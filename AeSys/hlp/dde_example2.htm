@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE Example 2</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkExecute Example 2 - Keystroke command:</h3>
+
+<p>Pegaesys recognizes all single ASCII keys as commands: A-Z, 0-9, punctuation. </p>
+<p><em>Control</em>.LinkExecute  "A"</p>
+<p><em>snaps the cursor to a point.</em></p>
+<p><em>Control</em>.LinkExecute  "X"</p>
+<p><em>moves the cursor South.</em></p>
+<p><em>If the single character is a short-cut key, it is executed and control is passed to the Pegaesys window. </em></p>
+<p>Non ascii commands such as return and escape can be sent using DDE.  It is  necessary to specify the character in the form {###} where ### is the keyAscii numeric representation:</p>
+<p><em>Control</em>.LinkExecute  "{13}"  'sends &lt;enter&gt;.</p>
+<p><em>Control</em>.LinkExecute  "{27}"  'sends &lt;esc&gt;.</p>
+
+</body>
+</html>

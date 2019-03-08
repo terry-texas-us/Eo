@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE LinkRequest</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+
+<h3>DDE LinkRequest</h3>
+<p>You can request a value from Pegaesys for your application in the format:</p>
+<ul style="list-style: none">
+	<li><em>Control</em>.LinkTopic = "Pegaes|General"</li>
+	<li><em>Control</em>.LinkMode = 1</li>
+	<li><em>Control</em>.LinkItem = Variable</li>
+	<li><em>Control</em>.LinkRequest</li>
+</ul>
+<p><em>where</em></p>
+<ul style="list-style: none">
+	<li>LinkTopic is a Property of the <em>control</em></li>
+	<li>LinkMode is a Property of the <em>control</em></li>
+	<li>LinkRequest is a Visual Basic KeyWord</li>
+	<li>Variable is a <a href="dde_variable.htm">variable which Pegaesys recognizes</a>.</li>
+</ul>
+<p><em>Example using a TextBox:</em></p>
+<ul style="list-style: none">
+	<li>Text1.LinkTopic = "Pegaes|General"</li>
+	<li>Text1.LinkItem = "Scale"</li>
+	<li>Text1.LinkMode = 1</li>
+	<li>Text1.LinkRequest</li>
+</ul>
+</body>
+</html>

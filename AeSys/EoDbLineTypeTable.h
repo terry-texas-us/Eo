@@ -1,0 +1,13 @@
+#pragma once
+
+class EoDbLinetypeTable {
+private:
+	static const WCHAR* LegacyLinetypes[];
+	static const EoUInt16 NumberOfLegacyLinetypes = 42;
+
+public:
+	static EoUInt16 LegacyLinetypeIndex(const OdString& name);
+	static OdString LegacyLinetypeName(const int index);
+public:
+	void LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const CString& fileName);
+};

@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDEPoke Function</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+
+<h3>DDEPoke Function</h3>
+<p>You can send data to Pegaesys from FoxPro in the format:</p>
+<p>=DDEPoke(Channel,"PokeVariableName", "PokeVariableValue")</p>
+<p><em>where:</em></p>
+<p>*  "PokeVariableName" is a <a href="dde_topic_names_general.htm">Pegaes defined topic name</a>.</p>
+<p>*  "PokeVariableValue"<strong> </strong>can be composed using the &amp;Macro Substitution function of FoxPro.</p>
+<p><em>for example, the following program fragment  changes the Scale in the Pegaesys window:</em></p>
+<p>store "SCALE" to mName</p>
+<p>store "48" to mValue</p>
+<p>=DDEPoke(iCh1,"&amp;mName","&amp;mValue") </p>
+
+</body>
+</html>

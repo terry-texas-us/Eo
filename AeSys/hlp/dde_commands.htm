@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>Pegaes Command LinkItems</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+<style type="text/css">
+#lists li span
+{
+	left: 12em;
+}
+</style>
+</head>
+
+<body>
+
+<h3>Pegaes|Command    LinkItems</h3>
+
+<div id="lists">
+<h4>LinkExecute Drawing Commands</h4>
+<ul>
+	<li>[Line(##)]<span><a href="hid_setup_penstyle.htm">Line</a>= 0 - 22</span></li>
+	<li>[Pen(##)]<span><a href="hid_setup_pencolor.htm">Pen</a>= 0 - 15</span></li>
+	<li>[Note($$...$)]<span>any ascii characters</span></li>
+	<li>[SetPoint(#)]<span>stake = 1 - 9</span></li>
+	<li>[GotoPoint(#)]<span>goto = 1 - 9</span></li>
+	<li>[DimAngZ(#.#)]<span>angle in degrees</span></li>
+	<li>[DimLen(##.##)]<span>distance in User Units</span></li>
+	<li>[Scale(##.#)]<span>ratio of drawing : world</span></li>
+	<li>[Fill($$$$$)]<span>pattern: S, H, C, P 1 - 21</span></li>
+	<li>[NoteHT(#.#)]<span>note height in inches .01 - 10</span></li>
+</ul>
+<h4>Keystroke Commands</h4>
+<ul>
+	<li>[$]<span><a href="dde_send_key_command.htm">a single keystroke command</a></span></li>
+	<li>[###]<span><a href="dde_send_char_command.htm">a single keyascii command</a></span></li>
+</ul>
+<h4>Send Keystroke Commands</h4>
+<ul>
+	<li>[Send($$...$)]<span>keystroke commands</span></li>
+	<li>[Send({##})]<span>keyascii commands</span></li>
+</ul>
+<h4>Menu Commands</h4>
+<ul>
+	<li>[FileOpen(filename.jb1)]</li>
+	<li>[FileMap(filename.jb1)]</li>
+	<li>[FileView(filename.jb1)]</li>
+	<li>[FileBlank(filename.jb1)]</li>
+	<li>[FileGet(filename.jb1)]</li>
+</ul>
+</div>
+</body>
+</html>

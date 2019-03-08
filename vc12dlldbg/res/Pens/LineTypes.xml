@@ -1,0 +1,384 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ItemGroup Lable="LineTypes">
+  <!-- defaults that must be in every drawing (they have no dash groups)-->
+  <LineDefinition Label="0" Name="0" Description="null">
+    <Appearance></Appearance>
+    <DashGroup Elements="0"></DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="1" Name="Continuous" Description="Solid line">
+    <Appearance></Appearance>
+    <DashGroup Elements="0"></DashGroup>
+  </LineDefinition>
+  <!-- Begin the line types with dash groups -->
+  <LineDefinition Label="2" Name="2" Description="Dash">
+    <Appearance>— </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.05</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="3" Name="3" Description="Dash2">
+    <Appearance>—— </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.1</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="4" Name="4" Description="LongDash">
+    <Appearance>———— </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.2</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="5" Name="5" Description="LongDash Dash">
+    <Appearance>———— — </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.2</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength>0.05</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="6" Name="6" Description="LongDash Dot">
+    <Appearance>———— • </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.2</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="7" Name="7" Description="LongDash Dot Dot">
+    <Appearance>———— • • </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.2</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="8" Name="8" Description="LongDash Dot Dot Dot">
+    <Appearance>———— • • • </Appearance>
+    <DashGroup Elements="8">
+      <DashLength>0.2</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="9" Name="9" Description="Dash">
+    <Appearance>— </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.05</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="10" Name="10" Description="LongDash2 Dash">
+    <Appearance>———————— — </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.4</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength>0.05</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="11" Name="11" Description="LongDash2 Dot">
+    <Appearance>———————— • </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.4</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="12" Name="12" Description="LongDash2 Dot Dot">
+    <Appearance>———————— • • </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.4</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="13" Name="13" Description="LongDash2 Dot Dot Dot">
+    <Appearance>———————— • • • </Appearance>
+    <DashGroup Elements="8">
+      <DashLength>0.4</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="14" Name="14" Description="LongDash4 Dash">
+    <Appearance>———————————————— — </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.8</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength>0.05</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="15" Name="15" Description="LongDash4 Dot">
+    <Appearance>———————————————— • </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.8</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="16" Name="16" Description="LongDash4 Dot Dot">
+    <Appearance>———————————————— • • </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.8</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="17" Name="17" Description="LongDash4 Dot Dot Dot">
+    <Appearance>———————————————— • • • </Appearance>
+    <DashGroup Elements="8">
+      <DashLength>0.8</DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+      <DashLength Style="Dot"></DashLength>
+      <DashLength Style="Gap">0.05</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <!-- Here begins the line types added for dwg imports -->
+  <LineDefinition Label="18" Name="BORDER" Description="Border">
+    <Appearance>——————————     ——————————     •     </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="19" Name="BORDER2" Description="Border(.5x)">
+    <Appearance>—————   —————   •   </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="20" Name="BORDERX2" Description="Border(2x)">
+    <Appearance>————————————————————          ————————————————————          •          </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>1.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength>1.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="21" Name="CENTER" Description="Center">
+    <Appearance>—————————————————————————     —————     </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>1.25</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="22" Name="CENTER2" Description="Center(.5x)">
+    <Appearance>———————————————  ——  </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.75</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength>0.125</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="23" Name="CENTERX2" Description="Center(2x)">
+    <Appearance>——————————————————————————————————————————————————          ——————————          </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>2.5</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="24" Name="DASHDOT" Description="Dash Dot">
+    <Appearance>——————————     •     </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="25" Name="DASHDOT2" Description="Dash Dot(.5x)">
+    <Appearance>—————  •  </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="26" Name="DASHDOTX2" Description="Dash Dot(2x)">
+    <Appearance>————————————————————          •          </Appearance>
+    <DashGroup Elements="4">
+      <DashLength>1.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="27" Name="DASHED" Description="Dashed">
+    <Appearance>——————————     </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="28" Name="DASHED2" Description="Dashed(.5x)">
+    <Appearance>—————  </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="29" Name="DASHEDX2" Description="Dashed(2x)">
+    <Appearance>————————————————————          </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>1.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="30" Name="DIVIDE" Description="Divide">
+    <Appearance>——————————     •     •     </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="31" Name="DIVIDE2" Description="Divide(.5x)">
+    <Appearance>—————  •  •  </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="32" Name="DIVIDEX2" Description="Divide(2x)">
+    <Appearance>————————————————————          •          •          </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>1.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="33" Name="DOT" Description="Dot">
+    <Appearance>-     </Appearance>
+    <DashGroup Elements="2">
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="34" Name="DOT2" Description="Dot(.5x)">
+    <Appearance>-  </Appearance>
+    <DashGroup Elements="2">
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="35" Name="DOTX2" Description="Dot(2x)">
+    <Appearance>-          </Appearance>
+    <DashGroup Elements="2">
+      <DashLength Style="Dot">0.0</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="36" Name="HIDDEN" Description="Hidden">
+    <Appearance>—————  </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="37" Name="HIDDEN2" Description="Hidden(.5x)">
+    <Appearance>—— </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.125</DashLength>
+      <DashLength Style="Gap">.0625</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="38" Name="HIDDENX2" Description="Hidden(2x)">
+    <Appearance>——————————     </Appearance>
+    <DashGroup Elements="2">
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="39" Name="PHANTOM" Description="Phantom">
+    <Appearance>—————————————————————————     —————     —————     </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>1.25</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+      <DashLength>0.25</DashLength>
+      <DashLength Style="Gap">0.25</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="40" Name="PHANTOM2" Description="Phantom(.5x)">
+    <Appearance>————————————  ——  ——  </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>0.625</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength>0.125</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+      <DashLength>0.125</DashLength>
+      <DashLength Style="Gap">0.125</DashLength>
+    </DashGroup>
+  </LineDefinition>
+  <LineDefinition Label="41" Name="PHANTOMX2" Description="Phantom(2x)">
+    <Appearance>——————————————————————————————————————————————————          ——————————          ——————————          </Appearance>
+    <DashGroup Elements="6">
+      <DashLength>2.5</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+      <DashLength>0.5</DashLength>
+      <DashLength Style="Gap">0.5</DashLength>
+    </DashGroup>
+  </LineDefinition>
+</ItemGroup>

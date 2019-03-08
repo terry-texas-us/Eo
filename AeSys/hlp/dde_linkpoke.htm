@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>LinkPoke</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkPoke</h3>
+<p>You can poke a value to Pegaesys from your application in the format:</p>
+<ul style="list-style: none">
+	<li><em>Control</em>.LinkTopic = "Pegaes|General"</li>
+	<li><em>Control</em>.LinkItem = Variable</li>
+	<li><em>Control</em>.LinkMode = 2</li>
+	<li><em>Control</em>.LinkPoke [(parameter)]</li>
+</ul>
+<p><em>where</em></p>
+<ul style="list-style: none">
+	<li>LinkTopic  is a Property of the control</li>
+	<li>LinkItem is a <a href="dde_variable.htm">variable which Pegaesys recognizes</a>.</li>
+	<li>LinkMode  is a Property of the <em>control,</em></li>
+	<li>LinkPoke  is a Visual Basic KeyWord</li>
+	<li>parameter  is a string value for the Variable</li>
+</ul>
+<p><em>Example using a TextBox:</em></p>
+<ul style="list-style: none">
+	<li>Text1.LinkTopic = "Pegaes|General"</li>
+	<li>Text1.LinkItem = "DimLen"</li>
+	<li>Text1.LinkMode = 2</li>
+	<li>Text1.LinkPoke</li>
+</ul>
+
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE Example 4</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkExecute Example 4 - Send Commands</h3>
+
+<p>In addition to sending characters representing keystroke commands one at a time, Pegaesys accepts a string of commands similar to the Windows function SendKeys.  <em>SendKeys could be used for  simple tasks, but using the caption bar as a report makes that a little awkward</em>.   </p>
+<p><em>for example:</em></p>
+<p><em>Control</em>.LinkExecute [Send(x)]</p>
+<p>moves the cursor South.</p>
+<p><em>Control</em>.LinkExecute [Send(7x7)]</p>
+<p>draws a circle.</p>
+<p><em>Control</em>.LinkExecute [Send(3x3s3e3{13})]</p>
+<p>draws a polygon.</p>
+<p><em>Specify non-ascii charactersi in the form <strong>{#}</strong> where # is the keyAscii numeric representation.</em></p>
+<p>Where messages are sent to dialog boxes, it is necessary to send each entry one string at a time.</p>
+<p><em>for example, to send the characters </em><strong>  =z2</strong>  :</p>
+<ul style="list-style: none">
+	<li><em>Control</em>.LinkExecute [Send(=)]</li>
+	<li>calls the Zoom Dialog Box</li>
+	<li><em>Control</em>.LinkExecute [Send(z)]</li>
+	<li>selects the zoom ratioTextBox.</li>
+	<li><em>Control</em>.LinkExecute [Send(2)]</li>
+	<li>specifies the zoom ratio = 2</li>
+	<li><em>Control</em>.LinkExecute [Send({13})]</li>
+	<li>closes the Zoom Dialog Box.</li>
+</ul>
+<p><em>This is necessary because Pegaesys has to shift the focus from the dialog box in order to get the next parameter.   You could, of course, store the parameters in your application in any form you wish.  </em></p>
+<p><em>For example:    </em><strong>\=z2\.</strong><em>  You could code your Visual Basic program to parse this string and convert it to the sequence listed. </em></p>
+
+</body>
+</html>

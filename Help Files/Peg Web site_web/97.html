@@ -1,0 +1,1174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head><title>[Trial version] Annotate  Mode</title>
+<meta http-equiv="Content-Style-Type" content="text/css">
+<style type="text/css"><!--
+body {
+  margin: 5px 5px 5px 5px;
+  background-color: #ffffff;
+}
+/* ========== Text Styles ========== */
+hr { color: #000000}
+body, table /* Normal text */
+{
+ font-size: 10pt;
+ font-family: 'Courier New';
+ font-style: normal;
+ font-weight: normal;
+ color: #000000;
+ text-decoration: none;
+}
+span.rvts1 /* Heading */
+{
+ font-weight: bold;
+ color: #0000ff;
+}
+span.rvts2 /* Subheading */
+{
+ font-weight: bold;
+ color: #000080;
+}
+span.rvts3 /* Keywords */
+{
+ font-family: 'Arial';
+ font-style: italic;
+ color: #800000;
+}
+a.rvts4, span.rvts4 /* Jump 1 */
+{
+ color: #008000;
+ text-decoration: underline;
+}
+a.rvts5, span.rvts5 /* Jump 2 */
+{
+ font-family: 'Arial';
+ color: #008000;
+ text-decoration: underline;
+}
+span.rvts6
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000000;
+}
+span.rvts7
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000000;
+ text-decoration: underline;
+}
+span.rvts8
+{
+ font-size: 12pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000080;
+}
+span.rvts9
+{
+ font-size: 14pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000080;
+}
+span.rvts10
+{
+ font-size: 16pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000080;
+}
+span.rvts11
+{
+ font-size: 16pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #000080;
+}
+span.rvts12
+{
+ font-family: '$$ep';
+ color: #008000;
+}
+span.rvts13
+{
+ font-family: '$$ep';
+ color: #000000;
+}
+span.rvts14
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #000080;
+ text-decoration: underline;
+}
+span.rvts15
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts16
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #ff0000;
+}
+span.rvts17
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #000000;
+}
+span.rvts18
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #ff0000;
+}
+span.rvts19
+{
+ font-size: 12pt;
+ font-family: '$$ep';
+ color: #ff0000;
+}
+span.rvts20
+{
+ font-family: '$$ep';
+ font-style: italic;
+ color: #008000;
+ text-decoration: underline;
+}
+span.rvts21
+{
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts22
+{
+ font-family: '$$ep';
+ color: #ff0000;
+}
+span.rvts23
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #008000;
+}
+span.rvts24
+{
+ font-family: '$$ep';
+ color: #0000ff;
+}
+span.rvts25
+{
+ font-family: '$$ep';
+ color: #008000;
+ text-decoration: underline;
+}
+span.rvts26
+{
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #000000;
+}
+span.rvts27
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #0000ff;
+}
+span.rvts28
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ color: #0000ff;
+}
+span.rvts29
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ color: #000000;
+}
+span.rvts30
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ color: #ff0000;
+}
+span.rvts31
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts32
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #000000;
+}
+span.rvts33
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000000;
+}
+span.rvts34
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts35
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #000000;
+}
+span.rvts36
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ color: #ff0000;
+ text-decoration: underline;
+}
+span.rvts37
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #ff0000;
+ text-decoration: underline;
+}
+span.rvts38
+{
+ font-family: '$$ep';
+ color: #0000ff;
+ text-decoration: underline;
+}
+span.rvts39
+{
+ font-family: '$$ep';
+ font-style: italic;
+ color: #000000;
+}
+span.rvts40
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #000000;
+}
+span.rvts41
+{
+ font-size: 16pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts42
+{
+ font-size: 16pt;
+ font-family: '$$ep';
+ color: #000000;
+}
+span.rvts43
+{
+ font-family: '$$ep';
+ color: #000000;
+ text-decoration: underline;
+}
+span.rvts44
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+}
+span.rvts45
+{
+ font-family: '$$ep';
+}
+span.rvts46
+{
+ font-family: '$$ep';
+ font-style: italic;
+ color: #0000ff;
+}
+span.rvts47
+{
+ font-family: '$$ep';
+ font-style: italic;
+}
+span.rvts48
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #0000ff;
+}
+span.rvts49
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #0000ff;
+}
+span.rvts50
+{
+ font-family: '$$ep';
+ font-weight: bold;
+}
+span.rvts51
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-weight: bold;
+}
+span.rvts52
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #0000ff;
+}
+span.rvts53
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+}
+span.rvts54
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #008000;
+}
+span.rvts55
+{
+ font-family: '$$ep';
+ font-style: italic;
+ color: #0000ff;
+ text-decoration: underline;
+}
+span.rvts56
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+}
+span.rvts57
+{
+ font-family: '$$ep';
+ font-style: italic;
+ color: #ff0000;
+}
+span.rvts58
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts59
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #ff0000;
+}
+span.rvts60
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+}
+span.rvts61
+{
+ font-size: 12pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts62
+{
+ font-family: '$$ep';
+ color: #ff0000;
+ text-decoration: underline;
+}
+span.rvts63
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #0000ff;
+}
+span.rvts64
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #000000;
+}
+span.rvts65
+{
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #0000ff;
+}
+span.rvts66
+{
+ font-family: '$$ep';
+ font-style: italic;
+ color: #008000;
+}
+span.rvts67
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ color: #008000;
+}
+span.rvts68
+{
+ font-size: 9pt;
+ font-family: '$$ep';
+ font-style: italic;
+ color: #008000;
+}
+span.rvts69
+{
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #008000;
+}
+span.rvts70
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts71
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #000000;
+ text-decoration: underline;
+}
+span.rvts72
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ text-decoration: underline;
+}
+span.rvts73
+{
+ font-size: 14pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #ff0000;
+}
+span.rvts74
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #008000;
+}
+span.rvts75
+{
+ font-family: '$$ep';
+ font-weight: bold;
+ color: #ff0000;
+ text-decoration: underline;
+}
+span.rvts76
+{
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #0000ff;
+}
+span.rvts77
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ font-style: italic;
+ font-weight: bold;
+ color: #000000;
+}
+span.rvts78
+{
+ font-family: '$$ep';
+ color: #008080;
+ text-decoration: underline;
+}
+span.rvts79
+{
+ font-family: '$$ep';
+ color: #c0c0c0;
+}
+span.rvts80
+{
+ font-size: 8pt;
+ font-family: '$$ep';
+ color: #c0c0c0;
+}
+/* ========== Para Styles ========== */
+p,ul,ol /* Paragraph Style */
+{
+ text-align: left;
+ text-indent: 0px;
+ padding: 0px 0px 0px 0px;
+ margin: 0px 0px 0px 0px;
+}
+.rvps1 /* Centered */
+{
+ text-align: center;
+}
+.rvps2
+{
+}
+.rvps3
+{
+ margin: 0px 0px 0px 72px;
+}
+.rvps4
+{
+ line-height: 0.-97;
+}
+.rvps5
+{
+ margin: 4px 0px 0px 0px;
+}
+.rvps6
+{
+}
+.rvps7
+{
+}
+.rvps8
+{
+ margin: 0px 0px 0px 96px;
+}
+.rvps9
+{
+ margin: 2px 0px 0px 0px;
+}
+.rvps10
+{
+ text-indent: -16px;
+ line-height: 0.-97;
+ margin: 0px 0px 0px 24px;
+}
+.rvps11
+{
+ text-indent: -42px;
+ margin: 0px 0px 0px 42px;
+}
+.rvps12
+{
+ text-indent: -48px;
+ margin: 0px 0px 0px 48px;
+}
+.rvps13
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps14
+{
+ text-indent: -24px;
+ margin: 0px 0px 0px 36px;
+}
+.rvps15
+{
+ text-indent: -54px;
+ margin: 4px 0px 0px 54px;
+}
+.rvps16
+{
+ text-indent: -54px;
+ margin: 0px 0px 0px 54px;
+}
+.rvps17
+{
+ text-indent: -54px;
+ margin: 2px 0px 0px 54px;
+}
+.rvps18
+{
+ text-indent: -16px;
+ line-height: 0.-97;
+ margin: 2px 0px 0px 24px;
+}
+.rvps19
+{
+ margin: 5px 0px 0px 12px;
+}
+.rvps20
+{
+ line-height: 0.-97;
+ margin: 5px 0px 0px 8px;
+}
+.rvps21
+{
+ text-indent: -18px;
+ margin: 0px 0px 0px 18px;
+}
+.rvps22
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps23
+{
+ text-indent: -84px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps24
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 66px;
+}
+.rvps25
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 66px;
+}
+.rvps26
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps27
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps28
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps29
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps30
+{
+ text-indent: -60px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps31
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps32
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps33
+{
+}
+.rvps34
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps35
+{
+}
+.rvps36
+{
+}
+.rvps37
+{
+}
+.rvps38
+{
+ line-height: 0.-97;
+ margin: 5px 0px 0px 8px;
+}
+.rvps39
+{
+ text-indent: -84px;
+ line-height: 0.-97;
+ margin: 5px 0px 0px 84px;
+}
+.rvps40
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps41
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps42
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps43
+{
+ text-indent: -60px;
+ margin: 0px 0px 0px 60px;
+}
+.rvps44
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps45
+{
+ text-indent: -84px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps46
+{
+ text-indent: -84px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps47
+{
+ text-indent: -70px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps48
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps49
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps50
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps51
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps52
+{
+ text-indent: -60px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps53
+{
+ text-indent: -54px;
+ margin: 0px 0px 0px 60px;
+}
+.rvps54
+{
+ text-indent: -60px;
+ margin: 0px 0px 0px 66px;
+}
+.rvps55
+{
+ text-indent: -36px;
+ margin: 0px 0px 0px 42px;
+}
+.rvps56
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps57
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps58
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps59
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps60
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps61
+{
+ margin: 0px 48px 0px 8px;
+}
+.rvps62
+{
+}
+.rvps63
+{
+ text-indent: -36px;
+ margin: 2px 0px 0px 36px;
+}
+.rvps64
+{
+ text-indent: -36px;
+ margin: 0px 0px 0px 36px;
+}
+.rvps65
+{
+ margin: 1px 0px 0px 6px;
+}
+.rvps66
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps67
+{
+}
+.rvps68
+{
+ margin: 2px 0px 0px 0px;
+}
+.rvps69
+{
+}
+.rvps70
+{
+ margin: 4px 0px 0px 0px;
+}
+.rvps71
+{
+ text-indent: -18px;
+ margin: 0px 0px 0px 30px;
+}
+.rvps72
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps73
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 83px;
+}
+.rvps74
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps75
+{
+}
+.rvps76
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps77
+{
+ margin: 0px 0px 0px 6px;
+}
+.rvps78
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps79
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps80
+{
+ text-indent: -60px;
+ margin: 0px 0px 0px 66px;
+}
+.rvps81
+{
+ text-indent: -24px;
+ margin: 0px 0px 0px 30px;
+}
+.rvps82
+{
+ text-indent: -18px;
+ margin: 0px 0px 0px 24px;
+}
+.rvps83
+{
+ text-indent: -48px;
+ margin: 0px 0px 0px 54px;
+}
+.rvps84
+{
+ text-indent: -30px;
+ margin: 0px 0px 0px 30px;
+}
+.rvps85
+{
+ margin: 0px 0px 0px 18px;
+}
+.rvps86
+{
+ margin: 0px 0px 0px 30px;
+}
+.rvps87
+{
+ margin: 0px 0px 0px 36px;
+}
+.rvps88
+{
+ margin: 0px 0px 0px 18px;
+}
+.rvps89
+{
+ margin: 0px 0px 0px 8px;
+}
+.rvps90
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps91
+{
+ line-height: 0.47;
+}
+.rvps92
+{
+}
+.rvps93
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 84px;
+}
+.rvps94
+{
+ text-indent: -30px;
+ margin: 2px 0px 0px 42px;
+}
+.rvps95
+{
+ text-indent: -30px;
+ margin: 0px 0px 0px 42px;
+}
+.rvps96
+{
+ margin: 2px 0px 0px 0px;
+}
+.rvps97
+{
+}
+.rvps98
+{
+ text-indent: -78px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps99
+{
+ text-indent: -12px;
+ margin: 0px 0px 0px 12px;
+}
+.rvps100
+{
+ text-indent: -90px;
+ margin: 0px 0px 0px 90px;
+}
+.rvps101
+{
+ margin: 0px 0px 0px 30px;
+}
+.rvps102
+{
+ text-indent: -18px;
+ margin: 0px 0px 0px 18px;
+}
+.rvps103
+{
+}
+.rvps104
+{
+ text-indent: -96px;
+ margin: 0px 0px 0px 114px;
+}
+.rvps105
+{
+ margin: 0px 0px 0px 24px;
+}
+.rvps106
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps107
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 66px;
+}
+.rvps108
+{
+ text-indent: -96px;
+ margin: 0px 0px 0px 96px;
+}
+.rvps109
+{
+ text-indent: -72px;
+ margin: 0px 0px 0px 78px;
+}
+.rvps110
+{
+ text-indent: -108px;
+ margin: 0px 0px 0px 120px;
+}
+.rvps111
+{
+ text-indent: -84px;
+ margin: 0px 0px 0px 90px;
+}
+.rvps112
+{
+}
+.rvps113
+{
+ text-indent: -36px;
+ margin: 0px 0px 0px 36px;
+}
+.rvps114
+{
+ text-indent: -114px;
+ margin: 0px 0px 0px 126px;
+}
+.rvps115
+{
+ margin: 0px 0px 0px 6px;
+}
+.rvps116
+{
+}
+.rvps117
+{
+ text-indent: -90px;
+ margin: 0px 0px 0px 96px;
+}
+.rvps118
+{
+ text-indent: -102px;
+ margin: 0px 0px 0px 114px;
+}
+.rvps119
+{
+ margin: 0px 12px 0px 0px;
+}
+.rvps120
+{
+}
+.rvps121
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 72px;
+}
+.rvps122
+{
+}
+.rvps123
+{
+ margin: 2px 0px 0px 0px;
+}
+.rvps124
+{
+}
+.rvps125
+{
+ text-indent: -12px;
+ margin: 0px 0px 0px 12px;
+}
+.rvps126
+{
+}
+.rvps127
+{
+ text-indent: -60px;
+ margin: 0px 0px 0px 60px;
+}
+.rvps128
+{
+ margin: 0px 96px 0px 0px;
+}
+.rvps129
+{
+}
+.rvps130
+{
+}
+.rvps131
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps132
+{
+ margin: 0px 0px 0px 12px;
+}
+.rvps133
+{
+ text-indent: -48px;
+ margin: 0px 0px 0px 54px;
+}
+.rvps134
+{
+}
+.rvps135
+{
+ text-indent: -18px;
+ margin: 0px 0px 0px 18px;
+}
+.rvps136
+{
+ text-indent: -18px;
+ margin: 0px 0px 0px 18px;
+}
+.rvps137
+{
+ text-indent: -66px;
+ margin: 0px 0px 0px 66px;
+}
+.rvps138
+{
+ text-indent: -24px;
+ margin: 0px 0px 0px 24px;
+}
+--></style>
+</head>
+<body alink=#ff0000>
+<center>This document was generated by Trial version of <A href="http://www.processtext.com/abchlp.html">ABC Amber HLP Converter program</A></center><hr><BR>
+<p><span class=rvts50>Annotate&nbsp; Mode</span><span class=rvts45> </span><span class=rvts24>To decorate a drawing</span></p>
+<p><span class=rvts45>Choose </span><span class=rvts22>Annotate</span><span class=rvts45> from </span><span class=rvts22>MenuBar - Mode</span><span class=rvts45>&nbsp; or </span></p>
+<p><span class=rvts45>Press&nbsp; </span><span class=rvts22>|</span><span class=rvts45>&nbsp; or&nbsp; </span><span class=rvts22>End</span><span class=rvts45>&nbsp; from any GIN mode.</span></p>
+<p><span class=rvts40>Press numeric keys to execute commands:</span></p>
+<p class=rvps90><span class=rvts22>&nbsp;&nbsp;&nbsp; 0</span><span class=rvts13>  &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Options</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Set Annotate Mode options </span></p>
+<p class=rvps90><span class=rvts22>&nbsp;&nbsp;&nbsp; 1</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Tag</span><span class=rvts13>  &nbsp; &nbsp; &nbsp; &nbsp;Insert a Tag Marker</span></p>
+<p class=rvps90><span class=rvts22>2-2</span><span class=rvts13>&nbsp;  &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Leader</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Start or end a plain leader.</span></p>
+<p class=rvps90><span class=rvts22>2-3</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Arrow</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Start or end a leader with arrowhead.</span></p>
+<p class=rvps90><span class=rvts22>&nbsp;&nbsp; 4</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Bubble</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Insert a bubble into the workfile (prompted).</span></p>
+<p class=rvps90><span class=rvts22>2-5</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Hook</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Start or end a leader with a hook.</span></p>
+<p class=rvps90><span class=rvts22>&nbsp;&nbsp;&nbsp; 6</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Undln</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Underline text at the cursor position.</span></p>
+<p class=rvps90><span class=rvts22>7-7</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Box</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Draw a box around text at cursor position.</span></p>
+<p class=rvps90><span class=rvts22>&nbsp;&nbsp;&nbsp; 8</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Cutin</span><span class=rvts13> &nbsp; &nbsp; &nbsp; &nbsp;Cut text into exisitng line (prompt provided)</span><span class=rvts22> </span></p>
+<p class=rvps90><span class=rvts22>&nbsp;&nbsp;&nbsp;&nbsp; 9 &nbsp; &nbsp; &nbsp; &nbsp;</span><span class=rvts12>Construction line</span><span class=rvts13>.&nbsp; Draw line from border to border</span></p>
+<p><span class=rvts22>Esc</span><span class=rvts13> cancels a pending operation.&nbsp; </span></p>
+<p><span class=rvts22>Enter</span><span class=rvts13>&nbsp; completes a pending operation.</span></p>
+<p><span class=rvts39>All vectors are drawn in Pen 1,&nbsp; all text in Pen 2..</span></p>
+<p><span class=rvts45><br></span></p>
+
+</body></html>

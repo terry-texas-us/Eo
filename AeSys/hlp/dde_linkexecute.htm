@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE LinkExecute</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkExecute</h3>
+
+<p>You can execute Pegaesys commands from your application in the format:</p>
+<ul style="list-style: none">
+	<li><em>Control</em>.LinkTopic = "Pegaes|Command"</li>
+	<li><em>Control</em>.LinkMode = 2</li>
+	<li><em>Control</em>.LinkExecute [PegCommand (parameter)]</li>
+</ul>
+<p><em>where</em></p>
+<ul style="list-style: none">
+	<li>LinkExecute is a Visual Basic KeyWord</li>
+	<li>..<a href="dde_commands.htm">PegCommand </a> is a Pegaesys Keyword.</li>
+	<li>Parameter is a string value known to Pegaesys</li>
+</ul>
+Examples:
+<ul style="list-style: none">
+	<li><a href="dde_example1.htm">Example 1 - using Text Box for commands</a></li>
+	<li><a href="dde_example2.htm">Example 2 - using Keystroke commands</a></li>
+	<li><a href="dde_example3.htm">Example 3 - using Menu Commands</a></li>
+	<li><a href="dde_example4.htm">Example 4 - using Send Commands</a></li>
+</ul>
+</body>
+</html>

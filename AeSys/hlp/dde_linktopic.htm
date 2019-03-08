@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE LinkTopic</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkTopic</h3>
+<p>In the Visual Basic program you must start a conversation with Pegaesys before data is exchanged.
+To initiate a conversation with Pegaesys, set up a Link to Pegaesys in the format:</p>
+<p><em>Control.</em>LinkTopic = "Application|Topic"</p>
+<p><em>where</em></p>
+<ul style="list-style:none">
+	<li>LinkTopic  is a Property of the control,</li>
+	<li>Application in our case is <strong>Pegaes</strong></li>
+	<li>Topic can be: System, <a href="dde_variable.htm">General</a>, or <a href="dde_commands.htm">Commands</a>.</li>
+</ul>
+<p><em>for example:</em></p>
+<p>Text1.LinkTopic  = "Pegaes|General"</p>
+<ul style="list-style:none">
+	<li>The bar | separator is required syntax.</li>
+	<li>The quote marks are required.</li>
+	<li>Pegaes is the server application.</li>
+	<li>General, System, or Commands are server Topics.</li>
+</ul>
+</body>
+</html>

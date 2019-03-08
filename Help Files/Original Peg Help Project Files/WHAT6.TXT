@@ -1,0 +1,319 @@
+Windows Help Authoring Tool (WHAT6) for Use with Word 6.0  
+ 
+------------------------------------------------------------------------ 
+The information in this article applies to: 
+ 
+- Microsoft Word for Windows, version 6.0 
+- Microsoft Windows operating system version 3.1 
+- Microsoft Visual Basic programming system for Windows, version 3.0 
+------------------------------------------------------------------------ 
+ 
+SUMMARY 
+======= 
+Microsoft has developed an internal tool called the Windows Help 
+Authoring Toolkit for Microsoft Word for Windows version 6.0 (WHAT6). 
+This tool is used within Microsoft to help create Help files. Microsoft 
+is now providing this internal tool to our customers. 
+ 
+   THIS TOOL IS NOT SUPPORTED BY MICROSOFT CORPORATION. IT IS 
+   PROVIDED "AS IS" BECAUSE WE BELIEVE IT MAY BE USEFUL TO 
+   YOU. WE REGRET THAT MICROSOFT IS UNABLE TO SUPPORT OR 
+   ASSIST YOU, SHOULD YOU HAVE PROBLEMS USING THIS TOOL. 
+ 
+Please refer all your questions on WHAT6 to the WHAT6 Help menu. 
+ 
+How to Obtain WHAT6 and Related Files 
+------------------------------------- 
+WHAT6.EXE contains WHAT6.DOT and related files. You can download  
+WHAT6.EXE, a self-extracting file, from the Microsoft Software Library  
+(MSL) on the following services: 
+ 
+ - CompuServe 
+      GO MSL 
+      Search for WHAT6.EXE 
+      Display results and download 
+ 
+ - Microsoft Download Service (MSDL) 
+      Dial (206) 936-6735 to connect to MSDL 
+      Download WHAT6.EXE 
+ 
+ - Internet (anonymous FTP) 
+      ftp ftp.microsoft.com 
+      Change to the \softlib\mslfiles directory 
+      Get WHAT6.EXE 
+ 
+After downloading it, run WHAT6.EXE in an empty directory to decompress  
+the component files contained within it. 
+ 
+MORE INFORMATION 
+================ 
+ 
+What Is WHAT6 
+------------- 
+The Windows Help Authoring Toolkit for Microsoft Word for Windows  
+version 6.0 (WHAT6) consists of a Microsoft Word version 6.0 template  
+(.DOT file)and various tools that modify Microsoft Word for Windows. 
+ 
+You can use WHAT6 to create and edit Help topic files. WHAT6 makes  
+creating Help files easier by providing dialog boxes to add Help  
+features that would otherwise need to be created using specialized Help  
+coding and word-processing functions. For example, instead of entering  
+footnotes for a topic's context string and title, you can simply type  
+the information into a dialog box. WHAT6 also has Help Files to assist  
+you and Windows programs for creating bitmap hotspots and managing your  
+Help project. 
+ 
+The Help Authoring Template (WHAT6.DOT) makes it easier for you to: 
+ 
+ - Create and edit topic files. 
+ - Insert and edit topics, graphics and hot spots. 
+ - Format topic text and graphics. 
+ - Save topic files in RTF format. 
+ - View partial or complete builds of the topic file in Windows Help. 
+ - Insert bitmaps into your help file. 
+ - Apply help styles. 
+ - Format Lists. 
+ 
+How the WHAT6.DOT Template Works 
+-------------------------------- 
+The Help Authoring Template is similar to other Word for Windows  
+templates. It contains a set of specialized macros and styles that  
+become available when you open a document based on the template. The  
+template modifies existing commands and adds new commands to the Word  
+for Windows menus. The result is a version of Word for Windows that has  
+all the word-processing functionality and yet is optimized for creating  
+Help files. 
+ 
+Requirements 
+------------ 
+The WHAT6.DOT template requires Microsoft Word version 6.0 for Windows  
+and Windows Help version 3.10.505, which is fully compatible with Word  
+for Windows 6.0 Rich Text Format (RTF).  
+ 
+What WHAT includes: / 32 files  / 2.72 MB 
+----------------------------------------- 
+The below list provides the names of all the files that are a part of  
+the WHAT6 utility.  In addition this list also indicates how each of  
+these filed should be installed on your system (there is not SETUP  
+utility for this tool). 
+ 
+The directories to which you will be asked to copy files to are: 
+ 
+\WINDOWS          This is your Windows directory (i.e. C:\WINDOWS) 
+\WINDOWS\SYSTEM   This is your System directory (i.e. C:\WINDOWS\SYSTEM) 
+\WINWORD          This is where you have WinWord installed  
+                  (i.e. C:\WINWORD). 
+\WINWORD\TEMPLATE This is where you have your templates stored for  
+                  WinWord (i.e. c:\WINWORD\TEMPLATE). 
+\HELP             This is your help working directory.  You can place 
+                  this directory any where you want and name it anything  
+                  you want (i.e. C:\WINWORD\HELP). You will need  
+                  to create this directory. 
+\HELP\SAMPLE      This is where the help samples will be placed. It is  
+                  usually set up as a directory off of your \HELP 
+                  directory (i.e. C:\WINWORD\HELP\SAMPLE). You will need  
+                  to create this directory. 
+ 
+ 
+Template Files: 
+--------------- 
+WHAT6.DOT     WHAT6 template used by WORD6. Copy to your                 
+              \WINWORD\TEMPLATE directory. 
+WHAT6.STY     Style sheet used by the WHAT6 template. Copy to your 
+              \WINWORD\TEMPLATE directory 
+WHAT6.INI     Initialization file for WHAT6. Copy to your \WINDOWS  
+              directory. 
+STYLES.DLL    Collection of function used by the WHAT6 template. Copy to  
+              the \WINDOWS\SYSTEM directory  
+ 
+Help Tools: 
+----------- 
+WHPE.EXE      Help Project Editor. Copy to your \HELP directory. 
+HCPARSE.DLL   Parses the HPJ file into a format used by WHPE.EXE
+SHED.EXE      HotSpot Editor. Copy to your \HELP directory. 
+MRBC.EXE      Multiple Resolution Bitmap Compiler. Copy to your \HELP  
+              directory. 
+ 
+ 
+Help Authoring Help Files: 
+-------------------------- 
+WHPE.HLP      Project Editor Help. Copy to your \HELP directory. 
+WHAT6.HLP     Help on WHAT6.DOT. Preferably, where your template is  
+              stored (in your \WINWORD\TEMPLATE directory). 
+BLDERROR.HLP  Help Compiler Errors. Copy to your \HELP directory. 
+HAG.HLP       Help Authoring Guide. Copy to your \HELP directory. 
+ 
+ 
+Help Compiler Files: 
+-------------------- 
+HC.EXE        Version 3.10.505. Copy to your \HELP directory 
+HC.ERR        Help Compiler Error file. Copy to same directory as    
+              HC.EXE. 
+HCP.EXE       Protect Mode Version 3.10.505. Copy to your \HELP  
+              directory. 
+HCP.ERR       Help Compiler Error file. Copy to same directory as 
+              HCP.EXE. 
+ 
+Sample Files: 
+------------- 
+HELPEX.HPJ    Copy to your \HELP\SAMPLE directory. 
+HELPEX.RTF    Copy to your \HELP\SAMPLE directory. 
+ 
+Help Bitmaps: 
+------------- 
+BIGBUT.BMP    Copy to your \HELP\SAMPLE directory. 
+BOOK.BMP      Copy to your \HELP\SAMPLE directory. 
+BULLET.BMP    Copy to your \HELP\SAMPLE directory. 
+CHICLET.BMP   Copy to your \HELP\SAMPLE directory. 
+CLOSED.BMP    Copy to your \HELP\SAMPLE directory. 
+DOC.BMP       Copy to your \HELP\SAMPLE directory. 
+EMDASH.BMP    Copy to your \HELP\SAMPLE directory. 
+LEAF.BMP      Copy to your \HELP\SAMPLE directory. 
+MINUS.BMP     Copy to your \HELP\SAMPLE directory. 
+NEXT.BMP      Copy to your \HELP\SAMPLE directory. 
+OPEN.BMP      Copy to your \HELP\SAMPLE directory. 
+PLUS.BMP      Copy to your \HELP\SAMPLE directory. 
+ 
+Misc: 
+----- 
+WHAT6.ICO     Icon for use with Program Manager. Copy to your \HELP  
+              directory. 
+HAG.ICO       Icon for the Help Authoring Guide. Copy to your \Help  
+              directory. 
+CMDIALOG.VBX  Common Dialog Custom control used by WHPE.EXE. Copy to
+              your \WINDOWS\SYSTEM directory.
+WHAT6.TXT     This Article 
+ 
+ 
+WHAT6.HLP Help File 
+------------------- 
+After you copy the WHAT6.HLP file to your hard-drive, note which  
+directory it is in. Then modify the macro called HelpOnWhat to point to  
+this location by following these steps: 
+ 
+1. From within Word 6.0 Choose New... from the File Menu. 
+ 
+2. From the "New" dialog select the Document radio button in the lower  
+   left and then select What6 from the "Template" Combo Box. 
+ 
+3. Choose Macro from the Tools menu. 
+ 
+4. Select HelpOnWhat from the "Macro Name" Combo Box and choose Edit. 
+ 
+5. Find the line of code that reads: 
+ 
+   t = WinHelp(hwnd,"\\merlin\winhelp\what\help\what6.hlp", hlpINDEX, 0) 
+ 
+6. Edit the command line so that it matches the location of the help  
+   file (i.e. "C:\WINWORD\TEMPLATE\WHAT6.HLP"). 
+ 
+7. From the File menu Close and save the macro. 
+ 
+8. Close your document and when prompted if you want to save changes to  
+   the .DOT template choose YES. 
+ 
+ 
+Setting up Icons in Program Manager 
+----------------------------------- 
+After you have the above files copied to all the correct location you 
+may want to setup icons for some of the files in a group in Program 
+Manager.   
+ 
+1. Select or create a new group in Program Manager. To create a new 
+group choose New... form the File menu in Program Manager. Select 
+Program Group and select OK. Next enter in a Description for the new 
+group and select OK. 
+ 
+2. Once you have a program group selected choose New... form the File 
+menu in Program Manager. Select Program Item and Select OK. Next enter 
+in the Description, Command Line and Working Directory, then select OK.  
+Repeat this process for each of the item listed below. 
+ 
+Description:         Help Project Editor 
+Command Line:        C:\WINWORD\HELP\WHPE.EXE 
+Working Directory:   C:\WINWORD\HELP 
+ 
+Description:         HotSpot Editor 
+Command Line:        C:\WINWORD\HELP\SHED.EXE 
+Working Directory:   C:\WINWORD\HELP 
+ 
+Description:         Help Compiler Errors 
+Command Line:        C:\WINWORD\HELP\BLDERROR.HLP 
+Working Directory:   C:\WINWORD\HELP 
+ 
+Description:         Help Authoring Guide 
+Command Line:        C:\WINWORD\HELP\HAG.HLP 
+Working Directory:   C:\WINWORD\HELP 
+ 
+For this last item (HAG.EXE) there is a separate icon file that is 
+provided that you can associate with it in Program Manager. To do this, 
+select (click once) the current icon in the program group in Program 
+Manager that you just created. Next Select Properties... from the File 
+menu. Then select 'Change Icon...' and in the 'File Name' field type in 
+the path and file name of the desired icon (i.e. 
+C:\WINWORD\HELP\HAG.ICO) and then select OK. 
+ 
+Getting Started 
+--------------- 
+The following steps will get you started with how to use the Project 
+Editor and the WHAT template to create a new Windows Help File. 
+ 
+1. Assuming you have set up icons for the installed components as 
+described above, double click on the Help Project Editor. 
+ 
+2. Once the Project Editor is up choose 'Project...' from the Edit menu. 
+ 
+3. In the Project Dialog you can set the Title and Contents description 
+for your project, however it is most important that you '3.1' as your 
+help version, without this et properly the WHAT6 template will not be 
+used.  Select OK when done. 
+ 
+4. Choose 'Add New or Existing File...' from the Edit menu. 
+ 
+5. When the dialog appears type in a new file name with .RTF extension.  
+Select OK. 
+ 
+6. If a dialog appears with the following message: 
+ 
+        "<filename>.RTF does not exist. Create it, based on WHAT30.DOT?" 
+ 
+select Cancel. Return to step 2. The project editor has not been set up 
+properly. Make sure that you have selected '3.1' as the help version. 
+ 
+If a dialog appears with the following message: 
+ 
+        "<filename>.RTF does not exist. Create it, based on WHAT6.DOT?" 
+ 
+Then everything is OK. Select OK to continue. The file will then be 
+added to the project list. 
+ 
+7. Select the file in the project list and then choose 'Edit File' from 
+the Edit Menu. This will load WinWord6 if not already loaded and open 
+your file using the WHAT6 template. 
+ 
+8. For further instruction on how to use the Help Project Editor or the 
+WHAT6 template, please see the on-line help file provided for each of 
+these tools. These files can be accessed through the Help menu while in 
+either of these tools. 
+ 
+ 
+Multiple Resolution Graphics 
+---------------------------- 
+In addition to the .DOT and .HLP files, the self-extracting file also 
+contains tools (SHED.EXE and MRBC.EXE) to help you compile multi- 
+resolution bitmaps (MRBMs) into your help file. You can use these tools  
+to make your graphics look good on monitors of various resolutions. 
+ 
+To create MRBMs, first take screen dumps of your graphic in each of the 
+resolutions you need (EGA, VGA, and 8514). Then create three separate  
+.SHG files using SHED.EXE (hotspot editor). Even if you don't have  
+hotspots in your graphic, create the separate *.SHG files. Then combine  
+the three .SHG graphics into one .MRB using MRBC.EXE. 
+ 
+When making this kind of file, you should make sure to archive the  
+original .BMP and .SHG files, in case you need to modify anything later. 
+ 
+It is useful to use SHED even if you're not putting hotspots in the 
+graphic. SHED interprets graphics the same way WINHELP.EXE does. You can  
+be reasonably sure that once the graphics are saved in SHED, they will  
+look good in your Help file. 

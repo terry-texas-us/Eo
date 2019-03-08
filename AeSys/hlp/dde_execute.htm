@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDEExecute Function</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDEExecute Function</h3>
+
+<p>The DDEExecute function sends a command to PegAEsys, using dynamic data
+exchange (DDE). The commands recognized by PegAEsys include all defined keyboard
+keys. This includes most alpha keys and the Drawing Modes numeric keys. In
+addition a small set of named commands are recognized.</p>
+<p>=DDEExecute(channel, command)</p>
+<p><em>where</em></p>
+<div id="lists">
+<ul style="list-style: none">
+	<li>channel<span>is a previously <a href="dde_initiate.htm">initiated</a> channel</span></li>
+	<li>command<span>is a keyboard key command or <a href="dde_executedrawingcommands.htm">Named command</a> recognized by Pegaesys</span></li>
+</ul>
+</div>
+<h4>Examples of keyboard key commands</h4>
+
+<p><em>to snap the cursor to a primitive control point:</em></p>
+<p>=DDEExecute(channel, "A")</p>
+
+<p><em>to move the cursor south:</em></p>
+<p>=DDEExecute(channel, "X")</p>
+
+<p><em>to change focus to PegAEsys and open the Pen Select dialog</em>:</p>
+<p>=DDEExecute(channel,"P")</p>
+
+<h4>Examples of Named commands</h4>
+
+<p><em>to changes the current Pen to Pen 4:</em></p>
+
+<p>=DDEExecute(channel, '[pen("4")]')</p>
+<p><em>to add a Note primitive to the active layer on the active drawing:</em></p>
+<ul style="list-style: none">
+	<li>store 'Hello there' to mString</li>
+	<li>=DDEExecute(channel,'[note("&amp;mString")]')</li>
+</ul>
+<p><em>to open a layer named B:\DIR1\SAMPLE.JB1 in a new window:</em></p>
+<ul style="list-style: none">
+	<li>store 'SAMPLE' to MLAYER</li>
+	<li>store trim(MLAYER) to MLAYER</li>
+	<li>store 'B:\\DIR1\\'+MLAYER+'.JB1' to MLAYER</li>
+	<li>=DDEExecute(channel,'[fileOPEN("&amp;MLAYER")]')</li>
+</ul>
+<p>Since blanks are not allowed, strings must be trimmed.
+Non-ASCII characters and <strong>\</strong> must be preceded by the <strong>\</strong> character.</p>
+</body>
+</html>

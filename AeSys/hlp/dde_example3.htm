@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE Example 3</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkExecute Example 3 - Menu Commands</h3>
+
+<p>Pegaesys recognizes menu commands in the format:</p>
+<p><em>Control</em>.LinkExecute [Menu_command(String_data)]</p>
+<p><em>for example, the following program fragment  opens layer B:\DIR1\SAMPLE.JB1</em></p>
+<ul style="list-style: none">
+	<li>mLayer =  'SAMPLE'</li>
+	<li>mLayer = Trim(mLayer)</li>
+	<li>mLayer = "B:\\DIR1\\" + mLayer + ".JB1"</li>
+	<li><em>control</em>.LinkExecute  [fileOpen(mLayer)]</li>
+</ul>
+<p><em>where</em></p>
+<ul style="list-style: none">
+	<li>The syntax  [???(????)] must be strictly followed.</li>
+	<li>Menu commands supported are: TracingOpen, TracingMap, TracingView, TracingBlank, FileGet</li>
+	<li>String data can be a variable or contents of a TextBox.</li>
+	<li><em>Since blanks are not allowed, strings must be trimmed</em></li>
+	<li>Non-ASCII characters and <strong>\</strong> must be preceded by the <strong>\</strong> character.</li>
+	<li><em>On Menu commands, control is automatically transferred back to the application window.   </em></li>
+</ul>
+</body>
+</html>

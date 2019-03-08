@@ -1,0 +1,401 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="vc12dlldbg|Win32">
+      <Configuration>vc12dlldbg</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{99616C98-7844-41E8-BC1F-B16C4044EB44}</ProjectGuid>
+    <RootNamespace>AeSys</RootNamespace>
+    <Keyword>MFCProj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">
+    <CodeAnalysisRuleSet>BasicCorrectnessRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\Teigha\12\Teigha_vc12dlldbg\TD\Include;E:\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_VC12;_TOOLKIT_IN_DLL_;WIN32;_WINDOWS;_DEBUG;ODAMFC_EXPORT_SYMBOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <MinimalRebuild>true</MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <ProjectReference />
+    <Link>
+      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Db.lib;TD_Gs.lib;TD_Key.lib;RecomputeDimBlock.lib;sisl.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Teigha\12\Teigha_vc12dlldbg\lib\vc12dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AssemblyDebug>
+      </AssemblyDebug>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers />
+      <ShowProgress>LinkVerbose</ShowProgress>
+    </Link>
+    <Bscmake />
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExRender\BmpTilesGen.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExDbCommandContext.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExFileUndoController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExHostAppServices.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExPageController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExStringIO.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExSystemServices.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExUndoController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\OdFileBuf.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="AeSysApp.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="AeSysDoc.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="EoAppAuditInfo.cpp" />
+    <ClCompile Include="EoDialogResizeHelper.cpp" />
+    <ClCompile Include="EoDlgAudit.cpp" />
+    <ClCompile Include="EoDlgEditProperties.cpp" />
+    <ClCompile Include="EoDlgNamedViews.cpp" />
+    <ClCompile Include="EoDlgNewView.cpp" />
+    <ClCompile Include="EoDlgPassword.cpp" />
+    <ClCompile Include="EoGripperScrollBar.cpp" />
+    <ClCompile Include="EoMfcExport.cpp" />
+    <ClCompile Include="AeSysView.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="EoExEditorObject.cpp" />
+    <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
+    <ClCompile Include="EoDbCharacterCellDefinition.cpp" />
+    <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="EoDbEntityToPrimitiveProtocolExtension.cpp" />
+    <ClCompile Include="EoDbFile.cpp" />
+    <ClCompile Include="EoDlgPageSetup.cpp" />
+    <ClCompile Include="EoDlgPlotStyleEditLineWeight.cpp" />
+    <ClCompile Include="EoDlgLowPressureDuctOptions.cpp" />
+    <ClCompile Include="EoDlgPlotStyleTableEditor.cpp" />
+    <ClCompile Include="EoDlgPlotStyleTableEditor_FormViewPropertyPage.cpp" />
+    <ClCompile Include="EoDlgPlotStyleTableEditor_GeneralPropertyPage.cpp" />
+    <ClCompile Include="EoDlgSelectGotoHomePoint.cpp" />
+    <ClCompile Include="EoDlgSetActiveLayout.cpp" />
+    <ClCompile Include="EoDlgSetupCustomMouseCharacters.cpp" />
+    <ClCompile Include="EoCtrlColorsButton.cpp" />
+    <ClCompile Include="EoDlgAnnotateOptions.cpp" />
+    <ClCompile Include="EoDlgBlockInsert.cpp" />
+    <ClCompile Include="EoDlgDrawOptions.cpp" />
+    <ClCompile Include="EoDlgEditOptions.cpp" />
+    <ClCompile Include="EoDlgEditTrapCommandsQuery.cpp" />
+    <ClCompile Include="EoDlgFileManage.cpp" />
+    <ClCompile Include="EoGeNurbCurve3d.cpp" />
+    <ClCompile Include="EoGePoint4d.cpp" />
+    <ClCompile Include="EoGePolyline.cpp" />
+    <ClCompile Include="EoLoadApps.cpp" />
+    <ClCompile Include="EoOle.cpp" />
+    <ClCompile Include="EoPreviewDib.cpp" />
+    <ClCompile Include="EoVarDialog.cpp" />
+    <ClCompile Include="EoVaxFloat.cpp" />
+    <ClCompile Include="EoViModelView.cpp" />
+    <ClCompile Include="EoExGripManager.cpp" />
+    <ClCompile Include="OFNHookProcFileTracing.cpp" />
+    <ClCompile Include="EoDlgFixupOptions.cpp" />
+    <ClCompile Include="EoDlgSetHomePoint.cpp" />
+    <ClCompile Include="EoDlgModeLetter.cpp" />
+    <ClCompile Include="EoDlgModeRevise.cpp" />
+    <ClCompile Include="EoDlgPipeOptions.cpp" />
+    <ClCompile Include="EoDlgPipeSymbol.cpp" />
+    <ClCompile Include="EoDlgSetPastePosition.cpp" />
+    <ClCompile Include="EoDlgSetupHatch.cpp" />
+    <ClCompile Include="EoDlgSetupConstraints.cpp" />
+    <ClCompile Include="EoDlgSetupLineType.cpp" />
+    <ClCompile Include="EoDlgSetupColor.cpp" />
+    <ClCompile Include="EoDlgSetUnitsAndPrecision.cpp" />
+    <ClCompile Include="EoDlgTrapModify.cpp" />
+    <ClCompile Include="EoDlgSetAngle.cpp" />
+    <ClCompile Include="EoDlgSetLength.cpp" />
+    <ClCompile Include="EoDlgSetScale.cpp" />
+    <ClCompile Include="EoDlgSetText.cpp" />
+    <ClCompile Include="EoDlgSetupNote.cpp" />
+    <ClCompile Include="EoDlgViewZoom.cpp" />
+    <ClCompile Include="EoDbDwgToPegFile.cpp" />
+    <ClCompile Include="EoApOptions.cpp" />
+    <ClCompile Include="EoGsAbstractView.cpp" />
+    <ClCompile Include="EoDbBlock.cpp" />
+    <ClCompile Include="EoDBBlockReference.cpp" />
+    <ClCompile Include="EoDbDimension.cpp" />
+    <ClCompile Include="EoDbEllipse.cpp" />
+    <ClCompile Include="EoDbGroup.cpp" />
+    <ClCompile Include="EoDbGroupList.cpp" />
+    <ClCompile Include="EoDbLine.cpp" />
+    <ClCompile Include="EoDbLineTypeTable.cpp" />
+    <ClCompile Include="EoDoBlockTable.cpp" />
+    <ClCompile Include="EoDbPoint.cpp" />
+    <ClCompile Include="EoDbHatch.cpp" />
+    <ClCompile Include="EoDbPolyline.cpp" />
+    <ClCompile Include="EoDbPrimitive.cpp" />
+    <ClCompile Include="EoDbSpline.cpp" />
+    <ClCompile Include="EoDbText.cpp" />
+    <ClCompile Include="EoDbTrappedGroups.cpp" />
+    <ClCompile Include="EoGePoint3d.cpp" />
+    <ClCompile Include="EoDlgLineWeight.cpp" />
+    <ClCompile Include="EoMfOutputDockablePane.cpp" />
+    <ClCompile Include="EoMfPropertiesDockablePane.cpp" />
+    <ClCompile Include="EoViAnnotateMode.cpp" />
+    <ClCompile Include="EoViCutMode.cpp" />
+    <ClCompile Include="EoViDimensionMode.cpp" />
+    <ClCompile Include="EoViDraw2Mode.cpp" />
+    <ClCompile Include="EoViDrawMode.cpp" />
+    <ClCompile Include="EoViEditMode.cpp" />
+    <ClCompile Include="EoViFixupMode.cpp" />
+    <ClCompile Include="EoViGroupSubModeEdit.cpp" />
+    <ClCompile Include="EoViLPDMode.cpp" />
+    <ClCompile Include="EoViNodalMode.cpp" />
+    <ClCompile Include="EoViPipeMode.cpp" />
+    <ClCompile Include="EoViPowerMode.cpp" />
+    <ClCompile Include="EoViPrimitiveSubModeEdit.cpp" />
+    <ClCompile Include="EoViPrimitiveSubModeMend.cpp" />
+    <ClCompile Include="EoViTrapMode.cpp" />
+    <ClCompile Include="EoDbBitmapFile.cpp" />
+    <ClCompile Include="EoDbJobFile.cpp" />
+    <ClCompile Include="EoDbPegFile.cpp" />
+    <ClCompile Include="EoDbTracingFile.cpp" />
+    <ClCompile Include="EoCtrlFindComboBox.cpp" />
+    <ClCompile Include="EoDbFontDefinition.cpp" />
+    <ClCompile Include="EoViConstraints.cpp" />
+    <ClCompile Include="EoDbLayer.cpp" />
+    <ClCompile Include="EoDlgLayerPropertiesManager.cpp" />
+    <ClCompile Include="Lex.cpp" />
+    <ClCompile Include="EoGeLineSeg3d.cpp" />
+    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="EoGeMatrix3d.cpp" />
+    <ClCompile Include="ModeLine.cpp" />
+    <ClCompile Include="EoGsModelTransform.cpp" />
+    <ClCompile Include="EoGsViewTransform.cpp" />
+    <ClCompile Include="EoObjectSnapManager.cpp" />
+    <ClCompile Include="PrimState.cpp" />
+    <ClCompile Include="EoGeReferenceSystem.cpp" />
+    <ClCompile Include="Section.cpp" />
+    <ClCompile Include="EoDlgSelectIsometricView.cpp" />
+    <ClCompile Include="Stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="EoDlgTrapFilter.cpp" />
+    <ClCompile Include="EoDlgViewParameters.cpp" />
+    <ClCompile Include="EoGsViewport.cpp" />
+    <ClCompile Include="EoDlgUserIOConsole.cpp" />
+    <ClCompile Include="WndProcPreview.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resource.hm" />
+    <None Include="res\AeSys.ico" />
+    <None Include="res\AeSys.rc2" />
+    <None Include="res\AeSys_Gold.ico" />
+    <None Include="res\AnnotateMode.cur" />
+    <None Include="res\CutMode.cur" />
+    <None Include="res\DimensionMode.cur" />
+    <None Include="res\Draw2Mode.cur" />
+    <None Include="res\DrawMode.cur" />
+    <None Include="res\EditMode.cur" />
+    <None Include="res\FixupMode.cur" />
+    <None Include="res\layer_filters.bmp" />
+    <None Include="res\LayerStates.bmp" />
+    <None Include="res\LayerStates_hc.bmp" />
+    <None Include="res\LowPressureDuct.cur" />
+    <None Include="res\NodalMode.cur" />
+    <None Include="res\NodalRMode.cur" />
+    <None Include="res\output_wnd.ico" />
+    <None Include="res\output_wnd_hc.ico" />
+    <None Include="res\PipeMode.cur" />
+    <None Include="res\PowerMode.cur" />
+    <None Include="res\properties.bmp" />
+    <None Include="res\properties_hc.bmp" />
+    <None Include="res\properties_wnd.ico" />
+    <None Include="res\properties_wnd_hc.ico" />
+    <None Include="res\Simplex.psf" />
+    <None Include="res\Toolbar.bmp" />
+    <None Include="res\Toolbar256.bmp" />
+    <None Include="res\TrapMode.cur" />
+    <None Include="res\TrapRMode.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="AeSys.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="AeSysApp.h" />
+    <ClInclude Include="AeSysDoc.h" />
+    <ClInclude Include="EoAppAuditInfo.h" />
+    <ClInclude Include="EoDialogResizeHelper.h" />
+    <ClInclude Include="EoDlgAudit.h" />
+    <ClInclude Include="EoDlgEditProperties.h" />
+    <ClInclude Include="EoDlgNamedViews.h" />
+    <ClInclude Include="EoDlgNewView.h" />
+    <ClInclude Include="EoDlgPassword.h" />
+    <ClInclude Include="EoGripperScrollBar.h" />
+    <ClInclude Include="EoMfcExport.h" />
+    <ClInclude Include="AeSysView.h" />
+    <ClInclude Include="EoExEditorObject.h" />
+    <ClInclude Include="EoCtrlBitmapPickerCombo.h" />
+    <ClInclude Include="eodb.h" />
+    <ClInclude Include="EoDbCharacterCellDefinition.h" />
+    <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="EoDbEntityToPrimitiveProtocolExtension.h" />
+    <ClInclude Include="EoDbFile.h" />
+    <ClInclude Include="EoDlgBlockInsert.h" />
+    <ClInclude Include="EoDlgDrawOptions.h" />
+    <ClInclude Include="EoDlgPageSetup.h" />
+    <ClInclude Include="EoDlgPlotStyleEditLineweight.h" />
+    <ClInclude Include="EoDlgFixupOptions.h" />
+    <ClInclude Include="EoDlgModeLetter.h" />
+    <ClInclude Include="EoDlgModeRevise.h" />
+    <ClInclude Include="EoDlgPlotStyleTableEditor.h" />
+    <ClInclude Include="EoDlgPlotStyleTableEditor_FormViewPropertyPage.h" />
+    <ClInclude Include="EoDlgPlotStyleTableEditor_GeneralPropertyPage.h" />
+    <ClInclude Include="EoDlgSetActiveLayout.h" />
+    <ClInclude Include="EoDlgSetHomePoint.h" />
+    <ClInclude Include="EoDlgLowPressureDuctOptions.h" />
+    <ClInclude Include="EoDlgEditOptions.h" />
+    <ClInclude Include="EoDlgEditTrapCommandsQuery.h" />
+    <ClInclude Include="EoCtrlColorsButton.h" />
+    <ClInclude Include="EoDlgAnnotateOptions.h" />
+    <ClInclude Include="EoDlgFileManage.h" />
+    <ClInclude Include="EoDlgTrapFilter.h" />
+    <ClInclude Include="EoDlgTrapModify.h" />
+    <ClInclude Include="EoDlgPipeOptions.h" />
+    <ClInclude Include="EoDlgPipeSymbol.h" />
+    <ClInclude Include="EoDlgSelectGotoHomePoint.h" />
+    <ClInclude Include="EoDlgSetAngle.h" />
+    <ClInclude Include="EoDlgSetPastePosition.h" />
+    <ClInclude Include="EoDlgSetUnitsAndPrecision.h" />
+    <ClInclude Include="EoDlgSetupConstraints.h" />
+    <ClInclude Include="EoDlgSetLength.h" />
+    <ClInclude Include="EoDlgSetScale.h" />
+    <ClInclude Include="EoDlgSetText.h" />
+    <ClInclude Include="EoDlgSetupColor.h" />
+    <ClInclude Include="EoDlgSetupCustomMouseCharacters.h" />
+    <ClInclude Include="EoDlgSetupHatch.h" />
+    <ClInclude Include="EoDlgSetupNote.h" />
+    <ClInclude Include="EoDlgViewZoom.h" />
+    <ClInclude Include="EoDbDwgToPegFile.h" />
+    <ClInclude Include="EoApOptions.h" />
+    <ClInclude Include="EoDbBlock.h" />
+    <ClInclude Include="EoDbBlockReference.h" />
+    <ClInclude Include="EoDbDimension.h" />
+    <ClInclude Include="EoDbEllipse.h" />
+    <ClInclude Include="EoDbGroup.h" />
+    <ClInclude Include="EoDbGroupList.h" />
+    <ClInclude Include="EoDbLine.h" />
+    <ClInclude Include="EoDbLineTypeTable.h" />
+    <ClInclude Include="EoDbMaskedPrimitive.h" />
+    <ClInclude Include="EoDbPoint.h" />
+    <ClInclude Include="EoDbHatch.h" />
+    <ClInclude Include="EoDbPolyline.h" />
+    <ClInclude Include="EoDbPrimitive.h" />
+    <ClInclude Include="EoDbSpline.h" />
+    <ClInclude Include="EoDbText.h" />
+    <ClInclude Include="EoDlgSetupLineType.h" />
+    <ClInclude Include="EoGeNurbCurve3d.h" />
+    <ClInclude Include="EoGePoint3d.h" />
+    <ClInclude Include="EoGePoint4d.h" />
+    <ClInclude Include="EoGePolyline.h" />
+    <ClInclude Include="EoGeUniquePoint.h" />
+    <ClInclude Include="EoDlgLineWeight.h" />
+    <ClInclude Include="EoGsAbstractView.h" />
+    <ClInclude Include="EoLoadApps.h" />
+    <ClInclude Include="EoMfcExportImpl.h" />
+    <ClInclude Include="EoMfOutputDockablePane.h" />
+    <ClInclude Include="EoMfPropertiesDockablePane.h" />
+    <ClInclude Include="EoDbBitmapFile.h" />
+    <ClInclude Include="EoDbJobFile.h" />
+    <ClInclude Include="EoDbPegFile.h" />
+    <ClInclude Include="EoDbTracingFile.h" />
+    <ClInclude Include="EoCtrlFindComboBox.h" />
+    <ClInclude Include="EoDbFontDefinition.h" />
+    <ClInclude Include="EoDbLayer.h" />
+    <ClInclude Include="EoDlgLayerPropertiesManager.h" />
+    <ClInclude Include="EoPreviewDib.h" />
+    <ClInclude Include="EoVarDialog.h" />
+    <ClInclude Include="EoVaxFloat.h" />
+    <ClInclude Include="EoExGripManager.h" />
+    <ClInclude Include="Lex.h" />
+    <ClInclude Include="EoGeLineSeg3d.h" />
+    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="EoGeMatrix3d.h" />
+    <ClInclude Include="EoGsModelTransform.h" />
+    <ClInclude Include="EoGsViewTransform.h" />
+    <ClInclude Include="EoObjectSnapManager.h" />
+    <ClInclude Include="PegColors.h" />
+    <ClInclude Include="Preview.h" />
+    <ClInclude Include="PrimState.h" />
+    <ClInclude Include="EoGeReferenceSystem.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SafeMath.h" />
+    <ClInclude Include="Section.h" />
+    <ClInclude Include="EoDlgSelectIsometricView.h" />
+    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="TargetVer.h" />
+    <ClInclude Include="EoDlgViewParameters.h" />
+    <ClInclude Include="EoGsViewport.h" />
+    <ClInclude Include="EoDlgUserIOConsole.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\psbmpchk.bmp" />
+    <Image Include="res\psbmpctb.bmp" />
+    <Image Include="res\psbmpstb.bmp" />
+    <Image Include="res\psbmpwht.bmp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="AeSys.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

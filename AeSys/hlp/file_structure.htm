@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>Drawing File Concepts</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Drawing file concepts"/>
+</object>
+</head>
+<body>
+
+<div id="intro">
+	<h4>Drawing File Concepts</h4>
+
+	<p>Graphic Files store data used to represent drawings. This data creates primitive drawing elements like alphabet letters create words.
+	Primitive drawing elements are points, lines, circles, arcs, curves, ellipses, and text.
+	Primitive elements may be combined into more complex segments, like words make a phrase.
+	Segments can be combined to form even more complex segments such as reusable blocks or compressed segments like words and phrases make a sentence.
+	Segments can be organized into Layers like sentences make a paragraph. Plans consist of views and details on sheets bound into a set of drawings like paragraphs on pages bound in a book.
+	</p>
+	<p>PegAEsys Graphic Files can be like that, for compatability with other CAD systems. Internal blocks and layers are supported, but since they are bound in a single file, access is limited to one terminal at a time.
+	PegAEsys can put multiple simple drawings called tracings together to form sheets like a loose-leaf book.
+	What this means is that more than one person can work on a sheet at the same time. </p>
+	<p>Since 3 degrees of access (<span>Open</span>, <span>Map</span>, and <span>View</span>) are supported, you can open an included tracing, and map or view the remainder of the sheet.
+	PegAEsys freely moves data between internal layers and external files. Even if you start with a bound drawing, you can <span>Melt</span> it into several files, work on them simultaneously, and <span>Fuse</span> back into a single file.
+	Usually they are plotted while separated and only recompiled when they are archived.</p>
+</div>
+</body>
+</html>

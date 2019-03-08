@@ -1,0 +1,36 @@
+NOTICE: By installing and using the SOFTWARE you are agreeing to be bound
+by the terms of this Agreement. If you do not agree to the terms of this
+Agreement, promptly delete the SOFTWARE from your computer.
+
+This Agreement permits you to make and use copies of the files designated
+as "HC.EXE" and "HCP.EXE" (the "SOFTWARE") provided that each such copy
+is used only on a single computer which contains a licensed copy of the
+Microsoft(R) Help Compiler which has been validly licensed by you. You
+must maintain all copyright notices on all copies of the SOFTWARE. You
+may not rent or lease the SOFTWARE, but you may transfer the SOFTWARE on
+a permanent basis provided you retain no copies, include the most recent
+update and all prior versions of the Help Compiler, and the recipient
+agrees to the terms of this Agreement. You may not reverse engineer,
+decompile, or disassemble the SOFTWARE.
+
+THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. MICROSOFT 
+DISCLAIMS ALL WARRANTIES, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT 
+LIMITED TO IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
+PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL MICROSOFT OR ITS SUPPLIERS 
+BE LIABLE FOR ANY DAMAGES WHATSOEVER (INCLUDING, WITHOUT LIMITATION, DAMAGES 
+FOR LOSS OF BUSINESS PROFITS, BUSINESS INTERRUPTION, LOSS OF BUSINESS 
+INFORMATION, OR OTHER PECUNIARY LOSS) ARISING OUT OF THE USE OF OR INABILITY 
+TO USE THE SOFTWARE, EVEN IF MICROSOFT HAS BEEN ADVISED OF THE POSSIBILITY 
+OF SUCH DAMAGES. BECAUSE SOME STATES DO NOT ALLOW THE EXCLUSION OR 
+LIMITATION OF LIABILITY FOR CONSEQUENTIAL OR INCIDENTAL DAMAGES, THE ABOVE 
+LIMITATION MAY NOT APPLY TO YOU.
+
+The SOFTWARE is provided with RESTRICTED RIGHTS. Use, duplication, or
+disclosure by the Government is subject to restrictions as set forth in
+subparagraph (c)(1)(ii) of The Rights in Technical Data and Computer
+Software clause at DFARS 252.227-7013 or subparagraphs (c)(1) and (2) of
+the Commercial Computer Software—Restricted Rights at 48 CFR 52.227-19,
+as applicable.  Manufacturer is Microsoft Corporation/One Microsoft
+Way/Redmond, WA  98052-6399.
+
+This Agreement is governed by the laws of the State of Washington.

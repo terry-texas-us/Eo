@@ -1,0 +1,31 @@
+; This file is maintained by HCW. Do not modify this file directly.
+
+; This help project requires hc 3.1
+[OPTIONS]
+ERRORLOG=pegaesys.err
+LCID=0x409 0x0 0x0 ; English (United States)
+REPORT=Yes
+CONTENTS=1
+TITLE=peg
+COPYRIGHT=barTFanning Software 1980-2009
+HLP=PEG.hlp
+
+[FILES]
+acontent.rtf
+annotate.rtf
+cut.rtf
+dde.rtf
+dimens.rtf
+draw.rtf
+draw2.rtf
+edit.rtf
+fixup.rtf
+index.rtf
+nodal.rtf
+sheets.rtf
+trap.rtf
+PROMO.RTF
+SETUP.RTF
+
+[CONFIG]
+BrowseButtons()

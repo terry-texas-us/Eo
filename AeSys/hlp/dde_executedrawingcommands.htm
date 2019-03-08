@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE Named Commands</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE Named Commands</h3>
+<h4>Drawing Commands</h4>
+<ul>
+    <li>[Line(##)]<a href="hid_setup_penstyle.htm">Line</a>= 0 - 22</li>
+    <li>[Pen(##)]<a href="hid_setup_pencolor.htm">Pen</a>= 0 - 15</li>
+    <li>[Note($$...$)]any ascii characters</li>
+    <li>[SetPoint(#)]stake = 1 - 9</li>
+    <li>[GotoPoint(#)]goto = 1 - 9</li>
+    <li>[DimAngZ(#.#)]angle in degrees</li>
+    <li>[DimLen(##.##)]distance in User Units</li>
+    <li>[Scale(##.#)]ratio of drawing : world</li>
+    <li>[Fill($$$$$)]pattern: S, H, C, P 1 - 21</li>
+    <li>[NoteHT(#.#)]note height in inches .01 - 10</li>
+    <li><em>Send Keystroke Commands</em></li>
+    <li>[Send($$...$)]keystroke commands</li>
+    <li>[Send({##})]keyascii commands</li>
+</ul>
+
+<h4>Menu Commands</h4>
+<ul>
+    <li>[TracingBlank(fileName)]</li>
+    <li>[TracingMap(fileName)]</li>
+    <li>[TracingOpen(fileName)]</li>
+    <li>[TracingView(fileName)]</li>
+    <li>[FileGet(fileName)]</li>
+</ul>
+
+</body>
+</html>

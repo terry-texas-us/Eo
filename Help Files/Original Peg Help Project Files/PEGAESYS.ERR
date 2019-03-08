@@ -1,0 +1,26 @@
+Microsoft (R) Help Compiler
+HCRTF 4.03.0002
+Copyright (c) Microsoft Corp 1990 - 1995. All rights reserved.
+PEG.HPJ
+    HC3025: Warning: topic #13 of C:\WHAT6\acontent.rtf : 
+	Jump to undefined Topic ID: "Barsetup".
+    HC4009: Warning: 
+	The Topic ID "1" specified in the Project files as the Default Topic does not exist.
+    HC2002: Note: 
+	The keywords "Dimension" and "DIMENSION" are identical except for case. Help Workshop has modified one keyword to match the other.
+    HC2002: Note: 
+	The keywords "Draw" and "DRAW" are identical except for case. Help Workshop has modified one keyword to match the other.
+    HC2002: Note: 
+	The keywords "Edit" and "EDIT" are identical except for case. Help Workshop has modified one keyword to match the other.
+    HC2002: Note: 
+	The keywords "tracing" and "Tracing" are identical except for case. Help Workshop has modified one keyword to match the other.
+311	Topics
+413	Jumps
+195	Keywords
+3	Bitmaps
+
+
+Created C:\WHAT6\PEG.hlp, 242,844 bytes
+Bitmaps: 7,810 bytes
+Compile time: 0 minutes, 0 seconds
+4 notes, 2 warnings

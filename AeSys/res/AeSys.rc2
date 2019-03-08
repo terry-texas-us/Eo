@@ -1,0 +1,17 @@
+//
+// AeSys.RC2 - resources Microsoft Visual C++ does not edit directly
+//
+
+#ifdef APSTUDIO_INVOKED
+#error this file is not editable by Microsoft Visual C++
+#endif //APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// STROKEFONT
+//
+
+IDR_PEGSTROKEFONT       STROKEFONT              "res\\Simplex.psf"
+
+/////////////////////////////////////////////////////////////////////////////

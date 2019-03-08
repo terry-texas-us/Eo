@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE using Visual Basic</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>Dynamic Data Exchange (DDE) using Visual Basic</h3>
+<p>DDE is a Windows feature which permits two applications to run simultaneously exchanging data.
+Visual Basic uses the Properties of a Control to establish a Link with Pegaesys.
+All three control properties must be included in the Visual Basic code for the application you are writing.</p>
+
+<h4>DDE properties supported in Visual Basic:</h4>
+<ul>
+	<li><em>Control.</em><a href="dde_linktopic.htm">LinkTopic</a> = &quot;Application|Topic&quot;</li>
+	<li><em>Control.</em><a href="dde_linkitem.htm">LinkItem</a> = &quot;[a <a href="dde_variable.htm">Variable</a> supported by Pegaes]&quot;</li>
+	<li><em>Control.</em><a href="dde_linkmode.htm">LinkMode</a> = [an Integer 0-3]</li>
+</ul>
+<p>where: <em>Control</em> is a Form, label, picture box or text box and LinkTopic, LinkItem, and LinkMode are Properties of the control.</p>
+
+<h4>DDE methods supported in Visual Basic:</h4>
+<ul>
+	<li><em>Control.</em><a href="dde_linkpoke.htm">LinkPoke</a>[???] - to send a value to Pegaes</li>
+	<li><em>Control.</em><a href="dde_linkrequest.htm">LinkRequest</a>[???]- to get a Pegaesys <a href="dde_variable.htm">Variable</a></li>
+	<li><em>Control.</em><a href="dde_linkexecute.htm">LinkExecute</a> [???] - to execute a Pegaes command</li>
+</ul>
+
+<h4>Shell functions supported in Visual Basic:</h4>
+<p>Refer to the Visual Basic Manual for supported functions. You can use a shell function to start Pegaesys if it is not already running:</p>
+<p>X = Shell(&quot;drive:\dir\PEGAES.exe&quot;, 4)   </p>
+
+<h4>Applications in Visual Basic :</h4>
+<p>Using Visual Basic you can write a applications which, when compiled to a .EXE file, can interact with Pegaesys.
+Refer to documentation provided by the client software for instructions in setting up an application.</p>
+<p>The following sequence is based on an Visual Basic Program as the Source:</p>
+<ul style="list-style: decimal">
+	<li>Open Visual Basic for Windows.</li>
+	<li>Create a &lt;FileName&gt;.MAK program file </li>
+	<li>Create a &lt;FormName&gt;.FRM with controls which can include the DDE commands as Code.</li>
+	<li>Write the code for the DDE commands.</li>
+	<li>Open Pegaesys in a window.</li>
+	<li>Run the program using the Pegaesys - File - Run command from the Bar Menu.</li>
+</ul>
+
+</body>
+</html>

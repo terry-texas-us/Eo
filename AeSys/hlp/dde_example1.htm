@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE Example 1</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE)"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDE LinkExecute Example 1 - TextBox:</h3>
+<p><em>Fragment of code for command for a form with one TextBox and a CommandButton:  The TextBox contains a supported command such as [Pen(3)]:</em></p>
+<ul style="list-style: none">
+	<li>Sub Command1_Click ()</li>
+	<li>Dim Cmd As String</li>
+	<li>Cmd = Text1.Text</li>
+	<li>Cmd = Trim(Cmd)</li>
+	<li><em>Control</em>.LinkTopic = "Pegaes|Command"</li>
+	<li><em>Control</em>.LinkMode = 2</li>
+	<li><em>Control</em>.LinkExecute Cmd</li>
+	<li>End Sub</li>
+</ul>
+<p>The command from the application Window is executed in the Pegaesys window.</p>
+
+<p><em>for example, the following program fragment  prints a Note to the drawing:</em></p>
+<ul style="list-style: none">
+	<li>Text1.Text =  "Hello there"</li>
+	<li>mString = Text1.Text</li>
+	<li>Text1.LinkExecute [note(mString)]</li>
+</ul>
+<p><em>for example, the following program fragment  changes the current Pen to Pen 4:</em></p>
+<ul style="list-style: none">
+	<li><em>Control</em>.LinkExecute [pen(4)]</li>
+</ul>
+<p><em>for example, the following program fragment gets the EngLen report from Pegaes:</em></p>
+<ul style="list-style: none">
+	<li>Sub Command1_Click ()</li>
+	<li>Command1.LinkMode = 0 'off temporarily</li>
+	<li>Command1.LinkTopic = "Pegaes|General" 'initiate Link</li>
+	<li>Command1.LinkMode = 2 'manual</li>
+	<li>Command1.LinkExecute "Q" 'get a EngLen report</li>
+	<li>Text1.LinkTopic = "Pegaes|General" </li>
+	<li>Text1.LinkItem = "EngLen"</li>
+	<li>Text1.LinkMode = 1</li>
+</ul>
+<p><em>Note that the code for the above program does not have to be written; you can set the properties of Command1 and Text1 when you create the form.
+In this case, only the LinkExecute command would have to be coded for  </em>Sub Command1_Click ()</p>
+
+</body>
+</html>

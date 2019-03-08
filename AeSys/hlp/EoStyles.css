@@ -1,0 +1,113 @@
+﻿/* @import "reset.css"; */
+
+body
+{
+	margin: 0;
+	border: 0;
+	padding: 0;
+	font: 75% georgia, san-serif;
+	background-color: rgb(51, 51, 51);
+	color: #fff;
+}
+div
+{
+	margin: 0;
+	border: 0;
+	padding: 0;
+}
+h1
+{
+	color: rgb(255, 204, 0);
+}
+h2
+{
+	color: rgb(255, 255, 255);
+}
+h3
+{
+	margin: 1em 0 1em 0;
+	border: 0;
+	padding: 0;
+	font-size: 1.17em;
+	font-weight: bold;
+	color: #c30;
+}
+h4
+{
+	margin: 1em 0 1em 0;
+	border: 0;
+	padding: 0;
+	font-size: 1.00em;
+	font-weight: normal;
+	color: #ff9;
+}
+h5
+{
+	color: #ff0;
+}
+h6
+{
+	color: #fff;
+}
+ul
+{
+	margin-left: 0;
+	border: 0;
+	padding: 0 0 0 2em;
+}
+a:link, a:visited
+{
+	color: #fc0;
+	text-decoration: none;
+}
+a:active, a:hover
+{
+	color: #f30;
+}
+div#commands
+{
+}
+#intro
+{
+	width: 100%
+}
+#commands li span
+{
+	position: absolute;
+	left: 8em;
+	width: 512px
+}
+#commands
+{
+	position: relative
+}
+#modes ul
+{
+	list-style: none;
+}
+#modes li span
+{
+	position: absolute;
+	left: 16em;
+	width: 512px;
+}
+#modes li a
+{
+	position: absolute;
+	left: 8em;
+}
+#modes
+{
+	position: relative;
+}
+}
+#lists li span
+{
+	position: absolute;
+	left: 12em;
+	width: 512px;
+}
+#lists
+{
+	position: relative;
+}

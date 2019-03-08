@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDEAdvise Function</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDEAdvise Function</h3>
+<h4>You can send data to Foxpro from Pegaesys in the format:</h4>
+
+<p>=DDEAdvise(Channel, "ItemName", "Procedure", LinkType)</p>
+<p><em>where</em></p>
+<ul>
+	<li>The Channel must have been previously initiated.  </li>
+	<li>"ItemName" is a <a href="dde_topic_names_general.htm">Pegaes defined topic name</a>.</li>
+	<li>"Procedure" is a function call to a subroutine in the .PRG file</li>
+	<li>LinkType"  is an integer number which specifies the type of link:</li>
+	<ul style="list-style: none">
+		<li>0 Manual</li>
+		<li>1 Notify</li>
+		<li>2 Automatic</li>
+	</ul>
+</ul>
+
+<p><em>The function in the Pegaesys window is executed in the FoxPro Window.</em></p>
+
+<p>The FoxPro report must be defined in a procedure call.
+The procedure call must start with a PARAMETERS statement which contains the following:</p>
+
+<div id="lists">
+<p>PARAMETERS channel, action, item, data, format, iStatus</p>
+<ul style="list-style: none">
+	<li>channel<span>the channel</span></li>
+	<li>sAction<span>can only be ADVISE or TERMINATE</span></li>
+	<li>item<span>a <a href="dde_topic_names_general.htm">Pegaes defined topic name</a>.</span></li>
+	<li>data<span>the new data value</span></li>
+	<li>format<span>format of the data, eg. CF_TEXT</span></li>
+	<li>iStatus<span>type of link. 0, 1, or 2</span></li>
+</ul>
+
+<h4>for example, the following program fragment advises Visual FoxPro of a change in Pegaesys automatically:</h4>
+<ul style="list-style: none">
+	<li>=DDEadvise(channel, "ExtNum", "iadd" ,2)</li>
+	<li><em>&amp;&amp; if a # operation occurs</em></li>
+	<li>=DDEadvise(channel,"ExtStr","iadd", 2)</li>
+	<li><em>&amp;&amp; if a $ operation occurs</em></li>
+	<li>=DDEadvise(channel,"EngLen","iadd", 2)</li>
+	<li><em>&amp;&amp; if a Q or A operation occurs</em></li>
+	<li>PROCEDURE iadd</li>
+	<li> PARAMETERS channel, action, item, data, format, iStatus</li>
+	<li> if action = 'ADVISE'</li>
+	<li> ? action,item,data,format,iStatus</li>
+	<li> endif</li>
+</ul>
+</div>
+</body>
+</html>

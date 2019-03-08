@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDEInitiate Function</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+
+<h3>DDEInitiate Function</h3>
+
+<p>In the .PRG file you must start a conversation with the server before data is exchanged.
+To initiate a conversation with Pegaesys, set up a channel to the server in the format:</p>
+<p>Channel = DDEInitiate(ServiceName, TopicName)</p>
+<p><em>where</em></p>
+<div id="lists">
+<ul style="list-style: none">
+	<li>Channel<span>returns a unique value for DDE calls</span></li>
+	<li>DDEInitiate<span>is the command</span></li>
+	<li>ServiceName<span>in our case is <strong>Pegaes</strong></span></li>
+	<li>TopicName<span>is: System, <a href="dde_variable.htm">General</a>, or <a href="dde_executedrawingcommands.htm">Commands</a>.</span></li>
+</ul>
+</div>
+<p><em>for example:</em></p>
+<p>iCh1 = DDEInitiate("Pegaes", "General")</p>
+<p>iCh2 = DDEInitiate("Pegaes", "Commands")</p>
+<p>If Pegaesys program is not  already running, it must be started. Any convenient Channel name can be used.  Multiple channels can be open simultaneously.</p>
+<p><em>You have now started a conversation between FoxPro and Pegaesys which
+allows you to pass data and commands between them.</em></p>
+
+</body>
+</html>

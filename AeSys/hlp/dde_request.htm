@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDERequest Function</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+<h3>DDERequest Function</h3>
+<p>You can request data to Foxpro from Pegaesys in the format:</p>
+<p>=DDERequest(Channel,"ItemName")</p>
+<p><em>where</em></p>
+<p>* The Channel must have been previously initiated.  </p>
+<p>* "ItemName" is a <a href="dde_topic_names_general.htm">Pegaes defined topic name</a>.</p>
+<p><em>* The function in the Pegaesys window is executed in the FoxProw Window.</em></p>
+<p><em>for example, the following program fragment reports the Engaged Length to the FoxPro window:</em></p>
+<p>p_EL =  DDERequest(iCh1,"EngLen")</p>
+<p>? "P_EL  is now " + p_EL</p>
+
+</body>
+</html>

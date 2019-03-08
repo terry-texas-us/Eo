@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>DDE with FoxPro</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Dynamic Data Exchange (DDE) using Visual FoxPro"/>
+</object>
+</head>
+
+<body>
+
+<h3>Dynamic Data Exchange (DDE) using Visual FoxPro</h3>
+
+<p>DDE is a Windows feature which permits two applications to run simultaneously exchanging data.</p>
+<p>Pegaesys supports DDE in <span style="text-decoration: underline">server mode</span>.
+Any application which supports DDE in client mode can interact with Pegaesys.
+This includes Excel and Visual Foxpro.  Refer to documentation provided by the client software for instructions in setting up an application.</p>
+<p>The following sequence is based on Visual FoxPro as the client.</p>
+<ul style="list-style: decimal">
+    <li>Open Pegaesys in one window.</li>
+    <li>Open Visual FoxPro in another window.</li>
+    <li>Create a .PRG program file which can include the DDE commands.</li>
+    <li>Run the program file using the FoxPro DO command.</li>
+</ul>
+<p>DDE commands supported in Visual FoxPro programs:</p>
+<ul>
+    <li><a href="dde_initiate.htm">DDEInitiate   </a>- to open a channel</li>
+    <li><a href="dde_execute.htm">DDEExecute</a>- to execute a command in Pegaesys</li>
+    <li><a href="dde_poke.htm">DDEPoke     </a>- to send FoxPro variable to Pegaesys</li>
+    <li><a href="dde_advise.htm">DDEAdvise   </a>- to update FoxPro on Pegaesys variable change</li>
+    <li><a href="dde_request.htm">DDERequest</a>- to send a Pegaesys variable to FoxPro</li>
+    <li><a href="dde_terminate.htm">DDETerminate</a>- to close a channel</li>
+</ul>
+
+</body>
+</html>

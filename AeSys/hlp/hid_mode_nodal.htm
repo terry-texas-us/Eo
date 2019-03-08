@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=Windows-1252"/>
+<link rel="stylesheet" type="text/css" href="EoStyles.css" title="Default"/>
+<title>(Mode Nodal)</title>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="Keyword" value="Mode Nodal"/>
+</object>
+</head>
+
+<body>
+
+<h3>Nodal command (Mode menu)</h3>
+<p>Use this command to select the Nodal mode command set.
+This mode is used to alter nodes (individual points) of selected primitives in the active drawing.
+All available commands are displayed on the right side of the status bar. Current command is highlighted if neccessary.</p>
+
+<p>Select Mode from bar menu and click on Nodal or Press &lt; from any drawing command mode.
+<em>Press numeric keys to execute a command.</em></p>
+
+<div id="modes">
+<h4>The following keys select the nodes to be operated on:</h4>
+<ul>
+    <li>0<a href="hid_nodal_mode_addremove.htm">AddRemove</a><span>Switch to include or exclude nodes</span></li>
+    <li>1<a href="hid_nodal_mode_point.htm">Point</a><span>Select nodes coincident to cursor</span></li>
+    <li>2<a href="hid_nodal_mode_line.htm">Lines</a><span>Select endpoints of a primitive</span></li>
+    <li>3-3<a href="hid_nodal_mode_area.htm">Area</a><span>Select nodes inside a rectangular area</span></li>
+    <li>8<a href="hid_nodal_mode_empty.htm">Empty</a><span>Empties the selected nodes list</span></li>
+    <li>9<a href="hid_nodal_mode_engage.htm">Engage</a><span>Select node of engaged segment</span></li>
+</ul>
+<h4>The following keys operate on the selected nodes:</h4>
+<ul>
+    <li>4-4<a href="hid_nodal_mode_move.htm">Move</a><span>Move the selected nodes</span></li>
+    <li>5-5<a href="hid_nodal_mode_copy.htm">Copy</a><span>Replicate groups with selected nodes</span></li>
+    <li>6-6<a href="hid_nodal_mode_toline.htm">ToLine</a><span>Create lines from nodes to new cursor position</span></li>
+    <li>7-7<a href="hid_nodal_mode_topolygon.htm">ToPolygon</a><span>Converts lines to polygons</span></li>
+</ul>
+</div>
+
+<p><em>Key 0 sets the Node Switch In or Out.</em></p>
+
+<p><em>Keys 1, 2, 3, and 9 add nodes to the set when the node switch is set to In.</em></p>
+<p><em>Keys 1, 2, 3, and 9 remove nodes from the set when the switch is set Out.</em></p>
+<p><em>After an set of nodes has been selected using 1, 2 or 3, while the Nodal switch is set to "In", you can press 0 and set the Nodal switch to "Out".</em></p>
+<p><em>You can add and remove nodes interactively until the desired set is composed.</em></p>
+<p><em>The Nodal buffer is automatically initialized to 0 when you press &lt; .
+This prevents any residual nodes from being in the buffer.
+You should only move the cursor using the diamond keys, so that you can un-do a move if you need to.
+It is advisable to save your work before using this function since there is no mechanism for recovering from an mistake.</em></p>
+
+</body>
+</html>
