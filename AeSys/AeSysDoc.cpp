@@ -47,7 +47,7 @@
 UINT CALLBACK OFNHookProcFileTracing(HWND, UINT, WPARAM, LPARAM);
 
 UINT AFXAPI HashKey(CString& str) {
-	LPCWSTR pStr = (LPCWSTR) str;
+	LPCWSTR pStr = (LPCWSTR)str;
 	UINT nHash = 0;
 	while (*pStr) {
 		nHash = (nHash << 5) + nHash + *pStr++;
@@ -65,8 +65,8 @@ ODRX_CONS_DEFINE_MEMBERS(OdDbDatabaseDoc, OdDbDatabase, NEW_CONSTR);
 
 AeSysDoc* OdDbDatabaseDoc::g_pDoc = 0;
 
-OdDbDatabaseDoc::OdDbDatabaseDoc() : 
-	m_pDoc(g_pDoc) {
+OdDbDatabaseDoc::OdDbDatabaseDoc() :
+m_pDoc(g_pDoc) {
 	g_pDoc = 0;
 }
 AeSysDoc* OdDbDatabaseDoc::document() const {
@@ -180,15 +180,15 @@ unsigned short AeSysDoc::ClipboardData::m_FormatR19 = (CLIPFORMAT)::RegisterClip
 AeSysDoc* g_pDoc = 0;
 
 AeSysDoc::AeSysDoc() :
-	m_bPartial(false),
-	m_pViewer(0),
-	m_SaveAsType(OdDb::kDwg),
-	m_SaveAsType_(EoDb::kUnknown),
-	m_SaveAsVer(OdDb::kDHL_CURRENT),
-	m_bConsole(false),
-	m_nCmdActive(0),
-	m_bLayoutSwitchable(false),
-	m_bDisableClearSel(false) {
+m_bPartial(false),
+m_pViewer(0),
+m_SaveAsType(OdDb::kDwg),
+m_SaveAsType_(EoDb::kUnknown),
+m_SaveAsVer(OdDb::kDHL_CURRENT),
+m_bConsole(false),
+m_nCmdActive(0),
+m_bLayoutSwitchable(false),
+m_bDisableClearSel(false) {
 	m_WorkLayer = NULL;
 	g_pDoc = this;
 
@@ -215,7 +215,7 @@ BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
 		if (replace && PathName.IsEmpty()) {
 			PathName = m_strTitle;
 			int BadCharacterPosition = PathName.FindOneOf(L" #%;/\\");
-			if (BadCharacterPosition != - 1) {
+			if (BadCharacterPosition != -1) {
 				PathName.ReleaseBuffer(BadCharacterPosition);
 			}
 			CString Extension;
@@ -232,10 +232,10 @@ BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
 
 	if (!OnSaveDocument(PathName)) {
 		if (pathName == NULL) {
-			TRY {
+			TRY{
 				CFile::Remove(PathName);
 			}
-			CATCH_ALL(Errors) {
+				CATCH_ALL(Errors) {
 				theApp.AddStringToMessageList(L"Warning: Failed to delete file <%s> after failed/aborted SaveAs", PathName);
 				do {
 					Errors->Delete();
@@ -264,9 +264,9 @@ void AeSysDoc::DeleteContents() {
 	ResetAllViews();
 
 #ifdef ODAMFC_EXPORT
-	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
+	AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
 	size_t NumberOfReactors = TheApp->m_aAppReactors.size();
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++ ) {
+	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		TheApp->m_aAppReactors[ReactorIndex]->documentToBeDestroyed(this);
 	}
 #endif // ODAMFC_EXPORT
@@ -279,8 +279,8 @@ void AeSysDoc::DeleteContents() {
 	COleDocument::DeleteContents();
 
 #ifdef ODAMFC_EXPORT
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++ )
-		TheApp->m_aAppReactors[ReactorIndex]->documentDestroyed((const wchar_t*) GetPathName());
+	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++)
+		TheApp->m_aAppReactors[ReactorIndex]->documentDestroyed((const wchar_t*)GetPathName());
 #endif // ODAMFC_EXPORT
 }
 BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
@@ -343,7 +343,7 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 					wRect.right = point2.x;
 					wRect.bottom = point2.y;
 					//
-					view->GetParent()->SendMessage(WM_CLOSE);		
+					view->GetParent()->SendMessage(WM_CLOSE);
 					OnVectorize();
 					// Search again for new view
 					POSITION pos = GetFirstViewPosition();
@@ -448,12 +448,12 @@ void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext* commandContext) {
 		AeSysDoc* Document = Database->document();
 		POSITION pos = Document->GetFirstViewPosition();
 		while (pos != NULL) {
-			CView* view = pDoc->GetNextView(pos);
-			LPCSTR className = view->GetRuntimeClass()->m_lpszClassName;
-			if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"CDwgView") == 0) {
-				CDwgView* pView = (CDwgView*) view;
-				pView->Find(pDb->getOdDbObjectId(hFailed));
-			}
+		CView* view = pDoc->GetNextView(pos);
+		LPCSTR className = view->GetRuntimeClass()->m_lpszClassName;
+		if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"CDwgView") == 0) {
+		CDwgView* pView = (CDwgView*) view;
+		pView->Find(pDb->getOdDbObjectId(hFailed));
+		}
 		}
 		</tas> */
 	}
@@ -468,12 +468,12 @@ void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext* commandContext) {
 	AeSysDoc* pNewDoc = (AeSysDoc*) theApp.OpenDocumentFile(L"Round-tripped");
 	POSITION pos = pNewDoc->GetFirstViewPosition();
 	while (pos != NULL) {
-		CView* view = pNewDoc->GetNextView(pos);
-		LPCSTR className = view->GetRuntimeClass()->m_lpszClassName;
-		if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"CDwgView") == 0) {
-			CDwgView* pView = (CDwgView*) view;
-			pView->Find(pNewDoc->m_DatabasePtr->getOdDbObjectId(hFailed));
-		}
+	CView* view = pNewDoc->GetNextView(pos);
+	LPCSTR className = view->GetRuntimeClass()->m_lpszClassName;
+	if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"CDwgView") == 0) {
+	CDwgView* pView = (CDwgView*) view;
+	pView->Find(pNewDoc->m_DatabasePtr->getOdDbObjectId(hFailed));
+	}
 	}
 	</tas> */
 }
@@ -491,7 +491,7 @@ void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 	// <tas="likely misused in AeSys environment"</tas>
 	theApp.setRecentGsDevicePath(vectorizerPath);
 
-	CDocTemplateEx* DocTemplate = (CDocTemplateEx*) GetDocTemplate();
+	CDocTemplateEx* DocTemplate = (CDocTemplateEx*)GetDocTemplate();
 	ASSERT_VALID(DocTemplate);
 
 	DocTemplate->SetViewToCreate(RUNTIME_CLASS(AeSysView));
@@ -559,7 +559,7 @@ OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTrac
 	if (m_pViewer) {
 		m_bConsoleResponded = false;
 		sRes = m_pViewer->getString(prompt, options, tracker);
-		if(!m_bConsoleResponded) {
+		if (!m_bConsoleResponded) {
 			putString(OdString(prompt) + L" " + sRes);
 		}
 		return sRes;
@@ -630,7 +630,7 @@ void AeSysDoc::OnEditConsole() {
 			}
 		}
 	}
-	catch( const OdEdCancel& ) {
+	catch (const OdEdCancel&) {
 	}
 }
 OdString commandMessageCaption(const OdString& command) {
@@ -712,7 +712,7 @@ private:
 			pDb->undo();
 			pDb->disableUndoRecording(false);
 		}
-		catch(const OdError& Error) {
+		catch (const OdError& Error) {
 			theApp.reportError(L"Can't repair database", Error);
 		}
 #ifndef _DEBUG
@@ -752,7 +752,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 			}
 			else {
 				m_pMacro = ExStringIO::create(command);
-				while(!m_pMacro->isEof())
+				while (!m_pMacro->isEof())
 				{
 					try
 					{
@@ -760,7 +760,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 						s.makeUpper();
 						cr.setLastInput(s);
 					}
-					catch(const OdEdEmptyInput)
+					catch (const OdEdEmptyInput)
 					{
 						s = recentCmdName();
 					}
@@ -772,12 +772,12 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 			getViewer()->propagateActiveViewChanges();
 		}
 	}
-	catch(const OdEdEmptyInput ) {
+	catch (const OdEdEmptyInput) {
 	}
-	catch(const OdEdCancel ) {
+	catch (const OdEdCancel) {
 	}
-	catch(const OdError& err) {
-		if(!m_bConsole) {
+	catch (const OdError& err) {
+		if (!m_bConsole) {
 			theApp.reportError(commandMessageCaption(command), err);
 		}
 		cmdIO()->putString(err.description());
@@ -804,11 +804,11 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 					CString Vectorizer;
 					TopMenu->GetSubMenu(3)->GetMenuStringW(commandId, Vectorizer, MF_BYCOMMAND);
 					if (messageCategory == CN_COMMAND) {
-						OnVectorize((LPCWSTR) Vectorizer);
+						OnVectorize((LPCWSTR)Vectorizer);
 					}
 					else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-						((CCmdUI*) commandObject)->Enable(m_pViewer == 0);
-						((CCmdUI*) commandObject)->SetCheck(Vectorizer == (LPCWSTR) theApp.recentGsDevicePath());
+						((CCmdUI*)commandObject)->Enable(m_pViewer == 0);
+						((CCmdUI*)commandObject)->SetCheck(Vectorizer == (LPCWSTR)theApp.recentGsDevicePath());
 					}
 					return TRUE;
 				}
@@ -824,7 +824,7 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 							}
 						}
 						else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-							((CCmdUI*) commandObject)->Enable(TRUE);
+							((CCmdUI*)commandObject)->Enable(TRUE);
 						}
 						return TRUE;
 					}
@@ -850,7 +850,7 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 						}
 					}
 					else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-						((CCmdUI*) commandObject)->Enable(TRUE);
+						((CCmdUI*)commandObject)->Enable(TRUE);
 					}
 					return TRUE;
 				}
@@ -881,7 +881,7 @@ void AeSysDoc::startDrag(const OdGePoint3d& point) {
 
 BOOL AeSysDoc::OnNewDocument() {
 #ifdef ODAMFC_EXPORT
-	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
+	AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
 	size_t NumberOfReactors = TheApp->m_aAppReactors.size();
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		TheApp->m_aAppReactors[ReactorIndex]->documentCreateStarted(this);
@@ -935,46 +935,46 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
 	OdDbDatabaseDoc::setDocToAssign(this);
 	EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(pathName);
 	switch (FileType) {
-		case EoDb::kDwg:
-		case EoDb::kDxf: {
-			m_DatabasePtr =  theApp.readFile(pathName, false, false);
-			m_DatabasePtr->startUndoRecord();
+	case EoDb::kDwg:
+	case EoDb::kDxf: {
+		m_DatabasePtr = theApp.readFile(pathName, false, false);
+		m_DatabasePtr->startUndoRecord();
 
-			CString FileAndVersion;
-			FileAndVersion.Format(L"Opened <%s> (Version: %d)\n", (LPCWSTR) m_DatabasePtr->getFilename(), m_DatabasePtr->originalFileVersion());
-			theApp.AddStringToMessageList(FileAndVersion);
+		CString FileAndVersion;
+		FileAndVersion.Format(L"Opened <%s> (Version: %d)\n", (LPCWSTR)m_DatabasePtr->getFilename(), m_DatabasePtr->originalFileVersion());
+		theApp.AddStringToMessageList(FileAndVersion);
 
-			EoDbDwgToPegFile File(m_DatabasePtr);
+		EoDbDwgToPegFile File(m_DatabasePtr);
 
-			File.ConvertToPeg(this);
-			m_SaveAsType_ = FileType;
-			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
-			break;
+		File.ConvertToPeg(this);
+		m_SaveAsType_ = FileType;
+		SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
+		break;
+	}
+	case EoDb::kPeg: {
+		m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
+		m_DatabasePtr->startUndoRecord();
+
+		EoDbDwgToPegFile File(m_DatabasePtr);
+		File.ConvertToPeg(this);
+
+		//<Teigha> no initial value for m_ContinuousLinetype = m_LinetypeTable.GetAt(1);
+		SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
+
+		EoDbPegFile PegFile(m_DatabasePtr);
+		CFileException e;
+		if (PegFile.Open(pathName, CFile::modeRead | CFile::shareDenyNone, &e)) {
+			PegFile.Load(this);
+			m_SaveAsType_ = EoDb::kPeg;
 		}
-		case EoDb::kPeg: {
-			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
-			m_DatabasePtr->startUndoRecord();
-
-			EoDbDwgToPegFile File(m_DatabasePtr);
-			File.ConvertToPeg(this);
-			
-			//<Teigha> no initial value for m_ContinuousLinetype = m_LinetypeTable.GetAt(1);
-			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
-
-			EoDbPegFile PegFile(m_DatabasePtr);
-			CFileException e;
-			if (PegFile.Open(pathName, CFile::modeRead | CFile::shareDenyNone, &e)) {
-				PegFile.Load(this);
-				m_SaveAsType_ = EoDb::kPeg;
-			}
-			break;
-		}
-		case EoDb::kTracing:
-		case EoDb::kJob:
-			TracingOpen(pathName);
-			break;
-		default:
-			return CDocument::OnOpenDocument(pathName);
+		break;
+	}
+	case EoDb::kTracing:
+	case EoDb::kJob:
+		TracingOpen(pathName);
+		break;
+	default:
+		return CDocument::OnOpenDocument(pathName);
 	}
 	return TRUE;
 }
@@ -995,7 +995,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 	case EoDb::kJob: {
 		EoDbLayer* Layer = GetLayerAt(pathName);
 		if (Layer != 0) {
-			
+
 			CFile File = CFile(pathName, CFile::modeCreate | CFile::modeWrite);
 			if (File == CFile::hFileNull) {
 				theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, pathName);
@@ -1004,7 +1004,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 			EoDbJobFile JobFile;
 			JobFile.WriteHeader(File);
 			JobFile.WriteLayer(File, Layer);
-			
+
 			theApp.AddStringToMessageList(IDS_MSG_TRACING_SAVE_SUCCESS, pathName);
 			ReturnStatus = TRUE;
 		}
@@ -1027,10 +1027,10 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 	}
 	case EoDb::kDxf:
 	case EoDb::kDwg: {
-			m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_CURRENT);
-			ReturnStatus = TRUE;
-			break;
-		}
+		m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_CURRENT);
+		ReturnStatus = TRUE;
+		break;
+	}
 	default:
 		theApp.WarningMessageBox(IDS_MSG_NOTHING_TO_SAVE);
 	}
@@ -1096,7 +1096,7 @@ POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup* group) {
 	m_DatabasePtr->disableUndoRecording(false);
 	group->Erase();
 	m_DatabasePtr->disableUndoRecording(true);
-	
+
 	return (m_DeletedGroupList.AddTail(group));
 }
 EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
@@ -1104,7 +1104,7 @@ EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
 	if (!m_DeletedGroupList.IsEmpty()) {
 		Group = m_DeletedGroupList.RemoveHead();
 		Group->UndoErase();
-	}	
+	}
 	return (Group);
 }
 void AeSysDoc::DeletedGroupsRemoveGroups() {
@@ -1115,11 +1115,11 @@ EoDbGroup* AeSysDoc::DeletedGroupsRemoveTail() {
 	if (!m_DeletedGroupList.IsEmpty()) {
 		Group = m_DeletedGroupList.RemoveTail();
 		Group->UndoErase();
-	}	
+	}
 	return (Group);
 }
 void AeSysDoc::DeletedGroupsRestore() {
-// <tas="UndoErase group is restored to original layer. If this is desired behavior need to revise AddWorkLayerGroup call."</tas>
+	// <tas="UndoErase group is restored to original layer. If this is desired behavior need to revise AddWorkLayerGroup call."</tas>
 	if (!m_DeletedGroupList.IsEmpty()) {
 		EoDbGroup* Group = DeletedGroupsRemoveTail();
 		AddWorkLayerGroup(Group);
@@ -1191,7 +1191,7 @@ void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) {
 			Layer->Display_(view, deviceContext, IdentifyTrap);
 		}
 		pstate.Restore(deviceContext, PrimitiveState);
-		
+
 		deviceContext->SetBkColor(BackgroundColor);
 	}
 	catch (CException* Exception) {
@@ -1211,10 +1211,10 @@ int AeSysDoc::GetLayerTableSize() const {
 }
 EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) {
 	int i = FindLayerAt(name);
-	return (i < 0 ? (EoDbLayer*) 0 : m_LayerTable.GetAt(i));
+	return (i < 0 ? (EoDbLayer*)0 : m_LayerTable.GetAt(i));
 }
 EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
-	return (layerIndex >= (int) m_LayerTable.GetSize() ? (EoDbLayer*) NULL : m_LayerTable.GetAt(layerIndex));
+	return (layerIndex >= (int)m_LayerTable.GetSize() ? (EoDbLayer*)NULL : m_LayerTable.GetAt(layerIndex));
 }
 int AeSysDoc::FindLayerAt(const OdString& name) const {
 	for (EoUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
@@ -1223,7 +1223,7 @@ int AeSysDoc::FindLayerAt(const OdString& name) const {
 			return (LayerIndex);
 		}
 	}
-	return (- 1);
+	return (-1);
 }
 OdDbLayerTablePtr AeSysDoc::LayerTable(OdDb::OpenMode openMode) {
 	return (m_DatabasePtr->getLayerTableId().safeOpenObject(openMode));
@@ -1302,7 +1302,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 				TracingFile.WriteLayer(Layer);
 			}
 			name = name.mid(of.nFileOffset);
-			
+
 			Layer->MakeResident(true);
 			Layer->MakeInternal(false);
 			Layer->SetIsLocked(true);
@@ -1310,7 +1310,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 			bRetVal = true;
 		}
 	}
-	delete [] of.lpstrFile;
+	delete[] of.lpstrFile;
 	return (bRetVal);
 }
 void AeSysDoc::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) {
@@ -1406,7 +1406,7 @@ POSITION AeSysDoc::GetFirstWorkLayerGroupPosition() const {
 }
 EoDbGroup* AeSysDoc::GetLastWorkLayerGroup() const {
 	POSITION Position = m_WorkLayer->GetTailPosition();
-	return ((EoDbGroup*) (Position != 0 ? m_WorkLayer->GetPrev(Position) : 0));
+	return ((EoDbGroup*)(Position != 0 ? m_WorkLayer->GetPrev(Position) : 0));
 }
 POSITION AeSysDoc::GetLastWorkLayerGroupPosition() const {
 	return m_WorkLayer->GetTailPosition();
@@ -1434,7 +1434,7 @@ OdDbObjectId AeSysDoc::SetCurrentLayer(OdDbLayerTableRecordPtr layerTableRecord)
 
 	m_WorkLayer = GetLayerAt(layerTableRecord->getName());
 	m_WorkLayer->MakeCurrent();
-	
+
 	return PreviousLayer;
 }
 
@@ -1462,7 +1462,7 @@ void AeSysDoc::TracingFuse(OdString& nameAndLocation) {
 		LPWSTR NextToken = NULL;
 		wcstok_s(Title, L".", &NextToken);
 		nameAndLocation = Title;
-		delete [] Title;
+		delete[] Title;
 
 		Layer->MakeResident(true);
 		Layer->MakeInternal(true);
@@ -1508,7 +1508,7 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 
 	EoDbDwgToPegFile File(m_DatabasePtr);
 	File.ConvertToPeg(this);
-			
+
 	OdDbLayerTableRecordPtr LayerTableRecord = m_DatabasePtr->getCLAYER().safeOpenObject(OdDb::kForWrite);
 	SetCurrentLayer(LayerTableRecord);
 	LayerTableRecord->setIsReconciled(true);
@@ -1638,7 +1638,7 @@ void AeSysDoc::OnPrimBreak() {
 		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
 			EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
 			Group->FindAndRemovePrimitive(Primitive);
-			
+
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
@@ -1860,17 +1860,17 @@ void AeSysDoc::OnPensRemoveUnusedLinetypes() {
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForWrite);
-		
+
 		OdString Name = Linetype->getName();
 		if (LinetypeIndexReferenceCount(EoDbLinetypeTable::LegacyLinetypeIndex(Name)) == 0) {
 			OdResult Result = Linetype->erase(true);
 			if (Result) {
 				CString ErrorDescription = m_DatabasePtr->appServices()->getErrorDescription(Result);
-				ErrorDescription += L" <%s> linetype can not be deleted"; 
-				theApp.AddStringToMessageList(ErrorDescription, (LPCWSTR) Name);
+				ErrorDescription += L" <%s> linetype can not be deleted";
+				theApp.AddStringToMessageList(ErrorDescription, (LPCWSTR)Name);
 			}
 			else {
-				theApp.AddStringToMessageList(IDS_MSG_UNUSED_LINETYPE_REMOVED, (LPCWSTR) Name);
+				theApp.AddStringToMessageList(IDS_MSG_UNUSED_LINETYPE_REMOVED, (LPCWSTR)Name);
 			}
 		}
 	}
@@ -1904,9 +1904,9 @@ void AeSysDoc::OnEditTrace() {
 				HGLOBAL ClipboardDataHandle = GetClipboardData(ClipboardFormat);
 				if (ClipboardDataHandle != 0) {
 
-					LPCSTR ClipboardData = (LPCSTR) GlobalLock(ClipboardDataHandle);
+					LPCSTR ClipboardData = (LPCSTR)GlobalLock(ClipboardDataHandle);
 					if (ClipboardData != NULL) {
-						DWORD ClipboardDataLength = *((DWORD*) ClipboardData);
+						DWORD ClipboardDataLength = *((DWORD*)ClipboardData);
 						CMemFile MemFile;
 						MemFile.Write(ClipboardData, UINT(ClipboardDataLength));
 						GlobalUnlock(ClipboardDataHandle);
@@ -1958,8 +1958,8 @@ void AeSysDoc::OnEditTrapPaste() {
 					OdGePoint3d InsertionPoint(theApp.GetCursorPosition());
 					SetTrapPivotPoint(InsertionPoint);
 
-					LPCSTR ClipboardData = (LPCSTR) GlobalLock(ClipboardDataHandle);
-					DWORD ClipboardDataLength = *((DWORD*) ClipboardData);
+					LPCSTR ClipboardData = (LPCSTR)GlobalLock(ClipboardDataHandle);
+					DWORD ClipboardDataLength = *((DWORD*)ClipboardData);
 					CMemFile MemoryFile;
 					MemoryFile.Write(ClipboardData, UINT(ClipboardDataLength));
 
@@ -1984,13 +1984,13 @@ void AeSysDoc::OnEditTrapPaste() {
 
 			LPWSTR lpText = new WCHAR[GlobalSize(ClipboardDataHandle)];
 
-			LPCWSTR ClipboardData = (LPCWSTR) GlobalLock(ClipboardDataHandle);
+			LPCWSTR ClipboardData = (LPCWSTR)GlobalLock(ClipboardDataHandle);
 			lstrcpyW(lpText, ClipboardData);
 			GlobalUnlock(ClipboardDataHandle);
 
 			AddTextBlock(lpText);
 
-			delete [] lpText;
+			delete[] lpText;
 		}
 		CloseClipboard();
 	}
@@ -2064,8 +2064,7 @@ void AeSysDoc::OnTrapCommandsBlock() {
 
 	do {
 		swprintf_s(szBlkNam, 16, L"_%.3i", ++w);
-	}
-	while (LookupBlock(szBlkNam, Block));
+	} while (LookupBlock(szBlkNam, Block));
 
 	Block = new EoDbBlock;
 
@@ -2089,7 +2088,7 @@ void AeSysDoc::OnTrapCommandsUnblock() {
 }
 void AeSysDoc::OnSetupPenColor() {
 	EoDlgSetupColor Dialog;
-	Dialog.m_ColorIndex = 	pstate.ColorIndex();
+	Dialog.m_ColorIndex = pstate.ColorIndex();
 
 	if (Dialog.DoModal() == IDOK) {
 		pstate.SetColorIndex(NULL, Dialog.m_ColorIndex);
@@ -2101,7 +2100,7 @@ void AeSysDoc::OnSetupLinetype() {
 	// <tas="Assertion on exit"</tas>
 	OdDbLinetypeTablePtr Linetypes = m_DatabasePtr->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 	EoDlgSetupLinetype Dialog(Linetypes);
-	
+
 	if (Dialog.DoModal() == IDOK) {
 		OdString Name = Dialog.m_Linetype->getName();
 		EoInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
@@ -2324,7 +2323,7 @@ void AeSysDoc::OnFileTracing() {
 		TracingOpen(of.lpstrFile);
 	}
 
-	delete [] of.lpstrFile;
+	delete[] of.lpstrFile;
 }
 void AeSysDoc::OnPurgeDuplicateObjects() {
 	PurgeDuplicateObjects();
@@ -2371,7 +2370,7 @@ void AeSysDoc::OnPensLoadColors() {
 		else
 			theApp.WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
 	}
-	delete [] of.lpstrFile;
+	delete[] of.lpstrFile;
 }
 void AeSysDoc::OnPensTranslate() {
 	CStdioFile fl;
@@ -2400,8 +2399,8 @@ void AeSysDoc::OnPensTranslate() {
 			}
 			PenTranslation(wCols, pColNew, pCol);
 
-			delete [] pColNew;
-			delete [] pCol;
+			delete[] pColNew;
+			delete[] pCol;
 		}
 	}
 	UpdateAllViews(NULL, 0L, NULL);
@@ -2438,7 +2437,7 @@ void AeSysDoc::OnPrimExtractNum() {
 		int iTokId = 0;
 
 		lex::Parse(Number);
-		lex::EvalTokenStream(&iTokId, &lDef, &iTyp, (void*) dVal);
+		lex::EvalTokenStream(&iTokId, &lDef, &iTyp, (void*)dVal);
 
 		if (iTyp != lex::TOK_LENGTH_OPERAND) {
 			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &lDef, dVal);
@@ -2475,67 +2474,67 @@ void AeSysDoc::OnPrimExtractStr() {
 }
 // Returns a pointer to the currently active document.
 AeSysDoc* AeSysDoc::GetDoc(void) {
-	CMDIFrameWndEx* Frame = (CMDIFrameWndEx*) AfxGetMainWnd();
+	CMDIFrameWndEx* Frame = (CMDIFrameWndEx*)AfxGetMainWnd();
 	if (Frame == NULL) {
 		return NULL;
 	}
-	CMDIChildWndEx* Child = (CMDIChildWndEx*) Frame->MDIGetActive();
+	CMDIChildWndEx* Child = (CMDIChildWndEx*)Frame->MDIGetActive();
 
-	return (Child == NULL) ? NULL : (AeSysDoc*) Child->GetActiveDocument();
+	return (Child == NULL) ? NULL : (AeSysDoc*)Child->GetActiveDocument();
 }
 void AeSysDoc::AddGroupToAllViews(EoDbGroup* group) {
 	POSITION ViewPosition = GetFirstViewPosition();
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
+		AeSysView* View = (AeSysView*)GetNextView(ViewPosition);
 		View->AddGroup(group);
 	}
 }
 void AeSysDoc::AddGroupsToAllViews(EoDbGroupList* groups) {
 	POSITION ViewPosition = GetFirstViewPosition();
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
+		AeSysView* View = (AeSysView*)GetNextView(ViewPosition);
 		View->AddGroups(groups);
 	}
 }
 void AeSysDoc::RemoveAllGroupsFromAllViews() {
 	POSITION ViewPosition = GetFirstViewPosition();
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
+		AeSysView* View = (AeSysView*)GetNextView(ViewPosition);
 		View->RemoveAllGroups();
 	}
 }
 void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup* group) {
 	POSITION ViewPosition = GetFirstViewPosition();
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
+		AeSysView* View = (AeSysView*)GetNextView(ViewPosition);
 		View->RemoveGroup(group);
 	}
 }
 void AeSysDoc::ResetAllViews() {
 	POSITION ViewPosition = GetFirstViewPosition();
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
+		AeSysView* View = (AeSysView*)GetNextView(ViewPosition);
 		View->ResetView();
 	}
 }
 void AeSysDoc::OnHelpKey() {
 	switch (theApp.CurrentMode()) {
 	case ID_MODE_DRAW:
-		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD) (LPWSTR) L"DRAW");
+		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)L"DRAW");
 		break;
 
 	case ID_MODE_EDIT: {
-			WCHAR szKey[] = L"EDIT";
-			WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD) (LPWSTR) szKey);
-			break;
-		}
+		WCHAR szKey[] = L"EDIT";
+		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)szKey);
+		break;
+	}
 	case ID_MODE_TRAP:
 	case ID_MODE_TRAPR: {
-			WCHAR szKey[] = L"TRAP";
-			WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD) (LPWSTR) szKey);
-			break;
+		WCHAR szKey[] = L"TRAP";
+		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)szKey);
+		break;
 
-		}
+	}
 	}
 }
 
@@ -2596,13 +2595,13 @@ void AeSysDoc::RemoveAllNodalGroups() {
 	m_NodalGroupList.RemoveAll();
 }
 POSITION AeSysDoc::AddMaskedPrimitive(EoDbMaskedPrimitive* maskedPrimitive) {
-	return m_MaskedPrimitives.AddTail((CObject*) maskedPrimitive);
+	return m_MaskedPrimitives.AddTail((CObject*)maskedPrimitive);
 }
 POSITION AeSysDoc::GetFirstMaskedPrimitivePosition() const {
 	return m_MaskedPrimitives.GetHeadPosition();
 }
 EoDbMaskedPrimitive* AeSysDoc::GetNextMaskedPrimitive(POSITION& position) {
-	return (EoDbMaskedPrimitive*) m_MaskedPrimitives.GetNext(position);
+	return (EoDbMaskedPrimitive*)m_MaskedPrimitives.GetNext(position);
 }
 void AeSysDoc::RemoveAllMaskedPrimitives() {
 	m_MaskedPrimitives.RemoveAll();
@@ -2621,13 +2620,13 @@ int AeSysDoc::AddUniquePoint(const OdGePoint3d& point) {
 	return (1);
 }
 POSITION AeSysDoc::AddUniquePoint(EoGeUniquePoint* uniquePoint) {
-	return m_UniquePoints.AddTail((CObject*) uniquePoint);
+	return m_UniquePoints.AddTail((CObject*)uniquePoint);
 }
 POSITION AeSysDoc::GetFirstUniquePointPosition() const {
 	return m_UniquePoints.GetHeadPosition();
 }
 EoGeUniquePoint* AeSysDoc::GetNextUniquePoint(POSITION& position) {
-	return (EoGeUniquePoint*) m_UniquePoints.GetNext(position);
+	return (EoGeUniquePoint*)m_UniquePoints.GetNext(position);
 }
 void AeSysDoc::RemoveUniquePointAt(POSITION position) {
 	m_UniquePoints.RemoveAt(position);
@@ -2770,7 +2769,7 @@ void AeSysDoc::OnInsertTracing() {
 			}
 		}
 	}
-	delete [] of.lpstrFile;
+	delete[] of.lpstrFile;
 }
 void AeSysDoc::OnFilePagesetup() {
 	OdSmartPtr<OdDbUserIO> pIO; // = pDbCmdCtx->userIO();
@@ -2791,24 +2790,24 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 
 	OdDbObjectIdArray objs = document->selectionSet()->objectIdArray();
 
-	OdDbDatabasePtr pDb = document->m_DatabasePtr->wblock(objs, OdGePoint3d::kOrigin );
+	OdDbDatabasePtr pDb = document->m_DatabasePtr->wblock(objs, OdGePoint3d::kOrigin);
 	TCHAR tempdir[MAX_PATH];
-	::GetTempPath(MAX_PATH,tempdir);
+	::GetTempPath(MAX_PATH, tempdir);
 	TCHAR tempname[MAX_PATH];
 	::GetTempFileName(tempdir, L"", 0, tempname);
 	m_tmpPath = tempname;
 	m_tmpPath.makeLower();
-	m_tmpPath.replace(L".tmp",L".dwg");
-	OdStreamBufPtr sbuf = theApp.createFile(m_tmpPath,Oda::kFileWrite,Oda::kShareDenyWrite,Oda::kCreateNew );
+	m_tmpPath.replace(L".tmp", L".dwg");
+	OdStreamBufPtr sbuf = theApp.createFile(m_tmpPath, Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kCreateNew);
 
 	//pDb->writeFile(sbuf,OdDb::kDwg,OdDb::vAC21);
 	//HGLOBAL hGlobal = GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR15));
 	//new (hGlobal) AcadClipDataR15(m_tmpPath, OdString(pDoc->GetPathName()), p2 );
 	//CacheGlobalData(ClipboardData::m_FormatR16, hGlobal);
 
-	pDb->writeFile(sbuf,OdDb::kDwg, OdDb::vAC21);
+	pDb->writeFile(sbuf, OdDb::kDwg, OdDb::vAC21);
 	HGLOBAL hGlobalR21 = GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR21));
-	new (hGlobalR21) AcadClipDataR21(m_tmpPath, OdString(document->GetPathName()), point);
+	new (hGlobalR21)AcadClipDataR21(m_tmpPath, OdString(document->GetPathName()), point);
 	CacheGlobalData(ClipboardData::m_FormatR17, hGlobalR21);
 }
 bool AeSysDoc::DataSource::DoDragDrop() {
@@ -2817,7 +2816,7 @@ bool AeSysDoc::DataSource::DoDragDrop() {
 void AeSysDoc::DataSource::Empty() {
 	COleDataSource::Empty();
 	if (!m_tmpPath.isEmpty()) {
-		DeleteFile(m_tmpPath );
+		DeleteFile(m_tmpPath);
 	}
 }
 AeSysDoc::DataSource::~DataSource() {
@@ -2826,9 +2825,9 @@ AeSysDoc::DataSource::~DataSource() {
 void AeSysDoc::OnDrawingutilitiesAudit() {
 	bool bFixErrors = AfxMessageBox(L"Fix any errors detected?", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES;
 
-	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
-	ODA_ASSERT (!TheApp->m_pAuditDlg);
-	
+	AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
+	ODA_ASSERT(!TheApp->m_pAuditDlg);
+
 	TheApp->m_pAuditDlg = new EoDlgAudit();
 	if (!TheApp->m_pAuditDlg) {
 		AfxMessageBox(L"Error Creating Audit Dialog Object");
@@ -2850,7 +2849,7 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 		delete TheApp->m_pAuditDlg;
 		TheApp->m_pAuditDlg = NULL;
 		theApp.reportError(L"Error Auditing Database...", Error);
-		AfxThrowUserException( );
+		AfxThrowUserException();
 	}
 	catch (const UserBreak&) {
 		delete TheApp->m_pAuditDlg;
@@ -2861,7 +2860,7 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 	}
 	CString Title(L"Audit info - " + GetTitle());
 	TheApp->m_pAuditDlg->SetWindowText(Title);
-	TheApp->m_pAuditDlg->ShowWindow (SW_SHOW);
+	TheApp->m_pAuditDlg->ShowWindow(SW_SHOW);
 
 	TheApp->m_pAuditDlg = NULL;
 }
@@ -2901,32 +2900,32 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 
 	Filter += L"dxf R15 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver ==OdDb::vAC15)
+	if (!isDwg && dwgver == OdDb::vAC15)
 		dlgFile.m_ofn.nFilterIndex = 5;
 
 	Filter += L"dxf R14 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver ==OdDb::vAC14)
+	if (!isDwg && dwgver == OdDb::vAC14)
 		dlgFile.m_ofn.nFilterIndex = 6;
 
 	Filter += L"dxf R13 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver ==OdDb::vAC13)
+	if (!isDwg && dwgver == OdDb::vAC13)
 		dlgFile.m_ofn.nFilterIndex = 7;
 
 	Filter += L"dxf R12 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver ==OdDb::vAC12)
+	if (!isDwg && dwgver == OdDb::vAC12)
 		dlgFile.m_ofn.nFilterIndex = 8;
 
 	Filter += L"dxf R10 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver ==OdDb::vAC10)
+	if (!isDwg && dwgver == OdDb::vAC10)
 		dlgFile.m_ofn.nFilterIndex = 9;
 
 	Filter += L"dxf R9 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver ==OdDb::vAC09)
+	if (!isDwg && dwgver == OdDb::vAC09)
 		dlgFile.m_ofn.nFilterIndex = 10;
 
 	// Binary dxf support
@@ -2952,27 +2951,27 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 
 	Filter += L"binary dxf R15 Files|*.dxb|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver ==OdDb::vAC15)
+	if (isDxb && dwgver == OdDb::vAC15)
 		dlgFile.m_ofn.nFilterIndex = 15;
 
 	Filter += L"binary dxf R14 Files|*.dxb|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver ==OdDb::vAC14)
+	if (isDxb && dwgver == OdDb::vAC14)
 		dlgFile.m_ofn.nFilterIndex = 16;
 
 	Filter += L"binary dxf R13 Files|*.dxb|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver ==OdDb::vAC13)
+	if (isDxb && dwgver == OdDb::vAC13)
 		dlgFile.m_ofn.nFilterIndex = 17;
 
 	Filter += L"binary dxf R12 Files|*.dxb|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver ==OdDb::vAC12)
+	if (isDxb && dwgver == OdDb::vAC12)
 		dlgFile.m_ofn.nFilterIndex = 18;
 
 	Filter += L"binary dxf R10 Files|*.dxb|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver ==OdDb::vAC10)
+	if (isDxb && dwgver == OdDb::vAC10)
 		dlgFile.m_ofn.nFilterIndex = 19;
 
 	// dwg support
@@ -2998,17 +2997,17 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 
 	Filter += L"dwg R15 Files|*.dwg|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver ==OdDb::vAC15)
+	if (isDwg && dwgver == OdDb::vAC15)
 		dlgFile.m_ofn.nFilterIndex = 24;
 
 	Filter += L"dwg R14 Files|*.dwg|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver ==OdDb::vAC14)
+	if (isDwg && dwgver == OdDb::vAC14)
 		dlgFile.m_ofn.nFilterIndex = 25;
 
 	Filter += L"dwg R13 Files|*.dwg|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver ==OdDb::vAC13)
+	if (isDwg && dwgver == OdDb::vAC13)
 		dlgFile.m_ofn.nFilterIndex = 26;
 
 	Filter += L"dwg R12 Files|*.dwg|";
@@ -3019,7 +3018,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 	Filter += L"|";
 	Filter.Replace('|', '\0');
 
-	if (fileName.Find('.') != - 1) {
+	if (fileName.Find('.') != -1) {
 		fileName = fileName.Left(fileName.Find('.'));
 	}
 	dlgFile.m_ofn.lpstrFilter = Filter;
@@ -3029,7 +3028,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 	LPARAM nResult = dlgFile.DoModal();
 	fileName.ReleaseBuffer();
 
-	if (fileName.Find('.') == - 1) {
+	if (fileName.Find('.') == -1) {
 		if (dlgFile.m_ofn.nFilterIndex < 20)
 			fileName += L".dxf";
 		else if (dlgFile.m_ofn.nFilterIndex >= 20)
@@ -3038,13 +3037,13 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 	if (dlgFile.m_ofn.nFilterIndex < 11) {
 		m_SaveAsType = OdDb::kDxf;
 	}
-	else if(dlgFile.m_ofn.nFilterIndex < 20) {
+	else if (dlgFile.m_ofn.nFilterIndex < 20) {
 		m_SaveAsType = OdDb::kDxb;
 	}
 	else {
 		m_SaveAsType = OdDb::kDwg;
 	}
-	switch(dlgFile.m_ofn.nFilterIndex) {
+	switch (dlgFile.m_ofn.nFilterIndex) {
 	case 1:
 	case 11:
 	case 20:
@@ -3141,5 +3140,5 @@ void AeSysDoc::OnEditSelectall() {
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
 			static_cast<AeSysView*>(View)->editorObject().selectionSetChanged();
 		}
-	}  
+	}
 }
