@@ -110,7 +110,7 @@ const bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotS
   return true;
 }
 
-void WinPathToDos(TCHAR *str) {
+void WinPathToDos(WCHAR *str) {
   CString pStr = str;
   CString sNewStr;
   int pos = 0;
@@ -159,10 +159,10 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
   HDC editDC = ::GetDC(m_staticFilepath.m_hWnd);
 //  CRect rect;
 //  m_staticFilepath.GetClientRect(&rect);
-  TCHAR buffer[MAX_PATH];
+  WCHAR buffer[MAX_PATH];
   wcscpy(buffer, m_sFileBufPath);
   WinPathToDos(buffer);
-  TCHAR *lpStr = buffer;
+  WCHAR *lpStr = buffer;
   PathCompactPath(editDC, lpStr, 630/*rect.right*/);
   m_staticFilepath.SetWindowText(lpStr);
 

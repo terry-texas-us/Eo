@@ -96,11 +96,11 @@ public:
 	BYTE m_iItem;
 	COLORREF m_color;
 	CBitmap m_bitmap;
-	TCHAR m_name[PS_COLOR_MAX_NAME];
+	WCHAR m_name[PS_COLOR_MAX_NAME];
 
-	CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const TCHAR* name);
+	CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const WCHAR* name);
 	CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, BYTE cColorItem, int colorIndex = -1);
-	CBitmapColorInfo(LPCWSTR lpszResourceName, const TCHAR* name);
+	CBitmapColorInfo(LPCWSTR lpszResourceName, const WCHAR* name);
 
 	// Implementation
 protected:

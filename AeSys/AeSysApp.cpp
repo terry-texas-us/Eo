@@ -434,8 +434,8 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 }
 OdString AeSysApp::getFontMapFileName() const {
 	OdString subkey;
-	TCHAR fontMapFile[4 * MAX_PATH];
-	TCHAR expandedPath[4 * MAX_PATH];
+	WCHAR fontMapFile[4 * MAX_PATH];
+	WCHAR expandedPath[4 * MAX_PATH];
 
 	//subkey = GetRegistryAcadProfilesKey();
 	if (!subkey.isEmpty()) {
@@ -1946,9 +1946,9 @@ bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wch
 }
 OdString GetRegistryAcadProfilesKey() {
 	OdString subkey = L"SOFTWARE\\Autodesk\\AutoCAD";
-	TCHAR version[32];
-	TCHAR subVersion[32];
-	TCHAR profile[4 * MAX_PATH];
+	WCHAR version[32];
+	WCHAR subVersion[32];
+	WCHAR profile[4 * MAX_PATH];
 	// char searchPaths[4 * MAX_PATH];
 
 	if (GetRegistryString(HKEY_CURRENT_USER, (LPCWSTR)subkey, L"CurVer", version, 32) == 0) {

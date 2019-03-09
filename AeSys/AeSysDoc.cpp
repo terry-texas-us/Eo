@@ -2791,9 +2791,9 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 	OdDbObjectIdArray objs = document->selectionSet()->objectIdArray();
 
 	OdDbDatabasePtr pDb = document->m_DatabasePtr->wblock(objs, OdGePoint3d::kOrigin);
-	TCHAR tempdir[MAX_PATH];
+	WCHAR tempdir[MAX_PATH];
 	::GetTempPath(MAX_PATH, tempdir);
-	TCHAR tempname[MAX_PATH];
+	WCHAR tempname[MAX_PATH];
 	::GetTempFileName(tempdir, L"", 0, tempname);
 	m_tmpPath = tempname;
 	m_tmpPath.makeLower();

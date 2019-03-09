@@ -17,7 +17,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
 	case IDOK:
 		{
 			const int nMaxCount = 100;
-			TCHAR sString[nMaxCount];
+			WCHAR sString[nMaxCount];
 			HWND hOwner = ::GetWindow(hwnd, GW_OWNER);
 			::GetWindowText(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
 			CPropertySheet *pPsDlg = (CPropertySheet *)CWnd::FromHandle(hOwner);
@@ -31,7 +31,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
 		{
 			if (codeNotify == EN_CHANGE) {
 				const int nMaxCount = 100;
-				TCHAR sString[nMaxCount];
+				WCHAR sString[nMaxCount];
 				HWND hOwner = ::GetWindow(hwnd, GW_OWNER);
 				::GetWindowText(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
 				CPropertySheet *pPsDlg = (CPropertySheet *)CWnd::FromHandle(hOwner);
@@ -198,14 +198,14 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, BYTE 
 			wcscpy(m_name, (LPCWSTR) clrName);
 		}
 }
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const TCHAR* name) : 
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const WCHAR* name) : 
 	m_iItem(0xff) {
 		m_color = (m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
 		CloneBitmap(pBitmap, &m_bitmap);
 		PaintBitmap(m_bitmap, color);
 		_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
-CBitmapColorInfo::CBitmapColorInfo(LPCWSTR lpszResourceName, const TCHAR* name) : 
+CBitmapColorInfo::CBitmapColorInfo(LPCWSTR lpszResourceName, const WCHAR* name) : 
 	m_iItem(0xff) {
 		HBITMAP hBmp;
 		hBmp = (HBITMAP)::LoadImage(AfxGetInstanceHandle(), 
@@ -539,7 +539,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 		m_editPen.SetWindowText(L"Automatic");
 	}
 	else {
-		TCHAR buffer[256];
+		WCHAR buffer[256];
 		_itot(num, buffer, 10);
 		m_editPen.SetWindowText(buffer);
 	}
@@ -568,7 +568,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 		m_editVirtpen.SetWindowText(L"Automatic");
 	}
 	else {
-		TCHAR buffer[256];
+		WCHAR buffer[256];
 		_itot(num, buffer, 10);
 		m_editVirtpen.SetWindowText(buffer);
 	}
@@ -887,9 +887,9 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileNa
 	strFilter = isCtb 
 		? L"Color-Dependent Style Table Files (*.ctb)"
 		: L"Style Table Files (*.stb)";
-	strFilter += (TCHAR)'\0'; // next string please
+	strFilter += (WCHAR)'\0'; // next string please
 	strFilter += isCtb ? L"*.ctb" : L"*.stb";
-	strFilter += (TCHAR)'\0'; // last string
+	strFilter += (WCHAR)'\0'; // last string
 	dlgFile.m_ofn.nMaxCustFilter++;
 	dlgFile.m_ofn.nFilterIndex = 1;
 
