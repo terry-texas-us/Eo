@@ -1582,11 +1582,11 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			dScreenFactorH = double(MarginsClipBox.Height()) / PrinterMarginHeight;
 			dScreenFactorW = double(MarginsClipBox.Width()) / PrinterMarginWidth;
 
-			MarginsClipBox.left += LONG((LeftMargin - PrinterLeftMargin) * dScreenFactorW);
-			MarginsClipBox.bottom -= LONG((BottomMargin - PrinterBottomMargin) * dScreenFactorH);
+			MarginsClipBox.left += long((LeftMargin - PrinterLeftMargin) * dScreenFactorW);
+			MarginsClipBox.bottom -= long((BottomMargin - PrinterBottomMargin) * dScreenFactorH);
 
-			MarginsClipBox.top = MarginsClipBox.bottom - LONG((PrinterHeight - TopMargin - BottomMargin) * dScreenFactorH);
-			MarginsClipBox.right = MarginsClipBox.left + LONG((PrinterWidth - LeftMargin - RightMargin) * dScreenFactorW);
+			MarginsClipBox.top = MarginsClipBox.bottom - long((PrinterHeight - TopMargin - BottomMargin) * dScreenFactorH);
+			MarginsClipBox.right = MarginsClipBox.left + long((PrinterWidth - LeftMargin - RightMargin) * dScreenFactorW);
 		}
 		// MarginsClipBox is calculated
 		CRect ClipBox(MarginsClipBox);
@@ -1734,16 +1734,16 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		}
 		if (!SkipClipping) {
 			if (IsPrint180Degrees || IsPrint90Degrees) {
-				ClipBox.left = LONG(ClipBox.right - (drx2 - drx1)* koeffX * dScreenFactorW);
-				ClipBox.bottom = LONG(ClipBox.top + (dry2 - dry1)* koeffY * dScreenFactorH);
+				ClipBox.left = long(ClipBox.right - (drx2 - drx1)* koeffX * dScreenFactorW);
+				ClipBox.bottom = long(ClipBox.top + (dry2 - dry1)* koeffY * dScreenFactorH);
 			}
 			else if (IsPrint0Degrees || IsPrint270Degrees) {
-				ClipBox.right = LONG(ClipBox.left + (drx2 - drx1)* koeffX * dScreenFactorW);
-				ClipBox.top = LONG(ClipBox.bottom - (dry2 - dry1)* koeffY * dScreenFactorH);
+				ClipBox.right = long(ClipBox.left + (drx2 - drx1)* koeffX * dScreenFactorW);
+				ClipBox.top = long(ClipBox.bottom - (dry2 - dry1)* koeffY * dScreenFactorH);
 			}
 			else { // preview
-				ClipBox.right = LONG(ClipBox.left + (drx2 - drx1)* koeffX * dScreenFactorW);
-				ClipBox.top = LONG(ClipBox.bottom - (dry2 - dry1)* koeffY * dScreenFactorH);
+				ClipBox.right = long(ClipBox.left + (drx2 - drx1)* koeffX * dScreenFactorW);
+				ClipBox.top = long(ClipBox.bottom - (dry2 - dry1)* koeffY * dScreenFactorH);
 			}
 			ClipBox.OffsetRect(int(offsetX * koeffX * dScreenFactorW), int(-offsetY * koeffY * dScreenFactorH));
 		}
@@ -1937,7 +1937,7 @@ OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTra
 			throw OdEdCancel();
 			break;
 		}
-		LONG Idle = 0;
+		long Idle = 0;
 		while (theApp.OnIdle(Idle++));
 	}
 	throw OdEdCancel();
@@ -1968,7 +1968,7 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTr
 		case Response::kCancel:
 			throw OdEdCancel();
 		}
-		LONG Idle = 0;
+		long Idle = 0;
 		while (theApp.OnIdle(Idle++));
 	}
 	throw OdEdCancel();
@@ -2252,7 +2252,7 @@ bool AeSysView::drawableVectorizationCallback(const OdGiDrawable* drawable) {
 	}
 	return true;
 }
-BOOL AeSysView::OnIdle(LONG count) {
+BOOL AeSysView::OnIdle(long count) {
 	if (!m_pDevice->isValid()) {
 		PostMessage(WM_PAINT);
 	}
@@ -2341,7 +2341,7 @@ void AeSysView::DoCustomMouseClick(const CString& characters) {
 	int Position = 0;
 
 	while (Position < characters.GetLength()) {
-		if (characters.Find(L'{', Position) == Position) {
+		if (characters.Find(L"{", Position) == Position) {
 			Position++;
 			CString VirtualKey = characters.Tokenize(L"}", Position);
 			PostMessageW(WM_KEYDOWN, _wtoi(VirtualKey), 0L);
@@ -2713,7 +2713,7 @@ void AeSysView::OnViewParameters() {
 
 	EoGsViewTransform ModelView(m_ViewTransform);
 
-	Dialog.m_ModelView = unsigned long(&ModelView);
+	Dialog.m_ModelView = DWORD(&ModelView);
 	Dialog.m_PerspectiveProjection = m_ViewTransform.IsPerspectiveOn();
 
 	if (Dialog.DoModal() == IDOK) {
@@ -3761,7 +3761,7 @@ void AeSysView::SetModeCursor(int mode) {
 	HCURSOR CursorHandle = (HCURSOR) ::LoadImage(theApp.GetInstance(), MAKEINTRESOURCE(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE);
 	VERIFY(CursorHandle);
 	::SetCursor(CursorHandle);
-	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, (LONG)CursorHandle);
+	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, (long)CursorHandle);
 }
 void AeSysView::SetWorldScale(const double scale) {
 	if (scale > FLT_EPSILON) {

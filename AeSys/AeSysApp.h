@@ -222,7 +222,7 @@ public:
 public:
 	virtual BOOL InitInstance(void);
 	virtual int ExitInstance(void);
-	virtual BOOL OnIdle(LONG count);
+	virtual BOOL OnIdle(long count);
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	enum Units {

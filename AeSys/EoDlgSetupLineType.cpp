@@ -53,7 +53,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 					DeviceContext.SetBkColor(BackgroundColor);
 					DeviceContext.SetTextColor(rgbText);
 
-					OdDbObjectId ItemData = (OdDbStub*) (unsigned long) m_LinetypesListControl.GetItemData(Item);
+					OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
 					OdDbLinetypeTableRecordPtr Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 					
 					CRect SubItemRectangle;
@@ -123,7 +123,7 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
 		if (Linetype->objectId() != Database->getLinetypeByLayerId() && Linetype->objectId() != Database->getLinetypeByBlockId()) {
 			m_LinetypesListControl.InsertItem(ItemIndex, NULL);
-			m_LinetypesListControl.SetItemData(ItemIndex++, (unsigned long) (OdDbStub*) Linetype->objectId());
+			m_LinetypesListControl.SetItemData(ItemIndex++, (DWORD)(OdDbStub*)Linetype->objectId());
 		}
 	}
 
@@ -135,7 +135,7 @@ void EoDlgSetupLinetype::OnOK() {
 	POSITION Position = m_LinetypesListControl.GetFirstSelectedItemPosition();
 	if (Position != NULL) {
 		int Item = m_LinetypesListControl.GetNextSelectedItem(Position);
-		OdDbObjectId ItemData = (OdDbStub*) (unsigned long) m_LinetypesListControl.GetItemData(Item);
+		OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
 		m_Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 	}
 	CDialog::OnOK();

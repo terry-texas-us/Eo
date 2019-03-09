@@ -391,7 +391,7 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 			FileToFind += L".shx";
 		}
 		else if (hint == kTextureMapFile) {
-			FileToFind.replace(L'/', L'\\');
+			FileToFind.replace(L"/", L"\\");
 			FileToFind.deleteChars(0, FileToFind.reverseFind(L'\\') + 1);
 		}
 		FilePathAndName = (hint != kTextureMapFile) ? ConfigurationPathFor(HKEY_CURRENT_USER, ApplicationName, L"ACAD") : ConfigurationPathFor(HKEY_CURRENT_USER, ApplicationName, L"AVEMAPS");
@@ -2253,7 +2253,7 @@ void AeSysApp::UninitializeTeigha() {
 void AeSysApp::UpdateMDITabs(BOOL resetMDIChild) {
 	((CMainFrame*)AfxGetMainWnd())->UpdateMDITabs(resetMDIChild);
 }
-BOOL AeSysApp::OnIdle(LONG count) {
+BOOL AeSysApp::OnIdle(long count) {
 #ifdef ODAMFC_EXPORT_SYMBOL
 	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex)
 		m_aAppReactors[ReactorIndex]->OnIdle(count);

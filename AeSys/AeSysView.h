@@ -965,7 +965,7 @@ protected:
 public:
 	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
 	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
-	BOOL OnIdle(LONG count);
+	BOOL OnIdle(long count);
 };
 #ifndef _DEBUG  // debug version in PegView.cpp
 inline AeSysDoc* AeSysView::GetDocument() const {

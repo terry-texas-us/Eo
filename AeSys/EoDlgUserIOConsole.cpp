@@ -49,7 +49,7 @@ OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd* parent) {
 	return OdSmartPtr<EoDlgUserIOConsole>(new EoDlgUserIOConsole(parent), kOdRxObjAttach);
 }
 void EoDlgUserIOConsole::Echo(const OdString& string) {
-	m_Output += L' ';
+	m_Output += L" ";
 	m_Output += (LPCWSTR) string;
 }
 OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {

@@ -19,7 +19,7 @@ protected:
 
 public:
 	BOOL m_PerspectiveProjection;
-	unsigned long m_ModelView;
+	DWORD m_ModelView;
 	afx_msg void OnBnClickedApply();
 	afx_msg void OnEnChangePositionX();
 	afx_msg void OnEnChangePositionY();
