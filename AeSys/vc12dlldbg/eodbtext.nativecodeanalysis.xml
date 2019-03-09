@@ -1,2 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<DEFECTS><DEFECT><SFA><FILEPATH>e:\projects\vs 2013\eo\aesys\</FILEPATH><FILENAME>eodbtext.cpp</FILENAME><LINE>449</LINE><COLUMN>16</COLUMN></SFA><DEFECTCODE>6330</DEFECTCODE><DESCRIPTION>'char' passed as _Param_(1) when 'unsigned char' is required in call to 'isprint'.</DESCRIPTION><FUNCTION>EoDbText::ConstructFrom</FUNCTION><DECORATED>?ConstructFrom@EoDbText@@SAPAV1@PAEH@Z</DECORATED><FUNCLINE>369</FUNCLINE><PATH/></DEFECT></DEFECTS>

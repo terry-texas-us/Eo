@@ -455,15 +455,18 @@ OdString AeSysApp::getFontMapFileName() const {
 	}
 }
 CString AeSysApp::getApplicationPath() {
-	wchar_t FileName[MAX_PATH];
-	::GetModuleFileNameW(::GetModuleHandleW(0), FileName, MAX_PATH);
-
-	// <tas="Using 'FileName' from possible failed function call; 'FileName' is used, but may not have been initialized</tas>
-
-	CString FilePath(FileName);
-	int Delimiter = FilePath.ReverseFind('\\');
-
-	return (FilePath.Left(Delimiter));
+	HMODULE handle = ::GetModuleHandleW(0);
+	if (handle) {
+		wchar_t FileName[MAX_PATH];
+		ZeroMemory(FileName, sizeof(wchar_t) * MAX_PATH);
+		::GetModuleFileNameW(handle, FileName, MAX_PATH);
+		CString FilePath(FileName);
+		int Delimiter = FilePath.ReverseFind('\\');
+		return (FilePath.Left(Delimiter));
+	}
+	else {
+		return L"";
+	}
 }
 const OdString& AeSysApp::getRecentCmd() {
 	return m_sRecentCmd;

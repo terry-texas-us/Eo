@@ -717,7 +717,7 @@ private:
 		}
 #ifndef _DEBUG
 		catch(...) {
-			::MessageBox(NULL, L"Unknown error occurred...", L"Can't repair database", MB_OK | MB_ICONERROR);
+			::MessageBoxW(NULL, L"Unknown error occurred...", L"Can't repair database", MB_OK | MB_ICONERROR);
 		}
 #endif //_DEBUG
 	}

@@ -1,2 +1,0 @@
-<?xml version='1.0' encoding='UTF-8'?>
-<DEFECTS><DEFECT><SFA><FILEPATH>e:\projects\vs 2013\eo\aesys\</FILEPATH><FILENAME>eodblinetypetable.cpp</FILENAME><LINE>51</LINE><COLUMN>38</COLUMN></SFA><DEFECTCODE>6031</DEFECTCODE><DESCRIPTION>Return value ignored: '_wtoi'.</DESCRIPTION><FUNCTION>EoDbLinetypeTable::LoadLinetypesFromTxtFile</FUNCTION><DECORATED>?LoadLinetypesFromTxtFile@EoDbLinetypeTable@@QAEXV?$OdSmartPtr@VOdDbDatabase@@@@ABV?$CStringT@_WV?$StrTraitMFC_DLL@_WV?$ChTraitsCRT@_W@ATL@@@@@ATL@@@Z</DECORATED><FUNCLINE>38</FUNCLINE><PATH/></DEFECT></DEFECTS>
