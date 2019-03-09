@@ -116,7 +116,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 			aldusMFHeader = (ALDUSMFHEADER*) m_odImage.wmf.begin();
 			seekpos = ALDUSMFHEADERSIZE;
 		}
-		BYTE* p = (BYTE*) m_odImage.wmf.begin();
+		EoByte* p = (EoByte*)m_odImage.wmf.begin();
 		mfHeader = (METAHEADER*) (p + seekpos);
 
 		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) {
@@ -125,7 +125,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
 		HENHMETAFILE m_emf;
-		m_emf = ::SetWinMetaFileBits(dwSize, (const BYTE*) mfHeader, NULL, NULL);
+		m_emf = ::SetWinMetaFileBits(dwSize, (const EoByte*)mfHeader, NULL, NULL);
 
 		CSize size(0, 0);
 		if (aldusMFHeader) {
