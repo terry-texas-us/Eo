@@ -3797,7 +3797,7 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 
 		CRect rc;
 
-		WCHAR szBuf[32];
+		wchar_t szBuf[32];
 
 		if ((item & WorkCount) == WorkCount) {
 			rc.SetRect(0, ClientRect.top, 8 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);

@@ -54,9 +54,9 @@ void EoDlgTrapFilter::OnOK() {
 		FilterByColor(ColorIndex);
 	}
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE)) {
-		WCHAR Name[32];
+		wchar_t Name[32];
 
-		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, (LPWSTR) Name, sizeof(Name) / sizeof(WCHAR))) {
+		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, (LPWSTR)Name, sizeof(Name) / sizeof(wchar_t))) {
 			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 			if (!Linetypes->getAt(Name).isNull()) {
 				EoInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);

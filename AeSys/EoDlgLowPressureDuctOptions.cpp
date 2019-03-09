@@ -39,7 +39,7 @@ BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 // EoDlgLowPressureDuctOptions message handlers
 
 void EoDlgLowPressureDuctOptions::OnBnClickedOk() {
-	WCHAR szBuf[32];
+	wchar_t szBuf[32];
 
 	GetDlgItemTextW(IDC_WIDTH, szBuf, 32);
 	m_Width = theApp.ParseLength(theApp.GetUnits(), szBuf);

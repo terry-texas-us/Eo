@@ -303,7 +303,7 @@ static int iCheck[] = {
 	// Notes:	If the character is found the scan pointer is updated
 	//			to point to the character following the one found.
 	// Returns: Pointer to the character if found,	0 if not.
-	LPTSTR ScanForChar(WCHAR c, LPTSTR *ppStr);
+	LPTSTR ScanForChar(wchar_t c, LPTSTR *ppStr);
 	/// <summary>Scan for a string.</summary>
 	// Notes:	The scan pointer is updated to point past the string.  The
 	//			arg buffer pointer is updated to point to the next free character.

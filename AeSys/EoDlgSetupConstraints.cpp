@@ -81,7 +81,7 @@ BOOL EoDlgSetupConstraints::OnInitDialog() {
 void EoDlgSetupConstraints::OnOK() {
 	AeSysApp::Units CurrentUnits = theApp.GetUnits();
 
-	WCHAR szBuf[32];
+	wchar_t szBuf[32];
 
 	double x, y, z;
 

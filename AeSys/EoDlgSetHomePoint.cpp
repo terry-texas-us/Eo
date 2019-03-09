@@ -51,7 +51,7 @@ BOOL EoDlgSetHomePoint::OnInitDialog() {
 	return TRUE;
 }
 void EoDlgSetHomePoint::OnOK() {
-	WCHAR szBuf[32];
+	wchar_t szBuf[32];
 
 	AeSysApp::Units CurrentUnits = theApp.GetUnits();
 

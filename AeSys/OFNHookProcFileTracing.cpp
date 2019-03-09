@@ -21,7 +21,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 			WndProcPreviewClear(::GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 		}
 		else if (lpofn->hdr.code == CDN_SELCHANGE) {
-			WCHAR FilePath[MAX_PATH];
+			wchar_t FilePath[MAX_PATH];
 			::ZeroMemory(FilePath, MAX_PATH);
 			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM) (LPWSTR) FilePath);
 
@@ -49,7 +49,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 		return (TRUE);
 	}
 	case WM_COMMAND: {
-		WCHAR FilePath[MAX_PATH];
+		wchar_t FilePath[MAX_PATH];
 		::ZeroMemory(FilePath, MAX_PATH);
 		::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM) (LPWSTR) FilePath);
 		CFileStatus	FileStatus;

@@ -2,7 +2,7 @@
 
 class EoDbLinetypeTable {
 private:
-	static const WCHAR* LegacyLinetypes[];
+	static const wchar_t* LegacyLinetypes[];
 	static const EoUInt16 NumberOfLegacyLinetypes = 42;
 
 public:

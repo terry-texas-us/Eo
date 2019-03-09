@@ -1270,7 +1270,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	of.hwndOwner = 0;
 	of.hInstance = theApp.GetInstance();
 	of.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
-	of.lpstrFile = new WCHAR[MAX_PATH];
+	of.lpstrFile = new wchar_t[MAX_PATH];
 	wcscpy_s(of.lpstrFile, MAX_PATH, name);
 	of.nMaxFile = MAX_PATH;
 	of.lpstrTitle = L"Melt As";
@@ -1457,7 +1457,7 @@ EoDbLayer* AeSysDoc::AnyLayerRemove(EoDbGroup* group) {
 void AeSysDoc::TracingFuse(OdString& nameAndLocation) {
 	EoDbLayer* Layer = GetLayerAt(nameAndLocation);
 	if (Layer != 0) {
-		LPWSTR Title = new WCHAR[MAX_PATH];
+		LPWSTR Title = new wchar_t[MAX_PATH];
 		GetFileTitle(nameAndLocation, Title, MAX_PATH);
 		LPWSTR NextToken = NULL;
 		wcstok_s(Title, L".", &NextToken);
@@ -1892,7 +1892,7 @@ void AeSysDoc::OnEditImageToClipboard() {
 }
 void AeSysDoc::OnEditTrace() {
 	if (::OpenClipboard(NULL)) {
-		WCHAR sBuf[16];
+		wchar_t sBuf[16];
 
 		UINT ClipboardFormat;
 		UINT Format = 0;
@@ -1982,7 +1982,7 @@ void AeSysDoc::OnEditTrapPaste() {
 		else if (IsClipboardFormatAvailable(CF_TEXT)) {
 			HGLOBAL ClipboardDataHandle = GetClipboardData(CF_TEXT);
 
-			LPWSTR lpText = new WCHAR[GlobalSize(ClipboardDataHandle)];
+			LPWSTR lpText = new wchar_t[GlobalSize(ClipboardDataHandle)];
 
 			LPCWSTR ClipboardData = (LPCWSTR)GlobalLock(ClipboardDataHandle);
 			lstrcpyW(lpText, ClipboardData);
@@ -2060,7 +2060,7 @@ void AeSysDoc::OnTrapCommandsBlock() {
 
 	EoDbBlock* Block;
 	EoUInt16 w = BlockTableSize();
-	WCHAR szBlkNam[16];
+	wchar_t szBlkNam[16];
 
 	do {
 		swprintf_s(szBlkNam, 16, L"_%.3i", ++w);
@@ -2308,7 +2308,7 @@ void AeSysDoc::OnFileTracing() {
 	of.hInstance = theApp.GetInstance();
 	of.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
 	of.nFilterIndex = FilterIndex;
-	of.lpstrFile = new WCHAR[MAX_PATH];
+	of.lpstrFile = new wchar_t[MAX_PATH];
 	of.lpstrFile[0] = 0;
 	of.nMaxFile = MAX_PATH;
 	of.lpstrTitle = L"Load Tracing";
@@ -2353,7 +2353,7 @@ void AeSysDoc::OnPensLoadColors() {
 	of.hwndOwner = 0;
 	of.hInstance = theApp.GetInstance();
 	of.lpstrFilter = L"Pen Color Files\0*.txt\0\0";
-	of.lpstrFile = new WCHAR[MAX_PATH];
+	of.lpstrFile = new wchar_t[MAX_PATH];
 	of.lpstrFile[0] = 0;
 	of.nMaxFile = MAX_PATH;
 	of.lpstrTitle = L"Load Pen Colors";
@@ -2442,7 +2442,7 @@ void AeSysDoc::OnPrimExtractNum() {
 		if (iTyp != lex::TOK_LENGTH_OPERAND) {
 			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &lDef, dVal);
 		}
-		WCHAR Message[64];
+		wchar_t Message[64];
 		swprintf_s(Message, 64, L"%10.4f ", dVal[0]);
 		wcscat_s(Message, 64, L"was extracted from drawing");
 		theApp.AddStringToMessageList(Message);
@@ -2524,13 +2524,13 @@ void AeSysDoc::OnHelpKey() {
 		break;
 
 	case ID_MODE_EDIT: {
-		WCHAR szKey[] = L"EDIT";
+		wchar_t szKey[] = L"EDIT";
 		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)szKey);
 		break;
 	}
 	case ID_MODE_TRAP:
 	case ID_MODE_TRAPR: {
-		WCHAR szKey[] = L"TRAP";
+		wchar_t szKey[] = L"TRAP";
 		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)szKey);
 		break;
 
@@ -2732,7 +2732,7 @@ void AeSysDoc::OnInsertTracing() {
 	of.hInstance = theApp.GetInstance();
 	of.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
 	of.nFilterIndex = FilterIndex;
-	of.lpstrFile = new WCHAR[MAX_PATH];
+	of.lpstrFile = new wchar_t[MAX_PATH];
 	of.lpstrFile[0] = 0;
 	of.nMaxFile = MAX_PATH;
 	of.lpstrTitle = L"Insert Tracing";
@@ -2791,9 +2791,9 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 	OdDbObjectIdArray objs = document->selectionSet()->objectIdArray();
 
 	OdDbDatabasePtr pDb = document->m_DatabasePtr->wblock(objs, OdGePoint3d::kOrigin);
-	WCHAR tempdir[MAX_PATH];
+	wchar_t tempdir[MAX_PATH];
 	::GetTempPath(MAX_PATH, tempdir);
-	WCHAR tempname[MAX_PATH];
+	wchar_t tempname[MAX_PATH];
 	::GetTempFileName(tempdir, L"", 0, tempname);
 	m_tmpPath = tempname;
 	m_tmpPath.makeLower();

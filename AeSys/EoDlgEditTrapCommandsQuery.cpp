@@ -44,7 +44,7 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT* result) {
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 
-	WCHAR szText[256];
+	wchar_t szText[256];
 	szText[0] = '\0';
 
 	TV_ITEM item;
@@ -52,7 +52,7 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT
 	item.hItem = pNMTreeView->itemNew.hItem;
 	item.mask = TVIF_TEXT | TVIF_PARAM;
 	item.pszText = szText;
-	item.cchTextMax = sizeof(szText) / sizeof(WCHAR);
+	item.cchTextMax = sizeof(szText) / sizeof(wchar_t);
 
 	m_GroupTreeViewControl.GetItem(&item);
 	m_ExtraListViewControl.DeleteAllItems();
@@ -70,7 +70,7 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT
 	*result = 0;
 }
 void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
-	WCHAR szBuf[64];
+	wchar_t szBuf[64];
 
 	int iItem = 0;
 
@@ -85,7 +85,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 
 		nOff += nDel + 1;
 		nDel = Extra.Mid(nOff).Find('\t');
-		size_t nLen = min(nDel, sizeof(szBuf) / sizeof(WCHAR) - 1);
+		size_t nLen = min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1);
 		wcscpy_s(szBuf, 64, Extra.Mid(nOff, nLen));
 
 		m_ExtraListViewControl.SetItemText(iItem++, 1, szBuf);
@@ -95,7 +95,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 	}
 }
 void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive* primitive) {
-	WCHAR szBuf[64];
+	wchar_t szBuf[64];
 	int iItem = 0;
 
 	CString strBuf;

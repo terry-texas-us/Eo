@@ -40,7 +40,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 
 	EoGsViewTransform* ModelView = (EoGsViewTransform*) m_ModelView;
 
-	WCHAR szBuf[32];
+	wchar_t szBuf[32];
 	OdGePoint3d Position;
 	GetDlgItemTextW(IDC_POSITION_X, (LPWSTR) szBuf, 32);
 	Position.x = theApp.ParseLength(theApp.GetUnits(), szBuf);

@@ -331,7 +331,7 @@ void EoDbDimension::SetDefaultNote() {
 
 	m_ReferenceSystem.SetOrigin(m_Line.midPoint());
 	double dAng = 0.;
-	WCHAR cText0 = m_strText[0];
+	wchar_t cText0 = m_strText[0];
 	if (cText0 != 'R' && cText0 != 'D') {
 		dAng = m_Line.AngleFromXAxis_xy();
 		double dDis = .075;

@@ -434,8 +434,8 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 }
 OdString AeSysApp::getFontMapFileName() const {
 	OdString subkey;
-	WCHAR fontMapFile[4 * MAX_PATH];
-	WCHAR expandedPath[4 * MAX_PATH];
+	wchar_t fontMapFile[4 * MAX_PATH];
+	wchar_t expandedPath[4 * MAX_PATH];
 
 	//subkey = GetRegistryAcadProfilesKey();
 	if (!subkey.isEmpty()) {
@@ -1003,7 +1003,7 @@ CString AeSysApp::FormatLength(double length, Units units, int width, int precis
 	return CString(LengthAsString).TrimLeft();
 }
 void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const {
-	WCHAR szBuf[16];
+	wchar_t szBuf[16];
 
 	double ScaledLength = length * AeSysView::GetActiveView()->WorldScale();
 
@@ -1436,12 +1436,12 @@ void AeSysApp::LoadColorPalletFromFile(const CString& strFileName) {
 	CStdioFile fl;
 
 	if (fl.Open(strFileName, CFile::modeRead | CFile::typeText)) {
-		WCHAR pBuf[128];
+		wchar_t pBuf[128];
 		LPWSTR	pId, pRed, pGreen, pBlue;
 
-		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(WCHAR) - 1) != 0 && _tcsnicmp(pBuf, L"<Colors>", 8) != 0);
+		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0 && _tcsnicmp(pBuf, L"<Colors>", 8) != 0);
 
-		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(WCHAR) - 1) != 0 && *pBuf != '<') {
+		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0 && *pBuf != '<') {
 			LPWSTR NextToken = NULL;
 			pId = wcstok_s(pBuf, L"=", &NextToken);
 			pRed = wcstok_s(0, L",", &NextToken);
@@ -1471,8 +1471,8 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 	int NumberOfPatternLines = 0;
 	int TableOffset = 0;
 
-	WCHAR	szLn[128];
-	while (fl.ReadString(szLn, sizeof(szLn) / sizeof(WCHAR) - 1) != 0) {
+	wchar_t	szLn[128];
+	while (fl.ReadString(szLn, sizeof(szLn) / sizeof(wchar_t) - 1) != 0) {
 		if (szLn[0] == '!') { // New Hatch index
 			if (iHatId != 0) {
 				EoDbHatch::sm_HatchPatternTable[EoDbHatch::sm_HatchPatternOffsets[iHatId]] = double(NumberOfPatternLines);
@@ -1480,7 +1480,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 			EoDbHatch::sm_HatchPatternOffsets[++iHatId] = TableOffset++;
 			NumberOfPatternLines = 0;
 
-			WCHAR Delimiters[] = L"*-\n";
+			wchar_t Delimiters[] = L"*-\n";
 			LPWSTR NextToken = NULL;
 			LPWSTR Token = wcstok_s(&szLn[2], Delimiters, &NextToken);
 			CString PatternName(Token);
@@ -1493,7 +1493,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 			int iNmbStrsId = TableOffset;
 			TableOffset += 1;
 			int iNmbEnts = 0;
-			WCHAR Delimiters[] = L",\0";
+			wchar_t Delimiters[] = L",\0";
 			LPWSTR NextToken = NULL;
 			LPWSTR Token = wcstok_s(szLn, Delimiters, &NextToken);
 			while (Token != 0) {
@@ -1639,7 +1639,7 @@ void AeSysApp::OnFilePlotstylemanager() {
 	of.hwndOwner = 0;
 	of.hInstance = theApp.GetInstance();
 	of.lpstrFilter = L"Plot Style Files\0*.ctb;*.stb\0All Files\0*.*\0\0";
-	of.lpstrFile = new WCHAR[MAX_PATH];
+	of.lpstrFile = new wchar_t[MAX_PATH];
 	*of.lpstrFile = 0;
 	of.nMaxFile = MAX_PATH;
 	of.lpstrTitle = L"Select Plot Style File";
@@ -1946,9 +1946,9 @@ bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wch
 }
 OdString GetRegistryAcadProfilesKey() {
 	OdString subkey = L"SOFTWARE\\Autodesk\\AutoCAD";
-	WCHAR version[32];
-	WCHAR subVersion[32];
-	WCHAR profile[4 * MAX_PATH];
+	wchar_t version[32];
+	wchar_t subVersion[32];
+	wchar_t profile[4 * MAX_PATH];
 	// char searchPaths[4 * MAX_PATH];
 
 	if (GetRegistryString(HKEY_CURRENT_USER, (LPCWSTR)subkey, L"CurVer", version, 32) == 0) {

@@ -27,7 +27,7 @@ BOOL EoDlgSetLength::OnInitDialog() {
 	return TRUE;
 }
 void EoDlgSetLength::OnOK() {
-	WCHAR szBuf[32];
+	wchar_t szBuf[32];
 
 	GetDlgItemTextW(IDC_DISTANCE, (LPWSTR) szBuf, 32);
 	m_Length = theApp.ParseLength(theApp.GetUnits(), szBuf);

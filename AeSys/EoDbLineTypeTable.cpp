@@ -4,7 +4,7 @@
 
 #include "EoDbLinetypeTable.h"
 
-const WCHAR* EoDbLinetypeTable::LegacyLinetypes[] = {
+const wchar_t* EoDbLinetypeTable::LegacyLinetypes[] = {
 	L"0", L"Continuous",
 	L"2", L"3", L"4", L"5", L"6", L"7", L"8", L"9",
 	L"10", L"11", L"12", L"13", L"14", L"15", L"16", L"17",

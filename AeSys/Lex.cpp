@@ -98,7 +98,7 @@ void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) {
 		acPic[++*aiLen] = '\0';
 	}
 	else {
-		WCHAR cVal[32];
+		wchar_t cVal[32];
 		long* lVal = (long*) cVal;
 		double* dVal = (double*) cVal;
 
@@ -165,7 +165,7 @@ void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) {
 	long*	piVal = (long*) apVal;
 
 	if (aiTyp == TOK_STRING) {
-		WCHAR szVal[256];
+		wchar_t szVal[256];
 
 		wcscpy_s(szVal, 256, (LPTSTR) apVal);
 		if (aiTypReq == TOK_INTEGER) {
@@ -198,7 +198,7 @@ void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) {
 void lex::ConvertStringToVal(int aiTyp, long alDef, LPTSTR aszVal, long* alDefReq, void* aVal) {
 	if (LOWORD(alDef) <= 0) throw L"Empty string";
 
-	WCHAR szTok[64];
+	wchar_t szTok[64];
 	int iNxt = 0;
 
 	int iTyp = Scan(szTok, aszVal, iNxt);
@@ -226,7 +226,7 @@ void lex::ConvertStringToVal(int aiTyp, long alDef, LPTSTR aszVal, long* alDefRe
 	}
 }
 void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
-	WCHAR szTok[256];
+	wchar_t szTok[256];
 
 	int iDim;
 	int iTyp;
@@ -255,7 +255,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 	double* dOp1 = (double*) apOp;
 	long* lOp1 = (long*) apOp;
 
-	WCHAR cOp2[256];
+	wchar_t cOp2[256];
 	double* dOp2 = (double*) cOp2;
 	long* lOp2 = (long*) cOp2;
 
@@ -429,7 +429,7 @@ void lex::Parse(LPCWSTR szLine) {
 	iToks = 0;
 	iValsCount = 0;
 
-	WCHAR szTok[256];
+	wchar_t szTok[256];
 
 	int iBeg = 0;
 	int iLnLen = (int) wcslen(szLine);
@@ -540,7 +540,7 @@ int lex::TokType(int aiTokId) {
 }
 void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, double* adOp) {
 	CD		cd;
-	WCHAR szTok[32];
+	wchar_t szTok[32];
 	int 	i;
 
 	int iDim = LOWORD(*alDef);
@@ -638,7 +638,7 @@ void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, double* adOp) {
 }
 void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, long* alOp) {
 	CD		cd;
-	WCHAR szTok[32];
+	wchar_t szTok[32];
 
 	int iDim = LOWORD(*alDef);
 	int iLen = HIWORD(*alDef);
@@ -677,7 +677,7 @@ void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, long* alOp) {
 		throw L"Unknown operation";
 	}
 }
-LPTSTR lex::ScanForChar(WCHAR c, LPTSTR *ppStr) {
+LPTSTR lex::ScanForChar(wchar_t c, LPTSTR *ppStr) {
 	LPTSTR p = lex::SkipWhiteSpace(*ppStr);
 
 	if (*p == c) {

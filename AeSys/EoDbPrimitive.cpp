@@ -50,7 +50,7 @@ CString EoDbPrimitive::FormatColorIndex() const {
 		str = L"ByBlock";
 	}
 	else {
-		WCHAR szBuf[16];
+		wchar_t szBuf[16];
 		_itow_s(m_ColorIndex, szBuf, 16, 10);
 		str = szBuf;
 	}
@@ -65,7 +65,7 @@ CString EoDbPrimitive::FormatLinetypeIndex() const {
 		str = L"ByBlock";
 	}
 	else {
-		WCHAR szBuf[16];
+		wchar_t szBuf[16];
 		_itow_s(m_LinetypeIndex, szBuf, 16, 10);
 		str = szBuf;
 	}

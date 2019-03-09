@@ -631,7 +631,7 @@ int LengthSansFormattingCharacters(const CString& text) {
 	int CurrentPosition = 0;
 
 	while (CurrentPosition < text.GetLength()) {
-		WCHAR c = text[CurrentPosition++];
+		wchar_t c = text[CurrentPosition++];
 		if (c == '\\') {
 			c = text[CurrentPosition];
 			if (c == 'A') {
@@ -691,7 +691,7 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 	int StartPosition = 0;
 	int CurrentPosition = StartPosition;
 	while (CurrentPosition < text.GetLength()) {
-		WCHAR c = text[CurrentPosition++];
+		wchar_t c = text[CurrentPosition++];
 
 		if (c == '\r' && text[CurrentPosition] == '\n') {
 			DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
@@ -872,7 +872,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 	int CurrentPosition = StartPosition;
 
 	while (CurrentPosition < text.GetLength()) {
-		WCHAR c = text[CurrentPosition++];
+		wchar_t c = text[CurrentPosition++];
 		if (c != '\\') {
 			NumberOfCharactersToDisplay++;
 		}
@@ -906,7 +906,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 				int EndSemicolon = text.Find(';', CurrentPosition);
 				if (EndSemicolon != - 1) {
 					if (CurrentPosition + 1 < EndSemicolon) {
-						WCHAR Parameter = text[CurrentPosition + 1];
+						wchar_t Parameter = text[CurrentPosition + 1];
 						if (Parameter >= '0' && Parameter <= '2') {
 							if (NumberOfCharactersToDisplay > 0) { // display text segment preceding the formatting
 								DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
