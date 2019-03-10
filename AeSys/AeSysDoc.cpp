@@ -443,43 +443,13 @@ void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext* commandContext) {
 
 	if (!hFailed.isNull()) { // Clear the value in context
 		commandContext->setArbitraryData(L"Handle", NULL);
-
-		/* <tas="No implementation for the Form view of the database">
-		OdDbCommandContextPtr CommandContext(commandContext);
-		OdDbDatabaseDocPtr Database = CommandContext->database();
-		AeSysDoc* Document = Database->document();
-		POSITION pos = Document->GetFirstViewPosition();
-		while (pos != NULL) {
-		CView* view = pDoc->GetNextView(pos);
-		LPCSTR className = view->GetRuntimeClass()->m_lpszClassName;
-		if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"CDwgView") == 0) {
-		CDwgView* pView = (CDwgView*) view;
-		pView->Find(pDb->getOdDbObjectId(hFailed));
-		}
-		}
-		</tas> */
 	}
 	OdDbDatabasePtr pNewDb = commandContext->arbitraryData(L"OdDbDatabasePtr");
 	if (pNewDb.isNull()) {
 		commandContext->userIO()->putString(L"No database passed");
 		return;
 	}
-	// Open document with round-tripped database and set selection to failed object in round-tripped database
-
-	/* <tas="No implementation for the Form view of the database">
-	AeSysDoc* pNewDoc = (AeSysDoc*) theApp.OpenDocumentFile(L"Round-tripped");
-	POSITION pos = pNewDoc->GetFirstViewPosition();
-	while (pos != NULL) {
-	CView* view = pNewDoc->GetNextView(pos);
-	LPCSTR className = view->GetRuntimeClass()->m_lpszClassName;
-	if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"CDwgView") == 0) {
-	CDwgView* pView = (CDwgView*) view;
-	pView->Find(pNewDoc->m_DatabasePtr->getOdDbObjectId(hFailed));
-	}
-	}
-	</tas> */
 }
-
 
 #pragma warning(push)
 #pragma warning(disable:4510)
@@ -498,7 +468,6 @@ void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 
 	DocTemplate->SetViewToCreate(RUNTIME_CLASS(AeSysView));
 	CFrameWnd* NewFrame = DocTemplate->CreateNewFrame(this, NULL);
-	// <tas="DocTemplate->SetViewToCreate(RUNTIME_CLASS(CDwgView));"</tas>
 
 	DocTemplate->InitialUpdateFrame(NewFrame, this);
 
