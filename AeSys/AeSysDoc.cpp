@@ -508,7 +508,9 @@ void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 #pragma warning(pop)
 
 void AeSysDoc::OnCloseVectorizer(AeSysView* view) {
-	ODA_ASSERT(view == m_pViewer);
+	if (view != m_pViewer) {
+		ATLTRACE2(atlTraceGeneral, 0, L"Vectorizer does not match expected viewer\n");
+	}
 	m_pViewer = 0;
 }
 void AeSysDoc::setVectorizer(AeSysView* view) {

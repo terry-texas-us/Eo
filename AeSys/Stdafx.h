@@ -40,6 +40,8 @@
 #include <math.h>
 #include <memory>
 
+#include "Resource.h"
+
 // OD_OLE_SUPPORT
 // Vectorization support for OLE objects on Windows can be obtained by including this module: OdOleItemHandler
 // Source for this module is located in [kernel root]/Extensions/win/OleItemHandler.
@@ -47,8 +49,6 @@
 // For the DLL version, place the OdOleItemHandler.tx module in the same directory as the DLLs (no explicit registration required).
 // Uncomment #define for support 
 // #define OD_OLE_SUPPORT 1
-
-#include "Resource.h"
 
 #include "OdaCommon.h"
 #include "Ge/GeTol.h"
