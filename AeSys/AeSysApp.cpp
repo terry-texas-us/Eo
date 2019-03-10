@@ -55,8 +55,10 @@ CString AeSysApp::CustomLButtonUpCharacters(L"" /* L"{13}" for VK_RETURN */);
 CString AeSysApp::CustomRButtonDownCharacters(L"");
 CString AeSysApp::CustomRButtonUpCharacters(L"" /* L"{27}" for VK_ESCAPE */);
 
+#ifdef OD_OLE_SUPPORT
 void rxInit_COleClientItem_handler();
 void rxUninit_COleClientItem_handler();
+#endif // OD_OLE_SUPPORT
 
 OdStaticRxObject<Cmd_VIEW> g_Cmd_VIEW;
 OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
@@ -1255,6 +1257,7 @@ BOOL AeSysApp::InitializeTeigha() {
 		::odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // Additional commands support (ERASE,EXPLODE,PURGE, etc.)
 		::odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName);
 		//</tas>
+
 #ifdef ODAMFC_EXPORT
 		// <tas="Function and location unknown"> ::odrxDynamicLinker()->loadModule(L"TD_MgdMfc.dll");"</tas>
 #endif // ODAMFC_EXPORT
@@ -1264,7 +1267,9 @@ BOOL AeSysApp::InitializeTeigha() {
 
 		OdDbDatabaseDoc::rxInit();
 
+#ifdef OD_OLE_SUPPORT
 		::rxInit_COleClientItem_handler();
+#endif // OD_OLE_SUPPORT
 
 		OdEdCommandStackPtr CommandStack = odedRegCmds();
 		CommandStack->addCommand(&g_Cmd_VIEW);
@@ -2239,7 +2244,9 @@ void AeSysApp::UninitializeTeigha() {
 
 		OdDbDatabaseDoc::rxUninit();
 
+#ifdef OD_OLE_SUPPORT
 		::rxUninit_COleClientItem_handler();
+#endif // OD_OLE_SUPPORT
 
 		removePaperDrawingCustomization();
 		removeMaterialTextureLoadingMonitor();

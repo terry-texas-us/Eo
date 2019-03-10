@@ -13,6 +13,7 @@
 
 #include "DbUserIO.h"
 
+#ifdef OD_OLE_SUPPORT
 class OleDwgItem : public COleClientItem, public OdOleItemHandler {
 	ODRX_HEAP_OPERATORS();
 
@@ -440,8 +441,12 @@ void rxUninit_COleClientItem_handler() {
 	}
 	OleDwgItem::rxUninit();
 }
+
 void AeSysDoc::OnInsertOleobject() {
 	BeginWaitCursor();
 	ExecuteCommand(L"insertobj");
 	EndWaitCursor();
 }
+#endif // OD_OLE_SUPPORT
+
+

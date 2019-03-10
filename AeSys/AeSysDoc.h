@@ -446,7 +446,9 @@ public: // Generated message map functions
 	afx_msg void OnFileQuery();
 	afx_msg void OnFileTracing();
 	afx_msg void OnHelpKey();
+#ifdef OD_OLE_SUPPORT
 	afx_msg void OnInsertOleobject();
+#endif // OD_OLE_SUPPORT
 	afx_msg void OnInsertTracing();
 	afx_msg void OnLayerActive();
 	afx_msg void OnLayerCurrent();
