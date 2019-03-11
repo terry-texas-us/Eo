@@ -5,7 +5,7 @@
 
 #ifndef _TOOLKIT_IN_DLL_
 #include "StaticAppSelDlg.h"
-#endif
+#endif // _TOOLKIT_IN_DLL_
 
 EoLoadApps::LoadedApps* EoLoadApps::m_LoadedApps = 0;
 
@@ -74,9 +74,9 @@ void EoLoadApps::OnLoadApp() {
 	dlg.m_ofn.lpstrTitle = L"Load application";
 	CString s_path = AeSysApp::getApplicationPath();
 	dlg.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
-#else
+#else // _TOOLKIT_IN_DLL_
 	CStaticAppSelDlg dlg(this);
-#endif //#ifdef _TOOLKIT_IN_DLL_
+#endif // _TOOLKIT_IN_DLL_
 	if ( dlg.DoModal() == IDOK) {
 		try {
 			::odrxDynamicLinker()->loadModule(OdString((LPCWSTR) dlg.GetPathName()), false);

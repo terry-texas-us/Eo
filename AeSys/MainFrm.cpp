@@ -344,12 +344,8 @@ BOOL CMainFrame::LoadFrame(UINT resourceId, DWORD defaultStyle, CWnd* parentWind
 		Tool2->SetCommand(L"mspaint.exe");
 
 		CUserTool* Tool3 = UserToolsManager->CreateNewTool();
-		Tool3->m_strLabel = L"&Windows Explorer";
-		Tool3->SetCommand(L"explorer.exe");
-
-		CUserTool* Tool4 = UserToolsManager->CreateNewTool();
-		Tool4->m_strLabel = L"Fanning, Fanning & Associates On-&Line";
-		Tool4->SetCommand(L"http://www.fanningfanning.com");
+		Tool3->m_strLabel = L"Fanning, Fanning & Associates On-&Line";
+		Tool3->SetCommand(L"http://www.fanningfanning.com");
 	}
 
 	// Enable customization button for all user toolbars

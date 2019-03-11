@@ -61,7 +61,6 @@
       </AssemblyDebug>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers />
-      <ShowProgress>LinkVerbose</ShowProgress>
     </Link>
     <Bscmake />
   </ItemDefinitionGroup>

@@ -1252,15 +1252,9 @@ BOOL AeSysApp::InitializeTeigha() {
 		EoApDocument::rxInit();
 #endif // ODAMFC_EXPORT
 
-		// <tas="Load all default dynamic modules>
-		::odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // Sample grip/snap points implementation
-		::odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // Additional commands support (ERASE,EXPLODE,PURGE, etc.)
-		::odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName);
-		//</tas>
-
-#ifdef ODAMFC_EXPORT
-		// <tas="Function and location unknown"> ::odrxDynamicLinker()->loadModule(L"TD_MgdMfc.dll");"</tas>
-#endif // ODAMFC_EXPORT
+		::odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
+		::odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
+		::odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName); // PlotSettingsValidator module (To include support for plot settings)
 
 		addPaperDrawingCustomization();
 		addMaterialTextureLoadingMonitor();
@@ -1289,16 +1283,18 @@ BOOL AeSysApp::InitializeTeigha() {
 	return TRUE;
 }
 BOOL AeSysApp::InitInstance() {
-	if (!AfxOleInit()) {
+	if (!AfxOleInit()) { // Failed to initialize OLE support for the application.
+	
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
 	}
-	AfxEnableControlContainer();
+	AfxEnableControlContainer(); // Enable support for containment of OLE controls.
 
 	// Standard initialization
 
+	// Application settings to be stored in the registry instead of INI files.
 	SetRegistryKey(L"Engineers Office");
-	LoadStdProfileSettings(8U);  // Load standard INI file options (including MRU)
+	LoadStdProfileSettings(8U);  // Load the list of most recently used (MRU) files and last preview state.
 
 	SetRegistryBase(L"Settings");
 
@@ -1329,7 +1325,7 @@ BOOL AeSysApp::InitInstance() {
 
 	// Initialize all Managers for usage. They are automatically constructed if not yet present
 	InitContextMenuManager();
-	InitKeyboardManager();
+	InitKeyboardManager(); // Manages shortcut key tables for the main frame window and child frame windows.
 	InitTooltipManager();
 
 	CMFCToolTipInfo params;
@@ -1342,8 +1338,8 @@ BOOL AeSysApp::InitInstance() {
 	// Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
 	InitCtrls.dwSize = sizeof(InitCtrls);
-	// Indicates common controls to load from the dll;
-	// animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
+	
+	// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
@@ -2304,15 +2300,15 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 	dlg.m_ofn.lpstrTitle = L"Select Graphic System DLL";
 	CString s_path = getApplicationPath();
 	dlg.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
-#else
+#else // _TOOLKIT_IN_DLL_
 	CStaticAppSelDlg dlg(::AfxGetMainWnd());
-#endif //#ifdef _TOOLKIT_IN_DLL_
+#endif // _TOOLKIT_IN_DLL_
 
 	if (dlg.DoModal() == IDOK) {
 		m_sVectorizerPath = (LPCWSTR)dlg.GetFileName();
 #ifdef _TOOLKIT_IN_DLL_
 		m_sVectorizerPath.replace(TD_DLL_VERSION_SUFFIX_STR, L"");
-#endif
+#endif // _TOOLKIT_IN_DLL_
 		CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
 		CMenu* VectorizePopupMenu = TopMenu->GetSubMenu(3);
 

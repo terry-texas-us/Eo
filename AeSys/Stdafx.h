@@ -57,7 +57,7 @@
 #include "Ge/GeLineSeg3d.h"
 #include "Ge/GeKnotVector.h"
 #include "Ge/GeNurbCurve3d.h"
-#include "Ge/GePlane.h"
+#include "Ge/GePlane.h"	
 #include "Ge/GeRay3d.h"
 #include "DbBlockIterator.h"
 #include "DbBlockReference.h"
