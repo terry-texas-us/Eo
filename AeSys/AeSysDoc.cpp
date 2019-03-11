@@ -864,6 +864,7 @@ BOOL AeSysDoc::OnNewDocument() {
 		OdDbDatabaseDoc::setDocToAssign(this);
 		try {
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
+			// the newly created *database* will be populated with the default set of objects(all tables, ModelSpace and PaperSpace blocks etc.)
 		}
 		catch (const OdError& Error) {
 			m_DatabasePtr = 0;
@@ -998,7 +999,11 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 		}
 		break;
 	}
-	case EoDb::kDxf:
+	case EoDb::kDxf: {
+		m_DatabasePtr->writeFile(pathName, OdDb::kDxf, OdDb::kDHL_CURRENT);
+		ReturnStatus = TRUE;
+		break;
+	}
 	case EoDb::kDwg: {
 		m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_CURRENT);
 		ReturnStatus = TRUE;
