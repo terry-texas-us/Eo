@@ -2,8 +2,6 @@
 #include "AeSysApp.h"
 #include "AeSysView.h"
 
-#include "DbPoint.h"
-
 EoDbPoint::EoDbPoint()
 	: m_Position(OdGePoint3d::kOrigin), m_NumberOfDatums(0), m_Data(0) {
 	m_ColorIndex = 1;
@@ -314,19 +312,44 @@ EoDbPoint* EoDbPoint::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) 
 	PointPrimitive->SetData(3, Data);
 	return (PointPrimitive);
 }
+
+OdDbPointPtr EoDbPoint::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord) {
+	OdDbPointPtr Point = OdDbPoint::createObject();
+	Point->setDatabaseDefaults(database);
+
+	blockTableRecord->appendOdDbEntity(Point);
+	Point->setColorIndex(pstate.ColorIndex());
+
+	// The point object does not store the appearance and size of a point.
+	// The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
+
+	return Point;
+}
+
+EoDbPoint* EoDbPoint::Create(OdDbPointPtr point) {
+	EoDbPoint* Point = new EoDbPoint();
+	Point->SetEntityObjectId(point->objectId());
+	Point->SetColorIndex(point->colorIndex());
+	Point->SetPosition(point->position());
+
+	Point->SetPointDisplayMode(pstate.PointDisplayMode());
+
+	return Point;
+}
+
 EoDbPoint* EoDbPoint::Create(OdDbDatabasePtr database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdDbPointPtr PointEntity = OdDbPoint::createObject();
 	PointEntity->setDatabaseDefaults(database);
 	BlockTableRecord->appendOdDbEntity(PointEntity);
-	
+
 	EoDbPoint* PointPrimitive = new EoDbPoint();
 	PointPrimitive->SetEntityObjectId(PointEntity->objectId());
-	
+
 	PointPrimitive->SetColorIndex(pstate.ColorIndex());
 	PointPrimitive->SetPointDisplayMode(pstate.PointDisplayMode());
-	
+
 	return PointPrimitive;
 }
 EoDbPoint* EoDbPoint::Create(const EoDbPoint& other, OdDbDatabasePtr database) {

@@ -28,7 +28,6 @@
 #include "DbMline.h"
 #include "DbOle2Frame.h"
 #include "DbOrdinateDimension.h"
-#include "DbPoint.h"
 #include "DbPolyFaceMesh.h"
 #include "DbPolyFaceMeshVertex.h"
 #include "DbPolygonMesh.h"

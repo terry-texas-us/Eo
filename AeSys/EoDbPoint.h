@@ -55,4 +55,6 @@ public: // Methods - static
 	static EoDbPoint* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
 	static EoDbPoint* Create(OdDbDatabasePtr database);
 	static EoDbPoint* Create(const EoDbPoint& other, OdDbDatabasePtr database);
+	static EoDbPoint* EoDbPoint::Create(OdDbPointPtr Point);
+	static OdDbPointPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
 };

@@ -68,6 +68,8 @@
 #include "DbLayerTableRecord.h"
 #include "DbLinetypeTable.h"
 #include "DbLinetypeTableRecord.h"
+#include "DbPoint.h"
+#include "DbLine.h"
 #include "DbSortentsTable.h"
 #include "DbSpatialFilter.h"
 #include "StringArray.h"

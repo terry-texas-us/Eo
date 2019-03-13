@@ -11,20 +11,14 @@ void AeSysView::OnDrawModeOptions() {
 }
 
 void AeSysView::OnDrawModePoint() {
-	//
-	CPoint _CursorPosition;
-	::GetCursorPos(&_CursorPosition);
-	ScreenToClient(&_CursorPosition);
-	OdGePoint3d _Point = GetWorldCoordinates(_CursorPosition);
-	//
-
 	OdGePoint3d CurrentPnt = GetCursorPosition();
 
+	OdDbPointPtr Point = EoDbPoint::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+	Point->setPosition(CurrentPnt);
+
 	EoDbGroup* Group = new EoDbGroup;
-	EoDbPoint* PointPrimitive = EoDbPoint::Create(Database());
-	PointPrimitive->SetColorIndex(pstate.ColorIndex());
-	PointPrimitive->SetPointDisplayMode(pstate.PointDisplayMode());
-	PointPrimitive->SetPosition(CurrentPnt);
+	EoDbPoint* PointPrimitive = EoDbPoint::Create(Point);
+	
 	Group->AddTail(PointPrimitive);
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
