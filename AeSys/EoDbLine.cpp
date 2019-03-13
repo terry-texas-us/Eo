@@ -449,20 +449,8 @@ OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr b
 	blockTableRecord->appendOdDbEntity(Line);
 	Line->setColorIndex(pstate.ColorIndex());
 
-	// <tas="Code block below is duplicated several times - refactor, but where"</tas>
-	OdDbLinetypeTablePtr Linetypes = database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
-	OdDbObjectId Linetype = 0;
+	OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
 
-	if (pstate.LinetypeIndex() == EoDbPrimitive::LINETYPE_BYLAYER) {
-		Linetype = Linetypes->getLinetypeByLayerId();
-	}
-	else if (pstate.LinetypeIndex() == EoDbPrimitive::LINETYPE_BYBLOCK) {
-		Linetype = Linetypes->getLinetypeByBlockId();
-	}
-	else {
-		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(pstate.LinetypeIndex());
-		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"</tas>
-	}
 	Line->setLinetype(Linetype);
 
 	return Line;

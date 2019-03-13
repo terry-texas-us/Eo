@@ -102,4 +102,5 @@ public: // Methods - static
 	static void SetHighlightLinetypeIndex(EoInt16 linetypeIndex);
 	static void SetLayerColorIndex(EoInt16 colorIndex);
 	static void SetLayerLinetypeIndex(EoInt16 linetypeIndex);
+	static OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(EoInt16 linetypeIndex);
 };

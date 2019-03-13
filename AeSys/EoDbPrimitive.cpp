@@ -35,7 +35,7 @@ bool EoDbPrimitive::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) 
 }
 bool EoDbPrimitive::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
 	CRuntimeClass* PrimitiveClass = GetRuntimeClass();
-	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));	
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
 }
 OdDbObjectId EoDbPrimitive::EntityObjectId() const {
@@ -133,20 +133,8 @@ void EoDbPrimitive::SetLinetypeIndex(EoInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 
 	if (!m_EntityObjectId.isNull()) {
-		OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
-		OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite);
-		OdDbObjectId Linetype = 0;
+		OdDbObjectId Linetype = LinetypeObjectFromIndex(LinetypeIndex());
 
-		if (LinetypeIndex() == LINETYPE_BYLAYER) {
-			Linetype = Linetypes->getLinetypeByLayerId();
-		}
-		else if (LinetypeIndex() == LINETYPE_BYBLOCK) {
-			Linetype = Linetypes->getLinetypeByBlockId();
-		}
-		else {
-			OdString Name = EoDbLinetypeTable::LegacyLinetypeName(LinetypeIndex());
-			Linetype = Linetypes->getAt(Name); // assumes the linetype created already
-		}
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		Entity->setLinetype(Linetype);
 	}
@@ -174,4 +162,23 @@ OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
 		ArbitraryAxis = OdGeVector3d::kZAxis.crossProduct(normal);
 	}
 	return ArbitraryAxis;
+}
+
+OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(EoInt16 linetypeIndex) {
+	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
+	OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
+
+	OdDbObjectId Linetype = 0;
+
+	if (linetypeIndex == EoDbPrimitive::LINETYPE_BYLAYER) {
+		Linetype = Linetypes->getLinetypeByLayerId();
+	}
+	else if (linetypeIndex == EoDbPrimitive::LINETYPE_BYBLOCK) {
+		Linetype = Linetypes->getLinetypeByBlockId();
+	}
+	else {
+		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
+		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"</tas>
+	}
+	return Linetype;
 }
