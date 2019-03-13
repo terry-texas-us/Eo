@@ -3065,7 +3065,7 @@ void AeSysView::OnPrimPerpJump() {
 	}
 }
 void AeSysView::OnHelpKey() {
-	::WinHelpW(GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)L"READY");
+	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/menu_mode.htm", HH_DISPLAY_TOPIC, NULL);
 }
 AeSysView* AeSysView::GetActiveView(void) {
 	CMDIFrameWndEx* MDIFrameWnd = (CMDIFrameWndEx*)AfxGetMainWnd();

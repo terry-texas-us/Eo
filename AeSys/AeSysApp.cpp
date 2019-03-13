@@ -1676,7 +1676,7 @@ void AeSysApp::OnFilePlotstylemanager() {
 	}
 }
 void AeSysApp::OnHelpContents() {
-	::WinHelpW(GetSafeHwnd(), L"peg.hlp", HELP_CONTENTS, 0L);
+	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm", HH_DISPLAY_TOPIC, NULL);
 }
 void AeSysApp::OnModeAnnotate() {
 	m_ModeResourceIdentifier = IDR_ANNOTATE_MODE;

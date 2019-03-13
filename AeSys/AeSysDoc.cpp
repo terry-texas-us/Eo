@@ -2497,20 +2497,17 @@ void AeSysDoc::ResetAllViews() {
 void AeSysDoc::OnHelpKey() {
 	switch (theApp.CurrentMode()) {
 	case ID_MODE_DRAW:
-		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)L"DRAW");
+		HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_draw.htm", HH_DISPLAY_TOPIC, NULL);
 		break;
 
 	case ID_MODE_EDIT: {
-		wchar_t szKey[] = L"EDIT";
-		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)szKey);
+		HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_edit.htm", HH_DISPLAY_TOPIC, NULL);
 		break;
 	}
 	case ID_MODE_TRAP:
 	case ID_MODE_TRAPR: {
-		wchar_t szKey[] = L"TRAP";
-		WinHelpW(theApp.GetSafeHwnd(), L"peg.hlp", HELP_KEY, (DWORD)(LPWSTR)szKey);
+		HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_trap.htm", HH_DISPLAY_TOPIC, NULL);
 		break;
-
 	}
 	}
 }

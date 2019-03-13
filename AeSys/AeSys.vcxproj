@@ -54,8 +54,8 @@
     </ResourceCompile>
     <ProjectReference />
     <Link>
-      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Db.lib;TD_Gs.lib;TD_Key.lib;RecomputeDimBlock.lib;sisl.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\Teigha\12\Teigha_vc12dlldbg\lib\vc12dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Db.lib;TD_Gs.lib;TD_Key.lib;RecomputeDimBlock.lib;sisl.lib;htmlhelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\Teigha\12\Teigha_vc12dlldbg\lib\vc12dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
