@@ -413,14 +413,6 @@ EoDbLine* EoDbLine::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
 	return (LinePrimitive);
 }
 
-EoDbLine* EoDbLine::Create(OdDbDatabasePtr database) {
-	EoDbLine* LinePrimitive = new EoDbLine();
-	LinePrimitive->SetColorIndex(pstate.ColorIndex());
-	LinePrimitive->SetLinetypeIndex(pstate.LinetypeIndex());
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	LinePrimitive->AssociateWith(BlockTableRecord);
-	return (LinePrimitive);
-}
 EoDbLine* EoDbLine::Create(const EoDbLine& other, OdDbDatabasePtr database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	OdDbLinePtr LineEntity = other.EntityObjectId().safeOpenObject()->clone();
@@ -431,10 +423,58 @@ EoDbLine* EoDbLine::Create(const EoDbLine& other, OdDbDatabasePtr database) {
 
 	return Line;
 }
+
 EoDbLine* EoDbLine::Create(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
 	EoDbLine* Line = Create(Database);
 	Line->SetStartPoint(startPoint);
 	Line->SetEndPoint(endPoint);
+
+	return Line;
+}
+
+EoDbLine* EoDbLine::Create(OdDbDatabasePtr database) {
+	EoDbLine* LinePrimitive = new EoDbLine();
+	LinePrimitive->SetColorIndex(pstate.ColorIndex());
+	LinePrimitive->SetLinetypeIndex(pstate.LinetypeIndex());
+	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	LinePrimitive->AssociateWith(BlockTableRecord);
+	return (LinePrimitive);
+}
+
+OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord) {
+	OdDbLinePtr Line = OdDbLine::createObject();
+	Line->setDatabaseDefaults(database);
+
+	blockTableRecord->appendOdDbEntity(Line);
+	Line->setColorIndex(pstate.ColorIndex());
+
+	// <tas="Code block below is duplicated several times - refactor, but where"</tas>
+	OdDbLinetypeTablePtr Linetypes = database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
+	OdDbObjectId Linetype = 0;
+
+	if (pstate.LinetypeIndex() == EoDbPrimitive::LINETYPE_BYLAYER) {
+		Linetype = Linetypes->getLinetypeByLayerId();
+	}
+	else if (pstate.LinetypeIndex() == EoDbPrimitive::LINETYPE_BYBLOCK) {
+		Linetype = Linetypes->getLinetypeByBlockId();
+	}
+	else {
+		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(pstate.LinetypeIndex());
+		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"</tas>
+	}
+	Line->setLinetype(Linetype);
+
+	return Line;
+}
+
+EoDbLine* EoDbLine::Create(OdDbLinePtr line) {
+	EoDbLine* Line = new EoDbLine();
+	Line->SetEntityObjectId(line->objectId());
+	Line->SetColorIndex(line->colorIndex());
+	Line->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
+	Line->SetStartPoint(line->startPoint());
+	Line->SetEndPoint(line->endPoint());
+	
 	return Line;
 }

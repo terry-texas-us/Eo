@@ -34,10 +34,14 @@ void AeSysView::OnDrawModeLine() {
 	else {
 		CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
 
-		EoDbLine* Line = EoDbLine::Create(Database());
-		Line->SetTo(m_DrawModePoints[0], CurrentPnt);
+		OdDbLinePtr Line = EoDbLine::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+		Line->setStartPoint(m_DrawModePoints[0]);
+		Line->setEndPoint(CurrentPnt);
+
 		EoDbGroup* Group = new EoDbGroup;
-		Group->AddTail(Line);
+		EoDbLine* LinePrimitive = EoDbLine::Create(Line);
+
+		Group->AddTail(LinePrimitive);
 		GetDocument()->AddWorkLayerGroup(Group);
 
 		m_DrawModePoints[0] = CurrentPnt;

@@ -2075,7 +2075,6 @@ void AeSysDoc::OnSetupPenColor() {
 	}
 }
 void AeSysDoc::OnSetupLinetype() {
-	// <tas="Assertion on exit"</tas>
 	OdDbLinetypeTablePtr Linetypes = m_DatabasePtr->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 	EoDlgSetupLinetype Dialog(Linetypes);
 

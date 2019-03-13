@@ -61,7 +61,10 @@ public: // Methods
 public: // Methods - static
 	static EoDbLine* ConstructFrom(EoDbFile& file);
 	static EoDbLine* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
-	static EoDbLine* Create(OdDbDatabasePtr database);
+
 	static EoDbLine* Create(const EoDbLine& line, OdDbDatabasePtr database);
 	static EoDbLine* Create(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
+	static EoDbLine* Create(OdDbDatabasePtr database);
+	static OdDbLinePtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
+	static EoDbLine* EoDbLine::Create(OdDbLinePtr line);
 };
