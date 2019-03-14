@@ -296,12 +296,14 @@ void AeSysDoc::DeleteContents() {
 #endif // ODAMFC_EXPORT
 }
 BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
+#ifdef DEV_COMMAND_VIEW
 	CView* ActiveView = frame->GetActiveView();
 	if (ActiveView->IsKindOf(&AeSysView::classAeSysView)) {
 		if (!static_cast<AeSysView*>(ActiveView)->canClose()) {
 			return FALSE;
 		}
 	}
+#endif // DEV_COMMAND_VIEW
 	return CDocument::CanCloseFrame(frame);
 }
 
@@ -426,6 +428,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	pIO->setPickfirst(0);
 	int iOpt = OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty;
 
+#ifdef DEV_COMMAND_VIEW
 	OdDbSelectionSetPtr pSSet;
 	try {
 		pSSet = pIO->select(OdString::kEmpty, iOpt, pView->editorObject().workingSSet());
@@ -435,6 +438,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 		throw OdEdCancel();
 	}
 	pView->editorObject().selectionSetChanged();
+#endif // DEV_COMMAND_VIEW
 	Database->appServices()->pageObjects(Database);
 }
 
@@ -543,6 +547,7 @@ EoDlgUserIOConsole* AeSysDoc::console() {
 }
 #endif // DEV_COMMAND_CONSOLE
 
+#ifdef DEV_COMMAND_CONSOLE
 // <OdEdBaseIO virtuals>
 OdUInt32 AeSysDoc::getKeyState() {
 	OdUInt32 KeyState(0);
@@ -3143,7 +3148,9 @@ void AeSysDoc::OnEditClearselection() {
 		CView* view = GetNextView(pos);
 		if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && view->GetDocument() == this) {
 			AeSysView* pDwgViewer = static_cast<AeSysView*>(view);
+#ifdef DEV_COMMAND_VIEW
 			pDwgViewer->editorObject().unselect();
+#endif // DEV_COMMAND_VIEW
 			cleared = true;
 		}
 	}
@@ -3178,7 +3185,9 @@ void AeSysDoc::OnEditSelectall() {
 	while (Position != NULL) {
 		CView* View = GetNextView(Position);
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
+#ifdef DEV_COMMAND_VIEW
 			static_cast<AeSysView*>(View)->editorObject().selectionSetChanged();
+#endif // DEV_COMMAND_VIEW
 		}
 	}
 }

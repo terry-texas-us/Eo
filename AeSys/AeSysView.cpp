@@ -459,64 +459,16 @@ void AeSysView::OnInitialUpdate() {
 	}
 	enableGsModel(true);
 	ResetDevice(true);
-
 #ifdef DEV_COMMAND_CONSOLE
+#ifdef DEV_COMMAND_VIEW
 	m_editor.initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
+#endif // DEV_COMMAND_VIEW
 #endif // DEV_COMMAND_CONSOLE
 
 	SetRenderMode(OdGsView::k2DOptimized);
 }
 bool AeSysView::regenAbort() const {
-	// to prevent artifacts in preview (in bitmap mode)
-	//if(isPlotGeneration())
 	return false;
-
-	//   if(!m_bRegenAbort)
-	//   {
-	//     // this message processing is necessary to avoid GUI lock during regeneration process
-	//     MSG msg;
-	//     if(::PeekMessage(&msg, NULL, NULL, NULL, PM_NOREMOVE))
-	//     {
-	//       switch(msg.message)
-	//       {
-	//       case WM_CLOSE:
-	//       case WM_QUIT:
-	//       case WM_COMMAND:
-	//       case WM_SYSCOMMAND:
-	// 
-	//       case WM_LBUTTONDOWN:
-	// //    case WM_LBUTTONUP:
-	//       case WM_LBUTTONDBLCLK:
-	//       case WM_RBUTTONDOWN:
-	// //    case WM_RBUTTONUP:
-	//       case WM_RBUTTONDBLCLK:
-	//       case WM_MBUTTONDOWN:
-	// //    case WM_MBUTTONUP:
-	//       case WM_MBUTTONDBLCLK:
-	//       case WM_MOUSEWHEEL:
-	//         // messages that abort regen
-	//         m_bRegenAbort = true;
-	//         break;
-	// 
-	//       case WM_MOUSEMOVE:
-	//         if(m_pTracker || m_mode==kGetPoint)
-	//         {
-	//           m_bRegenAbort = true;
-	//           break;
-	//         }
-	//       default:
-	//         if(msg.message==g_nRedrawMSG)
-	//         {
-	//           m_bRegenAbort = true;
-	//           break;
-	//         }
-	//         // message that might do not abort regen could be processed here
-	//         theApp.PumpMessage();
-	//         break;
-	//       }
-	//     }
-	//   }
-	//   return m_bRegenAbort;
 }
 LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	if (m_bInRegen) {
@@ -603,8 +555,9 @@ void AeSysView::OnDestroy() {
 	AeSysDoc* Document = GetDocument();
 	Document->OnCloseVectorizer(this);
 
+#ifdef DEV_COMMAND_VIEW
 	m_editor.uninitialize();
-
+#endif // DEV_COMMAND_VIEW
 	destroyDevice();
 
 	m_pPrinterDevice.release();
@@ -865,12 +818,15 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 	if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
 		switch (m_mode) {
 		case kQuiescent:
+#ifdef DEV_COMMAND_VIEW
 			if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
 				//getActiveView()->invalidate();
 				PostMessage(WM_PAINT);
 			}
+#endif // DEV_COMMAND_VIEW
 			break;
 		case kGetPoint:
+#ifdef DEV_COMMAND_VIEW
 			m_response.m_point = m_editor.toEyeToWorld(point.x, point.y);
 			if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
 				if (!m_editor.toUcsToWorld(m_response.m_point))
@@ -878,6 +834,7 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 			}
 			m_editor.snap(m_response.m_point, m_pBasePt);
 			m_response.m_type = Response::kPoint;
+#endif // DEV_COMMAND_VIEW
 			break;
 		default:
 			m_LeftButton = true;
@@ -929,16 +886,16 @@ CRect AeSysView::viewRect(OdGsView* view) {
 	return CRect(OdRoundToLong(ll.x), OdRoundToLong(ur.y), OdRoundToLong(ur.x), OdRoundToLong(ll.y));
 }
 BOOL AeSysView::OnMouseWheel(UINT nFlags, EoInt16 zDelta, CPoint point) {
-	/* <tas>
-		ScreenToClient(&point);
-		if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
+#ifdef DEV_COMMAND_VIEW
+	ScreenToClient(&point);
+	if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
 		PostMessage(WM_PAINT);
 		propagateActiveViewChanges();
-		}
-		</tas> */
+	}
+#else // DEV_COMMAND_VIEW
 	DollyAndZoom((zDelta > 0) ? 1. / 0.9 : 0.9);
-
 	InvalidateRect(NULL, TRUE);
+#endif // DEV_COMMAND_VIEW
 
 	return __super::OnMouseWheel(nFlags, zDelta, point);
 }
@@ -1845,6 +1802,7 @@ void AeSysView::OnUpdateViewerRegen(CCmdUI* pCmdUI) {
 	pCmdUI->Enable(m_pDevice->gsModel() != 0);
 }
 
+#ifdef DEV_COMMAND_VIEW
 bool AeSysView::canClose() const {
 	if (m_mode != kQuiescent) {
 		AfxMessageBox(L"Can not exit while command is active.", MB_OK | MB_ICONEXCLAMATION);
@@ -1856,7 +1814,7 @@ bool AeSysView::isGettingString() const {
 	return m_mode != kQuiescent;
 }
 OdString AeSysView::prompt() const {
-	return (LPCWSTR)m_sPrompt;
+	return (LPCWSTR) m_sPrompt;
 }
 int AeSysView::inpOptions() const {
 	return m_inpOptions;
@@ -1871,15 +1829,19 @@ public:
 		m_View(view), m_Cursor(view->cursor()) {
 		view->track(tracker);
 		view->setCursor(cursor);
+#ifdef DEV_COMMAND_VIEW
 		view->m_editor.initSnapping(view->getActiveTopView());
+#endif // DEV_COMMAND_VIEW
 	}
 	~SaveViewParams() {
 		m_View->track(0);
 		m_View->setCursor(m_Cursor);
+#ifdef DEV_COMMAND_VIEW
 		m_View->m_editor.uninitSnapping(m_View->getActiveTopView());
+#endif // DEV_COMMAND_VIEW
 	}
 };
-
+#endif // DEV_COMMAND_VIEW
 #ifdef DEV_COMMAND_CONSOLE
 // <OdEdBaseIO virtuals>
 OdUInt32 AeSysView::getKeyState() {
@@ -2031,9 +1993,11 @@ BOOL AeSysView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoin
 		AeSysDoc* pDoc = GetDocument();
 		OdDbDatabase* Database = pDoc->m_DatabasePtr;
 		Database->startUndoRecord();
-
+#ifdef DEV_COMMAND_VIEW
 		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.toEyeToWorld(point.x, point.y) - pData->pickPoint());
-
+#else // DEV_COMMAND_VIEW
+		OdGeMatrix3d xform = OdGeMatrix3d::kIdentity;
+#endif // DEV_COMMAND_VIEW
 		if (m_mode == kDragDrop) {
 			OdDbSelectionSetPtr pSSet = pDoc->selectionSet();
 			OdDbEntityPtr pEnt;
@@ -2159,10 +2123,12 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 	ReleaseDC(DeviceContext);
 }
 
+#ifdef DEV_COMMAND_VIEW
 void AeSysView::respond(const OdString& s) {
 	m_response.m_type = Response::kString;
 	m_response.m_string = s;
 }
+#endif // DEV_COMMAND_VIEW
 void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 	m_response.m_string = m_inpars.result();
 	switch (characterCodeValue) {
@@ -2178,9 +2144,11 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 
 		switch (m_mode) {
 		case kQuiescent:
+#ifdef DEV_COMMAND_VIEW
 			if (m_editor.unselect()) {
 				PostMessage(WM_PAINT);
 			}
+#endif // DEV_COMMAND_VIEW
 			break;
 
 		case kGetPoint:
@@ -2250,6 +2218,7 @@ struct OdExRegenCmd : OdEdCommand {
 	}
 };
 
+#ifdef DEV_COMMAND_VIEW
 OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 	if (commandName.iCompare(L"REGEN") == 0) {
 		OdSmartPtr<OdExRegenCmd> c = OdRxObjectImpl<OdExRegenCmd>::createObject();
@@ -2257,12 +2226,15 @@ OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 		c->m_pDevice = m_pDevice;
 		return c;
 	}
-	else
+	else {
 		return m_editor.command(commandName);
+	}
 }
+
 EoExEditorObject &AeSysView::editorObject() {
 	return m_editor;
 }
+
 const EoExEditorObject &AeSysView::editorObject() const {
 	return m_editor;
 }
@@ -2281,6 +2253,7 @@ bool AeSysView::drawableVectorizationCallback(const OdGiDrawable* drawable) {
 	}
 	return true;
 }
+#endif // DEV_COMMAND_VIEW
 BOOL AeSysView::OnIdle(long count) {
 	if (!m_pDevice->isValid()) {
 		PostMessage(WM_PAINT);

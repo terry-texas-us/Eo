@@ -1021,8 +1021,6 @@ void EoDlgPageSetup::OnCheckDisplayPlotStyles() {
 	FillPlotStyleCombo(false);
 }
 
-//#include "DwgViewer.h"
-
 void EoDlgPageSetup::OnClickWindowButton() {
 	UpdateData();
 
@@ -1035,6 +1033,7 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	OdGePoint3d FirstCorner = m_pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS);
 	OdGePoint3d OppositeCorner = m_pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame);
 
+#ifdef DEV_COMMAND_VIEW
 	// Points are returned in eye plane, transform it back to screen plane if it is possible
 	// Workaround, unfortunately can't get screen plane point from IO stream.
 	CMDIChildWnd* ChildWindow = (((CMDIFrameWnd*) theApp.GetMainWnd())->MDIGetActive());
@@ -1047,6 +1046,7 @@ void EoDlgPageSetup::OnClickWindowButton() {
 			OppositeCorner = View->editorObject().toScreenCoord(OppositeCorner);
 		}
 	}
+#endif // DEV_COMMAND_VIEW
 	m_PlotSettingsValidator->setPlotWindowArea(&m_PlotSettings, FirstCorner.x, FirstCorner.y, OppositeCorner.x, OppositeCorner.y);
 
 	ParentWindow->EnableWindow(FALSE);

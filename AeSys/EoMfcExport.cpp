@@ -81,6 +81,7 @@ OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 	return OdGsLayoutHelperPtr();
 }
 bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& pt) {
+#ifdef DEV_COMMAND_VIEW
 	POSITION Position = document->GetFirstViewPosition();
 	while (Position != 0) {
 		CView* pView = document->GetNextView(Position);
@@ -89,6 +90,7 @@ bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& pt) {
 			return pViewer->editorObject().snap(pt, 0);
 		}
 	}
+#endif // DEV_COMMAND_VIEW
 	return false;
 }
 #endif // ODAMFC_EXPORT_SYMBOL

@@ -53,6 +53,9 @@
 // DEV_COMMAND_CONSOLE 
 // #define DEV_COMMAND_CONSOLE 1
 
+// DEV_COMMAND_VIEW
+// #define DEV_COMMAND_VIEW 1
+
 #include "OdaCommon.h"
 #include "Ge/GeTol.h"
 #include "Ge/GePoint3d.h"

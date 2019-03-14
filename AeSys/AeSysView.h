@@ -19,7 +19,9 @@ class AeSysView : public CView
 #endif // DEV_COMMAND_CONSOLE
 				, EoExEditorObject::OleDragCallback
 {
+#ifdef DEV_COMMAND_VIEW
 	friend class SaveViewParams;
+#endif // DEV_COMMAND_VIEW
 
 	void destroyDevice();
 	COleDropTarget m_dropTarget;
@@ -28,7 +30,9 @@ class AeSysView : public CView
 	ExEdInputParser m_inpars;
 
 	static UINT g_nRedrawMSG;
+#ifdef DEV_COMMAND_VIEW
 	EoExEditorObject m_editor;
+#endif // DEV_COMMAND_VIEW
 	mutable bool m_bRegenAbort;
 	mutable bool m_bInRegen; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
 	enum PaintMode {
@@ -66,9 +70,9 @@ class AeSysView : public CView
 	const OdGePoint3d* m_pBasePt;
 
 	void exeCmd(const OdString& szCmdStr);
-// <OleDragCallback> virtual overrides
+// <OleDragCallback virtual>
 	bool beginDragCallback(const OdGePoint3d& point);
-// </OleDragCallback>
+// </OleDragCallback virtual>
 protected:
 	using CView::operator new;
 	using CView::operator delete;
@@ -116,18 +120,18 @@ public:
 	HCURSOR cursor() const;
 
 	void setViewportBorderProperties();
+#ifdef DEV_COMMAND_VIEW
 	bool canClose() const;
 	bool isGettingString() const;
 	OdString prompt() const;
 	int inpOptions() const;
 	void respond(const OdString& s);
-	
 	OdEdCommandPtr command(const OdString& commandName);
 	EoExEditorObject &editorObject();
 	const EoExEditorObject &editorObject() const;
 	bool isModelSpaceView() const;
-
 	bool drawableVectorizationCallback(const OdGiDrawable* drawable);
+#endif // DEV_COMMAND_VIEW
 
 public:
 	virtual void OnInitialUpdate();
