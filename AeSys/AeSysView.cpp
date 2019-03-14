@@ -1880,9 +1880,17 @@ public:
 	}
 };
 
+#ifdef DEV_COMMAND_CONSOLE
 // <OdEdBaseIO virtuals>
 OdUInt32 AeSysView::getKeyState() {
-	return (GetDocument()->getKeyState());
+	OdUInt32 KeyState(0);
+	if (::GetKeyState(VK_CONTROL) != 0) {
+		KeyState |= MK_CONTROL;
+	}
+	if (::GetKeyState(VK_SHIFT) != 0) {
+		KeyState |= MK_SHIFT;
+	}
+	return (KeyState);
 }
 
 OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
@@ -1955,6 +1963,7 @@ void AeSysView::putString(const OdString& string) {
 	}
 }
 // </OdEdBaseIO virtuals>
+#endif // DEV_COMMAND_CONSOLE
 
 void AeSysView::track(OdEdInputTracker* tracker) {
 	if (m_pTracker) {

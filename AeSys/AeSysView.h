@@ -12,7 +12,13 @@
 
 class AeSysDoc;
 
-class AeSysView : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, EoExEditorObject::OleDragCallback {
+class AeSysView : public CView
+                , public OdGiContextForDbDatabase
+#ifdef DEV_COMMAND_CONSOLE
+				, OdEdBaseIO
+#endif // DEV_COMMAND_CONSOLE
+				, EoExEditorObject::OleDragCallback
+{
 	friend class SaveViewParams;
 
 	void destroyDevice();
@@ -33,7 +39,7 @@ class AeSysView : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, EoE
 	HCURSOR m_hCursor;
 
 	enum Mode {
-		kQuiescent,
+		kQuiescent, // idle
 		kGetPoint,
 		kGetString,
 		kDragDrop
@@ -157,13 +163,15 @@ protected:
 	void createDevice();
 	bool regenAbort() const;
 
-public: // <OdEdBaseIO virtuals>
+public: 
+#ifdef DEV_COMMAND_CONSOLE
+	// <OdEdBaseIO virtuals>
 	OdUInt32 getKeyState();
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-// </OdEdBaseIO virtuals>
-
+    // </OdEdBaseIO virtuals>
+#endif // DEV_COMMAND_CONSOLE
 public:
 	enum EStateInformationItem {
 		WorkCount = 0x0001,

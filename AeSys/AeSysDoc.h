@@ -72,11 +72,17 @@ public:
 
 typedef OdSmartPtr<OdDbDatabaseDoc> OdDbDatabaseDocPtr;
 
-class COdaMfcAppDocStaticRxObjects : public OdDbLayoutManagerReactor, public OdEdBaseIO {
+class COdaMfcAppDocStaticRxObjects : public OdDbLayoutManagerReactor
+#ifdef DEV_COMMAND_CONSOLE
+	                               , public OdEdBaseIO
+#endif // DEV_COMMAND_CONSOLE
+{
 	ODRX_NO_HEAP_OPERATORS();
 };
 
-class AeSysDoc : public COleDocument, protected OdStaticRxObject<COdaMfcAppDocStaticRxObjects> {
+class AeSysDoc : public COleDocument
+	           , protected OdStaticRxObject<COdaMfcAppDocStaticRxObjects>
+{
 protected:
 	using COleDocument::operator new;
 	using COleDocument::operator delete;
@@ -213,14 +219,14 @@ protected:
 	OdString AeSysDoc::recentCmdName();
 #endif // DEV_COMMAND_CONSOLE
 
-// <OdEdBaseIO virtuals>
-	virtual OdUInt32 getKeyState();
 #ifdef DEV_COMMAND_CONSOLE
+	// <OdEdBaseIO virtuals>
+	virtual OdUInt32 getKeyState();
 	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
-#endif // DEV_COMMAND_CONSOLE
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-// </OdEdBaseIO virtuals>
+    // </OdEdBaseIO virtuals>
+#endif // DEV_COMMAND_CONSOLE
 
 	// OdDbLayoutManagerReactor
 	bool m_bLayoutSwitchable;

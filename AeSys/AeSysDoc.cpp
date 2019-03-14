@@ -555,7 +555,6 @@ OdUInt32 AeSysDoc::getKeyState() {
 	return (KeyState);
 }
 
-#ifdef DEV_COMMAND_CONSOLE
 OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
 		console()->putString(prompt);
@@ -570,10 +569,8 @@ OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTra
 	}
 	return console()->getPoint(prompt, options, tracker);
 }
-#endif // DEV_COMMAND_CONSOLE
 
 OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
-#ifdef DEV_COMMAND_CONSOLE
 	OdString sRes;
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
 		sRes = m_pMacro->getString(prompt, options, tracker);
@@ -592,20 +589,16 @@ OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTrac
 		return sRes;
 	}
 	return console()->getString(prompt, options, tracker);
-#else // DEV_COMMAND_CONSOLE
-    return OdString::kEmpty;
-#endif // DEV_COMMAND_CONSOLE
 }
 
 void AeSysDoc::putString(const OdString& string) {
-#ifdef DEV_COMMAND_CONSOLE
 	if (m_pViewer)
 		m_pViewer->putString(string);
 
 	console()->putString(string);
-#endif // DEV_COMMAND_CONSOLE
 }
 // </OdEdBaseIO virtuals>
+#endif // DEV_COMMAND_CONSOLE
 
 #ifdef DEV_COMMAND_CONSOLE
 OdString AeSysDoc::recentCmd() {

@@ -14,18 +14,21 @@ public:
 	const OdString globalName() const;
 	void execute(OdEdCommandContext* commandContext);
 };
+
 class OdEx3dOrbitCmd : public OdEdCommand {
 public:
 	const OdString groupName() const;
 	const OdString globalName() const;
 	void execute(OdEdCommandContext* commandContext);
 };
+
 class OdExDollyCmd : public OdEdCommand {
 public:
 	const OdString groupName() const;
 	const OdString globalName() const;
 	void execute(OdEdCommandContext* commandContext);
 };
+
 class EoExEditorObject {
 	OdGsLayoutHelperPtr m_pDevice;
 	bool m_bSnapOn;
@@ -82,6 +85,7 @@ public:
 	public:
 		virtual bool beginDragCallback(const OdGePoint3d& pt) = 0;
 	};
+
 	bool OnMouseLeftButtonClick(unsigned int flags, int x, int y, OleDragCallback* dragCallback = 0);
 	bool OnMouseMove(unsigned int nFlags, int x, int y);
 	bool OnMouseWheel(unsigned int nFlags, int x, int y, short zDelta);
