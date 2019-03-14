@@ -69,7 +69,7 @@ m_Points(0) {
 
 	m_PreviousOp = 0;
 	m_Plot = false;
-	m_ViewStateInformation = false;		// View state info within the view
+	m_ViewStateInformation = true;		// View state info within the view
 	m_ViewBackgroundImage = false;
 	m_ViewOdometer = true;
 	m_ViewPenWidths = false;
@@ -459,7 +459,10 @@ void AeSysView::OnInitialUpdate() {
 	}
 	enableGsModel(true);
 	ResetDevice(true);
+
+#ifdef DEV_COMMAND_CONSOLE
 	m_editor.initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
+#endif // DEV_COMMAND_CONSOLE
 
 	SetRenderMode(OdGsView::k2DOptimized);
 }
@@ -1859,19 +1862,100 @@ int AeSysView::inpOptions() const {
 	return m_inpOptions;
 }
 
+class SaveViewParams {
+	AeSysView* m_View;
+	HCURSOR m_Cursor;
+
+public:
+	SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor) :
+		m_View(view), m_Cursor(view->cursor()) {
+		view->track(tracker);
+		view->setCursor(cursor);
+		view->m_editor.initSnapping(view->getActiveTopView());
+	}
+	~SaveViewParams() {
+		m_View->track(0);
+		m_View->setCursor(m_Cursor);
+		m_View->m_editor.uninitSnapping(m_View->getActiveTopView());
+	}
+};
+
+// <OdEdBaseIO virtuals>
+OdUInt32 AeSysView::getKeyState() {
+	return (GetDocument()->getKeyState());
+}
+
+OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
+	m_sPrompt.Empty();
+	OdSaveState<CString> savePrompt(m_sPrompt);
+	putString(prompt);
+
+	OdSaveState<Mode> saved_m_mode(m_mode, kGetPoint);
+
+	m_response.m_type = Response::kNone;
+	m_inpOptions = options;
+
+	SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_CROSS));
+
+	while (theApp.PumpMessage()) {
+		switch (m_response.m_type) {
+			case Response::kPoint:
+				if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
+					SetCapture();
+				}
+				return m_response.m_point;
+
+			case Response::kString:
+				throw OdEdOtherInput(m_response.m_string);
+
+			case Response::kCancel:
+				throw OdEdCancel();
+		}
+		long Idle = 0;
+		while (theApp.OnIdle(Idle++));
+	}
+	throw OdEdCancel();
+}
+
+OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+	m_sPrompt.Empty();
+	OdSaveState<CString> savePrompt(m_sPrompt);
+	putString(prompt);
+
+	OdSaveState<Mode> saved_m_mode(m_mode, kGetString);
+
+	m_response.m_type = Response::kNone;
+	m_inpOptions = options;
+
+	SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_IBEAM));
+
+	while (theApp.PumpMessage()) {
+		switch (m_response.m_type) {
+			case Response::kString:
+				return m_response.m_string;
+
+			case Response::kCancel:
+				throw OdEdCancel();
+				break;
+		}
+		long Idle = 0;
+		while (theApp.OnIdle(Idle++));
+	}
+	throw OdEdCancel();
+}
+
 void AeSysView::putString(const OdString& string) {
-	m_sPrompt = (LPCWSTR)string;
+	m_sPrompt = (LPCWSTR) string;
 	int n = m_sPrompt.ReverseFind('\n');
 	if (n >= 0) {
-		theApp.SetStatusPaneTextAt(nStatusInfo, ((LPCWSTR)m_sPrompt) + n + 1);
+		theApp.SetStatusPaneTextAt(nStatusInfo, ((LPCWSTR) m_sPrompt) + n + 1);
 	}
 	else {
 		theApp.SetStatusPaneTextAt(nStatusInfo, m_sPrompt);
 	}
 }
-OdUInt32 AeSysView::getKeyState() {
-	return (GetDocument()->getKeyState());
-}
+// </OdEdBaseIO virtuals>
+
 void AeSysView::track(OdEdInputTracker* tracker) {
 	if (m_pTracker) {
 		m_pTracker->removeDrawables(getActiveTopView());
@@ -1891,24 +1975,6 @@ void AeSysView::track(OdEdInputTracker* tracker) {
 		m_bTrackerHasDrawables = false;
 }
 
-class SaveViewParams {
-	AeSysView* m_View;
-	HCURSOR m_Cursor;
-
-public:
-	SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor) :
-		m_View(view), m_Cursor(view->cursor()) {
-		view->track(tracker);
-		view->setCursor(cursor);
-		view->m_editor.initSnapping(view->getActiveTopView());
-	}
-	~SaveViewParams() {
-		m_View->track(0);
-		m_View->setCursor(m_Cursor);
-		m_View->m_editor.uninitSnapping(m_View->getActiveTopView());
-	}
-};
-
 HCURSOR AeSysView::cursor() const {
 	return (m_hCursor);
 }
@@ -1916,63 +1982,7 @@ void AeSysView::setCursor(HCURSOR cursor) {
 	m_hCursor = cursor;
 	::SetCursor(cursor);
 }
-OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
-	m_sPrompt.Empty();
-	OdSaveState<CString> savePrompt(m_sPrompt);
-	putString(prompt);
 
-	OdSaveState<Mode> saved_m_mode(m_mode, kGetString);
-
-	m_response.m_type = Response::kNone;
-	m_inpOptions = options;
-
-	SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_IBEAM));
-
-	while (theApp.PumpMessage()) {
-		switch (m_response.m_type) {
-		case Response::kString:
-			return m_response.m_string;
-
-		case Response::kCancel:
-			throw OdEdCancel();
-			break;
-		}
-		long Idle = 0;
-		while (theApp.OnIdle(Idle++));
-	}
-	throw OdEdCancel();
-}
-OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
-	m_sPrompt.Empty();
-	OdSaveState<CString> savePrompt(m_sPrompt);
-	putString(prompt);
-
-	OdSaveState<Mode> saved_m_mode(m_mode, kGetPoint);
-
-	m_response.m_type = Response::kNone;
-	m_inpOptions = options;
-
-	SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_CROSS));
-
-	while (theApp.PumpMessage()) {
-		switch (m_response.m_type) {
-		case Response::kPoint:
-			if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
-				SetCapture();
-			}
-			return m_response.m_point;
-
-		case Response::kString:
-			throw OdEdOtherInput(m_response.m_string);
-
-		case Response::kCancel:
-			throw OdEdCancel();
-		}
-		long Idle = 0;
-		while (theApp.OnIdle(Idle++));
-	}
-	throw OdEdCancel();
-}
 void AeSysView::OnRefresh() {
 	PostMessage(WM_PAINT);
 }
@@ -2003,7 +2013,10 @@ void transform_object_set(OdDbObjectIdArray& objs, OdGeMatrix3d& xform) {
 		pEnt->transformBy(xform);
 	}
 }
+
 BOOL AeSysView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) {
+// <tas=The code conditionally ignored due to DEV_COMMAND_CONSOLE may be breaking other drop functions></tas>
+#ifdef DEV_COMMAND_CONSOLE
 	OdSharedPtr<AeSysDoc::ClipboardData> pData = AeSysDoc::ClipboardData::get(pDataObject);
 	if (pData) {
 		AeSysDoc* pDoc = GetDocument();
@@ -2041,6 +2054,7 @@ BOOL AeSysView::OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoin
 		}
 		return TRUE;
 	}
+#endif // DEV_COMMAND_CONSOLE
 	return __super::OnDrop(pDataObject, dropEffect, point);
 }
 DROPEFFECT AeSysView::OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) {
@@ -2061,7 +2075,11 @@ void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		break;
 
 	case VK_DELETE:
+
+#ifdef DEV_COMMAND_CONSOLE
 		((AeSysDoc*)GetDocument())->DeleteSelection(false);
+#endif // DEV_COMMAND_CONSOLE
+
 		PostMessage(WM_PAINT);
 		break;
 	}
@@ -2169,7 +2187,9 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 				switch (m_mode) {
 				case kQuiescent:
 					if (m_response.m_string.isEmpty()) {
+#ifdef DEV_COMMAND_CONSOLE
 						GetDocument()->ExecuteCommand(GetDocument()->recentCmdName());
+#endif // DEV_COMMAND_CONSOLE
 					}
 					else {
 						GetDocument()->ExecuteCommand(m_response.m_string);

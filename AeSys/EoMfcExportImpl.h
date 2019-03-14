@@ -47,10 +47,12 @@ public:
 	virtual void myLockMode() const;
 	virtual bool isQuiescent() const;
 	virtual void* contextPtr() const;
+	virtual void ExecuteCommand(const OdString& command, bool echo);
+#ifdef DEV_COMMAND_CONSOLE
 	virtual OdEdBaseIO* cmdIO();
 	virtual OdDbCommandContextPtr cmdCtx();
-	virtual void ExecuteCommand( const OdString& command, bool echo);
 	virtual OdString recentCmd();
+#endif // DEV_COMMAND_CONSOLE
 	virtual OdDbSelectionSetPtr selectionSet() const;
 
 	MfcObjectWrapper< AeSysDoc >* m_pImp;

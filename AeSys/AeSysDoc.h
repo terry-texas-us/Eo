@@ -19,6 +19,8 @@
 
 class AeSysDoc;
 class AeSysView;
+
+#ifdef DEV_COMMAND_CONSOLE
 class EoDlgUserIOConsole;
 
 class Cmd_VIEW : public OdEdCommand {
@@ -53,6 +55,7 @@ public:
 	void commandUndef(bool undefIt);
 	OdInt32 commandFlags() const;
 };
+#endif // DEV_COMMAND_CONSOLE
 
 class OdDbDatabaseDoc : public OdDbDatabase {
 	static  AeSysDoc* g_pDoc;
@@ -79,11 +82,13 @@ protected:
 	using COleDocument::operator delete;
 
 	AeSysView* m_pViewer;
+
+#ifdef DEV_COMMAND_CONSOLE
 	bool m_bConsole;
 	bool m_bConsoleResponded;
 	int m_nCmdActive;
-	
 	EoDlgUserIOConsole* console();
+#endif // DEV_COMMAND_CONSOLE
 
 	class DataSource : COleDataSource {
 		friend class AeSysDoc;
@@ -197,20 +202,25 @@ protected:
 	BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* documentTemplate);
 
 	OdDbCommandContextPtr m_pCmdCtx;
+
+#ifdef DEV_COMMAND_CONSOLE
 	OdSmartPtr<EoDlgUserIOConsole> m_pConsole;
 	OdSmartPtr<ExStringIO> m_pMacro;
-
 	OdDbCommandContextPtr cmdCtx();
 	OdEdBaseIO* cmdIO();
 	OdString commandPrompt();
 	OdString recentCmd();
 	OdString AeSysDoc::recentCmdName();
-	
-	// OdEdBaseIO
+#endif // DEV_COMMAND_CONSOLE
+
+// <OdEdBaseIO virtuals>
+	virtual OdUInt32 getKeyState();
+#ifdef DEV_COMMAND_CONSOLE
+	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
+#endif // DEV_COMMAND_CONSOLE
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
-	virtual OdUInt32 getKeyState();
+// </OdEdBaseIO virtuals>
 
 	// OdDbLayoutManagerReactor
 	bool m_bLayoutSwitchable;
@@ -229,9 +239,13 @@ public:
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);
 	void ExecuteCommand(const OdString& command, bool bEcho = true);
-
+	
 	OdDbDatabasePtr m_DatabasePtr;
+
+#ifdef DEV_COMMAND_CONSOLE
 	void DeleteSelection(bool force);
+#endif // DEV_COMMAND_CONSOLE
+
 	void startDrag(const OdGePoint3d& point);
 
 public:
@@ -520,13 +534,16 @@ protected:
 public:
 	afx_msg void OnViewSetactivelayout();
 	afx_msg void OnDrawingutilitiesAudit();
+#ifdef DEV_COMMAND_CONSOLE
 	afx_msg void OnEditClearselection();
 	afx_msg void OnEditSelectall();
-	afx_msg void OnVectorize(); // <tas="This is the vectorize menu and toolbar button handler in Oda"</tas>
-	// <tas="Will not use"> afx_msg void OnRemoteGeomViewer();"</tas>
-	afx_msg void OnUpdateVectorize(CCmdUI* pCmdUI);
 	afx_msg void OnEditConsole();
 	afx_msg void OnEditExplode();
 	afx_msg void OnEditEntget();
 	afx_msg void OnViewNamedViews();
+#endif // DEV_COMMAND_CONSOLE
+	afx_msg void OnVectorize(); // <tas="This is the vectorize menu and toolbar button handler in Oda"</tas>
+	// <tas="Will not use"> afx_msg void OnRemoteGeomViewer();"</tas>
+	afx_msg void OnUpdateVectorize(CCmdUI* pCmdUI);
+
 };

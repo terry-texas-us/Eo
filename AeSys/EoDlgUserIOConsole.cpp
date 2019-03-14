@@ -1,10 +1,12 @@
 #include "stdafx.h"
 
+#ifdef DEV_COMMAND_CONSOLE
 #include "AeSysApp.h"
 #include "DbCommandContext.h"
 #include "DbSSet.h"
 #include "ExDbCommandContext.h"
 #include "Ge/GeExtents2d.h"
+
 #include "EoDlgUserIOConsole.h"
 
 EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent) : 
@@ -154,3 +156,4 @@ void EoDlgUserIOConsole::OnShowWindow(BOOL show, UINT status) {
 	CEdit* EditControl = (CEdit*) GetDlgItem(IDC_PROMPT);
 	EditControl->LineScroll(EditControl->GetLineCount());
 }
+#endif // DEV_COMMAND_CONSOLE

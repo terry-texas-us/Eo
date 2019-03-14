@@ -17,7 +17,11 @@
 #include "ExPageController.h"
 
 #include "ExStringIO.h"
+
+#ifdef DEV_COMMAND_CONSOLE
 #include "EoDlgUserIOConsole.h"
+#endif // DEV_COMMAND_CONSOLE
+
 #include "EoDlgAudit.h"
 #include "EoDlgEditProperties.h"
 #include "EoDbDwgToPegFile.h"
@@ -164,13 +168,15 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 	ON_COMMAND(ID_FILE_PAGESETUP, &AeSysDoc::OnFilePagesetup)
 	ON_COMMAND(ID_VIEW_SETACTIVELAYOUT, &AeSysDoc::OnViewSetactivelayout)
 	ON_COMMAND(ID_DRAWINGUTILITIES_AUDIT, &AeSysDoc::OnDrawingutilitiesAudit)
+#ifdef DEV_COMMAND_CONSOLE
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_CLEAR, &AeSysDoc::OnEditClearselection)
 	ON_COMMAND(ID_EDIT_CONSOLE, &AeSysDoc::OnEditConsole)
-	ON_COMMAND(ID_VECTORIZE, &AeSysDoc::OnVectorize)
-	ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
 	ON_COMMAND(ID_VIEW_NAMEDVIEWS, &AeSysDoc::OnViewNamedViews)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_SELECTALL, &AeSysDoc::OnEditSelectall)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_ENTGET, &AeSysDoc::OnEditEntget)
+#endif // DEV_COMMAND_CONSOLE
+	ON_COMMAND(ID_VECTORIZE, &AeSysDoc::OnVectorize)
+	ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
 END_MESSAGE_MAP()
 
 unsigned short AeSysDoc::ClipboardData::m_FormatR15 = (CLIPFORMAT)::RegisterClipboardFormat(L"AutoCAD.r15");
@@ -187,8 +193,12 @@ m_pViewer(0),
 m_SaveAsType(OdDb::kDwg),
 m_SaveAsType_(EoDb::kUnknown),
 m_SaveAsVer(OdDb::kDHL_CURRENT),
+
+#ifdef DEV_COMMAND_CONSOLE
 m_bConsole(false),
 m_nCmdActive(0),
+#endif // DEV_COMMAND_CONSOLE
+
 m_bLayoutSwitchable(false),
 m_bDisableClearSel(false) {
 	m_WorkLayer = NULL;
@@ -374,6 +384,7 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 		}
 	}
 }
+#ifdef DEV_COMMAND_CONSOLE
 const OdString Cmd_VIEW::groupName() const {
 	return L"AeSysApp";
 }
@@ -450,6 +461,7 @@ void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext* commandContext) {
 		return;
 	}
 }
+#endif // DEV_COMMAND_CONSOLE
 
 #pragma warning(push)
 #pragma warning(disable:4510)
@@ -493,58 +505,57 @@ void AeSysDoc::OnUpdateVectorize(CCmdUI* pCmdUI) {
 	pCmdUI->Enable(m_pViewer == 0 && !theApp.recentGsDevicePath().isEmpty());
 }
 
+#ifdef DEV_COMMAND_CONSOLE
 OdDbCommandContextPtr AeSysDoc::cmdCtx() {
 	if (m_pCmdCtx.isNull()) {
 		m_pCmdCtx = ExDbCommandContext::createObject(cmdIO(), m_DatabasePtr);
 	}
 	return m_pCmdCtx;
 }
+#endif // DEV_COMMAND_CONSOLE
+
 OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
+#ifdef DEV_COMMAND_CONSOLE
 	OdDbCommandContext* pCtx = const_cast<AeSysDoc*>(this)->cmdCtx();
 	OdDbSelectionSetPtr pRes = pCtx->arbitraryData(L"AeSysApp Working Selection Set");
+
 	if (pRes.isNull()) {
 		pRes = OdDbSelectionSet::createObject(m_DatabasePtr);
 		pCtx->setArbitraryData(L"OdaMfcApp Working Selection Set", pRes);
 	}
 	ATLTRACE2(atlTraceGeneral, 0, L"Working Selection set contains %d items\n", pRes->numEntities());
 	return pRes;
+#else // DEV_COMMAND_CONSOLE
+	return OdDbSelectionSet::createObject(m_DatabasePtr);
+#endif // DEV_COMMAND_CONSOLE
 }
+
+#ifdef DEV_COMMAND_CONSOLE
 OdEdBaseIO* AeSysDoc::cmdIO() {
 	return (this);
 }
+
 EoDlgUserIOConsole* AeSysDoc::console() {
 	if (m_pConsole.isNull()) {
 		m_pConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd());
 	}
 	return m_pConsole;
 }
-OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
-	OdString sRes;
-	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		sRes = m_pMacro->getString(prompt, options, tracker);
-		putString(OdString(prompt) + L" " + sRes);
-		return sRes;
-	}
+#endif // DEV_COMMAND_CONSOLE
 
-	if (m_bConsole) {
-		return console()->getString(prompt, options, tracker);
+// <OdEdBaseIO virtuals>
+OdUInt32 AeSysDoc::getKeyState() {
+	OdUInt32 KeyState(0);
+	if (::GetKeyState(VK_CONTROL) != 0) {
+		KeyState |= MK_CONTROL;
 	}
-	if (m_pViewer) {
-		m_bConsoleResponded = false;
-		sRes = m_pViewer->getString(prompt, options, tracker);
-		if (!m_bConsoleResponded) {
-			putString(OdString(prompt) + L" " + sRes);
-		}
-		return sRes;
+	if (::GetKeyState(VK_SHIFT) != 0) {
+		KeyState |= MK_SHIFT;
 	}
-	return console()->getString(prompt, options, tracker);
+	return (KeyState);
 }
-void AeSysDoc::putString(const OdString& string) {
-	if (m_pViewer)
-		m_pViewer->putString(string);
 
-	console()->putString(string);
-}
+#ifdef DEV_COMMAND_CONSOLE
 OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
 		console()->putString(prompt);
@@ -559,39 +570,74 @@ OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTra
 	}
 	return console()->getPoint(prompt, options, tracker);
 }
-OdUInt32 AeSysDoc::getKeyState() {
-	OdUInt32 KeyState(0);
-	if (::GetKeyState(VK_CONTROL) != 0) {
-		KeyState |= MK_CONTROL;
+#endif // DEV_COMMAND_CONSOLE
+
+OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+#ifdef DEV_COMMAND_CONSOLE
+	OdString sRes;
+	if (m_pMacro.get() && !m_pMacro->isEof()) {
+		sRes = m_pMacro->getString(prompt, options, tracker);
+		putString(OdString(prompt) + L" " + sRes);
+		return sRes;
 	}
-	if (::GetKeyState(VK_SHIFT) != 0) {
-		KeyState |= MK_SHIFT;
+	if (m_bConsole) {
+		return console()->getString(prompt, options, tracker);
 	}
-	return (KeyState);
+	if (m_pViewer) {
+		m_bConsoleResponded = false;
+		sRes = m_pViewer->getString(prompt, options, tracker);
+		if (!m_bConsoleResponded) {
+			putString(OdString(prompt) + L" " + sRes);
+		}
+		return sRes;
+	}
+	return console()->getString(prompt, options, tracker);
+#else // DEV_COMMAND_CONSOLE
+    return OdString::kEmpty;
+#endif // DEV_COMMAND_CONSOLE
 }
+
+void AeSysDoc::putString(const OdString& string) {
+#ifdef DEV_COMMAND_CONSOLE
+	if (m_pViewer)
+		m_pViewer->putString(string);
+
+	console()->putString(string);
+#endif // DEV_COMMAND_CONSOLE
+}
+// </OdEdBaseIO virtuals>
+
+#ifdef DEV_COMMAND_CONSOLE
 OdString AeSysDoc::recentCmd() {
 	return theApp.getRecentCmd();
 }
+
 OdString AeSysDoc::recentCmdName() {
 	return theApp.getRecentCmd().spanExcluding(L" \n");
 }
+
 OdString AeSysDoc::commandPrompt() {
 	return L"Command:";
 }
+
 void AeSysDoc::OnEditConsole() {
 	OdEdCommandStackPtr CommandStack = ::odedRegCmds();
 	OdDbCommandContextPtr CommandContext(cmdCtx());
 	OdSaveState<bool> saveConsoleMode(m_bConsole, true);
+
 	try {
 		if (m_pViewer && m_pViewer->isGettingString()) {
+
 			m_pViewer->respond(console()->getString(m_pViewer->prompt(), m_pViewer->inpOptions(), 0));
 			m_bConsoleResponded = true;
+
 		}
 		else {
 			for (;;) {
 				OdString CommandName = CommandContext->userIO()->getString(commandPrompt(), 0, L"");
 				if (CommandName.isEmpty()) {
 					CommandName = recentCmdName();
+
 					if (!CommandName.isEmpty()) {
 						CommandContext->userIO()->putString(CommandName);
 						ExecuteCommand(CommandName, false);
@@ -606,11 +652,14 @@ void AeSysDoc::OnEditConsole() {
 	catch (const OdEdCancel&) {
 	}
 }
+
 OdString commandMessageCaption(const OdString& command) {
 	OdString Caption;
 	Caption.format(L"Command: %ls", command.c_str());
 	return Caption;
 }
+#endif // DEV_COMMAND_CONSOLE
+
 class CmdReactor : public OdStaticRxObject<OdEdCommandStackReactor>, public OdStaticRxObject<OdDbDatabaseReactor> {
 	ODRX_NO_HEAP_OPERATORS();
 	OdDbCommandContext* m_pCmdCtx;
@@ -643,12 +692,15 @@ public:
 	bool isDatabaseModified() const {
 		return m_bModified;
 	}
+#ifdef DEV_COMMAND_CONSOLE
 	void objectOpenedForModify(const OdDbDatabase*, const OdDbObject*) {
 		setModified();
 	}
+
 	void headerSysVarWillChange(const OdDbDatabase*, const char*) {
 		setModified();
 	}
+
 	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) {
 		AeSysView* pViewer = OdDbDatabaseDocPtr(m_pCmdCtx->database())->document()->getViewer();
 		if (pViewer) {
@@ -662,6 +714,7 @@ public:
 		m_pCmdCtx->userIO()->putString(String);
 		return OdEdCommandPtr();
 	}
+
 	void commandWillStart(OdEdCommand* pCmd, OdEdCommandContext* /*pCmdCtx*/) {
 		m_sLastInput.makeUpper();
 		if (!GETBIT(pCmd->flags(), OdEdCommand::kNoHistory)) {
@@ -671,9 +724,11 @@ public:
 			m_pCmdCtx->database()->startUndoRecord();
 		}
 	}
+
 	void commandCancelled(OdEdCommand*, OdEdCommandContext*) {
 		undoCmd();
 	}
+
 	void commandFailed(OdEdCommand*, OdEdCommandContext*) {
 		undoCmd();
 	}
@@ -694,17 +749,22 @@ private:
 		}
 #endif //_DEBUG
 	}
+#endif // DEV_COMMAND_CONSOLE
 };
 
 void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
+
+#ifdef DEV_COMMAND_CONSOLE
 	OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
 	++m_nCmdActive;
 
 	OdDbCommandContextPtr CommandContext(cmdCtx());
+
 	CmdReactor cr(CommandContext);
 
 	try {
 		OdEdCommandStackPtr CommandStack = ::odedRegCmds();
+
 		ExDbCommandContext *pExCmdCtx = static_cast<ExDbCommandContext*>(CommandContext.get());
 		if (m_DatabasePtr->appServices()->getPICKFIRST())
 			pExCmdCtx->setPickfirst(selectionSet());
@@ -717,8 +777,9 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 		else {
 			OdString s = command.spanExcluding(L" \t\r\n");
 			if (s.getLength() == command.getLength()) {
-				if (echo)
+				if (echo) {
 					CommandContext->userIO()->putString(commandPrompt() + L" " + s);
+				}
 				s.makeUpper();
 				cr.setLastInput(s);
 				CommandStack->executeCommand(s, CommandContext);
@@ -750,6 +811,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	catch (const OdEdCancel) {
 	}
 	catch (const OdError& err) {
+
 		if (!m_bConsole) {
 			theApp.reportError(commandMessageCaption(command), err);
 		}
@@ -763,6 +825,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 		UpdateAllViews(0);
 	}
 	//static_cast<ExDbCommandContext*>(pCmdCtx.get())->setMacroIOPresent(false);
+#endif // DEV_COMMAND_CONSOLE
 }
 BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
 	if (handlerInfo == NULL) {
@@ -833,6 +896,7 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 	return COleDocument::OnCmdMsg(commandId, messageCategory, commandObject, handlerInfo);
 }
 
+#ifdef DEV_COMMAND_CONSOLE
 void AeSysDoc::DeleteSelection(bool force) {
 	if (m_DatabasePtr->appServices()->getPICKFIRST() && selectionSet()->numEntities()) {
 		if (force) {
@@ -843,6 +907,8 @@ void AeSysDoc::DeleteSelection(bool force) {
 		}
 	}
 }
+#endif // DEV_COMMAND_CONSOLE
+
 void AeSysDoc::startDrag(const OdGePoint3d& point) {
 	DataSource ds;
 	ds.Create(this, point);
@@ -2760,11 +2826,12 @@ void AeSysDoc::OnFilePagesetup() {
 AeSysDoc::DataSource::DataSource() {
 }
 void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) {
+#ifdef DEV_COMMAND_CONSOLE
 	Empty();
 
 	OdDbObjectIdArray objs = document->selectionSet()->objectIdArray();
-
 	OdDbDatabasePtr pDb = document->m_DatabasePtr->wblock(objs, OdGePoint3d::kOrigin);
+
 	wchar_t tempdir[MAX_PATH];
 	::GetTempPath(MAX_PATH, tempdir);
 	wchar_t tempname[MAX_PATH];
@@ -2783,7 +2850,9 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 	HGLOBAL hGlobalR21 = GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR21));
 	new (hGlobalR21)AcadClipDataR21(m_tmpPath, OdString(document->GetPathName()), point);
 	CacheGlobalData(ClipboardData::m_FormatR17, hGlobalR21);
+#endif // DEV_COMMAND_CONSOLE
 }
+
 bool AeSysDoc::DataSource::DoDragDrop() {
 	return (COleDataSource::DoDragDrop(DROPEFFECT_COPY | DROPEFFECT_MOVE) != DROPEFFECT_NONE);
 }
@@ -3072,6 +3141,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 	return nResult == IDOK;
 }
 
+#ifdef DEV_COMMAND_CONSOLE
 void AeSysDoc::OnEditClearselection() {
 	if (m_bDisableClearSel) return;
 	bool cleared = false;
@@ -3091,6 +3161,7 @@ void AeSysDoc::OnEditClearselection() {
 void AeSysDoc::OnEditExplode() {
 	ExecuteCommand(L"explode");
 }
+
 void AeSysDoc::OnEditEntget() {
 	OdDbSelectionSetIteratorPtr SelectionSetIterator = selectionSet()->newIterator();
 	if (!SelectionSetIterator->done()) {
@@ -3100,9 +3171,11 @@ void AeSysDoc::OnEditEntget() {
 		EditPropertiesDialog.DoModal();
 	}
 }
+
 void AeSysDoc::OnViewNamedViews() {
 	ExecuteCommand(L"VIEW");
 }
+
 void AeSysDoc::OnEditSelectall() {
 	OnEditClearselection();
 	m_bDisableClearSel = true;
@@ -3116,3 +3189,4 @@ void AeSysDoc::OnEditSelectall() {
 		}
 	}
 }
+#endif // DEV_COMMAND_CONSOLE

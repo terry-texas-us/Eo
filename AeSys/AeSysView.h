@@ -157,15 +157,12 @@ protected:
 	void createDevice();
 	bool regenAbort() const;
 
-public: // <OdEdBaseIO> virtual overrides
+public: // <OdEdBaseIO virtuals>
 	OdUInt32 getKeyState();
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-// </OdEdBaseIO>
-
-
-
+// </OdEdBaseIO virtuals>
 
 public:
 	enum EStateInformationItem {

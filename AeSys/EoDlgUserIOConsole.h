@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef DEV_COMMAND_CONSOLE
 #include "DbUserIO.h"
 #include "RxObjectImpl.h"
 #include "ExStringIO.h"
@@ -52,3 +53,4 @@ public:
 	void putString(const OdString& string);
 // </OdEdBaseIO> virtuals
 };
+#endif // DEV_COMMAND_CONSOLE

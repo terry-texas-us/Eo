@@ -55,10 +55,12 @@ public:
 	virtual void myLockMode() const = 0;
 	virtual bool isQuiescent() const = 0;
 	virtual void* contextPtr() const = 0;
+	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
+#ifdef DEV_COMMAND_CONSOLE
 	virtual OdEdBaseIO* cmdIO() = 0;
 	virtual OdDbCommandContextPtr cmdCtx() = 0;
-	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
 	virtual OdString recentCmd() = 0;
+#endif // DEV_COMMAND_CONSOLE
 	virtual OdDbSelectionSetPtr selectionSet() const = 0;
 };
 typedef OdSmartPtr< EoApDocument > EoApDocumentPtr;

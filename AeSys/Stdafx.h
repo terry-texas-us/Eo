@@ -50,6 +50,9 @@
 // Uncomment #define for support 
 // #define OD_OLE_SUPPORT 1
 
+// DEV_COMMAND_CONSOLE 
+// #define DEV_COMMAND_CONSOLE 1
+
 #include "OdaCommon.h"
 #include "Ge/GeTol.h"
 #include "Ge/GePoint3d.h"

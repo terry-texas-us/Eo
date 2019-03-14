@@ -83,7 +83,10 @@ private:
 	DWORD m_numGSMenuItems;
 
 	OdString m_sVectorizerPath;
+
+#ifdef DEV_COMMAND_CONSOLE
 	OdString m_sRecentCmd;
+#endif // DEV_COMMAND_CONSOLE
 
 	bool m_bPartial;
 	bool m_bRecover;
@@ -188,8 +191,11 @@ public:
 	void OnOptionsRenderingdeviceVectorize();
 	bool getSavePreview();
 	bool getSaveWithPassword();
+
+#ifdef DEV_COMMAND_CONSOLE
 	void setRecentCmd(const OdString& cmd);
 	const OdString& getRecentCmd();
+#endif // DEV_COMMAND_CONSOLE
 
 	static OdString objectIdAndClassName(OdDbObjectId id);
 	static OdString objectIdAndClassName(const OdDbObject* object);

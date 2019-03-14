@@ -37,21 +37,31 @@ bool EoApDocumentImpl::isQuiescent() const {
 void* EoApDocumentImpl::contextPtr() const {
 	return 0;
 }
+
+#ifdef DEV_COMMAND_CONSOLE
 OdEdBaseIO* EoApDocumentImpl::cmdIO() {
 	return (*m_pImp)->cmdIO();
 }
+
 OdDbCommandContextPtr EoApDocumentImpl::cmdCtx() {
 	return (*m_pImp)->cmdCtx();
 }
+#endif // DEV_COMMAND_CONSOLE
+
 void EoApDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
 	(*m_pImp)->ExecuteCommand(command, echo);
 }
+
+#ifdef DEV_COMMAND_CONSOLE
 OdString EoApDocumentImpl::recentCmd() {
 	return (*m_pImp)->recentCmd();
 }
+#endif // DEV_COMMAND_CONSOLE
+
 OdDbSelectionSetPtr EoApDocumentImpl::selectionSet() const {
 	return (*m_pImp)->selectionSet();
 }
+
 EoApDocumentPtr odGetAppDocument(CDocument* document) {
 	return static_cast<AeSysDoc*>(document)->m_pRefDocument;
 }

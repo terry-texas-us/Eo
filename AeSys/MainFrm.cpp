@@ -417,6 +417,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
 		MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 		MenuItemInfo.fMask = MIIM_DATA;
 
+#ifdef DEV_COMMAND_CONSOLE
 		OdEdCommandStackPtr CommandStack = ::odedRegCmds();
 		bool bHasNoCommand = CommandStack->newIterator()->done();
 
@@ -450,6 +451,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
 				GroupName.empty();
 			}
 		}
+#endif // DEV_COMMAND_CONSOLE
 	}
 	catch (...) {
 		theApp.AddStringToMessageList(L"Registered commands popup menu construction failed");

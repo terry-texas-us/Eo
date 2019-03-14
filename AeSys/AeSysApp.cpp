@@ -60,9 +60,11 @@ void rxInit_COleClientItem_handler();
 void rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
 
+#ifdef DEV_COMMAND_CONSOLE
 OdStaticRxObject<Cmd_VIEW> g_Cmd_VIEW;
 OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
 OdStaticRxObject<Cmd_DISPLAY_DIFFS> g_Cmd_DISPLAY_DIFFS;
+#endif // DEV_COMMAND_CONSOLE
 
 static void addPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
@@ -470,9 +472,13 @@ CString AeSysApp::getApplicationPath() {
 		return L"";
 	}
 }
+
+#ifdef DEV_COMMAND_CONSOLE
 const OdString& AeSysApp::getRecentCmd() {
 	return m_sRecentCmd;
 }
+#endif // DEV_COMMAND_CONSOLE
+
 OdString AeSysApp::objectIdAndClassName(OdDbObjectId id) {
 	return objectIdAndClassName(id.openObject());
 }
@@ -512,12 +518,16 @@ bool AeSysApp::getSavePreview() {
 bool AeSysApp::getSaveWithPassword() {
 	return (m_bSaveWithPassword != 0);
 }
+
+#ifdef DEV_COMMAND_CONSOLE
 void AeSysApp::setRecentCmd(const OdString& command) {
 	if (!command.isEmpty() && command != m_sRecentCmd) {
 		m_sRecentCmd = command;
 		WriteProfileStringW(L"options", L"Recent Command", m_sRecentCmd);
 	}
 }
+#endif // DEV_COMMAND_CONSOLE
+
 OdGsMarker AeSysApp::getGSMenuItemMarker() const {
 	return (OdGsMarker) this;
 }
@@ -583,6 +593,7 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 }
 
 void AeSysApp::RefreshCommandMenu(void) {
+#ifdef DEV_COMMAND_CONSOLE
 	CMenu* ToolsSubMenu(NULL);
 	CMenu* RegisteredCommandsSubMenu = CommandMenu(&ToolsSubMenu);
 
@@ -635,7 +646,9 @@ void AeSysApp::RefreshCommandMenu(void) {
 		}
 	}
 	m_numCustomCommands = CommandId - _APS_NEXT_COMMAND_VALUE - 100;
+#endif // DEV_COMMAND_CONSOLE
 }
+
 UINT AeSysApp::numCustomCommands() const {
 	return m_numCustomCommands;
 }
@@ -1265,10 +1278,14 @@ BOOL AeSysApp::InitializeTeigha() {
 		::rxInit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
 
+#ifdef DEV_COMMAND_CONSOLE
 		OdEdCommandStackPtr CommandStack = odedRegCmds();
+
 		CommandStack->addCommand(&g_Cmd_VIEW);
 		CommandStack->addCommand(&g_Cmd_SELECT);
 		CommandStack->addCommand(&g_Cmd_DISPLAY_DIFFS);
+#endif // DEV_COMMAND_CONSOLE
+
 		// <tas="rxInitMaterialsEditorObjects();"</tas>
 	}
 	catch (OdError& Error) {
@@ -1315,7 +1332,11 @@ BOOL AeSysApp::InitInstance() {
 	m_background = GetProfileInt(L"format", L"Background colour", 0);
 	m_bSaveWithPassword = GetProfileInt(L"options", L"Save DWG with password", 0);
 	m_sVectorizerPath = GetProfileStringW(L"options", L"recent GS", OdWinDirectXModuleName);
+
+#ifdef DEV_COMMAND_CONSOLE
 	m_sRecentCmd = GetProfileStringW(L"options", L"Recent Command", L"");
+#endif // DEV_COMMAND_CONSOLE
+
 	int nFillTtf = GetProfileInt(L"options", L"Fill TTF text", 1);
 	setTEXTFILL(nFillTtf != 0);
 
@@ -2231,12 +2252,17 @@ void AeSysApp::UninitializeTeigha() {
 	EoLoadApps::rxUninit();
 
 	try {
+#ifdef DEV_COMMAND_CONSOLE
 		OdEdCommandStackPtr CommandStack = odedRegCmds();
+#endif // DEV_COMMAND_CONSOLE
 
 		// <tas="rxUninitMaterialsEditorObjects();"</tas>
+
+#ifdef DEV_COMMAND_CONSOLE
 		CommandStack->removeCmd(&g_Cmd_DISPLAY_DIFFS);
 		CommandStack->removeCmd(&g_Cmd_SELECT);
 		CommandStack->removeCmd(&g_Cmd_VIEW);
+#endif // DEV_COMMAND_CONSOLE
 
 		OdDbDatabaseDoc::rxUninit();
 
