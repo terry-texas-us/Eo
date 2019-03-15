@@ -299,9 +299,6 @@ static OdString FindConfigFile(const OdString& configType, OdString file, OdDbSy
 
 AeSysApp theApp; // The one and only AeSys object
 
-const ODCOLORREF AeSysApp::activeBackground() const {
-	return m_background;
-}
 const ODCOLORREF* AeSysApp::curPalette() const {
 	return odcmAcadPalette(m_background);
 }
@@ -344,16 +341,11 @@ int AeSysApp::setPagingType(int pagingType) {
 	m_pagingType = pagingType;
 	return oldType;
 }
-int AeSysApp::pagingType() const {
-	return m_pagingType & 0x0f;
-}
+
 bool AeSysApp::setUndoType(bool useTempFiles) {
 	bool oldType = m_bUseTempFiles;
 	m_bUseTempFiles = useTempFiles;
 	return oldType;
-}
-bool AeSysApp::undoType() const {
-	return m_bUseTempFiles;
 }
 
 OdString AeSysApp::fileDialog(int flags, const OdString& prompt, const OdString& defExt, const OdString& fileName, const OdString& filter) {
@@ -368,20 +360,6 @@ OdString AeSysApp::fileDialog(int flags, const OdString& prompt, const OdString&
 		return OdString((LPCWSTR)dlg.GetPathName());
 	}
 	throw OdEdCancel();
-}
-
-bool AeSysApp::remoteGeomViewer() const {
-	return m_bRemoteGeomViewer;
-}
-void AeSysApp::setRemoteGeomViewer() {
-	m_bRemoteGeomViewer = true;
-}
-
-bool AeSysApp::supportFileSelectionViaDialog() const {
-	return m_bSupportFileSelectionViaDialog;
-}
-void AeSysApp::setSupportFileSelectionViaDialog(bool b) {
-	m_bSupportFileSelectionViaDialog = b;
 }
 
 OdRxClass* AeSysApp::databaseClass() const {
@@ -498,15 +476,6 @@ CString AeSysApp::getApplicationPath() {
 	return L"";
 }
 
-#ifdef DEV_COMMAND_CONSOLE
-const OdString& AeSysApp::getRecentCmd() {
-	return m_sRecentCmd;
-}
-#endif // DEV_COMMAND_CONSOLE
-
-OdString AeSysApp::objectIdAndClassName(OdDbObjectId id) {
-	return objectIdAndClassName(id.openObject());
-}
 OdString AeSysApp::objectIdAndClassName(const OdDbObject* object) {
 	OdString Name;
 	if (object) {
@@ -517,9 +486,7 @@ OdString AeSysApp::objectIdAndClassName(const OdDbObject* object) {
 	}
 	return Name;
 }
-void AeSysApp::setActiveBackground(const ODCOLORREF &color) {
-	m_background = color & 0xffffff;
-}
+
 void AeSysApp::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
 	if (m_pAuditDlg) {
 		m_pAuditDlg->printReport((OdDbAuditInfo*)auditInfo);
@@ -537,12 +504,6 @@ OdStreamBufPtr AeSysApp::newUndoStream() {
 	// OdMemFileStreamImpl = mix of memory and file streams
 	return OdRxObjectImpl<OdMemFileStreamImpl<OdStreamBuf> >::createObject();
 }
-bool AeSysApp::getSavePreview() {
-	return (m_bSavePreview != 0);
-}
-bool AeSysApp::getSaveWithPassword() {
-	return (m_bSaveWithPassword != 0);
-}
 
 #ifdef DEV_COMMAND_CONSOLE
 void AeSysApp::setRecentCmd(const OdString& command) {
@@ -553,19 +514,7 @@ void AeSysApp::setRecentCmd(const OdString& command) {
 }
 #endif // DEV_COMMAND_CONSOLE
 
-OdGsMarker AeSysApp::getGSMenuItemMarker() const {
-	return (OdGsMarker) this;
-}
-void AeSysApp::setPartialOption(bool partial) {
-	m_bPartial = partial;
-}
-void AeSysApp::setRecoverOption(bool recover) {
-	m_bRecover = recover;
-}
 // ODA_MT_DBIO_BEGIN
-void AeSysApp::setMTLoadingOption(bool useMTLoading) {
-	m_bUseMTLoading = useMTLoading;
-}
 // ODA_MT_DBIO_END
 
 CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
@@ -674,42 +623,6 @@ void AeSysApp::RefreshCommandMenu(void) {
 #endif // DEV_COMMAND_CONSOLE
 }
 
-UINT AeSysApp::numCustomCommands() const {
-	return m_numCustomCommands;
-}
-bool AeSysApp::printingViaBitmap() const {
-	return m_bEnablePrintPreviewViaBitmap != 0;
-}
-bool AeSysApp::doubleBufferEnabled() const {
-	return m_bEnableDoubleBuffer != 0;
-}
-bool AeSysApp::blocksCacheEnabled() const {
-	return m_bBlocksCache != 0;
-}
-bool AeSysApp::gsDeviceMultithreadEnabled() const {
-	return m_bGsDevMultithread != 0;
-}
-UINT AeSysApp::mtRegenThreadsCount() const {
-	return m_nMtRegenThreads;
-}
-bool AeSysApp::useGsModel() const {
-	return m_bUseGsModel != 0;
-}
-bool AeSysApp::useSoftwareHLR() const {
-	return m_bEnableHLR != 0;
-}
-bool AeSysApp::enableContextualColors() const {
-	return m_bContextColors != 0;
-}
-bool AeSysApp::enableTTFPolyDraw() const {
-	return m_bTTFPolyDraw != 0;
-}
-bool AeSysApp::enableTTFTextOut() const {
-	return m_bTTFTextOut != 0;
-}
-bool AeSysApp::discardBackFaces() const {
-	return m_bDiscardBackFaces != 0;
-}
 #ifdef ODAMFC_EXPORT_SYMBOL
 void AeSysApp::AddReactor(EoApplicationReactor* reactor) {
 	if (m_aAppReactors.end() == std::find(m_aAppReactors.begin(), m_aAppReactors.end(), EoApplicationReactorPtr(reactor))) {

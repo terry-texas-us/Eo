@@ -56,7 +56,10 @@ class EoDlgAudit;
 class UserBreak {
 };
 
-class AeSysApp : public CWinAppEx, public ExSystemServices, public ExHostAppServices  {
+class AeSysApp : public CWinAppEx
+	           , public ExSystemServices
+			   , public ExHostAppServices
+{
 protected:
 	using CWinAppEx::operator new;
 	using CWinAppEx::operator delete;
@@ -111,31 +114,30 @@ public:
 
 public:
 	OdDbDatabasePtr openFile(LPCWSTR pathName);
-	void setPartialOption(bool partial);
-	void setRecoverOption(bool recover);
+	void setPartialOption(bool partial) {m_bPartial = partial;}
+	void setRecoverOption(bool recover) {m_bRecover = recover;}
 	// ODA_MT_DBIO_BEGIN
-	void setMTLoadingOption(bool useMTLoading);
+	void setMTLoadingOption(bool useMTLoading) {m_bUseMTLoading = useMTLoading;}
 	// ODA_MT_DBIO_END
 
 public:
-	OdGsMarker getGSMenuItemMarker() const;
+	OdGsMarker getGSMenuItemMarker() const {return (OdGsMarker) this;}
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
 	void RefreshCommandMenu();
-	UINT numCustomCommands() const;
-
+	UINT numCustomCommands() const {return m_numCustomCommands;}
 	static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter);
 
-	bool printingViaBitmap() const;
-	bool doubleBufferEnabled() const;
-	bool blocksCacheEnabled() const;
-	bool gsDeviceMultithreadEnabled() const;
-	UINT mtRegenThreadsCount() const;
-	bool useGsModel() const;
-	bool useSoftwareHLR() const;
-	bool enableContextualColors() const;
-	bool enableTTFPolyDraw() const;
-	bool enableTTFTextOut() const;
-	bool discardBackFaces() const;
+	bool printingViaBitmap() const {return m_bEnablePrintPreviewViaBitmap != 0;}
+	bool doubleBufferEnabled() const {return m_bEnableDoubleBuffer != 0;}
+	bool blocksCacheEnabled() const {return m_bBlocksCache != 0;}
+	bool gsDeviceMultithreadEnabled() const {return m_bGsDevMultithread != 0;}
+	UINT mtRegenThreadsCount() const {return m_nMtRegenThreads;}
+	bool useGsModel() const {return m_bUseGsModel != 0;}
+	bool useSoftwareHLR() const {return m_bEnableHLR != 0;}
+	bool enableContextualColors() const {return m_bContextColors != 0;}
+	bool enableTTFPolyDraw() const {return m_bTTFPolyDraw != 0;}
+	bool enableTTFTextOut() const {return m_bTTFTextOut != 0;}
+	bool discardBackFaces() const {return m_bDiscardBackFaces != 0;}
 
 	BOOL m_isDwgOut;
 	BOOL m_bSaveRoundTrip;
@@ -181,55 +183,57 @@ public:
 
 	void initPlotStyleSheetEnv();
 
-	bool getSAVEROUNDTRIP() const {
-		return (m_bSaveRoundTrip != 0);
-	}
+	bool getSAVEROUNDTRIP() const {return (m_bSaveRoundTrip != 0);}
 	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const;
 	OdDbUndoControllerPtr newUndoController();
 	virtual OdStreamBufPtr newUndoStream();
 
 	void OnOptionsRenderingdeviceVectorize();
-	bool getSavePreview();
-	bool getSaveWithPassword();
+	bool getSavePreview() {return (m_bSavePreview != 0);}
+	bool getSaveWithPassword() {return (m_bSaveWithPassword != 0);}
 
 #ifdef DEV_COMMAND_CONSOLE
 	void setRecentCmd(const OdString& cmd);
-	const OdString& getRecentCmd();
+	const OdString& getRecentCmd() {return m_sRecentCmd;}
 #endif // DEV_COMMAND_CONSOLE
 
-	static OdString objectIdAndClassName(OdDbObjectId id);
+	static inline OdString objectIdAndClassName(OdDbObjectId id) {
+		return objectIdAndClassName(id.openObject());
+	}
 	static OdString objectIdAndClassName(const OdDbObject* object);
-	const ODCOLORREF activeBackground() const;
-	void setActiveBackground(const ODCOLORREF &color);
+	const ODCOLORREF activeBackground() const {return m_background;}
+	void setActiveBackground(const ODCOLORREF &color) {m_background = color & 0xffffff;}
 	const ODCOLORREF* curPalette() const;
 
 	OdGsDevicePtr gsBitmapDevice();
 
-	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams); // <tas="not implemented"</tas>
-	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams); // <tas="not implemented"</tas>
+	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
+	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 	bool getPassword(const OdString& dwgName, bool isXref, OdPassword& password);
 
 	OdDbPageControllerPtr newPageController();
 	int setPagingType(int pagingType);
-	int pagingType() const;
+	int pagingType() const {return m_pagingType & 0x0f;}
+
 	bool setUndoType(bool useTempFiles);
-	bool undoType() const;
+	bool undoType() const {return m_bUseTempFiles;}
 
 	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty);
 
-	bool remoteGeomViewer() const;
-	void setRemoteGeomViewer();
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-	bool supportFileSelectionViaDialog() const;
-	void setSupportFileSelectionViaDialog(bool b);
-	
+	bool remoteGeomViewer() const {return m_bRemoteGeomViewer;}
+	void setRemoteGeomViewer() {m_bRemoteGeomViewer = true;}
+
+	bool supportFileSelectionViaDialog() const {return m_bSupportFileSelectionViaDialog;}
+	void setSupportFileSelectionViaDialog(bool b) {m_bSupportFileSelectionViaDialog = b;}
+
 	static CString getApplicationPath();
 	
 public:
 	virtual BOOL InitInstance(void);
 	virtual int ExitInstance(void);
 	virtual BOOL OnIdle(long count);
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
 	enum Units {
 		kArchitecturalS = - 1, // Embedded S format
