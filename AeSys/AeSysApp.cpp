@@ -266,6 +266,36 @@ m_pagingType(0) {
 	m_ArchitecturalUnitsFractionPrecision = 16;
 	m_SimplexStrokeFont = 0;
 }
+OdString GetRegistryAcadLocation();
+OdString GetRegistryAcadProfilesKey();
+bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size);
+
+static OdString FindConfigPath(const OdString& configType) {
+	wchar_t searchPath[MAX_PATH * 4];
+	wchar_t expandedPath[MAX_PATH * 4];
+
+	OdString subkey = GetRegistryAcadProfilesKey();
+	if (!subkey.isEmpty()) {
+		subkey += L"\\General";
+		// get the value for the ACAD entry in the registry
+		if (::GetRegistryString(HKEY_CURRENT_USER, (LPCTSTR) subkey, (LPCTSTR) configType, searchPath, MAX_PATH * 4)) {
+			ExpandEnvironmentStrings(searchPath, expandedPath, MAX_PATH * 4);
+			return OdString(expandedPath);
+		}
+	}
+	return OdString::kEmpty;
+}
+
+static OdString FindConfigFile(const OdString& configType, OdString file, OdDbSystemServices* pSs) {
+	OdString searchPath = FindConfigPath(configType);
+	if (!searchPath.isEmpty()) {
+		file = searchPath + L"\\" + file;
+		if (pSs->accessFile(file, Oda::kFileRead)) {
+			return file;
+		}
+	}
+	return OdString::kEmpty;
+}
 
 AeSysApp theApp; // The one and only AeSys object
 
@@ -398,7 +428,7 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 			FileToFind.replace(L"/", L"\\");
 			FileToFind.deleteChars(0, FileToFind.reverseFind(L'\\') + 1);
 		}
-		FilePathAndName = (hint != kTextureMapFile) ? ConfigurationPathFor(HKEY_CURRENT_USER, ApplicationName, L"ACAD") : ConfigurationPathFor(HKEY_CURRENT_USER, ApplicationName, L"AVEMAPS");
+		FilePathAndName = (hint != kTextureMapFile) ? FindConfigPath(L"ACAD") : FindConfigPath(L"AVEMAPS");
 
 		OdDbSystemServices* SystemServices = odSystemServices();
 
@@ -422,7 +452,7 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 			return FilePathAndName;
 		}
 		if (FilePathAndName.isEmpty()) {
-			OdString AcadLocation(AcadLocationFromRegistry(HKEY_LOCAL_MACHINE, ApplicationName));
+			OdString AcadLocation(GetRegistryAcadLocation());
 			if (!AcadLocation.isEmpty()) {
 				FilePathAndName = AcadLocation + L"\\Fonts\\" + FileToFind;
 				if (!SystemServices->accessFile(FilePathAndName, Oda::kFileRead)) {
@@ -436,21 +466,20 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 	}
 	return FilePathAndName;
 }
+
 OdString AeSysApp::getFontMapFileName() const {
 	OdString subkey;
 	wchar_t fontMapFile[4 * MAX_PATH];
 	wchar_t expandedPath[4 * MAX_PATH];
 
-	//subkey = GetRegistryAcadProfilesKey();
+	subkey = GetRegistryAcadProfilesKey();
 	if (!subkey.isEmpty()) {
 		subkey += L"\\Editor Configuration";
 		// get the value for the ACAD entry in the registry
 
-		/* <tas="Problem with wchar_t constant">
 		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"FontMappingFile", fontMapFile, 4 * MAX_PATH) == 0) {
-		return L"";
+			return L"";
 		}
-		</tas> */
 		ExpandEnvironmentStringsW(fontMapFile, expandedPath, 4 * MAX_PATH);
 		return OdString(expandedPath);
 	}
@@ -458,19 +487,15 @@ OdString AeSysApp::getFontMapFileName() const {
 		return L"";
 	}
 }
+
 CString AeSysApp::getApplicationPath() {
-	HMODULE handle = ::GetModuleHandleW(0);
-	if (handle) {
-		wchar_t FileName[MAX_PATH];
-		ZeroMemory(FileName, sizeof(wchar_t) * MAX_PATH);
-		::GetModuleFileNameW(handle, FileName, MAX_PATH);
+	wchar_t FileName[MAX_PATH];
+	if (::GetModuleFileNameW(::GetModuleHandle(0), FileName, MAX_PATH)) {
 		CString FilePath(FileName);
 		int Delimiter = FilePath.ReverseFind('\\');
 		return (FilePath.Left(Delimiter));
 	}
-	else {
-		return L"";
-	}
+	return L"";
 }
 
 #ifdef DEV_COMMAND_CONSOLE
@@ -811,21 +836,7 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 	}
 	return Database;
 }
-OdString AeSysApp::AcadLocationFromRegistry(HKEY key, const OdString& applicationName) {
-	// <tas="Acad location only exists if AutoCad installed on local machine"</tas>
-	OdString SearchPaths;
-	OdString Version;
-	if (GetRegistryString(key, applicationName, L"CurVer", Version)) {
-		OdString SubKey(applicationName + L"\\" + Version);
-		OdString SubVersion;
-		if (GetRegistryString(key, SubKey, L"CurVer", SubVersion)) {
-			SubKey += L"\\" + SubVersion;
 
-			GetRegistryString(key, SubKey, L"AcadLocation", SearchPaths);
-		}
-	}
-	return (SearchPaths.isEmpty() ? L"" : SearchPaths);
-}
 void AeSysApp::AddModeInformationToMessageList() {
 	CString ResourceString = LoadStringResource(m_CurrentMode);
 	int NextToken = 0;
@@ -890,7 +901,7 @@ UINT AeSysApp::ClipboardFormatIdentifierForEoGroups() {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
 OdString AeSysApp::ConfigurationFileFor(HKEY key, const OdString& applicationName, const OdString& configType, OdString file) {
-	OdString ConfigPath = ConfigurationPathFor(key, applicationName, configType);
+	OdString ConfigPath = FindConfigPath(configType);
 	if (!ConfigPath.isEmpty()) {
 		file = ConfigPath + L"\\" + file;
 		if (odSystemServices()->accessFile(file, Oda::kFileRead)) {
@@ -899,20 +910,7 @@ OdString AeSysApp::ConfigurationFileFor(HKEY key, const OdString& applicationNam
 	}
 	return OdString::kEmpty;
 }
-OdString AeSysApp::ConfigurationPathFor(HKEY key, const OdString& applicationName, const OdString& configType) {
-	OdString ConfigPath;
-	OdString ProfilesKey(RegistryProfilesKeyFor(key, applicationName));
 
-	if (!ProfilesKey.isEmpty()) {
-		OdString SearchPaths;
-		if (GetRegistryString(key, ProfilesKey + L"\\General", configType, SearchPaths)) {
-			wchar_t ExpandedPath[MAX_PATH * 4];
-			::ExpandEnvironmentStringsW(SearchPaths, ExpandedPath, MAX_PATH * 4);
-			ConfigPath = OdString(ExpandedPath);
-		}
-	}
-	return (ConfigPath);
-}
 int AeSysApp::CurrentMode() const {
 	return m_CurrentMode;
 }
@@ -1165,34 +1163,7 @@ COLORREF AeSysApp::GetHotColor(EoInt16 colorIndex) {
 HINSTANCE AeSysApp::GetInstance() {
 	return (m_hInstance);
 }
-bool AeSysApp::GetRegistryString(HKEY key, const OdString& subKey, const OdString& valueName, OdString& value) {
-	bool ValidRegistryKey(false);
-	HKEY OpenedKey;
-	if (::RegOpenKeyExW(key, subKey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
-		DWORD DataSize(MAX_PATH * 4);
-		unsigned char Data[(MAX_PATH * 4) * sizeof(wchar_t)];
-		::ZeroMemory(&Data, MAX_PATH * 4);
-		LSTATUS QueryStatus = ::RegQueryValueExW(OpenedKey, valueName, 0, 0, Data, &DataSize);
-		if (QueryStatus == ERROR_SUCCESS) {
-			ValidRegistryKey = true;
-		}
-		else if (QueryStatus == ERROR_FILE_NOT_FOUND) {
-			LSTATUS EnumerateStatus = ::RegEnumKeyExW(OpenedKey, 0, (LPWSTR)Data, &DataSize, NULL, NULL, NULL, NULL);
-			if (EnumerateStatus == ERROR_SUCCESS) {
-				ValidRegistryKey = true;
-			}
-			else { // ERROR_NO_MORE_ITEMS
-			}
-		}
-		else { // ERROR_MORE_DATA
-		}
-		::RegCloseKey(OpenedKey);
-		if (ValidRegistryKey) {
-			value.format(L"%s\0", Data);
-		}
-	}
-	return (ValidRegistryKey);
-}
+
 HWND AeSysApp::GetSafeHwnd() {
 	return (AfxGetMainWnd()->GetSafeHwnd());
 }
@@ -1939,7 +1910,6 @@ int AeSysApp::PrimaryMode() const {
 	return m_PrimaryMode;
 }
 
-// <tas="Duplicate code">
 bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size) {
 	bool rv = false;
 	HKEY hKey;
@@ -1966,6 +1936,34 @@ bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wch
 	}
 	return rv;
 }
+
+OdString GetRegistryAcadLocation() {
+	OdString subkey = L"SOFTWARE\\Autodesk\\AutoCAD";
+	wchar_t version[32];
+	wchar_t subVersion[32];
+	wchar_t searchPaths[MAX_PATH * 4];
+
+	// get the version and concatenate onto subkey
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, (LPCTSTR) subkey, _T("CurVer"), version, 32) == 0) {
+		return L"";
+	}
+	subkey += L"\\";
+	subkey += version;
+
+	// get the sub-version and concatenate onto subkey
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, (LPCTSTR) subkey, _T("CurVer"), subVersion, 32) == 0) {
+		return L"";
+	}
+	subkey += L"\\";
+	subkey += subVersion;
+
+	// get the value for the AcadLocation entry in the registry
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, (LPCTSTR) subkey, _T("AcadLocation"), searchPaths, MAX_PATH * 4) == 0) {
+		return L"";
+	}
+	return OdString(searchPaths);
+}
+
 OdString GetRegistryAcadProfilesKey() {
 	OdString subkey = L"SOFTWARE\\Autodesk\\AutoCAD";
 	wchar_t version[32];
@@ -1996,24 +1994,7 @@ OdString GetRegistryAcadProfilesKey() {
 
 	return subkey;
 }
-// </tas>
 
-OdString AeSysApp::RegistryProfilesKeyFor(HKEY key, const OdString& applicationName) {
-	OdString SubKey(applicationName);
-	OdString Profile;
-	OdString Version;
-	if (GetRegistryString(key, SubKey, L"CurVer", Version)) {
-		SubKey += L"\\" + Version;
-
-		OdString SubVersion;
-		if (GetRegistryString(key, SubKey, L"CurVer", SubVersion)) {
-			SubKey += L"\\" + SubVersion + L"\\Profiles";
-
-			GetRegistryString(key, SubKey, L"", Profile);
-		}
-	}
-	return (Profile.isEmpty() ? L"" : SubKey + L"\\" + Profile);
-}
 void AeSysApp::ReleaseSimplexStrokeFont() {
 	if (m_SimplexStrokeFont != 0) {
 		delete[] m_SimplexStrokeFont;
@@ -2197,7 +2178,7 @@ BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 }
 
 void AeSysApp::initPlotStyleSheetEnv() {
-	OdString StyleSheetFiles = ConfigurationPathFor(HKEY_CURRENT_USER, L"SOFTWARE\\Autodesk\\AutoCAD", L"PrinterStyleSheetDir");
+	OdString StyleSheetFiles = FindConfigPath(L"PrinterStyleSheetDir");
 	_wputenv_s(L"DDPLOTSTYLEPATHS", StyleSheetFiles);
 }
 CString AeSysApp::ResourceFolderPath() {

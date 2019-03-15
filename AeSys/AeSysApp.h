@@ -284,7 +284,6 @@ public:
 	EoApOptions m_Options;
 
 public:
-	static OdString AcadLocationFromRegistry(HKEY key, const OdString& applicationName);
 	void AddModeInformationToMessageList();
 	void AddStringToMessageList(LPCWSTR message);
 	void AddStringToMessageList(LPCWSTR message, LPCWSTR string);
@@ -296,7 +295,6 @@ public:
 	void BuildModeSpecificAcceleratorTable(void);
 	UINT ClipboardFormatIdentifierForEoGroups();
 	static OdString ConfigurationFileFor(HKEY key, const OdString& applicationName, const OdString& configType, OdString file);
-	static OdString ConfigurationPathFor(HKEY key, const OdString& applicationName, const OdString& configType);
 	int CurrentMode() const;
 	double DeviceHeightInMillimeters() const;
 	double DeviceHeightInPixels() const;
@@ -324,7 +322,6 @@ public:
 	static EoDb::FileTypes GetFileTypeFromPath(const OdString& pathName);
 	COLORREF GetHotColor(EoInt16 colorIndex);
 	HINSTANCE GetInstance();
-	static bool GetRegistryString(HKEY key, const OdString& subKey, const OdString& valueName, OdString& value);
 	HWND GetSafeHwnd();
 	HMENU GetAeSysMenu();
 	HMENU GetAeSysSubMenu(int position);
@@ -353,7 +350,6 @@ public:
 	double PenWidthsGet(EoInt16 colorIndex);
 	virtual void PreLoadState();
 	int PrimaryMode() const;
-	static OdString RegistryProfilesKeyFor(HKEY key, const OdString& applicationName);
 	void ReleaseSimplexStrokeFont();
 	static CString ResourceFolderPath();
 	void SetArchitecturalUnitsFractionPrecision(const int precision);
