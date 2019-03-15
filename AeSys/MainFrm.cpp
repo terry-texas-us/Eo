@@ -107,7 +107,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 
 	m_StatusBar.SetPaneStyle(nStatusIcon, SBPS_NOBORDERS);
 	m_StatusBar.SetPaneStyle(nStatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
-	m_StatusBar.SetPaneWidth(nStatusProgress, 80);
+	m_StatusBar.SetPaneWidth(nStatusProgress, 96);
 
 	if (!CreateDockablePanes()) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create dockable panes\n");
@@ -672,19 +672,7 @@ void CMainFrame::OnDestroy() {
 
 	PostQuitMessage(0); 		// Force WM_QUIT message to terminate message loop
 }
-void CMainFrame::StartTimer() {
-	QueryPerformanceCounter(&m_pc0);
-}
-void CMainFrame::StopTimer(LPCWSTR operationName) {
-	QueryPerformanceCounter(&m_pc1);
-	m_pc1.QuadPart -= m_pc0.QuadPart;
-	if (QueryPerformanceFrequency(&m_pc0)) {
-		double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
-		CString NewText;
-		NewText.Format(L"%s Time: %.6f sec.", operationName ? operationName : L"Operation", loadTime);
-		SetStatusPaneTextAt(wcscmp(L"Redraw", operationName) == 0 ? 2 : 1, NewText);
-	}
-}
+
 void CMainFrame::SetStatusPaneTextAt(int index, LPCWSTR newText) {
 	m_StatusBar.SetPaneText(index, newText);
 }

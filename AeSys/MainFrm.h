@@ -16,8 +16,20 @@ class CMainFrame : public CMDIFrameWndEx {
 public:
 	CMainFrame();
 
-	void StartTimer();
-	void StopTimer(LPCWSTR operationName = NULL);
+	inline void StartTimer() {
+		QueryPerformanceCounter(&m_pc0);
+	}
+	inline void StopTimer(LPCWSTR operationName = NULL) {
+		QueryPerformanceCounter(&m_pc1);
+		m_pc1.QuadPart -= m_pc0.QuadPart;
+		if (QueryPerformanceFrequency(&m_pc0)) {
+			double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
+			CString NewText;
+			NewText.Format(L"%s Time: %.6f sec.", operationName ? operationName : L"Operation", loadTime);
+			SetStatusPaneTextAt(wcscmp(L"Redraw", operationName) == 0 ? 2 : 1, NewText);
+		}
+	}
+
 	void SetStatusPaneTextAt(int index, LPCWSTR newText);
 
 	void SetStatusPaneTextColorAt(int index, COLORREF textColor = COLORREF(- 1));
