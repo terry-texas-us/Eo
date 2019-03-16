@@ -266,20 +266,24 @@ m_pagingType(0) {
 	m_ArchitecturalUnitsFractionPrecision = 16;
 	m_SimplexStrokeFont = 0;
 }
+#define EO_REGISTRY_BUFFER_SIZE 1040
+#define EO_REGISTRY_MAX_PROFILE_NAME 128
+#define EO_REGISTRY_MAX_PATH 1024
+
 OdString GetRegistryAcadLocation();
 OdString GetRegistryAcadProfilesKey();
 bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size);
 
 static OdString FindConfigPath(const OdString& configType) {
-	wchar_t searchPath[MAX_PATH * 4];
-	wchar_t expandedPath[MAX_PATH * 4];
+	wchar_t searchPath[EO_REGISTRY_MAX_PATH];
+	wchar_t expandedPath[EO_REGISTRY_MAX_PATH];
 
 	OdString subkey = GetRegistryAcadProfilesKey();
 	if (!subkey.isEmpty()) {
 		subkey += L"\\General";
 		// get the value for the ACAD entry in the registry
-		if (::GetRegistryString(HKEY_CURRENT_USER, (LPCTSTR) subkey, (LPCTSTR) configType, searchPath, MAX_PATH * 4)) {
-			ExpandEnvironmentStrings(searchPath, expandedPath, MAX_PATH * 4);
+		if (::GetRegistryString(HKEY_CURRENT_USER, (LPCTSTR) subkey, (LPCTSTR) configType, searchPath, EO_REGISTRY_MAX_PATH)) {
+			ExpandEnvironmentStrings(searchPath, expandedPath, EO_REGISTRY_MAX_PATH);
 			return OdString(expandedPath);
 		}
 	}
@@ -447,18 +451,18 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 
 OdString AeSysApp::getFontMapFileName() const {
 	OdString subkey;
-	wchar_t fontMapFile[4 * MAX_PATH];
-	wchar_t expandedPath[4 * MAX_PATH];
+	wchar_t fontMapFile[EO_REGISTRY_MAX_PATH];
+	wchar_t expandedPath[EO_REGISTRY_MAX_PATH];
 
 	subkey = GetRegistryAcadProfilesKey();
 	if (!subkey.isEmpty()) {
 		subkey += L"\\Editor Configuration";
 		// get the value for the ACAD entry in the registry
 
-		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"FontMappingFile", fontMapFile, 4 * MAX_PATH) == 0) {
+		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"FontMappingFile", fontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
 			return L"";
 		}
-		ExpandEnvironmentStringsW(fontMapFile, expandedPath, 4 * MAX_PATH);
+		ExpandEnvironmentStringsW(fontMapFile, expandedPath, EO_REGISTRY_MAX_PATH);
 		return OdString(expandedPath);
 	}
 	else {
@@ -1827,22 +1831,22 @@ bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wch
 	bool rv = false;
 	HKEY hKey;
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-		DWORD dwSize(4 * MAX_PATH);
-		unsigned char data[4 * MAX_PATH];
-		memset(&data, 0x00, 4 * MAX_PATH);
+		DWORD dwSize = EO_REGISTRY_BUFFER_SIZE;
+		unsigned char data[EO_REGISTRY_BUFFER_SIZE];
+		memset(&data, 0x00, EO_REGISTRY_BUFFER_SIZE);
 		if (RegQueryValueExW(hKey, name, 0, 0, &data[0], &dwSize) == ERROR_SUCCESS) {
 			rv = true;
 		}
 		else {
-			if (ERROR_SUCCESS == RegEnumKeyExW(hKey, 0, (LPWSTR)(unsigned short*)&data[0], &dwSize, NULL, NULL, NULL, NULL)) {
+			if (ERROR_SUCCESS == RegEnumKeyExW(hKey, 0, (LPWSTR) (unsigned short*) &data[0], &dwSize, NULL, NULL, NULL, NULL)) {
 				rv = true;
 			}
 		}
-		if (size < 4 * MAX_PATH) {
+		if (size < EO_REGISTRY_BUFFER_SIZE) {
 			swprintf(value, L"%s\0", data);
 		}
 		else {
-			wcsncpy(value, (wchar_t*)data, size - 1);
+			wcsncpy(value, (wchar_t*) data, size - 1);
 			value[size - 1] = '\0';
 		}
 		RegCloseKey(hKey);
@@ -1854,7 +1858,7 @@ OdString GetRegistryAcadLocation() {
 	OdString subkey = L"SOFTWARE\\Autodesk\\AutoCAD";
 	wchar_t version[32];
 	wchar_t subVersion[32];
-	wchar_t searchPaths[MAX_PATH * 4];
+	wchar_t searchPaths[EO_REGISTRY_MAX_PATH];
 
 	// get the version and concatenate onto subkey
 	if (GetRegistryString(HKEY_LOCAL_MACHINE, (LPCTSTR) subkey, _T("CurVer"), version, 32) == 0) {
@@ -1871,7 +1875,7 @@ OdString GetRegistryAcadLocation() {
 	subkey += subVersion;
 
 	// get the value for the AcadLocation entry in the registry
-	if (GetRegistryString(HKEY_LOCAL_MACHINE, (LPCTSTR) subkey, _T("AcadLocation"), searchPaths, MAX_PATH * 4) == 0) {
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, (LPCTSTR) subkey, _T("AcadLocation"), searchPaths, EO_REGISTRY_MAX_PATH) == 0) {
 		return L"";
 	}
 	return OdString(searchPaths);
@@ -1881,8 +1885,7 @@ OdString GetRegistryAcadProfilesKey() {
 	OdString subkey = L"SOFTWARE\\Autodesk\\AutoCAD";
 	wchar_t version[32];
 	wchar_t subVersion[32];
-	wchar_t profile[4 * MAX_PATH];
-	// char searchPaths[4 * MAX_PATH];
+	wchar_t profile[EO_REGISTRY_MAX_PROFILE_NAME];
 
 	if (GetRegistryString(HKEY_CURRENT_USER, (LPCWSTR)subkey, L"CurVer", version, 32) == 0) {
 		return L"";
@@ -1899,7 +1902,7 @@ OdString GetRegistryAcadProfilesKey() {
 	subkey += L"\\Profiles";
 
 	// get the value for the (Default) entry in the registry
-	if (GetRegistryString(HKEY_CURRENT_USER, (LPCWSTR)subkey, L"", profile, 4 * MAX_PATH) == 0) {
+	if (GetRegistryString(HKEY_CURRENT_USER, (LPCWSTR)subkey, L"", profile, EO_REGISTRY_MAX_PROFILE_NAME) == 0) {
 		return L"";
 	}
 	subkey += L"\\";
