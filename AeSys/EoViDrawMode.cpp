@@ -4,6 +4,10 @@
 #include "AeSysView.h"
 #include "EoDlgBlockInsert.h"
 
+#include "DbGroup.h"
+#include "DbAudit.h"
+#include "EoDbEntityToPrimitiveProtocolExtension.h"
+
 EoUInt16 PreviousDrawCommand = 0;
 
 void AeSysView::OnDrawModeOptions() {
@@ -177,7 +181,7 @@ void AeSysView::OnDrawModeReturn() {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 		break;
 	}
-	case ID_OP4:
+	case ID_OP4: {
 		if (m_DrawModePoints[NumberOfPoints - 1] == CurrentPnt) {
 			theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
 			return;
@@ -197,8 +201,37 @@ void AeSysView::OnDrawModeReturn() {
 			Line->SetTo(m_DrawModePoints[i], m_DrawModePoints[(i + 1) % 4]);
 			Group->AddTail(Line);
 		}
-		break;
+		// <tas=working on different methods of access entity to group data>
+		ConvertEntityToPrimitiveProtocolExtension ProtocolExtensions(AeSysDoc::GetDoc());
+		ProtocolExtensions.Initialize();
 
+		OdDbObjectIdArray ObjectIds;
+		pGroup->allEntityIds(ObjectIds);
+		int n = 0;
+		OdDbGroupIteratorPtr pGrIter = pGroup->newIterator();
+		while (!pGrIter->done()) {
+			OdDbObjectId objId = pGrIter->objectId();
+
+			ASSERT(objId == ObjectIds.at(n++)); // can also use allEntityIds list for list traversal
+
+			OdDbEntityPtr Entity = objId.safeOpenObject(OdDb::kForRead);
+			
+			OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
+			
+			EntityConverter->Convert(Entity, Group); // modify to return the primitive and not stuff group
+
+			OdDbObjectIdArray Reactors = Entity->getPersistentReactors();
+
+			OdUInt32 index;
+			pGroup->getIndex(objId, index);
+			ATLTRACE2(atlTraceGeneral, 0, "%ls <%d>\n", odDbGetObjectIdName(objId).c_str(), index);
+			pGrIter->next();
+		}
+		pGroup->release();
+
+        // </tas>
+		break;
+	}
 	case ID_OP5: {
 		if (m_DrawModePoints[NumberOfPoints - 1] == CurrentPnt) {
 			theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
