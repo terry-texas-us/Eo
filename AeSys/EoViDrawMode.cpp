@@ -21,19 +21,18 @@ void AeSysView::OnDrawModePoint() {
 	Point->setPosition(CurrentPnt);
 
 	EoDbGroup* Group = new EoDbGroup;
-	EoDbPoint* PointPrimitive = EoDbPoint::Create(Point);
-	
-	Group->AddTail(PointPrimitive);
+	Group->AddTail(EoDbPoint::Create(Point));
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 }
 
 void AeSysView::OnDrawModeLine() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
+	
 	if (PreviousDrawCommand != ID_OP2) {
+		PreviousDrawCommand = ModeLineHighlightOp(ID_OP2);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP2);
 	}
 	else {
 		CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
@@ -43,9 +42,7 @@ void AeSysView::OnDrawModeLine() {
 		Line->setEndPoint(CurrentPnt);
 
 		EoDbGroup* Group = new EoDbGroup;
-		EoDbLine* LinePrimitive = EoDbLine::Create(Line);
-
-		Group->AddTail(LinePrimitive);
+		Group->AddTail(EoDbLine::Create(Line));
 		GetDocument()->AddWorkLayerGroup(Group);
 
 		m_DrawModePoints[0] = CurrentPnt;
@@ -55,7 +52,7 @@ void AeSysView::OnDrawModeLine() {
 
 void AeSysView::OnDrawModePolygon() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
-
+	
 	if (PreviousDrawCommand != ID_OP3) {
 		PreviousDrawCommand = ModeLineHighlightOp(ID_OP3);
 		m_DrawModePoints.clear();
@@ -73,7 +70,7 @@ void AeSysView::OnDrawModePolygon() {
 
 void AeSysView::OnDrawModeQuad() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
-
+	
 	if (PreviousDrawCommand != ID_OP4) {
 		PreviousDrawCommand = ModeLineHighlightOp(ID_OP4);
 		m_DrawModePoints.clear();
@@ -164,9 +161,7 @@ void AeSysView::OnDrawModeReturn() {
 		Line->setEndPoint(CurrentPnt);
 
 		Group = new EoDbGroup;
-		EoDbLine* LinePrimitive = EoDbLine::Create(Line);
-		
-		Group->AddTail(LinePrimitive);
+		Group->AddTail(EoDbLine::Create(Line));
 		break;
 	}
 	case ID_OP3: {
@@ -199,10 +194,10 @@ void AeSysView::OnDrawModeReturn() {
 
 		m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
-		OdDbDictionaryPtr pGroupDict = Database()->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite);
+		OdDbDictionaryPtr GroupDictionary = Database()->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite);
 		OdDbGroupPtr pGroup = OdDbGroup::createObject(); // do not attempt to add entries to the newly created group before adding the group to the group dictionary. 
-		pGroupDict->setAt(L"*", pGroup);
-		pGroupDict->release();
+		GroupDictionary->setAt(L"*", pGroup);
+		GroupDictionary->release();
 
 		pGroup->setSelectable(true);
 		pGroup->setAnonymous();
@@ -217,35 +212,6 @@ void AeSysView::OnDrawModeReturn() {
 
 			Group->AddTail(EoDbLine::Create(Line));
 		}
-		// <tas=working on different methods of access entity to group data>
-		ConvertEntityToPrimitiveProtocolExtension ProtocolExtensions(AeSysDoc::GetDoc());
-		ProtocolExtensions.Initialize();
-
-		OdDbObjectIdArray ObjectIds;
-		pGroup->allEntityIds(ObjectIds);
-		int n = 0;
-		OdDbGroupIteratorPtr pGrIter = pGroup->newIterator();
-		while (!pGrIter->done()) {
-			OdDbObjectId objId = pGrIter->objectId();
-
-			ASSERT(objId == ObjectIds.at(n++)); // can also use allEntityIds list for list traversal
-
-			OdDbEntityPtr Entity = objId.safeOpenObject(OdDb::kForRead);
-			
-			OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
-			
-			EntityConverter->Convert(Entity, Group); // modify to return the primitive and not stuff group
-
-			OdDbObjectIdArray Reactors = Entity->getPersistentReactors();
-
-			OdUInt32 index;
-			pGroup->getIndex(objId, index);
-			ATLTRACE2(atlTraceGeneral, 0, "%ls <%d>\n", odDbGetObjectIdName(objId).c_str(), index);
-			pGrIter->next();
-		}
-		pGroup->release();
-
-        // </tas>
 		break;
 	}
 	case ID_OP5: {
