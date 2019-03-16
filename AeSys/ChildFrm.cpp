@@ -55,6 +55,7 @@ void CChildFrame::Dump(CDumpContext& dc) const {
 	CMDIChildWndEx::Dump(dc);
 }
 #endif //_DEBUG
+
 void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd) {
 	CMDIChildWndEx::OnMDIActivate(activate, activateWnd, deactivateWnd);
 
@@ -64,7 +65,7 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 
 	CDocument* ActivatedDocument = ActivatedFrame != 0 ? ActivatedFrame->GetActiveDocument() : 0;
 	CDocument* DeactivatedDocument = DeactivatedFrame != 0 ? DeactivatedFrame->GetActiveDocument() : 0;
-	
+
 	//if (ActivatedDocument == DeactivatedDocument) {
 	//	return;
 	//}
@@ -73,12 +74,12 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 	size_t NumberOfReactors = TheApp->m_aAppReactors.size();
 
 	if (activate) {
-		if (DeactivatedDocument) 
+		if (DeactivatedDocument)
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 				TheApp->m_aAppReactors[ReactorIndex]->documentToBeDeactivated(DeactivatedDocument);
 			}
 
-		if (ActivatedDocument) { 
+		if (ActivatedDocument) {
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 				TheApp->m_aAppReactors[ReactorIndex]->documentActivated(ActivatedDocument);
 				TheApp->m_aAppReactors[ReactorIndex]->documentBecameCurrent(ActivatedDocument);
@@ -97,40 +98,40 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 
 static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* database) {
 	size_t ScaleMenuPosition = popupMenu->GetMenuItemCount() - 1;
-		for (; ScaleMenuPosition > 0; ScaleMenuPosition--) {
+	for (; ScaleMenuPosition > 0; ScaleMenuPosition--) {
 		if (CMenu* SubMenu = popupMenu->GetSubMenu(ScaleMenuPosition)) {
-				SubMenu->DestroyMenu();
-			}
-		popupMenu->DeleteMenu(ScaleMenuPosition, MF_BYPOSITION);
+			SubMenu->DestroyMenu();
 		}
+		popupMenu->DeleteMenu(ScaleMenuPosition, MF_BYPOSITION);
+	}
 
-		OdDbObjectContextManagerPtr ContextManager(database->objectContextManager());
-		OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
-		OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
+	OdDbObjectContextManagerPtr ContextManager(database->objectContextManager());
+	OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
+	OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
 
-		ScaleMenuPosition = 1;
-		OdIntPtr CurrentScaleIdentifier = database->getCANNOSCALE()->uniqueIdentifier();
-		for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
-		OdString ScaleName = (LPWSTR)(LPCWSTR) ScalesCollectionIterator->getContext()->getName();
+	ScaleMenuPosition = 1;
+	OdIntPtr CurrentScaleIdentifier = database->getCANNOSCALE()->uniqueIdentifier();
+	for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
+		OdString ScaleName = (LPWSTR) (LPCWSTR) ScalesCollectionIterator->getContext()->getName();
 		OdIntPtr ScaleIdentifier = ScalesCollectionIterator->getContext()->uniqueIdentifier();
 
-			MENUITEMINFO MenuItemInfo;
-			::ZeroMemory(&MenuItemInfo, sizeof(MENUITEMINFO));
-			MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
-			MenuItemInfo.fMask = MIIM_DATA | MIIM_ID | MIIM_STRING;
-			MenuItemInfo.fType = MFT_STRING;
-			MenuItemInfo.fState = MFS_ENABLED;
-			MenuItemInfo.wID = ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE;
-			MenuItemInfo.dwItemData = (UINT) ScaleMenuPosition;
-		MenuItemInfo.dwTypeData = (LPWSTR)(LPCWSTR) ScaleName;
+		MENUITEMINFO MenuItemInfo;
+		::ZeroMemory(&MenuItemInfo, sizeof(MENUITEMINFO));
+		MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
+		MenuItemInfo.fMask = MIIM_DATA | MIIM_ID | MIIM_STRING;
+		MenuItemInfo.fType = MFT_STRING;
+		MenuItemInfo.fState = MFS_ENABLED;
+		MenuItemInfo.wID = ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE;
+		MenuItemInfo.dwItemData = (UINT) ScaleMenuPosition;
+		MenuItemInfo.dwTypeData = (LPWSTR) (LPCWSTR) ScaleName;
 
 		if (ScaleIdentifier == CurrentScaleIdentifier) {
-				MenuItemInfo.fMask |= MIIM_STATE;
-				MenuItemInfo.fState |= MFS_CHECKED;
-			}
-		popupMenu->InsertMenuItemW(ScaleMenuPosition++, &MenuItemInfo, TRUE);
+			MenuItemInfo.fMask |= MIIM_STATE;
+			MenuItemInfo.fState |= MFS_CHECKED;
 		}
+		popupMenu->InsertMenuItemW(ScaleMenuPosition++, &MenuItemInfo, TRUE);
 	}
+}
 const int kViewMenuPosition(2);
 const int kAnnotationScalesMenuPosition(19);
 
@@ -141,9 +142,9 @@ void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuA
 	if (active && ActiveDocument) {
 		CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
 		ENSURE(TopMenu);
-		
+
 		CMenu* ScalesSubMenu = TopMenu->GetSubMenu(kViewMenuPosition)->GetSubMenu(kAnnotationScalesMenuPosition);
-		
+
 		if (ScalesSubMenu) {
 			UpdateAnnotationScalesPopupMenu(ScalesSubMenu, ((AeSysDoc*) ActiveDocument)->m_DatabasePtr);
 		}
