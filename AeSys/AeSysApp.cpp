@@ -914,7 +914,32 @@ CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter) {
 	return FileName;
 }
 int AeSysApp::ExitInstance() {
+	SetRegistryBase(L"ODA View");
+	theApp.WriteInt(L"Discard Back Faces", m_bDiscardBackFaces);
+	theApp.WriteInt(L"Enable Double Buffer", m_bEnableDoubleBuffer);
+	theApp.WriteInt(L"Enable Blocks Cache", m_bBlocksCache);
+	theApp.WriteInt(L"Gs Device Multithread", m_bGsDevMultithread);
+	theApp.WriteInt(L"Mt Regen Threads Count", m_nMtRegenThreads);
+	theApp.WriteInt(L"Print/Preview via bitmap device", m_bEnablePrintPreviewViaBitmap);
+	theApp.WriteInt(L"UseGsModel", m_bUseGsModel);
+	theApp.WriteInt(L"Enable Software HLR", m_bEnableHLR);
+	theApp.WriteInt(L"Contextual Colors", m_bContextColors);
+	theApp.WriteInt(L"TTF PolyDraw", m_bTTFPolyDraw);
+	theApp.WriteInt(L"TTF TextOut", m_bTTFTextOut);
+	theApp.WriteInt(L"View object in DWG format", m_isDwgOut);
+	theApp.WriteInt(L"Save round trip information", m_bSaveRoundTrip);
+	theApp.WriteInt(L"Save Preview", m_bSavePreview);
+	theApp.WriteInt(L"Background colour", m_background);
+	theApp.WriteInt(L"Save DWG with password", m_bSaveWithPassword);
+	theApp.WriteString(L"recent GS", m_sVectorizerPath);
+#ifdef DEV_COMMAND_CONSOLE
+	theApp.WriteString(L"Recent Command", m_sRecentCmd);
+#endif // DEV_COMMAND_CONSOLE
+	theApp.WriteInt(L"Fill TTF text", (int) getTEXTFILL());
+
+	SetRegistryBase(L"Options");
 	m_Options.Save();
+	SetRegistryBase(L"MFC Auto");
 
 	ReleaseSimplexStrokeFont();
 	UninitializeTeigha();
@@ -1200,35 +1225,32 @@ BOOL AeSysApp::InitInstance() {
 	// Application settings to be stored in the registry instead of INI files.
 	SetRegistryKey(L"Engineers Office");
 	LoadStdProfileSettings(8U);  // Load the list of most recently used (MRU) files and last preview state.
-
-	SetRegistryBase(L"Settings");
-
-	m_bDiscardBackFaces = GetProfileInt(L"options", L"Discard Back Faces", 1);
-	m_bEnableDoubleBuffer = GetProfileInt(L"options", L"Enable Double Buffer", 1); // <tas="TRUE unless debugging"</tas>
-	m_bBlocksCache = GetProfileInt(L"options", L"Enable Blocks Cache", 0); // 1
-	m_bGsDevMultithread = GetProfileInt(L"options", L"Gs Device Multithread", 0);
-	m_nMtRegenThreads = GetProfileInt(L"options", L"Mt Regen Threads Count", 4);
-	m_bEnablePrintPreviewViaBitmap = GetProfileInt(L"options", L"Print/Preview via bitmap device", 1);
-	m_bUseGsModel = GetProfileInt(L"options", L"UseGsModel", TRUE);
-	m_bEnableHLR = GetProfileInt(L"options", L"Enable Software HLR", 0);
-	m_bContextColors = GetProfileInt(L"options", L"Contextual Colors", 1);
-	m_bTTFPolyDraw = GetProfileInt(L"options", L"TTF PolyDraw", 0);
-	m_bTTFTextOut = GetProfileInt(L"options", L"TTF TextOut", 0);
-	m_isDwgOut = GetProfileInt(L"options", L"View object in DWG format", 0);
-	m_bSaveRoundTrip = GetProfileInt(L"options", L"Save round trip information", 1);
-	m_bSavePreview = GetProfileInt(L"options", L"Save Preview", 0);
-	m_background = GetProfileInt(L"format", L"Background colour", 0);
-	m_bSaveWithPassword = GetProfileInt(L"options", L"Save DWG with password", 0);
-	m_sVectorizerPath = GetProfileStringW(L"options", L"recent GS", OdWinDirectXModuleName);
-
-#ifdef DEV_COMMAND_CONSOLE
-	m_sRecentCmd = GetProfileStringW(L"options", L"Recent Command", L"");
-#endif // DEV_COMMAND_CONSOLE
-
-	int nFillTtf = GetProfileInt(L"options", L"Fill TTF text", 1);
-	setTEXTFILL(nFillTtf != 0);
-
+	SetRegistryBase(L"Options");
 	m_Options.Load();
+
+	SetRegistryBase(L"ODA View");
+	m_bDiscardBackFaces = theApp.GetInt(L"Discard Back Faces", 1);
+	m_bEnableDoubleBuffer = theApp.GetInt(L"Enable Double Buffer", 1); // <tas="TRUE unless debugging"</tas>
+	m_bBlocksCache = theApp.GetInt(L"Enable Blocks Cache", 0); // 1
+	m_bGsDevMultithread = theApp.GetInt(L"Gs Device Multithread", 0);
+	m_nMtRegenThreads = theApp.GetInt(L"Mt Regen Threads Count", 4);
+	m_bEnablePrintPreviewViaBitmap = theApp.GetInt(L"Print/Preview via bitmap device", 1);
+	m_bUseGsModel = theApp.GetInt(L"UseGsModel", TRUE);
+	m_bEnableHLR = theApp.GetInt(L"Enable Software HLR", 0);
+	m_bContextColors = theApp.GetInt(L"Contextual Colors", 1);
+	m_bTTFPolyDraw = theApp.GetInt(L"TTF PolyDraw", 0);
+	m_bTTFTextOut = theApp.GetInt(L"TTF TextOut", 0);
+	m_isDwgOut = theApp.GetInt(L"View object in DWG format", 0);
+	m_bSaveRoundTrip = theApp.GetInt(L"Save round trip information", 1);
+	m_bSavePreview = theApp.GetInt(L"Save Preview", 0);
+	m_background = theApp.GetInt(L"Background colour", 0);
+	m_bSaveWithPassword = theApp.GetInt(L"Save DWG with password", 0);
+	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
+#ifdef DEV_COMMAND_CONSOLE
+	m_sRecentCmd = theApp.GetString(L"Recent Command", L"");
+#endif // DEV_COMMAND_CONSOLE
+	setTEXTFILL(theApp.GetInt(L"Fill TTF text", 1) != 0);
+	SetRegistryBase(L"MFC Auto");
 
 	lex::Init();
 
