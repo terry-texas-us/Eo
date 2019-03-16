@@ -158,10 +158,15 @@ void AeSysView::OnDrawModeReturn() {
 	switch (PreviousDrawCommand) {
 	case ID_OP2: {
 		CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
+		
+		OdDbLinePtr Line = EoDbLine::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+		Line->setStartPoint(m_DrawModePoints[0]);
+		Line->setEndPoint(CurrentPnt);
+
 		Group = new EoDbGroup;
-		EoDbLine* Line = EoDbLine::Create(Database());
-		Line->SetTo(m_DrawModePoints[0], CurrentPnt);
-		Group->AddTail(Line);
+		EoDbLine* LinePrimitive = EoDbLine::Create(Line);
+		
+		Group->AddTail(LinePrimitive);
 		break;
 	}
 	case ID_OP3: {
@@ -194,12 +199,23 @@ void AeSysView::OnDrawModeReturn() {
 
 		m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
+		OdDbDictionaryPtr pGroupDict = Database()->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite);
+		OdDbGroupPtr pGroup = OdDbGroup::createObject(); // do not attempt to add entries to the newly created group before adding the group to the group dictionary. 
+		pGroupDict->setAt(L"*", pGroup);
+		pGroupDict->release();
+
+		pGroup->setSelectable(true);
+		pGroup->setAnonymous();
+
 		Group = new EoDbGroup;
-		EoDbLine* Line;
 		for (int i = 0; i < 4; i++) {
-			Line = EoDbLine::Create(Database());
-			Line->SetTo(m_DrawModePoints[i], m_DrawModePoints[(i + 1) % 4]);
-			Group->AddTail(Line);
+			OdDbLinePtr Line = EoDbLine::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+			Line->setStartPoint(m_DrawModePoints[i]);
+			Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
+			
+			pGroup->append(Line->objectId());
+
+			Group->AddTail(EoDbLine::Create(Line));
 		}
 		// <tas=working on different methods of access entity to group data>
 		ConvertEntityToPrimitiveProtocolExtension ProtocolExtensions(AeSysDoc::GetDoc());
