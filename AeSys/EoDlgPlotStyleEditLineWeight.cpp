@@ -193,11 +193,13 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	m_LineweightData = new EoLineweightData[m_PlotStyleTable->lineweightSize()];
 	const bool bInch = m_PlotStyleTable->isDisplayCustomLineweightUnits();
 	for (size_t i = 0; i < m_PlotStyleTable->lineweightSize(); i++) {
+#pragma warning(suppress: 6386)
 		m_LineweightData[i].m_OldIdx = i;
 		m_LineweightData[i].m_NewIdx = i;
 		m_LineweightData[i].m_Value = m_PlotStyleTable->getLineweightAt(i);
 
 		CString lineweight;
+#pragma warning(suppress: 6385)
 		lineweight.Format(L"%.4f", bInch ? MMTOINCH(m_LineweightData[i].m_Value) : m_LineweightData[i].m_Value);
 		bool isUse = false;
 		size_t nIndex;

@@ -205,6 +205,7 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::OnEditScalefactor() {
   CString pVal;
   m_editScalefactor.GetWindowText(pVal);
   double scaleFactor;
+#pragma warning(suppress: 6031)
   _stscanf(pVal, L"%lf", &scaleFactor);
   if(scaleFactor <= 0 || scaleFactor > PS_EDIT_MAX_SCALEFACTOR)
   {

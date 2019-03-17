@@ -26,6 +26,7 @@ public:
 			double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
 			CString NewText;
 			NewText.Format(L"%s Time: %.6f sec.", operationName ? operationName : L"Operation", loadTime);
+#pragma warning(suppress: 6387)
 			SetStatusPaneTextAt(wcscmp(L"Redraw", operationName) == 0 ? 2 : 1, NewText);
 		}
 	}

@@ -1032,9 +1032,9 @@ void AeSysView::fillContextualColors(OdGiContextualColorsImpl *pCtxColors) {
 	switch (pCtxColors->visualType()) {
 	case OdGiContextualColorsImpl::k2dModel:
 		SET_CTXCLR_ISOK(kGridMajorLinesColor, L"Drawing Window", L"2D Model grid major lines color");
-		SET_CTXCLR_ISOK(kGridMinorLinesColor, L"Drawing Window", "2D Model grid minor lines color");
-		SET_CTXCLR_ISOK(kGridAxisLinesColor, L"Drawing Window", "2D Model grid axis lines color");
-		SET_CTXCLRTINT_ISOK(kGridMajorLineTint, L"Drawing Window", "2D Model grid major lines tint");
+		SET_CTXCLR_ISOK(kGridMinorLinesColor, L"Drawing Window", L"2D Model grid minor lines color");
+		SET_CTXCLR_ISOK(kGridAxisLinesColor, L"Drawing Window", L"2D Model grid axis lines color");
+		SET_CTXCLRTINT_ISOK(kGridMajorLineTint, L"Drawing Window", L"2D Model grid major lines tint");
 		SET_CTXCLRTINT_ISOK(kGridMinorLineTint, L"Drawing Window", L"2D Model grid minor lines tint");
 		SET_CTXCLRTINT_ISOK(kGridAxisLineTint, L"Drawing Window", L"2D Model grid axis lines tint");
 		SET_CTXCLR_ISOK(kLightGlyphsColor, L"Light", L"Model glyphs color");

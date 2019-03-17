@@ -552,6 +552,7 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 	CMenu* RegisteredCommandsSubMenu(NULL);
 	size_t ToolsMenuItem;
 
+#pragma warning(suppress: 6011)
 	for (ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
 		MenuItemInfo.dwTypeData = NULL;
 		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
@@ -1860,14 +1861,18 @@ bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wch
 			rv = true;
 		}
 		else {
+#pragma warning(suppress: 6102)
+#pragma warning(suppress: 6386)
 			if (ERROR_SUCCESS == RegEnumKeyExW(hKey, 0, (LPWSTR) (unsigned short*) &data[0], &dwSize, NULL, NULL, NULL, NULL)) {
 				rv = true;
 			}
 		}
 		if (size < EO_REGISTRY_BUFFER_SIZE) {
+#pragma warning(suppress: 6302)
 			swprintf(value, L"%s\0", data);
 		}
 		else {
+#pragma warning(suppress: 6102)
 			wcsncpy(value, (wchar_t*) data, size - 1);
 			value[size - 1] = '\0';
 		}
@@ -1987,6 +1992,7 @@ void AeSysApp::meterProgress() {
 			static void Exec(void* statusUpdater) {
 				StatUpdater* pExec = reinterpret_cast<StatUpdater*>(statusUpdater);
 				CString str;
+#pragma warning(suppress: 6284)
 				str.Format(L"%s %d", pExec->m_Application->m_Msg, pExec->m_Percent);
 				// <tas="pExec->m_MainFrame->m_wndStatusBar.SetPaneText(0, str);:</tas>
 				// <tas="pExec->m_Application->m_tbExt.SetProgressValue(::AfxGetMainWnd()->GetSafeHwnd(), (ULONG) pExec->m_nPercent, 100);"</tas>
@@ -1995,6 +2001,7 @@ void AeSysApp::meterProgress() {
 					bool bDup = false;
 					if (Message.wParam == VK_ESCAPE && !bDup) {
 						bDup = true;
+#pragma warning(suppress: 6284)
 						str.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_Msg);
 						// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_Paused);"</tas>
 						if (AfxMessageBox(str, MB_YESNO | MB_ICONQUESTION) == IDYES) {

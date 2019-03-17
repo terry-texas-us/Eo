@@ -135,6 +135,7 @@ int EoDbGroupList::RemoveEmptyGroups() {
 	while (Position != 0) {
 		POSITION posPrev = Position;
 		EoDbGroup* Group = GetNext(Position);
+#pragma warning(suppress: 28182)
 		if (Group->GetCount() == 0) {
 			RemoveAt(posPrev);
 			delete Group;
