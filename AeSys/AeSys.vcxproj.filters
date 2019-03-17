@@ -426,31 +426,31 @@
     <ClCompile Include="EoDlgPassword.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExRender\BmpTilesGen.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExRender\BmpTilesGen.cpp">
       <Filter>Source Files\ExRender</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExDbCommandContext.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExDbCommandContext.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExFileUndoController.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExFileUndoController.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExHostAppServices.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExHostAppServices.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExPageController.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExPageController.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExStringIO.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExStringIO.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExSystemServices.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExSystemServices.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExUndoController.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExUndoController.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\OdFileBuf.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\OdFileBuf.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
   </ItemGroup>

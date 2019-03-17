@@ -38,8 +38,8 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\Teigha\12\Teigha_vc12dlldbg\TD\Include;E:\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_VC12;_TOOLKIT_IN_DLL_;WIN32;_WINDOWS;_DEBUG;ODAMFC_EXPORT_SYMBOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\Teigha\14\Teigha_vc14dlldbg\Core\Include;E:\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_VC14;_TOOLKIT_IN_DLL_;WIN32;_WINDOWS;_DEBUG;ODAMFC_EXPORT_SYMBOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
@@ -55,7 +55,7 @@
     <ProjectReference />
     <Link>
       <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Db.lib;TD_Gs.lib;TD_Key.lib;RecomputeDimBlock.lib;sisl.lib;htmlhelp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\Teigha\12\Teigha_vc12dlldbg\lib\vc12dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Teigha\14\Teigha_vc12dlldbg\lib\vc14dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
@@ -65,31 +65,31 @@
     <Bscmake />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExRender\BmpTilesGen.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExRender\BmpTilesGen.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExDbCommandContext.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExDbCommandContext.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExFileUndoController.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExFileUndoController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExHostAppServices.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExHostAppServices.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExPageController.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExPageController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExStringIO.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExStringIO.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExSystemServices.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExSystemServices.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\ExUndoController.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExUndoController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Teigha\12\Teigha_vc12dlldbg\TD\Extensions\ExServices\OdFileBuf.cpp">
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\OdFileBuf.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSysApp.cpp">
