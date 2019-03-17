@@ -1035,7 +1035,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 		EoDbLayer* Layer = GetLayerAt(pathName);
 		if (Layer != 0) {
 
-			CFile File = CFile(pathName, CFile::modeCreate | CFile::modeWrite);
+			CFile File(pathName, CFile::modeCreate | CFile::modeWrite);
 			if (File == CFile::hFileNull) {
 				theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, pathName);
 				return FALSE;
@@ -1326,7 +1326,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 		EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(name);
 		if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 			if (FileType == EoDb::kJob) {
-				CFile File = CFile(name, CFile::modeWrite | CFile::modeCreate);
+				CFile File(name, CFile::modeWrite | CFile::modeCreate);
 				if (File == CFile::hFileNull) {
 					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
 					return (false);
@@ -1857,7 +1857,7 @@ void AeSysDoc::OnTracingOff() {
 	EoDbLayer* Layer = GetLayerAt(m_IdentifiedLayerName);
 
 	if (Layer->IsCurrent()) {
-		CFile File = CFile(m_IdentifiedLayerName, CFile::modeWrite | CFile::modeCreate);
+		CFile File(m_IdentifiedLayerName, CFile::modeWrite | CFile::modeCreate);
 		if (File != CFile::hFileNull) {
 			EoDbJobFile JobFile;
 			JobFile.WriteHeader(File);

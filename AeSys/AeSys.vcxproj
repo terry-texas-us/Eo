@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="vc12dlldbg|Win32">
-      <Configuration>vc12dlldbg</Configuration>
+    <ProjectConfiguration Include="vc14dlldbg|Win32">
+      <Configuration>vc14dlldbg</Configuration>
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
@@ -12,7 +12,7 @@
     <Keyword>MFCProj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <PlatformToolset>v140</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
@@ -21,25 +21,25 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
-    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">true</LinkIncremental>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">
     <CodeAnalysisRuleSet>NativeRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>E:\Teigha\14\Teigha_vc14dlldbg\Core\Include;E:\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_VC14;_TOOLKIT_IN_DLL_;WIN32;_WINDOWS;_DEBUG;ODAMFC_EXPORT_SYMBOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
@@ -47,6 +47,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <MinimalRebuild>true</MinimalRebuild>
       <Optimization>Disabled</Optimization>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -55,48 +56,50 @@
     <ProjectReference />
     <Link>
       <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Db.lib;TD_Gs.lib;TD_Key.lib;RecomputeDimBlock.lib;sisl.lib;htmlhelp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\Teigha\14\Teigha_vc12dlldbg\lib\vc14dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\Teigha\14\Teigha_vc14dlldbg\lib\vc14dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers />
+      <ShowProgress>LinkVerboseLib</ShowProgress>
     </Link>
     <Bscmake />
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExRender\BmpTilesGen.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExDbCommandContext.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExFileUndoController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExHostAppServices.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExKWIndex.cpp" />
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExPageController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExStringIO.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExSystemServices.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExUndoController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\OdFileBuf.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSysApp.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSysDoc.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EoAppAuditInfo.cpp" />
     <ClCompile Include="EoDialogResizeHelper.cpp" />
@@ -108,7 +111,7 @@
     <ClCompile Include="EoGripperScrollBar.cpp" />
     <ClCompile Include="EoMfcExport.cpp" />
     <ClCompile Include="AeSysView.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EoExEditorObject.cpp" />
     <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
@@ -222,7 +225,7 @@
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="EoDlgSelectIsometricView.cpp" />
     <ClCompile Include="Stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc12dlldbg|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc14dlldbg|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EoDlgTrapFilter.cpp" />
     <ClCompile Include="EoDlgViewParameters.cpp" />

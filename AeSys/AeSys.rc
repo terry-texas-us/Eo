@@ -72,12 +72,19 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDR_MAINFRAME           ICON                    "res\\AeSys.ico"
+
 IDR_AESYSTYPE           ICON                    "res\\AeSys.ico"
+
 IDR_TRACINGTYPE         ICON                    "res\\AeSys_Gold.ico"
+
 IDI_OUTPUT_WND          ICON                    "res\\output_wnd.ico"
+
 IDI_OUTPUT_WND_HC       ICON                    "res\\output_wnd_hc.ico"
+
 IDI_PROPERTIES_WND      ICON                    "res\\properties_wnd.ico"
+
 IDI_PROPERTIES_WND_HC   ICON                    "res\\properties_wnd_hc.ico"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -85,17 +92,29 @@ IDI_PROPERTIES_WND_HC   ICON                    "res\\properties_wnd_hc.ico"
 //
 
 IDR_MAINFRAME           BITMAP                  "res\\Toolbar.bmp"
+
 IDR_MAINFRAME_256       BITMAP                  "res\\Toolbar256.bmp"
+
 IDR_PROPERTIES          BITMAP                  "res\\properties.bmp"
+
 IDB_PROPERTIES_HC       BITMAP                  "res\\properties_hc.bmp"
+
 IDB_LAYER_FILTERS       BITMAP                  "res\\layer_filters.bmp"
+
 IDB_LAYER_STATES        BITMAP                  "res\\LayerStates.bmp"
+
 IDB_LAYER_STATES_HC     BITMAP                  "res\\LayerStates_hc.bmp"
+
 IDB_PS_BITMAP_GENERAL_CTB BITMAP                  "res\\psbmpctb.bmp"
+
 IDB_PS_BITMAP_GENERAL_STB BITMAP                  "res\\psbmpstb.bmp"
+
 IDB_PS_BITMAP_CHECK     BITMAP                  "res\\psbmpchk.bmp"
+
 IDB_PS_BITMAP_WHITE     BITMAP                  "res\\psbmpwht.bmp"
+
 IDB_SELECT_TRUE_COLOR   BITMAP                  "res\\bitmap1.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -1586,8 +1605,8 @@ CAPTION "About AeSys"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
     ICON            IDR_MAINFRAME,IDC_STATIC,21,25,20,20
-    LTEXT           "AeSys, Version 12.11",IDC_STATIC,50,28,70,8,SS_NOPREFIX
-    LTEXT           "© 2003 - 2012 Fanning, Fanning & Assoc.",IDC_STATIC,40,39,131,8
+    LTEXT           "AeSys, Version 4.01_14",IDC_STATIC,50,28,77,8,SS_NOPREFIX
+    LTEXT           "© 2003 - 2019 Fanning, Fanning & Assoc.",IDC_STATIC,40,39,130,8
     DEFPUSHBUTTON   "OK",IDOK,71,63,50,14,WS_GROUP
 END
 
@@ -2901,19 +2920,44 @@ END
 //
 
 IDR_ANNOTATE_MODE       CURSOR                  "res\\AnnotateMode.cur"
+
 IDR_CUT_MODE            CURSOR                  "res\\CutMode.cur"
+
 IDR_DIMENSION_MODE      CURSOR                  "res\\DimensionMode.cur"
+
 IDR_DRAW2_MODE          CURSOR                  "res\\Draw2Mode.cur"
+
 IDR_DRAW_MODE           CURSOR                  "res\\DrawMode.cur"
+
 IDR_EDIT_MODE           CURSOR                  "res\\EditMode.cur"
+
 IDR_FIXUP_MODE          CURSOR                  "res\\FixupMode.cur"
+
 IDR_LPD_MODE            CURSOR                  "res\\LowPressureDuct.cur"
+
 IDR_NODAL_MODE          CURSOR                  "res\\NodalMode.cur"
+
 IDR_NODALR_MODE         CURSOR                  "res\\NodalRMode.cur"
+
 IDR_PIPE_MODE           CURSOR                  "res\\PipeMode.cur"
+
 IDR_POWER_MODE          CURSOR                  "res\\PowerMode.cur"
+
 IDR_TRAP_MODE           CURSOR                  "res\\TrapMode.cur"
+
 IDR_TRAPR_MODE          CURSOR                  "res\\TrapRMode.cur"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// AFX_DIALOG_LAYOUT
+//
+
+IDD_ABOUTBOX AFX_DIALOG_LAYOUT
+BEGIN
+    0
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //

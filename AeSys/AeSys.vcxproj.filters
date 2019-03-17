@@ -453,6 +453,9 @@
     <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\OdFileBuf.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\Teigha\14\Teigha_vc14dlldbg\Core\Extensions\ExServices\ExKWIndex.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AeSys.rc2">

@@ -56,7 +56,7 @@ OdString ucsString(const OdDbObject* pViewObj) {
 		res = L"Right";
 		break;
 	default: {
-			OdDbUCSTableRecordPtr pUCS = pViewPE->ucsName(pViewObj).openObject();
+			OdDbUCSTableRecordPtr pUCS = OdDbObjectId(pViewPE->ucsName(pViewObj)).openObject();
 			if (pUCS.get()) {
 				res = pUCS->getName();
 			}

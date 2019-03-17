@@ -53,7 +53,7 @@ void EoCtrlColorsButton::DrawCell(CDC* deviceContext, EoUInt16 index, COLORREF c
 			deviceContext->FrameRect(&CellRectangle, &InnerFrameBrush);
 			CellRectangle.DeflateRect(1, 1);
 		}
-		CBrush Brush = CBrush(color);
+		CBrush Brush(color);
 		deviceContext->FillRect(&CellRectangle, &Brush);
 	}
 }
