@@ -839,6 +839,7 @@ void EoExGripManager::selectionSetChanged(OdDbSelectionSetPtr selectionSet) {
 		}
 		disable(false);
 	}
+	OdDbDatabase* pDb = OdDbDatabase::cast(selectionSet->baseDatabase()).get();
 	// Old Entities.
 	{
 		OdDbObjectIdArray aOld;
@@ -889,8 +890,8 @@ void EoExGripManager::selectionSetChanged(OdDbSelectionSetPtr selectionSet) {
 		OdUInt32 i, iSize = aOld.size();
 		for (i = 0; i < iSize; i++) {
 			removeEntityGrips(aOld[i], true); 
-			if (i % GM_PAGE_EACH_OBJECT)
-				aOld[i].database()->appServices()->pageObjects(aOld[i].database());
+			if (i % GM_PAGE_EACH_OBJECT && pDb)
+			    pDb->pageObjects();
 		}
 	}
 	// New Entities.
@@ -909,7 +910,7 @@ void EoExGripManager::selectionSetChanged(OdDbSelectionSetPtr selectionSet) {
 		for (i = 0; i < iSize; i++) {
 			updateEntityGrips(aNew[i]); 
 			if (i % GM_PAGE_EACH_OBJECT)
-				aNew[i].database()->appServices()->pageObjects(aNew[i].database());
+				pDb->pageObjects();
 		}
 	}
 	updateInvisibleGrips();

@@ -17,7 +17,7 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) {
 	Class.cbWndExtra = 0;
 	Class.hInstance = instance;
 	Class.hIcon = 0;
-	Class.hCursor = (HCURSOR) ::LoadImage(HINSTANCE(NULL), MAKEINTRESOURCE(IDC_CROSS), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE);
+	Class.hCursor = (HCURSOR) ::LoadImage(HINSTANCE(NULL), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE);
 	Class.hbrBackground	= (HBRUSH) ::GetStockObject(BLACK_BRUSH);
 	Class.lpszMenuName = 0;
 	Class.lpszClassName	= L"PreviewWindow";

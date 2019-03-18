@@ -225,6 +225,7 @@ AeSysApp::~AeSysApp() {
 AeSysApp::AeSysApp() :
 m_nProgressPos(0),
 m_nProgressLimit(100),
+m_nPercent(0),
 m_pAuditDlg(NULL),
 m_bUseGsModel(TRUE),
 m_numGSMenuItems(0),

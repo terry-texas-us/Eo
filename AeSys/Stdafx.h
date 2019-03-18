@@ -57,6 +57,9 @@
 // #define DEV_COMMAND_VIEW 1
 
 #include "OdaCommon.h"
+#include "DbExport.h"
+#include "DbObject.h"
+
 #include "Ge/GeTol.h"
 #include "Ge/GePoint3d.h"
 #include "Ge/GeScale3d.h"

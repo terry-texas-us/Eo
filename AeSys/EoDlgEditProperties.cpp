@@ -89,7 +89,7 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 	m_propList.InsertColumn(0, L"DXF code", LVCFMT_LEFT, 180);
 	m_propList.InsertColumn(1, L"Value", LVCFMT_LEFT, 120);
 
-	m_pResBuf = oddbEntGet(m_pObjectId, L"*");
+    m_pResBuf = oddbEntGet(m_pObjectId, L"*");
 	int i = 0;
 	for (OdResBufPtr rb = m_pResBuf; !rb.isNull(); ++i, rb = rb->next()) {
 		m_propList.InsertItem(i, FormatCode(rb));

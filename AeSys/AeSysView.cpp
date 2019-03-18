@@ -49,6 +49,7 @@ IMPLEMENT_DYNCREATE(AeSysView, CView)
 AeSysView::AeSysView() :
 m_hWindowDC(0),
 m_bRegenAbort(false),
+m_bPsOverall(false),
 m_mode(kQuiescent),
 m_pTracker(0),
 m_bTrackerHasDrawables(false),
@@ -3757,7 +3758,7 @@ void AeSysView::SetModeCursor(int mode) {
 		break;
 
 	default:
-		::SetCursor((HCURSOR) ::LoadImage(HINSTANCE(NULL), MAKEINTRESOURCE(IDC_CROSS), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
+		::SetCursor((HCURSOR) ::LoadImage(HINSTANCE(NULL), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
 		return;
 	}
 	HCURSOR CursorHandle = (HCURSOR) ::LoadImage(theApp.GetInstance(), MAKEINTRESOURCE(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE);
