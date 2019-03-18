@@ -4,7 +4,6 @@
 #include "DbCommandContext.h"
 #include "Ed/EdCommandStack.h"
 #include "ExDbCommandContext.h"
-#include "ExStringIO.h"
 #include "StaticRxObject.h"
 #include "SharedPtr.h"
 #include "DbLayoutManager.h"
@@ -19,6 +18,7 @@
 
 class AeSysDoc;
 class AeSysView;
+class ExStringIO;
 
 #ifdef DEV_COMMAND_CONSOLE
 class EoDlgUserIOConsole;
@@ -72,7 +72,7 @@ public:
 
 typedef OdSmartPtr<OdDbDatabaseDoc> OdDbDatabaseDocPtr;
 
-class COdaMfcAppDocStaticRxObjects : public OdDbLayoutManagerReactor
+class AeSysAppDocStaticRxObjects : public OdDbLayoutManagerReactor
 #ifdef DEV_COMMAND_CONSOLE
 	                               , public OdEdBaseIO
 #endif // DEV_COMMAND_CONSOLE
@@ -81,7 +81,7 @@ class COdaMfcAppDocStaticRxObjects : public OdDbLayoutManagerReactor
 };
 
 class AeSysDoc : public COleDocument
-	           , protected OdStaticRxObject<COdaMfcAppDocStaticRxObjects>
+	           , protected OdStaticRxObject<AeSysAppDocStaticRxObjects>
 {
 protected:
 	using COleDocument::operator new;
