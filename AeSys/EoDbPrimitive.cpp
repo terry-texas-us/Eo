@@ -20,9 +20,7 @@ EoDbPrimitive::EoDbPrimitive(EoInt16 colorIndex, EoInt16 linetypeIndex)
 }
 EoDbPrimitive::~EoDbPrimitive() {
 }
-EoInt16 EoDbPrimitive::ColorIndex() const {
-	return m_ColorIndex;
-}
+
 void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) {
 }
 void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr database) {
@@ -37,9 +35,6 @@ bool EoDbPrimitive::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoi
 	CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
-}
-OdDbObjectId EoDbPrimitive::EntityObjectId() const {
-	return m_EntityObjectId;
 }
 CString EoDbPrimitive::FormatColorIndex() const {
 	CString str;
@@ -95,9 +90,6 @@ void EoDbPrimitive::ModifyState() {
 	m_ColorIndex = pstate.ColorIndex();
 	m_LinetypeIndex = pstate.LinetypeIndex();
 }
-EoInt16 EoDbPrimitive::LinetypeIndex() const {
-	return m_LinetypeIndex;
-}
 size_t EoDbPrimitive::ControlPointIndex() {
 	return sm_ControlPointIndex;
 }
@@ -119,9 +111,7 @@ void EoDbPrimitive::SetLayerLinetypeIndex(EoInt16 linetypeIndex) {
 double EoDbPrimitive::RelationshipOfPoint() {
 	return sm_RelationshipOfPoint;
 }
-void EoDbPrimitive::SetEntityObjectId(OdDbObjectId entityObjectId) {
-	m_EntityObjectId = entityObjectId;
-}
+
 void EoDbPrimitive::SetColorIndex(EoInt16 colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (!m_EntityObjectId.isNull()) {
@@ -129,6 +119,7 @@ void EoDbPrimitive::SetColorIndex(EoInt16 colorIndex) {
 		Entity->setColorIndex(colorIndex);
 	}
 }
+
 void EoDbPrimitive::SetLinetypeIndex(EoInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 
@@ -139,6 +130,7 @@ void EoDbPrimitive::SetLinetypeIndex(EoInt16 linetypeIndex) {
 		Entity->setLinetype(Linetype);
 	}
 }
+
 EoInt16 EoDbPrimitive::HighlightColorIndex() {
 	return sm_HighlightColorIndex;
 }

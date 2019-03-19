@@ -79,16 +79,19 @@ public: // Methods - virtuals
 	virtual bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
-	EoInt16 ColorIndex() const;
-	OdDbObjectId EntityObjectId() const;
+	EoInt16 ColorIndex() const {return m_ColorIndex;}
+	OdDbObjectId EntityObjectId() const {return m_EntityObjectId;}
 	CString FormatColorIndex() const;
 	CString FormatLinetypeIndex() const;
-	EoInt16 LinetypeIndex() const;
+	EoInt16 LinetypeIndex() const {return m_LinetypeIndex;}
 	EoInt16 LogicalColorIndex() const;
 	EoInt16 LogicalLinetypeIndex() const;
+
 	void SetColorIndex(EoInt16 colorIndex);
-	void SetEntityObjectId(OdDbObjectId entity);
+	void SetColorIndex_(EoInt16 colorIndex) {m_ColorIndex = colorIndex;}
+	void SetEntityObjectId(OdDbObjectId entityObjectId) {m_EntityObjectId = entityObjectId;}
 	void SetLinetypeIndex(EoInt16 linetypeIndex);
+	void SetLinetypeIndex_(EoInt16 linetypeIndex) {m_LinetypeIndex = linetypeIndex;}
 
 public: // Methods - static
 	static size_t ControlPointIndex();
