@@ -1065,12 +1065,12 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 		break;
 	}
 	case EoDb::kDxf: {
-		m_DatabasePtr->writeFile(pathName, OdDb::kDxf, OdDb::kDHL_CURRENT);
+		m_DatabasePtr->writeFile(pathName, OdDb::kDxf, OdDb::kDHL_PRECURR);
 		ReturnStatus = TRUE;
 		break;
 	}
 	case EoDb::kDwg: {
-		m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_CURRENT);
+		m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_PRECURR);
 		ReturnStatus = TRUE;
 		break;
 	}
