@@ -426,17 +426,8 @@
     <ClCompile Include="EoDlgPassword.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
-      <Filter>Source Files\ExServices</Filter>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
+      <Filter>Source Files\ExRender</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
       <Filter>Source Files\ExServices</Filter>
@@ -450,11 +441,20 @@
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
-      <Filter>Source Files\ExRender</Filter>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
+      <Filter>Source Files\ExServices</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
       <Filter>Source Files\ExServices</Filter>
