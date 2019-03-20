@@ -1170,7 +1170,7 @@ void AeSysApp::InitGbls(CDC* deviceContext) {
 	pstate.SetPointDisplayMode(1);
 }
 BOOL AeSysApp::InitializeTeigha() {
-	try 	{
+	try {
 		::odInitialize(this);
 
 		EoLoadApps::rxInit();
@@ -1216,7 +1216,6 @@ BOOL AeSysApp::InitializeTeigha() {
 }
 BOOL AeSysApp::InitInstance() {
 	if (!AfxOleInit()) { // Failed to initialize OLE support for the application.
-	
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
 	}
