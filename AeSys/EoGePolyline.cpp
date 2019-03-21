@@ -121,9 +121,13 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	MajorAxis *= radius;
 	MinorAxis *= radius;
 
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(MajorAxis.length(), MinorAxis.length(), 1.));
+
 	EoGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(centerPoint, MajorAxis, MinorAxis));
-	
+	PlaneToWorldTransform.postMultBy(ScaleMatrix);
+
 	// Determine the parameter (angular increment)
 	double AngleIncrement = TWOPI / double(numberOfPoints);
 	double CosIncrement = cos(AngleIncrement);
