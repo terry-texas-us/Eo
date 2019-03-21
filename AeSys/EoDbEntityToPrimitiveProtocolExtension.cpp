@@ -437,6 +437,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) ArcDimensionEntity->desc()->name());
 	}
 };
+
 class EoDbAttributeDefinition_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -454,6 +455,7 @@ public:
 		//ATLTRACE2(atlTraceGeneral, 2, L"Locked in Position: %i\n", (PCTSTR) attribute->lockPositionInBlock());
 	}
 };
+
 class EoDbBlockReference_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -485,6 +487,7 @@ public:
 		}
 	}
 };
+
 class EoDbBody_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -492,6 +495,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) BodyEntity->desc()->name());
 	}
 };
+
 class EoDbCircle_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -504,6 +508,7 @@ public:
 		group->AddTail(CirclePrimitive);
 	}
 };
+
 class EoDbDiametricDimension_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -511,6 +516,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) DiametricDimensionEntity->desc()->name());
 	}
 };
+
 class EoDbEllipse_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	/// <remarks>
@@ -548,6 +554,7 @@ public:
 
 	}
 };
+
 class EoDbFace_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	/// <remarks>Four sided, not necessarily planar, surface. It hides other objects and fills with solid color. No support for individual edge visibilty.</remarks>
@@ -570,6 +577,7 @@ public:
 		group->AddTail(HatchPrimitive);
 	}
 };
+
 class EoDbFcf_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -577,6 +585,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) FcfEntity->desc()->name());
 	}
 };
+
 class EoDbHatch_Converter : public EoDbConvertEntityToPrimitive {
 private:
 	static void ConvertPolylineType(int loopIndex , OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive) {
@@ -759,6 +768,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 2, L"Normal: %f, %f, %f\n", HatchEntity->normal()[0], HatchEntity->normal()[1], HatchEntity->normal()[2]);
 	}
 };
+
 class EoDbLeader_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -775,6 +785,7 @@ public:
 		}
 	}
 };
+
 class EoDbLine_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -784,6 +795,7 @@ public:
 		group->AddTail(EoDbLine::Create(Entity));
 	}
 };
+
 class EoDbMInsertBlock_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -808,6 +820,7 @@ public:
 		group->AddTail(BlockReferencePrimitive);
 	}
 };
+
 class EoDbMline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -815,6 +828,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) MlineEntity->desc()->name());
 	}
 };
+
 class EoDbMText_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -908,6 +922,7 @@ public:
 		group->AddTail(TextPrimitive);
 	}
 };
+
 class EoDbOrdinateDimension_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -915,6 +930,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) OrdinateDimensionEntity->desc()->name());
 	}
 };
+
 class EoDbPolyFaceMesh_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -922,6 +938,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) PolyFaceMeshEntity->desc()->name());
 	}
 };
+
 class EoDbOle2Frame_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -929,6 +946,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) Ole2FrameEntity->desc()->name());
 	}
 };
+
 class EoDbPoint_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -942,6 +960,7 @@ public:
 		group->AddTail(PointPrimitive);
 	}
 };
+
 class EoDbPolygonMesh_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -949,6 +968,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) PolygonMeshEntity->desc()->name());
 	}
 };
+
 class EoDbPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -976,6 +996,7 @@ public:
 		group->AddTail(PolylinePrimitive);
 	}
 };
+
 class EoDbProxyEntity_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -1021,6 +1042,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 2, L"Plot Style Name Change Allowed: %i\n", ProxyEntityEntity->plotStyleNameChangeAllowed());
 	}
 };
+
 class EoDbRadialDimension_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1028,6 +1050,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) RadialDimensionEntity->desc()->name());
 	}
 };
+
 class EoDbRasterImage_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1035,6 +1058,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) RasterImageEntity->desc()->name());
 	}
 };
+
 class EoDbRay_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1042,6 +1066,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) RayEntity->desc()->name());
 	}
 };
+
 class EoDbRegion_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1049,6 +1074,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) RegionEntity->desc()->name());
 	}
 };
+
 class EoDbRotatedDimension_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -1077,6 +1103,7 @@ public:
 		group->AddTail(BlockReferencePrimitive);
 	}
 };
+
 class EoDbShape_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1084,6 +1111,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) ShapeEntity->desc()->name());
 	}
 };
+
 class EoDbSolid_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	/// <remarks>
@@ -1113,6 +1141,7 @@ public:
 		group->AddTail(HatchPrimitive);
 	}
 };
+
 class EoDbSpline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -1161,6 +1190,7 @@ public:
 		}
 	}
 };
+
 class EoDbTable_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1168,6 +1198,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) TableEntity->desc()->name());
 	}
 };
+
 class EoDbText_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -1252,6 +1283,7 @@ public:
 		group->AddTail(TextPrimitive);
 	}
 };
+
 class EoDbTrace_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	/// <remarks>
@@ -1279,6 +1311,7 @@ public:
 		group->AddTail(HatchPrimitive);
 	}
 };
+
 class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
@@ -1353,6 +1386,7 @@ public:
 		//ConvertEntityData(ViewportEntity, );
 	}
 };
+
 class EoDbWipeout_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup*) {
@@ -1360,6 +1394,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) WipeoutEntity->desc()->name());
 	}
 };
+
 class EoDbXline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {

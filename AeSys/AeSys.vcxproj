@@ -42,7 +42,7 @@
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
