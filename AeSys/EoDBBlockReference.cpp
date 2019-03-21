@@ -96,7 +96,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	LeftMatrix.preMultBy(RightMatrix);
 	RightMatrix.setToRotation(m_Rotation, OdGeVector3d::kZAxis);
 	LeftMatrix.preMultBy(RightMatrix);
-	RightMatrix.setToPlaneToWorld(m_Normal);
+	RightMatrix.setToPlaneToWorld(m_Normal); // <tas="setToPlaneToWorld method change vs2013 to vs2015. It likely will not matter since this call uses normal instead of major, minor axis like ellipse usage. Have not checked if this is broken."</tas>
 	LeftMatrix.preMultBy(RightMatrix);
 	RightMatrix.setToTranslation(m_Position.asVector());
 	LeftMatrix.preMultBy(RightMatrix);
