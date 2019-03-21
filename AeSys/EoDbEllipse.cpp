@@ -211,9 +211,12 @@ void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.AddStringToMessageList(Report);
 }
 void EoDbEllipse::GenPts(const OdGePlane& plane, double sweepAngle) const {
-	EoGeMatrix3d PlaneToWorldTransform;
-	PlaneToWorldTransform.setToPlaneToWorld(plane);
-		
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.));
+
+	OdGeMatrix3d PlaneToWorldTransform;
+	PlaneToWorldTransform.setToPlaneToWorld(plane); // <tas=Builds a matrix which performs rotation and translation, but no scaling.</tas>
+
 	// Number of points based on angle and a smothness coefficient
 	double dLen = EoMax(m_MajorAxis.length(), m_MinorAxis.length());
 	int iPts = EoMax(2, abs(EoRound(sweepAngle / TWOPI * 32.)));
@@ -222,11 +225,14 @@ void EoDbEllipse::GenPts(const OdGePlane& plane, double sweepAngle) const {
 	double dAng = m_SweepAngle / (iPts - 1);
 	double dCos = cos(dAng);
 	double dSin = sin(dAng);
-
+		
+	// Generate an origin-centered unit radial curve, then scale before transforming back the world
+	
 	OdGePoint3d pt(1., 0., 0.);
 
 	for (int i = 0; i < iPts; i++) {
-		polyline::SetVertex(PlaneToWorldTransform * pt);
+		polyline::SetVertex(PlaneToWorldTransform * ScaleMatrix * pt);
+
 		double X = pt.x;
 		pt.x = X * dCos - pt.y * dSin;
 		pt.y = pt.y * dCos + X * dSin;
@@ -299,16 +305,24 @@ void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& ptsBox) const {
 			}
 		}
 	}
-	EoGeMatrix3d PlaneToWorldTransform;
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.));
+
+	OdGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis));
+	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
 	for (EoUInt16 w = 0; w < 4; w++) {
 		ptsBox[w].transformBy(PlaneToWorldTransform);
 	}
 }
 OdGePoint3d EoDbEllipse::EndPoint() const {
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.));
+
 	EoGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis));
+	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
 	OdGePoint3d pt(cos(m_SweepAngle), sin(m_SweepAngle), 0.);
 
@@ -958,8 +972,12 @@ EoDbEllipse* EoDbEllipse::Create(const EoDbEllipse& other, OdDbDatabasePtr datab
 
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double dAng) {
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(majorAxis.length(), minorAxis.length(), 1.));
+
 	EoGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(center, majorAxis, minorAxis));
+	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
 	OdGePoint3d pt(cos(dAng), sin(dAng), 0.);
 
