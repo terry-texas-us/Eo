@@ -30,7 +30,6 @@
 #include "EoDlgNamedViews.h"
 
 #include "EoDbJobFile.h"
-#include "EoDbPegFile.h"
 #include "EoDlgDrawOptions.h"
 #include "EoDlgEditTrapCommandsQuery.h"
 #include "EoDlgFileManage.h"

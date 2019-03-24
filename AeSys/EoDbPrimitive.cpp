@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
-#include "EoDbPrimitive.h"
 
 EoInt16	EoDbPrimitive::sm_LayerColorIndex = 1;
 EoInt16	EoDbPrimitive::sm_LayerLinetypeIndex = 1;

@@ -5,7 +5,6 @@
 #define STL_USING_ALGORITHM
 #include "OdaSTL.h"
 #include "UInt32Array.h"
-#include "Ge/GePoint3d.h"
 #include "Gi/GiDrawableImpl.h"
 #include "Gi/GiWorldDraw.h"
 #include "Gi/GiViewportDraw.h"

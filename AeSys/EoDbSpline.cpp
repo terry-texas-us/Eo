@@ -2,7 +2,6 @@
 #include "AeSysApp.h"
 #include "AeSysView.h"
 
-#include "Ge/GeKnotVector.h"
 #include "DbSpline.h"
 
 EoDbSpline::EoDbSpline() {

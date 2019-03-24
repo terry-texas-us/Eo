@@ -3,8 +3,6 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-#include "DbLine.h"
-
 EoDbLine::EoDbLine() {
 }
 EoDbLine::EoDbLine(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {

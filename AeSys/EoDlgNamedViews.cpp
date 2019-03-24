@@ -3,17 +3,12 @@
 #include "AeSysDoc.h"
 #include "EoDlgNamedViews.h"
 #include "DbLayout.h"
-#include "DbViewport.h"
 
 #include "DbViewTable.h"
 #include "DbViewTableRecord.h"
-#include "DbViewportTable.h"
-#include "DbViewportTableRecord.h"
-#include "DbBlockTableRecord.h"
 #include "EoDlgNewView.h"
 #include "DbLayerState.h"
 #include "DbUCSTableRecord.h"
-#include "DbSymUtl.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

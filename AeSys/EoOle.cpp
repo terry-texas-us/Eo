@@ -3,10 +3,8 @@
 #include "AeSysDoc.h"
 #include "afxodlgs.h"
 #include "DbOle2Frame.h"
-#include "DbBlockTableRecord.h"
 #include "OleItemHandlerBase.h"
 #include "MemoryStream.h"
-#include "Ge/GeScale3d.h"
 
 #include "Ed/EdCommandStack.h"
 #include "DbSSet.h"

@@ -3,13 +3,10 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-#include "EoGsModelTransform.h"
-
 #include "AbstractViewPE.h"
 #include "ColorMapping.h"
 #include "DbAbstractViewportData.h"
 #include "DbViewTable.h"
-#include "DbViewportTableRecord.h"
 #include "DbViewTableRecord.h"
 #include "DbGsManager.h"
 #include "RxVariantValue.h"

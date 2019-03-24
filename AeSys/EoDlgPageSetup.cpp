@@ -11,7 +11,6 @@
 #include "EoDlgPageSetup.h"
 #include "winspool.h"
 #include "DbPlotSettingsValidator.h"
-#include "DbDatabase.h"
 #include "DbHostAppServices.h"
 #include "EoDlgPlotStyleTableEditor.h"
 #include "DbSymbolTable.h"
