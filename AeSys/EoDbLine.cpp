@@ -459,10 +459,11 @@ OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr b
 EoDbLine* EoDbLine::Create(OdDbLinePtr line) {
 	EoDbLine* Line = new EoDbLine();
 	Line->SetEntityObjectId(line->objectId());
-	Line->SetColorIndex(line->colorIndex());
-	Line->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
-	Line->SetStartPoint(line->startPoint());
-	Line->SetEndPoint(line->endPoint());
+	Line->SetColorIndex_(line->colorIndex());
+	Line->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
+	
+	Line->SetStartPoint_(line->startPoint());
+	Line->SetEndPoint_(line->endPoint());
 	
 	return Line;
 }
