@@ -55,6 +55,6 @@ public:
 	void Write(EoDbFile& file);
 	void Write(CFile& file, EoByte* buffer);
 
-public: // static methods
+public: // Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive);
 };
