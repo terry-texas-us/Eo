@@ -641,7 +641,7 @@ void AeSysApp::RemoveReactor(EoApplicationReactor* reactor) {
 #endif // ODAMFC_EXPORT_SYMBOL
 
 OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
-	CMainFrame* MainFrame = (CMainFrame*)GetMainWnd();
+	CMainFrame* MainFrame = (CMainFrame*) GetMainWnd();
 	OdDbDatabasePtr Database;
 
 	// ODA_MT_DBIO_BEGIN
@@ -656,58 +656,11 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 		CWaitCursor wait;
 		OdString PathName(pathName);
 		if (PathName.right(4).iCompare(L".dgn") == 0) {
-			/* <tas="Likely will never support dgn>
-						OdDgnImportModulePtr pModule = ::odrxDynamicLinker()->loadApp(OdDgnImportModuleName, false);
-						OdDgnImportPtr importer = pModule->create();
-						importer->properties()->putAt( L"Services", static_cast<ExHostAppServices*>(this) );
-						importer->properties()->putAt( L"DgnPath", OdRxVariantValue(PathName) );
-						OdDgnImport::ImportResult res = importer->import();
-						if (res == OdDgnImport::success)
-						Database = importer->properties()->getAt(L"Database");
-						else
-						{
-						switch(res)
-						{
-						case OdDgnImport::bad_database:
-						messageBox(L"DGN import", L"Bad database", MB_OK | MB_ICONERROR);
-						break;
-						case OdDgnImport::bad_file:
-						messageBox(L"DGN import", L"Bad file", MB_OK | MB_ICONERROR);
-						break;
-						case OdDgnImport::encrypted_file:
-						case OdDgnImport::bad_password:
-						messageBox(L"DGN import", L"The file is encrypted", MB_OK | MB_ICONERROR);
-						break;
-						case OdDgnImport::fail:
-						messageBox(L"DGN import", L"Unknown import error", MB_OK | MB_ICONERROR);
-						break;
-						}
-						}
-						</tas> */
+			// <tas="Likely will never support dgn"</tas>
 			MainFrame->StopTimer(L"Loading");
 		}
 		else if (PathName.right(4).iCompare(L".dwf") == 0 || PathName.right(5).iCompare(L".dwfx") == 0) {
-			/* <tas="Will add support for dwf>
-						OdDwfImportModulePtr pModule = ::odrxDynamicLinker()->loadApp(OdDwf7ImportModuleName);
-						OdDwfImportPtr importer = pModule->create();
-						OdRxDictionaryPtr pProps = importer->properties();
-						Database = createDatabase();
-						pProps->putAt( OD_T("Database"), Database);
-						pProps->putAt( OD_T("DwfPath"), OdRxVariantValue(PathName) );
-						switch(importer->import())
-						{
-						case OdDwfImport::success:
-						break;
-						case OdDwfImport::bad_password:
-						messageBox(L"DWF import", L"The file is encrypted", MB_OK | MB_ICONERROR);
-						break;
-						default:
-						messageBox(L"DWF import", L"Import error", MB_OK | MB_ICONERROR);
-						break;
-						}
-						OdRxVariantValue backGround = (OdRxObject*)pProps->getAt(OD_T("Background"));
-						setActiveBackground( (ODCOLORREF)backGround->getInt32());
-						</tas> */
+			// <tas="Will add support for dwf"</tas>
 			MainFrame->StopTimer(L"Loading");
 		}
 		else if (m_bRecover) {
