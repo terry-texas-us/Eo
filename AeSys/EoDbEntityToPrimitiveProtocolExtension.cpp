@@ -22,7 +22,6 @@
 #include "DbFaceRecord.h"
 #include "DbFcf.h"
 #include "DbLeader.h"
-#include "DbLine.h"
 #include "DbMInsertBlock.h"
 #include "DbMText.h"
 #include "DbMline.h"
@@ -43,7 +42,6 @@
 #include "DbSolid.h"
 #include "DbSpline.h"
 #include "DbTable.h"
-#include "DbTextStyleTableRecord.h"
 #include "DbTrace.h"
 #include "DbUCSTableRecord.h"
 #include "DbWipeout.h"
@@ -52,7 +50,6 @@
 #include "Ge/GeCircArc3d.h"
 #include "Ge/GeCurve2d.h"
 #include "Ge/GeEllipArc2d.h"
-#include "Ge/GeKnotVector.h"
 #include "Ge/GeNurbCurve2d.h"
 #include "GeometryFromProxy.h"
 #include "Gs/Gs.h"
@@ -159,35 +156,9 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 			}
 		}
 	}
-	EoDb::VerticalAlignment VerticalAlignment;
-	switch (text->verticalMode()) {
-	case OdDb::kTextVertMid:
-		VerticalAlignment = EoDb::kAlignMiddle;
-		break;
+	EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
+	EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
 
-	case OdDb::kTextTop:
-		VerticalAlignment = EoDb::kAlignTop;
-		break;
-
-	default: // OdDb::kTextBottom & OdDb::kTextBase
-		VerticalAlignment = EoDb::kAlignBottom;
-	}
-	EoDb::HorizontalAlignment HorizontalAlignment;
-	switch (text->horizontalMode()) {
-	case OdDb::kTextMid:
-	case OdDb::kTextCenter:
-		HorizontalAlignment = EoDb::kAlignCenter;
-		break;
-
-	case OdDb::kTextRight:
-	case OdDb::kTextAlign:
-	case OdDb::kTextFit:
-		HorizontalAlignment = EoDb::kAlignRight;
-		break;
-
-	default: // OdDb::kTextLeft
-		HorizontalAlignment = EoDb::kAlignLeft;
-	}
 	OdGePoint3d AlignmentPoint = text->position();
 	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
 		AlignmentPoint = text->alignmentPoint();
@@ -215,19 +186,8 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	TextPrimitive->SetText((PCTSTR) text->textString());
 
 	ConvertEntityData(text, TextPrimitive);
-	group->AddTail(TextPrimitive);
 
-	ATLTRACE2(atlTraceGeneral, 2, L"Default Alignment: %i\n", text->isDefaultAlignment());
-	ATLTRACE2(atlTraceGeneral, 2, L"Mirrored in X: %i\n", text->isMirroredInX());
-	ATLTRACE2(atlTraceGeneral, 2, L"Mirrored in Y: %i\n", text->isMirroredInY());
-	OdGePoint3dArray points;
-	text->getBoundingPoints(points);
-	ATLTRACE2(atlTraceGeneral, 2, L"TL Bounding Point: %f, %f, %f\n", points[0]);
-	ATLTRACE2(atlTraceGeneral, 2, L"TR Bounding Point: %f, %f, %f\n", points[1]);
-	ATLTRACE2(atlTraceGeneral, 2, L"BL Bounding Point: %f, %f, %f\n", points[2]);
-	ATLTRACE2(atlTraceGeneral, 2, L"BR Bounding Point: %f, %f, %f\n", points[3]);
-	ATLTRACE2(atlTraceGeneral, 2, L"Normal: %f, %f, %f\n", text->normal());
-	ATLTRACE2(atlTraceGeneral, 2, L"Thickness: %f\n", text->thickness());
+	group->AddTail(TextPrimitive);
 };
 
 void ConvertAttributeData(OdDbAttribute* attribute) {
@@ -778,10 +738,10 @@ public:
 class EoDbLine_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
-		OdDbLinePtr Entity = entity;
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbLine ...\n", (LPCWSTR) Entity->desc()->name());
+		OdDbLinePtr Line = entity;
+		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbLine ...\n", (LPCWSTR) Line->desc()->name());
 
-		group->AddTail(EoDbLine::Create(Entity));
+		group->AddTail(EoDbLine::Create(Line));
 	}
 };
 class EoDbMInsertBlock_Converter : public EoDbConvertEntityToPrimitive {
@@ -1171,85 +1131,10 @@ public:
 class EoDbText_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
-		OdDbTextPtr TextEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbText ...\n", (PCTSTR) TextEntity->desc()->name());
+		OdDbTextPtr Text = entity;
+		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbText ...\n", (LPCWSTR) Text->desc()->name());
 
-		OdDbObjectId TextStyleObjectId = TextEntity->textStyle();
-		OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = TextStyleObjectId.safeOpenObject(OdDb::kForRead);
-		OdString FileName("Standard");
-		if (TextStyleTableRecordPtr->isShapeFile()) {
-			ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (PCTSTR) TextStyleTableRecordPtr->desc()->name());
-		}
-		else {
-			FileName = TextStyleTableRecordPtr->fileName();
-			int nExt = FileName.reverseFind('.');
-			if (nExt != - 1) {
-				if (FileName.mid(nExt).compare(L".shx") == 0) {
-					FileName = FileName.left(nExt);
-					for (int n = nExt; n < 8; n++) {
-						FileName += '_';
-					}
-					FileName += L".ttf";
-				}
-			}
-		}
-		EoDb::HorizontalAlignment HorizontalAlignment;
-		EoDb::VerticalAlignment VerticalAlignment;
-		switch (TextEntity->verticalMode()) {
-			case OdDb::kTextVertMid:
-				VerticalAlignment = EoDb::kAlignMiddle;
-				break;
-
-			case OdDb::kTextTop:
-				VerticalAlignment = EoDb::kAlignTop;
-				break;
-
-			default: // OdDb::kTextBottom & OdDb::kTextBase
-				VerticalAlignment = EoDb::kAlignBottom;
-		}
-		switch (TextEntity->horizontalMode()) {
-			case OdDb::kTextMid:
-			case OdDb::kTextCenter:
-				HorizontalAlignment = EoDb::kAlignCenter;
-				break;
-
-			case OdDb::kTextRight:
-			case OdDb::kTextAlign:
-			case OdDb::kTextFit:
-				HorizontalAlignment = EoDb::kAlignRight;
-				break;
-
-			default: // OdDb::kTextLeft
-				HorizontalAlignment = EoDb::kAlignLeft;
-		}
-		OdGePoint3d AlignmentPoint = TextEntity->position();
-		if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
-			AlignmentPoint = TextEntity->alignmentPoint();
-
-		EoDbFontDefinition FontDefinition;
-		FontDefinition.SetPrecision(EoDb::kEoTrueType);
-		FontDefinition.SetFontName((PCTSTR) FileName);
-		FontDefinition.SetHorizontalAlignment(HorizontalAlignment);
-		FontDefinition.SetVerticalAlignment(VerticalAlignment);
-
-		EoDbCharacterCellDefinition CharacterCellDefinition;
-		CharacterCellDefinition.SetHeight(TextEntity->height());
-		CharacterCellDefinition.SetWidthFactor(TextEntity->widthFactor());
-		CharacterCellDefinition.SetRotationAngle(TextEntity->rotation());
-		CharacterCellDefinition.SetObliqueAngle(TextEntity->oblique());
-
-		OdGeVector3d XDirection;
-		OdGeVector3d YDirection;
-		CharCellDef_EncdRefSys(TextEntity->normal(), CharacterCellDefinition, XDirection, YDirection);
-
-		EoGeReferenceSystem ReferenceSystem(AlignmentPoint, XDirection, YDirection);
-		EoDbText* TextPrimitive = new EoDbText();
-		TextPrimitive->SetFontDefinition(FontDefinition);
-		TextPrimitive->SetReferenceSystem(ReferenceSystem);
-		TextPrimitive->SetText((LPCWSTR) TextEntity->textString());
-
-		ConvertEntityData(TextEntity, TextPrimitive);
-		group->AddTail(TextPrimitive);
+		group->AddTail(EoDbText::Create(Text));
 	}
 };
 class EoDbTrace_Converter : public EoDbConvertEntityToPrimitive {
@@ -1369,51 +1254,52 @@ public:
 };
 
 class Converters {
-	OdStaticRxObject<EoDb2LineAngularDimension_Converter> m_2LineAngularDimensionConverter;
-	OdStaticRxObject<EoDb2dPolyline_Converter> m_2dPolylineConverter;
-	OdStaticRxObject<EoDb3PointAngularDimension_Converter> m_3PointAngularDimensionConverter;
-	OdStaticRxObject<EoDb3dPolyline_Converter> m_3dPolylineConverter;
+	OdStaticRxObject<EoDb2LineAngularDimension_Converter> m_2LineAngularDimensionConverter; // OdDbDimension
+	OdStaticRxObject<EoDb2dPolyline_Converter> m_2dPolylineConverter; // OdDbCurve
+	OdStaticRxObject<EoDb3PointAngularDimension_Converter> m_3PointAngularDimensionConverter; // OdDbDimension
+	OdStaticRxObject<EoDb3dPolyline_Converter> m_3dPolylineConverter; // OdDbCurve
 	OdStaticRxObject<EoDb3dSolid_Converter> m_3dSolidConverter;
-	OdStaticRxObject<EoDbAlignedDimension_Converter> m_AlignedDimensionConverter;
+	OdStaticRxObject<EoDbAlignedDimension_Converter> m_AlignedDimensionConverter; // OdDbDimension
 	OdStaticRxObject<EoDbArcAlignedText_Converter> m_ArcAlignedTextConverter;
-	OdStaticRxObject<EoDbArcDimension_Converter> m_ArcDimensionConverter;
-	OdStaticRxObject<EoDbArc_Converter> m_ArcConverter;
-	OdStaticRxObject<EoDbAttributeDefinition_Converter> m_AttributeDefinitionConverter;
+	OdStaticRxObject<EoDbArcDimension_Converter> m_ArcDimensionConverter; // OdDbDimension
+	OdStaticRxObject<EoDbArc_Converter> m_ArcConverter; // OdDbCurve
+	OdStaticRxObject<EoDbAttributeDefinition_Converter> m_AttributeDefinitionConverter; // OdDb_Text
 	OdStaticRxObject<EoDbBlockReference_Converter> m_BlockReference;
 	OdStaticRxObject<EoDbBody_Converter> m_BodyConverter;
-	OdStaticRxObject<EoDbCircle_Converter> m_CircleConverter;
-	OdStaticRxObject<EoDbDiametricDimension_Converter> m_DiametricDimensionConverter;
-	OdStaticRxObject<EoDbEllipse_Converter> m_EllipseConverter;
+	OdStaticRxObject<EoDbCircle_Converter> m_CircleConverter; // OdDbCurve
+	OdStaticRxObject<EoDbDiametricDimension_Converter> m_DiametricDimensionConverter; // OdDbDimension
+	OdStaticRxObject<EoDbEllipse_Converter> m_EllipseConverter; // OdDbCurve
 	OdStaticRxObject<EoDbConvertEntityToPrimitive> m_EntityConverter;
 	OdStaticRxObject<EoDbFace_Converter> m_FaceConverter;
 	OdStaticRxObject<EoDbFcf_Converter> m_FcfConverter;
 	OdStaticRxObject<EoDbHatch_Converter> m_HatchConverter;
-	OdStaticRxObject<EoDbLeader_Converter> m_LeaderConverter;
-	OdStaticRxObject<EoDbLine_Converter> m_LineConverter;
-	OdStaticRxObject<EoDbMInsertBlock_Converter> m_MInsertBlock;
+	OdStaticRxObject<EoDbLeader_Converter> m_LeaderConverter; // OdDbCurve
+	OdStaticRxObject<EoDbLine_Converter> m_LineConverter; // OdDbCurve
+	OdStaticRxObject<EoDbMInsertBlock_Converter> m_MInsertBlock; // OdDbBlockReference
 	OdStaticRxObject<EoDbMText_Converter> m_MTextConverter;
 	OdStaticRxObject<EoDbMline_Converter> m_MlineConverter;
 	OdStaticRxObject<EoDbOle2Frame_Converter> m_Ole2FrameConverter;
-	OdStaticRxObject<EoDbOrdinateDimension_Converter> m_OrdinateDimensionConverter;
+	OdStaticRxObject<EoDbOrdinateDimension_Converter> m_OrdinateDimensionConverter; // OdDbDimension
 	OdStaticRxObject<EoDbPoint_Converter> m_PointConverter;
 	OdStaticRxObject<EoDbPolyFaceMesh_Converter> m_PolyFaceMeshConverter;
 	OdStaticRxObject<EoDbPolygonMesh_Converter> m_PolygonMesh;
-	OdStaticRxObject<EoDbPolyline_Converter> m_PolylineConverter;
+	OdStaticRxObject<EoDbPolyline_Converter> m_PolylineConverter; // OdDbCurve
 	OdStaticRxObject<EoDbProxyEntity_Converter> m_ProxyEntityConverter;
-	OdStaticRxObject<EoDbRadialDimension_Converter> m_RadialDimensionConverter;
-	OdStaticRxObject<EoDbRasterImage_Converter> m_RasterImageConverter;
-	OdStaticRxObject<EoDbRay_Converter> m_RayConverter;
+	OdStaticRxObject<EoDbRadialDimension_Converter> m_RadialDimensionConverter; // OdDbDimension
+																				// OdDbRadialDimensionLarge << OdDbDimension
+	OdStaticRxObject<EoDbRasterImage_Converter> m_RasterImageConverter; // OdDbImage
+	OdStaticRxObject<EoDbRay_Converter> m_RayConverter; // OdDbCurve
 	OdStaticRxObject<EoDbRegion_Converter> m_RegionConverter;
-	OdStaticRxObject<EoDbRotatedDimension_Converter> m_RotatedDimensionConverter;
+	OdStaticRxObject<EoDbRotatedDimension_Converter> m_RotatedDimensionConverter; // OdDbDimension
 	OdStaticRxObject<EoDbShape_Converter> m_ShapeConverter;
 	OdStaticRxObject<EoDbSolid_Converter> m_SolidConverter;
-	OdStaticRxObject<EoDbSpline_Converter> m_SplineConverter;
-	OdStaticRxObject<EoDbTable_Converter> m_TableConverter;
+	OdStaticRxObject<EoDbSpline_Converter> m_SplineConverter; // OdDbCurve
+	OdStaticRxObject<EoDbTable_Converter> m_TableConverter; // OdDbBlockReference
 	OdStaticRxObject<EoDbText_Converter> m_TextConverter;
 	OdStaticRxObject<EoDbTrace_Converter> m_TraceConverter;
 	OdStaticRxObject<EoDbViewport_Converter> m_ViewportConverter;
 	OdStaticRxObject<EoDbWipeout_Converter> m_WipeoutConverter;
-	OdStaticRxObject<EoDbXline_Converter> m_XlineConverter;
+	OdStaticRxObject<EoDbXline_Converter> m_XlineConverter; // OdDbCurve
 
 public:
 	void AddExtensions() {

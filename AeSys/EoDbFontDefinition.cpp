@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 EoDbFontDefinition::EoDbFontDefinition()
-	: m_Precision(EoDb::kStrokeType), m_FontName(L"Simplex.psf"), m_Path(EoDb::kPathRight), m_HorizontalAlignment(EoDb::kAlignLeft), m_VerticalAlignment(EoDb::kAlignBottom), m_CharacterSpacing(0.) {
+	: m_Precision(EoDb::kEoTrueType), m_FontName(L"Simplex"), m_Path(EoDb::kPathRight), m_HorizontalAlignment(EoDb::kAlignLeft), m_VerticalAlignment(EoDb::kAlignBottom), m_CharacterSpacing(0.) {
 }
 EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
 	m_Precision = other.m_Precision;
