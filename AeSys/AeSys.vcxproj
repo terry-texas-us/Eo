@@ -54,7 +54,7 @@
     </ResourceCompile>
     <ProjectReference />
     <Link>
-      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Db.lib;TD_DbCore.lib;TD_DbEntities.lib;TD_DbIO.lib;TD_Gs.lib;TD_Key.lib;ATEXT.lib;ISM.lib;SCENEOE.lib;ACCAMERA.lib;RTEXT.lib;WipeOut.lib;AcMPolygonObj15.lib;RecomputeDimBlock.lib;htmlhelp.lib</AdditionalDependencies>
+      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;RecomputeDimBlock.lib;htmlhelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\ODA\15\Kernel_vc15dlldbg\lib\vc15dlldbg;E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AssemblyDebug>
