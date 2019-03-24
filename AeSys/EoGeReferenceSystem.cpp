@@ -45,7 +45,7 @@ OdGePoint3d EoGeReferenceSystem::Origin() const {
 EoGeMatrix3d EoGeReferenceSystem::TransformMatrix() const {
 	EoGeMatrix3d Matrix;
 	Matrix.setToWorldToPlane(OdGePlane(m_Origin, m_XDirection, m_YDirection));
-
+		
 	return (Matrix);
 }
 
