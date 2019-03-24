@@ -58,10 +58,14 @@ public: // Methods
 	void SetVerticalMode(VerticalAlignment verticalAlignment);
 
 public: // Methods - static
+	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode);
+	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode);
+
 	static EoDbText* ConstructFrom(EoDbFile& file);
 	static EoDbText* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
 	static EoDbText* Create(OdDbDatabasePtr database);
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
+	static EoDbText* Create(OdDbTextPtr text);
 };
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text);
 void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text);

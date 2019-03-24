@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
+#include "AeSysDoc.h"
 #include "AeSysView.h"
 
 #include "EoDlgTrapModify.h"
-
-#include "DbText.h"
 
 EoDbText::EoDbText() {
 }
@@ -529,28 +528,131 @@ EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
 	return Text;
 }
 
+EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) {
+	EoDb::HorizontalAlignment HorizontalAlignment;
+
+	switch (horizontalMode) {
+		case OdDb::kTextMid:
+		case OdDb::kTextCenter:
+			HorizontalAlignment = EoDb::kAlignCenter;
+			break;
+
+		case OdDb::kTextRight:
+		case OdDb::kTextAlign:
+		case OdDb::kTextFit:
+			HorizontalAlignment = EoDb::kAlignRight;
+			break;
+
+		default: // OdDb::kTextLeft
+			HorizontalAlignment = EoDb::kAlignLeft;
+	}
+	return HorizontalAlignment;
+
+}
+
+EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) {
+	EoDb::VerticalAlignment VerticalAlignment;
+
+	switch (verticalMode) {
+		case OdDb::kTextVertMid:
+			VerticalAlignment = EoDb::kAlignMiddle;
+			break;
+
+		case OdDb::kTextTop:
+			VerticalAlignment = EoDb::kAlignTop;
+			break;
+
+		default: // OdDb::kTextBottom & OdDb::kTextBase
+			VerticalAlignment = EoDb::kAlignBottom;
+	}
+	return VerticalAlignment;
+}
+
+EoDbText* EoDbText::Create(OdDbTextPtr text) {
+
+	EoDbText* Text = new EoDbText();
+	Text->SetEntityObjectId(text->objectId());
+	Text->SetColorIndex(text->colorIndex());
+	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+
+	OdDbObjectId TextStyleObjectId = text->textStyle();
+	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = TextStyleObjectId.safeOpenObject(OdDb::kForRead);
+
+	OdString FileName(L"Simplex.psf");
+	EoDb::Precision Precision(EoDb::kStrokeType);
+
+	if (TextStyleTableRecordPtr->isShapeFile()) {
+		ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (LPCWSTR) TextStyleTableRecordPtr->desc()->name());
+	}
+	else { // shx font file or windows (ttf) font file
+		OdString TypeFace;
+		bool Bold;
+		bool Italic;
+		int Charset;
+		int PitchAndFamily;
+
+		TextStyleTableRecordPtr->font(TypeFace, Bold, Italic, Charset, PitchAndFamily);
+
+		if (TypeFace != L"") { // windows (ttf) file
+			FileName = TypeFace;
+			Precision = EoDb::kEoTrueType;
+		}
+	}
+
+	EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
+	EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
+
+	OdGePoint3d AlignmentPoint = text->position();
+	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
+		AlignmentPoint = text->alignmentPoint();
+
+	EoDbFontDefinition FontDefinition;
+	FontDefinition.SetPrecision(Precision);
+	FontDefinition.SetFontName((LPCWSTR) FileName);
+	FontDefinition.SetHorizontalAlignment(HorizontalAlignment);
+	FontDefinition.SetVerticalAlignment(VerticalAlignment);
+
+	EoDbCharacterCellDefinition CharacterCellDefinition;
+	CharacterCellDefinition.SetHeight(text->height());
+	CharacterCellDefinition.SetWidthFactor(text->widthFactor());
+	CharacterCellDefinition.SetRotationAngle(text->rotation());
+	CharacterCellDefinition.SetObliqueAngle(text->oblique());
+
+	OdGeVector3d XDirection;
+	OdGeVector3d YDirection;
+	CharCellDef_EncdRefSys(text->normal(), CharacterCellDefinition, XDirection, YDirection);
+
+	EoGeReferenceSystem ReferenceSystem(AlignmentPoint, XDirection, YDirection);
+
+	Text->SetFontDefinition(FontDefinition);
+	Text->SetReferenceSystem(ReferenceSystem);
+	Text->SetText((LPCWSTR) text->textString());
+
+	return Text;
+}
+
 bool HasFormattingCharacters(const CString& text) {
 	for (int i = 0; i < text.GetLength() - 1; i++) {
 		if (text[i] == '\\') {
 			switch (text[i + 1]) { // Parameter Meaning
-			case 'P': // Hard line break
-			//case '~':	// Nonbreaking space
-			//case '/':	// Single backslash; otherwise used as an escape character
-			//case '{':	// Single opening curly bracket; otherwise used as block begin
-			//case '}':	// Single closing curly bracket; otherwise used as block end
-			case 'A': // Change alignment: bottom (0), center (1)  or top (2)
-			//case 'C':	// ACI color number				Change character color
-			case 'F': // Change to a different font: acad - \FArial.shx; windows - \FArial|b1|i0|c0|p34
-			case 'f':
-			//case 'H':	// Change text height: New height or relative height followed by an x
-			//case 'L': // Start underlining
-			//case 'l': // End underlining
-			//case 'O': // Start overlining
-			//case 'o': // End overlining
-			//case 'T':	// Change kerning, i.e. character spacing
-			//case 'W':	// Change character width, i.e X scaling
-			case 'S':	// Stacked text or fractions: the S is follwed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
-			return true;
+				case 'P': // Hard line break
+				//case '~':	// Nonbreaking space
+				//case '/':	// Single backslash; otherwise used as an escape character
+				//case '{':	// Single opening curly bracket; otherwise used as block begin
+				//case '}':	// Single closing curly bracket; otherwise used as block end
+				case 'A': // Change alignment: bottom (0), center (1)  or top (2)
+				//case 'C':	// ACI color number				Change character color
+				case 'F': // Change to a different font: acad - \FArial.shx; windows - \FArial|b1|i0|c0|p34
+				case 'f':
+					//case 'H':	// Change text height: New height or relative height followed by an x
+					//case 'L': // Start underlining
+					//case 'l': // End underlining
+					//case 'O': // Start overlining
+					//case 'o': // End overlining
+					//case 'T':	// Change kerning, i.e. character spacing
+					//case 'W':	// Change character width, i.e X scaling
+				case 'S':	// Stacked text or fractions: the S is follwed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
+					return true;
 			}
 		}
 	}
@@ -678,8 +780,12 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 		DisplayTextWithFormattingCharacters(view, deviceContext, fontDefinition, referenceSystem, text);
 		return;
 	}
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(1.0 / referenceSystem.XDirection().length(), 1.0 / referenceSystem.YDirection().length(), 1.));
+
 	EoGeReferenceSystem ReferenceSystem = referenceSystem;
 	EoGeMatrix3d tm(ReferenceSystem.TransformMatrix());
+	tm.preMultBy(ScaleMatrix);
 	tm.invert();
 
 	OdGePoint3d BottomLeftCorner;
@@ -736,8 +842,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	long* plStrokeFontDef = (long*) theApp.SimplexStrokeFont();
 	if (plStrokeFontDef == 0) return;
 
-	EoGeMatrix3d tm(referenceSystem.TransformMatrix());
-	tm.invert();
+	OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
 	long* plStrokeChrDef = plStrokeFontDef + 96;
 	double dChrSpac = 1. + (.32 + fontDefinition.CharacterSpacing()) / .6;
@@ -793,8 +898,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	if (numberOfCharacters <= 0)
 		return true;
 
-	EoGeMatrix3d tm(referenceSystem.TransformMatrix());
-	tm.invert();
+	OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
 	OdGePoint3d Origin = OdGePoint3d::kOrigin;
 	EoGePoint4d StartPoint(Origin.transformBy(tm), 1.);
@@ -857,8 +961,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text) {
 	EoGeReferenceSystem ReferenceSystem = referenceSystem;
 
-	EoGeMatrix3d tm(ReferenceSystem.TransformMatrix());
-	tm.invert();
+	OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
 	int Length = LengthSansFormattingCharacters(text);
 
@@ -986,8 +1089,7 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
 	boundingBox.setLogicalLength(4);
 
 	if (numberOfCharacters > 0) {
-		EoGeMatrix3d tm(referenceSystem.TransformMatrix());
-		tm.invert();
+		OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
 		double TextHeight = 1.;
 		double TextWidth = 1.;
