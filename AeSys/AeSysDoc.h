@@ -304,6 +304,10 @@ public:
 	/// <summary>Constructs 0 to many seperate text primitives for each "\r\n" delimited substr.</summary>
 	void AddTextBlock(LPWSTR pszText);
 
+// Text Style Table interface
+/// <summary>Add a new text style to the text style table.</summary>
+	OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr textStyles);
+
 // Block Table interface
 	EoDbBlockTable* BlockTable();
 	bool BlockTableIsEmpty();
