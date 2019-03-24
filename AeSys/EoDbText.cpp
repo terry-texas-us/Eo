@@ -780,6 +780,9 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 		DisplayTextWithFormattingCharacters(view, deviceContext, fontDefinition, referenceSystem, text);
 		return;
 	}
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(1.0 / referenceSystem.XDirection().length(), 1.0 / referenceSystem.YDirection().length(), 1.));
+
 	EoGeReferenceSystem ReferenceSystem = referenceSystem;
 
 	OdGeMatrix3d ScaleMatrix;
