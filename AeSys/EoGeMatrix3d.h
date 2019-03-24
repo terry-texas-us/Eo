@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoGeReferenceSystem.h"
+
 class EoGeMatrix3d : public OdGeMatrix3d {
 public: // Constructors and destructor
 	EoGeMatrix3d();
@@ -13,6 +15,9 @@ public: // Methods
 	EoGeMatrix3d& SetToParallelProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance);
 
 	EoGeMatrix3d& SetToViewTransform(const OdGePoint3d position, const OdGePoint3d target, const OdGeVector3d& viewUp);
+
+public: // Methods - static
+	static OdGeMatrix3d ReferenceSystemToWorld(const EoGeReferenceSystem& referenceSystem);
 };
 
 typedef CList<EoGeMatrix3d> EoGeMatrix3dList;

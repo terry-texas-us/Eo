@@ -91,3 +91,20 @@ EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const
 
 	return *this;
 }
+
+OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& referenceSystem) {
+	OdGeMatrix3d ScaleMatrix;
+	double XDirectionLength = referenceSystem.XDirection().length();
+	double YDirectionLength = referenceSystem.YDirection().length();
+	if (XDirectionLength > DBL_EPSILON && YDirectionLength > DBL_EPSILON) {
+		ScaleMatrix.setToScaling(OdGeScale3d(1. / XDirectionLength, 1. / YDirectionLength, 1.));
+
+		OdGeMatrix3d ToWorld(referenceSystem.TransformMatrix());
+		ToWorld.preMultBy(ScaleMatrix);
+		ToWorld.invert();
+
+		return ToWorld;
+	}
+	return OdGeMatrix3d::kIdentity;
+}
+
