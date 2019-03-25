@@ -67,6 +67,7 @@ public: // Methods - static
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
 	static EoDbText* Create(OdDbTextPtr text);
 };
+
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text);
 void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text);
 /// <summary> Displays a text string using a stroke font.</summary>

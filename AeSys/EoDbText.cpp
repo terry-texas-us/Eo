@@ -658,6 +658,7 @@ bool HasFormattingCharacters(const CString& text) {
 	}
 	return false;
 }
+
 int FontEscapementAngle(const OdGeVector3d& xAxis) {
 	double Angle = 0.;
 
@@ -667,6 +668,7 @@ int FontEscapementAngle(const OdGeVector3d& xAxis) {
 	}
 	return EoRound(EoToDegree(Angle) * 10.);
 }
+
 void GetBottomLeftCorner(EoDbFontDefinition& fontDefinition, int iChrs, OdGePoint3d& pt) {
 	if (iChrs > 0) {
 		double dTxtExt = iChrs + (iChrs - 1) * (.32 + fontDefinition.CharacterSpacing()) / .6;
@@ -728,6 +730,7 @@ void GetBottomLeftCorner(EoDbFontDefinition& fontDefinition, int iChrs, OdGePoin
 	}
 	pt.z = 0.;
 }
+
 int LengthSansFormattingCharacters(const CString& text) {
 	int Length = text.GetLength();
 	int CurrentPosition = 0;
@@ -772,6 +775,7 @@ int LengthSansFormattingCharacters(const CString& text) {
 	}
 	return Length;
 }
+
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text) {
 	if (text.IsEmpty())
 		return;
@@ -811,6 +815,7 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 	}
 	DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 }
+
 void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
 	if (deviceContext != 0 && fontDefinition.Precision() == EoDb::kEoTrueType && view->ViewTrueTypeFonts()) {
 		OdGeVector3d XDirection(referenceSystem.XDirection());
@@ -831,6 +836,7 @@ void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition&
 	}
 	DisplayTextSegmentUsingStrokeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text);
 }
+
 void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
 	if (numberOfCharacters == 0) return;
 
@@ -889,6 +895,51 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 		n++;
 	}
 }
+
+bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const CString& text) {
+	deviceContext->BeginPath();
+	deviceContext->TextOutW(x, y, text);
+	deviceContext->EndPath();
+
+	int nNumPts = deviceContext->GetPath(NULL, NULL, 0);
+	if (nNumPts == 0) {
+		return true;
+	}
+
+	// Allocate memory to hold points and stroke types from the path.
+	LPPOINT lpPoints = NULL;
+	LPBYTE lpTypes = NULL;
+	try
+	{
+		lpPoints = new POINT[nNumPts];
+		lpTypes = new BYTE[nNumPts];
+	}
+	catch (CException* pe)
+	{
+		delete[] lpPoints;
+		lpPoints = NULL;
+		delete[] lpTypes;
+		lpTypes = NULL;
+		pe->Delete();
+	}
+	if (lpPoints == NULL || lpTypes == NULL) {
+		return true;
+	}
+	// Now that we have the memory, really get the path data.
+	nNumPts = deviceContext->GetPath(lpPoints, lpTypes, nNumPts);
+
+	// If it worked, draw the lines.
+
+	if (nNumPts != -1) {
+		deviceContext->PolyDraw(lpPoints, lpTypes, nNumPts);
+	}
+
+	// Release the memory we used
+	delete[] lpPoints;
+	delete[] lpTypes;
+	return true;
+}
+
 bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
 	if (numberOfCharacters <= 0)
 		return true;
@@ -925,34 +976,30 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 		return true;
 	}
 	LOGFONT logfont;
+	memset(&logfont, 0, sizeof(logfont));
 	logfont.lfHeight = - EoRound(1.33 * dHeight);
-	logfont.lfWidth = 0;
 	logfont.lfEscapement = - FontEscapementAngle(vX);
 	logfont.lfOrientation = logfont.lfEscapement;
-	logfont.lfWeight = FW_THIN;
-	logfont.lfItalic = FALSE;
-	logfont.lfUnderline = FALSE;
-	logfont.lfStrikeOut = FALSE;
-	logfont.lfCharSet = ANSI_CHARSET;
-	logfont.lfOutPrecision = OUT_DEFAULT_PRECIS;
-	logfont.lfClipPrecision = CLIP_DEFAULT_PRECIS;
-	logfont.lfQuality = DEFAULT_QUALITY;
-	logfont.lfPitchAndFamily = DEFAULT_PITCH;
+	logfont.lfWeight = FW_NORMAL;
 	wcscpy_s(logfont.lfFaceName, LF_FACESIZE, fontDefinition.FontName());
 
 	CFont font;
 	font.CreateFontIndirect(&logfont);
 	CFont* pfntold = (CFont*) deviceContext->SelectObject(&font);
-	UINT uTextAlign = deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
+	UINT uTextAlign = deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);	
 	int iBkMode = deviceContext->SetBkMode(TRANSPARENT);
 	
 	deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition));
+	
+//	DisplayTextUsingWindowsFontOutline(deviceContext, ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition));
+
 	deviceContext->SetBkMode(iBkMode);
 	deviceContext->SetTextAlign(uTextAlign);
 	deviceContext->SelectObject(pfntold);
 
 	return true;
 }
+
 void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text) {
 	EoGeReferenceSystem ReferenceSystem = referenceSystem;
 
