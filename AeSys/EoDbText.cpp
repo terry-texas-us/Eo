@@ -780,16 +780,8 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 		DisplayTextWithFormattingCharacters(view, deviceContext, fontDefinition, referenceSystem, text);
 		return;
 	}
-	OdGeMatrix3d ScaleMatrix;
-	ScaleMatrix.setToScaling(OdGeScale3d(1.0 / referenceSystem.XDirection().length(), 1.0 / referenceSystem.YDirection().length(), 1.));
-
 	EoGeReferenceSystem ReferenceSystem = referenceSystem;
-
-	OdGeMatrix3d ScaleMatrix;
-	ScaleMatrix.setToScaling(OdGeScale3d(1.0 / referenceSystem.XDirection().length(), 1.0 / referenceSystem.YDirection().length(), 1.));
-	EoGeMatrix3d tm(ReferenceSystem.TransformMatrix());
-	tm.preMultBy(ScaleMatrix);
-	tm.invert();
+	OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
 	OdGePoint3d BottomLeftCorner;
 	GetBottomLeftCorner(fontDefinition, text.GetLength(), BottomLeftCorner);
@@ -865,10 +857,10 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 		for (int i = (int) plStrokeFontDef[Character - 32]; i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
 			int iY = (int) (plStrokeChrDef[i - 1] % 4096L);
 			if ((iY & 2048) != 0)
-				iY = - (iY - 2048);
+				iY = -(iY - 2048);
 			int iX = (int) ((plStrokeChrDef[i - 1] / 4096L) % 4096L);
 			if ((iX & 2048) != 0)
-				iX = - (iX - 2048);
+				iX = -(iX - 2048);
 
 			ptStroke += OdGeVector3d(.01 / .6 * iX, .01 * iY, 0.);
 
@@ -881,17 +873,17 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 		polyline::__End(view, deviceContext, 1);
 
 		switch (fontDefinition.Path()) {
-		case EoDb::kPathLeft:
-			ptChrPos.x -= dChrSpac;
-			break;
-		case EoDb::kPathUp:
-			ptChrPos.y += dChrSpac;
-			break;
-		case EoDb::kPathDown:
-			ptChrPos.y -= dChrSpac;
-			break;
-		default:
-			ptChrPos.x += dChrSpac;
+			case EoDb::kPathLeft:
+				ptChrPos.x -= dChrSpac;
+				break;
+			case EoDb::kPathUp:
+				ptChrPos.y += dChrSpac;
+				break;
+			case EoDb::kPathDown:
+				ptChrPos.y -= dChrSpac;
+				break;
+			default:
+				ptChrPos.x += dChrSpac;
 		}
 		ptStroke = ptChrPos;
 		n++;
@@ -953,8 +945,8 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	CFont* pfntold = (CFont*) deviceContext->SelectObject(&font);
 	UINT uTextAlign = deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
 	int iBkMode = deviceContext->SetBkMode(TRANSPARENT);
-
-	deviceContext->TextOut(ProjectedStartPoint.x, ProjectedStartPoint.y, (LPCWSTR) text.Mid(startPosition), numberOfCharacters);
+	
+	deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition));
 	deviceContext->SetBkMode(iBkMode);
 	deviceContext->SetTextAlign(uTextAlign);
 	deviceContext->SelectObject(pfntold);
@@ -1090,7 +1082,6 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 }
 void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, int numberOfCharacters, double spaceFactor, OdGePoint3dArray& boundingBox) {
 	boundingBox.setLogicalLength(4);
-
 	if (numberOfCharacters > 0) {
 		OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
@@ -1106,26 +1097,23 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
 		else {
 			TextHeight = d;
 		}
-		boundingBox[0] = OdGePoint3d::kOrigin;
-		boundingBox[1] = boundingBox[0];
-		boundingBox[2] = boundingBox[0];
-		boundingBox[3] = boundingBox[0];
+		boundingBox.setAll(OdGePoint3d::kOrigin);
 
 		if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) {
 			boundingBox[2].x = TextWidth;
 		}
 		else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
-			boundingBox[0].x = - TextWidth * .5;
+			boundingBox[0].x = -TextWidth * .5;
 			boundingBox[2].x = boundingBox[0].x + TextWidth;
 		}
 		else {
-			boundingBox[0].x = - TextWidth;
+			boundingBox[0].x = -TextWidth;
 		}
 		if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) {
-			boundingBox[0].y = - TextHeight;
+			boundingBox[0].y = -TextHeight;
 		}
 		else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
-			boundingBox[0].y = - TextHeight * .5;
+			boundingBox[0].y = -TextHeight * .5;
 			boundingBox[2].y = boundingBox[0].y + TextHeight;
 		}
 		else {
@@ -1147,9 +1135,7 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
 		}
 	}
 	else {
-		for (int n = 0; n < 4; n++) {
-			boundingBox[n] = referenceSystem.Origin();
-		}
+		boundingBox.setAll(referenceSystem.Origin());
 	}
 }
 OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double dLineSpaceFac, double dChrSpaceFac) {
