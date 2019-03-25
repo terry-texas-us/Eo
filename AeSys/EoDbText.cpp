@@ -669,66 +669,52 @@ int FontEscapementAngle(const OdGeVector3d& xAxis) {
 	return EoRound(EoToDegree(Angle) * 10.);
 }
 
-void GetBottomLeftCorner(EoDbFontDefinition& fontDefinition, int iChrs, OdGePoint3d& pt) {
-	if (iChrs > 0) {
-		double dTxtExt = iChrs + (iChrs - 1) * (.32 + fontDefinition.CharacterSpacing()) / .6;
+OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numberOfCharacters) {
+	OdGePoint3d InsertionPoint(OdGePoint3d::kOrigin);
+
+	if (numberOfCharacters > 0) {
+		double dTxtExt = numberOfCharacters + (numberOfCharacters - 1) * (.32 + fontDefinition.CharacterSpacing()) / .6;
 
 		if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
 			if (fontDefinition.Path() == EoDb::kPathRight) {
-				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft)
-					pt.x = 0.;
-				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
-					pt.x = - dTxtExt * .5;
+				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
+					InsertionPoint.x = -dTxtExt * .5;
 				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight)
-					pt.x = - dTxtExt;
+					InsertionPoint.x = -dTxtExt;
 			}
 			else {
 				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft)
-					pt.x = dTxtExt;
+					InsertionPoint.x = dTxtExt;
 				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
-					pt.x = dTxtExt * .5;
-				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight)
-					pt.x = 0.;
-				pt.x = pt.x - 1.;
+					InsertionPoint.x = dTxtExt * .5;
+				InsertionPoint.x = InsertionPoint.x - 1.;
 			}
-			if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom)
-				pt.y = 0.;
-			else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
-				pt.y = - .5;
+			if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
+				InsertionPoint.y = -.5;
 			else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop)
-				pt.y = - 1.;
+				InsertionPoint.y = -1.;
 		}
 		else if (fontDefinition.Path() == EoDb::kPathDown || fontDefinition.Path() == EoDb::kPathUp) {
-			if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft)
-				pt.x = 0.;
-			else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
-				pt.x = - .5;
+			if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
+				InsertionPoint.x = -.5;
 			else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight)
-				pt.x = - 1.;
+				InsertionPoint.x = -1.;
 			if (fontDefinition.Path() == EoDb::kPathUp) {
-				if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom)
-					pt.y = 0.;
-				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
-					pt.y = - dTxtExt * .5;
+				if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
+					InsertionPoint.y = -dTxtExt * .5;
 				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop)
-					pt.y = - dTxtExt;
+					InsertionPoint.y = -dTxtExt;
 			}
 			else {
 				if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom)
-					pt.y = dTxtExt;
+					InsertionPoint.y = dTxtExt;
 				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
-					pt.y = dTxtExt * .5;
-				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop)
-					pt.y = 0.;
-				pt.y = pt.y - 1.;
+					InsertionPoint.y = dTxtExt * .5;
+				InsertionPoint.y = InsertionPoint.y - 1.;
 			}
 		}
 	}
-	else {
-		pt.x = 0.;
-		pt.y = 0.;
-	}
-	pt.z = 0.;
+	return InsertionPoint;
 }
 
 int LengthSansFormattingCharacters(const CString& text) {
@@ -785,12 +771,10 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 		return;
 	}
 	EoGeReferenceSystem ReferenceSystem = referenceSystem;
-	OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
-	OdGePoint3d BottomLeftCorner;
-	GetBottomLeftCorner(fontDefinition, text.GetLength(), BottomLeftCorner);
-	BottomLeftCorner.transformBy(tm);
-	ReferenceSystem.SetOrigin(BottomLeftCorner);
+	OdGePoint3d InsertionPoint = CalculateInsertionPoint(fontDefinition, text.GetLength());
+	InsertionPoint.transformBy(EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem));
+	ReferenceSystem.SetOrigin(InsertionPoint);
 
 	int NumberOfCharactersToDisplay = 0;
 	int StartPosition = 0;
@@ -801,9 +785,9 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 		if (c == '\r' && text[CurrentPosition] == '\n') {
 			DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 
-			ReferenceSystem.SetOrigin(BottomLeftCorner);
+			ReferenceSystem.SetOrigin(InsertionPoint);
 			ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, 1., 0));
-			BottomLeftCorner = ReferenceSystem.Origin();
+			InsertionPoint = ReferenceSystem.Origin();
 
 			StartPosition += 2 + NumberOfCharactersToDisplay;
 			CurrentPosition = StartPosition;
@@ -825,13 +809,10 @@ void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition&
 		view->ModelViewTransformVector(YDirection);
 
 		OdGeVector3d PlaneNormal = XDirection.crossProduct(YDirection);
-		if (PlaneNormal.isZeroLength()) {
-			return;
-		}
+		if (PlaneNormal.isZeroLength()) return;
 		PlaneNormal.normalize();
 		if (PlaneNormal.isEqualTo(OdGeVector3d::kZAxis)) {
-			if (DisplayTextSegmentUsingTrueTypeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text))
-				return;
+			if (DisplayTextSegmentUsingTrueTypeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text)) return;
 		}
 	}
 	DisplayTextSegmentUsingStrokeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text);
@@ -1007,10 +988,9 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 
 	int Length = LengthSansFormattingCharacters(text);
 
-	OdGePoint3d BottomLeftCorner;
-	GetBottomLeftCorner(fontDefinition, Length, BottomLeftCorner);
-	BottomLeftCorner.transformBy(tm);
-	ReferenceSystem.SetOrigin(BottomLeftCorner);
+	OdGePoint3d InsertionPoint = CalculateInsertionPoint(fontDefinition, Length);
+	InsertionPoint.transformBy(tm);
+	ReferenceSystem.SetOrigin(InsertionPoint);
 
 	int NumberOfCharactersToDisplay = 0;
 	int StartPosition = 0;
@@ -1039,9 +1019,9 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 				if (CurrentPosition < text.GetLength()) {
 					DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 
-					ReferenceSystem.SetOrigin(BottomLeftCorner);
+					ReferenceSystem.SetOrigin(InsertionPoint);
 					ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, 1., 0));
-					BottomLeftCorner = ReferenceSystem.Origin();
+					InsertionPoint = ReferenceSystem.Origin();
 					StartPosition += 2 + NumberOfCharactersToDisplay;
 					CurrentPosition = StartPosition;
 					NumberOfCharactersToDisplay = 0;
@@ -1058,7 +1038,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 
 								// Offset the line position left of current position
 								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, referenceSystem, 0., NumberOfCharactersToDisplay * (1 + .32 / .6)));
-								BottomLeftCorner = ReferenceSystem.Origin();
+								InsertionPoint = ReferenceSystem.Origin();
 							}
 							StartPosition = EndSemicolon + 1;
 							CurrentPosition = StartPosition;
@@ -1090,7 +1070,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						}
 						// Offset the line position up and conditionally left of current position
 						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, - .35, NumberOfCharactersToDisplay * (1 + .32 / .6)));
-						BottomLeftCorner = ReferenceSystem.Origin();
+						InsertionPoint = ReferenceSystem.Origin();
 						StartPosition += 2; // skip the formatting characters
 						NumberOfCharactersToDisplay = TextSegmentDelimiter - StartPosition;
 						if (NumberOfCharactersToDisplay > 0) { // Display superscripted text segment
@@ -1099,7 +1079,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						}
 						// Offset the line position back down left
 						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .35, NumberOfCharactersToDisplay * (1 + .32 / .6) - .72));
-						BottomLeftCorner = ReferenceSystem.Origin();
+						InsertionPoint = ReferenceSystem.Origin();
 
 						if (text[TextSegmentDelimiter] == '/') { // display the text segment delimitier
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, TextSegmentDelimiter, 1, text);
@@ -1108,14 +1088,14 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						NumberOfCharactersToDisplay = EndSemicolon - StartPosition;
 						//Offset the line position down
 						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .35, .72));
-						BottomLeftCorner = ReferenceSystem.Origin();
+						InsertionPoint = ReferenceSystem.Origin();
 
 						if (NumberOfCharactersToDisplay > 0) { // Display subscripted text segment
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 							StartPosition += NumberOfCharactersToDisplay;
 						}
 						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, - .35, NumberOfCharactersToDisplay * (1 + .32 / .6)));
-						BottomLeftCorner = ReferenceSystem.Origin();
+						InsertionPoint = ReferenceSystem.Origin();
 
 						NumberOfCharactersToDisplay = 0;
 						StartPosition = EndSemicolon + 1;
