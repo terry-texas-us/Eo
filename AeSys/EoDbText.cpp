@@ -7,6 +7,7 @@
 
 EoDbText::EoDbText() {
 }
+
 EoDbText::EoDbText(const EoDbText& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -16,6 +17,7 @@ EoDbText::EoDbText(const EoDbText& other) {
 	m_ReferenceSystem = other.m_ReferenceSystem;
 	m_strText = other.m_strText;
 }
+
 EoDbText::~EoDbText() {
 }
 
@@ -30,6 +32,7 @@ const EoDbText& EoDbText::operator=(const EoDbText& other) {
 
 	return (*this);
 }
+
 void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Report(L"<Text>");
 	Report += L" Color:" + FormatColorIndex();
@@ -40,9 +43,11 @@ void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
 
 	theApp.AddStringToMessageList(Report);
 }
+
 void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Text>", this);
 }
+
 void EoDbText::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 	OdDbTextPtr TextEntity = OdDbText::createObject();
 	blockTableRecord->appendOdDbEntity(TextEntity);
@@ -58,6 +63,7 @@ void EoDbText::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 	TextEntity->setRotation(Rotation());
 	TextEntity->setAlignmentPoint(TextEntity->position());
 }
+
 void EoDbText::ConvertFormattingCharacters() {
 	for (int i = 0; i < m_strText.GetLength() - 1; i++) {
 		if (m_strText[i] == '^') {
@@ -77,9 +83,11 @@ void EoDbText::ConvertFormattingCharacters() {
 		}
 	}
 }
+
 EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr database) const {
 	return (EoDbText::Create(*this, database));
 }
+
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
 	EoInt16 ColorIndex = LogicalColorIndex();
 	pstate.SetColorIndex(deviceContext, ColorIndex);
@@ -90,9 +98,11 @@ void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
 	pstate.SetLinetypeIndex(deviceContext, LinetypeIndex);
 }
+
 EoDbFontDefinition EoDbText::FontDefinition() const {
 	return (m_FontDefinition);
 }
+
 void EoDbText::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
@@ -108,6 +118,7 @@ void EoDbText::FormatExtra(CString& extra) const {
 	extra += Length;
 	extra += L"Text;" + m_strText;
 }
+
 void EoDbText::FormatGeometry(CString& geometry) const {
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
 	OdGePoint3d Origin = ReferenceSystem.Origin();
@@ -120,17 +131,21 @@ void EoDbText::FormatGeometry(CString& geometry) const {
 	VectorString.Format(L"Y Axis;%f;%f;%f\t", ReferenceSystem.YDirection().x, ReferenceSystem.YDirection().y, ReferenceSystem.YDirection().z);
 	geometry += VectorString;
 }
+
 void EoDbText::GetAllPoints(OdGePoint3dArray& points) const {
 	points.clear();
 	points.append(m_ReferenceSystem.Origin());
 }
+
 void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const {
 	int Length = LengthSansFormattingCharacters(m_strText);
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, Length, spaceFactor, boundingBox);
 }
+
 OdGePoint3d EoDbText::GetCtrlPt() const {
 	return m_ReferenceSystem.Origin();
 }
+
 void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	OdGePoint3dArray BoundingBox;
 
@@ -140,15 +155,19 @@ void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 		extents.addPoint(BoundingBox[w]);
 	}
 }
+
 OdGePoint3d	EoDbText::GoToNxtCtrlPt() const {
 	return (m_ReferenceSystem.Origin());
 }
+
 bool EoDbText::Is(EoUInt16 type) const {
 	return type == EoDb::kTextPrimitive;
 }
+
 bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const {
 	return false;
 }
+
 bool EoDbText::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[2];
 
@@ -167,29 +186,30 @@ bool EoDbText::IsInView(AeSysView* view) const {
 	}
 	return false;
 }
+
 bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_ReferenceSystem.Origin(), 1.);
 	view->ModelViewTransformPoint(pt);
 
 	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
 }
+
 void EoDbText::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	if (iAtt == TM_TEXT_ALL) {
 		m_ColorIndex = pstate.ColorIndex();
 		m_FontDefinition = fontDefinition;
 		m_ReferenceSystem.Rescale(characterCellDefinition);
-	}
-	else if (iAtt == TM_TEXT_FONT) {
+	} else if (iAtt == TM_TEXT_FONT) {
 		m_FontDefinition.SetFontName(fontDefinition.FontName());
 		m_FontDefinition.SetPrecision(fontDefinition.Precision());
-	}
-	else if (iAtt == TM_TEXT_HEIGHT) {
+	} else if (iAtt == TM_TEXT_HEIGHT) {
 		m_FontDefinition.SetCharacterSpacing(fontDefinition.CharacterSpacing());
 		m_FontDefinition.SetPath(fontDefinition.Path());
 
 		m_ReferenceSystem.Rescale(characterCellDefinition);
 	}
 }
+
 void EoDbText::ModifyState() {
 	EoDbPrimitive::ModifyState();
 
@@ -199,12 +219,15 @@ void EoDbText::ModifyState() {
 
 	m_ReferenceSystem.Rescale(CharacterCellDefinition);
 }
+
 OdGePoint3d EoDbText::Position() const {
 	return m_ReferenceSystem.Origin();
 }
+
 EoGeReferenceSystem EoDbText::ReferenceSystem() const {
 	return (m_ReferenceSystem);
 }
+
 double EoDbText::Rotation() const {
 	OdGeVector3d HorizontalAxis = ReferenceSystem().XDirection();
 
@@ -216,15 +239,18 @@ double EoDbText::Rotation() const {
 	}
 	return (Angle);
 }
+
 OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = USHRT_MAX;
 	return (point.Convert3d());
 }
+
 bool EoDbText::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray Points;
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0., Points);
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
+
 bool EoDbText::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	if (m_strText.GetLength() == 0) {
 		return false;
@@ -246,9 +272,11 @@ bool EoDbText::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& 
 
 	return true;
 }
+
 void EoDbText::SetFontDefinition(const EoDbFontDefinition& fontDefinition) {
 	m_FontDefinition = fontDefinition;
 }
+
 void EoDbText::SetHorizontalMode(HorizontalAlignment horizontalAlignment) {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 	if (!m_EntityObjectId.isNull()) {
@@ -265,9 +293,11 @@ void EoDbText::SetHorizontalMode(HorizontalAlignment horizontalAlignment) {
 		}
 	}
 }
+
 void EoDbText::SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) {
 	m_ReferenceSystem = referenceSystem;
 }
+
 EoDbText& EoDbText::SetTo(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, const CString& text) {
 	// <tas="Text created with "\r\n" (ctrl-enter) not correctly displayed by dwg text entity"</tas>
 	m_FontDefinition = fontDefinition;
@@ -286,9 +316,11 @@ EoDbText& EoDbText::SetTo(const EoDbFontDefinition& fontDefinition, const EoGeRe
 	}
 	return (*this);
 }
+
 void EoDbText::SetText(const CString& text) {
 	m_strText = text;
 }
+
 void EoDbText::SetVerticalMode(VerticalAlignment verticalAlignment) {
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 	if (!m_EntityObjectId.isNull()) {
@@ -305,16 +337,20 @@ void EoDbText::SetVerticalMode(VerticalAlignment verticalAlignment) {
 		}
 	}
 }
+
 const CString& EoDbText::Text() {
 	return m_strText;
 }
+
 void EoDbText::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_ReferenceSystem.TransformBy(transformMatrix);
 }
+
 void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) {
 	if (mask != 0)
 		m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate);
 }
+
 bool EoDbText::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kTextPrimitive);
 	file.WriteInt16(m_ColorIndex);
@@ -325,6 +361,7 @@ bool EoDbText::Write(EoDbFile& file) const {
 
 	return true;
 }
+
 void EoDbText::Write(CFile& file, EoByte* buffer) const {
 	EoUInt16 NumberOfCharacters = EoUInt16(m_strText.GetLength());
 
@@ -350,6 +387,7 @@ void EoDbText::Write(CFile& file, EoByte* buffer) const {
 	}
 	file.Write(buffer, buffer[3] * 32);
 }
+
 EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
 	EoInt16 ColorIndex = file.ReadInt16();
 	/* EoInt16 LinetypeIndex = */ file.ReadInt16();
@@ -365,6 +403,7 @@ EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
 	Text->ConvertFormattingCharacters();
 	return (Text);
 }
+
 EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
 	EoInt16 ColorIndex;
 	EoDbFontDefinition FontDefinition;
@@ -439,11 +478,12 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
 		char* NextToken = NULL;
 		char* pChr = strtok_s((char*) &primitiveBuffer[44], "\\", &NextToken);
 
-		if (pChr == 0)
+		if (pChr == 0) {
 			Text = L"EoDbJobFile.PrimText error: Missing string terminator.";
-		else if (strlen(pChr) > 132)
+		}
+		else if (strlen(pChr) > 132) {
 			Text = L"EoDbJobFile.PrimText error: Text too long.";
-		else {
+		} else {
 			while (*pChr != 0) {
 				if (!isprint(*pChr)) *pChr = '.';
 				pChr++;
@@ -503,6 +543,7 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
 
 	return (TextPrimitive);
 }
+
 EoDbText* EoDbText::Create(OdDbDatabasePtr database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
@@ -517,6 +558,7 @@ EoDbText* EoDbText::Create(OdDbDatabasePtr database) {
 	
 	return Text;
 }
+
 EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	OdDbTextPtr TextEntity = other.EntityObjectId().safeOpenObject()->clone();
@@ -731,20 +773,17 @@ int LengthSansFormattingCharacters(const CString& text) {
 					Length -= 4;
 					CurrentPosition = EndSemicolon + 1;
 				}
-			}
-			else if (c == 'F' || c == 'f') {
+			} else if (c == 'F' || c == 'f') {
 				int EndSemicolon = text.Find(';', CurrentPosition);
 				if (EndSemicolon != - 1) {
 					int FormatLength = EndSemicolon - CurrentPosition;
 					Length -= FormatLength + 2;
 					CurrentPosition = EndSemicolon + 1;
 				}
-			}
-			else if (c == 'P') {
+			} else if (c == 'P') {
 				Length -= 2;
 				CurrentPosition++;
-			}
-			else if (c == 'S') {
+			} else if (c == 'S') {
 				int EndSemicolon = text.Find(';', CurrentPosition);
 				if (EndSemicolon != - 1) {
 					int TextSegmentDelimiter = text.Find('/', CurrentPosition);
@@ -1014,8 +1053,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						NumberOfCharactersToDisplay = 0;
 					}
 				}
-			}
-			else if (c == 'P') { // Hard line bresk
+			} else if (c == 'P') { // Hard line bresk
 				if (CurrentPosition < text.GetLength()) {
 					DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 
@@ -1026,8 +1064,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 					CurrentPosition = StartPosition;
 					NumberOfCharactersToDisplay = 0;
 				}
-			}
-			else if (c == 'A') { // Change alignment to bottom, center middle
+			} else if (c == 'A') { // Change alignment to bottom, center middle
 				int EndSemicolon = text.Find(';', CurrentPosition);
 				if (EndSemicolon != - 1) {
 					if (CurrentPosition + 1 < EndSemicolon) {
@@ -1046,8 +1083,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 
 							if (Parameter == '1') {
 								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .5, 0.));
-							}
-							else if (Parameter == '2') {
+							} else if (Parameter == '2') {
 								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, - .5, 0.));
 							}
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
@@ -1055,8 +1091,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						}
 					}
 				}
-			}
-			else if (c == 'S') { // Stacked text or fractions
+			} else if (c == 'S') { // Stacked text or fractions
 				int EndSemicolon = text.Find(';', CurrentPosition);
 				if (EndSemicolon != - 1) {
 					int TextSegmentDelimiter = text.Find('/', CurrentPosition);
@@ -1128,22 +1163,18 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
 
 		if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) {
 			boundingBox[2].x = TextWidth;
-		}
-		else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
+		} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
 			boundingBox[0].x = -TextWidth * .5;
 			boundingBox[2].x = boundingBox[0].x + TextWidth;
-		}
-		else {
+		} else {
 			boundingBox[0].x = -TextWidth;
 		}
 		if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) {
 			boundingBox[0].y = -TextHeight;
-		}
-		else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
+		} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
 			boundingBox[0].y = -TextHeight * .5;
 			boundingBox[2].y = boundingBox[0].y + TextHeight;
-		}
-		else {
+		} else {
 			boundingBox[2].y = TextHeight;
 		}
 		if (spaceFactor > DBL_EPSILON) {
