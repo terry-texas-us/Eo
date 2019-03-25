@@ -264,12 +264,9 @@ void AeSysView::OnAnnotateModeBox() {
 			bG2Flg = true;
 		}
 		if (bG1Flg && bG2Flg) {
-			// <tas="OdArray items are not initialized. In this case invalid z values exist in JoinedBoxes 1 & 3. Crash!"</tas>
 			OdGePoint3dArray JoinedBoxes;
 			JoinedBoxes.setLogicalLength(4);
-
-			JoinedBoxes[0] = ptsBox1[0];
-			JoinedBoxes[2] = ptsBox1[0];
+			JoinedBoxes.setAll(ptsBox1[0]);
 			for (int i = 1; i < 4; i++) {
 				JoinedBoxes[0].x = EoMin(JoinedBoxes[0].x, ptsBox1[i].x);
 				JoinedBoxes[2].x = EoMax(JoinedBoxes[2].x, ptsBox1[i].x);
