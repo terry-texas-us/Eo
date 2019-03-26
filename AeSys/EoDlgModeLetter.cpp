@@ -40,13 +40,32 @@ void EoDlgModeLetter::OnOK() {
 	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
 
 	if (m_TextEditControl.GetWindowTextLengthW() != 0) {
-		CString Text;
-		m_TextEditControl.GetWindowTextW(Text);
-		m_TextEditControl.SetWindowTextW(L"");
+        CString TextEditControl;
+        m_TextEditControl.GetWindowTextW(TextEditControl);
+        m_TextEditControl.SetWindowTextW(L"");
 
-		EoDbText* TextPrimitive = EoDbText::Create(Database);
-		TextPrimitive->SetTo(FontDefinition, ReferenceSystem, Text);
-		EoDbGroup* Group = new EoDbGroup;
+        EoDbText* TextPrimitive;
+
+        int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
+        if (HardLineBreakPosition == -1) { // single line text
+            OdDbTextPtr Text = EoDbText::Create(Database, Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+            Text->setPosition(ReferenceSystem.Origin());
+            Text->setTextString((LPCWSTR) TextEditControl);
+            Text->setHeight(ReferenceSystem.YDirection().length());
+            Text->setRotation(ReferenceSystem.Rotation());
+            Text->setAlignmentPoint(Text->position());
+
+            TextPrimitive = EoDbText::Create(Text);
+        } else {
+            OdDbMTextPtr MText = EoDbText::Create(Database, Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite), TextEditControl.GetBuffer());
+            MText->setLocation(ReferenceSystem.Origin());
+            MText->setContents((LPCWSTR) TextEditControl);
+            MText->setHeight(ReferenceSystem.YDirection().length());
+            MText->setRotation(ReferenceSystem.Rotation());
+
+            TextPrimitive = EoDbText::Create(MText);
+        }
+      	EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(TextPrimitive);
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);

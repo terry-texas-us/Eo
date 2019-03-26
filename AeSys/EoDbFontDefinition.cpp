@@ -88,3 +88,32 @@ void EoDbFontDefinition::Write(EoDbFile& file) const {
 	file.Write(&m_VerticalAlignment, sizeof(EoUInt16));
 	file.Write(&m_CharacterSpacing, sizeof(double));
 }
+
+void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) {
+    m_FontName = L"Simplex.psf";
+    m_Precision = EoDb::kStrokeType;
+
+    if (textStyleTableRecord->isShapeFile()) {
+        ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (LPCWSTR) textStyleTableRecord->desc()->name());
+    } else { // shx font file or windows (ttf) font file
+        OdString TypeFace;
+        bool Bold;
+        bool Italic;
+        int Charset;
+        int PitchAndFamily;
+
+        textStyleTableRecord->font(TypeFace, Bold, Italic, Charset, PitchAndFamily);
+
+        if (TypeFace != L"") { // windows (ttf) file
+            m_FontName = (LPCWSTR) TypeFace;
+            m_Precision = EoDb::kEoTrueType;
+        }
+    }
+}
+
+void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) {
+    m_HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(horizontalMode);;
+    m_VerticalAlignment = EoDbText::ConvertVerticalAlignment(verticalMode);
+}
+
+

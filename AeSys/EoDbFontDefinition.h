@@ -38,4 +38,7 @@ public:
 
 	void Read(EoDbFile& file);
 	void Write(EoDbFile& file) const;
+
+    void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord);
+    void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode);
 };

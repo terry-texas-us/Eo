@@ -65,7 +65,10 @@ public: // Methods - static
 	static EoDbText* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
 	static EoDbText* Create(OdDbDatabasePtr database);
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
-	static EoDbText* Create(OdDbTextPtr text);
+    static OdDbTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbMTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text);
+    static EoDbText* Create(OdDbTextPtr text);
+    static EoDbText* Create(OdDbMTextPtr text);
 };
 
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text);

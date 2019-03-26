@@ -81,6 +81,7 @@
 #include "DbTextStyleTableRecord.h"
 #include "DbPoint.h"
 #include "DbLine.h"
+#include "DbMText.h"
 #include "DbText.h"
 #include "DbSortentsTable.h"
 #include "DbSpatialFilter.h"
