@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
+#include "AeSysView.h"
 
 #include "EoDlgModeLetter.h"
 
@@ -35,7 +36,7 @@ void EoDlgModeLetter::OnOK() {
 	OdDbDatabasePtr Database = Document->m_DatabasePtr;
 
 	EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-	EoGeReferenceSystem ReferenceSystem(m_Point, CharacterCellDefinition);
+	EoGeReferenceSystem ReferenceSystem(m_Point, AeSysView::GetActiveView(), CharacterCellDefinition);
 
 	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
 
@@ -57,10 +58,11 @@ void EoDlgModeLetter::OnOK() {
 
             TextPrimitive = EoDbText::Create(Text);
         } else {
+            TextEditControl.Replace(L"\r\n", L"\\P");
             OdDbMTextPtr MText = EoDbText::Create(Database, Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite), TextEditControl.GetBuffer());
             MText->setLocation(ReferenceSystem.Origin());
             MText->setContents((LPCWSTR) TextEditControl);
-            MText->setHeight(ReferenceSystem.YDirection().length());
+            MText->setTextHeight(ReferenceSystem.YDirection().length());
             MText->setRotation(ReferenceSystem.Rotation());
 
             TextPrimitive = EoDbText::Create(MText);

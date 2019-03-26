@@ -174,12 +174,9 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	CharacterCellDefinition.SetWidthFactor(text->widthFactor());
 	CharacterCellDefinition.SetObliqueAngle(text->oblique());
 
-	OdGeVector3d XDirection;
-	OdGeVector3d YDirection;
-	CharCellDef_EncdRefSys(text->normal(), CharacterCellDefinition, XDirection, YDirection);
-
-	EoGeReferenceSystem ReferenceSystem(AlignmentPoint, XDirection, YDirection);
-	EoDbText* TextPrimitive = new EoDbText();
+    EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
+    
+    EoDbText* TextPrimitive = new EoDbText();
 	TextPrimitive->SetFontDefinition(FontDefinition);
 	TextPrimitive->SetReferenceSystem(ReferenceSystem);
 	TextPrimitive->SetText((PCTSTR) text->textString());
@@ -853,12 +850,9 @@ public:
 		CharacterCellDefinition.SetHeight(MTextEntity->textHeight());
 		CharacterCellDefinition.SetRotationAngle(MTextEntity->rotation());
 
-		OdGeVector3d XDirection;
-		OdGeVector3d YDirection;
-		CharCellDef_EncdRefSys(MTextEntity->normal(), CharacterCellDefinition, XDirection, YDirection);
+        EoGeReferenceSystem ReferenceSystem(MTextEntity->location(), MTextEntity->normal(), CharacterCellDefinition);
 
-		EoGeReferenceSystem ReferenceSystem(MTextEntity->location(), XDirection, YDirection);
-		EoDbText* TextPrimitive = new EoDbText();
+        EoDbText* TextPrimitive = new EoDbText();
 		TextPrimitive->SetFontDefinition(FontDefinition);
 		TextPrimitive->SetReferenceSystem(ReferenceSystem);
 		TextPrimitive->SetText((PCTSTR) Contents);

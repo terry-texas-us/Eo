@@ -644,17 +644,14 @@ EoDbText* EoDbText::Create(OdDbTextPtr text) {
     if (FontDefinition.HorizontalAlignment() != EoDb::kAlignLeft || FontDefinition.VerticalAlignment() != EoDb::kAlignBottom) {
         AlignmentPoint = text->alignmentPoint();
     }
+    
     EoDbCharacterCellDefinition CharacterCellDefinition;
     CharacterCellDefinition.SetHeight(text->height());
     CharacterCellDefinition.SetWidthFactor(text->widthFactor());
     CharacterCellDefinition.SetRotationAngle(text->rotation());
     CharacterCellDefinition.SetObliqueAngle(text->oblique());
 
-    OdGeVector3d XDirection;
-    OdGeVector3d YDirection;
-    CharCellDef_EncdRefSys(text->normal(), CharacterCellDefinition, XDirection, YDirection);
-
-    EoGeReferenceSystem ReferenceSystem(AlignmentPoint, XDirection, YDirection);
+    EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
 
     Text->SetFontDefinition(FontDefinition);
     Text->SetReferenceSystem(ReferenceSystem);
@@ -684,11 +681,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr text) {
     CharacterCellDefinition.SetRotationAngle(text->rotation());
 //    CharacterCellDefinition.SetObliqueAngle(text->oblique());
 
-    OdGeVector3d XDirection;
-    OdGeVector3d YDirection;
-    CharCellDef_EncdRefSys(text->normal(), CharacterCellDefinition, XDirection, YDirection);
-
-    EoGeReferenceSystem ReferenceSystem(AlignmentPoint, XDirection, YDirection);
+    EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
 
     Text->SetFontDefinition(FontDefinition);
     Text->SetReferenceSystem(ReferenceSystem);

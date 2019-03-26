@@ -389,8 +389,9 @@ void AeSysView::OnDimensionModeAngle(void) {
 				pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 				OdGePoint3d ptPvt = ProjectToward(ptCur, CenterPoint, - .25);
-				CharCellDef_EncdRefSys(PlaneNormal, CharacterCellDefinition, MajorAxis, MinorAxis);
-				EoGeReferenceSystem ReferenceSystem(ptPvt, MajorAxis, MinorAxis);
+
+                EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
+
 				EoDbText* TextPrimitive = EoDbText::Create(Database());
 				TextPrimitive->SetTo(FontDefinition, ReferenceSystem, theApp.FormatAngle(Angle));
 				Group->AddTail(TextPrimitive);

@@ -1,5 +1,6 @@
 #pragma once
 
+class AeSysView;
 class EoDbCharacterCellDefinition;
 class EoDbFile;
 
@@ -10,10 +11,12 @@ class EoGeReferenceSystem {
 
 public: // Constructors and destructor
 	EoGeReferenceSystem();
-	EoGeReferenceSystem(const OdGePoint3d& origin, EoDbCharacterCellDefinition& characterCellDefinition);
-	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection);
+//	EoGeReferenceSystem(const OdGePoint3d& origin, EoDbCharacterCellDefinition& characterCellDefinition);
+    EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition);
+    EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection);
+    EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition);
 
-	EoGeReferenceSystem(const EoGeReferenceSystem& cs);
+	EoGeReferenceSystem(const EoGeReferenceSystem& other);
 
 	~EoGeReferenceSystem() {
 	}
