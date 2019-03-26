@@ -1132,12 +1132,13 @@ void AeSysDoc::UpdateLayerInAllViews(LPARAM hint, EoDbLayer* layer) {
 void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive) {
 	CDocument::UpdateAllViews(NULL, hint, static_cast<CObject*>(primitive));
 }
+
 void AeSysDoc::AddTextBlock(LPWSTR text) {
 	OdGePoint3d ptPvt = theApp.GetCursorPosition();
 
 	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
 	EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-	EoGeReferenceSystem ReferenceSystem(ptPvt, CharacterCellDefinition);
+	EoGeReferenceSystem ReferenceSystem(ptPvt, AeSysView::GetActiveView(), CharacterCellDefinition);
 
 	LPWSTR NextToken = NULL;
 	LPWSTR pText = wcstok_s(text, L"\r", &NextToken);
@@ -2053,21 +2054,36 @@ void AeSysDoc::OnEditTrapPaste() {
 				}
 			}
 		}
-		else if (IsClipboardFormatAvailable(CF_TEXT)) {
-			HGLOBAL ClipboardDataHandle = GetClipboardData(CF_TEXT);
+        else if (IsClipboardFormatAvailable(CF_TEXT)) {
+            HGLOBAL ClipboardDataHandle = GetClipboardData(CF_TEXT);
+            if (ClipboardDataHandle != NULL) {
+                char* ClipboardData = (char*) GlobalLock(ClipboardDataHandle);
+                if (ClipboardData != NULL) {
+                    size_t ClipboardDataSize = GlobalSize(ClipboardDataHandle);
+                    wchar_t* Text = new wchar_t[ClipboardDataSize];
+                    for (int i = 0; i < ClipboardDataSize; i++) {
+                        Text[i] = (wchar_t) ClipboardData[i];
+                    }
+                    GlobalUnlock(ClipboardDataHandle);
+                    AddTextBlock(Text);
+                    delete[] Text;
+                }
+            }
+        }
+        else if (IsClipboardFormatAvailable(CF_UNICODETEXT)) {
+            HGLOBAL ClipboardDataHandle = GetClipboardData(CF_UNICODETEXT);
 
-			LPWSTR lpText = new wchar_t[GlobalSize(ClipboardDataHandle)];
-
-			LPCWSTR ClipboardData = (LPCWSTR)GlobalLock(ClipboardDataHandle);
-#pragma warning(suppress: 6387)
-			lstrcpyW(lpText, ClipboardData);
-			GlobalUnlock(ClipboardDataHandle);
-
-			AddTextBlock(lpText);
-
-			delete[] lpText;
-		}
-		CloseClipboard();
+            wchar_t* ClipboardData = (wchar_t*) GlobalLock(ClipboardDataHandle);
+            size_t ClipboardDataSize = GlobalSize(ClipboardDataHandle);
+            wchar_t* Text = new wchar_t[ClipboardDataSize];
+            for (int i = 0; i < ClipboardDataSize; i++) {
+                Text[i] = ClipboardData[i];
+            }
+            GlobalUnlock(ClipboardDataHandle);
+            AddTextBlock(Text);
+            delete[] Text;
+        }
+        CloseClipboard();
 	}
 	else
 		theApp.WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
