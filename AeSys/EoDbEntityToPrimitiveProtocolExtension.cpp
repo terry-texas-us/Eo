@@ -23,7 +23,6 @@
 #include "DbFcf.h"
 #include "DbLeader.h"
 #include "DbMInsertBlock.h"
-#include "DbMText.h"
 #include "DbMline.h"
 #include "DbOle2Frame.h"
 #include "DbOrdinateDimension.h"

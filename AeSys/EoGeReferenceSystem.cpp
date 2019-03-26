@@ -63,6 +63,19 @@ void EoGeReferenceSystem::Rescale(EoDbCharacterCellDefinition& characterCellDefi
 	m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
 	m_YDirection *= characterCellDefinition.Height();
 }
+
+double EoGeReferenceSystem::Rotation() const {
+    OdGeVector3d HorizontalAxis = m_XDirection;
+
+    double Angle = 0.;
+
+    Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
+    if (Angle < 0.) {
+        Angle += TWOPI;
+    }
+    return (Angle);
+}
+
 void EoGeReferenceSystem::Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) {
 	m_Origin = origin;
 	m_XDirection = xDirection;

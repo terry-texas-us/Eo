@@ -26,7 +26,8 @@ public: // Methods
 	void Read(EoDbFile& file);
 	/// <summary>Takes the current reference directions and rescales using passed character cell state.</summary>
 	void Rescale(EoDbCharacterCellDefinition& characterCellDefinition);
-	void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection);
+    double Rotation() const;
+    void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection);
 	void SetOrigin(const OdGePoint3d& origin);
 	void SetXDirection(const OdGeVector3d& xDirection);
 	void SetYDirection(const OdGeVector3d& yDirection);
