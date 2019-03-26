@@ -22,5 +22,3 @@ public:
 	void SetObliqueAngle(double obliqueAngle);
 	void SetRotationAngle(double rotationAngle);
 };
-/// <summary>Produces the reference system vectors for a single charater cell.</summary>
-void CharCellDef_EncdRefSys(const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition, OdGeVector3d& xAxisReference, OdGeVector3d& yAxisReference);

@@ -1,7 +1,6 @@
 #include "stdafx.h"
 
-EoDbCharacterCellDefinition::EoDbCharacterCellDefinition() :
-	m_Height(.1), m_WidthFactor(1.), m_RotationAngle(0.), m_ObliqueAngle(0.) {
+EoDbCharacterCellDefinition::EoDbCharacterCellDefinition() : m_Height(.1), m_WidthFactor(1.) , m_RotationAngle(0.) , m_ObliqueAngle(0.) {
 }
 EoDbCharacterCellDefinition::EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) {
 	m_Height = other.m_Height;
@@ -40,15 +39,4 @@ void EoDbCharacterCellDefinition::SetObliqueAngle(double obliqueAngle) {
 }
 void EoDbCharacterCellDefinition::SetRotationAngle(double rotationAngle) {
 	m_RotationAngle = rotationAngle;
-}
-void CharCellDef_EncdRefSys(const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition, OdGeVector3d& xAxis, OdGeVector3d& yAxis) {
-	xAxis = ComputeArbitraryAxis(normal);
-	xAxis.rotateBy(characterCellDefinition.RotationAngle(), normal);
-
-	yAxis = normal.crossProduct(xAxis);
-
-	xAxis *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
-
-	yAxis.rotateBy(characterCellDefinition.ObliqueAngle(), normal);
-	yAxis *= characterCellDefinition.Height();
 }
