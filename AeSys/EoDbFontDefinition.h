@@ -41,4 +41,5 @@ public:
 
     void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord);
     void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode);
+    void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint);
 };

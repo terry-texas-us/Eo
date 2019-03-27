@@ -79,7 +79,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text);
 void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text);
 /// <summary> Determines the count of characters in string excluding formatting characters.</summary>
-int LengthSansFormattingCharacters(const CString& text);
+int TextLengthSansFormattingCharacters(const CString& text);
 /// <summary> Determines the offset to the bottom left alignment position of a string of the specified number of characters and text attributes in the z=0 plane.</summary>
 OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int iChrs);
 /// <summary>Returns the region boundaries of a text string applying and optional inflation factor.</summary>

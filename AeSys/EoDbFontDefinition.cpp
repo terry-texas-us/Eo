@@ -116,4 +116,45 @@ void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdD
     m_VerticalAlignment = EoDbText::ConvertVerticalAlignment(verticalMode);
 }
 
+void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) {
+    switch (attachmentPoint) {
+        case OdDbMText::kTopLeft:
+            m_HorizontalAlignment = EoDb::kAlignLeft;
+            m_VerticalAlignment = EoDb::kAlignTop;
+            break;
+        case OdDbMText::kTopCenter:
+            m_HorizontalAlignment = EoDb::kAlignCenter;
+            m_VerticalAlignment = EoDb::kAlignTop;
+            break;
+        case OdDbMText::kTopRight:
+            m_HorizontalAlignment = EoDb::kAlignRight;
+            m_VerticalAlignment = EoDb::kAlignTop;
+            break;
+        case OdDbMText::kMiddleLeft:
+            m_HorizontalAlignment = EoDb::kAlignLeft;
+            m_VerticalAlignment = EoDb::kAlignMiddle;
+            break;
+        case OdDbMText::kMiddleCenter:
+            m_HorizontalAlignment = EoDb::kAlignCenter;
+            m_VerticalAlignment = EoDb::kAlignMiddle;
+            break;
+        case OdDbMText::kMiddleRight:
+            m_HorizontalAlignment = EoDb::kAlignRight;
+            m_VerticalAlignment = EoDb::kAlignMiddle;
+            break;
+        case OdDbMText::kBottomCenter:
+            m_HorizontalAlignment = EoDb::kAlignCenter;
+            m_VerticalAlignment = EoDb::kAlignBottom;
+            break;
+        case OdDbMText::kBottomRight:
+            m_HorizontalAlignment = EoDb::kAlignRight;
+            m_VerticalAlignment = EoDb::kAlignBottom;
+            break;
+        default:
+            m_HorizontalAlignment = EoDb::kAlignLeft;
+            m_VerticalAlignment = EoDb::kAlignBottom;
+    }
+}
+
+
 

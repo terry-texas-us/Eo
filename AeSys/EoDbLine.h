@@ -68,5 +68,5 @@ public: // Methods - static
 	static EoDbLine* Create(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 	static EoDbLine* Create(OdDbDatabasePtr database);
 	static OdDbLinePtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
-	static EoDbLine* EoDbLine::Create(OdDbLinePtr line);
+	static EoDbLine* Create(OdDbLinePtr line);
 };

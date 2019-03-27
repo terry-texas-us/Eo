@@ -138,7 +138,7 @@ void EoDbText::GetAllPoints(OdGePoint3dArray& points) const {
 }
 
 void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const {
-    int Length = LengthSansFormattingCharacters(m_strText);
+    int Length = TextLengthSansFormattingCharacters(m_strText);
     text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, Length, spaceFactor, boundingBox);
 }
 
@@ -671,13 +671,17 @@ EoDbText* EoDbText::Create(OdDbMTextPtr text) {
 
     EoDbFontDefinition FontDefinition;
     FontDefinition.SetTo(TextStyleTableRecordPtr);
-    FontDefinition.SetJustification(text->horizontalMode(), text->verticalMode());
+    FontDefinition.SetJustification(text->attachment());
+    
+// <tas="defines the bounding rectangle size for paragraph feastures"</tas>
+//    double Width = text->width();
+//    double Height = text->height();
 
     OdGePoint3d AlignmentPoint = text->location();
 
     EoDbCharacterCellDefinition CharacterCellDefinition;
-    CharacterCellDefinition.SetHeight(text->height());
-//    CharacterCellDefinition.SetWidthFactor(text->widthFactor());
+    CharacterCellDefinition.SetHeight(text->textHeight());
+//    CharacterCellDefinition.SetWidthFactor(text->??);
     CharacterCellDefinition.SetRotationAngle(text->rotation());
 //    CharacterCellDefinition.SetObliqueAngle(text->oblique());
 
@@ -773,7 +777,12 @@ OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numb
     return InsertionPoint;
 }
 
-int LengthSansFormattingCharacters(const CString& text) {
+// <summary>Determines the number of characters in the text excluding formatting characters.</summary>
+/* <issues>
+    Designed for single line of text. For Multiple lines the length should be of the longest line in the paragraph if the length is to be used for horizontal alignment points.
+    Block delimiters '{' and '}' and other formatting codes not being handled.
+</issues> */
+int TextLengthSansFormattingCharacters(const CString& text) {
     int Length = text.GetLength();
     int CurrentPosition = 0;
 
@@ -1019,9 +1028,9 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
     UINT uTextAlign = deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
     int iBkMode = deviceContext->SetBkMode(TRANSPARENT);
 
-    deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition));
+    deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
 
-    //	DisplayTextUsingWindowsFontOutline(deviceContext, ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition));
+    //	DisplayTextUsingWindowsFontOutline(deviceContext, ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
 
     deviceContext->SetBkMode(iBkMode);
     deviceContext->SetTextAlign(uTextAlign);
@@ -1033,7 +1042,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text) {
     EoGeReferenceSystem ReferenceSystem = referenceSystem;
 
-    int Length = LengthSansFormattingCharacters(text);
+    int Length = TextLengthSansFormattingCharacters(text);
 
     OdGePoint3d InsertionPoint = CalculateInsertionPoint(fontDefinition, Length);
     InsertionPoint.transformBy(EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem));
@@ -1086,15 +1095,13 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
                             }
                             StartPosition = EndSemicolon + 1;
                             CurrentPosition = StartPosition;
-                            NumberOfCharactersToDisplay = text.GetLength() - StartPosition;
+                            NumberOfCharactersToDisplay = 0;
 
                             if (Parameter == '1') {
                                 ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .5, 0.));
                             } else if (Parameter == '2') {
                                 ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -.5, 0.));
                             }
-                            DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
-                            return;
                         }
                     }
                 }
