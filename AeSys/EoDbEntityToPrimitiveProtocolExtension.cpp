@@ -801,43 +801,43 @@ public:
 
 		EoDb::HorizontalAlignment HorizontalAlignment;
 		EoDb::VerticalAlignment VerticalAlignment;
-		switch (MTextEntity->attachment()) {
-		case OdDb::kTopLeft:
-			HorizontalAlignment = EoDb::kAlignLeft; 
-			VerticalAlignment = EoDb::kAlignTop; 
-			break;
-		case OdDb::kTopCenter:
-			HorizontalAlignment = EoDb::kAlignCenter; 
-			VerticalAlignment = EoDb::kAlignTop; 
-			break;
-		case OdDb::kTopRight:
-			HorizontalAlignment = EoDb::kAlignRight; 
-			VerticalAlignment = EoDb::kAlignTop; 
-			break;
-		case OdDb::kMiddleLeft:
-			HorizontalAlignment = EoDb::kAlignLeft; 
-			VerticalAlignment = EoDb::kAlignMiddle; 
-			break;
-		case OdDb::kMiddleCenter:
-			HorizontalAlignment = EoDb::kAlignCenter; 
-			VerticalAlignment = EoDb::kAlignMiddle; 
-			break;
-		case OdDb::kMiddleRight:
-			HorizontalAlignment = EoDb::kAlignRight; 
-			VerticalAlignment = EoDb::kAlignMiddle; 
-			break;
-		case OdDb::kBottomCenter:
-			HorizontalAlignment = EoDb::kAlignCenter; 
-			VerticalAlignment = EoDb::kAlignBottom; 
-			break;
-		case OdDb::kBottomRight:
-			HorizontalAlignment = EoDb::kAlignRight; 
-			VerticalAlignment = EoDb::kAlignBottom; 
-			break;
-		default:
-			HorizontalAlignment = EoDb::kAlignLeft; 
-			VerticalAlignment = EoDb::kAlignBottom;
-		}
+        switch (MTextEntity->attachment()) {
+            case OdDb::kTopLeft:
+                HorizontalAlignment = EoDb::kAlignLeft;
+                VerticalAlignment = EoDb::kAlignTop;
+                break;
+            case OdDb::kTopCenter:
+                HorizontalAlignment = EoDb::kAlignCenter;
+                VerticalAlignment = EoDb::kAlignTop;
+                break;
+            case OdDb::kTopRight:
+                HorizontalAlignment = EoDb::kAlignRight;
+                VerticalAlignment = EoDb::kAlignTop;
+                break;
+            case OdDb::kMiddleLeft:
+                HorizontalAlignment = EoDb::kAlignLeft;
+                VerticalAlignment = EoDb::kAlignMiddle;
+                break;
+            case OdDb::kMiddleCenter:
+                HorizontalAlignment = EoDb::kAlignCenter;
+                VerticalAlignment = EoDb::kAlignMiddle;
+                break;
+            case OdDb::kMiddleRight:
+                HorizontalAlignment = EoDb::kAlignRight;
+                VerticalAlignment = EoDb::kAlignMiddle;
+                break;
+            case OdDb::kBottomCenter:
+                HorizontalAlignment = EoDb::kAlignCenter;
+                VerticalAlignment = EoDb::kAlignBottom;
+                break;
+            case OdDb::kBottomRight:
+                HorizontalAlignment = EoDb::kAlignRight;
+                VerticalAlignment = EoDb::kAlignBottom;
+                break;
+            default:
+                HorizontalAlignment = EoDb::kAlignLeft;
+                VerticalAlignment = EoDb::kAlignBottom;
+        }
 		OdString Contents = MTextEntity->contents();
 
 		EoDbFontDefinition FontDefinition;
