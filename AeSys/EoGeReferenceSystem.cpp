@@ -4,25 +4,6 @@
 EoGeReferenceSystem::EoGeReferenceSystem() : m_Origin(OdGePoint3d::kOrigin), m_XDirection(OdGeVector3d::kXAxis), m_YDirection(OdGeVector3d::kYAxis) {
 }
 
-/*
-EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, EoDbCharacterCellDefinition& characterCellDefinition) {
-    AeSysView* ActiveView = AeSysView::GetActiveView();
-
-    m_Origin = origin;
-
-    OdGeVector3d vNorm = ActiveView->CameraDirection();
-
-    m_YDirection = ActiveView->ViewUp();
-    m_YDirection.rotateBy(characterCellDefinition.RotationAngle(), vNorm);
-
-    m_XDirection = m_YDirection;
-    m_XDirection.rotateBy(- HALF_PI, vNorm);
-    m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), vNorm);
-    m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
-    m_YDirection *= characterCellDefinition.Height();
-}
-*/
-
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition) : m_Origin(origin) {
     OdGeVector3d normal = view->CameraDirection();
 
