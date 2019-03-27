@@ -1,6 +1,6 @@
 #pragma once
 
-#include "EoGeReferenceSystem.h"
+class EoGeReferenceSystem;
 
 class EoGeMatrix3d : public OdGeMatrix3d {
 public: // Constructors and destructor
