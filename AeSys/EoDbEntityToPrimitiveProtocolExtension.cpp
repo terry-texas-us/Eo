@@ -735,6 +735,7 @@ class EoDbLine_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
 		OdDbLinePtr Line = entity;
+        
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbLine ...\n", (LPCWSTR) Line->desc()->name());
 
 		group->AddTail(EoDbLine::Create(Line));

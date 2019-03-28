@@ -995,7 +995,10 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
 		case EoDb::kDwg:
 		case EoDb::kDxf: {
 			m_DatabasePtr = theApp.readFile(pathName, false, false);
-			
+            
+            //<tas="disable lineweight display until lineweight by default is properly defined"</tas>
+            if (m_DatabasePtr->getLWDISPLAY()) m_DatabasePtr->setLWDISPLAY(false);
+
 			OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
 			if (!TextStyles->has(L"EoStandard")) {
 				OdDbTextStyleTableRecordPtr TextStyle = AddNewTextStyle(L"EoStandard", TextStyles);
