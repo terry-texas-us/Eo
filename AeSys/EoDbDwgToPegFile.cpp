@@ -14,8 +14,10 @@ static char THIS_FILE[] = __FILE__;
 EoDbDwgToPegFile::EoDbDwgToPegFile(OdDbDatabasePtr database) {
 	m_DatabasePtr_ = database;
 }
+
 EoDbDwgToPegFile::~EoDbDwgToPegFile() {
 };
+
 void EoDbDwgToPegFile::ConvertToPeg(AeSysDoc* document) {
 	if (!m_DatabasePtr_.isNull()) {
 		ConvertHeaderSection(document);
@@ -28,6 +30,7 @@ void EoDbDwgToPegFile::ConvertToPeg(AeSysDoc* document) {
 		ConvertEntities(document);
 	}
 }
+
 void EoDbDwgToPegFile::ConvertBlockTable(AeSysDoc* document) {
 	OdDbBlockTablePtr BlockTable = m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead);
 	ATLTRACE2(atlTraceGeneral, 0, L"<%s> Loading block table\n", (LPCWSTR) BlockTable->desc()->name());
@@ -49,8 +52,10 @@ void EoDbDwgToPegFile::ConvertBlockTable(AeSysDoc* document) {
 		document->InsertBlock(Block->getName(), pBlock);
 	}
 }
+
 void EoDbDwgToPegFile::ConvertHeaderSection(AeSysDoc* document) {
 };
+
 void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {
 	OdDbLayerTablePtr Layers = m_DatabasePtr_->getLayerTableId().safeOpenObject(OdDb::kForWrite);
 	ATLTRACE2(atlTraceGeneral, 0, L"<%s> Loading layer definitions ...\n", (LPCWSTR) Layers->desc()->name());
@@ -86,6 +91,7 @@ void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {
 		}
 	}
 }
+
 void EoDbDwgToPegFile::ConvertViewportTable(AeSysDoc* document) {
 	OdDbViewportTablePtr Viewports = m_DatabasePtr_->getViewportTableId().safeOpenObject(OdDb::kForRead);
 	ATLTRACE2(atlTraceGeneral, 0, L"<%s> Loading viewport definitions ...\n", (LPCWSTR) Viewports->desc()->name());
@@ -99,6 +105,7 @@ void EoDbDwgToPegFile::ConvertViewportTable(AeSysDoc* document) {
 		if (Viewport->extensionDictionary()) {}
 	}
 }
+
 void EoDbDwgToPegFile::ConvertBlocks(AeSysDoc* document) {
 	OdDbBlockTablePtr BlockTable = m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead);
 	ATLTRACE2(atlTraceGeneral, 0, L"<%s> Loading block definitions ...\n", LPCWSTR(BlockTable->desc()->name()));
@@ -107,25 +114,25 @@ void EoDbDwgToPegFile::ConvertBlocks(AeSysDoc* document) {
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbBlockTableRecordPtr Block = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
-		ATLTRACE2(atlTraceGeneral, 0, L"%s  %s ", LPCWSTR(Block->desc()->name()), LPCWSTR(Block->getName()));
+		ATLTRACE2(atlTraceGeneral, 0, L"%s  %s\n", LPCWSTR(Block->desc()->name()), LPCWSTR(Block->getName()));
 		if (Block->isAnonymous()) {
-			ATLTRACE2(atlTraceGeneral, 0, L"(Anonymous block)");
+			ATLTRACE2(atlTraceGeneral, 0, L"(Anonymous block)\n");
 		}
 		if (Block->isLayout()) {
-			ATLTRACE2(atlTraceGeneral, 0, L"(Layout block)");
+			ATLTRACE2(atlTraceGeneral, 0, L"(Layout block)\n");
 		}
 		if (Block->xrefStatus() != OdDb::kXrfNotAnXref) {
 			if (Block->isFromExternalReference()) {
 				ATLTRACE2(atlTraceGeneral, 0, L"(External reference to drawing <%s> not loaded). Access available only through DWG interface.", (LPCWSTR) Block->pathName());
 			}
 		}		
-		ATLTRACE2(atlTraceGeneral, 0, L"\n");
 		if (Block->objectId() != m_DatabasePtr_->getModelSpaceId()) {
 //		if (!Block->isLayout()) {
 			ConvertBlock(Block, document);
 		}
 	}
 }
+
 void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* document) {
 	EoDbBlock* Block;
 	document->LookupBlock((LPCWSTR) block->getName(), Block);
@@ -169,6 +176,7 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 		}
 	}
 }
+
 void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 	ConvertEntityToPrimitiveProtocolExtension ProtocolExtensions(document);
 	ProtocolExtensions.Initialize();
