@@ -137,7 +137,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	CMFCToolBar::EnableQuickCustomization();
 
 	if (CMFCToolBar::GetUserImages() == NULL) { // load user-defined toolbar images
-		if (m_UserImages.Load(L"\\UserImages.bmp")) {
+		if (m_UserImages.Load(L"res\\UserImages.bmp")) {
 			m_UserImages.SetImageSize(CSize(16, 16), FALSE);
 			CMFCToolBar::SetUserImages(&m_UserImages);
 		}
