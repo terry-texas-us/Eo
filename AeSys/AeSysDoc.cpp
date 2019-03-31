@@ -220,7 +220,6 @@ BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
 	CString PathName(pathName);
 	if (PathName.IsEmpty()) { // Save As
 		CDocTemplate* DocTemplate = GetDocTemplate();
-		ASSERT(DocTemplate != NULL);
 
 		PathName = m_strPathName;
 		if (replace && PathName.IsEmpty()) {
