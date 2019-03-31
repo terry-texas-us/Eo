@@ -124,7 +124,6 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
 		if (Linetype->objectId() != Database->getLinetypeByLayerId() && Linetype->objectId() != Database->getLinetypeByBlockId()) {
-#pragma warning(suppress: 6387)
 			m_LinetypesListControl.InsertItem(ItemIndex, NULL);
 			m_LinetypesListControl.SetItemData(ItemIndex++, (DWORD)(OdDbStub*)Linetype->objectId());
 		}

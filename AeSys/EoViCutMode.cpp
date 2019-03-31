@@ -141,7 +141,6 @@ void AeSysView::OnCutModeField(void) {
 				continue;
 
 			POSITION PrimitivePosition, posPrimPrv;
-#pragma warning(suppress: 28182)
 			for (PrimitivePosition = Group->GetHeadPosition(); (posPrimPrv = PrimitivePosition) != 0;) {
 				Primitive = Group->GetNext(PrimitivePosition);
 
@@ -227,7 +226,6 @@ void AeSysView::OnCutModeClip(void) {
 			POSITION posPrim1;
 			POSITION posPrim2;
 
-#pragma warning(suppress: 28182)
 			for (posPrim1 = Group->GetHeadPosition(); (posPrim2 = posPrim1) != 0;) {
 				EoDbPrimitive* Primitive = Group->GetNext(posPrim1);
 

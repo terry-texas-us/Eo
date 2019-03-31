@@ -81,7 +81,6 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 	for (size_t nDel = Extra.Mid(nOff).Find(';'); nDel != - 1;) {
 		wcscpy_s(szBuf, Extra.Mid(nOff, nDel));
 
-#pragma warning(suppress: 6054)
 		m_ExtraListViewControl.InsertItem(iItem, szBuf);
 
 		nOff += nDel + 1;

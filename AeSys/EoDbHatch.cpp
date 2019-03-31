@@ -471,7 +471,6 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 			PatternOffset.negate();
 		}
 		// Determine where first scan position is
-#pragma warning(suppress: 6001)
 		double dScan = Edges[1].dMaxY - fmod((Edges[1].dMaxY - RotatedBasePoint.y), PatternOffset.y);
 		if (Edges[1].dMaxY < dScan) {
 			dScan = dScan - PatternOffset.y;

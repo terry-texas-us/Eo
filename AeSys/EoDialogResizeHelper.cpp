@@ -104,7 +104,6 @@ UINT EoDialogResizeHelper::Fix(LPCWSTR a_pszClassName, EHFix a_hFix, EVFix a_vFi
 	UINT cnt = 0;
 	CtrlCont_t::iterator it;
 	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
-#pragma warning(suppress: 6386)
 		::GetClassName(it->m_hCtrl, pszCN, sizeof(pszCN));
 		if (wcscmp(pszCN, a_pszClassName) == 0) {
 			cnt++;

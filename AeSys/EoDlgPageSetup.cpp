@@ -609,7 +609,6 @@ void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
 	GetDlgItem(IDC_PAGESETUP_DRAWING_UNIT)->EnableWindow(!m_FitToPaper);
 
 	if (m_PlotSettings.useStandardScale() && !m_FitToPaper) {
-#pragma warning(suppress: 6385)
 		m_PaperScaleUnit = plotScaleSetting[ScaleType].m_RealWorldUnits;
 		m_DrawingScaleUnit = plotScaleSetting[ScaleType].m_DrawingUnits;
 	}

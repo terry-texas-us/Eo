@@ -42,7 +42,6 @@ BOOL EoDlgLineWeight::OnInitDialog(void) {
 	}
 	m_LineWeightList.SelectString(- 1, CMainFrame::StringByLineWeight(m_OriginalLineWeight, false));
 	CString Text;
-#pragma warning(suppress: 6284)
 	Text.Format(L"Original : %s", CMainFrame::StringByLineWeight(m_OriginalLineWeight, false));
 	GetDlgItem(IDC_STATIC_LINEWEIGHT_ORIGINAL)->SetWindowTextW(Text);
 	return TRUE;

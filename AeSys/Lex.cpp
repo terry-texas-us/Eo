@@ -58,7 +58,6 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 				}
 			}
 			// Pop higher priority operators from stack
-#pragma warning(suppress: 6385)
 			while (TokenTable[OperatorStack[TopOfOperatorStack]].iInStkPrio >= TokenTable[CurrentTokenType].iInComPrio) {
 				typeOfTokens[numberOfTokens++] = OperatorStack[TopOfOperatorStack--];
 			}

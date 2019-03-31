@@ -44,11 +44,9 @@ void EoDbGroup::BreakPolylines() {
 	while (Position != 0) {
 		POSITION PrimitivePosition = Position;
 		EoDbPrimitive* Primitive = GetNext(Position);
-#pragma warning(suppress: 28182)
 		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
 			EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
 			OdGePoint3dArray Points;
-#pragma warning(suppress: 28182)
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
 			for (EoUInt16 w = 0; w < Points.size() - 1; w++) {
@@ -82,7 +80,6 @@ void EoDbGroup::BreakSegRefs() {
 		while (Position != 0) {
 			POSITION PrimitivePosition = Position;
 			EoDbPrimitive* Primitive = GetNext(Position);
-#pragma warning(suppress: 28182)
 			if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
 				iSegRefs++;
 				EoDbBlock* Block;
@@ -107,7 +104,6 @@ void EoDbGroup::DeletePrimitivesAndRemoveAll() {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbPrimitive* Primitive = GetNext(Position);
-#pragma warning(suppress: 28182)
 		OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -300,7 +296,6 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 	while (Position != 0) {
 		POSITION posPrev = Position;
 		EoDbPrimitive* Primitive = GetNext(Position);
-#pragma warning(suppress: 28182)
 		if (Primitive->Is(EoDb::kTextPrimitive)) {
 			if (static_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);

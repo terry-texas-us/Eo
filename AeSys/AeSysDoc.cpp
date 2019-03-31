@@ -230,7 +230,6 @@ BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
 				PathName.ReleaseBuffer(BadCharacterPosition);
 			}
 			CString Extension;
-#pragma warning(suppress: 6011)
 			if (DocTemplate->GetDocString(Extension, CDocTemplate::filterExt) && !Extension.IsEmpty()) {
 				ASSERT(Extension[0] == '.');
 				PathName += Extension;
@@ -1537,7 +1536,6 @@ void AeSysDoc::TracingFuse(OdString& nameAndLocation) {
 		LPWSTR Title = new wchar_t[MAX_PATH];
 		GetFileTitle(nameAndLocation, Title, MAX_PATH);
 		LPWSTR NextToken = NULL;
-#pragma warning(suppress: 6031)
 		wcstok_s(Title, L".", &NextToken);
 		nameAndLocation = Title;
 		delete[] Title;
@@ -2973,19 +2971,16 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 	CString Filter;
 	Filter = L"dxf R27 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-#pragma warning(suppress: 6287)
 	if (!isDwg && (dwgver == OdDb::vAC27 || dwgver == OdDb::kDHL_1027))
 		dlgFile.m_ofn.nFilterIndex = 1;
 
 	Filter += L"dxf R24 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-#pragma warning(suppress: 6287)
 	if (!isDwg && (dwgver == OdDb::vAC24 || dwgver == OdDb::kDHL_1024))
 		dlgFile.m_ofn.nFilterIndex = 2;
 
 	Filter += L"dxf R21 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-#pragma warning(suppress: 6287)
 	if (!isDwg && (dwgver == OdDb::vAC21 || dwgver == OdDb::kDHL_1021))
 		dlgFile.m_ofn.nFilterIndex = 3;
 

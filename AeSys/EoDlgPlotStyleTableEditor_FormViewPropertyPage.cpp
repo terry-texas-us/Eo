@@ -391,7 +391,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	for (size_t i = 0; i < m_pPlotStyleTable->lineweightSize(); i++)
 	{
 		CString lineweight;
-#pragma warning(suppress: 6284)
 		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), sUnits);
 		m_Lineweight.AddString(lineweight);
 	}
@@ -499,7 +498,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 	int num;
 	if (pVal == L"Automatic")
 		pVal = L"0";
-#pragma warning(suppress: 6031)
 	_stscanf(pVal, L"%d", &num);
 	if (num < 0 || num > PS_SPIN_MAX_PEN) {
 		num = 0;
@@ -529,7 +527,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 	int num;
 	if (pVal == L"Automatic")
 		pVal = L"0";
-#pragma warning(suppress: 6031)
 	_stscanf(pVal, L"%d", &num);
 	if (num < 0 || num > PS_SPIN_MAX_PEN) {
 		num = 0;
@@ -559,7 +556,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 	int num;
 	if (pVal == L"Automatic")
 		pVal = L"0";
-#pragma warning(suppress: 6031)
 	_stscanf(pVal, L"%d", &num);
 	if (num < 0 || num > PS_SPIN_MAX_VIRTPEN) {
 		num = 0;

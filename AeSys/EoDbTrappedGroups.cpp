@@ -163,7 +163,6 @@ void AeSysDoc::ExpandTrappedGroups() {
 	while (GroupPosition != 0) {
 		Group = Groups->GetNext(GroupPosition);
 
-#pragma warning(suppress: 28182)
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			Primitive = Group->GetNext(PrimitivePosition);
