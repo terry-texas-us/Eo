@@ -190,7 +190,6 @@ void AeSysView::OnDrawModeReturn() {
             OdDbDictionaryPtr GroupDictionary = Database()->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite);
             OdDbGroupPtr pGroup = OdDbGroup::createObject(); // do not attempt to add entries to the newly created group before adding the group to the group dictionary. 
             GroupDictionary->setAt(L"*", pGroup);
-            GroupDictionary->release();
 
             pGroup->setSelectable(true);
             pGroup->setAnonymous();
@@ -302,8 +301,6 @@ void AeSysView::DoDrawModeMouseMove() {
 
     switch (PreviousDrawCommand) {
         case ID_OP2:
-            VERIFY(m_DrawModePoints.size() > 0);
-
             if (m_DrawModePoints[0] != CurrentPnt) {
                 CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
                 m_DrawModePoints.append(CurrentPnt);
@@ -355,26 +352,24 @@ void AeSysView::DoDrawModeMouseMove() {
             break;
 
         case ID_OP4: {
-            CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
-            m_DrawModePoints.append(CurrentPnt);
+            if (m_DrawModePoints.last() != CurrentPnt) {
+                CurrentPnt = SnapPointToAxis(m_DrawModePoints.last(), CurrentPnt);
+                m_DrawModePoints.append(CurrentPnt);
 
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-            if (NumberOfPoints == 2) {
-                m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(CurrentPnt - m_DrawModePoints[1]));
-                m_DrawModePoints.append(m_DrawModePoints[0]);
+                if (NumberOfPoints == 2) {
+                    m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(CurrentPnt - m_DrawModePoints[1]));
+                    m_DrawModePoints.append(m_DrawModePoints[0]);
+                }
+                GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+                m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+
+                for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
+                    OdGePoint3d StartPoint = m_DrawModePoints[PointsIndex];
+                    OdGePoint3d EndPoint = m_DrawModePoints[(PointsIndex + 1) % 4];
+                    m_PreviewGroup.AddTail(EoDbLine::Create(StartPoint, EndPoint));
+                }
+                GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
             }
-            m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-
-            OdGePoint3dArray Points;
-            Points.setLogicalLength(m_DrawModePoints.size());
-            for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size(); PointsIndex++) {
-                Points[PointsIndex] = m_DrawModePoints[PointsIndex];
-            }
-            EoDbPolyline* Polyline = new EoDbPolyline();
-            Polyline->SetPoints(Points);
-            m_PreviewGroup.AddTail(Polyline);
-
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
             break;
         }
         case ID_OP5:
