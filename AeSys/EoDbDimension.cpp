@@ -5,7 +5,8 @@
 
 EoUInt16 EoDbDimension::sm_wFlags = 0;
 
-EoDbDimension::EoDbDimension() {
+EoDbDimension::EoDbDimension()
+    : m_TextColorIndex(1) {
 }
 EoDbDimension::EoDbDimension(const EoDbDimension& other) {
 	m_ColorIndex = other.m_ColorIndex;

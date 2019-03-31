@@ -13,7 +13,9 @@ BEGIN_MESSAGE_MAP(EoDlgLineWeight, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLineWeight::EoDlgLineWeight(CWnd* parent /*=NULL*/)
-	: CDialog(EoDlgLineWeight::IDD, parent), m_OriginalLineWeight(0) {
+	: CDialog(EoDlgLineWeight::IDD, parent)
+    , m_OriginalLineWeight(0)
+    , m_LineWeight(OdDb::LineWeight(0)) {
 }
 
 EoDlgLineWeight::EoDlgLineWeight(int originalLineWeight, CWnd* parent)

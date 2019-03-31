@@ -48,7 +48,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 
 		while (fl.ReadString(Line) != 0) {
 			int NextToken = 0;
-			/*EoUInt16 Label =*/ EoUInt16(_wtoi(Line.Tokenize(L"=", NextToken)));
+			EoUInt16 Label = EoUInt16(_wtoi(Line.Tokenize(L"=", NextToken)));
 
 			OdString Name = Line.Tokenize(L",", NextToken);
 			OdString Comments = Line.Tokenize(L"\n", NextToken);
