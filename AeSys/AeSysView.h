@@ -62,7 +62,9 @@ class AeSysView : public CView
 		OdString m_string;
 	};
 	Response m_response;
-	int m_inpOptions;
+#ifdef DEV_COMMAND_VIEW
+    int m_inpOptions;
+#endif // DEV_COMMAND_VIEW
 
 	OdEdInputTracker* m_pTracker;
 	bool m_bTrackerHasDrawables;

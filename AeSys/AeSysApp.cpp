@@ -230,16 +230,34 @@ m_pAuditDlg(NULL),
 m_bUseGsModel(TRUE),
 m_numGSMenuItems(0),
 m_bDiscardBackFaces(1),
+m_bEnableDoubleBuffer(1),
+m_bBlocksCache(0),
+m_bGsDevMultithread(0),
+m_nMtRegenThreads(4),
+m_bEnablePrintPreviewViaBitmap(1),
 m_bEnableHLR(0),
 m_bContextColors(TRUE),
 m_bTTFPolyDraw(FALSE),
 m_bTTFTextOut(0),
+m_thisThreadID(0),
+m_numCustomCommands(0),
 m_bLoading(false),
 m_bRemoteGeomViewer(false),
 m_bSupportFileSelectionViaDialog(true),
+
+m_isDwgOut(0),
+m_bSaveRoundTrip(1),
+m_bSavePreview(0),
+m_bSaveWithPassword(0),
+
+
+m_bPartial(false),
+m_bRecover(false),
 // ODA_MT_DBIO_BEGIN
 m_bUseMTLoading(false),
 // ODA_MT_DBIO_END
+
+
 m_bUseTempFiles(false),
 m_pagingType(0) {
 
@@ -266,6 +284,18 @@ m_pagingType(0) {
 	m_Units = kInches;
 	m_ArchitecturalUnitsFractionPrecision = 16;
 	m_SimplexStrokeFont = 0;
+    m_DeviceHeightInMillimeters = 0.;
+    m_DeviceHeightInPixels = 0.;
+    m_DeviceWidthInMillimeters = 0.;
+    m_DeviceWidthInPixels = 0.;
+
+    m_AeSysMenuHandle = NULL;
+    m_ModeResourceIdentifier = 0;
+    m_PrimaryMode = 0;
+
+    m_TrapHighlightColor = 15;
+    m_TrapHighlighted = true;
+
 }
 #define EO_REGISTRY_BUFFER_SIZE 1040
 #define EO_REGISTRY_MAX_PROFILE_NAME 128

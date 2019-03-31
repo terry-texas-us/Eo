@@ -54,9 +54,11 @@ m_hCursor(0),
 m_pBasePt(0),
 m_bInRegen(false),
 m_paintMode(PaintMode_Regen),
+m_bPlotPlotstyle(false),
+m_bShowPlotstyle(false),
 m_bPlotGrayscale(false),
 m_pagingCounter(0),
-
+m_RubberbandType(None),
 m_LeftButton(false),
 m_MiddleButton(false),
 m_RightButton(false),
@@ -73,9 +75,9 @@ m_Points(0) {
 	m_ViewPenWidths = false;
 	m_WorldScale = 1.;
 	m_ViewTrueTypeFonts = true;
-	m_SelectApertureSize = .005;
+    m_OpHighlighted = 0;
+    m_SelectApertureSize = .005;
 	m_PlotScaleFactor = 1.0f;
-
 	m_GapSpaceFactor = .5;			// Edge space factor 50 percent of character height
 	m_CircleRadius = .03125;		// Circle radius
 	m_EndItemType = 1;				// Arrow type
@@ -93,10 +95,37 @@ m_Points(0) {
 	m_BeginSectionLine = 0;
 	m_EndSectionLine = 0;
 	m_DistanceBetweenLines = .0625;
+    
+    // Constraints - grid and axis
+    m_MaximumDotsPerLine = 64;
 
-	InitializeConstraints();
+    m_XGridLineSpacing = 1.;
+    m_YGridLineSpacing = 1.;
+    m_ZGridLineSpacing = 1.;
+    
+    m_XGridSnapSpacing = 12.;
+    m_YGridSnapSpacing = 12.;
+    m_ZGridSnapSpacing = 12.;
+    
+    m_XGridPointSpacing = 3.;
+    m_YGridPointSpacing = 3.;
+    m_ZGridPointSpacing = 0.;
+    
+    m_AxisConstraintInfluenceAngle = 5.;
+    m_AxisConstraintOffsetAngle = 0.;
 
-	SetEditModeMirrorScaleFactors(-1, 1., 1.);
+    m_DisplayGridWithLines = false;
+    m_DisplayGridWithPoints = false;
+    m_GridSnap = false;
+
+    m_SubModeEditGroup = 0;
+    m_SubModeEditPrimitive = 0;
+
+    m_MendPrimitiveVertexIndex = 0;
+    m_PrimitiveToMend = 0;
+    m_PrimitiveToMendCopy = 0;
+    
+    SetEditModeMirrorScaleFactors(-1, 1., 1.);
 	SetEditModeScaleFactors(2., 2., 2.);
 
 	SetEditModeRotationAngles(0., 0., 45.);
@@ -125,9 +154,11 @@ m_Points(0) {
 	m_PipeRiseDropRadius = .03125;
 	m_CurrentPipeSymbolIndex = 0;
 
-	m_PowerArrow = false;
+// Power mode
+    m_PowerArrow = false;
 	m_PowerConductor = false;
 	m_PowerConductorSpacing = .04;
+    m_PreviousRadius = 0.;
 
 	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
 	m_Viewport.SetDeviceHeightInPixels(theApp.DeviceHeightInPixels());
@@ -825,7 +856,7 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 			break;
 		case kGetPoint:
 #ifdef DEV_COMMAND_VIEW
-			m_response.m_point = m_editor.toEyeToWorld(point.x, point.y);
+            m_response.m_point = m_editor.toEyeToWorld(point.x, point.y);
 			if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
 				if (!m_editor.toUcsToWorld(m_response.m_point))
 					break;
