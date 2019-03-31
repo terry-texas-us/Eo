@@ -87,36 +87,36 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 	BOOL ResetMDIChild = FALSE;
 
 	switch (int(Property->GetData())) {
-	case kTabsStyle: {
-			CString TabStyle = (LPCWSTR) (_bstr_t) Property->GetValue();
-			ResetMDIChild = TRUE;
+    case kTabsStyle: {
+        CString TabStyle = (LPCWSTR) (_bstr_t) Property->GetValue();
+        ResetMDIChild = TRUE;
 
-			for (int i = 0; ::TabsStyles[i] != NULL; i++) {
-				if (TabStyle == ::TabsStyles[i]) {
-					switch (i) {
-					case 0:
-						theApp.m_Options.m_nTabsStyle = EoApOptions::None;
-						break;
+        for (int i = 0; ::TabsStyles[i] != NULL; i++) {
+            if (TabStyle == ::TabsStyles[i]) {
+                switch (i) {
+                case 0:
+                    theApp.m_Options.m_nTabsStyle = EoApOptions::None;
+                    break;
 
-					case 1:
-						theApp.m_Options.m_nTabsStyle = EoApOptions::Standard;
-						break;
+                case 1:
+                    theApp.m_Options.m_nTabsStyle = EoApOptions::Standard;
+                    break;
 
-					case 2:
-						theApp.m_Options.m_nTabsStyle = EoApOptions::Grouped;
-						break;
-					}
-					break;
-				}
-			}
-			SetWorkspaceTabsSubItemsState();
-			break;
-		}
-	case kTabLocation: {
-			CString TabLocation = (LPCWSTR) (_bstr_t) Property->GetValue();
-			theApp.m_Options.m_MdiTabInfo.m_tabLocation = (TabLocation == TabLocations[0] ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP);
-			break;
-		}
+                case 2:
+                    theApp.m_Options.m_nTabsStyle = EoApOptions::Grouped;
+                    break;
+                }
+                break;
+            }
+        }
+        SetWorkspaceTabsSubItemsState();
+        break;
+    }
+    case kTabLocation: {
+        CString TabLocation = (LPCWSTR) (_bstr_t) Property->GetValue();
+        theApp.m_Options.m_MdiTabInfo.m_tabLocation = (TabLocation == TabLocations[0] ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP);
+        break;
+    }
 	case kTabsAutoColor:
 		theApp.m_Options.m_MdiTabInfo.m_bAutoColor = Property->GetValue().boolVal == VARIANT_TRUE;
 		break;
@@ -125,17 +125,17 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 		theApp.m_Options.m_MdiTabInfo.m_bTabIcons = Property->GetValue().boolVal == VARIANT_TRUE;
 		break;
 
-	case kTabBorderSize: {
-			int nBorder = Property->GetValue().iVal;
-			theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize = min(8, max (0, nBorder));
-			break;
-		}
-	case kActiveViewScale: {
-			AeSysView* ActiveView = AeSysView::GetActiveView();
-			ActiveView->SetWorldScale(Property->GetValue().dblVal);
-			ActiveView->UpdateStateInformation(AeSysView::Scale);
-			return LRESULT(0);
-		}
+    case kTabBorderSize: {
+        int nBorder = Property->GetValue().iVal;
+        theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize = min(8, max(0, nBorder));
+        break;
+    }
+    case kActiveViewScale: {
+        AeSysView* ActiveView = AeSysView::GetActiveView();
+        ActiveView->SetWorldScale(Property->GetValue().dblVal);
+        ActiveView->UpdateStateInformation(AeSysView::Scale);
+        return LRESULT(0);
+    }
 	}
 	theApp.UpdateMDITabs(ResetMDIChild);
 

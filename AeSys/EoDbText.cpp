@@ -282,14 +282,14 @@ void EoDbText::SetHorizontalMode(HorizontalAlignment horizontalAlignment) {
     if (!m_EntityObjectId.isNull()) {
         OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
         switch (horizontalAlignment) {
-            case EoDb::kAlignCenter:
-                Text->setHorizontalMode(OdDb::kTextCenter);
-                break;
-            case EoDb::kAlignRight:
-                Text->setHorizontalMode(OdDb::kTextRight);
-                break;
-            default:
-                Text->setHorizontalMode(OdDb::kTextLeft);
+        case EoDb::kAlignCenter:
+            Text->setHorizontalMode(OdDb::kTextCenter);
+            break;
+        case EoDb::kAlignRight:
+            Text->setHorizontalMode(OdDb::kTextRight);
+            break;
+        default:
+            Text->setHorizontalMode(OdDb::kTextLeft);
         }
     }
 }
@@ -326,14 +326,14 @@ void EoDbText::SetVerticalMode(VerticalAlignment verticalAlignment) {
     if (!m_EntityObjectId.isNull()) {
         OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
         switch (verticalAlignment) {
-            case EoDb::kAlignTop:
-                Text->setVerticalMode(OdDb::kTextTop);
-                break;
-            case EoDb::kAlignMiddle:
-                Text->setVerticalMode(OdDb::kTextVertMid);
-                break;
-            default:
-                Text->setVerticalMode(OdDb::kTextBase);
+        case EoDb::kAlignTop:
+            Text->setVerticalMode(OdDb::kTextTop);
+            break;
+        case EoDb::kAlignMiddle:
+            Text->setVerticalMode(OdDb::kTextVertMid);
+            break;
+        default:
+            Text->setVerticalMode(OdDb::kTextBase);
         }
     }
 }
@@ -421,37 +421,37 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
         double d = ((EoVaxFloat*) &primitiveBuffer[40])->Convert();
 
         switch (int(fmod(d, 10.))) {
-            case 3:
-                FontDefinition.SetPath(kPathDown);
-                break;
-            case 2:
-                FontDefinition.SetPath(kPathUp);
-                break;
-            case 1:
-                FontDefinition.SetPath(kPathLeft);
-                break;
-            default:
-                FontDefinition.SetPath(kPathRight);
+        case 3:
+            FontDefinition.SetPath(kPathDown);
+            break;
+        case 2:
+            FontDefinition.SetPath(kPathUp);
+            break;
+        case 1:
+            FontDefinition.SetPath(kPathLeft);
+            break;
+        default:
+            FontDefinition.SetPath(kPathRight);
         }
         switch (int(fmod(d / 10., 10.))) {
-            case 3:
-                FontDefinition.SetHorizontalAlignment(kAlignRight);
-                break;
-            case 2:
-                FontDefinition.SetHorizontalAlignment(kAlignCenter);
-                break;
-            default:
-                FontDefinition.SetHorizontalAlignment(kAlignLeft);
+        case 3:
+            FontDefinition.SetHorizontalAlignment(kAlignRight);
+            break;
+        case 2:
+            FontDefinition.SetHorizontalAlignment(kAlignCenter);
+            break;
+        default:
+            FontDefinition.SetHorizontalAlignment(kAlignLeft);
         }
         switch (int(d / 100.)) {
-            case 2:
-                FontDefinition.SetVerticalAlignment(kAlignTop);
-                break;
-            case 3:
-                FontDefinition.SetVerticalAlignment(kAlignMiddle);
-                break;
-            default:
-                FontDefinition.SetVerticalAlignment(kAlignBottom);
+        case 2:
+            FontDefinition.SetVerticalAlignment(kAlignTop);
+            break;
+        case 3:
+            FontDefinition.SetVerticalAlignment(kAlignMiddle);
+            break;
+        default:
+            FontDefinition.SetVerticalAlignment(kAlignBottom);
         }
         ReferenceSystem.SetOrigin(((EoVaxPoint3d*) &primitiveBuffer[8])->Convert() * 1.e-3);
 
@@ -493,37 +493,37 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
         ColorIndex = EoInt16(primitiveBuffer[6]);
         FontDefinition.SetCharacterSpacing(((EoVaxFloat*) &primitiveBuffer[10])->Convert());
         switch (primitiveBuffer[14]) {
-            case 3:
-                FontDefinition.SetPath(kPathDown);
-                break;
-            case 2:
-                FontDefinition.SetPath(kPathUp);
-                break;
-            case 1:
-                FontDefinition.SetPath(kPathLeft);
-                break;
-            default:
-                FontDefinition.SetPath(kPathRight);
+        case 3:
+            FontDefinition.SetPath(kPathDown);
+            break;
+        case 2:
+            FontDefinition.SetPath(kPathUp);
+            break;
+        case 1:
+            FontDefinition.SetPath(kPathLeft);
+            break;
+        default:
+            FontDefinition.SetPath(kPathRight);
         }
         switch (primitiveBuffer[15]) {
-            case 3:
-                FontDefinition.SetHorizontalAlignment(kAlignRight);
-                break;
-            case 2:
-                FontDefinition.SetHorizontalAlignment(kAlignCenter);
-                break;
-            default:
-                FontDefinition.SetHorizontalAlignment(kAlignLeft);
+        case 3:
+            FontDefinition.SetHorizontalAlignment(kAlignRight);
+            break;
+        case 2:
+            FontDefinition.SetHorizontalAlignment(kAlignCenter);
+            break;
+        default:
+            FontDefinition.SetHorizontalAlignment(kAlignLeft);
         }
         switch (primitiveBuffer[16]) {
-            case 2:
-                FontDefinition.SetVerticalAlignment(kAlignTop);
-                break;
-            case 3:
-                FontDefinition.SetVerticalAlignment(kAlignMiddle);
-                break;
-            default:
-                FontDefinition.SetVerticalAlignment(kAlignBottom);
+        case 2:
+            FontDefinition.SetVerticalAlignment(kAlignTop);
+            break;
+        case 3:
+            FontDefinition.SetVerticalAlignment(kAlignMiddle);
+            break;
+        default:
+            FontDefinition.SetVerticalAlignment(kAlignBottom);
         }
         ReferenceSystem.SetOrigin(((EoVaxPoint3d*) &primitiveBuffer[17])->Convert());
         ReferenceSystem.SetXDirection(((EoVaxVector3d*) &primitiveBuffer[29])->Convert());
@@ -572,19 +572,19 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextH
     EoDb::HorizontalAlignment HorizontalAlignment;
 
     switch (horizontalMode) {
-        case OdDb::kTextMid:
-        case OdDb::kTextCenter:
-            HorizontalAlignment = EoDb::kAlignCenter;
-            break;
+    case OdDb::kTextMid:
+    case OdDb::kTextCenter:
+        HorizontalAlignment = EoDb::kAlignCenter;
+        break;
 
-        case OdDb::kTextRight:
-        case OdDb::kTextAlign:
-        case OdDb::kTextFit:
-            HorizontalAlignment = EoDb::kAlignRight;
-            break;
+    case OdDb::kTextRight:
+    case OdDb::kTextAlign:
+    case OdDb::kTextFit:
+        HorizontalAlignment = EoDb::kAlignRight;
+        break;
 
-        default: // OdDb::kTextLeft
-            HorizontalAlignment = EoDb::kAlignLeft;
+    default: // OdDb::kTextLeft
+        HorizontalAlignment = EoDb::kAlignLeft;
     }
     return HorizontalAlignment;
 
@@ -594,16 +594,16 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertM
     EoDb::VerticalAlignment VerticalAlignment;
 
     switch (verticalMode) {
-        case OdDb::kTextVertMid:
-            VerticalAlignment = EoDb::kAlignMiddle;
-            break;
+    case OdDb::kTextVertMid:
+        VerticalAlignment = EoDb::kAlignMiddle;
+        break;
 
-        case OdDb::kTextTop:
-            VerticalAlignment = EoDb::kAlignTop;
-            break;
+    case OdDb::kTextTop:
+        VerticalAlignment = EoDb::kAlignTop;
+        break;
 
-        default: // OdDb::kTextBottom & OdDb::kTextBase
-            VerticalAlignment = EoDb::kAlignBottom;
+    default: // OdDb::kTextBottom & OdDb::kTextBase
+        VerticalAlignment = EoDb::kAlignBottom;
     }
     return VerticalAlignment;
 }
@@ -698,24 +698,24 @@ bool HasFormattingCharacters(const CString& text) {
     for (int i = 0; i < text.GetLength() - 1; i++) {
         if (text[i] == '\\') {
             switch (text[i + 1]) { // Parameter Meaning
-                case 'P': // Hard line break
-                //case '~':	// Nonbreaking space
-                //case '/':	// Single backslash; otherwise used as an escape character
-                //case '{':	// Single opening curly bracket; otherwise used as block begin
-                //case '}':	// Single closing curly bracket; otherwise used as block end
-                case 'A': // Change alignment: bottom (0), center (1)  or top (2)
-                //case 'C':	// ACI color number				Change character color
-                case 'F': // Change to a different font: acad - \FArial.shx; windows - \FArial|b1|i0|c0|p34
-                case 'f':
-                    //case 'H':	// Change text height: New height or relative height followed by an x
-                    //case 'L': // Start underlining
-                    //case 'l': // End underlining
-                    //case 'O': // Start overlining
-                    //case 'o': // End overlining
-                    //case 'T':	// Change kerning, i.e. character spacing
-                    //case 'W':	// Change character width, i.e X scaling
-                case 'S':	// Stacked text or fractions: the S is follwed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
-                    return true;
+            case 'P': // Hard line break
+            //case '~':	// Nonbreaking space
+            //case '/':	// Single backslash; otherwise used as an escape character
+            //case '{':	// Single opening curly bracket; otherwise used as block begin
+            //case '}':	// Single closing curly bracket; otherwise used as block end
+            case 'A': // Change alignment: bottom (0), center (1)  or top (2)
+            //case 'C':	// ACI color number				Change character color
+            case 'F': // Change to a different font: acad - \FArial.shx; windows - \FArial|b1|i0|c0|p34
+            case 'f':
+                //case 'H':	// Change text height: New height or relative height followed by an x
+                //case 'L': // Start underlining
+                //case 'l': // End underlining
+                //case 'O': // Start overlining
+                //case 'o': // End overlining
+                //case 'T':	// Change kerning, i.e. character spacing
+                //case 'W':	// Change character width, i.e X scaling
+            case 'S':	// Stacked text or fractions: the S is follwed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
+                return true;
             }
         }
     }
@@ -921,17 +921,17 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
         polyline::__End(view, deviceContext, 1);
 
         switch (fontDefinition.Path()) {
-            case EoDb::kPathLeft:
-                ptChrPos.x -= dChrSpac;
-                break;
-            case EoDb::kPathUp:
-                ptChrPos.y += dChrSpac;
-                break;
-            case EoDb::kPathDown:
-                ptChrPos.y -= dChrSpac;
-                break;
-            default:
-                ptChrPos.x += dChrSpac;
+        case EoDb::kPathLeft:
+            ptChrPos.x -= dChrSpac;
+            break;
+        case EoDb::kPathUp:
+            ptChrPos.y += dChrSpac;
+            break;
+        case EoDb::kPathDown:
+            ptChrPos.y -= dChrSpac;
+            break;
+        default:
+            ptChrPos.x += dChrSpac;
         }
         ptStroke = ptChrPos;
         n++;

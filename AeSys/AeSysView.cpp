@@ -1900,17 +1900,17 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTr
 
 	while (theApp.PumpMessage()) {
 		switch (m_response.m_type) {
-			case Response::kPoint:
-				if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
-					SetCapture();
-				}
-				return m_response.m_point;
+		case Response::kPoint:
+			if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
+				SetCapture();
+			}
+			return m_response.m_point;
 
-			case Response::kString:
-				throw OdEdOtherInput(m_response.m_string);
+		case Response::kString:
+			throw OdEdOtherInput(m_response.m_string);
 
-			case Response::kCancel:
-				throw OdEdCancel();
+		case Response::kCancel:
+			throw OdEdCancel();
 		}
 		long Idle = 0;
 		while (theApp.OnIdle(Idle++));
@@ -1932,12 +1932,12 @@ OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTra
 
 	while (theApp.PumpMessage()) {
 		switch (m_response.m_type) {
-			case Response::kString:
-				return m_response.m_string;
+		case Response::kString:
+			return m_response.m_string;
 
-			case Response::kCancel:
-				throw OdEdCancel();
-				break;
+		case Response::kCancel:
+			throw OdEdCancel();
+			break;
 		}
 		long Idle = 0;
 		while (theApp.OnIdle(Idle++));
