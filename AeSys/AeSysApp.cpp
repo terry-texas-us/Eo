@@ -583,15 +583,14 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 	}
 
 	CMenu* RegisteredCommandsSubMenu(NULL);
-	size_t ToolsMenuItem;
 
-	for (ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
+	for (int ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
 		MenuItemInfo.dwTypeData = NULL;
-		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
+		ToolsSubMenu->GetMenuItemInfoW(size_t(ToolsMenuItem), &MenuItemInfo, TRUE);
 
 		int SizeOfMenuName = ++MenuItemInfo.cch;
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
-		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
+		ToolsSubMenu->GetMenuItemInfoW(size_t(ToolsMenuItem), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
 
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.CompareNoCase(L"Registered &Commands") == 0) {
@@ -1840,20 +1839,26 @@ bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wch
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
 		DWORD dwSize = EO_REGISTRY_BUFFER_SIZE;
 		unsigned char data[EO_REGISTRY_BUFFER_SIZE];
-		memset(&data, 0x00, EO_REGISTRY_BUFFER_SIZE);
-		if (RegQueryValueExW(hKey, name, 0, 0, &data[0], &dwSize) == ERROR_SUCCESS) {
-			rv = true;
+        memset(data, 0, EO_REGISTRY_BUFFER_SIZE);
+
+        wchar_t data_t[EO_REGISTRY_BUFFER_SIZE];
+        wmemset(data_t, 0, EO_REGISTRY_BUFFER_SIZE);
+
+        if (RegQueryValueExW(hKey, name, 0, 0, data, &dwSize) == ERROR_SUCCESS) {
+            memcpy_s(&data_t, EO_REGISTRY_BUFFER_SIZE, &data, dwSize);
+            rv = true;
 		}
 		else {
-			if (ERROR_SUCCESS == RegEnumKeyExW(hKey, 0, (LPWSTR) (unsigned short*) &data[0], &dwSize, NULL, NULL, NULL, NULL)) {
+			if (ERROR_SUCCESS == RegEnumKeyExW(hKey, 0, data_t, &dwSize, NULL, NULL, NULL, NULL)) {
 				rv = true;
 			}
 		}
-		if (size < EO_REGISTRY_BUFFER_SIZE) {
-			swprintf(value, L"%s\0", data);
+        if (size < EO_REGISTRY_BUFFER_SIZE) {
+
+			swprintf(value, L"%s\0", data_t);
 		}
 		else {
-			wcsncpy(value, (wchar_t*) data, size - 1);
+			wcsncpy(value, data_t, size - 1);
 			value[size - 1] = '\0';
 		}
 		RegCloseKey(hKey);

@@ -17,14 +17,27 @@ BEGIN_MESSAGE_MAP(EoDlgEditOptions, CDialog)
 	ON_BN_CLICKED(IDC_EDIT_OP_MIR_Z, &EoDlgEditOptions::OnBnClickedEditOpMirZ)
 END_MESSAGE_MAP()
 
-EoDlgEditOptions::EoDlgEditOptions(CWnd* pParent /* = NULL */) :
-	CDialog(EoDlgEditOptions::IDD, pParent)
-	, m_ScaleFactorX(0), m_ScaleFactorY(0), m_ScaleFactorZ(0)
-	, m_EditModeRotationAngleX(0), m_EditModeRotationAngleY(0), m_EditModeRotationAngleZ(0) {
+EoDlgEditOptions::EoDlgEditOptions(CWnd* pParent /* = NULL */) 
+    : CDialog(EoDlgEditOptions::IDD, pParent)
+    , m_ActiveView(0)
+    , m_ScaleFactorX(0.)
+    , m_ScaleFactorY(0.)
+    , m_ScaleFactorZ(0.)
+    , m_EditModeRotationAngleX(0.)
+    , m_EditModeRotationAngleY(0.)
+    , m_EditModeRotationAngleZ(0.) {
 }
-EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* pParent /* = NULL */) :
-	CDialog(EoDlgEditOptions::IDD, pParent), m_ActiveView(view) {
-	}
+EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* pParent /* = NULL */) 
+    : CDialog(EoDlgEditOptions::IDD, pParent)
+    , m_ActiveView(view)
+    , m_ScaleFactorX(0.)
+    , m_ScaleFactorY(0.)
+    , m_ScaleFactorZ(0.)
+    , m_EditModeRotationAngleX(0.)
+    , m_EditModeRotationAngleY(0.)
+    , m_EditModeRotationAngleZ(0.) {
+
+}
 EoDlgEditOptions::~EoDlgEditOptions() {
 }
 void EoDlgEditOptions::DoDataExchange(CDataExchange* pDX) {

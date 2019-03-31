@@ -2061,7 +2061,7 @@ void AeSysDoc::OnEditTrapPaste() {
                 if (ClipboardData != NULL) {
                     size_t ClipboardDataSize = GlobalSize(ClipboardDataHandle);
                     wchar_t* Text = new wchar_t[ClipboardDataSize];
-                    for (int i = 0; i < ClipboardDataSize; i++) {
+                    for (size_t i = 0; i < ClipboardDataSize; i++) {
                         Text[i] = (wchar_t) ClipboardData[i];
                     }
                     GlobalUnlock(ClipboardDataHandle);
@@ -2076,7 +2076,7 @@ void AeSysDoc::OnEditTrapPaste() {
             wchar_t* ClipboardData = (wchar_t*) GlobalLock(ClipboardDataHandle);
             size_t ClipboardDataSize = GlobalSize(ClipboardDataHandle);
             wchar_t* Text = new wchar_t[ClipboardDataSize];
-            for (int i = 0; i < ClipboardDataSize; i++) {
+            for (size_t i = 0; i < ClipboardDataSize; i++) {
                 Text[i] = ClipboardData[i];
             }
             GlobalUnlock(ClipboardDataHandle);
@@ -2970,17 +2970,17 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags,
 	CString Filter;
 	Filter = L"dxf R27 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::vAC27 || dwgver == OdDb::kDHL_1027))
+	if (!isDwg && (dwgver == OdDb::kDHL_1027))
 		dlgFile.m_ofn.nFilterIndex = 1;
 
 	Filter += L"dxf R24 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::vAC24 || dwgver == OdDb::kDHL_1024))
+	if (!isDwg && (dwgver == OdDb::kDHL_1024))
 		dlgFile.m_ofn.nFilterIndex = 2;
 
 	Filter += L"dxf R21 Files|*.dxf|";
 	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::vAC21 || dwgver == OdDb::kDHL_1021))
+	if (!isDwg && (dwgver == OdDb::kDHL_1021))
 		dlgFile.m_ofn.nFilterIndex = 3;
 
 	Filter += L"dxf R18 Files|*.dxf|";

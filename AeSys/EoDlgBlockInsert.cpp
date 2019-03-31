@@ -16,11 +16,13 @@ END_MESSAGE_MAP()
 
 OdGePoint3d EoDlgBlockInsert::InsertionPoint;
 
-EoDlgBlockInsert::EoDlgBlockInsert(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgBlockInsert::IDD, pParent) {
+EoDlgBlockInsert::EoDlgBlockInsert(CWnd* pParent /*=NULL*/) 
+    : CDialog(EoDlgBlockInsert::IDD, pParent)
+    , m_Document(0) {
 }
-EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgBlockInsert::IDD, pParent), m_Document(document) {
+EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* pParent /*=NULL*/) 
+    : CDialog(EoDlgBlockInsert::IDD, pParent)
+    , m_Document(document) {
 }
 EoDlgBlockInsert::~EoDlgBlockInsert() {
 }

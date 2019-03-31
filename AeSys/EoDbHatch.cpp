@@ -25,10 +25,18 @@ struct EoEdge {
 		double dStepSiz; // change in x for each scanline
 	};
 };
-EoDbHatch::EoDbHatch() : 
-	m_InteriorStyle(EoDbHatch::kHatch), m_InteriorStyleIndex(1), m_Vertices(0), m_HatchOrigin(OdGePoint3d::kOrigin), m_HatchXAxis(OdGeVector3d::kXAxis), m_HatchYAxis(OdGeVector3d::kYAxis) {
+EoDbHatch::EoDbHatch() 
+    : m_InteriorStyle(EoDbHatch::kHatch)
+    , m_InteriorStyleIndex(1)
+    , m_Vertices(0)
+    , m_NumberOfLoops(0)
+    , m_HatchOrigin(OdGePoint3d::kOrigin)
+    , m_HatchXAxis(OdGeVector3d::kXAxis)
+    , m_HatchYAxis(OdGeVector3d::kYAxis) {
 }
-EoDbHatch::EoDbHatch(const EoDbHatch& other) {
+
+EoDbHatch::EoDbHatch(const EoDbHatch& other) 
+    : m_NumberOfLoops(0) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 

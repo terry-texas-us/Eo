@@ -29,14 +29,22 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnKeydownLayersListControl)
 END_MESSAGE_MAP()
 
-EoDlgFileManage::EoDlgFileManage(CWnd* parent /*=NULL*/) :
-	CDialog(EoDlgFileManage::IDD, parent) {
+EoDlgFileManage::EoDlgFileManage(CWnd* parent /*=NULL*/) 
+    : CDialog(EoDlgFileManage::IDD, parent)
+    , m_Document(NULL)
+    , m_ClickToColumnStatus(false)
+    , m_Description(0)
+    , m_NumberOfColumns(0)
+    , m_PreviewWindowHandle(0) {
 }
+
 EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent /*=NULL*/)
 	: CDialog(EoDlgFileManage::IDD, parent), m_Document(document), m_Database(database) {
 }
+
 EoDlgFileManage::~EoDlgFileManage() {
 }
+
 void EoDlgFileManage::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LAYERS_LIST_CONTROL, m_LayersList);

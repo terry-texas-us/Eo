@@ -736,7 +736,7 @@ OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numb
     OdGePoint3d InsertionPoint(OdGePoint3d::kOrigin);
 
     if (numberOfCharacters > 0) {
-        double dTxtExt = numberOfCharacters + (numberOfCharacters - 1) * (.32 + fontDefinition.CharacterSpacing()) / .6;
+        double dTxtExt = double(numberOfCharacters) + (double(numberOfCharacters) - 1.) * (.32 + fontDefinition.CharacterSpacing()) / .6;
 
         if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
             if (fontDefinition.Path() == EoDb::kPathRight) {
@@ -1007,8 +1007,8 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
     pnt[1] = view->DoViewportProjection(ptsBox[1]);
     pnt[2] = view->DoViewportProjection(ptsBox[2]);
 
-    OdGeVector3d vX(double(pnt[2].x - ProjectedStartPoint.x), double(pnt[2].y - ProjectedStartPoint.y), 0.);
-    OdGeVector3d vY(double(pnt[1].x - ProjectedStartPoint.x), double(pnt[1].y - ProjectedStartPoint.y), 0.);
+    OdGeVector3d vX(double(pnt[2].x) - double(ProjectedStartPoint.x), double(pnt[2].y) - double(ProjectedStartPoint.y), 0.);
+    OdGeVector3d vY(double(pnt[1].x) - double(ProjectedStartPoint.x), double(pnt[1].y) - double(ProjectedStartPoint.y), 0.);
 
     double dHeight = vY.length();
     if (dHeight == 0.) {
@@ -1166,7 +1166,7 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
         double TextWidth = 1.;
 
         double CharacterSpacing = (.32 + fontDefinition.CharacterSpacing()) / .6;
-        double d = (double) numberOfCharacters + CharacterSpacing * (double) (numberOfCharacters - 1);
+        double d = double(numberOfCharacters) + CharacterSpacing * (double(numberOfCharacters) - 1.);
 
         if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
             TextWidth = d;

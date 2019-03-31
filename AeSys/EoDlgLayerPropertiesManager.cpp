@@ -15,13 +15,25 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent /*=NULL*/)
-: CDialog(EoDlgLayerPropertiesManager::IDD, parent) {
+    : CDialog(EoDlgLayerPropertiesManager::IDD, parent)
+    , m_DeltaHeight(0)
+    , m_DeltaWidth(0)
+    , m_InititialHeight(0)
+    , m_InititialWidth(0) {
 }
+
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent /*=NULL*/)
-: CDialog(EoDlgLayerPropertiesManager::IDD, parent), m_Database(database) {
+    : CDialog(EoDlgLayerPropertiesManager::IDD, parent)
+    , m_Database(database)
+    , m_DeltaHeight(0)
+    , m_DeltaWidth(0)
+    , m_InititialHeight(0)
+    , m_InititialWidth(0) {
 }
+
 EoDlgLayerPropertiesManager::~EoDlgLayerPropertiesManager() {
 }
+
 void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LAYER_FILTER_TREE, m_TreeFilters);

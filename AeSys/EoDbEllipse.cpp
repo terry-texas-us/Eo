@@ -222,7 +222,7 @@ void EoDbEllipse::GenPts(const OdGePlane& plane, double sweepAngle) const {
 	int iPts = EoMax(2, abs(EoRound(sweepAngle / TWOPI * 32.)));
 	iPts = EoMin(128, EoMax(iPts, abs(EoRound(sweepAngle * dLen / .250))));
 
-	double dAng = m_SweepAngle / (iPts - 1);
+	double dAng = m_SweepAngle / (double(iPts) - 1.);
 	double dCos = cos(dAng);
 	double dSin = sin(dAng);
 		
