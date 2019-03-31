@@ -85,7 +85,7 @@ static void addPaperDrawingCustomization() {
 			OdGiGeometry& Geometry = worldDraw->geometry();
 			OdGePoint3d Dash1[2];
 			OdGePoint3d Dash2[2];
-			OdGeVector3d Step = (points[1] - points[0]) / (NumberOfDashes * 2 + 1);
+			OdGeVector3d Step = (points[1] - points[0]) / (double(NumberOfDashes) * 2. + 1.);
 			Dash1[0] = points[0];
 			Dash2[0] = points[2];
 			for (int i = 0; i <= NumberOfDashes; ++i) {
@@ -97,7 +97,7 @@ static void addPaperDrawingCustomization() {
 				Dash2[0] = Dash2[1] - Step;
 			}
 			NumberOfDashes = int((points[2] - points[1]).length() / Step.length() - 1) / 2;
-			Step = (points[2] - points[1]) / (NumberOfDashes * 2 + 1);
+			Step = (points[2] - points[1]) / (double(NumberOfDashes) * 2. + 1.);
 			Dash1[0] = points[1];
 			Dash2[0] = points[3];
 			for (int i = 0; i <= NumberOfDashes; ++i) {
@@ -277,6 +277,7 @@ m_pagingType(0) {
 	m_TrapModeAddGroups = true;
 	m_NodalModeAddGroups = true;
 	m_ClipboardFormatIdentifierForEoGroups = 0;
+    m_CurrentMode = 0;
 	m_EngagedLength = 0.;
 	m_EngagedAngle = 0.;
 	m_DimensionLength = 0.125;
@@ -1417,7 +1418,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 				iNmbEnts++;
 				Token = wcstok_s(0, Delimiters, &NextToken);
 			}
-			EoDbHatch::sm_HatchPatternTable[iNmbStrsId++] = double(iNmbEnts - 5);
+			EoDbHatch::sm_HatchPatternTable[iNmbStrsId++] = double(iNmbEnts) - 5.;
 			NumberOfPatternLines++;
 		}
 	}

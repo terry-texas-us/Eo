@@ -64,7 +64,8 @@ m_MiddleButton(false),
 m_RightButton(false),
 m_MousePosition(0),
 m_ZoomWindow(false),
-m_Points(0) {
+m_Points(0),
+m_ModelTabIsActive(false) {
 	m_Background = ViewBackgroundColor;
 
 	m_PreviousOp = 0;
@@ -750,9 +751,10 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 	{
 		OdGsViewPtr FirstView = m_pDevice->viewAt(0);
 
-		OdGeVector3d Vector(m_MousePosition.x - point.x, m_MousePosition.y - point.y, 0.);
-		Vector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
-		FirstView->dolly(Vector);
+        OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
+
+		DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
+		FirstView->dolly(DollyVector);
 
 		m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 		m_ViewTransform.BuildTransformMatrix();
@@ -762,7 +764,7 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 	}
 	else if (m_RightButton == true)
 	{
-		Orbit((m_MousePosition.y - point.y) / 100., (m_MousePosition.x - point.x) / 100.);
+		Orbit((double(m_MousePosition.y) - double(point.y)) / 100., (double(m_MousePosition.x) - double(point.x)) / 100.);
 		m_MousePosition = point;
 		PostMessageW(WM_PAINT);
 	}
