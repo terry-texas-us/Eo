@@ -4,7 +4,7 @@
 #include "AeSysView.h"
 #include "EoDlgFixupOptions.h"
 
-EoUInt16	PreviousFixupCommand = 0;
+OdUInt16	PreviousFixupCommand = 0;
 
 EoDbGroup* ReferenceGroup;
 EoDbPrimitive* ReferencePrimitive;

@@ -3,7 +3,7 @@
 class EoDbBlock : public EoDbGroup {
 private:
 
-	EoUInt16 m_wBlkTypFlgs;		// block type flag values
+	OdUInt16 m_wBlkTypFlgs;		// block type flag values
 									//		b0 set - anonymous block
 									//		b1 set - block has attribute definitions
 									//		b2 set - block is an external reference
@@ -16,15 +16,15 @@ private:
 
 public:
 	EoDbBlock();
-	EoDbBlock(EoUInt16 flags, const OdGePoint3d& basePoint);
-	EoDbBlock(EoUInt16 flags, const OdGePoint3d& basePoint, const OdString& pathName);
+	EoDbBlock(OdUInt16 flags, const OdGePoint3d& basePoint);
+	EoDbBlock(OdUInt16 flags, const OdGePoint3d& basePoint, const OdString& pathName);
 
 	OdGePoint3d	BasePoint() const;
-	EoUInt16 GetBlkTypFlgs();
+	OdUInt16 GetBlkTypFlgs();
 	bool HasAttributes();
 	bool IsAnonymous();
 	bool IsFromExternalReference();
-	void SetBlkTypFlgs(EoUInt16 flags);
+	void SetBlkTypFlgs(OdUInt16 flags);
 	void SetBasePoint(const OdGePoint3d& basePoint);
 };
 

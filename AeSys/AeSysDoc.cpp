@@ -1202,7 +1202,7 @@ void AeSysDoc::DeletedGroupsRestore() {
 	}
 }
 
-int AeSysDoc::LinetypeIndexReferenceCount(EoInt16 linetypeIndex) {
+int AeSysDoc::LinetypeIndexReferenceCount(OdInt16 linetypeIndex) {
 	int Count = 0;
 
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
@@ -1292,7 +1292,7 @@ EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
 	return (layerIndex >= (int)m_LayerTable.GetSize() ? (EoDbLayer*)NULL : m_LayerTable.GetAt(layerIndex));
 }
 int AeSysDoc::FindLayerAt(const OdString& name) const {
-	for (EoUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
+	for (OdUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
 		const EoDbLayer* Layer = m_LayerTable.GetAt(LayerIndex);
 		if (name.iCompare(Layer->Name()) == 0) {
 			return (LayerIndex);
@@ -1304,7 +1304,7 @@ OdDbLayerTablePtr AeSysDoc::LayerTable(OdDb::OpenMode openMode) {
 	return (m_DatabasePtr->getLayerTableId().safeOpenObject(openMode));
 }
 void AeSysDoc::RemoveAllLayers() {
-	for (EoUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
+	for (OdUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
 		EoDbLayer* Layer = m_LayerTable.GetAt(LayerIndex);
 		if (Layer) {
 			Layer->DeleteGroupsAndRemoveAll();
@@ -1388,7 +1388,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	delete[] of.lpstrFile;
 	return (bRetVal);
 }
-void AeSysDoc::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) {
+void AeSysDoc::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 		Layer->PenTranslation(wCols, pColNew, pCol);
@@ -1444,7 +1444,7 @@ int AeSysDoc::RemoveEmptyNotesAndDelete() {
 int AeSysDoc::RemoveEmptyGroups() {
 	int iCount = 0;
 
-	for (EoUInt16 LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
+	for (OdUInt16 LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 		iCount += Layer->RemoveEmptyGroups();
 	}
@@ -1717,7 +1717,7 @@ void AeSysDoc::OnPrimBreak() {
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
-			for (EoUInt16 w = 0; w < Points.size() - 1; w++) {
+			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
 				Line = EoDbLine::Create(Database);
 				Line->SetTo(Points[w], Points[w + 1]);
 				Line->SetColorIndex(Primitive->ColorIndex());
@@ -2150,7 +2150,7 @@ void AeSysDoc::OnTrapCommandsBlock() {
 		return;
 
 	EoDbBlock* Block;
-	EoUInt16 w = BlockTableSize();
+	OdUInt16 w = BlockTableSize();
 	wchar_t szBlkNam[16];
 
 	do {
@@ -2193,7 +2193,7 @@ void AeSysDoc::OnSetupLinetype() {
 
 	if (Dialog.DoModal() == IDOK) {
 		OdString Name = Dialog.m_Linetype->getName();
-		const EoInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
+		const OdInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
 		pstate.SetLinetypeIndex(NULL, LinetypeIndex);
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
 	}
@@ -2468,24 +2468,24 @@ void AeSysDoc::OnPensTranslate() {
 	// <tas="OnPensTranslate would be more useful if the file name could be selected. Currently fixed as xlate.txt"</tas>
 	if (fl.Open(AeSysApp::ResourceFolderPath() + L"\\Pens\\xlate.txt", CFile::modeRead | CFile::typeText)) {
 		wchar_t pBuf[128];
-		EoUInt16 wCols = 0;
+		OdUInt16 wCols = 0;
 
 		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0)
 			wCols++;
 
 		if (wCols > 0) {
-			EoInt16* pColNew = new EoInt16[wCols];
-			EoInt16* pCol = new EoInt16[wCols];
+			OdInt16* pColNew = new OdInt16[wCols];
+			OdInt16* pCol = new OdInt16[wCols];
 
-			EoUInt16 w = 0;
+			OdUInt16 w = 0;
 
 			fl.SeekToBegin();
 
 			LPWSTR NextToken;
 			while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0) {
 				NextToken = NULL;
-				pCol[w] = EoInt16(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
-				pColNew[w++] = EoInt16(_wtoi(wcstok_s(0, L"\n", &NextToken)));
+				pCol[w] = OdInt16(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
+				pColNew[w++] = OdInt16(_wtoi(wcstok_s(0, L"\n", &NextToken)));
 			}
 			PenTranslation(wCols, pColNew, pCol);
 

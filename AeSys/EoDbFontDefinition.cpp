@@ -73,19 +73,19 @@ CString EoDbFontDefinition::FormatVerticalAlignment() const {
 	return (m_VerticalAlignment >= EoDb::kAlignTop && m_VerticalAlignment <= EoDb::kAlignBottom) ? strAlign[m_VerticalAlignment - 2] : L"Invalid!";
 }
 void EoDbFontDefinition::Read(EoDbFile& file) {
-	file.Read(&m_Precision, sizeof(EoUInt16));
+	file.Read(&m_Precision, sizeof(OdUInt16));
 	file.ReadString(m_FontName);
-	file.Read(&m_Path, sizeof(EoUInt16));
-	file.Read(&m_HorizontalAlignment, sizeof(EoUInt16));
-	file.Read(&m_VerticalAlignment, sizeof(EoUInt16));
+	file.Read(&m_Path, sizeof(OdUInt16));
+	file.Read(&m_HorizontalAlignment, sizeof(OdUInt16));
+	file.Read(&m_VerticalAlignment, sizeof(OdUInt16));
 	file.Read(&m_CharacterSpacing, sizeof(double));
 }
 void EoDbFontDefinition::Write(EoDbFile& file) const {
-	file.Write(&m_Precision, sizeof(EoUInt16));
+	file.Write(&m_Precision, sizeof(OdUInt16));
 	file.WriteString(m_FontName);
-	file.Write(&m_Path, sizeof(EoUInt16));
-	file.Write(&m_HorizontalAlignment, sizeof(EoUInt16));
-	file.Write(&m_VerticalAlignment, sizeof(EoUInt16));
+	file.Write(&m_Path, sizeof(OdUInt16));
+	file.Write(&m_HorizontalAlignment, sizeof(OdUInt16));
+	file.Write(&m_VerticalAlignment, sizeof(OdUInt16));
 	file.Write(&m_CharacterSpacing, sizeof(double));
 }
 

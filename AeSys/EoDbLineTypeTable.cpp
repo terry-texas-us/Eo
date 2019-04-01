@@ -15,8 +15,8 @@ const wchar_t* EoDbLinetypeTable::LegacyLinetypes[] = {
 /// <remarks>
 /// "ByBlock" and "ByLayer" is not be permitted in all legacy file versions. This should be managed in the outbound conversions back to legacy file.
 /// </remarks>
-EoUInt16 EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
-	EoUInt16 Index = 0;
+OdUInt16 EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
+	OdUInt16 Index = 0;
 	if (name.iCompare(L"ByBlock") == 0) {
 		Index = EoDbPrimitive::LINETYPE_BYBLOCK;
 	}
@@ -41,14 +41,14 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 	CStdioFile fl;
 	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
 
-		EoUInt16 MaxNumberOfDashes = 12;
+		OdUInt16 MaxNumberOfDashes = 12;
 		double* DashLengths = new double[MaxNumberOfDashes];
 		
 		CString Line;
 
 		while (fl.ReadString(Line) != 0) {
 			int NextToken = 0;
-			EoUInt16 Label = EoUInt16(_wtoi(Line.Tokenize(L"=", NextToken)));
+			OdUInt16 Label = OdUInt16(_wtoi(Line.Tokenize(L"=", NextToken)));
 
 			OdString Name = Line.Tokenize(L",", NextToken);
 			OdString Comments = Line.Tokenize(L"\n", NextToken);
@@ -56,7 +56,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 			fl.ReadString(Line);
 
 			NextToken = 0;
-			EoUInt16 NumberOfDashes = EoUInt16(_wtoi(Line.Tokenize(L",\n", NextToken)));
+			OdUInt16 NumberOfDashes = OdUInt16(_wtoi(Line.Tokenize(L",\n", NextToken)));
 
 			if (NumberOfDashes > MaxNumberOfDashes) {
 				delete [] DashLengths;
@@ -64,7 +64,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 				MaxNumberOfDashes = NumberOfDashes;
 			}
 			double PatternLength = 0.;
-			for (EoUInt16 DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
+			for (OdUInt16 DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 				DashLengths[DashIndex] = _wtof(Line.Tokenize(L",\n", NextToken));
 				PatternLength += DashLengths[DashIndex];
 			}

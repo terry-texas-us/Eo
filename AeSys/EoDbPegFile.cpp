@@ -57,23 +57,23 @@ void EoDbPegFile::ReadLinetypesTable() {
 
 	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite);
 
-	const EoUInt16 NumberOfLinetypes = ReadUInt16();
+	const OdUInt16 NumberOfLinetypes = ReadUInt16();
 	double* DashLength = new double[32];
 
-	for (EoUInt16 n = 0; n < NumberOfLinetypes; n++) {
+	for (OdUInt16 n = 0; n < NumberOfLinetypes; n++) {
 		OdString Name;
 		ReadString(Name);
 				
-		/* EoUInt16 Flags = */ ReadUInt16();
+		/* OdUInt16 Flags = */ ReadUInt16();
 		
 		OdString Comments;
 		ReadString(Comments);
 				
-		const EoUInt16 NumberOfDashes = ReadUInt16();
+		const OdUInt16 NumberOfDashes = ReadUInt16();
 		double PatternLength;
 		PatternLength = ReadDouble();
 
-		for (EoUInt16 n = 0; n < NumberOfDashes; n++) {
+		for (OdUInt16 n = 0; n < NumberOfDashes; n++) {
 			DashLength[n] = ReadDouble();
 		}
 		if (Linetypes->getAt(Name).isNull()) {
@@ -109,20 +109,20 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 		throw L"Exception ReadLayerTable: Expecting sentinel EoDb::kLayerTable.";
 	}
 	OdDbLayerTablePtr Layers = document->LayerTable(OdDb::kForWrite);
-	const EoUInt16 NumberOfLayers = ReadUInt16();
-	for (EoUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
+	const OdUInt16 NumberOfLayers = ReadUInt16();
+	for (OdUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		OdString Name;
 		ReadString(Name);
-		/* EoUInt16 TracingFlags = */ ReadUInt16();
+		/* OdUInt16 TracingFlags = */ ReadUInt16();
 		
-		EoUInt16 StateFlags = ReadUInt16();
+		OdUInt16 StateFlags = ReadUInt16();
 		StateFlags |= EoDbLayer::kIsResident;
 		if ((StateFlags & EoDbLayer::kIsInternal) != EoDbLayer::kIsInternal) {
 			if (Name.find('.') == - 1) {
 				Name += L".jb1";
 			}
 		}
-		const EoInt16 ColorIndex = ReadInt16();
+		const OdInt16 ColorIndex = ReadInt16();
 		OdString LinetypeName;
 		ReadString(LinetypeName);
 
@@ -170,13 +170,13 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 	OdString Name;
 	OdString PathName;
 
-	const EoUInt16 NumberOfBlocks = ReadUInt16();
+	const OdUInt16 NumberOfBlocks = ReadUInt16();
 
-	for (EoUInt16 BlockIndex = 0; BlockIndex < NumberOfBlocks; BlockIndex++) {
-		const EoUInt16 NumberOfPrimitives = ReadUInt16();
+	for (OdUInt16 BlockIndex = 0; BlockIndex < NumberOfBlocks; BlockIndex++) {
+		const OdUInt16 NumberOfPrimitives = ReadUInt16();
 
 		ReadString(Name);
-		const EoUInt16 BlockTypeFlags = ReadUInt16();
+		const OdUInt16 BlockTypeFlags = ReadUInt16();
 		const OdGePoint3d BasePoint = ReadPoint3d();
 		EoDbBlock* Block = new EoDbBlock(BlockTypeFlags, BasePoint, PathName);
 
@@ -192,7 +192,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 		}
 		const bool LayoutBlock = BlockTableRecord->isLayout();
 
-		for (EoUInt16 PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
+		for (OdUInt16 PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
 			EoDbPrimitive* Primitive = ReadPrimitive();
 			Block->AddTail(Primitive);
 			if (!LayoutBlock) {
@@ -212,9 +212,9 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	const OdDbObjectId CurrentLayerObjectId = m_Database->getCLAYER();
 	OdDbLayerTablePtr Layers = document->LayerTable(OdDb::kForRead);
 
-	const EoUInt16 NumberOfLayers = ReadUInt16();
+	const OdUInt16 NumberOfLayers = ReadUInt16();
 	
-	for (EoUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
+	for (OdUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
 		
 		if (Layer == 0)
@@ -224,10 +224,10 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 		const OdDbObjectId LayerObjectId = Layers->getAt(LayerName);
 		m_Database->setCLAYER(LayerObjectId);
 
-		const EoUInt16 NumberOfGroups = ReadUInt16();
+		const OdUInt16 NumberOfGroups = ReadUInt16();
 
 		if (Layer->IsInternal()) {
-			for (EoUInt16 GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
+			for (OdUInt16 GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
 				const size_t NumberOfPrimitives = ReadUInt16();
 				
 				EoDbGroup* Group = new EoDbGroup;
@@ -290,7 +290,7 @@ void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 
 	OdDbSymbolTableIteratorPtr Iterator = Linetypes->newIterator();
-	EoUInt16 NumberOfLinetypes = 0;
+	OdUInt16 NumberOfLinetypes = 0;
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		NumberOfLinetypes++;
 	}
@@ -303,13 +303,13 @@ void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 		WriteUInt16(0);
 		WriteString(Linetype->comments());
 
-		const EoUInt16 DefinitionLength = static_cast<EoUInt16>(Linetype->numDashes());
+		const OdUInt16 DefinitionLength = static_cast<OdUInt16>(Linetype->numDashes());
 		WriteUInt16(DefinitionLength);
 
 		const double PatternLength = Linetype->patternLength();
 		WriteDouble(PatternLength);
 
-		for (EoUInt16 DashIndex = 0; DashIndex < DefinitionLength; DashIndex++) {
+		for (OdUInt16 DashIndex = 0; DashIndex < DefinitionLength; DashIndex++) {
 			WriteDouble(Linetype->dashLengthAt(DashIndex));
 		}
 	}	
@@ -321,7 +321,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	WriteUInt16(kLayerTable);
 
 	const ULONGLONG SavedFilePosition = CFile::GetPosition();
-	WriteUInt16(EoUInt16(NumberOfLayers));
+	WriteUInt16(OdUInt16(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
 		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
@@ -340,14 +340,14 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	if (NumberOfLayers != document->GetLayerTableSize()) {
 		const ULONGLONG CurrentFilePosition = CFile::GetPosition();
 		CFile::Seek(SavedFilePosition, CFile::begin);
-		WriteUInt16(EoUInt16(NumberOfLayers));
+		WriteUInt16(OdUInt16(NumberOfLayers));
 		CFile::Seek(CurrentFilePosition, CFile::begin);
 	}
 }
 void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 	WriteUInt16(kBlocksSection);
 
-	const EoUInt16 NumberOfBlocks = document->BlockTableSize();
+	const OdUInt16 NumberOfBlocks = document->BlockTableSize();
 	WriteUInt16(NumberOfBlocks);
 
 	CString Name;
@@ -359,7 +359,7 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 
 		const ULONGLONG SavedFilePosition = CFile::GetPosition();
 		WriteUInt16(0);
-		EoUInt16 NumberOfPrimitives = 0;
+		OdUInt16 NumberOfPrimitives = 0;
 
 		WriteString(Name);
 		WriteUInt16(Block->GetBlkTypFlgs());
@@ -383,12 +383,12 @@ void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 	WriteUInt16(kGroupsSection);
 
 	const int NumberOfLayers = document->GetLayerTableSize();
-	WriteUInt16(EoUInt16(NumberOfLayers));
+	WriteUInt16(OdUInt16(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
 		if (Layer->IsInternal()) {
-			WriteUInt16(EoUInt16(Layer->GetCount()));
+			WriteUInt16(OdUInt16(Layer->GetCount()));
 
 			POSITION Position = Layer->GetHeadPosition();
 			while (Position != 0) {

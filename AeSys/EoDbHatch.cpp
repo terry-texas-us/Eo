@@ -143,7 +143,7 @@ EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr database) const {
 	return (EoDbHatch::Create(*this, database));
 }
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
-	const EoInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
 
 	pstate.SetColorIndex(deviceContext, ColorIndex);
 	pstate.SetHatchInteriorStyle(m_InteriorStyle);
@@ -243,7 +243,7 @@ OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
 	}
 	return (m_Vertices[sm_PivotVertex]);
 }
-bool EoDbHatch::Is(EoUInt16 type) const {
+bool EoDbHatch::Is(OdUInt16 type) const {
 	return type == EoDb::kHatchPrimitive;
 }
 bool EoDbHatch::IsInView(AeSysView* view) const {
@@ -356,8 +356,8 @@ bool EoDbHatch::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kHatchPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_InteriorStyle);  // note polygon style stuffed up into unused line type on io
-	file.WriteUInt16(EoUInt16(EoMax(1U, m_InteriorStyleIndex)));
-	file.WriteUInt16(EoUInt16(m_Vertices.size()));
+	file.WriteUInt16(OdUInt16(EoMax(1U, m_InteriorStyleIndex)));
+	file.WriteUInt16(OdUInt16(m_Vertices.size()));
 	file.WritePoint3d(m_HatchOrigin);
 	
 	file.WriteDouble(m_HatchXAxis.x);
@@ -374,13 +374,13 @@ bool EoDbHatch::Write(EoDbFile& file) const {
 	}
 	return true;
 }
-void EoDbHatch::Write(CFile& file, EoByte* buffer) const {
-	buffer[3] = EoSbyte((79 + m_Vertices.size() * 12) / 32);
-	*((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kHatchPrimitive);
-	buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = EoSbyte(m_InteriorStyle);
-	*((EoInt16*) &buffer[8]) = EoInt16(m_InteriorStyleIndex);
-	*((EoInt16*) &buffer[10]) = EoInt16(m_Vertices.size());
+void EoDbHatch::Write(CFile& file, OdUInt8* buffer) const {
+	buffer[3] = OdInt8((79 + m_Vertices.size() * 12) / 32);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kHatchPrimitive);
+	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = OdInt8(m_InteriorStyle);
+	*((OdInt16*) &buffer[8]) = OdInt16(m_InteriorStyleIndex);
+	*((OdInt16*) &buffer[10]) = OdInt16(m_Vertices.size());
 
 	((EoVaxPoint3d*) &buffer[12])->Convert(m_HatchOrigin);
 	((EoVaxVector3d*) &buffer[24])->Convert(m_HatchXAxis);
@@ -408,8 +408,8 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 
 	EoEdge Edges[128];
 
-	const EoInt16 ColorIndex = pstate.ColorIndex();
-	const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const OdInt16 ColorIndex = pstate.ColorIndex();
+	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 	pstate.SetLinetypeIndex(deviceContext, 1);
 	const int InteriorStyleIndex = pstate.HatchInteriorStyleIndex();
 
@@ -754,7 +754,7 @@ void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double 
 	m_HatchXAxis *= patternScaleX;
 	m_HatchYAxis *= patternScaleY;
 }
-void EoDbHatch::SetInteriorStyle(EoInt16 interiorStyle) {
+void EoDbHatch::SetInteriorStyle(OdInt16 interiorStyle) {
 	m_InteriorStyle = interiorStyle;
 }
 void EoDbHatch::SetInteriorStyleIndex(size_t styleIndex) {
@@ -828,7 +828,7 @@ EoDbHatch* EoDbHatch::ConstructFrom(EoDbFile& file) {
 	HatchPrimitive->SetColorIndex(file.ReadInt16());
 	HatchPrimitive->SetInteriorStyle(file.ReadInt16());
 	HatchPrimitive->SetInteriorStyleIndex(file.ReadInt16());
-	const EoUInt16 NumberOfVertices = file.ReadUInt16();
+	const OdUInt16 NumberOfVertices = file.ReadUInt16();
 	HatchPrimitive->SetHatchOrigin(file.ReadPoint3d());
 	HatchPrimitive->SetHatchXAxis(file.ReadVector3d());
 	HatchPrimitive->SetHatchYAxis(file.ReadVector3d());
@@ -842,9 +842,9 @@ EoDbHatch* EoDbHatch::ConstructFrom(EoDbFile& file) {
 
 	return (HatchPrimitive);
 }
-EoDbHatch* EoDbHatch::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
-	EoInt16 ColorIndex;
-	EoInt16 InteriorStyle;
+EoDbHatch* EoDbHatch::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
+	OdInt16 ColorIndex;
+	OdInt16 InteriorStyle;
 	size_t InteriorStyleIndex = 0;
 	OdGePoint3d HatchOrigin;
 	OdGeVector3d HatchXAxis;
@@ -852,10 +852,10 @@ EoDbHatch* EoDbHatch::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) 
 	OdGePoint3dArray Vertices;
 
 	if (versionNumber == 1) {
-		ColorIndex = EoInt16(primitiveBuffer[4] & 0x000f);
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
 
 		const double StyleDefinition = ((EoVaxFloat*) &primitiveBuffer[12])->Convert();
-		InteriorStyle = EoInt16(int(StyleDefinition) % 16);
+		InteriorStyle = OdInt16(int(StyleDefinition) % 16);
 
 		switch (InteriorStyle) {
 		case EoDbHatch::kHatch: {
@@ -896,7 +896,7 @@ EoDbHatch* EoDbHatch::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) 
 		default:
 			throw L"Exception.FileJob: Unknown hatch primitive interior style.";
 		}
-		const size_t NumberOfVertices = EoUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
+		const size_t NumberOfVertices = OdUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
 		
 		int BufferOffset = 36;
 		Vertices.clear();
@@ -907,10 +907,10 @@ EoDbHatch* EoDbHatch::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) 
 		HatchOrigin = Vertices[0];
 	}
 	else {
-		ColorIndex = EoInt16(primitiveBuffer[6]);
-		InteriorStyle = EoSbyte(primitiveBuffer[7]);
-		InteriorStyleIndex = *((EoInt16*) &primitiveBuffer[8]);
-		const size_t NumberOfVertices = *((EoInt16*) &primitiveBuffer[10]);
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		InteriorStyle = OdInt8(primitiveBuffer[7]);
+		InteriorStyleIndex = *((OdInt16*) &primitiveBuffer[8]);
+		const size_t NumberOfVertices = *((OdInt16*) &primitiveBuffer[10]);
 		HatchOrigin = ((EoVaxPoint3d*) &primitiveBuffer[12])->Convert();
 		HatchXAxis = ((EoVaxVector3d*) &primitiveBuffer[24])->Convert();
 		HatchYAxis = ((EoVaxVector3d*) &primitiveBuffer[36])->Convert();

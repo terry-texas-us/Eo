@@ -78,7 +78,7 @@ void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArra
 		SectionLength -= dRemDisToEnd;
 	}
 }
-void __End(AeSysView* view, CDC* deviceContext, EoInt16 linetypeIndex) {
+void __End(AeSysView* view, CDC* deviceContext, OdInt16 linetypeIndex) {
 	if (EoDbPrimitive::IsSupportedLinetype(linetypeIndex)) {
 		const int Size = pts_.GetSize();
 		if (Size > 1) {
@@ -150,7 +150,7 @@ bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& inte
 
 	view->ModelViewTransformPoint(StartPoint);
 
-	for (EoUInt16 w = 1; w < pts_.GetSize(); w++) {
+	for (OdUInt16 w = 1; w < pts_.GetSize(); w++) {
 		EndPoint = EoGePoint4d(pts_[w]);
 		view->ModelViewTransformPoint(EndPoint);
 
@@ -193,7 +193,7 @@ bool SelectBy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPo
 	EoGePoint4d StartPoint(pts_[0]);
 	view->ModelViewTransformPoint(StartPoint);
 
-	for (EoUInt16 w = 1; w < pts_.GetSize(); w++) {
+	for (OdUInt16 w = 1; w < pts_.GetSize(); w++) {
 		EoGePoint4d EndPoint(pts_[w]);
 		view->ModelViewTransformPoint(EndPoint);
 
@@ -210,7 +210,7 @@ bool SelectUsingRectangle(AeSysView* view, const OdGePoint3d& lowerLeftCorner, c
 	EoGePoint4d ptBeg(points[0], 1.);
 	view->ModelViewTransformPoint(ptBeg);
 
-	for (EoUInt16 w = 1; w < points.size(); w++) {
+	for (OdUInt16 w = 1; w < points.size(); w++) {
 		EoGePoint4d ptEnd(points[w], 1.);
 		view->ModelViewTransformPoint(ptEnd);
 

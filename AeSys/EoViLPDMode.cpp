@@ -467,7 +467,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSect
 */
 	}
 }
-void AeSysView::GenerateRiseDrop(EoUInt16 riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group) {
+void AeSysView::GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group) {
 	const double SectionLength = referenceLine.length();
 
 	EoDbLine* Line;

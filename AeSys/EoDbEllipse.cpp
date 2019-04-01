@@ -179,8 +179,8 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 void EoDbEllipse::Display(AeSysView* view, CDC* deviceContext) {
 	if (fabs(m_SweepAngle) <= DBL_EPSILON) return;
 
-	const EoInt16 ColorIndex = LogicalColorIndex();
-	const EoInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -312,7 +312,7 @@ void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& ptsBox) const {
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis));
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
-	for (EoUInt16 w = 0; w < 4; w++) {
+	for (OdUInt16 w = 0; w < 4; w++) {
 		ptsBox[w].transformBy(PlaneToWorldTransform);
 	}
 }
@@ -465,7 +465,7 @@ void EoDbEllipse::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 		OdGePoint3dArray BoundingBox;
 		GetBoundingBox(BoundingBox);
 
-		for (EoUInt16 w = 0; w < 4; w++) {
+		for (OdUInt16 w = 0; w < 4; w++) {
 			extents.addPoint(BoundingBox[w]);
 		}
 	}
@@ -475,7 +475,7 @@ bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& poin
 
 	EoGePoint4d pt[] = {EoGePoint4d(StartPoint(), 1.), EoGePoint4d(EndPoint(), 1.)};
 
-	for (EoUInt16 w = 0; w < 2; w++) {
+	for (OdUInt16 w = 0; w < 2; w++) {
 		view->ModelViewTransformPoint(pt[w]);
 
 		if (point.DistanceToPointXY(pt[w]) < sm_SelectApertureSize)
@@ -636,7 +636,7 @@ OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
 	const double dAng = (sm_RelationshipOfPoint <= DBL_EPSILON) ? m_SweepAngle : 0.;
 	return (pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng));
 }
-bool EoDbEllipse::Is(EoUInt16 type) const {
+bool EoDbEllipse::Is(OdUInt16 type) const {
 	return type == EoDb::kEllipsePrimitive;
 }
 bool EoDbEllipse::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -650,7 +650,7 @@ bool EoDbEllipse::IsInView(AeSysView* view) const {
 	EoGePoint4d ptBeg(BoundingBox[0], 1.);
 	view->ModelViewTransformPoint(ptBeg);
 
-	for (EoUInt16 w = 1; w < 4; w++) {
+	for (OdUInt16 w = 1; w < 4; w++) {
 		EoGePoint4d ptEnd(BoundingBox[w], 1.);
 		view->ModelViewTransformPoint(ptEnd);
 
@@ -668,7 +668,7 @@ OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d
 
 	OdGePoint3d ptCtrl[] = {StartPoint(), EndPoint()};
 
-	for (EoUInt16 w = 0; w < 2; w++) {
+	for (OdUInt16 w = 0; w < 2; w++) {
 		EoGePoint4d pt(ptCtrl[w], 1.);
 
 		view->ModelViewTransformPoint(pt);
@@ -867,11 +867,11 @@ bool EoDbEllipse::Write(EoDbFile& file) const {
 
 	return true;
 }
-void EoDbEllipse::Write(CFile& file, EoByte* buffer) const {
+void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 2;
-	*((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kEllipsePrimitive);
-	buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = EoSbyte(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kEllipsePrimitive);
+	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) &buffer[8])->Convert(m_Center);
@@ -882,8 +882,8 @@ void EoDbEllipse::Write(CFile& file, EoByte* buffer) const {
 	file.Write(buffer, 64);
 }
 EoDbEllipse* EoDbEllipse::ConstructFrom(EoDbFile& file) {
-	const EoInt16 ColorIndex = file.ReadInt16();
-	const EoInt16 LinetypeIndex = file.ReadInt16();
+	const OdInt16 ColorIndex = file.ReadInt16();
+	const OdInt16 LinetypeIndex = file.ReadInt16();
 	const OdGePoint3d CenterPoint(file.ReadPoint3d());
 	const OdGeVector3d MajorAxis(file.ReadVector3d());
 	const OdGeVector3d MinorAxis(file.ReadVector3d());
@@ -895,17 +895,17 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(EoDbFile& file) {
 	EllipsePrimitive->SetLinetypeIndex(LinetypeIndex);
 	return (EllipsePrimitive);
 }
-EoDbEllipse* EoDbEllipse::ConstructFrom(EoByte* primitiveBufer, int versionNumber) {
-	EoInt16 ColorIndex;
-	EoInt16 LinetypeIndex;
+EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumber) {
+	OdInt16 ColorIndex;
+	OdInt16 LinetypeIndex;
 	OdGePoint3d CenterPoint;
 	OdGeVector3d MajorAxis;
 	OdGeVector3d MinorAxis;
 	double SweepAngle;
 
 	if (versionNumber == 1) {
-		ColorIndex = EoInt16(primitiveBufer[4] & 0x000f);
-		LinetypeIndex = EoInt16((primitiveBufer[4] & 0x00ff) >> 4);
+		ColorIndex = OdInt16(primitiveBufer[4] & 0x000f);
+		LinetypeIndex = OdInt16((primitiveBufer[4] & 0x00ff) >> 4);
 
 		OdGePoint3d BeginPoint;
 		BeginPoint = OdGePoint3d(((EoVaxFloat*) &primitiveBufer[8])->Convert(), ((EoVaxFloat*) &primitiveBufer[12])->Convert(), 0.) * 1.e-3;
@@ -925,8 +925,8 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(EoByte* primitiveBufer, int versionNumbe
 		SweepAngle = fabs(SweepAngle);
 	}
 	else {
-		ColorIndex = EoInt16(primitiveBufer[6]);
-		LinetypeIndex = EoInt16(primitiveBufer[7]);
+		ColorIndex = OdInt16(primitiveBufer[6]);
+		LinetypeIndex = OdInt16(primitiveBufer[7]);
 
 		CenterPoint = ((EoVaxPoint3d*) &primitiveBufer[8])->Convert();
 		MajorAxis = ((EoVaxVector3d*) &primitiveBufer[20])->Convert();

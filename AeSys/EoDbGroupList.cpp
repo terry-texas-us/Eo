@@ -78,7 +78,7 @@ void EoDbGroupList::GetExtents__(AeSysView* view, OdGeExtents3d& extents) {
 		Group->GetExtents_(view, extents);
 	}
 }
-int EoDbGroupList::GetLinetypeIndexRefCount(EoInt16 linetypeIndex) {
+int EoDbGroupList::GetLinetypeIndexRefCount(OdInt16 linetypeIndex) {
 	int iCount = 0;
 
 	POSITION Position = GetHeadPosition();
@@ -88,14 +88,14 @@ int EoDbGroupList::GetLinetypeIndexRefCount(EoInt16 linetypeIndex) {
 	}
 	return (iCount);
 }
-void EoDbGroupList::ModifyColorIndex(EoInt16 colorIndex) {
+void EoDbGroupList::ModifyColorIndex(OdInt16 colorIndex) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbGroup* Group = GetNext(Position);
 		Group->ModifyColorIndex(colorIndex);
 	}
 }
-void EoDbGroupList::ModifyLinetypeIndex(EoInt16 linetypeIndex) {
+void EoDbGroupList::ModifyLinetypeIndex(OdInt16 linetypeIndex) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0)
 		(GetNext(Position))->ModifyLinetypeIndex(linetypeIndex);
@@ -107,7 +107,7 @@ void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacte
 		Group->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 	}
 }
-void EoDbGroupList::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) {
+void EoDbGroupList::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0)
 		(GetNext(Position))->PenTranslation(wCols, pColNew, pCol);
@@ -183,7 +183,7 @@ void EoDbGroupList::TransformBy(const EoGeMatrix3d& transformMatrix) {
 		Group->TransformBy(transformMatrix);
 	}
 }
-void EoDbGroupList::Write(CFile& file, EoByte* buffer) {
+void EoDbGroupList::Write(CFile& file, OdUInt8* buffer) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0)
 		GetNext(Position)->Write(file, buffer);

@@ -106,7 +106,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.SetLength(96);
 		MemoryFile.SeekToEnd();
 
-		EoByte* Buffer = new EoByte[EoDbPrimitive::BUFFER_SIZE];
+        OdUInt8* Buffer = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
 		m_TrappedGroupList.Write(MemoryFile, Buffer);
 		delete [] Buffer;
 		
@@ -198,11 +198,11 @@ BOOL AeSysDoc::IsTrapEmpty() const {
 	return m_TrappedGroupList.IsEmpty();
 }
 
-void AeSysDoc::ModifyTrappedGroupsColorIndex(EoInt16 colorIndex) {
+void AeSysDoc::ModifyTrappedGroupsColorIndex(OdInt16 colorIndex) {
 	m_TrappedGroupList.ModifyColorIndex(colorIndex);
 }
 
-void AeSysDoc::ModifyTrappedGroupsLinetypeIndex(EoInt16 linetypeIndex) {
+void AeSysDoc::ModifyTrappedGroupsLinetypeIndex(OdInt16 linetypeIndex) {
 	m_TrappedGroupList.ModifyLinetypeIndex(linetypeIndex);
 }
 

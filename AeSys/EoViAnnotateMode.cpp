@@ -338,7 +338,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
 
-			const EoInt16 ColorIndex = pstate.ColorIndex();
+			const OdInt16 ColorIndex = pstate.ColorIndex();
 			pstate.SetColorIndex(DeviceContext, 2);
 
 			EoDbFontDefinition FontDefinition = pstate.FontDefinition();

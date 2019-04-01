@@ -141,8 +141,8 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 	if (DisplayGridWithLines()) {
 		if (fabs(m_XGridLineSpacing) > DBL_EPSILON && fabs(m_YGridLineSpacing) > DBL_EPSILON) {
 			int i;
-			const EoInt16 ColorIndex = pstate.ColorIndex();
-			const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+			const OdInt16 ColorIndex = pstate.ColorIndex();
+			const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 			pstate.SetPen(this, deviceContext, 250, 1);
 			
 			OdGePoint3d StartPoint;

@@ -3,7 +3,7 @@
 #include "AeSysApp.h"
 #include "AeSysView.h"
 
-EoUInt16 EoDbDimension::sm_wFlags = 0;
+OdUInt16 EoDbDimension::sm_wFlags = 0;
 
 EoDbDimension::EoDbDimension()
     : m_TextColorIndex(1) {
@@ -98,13 +98,13 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 	newGroups->AddTail(NewGroup);
 }
 void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
-	const EoInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
 	pstate.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
 	m_Line.Display(view, deviceContext);
 
 	pstate.SetColorIndex(deviceContext, m_TextColorIndex);
 
-	const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 	pstate.SetLinetypeIndex(deviceContext, 1);
 
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
@@ -184,7 +184,7 @@ OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 	}
 	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
 }
-bool EoDbDimension::Is(EoUInt16 type) const {
+bool EoDbDimension::Is(OdUInt16 type) const {
 	return type == EoDb::kDimensionPrimitive;
 }
 bool EoDbDimension::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -198,7 +198,7 @@ bool EoDbDimension::IsInView(AeSysView* view) const {
 	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
 }
 bool EoDbDimension::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	for (EoUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
+	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.);
 
 		view->ModelViewTransformPoint(pt);
@@ -243,7 +243,7 @@ OdGePoint3d EoDbDimension::SelectAtControlPoint(AeSysView* view, const EoGePoint
 
 	double Aperture = sm_SelectApertureSize;
 
-	for (EoUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
+	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.);
 
 		view->ModelViewTransformPoint(pt);
@@ -315,7 +315,7 @@ void EoDbDimension::SetStartPoint(const OdGePoint3d& startPoint) {
 void EoDbDimension::SetText(const CString& str) {
 	m_strText = str;
 }
-void EoDbDimension::SetTextColorIndex(EoInt16 colorIndex) {
+void EoDbDimension::SetTextColorIndex(OdInt16 colorIndex) {
 	m_TextColorIndex = colorIndex;
 }
 void EoDbDimension::SetEndPoint(const OdGePoint3d& endPoint) {
@@ -324,7 +324,7 @@ void EoDbDimension::SetEndPoint(const OdGePoint3d& endPoint) {
 const CString& EoDbDimension::Text() {
 	return m_strText;
 }
-const EoInt16& EoDbDimension::TextColorIndex() {
+const OdInt16& EoDbDimension::TextColorIndex() {
 	return m_TextColorIndex;
 }
 void EoDbDimension::SetDefaultNote() {
@@ -413,25 +413,25 @@ bool EoDbDimension::Write(EoDbFile& file) const {
 
 	return true;
 }
-void EoDbDimension::Write(CFile& file, EoByte* buffer) const {
-	EoUInt16 NumberOfCharacters = EoUInt16(m_strText.GetLength());
+void EoDbDimension::Write(CFile& file, OdUInt8* buffer) const {
+	OdUInt16 NumberOfCharacters = OdUInt16(m_strText.GetLength());
 
-	buffer[3] = EoByte((118 + NumberOfCharacters) / 32);
-	*((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kDimensionPrimitive);
-	buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = EoSbyte(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[3] = OdUInt8((118 + NumberOfCharacters) / 32);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kDimensionPrimitive);
+	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) &buffer[8])->Convert(m_Line.startPoint());
 	((EoVaxPoint3d*) &buffer[20])->Convert(m_Line.endPoint());
 
-	buffer[32] = EoSbyte(m_ColorIndex);
-	buffer[33] = EoSbyte(EoDb::kStrokeType);
-	*((EoInt16*) &buffer[34]) = 0;
+	buffer[32] = OdInt8(m_ColorIndex);
+	buffer[33] = OdInt8(EoDb::kStrokeType);
+	*((OdInt16*) &buffer[34]) = 0;
 	((EoVaxFloat*) &buffer[36])->Convert(m_FontDefinition.CharacterSpacing());
-	buffer[40] = EoSbyte(m_FontDefinition.Path());
-	buffer[41] = EoSbyte(m_FontDefinition.HorizontalAlignment());
-	buffer[42] = EoSbyte(m_FontDefinition.VerticalAlignment());
+	buffer[40] = OdInt8(m_FontDefinition.Path());
+	buffer[41] = OdInt8(m_FontDefinition.HorizontalAlignment());
+	buffer[42] = OdInt8(m_FontDefinition.VerticalAlignment());
 
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
 
@@ -439,19 +439,19 @@ void EoDbDimension::Write(CFile& file, EoByte* buffer) const {
 	((EoVaxVector3d*) &buffer[55])->Convert(ReferenceSystem.XDirection());
 	((EoVaxVector3d*) &buffer[67])->Convert(ReferenceSystem.YDirection());
 
-	*((EoInt16*) &buffer[79]) = NumberOfCharacters;
+	*((OdInt16*) &buffer[79]) = NumberOfCharacters;
 	size_t BufferOffset = 81;
 	for (size_t CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
-		buffer[BufferOffset++] = EoByte(m_strText[CharacterIndex]);
+		buffer[BufferOffset++] = OdUInt8(m_strText[CharacterIndex]);
 	}
 	file.Write(buffer, buffer[3] * 32);
 }
 EoDbDimension* EoDbDimension::ConstructFrom(EoDbFile& file) {
-	const EoInt16 ColorIndex = file.ReadInt16();
-	const EoInt16 LinetypeIndex = file.ReadInt16();
+	const OdInt16 ColorIndex = file.ReadInt16();
+	const OdInt16 LinetypeIndex = file.ReadInt16();
 	const OdGePoint3d StartPoint = file.ReadPoint3d();
 	const OdGePoint3d EndPoint = file.ReadPoint3d();
-	const EoInt16 TextColorIndex = file.ReadInt16();
+	const OdInt16 TextColorIndex = file.ReadInt16();
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.Read(file);
 	EoGeReferenceSystem ReferenceSystem;
@@ -470,13 +470,13 @@ EoDbDimension* EoDbDimension::ConstructFrom(EoDbFile& file) {
 	DimensionPrimitive->SetText(Text);
 	return (DimensionPrimitive);
 }
-EoDbDimension* EoDbDimension::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
-	const EoInt16 ColorIndex = EoInt16(primitiveBuffer[6]);
-	const EoInt16 LinetypeIndex = EoInt16(primitiveBuffer[7]);
+EoDbDimension* EoDbDimension::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
+	const OdInt16 ColorIndex = OdInt16(primitiveBuffer[6]);
+	const OdInt16 LinetypeIndex = OdInt16(primitiveBuffer[7]);
 	EoGeLineSeg3d Line;
 	Line.set(((EoVaxPoint3d*) &primitiveBuffer[8])->Convert(), ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert());
 
-	const EoInt16 TextColorIndex = EoInt16(primitiveBuffer[32]);
+	const OdInt16 TextColorIndex = OdInt16(primitiveBuffer[32]);
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetFontName(L"Simplex.psf");
 	FontDefinition.SetPrecision(EoDb::kStrokeType);
@@ -519,7 +519,7 @@ EoDbDimension* EoDbDimension::ConstructFrom(EoByte* primitiveBuffer, int version
 	ReferenceSystem.SetXDirection(((EoVaxVector3d*) &primitiveBuffer[55])->Convert());
 	ReferenceSystem.SetYDirection(((EoVaxVector3d*) &primitiveBuffer[67])->Convert());
 
-	EoInt16 TextLength = *((EoInt16*) &primitiveBuffer[79]);
+	OdInt16 TextLength = *((OdInt16*) &primitiveBuffer[79]);
 
 	primitiveBuffer[81 + TextLength] = '\0';
 	CString Text = CString((LPCSTR) &primitiveBuffer[81]);

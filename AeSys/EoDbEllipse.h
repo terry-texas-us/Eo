@@ -32,7 +32,7 @@ public: // Methods - absolute virtuals
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -45,7 +45,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods
 	OdGePoint3d Center() const;
@@ -75,7 +75,7 @@ public: // Methods
 
 public: // Methods - static
 	static EoDbEllipse* ConstructFrom(EoDbFile& file);
-	static EoDbEllipse* ConstructFrom(EoByte* primitiveBufer, int versionNumber);
+	static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
 	static EoDbEllipse* Create(OdDbDatabasePtr database);
 	static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr database);
 };

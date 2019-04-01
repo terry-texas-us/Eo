@@ -25,8 +25,8 @@ public:
 	CComboBox m_FilterLineComboBoxControl;
 	CListBox m_FilterPrimitiveTypeListBoxControl;
 
-	void FilterByColor(EoInt16 colorIndex);
-	void FilterByLinetype(EoInt16 linetypeIndex);
+	void FilterByColor(OdInt16 colorIndex);
+	void FilterByLinetype(OdInt16 linetypeIndex);
 	void FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType);
 
 protected:

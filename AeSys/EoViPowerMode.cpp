@@ -145,7 +145,7 @@ void AeSysView::DoPowerModeMouseMove() {
 	}
 	m_PowerModePoints.setLogicalLength(NumberOfPoints);
 }
-void AeSysView::DoPowerModeConductor(EoUInt16 conductorType) {
+void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	static OdGePoint3d PointOnCircuit;
 
 	OdGePoint3d CurrentPnt = GetCursorPosition();
@@ -225,7 +225,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 	Group->AddTail(Polyline);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 }
-void AeSysView::GeneratePowerConductorSymbol(EoUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
+void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
 	OdGePoint3d Points[5];

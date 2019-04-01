@@ -5,7 +5,7 @@
 
 double DimensionModePickTolerance = .05;
 OdGePoint3d PreviousDimensionCursorPosition;
-EoUInt16 PreviousDimensionCommand = 0;
+OdUInt16 PreviousDimensionCommand = 0;
 
 OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 	AeSysDoc* Document = AeSysDoc::GetDoc();

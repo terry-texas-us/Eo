@@ -5,18 +5,18 @@
 
 EoDbJobFile::EoDbJobFile() {
 	m_Version = 3;
-	m_PrimBuf = new EoByte[EoDbPrimitive::BUFFER_SIZE];
+	m_PrimBuf = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
 }
 EoDbJobFile::~EoDbJobFile() {
 	delete [] m_PrimBuf;
 }
 
-void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, EoInt16 PrimitiveType) {
+void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, OdInt16 PrimitiveType) {
 	switch(PrimitiveType) {
 	case EoDb::kTagPrimitive:
 	case EoDb::kPointPrimitive:
 		if (PrimitiveType == kTagPrimitive) {
-			*((EoUInt16*) &m_PrimBuf[4]) = EoDb::kPointPrimitive;
+			*((OdUInt16*) &m_PrimBuf[4]) = EoDb::kPointPrimitive;
 			::ZeroMemory(&m_PrimBuf[20], 12);
 		}
 		primitive = EoDbPoint::ConstructFrom(m_PrimBuf, 3);
@@ -33,9 +33,9 @@ void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, EoInt16 Primitiv
 	case EoDb::kCSplinePrimitive:
 	case EoDb::kSplinePrimitive:
 		if (PrimitiveType == kCSplinePrimitive) {
-			const EoUInt16 NumberOfControlPoints = *((EoUInt16*) &m_PrimBuf[10]);
-			m_PrimBuf[3] = EoSbyte((2 + NumberOfControlPoints * 3) / 8 + 1);
-			*((EoUInt16*) &m_PrimBuf[4]) = EoUInt16(EoDb::kSplinePrimitive);
+			const OdUInt16 NumberOfControlPoints = *((OdUInt16*) &m_PrimBuf[10]);
+			m_PrimBuf[3] = OdInt8((2 + NumberOfControlPoints * 3) / 8 + 1);
+			*((OdUInt16*) &m_PrimBuf[4]) = OdUInt16(EoDb::kSplinePrimitive);
 			m_PrimBuf[8] = m_PrimBuf[10];
 			m_PrimBuf[9] = m_PrimBuf[11];
 			::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
@@ -83,7 +83,7 @@ void EoDbJobFile::ConstructPrimitiveFromVersion1(EoDbPrimitive *&primitive) {
 	}
 }
 bool EoDbJobFile::GetNextPrimitive(CFile& file, EoDbPrimitive*& primitive) {
-	EoInt16 PrimitiveType = 0;
+	OdInt16 PrimitiveType = 0;
 	do {
 		if (!ReadNextPrimitive(file, m_PrimBuf, PrimitiveType)) {
 			return false;
@@ -104,8 +104,8 @@ bool EoDbJobFile::GetNextVisibleGroup(CFile& file, EoDbGroup*& group) {
 		}
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const EoUInt16 wPrims = *((EoUInt16*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
-		for (EoUInt16 w = 1; w < wPrims; w++) {
+		const OdUInt16 wPrims = *((OdUInt16*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
+		for (OdUInt16 w = 1; w < wPrims; w++) {
 			try {
 				Position = file.GetPosition();
 				if (!GetNextPrimitive(file, Primitive))
@@ -161,11 +161,11 @@ void EoDbJobFile::ReadMemFile(CFile& file) {
 		Document->AddGroupToTrap(Group);
 	}
 }
-bool EoDbJobFile::ReadNextPrimitive(CFile &file, EoByte *buffer, EoInt16& primitiveType) {
+bool EoDbJobFile::ReadNextPrimitive(CFile &file, OdUInt8 *buffer, OdInt16& primitiveType) {
 	if (file.Read(buffer, 32) < 32) {
 		return false;
 	}
-	primitiveType = *((EoInt16*) &buffer[4]);
+	primitiveType = *((OdInt16*) &buffer[4]);
 
 	if (!IsValidPrimitive(primitiveType)) {
 		throw L"Exception.FileJob: Invalid primitive type.";
@@ -200,7 +200,7 @@ int EoDbJobFile::Version() {
 	}
 	return (m_Version);
 }
-bool EoDbJobFile::IsValidPrimitive(EoInt16 primitiveType) {
+bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) {
 	switch (primitiveType) {
 	case EoDb::kPointPrimitive: // 0x0100
 	case EoDb::kLinePrimitive: // 0x0200
@@ -217,8 +217,8 @@ bool EoDbJobFile::IsValidPrimitive(EoInt16 primitiveType) {
 		return IsValidVersion1Primitive(primitiveType);
 	}
 }
-bool EoDbJobFile::IsValidVersion1Primitive(EoInt16 primitiveType) {
-	const EoByte* PrimitiveType = (EoByte*) &primitiveType;
+bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) {
+	const OdUInt8* PrimitiveType = (OdUInt8*) &primitiveType;
 	switch (PrimitiveType[1]) {
 	case 17: // 0x11 text
 	case 24: // 0x18 bspline
@@ -235,7 +235,7 @@ bool EoDbJobFile::IsValidVersion1Primitive(EoInt16 primitiveType) {
 }
 void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 	m_PrimBuf[0] = 0;
-	*((EoUInt16*) &m_PrimBuf[1]) = EoUInt16(group->GetCount());
+	*((OdUInt16*) &m_PrimBuf[1]) = OdUInt16(group->GetCount());
 
 	POSITION Position = group->GetHeadPosition();
 	while (Position != 0) {

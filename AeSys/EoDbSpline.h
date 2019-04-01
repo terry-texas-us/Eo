@@ -23,7 +23,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -33,7 +33,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
@@ -41,7 +41,7 @@ public: // Methods
 
 public: // Methods - static
 	static EoDbSpline* ConstructFrom(EoDbFile& file);
-	static EoDbSpline* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
+	static EoDbSpline* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 	static EoDbSpline* Create(OdDbDatabasePtr database);
 	static EoDbSpline* Create(const EoDbSpline& other, OdDbDatabasePtr database);
 };

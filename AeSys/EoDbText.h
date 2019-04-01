@@ -26,7 +26,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -39,7 +39,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods
 	void ConvertFormattingCharacters();
@@ -62,7 +62,7 @@ public: // Methods - static
 	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode);
 
 	static EoDbText* ConstructFrom(EoDbFile& file);
-	static EoDbText* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
+	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 	static EoDbText* Create(OdDbDatabasePtr database);
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
     static OdDbTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);

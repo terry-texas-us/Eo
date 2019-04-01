@@ -11,8 +11,8 @@ EoDbFile::~EoDbFile() {
 void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) {
 }
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive) {
-	const EoInt16 ColorIndex = ReadInt16();
-	const EoInt16 PointDisplayMode = ReadInt16();
+	const OdInt16 ColorIndex = ReadInt16();
+	const OdInt16 PointDisplayMode = ReadInt16();
 	const OdGePoint3d Point(ReadPoint3d());
 
 	EoDbPoint* PointPrimitive = new EoDbPoint(Point);
@@ -21,17 +21,17 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive
 	primitive = PointPrimitive;
 }
 void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive) {
-	const EoInt16 ColorIndex = ReadInt16();
-	const EoInt16 LinetypeIndex = ReadInt16();
+	const OdInt16 ColorIndex = ReadInt16();
+	const OdInt16 LinetypeIndex = ReadInt16();
 
-	Seek(sizeof(EoUInt16), CFile::current);
-	const EoUInt16 NumberOfPoints = ReadUInt16();
-	Seek(sizeof(EoUInt16), CFile::current);
+	Seek(sizeof(OdUInt16), CFile::current);
+	const OdUInt16 NumberOfPoints = ReadUInt16();
+	Seek(sizeof(OdUInt16), CFile::current);
 	Seek(3 * sizeof(double), CFile::current);
 	Seek(3 * sizeof(double), CFile::current);
 	OdGePoint3dArray Points;
 	Points.setLogicalLength(NumberOfPoints);
-	for (EoUInt16 n = 0; n < NumberOfPoints; n++) {
+	for (OdUInt16 n = 0; n < NumberOfPoints; n++) {
 		Points[n] = ReadPoint3d();
 	}
 	EoDbPolyline* Polyline = new EoDbPolyline();
@@ -108,9 +108,9 @@ double EoDbFile::ReadDouble() {
 	Read(&number, sizeof(double));
 	return number;
 }
-EoInt16 EoDbFile::ReadInt16() {
-	EoInt16 number;
-	Read(&number, sizeof(EoInt16));
+OdInt16 EoDbFile::ReadInt16() {
+	OdInt16 number;
+	Read(&number, sizeof(OdInt16));
 	return number;
 }
 OdGePoint3d EoDbFile::ReadPoint3d() {
@@ -120,9 +120,9 @@ OdGePoint3d EoDbFile::ReadPoint3d() {
 	Read(&Point.z, sizeof(double));
 	return Point;
 }
-EoUInt16 EoDbFile::ReadUInt16() {
-	EoUInt16 number;
-	Read(&number, sizeof(EoUInt16));
+OdUInt16 EoDbFile::ReadUInt16() {
+	OdUInt16 number;
+	Read(&number, sizeof(OdUInt16));
 	return number;
 }
 OdGeVector3d EoDbFile::ReadVector3d() {
@@ -135,8 +135,8 @@ OdGeVector3d EoDbFile::ReadVector3d() {
 void EoDbFile::WriteDouble(double number) {
 	Write(&number, sizeof(double));
 }
-void EoDbFile::WriteInt16(EoInt16 number) {
-	Write(&number, sizeof(EoInt16));
+void EoDbFile::WriteInt16(OdInt16 number) {
+	Write(&number, sizeof(OdInt16));
 }
 void EoDbFile::WritePoint3d(const OdGePoint3d& point) {
 	Write(&point.x, sizeof(double));
@@ -147,7 +147,7 @@ void EoDbFile::WritePoint3d(const OdGePoint3d& point) {
 void EoDbFile::WriteString(const CString& string) {
 	const int NumberOfCharacters = string.GetLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c = EoByte(string.GetAt(n));
+		const char c = OdUInt8(string.GetAt(n));
 		Write(&c, 1);
 	}
 	Write("\t", 1);
@@ -155,13 +155,13 @@ void EoDbFile::WriteString(const CString& string) {
 void EoDbFile::WriteString(const OdString& string) {
 	const int NumberOfCharacters = string.getLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c = EoByte(string.getAt(n));
+		const char c = OdUInt8(string.getAt(n));
 		Write(&c, 1);
 	}
 	Write("\t", 1);
 }
-void EoDbFile::WriteUInt16(EoUInt16 number) {
-	Write(&number, sizeof(EoUInt16));
+void EoDbFile::WriteUInt16(OdUInt16 number) {
+	Write(&number, sizeof(OdUInt16));
 }
 void EoDbFile::WriteVector3d(const OdGeVector3d& vector) {
 	Write(&vector.x, sizeof(double));

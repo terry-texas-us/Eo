@@ -140,7 +140,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpC
 
 	BITMAP bmp; 
 	DWORD dw;
-	EoByte *pb;
+    OdUInt8 *pb;
 	((CBitmap*)pBmpSource)->GetBitmap(&bmp); 
 
 	CClientDC dc(NULL);
@@ -149,7 +149,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpC
 	pBmpClone->CreateCompatibleBitmap(&dc, bmp.bmWidth, bmp.bmHeight);
 
 	dw = bmp.bmWidthBytes*bmp.bmHeight;
-	pb = new EoByte[dw];
+	pb = new OdUInt8[dw];
 	dw = pBmpSource->GetBitmapBits(dw, pb); 
 	pBmpClone->SetBitmapBits(dw, pb);
 	delete[]pb;
@@ -177,11 +177,11 @@ const OdCmEntityColor CBitmapColorInfo::GetColor() {
 		(OdUInt8)((m_color >> 8) & 0xFF), (OdUInt8)(m_color & 0xFF));
 	return color;
 }
-const bool CBitmapColorInfo::IsColor(COLORREF color, EoByte item) {
+const bool CBitmapColorInfo::IsColor(COLORREF color, OdUInt8 item) {
 	color = (item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
 	return m_color == color;
 }
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, EoByte cColorItem, int colorIndex) :
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, OdUInt8 cColorItem, int colorIndex) :
 	m_iItem(cColorItem) {
 
 		m_color = (m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
@@ -271,7 +271,7 @@ const bool CPsListStyleData::ReplaceBitmapColorInfo(COLORREF color, const int it
 	m_iActiveListIndex = getPublicArrayIndexByColor(color);
 
 	if (m_iActiveListIndex < 0) 
-		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, (EoByte)item);
+		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, (OdUInt8)item);
 
 	return true;
 
@@ -430,7 +430,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 			item = m_Color.AddBitmap(NULL, m_bitmapList[i]->m_name);
 		else
 			item = m_Color.AddBitmap(&m_bitmapList[i]->m_bitmap, m_bitmapList[i]->m_name);
-		m_bitmapList[i]->m_iItem = (EoByte)item;
+		m_bitmapList[i]->m_iItem = (OdUInt8)item;
 	}
 	m_Color.SetCurSel(0);
 }

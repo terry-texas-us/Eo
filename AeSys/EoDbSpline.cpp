@@ -57,8 +57,8 @@ EoDbPrimitive* EoDbSpline::Clone(OdDbDatabasePtr database) const {
 	return (EoDbSpline::Create(*this, database));
 }
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
-	const EoInt16 ColorIndex = LogicalColorIndex();
-	const EoInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -112,7 +112,7 @@ void EoDbSpline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	}
 	else {
 		// <tas="Extents should use the points on the curve and not the control points"</tas>
-		for (EoUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
+		for (OdUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
 			extents.addPoint(m_Spline.controlPointAt(w));
 		}
 	}
@@ -134,7 +134,7 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 		pt = m_Spline.endPoint();
 	return (pt);
 }
-bool EoDbSpline::Is(EoUInt16 type) const {
+bool EoDbSpline::Is(OdUInt16 type) const {
 	return type == EoDb::kSplinePrimitive;
 }
 bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
@@ -153,7 +153,7 @@ bool EoDbSpline::IsInView(AeSysView* view) const {
 
 	view->ModelViewTransformPoint(pt[0]);
 
-	for (EoUInt16 w = 1; w < m_Spline.numControlPoints(); w++) {
+	for (OdUInt16 w = 1; w < m_Spline.numControlPoints(); w++) {
 		pt[1] = EoGePoint4d(m_Spline.controlPointAt(w), 1.);
 
 		view->ModelViewTransformPoint(pt[1]);
@@ -180,7 +180,7 @@ bool EoDbSpline::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d
 }
 bool EoDbSpline::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray ControlPoints;
-	for (EoUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
+	for (OdUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
 		ControlPoints.append(m_Spline.controlPointAt(w));
 	}
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, ControlPoints);
@@ -218,24 +218,24 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kSplinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
-	file.WriteUInt16(EoUInt16(m_Spline.numControlPoints()));
+	file.WriteUInt16(OdUInt16(m_Spline.numControlPoints()));
 
-	for (EoUInt16 ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
+	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
 		file.WritePoint3d(m_Spline.controlPointAt(ControlPointIndex));
 	}
 	return true;
 }
-void EoDbSpline::Write(CFile& file, EoByte* buffer) const {
-	buffer[3] = EoSbyte((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
-	*((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kSplinePrimitive);
-	buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = EoSbyte(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+void EoDbSpline::Write(CFile& file, OdUInt8* buffer) const {
+	buffer[3] = OdInt8((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kSplinePrimitive);
+	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 
-	*((EoInt16*) &buffer[8]) = (EoInt16) m_Spline.numControlPoints();
+	*((OdInt16*) &buffer[8]) = (OdInt16) m_Spline.numControlPoints();
 
 	int i = 10;
 
-	for (EoUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
+	for (OdUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
 		((EoVaxPoint3d*) &buffer[i])->Convert(m_Spline.controlPointAt(w));
 		i += sizeof(EoVaxPoint3d);
 	}
@@ -254,7 +254,7 @@ EoDbSpline* EoDbSpline::ConstructFrom(EoDbFile& file) {
 	Spline->SetColorIndex(file.ReadInt16());
 	Spline->SetLinetypeIndex(file.ReadInt16());
 
-	const EoUInt16 NumberOfControlPoints = file.ReadUInt16();
+	const OdUInt16 NumberOfControlPoints = file.ReadUInt16();
 
 	const int Degree = EoMin(3, NumberOfControlPoints - 1);
 	
@@ -269,37 +269,37 @@ EoDbSpline* EoDbSpline::ConstructFrom(EoDbFile& file) {
 	Spline->Set(Degree, Knots, ControlPoints, Weights);
 	return (Spline);
 }
-EoDbSpline* EoDbSpline::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
+EoDbSpline* EoDbSpline::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	// <tas="Has not been tested since the change to EoGeNurbCurve3d internals"</tas>
-	EoInt16 ColorIndex;
-	EoInt16 LinetypeIndex;
+	OdInt16 ColorIndex;
+	OdInt16 LinetypeIndex;
 
 	OdGePoint3dArray ControlPoints;
 
 	if (versionNumber == 1) {
-		ColorIndex = EoInt16(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = EoInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
 
-		const EoUInt16 NumberOfControlPoints = EoUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
+		const OdUInt16 NumberOfControlPoints = OdUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 12;
 
-		for (EoUInt16 w = 0; w < NumberOfControlPoints; w++) {
+		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
 			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	}
 	else {
-		ColorIndex = EoInt16(primitiveBuffer[6]);
-		LinetypeIndex = EoInt16(primitiveBuffer[7]);
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		LinetypeIndex = OdInt16(primitiveBuffer[7]);
 
-		const EoUInt16 NumberOfControlPoints = *((EoInt16*) &primitiveBuffer[8]);
+		const OdUInt16 NumberOfControlPoints = *((OdInt16*) &primitiveBuffer[8]);
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 10;
 
-		for (EoUInt16 w = 0; w < NumberOfControlPoints; w++) {
+		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
 			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert();
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}

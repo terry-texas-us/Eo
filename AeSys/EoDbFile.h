@@ -26,19 +26,19 @@ public:
 	void ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive);
 
 	double ReadDouble();
-	EoInt16 ReadInt16();
+	OdInt16 ReadInt16();
 	OdGePoint3d ReadPoint3d();
 	EoDbPrimitive* ReadPrimitive();
 	void ReadString(CString& string);
 	void ReadString(OdString& string);
-	EoUInt16 ReadUInt16();
+	OdUInt16 ReadUInt16();
 	OdGeVector3d ReadVector3d();
 
 	void WriteDouble(double number);
-	void WriteInt16(EoInt16 number);
+	void WriteInt16(OdInt16 number);
 	void WritePoint3d(const OdGePoint3d& point);
 	void WriteString(const CString& string);
 	void WriteString(const OdString& string);
-	void WriteUInt16(EoUInt16 number);
+	void WriteUInt16(OdUInt16 number);
 	void WriteVector3d(const OdGeVector3d& vector);
 };

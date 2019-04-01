@@ -24,8 +24,8 @@ EoDbBlockTable* AeSysDoc::BlockTable() {
 bool AeSysDoc::BlockTableIsEmpty() {
 	return m_BlockTable.IsEmpty() == TRUE;
 }
-EoUInt16 AeSysDoc::BlockTableSize() {
-	return (EoUInt16(m_BlockTable.GetSize()));
+OdUInt16 AeSysDoc::BlockTableSize() {
+	return (OdUInt16(m_BlockTable.GetSize()));
 }
 POSITION AeSysDoc::GetFirstBlockPosition() {
 	return m_BlockTable.GetStartPosition();

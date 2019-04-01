@@ -917,7 +917,7 @@ CRect AeSysView::viewRect(OdGsView* view) {
 	ur.transformBy(x);
 	return CRect(OdRoundToLong(ll.x), OdRoundToLong(ur.y), OdRoundToLong(ur.x), OdRoundToLong(ll.y));
 }
-BOOL AeSysView::OnMouseWheel(UINT nFlags, EoInt16 zDelta, CPoint point) {
+BOOL AeSysView::OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point) {
 #ifdef DEV_COMMAND_VIEW
 	ScreenToClient(&point);
 	if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
@@ -3433,7 +3433,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& point, EoDbLine*& line) {
 	}
 	return 0;
 }
-EoDbGroup* AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, EoInt16 pointColor, EoInt16 pointDisplayMode, EoDbPoint*& primitive) {
+EoDbGroup* AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor, OdInt16 pointDisplayMode, EoDbPoint*& primitive) {
 	POSITION GroupPosition = GetFirstVisibleGroupPosition();
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
@@ -3729,7 +3729,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d& cursorPosition) {
 	::SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
 void AeSysView::SetModeCursor(int mode) {
-	EoUInt16 ResourceIdentifier;
+	OdUInt16 ResourceIdentifier;
 
 	switch (mode) {
 	case ID_MODE_ANNOTATE:

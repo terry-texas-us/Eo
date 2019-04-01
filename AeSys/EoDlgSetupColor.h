@@ -27,10 +27,10 @@ protected:
 
 	CEdit m_ColorEditControl;
 
-	void DrawSelectionInformation(EoUInt16 index);
+	void DrawSelectionInformation(OdUInt16 index);
 
 public:
-	EoUInt16 m_ColorIndex;
+	OdUInt16 m_ColorIndex;
 
 	afx_msg void OnBnClickedByblockButton();
 	afx_msg void OnBnClickedBylayerButton();

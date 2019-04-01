@@ -5,7 +5,7 @@ class EoDbPrimitive;
 class EoDbDimension : public EoDbPrimitive {
 	EoGeLineSeg3d m_Line;
 
-	EoInt16	m_TextColorIndex;
+	OdInt16	m_TextColorIndex;
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
@@ -30,7 +30,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -42,7 +42,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public:	// Methods - virtuals
 	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
@@ -64,15 +64,15 @@ public:	// Methods
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem);
 	void SetText(const CString& str);
 	void SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment);
-	void SetTextColorIndex(EoInt16 colorIndex);
+	void SetTextColorIndex(OdInt16 colorIndex);
 	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment);
 	const CString& Text();
-	const EoInt16& TextColorIndex();
+	const OdInt16& TextColorIndex();
 
 private:
-	static EoUInt16 sm_wFlags;	// bit 1	clear if dimension selected at note
+	static OdUInt16 sm_wFlags;	// bit 1	clear if dimension selected at note
 							//			set if dimension selected at line
 public:
 	static EoDbDimension* ConstructFrom(EoDbFile& file);
-	static EoDbDimension* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
+	static EoDbDimension* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 };

@@ -2,7 +2,7 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-EoUInt16 wPrvKeyDwn = 0;
+OdUInt16 wPrvKeyDwn = 0;
 OdGePoint3d rPrvPos;
 
 void AeSysView::OnCutModeOptions(void) {
@@ -80,7 +80,7 @@ void AeSysView::OnCutModeSlice(void) {
 				EoGeLineSeg3d ln;
 				ln = EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d());
 				Primitive->SelectBy(ln, this, Intersections);
-				for (EoUInt16 w = 0; w < Intersections.size(); w++) {
+				for (OdUInt16 w = 0; w < Intersections.size(); w++) {
 					EoDbGroup* NewGroup = new EoDbGroup;
 
 					Intersections[w].transformBy(TransformMatrix);
@@ -127,8 +127,8 @@ void AeSysView::OnCutModeField(void) {
 
 		AeSysDoc* Document = GetDocument();
 
-		const EoInt16 ColorIndex = pstate.ColorIndex();
-		const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+		const OdInt16 ColorIndex = pstate.ColorIndex();
+		const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 
 		EoDbGroupList* GroupsOut = new EoDbGroupList;
 		EoDbGroupList* GroupsIn = new EoDbGroupList;
@@ -199,8 +199,8 @@ void AeSysView::OnCutModeClip(void) {
 		double dRel[2];
 		OdGePoint3d	ptCut[2];
 
-		const EoInt16 ColorIndex = pstate.ColorIndex();
-		const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+		const OdInt16 ColorIndex = pstate.ColorIndex();
+		const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 
 		AeSysDoc* Document = GetDocument();
 

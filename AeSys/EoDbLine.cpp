@@ -120,8 +120,8 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGrou
 	newGroups->AddTail(NewGroup);
 }
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
-	const EoInt16 ColorIndex = LogicalColorIndex();
-	const EoInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -182,7 +182,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	}
 	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
 }
-bool EoDbLine::Is(EoUInt16 type) const {
+bool EoDbLine::Is(OdUInt16 type) const {
 	return type == EoDb::kLinePrimitive;
 }
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
@@ -276,7 +276,7 @@ OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& p
 
 	double Aperture = sm_SelectApertureSize;
 
-	for (EoUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
+	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.);
 
 		view->ModelViewTransformPoint(pt);
@@ -364,11 +364,11 @@ bool EoDbLine::Write(EoDbFile& file) const {
 	file.WritePoint3d(m_Line.endPoint());
 	return true;
 }
-void EoDbLine::Write(CFile& file, EoByte* buffer) const {
+void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
-	*((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kLinePrimitive);
-	buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = EoSbyte(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kLinePrimitive);
+	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) &buffer[8])->Convert(m_Line.startPoint());
@@ -386,21 +386,21 @@ EoDbLine* EoDbLine::ConstructFrom(EoDbFile& file) {
 	LinePrimitive->SetEndPoint(file.ReadPoint3d());
 	return (LinePrimitive);
 }
-EoDbLine* EoDbLine::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
+EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbLine* LinePrimitive = new EoDbLine();
-	EoInt16 ColorIndex;
-	EoInt16 LinetypeIndex;
+	OdInt16 ColorIndex;
+	OdInt16 LinetypeIndex;
 	OdGePoint3d StartPoint;
 	OdGePoint3d EndPoint;
 	if (versionNumber == 1) {
-		ColorIndex = EoInt16(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = EoInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
 		StartPoint = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert() * 1.e-3;
 		EndPoint = ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert() * 1.e-3;
 	}
 	else {
-		ColorIndex = EoInt16(primitiveBuffer[6]);
-		LinetypeIndex = EoInt16(primitiveBuffer[7]);
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		LinetypeIndex = OdInt16(primitiveBuffer[7]);
 		StartPoint = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert();
 		EndPoint = ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert();
 	}

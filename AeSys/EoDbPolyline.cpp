@@ -112,8 +112,8 @@ EoDbPrimitive* EoDbPolyline::Clone(OdDbDatabasePtr database) const {
 	return (EoDbPolyline::Create(*this, database));
 }
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
-	const EoInt16 ColorIndex = LogicalColorIndex();
-	const EoInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -233,7 +233,7 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 	GetPointAt(sm_PivotVertex, PivotPoint);
 	return (PivotPoint);
 }
-bool EoDbPolyline::Is(EoUInt16 type) const {
+bool EoDbPolyline::Is(OdUInt16 type) const {
 	return type == EoDb::kPolylinePrimitive;
 }
 bool EoDbPolyline::IsClosed() const {
@@ -438,7 +438,7 @@ bool EoDbPolyline::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kPolylinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
-	file.WriteUInt16(EoUInt16(m_Vertices.size()));
+	file.WriteUInt16(OdUInt16(m_Vertices.size()));
 
 	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		OdGePoint3d Point;
@@ -448,7 +448,7 @@ bool EoDbPolyline::Write(EoDbFile& file) const {
 	return true;
 }
 /// <remarks> Job (.jb1) files did not have a polyline primitive</remarks>
-void EoDbPolyline::Write(CFile& file, EoByte* buffer) const {
+void EoDbPolyline::Write(CFile& file, OdUInt8* buffer) const {
 };
 
 size_t EoDbPolyline::SwingVertex() const {
@@ -477,13 +477,13 @@ EoDbPolyline* EoDbPolyline::ConstructFrom(EoDbFile& file) {
 	EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
 	PolylinePrimitive->SetColorIndex(file.ReadInt16());
 	PolylinePrimitive->SetLinetypeIndex(file.ReadInt16());
-	const EoUInt16 NumberOfPoints = file.ReadUInt16();
+	const OdUInt16 NumberOfPoints = file.ReadUInt16();
 
 	//OdGePoint3dArray Points;
 	//Points.setLogicalLength(NumberOfPoints);
 
 	OdGePoint3d Point;
-	for (EoUInt16 n = 0; n < NumberOfPoints; n++) {
+	for (OdUInt16 n = 0; n < NumberOfPoints; n++) {
 		Point = file.ReadPoint3d();
 		PolylinePrimitive->AppendVertex(Point.convert2d());
 	//	Points[n] = Point;

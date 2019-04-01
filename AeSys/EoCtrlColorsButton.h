@@ -6,8 +6,8 @@ class EoCtrlColorsButton : public CMFCButton {
 	DECLARE_DYNAMIC(EoCtrlColorsButton)
 
 	static COLORREF* m_Palette;
-	static EoUInt16 m_CurrentIndex;
-	static EoUInt16 m_SelectedIndex;
+	static OdUInt16 m_CurrentIndex;
+	static OdUInt16 m_SelectedIndex;
 
 	enum Layouts {
 		SimpleSingleRow,
@@ -18,13 +18,13 @@ class EoCtrlColorsButton : public CMFCButton {
 	CSize m_CellSize;
 	CSize m_CellSpacing;
 	CSize m_Margins;
-	EoUInt16 m_BeginIndex;
-	EoUInt16 m_EndIndex;
-	EoUInt16 m_SubItem;
+	OdUInt16 m_BeginIndex;
+	OdUInt16 m_EndIndex;
+	OdUInt16 m_SubItem;
 
-	void DrawCell(CDC* deviceContext, EoUInt16 index, COLORREF color);
-	EoUInt16 SubItemByPoint(const CPoint& point);
-	void SubItemRectangleByIndex(EoUInt16 index, CRect& rectangle);
+	void DrawCell(CDC* deviceContext, OdUInt16 index, COLORREF color);
+	OdUInt16 SubItemByPoint(const CPoint& point);
+	void SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle);
 
 public:
 
@@ -32,7 +32,7 @@ public:
 
 	virtual ~EoCtrlColorsButton();
 
-	static void SetCurrentIndex(const EoUInt16 index) {
+	static void SetCurrentIndex(const OdUInt16 index) {
 		m_CurrentIndex = index;
 	}
 	static void SetPalette(COLORREF* palette) {
@@ -42,7 +42,7 @@ public:
 		m_Layout = layout;
 		m_CellSize = cellSize;
 	}
-	void SetSequenceRange(const EoUInt16 beginIndex, const EoUInt16 endIndex) {
+	void SetSequenceRange(const OdUInt16 beginIndex, const OdUInt16 endIndex) {
 		m_BeginIndex = beginIndex;
 		m_EndIndex = endIndex;
 	}

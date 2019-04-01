@@ -49,7 +49,7 @@ void EoDbGroup::BreakPolylines() {
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
-			for (EoUInt16 w = 0; w < Points.size() - 1; w++) {
+			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
 				Line = EoDbLine::Create(Points[w], Points[w + 1]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
@@ -188,7 +188,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 	}
 	return 0;
 }
-int EoDbGroup::GetLinetypeIndexRefCount(EoInt16 linetypeIndex) {
+int EoDbGroup::GetLinetypeIndexRefCount(OdInt16 linetypeIndex) {
 	int Count = 0;
 
 	POSITION Position = GetHeadPosition();
@@ -235,14 +235,14 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 bool EoDbGroup::IsPersistent() const {
 	return m_Document != 0;
 }
-void EoDbGroup::ModifyColorIndex(EoInt16 colorIndex) {
+void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbPrimitive* Primitive = GetNext(Position);
 		Primitive->SetColorIndex(colorIndex);
 	}
 }
-void EoDbGroup::ModifyLinetypeIndex(EoInt16 linetypeIndex) {
+void EoDbGroup::ModifyLinetypeIndex(OdInt16 linetypeIndex) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbPrimitive* Primitive = GetNext(Position);
@@ -258,12 +258,12 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCel
 		}
 	}
 }
-void EoDbGroup::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) {
+void EoDbGroup::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbPrimitive* Primitive = GetNext(Position);
 
-		for (EoUInt16 w = 0; w < wCols; w++) {
+		for (OdUInt16 w = 0; w < wCols; w++) {
 			if (Primitive->ColorIndex() == pCol[w]) {
 				Primitive->SetColorIndex(pColNew[w]);
 				break;
@@ -423,18 +423,18 @@ void EoDbGroup::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 void EoDbGroup::Write(EoDbFile& file) {
-	file.WriteUInt16(EoUInt16(GetCount()));
+	file.WriteUInt16(OdUInt16(GetCount()));
 
 	for (POSITION Position = GetHeadPosition(); Position != 0;) {
 		const EoDbPrimitive* Primitive = GetNext(Position);
 		Primitive->Write(file);
 	}
 }
-void EoDbGroup::Write(CFile& file, EoByte* buffer) {
+void EoDbGroup::Write(CFile& file, OdUInt8* buffer) {
 	// group flags
 	buffer[0] = 0;
 	// number of primitives in group
-	*((EoInt16*) &buffer[1]) = EoInt16(GetCount());
+	*((OdInt16*) &buffer[1]) = OdInt16(GetCount());
 
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {

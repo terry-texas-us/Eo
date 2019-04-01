@@ -210,13 +210,13 @@ private:
 	CPalette m_BackgroundImagePalette;
 	EoDbPrimitive* m_EngagedPrimitive;
 	EoDbGroup* m_EngagedGroup;
-	EoUInt16 m_OpHighlighted;
+	OdUInt16 m_OpHighlighted;
 	EoGsViewTransform m_OverviewViewTransform;
 	bool m_Plot;
 	float m_PlotScaleFactor;
 	EoDbGroup m_PreviewGroup;
 	EoGsViewTransform m_PreviousViewTransform;
-	EoUInt16 m_PreviousOp;
+	OdUInt16 m_PreviousOp;
 	OdGePoint3d m_PreviousPnt;
 	double m_SelectApertureSize;
 	bool m_ViewBackgroundImage;
@@ -335,7 +335,7 @@ public:
 	afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-	afx_msg BOOL OnMouseWheel(UINT nFlags, EoInt16 zDelta, CPoint point);
+	afx_msg BOOL OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point);
 	afx_msg void OnPaint();
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
@@ -365,7 +365,7 @@ public:
 	EoDbGroup* SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance, EoDbEllipse*& circle);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point, EoDbLine*& line);
-	EoDbGroup* SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, EoInt16 pointColor, EoInt16 pointDisplayMode, EoDbPoint*& primitve);
+	EoDbGroup* SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor, OdInt16 pointDisplayMode, EoDbPoint*& primitve);
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
@@ -463,8 +463,8 @@ public: // Group and Primitive operations
 	void InitializeGroupAndPrimitiveEdit();
 	void DoEditGroupCopy();
 	void DoEditGroupEscape();
-	void DoEditGroupTransform(EoUInt16 operation);
-	void DoEditPrimitiveTransform(EoUInt16 operation);
+	void DoEditGroupTransform(OdUInt16 operation);
+	void DoEditPrimitiveTransform(OdUInt16 operation);
 	void DoEditPrimitiveCopy();
 	void DoEditPrimitiveEscape();
 	void PreviewPrimitiveEdit();
@@ -762,7 +762,7 @@ public:
 	/// <summary>Generates rise or drop fitting.</summary>
 	/// <param name="riseDropIndicator">	rise or drop indicator; 1 rise, 2 drop</param>
 	/// <param name="section">horizontal section width and depth</param>
-	void GenerateRiseDrop(EoUInt16 riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group);
+	void GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group);
 	/// <summary>Generates rectangular section using a set of parallel lines.</summary>
 	/// <param name="section">width and depth of section</param>
 	/// <param name="group"></param>
@@ -858,14 +858,14 @@ public:
 	afx_msg void OnPowerModeReturn();
 	afx_msg void OnPowerModeEscape();
 
-	void GeneratePowerConductorSymbol(EoUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
+	void GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
 	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
-	void DoPowerModeConductor(EoUInt16 conductorType);
+	void DoPowerModeConductor(OdUInt16 conductorType);
 
 public: // Status & Mode Line
 	void ModeLineDisplay();
-	EoUInt16 ModeLineHighlightOp(EoUInt16 op);
-	void ModeLineUnhighlightOp(EoUInt16& op);
+	OdUInt16 ModeLineHighlightOp(OdUInt16 op);
+	void ModeLineUnhighlightOp(OdUInt16& op);
 
 	CMFCStatusBar& GetStatusBar(void) const;
 

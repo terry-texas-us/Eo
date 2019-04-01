@@ -25,7 +25,7 @@ public:
 	};
 
 private:
-	EoInt16	m_InteriorStyle;
+	OdInt16	m_InteriorStyle;
 	size_t m_InteriorStyleIndex;
 	OdGePoint3d	m_HatchOrigin;
 	OdGeVector3d m_HatchXAxis;
@@ -57,7 +57,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const {return false;}
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -67,7 +67,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods
 	int Append(const OdGePoint3d& vertex);
@@ -85,7 +85,7 @@ public: // Methods
 	void SetHatchXAxis(const OdGeVector3d& xAxis);
 	void SetHatchYAxis(const OdGeVector3d& yAxis);
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
-	void SetInteriorStyle(EoInt16 interiorStyle);
+	void SetInteriorStyle(OdInt16 interiorStyle);
 	void SetInteriorStyleIndex(size_t styleIndex);
 	void SetLoopAt(int loopIndex, OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
@@ -94,7 +94,7 @@ public: // Methods
 
 public:
 	static EoDbHatch* ConstructFrom(EoDbFile& file);
-	static EoDbHatch* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
+	static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 	static EoDbHatch* Create(OdDbDatabasePtr database);
 	static EoDbHatch* Create(const EoDbHatch& other, OdDbDatabasePtr database);
 

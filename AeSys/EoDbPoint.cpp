@@ -22,7 +22,7 @@ EoDbPoint::EoDbPoint(const EoDbPoint& other) {
 	m_NumberOfDatums = other.m_NumberOfDatums;
 	m_Data = (m_NumberOfDatums == 0) ? 0 : new double[m_NumberOfDatums];
 
-	for (EoUInt16 n = 0; n < m_NumberOfDatums; n++) {
+	for (OdUInt16 n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
 	}
 }
@@ -45,7 +45,7 @@ const EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 
 		m_Data = (m_NumberOfDatums == 0) ? 0 : new double[m_NumberOfDatums];
 	}
-	for (EoUInt16 n = 0; n < m_NumberOfDatums; n++) {
+	for (OdUInt16 n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
 	}
 	return (*this);
@@ -68,7 +68,7 @@ EoDbPrimitive* EoDbPoint::Clone(OdDbDatabasePtr database) const {
 	return (EoDbPoint::Create(*this, database));
 }
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
-	const EoInt16 ColorIndex = LogicalColorIndex();
+	const OdInt16 ColorIndex = LogicalColorIndex();
 
 	const COLORREF HotColor = theApp.GetHotColor(ColorIndex);
 
@@ -153,7 +153,7 @@ void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 OdGePoint3d EoDbPoint::GoToNxtCtrlPt() const {
 	return (m_Position);
 }
-bool EoDbPoint::Is(EoUInt16 type) const {
+bool EoDbPoint::Is(OdUInt16 type) const {
 	return type == EoDb::kPointPrimitive;
 }
 bool EoDbPoint::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -194,20 +194,20 @@ bool EoDbPoint::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point)
 
 	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
 }
-double EoDbPoint::DataAt(EoUInt16 dataIndex) const {
+double EoDbPoint::DataAt(OdUInt16 dataIndex) const {
 	return (m_Data[dataIndex]);
 }
 OdGePoint3d EoDbPoint::Position() const {
 	return (m_Position);
 }
-EoInt16 EoDbPoint::PointDisplayMode() const {
+OdInt16 EoDbPoint::PointDisplayMode() const {
 	return (m_PointDisplayMode);
 }
 void EoDbPoint::ModifyState() {
 	EoDbPrimitive::ModifyState();
 	m_PointDisplayMode = pstate.PointDisplayMode();
 }
-void EoDbPoint::SetData(EoUInt16 numberOfDatums, double* data) {
+void EoDbPoint::SetData(OdUInt16 numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
 		if (m_NumberOfDatums != 0) {
 			delete [] m_Data;
@@ -215,7 +215,7 @@ void EoDbPoint::SetData(EoUInt16 numberOfDatums, double* data) {
 		m_NumberOfDatums = numberOfDatums;
 		m_Data = (m_NumberOfDatums == 0) ? 0 : new double[m_NumberOfDatums];
 	}
-	for (EoUInt16 w = 0; w < m_NumberOfDatums; w++) {
+	for (OdUInt16 w = 0; w < m_NumberOfDatums; w++) {
 		m_Data[w] = data[w];
 	}
 }
@@ -226,7 +226,7 @@ void EoDbPoint::SetPosition(const OdGePoint3d& position) {
 	}
 	m_Position = position;
 }
-void EoDbPoint::SetPointDisplayMode(EoInt16 displayMode) {
+void EoDbPoint::SetPointDisplayMode(OdInt16 displayMode) {
 	m_PointDisplayMode = displayMode;
 }
 void EoDbPoint::TransformBy(const EoGeMatrix3d& transformMatrix) {
@@ -244,16 +244,16 @@ bool EoDbPoint::Write(EoDbFile& file) const {
 	file.WritePoint3d(m_Position);
 
 	file.WriteUInt16(m_NumberOfDatums);
-	for (EoUInt16 w = 0; w < m_NumberOfDatums; w++)
+	for (OdUInt16 w = 0; w < m_NumberOfDatums; w++)
 		file.WriteDouble(m_Data[w]);
 
 	return true;
 }
-void EoDbPoint::Write(CFile& file, EoByte* buffer) const {
+void EoDbPoint::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
-	*((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kPointPrimitive);
-	buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = EoSbyte(m_PointDisplayMode);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kPointPrimitive);
+	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = OdInt8(m_PointDisplayMode);
 
 	((EoVaxPoint3d*) &buffer[8])->Convert(m_Position);
 
@@ -261,7 +261,7 @@ void EoDbPoint::Write(CFile& file, EoByte* buffer) const {
 
 	int i = 20;
 
-	for (EoUInt16 w = 0; w < m_NumberOfDatums; w++) {
+	for (OdUInt16 w = 0; w < m_NumberOfDatums; w++) {
 		((EoVaxFloat*) &buffer[i])->Convert(m_Data[w]);
 		i += sizeof(EoVaxFloat);
 	}
@@ -269,14 +269,14 @@ void EoDbPoint::Write(CFile& file, EoByte* buffer) const {
 	file.Write(buffer, 32);
 }
 EoDbPoint* EoDbPoint::ConstructFrom(EoDbFile& file) {
-	const EoInt16 ColorIndex = file.ReadInt16();
-	const EoInt16 PointDisplayMode = file.ReadInt16();
+	const OdInt16 ColorIndex = file.ReadInt16();
+	const OdInt16 PointDisplayMode = file.ReadInt16();
 
 	const OdGePoint3d Position(file.ReadPoint3d());
-	const EoUInt16 NumberOfDatums = file.ReadUInt16();
+	const OdUInt16 NumberOfDatums = file.ReadUInt16();
 
 	double Data[3];
-	for (EoUInt16 n = 0; n < NumberOfDatums; n++) {
+	for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
 		Data[n] = file.ReadDouble();
 	}
 	EoDbPoint* PointPrimitive = new EoDbPoint(Position);
@@ -285,20 +285,20 @@ EoDbPoint* EoDbPoint::ConstructFrom(EoDbFile& file) {
 	PointPrimitive->SetData(NumberOfDatums, Data);
 	return (PointPrimitive);
 }
-EoDbPoint* EoDbPoint::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
+EoDbPoint* EoDbPoint::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbPoint* PointPrimitive = 0;
-	EoInt16 ColorIndex;
-	EoInt16 PointDisplayMode;
+	OdInt16 ColorIndex;
+	OdInt16 PointDisplayMode;
 	OdGePoint3d Position;
 
 	if (versionNumber == 1) {
-		ColorIndex = EoInt16(primitiveBuffer[4] & 0x000f);
-		PointDisplayMode = EoInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		PointDisplayMode = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
 		Position = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert() * 1.e-3;
 	}
 	else {
-		ColorIndex = EoInt16(primitiveBuffer[6]);
-		PointDisplayMode = EoInt16(primitiveBuffer[7]);
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		PointDisplayMode = OdInt16(primitiveBuffer[7]);
 		Position = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert();
 	}
 	double Data[3];

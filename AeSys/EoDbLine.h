@@ -25,7 +25,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -35,7 +35,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods - virtuals
 	/// <summary>Cuts a line a point.</summary>
@@ -62,7 +62,7 @@ public: // Methods
 
 public: // Methods - static
 	static EoDbLine* ConstructFrom(EoDbFile& file);
-	static EoDbLine* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
+	static EoDbLine* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 
 	static EoDbLine* Create(const EoDbLine& line, OdDbDatabasePtr database);
 	static EoDbLine* Create(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);

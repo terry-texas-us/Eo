@@ -10,9 +10,9 @@ class EoDbBlockReference : public EoDbPrimitive {
 	double m_Rotation;
 
 // Multiple inserts - not implemented
-	EoUInt16 m_Columns;
+	OdUInt16 m_Columns;
 	double m_ColumnSpacing;
-	EoUInt16 m_Rows;
+	OdUInt16 m_Rows;
 	double m_RowSpacing;
 
 public: // Constructors and destructor
@@ -35,7 +35,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -47,16 +47,16 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 public: // Methods
 	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
-	EoUInt16 Columns() const;
+	OdUInt16 Columns() const;
 	double ColumnSpacing() const;
 	CString Name() const;
 	OdGeVector3d Normal() const;
 	OdGePoint3d Position() const;
 	double Rotation() const;
-	EoUInt16 Rows() const;
+	OdUInt16 Rows() const;
 	double RowSpacing() const;
 	OdGeScale3d ScaleFactors() const;
 
@@ -65,9 +65,9 @@ public: // Methods
 	void SetPosition(const OdGePoint3d& position);
 	void SetScaleFactors(const OdGeScale3d& scaleFactors);
 	void SetRotation(double rotation);
-	void SetRows(EoUInt16 rows);
+	void SetRows(OdUInt16 rows);
 	void SetRowSpacing(double rowSpacing);
-	void SetColumns(EoUInt16 columns);
+	void SetColumns(OdUInt16 columns);
 	void SetColumnSpacing(double columnSpacing);
 
 public: // Methods - static

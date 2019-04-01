@@ -8,7 +8,7 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
 	m_StateFlags = kIsResident | kIsInternal | kIsActive;
 	const OdDbObjectId LinetypeObjectId = layer->linetypeObjectId();
 }
-EoDbLayer::EoDbLayer(const OdString& name, EoUInt16 stateFlags) {
+EoDbLayer::EoDbLayer(const OdString& name, OdUInt16 stateFlags) {
 	// <Teigha> - need to check this .. no defaults
 	m_TracingFlags = 0;
 	m_StateFlags = stateFlags;
@@ -16,7 +16,7 @@ EoDbLayer::EoDbLayer(const OdString& name, EoUInt16 stateFlags) {
 COLORREF EoDbLayer::Color() const {
 	return ColorPalette[m_Layer->colorIndex()];
 }
-EoInt16 EoDbLayer::ColorIndex() const {
+OdInt16 EoDbLayer::ColorIndex() const {
 	return m_Layer->colorIndex();
 }
 void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
@@ -92,7 +92,7 @@ bool EoDbLayer::IsCurrent() const {
 
 	return ((m_StateFlags & kIsCurrent) == kIsCurrent);
 }
-EoInt16 EoDbLayer::LinetypeIndex() {
+OdInt16 EoDbLayer::LinetypeIndex() {
 	OdDbLinetypeTableRecordPtr Linetype = m_Layer->linetypeObjectId().safeOpenObject();
 	return EoDbLinetypeTable::LegacyLinetypeIndex(Linetype->getName());
 }
@@ -175,7 +175,7 @@ void EoDbLayer::MakeCurrent() {
 OdString EoDbLayer::Name() const {
 	return m_Layer->getName();
 }
-void EoDbLayer::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) {
+void EoDbLayer::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
 	for (int i = 0; i < wCols; i++) {
 		if (m_Layer->colorIndex() == pCol[i]) {
 			m_Layer->setColorIndex(pColNew[i]);
@@ -184,7 +184,7 @@ void EoDbLayer::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) 
 	}
 	EoDbGroupList::PenTranslation(wCols, pColNew, pCol);
 }
-void EoDbLayer::SetColorIndex(EoInt16 colorIndex) {
+void EoDbLayer::SetColorIndex(OdInt16 colorIndex) {
 	m_Layer->upgradeOpen();
 	m_Layer->setColorIndex(colorIndex);
 	m_Layer->downgradeOpen();
@@ -199,7 +199,7 @@ void EoDbLayer::SetName(const OdString& name) {
 	m_Layer->setName(name);
 	m_Layer->downgradeOpen();
 }
-void EoDbLayer::SetStateFlags(EoUInt16 flags) {
+void EoDbLayer::SetStateFlags(OdUInt16 flags) {
 	m_StateFlags = flags;
 }
 void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
@@ -207,7 +207,7 @@ void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
 	m_Layer->setTransparency(transparency);
 	m_Layer->downgradeOpen();
 }
-EoUInt16 EoDbLayer::StateFlags() const {
+OdUInt16 EoDbLayer::StateFlags() const {
 	return m_StateFlags;
 }
 

@@ -162,7 +162,7 @@ void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) con
 OdGePoint3d	EoDbBlockReference::GoToNxtCtrlPt() const {
 	return m_Position;
 }
-bool EoDbBlockReference::Is(EoUInt16 type) const {
+bool EoDbBlockReference::Is(OdUInt16 type) const {
 	return type == EoDb::kGroupReferencePrimitive;
 }
 bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -298,10 +298,10 @@ bool EoDbBlockReference::Write(EoDbFile& file) const {
 
 	return true;
 }
-void EoDbBlockReference::Write(CFile& file, EoByte* buffer) const {
+void EoDbBlockReference::Write(CFile& file, OdUInt8* buffer) const {
 }
 
-EoUInt16 EoDbBlockReference::Columns() const {
+OdUInt16 EoDbBlockReference::Columns() const {
 	return m_Columns;
 }
 double EoDbBlockReference::ColumnSpacing() const {
@@ -322,7 +322,7 @@ OdGePoint3d EoDbBlockReference::Position() const {
 OdGeVector3d EoDbBlockReference::Normal() const {
 	return m_Normal;
 }
-EoUInt16 EoDbBlockReference::Rows() const {
+OdUInt16 EoDbBlockReference::Rows() const {
 	return m_Rows;
 }
 double EoDbBlockReference::RowSpacing() const {
@@ -351,13 +351,13 @@ void EoDbBlockReference::SetScaleFactors(const OdGeScale3d& scaleFactors) {
 void EoDbBlockReference::SetRotation(double rotation) {
 	m_Rotation = rotation;
 }
-void EoDbBlockReference::SetRows(EoUInt16 rows) {
+void EoDbBlockReference::SetRows(OdUInt16 rows) {
 	m_Rows = rows;
 }
 void EoDbBlockReference::SetRowSpacing(double rowSpacing) {
 	m_RowSpacing = rowSpacing;
 }
-void EoDbBlockReference::SetColumns(EoUInt16 columns) {
+void EoDbBlockReference::SetColumns(OdUInt16 columns) {
 	m_Columns = columns;
 }
 void EoDbBlockReference::SetColumnSpacing(double columnSpacing) {

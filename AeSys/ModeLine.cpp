@@ -53,7 +53,7 @@ void AeSysView::ModeLineDisplay() {
 	}
 	ReleaseDC(DeviceContext);
 }
-EoUInt16 AeSysView::ModeLineHighlightOp(EoUInt16 command) {
+OdUInt16 AeSysView::ModeLineHighlightOp(OdUInt16 command) {
 	ModeLineUnhighlightOp(m_OpHighlighted);
 
 	m_OpHighlighted = command;
@@ -97,7 +97,7 @@ EoUInt16 AeSysView::ModeLineHighlightOp(EoUInt16 command) {
 	}
 	return (command);
 }
-void AeSysView::ModeLineUnhighlightOp(EoUInt16& command) {
+void AeSysView::ModeLineUnhighlightOp(OdUInt16& command) {
 	if (command == 0 || m_OpHighlighted == 0) {
 		return;
 	}

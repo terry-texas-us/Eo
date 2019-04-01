@@ -41,7 +41,7 @@ void AeSysView::DoEditPrimitiveEscape() {
 		theApp.LoadModeResources(theApp.PrimaryMode());
 	}
 }
-void AeSysView::DoEditPrimitiveTransform(EoUInt16 operation) {
+void AeSysView::DoEditPrimitiveTransform(OdUInt16 operation) {
 	if (m_SubModeEditPrimitive != 0) {
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(- m_SubModeEditBeginPoint.asVector());

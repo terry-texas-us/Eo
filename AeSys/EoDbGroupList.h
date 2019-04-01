@@ -24,16 +24,16 @@ public: // Methods
 	int GetBlockReferenceCount(const CString& name);
 	/// <summary>Determines the extent of all groups in list.</summary>
 	void GetExtents__(AeSysView* view, OdGeExtents3d& extents);
-	int GetLinetypeIndexRefCount(EoInt16 linetypeIndex);
+	int GetLinetypeIndexRefCount(OdInt16 linetypeIndex);
 	void ModifyNotes(EoDbFontDefinition& cd, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
-	void ModifyColorIndex(EoInt16 colorIndex);
-	void ModifyLinetypeIndex(EoInt16 linetypeIndex);
-	void PenTranslation(EoUInt16, EoInt16*, EoInt16*);
+	void ModifyColorIndex(OdInt16 colorIndex);
+	void ModifyLinetypeIndex(OdInt16 linetypeIndex);
+	void PenTranslation(OdUInt16, OdInt16*, OdInt16*);
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	int RemoveEmptyGroups();
 	POSITION Remove(EoDbGroup* group);
 	EoDbGroup* SelectGroupBy(const OdGePoint3d& point);
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
-	void Write(CFile& file, EoByte* buffer);
+	void Write(CFile& file, OdUInt8* buffer);
 };

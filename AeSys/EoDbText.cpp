@@ -89,10 +89,10 @@ EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr database) const {
 }
 
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
-    const EoInt16 ColorIndex = LogicalColorIndex();
+    const OdInt16 ColorIndex = LogicalColorIndex();
     pstate.SetColorIndex(deviceContext, ColorIndex);
 
-    const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+    const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
     pstate.SetLinetypeIndex(deviceContext, 1);
 
     DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
@@ -151,7 +151,7 @@ void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 
     text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0., BoundingBox);
 
-    for (EoUInt16 w = 0; w < BoundingBox.size(); w++) {
+    for (OdUInt16 w = 0; w < BoundingBox.size(); w++) {
         extents.addPoint(BoundingBox[w]);
     }
 }
@@ -160,7 +160,7 @@ OdGePoint3d	EoDbText::GoToNxtCtrlPt() const {
     return (m_ReferenceSystem.Origin());
 }
 
-bool EoDbText::Is(EoUInt16 type) const {
+bool EoDbText::Is(OdUInt16 type) const {
     return type == EoDb::kTextPrimitive;
 }
 
@@ -362,35 +362,35 @@ bool EoDbText::Write(EoDbFile& file) const {
     return true;
 }
 
-void EoDbText::Write(CFile& file, EoByte* buffer) const {
-    EoUInt16 NumberOfCharacters = EoUInt16(m_strText.GetLength());
+void EoDbText::Write(CFile& file, OdUInt8* buffer) const {
+    OdUInt16 NumberOfCharacters = OdUInt16(m_strText.GetLength());
 
-    buffer[3] = EoSbyte((86 + NumberOfCharacters) / 32);
-    *((EoUInt16*) &buffer[4]) = EoUInt16(EoDb::kTextPrimitive);
-    buffer[6] = EoSbyte(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-    buffer[7] = EoSbyte(m_FontDefinition.Precision());
-    *((EoInt16*) &buffer[8]) = 0;
+    buffer[3] = OdInt8((86 + NumberOfCharacters) / 32);
+    *((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kTextPrimitive);
+    buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+    buffer[7] = OdInt8(m_FontDefinition.Precision());
+    *((OdInt16*) &buffer[8]) = 0;
     ((EoVaxFloat*) &buffer[10])->Convert(m_FontDefinition.CharacterSpacing());
-    buffer[14] = EoSbyte(m_FontDefinition.Path());
-    buffer[15] = EoSbyte(m_FontDefinition.HorizontalAlignment());
-    buffer[16] = EoSbyte(m_FontDefinition.VerticalAlignment());
+    buffer[14] = OdInt8(m_FontDefinition.Path());
+    buffer[15] = OdInt8(m_FontDefinition.HorizontalAlignment());
+    buffer[16] = OdInt8(m_FontDefinition.VerticalAlignment());
 
     EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
     ((EoVaxPoint3d*) &buffer[17])->Convert(ReferenceSystem.Origin());
     ((EoVaxVector3d*) &buffer[29])->Convert(ReferenceSystem.XDirection());
     ((EoVaxVector3d*) &buffer[41])->Convert(ReferenceSystem.YDirection());
 
-    *((EoUInt16*) &buffer[53]) = NumberOfCharacters;
+    *((OdUInt16*) &buffer[53]) = NumberOfCharacters;
     size_t BufferOffset = 55;
     for (size_t CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
-        buffer[BufferOffset++] = EoByte(m_strText[CharacterIndex]);
+        buffer[BufferOffset++] = OdUInt8(m_strText[CharacterIndex]);
     }
     file.Write(buffer, buffer[3] * 32);
 }
 
 EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
-    const EoInt16 ColorIndex = file.ReadInt16();
-    /* EoInt16 LinetypeIndex = */ file.ReadInt16();
+    const OdInt16 ColorIndex = file.ReadInt16();
+    /* OdInt16 LinetypeIndex = */ file.ReadInt16();
     EoDbFontDefinition FontDefinition;
     FontDefinition.Read(file);
     EoGeReferenceSystem ReferenceSystem;
@@ -404,8 +404,8 @@ EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
     return (Text);
 }
 
-EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
-    EoInt16 ColorIndex;
+EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
+    OdInt16 ColorIndex;
     EoDbFontDefinition FontDefinition;
     EoGeReferenceSystem ReferenceSystem;
     CString Text;
@@ -414,7 +414,7 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
     FontDefinition.SetFontName(L"Simplex.psf");
 
     if (versionNumber == 1) {
-        ColorIndex = EoInt16(primitiveBuffer[4] & 0x000f);
+        ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
         FontDefinition.SetCharacterSpacing(((EoVaxFloat*) &primitiveBuffer[36])->Convert());
         FontDefinition.SetCharacterSpacing(min(max(FontDefinition.CharacterSpacing(), 0.), 4.));
 
@@ -490,7 +490,7 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
             Text = &primitiveBuffer[44];
         }
     } else {
-        ColorIndex = EoInt16(primitiveBuffer[6]);
+        ColorIndex = OdInt16(primitiveBuffer[6]);
         FontDefinition.SetCharacterSpacing(((EoVaxFloat*) &primitiveBuffer[10])->Convert());
         switch (primitiveBuffer[14]) {
         case 3:
@@ -529,7 +529,7 @@ EoDbText* EoDbText::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
         ReferenceSystem.SetXDirection(((EoVaxVector3d*) &primitiveBuffer[29])->Convert());
         ReferenceSystem.SetYDirection(((EoVaxVector3d*) &primitiveBuffer[41])->Convert());
 
-        EoInt16 TextLength = *((EoInt16*) &primitiveBuffer[53]);
+        OdInt16 TextLength = *((OdInt16*) &primitiveBuffer[53]);
         primitiveBuffer[55 + TextLength] = '\0';
         Text = CString((LPCSTR) &primitiveBuffer[55]);
     }

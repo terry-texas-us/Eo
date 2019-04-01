@@ -92,11 +92,6 @@
 #include "DbViewportTableRecord.h"
 #include "LyLayerFilter.h"
 
-typedef unsigned char EoByte;
-typedef char EoSbyte;
-typedef short EoInt16;
-typedef unsigned short EoUInt16;
-
 UINT AFXAPI HashKey(CString& str);
 
 const double PI = 3.14159265358979323846;

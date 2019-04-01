@@ -273,7 +273,7 @@ private:
 	CString m_ShadowFolderPath;
 	char* m_SimplexStrokeFont;
 	CMultiDocTemplate* m_TracingDocTemplate;
-	EoInt16 m_TrapHighlightColor;
+	OdInt16 m_TrapHighlightColor;
 	bool m_TrapHighlighted;
 	bool m_TrapModeAddGroups;
 	Units m_Units;
@@ -324,7 +324,7 @@ public:
 	void FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
 	OdGePoint3d GetCursorPosition();
 	static EoDb::FileTypes GetFileTypeFromPath(const OdString& pathName);
-	COLORREF GetHotColor(EoInt16 colorIndex);
+	COLORREF GetHotColor(OdInt16 colorIndex);
 	HINSTANCE GetInstance();
 	HWND GetSafeHwnd();
 	HMENU GetAeSysMenu();
@@ -351,7 +351,7 @@ public:
 	bool ModeInformationOverView() const;
 	double ParseLength(LPWSTR lengthAsString);
 	double ParseLength(Units units, LPWSTR);
-	double PenWidthsGet(EoInt16 colorIndex);
+	double PenWidthsGet(OdInt16 colorIndex);
 	virtual void PreLoadState();
 	int PrimaryMode() const;
 	void ReleaseSimplexStrokeFont();
@@ -365,7 +365,7 @@ public:
 	void SetUnits(Units units);
 	CString ShadowFolderPath() const;
 	char* SimplexStrokeFont();
-	EoInt16 TrapHighlightColor() const;
+	OdInt16 TrapHighlightColor() const;
 	void UninitializeTeigha();
 	void UpdateMDITabs(BOOL resetMDIChild);
 

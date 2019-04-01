@@ -40,7 +40,7 @@ void AeSysView::DoEditGroupEscape() {
 		theApp.LoadModeResources(theApp.PrimaryMode());
 	}
 }
-void AeSysView::DoEditGroupTransform(EoUInt16 operation) {
+void AeSysView::DoEditGroupTransform(OdUInt16 operation) {
 	AeSysDoc* Document = GetDocument();
 	if (m_SubModeEditGroup != 0) {
 		EoGeMatrix3d TransformMatrix;

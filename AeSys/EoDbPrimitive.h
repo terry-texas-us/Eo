@@ -11,30 +11,30 @@ class EoDbGroup;
 
 class EoDbPrimitive : public CObject {
 public:
-	static const EoUInt16 BUFFER_SIZE = 2048;
+	static const OdUInt16 BUFFER_SIZE = 2048;
 
-	static const EoInt16 COLORINDEX_BYBLOCK = 0x0000;
-	static const EoInt16 COLORINDEX_BYLAYER = 256;
-	static const EoInt16 LINETYPE_BYBLOCK = 32766;
-	static const EoInt16 LINETYPE_BYLAYER = 32767;
+	static const OdInt16 COLORINDEX_BYBLOCK = 0x0000;
+	static const OdInt16 COLORINDEX_BYLAYER = 256;
+	static const OdInt16 LINETYPE_BYBLOCK = 32766;
+	static const OdInt16 LINETYPE_BYLAYER = 32767;
 
 protected:
 	OdDbObjectId m_LayerId;
-	EoInt16	m_ColorIndex;
-	EoInt16	m_LinetypeIndex;
+	OdInt16	m_ColorIndex;
+	OdInt16	m_LinetypeIndex;
 	OdDbObjectId m_EntityObjectId;
 
-	static	EoInt16	sm_LayerColorIndex;
-	static	EoInt16	sm_LayerLinetypeIndex;
-	static	EoInt16	sm_HighlightColorIndex;
-	static	EoInt16	sm_HighlightLinetypeIndex;
+	static	OdInt16	sm_LayerColorIndex;
+	static	OdInt16	sm_LayerLinetypeIndex;
+	static	OdInt16	sm_HighlightColorIndex;
+	static	OdInt16	sm_HighlightLinetypeIndex;
 	static	size_t sm_ControlPointIndex;
 	static	double 	sm_RelationshipOfPoint;
 	static	double sm_SelectApertureSize;
 
 public: // Constructors and destructor
 	EoDbPrimitive();
-	EoDbPrimitive(EoInt16 colorIndex, EoInt16 linetypeIndex);
+	EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex);
 	virtual ~EoDbPrimitive();
 
 public: // Methods - absolute virtuals
@@ -49,7 +49,7 @@ public: // Methods - absolute virtuals
 	virtual OdGePoint3d GetCtrlPt() const = 0;
 	virtual void GetExtents(AeSysView* view, OdGeExtents3d& extents) const = 0;
 	virtual OdGePoint3d GoToNxtCtrlPt() const = 0;
-	virtual bool Is(EoUInt16 type) const = 0;
+	virtual bool Is(OdUInt16 type) const = 0;
 	virtual bool IsEqualTo(EoDbPrimitive* primitive) const = 0;
 	/// <summary>Tests whether a line is wholly or partially within the current view volume.</summary>
 	virtual bool IsInView(AeSysView* view) const = 0;
@@ -63,7 +63,7 @@ public: // Methods - absolute virtuals
 	virtual void TransformBy(const EoGeMatrix3d& transformMatrix) = 0;
 	virtual void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) = 0;
 	virtual bool Write(EoDbFile& file) const = 0;
-	virtual void Write(CFile& file, EoByte* buffer) const = 0;
+	virtual void Write(CFile& file, OdUInt8* buffer) const = 0;
 
 public: // Methods - virtuals
 	virtual void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
@@ -79,31 +79,31 @@ public: // Methods - virtuals
 	virtual bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
-	EoInt16 ColorIndex() const {return m_ColorIndex;}
+	OdInt16 ColorIndex() const {return m_ColorIndex;}
 	OdDbObjectId EntityObjectId() const {return m_EntityObjectId;}
 	CString FormatColorIndex() const;
 	CString FormatLinetypeIndex() const;
-	EoInt16 LinetypeIndex() const {return m_LinetypeIndex;}
-	EoInt16 LogicalColorIndex() const;
-	EoInt16 LogicalLinetypeIndex() const;
+	OdInt16 LinetypeIndex() const {return m_LinetypeIndex;}
+	OdInt16 LogicalColorIndex() const;
+	OdInt16 LogicalLinetypeIndex() const;
 
-	void SetColorIndex(EoInt16 colorIndex);
-	void SetColorIndex_(EoInt16 colorIndex) {m_ColorIndex = colorIndex;}
+	void SetColorIndex(OdInt16 colorIndex);
+	void SetColorIndex_(OdInt16 colorIndex) {m_ColorIndex = colorIndex;}
 	void SetEntityObjectId(OdDbObjectId entityObjectId) {m_EntityObjectId = entityObjectId;}
-	void SetLinetypeIndex(EoInt16 linetypeIndex);
-	void SetLinetypeIndex_(EoInt16 linetypeIndex) {m_LinetypeIndex = linetypeIndex;}
+	void SetLinetypeIndex(OdInt16 linetypeIndex);
+	void SetLinetypeIndex_(OdInt16 linetypeIndex) {m_LinetypeIndex = linetypeIndex;}
 
 public: // Methods - static
 	static size_t ControlPointIndex();
-	static EoInt16 HighlightColorIndex();
-	static EoInt16 HighlightLinetypeIndex();
+	static OdInt16 HighlightColorIndex();
+	static OdInt16 HighlightLinetypeIndex();
 	static bool IsSupportedLinetype(int linetype);
-	static EoInt16 LayerColorIndex();
-	static EoInt16 LayerLinetypeIndex();
+	static OdInt16 LayerColorIndex();
+	static OdInt16 LayerLinetypeIndex();
 	static double RelationshipOfPoint();
-	static void SetHighlightColorIndex(EoInt16 colorIndex);
-	static void SetHighlightLinetypeIndex(EoInt16 linetypeIndex);
-	static void SetLayerColorIndex(EoInt16 colorIndex);
-	static void SetLayerLinetypeIndex(EoInt16 linetypeIndex);
-	static OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(EoInt16 linetypeIndex);
+	static void SetHighlightColorIndex(OdInt16 colorIndex);
+	static void SetHighlightLinetypeIndex(OdInt16 linetypeIndex);
+	static void SetLayerColorIndex(OdInt16 colorIndex);
+	static void SetLayerLinetypeIndex(OdInt16 linetypeIndex);
+	static OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex);
 };

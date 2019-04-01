@@ -3,7 +3,7 @@
 class EoDbJobFile {
 private:
 	int m_Version;
-	EoByte*	m_PrimBuf;
+    OdUInt8* m_PrimBuf;
 
 public:
 	EoDbJobFile();
@@ -16,15 +16,15 @@ public:
 
 	bool GetNextVisibleGroup(CFile& file, EoDbGroup*& group);
 	bool GetNextPrimitive(CFile& file, EoDbPrimitive*& primitve);
-	bool ReadNextPrimitive(CFile &file, EoByte *buffer, EoInt16& primitiveType);
+	bool ReadNextPrimitive(CFile &file, OdUInt8 *buffer, OdInt16& primitiveType);
 
 	int Version();
 	void WriteHeader(CFile& file);
 	void WriteLayer(CFile& file, EoDbLayer* layer);
 	void WriteGroup(CFile& file, EoDbGroup* group);
-	void ConstructPrimitive(EoDbPrimitive *&primitive, EoInt16 PrimitiveType);
+	void ConstructPrimitive(EoDbPrimitive *&primitive, OdInt16 PrimitiveType);
 	void ConstructPrimitiveFromVersion1(EoDbPrimitive *&primitive);
 
-	static bool IsValidPrimitive(EoInt16 primitiveType);
-	static bool IsValidVersion1Primitive(EoInt16 primitiveType);
+	static bool IsValidPrimitive(OdInt16 primitiveType);
+	static bool IsValidVersion1Primitive(OdInt16 primitiveType);
 };

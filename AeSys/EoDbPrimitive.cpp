@@ -2,10 +2,10 @@
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
 
-EoInt16	EoDbPrimitive::sm_LayerColorIndex = 1;
-EoInt16	EoDbPrimitive::sm_LayerLinetypeIndex = 1;
-EoInt16	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
-EoInt16	EoDbPrimitive::sm_HighlightColorIndex = 0;
+OdInt16	EoDbPrimitive::sm_LayerColorIndex = 1;
+OdInt16	EoDbPrimitive::sm_LayerLinetypeIndex = 1;
+OdInt16	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
+OdInt16	EoDbPrimitive::sm_HighlightColorIndex = 0;
 
 size_t EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.;
@@ -14,7 +14,7 @@ double EoDbPrimitive::sm_SelectApertureSize = .02;
 EoDbPrimitive::EoDbPrimitive()
 	: m_LayerId(NULL), m_ColorIndex(1), m_LinetypeIndex(1) {
 }
-EoDbPrimitive::EoDbPrimitive(EoInt16 colorIndex, EoInt16 linetypeIndex)
+EoDbPrimitive::EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex)
 	: m_LayerId(NULL), m_ColorIndex(colorIndex), m_LinetypeIndex(linetypeIndex) {
 }
 EoDbPrimitive::~EoDbPrimitive() {
@@ -65,8 +65,8 @@ CString EoDbPrimitive::FormatLinetypeIndex() const {
 	}
 	return str;
 }
-EoInt16 EoDbPrimitive::LogicalColorIndex() const {
-	EoInt16 ColorIndex = sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex;
+OdInt16 EoDbPrimitive::LogicalColorIndex() const {
+	OdInt16 ColorIndex = sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex;
 	if (ColorIndex == COLORINDEX_BYLAYER) {
 		ColorIndex = sm_LayerColorIndex;
 	}
@@ -75,8 +75,8 @@ EoInt16 EoDbPrimitive::LogicalColorIndex() const {
 	}
 	return (ColorIndex);
 }
-EoInt16 EoDbPrimitive::LogicalLinetypeIndex() const {
-	EoInt16 LinetypeIndex = sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex;
+OdInt16 EoDbPrimitive::LogicalLinetypeIndex() const {
+	OdInt16 LinetypeIndex = sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex;
 	if (LinetypeIndex == LINETYPE_BYLAYER) {
 		LinetypeIndex = sm_LayerLinetypeIndex;
 	}
@@ -95,23 +95,23 @@ size_t EoDbPrimitive::ControlPointIndex() {
 bool EoDbPrimitive::IsSupportedLinetype(int linetype) {
 	return (linetype <= 7 && linetype != 4 && linetype != 5);
 }
-EoInt16 EoDbPrimitive::LayerColorIndex() {
+OdInt16 EoDbPrimitive::LayerColorIndex() {
 	return sm_LayerColorIndex;
 }
-void EoDbPrimitive::SetLayerColorIndex(EoInt16 colorIndex) {
+void EoDbPrimitive::SetLayerColorIndex(OdInt16 colorIndex) {
 	sm_LayerColorIndex = colorIndex;
 }
-EoInt16 EoDbPrimitive::LayerLinetypeIndex() {
+OdInt16 EoDbPrimitive::LayerLinetypeIndex() {
 	return sm_LayerLinetypeIndex;
 }
-void EoDbPrimitive::SetLayerLinetypeIndex(EoInt16 linetypeIndex) {
+void EoDbPrimitive::SetLayerLinetypeIndex(OdInt16 linetypeIndex) {
 	sm_LayerLinetypeIndex = linetypeIndex;
 }
 double EoDbPrimitive::RelationshipOfPoint() {
 	return sm_RelationshipOfPoint;
 }
 
-void EoDbPrimitive::SetColorIndex(EoInt16 colorIndex) {
+void EoDbPrimitive::SetColorIndex(OdInt16 colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -119,7 +119,7 @@ void EoDbPrimitive::SetColorIndex(EoInt16 colorIndex) {
 	}
 }
 
-void EoDbPrimitive::SetLinetypeIndex(EoInt16 linetypeIndex) {
+void EoDbPrimitive::SetLinetypeIndex(OdInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 
 	if (!m_EntityObjectId.isNull()) {
@@ -130,16 +130,16 @@ void EoDbPrimitive::SetLinetypeIndex(EoInt16 linetypeIndex) {
 	}
 }
 
-EoInt16 EoDbPrimitive::HighlightColorIndex() {
+OdInt16 EoDbPrimitive::HighlightColorIndex() {
 	return sm_HighlightColorIndex;
 }
-EoInt16 EoDbPrimitive::HighlightLinetypeIndex() {
+OdInt16 EoDbPrimitive::HighlightLinetypeIndex() {
 	return sm_HighlightLinetypeIndex;
 }
-void EoDbPrimitive::SetHighlightColorIndex(EoInt16 colorIndex) {
+void EoDbPrimitive::SetHighlightColorIndex(OdInt16 colorIndex) {
 	sm_HighlightColorIndex = colorIndex;
 }
-void EoDbPrimitive::SetHighlightLinetypeIndex(EoInt16 linetypeIndex) {
+void EoDbPrimitive::SetHighlightLinetypeIndex(OdInt16 linetypeIndex) {
 	sm_HighlightLinetypeIndex = linetypeIndex;
 }
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
@@ -155,7 +155,7 @@ OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
 	return ArbitraryAxis;
 }
 
-OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(EoInt16 linetypeIndex) {
+OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
 	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
 	OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 

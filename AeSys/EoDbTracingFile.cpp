@@ -19,9 +19,9 @@ bool EoDbTracingFile::ReadLayer(EoDbLayer* layer) {
 	if (ReadUInt16() != kGroupsSection)
 		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kGroupsSection.";
 
-	const EoUInt16 NumberOfGroups = ReadUInt16();
+	const OdUInt16 NumberOfGroups = ReadUInt16();
 
-	for (EoUInt16 n = 0; n < NumberOfGroups; n++) {
+	for (OdUInt16 n = 0; n < NumberOfGroups; n++) {
 		EoDbGroup* Group = ReadGroup();
 		layer->AddTail(Group);
 	}
@@ -50,7 +50,7 @@ void EoDbTracingFile::WriteHeader() {
 void EoDbTracingFile::WriteLayer(EoDbLayer* layer) {
 	WriteUInt16(kGroupsSection);
 
-	WriteUInt16(EoUInt16(layer->GetCount()));
+	WriteUInt16(OdUInt16(layer->GetCount()));
 
 	POSITION Position = layer->GetHeadPosition();
 	while (Position != 0) {

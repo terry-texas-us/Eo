@@ -19,19 +19,19 @@ const CPrimState& CPrimState::operator=(const CPrimState& other) {
 EoDbCharacterCellDefinition CPrimState::CharacterCellDefinition() const {
 	return (m_CharacterCellDefinition);
 }
-EoInt16 CPrimState::ColorIndex() const {
+OdInt16 CPrimState::ColorIndex() const {
 	return (m_ColorIndex);
 }
 EoDbFontDefinition CPrimState::FontDefinition() const {
 	return (m_FontDefinition);
 }
-EoInt16 CPrimState::LinetypeIndex() const {
+OdInt16 CPrimState::LinetypeIndex() const {
 	return (m_LinetypeIndex);
 }
-EoInt16 CPrimState::PointDisplayMode() const {
+OdInt16 CPrimState::PointDisplayMode() const {
 	return m_PointDisplayMode;
 }
-EoInt16 CPrimState::HatchInteriorStyle() const {
+OdInt16 CPrimState::HatchInteriorStyle() const {
 	return (m_HatchInteriorStyle);
 }
 size_t CPrimState::HatchInteriorStyleIndex() const {
@@ -72,7 +72,7 @@ int CPrimState::Save() {
 	// return id to use for restore reference
 	return (iSaveId);
 }
-void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, EoInt16 colorIndex, EoInt16 linetypeIndex) {
+void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, OdInt16 colorIndex, OdInt16 linetypeIndex) {
 	if (EoDbPrimitive::HighlightColorIndex() != 0) {
 		colorIndex = EoDbPrimitive::HighlightColorIndex();
 	}
@@ -100,11 +100,11 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, EoInt16 colorIndex,
 		ManagePenResources(deviceContext, colorIndex, int(LogicalWidth), linetypeIndex);
 	}
 }
-void CPrimState::ManagePenResources(CDC* deviceContext, EoInt16 colorIndex, int penWidth, EoInt16 linetypeIndex) {
+void CPrimState::ManagePenResources(CDC* deviceContext, OdInt16 colorIndex, int penWidth, OdInt16 linetypeIndex) {
 	static const int NumberOfPens = 8;
 	static HPEN hPen[NumberOfPens] = {0, 0, 0, 0, 0, 0, 0, 0};
 	static COLORREF	crColRef[NumberOfPens];
-	static EoInt16 LinetypeIndexes[NumberOfPens];
+	static OdInt16 LinetypeIndexes[NumberOfPens];
 	static int PenWidths[NumberOfPens];
 	static HPEN hPenCur;
 
@@ -165,13 +165,13 @@ void CPrimState::ManagePenResources(CDC* deviceContext, EoInt16 colorIndex, int 
 		crColRef[iPen] = pColTbl[colorIndex];
 	}
 }
-void CPrimState::SetColorIndex(CDC* deviceContext, EoInt16 colorIndex) {
+void CPrimState::SetColorIndex(CDC* deviceContext, OdInt16 colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (deviceContext) {
 		ManagePenResources(deviceContext, colorIndex, 0, m_LinetypeIndex);
 	}
 }
-void CPrimState::SetLinetypeIndex(CDC* deviceContext, EoInt16 linetypeIndex) {
+void CPrimState::SetLinetypeIndex(CDC* deviceContext, OdInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 	if (deviceContext) {
 		ManagePenResources(deviceContext, m_ColorIndex, 0, linetypeIndex);
@@ -201,10 +201,10 @@ void CPrimState::SetFontDefinition(CDC* deviceContext, const EoDbFontDefinition&
 	m_FontDefinition = fontDefinition;
 	SetTxtAlign(deviceContext, m_FontDefinition.HorizontalAlignment(), m_FontDefinition.VerticalAlignment());
 }
-void CPrimState::SetPointDisplayMode(EoInt16 pointDisplayMode) {
+void CPrimState::SetPointDisplayMode(OdInt16 pointDisplayMode) {
 	m_PointDisplayMode = pointDisplayMode;
 }
-void CPrimState::SetHatchInteriorStyle(EoInt16 interiorStyle) {
+void CPrimState::SetHatchInteriorStyle(OdInt16 interiorStyle) {
 	m_HatchInteriorStyle = interiorStyle;
 }
 void CPrimState::SetHatchInteriorStyleIndex(size_t styleIndex) {

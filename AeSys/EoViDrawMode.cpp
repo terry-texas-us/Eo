@@ -8,7 +8,7 @@
 #include "DbAudit.h"
 #include "EoDbEntityToPrimitiveProtocolExtension.h"
 
-EoUInt16 PreviousDrawCommand = 0;
+OdUInt16 PreviousDrawCommand = 0;
 
 void AeSysView::OnDrawModeOptions() {
     AeSysDoc::GetDoc()->OnSetupOptionsDraw();

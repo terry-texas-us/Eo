@@ -1,9 +1,9 @@
 #pragma once
 
 class EoDbPoint : public EoDbPrimitive {
-	EoInt16	m_PointDisplayMode;
+	OdInt16	m_PointDisplayMode;
 	OdGePoint3d	m_Position;
-	EoUInt16 m_NumberOfDatums;
+	OdUInt16 m_NumberOfDatums;
 	double* m_Data;
 
 public: // Constructors and destructor
@@ -29,7 +29,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(EoUInt16 type) const;
+	bool Is(OdUInt16 type) const;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -39,20 +39,20 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, EoByte* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods
-	double DataAt(EoUInt16 dataIndex) const;
+	double DataAt(OdUInt16 dataIndex) const;
 	void ModifyState();
-	EoInt16 PointDisplayMode() const;
+	OdInt16 PointDisplayMode() const;
 	OdGePoint3d Position() const;
-	void SetData(EoUInt16 numberOfDatums, double* data);
-	void SetPointDisplayMode(EoInt16 displayMode);
+	void SetData(OdUInt16 numberOfDatums, double* data);
+	void SetPointDisplayMode(OdInt16 displayMode);
 	void SetPosition(const OdGePoint3d& point);
 
 public: // Methods - static
 	static EoDbPoint* ConstructFrom(EoDbFile& file);
-	static EoDbPoint* ConstructFrom(EoByte* primitiveBuffer, int versionNumber);
+	static EoDbPoint* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 	static EoDbPoint* Create(OdDbDatabasePtr database);
 	static EoDbPoint* Create(const EoDbPoint& other, OdDbDatabasePtr database);
 	static EoDbPoint* EoDbPoint::Create(OdDbPointPtr Point);
