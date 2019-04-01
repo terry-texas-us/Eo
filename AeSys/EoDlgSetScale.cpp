@@ -9,11 +9,14 @@ IMPLEMENT_DYNAMIC(EoDlgSetScale, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetScale, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetScale::EoDlgSetScale(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgSetScale::IDD, pParent), m_Scale(0) {
+EoDlgSetScale::EoDlgSetScale(CWnd* parent) 
+    : CDialog(EoDlgSetScale::IDD, parent)
+    , m_Scale(0) {
 }
+
 EoDlgSetScale::~EoDlgSetScale() {
 }
+
 void EoDlgSetScale::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_SCALE, m_Scale);

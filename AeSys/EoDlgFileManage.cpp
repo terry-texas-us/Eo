@@ -29,7 +29,7 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnKeydownLayersListControl)
 END_MESSAGE_MAP()
 
-EoDlgFileManage::EoDlgFileManage(CWnd* parent /*=NULL*/) 
+EoDlgFileManage::EoDlgFileManage(CWnd* parent) 
     : CDialog(EoDlgFileManage::IDD, parent)
     , m_Document(NULL)
     , m_ClickToColumnStatus(false)
@@ -38,8 +38,14 @@ EoDlgFileManage::EoDlgFileManage(CWnd* parent /*=NULL*/)
     , m_PreviewWindowHandle(0) {
 }
 
-EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent /*=NULL*/)
-	: CDialog(EoDlgFileManage::IDD, parent), m_Document(document), m_Database(database) {
+EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
+	: CDialog(EoDlgFileManage::IDD, parent)
+    , m_Document(document)
+    , m_Database(database)
+    , m_ClickToColumnStatus(false)
+    , m_Description(0)
+    , m_NumberOfColumns(0)
+    , m_PreviewWindowHandle(0) {
 }
 
 EoDlgFileManage::~EoDlgFileManage() {
@@ -249,22 +255,22 @@ BOOL EoDlgFileManage::OnInitDialog(void) {
 
 	m_LayersList.DeleteAllItems();
 	m_LayersList.InsertColumn(Status, L"Status", LVCFMT_LEFT, 32);
-	m_LayersList.InsertColumn(Name, L"Layer", LVCFMT_LEFT, 64);
+	m_LayersList.InsertColumn(Name, L"Name", LVCFMT_LEFT, 96);
 	m_LayersList.InsertColumn(On, L"On", LVCFMT_LEFT, 32);
 	m_LayersList.InsertColumn(Freeze, L"Freeze in all VP", LVCFMT_LEFT, 32);
 	m_LayersList.InsertColumn(Lock, L"Lock", LVCFMT_LEFT, 32);
-	m_LayersList.InsertColumn(Color, L"Color", LVCFMT_LEFT, 48);
-	m_LayersList.InsertColumn(Linetype, L"Linetype", LVCFMT_LEFT, 64);
-	m_LayersList.InsertColumn(Lineweight, L"Lineweight", LVCFMT_LEFT, 48);
+	m_LayersList.InsertColumn(Color, L"Color", LVCFMT_LEFT, 96);
+	m_LayersList.InsertColumn(Linetype, L"Linetype", LVCFMT_LEFT, 96);
+	m_LayersList.InsertColumn(Lineweight, L"Lineweight", LVCFMT_LEFT, 96);
 	m_LayersList.InsertColumn(PlotStyle, L"Plot Style", LVCFMT_LEFT, 64);
-	m_NumberOfColumns = m_LayersList.InsertColumn(Plot, L"Plot", LVCFMT_LEFT, 16);
+	m_NumberOfColumns = m_LayersList.InsertColumn(Plot, L"Plot", LVCFMT_LEFT, 32);
 	
 	if (!m_Database->getTILEMODE()) { // Layout (not Model) tab is active
 		m_ActiveViewport = m_Database->activeViewportId();
-		m_LayersList.InsertColumn(VpFreeze, L"VP Freeze", LVCFMT_LEFT, 16);
-		m_LayersList.InsertColumn(VpColor, L"VP Color", LVCFMT_LEFT, 48);
-		m_LayersList.InsertColumn(VpLinetype, L"VP Linetype", LVCFMT_LEFT, 64);
-		m_LayersList.InsertColumn(VpLineweight, L"VP Lineweight", LVCFMT_LEFT, 64);
+		m_LayersList.InsertColumn(VpFreeze, L"VP Freeze", LVCFMT_LEFT, 32);
+		m_LayersList.InsertColumn(VpColor, L"VP Color", LVCFMT_LEFT, 96);
+		m_LayersList.InsertColumn(VpLinetype, L"VP Linetype", LVCFMT_LEFT, 96);
+		m_LayersList.InsertColumn(VpLineweight, L"VP Lineweight", LVCFMT_LEFT, 96);
 		m_NumberOfColumns = m_LayersList.InsertColumn(VpPlotStyle, L"Plot Style", LVCFMT_LEFT, 64);
 	}
 	m_Description = m_LayersList.InsertColumn(++m_NumberOfColumns, L"Description", LVCFMT_LEFT, 96);

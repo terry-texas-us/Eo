@@ -21,11 +21,13 @@ EoDbFontDefinition EoDlgModeRevise::sm_FontDefinition;
 EoGeReferenceSystem EoDlgModeRevise::sm_ReferenceSystem;
 EoDbText* EoDlgModeRevise::sm_TextPrimitive;
 
-EoDlgModeRevise::EoDlgModeRevise(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgModeRevise::IDD, pParent) {
+EoDlgModeRevise::EoDlgModeRevise(CWnd* parent) 
+    : CDialog(EoDlgModeRevise::IDD, parent) {
 }
+
 EoDlgModeRevise::~EoDlgModeRevise() {
 }
+
 void EoDlgModeRevise::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TEXT, m_TextEditControl);

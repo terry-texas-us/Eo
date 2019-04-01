@@ -16,12 +16,14 @@ BEGIN_MESSAGE_MAP(EoDlgSetupColor, CDialog)
 	ON_WM_GETDLGCODE()
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
-EoDlgSetupColor::EoDlgSetupColor(CWnd* pParent /*=NULL*/) :
-CDialog(EoDlgSetupColor::IDD, pParent)
-, m_ColorIndex(0) {
+EoDlgSetupColor::EoDlgSetupColor(CWnd* parent) 
+    : CDialog(EoDlgSetupColor::IDD, parent)
+    , m_ColorIndex(0) {
 }
+
 EoDlgSetupColor::~EoDlgSetupColor() {
 }
+
 void EoDlgSetupColor::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EVEN_COLORS, m_EvenColorsButton);
@@ -31,6 +33,7 @@ void EoDlgSetupColor::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_SELECTION_COLOR, m_SelectionButton);
 	DDX_Control(pDX, IDC_COLOR_EDIT, m_ColorEditControl);
 }
+
 BOOL EoDlgSetupColor::OnInitDialog() {
 	CDialog::OnInitDialog();
 

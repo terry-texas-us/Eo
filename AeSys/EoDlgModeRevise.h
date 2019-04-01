@@ -6,7 +6,7 @@ class EoDlgModeRevise : public CDialog {
 	DECLARE_DYNAMIC(EoDlgModeRevise)
 
 public:
-	EoDlgModeRevise(CWnd* pParent = NULL);
+	EoDlgModeRevise(CWnd* parent = NULL);
 	virtual ~EoDlgModeRevise();
 
 // Dialog Data

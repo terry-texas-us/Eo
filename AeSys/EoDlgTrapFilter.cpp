@@ -11,14 +11,20 @@ IMPLEMENT_DYNAMIC(EoDlgTrapFilter, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgTrapFilter, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgTrapFilter::EoDlgTrapFilter(CWnd* parent /*=NULL*/) :
-	CDialog(EoDlgTrapFilter::IDD, parent) {
+EoDlgTrapFilter::EoDlgTrapFilter(CWnd* parent) 
+    : CDialog(EoDlgTrapFilter::IDD, parent)
+    , m_Document(0) {
 }
-EoDlgTrapFilter::EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent /*=NULL*/) :
-	CDialog(EoDlgTrapFilter::IDD, parent), m_Document(document), m_Database(database) {
+
+EoDlgTrapFilter::EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
+    : CDialog(EoDlgTrapFilter::IDD, parent)
+    , m_Document(document)
+    , m_Database(database) {
 }
+
 EoDlgTrapFilter::~EoDlgTrapFilter() {
 }
+
 void EoDlgTrapFilter::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TRAP_FILTER_LINE_LIST, m_FilterLineComboBoxControl);

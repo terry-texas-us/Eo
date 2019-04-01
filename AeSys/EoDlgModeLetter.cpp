@@ -15,11 +15,13 @@ END_MESSAGE_MAP()
 
 OdGePoint3d EoDlgModeLetter::m_Point = OdGePoint3d::kOrigin;
 
-EoDlgModeLetter::EoDlgModeLetter(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgModeLetter::IDD, pParent) {
+EoDlgModeLetter::EoDlgModeLetter(CWnd* parent) 
+    : CDialog(EoDlgModeLetter::IDD, parent) {
 }
+
 EoDlgModeLetter::~EoDlgModeLetter() {
 }
+
 void EoDlgModeLetter::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_TEXT, m_TextEditControl);

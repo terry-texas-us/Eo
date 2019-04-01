@@ -91,8 +91,8 @@ OdDbViewTableRecordPtr CNamedViewListCtrl::selectedView() {
 	return OdDbViewTableRecordPtr();
 }
 
-EoDlgNamedViews::EoDlgNamedViews(AeSysDoc* pDoc, CWnd* pParent /*=NULL*/) : 
-	CDialog(EoDlgNamedViews::IDD, pParent) {
+EoDlgNamedViews::EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent) 
+    :  CDialog(EoDlgNamedViews::IDD, parent) {
 	m_pDoc = pDoc;
 }
 

@@ -17,8 +17,8 @@ BEGIN_MESSAGE_MAP(EoDlgEditOptions, CDialog)
 	ON_BN_CLICKED(IDC_EDIT_OP_MIR_Z, &EoDlgEditOptions::OnBnClickedEditOpMirZ)
 END_MESSAGE_MAP()
 
-EoDlgEditOptions::EoDlgEditOptions(CWnd* pParent /* = NULL */) 
-    : CDialog(EoDlgEditOptions::IDD, pParent)
+EoDlgEditOptions::EoDlgEditOptions(CWnd* parent) 
+    : CDialog(EoDlgEditOptions::IDD, parent)
     , m_ActiveView(0)
     , m_ScaleFactorX(0.)
     , m_ScaleFactorY(0.)
@@ -27,8 +27,9 @@ EoDlgEditOptions::EoDlgEditOptions(CWnd* pParent /* = NULL */)
     , m_EditModeRotationAngleY(0.)
     , m_EditModeRotationAngleZ(0.) {
 }
-EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* pParent /* = NULL */) 
-    : CDialog(EoDlgEditOptions::IDD, pParent)
+
+EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* parent) 
+    : CDialog(EoDlgEditOptions::IDD, parent)
     , m_ActiveView(view)
     , m_ScaleFactorX(0.)
     , m_ScaleFactorY(0.)
@@ -38,8 +39,10 @@ EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* pParent /* = NULL */)
     , m_EditModeRotationAngleZ(0.) {
 
 }
+
 EoDlgEditOptions::~EoDlgEditOptions() {
 }
+
 void EoDlgEditOptions::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_OP_MIR_X, m_MirrorXButton);

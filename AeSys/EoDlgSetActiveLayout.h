@@ -11,7 +11,7 @@ public:
 	bool m_bCreateNewLayout;
 	CString m_sNewLayoutName;
 
-	EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* pParent = NULL);
+	EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent = NULL);
 	void FillListBox();
 
 	enum { IDD = IDD_SET_ACTIVE_LAYOUT };

@@ -6,7 +6,7 @@ class EoDlgSetAngle : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetAngle)
 
 public:
-	EoDlgSetAngle(CWnd* pParent = NULL);
+	EoDlgSetAngle(CWnd* parent = NULL);
 	virtual ~EoDlgSetAngle();
 
 // Dialog Data

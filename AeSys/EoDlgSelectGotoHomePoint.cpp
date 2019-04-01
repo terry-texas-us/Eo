@@ -14,14 +14,19 @@ BEGIN_MESSAGE_MAP(EoDlgSelectGotoHomePoint, CDialog)
 	ON_CBN_SELCHANGE(IDC_LIST, &EoDlgSelectGotoHomePoint::OnCbnSelchangeList)
 END_MESSAGE_MAP()
 
-EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgSelectGotoHomePoint::IDD, pParent) {
+EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(CWnd* parent) 
+    : CDialog(EoDlgSelectGotoHomePoint::IDD, parent)
+    , m_ActiveView(0) {
 }
-EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(AeSysView* activeView, CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgSelectGotoHomePoint::IDD, pParent), m_ActiveView(activeView) {
+
+EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(AeSysView* activeView, CWnd* parent) 
+    : CDialog(EoDlgSelectGotoHomePoint::IDD, parent)
+    , m_ActiveView(activeView) {
 }
+
 EoDlgSelectGotoHomePoint::~EoDlgSelectGotoHomePoint() {
 }
+
 void EoDlgSelectGotoHomePoint::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST, m_HomePointNames);

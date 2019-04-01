@@ -6,13 +6,15 @@
 
 IMPLEMENT_DYNAMIC(EoDlgPlotStyleManager, CPropertySheet)
 
-EoDlgPlotStyleManager::EoDlgPlotStyleManager(CWnd *pParent)
-	: CPropertySheet(L"Plot Style Table Editor", pParent) {
+EoDlgPlotStyleManager::EoDlgPlotStyleManager(CWnd* parent)
+	: CPropertySheet(L"Plot Style Table Editor", parent)
+    , m_pPlotStyleTable(0) {
 	m_psh.dwFlags |= PSH_NOAPPLYNOW;
 
 	AddPage(&m_page1);
 	AddPage(&m_page2);
 }
+
 EoDlgPlotStyleManager::~EoDlgPlotStyleManager() {
 }
 

@@ -31,7 +31,7 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditLineweight, CDialog)
 	ON_NOTIFY(LVN_ENDLABELEDIT, IDC_LIST_LINEWEIGHTS, OnEndlabeleditListLineweight)
 END_MESSAGE_MAP()
 
-EoDlgPlotStyleEditLineweight::EoDlgPlotStyleEditLineweight(CWnd* parent /*=NULL*/) 
+EoDlgPlotStyleEditLineweight::EoDlgPlotStyleEditLineweight(CWnd* parent) 
 	: CDialog(EoDlgPlotStyleEditLineweight::IDD, parent) {
 	m_PlotStyleTable = NULL;
 	m_InitialSelection = 0;
@@ -63,7 +63,7 @@ void EoDlgPlotStyleEditLineweight::OnOK() {
 		for (int j = 0; j < iLineweightQnt; j++) {
 			if (m_LineweightData[j].m_OldIdx == lineweight) {
 				if (m_LineweightData[j].m_OldIdx != m_LineweightData[j].m_NewIdx) {
-					PlotStyleData.setLineweight(m_LineweightData[j].m_NewIdx + 1);
+					PlotStyleData.setLineweight(double(m_LineweightData[j].m_NewIdx) + 1.);
 					PlotStyle->setData(PlotStyleData);
 				}
 				break;

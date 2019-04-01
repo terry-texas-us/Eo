@@ -18,7 +18,7 @@ class EoDlgNamedViews : public CDialog {
   AeSysDoc *m_pDoc;
 public:
   // Construction
-	EoDlgNamedViews(AeSysDoc* pDoc, CWnd* pParent = NULL);   // standard constructor
+	EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = NULL);
 
   enum {
     kUnchangedItem  = 0,

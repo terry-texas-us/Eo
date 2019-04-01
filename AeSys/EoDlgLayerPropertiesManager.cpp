@@ -14,7 +14,7 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 	ON_NOTIFY(TVN_KEYDOWN, IDC_LAYER_FILTER_TREE, &EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree)
 END_MESSAGE_MAP()
 
-EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent /*=NULL*/)
+EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
     : CDialog(EoDlgLayerPropertiesManager::IDD, parent)
     , m_DeltaHeight(0)
     , m_DeltaWidth(0)
@@ -22,7 +22,7 @@ EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent /*=NULL*/)
     , m_InititialWidth(0) {
 }
 
-EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent /*=NULL*/)
+EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent)
     : CDialog(EoDlgLayerPropertiesManager::IDD, parent)
     , m_Database(database)
     , m_DeltaHeight(0)

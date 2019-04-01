@@ -2,7 +2,7 @@
 
 class EoDlgNewView : public CDialog {
 public:
-	EoDlgNewView(CWnd* pParent = NULL);   // standard constructor
+	EoDlgNewView(CWnd* parent = NULL);
 
 	enum { IDD = IDD_DIALOG_NEW_VIEW };
 	CComboBox m_UCSs;

@@ -12,24 +12,25 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-EoDlgNewView::EoDlgNewView(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgNewView::IDD, pParent) {
-		m_sViewName = L"";
-		m_sViewCategory = L"";
-		m_bStoreLS = TRUE;
-		m_bSaveUCS = TRUE;
-		m_sUcsName = L"";
+EoDlgNewView::EoDlgNewView(CWnd* parent)
+    : CDialog(EoDlgNewView::IDD, parent) {
+    m_sViewName = L"";
+    m_sViewCategory = L"";
+    m_bStoreLS = TRUE;
+    m_bSaveUCS = TRUE;
+    m_sUcsName = L"";
 }
-void EoDlgNewView::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
 
-	DDX_Control(pDX, IDC_COMBO_UCSNAME, m_UCSs);
-	DDX_Control(pDX, IDC_COMBO_VIEWCATEGORY, m_categories);
-	DDX_Text(pDX, IDC_EDIT_VIEWNAME, m_sViewName);
-	DDX_CBString(pDX, IDC_COMBO_VIEWCATEGORY, m_sViewCategory);
-	DDX_Check(pDX, IDC_CHECK_STORE_LS, m_bStoreLS);
-	DDX_Check(pDX, IDC_CHECK_SAVEUCS, m_bSaveUCS);
-	DDX_CBString(pDX, IDC_COMBO_UCSNAME, m_sUcsName);
+void EoDlgNewView::DoDataExchange(CDataExchange* pDX) {
+    CDialog::DoDataExchange(pDX);
+
+    DDX_Control(pDX, IDC_COMBO_UCSNAME, m_UCSs);
+    DDX_Control(pDX, IDC_COMBO_VIEWCATEGORY, m_categories);
+    DDX_Text(pDX, IDC_EDIT_VIEWNAME, m_sViewName);
+    DDX_CBString(pDX, IDC_COMBO_VIEWCATEGORY, m_sViewCategory);
+    DDX_Check(pDX, IDC_CHECK_STORE_LS, m_bStoreLS);
+    DDX_Check(pDX, IDC_CHECK_SAVEUCS, m_bSaveUCS);
+    DDX_CBString(pDX, IDC_COMBO_UCSNAME, m_sUcsName);
 }
 BEGIN_MESSAGE_MAP(EoDlgNewView, CDialog)
 END_MESSAGE_MAP()
@@ -38,34 +39,34 @@ OdString orthoTypeString(OdDb::OrthographicView type);
 OdString ucsString(const OdDbObject* pViewObj);
 
 BOOL EoDlgNewView::OnInitDialog() {
-	CDialog::OnInitDialog();
+    CDialog::OnInitDialog();
 
-	EoDlgNamedViews* pParent = static_cast<EoDlgNamedViews*>(GetParent());
-	OdDbDatabase* pDb = pParent->database();
-	OdDbSymbolTablePtr pTable;
-	OdDbSymbolTableIteratorPtr pIter;
+    EoDlgNamedViews* pParent = static_cast<EoDlgNamedViews*>(GetParent());
+    OdDbDatabase* pDb = pParent->database();
+    OdDbSymbolTablePtr pTable;
+    OdDbSymbolTableIteratorPtr pIter;
 
-	pTable = pDb->getViewTableId().safeOpenObject();
-	for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
-		OdDbViewTableRecordPtr pView = pIter->getRecordId().openObject();
-		OdString sCategory = pView->getCategoryName();
-		if (!sCategory.isEmpty()) {
-			if (m_categories.FindString(-1, sCategory)==- 1) {
-				m_categories.AddString(sCategory);
-			}
-		}
-	}
-	pTable = pDb->getUCSTableId().safeOpenObject();
-	m_UCSs.AddString(L"World");
+    pTable = pDb->getViewTableId().safeOpenObject();
+    for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
+        OdDbViewTableRecordPtr pView = pIter->getRecordId().openObject();
+        OdString sCategory = pView->getCategoryName();
+        if (!sCategory.isEmpty()) {
+            if (m_categories.FindString(-1, sCategory) == -1) {
+                m_categories.AddString(sCategory);
+            }
+        }
+    }
+    pTable = pDb->getUCSTableId().safeOpenObject();
+    m_UCSs.AddString(L"World");
 
-	m_sUcsName = (LPCWSTR) ucsString(pDb->activeViewportId().safeOpenObject());
-	if (m_sUcsName== L"Unnamed") {
-		m_UCSs.AddString(m_sUcsName);
-	}
-	for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
-		OdDbUCSTableRecordPtr pUCS = pIter->getRecordId().openObject();
-		m_UCSs.AddString(pUCS->getName());
-	}
-	UpdateData(FALSE);
-	return TRUE;
+    m_sUcsName = (LPCWSTR) ucsString(pDb->activeViewportId().safeOpenObject());
+    if (m_sUcsName == L"Unnamed") {
+        m_UCSs.AddString(m_sUcsName);
+    }
+    for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
+        OdDbUCSTableRecordPtr pUCS = pIter->getRecordId().openObject();
+        m_UCSs.AddString(pUCS->getName());
+    }
+    UpdateData(FALSE);
+    return TRUE;
 }

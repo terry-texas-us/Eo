@@ -35,7 +35,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 		double H = 0.;
 		double Z = 0.;
 		double T, W1, W2;
-		double Step = spline.knotAt(KnotsLength) / (double) (iPts - 1);
+		double Step = spline.knotAt(KnotsLength) / (double(iPts) - 1.);
 		int iPts2 = 0;
 		for (int i4 = Order - 1; i4 <= NumberOfControlPoints + 1; i4++) {
 			for (int i = 0; i <= KnotsLength - 1; i++) { // Calculate values for weighting value

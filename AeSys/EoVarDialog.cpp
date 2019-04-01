@@ -7,12 +7,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-EoVarDialog::EoVarDialog(LPCWSTR templateName, CWnd* parent /*= NULL*/) : 
-	CDialog(templateName, parent) {
+EoVarDialog::EoVarDialog(LPCWSTR templateName, CWnd* parent)
+    : CDialog(templateName, parent) {
 	m_bInitialized = FALSE;
 }
-EoVarDialog::EoVarDialog(UINT templateId, CWnd* parent /*= NULL*/) :
-	CDialog(templateId, parent) {
+EoVarDialog::EoVarDialog(UINT templateId, CWnd* parent) 
+    : CDialog(templateId, parent) {
 	m_bInitialized = FALSE;
 }
 BEGIN_MESSAGE_MAP(EoVarDialog, CDialog)

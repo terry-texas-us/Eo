@@ -6,8 +6,8 @@ class EoDlgBlockInsert : public CDialog {
 	DECLARE_DYNAMIC(EoDlgBlockInsert)
 
 public:
-	EoDlgBlockInsert(CWnd* pParent = NULL);
-	EoDlgBlockInsert(AeSysDoc* document, CWnd* pParent = NULL);
+	EoDlgBlockInsert(CWnd* parent = NULL);
+	EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = NULL);
 	virtual ~EoDlgBlockInsert();
 
 // Dialog Data

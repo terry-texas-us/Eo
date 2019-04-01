@@ -7,11 +7,15 @@
 #include "EoDlgEditProperties.h"
 
 IMPLEMENT_DYNAMIC(EoDlgEditProperties, CDialog)
-	EoDlgEditProperties::EoDlgEditProperties(OdDbObjectId &id, CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgEditProperties::IDD, pParent), m_pObjectId(id), m_nCurItem(- 1) {
+	EoDlgEditProperties::EoDlgEditProperties(OdDbObjectId &id, CWnd* parent) 
+    : CDialog(EoDlgEditProperties::IDD, parent)
+    , m_pObjectId(id)
+    , m_nCurItem(- 1) {
 }
+
 EoDlgEditProperties::~EoDlgEditProperties() {
 }
+
 void EoDlgEditProperties::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BUTTON1, m_doset);

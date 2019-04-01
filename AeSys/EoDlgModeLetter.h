@@ -6,7 +6,7 @@ class EoDlgModeLetter : public CDialog {
 	DECLARE_DYNAMIC(EoDlgModeLetter)
 
 public:
-	EoDlgModeLetter(CWnd* pParent = NULL);
+	EoDlgModeLetter(CWnd* parent = NULL);
 	virtual ~EoDlgModeLetter();
 
 // Dialog Data

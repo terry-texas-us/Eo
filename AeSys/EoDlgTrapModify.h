@@ -9,8 +9,8 @@ class EoDlgTrapModify : public CDialog {
 	DECLARE_DYNAMIC(EoDlgTrapModify)
 
 public:
-	EoDlgTrapModify(CWnd* pParent = NULL);
-	EoDlgTrapModify(AeSysDoc* document, CWnd* pParent = NULL);
+	EoDlgTrapModify(CWnd* parent = NULL);
+	EoDlgTrapModify(AeSysDoc* document, CWnd* parent = NULL);
 	virtual ~EoDlgTrapModify();
 
 // Dialog Data

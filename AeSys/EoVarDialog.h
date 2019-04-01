@@ -8,7 +8,7 @@ class EoVarDialog : public CDialog
 	// Construction
 public:
 	EoVarDialog(LPCWSTR lpszTemplateName, CWnd* pParentWnd = NULL);
-	EoVarDialog(UINT nIDTemplate, CWnd* pParent = NULL);
+	EoVarDialog(UINT nIDTemplate, CWnd* parent = NULL);
 
 	// Implementation
 protected:

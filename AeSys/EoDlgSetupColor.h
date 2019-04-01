@@ -7,7 +7,7 @@ class EoDlgSetupColor : public CDialog {
 
 public:
 
-	EoDlgSetupColor(CWnd* pParent = NULL);
+	EoDlgSetupColor(CWnd* parent = NULL);
 	virtual ~EoDlgSetupColor();
 
 // Dialog Data

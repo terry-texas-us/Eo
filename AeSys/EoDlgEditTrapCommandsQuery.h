@@ -6,7 +6,7 @@ class EoDlgEditTrapCommandsQuery : public CDialog {
 	DECLARE_DYNAMIC(EoDlgEditTrapCommandsQuery)
 
 public:
-	EoDlgEditTrapCommandsQuery(CWnd* pParent = NULL);
+	EoDlgEditTrapCommandsQuery(CWnd* parent = NULL);
 	virtual ~EoDlgEditTrapCommandsQuery();
 
 // Dialog Data

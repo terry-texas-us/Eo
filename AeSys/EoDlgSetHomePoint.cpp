@@ -15,14 +15,19 @@ END_MESSAGE_MAP()
 
 OdGePoint3d EoDlgSetHomePoint::m_CursorPosition = OdGePoint3d::kOrigin;
 
-EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgSetHomePoint::IDD, pParent) {
+EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* parent) 
+    : CDialog(EoDlgSetHomePoint::IDD, parent)
+    , m_ActiveView(0) {
 }
-EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgSetHomePoint::IDD, pParent), m_ActiveView(activeView) {
+
+EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent) 
+    : CDialog(EoDlgSetHomePoint::IDD, parent)
+    , m_ActiveView(activeView) {
 }
+
 EoDlgSetHomePoint::~EoDlgSetHomePoint() {
 }
+
 void EoDlgSetHomePoint::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST, m_HomePointNames);

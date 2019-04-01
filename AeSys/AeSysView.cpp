@@ -1172,7 +1172,8 @@ void AeSysView::createDevice() {
 		OdGsDevicePtr GsDevice = GsModule->createDevice();
 		OdRxDictionaryPtr pProperties = GsDevice->properties();
 		if (pProperties.get()) {
-			if (pProperties->has(L"WindowHWND"))
+#pragma warning (disable: 26444)
+            if (pProperties->has(L"WindowHWND"))
 				pProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr)m_hWnd));
 			if (pProperties->has(L"WindowHDC"))
 				pProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr)m_hWindowDC));
@@ -1190,7 +1191,8 @@ void AeSysView::createDevice() {
 				pProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16)theApp.mtRegenThreadsCount()));
 			if (pProperties->has(L"UseTextOut"))
 				pProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
-		}
+#pragma warning (restore: 26444)
+        }
 		enableKeepPSLayoutHelperView(true);
 		enableContextualColorsManagement(theApp.enableContextualColors());
 		setTtfPolyDrawMode(theApp.enableTTFPolyDraw());

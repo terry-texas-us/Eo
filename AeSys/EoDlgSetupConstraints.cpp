@@ -12,14 +12,19 @@ IMPLEMENT_DYNAMIC(EoDlgSetupConstraints, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetupConstraints, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetupConstraints::EoDlgSetupConstraints(CWnd* pParent /* = NULL */) :
-	CDialog(EoDlgSetupConstraints::IDD, pParent) {
+EoDlgSetupConstraints::EoDlgSetupConstraints(CWnd* parent) 
+    : CDialog(EoDlgSetupConstraints::IDD, parent)
+    , m_ActiveView(0) {
 }
-EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* pParent /* = NULL */) :
-	CDialog(EoDlgSetupConstraints::IDD, pParent), m_ActiveView(view) {
+
+EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent) 
+    : CDialog(EoDlgSetupConstraints::IDD, parent)
+    , m_ActiveView(view) {
 }
+
 EoDlgSetupConstraints::~EoDlgSetupConstraints() {
 }
+
 void EoDlgSetupConstraints::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_USR_GRID_X_INT, m_GridXSnapSpacing);

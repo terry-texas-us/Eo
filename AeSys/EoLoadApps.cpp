@@ -17,8 +17,8 @@ void EoLoadApps::rxUninit() {
 	odrxDynamicLinker()->removeReactor(m_LoadedApps);
 	delete m_LoadedApps;
 }
-EoLoadApps::EoLoadApps(CWnd* parent /*= NULL*/) : 
-	CDialog(EoLoadApps::IDD, parent) {
+EoLoadApps::EoLoadApps(CWnd* parent) 
+    : CDialog(EoLoadApps::IDD, parent) {
 }
 void EoLoadApps::LoadedApps::rxAppLoaded(OdRxModule* appModule) {
 	append(appModule->moduleName());

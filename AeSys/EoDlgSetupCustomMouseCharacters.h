@@ -6,7 +6,7 @@ class EoDlgSetupCustomMouseCharacters : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupCustomMouseCharacters)
 
 public:
-	EoDlgSetupCustomMouseCharacters(CWnd* pParent = NULL);
+	EoDlgSetupCustomMouseCharacters(CWnd* parent = NULL);
 	virtual ~EoDlgSetupCustomMouseCharacters();
 
 	enum { IDD = IDD_MOUSEKEYS };

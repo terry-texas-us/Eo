@@ -6,7 +6,7 @@ class EoDlgDrawOptions : public CDialog {
 	DECLARE_DYNAMIC(EoDlgDrawOptions)
 
 public:
-	EoDlgDrawOptions(CWnd* pParent = NULL);
+	EoDlgDrawOptions(CWnd* parent = NULL);
 	virtual ~EoDlgDrawOptions();
 
 // Dialog Data

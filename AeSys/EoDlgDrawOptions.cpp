@@ -17,11 +17,13 @@ BEGIN_MESSAGE_MAP(EoDlgDrawOptions, CDialog)
 	ON_BN_CLICKED(IDC_CONSTRAINTS, &EoDlgDrawOptions::OnBnClickedConstraints)
 END_MESSAGE_MAP()
 
-EoDlgDrawOptions::EoDlgDrawOptions(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgDrawOptions::IDD, pParent) {
+EoDlgDrawOptions::EoDlgDrawOptions(CWnd* parent) 
+    : CDialog(EoDlgDrawOptions::IDD, parent) {
 }
+
 EoDlgDrawOptions::~EoDlgDrawOptions() {
 }
+
 void EoDlgDrawOptions::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 }

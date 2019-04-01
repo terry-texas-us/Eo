@@ -8,10 +8,11 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-EoDlgPassword::EoDlgPassword(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgPassword::IDD, pParent) {
+EoDlgPassword::EoDlgPassword(CWnd* parent) 
+    : CDialog(EoDlgPassword::IDD, parent) {
 	m_sFileName = L"";
 }
+
 void EoDlgPassword::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_EDIT_PWD, m_pswCtrl);

@@ -11,6 +11,17 @@
 
 #define snapPtSize 5
 
+EoObjectSnapManager::EoObjectSnapManager()
+    : m_pView(0)
+    , m_pPickPoint(0)
+    , m_pLastPoint(0)
+    , m_nSnapModes(0xFFFFFFFF)
+    , m_dWorldToDevice(0.)
+    , m_dNearDist(0.)
+    , m_mode(OdDb::OsnapMode(0))
+    , m_bRedraw(false) {
+}
+
 EoObjectSnapManager::SubentId::SubentId(const OdGiPathNode& pathNode) {
 	m_gsMarker = pathNode.selectionMarker();
 	const OdGiPathNode* pGiPath = &pathNode;
@@ -35,9 +46,7 @@ bool EoObjectSnapManager::SubentId::operator==(const SubentId& other) const {
 	}
 	return true;
 }
-EoObjectSnapManager::EoObjectSnapManager() : 
-	m_nSnapModes(0xFFFFFFFF), m_mode(OdDb::OsnapMode(0)) {
-}
+
 void EoObjectSnapManager::reset() {
 	m_centers.clear();
 }

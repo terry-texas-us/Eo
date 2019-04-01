@@ -9,11 +9,14 @@ IMPLEMENT_DYNAMIC(EoDlgSetAngle, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetAngle::EoDlgSetAngle(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgSetAngle::IDD, pParent), m_dAngle(0) {
+EoDlgSetAngle::EoDlgSetAngle(CWnd* parent) 
+    : CDialog(EoDlgSetAngle::IDD, parent)
+    , m_dAngle(0) {
 }
+
 EoDlgSetAngle::~EoDlgSetAngle() {
 }
+
 void EoDlgSetAngle::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_ANGLE, m_dAngle);

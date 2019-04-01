@@ -11,16 +11,21 @@ BEGIN_MESSAGE_MAP(EoDlgSetUnitsAndPrecision, CDialog)
 	ON_BN_CLICKED(IDC_METRIC, &EoDlgSetUnitsAndPrecision::OnBnClickedMetric)
 END_MESSAGE_MAP()
 
-EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* pParent /*=NULL*/) :
-	m_Units(AeSysApp::kInches), m_Precision(8), CDialog(EoDlgSetUnitsAndPrecision::IDD, pParent) {
+EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent) 
+    : CDialog(EoDlgSetUnitsAndPrecision::IDD, parent)
+    , m_Units(AeSysApp::kInches)
+    , m_Precision(8) {
 }
+
 EoDlgSetUnitsAndPrecision::~EoDlgSetUnitsAndPrecision() {
 }
+
 void EoDlgSetUnitsAndPrecision::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_METRIC_UNITS, m_MetricUnitsListBoxControl);
 	DDX_Text(pDX, IDC_PRECISION, m_Precision);
 }
+
 BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 	CDialog::OnInitDialog();
 

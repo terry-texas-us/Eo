@@ -49,7 +49,7 @@ private:
 		HWND  m_hCtrl;
 		EHFix  m_hFix;
 		EVFix  m_vFix;
-		CtrlSize() : m_hFix(kNoHFix), m_vFix(kNoVFix) {
+		CtrlSize() : m_hCtrl(0), m_hFix(kNoHFix), m_vFix(kNoVFix) {
 		}
 	};
 	typedef std::list<CtrlSize> CtrlCont_t;

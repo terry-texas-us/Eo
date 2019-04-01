@@ -6,8 +6,8 @@ class EoDlgSetHomePoint : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetHomePoint)
 
 public:
-	EoDlgSetHomePoint(CWnd* pParent = NULL);
-	EoDlgSetHomePoint(AeSysView* activeView, CWnd* pParent = NULL);
+	EoDlgSetHomePoint(CWnd* parent = NULL);
+	EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent = NULL);
 	virtual ~EoDlgSetHomePoint();
 
 // Dialog Data

@@ -471,7 +471,8 @@ void EoExGripData::setShared(bool val) {
 	m_bShared = val;
 }
 
-EoExGripManager::EoExGripManager() {
+EoExGripManager::EoExGripManager() 
+    : m_pGsModel(0) {
 	m_pDevice = 0;
 	m_pCmdCtx = 0;
 	m_aGripData.clear();
@@ -1246,8 +1247,8 @@ double EoExGripManager::activeViewUnitSize() const {
 
 			OdGsDCRect scrRect;
 			pView->getViewport(scrRect);
-			ptDim.x = fabs(double(scrRect.m_max.x - scrRect.m_min.x) / pView->fieldWidth()  * (ur.x-ll.x));
-			ptDim.y = fabs(double(scrRect.m_max.y - scrRect.m_min.y) / pView->fieldHeight() * (ur.y-ll.y));
+			ptDim.x = fabs((double(scrRect.m_max.x) - double(scrRect.m_min.x)) / pView->fieldWidth()  * (ur.x-ll.x));
+			ptDim.y = fabs((double(scrRect.m_max.y) - double(scrRect.m_min.y)) / pView->fieldHeight() * (ur.y-ll.y));
 		}
 		OdGeVector3d v(m_GRIPSIZE / ptDim.x, 0, 0);
 		v.transformBy(pView->viewingMatrix());

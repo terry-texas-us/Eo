@@ -6,7 +6,7 @@ class OdDbAuditInfo;
 
 class EoDlgAudit : public EoVarDialog {
 public:
-	EoDlgAudit(CWnd* pParent = NULL);   // standard constructor
+	EoDlgAudit(CWnd* parent = NULL);
 
 	void printReport (OdDbAuditInfo* auditInfo);
 	void OnCancel();

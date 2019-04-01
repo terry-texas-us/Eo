@@ -42,7 +42,7 @@ protected:
 public:
 	void Echo(const OdString& string);
 	OdString GetLastString();
-	static OdSmartPtr<EoDlgUserIOConsole> create(CWnd* pParent);
+	static OdSmartPtr<EoDlgUserIOConsole> create(CWnd* parent);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnDestroy();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);

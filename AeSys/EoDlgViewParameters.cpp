@@ -21,15 +21,20 @@ BEGIN_MESSAGE_MAP(EoDlgViewParameters, CDialog)
 	ON_BN_CLICKED(IDC_PERSPECTIVE_PROJECTION, &EoDlgViewParameters::OnBnClickedPerspectiveProjection)
 END_MESSAGE_MAP()
 
-EoDlgViewParameters::EoDlgViewParameters(CWnd* pParent /*=NULL*/)
-	: CDialog(EoDlgViewParameters::IDD, pParent), m_ModelView(0) {
+EoDlgViewParameters::EoDlgViewParameters(CWnd* parent)
+	: CDialog(EoDlgViewParameters::IDD, parent)
+    , m_PerspectiveProjection(FALSE)
+    , m_ModelView(0) {
 }
+
 EoDlgViewParameters::~EoDlgViewParameters() {
 }
+
 void EoDlgViewParameters::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Check(pDX, IDC_PERSPECTIVE_PROJECTION, m_PerspectiveProjection);
 }
+
 // EoDlgViewParameters message handlers
 
 void EoDlgViewParameters::OnBnClickedApply() {

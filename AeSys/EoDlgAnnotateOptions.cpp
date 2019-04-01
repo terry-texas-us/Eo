@@ -11,8 +11,8 @@ IMPLEMENT_DYNAMIC(EoDlgAnnotateOptions, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgAnnotateOptions, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* pParent /* = NULL */) 
-    : CDialog(EoDlgAnnotateOptions::IDD, pParent)
+EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent) 
+    : CDialog(EoDlgAnnotateOptions::IDD, parent)
 	, m_ActiveView(0)
     , m_GapSpaceFactor(0)
     , m_CircleRadius(0)
@@ -21,8 +21,10 @@ EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* pParent /* = NULL */)
     , m_NumberOfSides(0)
     , m_DefaultText(L"") {
 }
-EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* pParent /* = NULL */) :
-	CDialog(EoDlgAnnotateOptions::IDD, pParent), m_ActiveView(view) {
+
+EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent) 
+    : CDialog(EoDlgAnnotateOptions::IDD, parent)
+    , m_ActiveView(view) {
 	m_GapSpaceFactor = view->GapSpaceFactor();
 	m_CircleRadius = view->CircleRadius();
 	m_EndItemSize = view->EndItemSize();
@@ -30,8 +32,10 @@ EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* pParent /* = N
 	m_NumberOfSides = view->NumberOfSides();
 	m_DefaultText = view->DefaultText();
 }
+
 EoDlgAnnotateOptions::~EoDlgAnnotateOptions() {
 }
+
 void EoDlgAnnotateOptions::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_ANN_ARR_TYP, m_EndItemTypeComboBox);

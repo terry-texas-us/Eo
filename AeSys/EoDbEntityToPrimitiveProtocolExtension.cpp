@@ -1003,6 +1003,7 @@ class Converters {
 
 public:
 	void AddExtensions() {
+#pragma warning (disable: 26444)
         OdDbEntity::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_EntityConverter);
         
         OdDb2dPolyline::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_2dPolylineConverter);
@@ -1027,8 +1028,10 @@ public:
 		OdDbText::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_TextConverter);
 		OdDbTrace::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_TraceConverter);
 		OdDbViewport::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_ViewportConverter);
-	}
+#pragma warning (restore: 26444)
+    }
 	void DeleteExtensions() {
+#pragma warning (disable: 26444)
         OdDbEntity::desc()->delX(EoDbConvertEntityToPrimitive::desc());
         
         OdDb2dPolyline::desc()->delX(EoDbConvertEntityToPrimitive::desc());
@@ -1053,7 +1056,8 @@ public:
 		OdDbText::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbTrace::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbViewport::desc()->delX(EoDbConvertEntityToPrimitive::desc());
-	}
+#pragma warning (restore: 26444)
+    }
 };
 AeSysDoc* ConvertEntityToPrimitiveProtocolExtension::m_Document = NULL;
 

@@ -6,7 +6,7 @@ class EoDlgSelectIsometricView : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSelectIsometricView)
 
 public:
-	EoDlgSelectIsometricView(CWnd* pParent = NULL);
+	EoDlgSelectIsometricView(CWnd* parent = NULL);
 	virtual ~EoDlgSelectIsometricView();
 
 // Dialog Data

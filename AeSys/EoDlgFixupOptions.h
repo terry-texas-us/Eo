@@ -6,7 +6,7 @@ class EoDlgFixupOptions : public CDialog {
 	DECLARE_DYNAMIC(EoDlgFixupOptions)
 
 public:
-	EoDlgFixupOptions(CWnd* pParent = NULL);
+	EoDlgFixupOptions(CWnd* parent = NULL);
 	virtual ~EoDlgFixupOptions();
 
 // Dialog Data

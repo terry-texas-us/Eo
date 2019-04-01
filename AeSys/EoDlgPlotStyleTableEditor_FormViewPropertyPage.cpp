@@ -205,8 +205,9 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const
 		PaintBitmap(m_bitmap, color);
 		_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
-CBitmapColorInfo::CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name) :
-	m_iItem(0xff) {
+CBitmapColorInfo::CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name) 
+    : m_iItem(0xff)
+    , m_color(0) {
 		HBITMAP hBmp;
 		hBmp = (HBITMAP)::LoadImage(AfxGetInstanceHandle(), 
 			lpszResourceName, IMAGE_BITMAP, 13,13, LR_CREATEDIBSECTION ); 
@@ -227,8 +228,11 @@ const int CPsListStyleData::getPublicArrayIndexByColor(COLORREF color) {
 	return -1;
 
 }
-CPsListStyleData::CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item) : 
-	m_pPlotStyles(pPs), m_pPublicBitmapList(pPublicBitmapList), m_pBitmapColorInfo(NULL) {
+CPsListStyleData::CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item) 
+    : m_pPlotStyles(pPs)
+    , m_pPublicBitmapList(pPublicBitmapList)
+    , m_pBitmapColorInfo(NULL)
+    , m_iActiveListIndex(0) {
 	if (!m_pPlotStyles && !m_pPublicBitmapList) return;
 	OdPsPlotStyleData OdPsData;
 	pPs->getData(OdPsData);

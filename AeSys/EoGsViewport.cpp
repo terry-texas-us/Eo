@@ -1,10 +1,17 @@
 #include "stdafx.h"
 
-EoGsViewport::EoGsViewport() {
+EoGsViewport::EoGsViewport()
+    : m_DeviceHeightInPixels(0.)
+    , m_DeviceWidthInPixels(0.)
+    , m_DeviceHeightInInches(0.)
+    , m_DeviceWidthInInches(0.)
+    , m_HeightInPixels(0.)
+    , m_WidthInPixels(0.) {
 }
 
 EoGsViewport::~EoGsViewport() {
 };
+
 EoGsViewport::EoGsViewport(const EoGsViewport& viewport) {
 	m_DeviceHeightInPixels = viewport.m_DeviceHeightInPixels;
 	m_DeviceWidthInPixels = viewport.m_DeviceWidthInPixels;
@@ -13,6 +20,7 @@ EoGsViewport::EoGsViewport(const EoGsViewport& viewport) {
 	m_HeightInPixels = viewport.m_HeightInPixels;
 	m_WidthInPixels = viewport.m_WidthInPixels;
 }
+
 EoGsViewport& EoGsViewport::operator=(const EoGsViewport& viewport) {
 	m_DeviceHeightInPixels = viewport.m_DeviceHeightInPixels;
 	m_DeviceWidthInPixels = viewport.m_DeviceWidthInPixels;

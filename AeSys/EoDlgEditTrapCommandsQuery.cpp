@@ -11,11 +11,13 @@ BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_GROUP_TREE, &EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree)
 END_MESSAGE_MAP()
 
-EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgEditTrapCommandsQuery::IDD, pParent) {
+EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent) 
+    : CDialog(EoDlgEditTrapCommandsQuery::IDD, parent) {
 }
+
 EoDlgEditTrapCommandsQuery::~EoDlgEditTrapCommandsQuery() {
 }
+
 void EoDlgEditTrapCommandsQuery::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_GROUP_TREE, m_GroupTreeViewControl);

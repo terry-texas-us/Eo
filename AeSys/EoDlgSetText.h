@@ -6,7 +6,7 @@ class EoDlgSetText : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetText)
 
 public:
-	EoDlgSetText(CWnd* pParent = NULL);
+	EoDlgSetText(CWnd* parent = NULL);
 	virtual ~EoDlgSetText();
 
 // Dialog Data

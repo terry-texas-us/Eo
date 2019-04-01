@@ -10,14 +10,19 @@ IMPLEMENT_DYNAMIC(EoDlgTrapModify, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgTrapModify::EoDlgTrapModify(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgTrapModify::IDD, pParent) {
+EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) 
+    : CDialog(EoDlgTrapModify::IDD, parent)
+    , m_Document(0) {
 }
-EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgTrapModify::IDD, pParent), m_Document(document) {
+
+EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent) 
+    : CDialog(EoDlgTrapModify::IDD, parent)
+    , m_Document(document) {
 }
+
 EoDlgTrapModify::~EoDlgTrapModify() {
 }
+
 void EoDlgTrapModify::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 }

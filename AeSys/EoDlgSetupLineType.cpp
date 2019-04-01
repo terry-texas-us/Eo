@@ -18,12 +18,15 @@ void EoDlgSetupLinetype::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LINETYPES_LIST_CONTROL, m_LinetypesListControl);
 }
-EoDlgSetupLinetype::EoDlgSetupLinetype(CWnd* parent /*=NULL*/) :
-CDialog(EoDlgSetupLinetype::IDD, parent) {
+EoDlgSetupLinetype::EoDlgSetupLinetype(CWnd* parent) 
+    : CDialog(EoDlgSetupLinetype::IDD, parent) {
 }
-EoDlgSetupLinetype::EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent /*=NULL*/)
-	: CDialog(EoDlgSetupLinetype::IDD, parent), m_LinetypeTable(linetypeTable) {
+
+EoDlgSetupLinetype::EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent)
+	: CDialog(EoDlgSetupLinetype::IDD, parent)
+    , m_LinetypeTable(linetypeTable) {
 }
+
 void EoDlgSetupLinetype::OnBnClickedByblockButton() {
 	m_Linetype = m_LinetypeTable->getLinetypeByBlockId().safeOpenObject(OdDb::kForRead);
 	CDialog::OnOK();
@@ -73,15 +76,15 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 
 				ActiveView->SetViewportSize(SubItemRectangle.right + SubItemRectangle.left, SubItemRectangle.bottom + SubItemRectangle.top);
 
-				double FieldWidth = static_cast<double>(SubItemRectangle.right + SubItemRectangle.left) / static_cast<double>(DeviceContext.GetDeviceCaps(LOGPIXELSX));
-				double FieldHeight = static_cast<double>(SubItemRectangle.bottom + SubItemRectangle.top) / static_cast<double>(DeviceContext.GetDeviceCaps(LOGPIXELSY));
+				double FieldWidth = (double(SubItemRectangle.right) + double(SubItemRectangle.left)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
+				double FieldHeight = (double(SubItemRectangle.bottom) + double(SubItemRectangle.top)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSY));
 				ActiveView->ModelViewInitialize();
 
 				ActiveView->SetViewWindow(0., 0., FieldWidth, FieldHeight);
 				ActiveView->SetCameraTarget(OdGePoint3d::kOrigin);
 				ActiveView->SetCameraPosition(OdGeVector3d::kZAxis);
-				double FieldWidthMinimum = static_cast<double>(SubItemRectangle.left) / static_cast<double>(DeviceContext.GetDeviceCaps(LOGPIXELSX));
-				double FieldWidthMaximum = static_cast<double>(SubItemRectangle.right) / static_cast<double>(DeviceContext.GetDeviceCaps(LOGPIXELSX));
+				double FieldWidthMinimum = double(SubItemRectangle.left) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
+				double FieldWidthMaximum = double(SubItemRectangle.right) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
 
 				EoGeLineSeg3d Line = EoGeLineSeg3d(OdGePoint3d(FieldWidthMinimum, FieldHeight / 2., 0.), OdGePoint3d(FieldWidthMaximum, FieldHeight / 2., 0.));
 				Line.Display(ActiveView, &DeviceContext);

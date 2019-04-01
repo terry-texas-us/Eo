@@ -9,11 +9,15 @@ IMPLEMENT_DYNAMIC(EoDlgPipeOptions, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgPipeOptions, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgPipeOptions::EoDlgPipeOptions(CWnd* pParent /*=NULL*/) :
-	CDialog(EoDlgPipeOptions::IDD, pParent), m_PipeTicSize(0), m_PipeRiseDropRadius(0) {
+EoDlgPipeOptions::EoDlgPipeOptions(CWnd* parent) 
+    : CDialog(EoDlgPipeOptions::IDD, parent)
+    , m_PipeTicSize(0)
+    , m_PipeRiseDropRadius(0) {
 }
+
 EoDlgPipeOptions::~EoDlgPipeOptions() {
 }
+
 void EoDlgPipeOptions::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 }

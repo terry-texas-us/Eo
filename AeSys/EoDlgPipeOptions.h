@@ -6,7 +6,7 @@ class EoDlgPipeOptions : public CDialog {
 	DECLARE_DYNAMIC(EoDlgPipeOptions)
 
 public:
-	EoDlgPipeOptions(CWnd* pParent = NULL);
+	EoDlgPipeOptions(CWnd* parent = NULL);
 	virtual ~EoDlgPipeOptions();
 
 // Dialog Data
