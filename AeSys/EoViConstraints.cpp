@@ -90,13 +90,13 @@ void AeSysView::SetGridSnapSpacing(double x, double y, double z) {
 	m_ZGridSnapSpacing = z;
 }
 void AeSysView::DisplayGrid(CDC* deviceContext) {
-	double dHalfPts = m_MaximumDotsPerLine * .5;
+	const double dHalfPts = m_MaximumDotsPerLine * .5;
 
 	if (DisplayGridWithPoints()) {
 		OdGePoint3d	pt;
 
 		if (fabs(m_YGridPointSpacing) > DBL_EPSILON && fabs(m_ZGridPointSpacing) > DBL_EPSILON) {
-			COLORREF Color = theApp.GetHotColor(1);
+			const COLORREF Color = theApp.GetHotColor(1);
 
 			pt.x = m_GridOrigin.x;
 			pt.z = m_GridOrigin.z - dHalfPts * m_ZGridPointSpacing;
@@ -110,7 +110,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 			}
 		}
 		if (fabs(m_XGridPointSpacing) > DBL_EPSILON && fabs(m_ZGridPointSpacing) > DBL_EPSILON) {
-			COLORREF Color = theApp.GetHotColor(2);
+			const COLORREF Color = theApp.GetHotColor(2);
 
 			pt.x = m_GridOrigin.x - dHalfPts * m_XGridPointSpacing;
 			pt.y = m_GridOrigin.y;
@@ -124,7 +124,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 			}
 		}
 		if (fabs(m_XGridPointSpacing) > DBL_EPSILON && fabs(m_YGridPointSpacing) > DBL_EPSILON) {
-			COLORREF Color = theApp.GetHotColor(3);
+			const COLORREF Color = theApp.GetHotColor(3);
 
 			pt.y = m_GridOrigin.y - dHalfPts * m_YGridPointSpacing;
 			pt.z = m_GridOrigin.z;
@@ -141,8 +141,8 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 	if (DisplayGridWithLines()) {
 		if (fabs(m_XGridLineSpacing) > DBL_EPSILON && fabs(m_YGridLineSpacing) > DBL_EPSILON) {
 			int i;
-			EoInt16 ColorIndex = pstate.ColorIndex();
-			EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+			const EoInt16 ColorIndex = pstate.ColorIndex();
+			const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
 			pstate.SetPen(this, deviceContext, 250, 1);
 			
 			OdGePoint3d StartPoint;

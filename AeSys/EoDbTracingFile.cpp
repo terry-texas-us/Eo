@@ -19,7 +19,7 @@ bool EoDbTracingFile::ReadLayer(EoDbLayer* layer) {
 	if (ReadUInt16() != kGroupsSection)
 		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kGroupsSection.";
 
-	EoUInt16 NumberOfGroups = ReadUInt16();
+	const EoUInt16 NumberOfGroups = ReadUInt16();
 
 	for (EoUInt16 n = 0; n < NumberOfGroups; n++) {
 		EoDbGroup* Group = ReadGroup();
@@ -31,7 +31,7 @@ bool EoDbTracingFile::ReadLayer(EoDbLayer* layer) {
 	return true;
 }
 EoDbGroup* EoDbTracingFile::ReadGroup() {
-	size_t NumberOfPrimitives = ReadUInt16();
+	const size_t NumberOfPrimitives = ReadUInt16();
 
 	EoDbGroup* Group = new EoDbGroup;
 	EoDbPrimitive* Primitive;

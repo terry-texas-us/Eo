@@ -54,7 +54,7 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 		UpdateGroupInAllViews(EoDb::kGroup, Group);
 		Group->TransformBy(TranslationMatrix);
 
-		LPARAM Hint = (theApp.IsTrapHighlighted()) ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
+		const LPARAM Hint = (theApp.IsTrapHighlighted()) ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
 		UpdateGroupInAllViews(Hint, Group);
 	}
 }
@@ -68,7 +68,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 
 		POSITION GroupPosition = GetFirstTrappedGroupPosition();
 		while (GroupPosition != 0) {
-			EoDbGroup* Group = GetNextTrappedGroup(GroupPosition);
+			const EoDbGroup* Group = GetNextTrappedGroup(GroupPosition);
 
 			POSITION PrimitivePosition = Group->GetHeadPosition();
 			while (PrimitivePosition != 0) {
@@ -79,7 +79,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 				}
 			}
 		}
-		size_t AllocationSize = (strBuf.GetLength() + 1) * sizeof(wchar_t);
+		const size_t AllocationSize = (strBuf.GetLength() + 1) * sizeof(wchar_t);
 		GLOBALHANDLE ClipboardDataHandle = (GLOBALHANDLE) GlobalAlloc(GHND, AllocationSize);
         if (ClipboardDataHandle != NULL) {
             LPWSTR ClipboardData = (LPWSTR) GlobalLock(ClipboardDataHandle);
@@ -91,7 +91,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
         }
 	}
 	if (theApp.IsClipboardDataImage()) {
-		int PrimitiveState = pstate.Save();
+		const int PrimitiveState = pstate.Save();
 
 		HDC hdcEMF = ::CreateEnhMetaFile(0, 0, 0, 0);
 		m_TrappedGroupList.Display(view, CDC::FromHandle(hdcEMF));
@@ -112,8 +112,8 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		
 		OdGeExtents3d Extents;
 		m_TrappedGroupList.GetExtents__(view, Extents);
-		OdGePoint3d MinimumPoint = Extents.minPoint();
-		ULONGLONG dwSizeOfBuffer = MemoryFile.GetLength();
+		const OdGePoint3d MinimumPoint = Extents.minPoint();
+		const ULONGLONG dwSizeOfBuffer = MemoryFile.GetLength();
 
 		MemoryFile.SeekToBegin();
 		MemoryFile.Write(&dwSizeOfBuffer, sizeof(DWORD));

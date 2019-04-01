@@ -218,7 +218,7 @@ void EoCtrlColorsButton::OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags) {
 	CMFCButton::OnKeyDown(keyCode, repeatCount, flags);
 }
 void EoCtrlColorsButton::OnLButtonUp(UINT flags, CPoint point) {
-	EoUInt16 CurrentSubItem = SubItemByPoint(point);
+	const EoUInt16 CurrentSubItem = SubItemByPoint(point);
 	if (CurrentSubItem != 0) {
 		m_SubItem = CurrentSubItem;
 	}

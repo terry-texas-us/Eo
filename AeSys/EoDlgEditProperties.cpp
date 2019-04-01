@@ -34,7 +34,7 @@ static OdString FormatValue(const OdResBuf* rb) {
 	OdString s;
 
 	if (rb->restype() == OdResBuf::kRtEntName || rb->restype() == OdResBuf::kDxfEnd) {
-		OdDbObjectId id = rb->getObjectId(0);
+		const OdDbObjectId id = rb->getObjectId(0);
 		s = id.getHandle().ascii();
 		return s;
 	}
@@ -144,8 +144,8 @@ void EoDlgEditProperties::OnButton() {
 			rb->setDouble(wcstod(m_sValue, 0));
 			break;
 		case OdDxfCode::Point: {
-			int sp1 = m_sValue.Find(' ');
-			int sp2 = m_sValue.Find(' ',sp1+1);
+			const int sp1 = m_sValue.Find(' ');
+			const int sp2 = m_sValue.Find(' ',sp1+1);
 			double x = wcstod(m_sValue.Left(sp1), 0);
 			double y = wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0);
 			double z = wcstod(m_sValue.Mid(sp2 + 1), 0);

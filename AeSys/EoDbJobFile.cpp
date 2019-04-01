@@ -33,7 +33,7 @@ void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, EoInt16 Primitiv
 	case EoDb::kCSplinePrimitive:
 	case EoDb::kSplinePrimitive:
 		if (PrimitiveType == kCSplinePrimitive) {
-			EoUInt16 NumberOfControlPoints = *((EoUInt16*) &m_PrimBuf[10]);
+			const EoUInt16 NumberOfControlPoints = *((EoUInt16*) &m_PrimBuf[10]);
 			m_PrimBuf[3] = EoSbyte((2 + NumberOfControlPoints * 3) / 8 + 1);
 			*((EoUInt16*) &m_PrimBuf[4]) = EoUInt16(EoDb::kSplinePrimitive);
 			m_PrimBuf[8] = m_PrimBuf[10];
@@ -104,7 +104,7 @@ bool EoDbJobFile::GetNextVisibleGroup(CFile& file, EoDbGroup*& group) {
 		}
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		EoUInt16 wPrims = *((EoUInt16*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
+		const EoUInt16 wPrims = *((EoUInt16*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
 		for (EoUInt16 w = 1; w < wPrims; w++) {
 			try {
 				Position = file.GetPosition();
@@ -112,13 +112,13 @@ bool EoDbJobFile::GetNextVisibleGroup(CFile& file, EoDbGroup*& group) {
 					throw L"Exception.FileJob: Unexpected end of file.";
 				group->AddTail(Primitive);
 			}
-			catch (LPWSTR szMessage) {
+			catch (const LPWSTR szMessage) {
 				theApp.AddStringToMessageList(szMessage);
 				file.Seek(Position + 32, CFile::begin);
 			}
 		}
 	}
-	catch (LPWSTR szMessage) {
+	catch (const LPWSTR szMessage) {
 		if (Position >= 96) {
 			if (::MessageBoxW(0, szMessage, 0, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL)
 				return false;
@@ -170,9 +170,9 @@ bool EoDbJobFile::ReadNextPrimitive(CFile &file, EoByte *buffer, EoInt16& primit
 	if (!IsValidPrimitive(primitiveType)) {
 		throw L"Exception.FileJob: Invalid primitive type.";
 	}
-	int LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
+	const int LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
 	if (LengthInChunks > 1) {
-		UINT BytesRemaining = (LengthInChunks - 1) * 32;
+		const UINT BytesRemaining = (LengthInChunks - 1) * 32;
 
 		if (BytesRemaining >= EoDbPrimitive::BUFFER_SIZE - 32) {
 			throw L"Exception.FileJob: Primitive buffer overflow.";
@@ -218,7 +218,7 @@ bool EoDbJobFile::IsValidPrimitive(EoInt16 primitiveType) {
 	}
 }
 bool EoDbJobFile::IsValidVersion1Primitive(EoInt16 primitiveType) {
-	EoByte* PrimitiveType = (EoByte*) &primitiveType;
+	const EoByte* PrimitiveType = (EoByte*) &primitiveType;
 	switch (PrimitiveType[1]) {
 	case 17: // 0x11 text
 	case 24: // 0x18 bspline
@@ -239,7 +239,7 @@ void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 
 	POSITION Position = group->GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = group->GetNext(Position);
+		const EoDbPrimitive* Primitive = group->GetNext(Position);
 		Primitive->Write(file, m_PrimBuf);
 	}
 }

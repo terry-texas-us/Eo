@@ -30,7 +30,7 @@ EoDbGroup::~EoDbGroup() {
 void EoDbGroup::AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 		Primitive->AddToTreeViewControl(tree, parent);
 	}
 }
@@ -45,7 +45,7 @@ void EoDbGroup::BreakPolylines() {
 		POSITION PrimitivePosition = Position;
 		EoDbPrimitive* Primitive = GetNext(Position);
 		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
-			EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
+			const EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
@@ -104,7 +104,7 @@ void EoDbGroup::DeletePrimitivesAndRemoveAll() {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbPrimitive* Primitive = GetNext(Position);
-		OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
+		const OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Entity->erase();
@@ -124,8 +124,8 @@ void EoDbGroup::Display(AeSysView* view, CDC* deviceContext) {
 void EoDbGroup::Erase() {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
-		OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
+		const EoDbPrimitive* Primitive = GetNext(Position);
+		const OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Entity->erase();
@@ -135,8 +135,8 @@ void EoDbGroup::Erase() {
 void EoDbGroup::UndoErase() {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
-		OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
+		const EoDbPrimitive* Primitive = GetNext(Position);
+		const OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForWrite, true);
 			Entity->erase(false);
@@ -170,7 +170,7 @@ void EoDbGroup::GetExtents_(AeSysView* view, OdGeExtents3d& extents) {
 	OdGeExtents3d GroupExtents;
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 		Primitive->GetExtents(view, GroupExtents);
 	}
 	if (GroupExtents.isValidExtents()) {
@@ -193,7 +193,7 @@ int EoDbGroup::GetLinetypeIndexRefCount(EoInt16 linetypeIndex) {
 
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 
 		if (Primitive->LinetypeIndex() == linetypeIndex) {
 			Count++;
@@ -214,7 +214,7 @@ void EoDbGroup::InsertBefore(POSITION insertPosition, EoDbGroup* group) {
 bool EoDbGroup::IsInView(AeSysView* view) const {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 		if (Primitive->IsInView(view)) {
 			return true;
 		}
@@ -225,7 +225,7 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	OdGePoint3d Point;
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 		if (Primitive->SelectBy(point, view, Point)) {
 			return true;
 		}
@@ -275,7 +275,7 @@ void EoDbGroup::PenTranslation(EoUInt16 wCols, EoInt16* pColNew, EoInt16* pCol) 
 void EoDbGroup::RemoveDuplicatePrimitives() {
 	POSITION BasePosition = GetHeadPosition();
 	while (BasePosition != 0) {
-		EoDbPrimitive* BasePrimitive = GetNext(BasePosition);
+		const EoDbPrimitive* BasePrimitive = GetNext(BasePosition);
 
 		POSITION TestPosition = BasePosition;
 		while (TestPosition != 0) {
@@ -321,7 +321,7 @@ bool EoDbGroup::SelectBy(const EoGeLineSeg3d& line, AeSysView* view) const {
 bool EoDbGroup::SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysView* view) const {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 		if (Primitive->SelectBy(pt1, pt2, view)) {
 			return true;
 		}
@@ -338,7 +338,7 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 		if (Primitive == sm_PrimitiveToIgnore) {
 			continue;
 		}
-		OdGePoint3d pt = Primitive->SelectAtControlPoint(view, point);
+		const OdGePoint3d pt = Primitive->SelectAtControlPoint(view, point);
 
 		if (EoDbPrimitive::ControlPointIndex() != SIZE_T_MAX) {
 			EngagedPrimitive = Primitive;
@@ -381,8 +381,8 @@ void EoDbGroup::SortTextOnY() {
 			EoDbPrimitive* pPrim2 = GetNext(pos2);
 
 			if (pPrim1->Is(EoDb::kTextPrimitive) && pPrim2->Is(EoDb::kTextPrimitive)) {
-				double dY1 = static_cast<EoDbText*>(pPrim1)->Position().y;
-				double dY2 = static_cast<EoDbText*>(pPrim2)->Position().y;
+				const double dY1 = static_cast<EoDbText*>(pPrim1)->Position().y;
+				const double dY2 = static_cast<EoDbText*>(pPrim2)->Position().y;
 				if (dY1 < dY2) {
 					SetAt(Position, pPrim2);
 					SetAt(pos1, pPrim1);
@@ -414,7 +414,7 @@ void EoDbGroup::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		EoDbPrimitive* Primitive = GetNext(Position);
-		OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
+		const OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Entity->transformBy(transformMatrix);
@@ -426,7 +426,7 @@ void EoDbGroup::Write(EoDbFile& file) {
 	file.WriteUInt16(EoUInt16(GetCount()));
 
 	for (POSITION Position = GetHeadPosition(); Position != 0;) {
-		EoDbPrimitive* Primitive = GetNext(Position);
+		const EoDbPrimitive* Primitive = GetNext(Position);
 		Primitive->Write(file);
 	}
 }
@@ -438,7 +438,7 @@ void EoDbGroup::Write(CFile& file, EoByte* buffer) {
 
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive =	GetNext(Position);
+		const EoDbPrimitive* Primitive =	GetNext(Position);
 		Primitive->Write(file, buffer);
 	}
 }

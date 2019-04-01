@@ -58,7 +58,7 @@ void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) {
 void AeSysView::OnEditModePivot() {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d pt = GetCursorPosition();
+	const OdGePoint3d pt = GetCursorPosition();
 	Document->SetTrapPivotPoint(pt);
 	// pSetSegPos(pTRAP_PVT_MRK_ID, pt);
 }
@@ -95,7 +95,7 @@ void AeSysView::OnEditModeRotcw() {
 void AeSysView::OnEditModeMove() {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d pt = GetCursorPosition();
+	const OdGePoint3d pt = GetCursorPosition();
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 		RubberBandingStartAtEnable(pt, Lines);
@@ -115,7 +115,7 @@ void AeSysView::OnEditModeMove() {
 void AeSysView::OnEditModeCopy() {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d pt = GetCursorPosition();
+	const OdGePoint3d pt = GetCursorPosition();
 	if (m_PreviousOp != ID_OP5) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 		RubberBandingStartAtEnable(pt, Lines);

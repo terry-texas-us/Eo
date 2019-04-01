@@ -15,7 +15,7 @@ void AeSysView::OnDrawModeOptions() {
 }
 
 void AeSysView::OnDrawModePoint() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const OdGePoint3d CurrentPnt = GetCursorPosition();
 
     OdDbPointPtr Point = EoDbPoint::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
     Point->setPosition(CurrentPnt);
@@ -57,7 +57,7 @@ void AeSysView::OnDrawModePolygon() {
         m_DrawModePoints.clear();
         m_DrawModePoints.append(CurrentPnt);
     } else {
-        int NumberOfPoints = m_DrawModePoints.size();
+        const int NumberOfPoints = m_DrawModePoints.size();
 
         if (m_DrawModePoints[NumberOfPoints - 1] != CurrentPnt) {
             CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
@@ -67,7 +67,7 @@ void AeSysView::OnDrawModePolygon() {
 }
 
 void AeSysView::OnDrawModeQuad() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const OdGePoint3d CurrentPnt = GetCursorPosition();
 
     if (PreviousDrawCommand != ID_OP4) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP4);
@@ -79,7 +79,7 @@ void AeSysView::OnDrawModeQuad() {
 }
 
 void AeSysView::OnDrawModeArc() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const OdGePoint3d CurrentPnt = GetCursorPosition();
 
     if (PreviousDrawCommand != ID_OP5) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP5);
@@ -91,7 +91,7 @@ void AeSysView::OnDrawModeArc() {
 }
 
 void AeSysView::OnDrawModeBspline() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const OdGePoint3d CurrentPnt = GetCursorPosition();
 
     if (PreviousDrawCommand != ID_OP6) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP6);
@@ -105,7 +105,7 @@ void AeSysView::OnDrawModeBspline() {
     }
 }
 void AeSysView::OnDrawModeCircle() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const OdGePoint3d CurrentPnt = GetCursorPosition();
 
     if (PreviousDrawCommand != ID_OP7) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP7);
@@ -118,7 +118,7 @@ void AeSysView::OnDrawModeCircle() {
 }
 
 void AeSysView::OnDrawModeEllipse() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const OdGePoint3d CurrentPnt = GetCursorPosition();
 
     if (PreviousDrawCommand != ID_OP8) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP8);
@@ -142,7 +142,7 @@ void AeSysView::OnDrawModeInsert() {
 void AeSysView::OnDrawModeReturn() {
     OdGePoint3d CurrentPnt = GetCursorPosition();
 
-    int NumberOfPoints = m_DrawModePoints.size();
+    const int NumberOfPoints = m_DrawModePoints.size();
     EoDbGroup* Group = 0;
 
     switch (PreviousDrawCommand) {
@@ -232,7 +232,7 @@ void AeSysView::OnDrawModeReturn() {
     }
     case ID_OP6: {
         m_DrawModePoints.append(CurrentPnt);
-        int NumberOfControlPoints = m_DrawModePoints.size();
+        const int NumberOfControlPoints = m_DrawModePoints.size();
         Group = new EoDbGroup;
         EoDbSpline* Spline = EoDbSpline::Create(Database());
         OdGePoint3dArray Points;
@@ -248,7 +248,7 @@ void AeSysView::OnDrawModeReturn() {
             theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
             return;
         }
-        OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+        const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
         Group = new EoDbGroup;
         EoDbEllipse* Circle = EoDbEllipse::Create(Database());
@@ -266,8 +266,8 @@ void AeSysView::OnDrawModeReturn() {
             SetCursorPosition(m_DrawModePoints[0]);
             return;
         }
-        OdGeVector3d MajorAxis(m_DrawModePoints[1] - m_DrawModePoints[0]);
-        OdGeVector3d MinorAxis(m_DrawModePoints[2] - m_DrawModePoints[0]);
+        const OdGeVector3d MajorAxis(m_DrawModePoints[1] - m_DrawModePoints[0]);
+        const OdGeVector3d MinorAxis(m_DrawModePoints[2] - m_DrawModePoints[0]);
         // <tas="Ellipse major and minor axis may not properly define a plane. Memory leaks?"</tas>
         // <tas="Ellipse major must always be longer than minor. Asserts otherwise!"</tas>
         Group = new EoDbGroup;
@@ -297,7 +297,7 @@ void AeSysView::OnDrawModeEscape() {
 
 void AeSysView::DoDrawModeMouseMove() {
     OdGePoint3d CurrentPnt = GetCursorPosition();
-    int NumberOfPoints = m_DrawModePoints.size();
+    const int NumberOfPoints = m_DrawModePoints.size();
 
     switch (PreviousDrawCommand) {
     case ID_OP2:
@@ -321,7 +321,7 @@ void AeSysView::DoDrawModeMouseMove() {
         if (NumberOfPoints == 1) {
             m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
         } else {
-            OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+            const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
             OdGeMatrix3d WorldToPlaneTransform;
             OdGePlane Plane(m_DrawModePoints[0], ActiveViewPlaneNormal);
@@ -332,7 +332,7 @@ void AeSysView::DoDrawModeMouseMove() {
             OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
             PointToPlaneVector.transformBy(WorldToPlaneTransform);
 
-            double Elevation = PointToPlaneVector.z;
+            const double Elevation = PointToPlaneVector.z;
 
             WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
 
@@ -364,8 +364,8 @@ void AeSysView::DoDrawModeMouseMove() {
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
             for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
-                OdGePoint3d StartPoint = m_DrawModePoints[PointsIndex];
-                OdGePoint3d EndPoint = m_DrawModePoints[(PointsIndex + 1) % 4];
+                const OdGePoint3d StartPoint = m_DrawModePoints[PointsIndex];
+                const OdGePoint3d EndPoint = m_DrawModePoints[(PointsIndex + 1) % 4];
                 m_PreviewGroup.AddTail(EoDbLine::Create(StartPoint, EndPoint));
             }
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
@@ -398,8 +398,8 @@ void AeSysView::DoDrawModeMouseMove() {
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-            int NumberOfControlPoints = m_DrawModePoints.size();
-            int Degree = EoMin(3, NumberOfControlPoints - 1);
+            const int NumberOfControlPoints = m_DrawModePoints.size();
+            const int Degree = EoMin(3, NumberOfControlPoints - 1);
             OdGePoint3dArray Points;
             for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
                 Points.append(m_DrawModePoints[ControlPointIndex]);
@@ -417,7 +417,7 @@ void AeSysView::DoDrawModeMouseMove() {
     case ID_OP7:
         if (m_DrawModePoints[0] != CurrentPnt) {
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-            OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+            const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
@@ -435,8 +435,8 @@ void AeSysView::DoDrawModeMouseMove() {
             if (NumberOfPoints == 1) {
                 m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
             } else {
-                OdGeVector3d MajorAxis(m_DrawModePoints[1] - m_DrawModePoints[0]);
-                OdGeVector3d MinorAxis(CurrentPnt - m_DrawModePoints[0]);
+                const OdGeVector3d MajorAxis(m_DrawModePoints[1] - m_DrawModePoints[0]);
+                const OdGeVector3d MinorAxis(CurrentPnt - m_DrawModePoints[0]);
 
                 m_PreviewGroup.AddTail(new EoDbEllipse(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI));
             }

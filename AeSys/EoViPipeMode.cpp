@@ -43,8 +43,8 @@ void AeSysView::OnPipeModeFitting() {
 	EoDbLine* HorizontalSection;
 	EoDbGroup* Group = SelectLineBy(CurrentPnt, HorizontalSection);
 	if (Group != 0) {
-		OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
-		OdGePoint3d EndPoint = HorizontalSection->EndPoint();
+		const OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
+		const OdGePoint3d EndPoint = HorizontalSection->EndPoint();
 
 		if (!m_PipeModePoints.empty()) {
 			CurrentPnt = SnapPointToAxis(m_PipeModePoints[0], CurrentPnt);
@@ -172,7 +172,7 @@ void AeSysView::OnPipeModeRise() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			}
 			Group = new EoDbGroup;
-			OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+			const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 			EoDbEllipse* Circle = EoDbEllipse::Create(Database());
 			Circle->SetToCircle(CurrentPnt, ActiveViewPlaneNormal, m_PipeRiseDropRadius);
 			Circle->SetColorIndex(1);
@@ -242,7 +242,7 @@ void AeSysView::OnPipeModeDrop() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			}
 			Group = new EoDbGroup;
-			OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+			const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 			EoDbEllipse* Circle = EoDbEllipse::Create(Database());
 			Circle->SetToCircle(CurrentPnt, ActiveViewPlaneNormal, m_PipeRiseDropRadius);
 			Circle->SetColorIndex(1);
@@ -258,17 +258,17 @@ void AeSysView::OnPipeModeDrop() {
 }
 
 void AeSysView::OnPipeModeSymbol() {
-	double SymbolSize[] = {
+	const double SymbolSize[] = {
 		.09375, .09375, .09375, .09375, .125, .125, .125, .125, .125, .125,
 		.125, .125, .125, .125, .125, 0., 0., .09375
 	};
-	double TicDistance[] = {
+	const double TicDistance[] = {
 		.125, .125, .125, .125, .15625, .15625, .15625, .15625, .15625, .15625,
 		.15625, .15625, .15625, .15625, .15625, .03125, .03125, .125
 	};
 
-	OdGePoint3d CurrentPnt = GetCursorPosition();
-	OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
 	OnPipeModeEscape();
 	m_PipeModePoints.setLogicalLength(2);
@@ -283,9 +283,9 @@ void AeSysView::OnPipeModeSymbol() {
 	if (Dialog.DoModal() == IDOK) {
 		m_CurrentPipeSymbolIndex = Dialog.m_CurrentPipeSymbolIndex;
 	}
-	OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
-	OdGePoint3d EndPoint = HorizontalSection->EndPoint();
-	OdGePoint3d PointOnSection = HorizontalSection->ProjPt_(CurrentPnt);
+	const OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
+	const OdGePoint3d EndPoint = HorizontalSection->EndPoint();
+	const OdGePoint3d PointOnSection = HorizontalSection->ProjPt_(CurrentPnt);
 
 	EoGeLineSeg3d BeginSection(PointOnSection, BeginPoint);
 	EoGeLineSeg3d EndSection(PointOnSection, EndPoint);
@@ -294,7 +294,7 @@ void AeSysView::OnPipeModeSymbol() {
 
 	OdGePoint3d SymbolBeginPoint = ProjectToward(PointOnSection, BeginPoint, SymbolSize[m_CurrentPipeSymbolIndex]);
 	OdGePoint3d SymbolEndPoint = ProjectToward(PointOnSection, EndPoint, SymbolSize[m_CurrentPipeSymbolIndex]);
-	double TicSize = m_PipeTicSize;
+	const double TicSize = m_PipeTicSize;
 
 	HorizontalSection->SetEndPoint(SymbolBeginPoint);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, HorizontalSection);
@@ -766,7 +766,7 @@ void AeSysView::OnPipeModeSymbol() {
 }
 
 void AeSysView::OnPipeModeWye() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+	const OdGePoint3d CurrentPnt = GetCursorPosition();
 
 	if (m_PipeModePoints.empty()) {
 		m_PipeModePoints.append(CurrentPnt);
@@ -777,16 +777,16 @@ void AeSysView::OnPipeModeWye() {
 	EoDbGroup* Group = SelectLineBy(CurrentPnt, HorizontalSection);
 	if (Group != 0) {
 		OdGePoint3d PointOnSection = HorizontalSection->ProjPt_(CurrentPnt);
-		OdGePoint3d BeginPointProjectedToSection = HorizontalSection->ProjPt_(m_PipeModePoints[0]);
-		double DistanceToSection = OdGeVector3d(BeginPointProjectedToSection - m_PipeModePoints[0]).length();
+		const OdGePoint3d BeginPointProjectedToSection = HorizontalSection->ProjPt_(m_PipeModePoints[0]);
+		const double DistanceToSection = OdGeVector3d(BeginPointProjectedToSection - m_PipeModePoints[0]).length();
 
 		if (DistanceToSection >= .25) {
 			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-			OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
-			OdGePoint3d EndPoint = HorizontalSection->EndPoint();
+			const OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
+			const OdGePoint3d EndPoint = HorizontalSection->EndPoint();
 
-			double DistanceBetweenSectionPoints = OdGeVector3d(PointOnSection - BeginPointProjectedToSection).length();
+			const double DistanceBetweenSectionPoints = OdGeVector3d(PointOnSection - BeginPointProjectedToSection).length();
 
 			if (fabs(DistanceBetweenSectionPoints - DistanceToSection) <= .25) { // Just need to shift point on section and do a single 45 degree line
 				PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, DistanceToSection);
@@ -814,7 +814,7 @@ void AeSysView::OnPipeModeWye() {
 				OdGePoint3d PointAtBend;
 
 				if (DistanceBetweenSectionPoints - .25 <= DistanceToSection) {
-					double d3 = (DistanceBetweenSectionPoints > .25) ? DistanceBetweenSectionPoints : .125;
+					const double d3 = (DistanceBetweenSectionPoints > .25) ? DistanceBetweenSectionPoints : .125;
 					PointAtBend = ProjectToward(BeginPointProjectedToSection, m_PipeModePoints[0], d3);
 					PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, d3);
 				}
@@ -865,7 +865,7 @@ void AeSysView::OnPipeModeEscape() {
 
 void AeSysView::DoPipeModeMouseMove() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
-	int NumberOfPoints = m_PipeModePoints.size();
+	const int NumberOfPoints = m_PipeModePoints.size();
 
 	switch (m_PreviousOp) {
 	case ID_OP2:
@@ -941,8 +941,8 @@ void AeSysView::GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint,
 void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) {
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, section);
 
-	OdGePoint3d BeginPoint = section->StartPoint();
-	OdGePoint3d EndPoint = section->EndPoint();
+	const OdGePoint3d BeginPoint = section->StartPoint();
+	const OdGePoint3d EndPoint = section->EndPoint();
 	OdGePoint3d CutPoint = ProjectToward(point, BeginPoint, m_PipeRiseDropRadius);
 	
 	section->SetEndPoint(CutPoint);
@@ -956,7 +956,7 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
 	group = new EoDbGroup;
 	GenerateTicMark(point, BeginPoint, 2. * m_PipeRiseDropRadius, group);
 	
-	OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 	EoDbEllipse* Circle = EoDbEllipse::Create(Database());
 	Circle->SetToCircle(point, ActiveViewPlaneNormal, m_PipeRiseDropRadius);
 	Circle->SetColorIndex(1);
@@ -968,8 +968,8 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }
 void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) {
-	OdGePoint3d BeginPoint = section->StartPoint();
-	OdGePoint3d EndPoint = section->EndPoint();
+	const OdGePoint3d BeginPoint = section->StartPoint();
+	const OdGePoint3d EndPoint = section->EndPoint();
 
 	section->SetEndPoint(point);
 	EoDbLine* Line = EoDbLine::Create(Database());
@@ -981,7 +981,7 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, Eo
 	group = new EoDbGroup;
 	GenerateTicMark(point, BeginPoint, 2. * m_PipeRiseDropRadius, group);
 
-	OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 	EoDbEllipse* Circle = EoDbEllipse::Create(Database());
 	Circle->SetToCircle(point, ActiveViewPlaneNormal, m_PipeRiseDropRadius);
 	Circle->SetColorIndex(1);
@@ -993,13 +993,13 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, Eo
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }
 bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, double distance, EoDbGroup* group) {
-	OdGePoint3d PointOnLine = ProjectToward(startPoint, endPoint, distance);
+	const OdGePoint3d PointOnLine = ProjectToward(startPoint, endPoint, distance);
 
 	OdGeVector3d Projection(endPoint - PointOnLine);
 
-	double DistanceToEndPoint = Projection.length();
+	const double DistanceToEndPoint = Projection.length();
 
-	bool MarkGenerated = DistanceToEndPoint > DBL_EPSILON;
+	const bool MarkGenerated = DistanceToEndPoint > DBL_EPSILON;
 	if (MarkGenerated) {
 		Projection *= m_PipeTicSize / DistanceToEndPoint;
 

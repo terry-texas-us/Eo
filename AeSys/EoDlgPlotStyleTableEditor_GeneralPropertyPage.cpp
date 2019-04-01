@@ -148,7 +148,7 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
   OdString description = m_pPlotStyleTable->description();
   m_editDescription.SetWindowText(description);
 
-  bool check = m_pPlotStyleTable->isApplyScaleFactor();
+  const bool check = m_pPlotStyleTable->isApplyScaleFactor();
   m_checkScalefactor.SetCheck(check);
   m_editScalefactor.EnableWindow(check);
   OdString sScaleFactor;
@@ -196,7 +196,7 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::OnChangeEditDescription() {
 }
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnCheckScalefactor() {
-  int check = m_checkScalefactor.GetCheck();
+  const int check = m_checkScalefactor.GetCheck();
   m_pPlotStyleTable->setApplyScaleFactor(check ? true : false);
   m_editScalefactor.EnableWindow(check);
 }

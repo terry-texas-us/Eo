@@ -9,8 +9,8 @@ EoGeNurbCurve3d::EoGeNurbCurve3d(const EoGeNurbCurve3d& spline)
 EoGeNurbCurve3d::~EoGeNurbCurve3d() {
 }
 int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
-	int NumberOfControlPoints = spline.numControlPoints();
-	int Degree = EoMin(spline.degree(), NumberOfControlPoints - 1);
+	const int NumberOfControlPoints = spline.numControlPoints();
+	const int Degree = EoMin(spline.degree(), NumberOfControlPoints - 1);
 
 	if (Degree == 1) {
 		for (int ArrayIndex = 0; ArrayIndex < NumberOfControlPoints; ArrayIndex++) {
@@ -18,14 +18,14 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 		}
 		return NumberOfControlPoints;
 	}
-	int Order = Degree + 1;
+	const int Order = Degree + 1;
 
 	// <tas="Large allocation for weight array is really not used. Allocation failure not tested for"</tas>
 	double* Weight = new double[128 * 128];
 	for (int i = 0; i < 128 * 128; i++) {
 		Weight[i] = 0.;
 	}
-	int KnotsLength = NumberOfControlPoints + Degree;
+	const int KnotsLength = NumberOfControlPoints + Degree;
 
 	int iPts = 8 * NumberOfControlPoints;
 	
@@ -35,7 +35,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 		double H = 0.;
 		double Z = 0.;
 		double T, W1, W2;
-		double Step = spline.knotAt(KnotsLength) / (double(iPts) - 1.);
+		const double Step = spline.knotAt(KnotsLength) / (double(iPts) - 1.);
 		int iPts2 = 0;
 		for (int i4 = Order - 1; i4 <= NumberOfControlPoints + 1; i4++) {
 			for (int i = 0; i <= KnotsLength - 1; i++) { // Calculate values for weighting value
@@ -88,12 +88,12 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	return (iPts);
 }
 void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& controlPoints, OdGeKnotVector& knots) {
-	int Order = degree + 1;
-	int NumberOfControlPoints = controlPoints.size();
+	const int Order = degree + 1;
+	const int NumberOfControlPoints = controlPoints.size();
 
 	knots.setLogicalLength(0);
 
-	int KnotsLength = NumberOfControlPoints + Order;
+	const int KnotsLength = NumberOfControlPoints + Order;
 
 	for (int KnotIndex = 0; KnotIndex < KnotsLength; KnotIndex++) {
 		if (KnotIndex <= Order - 1) { // Beginning of curve
@@ -103,7 +103,7 @@ void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& c
 			knots.append(knots[KnotIndex - 1]);
 		}
 		else {
-			int i2 = KnotIndex - Order;
+			const int i2 = KnotIndex - Order;
 			if (controlPoints[i2] == controlPoints[i2 + 1]) { // Repeating vertices
 				knots.append(knots[KnotIndex - 1]);
 			}

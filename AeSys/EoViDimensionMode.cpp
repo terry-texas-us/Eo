@@ -47,7 +47,7 @@ void AeSysView::OnDimensionModeOptions(void) {
 
 void AeSysView::OnDimensionModeArrow(void) {
 	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
@@ -124,7 +124,7 @@ void AeSysView::OnDimensionModeLine(void) {
 }
 void AeSysView::OnDimensionModeDLine(void) {
 	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (PreviousDimensionCommand == ID_OP3 || PreviousDimensionCommand == ID_OP4) {
 		RubberBandingDisable();
 		if (PreviousDimensionCursorPosition != ptCur) {
@@ -164,7 +164,7 @@ void AeSysView::OnDimensionModeDLine(void) {
 }
 void AeSysView::OnDimensionModeDLine2(void) {
 	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (PreviousDimensionCommand == 0) {
 		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
 		PreviousDimensionCursorPosition = ptCur;
@@ -232,15 +232,15 @@ void AeSysView::OnDimensionModeExten(void) {
 }
 void AeSysView::OnDimensionModeRadius(void) {
 	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 
 	if (SelectGroupAndPrimitive(ptCur) != 0) {
-		OdGePoint3d ptEnd = DetPt();
+		const OdGePoint3d ptEnd = DetPt();
 
 		if ((EngagedPrimitive())->Is(EoDb::kEllipsePrimitive)) {
 			EoDbEllipse* pArc = static_cast<EoDbEllipse*>(EngagedPrimitive());
 
-			OdGePoint3d ptBeg = pArc->Center();
+			const OdGePoint3d ptBeg = pArc->Center();
 
 			EoDbGroup* Group = new EoDbGroup;
 
@@ -270,15 +270,15 @@ void AeSysView::OnDimensionModeRadius(void) {
 }
 void AeSysView::OnDimensionModeDiameter() {
 	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 
 	if (SelectGroupAndPrimitive(ptCur) != 0) {
-		OdGePoint3d ptEnd = DetPt();
+		const OdGePoint3d ptEnd = DetPt();
 
 		if ((EngagedPrimitive())->Is(EoDb::kEllipsePrimitive)) {
 			EoDbEllipse* pArc = static_cast<EoDbEllipse*>(EngagedPrimitive());
 
-			OdGePoint3d ptBeg = ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length());
+			const OdGePoint3d ptBeg = ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length());
 
 			EoDbGroup* Group = new EoDbGroup;
 
@@ -312,7 +312,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 	CDC* DeviceContext = GetDC();
 
 	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 
 	static OdGePoint3d rProjPt[2];
 	static OdGePoint3d CenterPoint;
@@ -348,19 +348,19 @@ void AeSysView::OnDimensionModeAngle(void) {
 		else {
 			double Angle;
 
-			OdGeVector3d vCenterToProjPt = OdGeVector3d(rProjPt[0] - CenterPoint);
-			OdGeVector3d vCenterToCur = OdGeVector3d(ptCur - CenterPoint);
+			const OdGeVector3d vCenterToProjPt = OdGeVector3d(rProjPt[0] - CenterPoint);
+			const OdGeVector3d vCenterToCur = OdGeVector3d(ptCur - CenterPoint);
 			OdGeVector3d PlaneNormal = vCenterToProjPt.crossProduct(vCenterToCur);
 			PlaneNormal.normalize();
 			if (pFndSwpAngGivPlnAnd3Lns(PlaneNormal, rProjPt[0], ptCur, rProjPt[1], CenterPoint, Angle)) {
-				double dRad = OdGeVector3d(ptCur - CenterPoint).length();
+				const double dRad = OdGeVector3d(ptCur - CenterPoint).length();
 
 				ln.set(ProjectToward(CenterPoint, rProjPt[0], dRad), ln.startPoint());
 				ln.endPoint().rotateBy(Angle, PlaneNormal, CenterPoint);
-				OdGeVector3d MajorAxis = OdGeVector3d(ln.startPoint() - CenterPoint);
+				const OdGeVector3d MajorAxis = OdGeVector3d(ln.startPoint() - CenterPoint);
 				OdGePoint3d ptRot = ln.startPoint();
 				ptRot.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
-				OdGeVector3d MinorAxis = OdGeVector3d(ptRot - CenterPoint);
+				const OdGeVector3d MinorAxis = OdGeVector3d(ptRot - CenterPoint);
 				OdGePoint3d ptArrow = ln.startPoint();
 				ptArrow.rotateBy(RADIAN, PlaneNormal, CenterPoint);
 				EoDbGroup* Group = new EoDbGroup;
@@ -376,7 +376,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 				ptArrow.rotateBy(Angle - RADIAN, PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
 				GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
-				int PrimitiveState = pstate.Save();
+				const int PrimitiveState = pstate.Save();
 
 				EoDbFontDefinition FontDefinition = pstate.FontDefinition();
 				FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
@@ -388,7 +388,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 				CharacterCellDefinition.SetHeight(.1);
 				pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
-				OdGePoint3d ptPvt = ProjectToward(ptCur, CenterPoint, - .25);
+				const OdGePoint3d ptPvt = ProjectToward(ptCur, CenterPoint, - .25);
 
                 EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 
@@ -405,7 +405,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 	}
 }
 void AeSysView::OnDimensionModeConvert(void) {
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -471,7 +471,7 @@ void AeSysView::OnDimensionModeConvert(void) {
 	PreviousDimensionCursorPosition = ptCur;
 }
 void AeSysView::OnDimensionModeReturn(void) {
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -479,7 +479,7 @@ void AeSysView::OnDimensionModeReturn(void) {
 	PreviousDimensionCursorPosition = ptCur;
 }
 void AeSysView::OnDimensionModeEscape(void) {
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 
 	RubberBandingDisable();
 	ModeLineUnhighlightOp(PreviousDimensionCommand);

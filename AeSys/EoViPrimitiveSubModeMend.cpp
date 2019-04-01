@@ -4,7 +4,7 @@
 #include "AeSysView.h"
 
 void AeSysView::OnModePrimitiveMend() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+	const OdGePoint3d CurrentPnt = GetCursorPosition();
 	EoGePoint4d ptView(CurrentPnt, 1.);
 	ModelViewTransformPoint(ptView);
 
@@ -38,8 +38,8 @@ void AeSysView::OnModePrimitiveMend() {
 	}
 }
 void AeSysView::PreviewMendPrimitive() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
-	OdGeVector3d Translate(CurrentPnt - m_MendPrimitiveBegin);
+	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	const OdGeVector3d Translate(CurrentPnt - m_MendPrimitiveBegin);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
 	m_PrimitiveToMendCopy->TranslateUsingMask(Translate, m_MendPrimitiveVertexIndex);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_PrimitiveToMendCopy);

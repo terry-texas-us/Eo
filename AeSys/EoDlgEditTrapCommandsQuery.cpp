@@ -88,7 +88,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 
 		nOff += nDel + 1;
 		nDel = Extra.Mid(nOff).Find('\t');
-		size_t nLen = min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1);
+		const size_t nLen = min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1);
 		wcscpy_s(szBuf, 64, Extra.Mid(nOff, nLen));
 
 		m_ExtraListViewControl.SetItemText(iItem++, 1, szBuf);

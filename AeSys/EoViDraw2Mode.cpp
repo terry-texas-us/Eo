@@ -42,7 +42,7 @@ void AeSysView::OnDraw2ModeJoin() {
 void AeSysView::OnDraw2ModeWall() {
 	OdGePoint3d ptEnd;
 	OdGePoint3d ptBeg;
-	OdGePoint3d ptInt;
+	const OdGePoint3d ptInt;
 
 	OdGePoint3d CurrentPnt = GetCursorPosition();
 
@@ -159,7 +159,7 @@ void AeSysView::OnDraw2ModeEscape() {
 }
 
 bool AeSysView::CleanPreviousLines() {
-	bool ParallelLines = m_PreviousReferenceLine.isParallelTo(m_CurrentReferenceLine);
+	const bool ParallelLines = m_PreviousReferenceLine.isParallelTo(m_CurrentReferenceLine);
 	if (ParallelLines) return false;
 
 	OdGePoint3d ptInt;
@@ -191,7 +191,7 @@ bool AeSysView::CleanPreviousLines() {
 bool AeSysView::StartAssemblyFromLine() {
 	EoGeLineSeg3d Line = m_BeginSectionLine->Line();
 
-	bool ParallelLines = Line.isParallelTo(m_CurrentReferenceLine);
+	const bool ParallelLines = Line.isParallelTo(m_CurrentReferenceLine);
 	if (ParallelLines) return false;
 
 	OdGePoint3d ptInt;

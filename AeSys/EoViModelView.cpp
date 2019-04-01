@@ -22,7 +22,7 @@ EoGsViewTransform AeSysView::PreviousModelView() {
 	return m_PreviousViewTransform;
 }
 void AeSysView::SetCameraPosition(const OdGeVector3d& direction) {
-	OdGePoint3d Position = m_ViewTransform.Target() + (direction.normal() * m_ViewTransform.LensLength());
+	const OdGePoint3d Position = m_ViewTransform.Target() + (direction.normal() * m_ViewTransform.LensLength());
 	m_ViewTransform.SetPosition_(Position);
 	m_ViewTransform.BuildTransformMatrix();
 }
@@ -76,7 +76,7 @@ void AeSysView::ModelViewTransformPoint(EoGePoint4d& point) {
 	point.TransformBy(Matrix);
 }
 void AeSysView::ModelViewTransformPoints(EoGePoint4dArray& points) {
-	int NumberOfPoints = (int) points.GetSize();
+	const int NumberOfPoints = (int) points.GetSize();
 	EoGeMatrix3d Matrix(m_ViewTransform.Matrix());
 	if (m_ModelTransform.Depth() != 0) {
 		Matrix.postMultBy(m_ModelTransform.ModelMatrix());

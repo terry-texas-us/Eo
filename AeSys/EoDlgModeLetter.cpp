@@ -37,7 +37,7 @@ void EoDlgModeLetter::OnOK() {
 	AeSysDoc* Document = AeSysDoc::GetDoc();
 	OdDbDatabasePtr Database = Document->m_DatabasePtr;
 
-	EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
+	const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 	EoGeReferenceSystem ReferenceSystem(m_Point, AeSysView::GetActiveView(), CharacterCellDefinition);
 
 	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
@@ -49,7 +49,7 @@ void EoDlgModeLetter::OnOK() {
 
         EoDbText* TextPrimitive;
 
-        int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
+        const int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
         if (HardLineBreakPosition == -1) { // single line text
             OdDbTextPtr Text = EoDbText::Create(Database, Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
             Text->setPosition(ReferenceSystem.Origin());

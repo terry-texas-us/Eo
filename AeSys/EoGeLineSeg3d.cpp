@@ -18,7 +18,7 @@ double EoGeLineSeg3d::AngleBetween_xy(const EoGeLineSeg3d& line) const {
 	OdGeVector3d v2(line.endPoint() - line.startPoint());
 	v2.z = 0.;
 
-	double dSumProd = v1.lengthSqrd() * v2.lengthSqrd();
+	const double dSumProd = v1.lengthSqrd() * v2.lengthSqrd();
 
 	if (dSumProd > DBL_EPSILON) {
 		double dVal = v1.dotProduct(v2) / sqrt(dSumProd);
@@ -30,7 +30,7 @@ double EoGeLineSeg3d::AngleBetween_xy(const EoGeLineSeg3d& line) const {
 	return (0.);
 }
 double EoGeLineSeg3d::AngleFromXAxis_xy() const {
-	OdGeVector3d Vector(endPoint() - startPoint());
+	const OdGeVector3d Vector(endPoint() - startPoint());
 
 	double Angle = 0.;
 
@@ -55,9 +55,9 @@ OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(double influenceAngle, double axisOff
 
 	pt.transformBy(TransformMatrix);
 
-	double dX = pt.x * pt.x;
-	double dY = pt.y * pt.y;
-	double dZ = pt.z * pt.z;
+	const double dX = pt.x * pt.x;
+	const double dY = pt.y * pt.y;
+	const double dZ = pt.z * pt.z;
 
 	double dLen = sqrt(dX + dY + dZ);
 
@@ -106,7 +106,7 @@ EoUInt16 EoGeLineSeg3d::CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line) {
 	return (wRet);
 }
 int EoGeLineSeg3d::DirectedRelationshipOf(const OdGePoint3d& point) const {
-	double Determinant = startPoint().x * (endPoint().y - point.y) - endPoint().x * (startPoint().y - point.y) + point.x * (startPoint().y - endPoint().y);
+	const double Determinant = startPoint().x * (endPoint().y - point.y) - endPoint().x * (startPoint().y - point.y) + point.x * (startPoint().y - endPoint().y);
 
 	if (Determinant > DBL_EPSILON)
 		return (1);
@@ -116,7 +116,7 @@ int EoGeLineSeg3d::DirectedRelationshipOf(const OdGePoint3d& point) const {
 		return 0;
 }
 void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
-	EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
 
 	if (EoDbPrimitive::IsSupportedLinetype(LinetypeIndex)) {
 		EoGePoint4d pt[] = {EoGePoint4d(startPoint(), 1.), EoGePoint4d(endPoint(), 1.)};
@@ -149,11 +149,11 @@ bool EoGeLineSeg3d::GetParallels(double distanceBetweenLines, double eccentricit
 	leftLine = *this;
 	rightLine = *this;
 
-	double LengthOfLines = length();
+	const double LengthOfLines = length();
 
 	if (LengthOfLines > FLT_EPSILON) {
-		double X = (endPoint().y - startPoint().y) * distanceBetweenLines / LengthOfLines;
-		double Y = (endPoint().x - startPoint().x) * distanceBetweenLines / LengthOfLines;
+		const double X = (endPoint().y - startPoint().y) * distanceBetweenLines / LengthOfLines;
+		const double Y = (endPoint().x - startPoint().x) * distanceBetweenLines / LengthOfLines;
 
 		leftLine.translateBy(OdGeVector3d(- X * eccentricity, Y * eccentricity, 0.));
 		rightLine.translateBy(OdGeVector3d(X * (1. - eccentricity), - Y * (1. - eccentricity), 0.));
@@ -164,14 +164,14 @@ bool EoGeLineSeg3d::GetParallels(double distanceBetweenLines, double eccentricit
 }
 bool EoGeLineSeg3d::IntersectWith_xy(const EoGeLineSeg3d& line, OdGePoint3d& intersection) const {
 	OdGeVector3d Start1End1(endPoint() - startPoint());
-	OdGeVector3d Start2End2(line.endPoint() - line.startPoint());
+	const OdGeVector3d Start2End2(line.endPoint() - line.startPoint());
 
-	double Determinant = Start1End1.x * Start2End2.y - Start2End2.x * Start1End1.y;
+	const double Determinant = Start1End1.x * Start2End2.y - Start2End2.x * Start1End1.y;
 
 	if (fabs(Determinant) > DBL_EPSILON) {
-		OdGeVector3d Start1Start2(line.startPoint() - startPoint());
+		const OdGeVector3d Start1Start2(line.startPoint() - startPoint());
 
-		double dT = (Start1Start2.y * Start2End2.x - Start2End2.y * Start1Start2.x) / Determinant;
+		const double dT = (Start1Start2.y * Start2End2.x - Start2End2.y * Start1Start2.x) / Determinant;
 
 		Start1End1 *= dT;
 		intersection = startPoint() - Start1End1;
@@ -184,8 +184,8 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 	pt[0] = startPoint();
 	pt[1] = endPoint();
 
-	double dX = endPoint().x - startPoint().x;
-	double dY = endPoint().y - startPoint().y;
+	const double dX = endPoint().x - startPoint().x;
+	const double dY = endPoint().y - startPoint().y;
 	int  i = 1;
 
 	int iOut[2];
@@ -240,8 +240,8 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert
 	else {
 		relationship = - (dPBegX * dBegEndX + dPBegY * dBegEndY) / dDivr;
 		relationship = EoMax(0., EoMin(1., relationship));
-		double dx = dPBegX + relationship * dBegEndX;
-		double dy = dPBegY + relationship * dBegEndY;
+		const double dx = dPBegX + relationship * dBegEndX;
+		const double dy = dPBegY + relationship * dBegEndY;
 		DistanceSquared = dx * dx + dy * dy;
 	}
 	if (DistanceSquared > apert * apert)
@@ -272,12 +272,12 @@ bool EoGeLineSeg3d::ParametricRelationshipOf(const OdGePoint3d& point, double& r
 OdGePoint3d EoGeLineSeg3d::ProjPt(const OdGePoint3d& point) const {
 	OdGeVector3d vBegEnd(endPoint() - startPoint());
 
-	double dSum = vBegEnd.lengthSqrd();
+	const double dSum = vBegEnd.lengthSqrd();
 
 	if (dSum > DBL_EPSILON) {
-		OdGeVector3d vBegPt(point - startPoint());
+		const OdGeVector3d vBegPt(point - startPoint());
 
-		double dScale = vBegPt.dotProduct(vBegEnd) / dSum;
+		const double dScale = vBegPt.dotProduct(vBegEnd) / dSum;
 
 		vBegEnd *= dScale;
 	}
@@ -312,7 +312,7 @@ int EoGeLineSeg3d::ProjPtFrom_xy(double parallelDistance, double perpendicularDi
 OdGePoint3d EoGeLineSeg3d::ProjToBegPt(double distance) {
 	OdGeVector3d vEndBeg(startPoint() - endPoint());
 
-	double dLen = vEndBeg.length();
+	const double dLen = vEndBeg.length();
 
 	if (dLen > DBL_EPSILON)
 		vEndBeg *= distance / dLen;
@@ -322,7 +322,7 @@ OdGePoint3d EoGeLineSeg3d::ProjToBegPt(double distance) {
 OdGePoint3d EoGeLineSeg3d::ProjToEndPt(double distance) {
 	OdGeVector3d vBegEnd(endPoint() - startPoint());
 
-	double dLen = vBegEnd.length();
+	const double dLen = vBegEnd.length();
 
 	if (dLen > DBL_EPSILON)
 		vBegEnd *= distance / dLen;

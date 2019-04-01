@@ -57,8 +57,8 @@ EoDbPrimitive* EoDbSpline::Clone(OdDbDatabasePtr database) const {
 	return (EoDbSpline::Create(*this, database));
 }
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
-	EoInt16 ColorIndex = LogicalColorIndex();
-	EoInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const EoInt16 ColorIndex = LogicalColorIndex();
+	const EoInt16 LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -84,7 +84,7 @@ void EoDbSpline::FormatExtra(CString& extra) const {
 void EoDbSpline::FormatGeometry(CString& geometry) const {
 	CString ControlPointString;
 	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
-		OdGePoint3d ControlPoint = m_Spline.controlPointAt(ControlPointIndex);
+		const OdGePoint3d ControlPoint = m_Spline.controlPointAt(ControlPointIndex);
 		ControlPointString.Format(L"Control Point;%f;%f;%f\t", ControlPoint.x, ControlPoint.y, ControlPoint.z);
 		geometry += ControlPointString;
 	}
@@ -139,7 +139,7 @@ bool EoDbSpline::Is(EoUInt16 type) const {
 }
 bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
 	bool IsEqual = false;
-	OdDbObjectId OtherObjectId = other->EntityObjectId();
+	const OdDbObjectId OtherObjectId = other->EntityObjectId();
 	if (!m_EntityObjectId.isNull() && !OtherObjectId.isNull()) {
 		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
 		OdDbSplinePtr OtherSpline = OtherObjectId.safeOpenObject();
@@ -189,8 +189,8 @@ void EoDbSpline::Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dA
 	m_Spline.set(degree, knots, controlPoints, weights, isPeriodic);
 }
 void EoDbSpline::SetControlPoints(const OdGePoint3dArray& controlPoints) {
-	int NumberOfControlPoints = controlPoints.size();
-	int Degree = EoMin(3, NumberOfControlPoints - 1);
+	const int NumberOfControlPoints = controlPoints.size();
+	const int Degree = EoMin(3, NumberOfControlPoints - 1);
 
 	OdGeKnotVector Knots;
 	EoGeNurbCurve3d::SetDefaultKnotVector(Degree, controlPoints, Knots);
@@ -254,9 +254,9 @@ EoDbSpline* EoDbSpline::ConstructFrom(EoDbFile& file) {
 	Spline->SetColorIndex(file.ReadInt16());
 	Spline->SetLinetypeIndex(file.ReadInt16());
 
-	EoUInt16 NumberOfControlPoints = file.ReadUInt16();
+	const EoUInt16 NumberOfControlPoints = file.ReadUInt16();
 
-	int Degree = EoMin(3, NumberOfControlPoints - 1);
+	const int Degree = EoMin(3, NumberOfControlPoints - 1);
 	
 	OdGePoint3dArray ControlPoints;
 	for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
@@ -280,7 +280,7 @@ EoDbSpline* EoDbSpline::ConstructFrom(EoByte* primitiveBuffer, int versionNumber
 		ColorIndex = EoInt16(primitiveBuffer[4] & 0x000f);
 		LinetypeIndex = EoInt16((primitiveBuffer[4] & 0x00ff) >> 4);
 
-		EoUInt16 NumberOfControlPoints = EoUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
+		const EoUInt16 NumberOfControlPoints = EoUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 12;
@@ -294,7 +294,7 @@ EoDbSpline* EoDbSpline::ConstructFrom(EoByte* primitiveBuffer, int versionNumber
 		ColorIndex = EoInt16(primitiveBuffer[6]);
 		LinetypeIndex = EoInt16(primitiveBuffer[7]);
 
-		EoUInt16 NumberOfControlPoints = *((EoInt16*) &primitiveBuffer[8]);
+		const EoUInt16 NumberOfControlPoints = *((EoInt16*) &primitiveBuffer[8]);
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 10;

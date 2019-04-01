@@ -42,7 +42,7 @@ BOOL EoDlgNewView::OnInitDialog() {
     CDialog::OnInitDialog();
 
     EoDlgNamedViews* pParent = static_cast<EoDlgNamedViews*>(GetParent());
-    OdDbDatabase* pDb = pParent->database();
+    const OdDbDatabase* pDb = pParent->database();
     OdDbSymbolTablePtr pTable;
     OdDbSymbolTableIteratorPtr pIter;
 

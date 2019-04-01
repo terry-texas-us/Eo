@@ -55,7 +55,7 @@ void EoDlgTrapModify::OnOK() {
 void EoDlgTrapModify::ModifyPolygons(void) {
 	POSITION Position = m_Document->GetFirstTrappedGroupPosition();
 	while (Position != 0) {
-		EoDbGroup* Group = m_Document->GetNextTrappedGroup(Position);
+		const EoDbGroup* Group = m_Document->GetNextTrappedGroup(Position);
 
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {

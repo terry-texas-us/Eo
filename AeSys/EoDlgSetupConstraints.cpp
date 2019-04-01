@@ -46,7 +46,7 @@ void EoDlgSetupConstraints::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgSetupConstraints::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	AeSysApp::Units CurrentUnits = theApp.GetUnits();
+	const AeSysApp::Units CurrentUnits = theApp.GetUnits();
 
 	double x, y, z;
 
@@ -84,7 +84,7 @@ BOOL EoDlgSetupConstraints::OnInitDialog() {
 }
 
 void EoDlgSetupConstraints::OnOK() {
-	AeSysApp::Units CurrentUnits = theApp.GetUnits();
+	const AeSysApp::Units CurrentUnits = theApp.GetUnits();
 
 	wchar_t szBuf[32];
 

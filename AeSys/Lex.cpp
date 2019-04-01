@@ -52,7 +52,7 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 		case BinaryArithOp:
 		case Other:
 			if (CurrentTokenType == TOK_BINARY_PLUS || CurrentTokenType == TOK_BINARY_MINUS) {
-				ETokClass eClassPrv = TokenTable[PreviousTokenType].eClass;
+				const ETokClass eClassPrv = TokenTable[PreviousTokenType].eClass;
 				if (eClassPrv != Constant && eClassPrv != Identifier && eClassPrv != CloseParen) {
 					CurrentTokenType = (CurrentTokenType == TOK_BINARY_PLUS) ? TOK_UNARY_PLUS : TOK_UNARY_MINUS;
 				}
@@ -87,7 +87,7 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 		throw L"Syntax error";
 }
 void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) {
-	long lTyp = arCD->lTyp;
+	const long lTyp = arCD->lTyp;
 	int iDim = LOWORD(arCD->lDef);
 
 	if (lTyp == TOK_STRING) {
@@ -201,7 +201,7 @@ void lex::ConvertStringToVal(int aiTyp, long alDef, LPTSTR aszVal, long* alDefRe
 	wchar_t szTok[64];
 	int iNxt = 0;
 
-	int iTyp = Scan(szTok, aszVal, iNxt);
+	const int iTyp = Scan(szTok, aszVal, iNxt);
 	if (aiTyp == TOK_INTEGER) { // Conversion to integer
 		long *pVal = (long *) aVal;
 
@@ -256,15 +256,15 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 	long* lOp1 = (long*) apOp;
 
 	wchar_t cOp2[256];
-	double* dOp2 = (double*) cOp2;
+	const double* dOp2 = (double*) cOp2;
 	long* lOp2 = (long*) cOp2;
 
 	int iOpStkTop = 0;												// Empty operand stack
 	int iTokStkId = 0;												// Start with first token
 
 	while (iTokStkId < NumberOfTokens) {
-		int iTokTyp = iExprTokTyp[iTokStkId];
-		int iTokLoc = iExprTokLoc[iTokStkId];
+		const int iTokTyp = iExprTokTyp[iTokStkId];
+		const int iTokLoc = iExprTokLoc[iTokStkId];
 		if (TokenTable[iTokTyp].eClass == Identifier) {
 			// symbol table stuff if desired
 			throw L"Identifier token class not implemented";
@@ -391,7 +391,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 						lOp1[0] = (int) pow((double) lOp2[0], lOp1[0]);
 					}
 					else if (iTyp1 == TOK_REAL) {
-						int iExp = (int) dOp1[0];
+						const int iExp = (int) dOp1[0];
 
 						if ((iExp >= 0 && iExp > DBL_MAX_10_EXP) || (iExp < 0 && iExp < DBL_MIN_10_EXP))
 							throw L"Exponentiation error";
@@ -432,10 +432,10 @@ void lex::Parse(LPCWSTR szLine) {
 	wchar_t szTok[256];
 
 	int iBeg = 0;
-	int iLnLen = (int) wcslen(szLine);
+	const int iLnLen = (int) wcslen(szLine);
 
 	while (iBeg < iLnLen) {
-		int iTyp = Scan(szTok, szLine, iBeg);
+		const int iTyp = Scan(szTok, szLine, iBeg);
 
 		if (iTyp == - 1) return;
 		if (iToks == TOKS_MAX) return;
@@ -494,7 +494,7 @@ void lex::ParseStringOperand(LPCWSTR pszTok) {
 		pszValues[iDim++] = pszTok[iNxt++];
 	}
 	pszValues[--iDim] = '\0';
-	int iLen = 1 + (iDim - 1) /  4;
+	const int iLen = 1 + (iDim - 1) /  4;
 	iValLoc[iToks] = ++iValsCount;
 	lValues[iValsCount] = MAKELONG(iDim, iLen);
 	iValsCount += iLen;
@@ -512,7 +512,7 @@ int lex::Scan(LPTSTR aszTok, LPCWSTR szLine, int& iLP) {
 
 	bool bDone = false;
 	while (!bDone) {
-		int iAddr = iBase[iS] + szLine[iLP];
+		const int iAddr = iBase[iS] + szLine[iLP];
 
 		if (iCheck[iAddr] == iS) {
 			iS = iNext[iAddr];
@@ -697,7 +697,7 @@ LPTSTR lex::ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) {
 	LPTSTR pStart = *ppArgBuf;
 	LPTSTR pOut = pStart;
 
-	bool bInQuotes = *pIn == '"';
+	const bool bInQuotes = *pIn == '"';
 
 	if (bInQuotes)
 		pIn++;

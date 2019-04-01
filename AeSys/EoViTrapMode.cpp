@@ -37,7 +37,7 @@ void AeSysView::OnTrapModeStitch() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
 	}
 	else {
-		OdGePoint3d pt = GetCursorPosition();
+		const OdGePoint3d pt = GetCursorPosition();
 
 		if (m_PreviousPnt == pt) return;
 
@@ -70,7 +70,7 @@ void AeSysView::OnTrapModeField() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	}
 	else {
-		OdGePoint3d pt = GetCursorPosition();
+		const OdGePoint3d pt = GetCursorPosition();
 		if (m_PreviousPnt == pt) return;
 
 		AeSysDoc* Document = GetDocument();
@@ -79,8 +79,8 @@ void AeSysView::OnTrapModeField() {
 
 		ModelViewTransformPoints(2, ptView);
 
-		OdGePoint3d ptMin = EoGePoint4d::Min(ptView[0], ptView[1]).Convert3d();
-		OdGePoint3d ptMax = EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d();
+		const OdGePoint3d ptMin = EoGePoint4d::Min(ptView[0], ptView[1]).Convert3d();
+		const OdGePoint3d ptMax = EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d();
 
 		POSITION Position = GetFirstVisibleGroupPosition();
 		while (Position != 0) {
@@ -187,7 +187,7 @@ void AeSysView::OnTraprModeStitch() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
 	}
 	else {
-		OdGePoint3d pt = GetCursorPosition();
+		const OdGePoint3d pt = GetCursorPosition();
 
 		if (m_PreviousPnt == pt) return;
 		AeSysDoc* Document = GetDocument();
@@ -218,7 +218,7 @@ void AeSysView::OnTraprModeField() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	}
 	else {
-		OdGePoint3d pt = GetCursorPosition();
+		const OdGePoint3d pt = GetCursorPosition();
 		if (m_PreviousPnt == pt) return;
 
 		AeSysDoc* Document = GetDocument();
@@ -227,8 +227,8 @@ void AeSysView::OnTraprModeField() {
 
 		ModelViewTransformPoints(2, ptView);
 
-		OdGePoint3d ptMin = EoGePoint4d::Min(ptView[0], ptView[1]).Convert3d();
-		OdGePoint3d ptMax = EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d();
+		const OdGePoint3d ptMin = EoGePoint4d::Min(ptView[0], ptView[1]).Convert3d();
+		const OdGePoint3d ptMax = EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d();
 
 		POSITION Position = Document->GetFirstTrappedGroupPosition();
 		while (Position != 0) {

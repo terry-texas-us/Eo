@@ -317,7 +317,7 @@ void AeSysDoc::OnViewSetactivelayout() {
 			m_DatabasePtr->startUndoRecord();
 			m_DatabasePtr->setCurrentLayout(OdString(ActiveLayoutDialog.m_sNewLayoutName));
 		}
-		catch (OdError& Error) {
+		catch (const OdError& Error) {
 			theApp.reportError(L"Error Setting Layout...", Error);
 			m_DatabasePtr->disableUndoRecording(true);
 			m_DatabasePtr->undo();
@@ -334,13 +334,13 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 		// into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
 		POSITION pos = GetFirstViewPosition();
 		while (pos != NULL) {
-			CView *view = GetNextView(pos);
+			const CView *view = GetNextView(pos);
 			if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
 				if (view->GetDocument() == this) {
-					CWnd *pParent = view->GetParent();
+					const CWnd *pParent = view->GetParent();
 					// Get prev params
-					bool bIconic = pParent->IsIconic() != FALSE;
-					bool bZoomed = pParent->IsZoomed() != FALSE;
+					const bool bIconic = pParent->IsIconic() != FALSE;
+					const bool bZoomed = pParent->IsZoomed() != FALSE;
 					CRect wRect;
 					pParent->GetWindowRect(&wRect);
 					POINT point1, point2;
@@ -360,7 +360,7 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 					// Search again for new view
 					POSITION pos = GetFirstViewPosition();
 					while (pos != NULL) {
-						CView *view = GetNextView(pos);
+						const CView *view = GetNextView(pos);
 						if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
 							if (view->GetDocument() == this) {
 								CWnd *pParent = view->GetParent();
@@ -920,7 +920,7 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextSty
 		TextStyle->setName(name);
 		textStyles->add(TextStyle);
 	}
-	catch (OdError& Error)
+	catch (const OdError& Error)
 	{
 		theApp.reportError(L"Error adding new text style...", Error);
 		TextStyle->erase();
@@ -1232,7 +1232,7 @@ int AeSysDoc::NumberOfGroupsInWorkLayer() {
 	int iCount = 0;
 
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
-		EoDbLayer* Layer = GetLayerAt(LayerIndex);
+		const EoDbLayer* Layer = GetLayerAt(LayerIndex);
 		if (Layer->IsCurrent()) {
 			iCount += Layer->GetCount();
 		}
@@ -1243,7 +1243,7 @@ int AeSysDoc::NumberOfGroupsInActiveLayers() {
 	int iCount = 0;
 
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
-		EoDbLayer* Layer = GetLayerAt(LayerIndex);
+		const EoDbLayer* Layer = GetLayerAt(LayerIndex);
 		if (Layer->IsActive()) {
 			iCount += Layer->GetCount();
 		}
@@ -1293,7 +1293,7 @@ EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
 }
 int AeSysDoc::FindLayerAt(const OdString& name) const {
 	for (EoUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
-		EoDbLayer* Layer = m_LayerTable.GetAt(LayerIndex);
+		const EoDbLayer* Layer = m_LayerTable.GetAt(LayerIndex);
 		if (name.iCompare(Layer->Name()) == 0) {
 			return (LayerIndex);
 		}
@@ -1938,7 +1938,7 @@ void AeSysDoc::OnPensRemoveUnusedLinetypes() {
 
 		OdString Name = Linetype->getName();
 		if (LinetypeIndexReferenceCount(EoDbLinetypeTable::LegacyLinetypeIndex(Name)) == 0) {
-			OdResult Result = Linetype->erase(true);
+			const OdResult Result = Linetype->erase(true);
 			if (Result) {
 				CString ErrorDescription = m_DatabasePtr->appServices()->getErrorDescription(Result);
 				ErrorDescription += L" <%s> linetype can not be deleted";
@@ -1981,7 +1981,7 @@ void AeSysDoc::OnEditTrace() {
 
 					LPCSTR ClipboardData = (LPCSTR)GlobalLock(ClipboardDataHandle);
 					if (ClipboardData != NULL) {
-						DWORD ClipboardDataLength = *((DWORD*)ClipboardData);
+						const DWORD ClipboardDataLength = *((DWORD*)ClipboardData);
 						CMemFile MemFile;
 						MemFile.Write(ClipboardData, UINT(ClipboardDataLength));
 						GlobalUnlock(ClipboardDataHandle);
@@ -2161,7 +2161,7 @@ void AeSysDoc::OnTrapCommandsBlock() {
 
 	POSITION Position = GetFirstTrappedGroupPosition();
 	while (Position != 0) {
-		EoDbGroup* Group = GetNextTrappedGroup(Position);
+		const EoDbGroup* Group = GetNextTrappedGroup(Position);
 
 		EoDbGroup* pSeg2 = new EoDbGroup(*Group);
 
@@ -2725,7 +2725,7 @@ void AeSysDoc::DisplayUniquePoints() {
 	EoDbGroup Group;
 	POSITION UniquePointPosition = GetFirstUniquePointPosition();
 	while (UniquePointPosition != 0) {
-		EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
+		const EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
 		EoDbPoint* PointPrimitive = new EoDbPoint(UniquePoint->m_Point);
 		PointPrimitive->SetColorIndex(252);
 		PointPrimitive->SetPointDisplayMode(8);

@@ -5,7 +5,7 @@ EoGeReferenceSystem::EoGeReferenceSystem() : m_Origin(OdGePoint3d::kOrigin), m_X
 }
 
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition) : m_Origin(origin) {
-    OdGeVector3d normal = view->CameraDirection();
+    const OdGeVector3d normal = view->CameraDirection();
 
     m_YDirection = view->ViewUp();
     m_YDirection.rotateBy(characterCellDefinition.RotationAngle(), normal);
@@ -79,7 +79,7 @@ void EoGeReferenceSystem::Rescale(EoDbCharacterCellDefinition& characterCellDefi
 }
 
 double EoGeReferenceSystem::Rotation() const {
-    OdGeVector3d HorizontalAxis = m_XDirection;
+    const OdGeVector3d HorizontalAxis = m_XDirection;
 
     double Angle = 0.;
 

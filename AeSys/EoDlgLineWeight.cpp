@@ -52,7 +52,7 @@ BOOL EoDlgLineWeight::OnInitDialog(void) {
 }
 
 void EoDlgLineWeight::OnBnClickedOk() {
-	int Index = m_LineWeightList.GetCurSel();
+	const int Index = m_LineWeightList.GetCurSel();
 	m_LineWeight = (OdDb::LineWeight) m_LineWeightList.GetItemData(Index);
 
 	CDialog::OnOK();

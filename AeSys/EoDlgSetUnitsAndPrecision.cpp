@@ -29,7 +29,7 @@ void EoDlgSetUnitsAndPrecision::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	int	CheckButtonId = EoMin(IDC_ARCHITECTURAL + m_Units, IDC_METRIC);
+	const int CheckButtonId = EoMin(IDC_ARCHITECTURAL + m_Units, IDC_METRIC);
 	CheckRadioButton(IDC_ARCHITECTURAL, IDC_METRIC, CheckButtonId);
 
 	CString MetricUnits = theApp.LoadStringResource(IDS_METRIC_UNITS);

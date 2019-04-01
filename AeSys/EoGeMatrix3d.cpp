@@ -72,7 +72,7 @@ EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const
 	OdGeVector3d vV = Normal.crossProduct(vU);
 	vV.normalize();
 
-	OdGeVector3d PositionAsVector = - position.asVector();
+	const OdGeVector3d PositionAsVector = - position.asVector();
 
 	entry[0][0] = vU.x;
 	entry[0][1] = vU.y;
@@ -94,8 +94,8 @@ EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const
 
 OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& referenceSystem) {
 	OdGeMatrix3d ScaleMatrix;
-	double XDirectionLength = referenceSystem.XDirection().length();
-	double YDirectionLength = referenceSystem.YDirection().length();
+	const double XDirectionLength = referenceSystem.XDirection().length();
+	const double YDirectionLength = referenceSystem.YDirection().length();
 	if (XDirectionLength > DBL_EPSILON && YDirectionLength > DBL_EPSILON) {
 		ScaleMatrix.setToScaling(OdGeScale3d(1. / XDirectionLength, 1. / YDirectionLength, 1.));
 

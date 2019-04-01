@@ -38,10 +38,10 @@ EoGePoint4d EoGePoint4d::operator+(const OdGeVector3d& vector) {
 	return Point;
 }
 bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
-	double BoundaryCodeA[] = {
+	const double BoundaryCodeA[] = {
 		ptA.w + ptA.x, ptA.w - ptA.x, ptA.w + ptA.y, ptA.w - ptA.y, ptA.w + ptA.z, ptA.w - ptA.z
 	};
-	double BoundaryCodeB[] = {
+	const double BoundaryCodeB[] = {
 		ptB.w + ptB.x, ptB.w - ptB.x, ptB.w + ptB.y, ptB.w - ptB.y, ptB.w + ptB.z, ptB.w - ptB.z
 	};
 
@@ -101,7 +101,7 @@ void EoGePoint4d::ClipPolygon(EoGePoint4dArray& pointsArray) {
 	for (int planeIndex = 0; planeIndex < 6; planeIndex++) {
 		IntersectionWithPln(pointsArray, pointsOnClipPlanes[planeIndex], vPln[planeIndex], PointsArrayOut);
 
-		int iPtsOut = (int) PointsArrayOut.GetSize();
+		const int iPtsOut = (int) PointsArrayOut.GetSize();
 		pointsArray.SetSize(iPtsOut);
 
 		if (iPtsOut == 0)
@@ -118,7 +118,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 	EoGePoint4d ptEdge[2];
 	bool bEdgeVis[2];
 
-	bool bVisVer0 = OdGeVector3d(pointsArrayIn[0].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
+	const bool bVisVer0 = OdGeVector3d(pointsArrayIn[0].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
 
 	ptEdge[0] = pointsArrayIn[0];
 	bEdgeVis[0] = bVisVer0;
@@ -126,7 +126,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 	if (bVisVer0) {
 		pointsArrayOut.Add(pointsArrayIn[0]);
 	}
-	int iPtsIn = (int) pointsArrayIn.GetSize();
+	const int iPtsIn = (int) pointsArrayIn.GetSize();
 	for (int i = 1; i < iPtsIn; i++) {
 		ptEdge[1] = pointsArrayIn[i];
 		bEdgeVis[1] = OdGeVector3d(ptEdge[1].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
@@ -148,10 +148,10 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 }
 EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint4d& endPoint, const EoGePoint4d& pointOnPlane, const OdGeVector3d& planeNormal) {
 	OdGeVector3d LineVector(endPoint.Convert3d() - startPoint.Convert3d());
-	double DotProduct = planeNormal.dotProduct(LineVector);
+	const double DotProduct = planeNormal.dotProduct(LineVector);
 
 	if (fabs(DotProduct) > DBL_EPSILON) {
-		OdGeVector3d vPtPt0(startPoint.Convert3d() - pointOnPlane.Convert3d());
+		const OdGeVector3d vPtPt0(startPoint.Convert3d() - pointOnPlane.Convert3d());
 		LineVector *= (planeNormal.dotProduct(vPtPt0)) / DotProduct;
 	}
 	else { // Line and the plane are parallel .. force return to start point
@@ -163,8 +163,8 @@ OdGePoint3d EoGePoint4d::Convert3d() const {
 	return OdGePoint3d(x / w, y / w, z / w);
 }
 double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const {
-	double X = ptQ.x / ptQ.w - x / w;
-	double Y = ptQ.y / ptQ.w - y / w;
+	const double X = ptQ.x / ptQ.w - x / w;
+	const double Y = ptQ.y / ptQ.w - y / w;
 
 	return sqrt(X * X + Y * Y);
 }

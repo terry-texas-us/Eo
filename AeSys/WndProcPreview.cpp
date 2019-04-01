@@ -109,27 +109,27 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 
 	OdGeExtents3d Extents;
 	block->GetExtents_(ActiveView, Extents);
-	OdGePoint3d MinimumPoint = Extents.minPoint();
-	OdGePoint3d MaximumPoint = Extents.maxPoint();
+	const OdGePoint3d MinimumPoint = Extents.minPoint();
+	const OdGePoint3d MaximumPoint = Extents.maxPoint();
 	
 	ActiveView->PushViewTransform();
 
 	double FieldWidth = MaximumPoint.x - MinimumPoint.x;
 	double FieldHeight = MaximumPoint.y - MinimumPoint.y;
 
-	double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
+	const double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
 	}
 	else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
-	OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
-	OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
+	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
+	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
 
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
 
-	int PrimitiveState = pstate.Save();
+	const int PrimitiveState = pstate.Save();
 	block->Display(ActiveView, &dcMem);
 	pstate.Restore(&dcMem, PrimitiveState);
 
@@ -159,27 +159,27 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 
 	OdGeExtents3d Extents;
 	groups->GetExtents__(ActiveView, Extents);
-	OdGePoint3d MinimumPoint = Extents.minPoint();
-	OdGePoint3d MaximumPoint = Extents.maxPoint();
+	const OdGePoint3d MinimumPoint = Extents.minPoint();
+	const OdGePoint3d MaximumPoint = Extents.maxPoint();
 
 	ActiveView->PushViewTransform();
 	
 	double FieldWidth = MaximumPoint.x - MinimumPoint.x;
 	double FieldHeight = MaximumPoint.y - MinimumPoint.y;
 
-	double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
+	const double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
 	}
 	else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
-	OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
-	OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
+	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
+	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
 
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
 	
-	int PrimitiveState = pstate.Save();
+	const int PrimitiveState = pstate.Save();
 	groups->Display(ActiveView, &dcMem);
 	pstate.Restore(&dcMem, PrimitiveState);
 

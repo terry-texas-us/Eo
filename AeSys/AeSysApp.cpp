@@ -567,7 +567,7 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 		MenuItemInfo.dwTypeData = NULL;
 		TopMenu->GetMenuItemInfoW(Item, &MenuItemInfo, TRUE);
 
-		int SizeOfMenuName = ++MenuItemInfo.cch;
+		const int SizeOfMenuName = ++MenuItemInfo.cch;
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
 		TopMenu->GetMenuItemInfoW(Item, &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
@@ -588,7 +588,7 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 		MenuItemInfo.dwTypeData = NULL;
 		ToolsSubMenu->GetMenuItemInfoW(size_t(ToolsMenuItem), &MenuItemInfo, TRUE);
 
-		int SizeOfMenuName = ++MenuItemInfo.cch;
+		const int SizeOfMenuName = ++MenuItemInfo.cch;
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
 		ToolsSubMenu->GetMenuItemInfoW(size_t(ToolsMenuItem), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
@@ -1134,7 +1134,7 @@ void AeSysApp::InitGbls(CDC* deviceContext) {
 	EoDbHatch::sm_PatternScaleY = .1;
 	EoDbHatch::sm_PatternAngle = 0.;
 
-	EoDbCharacterCellDefinition CharacterCellDefinition;
+	const EoDbCharacterCellDefinition CharacterCellDefinition;
 	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 	EoDbFontDefinition FontDefinition;
@@ -1186,7 +1186,7 @@ BOOL AeSysApp::InitializeTeigha() {
 
 		// <tas="rxInitMaterialsEditorObjects();"</tas>
 	}
-	catch (OdError& Error) {
+	catch (const OdError& Error) {
 		theApp.reportError(L"odInitialize error", Error);
 		return FALSE;
 	}
@@ -1398,7 +1398,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 
 			const wchar_t Delimiters[] = L"*-\n";
 			LPWSTR NextToken = NULL;
-			LPWSTR Token = wcstok_s(&szLn[2], Delimiters, &NextToken);
+			const LPWSTR Token = wcstok_s(&szLn[2], Delimiters, &NextToken);
 			CString PatternName(Token);
 			PatternName.TrimRight();
 			if (PatternName.CompareNoCase(L"end") != 0) {
@@ -1426,10 +1426,10 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 	for (int PatternIndex = 1; PatternIndex <= 2; PatternIndex++) {
 		OdHatchPattern HatchPattern;
 		TableOffset = EoDbHatch::sm_HatchPatternOffsets[PatternIndex];
-		int NumberOfLinePatterns = int(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
+		const int NumberOfLinePatterns = int(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
 		OdHatchPatternLine HatchPatternLine;
 		for (int PatternLineIndex = 0; PatternLineIndex < NumberOfLinePatterns; PatternLineIndex++) {
-			int NumberOfDashesInPattern = int(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
+			const int NumberOfDashesInPattern = int(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
 			HatchPatternLine.m_dLineAngle = EoDbHatch::sm_HatchPatternTable[TableOffset++];
 			HatchPatternLine.m_basePoint.x = EoDbHatch::sm_HatchPatternTable[TableOffset++];
 			HatchPatternLine.m_basePoint.y = EoDbHatch::sm_HatchPatternTable[TableOffset++];
@@ -1472,7 +1472,7 @@ void AeSysApp::LoadPenWidthsFromFile(const CString& strFileName) {
 			LPWSTR NextToken = NULL;
 
 			int PenIndex = _wtoi(wcstok_s(PenWidths, L"=", &NextToken));
-			double Width = _wtof(wcstok_s(NULL, L",\n", &NextToken));
+			const double Width = _wtof(wcstok_s(NULL, L",\n", &NextToken));
 
 			if (PenIndex >= 0 && PenIndex < sizeof(dPWids) / sizeof(dPWids[0]))
 				dPWids[PenIndex] = Width;
@@ -1815,7 +1815,7 @@ double AeSysApp::ParseLength(Units units, LPWSTR aszLen) {
 		}
 		return (dVal[0]);
 	}
-	catch (LPWSTR szMessage) {
+	catch (const LPWSTR szMessage) {
 		::MessageBoxW(0, szMessage, 0, MB_ICONWARNING | MB_OK);
 		return (0.);
 	}
@@ -2094,7 +2094,7 @@ BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 	else {
 		CWinApp::ProcessShellCommand(commandLineInfo);
 	}
-	CFullCommandLineInfo& FullCommandLine = (CFullCommandLineInfo&)commandLineInfo;
+	const CFullCommandLineInfo& FullCommandLine = (CFullCommandLineInfo&)commandLineInfo;
 	if (!FullCommandLine.m_SaveName.IsEmpty()) {
 		if (!tmpDoc->OnSaveDocument(FullCommandLine.m_SaveName))
 			return FALSE;
@@ -2244,7 +2244,7 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 #ifdef _TOOLKIT_IN_DLL_
 		m_sVectorizerPath.replace(TD_DLL_VERSION_SUFFIX_STR, L"");
 #endif // _TOOLKIT_IN_DLL_
-		CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
+		const CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
 		CMenu* VectorizePopupMenu = TopMenu->GetSubMenu(3);
 
 		::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, m_sVectorizerPath);
@@ -2254,7 +2254,7 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 }
 void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI *pCmdUI) {
 	if (m_numGSMenuItems == 0) {
-		CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
+		const CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
 		CMenu* VectorizePopupMenu = TopMenu->GetSubMenu(3);
 
 		CRegKey RegistryKey;
@@ -2264,7 +2264,7 @@ void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI *pCmdUI) {
 		DWORD pathSize;
 		for (;;) {
 			pathSize = _MAX_FNAME + _MAX_EXT;
-			DWORD err = ::RegEnumValueW(RegistryKey, m_numGSMenuItems, path.GetBuffer(pathSize), &pathSize, NULL, NULL, NULL, NULL);
+			const DWORD err = ::RegEnumValueW(RegistryKey, m_numGSMenuItems, path.GetBuffer(pathSize), &pathSize, NULL, NULL, NULL, NULL);
 			path.ReleaseBuffer();
 			if (err == ERROR_SUCCESS) {
 				if (!::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, path)) {

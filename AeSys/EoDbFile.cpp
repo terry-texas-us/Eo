@@ -11,9 +11,9 @@ EoDbFile::~EoDbFile() {
 void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) {
 }
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive) {
-	EoInt16 ColorIndex = ReadInt16();
-	EoInt16 PointDisplayMode = ReadInt16();
-	OdGePoint3d Point(ReadPoint3d());
+	const EoInt16 ColorIndex = ReadInt16();
+	const EoInt16 PointDisplayMode = ReadInt16();
+	const OdGePoint3d Point(ReadPoint3d());
 
 	EoDbPoint* PointPrimitive = new EoDbPoint(Point);
 	PointPrimitive->SetColorIndex(ColorIndex);
@@ -21,11 +21,11 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive
 	primitive = PointPrimitive;
 }
 void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive) {
-	EoInt16 ColorIndex = ReadInt16();
-	EoInt16 LinetypeIndex = ReadInt16();
+	const EoInt16 ColorIndex = ReadInt16();
+	const EoInt16 LinetypeIndex = ReadInt16();
 
 	Seek(sizeof(EoUInt16), CFile::current);
-	EoUInt16 NumberOfPoints = ReadUInt16();
+	const EoUInt16 NumberOfPoints = ReadUInt16();
 	Seek(sizeof(EoUInt16), CFile::current);
 	Seek(3 * sizeof(double), CFile::current);
 	Seek(3 * sizeof(double), CFile::current);
@@ -145,17 +145,17 @@ void EoDbFile::WritePoint3d(const OdGePoint3d& point) {
 }
 
 void EoDbFile::WriteString(const CString& string) {
-	int NumberOfCharacters = string.GetLength();
+	const int NumberOfCharacters = string.GetLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		char c = EoByte(string.GetAt(n));
+		const char c = EoByte(string.GetAt(n));
 		Write(&c, 1);
 	}
 	Write("\t", 1);
 }
 void EoDbFile::WriteString(const OdString& string) {
-	int NumberOfCharacters = string.getLength();
+	const int NumberOfCharacters = string.getLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		char c = EoByte(string.getAt(n));
+		const char c = EoByte(string.getAt(n));
 		Write(&c, 1);
 	}
 	Write("\t", 1);

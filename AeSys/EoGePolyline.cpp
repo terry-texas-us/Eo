@@ -21,7 +21,7 @@ bool AnyPointsInView(EoGePoint4dArray& pointsArray) {
 	return false;
 }
 void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArray, OdDbLinetypeTableRecordPtr linetype) {
-	int NumberOfDashes = linetype->numDashes();
+	const int NumberOfDashes = linetype->numDashes();
 	if (NumberOfDashes == 0) return;
 
 	EoGePoint4d ln[2];
@@ -33,10 +33,10 @@ void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArra
 	double SectionLength = EoMax(.025 * 96., fabs(linetype->dashLengthAt(DashIndex)));
 
 	for (int i = 0; i < pointsArray.GetSize() - 1; i++) {
-		OdGeVector3d vLn(pointsArray[i + 1].Convert3d() - pointsArray[i].Convert3d());
+		const OdGeVector3d vLn(pointsArray[i + 1].Convert3d() - pointsArray[i].Convert3d());
 		pt[0] = pointsArray[i].Convert3d();
 
-		double dVecLen = vLn.length();
+		const double dVecLen = vLn.length();
 		double dRemDisToEnd = dVecLen;
 
 		while (SectionLength <= dRemDisToEnd + DBL_EPSILON) {
@@ -80,7 +80,7 @@ void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArra
 }
 void __End(AeSysView* view, CDC* deviceContext, EoInt16 linetypeIndex) {
 	if (EoDbPrimitive::IsSupportedLinetype(linetypeIndex)) {
-		int Size = pts_.GetSize();
+		const int Size = pts_.GetSize();
 		if (Size > 1) {
 			view->ModelViewTransformPoints(pts_);
 
@@ -129,9 +129,9 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
 	// Determine the parameter (angular increment)
-	double AngleIncrement = TWOPI / double(numberOfPoints);
-	double CosIncrement = cos(AngleIncrement);
-	double SinIncrement = sin(AngleIncrement);
+	const double AngleIncrement = TWOPI / double(numberOfPoints);
+	const double CosIncrement = cos(AngleIncrement);
+	const double SinIncrement = sin(AngleIncrement);
 	points.setLogicalLength(numberOfPoints);
 	points[0].set(1., 0., 0.);
 

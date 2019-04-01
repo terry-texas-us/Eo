@@ -49,7 +49,7 @@ int EoDlgLayerPropertiesManager::OnCreate(LPCREATESTRUCT createStructure) {
 }
 void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* /* pNMHDR */, LRESULT* result) {
 	if (HTREEITEM h = m_TreeFilters.GetSelectedItem()) {
-		OdLyLayerFilter* lf = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(h);
+		const OdLyLayerFilter* lf = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(h);
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {
 			//OdaLayerFilterPropDlg(lf, this).DoModal();
 		}
@@ -58,7 +58,7 @@ void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* /* pNMHDR */,
 }
 
 void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* pNMHDR, LRESULT* result) {
-	LPNMTVKEYDOWN pTVKeyDown = reinterpret_cast<LPNMTVKEYDOWN> (pNMHDR);
+	const LPNMTVKEYDOWN pTVKeyDown = reinterpret_cast<LPNMTVKEYDOWN> (pNMHDR);
 
 	if (pTVKeyDown->wVKey == VK_DELETE) {
 		if (HTREEITEM SelectedItem = m_TreeFilters.GetSelectedItem()) {
@@ -68,7 +68,7 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* pNMHDR, LRE
 			Filter->parent()->removeNested(Filter);
 			m_TreeFilters.DeleteItem(SelectedItem);
 
-			OdLyLayerFilter* Root = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem());
+			const OdLyLayerFilter* Root = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem());
 			::odlyGetLayerFilterManager(m_Database)->setFilters(Root, Root);
 		}
 	}
@@ -93,14 +93,14 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
 	OdDbDictionaryIteratorPtr MainDictionaryIterator = MainDictionary->newIterator();
 	while (!MainDictionaryIterator->done())
 	{
-		OdDbObjectId MainDictionaryEntryObjectId = MainDictionaryIterator->objectId();
+		const OdDbObjectId MainDictionaryEntryObjectId = MainDictionaryIterator->objectId();
 		ATLTRACE2(atlTraceGeneral, 0, L"<%4s> \"%s\"\n", MainDictionaryEntryObjectId.getHandle().ascii().c_str(), MainDictionaryIterator->name().c_str());
 		if (MainDictionaryIterator->objectId() == m_Database->getLayoutDictionaryId()) {
 			OdDbDictionaryPtr LayoutDictionary = m_Database->getLayoutDictionaryId().safeOpenObject(OdDb::kForRead);
 			OdDbDictionaryIteratorPtr LayoutDictionaryIterator = LayoutDictionary->newIterator();
 			while (!LayoutDictionaryIterator->done())
 			{
-				OdDbObjectId LayoutDictionaryEntryObjectId = LayoutDictionaryIterator->objectId();
+				const OdDbObjectId LayoutDictionaryEntryObjectId = LayoutDictionaryIterator->objectId();
 				ATLTRACE2(atlTraceGeneral, 0, L"    <%4s> \"%s\"\n", LayoutDictionaryEntryObjectId.getHandle().ascii().c_str(), LayoutDictionaryIterator->name().c_str());
 				LayoutDictionaryIterator->next();
 			}
@@ -110,7 +110,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
 			OdDbDictionaryIteratorPtr ScaleListDictionaryIterator = ScaleListDictionary->newIterator();
 			while (!ScaleListDictionaryIterator->done())
 			{
-				OdDbObjectId ScaleListDictionaryEntryObjectId = ScaleListDictionaryIterator->objectId();
+				const OdDbObjectId ScaleListDictionaryEntryObjectId = ScaleListDictionaryIterator->objectId();
 				ATLTRACE2(atlTraceGeneral, 2, L"    <%4s> \"%s\"\n", ScaleListDictionaryEntryObjectId.getHandle().ascii().c_str(), ScaleListDictionaryIterator->name().c_str());
 		
 				ScaleListDictionaryIterator->next();
@@ -130,7 +130,7 @@ static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerF
 	if (root) {
 		HTREEITEM TreeItem = tree.InsertItem(root->name(), parent);
 		tree.SetItemData(TreeItem, (DWORD)(void*) root);
-		int Image = root->isIdFilter() ? 2 : 1;
+		const int Image = root->isIdFilter() ? 2 : 1;
 		tree.SetItemImage(TreeItem, Image, Image);
 		for (size_t FilterIndex = 0; FilterIndex < root->getNestedFilters().length(); FilterIndex++) {
 			UpdateFilterTree(tree, TreeItem, root->getNestedFilters()[FilterIndex], current);
@@ -193,7 +193,7 @@ void EoDlgLayerPropertiesManager::OnSize(UINT type, int newWidth, int newHeight)
 void EoDlgLayerPropertiesManager::OnSizing(UINT side, LPRECT rectangle) {
 	CDialog::OnSizing(side, rectangle);
 
-	CRect rct(*rectangle);
+	const CRect rct(*rectangle);
 
 	CRect dlgRect;
 	GetWindowRect(&dlgRect);

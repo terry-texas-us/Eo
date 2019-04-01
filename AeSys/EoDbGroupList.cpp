@@ -27,7 +27,7 @@ void EoDbGroupList::AddToTreeViewControl(HWND tree, HTREEITEM htiParent) {
 
 	while (Position != 0) {
 		EoDbGroup* Group = GetNext(Position);
-		HTREEITEM htiSeg = Group->AddToTreeViewControl(tree, htiParent);
+		const HTREEITEM htiSeg = Group->AddToTreeViewControl(tree, htiParent);
 		if (Group->GetCount() == 1) {
 			TreeView_Expand(tree, htiSeg, TVE_EXPAND);
 		}
@@ -66,7 +66,7 @@ int EoDbGroupList::GetBlockReferenceCount(const CString& name) {
 
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
-		EoDbGroup* Group = GetNext(Position);
+		const EoDbGroup* Group = GetNext(Position);
 		Count += Group->GetBlockReferenceCount(name);
 	}
 	return Count;

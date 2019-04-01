@@ -11,7 +11,7 @@ void EoVaxFloat::Convert(const double& dMS) {
 		EoByte* pMS = (EoByte*) &fMS;
 		EoByte* pVax = (EoByte*) &fVax;
 
-		EoByte bSign = EoByte(pMS[3] & 0x80);
+		const EoByte bSign = EoByte(pMS[3] & 0x80);
 		EoByte bExp = EoByte((pMS[3] << 1) & 0xff);
 		bExp |= pMS[2] >> 7;
 
@@ -38,7 +38,7 @@ double EoVaxFloat::Convert() {
 	EoByte* pvax = (EoByte*) &m_f;
 	EoByte* pms = (EoByte*) &fMS;
 
-	EoByte bSign = EoByte(pvax[1] & 0x80);
+	const EoByte bSign = EoByte(pvax[1] & 0x80);
 	EoByte bExp = EoByte((pvax[1] << 1) & 0xff);
 	bExp |= pvax[0] >> 7;
 

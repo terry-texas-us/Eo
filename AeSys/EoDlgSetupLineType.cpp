@@ -40,7 +40,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 		switch (drawItemStruct->itemAction) {
 		case ODA_DRAWENTIRE: {
 			CRect ItemRectangle(drawItemStruct->rcItem);
-			COLORREF BackgroundColor = ::GetSysColor((drawItemStruct->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW);
+			const COLORREF BackgroundColor = ::GetSysColor((drawItemStruct->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW);
 
 			CDC DeviceContext;
 			DeviceContext.Attach(drawItemStruct->hDC);
@@ -50,13 +50,13 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 			if (drawItemStruct->itemState & ODS_FOCUS) {
 				DeviceContext.DrawFocusRect(ItemRectangle);
 			}
-			int Item = drawItemStruct->itemID;
+			const int Item = drawItemStruct->itemID;
 			if (Item != -1) {
-				COLORREF rgbText = (drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
+				const COLORREF rgbText = (drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
 				DeviceContext.SetBkColor(BackgroundColor);
 				DeviceContext.SetTextColor(rgbText);
 
-				OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
+				const OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
 				OdDbLinetypeTableRecordPtr Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 
 				CRect SubItemRectangle;
@@ -66,7 +66,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 
 				m_LinetypesListControl.GetSubItemRect(Item, Appearance, LVIR_LABEL, SubItemRectangle);
 
-				EoInt16 ColorIndex = pstate.ColorIndex();
+				const EoInt16 ColorIndex = pstate.ColorIndex();
 				pstate.SetPen(NULL, &DeviceContext, 0, EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 
 				AeSysView* ActiveView = AeSysView::GetActiveView();
@@ -76,15 +76,15 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 
 				ActiveView->SetViewportSize(SubItemRectangle.right + SubItemRectangle.left, SubItemRectangle.bottom + SubItemRectangle.top);
 
-				double FieldWidth = (double(SubItemRectangle.right) + double(SubItemRectangle.left)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
-				double FieldHeight = (double(SubItemRectangle.bottom) + double(SubItemRectangle.top)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSY));
+				const double FieldWidth = (double(SubItemRectangle.right) + double(SubItemRectangle.left)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
+				const double FieldHeight = (double(SubItemRectangle.bottom) + double(SubItemRectangle.top)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSY));
 				ActiveView->ModelViewInitialize();
 
 				ActiveView->SetViewWindow(0., 0., FieldWidth, FieldHeight);
 				ActiveView->SetCameraTarget(OdGePoint3d::kOrigin);
 				ActiveView->SetCameraPosition(OdGeVector3d::kZAxis);
-				double FieldWidthMinimum = double(SubItemRectangle.left) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
-				double FieldWidthMaximum = double(SubItemRectangle.right) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
+				const double FieldWidthMinimum = double(SubItemRectangle.left) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
+				const double FieldWidthMaximum = double(SubItemRectangle.right) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
 
 				EoGeLineSeg3d Line = EoGeLineSeg3d(OdGePoint3d(FieldWidthMinimum, FieldHeight / 2., 0.), OdGePoint3d(FieldWidthMaximum, FieldHeight / 2., 0.));
 				Line.Display(ActiveView, &DeviceContext);
@@ -141,8 +141,8 @@ void EoDlgSetupLinetype::OnOK() {
 
 	POSITION Position = m_LinetypesListControl.GetFirstSelectedItemPosition();
 	if (Position != NULL) {
-		int Item = m_LinetypesListControl.GetNextSelectedItem(Position);
-		OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
+		const int Item = m_LinetypesListControl.GetNextSelectedItem(Position);
+		const OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
 		m_Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 	}
 	CDialog::OnOK();

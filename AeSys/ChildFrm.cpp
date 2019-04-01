@@ -71,7 +71,7 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 	//}
 
 	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
-	size_t NumberOfReactors = TheApp->m_aAppReactors.size();
+	const size_t NumberOfReactors = TheApp->m_aAppReactors.size();
 
 	if (activate) {
 		if (DeactivatedDocument)
@@ -106,7 +106,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 	}
 
 	OdDbObjectContextManagerPtr ContextManager(database->objectContextManager());
-	OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
+	const OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
 	OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
 
 	ScaleMenuPosition = 1;
@@ -140,7 +140,7 @@ void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuA
 
 	CDocument* ActiveDocument = GetActiveDocument();
 	if (active && ActiveDocument) {
-		CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
+		const CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
 		ENSURE(TopMenu);
 
 		CMenu* ScalesSubMenu = TopMenu->GetSubMenu(kViewMenuPosition)->GetSubMenu(kAnnotationScalesMenuPosition);

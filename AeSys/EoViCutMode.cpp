@@ -10,7 +10,7 @@ void AeSysView::OnCutModeOptions(void) {
 void AeSysView::OnCutModeTorch(void) {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d pt = GetCursorPosition();
+	const OdGePoint3d pt = GetCursorPosition();
 	EoDbGroupList* Groups = new EoDbGroupList;
 
 	OdGePoint3d ptCut;
@@ -44,15 +44,15 @@ void AeSysView::OnCutModeTorch(void) {
 	delete Groups;
 }
 void AeSysView::OnCutModeSlice(void) {
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (wPrvKeyDwn != ID_OP2) {
 		rPrvPos = ptCur;
 		RubberBandingStartAtEnable(ptCur, Lines);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP2);
 	}
 	else {
-		OdGePoint3d pt1 = rPrvPos;
-		OdGePoint3d pt2 = ptCur;
+		const OdGePoint3d pt1 = rPrvPos;
+		const OdGePoint3d pt2 = ptCur;
 
 		AeSysDoc* Document = GetDocument();
 
@@ -102,7 +102,7 @@ void AeSysView::OnCutModeSlice(void) {
 }
 void AeSysView::OnCutModeField(void) {
 	CDC* DeviceContext = GetDC();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (wPrvKeyDwn != ID_OP4) {
 		rPrvPos = ptCur;
 		RubberBandingStartAtEnable(ptCur, Rectangles);
@@ -116,8 +116,8 @@ void AeSysView::OnCutModeField(void) {
 		rUR.x = EoMax(rPrvPos.x, ptCur.x);
 		rUR.y = EoMax(rPrvPos.y, ptCur.y);
 
-		OdGePoint3d ptLL = rLL;
-		OdGePoint3d ptUR = rUR;
+		const OdGePoint3d ptLL = rLL;
+		const OdGePoint3d ptUR = rUR;
 
 		EoDbGroup* Group;
 		EoDbPrimitive* Primitive;
@@ -127,8 +127,8 @@ void AeSysView::OnCutModeField(void) {
 
 		AeSysDoc* Document = GetDocument();
 
-		EoInt16 ColorIndex = pstate.ColorIndex();
-		EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+		const EoInt16 ColorIndex = pstate.ColorIndex();
+		const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
 
 		EoDbGroupList* GroupsOut = new EoDbGroupList;
 		EoDbGroupList* GroupsIn = new EoDbGroupList;
@@ -183,14 +183,14 @@ void AeSysView::OnCutModeField(void) {
 }
 void AeSysView::OnCutModeClip(void) {
 	CDC* DeviceContext = GetDC();
-	OdGePoint3d ptCur = GetCursorPosition();
+	const OdGePoint3d ptCur = GetCursorPosition();
 	if (wPrvKeyDwn != ID_OP7) {
 		rPrvPos = ptCur;
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP7);
 	}
 	else {
-		OdGePoint3d pt1 = rPrvPos;
-		OdGePoint3d pt2 = ptCur;
+		const OdGePoint3d pt1 = rPrvPos;
+		const OdGePoint3d pt2 = ptCur;
 
 		if (pt1 == pt2) {
 			return;
@@ -199,8 +199,8 @@ void AeSysView::OnCutModeClip(void) {
 		double dRel[2];
 		OdGePoint3d	ptCut[2];
 
-		EoInt16 ColorIndex = pstate.ColorIndex();
-		EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+		const EoInt16 ColorIndex = pstate.ColorIndex();
+		const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
 
 		AeSysDoc* Document = GetDocument();
 
@@ -239,7 +239,7 @@ void AeSysView::OnCutModeClip(void) {
 				ptCut[0].transformBy(TransformMatrix);
 				ptCut[1].transformBy(TransformMatrix);
 				if (dRel[0] > dRel[1]) {
-					OdGePoint3d ptTmp = ptCut[0];
+					const OdGePoint3d ptTmp = ptCut[0];
 					ptCut[0] = ptCut[1]; ptCut[1] = ptTmp;
 				}
 				Group->RemoveAt(posPrim2);

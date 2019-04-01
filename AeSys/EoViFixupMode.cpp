@@ -100,16 +100,16 @@ void AeSysView::OnFixupModeReference(void) {
 				pLinePrv->SetEndPoint(m_FixupModeFirstLine.endPoint());
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
 
-				OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
-				OdGeVector3d rPrvEndRefBeg(m_FixupModeReferenceLine.startPoint() - m_FixupModeFirstLine.endPoint());
+				const OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
+				const OdGeVector3d rPrvEndRefBeg(m_FixupModeReferenceLine.startPoint() - m_FixupModeFirstLine.endPoint());
 				OdGeVector3d PlaneNormal = rPrvEndInter.crossProduct(rPrvEndRefBeg);
 				PlaneNormal.normalize();
 				double SweepAngle;
 				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FixupModeFirstLine.endPoint(), ptInt, m_FixupModeReferenceLine.startPoint(), CenterPoint, SweepAngle);
-				OdGeVector3d MajorAxis(m_FixupModeFirstLine.endPoint() - CenterPoint);
+				const OdGeVector3d MajorAxis(m_FixupModeFirstLine.endPoint() - CenterPoint);
 				OdGePoint3d rTmp = m_FixupModeFirstLine.endPoint();
 				rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
-				OdGeVector3d MinorAxis(rTmp - CenterPoint);
+				const OdGeVector3d MinorAxis(rTmp - CenterPoint);
 
 				EoDbGroup* Group = new EoDbGroup;
 				EoDbEllipse* Arc = EoDbEllipse::Create(Database());
@@ -210,16 +210,16 @@ void AeSysView::OnFixupModeMend(void) {
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
 				pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
-				OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
-				OdGeVector3d rPrvEndSecBeg(m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint());
+				const OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
+				const OdGeVector3d rPrvEndSecBeg(m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint());
 				OdGeVector3d PlaneNormal = rPrvEndInter.crossProduct(rPrvEndSecBeg);
 				PlaneNormal.normalize();
 				double SweepAngle;
 				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FixupModeFirstLine.endPoint(), ptInt, m_FixupModeSecondLine.startPoint(), CenterPoint, SweepAngle);
-				OdGeVector3d MajorAxis(m_FixupModeFirstLine.endPoint() - CenterPoint);
+				const OdGeVector3d MajorAxis(m_FixupModeFirstLine.endPoint() - CenterPoint);
 				OdGePoint3d rTmp = m_FixupModeFirstLine.endPoint();
 				rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
-				OdGeVector3d MinorAxis(rTmp - CenterPoint);
+				const OdGeVector3d MinorAxis(rTmp - CenterPoint);
 				EoDbEllipse* Arc = EoDbEllipse::Create(Database());
 				Arc->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
 				pSegPrv->AddTail(Arc);
@@ -239,7 +239,7 @@ void AeSysView::OnFixupModeMend(void) {
 void AeSysView::OnFixupModeChamfer(void) {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d ptCurPos = GetCursorPosition();
+	const OdGePoint3d ptCurPos = GetCursorPosition();
 
 	OdGePoint3d ptInt;
 	OdGePoint3d	ptCP;
@@ -312,7 +312,7 @@ void AeSysView::OnFixupModeChamfer(void) {
 void AeSysView::OnFixupModeFillet(void) {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d ptCurPos = GetCursorPosition();
+	const OdGePoint3d ptCurPos = GetCursorPosition();
 
 	OdGePoint3d ptInt;
 
@@ -372,15 +372,15 @@ void AeSysView::OnFixupModeFillet(void) {
 			pLine->SetEndPoint(m_FixupModeSecondLine.endPoint());
 
 			double SweepAngle;
-			OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
-			OdGeVector3d rPrvEndSecBeg(m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint());
+			const OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
+			const OdGeVector3d rPrvEndSecBeg(m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint());
 			OdGeVector3d PlaneNormal = rPrvEndInter.crossProduct(rPrvEndSecBeg);
 			PlaneNormal.normalize();
 			pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FixupModeFirstLine.endPoint(), ptInt, m_FixupModeSecondLine.startPoint(), CenterPoint, SweepAngle);
-			OdGeVector3d MajorAxis(m_FixupModeFirstLine.endPoint() - CenterPoint);
+			const OdGeVector3d MajorAxis(m_FixupModeFirstLine.endPoint() - CenterPoint);
 			OdGePoint3d rTmp = m_FixupModeFirstLine.endPoint();
 			rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
-			OdGeVector3d MinorAxis(rTmp - CenterPoint);
+			const OdGeVector3d MinorAxis(rTmp - CenterPoint);
 			EoDbEllipse* Fillet = EoDbEllipse::Create(Database());
 			Fillet->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
 			OtherGroup->AddTail(Fillet);
@@ -403,10 +403,10 @@ void AeSysView::OnFixupModeSquare(void) {
 		if (OtherPrimitive->Is(EoDb::kLinePrimitive)) {
 			pLine = static_cast<EoDbLine*>(OtherPrimitive);
 			pLine->GetLine(m_FixupModeSecondLine);
-			double dLen = m_FixupModeSecondLine.length();
+			const double dLen = m_FixupModeSecondLine.length();
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
 			m_FixupModeSecondLine.SetStartPoint(SnapPointToAxis(ptCurPos, m_FixupModeSecondLine.startPoint()));
-			OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
+			const OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
 			m_FixupModeSecondLine.SetEndPoint(ProjectToward(StartPoint, ptCurPos, dLen));
 			pLine->SetStartPoint(SnapPointToGrid(m_FixupModeSecondLine.startPoint()));
 			pLine->SetEndPoint(SnapPointToGrid(m_FixupModeSecondLine.endPoint()));
@@ -417,7 +417,7 @@ void AeSysView::OnFixupModeSquare(void) {
 void AeSysView::OnFixupModeParallel(void) {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d ptCurPos = GetCursorPosition();
+	const OdGePoint3d ptCurPos = GetCursorPosition();
 
 	EoDbLine*	pLine;
 	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(ptCurPos);
@@ -428,9 +428,9 @@ void AeSysView::OnFixupModeParallel(void) {
 
 			m_FixupModeSecondLine.set(m_FixupModeReferenceLine.ProjPt(pLine->StartPoint()), m_FixupModeReferenceLine.ProjPt(pLine->EndPoint()));
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-			OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
+			const OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
 			pLine->SetStartPoint(ProjectToward(StartPoint, pLine->StartPoint(), theApp.DimensionLength()));
-			OdGePoint3d EndPoint = m_FixupModeSecondLine.endPoint();
+			const OdGePoint3d EndPoint = m_FixupModeSecondLine.endPoint();
 			pLine->SetEndPoint(ProjectToward(EndPoint, pLine->EndPoint(), theApp.DimensionLength()));
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
 		}

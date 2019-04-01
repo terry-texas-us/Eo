@@ -32,7 +32,7 @@ EoUInt16 EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	return Index;
 }
 OdString EoDbLinetypeTable::LegacyLinetypeName(const int index) {
-	int Index = (index < NumberOfLegacyLinetypes) ? index : 1;
+	const int Index = (index < NumberOfLegacyLinetypes) ? index : 1;
 	return LegacyLinetypes[Index];
 }
 void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const CString& fileName) {

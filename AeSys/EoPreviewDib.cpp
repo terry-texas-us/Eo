@@ -47,8 +47,8 @@ CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) {
 			d = wndDep;
 		}
 	}
-	int x = (wndWid - w) / 2;
-	int y = (wndDep - d) / 2;
+	const int x = (wndWid - w) / 2;
+	const int y = (wndDep - d) / 2;
 	return CRect(x, y, x + w, y + d);
 }
 

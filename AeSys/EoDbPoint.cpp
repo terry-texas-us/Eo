@@ -68,15 +68,15 @@ EoDbPrimitive* EoDbPoint::Clone(OdDbDatabasePtr database) const {
 	return (EoDbPoint::Create(*this, database));
 }
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
-	EoInt16 ColorIndex = LogicalColorIndex();
+	const EoInt16 ColorIndex = LogicalColorIndex();
 
-	COLORREF HotColor = theApp.GetHotColor(ColorIndex);
+	const COLORREF HotColor = theApp.GetHotColor(ColorIndex);
 
 	EoGePoint4d pt(m_Position, 1.);
 	view->ModelViewTransformPoint(pt);
 
 	if (pt.IsInView()) {
-		CPoint pnt = view->DoViewportProjection(pt);
+		const CPoint pnt = view->DoViewportProjection(pt);
 
 		int i;
 		switch (m_PointDisplayMode) {
@@ -269,11 +269,11 @@ void EoDbPoint::Write(CFile& file, EoByte* buffer) const {
 	file.Write(buffer, 32);
 }
 EoDbPoint* EoDbPoint::ConstructFrom(EoDbFile& file) {
-	EoInt16 ColorIndex = file.ReadInt16();
-	EoInt16 PointDisplayMode = file.ReadInt16();
+	const EoInt16 ColorIndex = file.ReadInt16();
+	const EoInt16 PointDisplayMode = file.ReadInt16();
 
-	OdGePoint3d Position(file.ReadPoint3d());
-	EoUInt16 NumberOfDatums = file.ReadUInt16();
+	const OdGePoint3d Position(file.ReadPoint3d());
+	const EoUInt16 NumberOfDatums = file.ReadUInt16();
 
 	double Data[3];
 	for (EoUInt16 n = 0; n < NumberOfDatums; n++) {

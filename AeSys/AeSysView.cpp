@@ -1173,7 +1173,6 @@ void AeSysView::createDevice() {
 		OdGsDevicePtr GsDevice = GsModule->createDevice();
 		OdRxDictionaryPtr pProperties = GsDevice->properties();
 		if (pProperties.get()) {
-#pragma warning (disable: 26444)
             if (pProperties->has(L"WindowHWND"))
 				pProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr)m_hWnd));
 			if (pProperties->has(L"WindowHDC"))
@@ -1192,7 +1191,6 @@ void AeSysView::createDevice() {
 				pProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16)theApp.mtRegenThreadsCount()));
 			if (pProperties->has(L"UseTextOut"))
 				pProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
-#pragma warning (restore: 26444)
         }
 		enableKeepPSLayoutHelperView(true);
 		enableContextualColorsManagement(theApp.enableContextualColors());
@@ -1324,10 +1322,10 @@ void generateTiles(HDC hdc, RECT& drawrc, OdGsDevice* pBmpDevice, OdUInt32 nTile
 			HBITMAP hOld = (HBITMAP)SelectObject(bmpDC, hBmp);
 			for (OdInt32 i = 0; i < m; ++i) {
 				for (OdInt32 j = 0; j < n; ++j) {
-					int minx = rc.m_min.x + i * dx;
-					int maxx = minx + dx;
-					int miny = rc.m_min.y + j * dy;
-					int maxy = miny + dy;
+					const int minx = rc.m_min.x + i * dx;
+					const int maxx = minx + dx;
+					const int miny = rc.m_min.y + j * dy;
+					const int maxy = miny + dy;
 
 					// render wider then a tile area to reduce gaps in lines.
 					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
@@ -3462,7 +3460,7 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 
 	POSITION GroupPosition = GetFirstVisibleGroupPosition();
 	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
+		const EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);

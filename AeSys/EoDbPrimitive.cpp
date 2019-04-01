@@ -31,7 +31,7 @@ bool EoDbPrimitive::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) 
 	return false;
 }
 bool EoDbPrimitive::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
-	CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
 }
@@ -123,7 +123,7 @@ void EoDbPrimitive::SetLinetypeIndex(EoInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 
 	if (!m_EntityObjectId.isNull()) {
-		OdDbObjectId Linetype = LinetypeObjectFromIndex(LinetypeIndex());
+		const OdDbObjectId Linetype = LinetypeObjectFromIndex(LinetypeIndex());
 
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		Entity->setLinetype(Linetype);

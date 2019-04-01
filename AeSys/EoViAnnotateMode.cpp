@@ -106,7 +106,7 @@ void AeSysView::OnAnnotateModeBubble() {
 	if (!CurrentText.IsEmpty()) {
 		CDC* DeviceContext = GetDC();
 
-		OdGeVector3d PlaneNormal = CameraDirection();
+		const OdGeVector3d PlaneNormal = CameraDirection();
 		OdGeVector3d MinorAxis = ViewUp();
 		OdGeVector3d MajorAxis = MinorAxis;
 		MajorAxis.rotateBy(- HALF_PI, PlaneNormal);
@@ -115,7 +115,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		MinorAxis *= .1;
 		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
 
-		int PrimitiveState = pstate.Save();
+		const int PrimitiveState = pstate.Save();
 		pstate.SetColorIndex(DeviceContext, 2);
 
 		EoDbFontDefinition FontDefinition = pstate.FontDefinition();
@@ -132,7 +132,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		pstate.Restore(DeviceContext, PrimitiveState);
 		ReleaseDC(DeviceContext);
 	}
-	OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 	if (NumberOfSides() == 0) {
 		EoDbEllipse* Circle = EoDbEllipse::Create(Database());
 		Circle->SetToCircle(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius());
@@ -149,7 +149,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		OdGePoint3dArray Points;
 		polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
 
-		OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+		const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
 		OdGeMatrix3d WorldToPlaneTransform;
 		OdGePlane Plane(CurrentPnt, ActiveViewPlaneNormal);
@@ -160,7 +160,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
 		PointToPlaneVector.transformBy(WorldToPlaneTransform);
 	
-		double Elevation = PointToPlaneVector.z;
+		const double Elevation = PointToPlaneVector.z;
 
 		WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
 
@@ -202,7 +202,7 @@ void AeSysView::OnAnnotateModeHook() {
 		}
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP5);
-	OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 	EoDbEllipse* Circle = EoDbEllipse::Create(Database());
 	Circle->SetToCircle(CurrentPnt, ActiveViewPlaneNormal, CircleRadius());
 	Circle->SetColorIndex(1);
@@ -214,7 +214,7 @@ void AeSysView::OnAnnotateModeHook() {
 }
 
 void AeSysView::OnAnnotateModeUnderline() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+	const OdGePoint3d CurrentPnt = GetCursorPosition();
 
 	if (m_PreviousOp != 0) {
 		ModeLineUnhighlightOp(m_PreviousOp);
@@ -238,7 +238,7 @@ void AeSysView::OnAnnotateModeUnderline() {
 }
 
 void AeSysView::OnAnnotateModeBox() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+	const OdGePoint3d CurrentPnt = GetCursorPosition();
 	if (m_PreviousOp != ID_OP7) {
 		if (m_PreviousOp != 0) {
 			RubberBandingDisable();
@@ -321,7 +321,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 
-		int PrimitiveState = pstate.Save();
+		const int PrimitiveState = pstate.Save();
 
 		if (!CurrentText.IsEmpty()) {
 			EoGeLineSeg3d Line = pLine->Line();
@@ -329,7 +329,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			if (dAng > .25 * TWOPI && dAng <  .75 * TWOPI)
 				dAng += PI;
 
-			OdGeVector3d PlaneNormal = CameraDirection();
+			const OdGeVector3d PlaneNormal = CameraDirection();
 			OdGeVector3d MinorAxis = ViewUp();
 			MinorAxis.rotateBy(dAng, PlaneNormal);
 			OdGeVector3d MajorAxis = MinorAxis;
@@ -338,7 +338,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
 
-			EoInt16 ColorIndex = pstate.ColorIndex();
+			const EoInt16 ColorIndex = pstate.ColorIndex();
 			pstate.SetColorIndex(DeviceContext, 2);
 
 			EoDbFontDefinition FontDefinition = pstate.FontDefinition();
@@ -358,7 +358,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			OdGePoint3dArray BoundingBox;
 			TextPrimitive->GetBoundingBox(BoundingBox, GapSpaceFactor());
 
-			double dGap = OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length();
+			const double dGap = OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length();
 
 			BoundingBox[0] = ProjectToward(CurrentPnt, pLine->StartPoint(), dGap / 2.);
 			BoundingBox[1] = ProjectToward(CurrentPnt, pLine->EndPoint(), dGap / 2.);
@@ -424,7 +424,7 @@ void AeSysView::OnAnnotateModeEscape() {
 }
 
 bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const {
-	double LineSegmentLength = OdGeVector3d(endPoint - startPoint).length();
+	const double LineSegmentLength = OdGeVector3d(endPoint - startPoint).length();
 
 	double BeginDistance = 0.;
 
@@ -499,7 +499,7 @@ void AeSysView::SetNumberOfSides(int number) {
 
 void AeSysView::DoAnnotateModeMouseMove() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
-	int NumberOfPoints = EoViAnn_points.size();
+	const int NumberOfPoints = EoViAnn_points.size();
 	EoViAnn_points.append(CurrentPnt);
 
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
@@ -546,16 +546,16 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
 void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
-	OdGeVector3d PlaneNormal = CameraDirection();
+	const OdGeVector3d PlaneNormal = CameraDirection();
 
-	OdGePoint3d EndPoint = endPoint;
+	const OdGePoint3d EndPoint = endPoint;
 
 	OdGePoint3dArray ItemPoints;
 	ItemPoints.clear();
 
 	if (type == 1 || type == 2) {
-		double Angle = .244978663127;
-		double Size = size / .970142500145;
+		const double Angle = .244978663127;
+		const double Size = size / .970142500145;
 
 		OdGePoint3d BasePoint(ProjectToward(EndPoint, startPoint, Size));
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
@@ -571,8 +571,8 @@ void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& st
 		group->AddTail(Polyline);
 	}
 	else if (type == 3) {
-		double Angle = 9.96686524912e-2;
-		double Size = size / .99503719021;
+		const double Angle = 9.96686524912e-2;
+		const double Size = size / .99503719021;
 
 		OdGePoint3d BasePoint(ProjectToward(EndPoint, startPoint, Size));
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
@@ -585,8 +585,8 @@ void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& st
 		group->AddTail(Polyline);
 	}
 	else if (type == 4) {
-		double Angle = .785398163397;
-		double Size = .5 * size / .707106781187;
+		const double Angle = .785398163397;
+		const double Size = .5 * size / .707106781187;
 
 		OdGePoint3d BasePoint(ProjectToward(EndPoint, startPoint, Size));
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));

@@ -87,7 +87,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	else {
 		primitive->SetColorIndex_(Color.colorIndex());
 	}
-	OdDbObjectId Linetype = entity->linetypeId();
+	const OdDbObjectId Linetype = entity->linetypeId();
 
 	if (Linetype == DatabasePtr->getLinetypeByBlockId()) {
 		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYBLOCK);
@@ -118,7 +118,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbText ...\n", (PCTSTR) text->desc()->name());
 
-	OdDbObjectId TextStyleObjectId = text->textStyle();
+	const OdDbObjectId TextStyleObjectId = text->textStyle();
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = TextStyleObjectId.safeOpenObject(OdDb::kForRead);
 
 	OdString FileName;
@@ -127,7 +127,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	}
 	else {
 		FileName = TextStyleTableRecordPtr->fileName();
-		int nExt = FileName.reverseFind('.');
+		const int nExt = FileName.reverseFind('.');
 		if (nExt != - 1) {
 			if (FileName.mid(nExt).compare(L".shx") == 0) {
 				FileName = FileName.left(nExt);
@@ -138,8 +138,8 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 			}
 		}
 	}
-	EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
-	EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
+	const EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
+	const EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
 
 	OdGePoint3d AlignmentPoint = text->position();
 	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
@@ -265,8 +265,8 @@ public:
 		OdDbArcPtr ArcEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) ArcEntity->desc()->name());
 
-		OdGeVector3d Normal(ArcEntity->normal());
-		OdGePoint3d Center(ArcEntity->center());
+		const OdGeVector3d Normal(ArcEntity->normal());
+		const OdGePoint3d Center(ArcEntity->center());
 
 		double StartAngle = ArcEntity->startAngle();
 		double EndAngle = ArcEntity->endAngle();
@@ -283,8 +283,8 @@ public:
 		OdGePoint3d StartPoint;
 		ArcEntity->getStartPoint(StartPoint);
 
-		OdGeVector3d MajorAxis(StartPoint - Center);
-		OdGeVector3d MinorAxis = Normal.crossProduct(MajorAxis);
+		const OdGeVector3d MajorAxis(StartPoint - Center);
+		const OdGeVector3d MinorAxis = Normal.crossProduct(MajorAxis);
 		
 		EoDbEllipse* ArcPrimitive = new EoDbEllipse();
 		// <tas="Encountered Circular Arc entity with zero radius. Is this valid for dwg files?"</tas>
@@ -426,7 +426,7 @@ private:
 		hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
 	}
 	static void ConvertCircularArcEdge(OdGeCurve2d* pEdge) {
-		OdGeCircArc2d* pCircArc = (OdGeCircArc2d*) pEdge;
+		const OdGeCircArc2d* pCircArc = (OdGeCircArc2d*) pEdge;
 		ATLTRACE2(atlTraceGeneral, 2, L"Center: %f, %f\n", pCircArc->center());
 		ATLTRACE2(atlTraceGeneral, 2, L"Radius: %f\n", pCircArc->radius());
 		ATLTRACE2(atlTraceGeneral, 2, L"Start Angle %f\n", pCircArc->startAng());
@@ -434,7 +434,7 @@ private:
 		ATLTRACE2(atlTraceGeneral, 2, L"Clockwise: %i\n", pCircArc->isClockWise());
 	}
 	static void ConvertEllipticalArcEdge(OdGeCurve2d* pEdge) {
-		OdGeEllipArc2d* pEllipArc = (OdGeEllipArc2d*)pEdge;
+		const OdGeEllipArc2d* pEllipArc = (OdGeEllipArc2d*)pEdge;
 		ATLTRACE2(atlTraceGeneral, 2, L"Center: %f, %f\n", pEllipArc->center()[0], pEllipArc->center()[1]);
 		ATLTRACE2(atlTraceGeneral, 2, L"Major Radius: %f\n", pEllipArc->majorRadius());
 		ATLTRACE2(atlTraceGeneral, 2, L"Minor Radius: %f\n", pEllipArc->minorRadius());
@@ -445,7 +445,7 @@ private:
 		ATLTRACE2(atlTraceGeneral, 2, L"Clockwise:%i\n", pEllipArc->isClockWise());
 	}
 	static void ConvertNurbCurveEdge(OdGeCurve2d* pEdge) {
-		OdGeNurbCurve2d* pNurbCurve = (OdGeNurbCurve2d*)pEdge;
+		const OdGeNurbCurve2d* pNurbCurve = (OdGeNurbCurve2d*)pEdge;
 		int Degree;
 		bool Rational, Periodic;
 		OdGePoint2dArray ControlPoints;
@@ -479,7 +479,7 @@ private:
 		
 		double Lower;
 		double Upper(1.);
-		size_t NumberOfEdges = Edges.size();
+		const size_t NumberOfEdges = Edges.size();
 
 		for (size_t EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
 			OdGeCurve2d* Edge = Edges[EdgeIndex];
@@ -501,11 +501,11 @@ private:
 			Edge->getInterval(Interval);
 			Interval.getBounds(Lower, Upper);
 
-			OdGePoint2d LowerPoint(Edge->evalPoint(Lower));
+			const OdGePoint2d LowerPoint(Edge->evalPoint(Lower));
 
 			hatchPrimitive->Append(OdGePoint3d(LowerPoint.x, LowerPoint.y, hatchEntity->elevation()));
 		}
-		OdGePoint2d UpperPoint(Edges[NumberOfEdges - 1]->evalPoint(Upper));
+		const OdGePoint2d UpperPoint(Edges[NumberOfEdges - 1]->evalPoint(Upper));
 		hatchPrimitive->Append(OdGePoint3d(UpperPoint.x, UpperPoint.y, hatchEntity->elevation()));
 		// <tas="Hatch edge conversion - not considering the effect of "Closed" edge property"</tas>
 	}
@@ -531,7 +531,7 @@ public:
 				else {
 					HatchPrimitive->SetInteriorStyle(EoDbHatch::kHatch);
 					HatchPrimitive->SetInteriorStyleIndex(EoDbHatch::LegacyInteriorStyleIndex(HatchEntity->patternName()));
-					OdGePoint3d Origin = OdGePoint3d::kOrigin + HatchEntity->elevation() * HatchEntity->normal();
+					const OdGePoint3d Origin = OdGePoint3d::kOrigin + HatchEntity->elevation() * HatchEntity->normal();
 					// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
 					HatchPrimitive->SetPatternReferenceSystem(Origin, HatchEntity->normal(), HatchEntity->patternAngle(), HatchEntity->patternScale());
 				}
@@ -539,7 +539,7 @@ public:
 			case OdDbHatch::kUserDefined:
 				HatchPrimitive->SetInteriorStyle(EoDbHatch::kHatch);
 				HatchPrimitive->SetInteriorStyleIndex(EoDbHatch::LegacyInteriorStyleIndex(HatchEntity->patternName()));
-				OdGePoint3d Origin = OdGePoint3d::kOrigin + HatchEntity->elevation() * HatchEntity->normal();
+				const OdGePoint3d Origin = OdGePoint3d::kOrigin + HatchEntity->elevation() * HatchEntity->normal();
 				// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
 				HatchPrimitive->SetPatternReferenceSystem(Origin, HatchEntity->normal(), HatchEntity->patternAngle(), HatchEntity->patternScale());
 				break;
@@ -573,7 +573,7 @@ public:
 		for (i = 0; i < HatchEntity->numSeedPoints(); i++) {
 			ATLTRACE2(atlTraceGeneral, 2, L"Seed point %f, %f\n", HatchEntity->getSeedPointAt(i)[0], HatchEntity->getSeedPointAt(i)[1]);
 		}
-		int NumberOfLoops = HatchEntity->numLoops();
+		const int NumberOfLoops = HatchEntity->numLoops();
 		if (NumberOfLoops > 1) {
 			ATLTRACE2(atlTraceGeneral, 0, L"Hatch defined using more than one loop, %i skipped\n", NumberOfLoops - 1);
 		}
@@ -611,7 +611,7 @@ public:
 
 		OdRxObjectPtrArray EntitySet;
 		LeaderEntity->explode(EntitySet);
-		int NumberOfEntities = EntitySet.size();
+		const int NumberOfEntities = EntitySet.size();
 		for (int i = 0; i < NumberOfEntities; i++) {
 			OdDbEntityPtr Entity = static_cast<OdDbEntityPtr>(EntitySet[i]);
 			OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
@@ -687,7 +687,7 @@ public:
 
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
 		
-		size_t NumberOfVertices = PolylineEntity->numVerts();
+		const size_t NumberOfVertices = PolylineEntity->numVerts();
 
 		EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
 		OdGePoint2d Vertex;
@@ -727,7 +727,7 @@ public:
 			}
 			OdRxObjectPtrArray EntitySet;
 			ProxyEntityEntity->explodeGeometry(EntitySet);
-			int NumberOfEntities = EntitySet.size();
+			const int NumberOfEntities = EntitySet.size();
 			for (int n = 0; n < NumberOfEntities; n++) {
 				OdDbEntityPtr Entity = static_cast<OdDbEntityPtr>(EntitySet[n]);
 				OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
@@ -1003,7 +1003,6 @@ class Converters {
 
 public:
 	void AddExtensions() {
-#pragma warning (disable: 26444)
         OdDbEntity::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_EntityConverter);
         
         OdDb2dPolyline::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_2dPolylineConverter);
@@ -1028,10 +1027,8 @@ public:
 		OdDbText::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_TextConverter);
 		OdDbTrace::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_TraceConverter);
 		OdDbViewport::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_ViewportConverter);
-#pragma warning (restore: 26444)
     }
 	void DeleteExtensions() {
-#pragma warning (disable: 26444)
         OdDbEntity::desc()->delX(EoDbConvertEntityToPrimitive::desc());
         
         OdDb2dPolyline::desc()->delX(EoDbConvertEntityToPrimitive::desc());
@@ -1056,7 +1053,6 @@ public:
 		OdDbText::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbTrace::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbViewport::desc()->delX(EoDbConvertEntityToPrimitive::desc());
-#pragma warning (restore: 26444)
     }
 };
 AeSysDoc* ConvertEntityToPrimitiveProtocolExtension::m_Document = NULL;

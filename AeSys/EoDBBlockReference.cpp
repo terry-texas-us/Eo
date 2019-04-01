@@ -67,7 +67,7 @@ void EoDbBlockReference::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord)
 	OdDbDatabasePtr Database = BlockReferenceEntity->database();
 
 	OdDbBlockTablePtr BlockTable = Database->getBlockTableId().safeOpenObject(OdDb::kForRead);
-	OdDbObjectId Block = BlockTable->getAt((LPCWSTR) m_Name);
+	const OdDbObjectId Block = BlockTable->getAt((LPCWSTR) m_Name);
 	
 	BlockReferenceEntity->setBlockTableRecord(Block);
 
@@ -175,7 +175,7 @@ bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {return false;}
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	bool bInView = Block->IsInView(view);
+	const bool bInView = Block->IsInView(view);
 	view->PopModelTransform();
 
 	return (bInView);
@@ -196,7 +196,7 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGe
 
 	POSITION Position = Block->GetHeadPosition();
 	while (Position != 0) {
-		EoDbPrimitive* Primitive = Block->GetNext(Position);
+		const EoDbPrimitive* Primitive = Block->GetNext(Position);
 		ptCtrl = Primitive->SelectAtControlPoint(view, point);
 		if (sm_ControlPointIndex != SIZE_T_MAX) {
 			view->ModelTransformPoint(ptCtrl);
@@ -213,7 +213,7 @@ bool EoDbBlockReference::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGe
 		return false;
 	}
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	bool bResult = Block->SelectBy(lowerLeftCorner, upperRightCorner, view);
+	const bool bResult = Block->SelectBy(lowerLeftCorner, upperRightCorner, view);
 	view->PopModelTransform();
 
 	return (bResult);
@@ -261,8 +261,8 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 			ScaleMatrix.preMultBy(transformMatrix);
 			m_ScaleFactors.extractScale(ScaleMatrix);
 
-			OdGeVector3d XAxis = transformMatrix.getCsXAxis();
-			double Rotation = XAxis.convert2d().angle();
+			const OdGeVector3d XAxis = transformMatrix.getCsXAxis();
+			const double Rotation = XAxis.convert2d().angle();
 			m_Rotation += Rotation;
 		}
 	}

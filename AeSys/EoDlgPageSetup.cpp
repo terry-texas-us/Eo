@@ -236,7 +236,7 @@ void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString &deviceName, OdString ca
 void EoDlgPageSetup::FillMMInches() {
 	m_MMInches.ResetContent();
 
-	OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
+	const OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
 	if (PaperUnits == OdDbPlotSettings::kPixels) {
 		m_MMInches.AddString(L"pixels");
 		m_MMInches.EnableWindow(FALSE);
@@ -284,17 +284,17 @@ void EoDlgPageSetup::FillShadePlotQualityDPI(bool fillCombo) {
 		m_ShadePlot.AddString(L"Hidden");
 		m_ShadePlot.AddString(L"Rendered");
 	}
-	OdDbPlotSettings::ShadePlotType PlotType = m_PlotSettings.shadePlot();
+    const OdDbPlotSettings::ShadePlotType PlotType = m_PlotSettings.shadePlot();
 	m_ShadePlot.SetCurSel((int) PlotType);
 
-	OdDbPlotSettings::ShadePlotResLevel ResLevel = m_PlotSettings.shadePlotResLevel();
+	const OdDbPlotSettings::ShadePlotResLevel ResLevel = m_PlotSettings.shadePlotResLevel();
 	m_Quality.SetCurSel((int) ResLevel);
 
 	if (ResLevel == OdDbPlotSettings::kCustom) {
 		m_CustomDPI = m_PlotSettings.shadePlotCustomDPI();
 	}
 	if (IsModelSpacePageSetup()) {
-		bool bEnableWindows = PlotType == OdDbPlotSettings::kAsDisplayed || PlotType == OdDbPlotSettings::kRendered;
+		const bool bEnableWindows = PlotType == OdDbPlotSettings::kAsDisplayed || PlotType == OdDbPlotSettings::kRendered;
 		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(bEnableWindows);
 		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(ResLevel == OdDbPlotSettings::kCustom && bEnableWindows);
 	}
@@ -331,7 +331,7 @@ void EoDlgPageSetup::FillPlotStyles() {
 	UpdateData(FALSE);
 }
 void EoDlgPageSetup::FillPaperOrientation() {
-	OdDbPlotSettings::PlotRotation Rotation = m_PlotSettings.plotRotation();
+	const OdDbPlotSettings::PlotRotation Rotation = m_PlotSettings.plotRotation();
 
 	m_DrawingOrientation = Rotation & 1;
 	if (!IsPaperWidthLessHeight()) {
@@ -359,8 +359,8 @@ void EoDlgPageSetup::OnClickPortraitLandscape() {
 	FillPlotOffset();
 }
 void EoDlgPageSetup::OnChangeEditScaleUnit() {
-	double OldPaperScaleUnit = m_PaperScaleUnit;
-	double OldDrawingScaleUnit = m_DrawingScaleUnit;
+	const double OldPaperScaleUnit = m_PaperScaleUnit;
+	const double OldDrawingScaleUnit = m_DrawingScaleUnit;
 	UpdateData();
 
 	if (OldPaperScaleUnit != m_PaperScaleUnit || OldDrawingScaleUnit != m_DrawingScaleUnit) {
@@ -397,7 +397,7 @@ void EoDlgPageSetup::OnCheckScaleLW() {
 void EoDlgPageSetup::OnSelchangeScaleValues() {
 	UpdateData();
 
-	int CurrentSelection = m_ScaleValues.GetCurSel();
+	const int CurrentSelection = m_ScaleValues.GetCurSel();
 	if (CurrentSelection != 0) { // skip Custom
 		m_PlotSettingsValidator->setStdScaleType(&m_PlotSettings, StdScaleType(plotScaleSetting[CurrentSelection].m_ScaleType));
 	}
@@ -415,13 +415,13 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	UpdateData();
 
 	CString NewLocaleMediaName;
-	int i = m_PaperSize.GetCurSel();
+	const int i = m_PaperSize.GetCurSel();
 	m_PaperSize.GetLBText(i, NewLocaleMediaName);
 
 	OdString NewCanonicalMediaName = GetCanonicalByLocaleMediaName(OdString((LPCWSTR) NewLocaleMediaName));
 
 	m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, NewCanonicalMediaName);
-	OdDbPlotSettings::PlotPaperUnits MediaNativeUnits = GetMediaNativePPU();
+	const OdDbPlotSettings::PlotPaperUnits MediaNativeUnits = GetMediaNativePPU();
 
 	FillPaperSizes();
 	m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, NewLocaleMediaName));
@@ -466,7 +466,7 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 	UpdateData();
 
 	CString NewDeviceName;
-	int CurrentSelection = m_PlotDeviceName.GetCurSel();
+	const int CurrentSelection = m_PlotDeviceName.GetCurSel();
 	m_PlotDeviceName.GetLBText(CurrentSelection, NewDeviceName);
 
 	OdString CanonicalMediaName = m_PlotSettings.getCanonicalMediaName();
@@ -578,20 +578,20 @@ void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
 	if (fillCombo) {
 		m_ScaleValues.ResetContent();
 
-		int NumberOfScaleVaules = sizeof(StandardPlotScaleValues) / sizeof(LPWSTR);
+		const int NumberOfScaleVaules = sizeof(StandardPlotScaleValues) / sizeof(LPWSTR);
 		for (int ScaleValueIndex = 0; ScaleValueIndex < NumberOfScaleVaules; ScaleValueIndex++) {
 			m_ScaleValues.AddString(StandardPlotScaleValues[ScaleValueIndex]);
 		}
 	}
-	OdDbPlotSettings::StdScaleType ScaleType = m_PlotSettings.stdScaleType();
+	const OdDbPlotSettings::StdScaleType ScaleType = m_PlotSettings.stdScaleType();
 	if (m_PlotSettings.useStandardScale() && ScaleType != OdDbPlotSettings::kScaleToFit && ScaleType >=0 && ScaleType <=OdDbPlotSettings::k1000_1) {
 		m_ScaleValues.SetCurSel(m_ScaleValues.FindStringExact(0, StandardPlotScaleValues[ScaleType]));
 	}
 	else {
 		m_ScaleValues.SetCurSel(m_ScaleValues.FindStringExact(0, L"Custom"));
 	}
-	bool IsModel = IsModelSpacePageSetup();
-	bool IsLayout = m_PlotSettings.plotType() == OdDbPlotSettings::kLayout;
+	const bool IsModel = IsModelSpacePageSetup();
+	const bool IsLayout = m_PlotSettings.plotType() == OdDbPlotSettings::kLayout;
 
 	m_FitToPaper = m_PlotSettings.useStandardScale() && !IsLayout && (ScaleType == OdDbPlotSettings::kScaleToFit);
 	m_ScaleLW = m_PlotSettings.scaleLineweights();
@@ -622,13 +622,13 @@ void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
 	UpdateData(FALSE);  
 }
 bool EoDlgPageSetup::IsWHSwap() const {
-	OdDbPlotSettings::PlotRotation Rotation = m_PlotSettings.plotRotation();
+	const OdDbPlotSettings::PlotRotation Rotation = m_PlotSettings.plotRotation();
 	return Rotation == OdDbPlotSettings::k90degrees || Rotation == OdDbPlotSettings::k270degrees;
 }
 void EoDlgPageSetup::OnChangeEditOffsetXY() {
 	UpdateData();
 
-	OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
+	const OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
 	if (PaperUnits == OdDbPlotSettings::kInches) {
 		m_OffsetX *= PlotUnitsInfo[PaperUnits].m_Scale;
 		m_OffsetY *= PlotUnitsInfo[PaperUnits].m_Scale;
@@ -656,7 +656,7 @@ void EoDlgPageSetup::OnSelChangePlotAreaType() {
 	UpdateData();
 
 	CString NewViewType;
-	int CurrentSelection = m_PlotAreaType.GetCurSel();
+	const int CurrentSelection = m_PlotAreaType.GetCurSel();
 	m_PlotAreaType.GetLBText(CurrentSelection, NewViewType);
 
 	OdDbPlotSettings::PlotType Type = OdDbPlotSettings::kDisplay;
@@ -731,7 +731,7 @@ void EoDlgPageSetup::FillPlotOffset() {
 	else {
 		m_PlotSettings.getPlotOrigin(m_OffsetX, m_OffsetY);
 	}
-	OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
+	const OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
 	if (PaperUnits == OdDbPlotSettings::kInches) {
 		m_OffsetX /= PlotUnitsInfo[PaperUnits].m_Scale;
 		m_OffsetY /= PlotUnitsInfo[PaperUnits].m_Scale;
@@ -789,7 +789,7 @@ void EoDlgPageSetup::FillPlotAreaCombo(bool fillCombo) {
 			m_PlotAreaType.AddString(L"Window");
 		}
 	}
-	OdDbPlotSettings::PlotType Type = m_PlotSettings.plotType();
+	const OdDbPlotSettings::PlotType Type = m_PlotSettings.plotType();
 
 	GetDlgItem(IDC_PAGESETUP_VIEWS)->ShowWindow((Type == OdDbPlotSettings::kView) ? SW_SHOW : SW_HIDE);
 	GetDlgItem(IDC_BUTTON_WINDOW)->ShowWindow((Type == OdDbPlotSettings::kWindow) ? SW_SHOW : SW_HIDE);
@@ -882,7 +882,7 @@ void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 	UpdateData(FALSE);
 }
 void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
-	int CurrentSelection = m_PlotStyleFiles.GetCurSel();
+	const int CurrentSelection = m_PlotStyleFiles.GetCurSel();
 
 	CString tmp;
 	m_PlotStyleFiles.GetLBText(CurrentSelection, tmp);
@@ -922,7 +922,7 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 	}
 }
 void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
-	int CurrentSelection = m_PlotStyleFiles.GetCurSel();
+	const int CurrentSelection = m_PlotStyleFiles.GetCurSel();
 	GetDlgItem(IDC_PAGESETUP_BUTTON_PLOTSTYLEFILES)->EnableWindow(CurrentSelection);
 
 	if (CurrentSelection) {
@@ -936,13 +936,13 @@ void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
 }
 void EoDlgPageSetup::OnSelChangeQualityList() {
 	UpdateData();
-	int CurrentSelection = m_Quality.GetCurSel();
+	const int CurrentSelection = m_Quality.GetCurSel();
 	m_PlotSettings.setShadePlotResLevel((OdDbPlotSettings::ShadePlotResLevel) CurrentSelection);
 	FillShadePlotQualityDPI(false);
 }
 void EoDlgPageSetup::OnSelChangeShadePlotList() {
 	UpdateData();
-	int CurrentSelection = m_ShadePlot.GetCurSel();
+	const int CurrentSelection = m_ShadePlot.GetCurSel();
 	m_PlotSettings.setShadePlot((OdDbPlotSettings::ShadePlotType) CurrentSelection);
 	FillShadePlotQualityDPI(false);
 }
@@ -950,7 +950,7 @@ void EoDlgPageSetup::OnSelChangeViewsList() {
 	UpdateData();
 
 	CString ViewName;
-	int CurrentSelection = m_Views.GetCurSel();
+	const int CurrentSelection = m_Views.GetCurSel();
 	m_Views.GetLBText(CurrentSelection, ViewName);
 
 	m_PlotSettingsValidator->setPlotViewName(&m_PlotSettings, LPCWSTR(ViewName));
@@ -989,7 +989,7 @@ void EoDlgPageSetup::OnSelChangeMMInchesList() {
 	UpdateData();
 
 	CString Units;
-	int CurrentSelection = m_MMInches.GetCurSel();
+	const int CurrentSelection = m_MMInches.GetCurSel();
 	m_MMInches.GetLBText(CurrentSelection, Units);
 
 	OdDbPlotSettings::PlotPaperUnits PaperUnits = OdDbPlotSettings::kPixels;
@@ -999,7 +999,7 @@ void EoDlgPageSetup::OnSelChangeMMInchesList() {
 	else if (Units == "inches") {
 		PaperUnits = OdDbPlotSettings::kInches;
 	}
-	OdDbPlotSettings::PlotPaperUnits PreviousUnits = m_PlotSettings.plotPaperUnits();
+	const OdDbPlotSettings::PlotPaperUnits PreviousUnits = m_PlotSettings.plotPaperUnits();
 
 	ODA_VERIFY(m_PlotSettingsValidator->setPlotPaperUnits(&m_PlotSettings, PaperUnits) == eOk);
 
@@ -1029,8 +1029,8 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	ParentWindow->EnableWindow(TRUE);
 	ParentWindow->BringWindowToTop();
 
-	OdGePoint3d FirstCorner = m_pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS);
-	OdGePoint3d OppositeCorner = m_pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame);
+	const OdGePoint3d FirstCorner = m_pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS);
+	const OdGePoint3d OppositeCorner = m_pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame);
 
 #ifdef DEV_COMMAND_VIEW
 	// Points are returned in eye plane, transform it back to screen plane if it is possible

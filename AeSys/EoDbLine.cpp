@@ -41,7 +41,7 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	}
 	AngleInXYPlane = fmod(AngleInXYPlane, TWOPI);
 
-	double Length = m_Line.length();
+	const double Length = m_Line.length();
 
 	CString Report(L"<Line>");
 	Report += L" Color:" + FormatColorIndex();
@@ -120,8 +120,8 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGrou
 	newGroups->AddTail(NewGroup);
 }
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
-	EoInt16 ColorIndex = LogicalColorIndex();
-	EoInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const EoInt16 ColorIndex = LogicalColorIndex();
+	const EoInt16 LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -168,8 +168,8 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	else if (sm_ControlPointIndex == 1)
 		sm_ControlPointIndex = 0;
 	else { // Initial rock .. jump to point at lower left or down if vertical
-		OdGePoint3d ptBeg = m_Line.startPoint();
-		OdGePoint3d ptEnd = m_Line.endPoint();
+		const OdGePoint3d ptBeg = m_Line.startPoint();
+		const OdGePoint3d ptEnd = m_Line.endPoint();
 
 		if (ptEnd.x > ptBeg.x)
 			sm_ControlPointIndex = 0;
@@ -281,7 +281,7 @@ OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& p
 
 		view->ModelViewTransformPoint(pt);
 
-		double Distance = point.DistanceToPointXY(pt);
+		const double Distance = point.DistanceToPointXY(pt);
 
 		if (Distance < Aperture) {
 			sm_ControlPointIndex = ControlPointIndex;
@@ -333,11 +333,11 @@ void EoDbLine::SetStartPoint(const OdGePoint3d& startPoint) {
 	m_Line.SetStartPoint(startPoint);
 }
 void EoDbLine::Square(AeSysView* view) {
-	OdGePoint3d StartPoint = view->SnapPointToGrid(m_Line.startPoint());
+	const OdGePoint3d StartPoint = view->SnapPointToGrid(m_Line.startPoint());
 	OdGePoint3d EndPoint = view->SnapPointToGrid(m_Line.endPoint());
 
-	OdGePoint3d MidPoint = EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
-	double Length = OdGeVector3d(EndPoint - StartPoint).length();
+	const OdGePoint3d MidPoint = EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
+	const double Length = OdGeVector3d(EndPoint - StartPoint).length();
 	EndPoint = view->SnapPointToAxis(MidPoint, EndPoint);
 	SetStartPoint(ProjectToward(EndPoint, MidPoint, Length));
 	SetEndPoint(EndPoint);
@@ -447,7 +447,7 @@ OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr b
 	blockTableRecord->appendOdDbEntity(Line);
 	Line->setColorIndex(pstate.ColorIndex());
 
-	OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+	const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
 
 	Line->setLinetype(Linetype);
 

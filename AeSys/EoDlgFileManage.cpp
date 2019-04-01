@@ -58,7 +58,7 @@ void EoDlgFileManage::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_GROUPS, m_Groups);
 }
 void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& itemRectangle) {
-	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(itemID);
+	const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(itemID);
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 
 	OdString ItemName;
@@ -133,9 +133,9 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 	}
 }
 void EoDlgFileManage::OnBnClickedFuse() {
-	int SelectionMark = m_LayersList.GetSelectionMark();
+	const int SelectionMark = m_LayersList.GetSelectionMark();
 	if (SelectionMark > - 1) {
-		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
+		const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
 		OdString Name(Layer->Name());
 		if (Layer->IsInternal()) {
 			theApp.AddStringToMessageList(L"Selection <%s> already an internal layer.\n", Name);
@@ -148,9 +148,9 @@ void EoDlgFileManage::OnBnClickedFuse() {
 	}
 }
 void EoDlgFileManage::OnBnClickedMelt() {
-	int SelectionMark = m_LayersList.GetSelectionMark();
+	const int SelectionMark = m_LayersList.GetSelectionMark();
 	if (SelectionMark > - 1) {
-		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
+		const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
 		OdString Name(Layer->Name());
 		if (!Layer->IsInternal()) {
 			theApp.AddStringToMessageList(L"Selection <%s> already a tracing.\n", Name);
@@ -178,14 +178,14 @@ void EoDlgFileManage::OnBnClickedNewlayer() {
 	LayerTableRecord->setName(Name);
 	m_Document->AddLayerTo(Layers, Layer);
 	
-	int ItemCount = m_LayersList.GetItemCount();
+	const int ItemCount = m_LayersList.GetItemCount();
 	m_LayersList.InsertItem(ItemCount, Name);
 	m_LayersList.SetItemData(ItemCount, DWORD_PTR(m_Document->GetLayerAt(Name)));
 }
 void EoDlgFileManage::OnBnClickedSetcurrent() {
-	int SelectionMark = m_LayersList.GetSelectionMark();
+	const int SelectionMark = m_LayersList.GetSelectionMark();
 	if (SelectionMark > - 1) {
-		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
+		const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
 		OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 		LayerTableRecord->upgradeOpen();
 		if (!LayerTableRecord.isNull())
@@ -210,17 +210,17 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 			//clear item
 			CRect rcItem(drawItemStruct->rcItem);
 			CDC DeviceContext;
-			COLORREF rgbBkgnd = ::GetSysColor((drawItemStruct->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW);
+			const COLORREF rgbBkgnd = ::GetSysColor((drawItemStruct->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW);
 			DeviceContext.Attach(drawItemStruct->hDC);
 			CBrush br(rgbBkgnd);
 			DeviceContext.FillRect(rcItem, &br);
 			if (drawItemStruct->itemState & ODS_FOCUS) {
 				DeviceContext.DrawFocusRect(rcItem);
 			}
-			int itemID = drawItemStruct->itemID;
+			const int itemID = drawItemStruct->itemID;
 			if (itemID != - 1) {
 				// The text color is stored as the item data.
-				COLORREF rgbText = (drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
+				const COLORREF rgbText = (drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
 				DeviceContext.SetBkColor(rgbBkgnd);
 				DeviceContext.SetTextColor(rgbText);
 				for (int labelIndex = 0; labelIndex < m_NumberOfColumns; ++labelIndex) {
@@ -278,7 +278,7 @@ BOOL EoDlgFileManage::OnInitDialog(void) {
 
 	OdDbLayerTablePtr Layers = m_Document->LayerTable(OdDb::kForRead);
 	for (int LayerIndex = 0; LayerIndex < m_Document->GetLayerTableSize(); LayerIndex++) {
-		EoDbLayer* Layer = m_Document->GetLayerAt(LayerIndex);
+		const EoDbLayer* Layer = m_Document->GetLayerAt(LayerIndex);
 
 		m_LayersList.InsertItem(LayerIndex, Layer->Name());
 		m_LayersList.SetItemData(LayerIndex, DWORD_PTR(Layer));
@@ -294,7 +294,7 @@ BOOL EoDlgFileManage::OnInitDialog(void) {
 	while (Position != NULL) {
 		m_Document->GetNextBlock(Position, BlockName, Block);
 		if (!Block->IsAnonymous()) {
-			int ItemIndex = m_BlocksList.AddString(BlockName);
+			const int ItemIndex = m_BlocksList.AddString(BlockName);
 			m_BlocksList.SetItemData(ItemIndex, DWORD_PTR(Block));
 		}
 	}
@@ -308,10 +308,10 @@ BOOL EoDlgFileManage::OnInitDialog(void) {
 	return TRUE;
 }
 void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR *pNMHDR, LRESULT* result) {
-	LPNMLISTVIEW ListViewNotificationMessage = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	const LPNMLISTVIEW ListViewNotificationMessage = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
 
 	if ((ListViewNotificationMessage->uNewState & LVIS_FOCUSED) == LVFIS_FOCUSED) {
-		int Item = ListViewNotificationMessage->iItem;
+		const int Item = ListViewNotificationMessage->iItem;
 		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item);
 
 		CString NumberOfGroups;
@@ -326,7 +326,7 @@ void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR *pNMHDR, LRESULT* res
 	*result = 0;
 }
 void EoDlgFileManage::OnLbnSelchangeBlocksList() {
-	int CurrentSelection = m_BlocksList.GetCurSel();
+	const int CurrentSelection = m_BlocksList.GetCurSel();
 	if (CurrentSelection != LB_ERR) {
 		if (m_BlocksList.GetTextLen(CurrentSelection) != LB_ERR) {
 			CString BlockName;
@@ -340,10 +340,10 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 	}
 }
 void EoDlgFileManage::OnNMClickLayersListControl(NMHDR *pNMHDR, LRESULT* result) {
-	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	const LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 
-	int Item = pNMItemActivate->iItem;
-	int SubItem = pNMItemActivate->iSubItem;
+	const int Item = pNMItemActivate->iItem;
+	const int SubItem = pNMItemActivate->iSubItem;
 
 	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item);
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
@@ -455,16 +455,16 @@ void EoDlgFileManage::UpdateCurrentLayerInfoField() {
 	GetDlgItem(IDC_STATIC_CURRENT_LAYER)->SetWindowTextW(L"Current Layer: " + LayerName);
 }
 void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR pNMHDR, LRESULT* result) {
-	NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
-	LVITEM Item = ListViewNotificationDisplayInfo->item;
-	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
+	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+	const LVITEM Item = ListViewNotificationDisplayInfo->item;
+	const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 	// <tas="Layer0 should be culled here instead of the EndlabeleditLayers."</tas>
 	result = 0;
 }
 void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR pNMHDR, LRESULT* result) {
-	NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
-	LVITEM Item = ListViewNotificationDisplayInfo->item;
+	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+	const LVITEM Item = ListViewNotificationDisplayInfo->item;
 	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 
@@ -490,14 +490,14 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR pNMHDR, LRESULT
 	result = 0;
 }
 void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR pNMHDR, LRESULT* result) {
-	LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(pNMHDR);
+	const LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(pNMHDR);
 	if (pLVKeyDow->wVKey == VK_DELETE) {
-		int SelectionMark = m_LayersList.GetSelectionMark();
+		const int SelectionMark = m_LayersList.GetSelectionMark();
 		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
 
 		OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 		OdString Name(Layer->Name());
-		OdResult Result = LayerTableRecord->erase(true);
+		const OdResult Result = LayerTableRecord->erase(true);
 		if (Result) {
 			OdString ErrorDescription = m_Database->appServices()->getErrorDescription(Result);
 			ErrorDescription += L": <%s> layer can not be deleted";
@@ -505,7 +505,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR pNMHDR, LRESULT* res
 		}
 		else {
 			m_Document->UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
-			int LayerIndex = m_Document->FindLayerAt(Name);
+			const int LayerIndex = m_Document->FindLayerAt(Name);
 			m_Document->RemoveLayerAt(LayerIndex);
 			m_LayersList.DeleteItem(SelectionMark);
 			theApp.AddStringToMessageList(IDS_MSG_LAYER_ERASED, Name);

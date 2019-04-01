@@ -174,11 +174,11 @@ OdGePoint3d EoExEditorObject::toScreenCoord(const OdGePoint3d &wcsPt) const {
 	ActiveView->clientViewInfo(ClientViewInfo);
 	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject();
 	OdAbstractViewPEPtr pVp(pObj);
-	OdGeVector3d vecY = pVp->upVector(pObj);
-	OdGeVector3d vecZ = pVp->direction(pObj);
-	OdGeVector3d vecX = vecY.crossProduct(vecZ).normal();
-	OdGeVector2d offset = pVp->viewOffset(pObj);
-	OdGePoint3d prTarg = pVp->target(pObj) - vecX * offset.x - vecY * offset.y;
+	const OdGeVector3d vecY = pVp->upVector(pObj);
+	const OdGeVector3d vecZ = pVp->direction(pObj);
+	const OdGeVector3d vecX = vecY.crossProduct(vecZ).normal();
+	const OdGeVector2d offset = pVp->viewOffset(pObj);
+	const OdGePoint3d prTarg = pVp->target(pObj) - vecX * offset.x - vecY * offset.y;
 	scrPt.x = vecX.dotProduct(wcsPt - prTarg);
 	scrPt.y = vecY.dotProduct(wcsPt - prTarg);
 	scrPt.z =0.;
@@ -248,7 +248,7 @@ void EoExEditorObject::set3DView(_3DViewType type) {
 	OdDbObjectPtr pObject = OdDbObjectId(ClientViewInfo.viewportObjectId).safeOpenObject(OdDb::kForWrite);
 	OdAbstractViewPEPtr(pObject)->setUcs(pObject, Target, Axis.crossProduct(Position.asVector()), Axis);
 
-	OdGsView::Projection ProjectionType((ActiveView->isPerspective()) ? OdGsView::kPerspective : OdGsView::kParallel);
+	const OdGsView::Projection ProjectionType((ActiveView->isPerspective()) ? OdGsView::kPerspective : OdGsView::kParallel);
 	ActiveView->setView(Position, Target, Axis, ActiveView->fieldWidth(), ActiveView->fieldHeight(), ProjectionType);
 }
 bool EoExEditorObject::snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
@@ -283,9 +283,9 @@ bool EoExEditorObject::OnCtrlClick() {
 	return m_gripManager.onControlClick();
 }
 bool EoExEditorObject::OnMouseLeftButtonClick(unsigned int flags, int x, int y, OleDragCallback* dragCallback) {
-	bool ShiftIsDown = (OdEdBaseIO::kShiftIsDown & flags) != 0;
-	bool ControlIsDown = (OdEdBaseIO::kControlIsDown & flags) != 0;
-	OdGePoint3d pt = toEyeToWorld(x, y);
+	const bool ShiftIsDown = (OdEdBaseIO::kShiftIsDown & flags) != 0;
+	const bool ControlIsDown = (OdEdBaseIO::kControlIsDown & flags) != 0;
+	const OdGePoint3d pt = toEyeToWorld(x, y);
 
 	if (m_gripManager.onMouseDown(x, y, ShiftIsDown)) {
 		return true;
@@ -314,7 +314,7 @@ bool EoExEditorObject::OnMouseLeftButtonClick(unsigned int flags, int x, int y, 
 			}
 		}
 	}
-	catch (OdError& Error) {
+	catch (const OdError& Error) {
 		theApp.reportError(L"", Error);
 		return (false);
 	}
@@ -351,13 +351,13 @@ bool EoExEditorObject::OnMouseLeftButtonClick(unsigned int flags, int x, int y, 
 	return true;
 }
 bool EoExEditorObject::OnMouseLeftButtonDoubleClick(unsigned int flags, int x, int y) {
-	OdGsView* ActiveView = activeView();
+	const OdGsView* ActiveView = activeView();
 	m_pDevice->setActiveViewport(OdGePoint2d(x, y));
-	bool bChanged = ActiveView != activeView();
+	const bool bChanged = ActiveView != activeView();
 	if (bChanged) {
 		// @@@ probably move this code to GsLayoutHelper's?
 		OdDbObjectPtr pObj = activeVpId().safeOpenObject();
-		OdDbDatabase* pDb = pObj->database();
+		const OdDbDatabase* pDb = pObj->database();
 		if (pDb->getTILEMODE()) {
 			OdDbViewportTable::cast(pDb->getViewportTableId().safeOpenObject(OdDb::kForWrite))->SetActiveViewport(activeVpId());
 		}
@@ -374,7 +374,7 @@ bool EoExEditorObject::OnMouseRightButtonDoubleClick(unsigned int nFlags, int x,
 	OdGsView* pView = activeView();
 
 	// set target to center of the scene, keep view direction:
-	OdGePoint3d targ = pView->target();
+	const OdGePoint3d targ = pView->target();
 
 	pView->setView(targ + OdGeVector3d::kZAxis, targ, OdGeVector3d::kYAxis, pView->fieldWidth(), pView->fieldHeight());
 
@@ -423,7 +423,7 @@ bool EoExEditorObject::OnMouseWheel(unsigned int nFlags, int x, int y, short zDe
 }
 
 void Zoom_Window(OdGePoint3d& pt1, OdGePoint3d& pt2, OdGsView* view) {
-	OdGeMatrix3d WorldToEye = OdAbstractViewPEPtr(view)->worldToEye(view);
+	const OdGeMatrix3d WorldToEye = OdAbstractViewPEPtr(view)->worldToEye(view);
 	pt1.transformBy(WorldToEye);
 	pt2.transformBy(WorldToEye);
 	OdGeVector3d eyeVec = pt2 - pt1;
@@ -435,8 +435,8 @@ void Zoom_Window(OdGePoint3d& pt1, OdGePoint3d& pt2, OdGsView* view) {
 
 		view->dolly(newPos.asVector());
 
-		double FieldWidth = view->fieldWidth()  / eyeVec.x;
-		double FieldHeight = view->fieldHeight() / eyeVec.y;
+		const double FieldWidth = view->fieldWidth()  / eyeVec.x;
+		const double FieldHeight = view->fieldHeight() / eyeVec.y;
 
 		view->zoom(odmin(FieldWidth, FieldHeight));
 	}
@@ -455,7 +455,7 @@ static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, 
 	return false;
 }
 void zoom_extents(OdGsView* view, OdDbObject* activeViewportObject) {
-	OdDbDatabase* Database = activeViewportObject->database();
+	const OdDbDatabase* Database = activeViewportObject->database();
 	OdAbstractViewPEPtr pVpPE(view);
 	OdGeBoundBlock3d BoundBlock;
 	bool bBboxValid = pVpPE->viewExtents(view, BoundBlock);
@@ -497,13 +497,13 @@ public:
 		m_base = (m_pView->projectionMatrix() * m_pView->viewingMatrix() * base).y;
 	}
 	void setValue(const OdGePoint3d& value) {
-		OdGeMatrix3d xWorldToNDC = m_pView->projectionMatrix() * m_pView->viewingMatrix();
-		OdGePoint3d pt2 = xWorldToNDC * value;
+		const OdGeMatrix3d xWorldToNDC = m_pView->projectionMatrix() * m_pView->viewingMatrix();
+		const OdGePoint3d pt2 = xWorldToNDC * value;
 		double fac = 1. + fabs(pt2.y - m_base) * 1.5;
 		if (pt2.y > m_base) {
 			fac = 1./fac;
 		}
-		OdGsView::Projection ProjectionType(m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
+		const OdGsView::Projection ProjectionType(m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 		m_pView->setView(m_pView->position(), m_pView->target(), m_pView->upVector(), m_fw * fac, m_fh * fac, ProjectionType);
 	}
 	int addDrawables(OdGsView* view) {
@@ -553,7 +553,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* commandContext) {
 	}
 	catch(const OdEdOtherInput& otherInput) { // nX or nXP
 		OdChar* pEnd;
-		double scale = odStrToD(otherInput.string(), &pEnd);
+		const double scale = odStrToD(otherInput.string(), &pEnd);
 		if (pEnd > otherInput.string().c_str()) {
 			OdString sEnd(pEnd);
 			if(sEnd.iCompare(L"X") == 0) {
@@ -604,7 +604,7 @@ public:
 		return false;
 	}
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const {
-		OdGiViewport& ViewPort = viewportDraw->viewport();
+		const OdGiViewport& ViewPort = viewportDraw->viewport();
 		OdGiGeometry& Geometry = viewportDraw->geometry();
 		viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACIGreen);
 		viewportDraw->subEntityTraits().setFillType(kOdGiFillNever);
@@ -617,7 +617,7 @@ public:
 		ViewPort.getViewportDcCorners((OdGePoint2d&) pt1, pt2);
 		pt2.x -= pt1.x;
 		pt2.y -= pt1.y;
-		double Radius = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
+		const double Radius = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
 		((OdGePoint2d&)pt1) += (pt2.asVector() / 2.);
 		Geometry.circle(pt1, Radius, OdGeVector3d::kZAxis);
 
@@ -649,9 +649,9 @@ class RTOrbitTracker : public OdEdPointTracker {
 	m_axis;
 
 	void viewportDcCorners(OdGePoint2d& lowerLeft, OdGePoint2d& upperRight) const {
-		OdGePoint3d Target = m_pView->viewingMatrix() * m_pView->target();
-		double HalfFieldWidth = m_pView->fieldWidth() / 2.0;
-		double HalfFieldHeight = m_pView->fieldHeight() / 2.0;
+		const OdGePoint3d Target = m_pView->viewingMatrix() * m_pView->target();
+		const double HalfFieldWidth = m_pView->fieldWidth() / 2.0;
+		const double HalfFieldHeight = m_pView->fieldHeight() / 2.0;
 		lowerLeft.x = Target.x - HalfFieldWidth;
 		lowerLeft.y = Target.y - HalfFieldHeight;
 		upperRight.x = Target.x + HalfFieldWidth;
@@ -681,10 +681,10 @@ public:
 		viewportDcCorners((OdGePoint2d&)pt1, pt2);
 		pt2.x -= pt1.x;
 		pt2.y -= pt1.y;
-		double Radius = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
+		const double Radius = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
 		m_D = 2.0 * Radius;
 		((OdGePoint2d&)pt1) += (pt2.asVector() / 2.);
-		double r2sqrd = Radius * Radius / 400.;
+		const double r2sqrd = Radius * Radius / 400.;
 
 		pt1.y += Radius;
 		if((pt1 - m_pt).lengthSqrd() <= r2sqrd) {
@@ -727,7 +727,7 @@ public:
 		m_viewCenter.transformBy(m_initViewingMatrixInv);
 	}
 	double angle(const OdGePoint3d& value) const {
-		OdGePoint3d pt2 = m_pView->viewingMatrix() * value;
+		const OdGePoint3d pt2 = m_pView->viewingMatrix() * value;
 		double Distance(0.);
 		if (m_axis == kHorizontal) {
 			Distance = pt2.y - m_pt.y;
@@ -765,8 +765,8 @@ public:
 				OdGePoint3d value1(value);
 					value1.transformBy(m_pView->viewingMatrix());
 					value1.z = 0.0;
-					OdGeVector2d dir = (value1 - m_pt).convert2d();
-					OdGeVector2d perp = dir.perpVector();
+					const OdGeVector2d dir = (value1 - m_pt).convert2d();
+					const OdGeVector2d perp = dir.perpVector();
 					OdGeVector3d perp3d(perp.x, perp.y, 0.0);
 					perp3d.normalizeGetLength();
 					perp3d.transformBy(m_initViewingMatrixInv);
@@ -774,12 +774,13 @@ public:
 					break;
 				}
 			}
-			OdGePoint3d newPos = x * m_pos, newTarget = x * m_trg;
+            OdGePoint3d newPos = x * m_pos;
+            const OdGePoint3d newTarget = x * m_trg;
 			OdGeVector3d newPosDir = newPos - newTarget;
 			newPosDir.normalizeGetLength();
 			newPosDir *= m_pos.distanceTo(m_trg);
 			newPos = newTarget + newPosDir;
-			OdGsView::Projection ProjectionType(m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
+			const OdGsView::Projection ProjectionType(m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 			m_pView->setView(newPos, newTarget, x * m_up, m_pView->fieldWidth(), m_pView->fieldHeight(), ProjectionType);
 		}
 	}
@@ -829,9 +830,9 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* commandContext) {
 	OdStaticRxObject<RTOrbitTracker> tracker;
 	for (;;) {
 		try {
-			int BeginDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag);
+			const int BeginDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag);
 			tracker.init(pView, UserIO->getPoint(L"Press ESC or ENTER to exit.", BeginDragOptions, 0, OdString::kEmpty, &tracker));
-			int EndDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag);
+			const int EndDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag);
 			UserIO->getPoint(L"Press ESC or ENTER to exit.", EndDragOptions, 0, OdString::kEmpty, &tracker);
 			tracker.reset();
 		}
@@ -902,9 +903,9 @@ void OdExDollyCmd::execute(OdEdCommandContext* commandContext) {
 	OdStaticRxObject<RTDollyTracker> tracker;
 	for (;;) {
 		try {
-			int BeginDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag);
+			const int BeginDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag);
 			tracker.init(pView, UserIO->getPoint(L"Press ESC or ENTER to exit.", BeginDragOptions, 0, OdString::kEmpty, &tracker));
-			int EndDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag);
+			const int EndDragOptions(OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag);
 			UserIO->getPoint(L"Press ESC or ENTER to exit.", EndDragOptions, 0, OdString::kEmpty, &tracker);
 			tracker.reset();
 		}

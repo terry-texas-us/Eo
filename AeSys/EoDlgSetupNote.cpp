@@ -61,21 +61,21 @@ void EoDlgSetupNote::OnOK() {
 	GetDlgItemTextW(IDC_TEXT_SPACING, Spacing);
 	m_FontDefinition->SetCharacterSpacing(_wtof(Spacing));
 
-	EoDb::HorizontalAlignment HorizontalAlignment = EoDb::HorizontalAlignment(1 - IDC_TEXT_ALIGN_HOR_LEFT + GetCheckedRadioButton(IDC_TEXT_ALIGN_HOR_LEFT, IDC_TEXT_ALIGN_HOR_RIGHT));
+	const EoDb::HorizontalAlignment HorizontalAlignment = EoDb::HorizontalAlignment(1 - IDC_TEXT_ALIGN_HOR_LEFT + GetCheckedRadioButton(IDC_TEXT_ALIGN_HOR_LEFT, IDC_TEXT_ALIGN_HOR_RIGHT));
 	m_FontDefinition->SetHorizontalAlignment(HorizontalAlignment);
 
-	EoDb::VerticalAlignment VerticalAlignment = EoDb::VerticalAlignment(4 + IDC_TEXT_ALIGN_VER_BOT - GetCheckedRadioButton(IDC_TEXT_ALIGN_VER_BOT, IDC_TEXT_ALIGN_VER_TOP));
+	const EoDb::VerticalAlignment VerticalAlignment = EoDb::VerticalAlignment(4 + IDC_TEXT_ALIGN_VER_BOT - GetCheckedRadioButton(IDC_TEXT_ALIGN_VER_BOT, IDC_TEXT_ALIGN_VER_TOP));
 	m_FontDefinition->SetVerticalAlignment(VerticalAlignment);
 
-	EoDb::Path Path = EoDb::Path(GetCheckedRadioButton(IDC_PATH_RIGHT, IDC_PATH_DOWN) - IDC_PATH_RIGHT);
+	const EoDb::Path Path = EoDb::Path(GetCheckedRadioButton(IDC_PATH_RIGHT, IDC_PATH_DOWN) - IDC_PATH_RIGHT);
 	m_FontDefinition->SetPath(Path);
 
-	int FontsIndex = m_MfcFontComboControl.GetCurSel();
+	const int FontsIndex = m_MfcFontComboControl.GetCurSel();
 	if (FontsIndex != CB_ERR) {
 		CString FontsItemName;
 		m_MfcFontComboControl.GetLBText(FontsIndex, FontsItemName);
 		m_FontDefinition->SetFontName(FontsItemName);
-		EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? EoDb::kEoTrueType : EoDb::kStrokeType);
+		const EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? EoDb::kEoTrueType : EoDb::kStrokeType);
 		m_FontDefinition->SetPrecision(Precision);
 	}
 

@@ -11,9 +11,9 @@ typedef struct {
 } EoListCtrlSortData;
 
 static int CALLBACK EoLineweightCompareFunction(LPARAM item1, LPARAM item2, LPARAM sortData) {
-	int NewIndex1 = ((EoLineweightData*) item1)->m_NewIdx;
-	int NewIndex2 = ((EoLineweightData*) item2)->m_NewIdx;
-	CListCtrl* ListCtrl = ((EoListCtrlSortData*) sortData)->m_ListCtrl;
+	const int NewIndex1 = ((EoLineweightData*) item1)->m_NewIdx;
+	const int NewIndex2 = ((EoLineweightData*) item2)->m_NewIdx;
+	const CListCtrl* ListCtrl = ((EoListCtrlSortData*) sortData)->m_ListCtrl;
 
 	double Value1 = _wtof(ListCtrl->GetItemText(NewIndex1, 0));
 	double Value2 = _wtof(ListCtrl->GetItemText(NewIndex2, 0));
@@ -53,13 +53,13 @@ void EoDlgPlotStyleEditLineweight::OnOK() {
 	// <tas="Is extra validation needed here?"</tas>
 	OnButtonSortlineweight();
 	m_PlotStyleTable->setDisplayCustomLineweightUnits(m_InchesButton.GetCheck() ? true : false);
-	size_t NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
+	const size_t NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
 	OdPsPlotStyleData PlotStyleData;
-	int iLineweightQnt = m_PlotStyleTable->lineweightSize();
+	const int iLineweightQnt = m_PlotStyleTable->lineweightSize();
 	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
 		OdPsPlotStylePtr PlotStyle = m_PlotStyleTable->plotStyleAt(PlotStyleIndex);
 		PlotStyle->getData(PlotStyleData);
-		int lineweight = (int) PlotStyleData.lineweight() - 1;
+		const int lineweight = (int) PlotStyleData.lineweight() - 1;
 		for (int j = 0; j < iLineweightQnt; j++) {
 			if (m_LineweightData[j].m_OldIdx == lineweight) {
 				if (m_LineweightData[j].m_OldIdx != m_LineweightData[j].m_NewIdx) {
@@ -87,7 +87,7 @@ void EoDlgPlotStyleEditLineweight::OnButtonSortlineweight() {
 	SortData.m_SubItem = 0;
 	SortData.m_Type = 0;
 	m_LineweightsListCtrl.SortItems(EoLineweightCompareFunction, (DWORD_PTR) &SortData);
-	int NumberOfLineweights = m_LineweightsListCtrl.GetItemCount();
+	const int NumberOfLineweights = m_LineweightsListCtrl.GetItemCount();
 	for (int LineWeightIndex = 0; LineWeightIndex < NumberOfLineweights; LineWeightIndex++) {
 		EoLineweightData* LineweightDataItem = (EoLineweightData*) m_LineweightsListCtrl.GetItemData(LineWeightIndex);
 		LineweightDataItem->m_NewIdx = LineWeightIndex; 
@@ -95,7 +95,7 @@ void EoDlgPlotStyleEditLineweight::OnButtonSortlineweight() {
 }
 void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* pNMHDR, LRESULT* result) {
 	LV_DISPINFO* DisplayInfo = (LV_DISPINFO*) pNMHDR;
-	LV_ITEM* pItem = &((LV_DISPINFO*) DisplayInfo)->item;
+	const LV_ITEM* pItem = &((LV_DISPINFO*) DisplayInfo)->item;
 	if (pItem->mask & LVIF_TEXT) {
 		CString str;
 		str.Format(L"%.4f", _wtof(pItem->pszText));
@@ -126,10 +126,10 @@ void EoDlgPlotStyleEditLineweight::SetInitialSelection(int selection) {
 }
 void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
 	CString Lineweight;
-	int NumberOfLineweights = m_LineweightsListCtrl.GetItemCount();
+	const int NumberOfLineweights = m_LineweightsListCtrl.GetItemCount();
 	for (int i = 0; i < NumberOfLineweights; i++) {
-		EoLineweightData* LineweightDataItem = (EoLineweightData*) m_LineweightsListCtrl.GetItemData(i);
-		double Value = LineweightDataItem->m_Value;
+		const EoLineweightData* LineweightDataItem = (EoLineweightData*) m_LineweightsListCtrl.GetItemData(i);
+		const double Value = LineweightDataItem->m_Value;
 		Lineweight.Format(L"%.4f", isInchUnits ? MMTOINCH(Value) : Value);
 
 		LV_ITEM lvi;
@@ -180,11 +180,11 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	OdGeIntArray useLineWeightIndex;
 	OdPsPlotStylePtr pPs;
 	OdPsPlotStyleData OdPsData;
-	size_t NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
+	const size_t NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
 	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
 		pPs = m_PlotStyleTable->plotStyleAt(PlotStyleIndex);
 		pPs->getData(OdPsData);
-		size_t value = (size_t) OdPsData.lineweight() - 1;
+		const size_t value = (size_t) OdPsData.lineweight() - 1;
 		size_t nIndex;
 		if (!useLineWeightIndex.find(value, nIndex)) {
 			useLineWeightIndex.push_back(value);
@@ -205,7 +205,7 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		if (useLineWeightIndex.find(i, nIndex)) {
 			isUse = true;
 		}
-		size_t item = InsertLineweightAt(i, lineweight, isUse);
+		const size_t item = InsertLineweightAt(i, lineweight, isUse);
 		m_LineweightsListCtrl.SetItemData(item, (DWORD) &m_LineweightData[i]);
 	}
 	m_LineweightsListCtrl.SetItemState(m_InitialSelection, LVIS_SELECTED, LVIS_SELECTED);
@@ -221,7 +221,7 @@ const int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const CStr
 	lvItem.iSubItem = 0;
 
 	lvItem.pszText = (LPWSTR)(LPCWSTR) lineweight;
-	int nItem = m_LineweightsListCtrl.InsertItem(&lvItem);
+	const int nItem = m_LineweightsListCtrl.InsertItem(&lvItem);
 
 	LV_ITEM lvItem1;
 	lvItem1.mask = LVIF_STATE | LVIF_IMAGE;

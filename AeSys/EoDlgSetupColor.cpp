@@ -95,12 +95,12 @@ void EoDlgSetupColor::OnBnClickedBylayerButton() {
 	CDialog::OnOK();
 }
 void EoDlgSetupColor::OnChangeColorEdit() {
-	EoUInt16 Index = EoUInt16(GetDlgItemInt(IDC_COLOR_EDIT));
+	const EoUInt16 Index = EoUInt16(GetDlgItemInt(IDC_COLOR_EDIT));
 	DrawSelectionInformation(Index);
 }
 BOOL EoDlgSetupColor::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) {
 	NMHDR* NotifyStructure = (NMHDR*) lParam;
-	CWnd* ColorsButton = CWnd::FromHandle(NotifyStructure->hwndFrom);
+	const CWnd* ColorsButton = CWnd::FromHandle(NotifyStructure->hwndFrom);
 	DrawSelectionInformation(((EoCtrlColorsButton*) ColorsButton)->m_SubItem);
 	return CDialog::OnNotify(wParam, lParam, result);
 }

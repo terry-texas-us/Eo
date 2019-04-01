@@ -89,7 +89,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 
 	// Prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
-	DWORD Style(WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+	const DWORD Style(WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
 	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create toolbar\n");
 		return - 1;
@@ -154,7 +154,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
 	return TRUE;
 }
 BOOL CMainFrame::CreateDockablePanes() {
-	CSize DefaultSize(200, 200);
+	const CSize DefaultSize(200, 200);
 
 	const DWORD SharedStyles(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI);
 
@@ -189,8 +189,8 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	}
 }
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
-	double PixelsPerLogicalMillimeter = static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / EoMmPerInch;
-	int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + .5);
+	const double PixelsPerLogicalMillimeter = static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / EoMmPerInch;
+	const int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + .5);
 
 	LOGBRUSH Brush;
 	Brush.lbStyle = BS_SOLID;
@@ -216,7 +216,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 }
 void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const CString& textOut, const OdDbDatabasePtr database) {
 	if (database->getPSTYLEMODE() == 1) {
-		COLORREF OldTextColor = deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT));
+		const COLORREF OldTextColor = deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT));
 		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), NULL);
 		deviceContext.SetTextColor(OldTextColor);
 	}
@@ -225,7 +225,7 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 	}
 }
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
-	CSize SmallIconSize(::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
+	const CSize SmallIconSize(::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
 	HINSTANCE ResourceHandle(::AfxGetResourceHandle());
 
 	HICON PropertiesPaneIcon = (HICON) ::LoadImage(ResourceHandle, MAKEINTRESOURCE(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, SmallIconSize.cx, SmallIconSize.cy, 0);
@@ -367,7 +367,7 @@ LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, LPARAM point) {
 	ASSERT(SubMenu != NULL);
 
 	if (SubMenu) {
-		CPoint Point(AFX_GET_X_LPARAM(point), AFX_GET_Y_LPARAM(point));
+		const CPoint Point(AFX_GET_X_LPARAM(point), AFX_GET_Y_LPARAM(point));
 
 		CMFCPopupMenu* PopupMenu = new CMFCPopupMenu;
 		PopupMenu->Create(this, Point.x, Point.y, SubMenu->Detach());
@@ -473,7 +473,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			DWORD PathSize;
 			for(;;) {
 				PathSize = _MAX_FNAME + _MAX_EXT;
-				DWORD ReturnValue = ::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, NULL, NULL, NULL, NULL);
+				const DWORD ReturnValue = ::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, NULL, NULL, NULL, NULL);
 				VectorizerPath.ReleaseBuffer();
 				if (ReturnValue != ERROR_SUCCESS) {
 					break;
@@ -529,7 +529,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 					EnableMDITabs(FALSE);
 				}
 				else if (MDITabsType == 2) {
-					CMDITabInfo TabInfo; // ignored when tabbed groups are disabled
+					const CMDITabInfo TabInfo; // ignored when tabbed groups are disabled
 
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
@@ -579,7 +579,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 	}
 	CMFCToolBar::SetNonPermittedCommands(lstCommands);
 	if (resetMDIChild) {
-		BOOL bMaximize = theApp.m_Options.m_nTabsStyle != EoApOptions::None;
+		const BOOL bMaximize = theApp.m_Options.m_nTabsStyle != EoApOptions::None;
 
 		HWND hwndT = ::GetWindow(m_hWndMDIClient, GW_CHILD);
 		while (hwndT != NULL) {

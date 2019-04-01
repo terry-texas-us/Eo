@@ -63,16 +63,16 @@ EoGsAbstractView& EoGsAbstractView::operator=(const EoGsAbstractView& other) {
 }
 
 void EoGsAbstractView::AdjustWindow(const double aspectRatio) {
-	double FieldWidth = m_FieldWidthMaximum - m_FieldWidthMinimum;
-	double FieldHeight = m_FieldHeightMaximum - m_FieldHeightMinimum;
+	const double FieldWidth = m_FieldWidthMaximum - m_FieldWidthMinimum;
+	const double FieldHeight = m_FieldHeightMaximum - m_FieldHeightMinimum;
 
 	if (FieldWidth <= FLT_EPSILON || FieldHeight / FieldWidth > aspectRatio) {
-		double Adjustment = (FieldHeight / aspectRatio - FieldWidth) * 0.5;
+		const double Adjustment = (FieldHeight / aspectRatio - FieldWidth) * 0.5;
 		m_FieldWidthMinimum -= Adjustment;
 		m_FieldWidthMaximum += Adjustment;
 	}
 	else {
-		double Adjustment = (FieldWidth * aspectRatio - FieldHeight) * 0.5;
+		const double Adjustment = (FieldWidth * aspectRatio - FieldHeight) * 0.5;
 		m_FieldHeightMinimum -= Adjustment;
 		m_FieldHeightMaximum += Adjustment;
 	}

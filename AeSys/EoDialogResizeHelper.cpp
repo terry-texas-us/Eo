@@ -36,15 +36,15 @@ void EoDialogResizeHelper::OnSize() {
 		CRect currParentSize;
 		::GetWindowRect(m_hParent, currParentSize);
 
-		double xRatio = ((double) currParentSize.Width()) / m_origParentSize.Width();
-		double yRatio = ((double) currParentSize.Height()) / m_origParentSize.Height();
+		const double xRatio = ((double) currParentSize.Width()) / m_origParentSize.Width();
+		const double yRatio = ((double) currParentSize.Height()) / m_origParentSize.Height();
 
 		// resize child windows according to their fix attributes
 		CtrlCont_t::const_iterator it;
 		for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 			CRect currCtrlSize;
-			EHFix hFix = it->m_hFix;
-			EVFix vFix = it->m_vFix;
+			const EHFix hFix = it->m_hFix;
+			const EVFix vFix = it->m_vFix;
 
 			// might go easier ;-)
 			if (hFix & kLeft) {

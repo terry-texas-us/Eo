@@ -126,7 +126,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 		break;
 
     case kTabBorderSize: {
-        int nBorder = Property->GetValue().iVal;
+        const int nBorder = Property->GetValue().iVal;
         theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize = min(8, max(0, nBorder));
         break;
     }
@@ -169,8 +169,8 @@ void EoMfPropertiesDockablePane::AdjustLayout() {
 
 	m_wndObjectCombo.GetWindowRect(&rectCombo);
 
-	int cyCmb = rectCombo.Size().cy;
-	int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
+	const int cyCmb = rectCombo.Size().cy;
+	const int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
 	m_wndObjectCombo.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), 200, SWP_NOACTIVATE | SWP_NOZORDER);
 	m_PropertiesToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top + cyCmb, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
@@ -220,7 +220,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 
-	double Scale = (ActiveView == NULL) ? 1. : ActiveView->WorldScale();
+	const double Scale = (ActiveView == NULL) ? 1. : ActiveView->WorldScale();
 
 	CMFCPropertyGridProperty* ActiveViewGroup = new CMFCPropertyGridProperty(L"Active View");
 	CMFCPropertyGridProperty* WorldScaleProperty = new CMFCPropertyGridProperty(L"World Scale", (_variant_t) Scale, L"Specifies the world scale used in the Active View", kActiveViewScale);

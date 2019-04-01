@@ -6,7 +6,7 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
 	m_Layer(layer) {
 	m_TracingFlags = 0; 
 	m_StateFlags = kIsResident | kIsInternal | kIsActive;
-	OdDbObjectId LinetypeObjectId = layer->linetypeObjectId();
+	const OdDbObjectId LinetypeObjectId = layer->linetypeObjectId();
 }
 EoDbLayer::EoDbLayer(const OdString& name, EoUInt16 stateFlags) {
 	// <Teigha> - need to check this .. no defaults
@@ -42,7 +42,7 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 
 			COLORREF* pCurColTbl = pColTbl;
 
-			bool LayerIsDetectable = IsCurrent() || IsActive();
+			const bool LayerIsDetectable = IsCurrent() || IsActive();
 
 			pColTbl = LayerIsDetectable ? ColorPalette : GreyPalette;
 
@@ -87,7 +87,7 @@ bool EoDbLayer::IsLocked() const {
 	return ((m_StateFlags & kIsLocked) == kIsLocked);
 }
 bool EoDbLayer::IsCurrent() const {
-	bool IsCurrent = m_Layer->objectId() == m_Layer->database()->getCLAYER();
+	const bool IsCurrent = m_Layer->objectId() == m_Layer->database()->getCLAYER();
 	VERIFY(((m_StateFlags & kIsCurrent) == kIsCurrent) == IsCurrent);
 
 	return ((m_StateFlags & kIsCurrent) == kIsCurrent);

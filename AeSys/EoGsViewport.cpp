@@ -45,7 +45,7 @@ void EoGsViewport::DoProjection(CPoint* pnt, int numberOfPoints, EoGePoint4d* po
 	}
 }
 void EoGsViewport::DoProjection(CPoint* pnt, EoGePoint4dArray& points) const {
-	int numberOfPoints = (int) points.GetSize();
+	const int numberOfPoints = (int) points.GetSize();
 
 	for (int PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		pnt[PointIndex] = DoProjection(points[PointIndex]);

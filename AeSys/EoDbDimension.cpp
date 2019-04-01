@@ -98,13 +98,13 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 	newGroups->AddTail(NewGroup);
 }
 void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
-	EoInt16 ColorIndex = LogicalColorIndex();
+	const EoInt16 ColorIndex = LogicalColorIndex();
 	pstate.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
 	m_Line.Display(view, deviceContext);
 
 	pstate.SetColorIndex(deviceContext, m_TextColorIndex);
 
-	EoInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const EoInt16 LinetypeIndex = pstate.LinetypeIndex();
 	pstate.SetLinetypeIndex(deviceContext, 1);
 
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
@@ -121,7 +121,7 @@ void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
 	}
 	AngleInXYPlane = fmod(AngleInXYPlane, TWOPI);
 
-	double Length = m_Line.length();
+	const double Length = m_Line.length();
 
 	CString Report(L"<Dimension>");
 	Report += L" Color:" + FormatColorIndex();
@@ -170,8 +170,8 @@ OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 	else if (sm_ControlPointIndex == 1)
 		sm_ControlPointIndex = 0;
 	else { // Initial rock .. jump to point at lower left or down if vertical
-		OdGePoint3d ptBeg = m_Line.startPoint();
-		OdGePoint3d ptEnd = m_Line.endPoint();
+		const OdGePoint3d ptBeg = m_Line.startPoint();
+		const OdGePoint3d ptEnd = m_Line.endPoint();
 
 		if (ptEnd.x > ptBeg.x)
 			sm_ControlPointIndex = 0;
@@ -248,7 +248,7 @@ OdGePoint3d EoDbDimension::SelectAtControlPoint(AeSysView* view, const EoGePoint
 
 		view->ModelViewTransformPoint(pt);
 
-		double Distance = point.DistanceToPointXY(pt);
+		const double Distance = point.DistanceToPointXY(pt);
 
 		if (Distance < Aperture) {
 			sm_ControlPointIndex = ControlPointIndex;
@@ -328,11 +328,11 @@ const EoInt16& EoDbDimension::TextColorIndex() {
 	return m_TextColorIndex;
 }
 void EoDbDimension::SetDefaultNote() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	const AeSysView* ActiveView = AeSysView::GetActiveView();
 
 	m_ReferenceSystem.SetOrigin(m_Line.midPoint());
 	double dAng = 0.;
-	wchar_t cText0 = m_strText[0];
+	const wchar_t cText0 = m_strText[0];
 	if (cText0 != 'R' && cText0 != 'D') {
 		dAng = m_Line.AngleFromXAxis_xy();
 		double dDis = .075;
@@ -344,7 +344,7 @@ void EoDbDimension::SetDefaultNote() {
 		EoGeLineSeg3d(m_ReferenceSystem.Origin(), m_Line.endPoint()).ProjPtFrom_xy(0., dDis, Origin);
 		m_ReferenceSystem.SetOrigin(Origin);
 	}
-	OdGeVector3d vPlnNorm = ActiveView->CameraDirection();
+	const OdGeVector3d vPlnNorm = ActiveView->CameraDirection();
 
 	OdGeVector3d XDirection;
 	OdGeVector3d YDirection;
@@ -447,11 +447,11 @@ void EoDbDimension::Write(CFile& file, EoByte* buffer) const {
 	file.Write(buffer, buffer[3] * 32);
 }
 EoDbDimension* EoDbDimension::ConstructFrom(EoDbFile& file) {
-	EoInt16 ColorIndex = file.ReadInt16();
-	EoInt16 LinetypeIndex = file.ReadInt16();
-	OdGePoint3d StartPoint = file.ReadPoint3d();
-	OdGePoint3d EndPoint = file.ReadPoint3d();
-	EoInt16 TextColorIndex = file.ReadInt16();
+	const EoInt16 ColorIndex = file.ReadInt16();
+	const EoInt16 LinetypeIndex = file.ReadInt16();
+	const OdGePoint3d StartPoint = file.ReadPoint3d();
+	const OdGePoint3d EndPoint = file.ReadPoint3d();
+	const EoInt16 TextColorIndex = file.ReadInt16();
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.Read(file);
 	EoGeReferenceSystem ReferenceSystem;
@@ -471,12 +471,12 @@ EoDbDimension* EoDbDimension::ConstructFrom(EoDbFile& file) {
 	return (DimensionPrimitive);
 }
 EoDbDimension* EoDbDimension::ConstructFrom(EoByte* primitiveBuffer, int versionNumber) {
-	EoInt16 ColorIndex = EoInt16(primitiveBuffer[6]);
-	EoInt16 LinetypeIndex = EoInt16(primitiveBuffer[7]);
+	const EoInt16 ColorIndex = EoInt16(primitiveBuffer[6]);
+	const EoInt16 LinetypeIndex = EoInt16(primitiveBuffer[7]);
 	EoGeLineSeg3d Line;
 	Line.set(((EoVaxPoint3d*) &primitiveBuffer[8])->Convert(), ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert());
 
-	EoInt16 TextColorIndex = EoInt16(primitiveBuffer[32]);
+	const EoInt16 TextColorIndex = EoInt16(primitiveBuffer[32]);
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetFontName(L"Simplex.psf");
 	FontDefinition.SetPrecision(EoDb::kStrokeType);

@@ -23,7 +23,7 @@ public:
 		QueryPerformanceCounter(&m_pc1);
 		m_pc1.QuadPart -= m_pc0.QuadPart;
 		if (QueryPerformanceFrequency(&m_pc0)) {
-			double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
+			const double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
 			CString NewText;
 			NewText.Format(L"%s Time: %.6f sec.", operationName ? operationName : L"Operation", loadTime);
 			SetStatusPaneTextAt(wcscmp(L"Redraw", operationName) == 0 ? 2 : 1, NewText);

@@ -84,7 +84,7 @@ void CNamedViewListCtrl::InsertItem(int i, const OdDbViewTableRecord* pView) {
 	SetItemText(i, 6, pView->perspectiveEnabled() ? L"On" : L"Off");
 }
 OdDbViewTableRecordPtr CNamedViewListCtrl::selectedView() {
-	int nSelectionMark = GetSelectionMark();
+	const int nSelectionMark = GetSelectionMark();
 	if (nSelectionMark > - 1) {
 		return view(nSelectionMark);
 	}
@@ -126,7 +126,7 @@ BOOL EoDlgNamedViews::OnInitDialog() {
 	m_views.InsertColumn(6, L"Perspective", LVCFMT_LEFT, 30);
 
 	try {
-		OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
+		const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
 		OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
 		int Index(0);
 		OdDbSymbolTableIteratorPtr ViewTableIterator;
@@ -185,7 +185,7 @@ void updateLayerState(OdDbViewTableRecord* pNamedView) {
 void EoDlgNamedViews::OnNewButton() {
 	EoDlgNewView newDlg(this);
 	OdDbViewTableRecordPtr pNamedView;
-	OdDbDatabase* pDb = m_pDoc->m_DatabasePtr;
+	const OdDbDatabase* pDb = m_pDoc->m_DatabasePtr;
 	while(newDlg.DoModal() == IDOK) {
 		LVFINDINFO lvfi = {LVFI_STRING, newDlg.m_sViewName, 0, {0,0}, 0};
 		int i = m_views.FindItem(&lvfi);
@@ -232,14 +232,14 @@ void EoDlgNamedViews::OnNewButton() {
 	}
 }
 void EoDlgNamedViews::OnUpdateLayersButton() {
-	int nSelectionMark = m_views.GetSelectionMark();
+	const int nSelectionMark = m_views.GetSelectionMark();
 	if (nSelectionMark > - 1) {
 		updateLayerState(m_views.selectedView());
 		m_views.SetItemText(nSelectionMark, 4, L"Saved");
 	}
 }
 void EoDlgNamedViews::OnDeleteButton() {
-	int nSelectionMark = m_views.GetSelectionMark();
+	const int nSelectionMark = m_views.GetSelectionMark();
 	if (nSelectionMark > - 1) {
 		m_views.view(nSelectionMark)->erase();
 		m_views.DeleteItem(nSelectionMark);
