@@ -374,13 +374,13 @@ OdDbPageControllerPtr AeSysApp::newPageController() {
 }
 
 int AeSysApp::setPagingType(int pagingType) {
-	int oldType = m_pagingType;
+	const int oldType = m_pagingType;
 	m_pagingType = pagingType;
 	return oldType;
 }
 
 bool AeSysApp::setUndoType(bool useTempFiles) {
-	bool oldType = m_bUseTempFiles;
+	const bool oldType = m_bUseTempFiles;
 	m_bUseTempFiles = useTempFiles;
 	return oldType;
 }
@@ -449,7 +449,7 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 
 		OdString Path;
 		while (!FilePathAndName.isEmpty()) {
-			int PathDelimiter = FilePathAndName.find(L";");
+			const int PathDelimiter = FilePathAndName.find(L";");
 			if (PathDelimiter == -1) {
 				Path = FilePathAndName;
 				FilePathAndName.empty();
@@ -507,7 +507,7 @@ CString AeSysApp::getApplicationPath() {
 	wchar_t FileName[MAX_PATH];
 	if (::GetModuleFileNameW(::GetModuleHandle(0), FileName, MAX_PATH)) {
 		CString FilePath(FileName);
-		int Delimiter = FilePath.ReverseFind('\\');
+		const int Delimiter = FilePath.ReverseFind('\\');
 		return (FilePath.Left(Delimiter));
 	}
 	return L"";
@@ -788,7 +788,7 @@ void AeSysApp::BuildModeSpecificAcceleratorTable(void) {
 	int ModeAcceleratorTableEntries = ::CopyAcceleratorTable(ModeAcceleratorTableHandle, NULL, 0);
 
 	AcceleratorTableHandle = ::LoadAccelerators(m_hInstance, MAKEINTRESOURCE(IDR_MAINFRAME));
-	int AcceleratorTableEntries = ::CopyAcceleratorTable(AcceleratorTableHandle, NULL, 0);
+	const int AcceleratorTableEntries = ::CopyAcceleratorTable(AcceleratorTableHandle, NULL, 0);
 
 	LPACCEL ModifiedAcceleratorTable = new ACCEL[AcceleratorTableEntries + ModeAcceleratorTableEntries];
 
@@ -860,7 +860,7 @@ double AeSysApp::EngagedLength() const {
 }
 CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter) {
 	CString FileName;
-	DWORD Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
+	const DWORD Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
 	HINSTANCE hinstLib = LoadLibraryW(LibraryFileName);
 	if (NULL != hinstLib) {
@@ -954,7 +954,7 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		int Feet = int(ScaledLength / 12.);
 		int Inches = abs(int(fmod(ScaledLength, 12.)));
 
-		int FractionPrecision = ArchitecturalUnitsFractionPrecision();
+		const int FractionPrecision = ArchitecturalUnitsFractionPrecision();
 		int Numerator = int(fabs(fmod(ScaledLength, 1.)) * (double)(FractionPrecision)+.5);	// Numerator of fractional component of inches
 
 		if (Numerator == FractionPrecision) {
@@ -975,9 +975,9 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		wcscat_s(lengthAsString, bufSize, szBuf);
 		if (Numerator > 0) {
 			wcscat_s(lengthAsString, bufSize, (units == kArchitecturalS) ? L"\\S" : L"·" /* middle dot [U+00B7] */);
-			int	iGrtComDivisor = GreatestCommonDivisor(Numerator, FractionPrecision);
+			const int	iGrtComDivisor = GreatestCommonDivisor(Numerator, FractionPrecision);
 			Numerator /= iGrtComDivisor;
-			int Denominator = FractionPrecision / iGrtComDivisor; // Add fractional component of inches
+			const int Denominator = FractionPrecision / iGrtComDivisor; // Add fractional component of inches
 			_itow_s(Numerator, szBuf, 16, 10);
 			wcscat_s(lengthAsString, bufSize, szBuf);
 			wcscat_s(lengthAsString, bufSize, L"/");
@@ -991,7 +991,7 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		wcscpy_s(lengthAsString, bufSize, (length >= 0.) ? L" " : L"-");
 		ScaledLength = fabs(ScaledLength);
 
-		int Precision = (ScaledLength >= 1.) ? precision - int(log10(ScaledLength)) - 1 : precision;
+		const int Precision = (ScaledLength >= 1.) ? precision - int(log10(ScaledLength)) - 1 : precision;
 
 		if (Precision >= 0) {
 			_itow_s(int(ScaledLength / 12.), szBuf, 16, 10);
@@ -1008,7 +1008,7 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 
 				CString FractionalInches;
 				FractionalInches.Format(FormatSpecification, ScaledLength);
-				int DecimalPointPosition = FractionalInches.Find('.');
+				const int DecimalPointPosition = FractionalInches.Find('.');
 				FractionalInches = FractionalInches.Mid(DecimalPointPosition) + L"\"";
 
 				wcscat_s(lengthAsString, bufSize, FractionalInches);
@@ -1107,7 +1107,7 @@ int AeSysApp::GreatestCommonDivisor(const int number1, const int number2) const 
 	int ReturnValue = abs(number1);
 	int Divisor = abs(number2);
 	while (Divisor != 0) {
-		int Remainder = ReturnValue % Divisor;
+		const int Remainder = ReturnValue % Divisor;
 		ReturnValue = Divisor;
 		Divisor = Remainder;
 	}
@@ -1396,7 +1396,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 			EoDbHatch::sm_HatchPatternOffsets[++iHatId] = TableOffset++;
 			NumberOfPatternLines = 0;
 
-			wchar_t Delimiters[] = L"*-\n";
+			const wchar_t Delimiters[] = L"*-\n";
 			LPWSTR NextToken = NULL;
 			LPWSTR Token = wcstok_s(&szLn[2], Delimiters, &NextToken);
 			CString PatternName(Token);
@@ -1409,7 +1409,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 			int iNmbStrsId = TableOffset;
 			TableOffset += 1;
 			int iNmbEnts = 0;
-			wchar_t Delimiters[] = L",\0";
+			const wchar_t Delimiters[] = L",\0";
 			LPWSTR NextToken = NULL;
 			LPWSTR Token = wcstok_s(szLn, Delimiters, &NextToken);
 			while (Token != 0) {
@@ -1502,7 +1502,7 @@ void AeSysApp::LoadSimplexStrokeFont(const CString& pathName) {
 	else {
 		HRSRC ResourceHandle = FindResource(NULL, MAKEINTRESOURCE(IDR_PEGSTROKEFONT), L"STROKEFONT");
 		if (ResourceHandle != NULL) {
-			int ResourceSize = SizeofResource(NULL, ResourceHandle);
+			const int ResourceSize = SizeofResource(NULL, ResourceHandle);
 			m_SimplexStrokeFont = new char[ResourceSize];
 			LPVOID Resource = LockResource(LoadResource(NULL, ResourceHandle));
 			memcpy_s(m_SimplexStrokeFont, ResourceSize, Resource, ResourceSize);
@@ -1531,7 +1531,7 @@ void AeSysApp::OnEditCfText() {
 	m_ClipboardDataText = !m_ClipboardDataText;
 }
 void AeSysApp::OnFileOpen(void) {
-	DWORD Flags(OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
+	const DWORD Flags(OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
 	CString Filter = LoadStringResource(IDS_OPENFILE_FILTER);
 	CFileDialog FileDialog(TRUE, NULL, NULL, Flags, Filter);
 
@@ -1541,7 +1541,7 @@ void AeSysApp::OnFileOpen(void) {
 	CString Title = LoadStringResource(AFX_IDS_OPENFILE);
 	FileDialog.m_ofn.lpstrTitle = Title;
 
-	int Result = FileDialog.DoModal();
+	const int Result = FileDialog.DoModal();
 	FileName.ReleaseBuffer();
 
 	if (Result == IDOK) {
@@ -1962,7 +1962,7 @@ void AeSysApp::meterProgress() {
 	int Percent;
 	{
 		TD_AUTOLOCK_P_DEF(m_pMeterMutex);
-		int OldPercent = m_nPercent;
+		const int OldPercent = m_nPercent;
 		Percent = m_nPercent = int((double(m_nProgressPos++) / double(m_nProgressLimit)) * 100);
 		UpdateProgress = (OldPercent != m_nPercent);
 	}
@@ -2229,7 +2229,7 @@ bool addGsMenuItem(CMenu* vectorizePopupMenu, DWORD& numberOfVectorizers, LPCWST
 
 void AeSysApp::OnVectorizeAddVectorizerDLL() {
 #ifdef _TOOLKIT_IN_DLL_
-	DWORD Flags(OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST);
+	const DWORD Flags(OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST);
 	CString Filter(L"Graphic System DLL (*."  VECTORIZATION_MODULE_EXTENSION_W  L")|*." VECTORIZATION_MODULE_EXTENSION_W  L"|Windows DLL (*.dll)|*.dll||");
 	CFileDialog dlg(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, ::AfxGetMainWnd());
 	dlg.m_ofn.lpstrTitle = L"Select Graphic System DLL";
@@ -2277,7 +2277,7 @@ void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI *pCmdUI) {
 	}
 }
 void AeSysApp::OnVectorizeClearmenu() {
-	CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
+	const CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
 	CMenu* VectorizePopupMenu = TopMenu->GetSubMenu(3);
 
 	while (VectorizePopupMenu->GetMenuItemCount() > 3) {
