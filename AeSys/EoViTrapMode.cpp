@@ -142,7 +142,7 @@ void AeSysView::OnTrapModeModify() {
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
 		if (Dialog.DoModal() == IDOK) {
-			GetDocument()->UpdateAllViews(NULL, 0L, NULL);
+			GetDocument()->UpdateAllViews(nullptr);
 		}
 	}
 	else {
@@ -268,7 +268,7 @@ void AeSysView::OnTraprModeModify() {
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
 		if (Dialog.DoModal() == IDOK) {
-			GetDocument()->UpdateAllViews(NULL, 0L, NULL);
+			GetDocument()->UpdateAllViews(nullptr);
 		}
 	}
 	else {

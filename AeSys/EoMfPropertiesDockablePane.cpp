@@ -220,7 +220,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 
-	const double Scale = (ActiveView == NULL) ? 1. : ActiveView->WorldScale();
+	const double Scale = (ActiveView) ? ActiveView->WorldScale() : 1.;
 
 	CMFCPropertyGridProperty* ActiveViewGroup = new CMFCPropertyGridProperty(L"Active View");
 	CMFCPropertyGridProperty* WorldScaleProperty = new CMFCPropertyGridProperty(L"World Scale", (_variant_t) Scale, L"Specifies the world scale used in the Active View", kActiveViewScale);

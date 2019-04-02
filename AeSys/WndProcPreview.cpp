@@ -28,7 +28,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lPa
 	switch (message) {
 	case WM_CREATE: {
 			AeSysView* ActiveView = AeSysView::GetActiveView();
-			CDC* DeviceContext = (ActiveView == NULL) ? NULL : ActiveView->GetDC();
+			CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : NULL;
 
 			CRect rc;
 			::GetClientRect(hwnd, &rc);

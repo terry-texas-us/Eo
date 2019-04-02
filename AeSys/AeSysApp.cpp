@@ -222,48 +222,43 @@ END_MESSAGE_MAP()
 AeSysApp::~AeSysApp() {
 }
 
-AeSysApp::AeSysApp() :
-m_nProgressPos(0),
-m_nProgressLimit(100),
-m_nPercent(0),
-m_pAuditDlg(nullptr),
-m_bUseGsModel(TRUE),
-m_numGSMenuItems(0),
-m_bDiscardBackFaces(1),
-m_bEnableDoubleBuffer(1),
-m_bBlocksCache(0),
-m_bGsDevMultithread(0),
-m_nMtRegenThreads(4),
-m_bEnablePrintPreviewViaBitmap(1),
-m_bEnableHLR(0),
-m_bContextColors(TRUE),
-m_bTTFPolyDraw(FALSE),
-m_bTTFTextOut(0),
-m_background(0),
-m_thisThreadID(0),
-m_numCustomCommands(0),
-m_bLoading(false),
-m_bRemoteGeomViewer(false),
-m_bSupportFileSelectionViaDialog(true),
-
-m_isDwgOut(0),
-m_bSaveRoundTrip(1),
-m_bSavePreview(0),
-m_bSaveWithPassword(0),
-
-
-m_bPartial(false),
-m_bRecover(false),
+AeSysApp::AeSysApp() 
+    : m_nProgressPos(0)
+    , m_nProgressLimit(100)
+    , m_nPercent(0)
+    , m_pAuditDlg(nullptr)
+    , m_bUseGsModel(TRUE)
+    , m_numGSMenuItems(0)
+    , m_bDiscardBackFaces(1)
+    , m_bEnableDoubleBuffer(1)
+    , m_bBlocksCache(0)
+    , m_bGsDevMultithread(0)
+    , m_nMtRegenThreads(4)
+    , m_bEnablePrintPreviewViaBitmap(1)
+    , m_bEnableHLR(0)
+    , m_bContextColors(TRUE)
+    , m_bTTFPolyDraw(FALSE)
+    , m_bTTFTextOut(0)
+    , m_background(0)
+    , m_thisThreadID(0)
+    , m_numCustomCommands(0)
+    , m_bLoading(false)
+    , m_bRemoteGeomViewer(false)
+    , m_bSupportFileSelectionViaDialog(true)
+    , m_isDwgOut(0)
+    , m_bSaveRoundTrip(1)
+    , m_bSavePreview(0)
+    , m_bSaveWithPassword(0)
+    , m_bPartial(false)
+    , m_bRecover(false)
 // ODA_MT_DBIO_BEGIN
-m_bUseMTLoading(false),
+    , m_bUseMTLoading(false)
 // ODA_MT_DBIO_END
+    , m_bUseTempFiles(false)
+    , m_pagingType(0) {
 
-
-m_bUseTempFiles(false),
-m_pagingType(0) {
-
-	m_PegDocTemplate = NULL;
-	m_TracingDocTemplate = NULL;
+	m_PegDocTemplate = nullptr;
+	m_TracingDocTemplate = nullptr;
 
 	EnableHtmlHelp();
 
@@ -285,7 +280,7 @@ m_pagingType(0) {
 	m_DimensionAngle = 45.;
 	m_Units = kInches;
 	m_ArchitecturalUnitsFractionPrecision = 16;
-	m_SimplexStrokeFont = 0;
+	m_SimplexStrokeFont = nullptr;
     m_DeviceHeightInMillimeters = 0.;
     m_DeviceHeightInPixels = 0.;
     m_DeviceWidthInMillimeters = 0.;
@@ -850,7 +845,7 @@ void AeSysApp::EditColorPalette() {
 
 	::MessageBoxW(0, L"The background color is no longer associated with the pen Color Palette.", L"Deprecation Notice", MB_OK | MB_ICONINFORMATION);
 
-	AeSysDoc::GetDoc()->UpdateAllViews(NULL, 0L, NULL);
+	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
 double AeSysApp::EngagedAngle() const noexcept {
 	return (m_EngagedAngle);
@@ -1054,10 +1049,12 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		}
 	}
 }
+
 OdGePoint3d AeSysApp::GetCursorPosition() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-	return (ActiveView == NULL) ? OdGePoint3d::kOrigin : ActiveView->GetCursorPosition();
+    AeSysView* ActiveView = AeSysView::GetActiveView();
+    return (ActiveView) ? ActiveView->GetCursorPosition() : OdGePoint3d::kOrigin;
 }
+
 EoDb::FileTypes AeSysApp::GetFileTypeFromPath(const OdString& pathName) {
 	EoDb::FileTypes Type(EoDb::kUnknown);
 	OdString Extension = pathName.right(3);
@@ -1489,7 +1486,7 @@ void AeSysApp::LoadSimplexStrokeFont(const CString& pathName) {
 	HANDLE OpenHandle = CreateFile(pathName, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (OpenHandle != INVALID_HANDLE_VALUE) {
 		if (SetFilePointer(OpenHandle, 0, 0, FILE_BEGIN) != (DWORD)-1) {
-			if (m_SimplexStrokeFont == 0) {
+			if (!m_SimplexStrokeFont) {
 				m_SimplexStrokeFont = new char[16384];
 			}
 			DWORD NumberOfBytesRead;
@@ -1736,7 +1733,7 @@ COLORREF AppGetTextCol() noexcept {
 }
 void AeSysApp::OnViewModeInformation() {
 	m_ModeInformationOverView = !m_ModeInformationOverView;
-	AeSysDoc::GetDoc()->UpdateAllViews(NULL, 0L, NULL);
+	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
 double AeSysApp::ParseLength(LPWSTR aszLen) {
 	LPWSTR	szEndPtr;
@@ -1924,7 +1921,7 @@ OdString GetRegistryAcadProfilesKey() {
 }
 
 void AeSysApp::ReleaseSimplexStrokeFont() noexcept {
-	if (m_SimplexStrokeFont != 0) {
+	if (m_SimplexStrokeFont) {
 		delete[] m_SimplexStrokeFont;
 	}
 }

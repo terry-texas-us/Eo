@@ -421,7 +421,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 		throw OdEdCancel();
 	}
 	Document->OnEditClearselection();
-	Document->UpdateAllViews(NULL);
+	Document->UpdateAllViews(nullptr);
 	OdDbUserIO* pIO = CommandContext->dbUserIO();
 	pIO->setPickfirst(0);
 	int iOpt = OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty;
@@ -818,7 +818,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) noexcept {
 		// Call here OdExEditorObject::unselect() instead sset->clear(), if you want affect changes on grip points and etc.
 		if (0 != cr.lastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2)
 			OnEditClearselection();
-		UpdateAllViews(0);
+		UpdateAllViews(nullptr);
 	}
 	//static_cast<ExDbCommandContext*>(pCmdCtx.get())->setMacroIOPresent(false);
 #endif // DEV_COMMAND_CONSOLE
@@ -872,7 +872,7 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 								MenuItemInfo.fState = MFS_CHECKED;
 								TopMenu->SetMenuItemInfoW(commandId, &MenuItemInfo, FALSE);
 								ExecuteCommand(L"REGEN");
-								UpdateAllViews(0);
+								UpdateAllViews(nullptr);
 							}
 							else {
 								MenuItemInfo.fMask = MIIM_STATE;
@@ -909,7 +909,7 @@ void AeSysDoc::startDrag(const OdGePoint3d& point) {
 	DataSource ds;
 	ds.Create(this, point);
 	if (ds.DoDragDrop()) {
-		UpdateAllViews(0);
+		UpdateAllViews(nullptr);
 	}
 }
 
@@ -1122,16 +1122,16 @@ void AeSysDoc::Dump(CDumpContext& dc) const {
 #endif //_DEBUG
 
 void AeSysDoc::UpdateGroupInAllViews(LPARAM hint, EoDbGroup* group) {
-	CDocument::UpdateAllViews(NULL, hint, static_cast<CObject*>(group));
+	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(group));
 }
 void AeSysDoc::UpdateGroupsInAllViews(LPARAM hint, EoDbGroupList* groups) {
-	CDocument::UpdateAllViews(NULL, hint, static_cast<CObject*>(groups));
+	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(groups));
 }
 void AeSysDoc::UpdateLayerInAllViews(LPARAM hint, EoDbLayer* layer) {
-	CDocument::UpdateAllViews(NULL, hint, static_cast<CObject*>(layer));
+	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(layer));
 }
 void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive) {
-	CDocument::UpdateAllViews(NULL, hint, static_cast<CObject*>(primitive));
+	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(primitive));
 }
 
 void AeSysDoc::AddTextBlock(LPWSTR text) {
@@ -1596,7 +1596,7 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 	Layer->MakeCurrent();
 
 	m_SaveAsType_ = EoDb::kTracing;
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 
 	return true;
 }
@@ -1649,7 +1649,7 @@ void AeSysDoc::OnClearAllLayers() {
 			Layer->DeleteGroupsAndRemoveAll();
 		}
 	}
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnClearWorkingLayer() {
 	InitializeGroupAndPrimitiveEdit();
@@ -1666,7 +1666,7 @@ void AeSysDoc::OnClearAllTracings() {
 			Layer->DeleteGroupsAndRemoveAll();
 		}
 	}
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnClearMappedTracings() {
 	InitializeGroupAndPrimitiveEdit();
@@ -1912,7 +1912,7 @@ void AeSysDoc::OnLayersSetAllActive() {
 			Layer->MakeActive();
 		}
 	}
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnLayersSetAllLocked() {
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
@@ -1921,7 +1921,7 @@ void AeSysDoc::OnLayersSetAllLocked() {
 			Layer->SetIsLocked(true);
 		}
 	}
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnPurgeUnusedLayers() {
 	RemoveEmptyLayers();
@@ -2003,7 +2003,7 @@ void AeSysDoc::OnEditTrace() {
 }
 void AeSysDoc::OnEditTrapDelete() {
 	DeleteAllTrappedGroups();
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 	OnEditTrapQuit();
 }
 void AeSysDoc::OnEditTrapQuit() {
@@ -2018,7 +2018,7 @@ void AeSysDoc::OnEditTrapCut() {
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 	CopyTrappedGroupsToClipboard(ActiveView);
 	DeleteAllTrappedGroups();
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnEditTrapPaste() {
 	if (::OpenClipboard(NULL)) {
@@ -2128,7 +2128,7 @@ void AeSysDoc::OnTrapCommandsInvert() {
 			}
 		}
 	}
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnTrapCommandsSquare() {
 	AeSysView* ActiveView = AeSysView::GetActiveView();
@@ -2239,7 +2239,7 @@ void AeSysDoc::OnSetupNote() {
 		pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 		AeSysView* ActiveView = AeSysView::GetActiveView();
-		CDC* DeviceContext = (ActiveView == NULL) ? NULL : ActiveView->GetDC();
+		CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : NULL;
 
 		pstate.SetFontDefinition(DeviceContext, FontDefinition);
 	}
@@ -2455,7 +2455,7 @@ void AeSysDoc::OnPensLoadColors() {
 		if ((of.Flags & OFN_EXTENSIONDIFFERENT) == 0) {
 			theApp.LoadColorPalletFromFile(of.lpstrFile);
 
-			UpdateAllViews(NULL, 0L, NULL);
+			UpdateAllViews(nullptr);
 		}
 		else
 			theApp.WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
@@ -2493,7 +2493,7 @@ void AeSysDoc::OnPensTranslate() {
 			delete[] pCol;
 		}
 	}
-	UpdateAllViews(NULL, 0L, NULL);
+	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnFile() {
 	CPoint Position(8, 8);
@@ -2806,7 +2806,7 @@ void AeSysDoc::OnSetupLayerproperties() {
 	EoDlgLayerPropertiesManager LayerPropertiesManager(m_DatabasePtr);
 
 	if (IDOK == LayerPropertiesManager.DoModal()) {
-		UpdateAllViews(0);
+		UpdateAllViews(nullptr);
 	}
 }
 void AeSysDoc::OnInsertTracing() {

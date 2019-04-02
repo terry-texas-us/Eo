@@ -31,7 +31,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
     <Midl>
@@ -41,7 +41,7 @@
     <ClCompile>
       <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <EnablePREfast>false</EnablePREfast>
+      <EnablePREfast>true</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>

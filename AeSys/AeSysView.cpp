@@ -3808,7 +3808,7 @@ void AeSysView::SetWorldScale(const double scale) {
 }
 void AeSysView::OnViewStateInformation() {
 	m_ViewStateInformation = !m_ViewStateInformation;
-	AeSysDoc::GetDoc()->UpdateAllViews(NULL, 0L, NULL);
+	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
 void AeSysView::OnUpdateViewStateinformation(CCmdUI *pCmdUI) {
 	pCmdUI->SetCheck(m_ViewStateInformation);
