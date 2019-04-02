@@ -226,7 +226,7 @@ AeSysApp::AeSysApp() :
 m_nProgressPos(0),
 m_nProgressLimit(100),
 m_nPercent(0),
-m_pAuditDlg(NULL),
+m_pAuditDlg(nullptr),
 m_bUseGsModel(TRUE),
 m_numGSMenuItems(0),
 m_bDiscardBackFaces(1),
@@ -708,7 +708,7 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 			m_pAuditDlg->SetWindowTextW(L"Recover info " + PathName);
 			m_pAuditDlg->ShowWindow(SW_SHOW);
 
-			m_pAuditDlg = NULL;
+			m_pAuditDlg = nullptr;
 		}
 		else {
 			m_bLoading = true;
@@ -734,7 +734,7 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 	}
 	if (m_pAuditDlg) { // Destroy audit dialog if recover failed
 		delete m_pAuditDlg;
-		m_pAuditDlg = 0;
+		m_pAuditDlg = nullptr;
 	}
 	return Database;
 }

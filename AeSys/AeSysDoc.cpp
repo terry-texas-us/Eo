@@ -2937,22 +2937,22 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 	}
 	catch (const OdError& Error) {
 		delete TheApp->m_pAuditDlg;
-		TheApp->m_pAuditDlg = NULL;
+		TheApp->m_pAuditDlg = nullptr;
 		theApp.reportError(L"Error Auditing Database...", Error);
 		AfxThrowUserException();
 	}
 	catch (const UserBreak&) {
 		delete TheApp->m_pAuditDlg;
-		TheApp->m_pAuditDlg = NULL;
+		TheApp->m_pAuditDlg = nullptr;
 	}
-	if (TheApp->m_pAuditDlg == NULL) {
+	if (!TheApp->m_pAuditDlg) {
 		return;
 	}
 	CString Title(L"Audit info - " + GetTitle());
 	TheApp->m_pAuditDlg->SetWindowText(Title);
 	TheApp->m_pAuditDlg->ShowWindow(SW_SHOW);
 
-	TheApp->m_pAuditDlg = NULL;
+	TheApp->m_pAuditDlg = nullptr;
 }
 BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL isOpenFileDialog, CDocTemplate* docTemplate) {
 	const OdDb::DwgVersion dwgver = m_DatabasePtr->originalFileVersion();
