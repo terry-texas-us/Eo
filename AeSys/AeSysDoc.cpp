@@ -49,7 +49,7 @@
 
 UINT CALLBACK OFNHookProcFileTracing(HWND, UINT, WPARAM, LPARAM);
 
-UINT AFXAPI HashKey(CString& str) {
+UINT AFXAPI HashKey(CString& str) noexcept {
 	LPCWSTR pStr = (LPCWSTR)str;
 	UINT nHash = 0;
 	while (*pStr) {
@@ -72,10 +72,10 @@ OdDbDatabaseDoc::OdDbDatabaseDoc() :
 m_pDoc(g_pDoc) {
 	g_pDoc = 0;
 }
-AeSysDoc* OdDbDatabaseDoc::document() const {
+AeSysDoc* OdDbDatabaseDoc::document() const noexcept {
 	return m_pDoc;
 }
-void OdDbDatabaseDoc::setDocToAssign(AeSysDoc* document) {
+void OdDbDatabaseDoc::setDocToAssign(AeSysDoc* document) noexcept {
 	g_pDoc = document;
 }
 
@@ -305,7 +305,7 @@ BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
 	return CDocument::CanCloseFrame(frame);
 }
 
-AeSysView* AeSysDoc::getViewer() {
+AeSysView* AeSysDoc::getViewer() noexcept {
 	return m_pViewer;
 }
 void AeSysDoc::OnViewSetactivelayout() {
@@ -469,7 +469,7 @@ void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext* commandContext) {
 #pragma warning(disable:4510)
 #pragma warning(disable:4610)
 struct CDocTemplateEx : CDocTemplate {
-	void SetViewToCreate(CRuntimeClass* viewClass) {
+	void SetViewToCreate(CRuntimeClass* viewClass) noexcept {
 		m_pViewClass = viewClass;
 	}
 };
@@ -682,10 +682,10 @@ public:
 	void setLastInput(const OdString& sLastInput) {
 		m_sLastInput = sLastInput;
 	}
-	const OdString &lastInput() const {
+	const OdString &lastInput() const noexcept {
 		return m_sLastInput;
 	}
-	bool isDatabaseModified() const {
+	bool isDatabaseModified() const noexcept {
 		return m_bModified;
 	}
 #ifdef DEV_COMMAND_CONSOLE
@@ -748,7 +748,7 @@ private:
 #endif // DEV_COMMAND_CONSOLE
 };
 
-void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
+void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) noexcept {
 
 #ifdef DEV_COMMAND_CONSOLE
 	OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
@@ -1492,7 +1492,7 @@ EoDbGroup* AeSysDoc::GetNextWorkLayerGroup(POSITION& position) const {
 EoDbGroup* AeSysDoc::GetPreviousWorkLayerGroup(POSITION& position) const {
 	return m_WorkLayer->GetPrev(position);
 }
-EoDbLayer* AeSysDoc::GetWorkLayer() const {
+EoDbLayer* AeSysDoc::GetWorkLayer() const noexcept {
 	return m_WorkLayer;
 }
 void AeSysDoc::InitializeWorkLayer() {
@@ -2198,13 +2198,13 @@ void AeSysDoc::OnSetupLinetype() {
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
 	}
 }
-void AeSysDoc::OnSetupFillHollow() {
+void AeSysDoc::OnSetupFillHollow() noexcept {
 	pstate.SetHatchInteriorStyle(EoDbHatch::kHollow);
 }
-void AeSysDoc::OnSetupFillSolid() {
+void AeSysDoc::OnSetupFillSolid() noexcept {
 	pstate.SetHatchInteriorStyle(EoDbHatch::kSolid);
 }
-void AeSysDoc::OnSetupFillPattern() {
+void AeSysDoc::OnSetupFillPattern() noexcept {
 }
 void AeSysDoc::OnSetupFillHatch() {
 	EoDlgSetupHatch Dialog;
@@ -2872,7 +2872,7 @@ void AeSysDoc::OnFilePagesetup() {
 
 AeSysDoc::DataSource::DataSource() {
 }
-void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) {
+void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) noexcept {
 #ifdef DEV_COMMAND_CONSOLE
 	Empty();
 

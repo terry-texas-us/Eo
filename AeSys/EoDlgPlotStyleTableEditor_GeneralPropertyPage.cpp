@@ -29,80 +29,80 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 
 END_MESSAGE_MAP()
 
-void DrawTransparentBitmap(HDC hdc, HBITMAP hBitmap, short xStart, short yStart, COLORREF cTransparentColor) {
-BITMAP bm;
-COLORREF cColor;
-HBITMAP bmAndBack, bmAndObject, bmAndMem, bmSave;
-HBITMAP bmBackOld, bmObjectOld, bmMemOld, bmSaveOld;
-HDC hdcMem, hdcBack, hdcObject, hdcTemp, hdcSave;
-POINT ptSize;
+void DrawTransparentBitmap(HDC hdc, HBITMAP hBitmap, short xStart, short yStart, COLORREF cTransparentColor) noexcept {
+    BITMAP bm;
+    COLORREF cColor;
+    HBITMAP bmAndBack, bmAndObject, bmAndMem, bmSave;
+    HBITMAP bmBackOld, bmObjectOld, bmMemOld, bmSaveOld;
+    HDC hdcMem, hdcBack, hdcObject, hdcTemp, hdcSave;
+    POINT ptSize;
 
-hdcTemp = CreateCompatibleDC(hdc);
-SelectObject(hdcTemp, hBitmap); 
+    hdcTemp = CreateCompatibleDC(hdc);
+    SelectObject(hdcTemp, hBitmap);
 
-GetObject(hBitmap, sizeof(BITMAP), (LPSTR)&bm);
-ptSize.x = bm.bmWidth; 
-ptSize.y = bm.bmHeight; 
-DPtoLP(hdcTemp, &ptSize, 1); 
+    GetObject(hBitmap, sizeof(BITMAP), (LPSTR) &bm);
+    ptSize.x = bm.bmWidth;
+    ptSize.y = bm.bmHeight;
+    DPtoLP(hdcTemp, &ptSize, 1);
 
-hdcBack = CreateCompatibleDC(hdc);
-hdcObject = CreateCompatibleDC(hdc);
-hdcMem = CreateCompatibleDC(hdc);
-hdcSave = CreateCompatibleDC(hdc);
+    hdcBack = CreateCompatibleDC(hdc);
+    hdcObject = CreateCompatibleDC(hdc);
+    hdcMem = CreateCompatibleDC(hdc);
+    hdcSave = CreateCompatibleDC(hdc);
 
-bmAndBack = CreateBitmap(ptSize.x, ptSize.y, 1, 1, NULL);
+    bmAndBack = CreateBitmap(ptSize.x, ptSize.y, 1, 1, NULL);
 
-bmAndObject = CreateBitmap(ptSize.x, ptSize.y, 1, 1, NULL);
+    bmAndObject = CreateBitmap(ptSize.x, ptSize.y, 1, 1, NULL);
 
-bmAndMem = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
-bmSave = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
+    bmAndMem = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
+    bmSave = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
 
-bmBackOld = (HBITMAP)SelectObject(hdcBack, bmAndBack);
-bmObjectOld = (HBITMAP)SelectObject(hdcObject, bmAndObject);
-bmMemOld = (HBITMAP)SelectObject(hdcMem, bmAndMem);
-bmSaveOld = (HBITMAP)SelectObject(hdcSave, bmSave);
+    bmBackOld = (HBITMAP) SelectObject(hdcBack, bmAndBack);
+    bmObjectOld = (HBITMAP) SelectObject(hdcObject, bmAndObject);
+    bmMemOld = (HBITMAP) SelectObject(hdcMem, bmAndMem);
+    bmSaveOld = (HBITMAP) SelectObject(hdcSave, bmSave);
 
-SetMapMode(hdcTemp, GetMapMode(hdc));
+    SetMapMode(hdcTemp, GetMapMode(hdc));
 
-BitBlt(hdcSave, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCCOPY);
+    BitBlt(hdcSave, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCCOPY);
 
-cColor = SetBkColor(hdcTemp, cTransparentColor);
+    cColor = SetBkColor(hdcTemp, cTransparentColor);
 
-BitBlt(hdcObject, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0,
-SRCCOPY);
+    BitBlt(hdcObject, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0,
+        SRCCOPY);
 
-SetBkColor(hdcTemp, cColor);
+    SetBkColor(hdcTemp, cColor);
 
-BitBlt(hdcBack, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0,
-NOTSRCCOPY);
+    BitBlt(hdcBack, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0,
+        NOTSRCCOPY);
 
-BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdc, xStart, yStart,
-SRCCOPY);
+    BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdc, xStart, yStart,
+        SRCCOPY);
 
-BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0, SRCAND);
+    BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0, SRCAND);
 
-BitBlt(hdcTemp, 0, 0, ptSize.x, ptSize.y, hdcBack, 0, 0, SRCAND);
+    BitBlt(hdcTemp, 0, 0, ptSize.x, ptSize.y, hdcBack, 0, 0, SRCAND);
 
-BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCPAINT);
+    BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCPAINT);
 
-BitBlt(hdc, xStart, yStart, ptSize.x, ptSize.y, hdcMem, 0, 0,
-SRCCOPY);
+    BitBlt(hdc, xStart, yStart, ptSize.x, ptSize.y, hdcMem, 0, 0,
+        SRCCOPY);
 
-BitBlt(hdcTemp, 0, 0, ptSize.x, ptSize.y, hdcSave, 0, 0, SRCCOPY);
+    BitBlt(hdcTemp, 0, 0, ptSize.x, ptSize.y, hdcSave, 0, 0, SRCCOPY);
 
-DeleteObject(SelectObject(hdcBack, bmBackOld));
-DeleteObject(SelectObject(hdcObject, bmObjectOld));
-DeleteObject(SelectObject(hdcMem, bmMemOld));
-DeleteObject(SelectObject(hdcSave, bmSaveOld));
+    DeleteObject(SelectObject(hdcBack, bmBackOld));
+    DeleteObject(SelectObject(hdcObject, bmObjectOld));
+    DeleteObject(SelectObject(hdcMem, bmMemOld));
+    DeleteObject(SelectObject(hdcSave, bmSaveOld));
 
-DeleteDC(hdcMem);
-DeleteDC(hdcBack);
-DeleteDC(hdcObject);
-DeleteDC(hdcSave);
-DeleteDC(hdcTemp);
+    DeleteDC(hdcMem);
+    DeleteDC(hdcBack);
+    DeleteDC(hdcObject);
+    DeleteDC(hdcSave);
+    DeleteDC(hdcTemp);
 }
 
-const bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) {
+const bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
 	if (!pPlotStyleTable) {
 		return false;
 	}

@@ -97,7 +97,7 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 		theApp.SetEngagedAngle(AngleInXYPlane);
 	}
 }
-void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Hatch>", this);
 }
 void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -243,7 +243,7 @@ OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
 	}
 	return (m_Vertices[sm_PivotVertex]);
 }
-bool EoDbHatch::Is(OdUInt16 type) const {
+bool EoDbHatch::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kHatchPrimitive;
 }
 bool EoDbHatch::IsInView(AeSysView* view) const {
@@ -642,7 +642,7 @@ CString EoDbHatch::FormatInteriorStyle() const {
 OdGePoint3d EoDbHatch::GetPointAt(int pointIndex) {
 	return (m_Vertices[pointIndex]);
 }
-void EoDbHatch::ModifyState() {
+void EoDbHatch::ModifyState() noexcept {
 	EoDbPrimitive::ModifyState();
 
 	m_InteriorStyle = pstate.HatchInteriorStyle();
@@ -651,7 +651,7 @@ void EoDbHatch::ModifyState() {
 int EoDbHatch::NumberOfVertices() const {
 	return (m_Vertices.size());
 }
-bool EoDbHatch::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) {
+bool EoDbHatch::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
 	const size_t NumberOfVertices = m_Vertices.size();
 	if (sm_PivotVertex >= NumberOfVertices) { // Not engaged at a vertex
 		return false;
@@ -728,13 +728,13 @@ void EoDbHatch::RetrieveHatchPattern(const OdString& hatchPatternName, OdHatchPa
 		}		
 	}
 }
-void EoDbHatch::SetHatchOrigin(const OdGePoint3d& origin) {
+void EoDbHatch::SetHatchOrigin(const OdGePoint3d& origin) noexcept {
 	m_HatchOrigin = origin;
 }
-void EoDbHatch::SetHatchXAxis(const OdGeVector3d& xAxis) {
+void EoDbHatch::SetHatchXAxis(const OdGeVector3d& xAxis) noexcept {
 	m_HatchXAxis = xAxis;
 }
-void EoDbHatch::SetHatchYAxis(const OdGeVector3d& yAxis) {
+void EoDbHatch::SetHatchYAxis(const OdGeVector3d& yAxis) noexcept {
 	m_HatchYAxis = yAxis;
 }
 void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY) {
@@ -754,7 +754,7 @@ void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double 
 	m_HatchXAxis *= patternScaleX;
 	m_HatchYAxis *= patternScaleY;
 }
-void EoDbHatch::SetInteriorStyle(OdInt16 interiorStyle) {
+void EoDbHatch::SetInteriorStyle(OdInt16 interiorStyle) noexcept {
 	m_InteriorStyle = interiorStyle;
 }
 void EoDbHatch::SetInteriorStyleIndex(size_t styleIndex) {
@@ -964,7 +964,7 @@ EoDbHatch* EoDbHatch::Create(const EoDbHatch& other, OdDbDatabasePtr database) {
 	return Hatch;
 }
 
-size_t EoDbHatch::Edge() {
+size_t EoDbHatch::Edge() noexcept {
 	return sm_Edge;
 }
 size_t EoDbHatch::LegacyInteriorStyleIndex(const OdString& name) {
@@ -977,6 +977,6 @@ size_t EoDbHatch::LegacyInteriorStyleIndex(const OdString& name) {
 	Index = (Index < NumberOfLegacyStyles) ? Index : 0;
 	return Index;
 }
-void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) {
+void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }

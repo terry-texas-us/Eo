@@ -96,12 +96,12 @@ public:
 	bool hasSelection() const { 
 		return (workingSSet()->numEntities()>0);
 	}
-	bool isSnapOn() const { 
+	bool isSnapOn() const noexcept {
 		return m_bSnapOn;
 	}
 	bool snap(OdGePoint3d& pt, const OdGePoint3d* lastPoint);
-	unsigned getSnapModes() const;
-	void setSnapModes(bool snapOn, unsigned modes );
+	unsigned getSnapModes() const noexcept;
+	void setSnapModes(bool snapOn, unsigned modes) noexcept;
 	void resetSnapManager();
 	void initSnapping(OdGsView* pView );
 	void uninitSnapping(OdGsView* pView );

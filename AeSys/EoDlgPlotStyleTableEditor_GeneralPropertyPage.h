@@ -29,7 +29,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
 
 public:
-	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
+	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
 	void SetFileBufPath(const OdString sFilePath);
 
 protected:

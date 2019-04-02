@@ -411,7 +411,7 @@ void AeSysView::OnAnnotateModeConstructionLine() {
 	}
 }
 
-void AeSysView::OnAnnotateModeReturn() {
+void AeSysView::OnAnnotateModeReturn() noexcept {
 	// TODO: Add your command handler code here
 }
 
@@ -454,16 +454,16 @@ bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& 
 		return false;
 	}
 }
-double AeSysView::BubbleRadius() const {
+double AeSysView::BubbleRadius() const noexcept {
 	return m_BubbleRadius;
 }
-void AeSysView::SetBubbleRadius(double radius) {
+void AeSysView::SetBubbleRadius(double radius) noexcept {
 	m_BubbleRadius = radius;
 }
-double AeSysView::CircleRadius() const {
+double AeSysView::CircleRadius() const noexcept {
 	return m_CircleRadius;
 }
-void AeSysView::SetCircleRadius(double radius) {
+void AeSysView::SetCircleRadius(double radius) noexcept {
 	m_CircleRadius = radius;
 }
 CString AeSysView::DefaultText() const {
@@ -472,28 +472,28 @@ CString AeSysView::DefaultText() const {
 void AeSysView::SetDefaultText(const CString& text) {
 	m_DefaultText = text;
 }
-double AeSysView::EndItemSize() const {
+double AeSysView::EndItemSize() const noexcept {
 	return m_EndItemSize;
 }
-void AeSysView::SetEndItemSize(double size) {
+void AeSysView::SetEndItemSize(double size) noexcept {
 	m_EndItemSize = size;
 }
-int AeSysView::EndItemType() {
+int AeSysView::EndItemType() noexcept {
 	return m_EndItemType;
 }
-void AeSysView::SetEndItemType(int type) {
+void AeSysView::SetEndItemType(int type) noexcept {
 	m_EndItemType = type;
 }
-double AeSysView::GapSpaceFactor() const {
+double AeSysView::GapSpaceFactor() const noexcept {
 	return m_GapSpaceFactor;
 }
-void AeSysView::SetGapSpaceFactor(double factor) {
+void AeSysView::SetGapSpaceFactor(double factor) noexcept {
 	m_GapSpaceFactor = factor;
 }
-int AeSysView::NumberOfSides() const {
+int AeSysView::NumberOfSides() const noexcept {
 	return m_NumberOfSides;
 }
-void AeSysView::SetNumberOfSides(int number) {
+void AeSysView::SetNumberOfSides(int number) noexcept {
 	m_NumberOfSides = number;
 }
 
@@ -545,7 +545,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	}
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
-void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
+void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) noexcept {
 	const OdGeVector3d PlaneNormal = CameraDirection();
 
 	const OdGePoint3d EndPoint = endPoint;

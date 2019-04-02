@@ -48,12 +48,12 @@ class EoObjectSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSe
 
 	HistEntryArray m_centers;
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const;
-	bool subWorldDraw(OdGiWorldDraw* worldDraw) const;
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept;
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const;
 
 // <OdGsSelectionReactor> virtuals
-	bool selected(const OdGiDrawableDesc& drawableDesc);
+	bool selected(const OdGiDrawableDesc& drawableDesc) noexcept;
 	OdUInt32 selected(const OdGiPathNode& pathNode, const OdGiViewport& viewport);
 // </OdGsSelectionReactor> virtuals
 	
@@ -64,7 +64,7 @@ protected:
 
 public:
 	bool snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint);
-	unsigned snapModes() const;
-	void setSnapModes(unsigned snapModes);
+	unsigned snapModes() const noexcept;
+	void setSnapModes(unsigned snapModes) noexcept;
 	void reset();
 };

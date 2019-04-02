@@ -79,7 +79,7 @@ CSize EoCtrlColorsButton::SizeToContent(BOOL calculateOnly) {
 	}
 	return Size;
 }
-void EoCtrlColorsButton::SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle) {
+void EoCtrlColorsButton::SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle) noexcept {
 	rectangle.top = m_Margins.cx + m_CellSpacing.cy;
 	rectangle.left = m_Margins.cy + m_CellSpacing.cx;
 
@@ -98,7 +98,7 @@ void EoCtrlColorsButton::SubItemRectangleByIndex(OdUInt16 index, CRect& rectangl
 	rectangle.bottom = rectangle.top + m_CellSize.cy;
 	rectangle.right = rectangle.left + m_CellSize.cx;
 }
-OdUInt16 EoCtrlColorsButton::SubItemByPoint(const CPoint& point) {
+OdUInt16 EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
 	CRect Rectangle;
 	Rectangle.SetRectEmpty();
 
@@ -148,7 +148,7 @@ void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle */,
 		}
 	}
 }
-UINT EoCtrlColorsButton::OnGetDlgCode() {
+UINT EoCtrlColorsButton::OnGetDlgCode() noexcept {
 	return DLGC_WANTARROWS;
 }
 void EoCtrlColorsButton::OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags) {

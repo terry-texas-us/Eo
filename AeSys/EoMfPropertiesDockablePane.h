@@ -53,7 +53,7 @@ protected:
 	void SetWorkspaceTabsSubItemsState(void);
 
 public:
-	CMFCPropertyGridCtrl& GetPropertyGridCtrl(void) {
+	CMFCPropertyGridCtrl& GetPropertyGridCtrl(void) noexcept {
 		return m_PropertyGrid;
 	}
 	CMFCPropertyGridProperty& GetActiveViewScaleProperty(void) {

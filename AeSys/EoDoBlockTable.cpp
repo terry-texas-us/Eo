@@ -18,7 +18,7 @@ int AeSysDoc::GetBlockReferenceCount(const CString& name) {
 	}
 	return Count;
 }
-EoDbBlockTable* AeSysDoc::BlockTable() {
+EoDbBlockTable* AeSysDoc::BlockTable() noexcept {
 	return (&m_BlockTable);
 }
 bool AeSysDoc::BlockTableIsEmpty() {

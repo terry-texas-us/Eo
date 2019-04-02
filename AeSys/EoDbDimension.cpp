@@ -32,16 +32,16 @@ const EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
 
 	return (*this);
 }
-void EoDbDimension::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbDimension::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Dimension>", this);
 }
-void EoDbDimension::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+void EoDbDimension::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) noexcept {
 // <tas="AssociateWith for Dimension not finished"</tas>
 }
 EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr database) const {
 	return (new EoDbDimension(*this));
 }
-void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
+void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) noexcept {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
@@ -53,7 +53,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDataba
 	}
 	SetDefaultNote();
 }
-void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
+void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept {
 	EoDbDimension*	pDim;
 	double	dRel[2];
 
@@ -184,10 +184,10 @@ OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 	}
 	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
 }
-bool EoDbDimension::Is(OdUInt16 type) const {
+bool EoDbDimension::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kDimensionPrimitive;
 }
-bool EoDbDimension::IsEqualTo(EoDbPrimitive* primitive) const {
+bool EoDbDimension::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
 	return false;
 }
 bool EoDbDimension::IsInView(AeSysView* view) const {
@@ -208,7 +208,7 @@ bool EoDbDimension::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& po
 	}
 	return false;
 }
-void EoDbDimension::ModifyState() {
+void EoDbDimension::ModifyState() noexcept {
 	if ((sm_wFlags & 0x0001) != 0) {
 		EoDbPrimitive::ModifyState();
 	}
@@ -216,10 +216,10 @@ void EoDbDimension::ModifyState() {
 		m_FontDefinition = pstate.FontDefinition();
 	}
 }
-const EoDbFontDefinition& EoDbDimension::FontDef() {
+const EoDbFontDefinition& EoDbDimension::FontDef() noexcept {
 	return m_FontDefinition;
 }
-const EoGeLineSeg3d& EoDbDimension::Line() {
+const EoGeLineSeg3d& EoDbDimension::Line() noexcept {
 	return m_Line;
 }
 void EoDbDimension::GetPts(OdGePoint3d& ptBeg, OdGePoint3d& ptEnd) {
@@ -315,16 +315,16 @@ void EoDbDimension::SetStartPoint(const OdGePoint3d& startPoint) {
 void EoDbDimension::SetText(const CString& str) {
 	m_strText = str;
 }
-void EoDbDimension::SetTextColorIndex(OdInt16 colorIndex) {
+void EoDbDimension::SetTextColorIndex(OdInt16 colorIndex) noexcept {
 	m_TextColorIndex = colorIndex;
 }
 void EoDbDimension::SetEndPoint(const OdGePoint3d& endPoint) {
 	m_Line.SetEndPoint(endPoint);
 }
-const CString& EoDbDimension::Text() {
+const CString& EoDbDimension::Text() noexcept {
 	return m_strText;
 }
-const OdInt16& EoDbDimension::TextColorIndex() {
+const OdInt16& EoDbDimension::TextColorIndex() noexcept {
 	return m_TextColorIndex;
 }
 void EoDbDimension::SetDefaultNote() {
@@ -371,13 +371,13 @@ void EoDbDimension::SetDefaultNote() {
 void EoDbDimension::SetFontDefinition(const EoDbFontDefinition& fontDefinition) {
 	m_FontDefinition = fontDefinition;
 }
-void EoDbDimension::SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) {
+void EoDbDimension::SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept {
 	m_ReferenceSystem = referenceSystem;
 }
-void EoDbDimension::SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) {
+void EoDbDimension::SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 }
-void EoDbDimension::SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) {
+void EoDbDimension::SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept {
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 }
 void EoDbDimension::TransformBy(const EoGeMatrix3d& transformMatrix) {

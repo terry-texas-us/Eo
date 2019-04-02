@@ -29,7 +29,7 @@ public: // Operators
 	const EoDbPolyline& operator=(const EoDbPolyline& other);
 
 public: // Methods - absolute virtuals
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
 	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
@@ -40,25 +40,25 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
-	bool IsEqualTo(EoDbPrimitive* primitive) const {return false;}
+	bool Is(OdUInt16 type) const noexcept;
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept {return false;}
 	bool IsInView(AeSysView* view) const;
-	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
+	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
 	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const;
 	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const;
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
 	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, OdUInt8* buffer) const;
+	void Write(CFile& file, OdUInt8* buffer) const noexcept;
 
 public: // Methods
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0., double startWidth = - 1., double endWidth = - 1.);
 	void GetPointAt(int vertexIndex, OdGePoint3d& point) const;
-	bool IsClosed() const;
+	bool IsClosed() const noexcept;
 	void SetClosed(bool closed);
-	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point);
-	void SetConstantWidth(double constantWidth);
+	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
+	void SetConstantWidth(double constantWidth) noexcept;
 	void SetElevation(double elevation);
 	void SetNormal(const OdGeVector3d& normal);
 	void SetPoints(const OdGePoint3dArray& points);
@@ -69,6 +69,6 @@ public: // Methods - static
 	static EoDbPolyline* Create(OdDbDatabasePtr database);
 	static EoDbPolyline* Create(const EoDbPolyline& other, OdDbDatabasePtr database);
 
-	static size_t Edge();
-	static void SetEdgeToEvaluate(size_t edgeToEvaluate);
+	static size_t Edge() noexcept;
+	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 };

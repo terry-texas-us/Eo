@@ -5,7 +5,7 @@ class EoGeMatrix3d;
 
 /// <summary>Determines if a point is contained by a window.</summary>
 /// <returns>true if point is in window, false otherwise</returns>
-bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint);
+bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept;
 
 /// <summary>Projects a point toward or beyond another point.</summary>
 /// <param name="ptQ">point defining direction vector</param>
@@ -19,4 +19,4 @@ OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoi
 //		bit 2 set - point below window
 //		bit 4 set - point to the right of window
 //		bit 8 set - point to the left of window
-int	RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint);
+int	RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept;

@@ -18,7 +18,7 @@ public:
 protected:
   virtual void DrawItem(LPDRAWITEMSTRUCT drawItemStruct);
 
-  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS);
-  virtual int AddString(LPCWSTR ) { return -1; }
-  virtual int InsertString(int , LPCWSTR ) { return -1; }
+  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept;
+  virtual int AddString(LPCWSTR ) noexcept { return -1; }
+  virtual int InsertString(int , LPCWSTR ) noexcept { return -1; }
 };

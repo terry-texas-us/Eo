@@ -60,36 +60,36 @@ public: // Constructors and destructor
 
 public: // Operators
 
-	EoGsAbstractView& operator=(const EoGsAbstractView& av);
+	EoGsAbstractView& operator=(const EoGsAbstractView& av) noexcept;
 
 public: // Methods
-	void AdjustWindow(const double aspectRatio);
-	void EnablePerspective(bool enabled);
-	double FarClipDistance() const;
-	double FieldHeight() const;
-	double FieldHeightMaximum() const;
-	double FieldHeightMinimum() const;
-	double FieldWidth() const;
-	double FieldWidthMaximum() const;
-	double FieldWidthMinimum() const;
-	bool IsFarClipOn() const;
-	bool IsNearClipAtEyeOn() const;
-	bool IsNearClipOn() const;
-	bool IsPerspectiveOn() const;
-	double LensLength() const;
-	double NearClipDistance() const;
-	OdGePoint3d Position(void) const;
-	OdGsView::RenderMode RenderMode() const;
-	void SetFarClipDistance(const double distance);
-	void SetLensLength(const double length);
-	void SetNearClipDistance(const double distance);
-	void SetPosition_(const OdGePoint3d& position);
-	void SetProjectionPlaneField(double fieldWidth, double fieldHeight);
-	void SetProjectionPlaneField(const double uMin, const double vMin, const double uMax, const double vMax);
-	void SetRenderMode(const OdGsView::RenderMode& renderMode);
-	void SetTarget(const OdGePoint3d& target);
+	void AdjustWindow(const double aspectRatio) noexcept;
+	void EnablePerspective(bool enabled) noexcept;
+	double FarClipDistance() const noexcept;
+	double FieldHeight() const noexcept;
+	double FieldHeightMaximum() const noexcept;
+	double FieldHeightMinimum() const noexcept;
+	double FieldWidth() const noexcept;
+	double FieldWidthMaximum() const noexcept;
+	double FieldWidthMinimum() const noexcept;
+	bool IsFarClipOn() const noexcept;
+	bool IsNearClipAtEyeOn() const noexcept;
+	bool IsNearClipOn() const noexcept;
+	bool IsPerspectiveOn() const noexcept;
+	double LensLength() const noexcept;
+	double NearClipDistance() const noexcept;
+	OdGePoint3d Position(void) const noexcept;
+	OdGsView::RenderMode RenderMode() const noexcept;
+	void SetFarClipDistance(const double distance) noexcept;
+	void SetLensLength(const double length) noexcept;
+	void SetNearClipDistance(const double distance) noexcept;
+	void SetPosition_(const OdGePoint3d& position) noexcept;
+	void SetProjectionPlaneField(double fieldWidth, double fieldHeight) noexcept;
+	void SetProjectionPlaneField(const double uMin, const double vMin, const double uMax, const double vMax) noexcept;
+	void SetRenderMode(const OdGsView::RenderMode& renderMode) noexcept;
+	void SetTarget(const OdGePoint3d& target) noexcept;
 	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight);
 	void SetViewUp(const OdGeVector3d& upVector);
-	OdGePoint3d Target(void) const;
-	OdGeVector3d ViewUp() const;
+	OdGePoint3d Target(void) const noexcept;
+	OdGeVector3d ViewUp() const noexcept;
 };

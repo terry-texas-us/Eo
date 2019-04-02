@@ -20,40 +20,40 @@ EoDbFontDefinition& EoDbFontDefinition::operator=(const EoDbFontDefinition& othe
 	m_CharacterSpacing = other.m_CharacterSpacing;
 	return (*this);
 }
-double EoDbFontDefinition::CharacterSpacing() const {
+double EoDbFontDefinition::CharacterSpacing() const noexcept {
 	return m_CharacterSpacing;
 }
-EoDb::HorizontalAlignment EoDbFontDefinition::HorizontalAlignment() const {
+EoDb::HorizontalAlignment EoDbFontDefinition::HorizontalAlignment() const noexcept {
 	return m_HorizontalAlignment;
 }
 CString EoDbFontDefinition::FontName() const {
 	return m_FontName;
 }
-EoDb::Precision EoDbFontDefinition::Precision() const {
+EoDb::Precision EoDbFontDefinition::Precision() const noexcept {
 	return m_Precision;
 }
-EoDb::Path EoDbFontDefinition::Path() const {
+EoDb::Path EoDbFontDefinition::Path() const noexcept {
 	return m_Path;
 }
-EoDb::VerticalAlignment EoDbFontDefinition::VerticalAlignment() const {
+EoDb::VerticalAlignment EoDbFontDefinition::VerticalAlignment() const noexcept {
 	return m_VerticalAlignment;
 }
-void EoDbFontDefinition::SetCharacterSpacing(double spacing) {
+void EoDbFontDefinition::SetCharacterSpacing(double spacing) noexcept {
 	m_CharacterSpacing = spacing;
 }
-void EoDbFontDefinition::SetHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) {
+void EoDbFontDefinition::SetHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept {
 	m_HorizontalAlignment = horizontalAlignment;
 }
 void EoDbFontDefinition::SetFontName(const CString& fontName) {
 	m_FontName = fontName;
 }
-void EoDbFontDefinition::SetPath(EoDb::Path path) {
+void EoDbFontDefinition::SetPath(EoDb::Path path) noexcept {
 	m_Path = path;
 }
-void EoDbFontDefinition::SetPrecision(EoDb::Precision precision) {
+void EoDbFontDefinition::SetPrecision(EoDb::Precision precision) noexcept {
 	m_Precision = precision;
 }
-void EoDbFontDefinition::SetVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) {
+void EoDbFontDefinition::SetVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept {
 	m_VerticalAlignment = verticalAlignment;
 }
 CString EoDbFontDefinition::FormatHorizonatlAlignment() const {
@@ -89,7 +89,7 @@ void EoDbFontDefinition::Write(EoDbFile& file) const {
 	file.Write(&m_CharacterSpacing, sizeof(double));
 }
 
-void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) {
+void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept {
     m_FontName = L"Simplex.psf";
     m_Precision = EoDb::kStrokeType;
 
@@ -111,12 +111,12 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
     }
 }
 
-void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) {
+void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept {
     m_HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(horizontalMode);;
     m_VerticalAlignment = EoDbText::ConvertVerticalAlignment(verticalMode);
 }
 
-void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) {
+void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept {
     switch (attachmentPoint) {
     case OdDbMText::kTopLeft:
         m_HorizontalAlignment = EoDb::kAlignLeft;

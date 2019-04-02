@@ -50,7 +50,7 @@ const EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 	}
 	return (*this);
 }
-void EoDbPoint::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbPoint::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Point>", this);
 }
 void EoDbPoint::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -144,16 +144,16 @@ void EoDbPoint::GetAllPoints(OdGePoint3dArray& points) const {
 	points.clear(); 
 	points.append(m_Position);
 }
-OdGePoint3d EoDbPoint::GetCtrlPt() const {
+OdGePoint3d EoDbPoint::GetCtrlPt() const noexcept {
 	return (m_Position);
 }
 void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	extents.addPoint(m_Position);
 }
-OdGePoint3d EoDbPoint::GoToNxtCtrlPt() const {
+OdGePoint3d EoDbPoint::GoToNxtCtrlPt() const noexcept {
 	return (m_Position);
 }
-bool EoDbPoint::Is(OdUInt16 type) const {
+bool EoDbPoint::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kPointPrimitive;
 }
 bool EoDbPoint::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -194,16 +194,16 @@ bool EoDbPoint::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point)
 
 	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
 }
-double EoDbPoint::DataAt(OdUInt16 dataIndex) const {
+double EoDbPoint::DataAt(OdUInt16 dataIndex) const noexcept {
 	return (m_Data[dataIndex]);
 }
-OdGePoint3d EoDbPoint::Position() const {
+OdGePoint3d EoDbPoint::Position() const noexcept {
 	return (m_Position);
 }
-OdInt16 EoDbPoint::PointDisplayMode() const {
+OdInt16 EoDbPoint::PointDisplayMode() const noexcept {
 	return (m_PointDisplayMode);
 }
-void EoDbPoint::ModifyState() {
+void EoDbPoint::ModifyState() noexcept {
 	EoDbPrimitive::ModifyState();
 	m_PointDisplayMode = pstate.PointDisplayMode();
 }
@@ -226,7 +226,7 @@ void EoDbPoint::SetPosition(const OdGePoint3d& position) {
 	}
 	m_Position = position;
 }
-void EoDbPoint::SetPointDisplayMode(OdInt16 displayMode) {
+void EoDbPoint::SetPointDisplayMode(OdInt16 displayMode) noexcept {
 	m_PointDisplayMode = displayMode;
 }
 void EoDbPoint::TransformBy(const EoGeMatrix3d& transformMatrix) {

@@ -16,7 +16,7 @@ class CMainFrame : public CMDIFrameWndEx {
 public:
 	CMainFrame();
 
-	inline void StartTimer() {
+	inline void StartTimer() noexcept {
 		QueryPerformanceCounter(&m_pc0);
 	}
 	inline void StopTimer(LPCWSTR operationName = NULL) {
@@ -56,8 +56,8 @@ public:
 	static void DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight);
 	static void DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const CString& textOut, const OdDbDatabasePtr database);
 	static CMFCToolBarComboBoxButton* GetFindCombo(void);
-	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object);
-	static OdDb::LineWeight LineWeightByIndex(char lineWeight);
+	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept;
+	static OdDb::LineWeight LineWeightByIndex(char lineWeight) noexcept;
 	static CString StringByLineWeight(int lineWeight, bool lineWeightByIndex);
 
 protected:  // control bar embedded members
@@ -102,13 +102,13 @@ protected:
 public:
 	void OnStartProgress(void);
 
-	CMFCStatusBar& GetStatusBar(void) {
+	CMFCStatusBar& GetStatusBar(void) noexcept {
 		return m_StatusBar;
 	}
-	EoMfOutputDockablePane& GetOutputPane(void) {
+	EoMfOutputDockablePane& GetOutputPane(void) noexcept {
 		return m_OutputPane;
 	}
-	EoMfPropertiesDockablePane& GetPropertiesPane(void) {
+	EoMfPropertiesDockablePane& GetPropertiesPane(void) noexcept {
 		return m_PropertiesPane;
 	}
 };

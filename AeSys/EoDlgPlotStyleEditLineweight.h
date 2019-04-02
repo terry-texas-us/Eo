@@ -39,9 +39,9 @@ protected:
 	void InitializeLineweightsListCtrlImages();
 
 public:
-	const bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable);
+	const bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept;
 	void SetUnitIntoList(const bool isInchUnits);
-	void SetInitialSelection(int selection);
+	void SetInitialSelection(int selection) noexcept;
 
 protected:
 	afx_msg void OnRadioMillimetrs();

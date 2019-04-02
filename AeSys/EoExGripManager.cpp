@@ -440,16 +440,16 @@ void EoExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 		viewportDraw->geometry().polygonEye(4, aPoly);
 	}
 }
-OdDbGripOperations::DrawType EoExGripData::status() const {
+OdDbGripOperations::DrawType EoExGripData::status() const noexcept {
 	return m_status;
 }
-bool EoExGripData::isInvisible() const {
+bool EoExGripData::isInvisible() const noexcept {
 	return m_bInvisible;
 }
-bool EoExGripData::isShared() const {
+bool EoExGripData::isShared() const noexcept {
 	return m_bShared;
 }
-OdGePoint3d EoExGripData::point() const {
+OdGePoint3d EoExGripData::point() const noexcept {
 	return m_point;
 }
 OdDbGripDataPtr EoExGripData::data() const {
@@ -464,13 +464,13 @@ bool EoExGripData::entPath(OdDbFullSubentPath* path) const {
 	}
 	return m_entPath.subentId() != OdDbSubentId();
 }
-void EoExGripData::setStatus(OdDbGripOperations::DrawType val) {
+void EoExGripData::setStatus(OdDbGripOperations::DrawType val) noexcept {
 	m_status = val;
 }
-void EoExGripData::setInvisible(bool val) {
+void EoExGripData::setInvisible(bool val) noexcept {
 	m_bInvisible = val;
 }
-void EoExGripData::setShared(bool val) {
+void EoExGripData::setShared(bool val) noexcept {
 	m_bShared = val;
 }
 
@@ -1353,7 +1353,7 @@ void EoExGripManager::disable(bool isDisabled) {
 EoExGripDbReactor::EoExGripDbReactor() : 
 	m_pOwner(0) {
 }
-void EoExGripDbReactor::objectAppended(const OdDbDatabase* , const OdDbObject*) {
+void EoExGripDbReactor::objectAppended(const OdDbDatabase* , const OdDbObject*) noexcept {
 	// New object.
 }
 void EoExGripDbReactor::objectModified(const OdDbDatabase*, const OdDbObject* pDbObj) {

@@ -17,7 +17,10 @@ EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* v
     m_YDirection *= characterCellDefinition.Height();
 }
 
-EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) : m_Origin(origin), m_XDirection(xDirection), m_YDirection(yDirection) {
+EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept
+    : m_Origin(origin)
+    , m_XDirection(xDirection)
+    , m_YDirection(yDirection) {
 }
 
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition) : m_Origin(origin) {
@@ -38,7 +41,7 @@ EoGeReferenceSystem::EoGeReferenceSystem(const EoGeReferenceSystem& other) {
 	m_YDirection = other.m_YDirection;
 }
 
-EoGeReferenceSystem& EoGeReferenceSystem::operator=(const EoGeReferenceSystem& other) {
+EoGeReferenceSystem& EoGeReferenceSystem::operator=(const EoGeReferenceSystem& other) noexcept {
 	m_Origin = other.m_Origin;
 	m_XDirection = other.m_XDirection;
 	m_YDirection = other.m_YDirection;
@@ -51,7 +54,7 @@ void EoGeReferenceSystem::GetUnitNormal(OdGeVector3d& normal) {
 	normal = m_XDirection.crossProduct(m_YDirection).normal();
 }
 
-OdGePoint3d EoGeReferenceSystem::Origin() const {
+OdGePoint3d EoGeReferenceSystem::Origin() const noexcept {
 	return m_Origin;
 }
 
@@ -78,7 +81,7 @@ void EoGeReferenceSystem::Rescale(EoDbCharacterCellDefinition& characterCellDefi
 	m_YDirection *= characterCellDefinition.Height();
 }
 
-double EoGeReferenceSystem::Rotation() const {
+double EoGeReferenceSystem::Rotation() const noexcept {
     const OdGeVector3d HorizontalAxis = m_XDirection;
 
     double Angle = 0.;
@@ -90,21 +93,21 @@ double EoGeReferenceSystem::Rotation() const {
     return (Angle);
 }
 
-void EoGeReferenceSystem::Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) {
+void EoGeReferenceSystem::Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept {
 	m_Origin = origin;
 	m_XDirection = xDirection;
 	m_YDirection = yDirection;
 }
 
-void EoGeReferenceSystem::SetOrigin(const OdGePoint3d& origin) {
+void EoGeReferenceSystem::SetOrigin(const OdGePoint3d& origin) noexcept {
 	m_Origin = origin;
 }
 
-void EoGeReferenceSystem::SetXDirection(const OdGeVector3d& xDirection) {
+void EoGeReferenceSystem::SetXDirection(const OdGeVector3d& xDirection) noexcept {
 	m_XDirection = xDirection;
 }
 
-void EoGeReferenceSystem::SetYDirection(const OdGeVector3d& yDirection) {
+void EoGeReferenceSystem::SetYDirection(const OdGeVector3d& yDirection) noexcept {
 	m_YDirection = yDirection;
 }
 
@@ -120,10 +123,10 @@ void EoGeReferenceSystem::Write(EoDbFile& file) const {
 	file.WriteVector3d(m_YDirection);
 }
 
-OdGeVector3d EoGeReferenceSystem::XDirection() const {
+OdGeVector3d EoGeReferenceSystem::XDirection() const noexcept {
 	return m_XDirection;
 }
 
-OdGeVector3d EoGeReferenceSystem::YDirection() const {
+OdGeVector3d EoGeReferenceSystem::YDirection() const noexcept {
 	return m_YDirection;
 }

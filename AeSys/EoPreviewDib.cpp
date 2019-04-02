@@ -28,7 +28,7 @@ void EoPreviewDib::SetPreviewFile(LPCWSTR fileName) {
 		}
 	}
 }
-CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) {
+CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) noexcept {
 	int d;
 	int w;
 	if (bmpDep > bmpWid) {

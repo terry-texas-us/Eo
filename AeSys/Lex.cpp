@@ -86,7 +86,7 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 	if (numberOfTokens == 0)
 		throw L"Syntax error";
 }
-void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) {
+void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) noexcept {
 	const long lTyp = arCD->lTyp;
 	int iDim = LOWORD(arCD->lDef);
 
@@ -158,7 +158,7 @@ void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) {
 		}
 	}
 }
-void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) {
+void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) noexcept {
 	if (aiTyp == aiTypReq) return;
 
 	double* pdVal = (double*) apVal;
@@ -421,7 +421,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 	*aiTyp = iTyp1;
 	*alDef = lDef1;
 }
-void lex::Init() {
+void lex::Init() noexcept {
 	iToks = 0;
 	iValsCount = 0;
 }
@@ -535,7 +535,7 @@ int lex::Scan(LPTSTR aszTok, LPCWSTR szLine, int& iLP) {
 	if (iRetVal == - 1) {iLP = iBegLoc + 1;}
 	return (iRetVal);
 }
-int lex::TokType(int aiTokId) {
+int lex::TokType(int aiTokId) noexcept {
 	return (aiTokId >= 0 && aiTokId < lex::iToks) ? iTokenType[aiTokId] : - 1;
 }
 void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, double* adOp) {
@@ -677,7 +677,7 @@ void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, long* alOp) {
 		throw L"Unknown operation";
 	}
 }
-LPTSTR lex::ScanForChar(wchar_t c, LPTSTR *ppStr) {
+LPTSTR lex::ScanForChar(wchar_t c, LPTSTR *ppStr) noexcept {
 	LPTSTR p = lex::SkipWhiteSpace(*ppStr);
 
 	if (*p == c) {
@@ -686,13 +686,13 @@ LPTSTR lex::ScanForChar(wchar_t c, LPTSTR *ppStr) {
 	}
 	return 0; // not found
 }
-LPTSTR lex::SkipWhiteSpace(LPTSTR pszString) {
+LPTSTR lex::SkipWhiteSpace(LPTSTR pszString) noexcept {
 	while (pszString && *pszString && isspace(*pszString))
 		pszString++;
 
 	return pszString;
 }
-LPTSTR lex::ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) {
+LPTSTR lex::ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) noexcept {
 	LPTSTR pIn = lex::SkipWhiteSpace(*ppStr);
 	LPTSTR pStart = *ppArgBuf;
 	LPTSTR pOut = pStart;

@@ -14,16 +14,16 @@ public:
 		m_Primitive = primitive;
 		m_Mask = mask;
 	}
-	void ClearMaskBit(int bit) {
+	void ClearMaskBit(int bit) noexcept {
 		m_Mask &= ~(1UL << bit);
 	}
-	DWORD GetMask() {
+	DWORD GetMask() noexcept {
 		return m_Mask;
 	}
-	EoDbPrimitive*& GetPrimitive() {
+	EoDbPrimitive*& GetPrimitive() noexcept {
 		return m_Primitive;
 	}
-	void SetMaskBit(int bit) {
+	void SetMaskBit(int bit) noexcept {
 		m_Mask |= (1UL << bit);
 	}
 };

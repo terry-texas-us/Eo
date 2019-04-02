@@ -118,8 +118,8 @@ public:
 	void propagateActiveViewChanges() const;
 
 	void track(OdEdInputTracker* tracker);
-	void setCursor(HCURSOR cursor);
-	HCURSOR cursor() const;
+	void setCursor(HCURSOR cursor) noexcept;
+	HCURSOR cursor() const noexcept;
 
 	void setViewportBorderProperties();
 #ifdef DEV_COMMAND_VIEW
@@ -167,7 +167,7 @@ protected:
 
 	// <tas="Not implemented in example"</tas> void adjustDevice(OdGsDevice* pDevice);
 	void createDevice();
-	bool regenAbort() const;
+	bool regenAbort() const noexcept;
 
 public: 
 #ifdef DEV_COMMAND_CONSOLE
@@ -277,40 +277,40 @@ private: // grid and axis constraints
 	bool m_GridSnap;
 
 public:
-	double AxisConstraintInfluenceAngle() const;
-	void SetAxisConstraintInfluenceAngle(const double angle);
-	double AxisConstraintOffsetAngle() const;
-	void SetAxisConstraintOffsetAngle(const double angle);
-	void InitializeConstraints();
+	double AxisConstraintInfluenceAngle() const noexcept;
+	void SetAxisConstraintInfluenceAngle(const double angle) noexcept;
+	double AxisConstraintOffsetAngle() const noexcept;
+	void SetAxisConstraintOffsetAngle(const double angle) noexcept;
+	void InitializeConstraints() noexcept;
 	/// <summary>Generates a point display centered about the user origin in one or more of the three orthogonal planes for the current user grid.</summary>
 	void DisplayGrid(CDC* deviceContext);
-	OdGePoint3d GridOrigin() const;
-	void SetGridOrigin(const OdGePoint3d& origin);
-	void GetGridLineSpacing(double& x, double& y, double& z);
-	void SetGridLineSpacing(double x, double y, double z);
-	void GetGridPointSpacing(double& x, double& y, double& z);
-	void SetGridPointSpacing(double x, double y, double z);
-	void GetGridSnapSpacing(double& x, double& y, double& z);
-	void SetGridSnapSpacing(double x, double y, double z);
+	OdGePoint3d GridOrigin() const noexcept;
+	void SetGridOrigin(const OdGePoint3d& origin) noexcept;
+	void GetGridLineSpacing(double& x, double& y, double& z) noexcept;
+	void SetGridLineSpacing(double x, double y, double z) noexcept;
+	void GetGridPointSpacing(double& x, double& y, double& z) noexcept;
+	void SetGridPointSpacing(double x, double y, double z) noexcept;
+	void GetGridSnapSpacing(double& x, double& y, double& z) noexcept;
+	void SetGridSnapSpacing(double x, double y, double z) noexcept;
 	/// <summary>Determines the nearest point on system constraining grid.</summary>
-	OdGePoint3d	SnapPointToGrid(const OdGePoint3d& point);
+	OdGePoint3d	SnapPointToGrid(const OdGePoint3d& point) noexcept;
 	/// <summary>Set Axis constraint tolerance angle and offset axis constraint offset angle. Constrains a line to nearest axis pivoting on first endpoint.</summary>
 	/// <remarks>Offset angle only support about z-axis</remarks>
 	/// <returns>Point after snap</returns>
 	OdGePoint3d SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 
-	bool DisplayGridWithLines() const;
-	void EnableDisplayGridWithLines(bool display);
-	void EnableDisplayGridWithPoints(bool display);
-	bool DisplayGridWithPoints() const;
-	bool GridSnap() const;
-	void EnableGridSnap(bool snap);
+	bool DisplayGridWithLines() const noexcept;
+	void EnableDisplayGridWithLines(bool display) noexcept;
+	void EnableDisplayGridWithPoints(bool display) noexcept;
+	bool DisplayGridWithPoints() const noexcept;
+	bool GridSnap() const noexcept;
+	void EnableGridSnap(bool snap) noexcept;
 	void ZoomWindow(OdGePoint3d point1, OdGePoint3d point2);
 
 public:
 	void ResetDevice(bool zoomExtents = FALSE);
 	void SetRenderMode(OdGsView::RenderMode renderMode);
-	OdGsView::RenderMode RenderMode() const {
+	OdGsView::RenderMode RenderMode() const noexcept {
 		return m_ViewTransform.RenderMode();
 	}
 	void SetViewportBorderProperties(OdGsDevice* device, bool model);
@@ -369,25 +369,25 @@ public:
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
-	OdGePoint3d& DetPt();
-	EoDbPrimitive*& EngagedPrimitive();
-	EoDbGroup*&	EngagedGroup();
+	OdGePoint3d& DetPt() noexcept;
+	EoDbPrimitive*& EngagedPrimitive() noexcept;
+	EoDbGroup*&	EngagedGroup() noexcept;
 	/// <summary>Set a pixel.</summary>
 	void DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point);
 
-	bool GroupIsEngaged();
-	double SelectApertureSize() const;
+	bool GroupIsEngaged() noexcept;
+	double SelectApertureSize() const noexcept;
 	void BreakAllPolylines();
 	void BreakAllSegRefs();
 
-	bool PenWidthsOn();
-	double WorldScale() const;
+	bool PenWidthsOn() noexcept;
+	double WorldScale() const noexcept;
 	void SetWorldScale(const double scale);
 	POSITION AddGroup(EoDbGroup* group);
 	void AddGroups(EoDbGroupList* groups);
 	POSITION RemoveGroup(EoDbGroup* group);
 	void RemoveAllGroups();
-	void ResetView();
+	void ResetView() noexcept;
 	/// <summary> Deletes last group detectable in the this view.</summary>
 	void DeleteLastGroup();
 	POSITION GetFirstVisibleGroupPosition() const;
@@ -395,7 +395,7 @@ public:
 	EoDbGroup* GetNextVisibleGroup(POSITION& position);
 	EoDbGroup* GetPreviousGroup(POSITION& position);
 	void BackgroundImageDisplay(CDC* deviceContext);
-	bool ViewTrueTypeFonts();
+	bool ViewTrueTypeFonts() noexcept;
 	void DisplayOdometer();
 	/// <summary> Streams a sequence of characters as WM_KEYDOWN or WM_CHAR window messages.</summary>
 	/// <remarks> This is a legacy feature.</remarks>
@@ -404,21 +404,21 @@ public:
 	void Dolly();
 	void DollyAndZoom(double zoomFactor);
 
-	void CopyActiveModelViewToPreviousModelView();
+	void CopyActiveModelViewToPreviousModelView() noexcept;
 	EoGsViewTransform PreviousModelView();
 	void ExchangeActiveAndPreviousModelViews();
 	
-	EoGeMatrix3d ModelToWorldTransform() const;
+	EoGeMatrix3d ModelToWorldTransform() const noexcept;
 	void PushModelTransform(const EoGeMatrix3d& transformation);
 	void PopModelTransform();
 	void ModelTransformPoint(OdGePoint3d& point);
 	
-	void ModelViewGetViewport(EoGsViewport& viewport);
+	void ModelViewGetViewport(EoGsViewport& viewport) noexcept;
 	OdGeVector3d CameraDirection() const;
-	EoGeMatrix3d ModelViewMatrix() const;
-	OdGePoint3d	CameraTarget() const;
-	double ZoomFactor() const;
-	OdGeVector3d ViewUp() const;
+	EoGeMatrix3d ModelViewMatrix() const noexcept;
+	OdGePoint3d	CameraTarget() const noexcept;
+	double ZoomFactor() const noexcept;
+	OdGeVector3d ViewUp() const noexcept;
 	void ModelViewInitialize();
 
 	void PopViewTransform();
@@ -437,21 +437,21 @@ public:
 	/// <summary>Determines the number of pages for 1 to 1 print</summary>
 	UINT NumPages(CDC* deviceContext, double dScaleFactor, UINT& nHorzPages, UINT& nVertPages);
 
-	double OverviewUExt();
-	double OverviewUMin();
-	double OverviewVExt();
-	double OverviewVMin();
-	CPoint DoViewportProjection(const EoGePoint4d& point) const;
-	void DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const;
+	double OverviewUExt() noexcept;
+	double OverviewUMin() noexcept;
+	double OverviewVExt() noexcept;
+	double OverviewVMin() noexcept;
+	CPoint DoViewportProjection(const EoGePoint4d& point) const noexcept;
+	void DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept;
 	void DoViewportProjection(CPoint* pnt, EoGePoint4dArray& points) const;
-	OdGePoint3d DoViewportProjectionInverse(const OdGePoint3d& point) const;
-	double ViewportHeightInInches() const;
-	double ViewportWidthInInches() const;
+	OdGePoint3d DoViewportProjectionInverse(const OdGePoint3d& point) const noexcept;
+	double ViewportHeightInInches() const noexcept;
+	double ViewportWidthInInches() const noexcept;
 	void ViewportPopActive();
 	void ViewportPushActive();
-	void SetViewportSize(const int width, const int height);
-	void SetDeviceHeightInInches(double height);
-	void SetDeviceWidthInInches(double width);
+	void SetViewportSize(const int width, const int height) noexcept;
+	void SetDeviceHeightInInches(double height) noexcept;
+	void SetDeviceWidthInInches(double width) noexcept;
 public: // Group and Primitive operations
 
 	EoDbGroup* m_SubModeEditGroup;
@@ -489,20 +489,20 @@ private: // Annotate and Dimension interface
 	CString m_DefaultText;
 
 public:
-	double BubbleRadius() const;
-	void SetBubbleRadius(double radius);
-	double CircleRadius() const;
-	void SetCircleRadius(double radius);
+	double BubbleRadius() const noexcept;
+	void SetBubbleRadius(double radius) noexcept;
+	double CircleRadius() const noexcept;
+	void SetCircleRadius(double radius) noexcept;
 	CString DefaultText() const;
 	void SetDefaultText(const CString& text);
-	double EndItemSize() const;
-	void SetEndItemSize(double size);
-	int EndItemType();
-	void SetEndItemType(int type);
-	double GapSpaceFactor() const;
-	void SetGapSpaceFactor(double factor);
-	int NumberOfSides() const;
-	void SetNumberOfSides(int number);
+	double EndItemSize() const noexcept;
+	void SetEndItemSize(double size) noexcept;
+	int EndItemType() noexcept;
+	void SetEndItemType(int type) noexcept;
+	double GapSpaceFactor() const noexcept;
+	void SetGapSpaceFactor(double factor) noexcept;
+	int NumberOfSides() const noexcept;
+	void SetNumberOfSides(int number) noexcept;
 
 public: // Annotate mode interface
 	void DoAnnotateModeMouseMove();
@@ -516,7 +516,7 @@ public: // Annotate mode interface
 	afx_msg void OnAnnotateModeBox();
 	afx_msg void OnAnnotateModeCutIn();
 	afx_msg void OnAnnotateModeConstructionLine();
-	afx_msg void OnAnnotateModeReturn();
+	afx_msg void OnAnnotateModeReturn() noexcept;
 	afx_msg void OnAnnotateModeEscape();
 
 	/// <summary>Generates arrow heads for annotation mode.</summary>
@@ -525,7 +525,7 @@ public: // Annotate mode interface
 	/// <param name="startPoint">tail of line segment defining arrow head</param>
 	/// <param name="endPoint">head of line segment defining arrow head</param>
 	/// <param name="group">group where primitives are placed</param>
-	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group);
+	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) noexcept;
 	bool CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const;
 
 public: // Draw mode interface
@@ -626,7 +626,7 @@ public: // Nodal mode interface
 	void ConstructPreviewGroupForNodalGroups();
 
 public: // Cut mode interface
-	afx_msg void OnCutModeOptions();
+	afx_msg void OnCutModeOptions() noexcept;
 	/// <summary>Cuts a primative at cursor position.</summary>
 	afx_msg void OnCutModeTorch();
 	/// <summary>Cuts all primatives which intersect with line defined by two points.</summary>
@@ -638,7 +638,7 @@ public: // Cut mode interface
 	//			eccentricities. if two cut points are coincident
 	//			nothing happens.
 	afx_msg void OnCutModeClip();
-	afx_msg void OnCutModeDivide();
+	afx_msg void OnCutModeDivide() noexcept;
 	afx_msg void OnCutModeReturn();
 	afx_msg void OnCutModeEscape();
 
@@ -647,13 +647,13 @@ public: // Edit mode interface
 	OdGeVector3d m_EditModeRotationAngles;
 	OdGeScale3d m_ScaleFactors;
 
-	OdGeVector3d EditModeRotationAngles() const;
+	OdGeVector3d EditModeRotationAngles() const noexcept;
 	EoGeMatrix3d EditModeInvertedRotationMatrix() const;
-	OdGeScale3d EditModeMirrorScaleFactors() const;
+	OdGeScale3d EditModeMirrorScaleFactors() const noexcept;
 	EoGeMatrix3d EditModeRotationMatrix() const;
-	OdGeScale3d EditModeScaleFactors() const;
-	void SetEditModeScaleFactors(const double sx, const double sy, const double sz);
-	void SetEditModeRotationAngles(double x, double y, double z);
+	OdGeScale3d EditModeScaleFactors() const noexcept;
+	void SetEditModeScaleFactors(const double sx, const double sy, const double sz) noexcept;
+	void SetEditModeRotationAngles(double x, double y, double z) noexcept;
 	void SetEditModeMirrorScaleFactors(double sx, double sy, double sz);
 
 	afx_msg void OnEditModeOptions();
@@ -665,7 +665,7 @@ public: // Edit mode interface
 	afx_msg void OnEditModeFlip();
 	afx_msg void OnEditModeReduce();
 	afx_msg void OnEditModeEnlarge();
-	afx_msg void OnEditModeReturn();
+	afx_msg void OnEditModeReturn() noexcept;
 	afx_msg void OnEditModeEscape();
 
 	afx_msg void OnInsertBlockreference();
@@ -694,7 +694,7 @@ public: // Edit mode interface
 	//				pt2 	other corner of the area
 	afx_msg void OnTraprModeField();
 	afx_msg void OnTraprModeLast();
-	afx_msg void OnTraprModeEngage();
+	afx_msg void OnTraprModeEngage() noexcept;
 	afx_msg void OnTraprModeMenu();
 	afx_msg void OnTraprModeModify();
 	afx_msg void OnTraprModeEscape();
@@ -811,7 +811,7 @@ public:
 	/// <param name="previousSection">width and depth of start section</param>
 	/// <param name="currentSection">width and depth of end section</param>
 	/// <returns>length of the transition</returns>
-	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection);
+	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept;
 
 private: // Pipe mode interface
 	int m_CurrentPipeSymbolIndex;
@@ -848,7 +848,7 @@ private: // Power mode interface
 public:
 	void DoPowerModeMouseMove();
 
-	afx_msg void OnPowerModeOptions();
+	afx_msg void OnPowerModeOptions() noexcept;
 	afx_msg void OnPowerModeCircuit();
 	afx_msg void OnPowerModeGround();
 	afx_msg void OnPowerModeHot();

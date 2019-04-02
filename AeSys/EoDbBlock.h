@@ -19,13 +19,13 @@ public:
 	EoDbBlock(OdUInt16 flags, const OdGePoint3d& basePoint);
 	EoDbBlock(OdUInt16 flags, const OdGePoint3d& basePoint, const OdString& pathName);
 
-	OdGePoint3d	BasePoint() const;
-	OdUInt16 GetBlkTypFlgs();
-	bool HasAttributes();
-	bool IsAnonymous();
-	bool IsFromExternalReference();
-	void SetBlkTypFlgs(OdUInt16 flags);
-	void SetBasePoint(const OdGePoint3d& basePoint);
+	OdGePoint3d	BasePoint() const noexcept;
+	OdUInt16 GetBlkTypFlgs() noexcept;
+	bool HasAttributes() noexcept;
+	bool IsAnonymous() noexcept;
+	bool IsFromExternalReference() noexcept;
+	void SetBlkTypFlgs(OdUInt16 flags) noexcept;
+	void SetBasePoint(const OdGePoint3d& basePoint) noexcept;
 };
 
 typedef CTypedPtrMap<CMapStringToOb, CString, EoDbBlock*> EoDbBlockTable;

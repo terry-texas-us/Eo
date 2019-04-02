@@ -14,17 +14,17 @@ private:
 
 public:
 	Section(void);
-	Section(double width, double depth, long properties);
+	Section(double width, double depth, long properties) noexcept;
 	~Section(void);
 
-	bool operator==(const Section& other);
+	bool operator==(const Section& other) noexcept;
 	bool operator!=(const Section& other);
-	void operator()(double width, double depth, long properties);
-	void SetWidth(double width);
-	void SetDepth(double depth);
-	double Width(void) const;
-	double Depth(void) const;
-	bool Identical(const Section& section);
-	bool IsRectangular();
-	bool IsRound();
+	void operator()(double width, double depth, long properties) noexcept;
+	void SetWidth(double width) noexcept;
+	void SetDepth(double depth) noexcept;
+	double Width(void) const noexcept;
+	double Depth(void) const noexcept;
+	bool Identical(const Section& section) noexcept;
+	bool IsRectangular() noexcept;
+	bool IsRound() noexcept;
 };

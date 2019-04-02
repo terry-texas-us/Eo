@@ -65,9 +65,9 @@ public:
 
 	OdDbDatabaseDoc();
 
-	AeSysDoc* document() const;
+	AeSysDoc* document() const noexcept;
 
-	static void setDocToAssign(AeSysDoc* document);
+	static void setDocToAssign(AeSysDoc* document) noexcept;
 };
 
 typedef OdSmartPtr<OdDbDatabaseDoc> OdDbDatabaseDocPtr;
@@ -101,14 +101,14 @@ protected:
 		OdString m_tmpPath;
 	public:
 		DataSource();
-		void Create(AeSysDoc* document, const OdGePoint3d& point = OdGePoint3d::kOrigin);
+		void Create(AeSysDoc* document, const OdGePoint3d& point = OdGePoint3d::kOrigin) noexcept;
 		bool DoDragDrop();
 		void Empty();
 		~DataSource();
 	};
 	template<class TChar>
 	struct AcadClipData {
-		void init() {
+		void init() noexcept {
 			memset(this, 0, sizeof(AcadClipData<TChar>));
 		}
 		void read(CFile* pFile) {
@@ -241,10 +241,10 @@ public:
 
 public:
 	OdDbSelectionSetPtr selectionSet() const;
-	AeSysView* AeSysDoc::getViewer();
+	AeSysView* AeSysDoc::getViewer() noexcept;
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);
-	void ExecuteCommand(const OdString& command, bool bEcho = true);
+	void ExecuteCommand(const OdString& command, bool bEcho = true) noexcept;
 	
 	OdDbDatabasePtr m_DatabasePtr;
 
@@ -309,7 +309,7 @@ public:
 	OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr textStyles);
 
 // Block Table interface
-	EoDbBlockTable* BlockTable();
+	EoDbBlockTable* BlockTable() noexcept;
 	bool BlockTableIsEmpty();
 	OdUInt16 BlockTableSize();
 	int GetBlockReferenceCount(const CString& name);
@@ -361,7 +361,7 @@ public:
 	POSITION GetLastWorkLayerGroupPosition() const;
 	EoDbGroup* GetNextWorkLayerGroup(POSITION& position) const;
 	EoDbGroup* GetPreviousWorkLayerGroup(POSITION& position) const;
-	EoDbLayer* GetWorkLayer() const;
+	EoDbLayer* GetWorkLayer() const noexcept;
 	void InitializeWorkLayer();
 	OdDbObjectId SetCurrentLayer(OdDbLayerTableRecordPtr layerTableRecord);
 // </Work Layer>
@@ -392,7 +392,7 @@ public: // trap interface
 	POSITION FindTrappedGroup(EoDbGroup* group);
 	POSITION GetFirstTrappedGroupPosition() const;
 	EoDbGroup* GetNextTrappedGroup(POSITION& position);
-	EoDbGroupList* GroupsInTrap();
+	EoDbGroupList* GroupsInTrap() noexcept;
 	BOOL IsTrapEmpty() const;
 	void ModifyTrappedGroupsColorIndex(OdInt16 colorIndex);
 	void ModifyTrappedGroupsLinetypeIndex(OdInt16 linetypeIndex);
@@ -401,7 +401,7 @@ public: // trap interface
 	EoDbGroup* RemoveLastTrappedGroup();
 	POSITION RemoveTrappedGroup(EoDbGroup* group);
 	void RemoveTrappedGroupAt(POSITION position);
-	void SetTrapPivotPoint(const OdGePoint3d& pivotPoint);
+	void SetTrapPivotPoint(const OdGePoint3d& pivotPoint) noexcept;
 	void SquareTrappedGroups(AeSysView* view);
 
 public:
@@ -412,7 +412,7 @@ public:
 public:
 	void TransformTrappedGroups(const EoGeMatrix3d& transformMatrix);
 	int TrapGroupCount() const;
-	OdGePoint3d TrapPivotPoint() const;
+	OdGePoint3d TrapPivotPoint() const noexcept;
 
 public: // Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
@@ -513,9 +513,9 @@ public: // Generated message map functions
 	afx_msg void OnToolsGroupExchange();
 	afx_msg void OnToolsGroupUndelete();
 	afx_msg void OnSetupFillHatch();
-	afx_msg void OnSetupFillHollow();
-	afx_msg void OnSetupFillPattern();
-	afx_msg void OnSetupFillSolid();
+	afx_msg void OnSetupFillHollow() noexcept;
+	afx_msg void OnSetupFillPattern() noexcept;
+	afx_msg void OnSetupFillSolid() noexcept;
 	afx_msg void OnSetupGotoPoint();
 	afx_msg void OnSetupNote();
 	afx_msg void OnSetupOptionsDraw();

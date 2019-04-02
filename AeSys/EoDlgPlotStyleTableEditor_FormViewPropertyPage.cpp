@@ -8,7 +8,7 @@
 
 #include "WindowsX.h"
 
-void Dlg_OnClose(HWND hwnd) {
+void Dlg_OnClose(HWND hwnd) noexcept {
 	DestroyWindow(hwnd);
 }
 void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
@@ -177,7 +177,7 @@ const OdCmEntityColor CBitmapColorInfo::GetColor() {
 		(OdUInt8)((m_color >> 8) & 0xFF), (OdUInt8)(m_color & 0xFF));
 	return color;
 }
-const bool CBitmapColorInfo::IsColor(COLORREF color, OdUInt8 item) {
+const bool CBitmapColorInfo::IsColor(COLORREF color, OdUInt8 item) noexcept {
 	color = (item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
 	return m_color == color;
 }
@@ -594,9 +594,9 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 
 	m_bEditChanging = false;
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnUpdateEditDescription() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnUpdateEditDescription() noexcept {
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept {
 	*result = 0;
 }
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result) {
@@ -619,12 +619,12 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* 
 
 	*result = 0;
 }
-const bool EoDlgPlotStyleEditor_FormViewPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) {
+const bool EoDlgPlotStyleEditor_FormViewPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
 	if (!pPlotStyleTable) return false;
 	m_pPlotStyleTable = pPlotStyleTable;
 	return true;
 }
-HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width,int height, COLORREF color) {
+HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width,int height, COLORREF color) noexcept {
 	ICONINFO ii;
 	ii.fIcon=TRUE;
 	HDC hScreenDC=::GetDC(NULL);
@@ -793,7 +793,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 	OdPsData.setColor(color);
 	m_pPlotStyleActive->setData(OdPsData);
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboColor() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboColor() noexcept {
 }
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboDither() {
 	const int CurrentSelection = m_Dither.GetCurSel();

@@ -13,30 +13,30 @@ public:
 	ODRX_DECLARE_MEMBERS( EoApplicationReactor );
 
 	// App events.
-	virtual void OnBeginQuit(){}
-	virtual void OnEnterModal(){}
-	virtual void OnIdle( int ){}
-	virtual void OnLeaveModal(){}
-	virtual void OnPreTranslateMessage(MSG* message) {}
-	virtual void OnQuitAborted(){}
-	virtual void OnQuitWillStart(){}
+	virtual void OnBeginQuit() noexcept {}
+	virtual void OnEnterModal() noexcept {}
+	virtual void OnIdle( int ) noexcept {}
+	virtual void OnLeaveModal() noexcept {}
+	virtual void OnPreTranslateMessage(MSG* message) noexcept {}
+	virtual void OnQuitAborted() noexcept {}
+	virtual void OnQuitWillStart() noexcept {}
 
 	// Document events.
-	virtual void documentCreateStarted(CDocument* document) {}
-	virtual void documentCreated(CDocument* document) {}
-	virtual void documentToBeDestroyed(CDocument* document) {}
-	virtual void documentDestroyed(const OdString& document) {}
-	virtual void documentCreateCanceled(CDocument* document) {}
+	virtual void documentCreateStarted(CDocument* document) noexcept {}
+	virtual void documentCreated(CDocument* document) noexcept {}
+	virtual void documentToBeDestroyed(CDocument* document) noexcept {}
+	virtual void documentDestroyed(const OdString& document) noexcept {}
+	virtual void documentCreateCanceled(CDocument* document) noexcept {}
 
 	//virtual void documentLockModeWillChange(CDocument* document, AcAp::DocLockMode myCurrentMode, AcAp::DocLockMode myNewMode, AcAp::DocLockMode currentMode, const ACHAR* pGlobalCmdName);
 	//virtual void documentLockModeChangeVetoed(CDocument* document, const ACHAR* pGlobalCmdName);
 	//virtual void documentLockModeChanged(CDocument* document, AcAp::DocLockMode myPreviousMode, AcAp::DocLockMode myCurrentMode, AcAp::DocLockMode currentMode, const ACHAR* pGlobalCmdName);
 
-	virtual void documentBecameCurrent(CDocument* document) {}
-	virtual void documentToBeActivated(CDocument* document) {}
-	virtual void documentToBeDeactivated(CDocument* document) {}
-	virtual void documentActivationModified(bool document) {}
-	virtual void documentActivated(CDocument* document) {}
+	virtual void documentBecameCurrent(CDocument* document) noexcept {}
+	virtual void documentToBeActivated(CDocument* document) noexcept {}
+	virtual void documentToBeDeactivated(CDocument* document) noexcept {}
+	virtual void documentActivationModified(bool document) noexcept {}
+	virtual void documentActivated(CDocument* document) noexcept {}
 };
 
 typedef OdSmartPtr< EoApplicationReactor > EoApplicationReactorPtr;
@@ -67,4 +67,4 @@ typedef OdSmartPtr< EoApDocument > EoApDocumentPtr;
 
 ODAMFC_EXPORT EoApDocumentPtr odGetAppDocument(CDocument* document);
 ODAMFC_EXPORT OdGsLayoutHelperPtr odGetDocDevice( CDocument* document);
-ODAMFC_EXPORT bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point);
+ODAMFC_EXPORT bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) noexcept;

@@ -39,7 +39,7 @@ EoDbEllipse::EoDbEllipse(const EoDbEllipse& other) {
 EoDbEllipse::~EoDbEllipse() {
 }
 
-const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) {
+const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 
@@ -51,7 +51,7 @@ const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) {
 	m_SweepAngle = other.m_SweepAngle;
 	return (*this);
 }
-void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 		CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Arc>", this);
 }
 void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -75,7 +75,7 @@ void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr database) const {
 	return (EoDbEllipse::Create(*this, database));
 }
-void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
+void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) noexcept {
 	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}
@@ -98,7 +98,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabase
 	m_SweepAngle -= SweepAngle;
 	SetTo(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 }
-void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
+void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept {
 	EoDbEllipse* pArc;
 
 	double dRel[2];
@@ -265,7 +265,7 @@ void EoDbEllipse::GetAllPoints(OdGePoint3dArray& points) const {
 	points.clear(); 
 	points.append(m_Center);
 }
-OdGePoint3d EoDbEllipse::GetCtrlPt() const {
+OdGePoint3d EoDbEllipse::GetCtrlPt() const noexcept {
 	return (m_Center);
 }
 OdGePoint3d EoDbEllipse::StartPoint() const {
@@ -329,19 +329,19 @@ OdGePoint3d EoDbEllipse::EndPoint() const {
 	pt.transformBy(PlaneToWorldTransform);
 	return (pt);
 }
-OdGeVector3d EoDbEllipse::MajorAxis() const {
+OdGeVector3d EoDbEllipse::MajorAxis() const noexcept {
 	return m_MajorAxis;
 }
-OdGeVector3d EoDbEllipse::MinorAxis() const {
+OdGeVector3d EoDbEllipse::MinorAxis() const noexcept {
 	return m_MinorAxis;
 }
-OdGePoint3d EoDbEllipse::Center() const {
+OdGePoint3d EoDbEllipse::Center() const noexcept {
 	return (m_Center);
 }
-double EoDbEllipse::SweepAngle() const {
+double EoDbEllipse::SweepAngle() const noexcept {
 	return m_SweepAngle;
 }
-void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d* arMin, OdGePoint3d* arMax) {
+void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d* arMin, OdGePoint3d* arMax) noexcept {
 
 	const double dx = double(m_Center.x - arBeg.x);
 	const double dy = double(m_Center.y - arBeg.y);
@@ -484,7 +484,7 @@ bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& poin
 	return false;
 }
 
-int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
+int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
 	OdGeVector3d vPlnNorm = m_MajorAxis.crossProduct(m_MinorAxis);
 	vPlnNorm.normalize();
 
@@ -636,10 +636,10 @@ OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
 	const double dAng = (sm_RelationshipOfPoint <= DBL_EPSILON) ? m_SweepAngle : 0.;
 	return (pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng));
 }
-bool EoDbEllipse::Is(OdUInt16 type) const {
+bool EoDbEllipse::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kEllipsePrimitive;
 }
-bool EoDbEllipse::IsEqualTo(EoDbPrimitive* primitive) const {
+bool EoDbEllipse::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
 	return false;
 }
 bool EoDbEllipse::IsInView(AeSysView* view) const {
@@ -697,16 +697,16 @@ bool EoDbEllipse::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
 	return polyline::SelectBy(lowerLeftCorner, upperRightCorner, view);
 }
-void EoDbEllipse::SetCenter(const OdGePoint3d& center) {
+void EoDbEllipse::SetCenter(const OdGePoint3d& center) noexcept {
 	m_Center = center;
 }
-void EoDbEllipse::SetMajorAxis(const OdGeVector3d& majorAxis) {
+void EoDbEllipse::SetMajorAxis(const OdGeVector3d& majorAxis) noexcept {
 	m_MajorAxis = majorAxis;
 }
-void EoDbEllipse::SetMinorAxis(const OdGeVector3d& minorAxis) {
+void EoDbEllipse::SetMinorAxis(const OdGeVector3d& minorAxis) noexcept {
 	m_MinorAxis = minorAxis;
 }
-void EoDbEllipse::SetSweepAngle(double angle) {
+void EoDbEllipse::SetSweepAngle(double angle) noexcept {
 	m_SweepAngle = angle;
 }
 EoDbEllipse& EoDbEllipse::SetTo(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) {

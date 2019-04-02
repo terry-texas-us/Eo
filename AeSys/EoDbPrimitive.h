@@ -66,44 +66,44 @@ public: // Methods - absolute virtuals
 	virtual void Write(CFile& file, OdUInt8* buffer) const = 0;
 
 public: // Methods - virtuals
-	virtual void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
+	virtual void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) noexcept;
 	/// <summary>Cuts a primitive at two points.</summary>
 	/// <param name="points"></param>
 	/// <param name="groups">group to place optional line not defined by the cut points</param>
 	/// <param name="newGroups">group to place line defined by the cut points</param>
-	virtual void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database);
-	virtual int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections);
-	virtual void ModifyState();
-	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point);
+	virtual void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept;
+	virtual int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept;
+	virtual void ModifyState() noexcept;
+	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 	/// <summary>Evaluates whether a line intersects line.</summary>
 	virtual bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
-	OdInt16 ColorIndex() const {return m_ColorIndex;}
-	OdDbObjectId EntityObjectId() const {return m_EntityObjectId;}
+	OdInt16 ColorIndex() const noexcept {return m_ColorIndex;}
+	OdDbObjectId EntityObjectId() const noexcept {return m_EntityObjectId;}
 	CString FormatColorIndex() const;
 	CString FormatLinetypeIndex() const;
-	OdInt16 LinetypeIndex() const {return m_LinetypeIndex;}
-	OdInt16 LogicalColorIndex() const;
-	OdInt16 LogicalLinetypeIndex() const;
+	OdInt16 LinetypeIndex() const noexcept {return m_LinetypeIndex;}
+	OdInt16 LogicalColorIndex() const noexcept;
+	OdInt16 LogicalLinetypeIndex() const noexcept;
 
 	void SetColorIndex(OdInt16 colorIndex);
-	void SetColorIndex_(OdInt16 colorIndex) {m_ColorIndex = colorIndex;}
-	void SetEntityObjectId(OdDbObjectId entityObjectId) {m_EntityObjectId = entityObjectId;}
+	void SetColorIndex_(OdInt16 colorIndex) noexcept {m_ColorIndex = colorIndex;}
+	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept {m_EntityObjectId = entityObjectId;}
 	void SetLinetypeIndex(OdInt16 linetypeIndex);
-	void SetLinetypeIndex_(OdInt16 linetypeIndex) {m_LinetypeIndex = linetypeIndex;}
+	void SetLinetypeIndex_(OdInt16 linetypeIndex) noexcept {m_LinetypeIndex = linetypeIndex;}
 
 public: // Methods - static
-	static size_t ControlPointIndex();
-	static OdInt16 HighlightColorIndex();
-	static OdInt16 HighlightLinetypeIndex();
-	static bool IsSupportedLinetype(int linetype);
-	static OdInt16 LayerColorIndex();
-	static OdInt16 LayerLinetypeIndex();
-	static double RelationshipOfPoint();
-	static void SetHighlightColorIndex(OdInt16 colorIndex);
-	static void SetHighlightLinetypeIndex(OdInt16 linetypeIndex);
-	static void SetLayerColorIndex(OdInt16 colorIndex);
-	static void SetLayerLinetypeIndex(OdInt16 linetypeIndex);
+	static size_t ControlPointIndex() noexcept;
+	static OdInt16 HighlightColorIndex() noexcept;
+	static OdInt16 HighlightLinetypeIndex() noexcept;
+	static bool IsSupportedLinetype(int linetype) noexcept;
+	static OdInt16 LayerColorIndex() noexcept;
+	static OdInt16 LayerLinetypeIndex() noexcept;
+	static double RelationshipOfPoint() noexcept;
+	static void SetHighlightColorIndex(OdInt16 colorIndex) noexcept;
+	static void SetHighlightLinetypeIndex(OdInt16 linetypeIndex) noexcept;
+	static void SetLayerColorIndex(OdInt16 colorIndex) noexcept;
+	static void SetLayerLinetypeIndex(OdInt16 linetypeIndex) noexcept;
 	static OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex);
 };

@@ -3,7 +3,7 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-void AeSysView::OnPowerModeOptions() {
+void AeSysView::OnPowerModeOptions() noexcept {
 	// TODO: Add your command handler code here
 }
 

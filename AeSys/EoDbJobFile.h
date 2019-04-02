@@ -18,13 +18,13 @@ public:
 	bool GetNextPrimitive(CFile& file, EoDbPrimitive*& primitve);
 	bool ReadNextPrimitive(CFile &file, OdUInt8 *buffer, OdInt16& primitiveType);
 
-	int Version();
+	int Version() noexcept;
 	void WriteHeader(CFile& file);
 	void WriteLayer(CFile& file, EoDbLayer* layer);
 	void WriteGroup(CFile& file, EoDbGroup* group);
 	void ConstructPrimitive(EoDbPrimitive *&primitive, OdInt16 PrimitiveType);
 	void ConstructPrimitiveFromVersion1(EoDbPrimitive *&primitive);
 
-	static bool IsValidPrimitive(OdInt16 primitiveType);
-	static bool IsValidVersion1Primitive(OdInt16 primitiveType);
+	static bool IsValidPrimitive(OdInt16 primitiveType) noexcept;
+	static bool IsValidVersion1Primitive(OdInt16 primitiveType) noexcept;
 };

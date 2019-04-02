@@ -6,10 +6,10 @@ EoGsModelTransform::EoGsModelTransform()
 }
 EoGsModelTransform::~EoGsModelTransform() {
 }
-EoGeMatrix3d EoGsModelTransform::ModelMatrix() const {
+EoGeMatrix3d EoGsModelTransform::ModelMatrix() const noexcept {
 	return m_CurrentModelTransform;
 }
-size_t EoGsModelTransform::Depth() const {
+size_t EoGsModelTransform::Depth() const noexcept {
 	return (m_Depth);
 }
 void EoGsModelTransform::PopModelTransform() {

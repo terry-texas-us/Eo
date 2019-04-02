@@ -6,13 +6,13 @@ EoGePoint4d::EoGePoint4d() {
 	z = 0.;
 	w = 1.;
 }
-EoGePoint4d::EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) {
+EoGePoint4d::EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept {
 	x = initialPoint.x;
 	y = initialPoint.y;
 	z = initialPoint.z;
 	w = initialW;
 }
-void EoGePoint4d::operator/=(const double d) {
+void EoGePoint4d::operator/=(const double d) noexcept {
 	x /= d;
 	y /= d;
 	z /= d;
@@ -146,7 +146,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 		pointsArrayOut.Add(pt);
 	}
 }
-EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint4d& endPoint, const EoGePoint4d& pointOnPlane, const OdGeVector3d& planeNormal) {
+EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint4d& endPoint, const EoGePoint4d& pointOnPlane, const OdGeVector3d& planeNormal) noexcept {
 	OdGeVector3d LineVector(endPoint.Convert3d() - startPoint.Convert3d());
 	const double DotProduct = planeNormal.dotProduct(LineVector);
 
@@ -162,20 +162,20 @@ EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint
 OdGePoint3d EoGePoint4d::Convert3d() const {
 	return OdGePoint3d(x / w, y / w, z / w);
 }
-double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const {
+double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept {
 	const double X = ptQ.x / ptQ.w - x / w;
 	const double Y = ptQ.y / ptQ.w - y / w;
 
 	return sqrt(X * X + Y * Y);
 }
-bool EoGePoint4d::IsInView() {
+bool EoGePoint4d::IsInView() noexcept {
 	if (w + x <= 0. || w - x <= 0.) return false;
 	if (w + y <= 0. || w - y <= 0.) return false;
 	if (w + z <= 0. || w - z <= 0.) return false;
 
 	return true;
 }
-EoGePoint4d& EoGePoint4d::TransformBy(const EoGeMatrix3d& matrix) {
+EoGePoint4d& EoGePoint4d::TransformBy(const EoGeMatrix3d& matrix) noexcept {
 	EoGePoint4d Point(*this);
 	Point.x = x * matrix.entry[0][0] + y * matrix.entry[0][1] + z * matrix.entry[0][2] + w * matrix.entry[0][3];
 	Point.y = x * matrix.entry[1][0] + y * matrix.entry[1][1] + z * matrix.entry[1][2] + w * matrix.entry[1][3];

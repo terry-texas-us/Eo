@@ -92,7 +92,7 @@
 #include "DbViewportTableRecord.h"
 #include "LyLayerFilter.h"
 
-UINT AFXAPI HashKey(CString& str);
+UINT AFXAPI HashKey(CString& str) noexcept;
 
 const double PI = 3.14159265358979323846;
 const double HALF_PI = PI / 2.;

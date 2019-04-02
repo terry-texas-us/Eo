@@ -10,8 +10,8 @@ public:
 
 	EoGsModelTransform();
 	~EoGsModelTransform();
-	EoGeMatrix3d ModelMatrix() const;
-	size_t Depth() const;
+	EoGeMatrix3d ModelMatrix() const noexcept;
+	size_t Depth() const noexcept;
 	/// <summary> Removes the top transformation off the current transformation stack.</summary>
 	void PopModelTransform();
 	/// <summary> The specified transformation is concatenated to the current model transformation (which is initially the identity transform).</summary>

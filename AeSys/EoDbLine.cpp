@@ -52,7 +52,7 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.SetEngagedLength(Length);
 	theApp.SetEngagedAngle(AngleInXYPlane);
 }
-void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Line>", this);
 }
 void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -70,7 +70,7 @@ void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr database) const {
 	return (EoDbLine::Create(*this, database));
 }
-void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
+void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) noexcept {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
@@ -80,7 +80,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr
 		group->AddTail(Line);
 	}
 }
-void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
+void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept {
 	EoDbLine* pLine;
 	double FirstPointParameter;
 	double SecondPointParameter;
@@ -182,7 +182,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	}
 	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
 }
-bool EoDbLine::Is(OdUInt16 type) const {
+bool EoDbLine::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kLinePrimitive;
 }
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
@@ -222,7 +222,7 @@ void EoDbLine::GetPoints(OdGePoint3d& startPoint, OdGePoint3d& endPoint) {
 	startPoint = m_Line.startPoint();
 	endPoint = m_Line.endPoint();
 }
-int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
+int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
 	int i;
 	int iLoc[2];
 

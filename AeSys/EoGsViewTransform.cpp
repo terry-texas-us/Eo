@@ -11,7 +11,7 @@ EoGsViewTransform::EoGsViewTransform(const EoGsViewTransform& other)
 EoGsViewTransform::~EoGsViewTransform() {
 }
 
-EoGsViewTransform& EoGsViewTransform::operator=(const EoGsViewTransform& other) {
+EoGsViewTransform& EoGsViewTransform::operator=(const EoGsViewTransform& other) noexcept {
 	EoGsAbstractView::operator=(other);
 	m_Matrix = other.m_Matrix;
 	m_ViewMatrix = other.m_ViewMatrix;
@@ -30,6 +30,6 @@ void EoGsViewTransform::BuildTransformMatrix() {
 	m_ViewMatrix = m_Matrix;
 	m_Matrix.preMultBy(m_ProjectionMatrix);
 }
-EoGeMatrix3d EoGsViewTransform::Matrix() const {
+EoGeMatrix3d EoGsViewTransform::Matrix() const noexcept {
 	return m_Matrix;
 }

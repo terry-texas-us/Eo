@@ -45,7 +45,7 @@ public:
 		pRes->m_pXForm = &xForm;
 		return pRes;
 	}
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept {
 		return kDrawableUsesNesting;
 	}
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const {
@@ -53,7 +53,7 @@ public:
 		worldDraw->geometry().draw(m_pDrawable);
 		return true;
 	}
-	void subViewportDraw(OdGiViewportDraw* viewportDraw) const {
+	void subViewportDraw(OdGiViewportDraw* viewportDraw) const noexcept {
 	}
 };
 
@@ -184,13 +184,13 @@ OdGePoint3d EoExEditorObject::toScreenCoord(const OdGePoint3d &wcsPt) const {
 	scrPt.z =0.;
 	return scrPt;
 }
-unsigned EoExEditorObject::getSnapModes() const {
+unsigned EoExEditorObject::getSnapModes() const noexcept {
 	return m_osnapManager.snapModes();
 }
 void EoExEditorObject::resetSnapManager() {
 	m_osnapManager.reset();
 }
-void EoExEditorObject::setSnapModes(bool snapOn, unsigned snapModes) {
+void EoExEditorObject::setSnapModes(bool snapOn, unsigned snapModes) noexcept {
 	m_bSnapOn = snapOn;
 	m_osnapManager.setSnapModes(snapModes);
 }
@@ -441,7 +441,7 @@ void Zoom_Window(OdGePoint3d& pt1, OdGePoint3d& pt2, OdGsView* view) {
 		view->zoom(odmin(FieldWidth, FieldHeight));
 	}
 }
-void zoom_scale(double factor) {
+void zoom_scale(double factor) noexcept {
 }
 static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, OdGeBoundBlock3d& boundingBox) {
 	OdDbBlockTableRecordPtr BlockTableRecord = spaceId.safeOpenObject();
@@ -481,7 +481,7 @@ void zoom_extents(OdGsView* view, OdDbObject* activeViewportObject) {
 	}
 	pVpPE->zoomExtents(view, &BoundBlock);
 }
-void zoom_scaleXP(double factor) {
+void zoom_scaleXP(double factor) noexcept {
 }
 
 class RTZoomTracker : public OdEdPointTracker {
@@ -506,10 +506,10 @@ public:
 		const OdGsView::Projection ProjectionType(m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 		m_pView->setView(m_pView->position(), m_pView->target(), m_pView->upVector(), m_fw * fac, m_fh * fac, ProjectionType);
 	}
-	int addDrawables(OdGsView* view) {
+	int addDrawables(OdGsView* view) noexcept {
 		return 1;
 	}
-	void removeDrawables(OdGsView* view) {
+	void removeDrawables(OdGsView* view) noexcept {
 	}
 };
 const OdString OdExZoomCmd::groupName() const {
@@ -597,10 +597,10 @@ void OdExZoomCmd::execute(OdEdCommandContext* commandContext) {
 
 class OrbitCtrl: public OdGiDrawableImpl<> {
 public:
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
-	bool subWorldDraw(OdGiWorldDraw* worldDraw) const {
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept {
 		return false;
 	}
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const {
@@ -661,7 +661,7 @@ public:
 	RTOrbitTracker() :
 		m_pView(0), m_D(0) {
 	}
-	void reset() { 
+	void reset() noexcept {
 		m_pView = 0;
 	}
 	void init(OdGsView* view, const OdGePoint3d& point) {
@@ -850,7 +850,7 @@ public:
 	RTDollyTracker() :
 		m_pView(0) {
 	}
-	void reset() {
+	void reset() noexcept {
 		m_pView = 0;
 	}
 	void init(OdGsView* view, const OdGePoint3d& point) {
@@ -867,10 +867,10 @@ public:
 			m_pos = m_pView->position();
 		}
 	}
-	int addDrawables(OdGsView* view) {
+	int addDrawables(OdGsView* view) noexcept {
 		return 0;
 	}
-	void removeDrawables(OdGsView* view) {
+	void removeDrawables(OdGsView* view) noexcept {
 	}
 };
 const OdString OdExDollyCmd::groupName() const {

@@ -19,8 +19,8 @@ public: // Operators
 	const EoDbDimension& operator=(const EoDbDimension& other);
 
 public: // Methods - absolute virtuals
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
-	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
+	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) noexcept;
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void AddReportToMessageList(const OdGePoint3d& point) const;
@@ -30,8 +30,8 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
-	bool IsEqualTo(EoDbPrimitive* primitive) const;
+	bool Is(OdUInt16 type) const noexcept;
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
 	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -45,14 +45,14 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const;
 
 public:	// Methods - virtuals
-	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database);
-	void ModifyState();
+	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) noexcept;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) noexcept;
+	void ModifyState() noexcept;
 
 public:	// Methods
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
-	const EoDbFontDefinition& FontDef();
-	const EoGeLineSeg3d& Line();
+	const EoDbFontDefinition& FontDef() noexcept;
+	const EoGeLineSeg3d& Line() noexcept;
 	void GetPts(OdGePoint3d& ptBeg, OdGePoint3d& ptEnd);
 	EoGeReferenceSystem ReferenceSystem() const;
 	double Length() const;
@@ -61,13 +61,13 @@ public:	// Methods
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition);
 	void SetStartPoint(const OdGePoint3d& startPoint);
 	void SetEndPoint(const OdGePoint3d& endPoint);
-	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem);
+	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& str);
-	void SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment);
-	void SetTextColorIndex(OdInt16 colorIndex);
-	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment);
-	const CString& Text();
-	const OdInt16& TextColorIndex();
+	void SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept;
+	void SetTextColorIndex(OdInt16 colorIndex) noexcept;
+	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept;
+	const CString& Text() noexcept;
+	const OdInt16& TextColorIndex() noexcept;
 
 private:
 	static OdUInt16 sm_wFlags;	// bit 1	clear if dimension selected at note

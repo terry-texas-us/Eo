@@ -86,7 +86,7 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 		theApp.SetEngagedAngle(AngleInXYPlane);
 	}
 }
-void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Polyline>", this);
 }
 void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -233,10 +233,10 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 	GetPointAt(sm_PivotVertex, PivotPoint);
 	return (PivotPoint);
 }
-bool EoDbPolyline::Is(OdUInt16 type) const {
+bool EoDbPolyline::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kPolylinePrimitive;
 }
-bool EoDbPolyline::IsClosed() const {
+bool EoDbPolyline::IsClosed() const noexcept {
 	return (m_Flags != 0);
 }
 bool EoDbPolyline::IsInView(AeSysView* view) const {
@@ -258,11 +258,11 @@ bool EoDbPolyline::IsInView(AeSysView* view) const {
 	}
 	return false;
 }
-bool EoDbPolyline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+bool EoDbPolyline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
 	// <tas="Polyline: need to implement IsPointOnControlPoint"</tas>
 	return false;
 }
-bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) {
+bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
 	const size_t NumberOfVertices = m_Vertices.size();
 	if (sm_PivotVertex >= NumberOfVertices) { // Not engaged at a vertex
 		return false;
@@ -395,7 +395,7 @@ void EoDbPolyline::AppendVertex(const OdGePoint2d& vertex, double bulge, double 
 		PolylineEntity->addVertexAt(VertexIndex, vertex, bulge, startWidth, endWidth);
 	}
 }
-void EoDbPolyline::SetConstantWidth(double constantWidth) {
+void EoDbPolyline::SetConstantWidth(double constantWidth) noexcept {
 	m_ConstantWidth = constantWidth;
 }
 void EoDbPolyline::SetElevation(double elevation) {
@@ -448,7 +448,7 @@ bool EoDbPolyline::Write(EoDbFile& file) const {
 	return true;
 }
 /// <remarks> Job (.jb1) files did not have a polyline primitive</remarks>
-void EoDbPolyline::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbPolyline::Write(CFile& file, OdUInt8* buffer) const noexcept {
 };
 
 size_t EoDbPolyline::SwingVertex() const {
@@ -466,10 +466,10 @@ size_t EoDbPolyline::SwingVertex() const {
 	}
 	return (SwingVertex);
 }
-size_t EoDbPolyline::Edge() {
+size_t EoDbPolyline::Edge() noexcept {
 	return sm_Edge;
 }
-void EoDbPolyline::SetEdgeToEvaluate(size_t edgeToEvaluate) {
+void EoDbPolyline::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 

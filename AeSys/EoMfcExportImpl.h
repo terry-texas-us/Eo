@@ -7,7 +7,7 @@ class AeSysDoc;
 template< class T >
 class MfcObjectWrapper {
 public:
-	MfcObjectWrapper(T* object) : 
+	MfcObjectWrapper(T* object) noexcept :
 		m_pUnderlayObj(object) {
 	}
 	T* operator->() {
@@ -23,10 +23,10 @@ public:
 	const T* get() const {
 		return m_pUnderlayObj;
 	}
-	T* get() {
+	T* get() noexcept {
 		return m_pUnderlayObj;
 	}
-	void SetNull() {
+	void SetNull() noexcept {
 		m_pUnderlayObj = 0;
 	}
 
@@ -40,13 +40,13 @@ public:
 
 	virtual ~EoApDocumentImpl();
 	virtual OdString fileName() const;
-	virtual CDocument* cDoc() const;
+	virtual CDocument* cDoc() const noexcept;
 	//virtual AcTransactionManager* transactionManager() const;
 	virtual OdDbDatabasePtr database() const;
-	virtual void lockMode(bool includeMyLocks) const;
-	virtual void myLockMode() const;
-	virtual bool isQuiescent() const;
-	virtual void* contextPtr() const;
+	virtual void lockMode(bool includeMyLocks) const noexcept;
+	virtual void myLockMode() const noexcept;
+	virtual bool isQuiescent() const noexcept;
+	virtual void* contextPtr() const noexcept;
 	virtual void ExecuteCommand(const OdString& command, bool echo);
 #ifdef DEV_COMMAND_CONSOLE
 	virtual OdEdBaseIO* cmdIO();

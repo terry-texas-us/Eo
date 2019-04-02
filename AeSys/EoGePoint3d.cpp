@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) {
+bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept {
 	double RelativeTolerance = DBL_EPSILON + fabs(DBL_EPSILON * point.x);
 
 	if (lowerLeftPoint.x > point.x + RelativeTolerance || upperRightPoint.x < point.x - RelativeTolerance) {
@@ -19,7 +19,7 @@ OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoi
 	}
 	return (fromPoint + Direction);
 }
-int RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) {
+int RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept {
 	int returnValue = 0;
 
 	if (point.y > upperRightPoint.y + DBL_EPSILON) {

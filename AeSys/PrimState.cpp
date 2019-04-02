@@ -16,25 +16,25 @@ const CPrimState& CPrimState::operator=(const CPrimState& other) {
 
 	return (*this);
 }
-EoDbCharacterCellDefinition CPrimState::CharacterCellDefinition() const {
+EoDbCharacterCellDefinition CPrimState::CharacterCellDefinition() const noexcept {
 	return (m_CharacterCellDefinition);
 }
-OdInt16 CPrimState::ColorIndex() const {
+OdInt16 CPrimState::ColorIndex() const noexcept {
 	return (m_ColorIndex);
 }
 EoDbFontDefinition CPrimState::FontDefinition() const {
 	return (m_FontDefinition);
 }
-OdInt16 CPrimState::LinetypeIndex() const {
+OdInt16 CPrimState::LinetypeIndex() const noexcept {
 	return (m_LinetypeIndex);
 }
-OdInt16 CPrimState::PointDisplayMode() const {
+OdInt16 CPrimState::PointDisplayMode() const noexcept {
 	return m_PointDisplayMode;
 }
-OdInt16 CPrimState::HatchInteriorStyle() const {
+OdInt16 CPrimState::HatchInteriorStyle() const noexcept {
 	return (m_HatchInteriorStyle);
 }
-size_t CPrimState::HatchInteriorStyleIndex() const {
+size_t CPrimState::HatchInteriorStyleIndex() const noexcept {
 	return (m_HatchInteriorStyleIndex);
 }
 void CPrimState::Restore(CDC* deviceContext, int iSaveId) {
@@ -72,7 +72,7 @@ int CPrimState::Save() {
 	// return id to use for restore reference
 	return (iSaveId);
 }
-void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, OdInt16 colorIndex, OdInt16 linetypeIndex) {
+void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, OdInt16 colorIndex, OdInt16 linetypeIndex) noexcept {
 	if (EoDbPrimitive::HighlightColorIndex() != 0) {
 		colorIndex = EoDbPrimitive::HighlightColorIndex();
 	}
@@ -194,19 +194,19 @@ void CPrimState::SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horiz
 
 	deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
 }
-void CPrimState::SetCharacterCellDefinition(const EoDbCharacterCellDefinition& characterCellDefinition) {
+void CPrimState::SetCharacterCellDefinition(const EoDbCharacterCellDefinition& characterCellDefinition) noexcept {
 	m_CharacterCellDefinition = characterCellDefinition;
 }
 void CPrimState::SetFontDefinition(CDC* deviceContext, const EoDbFontDefinition& fontDefinition) {
 	m_FontDefinition = fontDefinition;
 	SetTxtAlign(deviceContext, m_FontDefinition.HorizontalAlignment(), m_FontDefinition.VerticalAlignment());
 }
-void CPrimState::SetPointDisplayMode(OdInt16 pointDisplayMode) {
+void CPrimState::SetPointDisplayMode(OdInt16 pointDisplayMode) noexcept {
 	m_PointDisplayMode = pointDisplayMode;
 }
-void CPrimState::SetHatchInteriorStyle(OdInt16 interiorStyle) {
+void CPrimState::SetHatchInteriorStyle(OdInt16 interiorStyle) noexcept {
 	m_HatchInteriorStyle = interiorStyle;
 }
-void CPrimState::SetHatchInteriorStyleIndex(size_t styleIndex) {
+void CPrimState::SetHatchInteriorStyleIndex(size_t styleIndex) noexcept {
 	m_HatchInteriorStyleIndex = styleIndex;
 }

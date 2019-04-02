@@ -71,19 +71,19 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 		e->Delete();
 	}
 }
-bool EoDbLayer::IsActive() const {
+bool EoDbLayer::IsActive() const noexcept {
 	return ((m_StateFlags & kIsActive) == kIsActive);
 }
-bool EoDbLayer::IsInternal() const {
+bool EoDbLayer::IsInternal() const noexcept {
 	return ((m_StateFlags & kIsInternal) == kIsInternal);
 }
-bool EoDbLayer::IsOff() const {
+bool EoDbLayer::IsOff() const noexcept {
 	return ((m_StateFlags & kIsOff) == kIsOff);
 }
-bool EoDbLayer::IsResident() const {
+bool EoDbLayer::IsResident() const noexcept {
 	return ((m_StateFlags & kIsResident) == kIsResident);
 }
-bool EoDbLayer::IsLocked() const {
+bool EoDbLayer::IsLocked() const noexcept {
 	return ((m_StateFlags & kIsLocked) == kIsLocked);
 }
 bool EoDbLayer::IsCurrent() const {
@@ -100,7 +100,7 @@ OdString EoDbLayer::LinetypeName() {
 	OdDbLinetypeTableRecordPtr Linetype = m_Layer->linetypeObjectId().safeOpenObject();
 	return Linetype->getName();
 }
-void EoDbLayer::MakeInternal(bool isInternal) {
+void EoDbLayer::MakeInternal(bool isInternal) noexcept {
 	if (isInternal) {
 		m_StateFlags |= kIsInternal;
 	}
@@ -108,7 +108,7 @@ void EoDbLayer::MakeInternal(bool isInternal) {
 		m_StateFlags &= ~kIsInternal;
 	}
 }
-void EoDbLayer::MakeResident(bool isResident) {
+void EoDbLayer::MakeResident(bool isResident) noexcept {
 	if (isResident) {
 		m_StateFlags |= kIsResident;
 	}
@@ -168,7 +168,7 @@ void EoDbLayer::SetIsLocked(bool isLocked) {
 	m_Layer->setIsLocked(IsLocked());
 	m_Layer->downgradeOpen();
 }
-void EoDbLayer::MakeCurrent() {
+void EoDbLayer::MakeCurrent() noexcept {
 	m_StateFlags &= ~(kIsActive | kIsLocked | kIsOff);
 	m_StateFlags |= kIsCurrent;
 }
@@ -199,7 +199,7 @@ void EoDbLayer::SetName(const OdString& name) {
 	m_Layer->setName(name);
 	m_Layer->downgradeOpen();
 }
-void EoDbLayer::SetStateFlags(OdUInt16 flags) {
+void EoDbLayer::SetStateFlags(OdUInt16 flags) noexcept {
 	m_StateFlags = flags;
 }
 void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
@@ -207,7 +207,7 @@ void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
 	m_Layer->setTransparency(transparency);
 	m_Layer->downgradeOpen();
 }
-OdUInt16 EoDbLayer::StateFlags() const {
+OdUInt16 EoDbLayer::StateFlags() const noexcept {
 	return m_StateFlags;
 }
 

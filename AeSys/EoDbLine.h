@@ -16,7 +16,7 @@ public: // Operators
 public: // Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const;
 	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void FormatExtra(CString& extra) const;
@@ -25,7 +25,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
+	bool Is(OdUInt16 type) const noexcept;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -39,9 +39,9 @@ public: // Methods - absolute virtuals
 
 public: // Methods - virtuals
 	/// <summary>Cuts a line a point.</summary>
-	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database);
-	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections);
+	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) noexcept;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) noexcept;
+	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept;
 	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods

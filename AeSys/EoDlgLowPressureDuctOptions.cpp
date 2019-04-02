@@ -58,6 +58,6 @@ void EoDlgLowPressureDuctOptions::OnBnClickedOk() {
 
 	OnOK();
 }
-void EoDlgLowPressureDuctOptions::OnBnClickedGenVanes() {
+void EoDlgLowPressureDuctOptions::OnBnClickedGenVanes() noexcept {
 	// <tas="No implementation for event OnBnClickedGenVanes"</tas>
 }

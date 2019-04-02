@@ -43,7 +43,7 @@ int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, LPC
 	}
 	return n;
 }
-void EoCtrlBitmapPickerCombo::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) { 
+void EoCtrlBitmapPickerCombo::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept {
 	lpMIS->itemWidth = (m_ItemWidth + 2);
 	lpMIS->itemHeight = (m_ItemHeight + 2);
 }

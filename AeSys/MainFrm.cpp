@@ -727,7 +727,7 @@ CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo(void) {
 	}
 	return FoundCombo;
 }
-HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) {
+HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept {
 	TV_INSERTSTRUCT tvIS;
 	tvIS.hParent = parent;
 	tvIS.hInsertAfter = TVI_LAST;
@@ -740,7 +740,7 @@ HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPW
 	return TreeView_InsertItem(tree, &tvIS);
 }
 
-OdDb::LineWeight CMainFrame::LineWeightByIndex(char lineWeight) {
+OdDb::LineWeight CMainFrame::LineWeightByIndex(char lineWeight) noexcept {
 	switch(lineWeight) {
 	case 0:
 		return OdDb::kLnWt000;

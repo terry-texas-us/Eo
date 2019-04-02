@@ -190,7 +190,7 @@ EoDbGroup* AeSysDoc::GetNextTrappedGroup(POSITION& position) {
 	return m_TrappedGroupList.GetNext(position);
 }
 
-EoDbGroupList* AeSysDoc::GroupsInTrap() {
+EoDbGroupList* AeSysDoc::GroupsInTrap() noexcept {
 	return &m_TrappedGroupList;
 }
 
@@ -231,7 +231,7 @@ void AeSysDoc::RemoveTrappedGroupAt(POSITION position) {
 	m_TrappedGroupList.RemoveAt(position);
 }
 
-void AeSysDoc::SetTrapPivotPoint(const OdGePoint3d& pivotPoint) {
+void AeSysDoc::SetTrapPivotPoint(const OdGePoint3d& pivotPoint) noexcept {
 	m_TrapPivotPoint = pivotPoint;
 }
 
@@ -261,6 +261,6 @@ int AeSysDoc::TrapGroupCount() const {
 	return m_TrappedGroupList.GetCount();
 }
 
-OdGePoint3d AeSysDoc::TrapPivotPoint() const {
+OdGePoint3d AeSysDoc::TrapPivotPoint() const noexcept {
 	return m_TrapPivotPoint;
 }

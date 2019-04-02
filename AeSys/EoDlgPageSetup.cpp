@@ -98,7 +98,7 @@ struct EoPlotUnitsInfo {
 	const wchar_t* m_Name1;
 	const wchar_t* m_Name2;
 
-	static const wchar_t* GetTextByValue(double value, const EoPlotUnitsInfo &info) {
+	static const wchar_t* GetTextByValue(double value, const EoPlotUnitsInfo &info) noexcept {
 		return (fabs(value) <= 1.) ? info.m_Name1 : info.m_Name2;
 	}
 };

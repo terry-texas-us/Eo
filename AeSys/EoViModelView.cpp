@@ -7,10 +7,10 @@ OdGeVector3d AeSysView::CameraDirection() const {
 	Direction.normalize();
 	return (Direction);
 }
-OdGePoint3d	AeSysView::CameraTarget() const {
+OdGePoint3d	AeSysView::CameraTarget() const noexcept {
 	return m_ViewTransform.Target();
 }
-void AeSysView::CopyActiveModelViewToPreviousModelView() {
+void AeSysView::CopyActiveModelViewToPreviousModelView() noexcept {
 	m_PreviousViewTransform = m_ViewTransform;
 }
 void AeSysView::ExchangeActiveAndPreviousModelViews() {
@@ -46,16 +46,16 @@ void AeSysView::SetViewWindow(const double uMin, const double vMin, const double
 	m_ViewTransform.SetProjectionPlaneField(uMin, vMin, uMax, vMax);
 	m_ViewTransform.BuildTransformMatrix();
 }
-void AeSysView::ModelViewGetViewport(EoGsViewport& viewport) {
+void AeSysView::ModelViewGetViewport(EoGsViewport& viewport) noexcept {
 	viewport = m_Viewport;
 }
-EoGeMatrix3d AeSysView::ModelViewMatrix() const {
+EoGeMatrix3d AeSysView::ModelViewMatrix() const noexcept {
 	return m_ViewTransform.Matrix();
 }
-double AeSysView::ZoomFactor() const {
+double AeSysView::ZoomFactor() const noexcept {
 	return (ViewportWidthInInches() / m_ViewTransform.FieldWidth());
 }
-OdGeVector3d AeSysView::ViewUp() const {
+OdGeVector3d AeSysView::ViewUp() const noexcept {
 	return m_ViewTransform.ViewUp();
 }
 void AeSysView::ModelViewInitialize() {

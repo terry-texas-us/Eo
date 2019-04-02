@@ -13,24 +13,24 @@ EoDbBlock::EoDbBlock(OdUInt16 flags, const OdGePoint3d&  basePoint, const OdStri
 	m_strXRefPathName = pathName;
 }
 
-OdGePoint3d	EoDbBlock::BasePoint() const {
+OdGePoint3d	EoDbBlock::BasePoint() const noexcept {
 	return m_BasePoint;
 }
-OdUInt16 EoDbBlock::GetBlkTypFlgs() {
+OdUInt16 EoDbBlock::GetBlkTypFlgs() noexcept {
 	return m_wBlkTypFlgs;
 }
-bool EoDbBlock::HasAttributes() {
+bool EoDbBlock::HasAttributes() noexcept {
 	return (m_wBlkTypFlgs & 2) == 2;
 }
-bool EoDbBlock::IsAnonymous() {
+bool EoDbBlock::IsAnonymous() noexcept {
 	return (m_wBlkTypFlgs & 1) == 1;
 }
-bool EoDbBlock::IsFromExternalReference() {
+bool EoDbBlock::IsFromExternalReference() noexcept {
 	return (m_wBlkTypFlgs & 4) == 4;
 }
-void EoDbBlock::SetBlkTypFlgs(OdUInt16 flags) {
+void EoDbBlock::SetBlkTypFlgs(OdUInt16 flags) noexcept {
 	m_wBlkTypFlgs = flags;
 }
-void EoDbBlock::SetBasePoint(const OdGePoint3d& basePoint) {
+void EoDbBlock::SetBasePoint(const OdGePoint3d& basePoint) noexcept {
 	m_BasePoint = basePoint;
 }

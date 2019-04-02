@@ -121,7 +121,7 @@ void EoDlgPlotStyleEditLineweight::OnButtonEditlineweight() {
 	m_LineweightsListCtrl.SetFocus();
 	m_LineweightsListCtrl.EditLabel(m_LineweightsListCtrl.GetSelectionMark());
 } 
-void EoDlgPlotStyleEditLineweight::SetInitialSelection(int selection) {
+void EoDlgPlotStyleEditLineweight::SetInitialSelection(int selection) noexcept {
 	m_InitialSelection = !selection ? selection : selection - 1;
 }
 void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
@@ -147,7 +147,7 @@ void EoDlgPlotStyleEditLineweight::OnRadioMillimetrs() {
 void EoDlgPlotStyleEditLineweight::OnRadioInches() {
 	SetUnitIntoList(true);
 }
-const bool EoDlgPlotStyleEditLineweight::SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) {
+const bool EoDlgPlotStyleEditLineweight::SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept {
 	if (!plotStyleTable) {
 		return false;
 	}

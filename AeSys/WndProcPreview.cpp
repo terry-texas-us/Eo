@@ -8,7 +8,7 @@ CBitmap* WndProcPreview_Bitmap = NULL;
 
 LRESULT CALLBACK WndProcPreview(HWND, UINT, WPARAM, LPARAM);
 
-ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) {
+ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	WNDCLASS Class;
 
 	Class.style = CS_HREDRAW | CS_VREDRAW;

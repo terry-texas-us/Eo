@@ -9,16 +9,16 @@ class EoDbCharacterCellDefinition {
 public:
 
 	EoDbCharacterCellDefinition();
-	EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other);
+	EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) noexcept;
 
-	EoDbCharacterCellDefinition& operator=(const EoDbCharacterCellDefinition& other);
+	EoDbCharacterCellDefinition& operator=(const EoDbCharacterCellDefinition& other) noexcept;
 
-	double WidthFactor() const;
-	double Height() const;
-	double ObliqueAngle() const;
-	double RotationAngle() const;
-	void SetWidthFactor(double widthFactor);
-	void SetHeight(double height);
-	void SetObliqueAngle(double obliqueAngle);
-	void SetRotationAngle(double rotationAngle);
+	double WidthFactor() const noexcept;
+	double Height() const noexcept;
+	double ObliqueAngle() const noexcept;
+	double RotationAngle() const noexcept;
+	void SetWidthFactor(double widthFactor) noexcept;
+	void SetHeight(double height) noexcept;
+	void SetObliqueAngle(double obliqueAngle) noexcept;
+	void SetRotationAngle(double rotationAngle) noexcept;
 };

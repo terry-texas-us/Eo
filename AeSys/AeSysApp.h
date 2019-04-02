@@ -114,30 +114,30 @@ public:
 
 public:
 	OdDbDatabasePtr openFile(LPCWSTR pathName);
-	void setPartialOption(bool partial) {m_bPartial = partial;}
-	void setRecoverOption(bool recover) {m_bRecover = recover;}
+	void setPartialOption(bool partial) noexcept {m_bPartial = partial;}
+	void setRecoverOption(bool recover) noexcept {m_bRecover = recover;}
 	// ODA_MT_DBIO_BEGIN
-	void setMTLoadingOption(bool useMTLoading) {m_bUseMTLoading = useMTLoading;}
+	void setMTLoadingOption(bool useMTLoading) noexcept {m_bUseMTLoading = useMTLoading;}
 	// ODA_MT_DBIO_END
 
 public:
-	OdGsMarker getGSMenuItemMarker() const {return (OdGsMarker) this;}
+	OdGsMarker getGSMenuItemMarker() const noexcept {return (OdGsMarker) this;}
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
-	void RefreshCommandMenu();
-	UINT numCustomCommands() const {return m_numCustomCommands;}
+	void RefreshCommandMenu() noexcept;
+	UINT numCustomCommands() const noexcept {return m_numCustomCommands;}
 	static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter);
 
-	bool printingViaBitmap() const {return m_bEnablePrintPreviewViaBitmap != 0;}
-	bool doubleBufferEnabled() const {return m_bEnableDoubleBuffer != 0;}
-	bool blocksCacheEnabled() const {return m_bBlocksCache != 0;}
-	bool gsDeviceMultithreadEnabled() const {return m_bGsDevMultithread != 0;}
-	UINT mtRegenThreadsCount() const {return m_nMtRegenThreads;}
-	bool useGsModel() const {return m_bUseGsModel != 0;}
-	bool useSoftwareHLR() const {return m_bEnableHLR != 0;}
-	bool enableContextualColors() const {return m_bContextColors != 0;}
-	bool enableTTFPolyDraw() const {return m_bTTFPolyDraw != 0;}
-	bool enableTTFTextOut() const {return m_bTTFTextOut != 0;}
-	bool discardBackFaces() const {return m_bDiscardBackFaces != 0;}
+	bool printingViaBitmap() const noexcept {return m_bEnablePrintPreviewViaBitmap != 0;}
+	bool doubleBufferEnabled() const noexcept {return m_bEnableDoubleBuffer != 0;}
+	bool blocksCacheEnabled() const noexcept {return m_bBlocksCache != 0;}
+	bool gsDeviceMultithreadEnabled() const noexcept {return m_bGsDevMultithread != 0;}
+	UINT mtRegenThreadsCount() const noexcept {return m_nMtRegenThreads;}
+	bool useGsModel() const noexcept {return m_bUseGsModel != 0;}
+	bool useSoftwareHLR() const noexcept {return m_bEnableHLR != 0;}
+	bool enableContextualColors() const noexcept {return m_bContextColors != 0;}
+	bool enableTTFPolyDraw() const noexcept {return m_bTTFPolyDraw != 0;}
+	bool enableTTFTextOut() const noexcept {return m_bTTFTextOut != 0;}
+	bool discardBackFaces() const noexcept {return m_bDiscardBackFaces != 0;}
 
 	BOOL m_isDwgOut;
 	BOOL m_bSaveRoundTrip;
@@ -164,7 +164,7 @@ public:
 	void start(const OdString& displayString = OdString::kEmpty);
 	void stop();
 	void meterProgress();
-	void setLimit(int max);
+	void setLimit(int max) noexcept;
 
 	int ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
 	void warning(const char* warnVisGroup, const OdString& message);
@@ -183,14 +183,13 @@ public:
 
 	void initPlotStyleSheetEnv();
 
-	bool getSAVEROUNDTRIP() const {return (m_bSaveRoundTrip != 0);}
+	bool getSAVEROUNDTRIP() const noexcept {return (m_bSaveRoundTrip != 0);}
 	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const;
 	OdDbUndoControllerPtr newUndoController();
 	virtual OdStreamBufPtr newUndoStream();
 
-	void OnOptionsRenderingdeviceVectorize();
-	bool getSavePreview() {return (m_bSavePreview != 0);}
-	bool getSaveWithPassword() {return (m_bSaveWithPassword != 0);}
+	bool getSavePreview() noexcept {return (m_bSavePreview != 0);}
+	bool getSaveWithPassword() noexcept {return (m_bSaveWithPassword != 0);}
 
 #ifdef DEV_COMMAND_CONSOLE
 	void setRecentCmd(const OdString& cmd);
@@ -201,32 +200,30 @@ public:
 		return objectIdAndClassName(id.openObject());
 	}
 	static OdString objectIdAndClassName(const OdDbObject* object);
-	const ODCOLORREF activeBackground() const {return m_background;}
-	void setActiveBackground(const ODCOLORREF &color) {m_background = color & 0xffffff;}
+	const ODCOLORREF activeBackground() const noexcept {return m_background;}
+	void setActiveBackground(const ODCOLORREF &color) noexcept {m_background = color & 0xffffff;}
 	const ODCOLORREF* curPalette() const;
 
 	OdGsDevicePtr gsBitmapDevice();
 
-	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
-	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 	bool getPassword(const OdString& dwgName, bool isXref, OdPassword& password);
 
 	OdDbPageControllerPtr newPageController();
-	int setPagingType(int pagingType);
-	int pagingType() const {return m_pagingType & 0x0f;}
+	int setPagingType(int pagingType) noexcept;
+	int pagingType() const noexcept {return m_pagingType & 0x0f;}
 
-	bool setUndoType(bool useTempFiles);
-	bool undoType() const {return m_bUseTempFiles;}
+	bool setUndoType(bool useTempFiles) noexcept;
+	bool undoType() const noexcept {return m_bUseTempFiles;}
 
 	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty);
 
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
 
-	bool remoteGeomViewer() const {return m_bRemoteGeomViewer;}
-	void setRemoteGeomViewer() {m_bRemoteGeomViewer = true;}
+	bool remoteGeomViewer() const noexcept {return m_bRemoteGeomViewer;}
+	void setRemoteGeomViewer() noexcept {m_bRemoteGeomViewer = true;}
 
-	bool supportFileSelectionViaDialog() const {return m_bSupportFileSelectionViaDialog;}
-	void setSupportFileSelectionViaDialog(bool b) {m_bSupportFileSelectionViaDialog = b;}
+	bool supportFileSelectionViaDialog() const noexcept {return m_bSupportFileSelectionViaDialog;}
+	void setSupportFileSelectionViaDialog(bool b) noexcept {m_bSupportFileSelectionViaDialog = b;}
 
 	static CString getApplicationPath();
 	
@@ -295,20 +292,20 @@ public:
 	void AddStringToMessageList(UINT stringResourceIdentifier, LPCWSTR string);
 	void AddStringToReportList(LPCWSTR message);
 
-	int	ArchitecturalUnitsFractionPrecision() const;
+	int	ArchitecturalUnitsFractionPrecision() const noexcept;
 	void BuildModeSpecificAcceleratorTable(void);
-	UINT ClipboardFormatIdentifierForEoGroups();
+	UINT ClipboardFormatIdentifierForEoGroups() noexcept;
 	static OdString ConfigurationFileFor(HKEY key, const OdString& applicationName, const OdString& configType, OdString file);
-	int CurrentMode() const;
-	double DeviceHeightInMillimeters() const;
-	double DeviceHeightInPixels() const;
-	double DeviceWidthInMillimeters() const;
-	double DeviceWidthInPixels() const;
-	double DimensionAngle() const;
-	double DimensionLength() const;
+	int CurrentMode() const noexcept;
+	double DeviceHeightInMillimeters() const noexcept;
+	double DeviceHeightInPixels() const noexcept;
+	double DeviceWidthInMillimeters() const noexcept;
+	double DeviceWidthInPixels() const noexcept;
+	double DimensionAngle() const noexcept;
+	double DimensionLength() const noexcept;
 	void EditColorPalette();
-	double EngagedAngle() const;
-	double EngagedLength() const;
+	double EngagedAngle() const noexcept;
+	double EngagedLength() const noexcept;
 	CString FormatAngle(double angle, int width = 8, int precision = 3) const;
 	CString FormatLength(double length, Units units, int width = 16, int precision = 8) const;
 	/// <summary>
@@ -324,58 +321,56 @@ public:
 	void FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
 	OdGePoint3d GetCursorPosition();
 	static EoDb::FileTypes GetFileTypeFromPath(const OdString& pathName);
-	COLORREF GetHotColor(OdInt16 colorIndex);
-	HINSTANCE GetInstance();
+	COLORREF GetHotColor(OdInt16 colorIndex) noexcept;
+	HINSTANCE GetInstance() noexcept;
 	HWND GetSafeHwnd();
-	HMENU GetAeSysMenu();
-	HMENU GetAeSysSubMenu(int position);
-	Units GetUnits();
+	HMENU GetAeSysMenu() noexcept;
+	HMENU GetAeSysSubMenu(int position) noexcept;
+	Units GetUnits() noexcept;
 	/// <summary>Finds the greatest common divisor of arbitrary integers.</summary>
 	/// <returns>First number if second number is zero, greatest common divisor otherwise.</returns>
-	int GreatestCommonDivisor(const int number1, const int number2) const;
-	bool HighColorMode() const;
-	OdGePoint3d HomePointGet(int i);
-	void HomePointSave(int i, const OdGePoint3d& point);
+	int GreatestCommonDivisor(const int number1, const int number2) const noexcept;
+	bool HighColorMode() const noexcept;
+	OdGePoint3d HomePointGet(int i) noexcept;
+	void HomePointSave(int i, const OdGePoint3d& point) noexcept;
 	void InitGbls(CDC* deviceContext);
 	BOOL InitializeTeigha();
-	bool IsClipboardDataGroups();
-	bool IsClipboardDataImage();
-	bool IsClipboardDataText();
-	bool IsTrapHighlighted();
+	bool IsClipboardDataGroups() noexcept;
+	bool IsClipboardDataImage() noexcept;
+	bool IsClipboardDataText() noexcept;
+	bool IsTrapHighlighted() noexcept;
 	void LoadColorPalletFromFile(const CString& pathName);
 	void LoadHatchesFromFile(const CString& strFileName);
 	void LoadModeResources(int mode);
 	void LoadPenWidthsFromFile(const CString& pathName);
 	void LoadSimplexStrokeFont(const CString& pathName);
 	CString LoadStringResource(UINT resourceIdentifier) const;
-	bool ModeInformationOverView() const;
+	bool ModeInformationOverView() const noexcept;
 	double ParseLength(LPWSTR lengthAsString);
 	double ParseLength(Units units, LPWSTR);
-	double PenWidthsGet(OdInt16 colorIndex);
+	double PenWidthsGet(OdInt16 colorIndex) noexcept;
 	virtual void PreLoadState();
-	int PrimaryMode() const;
-	void ReleaseSimplexStrokeFont();
+	int PrimaryMode() const noexcept;
+	void ReleaseSimplexStrokeFont() noexcept;
 	static CString ResourceFolderPath();
-	void SetArchitecturalUnitsFractionPrecision(const int precision);
-	void SetDimensionAngle(double angle);
-	void SetDimensionLength(double length);
-	void SetEngagedAngle(double angle);
-	void SetEngagedLength(double length);
+	void SetArchitecturalUnitsFractionPrecision(const int precision) noexcept;
+	void SetDimensionAngle(double angle) noexcept;
+	void SetDimensionLength(double length) noexcept;
+	void SetEngagedAngle(double angle) noexcept;
+	void SetEngagedLength(double length) noexcept;
 	int SetShadowFolderPath(const CString& folder);
-	void SetUnits(Units units);
-	CString ShadowFolderPath() const;
-	char* SimplexStrokeFont();
-	OdInt16 TrapHighlightColor() const;
-	void UninitializeTeigha();
+	void SetUnits(Units units) noexcept;
+	CString ShadowFolderPath() const noexcept;
+	char* SimplexStrokeFont() noexcept;
+	OdInt16 TrapHighlightColor() const noexcept;
+	void UninitializeTeigha() noexcept;
 	void UpdateMDITabs(BOOL resetMDIChild);
 
 public:
 	afx_msg void OnAppAbout(void);
-	afx_msg void OnEditCfGroups();
-	afx_msg void OnEditCfImage();
-	afx_msg void OnEditCfText();
-	afx_msg void OnEditClipboardDataGroups();
-	afx_msg void OnEditClipboardDataText();
+	afx_msg void OnEditCfGroups() noexcept;
+	afx_msg void OnEditCfImage() noexcept;
+	afx_msg void OnEditCfText() noexcept;
 	afx_msg void OnFileOpen(void);
 	afx_msg void OnFilePlotstylemanager();
 	afx_msg void OnHelpContents();
@@ -395,7 +390,7 @@ public:
 	afx_msg void OnModeTrap();
 	afx_msg void OnToolsLoadapplications();
 	afx_msg void OnTrapCommandsAddGroups();
-	afx_msg void OnTrapCommandsHighlight();
+	afx_msg void OnTrapCommandsHighlight() noexcept;
 	afx_msg void OnUpdateEditCfGroups(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateEditCfImage(CCmdUI *pCmdUI);
 	afx_msg void OnUpdateEditCfText(CCmdUI *pCmdUI);
@@ -425,4 +420,4 @@ protected:
 };
 extern AeSysApp theApp;
 
-COLORREF AppGetTextCol();
+COLORREF AppGetTextCol() noexcept;

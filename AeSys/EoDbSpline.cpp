@@ -30,7 +30,7 @@ const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 	return (*this);
 }
 
-void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BSpline>", this);
 }
 void EoDbSpline::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -134,7 +134,7 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 		pt = m_Spline.endPoint();
 	return (pt);
 }
-bool EoDbSpline::Is(OdUInt16 type) const {
+bool EoDbSpline::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kSplinePrimitive;
 }
 bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
@@ -165,7 +165,7 @@ bool EoDbSpline::IsInView(AeSysView* view) const {
 	}
 	return false;
 }
-bool EoDbSpline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+bool EoDbSpline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
 	return false;
 }
 OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {

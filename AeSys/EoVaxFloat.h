@@ -9,7 +9,7 @@ class EoVaxFloat {
 	float m_f;
 public:
 	EoVaxFloat();
-	void Convert(const double& dMS);
+	void Convert(const double& dMS) noexcept;
 	double Convert();
 };
 class EoVaxPoint3d {
@@ -20,7 +20,7 @@ class EoVaxPoint3d {
 public:
 	EoVaxPoint3d() {
 	}
-	void Convert(const OdGePoint3d& point) {
+	void Convert(const OdGePoint3d& point) noexcept {
 		x.Convert(point.x);
 		y.Convert(point.y);
 		z.Convert(point.z);
@@ -36,7 +36,7 @@ class EoVaxVector3d {
 public:
 	EoVaxVector3d() {
 	}
-	void Convert(const OdGeVector3d& vector) {
+	void Convert(const OdGeVector3d& vector) noexcept {
 		x.Convert(vector.x);
 		y.Convert(vector.y);
 		z.Convert(vector.z);

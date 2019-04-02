@@ -20,7 +20,7 @@ void AeSysView::OnEditModeOptions() {
 		m_ScaleFactors.set(Dialog.m_ScaleFactorX, Dialog.m_ScaleFactorY, Dialog.m_ScaleFactorZ);
 	}
 }
-OdGeVector3d AeSysView::EditModeRotationAngles() const {
+OdGeVector3d AeSysView::EditModeRotationAngles() const noexcept {
 	return m_EditModeRotationAngles;
 }
 EoGeMatrix3d AeSysView::EditModeInvertedRotationMatrix() const {
@@ -34,21 +34,21 @@ EoGeMatrix3d AeSysView::EditModeRotationMatrix() const {
 	Matrix.SetTo3AxisRotation(EditModeRotationAngles());
 	return Matrix;
 }
-OdGeScale3d AeSysView::EditModeScaleFactors() const {
+OdGeScale3d AeSysView::EditModeScaleFactors() const noexcept {
 	return m_ScaleFactors;
 }
-void AeSysView::SetEditModeScaleFactors(const double x, const double y, const double z) {
+void AeSysView::SetEditModeScaleFactors(const double x, const double y, const double z) noexcept {
 	// <tas="Verify scale factors are always not zero"</tas>
 	m_ScaleFactors.sx = x;
 	m_ScaleFactors.sy = y;
 	m_ScaleFactors.sz = z;
 }
-void AeSysView::SetEditModeRotationAngles(double x, double y, double z) {
+void AeSysView::SetEditModeRotationAngles(double x, double y, double z) noexcept {
 	m_EditModeRotationAngles.x = x;
 	m_EditModeRotationAngles.y = y;
 	m_EditModeRotationAngles.z = z;
 }
-OdGeScale3d AeSysView::EditModeMirrorScaleFactors() const {
+OdGeScale3d AeSysView::EditModeMirrorScaleFactors() const noexcept {
 	return m_MirrorScaleFactors;
 }
 void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) {
@@ -174,7 +174,7 @@ void AeSysView::OnEditModeEnlarge() {
 	Document->TransformTrappedGroups(TransformMatrix);
 }
 
-void AeSysView::OnEditModeReturn() {
+void AeSysView::OnEditModeReturn() noexcept {
 	// TODO: Add your command handler code here
 }
 

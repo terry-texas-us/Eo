@@ -24,16 +24,16 @@ public:
 	virtual bool subWorldDraw(OdGiWorldDraw* worldDraw) const;
 	virtual void subViewportDraw(OdGiViewportDraw* viewportDraw) const;
 
-	OdDbGripOperations::DrawType status() const;
-	bool isInvisible() const;
-	bool isShared() const;
-	OdGePoint3d point() const;
+	OdDbGripOperations::DrawType status() const noexcept;
+	bool isInvisible() const noexcept;
+	bool isShared() const noexcept;
+	OdGePoint3d point() const noexcept;
 	OdDbGripDataPtr data() const;
 	OdDbObjectId entityId() const;
 	bool entPath(OdDbFullSubentPath* path = NULL) const;
-	void setStatus(OdDbGripOperations::DrawType val);
-	void setInvisible(bool val);
-	void setShared(bool val);
+	void setStatus(OdDbGripOperations::DrawType val) noexcept;
+	void setInvisible(bool val) noexcept;
+	void setShared(bool val) noexcept;
 
 private:
 	bool computeDragPoint(OdGePoint3d& ptOverride)  const;
@@ -86,7 +86,7 @@ typedef OdArray<EoExGripDragPtr> EoExGripDragPtrArray;
 class EoExGripDbReactor : public OdDbDatabaseReactor {
 public:
 	EoExGripDbReactor();
-	virtual void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj);
+	virtual void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj) noexcept;
 	virtual void objectModified(const OdDbDatabase* pDb, const OdDbObject* pDbObj);
 	virtual void objectErased(const OdDbDatabase* pDb, const OdDbObject* pDbObj, bool pErased = true);
 
@@ -149,7 +149,7 @@ private:
 	void disable(bool isDisabled);
 
 public:
-	bool isDisabled() {
+	bool isDisabled() noexcept {
 		return m_bDisabled;
 	}
 	struct EoExGripDataSubent {

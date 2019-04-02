@@ -5,7 +5,7 @@
 OdUInt16 wPrvKeyDwn = 0;
 OdGePoint3d rPrvPos;
 
-void AeSysView::OnCutModeOptions(void) {
+void AeSysView::OnCutModeOptions(void) noexcept {
 }
 void AeSysView::OnCutModeTorch(void) {
 	AeSysDoc* Document = GetDocument();
@@ -271,7 +271,7 @@ void AeSysView::OnCutModeClip(void) {
 		ModeLineUnhighlightOp(wPrvKeyDwn);
 	}
 }
-void AeSysView::OnCutModeDivide(void) {
+void AeSysView::OnCutModeDivide(void) noexcept {
 }
 void AeSysView::OnCutModeReturn(void) {
 	RubberBandingDisable();

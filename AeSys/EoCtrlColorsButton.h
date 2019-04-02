@@ -23,8 +23,8 @@ class EoCtrlColorsButton : public CMFCButton {
 	OdUInt16 m_SubItem;
 
 	void DrawCell(CDC* deviceContext, OdUInt16 index, COLORREF color);
-	OdUInt16 SubItemByPoint(const CPoint& point);
-	void SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle);
+	OdUInt16 SubItemByPoint(const CPoint& point) noexcept;
+	void SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle) noexcept;
 
 public:
 
@@ -32,17 +32,17 @@ public:
 
 	virtual ~EoCtrlColorsButton();
 
-	static void SetCurrentIndex(const OdUInt16 index) {
+	static void SetCurrentIndex(const OdUInt16 index) noexcept {
 		m_CurrentIndex = index;
 	}
-	static void SetPalette(COLORREF* palette) {
+	static void SetPalette(COLORREF* palette) noexcept {
 		m_Palette = palette;
 	}
-	void SetLayout(Layouts layout, const CSize& cellSize) {
+	void SetLayout(Layouts layout, const CSize& cellSize) noexcept {
 		m_Layout = layout;
 		m_CellSize = cellSize;
 	}
-	void SetSequenceRange(const OdUInt16 beginIndex, const OdUInt16 endIndex) {
+	void SetSequenceRange(const OdUInt16 beginIndex, const OdUInt16 endIndex) noexcept {
 		m_BeginIndex = beginIndex;
 		m_EndIndex = endIndex;
 	}
@@ -50,7 +50,7 @@ public:
 	virtual void OnDraw(CDC* deviceContext, const CRect& rectangle, UINT state);
 	virtual CSize SizeToContent(BOOL calculateOnly = FALSE);
 
-	afx_msg UINT OnGetDlgCode();
+	afx_msg UINT OnGetDlgCode() noexcept;
 	afx_msg void OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags);
 	afx_msg void OnLButtonUp(UINT flags, CPoint point);
 	afx_msg void OnMouseMove(UINT flags, CPoint point);

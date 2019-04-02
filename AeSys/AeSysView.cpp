@@ -497,7 +497,7 @@ void AeSysView::OnInitialUpdate() {
 
 	SetRenderMode(OdGsView::k2DOptimized);
 }
-bool AeSysView::regenAbort() const {
+bool AeSysView::regenAbort() const noexcept {
 	return false;
 }
 LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
@@ -1013,7 +1013,7 @@ void AeSysView::preparePlotstyles(const OdDbLayout* pLayout, bool bForceReload) 
 }
 
 OdString GetRegistryAcadProfilesKey(); // external defined in AeSysApp
-static bool GetRegistryDWORD(HKEY key, LPCWSTR subkey, LPCWSTR name, DWORD &rval) {
+static bool GetRegistryDWORD(HKEY key, LPCWSTR subkey, LPCWSTR name, DWORD &rval) noexcept {
 	bool rv = false;
 	HKEY hKey;
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
@@ -1978,10 +1978,10 @@ void AeSysView::track(OdEdInputTracker* tracker) {
 		m_bTrackerHasDrawables = false;
 }
 
-HCURSOR AeSysView::cursor() const {
+HCURSOR AeSysView::cursor() const noexcept {
 	return (m_hCursor);
 }
-void AeSysView::setCursor(HCURSOR cursor) {
+void AeSysView::setCursor(HCURSOR cursor) noexcept {
 	m_hCursor = cursor;
 	::SetCursor(cursor);
 }
@@ -2245,7 +2245,7 @@ struct OdExRegenCmd : OdEdCommand {
 	virtual OdInt32 flags() const {
 		return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
 	}
-	void execute(OdEdCommandContext* pCmdCtx) {
+	void execute(OdEdCommandContext* pCmdCtx) noexcept {
 		// <tas="placeholder until implemented" m_pView->OnViewerRegen();"</tas>
 	}
 };
@@ -2416,7 +2416,7 @@ void AeSysView::PopViewTransform() {
 void AeSysView::PushViewTransform() {
 	m_ViewTransforms.AddTail(m_ViewTransform);
 }
-EoGeMatrix3d AeSysView::ModelToWorldTransform() const {
+EoGeMatrix3d AeSysView::ModelToWorldTransform() const noexcept {
 	return m_ModelTransform.ModelMatrix();
 }
 void AeSysView::PushModelTransform(const EoGeMatrix3d& transformation) {
@@ -2459,36 +2459,36 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		deviceContext->SelectPalette(pPalette, FALSE);
 	}
 }
-double AeSysView::OverviewUExt() {
+double AeSysView::OverviewUExt() noexcept {
 	return m_OverviewViewTransform.FieldWidth();
 }
-double AeSysView::OverviewUMin() {
+double AeSysView::OverviewUMin() noexcept {
 	return m_OverviewViewTransform.FieldWidthMinimum();
 }
-double AeSysView::OverviewVExt() {
+double AeSysView::OverviewVExt() noexcept {
 	return m_OverviewViewTransform.FieldHeight();
 }
-double AeSysView::OverviewVMin() {
+double AeSysView::OverviewVMin() noexcept {
 	return m_OverviewViewTransform.FieldHeightMinimum();
 }
-CPoint AeSysView::DoViewportProjection(const EoGePoint4d& point) const {
+CPoint AeSysView::DoViewportProjection(const EoGePoint4d& point) const noexcept {
 	return m_Viewport.DoProjection(point);
 }
-void AeSysView::DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const {
+void AeSysView::DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept {
 	m_Viewport.DoProjection(pnt, iPts, pt);
 }
 void AeSysView::DoViewportProjection(CPoint* pnt, EoGePoint4dArray& points) const {
 	m_Viewport.DoProjection(pnt, points);
 }
-OdGePoint3d AeSysView::DoViewportProjectionInverse(const OdGePoint3d& point) const {
+OdGePoint3d AeSysView::DoViewportProjectionInverse(const OdGePoint3d& point) const noexcept {
 	OdGePoint3d Point = point;
 	m_Viewport.DoProjectionInverse(Point);
 	return (Point);
 }
-double AeSysView::ViewportHeightInInches() const {
+double AeSysView::ViewportHeightInInches() const noexcept {
 	return m_Viewport.HeightInInches();
 }
-double AeSysView::ViewportWidthInInches() const {
+double AeSysView::ViewportWidthInInches() const noexcept {
 	return m_Viewport.WidthInInches();
 }
 void AeSysView::ViewportPopActive() {
@@ -2499,13 +2499,13 @@ void AeSysView::ViewportPopActive() {
 void AeSysView::ViewportPushActive() {
 	m_Viewports.AddTail(m_Viewport);
 }
-void AeSysView::SetViewportSize(const int width, const int height) {
+void AeSysView::SetViewportSize(const int width, const int height) noexcept {
 	m_Viewport.SetSize(width, height);
 }
-void AeSysView::SetDeviceHeightInInches(double height) {
+void AeSysView::SetDeviceHeightInInches(double height) noexcept {
 	m_Viewport.SetDeviceHeightInInches(height);
 }
-void AeSysView::SetDeviceWidthInInches(double width) {
+void AeSysView::SetDeviceWidthInInches(double width) noexcept {
 	m_Viewport.SetDeviceWidthInInches(width);
 }
 // AeSysView printing
@@ -3248,7 +3248,7 @@ EoDbGroup* AeSysView::GetNextVisibleGroup(POSITION& position) {
 EoDbGroup* AeSysView::GetPreviousGroup(POSITION& position) {
 	return m_VisibleGroupList.GetPrev(position);
 }
-bool AeSysView::ViewTrueTypeFonts() {
+bool AeSysView::ViewTrueTypeFonts() noexcept {
 	return m_ViewTrueTypeFonts;
 }
 void AeSysView::BreakAllPolylines() {
@@ -3265,10 +3265,10 @@ void AeSysView::BreakAllSegRefs() {
 		Group->BreakSegRefs();
 	}
 }
-bool AeSysView::PenWidthsOn() {
+bool AeSysView::PenWidthsOn() noexcept {
 	return m_ViewPenWidths;
 }
-double AeSysView::WorldScale() const {
+double AeSysView::WorldScale() const noexcept {
 	return m_WorldScale;
 }
 POSITION AeSysView::AddGroup(EoDbGroup* group) {
@@ -3283,7 +3283,7 @@ POSITION AeSysView::RemoveGroup(EoDbGroup* group) {
 void AeSysView::RemoveAllGroups() {
 	m_VisibleGroupList.RemoveAll();
 }
-void AeSysView::ResetView() {
+void AeSysView::ResetView() noexcept {
 	m_EngagedGroup = 0;
 	m_EngagedPrimitive = 0;
 }
@@ -3309,20 +3309,20 @@ EoDbGroup* AeSysView::SelSegAndPrimAtCtrlPt(const EoGePoint4d& point) {
 	}
 	return (m_EngagedGroup);
 }
-OdGePoint3d& AeSysView::DetPt() {
+OdGePoint3d& AeSysView::DetPt() noexcept {
 	return m_ptDet;
 }
-EoDbPrimitive*& AeSysView::EngagedPrimitive() {
+EoDbPrimitive*& AeSysView::EngagedPrimitive() noexcept {
 	return m_EngagedPrimitive;
 }
-EoDbGroup*&	AeSysView::EngagedGroup() {
+EoDbGroup*&	AeSysView::EngagedGroup() noexcept {
 	return m_EngagedGroup;
 }
 
-bool AeSysView::GroupIsEngaged() {
+bool AeSysView::GroupIsEngaged() noexcept {
 	return m_EngagedGroup != 0;
 }
-double AeSysView::SelectApertureSize() const {
+double AeSysView::SelectApertureSize() const noexcept {
 	return m_SelectApertureSize;
 }
 EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {

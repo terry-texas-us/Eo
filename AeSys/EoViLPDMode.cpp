@@ -5,7 +5,7 @@
 
 #include "EoDlgLowPressureDuctOptions.h"
 
-LPWSTR TrimLeadingSpace(LPWSTR szString) {
+LPWSTR TrimLeadingSpace(LPWSTR szString) noexcept {
 	LPWSTR p = szString;
 
 	while (p && *p && isspace(*p)) {
@@ -717,7 +717,7 @@ void AeSysView::SetDuctOptions(Section& section) {
 	}
 	theApp.SetUnits(Units);
 }
-double AeSysView::LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) {
+double AeSysView::LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept {
 	const double WidthChange = currentSection.Width() - previousSection.Width();
 	const double DepthChange = currentSection.Depth() - previousSection.Depth();
 

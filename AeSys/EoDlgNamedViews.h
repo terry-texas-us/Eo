@@ -26,7 +26,7 @@ public:
     kReplace        = 2
   };
 
-  AeSysDoc* document() {
+  AeSysDoc* document() noexcept {
 	  return m_pDoc;
   }
   OdDbDatabase* database();

@@ -332,10 +332,10 @@ void EoObjectSnapManager::invalidateViewport(const OdGePoint3d& point) const {
 		m_pView->invalidate(rc);
 	}
 }
-OdUInt32 EoObjectSnapManager::subSetAttributes(OdGiDrawableTraits* traits) const {
+OdUInt32 EoObjectSnapManager::subSetAttributes(OdGiDrawableTraits* traits) const noexcept {
 	return kDrawableNone;
 }
-bool EoObjectSnapManager::subWorldDraw(OdGiWorldDraw* worldDraw) const {
+bool EoObjectSnapManager::subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept {
 	return false;
 }
 
@@ -402,13 +402,13 @@ bool EoObjectSnapManager::snap(OdGsView* view, OdGePoint3d& point, const OdGePoi
 	}
 	return bRes | m_bRedraw;
 }
-unsigned EoObjectSnapManager::snapModes() const {
+unsigned EoObjectSnapManager::snapModes() const noexcept {
 	return m_nSnapModes;
 }
-void EoObjectSnapManager::setSnapModes(unsigned snapModes ) { 
+void EoObjectSnapManager::setSnapModes(unsigned snapModes ) noexcept {
 	m_nSnapModes = snapModes;
 }
-bool EoObjectSnapManager::selected(const OdGiDrawableDesc& ) {
+bool EoObjectSnapManager::selected(const OdGiDrawableDesc& ) noexcept {
 	return false;
 }
 

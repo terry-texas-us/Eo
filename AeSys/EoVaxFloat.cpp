@@ -3,7 +3,7 @@
 EoVaxFloat::EoVaxFloat() {
 	m_f = 0.f;
 }
-void EoVaxFloat::Convert(const double& dMS) {
+void EoVaxFloat::Convert(const double& dMS) noexcept {
 	float fMS = float(dMS);
 	float fVax = 0.f;
 

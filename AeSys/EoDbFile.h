@@ -21,7 +21,7 @@ public:
 	EoDbFile(const OdString& fileName, UINT openFlags);
 	virtual ~EoDbFile();
 
-	void ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive);
+	void ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept;
 	void ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive);
 	void ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive);
 

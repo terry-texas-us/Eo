@@ -280,13 +280,13 @@ static int iCheck[] = {
 	//				alDefReq	dimension (lo word) and length (hi word) of result
 	//				aVal		result
 	void ConvertStringToVal(int iTyp, long lDef, LPTSTR szVal, long* lDefReq, void* p);
-	void ConvertValToString(LPTSTR, CD*, LPTSTR, int*);
+	void ConvertValToString(LPTSTR, CD*, LPTSTR, int*) noexcept;
 	/// <summary>Does value type conversion</summary>
 	// Parameters:	aiTyp		type of value(s)
 	//				aiTypReq	type of value(s) required
 	//				alDef		dimension (lo word) and length (hi word) of result
 	//				apVal		value(s)
-	void ConvertValTyp(int, int, long*, void*);
+	void ConvertValTyp(int, int, long*, void*) noexcept;
 	/// <summary> Evaluates an expression.</summary>
 	// Returns: 1 infix expression successfully evaluated
 	//			0 unspecified syntax error
@@ -295,7 +295,7 @@ static int iCheck[] = {
 	//				aiTyp		type of result
 	//				apOp		result
 	void EvalTokenStream(int*, long*, int*, void*);
-	void Init();
+	void Init() noexcept;
 	/// <summary>Parses line into tokens.</summary>
 	void Parse(LPCWSTR pszLine);
 	void ParseStringOperand(LPCWSTR pszTok);
@@ -303,21 +303,21 @@ static int iCheck[] = {
 	// Notes:	If the character is found the scan pointer is updated
 	//			to point to the character following the one found.
 	// Returns: Pointer to the character if found,	0 if not.
-	LPTSTR ScanForChar(wchar_t c, LPTSTR *ppStr);
+	LPTSTR ScanForChar(wchar_t c, LPTSTR *ppStr) noexcept;
 	/// <summary>Scan for a string.</summary>
 	// Notes:	The scan pointer is updated to point past the string.  The
 	//			arg buffer pointer is updated to point to the next free character.
 	// Returns: Pointer tot he string or 0 if an error occurs.
-	LPTSTR ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf);
+	LPTSTR ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) noexcept;
 	int Scan(LPTSTR aszTok, LPCWSTR pszLine, int& iLP);
 	/// <summary>Skip over any white space characters.</summary>
 	/// <param name="pszString">Pointer to the current buffer position.</param>
 	/// <returns>Pointer to the first non-white character.</returns>
-	LPTSTR SkipWhiteSpace(LPTSTR pszString);
+	LPTSTR SkipWhiteSpace(LPTSTR pszString) noexcept;
 	/// <summary> Fetches specified tokens type from current token stream.</summary>
 	// Returns:  token type
 	//		 - 1 if token identifier out of range
-	int TokType(int);
+	int TokType(int) noexcept;
 	void UnaryOp(int, int*, long*,	double*);
 	void UnaryOp(int, int*, long*, long*);
 }

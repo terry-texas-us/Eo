@@ -84,11 +84,21 @@ struct DIBCOLOR {
     OdUInt8 g;
     OdUInt8 r;
     OdUInt8 reserved;
-	DIBCOLOR(OdUInt8 ar, OdUInt8 ag, OdUInt8 ab) :
-		r(ar), g(ag), b(ab), reserved(0) {}
-	DIBCOLOR(COLORREF color):
-		r(GetRValue(color)), g(GetGValue(color)), b(GetBValue(color)), reserved(0) {}
-	operator DWORD() {return *reinterpret_cast<DWORD*>(this);}
+	DIBCOLOR(OdUInt8 ar, OdUInt8 ag, OdUInt8 ab)  noexcept
+        : r(ar)
+        , g(ag)
+        , b(ab)
+        , reserved(0) {
+    }
+	DIBCOLOR(COLORREF color) noexcept
+        : r(GetRValue(color))
+        , g(GetGValue(color))
+        , b(GetBValue(color))
+        , reserved(0) {
+    }
+	operator DWORD() noexcept {
+        return *reinterpret_cast<DWORD*>(this);
+    }
 };
 
 class CBitmapColorInfo {
@@ -111,7 +121,7 @@ protected:
 public:
 	CBitmap* CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpClone);
 	void PaintBitmap(CBitmap &Bmp, COLORREF color);
-	const bool IsColor(COLORREF color, OdUInt8 item);
+	const bool IsColor(COLORREF color, OdUInt8 item) noexcept;
 	const OdCmEntityColor GetColor();
 };
 
@@ -131,13 +141,13 @@ public:
 
 	~CPsListStyleData();
 
-	OdPsPlotStyle* GetOdPsPlotStyle() const { return m_pPlotStyles; };
-	CBitmapColorInfo*  GetBitmapColorInfo() const { return m_pBitmapColorInfo; };
-	const int GetActiveListIndex() const { return m_iActiveListIndex; };
-	const bool ReplaceBitmapColorInfo(COLORREF color, const int item);
-	const bool SetActiveListIndex(const int index, const bool bBmpInfo = false);
-	const OdCmEntityColor GetColor();
-	OdPsPlotStyle* GetOdPsPlotStyle(){ return m_pPlotStyles; };
+    OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; };
+    CBitmapColorInfo*  GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; };
+    const int GetActiveListIndex() const noexcept { return m_iActiveListIndex; };
+    const bool ReplaceBitmapColorInfo(COLORREF color, const int item);
+    const bool SetActiveListIndex(const int index, const bool bBmpInfo = false);
+    const OdCmEntityColor GetColor();
+    OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; };
 };
 
 class EoDlgPlotStyleEditor_FormViewPropertyPage : public CPropertyPage {
@@ -196,7 +206,7 @@ protected:
 	void initColorComboBox();
 	void initListCtrl();
 	const int insertItem(int index);
-	HICON initColorIcon(int width,int height, COLORREF color);
+	HICON initColorIcon(int width,int height, COLORREF color) noexcept;
 	void initImageList();
 
 	const int deleteCustomColor();
@@ -204,18 +214,18 @@ protected:
 	const int replaceCustomColor(COLORREF color, const int item);
 
 public:
-	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
+	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
 	BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags);
 	void SetFileBufPath(const OdString sFilePath);
 	void AddNewPlotStyle(LPCWSTR lpStyleName);
-	const OdPsPlotStyleTable *GetPlotStyleTable() const { return m_pPlotStyleTable; };
+	const OdPsPlotStyleTable *GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };
 
 protected:
 	afx_msg void OnLineweightBtn();
 	afx_msg void OnAddBtnStyle();
 	afx_msg void OnSaveBtn();
 	afx_msg void OnDelBtnStyle();
-	afx_msg void OnUpdateEditDescription();
+	afx_msg void OnUpdateEditDescription() noexcept;
 	afx_msg void OnChangeEditDescription();
 	afx_msg void OnChangeEditPen();
 	afx_msg void OnChangeEditVirtPen();
@@ -223,9 +233,9 @@ protected:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result);
 	afx_msg void OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result);
-	afx_msg void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result);
+	afx_msg void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept;
 	afx_msg void OnSelchangeComboColor();
-	afx_msg void OnSelendokComboColor();
+	afx_msg void OnSelendokComboColor() noexcept;
 	afx_msg void OnSelendokComboDither();
 	afx_msg void OnSelendokComboGrayScale();
 	afx_msg void OnSelendokComboLineType();

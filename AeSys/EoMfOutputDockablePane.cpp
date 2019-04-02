@@ -91,11 +91,11 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 	}
 	SetFocus();
 }
-void EoMfOutputListBox::OnEditCopy() {
+void EoMfOutputListBox::OnEditCopy() noexcept {
 	::MessageBoxW(0, L"Copy output", L"Testing", 0);
 }
 
-void EoMfOutputListBox::OnEditClear() {
+void EoMfOutputListBox::OnEditClear() noexcept {
 	::MessageBoxW(0, L"Clear output", L"Testing", 0);
 }
 

@@ -18,7 +18,7 @@ public: // Operators
 	const EoDbPoint& operator=(const EoDbPoint& other);
 
 public: // Methods - absolute virtuals
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
 	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
@@ -26,10 +26,10 @@ public: // Methods - absolute virtuals
 	void FormatExtra(CString& extra) const;
 	void FormatGeometry(CString& geometry) const;
 	void GetAllPoints(OdGePoint3dArray& points) const;
-	OdGePoint3d GetCtrlPt() const;
+	OdGePoint3d GetCtrlPt() const noexcept;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
-	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
+	OdGePoint3d GoToNxtCtrlPt() const noexcept;
+	bool Is(OdUInt16 type) const noexcept;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -42,12 +42,12 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const;
 
 public: // Methods
-	double DataAt(OdUInt16 dataIndex) const;
-	void ModifyState();
-	OdInt16 PointDisplayMode() const;
-	OdGePoint3d Position() const;
+	double DataAt(OdUInt16 dataIndex) const noexcept;
+	void ModifyState() noexcept;
+	OdInt16 PointDisplayMode() const noexcept;
+	OdGePoint3d Position() const noexcept;
 	void SetData(OdUInt16 numberOfDatums, double* data);
-	void SetPointDisplayMode(OdInt16 displayMode);
+	void SetPointDisplayMode(OdInt16 displayMode) noexcept;
 	void SetPosition(const OdGePoint3d& point);
 
 public: // Methods - static

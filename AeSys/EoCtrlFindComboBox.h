@@ -11,7 +11,7 @@ protected:
 	static BOOL m_HasFocus;
 
 public:
-	static BOOL HasFocus() {
+	static BOOL HasFocus() noexcept {
 		return m_HasFocus;
 	}
 protected:

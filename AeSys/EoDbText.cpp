@@ -44,7 +44,7 @@ void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
     theApp.AddStringToMessageList(Report);
 }
 
-void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
     CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Text>", this);
 }
 
@@ -142,7 +142,7 @@ void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor)
     text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, Length, spaceFactor, boundingBox);
 }
 
-OdGePoint3d EoDbText::GetCtrlPt() const {
+OdGePoint3d EoDbText::GetCtrlPt() const noexcept {
     return m_ReferenceSystem.Origin();
 }
 
@@ -156,15 +156,15 @@ void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
     }
 }
 
-OdGePoint3d	EoDbText::GoToNxtCtrlPt() const {
+OdGePoint3d	EoDbText::GoToNxtCtrlPt() const noexcept {
     return (m_ReferenceSystem.Origin());
 }
 
-bool EoDbText::Is(OdUInt16 type) const {
+bool EoDbText::Is(OdUInt16 type) const noexcept {
     return type == EoDb::kTextPrimitive;
 }
 
-bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const {
+bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
     return false;
 }
 
@@ -210,7 +210,7 @@ void EoDbText::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCell
     }
 }
 
-void EoDbText::ModifyState() {
+void EoDbText::ModifyState() noexcept {
     EoDbPrimitive::ModifyState();
 
     m_FontDefinition = pstate.FontDefinition();
@@ -220,7 +220,7 @@ void EoDbText::ModifyState() {
     m_ReferenceSystem.Rescale(CharacterCellDefinition);
 }
 
-OdGePoint3d EoDbText::Position() const {
+OdGePoint3d EoDbText::Position() const noexcept {
     return m_ReferenceSystem.Origin();
 }
 
@@ -294,7 +294,7 @@ void EoDbText::SetHorizontalMode(HorizontalAlignment horizontalAlignment) {
     }
 }
 
-void EoDbText::SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) {
+void EoDbText::SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept {
     m_ReferenceSystem = referenceSystem;
 }
 
@@ -338,7 +338,7 @@ void EoDbText::SetVerticalMode(VerticalAlignment verticalAlignment) {
     }
 }
 
-const CString& EoDbText::Text() {
+const CString& EoDbText::Text() noexcept {
     return m_strText;
 }
 
@@ -568,7 +568,7 @@ EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
     return Text;
 }
 
-EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) {
+EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
     EoDb::HorizontalAlignment HorizontalAlignment;
 
     switch (horizontalMode) {
@@ -590,7 +590,7 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextH
 
 }
 
-EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) {
+EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
     EoDb::VerticalAlignment VerticalAlignment;
 
     switch (verticalMode) {
@@ -722,7 +722,7 @@ bool HasFormattingCharacters(const CString& text) {
     return false;
 }
 
-int FontEscapementAngle(const OdGeVector3d& xAxis) {
+int FontEscapementAngle(const OdGeVector3d& xAxis) noexcept {
     double Angle = 0.;
 
     Angle = atan2(xAxis.y, xAxis.x); // -pi to pi radians
@@ -732,7 +732,7 @@ int FontEscapementAngle(const OdGeVector3d& xAxis) {
     return EoRound(EoToDegree(Angle) * 10.);
 }
 
-OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numberOfCharacters) {
+OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numberOfCharacters) noexcept {
     OdGePoint3d InsertionPoint(OdGePoint3d::kOrigin);
 
     if (numberOfCharacters > 0) {

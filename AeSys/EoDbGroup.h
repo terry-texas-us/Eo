@@ -35,7 +35,7 @@ public:
 	bool IsOn(const EoGePoint4d& point, AeSysView* view) const;
 	/// <summary>Checks if this group is persistent</summary>
 	/// <returns>true if the group will be appended to the database and saved to file, false if group is temporary ie used in dynamic previews</returns>
-	bool IsPersistent() const;
+	bool IsPersistent() const noexcept;
 	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(OdInt16 colorIndex);
 	void ModifyLinetypeIndex(OdInt16 linetypeIndex);
@@ -56,5 +56,5 @@ public:
 	void Write(CFile& file, OdUInt8* buffer);
 
 public: // Methods - static
-	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive);
+	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
 };

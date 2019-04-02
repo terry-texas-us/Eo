@@ -183,7 +183,7 @@ bool EoDbJobFile::ReadNextPrimitive(CFile &file, OdUInt8 *buffer, OdInt16& primi
 	}
 	return true;
 }
-int EoDbJobFile::Version() {
+int EoDbJobFile::Version() noexcept {
 	switch (m_PrimBuf[5]) {
 	case 17: // 0x11 text
 	case 24: // 0x18 bspline
@@ -200,7 +200,7 @@ int EoDbJobFile::Version() {
 	}
 	return (m_Version);
 }
-bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) {
+bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
 	switch (primitiveType) {
 	case EoDb::kPointPrimitive: // 0x0100
 	case EoDb::kLinePrimitive: // 0x0200
@@ -217,7 +217,7 @@ bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) {
 		return IsValidVersion1Primitive(primitiveType);
 	}
 }
-bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) {
+bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) noexcept {
 	const OdUInt8* PrimitiveType = (OdUInt8*) &primitiveType;
 	switch (PrimitiveType[1]) {
 	case 17: // 0x11 text

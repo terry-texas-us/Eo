@@ -9,7 +9,7 @@ public:
 	~EoDbDwgToPegFile();
 	void ConvertToPeg(AeSysDoc* document);
 
-	void ConvertHeaderSection(AeSysDoc* document);
+	void ConvertHeaderSection(AeSysDoc* document) noexcept;
 	void ConvertViewportTable(AeSysDoc* document);
 	void ConvertLayerTable(AeSysDoc* document);
 

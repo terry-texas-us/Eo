@@ -232,7 +232,7 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	}
 	return false;
 }
-bool EoDbGroup::IsPersistent() const {
+bool EoDbGroup::IsPersistent() const noexcept {
 	return m_Document != 0;
 }
 void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
@@ -362,7 +362,7 @@ EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d& point, AeSysView*
 	}
 	return 0;
 }
-void EoDbGroup::SetPrimitiveToIgnore(EoDbPrimitive* primitive) {
+void EoDbGroup::SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept {
 	sm_PrimitiveToIgnore = primitive;
 }
 void EoDbGroup::SortTextOnY() {

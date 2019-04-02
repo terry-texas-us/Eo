@@ -121,7 +121,7 @@ static void removePaperDrawingCustomization() {
 static void addMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
 	public:
-		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) {
+		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept {
 			// Material texture to be loaded. Correct loading path here.
 		}
 		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* database) {
@@ -305,7 +305,7 @@ m_pagingType(0) {
 
 OdString GetRegistryAcadLocation();
 OdString GetRegistryAcadProfilesKey();
-bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size);
+bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size) noexcept;
 
 static OdString FindConfigPath(const OdString& configType) {
 	wchar_t searchPath[EO_REGISTRY_MAX_PATH];
@@ -373,13 +373,13 @@ OdDbPageControllerPtr AeSysApp::newPageController() {
 	return (OdDbPageController*)0;
 }
 
-int AeSysApp::setPagingType(int pagingType) {
+int AeSysApp::setPagingType(int pagingType) noexcept {
 	const int oldType = m_pagingType;
 	m_pagingType = pagingType;
 	return oldType;
 }
 
-bool AeSysApp::setUndoType(bool useTempFiles) {
+bool AeSysApp::setUndoType(bool useTempFiles) noexcept {
 	const bool oldType = m_bUseTempFiles;
 	m_bUseTempFiles = useTempFiles;
 	return oldType;
@@ -602,7 +602,7 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 	return (RegisteredCommandsSubMenu);
 }
 
-void AeSysApp::RefreshCommandMenu(void) {
+void AeSysApp::RefreshCommandMenu(void) noexcept {
 #ifdef DEV_COMMAND_CONSOLE
 	CMenu* ToolsSubMenu(NULL);
 	CMenu* RegisteredCommandsSubMenu = CommandMenu(&ToolsSubMenu);
@@ -774,7 +774,7 @@ void AeSysApp::AddStringToReportList(LPCWSTR message) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
 }
-int	AeSysApp::ArchitecturalUnitsFractionPrecision() const {
+int	AeSysApp::ArchitecturalUnitsFractionPrecision() const  noexcept {
 	return (m_ArchitecturalUnitsFractionPrecision);
 }
 // Modifies the base accelerator table by defining the mode specific keys.
@@ -799,7 +799,7 @@ void AeSysApp::BuildModeSpecificAcceleratorTable(void) {
 
 	delete[] ModifiedAcceleratorTable;
 }
-UINT AeSysApp::ClipboardFormatIdentifierForEoGroups() {
+UINT AeSysApp::ClipboardFormatIdentifierForEoGroups()  noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
 OdString AeSysApp::ConfigurationFileFor(HKEY key, const OdString& applicationName, const OdString& configType, OdString file) {
@@ -813,25 +813,25 @@ OdString AeSysApp::ConfigurationFileFor(HKEY key, const OdString& applicationNam
 	return OdString::kEmpty;
 }
 
-int AeSysApp::CurrentMode() const {
+int AeSysApp::CurrentMode() const  noexcept {
 	return m_CurrentMode;
 }
-double AeSysApp::DeviceHeightInMillimeters() const {
+double AeSysApp::DeviceHeightInMillimeters() const  noexcept {
 	return m_DeviceHeightInMillimeters;
 }
-double AeSysApp::DeviceHeightInPixels() const {
+double AeSysApp::DeviceHeightInPixels() const  noexcept {
 	return m_DeviceHeightInPixels;
 }
-double AeSysApp::DeviceWidthInMillimeters() const {
+double AeSysApp::DeviceWidthInMillimeters() const  noexcept {
 	return m_DeviceWidthInMillimeters;
 }
-double AeSysApp::DeviceWidthInPixels() const {
+double AeSysApp::DeviceWidthInPixels() const  noexcept {
 	return m_DeviceWidthInPixels;
 }
-double AeSysApp::DimensionAngle() const {
+double AeSysApp::DimensionAngle() const  noexcept {
 	return (m_DimensionAngle);
 }
-double AeSysApp::DimensionLength() const {
+double AeSysApp::DimensionLength() const  noexcept {
 	return (m_DimensionLength);
 }
 void AeSysApp::EditColorPalette() {
@@ -852,10 +852,10 @@ void AeSysApp::EditColorPalette() {
 
 	AeSysDoc::GetDoc()->UpdateAllViews(NULL, 0L, NULL);
 }
-double AeSysApp::EngagedAngle() const {
+double AeSysApp::EngagedAngle() const noexcept {
 	return (m_EngagedAngle);
 }
-double AeSysApp::EngagedLength() const {
+double AeSysApp::EngagedLength() const noexcept {
 	return (m_EngagedLength);
 }
 CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter) {
@@ -1084,26 +1084,26 @@ EoDb::FileTypes AeSysApp::GetFileTypeFromPath(const OdString& pathName) {
 	}
 	return Type;
 }
-COLORREF AeSysApp::GetHotColor(EoInt16 colorIndex) {
+COLORREF AeSysApp::GetHotColor(OdInt16 colorIndex) noexcept {
 	return (ColorPalette[colorIndex]);
 }
-HINSTANCE AeSysApp::GetInstance() {
+HINSTANCE AeSysApp::GetInstance() noexcept {
 	return (m_hInstance);
 }
 
 HWND AeSysApp::GetSafeHwnd() {
 	return (AfxGetMainWnd()->GetSafeHwnd());
 }
-HMENU AeSysApp::GetAeSysMenu() {
+HMENU AeSysApp::GetAeSysMenu() noexcept {
 	return (m_AeSysMenuHandle);
 }
-HMENU AeSysApp::GetAeSysSubMenu(int position) {
+HMENU AeSysApp::GetAeSysSubMenu(int position) noexcept {
 	return (::GetSubMenu(m_AeSysMenuHandle, position));
 }
-AeSysApp::Units AeSysApp::GetUnits() {
+AeSysApp::Units AeSysApp::GetUnits() noexcept {
 	return (m_Units);
 }
-int AeSysApp::GreatestCommonDivisor(const int number1, const int number2) const {
+int AeSysApp::GreatestCommonDivisor(const int number1, const int number2) const noexcept {
 	int ReturnValue = abs(number1);
 	int Divisor = abs(number2);
 	while (Divisor != 0) {
@@ -1113,16 +1113,16 @@ int AeSysApp::GreatestCommonDivisor(const int number1, const int number2) const 
 	}
 	return (ReturnValue);
 }
-bool AeSysApp::HighColorMode() const {
+bool AeSysApp::HighColorMode() const noexcept {
 	return m_HighColorMode;
 }
-OdGePoint3d AeSysApp::HomePointGet(int i) {
+OdGePoint3d AeSysApp::HomePointGet(int i) noexcept {
 	if (i >= 0 && i < 9)
 		return (m_HomePoints[i]);
 
 	return (OdGePoint3d::kOrigin);
 }
-void AeSysApp::HomePointSave(int i, const OdGePoint3d& point) {
+void AeSysApp::HomePointSave(int i, const OdGePoint3d& point) noexcept {
 	if (i >= 0 && i < 9)
 		m_HomePoints[i] = point;
 }
@@ -1336,16 +1336,16 @@ BOOL AeSysApp::InitInstance() {
 
 	return TRUE;
 }
-bool AeSysApp::IsClipboardDataGroups() {
+bool AeSysApp::IsClipboardDataGroups() noexcept {
 	return m_ClipboardDataEoGroups;
 }
-bool AeSysApp::IsClipboardDataImage() {
+bool AeSysApp::IsClipboardDataImage() noexcept {
 	return m_ClipboardDataImage;
 }
-bool AeSysApp::IsClipboardDataText() {
+bool AeSysApp::IsClipboardDataText() noexcept {
 	return m_ClipboardDataText;
 }
-bool AeSysApp::IsTrapHighlighted() {
+bool AeSysApp::IsTrapHighlighted() noexcept {
 	return m_TrapHighlighted;
 }
 void AeSysApp::LoadColorPalletFromFile(const CString& strFileName) {
@@ -1514,20 +1514,20 @@ CString AeSysApp::LoadStringResource(UINT resourceIdentifier) const {
 	VERIFY(String.LoadStringW(resourceIdentifier) == TRUE);
 	return String;
 }
-bool AeSysApp::ModeInformationOverView() const {
+bool AeSysApp::ModeInformationOverView() const noexcept {
 	return m_ModeInformationOverView;
 }
 void AeSysApp::OnAppAbout() {
 	EoDlgAbout dlg;
 	dlg.DoModal();
 }
-void AeSysApp::OnEditCfGroups() {
+void AeSysApp::OnEditCfGroups() noexcept {
 	m_ClipboardDataEoGroups = !m_ClipboardDataEoGroups;
 }
-void AeSysApp::OnEditCfImage() {
+void AeSysApp::OnEditCfImage() noexcept {
 	m_ClipboardDataImage = !m_ClipboardDataImage;
 }
-void AeSysApp::OnEditCfText() {
+void AeSysApp::OnEditCfText() noexcept {
 	m_ClipboardDataText = !m_ClipboardDataText;
 }
 void AeSysApp::OnFileOpen(void) {
@@ -1670,7 +1670,7 @@ void AeSysApp::OnTrapCommandsAddGroups() {
 
 	OnModeTrap();
 }
-void AeSysApp::OnTrapCommandsHighlight() {
+void AeSysApp::OnTrapCommandsHighlight() noexcept {
 	m_TrapHighlighted = !m_TrapHighlighted;
 	//LPARAM Hint = m_TrapHighlighted ? EoDb::kGroupsSafeTrap : EoDb::kGroupsSafe;
 	//UpdateGroupsInAllViews(Hint, &m_TrappedGroupList);
@@ -1731,7 +1731,7 @@ void AeSysApp::OnUpdateViewModeinformation(CCmdUI *pCmdUI) {
 }
 
 
-COLORREF AppGetTextCol() {
+COLORREF AppGetTextCol() noexcept {
 	return (~(ViewBackgroundColor | 0xff000000));
 }
 void AeSysApp::OnViewModeInformation() {
@@ -1820,7 +1820,7 @@ double AeSysApp::ParseLength(Units units, LPWSTR aszLen) {
 		return (0.);
 	}
 }
-double AeSysApp::PenWidthsGet(EoInt16 colorIndex) {
+double AeSysApp::PenWidthsGet(OdInt16 colorIndex) noexcept {
 	return (dPWids[colorIndex]);
 }
 /// <remarks> Processing occurs immediately before the framework loads the application state from the registry. </remarks>
@@ -1829,11 +1829,11 @@ void AeSysApp::PreLoadState() {
 
 	// TODO: add another context menus here
 }
-int AeSysApp::PrimaryMode() const {
+int AeSysApp::PrimaryMode() const noexcept {
 	return m_PrimaryMode;
 }
 
-bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size) {
+bool GetRegistryString(HKEY key, const wchar_t *subkey, const wchar_t *name, wchar_t *value, int size) noexcept {
 	bool rv = false;
 	HKEY hKey;
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
@@ -1923,7 +1923,7 @@ OdString GetRegistryAcadProfilesKey() {
 	return subkey;
 }
 
-void AeSysApp::ReleaseSimplexStrokeFont() {
+void AeSysApp::ReleaseSimplexStrokeFont() noexcept {
 	if (m_SimplexStrokeFont != 0) {
 		delete[] m_SimplexStrokeFont;
 	}
@@ -1971,8 +1971,10 @@ void AeSysApp::meterProgress() {
 			int m_Percent;
 			CMainFrame* m_MainFrame;
 			AeSysApp* m_Application;
-			StatUpdater(int percent, CMainFrame* mainFrame, AeSysApp* application) :
-				m_Percent(percent), m_MainFrame(mainFrame), m_Application(application) {
+			StatUpdater(int percent, CMainFrame* mainFrame, AeSysApp* application)  noexcept
+                : m_Percent(percent)
+                , m_MainFrame(mainFrame)
+                , m_Application(application) {
 			}
 			static void Exec(void* statusUpdater) {
 				StatUpdater* pExec = reinterpret_cast<StatUpdater*>(statusUpdater);
@@ -2001,7 +2003,7 @@ void AeSysApp::meterProgress() {
 		odExecuteMainThreadAction(StatUpdater::Exec, &execArg);
 	}
 }
-void AeSysApp::setLimit(int max) {
+void AeSysApp::setLimit(int max) noexcept {
 	m_nProgressLimit = max ? max : 1;
 }
 int AeSysApp::ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
@@ -2112,19 +2114,19 @@ void AeSysApp::initPlotStyleSheetEnv() {
 CString AeSysApp::ResourceFolderPath() {
 	return (getApplicationPath() + L"\\res\\");
 }
-void AeSysApp::SetArchitecturalUnitsFractionPrecision(const int precision) {
+void AeSysApp::SetArchitecturalUnitsFractionPrecision(const int precision) noexcept {
 	if (precision > 0) m_ArchitecturalUnitsFractionPrecision = precision;
 }
-void AeSysApp::SetDimensionAngle(double angle) {
+void AeSysApp::SetDimensionAngle(double angle) noexcept {
 	m_DimensionAngle = angle;
 }
-void AeSysApp::SetDimensionLength(double length) {
+void AeSysApp::SetDimensionLength(double length) noexcept {
 	m_DimensionLength = length;
 }
-void AeSysApp::SetEngagedAngle(double angle) {
+void AeSysApp::SetEngagedAngle(double angle) noexcept {
 	m_EngagedAngle = angle;
 }
-void AeSysApp::SetEngagedLength(double length) {
+void AeSysApp::SetEngagedLength(double length) noexcept {
 	m_EngagedLength = length;
 }
 int AeSysApp::SetShadowFolderPath(const CString& folder) {
@@ -2140,19 +2142,19 @@ int AeSysApp::SetShadowFolderPath(const CString& folder) {
 
 	return (_wmkdir(m_ShadowFolderPath));
 }
-void AeSysApp::SetUnits(Units units) {
+void AeSysApp::SetUnits(Units units) noexcept {
 	m_Units = units;
 }
-CString AeSysApp::ShadowFolderPath() const {
+CString AeSysApp::ShadowFolderPath() const noexcept {
 	return m_ShadowFolderPath;
 }
-char* AeSysApp::SimplexStrokeFont() {
+char* AeSysApp::SimplexStrokeFont() noexcept {
 	return m_SimplexStrokeFont;
 }
-EoInt16 AeSysApp::TrapHighlightColor() const {
+OdInt16 AeSysApp::TrapHighlightColor() const noexcept {
 	return m_TrapHighlightColor;
 }
-void AeSysApp::UninitializeTeigha() {
+void AeSysApp::UninitializeTeigha() noexcept {
 #ifdef ODAMFC_EXPORT
 	EoApplicationReactor::rxUninit();
 	EoApDocument::rxUninit();

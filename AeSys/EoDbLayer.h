@@ -23,18 +23,18 @@ public:
 	OdInt16 ColorIndex() const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap);
-	bool IsActive() const;
+	bool IsActive() const noexcept;
 	bool IsCurrent() const;
-	bool IsInternal() const;
-	bool IsLocked() const;
-	bool IsOff() const;
-	bool IsResident() const;
+	bool IsInternal() const noexcept;
+	bool IsLocked() const noexcept;
+	bool IsOff() const noexcept;
+	bool IsResident() const noexcept;
 	OdInt16 LinetypeIndex();
 	OdString LinetypeName();
 	void MakeActive();
-	void MakeCurrent();
-	void MakeInternal(bool isInternal);
-	void MakeResident(bool isResident);
+	void MakeCurrent() noexcept;
+	void MakeInternal(bool isInternal) noexcept;
+	void MakeResident(bool isResident) noexcept;
 	OdString Name() const;
 	void PenTranslation(OdUInt16, OdInt16*, OdInt16*);
 	void SetColorIndex(OdInt16 colorIndex);
@@ -43,9 +43,9 @@ public:
 	void SetIsOff(bool isOff);
 	void SetLinetype(OdDbObjectId linetype);
 	void SetName(const OdString& name);
-	void SetStateFlags(OdUInt16 flags);
+	void SetStateFlags(OdUInt16 flags) noexcept;
 	void SetTransparency(const OdCmTransparency& transparency);
-	OdUInt16 StateFlags() const;
+	OdUInt16 StateFlags() const noexcept;
 	OdDbLayerTableRecordPtr TableRecord() const;
 };
 

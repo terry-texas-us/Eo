@@ -14,7 +14,7 @@ public: // Operators
 public: // Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const;
 	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void FormatExtra(CString& extra) const;
@@ -23,10 +23,10 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
+	bool Is(OdUInt16 type) const noexcept;
 	bool IsEqualTo(EoDbPrimitive* primitive) const;
 	bool IsInView(AeSysView* view) const;
-	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
+	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
 	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const;
 	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const;

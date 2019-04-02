@@ -9,7 +9,7 @@ public:
 	}
 
 public:
-	void setHostAppServices(OdDbHostAppServices* hostAppServices) {
+	void setHostAppServices(OdDbHostAppServices* hostAppServices) noexcept {
 		m_pHostAppServices = hostAppServices;
 	}
 	virtual void printError(const OdString& name, const OdString& value, const OdString& validation = OdString(), const OdString& defaultValue = OdString());

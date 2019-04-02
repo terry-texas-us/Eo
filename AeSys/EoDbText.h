@@ -15,7 +15,7 @@ public: // Operators
 	const EoDbText& operator=(const EoDbText&);
 
 public: // Methods - absolute virtuals
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
 	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
@@ -23,14 +23,14 @@ public: // Methods - absolute virtuals
 	void GetAllPoints(OdGePoint3dArray& points) const;
 	void FormatExtra(CString& extra) const;
 	void FormatGeometry(CString& geometry) const;
-	OdGePoint3d	GetCtrlPt() const;
+	OdGePoint3d	GetCtrlPt() const noexcept;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
-	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
-	bool IsEqualTo(EoDbPrimitive* primitive) const;
+	OdGePoint3d	GoToNxtCtrlPt() const noexcept;
+	bool Is(OdUInt16 type) const noexcept;
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept;
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
-	void ModifyState();
+	void ModifyState() noexcept;
 	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
 	/// <summary>Evaluates whether a point lies within the bounding region of text.</summary>
@@ -48,18 +48,18 @@ public: // Methods
 	EoDbFontDefinition FontDefinition() const;
 	EoGeReferenceSystem ReferenceSystem() const;
 	double Rotation() const;
-	const CString& Text();
-	OdGePoint3d Position() const;
+	const CString& Text() noexcept;
+	OdGePoint3d Position() const noexcept;
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition);
 	void SetHorizontalMode(HorizontalAlignment horizontalAlignment);
-	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem);
+	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);
 	EoDbText& SetTo(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, const CString& text);
 	void SetVerticalMode(VerticalAlignment verticalAlignment);
 
 public: // Methods - static
-	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode);
-	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode);
+	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
+	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
 
 	static EoDbText* ConstructFrom(EoDbFile& file);
 	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
@@ -81,7 +81,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 /// <summary> Determines the count of characters in string excluding formatting characters.</summary>
 int TextLengthSansFormattingCharacters(const CString& text);
 /// <summary> Determines the offset to the bottom left alignment position of a string of the specified number of characters and text attributes in the z=0 plane.</summary>
-OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int iChrs);
+OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int iChrs) noexcept;
 /// <summary>Returns the region boundaries of a text string applying and optional inflation factor.</summary>
 void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, int numberOfCharacters, double spaceFactor,  OdGePoint3dArray& boundingBox);
 OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double dLineSpaceFac, double dChrSpaceFac);

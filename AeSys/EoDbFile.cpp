@@ -8,7 +8,7 @@ EoDbFile::EoDbFile(const OdString& fileName, UINT openFlags)
 }
 EoDbFile::~EoDbFile() {
 }
-void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) {
+void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept {
 }
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive) {
 	const OdInt16 ColorIndex = ReadInt16();

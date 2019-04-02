@@ -56,7 +56,7 @@ void EoDbDwgToPegFile::ConvertBlockTable(AeSysDoc* document) {
 	}
 }
 
-void EoDbDwgToPegFile::ConvertHeaderSection(AeSysDoc* document) {
+void EoDbDwgToPegFile::ConvertHeaderSection(AeSysDoc* document) noexcept {
 };
 
 void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {

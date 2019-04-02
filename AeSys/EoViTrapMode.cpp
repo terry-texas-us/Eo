@@ -253,7 +253,7 @@ void AeSysView::OnTraprModeLast() {
 		UpdateStateInformation(TrapCount);
 	}
 }
-void AeSysView::OnTraprModeEngage() {
+void AeSysView::OnTraprModeEngage() noexcept {
 	// TODO: Add your command handler code here
 }
 void AeSysView::OnTraprModeMenu() {

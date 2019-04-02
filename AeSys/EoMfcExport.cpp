@@ -20,21 +20,21 @@ EoApDocumentImpl::~EoApDocumentImpl() {
 OdString EoApDocumentImpl::fileName() const {
 	return (const wchar_t*) (*m_pImp)->GetPathName();
 }
-CDocument* EoApDocumentImpl::cDoc() const {
+CDocument* EoApDocumentImpl::cDoc() const noexcept {
 	return (*m_pImp).get();
 }
 //AcTransactionManager* transactionManager() const {};
 OdDbDatabasePtr EoApDocumentImpl::database() const {
 	return (*m_pImp)->m_DatabasePtr;
 }
-void EoApDocumentImpl::lockMode(bool includeMyLocks ) const {
+void EoApDocumentImpl::lockMode(bool includeMyLocks ) const noexcept {
 }
-void EoApDocumentImpl::myLockMode() const {
+void EoApDocumentImpl::myLockMode() const noexcept {
 }
-bool EoApDocumentImpl::isQuiescent() const {
+bool EoApDocumentImpl::isQuiescent() const noexcept {
 	return false;
 }
-void* EoApDocumentImpl::contextPtr() const {
+void* EoApDocumentImpl::contextPtr() const noexcept {
 	return 0;
 }
 
@@ -80,7 +80,7 @@ OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 	}
 	return OdGsLayoutHelperPtr();
 }
-bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& pt) {
+bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& pt) noexcept {
 #ifdef DEV_COMMAND_VIEW
 	POSITION Position = document->GetFirstViewPosition();
 	while (Position != 0) {

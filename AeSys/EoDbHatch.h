@@ -48,7 +48,7 @@ public: // Operators
 public: // Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const;
 	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
 	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void FormatExtra(CString& extra) const;
@@ -57,8 +57,8 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
 	OdGePoint3d	GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const;
-	bool IsEqualTo(EoDbPrimitive* primitive) const {return false;}
+	bool Is(OdUInt16 type) const noexcept;
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept {return false;}
 	bool IsInView(AeSysView* view) const;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
@@ -76,16 +76,16 @@ public: // Methods
 	void DisplaySolid(AeSysView* view, CDC* deviceContext) const;
 	CString FormatInteriorStyle() const;
 	OdGePoint3d GetPointAt(int pointIndex);
-	void ModifyState();
+	void ModifyState() noexcept;
 	int NumberOfVertices() const;
-	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point);
+	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 	OdGeVector3d RecomputeReferenceSystem();
 	void RetrieveHatchPattern(const OdString& hatchPatternName, OdHatchPattern& hatchPattern) const;
-	void SetHatchOrigin(const OdGePoint3d& origin);
-	void SetHatchXAxis(const OdGeVector3d& xAxis);
-	void SetHatchYAxis(const OdGeVector3d& yAxis);
+	void SetHatchOrigin(const OdGePoint3d& origin) noexcept;
+	void SetHatchXAxis(const OdGeVector3d& xAxis) noexcept;
+	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
-	void SetInteriorStyle(OdInt16 interiorStyle);
+	void SetInteriorStyle(OdInt16 interiorStyle) noexcept;
 	void SetInteriorStyleIndex(size_t styleIndex);
 	void SetLoopAt(int loopIndex, OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
@@ -98,7 +98,7 @@ public:
 	static EoDbHatch* Create(OdDbDatabasePtr database);
 	static EoDbHatch* Create(const EoDbHatch& other, OdDbDatabasePtr database);
 
-	static size_t Edge();
+	static size_t Edge() noexcept;
 	static size_t LegacyInteriorStyleIndex(const OdString& name);
-	static void SetEdgeToEvaluate(size_t edgeToEvaluate);
+	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 };

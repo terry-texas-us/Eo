@@ -146,7 +146,7 @@ void EoDbBlockReference::FormatGeometry(CString& geometry) const {
 	ScaleFactorsString.Format(L"Scale Factors;%f;%f;%f\t", m_ScaleFactors.sx, m_ScaleFactors.sy, m_ScaleFactors.sz);
 	geometry +=  ScaleFactorsString;
 }
-OdGePoint3d EoDbBlockReference::GetCtrlPt() const {
+OdGePoint3d EoDbBlockReference::GetCtrlPt() const noexcept {
 	return (m_Position);
 }
 void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
@@ -159,13 +159,13 @@ void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) con
 		view->PopModelTransform();
 	}
 }
-OdGePoint3d	EoDbBlockReference::GoToNxtCtrlPt() const {
+OdGePoint3d	EoDbBlockReference::GoToNxtCtrlPt() const noexcept {
 	return m_Position;
 }
-bool EoDbBlockReference::Is(OdUInt16 type) const {
+bool EoDbBlockReference::Is(OdUInt16 type) const noexcept {
 	return type == EoDb::kGroupReferencePrimitive;
 }
-bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const {
+bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
 	return false;
 }
 bool EoDbBlockReference::IsInView(AeSysView* view) const {
@@ -180,7 +180,7 @@ bool EoDbBlockReference::IsInView(AeSysView* view) const {
 
 	return (bInView);
 }
-bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
 	return false;
 }
 OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
@@ -298,34 +298,34 @@ bool EoDbBlockReference::Write(EoDbFile& file) const {
 
 	return true;
 }
-void EoDbBlockReference::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbBlockReference::Write(CFile& file, OdUInt8* buffer) const noexcept {
 }
 
-OdUInt16 EoDbBlockReference::Columns() const {
+OdUInt16 EoDbBlockReference::Columns() const noexcept {
 	return m_Columns;
 }
-double EoDbBlockReference::ColumnSpacing() const {
+double EoDbBlockReference::ColumnSpacing() const noexcept {
 	return m_ColumnSpacing;
 }
 CString EoDbBlockReference::Name() const {
 	return m_Name;
 }
-double EoDbBlockReference::Rotation() const {
+double EoDbBlockReference::Rotation() const noexcept {
 	return m_Rotation;
 }
-OdGeScale3d EoDbBlockReference::ScaleFactors() const {
+OdGeScale3d EoDbBlockReference::ScaleFactors() const noexcept {
 	return m_ScaleFactors;
 }
-OdGePoint3d EoDbBlockReference::Position() const {
+OdGePoint3d EoDbBlockReference::Position() const noexcept {
 	return m_Position;
 }
-OdGeVector3d EoDbBlockReference::Normal() const {
+OdGeVector3d EoDbBlockReference::Normal() const noexcept {
 	return m_Normal;
 }
-OdUInt16 EoDbBlockReference::Rows() const {
+OdUInt16 EoDbBlockReference::Rows() const noexcept {
 	return m_Rows;
 }
-double EoDbBlockReference::RowSpacing() const {
+double EoDbBlockReference::RowSpacing() const noexcept {
 	return m_RowSpacing;
 }
 void EoDbBlockReference::SetName(const CString& name) {
@@ -345,22 +345,22 @@ void EoDbBlockReference::SetPosition(const OdGePoint3d& position) {
 		BlockReference->setPosition(position);
 	}
 }
-void EoDbBlockReference::SetScaleFactors(const OdGeScale3d& scaleFactors) {
+void EoDbBlockReference::SetScaleFactors(const OdGeScale3d& scaleFactors) noexcept {
 	m_ScaleFactors = scaleFactors;
 }
-void EoDbBlockReference::SetRotation(double rotation) {
+void EoDbBlockReference::SetRotation(double rotation) noexcept {
 	m_Rotation = rotation;
 }
-void EoDbBlockReference::SetRows(OdUInt16 rows) {
+void EoDbBlockReference::SetRows(OdUInt16 rows) noexcept {
 	m_Rows = rows;
 }
-void EoDbBlockReference::SetRowSpacing(double rowSpacing) {
+void EoDbBlockReference::SetRowSpacing(double rowSpacing) noexcept {
 	m_RowSpacing = rowSpacing;
 }
-void EoDbBlockReference::SetColumns(OdUInt16 columns) {
+void EoDbBlockReference::SetColumns(OdUInt16 columns) noexcept {
 	m_Columns = columns;
 }
-void EoDbBlockReference::SetColumnSpacing(double columnSpacing) {
+void EoDbBlockReference::SetColumnSpacing(double columnSpacing) noexcept {
 	m_ColumnSpacing = columnSpacing;
 }
 EoDbBlockReference* EoDbBlockReference::ConstructFrom(EoDbFile& file) {

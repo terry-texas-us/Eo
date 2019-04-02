@@ -1057,7 +1057,7 @@ public:
 };
 AeSysDoc* ConvertEntityToPrimitiveProtocolExtension::m_Document = NULL;
 
-ConvertEntityToPrimitiveProtocolExtension::ConvertEntityToPrimitiveProtocolExtension(AeSysDoc* document) 
+ConvertEntityToPrimitiveProtocolExtension::ConvertEntityToPrimitiveProtocolExtension(AeSysDoc* document) noexcept
     : m_Converters(0) {
 	m_Document = document;
 }
