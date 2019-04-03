@@ -286,7 +286,7 @@ AeSysApp::AeSysApp()
     m_DeviceWidthInMillimeters = 0.;
     m_DeviceWidthInPixels = 0.;
 
-    m_AeSysMenuHandle = NULL;
+    m_AeSysMenuHandle = nullptr;
     m_ModeResourceIdentifier = 0;
     m_PrimaryMode = 0;
 
@@ -500,7 +500,7 @@ OdString AeSysApp::getFontMapFileName() const {
 
 CString AeSysApp::getApplicationPath() {
 	wchar_t FileName[MAX_PATH];
-	if (::GetModuleFileNameW(::GetModuleHandle(0), FileName, MAX_PATH)) {
+	if (::GetModuleFileNameW(::GetModuleHandleW(nullptr), FileName, MAX_PATH)) {
 		CString FilePath(FileName);
 		const int Delimiter = FilePath.ReverseFind('\\');
 		return (FilePath.Left(Delimiter));
@@ -780,15 +780,15 @@ void AeSysApp::BuildModeSpecificAcceleratorTable(void) {
 	::DestroyAcceleratorTable(AcceleratorTableHandle);
 
 	HACCEL ModeAcceleratorTableHandle = ::LoadAccelerators(m_hInstance, MAKEINTRESOURCE(m_ModeResourceIdentifier));
-	int ModeAcceleratorTableEntries = ::CopyAcceleratorTable(ModeAcceleratorTableHandle, NULL, 0);
+	int ModeAcceleratorTableEntries = ::CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0);
 
 	AcceleratorTableHandle = ::LoadAccelerators(m_hInstance, MAKEINTRESOURCE(IDR_MAINFRAME));
-	const int AcceleratorTableEntries = ::CopyAcceleratorTable(AcceleratorTableHandle, NULL, 0);
+	const int AcceleratorTableEntries = ::CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0);
 
 	LPACCEL ModifiedAcceleratorTable = new ACCEL[AcceleratorTableEntries + ModeAcceleratorTableEntries];
 
-	::CopyAcceleratorTable(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
-	::CopyAcceleratorTable(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
+	::CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
+	::CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
 
 	MainFrame->m_hAccelTable = ::CreateAcceleratorTable(ModifiedAcceleratorTable, AcceleratorTableEntries + ModeAcceleratorTableEntries);
 
@@ -1531,10 +1531,11 @@ void AeSysApp::OnEditCfImage() noexcept {
 void AeSysApp::OnEditCfText() noexcept {
 	m_ClipboardDataText = !m_ClipboardDataText;
 }
+
 void AeSysApp::OnFileOpen(void) {
 	const DWORD Flags(OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
 	CString Filter = LoadStringResource(IDS_OPENFILE_FILTER);
-	CFileDialog FileDialog(TRUE, NULL, NULL, Flags, Filter);
+	CFileDialog FileDialog(TRUE, nullptr, nullptr, Flags, Filter);
 
 	CString FileName;
 	FileDialog.m_ofn.lpstrFile = FileName.GetBuffer(MAX_PATH);
@@ -1549,6 +1550,7 @@ void AeSysApp::OnFileOpen(void) {
 		OpenDocumentFile(FileName);
 	}
 }
+
 void AeSysApp::OnFilePlotstylemanager() {
 	OPENFILENAME of;
 	::ZeroMemory(&of, sizeof(OPENFILENAME));
