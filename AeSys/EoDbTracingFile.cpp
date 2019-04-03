@@ -15,21 +15,23 @@ void EoDbTracingFile::ReadHeader() {
 	if (ReadUInt16() != kEndOfSection)
 		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kEndOfSection.";
 }
+
 bool EoDbTracingFile::ReadLayer(EoDbLayer* layer) {
-	if (ReadUInt16() != kGroupsSection)
-		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kGroupsSection.";
+    if (ReadUInt16() != kGroupsSection)
+        throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kGroupsSection.";
 
-	const OdUInt16 NumberOfGroups = ReadUInt16();
+    const size_t NumberOfGroups = ReadUInt16();
 
-	for (OdUInt16 n = 0; n < NumberOfGroups; n++) {
-		EoDbGroup* Group = ReadGroup();
-		layer->AddTail(Group);
-	}
-	if (ReadUInt16() != kEndOfSection)
-		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kEndOfSection.";
+    for (size_t GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
+        EoDbGroup* Group = ReadGroup();
+        layer->AddTail(Group);
+    }
+    if (ReadUInt16() != kEndOfSection)
+        throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kEndOfSection.";
 
-	return true;
+    return true;
 }
+
 EoDbGroup* EoDbTracingFile::ReadGroup() {
 	const size_t NumberOfPrimitives = ReadUInt16();
 

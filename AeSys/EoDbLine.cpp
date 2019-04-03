@@ -379,12 +379,12 @@ void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 
 // Static
 EoDbLine* EoDbLine::ConstructFrom(EoDbFile& file) {
-	EoDbLine* LinePrimitive = new EoDbLine();
-	LinePrimitive->SetColorIndex(file.ReadInt16());
-	LinePrimitive->SetLinetypeIndex(file.ReadInt16());
-	LinePrimitive->SetStartPoint(file.ReadPoint3d());
-	LinePrimitive->SetEndPoint(file.ReadPoint3d());
-	return (LinePrimitive);
+    EoDbLine* LinePrimitive = new EoDbLine();
+    LinePrimitive->SetColorIndex(file.ReadInt16());
+    LinePrimitive->SetLinetypeIndex(file.ReadInt16());
+    LinePrimitive->SetStartPoint(file.ReadPoint3d());
+    LinePrimitive->SetEndPoint(file.ReadPoint3d());
+    return (LinePrimitive);
 }
 EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbLine* LinePrimitive = new EoDbLine();
@@ -441,17 +441,35 @@ EoDbLine* EoDbLine::Create(OdDbDatabasePtr database) {
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord) {
-	OdDbLinePtr Line = OdDbLine::createObject();
-	Line->setDatabaseDefaults(database);
+    OdDbLinePtr Line = OdDbLine::createObject();
+    Line->setDatabaseDefaults(database);
 
-	blockTableRecord->appendOdDbEntity(Line);
-	Line->setColorIndex(pstate.ColorIndex());
+    blockTableRecord->appendOdDbEntity(Line);
+    Line->setColorIndex(pstate.ColorIndex());
 
 	const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
 
 	Line->setLinetype(Linetype);
 
 	return Line;
+}
+
+OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbLinePtr Line = OdDbLine::createObject();
+    Line->setDatabaseDefaults(database);
+
+    blockTableRecord->appendOdDbEntity(Line);
+
+    Line->setColorIndex(file.ReadInt16());
+    
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+    
+    Line->setLinetype(Linetype);
+    
+    Line->setStartPoint(file.ReadPoint3d());
+    Line->setEndPoint(file.ReadPoint3d());
+    
+    return (Line);
 }
 
 EoDbLine* EoDbLine::Create(OdDbLinePtr line) {

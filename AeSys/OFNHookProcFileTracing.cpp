@@ -27,7 +27,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 
 			CFileStatus	FileStatus;
 			if (CFile::GetStatus(FilePath, FileStatus)) {
-				EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(FilePath);
+				EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
 				if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 					EoDbLayer* Layer = Document->GetLayerAt(FilePath);
 					HWND PreviewWindow = ::GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
@@ -59,7 +59,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 		}
 		LPWSTR Name = PathFindFileName(FilePath);
 
-		EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(FilePath);
+		EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
 		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
 			theApp.WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
 			return (TRUE);

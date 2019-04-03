@@ -406,7 +406,7 @@ public: // trap interface
 
 public:
 	void TracingFuse(OdString& nameAndLocation);
-	bool TracingLoadLayer(const OdString& fileName, EoDbLayer* layer);
+	bool TracingLoadLayer(const OdString& file, EoDbLayer* layer);
 	bool TracingOpen(const OdString& pathName);
 
 public:

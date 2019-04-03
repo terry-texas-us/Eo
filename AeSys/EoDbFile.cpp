@@ -43,42 +43,43 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 }
 
 EoDbPrimitive* EoDbFile::ReadPrimitive() {
-	EoDbPrimitive* Primitive = 0;
-	switch (ReadUInt16()) {
-	case EoDb::kPointPrimitive:
+	EoDbPrimitive* Primitive = nullptr;
+
+    switch (ReadUInt16()) {
+	case kPointPrimitive:
 		Primitive = EoDbPoint::ConstructFrom(*this);
 		break;
-	case EoDb::kInsertPrimitive:
+	case kInsertPrimitive:
 		ConstructBlockReferencePrimitiveFromInsertPrimitive(Primitive);
 		break;
-	case EoDb::kGroupReferencePrimitive:
+	case kGroupReferencePrimitive:
 		Primitive = EoDbBlockReference::ConstructFrom(*this);
 		break;
-	case EoDb::kLinePrimitive:
+	case kLinePrimitive:
 		Primitive = EoDbLine::ConstructFrom(*this);
 		break;
-	case EoDb::kHatchPrimitive:
+	case kHatchPrimitive:
 		Primitive = EoDbHatch::ConstructFrom(*this);
 		break;
-	case EoDb::kEllipsePrimitive:
+	case kEllipsePrimitive:
 		Primitive = EoDbEllipse::ConstructFrom(*this);
 		break;
-	case EoDb::kSplinePrimitive:
+	case kSplinePrimitive:
 		Primitive = EoDbSpline::ConstructFrom(*this);
 		break;
-	case EoDb::kCSplinePrimitive:
+	case kCSplinePrimitive:
 		ConstructPolylinePrimitiveFromCSplinePrimitive(Primitive);
 		break;
-	case EoDb::kPolylinePrimitive:
+	case kPolylinePrimitive:
 		Primitive = EoDbPolyline::ConstructFrom(*this);
 		break;
-	case EoDb::kTextPrimitive:
+	case kTextPrimitive:
 		Primitive = EoDbText::ConstructFrom(*this);
 		break;
-	case EoDb::kDimensionPrimitive:
+	case kDimensionPrimitive:
 		Primitive = EoDbDimension::ConstructFrom(*this);
 		break;
-	case EoDb::kTagPrimitive:
+	case kTagPrimitive:
 		ConstructPointPrimitiveFromTagPrimitive(Primitive);
 		break;
 

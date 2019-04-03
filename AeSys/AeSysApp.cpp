@@ -1055,32 +1055,28 @@ OdGePoint3d AeSysApp::GetCursorPosition() {
     return (ActiveView) ? ActiveView->GetCursorPosition() : OdGePoint3d::kOrigin;
 }
 
-EoDb::FileTypes AeSysApp::GetFileTypeFromPath(const OdString& pathName) {
-	EoDb::FileTypes Type(EoDb::kUnknown);
-	OdString Extension = pathName.right(3);
+EoDb::FileTypes AeSysApp::GetFileType(const OdString& file) {
+    EoDb::FileTypes Type(kUnknown);
+    OdString Extension = file.right(3);
 
-	if (!Extension.isEmpty()) {
-		if (Extension.iCompare(L"peg") == 0) {
-			Type = EoDb::kPeg;
-		}
-		else if (Extension.iCompare(L"tra") == 0) {
-			Type = EoDb::kTracing;
-		}
-		else if (Extension.iCompare(L"jb1") == 0) {
-			Type = EoDb::kJob;
-		}
-		else if (Extension.iCompare(L"dwg") == 0) {
-			Type = EoDb::kDwg;
-		}
-		else if (Extension.iCompare(L"dxf") == 0) {
-			Type = EoDb::kDxf;
-		}
-		else if (Extension.iCompare(L"dxb") == 0) {
-			Type = EoDb::kDxb;
-		}
-	}
-	return Type;
+    if (!Extension.isEmpty()) {
+        if (Extension.iCompare(L"peg") == 0) {
+            Type = kPeg;
+        } else if (Extension.iCompare(L"tra") == 0) {
+            Type = kTracing;
+        } else if (Extension.iCompare(L"jb1") == 0) {
+            Type = kJob;
+        } else if (Extension.iCompare(L"dwg") == 0) {
+            Type = kDwg;
+        } else if (Extension.iCompare(L"dxf") == 0) {
+            Type = kDxf;
+        } else if (Extension.iCompare(L"dxb") == 0) {
+            Type = kDxb;
+        }
+    }
+    return Type;
 }
+
 COLORREF AeSysApp::GetHotColor(OdInt16 colorIndex) noexcept {
 	return (ColorPalette[colorIndex]);
 }

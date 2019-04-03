@@ -986,13 +986,14 @@ BOOL AeSysDoc::OnNewDocument() {
 	return FALSE;
 }
 
-BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
+BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 	OdDbDatabaseDoc::setDocToAssign(this);
-	EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(pathName);
+	FileTypes FileType = AeSysApp::GetFileType(file);
+    
     switch (FileType) {
     case EoDb::kDwg:
     case EoDb::kDxf: {
-        m_DatabasePtr = theApp.readFile(pathName, false, false);
+        m_DatabasePtr = theApp.readFile(file, false, false);
 
         //<tas="disable lineweight display until lineweight by default is properly defined"</tas>
         if (m_DatabasePtr->getLWDISPLAY()) m_DatabasePtr->setLWDISPLAY(false);
@@ -1032,7 +1033,7 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
 
         EoDbPegFile PegFile(m_DatabasePtr);
         CFileException e;
-        if (PegFile.Open(pathName, CFile::modeRead | CFile::shareDenyNone, &e)) {
+        if (PegFile.Open(file, CFile::modeRead | CFile::shareDenyNone, &e)) {
             PegFile.Load(this);
             m_SaveAsType_ = EoDb::kPeg;
         }
@@ -1040,10 +1041,10 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
     }
     case EoDb::kTracing:
     case EoDb::kJob:
-        TracingOpen(pathName);
+        TracingOpen(file);
         break;
     default:
-        return CDocument::OnOpenDocument(pathName);
+        return CDocument::OnOpenDocument(file);
     }
 	return TRUE;
 }
@@ -1355,7 +1356,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	if (GetSaveFileNameW(&of)) {
 		name = of.lpstrFile;
 
-		const EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(name);
+		const EoDb::FileTypes FileType = AeSysApp::GetFileType(name);
 		if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 			if (FileType == EoDb::kJob) {
 				CFile File(name, CFile::modeWrite | CFile::modeCreate);
@@ -1546,37 +1547,38 @@ void AeSysDoc::TracingFuse(OdString& nameAndLocation) {
 		Layer->SetName(nameAndLocation);
 	}
 }
-bool AeSysDoc::TracingLoadLayer(const OdString& pathName, EoDbLayer* layer) {
-	const EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(pathName);
-	if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
-		return false;
-	}
-	if (layer == 0)
-		return false;
 
-	const bool bFileOpen = false;
+bool AeSysDoc::TracingLoadLayer(const OdString& file, EoDbLayer* layer) {
+    if (!layer)
+        return false;
 
-	if (FileType == EoDb::kTracing) {
-		CFileException e;
-		EoDbTracingFile TracingFile(pathName, CFile::modeRead | CFile::shareDenyNone);
-		if (TracingFile != CFile::hFileNull) {
-			TracingFile.ReadHeader();
-			TracingFile.ReadLayer(layer);
-			return true;
-		}
-	}
-	else {
-		CFile File(pathName, CFile::modeRead | CFile::shareDenyNone);
-		if (File != 0) {
-			EoDbJobFile JobFile;
-			JobFile.ReadHeader(File);
-			JobFile.ReadLayer(File, layer);
-			return true;
-		}
-		theApp.WarningMessageBox(IDS_MSG_TRACING_OPEN_FAILURE, pathName);
-	}
-	return (bFileOpen);
+    const FileTypes FileType = AeSysApp::GetFileType(file);
+    if (FileType != kTracing && FileType != kJob) {
+        return false;
+    }
+    const bool bFileOpen = false;
+
+    if (FileType == kTracing) {
+        CFileException e;
+        EoDbTracingFile TracingFile(file, CFile::modeRead | CFile::shareDenyNone);
+        if (TracingFile != CFile::hFileNull) {
+            TracingFile.ReadHeader();
+            TracingFile.ReadLayer(layer);
+            return true;
+        }
+    } else {
+        CFile File(file, CFile::modeRead | CFile::shareDenyNone);
+        if (File != 0) {
+            EoDbJobFile JobFile;
+            JobFile.ReadHeader(File);
+            JobFile.ReadLayer(File, layer);
+            return true;
+        }
+        theApp.WarningMessageBox(IDS_MSG_TRACING_OPEN_FAILURE, file);
+    }
+    return (bFileOpen);
 }
+
 bool AeSysDoc::TracingOpen(const OdString& fileName) {
 	m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 	m_DatabasePtr->startUndoRecord();
@@ -2834,7 +2836,7 @@ void AeSysDoc::OnInsertTracing() {
 
 		Name = Name.mid(of.nFileOffset);
 
-		const EoDb::FileTypes FileType = AeSysApp::GetFileTypeFromPath(Name);
+		const EoDb::FileTypes FileType = AeSysApp::GetFileType(Name);
 		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
 			return;
 		}

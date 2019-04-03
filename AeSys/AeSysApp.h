@@ -320,7 +320,7 @@ public:
 	/// </summary>
 	void FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
 	OdGePoint3d GetCursorPosition();
-	static EoDb::FileTypes GetFileTypeFromPath(const OdString& pathName);
+	static EoDb::FileTypes GetFileType(const OdString& file);
 	COLORREF GetHotColor(OdInt16 colorIndex) noexcept;
 	HINSTANCE GetInstance() noexcept;
 	HWND GetSafeHwnd();
