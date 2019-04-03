@@ -7,8 +7,8 @@ public:
 	class LoadedApps : public OdArray<OdString>, public OdStaticRxObject<OdRxDLinkerReactor> {
 	public:
 		ODRX_HEAP_OPERATORS();
-		LoadedApps() : 
-			m_pListBox(0) {
+		LoadedApps() 
+            : m_pListBox(0) {
 		}
 		CListBox* m_pListBox;
 		void rxAppLoaded(OdRxModule* appModule);

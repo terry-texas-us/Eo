@@ -1153,7 +1153,7 @@ void AeSysDoc::AddTextBlock(LPWSTR text) {
 			UpdateGroupInAllViews(EoDb::kGroup, Group);
 		}
 		ReferenceSystem.SetOrigin(text_GetNewLinePos(FontDefinition, ReferenceSystem, 1., 0));
-		pText = wcstok_s(0, L"\r", &NextToken);
+		pText = wcstok_s(nullptr, L"\r", &NextToken);
 		if (pText == 0)
 			break;
 		pText++;
@@ -2485,7 +2485,7 @@ void AeSysDoc::OnPensTranslate() {
 			while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0) {
 				NextToken = NULL;
 				pCol[w] = OdInt16(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
-				pColNew[w++] = OdInt16(_wtoi(wcstok_s(0, L"\n", &NextToken)));
+				pColNew[w++] = OdInt16(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
 			}
 			PenTranslation(wCols, pColNew, pCol);
 

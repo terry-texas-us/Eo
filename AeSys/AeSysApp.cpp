@@ -1146,7 +1146,7 @@ void AeSysApp::InitGbls(CDC* deviceContext) {
 	m_TrapHighlightColor = 15;
 
 	//Document->InitializeGroupAndPrimitiveEdit();
-	pstate.SetPen(NULL, deviceContext, 1, 1);
+	pstate.SetPen(nullptr, deviceContext, 1, 1);
 	pstate.SetPointDisplayMode(1);
 }
 BOOL AeSysApp::InitializeTeigha() {
@@ -1302,7 +1302,7 @@ BOOL AeSysApp::InitInstance() {
 	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) {
 		//CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
 		if (!MainFrame->LoadMDIState(GetRegSectionPath())) {
-			m_PegDocTemplate->OpenDocumentFile(NULL);
+			m_PegDocTemplate->OpenDocumentFile(nullptr);
 		}
 	}
 	else { // Dispatch commands specified on the command line
@@ -1345,25 +1345,29 @@ bool AeSysApp::IsClipboardDataText() noexcept {
 bool AeSysApp::IsTrapHighlighted() noexcept {
 	return m_TrapHighlighted;
 }
-void AeSysApp::LoadColorPalletFromFile(const CString& strFileName) {
+void AeSysApp::LoadColorPalletFromFile(const CString& fileName) {
 	CStdioFile fl;
 
-	if (fl.Open(strFileName, CFile::modeRead | CFile::typeText)) {
-		wchar_t pBuf[128];
-		LPWSTR	pId, pRed, pGreen, pBlue;
+	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
+		wchar_t Line[128];
+        wmemset(Line, 0, 128);
+        LPWSTR pId = nullptr;
+        LPWSTR pRed = nullptr;
+        LPWSTR pGreen = nullptr;
+        LPWSTR pBlue = nullptr;
+        
+		while (fl.ReadString(Line, sizeof(Line) / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0);
 
-		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0 && _tcsnicmp(pBuf, L"<Colors>", 8) != 0);
-
-		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != 0 && *pBuf != '<') {
-			LPWSTR NextToken = NULL;
-			pId = wcstok_s(pBuf, L"=", &NextToken);
-			pRed = wcstok_s(0, L",", &NextToken);
-			pGreen = wcstok_s(0, L",", &NextToken);
-			pBlue = wcstok_s(0, L",", &NextToken);
+		while (fl.ReadString(Line, sizeof(Line) / sizeof(wchar_t) - 1) && *Line != '<') {
+			LPWSTR NextToken = nullptr;
+			pId = wcstok_s(Line, L"=", &NextToken);
+			pRed = wcstok_s(nullptr, L",", &NextToken);
+			pGreen = wcstok_s(nullptr, L",", &NextToken);
+			pBlue = wcstok_s(nullptr, L",", &NextToken);
 			ColorPalette[_wtoi(pId)] = RGB(_wtoi(pRed), _wtoi(pGreen), _wtoi(pBlue));
-			pRed = wcstok_s(0, L",", &NextToken);
-			pGreen = wcstok_s(0, L",", &NextToken);
-			pBlue = wcstok_s(0, L"\n", &NextToken);
+			pRed = wcstok_s(nullptr, L",", &NextToken);
+			pGreen = wcstok_s(nullptr, L",", &NextToken);
+			pBlue = wcstok_s(nullptr, L"\n", &NextToken);
 			GreyPalette[_wtoi(pId)] = RGB(_wtoi(pRed), _wtoi(pGreen), _wtoi(pBlue));
 		}
 	}
@@ -1385,7 +1389,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 	int TableOffset = 0;
 
 	wchar_t	szLn[128];
-	while (fl.ReadString(szLn, sizeof(szLn) / sizeof(wchar_t) - 1) != 0) {
+	while (fl.ReadString(szLn, sizeof(szLn) / sizeof(wchar_t) - 1)) {
 		if (szLn[0] == '!') { // New Hatch index
 			if (iHatId != 0) {
 				EoDbHatch::sm_HatchPatternTable[EoDbHatch::sm_HatchPatternOffsets[iHatId]] = double(NumberOfPatternLines);
@@ -1394,7 +1398,7 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 			NumberOfPatternLines = 0;
 
 			const wchar_t Delimiters[] = L"*-\n";
-			LPWSTR NextToken = NULL;
+			LPWSTR NextToken = nullptr;
 			const LPWSTR Token = wcstok_s(&szLn[2], Delimiters, &NextToken);
 			CString PatternName(Token);
 			PatternName.TrimRight();
@@ -1407,12 +1411,12 @@ void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
 			TableOffset += 1;
 			int iNmbEnts = 0;
 			const wchar_t Delimiters[] = L",\0";
-			LPWSTR NextToken = NULL;
+			LPWSTR NextToken = nullptr;
 			LPWSTR Token = wcstok_s(szLn, Delimiters, &NextToken);
 			while (Token != 0) {
 				EoDbHatch::sm_HatchPatternTable[TableOffset++] = _wtof(Token);
 				iNmbEnts++;
-				Token = wcstok_s(0, Delimiters, &NextToken);
+				Token = wcstok_s(nullptr, Delimiters, &NextToken);
 			}
 			EoDbHatch::sm_HatchPatternTable[iNmbStrsId++] = double(iNmbEnts) - 5.;
 			NumberOfPatternLines++;
@@ -1459,22 +1463,22 @@ void AeSysApp::LoadModeResources(int mode) {
 		ActiveView->RubberBandingDisable();
 	}
 }
-void AeSysApp::LoadPenWidthsFromFile(const CString& strFileName) {
-	CStdioFile fl;
+void AeSysApp::LoadPenWidthsFromFile(const CString& fileName) {
+    CStdioFile fl;
 
-	if (fl.Open(strFileName, CFile::modeRead | CFile::typeText)) {
-		wchar_t PenWidths[64];
+    if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
+        wchar_t PenWidths[64];
 
-		while (fl.ReadString(PenWidths, sizeof(PenWidths) / sizeof(wchar_t) - 1) != 0) {
-			LPWSTR NextToken = NULL;
+        while (fl.ReadString(PenWidths, sizeof(PenWidths) / sizeof(wchar_t) - 1)) {
+            LPWSTR NextToken = nullptr;
 
-			int PenIndex = _wtoi(wcstok_s(PenWidths, L"=", &NextToken));
-			const double Width = _wtof(wcstok_s(NULL, L",\n", &NextToken));
+            int PenIndex = _wtoi(wcstok_s(PenWidths, L"=", &NextToken));
+            const double Width = _wtof(wcstok_s(nullptr, L",\n", &NextToken));
 
-			if (PenIndex >= 0 && PenIndex < sizeof(dPWids) / sizeof(dPWids[0]))
-				dPWids[PenIndex] = Width;
-		}
-	}
+            if (PenIndex >= 0 && PenIndex < sizeof(dPWids) / sizeof(dPWids[0]))
+                dPWids[PenIndex] = Width;
+        }
+    }
 }
 /// <remarks> Font stroke table encoded as follows:
 /// b0 - b11  relative y displacement
@@ -1483,7 +1487,7 @@ void AeSysApp::LoadPenWidthsFromFile(const CString& strFileName) {
 /// The font is exactly 16384 bytes and defines a 96 character font set with a maximum of 4096 stokes
 /// </remarks>
 void AeSysApp::LoadSimplexStrokeFont(const CString& pathName) {
-	HANDLE OpenHandle = CreateFile(pathName, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	HANDLE OpenHandle = CreateFileW(pathName, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
 	if (OpenHandle != INVALID_HANDLE_VALUE) {
 		if (SetFilePointer(OpenHandle, 0, 0, FILE_BEGIN) != (DWORD)-1) {
 			if (!m_SimplexStrokeFont) {
@@ -1497,7 +1501,7 @@ void AeSysApp::LoadSimplexStrokeFont(const CString& pathName) {
 		CloseHandle(OpenHandle);
 	}
 	else {
-		HRSRC ResourceHandle = FindResource(NULL, MAKEINTRESOURCE(IDR_PEGSTROKEFONT), L"STROKEFONT");
+		HRSRC ResourceHandle = FindResourceW(NULL, MAKEINTRESOURCE(IDR_PEGSTROKEFONT), L"STROKEFONT");
 		if (ResourceHandle != NULL) {
 			const int ResourceSize = SizeofResource(NULL, ResourceHandle);
 			m_SimplexStrokeFont = new char[ResourceSize];
@@ -2083,7 +2087,7 @@ public:
 };
 
 BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
-	CDocument* tmpDoc = NULL;
+	CDocument* tmpDoc = nullptr;
 	if (commandLineInfo.m_nShellCommand == CCommandLineInfo::FileOpen) {
 		tmpDoc = OpenDocumentFile(commandLineInfo.m_strFileName);
 		if (!tmpDoc) {
