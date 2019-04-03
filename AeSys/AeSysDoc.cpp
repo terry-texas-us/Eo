@@ -957,9 +957,9 @@ BOOL AeSysDoc::OnNewDocument() {
 		ODCOLORREF LocalDarkPalette[256];
 		memcpy(LocalDarkPalette, DarkPalette, 256 * sizeof(ODCOLORREF));
 
-		EoDbDwgToPegFile File(m_DatabasePtr);
+		EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
 
-		File.ConvertToPeg(this);
+        DwgToPegFile.ConvertToPeg(this);
 
 		// <Teigha> - Continuous Linetype initialization ??
 		m_LinetypeTable.LoadLinetypesFromTxtFile(m_DatabasePtr, AeSysApp::ResourceFolderPath() + L"Pens\\Linetypes.txt");
@@ -1008,9 +1008,9 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
         FileAndVersion.Format(L"Opened <%s> (Version: %d)\n", (LPCWSTR) m_DatabasePtr->getFilename(), m_DatabasePtr->originalFileVersion());
         theApp.AddStringToMessageList(FileAndVersion);
 
-        EoDbDwgToPegFile File(m_DatabasePtr);
+        EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
 
-        File.ConvertToPeg(this);
+        DwgToPegFile.ConvertToPeg(this);
         m_SaveAsType_ = FileType;
         SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
         break;
@@ -1024,8 +1024,8 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR pathName) {
 
         m_DatabasePtr->startUndoRecord();
 
-        EoDbDwgToPegFile File(m_DatabasePtr);
-        File.ConvertToPeg(this);
+        EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
+        DwgToPegFile.ConvertToPeg(this);
 
         //<Teigha> no initial value for m_ContinuousLinetype = m_LinetypeTable.GetAt(1);
         SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
@@ -1054,10 +1054,10 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 	switch (m_SaveAsType_) {
 	case EoDb::kPeg: {
 		WriteShadowFile();
-		EoDbPegFile File(m_DatabasePtr);
+		EoDbPegFile DwgToPegFile(m_DatabasePtr);
 		CFileException e;
-		if (File.Open(pathName, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e)) {
-			File.Unload(this);
+		if (DwgToPegFile.Open(pathName, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e)) {
+            DwgToPegFile.Unload(this);
 			ReturnStatus = TRUE;
 		}
 		break;
@@ -1581,8 +1581,8 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 	m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 	m_DatabasePtr->startUndoRecord();
 
-	EoDbDwgToPegFile File(m_DatabasePtr);
-	File.ConvertToPeg(this);
+	EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
+    DwgToPegFile.ConvertToPeg(this);
 
 	OdDbLayerTableRecordPtr LayerTableRecord = m_DatabasePtr->getCLAYER().safeOpenObject(OdDb::kForWrite);
 	SetCurrentLayer(LayerTableRecord);
@@ -1614,10 +1614,10 @@ void AeSysDoc::WriteShadowFile() {
 			ShadowFilePath += L".peg";
 
 			CFileException e;
-			EoDbPegFile File(m_DatabasePtr);
-			if (!File.Open(ShadowFilePath, CFile::modeWrite, &e)) {
-				File.Open(ShadowFilePath, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e);
-				File.Unload(this);
+			EoDbPegFile PegFile(m_DatabasePtr);
+			if (!PegFile.Open(ShadowFilePath, CFile::modeWrite, &e)) {
+				PegFile.Open(ShadowFilePath, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e);
+				PegFile.Unload(this);
 				theApp.WarningMessageBox(IDS_MSG_FILE_SHADOWED_AS, ShadowFilePath);
 				return;
 			}
