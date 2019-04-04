@@ -386,6 +386,7 @@ EoDbLine* EoDbLine::ConstructFrom(EoDbFile& file) {
     LinePrimitive->SetEndPoint(file.ReadPoint3d());
     return (LinePrimitive);
 }
+
 EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbLine* LinePrimitive = new EoDbLine();
 	OdInt16 ColorIndex;
@@ -440,18 +441,18 @@ EoDbLine* EoDbLine::Create(OdDbDatabasePtr database) {
 	return (LinePrimitive);
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
     OdDbLinePtr Line = OdDbLine::createObject();
-    Line->setDatabaseDefaults(database);
+    Line->setDatabaseDefaults(blockTableRecord->database());
 
     blockTableRecord->appendOdDbEntity(Line);
     Line->setColorIndex(pstate.ColorIndex());
 
-	const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
 
-	Line->setLinetype(Linetype);
+    Line->setLinetype(Linetype);
 
-	return Line;
+    return Line;
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {

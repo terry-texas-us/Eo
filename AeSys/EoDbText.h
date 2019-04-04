@@ -1,6 +1,24 @@
 #pragma once
 using namespace EoDb;
 
+/* <remarks>
+Text primitive in Peg files and Tracing files
+  Type code <0x4000>        OdUInt16[0-1]
+  Pen color				    OdUInt16[2-3]
+  Line type				    OdUInt16[4-5]
+  Font definition
+    Text precision		    OdUInt16[6-7]
+    Text font name		    string
+    Text path				OdUInt16
+    Horizontal alignment	OdUInt16
+    Vertical alignment	    OdUInt16
+    Character spacing		double
+  Insertion point		    OdGePoint3d
+  Local reference x-axis	OdGeVector3d
+  Local reference y-axis	OdGeVector3d
+  Text('\t' terminated)	    string
+</remarks> */
+
 class EoDbText : public EoDbPrimitive {
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;

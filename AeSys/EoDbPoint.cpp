@@ -268,6 +268,7 @@ void EoDbPoint::Write(CFile& file, OdUInt8* buffer) const {
 
 	file.Write(buffer, 32);
 }
+
 EoDbPoint* EoDbPoint::ConstructFrom(EoDbFile& file) {
 	const OdInt16 ColorIndex = file.ReadInt16();
 	const OdInt16 PointDisplayMode = file.ReadInt16();
@@ -285,6 +286,7 @@ EoDbPoint* EoDbPoint::ConstructFrom(EoDbFile& file) {
 	PointPrimitive->SetData(NumberOfDatums, Data);
 	return (PointPrimitive);
 }
+
 EoDbPoint* EoDbPoint::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbPoint* PointPrimitive = 0;
 	OdInt16 ColorIndex;
@@ -313,9 +315,36 @@ EoDbPoint* EoDbPoint::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber)
 	return (PointPrimitive);
 }
 
-OdDbPointPtr EoDbPoint::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord) {
+EoDbPoint* EoDbPoint::Create(const EoDbPoint& other, OdDbDatabasePtr database) {
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    OdDbPointPtr PointEntity = other.EntityObjectId().safeOpenObject()->clone();
+    BlockTableRecord->appendOdDbEntity(PointEntity);
+
+    EoDbPoint* Point = new EoDbPoint(other);
+    Point->SetEntityObjectId(PointEntity->objectId());
+
+    return Point;
+}
+
+EoDbPoint* EoDbPoint::Create(OdDbDatabasePtr database) {
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    OdDbPointPtr PointEntity = OdDbPoint::createObject();
+    PointEntity->setDatabaseDefaults(database);
+    BlockTableRecord->appendOdDbEntity(PointEntity);
+
+    EoDbPoint* PointPrimitive = new EoDbPoint();
+    PointPrimitive->SetEntityObjectId(PointEntity->objectId());
+
+    PointPrimitive->SetColorIndex(pstate.ColorIndex());
+    PointPrimitive->SetPointDisplayMode(pstate.PointDisplayMode());
+
+    return PointPrimitive;
+}
+
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	OdDbPointPtr Point = OdDbPoint::createObject();
-	Point->setDatabaseDefaults(database);
+	Point->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Point);
 	Point->setColorIndex(pstate.ColorIndex());
@@ -326,39 +355,35 @@ OdDbPointPtr EoDbPoint::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr
 	return Point;
 }
 
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbPointPtr Point = OdDbPoint::createObject();
+    Point->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Point);
+
+    Point->setColorIndex(file.ReadInt16());
+
+    const OdInt16 PointDisplayMode = file.ReadInt16();
+
+    Point->setPosition(file.ReadPoint3d());
+
+    const OdUInt16 NumberOfDatums = file.ReadUInt16();
+    if (NumberOfDatums > 0) {
+        double Data[3];
+        for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
+            Data[n] = file.ReadDouble();
+        }
+    }
+    return Point;
+}
+
 EoDbPoint* EoDbPoint::Create(OdDbPointPtr point) {
-	EoDbPoint* Point = new EoDbPoint();
-	Point->SetEntityObjectId(point->objectId());
-	Point->SetColorIndex(point->colorIndex());
-	Point->SetPosition(point->position());
+    EoDbPoint* Point = new EoDbPoint();
+    Point->SetEntityObjectId(point->objectId());
+    Point->SetColorIndex(point->colorIndex());
+    Point->SetPosition(point->position());
 
-	Point->SetPointDisplayMode(pstate.PointDisplayMode());
+    Point->SetPointDisplayMode(pstate.PointDisplayMode());
 
-	return Point;
-}
-
-EoDbPoint* EoDbPoint::Create(OdDbDatabasePtr database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
-	OdDbPointPtr PointEntity = OdDbPoint::createObject();
-	PointEntity->setDatabaseDefaults(database);
-	BlockTableRecord->appendOdDbEntity(PointEntity);
-
-	EoDbPoint* PointPrimitive = new EoDbPoint();
-	PointPrimitive->SetEntityObjectId(PointEntity->objectId());
-
-	PointPrimitive->SetColorIndex(pstate.ColorIndex());
-	PointPrimitive->SetPointDisplayMode(pstate.PointDisplayMode());
-
-	return PointPrimitive;
-}
-EoDbPoint* EoDbPoint::Create(const EoDbPoint& other, OdDbDatabasePtr database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	OdDbPointPtr PointEntity = other.EntityObjectId().safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(PointEntity);
-
-	EoDbPoint* Point = new EoDbPoint(other);
-	Point->SetEntityObjectId(PointEntity->objectId());
-
-	return Point;
+    return Point;
 }

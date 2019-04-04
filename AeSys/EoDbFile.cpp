@@ -52,9 +52,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
     EoDbPrimitive* Primitive = nullptr;
 
     switch (ReadUInt16()) {
-    case kPointPrimitive:
-        Primitive = EoDbPoint::ConstructFrom(*this);
+    case kPointPrimitive: {
+        OdDbPointPtr Point = EoDbPoint::Create(blockTable, *this);
+        Primitive = EoDbPoint::Create(Point);
         break;
+    }
     case kInsertPrimitive:
         ConstructBlockReferencePrimitiveFromInsertPrimitive(Primitive);
         break;

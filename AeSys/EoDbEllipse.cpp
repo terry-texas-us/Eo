@@ -890,6 +890,20 @@ void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
 	file.Write(buffer, 64);
 }
 
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord) {
+    OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
+    Ellipse->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Ellipse);
+    Ellipse->setColorIndex(pstate.ColorIndex());
+
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+
+    Ellipse->setLinetype(Linetype);
+
+    return Ellipse;
+}
+
 OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
     OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
     Ellipse->setDatabaseDefaults(blockTableRecord->database());

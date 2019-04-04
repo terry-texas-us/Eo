@@ -76,11 +76,15 @@ public: // Methods
 	double SwpAngToPt(const OdGePoint3d& point);
 
 public: // Methods - static
-    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
     static EoDbEllipse* ConstructFrom(EoDbFile& file);
-	static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
-	static EoDbEllipse* Create(OdDbDatabasePtr database);
-	static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr database);
+    static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
+
+    static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr database);
+
+    static EoDbEllipse* Create(OdDbDatabasePtr database);
+    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+
     static EoDbEllipse* Create(OdDbEllipsePtr ellipse);
 };
 

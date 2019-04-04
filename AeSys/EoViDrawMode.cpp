@@ -16,8 +16,9 @@ void AeSysView::OnDrawModeOptions() {
 
 void AeSysView::OnDrawModePoint() {
     const OdGePoint3d CurrentPnt = GetCursorPosition();
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    OdDbPointPtr Point = EoDbPoint::Create(BlockTableRecord);
 
-    OdDbPointPtr Point = EoDbPoint::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
     Point->setPosition(CurrentPnt);
 
     EoDbGroup* Group = new EoDbGroup;
@@ -35,8 +36,8 @@ void AeSysView::OnDrawModeLine() {
         m_DrawModePoints.append(CurrentPnt);
     } else {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
-
-        OdDbLinePtr Line = EoDbLine::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+        OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
         Line->setStartPoint(m_DrawModePoints[0]);
         Line->setEndPoint(CurrentPnt);
 
@@ -148,8 +149,8 @@ void AeSysView::OnDrawModeReturn() {
     switch (PreviousDrawCommand) {
     case ID_OP2: {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
-
-        OdDbLinePtr Line = EoDbLine::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+        OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
         Line->setStartPoint(m_DrawModePoints[0]);
         Line->setEndPoint(CurrentPnt);
 
@@ -194,9 +195,11 @@ void AeSysView::OnDrawModeReturn() {
         pGroup->setSelectable(true);
         pGroup->setAnonymous();
 
+        OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+
         Group = new EoDbGroup;
         for (int i = 0; i < 4; i++) {
-            OdDbLinePtr Line = EoDbLine::Create(Database(), Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+            OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
             Line->setStartPoint(m_DrawModePoints[i]);
             Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
 

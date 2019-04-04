@@ -963,6 +963,19 @@ BOOL AeSysDoc::OnNewDocument() {
         OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
         m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
+// <tas=Initial testing of dictionary for extension of point to retain data. Used by at least lpd.">
+        OdDbDictionaryPtr Dictionary = OdDbDictionary::createObject();
+        OdDbObjectId ObjectId = m_DatabasePtr->addOdDbObject(Dictionary);
+        
+        OdDbDictionaryPtr RootDictionary = m_DatabasePtr->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForWrite);
+
+        if (!RootDictionary->has("MY_DICT")) {
+            OdDbObjectId idDict = RootDictionary->setAt("MY_DICT", Dictionary);
+            ATLTRACE2(L"\n\"MY_DICT\" dictionary gets handle = %s", idDict.getHandle().ascii());
+        } else
+            ATLTRACE2(L"\n\"MY_DICT\" dictionary already exists");
+// </tas>
+
         m_DatabasePtr->startUndoRecord();
 
 		const ODCOLORREF* DarkPalette = odcmAcadDarkPalette();

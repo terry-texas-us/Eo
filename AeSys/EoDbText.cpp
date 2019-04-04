@@ -388,24 +388,6 @@ void EoDbText::Write(CFile& file, OdUInt8* buffer) const {
     file.Write(buffer, buffer[3] * 32);
 }
 
-/* <remarks>
-Text primitive in Peg files and Tracing files
-  Type code <0x4000>        EoUInt16[0-1]
-  Pen color				    EoUInt16[2-3]
-  Line type				    EoUInt16[4-5]
-  Font definition
-    Text precision		    EoUInt16[6-7]
-    Text font name		    string
-    Text path				EoUInt16
-    Horizontal alignment	EoUInt16
-    Vertical alignment	    EoUInt16
-    Character spacing		double
-  Insertion point		    EoGePoint3d
-  Local reference x-axis	EoGeVector3d
-  Local reference y-axis	EoGeVector3d
-  Text('\t' terminated)	    string
-   </remarks> */
-
 OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
     OdDbTextPtr Text = OdDbText::createObject();
     Text->setDatabaseDefaults(blockTableRecord->database());
