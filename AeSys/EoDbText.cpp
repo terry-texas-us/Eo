@@ -415,13 +415,15 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
     Text->setColorIndex(file.ReadInt16());
     /* OdInt16 LinetypeIndex = */ file.ReadInt16();
 
+// <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
     OdUInt16 Precision = kStrokeType;
     file.Read(&Precision, sizeof(OdUInt16));
     OdString FontName;
     file.ReadString(FontName);
     OdUInt16 Path = kPathRight;
     file.Read(&Path, sizeof(OdUInt16));
-    
+// </tas>
+
     Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
     Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
 
@@ -716,7 +718,7 @@ OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignmen
         break;
 
     default: // kAlignBottom
-        VerticalMode = OdDb::kTextBottom;
+        VerticalMode = OdDb::kTextBase;
     }
     return VerticalMode;
 }

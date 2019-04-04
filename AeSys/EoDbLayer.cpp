@@ -9,7 +9,7 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
 	const OdDbObjectId LinetypeObjectId = layer->linetypeObjectId();
 }
 EoDbLayer::EoDbLayer(const OdString& name, OdUInt16 stateFlags) {
-	// <Teigha> - need to check this .. no defaults
+	// <tas="need to check this .. no defaults"></tas>
 	m_TracingFlags = 0;
 	m_StateFlags = stateFlags;
 }

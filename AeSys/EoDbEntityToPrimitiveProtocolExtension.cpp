@@ -365,34 +365,10 @@ public:
 	/// Can only properly convert ellipse which is radial (trival) or non radials which have a start parameter of 0.
 	/// </remarks>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) {
-		OdDbEllipsePtr EllipseEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) EllipseEntity->desc()->name());
+		OdDbEllipsePtr Ellipse = entity;
+		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) Ellipse->desc()->name());
 
-		OdGeVector3d MajorAxis(EllipseEntity->majorAxis());
-		OdGeVector3d MinorAxis(EllipseEntity->minorAxis());
-
-		double StartAngle = EllipseEntity->startAngle();
-		double EndAngle = EllipseEntity->endAngle();
-
-		if (StartAngle >= TWOPI) { // need to rationalize angs to first period angles in range on (0 to twopi)
-			StartAngle -= TWOPI;
-			EndAngle -= TWOPI;
-		}
-		double SweepAngle = EndAngle - StartAngle;
-		if (SweepAngle <= FLT_EPSILON)
-			SweepAngle += TWOPI;
-
-		if (StartAngle != 0.) {
-			MajorAxis.rotateBy(StartAngle, EllipseEntity->normal());
-			MinorAxis.rotateBy(StartAngle, EllipseEntity->normal());
-			if (EllipseEntity->radiusRatio() != 1.) {
-				ATLTRACE2(atlTraceGeneral, 0, L"Ellipse: Non radial with start parameter not 0.\n");
-			}
-		}
-		EoDbEllipse* EllipsePrimitive = new EoDbEllipse(EllipseEntity->center(), MajorAxis, MinorAxis, SweepAngle);
-		
-		ConvertEntityData(EllipseEntity, EllipsePrimitive);
-		group->AddTail(EllipsePrimitive);
+		group->AddTail(EoDbEllipse::Create(Ellipse));
 
 	}
 };

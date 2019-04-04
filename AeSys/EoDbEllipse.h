@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbEllipse.h"
+
 class EoDbEllipse : public EoDbPrimitive {
 	OdGePoint3d	m_Center;
 	OdGeVector3d m_MajorAxis;
@@ -74,10 +76,12 @@ public: // Methods
 	double SwpAngToPt(const OdGePoint3d& point);
 
 public: // Methods - static
-	static EoDbEllipse* ConstructFrom(EoDbFile& file);
+    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+    static EoDbEllipse* ConstructFrom(EoDbFile& file);
 	static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
 	static EoDbEllipse* Create(OdDbDatabasePtr database);
 	static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr database);
+    static EoDbEllipse* Create(OdDbEllipsePtr ellipse);
 };
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double);

@@ -86,10 +86,10 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
 
 	UpdateFiltersTree();
 
-// <Teigha> - testing main dictionary interface
+// <tas="testing main dictionary interface">
 	OdDbDictionaryPtr MainDictionary = m_Database->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForRead);
 	ATLTRACE2(atlTraceGeneral, 0, L"Main dictionary contains %i entries\n", MainDictionary->numEntries());
-	
+// </tas>
 	OdDbDictionaryIteratorPtr MainDictionaryIterator = MainDictionary->newIterator();
 	while (!MainDictionaryIterator->done())
 	{

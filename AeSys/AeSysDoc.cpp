@@ -928,6 +928,20 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextSty
 	return TextStyle;
 }
 
+OdDbTextStyleTableRecordPtr AeSysDoc::AddStandardTextStyle() {
+    OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
+
+    OdDbTextStyleTableRecordPtr TextStyle;
+
+    if (TextStyles->has(L"EoStandard")) {
+        TextStyle = TextStyles->getAt(L"EoStandard").safeOpenObject();
+    } else {
+        TextStyle = AddNewTextStyle(L"EoStandard", TextStyles);
+        TextStyle->setFont(L"Simplex", false, false, DEFAULT_CHARSET, DEFAULT_PITCH);
+    }
+    return TextStyle;
+}
+
 BOOL AeSysDoc::OnNewDocument() {
 #ifdef ODAMFC_EXPORT
 	AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
@@ -946,12 +960,10 @@ BOOL AeSysDoc::OnNewDocument() {
 			theApp.reportError(L"Database Creating Error...", Error);
 			return FALSE;
 		}
-		OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
-		OdDbTextStyleTableRecordPtr TextStyle = AddNewTextStyle(L"EoStandard", TextStyles);
-		TextStyle->setFont(L"Simplex", false, false, DEFAULT_CHARSET, DEFAULT_PITCH);
-		m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
+        OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+        m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
-		m_DatabasePtr->startUndoRecord();
+        m_DatabasePtr->startUndoRecord();
 
 		const ODCOLORREF* DarkPalette = odcmAcadDarkPalette();
 		ODCOLORREF LocalDarkPalette[256];
@@ -961,7 +973,7 @@ BOOL AeSysDoc::OnNewDocument() {
 
         DwgToPegFile.ConvertToPeg(this);
 
-		// <Teigha> - Continuous Linetype initialization ??
+		// <tas="Continuous Linetype initialization ??"</tas>
 		m_LinetypeTable.LoadLinetypesFromTxtFile(m_DatabasePtr, AeSysApp::ResourceFolderPath() + L"Pens\\Linetypes.txt");
 
 		m_SaveAsType_ = kPeg;
@@ -998,11 +1010,8 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
         //<tas="disable lineweight display until lineweight by default is properly defined"</tas>
         if (m_DatabasePtr->getLWDISPLAY()) m_DatabasePtr->setLWDISPLAY(false);
 
-        OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
-        if (!TextStyles->has(L"EoStandard")) {
-            OdDbTextStyleTableRecordPtr TextStyle = AddNewTextStyle(L"EoStandard", TextStyles);
-            TextStyle->setFont(L"Simplex", false, false, DEFAULT_CHARSET, DEFAULT_PITCH);
-        }
+        OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+
         m_DatabasePtr->startUndoRecord();
 
         CString FileAndVersion;
@@ -1019,16 +1028,14 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
     case kPeg: {
         m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 
-        OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
-        OdDbTextStyleTableRecordPtr TextStyle = AddNewTextStyle(L"EoStandard", TextStyles);
-        TextStyle->setFont(L"Simplex", false, false, DEFAULT_CHARSET, DEFAULT_PITCH);
+        OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+        m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
         m_DatabasePtr->startUndoRecord();
 
         EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
         DwgToPegFile.ConvertToPeg(this);
 
-        //<Teigha> no initial value for m_ContinuousLinetype = m_LinetypeTable.GetAt(1);
         SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 
         EoDbPegFile PegFile(m_DatabasePtr);
@@ -1585,6 +1592,10 @@ bool AeSysDoc::TracingLoadLayer(const OdString& file, EoDbLayer* layer) {
 
 bool AeSysDoc::TracingOpen(const OdString& fileName) {
 	m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
+
+    OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+    m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
+
 	m_DatabasePtr->startUndoRecord();
 
 	EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);

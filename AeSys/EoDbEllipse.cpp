@@ -1,14 +1,22 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
+#include "AeSysDoc.h"
 #include "AeSysView.h"
 
 #include "DbEllipse.h"
 
 EoDbEllipse::EoDbEllipse() 
-	: m_Center(OdGePoint3d::kOrigin), m_MajorAxis(OdGeVector3d::kXAxis), m_MinorAxis(OdGeVector3d::kYAxis), m_SweepAngle(TWOPI) {
+	: m_Center(OdGePoint3d::kOrigin)
+    , m_MajorAxis(OdGeVector3d::kXAxis)
+    , m_MinorAxis(OdGeVector3d::kYAxis)
+    , m_SweepAngle(TWOPI) {
 }
+
 EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle)
-	: m_Center(center), m_MajorAxis(majorAxis), m_MinorAxis(minorAxis), m_SweepAngle(sweepAngle) {
+	: m_Center(center)
+    , m_MajorAxis(majorAxis)
+    , m_MinorAxis(minorAxis)
+    , m_SweepAngle(sweepAngle) {
 	m_ColorIndex = pstate.ColorIndex();
 	m_LinetypeIndex = pstate.LinetypeIndex();
 }
@@ -881,13 +889,42 @@ void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
 
 	file.Write(buffer, 64);
 }
+
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
+    Ellipse->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Ellipse);
+    
+    Ellipse->setColorIndex(file.ReadInt16());
+
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+
+    Ellipse->setLinetype(Linetype);
+
+    const OdGePoint3d CenterPoint(file.ReadPoint3d());
+    const OdGeVector3d MajorAxis(file.ReadVector3d());
+    const OdGeVector3d MinorAxis(file.ReadVector3d());
+
+    double SweepAngle = file.ReadDouble();
+
+    OdGeVector3d PlaneNormal = MajorAxis.crossProduct(MinorAxis);
+    if (!PlaneNormal.isZeroLength()) {
+        PlaneNormal.normalize();
+        // <tas="Apparently some ellipse primitives have a RadiusRatio > 1."></tas>
+        const double RadiusRatio = MinorAxis.length() / MajorAxis.length();
+        Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, EoMin(1., RadiusRatio), 0., SweepAngle);
+    }
+    return Ellipse;
+}
+
 EoDbEllipse* EoDbEllipse::ConstructFrom(EoDbFile& file) {
 	const OdInt16 ColorIndex = file.ReadInt16();
 	const OdInt16 LinetypeIndex = file.ReadInt16();
-	const OdGePoint3d CenterPoint(file.ReadPoint3d());
-	const OdGeVector3d MajorAxis(file.ReadVector3d());
-	const OdGeVector3d MinorAxis(file.ReadVector3d());
-	
+    const OdGePoint3d CenterPoint(file.ReadPoint3d());
+    const OdGeVector3d MajorAxis(file.ReadVector3d());
+    const OdGeVector3d MinorAxis(file.ReadVector3d());
+
 	double SweepAngle;
 	SweepAngle = file.ReadDouble();
 	EoDbEllipse* EllipsePrimitive = new EoDbEllipse(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
@@ -961,7 +998,7 @@ EoDbEllipse* EoDbEllipse::Create(OdDbDatabasePtr database) {
 }
 EoDbEllipse* EoDbEllipse::Create(const EoDbEllipse& other, OdDbDatabasePtr database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	// <Teigha>Possibly need additional typing of the ObjecId producted by cloning</Teigha>
+	// <tas="Possibly need additional typing of the ObjecId producted by cloning"></tas>
 	OdDbEllipsePtr EllipseEntity = other.EntityObjectId().safeOpenObject()->clone();
 	BlockTableRecord->appendOdDbEntity(EllipseEntity);
 
@@ -971,6 +1008,40 @@ EoDbEllipse* EoDbEllipse::Create(const EoDbEllipse& other, OdDbDatabasePtr datab
 	return Ellipse;
 }
 
+EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr ellipse) {
+    EoDbEllipse* Ellipse = new EoDbEllipse();
+    Ellipse->SetEntityObjectId(ellipse->objectId());
+    Ellipse->SetColorIndex_(ellipse->colorIndex());
+    Ellipse->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype()));
+
+    OdGeVector3d MajorAxis(ellipse->majorAxis());
+    OdGeVector3d MinorAxis(ellipse->minorAxis());
+
+    double StartAngle = ellipse->startAngle();
+    double EndAngle = ellipse->endAngle();
+
+    if (StartAngle >= TWOPI) { // need to rationalize angs to first period angles in range on (0 to twopi)
+        StartAngle -= TWOPI;
+        EndAngle -= TWOPI;
+    }
+    double SweepAngle = EndAngle - StartAngle;
+    if (SweepAngle <= FLT_EPSILON)
+        SweepAngle += TWOPI;
+
+    if (StartAngle != 0.) {
+        MajorAxis.rotateBy(StartAngle, ellipse->normal());
+        MinorAxis.rotateBy(StartAngle, ellipse->normal());
+        if (ellipse->radiusRatio() != 1.) {
+            ATLTRACE2(atlTraceGeneral, 0, L"Ellipse: Non radial with start parameter not 0.\n");
+        }
+    }
+    Ellipse->SetCenter(ellipse->center());
+    Ellipse->SetMajorAxis(MajorAxis);
+    Ellipse->SetMinorAxis(MinorAxis);
+    Ellipse->SetSweepAngle(SweepAngle);
+
+    return Ellipse;
+}
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double dAng) {
 	OdGeMatrix3d ScaleMatrix;
