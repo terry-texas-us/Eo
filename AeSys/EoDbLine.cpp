@@ -183,10 +183,10 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
 }
 bool EoDbLine::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kLinePrimitive;
+	return type == kLinePrimitive;
 }
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
-	bool IsEqualTo = primitive->Is(EoDb::kLinePrimitive);
+	bool IsEqualTo = primitive->Is(kLinePrimitive);
 	if (IsEqualTo) {
 		IsEqualTo = m_Line.isEqualTo(static_cast<EoDbLine*>(primitive)->Line());
 	}
@@ -357,7 +357,7 @@ void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mas
 	}
 }
 bool EoDbLine::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kLinePrimitive);
+	file.WriteUInt16(kLinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	file.WritePoint3d(m_Line.startPoint());
@@ -366,7 +366,7 @@ bool EoDbLine::Write(EoDbFile& file) const {
 }
 void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kLinePrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(kLinePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
@@ -454,9 +454,9 @@ OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr b
 	return Line;
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
     OdDbLinePtr Line = OdDbLine::createObject();
-    Line->setDatabaseDefaults(database);
+    Line->setDatabaseDefaults(blockTableRecord->database());
 
     blockTableRecord->appendOdDbEntity(Line);
 

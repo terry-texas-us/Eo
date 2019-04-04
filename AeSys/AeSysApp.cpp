@@ -1671,7 +1671,7 @@ void AeSysApp::OnTrapCommandsAddGroups() {
 }
 void AeSysApp::OnTrapCommandsHighlight() noexcept {
 	m_TrapHighlighted = !m_TrapHighlighted;
-	//LPARAM Hint = m_TrapHighlighted ? EoDb::kGroupsSafeTrap : EoDb::kGroupsSafe;
+	//LPARAM Hint = m_TrapHighlighted ? kGroupsSafeTrap : kGroupsSafe;
 	//UpdateGroupsInAllViews(Hint, &m_TrappedGroupList);
 }
 void AeSysApp::OnUpdateEditCfGroups(CCmdUI *pCmdUI) {

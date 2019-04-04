@@ -58,15 +58,19 @@ public: // Methods
 	void SetVerticalMode(VerticalAlignment verticalAlignment);
 
 public: // Methods - static
-	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
-	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
+    static void ConvertFractionMarkup(CString& text);
+    static HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
+	static VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
+    static OdDb::TextHorzMode ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept;
+    static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
 
-	static EoDbText* ConstructFrom(EoDbFile& file);
+    static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+    static EoDbText* ConstructFrom(EoDbFile& file);
 	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 	static EoDbText* Create(OdDbDatabasePtr database);
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
-    static OdDbTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbMTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text);
+    static OdDbTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbMTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text);
     static EoDbText* Create(OdDbTextPtr text);
     static EoDbText* Create(OdDbMTextPtr text);
 };

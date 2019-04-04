@@ -244,7 +244,7 @@ OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
 	return (m_Vertices[sm_PivotVertex]);
 }
 bool EoDbHatch::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kHatchPrimitive;
+	return type == kHatchPrimitive;
 }
 bool EoDbHatch::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[2];
@@ -353,7 +353,7 @@ void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const DWORD ma
 	}
 }
 bool EoDbHatch::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kHatchPrimitive);
+	file.WriteUInt16(kHatchPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_InteriorStyle);  // note polygon style stuffed up into unused line type on io
 	file.WriteUInt16(OdUInt16(EoMax(1U, m_InteriorStyleIndex)));
@@ -376,7 +376,7 @@ bool EoDbHatch::Write(EoDbFile& file) const {
 }
 void EoDbHatch::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = OdInt8((79 + m_Vertices.size() * 12) / 32);
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kHatchPrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(kHatchPrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_InteriorStyle);
 	*((OdInt16*) &buffer[8]) = OdInt16(m_InteriorStyleIndex);

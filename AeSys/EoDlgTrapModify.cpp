@@ -61,7 +61,7 @@ void EoDlgTrapModify::ModifyPolygons(void) {
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
-			if (Primitive->Is(EoDb::kHatchPrimitive)) {
+			if (Primitive->Is(kHatchPrimitive)) {
 				EoDbHatch* pPolygon = static_cast<EoDbHatch*>(Primitive);
 				pPolygon->SetInteriorStyle(pstate.HatchInteriorStyle());
 				pPolygon->SetInteriorStyleIndex(pstate.HatchInteriorStyleIndex());

@@ -15,10 +15,11 @@ public:
 		kLayerTable = 0x0203,
 		kEndOfTable = 0x02ff
 	};
-
+    OdDbDatabasePtr m_Database;
 public:
-	EoDbFile();
-	EoDbFile(const OdString& fileName, UINT openFlags);
+    EoDbFile();
+    EoDbFile(OdDbDatabasePtr database);
+    EoDbFile(const OdString& fileName, UINT openFlags);
 	virtual ~EoDbFile();
 
 	void ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept;
@@ -28,7 +29,7 @@ public:
 	double ReadDouble();
 	OdInt16 ReadInt16();
 	OdGePoint3d ReadPoint3d();
-	EoDbPrimitive* ReadPrimitive();
+	EoDbPrimitive* ReadPrimitive(OdDbBlockTableRecordPtr blockTable);
 	void ReadString(CString& string);
 	void ReadString(OdString& string);
 	OdUInt16 ReadUInt16();

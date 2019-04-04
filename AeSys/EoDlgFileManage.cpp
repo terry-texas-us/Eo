@@ -504,7 +504,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR pNMHDR, LRESULT* res
 			theApp.AddStringToMessageList(ErrorDescription, Name);
 		}
 		else {
-			m_Document->UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			m_Document->UpdateLayerInAllViews(kLayerErase, Layer);
 			const int LayerIndex = m_Document->FindLayerAt(Name);
 			m_Document->RemoveLayerAt(LayerIndex);
 			m_LayersList.DeleteItem(SelectionMark);

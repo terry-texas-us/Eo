@@ -75,7 +75,7 @@ void EoDlgBlockInsert::OnOK() {
 		EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(BlockReference);
 		m_Document->AddWorkLayerGroup(Group);
-		m_Document->UpdateGroupInAllViews(EoDb::kGroup, Group);
+		m_Document->UpdateGroupInAllViews(kGroup, Group);
 	}
 	CDialog::OnOK();
 }

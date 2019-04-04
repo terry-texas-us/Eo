@@ -23,7 +23,7 @@ void AeSysView::OnDrawModePoint() {
     EoDbGroup* Group = new EoDbGroup;
     Group->AddTail(EoDbPoint::Create(Point));
     GetDocument()->AddWorkLayerGroup(Group);
-    GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+    GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 }
 
 void AeSysView::OnDrawModeLine() {
@@ -171,7 +171,7 @@ void AeSysView::OnDrawModeReturn() {
         EoDbHatch* Hatch = EoDbHatch::Create(Database());
         Hatch->SetVertices(m_DrawModePoints);
         Group->AddTail(Hatch);
-        GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+        GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
         break;
     }
     case ID_OP4: {
@@ -281,14 +281,14 @@ void AeSysView::OnDrawModeReturn() {
     }
     m_PreviewGroup.DeletePrimitivesAndRemoveAll();
     GetDocument()->AddWorkLayerGroup(Group);
-    GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+    GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 
     m_DrawModePoints.clear();
     ModeLineUnhighlightOp(PreviousDrawCommand);
 }
 
 void AeSysView::OnDrawModeEscape() {
-    GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+    GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 
     m_PreviewGroup.DeletePrimitivesAndRemoveAll();
     m_DrawModePoints.clear();
@@ -305,10 +305,10 @@ void AeSysView::DoDrawModeMouseMove() {
             CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
             m_DrawModePoints.append(CurrentPnt);
 
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
             m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
 
@@ -316,7 +316,7 @@ void AeSysView::DoDrawModeMouseMove() {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
         m_DrawModePoints.append(CurrentPnt);
 
-        GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+        GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         m_PreviewGroup.DeletePrimitivesAndRemoveAll();
         if (NumberOfPoints == 1) {
             m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
@@ -348,7 +348,7 @@ void AeSysView::DoDrawModeMouseMove() {
             Polyline->SetClosed(true);
             m_PreviewGroup.AddTail(Polyline);
         }
-        GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+        GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         break;
 
     case ID_OP4: {
@@ -360,7 +360,7 @@ void AeSysView::DoDrawModeMouseMove() {
                 m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(CurrentPnt - m_DrawModePoints[1]));
                 m_DrawModePoints.append(m_DrawModePoints[0]);
             }
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
             for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
@@ -368,14 +368,14 @@ void AeSysView::DoDrawModeMouseMove() {
                 const OdGePoint3d EndPoint = m_DrawModePoints[(PointsIndex + 1) % 4];
                 m_PreviewGroup.AddTail(EoDbLine::Create(StartPoint, EndPoint));
             }
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
     }
     case ID_OP5:
         m_DrawModePoints.append(CurrentPnt);
 
-        GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+        GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
         if (NumberOfPoints == 1) {
@@ -388,14 +388,14 @@ void AeSysView::DoDrawModeMouseMove() {
             Arc->SetLinetypeIndex(pstate.LinetypeIndex());
             m_PreviewGroup.AddTail(Arc);
         }
-        GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+        GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         break;
 
     case ID_OP6:
         if (!m_DrawModePoints[m_DrawModePoints.size() - 1].isEqualTo(CurrentPnt)) {
             m_DrawModePoints.append(CurrentPnt);
 
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
             const int NumberOfControlPoints = m_DrawModePoints.size();
@@ -411,18 +411,18 @@ void AeSysView::DoDrawModeMouseMove() {
             EoDbSpline* Spline = new EoDbSpline();
             Spline->Set(Degree, Knots, Points, Weights);
             m_PreviewGroup.AddTail(Spline);
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
     case ID_OP7:
         if (m_DrawModePoints[0] != CurrentPnt) {
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
             m_PreviewGroup.AddTail(new EoDbEllipse(m_DrawModePoints[0], ActiveViewPlaneNormal, OdGeVector3d(CurrentPnt - m_DrawModePoints[0]).length()));
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
 
@@ -430,7 +430,7 @@ void AeSysView::DoDrawModeMouseMove() {
         if (m_DrawModePoints[0] != CurrentPnt) {
             m_DrawModePoints.append(CurrentPnt);
 
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
             if (NumberOfPoints == 1) {
                 m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
@@ -440,7 +440,7 @@ void AeSysView::DoDrawModeMouseMove() {
 
                 m_PreviewGroup.AddTail(new EoDbEllipse(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI));
             }
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
 

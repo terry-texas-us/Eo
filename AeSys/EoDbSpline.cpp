@@ -135,7 +135,7 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 	return (pt);
 }
 bool EoDbSpline::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kSplinePrimitive;
+	return type == kSplinePrimitive;
 }
 bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
 	bool IsEqual = false;
@@ -215,7 +215,7 @@ void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const DWORD m
 }
 // <tas="Currently allowing 1st degree (only 2 control points) splines to be saved. This likely will not load in legacy apps"</tas>
 bool EoDbSpline::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kSplinePrimitive);
+	file.WriteUInt16(kSplinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	file.WriteUInt16(OdUInt16(m_Spline.numControlPoints()));
@@ -227,7 +227,7 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 }
 void EoDbSpline::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = OdInt8((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kSplinePrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(kSplinePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 

@@ -174,7 +174,7 @@ void AeSysView::OnTraprModePoint() {
 
 		if (Group->IsOn(ptView, this)) {
 			Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 		}
 	}
 	UpdateStateInformation(TrapCount);
@@ -202,7 +202,7 @@ void AeSysView::OnTraprModeStitch() {
 
 			if (Group->SelectBy(EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d()), this)) {
 				Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				Document->UpdateGroupInAllViews(kGroupSafe, Group);
 			}
 		}
 		RubberBandingDisable();
@@ -236,7 +236,7 @@ void AeSysView::OnTraprModeField() {
 
 			if (Group->SelectBy(ptMin, ptMax, this)) {
 				Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				Document->UpdateGroupInAllViews(kGroupSafe, Group);
 			}
 		}
 		RubberBandingDisable();
@@ -249,7 +249,7 @@ void AeSysView::OnTraprModeLast() {
 
 	if (!Document->IsTrapEmpty()) {
 		EoDbGroup* Group = Document->RemoveLastTrappedGroup();
-		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+		Document->UpdateGroupInAllViews(kGroupSafe, Group);
 		UpdateStateInformation(TrapCount);
 	}
 }

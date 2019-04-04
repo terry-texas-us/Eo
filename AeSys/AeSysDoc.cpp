@@ -190,7 +190,7 @@ AeSysDoc::AeSysDoc() :
 m_bPartial(false),
 m_pViewer(0),
 m_SaveAsType(OdDb::kDwg),
-m_SaveAsType_(EoDb::kUnknown),
+m_SaveAsType_(kUnknown),
 m_SaveAsVer(OdDb::kDHL_CURRENT),
 
 #ifdef DEV_COMMAND_CONSOLE
@@ -964,7 +964,7 @@ BOOL AeSysDoc::OnNewDocument() {
 		// <Teigha> - Continuous Linetype initialization ??
 		m_LinetypeTable.LoadLinetypesFromTxtFile(m_DatabasePtr, AeSysApp::ResourceFolderPath() + L"Pens\\Linetypes.txt");
 
-		m_SaveAsType_ = EoDb::kPeg;
+		m_SaveAsType_ = kPeg;
 		SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 		InitializeGroupAndPrimitiveEdit();
 
@@ -991,8 +991,8 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 	FileTypes FileType = AeSysApp::GetFileType(file);
     
     switch (FileType) {
-    case EoDb::kDwg:
-    case EoDb::kDxf: {
+    case kDwg:
+    case kDxf: {
         m_DatabasePtr = theApp.readFile(file, false, false);
 
         //<tas="disable lineweight display until lineweight by default is properly defined"</tas>
@@ -1016,7 +1016,7 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
         SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
         break;
     }
-    case EoDb::kPeg: {
+    case kPeg: {
         m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 
         OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
@@ -1035,12 +1035,12 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
         CFileException e;
         if (PegFile.Open(file, CFile::modeRead | CFile::shareDenyNone, &e)) {
             PegFile.Load(this);
-            m_SaveAsType_ = EoDb::kPeg;
+            m_SaveAsType_ = kPeg;
         }
         break;
     }
-    case EoDb::kTracing:
-    case EoDb::kJob:
+    case kTracing:
+    case kJob:
         TracingOpen(file);
         break;
     default:
@@ -1053,7 +1053,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 	BOOL ReturnStatus = FALSE;
 
 	switch (m_SaveAsType_) {
-	case EoDb::kPeg: {
+	case kPeg: {
 		WriteShadowFile();
 		EoDbPegFile DwgToPegFile(m_DatabasePtr);
 		CFileException e;
@@ -1063,7 +1063,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 		}
 		break;
 	}
-	case EoDb::kJob: {
+	case kJob: {
 		EoDbLayer* Layer = GetLayerAt(pathName);
 		if (Layer != 0) {
 
@@ -1081,7 +1081,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 		}
 		break;
 	}
-	case EoDb::kTracing: {
+	case kTracing: {
 		EoDbLayer* Layer = GetLayerAt(pathName);
 		if (Layer != 0) {
 			EoDbTracingFile TracingFile(pathName, CFile::modeCreate | CFile::modeWrite);
@@ -1096,12 +1096,12 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 		}
 		break;
 	}
-	case EoDb::kDxf: {
+	case kDxf: {
 		m_DatabasePtr->writeFile(pathName, OdDb::kDxf, OdDb::kDHL_PRECURR);
 		ReturnStatus = TRUE;
 		break;
 	}
-	case EoDb::kDwg: {
+	case kDwg: {
 		m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_PRECURR);
 		ReturnStatus = TRUE;
 		break;
@@ -1151,7 +1151,7 @@ void AeSysDoc::AddTextBlock(LPWSTR text) {
 			TextPrimitive->SetTo(FontDefinition, ReferenceSystem, pText);
 			Group->AddTail(TextPrimitive);
 			AddWorkLayerGroup(Group);
-			UpdateGroupInAllViews(EoDb::kGroup, Group);
+			UpdateGroupInAllViews(kGroup, Group);
 		}
 		ReferenceSystem.SetOrigin(text_GetNewLinePos(FontDefinition, ReferenceSystem, 1., 0));
 		pText = wcstok_s(nullptr, L"\r", &NextToken);
@@ -1199,7 +1199,7 @@ void AeSysDoc::DeletedGroupsRestore() {
 	if (!m_DeletedGroupList.IsEmpty()) {
 		EoDbGroup* Group = DeletedGroupsRemoveTail();
 		AddWorkLayerGroup(Group);
-		UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+		UpdateGroupInAllViews(kGroupSafe, Group);
 	}
 }
 
@@ -1357,8 +1357,8 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 		name = of.lpstrFile;
 
 		const EoDb::FileTypes FileType = AeSysApp::GetFileType(name);
-		if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
-			if (FileType == EoDb::kJob) {
+		if (FileType == kTracing || FileType == kJob) {
+			if (FileType == kJob) {
 				CFile File(name, CFile::modeWrite | CFile::modeCreate);
 				if (File == CFile::hFileNull) {
 					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
@@ -1562,8 +1562,12 @@ bool AeSysDoc::TracingLoadLayer(const OdString& file, EoDbLayer* layer) {
         CFileException e;
         EoDbTracingFile TracingFile(file, CFile::modeRead | CFile::shareDenyNone);
         if (TracingFile != CFile::hFileNull) {
+
+            m_SaveAsType_ = kTracing;
+            SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
+                        
             TracingFile.ReadHeader();
-            TracingFile.ReadLayer(layer);
+            TracingFile.ReadLayer(m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite), layer);
             return true;
         }
     } else {
@@ -1597,13 +1601,13 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 
 	Layer->MakeCurrent();
 
-	m_SaveAsType_ = EoDb::kTracing;
+	m_SaveAsType_ = kTracing;
 	UpdateAllViews(nullptr);
 
 	return true;
 }
 void AeSysDoc::WriteShadowFile() {
-	if (m_SaveAsType_ == EoDb::kPeg) {
+	if (m_SaveAsType_ == kPeg) {
 		CString ShadowFilePath(theApp.ShadowFolderPath());
 		ShadowFilePath += GetTitle();
 		const int nExt = ShadowFilePath.Find('.');
@@ -1635,7 +1639,7 @@ void AeSysDoc::OnClearActiveLayers() {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 
 		if (Layer->IsActive()) {
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 			Layer->DeleteGroupsAndRemoveAll();
 		}
 	}
@@ -1647,7 +1651,7 @@ void AeSysDoc::OnClearAllLayers() {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 
 		if (Layer->IsInternal()) {
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 			Layer->DeleteGroupsAndRemoveAll();
 		}
 	}
@@ -1664,7 +1668,7 @@ void AeSysDoc::OnClearAllTracings() {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 
 		if (!Layer->IsInternal()) {
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 			Layer->DeleteGroupsAndRemoveAll();
 		}
 	}
@@ -1676,7 +1680,7 @@ void AeSysDoc::OnClearMappedTracings() {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 
 		if (Layer->IsActive()) {
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 
 			if (Layer->IsResident()) {
 				Layer->SetIsOff(true);
@@ -1693,7 +1697,7 @@ void AeSysDoc::OnClearViewedTracings() {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 
 		if (Layer->IsLocked()) {
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 
 			if (Layer->IsResident()) {
 				Layer->SetIsOff(true);
@@ -1712,7 +1716,7 @@ void AeSysDoc::OnPrimBreak() {
 	if (Group != 0 && ActiveView->EngagedPrimitive() != 0) {
 		EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
 
-		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
+		if (Primitive->Is(kPolylinePrimitive)) {
 			const EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
 			Group->FindAndRemovePrimitive(Primitive);
 
@@ -1736,7 +1740,7 @@ void AeSysDoc::OnPrimBreak() {
 			delete Primitive;
 			ResetAllViews();
 		}
-		else if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
+		else if (Primitive->Is(kGroupReferencePrimitive)) {
 			const EoDbBlockReference* BlockReference = static_cast<EoDbBlockReference*>(Primitive);
 
 			EoDbBlock* Block;
@@ -1767,9 +1771,9 @@ void AeSysDoc::OnEditSegToWork() {
 
 			if (Group != 0) {
 				Layer->Remove(Group);
-				UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
+				UpdateGroupInAllViews(kGroupEraseSafe, Group);
 				AddWorkLayerGroup(Group);
-				UpdateGroupInAllViews(EoDb::kGroup, Group);
+				UpdateGroupInAllViews(kGroup, Group);
 			}
 		}
 	}
@@ -1819,7 +1823,7 @@ void AeSysDoc::OnLayerActive() {
 		}
 		else {
 			Layer->MakeActive();
-			UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
+			UpdateLayerInAllViews(kLayerSafe, Layer);
 		}
 	}
 }
@@ -1832,7 +1836,7 @@ void AeSysDoc::OnLayerLock() {
 		}
 		else {
 			Layer->SetIsLocked(true);
-			UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
+			UpdateLayerInAllViews(kLayerSafe, Layer);
 		}
 	}
 }
@@ -1844,7 +1848,7 @@ void AeSysDoc::OnLayerOff() {
 			theApp.WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, m_IdentifiedLayerName);
 		}
 		else {
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 			Layer->SetIsOff(true);
 		}
 	}
@@ -1864,13 +1868,13 @@ void AeSysDoc::OnTracingActive() {
 	}
 	else {
 		Layer->MakeActive();
-		UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
+		UpdateLayerInAllViews(kLayerSafe, Layer);
 	}
 }
 void AeSysDoc::OnTracingCurrent() {
 	EoDbLayer* Layer = GetLayerAt(m_IdentifiedLayerName);
 	Layer->MakeCurrent();
-	UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
+	UpdateLayerInAllViews(kLayerSafe, Layer);
 }
 void AeSysDoc::OnTracingFuse() {
 	TracingFuse(m_IdentifiedLayerName);
@@ -1883,7 +1887,7 @@ void AeSysDoc::OnTracingLock() {
 	}
 	else {
 		Layer->SetIsLocked(true);
-		UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
+		UpdateLayerInAllViews(kLayerSafe, Layer);
 	}
 }
 void AeSysDoc::OnTracingOff() {
@@ -1895,12 +1899,12 @@ void AeSysDoc::OnTracingOff() {
 			EoDbJobFile JobFile;
 			JobFile.WriteHeader(File);
 			JobFile.WriteLayer(File, Layer);
-			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
+			UpdateLayerInAllViews(kLayerErase, Layer);
 			Layer->SetIsOff(true);
 			// <tas="If a single layer tracing if being set off no layers will be visible. Need to correct."</tas>
 			Layer = GetLayerAt(0);
 			SetCurrentLayer(Layer->TableRecord());
-			m_SaveAsType_ = EoDb::kUnknown;
+			m_SaveAsType_ = kUnknown;
 		}
 		else {
 			theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, m_IdentifiedLayerName);
@@ -2265,7 +2269,7 @@ void AeSysDoc::OnToolsGroupDelete() {
 		if (RemoveTrappedGroup(Group) != NULL) {
 			ActiveView->UpdateStateInformation(AeSysView::TrapCount);
 		}
-		UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
+		UpdateGroupInAllViews(kGroupEraseSafe, Group);
 		DeletedGroupsAddTail(Group);
 		theApp.AddStringToMessageList(IDS_MSG_GROUP_ADDED_TO_DEL_GROUPS);
 	}
@@ -2327,14 +2331,14 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 	if (Group != 0) {
 		const POSITION Position = FindTrappedGroup(Group);
 
-		LPARAM lHint = (Position != 0) ? EoDb::kGroupEraseSafeTrap : EoDb::kGroupEraseSafe;
+		LPARAM lHint = (Position != 0) ? kGroupEraseSafeTrap : kGroupEraseSafe;
 		// erase entire group even if group has more than one primitive
 		UpdateGroupInAllViews(lHint, Group);
 
 		if (Group->GetCount() > 1) { // remove primitive from group
 			EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
 			Group->FindAndRemovePrimitive(Primitive);
-			lHint = (Position != 0) ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
+			lHint = (Position != 0) ? kGroupSafeTrap : kGroupSafe;
 			// display the group with the primitive removed
 			UpdateGroupInAllViews(lHint, Group);
 			// new group required to allow primitive to be placed into deleted group list
@@ -2362,7 +2366,7 @@ void AeSysDoc::OnPrimModifyAttributes() {
 
 	if (Group != 0) {
 		ActiveView->EngagedPrimitive()->ModifyState();
-		UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, ActiveView->EngagedPrimitive());
+		UpdatePrimitiveInAllViews(kPrimitiveSafe, ActiveView->EngagedPrimitive());
 	}
 }
 void AeSysDoc::OnSetupSavePoint() {
@@ -2514,10 +2518,10 @@ void AeSysDoc::OnPrimExtractNum() {
 
 		CString Number;
 
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+		if (Primitive->Is(kTextPrimitive)) {
 			Number = static_cast<EoDbText*>(Primitive)->Text();
 		}
-		else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+		else if (Primitive->Is(kDimensionPrimitive)) {
 			Number = static_cast<EoDbDimension*>(Primitive)->Text();
 		}
 		else {
@@ -2550,10 +2554,10 @@ void AeSysDoc::OnPrimExtractStr() {
 
 		CString String;
 
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+		if (Primitive->Is(kTextPrimitive)) {
 			String = static_cast<EoDbText*>(Primitive)->Text();
 		}
-		else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+		else if (Primitive->Is(kDimensionPrimitive)) {
 			String = static_cast<EoDbDimension*>(Primitive)->Text();
 		}
 		else {
@@ -2651,7 +2655,7 @@ void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, DWORD
 				EoDbPoint PointPrimitive(point);
 				PointPrimitive.SetColorIndex(252);
 				PointPrimitive.SetPointDisplayMode(8);
-				UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, &PointPrimitive);
+				UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, &PointPrimitive);
 			}
 		}
 	}
@@ -2663,7 +2667,7 @@ void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, DWORD
 				EoDbPoint PointPrimitive(point);
 				PointPrimitive.SetColorIndex(252);
 				PointPrimitive.SetPointDisplayMode(8);
-				UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, &PointPrimitive);
+				UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, &PointPrimitive);
 			}
 		}
 	}
@@ -2733,7 +2737,7 @@ void AeSysDoc::DisplayUniquePoints() {
 		PointPrimitive->SetPointDisplayMode(8);
 		Group.AddTail(PointPrimitive);
 	}
-	UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &Group);
+	UpdateGroupInAllViews(kGroupEraseSafe, &Group);
 	Group.DeletePrimitivesAndRemoveAll();
 }
 int AeSysDoc::RemoveUniquePoint(const OdGePoint3d& point) {
@@ -2837,7 +2841,7 @@ void AeSysDoc::OnInsertTracing() {
 		Name = Name.mid(of.nFileOffset);
 
 		const EoDb::FileTypes FileType = AeSysApp::GetFileType(Name);
-		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
+		if (FileType != kTracing && FileType != kJob) {
 			return;
 		}
 		OdDbLayerTablePtr Layers = LayerTable(OdDb::kForWrite);

@@ -23,9 +23,9 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
-			if (Primitive->Is(EoDb::kLinePrimitive))
+			if (Primitive->Is(kLinePrimitive))
 				static_cast<EoDbLine*>(Primitive)->GetLine(ln);
-			else if (Primitive->Is(EoDb::kDimensionPrimitive))
+			else if (Primitive->Is(kDimensionPrimitive))
 				ln = static_cast<EoDbDimension*>(Primitive)->Line();
 			else
 				continue;
@@ -61,11 +61,11 @@ void AeSysView::OnDimensionModeArrow(void) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kLinePrimitive)) {
+			if (Primitive->Is(kLinePrimitive)) {
 				EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
 				LinePrimitive->GetLine(TestLine);
 			}
-			else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+			else if (Primitive->Is(kDimensionPrimitive)) {
 				EoDbDimension* DimensionPrimitive = static_cast<EoDbDimension*>(Primitive);
 				TestLine = DimensionPrimitive->Line();
 			}
@@ -88,7 +88,7 @@ void AeSysView::OnDimensionModeArrow(void) {
 					pt = TestLine.endPoint();
 				}
 				Document->AddWorkLayerGroup(NewGroup);
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
+				Document->UpdateGroupInAllViews(kGroupSafe, NewGroup);
 
 				SetCursorPosition(pt);
 				PreviousDimensionCursorPosition = pt;
@@ -116,7 +116,7 @@ void AeSysView::OnDimensionModeLine(void) {
 			EoDbGroup* Group = new EoDbGroup;
 			Group->AddTail(Line);
 			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 		}
 		PreviousDimensionCursorPosition = ptCur;
 	}
@@ -141,12 +141,12 @@ void AeSysView::OnDimensionModeDLine(void) {
 			DimensionPrimitive->SetStartPoint(PreviousDimensionCursorPosition);
 			DimensionPrimitive->SetEndPoint(ptCur);
 			DimensionPrimitive->SetTextColorIndex(5);
-			DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
-			DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
+			DimensionPrimitive->SetTextHorizontalAlignment(kAlignCenter);
+			DimensionPrimitive->SetTextVerticalAlignment(kAlignMiddle);
 			DimensionPrimitive->SetDefaultNote();
 			Group->AddTail(DimensionPrimitive);
 			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 
 			PreviousDimensionCursorPosition = ptCur;
 		}
@@ -185,13 +185,13 @@ void AeSysView::OnDimensionModeDLine2(void) {
 			DimensionPrimitive->SetStartPoint(PreviousDimensionCursorPosition);
 			DimensionPrimitive->SetEndPoint(ptCur);
 			DimensionPrimitive->SetTextColorIndex(5);
-			DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
-			DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
+			DimensionPrimitive->SetTextHorizontalAlignment(kAlignCenter);
+			DimensionPrimitive->SetTextVerticalAlignment(kAlignMiddle);
 			DimensionPrimitive->SetDefaultNote();
 			Group->AddTail(DimensionPrimitive);
 			GenerateLineEndItem(1, .1, PreviousDimensionCursorPosition, ptCur, Group);
 			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 
 			PreviousDimensionCursorPosition = ptCur;
 		}
@@ -224,7 +224,7 @@ void AeSysView::OnDimensionModeExten(void) {
 			EoDbGroup* Group = new EoDbGroup;
 			Group->AddTail(Line);
 			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 		}
 		PreviousDimensionCursorPosition = ptCur;
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -237,7 +237,7 @@ void AeSysView::OnDimensionModeRadius(void) {
 	if (SelectGroupAndPrimitive(ptCur) != 0) {
 		const OdGePoint3d ptEnd = DetPt();
 
-		if ((EngagedPrimitive())->Is(EoDb::kEllipsePrimitive)) {
+		if ((EngagedPrimitive())->Is(kEllipsePrimitive)) {
 			EoDbEllipse* pArc = static_cast<EoDbEllipse*>(EngagedPrimitive());
 
 			const OdGePoint3d ptBeg = pArc->Center();
@@ -250,8 +250,8 @@ void AeSysView::OnDimensionModeRadius(void) {
 			DimensionPrimitive->SetStartPoint(ptBeg);
 			DimensionPrimitive->SetEndPoint(ptEnd);
 			DimensionPrimitive->SetTextColorIndex(5);
-			DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
-			DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
+			DimensionPrimitive->SetTextHorizontalAlignment(kAlignCenter);
+			DimensionPrimitive->SetTextVerticalAlignment(kAlignMiddle);
 			DimensionPrimitive->SetDefaultNote();
 			DimensionPrimitive->SetText(L"R" + DimensionPrimitive->Text());
 			DimensionPrimitive->SetDefaultNote();
@@ -259,7 +259,7 @@ void AeSysView::OnDimensionModeRadius(void) {
 
 			GenerateLineEndItem(1, .1, ptBeg, ptEnd, Group);
 			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 
 			PreviousDimensionCursorPosition = ptEnd;
 		}
@@ -275,7 +275,7 @@ void AeSysView::OnDimensionModeDiameter() {
 	if (SelectGroupAndPrimitive(ptCur) != 0) {
 		const OdGePoint3d ptEnd = DetPt();
 
-		if ((EngagedPrimitive())->Is(EoDb::kEllipsePrimitive)) {
+		if ((EngagedPrimitive())->Is(kEllipsePrimitive)) {
 			EoDbEllipse* pArc = static_cast<EoDbEllipse*>(EngagedPrimitive());
 
 			const OdGePoint3d ptBeg = ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length());
@@ -290,8 +290,8 @@ void AeSysView::OnDimensionModeDiameter() {
 			DimensionPrimitive->SetStartPoint(ptBeg);
 			DimensionPrimitive->SetEndPoint(ptEnd);
 			DimensionPrimitive->SetTextColorIndex(5);
-			DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
-			DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
+			DimensionPrimitive->SetTextHorizontalAlignment(kAlignCenter);
+			DimensionPrimitive->SetTextVerticalAlignment(kAlignMiddle);
 			DimensionPrimitive->SetDefaultNote();
 			DimensionPrimitive->SetText(L"D" + DimensionPrimitive->Text());
 			DimensionPrimitive->SetDefaultNote();
@@ -299,7 +299,7 @@ void AeSysView::OnDimensionModeDiameter() {
 
 			GenerateLineEndItem(1, .1, ptBeg, ptEnd, Group);
 			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 
 			PreviousDimensionCursorPosition = ptEnd;
 		}
@@ -379,8 +379,8 @@ void AeSysView::OnDimensionModeAngle(void) {
 				const int PrimitiveState = pstate.Save();
 
 				EoDbFontDefinition FontDefinition = pstate.FontDefinition();
-				FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
-				FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
+				FontDefinition.SetHorizontalAlignment(kAlignCenter);
+				FontDefinition.SetVerticalAlignment(kAlignMiddle);
 				pstate.SetFontDefinition(DeviceContext, FontDefinition);
 
 				EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
@@ -396,7 +396,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 				TextPrimitive->SetTo(FontDefinition, ReferenceSystem, theApp.FormatAngle(Angle));
 				Group->AddTail(TextPrimitive);
 				Document->AddWorkLayerGroup(Group);
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				Document->UpdateGroupInAllViews(kGroupSafe, Group);
 				pstate.Restore(DeviceContext, PrimitiveState);
 			}
 			ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -429,7 +429,7 @@ void AeSysView::OnDimensionModeConvert(void) {
 			posPrimCur = PrimitivePosition;
 			Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->SelectBy(ptView, this, ptProj)) {
-				if (Primitive->Is(EoDb::kLinePrimitive)) {
+				if (Primitive->Is(kLinePrimitive)) {
 					EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
 					EoDbDimension* DimensionPrimitive = new EoDbDimension();
 					DimensionPrimitive->SetColorIndex(LinePrimitive->ColorIndex());
@@ -439,8 +439,8 @@ void AeSysView::OnDimensionModeConvert(void) {
 					DimensionPrimitive->SetFontDefinition(pstate.FontDefinition());
 
 					DimensionPrimitive->SetTextColorIndex(5);
-					DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
-					DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
+					DimensionPrimitive->SetTextHorizontalAlignment(kAlignCenter);
+					DimensionPrimitive->SetTextVerticalAlignment(kAlignMiddle);
 					DimensionPrimitive->SetDefaultNote();
 					Group->InsertAfter(posPrimCur, DimensionPrimitive);
 					Group->RemoveAt(posPrimCur);
@@ -448,7 +448,7 @@ void AeSysView::OnDimensionModeConvert(void) {
 					PreviousDimensionCursorPosition = ptProj;
 					return;
 				}
-				else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+				else if (Primitive->Is(kDimensionPrimitive)) {
 					EoDbDimension* DimensionPrimitive = static_cast<EoDbDimension*>(Primitive);
 					EoGeReferenceSystem ReferenceSystem;
 					ReferenceSystem = DimensionPrimitive->ReferenceSystem();

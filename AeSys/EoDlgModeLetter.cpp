@@ -72,7 +72,7 @@ void EoDlgModeLetter::OnOK() {
       	EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(TextPrimitive);
 		Document->AddWorkLayerGroup(Group);
-		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+		Document->UpdateGroupInAllViews(kGroupSafe, Group);
 	}
 	m_Point = text_GetNewLinePos(FontDefinition, ReferenceSystem, 1., 0);
 	m_TextEditControl.SetFocus();

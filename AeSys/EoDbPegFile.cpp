@@ -3,8 +3,9 @@
 #include "AeSysDoc.h"
 
 EoDbPegFile::EoDbPegFile(OdDbDatabasePtr database)
-	: m_Database(database) {
+    : EoDbFile(database) {
 }
+
 EoDbPegFile::~EoDbPegFile() {
 }
 
@@ -22,38 +23,38 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 
 void EoDbPegFile::ReadHeaderSection(AeSysDoc*) {
 	if (ReadUInt16() != kHeaderSection) {
-		throw L"Exception ReadHeaderSection: Expecting sentinel EoDb::kHeaderSection.";
+		throw L"Exception ReadHeaderSection: Expecting sentinel kHeaderSection.";
 	}
 	// <tas="All database settings can be set here ??"</tas>
 	m_Database->setPDMODE(64); // Point display mode - square
 	m_Database->setPDSIZE(.015625); 
 	if (ReadUInt16() != kEndOfSection) {
-		throw L"Exception ReadHeaderSection: Expecting sentinel EoDb::kEndOfSection.";
+		throw L"Exception ReadHeaderSection: Expecting sentinel kEndOfSection.";
 	}
 }
 void EoDbPegFile::ReadTablesSection(AeSysDoc* document) {
 	if (ReadUInt16() != kTablesSection) {
-		throw L"Exception ReadTablesSection: Expecting sentinel EoDb::kTablesSection.";
+		throw L"Exception ReadTablesSection: Expecting sentinel kTablesSection.";
 	}
 	ReadViewportTable(document);
 	ReadLinetypesTable();
 	ReadLayerTable(document);
 	if (ReadUInt16() != kEndOfSection) {
-		throw L"Exception ReadTablesSection: Expecting sentinel EoDb::kEndOfSection.";
+		throw L"Exception ReadTablesSection: Expecting sentinel kEndOfSection.";
 	}
 }
 void EoDbPegFile::ReadViewportTable(AeSysDoc*) {
 	if (ReadUInt16() != kViewPortTable) {
-		throw L"Exception ReadViewportTable: Expecting sentinel EoDb::kViewPortTable.";
+		throw L"Exception ReadViewportTable: Expecting sentinel kViewPortTable.";
 	}
 	ReadUInt16();
 	if (ReadUInt16() != kEndOfTable) {
-		throw L"Exception ReadViewportTable: Expecting sentinel EoDb::kEndOfTable.";
+		throw L"Exception ReadViewportTable: Expecting sentinel kEndOfTable.";
 	}
 }
 void EoDbPegFile::ReadLinetypesTable() {
 	if (ReadUInt16() != kLinetypeTable)
-		throw L"Exception ReadLinetypesTable: Expecting sentinel EoDb::kLinetypeTable.";
+		throw L"Exception ReadLinetypesTable: Expecting sentinel kLinetypeTable.";
 
 	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite);
 
@@ -102,11 +103,11 @@ void EoDbPegFile::ReadLinetypesTable() {
 	delete [] DashLength;
 
 	if (ReadUInt16() != kEndOfTable)
-		throw L"Exception ReadLinetypesTable: Expecting sentinel EoDb::kEndOfTable.";
+		throw L"Exception ReadLinetypesTable: Expecting sentinel kEndOfTable.";
 }
 void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 	if (ReadUInt16() != kLayerTable) {
-		throw L"Exception ReadLayerTable: Expecting sentinel EoDb::kLayerTable.";
+		throw L"Exception ReadLayerTable: Expecting sentinel kLayerTable.";
 	}
 	OdDbLayerTablePtr Layers = document->LayerTable(OdDb::kForWrite);
 	const OdUInt16 NumberOfLayers = ReadUInt16();
@@ -158,12 +159,12 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 		Layer->SetLinetype(Linetype);
 	}
 	if (ReadUInt16() != kEndOfTable) {
-		throw L"Exception ReadLayerTable: Expecting sentinel EoDb::kEndOfTable.";
+		throw L"Exception ReadLayerTable: Expecting sentinel kEndOfTable.";
 	}
 }
 void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 	if (ReadUInt16() != kBlocksSection) {
-		throw L"Exception ReadBlocksSection: Expecting sentinel EoDb::kBlocksSection.";
+		throw L"Exception ReadBlocksSection: Expecting sentinel kBlocksSection.";
 	}
 	OdDbBlockTablePtr BlockTable = m_Database->getBlockTableId().safeOpenObject(OdDb::kForWrite);
 
@@ -193,7 +194,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 		const bool LayoutBlock = BlockTableRecord->isLayout();
 
 		for (OdUInt16 PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-			EoDbPrimitive* Primitive = ReadPrimitive();
+			EoDbPrimitive* Primitive = ReadPrimitive(BlockTableRecord);
 			Block->AddTail(Primitive);
 			if (!LayoutBlock) {
 				Primitive->AssociateWith(BlockTableRecord);
@@ -201,12 +202,12 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 		}
 	}
 	if (ReadUInt16() != kEndOfSection) {
-		throw L"Exception ReadBlocksSection: Expecting sentinel EoDb::kEndOfSection.";
+		throw L"Exception ReadBlocksSection: Expecting sentinel kEndOfSection.";
 	}
 }
 void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	if (ReadUInt16() != kGroupsSection) {
-		throw L"Exception ReadGroupsSection: Expecting sentinel EoDb::kGroupsSection.";
+		throw L"Exception ReadGroupsSection: Expecting sentinel kGroupsSection.";
 	}
 	OdDbBlockTableRecordPtr ModelSpaceBlock = m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	const OdDbObjectId CurrentLayerObjectId = m_Database->getCLAYER();
@@ -217,7 +218,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	for (OdUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
 		
-		if (Layer == 0)
+		if (!Layer)
 			return;
 
 		OdString LayerName = Layer->Name();
@@ -231,10 +232,9 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 				const size_t NumberOfPrimitives = ReadUInt16();
 				
 				EoDbGroup* Group = new EoDbGroup;
-				EoDbPrimitive* Primitive;
 				
 				for (size_t PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-					Primitive = ReadPrimitive();
+                    EoDbPrimitive* Primitive = ReadPrimitive(ModelSpaceBlock);
 					Primitive->AssociateWith(ModelSpaceBlock);
 					Group->AddTail(Primitive);
 				}
@@ -250,7 +250,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	m_Database->setCLAYER(CurrentLayerObjectId);
 
 	if (ReadUInt16() != kEndOfSection) {
-		throw L"Exception ReadGroupsSection: Expecting sentinel EoDb::kEndOfSection.";
+		throw L"Exception ReadGroupsSection: Expecting sentinel kEndOfSection.";
 	}
 }
 void EoDbPegFile::Unload(AeSysDoc* document) {

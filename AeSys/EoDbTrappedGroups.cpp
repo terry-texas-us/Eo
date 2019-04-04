@@ -5,14 +5,14 @@
 
 void AeSysDoc::AddGroupsToTrap(EoDbGroupList* groups) {
 	if (theApp.IsTrapHighlighted()) {
-		UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, groups);
+		UpdateGroupsInAllViews(kGroupsSafeTrap, groups);
 	}
 	m_TrappedGroupList.AddTail(groups);
 }
 
 POSITION AeSysDoc::AddGroupToTrap(EoDbGroup* group) {
 	if (theApp.IsTrapHighlighted()) {
-		UpdateGroupInAllViews(EoDb::kGroupSafeTrap, group);
+		UpdateGroupInAllViews(kGroupSafeTrap, group);
 	}
 	return m_TrappedGroupList.AddTail(group);
 }
@@ -51,10 +51,10 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 		EoDbGroup* NewGroup = new EoDbGroup(*Group);
 
 		AddWorkLayerGroup(NewGroup);
-		UpdateGroupInAllViews(EoDb::kGroup, Group);
+		UpdateGroupInAllViews(kGroup, Group);
 		Group->TransformBy(TranslationMatrix);
 
-		const LPARAM Hint = (theApp.IsTrapHighlighted()) ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
+		const LPARAM Hint = (theApp.IsTrapHighlighted()) ? kGroupSafeTrap : kGroupSafe;
 		UpdateGroupInAllViews(Hint, Group);
 	}
 }
@@ -73,7 +73,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			POSITION PrimitivePosition = Group->GetHeadPosition();
 			while (PrimitivePosition != 0) {
 				EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-				if (Primitive->Is(EoDb::kTextPrimitive)) {
+				if (Primitive->Is(kTextPrimitive)) {
 					strBuf += static_cast<EoDbText*>(Primitive)->Text();
 					strBuf += L"\r\n";
 				}
@@ -213,7 +213,7 @@ void AeSysDoc::ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, Eo
 void AeSysDoc::RemoveAllTrappedGroups() {
 	if (!m_TrappedGroupList.IsEmpty()) {
 		if (theApp.IsTrapHighlighted()) {
-			UpdateGroupsInAllViews(EoDb::kGroupsSafe, &m_TrappedGroupList);
+			UpdateGroupsInAllViews(kGroupsSafe, &m_TrappedGroupList);
 		}
 		m_TrappedGroupList.RemoveAll();
 	}
@@ -236,24 +236,24 @@ void AeSysDoc::SetTrapPivotPoint(const OdGePoint3d& pivotPoint) noexcept {
 }
 
 void AeSysDoc::SquareTrappedGroups(AeSysView* view) {
-	UpdateGroupsInAllViews(EoDb::kGroupsEraseSafeTrap, &m_TrappedGroupList);
+	UpdateGroupsInAllViews(kGroupsEraseSafeTrap, &m_TrappedGroupList);
 
 	POSITION GroupPosition = m_TrappedGroupList.GetHeadPosition();
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = m_TrappedGroupList.GetNext(GroupPosition);
 		Group->Square(view);
 	}
-	UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, &m_TrappedGroupList);
+	UpdateGroupsInAllViews(kGroupsSafeTrap, &m_TrappedGroupList);
 }
 
 void AeSysDoc::TransformTrappedGroups(const EoGeMatrix3d& transformMatrix) {
 	if (theApp.IsTrapHighlighted()) {
-		UpdateGroupsInAllViews(EoDb::kGroupsEraseSafeTrap, &m_TrappedGroupList);
+		UpdateGroupsInAllViews(kGroupsEraseSafeTrap, &m_TrappedGroupList);
 	}
 	m_TrappedGroupList.TransformBy(transformMatrix);
 
 	if (theApp.IsTrapHighlighted()) {
-		UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, &m_TrappedGroupList);
+		UpdateGroupsInAllViews(kGroupsSafeTrap, &m_TrappedGroupList);
 	}
 }
 

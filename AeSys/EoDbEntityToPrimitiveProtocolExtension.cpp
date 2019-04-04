@@ -138,15 +138,15 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 			}
 		}
 	}
-	const EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
-	const EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
+	const VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
+	const HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
 
 	OdGePoint3d AlignmentPoint = text->position();
-	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
+	if (HorizontalAlignment != kAlignLeft || VerticalAlignment != kAlignBottom)
 		AlignmentPoint = text->alignmentPoint();
 
 	EoDbFontDefinition FontDefinition;
-	FontDefinition.SetPrecision(EoDb::kEoTrueType);
+	FontDefinition.SetPrecision(kTrueType);
 	FontDefinition.SetFontName((PCTSTR) FileName);
 	FontDefinition.SetHorizontalAlignment(HorizontalAlignment);
 	FontDefinition.SetVerticalAlignment(VerticalAlignment);

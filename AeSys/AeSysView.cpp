@@ -2103,52 +2103,52 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 	int PrimitiveState = 0;
 	int iDrawMode = 0;
 
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
+	if ((hint & kSafe) == kSafe) {
 		PrimitiveState = pstate.Save();
 	}
-	if ((hint & EoDb::kErase) == EoDb::kErase) {
+	if ((hint & kErase) == kErase) {
 		iDrawMode = pstate.SetROP2(DeviceContext, R2_XORPEN);
 	}
-	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
+	if ((hint & kTrap) == kTrap) {
 		EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 	}
 	switch (hint) {
-	case EoDb::kPrimitive:
-	case EoDb::kPrimitiveSafe:
-	case EoDb::kPrimitiveEraseSafe:
+	case kPrimitive:
+	case kPrimitiveSafe:
+	case kPrimitiveEraseSafe:
 		((EoDbPrimitive*)hintObject)->Display(this, DeviceContext);
 		break;
 
-	case EoDb::kGroup:
-	case EoDb::kGroupSafe:
-	case EoDb::kGroupEraseSafe:
-	case EoDb::kGroupSafeTrap:
-	case EoDb::kGroupEraseSafeTrap:
+	case kGroup:
+	case kGroupSafe:
+	case kGroupEraseSafe:
+	case kGroupSafeTrap:
+	case kGroupEraseSafeTrap:
 		((EoDbGroup*)hintObject)->Display(this, DeviceContext);
 		break;
 
-	case EoDb::kGroups:
-	case EoDb::kGroupsSafe:
-	case EoDb::kGroupsSafeTrap:
-	case EoDb::kGroupsEraseSafeTrap:
+	case kGroups:
+	case kGroupsSafe:
+	case kGroupsSafeTrap:
+	case kGroupsEraseSafeTrap:
 		((EoDbGroupList*)hintObject)->Display(this, DeviceContext);
 		break;
 
-	case EoDb::kLayer:
-	case EoDb::kLayerErase:
+	case kLayer:
+	case kLayerErase:
 		((EoDbLayer*)hintObject)->Display(this, DeviceContext);
 		break;
 
 	default:
 		CView::OnUpdate(sender, hint, hintObject);
 	}
-	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
+	if ((hint & kTrap) == kTrap) {
 		EoDbPrimitive::SetHighlightColorIndex(0);
 	}
-	if ((hint & EoDb::kErase) == EoDb::kErase) {
+	if ((hint & kErase) == kErase) {
 		pstate.SetROP2(DeviceContext, iDrawMode);
 	}
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
+	if ((hint & kSafe) == kSafe) {
 		pstate.Restore(DeviceContext, PrimitiveState);
 	}
 	DeviceContext->SetBkColor(BackgroundColor);
@@ -3091,7 +3091,7 @@ void AeSysView::OnPrimPerpJump() {
 	OdGePoint3d CursorPosition = GetCursorPosition();
 
 	if (SelectGroupAndPrimitive(CursorPosition) != 0) {
-		if (m_EngagedPrimitive->Is(EoDb::kLinePrimitive)) {
+		if (m_EngagedPrimitive->Is(kLinePrimitive)) {
 			const EoDbLine* LinePrimLine = static_cast<EoDbLine*>(m_EngagedPrimitive);
 			CursorPosition = LinePrimLine->ProjPt_(m_ptCursorPosWorld);
 			SetCursorPosition(CursorPosition);
@@ -3228,10 +3228,10 @@ void AeSysView::DeleteLastGroup() {
 
 		Document->AnyLayerRemove(Group);
 		if (Document->RemoveTrappedGroup(Group) != 0) { // Display it normal color so the erase xor will work
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 			UpdateStateInformation(TrapCount);
 		}
-		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
+		Document->UpdateGroupInAllViews(kGroupEraseSafe, Group);
 		Document->DeletedGroupsAddTail(Group);
 		theApp.AddStringToMessageList(IDS_MSG_GROUP_ADDED_TO_DEL_GROUPS);
 	}
@@ -3363,7 +3363,7 @@ EoDbGroup* AeSysView::SelectCircleUsingPoint(const OdGePoint3d& point, double to
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kEllipsePrimitive)) {
+			if (Primitive->Is(kEllipsePrimitive)) {
 				EoDbEllipse* Arc = static_cast<EoDbEllipse*>(Primitive);
 
 				if (fabs(Arc->SweepAngle() - TWOPI) <= DBL_EPSILON &&
@@ -3398,7 +3398,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& pt) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kLinePrimitive)) {
+			if (Primitive->Is(kLinePrimitive)) {
 				if (Primitive->SelectBy(ptView, this, ptEng)) {
 					tol = ptView.DistanceToPointXY(EoGePoint4d(ptEng, 1.));
 
@@ -3422,7 +3422,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& point, EoDbLine*& line) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kLinePrimitive)) {
+			if (Primitive->Is(kLinePrimitive)) {
 				OdGePoint3d PointOnLine;
 				if (Primitive->SelectBy(ptView, this, PointOnLine)) {
 					line = static_cast<EoDbLine*>(Primitive);
@@ -3440,7 +3440,7 @@ EoDbGroup* AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tol
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kPointPrimitive)) {
+			if (Primitive->Is(kPointPrimitive)) {
 				EoDbPoint* Point = static_cast<EoDbPoint*>(Primitive);
 
 				if (Point->ColorIndex() == pointColor && Point->PointDisplayMode() == pointDisplayMode) {
@@ -3464,7 +3464,7 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kTextPrimitive)) {
+			if (Primitive->Is(kTextPrimitive)) {
 				OdGePoint3d ptProj;
 				if (static_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj))
 					return static_cast<EoDbText*>(Primitive);

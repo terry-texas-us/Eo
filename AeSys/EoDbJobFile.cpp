@@ -13,40 +13,40 @@ EoDbJobFile::~EoDbJobFile() {
 
 void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, OdInt16 PrimitiveType) {
 	switch(PrimitiveType) {
-	case EoDb::kTagPrimitive:
-	case EoDb::kPointPrimitive:
+	case kTagPrimitive:
+	case kPointPrimitive:
 		if (PrimitiveType == kTagPrimitive) {
-			*((OdUInt16*) &m_PrimBuf[4]) = EoDb::kPointPrimitive;
+			*((OdUInt16*) &m_PrimBuf[4]) = kPointPrimitive;
 			::ZeroMemory(&m_PrimBuf[20], 12);
 		}
 		primitive = EoDbPoint::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case EoDb::kLinePrimitive:
+	case kLinePrimitive:
 		primitive = EoDbLine::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case EoDb::kHatchPrimitive:
+	case kHatchPrimitive:
 		primitive = EoDbHatch::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case EoDb::kEllipsePrimitive:
+	case kEllipsePrimitive:
 		primitive = EoDbEllipse::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case EoDb::kCSplinePrimitive:
-	case EoDb::kSplinePrimitive:
+	case kCSplinePrimitive:
+	case kSplinePrimitive:
 		if (PrimitiveType == kCSplinePrimitive) {
 			const OdUInt16 NumberOfControlPoints = *((OdUInt16*) &m_PrimBuf[10]);
 			m_PrimBuf[3] = OdInt8((2 + NumberOfControlPoints * 3) / 8 + 1);
-			*((OdUInt16*) &m_PrimBuf[4]) = OdUInt16(EoDb::kSplinePrimitive);
+			*((OdUInt16*) &m_PrimBuf[4]) = OdUInt16(kSplinePrimitive);
 			m_PrimBuf[8] = m_PrimBuf[10];
 			m_PrimBuf[9] = m_PrimBuf[11];
 			::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
 		}
 		primitive = EoDbSpline::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case EoDb::kTextPrimitive:
+	case kTextPrimitive:
 		primitive = EoDbText::ConstructFrom(m_PrimBuf, 3);
 		static_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
 		break;
-	case EoDb::kDimensionPrimitive:
+	case kDimensionPrimitive:
 		primitive = EoDbDimension::ConstructFrom(m_PrimBuf, 3);
 		break;
 
@@ -202,15 +202,15 @@ int EoDbJobFile::Version() noexcept {
 }
 bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
 	switch (primitiveType) {
-	case EoDb::kPointPrimitive: // 0x0100
-	case EoDb::kLinePrimitive: // 0x0200
-	case EoDb::kHatchPrimitive: // 0x0400
-	case EoDb::kEllipsePrimitive: // 0x1003
-	case EoDb::kSplinePrimitive: // 0x2000
-	case EoDb::kCSplinePrimitive: // 0x2001
-	case EoDb::kTextPrimitive: // 0x4000
-	case EoDb::kTagPrimitive: // 0x4100
-	case EoDb::kDimensionPrimitive: // 0x4200
+	case kPointPrimitive: // 0x0100
+	case kLinePrimitive: // 0x0200
+	case kHatchPrimitive: // 0x0400
+	case kEllipsePrimitive: // 0x1003
+	case kSplinePrimitive: // 0x2000
+	case kCSplinePrimitive: // 0x2001
+	case kTextPrimitive: // 0x4000
+	case kTagPrimitive: // 0x4100
+	case kDimensionPrimitive: // 0x4200
 		return true;
 
 	default:

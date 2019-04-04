@@ -75,7 +75,7 @@ void EoDlgSetupNote::OnOK() {
 		CString FontsItemName;
 		m_MfcFontComboControl.GetLBText(FontsIndex, FontsItemName);
 		m_FontDefinition->SetFontName(FontsItemName);
-		const EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? EoDb::kEoTrueType : EoDb::kStrokeType);
+		const EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? kTrueType : kStrokeType);
 		m_FontDefinition->SetPrecision(Precision);
 	}
 

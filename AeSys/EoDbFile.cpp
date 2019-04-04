@@ -3,11 +3,17 @@
 
 EoDbFile::EoDbFile() {
 }
+
+EoDbFile::EoDbFile(OdDbDatabasePtr database) {
+}
+
 EoDbFile::EoDbFile(const OdString& fileName, UINT openFlags)
 	: CFile(fileName, openFlags) {
 }
+
 EoDbFile::~EoDbFile() {
 }
+
 void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept {
 }
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive) {
@@ -42,7 +48,7 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 	primitive = Polyline;
 }
 
-EoDbPrimitive* EoDbFile::ReadPrimitive() {
+EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
 	EoDbPrimitive* Primitive = nullptr;
 
     switch (ReadUInt16()) {
@@ -55,9 +61,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive() {
 	case kGroupReferencePrimitive:
 		Primitive = EoDbBlockReference::ConstructFrom(*this);
 		break;
-	case kLinePrimitive:
-		Primitive = EoDbLine::ConstructFrom(*this);
-		break;
+    case kLinePrimitive: {
+        OdDbLinePtr Line = EoDbLine::Create(blockTable, *this);
+        Primitive = EoDbLine::Create(Line);
+        break;
+    }
 	case kHatchPrimitive:
 		Primitive = EoDbHatch::ConstructFrom(*this);
 		break;
@@ -73,9 +81,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive() {
 	case kPolylinePrimitive:
 		Primitive = EoDbPolyline::ConstructFrom(*this);
 		break;
-	case kTextPrimitive:
-		Primitive = EoDbText::ConstructFrom(*this);
-		break;
+    case kTextPrimitive: {
+        OdDbTextPtr Text = EoDbText::Create(blockTable, *this);
+        Primitive = EoDbText::Create(Text);
+        break;
+    }
 	case kDimensionPrimitive:
 		Primitive = EoDbDimension::ConstructFrom(*this);
 		break;

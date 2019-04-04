@@ -83,7 +83,7 @@ void AeSysView::OnPowerModeHome() {
 	m_PowerConductor = false;
 	m_PreviousOp = 0;
 
-	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 	if (!m_PowerArrow || (PointOnCircuit != CurrentPnt)) {
@@ -124,7 +124,7 @@ void AeSysView::DoPowerModeMouseMove() {
 	switch (m_PreviousOp) {
 	case ID_OP2:
 		if (m_PowerModePoints[0] != CurrentPnt) {
-			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 			EoDbEllipse* SymbolCircle;
@@ -139,7 +139,7 @@ void AeSysView::DoPowerModeMouseMove() {
 			}
 			const OdGePoint3d pt1 = ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius);
 			m_PreviewGroup.AddTail(new EoDbLine(pt1, CurrentPnt));
-			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 		}
 		break;
 	}
@@ -153,7 +153,7 @@ void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	m_PowerArrow = false;
 	m_PreviousOp = 0;
 
-	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 	if (!m_PowerConductor || PointOnCircuit != CurrentPnt) {
@@ -200,7 +200,7 @@ void AeSysView::OnPowerModeEscape() {
 
 	ModeLineUnhighlightOp(m_PreviousOp);	m_PreviousOp = 0;
 
-	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 }
 
@@ -223,7 +223,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 	Polyline->SetLinetypeIndex(1);
 	Polyline->SetPoints(Points);
 	Group->AddTail(Polyline);
-	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 }
 void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
@@ -302,5 +302,5 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 		return;
 	}
 	GetDocument()->AddWorkLayerGroup(Group);
-	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 }

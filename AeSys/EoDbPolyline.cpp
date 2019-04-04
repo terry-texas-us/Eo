@@ -234,7 +234,7 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 	return (PivotPoint);
 }
 bool EoDbPolyline::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kPolylinePrimitive;
+	return type == kPolylinePrimitive;
 }
 bool EoDbPolyline::IsClosed() const noexcept {
 	return (m_Flags != 0);
@@ -435,7 +435,7 @@ void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& translate, const DWORD
 	}
 }
 bool EoDbPolyline::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kPolylinePrimitive);
+	file.WriteUInt16(kPolylinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	file.WriteUInt16(OdUInt16(m_Vertices.size()));

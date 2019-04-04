@@ -163,7 +163,7 @@ OdGePoint3d	EoDbBlockReference::GoToNxtCtrlPt() const noexcept {
 	return m_Position;
 }
 bool EoDbBlockReference::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kGroupReferencePrimitive;
+	return type == kGroupReferencePrimitive;
 }
 bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
 	return false;
@@ -273,7 +273,7 @@ void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, DWORD
 	}
 }
 bool EoDbBlockReference::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kGroupReferencePrimitive);
+	file.WriteUInt16(kGroupReferencePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	file.WriteString(m_Name);

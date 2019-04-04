@@ -637,7 +637,7 @@ OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
 	return (pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng));
 }
 bool EoDbEllipse::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kEllipsePrimitive;
+	return type == kEllipsePrimitive;
 }
 bool EoDbEllipse::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
 	return false;
@@ -847,7 +847,7 @@ void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const DWORD 
 }
 
 bool EoDbEllipse::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kEllipsePrimitive);
+	file.WriteUInt16(kEllipsePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	
@@ -869,7 +869,7 @@ bool EoDbEllipse::Write(EoDbFile& file) const {
 }
 void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 2;
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kEllipsePrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(kEllipsePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;

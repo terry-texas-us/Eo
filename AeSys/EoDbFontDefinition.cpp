@@ -1,7 +1,12 @@
 #include "stdafx.h"
 
 EoDbFontDefinition::EoDbFontDefinition()
-	: m_Precision(EoDb::kEoTrueType), m_FontName(L"Simplex"), m_Path(EoDb::kPathRight), m_HorizontalAlignment(EoDb::kAlignLeft), m_VerticalAlignment(EoDb::kAlignBottom), m_CharacterSpacing(0.) {
+	: m_Precision(kTrueType)
+    , m_FontName(L"Simplex")
+    , m_Path(kPathRight)
+    , m_HorizontalAlignment(kAlignLeft)
+    , m_VerticalAlignment(kAlignBottom)
+    , m_CharacterSpacing(0.) {
 }
 EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
 	m_Precision = other.m_Precision;
@@ -23,19 +28,19 @@ EoDbFontDefinition& EoDbFontDefinition::operator=(const EoDbFontDefinition& othe
 double EoDbFontDefinition::CharacterSpacing() const noexcept {
 	return m_CharacterSpacing;
 }
-EoDb::HorizontalAlignment EoDbFontDefinition::HorizontalAlignment() const noexcept {
+HorizontalAlignment EoDbFontDefinition::HorizontalAlignment() const noexcept {
 	return m_HorizontalAlignment;
 }
 CString EoDbFontDefinition::FontName() const {
 	return m_FontName;
 }
-EoDb::Precision EoDbFontDefinition::Precision() const noexcept {
+Precision EoDbFontDefinition::Precision() const noexcept {
 	return m_Precision;
 }
-EoDb::Path EoDbFontDefinition::Path() const noexcept {
+Path EoDbFontDefinition::Path() const noexcept {
 	return m_Path;
 }
-EoDb::VerticalAlignment EoDbFontDefinition::VerticalAlignment() const noexcept {
+VerticalAlignment EoDbFontDefinition::VerticalAlignment() const noexcept {
 	return m_VerticalAlignment;
 }
 void EoDbFontDefinition::SetCharacterSpacing(double spacing) noexcept {
@@ -58,19 +63,19 @@ void EoDbFontDefinition::SetVerticalAlignment(EoDb::VerticalAlignment verticalAl
 }
 CString EoDbFontDefinition::FormatHorizonatlAlignment() const {
 	CString strAlign[] = {L"Left", L"Center", L"Right"};
-	return (m_HorizontalAlignment >= EoDb::kAlignLeft && m_HorizontalAlignment <= EoDb::kAlignRight) ? strAlign[m_HorizontalAlignment - 1] : L"Invalid!";
+	return (m_HorizontalAlignment >= kAlignLeft && m_HorizontalAlignment <= kAlignRight) ? strAlign[m_HorizontalAlignment - 1] : L"Invalid!";
 }
 CString EoDbFontDefinition::FormatPath() const {
 	CString strPath[] = {L"Right", L"Left", L"Up", L"Down"};
-	return (m_Path >= EoDb::kPathRight && m_Path <= EoDb::kPathDown) ? strPath[m_Path] : L"Invalid!";
+	return (m_Path >= kPathRight && m_Path <= kPathDown) ? strPath[m_Path] : L"Invalid!";
 }
 CString EoDbFontDefinition::FormatPrecision() const {
 	CString strPrec[] = {L"True Type", L"Stroke"};
-	return (m_Precision >= EoDb::kEoTrueType && m_Precision <= EoDb::kStrokeType) ? strPrec[m_Precision - 1] : L"Invalid!";
+	return (m_Precision >= kTrueType && m_Precision <= kStrokeType) ? strPrec[m_Precision - 1] : L"Invalid!";
 }
 CString EoDbFontDefinition::FormatVerticalAlignment() const {
 	CString strAlign[] = {L"Top", L"Middle", L"Bottom"};
-	return (m_VerticalAlignment >= EoDb::kAlignTop && m_VerticalAlignment <= EoDb::kAlignBottom) ? strAlign[m_VerticalAlignment - 2] : L"Invalid!";
+	return (m_VerticalAlignment >= kAlignTop && m_VerticalAlignment <= kAlignBottom) ? strAlign[m_VerticalAlignment - 2] : L"Invalid!";
 }
 void EoDbFontDefinition::Read(EoDbFile& file) {
 	file.Read(&m_Precision, sizeof(OdUInt16));
@@ -91,7 +96,7 @@ void EoDbFontDefinition::Write(EoDbFile& file) const {
 
 void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept {
     m_FontName = L"Simplex.psf";
-    m_Precision = EoDb::kStrokeType;
+    m_Precision = kStrokeType;
 
     if (textStyleTableRecord->isShapeFile()) {
         ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (LPCWSTR) textStyleTableRecord->desc()->name());
@@ -106,7 +111,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
 
         if (TypeFace != L"") { // windows (ttf) file
             m_FontName = (LPCWSTR) TypeFace;
-            m_Precision = EoDb::kEoTrueType;
+            m_Precision = kTrueType;
         }
     }
 }
@@ -119,40 +124,40 @@ void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdD
 void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept {
     switch (attachmentPoint) {
     case OdDbMText::kTopLeft:
-        m_HorizontalAlignment = EoDb::kAlignLeft;
-        m_VerticalAlignment = EoDb::kAlignTop;
+        m_HorizontalAlignment = kAlignLeft;
+        m_VerticalAlignment = kAlignTop;
         break;
     case OdDbMText::kTopCenter:
-        m_HorizontalAlignment = EoDb::kAlignCenter;
-        m_VerticalAlignment = EoDb::kAlignTop;
+        m_HorizontalAlignment = kAlignCenter;
+        m_VerticalAlignment = kAlignTop;
         break;
     case OdDbMText::kTopRight:
-        m_HorizontalAlignment = EoDb::kAlignRight;
-        m_VerticalAlignment = EoDb::kAlignTop;
+        m_HorizontalAlignment = kAlignRight;
+        m_VerticalAlignment = kAlignTop;
         break;
     case OdDbMText::kMiddleLeft:
-        m_HorizontalAlignment = EoDb::kAlignLeft;
-        m_VerticalAlignment = EoDb::kAlignMiddle;
+        m_HorizontalAlignment = kAlignLeft;
+        m_VerticalAlignment = kAlignMiddle;
         break;
     case OdDbMText::kMiddleCenter:
-        m_HorizontalAlignment = EoDb::kAlignCenter;
-        m_VerticalAlignment = EoDb::kAlignMiddle;
+        m_HorizontalAlignment = kAlignCenter;
+        m_VerticalAlignment = kAlignMiddle;
         break;
     case OdDbMText::kMiddleRight:
-        m_HorizontalAlignment = EoDb::kAlignRight;
-        m_VerticalAlignment = EoDb::kAlignMiddle;
+        m_HorizontalAlignment = kAlignRight;
+        m_VerticalAlignment = kAlignMiddle;
         break;
     case OdDbMText::kBottomCenter:
-        m_HorizontalAlignment = EoDb::kAlignCenter;
-        m_VerticalAlignment = EoDb::kAlignBottom;
+        m_HorizontalAlignment = kAlignCenter;
+        m_VerticalAlignment = kAlignBottom;
         break;
     case OdDbMText::kBottomRight:
-        m_HorizontalAlignment = EoDb::kAlignRight;
-        m_VerticalAlignment = EoDb::kAlignBottom;
+        m_HorizontalAlignment = kAlignRight;
+        m_VerticalAlignment = kAlignBottom;
         break;
     default:
-        m_HorizontalAlignment = EoDb::kAlignLeft;
-        m_VerticalAlignment = EoDb::kAlignBottom;
+        m_HorizontalAlignment = kAlignLeft;
+        m_VerticalAlignment = kAlignBottom;
     }
 }
 

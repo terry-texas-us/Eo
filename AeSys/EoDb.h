@@ -64,7 +64,7 @@ namespace EoDb {
 		kAlignBottom
 	};
 	enum Precision {
-		kEoTrueType = 1,
+		kTrueType = 1,
 		kStrokeType
 	};
 }

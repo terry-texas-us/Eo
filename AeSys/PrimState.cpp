@@ -188,7 +188,7 @@ int CPrimState::SetROP2(CDC* deviceContext, int iDrawMode) {
 	}
 	return (deviceContext->SetROP2(iDrawMode));
 }
-void CPrimState::SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment) {
+void CPrimState::SetTxtAlign(CDC* deviceContext, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment) {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 

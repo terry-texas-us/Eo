@@ -161,7 +161,7 @@ OdGePoint3d	EoDbText::GoToNxtCtrlPt() const noexcept {
 }
 
 bool EoDbText::Is(OdUInt16 type) const noexcept {
-    return type == EoDb::kTextPrimitive;
+    return type == kTextPrimitive;
 }
 
 bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
@@ -282,10 +282,10 @@ void EoDbText::SetHorizontalMode(HorizontalAlignment horizontalAlignment) {
     if (!m_EntityObjectId.isNull()) {
         OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
         switch (horizontalAlignment) {
-        case EoDb::kAlignCenter:
+        case kAlignCenter:
             Text->setHorizontalMode(OdDb::kTextCenter);
             break;
-        case EoDb::kAlignRight:
+        case kAlignRight:
             Text->setHorizontalMode(OdDb::kTextRight);
             break;
         default:
@@ -326,10 +326,10 @@ void EoDbText::SetVerticalMode(VerticalAlignment verticalAlignment) {
     if (!m_EntityObjectId.isNull()) {
         OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
         switch (verticalAlignment) {
-        case EoDb::kAlignTop:
+        case kAlignTop:
             Text->setVerticalMode(OdDb::kTextTop);
             break;
-        case EoDb::kAlignMiddle:
+        case kAlignMiddle:
             Text->setVerticalMode(OdDb::kTextVertMid);
             break;
         default:
@@ -352,7 +352,7 @@ void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mas
 }
 
 bool EoDbText::Write(EoDbFile& file) const {
-    file.WriteUInt16(EoDb::kTextPrimitive);
+    file.WriteUInt16(kTextPrimitive);
     file.WriteInt16(m_ColorIndex);
     file.WriteInt16(m_LinetypeIndex);
     m_FontDefinition.Write(file);
@@ -366,7 +366,7 @@ void EoDbText::Write(CFile& file, OdUInt8* buffer) const {
     OdUInt16 NumberOfCharacters = OdUInt16(m_strText.GetLength());
 
     buffer[3] = OdInt8((86 + NumberOfCharacters) / 32);
-    *((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kTextPrimitive);
+    *((OdUInt16*) &buffer[4]) = OdUInt16(kTextPrimitive);
     buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
     buffer[7] = OdInt8(m_FontDefinition.Precision());
     *((OdInt16*) &buffer[8]) = 0;
@@ -388,6 +388,62 @@ void EoDbText::Write(CFile& file, OdUInt8* buffer) const {
     file.Write(buffer, buffer[3] * 32);
 }
 
+/* <remarks>
+Text primitive in Peg files and Tracing files
+  Type code <0x4000>        EoUInt16[0-1]
+  Pen color				    EoUInt16[2-3]
+  Line type				    EoUInt16[4-5]
+  Font definition
+    Text precision		    EoUInt16[6-7]
+    Text font name		    string
+    Text path				EoUInt16
+    Horizontal alignment	EoUInt16
+    Vertical alignment	    EoUInt16
+    Character spacing		double
+  Insertion point		    EoGePoint3d
+  Local reference x-axis	EoGeVector3d
+  Local reference y-axis	EoGeVector3d
+  Text('\t' terminated)	    string
+   </remarks> */
+
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbTextPtr Text = OdDbText::createObject();
+    Text->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Text);
+
+    Text->setColorIndex(file.ReadInt16());
+    /* OdInt16 LinetypeIndex = */ file.ReadInt16();
+
+    OdUInt16 Precision = kStrokeType;
+    file.Read(&Precision, sizeof(OdUInt16));
+    OdString FontName;
+    file.ReadString(FontName);
+    OdUInt16 Path = kPathRight;
+    file.Read(&Path, sizeof(OdUInt16));
+    
+    Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
+    Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
+
+    double CharacterSpacing = 0.;
+    file.Read(&CharacterSpacing, sizeof(double));
+
+    EoGeReferenceSystem ReferenceSystem;
+    ReferenceSystem.Read(file);
+
+    Text->setPosition(ReferenceSystem.Origin());
+    Text->setHeight(ReferenceSystem.YDirection().length());
+    Text->setRotation(ReferenceSystem.Rotation());
+    Text->setAlignmentPoint(Text->position());
+   
+    OdString TextString;
+    file.ReadString(TextString);
+
+    Text->setTextString(TextString);
+
+    return Text;
+}
+
 EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
     const OdInt16 ColorIndex = file.ReadInt16();
     /* OdInt16 LinetypeIndex = */ file.ReadInt16();
@@ -397,10 +453,12 @@ EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
     ReferenceSystem.Read(file);
     CString TextString;
     file.ReadString(TextString);
+    ConvertFractionMarkup(TextString);
+
     EoDbText* Text = new EoDbText();
     Text->SetColorIndex(ColorIndex);
     Text->SetTo(FontDefinition, ReferenceSystem, TextString);
-    Text->ConvertFormattingCharacters();
+
     return (Text);
 }
 
@@ -410,7 +468,7 @@ EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
     EoGeReferenceSystem ReferenceSystem;
     CString Text;
 
-    FontDefinition.SetPrecision(EoDb::kStrokeType);
+    FontDefinition.SetPrecision(kStrokeType);
     FontDefinition.SetFontName(L"Simplex.psf");
 
     if (versionNumber == 1) {
@@ -568,44 +626,99 @@ EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
     return Text;
 }
 
-EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
-    EoDb::HorizontalAlignment HorizontalAlignment;
+void EoDbText::ConvertFractionMarkup(CString& text) {
+    for (int i = 0; i < text.GetLength() - 1; i++) {
+        if (text[i] == '^') {
+            if (text[i + 1] == '/') { // Fractions
+                const int EndCaret = text.Find('^', i + 1);
+
+                if (EndCaret != -1) {
+                    const int FractionBar = text.Find('/', i + 2);
+                    if (FractionBar != -1 && FractionBar < EndCaret) {
+                        text.SetAt(i++, '\\');
+                        text.SetAt(i, 'S');
+                        text.SetAt(EndCaret, ';');
+                        i = EndCaret;
+                    }
+                }
+            }
+        }
+    }
+}
+
+HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
+    HorizontalAlignment HorizontalAlignment = kAlignLeft;
 
     switch (horizontalMode) {
     case OdDb::kTextMid:
     case OdDb::kTextCenter:
-        HorizontalAlignment = EoDb::kAlignCenter;
+        HorizontalAlignment = kAlignCenter;
         break;
 
     case OdDb::kTextRight:
     case OdDb::kTextAlign:
     case OdDb::kTextFit:
-        HorizontalAlignment = EoDb::kAlignRight;
+        HorizontalAlignment = kAlignRight;
         break;
 
     default: // OdDb::kTextLeft
-        HorizontalAlignment = EoDb::kAlignLeft;
+        HorizontalAlignment = kAlignLeft;
     }
     return HorizontalAlignment;
-
 }
 
-EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
-    EoDb::VerticalAlignment VerticalAlignment;
+VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
+    VerticalAlignment VerticalAlignment = kAlignBottom;
 
     switch (verticalMode) {
     case OdDb::kTextVertMid:
-        VerticalAlignment = EoDb::kAlignMiddle;
+        VerticalAlignment = kAlignMiddle;
         break;
 
     case OdDb::kTextTop:
-        VerticalAlignment = EoDb::kAlignTop;
+        VerticalAlignment = kAlignTop;
         break;
 
     default: // OdDb::kTextBottom & OdDb::kTextBase
-        VerticalAlignment = EoDb::kAlignBottom;
+        VerticalAlignment = kAlignBottom;
     }
     return VerticalAlignment;
+}
+
+OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept {
+    OdDb::TextHorzMode HorizontalMode = OdDb::kTextLeft;
+
+    switch (horizontalAlignment) {
+    case kAlignCenter:
+        HorizontalMode = OdDb::kTextCenter;
+        break;
+
+    case kAlignRight:
+        HorizontalMode = OdDb::kTextRight;
+        break;
+
+    default: // kAlignLeft
+        HorizontalMode = OdDb::kTextLeft;
+    }
+    return HorizontalMode;
+}
+
+OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept {
+    OdDb::TextVertMode VerticalMode = OdDb::kTextBottom;
+
+    switch (verticalAlignment) {
+    case kAlignMiddle:
+        VerticalMode = OdDb::kTextVertMid;
+        break;
+
+    case kAlignTop:
+        VerticalMode = OdDb::kTextTop;
+        break;
+
+    default: // kAlignBottom
+        VerticalMode = OdDb::kTextBottom;
+    }
+    return VerticalMode;
 }
 
 OdDbMTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text) {
@@ -641,7 +754,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr text) {
     FontDefinition.SetJustification(text->horizontalMode(), text->verticalMode());
 
     OdGePoint3d AlignmentPoint = text->position();
-    if (FontDefinition.HorizontalAlignment() != EoDb::kAlignLeft || FontDefinition.VerticalAlignment() != EoDb::kAlignBottom) {
+    if (FontDefinition.HorizontalAlignment() != kAlignLeft || FontDefinition.VerticalAlignment() != kAlignBottom) {
         AlignmentPoint = text->alignmentPoint();
     }
     
@@ -738,37 +851,37 @@ OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numb
     if (numberOfCharacters > 0) {
         const double dTxtExt = double(numberOfCharacters) + (double(numberOfCharacters) - 1.) * (.32 + fontDefinition.CharacterSpacing()) / .6;
 
-        if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
-            if (fontDefinition.Path() == EoDb::kPathRight) {
-                if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
+        if (fontDefinition.Path() == kPathRight || fontDefinition.Path() == kPathLeft) {
+            if (fontDefinition.Path() == kPathRight) {
+                if (fontDefinition.HorizontalAlignment() == kAlignCenter)
                     InsertionPoint.x = -dTxtExt * .5;
-                else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight)
+                else if (fontDefinition.HorizontalAlignment() == kAlignRight)
                     InsertionPoint.x = -dTxtExt;
             } else {
-                if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft)
+                if (fontDefinition.HorizontalAlignment() == kAlignLeft)
                     InsertionPoint.x = dTxtExt;
-                else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
+                else if (fontDefinition.HorizontalAlignment() == kAlignCenter)
                     InsertionPoint.x = dTxtExt * .5;
                 InsertionPoint.x = InsertionPoint.x - 1.;
             }
-            if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
+            if (fontDefinition.VerticalAlignment() == kAlignMiddle)
                 InsertionPoint.y = -.5;
-            else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop)
+            else if (fontDefinition.VerticalAlignment() == kAlignTop)
                 InsertionPoint.y = -1.;
-        } else if (fontDefinition.Path() == EoDb::kPathDown || fontDefinition.Path() == EoDb::kPathUp) {
-            if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
+        } else if (fontDefinition.Path() == kPathDown || fontDefinition.Path() == kPathUp) {
+            if (fontDefinition.HorizontalAlignment() == kAlignCenter)
                 InsertionPoint.x = -.5;
-            else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight)
+            else if (fontDefinition.HorizontalAlignment() == kAlignRight)
                 InsertionPoint.x = -1.;
-            if (fontDefinition.Path() == EoDb::kPathUp) {
-                if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
+            if (fontDefinition.Path() == kPathUp) {
+                if (fontDefinition.VerticalAlignment() == kAlignMiddle)
                     InsertionPoint.y = -dTxtExt * .5;
-                else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop)
+                else if (fontDefinition.VerticalAlignment() == kAlignTop)
                     InsertionPoint.y = -dTxtExt;
             } else {
-                if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom)
+                if (fontDefinition.VerticalAlignment() == kAlignBottom)
                     InsertionPoint.y = dTxtExt;
-                else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
+                else if (fontDefinition.VerticalAlignment() == kAlignMiddle)
                     InsertionPoint.y = dTxtExt * .5;
                 InsertionPoint.y = InsertionPoint.y - 1.;
             }
@@ -862,7 +975,7 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 }
 
 void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
-    if (deviceContext != 0 && fontDefinition.Precision() == EoDb::kEoTrueType && view->ViewTrueTypeFonts()) {
+    if (deviceContext != 0 && fontDefinition.Precision() == kTrueType && view->ViewTrueTypeFonts()) {
         OdGeVector3d XDirection(referenceSystem.XDirection());
         OdGeVector3d YDirection(referenceSystem.YDirection());
 
@@ -921,13 +1034,13 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
         polyline::__End(view, deviceContext, 1);
 
         switch (fontDefinition.Path()) {
-        case EoDb::kPathLeft:
+        case kPathLeft:
             ptChrPos.x -= dChrSpac;
             break;
-        case EoDb::kPathUp:
+        case kPathUp:
             ptChrPos.y += dChrSpac;
             break;
-        case EoDb::kPathDown:
+        case kPathDown:
             ptChrPos.y -= dChrSpac;
             break;
         default:
@@ -1168,24 +1281,24 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
         const double CharacterSpacing = (.32 + fontDefinition.CharacterSpacing()) / .6;
         const double d = double(numberOfCharacters) + CharacterSpacing * (double(numberOfCharacters) - 1.);
 
-        if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
+        if (fontDefinition.Path() == kPathRight || fontDefinition.Path() == kPathLeft) {
             TextWidth = d;
         } else {
             TextHeight = d;
         }
         boundingBox.setAll(OdGePoint3d::kOrigin);
 
-        if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) {
+        if (fontDefinition.HorizontalAlignment() == kAlignLeft) {
             boundingBox[2].x = TextWidth;
-        } else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
+        } else if (fontDefinition.HorizontalAlignment() == kAlignCenter) {
             boundingBox[0].x = -TextWidth * .5;
             boundingBox[2].x = boundingBox[0].x + TextWidth;
         } else {
             boundingBox[0].x = -TextWidth;
         }
-        if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) {
+        if (fontDefinition.VerticalAlignment() == kAlignTop) {
             boundingBox[0].y = -TextHeight;
-        } else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
+        } else if (fontDefinition.VerticalAlignment() == kAlignMiddle) {
             boundingBox[0].y = -TextHeight * .5;
             boundingBox[2].y = boundingBox[0].y + TextHeight;
         } else {
@@ -1216,7 +1329,7 @@ OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReference
     OdGeVector3d vPath = referenceSystem.XDirection();
     const OdGeVector3d YDirection = referenceSystem.YDirection();
 
-    if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
+    if (fontDefinition.Path() == kPathRight || fontDefinition.Path() == kPathLeft) {
         pt += vPath * dChrSpaceFac;
         OdGeVector3d vRefNorm;
         referenceSystem.GetUnitNormal(vRefNorm);

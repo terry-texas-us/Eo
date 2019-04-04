@@ -154,7 +154,7 @@ OdGePoint3d EoDbPoint::GoToNxtCtrlPt() const noexcept {
 	return (m_Position);
 }
 bool EoDbPoint::Is(OdUInt16 type) const noexcept {
-	return type == EoDb::kPointPrimitive;
+	return type == kPointPrimitive;
 }
 bool EoDbPoint::IsEqualTo(EoDbPrimitive* primitive) const {
 	return m_Position == static_cast<EoDbPoint*>(primitive)->m_Position;
@@ -237,7 +237,7 @@ void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, const DWORD ma
 		m_Position += translate;
 }
 bool EoDbPoint::Write(EoDbFile& file) const {
-	file.WriteUInt16(EoDb::kPointPrimitive);
+	file.WriteUInt16(kPointPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_PointDisplayMode);
 	
@@ -251,7 +251,7 @@ bool EoDbPoint::Write(EoDbFile& file) const {
 }
 void EoDbPoint::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kPointPrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(kPointPrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_PointDisplayMode);
 

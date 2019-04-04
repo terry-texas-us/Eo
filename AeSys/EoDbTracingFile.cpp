@@ -1,49 +1,54 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
 
-EoDbTracingFile::EoDbTracingFile(const OdString& fileName, UINT openFlags)
-	: EoDbFile(fileName, openFlags) {
+EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr database) {
 }
+
+EoDbTracingFile::EoDbTracingFile(const OdString& file, UINT openFlags)
+	: EoDbFile(file, openFlags) {
+}
+
 EoDbTracingFile::~EoDbTracingFile() {
 }
+
 void EoDbTracingFile::ReadHeader() {
 	if (ReadUInt16() != kHeaderSection)
-		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kHeaderSection.";
+		throw L"Exception EoDbTracingFile: Expecting sentinel kHeaderSection.";
 
-	// 	with addition of info here will loop key-value pairs till EoDb::kEndOfSection sentinel
+	// 	with addition of info here will loop key-value pairs till kEndOfSection sentinel
 
 	if (ReadUInt16() != kEndOfSection)
-		throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kEndOfSection.";
+		throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection.";
 }
 
-bool EoDbTracingFile::ReadLayer(EoDbLayer* layer) {
+bool EoDbTracingFile::ReadLayer(OdDbBlockTableRecordPtr blockTable, EoDbLayer* layer) {
     if (ReadUInt16() != kGroupsSection)
-        throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kGroupsSection.";
+        throw L"Exception EoDbTracingFile: Expecting sentinel kGroupsSection.";
 
     const size_t NumberOfGroups = ReadUInt16();
 
     for (size_t GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
-        EoDbGroup* Group = ReadGroup();
+        EoDbGroup* Group = ReadGroup(blockTable);
         layer->AddTail(Group);
     }
     if (ReadUInt16() != kEndOfSection)
-        throw L"Exception EoDbTracingFile: Expecting sentinel EoDb::kEndOfSection.";
+        throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection.";
 
     return true;
 }
 
-EoDbGroup* EoDbTracingFile::ReadGroup() {
+EoDbGroup* EoDbTracingFile::ReadGroup(OdDbBlockTableRecordPtr blockTable) {
 	const size_t NumberOfPrimitives = ReadUInt16();
 
 	EoDbGroup* Group = new EoDbGroup;
-	EoDbPrimitive* Primitive;
 
-	for (size_t PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-		Primitive = ReadPrimitive();
+    for (size_t PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
+		EoDbPrimitive* Primitive = ReadPrimitive(blockTable);
 		Group->AddTail(Primitive);
 	}
 	return Group;
 }
+
 void EoDbTracingFile::WriteHeader() {
 	WriteUInt16(kHeaderSection);
 

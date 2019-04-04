@@ -3,7 +3,7 @@
 class AeSysDoc;
 
 class EoDbPegFile : public EoDbFile {
-	OdDbDatabasePtr m_Database;
+
 public:
 	EoDbPegFile(OdDbDatabasePtr database);
 	virtual ~EoDbPegFile();

@@ -54,9 +54,9 @@ void EoDlgModeRevise::OnOK() {
 	m_TextEditControl.GetWindowTextW(Text);
 
 	if (sm_TextPrimitive != 0) {
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, sm_TextPrimitive);
+		Document->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, sm_TextPrimitive);
 		sm_TextPrimitive->SetText(Text);
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, sm_TextPrimitive);
+		Document->UpdatePrimitiveInAllViews(kPrimitiveSafe, sm_TextPrimitive);
 	}
 	else {
 		EoDbText* TextPrimitive = EoDbText::Create(Database);
@@ -64,7 +64,7 @@ void EoDlgModeRevise::OnOK() {
 		EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(TextPrimitive);
 		Document->AddWorkLayerGroup(Group);
-		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+		Document->UpdateGroupInAllViews(kGroupSafe, Group);
 	}
 	sm_ReferenceSystem.SetOrigin(text_GetNewLinePos(sm_FontDefinition, sm_ReferenceSystem, 1., 0));
 
