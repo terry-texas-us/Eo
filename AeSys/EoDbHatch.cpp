@@ -1024,7 +1024,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
     OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatch::sm_HatchNames[InteriorStyleIndex]);
     Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
-    // const OdGeVector3d PlaneNormal = RecomputeReferenceSystem();
+    // Plane normal from the first three vertices
     OdGeVector3d PlaneNormal = OdGeVector3d(Vertices[1] - Vertices[0]).crossProduct(OdGeVector3d(Vertices[2] - Vertices[0]));
     if (!PlaneNormal.isZeroLength()) {
         PlaneNormal.normalize();
@@ -1033,7 +1033,6 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
             HatchYAxis = PlaneNormal.crossProduct(HatchXAxis);
         }
     }
-
     Hatch->setNormal(PlaneNormal);
 
     OdGePlane Plane(Vertices[0], PlaneNormal);
@@ -1062,11 +1061,125 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
     return Hatch;
 }
 
-EoDbHatch* Create(OdDbHatchPtr hatch) {
+EoDbHatch* EoDbHatch::Create(OdDbHatchPtr hatch) {
     EoDbHatch* Hatch = new EoDbHatch();
     Hatch->SetEntityObjectId(hatch->objectId());
 
-    // incomplete
+    Hatch->SetColorIndex_(hatch->colorIndex());
+    Hatch->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype()));
 
+    if (hatch->isHatch()) {
+        switch (hatch->patternType()) {
+        case OdDbHatch::kPreDefined:
+        case OdDbHatch::kCustomDefined:
+            if (hatch->isSolidFill()) {
+                Hatch->SetInteriorStyle(EoDbHatch::kSolid);
+            } else {
+                Hatch->SetInteriorStyle(EoDbHatch::kHatch);
+                Hatch->SetInteriorStyleIndex(EoDbHatch::LegacyInteriorStyleIndex(hatch->patternName()));
+                const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
+                // <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
+                Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
+            }
+            break;
+        case OdDbHatch::kUserDefined:
+            Hatch->SetInteriorStyle(EoDbHatch::kHatch);
+            Hatch->SetInteriorStyleIndex(EoDbHatch::LegacyInteriorStyleIndex(hatch->patternName()));
+            const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
+            // <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
+            Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
+            break;
+        }
+    }
+    if (hatch->isGradient()) {
+        if (hatch->getGradientOneColorMode()) {
+        }
+        OdCmColorArray colors;
+        OdGeDoubleArray values;
+        hatch->getGradientColors(colors, values);
+        for (int i = 0; i < (int) colors.size(); i++) {
+        }
+    }
+    // <tas="Not working with associated objects. The objects are still resident just not incorporated in peg/tracing"></tas>
+    // <tas="Seed points not incorporated in peg/tracing"></tas>
+
+    const int NumberOfLoops = hatch->numLoops();
+    if (NumberOfLoops > 1) {
+        theApp.AddStringToReportList(L"Only used one loop in multiple loop Hatch.");
+    }
+    for (int i = 0; i < hatch->numLoops(); i++) {
+
+        if (hatch->loopTypeAt(i) & OdDbHatch::kPolyline) {
+            if (i == 0) {
+                // <tas="Only handling the first loop"</tas>
+                ConvertPolylineType(i, hatch, Hatch);
+            }
+        } else {
+            ConvertEdgesType(i, hatch, Hatch);
+        }
+        if (hatch->associative()) {
+        }
+    }
     return Hatch;
+}
+
+#include "Ge/GeCircArc2d.h"
+#include "Ge/GeEllipArc2d.h"
+#include "Ge/GeNurbCurve2d.h"
+
+void EoDbHatch::ConvertPolylineType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive) {
+    hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
+}
+
+void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) {
+    const OdGeCircArc2d* CircularArcEdge = (OdGeCircArc2d*) edge;
+    // <tas="Properties: center, radius, startAng, endAng, isClockWise"></tas>
+}
+
+void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) {
+    const OdGeEllipArc2d* EllipticalArcEdge = (OdGeEllipArc2d*) edge;
+    // <tas="Properties: center, majorRadius, minorRadius, majorAxis, minorAxis, startAng, endAng, isClockWise"></tas>
+}
+
+void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) {
+    const OdGeNurbCurve2d* NurbCurveEdge = (OdGeNurbCurve2d*) edge;
+    // <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>
+}
+
+void EoDbHatch::ConvertEdgesType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive) {
+    EdgeArray Edges;
+    hatchEntity->getLoopAt(loopIndex, Edges);
+
+    double Lower;
+    double Upper(1.);
+    const size_t NumberOfEdges = Edges.size();
+
+    for (size_t EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
+        OdGeCurve2d* Edge = Edges[EdgeIndex];
+        switch (Edge->type()) {
+        case OdGe::kLineSeg2d:
+            break;
+        case OdGe::kCircArc2d:
+            ConvertCircularArcEdge(Edge);
+            break;
+        case OdGe::kEllipArc2d:
+            ConvertEllipticalArcEdge(Edge);
+            break;
+        case OdGe::kNurbCurve2d:
+            ConvertNurbCurveEdge(Edge);
+            break;
+        }
+        // Common Edge Properties
+        OdGeInterval Interval;
+        Edge->getInterval(Interval);
+        Interval.getBounds(Lower, Upper);
+
+        const OdGePoint2d LowerPoint(Edge->evalPoint(Lower));
+
+        hatchPrimitive->Append(OdGePoint3d(LowerPoint.x, LowerPoint.y, hatchEntity->elevation()));
+    }
+    const OdGePoint2d UpperPoint(Edges[NumberOfEdges - 1]->evalPoint(Upper));
+    hatchPrimitive->Append(OdGePoint3d(UpperPoint.x, UpperPoint.y, hatchEntity->elevation()));
+    
+    // <tas="Hatch edge conversion - not considering the effect of "Closed" edge property"></tas>
 }
