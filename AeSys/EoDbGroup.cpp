@@ -215,7 +215,7 @@ bool EoDbGroup::IsInView(AeSysView* view) const {
 	POSITION Position = GetHeadPosition();
 	while (Position != 0) {
 		const EoDbPrimitive* Primitive = GetNext(Position);
-		if (Primitive->IsInView(view)) {
+		if (Primitive && Primitive->IsInView(view)) {
 			return true;
 		}
 	}

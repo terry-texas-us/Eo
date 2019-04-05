@@ -68,9 +68,13 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
         Primitive = EoDbLine::Create(Line);
         break;
     }
-    case kHatchPrimitive:
-        Primitive = EoDbHatch::ConstructFrom(*this);
+    case kHatchPrimitive: {
+        OdDbHatchPtr Hatch = EoDbHatch::Create(blockTable, *this);
+        // Primitive = EoDbHatch::Create(Hatch);
+
+        // Primitive = EoDbHatch::ConstructFrom(*this);
         break;
+    }
     case kEllipsePrimitive: {
         OdDbEllipsePtr Ellipse = EoDbEllipse::Create(blockTable, *this);
         Primitive = EoDbEllipse::Create(Ellipse);

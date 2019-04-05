@@ -93,12 +93,18 @@ public: // Methods
 	size_t SwingVertex() const;
 
 public:
-	static EoDbHatch* ConstructFrom(EoDbFile& file);
-	static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-	static EoDbHatch* Create(OdDbDatabasePtr database);
-	static EoDbHatch* Create(const EoDbHatch& other, OdDbDatabasePtr database);
-
 	static size_t Edge() noexcept;
 	static size_t LegacyInteriorStyleIndex(const OdString& name);
 	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
+
+    static EoDbHatch* ConstructFrom(EoDbFile& file);
+    static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
+
+    static EoDbHatch* Create(const EoDbHatch& other, OdDbDatabasePtr database);
+
+    static EoDbHatch* Create(OdDbDatabasePtr database);
+    static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+
+    static EoDbHatch* Create(OdDbHatchPtr hatch);
 };

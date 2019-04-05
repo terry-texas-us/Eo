@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
+#include "AeSysDoc.h"
 #include "AeSysView.h"
 
 #include "HatchPatternManager.h"
@@ -823,147 +824,6 @@ size_t EoDbHatch::SwingVertex() const {
 	return (SwingVertex);
 }
 // Methods - static
-EoDbHatch* EoDbHatch::ConstructFrom(EoDbFile& file) {
-	EoDbHatch* HatchPrimitive = new EoDbHatch();
-	HatchPrimitive->SetColorIndex(file.ReadInt16());
-	HatchPrimitive->SetInteriorStyle(file.ReadInt16());
-	HatchPrimitive->SetInteriorStyleIndex(file.ReadInt16());
-	const OdUInt16 NumberOfVertices = file.ReadUInt16();
-	HatchPrimitive->SetHatchOrigin(file.ReadPoint3d());
-	HatchPrimitive->SetHatchXAxis(file.ReadVector3d());
-	HatchPrimitive->SetHatchYAxis(file.ReadVector3d());
-	
-	OdGePoint3dArray Vertices;
-	Vertices.setLogicalLength(NumberOfVertices);
-	for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-		Vertices[VertexIndex] = file.ReadPoint3d();
-	}
-	HatchPrimitive->SetVertices(Vertices);
-
-	return (HatchPrimitive);
-}
-EoDbHatch* EoDbHatch::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-	OdInt16 ColorIndex;
-	OdInt16 InteriorStyle;
-	size_t InteriorStyleIndex = 0;
-	OdGePoint3d HatchOrigin;
-	OdGeVector3d HatchXAxis;
-	OdGeVector3d HatchYAxis;
-	OdGePoint3dArray Vertices;
-
-	if (versionNumber == 1) {
-		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
-
-		const double StyleDefinition = ((EoVaxFloat*) &primitiveBuffer[12])->Convert();
-		InteriorStyle = OdInt16(int(StyleDefinition) % 16);
-
-		switch (InteriorStyle) {
-		case EoDbHatch::kHatch: {
-			const double ScaleFactorX = ((EoVaxFloat*) &primitiveBuffer[16])->Convert();
-			const double ScaleFactorY = ((EoVaxFloat*) &primitiveBuffer[20])->Convert();
-			double PatternAngle = ((EoVaxFloat*) &primitiveBuffer[24])->Convert();
-
-			if (fabs(ScaleFactorX) > FLT_EPSILON && fabs(ScaleFactorY) > FLT_EPSILON) { // Have 2 hatch lines
-				InteriorStyleIndex = 2;
-				HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-				HatchYAxis = OdGeVector3d(- sin(PatternAngle), cos(PatternAngle), 0.);
-				HatchXAxis *= ScaleFactorX * 1.e-3;
-				HatchYAxis *= ScaleFactorY * 1.e-3;
-			}
-			else if (fabs(ScaleFactorX) > FLT_EPSILON) { // Vertical hatch lines
-				InteriorStyleIndex = 1;
-				PatternAngle += HALF_PI;
-
-				HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-				HatchYAxis = OdGeVector3d(- sin(PatternAngle), cos(PatternAngle), 0.);
-				HatchXAxis *= ScaleFactorX * 1.e-3;
-			}
-			else { // Horizontal hatch lines
-				InteriorStyleIndex = 1;
-				HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-				HatchYAxis = OdGeVector3d(- sin(PatternAngle), cos(PatternAngle), 0.);
-				HatchYAxis *= ScaleFactorY * 1.e-3;
-			}
-			break;
-		}
-		case EoDbHatch::kHollow:
-		case EoDbHatch::kSolid:
-		case EoDbHatch::kPattern:
-			HatchXAxis = OdGeVector3d::kXAxis * 1.e-3;
-			HatchYAxis = OdGeVector3d::kYAxis * 1.e-3;
-			break;
-
-		default:
-			throw L"Exception.FileJob: Unknown hatch primitive interior style.";
-		}
-		const size_t NumberOfVertices = OdUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
-		
-		int BufferOffset = 36;
-		Vertices.clear();
-		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			Vertices.append(((EoVaxPoint3d*) &primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
-			BufferOffset += sizeof(EoVaxPoint3d);
-		}
-		HatchOrigin = Vertices[0];
-	}
-	else {
-		ColorIndex = OdInt16(primitiveBuffer[6]);
-		InteriorStyle = OdInt8(primitiveBuffer[7]);
-		InteriorStyleIndex = *((OdInt16*) &primitiveBuffer[8]);
-		const size_t NumberOfVertices = *((OdInt16*) &primitiveBuffer[10]);
-		HatchOrigin = ((EoVaxPoint3d*) &primitiveBuffer[12])->Convert();
-		HatchXAxis = ((EoVaxVector3d*) &primitiveBuffer[24])->Convert();
-		HatchYAxis = ((EoVaxVector3d*) &primitiveBuffer[36])->Convert();
-		
-		int BufferOffset = 48;
-		Vertices.clear();
-		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			Vertices.append(((EoVaxPoint3d*) &primitiveBuffer[BufferOffset])->Convert());
-			BufferOffset += sizeof(EoVaxPoint3d);
-		}
-	}
-	EoDbHatch* HatchPrimitive = new EoDbHatch();
-	HatchPrimitive->SetColorIndex(ColorIndex);
-	HatchPrimitive->SetInteriorStyle(InteriorStyle);
-	HatchPrimitive->SetInteriorStyleIndex(InteriorStyleIndex);
-	HatchPrimitive->SetHatchOrigin(HatchOrigin);
-	HatchPrimitive->SetHatchXAxis(HatchXAxis);
-	HatchPrimitive->SetHatchYAxis(HatchYAxis);
-
-	HatchPrimitive->SetVertices(Vertices);
-
-	return (HatchPrimitive);
-}
-EoDbHatch* EoDbHatch::Create(OdDbDatabasePtr database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
-	OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
-	HatchEntity->setDatabaseDefaults(database);
-	HatchEntity->setAssociative(false);
-	OdString HatchName = EoDbHatch::sm_HatchNames[pstate.HatchInteriorStyleIndex()];
-	HatchEntity->setPattern(OdDbHatch::kPreDefined, HatchName);
-	
-	BlockTableRecord->appendOdDbEntity(HatchEntity);
-	
-	EoDbHatch* HatchPrimitive = new EoDbHatch();
-	HatchPrimitive->SetEntityObjectId(HatchEntity->objectId());
-	
-	HatchPrimitive->SetColorIndex(pstate.ColorIndex());
-	HatchPrimitive->SetInteriorStyleIndex(pstate.HatchInteriorStyleIndex());
-
-	return HatchPrimitive;
-}
-EoDbHatch* EoDbHatch::Create(const EoDbHatch& other, OdDbDatabasePtr database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	OdDbHatchPtr HatchEntity = other.EntityObjectId().safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(HatchEntity);
-
-	EoDbHatch* Hatch = new EoDbHatch(other);
-	Hatch->SetEntityObjectId(HatchEntity->objectId());
-
-	return Hatch;
-}
-
 size_t EoDbHatch::Edge() noexcept {
 	return sm_Edge;
 }
@@ -979,4 +839,234 @@ size_t EoDbHatch::LegacyInteriorStyleIndex(const OdString& name) {
 }
 void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
+}
+
+EoDbHatch* EoDbHatch::ConstructFrom(EoDbFile& file) {
+    EoDbHatch* HatchPrimitive = new EoDbHatch();
+    HatchPrimitive->SetColorIndex(file.ReadInt16());
+    HatchPrimitive->SetInteriorStyle(file.ReadInt16());
+    HatchPrimitive->SetInteriorStyleIndex(file.ReadInt16());
+    const OdUInt16 NumberOfVertices = file.ReadUInt16();
+    HatchPrimitive->SetHatchOrigin(file.ReadPoint3d());
+    HatchPrimitive->SetHatchXAxis(file.ReadVector3d());
+    HatchPrimitive->SetHatchYAxis(file.ReadVector3d());
+
+    OdGePoint3dArray Vertices;
+    Vertices.setLogicalLength(NumberOfVertices);
+    for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+        Vertices[VertexIndex] = file.ReadPoint3d();
+    }
+    HatchPrimitive->SetVertices(Vertices);
+
+    return (HatchPrimitive);
+}
+
+EoDbHatch* EoDbHatch::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
+    OdInt16 ColorIndex;
+    OdInt16 InteriorStyle;
+    size_t InteriorStyleIndex = 0;
+    OdGePoint3d HatchOrigin;
+    OdGeVector3d HatchXAxis;
+    OdGeVector3d HatchYAxis;
+    OdGePoint3dArray Vertices;
+
+    if (versionNumber == 1) {
+        ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+
+        const double StyleDefinition = ((EoVaxFloat*) &primitiveBuffer[12])->Convert();
+        InteriorStyle = OdInt16(int(StyleDefinition) % 16);
+
+        switch (InteriorStyle) {
+        case EoDbHatch::kHatch: {
+            const double ScaleFactorX = ((EoVaxFloat*) &primitiveBuffer[16])->Convert();
+            const double ScaleFactorY = ((EoVaxFloat*) &primitiveBuffer[20])->Convert();
+            double PatternAngle = ((EoVaxFloat*) &primitiveBuffer[24])->Convert();
+
+            if (fabs(ScaleFactorX) > FLT_EPSILON && fabs(ScaleFactorY) > FLT_EPSILON) { // Have 2 hatch lines
+                InteriorStyleIndex = 2;
+                HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
+                HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+                HatchXAxis *= ScaleFactorX * 1.e-3;
+                HatchYAxis *= ScaleFactorY * 1.e-3;
+            } else if (fabs(ScaleFactorX) > FLT_EPSILON) { // Vertical hatch lines
+                InteriorStyleIndex = 1;
+                PatternAngle += HALF_PI;
+
+                HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
+                HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+                HatchXAxis *= ScaleFactorX * 1.e-3;
+            } else { // Horizontal hatch lines
+                InteriorStyleIndex = 1;
+                HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
+                HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+                HatchYAxis *= ScaleFactorY * 1.e-3;
+            }
+            break;
+        }
+        case EoDbHatch::kHollow:
+        case EoDbHatch::kSolid:
+        case EoDbHatch::kPattern:
+            HatchXAxis = OdGeVector3d::kXAxis * 1.e-3;
+            HatchYAxis = OdGeVector3d::kYAxis * 1.e-3;
+            break;
+
+        default:
+            throw L"Exception.FileJob: Unknown hatch primitive interior style.";
+        }
+        const size_t NumberOfVertices = OdUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
+
+        int BufferOffset = 36;
+        Vertices.clear();
+        for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+            Vertices.append(((EoVaxPoint3d*) &primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
+            BufferOffset += sizeof(EoVaxPoint3d);
+        }
+        HatchOrigin = Vertices[0];
+    } else {
+        ColorIndex = OdInt16(primitiveBuffer[6]);
+        InteriorStyle = OdInt8(primitiveBuffer[7]);
+        InteriorStyleIndex = *((OdInt16*) &primitiveBuffer[8]);
+        const size_t NumberOfVertices = *((OdInt16*) &primitiveBuffer[10]);
+        HatchOrigin = ((EoVaxPoint3d*) &primitiveBuffer[12])->Convert();
+        HatchXAxis = ((EoVaxVector3d*) &primitiveBuffer[24])->Convert();
+        HatchYAxis = ((EoVaxVector3d*) &primitiveBuffer[36])->Convert();
+
+        int BufferOffset = 48;
+        Vertices.clear();
+        for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+            Vertices.append(((EoVaxPoint3d*) &primitiveBuffer[BufferOffset])->Convert());
+            BufferOffset += sizeof(EoVaxPoint3d);
+        }
+    }
+    EoDbHatch* HatchPrimitive = new EoDbHatch();
+    HatchPrimitive->SetColorIndex(ColorIndex);
+    HatchPrimitive->SetInteriorStyle(InteriorStyle);
+    HatchPrimitive->SetInteriorStyleIndex(InteriorStyleIndex);
+    HatchPrimitive->SetHatchOrigin(HatchOrigin);
+    HatchPrimitive->SetHatchXAxis(HatchXAxis);
+    HatchPrimitive->SetHatchYAxis(HatchYAxis);
+
+    HatchPrimitive->SetVertices(Vertices);
+
+    return (HatchPrimitive);
+}
+
+EoDbHatch* EoDbHatch::Create(const EoDbHatch& other, OdDbDatabasePtr database) {
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    OdDbHatchPtr HatchEntity = other.EntityObjectId().safeOpenObject()->clone();
+    BlockTableRecord->appendOdDbEntity(HatchEntity);
+
+    EoDbHatch* Hatch = new EoDbHatch(other);
+    Hatch->SetEntityObjectId(HatchEntity->objectId());
+
+    return Hatch;
+}
+
+EoDbHatch* EoDbHatch::Create(OdDbDatabasePtr database) {
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
+    HatchEntity->setDatabaseDefaults(database);
+    HatchEntity->setAssociative(false);
+    OdString HatchName = EoDbHatch::sm_HatchNames[pstate.HatchInteriorStyleIndex()];
+    HatchEntity->setPattern(OdDbHatch::kPreDefined, HatchName);
+
+    BlockTableRecord->appendOdDbEntity(HatchEntity);
+
+    EoDbHatch* HatchPrimitive = new EoDbHatch();
+    HatchPrimitive->SetEntityObjectId(HatchEntity->objectId());
+
+    HatchPrimitive->SetColorIndex(pstate.ColorIndex());
+    HatchPrimitive->SetInteriorStyleIndex(pstate.HatchInteriorStyleIndex());
+
+    return HatchPrimitive;
+}
+
+OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
+    OdDbHatchPtr Hatch = OdDbLine::createObject();
+    Hatch->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Hatch);
+    Hatch->setColorIndex(pstate.ColorIndex());
+
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+
+    Hatch->setLinetype(Linetype);
+
+    return Hatch;
+}
+
+OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbHatchPtr Hatch = OdDbHatch::createObject();
+    blockTableRecord->appendOdDbEntity(Hatch);
+
+    Hatch->setDatabaseDefaults(blockTableRecord->database());
+
+// <tas="primitive data from file input stream">
+    auto ColorIndex {file.ReadInt16()};
+    auto InteriorStyle {file.ReadInt16()};
+    auto InteriorStyleIndex {file.ReadInt16()};
+    auto NumberOfVertices {file.ReadUInt16()};
+    auto HatchOrigin {file.ReadPoint3d()};
+    auto HatchXAxis {file.ReadVector3d()};
+    auto HatchYAxis {file.ReadVector3d()};
+
+    OdGePoint3dArray Vertices;
+    Vertices.setLogicalLength(NumberOfVertices);
+    for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+        Vertices[VertexIndex] = file.ReadPoint3d();
+    }
+// </tas>
+
+    Hatch->setAssociative(false);
+
+    Hatch->setColorIndex(ColorIndex);
+    OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatch::sm_HatchNames[InteriorStyleIndex]);
+    Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
+
+    // const OdGeVector3d PlaneNormal = RecomputeReferenceSystem();
+    OdGeVector3d PlaneNormal = OdGeVector3d(Vertices[1] - Vertices[0]).crossProduct(OdGeVector3d(Vertices[2] - Vertices[0]));
+    if (!PlaneNormal.isZeroLength()) {
+        PlaneNormal.normalize();
+        if (InteriorStyle != kHatch) {
+            HatchXAxis = ComputeArbitraryAxis(PlaneNormal);
+            HatchYAxis = PlaneNormal.crossProduct(HatchXAxis);
+        }
+    }
+
+    Hatch->setNormal(PlaneNormal);
+
+    OdGePlane Plane(Vertices[0], PlaneNormal);
+    OdGeMatrix3d WorldToPlaneTransform;
+    WorldToPlaneTransform.setToWorldToPlane(Plane);
+
+    OdGePoint3d WorldOriginOnPlane = OdGePoint3d::kOrigin.orthoProject(Plane);
+    OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
+    PointToPlaneVector.transformBy(WorldToPlaneTransform);
+    Hatch->setElevation(PointToPlaneVector.z);
+
+    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
+
+    OdGePoint2dArray Vertices2;
+    Vertices2.clear();
+    OdGeDoubleArray Bulges;
+    Bulges.clear();
+    for (size_t VertexIndex = 0; VertexIndex < Vertices.size(); VertexIndex++) {
+        OdGePoint3d Vertex(Vertices[VertexIndex]);
+        Vertex.transformBy(WorldToPlaneTransform);
+        Vertices2.append(Vertex.convert2d());
+        Bulges.append(0.);
+    }
+    Hatch->appendLoop(OdDbHatch::kPolyline, Vertices2, Bulges);
+
+    return Hatch;
+}
+
+EoDbHatch* Create(OdDbHatchPtr hatch) {
+    EoDbHatch* Hatch = new EoDbHatch();
+    Hatch->SetEntityObjectId(hatch->objectId());
+
+    // incomplete
+
+    return Hatch;
 }
