@@ -32,13 +32,13 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	HTREEITEM htiGroupList = CMainFrame::InsertTreeViewControlItem(hWndGroupTree, TVI_ROOT, L"<Groups>", GroupsInTrap);
 	GroupsInTrap->AddToTreeViewControl(hWndGroupTree, htiGroupList);
 
-	m_ExtraListViewControl.InsertColumn(0, L"Property", LVCFMT_LEFT, 75);
-	m_ExtraListViewControl.InsertColumn(1, L"Value", LVCFMT_LEFT, 150);
+	m_ExtraListViewControl.InsertColumn(0, L"Property", LVCFMT_LEFT, 128);
+	m_ExtraListViewControl.InsertColumn(1, L"Value", LVCFMT_LEFT, 192);
 
-	m_GeometryListViewControl.InsertColumn(0, L"Property", LVCFMT_LEFT, 75);
-	m_GeometryListViewControl.InsertColumn(1, L"X-Axis", LVCFMT_LEFT, 75);
-	m_GeometryListViewControl.InsertColumn(2, L"Y-Axis", LVCFMT_LEFT, 75);
-	m_GeometryListViewControl.InsertColumn(3, L"Z-Axis", LVCFMT_LEFT, 75);
+	m_GeometryListViewControl.InsertColumn(0, L"Property", LVCFMT_LEFT, 128);
+	m_GeometryListViewControl.InsertColumn(1, L"X-Axis", LVCFMT_LEFT, 96);
+	m_GeometryListViewControl.InsertColumn(2, L"Y-Axis", LVCFMT_LEFT, 96);
+	m_GeometryListViewControl.InsertColumn(3, L"Z-Axis", LVCFMT_LEFT, 96);
 
 	TreeView_Expand(hWndGroupTree, htiGroupList, TVE_EXPAND);
 	return TRUE;
