@@ -24,9 +24,10 @@ public:
 		m_pc1.QuadPart -= m_pc0.QuadPart;
 		if (QueryPerformanceFrequency(&m_pc0)) {
 			const double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
-			CString NewText;
-			NewText.Format(L"%s Time: %.6f sec.", operationName ? operationName : L"Operation", loadTime);
-			SetStatusPaneTextAt(wcscmp(L"Redraw", operationName) == 0 ? 2 : 1, NewText);
+			OdString NewText;
+            OdString OperationName {operationName ? operationName : L"Operation"};
+			NewText.format(L"%s Time: %.6f sec.", OperationName, loadTime);
+			SetStatusPaneTextAt(wcscmp(L"Redraw", OperationName) == 0 ? nStatusProgress : nStatusInfo, NewText);
 		}
 	}
 
