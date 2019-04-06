@@ -80,7 +80,7 @@ EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbLine::Create(*this, database));
 }
 
-void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
+void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr& database) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
@@ -91,7 +91,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr
 	}
 }
 
-void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept {
+void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) {
 	EoDbLine* pLine;
 	double FirstPointParameter;
 	double SecondPointParameter;

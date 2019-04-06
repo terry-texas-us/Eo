@@ -11,30 +11,41 @@ size_t EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
-EoDbPrimitive::EoDbPrimitive()
-	: m_LayerId(NULL), m_ColorIndex(1), m_LinetypeIndex(1) {
+EoDbPrimitive::EoDbPrimitive() noexcept
+	: m_LayerId(NULL)
+    , m_ColorIndex(1)
+    , m_LinetypeIndex(1) {
 }
+
 EoDbPrimitive::EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex)
-	: m_LayerId(NULL), m_ColorIndex(colorIndex), m_LinetypeIndex(linetypeIndex) {
+	: m_LayerId(NULL)
+    , m_ColorIndex(colorIndex)
+    , m_LinetypeIndex(linetypeIndex) {
 }
+
 EoDbPrimitive::~EoDbPrimitive() {
 }
 
-void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) {
+void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database) {
 }
-void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr database) noexcept {
+
+void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr& database) {
 }
+
 int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
 	return 0;
 }
+
 bool EoDbPrimitive::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
 	return false;
 }
+
 bool EoDbPrimitive::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
 }
+
 CString EoDbPrimitive::FormatColorIndex() const {
 	CString str;
 	if (m_ColorIndex == COLORINDEX_BYLAYER) {
@@ -50,6 +61,7 @@ CString EoDbPrimitive::FormatColorIndex() const {
 	}
 	return str;
 }
+
 CString EoDbPrimitive::FormatLinetypeIndex() const {
 	CString str;
 	if (m_LinetypeIndex == LINETYPE_BYLAYER) {
@@ -65,6 +77,7 @@ CString EoDbPrimitive::FormatLinetypeIndex() const {
 	}
 	return str;
 }
+
 OdInt16 EoDbPrimitive::LogicalColorIndex() const noexcept {
 	OdInt16 ColorIndex = sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex;
 	if (ColorIndex == COLORINDEX_BYLAYER) {
@@ -75,6 +88,7 @@ OdInt16 EoDbPrimitive::LogicalColorIndex() const noexcept {
 	}
 	return (ColorIndex);
 }
+
 OdInt16 EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
 	OdInt16 LinetypeIndex = sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex;
 	if (LinetypeIndex == LINETYPE_BYLAYER) {
@@ -85,28 +99,36 @@ OdInt16 EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
 	}
 	return (LinetypeIndex);
 }
+
 void EoDbPrimitive::ModifyState() noexcept {
 	m_ColorIndex = pstate.ColorIndex();
 	m_LinetypeIndex = pstate.LinetypeIndex();
 }
+
 size_t EoDbPrimitive::ControlPointIndex() noexcept {
 	return sm_ControlPointIndex;
 }
+
 bool EoDbPrimitive::IsSupportedLinetype(int linetype) noexcept {
 	return (linetype <= 7 && linetype != 4 && linetype != 5);
 }
+
 OdInt16 EoDbPrimitive::LayerColorIndex() noexcept {
 	return sm_LayerColorIndex;
 }
+
 void EoDbPrimitive::SetLayerColorIndex(OdInt16 colorIndex) noexcept {
 	sm_LayerColorIndex = colorIndex;
 }
+
 OdInt16 EoDbPrimitive::LayerLinetypeIndex() noexcept {
 	return sm_LayerLinetypeIndex;
 }
+
 void EoDbPrimitive::SetLayerLinetypeIndex(OdInt16 linetypeIndex) noexcept {
 	sm_LayerLinetypeIndex = linetypeIndex;
 }
+
 double EoDbPrimitive::RelationshipOfPoint() noexcept {
 	return sm_RelationshipOfPoint;
 }
@@ -133,15 +155,19 @@ void EoDbPrimitive::SetLinetypeIndex(OdInt16 linetypeIndex) {
 OdInt16 EoDbPrimitive::HighlightColorIndex() noexcept {
 	return sm_HighlightColorIndex;
 }
+
 OdInt16 EoDbPrimitive::HighlightLinetypeIndex() noexcept {
 	return sm_HighlightLinetypeIndex;
 }
+
 void EoDbPrimitive::SetHighlightColorIndex(OdInt16 colorIndex) noexcept {
 	sm_HighlightColorIndex = colorIndex;
 }
+
 void EoDbPrimitive::SetHighlightLinetypeIndex(OdInt16 linetypeIndex) noexcept {
 	sm_HighlightLinetypeIndex = linetypeIndex;
 }
+
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
 	const double Epsilon = 1. / 64.;
 

@@ -45,8 +45,8 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const;
 
 public:	// Methods - virtuals
-	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) noexcept;
+	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database);
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database);
 	void ModifyState() noexcept;
 
 public:	// Methods

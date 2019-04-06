@@ -1,6 +1,24 @@
 #pragma once
 
+using namespace EoDb;
+
 class EoDbPegFile;
+
+/* <remarks>
+GroupReference(SegRef) primitive in Peg files and Tracing files
+  Type code <0x0102>	EoUInt16[0-1]
+  Pen color				EoUInt16[2-3]
+  Line type				EoUInt16[4-5]
+  Group name			string
+  Insertion point		EoGePoint3d
+  Local normal vector	EoGeVector3d
+  Scale factors(x, y, z)EoGeVector3d
+  Rotation				double
+  Number of columns		EoUInt16
+  Number of rows		EoUInt16
+  Column spacing		double
+  Row spacing			double
+</remarks> */
 
 class EoDbBlockReference : public EoDbPrimitive {
 	CString m_Name;
@@ -16,40 +34,45 @@ class EoDbBlockReference : public EoDbPrimitive {
 	double m_RowSpacing;
 
 public: // Constructors and destructor
-	EoDbBlockReference();
+	
+    EoDbBlockReference() noexcept;
 	EoDbBlockReference(const EoDbBlockReference& other);
-	virtual ~EoDbBlockReference();
+	~EoDbBlockReference();
 
 public: // Operators
-	const EoDbBlockReference& operator=(const EoDbBlockReference& other);
+	
+    const EoDbBlockReference& operator=(const EoDbBlockReference& other);
 
 public: // Methods - absolute virtuals
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const;
-	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord);
-	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const;
-	void Display(AeSysView* view, CDC* deviceContext);
-	void AddReportToMessageList(const OdGePoint3d& point) const;
-	void GetAllPoints(OdGePoint3dArray& points) const;
-	void FormatExtra(CString& extra) const;
-	void FormatGeometry(CString& geometry) const;
-	OdGePoint3d	GetCtrlPt() const noexcept;
-	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
-	OdGePoint3d	GoToNxtCtrlPt() const noexcept;
-	bool Is(OdUInt16 type) const noexcept;
-	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept;
-	bool IsInView(AeSysView* view) const;
-	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept;
+    
+    void AddReportToMessageList(const OdGePoint3d& point) const override;
+    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
+	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
+	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
+	void Display(AeSysView* view, CDC* deviceContext) override;
+	void FormatExtra(CString& extra) const override;
+	void FormatGeometry(CString& geometry) const override;
+    void GetAllPoints(OdGePoint3dArray& points) const override;
+    OdGePoint3d	GetCtrlPt() const noexcept override;
+	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
+	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
+    bool Is(OdUInt16 type) const noexcept override {return type == kGroupReferencePrimitive;}
+    bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
+	bool IsInView(AeSysView* view) const override;
+	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
 	void Read(CFile&);
-	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
-	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const;
+	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	/// <summary>Evaluates whether a point lies within tolerance specified of block.</summary>
-	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const;
-	void TransformBy(const EoGeMatrix3d& transformMatrix);
-	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask);
-	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, OdUInt8* buffer) const noexcept;
+	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
+	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) override;
+	bool Write(EoDbFile& file) const override;
+	void Write(CFile& file, OdUInt8* buffer) const noexcept override;
+
 public: // Methods
-	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
+
+    EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
 	OdUInt16 Columns() const noexcept;
 	double ColumnSpacing() const noexcept;
 	CString Name() const;
@@ -71,7 +94,12 @@ public: // Methods
 	void SetColumnSpacing(double columnSpacing) noexcept;
 
 public: // Methods - static
+
 	static EoDbBlockReference* ConstructFrom(EoDbFile& file);
-	static EoDbBlockReference* Create(OdDbDatabasePtr database);
-	static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
+    static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
+    static EoDbBlockReference* Create(OdDbDatabasePtr& database);
+    static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+
+    static EoDbBlockReference* Create(OdDbBlockReferencePtr line);
 };

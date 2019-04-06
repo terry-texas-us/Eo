@@ -1,5 +1,7 @@
 #pragma once
 
+using namespace EoDb;
+
 #include "DbEllipse.h"
 
 class EoDbEllipse : public EoDbPrimitive {
@@ -9,7 +11,7 @@ class EoDbEllipse : public EoDbPrimitive {
 	double m_SweepAngle;
 
 public: // Constructors and destructor
-	EoDbEllipse();
+	EoDbEllipse() noexcept;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle);
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
@@ -22,37 +24,37 @@ public: // Operators
 	const EoDbEllipse& operator=(const EoDbEllipse&) noexcept;
 
 public: // Methods - absolute virtuals
-	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
-	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord);
-	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const;
-	void Display(AeSysView* view, CDC* deviceContext);
-	void AddReportToMessageList(const OdGePoint3d& point) const;
-	void GetAllPoints(OdGePoint3dArray& points) const;
-	OdGePoint3d GetCtrlPt() const noexcept;
-	void FormatExtra(CString& extra) const;
-	void FormatGeometry(CString& geometry) const;
+    void AddReportToMessageList(const OdGePoint3d& point) const override;
+    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
+	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
+	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
+	void Display(AeSysView* view, CDC* deviceContext) override;
+	void GetAllPoints(OdGePoint3dArray& points) const override;
+	OdGePoint3d GetCtrlPt() const noexcept override;
+	void FormatExtra(CString& extra) const override;
+	void FormatGeometry(CString& geometry) const override;
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
-	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const;
-	OdGePoint3d GoToNxtCtrlPt() const;
-	bool Is(OdUInt16 type) const noexcept;
-	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept;
-	bool IsInView(AeSysView* view) const;
-	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
+	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
+	OdGePoint3d GoToNxtCtrlPt() const override;
+    bool Is(OdUInt16 type) const noexcept override {return type == kEllipsePrimitive;}
+    bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
+	bool IsInView(AeSysView* view) const override;
+	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	/// <summary>Determines the best control point on arc within specified tolerance. Control points for arcs are the points at start and end of the sweep.</summary>
-	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const;
+	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	/// <summary>Determines if a line crosses arc.</summary>
-	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
-	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const;
-	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const;
-	void TransformBy(const EoGeMatrix3d& transformMatrix);
-	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD);
-	bool Write(EoDbFile& file) const;
-	void Write(CFile& file, OdUInt8* buffer) const;
+	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) override;
+	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
+	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
+	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
+	bool Write(EoDbFile& file) const override;
+	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods
 	OdGePoint3d Center() const noexcept;
-	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) noexcept;
+	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database) override;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) override;
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>
@@ -62,7 +64,7 @@ public: // Methods
 	OdGeVector3d MinorAxis() const noexcept;
 	double SweepAngle() const noexcept;
 	void GetXYExtents(OdGePoint3d, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
-	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept;
+	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept override;
 	void SetCenter(const OdGePoint3d& center) noexcept;
 	void SetMajorAxis(const OdGeVector3d& majorAxis) noexcept;
 	void SetMinorAxis(const OdGeVector3d& minorAxis) noexcept;
@@ -79,25 +81,21 @@ public: // Methods - static
     static EoDbEllipse* ConstructFrom(EoDbFile& file);
     static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
 
-    static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr database);
+    static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr& database);
 
-    static EoDbEllipse* Create(OdDbDatabasePtr database);
-    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+    static EoDbEllipse* Create(OdDbDatabasePtr& database);
+    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
+    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 
-    static EoDbEllipse* Create(OdDbEllipsePtr ellipse);
+    static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 };
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double);
 int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d&, const OdGePoint3d&, const OdGePoint3d&, const OdGePoint3d&, double& sweepAngle);
 /// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
-
-// Notes:	A radius and two lines define four center points.  The center point
-//			selected is on the concave side of the angle formed by the two vectors
-//			defined by the line endpoints.	These two vectors are oriented with
-//			the tail of the second vector at the head of the first.
-
-// Returns: TRUE	center point determined
-//			FALSE	endpoints of first line coincide or endpoints of second line coincide or
-//					two lines are parallel or four points are not coplanar
+/// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
+/// <Returns>
+/// true    center point determined
+/// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
+/// </Returns>
 bool pFndCPGivRadAnd4Pts(double radius, OdGePoint3d, OdGePoint3d, OdGePoint3d, OdGePoint3d, OdGePoint3d*);

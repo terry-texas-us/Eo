@@ -82,7 +82,6 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
     case kSplinePrimitive: {
         OdDbSplinePtr Spline = EoDbSpline::Create(blockTable, *this);
         Primitive = EoDbSpline::Create(Spline);
-        // Primitive = EoDbSpline::ConstructFrom(*this);
         break;
     }
     case kCSplinePrimitive:
@@ -96,11 +95,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
         Primitive = EoDbText::Create(Text);
         break;
     }
-    case kDimensionPrimitive:
-        Primitive = EoDbDimension::ConstructFrom(*this);
-        break;
     case kTagPrimitive:
         ConstructPointPrimitiveFromTagPrimitive(Primitive);
+        break;
+    case kDimensionPrimitive:
+        Primitive = EoDbDimension::ConstructFrom(*this);
         break;
 
     default:

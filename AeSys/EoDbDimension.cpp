@@ -41,7 +41,7 @@ void EoDbDimension::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) noe
 EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr& database) const {
 	return (new EoDbDimension(*this));
 }
-void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
+void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr& database) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
@@ -53,7 +53,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDataba
 	}
 	SetDefaultNote();
 }
-void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept {
+void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) {
 	EoDbDimension*	pDim;
 	double	dRel[2];
 
