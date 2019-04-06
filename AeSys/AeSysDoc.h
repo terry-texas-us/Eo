@@ -63,7 +63,7 @@ class OdDbDatabaseDoc : public OdDbDatabase {
 public:
 	ODRX_DECLARE_MEMBERS(OdDbDatabaseDoc);
 
-	OdDbDatabaseDoc();
+	OdDbDatabaseDoc() noexcept;
 
 	AeSysDoc* document() const noexcept;
 
@@ -202,7 +202,7 @@ public:
 	};
 
 protected:
-	AeSysDoc();
+	AeSysDoc() noexcept;
 	DECLARE_DYNCREATE(AeSysDoc)
 
 	BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* documentTemplate);
@@ -230,7 +230,7 @@ protected:
 
 	// OdDbLayoutManagerReactor
 	bool m_bLayoutSwitchable;
-	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout);
+	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
 	bool m_bDisableClearSel;
 
 public:
@@ -255,20 +255,20 @@ public:
 	void startDrag(const OdGePoint3d& point);
 
 public:
-	virtual BOOL OnSaveDocument(LPCWSTR pathName);
+	virtual BOOL OnSaveDocument(LPCWSTR pathName) override;
 	virtual BOOL OnCmdMsg(UINT nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo);
-	virtual BOOL OnNewDocument();
-	virtual BOOL OnOpenDocument(LPCWSTR pathName);
-	virtual void DeleteContents();
-	virtual BOOL CanCloseFrame(CFrameWnd* frame);
+	virtual BOOL OnNewDocument() override;
+	virtual BOOL OnOpenDocument(LPCWSTR pathName) override;
+	virtual void DeleteContents() override;
+	virtual BOOL CanCloseFrame(CFrameWnd* frame) override;
 
 public:
 	virtual ~AeSysDoc();
-	virtual BOOL DoSave(LPCWSTR pathName, BOOL replace = TRUE);
+	virtual BOOL DoSave(LPCWSTR pathName, BOOL replace = TRUE) override;
 
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+	virtual void AssertValid() const override;
+	virtual void Dump(CDumpContext& dc) const override;
 #endif
 
 #ifdef ODAMFC_EXPORT_SYMBOL

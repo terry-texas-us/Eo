@@ -69,15 +69,15 @@ OdStaticRxObject<Cmd_DISPLAY_DIFFS> g_Cmd_DISPLAY_DIFFS;
 static void addPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
 	public:
-		virtual bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) {
+		virtual bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
 		}
-		virtual bool drawBorder(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) {
+		virtual bool drawBorder(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
 		}
-		virtual bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) {
+		virtual bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			if (points[0] == points[1] || points[1] == points[2]) {
 				return true;
 			}
@@ -121,14 +121,14 @@ static void removePaperDrawingCustomization() {
 static void addMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
 	public:
-		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept {
+		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept override {
 			// Material texture to be loaded. Correct loading path here.
 		}
-		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* database) {
+		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* database) override {
 			ATLTRACE2(atlTraceGeneral, 0, L"Material texture loaded: %s\n", fileName.c_str());
 		}
 		/// <remarks> Called by texture loader after file loading, only if texture loading failed. </remarks>
-		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* database) {
+		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* database) override {
 			ATLTRACE2(atlTraceGeneral, 0, L"Failed to load material texture: %s\n", fileName.c_str());
 		}
 	}
@@ -142,7 +142,7 @@ void removeMaterialTextureLoadingMonitor() {
 
 class EoDlgAbout : public CDialogEx {
 public:
-	EoDlgAbout();
+	EoDlgAbout() noexcept;
 
 	enum { IDD = IDD_ABOUTBOX };
 
@@ -152,7 +152,8 @@ protected:
 protected:
 	DECLARE_MESSAGE_MAP()
 };
-EoDlgAbout::EoDlgAbout() : CDialogEx(EoDlgAbout::IDD) {
+EoDlgAbout::EoDlgAbout() noexcept 
+    : CDialogEx(EoDlgAbout::IDD) {
 }
 void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
 	CDialogEx::DoDataExchange(pDX);
@@ -222,7 +223,7 @@ END_MESSAGE_MAP()
 AeSysApp::~AeSysApp() {
 }
 
-AeSysApp::AeSysApp() 
+AeSysApp::AeSysApp() noexcept
     : m_nProgressPos(0)
     , m_nProgressLimit(100)
     , m_nPercent(0)

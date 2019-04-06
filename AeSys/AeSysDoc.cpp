@@ -68,8 +68,8 @@ ODRX_CONS_DEFINE_MEMBERS(OdDbDatabaseDoc, OdDbDatabase, NEW_CONSTR);
 
 AeSysDoc* OdDbDatabaseDoc::g_pDoc = 0;
 
-OdDbDatabaseDoc::OdDbDatabaseDoc() :
-m_pDoc(g_pDoc) {
+OdDbDatabaseDoc::OdDbDatabaseDoc() noexcept 
+    : m_pDoc(g_pDoc) {
 	g_pDoc = 0;
 }
 AeSysDoc* OdDbDatabaseDoc::document() const noexcept {
@@ -186,20 +186,18 @@ unsigned short AeSysDoc::ClipboardData::m_FormatR19 = (CLIPFORMAT)::RegisterClip
 
 AeSysDoc* g_pDoc = 0;
 
-AeSysDoc::AeSysDoc() :
-m_bPartial(false),
-m_pViewer(0),
-m_SaveAsType(OdDb::kDwg),
-m_SaveAsType_(kUnknown),
-m_SaveAsVer(OdDb::kDHL_CURRENT),
-
+AeSysDoc::AeSysDoc() noexcept 
+    : m_bPartial(false)
+    , m_pViewer(0)
+    , m_SaveAsType(OdDb::kDwg)
+    , m_SaveAsType_(kUnknown)
+    , m_SaveAsVer(OdDb::kDHL_CURRENT)
 #ifdef DEV_COMMAND_CONSOLE
-m_bConsole(false),
-m_nCmdActive(0),
+    , m_bConsole(false)
+    , m_nCmdActive(0)
 #endif // DEV_COMMAND_CONSOLE
-
-m_bLayoutSwitchable(false),
-m_bDisableClearSel(false) {
+    , m_bLayoutSwitchable(false)
+    , m_bDisableClearSel(false) {
 	m_WorkLayer = NULL;
 	g_pDoc = this;
 

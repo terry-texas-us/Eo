@@ -149,7 +149,7 @@ public:
 	OdMutexPtr m_pMeterMutex;
 
 public:
-	AeSysApp();
+	AeSysApp() noexcept;
 	~AeSysApp();
 
 	OdString recentGsDevicePath() const;
@@ -160,14 +160,14 @@ public:
 	void addRef() {}
 	void release() {}
 
-	OdDbHostAppProgressMeter* newProgressMeter();
-	void start(const OdString& displayString = OdString::kEmpty);
-	void stop();
-	void meterProgress();
-	void setLimit(int max) noexcept;
+	OdDbHostAppProgressMeter* newProgressMeter() override;
+	void start(const OdString& displayString = OdString::kEmpty) override;
+	void stop() override;
+	void meterProgress() override;
+	void setLimit(int max) noexcept override;
 
 	int ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
-	void warning(const char* warnVisGroup, const OdString& message);
+	void warning(const char* warnVisGroup, const OdString& message) override;
 	void WarningMessageBox(UINT stringResourceIdentifier);
 	void WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
 
@@ -175,18 +175,18 @@ public:
 	void reportError(LPCWSTR caption, const OdError& error);
 	void reportError(LPCWSTR caption, unsigned int error);
 
-	OdRxClass* databaseClass() const;
+	OdRxClass* databaseClass() const override;
 
-	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault);
-	OdString getFontMapFileName() const;
+	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override;
+	OdString getFontMapFileName() const override;
 	BOOL ProcessShellCommand(CCommandLineInfo& commandLineInfo);
 
 	void initPlotStyleSheetEnv();
 
-	bool getSAVEROUNDTRIP() const noexcept {return (m_bSaveRoundTrip != 0);}
-	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const;
-	OdDbUndoControllerPtr newUndoController();
-	virtual OdStreamBufPtr newUndoStream();
+	bool getSAVEROUNDTRIP() const noexcept override {return (m_bSaveRoundTrip != 0);}
+	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override;
+	OdDbUndoControllerPtr newUndoController() override;
+	virtual OdStreamBufPtr newUndoStream() override;
 
 	bool getSavePreview() noexcept {return (m_bSavePreview != 0);}
 	bool getSaveWithPassword() noexcept {return (m_bSaveWithPassword != 0);}
@@ -206,18 +206,18 @@ public:
 
 	OdGsDevicePtr gsBitmapDevice();
 
-	bool getPassword(const OdString& dwgName, bool isXref, OdPassword& password);
+	bool getPassword(const OdString& dwgName, bool isXref, OdPassword& password) override;
 
-	OdDbPageControllerPtr newPageController();
+	OdDbPageControllerPtr newPageController() override;
 	int setPagingType(int pagingType) noexcept;
 	int pagingType() const noexcept {return m_pagingType & 0x0f;}
 
 	bool setUndoType(bool useTempFiles) noexcept;
 	bool undoType() const noexcept {return m_bUseTempFiles;}
 
-	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty);
+	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
 
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual BOOL PreTranslateMessage(MSG* pMsg) override;
 
 	bool remoteGeomViewer() const noexcept {return m_bRemoteGeomViewer;}
 	void setRemoteGeomViewer() noexcept {m_bRemoteGeomViewer = true;}
@@ -228,9 +228,9 @@ public:
 	static CString getApplicationPath();
 	
 public:
-	virtual BOOL InitInstance(void);
-	virtual int ExitInstance(void);
-	virtual BOOL OnIdle(long count);
+	virtual BOOL InitInstance(void) override;
+	virtual int ExitInstance(void) override;
+	virtual BOOL OnIdle(long count) override;
 
 	enum Units {
 		kArchitecturalS = - 1, // Embedded S format
@@ -349,7 +349,7 @@ public:
 	double ParseLength(LPWSTR lengthAsString);
 	double ParseLength(Units units, LPWSTR);
 	double PenWidthsGet(OdInt16 colorIndex) noexcept;
-	virtual void PreLoadState();
+	virtual void PreLoadState() override;
 	int PrimaryMode() const noexcept;
 	void ReleaseSimplexStrokeFont() noexcept;
 	static CString ResourceFolderPath();
