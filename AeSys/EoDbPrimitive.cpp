@@ -20,7 +20,7 @@ EoDbPrimitive::EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex)
 EoDbPrimitive::~EoDbPrimitive() {
 }
 
-void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) noexcept {
+void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) {
 }
 void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr database) noexcept {
 }

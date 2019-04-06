@@ -105,7 +105,7 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Hatch>", this);
 }
-void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
 	blockTableRecord->appendOdDbEntity(HatchEntity);
 	HatchEntity->setDatabaseDefaults();
@@ -144,7 +144,7 @@ void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 	}
 	HatchEntity->appendLoop(OdDbHatch::kPolyline, Vertices, Bulges);
 }
-EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr database) const {
+EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbHatch::Create(*this, database));
 }
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {

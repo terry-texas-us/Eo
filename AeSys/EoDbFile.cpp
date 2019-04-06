@@ -4,7 +4,8 @@
 EoDbFile::EoDbFile() {
 }
 
-EoDbFile::EoDbFile(OdDbDatabasePtr database) {
+EoDbFile::EoDbFile(OdDbDatabasePtr database)
+    : m_Database {database} {
 }
 
 EoDbFile::EoDbFile(const OdString& fileName, UINT openFlags)
@@ -78,9 +79,12 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
         Primitive = EoDbEllipse::Create(Ellipse);
         break;
     }
-    case kSplinePrimitive:
-        Primitive = EoDbSpline::ConstructFrom(*this);
+    case kSplinePrimitive: {
+        OdDbSplinePtr Spline = EoDbSpline::Create(blockTable, *this);
+        Primitive = EoDbSpline::Create(Spline);
+        // Primitive = EoDbSpline::ConstructFrom(*this);
         break;
+    }
     case kCSplinePrimitive:
         ConstructPolylinePrimitiveFromCSplinePrimitive(Primitive);
         break;

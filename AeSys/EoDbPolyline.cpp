@@ -89,7 +89,7 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Polyline>", this);
 }
-void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbPolylinePtr PolylineEntity = OdDbPolyline::createObject();
 	blockTableRecord->appendOdDbEntity(PolylineEntity);
 	PolylineEntity->setDatabaseDefaults();
@@ -108,7 +108,7 @@ void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 	}
 	PolylineEntity->setClosed(m_Flags == EoDbPolyline::sm_Closed);
 }
-EoDbPrimitive* EoDbPolyline::Clone(OdDbDatabasePtr database) const {
+EoDbPrimitive* EoDbPolyline::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbPolyline::Create(*this, database));
 }
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {

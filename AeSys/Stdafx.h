@@ -83,6 +83,7 @@
 #include "DbLine.h"
 #include "DbMText.h"
 #include "DbText.h"
+#include "DbSpline.h"
 #include "DbSortentsTable.h"
 #include "DbSpatialFilter.h"
 #include "StringArray.h"

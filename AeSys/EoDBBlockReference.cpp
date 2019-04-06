@@ -53,7 +53,7 @@ void EoDbBlockReference::AddToTreeViewControl(HWND tree, HTREEITEM parent) const
 
 	((EoDbGroup*) Block)->AddPrimsToTreeViewControl(tree, hti);
 }
-void EoDbBlockReference::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+void EoDbBlockReference::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbBlockReferencePtr BlockReferenceEntity = OdDbBlockReference::createObject();
 	blockTableRecord->appendOdDbEntity(BlockReferenceEntity);
 	BlockReferenceEntity->setDatabaseDefaults();
@@ -103,7 +103,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 
 	return LeftMatrix;
 }
-EoDbPrimitive* EoDbBlockReference::Clone(OdDbDatabasePtr database) const {
+EoDbPrimitive* EoDbBlockReference::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbBlockReference::Create(*this, database));
 }
 void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {

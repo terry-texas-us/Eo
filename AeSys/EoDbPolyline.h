@@ -30,8 +30,8 @@ public: // Operators
 
 public: // Methods - absolute virtuals
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
-	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
-	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
+	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord);
+	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void AddReportToMessageList(const OdGePoint3d& point) const;
 	void FormatExtra(CString& extra) const;

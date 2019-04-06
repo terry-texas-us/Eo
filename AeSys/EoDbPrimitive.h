@@ -39,8 +39,8 @@ public: // Constructors and destructor
 
 public: // Methods - absolute virtuals
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;
-	virtual void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) = 0;
-	virtual EoDbPrimitive* Clone(OdDbDatabasePtr database) const = 0;
+	virtual void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) = 0;
+	virtual EoDbPrimitive* Clone(OdDbDatabasePtr& database) const = 0;
 	virtual void Display(AeSysView* view, CDC* deviceContext) = 0;
 	virtual void AddReportToMessageList(const OdGePoint3d& point) const = 0;
 	virtual void FormatExtra(CString& extra) const = 0;
@@ -66,7 +66,7 @@ public: // Methods - absolute virtuals
 	virtual void Write(CFile& file, OdUInt8* buffer) const = 0;
 
 public: // Methods - virtuals
-	virtual void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) noexcept;
+	virtual void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
 	/// <summary>Cuts a primitive at two points.</summary>
 	/// <param name="points"></param>
 	/// <param name="groups">group to place optional line not defined by the cut points</param>

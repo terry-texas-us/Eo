@@ -35,13 +35,13 @@ const EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
 void EoDbDimension::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Dimension>", this);
 }
-void EoDbDimension::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) noexcept {
+void EoDbDimension::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) noexcept {
 // <tas="AssociateWith for Dimension not finished"</tas>
 }
-EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr database) const {
+EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr& database) const {
 	return (new EoDbDimension(*this));
 }
-void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) noexcept {
+void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {

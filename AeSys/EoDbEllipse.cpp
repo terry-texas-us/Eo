@@ -62,7 +62,7 @@ const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
 void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 		CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Arc>", this);
 }
-void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbEllipsePtr EllipseEntity = OdDbEllipse::createObject();
 	blockTableRecord->appendOdDbEntity(EllipseEntity);
 	EllipseEntity->setDatabaseDefaults();
@@ -80,10 +80,10 @@ void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 		EllipseEntity->set(m_Center, PlaneNormal, m_MajorAxis, EoMin(1., RadiusRatio), 0., m_SweepAngle);
 	}
 }
-EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr database) const {
+EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbEllipse::Create(*this, database));
 }
-void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) noexcept {
+void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
 	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}

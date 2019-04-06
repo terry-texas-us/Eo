@@ -39,7 +39,6 @@
 #include "DbRotatedDimension.h"
 #include "DbShape.h"
 #include "DbSolid.h"
-#include "DbSpline.h"
 #include "DbTable.h"
 #include "DbTrace.h"
 #include "DbUCSTableRecord.h"

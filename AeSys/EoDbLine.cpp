@@ -3,13 +3,15 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-EoDbLine::EoDbLine() {
+EoDbLine::EoDbLine() noexcept {
 }
+
 EoDbLine::EoDbLine(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	m_ColorIndex = pstate.ColorIndex();
 	m_LinetypeIndex = pstate.LinetypeIndex();
 	m_Line.set(startPoint, endPoint);
 }
+
 EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -18,9 +20,12 @@ EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_LinetypeIndex = other.m_LinetypeIndex;
 	m_Line = other.m_Line;
 }
+
 EoDbLine::~EoDbLine() {
 }
+
 // Operators
+
 const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -30,6 +35,7 @@ const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 	m_Line = other.m_Line;
 	return (*this);
 }
+
 void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	double AngleInXYPlane = m_Line.AngleFromXAxis_xy();
 
@@ -52,10 +58,12 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.SetEngagedLength(Length);
 	theApp.SetEngagedAngle(AngleInXYPlane);
 }
+
 void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Line>", this);
 }
-void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+
+void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbLinePtr LineEntity = OdDbLine::createObject();
 	blockTableRecord->appendOdDbEntity(LineEntity);
 	LineEntity->setDatabaseDefaults();
@@ -67,10 +75,12 @@ void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
 	LineEntity->setStartPoint(m_Line.startPoint());
 	LineEntity->setEndPoint(m_Line.endPoint());
 }
-EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr database) const {
+
+EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbLine::Create(*this, database));
 }
-void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) noexcept {
+
+void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr database) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
@@ -80,6 +90,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr
 		group->AddTail(Line);
 	}
 }
+
 void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) noexcept {
 	EoDbLine* pLine;
 	double FirstPointParameter;
@@ -119,6 +130,7 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGrou
 	NewGroup->AddTail(pLine);
 	newGroups->AddTail(NewGroup);
 }
+
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
 	const OdInt16 ColorIndex = LogicalColorIndex();
 	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
@@ -130,9 +142,11 @@ void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
 	polyline::SetVertex(m_Line.endPoint());
 	polyline::__End(view, deviceContext, LinetypeIndex);
 }
+
 OdGePoint3d EoDbLine::EndPoint() const {
 	return m_Line.endPoint();
 }
+
 void EoDbLine::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
@@ -140,6 +154,7 @@ void EoDbLine::FormatExtra(CString& extra) const {
 	extra += L"Length;" + theApp.FormatLength(Length(), theApp.GetUnits()) + L"\t";
 	extra += L"Z-Angle;" + theApp.FormatAngle(m_Line.AngleFromXAxis_xy());
 }
+
 void EoDbLine::FormatGeometry(CString& geometry) const {
 	OdGePoint3d Point;
 	Point = m_Line.startPoint();
@@ -150,18 +165,22 @@ void EoDbLine::FormatGeometry(CString& geometry) const {
 	PointString.Format(L"End Point;%f;%f;%f\t", Point.x, Point.y, Point.z);
 	geometry += PointString;
 }
+
 void EoDbLine::GetAllPoints(OdGePoint3dArray& points) const {
 	points.clear();
 	points.append(m_Line.startPoint());
 	points.append(m_Line.endPoint());
 }
+
 OdGePoint3d EoDbLine::GetCtrlPt() const {
 	return m_Line.midPoint();
 }
+
 void EoDbLine::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	extents.addPoint(m_Line.startPoint());
 	extents.addPoint(m_Line.endPoint());
 }
+
 OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	if (sm_ControlPointIndex == 0)
 		sm_ControlPointIndex = 1;
@@ -182,9 +201,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	}
 	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
 }
-bool EoDbLine::Is(OdUInt16 type) const noexcept {
-	return type == kLinePrimitive;
-}
+
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
 	bool IsEqualTo = primitive->Is(kLinePrimitive);
 	if (IsEqualTo) {
@@ -192,12 +209,14 @@ bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
 	}
 	return IsEqualTo;
 }
+
 bool EoDbLine::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[] = {EoGePoint4d(m_Line.startPoint(), 1.), EoGePoint4d(m_Line.endPoint(), 1.)};
 	view->ModelViewTransformPoints(2, &pt[0]);
 
 	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
 }
+
 bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt;
 
@@ -215,13 +234,16 @@ bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 
 	return false;
 }
+
 void EoDbLine::GetLine(EoGeLineSeg3d& line) const {
 	line = m_Line;
 }
+
 void EoDbLine::GetPoints(OdGePoint3d& startPoint, OdGePoint3d& endPoint) {
 	startPoint = m_Line.startPoint();
 	endPoint = m_Line.endPoint();
 }
+
 int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
 	int i;
 	int iLoc[2];
@@ -256,20 +278,25 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 	}
 	return (2);
 }
+
 double EoDbLine::Length() const {
 	return (m_Line.length());
 }
+
 EoGeLineSeg3d EoDbLine::Line() const {
 	return m_Line;
 }
+
 OdGePoint3d EoDbLine::ProjPt_(const OdGePoint3d& point) const {
 	return (m_Line.ProjPt(point));
 }
+
 double EoDbLine::ParametricRelationshipOf(const OdGePoint3d& point) const {
 	double dRel;
 	m_Line.ParametricRelationshipOf(point, dRel);
 	return dRel;
 }
+
 OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
@@ -291,24 +318,28 @@ OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& p
 	}
 	return ControlPoint;
 }
+
 bool EoDbLine::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_Line.startPoint());
 	polyline::SetVertex(m_Line.endPoint());
 	return polyline::SelectBy(line, view, intersections);
 }
+
 bool EoDbLine::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_Line.startPoint());
 	polyline::SetVertex(m_Line.endPoint());
 	return polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj);
 }
+
 bool EoDbLine::SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysView* view) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_Line.startPoint());
 	polyline::SetVertex(m_Line.endPoint());
 	return polyline::SelectBy(pt1, pt2, view);
 }
+
 EoDbLine& EoDbLine::SetTo(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	m_Line.set(startPoint, endPoint);
 	if (!m_EntityObjectId.isNull()) {
@@ -318,6 +349,7 @@ EoDbLine& EoDbLine::SetTo(const OdGePoint3d& startPoint, const OdGePoint3d& endP
 	}
 	return (*this);
 }
+
 void EoDbLine::SetEndPoint(const OdGePoint3d& endPoint) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -325,6 +357,7 @@ void EoDbLine::SetEndPoint(const OdGePoint3d& endPoint) {
 	}
 	m_Line.SetEndPoint(endPoint);
 }
+
 void EoDbLine::SetStartPoint(const OdGePoint3d& startPoint) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -332,6 +365,7 @@ void EoDbLine::SetStartPoint(const OdGePoint3d& startPoint) {
 	}
 	m_Line.SetStartPoint(startPoint);
 }
+
 void EoDbLine::Square(AeSysView* view) {
 	const OdGePoint3d StartPoint = view->SnapPointToGrid(m_Line.startPoint());
 	OdGePoint3d EndPoint = view->SnapPointToGrid(m_Line.endPoint());
@@ -342,12 +376,15 @@ void EoDbLine::Square(AeSysView* view) {
 	SetStartPoint(ProjectToward(EndPoint, MidPoint, Length));
 	SetEndPoint(EndPoint);
 }
+
 OdGePoint3d EoDbLine::StartPoint() const {
 	return m_Line.startPoint();
 }
+
 void EoDbLine::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Line.transformBy(transformMatrix);
 }
+
 void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) {
 	if ((mask & 1) == 1) {
 		SetStartPoint(m_Line.startPoint() + translate);
@@ -356,6 +393,7 @@ void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mas
 		SetEndPoint(m_Line.endPoint() + translate);
 	}
 }
+
 bool EoDbLine::Write(EoDbFile& file) const {
 	file.WriteUInt16(kLinePrimitive);
 	file.WriteInt16(m_ColorIndex);
@@ -364,6 +402,7 @@ bool EoDbLine::Write(EoDbFile& file) const {
 	file.WritePoint3d(m_Line.endPoint());
 	return true;
 }
+
 void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
 	*((OdUInt16*) &buffer[4]) = OdUInt16(kLinePrimitive);
@@ -378,6 +417,7 @@ void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 }
 
 // Static
+
 EoDbLine* EoDbLine::ConstructFrom(EoDbFile& file) {
     EoDbLine* LinePrimitive = new EoDbLine();
     LinePrimitive->SetColorIndex(file.ReadInt16());

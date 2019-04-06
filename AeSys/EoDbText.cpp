@@ -48,7 +48,7 @@ void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept 
     CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Text>", this);
 }
 
-void EoDbText::AssociateWith(OdDbBlockTableRecordPtr blockTableRecord) {
+void EoDbText::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
     OdDbTextPtr TextEntity = OdDbText::createObject();
     blockTableRecord->appendOdDbEntity(TextEntity);
     TextEntity->setDatabaseDefaults();
@@ -84,7 +84,7 @@ void EoDbText::ConvertFormattingCharacters() {
     }
 }
 
-EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr database) const {
+EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr& database) const {
     return (EoDbText::Create(*this, database));
 }
 

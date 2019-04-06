@@ -23,8 +23,8 @@ public: // Operators
 
 public: // Methods - absolute virtuals
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept;
-	void AssociateWith(OdDbBlockTableRecordPtr blockTableRecord);
-	EoDbPrimitive* Clone(OdDbDatabasePtr database) const;
+	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord);
+	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	void AddReportToMessageList(const OdGePoint3d& point) const;
 	void GetAllPoints(OdGePoint3dArray& points) const;
@@ -51,7 +51,7 @@ public: // Methods - absolute virtuals
 
 public: // Methods
 	OdGePoint3d Center() const noexcept;
-	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database) noexcept;
+	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr database);
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) noexcept;
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
