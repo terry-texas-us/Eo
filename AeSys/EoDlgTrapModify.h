@@ -18,7 +18,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual void OnOK();
+	virtual void OnOK() override;
 
 	AeSysDoc* m_Document;
 

@@ -15,7 +15,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog(void);
+	virtual BOOL OnInitDialog(void) override;
 
 private:
 	int m_OriginalLineWeight;

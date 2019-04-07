@@ -66,9 +66,9 @@ private:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	virtual void OnCancel();
+	virtual BOOL OnInitDialog() override;
+	virtual void OnOK() override;
+	virtual void OnCancel() override;
 	afx_msg void OnSelchangeScaleValues();
 	afx_msg void OnSelchangeDeviceList();
 	afx_msg void OnSelChangeMediaList();

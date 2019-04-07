@@ -20,8 +20,8 @@ public:
 protected:
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
+	virtual BOOL OnInitDialog() override;
+	virtual void OnOK() override;
 	double m_HatchXScaleFactor;
 	double m_HatchYScaleFactor;
 	double m_HatchRotationAngle;

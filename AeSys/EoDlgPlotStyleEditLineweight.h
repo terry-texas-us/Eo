@@ -28,10 +28,10 @@ public: // Construction
 	CButton m_InchesButton;
 
 protected:
-	virtual BOOL DestroyWindow();
+	virtual BOOL DestroyWindow() override;
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
+	virtual BOOL OnInitDialog() override;
+	virtual void OnOK() override;
 
 protected:
 	void InitializeListCtrl();

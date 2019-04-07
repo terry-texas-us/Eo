@@ -19,7 +19,7 @@ protected:
 	CListCtrl m_propList;
 	CString m_sValue;
 
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnSetfocusValue();
 	afx_msg void OnButton();
 	afx_msg void OnClickProplist(NMHDR* pNMHDR, LRESULT* result);

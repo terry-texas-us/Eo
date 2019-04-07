@@ -14,7 +14,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 public:
 	double m_dAngle;
 	CString m_strTitle;

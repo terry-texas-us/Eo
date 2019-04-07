@@ -47,7 +47,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	void AdjustLayout(void);
+	void AdjustLayout(void) override;
 	void InitializePropertyGrid(void);
 	void SetPropertyGridFont(void);
 	void SetWorkspaceTabsSubItemsState(void);

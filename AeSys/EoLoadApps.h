@@ -11,8 +11,8 @@ public:
             : m_pListBox(0) {
 		}
 		CListBox* m_pListBox;
-		void rxAppLoaded(OdRxModule* appModule);
-		void rxAppUnloaded(const OdString& appName);
+		void rxAppLoaded(OdRxModule* appModule) override;
+		void rxAppUnloaded(const OdString& appName) override;
 	};
 private:
 	friend class LoadedApps;
@@ -33,7 +33,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 protected:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnLoadApp();
 	afx_msg void OnUnloadApp();
 	afx_msg void OnAppsListEvent();

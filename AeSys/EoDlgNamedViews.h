@@ -38,7 +38,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
 protected:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnSetcurrentButton();
 	afx_msg void OnDblclkNamedviews(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNewButton();

@@ -16,9 +16,9 @@ public:
   int InsertBitmap(int nIndex, const CBitmap *bitmap, LPCWSTR string = NULL);
 
 protected:
-  virtual void DrawItem(LPDRAWITEMSTRUCT drawItemStruct);
+  virtual void DrawItem(LPDRAWITEMSTRUCT drawItemStruct) override;
 
-  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept;
+  virtual void MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept override;
   virtual int AddString(LPCWSTR ) noexcept { return -1; }
   virtual int InsertString(int , LPCWSTR ) noexcept { return -1; }
 };

@@ -2236,16 +2236,16 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 struct OdExRegenCmd : OdEdCommand {
 	OdGsLayoutHelper* m_pDevice;
 	AeSysView* m_pView;
-	const OdString groupName() const {
+	const OdString groupName() const override {
 		return L"REGEN";
 	}
-	const OdString globalName() const {
+	const OdString globalName() const override {
 		return L"REGEN";
 	}
-	virtual OdInt32 flags() const {
+	virtual OdInt32 flags() const override {
 		return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
 	}
-	void execute(OdEdCommandContext* pCmdCtx) noexcept {
+	void execute(OdEdCommandContext* pCmdCtx) noexcept override {
 		// <tas="placeholder until implemented" m_pView->OnViewerRegen();"</tas>
 	}
 };

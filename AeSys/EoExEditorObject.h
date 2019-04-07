@@ -10,23 +10,23 @@
 
 class OdExZoomCmd : public OdEdCommand {
 public:
-	const OdString groupName() const;
-	const OdString globalName() const;
-	void execute(OdEdCommandContext* commandContext);
+	const OdString groupName() const override;
+	const OdString globalName() const override;
+	void execute(OdEdCommandContext* commandContext) override;
 };
 
 class OdEx3dOrbitCmd : public OdEdCommand {
 public:
-	const OdString groupName() const;
-	const OdString globalName() const;
-	void execute(OdEdCommandContext* commandContext);
+	const OdString groupName() const override;
+	const OdString globalName() const override;
+	void execute(OdEdCommandContext* commandContext) override;
 };
 
 class OdExDollyCmd : public OdEdCommand {
 public:
-	const OdString groupName() const;
-	const OdString globalName() const;
-	void execute(OdEdCommandContext* commandContext);
+	const OdString groupName() const override;
+	const OdString globalName() const override;
+	void execute(OdEdCommandContext* commandContext) override;
 };
 
 class EoExEditorObject {

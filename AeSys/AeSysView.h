@@ -73,7 +73,7 @@ class AeSysView : public CView
 
 	void exeCmd(const OdString& szCmdStr);
 // <OleDragCallback virtual>
-	bool beginDragCallback(const OdGePoint3d& point);
+	bool beginDragCallback(const OdGePoint3d& point) override;
 // </OleDragCallback virtual>
 protected:
 	using CView::operator new;
@@ -86,8 +86,8 @@ private:
 	bool m_bShowPlotstyle;
 	bool m_bPlotGrayscale;
 
-	OdGiContext::PStyleType plotStyleType() const;
-	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const;
+	OdGiContext::PStyleType plotStyleType() const override;
+	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
 protected:
 #ifdef ODAMFC_EXPORT_SYMBOL
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
@@ -105,8 +105,8 @@ protected:
 
 	void preparePlotstyles(const OdDbLayout* pLayout = NULL, bool bForceReload = false);
 
-	OdUInt32 glyphSize(GlyphType glyphType) const;
-	void fillContextualColors(OdGiContextualColorsImpl *pCtxColors);
+	OdUInt32 glyphSize(GlyphType glyphType) const override;
+	void fillContextualColors(OdGiContextualColorsImpl *pCtxColors) override;
 
 	DECLARE_DYNCREATE(AeSysView)
 
@@ -136,21 +136,21 @@ public:
 #endif // DEV_COMMAND_VIEW
 
 public:
-	virtual void OnInitialUpdate();
+	virtual void OnInitialUpdate() override;
 
 protected:
-	virtual void OnDraw(CDC* deviceContext);  // overridden to draw this view
-	virtual BOOL OnPreparePrinting(CPrintInfo* printInformation);
-	virtual void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation);
-	virtual void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation);
-	virtual void OnPrint(CDC* deviceContext, CPrintInfo* printInformation);
-	virtual void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation);
+	virtual void OnDraw(CDC* deviceContext) override;  // overridden to draw this view
+	virtual BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
+	virtual void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+	virtual void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
+	virtual void OnPrint(CDC* deviceContext, CPrintInfo* printInformation) override;
+	virtual void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
 
-	virtual void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame);
-	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView);
+	virtual void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame) override;
+	virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
 
-	virtual BOOL PreCreateWindow(CREATESTRUCT& createStructure);
-	virtual void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject);
+	virtual BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
+	virtual void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
 protected:
 	void addRef() {}
@@ -167,7 +167,7 @@ protected:
 
 	// <tas="Not implemented in example"</tas> void adjustDevice(OdGsDevice* pDevice);
 	void createDevice();
-	bool regenAbort() const noexcept;
+	bool regenAbort() const noexcept override;
 
 public: 
 #ifdef DEV_COMMAND_CONSOLE
@@ -974,8 +974,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
-	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point);
-	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point);
+	virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
+	virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
 	BOOL OnIdle(long count);
 };
 #ifndef _DEBUG  // debug version in PegView.cpp

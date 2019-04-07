@@ -14,7 +14,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 
 	CTreeCtrl m_GroupTreeViewControl;
 	CListCtrl m_GeometryListViewControl;

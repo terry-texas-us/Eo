@@ -202,7 +202,7 @@ void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup*) {
 
 class EoDb2dPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDb2dPolylinePtr PolylineEntity = entity;
 
 		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
@@ -236,7 +236,7 @@ public:
 
 class EoDb3dPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDb3dPolylinePtr PolylineEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
 		// <tas="No vertices appended to polyline"</tas>
@@ -260,7 +260,7 @@ public:
 
 class EoDbArc_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbArcPtr ArcEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) ArcEntity->desc()->name());
 
@@ -297,7 +297,7 @@ public:
 
 class EoDbAttributeDefinition_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbAttributeDefinitionPtr AttributeDefinitionEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) AttributeDefinitionEntity->desc()->name());
 		ATLTRACE2(atlTraceGeneral, 2, L"%s with constant text converted to EoDbText ...\n", (PCTSTR) AttributeDefinitionEntity->desc()->name());
@@ -315,7 +315,7 @@ public:
 
 class EoDbBlockReference_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbBlockReferencePtr BlockReferenceEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbBlockReference ...\n", (PCTSTR) BlockReferenceEntity->desc()->name());
 
@@ -347,7 +347,7 @@ public:
 
 class EoDbCircle_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbCirclePtr CircleEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) CircleEntity->desc()->name());
 
@@ -363,7 +363,7 @@ public:
 	/// <remarks>
 	/// Can only properly convert ellipse which is radial (trival) or non radials which have a start parameter of 0.
 	/// </remarks>
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbEllipsePtr Ellipse = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) Ellipse->desc()->name());
 
@@ -376,7 +376,7 @@ class EoDbFace_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	/// <remarks>Four sided, not necessarily planar, surface. It hides other objects and fills with solid color. No support for individual edge visibilty.</remarks>
 	/// <tas="Convert Face entity to 2 triangular polygons to ensure planar surface"</tas>
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbFacePtr FaceEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbHatch ...\n", (PCTSTR) FaceEntity->desc()->name());
 
@@ -397,7 +397,7 @@ public:
 
 class EoDbHatch_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbHatchPtr Hatch = entity;
 		
         ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbHatch ...\n", (LPCWSTR) Hatch->desc()->name());
@@ -408,7 +408,7 @@ public:
 
 class EoDbLeader_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbLeaderPtr LeaderEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to primitive set ...\n", (PCTSTR) LeaderEntity->desc()->name());
 
@@ -425,7 +425,7 @@ public:
 
 class EoDbLine_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbLinePtr Line = entity;
         
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbLine ...\n", (LPCWSTR) Line->desc()->name());
@@ -436,7 +436,7 @@ public:
 
 class EoDbMInsertBlock_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbMInsertBlockPtr MInsertBlockEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbBlockReference ...\n", (PCTSTR) MInsertBlockEntity->desc()->name());
 
@@ -461,7 +461,7 @@ public:
 
 class EoDbMText_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbMTextPtr MTextEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbText ...\n", (PCTSTR) MTextEntity->desc()->name());
 
@@ -471,7 +471,7 @@ public:
 
 class EoDbPoint_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbPointPtr PointEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbPoint ...\n", (PCTSTR) PointEntity->desc()->name());
 
@@ -485,7 +485,7 @@ public:
 
 class EoDbPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbPolylinePtr PolylineEntity = entity;
 
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
@@ -513,7 +513,7 @@ public:
 
 class EoDbProxyEntity_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbProxyEntityPtr ProxyEntityEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to ", (PCTSTR) ProxyEntityEntity->desc()->name());
 
@@ -559,7 +559,7 @@ public:
 
 class EoDbRotatedDimension_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbRotatedDimensionPtr RotatedDimensionEntity = entity;
 		OdDbBlockTableRecordPtr Block = RotatedDimensionEntity->dimBlockId().safeOpenObject(OdDb::kForRead);
 
@@ -593,7 +593,7 @@ public:
 	/// If the fourth point coincides with third result is a filled triangle.
 	/// else fourth point creates a quadrilateral area.
 	/// </remarks>
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbSolidPtr SolidEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbHatch ...\n", (PCTSTR) SolidEntity->desc()->name());
 
@@ -618,7 +618,7 @@ public:
 
 class EoDbSpline_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbSplinePtr SplineEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbSpline ...\n", (PCTSTR) SplineEntity->desc()->name());
 
@@ -667,7 +667,7 @@ public:
 
 class EoDbText_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbTextPtr Text = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbText ...\n", (LPCWSTR) Text->desc()->name());
 
@@ -680,7 +680,7 @@ public:
 	/// <remarks>
 	/// A Trace entity is the exact same thing as a Solid entity
 	/// </remarks>
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbTracePtr TraceEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbHatch ...\n", (PCTSTR) TraceEntity->desc()->name());
 
@@ -705,7 +705,7 @@ public:
 
 class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) {
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbViewportPtr ViewportEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) ViewportEntity->desc()->name());
 

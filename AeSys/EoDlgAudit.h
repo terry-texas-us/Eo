@@ -9,7 +9,7 @@ public:
 	EoDlgAudit(CWnd* parent = NULL);
 
 	void printReport (OdDbAuditInfo* auditInfo);
-	void OnCancel();
+	void OnCancel() override;
 
 	enum { IDD = IDD_AUDITINFO };
 
@@ -19,7 +19,7 @@ public:
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 
 	DECLARE_MESSAGE_MAP()
 };

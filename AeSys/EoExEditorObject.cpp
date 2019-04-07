@@ -45,15 +45,15 @@ public:
 		pRes->m_pXForm = &xForm;
 		return pRes;
 	}
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept override {
 		return kDrawableUsesNesting;
 	}
-	bool subWorldDraw(OdGiWorldDraw* worldDraw) const {
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override {
 		OdGiModelTransformSaver mt(worldDraw->geometry(), *m_pXForm);
 		worldDraw->geometry().draw(m_pDrawable);
 		return true;
 	}
-	void subViewportDraw(OdGiViewportDraw* viewportDraw) const noexcept {
+	void subViewportDraw(OdGiViewportDraw* viewportDraw) const noexcept override {
 	}
 };
 
@@ -496,7 +496,7 @@ public:
 		m_fh = view->fieldHeight();
 		m_base = (m_pView->projectionMatrix() * m_pView->viewingMatrix() * base).y;
 	}
-	void setValue(const OdGePoint3d& value) {
+	void setValue(const OdGePoint3d& value) override {
 		const OdGeMatrix3d xWorldToNDC = m_pView->projectionMatrix() * m_pView->viewingMatrix();
 		const OdGePoint3d pt2 = xWorldToNDC * value;
 		double fac = 1. + fabs(pt2.y - m_base) * 1.5;
@@ -506,10 +506,10 @@ public:
 		const OdGsView::Projection ProjectionType(m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 		m_pView->setView(m_pView->position(), m_pView->target(), m_pView->upVector(), m_fw * fac, m_fh * fac, ProjectionType);
 	}
-	int addDrawables(OdGsView* view) noexcept {
+	int addDrawables(OdGsView* view) noexcept override {
 		return 1;
 	}
-	void removeDrawables(OdGsView* view) noexcept {
+	void removeDrawables(OdGsView* view) noexcept override {
 	}
 };
 const OdString OdExZoomCmd::groupName() const {
@@ -597,13 +597,13 @@ void OdExZoomCmd::execute(OdEdCommandContext* commandContext) {
 
 class OrbitCtrl: public OdGiDrawableImpl<> {
 public:
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept override {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
-	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept {
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept override {
 		return false;
 	}
-	void subViewportDraw(OdGiViewportDraw* viewportDraw) const {
+	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override {
 		const OdGiViewport& ViewPort = viewportDraw->viewport();
 		OdGiGeometry& Geometry = viewportDraw->geometry();
 		viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACIGreen);
@@ -748,7 +748,7 @@ public:
 		pt2.z = 0.0;
 		return pt2.distanceTo(m_pt) * OdaPI / m_D;
 	}
-	void setValue(const OdGePoint3d& value) {
+	void setValue(const OdGePoint3d& value) override {
 		if(m_pView) {
 			OdGeMatrix3d x;
 			switch(m_axis) {
@@ -784,7 +784,7 @@ public:
 			m_pView->setView(newPos, newTarget, x * m_up, m_pView->fieldWidth(), m_pView->fieldHeight(), ProjectionType);
 		}
 	}
-	int addDrawables(OdGsView* view) {
+	int addDrawables(OdGsView* view) override {
 		m_pDrw = OdRxObjectImpl<OrbitCtrl>::createObject();
 		if (m_pModel.isNull()) {
 			m_pModel = view->device()->createModel();
@@ -795,7 +795,7 @@ public:
 		view->add(m_pDrw, m_pModel.get());
 		return 1;
 	}
-	void removeDrawables(OdGsView* view) {
+	void removeDrawables(OdGsView* view) override {
 		view->erase(m_pDrw);
 	}
 };
@@ -858,7 +858,7 @@ public:
 		m_pos = view->position();
 		m_pt = point - m_pos.asVector();
 	}
-	void setValue(const OdGePoint3d& value) {
+	void setValue(const OdGePoint3d& value) override {
 		if (m_pView) {
 			OdGeVector3d delta = (m_pt - (value - m_pos)).asVector();
 			m_pt = value - m_pos.asVector();
@@ -867,10 +867,10 @@ public:
 			m_pos = m_pView->position();
 		}
 	}
-	int addDrawables(OdGsView* view) noexcept {
+	int addDrawables(OdGsView* view) noexcept override {
 		return 0;
 	}
-	void removeDrawables(OdGsView* view) noexcept {
+	void removeDrawables(OdGsView* view) noexcept override {
 	}
 };
 const OdString OdExDollyCmd::groupName() const {

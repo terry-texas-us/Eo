@@ -16,7 +16,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog(void);
+	virtual BOOL OnInitDialog(void) override;
 
 	DECLARE_MESSAGE_MAP()
 

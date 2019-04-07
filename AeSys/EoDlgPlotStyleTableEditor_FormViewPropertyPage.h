@@ -230,7 +230,7 @@ protected:
 	afx_msg void OnChangeEditPen();
 	afx_msg void OnChangeEditVirtPen();
 	afx_msg void OnChangeEditScreening();
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result);
 	afx_msg void OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result);
 	afx_msg void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept;

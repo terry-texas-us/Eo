@@ -18,7 +18,7 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 
 protected:
 	afx_msg void OnLayoutDlgClose();

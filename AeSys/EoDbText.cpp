@@ -160,10 +160,6 @@ OdGePoint3d	EoDbText::GoToNxtCtrlPt() const noexcept {
     return (m_ReferenceSystem.Origin());
 }
 
-bool EoDbText::Is(OdUInt16 type) const noexcept {
-    return type == kTextPrimitive;
-}
-
 bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
     return false;
 }

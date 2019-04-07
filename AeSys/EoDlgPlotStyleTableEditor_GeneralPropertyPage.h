@@ -33,11 +33,11 @@ public:
 	void SetFileBufPath(const OdString sFilePath);
 
 protected:
-	virtual BOOL OnInitDialog();
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnChangeEditDescription();
 	afx_msg void OnCheckScalefactor();
 	afx_msg void OnEditScalefactor();
-	virtual void OnOK();
+	virtual void OnOK() override;
 
 	DECLARE_MESSAGE_MAP()
 };

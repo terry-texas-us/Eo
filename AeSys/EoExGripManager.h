@@ -20,9 +20,9 @@ public:
 	static EoExGripDataPtr createObject(OdDbObjectId id, OdDbGripDataPtr gripData, const OdGePoint3d& point,  EoExGripManager* gripManager);
 	static EoExGripDataPtr createObject(OdDbFullSubentPath fullSentPath, OdDbGripDataPtr gripData, const OdGePoint3d& point,  EoExGripManager* gripManager);
 
-	virtual OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const;
-	virtual bool subWorldDraw(OdGiWorldDraw* worldDraw) const;
-	virtual void subViewportDraw(OdGiViewportDraw* viewportDraw) const;
+	virtual OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const override;
+	virtual bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
+	virtual void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
 	OdDbGripOperations::DrawType status() const noexcept;
 	bool isInvisible() const noexcept;
@@ -59,9 +59,9 @@ public:
 	static EoExGripDragPtr createObject(OdDbObjectId entPath, EoExGripManager* gripManager);
 	static EoExGripDragPtr createObject(OdDbFullSubentPath entPath, EoExGripManager* gripManager);
 
-	virtual OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const;
-	virtual bool subWorldDraw(OdGiWorldDraw* worldDraw) const;
-	virtual void subViewportDraw(OdGiViewportDraw* viewportDraw) const;
+	virtual OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const override;
+	virtual bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
+	virtual void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
 	void cloneEntity();
 	void cloneEntity(const OdGePoint3d& ptMoveAt);
@@ -86,9 +86,9 @@ typedef OdArray<EoExGripDragPtr> EoExGripDragPtrArray;
 class EoExGripDbReactor : public OdDbDatabaseReactor {
 public:
 	EoExGripDbReactor();
-	virtual void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj) noexcept;
-	virtual void objectModified(const OdDbDatabase* pDb, const OdDbObject* pDbObj);
-	virtual void objectErased(const OdDbDatabase* pDb, const OdDbObject* pDbObj, bool pErased = true);
+	virtual void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj) noexcept override;
+	virtual void objectModified(const OdDbDatabase* pDb, const OdDbObject* pDbObj) override;
+	virtual void objectErased(const OdDbDatabase* pDb, const OdDbObject* pDbObj, bool pErased = true) override;
 
 public:
 	EoExGripManager* m_pOwner;
@@ -106,9 +106,9 @@ public:
 	void uninit();
 
 	// OdEdPointTracker protocol
-	virtual void setValue(const OdGePoint3d& pointValue);
-	virtual int addDrawables(OdGsView* pView);
-	virtual void removeDrawables(OdGsView* pView);
+	virtual void setValue(const OdGePoint3d& pointValue) override;
+	virtual int addDrawables(OdGsView* pView) override;
+	virtual void removeDrawables(OdGsView* pView) override;
 
 	// Events from Windows.
 	bool onMouseDown(int x, int y, bool shiftIsDown);

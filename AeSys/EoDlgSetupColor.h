@@ -15,9 +15,9 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
-	virtual void OnOK();
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result);
+	virtual BOOL OnInitDialog() override;
+	virtual void OnOK() override;
+	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) override;
 
 	EoCtrlColorsButton m_EvenColorsButton;
 	EoCtrlColorsButton m_OddColorsButton;

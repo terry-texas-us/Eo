@@ -30,7 +30,7 @@ public: // Methods - absolute virtuals
     bool Is(OdUInt16 type) const noexcept override {return type == kLinePrimitive;}
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
-	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const;
+	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
@@ -44,7 +44,7 @@ public: // Methods - virtuals
 	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) override;
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept override;
-	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
+	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) override;
 
 public: // Methods
 	OdGePoint3d EndPoint() const;
