@@ -40,6 +40,8 @@
 #include <math.h>
 #include <memory>
 
+#include <gsl/gsl>
+
 #include "Resource.h"
 
 // OD_OLE_SUPPORT
