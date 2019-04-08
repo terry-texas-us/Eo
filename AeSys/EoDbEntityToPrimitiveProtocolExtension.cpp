@@ -30,7 +30,6 @@
 #include "DbPolyFaceMeshVertex.h"
 #include "DbPolygonMesh.h"
 #include "DbPolygonMeshVertex.h"
-#include "DbPolyline.h"
 #include "DbProxyEntity.h"
 #include "DbRadialDimension.h"
 #include "DbRasterImage.h"
@@ -486,28 +485,11 @@ public:
 class EoDbPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
-		OdDbPolylinePtr PolylineEntity = entity;
+		OdDbPolylinePtr Polyline = entity;
 
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
+		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbPolyline ...\n", (LPCWSTR) Polyline->desc()->name());
 		
-		const size_t NumberOfVertices = PolylineEntity->numVerts();
-
-		EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
-		OdGePoint2d Vertex;
-		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			PolylineEntity->getPointAt(VertexIndex, Vertex);
-			double StartWidth;
-			double EndWidth;
-			PolylineEntity->getWidthsAt(VertexIndex, StartWidth, EndWidth);
-			PolylinePrimitive->AppendVertex(Vertex, PolylineEntity->getBulgeAt(VertexIndex), StartWidth, EndWidth);
-		}
-		PolylinePrimitive->SetClosed(PolylineEntity->isClosed());
-		PolylinePrimitive->SetConstantWidth(PolylineEntity->getConstantWidth());
-		PolylinePrimitive->SetNormal(PolylineEntity->normal());
-		PolylinePrimitive->SetElevation(PolylineEntity->elevation());
-
-		ConvertEntityData(PolylineEntity, PolylinePrimitive);
-		group->AddTail(PolylinePrimitive);
+        group->AddTail(EoDbPolyline::Create(Polyline));
 	}
 };
 

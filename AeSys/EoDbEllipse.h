@@ -11,19 +11,20 @@ class EoDbEllipse : public EoDbPrimitive {
 	double m_SweepAngle;
 
 public: // Constructors and destructor
-	EoDbEllipse() noexcept;
+
+    EoDbEllipse() noexcept;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle);
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
 
-	EoDbEllipse(const EoDbEllipse& ellipse);
+	EoDbEllipse(const EoDbEllipse& other);
+    const EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
 
 	~EoDbEllipse();
-public: // Operators
-	const EoDbEllipse& operator=(const EoDbEllipse&) noexcept;
 
 public: // Methods - absolute virtuals
+
     void AddReportToMessageList(const OdGePoint3d& point) const override;
     void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
@@ -78,7 +79,7 @@ public: // Methods
 	double SwpAngToPt(const OdGePoint3d& point);
 
 public: // Methods - static
-    static EoDbEllipse* ConstructFrom(EoDbFile& file);
+
     static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
 
     static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr& database);

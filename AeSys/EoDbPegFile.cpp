@@ -183,7 +183,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 
 		document->InsertBlock(Name, Block);
 				
-		OdDbBlockTableRecordPtr BlockTableRecord = m_Database->getModelSpaceId().safeOpenObject();
+		OdDbBlockTableRecordPtr BlockTableRecord = m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 		if (BlockTable->getAt(Name).isNull()) {
 			BlockTableRecord = OdDbBlockTableRecord::createObject();
 			BlockTableRecord->setName(Name);
@@ -196,9 +196,11 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 		for (OdUInt16 PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
 			EoDbPrimitive* Primitive = ReadPrimitive(BlockTableRecord);
 			Block->AddTail(Primitive);
-			if (!LayoutBlock) {
+            /* <tas="ReadPrimitive now first creates the entity and then uses the entity to create the primitive. So AssociateWith is not required.">
+            if (!LayoutBlock) {
 				Primitive->AssociateWith(BlockTableRecord);
 			}
+            </tas> */
 		}
 	}
 	if (ReadUInt16() != kEndOfSection) {
@@ -235,7 +237,9 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 				
 				for (size_t PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
                     EoDbPrimitive* Primitive = ReadPrimitive(ModelSpaceBlock);
-					Primitive->AssociateWith(ModelSpaceBlock);
+                    /* <tas="ReadPrimitive now first creates the entity and then uses the entity to create the primitive. So AssociateWith is not required.">
+                    Primitive->AssociateWith(ModelSpaceBlock);
+                    </tas> */
 					Group->AddTail(Primitive);
 				}
 				Layer->AddTail(Group);

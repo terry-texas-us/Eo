@@ -19,9 +19,6 @@ public: // Constructors and destructor
 	BOOL m_bTabsContextMenu;
 	BOOL m_bDisableSetRedraw;
 
-public: // Operators
-
-public: // Methods - absolute virtuals
 public: // Methods
 	void Load();
 	void Save();

@@ -7,17 +7,17 @@ class EoDbPoint : public EoDbPrimitive {
 	double* m_Data;
 
 public: // Constructors and destructor
+
 	EoDbPoint() noexcept;
 	EoDbPoint(const OdGePoint3d& point);
 
 	EoDbPoint(const EoDbPoint& other);
+    const EoDbPoint& operator=(const EoDbPoint& other);
 
 	~EoDbPoint();
 
-public: // Operators
-	const EoDbPoint& operator=(const EoDbPoint& other);
-
 public: // Methods - absolute virtuals
+
     void AddReportToMessageList(const OdGePoint3d& point) const override;
     void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
@@ -42,6 +42,7 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods
+
 	double DataAt(OdUInt16 dataIndex) const noexcept;
 	void ModifyState() noexcept override;
 	OdInt16 PointDisplayMode() const noexcept;
@@ -51,7 +52,7 @@ public: // Methods
 	void SetPosition(const OdGePoint3d& point);
 
 public: // Methods - static
-	static EoDbPoint* ConstructFrom(EoDbFile& file);
+
 	static EoDbPoint* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
     
     static EoDbPoint* Create(const EoDbPoint& other, OdDbDatabasePtr& database);

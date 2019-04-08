@@ -10,11 +10,12 @@ class CPrimState {
 	size_t m_HatchInteriorStyleIndex;
 
 public: // Constructors and destructor
-public: // Operators
-	const CPrimState& operator=(const CPrimState&);
+
+    const CPrimState& operator=(const CPrimState& other);
 
 public: // Methods
-	EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
+
+    EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
 	OdInt16 ColorIndex() const noexcept;
 	EoDbFontDefinition FontDefinition() const;
 	OdInt16 HatchInteriorStyle() const noexcept;

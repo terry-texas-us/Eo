@@ -882,26 +882,6 @@ void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 
-EoDbHatch* EoDbHatch::ConstructFrom(EoDbFile& file) {
-    EoDbHatch* HatchPrimitive = new EoDbHatch();
-    HatchPrimitive->SetColorIndex(file.ReadInt16());
-    HatchPrimitive->SetInteriorStyle(file.ReadInt16());
-    HatchPrimitive->SetInteriorStyleIndex(file.ReadInt16());
-    const OdUInt16 NumberOfVertices = file.ReadUInt16();
-    HatchPrimitive->SetHatchOrigin(file.ReadPoint3d());
-    HatchPrimitive->SetHatchXAxis(file.ReadVector3d());
-    HatchPrimitive->SetHatchYAxis(file.ReadVector3d());
-
-    OdGePoint3dArray Vertices;
-    Vertices.setLogicalLength(NumberOfVertices);
-    for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-        Vertices[VertexIndex] = file.ReadPoint3d();
-    }
-    HatchPrimitive->SetVertices(Vertices);
-
-    return (HatchPrimitive);
-}
-
 EoDbHatch* EoDbHatch::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
     OdInt16 ColorIndex;
     OdInt16 InteriorStyle;

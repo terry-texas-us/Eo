@@ -82,6 +82,7 @@
 #include "DbPoint.h"
 #include "DbLine.h"
 #include "DbMText.h"
+#include "DbPolyline.h"
 #include "DbText.h"
 #include "DbSpline.h"
 #include "DbSortentsTable.h"

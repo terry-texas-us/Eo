@@ -424,24 +424,6 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
     return Text;
 }
 
-EoDbText* EoDbText::ConstructFrom(EoDbFile& file) {
-    const OdInt16 ColorIndex = file.ReadInt16();
-    /* OdInt16 LinetypeIndex = */ file.ReadInt16();
-    EoDbFontDefinition FontDefinition;
-    FontDefinition.Read(file);
-    EoGeReferenceSystem ReferenceSystem;
-    ReferenceSystem.Read(file);
-    CString TextString;
-    file.ReadString(TextString);
-    ConvertFractionMarkup(TextString);
-
-    EoDbText* Text = new EoDbText();
-    Text->SetColorIndex(ColorIndex);
-    Text->SetTo(FontDefinition, ReferenceSystem, TextString);
-
-    return (Text);
-}
-
 EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
     OdInt16 ColorIndex;
     EoDbFontDefinition FontDefinition;

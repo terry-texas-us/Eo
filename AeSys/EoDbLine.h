@@ -9,11 +9,9 @@ public: // Constructors and destructor
 	EoDbLine() noexcept;
 	EoDbLine(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 	EoDbLine(const EoDbLine& other);
+    const EoDbLine& operator=(const EoDbLine& other);
 
 	~EoDbLine();
-
-public: // Operators
-	const EoDbLine& operator=(const EoDbLine& other);
 
 public: // Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
@@ -40,6 +38,7 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods - virtuals
+
 	/// <summary>Cuts a line a point.</summary>
 	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) override;
@@ -47,6 +46,7 @@ public: // Methods - virtuals
 	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) override;
 
 public: // Methods
+
 	OdGePoint3d EndPoint() const;
 	void GetLine(EoGeLineSeg3d& line) const;
 	void GetPoints(OdGePoint3d& startPoint, OdGePoint3d& endPoint);
@@ -63,7 +63,7 @@ public: // Methods
 	OdGePoint3d StartPoint() const;
 
 public: // Methods - static
-	static EoDbLine* ConstructFrom(EoDbFile& file);
+
 	static EoDbLine* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 
 	static EoDbLine* Create(const EoDbLine& line, OdDbDatabasePtr database);

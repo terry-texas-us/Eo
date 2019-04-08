@@ -13,10 +13,9 @@ class EoDbDimension : public EoDbPrimitive {
 public:	// Constructors and destructor
 	EoDbDimension();
 	EoDbDimension(const EoDbDimension& other);
-	~EoDbDimension();
+    const EoDbDimension& operator=(const EoDbDimension& other);
 
-public: // Operators
-	const EoDbDimension& operator=(const EoDbDimension& other);
+    ~EoDbDimension();
 
 public: // Methods - absolute virtuals
     void AddReportToMessageList(const OdGePoint3d& point) const override;

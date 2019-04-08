@@ -8,8 +8,12 @@ Polyline primitive(never made it release : if already written flags not streamed
   Pen color				EoUInt16[2-3]
   Line type				EoUInt16[4-5]
   Flags					EoUInt16[6-7]
-  Number of points		EoUInt16[8-9]
-  {0 or more points}    EoGePoint3d[10- ]
+  Constant width        double[8-11]
+  Elevation             double[12-15]
+  Thickness             dobuel[16-19]
+  Normal                OdGeVector3d[20-31]
+  Number of points		EoUInt16[32-33]
+  {0 or more Vertices}  {Vertex, StartWidth, EndWidth, Bulge}  {OdGePoint2d, double, double, double} [34- ]
 </remarks> */
 
 class EoDbPolyline : public EoDbPrimitive {
@@ -18,29 +22,29 @@ class EoDbPolyline : public EoDbPrimitive {
 	static size_t sm_PivotVertex;
 
 public:
-	static const OdUInt16 sm_Closed = 0x0010;
+	static const OdUInt16 sm_Closed = 0x0001;
 
 private:
 	OdUInt16 m_Flags;
 	double m_ConstantWidth;
 	double m_Elevation;
 	double m_Thickness;
-	OdGePoint2dArray m_Vertices;
+    OdGeVector3d m_Normal;
+    OdGePoint2dArray m_Vertices;
 	OdGeDoubleArray m_StartWidths;
 	OdGeDoubleArray m_EndWidths;
 	OdGeDoubleArray m_Bulges;
-	OdGeVector3d m_Normal;
 
 public:	// Constructors and destructor
-	EoDbPolyline() noexcept;
+
+	EoDbPolyline();
 	EoDbPolyline(const EoDbPolyline& other);
+    const EoDbPolyline& operator=(const EoDbPolyline& other);
 
 	~EoDbPolyline();
 
-public: // Operators
-	const EoDbPolyline& operator=(const EoDbPolyline& other);
-
 public: // Methods - absolute virtuals
+
     void AddReportToMessageList(const OdGePoint3d& point) const override;
     void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
@@ -65,7 +69,8 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const noexcept override;
 
 public: // Methods
-	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0., double startWidth = - 1., double endWidth = - 1.);
+
+	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0., double startWidth = 0., double endWidth = 0.);
 	void GetPointAt(int vertexIndex, OdGePoint3d& point) const;
 	bool IsClosed() const noexcept;
 	void SetClosed(bool closed);
@@ -77,10 +82,18 @@ public: // Methods
 	size_t SwingVertex() const;
 
 public: // Methods - static
-	static EoDbPolyline* ConstructFrom(EoDbFile& file);
-	static EoDbPolyline* Create(OdDbDatabasePtr& database);
-	static EoDbPolyline* Create(const EoDbPolyline& other, OdDbDatabasePtr& database);
 
-	static size_t Edge() noexcept;
+    // <tas="No contruction from job files."/>
+
+    static EoDbPolyline* Create(const EoDbPolyline& polyline, OdDbDatabasePtr database);
+    
+    static EoDbPolyline* Create(OdDbDatabasePtr database);
+	
+    static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+
+    static EoDbPolyline* Create(OdDbPolylinePtr polyline);
+    
+    static size_t Edge() noexcept;
 	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 };

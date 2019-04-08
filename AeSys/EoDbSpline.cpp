@@ -19,8 +19,6 @@ EoDbSpline::EoDbSpline(const EoDbSpline& other) {
 EoDbSpline::~EoDbSpline() {
 }
 
-// Operators
-
 const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -271,27 +269,6 @@ void EoDbSpline::Write(CFile& file, OdUInt8* buffer) const {
 }
 
 // Static
-
-EoDbSpline* EoDbSpline::ConstructFrom(EoDbFile& file) {
-	EoDbSpline* Spline = new EoDbSpline();
-	Spline->SetColorIndex(file.ReadInt16());
-	Spline->SetLinetypeIndex(file.ReadInt16());
-
-	const OdUInt16 NumberOfControlPoints = file.ReadUInt16();
-
-	const int Degree = EoMin(3, NumberOfControlPoints - 1);
-	
-	OdGePoint3dArray ControlPoints;
-	for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
-		ControlPoints.append(file.ReadPoint3d());
-	}
-	OdGeKnotVector Knots;
-	EoGeNurbCurve3d::SetDefaultKnotVector(Degree, ControlPoints, Knots);
-	OdGeDoubleArray Weights;
-	Weights.setLogicalLength(NumberOfControlPoints);
-	Spline->Set(Degree, Knots, ControlPoints, Weights);
-	return (Spline);
-}
 
 EoDbSpline* EoDbSpline::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	// <tas="Has not been tested since the change to EoGeNurbCurve3d internals"</tas>

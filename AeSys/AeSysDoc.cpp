@@ -1072,7 +1072,7 @@ BOOL AeSysDoc::OnSaveDocument(LPCWSTR pathName) {
 
 	switch (m_SaveAsType_) {
 	case kPeg: {
-		WriteShadowFile();
+		// <tas="shadow files disabled"/> WriteShadowFile();
 		EoDbPegFile DwgToPegFile(m_DatabasePtr);
 		CFileException e;
 		if (DwgToPegFile.Open(pathName, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e)) {

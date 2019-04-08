@@ -302,24 +302,6 @@ void EoDbPoint::Write(CFile& file, OdUInt8* buffer) const {
 	file.Write(buffer, 32);
 }
 
-EoDbPoint* EoDbPoint::ConstructFrom(EoDbFile& file) {
-	const OdInt16 ColorIndex = file.ReadInt16();
-	const OdInt16 PointDisplayMode = file.ReadInt16();
-
-	const OdGePoint3d Position(file.ReadPoint3d());
-	const OdUInt16 NumberOfDatums = file.ReadUInt16();
-
-	double Data[3];
-	for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
-		Data[n] = file.ReadDouble();
-	}
-	EoDbPoint* PointPrimitive = new EoDbPoint(Position);
-	PointPrimitive->SetColorIndex(ColorIndex);
-	PointPrimitive->SetPointDisplayMode(PointDisplayMode);
-	PointPrimitive->SetData(NumberOfDatums, Data);
-	return (PointPrimitive);
-}
-
 EoDbPoint* EoDbPoint::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbPoint* PointPrimitive = 0;
 	OdInt16 ColorIndex;

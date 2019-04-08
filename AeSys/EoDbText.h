@@ -25,14 +25,15 @@ class EoDbText : public EoDbPrimitive {
 	CString m_strText;
 
 public:	// Constructors and destructor
-	EoDbText();
+
+    EoDbText();
 	EoDbText(const EoDbText& other);
+    const EoDbText& operator=(const EoDbText&);
 
 	~EoDbText();
-public: // Operators
-	const EoDbText& operator=(const EoDbText&);
 
 public: // Methods - absolute virtuals
+    
     void AddReportToMessageList(const OdGePoint3d& point) const override;
     void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
@@ -82,11 +83,10 @@ public: // Methods - static
     static OdDb::TextHorzMode ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept;
     static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
 
-    static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-    static EoDbText* ConstructFrom(EoDbFile& file);
 	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 	static EoDbText* Create(OdDbDatabasePtr database);
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
+    static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
     static OdDbTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbMTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text);
     static EoDbText* Create(OdDbTextPtr text);

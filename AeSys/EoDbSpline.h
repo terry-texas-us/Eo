@@ -15,15 +15,16 @@ class EoDbSpline : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;
 
 public:	// Constructors and destructor
-	EoDbSpline() noexcept;
+	
+    EoDbSpline() noexcept;
 	EoDbSpline(const EoDbSpline& other);
+    const EoDbSpline& operator=(const EoDbSpline& other);
 
 	~EoDbSpline();
-public: // Operators
-	const EoDbSpline& operator=(const EoDbSpline& other);
 
 public: // Methods - absolute virtuals
-	void AddReportToMessageList(const OdGePoint3d& point) const override;
+
+    void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
     void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
     EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
@@ -51,7 +52,6 @@ public: // Methods
 	void SetControlPoints(const OdGePoint3dArray& controlPoints);
 
 public: // Methods - static
-	static EoDbSpline* ConstructFrom(EoDbFile& file);
 	static EoDbSpline* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
     static EoDbSpline* Create(const EoDbSpline& spline, OdDbDatabasePtr& database);
     static EoDbSpline* Create(OdDbDatabasePtr& database);

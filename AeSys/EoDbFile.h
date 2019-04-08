@@ -28,7 +28,8 @@ public:
 
 	double ReadDouble();
 	OdInt16 ReadInt16();
-	OdGePoint3d ReadPoint3d();
+    OdGePoint2d ReadPoint2d();
+    OdGePoint3d ReadPoint3d();
 	EoDbPrimitive* ReadPrimitive(OdDbBlockTableRecordPtr blockTable);
 	void ReadString(CString& string);
 	void ReadString(OdString& string);
@@ -37,8 +38,9 @@ public:
 
 	void WriteDouble(double number);
 	void WriteInt16(OdInt16 number);
-	void WritePoint3d(const OdGePoint3d& point);
-	void WriteString(const CString& string);
+    void WritePoint2d(const OdGePoint2d& point);
+    void WritePoint3d(const OdGePoint3d& point);
+    void WriteString(const CString& string);
 	void WriteString(const OdString& string);
 	void WriteUInt16(OdUInt16 number);
 	void WriteVector3d(const OdGeVector3d& vector);

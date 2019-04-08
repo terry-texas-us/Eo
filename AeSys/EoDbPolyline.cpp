@@ -1,14 +1,13 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
+#include "AeSysDoc.h"
 #include "AeSysView.h"
-
-#include "DbPolyline.h"
 
 size_t EoDbPolyline::sm_EdgeToEvaluate = 0;
 size_t EoDbPolyline::sm_Edge = 0;
 size_t EoDbPolyline::sm_PivotVertex = 0;
 
-EoDbPolyline::EoDbPolyline() noexcept
+EoDbPolyline::EoDbPolyline()
 	: m_Flags(0)
     , m_ConstantWidth(0.)
     , m_Elevation(0.)
@@ -112,8 +111,8 @@ void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	PolylineEntity->setThickness(m_Thickness);
 	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		PolylineEntity->addVertexAt(VertexIndex, m_Vertices[VertexIndex]);
-		//PolylineEntity->setWidthsAt(VertexIndex, m_StartWidths[VertexIndex], m_EndWidths[VertexIndex]);
-		//PolylineEntity->setBulgeAt(VertexIndex, m_Bulges[VertexIndex]);
+		PolylineEntity->setWidthsAt(VertexIndex, m_StartWidths[VertexIndex], m_EndWidths[VertexIndex]);
+		PolylineEntity->setBulgeAt(VertexIndex, m_Bulges[VertexIndex]);
 	}
 	PolylineEntity->setClosed(m_Flags == EoDbPolyline::sm_Closed);
 }
@@ -191,6 +190,7 @@ void EoDbPolyline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	}
 }
 
+/// <summary> This function sets point to the 3D location of the vertex index in World Coordinates.</summary>
 void EoDbPolyline::GetPointAt(int vertexIndex, OdGePoint3d& point) const {
 	const OdGePoint3d Origin = OdGePoint3d::kOrigin + m_Normal * m_Elevation;
 	const OdGeVector3d XAxis = ComputeArbitraryAxis(m_Normal);
@@ -414,10 +414,6 @@ void EoDbPolyline::AppendVertex(const OdGePoint2d& vertex, double bulge, double 
 	m_Bulges.append(bulge);
 	m_StartWidths.append(startWidth);
 	m_EndWidths.append(endWidth);
-	if (!m_EntityObjectId.isNull()) {
-		OdDbPolylinePtr PolylineEntity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		PolylineEntity->addVertexAt(VertexIndex, vertex, bulge, startWidth, endWidth);
-	}
 }
 
 void EoDbPolyline::SetConstantWidth(double constantWidth) noexcept {
@@ -469,12 +465,19 @@ bool EoDbPolyline::Write(EoDbFile& file) const {
 	file.WriteUInt16(kPolylinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
-	file.WriteUInt16(OdUInt16(m_Vertices.size()));
+    file.WriteUInt16(m_Flags);
+    file.WriteDouble(m_ConstantWidth);
+    file.WriteDouble(m_Elevation);
+    file.WriteDouble(m_Thickness);
+    file.WriteVector3d(m_Normal);
 
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		OdGePoint3d Point;
-		GetPointAt(VertexIndex, Point);
-		file.WritePoint3d(Point);
+    file.WriteUInt16(OdUInt16(m_Vertices.size()));
+
+    for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+		file.WritePoint2d(m_Vertices[VertexIndex]);
+        file.WriteDouble(m_StartWidths[VertexIndex]);
+        file.WriteDouble(m_EndWidths[VertexIndex]);
+        file.WriteDouble(m_Bulges[VertexIndex]);
 	}
 	return true;
 }
@@ -507,26 +510,18 @@ void EoDbPolyline::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 
-EoDbPolyline* EoDbPolyline::ConstructFrom(EoDbFile& file) {
-	EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
-	PolylinePrimitive->SetColorIndex(file.ReadInt16());
-	PolylinePrimitive->SetLinetypeIndex(file.ReadInt16());
-	const OdUInt16 NumberOfPoints = file.ReadUInt16();
+EoDbPolyline* EoDbPolyline::Create(const EoDbPolyline& polyline, OdDbDatabasePtr database) {
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    OdDbPolylinePtr PolylineEntity = polyline.EntityObjectId().safeOpenObject()->clone();
+    BlockTableRecord->appendOdDbEntity(PolylineEntity);
 
-	//OdGePoint3dArray Points;
-	//Points.setLogicalLength(NumberOfPoints);
+    EoDbPolyline* Polyline = new EoDbPolyline(polyline);
+    Polyline->SetEntityObjectId(PolylineEntity->objectId());
 
-	OdGePoint3d Point;
-	for (OdUInt16 n = 0; n < NumberOfPoints; n++) {
-		Point = file.ReadPoint3d();
-		PolylinePrimitive->AppendVertex(Point.convert2d());
-	//	Points[n] = Point;
-	}
-	//PolylinePrimitive->SetPoints(Points);
-	return (PolylinePrimitive);
+    return Polyline;
 }
 
-EoDbPolyline* EoDbPolyline::Create(OdDbDatabasePtr& database) {
+EoDbPolyline* EoDbPolyline::Create(OdDbDatabasePtr database) {
 	EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
 	PolylinePrimitive->SetColorIndex(pstate.ColorIndex());
 	PolylinePrimitive->SetLinetypeIndex(pstate.LinetypeIndex());
@@ -535,13 +530,73 @@ EoDbPolyline* EoDbPolyline::Create(OdDbDatabasePtr& database) {
 	return PolylinePrimitive;
 }
 
-EoDbPolyline* EoDbPolyline::Create(const EoDbPolyline& other, OdDbDatabasePtr& database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	OdDbPolylinePtr PolylineEntity = other.EntityObjectId().safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(PolylineEntity);
+OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
+    OdDbPolylinePtr Polyline = OdDbPolyline::createObject();
+    Polyline->setDatabaseDefaults(blockTableRecord->database());
 
-	EoDbPolyline* Polyline = new EoDbPolyline(other);
-	Polyline->SetEntityObjectId(PolylineEntity->objectId());
+    blockTableRecord->appendOdDbEntity(Polyline);
+    Polyline->setColorIndex(pstate.ColorIndex());
 
-	return Polyline;
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+
+    Polyline->setLinetype(Linetype);
+
+    return Polyline;
+}
+
+OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbPolylinePtr Polyline = OdDbPolyline::createObject();
+    Polyline->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Polyline);
+
+    Polyline->setColorIndex(file.ReadInt16());
+
+    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+
+    Polyline->setLinetype(Linetype);
+
+    OdUInt16 Flags = file.ReadUInt16();
+    auto Closed {(Flags && sm_Closed) == sm_Closed};
+    Polyline->setClosed(Closed);
+
+    Polyline->setConstantWidth(file.ReadDouble());
+    Polyline->setElevation(file.ReadDouble());
+    Polyline->setThickness(file.ReadDouble());
+    Polyline->setNormal(file.ReadVector3d());
+
+    const OdUInt16 NumberOfVertices = file.ReadUInt16();
+
+    for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+        Polyline->addVertexAt(VertexIndex, file.ReadPoint2d());
+        Polyline->setWidthsAt(VertexIndex, file.ReadDouble(), file.ReadDouble());
+        Polyline->setBulgeAt(VertexIndex, file.ReadDouble());
+    }
+    return (Polyline);
+}
+
+EoDbPolyline* EoDbPolyline::Create(OdDbPolylinePtr polyline) {
+    EoDbPolyline* Polyline = new EoDbPolyline();
+    Polyline->SetEntityObjectId(polyline->objectId());
+    Polyline->SetColorIndex_(polyline->colorIndex());
+    Polyline->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(polyline->linetype()));
+
+    const size_t NumberOfVertices {polyline->numVerts()};
+
+    auto Vertex {OdGePoint2d::kOrigin};
+    auto StartWidth {0.};
+    auto EndWidth {0.};
+    
+    for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+        polyline->getPointAt(VertexIndex, Vertex);
+        polyline->getWidthsAt(VertexIndex, StartWidth, EndWidth);
+
+        Polyline->AppendVertex(Vertex, polyline->getBulgeAt(VertexIndex), StartWidth, EndWidth);
+    }
+    Polyline->SetClosed(polyline->isClosed());
+    Polyline->SetConstantWidth(polyline->getConstantWidth());
+    Polyline->SetNormal(polyline->normal());
+    Polyline->SetElevation(polyline->elevation());
+
+    return Polyline;
 }

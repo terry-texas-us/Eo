@@ -967,21 +967,6 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, Eo
     return Ellipse;
 }
 
-EoDbEllipse* EoDbEllipse::ConstructFrom(EoDbFile& file) {
-	const OdInt16 ColorIndex = file.ReadInt16();
-	const OdInt16 LinetypeIndex = file.ReadInt16();
-    const OdGePoint3d CenterPoint(file.ReadPoint3d());
-    const OdGeVector3d MajorAxis(file.ReadVector3d());
-    const OdGeVector3d MinorAxis(file.ReadVector3d());
-
-	double SweepAngle;
-	SweepAngle = file.ReadDouble();
-	EoDbEllipse* EllipsePrimitive = new EoDbEllipse(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
-	EllipsePrimitive->SetColorIndex(ColorIndex);
-	EllipsePrimitive->SetLinetypeIndex(LinetypeIndex);
-	return (EllipsePrimitive);
-}
-
 EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumber) {
 	OdInt16 ColorIndex;
 	OdInt16 LinetypeIndex;

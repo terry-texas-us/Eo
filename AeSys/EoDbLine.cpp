@@ -24,8 +24,6 @@ EoDbLine::EoDbLine(const EoDbLine& other) {
 EoDbLine::~EoDbLine() {
 }
 
-// Operators
-
 const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -417,15 +415,6 @@ void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 }
 
 // Static
-
-EoDbLine* EoDbLine::ConstructFrom(EoDbFile& file) {
-    EoDbLine* LinePrimitive = new EoDbLine();
-    LinePrimitive->SetColorIndex(file.ReadInt16());
-    LinePrimitive->SetLinetypeIndex(file.ReadInt16());
-    LinePrimitive->SetStartPoint(file.ReadPoint3d());
-    LinePrimitive->SetEndPoint(file.ReadPoint3d());
-    return (LinePrimitive);
-}
 
 EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	EoDbLine* LinePrimitive = new EoDbLine();

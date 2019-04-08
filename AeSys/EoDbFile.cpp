@@ -17,6 +17,7 @@ EoDbFile::~EoDbFile() {
 
 void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept {
 }
+
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive) {
 	const OdInt16 ColorIndex = ReadInt16();
 	const OdInt16 PointDisplayMode = ReadInt16();
@@ -27,6 +28,7 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive *&primitive
 	PointPrimitive->SetPointDisplayMode(PointDisplayMode);
 	primitive = PointPrimitive;
 }
+
 void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive) {
 	const OdInt16 ColorIndex = ReadInt16();
 	const OdInt16 LinetypeIndex = ReadInt16();
@@ -61,9 +63,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
     case kInsertPrimitive:
         ConstructBlockReferencePrimitiveFromInsertPrimitive(Primitive);
         break;
-    case kGroupReferencePrimitive:
-        Primitive = EoDbBlockReference::ConstructFrom(*this);
+    case kGroupReferencePrimitive: {
+        OdDbBlockReferencePtr BlockReference = EoDbBlockReference::Create(blockTable, *this);
+        Primitive = EoDbBlockReference::Create(BlockReference);
         break;
+    }
     case kLinePrimitive: {
         OdDbLinePtr Line = EoDbLine::Create(blockTable, *this);
         Primitive = EoDbLine::Create(Line);
@@ -87,9 +91,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
     case kCSplinePrimitive:
         ConstructPolylinePrimitiveFromCSplinePrimitive(Primitive);
         break;
-    case kPolylinePrimitive:
-        Primitive = EoDbPolyline::ConstructFrom(*this);
+    case kPolylinePrimitive: {
+        OdDbPolylinePtr Polyline = EoDbPolyline::Create(blockTable, *this);
+        Primitive = EoDbPolyline::Create(Polyline);
         break;
+    }
     case kTextPrimitive: {
         OdDbTextPtr Text = EoDbText::Create(blockTable, *this);
         Primitive = EoDbText::Create(Text);
@@ -116,6 +122,7 @@ void EoDbFile::ReadString(CString& string) {
 		string += c;
 	}
 }
+
 void EoDbFile::ReadString(OdString& string) {
 	string.empty();
 	char c;
@@ -124,28 +131,40 @@ void EoDbFile::ReadString(OdString& string) {
 		string += c;
 	}
 }
+
 double EoDbFile::ReadDouble() {
 	double number;
 	Read(&number, sizeof(double));
 	return number;
 }
+
 OdInt16 EoDbFile::ReadInt16() {
 	OdInt16 number;
 	Read(&number, sizeof(OdInt16));
 	return number;
 }
-OdGePoint3d EoDbFile::ReadPoint3d() {
-	OdGePoint3d Point;
-	Read(&Point.x, sizeof(double));
-	Read(&Point.y, sizeof(double));
-	Read(&Point.z, sizeof(double));
-	return Point;
+
+OdGePoint2d EoDbFile::ReadPoint2d() {
+    OdGePoint2d Point;
+    Read(&Point.x, sizeof(double));
+    Read(&Point.y, sizeof(double));
+    return Point;
 }
+
+OdGePoint3d EoDbFile::ReadPoint3d() {
+    OdGePoint3d Point;
+    Read(&Point.x, sizeof(double));
+    Read(&Point.y, sizeof(double));
+    Read(&Point.z, sizeof(double));
+    return Point;
+}
+
 OdUInt16 EoDbFile::ReadUInt16() {
 	OdUInt16 number;
 	Read(&number, sizeof(OdUInt16));
 	return number;
 }
+
 OdGeVector3d EoDbFile::ReadVector3d() {
 	OdGeVector3d Vector;
 	Read(&Vector.x, sizeof(double));
@@ -153,16 +172,24 @@ OdGeVector3d EoDbFile::ReadVector3d() {
 	Read(&Vector.z, sizeof(double));
 	return Vector;
 }
+
 void EoDbFile::WriteDouble(double number) {
 	Write(&number, sizeof(double));
 }
+
 void EoDbFile::WriteInt16(OdInt16 number) {
 	Write(&number, sizeof(OdInt16));
 }
+
+void EoDbFile::WritePoint2d(const OdGePoint2d& point) {
+    Write(&point.x, sizeof(double));
+    Write(&point.y, sizeof(double));
+}
+
 void EoDbFile::WritePoint3d(const OdGePoint3d& point) {
-	Write(&point.x, sizeof(double));
-	Write(&point.y, sizeof(double));
-	Write(&point.z, sizeof(double));
+    Write(&point.x, sizeof(double));
+    Write(&point.y, sizeof(double));
+    Write(&point.z, sizeof(double));
 }
 
 void EoDbFile::WriteString(const CString& string) {
@@ -173,6 +200,7 @@ void EoDbFile::WriteString(const CString& string) {
 	}
 	Write("\t", 1);
 }
+
 void EoDbFile::WriteString(const OdString& string) {
 	const int NumberOfCharacters = string.getLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
@@ -181,9 +209,11 @@ void EoDbFile::WriteString(const OdString& string) {
 	}
 	Write("\t", 1);
 }
+
 void EoDbFile::WriteUInt16(OdUInt16 number) {
 	Write(&number, sizeof(OdUInt16));
 }
+
 void EoDbFile::WriteVector3d(const OdGeVector3d& vector) {
 	Write(&vector.x, sizeof(double));
 	Write(&vector.y, sizeof(double));

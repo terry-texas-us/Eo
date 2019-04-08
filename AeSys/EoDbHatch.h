@@ -39,16 +39,16 @@ private:
 	OdGeDoubleArray m_Bulges;
 
 public:	// Constructors and destructor
-	EoDbHatch();
+
+    EoDbHatch();
 	EoDbHatch(const EoDbHatch& other);
+    const EoDbHatch& operator=(const EoDbHatch& other);
 
 	~EoDbHatch();
 
-public: // Operators
-	const EoDbHatch& operator=(const EoDbHatch& other);
-
 public: // Methods - absolute virtuals
-	void AddReportToMessageList(const OdGePoint3d& point) const override;
+
+    void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
@@ -99,7 +99,6 @@ public:
 	static size_t LegacyInteriorStyleIndex(const OdString& name);
 	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 
-    static EoDbHatch* ConstructFrom(EoDbFile& file);
     static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 
     static EoDbHatch* Create(const EoDbHatch& other, OdDbDatabasePtr database);

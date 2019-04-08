@@ -55,12 +55,10 @@ protected:
 public: // Constructors and destructor
 
 	EoGsAbstractView();
-	EoGsAbstractView(const EoGsAbstractView& av);
-	virtual ~EoGsAbstractView();
+	EoGsAbstractView(const EoGsAbstractView& other);
+    EoGsAbstractView& operator=(const EoGsAbstractView& other) noexcept;
 
-public: // Operators
-
-	EoGsAbstractView& operator=(const EoGsAbstractView& av) noexcept;
+    virtual ~EoGsAbstractView();
 
 public: // Methods
 	void AdjustWindow(const double aspectRatio) noexcept;
