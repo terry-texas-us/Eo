@@ -408,29 +408,6 @@ void EoDbBlockReference::SetColumnSpacing(double columnSpacing) noexcept {
 	m_ColumnSpacing = columnSpacing;
 }
 
-EoDbBlockReference* EoDbBlockReference::ConstructFrom(EoDbFile& file) {
-	EoDbBlockReference* BlockReference = new EoDbBlockReference();
-	BlockReference->SetColorIndex(file.ReadInt16());
-	BlockReference->SetLinetypeIndex(file.ReadInt16());
-	CString Name;
-	file.ReadString(Name);
-	BlockReference->SetName(Name);
-	BlockReference->SetPosition(file.ReadPoint3d());
-	BlockReference->SetNormal(file.ReadVector3d());
-	OdGeScale3d ScaleFactors;
-	ScaleFactors.sx = file.ReadDouble();
-	ScaleFactors.sy = file.ReadDouble();
-	ScaleFactors.sz = file.ReadDouble();
-	BlockReference->SetScaleFactors(ScaleFactors);
-	BlockReference->SetRotation(file.ReadDouble());
-	BlockReference->SetColumns(file.ReadUInt16());
-	BlockReference->SetRows(file.ReadUInt16());
-	BlockReference->SetColumnSpacing(file.ReadDouble());
-	BlockReference->SetRowSpacing(file.ReadDouble());
-	
-	return (BlockReference);
-}
-
 EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr& database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
@@ -485,8 +462,35 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 
     BlockReference->setLinetype(Linetype);
 
-    // incomplete
+    // <tas="BlockReference Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
+    OdDbDatabasePtr Database = BlockReference->database();
 
+    OdDbBlockTablePtr BlockTable = Database->getBlockTableId().safeOpenObject(OdDb::kForRead);
+
+    CString Name;
+    file.ReadString(Name);
+
+    const auto Block {BlockTable->getAt((LPCWSTR) Name)};
+
+    BlockReference->setBlockTableRecord(Block);
+
+    BlockReference->setPosition(file.ReadPoint3d());
+    BlockReference->setNormal(file.ReadVector3d());
+
+    OdGeScale3d ScaleFactors;
+    ScaleFactors.sx = file.ReadDouble();
+    ScaleFactors.sy = file.ReadDouble();
+    ScaleFactors.sz = file.ReadDouble();
+    BlockReference->setScaleFactors(ScaleFactors);
+
+    BlockReference->setRotation(file.ReadDouble());
+
+// <tas="These four properties are required for OdDbMInsertBlock. Unused here.">
+    auto Columns {file.ReadUInt16()};
+    auto Rows {file.ReadUInt16()};
+    auto ColumnSpacing {file.ReadDouble()};
+    auto RowSpacing {file.ReadDouble()};
+// </tas>
     return (BlockReference);
 }
 
@@ -498,13 +502,11 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockRefere
 
     OdDbBlockTableRecordPtr BlockTableRecordPtr = blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead);
 
-    EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
-
-    BlockReferencePrimitive->SetName((LPCWSTR) BlockTableRecordPtr->getName());
-    BlockReferencePrimitive->SetPosition(blockReference->position());
-    BlockReferencePrimitive->SetNormal(blockReference->normal());
-    BlockReferencePrimitive->SetScaleFactors(blockReference->scaleFactors());
-    BlockReferencePrimitive->SetRotation(blockReference->rotation());
+    BlockReference->SetName((LPCWSTR) BlockTableRecordPtr->getName());
+    BlockReference->SetPosition(blockReference->position());
+    BlockReference->SetNormal(blockReference->normal());
+    BlockReference->SetScaleFactors(blockReference->scaleFactors());
+    BlockReference->SetRotation(blockReference->rotation());
 
     // <tas="Block reference - attributes">
     OdDbObjectIteratorPtr ObjectIterator = blockReference->attributeIterator();

@@ -28,12 +28,16 @@ void AeSysView::OnAnnotateModeLine() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-			EoDbLine* Line = EoDbLine::Create(Database());
-			Line->SetTo(EoViAnn_points[0], CurrentPnt);
-			Line->SetColorIndex(1);
-			Line->SetLinetypeIndex(1);
-			Group->AddTail(Line);
-			EoViAnn_points[0] = CurrentPnt;
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+            auto Line {EoDbLine::Create(BlockTableRecord)};
+            Line->setStartPoint(EoViAnn_points[0]);
+            Line->setEndPoint(CurrentPnt);
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+           
+            Group->AddTail(EoDbLine::Create(Line));
+            
+            EoViAnn_points[0] = CurrentPnt;
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 		}
 	}
@@ -133,18 +137,25 @@ void AeSysView::OnAnnotateModeBubble() {
 		ReleaseDC(DeviceContext);
 	}
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-	if (NumberOfSides() == 0) {
-		EoDbEllipse* Circle = EoDbEllipse::Create(Database());
-		Circle->SetToCircle(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius());
-		Circle->SetColorIndex(1);
-		Circle->SetLinetypeIndex(1);
-		Group->AddTail(Circle);
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    if (NumberOfSides() == 0) {
+        auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+        Ellipse->setColorIndex(1);
+        Ellipse->setLinetype(L"Continuous");
+
+        auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+        MajorAxis.normalize();
+        MajorAxis *= BubbleRadius();
+
+        Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.);
+        Group->AddTail(EoDbEllipse::Create(Ellipse));
 	}
 	else {
-		EoDbPolyline* Polyline = EoDbPolyline::Create(Database());
-		Polyline->SetColorIndex(1);
-		Polyline->SetLinetypeIndex(1);
-		Polyline->SetClosed(true);
+        auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
+
+        Polyline->setColorIndex(1);
+		Polyline->setLinetype(L"Continuous");
+		Polyline->setClosed(true);
 
 		OdGePoint3dArray Points;
 		polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
@@ -167,11 +178,12 @@ void AeSysView::OnAnnotateModeBubble() {
 		for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
 			OdGePoint3d Vertex = Points[VertexIndex];
 			Vertex.transformBy(WorldToPlaneTransform);
-			Polyline->AppendVertex(Vertex.convert2d());
+            Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
 		}
-		Polyline->SetNormal(ActiveViewPlaneNormal);
-		Polyline->SetElevation(Elevation);
-		Group->AddTail(Polyline);
+		Polyline->setNormal(ActiveViewPlaneNormal);
+		Polyline->setElevation(Elevation);
+
+        Group->AddTail(EoDbPolyline::Create(Polyline));
 	}
 	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 	EoViAnn_points[0] = CurrentPnt;
@@ -203,11 +215,20 @@ void AeSysView::OnAnnotateModeHook() {
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-	EoDbEllipse* Circle = EoDbEllipse::Create(Database());
-	Circle->SetToCircle(CurrentPnt, ActiveViewPlaneNormal, CircleRadius());
-	Circle->SetColorIndex(1);
-	Circle->SetLinetypeIndex(1);
-	Group->AddTail(Circle);
+
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+    Ellipse->setColorIndex(1);
+    Ellipse->setLinetype(L"Continuous");
+
+    auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+    MajorAxis.normalize();
+    MajorAxis *= CircleRadius();
+
+    Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.);
+    Group->AddTail(EoDbEllipse::Create(Ellipse));
+    
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 	EoViAnn_points[0] = CurrentPnt;
@@ -545,7 +566,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	}
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
-void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) noexcept {
+void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
 	const OdGeVector3d PlaneNormal = CameraDirection();
 
 	const OdGePoint3d EndPoint = endPoint;

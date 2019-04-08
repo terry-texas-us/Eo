@@ -525,7 +525,7 @@ public: // Annotate mode interface
 	/// <param name="startPoint">tail of line segment defining arrow head</param>
 	/// <param name="endPoint">head of line segment defining arrow head</param>
 	/// <param name="group">group where primitives are placed</param>
-	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) noexcept;
+	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group);
 	bool CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const;
 
 public: // Draw mode interface

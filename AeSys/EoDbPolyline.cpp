@@ -73,7 +73,7 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 			GetPointAt(sm_PivotVertex, ptBeg);
 			GetPointAt(SwingVertex(), ptEnd);
 		}
-		double AngleInXYPlane;
+        double AngleInXYPlane {0.};
 		const double EdgeLength = OdGeVector3d(ptEnd - ptBeg).length();
 
 		if (OdGeVector3d(ptBeg - point).length() > EdgeLength * .5) {

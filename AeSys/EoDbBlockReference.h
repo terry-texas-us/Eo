@@ -37,11 +37,9 @@ public: // Constructors and destructor
 	
     EoDbBlockReference() noexcept;
 	EoDbBlockReference(const EoDbBlockReference& other);
-	~EoDbBlockReference();
-
-public: // Operators
-	
     const EoDbBlockReference& operator=(const EoDbBlockReference& other);
+
+    ~EoDbBlockReference();
 
 public: // Methods - absolute virtuals
     
@@ -95,8 +93,7 @@ public: // Methods
 
 public: // Methods - static
 
-	static EoDbBlockReference* ConstructFrom(EoDbFile& file);
-    static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
+	static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
     static EoDbBlockReference* Create(OdDbDatabasePtr& database);
     static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);

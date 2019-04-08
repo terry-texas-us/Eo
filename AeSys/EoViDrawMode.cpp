@@ -146,10 +146,11 @@ void AeSysView::OnDrawModeReturn() {
     const int NumberOfPoints = m_DrawModePoints.size();
     EoDbGroup* Group = 0;
 
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
     switch (PreviousDrawCommand) {
     case ID_OP2: {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
-        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
         OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
         Line->setStartPoint(m_DrawModePoints[0]);
         Line->setEndPoint(CurrentPnt);
@@ -194,8 +195,6 @@ void AeSysView::OnDrawModeReturn() {
 
         pGroup->setSelectable(true);
         pGroup->setAnonymous();
-
-        OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
         Group = new EoDbGroup;
         for (int i = 0; i < 4; i++) {
@@ -251,12 +250,18 @@ void AeSysView::OnDrawModeReturn() {
             theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
             return;
         }
+        Group = new EoDbGroup;
+
         const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
-        Group = new EoDbGroup;
-        EoDbEllipse* Circle = EoDbEllipse::Create(Database());
-        Circle->SetToCircle(m_DrawModePoints[0], ActiveViewPlaneNormal, OdGeVector3d(CurrentPnt - m_DrawModePoints[0]).length());
-        Group->AddTail(Circle);
+        auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+        auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+        MajorAxis.normalize();
+        MajorAxis *= OdGeVector3d(CurrentPnt - m_DrawModePoints[0]).length();
+
+        Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, 1.);
+        Group->AddTail(EoDbEllipse::Create(Ellipse));
+
         break;
     }
     case ID_OP8: {
