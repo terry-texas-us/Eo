@@ -71,7 +71,7 @@ void EoGeReferenceSystem::Read(EoDbFile& file) {
 	m_YDirection = file.ReadVector3d();
 }
 
-void EoGeReferenceSystem::Rescale(EoDbCharacterCellDefinition& characterCellDefinition) {
+void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCellDefinition) {
 	OdGeVector3d vNorm;
 	GetUnitNormal(vNorm);
 	m_XDirection.normalize();

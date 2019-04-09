@@ -85,7 +85,8 @@ void EoDbText::ConvertFormattingCharacters() {
 }
 
 EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr& database) const {
-    return (EoDbText::Create(*this, database));
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    return (EoDbText::Create(*this, BlockTableRecord));
 }
 
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
@@ -190,7 +191,7 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
     return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
 }
 
-void EoDbText::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
+void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
     if (iAtt == TM_TEXT_ALL) {
         m_ColorIndex = pstate.ColorIndex();
         m_FontDefinition = fontDefinition;
@@ -480,7 +481,7 @@ OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignmen
 }
 
 EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-    OdInt16 ColorIndex;
+    OdInt16 ColorIndex {1};
     EoDbFontDefinition FontDefinition;
     EoGeReferenceSystem ReferenceSystem;
     CString Text;
@@ -617,7 +618,7 @@ EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
     return (TextPrimitive);
 }
 
-OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
     OdDbTextPtr Text = OdDbText::createObject();
     Text->setDatabaseDefaults(blockTableRecord->database());
 
@@ -657,7 +658,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
     return Text;
 }
 
-OdDbTextPtr EoDbText::Create0(OdDbBlockTableRecordPtr blockTableRecord) {
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& position, const OdString& textString) {
 
     OdDbTextPtr Text = OdDbText::createObject();
     Text->setDatabaseDefaults(blockTableRecord->database());
@@ -665,28 +666,15 @@ OdDbTextPtr EoDbText::Create0(OdDbBlockTableRecordPtr blockTableRecord) {
     blockTableRecord->appendOdDbEntity(Text);
     Text->setColorIndex(pstate.ColorIndex());
 
-    return Text;
-}
-
-EoDbText* EoDbText::Create1(OdDbDatabasePtr database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
-    OdDbTextPtr TextEntity = OdDbText::createObject();
-    TextEntity->setDatabaseDefaults(database);
-    BlockTableRecord->appendOdDbEntity(TextEntity);
-
-    EoDbText* Text = new EoDbText();
-    Text->SetEntityObjectId(TextEntity->objectId());
-
-    Text->SetColorIndex(pstate.ColorIndex());
+    Text->setPosition(position);
+    Text->setTextString(textString);
 
     return Text;
 }
 
-EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+EoDbText* EoDbText::Create(const EoDbText& other, OdDbBlockTableRecordPtr& blockTableRecord) {
     OdDbTextPtr TextEntity = other.EntityObjectId().safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(TextEntity);
+    blockTableRecord->appendOdDbEntity(TextEntity);
 
     EoDbText* Text = new EoDbText(other);
     Text->SetEntityObjectId(TextEntity->objectId());
@@ -694,16 +682,16 @@ EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
     return Text;
 }
 
-OdDbMTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text) {
+OdDbMTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, OdString text) {
     OdDbMTextPtr MText = OdDbMText::createObject();
-    MText->setDatabaseDefaults(database);
+    MText->setDatabaseDefaults(blockTableRecord->database());
     blockTableRecord->appendOdDbEntity(MText);
     MText->setColorIndex(pstate.ColorIndex());
 
     return MText;
 }
 
-EoDbText* EoDbText::Create(OdDbTextPtr text) {
+EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 
     EoDbText* Text = new EoDbText();
     Text->SetEntityObjectId(text->objectId());
@@ -736,7 +724,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr text) {
     return Text;
 }
 
-EoDbText* EoDbText::Create(OdDbMTextPtr text) {
+EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 
     EoDbText* Text = new EoDbText();
     Text->SetEntityObjectId(text->objectId());
@@ -808,7 +796,7 @@ int FontEscapementAngle(const OdGeVector3d& xAxis) noexcept {
     return EoRound(EoToDegree(Angle) * 10.);
 }
 
-OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int numberOfCharacters) noexcept {
+OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, int numberOfCharacters) noexcept {
     OdGePoint3d InsertionPoint(OdGePoint3d::kOrigin);
 
     if (numberOfCharacters > 0) {

@@ -125,13 +125,11 @@ void AeSysView::OnAnnotateModeBubble() {
 
 		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis *.06, MinorAxis * .1);
 
-        OdDbTextPtr Text = EoDbText::Create0(BlockTableRecord);
+        OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
 
-        Text->setPosition(ReferenceSystem.Origin());
         Text->setNormal(ActiveViewPlaneNormal);
         Text->setRotation(ReferenceSystem.Rotation());
         Text->setHeight(ReferenceSystem.YDirection().length());
-        Text->setTextString((LPCWSTR) CurrentText);
         Text->setAlignmentPoint(ReferenceSystem.Origin());
         Text->setColorIndex(2);
         Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(kAlignCenter));
@@ -379,11 +377,9 @@ void AeSysView::OnAnnotateModeCutIn() {
 			EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 			CharacterCellDefinition.SetRotationAngle(0.);
 			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
-
-            OdDbTextPtr Text = EoDbText::Create0(Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+            OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+            OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
             
-            Text->setPosition(ReferenceSystem.Origin());
-            Text->setTextString((LPCWSTR) CurrentText);
             Text->setHeight(ReferenceSystem.YDirection().length());
             Text->setRotation(ReferenceSystem.Rotation());
             Text->setAlignmentPoint(ReferenceSystem.Origin());

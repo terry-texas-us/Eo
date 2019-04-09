@@ -50,19 +50,30 @@ void EoDlgModeRevise::OnOK() {
 	AeSysDoc* Document = AeSysDoc::GetDoc();
 	OdDbDatabasePtr Database = Document->m_DatabasePtr;
 
-	CString Text;
-	m_TextEditControl.GetWindowTextW(Text);
+	CString TextString;
+	m_TextEditControl.GetWindowTextW(TextString);
 
 	if (sm_TextPrimitive != 0) {
 		Document->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, sm_TextPrimitive);
-		sm_TextPrimitive->SetText(Text);
+		sm_TextPrimitive->SetText(TextString);
 		Document->UpdatePrimitiveInAllViews(kPrimitiveSafe, sm_TextPrimitive);
 	}
 	else {
-		EoDbText* TextPrimitive = EoDbText::Create1(Database);
-		TextPrimitive->SetTo(sm_FontDefinition, sm_ReferenceSystem, Text);
-		EoDbGroup* Group = new EoDbGroup;
-		Group->AddTail(TextPrimitive);
+        OdGeVector3d PlaneNormal;
+        sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
+        OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+        OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), (LPCWSTR) TextString);
+
+        Text->setNormal(PlaneNormal);
+        Text->setRotation(sm_ReferenceSystem.Rotation());
+        Text->setHeight(sm_ReferenceSystem.YDirection().length());
+        Text->setAlignmentPoint(sm_ReferenceSystem.Origin());
+        Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(sm_FontDefinition.HorizontalAlignment()));
+        Text->setVerticalMode(EoDbText::ConvertVerticalMode(sm_FontDefinition.VerticalAlignment()));
+
+        EoDbGroup* Group = new EoDbGroup;
+        Group->AddTail(EoDbText::Create(Text));
+
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(kGroupSafe, Group);
 	}

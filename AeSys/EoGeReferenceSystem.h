@@ -28,7 +28,7 @@ public: // Methods
 	OdGePoint3d Origin() const noexcept;
 	void Read(EoDbFile& file);
 	/// <summary>Takes the current reference directions and rescales using passed character cell state.</summary>
-	void Rescale(EoDbCharacterCellDefinition& characterCellDefinition);
+	void Rescale(const EoDbCharacterCellDefinition& characterCellDefinition);
     double Rotation() const noexcept;
     void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	void SetOrigin(const OdGePoint3d& origin) noexcept;

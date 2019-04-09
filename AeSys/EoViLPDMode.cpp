@@ -561,11 +561,13 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 	const OdGeVector3d XDirection = OdGeVector3d(0.06, 0., 0.).rotateBy(angle, OdGeVector3d::kZAxis);
 	const OdGeVector3d YDirection = OdGeVector3d(0., 0.1, 0.).rotateBy(angle, OdGeVector3d::kZAxis);
 	EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
+    OdGeVector3d PlaneNormal;
+    ReferenceSystem.GetUnitNormal(PlaneNormal);
 
 	CString Note;
-	Note += theApp.FormatLength(section.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 0);
+	Note += theApp.FormatLength(section.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
 	Note += L"/";
-	Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 0);
+	Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
 
 	CDC* DeviceContext = GetDC();
 	const int PrimitiveState = pstate.Save();
@@ -580,9 +582,19 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 	EoDbGroup* Group = new EoDbGroup;
-	EoDbText* Text = EoDbText::Create1(Database());
-	Text->SetTo(FontDefinition, ReferenceSystem, Note);
-	Group->AddTail(Text);
+
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) Note);
+
+    Text->setNormal(PlaneNormal);
+    Text->setRotation(ReferenceSystem.Rotation());
+    Text->setHeight(ReferenceSystem.YDirection().length());
+    Text->setAlignmentPoint(ReferenceSystem.Origin());
+    Text->setHorizontalMode(OdDb::kTextCenter);
+    Text->setVerticalMode(OdDb::kTextVertMid);
+
+    Group->AddTail(EoDbText::Create(Text));
+
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 	pstate.Restore(DeviceContext, PrimitiveState);

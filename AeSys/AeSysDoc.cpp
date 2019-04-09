@@ -1159,15 +1159,28 @@ void AeSysDoc::AddTextBlock(LPWSTR text) {
 	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
 	const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 	EoGeReferenceSystem ReferenceSystem(ptPvt, AeSysView::GetActiveView(), CharacterCellDefinition);
+    OdGeVector3d PlaneNormal;
+    ReferenceSystem.GetUnitNormal(PlaneNormal);
 
-	LPWSTR NextToken = NULL;
+    OdDbBlockTableRecordPtr BlockTableRecord = m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    LPWSTR NextToken {nullptr};
 	LPWSTR pText = wcstok_s(text, L"\r", &NextToken);
 	while (pText != 0) {
 		if (wcslen(pText) > 0) {
 			EoDbGroup* Group = new EoDbGroup;
-			EoDbText* TextPrimitive = EoDbText::Create1(m_DatabasePtr);
-			TextPrimitive->SetTo(FontDefinition, ReferenceSystem, pText);
-			Group->AddTail(TextPrimitive);
+
+            OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) pText);
+
+            Text->setNormal(PlaneNormal);
+            Text->setRotation(ReferenceSystem.Rotation());
+            Text->setHeight(ReferenceSystem.YDirection().length());
+            
+            Text->setAlignmentPoint(ReferenceSystem.Origin());
+            Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(FontDefinition.HorizontalAlignment()));
+            Text->setVerticalMode(EoDbText::ConvertVerticalMode(FontDefinition.VerticalAlignment()));
+            
+            Group->AddTail(EoDbText::Create(Text));
 			AddWorkLayerGroup(Group);
 			UpdateGroupInAllViews(kGroup, Group);
 		}

@@ -42,7 +42,7 @@ public: // Methods - absolute virtuals
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
-	OdGePoint3d	GetCtrlPt() const noexcept;
+	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
     bool Is(OdUInt16 type) const noexcept override {return type == kTextPrimitive;}
@@ -50,7 +50,7 @@ public: // Methods - absolute virtuals
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	void ModifyState() noexcept override;
-	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
+	void ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	/// <summary>Evaluates whether a point lies within the bounding region of text.</summary>
 	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
@@ -84,13 +84,13 @@ public: // Methods - static
     static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
 
 	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-	static EoDbText* Create1(OdDbDatabasePtr database);
-	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
-    static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-    static OdDbTextPtr Create0(OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbMTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text);
-    static EoDbText* Create(OdDbTextPtr text);
-    static EoDbText* Create(OdDbMTextPtr text);
+
+	static EoDbText* Create(const EoDbText& other, OdDbBlockTableRecordPtr& blockTableRecord);
+    static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+    static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& position, const OdString& textString);
+    static OdDbMTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, OdString text);
+    static EoDbText* Create(OdDbTextPtr& text);
+    static EoDbText* Create(OdDbMTextPtr& text);
 };
 
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text);
@@ -103,7 +103,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 /// <summary> Determines the count of characters in string excluding formatting characters.</summary>
 int TextLengthSansFormattingCharacters(const CString& text);
 /// <summary> Determines the offset to the bottom left alignment position of a string of the specified number of characters and text attributes in the z=0 plane.</summary>
-OdGePoint3d CalculateInsertionPoint(EoDbFontDefinition& fontDefinition, int iChrs) noexcept;
+OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, int iChrs) noexcept;
 /// <summary>Returns the region boundaries of a text string applying and optional inflation factor.</summary>
 void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, int numberOfCharacters, double spaceFactor,  OdGePoint3dArray& boundingBox);
 OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double dLineSpaceFac, double dChrSpaceFac);

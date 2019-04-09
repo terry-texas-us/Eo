@@ -364,7 +364,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 				OdGePoint3d ptArrow = ln.startPoint();
 				ptArrow.rotateBy(RADIAN, PlaneNormal, CenterPoint);
 				EoDbGroup* Group = new EoDbGroup;
-				GenerateLineEndItem(1, .1, ptArrow, ln.startPoint(), Group);
+				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.startPoint(), Group);
 
 				EoDbEllipse* Ellipse = EoDbEllipse::Create(Database());
 				Ellipse->SetTo(CenterPoint, MajorAxis, MinorAxis, Angle);
@@ -375,7 +375,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 				ptArrow = ln.startPoint();
 				ptArrow.rotateBy(Angle - RADIAN, PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
-				GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
+				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
 				const int PrimitiveState = pstate.Save();
 
 				EoDbFontDefinition FontDefinition = pstate.FontDefinition();
@@ -392,9 +392,18 @@ void AeSysView::OnDimensionModeAngle(void) {
 
                 EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 
-				EoDbText* TextPrimitive = EoDbText::Create1(Database());
-				TextPrimitive->SetTo(FontDefinition, ReferenceSystem, theApp.FormatAngle(Angle));
-				Group->AddTail(TextPrimitive);
+                OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+                OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) theApp.FormatAngle(Angle));
+
+                Text->setNormal(PlaneNormal);
+                Text->setRotation(ReferenceSystem.Rotation());
+                Text->setHeight(ReferenceSystem.YDirection().length());
+                Text->setAlignmentPoint(ReferenceSystem.Origin());
+                Text->setHorizontalMode(OdDb::kTextCenter);
+                Text->setVerticalMode(OdDb::kTextVertMid);
+
+                Group->AddTail(EoDbText::Create(Text));
+
 				Document->AddWorkLayerGroup(Group);
 				Document->UpdateGroupInAllViews(kGroupSafe, Group);
 				pstate.Restore(DeviceContext, PrimitiveState);
@@ -452,13 +461,27 @@ void AeSysView::OnDimensionModeConvert(void) {
 					EoDbDimension* DimensionPrimitive = static_cast<EoDbDimension*>(Primitive);
 					EoGeReferenceSystem ReferenceSystem;
 					ReferenceSystem = DimensionPrimitive->ReferenceSystem();
-					EoDbLine* LinePrimitive = EoDbLine::Create(DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint());
+                    OdGeVector3d PlaneNormal;
+                    ReferenceSystem.GetUnitNormal(PlaneNormal);
+
+                    EoDbLine* LinePrimitive = EoDbLine::Create(DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint());
 					LinePrimitive->SetColorIndex(DimensionPrimitive->ColorIndex());
 					LinePrimitive->SetLinetypeIndex(DimensionPrimitive->LinetypeIndex());
-					EoDbText* TextPrimitive = EoDbText::Create1(Database());
-					TextPrimitive->SetTo(DimensionPrimitive->FontDef(), ReferenceSystem, DimensionPrimitive->Text());
-					TextPrimitive->SetColorIndex(DimensionPrimitive->TextColorIndex());
-					Group->InsertAfter(posPrimCur, LinePrimitive);
+					
+                    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+                    OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) DimensionPrimitive->Text());
+
+                    Text->setNormal(PlaneNormal);
+                    Text->setRotation(ReferenceSystem.Rotation());
+                    Text->setHeight(ReferenceSystem.YDirection().length());
+                    Text->setAlignmentPoint(ReferenceSystem.Origin());
+                    Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(DimensionPrimitive->FontDef().HorizontalAlignment()));
+                    Text->setVerticalMode(EoDbText::ConvertVerticalMode(DimensionPrimitive->FontDef().VerticalAlignment()));
+                    Text->setColorIndex(DimensionPrimitive->TextColorIndex());
+
+                    auto TextPrimitive = EoDbText::Create(Text);
+                    
+                    Group->InsertAfter(posPrimCur, LinePrimitive);
 					Group->InsertAfter(posPrimCur, TextPrimitive);
 					Group->RemoveAt(posPrimCur);
 					delete Primitive;
