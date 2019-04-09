@@ -580,7 +580,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 	EoDbGroup* Group = new EoDbGroup;
-	EoDbText* Text = EoDbText::Create(Database());
+	EoDbText* Text = EoDbText::Create1(Database());
 	Text->SetTo(FontDefinition, ReferenceSystem, Note);
 	Group->AddTail(Text);
 	GetDocument()->AddWorkLayerGroup(Group);

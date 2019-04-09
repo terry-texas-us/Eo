@@ -84,10 +84,10 @@ public: // Methods - static
     static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
 
 	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-	static EoDbText* Create(OdDbDatabasePtr database);
+	static EoDbText* Create1(OdDbDatabasePtr database);
 	static EoDbText* Create(const EoDbText& other, OdDbDatabasePtr database);
     static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-    static OdDbTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord);
+    static OdDbTextPtr Create0(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbMTextPtr Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text);
     static EoDbText* Create(OdDbTextPtr text);
     static EoDbText* Create(OdDbMTextPtr text);

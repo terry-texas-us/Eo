@@ -384,44 +384,99 @@ void EoDbText::Write(CFile& file, OdUInt8* buffer) const {
     file.Write(buffer, buffer[3] * 32);
 }
 
-OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-    OdDbTextPtr Text = OdDbText::createObject();
-    Text->setDatabaseDefaults(blockTableRecord->database());
+void EoDbText::ConvertFractionMarkup(CString& text) {
+    for (int i = 0; i < text.GetLength() - 1; i++) {
+        if (text[i] == '^') {
+            if (text[i + 1] == '/') { // Fractions
+                const int EndCaret = text.Find('^', i + 1);
 
-    blockTableRecord->appendOdDbEntity(Text);
+                if (EndCaret != -1) {
+                    const int FractionBar = text.Find('/', i + 2);
+                    if (FractionBar != -1 && FractionBar < EndCaret) {
+                        text.SetAt(i++, '\\');
+                        text.SetAt(i, 'S');
+                        text.SetAt(EndCaret, ';');
+                        i = EndCaret;
+                    }
+                }
+            }
+        }
+    }
+}
 
-    Text->setColorIndex(file.ReadInt16());
-    /* OdInt16 LinetypeIndex = */ file.ReadInt16();
+HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
+    HorizontalAlignment HorizontalAlignment = kAlignLeft;
 
-// <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
-    OdUInt16 Precision = kStrokeType;
-    file.Read(&Precision, sizeof(OdUInt16));
-    OdString FontName;
-    file.ReadString(FontName);
-    OdUInt16 Path = kPathRight;
-    file.Read(&Path, sizeof(OdUInt16));
-// </tas>
+    switch (horizontalMode) {
+    case OdDb::kTextMid:
+    case OdDb::kTextCenter:
+        HorizontalAlignment = kAlignCenter;
+        break;
 
-    Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
-    Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
+    case OdDb::kTextRight:
+    case OdDb::kTextAlign:
+    case OdDb::kTextFit:
+        HorizontalAlignment = kAlignRight;
+        break;
 
-    double CharacterSpacing = 0.;
-    file.Read(&CharacterSpacing, sizeof(double));
+    default: // OdDb::kTextLeft
+        HorizontalAlignment = kAlignLeft;
+    }
+    return HorizontalAlignment;
+}
 
-    EoGeReferenceSystem ReferenceSystem;
-    ReferenceSystem.Read(file);
+VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
+    VerticalAlignment VerticalAlignment = kAlignBottom;
 
-    Text->setPosition(ReferenceSystem.Origin());
-    Text->setHeight(ReferenceSystem.YDirection().length());
-    Text->setRotation(ReferenceSystem.Rotation());
-    Text->setAlignmentPoint(Text->position());
-   
-    OdString TextString;
-    file.ReadString(TextString);
+    switch (verticalMode) {
+    case OdDb::kTextVertMid:
+        VerticalAlignment = kAlignMiddle;
+        break;
 
-    Text->setTextString(TextString);
+    case OdDb::kTextTop:
+        VerticalAlignment = kAlignTop;
+        break;
 
-    return Text;
+    default: // OdDb::kTextBottom & OdDb::kTextBase
+        VerticalAlignment = kAlignBottom;
+    }
+    return VerticalAlignment;
+}
+
+OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept {
+    OdDb::TextHorzMode HorizontalMode = OdDb::kTextLeft;
+
+    switch (horizontalAlignment) {
+    case kAlignCenter:
+        HorizontalMode = OdDb::kTextCenter;
+        break;
+
+    case kAlignRight:
+        HorizontalMode = OdDb::kTextRight;
+        break;
+
+    default: // kAlignLeft
+        HorizontalMode = OdDb::kTextLeft;
+    }
+    return HorizontalMode;
+}
+
+OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept {
+    OdDb::TextVertMode VerticalMode = OdDb::kTextBottom;
+
+    switch (verticalAlignment) {
+    case kAlignMiddle:
+        VerticalMode = OdDb::kTextVertMid;
+        break;
+
+    case kAlignTop:
+        VerticalMode = OdDb::kTextTop;
+        break;
+
+    default: // kAlignBottom
+        VerticalMode = OdDb::kTextBase;
+    }
+    return VerticalMode;
 }
 
 EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
@@ -562,7 +617,58 @@ EoDbText* EoDbText::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
     return (TextPrimitive);
 }
 
-EoDbText* EoDbText::Create(OdDbDatabasePtr database) {
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+    OdDbTextPtr Text = OdDbText::createObject();
+    Text->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Text);
+
+    Text->setColorIndex(file.ReadInt16());
+    /* OdInt16 LinetypeIndex = */ file.ReadInt16();
+
+// <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
+    OdUInt16 Precision = kStrokeType;
+    file.Read(&Precision, sizeof(OdUInt16));
+    OdString FontName;
+    file.ReadString(FontName);
+    OdUInt16 Path = kPathRight;
+    file.Read(&Path, sizeof(OdUInt16));
+// </tas>
+
+    Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
+    Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
+
+    double CharacterSpacing = 0.;
+    file.Read(&CharacterSpacing, sizeof(double));
+
+    EoGeReferenceSystem ReferenceSystem;
+    ReferenceSystem.Read(file);
+
+    Text->setPosition(ReferenceSystem.Origin());
+    Text->setHeight(ReferenceSystem.YDirection().length());
+    Text->setRotation(ReferenceSystem.Rotation());
+    Text->setAlignmentPoint(Text->position());
+   
+    OdString TextString;
+    file.ReadString(TextString);
+
+    Text->setTextString(TextString);
+
+    return Text;
+}
+
+OdDbTextPtr EoDbText::Create0(OdDbBlockTableRecordPtr blockTableRecord) {
+
+    OdDbTextPtr Text = OdDbText::createObject();
+    Text->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Text);
+    Text->setColorIndex(pstate.ColorIndex());
+
+    return Text;
+}
+
+EoDbText* EoDbText::Create1(OdDbDatabasePtr database) {
     OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     OdDbTextPtr TextEntity = OdDbText::createObject();
@@ -588,101 +694,6 @@ EoDbText* EoDbText::Create(const EoDbText& other, OdDbDatabasePtr database) {
     return Text;
 }
 
-void EoDbText::ConvertFractionMarkup(CString& text) {
-    for (int i = 0; i < text.GetLength() - 1; i++) {
-        if (text[i] == '^') {
-            if (text[i + 1] == '/') { // Fractions
-                const int EndCaret = text.Find('^', i + 1);
-
-                if (EndCaret != -1) {
-                    const int FractionBar = text.Find('/', i + 2);
-                    if (FractionBar != -1 && FractionBar < EndCaret) {
-                        text.SetAt(i++, '\\');
-                        text.SetAt(i, 'S');
-                        text.SetAt(EndCaret, ';');
-                        i = EndCaret;
-                    }
-                }
-            }
-        }
-    }
-}
-
-HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
-    HorizontalAlignment HorizontalAlignment = kAlignLeft;
-
-    switch (horizontalMode) {
-    case OdDb::kTextMid:
-    case OdDb::kTextCenter:
-        HorizontalAlignment = kAlignCenter;
-        break;
-
-    case OdDb::kTextRight:
-    case OdDb::kTextAlign:
-    case OdDb::kTextFit:
-        HorizontalAlignment = kAlignRight;
-        break;
-
-    default: // OdDb::kTextLeft
-        HorizontalAlignment = kAlignLeft;
-    }
-    return HorizontalAlignment;
-}
-
-VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
-    VerticalAlignment VerticalAlignment = kAlignBottom;
-
-    switch (verticalMode) {
-    case OdDb::kTextVertMid:
-        VerticalAlignment = kAlignMiddle;
-        break;
-
-    case OdDb::kTextTop:
-        VerticalAlignment = kAlignTop;
-        break;
-
-    default: // OdDb::kTextBottom & OdDb::kTextBase
-        VerticalAlignment = kAlignBottom;
-    }
-    return VerticalAlignment;
-}
-
-OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept {
-    OdDb::TextHorzMode HorizontalMode = OdDb::kTextLeft;
-
-    switch (horizontalAlignment) {
-    case kAlignCenter:
-        HorizontalMode = OdDb::kTextCenter;
-        break;
-
-    case kAlignRight:
-        HorizontalMode = OdDb::kTextRight;
-        break;
-
-    default: // kAlignLeft
-        HorizontalMode = OdDb::kTextLeft;
-    }
-    return HorizontalMode;
-}
-
-OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept {
-    OdDb::TextVertMode VerticalMode = OdDb::kTextBottom;
-
-    switch (verticalAlignment) {
-    case kAlignMiddle:
-        VerticalMode = OdDb::kTextVertMid;
-        break;
-
-    case kAlignTop:
-        VerticalMode = OdDb::kTextTop;
-        break;
-
-    default: // kAlignBottom
-        VerticalMode = OdDb::kTextBase;
-    }
-    return VerticalMode;
-}
-
 OdDbMTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord, OdString text) {
     OdDbMTextPtr MText = OdDbMText::createObject();
     MText->setDatabaseDefaults(database);
@@ -690,16 +701,6 @@ OdDbMTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr 
     MText->setColorIndex(pstate.ColorIndex());
 
     return MText;
-}
-
-OdDbTextPtr EoDbText::Create(OdDbDatabasePtr database, OdDbBlockTableRecordPtr blockTableRecord) {
-
-    OdDbTextPtr Text = OdDbText::createObject();
-    Text->setDatabaseDefaults(database);
-    blockTableRecord->appendOdDbEntity(Text);
-    Text->setColorIndex(pstate.ColorIndex());
-
-    return Text;
 }
 
 EoDbText* EoDbText::Create(OdDbTextPtr text) {

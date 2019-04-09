@@ -59,7 +59,7 @@ void EoDlgModeRevise::OnOK() {
 		Document->UpdatePrimitiveInAllViews(kPrimitiveSafe, sm_TextPrimitive);
 	}
 	else {
-		EoDbText* TextPrimitive = EoDbText::Create(Database);
+		EoDbText* TextPrimitive = EoDbText::Create1(Database);
 		TextPrimitive->SetTo(sm_FontDefinition, sm_ReferenceSystem, Text);
 		EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(TextPrimitive);

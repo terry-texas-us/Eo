@@ -1165,7 +1165,7 @@ void AeSysDoc::AddTextBlock(LPWSTR text) {
 	while (pText != 0) {
 		if (wcslen(pText) > 0) {
 			EoDbGroup* Group = new EoDbGroup;
-			EoDbText* TextPrimitive = EoDbText::Create(m_DatabasePtr);
+			EoDbText* TextPrimitive = EoDbText::Create1(m_DatabasePtr);
 			TextPrimitive->SetTo(FontDefinition, ReferenceSystem, pText);
 			Group->AddTail(TextPrimitive);
 			AddWorkLayerGroup(Group);

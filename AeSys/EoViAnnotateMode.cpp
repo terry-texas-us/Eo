@@ -57,12 +57,16 @@ void AeSysView::OnAnnotateModeArrow() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-			EoDbLine* Line = EoDbLine::Create(Database());
-			Line->SetTo(EoViAnn_points[0], CurrentPnt);
-			Line->SetColorIndex(1);
-			Line->SetLinetypeIndex(1);
-			Group->AddTail(Line);
-			GenerateLineEndItem(EndItemType(), EndItemSize(), EoViAnn_points[0], CurrentPnt, Group);
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+            auto Line {EoDbLine::Create(BlockTableRecord)};
+            Line->setStartPoint(EoViAnn_points[0]);
+            Line->setEndPoint(CurrentPnt);
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+
+            Group->AddTail(EoDbLine::Create(Line));
+
+            GenerateLineEndItem(EndItemType(), EndItemSize(), EoViAnn_points[0], CurrentPnt, Group);
 			GetDocument()->AddWorkLayerGroup(Group);
 			GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 			EoViAnn_points[0] = CurrentPnt;
@@ -75,6 +79,8 @@ void AeSysView::OnAnnotateModeArrow() {
 void AeSysView::OnAnnotateModeBubble() {
 	static CString CurrentText;
 	OdGePoint3d CurrentPnt = GetCursorPosition();
+
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDlgSetText dlg;
 	dlg.m_strTitle = L"Set Bubble Text";
@@ -98,56 +104,47 @@ void AeSysView::OnAnnotateModeBubble() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-			EoDbLine* Line = EoDbLine::Create(Database());
-			Line->SetTo(EoViAnn_points[0], pt);
-			Line->SetColorIndex(1);
-			Line->SetLinetypeIndex(1);
-			Group->AddTail(Line);
+            auto Line {EoDbLine::Create(BlockTableRecord)};
+            Line->setStartPoint(EoViAnn_points[0]);
+            Line->setEndPoint(pt);
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+
+            Group->AddTail(EoDbLine::Create(Line));
 		}
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 
-	if (!CurrentText.IsEmpty()) {
-		CDC* DeviceContext = GetDC();
+    const auto ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+    auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+    MajorAxis.normalize();
 
-		const OdGeVector3d PlaneNormal = CameraDirection();
-		OdGeVector3d MinorAxis = ViewUp();
-		OdGeVector3d MajorAxis = MinorAxis;
-		MajorAxis.rotateBy(- HALF_PI, PlaneNormal);
+    if (!CurrentText.IsEmpty()) {
+        OdGeVector3d MinorAxis {MajorAxis};
+		MinorAxis.rotateBy(HALF_PI, ActiveViewPlaneNormal);
 
-		MajorAxis *= .06;
-		MinorAxis *= .1;
-		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
+		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis *.06, MinorAxis * .1);
 
-		const int PrimitiveState = pstate.Save();
-		pstate.SetColorIndex(DeviceContext, 2);
+        OdDbTextPtr Text = EoDbText::Create0(BlockTableRecord);
 
-		EoDbFontDefinition FontDefinition = pstate.FontDefinition();
-		FontDefinition.SetHorizontalAlignment(kAlignCenter);
-		FontDefinition.SetVerticalAlignment(kAlignMiddle);
+        Text->setPosition(ReferenceSystem.Origin());
+        Text->setNormal(ActiveViewPlaneNormal);
+        Text->setRotation(ReferenceSystem.Rotation());
+        Text->setHeight(ReferenceSystem.YDirection().length());
+        Text->setTextString((LPCWSTR) CurrentText);
+        Text->setAlignmentPoint(ReferenceSystem.Origin());
+        Text->setColorIndex(2);
+        Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(kAlignCenter));
+        Text->setVerticalMode(EoDbText::ConvertVerticalMode(kAlignMiddle));
 
-		EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-		CharacterCellDefinition.SetRotationAngle(0.);
-		pstate.SetCharacterCellDefinition(CharacterCellDefinition);
-
-		EoDbText* TextPrimitive = EoDbText::Create(Database());
-		TextPrimitive->SetTo(FontDefinition, ReferenceSystem, CurrentText);
-		Group->AddTail(TextPrimitive);
-		pstate.Restore(DeviceContext, PrimitiveState);
-		ReleaseDC(DeviceContext);
+        Group->AddTail(EoDbText::Create(Text));
 	}
-	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
     if (NumberOfSides() == 0) {
         auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
         Ellipse->setColorIndex(1);
         Ellipse->setLinetype(L"Continuous");
 
-        auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
-        MajorAxis.normalize();
-        MajorAxis *= BubbleRadius();
-
-        Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.);
+        Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis * BubbleRadius(), 1.);
         Group->AddTail(EoDbEllipse::Create(Ellipse));
 	}
 	else {
@@ -192,7 +189,10 @@ void AeSysView::OnAnnotateModeBubble() {
 void AeSysView::OnAnnotateModeHook() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
 	EoDbGroup* Group = new EoDbGroup;
-	if (m_PreviousOp == 0) {
+
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
 	}
@@ -203,20 +203,20 @@ void AeSysView::OnAnnotateModeHook() {
 		OdGePoint3d pt(CurrentPnt);
 
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP5, EoViAnn_points[0], pt)) {
-			if (m_PreviousOp == ID_OP3)
-				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
+            if (m_PreviousOp == ID_OP3) {
+                GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
+            }
+            auto Line {EoDbLine::Create(BlockTableRecord)};
+            Line->setStartPoint(EoViAnn_points[0]);
+            Line->setEndPoint(pt);
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
 
-			EoDbLine* Line = EoDbLine::Create(Database());
-			Line->SetTo(EoViAnn_points[0], pt);
-			Line->SetColorIndex(1);
-			Line->SetLinetypeIndex(1);
-			Group->AddTail(Line);
-		}
+            Group->AddTail(EoDbLine::Create(Line));
+        }
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
     Ellipse->setColorIndex(1);
@@ -248,11 +248,17 @@ void AeSysView::OnAnnotateModeUnderline() {
 		pText->GetBoundingBox(Underline, GapSpaceFactor());
 
 		EoDbGroup* Group = new EoDbGroup;
-		EoDbLine* Line = EoDbLine::Create(Database());
-		Line->SetTo(Underline[0], Underline[1]);
-		Line->SetColorIndex(pstate.ColorIndex());
-		Line->SetLinetypeIndex(1);
-		Group->AddTail(Line);
+
+        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+        auto Line {EoDbLine::Create(BlockTableRecord)};
+        Line->setStartPoint(Underline[0]);
+        Line->setEndPoint(Underline[1]);
+        
+        Line->setLinetype(L"Continuous");
+
+        Group->AddTail(EoDbLine::Create(Line));
+        
 		GetDocument()->AddWorkLayerGroup(Group);
 		GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 	}
@@ -306,13 +312,17 @@ void AeSysView::OnAnnotateModeBox() {
 			JoinedBoxes[3].y = JoinedBoxes[2].y;
 
 			EoDbGroup* Group = new EoDbGroup;
-			EoDbLine* Line;
+
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
 			for (int i = 0; i < 4; i++) {
-				Line = EoDbLine::Create(Database());
-				Line->SetTo(JoinedBoxes[i], JoinedBoxes[(i + 1) % 4]);
-				Line->SetColorIndex(1);
-				Line->SetLinetypeIndex(1);
-				Group->AddTail(Line);
+                auto Line {EoDbLine::Create(BlockTableRecord)};
+                Line->setStartPoint(JoinedBoxes[i]);
+                Line->setEndPoint(JoinedBoxes[(i + 1) % 4]);
+                Line->setColorIndex(1);
+                Line->setLinetype(L"Continuous");
+
+                Group->AddTail(EoDbLine::Create(Line));
 			}
 			GetDocument()->AddWorkLayerGroup(Group);
 			GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
@@ -328,7 +338,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 
 	EoDbGroup* Group = SelectLineBy(CurrentPnt);
 	if (Group != 0) {
-		EoDbLine* pLine = static_cast<EoDbLine*>(EngagedPrimitive());
+		EoDbLine* EngagedLine = static_cast<EoDbLine*>(EngagedPrimitive());
 
 		CurrentPnt = DetPt();
 
@@ -345,8 +355,8 @@ void AeSysView::OnAnnotateModeCutIn() {
 		const int PrimitiveState = pstate.Save();
 
 		if (!CurrentText.IsEmpty()) {
-			EoGeLineSeg3d Line = pLine->Line();
-			double dAng = Line.AngleFromXAxis_xy();
+			EoGeLineSeg3d LineSeg = EngagedLine->Line();
+			double dAng = LineSeg.AngleFromXAxis_xy();
 			if (dAng > .25 * TWOPI && dAng <  .75 * TWOPI)
 				dAng += PI;
 
@@ -370,36 +380,56 @@ void AeSysView::OnAnnotateModeCutIn() {
 			CharacterCellDefinition.SetRotationAngle(0.);
 			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
-			EoDbText* TextPrimitive = EoDbText::Create(Database());
-			TextPrimitive->SetTo(FontDefinition, ReferenceSystem, CurrentText);
-			pstate.SetColorIndex(DeviceContext, ColorIndex);
+            OdDbTextPtr Text = EoDbText::Create0(Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite));
+            
+            Text->setPosition(ReferenceSystem.Origin());
+            Text->setTextString((LPCWSTR) CurrentText);
+            Text->setHeight(ReferenceSystem.YDirection().length());
+            Text->setRotation(ReferenceSystem.Rotation());
+            Text->setAlignmentPoint(ReferenceSystem.Origin());
+            Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(kAlignCenter));
+            Text->setVerticalMode(EoDbText::ConvertVerticalMode(kAlignMiddle));
 
-			Group->AddTail(TextPrimitive);
+//            OdGePoint3dArray BoundingBox;
+//            Text->getBoundingPoints(BoundingBox);
+
+            auto TextPrimitive {EoDbText::Create(Text)};
+            Group->AddTail(TextPrimitive);
+
+			pstate.SetColorIndex(DeviceContext, ColorIndex);
 
 			OdGePoint3dArray BoundingBox;
 			TextPrimitive->GetBoundingBox(BoundingBox, GapSpaceFactor());
 
 			const double dGap = OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length();
 
-			BoundingBox[0] = ProjectToward(CurrentPnt, pLine->StartPoint(), dGap / 2.);
-			BoundingBox[1] = ProjectToward(CurrentPnt, pLine->EndPoint(), dGap / 2.);
+			BoundingBox[0] = ProjectToward(CurrentPnt, EngagedLine->StartPoint(), dGap / 2.);
+			BoundingBox[1] = ProjectToward(CurrentPnt, EngagedLine->EndPoint(), dGap / 2.);
 
 			double dRel[2];
 
-			dRel[0] = pLine->ParametricRelationshipOf(BoundingBox[0]);
-			dRel[1] = pLine->ParametricRelationshipOf(BoundingBox[1]);
+			dRel[0] = EngagedLine->ParametricRelationshipOf(BoundingBox[0]);
+			dRel[1] = EngagedLine->ParametricRelationshipOf(BoundingBox[1]);
 
-			if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) {
-				EoDbLine* NewLinePrimitive = EoDbLine::Create(*pLine, Database());
-				pLine->SetEndPoint(BoundingBox[0]);
-				NewLinePrimitive->SetStartPoint(BoundingBox[1]);
-				Group->AddTail(NewLinePrimitive);
+            OdDbLinePtr Line {EngagedLine->EntityObjectId().safeOpenObject(OdDb::kForWrite)};
+            if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) {
+                OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+                OdDbLinePtr NewLine {Line->clone()};
+                BlockTableRecord->appendOdDbEntity(NewLine);
+                Line->setEndPoint(BoundingBox[0]);
+                NewLine->setStartPoint(BoundingBox[1]);
+
+                EngagedLine->SetEndPoint(BoundingBox[0]);
+				Group->AddTail(EoDbLine::Create(NewLine));
 			}
-			else if (dRel[0] <= DBL_EPSILON)
-				pLine->SetStartPoint(BoundingBox[1]);
-			else if (dRel[1] >= 1. - DBL_EPSILON)
-				pLine->SetEndPoint(BoundingBox[0]);
-
+            else if (dRel[0] <= DBL_EPSILON) {
+                Line->setStartPoint(BoundingBox[1]);
+                EngagedLine->SetStartPoint(BoundingBox[1]);
+            }
+            else if (dRel[1] >= 1. - DBL_EPSILON) {
+                Line->setEndPoint(BoundingBox[0]);
+                EngagedLine->SetEndPoint(BoundingBox[0]);
+            }
 		}
 		GetDocument()->UpdateGroupInAllViews(kGroup, Group);
 		pstate.Restore(DeviceContext, PrimitiveState);

@@ -392,7 +392,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 
                 EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 
-				EoDbText* TextPrimitive = EoDbText::Create(Database());
+				EoDbText* TextPrimitive = EoDbText::Create1(Database());
 				TextPrimitive->SetTo(FontDefinition, ReferenceSystem, theApp.FormatAngle(Angle));
 				Group->AddTail(TextPrimitive);
 				Document->AddWorkLayerGroup(Group);
@@ -455,7 +455,7 @@ void AeSysView::OnDimensionModeConvert(void) {
 					EoDbLine* LinePrimitive = EoDbLine::Create(DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint());
 					LinePrimitive->SetColorIndex(DimensionPrimitive->ColorIndex());
 					LinePrimitive->SetLinetypeIndex(DimensionPrimitive->LinetypeIndex());
-					EoDbText* TextPrimitive = EoDbText::Create(Database());
+					EoDbText* TextPrimitive = EoDbText::Create1(Database());
 					TextPrimitive->SetTo(DimensionPrimitive->FontDef(), ReferenceSystem, DimensionPrimitive->Text());
 					TextPrimitive->SetColorIndex(DimensionPrimitive->TextColorIndex());
 					Group->InsertAfter(posPrimCur, LinePrimitive);
