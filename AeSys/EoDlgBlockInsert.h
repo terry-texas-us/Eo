@@ -8,15 +8,15 @@ class EoDlgBlockInsert : public CDialog {
 public:
 	EoDlgBlockInsert(CWnd* parent = NULL);
 	EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = NULL);
-	virtual ~EoDlgBlockInsert();
+	~EoDlgBlockInsert();
 
 // Dialog Data
 	enum { IDD = IDD_INSERT_BLOCK };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+	void OnOK() override;
 
 	static OdGePoint3d InsertionPoint;
 	AeSysDoc* m_Document;
@@ -27,4 +27,6 @@ public:
 
 protected:
 	DECLARE_MESSAGE_MAP()
+public:
+    afx_msg void OnBnClickedCancel();
 };

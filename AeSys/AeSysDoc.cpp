@@ -1193,12 +1193,13 @@ void AeSysDoc::AddTextBlock(LPWSTR text) {
 }
 
 POSITION AeSysDoc::DeletedGroupsAddHead(EoDbGroup* group) {
-	m_DatabasePtr->disableUndoRecording(false);
-	group->Erase();
-	m_DatabasePtr->disableUndoRecording(true);
+    m_DatabasePtr->disableUndoRecording(false);
+    group->Erase();
+    m_DatabasePtr->disableUndoRecording(true);
 
-	return (m_DeletedGroupList.AddHead(group));
+    return (m_DeletedGroupList.AddHead(group));
 }
+
 POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup* group) {
 	m_DatabasePtr->disableUndoRecording(false);
 	group->Erase();
@@ -1206,6 +1207,7 @@ POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup* group) {
 
 	return (m_DeletedGroupList.AddTail(group));
 }
+
 EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
 	EoDbGroup* Group = NULL;
 	if (!m_DeletedGroupList.IsEmpty()) {

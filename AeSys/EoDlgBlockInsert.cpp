@@ -12,13 +12,14 @@ IMPLEMENT_DYNAMIC(EoDlgBlockInsert, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)
 	ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelchangeBlocksList)
 	ON_BN_CLICKED(IDC_PURGE, &EoDlgBlockInsert::OnBnClickedPurge)
+    ON_BN_CLICKED(IDCANCEL, &EoDlgBlockInsert::OnBnClickedCancel)
 END_MESSAGE_MAP()
 
 OdGePoint3d EoDlgBlockInsert::InsertionPoint;
 
 EoDlgBlockInsert::EoDlgBlockInsert(CWnd* parent) 
     : CDialog(EoDlgBlockInsert::IDD, parent)
-    , m_Document(0) {
+    , m_Document(nullptr) {
 }
 
 EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* parent) 
@@ -97,4 +98,9 @@ void EoDlgBlockInsert::OnBnClickedPurge() {
 	m_Document->PurgeUnreferencedBlocks();
 
 	CDialog::OnOK();
+}
+
+void EoDlgBlockInsert::OnBnClickedCancel() {
+    // TODO: Add your control notification handler code here
+    CDialog::OnCancel();
 }

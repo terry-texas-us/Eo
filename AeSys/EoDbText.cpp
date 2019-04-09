@@ -682,11 +682,12 @@ EoDbText* EoDbText::Create(const EoDbText& other, OdDbBlockTableRecordPtr& block
     return Text;
 }
 
-OdDbMTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, OdString text) {
+OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text) {
     OdDbMTextPtr MText = OdDbMText::createObject();
     MText->setDatabaseDefaults(blockTableRecord->database());
     blockTableRecord->appendOdDbEntity(MText);
     MText->setColorIndex(pstate.ColorIndex());
+    MText->setContents(text);
 
     return MText;
 }

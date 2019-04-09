@@ -205,7 +205,9 @@
 #define IDC_GROUPS                      1256
 #define IDC_LEFT_DOWN                   1273
 #define IDC_EDIT1                       1274
+#define IDC_SCALE_X                     1275
 #define IDC_LEFT_UP                     1276
+#define IDC_ROTATION_ANGLE              1276
 #define IDC_RIGHT_DOWN                  1277
 #define IDC_RIGHT_UP                    1278
 #define IDC_ARC_3_POINT                 1278
@@ -227,6 +229,8 @@
 #define IDC_REFERENCES                  1316
 #define IDC_CHECK1                      1319
 #define IDC_APPEND                      1320
+#define IDC_SCALE_ONSCREEN              1320
+#define IDC_ROTATION_ONSCREEN           1321
 #define IDC_RADIO1                      1323
 #define IDC_RADIO2                      1324
 #define IDC_SHEET                       1325
@@ -433,6 +437,14 @@
 #define IDC_PROPLIST                    1600
 #define IDC_VALUE                       1601
 #define IDC_BUTTON1                     1602
+#define IDC_INSERTION_POINT_Y           1603
+#define IDC_INSERTION_POINT_Z           1604
+#define IDC_SCALE_Y                     1605
+#define IDC_SCALE_Z                     1606
+#define IDC_CHECK3                      1607
+#define IDC_EXPLODE                     1607
+#define IDC_INSERTION_POINT_X           1608
+#define IDC_INSERTION_POINT_ONSCREEN    1609
 #define IDS_TOOLBAR_STANDARD            3781
 #define IDS_TOOLBAR_CUSTOMIZE           3782
 #define IDS_WINDOWS_MANAGER             3783
@@ -936,9 +948,9 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        343
+#define _APS_NEXT_RESOURCE_VALUE        349
 #define _APS_NEXT_COMMAND_VALUE         4948
-#define _APS_NEXT_CONTROL_VALUE         1603
+#define _APS_NEXT_CONTROL_VALUE         1610
 #define _APS_NEXT_SYMED_VALUE           500
 #endif
 #endif

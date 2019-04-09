@@ -61,9 +61,8 @@ void EoDlgModeLetter::OnOK() {
         } else {
             TextEditControl.Replace(L"\r\n", L"\\P");
             OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-            OdDbMTextPtr MText = EoDbText::Create(BlockTableRecord, TextEditControl.GetBuffer());
+            OdDbMTextPtr MText = EoDbText::CreateM(BlockTableRecord, TextEditControl.GetBuffer());
             MText->setLocation(ReferenceSystem.Origin());
-            MText->setContents((LPCWSTR) TextEditControl);
             MText->setTextHeight(ReferenceSystem.YDirection().length());
             MText->setRotation(ReferenceSystem.Rotation());
 

@@ -88,7 +88,7 @@ public: // Methods - static
 	static EoDbText* Create(const EoDbText& other, OdDbBlockTableRecordPtr& blockTableRecord);
     static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
     static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& position, const OdString& textString);
-    static OdDbMTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, OdString text);
+    static OdDbMTextPtr CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text);
     static EoDbText* Create(OdDbTextPtr& text);
     static EoDbText* Create(OdDbMTextPtr& text);
 };
