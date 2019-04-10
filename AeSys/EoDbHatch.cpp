@@ -1045,26 +1045,16 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
     OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatch::sm_HatchNames[InteriorStyleIndex]);
     Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
-    // Plane normal from the first three vertices
-    OdGeVector3d PlaneNormal = OdGeVector3d(Vertices[1] - Vertices[0]).crossProduct(OdGeVector3d(Vertices[2] - Vertices[0]));
-    if (!PlaneNormal.isZeroLength()) {
-        PlaneNormal.normalize();
-        if (InteriorStyle != kHatch) {
-            HatchXAxis = ComputeArbitraryAxis(PlaneNormal);
-            HatchYAxis = PlaneNormal.crossProduct(HatchXAxis);
-        }
+    const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
+
+    if (InteriorStyle != kHatch) {
+        HatchXAxis = ComputeArbitraryAxis(PlaneNormal);
+        HatchYAxis = PlaneNormal.crossProduct(HatchXAxis);
     }
     Hatch->setNormal(PlaneNormal);
+    Hatch->setElevation(ComputeElevation(Vertices[0], PlaneNormal));
 
-    OdGePlane Plane(Vertices[0], PlaneNormal);
     OdGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(Plane);
-
-    OdGePoint3d WorldOriginOnPlane = OdGePoint3d::kOrigin.orthoProject(Plane);
-    OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
-    PointToPlaneVector.transformBy(WorldToPlaneTransform);
-    Hatch->setElevation(PointToPlaneVector.z);
-
     WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
     OdGePoint2dArray Vertices2;

@@ -193,6 +193,14 @@ double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal) {
 
     return OriginToPlaneVector.z;
 }
+// <summary>Computes the plane normal. Expects uAxis = pointU - origin and vAxis = pointV - origin to be non-collinear.</summary>
+OdGeVector3d ComputeNormal(const OdGePoint3d& pointU, const OdGePoint3d& origin, const OdGePoint3d& pointV) {
+    auto Normal = OdGeVector3d(pointU - origin).crossProduct(OdGeVector3d(pointV - origin));
+    if (Normal.isZeroLength()) {
+        return OdGeVector3d::kZAxis;
+    }
+    return Normal.normalize();
+}
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
 	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
