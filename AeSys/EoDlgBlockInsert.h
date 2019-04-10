@@ -22,7 +22,21 @@ protected:
 	AeSysDoc* m_Document;
 public:
 	CListBox m_BlocksListBoxControl;
-	afx_msg void OnLbnSelchangeBlocksList();
+    CEdit m_InsertionPointX;
+    CEdit m_InsertionPointY;
+    CEdit m_InsertionPointZ;
+    CEdit m_ScaleX;
+    CEdit m_ScaleY;
+    CEdit m_ScaleZ;
+    CEdit m_RotationAngle;
+
+    CButton m_InsertionPointOnscreen;
+    CButton m_ScaleOnscreen;
+    CButton m_RotationOnscreen;
+
+    CButton m_Explode;
+
+    afx_msg void OnLbnSelchangeBlocksList();
 	afx_msg void OnBnClickedPurge();
 
 protected:

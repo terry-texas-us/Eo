@@ -33,7 +33,20 @@ EoDlgBlockInsert::~EoDlgBlockInsert() {
 void EoDlgBlockInsert::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BLOCKS_LIST, m_BlocksListBoxControl);
+    
+    DDX_Control(pDX, IDC_INSERTION_POINT_ONSCREEN, m_InsertionPointOnscreen);
+    DDX_Control(pDX, IDC_INSERTION_POINT_X, m_InsertionPointX);
+    DDX_Control(pDX, IDC_INSERTION_POINT_Y, m_InsertionPointY);
+    DDX_Control(pDX, IDC_INSERTION_POINT_Z, m_InsertionPointZ);
+    DDX_Control(pDX, IDC_SCALE_ONSCREEN, m_ScaleOnscreen);
+    DDX_Control(pDX, IDC_SCALE_X, m_ScaleX);
+    DDX_Control(pDX, IDC_SCALE_Y, m_ScaleY);
+    DDX_Control(pDX, IDC_SCALE_Z, m_ScaleZ);
+    DDX_Control(pDX, IDC_ROTATION_ONSCREEN, m_RotationOnscreen);
+    DDX_Control(pDX, IDC_ROTATION_ANGLE, m_RotationAngle);
+    DDX_Control(pDX, IDC_EXPLODE, m_Explode);
 }
+
 BOOL EoDlgBlockInsert::OnInitDialog() {
 	CDialog::OnInitDialog();
 
@@ -63,6 +76,7 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 	}
 	return TRUE;
 }
+
 void EoDlgBlockInsert::OnOK() {
 	const int CurrentSelection = m_BlocksListBoxControl.GetCurSel();
 
@@ -80,6 +94,7 @@ void EoDlgBlockInsert::OnOK() {
 	}
 	CDialog::OnOK();
 }
+
 void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
 	const int CurrentSelection = m_BlocksListBoxControl.GetCurSel();
 
@@ -94,6 +109,7 @@ void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
 		WndProcPreviewUpdate(GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd(), Block);
 	}
 }
+
 void EoDlgBlockInsert::OnBnClickedPurge() {
 	m_Document->PurgeUnreferencedBlocks();
 
