@@ -4,16 +4,17 @@ using namespace EoDb;
 
 /* <remarks>
 Polyline primitive(never made it release : if already written flags not streamed)
-  Type code <0x2002>	EoUInt16[0-1]
-  Pen color				EoUInt16[2-3]
-  Line type				EoUInt16[4-5]
-  Flags					EoUInt16[6-7]
-  Constant width        double[8-11]
-  Elevation             double[12-15]
-  Thickness             dobuel[16-19]
-  Normal                OdGeVector3d[20-31]
-  Number of points		EoUInt16[32-33]
-  {0 or more Vertices}  {Vertex, StartWidth, EndWidth, Bulge}  {OdGePoint2d, double, double, double} [34- ]
+  Type code <0x2002>                OdUInt16[0-1]
+  Pen color                         OdUInt16[2-3]
+  Line type                         OdUInt16[4-5]
+  Flags                             OdUInt16[6-7]
+  Constant width                    double[8-11]
+  Elevation                         double[12-15]
+  Thickness                         double[16-19]
+  Normal                            OdGeVector3d[20-31]
+  Number of points                  OdUInt16[32-33]
+  {0 or more Vertices} {Vertex, StartWidth, EndWidth, Bulge}
+                                    {OdGePoint2d, double, double, double} [34- ]
 </remarks> */
 
 class EoDbPolyline : public EoDbPrimitive {
@@ -87,8 +88,6 @@ public: // Methods - static
 
     static EoDbPolyline* Create(const EoDbPolyline& polyline, OdDbDatabasePtr database);
     
-    static EoDbPolyline* Create(OdDbDatabasePtr database);
-	
     static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 

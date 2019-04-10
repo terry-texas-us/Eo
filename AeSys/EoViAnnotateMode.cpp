@@ -145,38 +145,26 @@ void AeSysView::OnAnnotateModeBubble() {
         Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis * BubbleRadius(), 1.);
         Group->AddTail(EoDbEllipse::Create(Ellipse));
 	}
-	else {
+    else {
         auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
         Polyline->setColorIndex(1);
-		Polyline->setLinetype(L"Continuous");
-		Polyline->setClosed(true);
+        Polyline->setLinetype(L"Continuous");
+        Polyline->setClosed(true);
 
-		OdGePoint3dArray Points;
-		polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
+        OdGePoint3dArray Points;
+        polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
 
-		const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-
-		OdGeMatrix3d WorldToPlaneTransform;
-		OdGePlane Plane(CurrentPnt, ActiveViewPlaneNormal);
-			
-		WorldToPlaneTransform.setToWorldToPlane(Plane);
-
-		OdGePoint3d WorldOriginOnPlane = OdGePoint3d::kOrigin.orthoProject(Plane);
-		OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
-		PointToPlaneVector.transformBy(WorldToPlaneTransform);
-	
-		const double Elevation = PointToPlaneVector.z;
-
-		WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
+        OdGeMatrix3d WorldToPlaneTransform;
+        WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
 
 		for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
-			OdGePoint3d Vertex = Points[VertexIndex];
+			auto Vertex = Points[VertexIndex];
 			Vertex.transformBy(WorldToPlaneTransform);
             Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
 		}
 		Polyline->setNormal(ActiveViewPlaneNormal);
-		Polyline->setElevation(Elevation);
+        Polyline->setElevation(ComputeElevation(CurrentPnt, ActiveViewPlaneNormal));
 
         Group->AddTail(EoDbPolyline::Create(Polyline));
 	}
@@ -593,55 +581,57 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
 void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
-	const OdGeVector3d PlaneNormal = CameraDirection();
+    const auto PlaneNormal {CameraDirection()};
 
-	const OdGePoint3d EndPoint = endPoint;
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdGePoint3dArray ItemPoints;
 	ItemPoints.clear();
 
-	if (type == 1 || type == 2) {
-		const double Angle = .244978663127;
-		const double Size = size / .970142500145;
+    auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
-		OdGePoint3d BasePoint(ProjectToward(EndPoint, startPoint, Size));
-		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
+    Polyline->setColorIndex(1);
+    Polyline->setLinetype(L"Continuous");
+
+    if (type == 1 || type == 2) { // open arrow or closed arrow
+        const auto Angle {.244978663127};
+        const auto Size {size / .970142500145};
+
+        auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
+
+        ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(endPoint);
 		ItemPoints.append(BasePoint.rotateBy(- 2. * Angle, PlaneNormal, endPoint));
-		EoDbPolyline* Polyline = EoDbPolyline::Create(Database());
-		Polyline->SetColorIndex(1);
-		Polyline->SetLinetypeIndex(1);
-		Polyline->SetPoints(ItemPoints);
-		if (type == 2) {
-			Polyline->SetClosed(true);
-		}
-		group->AddTail(Polyline);
-	}
-	else if (type == 3) {
-		const double Angle = 9.96686524912e-2;
-		const double Size = size / .99503719021;
 
-		OdGePoint3d BasePoint(ProjectToward(EndPoint, startPoint, Size));
+        if (type == 2) {
+            Polyline->setClosed(true);
+        }
+	}
+	else if (type == 3) { // half arrow
+        const auto Angle {9.96686524912e-2};
+        const auto Size {size / .99503719021};
+
+        auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(endPoint);
-		EoDbPolyline* Polyline = EoDbPolyline::Create(Database());
-		Polyline->SetColorIndex(1);
-		Polyline->SetLinetypeIndex(1);
-		Polyline->SetPoints(ItemPoints);
+    }
+	else { // hash
+        const auto Angle {.785398163397};
+        const auto Size {.5 * size / .707106781187};
 
-		group->AddTail(Polyline);
-	}
-	else if (type == 4) {
-		const double Angle = .785398163397;
-		const double Size = .5 * size / .707106781187;
-
-		OdGePoint3d BasePoint(ProjectToward(EndPoint, startPoint, Size));
+        auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(BasePoint.rotateBy(PI, PlaneNormal, endPoint));
-		EoDbPolyline* Polyline = EoDbPolyline::Create(Database());
-		Polyline->SetColorIndex(1);
-		Polyline->SetLinetypeIndex(1);
-		Polyline->SetPoints(ItemPoints);
-		group->AddTail(Polyline);
-	}
+    }
+    OdGeMatrix3d WorldToPlaneTransform;
+    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
+
+    for (size_t VertexIndex = 0; VertexIndex < ItemPoints.size(); VertexIndex++) {
+        auto Vertex = ItemPoints[VertexIndex];
+        Vertex.transformBy(WorldToPlaneTransform);
+        Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
+    }
+    Polyline->setNormal(PlaneNormal);
+    Polyline->setElevation(ComputeElevation(endPoint, PlaneNormal));
+    group->AddTail(EoDbPolyline::Create(Polyline));
 }

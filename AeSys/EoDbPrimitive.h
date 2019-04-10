@@ -5,6 +5,8 @@ class EoDbPegFile;
 /// <summary>Compute a not so arbitrary axis for AutoCAD entities</summary>
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal);
 
+double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal);
+
 class AeSysView;
 class EoDbGroupList;
 class EoDbGroup;

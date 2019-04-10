@@ -205,7 +205,9 @@ void AeSysView::OnPowerModeEscape() {
 }
 
 void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
-	OdGePoint3dArray Points;
+    const auto PlaneNormal {CameraDirection()};
+
+    OdGePoint3dArray Points;
 	Points.setLogicalLength(3);
 
 	Points[0] = ProjectToward(pointOnCircuit, endPoint, .05);
@@ -216,13 +218,28 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 	Points[1] = pointOnCircuit;
 	Circuit.ProjPtFrom_xy(0., .075, Points[2]);
 
-	EoDbGroup* Group = new EoDbGroup;
+    auto Group {new EoDbGroup};
 	GetDocument()->AddWorkLayerGroup(Group);
-	EoDbPolyline* Polyline = EoDbPolyline::Create(Database());
-	Polyline->SetColorIndex(2);
-	Polyline->SetLinetypeIndex(1);
-	Polyline->SetPoints(Points);
-	Group->AddTail(Polyline);
+
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
+
+    Polyline->setColorIndex(2);
+    Polyline->setLinetype(L"Continuous");
+
+    OdGeMatrix3d WorldToPlaneTransform;
+    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
+
+    for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
+        auto Vertex = Points[VertexIndex];
+        Vertex.transformBy(WorldToPlaneTransform);
+        Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
+    }
+    Polyline->setNormal(PlaneNormal);
+    Polyline->setElevation(ComputeElevation(endPoint, PlaneNormal));
+    Group->AddTail(EoDbPolyline::Create(Polyline));
+
 	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 }
 void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {

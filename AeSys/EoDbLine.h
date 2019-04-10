@@ -2,6 +2,19 @@
 
 using namespace EoDb;
 
+/* <remarks>
+Hatch(Polygon) primitive
+  Type code <0x0400>			    OdUInt16[0-1]
+  Pen color				            OdUInt16[2-3]
+  Polygon style				        OdUInt16[4-5]
+  Polygon Style Index			    OdUInt16[6-7]
+  Number of vertices			    OdUInt16[8-9]
+  Hatch origin				        OdGePoint3d[10-13][14-17][18-21]
+  Hatch/pattern reference x-axis	OdGeVector3d[22-25][26-29][30-33]
+  Hatch/pattern reference y-axis  	OdGeVector3d[34-37][38-41][42-45]
+  {0 or more points}			    OdGePoint3d[46- ]
+  </remarks> */
+
 class EoDbLine : public EoDbPrimitive {
 	EoGeLineSeg3d m_Line;
 

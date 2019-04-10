@@ -193,7 +193,7 @@ void AeSysView::OnNodalModeToPolygon(void) {
 								Points[3] = Points[0] + Translate;
 								// <tas="Behavior changed. Line extruded into solid hatch primitive"</tas>
 								EoDbGroup* NewGroup = new EoDbGroup;
-								EoDbHatch* NewHatch = EoDbHatch::Create(Database());
+								EoDbHatch* NewHatch = EoDbHatch::Create0(Database());
 								NewHatch->SetInteriorStyle(EoDbHatch::kSolid);
 								NewHatch->SetVertices(Points);
 								NewGroup->AddTail(NewHatch);
@@ -213,7 +213,7 @@ void AeSysView::OnNodalModeToPolygon(void) {
 									Points[3] = Points[0] + Translate;
 									// <tas="Behavior changed. Edges of hatch extruded into solid hatch primitives"</tas>
 									EoDbGroup* NewGroup = new EoDbGroup;
-									EoDbHatch* NewHatch = EoDbHatch::Create(Database());
+									EoDbHatch* NewHatch = EoDbHatch::Create0(Database());
 									NewHatch->SetInteriorStyle(EoDbHatch::kSolid);
 									NewHatch->SetVertices(Points);
 									NewGroup->AddTail(NewHatch);

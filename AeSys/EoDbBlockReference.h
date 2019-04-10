@@ -6,18 +6,18 @@ class EoDbPegFile;
 
 /* <remarks>
 GroupReference(SegRef) primitive in Peg files and Tracing files
-  Type code <0x0102>	EoUInt16[0-1]
-  Pen color				EoUInt16[2-3]
-  Line type				EoUInt16[4-5]
-  Group name			string
-  Insertion point		EoGePoint3d
-  Local normal vector	EoGeVector3d
-  Scale factors(x, y, z)EoGeVector3d
-  Rotation				double
-  Number of columns		EoUInt16
-  Number of rows		EoUInt16
-  Column spacing		double
-  Row spacing			double
+  Type code <0x0102>	            OdUInt16[0-1]
+  Pen color				            OdUInt16[2-3]
+  Line type				            OdUInt16[4-5]
+  Group name			            string
+  Insertion point		            OdGePoint3d
+  Local normal vector	            OdGeVector3d
+  Scale factors(x, y, z)            OdGeVector3d
+  Rotation				            double
+  Number of columns		            OdUInt16
+  Number of rows		            OdUInt16
+  Column spacing		            double
+  Row spacing			            double
 </remarks> */
 
 class EoDbBlockReference : public EoDbPrimitive {

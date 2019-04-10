@@ -4,6 +4,19 @@
 
 using namespace EoDb;
 
+/* <remarks>
+Hatch(Polygon) primitive
+  Type code <0x0400>                EoUInt16[0-1]
+  Pen color                         EoUInt16[2-3]
+  Polygon style                     EoUInt16[4-5]
+  Polygon Style Index               EoUInt16[6-7]
+  Number of vertices                EoUInt16[8-9]
+  Hatch origin                      EoGePoint3d[10-13][14-17][18-21]
+  Hatch / pattern reference x-axis  EoGeVector3d[22-25][26-29][30-33]
+  Hatch / pattern reference y-axis  EoGeVector3d[34-37][38-41][42-45]
+  {0 or more points}                EoGePoint3d[46- ]
+</remarks> */
+
 class EoDbHatch : public EoDbPrimitive {
 	static size_t sm_EdgeToEvaluate;
 	static size_t sm_Edge;
@@ -101,9 +114,9 @@ public:
 
     static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
 
-    static EoDbHatch* Create(const EoDbHatch& other, OdDbDatabasePtr database);
+    static EoDbHatch* Create1(const EoDbHatch& other, OdDbDatabasePtr database);
 
-    static EoDbHatch* Create(OdDbDatabasePtr database);
+    static EoDbHatch* Create0(OdDbDatabasePtr database);
     static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 

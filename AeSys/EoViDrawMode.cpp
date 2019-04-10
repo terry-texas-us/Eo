@@ -170,7 +170,7 @@ void AeSysView::OnDrawModeReturn() {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
         m_DrawModePoints.append(CurrentPnt);
         Group = new EoDbGroup;
-        EoDbHatch* Hatch = EoDbHatch::Create(Database());
+        EoDbHatch* Hatch = EoDbHatch::Create0(Database());
         Hatch->SetVertices(m_DrawModePoints);
         Group->AddTail(Hatch);
         GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
@@ -320,45 +320,44 @@ void AeSysView::DoDrawModeMouseMove() {
         }
         break;
 
-    case ID_OP3:
+    case ID_OP3: {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
         m_DrawModePoints.append(CurrentPnt);
 
         GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+     
+        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+        
         if (NumberOfPoints == 1) {
-            m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
+            OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
+            Line->setStartPoint(m_DrawModePoints[0]);
+            Line->setEndPoint(CurrentPnt);
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
         } else {
-            const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+            // <tas="This works for plane normal as long as input does not take current point off the view plane. Once input is off the view plane need to use three points for normal and ensure the inputs are planar."/>
+            const auto PlaneNormal = CameraDirection();
+
+            auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
             OdGeMatrix3d WorldToPlaneTransform;
-            OdGePlane Plane(m_DrawModePoints[0], ActiveViewPlaneNormal);
-
-            WorldToPlaneTransform.setToWorldToPlane(Plane);
-
-            OdGePoint3d WorldOriginOnPlane = OdGePoint3d::kOrigin.orthoProject(Plane);
-            OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
-            PointToPlaneVector.transformBy(WorldToPlaneTransform);
-
-            const double Elevation = PointToPlaneVector.z;
-
-            WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
-
-            EoDbPolyline* Polyline = new EoDbPolyline();
-            Polyline->SetNormal(ActiveViewPlaneNormal);
-            Polyline->SetElevation(Elevation);
+            WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
             for (size_t VertexIndex = 0; VertexIndex < m_DrawModePoints.size(); VertexIndex++) {
-                OdGePoint3d Vertex = m_DrawModePoints[VertexIndex];
+                auto Vertex {m_DrawModePoints[VertexIndex]};
                 Vertex.transformBy(WorldToPlaneTransform);
-                Polyline->AppendVertex(Vertex.convert2d());
+                Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
             }
-            Polyline->SetClosed(true);
-            m_PreviewGroup.AddTail(Polyline);
+            Polyline->setClosed(true);
+
+            Polyline->setNormal(PlaneNormal);
+            Polyline->setElevation(ComputeElevation(m_DrawModePoints[0], PlaneNormal));
+
+            m_PreviewGroup.AddTail(EoDbPolyline::Create(Polyline));
         }
         GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         break;
-
+    }
     case ID_OP4: {
         if (m_DrawModePoints.last() != CurrentPnt) {
             CurrentPnt = SnapPointToAxis(m_DrawModePoints.last(), CurrentPnt);

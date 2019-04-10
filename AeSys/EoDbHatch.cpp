@@ -145,7 +145,7 @@ void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	HatchEntity->appendLoop(OdDbHatch::kPolyline, Vertices, Bulges);
 }
 EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbHatch::Create(*this, database));
+	return (EoDbHatch::Create1(*this, database));
 }
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
 	const OdInt16 ColorIndex = LogicalColorIndex();
@@ -972,7 +972,7 @@ EoDbHatch* EoDbHatch::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber)
     return (HatchPrimitive);
 }
 
-EoDbHatch* EoDbHatch::Create(const EoDbHatch& other, OdDbDatabasePtr database) {
+EoDbHatch* EoDbHatch::Create1(const EoDbHatch& other, OdDbDatabasePtr database) {
     OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
     OdDbHatchPtr HatchEntity = other.EntityObjectId().safeOpenObject()->clone();
     BlockTableRecord->appendOdDbEntity(HatchEntity);
@@ -983,7 +983,7 @@ EoDbHatch* EoDbHatch::Create(const EoDbHatch& other, OdDbDatabasePtr database) {
     return Hatch;
 }
 
-EoDbHatch* EoDbHatch::Create(OdDbDatabasePtr database) {
+EoDbHatch* EoDbHatch::Create0(OdDbDatabasePtr database) {
     OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     OdDbHatchPtr HatchEntity = OdDbHatch::createObject();

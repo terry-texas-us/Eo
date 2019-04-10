@@ -2,14 +2,14 @@
 
 using namespace EoDb;
 
-/* <tas="">
+/* <remarks>
 Spline primitive
-  Type code <0x2000>	        EoUInt16[0-1]
-  Pen color				        EoUInt16[2-3]
-  Line type				        EoUInt16[4-5]
-  Number of control points	    EoUInt16[6-7]
-  {0 or more control points}	EoGePoint3d[8- ]
-</tas> */
+  Type code <0x2000>                OdUInt16[0-1]
+  Pen color                         OdUInt16[2-3]
+  Line type                         OdUInt16[4-5]
+  Number of control points          OdUInt16[6-7]
+  {0 or more control points}        OdGePoint3d[8- ]
+</remarks> */
 
 class EoDbSpline : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;

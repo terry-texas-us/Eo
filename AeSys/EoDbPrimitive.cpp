@@ -181,6 +181,19 @@ OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
 	return ArbitraryAxis;
 }
 
+double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal) {
+    OdGePlane Plane(point, normal);
+
+    OdGeMatrix3d WorldToPlaneTransform;
+    WorldToPlaneTransform.setToWorldToPlane(Plane);
+
+    auto OriginOnPlane {OdGePoint3d::kOrigin.orthoProject(Plane)};
+    auto OriginToPlaneVector {OriginOnPlane.asVector()};
+    OriginToPlaneVector.transformBy(WorldToPlaneTransform);
+
+    return OriginToPlaneVector.z;
+}
+
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
 	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
 	OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);

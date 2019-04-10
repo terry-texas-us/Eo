@@ -521,15 +521,6 @@ EoDbPolyline* EoDbPolyline::Create(const EoDbPolyline& polyline, OdDbDatabasePtr
     return Polyline;
 }
 
-EoDbPolyline* EoDbPolyline::Create(OdDbDatabasePtr database) {
-	EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
-	PolylinePrimitive->SetColorIndex(pstate.ColorIndex());
-	PolylinePrimitive->SetLinetypeIndex(pstate.LinetypeIndex());
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	PolylinePrimitive->AssociateWith(BlockTableRecord);
-	return PolylinePrimitive;
-}
-
 OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
     OdDbPolylinePtr Polyline = OdDbPolyline::createObject();
     Polyline->setDatabaseDefaults(blockTableRecord->database());
