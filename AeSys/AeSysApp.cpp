@@ -20,6 +20,7 @@
 #include "..\win\ExtDialog\FileDlgExt.h"
 
 #include "EoAppAuditInfo.h"
+#include "EoDbHatchPatternTable.h"
 #include "EoDlgAudit.h"
 #include "EoDlgModeLetter.h"
 #include "EoDlgModeRevise.h"
@@ -1313,7 +1314,7 @@ BOOL AeSysApp::InitInstance() {
 	SetShadowFolderPath(L"AeSys Shadow Folder");
 
 	LoadSimplexStrokeFont(ResourceFolderPath() + L"Simplex.psf");
-	LoadHatchesFromFile(ResourceFolderPath() + L"Hatches\\DefaultSet.txt");
+	EoDbHatchPatternTable::LoadHatchesFromFile(ResourceFolderPath() + L"Hatches\\DefaultSet.pat");
 	LoadPenWidthsFromFile(ResourceFolderPath() + L"Pens\\Widths.txt");
 	//LoadColorPalletFromFile(ResourceFolder + L"Pens\\Colors\\Default.txt"));
 
@@ -1369,84 +1370,7 @@ void AeSysApp::LoadColorPalletFromFile(const CString& fileName) {
 		}
 	}
 }
-/// <summary> Loads the hatch pattern definition table.</summary>
-/// <remarks> No longer including the total length of all dash components in the table.</remarks>
-void AeSysApp::LoadHatchesFromFile(const CString& fileName) {
-	CFileException e;
-	CStdioFile fl;
 
-	// <tas="failure to open and then continue leaves"</tas>
-	if (!fl.Open(fileName, CFile::modeRead | CFile::typeText, &e))
-		return;
-
-	EoDbHatch::sm_HatchNames.clear();
-	EoDbHatch::sm_HatchNames.append(L"ExternalHatch");
-	int iHatId = 0;
-	int NumberOfPatternLines = 0;
-	int TableOffset = 0;
-
-	wchar_t	szLn[128];
-	while (fl.ReadString(szLn, sizeof(szLn) / sizeof(wchar_t) - 1)) {
-		if (szLn[0] == '!') { // New Hatch index
-			if (iHatId != 0) {
-				EoDbHatch::sm_HatchPatternTable[EoDbHatch::sm_HatchPatternOffsets[iHatId]] = double(NumberOfPatternLines);
-			}
-			EoDbHatch::sm_HatchPatternOffsets[++iHatId] = TableOffset++;
-			NumberOfPatternLines = 0;
-
-			const wchar_t Delimiters[] = L"*-\n";
-			LPWSTR NextToken = nullptr;
-			const LPWSTR Token = wcstok_s(&szLn[2], Delimiters, &NextToken);
-			CString PatternName(Token);
-			PatternName.TrimRight();
-			if (PatternName.CompareNoCase(L"end") != 0) {
-				EoDbHatch::sm_HatchNames.append((LPCWSTR)PatternName);
-			}
-		}
-		else {
-			int iNmbStrsId = TableOffset;
-			TableOffset += 1;
-			int iNmbEnts = 0;
-			const wchar_t Delimiters[] = L",\0";
-			LPWSTR NextToken = nullptr;
-			LPWSTR Token = wcstok_s(szLn, Delimiters, &NextToken);
-			while (Token != 0) {
-				EoDbHatch::sm_HatchPatternTable[TableOffset++] = _wtof(Token);
-				iNmbEnts++;
-				Token = wcstok_s(nullptr, Delimiters, &NextToken);
-			}
-			EoDbHatch::sm_HatchPatternTable[iNmbStrsId++] = double(iNmbEnts) - 5.;
-			NumberOfPatternLines++;
-		}
-	}
-	OdHatchPatternManager* Manager = theApp.patternManager();
-
-	for (int PatternIndex = 1; PatternIndex <= 2; PatternIndex++) {
-		OdHatchPattern HatchPattern;
-		TableOffset = EoDbHatch::sm_HatchPatternOffsets[PatternIndex];
-		const int NumberOfLinePatterns = int(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
-		OdHatchPatternLine HatchPatternLine;
-		for (int PatternLineIndex = 0; PatternLineIndex < NumberOfLinePatterns; PatternLineIndex++) {
-			const int NumberOfDashesInPattern = int(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
-			HatchPatternLine.m_dLineAngle = EoDbHatch::sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_basePoint.x = EoDbHatch::sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_basePoint.y = EoDbHatch::sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_patternOffset.x = EoDbHatch::sm_HatchPatternTable[TableOffset++] / 12.;
-			HatchPatternLine.m_patternOffset.y = EoDbHatch::sm_HatchPatternTable[TableOffset++] / 12.;
-			HatchPatternLine.m_dashes.clear();
-			if (EoDbHatch::sm_HatchPatternTable[TableOffset] == 1.E16 && EoDbHatch::sm_HatchPatternTable[TableOffset + 1] == 0.) {
-				TableOffset += 2;
-			}
-			else {
-				for (int DashIndex = 0; DashIndex < NumberOfDashesInPattern; DashIndex++) {
-					HatchPatternLine.m_dashes.append(EoDbHatch::sm_HatchPatternTable[TableOffset++]);
-				}
-			}
-			HatchPattern.append(HatchPatternLine);
-		}
-		Manager->appendPattern(OdDbHatch::kPreDefined, EoDbHatch::sm_HatchNames[PatternIndex], HatchPattern);
-	}
-}
 void AeSysApp::LoadModeResources(int mode) {
 	BuildModeSpecificAcceleratorTable();
 

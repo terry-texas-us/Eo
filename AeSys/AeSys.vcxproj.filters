@@ -459,6 +459,9 @@
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
       <Filter>Source Files\ExServices</Filter>
     </ClCompile>
+    <ClCompile Include="EoDbHatchPatternTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AeSys.rc2">
@@ -903,6 +906,9 @@
     <ClInclude Include="EoDlgPassword.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
+    <ClInclude Include="EoDbHatchPatternTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\psbmpchk.bmp">
@@ -920,5 +926,10 @@
     <Image Include="res\psbmpstb.bmp">
       <Filter>Resource Files\Bitmaps</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\vc15dlldbg\res\Hatches\DefaultSet.pat">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -4,6 +4,7 @@
 #include "AeSysView.h"
 
 #include "HatchPatternManager.h"
+#include "EoDbHatchPatternTable.h"
 
 size_t EoDbHatch::sm_EdgeToEvaluate = 0;
 size_t EoDbHatch::sm_Edge = 0;
@@ -12,10 +13,6 @@ size_t EoDbHatch::sm_PivotVertex = 0;
 double EoDbHatch::sm_PatternAngle = 0.;
 double EoDbHatch::sm_PatternScaleX = .1;
 double EoDbHatch::sm_PatternScaleY = .1;
-
-OdStringArray EoDbHatch::sm_HatchNames;
-int EoDbHatch::sm_HatchPatternOffsets[64];
-double EoDbHatch::sm_HatchPatternTable[1536];
 
 struct EoEdge {
 	double dMinY; // minimum y extent of edge
@@ -105,6 +102,7 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Hatch>", this);
 }
+
 void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
 	blockTableRecord->appendOdDbEntity(HatchEntity);
@@ -115,7 +113,7 @@ void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	HatchEntity->setAssociative(false);
 	
 	HatchEntity->setColorIndex(m_ColorIndex);
-	OdString HatchName(m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatch::sm_HatchNames[m_InteriorStyleIndex]);
+	OdString HatchName(m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex));
 	HatchEntity->setPattern(OdDbHatch::kPreDefined, HatchName);
 	
 	const OdGeVector3d PlaneNormal = RecomputeReferenceSystem();
@@ -165,7 +163,7 @@ void EoDbHatch::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Interior Style;" + FormatInteriorStyle() + L"\t";
-	extra += L"Interior Style Name;" + CString((LPCWSTR) sm_HatchNames[m_InteriorStyleIndex]) + L"\t";
+	extra += L"Interior Style Name;" + CString((LPCWSTR) EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex)) + L"\t";
 	CString NumberOfVertices;
 	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
 	extra += NumberOfVertices;
@@ -427,7 +425,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 	const int InteriorStyleIndex = pstate.HatchInteriorStyleIndex();
 
 	OdHatchPattern HatchPattern;
-	RetrieveHatchPattern(sm_HatchNames[InteriorStyleIndex], HatchPattern);
+	EoDbHatchPatternTable::RetrieveHatchPattern(EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex), HatchPattern);
 	const size_t NumberOfPatterns = HatchPattern.size();
 
 	OdHatchPatternLine HatchPatternLine;
@@ -440,11 +438,12 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 			TotalPatternLength += fabs(HatchPatternLine.m_dashes[DashIndex]);
 		}
 		OdGePoint2d RotatedBasePoint(HatchPatternLine.m_basePoint);
-		RotatedBasePoint.rotateBy(- HatchPatternLine.m_dLineAngle);
+        auto LineAngleInRadians {EoToRadian(HatchPatternLine.m_dLineAngle)};
+        RotatedBasePoint.rotateBy(-LineAngleInRadians);
 
 		// Add rotation to matrix which gets current scan lines parallel to x-axis
 		EoGeMatrix3d tmRotZ;
-		tmRotZ.setToRotation(- HatchPatternLine.m_dLineAngle, OdGeVector3d::kZAxis);
+		tmRotZ.setToRotation(-LineAngleInRadians, OdGeVector3d::kZAxis);
 		tm.preMultBy(tmRotZ);
 		EoGeMatrix3d tmInv = tm;
 		tmInv.invert();
@@ -605,7 +604,7 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 			dSecBeg -= PatternOffset.x;
 			goto l1;
 		}
-		tmRotZ.setToRotation(HatchPatternLine.m_dLineAngle, OdGeVector3d::kZAxis);
+		tmRotZ.setToRotation(LineAngleInRadians, OdGeVector3d::kZAxis);
 		tm.preMultBy(tmRotZ);
 	}
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
@@ -710,44 +709,6 @@ OdGeVector3d EoDbHatch::RecomputeReferenceSystem() {
 	}
 	return (PlaneNormal);
 }
-void EoDbHatch::RetrieveHatchPattern(const OdString& hatchPatternName, OdHatchPattern& hatchPattern) const {
-	const size_t InteriorStyleIndex = LegacyInteriorStyleIndex(hatchPatternName);
-	if (InteriorStyleIndex == 0) {
-		if (!m_EntityObjectId.isNull()) {
-			OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject();
-			ATLTRACE2(atlTraceGeneral, 2, L"Hatch pattern <%s> loaded from entity\n", (LPCWSTR) Hatch->patternName());
-			hatchPattern = Hatch->getPattern();
-		}
-	}
-	else {
-		int TableOffset = sm_HatchPatternOffsets[InteriorStyleIndex];
-		const int NumberOfPatterns = int(sm_HatchPatternTable[TableOffset++]);
-
-		OdHatchPatternLine HatchPatternLine;
-		for (int PatternIndex = 0; PatternIndex < NumberOfPatterns; PatternIndex++) {
-			const int NumberOfDashesInPattern = int(sm_HatchPatternTable[TableOffset++]);
-		
-			HatchPatternLine.m_dLineAngle = sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_basePoint.x = sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_basePoint.y = sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_patternOffset.x = sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_patternOffset.y = sm_HatchPatternTable[TableOffset++];
-			HatchPatternLine.m_dashes.clear();
-		
-			for (int DashIndex = 0; DashIndex < NumberOfDashesInPattern; DashIndex++) {
-				HatchPatternLine.m_dashes.append(sm_HatchPatternTable[TableOffset++]);
- 				if ((DashIndex & 1) == 1) {
-					HatchPatternLine.m_dashes[DashIndex] = - HatchPatternLine.m_dashes[DashIndex];
-				}
-			}
-			// <tas="Until the hatch file is modified Legacy continuous pattern line marked by 1.E16 dash length</ToReview>
-			if (HatchPatternLine.m_dashes.first() == 1.E16) {
-				HatchPatternLine.m_dashes.clear();
-			}
-			hatchPattern.append(HatchPatternLine);
-		}		
-	}
-}
 
 void EoDbHatch::SetHatchOrigin(const OdGePoint3d& origin) noexcept {
 	m_HatchOrigin = origin;
@@ -789,7 +750,7 @@ void EoDbHatch::SetInteriorStyleIndex(size_t styleIndex) {
 		
 		OdHatchPatternManager* Manager = theApp.patternManager();
 		
-		OdString HatchName = m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatch::sm_HatchNames[styleIndex];
+		OdString HatchName = m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex);
 		OdHatchPattern HatchPattern;
 				
 		if (Manager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
@@ -865,17 +826,6 @@ size_t EoDbHatch::SwingVertex() const {
 
 size_t EoDbHatch::Edge() noexcept {
 	return sm_Edge;
-}
-
-size_t EoDbHatch::LegacyInteriorStyleIndex(const OdString& name) {
-	size_t Index = 0;
-	const size_t NumberOfLegacyStyles = EoDbHatch::sm_HatchNames.size();
-
-	while (Index < NumberOfLegacyStyles && name.iCompare(EoDbHatch::sm_HatchNames[Index]) != 0) {
-		Index++;
-	}
-	Index = (Index < NumberOfLegacyStyles) ? Index : 0;
-	return Index;
 }
 
 void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
@@ -989,7 +939,7 @@ EoDbHatch* EoDbHatch::Create0(OdDbDatabasePtr database) {
     OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
     HatchEntity->setDatabaseDefaults(database);
     HatchEntity->setAssociative(false);
-    OdString HatchName = EoDbHatch::sm_HatchNames[pstate.HatchInteriorStyleIndex()];
+    OdString HatchName = EoDbHatchPatternTable::LegacyHatchPatternName(pstate.HatchInteriorStyleIndex());
     HatchEntity->setPattern(OdDbHatch::kPreDefined, HatchName);
 
     BlockTableRecord->appendOdDbEntity(HatchEntity);
@@ -1042,7 +992,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
     Hatch->setAssociative(false);
 
     Hatch->setColorIndex(ColorIndex);
-    OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatch::sm_HatchNames[InteriorStyleIndex]);
+    OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
     Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
     const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
@@ -1087,7 +1037,7 @@ EoDbHatch* EoDbHatch::Create(OdDbHatchPtr& hatch) {
                 Hatch->SetInteriorStyle(EoDbHatch::kSolid);
             } else {
                 Hatch->SetInteriorStyle(EoDbHatch::kHatch);
-                Hatch->SetInteriorStyleIndex(EoDbHatch::LegacyInteriorStyleIndex(hatch->patternName()));
+                Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
                 const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
                 // <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
                 Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
@@ -1095,7 +1045,7 @@ EoDbHatch* EoDbHatch::Create(OdDbHatchPtr& hatch) {
             break;
         case OdDbHatch::kUserDefined:
             Hatch->SetInteriorStyle(EoDbHatch::kHatch);
-            Hatch->SetInteriorStyleIndex(EoDbHatch::LegacyInteriorStyleIndex(hatch->patternName()));
+            Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
             const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
             // <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
             Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
