@@ -340,7 +340,6 @@ public:
 	bool IsClipboardDataText() noexcept;
 	bool IsTrapHighlighted() noexcept;
 	void LoadColorPalletFromFile(const CString& pathName);
-	void LoadHatchesFromFile(const CString& strFileName);
 	void LoadModeResources(int mode);
 	void LoadPenWidthsFromFile(const CString& pathName);
 	void LoadSimplexStrokeFont(const CString& pathName);

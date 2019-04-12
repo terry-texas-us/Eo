@@ -102,6 +102,7 @@
     <ClCompile Include="AeSysApp.cpp" />
     <ClCompile Include="AeSysDoc.cpp" />
     <ClCompile Include="EoAppAuditInfo.cpp" />
+    <ClCompile Include="EoDbHatchPatternTable.cpp" />
     <ClCompile Include="EoDialogResizeHelper.cpp" />
     <ClCompile Include="EoDlgAudit.cpp" />
     <ClCompile Include="EoDlgEditProperties.cpp" />
@@ -270,6 +271,7 @@
     <ClInclude Include="AeSysApp.h" />
     <ClInclude Include="AeSysDoc.h" />
     <ClInclude Include="EoAppAuditInfo.h" />
+    <ClInclude Include="EoDbHatchPatternTable.h" />
     <ClInclude Include="EoDialogResizeHelper.h" />
     <ClInclude Include="EoDlgAudit.h" />
     <ClInclude Include="EoDlgEditProperties.h" />
@@ -389,6 +391,9 @@
     <Image Include="res\psbmpctb.bmp" />
     <Image Include="res\psbmpstb.bmp" />
     <Image Include="res\psbmpwht.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\vc15dlldbg\res\Hatches\DefaultSet.pat" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

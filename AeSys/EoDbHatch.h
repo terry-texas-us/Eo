@@ -27,10 +27,6 @@ public:
 	static double sm_PatternScaleX;
 	static double sm_PatternScaleY;
 
-	static OdStringArray sm_HatchNames;
-	static int sm_HatchPatternOffsets[];
-	static double sm_HatchPatternTable[];
-
 public:
 	enum InteriorStyle {
 		kHollow,
@@ -95,7 +91,6 @@ public: // Methods
 	int NumberOfVertices() const;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	OdGeVector3d RecomputeReferenceSystem();
-	void RetrieveHatchPattern(const OdString& hatchPatternName, OdHatchPattern& hatchPattern) const;
 	void SetHatchOrigin(const OdGePoint3d& origin) noexcept;
 	void SetHatchXAxis(const OdGeVector3d& xAxis) noexcept;
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
@@ -109,7 +104,6 @@ public: // Methods
 
 public:
 	static size_t Edge() noexcept;
-	static size_t LegacyInteriorStyleIndex(const OdString& name);
 	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 
     static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
