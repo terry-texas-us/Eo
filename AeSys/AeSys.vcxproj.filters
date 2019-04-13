@@ -554,6 +554,18 @@
     <None Include="Resource.hm">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acad.pat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.pat">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acad.lin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.lin">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AeSys.rc">

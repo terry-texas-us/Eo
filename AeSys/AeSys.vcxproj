@@ -30,7 +30,7 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
-    <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
@@ -233,6 +233,10 @@
     <ClCompile Include="WndProcPreview.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acad.lin" />
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acad.pat" />
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.lin" />
+    <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.pat" />
     <None Include="Resource.hm" />
     <None Include="res\AeSys.ico" />
     <None Include="res\AeSys.rc2" />

@@ -438,7 +438,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 			TotalPatternLength += fabs(HatchPatternLine.m_dashes[DashIndex]);
 		}
 		OdGePoint2d RotatedBasePoint(HatchPatternLine.m_basePoint);
-        auto LineAngleInRadians {EoToRadian(HatchPatternLine.m_dLineAngle)};
+        auto LineAngleInRadians {HatchPatternLine.m_dLineAngle};
         RotatedBasePoint.rotateBy(-LineAngleInRadians);
 
 		// Add rotation to matrix which gets current scan lines parallel to x-axis
