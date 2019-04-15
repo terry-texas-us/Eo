@@ -10,6 +10,7 @@
     <ProjectGuid>{99616C98-7844-41E8-BC1F-B16C4044EB44}</ProjectGuid>
     <RootNamespace>AeSys</RootNamespace>
     <Keyword>MFCProj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'" Label="Configuration">
@@ -30,7 +31,7 @@
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">true</LinkIncremental>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
-    <CodeAnalysisRuleSet>NativeMinimumRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
   </PropertyGroup>

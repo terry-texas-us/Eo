@@ -15,20 +15,20 @@ void AeSysView::OnDrawModeOptions() {
 }
 
 void AeSysView::OnDrawModePoint() {
-    const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    OdDbPointPtr Point = EoDbPoint::Create(BlockTableRecord);
+    auto Point {EoDbPoint::Create(BlockTableRecord)};
 
     Point->setPosition(CurrentPnt);
 
-    EoDbGroup* Group = new EoDbGroup;
+    auto Group {new EoDbGroup};
     Group->AddTail(EoDbPoint::Create(Point));
     GetDocument()->AddWorkLayerGroup(Group);
     GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 }
 
 void AeSysView::OnDrawModeLine() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP2) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP2);
@@ -37,11 +37,11 @@ void AeSysView::OnDrawModeLine() {
     } else {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
         OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-        OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
+        auto Line {EoDbLine::Create(BlockTableRecord)};
         Line->setStartPoint(m_DrawModePoints[0]);
         Line->setEndPoint(CurrentPnt);
 
-        EoDbGroup* Group = new EoDbGroup;
+        auto Group {new EoDbGroup};
         Group->AddTail(EoDbLine::Create(Line));
         GetDocument()->AddWorkLayerGroup(Group);
 
@@ -51,7 +51,7 @@ void AeSysView::OnDrawModeLine() {
 }
 
 void AeSysView::OnDrawModePolygon() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP3) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP3);
@@ -68,7 +68,7 @@ void AeSysView::OnDrawModePolygon() {
 }
 
 void AeSysView::OnDrawModeQuad() {
-    const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP4) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP4);
@@ -80,7 +80,7 @@ void AeSysView::OnDrawModeQuad() {
 }
 
 void AeSysView::OnDrawModeArc() {
-    const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP5) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP5);
@@ -92,7 +92,7 @@ void AeSysView::OnDrawModeArc() {
 }
 
 void AeSysView::OnDrawModeBspline() {
-    const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP6) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP6);
@@ -106,7 +106,7 @@ void AeSysView::OnDrawModeBspline() {
     }
 }
 void AeSysView::OnDrawModeCircle() {
-    const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP7) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP7);
@@ -119,7 +119,7 @@ void AeSysView::OnDrawModeCircle() {
 }
 
 void AeSysView::OnDrawModeEllipse() {
-    const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
     if (PreviousDrawCommand != ID_OP8) {
         PreviousDrawCommand = ModeLineHighlightOp(ID_OP8);
@@ -131,7 +131,7 @@ void AeSysView::OnDrawModeEllipse() {
 }
 
 void AeSysView::OnDrawModeInsert() {
-    AeSysDoc* Document = GetDocument();
+    auto Document {GetDocument()};
 
     if (Document->BlockTableSize() > 0) {
 
@@ -141,17 +141,17 @@ void AeSysView::OnDrawModeInsert() {
 }
 
 void AeSysView::OnDrawModeReturn() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
     const int NumberOfPoints = m_DrawModePoints.size();
-    EoDbGroup* Group = 0;
+    EoDbGroup* Group {nullptr};
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     switch (PreviousDrawCommand) {
     case ID_OP2: {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
-        OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
+        auto Line {EoDbLine::Create(BlockTableRecord)};
         Line->setStartPoint(m_DrawModePoints[0]);
         Line->setEndPoint(CurrentPnt);
 
@@ -170,7 +170,7 @@ void AeSysView::OnDrawModeReturn() {
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
         m_DrawModePoints.append(CurrentPnt);
         Group = new EoDbGroup;
-        EoDbHatch* Hatch = EoDbHatch::Create0(Database());
+        auto Hatch {EoDbHatch::Create0(Database())};
         Hatch->SetVertices(m_DrawModePoints);
         Group->AddTail(Hatch);
         GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
@@ -190,7 +190,7 @@ void AeSysView::OnDrawModeReturn() {
         m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
         OdDbDictionaryPtr GroupDictionary = Database()->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite);
-        OdDbGroupPtr pGroup = OdDbGroup::createObject(); // do not attempt to add entries to the newly created group before adding the group to the group dictionary. 
+        auto pGroup = OdDbGroup::createObject(); // do not attempt to add entries to the newly created group before adding the group to the group dictionary. 
         GroupDictionary->setAt(L"*", pGroup);
 
         pGroup->setSelectable(true);
@@ -198,7 +198,7 @@ void AeSysView::OnDrawModeReturn() {
 
         Group = new EoDbGroup;
         for (int i = 0; i < 4; i++) {
-            OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
+            auto Line {EoDbLine::Create(BlockTableRecord)};
             Line->setStartPoint(m_DrawModePoints[i]);
             Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
 
@@ -218,7 +218,7 @@ void AeSysView::OnDrawModeReturn() {
         if (NumberOfPoints == 1)
             return;
 
-        EoDbEllipse* Arc = EoDbEllipse::Create(Database());
+        auto Arc {EoDbEllipse::Create(Database())};
         Arc->SetTo3PointArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
         Arc->SetColorIndex(pstate.ColorIndex());
         Arc->SetLinetypeIndex(pstate.LinetypeIndex());
@@ -236,7 +236,7 @@ void AeSysView::OnDrawModeReturn() {
         m_DrawModePoints.append(CurrentPnt);
         const int NumberOfControlPoints = m_DrawModePoints.size();
         Group = new EoDbGroup;
-        EoDbSpline* Spline = EoDbSpline::Create(Database());
+        auto Spline {EoDbSpline::Create(Database())};
         OdGePoint3dArray Points;
         for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
             Points.append(m_DrawModePoints[ControlPointIndex]);
@@ -252,10 +252,10 @@ void AeSysView::OnDrawModeReturn() {
         }
         Group = new EoDbGroup;
 
-        const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+        const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
         auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-        auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+        auto MajorAxis {ComputeArbitraryAxis(ActiveViewPlaneNormal)};
         MajorAxis.normalize();
         MajorAxis *= OdGeVector3d(CurrentPnt - m_DrawModePoints[0]).length();
 
@@ -274,12 +274,12 @@ void AeSysView::OnDrawModeReturn() {
             SetCursorPosition(m_DrawModePoints[0]);
             return;
         }
-        const OdGeVector3d MajorAxis(m_DrawModePoints[1] - m_DrawModePoints[0]);
-        const OdGeVector3d MinorAxis(m_DrawModePoints[2] - m_DrawModePoints[0]);
+        const auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
+        const auto MinorAxis {m_DrawModePoints[2] - m_DrawModePoints[0]};
         // <tas="Ellipse major and minor axis may not properly define a plane. Memory leaks?"</tas>
         // <tas="Ellipse major must always be longer than minor. Asserts otherwise!"</tas>
         Group = new EoDbGroup;
-        EoDbEllipse* Ellipse = EoDbEllipse::Create(Database());
+        auto Ellipse {EoDbEllipse::Create(Database())};
         Ellipse->SetTo(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI);
         Group->AddTail(Ellipse);
         break;
@@ -304,7 +304,7 @@ void AeSysView::OnDrawModeEscape() {
 }
 
 void AeSysView::DoDrawModeMouseMove() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
     const int NumberOfPoints = m_DrawModePoints.size();
 
     switch (PreviousDrawCommand) {
@@ -330,13 +330,13 @@ void AeSysView::DoDrawModeMouseMove() {
         OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
         
         if (NumberOfPoints == 1) {
-            OdDbLinePtr Line = EoDbLine::Create(BlockTableRecord);
+            auto Line {EoDbLine::Create(BlockTableRecord)};
             Line->setStartPoint(m_DrawModePoints[0]);
             Line->setEndPoint(CurrentPnt);
             m_PreviewGroup.AddTail(EoDbLine::Create(Line));
         } else {
             // <tas="This works for plane normal as long as input does not take current point off the view plane. Once input is off the view plane need to use three points for normal and ensure the inputs are planar."/>
-            const auto PlaneNormal = CameraDirection();
+            const auto PlaneNormal {CameraDirection()};
 
             auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
@@ -371,8 +371,8 @@ void AeSysView::DoDrawModeMouseMove() {
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
             for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
-                const OdGePoint3d StartPoint = m_DrawModePoints[PointsIndex];
-                const OdGePoint3d EndPoint = m_DrawModePoints[(PointsIndex + 1) % 4];
+                const auto StartPoint {m_DrawModePoints[PointsIndex]};
+                const auto EndPoint {m_DrawModePoints[(PointsIndex + 1) % 4]};
                 m_PreviewGroup.AddTail(EoDbLine::Create(StartPoint, EndPoint));
             }
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
@@ -389,7 +389,7 @@ void AeSysView::DoDrawModeMouseMove() {
             m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
         }
         if (NumberOfPoints == 2) {
-            EoDbEllipse* Arc = new EoDbEllipse();
+            auto Arc {new EoDbEllipse()};
             Arc->SetTo3PointArc(m_DrawModePoints[0], m_DrawModePoints[1], CurrentPnt);
             Arc->SetColorIndex(pstate.ColorIndex());
             Arc->SetLinetypeIndex(pstate.LinetypeIndex());
@@ -415,7 +415,7 @@ void AeSysView::DoDrawModeMouseMove() {
             EoGeNurbCurve3d::SetDefaultKnotVector(Degree, Points, Knots);
             OdGeDoubleArray Weights;
             Weights.setLogicalLength(NumberOfControlPoints);
-            EoDbSpline* Spline = new EoDbSpline();
+            auto Spline {new EoDbSpline()};
             Spline->Set(Degree, Knots, Points, Weights);
             m_PreviewGroup.AddTail(Spline);
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
@@ -424,7 +424,7 @@ void AeSysView::DoDrawModeMouseMove() {
     case ID_OP7:
         if (m_DrawModePoints[0] != CurrentPnt) {
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-            const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+            const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
@@ -442,8 +442,8 @@ void AeSysView::DoDrawModeMouseMove() {
             if (NumberOfPoints == 1) {
                 m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
             } else {
-                const OdGeVector3d MajorAxis(m_DrawModePoints[1] - m_DrawModePoints[0]);
-                const OdGeVector3d MinorAxis(CurrentPnt - m_DrawModePoints[0]);
+                const auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
+                const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};
 
                 m_PreviewGroup.AddTail(new EoDbEllipse(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI));
             }
