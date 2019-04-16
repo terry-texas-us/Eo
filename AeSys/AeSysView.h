@@ -101,7 +101,7 @@ protected:
 	CRect viewportRect() const;
 	static CRect viewRect(OdGsView*);
 
-	AeSysView(); // protected constructor used by dynamic creation
+	AeSysView() noexcept; // protected constructor used by dynamic creation
 
 	void preparePlotstyles(const OdDbLayout* pLayout = NULL, bool bForceReload = false);
 

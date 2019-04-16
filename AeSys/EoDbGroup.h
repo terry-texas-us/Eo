@@ -10,7 +10,7 @@ public:
 	AeSysDoc* m_Document;
 
 public:
-	EoDbGroup();
+	EoDbGroup() noexcept;
 	virtual ~EoDbGroup();
 	EoDbGroup(const EoDbGroup& group);
 	EoDbGroup(const EoDbBlock& block);

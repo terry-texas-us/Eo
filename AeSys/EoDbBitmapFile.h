@@ -2,7 +2,7 @@
 
 class EoDbBitmapFile : public CFile {
 public:
-	EoDbBitmapFile() {
+	EoDbBitmapFile() noexcept {
 	}
 	EoDbBitmapFile(const CString& strPathName);
 

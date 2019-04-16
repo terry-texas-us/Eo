@@ -2,7 +2,7 @@
 
 class EoDbGroupList : public CObList {
 public: // Constructors and destructor
-	EoDbGroupList() {
+	EoDbGroupList() noexcept {
 	}
 	virtual ~EoDbGroupList() {
 	}

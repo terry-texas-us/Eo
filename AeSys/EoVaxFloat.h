@@ -18,7 +18,7 @@ class EoVaxPoint3d {
 	EoVaxFloat z;
 
 public:
-	EoVaxPoint3d() {
+	EoVaxPoint3d() noexcept {
 	}
 	void Convert(const OdGePoint3d& point) noexcept {
 		x.Convert(point.x);
@@ -34,7 +34,7 @@ class EoVaxVector3d {
 	EoVaxFloat y;
 	EoVaxFloat z;
 public:
-	EoVaxVector3d() {
+	EoVaxVector3d() noexcept {
 	}
 	void Convert(const OdGeVector3d& vector) noexcept {
 		x.Convert(vector.x);

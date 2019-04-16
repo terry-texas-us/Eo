@@ -49,7 +49,7 @@ private:
 		HWND  m_hCtrl;
 		EHFix  m_hFix;
 		EVFix  m_vFix;
-		CtrlSize() 
+		CtrlSize() noexcept
             : m_hCtrl(0)
             , m_hFix(kNoHFix)
             , m_vFix(kNoVFix) {

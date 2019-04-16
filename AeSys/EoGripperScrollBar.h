@@ -2,7 +2,7 @@
 
 class EoGripperScrollBar : public CScrollBar {
 public:
-	EoGripperScrollBar() {
+	EoGripperScrollBar() noexcept {
 	};
 
 public:

@@ -43,7 +43,7 @@ UINT AeSysView::g_nRedrawMSG = 0;
 
 IMPLEMENT_DYNCREATE(AeSysView, CView)
 
-AeSysView::AeSysView() :
+AeSysView::AeSysView() noexcept :
 m_hWindowDC(0),
 m_bRegenAbort(false),
 m_bPsOverall(false),

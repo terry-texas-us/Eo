@@ -170,7 +170,7 @@ public:
 				return pData;
 			return 0;
 		}
-		ClipboardData() :
+		ClipboardData() noexcept :
 			_isR15format(false) {
 		}
 		bool read(COleDataObject* pDataObject) {
@@ -193,11 +193,13 @@ public:
 		OdGePoint3d pickPoint() { return _isR15format ? OdGePoint3d(_data._r15._x, _data._r15._y, _data._r15._z) : OdGePoint3d(_data._r21._x, _data._r21._y, _data._r21._z); }
 
 	private:
-		union Data {
-			AcadClipData<char>   _r15;
-			AcadClipData<OdChar> _r21;
-			Data() { _r21.init(); }
-		} _data;
+        union Data {
+            AcadClipData<char>   _r15;
+            AcadClipData<OdChar> _r21;
+            Data() noexcept {
+                _r21.init();
+            }
+        } _data;
 		bool _isR15format;
 	};
 

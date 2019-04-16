@@ -6,7 +6,7 @@ private:
 	DWORD m_Mask;
 
 public:
-	EoDbMaskedPrimitive() {
+	EoDbMaskedPrimitive() noexcept {
 		m_Primitive = (EoDbPrimitive*) 0;
 		m_Mask = 0;
 	}

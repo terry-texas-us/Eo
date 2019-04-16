@@ -5,7 +5,7 @@
 
 EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(NULL);
 
-EoDbGroup::EoDbGroup() 
+EoDbGroup::EoDbGroup() noexcept
 	: m_Document(AeSysDoc::GetDoc()) {
 }
 EoDbGroup::EoDbGroup(const EoDbBlock& block) {
