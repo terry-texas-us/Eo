@@ -8,9 +8,9 @@ void AeSysView::OnModePrimitiveEdit() {
 
 	m_SubModeEditBeginPoint = GetCursorPosition();
 
-	EoDbGroup* Group = SelectGroupAndPrimitive(m_SubModeEditBeginPoint);
+    auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
 
-	if (Group != 0) {
+	if (Group != nullptr) {
 		m_SubModeEditGroup = Group;
 		m_SubModeEditPrimitive = EngagedPrimitive();
 		theApp.LoadModeResources(ID_MODE_PRIMITIVE_EDIT);

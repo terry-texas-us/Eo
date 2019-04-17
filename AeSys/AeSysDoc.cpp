@@ -1431,9 +1431,9 @@ void AeSysDoc::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
 EoDbLayer* AeSysDoc::SelectLayerBy(const OdGePoint3d& point) {
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 
-	EoDbGroup* Group = ActiveView->SelectGroupAndPrimitive(point);
+    auto Group {ActiveView->SelectGroupAndPrimitive(point)};
 
-	if (Group != 0) {
+	if (Group != nullptr) {
 		for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 			EoDbLayer* Layer = GetLayerAt(LayerIndex);
 			if (Layer->Find(Group)) {
@@ -1750,8 +1750,8 @@ void AeSysDoc::OnPrimBreak() {
 	OdDbDatabasePtr Database = ActiveView->Database();
     OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-	EoDbGroup* Group = ActiveView->SelectGroupAndPrimitive(ActiveView->GetCursorPosition());
-	if (Group != 0 && ActiveView->EngagedPrimitive() != 0) {
+    auto Group {ActiveView->SelectGroupAndPrimitive(ActiveView->GetCursorPosition())};
+	if (Group != nullptr && ActiveView->EngagedPrimitive() != 0) {
 		EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
 
 		if (Primitive->Is(kPolylinePrimitive)) {
@@ -2299,9 +2299,9 @@ void AeSysDoc::OnToolsGroupDelete() {
 
 	const OdGePoint3d pt = ActiveView->GetCursorPosition();
 
-	EoDbGroup* Group = ActiveView->SelectGroupAndPrimitive(pt);
+    auto Group {ActiveView->SelectGroupAndPrimitive(pt)};
 
-	if (Group != 0) {
+	if (Group != nullptr) {
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
 		if (RemoveTrappedGroup(Group) != NULL) {
@@ -2364,9 +2364,9 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 
-	EoDbGroup* Group = ActiveView->SelectGroupAndPrimitive(pt);
+    auto Group {ActiveView->SelectGroupAndPrimitive(pt)};
 
-	if (Group != 0) {
+	if (Group != nullptr) {
 		const POSITION Position = FindTrappedGroup(Group);
 
 		LPARAM lHint = (Position != 0) ? kGroupEraseSafeTrap : kGroupEraseSafe;
@@ -2400,9 +2400,9 @@ void AeSysDoc::OnPrimModifyAttributes() {
 
 	const OdGePoint3d pt = ActiveView->GetCursorPosition();
 
-	const EoDbGroup* Group = ActiveView->SelectGroupAndPrimitive(pt);
+    const auto Group {ActiveView->SelectGroupAndPrimitive(pt)};
 
-	if (Group != 0) {
+	if (Group != nullptr) {
 		ActiveView->EngagedPrimitive()->ModifyState();
 		UpdatePrimitiveInAllViews(kPrimitiveSafe, ActiveView->EngagedPrimitive());
 	}

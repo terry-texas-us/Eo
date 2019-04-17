@@ -90,11 +90,11 @@ m_ModelTabIsActive(false) {
 
 	m_CenterLineEccentricity = .5;	// Center line eccentricity for parallel lines
 	m_ContinueCorner = false;
-	m_AssemblyGroup = 0;
-	m_BeginSectionGroup = 0;
-	m_EndSectionGroup = 0;
-	m_BeginSectionLine = 0;
-	m_EndSectionLine = 0;
+	m_AssemblyGroup = nullptr;
+	m_BeginSectionGroup = nullptr;
+	m_EndSectionGroup = nullptr;
+	m_BeginSectionLine = nullptr;
+	m_EndSectionLine = nullptr;
 	m_DistanceBetweenLines = .0625;
     
     // Constraints - grid and axis
@@ -3081,7 +3081,7 @@ void AeSysView::OnToolsPrimitiveSnapto() {
 			return;
 		}
 	}
-	if (SelectGroupAndPrimitive(pt) != 0) {
+	if (SelectGroupAndPrimitive(pt) != nullptr) {
 		ptDet = m_ptDet;
 		m_EngagedPrimitive->AddReportToMessageList(ptDet);
 		SetCursorPosition(ptDet);
@@ -3090,7 +3090,7 @@ void AeSysView::OnToolsPrimitiveSnapto() {
 void AeSysView::OnPrimPerpJump() {
 	OdGePoint3d CursorPosition = GetCursorPosition();
 
-	if (SelectGroupAndPrimitive(CursorPosition) != 0) {
+	if (SelectGroupAndPrimitive(CursorPosition) != nullptr) {
 		if (m_EngagedPrimitive->Is(kLinePrimitive)) {
 			const EoDbLine* LinePrimLine = static_cast<EoDbLine*>(m_EngagedPrimitive);
 			CursorPosition = LinePrimLine->ProjPt_(m_ptCursorPosWorld);
@@ -3354,7 +3354,7 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 			return (Group);
 		}
 	}
-	return 0;
+	return nullptr;
 }
 EoDbGroup* AeSysView::SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance, EoDbEllipse*& circle) {
 	POSITION GroupPosition = GetFirstVisibleGroupPosition();

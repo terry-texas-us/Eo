@@ -32,11 +32,11 @@ void AeSysView::OnFixupModeReference(void) {
     
     OdGePoint3d ptInt;
 
-	if (ReferenceGroup != 0) {
+	if (ReferenceGroup != nullptr) {
 		Document->UpdatePrimitiveInAllViews(kPrimitive, ReferencePrimitive);
 	}
 	ReferenceGroup = SelectGroupAndPrimitive(ptCurPos);
-	if (ReferenceGroup == 0) {
+	if (ReferenceGroup == nullptr) {
 		return;
 	}
 	ReferencePrimitive = EngagedPrimitive();
@@ -130,8 +130,8 @@ void AeSysView::OnFixupModeMend(void) {
 	OdGePoint3d ptInt;
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(GetCursorPosition());
-	if (OtherGroup == 0) {
+    auto OtherGroup {SelectGroupAndPrimitive(GetCursorPosition())};
+	if (OtherGroup == nullptr) {
 		return;
 	}
 	EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
@@ -250,8 +250,8 @@ void AeSysView::OnFixupModeChamfer(void) {
 
 	EoDbLine*	pLine;
 
-	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(ptCurPos);
-	if (OtherGroup == 0) {
+    auto OtherGroup {SelectGroupAndPrimitive(ptCurPos)};
+	if (OtherGroup == nullptr) {
 		return;
 	}
 	EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
@@ -322,7 +322,7 @@ void AeSysView::OnFixupModeFillet(void) {
 
 	EoDbLine*	pLine;
 
-	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(ptCurPos);
+    auto OtherGroup {SelectGroupAndPrimitive(ptCurPos)};
 	EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
 	pLine = static_cast<EoDbLine*>(OtherPrimitive);
 	pLine->GetLine(m_FixupModeSecondLine);
@@ -400,8 +400,8 @@ void AeSysView::OnFixupModeSquare(void) {
 	OdGePoint3d ptCurPos = GetCursorPosition();
 
 	EoDbLine*	pLine;
-	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(ptCurPos);
-	if (OtherGroup != 0) {
+    auto OtherGroup {SelectGroupAndPrimitive(ptCurPos)};
+	if (OtherGroup != nullptr) {
 		EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
 		ptCurPos = DetPt();
 		if (OtherPrimitive->Is(kLinePrimitive)) {
@@ -424,8 +424,8 @@ void AeSysView::OnFixupModeParallel(void) {
 	const OdGePoint3d ptCurPos = GetCursorPosition();
 
 	EoDbLine*	pLine;
-	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(ptCurPos);
-	if (ReferenceGroup != 0 && OtherGroup != 0) {
+    auto OtherGroup {SelectGroupAndPrimitive(ptCurPos)};
+	if (ReferenceGroup != nullptr && OtherGroup != nullptr) {
 		EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
 		if (OtherPrimitive->Is(kLinePrimitive)) {
 			pLine = static_cast<EoDbLine*>(OtherPrimitive);
@@ -443,18 +443,20 @@ void AeSysView::OnFixupModeParallel(void) {
 void AeSysView::OnFixupModeReturn(void) {
 	AeSysDoc* Document = GetDocument();
 
-	if (ReferenceGroup != 0) {
+	if (ReferenceGroup != nullptr) {
 		Document->UpdatePrimitiveInAllViews(kPrimitive, ReferencePrimitive);
-		ReferenceGroup = 0; ReferencePrimitive = 0;
+		ReferenceGroup = nullptr;
+        ReferencePrimitive = 0;
 	}
 	ModeLineUnhighlightOp(PreviousFixupCommand);
 }
 void AeSysView::OnFixupModeEscape(void) {
 	AeSysDoc* Document = GetDocument();
 
-	if (ReferenceGroup != 0) {
+	if (ReferenceGroup != nullptr) {
 		Document->UpdatePrimitiveInAllViews(kPrimitive, ReferencePrimitive);
-		ReferenceGroup = 0; ReferencePrimitive = 0;
+		ReferenceGroup = nullptr;
+        ReferencePrimitive = 0;
 	}
 	ModeLineUnhighlightOp(PreviousFixupCommand);
 }

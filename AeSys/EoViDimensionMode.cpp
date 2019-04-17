@@ -234,7 +234,7 @@ void AeSysView::OnDimensionModeRadius(void) {
 	AeSysDoc* Document = GetDocument();
 	const OdGePoint3d ptCur = GetCursorPosition();
 
-	if (SelectGroupAndPrimitive(ptCur) != 0) {
+	if (SelectGroupAndPrimitive(ptCur) != nullptr) {
 		const OdGePoint3d ptEnd = DetPt();
 
 		if ((EngagedPrimitive())->Is(kEllipsePrimitive)) {
@@ -272,7 +272,7 @@ void AeSysView::OnDimensionModeDiameter() {
 	AeSysDoc* Document = GetDocument();
 	const OdGePoint3d ptCur = GetCursorPosition();
 
-	if (SelectGroupAndPrimitive(ptCur) != 0) {
+	if (SelectGroupAndPrimitive(ptCur) != nullptr) {
 		const OdGePoint3d ptEnd = DetPt();
 
 		if ((EngagedPrimitive())->Is(kEllipsePrimitive)) {

@@ -48,8 +48,8 @@ void AeSysView::OnNodalModePoint(void) {
 void AeSysView::OnNodalModeLine(void) {
 	const OdGePoint3d CurrentPnt = GetCursorPosition();
 	OdGePoint3dArray Points;
-	EoDbGroup* Group = SelectGroupAndPrimitive(CurrentPnt);
-	if (Group != 0) {
+    auto Group {SelectGroupAndPrimitive(CurrentPnt)};
+	if (Group != nullptr) {
 		EoDbPrimitive* Primitive = EngagedPrimitive();
 
 		const DWORD Mask = GetDocument()->GetPrimitiveMask(Primitive);

@@ -465,13 +465,10 @@ EoDbLine* EoDbLine::Create0(OdDbBlockTableRecordPtr blockTableRecord) {
 }
 
 EoDbLine* EoDbLine::Create1(const EoDbLine& other, OdDbBlockTableRecordPtr blockTableRecord) {
-    OdDbLinePtr LineEntity = other.EntityObjectId().safeOpenObject()->clone();
-	blockTableRecord->appendOdDbEntity(LineEntity);
+    OdDbLinePtr Line = other.EntityObjectId().safeOpenObject()->clone();
+	blockTableRecord->appendOdDbEntity(Line);
 
-    auto Line {new EoDbLine(other)};
-	Line->SetEntityObjectId(LineEntity->objectId());
-
-	return Line;
+    return EoDbLine::Create(Line);
 }
 
 EoDbLine* EoDbLine::Create2(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {

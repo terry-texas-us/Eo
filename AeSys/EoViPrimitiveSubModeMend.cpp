@@ -23,7 +23,7 @@ void AeSysView::OnModePrimitiveMend() {
 		}
 	}
 	if (m_PrimitiveToMend == 0) { // No engaged group, or engaged primitive to far from cursor
-		if (SelectGroupAndPrimitive(m_MendPrimitiveBegin) != 0) { // Group successfully engaged
+		if (SelectGroupAndPrimitive(m_MendPrimitiveBegin) != nullptr) { // Group successfully engaged
 			m_PrimitiveToMend = EngagedPrimitive();
 		}
 	}
