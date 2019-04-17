@@ -77,7 +77,7 @@ void AeSysView::OnFixupModeReference(void) {
 				Document->UpdateGroupInAllViews(kGroupEraseSafe, pSegPrv);
 				pLinePrv->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLinePrv->SetEndPoint(m_FixupModeFirstLine.endPoint());
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(Database())};
 				Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint());
 				pSegPrv->AddTail(Line);
 				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
@@ -189,7 +189,7 @@ void AeSysView::OnFixupModeMend(void) {
 				Document->UpdateGroupInAllViews(kGroupEraseSafe, pSegPrv);
 				pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(Database())};
 				Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint());
 				pSegPrv->AddTail(Line);
 				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
@@ -300,7 +300,7 @@ void AeSysView::OnFixupModeChamfer(void) {
 			Document->UpdateGroupInAllViews(kGroupEraseSafe, OtherGroup);
 			pLine->SetStartPoint(m_FixupModeSecondLine.startPoint());
 			pLine->SetEndPoint(m_FixupModeSecondLine.endPoint());
-			EoDbLine* Line = EoDbLine::Create(Database());
+            auto Line {EoDbLine::Create0(Database())};
 			Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint());
 			OtherGroup->AddTail(Line);
 

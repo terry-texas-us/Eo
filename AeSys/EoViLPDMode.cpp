@@ -404,7 +404,7 @@ void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d&
 	PointPrimitive->SetData(2, Data);
 	group->AddTail(PointPrimitive);
 	EoDbLine* LinePrimitive;
-	LinePrimitive = group->IsPersistent() ? EoDbLine::Create(startPoint, endPoint) : new EoDbLine(startPoint, endPoint);
+	LinePrimitive = group->IsPersistent() ? EoDbLine::Create2(startPoint, endPoint) : new EoDbLine(startPoint, endPoint);
 	group->AddTail(LinePrimitive);
 }
 void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSectionReferenceLine, Section existingSection, EoDbGroup* group) {
@@ -480,10 +480,10 @@ void AeSysView::GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, Eo
 		const OdGePoint3d StartPoint = ReferenceLine.startPoint();
 		ReferenceLine.SetEndPoint(ProjectToward(StartPoint, ReferenceLine.endPoint(), m_DuctSeamSize));
 		ReferenceLine.GetParallels(section.Width(), m_CenterLineEccentricity, LeftLine, RightLine);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(Database());
 		Line->SetTo(LeftLine.startPoint(), LeftLine.endPoint());
 		group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(Database());
 		Line->SetTo(RightLine.startPoint(), RightLine.endPoint());
 		group->AddTail(Line);
 		referenceLine.SetStartPoint(ReferenceLine.endPoint());
@@ -491,12 +491,12 @@ void AeSysView::GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, Eo
 	referenceLine.GetParallels(section.Width(), m_CenterLineEccentricity, LeftLine, RightLine);
 	GenerateRectangularSection(referenceLine, m_CenterLineEccentricity, section, group);
 	// need to allow continuation perpendicular to vertical section ?
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(LeftLine.startPoint(), RightLine.endPoint());
 	Line->SetColorIndex(pstate.ColorIndex());
 	Line->SetLinetypeIndex(riseDropIndicator);
 	group->AddTail(Line);
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(RightLine.startPoint(), LeftLine.endPoint());
 	Line->SetColorIndex(pstate.ColorIndex());
 	Line->SetLinetypeIndex(riseDropIndicator);
@@ -526,17 +526,17 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, S
 	GenerateEndCap(PreviousLeftLine.endPoint(), PreviousRightLine.endPoint(), previousSection, group);
 
 	EoDbLine* Line;
-	Line = group->IsPersistent() ? EoDbLine::Create(PreviousLeftLine.endPoint(), InsideCorner) : new EoDbLine(PreviousLeftLine.endPoint(), InsideCorner);
+	Line = group->IsPersistent() ? EoDbLine::Create2(PreviousLeftLine.endPoint(), InsideCorner) : new EoDbLine(PreviousLeftLine.endPoint(), InsideCorner);
 	group->AddTail(Line);
-	Line = group->IsPersistent() ? EoDbLine::Create(InsideCorner, CurrentLeftLine.startPoint()) : new EoDbLine(InsideCorner, CurrentLeftLine.startPoint());
+	Line = group->IsPersistent() ? EoDbLine::Create2(InsideCorner, CurrentLeftLine.startPoint()) : new EoDbLine(InsideCorner, CurrentLeftLine.startPoint());
 	group->AddTail(Line);
-	Line = group->IsPersistent() ? EoDbLine::Create(PreviousRightLine.endPoint(), OutsideCorner) : new EoDbLine(PreviousRightLine.endPoint(), OutsideCorner);
+	Line = group->IsPersistent() ? EoDbLine::Create2(PreviousRightLine.endPoint(), OutsideCorner) : new EoDbLine(PreviousRightLine.endPoint(), OutsideCorner);
 	group->AddTail(Line);
-	Line = group->IsPersistent() ? EoDbLine::Create(OutsideCorner, CurrentRightLine.startPoint()) : new EoDbLine(OutsideCorner, CurrentRightLine.startPoint());
+	Line = group->IsPersistent() ? EoDbLine::Create2(OutsideCorner, CurrentRightLine.startPoint()) : new EoDbLine(OutsideCorner, CurrentRightLine.startPoint());
 	group->AddTail(Line);
 
 	if (m_GenerateTurningVanes) {
-		EoDbLine* Line = group->IsPersistent() ? EoDbLine::Create(InsideCorner, OutsideCorner) : new EoDbLine(InsideCorner, OutsideCorner);
+		Line = group->IsPersistent() ? EoDbLine::Create2(InsideCorner, OutsideCorner) : new EoDbLine(InsideCorner, OutsideCorner);
 		Line->SetColorIndex(2);
 		Line->SetLinetypeIndex(2);
 		group->AddTail(Line);
@@ -550,10 +550,10 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double 
 	if (referenceLine.GetParallels(section.Width(), eccentricity, LeftLine, RightLine)) {
 		GenerateEndCap(LeftLine.startPoint(), RightLine.startPoint(), section, group);
 		EoDbLine* Line;
-		Line = group->IsPersistent() ? EoDbLine::Create(LeftLine.startPoint(), LeftLine.endPoint()) : new EoDbLine(LeftLine.startPoint(), LeftLine.endPoint());
+		Line = group->IsPersistent() ? EoDbLine::Create2(LeftLine.startPoint(), LeftLine.endPoint()) : new EoDbLine(LeftLine.startPoint(), LeftLine.endPoint());
 		group->AddTail(Line);
 		GenerateEndCap(LeftLine.endPoint(), RightLine.endPoint(), section, group);
-		Line = group->IsPersistent() ? EoDbLine::Create(RightLine.startPoint(), RightLine.endPoint()) : new EoDbLine(RightLine.startPoint(), RightLine.endPoint());
+		Line = group->IsPersistent() ? EoDbLine::Create2(RightLine.startPoint(), RightLine.endPoint()) : new EoDbLine(RightLine.startPoint(), RightLine.endPoint());
 		group->AddTail(Line);
 	}
 }
@@ -620,13 +620,13 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	GenerateEndCap(LeftLine.startPoint(), RightLine.startPoint(), section, Section);
 
 	EoDbLine* Line;
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(RightLine.startPoint(), RightLine.endPoint());
 	Section->AddTail(Line);
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(RightLine.endPoint(), LeftLine.endPoint());
 	Section->AddTail(Line);
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(LeftLine.startPoint(), LeftLine.endPoint());
 	Section->AddTail(Line);
 
@@ -643,10 +643,10 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 		LeftLine.SetEndPoint(EndPoint);
 
 	}
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(RightLine.startPoint(), RightLine.endPoint());
 	Section->AddTail(Line);
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(LeftLine.endPoint(), LeftLine.startPoint());
 	Section->AddTail(Line);
 
@@ -661,7 +661,7 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 		Circle->SetLinetypeIndex(1);
 		Section->AddTail(Circle);
 
-		EoDbLine* Line = EoDbLine::Create(Database());
+        auto Line {EoDbLine::Create0(Database())};
 		Line->SetTo(BeginPoint, EndPoint);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(pstate.LinetypeIndex());
@@ -699,11 +699,11 @@ void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, double eccentri
 	}
 	GenerateEndCap(LeftLine.startPoint(), RightLine.startPoint(), previousSection, group);
 	EoDbLine* Line;
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(RightLine.startPoint(), RightLine.endPoint());
 	group->AddTail(Line);
 	GenerateEndCap(RightLine.endPoint(), LeftLine.endPoint(), currentSection, group);
-	Line = EoDbLine::Create(Database());
+	Line = EoDbLine::Create0(Database());
 	Line->SetTo(LeftLine.endPoint(), LeftLine.startPoint());
 	group->AddTail(Line);
 }

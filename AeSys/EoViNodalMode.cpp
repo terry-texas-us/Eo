@@ -139,7 +139,7 @@ void AeSysView::OnNodalModeToLine(void) {
 			POSITION PointPosition = GetDocument()->GetFirstUniquePointPosition();
 			while (PointPosition != 0) {
 				EoGeUniquePoint* UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
-				EoDbLine* Primitive = EoDbLine::Create(UniquePoint->m_Point, UniquePoint->m_Point + Translate);
+                auto Primitive {EoDbLine::Create2(UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
 				Group->AddTail(Primitive);
 			}
 			GetDocument()->AddWorkLayerGroup(Group);

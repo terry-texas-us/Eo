@@ -78,12 +78,12 @@ public: // Methods
 public: // Methods - static
 
 	static EoDbLine* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
+    static EoDbLine* Create(OdDbLinePtr line);
 
-	static EoDbLine* Create(const EoDbLine& line, OdDbDatabasePtr database);
-	static EoDbLine* Create(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
-	static EoDbLine* Create(OdDbDatabasePtr database);
+    static EoDbLine* Create0(OdDbDatabasePtr database);
+    static EoDbLine* Create1(const EoDbLine& line, OdDbBlockTableRecordPtr blockTableRecord);
+	static EoDbLine* Create2(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
+    
     static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-
-	static EoDbLine* Create(OdDbLinePtr line);
 };

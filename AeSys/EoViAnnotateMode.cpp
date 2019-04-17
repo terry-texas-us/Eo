@@ -433,7 +433,7 @@ void AeSysView::OnAnnotateModeConstructionLine() {
 		CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[1], EoViAnn_points[0], 96.));
-		EoDbLine* Line = EoDbLine::Create(Database());
+        auto Line {EoDbLine::Create0(Database())};
 		Line->SetTo(EoViAnn_points[1], EoViAnn_points[2]);
 		Line->SetColorIndex(15);
 		Line->SetLinetypeIndex(2);

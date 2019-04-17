@@ -110,7 +110,7 @@ void AeSysView::OnDimensionModeLine(void) {
 	else {
 		ptCur = SnapPointToAxis(PreviousDimensionCursorPosition, ptCur);
 		if (PreviousDimensionCursorPosition != ptCur) {
-			EoDbLine* Line = EoDbLine::Create(PreviousDimensionCursorPosition, ptCur);
+            auto Line {EoDbLine::Create2(PreviousDimensionCursorPosition, ptCur)};
 			Line->SetColorIndex(1);
 			Line->SetLinetypeIndex(1);
 			EoDbGroup* Group = new EoDbGroup;
@@ -218,7 +218,7 @@ void AeSysView::OnDimensionModeExten(void) {
 		if (PreviousDimensionCursorPosition != ptCur) {
 			ptCur = ProjectToward(ptCur, PreviousDimensionCursorPosition, - .1875);
 			PreviousDimensionCursorPosition = ProjectToward(PreviousDimensionCursorPosition, ptCur, .0625);
-			EoDbLine* Line = EoDbLine::Create(PreviousDimensionCursorPosition, ptCur);
+            auto Line {EoDbLine::Create2(PreviousDimensionCursorPosition, ptCur)};
 			Line->SetColorIndex(1);
 			Line->SetLinetypeIndex(1);
 			EoDbGroup* Group = new EoDbGroup;
@@ -464,7 +464,7 @@ void AeSysView::OnDimensionModeConvert(void) {
                     OdGeVector3d PlaneNormal;
                     ReferenceSystem.GetUnitNormal(PlaneNormal);
 
-                    EoDbLine* LinePrimitive = EoDbLine::Create(DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint());
+                    auto LinePrimitive {EoDbLine::Create2(DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint())};
 					LinePrimitive->SetColorIndex(DimensionPrimitive->ColorIndex());
 					LinePrimitive->SetLinetypeIndex(DimensionPrimitive->LinetypeIndex());
 					

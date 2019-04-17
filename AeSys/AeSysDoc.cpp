@@ -1761,14 +1761,14 @@ void AeSysDoc::OnPrimBreak() {
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
 			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
-				Line = EoDbLine::Create(Database);
+				Line = EoDbLine::Create0(Database);
 				Line->SetTo(Points[w], Points[w + 1]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
 				Group->AddTail(Line);
 			}
 			if (PolylinePrimitive->IsClosed()) {
-				Line = EoDbLine::Create(Database);
+				Line = EoDbLine::Create0(Database);
 				Line->SetTo(Points[Points.size() - 1], Points[0]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
