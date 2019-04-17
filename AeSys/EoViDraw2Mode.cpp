@@ -44,13 +44,15 @@ void AeSysView::OnDraw2ModeWall() {
 	OdGePoint3d ptBeg;
 	const OdGePoint3d ptInt;
 
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
-	if (m_PreviousOp != 0) {
+    OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+    
+    if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
-	if (m_EndSectionGroup == 0) {
+	if (m_EndSectionGroup == nullptr) {
 		if (m_PreviousOp != 0) {
 			CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 
@@ -60,24 +62,24 @@ void AeSysView::OnDraw2ModeWall() {
 			if (m_ContinueCorner) {
 				CleanPreviousLines();
 			}
-			else if (m_BeginSectionGroup != 0) {
+			else if (m_BeginSectionGroup != nullptr) {
 				StartAssemblyFromLine();
 			}
 			else if (m_PreviousOp == ID_OP2) {
 				m_AssemblyGroup = new EoDbGroup;
 				GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(BlockTableRecord)};
 				Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint());
 				m_AssemblyGroup->AddTail(Line);
 			}
 			EoDbLine* Line;
-			Line = EoDbLine::Create(Database());
+			Line = EoDbLine::Create0(BlockTableRecord);
 			Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint());
 			m_AssemblyGroup->AddTail(Line);
-			Line = EoDbLine::Create(Database());
+			Line = EoDbLine::Create0(BlockTableRecord);
 			Line->SetTo(m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
 			m_AssemblyGroup->AddTail(Line);
-			Line = EoDbLine::Create(Database());
+			Line = EoDbLine::Create0(BlockTableRecord);
 			Line->SetTo(m_CurrentRightLine.endPoint(), m_CurrentLeftLine.endPoint());
 			m_AssemblyGroup->AddTail(Line);
 			GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_AssemblyGroup);
@@ -95,13 +97,13 @@ void AeSysView::OnDraw2ModeWall() {
 		if (m_ContinueCorner) {
 			CleanPreviousLines();
 		}
-		else if (m_BeginSectionGroup != 0) {
+		else if (m_BeginSectionGroup != nullptr) {
 			StartAssemblyFromLine();
 		}
 		else if (m_PreviousOp == ID_OP2) {
 			m_AssemblyGroup = new EoDbGroup;
 			GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
-			EoDbLine* Line = EoDbLine::Create(Database());
+            auto Line {EoDbLine::Create0(BlockTableRecord)};
 			Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint());
 			m_AssemblyGroup->AddTail(Line);
 		}
@@ -109,15 +111,15 @@ void AeSysView::OnDraw2ModeWall() {
 		ptBeg = m_EndSectionLine->StartPoint();
 		ptEnd = m_EndSectionLine->EndPoint();
 		EoDbLine* Line;
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint());
 		m_AssemblyGroup->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
 		m_AssemblyGroup->AddTail(Line);
 		GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_AssemblyGroup);
 
-		EoDbLine* LinePrimitive = EoDbLine::Create(*m_EndSectionLine, Database());
+        auto LinePrimitive {EoDbLine::Create1(*m_EndSectionLine, BlockTableRecord)};
 		if (EoGeLineSeg3d(m_PreviousPnt, CurrentPnt).DirectedRelationshipOf(ptBeg) < 0) {
 			m_EndSectionLine->SetEndPoint(m_CurrentRightLine.endPoint());
 			LinePrimitive->SetStartPoint(m_CurrentLeftLine.endPoint());
@@ -128,7 +130,7 @@ void AeSysView::OnDraw2ModeWall() {
 		}
 		m_EndSectionGroup->AddTail(LinePrimitive);
 		GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_EndSectionGroup);
-		m_EndSectionGroup = 0;
+		m_EndSectionGroup = nullptr;
 
 		ModeLineUnhighlightOp(m_PreviousOp);
 		m_ContinueCorner = false;
@@ -152,9 +154,9 @@ void AeSysView::OnDraw2ModeEscape() {
 
 	m_AssemblyGroup = 0;
 	m_ContinueCorner = false;
-	m_BeginSectionGroup = 0;
+	m_BeginSectionGroup = nullptr;
 	m_BeginSectionLine = 0;
-	m_EndSectionGroup = 0;
+	m_EndSectionGroup = nullptr;
 	m_EndSectionLine = 0;
 }
 
@@ -204,7 +206,8 @@ bool AeSysView::StartAssemblyFromLine() {
 	Line.IntersectWith_xy(m_CurrentRightLine, ptInt);
 	m_CurrentRightLine.SetStartPoint(ptInt);
 
-	EoDbLine* LinePrimitive = EoDbLine::Create(*m_BeginSectionLine, Database());
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    auto LinePrimitive {EoDbLine::Create1(*m_BeginSectionLine, Database())};
 
 	if (OdGeVector3d(m_CurrentLeftLine.startPoint() - Line.startPoint()).length() > OdGeVector3d(m_CurrentRightLine.startPoint() - Line.startPoint()).length()) {
 		m_BeginSectionLine->SetEndPoint(m_CurrentRightLine.startPoint());

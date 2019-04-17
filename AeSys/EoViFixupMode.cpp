@@ -26,9 +26,11 @@ void AeSysView::OnFixupModeOptions(void) {
 void AeSysView::OnFixupModeReference(void) {
 	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d ptCurPos = GetCursorPosition();
+    auto ptCurPos {GetCursorPosition()};
 
-	OdGePoint3d ptInt;
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    
+    OdGePoint3d ptInt;
 
 	if (ReferenceGroup != 0) {
 		Document->UpdatePrimitiveInAllViews(kPrimitive, ReferencePrimitive);
@@ -77,7 +79,7 @@ void AeSysView::OnFixupModeReference(void) {
 				Document->UpdateGroupInAllViews(kGroupEraseSafe, pSegPrv);
 				pLinePrv->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLinePrv->SetEndPoint(m_FixupModeFirstLine.endPoint());
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(BlockTableRecord)};
 				Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint());
 				pSegPrv->AddTail(Line);
 				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
@@ -126,6 +128,7 @@ void AeSysView::OnFixupModeMend(void) {
 	AeSysDoc* Document = GetDocument();
 
 	OdGePoint3d ptInt;
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDbGroup* OtherGroup = SelectGroupAndPrimitive(GetCursorPosition());
 	if (OtherGroup == 0) {
@@ -189,7 +192,7 @@ void AeSysView::OnFixupModeMend(void) {
 				Document->UpdateGroupInAllViews(kGroupEraseSafe, pSegPrv);
 				pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(BlockTableRecord)};
 				Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint());
 				pSegPrv->AddTail(Line);
 				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
@@ -239,7 +242,8 @@ void AeSysView::OnFixupModeMend(void) {
 void AeSysView::OnFixupModeChamfer(void) {
 	AeSysDoc* Document = GetDocument();
 
-	const OdGePoint3d ptCurPos = GetCursorPosition();
+    const auto ptCurPos {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdGePoint3d ptInt;
 	OdGePoint3d	ptCP;
@@ -300,7 +304,7 @@ void AeSysView::OnFixupModeChamfer(void) {
 			Document->UpdateGroupInAllViews(kGroupEraseSafe, OtherGroup);
 			pLine->SetStartPoint(m_FixupModeSecondLine.startPoint());
 			pLine->SetEndPoint(m_FixupModeSecondLine.endPoint());
-			EoDbLine* Line = EoDbLine::Create(Database());
+            auto Line {EoDbLine::Create0(BlockTableRecord)};
 			Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint());
 			OtherGroup->AddTail(Line);
 

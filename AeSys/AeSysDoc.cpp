@@ -1748,6 +1748,7 @@ void AeSysDoc::OnClearViewedTracings() {
 void AeSysDoc::OnPrimBreak() {
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 	OdDbDatabasePtr Database = ActiveView->Database();
+    OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDbGroup* Group = ActiveView->SelectGroupAndPrimitive(ActiveView->GetCursorPosition());
 	if (Group != 0 && ActiveView->EngagedPrimitive() != 0) {
@@ -1761,14 +1762,14 @@ void AeSysDoc::OnPrimBreak() {
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
 			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
-				Line = EoDbLine::Create(Database);
+				Line = EoDbLine::Create0(BlockTableRecord);
 				Line->SetTo(Points[w], Points[w + 1]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
 				Group->AddTail(Line);
 			}
 			if (PolylinePrimitive->IsClosed()) {
-				Line = EoDbLine::Create(Database);
+				Line = EoDbLine::Create0(BlockTableRecord);
 				Line->SetTo(Points[Points.size() - 1], Points[0]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());

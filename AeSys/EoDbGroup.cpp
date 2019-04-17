@@ -50,13 +50,13 @@ void EoDbGroup::BreakPolylines() {
 			PolylinePrimitive->GetAllPoints(Points);
 			EoDbLine* Line;
 			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
-				Line = EoDbLine::Create(Points[w], Points[w + 1]);
+				Line = EoDbLine::Create2(Points[w], Points[w + 1]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
 				CObList::InsertBefore(PrimitivePosition, Line);
 			}
 			if (PolylinePrimitive->IsClosed()) {
-				Line = EoDbLine::Create(Points[Points.size() - 1], Points[0]);
+				Line = EoDbLine::Create2(Points[Points.size() - 1], Points[0]);
 				Line->SetColorIndex(Primitive->ColorIndex());
 				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
 				CObList::InsertBefore(PrimitivePosition, Line);

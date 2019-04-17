@@ -75,14 +75,15 @@ void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 }
 
 EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbLine::Create(*this, database));
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    return (EoDbLine::Create1(*this, BlockTableRecord));
 }
 
 void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr& database) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
-		EoDbLine* Line = EoDbLine::Create(ln.startPoint(), ln.endPoint());
+		auto Line = EoDbLine::Create2(ln.startPoint(), ln.endPoint());
 		Line->SetColorIndex(m_ColorIndex);
 		Line->SetLinetypeIndex(m_LinetypeIndex);
 		group->AddTail(Line);
@@ -100,14 +101,15 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGrou
 		pLine = this;
 	}
 	else { // Something gets cut
-		pLine = EoDbLine::Create(*this, database);
+        OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+        pLine = EoDbLine::Create1(*this, BlockTableRecord);
 		if (FirstPointParameter > DBL_EPSILON && SecondPointParameter < 1. - DBL_EPSILON) { // Cut section out of middle
 			pLine->SetStartPoint(points[1]);
 			EoDbGroup* Group = new EoDbGroup;
 			Group->AddTail(pLine);
 			groups->AddTail(Group);
 
-			pLine = EoDbLine::Create(*this, database);
+			pLine = EoDbLine::Create1(*this, BlockTableRecord);
 			pLine->SetStartPoint(points[0]);
 			pLine->SetEndPoint(points[1]);
 			SetEndPoint(points[0]);
@@ -441,43 +443,55 @@ EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	return (LinePrimitive);
 }
 
-EoDbLine* EoDbLine::Create(const EoDbLine& other, OdDbDatabasePtr database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	OdDbLinePtr LineEntity = other.EntityObjectId().safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(LineEntity);
+EoDbLine* EoDbLine::Create(OdDbLinePtr line) {
+    auto Line {new EoDbLine()};
+    Line->SetEntityObjectId(line->objectId());
+    Line->SetColorIndex_(line->colorIndex());
+    Line->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
 
-	EoDbLine* Line = new EoDbLine(other);
+    Line->SetStartPoint_(line->startPoint());
+    Line->SetEndPoint_(line->endPoint());
+
+    return Line;
+}
+
+EoDbLine* EoDbLine::Create0(OdDbBlockTableRecordPtr blockTableRecord) {
+    auto Line {new EoDbLine()};
+    Line->SetColorIndex(pstate.ColorIndex());
+    Line->SetLinetypeIndex(pstate.LinetypeIndex());
+    Line->AssociateWith(blockTableRecord);
+
+    return Line;
+}
+
+EoDbLine* EoDbLine::Create1(const EoDbLine& other, OdDbBlockTableRecordPtr blockTableRecord) {
+    OdDbLinePtr LineEntity = other.EntityObjectId().safeOpenObject()->clone();
+	blockTableRecord->appendOdDbEntity(LineEntity);
+
+    auto Line {new EoDbLine(other)};
 	Line->SetEntityObjectId(LineEntity->objectId());
 
 	return Line;
 }
 
-EoDbLine* EoDbLine::Create(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
+EoDbLine* EoDbLine::Create2(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
-	EoDbLine* Line = Create(Database);
+    OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    auto Line {Create0(BlockTableRecord)};
 	Line->SetStartPoint(startPoint);
 	Line->SetEndPoint(endPoint);
 
 	return Line;
 }
 
-EoDbLine* EoDbLine::Create(OdDbDatabasePtr database) {
-	EoDbLine* LinePrimitive = new EoDbLine();
-	LinePrimitive->SetColorIndex(pstate.ColorIndex());
-	LinePrimitive->SetLinetypeIndex(pstate.LinetypeIndex());
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	LinePrimitive->AssociateWith(BlockTableRecord);
-	return (LinePrimitive);
-}
-
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
-    OdDbLinePtr Line = OdDbLine::createObject();
+    auto Line {OdDbLine::createObject()};
     Line->setDatabaseDefaults(blockTableRecord->database());
 
     blockTableRecord->appendOdDbEntity(Line);
     Line->setColorIndex(pstate.ColorIndex());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+    const auto Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
 
     Line->setLinetype(Linetype);
 
@@ -485,14 +499,14 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-    OdDbLinePtr Line = OdDbLine::createObject();
+    auto Line {OdDbLine::createObject()};
     Line->setDatabaseDefaults(blockTableRecord->database());
 
     blockTableRecord->appendOdDbEntity(Line);
 
     Line->setColorIndex(file.ReadInt16());
     
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+    const auto Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
     
     Line->setLinetype(Linetype);
     
@@ -500,16 +514,4 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
     Line->setEndPoint(file.ReadPoint3d());
     
     return (Line);
-}
-
-EoDbLine* EoDbLine::Create(OdDbLinePtr line) {
-	EoDbLine* Line = new EoDbLine();
-	Line->SetEntityObjectId(line->objectId());
-	Line->SetColorIndex_(line->colorIndex());
-	Line->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
-	
-	Line->SetStartPoint_(line->startPoint());
-	Line->SetEndPoint_(line->endPoint());
-	
-	return Line;
 }

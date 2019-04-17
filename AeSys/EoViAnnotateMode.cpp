@@ -422,7 +422,9 @@ void AeSysView::OnAnnotateModeCutIn() {
 }
 
 void AeSysView::OnAnnotateModeConstructionLine() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
+
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	if (m_PreviousOp != ID_OP9) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP9);
@@ -433,7 +435,7 @@ void AeSysView::OnAnnotateModeConstructionLine() {
 		CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[1], EoViAnn_points[0], 96.));
-		EoDbLine* Line = EoDbLine::Create(Database());
+        auto Line {EoDbLine::Create0(BlockTableRecord)};
 		Line->SetTo(EoViAnn_points[1], EoViAnn_points[2]);
 		Line->SetColorIndex(15);
 		Line->SetLinetypeIndex(2);

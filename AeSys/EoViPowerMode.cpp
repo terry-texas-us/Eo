@@ -8,7 +8,8 @@ void AeSysView::OnPowerModeOptions() noexcept {
 }
 
 void AeSysView::OnPowerModeCircuit() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	m_PowerArrow = false;
 	m_PowerConductor = false;
@@ -30,7 +31,7 @@ void AeSysView::OnPowerModeCircuit() {
 			GetDocument()->AddWorkLayerGroup(Group);
 			const OdGePoint3d pt1 = ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius);
 			const OdGePoint3d pt2 = ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius);
-			EoDbLine* Line = EoDbLine::Create(Database());
+            auto Line {EoDbLine::Create0(BlockTableRecord)};
 			Line->SetTo(pt1, pt2);
 			Group->AddTail(Line);
 			m_PowerModePoints[0] = CurrentPnt;
@@ -48,7 +49,7 @@ void AeSysView::OnPowerModeCircuit() {
 			GetDocument()->AddWorkLayerGroup(Group);
 			const OdGePoint3d pt1 = ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius);
 			const OdGePoint3d pt2 = ProjectToward(CurrentPnt, m_PowerModePoints[0], 0.);
-			EoDbLine* Line = EoDbLine::Create(Database());
+            auto Line {EoDbLine::Create0(BlockTableRecord)};
 			Line->SetTo(pt1, pt2);
 			Group->AddTail(Line);
 
@@ -245,6 +246,8 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
 	OdGePoint3d Points[5];
 	EoGeLineSeg3d Circuit(pointOnCircuit, endPoint);
 	EoDbEllipse* Circle;
@@ -256,7 +259,7 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 		Circuit.ProjPtFrom_xy(0., - .1, Points[0]);
 		Circuit.ProjPtFrom_xy(0., .075, Points[1]);
 		Circuit.ProjPtFrom_xy(0., .0875, Points[2]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(Points[0], Points[1]);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
@@ -271,7 +274,7 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 	case ID_OP5:
 		Circuit.ProjPtFrom_xy(0., - .1, Points[0]);
 		Circuit.ProjPtFrom_xy(0., .1, Points[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(Points[0], Points[1]);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
@@ -287,17 +290,17 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 		EoGeLineSeg3d(Points[2], endPoint).ProjPtFrom_xy(0., .075, Points[3]);
 		EoGeLineSeg3d(pointOnCircuit, endPoint).ProjPtFrom_xy(0., .1, Points[4]);
 		
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(Points[0], Points[1]);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(Points[1], Points[3]);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(Points[3], Points[4]);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
@@ -307,7 +310,7 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 	case ID_OP7:
 		Circuit.ProjPtFrom_xy(0., - .05, Points[0]);
 		Circuit.ProjPtFrom_xy(0., .05, Points[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(Points[0], Points[1]);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);

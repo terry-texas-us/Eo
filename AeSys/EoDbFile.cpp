@@ -53,8 +53,8 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 
 EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
     EoDbPrimitive* Primitive = nullptr;
-
-    switch (ReadUInt16()) {
+    auto PrimitiveType {ReadUInt16()};
+    switch (PrimitiveType) {
     case kPointPrimitive: {
         OdDbPointPtr Point = EoDbPoint::Create(blockTable, *this);
         Primitive = EoDbPoint::Create(Point);

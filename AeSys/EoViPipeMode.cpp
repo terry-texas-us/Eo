@@ -38,7 +38,8 @@ void AeSysView::OnPipeModeLine() {
 }
 
 void AeSysView::OnPipeModeFitting() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDbLine* HorizontalSection;
 	EoDbGroup* Group = SelectLineBy(CurrentPnt, HorizontalSection);
@@ -51,7 +52,7 @@ void AeSysView::OnPipeModeFitting() {
 		}
 		CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
 		HorizontalSection->SetEndPoint(CurrentPnt);
-		EoDbLine* Line = EoDbLine::Create(Database());
+        auto Line {EoDbLine::Create0(BlockTableRecord)};
 		Line->SetTo(CurrentPnt, EndPoint);
 		Line->SetColorIndex(HorizontalSection->ColorIndex());
 		Line->SetLinetypeIndex(HorizontalSection->LinetypeIndex());
@@ -267,8 +268,9 @@ void AeSysView::OnPipeModeSymbol() {
 		.15625, .15625, .15625, .15625, .15625, .03125, .03125, .125
 	};
 
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OnPipeModeEscape();
 	m_PipeModePoints.setLogicalLength(2);
@@ -298,7 +300,7 @@ void AeSysView::OnPipeModeSymbol() {
 
 	HorizontalSection->SetEndPoint(SymbolBeginPoint);
 	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveSafe, HorizontalSection);
-	EoDbLine* Line = EoDbLine::Create(Database());
+    auto Line {EoDbLine::Create0(BlockTableRecord)};
 	Line->SetTo(SymbolEndPoint, EndPoint);
 	Line->SetColorIndex(HorizontalSection->ColorIndex());
 	Line->SetLinetypeIndex(HorizontalSection->LinetypeIndex());
@@ -322,19 +324,19 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[0], - SymbolSize[0] * 2., m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[0], SymbolSize[0] * 1.5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[0], SymbolSize[0] * 2., SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		break;
@@ -347,14 +349,14 @@ void AeSysView::OnPipeModeSymbol() {
 		m_PipeModePoints[0].rotateBy(QUARTER_PI, OdGeVector3d::kZAxis, PointOnSection);
 		m_PipeModePoints[1] = m_PipeModePoints[0];
 		m_PipeModePoints[1].rotateBy(PI, OdGeVector3d::kZAxis, PointOnSection);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		m_PipeModePoints[0] = SymbolBeginPoint;
 		m_PipeModePoints[0].rotateBy(3. * QUARTER_PI, OdGeVector3d::kZAxis, PointOnSection);
 		m_PipeModePoints[1] = m_PipeModePoints[0];
 		m_PipeModePoints[1].rotateBy(PI, OdGeVector3d::kZAxis, PointOnSection);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		break;
@@ -365,11 +367,11 @@ void AeSysView::OnPipeModeSymbol() {
 		Group->AddTail(Circle);
 		EndSection.ProjPtFrom_xy(SymbolSize[2], SymbolSize[2] * 1.5, m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[2] * 1.5, m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[2], SymbolBeginPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		break;
@@ -380,11 +382,11 @@ void AeSysView::OnPipeModeSymbol() {
 		Group->AddTail(Circle);
 		EndSection.ProjPtFrom_xy(SymbolSize[3], SymbolSize[3] * 1.5, m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[3] * 1.5, m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(0., SymbolSize[3], SymbolBeginPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		break;
@@ -392,15 +394,15 @@ void AeSysView::OnPipeModeSymbol() {
 	case 4:
 		EndSection.ProjPtFrom_xy(SymbolSize[4], SymbolSize[4] * .5, m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(SymbolSize[4], - SymbolSize[4] * .5, m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(SymbolSize[4], - SymbolSize[4] * .5, SymbolBeginPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(SymbolSize[4], SymbolSize[4] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(SymbolSize[4], - SymbolSize[4] * .3, m_PipeModePoints[0]);
@@ -412,22 +414,22 @@ void AeSysView::OnPipeModeSymbol() {
 	case 5:
 		EndSection.ProjPtFrom_xy(SymbolSize[5], SymbolSize[5] * .5, m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(SymbolSize[5], - SymbolSize[5] * .5, m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(SymbolSize[5], - SymbolSize[5] * .5, SymbolBeginPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(SymbolSize[5], SymbolSize[5] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
 		BeginSection.ProjPtFrom_xy(SymbolSize[5], - SymbolSize[5] * .3, m_PipeModePoints[0]);
 		Circle = EoDbEllipse::Create(Database());
 		Circle->SetToCircle(SymbolBeginPoint, ActiveViewPlaneNormal, OdGeVector3d(m_PipeModePoints[0] - SymbolBeginPoint).length());
 		Group->AddTail(Circle);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, PointOnSection);
 		Group->AddTail(Line);
 		break;
@@ -437,16 +439,16 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[6], - SymbolSize[6] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[6], - SymbolSize[6] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[6], SymbolSize[6] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		break;
@@ -456,16 +458,16 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[7], - SymbolSize[7] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[7], - SymbolSize[7] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[7], SymbolSize[7] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[7] * .25);
@@ -479,16 +481,16 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[8], - SymbolSize[8] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[8], - SymbolSize[8] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[8], SymbolSize[8] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[8] * .25);
@@ -496,7 +498,7 @@ void AeSysView::OnPipeModeSymbol() {
 		Circle->SetToCircle(PointOnSection, ActiveViewPlaneNormal, OdGeVector3d(m_PipeModePoints[0] - PointOnSection).length());
 		Group->AddTail(Circle);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[8], m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		m_PipeTicSize = SymbolSize[8] * .25;
@@ -508,16 +510,16 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[9], - SymbolSize[9] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[9], - SymbolSize[9] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[9], SymbolSize[9] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[9] * .25);
@@ -525,15 +527,15 @@ void AeSysView::OnPipeModeSymbol() {
 		Circle->SetToCircle(PointOnSection, ActiveViewPlaneNormal, OdGeVector3d(m_PipeModePoints[0] - PointOnSection).length());
 		Group->AddTail(Circle);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[9], m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(SymbolSize[9] * .5, SymbolSize[9] * .75, m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[9] * .5, SymbolBeginPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		break;
@@ -543,36 +545,36 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[10], - SymbolSize[10] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[10], - SymbolSize[10] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[10], SymbolSize[10] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[10] * .5, m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * .5, m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * .75, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, - SymbolSize[10] * .75, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, - SymbolSize[10] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		break;
@@ -582,47 +584,47 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[11], - SymbolSize[11] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[11], - SymbolSize[11] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[11], SymbolSize[11] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[11] * .5, m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * .5, m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * .75, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, - SymbolSize[11] * .75, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, - SymbolSize[11] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(SymbolSize[11] * .5, - SymbolSize[11], m_PipeModePoints[0]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[11] * .5, SymbolSize[11], m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], PointOnSection);
 		Group->AddTail(Line);
 		break;
@@ -632,30 +634,30 @@ void AeSysView::OnPipeModeSymbol() {
 		EndSection.ProjPtFrom_xy(SymbolSize[12], - SymbolSize[12] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[12], - SymbolSize[12] * .5, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[12], SymbolSize[12] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[12] * .5, m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		EndSection.ProjPtFrom_xy(SymbolSize[12] * .25, SymbolSize[12] * .5, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[12] * .25, - SymbolSize[12] * .5, SymbolBeginPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
 		// add a half circle here i think
 		BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, - SymbolSize[12] * .5, m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, m_PipeModePoints[0]);
 		Line->SetColorIndex(pstate.ColorIndex());
 		Line->SetLinetypeIndex(2);
@@ -663,16 +665,16 @@ void AeSysView::OnPipeModeSymbol() {
 		BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, - SymbolSize[12] * .75, m_PipeModePoints[1]);
 		BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., - SymbolSize[12] * .75, SymbolBeginPoint);
 		BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., - SymbolSize[12] * .5, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		break;
@@ -680,16 +682,16 @@ void AeSysView::OnPipeModeSymbol() {
 	case 13:
 		EndSection.ProjPtFrom_xy(0., - SymbolSize[13], m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[13], m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], SymbolEndPoint);
 		Group->AddTail(Line);
 		break;
@@ -697,53 +699,53 @@ void AeSysView::OnPipeModeSymbol() {
 	case 14:
 		EndSection.ProjPtFrom_xy(0., - SymbolSize[14], m_PipeModePoints[0]);
 		EndSection.ProjPtFrom_xy(0., SymbolSize[14], m_PipeModePoints[1]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolEndPoint, m_PipeModePoints[1]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, m_PipeModePoints[0]);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], SymbolEndPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[0], m_PipeModePoints[1]);
 		Group->AddTail(Line);
 		break;
 
 	case 15:
 		EndSection.ProjPtFrom_xy(0., - .250, m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		GenerateTicMark(PointOnSection, m_PipeModePoints[0], TicDistance[15], Group);
 		BeginSection.ProjPtFrom_xy(.0625, .1875, m_PipeModePoints[1]);
 		EndSection.ProjPtFrom_xy(.0625, - .1875, SymbolBeginPoint);
 		EndSection.ProjPtFrom_xy(.0625, - .125, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
 		break;
 
 	case 16:
 		EndSection.ProjPtFrom_xy(0., - .250, m_PipeModePoints[0]);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(PointOnSection, m_PipeModePoints[0]);
 		Group->AddTail(Line);
 		GenerateTicMark(PointOnSection, m_PipeModePoints[0], TicDistance[16], Group);
 		BeginSection.ProjPtFrom_xy(.0625, .1875, m_PipeModePoints[1]);
 		EndSection.ProjPtFrom_xy(.0625, - .1875, SymbolBeginPoint);
 		EndSection.ProjPtFrom_xy(.0625, - .125, SymbolEndPoint);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(m_PipeModePoints[1], SymbolBeginPoint);
 		Group->AddTail(Line);
-		Line = EoDbLine::Create(Database());
+		Line = EoDbLine::Create0(BlockTableRecord);
 		Line->SetTo(SymbolBeginPoint, SymbolEndPoint);
 		Group->AddTail(Line);
 		m_PipeModePoints[1] = ProjectToward(PointOnSection, m_PipeModePoints[0], .28125);
@@ -766,7 +768,8 @@ void AeSysView::OnPipeModeSymbol() {
 }
 
 void AeSysView::OnPipeModeWye() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	if (m_PipeModePoints.empty()) {
 		m_PipeModePoints.append(CurrentPnt);
@@ -791,7 +794,7 @@ void AeSysView::OnPipeModeWye() {
 			if (fabs(DistanceBetweenSectionPoints - DistanceToSection) <= .25) { // Just need to shift point on section and do a single 45 degree line
 				PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, DistanceToSection);
 				HorizontalSection->SetEndPoint(PointOnSection);
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(BlockTableRecord)};
 				Line->SetTo(PointOnSection, EndPoint);
 				Line->SetColorIndex(HorizontalSection->ColorIndex());
 				Line->SetLinetypeIndex(HorizontalSection->LinetypeIndex());
@@ -829,7 +832,7 @@ void AeSysView::OnPipeModeWye() {
 				GenerateTicMark(PointOnSection, EndPoint, m_PipeRiseDropRadius, Group);
 				GetDocument()->AddWorkLayerGroup(Group);
 				GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
-				EoDbLine* Line = EoDbLine::Create(Database());
+                auto Line {EoDbLine::Create0(BlockTableRecord)};
 				Line->SetTo(PointOnSection, EndPoint);
 				Line->SetColorIndex(HorizontalSection->ColorIndex());
 				Line->SetLinetypeIndex(HorizontalSection->LinetypeIndex());
@@ -935,7 +938,7 @@ void AeSysView::GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint,
 		pt2 = ProjectToward(endPoint, startPoint, m_PipeRiseDropRadius);
 		GenerateTicMark(endPoint, startPoint, 2. * m_PipeRiseDropRadius, group);
 	}
-	EoDbLine* Line = group->m_Document == 0 ? new EoDbLine(pt1, pt2) : EoDbLine::Create(pt1, pt2);
+	auto Line = group->m_Document == 0 ? new EoDbLine(pt1, pt2) : EoDbLine::Create2(pt1, pt2);
 	group->AddTail(Line);
 }
 void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) {
@@ -947,7 +950,7 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
 	
 	section->SetEndPoint(CutPoint);
 	CutPoint = ProjectToward(point, EndPoint, m_PipeRiseDropRadius);
-	EoDbLine* Line = EoDbLine::Create(CutPoint, EndPoint);
+    auto Line {EoDbLine::Create2(CutPoint, EndPoint)};
 	Line->SetColorIndex(section->ColorIndex());
 	Line->SetLinetypeIndex(section->LinetypeIndex());
 	group->AddTail(Line);
@@ -971,8 +974,10 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, Eo
 	const OdGePoint3d BeginPoint = section->StartPoint();
 	const OdGePoint3d EndPoint = section->EndPoint();
 
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
 	section->SetEndPoint(point);
-	EoDbLine* Line = EoDbLine::Create(Database());
+    auto Line {EoDbLine::Create0(BlockTableRecord)};
 	Line->SetTo(point, EndPoint);
 	Line->SetColorIndex(section->ColorIndex());
 	Line->SetLinetypeIndex(section->LinetypeIndex());
@@ -1008,7 +1013,7 @@ bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d
 
 		OdGePoint3d TicEndPoint(PointOnLine);
 		TicEndPoint += OdGeVector3d(- Projection.y, Projection.x, 0.);
-		EoDbLine* Line = group->m_Document == 0 ? new EoDbLine(TicStartPoint, TicEndPoint) : EoDbLine::Create(TicStartPoint, TicEndPoint);
+		auto Line = group->m_Document == 0 ? new EoDbLine(TicStartPoint, TicEndPoint) : EoDbLine::Create2(TicStartPoint, TicEndPoint);
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
 		group->AddTail(Line);

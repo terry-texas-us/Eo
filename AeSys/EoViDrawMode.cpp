@@ -373,7 +373,7 @@ void AeSysView::DoDrawModeMouseMove() {
             for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
                 const auto StartPoint {m_DrawModePoints[PointsIndex]};
                 const auto EndPoint {m_DrawModePoints[(PointsIndex + 1) % 4]};
-                m_PreviewGroup.AddTail(EoDbLine::Create(StartPoint, EndPoint));
+                m_PreviewGroup.AddTail(EoDbLine::Create2(StartPoint, EndPoint));
             }
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }

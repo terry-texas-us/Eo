@@ -139,7 +139,7 @@ void AeSysView::OnNodalModeToLine(void) {
 			POSITION PointPosition = GetDocument()->GetFirstUniquePointPosition();
 			while (PointPosition != 0) {
 				EoGeUniquePoint* UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
-				EoDbLine* Primitive = EoDbLine::Create(UniquePoint->m_Point, UniquePoint->m_Point + Translate);
+                auto Primitive {EoDbLine::Create2(UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
 				Group->AddTail(Primitive);
 			}
 			GetDocument()->AddWorkLayerGroup(Group);
@@ -155,7 +155,8 @@ void AeSysView::OnNodalModeToLine(void) {
 /// The pen color used for any polygons added to drawing is the current pen color and not the pen color of the reference primitives.
 /// </remarks>
 void AeSysView::OnNodalModeToPolygon(void) {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
+
 	if (PreviousNodalCommand != ID_OP7) {
 		PreviousNodalCursorPosition = CurrentPnt;
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
