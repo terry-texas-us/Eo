@@ -42,21 +42,25 @@ void AeSysView::OnPipeModeFitting() {
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDbLine* HorizontalSection;
-	EoDbGroup* Group = SelectLineBy(CurrentPnt, HorizontalSection);
-	if (Group != 0) {
-		const OdGePoint3d BeginPoint = HorizontalSection->StartPoint();
-		const OdGePoint3d EndPoint = HorizontalSection->EndPoint();
+    auto Group {SelectLineBy(CurrentPnt, HorizontalSection)};
+	if (Group != nullptr) {
+        const auto BeginPoint {HorizontalSection->StartPoint()};
+        const auto EndPoint {HorizontalSection->EndPoint()};
 
 		if (!m_PipeModePoints.empty()) {
 			CurrentPnt = SnapPointToAxis(m_PipeModePoints[0], CurrentPnt);
 		}
 		CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
 		HorizontalSection->SetEndPoint(CurrentPnt);
-        auto Line {EoDbLine::Create0(BlockTableRecord)};
-		Line->SetTo(CurrentPnt, EndPoint);
-		Line->SetColorIndex(HorizontalSection->ColorIndex());
-		Line->SetLinetypeIndex(HorizontalSection->LinetypeIndex());
-		Group->AddTail(Line);
+
+        auto Line {EoDbLine::Create(BlockTableRecord)};
+
+        Line->setStartPoint(CurrentPnt);
+        Line->setEndPoint(EndPoint);
+        Line->setColorIndex(HorizontalSection->ColorIndex());
+        Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(HorizontalSection->LinetypeIndex()));
+
+        Group->AddTail(EoDbLine::Create(Line));
 
 		Group = new EoDbGroup;
 		GenerateTicMark(CurrentPnt, BeginPoint, m_PipeRiseDropRadius, Group);

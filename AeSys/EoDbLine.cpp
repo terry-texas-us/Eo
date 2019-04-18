@@ -76,17 +76,30 @@ void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 
 EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr& database) const {
     OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    return (EoDbLine::Create1(*this, BlockTableRecord));
+
+    OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+    BlockTableRecord->appendOdDbEntity(Line);
+
+    return EoDbLine::Create(Line);
 }
 
 void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr& database) {
-	EoGeLineSeg3d ln;
+	EoGeLineSeg3d LineSeg;
 
-	if (m_Line.CutAt(point, ln) != 0) {
-		auto Line = EoDbLine::Create2(ln.startPoint(), ln.endPoint());
-		Line->SetColorIndex(m_ColorIndex);
-		Line->SetLinetypeIndex(m_LinetypeIndex);
-		group->AddTail(Line);
+	if (m_Line.CutAt(point, LineSeg) != 0) {
+        OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
+        Line->setStartPoint(m_Line.startPoint());
+        Line->setEndPoint(m_Line.endPoint());
+
+        OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+        OdDbLinePtr NewLine {m_EntityObjectId.safeOpenObject()->clone()};
+        BlockTableRecord->appendOdDbEntity(NewLine);
+
+        NewLine->setStartPoint(LineSeg.startPoint());
+        NewLine->setEndPoint(LineSeg.endPoint());
+
+        group->AddTail(EoDbLine::Create(NewLine));
 	}
 }
 
@@ -102,16 +115,26 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGrou
 	}
 	else { // Something gets cut
         OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-        pLine = EoDbLine::Create1(*this, BlockTableRecord);
+
+        OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+        BlockTableRecord->appendOdDbEntity(Line);
+
+        pLine = EoDbLine::Create(Line);
+
 		if (FirstPointParameter > DBL_EPSILON && SecondPointParameter < 1. - DBL_EPSILON) { // Cut section out of middle
 			pLine->SetStartPoint(points[1]);
 			EoDbGroup* Group = new EoDbGroup;
 			Group->AddTail(pLine);
 			groups->AddTail(Group);
 
-			pLine = EoDbLine::Create1(*this, BlockTableRecord);
-			pLine->SetStartPoint(points[0]);
-			pLine->SetEndPoint(points[1]);
+            OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+            Line->setStartPoint(points[0]);
+            Line->setEndPoint(points[1]);
+
+            BlockTableRecord->appendOdDbEntity(Line);
+
+            pLine = EoDbLine::Create(Line);
+            
 			SetEndPoint(points[0]);
 		}
 		else if (SecondPointParameter < 1. - DBL_EPSILON) { // Cut in two and place begin section in trap
@@ -462,13 +485,6 @@ EoDbLine* EoDbLine::Create0(OdDbBlockTableRecordPtr blockTableRecord) {
     Line->AssociateWith(blockTableRecord);
 
     return Line;
-}
-
-EoDbLine* EoDbLine::Create1(const EoDbLine& other, OdDbBlockTableRecordPtr blockTableRecord) {
-    OdDbLinePtr Line = other.EntityObjectId().safeOpenObject()->clone();
-	blockTableRecord->appendOdDbEntity(Line);
-
-    return EoDbLine::Create(Line);
 }
 
 EoDbLine* EoDbLine::Create2(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
