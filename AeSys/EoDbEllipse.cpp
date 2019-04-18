@@ -108,10 +108,15 @@ void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 }
 
 EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbEllipse::Create(*this, database));
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+    OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject()->clone();
+    BlockTableRecord->appendOdDbEntity(Ellipse);
+
+    return EoDbEllipse::Create(Ellipse);
 }
 
-void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr& database) {
+void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}
@@ -121,10 +126,13 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabase
 		return;
 	}
 	const double SweepAngle = m_SweepAngle * Relationship;
-
-	EoDbEllipse* Arc = EoDbEllipse::Create(*this, database);
+    
+    OdDbDatabasePtr Database = this->m_EntityObjectId.database();
+    OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    
+    EoDbEllipse* Arc = EoDbEllipse::Create3(*this, BlockTableRecord);
 	Arc->SetTo(m_Center, m_MajorAxis, m_MinorAxis, SweepAngle);
-	group->AddTail(Arc);
+	newGroup->AddTail(Arc);
 
 	OdGeVector3d PlaneNormal = m_MajorAxis.crossProduct(m_MinorAxis);
 	PlaneNormal.normalize();
@@ -147,7 +155,9 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 		pArc = this;
 	}
 	else { // Something gets cut
-		OdGeVector3d vPlnNorm = m_MajorAxis.crossProduct(m_MinorAxis);
+        OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+        
+        OdGeVector3d vPlnNorm = m_MajorAxis.crossProduct(m_MinorAxis);
 		vPlnNorm.normalize();
 
 		if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) { // Closed arc
@@ -156,7 +166,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 			m_MajorAxis.rotateBy(dRel[0] * TWOPI, vPlnNorm);
 			m_MinorAxis.rotateBy(dRel[0] * TWOPI, vPlnNorm);
 
-			pArc = EoDbEllipse::Create(*this, database);
+            pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 
 			m_MajorAxis.rotateBy(m_SweepAngle, vPlnNorm);
 			m_MinorAxis.rotateBy(m_SweepAngle, vPlnNorm);
@@ -164,7 +174,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 			m_SweepAngle = TWOPI - m_SweepAngle;
 		}
 		else { // Arc section with a cut
-			pArc = EoDbEllipse::Create(*this, database);
+            pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 			const double dSwpAng = m_SweepAngle;
 
 			const double dAng1 = dRel[0] * m_SweepAngle;
@@ -180,7 +190,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 				m_MinorAxis.rotateBy(dAng1, vPlnNorm);
 				m_SweepAngle = dAng2 - dAng1;
 
-				pArc = EoDbEllipse::Create(*this, database);
+                pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 
 				m_MajorAxis.rotateBy(m_SweepAngle, vPlnNorm);
 				m_MinorAxis.rotateBy(m_SweepAngle, vPlnNorm);
@@ -1033,11 +1043,10 @@ EoDbEllipse* EoDbEllipse::Create(OdDbDatabasePtr& database) {
 	return Ellipse;
 }
 
-EoDbEllipse* EoDbEllipse::Create(const EoDbEllipse& other, OdDbDatabasePtr& database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecordPtr& blockTableRecord) {
 	// <tas="Possibly need additional typing of the ObjecId producted by cloning"></tas>
 	OdDbEllipsePtr EllipseEntity = other.EntityObjectId().safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(EllipseEntity);
+	blockTableRecord->appendOdDbEntity(EllipseEntity);
 
 	EoDbEllipse* Ellipse = new EoDbEllipse(other);
 	Ellipse->SetEntityObjectId(EllipseEntity->objectId());

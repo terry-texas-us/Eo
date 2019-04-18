@@ -68,7 +68,7 @@ public: // Methods - absolute virtuals
 	virtual void Write(CFile& file, OdUInt8* buffer) const = 0;
 
 public: // Methods - virtuals
-	virtual void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database);
+	virtual void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup);
 	/// <summary>Cuts a primitive at two points.</summary>
 	/// <param name="points"></param>
 	/// <param name="groups">group to place optional line not defined by the cut points</param>

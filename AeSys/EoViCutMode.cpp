@@ -10,15 +10,15 @@ void AeSysView::OnCutModeOptions(void) noexcept {
 void AeSysView::OnCutModeTorch(void) {
 	AeSysDoc* Document = GetDocument();
 
-	const OdGePoint3d pt = GetCursorPosition();
-	EoDbGroupList* Groups = new EoDbGroupList;
+    const auto pt {GetCursorPosition()};
+    auto Groups {new EoDbGroupList};
 
 	OdGePoint3d ptCut;
 
 	EoGePoint4d ptView(pt, 1.);
 	ModelViewTransformPoint(ptView);
 
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
+    auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
 
@@ -32,7 +32,7 @@ void AeSysView::OnCutModeTorch(void) {
 				EoGeMatrix3d TransformMatrix = ModelViewMatrix();
 				ptCut.transformBy(TransformMatrix.invert());
 				Document->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, Primitive);
-				Primitive->CutAt(ptCut, NewGroup, Database());
+				Primitive->CutAt(ptCut, NewGroup);
 				Document->UpdatePrimitiveInAllViews(kPrimitiveSafe, Primitive);
 				Groups->AddTail(NewGroup);
 				break;
@@ -44,26 +44,26 @@ void AeSysView::OnCutModeTorch(void) {
 	delete Groups;
 }
 void AeSysView::OnCutModeSlice(void) {
-	const OdGePoint3d ptCur = GetCursorPosition();
+    const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP2) {
 		rPrvPos = ptCur;
 		RubberBandingStartAtEnable(ptCur, Lines);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP2);
 	}
 	else {
-		const OdGePoint3d pt1 = rPrvPos;
-		const OdGePoint3d pt2 = ptCur;
+        const auto pt1 {rPrvPos};
+        const auto pt2 {ptCur};
 
-		AeSysDoc* Document = GetDocument();
+        auto Document {GetDocument()};
 
-		EoDbGroupList* Groups = new EoDbGroupList;
+        auto Groups {new EoDbGroupList};
 
 		OdGePoint3dArray Intersections;
 
 		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.), EoGePoint4d(pt2, 1.)};
 		ModelViewTransformPoints(2, ptView);
 
-		EoGeMatrix3d TransformMatrix = ModelViewMatrix();
+        auto TransformMatrix {ModelViewMatrix()};
 		TransformMatrix.invert();
 
 		POSITION GroupPosition = GetFirstVisibleGroupPosition();
@@ -86,7 +86,7 @@ void AeSysView::OnCutModeSlice(void) {
 					Intersections[w].transformBy(TransformMatrix);
 
 					Document->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, Primitive);
-					Primitive->CutAt(Intersections[w], NewGroup, Database());
+					Primitive->CutAt(Intersections[w], NewGroup);
 					Document->UpdatePrimitiveInAllViews(kPrimitiveSafe, Primitive);
 					Groups->AddTail(NewGroup);
 				}

@@ -70,7 +70,7 @@ EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr& database) const {
 	return (new EoDbDimension(*this));
 }
 
-void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDatabasePtr& database) {
+void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
@@ -78,7 +78,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* group, OdDbDataba
 
 		DimensionPrimitive->m_Line = ln;
 		DimensionPrimitive->SetDefaultNote();
-		group->AddTail(DimensionPrimitive);
+		newGroup->AddTail(DimensionPrimitive);
 	}
 	SetDefaultNote();
 }

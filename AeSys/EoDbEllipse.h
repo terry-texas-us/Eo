@@ -54,7 +54,7 @@ public: // Methods - absolute virtuals
 
 public: // Methods
 	OdGePoint3d Center() const noexcept;
-	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database) override;
+	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) override;
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
@@ -81,14 +81,14 @@ public: // Methods
 public: // Methods - static
 
     static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
+    static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 
-    static EoDbEllipse* Create(const EoDbEllipse& ellipse, OdDbDatabasePtr& database);
+    static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
 
     static EoDbEllipse* Create(OdDbDatabasePtr& database);
+
     static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
     static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-
-    static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 };
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double);
