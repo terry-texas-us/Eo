@@ -54,7 +54,7 @@ public: // Methods - virtuals
 
 	/// <summary>Cuts a line a point.</summary>
 	void CutAt(const OdGePoint3d& point, EoDbGroup*, OdDbDatabasePtr& database) override;
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) override;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr& database) override;
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept override;
 	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) override;
 
