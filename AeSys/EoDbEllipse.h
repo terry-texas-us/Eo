@@ -85,7 +85,7 @@ public: // Methods - static
 
     static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
 
-    static EoDbEllipse* Create(OdDbDatabasePtr& database);
+    static EoDbEllipse* Create0(OdDbBlockTableRecordPtr& blockTableRecord);
 
     static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
     static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);

@@ -366,7 +366,8 @@ void AeSysView::OnDimensionModeAngle(void) {
 				EoDbGroup* Group = new EoDbGroup;
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.startPoint(), Group);
 
-				EoDbEllipse* Ellipse = EoDbEllipse::Create(Database());
+                OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+                EoDbEllipse* Ellipse = EoDbEllipse::Create0(BlockTableRecord);
 				Ellipse->SetTo(CenterPoint, MajorAxis, MinorAxis, Angle);
 				Ellipse->SetColorIndex(1);
 				Ellipse->SetLinetypeIndex(1);
@@ -392,7 +393,6 @@ void AeSysView::OnDimensionModeAngle(void) {
 
                 EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 
-                OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
                 OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) theApp.FormatAngle(Angle));
 
                 Text->setNormal(PlaneNormal);

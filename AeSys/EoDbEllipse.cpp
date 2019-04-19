@@ -1027,12 +1027,10 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumb
 	return (EllipsePrimitive);
 }
 
-EoDbEllipse* EoDbEllipse::Create(OdDbDatabasePtr& database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbEllipse* EoDbEllipse::Create0(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbEllipsePtr EllipseEntity = OdDbEllipse::createObject();
-	EllipseEntity->setDatabaseDefaults(database);
-	BlockTableRecord->appendOdDbEntity(EllipseEntity);
+	EllipseEntity->setDatabaseDefaults(blockTableRecord->database());
+	blockTableRecord->appendOdDbEntity(EllipseEntity);
 	
 	EoDbEllipse* Ellipse = new EoDbEllipse();
 	Ellipse->SetEntityObjectId(EllipseEntity->objectId());

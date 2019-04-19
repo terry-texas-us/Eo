@@ -114,7 +114,7 @@ void AeSysView::OnFixupModeReference(void) {
 				const OdGeVector3d MinorAxis(rTmp - CenterPoint);
 
 				EoDbGroup* Group = new EoDbGroup;
-				EoDbEllipse* Arc = EoDbEllipse::Create(Database());
+				EoDbEllipse* Arc = EoDbEllipse::Create0(BlockTableRecord);
 				Arc->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
 				Group->AddTail(Arc);
 				Document->AddWorkLayerGroup(Group);
@@ -223,7 +223,7 @@ void AeSysView::OnFixupModeMend(void) {
 				OdGePoint3d rTmp = m_FixupModeFirstLine.endPoint();
 				rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
 				const OdGeVector3d MinorAxis(rTmp - CenterPoint);
-				EoDbEllipse* Arc = EoDbEllipse::Create(Database());
+				EoDbEllipse* Arc = EoDbEllipse::Create0(BlockTableRecord);
 				Arc->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
 				pSegPrv->AddTail(Arc);
 				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
@@ -316,7 +316,8 @@ void AeSysView::OnFixupModeChamfer(void) {
 void AeSysView::OnFixupModeFillet(void) {
 	AeSysDoc* Document = GetDocument();
 
-	const OdGePoint3d ptCurPos = GetCursorPosition();
+    const auto ptCurPos {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdGePoint3d ptInt;
 
@@ -385,7 +386,7 @@ void AeSysView::OnFixupModeFillet(void) {
 			OdGePoint3d rTmp = m_FixupModeFirstLine.endPoint();
 			rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
 			const OdGeVector3d MinorAxis(rTmp - CenterPoint);
-			EoDbEllipse* Fillet = EoDbEllipse::Create(Database());
+            auto Fillet {EoDbEllipse::Create0(BlockTableRecord)};
 			Fillet->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
 			OtherGroup->AddTail(Fillet);
 

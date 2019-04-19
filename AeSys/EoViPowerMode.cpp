@@ -244,7 +244,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
 }
 void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
-	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+    const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
@@ -264,7 +264,7 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 		Line->SetColorIndex(1);
 		Line->SetLinetypeIndex(1);
 		Group->AddTail(Line);
-		Circle = EoDbEllipse::Create(Database());
+		Circle = EoDbEllipse::Create0(BlockTableRecord);
 		Circle->SetToCircle(Points[2], ActiveViewPlaneNormal, .0125);
 		Circle->SetColorIndex(1);
 		Circle->SetLinetypeIndex(1);

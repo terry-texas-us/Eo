@@ -658,8 +658,8 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 		const OdGePoint3d BeginPoint = ((justification == Left) ? RightLine : LeftLine).ProjToBegPt(- m_DuctTapSize / 3.);
 		const OdGePoint3d EndPoint = m_CurrentReferenceLine.ProjToBegPt(- m_DuctTapSize / 2.);
 
-		const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-		EoDbEllipse* Circle = EoDbEllipse::Create(Database());
+        const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
+        auto Circle {EoDbEllipse::Create0(BlockTableRecord)};
 		Circle->SetToCircle(BeginPoint, ActiveViewPlaneNormal, .01);
 		Circle->SetColorIndex(1);
 		Circle->SetLinetypeIndex(1);

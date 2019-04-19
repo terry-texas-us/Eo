@@ -218,7 +218,7 @@ void AeSysView::OnDrawModeReturn() {
         if (NumberOfPoints == 1)
             return;
 
-        auto Arc {EoDbEllipse::Create(Database())};
+        auto Arc {EoDbEllipse::Create0(BlockTableRecord)};
         Arc->SetTo3PointArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
         Arc->SetColorIndex(pstate.ColorIndex());
         Arc->SetLinetypeIndex(pstate.LinetypeIndex());
@@ -279,7 +279,7 @@ void AeSysView::OnDrawModeReturn() {
         // <tas="Ellipse major and minor axis may not properly define a plane. Memory leaks?"</tas>
         // <tas="Ellipse major must always be longer than minor. Asserts otherwise!"</tas>
         Group = new EoDbGroup;
-        auto Ellipse {EoDbEllipse::Create(Database())};
+        auto Ellipse {EoDbEllipse::Create0(BlockTableRecord)};
         Ellipse->SetTo(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI);
         Group->AddTail(Ellipse);
         break;
