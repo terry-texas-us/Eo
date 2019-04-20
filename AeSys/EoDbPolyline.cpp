@@ -528,7 +528,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
     blockTableRecord->appendOdDbEntity(Polyline);
     Polyline->setColorIndex(pstate.ColorIndex());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
     Polyline->setLinetype(Linetype);
 
@@ -543,7 +543,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 
     Polyline->setColorIndex(file.ReadInt16());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
 
     Polyline->setLinetype(Linetype);
 

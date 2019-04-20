@@ -935,48 +935,6 @@ void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
 	file.Write(buffer, 64);
 }
 
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
-    OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
-    Ellipse->setDatabaseDefaults(blockTableRecord->database());
-
-    blockTableRecord->appendOdDbEntity(Ellipse);
-    Ellipse->setColorIndex(pstate.ColorIndex());
-
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
-
-    Ellipse->setLinetype(Linetype);
-
-    return Ellipse;
-}
-
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-    OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
-    Ellipse->setDatabaseDefaults(blockTableRecord->database());
-
-    blockTableRecord->appendOdDbEntity(Ellipse);
-    
-    Ellipse->setColorIndex(file.ReadInt16());
-
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
-
-    Ellipse->setLinetype(Linetype);
-
-    const OdGePoint3d CenterPoint(file.ReadPoint3d());
-    const OdGeVector3d MajorAxis(file.ReadVector3d());
-    const OdGeVector3d MinorAxis(file.ReadVector3d());
-
-    double SweepAngle = file.ReadDouble();
-
-    OdGeVector3d PlaneNormal = MajorAxis.crossProduct(MinorAxis);
-    if (!PlaneNormal.isZeroLength()) {
-        PlaneNormal.normalize();
-        // <tas="Apparently some ellipse primitives have a RadiusRatio > 1."></tas>
-        const double RadiusRatio = MinorAxis.length() / MajorAxis.length();
-        Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, EoMin(1., RadiusRatio), 0., SweepAngle);
-    }
-    return Ellipse;
-}
-
 EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumber) {
 	OdInt16 ColorIndex;
 	OdInt16 LinetypeIndex;
@@ -1028,17 +986,17 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumb
 }
 
 EoDbEllipse* EoDbEllipse::Create0(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbEllipsePtr EllipseEntity = OdDbEllipse::createObject();
-	EllipseEntity->setDatabaseDefaults(blockTableRecord->database());
-	blockTableRecord->appendOdDbEntity(EllipseEntity);
+    auto Ellipse {OdDbEllipse::createObject()};
+    Ellipse->setDatabaseDefaults(blockTableRecord->database());
 	
-	EoDbEllipse* Ellipse = new EoDbEllipse();
-	Ellipse->SetEntityObjectId(EllipseEntity->objectId());
-	
-	Ellipse->SetColorIndex(pstate.ColorIndex());
-	Ellipse->SetLinetypeIndex(pstate.LinetypeIndex());
-	
-	return Ellipse;
+    blockTableRecord->appendOdDbEntity(Ellipse);
+    Ellipse->setColorIndex(pstate.ColorIndex());
+
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+
+    Ellipse->setLinetype(Linetype);
+
+	return EoDbEllipse::Create(Ellipse);
 }
 
 EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecordPtr& blockTableRecord) {
@@ -1053,7 +1011,7 @@ EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecord
 }
 
 EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
-    EoDbEllipse* Ellipse = new EoDbEllipse();
+    auto Ellipse {new EoDbEllipse()};
     Ellipse->SetEntityObjectId(ellipse->objectId());
     Ellipse->SetColorIndex_(ellipse->colorIndex());
     Ellipse->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype()));
@@ -1084,6 +1042,48 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
     Ellipse->SetMinorAxis(MinorAxis);
     Ellipse->SetSweepAngle(SweepAngle);
 
+    return Ellipse;
+}
+
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
+    auto Ellipse {OdDbEllipse::createObject()};
+    Ellipse->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Ellipse);
+    Ellipse->setColorIndex(pstate.ColorIndex());
+
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+
+    Ellipse->setLinetype(Linetype);
+
+    return Ellipse;
+}
+
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
+    OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
+    Ellipse->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Ellipse);
+
+    Ellipse->setColorIndex(file.ReadInt16());
+
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+
+    Ellipse->setLinetype(Linetype);
+
+    const OdGePoint3d CenterPoint(file.ReadPoint3d());
+    const OdGeVector3d MajorAxis(file.ReadVector3d());
+    const OdGeVector3d MinorAxis(file.ReadVector3d());
+
+    double SweepAngle = file.ReadDouble();
+
+    auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};
+    if (!PlaneNormal.isZeroLength()) {
+        PlaneNormal.normalize();
+        // <tas="Apparently some ellipse primitives have a RadiusRatio > 1."></tas>
+        const double RadiusRatio = MinorAxis.length() / MajorAxis.length();
+        Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, EoMin(1., RadiusRatio), 0., SweepAngle);
+    }
     return Ellipse;
 }
 

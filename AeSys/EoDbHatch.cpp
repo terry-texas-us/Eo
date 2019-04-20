@@ -960,7 +960,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
     blockTableRecord->appendOdDbEntity(Hatch);
     Hatch->setColorIndex(pstate.ColorIndex());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
     Hatch->setLinetype(Linetype);
 

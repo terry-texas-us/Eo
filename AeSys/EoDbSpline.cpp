@@ -346,7 +346,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
     blockTableRecord->appendOdDbEntity(Spline);
     Spline->setColorIndex(pstate.ColorIndex());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
     Spline->setLinetype(Linetype);
 
@@ -361,7 +361,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 
     Spline->setColorIndex(file.ReadInt16());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
 
     Spline->setLinetype(Linetype);
 

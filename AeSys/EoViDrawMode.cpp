@@ -8,6 +8,8 @@
 #include "DbAudit.h"
 #include "EoDbEntityToPrimitiveProtocolExtension.h"
 
+#include "Ge/GeCircArc3d.h"
+
 OdUInt16 PreviousDrawCommand = 0;
 
 void AeSysView::OnDrawModeOptions() {
@@ -218,18 +220,12 @@ void AeSysView::OnDrawModeReturn() {
         if (NumberOfPoints == 1)
             return;
 
-        auto Arc {EoDbEllipse::Create0(BlockTableRecord)};
-        Arc->SetTo3PointArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
-        Arc->SetColorIndex(pstate.ColorIndex());
-        Arc->SetLinetypeIndex(pstate.LinetypeIndex());
+        auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+        OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
+        Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1., 0., CircularArc.endAng());
 
-        if (Arc->SweepAngle() == 0.) {
-            delete Arc;
-            theApp.AddStringToMessageList(IDS_MSG_PTS_COLINEAR);
-            return;
-        }
         Group = new EoDbGroup;
-        Group->AddTail(Arc);
+        Group->AddTail({EoDbEllipse::Create(Ellipse)});
         break;
     }
     case ID_OP6: {

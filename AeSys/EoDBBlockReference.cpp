@@ -443,7 +443,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
     blockTableRecord->appendOdDbEntity(BlockReference);
     BlockReference->setColorIndex(pstate.ColorIndex());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
     BlockReference->setLinetype(Linetype);
 
@@ -458,7 +458,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 
     BlockReference->setColorIndex(file.ReadInt16());
 
-    const OdDbObjectId Linetype = EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16());
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
 
     BlockReference->setLinetype(Linetype);
 
