@@ -4,6 +4,7 @@
 #include "AeSysView.h"
 
 #include "DbEllipse.h"
+#include "Ge/GeCircArc3d.h"
 
 EoDbEllipse::EoDbEllipse() noexcept 
 	: m_Center(OdGePoint3d::kOrigin)
@@ -1056,6 +1057,17 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 
     Ellipse->setLinetype(Linetype);
 
+    return Ellipse;
+}
+
+OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius) {
+    auto Ellipse {OdDbEllipse::createObject()};
+    Ellipse->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Ellipse);
+    OdGeCircArc3d Circle(center, normal, radius);
+
+    Ellipse->set(center, Circle.normal(), Circle.refVec() * radius, 1.);
     return Ellipse;
 }
 

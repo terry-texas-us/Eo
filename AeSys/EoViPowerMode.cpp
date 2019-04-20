@@ -250,27 +250,28 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 
 	OdGePoint3d Points[5];
 	EoGeLineSeg3d Circuit(pointOnCircuit, endPoint);
-	EoDbEllipse* Circle;
 	EoDbLine* Line;
-	EoDbGroup* Group = new EoDbGroup;
+
+    auto Group {new EoDbGroup};
 
 	switch (conductorType) {
-	case ID_OP4:
-		Circuit.ProjPtFrom_xy(0., - .1, Points[0]);
-		Circuit.ProjPtFrom_xy(0., .075, Points[1]);
-		Circuit.ProjPtFrom_xy(0., .0875, Points[2]);
-		Line = EoDbLine::Create0(BlockTableRecord);
-		Line->SetTo(Points[0], Points[1]);
-		Line->SetColorIndex(1);
-		Line->SetLinetypeIndex(1);
-		Group->AddTail(Line);
-		Circle = EoDbEllipse::Create0(BlockTableRecord);
-		Circle->SetToCircle(Points[2], ActiveViewPlaneNormal, .0125);
-		Circle->SetColorIndex(1);
-		Circle->SetLinetypeIndex(1);
-		Group->AddTail(Circle);
-		break;
+    case ID_OP4:
+    {
+        Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
+        Circuit.ProjPtFrom_xy(0., .075, Points[1]);
+        Circuit.ProjPtFrom_xy(0., .0875, Points[2]);
+        Line = EoDbLine::Create0(BlockTableRecord);
+        Line->SetTo(Points[0], Points[1]);
+        Line->SetColorIndex(1);
+        Line->SetLinetypeIndex(1);
+        Group->AddTail(Line);
 
+        auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, Points[2], ActiveViewPlaneNormal, .0125)};
+        Circle->setColorIndex(1);
+        Circle->setLinetype(L"Continuous");
+        Group->AddTail(EoDbEllipse::Create(Circle));
+        break;
+    }
 	case ID_OP5:
 		Circuit.ProjPtFrom_xy(0., - .1, Points[0]);
 		Circuit.ProjPtFrom_xy(0., .1, Points[1]);

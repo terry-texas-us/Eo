@@ -655,15 +655,15 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	Section->AddTail(Line);
 
 	if (m_GenerateTurningVanes) {
-		const OdGePoint3d BeginPoint = ((justification == Left) ? RightLine : LeftLine).ProjToBegPt(- m_DuctTapSize / 3.);
-		const OdGePoint3d EndPoint = m_CurrentReferenceLine.ProjToBegPt(- m_DuctTapSize / 2.);
+        const auto BeginPoint {((justification == Left) ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
+        const auto EndPoint {m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.)};
 
         const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
-        auto Circle {EoDbEllipse::Create0(BlockTableRecord)};
-		Circle->SetToCircle(BeginPoint, ActiveViewPlaneNormal, .01);
-		Circle->SetColorIndex(1);
-		Circle->SetLinetypeIndex(1);
-		Section->AddTail(Circle);
+
+        auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, BeginPoint, ActiveViewPlaneNormal, .01)};
+        Circle->setColorIndex(1);
+        Circle->setLinetype(L"Continuous");
+        Section->AddTail(EoDbEllipse::Create(Circle));
 
         auto Line {EoDbLine::Create0(BlockTableRecord)};
 		Line->SetTo(BeginPoint, EndPoint);

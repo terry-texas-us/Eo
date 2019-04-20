@@ -516,6 +516,18 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
     return Line;
 }
 
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
+    auto Line {OdDbLine::createObject()};
+    Line->setDatabaseDefaults(blockTableRecord->database());
+
+    blockTableRecord->appendOdDbEntity(Line);
+
+    Line->setStartPoint(startPoint);
+    Line->setEndPoint(endPoint);
+
+    return Line;
+}
+
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
     auto Line {OdDbLine::createObject()};
     Line->setDatabaseDefaults(blockTableRecord->database());
