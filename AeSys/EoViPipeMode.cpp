@@ -1030,12 +1030,14 @@ void AeSysView::OnPipeModeWye() {
                 GenerateTicMark(PointOnSection, EndPoint, m_PipeRiseDropRadius, Group);
                 GetDocument()->AddWorkLayerGroup(Group);
                 GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
-                auto Line {EoDbLine::Create0(BlockTableRecord)};
-                Line->SetTo(PointOnSection, EndPoint);
-                Line->SetColorIndex(HorizontalSection->ColorIndex());
-                Line->SetLinetypeIndex(HorizontalSection->LinetypeIndex());
+
                 Group = new EoDbGroup;
-                Group->AddTail(Line);
+
+                auto Line {EoDbLine::Create(BlockTableRecord, PointOnSection, EndPoint)};
+                Line->setColorIndex(HorizontalSection->ColorIndex());
+                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(HorizontalSection->LinetypeIndex()));
+                Group->AddTail(EoDbLine::Create(Line));
+
                 GetDocument()->AddWorkLayerGroup(Group);
                 Group = new EoDbGroup;
                 GenerateLineWithFittings(m_PreviousOp, m_PipeModePoints[0], ID_OP3, PointAtBend, Group);
@@ -1180,11 +1182,10 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d & point, E
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     section->SetEndPoint(point);
-    auto Line {EoDbLine::Create0(BlockTableRecord)};
-    Line->SetTo(point, EndPoint);
-    Line->SetColorIndex(section->ColorIndex());
-    Line->SetLinetypeIndex(section->LinetypeIndex());
-    group->AddTail(Line);
+    auto Line {EoDbLine::Create(BlockTableRecord, point, EndPoint)};
+    Line->setColorIndex(section->ColorIndex());
+    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(section->LinetypeIndex()));
+    group->AddTail(EoDbLine::Create(Line));
 
     group = new EoDbGroup;
     GenerateTicMark(point, BeginPoint, 2. * m_PipeRiseDropRadius, group);

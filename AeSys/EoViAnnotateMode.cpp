@@ -435,13 +435,15 @@ void AeSysView::OnAnnotateModeConstructionLine() {
 		CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[1], EoViAnn_points[0], 96.));
-        auto Line {EoDbLine::Create0(BlockTableRecord)};
-		Line->SetTo(EoViAnn_points[1], EoViAnn_points[2]);
-		Line->SetColorIndex(15);
-		Line->SetLinetypeIndex(2);
-		EoDbGroup* Group = new EoDbGroup;
-		Group->AddTail(Line);
-		GetDocument()->AddWorkLayerGroup(Group);
+
+        auto Group {new EoDbGroup};
+
+        auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[1], EoViAnn_points[2])};
+		Line->setColorIndex(15);
+		Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
+        Group->AddTail(EoDbLine::Create(Line));
+
+        GetDocument()->AddWorkLayerGroup(Group);
 		ModeLineUnhighlightOp(m_PreviousOp);
 		EoViAnn_points.clear();
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();

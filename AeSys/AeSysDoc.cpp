@@ -1746,8 +1746,8 @@ void AeSysDoc::OnClearViewedTracings() {
 	}
 }
 void AeSysDoc::OnPrimBreak() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-	OdDbDatabasePtr Database = ActiveView->Database();
+    auto ActiveView {AeSysView::GetActiveView()};
+    auto Database {ActiveView->Database()};
     OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     auto Group {ActiveView->SelectGroupAndPrimitive(ActiveView->GetCursorPosition())};
@@ -1760,20 +1760,18 @@ void AeSysDoc::OnPrimBreak() {
 
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
-			EoDbLine* Line;
+			OdDbLinePtr Line;
 			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
-				Line = EoDbLine::Create0(BlockTableRecord);
-				Line->SetTo(Points[w], Points[w + 1]);
-				Line->SetColorIndex(Primitive->ColorIndex());
-				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
-				Group->AddTail(Line);
+				Line = EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1]);
+				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
+				Group->AddTail(EoDbLine::Create(Line));
 			}
 			if (PolylinePrimitive->IsClosed()) {
-				Line = EoDbLine::Create0(BlockTableRecord);
-				Line->SetTo(Points[Points.size() - 1], Points[0]);
-				Line->SetColorIndex(Primitive->ColorIndex());
-				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
-				Group->AddTail(Line);
+				Line = EoDbLine::Create(BlockTableRecord, Points[Points.size() - 1], Points[0]);
+				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
+				Group->AddTail(EoDbLine::Create(Line));
 			}
 			delete Primitive;
 			ResetAllViews();

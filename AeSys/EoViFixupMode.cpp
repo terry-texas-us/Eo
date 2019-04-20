@@ -29,7 +29,7 @@ void AeSysView::OnFixupModeReference(void) {
     auto ptCurPos {GetCursorPosition()};
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    
+
     OdGePoint3d ptInt;
 
 	if (ReferenceGroup != nullptr) {
@@ -79,10 +79,13 @@ void AeSysView::OnFixupModeReference(void) {
 				Document->UpdateGroupInAllViews(kGroupEraseSafe, pSegPrv);
 				pLinePrv->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLinePrv->SetEndPoint(m_FixupModeFirstLine.endPoint());
-                auto Line {EoDbLine::Create0(BlockTableRecord)};
-				Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint());
-				pSegPrv->AddTail(Line);
-				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
+
+                auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint())};
+                Line->setColorIndex(pLinePrv->ColorIndex());
+                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pLinePrv->LinetypeIndex()));
+                pSegPrv->AddTail(EoDbLine::Create(Line));
+
+                Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
 			}
 		}
 		else if (PreviousFixupCommand == ID_OP4) {
@@ -192,10 +195,13 @@ void AeSysView::OnFixupModeMend(void) {
 				Document->UpdateGroupInAllViews(kGroupEraseSafe, pSegPrv);
 				pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
 				pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
-                auto Line {EoDbLine::Create0(BlockTableRecord)};
-				Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint());
-				pSegPrv->AddTail(Line);
-				Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
+
+                auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint())};
+                Line->setColorIndex(pLine->ColorIndex());
+                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pLine->LinetypeIndex()));
+                pSegPrv->AddTail(EoDbLine::Create(Line));
+
+                Document->UpdateGroupInAllViews(kGroupSafe, pSegPrv);
 			}
 		}
 		else if (PreviousFixupCommand == ID_OP4) {
@@ -304,9 +310,11 @@ void AeSysView::OnFixupModeChamfer(void) {
 			Document->UpdateGroupInAllViews(kGroupEraseSafe, OtherGroup);
 			pLine->SetStartPoint(m_FixupModeSecondLine.startPoint());
 			pLine->SetEndPoint(m_FixupModeSecondLine.endPoint());
-            auto Line {EoDbLine::Create0(BlockTableRecord)};
-			Line->SetTo(m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint());
-			OtherGroup->AddTail(Line);
+
+            auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint())};
+            Line->setColorIndex(pLine->ColorIndex());
+            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pLine->LinetypeIndex()));
+            OtherGroup->AddTail(EoDbLine::Create(Line));
 
 			Document->UpdateGroupInAllViews(kGroupSafe, OtherGroup);
 		}
