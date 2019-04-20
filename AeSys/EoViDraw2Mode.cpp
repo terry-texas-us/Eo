@@ -47,7 +47,10 @@ void AeSysView::OnDraw2ModeWall() {
     auto CurrentPnt {GetCursorPosition()};
 
     OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-    
+
+    const auto ColorIndex {pstate.ColorIndex()};
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+
     if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -68,21 +71,28 @@ void AeSysView::OnDraw2ModeWall() {
 			else if (m_PreviousOp == ID_OP2) {
 				m_AssemblyGroup = new EoDbGroup;
 				GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
-                auto Line {EoDbLine::Create0(BlockTableRecord)};
-				Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint());
-				m_AssemblyGroup->AddTail(Line);
-			}
-			EoDbLine* Line;
-			Line = EoDbLine::Create0(BlockTableRecord);
-			Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint());
-			m_AssemblyGroup->AddTail(Line);
-			Line = EoDbLine::Create0(BlockTableRecord);
-			Line->SetTo(m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
-			m_AssemblyGroup->AddTail(Line);
-			Line = EoDbLine::Create0(BlockTableRecord);
-			Line->SetTo(m_CurrentRightLine.endPoint(), m_CurrentLeftLine.endPoint());
-			m_AssemblyGroup->AddTail(Line);
-			GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_AssemblyGroup);
+
+                auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint())};
+                Line->setColorIndex(ColorIndex);
+                Line->setLinetype(Linetype);
+                m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+            }
+			auto Line = EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint());
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(Linetype);
+            m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+
+            Line = EoDbLine::Create(BlockTableRecord, m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(Linetype);
+            m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+            
+            Line = EoDbLine::Create(BlockTableRecord, m_CurrentRightLine.endPoint(), m_CurrentLeftLine.endPoint());
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(Linetype);
+            m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+            
+            GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_AssemblyGroup);
 			m_ContinueCorner = true;
 			m_PreviousReferenceLine = m_CurrentReferenceLine;
 		}
@@ -94,30 +104,33 @@ void AeSysView::OnDraw2ModeWall() {
 		m_CurrentReferenceLine = EoGeLineSeg3d(m_PreviousPnt, CurrentPnt);
 		m_CurrentReferenceLine.GetParallels(m_DistanceBetweenLines, m_CenterLineEccentricity, m_CurrentLeftLine, m_CurrentRightLine);
 
-		if (m_ContinueCorner) {
-			CleanPreviousLines();
-		}
-		else if (m_BeginSectionGroup != nullptr) {
-			StartAssemblyFromLine();
-		}
-		else if (m_PreviousOp == ID_OP2) {
-			m_AssemblyGroup = new EoDbGroup;
-			GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
-            auto Line {EoDbLine::Create0(BlockTableRecord)};
-			Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint());
-			m_AssemblyGroup->AddTail(Line);
-		}
+        if (m_ContinueCorner) {
+            CleanPreviousLines();
+        } else if (m_BeginSectionGroup != nullptr) {
+            StartAssemblyFromLine();
+        } else if (m_PreviousOp == ID_OP2) {
+            m_AssemblyGroup = new EoDbGroup;
+            GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
+            auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint())};
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(Linetype);
+            m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+        }
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, m_EndSectionGroup);
 		ptBeg = m_EndSectionLine->StartPoint();
 		ptEnd = m_EndSectionLine->EndPoint();
-		EoDbLine* Line;
-		Line = EoDbLine::Create0(BlockTableRecord);
-		Line->SetTo(m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint());
-		m_AssemblyGroup->AddTail(Line);
-		Line = EoDbLine::Create0(BlockTableRecord);
-		Line->SetTo(m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
-		m_AssemblyGroup->AddTail(Line);
-		GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_AssemblyGroup);
+        
+        auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint())};
+        Line->setColorIndex(ColorIndex);
+        Line->setLinetype(Linetype);
+        m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+
+		Line = EoDbLine::Create(BlockTableRecord, m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
+        Line->setColorIndex(ColorIndex);
+        Line->setLinetype(Linetype);
+        m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
+        
+        GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_AssemblyGroup);
 
         OdDbLinePtr LineEntity = m_EndSectionLine->EntityObjectId().safeOpenObject()->clone();
         BlockTableRecord->appendOdDbEntity(LineEntity);
