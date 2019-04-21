@@ -1116,34 +1116,34 @@ void AeSysView::DoPipeModeMouseMove() {
 }
 
 void AeSysView::GenerateLineWithFittings(int beginType, OdGePoint3d & startPoint, int endType, OdGePoint3d & endPoint, EoDbGroup * group) {
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
     auto pt1 {startPoint};
     auto pt2 {endPoint};
 
-    if (beginType == ID_OP3)
-        // Previous fitting is an elbow or side tee
+    if (beginType == ID_OP3) { // Previous fitting is an elbow or side tee
         GenerateTicMark(startPoint, endPoint, m_PipeRiseDropRadius, group);
-    else if (beginType == ID_OP4) { // Previous fitting is an elbow down, riser down or bottom tee
+    } else if (beginType == ID_OP4) { // Previous fitting is an elbow down, riser down or bottom tee
         pt1 = ProjectToward(startPoint, endPoint, m_PipeRiseDropRadius);
         GenerateTicMark(pt1, endPoint, m_PipeRiseDropRadius, group);
-    } else if (beginType == ID_OP5)
-        // Previous fitting is an elbow up, riser up or top tee
+    } else if (beginType == ID_OP5) { // Previous fitting is an elbow up, riser up or top tee
         GenerateTicMark(startPoint, endPoint, 2. * m_PipeRiseDropRadius, group);
-
-    if (endType == ID_OP3)
-        // Current fitting is an elbow or side tee
+    }
+    if (endType == ID_OP3) { // Current fitting is an elbow or side tee
         GenerateTicMark(endPoint, startPoint, m_PipeRiseDropRadius, group);
-    else if (endType == ID_OP4)
-        // Current fitting is an elbow down, riser down or bottom tee
+    } else if (endType == ID_OP4) { // Current fitting is an elbow down, riser down or bottom tee
         GenerateTicMark(endPoint, startPoint, 2. * m_PipeRiseDropRadius, group);
-    else if (endType == ID_OP5) { // Current fitting is an elbow up, riser up or top tee
+    } else if (endType == ID_OP5) { // Current fitting is an elbow up, riser up or top tee
         pt2 = ProjectToward(endPoint, startPoint, m_PipeRiseDropRadius);
         GenerateTicMark(endPoint, startPoint, 2. * m_PipeRiseDropRadius, group);
     }
-    auto Line = group->m_Document == 0 ? new EoDbLine(pt1, pt2) : EoDbLine::Create2(pt1, pt2);
-    group->AddTail(Line);
+    auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
+    Line->setColorIndex(pstate.ColorIndex());
+    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+    group->AddTail(EoDbLine::Create(Line));
 }
 
-void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d & point, EoDbGroup * group, EoDbLine * section) {
+void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) {
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, section);
@@ -1154,10 +1154,12 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d & point, E
 
     section->SetEndPoint(CutPoint);
     CutPoint = ProjectToward(point, EndPoint, m_PipeRiseDropRadius);
-    auto Line {EoDbLine::Create2(CutPoint, EndPoint)};
-    Line->SetColorIndex(section->ColorIndex());
-    Line->SetLinetypeIndex(section->LinetypeIndex());
-    group->AddTail(Line);
+
+    auto Line {EoDbLine::Create(BlockTableRecord, CutPoint, EndPoint)};
+    Line->setColorIndex(section->ColorIndex());
+    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(section->LinetypeIndex()));
+    group->AddTail(EoDbLine::Create(Line));
+
     GetDocument()->UpdateGroupInAllViews(kGroupSafe, group);
 
     group = new EoDbGroup;
@@ -1176,10 +1178,10 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d & point, E
 }
 
 void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d & point, EoDbGroup * group, EoDbLine * section) {
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
     const auto BeginPoint {section->StartPoint()};
     const auto EndPoint {section->EndPoint()};
-
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     section->SetEndPoint(point);
     auto Line {EoDbLine::Create(BlockTableRecord, point, EndPoint)};
@@ -1202,7 +1204,7 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d & point, E
     GetDocument()->UpdateGroupInAllViews(kGroupSafe, group);
 }
 
-bool AeSysView::GenerateTicMark(const OdGePoint3d & startPoint, const OdGePoint3d & endPoint, double distance, EoDbGroup * group) {
+bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, double distance, EoDbGroup* group) {
     const auto PointOnLine {ProjectToward(startPoint, endPoint, distance)};
 
     OdGeVector3d Projection(endPoint - PointOnLine);
@@ -1211,6 +1213,8 @@ bool AeSysView::GenerateTicMark(const OdGePoint3d & startPoint, const OdGePoint3
 
     const bool MarkGenerated = DistanceToEndPoint > DBL_EPSILON;
     if (MarkGenerated) {
+        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
         Projection *= m_PipeTicSize / DistanceToEndPoint;
 
         OdGePoint3d TicStartPoint(PointOnLine);
@@ -1218,10 +1222,11 @@ bool AeSysView::GenerateTicMark(const OdGePoint3d & startPoint, const OdGePoint3
 
         OdGePoint3d TicEndPoint(PointOnLine);
         TicEndPoint += OdGeVector3d(-Projection.y, Projection.x, 0.);
-        auto Line = group->m_Document == 0 ? new EoDbLine(TicStartPoint, TicEndPoint) : EoDbLine::Create2(TicStartPoint, TicEndPoint);
-        Line->SetColorIndex(1);
-        Line->SetLinetypeIndex(1);
-        group->AddTail(Line);
+
+        auto Line {EoDbLine::Create(BlockTableRecord, TicStartPoint, TicEndPoint)};
+        Line->setColorIndex(1);
+        Line->setLinetype(L"Continuous");
+        group->AddTail(EoDbLine::Create(Line));
     }
     return MarkGenerated;
 }

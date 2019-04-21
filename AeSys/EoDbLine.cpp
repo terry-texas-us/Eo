@@ -487,14 +487,18 @@ EoDbLine* EoDbLine::Create2(const OdGePoint3d& startPoint, const OdGePoint3d& en
 	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
     OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    auto Line {new EoDbLine()};
-    Line->SetColorIndex(pstate.ColorIndex());
-    Line->SetLinetypeIndex(pstate.LinetypeIndex());
-    Line->AssociateWith(BlockTableRecord);
-	Line->SetStartPoint(startPoint);
-	Line->SetEndPoint(endPoint);
+    auto Line {OdDbLine::createObject()};
+    Line->setDatabaseDefaults(BlockTableRecord->database());
 
-	return Line;
+    BlockTableRecord->appendOdDbEntity(Line);
+
+    Line->setStartPoint(startPoint);
+    Line->setEndPoint(endPoint);
+
+    Line->setColorIndex(pstate.ColorIndex());
+    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+
+	return EoDbLine::Create(Line);
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
