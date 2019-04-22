@@ -2,6 +2,8 @@
 #include "AeSysApp.h"
 #include "AeSysView.h"
 
+#include "DbObject.h"
+
 EoDbPoint::EoDbPoint() noexcept
     : m_Position {OdGePoint3d::kOrigin}
     , m_NumberOfDatums {0}
@@ -85,7 +87,11 @@ void EoDbPoint::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 }
 
 EoDbPrimitive* EoDbPoint::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbPoint::Create(*this, database));
+    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    OdDbPointPtr Point = m_EntityObjectId.safeOpenObject()->clone();
+    BlockTableRecord->appendOdDbEntity(Point);
+
+	return EoDbPoint::Create(Point);
 }
 
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
@@ -330,33 +336,6 @@ EoDbPoint* EoDbPoint::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber)
 	return (PointPrimitive);
 }
 
-EoDbPoint* EoDbPoint::Create(const EoDbPoint& other, OdDbDatabasePtr& database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    OdDbPointPtr PointEntity = other.EntityObjectId().safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(PointEntity);
-
-    EoDbPoint* Point = new EoDbPoint(other);
-    Point->SetEntityObjectId(PointEntity->objectId());
-
-    return Point;
-}
-
-EoDbPoint* EoDbPoint::Create(OdDbDatabasePtr& database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
-    OdDbPointPtr PointEntity = OdDbPoint::createObject();
-    PointEntity->setDatabaseDefaults(database);
-    BlockTableRecord->appendOdDbEntity(PointEntity);
-
-    EoDbPoint* PointPrimitive = new EoDbPoint();
-    PointPrimitive->SetEntityObjectId(PointEntity->objectId());
-
-    PointPrimitive->SetColorIndex(pstate.ColorIndex());
-    PointPrimitive->SetPointDisplayMode(pstate.PointDisplayMode());
-
-    return PointPrimitive;
-}
-
 OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbPointPtr Point = OdDbPoint::createObject();
 	Point->setDatabaseDefaults(blockTableRecord->database());
@@ -364,8 +343,8 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	blockTableRecord->appendOdDbEntity(Point);
 	Point->setColorIndex(pstate.ColorIndex());
 
-	// The point object does not store the appearance and size of a point.
-	// The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
+    // The point object does not store the appearance and size of a point.
+    // The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
 
 	return Point;
 }
@@ -382,12 +361,17 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 
     Point->setPosition(file.ReadPoint3d());
 
-    const OdUInt16 NumberOfDatums = file.ReadUInt16();
+    const auto NumberOfDatums {file.ReadUInt16()};
     if (NumberOfDatums > 0) {
-        double Data[3] {0., 0., 0.};
+
+        OdResBufPtr ResourceBuffer = OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys");
+
+        double Data;
         for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
-            Data[n] = file.ReadDouble();
+            Data = file.ReadDouble();
+            ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data));
         }
+        Point->setXData(ResourceBuffer);
     }
     return Point;
 }
@@ -397,8 +381,21 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr& point) {
     Point->SetEntityObjectId(point->objectId());
     Point->SetColorIndex(point->colorIndex());
     Point->SetPosition(point->position());
-
     Point->SetPointDisplayMode(pstate.PointDisplayMode());
+
+    auto NumberOfDatums {0U};
+    double Data[] {0., 0., 0.};
+    auto ResourceBuffer = point->xData(L"AeSys");
+    
+    if (!ResourceBuffer.isNull()) {
+        auto Name {ResourceBuffer->getString()}; // not testing for expected value L"AeSys"
+        ResourceBuffer = ResourceBuffer->next();
+        while (!ResourceBuffer.isNull()) {
+            Data[NumberOfDatums++] = ResourceBuffer->getDouble(); // not testing for more than 3 datums. boom
+            ResourceBuffer = ResourceBuffer->next();
+        }
+    }
+    Point->SetData(NumberOfDatums, Data);
 
     return Point;
 }

@@ -365,7 +365,7 @@ public:
 	EoDbGroup* SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance, EoDbEllipse*& circle);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point, EoDbLine*& line);
-	EoDbGroup* SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor, OdInt16 pointDisplayMode, EoDbPoint*& primitve);
+    std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor);
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
@@ -774,7 +774,7 @@ public:
 	/// <param name="currentReferenceLine">on exit the start point is the same as the point on the endcap</param>
 	/// <param name="currentSection"></param>
 	/// <param name="group"></param>
-	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group);
+	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group, bool generateEndCaps = true);
 	/// <summary>Generates rectangular tap fitting.</summary>
 	/// <param name="justification"></param>
 	/// <param name="section"></param>

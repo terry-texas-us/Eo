@@ -301,6 +301,8 @@ void AeSysView::OnDrawModeEscape() {
 
 void AeSysView::DoDrawModeMouseMove() {
     auto CurrentPnt {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
     const int NumberOfPoints = m_DrawModePoints.size();
 
     switch (PreviousDrawCommand) {
@@ -311,7 +313,12 @@ void AeSysView::DoDrawModeMouseMove() {
 
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-            m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
+
+            auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
+            Line->setColorIndex(pstate.ColorIndex());
+            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
@@ -323,8 +330,6 @@ void AeSysView::DoDrawModeMouseMove() {
         GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         m_PreviewGroup.DeletePrimitivesAndRemoveAll();
      
-        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-        
         if (NumberOfPoints == 1) {
             auto Line {EoDbLine::Create(BlockTableRecord)};
             Line->setStartPoint(m_DrawModePoints[0]);
@@ -369,7 +374,10 @@ void AeSysView::DoDrawModeMouseMove() {
             for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
                 const auto StartPoint {m_DrawModePoints[PointsIndex]};
                 const auto EndPoint {m_DrawModePoints[(PointsIndex + 1) % 4]};
-                m_PreviewGroup.AddTail(EoDbLine::Create2(StartPoint, EndPoint));
+                auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};
+                Line->setColorIndex(pstate.ColorIndex());
+                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+                m_PreviewGroup.AddTail(EoDbLine::Create(Line));
             }
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }

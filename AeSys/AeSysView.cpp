@@ -143,8 +143,8 @@ m_ModelTabIsActive(false) {
 	m_DuctJustification = Center;	// justification (Left, Center or Right)
 	m_TransitionSlope = 4.;
 	m_ElbowType = Mittered;			// elbow type (Mittered or Radial)
-	m_EndCapGroup = 0;
-	m_EndCapPoint = 0;
+	m_EndCapGroup = nullptr;
+	m_EndCapPoint = nullptr;
 	m_EndCapLocation = 0;
 	m_OriginalPreviousGroupDisplayed = true;
 	m_OriginalPreviousGroup = 0;
@@ -3433,27 +3433,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& point, EoDbLine*& line) {
 	}
 	return 0;
 }
-EoDbGroup* AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor, OdInt16 pointDisplayMode, EoDbPoint*& primitive) {
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kPointPrimitive)) {
-				EoDbPoint* Point = static_cast<EoDbPoint*>(Primitive);
 
-				if (Point->ColorIndex() == pointColor && Point->PointDisplayMode() == pointDisplayMode) {
-					if (point.distanceTo(Point->Position()) <= tolerance) {
-						primitive = Point;
-						return Group;
-					}
-				}
-			}
-		}
-	}
-	return 0;
-}
 EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 	EoGePoint4d ptView(pt, 1.);
 	ModelViewTransformPoint(ptView);

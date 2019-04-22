@@ -280,6 +280,8 @@ public:
 protected:
 	void OnVectorize(const OdString& vectorizerPath);
 
+    void AddRegisteredApp(const OdString& name);
+
 private:
 	OdString m_IdentifiedLayerName;
 

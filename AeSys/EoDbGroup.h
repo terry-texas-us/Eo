@@ -7,11 +7,8 @@ class EoDbGroup: public CObList {
 	static EoDbPrimitive* sm_PrimitiveToIgnore;
 
 public:
-	AeSysDoc* m_Document;
-
-public:
 	EoDbGroup() noexcept;
-	virtual ~EoDbGroup();
+	~EoDbGroup();
 	EoDbGroup(const EoDbGroup& group);
 	EoDbGroup(const EoDbBlock& block);
 
@@ -35,7 +32,6 @@ public:
 	bool IsOn(const EoGePoint4d& point, AeSysView* view) const;
 	/// <summary>Checks if this group is persistent</summary>
 	/// <returns>true if the group will be appended to the database and saved to file, false if group is temporary ie used in dynamic previews</returns>
-	bool IsPersistent() const noexcept;
 	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(OdInt16 colorIndex);
 	void ModifyLinetypeIndex(OdInt16 linetypeIndex);

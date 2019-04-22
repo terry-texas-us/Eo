@@ -7,6 +7,9 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "DbRegAppTable.h"
+#include "DbRegAppTableRecord.h"
+
 #include "Ed/EdLispEngine.h"
 #include "DbObjectContextCollection.h"
 #include "DbObjectContextManager.h"
@@ -940,6 +943,20 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddStandardTextStyle() {
     return TextStyle;
 }
 
+void AeSysDoc::AddRegisteredApp(const OdString& name) {
+    OdDbRegAppTablePtr RegisteredApps = m_DatabasePtr->getRegAppTableId().safeOpenObject(OdDb::kForWrite);
+    if (!RegisteredApps->has(name)) {
+        OdDbRegAppTableRecordPtr RegisteredApp = OdDbRegAppTableRecord::createObject();
+        try {
+            RegisteredApp->setName(name);
+            RegisteredApps->add(RegisteredApp);
+        } catch (const OdError& Error) {
+            RegisteredApp->erase();
+            theApp.reportError(L"ODA Error - AeSysDoc::AddRegisteredApp", Error);
+        }
+    }
+}
+
 BOOL AeSysDoc::OnNewDocument() {
 #ifdef ODAMFC_EXPORT
 	AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
@@ -954,25 +971,14 @@ BOOL AeSysDoc::OnNewDocument() {
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 		}
 		catch (const OdError& Error) {
-			m_DatabasePtr = 0;
-			theApp.reportError(L"Database Creating Error...", Error);
-			return FALSE;
+			m_DatabasePtr = nullptr;
+            theApp.reportError(L"Database Creating Error...", Error);
+            return FALSE;
 		}
         OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
         m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
-// <tas=Initial testing of dictionary for extension of point to retain data. Used by at least lpd.">
-        OdDbDictionaryPtr Dictionary = OdDbDictionary::createObject();
-        OdDbObjectId ObjectId = m_DatabasePtr->addOdDbObject(Dictionary);
-        
-        OdDbDictionaryPtr RootDictionary = m_DatabasePtr->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForWrite);
-
-        if (!RootDictionary->has("MY_DICT")) {
-            OdDbObjectId idDict = RootDictionary->setAt("MY_DICT", Dictionary);
-            ATLTRACE2(L"\n\"MY_DICT\" dictionary gets handle = %s", idDict.getHandle().ascii());
-        } else
-            ATLTRACE2(L"\n\"MY_DICT\" dictionary already exists");
-// </tas>
+        AddRegisteredApp(L"AeSys");
 
         m_DatabasePtr->startUndoRecord();
 
@@ -1041,6 +1047,8 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 
         OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
         m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
+
+        AddRegisteredApp(L"AeSys");
 
         m_DatabasePtr->startUndoRecord();
 
@@ -1621,6 +1629,8 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 
     OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
     m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
+
+    AddRegisteredApp(L"AeSys");
 
 	m_DatabasePtr->startUndoRecord();
 

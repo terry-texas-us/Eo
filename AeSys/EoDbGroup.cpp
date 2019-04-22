@@ -5,28 +5,28 @@
 
 EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(NULL);
 
-EoDbGroup::EoDbGroup() noexcept
-	: m_Document(AeSysDoc::GetDoc()) {
-}
+EoDbGroup::EoDbGroup() noexcept {}
+
 EoDbGroup::EoDbGroup(const EoDbBlock& block) {
-    auto Database {m_Document->m_DatabasePtr};
+    auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
 
     auto Position {block.GetHeadPosition()};
-	while (Position != 0) {
-		AddTail((block.GetNext(Position))->Clone(Database));
-	}
+    while (Position != 0) {
+        AddTail((block.GetNext(Position))->Clone(Database));
+    }
 }
-EoDbGroup::EoDbGroup(const EoDbGroup& group)
-	: m_Document(AeSysDoc::GetDoc()) {
-    auto Database {m_Document->m_DatabasePtr};
-	
+
+EoDbGroup::EoDbGroup(const EoDbGroup& group) {
+    auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
+
     auto Position {group.GetHeadPosition()};
-	while (Position != 0) {
-		AddTail((group.GetNext(Position))->Clone(Database));
-	}
+    while (Position != 0) {
+        AddTail((group.GetNext(Position))->Clone(Database));
+    }
 }
-EoDbGroup::~EoDbGroup() {
-}
+
+EoDbGroup::~EoDbGroup() {}
+
 void EoDbGroup::AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
@@ -232,9 +232,7 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	}
 	return false;
 }
-bool EoDbGroup::IsPersistent() const noexcept {
-	return m_Document != 0;
-}
+
 void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
