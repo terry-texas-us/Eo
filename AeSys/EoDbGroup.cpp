@@ -233,7 +233,8 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	return false;
 }
 bool EoDbGroup::IsPersistent() const noexcept {
-	return m_Document != 0;
+    return true;
+//    return m_Document != 0;
 }
 void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
     auto Position {GetHeadPosition()};

@@ -14,6 +14,24 @@ LPWSTR TrimLeadingSpace(LPWSTR szString) noexcept {
 	return p;
 }
 
+std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor) {
+    auto GroupPosition {GetFirstVisibleGroupPosition()};
+    while (GroupPosition != nullptr) {
+        auto Group = GetNextVisibleGroup(GroupPosition);
+        auto PrimitivePosition = Group->GetHeadPosition();
+        while (PrimitivePosition != nullptr) {
+            auto Primitive = Group->GetNext(PrimitivePosition);
+            if (Primitive->Is(kPointPrimitive) && Primitive->ColorIndex() == pointColor) {
+                const auto Point = dynamic_cast<EoDbPoint*>(Primitive);
+                if (point.distanceTo(Point->Position()) <= tolerance) {
+                    return {Group, Point};
+                }
+            }
+        }
+    }
+    return {nullptr, nullptr};
+}
+
 /// <remarks>
 ///Only check for actual end-cap marker is by attributes. No error processing for invalid width or depth values.
 ///Group data contains whatever primative follows marker (hopefully this is associated end-cap line).
@@ -24,28 +42,34 @@ LPWSTR TrimLeadingSpace(LPWSTR szString) noexcept {
 /// </remarks>
 
 void AeSysView::OnLpdModeOptions() {
-	SetDuctOptions(m_CurrentSection);
+    SetDuctOptions(m_CurrentSection);
 }
+
 void AeSysView::OnLpdModeJoin() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
+    
+    auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
+    m_EndCapGroup = std::get<0>(Selection);
 
-	m_EndCapGroup = SelectPointUsingPoint(CurrentPnt, .01, 15, 8, m_EndCapPoint);
-	if (m_EndCapGroup != 0) {
-		m_PreviousPnt = m_EndCapPoint->Position();
-		m_PreviousSection.SetWidth(m_EndCapPoint->DataAt(0));
-		m_PreviousSection.SetDepth(m_EndCapPoint->DataAt(1));
-		m_ContinueSection = false;
+    if (m_EndCapGroup != nullptr) {
+        m_EndCapPoint = std::get<1>(Selection);
 
-		m_EndCapLocation = (m_PreviousOp == 0) ? 1 : - 1; // 1 (start) and -1 (end)
+        m_PreviousPnt = m_EndCapPoint->Position();
+        m_PreviousSection.SetWidth(m_EndCapPoint->DataAt(0));
+        m_PreviousSection.SetDepth(m_EndCapPoint->DataAt(1));
+        m_ContinueSection = false;
 
-		CString Message(L"Cross sectional dimension (Width by Depth) is ");
-		Message += theApp.FormatLength(m_PreviousSection.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 12, 2);
-		Message += L" by ";
-		Message += theApp.FormatLength(m_PreviousSection.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 12, 2);
-		theApp.AddStringToMessageList(Message);
-		SetCursorPosition(m_PreviousPnt);
-	}
+        m_EndCapLocation = (m_PreviousOp == 0) ? 1 : -1; // 1 (start) and -1 (end)
+
+        OdString Message(L"Cross sectional dimension (Width by Depth) is ");
+        Message += theApp.FormatLength(m_PreviousSection.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 12, 2);
+        Message += L" by ";
+        Message += theApp.FormatLength(m_PreviousSection.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 12, 2);
+        theApp.AddStringToMessageList(Message);
+        SetCursorPosition(m_PreviousPnt);
+    }
 }
+
 void AeSysView::OnLpdModeDuct() {
 	OdGePoint3d CurrentPnt = GetCursorPosition();
 
@@ -179,21 +203,23 @@ void AeSysView::OnLpdModeEll() {
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
-	if (m_PreviousOp == ID_OP2) {
-		EoDbPoint* EndPointPrimitive = 0;
-		EoDbGroup* ExistingGroup = SelectPointUsingPoint(CurrentPnt, .01, 15, 8, EndPointPrimitive);
-		if (ExistingGroup == 0) {
+    if (m_PreviousOp == ID_OP2) {
+        auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
+        auto ExistingGroup {std::get<0>(Selection)};
+
+		if (ExistingGroup == nullptr) {
 			theApp.AddStringToMessageList(IDS_MSG_LPD_NO_END_CAP_LOC);
 			return;
 		}
-		CurrentPnt = EndPointPrimitive->Position();
+        auto EndPointPrimitive {std::get<1>(Selection)};
+        CurrentPnt = EndPointPrimitive->Position();
 		Section ExistingSection(EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular);
 
-		EoDbPoint* BeginPointPrimitive = ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive);
+        auto BeginPointPrimitive {ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive)};
 		if (BeginPointPrimitive != 0) {
 			EoGeLineSeg3d ExistingSectionReferenceLine(BeginPointPrimitive->Position(), CurrentPnt);
 
-			const OdGePoint3d IntersectionPoint(ExistingSectionReferenceLine.ProjPt(m_PreviousPnt));
+			const auto IntersectionPoint(ExistingSectionReferenceLine.ProjPt(m_PreviousPnt));
 			double Relationship;
 			ExistingSectionReferenceLine.ParametricRelationshipOf(IntersectionPoint, Relationship);
 			if (Relationship > FLT_EPSILON) {
@@ -265,52 +291,56 @@ void AeSysView::OnLpdModeUpDown() {
 		m_PreviousPnt = CurrentPnt;
 	}
 }
+
 void AeSysView::OnLpdModeSize() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
-	double dAng = 0.;
-	if (m_EndCapPoint != 0) {
-		if (m_EndCapPoint->ColorIndex() == 15 && m_EndCapPoint->PointDisplayMode() == 8) {
-			POSITION Position = m_EndCapGroup->Find(m_EndCapPoint);
-			m_EndCapGroup->GetNext(Position);
-			EoDbLine* pLine = static_cast<EoDbLine*>(m_EndCapGroup->GetAt(Position));
-			EoGeLineSeg3d Line = pLine->Line();
-			dAng = fmod(Line.AngleFromXAxis_xy(), PI);
-			if (dAng <= RADIAN)
-				dAng += PI;
-			dAng -= HALF_PI;
-		}
-		m_EndCapPoint = 0;
-	}
-	GenSizeNote(CurrentPnt, dAng, m_PreviousSection);
-	if (m_PreviousOp != 0)
-		RubberBandingDisable();
-	m_PreviousOp = 0;
-	m_ContinueSection = false;
+    double Angle = 0.;
+    if (m_EndCapPoint != nullptr) {
+        if (m_EndCapPoint->ColorIndex() == 15) {
+            POSITION Position = m_EndCapGroup->Find(m_EndCapPoint);
+            m_EndCapGroup->GetNext(Position);
+            auto pLine = dynamic_cast<EoDbLine*>(m_EndCapGroup->GetAt(Position));
+            auto Line = pLine->Line();
+            Angle = fmod(Line.AngleFromXAxis_xy(), PI);
+            if (Angle <= RADIAN)
+                Angle += PI;
+            Angle -= HALF_PI;
+        }
+        m_EndCapPoint = nullptr;
+    }
+    GenSizeNote(CurrentPnt, Angle, m_PreviousSection);
+    if (m_PreviousOp != 0)
+        RubberBandingDisable();
+    m_PreviousOp = 0;
+    m_ContinueSection = false;
 }
+
 void AeSysView::OnLpdModeReturn() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
-	if (m_PreviousOp != 0) {
-		OnLpdModeEscape();
-	}
-	m_PreviousPnt = CurrentPnt;
+    if (m_PreviousOp != 0) {
+        OnLpdModeEscape();
+    }
+    m_PreviousPnt = CurrentPnt;
 }
+
 void AeSysView::OnLpdModeEscape() {
-	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+    GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+    m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-	if (!m_OriginalPreviousGroupDisplayed) {
-		GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_OriginalPreviousGroup);
-		m_OriginalPreviousGroupDisplayed = true;
-	}
-	ModeLineUnhighlightOp(m_PreviousOp);
-	m_PreviousOp = 0;
+    if (!m_OriginalPreviousGroupDisplayed) {
+        GetDocument()->UpdateGroupInAllViews(kGroupSafe, m_OriginalPreviousGroup);
+        m_OriginalPreviousGroupDisplayed = true;
+    }
+    ModeLineUnhighlightOp(m_PreviousOp);
+    m_PreviousOp = 0;
 
-	m_ContinueSection = false;
-	m_EndCapGroup = 0;
-	m_EndCapPoint = 0;
+    m_ContinueSection = false;
+    m_EndCapGroup = nullptr;
+    m_EndCapPoint = nullptr;
 }
+
 void AeSysView::DoDuctModeMouseMove() {
 	static OdGePoint3d CurrentPnt = OdGePoint3d();
 
@@ -335,13 +365,15 @@ void AeSysView::DoDuctModeMouseMove() {
 			GenerateRectangularElbow(PreviousReferenceLine, m_PreviousSection, m_CurrentReferenceLine, m_CurrentSection, &m_PreviewGroup);
 			GenerateRectangularSection(PreviousReferenceLine, m_CenterLineEccentricity, m_PreviousSection, &m_PreviewGroup);
 		}
-		EoDbPoint* EndPointPrimitive = 0;
-		EoDbGroup* ExistingGroup = SelectPointUsingPoint(CurrentPnt, .01, 15, 8, EndPointPrimitive);
-		if (ExistingGroup != 0) {
-			CurrentPnt = EndPointPrimitive->Position();
+        auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
+        auto ExistingGroup {std::get<0>(Selection)};
+
+        if (ExistingGroup != nullptr) {
+            auto EndPointPrimitive {std::get<1>(Selection)};
+            CurrentPnt = EndPointPrimitive->Position();
 			Section ExistingSection(EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular);
 
-			EoDbPoint* BeginPointPrimitive = ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive);
+            auto BeginPointPrimitive {ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive)};
 			if (BeginPointPrimitive != 0) {
 				EoGeLineSeg3d ExistingSectionReferenceLine(BeginPointPrimitive->Position(), CurrentPnt);
 
@@ -386,27 +418,39 @@ void AeSysView::DoDuctModeMouseMove() {
 				}
 			}
 		}
-		// <tas="RemoveDuplicatePrimitives no long considers lines to be equal if start point and end point are not equal. May result in xor issues on UpdateAllViews"</tas>
+		
+        /* <tas="RemoveDuplicatePrimitives no long considers lines to be equal if start point and end point are not equal. May result in xor issues with section end cap and elbow end caps being equal."
 		m_PreviewGroup.RemoveDuplicatePrimitives();
+        </tas> */
+
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 	}
 }
+
 void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, Section section, EoDbGroup* group) {
-	const OdGePoint3d Midpoint = startPoint + (endPoint - startPoint) * .5;
+    const auto Midpoint {startPoint + (endPoint - startPoint) * .5};
 
-	double Data[] = {section.Width(), section.Depth()};
+    auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
+    ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, section.Width()));
+    ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, section.Depth()));
 
-	EoDbPoint* PointPrimitive;
-	PointPrimitive = group->IsPersistent() ? EoDbPoint::Create(Database()) : new EoDbPoint();
-	PointPrimitive->SetColorIndex(15);
-	PointPrimitive->SetPointDisplayMode(8);
-	PointPrimitive->SetPosition(Midpoint);
-	PointPrimitive->SetData(2, Data);
-	group->AddTail(PointPrimitive);
-	EoDbLine* LinePrimitive;
-	LinePrimitive = group->IsPersistent() ? EoDbLine::Create2(startPoint, endPoint) : new EoDbLine(startPoint, endPoint);
-	group->AddTail(LinePrimitive);
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    auto Point {EoDbPoint::Create(BlockTableRecord)};
+    Point->setPosition(Midpoint);
+    Point->setColorIndex(15);
+    Point->setXData(ResourceBuffer);
+    group->AddTail(EoDbPoint::Create(Point));
+
+    /* <tas="display mode 8 is significant for the endcap join. On save to peg, if xdata defined set display mode to 8."
+    PointPrimitive->SetPointDisplayMode(8);
+    </tas> */
+
+    auto Line {EoDbLine::Create(BlockTableRecord, startPoint, endPoint)};
+    Line->setColorIndex(pstate.ColorIndex());
+    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+	group->AddTail(EoDbLine::Create(Line));
 }
+
 void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSectionReferenceLine, Section existingSection, EoDbGroup* group) {
 	const OdGeVector3d NewSectionDirection(existingSectionReferenceLine.endPoint() - existingSectionReferenceLine.startPoint());
 
@@ -567,34 +611,35 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double 
 		group->AddTail(Line);
 	}
 }
+
 void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section section) {
-	const OdGeVector3d XDirection = OdGeVector3d(0.06, 0., 0.).rotateBy(angle, OdGeVector3d::kZAxis);
-	const OdGeVector3d YDirection = OdGeVector3d(0., 0.1, 0.).rotateBy(angle, OdGeVector3d::kZAxis);
-	EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
+    const auto XDirection {OdGeVector3d(0.06, 0., 0.).rotateBy(angle, OdGeVector3d::kZAxis)};
+    const auto YDirection {OdGeVector3d(0., 0.1, 0.).rotateBy(angle, OdGeVector3d::kZAxis)};
+    EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
     OdGeVector3d PlaneNormal;
     ReferenceSystem.GetUnitNormal(PlaneNormal);
 
-	CString Note;
-	Note += theApp.FormatLength(section.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
-	Note += L"/";
-	Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
+    OdString Note;
+    Note += theApp.FormatLength(section.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
+    Note += L"/";
+    Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
 
-	CDC* DeviceContext = GetDC();
-	const int PrimitiveState = pstate.Save();
-	pstate.SetColorIndex(DeviceContext, 2);
+    auto DeviceContext {GetDC()};
+    const int PrimitiveState = pstate.Save();
+    pstate.SetColorIndex(DeviceContext, 2);
 
-	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
-	FontDefinition.SetHorizontalAlignment(kAlignCenter);
-	FontDefinition.SetVerticalAlignment(kAlignMiddle);
+    auto FontDefinition {pstate.FontDefinition()};
+    FontDefinition.SetHorizontalAlignment(kAlignCenter);
+    FontDefinition.SetVerticalAlignment(kAlignMiddle);
 
-	EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-	CharacterCellDefinition.SetRotationAngle(0.);
-	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
+    auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+    CharacterCellDefinition.SetRotationAngle(0.);
+    pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
-	EoDbGroup* Group = new EoDbGroup;
+    auto Group {new EoDbGroup};
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) Note);
+    auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), Note)};
 
     Text->setNormal(PlaneNormal);
     Text->setRotation(ReferenceSystem.Rotation());
@@ -605,11 +650,12 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 
     Group->AddTail(EoDbText::Create(Text));
 
-	GetDocument()->AddWorkLayerGroup(Group);
-	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
-	pstate.Restore(DeviceContext, PrimitiveState);
-	ReleaseDC(DeviceContext);
+    GetDocument()->AddWorkLayerGroup(Group);
+    GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+    pstate.Restore(DeviceContext, PrimitiveState);
+    ReleaseDC(DeviceContext);
 }
+
 bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;

@@ -301,6 +301,8 @@ void AeSysView::OnDrawModeEscape() {
 
 void AeSysView::DoDrawModeMouseMove() {
     auto CurrentPnt {GetCursorPosition()};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
     const int NumberOfPoints = m_DrawModePoints.size();
 
     switch (PreviousDrawCommand) {
@@ -311,7 +313,10 @@ void AeSysView::DoDrawModeMouseMove() {
 
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-            m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
+
+            auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
@@ -323,8 +328,6 @@ void AeSysView::DoDrawModeMouseMove() {
         GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         m_PreviewGroup.DeletePrimitivesAndRemoveAll();
      
-        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-        
         if (NumberOfPoints == 1) {
             auto Line {EoDbLine::Create(BlockTableRecord)};
             Line->setStartPoint(m_DrawModePoints[0]);
