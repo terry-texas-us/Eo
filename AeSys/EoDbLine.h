@@ -67,21 +67,16 @@ public: // Methods
 	double Length() const;
 	OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 	double ParametricRelationshipOf(const OdGePoint3d& point) const;
-	void SetEndPoint_(const OdGePoint3d& endPoint) {m_Line.SetEndPoint(endPoint);}
 	void SetEndPoint(const OdGePoint3d& endPoint);
-	void SetStartPoint_(const OdGePoint3d& startPoint) { m_Line.SetStartPoint(startPoint); }
 	void SetStartPoint(const OdGePoint3d& startPoint);
-	EoDbLine& SetTo(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 	void Square(AeSysView* view);
 	OdGePoint3d StartPoint() const;
 
 public: // Methods - static
 
 	static EoDbLine* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-    static EoDbLine* Create(OdDbLinePtr line);
+    static EoDbLine* Create(const OdDbLinePtr& line);
 
-	static EoDbLine* Create2(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
-    
     static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
     static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);

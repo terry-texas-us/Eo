@@ -93,7 +93,6 @@ public: // Methods
 	void SetColorIndex_(OdInt16 colorIndex) noexcept {m_ColorIndex = colorIndex;}
 	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept {m_EntityObjectId = entityObjectId;}
 	void SetLinetypeIndex(OdInt16 linetypeIndex);
-	void SetLinetypeIndex_(OdInt16 linetypeIndex) noexcept {m_LinetypeIndex = linetypeIndex;}
 
 public: // Methods - static
 	static size_t ControlPointIndex() noexcept;

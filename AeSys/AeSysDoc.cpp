@@ -1765,7 +1765,7 @@ void AeSysDoc::OnPrimBreak() {
 		EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
 
 		if (Primitive->Is(kPolylinePrimitive)) {
-			const EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
+			const EoDbPolyline* PolylinePrimitive = dynamic_cast<EoDbPolyline*>(Primitive);
 			Group->FindAndRemovePrimitive(Primitive);
 
 			OdGePoint3dArray Points;
@@ -1787,7 +1787,7 @@ void AeSysDoc::OnPrimBreak() {
 			ResetAllViews();
 		}
 		else if (Primitive->Is(kGroupReferencePrimitive)) {
-			const EoDbBlockReference* BlockReference = static_cast<EoDbBlockReference*>(Primitive);
+			const EoDbBlockReference* BlockReference = dynamic_cast<EoDbBlockReference*>(Primitive);
 
 			EoDbBlock* Block;
 
@@ -2565,10 +2565,10 @@ void AeSysDoc::OnPrimExtractNum() {
 		CString Number;
 
 		if (Primitive->Is(kTextPrimitive)) {
-			Number = static_cast<EoDbText*>(Primitive)->Text();
+			Number = dynamic_cast<EoDbText*>(Primitive)->Text();
 		}
 		else if (Primitive->Is(kDimensionPrimitive)) {
-			Number = static_cast<EoDbDimension*>(Primitive)->Text();
+			Number = dynamic_cast<EoDbDimension*>(Primitive)->Text();
 		}
 		else {
 			return;
@@ -2601,10 +2601,10 @@ void AeSysDoc::OnPrimExtractStr() {
 		CString String;
 
 		if (Primitive->Is(kTextPrimitive)) {
-			String = static_cast<EoDbText*>(Primitive)->Text();
+			String = dynamic_cast<EoDbText*>(Primitive)->Text();
 		}
 		else if (Primitive->Is(kDimensionPrimitive)) {
-			String = static_cast<EoDbDimension*>(Primitive)->Text();
+			String = dynamic_cast<EoDbDimension*>(Primitive)->Text();
 		}
 		else {
 			return;

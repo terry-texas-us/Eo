@@ -1014,8 +1014,9 @@ EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecord
 EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
     auto Ellipse {new EoDbEllipse()};
     Ellipse->SetEntityObjectId(ellipse->objectId());
-    Ellipse->SetColorIndex_(ellipse->colorIndex());
-    Ellipse->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype()));
+
+    Ellipse->m_ColorIndex = ellipse->colorIndex();
+    Ellipse->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype());
 
     OdGeVector3d MajorAxis(ellipse->majorAxis());
     OdGeVector3d MinorAxis(ellipse->minorAxis());

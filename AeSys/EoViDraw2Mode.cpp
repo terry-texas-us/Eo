@@ -25,13 +25,13 @@ void AeSysView::OnDraw2ModeJoin() {
 		CurrentPnt = DetPt();
 		if (m_PreviousOp == 0) { // Starting at existing wall
 			m_BeginSectionGroup = Group;
-			m_BeginSectionLine = static_cast<EoDbLine*>(EngagedPrimitive());
+			m_BeginSectionLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
 			m_PreviousPnt = CurrentPnt;
 			m_PreviousOp = ID_OP1;
 		}
 		else { // Ending at existing wall
 			m_EndSectionGroup = Group;
-			m_EndSectionLine = static_cast<EoDbLine*>(EngagedPrimitive());
+			m_EndSectionLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
 			OnDraw2ModeWall();
 			OnDraw2ModeEscape();
 		}
@@ -196,13 +196,13 @@ bool AeSysView::CleanPreviousLines() {
 
 	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, m_AssemblyGroup);
 
-	EoDbPrimitive* Primitive = static_cast<EoDbPrimitive*>(m_AssemblyGroup->RemoveTail());
+	EoDbPrimitive* Primitive = dynamic_cast<EoDbPrimitive*>(m_AssemblyGroup->RemoveTail());
 	Primitive->EntityObjectId().safeOpenObject(OdDb::kForWrite)->erase();
 	delete Primitive;
 	
 	POSITION Position = m_AssemblyGroup->GetTailPosition();
-	static_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousRightLine.endPoint());
-	static_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousLeftLine.endPoint());
+	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousRightLine.endPoint());
+	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousLeftLine.endPoint());
 
 	return true;
 }

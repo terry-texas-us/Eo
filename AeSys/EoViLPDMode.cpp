@@ -864,7 +864,7 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, double
 			if (Primitive == testLinePrimitive || !Primitive->Is(kLinePrimitive))
 				continue;
 
-			EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
+			EoDbLine* LinePrimitive = dynamic_cast<EoDbLine*>(Primitive);
 			LinePrimitive->GetLine(Line);
 			if (Line.startPoint() == TestLine.startPoint() || Line.startPoint() == TestLine.endPoint()) { // Exchange points
 				const OdGePoint3d Point = Line.startPoint();

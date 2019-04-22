@@ -40,33 +40,37 @@ HTREEITEM EoDbGroup::AddToTreeViewControl(HWND tree, HTREEITEM parent) {
 	return TreeItem;
 }
 void EoDbGroup::BreakPolylines() {
+    auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
+    OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
 		POSITION PrimitivePosition = Position;
         auto Primitive {GetNext(Position)};
 		if (Primitive->Is(kPolylinePrimitive)) {
-			const EoDbPolyline* PolylinePrimitive = static_cast<EoDbPolyline*>(Primitive);
+			const auto Polyline = dynamic_cast<EoDbPolyline*>(Primitive);
 			OdGePoint3dArray Points;
-			PolylinePrimitive->GetAllPoints(Points);
-			EoDbLine* Line;
-			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
-				Line = EoDbLine::Create2(Points[w], Points[w + 1]);
-				Line->SetColorIndex(Primitive->ColorIndex());
-				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
-				CObList::InsertBefore(PrimitivePosition, Line);
+			Polyline->GetAllPoints(Points);
+
+            for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
+                auto Line = EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1]);
+                Line->setColorIndex(Primitive->ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
+				CObList::InsertBefore(PrimitivePosition, EoDbLine::Create(Line));
 			}
-			if (PolylinePrimitive->IsClosed()) {
-				Line = EoDbLine::Create2(Points[Points.size() - 1], Points[0]);
-				Line->SetColorIndex(Primitive->ColorIndex());
-				Line->SetLinetypeIndex(Primitive->LinetypeIndex());
-				CObList::InsertBefore(PrimitivePosition, Line);
+			
+            if (Polyline->IsClosed()) {
+                auto Line = EoDbLine::Create(BlockTableRecord, Points[Points.size() - 1], Points[0]);
+				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
+				CObList::InsertBefore(PrimitivePosition, EoDbLine::Create(Line));
 			}
 			this->RemoveAt(PrimitivePosition);
 			delete Primitive;
 		}
 		else if (Primitive->Is(kGroupReferencePrimitive)) {
 			EoDbBlock* Block;
-			if (AeSysDoc::GetDoc()->LookupBlock(static_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
+			if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
 				Block->BreakPolylines();
 			}
 		}
@@ -83,9 +87,9 @@ void EoDbGroup::BreakSegRefs() {
 			if (Primitive->Is(kGroupReferencePrimitive)) {
 				iSegRefs++;
 				EoDbBlock* Block;
-				if (AeSysDoc::GetDoc()->LookupBlock(static_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
+				if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
                     auto pSegT {new EoDbGroup(*Block)};
-					EoGeMatrix3d tm = static_cast<EoDbBlockReference*>(Primitive)->BlockTransformMatrix(Block->BasePoint());
+					EoGeMatrix3d tm = dynamic_cast<EoDbBlockReference*>(Primitive)->BlockTransformMatrix(Block->BasePoint());
 					pSegT->TransformBy(tm);
 
 					this->InsertBefore(PrimitivePosition, pSegT);
@@ -160,7 +164,7 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
 		if (Primitive->Is(kGroupReferencePrimitive)) {
-			if (static_cast<EoDbBlockReference*>(Primitive)->Name() == name)
+			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name)
 				Count++;
 		}
 	}
@@ -183,7 +187,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
 		if (Primitive != pointPrimitive && Primitive->Is(kPointPrimitive)) {
-			return (static_cast<EoDbPoint*>(Primitive));
+			return (dynamic_cast<EoDbPoint*>(Primitive));
 		}
 	}
 	return 0;
@@ -252,7 +256,7 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCel
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
 		if (Primitive->Is(kTextPrimitive)) {
-			static_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
+			dynamic_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 		}
 	}
 }
@@ -295,7 +299,7 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
         auto posPrev {Position};
         auto Primitive {GetNext(Position)};
 		if (Primitive->Is(kTextPrimitive)) {
-			if (static_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
+			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);
 				delete Primitive;
 				iCount++;
@@ -379,8 +383,8 @@ void EoDbGroup::SortTextOnY() {
             auto pPrim2 {GetNext(pos2)};
 
 			if (pPrim1->Is(kTextPrimitive) && pPrim2->Is(kTextPrimitive)) {
-                const auto dY1 {static_cast<EoDbText*>(pPrim1)->Position().y};
-                const auto dY2 {static_cast<EoDbText*>(pPrim2)->Position().y};
+                const auto dY1 {dynamic_cast<EoDbText*>(pPrim1)->Position().y};
+                const auto dY2 {dynamic_cast<EoDbText*>(pPrim2)->Position().y};
 				if (dY1 < dY2) {
 					SetAt(Position, pPrim2);
 					SetAt(pos1, pPrim1);
@@ -404,7 +408,7 @@ void EoDbGroup::Square(AeSysView* view) {
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
 		if (Primitive->Is(kLinePrimitive)) {
-			static_cast<EoDbLine*>(Primitive)->Square(view);
+			dynamic_cast<EoDbLine*>(Primitive)->Square(view);
 		}
 	}
 }

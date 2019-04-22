@@ -3092,7 +3092,7 @@ void AeSysView::OnPrimPerpJump() {
 
 	if (SelectGroupAndPrimitive(CursorPosition) != nullptr) {
 		if (m_EngagedPrimitive->Is(kLinePrimitive)) {
-			const EoDbLine* LinePrimLine = static_cast<EoDbLine*>(m_EngagedPrimitive);
+			const EoDbLine* LinePrimLine = dynamic_cast<EoDbLine*>(m_EngagedPrimitive);
 			CursorPosition = LinePrimLine->ProjPt_(m_ptCursorPosWorld);
 			SetCursorPosition(CursorPosition);
 		}
@@ -3356,28 +3356,28 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 	}
 	return nullptr;
 }
-EoDbGroup* AeSysView::SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance, EoDbEllipse*& circle) {
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kEllipsePrimitive)) {
-				EoDbEllipse* Arc = static_cast<EoDbEllipse*>(Primitive);
 
-				if (fabs(Arc->SweepAngle() - TWOPI) <= DBL_EPSILON &&
-					(Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd()) <= DBL_EPSILON) {
-					if (point.distanceTo(Arc->Center()) <= tolerance) {
-						circle = Arc;
-						return Group;
-					}
-				}
-			}
-		}
-	}
-	return 0;
+std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance) {
+    auto GroupPosition {GetFirstVisibleGroupPosition()};
+    while (GroupPosition != nullptr) {
+        auto Group = GetNextVisibleGroup(GroupPosition);
+        auto PrimitivePosition = Group->GetHeadPosition();
+        while (PrimitivePosition != nullptr) {
+            auto Primitive = Group->GetNext(PrimitivePosition);
+            if (Primitive->Is(kEllipsePrimitive)) {
+                auto Arc = dynamic_cast<EoDbEllipse*>(Primitive);
+
+                if (fabs(Arc->SweepAngle() - TWOPI) <= DBL_EPSILON && (Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd()) <= DBL_EPSILON) {
+                    if (point.distanceTo(Arc->Center()) <= tolerance) {
+                        return {Group, Arc};
+                    }
+                }
+            }
+        }
+    }
+    return {nullptr, nullptr};
 }
+
 EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& pt) {
 	m_EngagedGroup = 0;
 	m_EngagedPrimitive = 0;
@@ -3425,7 +3425,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& point, EoDbLine*& line) {
 			if (Primitive->Is(kLinePrimitive)) {
 				OdGePoint3d PointOnLine;
 				if (Primitive->SelectBy(ptView, this, PointOnLine)) {
-					line = static_cast<EoDbLine*>(Primitive);
+					line = dynamic_cast<EoDbLine*>(Primitive);
 					return Group;
 				}
 			}
@@ -3446,8 +3446,8 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->Is(kTextPrimitive)) {
 				OdGePoint3d ptProj;
-				if (static_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj))
-					return static_cast<EoDbText*>(Primitive);
+				if (dynamic_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj))
+					return dynamic_cast<EoDbText*>(Primitive);
 			}
 		}
 	}

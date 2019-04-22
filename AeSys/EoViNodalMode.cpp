@@ -122,35 +122,40 @@ void AeSysView::OnNodalModeCopy(void) {
 		OnNodalModeReturn();
 	}
 }
+
 void AeSysView::OnNodalModeToLine(void) {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
-	if (PreviousNodalCommand != ID_OP6) {
-		PreviousNodalCursorPosition = CurrentPnt;
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
-		PreviousNodalCommand = ModeLineHighlightOp(ID_OP6);
-	}
-	else {
-		if (PreviousNodalCursorPosition != CurrentPnt) {
-			CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
-			const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
+    auto CurrentPnt {GetCursorPosition()};
+    if (PreviousNodalCommand != ID_OP6) {
+        PreviousNodalCursorPosition = CurrentPnt;
+        RubberBandingStartAtEnable(CurrentPnt, Lines);
+        PreviousNodalCommand = ModeLineHighlightOp(ID_OP6);
+    } else {
+        if (PreviousNodalCursorPosition != CurrentPnt) {
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-			EoDbGroup* Group = new EoDbGroup;
+            CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
+            const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
 
-			POSITION PointPosition = GetDocument()->GetFirstUniquePointPosition();
-			while (PointPosition != 0) {
-				EoGeUniquePoint* UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
-                auto Primitive {EoDbLine::Create2(UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
-				Group->AddTail(Primitive);
-			}
-			GetDocument()->AddWorkLayerGroup(Group);
-			GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+            auto Group {new EoDbGroup};
 
-			SetCursorPosition(CurrentPnt);
-		}
-		RubberBandingDisable();
-		ModeLineUnhighlightOp(PreviousNodalCommand);
-	}
+            auto PointPosition {GetDocument()->GetFirstUniquePointPosition()};
+            while (PointPosition != 0) {
+                auto UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
+                auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
+                Line->setColorIndex(pstate.ColorIndex());
+                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+                Group->AddTail(EoDbLine::Create(Line));
+            }
+            GetDocument()->AddWorkLayerGroup(Group);
+            GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+
+            SetCursorPosition(CurrentPnt);
+        }
+        RubberBandingDisable();
+        ModeLineUnhighlightOp(PreviousNodalCommand);
+    }
 }
+
 /// <remarks>
 /// The pen color used for any polygons added to drawing is the current pen color and not the pen color of the reference primitives.
 /// </remarks>

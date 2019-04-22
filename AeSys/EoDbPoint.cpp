@@ -180,7 +180,7 @@ OdGePoint3d EoDbPoint::GoToNxtCtrlPt() const noexcept {
 }
 
 bool EoDbPoint::IsEqualTo(EoDbPrimitive* primitive) const {
-	return m_Position == static_cast<EoDbPoint*>(primitive)->m_Position;
+	return m_Position == dynamic_cast<EoDbPoint*>(primitive)->m_Position;
 }
 
 bool EoDbPoint::IsInView(AeSysView* view) const {

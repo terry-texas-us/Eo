@@ -233,7 +233,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
 	bool IsEqualTo = primitive->Is(kLinePrimitive);
 	if (IsEqualTo) {
-		IsEqualTo = m_Line.isEqualTo(static_cast<EoDbLine*>(primitive)->Line());
+		IsEqualTo = m_Line.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->Line());
 	}
 	return IsEqualTo;
 }
@@ -368,16 +368,6 @@ bool EoDbLine::SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysVie
 	return polyline::SelectBy(pt1, pt2, view);
 }
 
-EoDbLine& EoDbLine::SetTo(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
-	m_Line.set(startPoint, endPoint);
-	if (!m_EntityObjectId.isNull()) {
-		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Line->setStartPoint(startPoint);
-		Line->setEndPoint(endPoint);
-	}
-	return (*this);
-}
-
 void EoDbLine::SetEndPoint(const OdGePoint3d& endPoint) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -471,34 +461,17 @@ EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 	return (LinePrimitive);
 }
 
-EoDbLine* EoDbLine::Create(OdDbLinePtr line) {
+EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {
     auto Line {new EoDbLine()};
     Line->SetEntityObjectId(line->objectId());
-    Line->SetColorIndex_(line->colorIndex());
-    Line->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
 
-    Line->SetStartPoint_(line->startPoint());
-    Line->SetEndPoint_(line->endPoint());
+    Line->m_ColorIndex = line->colorIndex();
+    Line->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype());
+
+    Line->m_Line.SetStartPoint(line->startPoint());
+    Line->m_Line.SetEndPoint(line->endPoint());
 
     return Line;
-}
-
-EoDbLine* EoDbLine::Create2(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
-	OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
-    OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
-    auto Line {OdDbLine::createObject()};
-    Line->setDatabaseDefaults(BlockTableRecord->database());
-
-    BlockTableRecord->appendOdDbEntity(Line);
-
-    Line->setStartPoint(startPoint);
-    Line->setEndPoint(endPoint);
-
-    Line->setColorIndex(pstate.ColorIndex());
-    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
-
-	return EoDbLine::Create(Line);
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {

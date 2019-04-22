@@ -362,7 +362,7 @@ public:
 	void SetCursorPosition(const OdGePoint3d& point);
 	void SetModeCursor(int mode);
 
-	EoDbGroup* SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance, EoDbEllipse*& circle);
+    std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point, EoDbLine*& line);
     std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor);

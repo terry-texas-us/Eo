@@ -567,10 +567,11 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 }
 
 EoDbPolyline* EoDbPolyline::Create(OdDbPolylinePtr polyline) {
-    EoDbPolyline* Polyline = new EoDbPolyline();
+    auto Polyline {new EoDbPolyline()};
     Polyline->SetEntityObjectId(polyline->objectId());
-    Polyline->SetColorIndex_(polyline->colorIndex());
-    Polyline->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(polyline->linetype()));
+
+    Polyline->m_ColorIndex = polyline->colorIndex();
+    Polyline->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(polyline->linetype());
 
     const size_t NumberOfVertices {polyline->numVerts()};
 

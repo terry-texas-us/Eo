@@ -82,9 +82,11 @@ void AeSysView::OnPipeModeFitting() {
             OnPipeModeEscape();
         }
     } else {
-        EoDbEllipse* VerticalSection;
-        Group = SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius, VerticalSection);
-        if (Group != 0) {
+        auto Selection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
+        Group = std::get<0>(Selection);
+
+        if (Group != nullptr) {
+            auto VerticalSection = std::get<1>(Selection);
             CurrentPnt = VerticalSection->Center();
 
             if (m_PipeModePoints.empty()) {
@@ -139,10 +141,13 @@ void AeSysView::OnPipeModeRise() {
         }
         m_PreviousOp = ModeLineHighlightOp(ID_OP5);
     } else {
-        EoDbEllipse* VerticalSection;
-        Group = SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius, VerticalSection);
-        if (Group != 0) { // On an existing vertical pipe section
+        auto Selection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
+        Group = std::get<0>(Selection);
+        
+        if (Group != nullptr) { // On an existing vertical pipe section
+            auto VerticalSection = std::get<1>(Selection);
             CurrentPnt = VerticalSection->Center();
+            
             if (m_PipeModePoints.empty()) {
                 m_PipeModePoints.append(CurrentPnt);
                 m_PreviousOp = ModeLineHighlightOp(ID_OP4);
@@ -205,10 +210,13 @@ void AeSysView::OnPipeModeDrop() {
         }
         m_PreviousOp = ModeLineHighlightOp(ID_OP4);
     } else {
-        EoDbEllipse* VerticalSection;
-        Group = SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius, VerticalSection);
-        if (Group != 0) { // On an existing vertical pipe section
+        auto Selection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
+        Group = std::get<0>(Selection);
+
+        if (Group != nullptr) { // On an existing vertical pipe section
+            auto VerticalSection = std::get<1>(Selection);
             CurrentPnt = VerticalSection->Center();
+
             if (m_PipeModePoints.empty()) {
                 m_PipeModePoints.append(CurrentPnt);
                 m_PreviousOp = ModeLineHighlightOp(ID_OP5);

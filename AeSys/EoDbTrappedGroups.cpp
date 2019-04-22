@@ -74,7 +74,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			while (PrimitivePosition != 0) {
 				EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 				if (Primitive->Is(kTextPrimitive)) {
-					strBuf += static_cast<EoDbText*>(Primitive)->Text();
+					strBuf += dynamic_cast<EoDbText*>(Primitive)->Text();
 					strBuf += L"\r\n";
 				}
 			}

@@ -19,11 +19,14 @@ void AeSysView::OnPowerModeCircuit() {
 
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-	EoDbEllipse* SymbolCircle;
-	EoDbGroup* Group = SelectCircleUsingPoint(CurrentPnt, .02, SymbolCircle);
-	if (Group != 0) {
-		CurrentPnt = SymbolCircle->Center();
-		const double CurrentRadius = SymbolCircle->MajorAxis().length();
+    auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
+    auto Group {std::get<0>(Selection)};
+
+    if (Group != nullptr) {
+        auto SymbolCircle {std::get<1>(Selection)};
+        CurrentPnt = SymbolCircle->Center();
+		
+        const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
 
 		if (m_PowerModePoints.empty()) {
 			m_PowerModePoints.append(CurrentPnt);
@@ -126,33 +129,36 @@ void AeSysView::OnPowerModeHome() {
 }
 
 void AeSysView::DoPowerModeMouseMove() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
-	const int NumberOfPoints = m_PowerModePoints.size();
+    OdGePoint3d CurrentPnt = GetCursorPosition();
+    const int NumberOfPoints = m_PowerModePoints.size();
 
-	switch (m_PreviousOp) {
-	case ID_OP2:
-		if (m_PowerModePoints[0] != CurrentPnt) {
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+    switch (m_PreviousOp) {
+    case ID_OP2:
+        if (m_PowerModePoints[0] != CurrentPnt) {
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+            m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-			EoDbEllipse* SymbolCircle;
-			EoDbGroup* Group = SelectCircleUsingPoint(CurrentPnt, .02, SymbolCircle);
-			if (Group != 0) {
-				const double CurrentRadius = SymbolCircle->MajorAxis().length();
-				CurrentPnt = SymbolCircle->Center();
-				CurrentPnt = ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius);
-			}
-			else {
-				CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
-			}
-			const OdGePoint3d pt1 = ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius);
-			m_PreviewGroup.AddTail(new EoDbLine(pt1, CurrentPnt));
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-		}
-		break;
-	}
-	m_PowerModePoints.setLogicalLength(NumberOfPoints);
+            auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
+            auto Group {std::get<0>(Selection)};
+
+            if (Group != nullptr) {
+                auto SymbolCircle {std::get<1>(Selection)};
+                const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
+
+                CurrentPnt = SymbolCircle->Center();
+                CurrentPnt = ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius);
+            } else {
+                CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
+            }
+            const OdGePoint3d pt1 = ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius);
+            m_PreviewGroup.AddTail(new EoDbLine(pt1, CurrentPnt));
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+        }
+        break;
+    }
+    m_PowerModePoints.setLogicalLength(NumberOfPoints);
 }
+
 void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	static OdGePoint3d PointOnCircuit;
 

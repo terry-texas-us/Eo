@@ -1023,11 +1023,11 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 }
 
 EoDbHatch* EoDbHatch::Create(OdDbHatchPtr& hatch) {
-    EoDbHatch* Hatch = new EoDbHatch();
+    auto Hatch {new EoDbHatch()};
     Hatch->SetEntityObjectId(hatch->objectId());
 
-    Hatch->SetColorIndex_(hatch->colorIndex());
-    Hatch->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype()));
+    Hatch->m_ColorIndex = hatch->colorIndex();
+    Hatch->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype());
 
     if (hatch->isHatch()) {
         switch (hatch->patternType()) {

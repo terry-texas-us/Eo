@@ -495,10 +495,11 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 }
 
 EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockReference) {
-    EoDbBlockReference* BlockReference = new EoDbBlockReference();
+    auto BlockReference {new EoDbBlockReference()};
     BlockReference->SetEntityObjectId(blockReference->objectId());
-    BlockReference->SetColorIndex_(blockReference->colorIndex());
-    BlockReference->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype()));
+
+    BlockReference->m_ColorIndex = blockReference->colorIndex();
+    BlockReference->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype());
 
     OdDbBlockTableRecordPtr BlockTableRecordPtr = blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead);
 

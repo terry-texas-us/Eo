@@ -44,7 +44,7 @@ void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, OdInt16 Primitiv
 		break;
 	case kTextPrimitive:
 		primitive = EoDbText::ConstructFrom(m_PrimBuf, 3);
-		static_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
+		dynamic_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
 		break;
 	case kDimensionPrimitive:
 		primitive = EoDbDimension::ConstructFrom(m_PrimBuf, 3);
@@ -58,7 +58,7 @@ void EoDbJobFile::ConstructPrimitiveFromVersion1(EoDbPrimitive *&primitive) {
 	switch (m_PrimBuf[5]) {
 	case 17:
 		primitive = EoDbText::ConstructFrom(m_PrimBuf, 1);
-		static_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
+		dynamic_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
 		break;
 	case 24:
 		primitive = EoDbSpline::ConstructFrom(m_PrimBuf, 1);

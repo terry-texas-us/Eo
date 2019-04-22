@@ -384,10 +384,11 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 }
 
 EoDbSpline* EoDbSpline::Create(OdDbSplinePtr& spline) {
-    EoDbSpline* Spline = new EoDbSpline();
+    auto Spline {new EoDbSpline()};
     Spline->SetEntityObjectId(spline->objectId());
-    Spline->SetColorIndex_(spline->colorIndex());
-    Spline->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(spline->linetype()));
+
+    Spline->m_ColorIndex = spline->colorIndex();
+    Spline->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(spline->linetype());
 
     int Degree;
     bool Rational;

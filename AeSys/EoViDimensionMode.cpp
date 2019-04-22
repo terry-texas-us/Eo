@@ -24,9 +24,9 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
 			if (Primitive->Is(kLinePrimitive))
-				static_cast<EoDbLine*>(Primitive)->GetLine(ln);
+				dynamic_cast<EoDbLine*>(Primitive)->GetLine(ln);
 			else if (Primitive->Is(kDimensionPrimitive))
-				ln = static_cast<EoDbDimension*>(Primitive)->Line();
+				ln = dynamic_cast<EoDbDimension*>(Primitive)->Line();
 			else
 				continue;
 
@@ -62,11 +62,11 @@ void AeSysView::OnDimensionModeArrow(void) {
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->Is(kLinePrimitive)) {
-				EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
+				EoDbLine* LinePrimitive = dynamic_cast<EoDbLine*>(Primitive);
 				LinePrimitive->GetLine(TestLine);
 			}
 			else if (Primitive->Is(kDimensionPrimitive)) {
-				EoDbDimension* DimensionPrimitive = static_cast<EoDbDimension*>(Primitive);
+				EoDbDimension* DimensionPrimitive = dynamic_cast<EoDbDimension*>(Primitive);
 				TestLine = DimensionPrimitive->Line();
 			}
 			else {
@@ -100,28 +100,31 @@ void AeSysView::OnDimensionModeArrow(void) {
 }
 
 void AeSysView::OnDimensionModeLine(void) {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
-	RubberBandingDisable();
-	if (PreviousDimensionCommand != ID_OP2) {
-		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP2);
-		PreviousDimensionCursorPosition = ptCur;
-	}
-	else {
-		ptCur = SnapPointToAxis(PreviousDimensionCursorPosition, ptCur);
-		if (PreviousDimensionCursorPosition != ptCur) {
-            auto Line {EoDbLine::Create2(PreviousDimensionCursorPosition, ptCur)};
-			Line->SetColorIndex(1);
-			Line->SetLinetypeIndex(1);
-			EoDbGroup* Group = new EoDbGroup;
-			Group->AddTail(Line);
-			Document->AddWorkLayerGroup(Group);
-			Document->UpdateGroupInAllViews(kGroupSafe, Group);
-		}
-		PreviousDimensionCursorPosition = ptCur;
-	}
-	RubberBandingStartAtEnable(ptCur, Lines);
+    auto Document {GetDocument()};
+    auto ptCur {GetCursorPosition()};
+    RubberBandingDisable();
+    if (PreviousDimensionCommand != ID_OP2) {
+        PreviousDimensionCommand = ModeLineHighlightOp(ID_OP2);
+        PreviousDimensionCursorPosition = ptCur;
+    } else {
+        ptCur = SnapPointToAxis(PreviousDimensionCursorPosition, ptCur);
+        if (PreviousDimensionCursorPosition != ptCur) {
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+            auto Group {new EoDbGroup};
+            
+            auto Line {EoDbLine::Create(BlockTableRecord, PreviousDimensionCursorPosition, ptCur)};
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+            Group->AddTail(EoDbLine::Create(Line));
+
+            Document->AddWorkLayerGroup(Group);
+            Document->UpdateGroupInAllViews(kGroupSafe, Group);
+        }
+        PreviousDimensionCursorPosition = ptCur;
+    }
+    RubberBandingStartAtEnable(ptCur, Lines);
 }
+
 void AeSysView::OnDimensionModeDLine(void) {
 	AeSysDoc* Document = GetDocument();
 	const OdGePoint3d ptCur = GetCursorPosition();
@@ -205,8 +208,8 @@ void AeSysView::OnDimensionModeDLine2(void) {
 	RubberBandingStartAtEnable(ptCur, Lines);
 }
 void AeSysView::OnDimensionModeExten(void) {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d ptCur = GetCursorPosition();
+    auto Document {GetDocument()};
+    auto ptCur {GetCursorPosition()};
 	if (PreviousDimensionCommand != ID_OP5) {
 		RubberBandingDisable();
 		PreviousDimensionCursorPosition = ProjPtToLn(ptCur);
@@ -216,13 +219,16 @@ void AeSysView::OnDimensionModeExten(void) {
 	else {
 		ptCur = ProjPtToLn(ptCur);
 		if (PreviousDimensionCursorPosition != ptCur) {
-			ptCur = ProjectToward(ptCur, PreviousDimensionCursorPosition, - .1875);
+            ptCur = ProjectToward(ptCur, PreviousDimensionCursorPosition, - .1875);
 			PreviousDimensionCursorPosition = ProjectToward(PreviousDimensionCursorPosition, ptCur, .0625);
-            auto Line {EoDbLine::Create2(PreviousDimensionCursorPosition, ptCur)};
-			Line->SetColorIndex(1);
-			Line->SetLinetypeIndex(1);
-			EoDbGroup* Group = new EoDbGroup;
-			Group->AddTail(Line);
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+            auto Group {new EoDbGroup};
+
+            auto Line {EoDbLine::Create(BlockTableRecord, PreviousDimensionCursorPosition, ptCur)};
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+            Group->AddTail(EoDbLine::Create(Line));
+
 			Document->AddWorkLayerGroup(Group);
 			Document->UpdateGroupInAllViews(kGroupSafe, Group);
 		}
@@ -238,7 +244,7 @@ void AeSysView::OnDimensionModeRadius(void) {
 		const OdGePoint3d ptEnd = DetPt();
 
 		if ((EngagedPrimitive())->Is(kEllipsePrimitive)) {
-			EoDbEllipse* pArc = static_cast<EoDbEllipse*>(EngagedPrimitive());
+			EoDbEllipse* pArc = dynamic_cast<EoDbEllipse*>(EngagedPrimitive());
 
 			const OdGePoint3d ptBeg = pArc->Center();
 
@@ -276,7 +282,7 @@ void AeSysView::OnDimensionModeDiameter() {
 		const OdGePoint3d ptEnd = DetPt();
 
 		if ((EngagedPrimitive())->Is(kEllipsePrimitive)) {
-			EoDbEllipse* pArc = static_cast<EoDbEllipse*>(EngagedPrimitive());
+			EoDbEllipse* pArc = dynamic_cast<EoDbEllipse*>(EngagedPrimitive());
 
 			const OdGePoint3d ptBeg = ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length());
 
@@ -324,7 +330,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 
 		if (SelectLineBy(ptCur) != 0) {
-			EoDbLine* pLine = static_cast<EoDbLine*>(EngagedPrimitive());
+			EoDbLine* pLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
 
 			rProjPt[0] = DetPt();
 			pLine->GetLine(ln);
@@ -336,7 +342,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 	else {
 		if (iLns == 1) {
 			if (SelectLineBy(ptCur) != 0) {
-				EoDbLine* pLine = static_cast<EoDbLine*>(EngagedPrimitive());
+				EoDbLine* pLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
 
 				rProjPt[1] = DetPt();
 				if (ln.intersectWith(pLine->Line(), CenterPoint)) {
@@ -414,7 +420,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 	}
 }
 void AeSysView::OnDimensionModeConvert(void) {
-	const OdGePoint3d ptCur = GetCursorPosition();
+    const auto ptCur {GetCursorPosition()};
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -439,8 +445,8 @@ void AeSysView::OnDimensionModeConvert(void) {
 			Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->SelectBy(ptView, this, ptProj)) {
 				if (Primitive->Is(kLinePrimitive)) {
-					EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
-					EoDbDimension* DimensionPrimitive = new EoDbDimension();
+                    auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
+                    auto DimensionPrimitive {new EoDbDimension()};
 					DimensionPrimitive->SetColorIndex(LinePrimitive->ColorIndex());
 					DimensionPrimitive->SetLinetypeIndex(LinePrimitive->LinetypeIndex());
 					DimensionPrimitive->SetStartPoint(LinePrimitive->StartPoint());
@@ -458,18 +464,20 @@ void AeSysView::OnDimensionModeConvert(void) {
 					return;
 				}
 				else if (Primitive->Is(kDimensionPrimitive)) {
-					EoDbDimension* DimensionPrimitive = static_cast<EoDbDimension*>(Primitive);
+                    auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
 					EoGeReferenceSystem ReferenceSystem;
 					ReferenceSystem = DimensionPrimitive->ReferenceSystem();
                     OdGeVector3d PlaneNormal;
                     ReferenceSystem.GetUnitNormal(PlaneNormal);
 
-                    auto LinePrimitive {EoDbLine::Create2(DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint())};
-					LinePrimitive->SetColorIndex(DimensionPrimitive->ColorIndex());
-					LinePrimitive->SetLinetypeIndex(DimensionPrimitive->LinetypeIndex());
-					
                     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-                    OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) DimensionPrimitive->Text());
+
+                    auto Line {EoDbLine::Create(BlockTableRecord, DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint())};
+                    Line->setColorIndex(DimensionPrimitive->ColorIndex());
+                    Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(DimensionPrimitive->LinetypeIndex()));
+                    auto LinePrimitive {EoDbLine::Create(Line)};
+
+                    auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR)DimensionPrimitive->Text())};
 
                     Text->setNormal(PlaneNormal);
                     Text->setRotation(ReferenceSystem.Rotation());
