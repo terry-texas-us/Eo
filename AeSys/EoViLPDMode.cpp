@@ -23,6 +23,24 @@ std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoi
     return {nullptr, nullptr};
 }
 
+std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor) {
+    auto GroupPosition {GetFirstVisibleGroupPosition()};
+    while (GroupPosition != nullptr) {
+        auto Group = GetNextVisibleGroup(GroupPosition);
+        auto PrimitivePosition = Group->GetHeadPosition();
+        while (PrimitivePosition != nullptr) {
+            auto Primitive = Group->GetNext(PrimitivePosition);
+            if (Primitive->Is(kPointPrimitive) && Primitive->ColorIndex() == pointColor) {
+                const auto Point = dynamic_cast<EoDbPoint*>(Primitive);
+                if (point.distanceTo(Point->Position()) <= tolerance) {
+                    return {Group, Point};
+                }
+            }
+        }
+    }
+    return {nullptr, nullptr};
+}
+
 /// <remarks>
 ///Only check for actual end-cap marker is by attributes. No error processing for invalid width or depth values.
 ///Group data contains whatever primative follows marker (hopefully this is associated end-cap line).

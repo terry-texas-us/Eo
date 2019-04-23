@@ -236,7 +236,6 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	}
 	return false;
 }
-
 void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
