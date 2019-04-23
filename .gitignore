@@ -339,3 +339,4 @@ ASALocalRun/
 .localhistory/
 *.cd
 /AeSys/CppEssentialProfile.ruleset
+*.lastcodeanalysissucceeded
