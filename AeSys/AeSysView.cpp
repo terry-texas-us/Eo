@@ -3413,6 +3413,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& pt) {
 	return (m_EngagedGroup);
 }
 
+std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d& point) {
     EoGePoint4d ptView(point, 1.);
     ModelViewTransformPoint(ptView);
 
@@ -3435,6 +3436,26 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& pt) {
 }
 
 EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
+	EoGePoint4d ptView(pt, 1.);
+	ModelViewTransformPoint(ptView);
+
+	POSITION GroupPosition = GetFirstVisibleGroupPosition();
+	while (GroupPosition != 0) {
+		const EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
+		POSITION PrimitivePosition = Group->GetHeadPosition();
+		while (PrimitivePosition != 0) {
+			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+			if (Primitive->Is(kTextPrimitive)) {
+				OdGePoint3d ptProj;
+				if (dynamic_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj))
+					return dynamic_cast<EoDbText*>(Primitive);
+			}
+		}
+	}
+	return 0;
+}
+void AeSysView::OnOp0() {
+	switch (theApp.CurrentMode()) {
 	case ID_MODE_PRIMITIVE_EDIT:
 	case ID_MODE_GROUP_EDIT:
 		OnEditModeOptions();
