@@ -23,7 +23,7 @@ void AeSysView::OnNodalModeAddRemove(void) {
 	}
 }
 void AeSysView::OnNodalModePoint(void) {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	OdGePoint3dArray Points;
 
 	POSITION GroupPosition = GetFirstVisibleGroupPosition();
@@ -46,7 +46,7 @@ void AeSysView::OnNodalModePoint(void) {
 	}
 }
 void AeSysView::OnNodalModeLine(void) {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	OdGePoint3dArray Points;
     auto Group {SelectGroupAndPrimitive(CurrentPnt)};
 	if (Group != nullptr) {
@@ -61,7 +61,7 @@ void AeSysView::OnNodalModeLine(void) {
 	}
 }
 void AeSysView::OnNodalModeArea(void) {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP3) {
 		PreviousNodalCursorPosition = CurrentPnt;
 		RubberBandingStartAtEnable(CurrentPnt, Rectangles);
@@ -97,7 +97,7 @@ void AeSysView::OnNodalModeArea(void) {
 	}
 }
 void AeSysView::OnNodalModeMove(void) {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP4) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP4);
 		m_NodalModePoints.clear();
@@ -110,7 +110,7 @@ void AeSysView::OnNodalModeMove(void) {
 	}
 }
 void AeSysView::OnNodalModeCopy(void) {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP5) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP5);
 		m_NodalModePoints.clear();
@@ -255,7 +255,7 @@ void AeSysView::OnNodalModeEngage(void) {
 	}
 }
 void AeSysView::OnNodalModeReturn(void) {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	switch (PreviousNodalCommand) {
 	case ID_OP4:
@@ -324,7 +324,7 @@ void AeSysView::OnNodalModeEscape(void) {
 	}
 }
 void AeSysView::DoNodalModeMouseMove() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 	const int NumberOfPoints = m_NodalModePoints.size();
 
 	switch (PreviousNodalCommand) {

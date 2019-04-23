@@ -3412,26 +3412,27 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& pt) {
 	}
 	return (m_EngagedGroup);
 }
-EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d& point, EoDbLine*& line) {
-	EoGePoint4d ptView(point, 1.);
-	ModelViewTransformPoint(ptView);
 
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kLinePrimitive)) {
-				OdGePoint3d PointOnLine;
-				if (Primitive->SelectBy(ptView, this, PointOnLine)) {
-					line = dynamic_cast<EoDbLine*>(Primitive);
-					return Group;
-				}
-			}
-		}
-	}
-	return 0;
+std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d& point) {
+    EoGePoint4d ptView(point, 1.);
+    ModelViewTransformPoint(ptView);
+
+    auto GroupPosition {GetFirstVisibleGroupPosition()};
+    while (GroupPosition != nullptr) {
+        auto Group = GetNextVisibleGroup(GroupPosition);
+        auto PrimitivePosition = Group->GetHeadPosition();
+        while (PrimitivePosition != nullptr) {
+            auto Primitive = Group->GetNext(PrimitivePosition);
+            if (Primitive->Is(kLinePrimitive)) {
+                OdGePoint3d PointOnLine;
+                if (Primitive->SelectBy(ptView, this, PointOnLine)) {
+                    return {Group, dynamic_cast<EoDbLine*>(Primitive)};
+                }
+            }
+        }
+    }
+    return {nullptr, nullptr};
+
 }
 
 EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {

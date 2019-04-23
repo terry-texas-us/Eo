@@ -42,9 +42,10 @@ void AeSysView::OnPipeModeFitting() {
     auto CurrentPnt {GetCursorPosition()};
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    EoDbLine* HorizontalSection;
-    auto Group {SelectLineBy(CurrentPnt, HorizontalSection)};
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
     if (Group != nullptr) {
+        auto HorizontalSection {std::get<1>(Selection)};
         const auto BeginPoint {HorizontalSection->StartPoint()};
         const auto EndPoint {HorizontalSection->EndPoint()};
 
@@ -124,9 +125,10 @@ void AeSysView::OnPipeModeRise() {
     auto CurrentPnt {GetCursorPosition()};
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    EoDbLine* HorizontalSection;
-    EoDbGroup* Group = SelectLineBy(CurrentPnt, HorizontalSection);
-    if (Group != 0) { // On an existing horizontal pipe section
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group != nullptr) { // On an existing horizontal pipe section
+        auto HorizontalSection {std::get<1>(Selection)};
         CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
 
         if (m_PipeModePoints.empty()) { // Rising from an existing horizontal pipe section
@@ -193,9 +195,10 @@ void AeSysView::OnPipeModeDrop() {
     auto CurrentPnt {GetCursorPosition()};
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    EoDbLine* HorizontalSection;
-    auto Group {SelectLineBy(CurrentPnt, HorizontalSection)};
-    if (Group != 0) { // On an existing horizontal pipe section
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group != nullptr) { // On an existing horizontal pipe section
+        auto HorizontalSection {std::get<1>(Selection)};
         CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
 
         if (m_PipeModePoints.empty()) { // Dropping from an existing horizontal pipe section
@@ -277,10 +280,12 @@ void AeSysView::OnPipeModeSymbol() {
     OnPipeModeEscape();
     m_PipeModePoints.setLogicalLength(2);
 
-    EoDbLine* HorizontalSection;
-    auto Group {SelectLineBy(CurrentPnt, HorizontalSection)};
-    if (Group == 0)
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group == nullptr) {
         return;
+    }
+    auto HorizontalSection {std::get<1>(Selection)};
 
     EoDlgPipeSymbol Dialog;
     Dialog.m_CurrentPipeSymbolIndex = m_CurrentPipeSymbolIndex;
@@ -982,9 +987,10 @@ void AeSysView::OnPipeModeWye() {
         m_PreviousOp = ModeLineHighlightOp(ID_OP9);
         return;
     }
-    EoDbLine* HorizontalSection;
-    auto Group = SelectLineBy(CurrentPnt, HorizontalSection);
-    if (Group != 0) {
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group != nullptr) {
+        auto HorizontalSection {std::get<1>(Selection)};
         auto PointOnSection {HorizontalSection->ProjPt_(CurrentPnt)};
         const auto BeginPointProjectedToSection {HorizontalSection->ProjPt_(m_PipeModePoints[0])};
         const auto DistanceToSection {(BeginPointProjectedToSection - m_PipeModePoints[0]).length()};

@@ -62,7 +62,7 @@ void AeSysView::OnLpdModeJoin() {
 }
 
 void AeSysView::OnLpdModeDuct() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	if (m_PreviousOp != 0) {
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -134,17 +134,19 @@ void AeSysView::OnLpdModeTransition() {
 	OnLpdModeDuct();
 }
 void AeSysView::OnLpdModeTap() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
-	EoDbLine* LinePrimitive;
-    auto Group {SelectLineBy(CurrentPnt, LinePrimitive)};
-	if (Group != 0) {
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group != nullptr) {
+        auto LinePrimitive {std::get<1>(Selection)};
 		const OdGePoint3d TestPoint(CurrentPnt);
-		CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
+		
+        CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 		CurrentPnt = LinePrimitive->ProjPt_(CurrentPnt);
 		m_CurrentReferenceLine.set(m_PreviousPnt, CurrentPnt);
 
@@ -188,7 +190,7 @@ void AeSysView::OnLpdModeTap() {
 		theApp.AddStringToMessageList(IDS_MSG_LINE_NOT_SELECTED);
 }
 void AeSysView::OnLpdModeEll() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
@@ -235,7 +237,7 @@ void AeSysView::OnLpdModeEll() {
 	m_PreviousOp = ID_OP2;
 }
 void AeSysView::OnLpdModeTee() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
 	if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
@@ -247,7 +249,7 @@ void AeSysView::OnLpdModeTee() {
 	m_PreviousOp = ID_OP2;
 }
 void AeSysView::OnLpdModeUpDown() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	const int iRet = 0; // dialog to "Select direction", 'Up.Down.'
 	if (iRet >= 0) {
@@ -484,8 +486,10 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSect
 
 		GenerateTransition(TransitionReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, ContinueGroup, CurrentSection, group);
 	}
-	if (m_GenerateTurningVanes) {
 /*
+    if (m_GenerateTurningVanes) {
+        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
 		OdGePoint3dArray Points;
 		Points.setLogicalLength(5);
 
@@ -495,12 +499,23 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSect
 		EoGeLineSeg3d(Points[2], rPar[1][1]).ProjPtFrom_xy(0., dDSiz + m_DuctSeamSize, Points[4]);
 		EoDbGroup* Group = new EoDbGroup;
 		GetDocument()->AddWorkLayerGroup(Group);
-		Group->AddTail(new EoDbLine(1, pstate.LinetypeIndex(), lnLead[0], Points[2]));
-		Group->AddTail(new EoDbEllipse(1, pstate.LinetypeIndex(), Points[3], .01));
-		Group->AddTail(new EoDbLine(1, pstate.LinetypeIndex(), Points[3], Points[4]));
-		GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
-*/
+		
+        auto Line {EoDbLine::Create(BlockTableRecord, lnLead[0], Points[2])};
+        Line->setColorIndex(1);
+        Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+        Group->AddTail(EoDbLine::Create(Line));
+
+        Group->AddTail(new EoDbEllipse(1, pstate.LinetypeIndex(), Points[3], .01));
+
+        auto Line {EoDbLine::Create(BlockTableRecord, Points[3], Points[4])};
+        Line->setColorIndex(1);
+        Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+        Group->AddTail(EoDbLine::Create(Line));
+
+        GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+
 	}
+*/
 }
 void AeSysView::GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group) {
 	const double SectionLength = referenceLine.length();

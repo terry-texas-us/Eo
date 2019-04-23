@@ -89,7 +89,7 @@ void AeSysView::OnPowerModeNeutral() {
 void AeSysView::OnPowerModeHome() {
 	static OdGePoint3d PointOnCircuit;
 
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	m_PowerConductor = false;
 	m_PreviousOp = 0;
@@ -99,10 +99,11 @@ void AeSysView::OnPowerModeHome() {
 
 	if (!m_PowerArrow || (PointOnCircuit != CurrentPnt)) {
 		m_PowerArrow = false;
-		EoDbLine* Circuit;
-		EoDbGroup* Group = SelectLineBy(CurrentPnt, Circuit);
-		if (Group != 0) {
-			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
+        auto Selection {SelectLineUsingPoint(CurrentPnt)};
+        auto Group {std::get<0>(Selection)};
+        if (Group != nullptr) {
+            auto Circuit {std::get<1>(Selection)};
+            CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= .5) {
 				m_CircuitEndPoint = Circuit->EndPoint();
 				if (CurrentPnt.distanceTo(Circuit->StartPoint()) <= .1)
@@ -129,8 +130,8 @@ void AeSysView::OnPowerModeHome() {
 }
 
 void AeSysView::DoPowerModeMouseMove() {
-    OdGePoint3d CurrentPnt = GetCursorPosition();
-    const int NumberOfPoints = m_PowerModePoints.size();
+    auto CurrentPnt {GetCursorPosition()};
+    const auto NumberOfPoints {m_PowerModePoints.size()};
 
     switch (m_PreviousOp) {
     case ID_OP2:
@@ -150,8 +151,14 @@ void AeSysView::DoPowerModeMouseMove() {
             } else {
                 CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
             }
-            const OdGePoint3d pt1 = ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius);
-            m_PreviewGroup.AddTail(new EoDbLine(pt1, CurrentPnt));
+            const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
+
+            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+            auto Line {EoDbLine::Create(BlockTableRecord, pt1, CurrentPnt)};
+            Line->setColorIndex(pstate.ColorIndex());
+            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
@@ -162,7 +169,7 @@ void AeSysView::DoPowerModeMouseMove() {
 void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	static OdGePoint3d PointOnCircuit;
 
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
 	m_PowerArrow = false;
 	m_PreviousOp = 0;
@@ -172,12 +179,13 @@ void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 
 	if (!m_PowerConductor || PointOnCircuit != CurrentPnt) {
 		m_PowerConductor = false;
-		EoDbLine* Circuit;
-		EoDbGroup* Group = SelectLineBy(CurrentPnt, Circuit);
-		if (Group != 0) {
-			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
+        auto Selection {SelectLineUsingPoint(CurrentPnt)};
+        auto Group {std::get<0>(Selection)};
+        if (Group != nullptr) {
+            auto Circuit {std::get<1>(Selection)};
+		    CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 
-			const OdGePoint3d BeginPoint = Circuit->StartPoint();
+            const auto BeginPoint {Circuit->StartPoint()};
 			m_CircuitEndPoint = Circuit->EndPoint();
 
 			if (fabs(m_CircuitEndPoint.x - BeginPoint.x) > .025) {
@@ -212,7 +220,8 @@ void AeSysView::OnPowerModeEscape() {
 
 	m_PowerModePoints.clear();
 
-	ModeLineUnhighlightOp(m_PreviousOp);	m_PreviousOp = 0;
+	ModeLineUnhighlightOp(m_PreviousOp);
+    m_PreviousOp = 0;
 
 	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();

@@ -253,14 +253,6 @@ void EoDbPoint::SetData(OdUInt16 numberOfDatums, double* data) {
 	}
 }
 
-void EoDbPoint::SetPosition(const OdGePoint3d& position) {
-	if (!m_EntityObjectId.isNull()) {
-		OdDbPointPtr Point = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Point->setPosition(position);
-	}
-	m_Position = position;
-}
-
 void EoDbPoint::SetPointDisplayMode(OdInt16 displayMode) noexcept {
 	m_PointDisplayMode = displayMode;
 }
@@ -377,10 +369,11 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 }
 
 EoDbPoint* EoDbPoint::Create(OdDbPointPtr& point) {
-    EoDbPoint* Point = new EoDbPoint();
-    Point->SetEntityObjectId(point->objectId());
-    Point->SetColorIndex(point->colorIndex());
-    Point->SetPosition(point->position());
+    auto Point {new EoDbPoint()};
+    Point->m_EntityObjectId = point->objectId();
+    Point->m_ColorIndex = point->colorIndex();
+    Point->m_Position = point->position();
+
     Point->SetPointDisplayMode(pstate.PointDisplayMode());
 
     auto NumberOfDatums {0U};

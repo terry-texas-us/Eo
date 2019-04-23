@@ -49,7 +49,6 @@ public: // Methods
 	OdGePoint3d Position() const noexcept;
 	void SetData(OdUInt16 numberOfDatums, double* data);
 	void SetPointDisplayMode(OdInt16 displayMode) noexcept;
-	void SetPosition(const OdGePoint3d& point);
 
 public: // Methods - static
 

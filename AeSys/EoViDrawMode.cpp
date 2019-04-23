@@ -390,7 +390,10 @@ void AeSysView::DoDrawModeMouseMove() {
         m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
         if (NumberOfPoints == 1) {
-            m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
+            auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
+            Line->setColorIndex(pstate.ColorIndex());
+            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
         }
         if (NumberOfPoints == 2) {
             auto Arc {new EoDbEllipse()};
@@ -444,7 +447,10 @@ void AeSysView::DoDrawModeMouseMove() {
             GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
             if (NumberOfPoints == 1) {
-                m_PreviewGroup.AddTail(new EoDbLine(m_DrawModePoints[0], CurrentPnt));
+                auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
+                Line->setColorIndex(pstate.ColorIndex());
+                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+                m_PreviewGroup.AddTail(EoDbLine::Create(Line));
             } else {
                 const auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
                 const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};

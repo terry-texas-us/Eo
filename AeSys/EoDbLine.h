@@ -20,7 +20,6 @@ class EoDbLine : public EoDbPrimitive {
 
 public: // Constructors and destructor
 	EoDbLine() noexcept;
-	EoDbLine(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 	EoDbLine(const EoDbLine& other);
     const EoDbLine& operator=(const EoDbLine& other);
 

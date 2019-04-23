@@ -19,19 +19,21 @@ void AeSysView::OnDraw2ModeJoin() {
     auto CurrentPnt {GetCursorPosition()};
 	CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 
-    auto Group {SelectGroupAndPrimitive(CurrentPnt)};
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group != nullptr) {
+        auto Line {std::get<1>(Selection)};
+        CurrentPnt = Line->ProjPt_(CurrentPnt);
 
-	if (Group != nullptr) {
-		CurrentPnt = DetPt();
 		if (m_PreviousOp == 0) { // Starting at existing wall
 			m_BeginSectionGroup = Group;
-			m_BeginSectionLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
+			m_BeginSectionLine = Line;
 			m_PreviousPnt = CurrentPnt;
 			m_PreviousOp = ID_OP1;
 		}
 		else { // Ending at existing wall
 			m_EndSectionGroup = Group;
-			m_EndSectionLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
+			m_EndSectionLine = Line;
 			OnDraw2ModeWall();
 			OnDraw2ModeEscape();
 		}
@@ -244,7 +246,9 @@ bool AeSysView::StartAssemblyFromLine() {
 void AeSysView::DoDraw2ModeMouseMove() {
 	static OdGePoint3d CurrentPnt = OdGePoint3d();
 
-	if (m_PreviousOp == 0) {
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+    
+    if (m_PreviousOp == 0) {
 		CurrentPnt = GetCursorPosition();
 	}
 	else if (m_PreviousOp == ID_OP1 || m_PreviousOp == ID_OP2) {
@@ -256,19 +260,29 @@ void AeSysView::DoDraw2ModeMouseMove() {
 			EoGeLineSeg3d PreviewLines[2];
 			EoGeLineSeg3d ln(m_PreviousPnt, CurrentPnt);
 			ln.GetParallels(m_DistanceBetweenLines, m_CenterLineEccentricity, PreviewLines[0], PreviewLines[1]);
-			EoDbLine* Line;
-			Line = new EoDbLine(PreviewLines[0].startPoint(), PreviewLines[1].startPoint());
-			m_PreviewGroup.AddTail(Line);
-			Line = new EoDbLine(PreviewLines[0].startPoint(), PreviewLines[0].endPoint());
-			Line->SetColorIndex(pstate.ColorIndex());
-			Line->SetLinetypeIndex(pstate.LinetypeIndex());
-			m_PreviewGroup.AddTail(Line);
-			Line = new EoDbLine(PreviewLines[1].startPoint(), PreviewLines[1].endPoint());
-			Line->SetColorIndex(pstate.ColorIndex());
-			Line->SetLinetypeIndex(pstate.LinetypeIndex());
-			m_PreviewGroup.AddTail(Line);
-			Line = new EoDbLine(PreviewLines[1].endPoint(), PreviewLines[0].endPoint());
-			m_PreviewGroup.AddTail(Line);
+			
+            const auto ColorIndex {pstate.ColorIndex()};
+            const auto LinetypeId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+            auto Line {EoDbLine::Create(BlockTableRecord, PreviewLines[0].startPoint(), PreviewLines[1].startPoint())};
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(LinetypeId);
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
+            Line = EoDbLine::Create(BlockTableRecord, PreviewLines[0].startPoint(), PreviewLines[0].endPoint());
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(LinetypeId);
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
+            Line = EoDbLine::Create(BlockTableRecord, PreviewLines[1].startPoint(), PreviewLines[1].endPoint());
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(LinetypeId);
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
+            Line = EoDbLine::Create(BlockTableRecord, PreviewLines[1].endPoint(), PreviewLines[0].endPoint());
+            Line->setColorIndex(ColorIndex);
+            Line->setLinetype(LinetypeId);
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+
 			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
 		}
 	}

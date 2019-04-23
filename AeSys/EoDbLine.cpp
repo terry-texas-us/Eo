@@ -6,12 +6,6 @@
 EoDbLine::EoDbLine() noexcept {
 }
 
-EoDbLine::EoDbLine(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
-	m_ColorIndex = pstate.ColorIndex();
-	m_LinetypeIndex = pstate.LinetypeIndex();
-	m_Line.set(startPoint, endPoint);
-}
-
 EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;

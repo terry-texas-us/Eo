@@ -15,7 +15,7 @@ void AeSysView::OnAnnotateModeOptions() {
 }
 
 void AeSysView::OnAnnotateModeLine() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
@@ -45,7 +45,7 @@ void AeSysView::OnAnnotateModeLine() {
 }
 
 void AeSysView::OnAnnotateModeArrow() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
@@ -78,7 +78,7 @@ void AeSysView::OnAnnotateModeArrow() {
 
 void AeSysView::OnAnnotateModeBubble() {
 	static CString CurrentText;
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
@@ -173,8 +173,8 @@ void AeSysView::OnAnnotateModeBubble() {
 }
 
 void AeSysView::OnAnnotateModeHook() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
-	EoDbGroup* Group = new EoDbGroup;
+    auto CurrentPnt {GetCursorPosition()};
+    auto Group {new EoDbGroup};
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
@@ -221,7 +221,7 @@ void AeSysView::OnAnnotateModeHook() {
 }
 
 void AeSysView::OnAnnotateModeUnderline() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 
 	if (m_PreviousOp != 0) {
 		ModeLineUnhighlightOp(m_PreviousOp);
@@ -251,7 +251,7 @@ void AeSysView::OnAnnotateModeUnderline() {
 }
 
 void AeSysView::OnAnnotateModeBox() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+    const auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp != ID_OP7) {
 		if (m_PreviousOp != 0) {
 			RubberBandingDisable();
@@ -318,15 +318,15 @@ void AeSysView::OnAnnotateModeBox() {
 }
 
 void AeSysView::OnAnnotateModeCutIn() {
-	CDC* DeviceContext = GetDC();
+    auto DeviceContext {GetDC()};
 
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+    auto CurrentPnt {GetCursorPosition()};
 
-	EoDbGroup* Group = SelectLineBy(CurrentPnt);
-	if (Group != 0) {
-		EoDbLine* EngagedLine = static_cast<EoDbLine*>(EngagedPrimitive());
-
-		CurrentPnt = DetPt();
+    auto Selection {SelectLineUsingPoint(CurrentPnt)};
+    auto Group {std::get<0>(Selection)};
+    if (Group != nullptr) {
+        auto EngagedLine {std::get<1>(Selection)};
+        CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
 
 		CString CurrentText;
 
@@ -341,13 +341,13 @@ void AeSysView::OnAnnotateModeCutIn() {
 		const int PrimitiveState = pstate.Save();
 
 		if (!CurrentText.IsEmpty()) {
-			EoGeLineSeg3d LineSeg = EngagedLine->Line();
+            auto LineSeg {EngagedLine->Line()};
 			double dAng = LineSeg.AngleFromXAxis_xy();
 			if (dAng > .25 * TWOPI && dAng <  .75 * TWOPI)
 				dAng += PI;
 
-			const OdGeVector3d PlaneNormal = CameraDirection();
-			OdGeVector3d MinorAxis = ViewUp();
+            const auto PlaneNormal {CameraDirection()};
+            auto MinorAxis {ViewUp()};
 			MinorAxis.rotateBy(dAng, PlaneNormal);
 			OdGeVector3d MajorAxis = MinorAxis;
 			MajorAxis.rotateBy(- HALF_PI, PlaneNormal);
@@ -537,52 +537,61 @@ void AeSysView::SetNumberOfSides(int number) noexcept {
 }
 
 void AeSysView::DoAnnotateModeMouseMove() {
-	OdGePoint3d CurrentPnt = GetCursorPosition();
-	const int NumberOfPoints = EoViAnn_points.size();
-	EoViAnn_points.append(CurrentPnt);
+    auto CurrentPnt {GetCursorPosition()};
+    const int NumberOfPoints = EoViAnn_points.size();
+    EoViAnn_points.append(CurrentPnt);
 
-	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-	switch(m_PreviousOp) {
-	case ID_OP2:
-	case ID_OP3:
-		if (EoViAnn_points[0] != CurrentPnt) {
-			if (m_PreviousOp == ID_OP3) {
-				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], &m_PreviewGroup);
-			}
-			m_PreviewGroup.AddTail(new EoDbLine(EoViAnn_points[0], CurrentPnt));
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-		}
-		break;
+    GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+    m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-	case ID_OP4:
-	case ID_OP5: {
-		OdGePoint3d m_PreviousPnt(EoViAnn_points[0]);
-		if (CorrectLeaderEndpoints(m_PreviousOp, 0, EoViAnn_points[0], EoViAnn_points[1])) {
-			m_PreviewGroup.AddTail(new EoDbLine(EoViAnn_points[0], EoViAnn_points[1]));
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-		}
-		EoViAnn_points[0] = m_PreviousPnt;
-		break;
-				 }
-	case ID_OP9:
-		if (EoViAnn_points[0] != CurrentPnt) {
-			CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
+    switch (m_PreviousOp) {
+    case ID_OP2:
+    case ID_OP3:
+        if (EoViAnn_points[0] != CurrentPnt) {
+            if (m_PreviousOp == ID_OP3) {
+                GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], &m_PreviewGroup);
+            }
+            auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], CurrentPnt)};
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+        }
+        break;
 
-			EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
-			EoViAnn_points.append(ProjectToward(EoViAnn_points[2], EoViAnn_points[0], 96.));
+    case ID_OP4:
+    case ID_OP5:
+    {
+        OdGePoint3d m_PreviousPnt(EoViAnn_points[0]);
+        if (CorrectLeaderEndpoints(m_PreviousOp, 0, EoViAnn_points[0], EoViAnn_points[1])) {
+            auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], EoViAnn_points[1])};
+            Line->setColorIndex(1);
+            Line->setLinetype(L"Continuous");
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+        }
+        EoViAnn_points[0] = m_PreviousPnt;
+        break;
+    }
+    case ID_OP9:
+        if (EoViAnn_points[0] != CurrentPnt) {
+            CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
 
-			EoDbLine* Line = new EoDbLine(EoViAnn_points[2], EoViAnn_points[3]);
-			Line->SetColorIndex(15);
-			Line->SetLinetypeIndex(2);
-			m_PreviewGroup.AddTail(Line);
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
-		}
-		break;
+            EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
+            EoViAnn_points.append(ProjectToward(EoViAnn_points[2], EoViAnn_points[0], 96.));
 
-	}
-	EoViAnn_points.setLogicalLength(NumberOfPoints);
+            auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[2], EoViAnn_points[3])};
+            Line->setColorIndex(15);
+            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
+            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+        }
+        break;
+
+    }
+    EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
 void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
     const auto PlaneNormal {CameraDirection()};

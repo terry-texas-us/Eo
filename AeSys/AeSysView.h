@@ -364,7 +364,7 @@ public:
 
     std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	EoDbGroup* SelectLineBy(const OdGePoint3d& point);
-	EoDbGroup* SelectLineBy(const OdGePoint3d& point, EoDbLine*& line);
+    std::pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
     std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor);
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
