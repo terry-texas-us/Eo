@@ -2267,25 +2267,28 @@ EoExEditorObject &AeSysView::editorObject() {
 	return m_editor;
 }
 
-const EoExEditorObject &AeSysView::editorObject() const {
-	return m_editor;
+const EoExEditorObject& AeSysView::editorObject() const {
+    return m_editor;
 }
+
 bool AeSysView::isModelSpaceView() const {
-	return (getDatabase()->getTILEMODE());
-	//return m_bPsOverall;
+    return (getDatabase()->getTILEMODE());
+    //return m_bPsOverall;
 }
+
 bool AeSysView::drawableVectorizationCallback(const OdGiDrawable* drawable) {
-	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
-		//++m_pagingCounter;
-		//if (m_pagingCounter > 99)
-		{
-			//m_pagingCounter = 0;
-			theApp.pageObjects(getDatabase());
-		}
-	}
-	return true;
+    if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
+        //++m_pagingCounter;
+        //if (m_pagingCounter > 99)
+        {
+            //m_pagingCounter = 0;
+            getDatabase()->pageObjects();
+        }
+    }
+    return true;
 }
 #endif // DEV_COMMAND_VIEW
+
 BOOL AeSysView::OnIdle(long count) {
 	if (!m_pDevice->isValid()) {
 		PostMessage(WM_PAINT);

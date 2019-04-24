@@ -51,25 +51,24 @@ BEGIN_MESSAGE_MAP(EoLoadApps, CDialog)
 END_MESSAGE_MAP()
 
 BOOL EoLoadApps::OnInitDialog() {
-	CDialog::OnInitDialog();
+    CDialog::OnInitDialog();
 
-	m_AppsList.ResetContent();
+    m_AppsList.ResetContent();
 
-	m_LoadedApps->m_pListBox = &m_AppsList;
+    m_LoadedApps->m_pListBox = &m_AppsList;
 
-	for(OdUInt32 i=0; i<m_LoadedApps->size(); ++i) {
-		const int n = m_AppsList.AddString(m_LoadedApps->at(i));
-		OdRxModulePtr pModule = ::odrxDynamicLinker()->loadModule(m_LoadedApps->at(i));
-		m_AppsList.SetItemData(n, (LPARAM)pModule.get());
-	}
-	OnAppsListEvent();
+    for (OdUInt32 i = 0; i < m_LoadedApps->size(); ++i) {
+        const int n = m_AppsList.AddString(m_LoadedApps->at(i));
+        OdRxModulePtr pModule = ::odrxDynamicLinker()->loadModule(m_LoadedApps->at(i));
+        m_AppsList.SetItemData(n, (LPARAM)pModule.get());
+    }
+    OnAppsListEvent();
 
-	return TRUE;
+    return TRUE;
 }
 void EoLoadApps::OnLoadApp() {
 #ifdef _TOOLKIT_IN_DLL_
-	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST,
-		L"Teigha Run-time Extention (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
+	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Teigha Run-time Extention (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
 
 	dlg.m_ofn.lpstrTitle = L"Load application";
 	CString s_path = AeSysApp::getApplicationPath();

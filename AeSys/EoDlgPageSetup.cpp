@@ -1029,8 +1029,8 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	ParentWindow->EnableWindow(TRUE);
 	ParentWindow->BringWindowToTop();
 
-	const OdGePoint3d FirstCorner = m_pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS);
-	const OdGePoint3d OppositeCorner = m_pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame);
+    auto FirstCorner {m_pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS)};
+    auto OppositeCorner {m_pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame)};
 
 #ifdef DEV_COMMAND_VIEW
 	// Points are returned in eye plane, transform it back to screen plane if it is possible

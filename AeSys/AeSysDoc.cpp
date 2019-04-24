@@ -438,7 +438,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	}
 	pView->editorObject().selectionSetChanged();
 #endif // DEV_COMMAND_VIEW
-	Database->appServices()->pageObjects(Database);
+	Database->pageObjects();
 }
 
 const OdString Cmd_DISPLAY_DIFFS::groupName() const {
