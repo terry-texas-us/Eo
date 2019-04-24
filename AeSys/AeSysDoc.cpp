@@ -3006,238 +3006,193 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 
 	TheApp->m_pAuditDlg = nullptr;
 }
+
 BOOL AeSysDoc::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL isOpenFileDialog, CDocTemplate* docTemplate) {
-	const OdDb::DwgVersion dwgver = m_DatabasePtr->originalFileVersion();
-	CString Extension = fileName.Right(3);
+    const auto dwgver {m_DatabasePtr->originalFileVersion()};
+    auto Extension {fileName.Right(3)};
 
-	const bool isDwg = Extension.CompareNoCase(L"dxf") != 0;
-	const bool isDxb = (m_DatabasePtr->originalFileType() == OdDb::kDxb);
+    const bool isDwg {Extension.CompareNoCase(L"dxf") != 0};
 
-	CString title;
-	VERIFY(title.LoadString(nIDSTitle));
+    CString title;
+    VERIFY(title.LoadString(nIDSTitle));
 
-	CFileDialog dlgFile(isOpenFileDialog);
-	dlgFile.m_ofn.Flags |= lFlags;
+    CFileDialog dlgFile(isOpenFileDialog);
+    dlgFile.m_ofn.Flags |= lFlags;
 
-	CString Filter;
-	Filter = L"dxf R27 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1027))
-		dlgFile.m_ofn.nFilterIndex = 1;
+    CString Filter;
+    
+    Filter = L"AutoCAD 2018 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC32)
+        dlgFile.m_ofn.nFilterIndex = 1;
 
-	Filter += L"dxf R24 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1024))
-		dlgFile.m_ofn.nFilterIndex = 2;
+    Filter += L"AutoCAD 2013 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC27)
+        dlgFile.m_ofn.nFilterIndex = 2;
 
-	Filter += L"dxf R21 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1021))
-		dlgFile.m_ofn.nFilterIndex = 3;
+    Filter += "AutoCAD 2010 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC24)
+        dlgFile.m_ofn.nFilterIndex = 3;
 
-	Filter += L"dxf R18 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
-		dlgFile.m_ofn.nFilterIndex = 4;
+    Filter += "AutoCAD 2007 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC21)
+        dlgFile.m_ofn.nFilterIndex = 4;
 
-	Filter += L"dxf R15 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC15)
-		dlgFile.m_ofn.nFilterIndex = 5;
+    Filter += L"AutoCAD 2004 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
+        dlgFile.m_ofn.nFilterIndex = 5;
 
-	Filter += L"dxf R14 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC14)
-		dlgFile.m_ofn.nFilterIndex = 6;
+    Filter += L"AutoCAD 2000 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC15)
+        dlgFile.m_ofn.nFilterIndex = 6;
 
-	Filter += L"dxf R13 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC13)
-		dlgFile.m_ofn.nFilterIndex = 7;
+    Filter += L"AutoCAD R14 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC14)
+        dlgFile.m_ofn.nFilterIndex = 7;
 
-	Filter += L"dxf R12 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC12)
-		dlgFile.m_ofn.nFilterIndex = 8;
+    Filter += L"AutoCAD R13 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver == OdDb::vAC13)
+        dlgFile.m_ofn.nFilterIndex = 8;
 
-	Filter += L"dxf R10 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC10)
-		dlgFile.m_ofn.nFilterIndex = 9;
+    Filter += L"AutoCAD R12 Compatible Drawing |*.dwg|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (isDwg && dwgver <= OdDb::vAC12)
+        dlgFile.m_ofn.nFilterIndex = 9;
 
-	Filter += L"dxf R9 Files|*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC09)
-		dlgFile.m_ofn.nFilterIndex = 10;
+    Filter += L"AutoCAD 2018 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && (dwgver == OdDb::vAC32))
+        dlgFile.m_ofn.nFilterIndex = 10;
 
-	// Binary dxf support
-	Filter += L"binary dxf R27 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && (dwgver == OdDb::kDHL_2700a || dwgver == OdDb::kDHL_1027))
-		dlgFile.m_ofn.nFilterIndex = 11;
+    Filter += L"AutoCAD 2013 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && (dwgver == OdDb::kDHL_1027))
+        dlgFile.m_ofn.nFilterIndex = 11;
 
-	Filter += L"binary dxf R24 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && (dwgver == OdDb::kDHL_2400a || dwgver == OdDb::kDHL_1024))
-		dlgFile.m_ofn.nFilterIndex = 12;
+    Filter += L"AutoCAD 2010 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && (dwgver == OdDb::kDHL_1024))
+        dlgFile.m_ofn.nFilterIndex = 12;
 
-	Filter += L"binary dxf R21 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && (dwgver == OdDb::kDHL_2100a || dwgver == OdDb::kDHL_1021))
-		dlgFile.m_ofn.nFilterIndex = 13;
+    Filter += L"AutoCAD 2007 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && (dwgver == OdDb::kDHL_1021))
+        dlgFile.m_ofn.nFilterIndex = 13;
 
-	Filter += L"binary dxf R18 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
-		dlgFile.m_ofn.nFilterIndex = 14;
+    Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
+        dlgFile.m_ofn.nFilterIndex = 14;
 
-	Filter += L"binary dxf R15 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver == OdDb::vAC15)
-		dlgFile.m_ofn.nFilterIndex = 15;
+    Filter += L"AutoCAD 2000 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && dwgver == OdDb::vAC15)
+        dlgFile.m_ofn.nFilterIndex = 15;
 
-	Filter += L"binary dxf R14 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver == OdDb::vAC14)
-		dlgFile.m_ofn.nFilterIndex = 16;
+    Filter += L"AutoCAD R14 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && dwgver == OdDb::vAC14)
+        dlgFile.m_ofn.nFilterIndex = 16;
 
-	Filter += L"binary dxf R13 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver == OdDb::vAC13)
-		dlgFile.m_ofn.nFilterIndex = 17;
+    Filter += L"AutoCAD R13 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && dwgver == OdDb::vAC13)
+        dlgFile.m_ofn.nFilterIndex = 17;
 
-	Filter += L"binary dxf R12 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver == OdDb::vAC12)
-		dlgFile.m_ofn.nFilterIndex = 18;
+    Filter += L"AutoCAD R12 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && dwgver == OdDb::vAC12)
+        dlgFile.m_ofn.nFilterIndex = 18;
 
-	Filter += L"binary dxf R10 Files|*.dxb|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDxb && dwgver == OdDb::vAC10)
-		dlgFile.m_ofn.nFilterIndex = 19;
+    Filter += L"AutoCAD R10 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && dwgver == OdDb::vAC10)
+        dlgFile.m_ofn.nFilterIndex = 19;
 
-	// dwg support
-	Filter += L"dwg R27 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC27)
-		dlgFile.m_ofn.nFilterIndex = 20;
+    Filter += L"AutoCAD R9 Compatible DXF |*.dxf|";
+    dlgFile.m_ofn.nMaxCustFilter++;
+    if (!isDwg && dwgver == OdDb::vAC09)
+        dlgFile.m_ofn.nFilterIndex = 20;
 
-	Filter += "dwg R24 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC24)
-		dlgFile.m_ofn.nFilterIndex = 21;
+    Filter += L"|";
+    Filter.Replace('|', '\0');
 
-	Filter += "dwg R21 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC21)
-		dlgFile.m_ofn.nFilterIndex = 22;
+    if (fileName.Find('.') != -1) {
+        fileName = fileName.Left(fileName.Find('.'));
+    }
+    dlgFile.m_ofn.lpstrFilter = Filter;
+    dlgFile.m_ofn.lpstrTitle = title;
+    dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
 
-	Filter += L"dwg R18 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
-		dlgFile.m_ofn.nFilterIndex = 23;
+    const LPARAM nResult = dlgFile.DoModal();
+    fileName.ReleaseBuffer();
 
-	Filter += L"dwg R15 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC15)
-		dlgFile.m_ofn.nFilterIndex = 24;
+    if (fileName.Find('.') == -1) {
+        if (dlgFile.m_ofn.nFilterIndex < 10) {
+            fileName += L".dwg";
+        } else {
+            fileName += L".dxf";
+        }
+    }
+    if (dlgFile.m_ofn.nFilterIndex < 10) {
+        m_SaveAsType = OdDb::kDwg;
+    } else {
+        m_SaveAsType = OdDb::kDxf;
+    }
+    switch (dlgFile.m_ofn.nFilterIndex) {
+    case 1:
+    case 10:
+        m_SaveAsVer = OdDb::vAC32; // R32 (2018) release
+    case 2:
+    case 11:
+        m_SaveAsVer = OdDb::vAC27; // R27 (2013) release
+        break;
+    case 3:
+    case 12:
+        m_SaveAsVer = OdDb::vAC24; // R24 (2010) release
+        break;
+    case 4:
+    case 13:
+        m_SaveAsVer = OdDb::vAC21;  // R21 (2007) release
+        break;
+    case 5:
+    case 14:
+        m_SaveAsVer = OdDb::vAC18; // R18 (2004) release
+        break;
+    case 6:
+    case 15:
+        m_SaveAsVer = OdDb::vAC15; // R15 (2000) release
+        break;
+    case 7:
+    case 16:
+        m_SaveAsVer = OdDb::vAC14; // R14 (release date 1997)
+        break;
+    case 8:
+    case 17:
+        m_SaveAsVer = OdDb::vAC13; // R13 (release date 1994)
+        break;
+    case 9:
+    case 18:
+        m_SaveAsVer = OdDb::vAC12; // R11 & R12 (release date 1990)
+        break;
+    case 19:
+        m_SaveAsVer = OdDb::vAC10; // R10 (release date 1988)
+        break;
+    case 20:
+        m_SaveAsVer = OdDb::vAC09; // R9 (release date 1987) 
+        break;
+    default:
+        m_SaveAsVer = m_DatabasePtr->originalFileVersion();
+    };
 
-	Filter += L"dwg R14 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC14)
-		dlgFile.m_ofn.nFilterIndex = 25;
-
-	Filter += L"dwg R13 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC13)
-		dlgFile.m_ofn.nFilterIndex = 26;
-
-	Filter += L"dwg R12 Files|*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver <= OdDb::vAC12)
-		dlgFile.m_ofn.nFilterIndex = 27;
-
-	Filter += L"|";
-	Filter.Replace('|', '\0');
-
-	if (fileName.Find('.') != -1) {
-		fileName = fileName.Left(fileName.Find('.'));
-	}
-	dlgFile.m_ofn.lpstrFilter = Filter;
-	dlgFile.m_ofn.lpstrTitle = title;
-	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
-
-	const LPARAM nResult = dlgFile.DoModal();
-	fileName.ReleaseBuffer();
-
-	if (fileName.Find('.') == -1) {
-		if (dlgFile.m_ofn.nFilterIndex < 20)
-			fileName += L".dxf";
-		else if (dlgFile.m_ofn.nFilterIndex >= 20)
-			fileName += L".dwg";
-	}
-	if (dlgFile.m_ofn.nFilterIndex < 11) {
-		m_SaveAsType = OdDb::kDxf;
-	}
-	else if (dlgFile.m_ofn.nFilterIndex < 20) {
-		m_SaveAsType = OdDb::kDxb;
-	}
-	else {
-		m_SaveAsType = OdDb::kDwg;
-	}
-	switch (dlgFile.m_ofn.nFilterIndex) {
-	case 1:
-	case 11:
-	case 20:
-		m_SaveAsVer = OdDb::vAC27;
-		break;
-	case 2:
-	case 12:
-	case 21:
-		m_SaveAsVer = OdDb::vAC24;
-		break;
-	case 3:
-	case 13:
-	case 22:
-		m_SaveAsVer = OdDb::vAC21;
-		break;
-	case 4:
-	case 14:
-	case 23:
-		m_SaveAsVer = OdDb::vAC18;
-		break;
-	case 5:
-	case 15:
-	case 24:
-		m_SaveAsVer = OdDb::vAC15;
-		break;
-	case 6:
-	case 16:
-	case 25:
-		m_SaveAsVer = OdDb::vAC14;
-		break;
-	case 7:
-	case 17:
-	case 26:
-		m_SaveAsVer = OdDb::vAC13;
-		break;
-	case 8:
-	case 18:
-	case 27:
-		m_SaveAsVer = OdDb::vAC12;
-		break;
-	case 9:
-	case 19:
-		m_SaveAsVer = OdDb::vAC10;
-		break;
-	case 10:
-		m_SaveAsVer = OdDb::vAC09;
-		break;
-	default:
-		m_SaveAsVer = m_DatabasePtr->originalFileVersion();
-	};
-
-	return nResult == IDOK;
+    return nResult == IDOK;
 }
 
 #ifdef DEV_COMMAND_CONSOLE

@@ -191,20 +191,15 @@ void AeSysView::OnDrawModeReturn() {
 
         m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
-        OdDbDictionaryPtr GroupDictionary = Database()->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite);
-        auto pGroup = OdDbGroup::createObject(); // do not attempt to add entries to the newly created group before adding the group to the group dictionary. 
-        GroupDictionary->setAt(L"*", pGroup);
+        auto GroupPair {EoDbGroup::Create(Database())};
+        Group = std::get<0>(GroupPair);
 
-        pGroup->setSelectable(true);
-        pGroup->setAnonymous();
-
-        Group = new EoDbGroup;
         for (int i = 0; i < 4; i++) {
             auto Line {EoDbLine::Create(BlockTableRecord)};
             Line->setStartPoint(m_DrawModePoints[i]);
             Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
 
-            pGroup->append(Line->objectId());
+            std::get<1>(GroupPair)->append(Line->objectId());
 
             Group->AddTail(EoDbLine::Create(Line));
         }

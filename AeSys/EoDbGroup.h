@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbGroup.h"
+
 class AeSysDoc;
 class EoDbBlock;
 
@@ -53,4 +55,6 @@ public:
 
 public: // Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
+
+    static std::pair<EoDbGroup*, OdDbGroupPtr> EoDbGroup::Create(OdDbDatabasePtr database);
 };

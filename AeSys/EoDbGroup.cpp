@@ -444,3 +444,14 @@ void EoDbGroup::Write(CFile& file, OdUInt8* buffer) {
 		Primitive->Write(file, buffer);
 	}
 }
+
+std::pair<EoDbGroup*, OdDbGroupPtr> EoDbGroup::Create(OdDbDatabasePtr database) {
+    OdDbDictionaryPtr GroupDictionary {database->getGroupDictionaryId().safeOpenObject(OdDb::kForWrite)};
+    auto Group {OdDbGroup::createObject()}; // do not attempt to add entries to the newly created group before adding the group to the group dictionary.
+    GroupDictionary->setAt(L"*", Group);
+
+    Group->setSelectable(true);
+    Group->setAnonymous();
+
+    return {new EoDbGroup, Group};
+}

@@ -4,7 +4,7 @@ class EoDbGroupList : public CObList {
 public: // Constructors and destructor
 	EoDbGroupList() noexcept {
 	}
-	virtual ~EoDbGroupList() {
+	~EoDbGroupList() {
 	}
 public:	// Base class wrappers
 	POSITION AddHead(EoDbGroup* group);
