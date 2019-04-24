@@ -1,12 +1,15 @@
 #pragma once
 
-#ifdef DEV_COMMAND_CONSOLE
+// <command_console>
 #include "DbUserIO.h"
 #include "RxObjectImpl.h"
 #include "ExStringIO.h"
 
-class EoDlgUserIOConsole : public CDialog, public OdEdBaseIO {
-	static int sm_WindowWidth;
+class EoDlgUserIOConsole 
+    : public CDialog
+    , public OdEdBaseIO {
+	
+    static int sm_WindowWidth;
 	static int sm_WindowHeight;
 
 	using CDialog::operator new;
@@ -22,10 +25,9 @@ class EoDlgUserIOConsole : public CDialog, public OdEdBaseIO {
 protected:
 	EoDlgUserIOConsole(CWnd* parent);
 
-	void addRef();
-	long numRefs() const;
-	void release();
-
+	void addRef() override;
+	long numRefs() const override;
+	void release() override;
 
 	enum { IDD = IDD_CONSOLE_DLG };
 	CStatic	m_PromptWindow;
@@ -34,8 +36,8 @@ protected:
 	CString	m_Output;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog();
+	virtual void DoDataExchange(CDataExchange* pDX) override;
+	virtual BOOL OnInitDialog() override;
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 
@@ -50,7 +52,7 @@ public:
 public: // Methods - virtuals
 
     virtual OdUInt32 getKeyState() {return 0;}
-	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
-	void putString(const OdString& string);
+	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
+	void putString(const OdString& string) override;
 };
-#endif // DEV_COMMAND_CONSOLE
+// </command_console>

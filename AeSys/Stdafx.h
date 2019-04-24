@@ -55,12 +55,6 @@
 // Uncomment #define for support 
 // #define OD_OLE_SUPPORT 1
 
-// DEV_COMMAND_CONSOLE 
-// #define DEV_COMMAND_CONSOLE 1
-
-// DEV_COMMAND_VIEW
-// #define DEV_COMMAND_VIEW 1
-
 #include "OdaCommon.h"
 #include "DbExport.h"
 #include "DbObject.h"

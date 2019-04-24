@@ -20,7 +20,7 @@ class AeSysDoc;
 class AeSysView;
 class ExStringIO;
 
-#ifdef DEV_COMMAND_CONSOLE
+// <command_console>
 class EoDlgUserIOConsole;
 
 class Cmd_VIEW : public OdEdCommand {
@@ -55,7 +55,7 @@ public:
 	void commandUndef(bool undefIt);
 	OdInt32 commandFlags() const;
 };
-#endif // DEV_COMMAND_CONSOLE
+// </command_console>
 
 class OdDbDatabaseDoc : public OdDbDatabase {
 	static  AeSysDoc* g_pDoc;
@@ -72,16 +72,18 @@ public:
 
 typedef OdSmartPtr<OdDbDatabaseDoc> OdDbDatabaseDocPtr;
 
-class AeSysAppDocStaticRxObjects : public OdDbLayoutManagerReactor
-#ifdef DEV_COMMAND_CONSOLE
-	                               , public OdEdBaseIO
-#endif // DEV_COMMAND_CONSOLE
+class AeSysAppDocStaticRxObjects 
+    : public OdDbLayoutManagerReactor
+    // <command_console>
+	, public OdEdBaseIO
+    // </command_console>
 {
 	ODRX_NO_HEAP_OPERATORS();
 };
 
-class AeSysDoc : public COleDocument
-	           , protected OdStaticRxObject<AeSysAppDocStaticRxObjects>
+class AeSysDoc 
+    : public COleDocument
+	, protected OdStaticRxObject<AeSysAppDocStaticRxObjects>
 {
 protected:
 	using COleDocument::operator new;
@@ -89,12 +91,12 @@ protected:
 
 	AeSysView* m_pViewer;
 
-#ifdef DEV_COMMAND_CONSOLE
+// <command_console>
 	bool m_bConsole;
 	bool m_bConsoleResponded;
 	int m_nCmdActive;
 	EoDlgUserIOConsole* console();
-#endif // DEV_COMMAND_CONSOLE
+// </command_console>
 
 	class DataSource : COleDataSource {
 		friend class AeSysDoc;
@@ -211,7 +213,7 @@ protected:
 
 	OdDbCommandContextPtr m_pCmdCtx;
 
-#ifdef DEV_COMMAND_CONSOLE
+    // <command_console>
 	OdSmartPtr<EoDlgUserIOConsole> m_pConsole;
 	OdSmartPtr<ExStringIO> m_pMacro;
 	OdDbCommandContextPtr cmdCtx();
@@ -219,14 +221,12 @@ protected:
 	OdString commandPrompt();
 	OdString recentCmd();
 	OdString AeSysDoc::recentCmdName();
-#endif // DEV_COMMAND_CONSOLE
 
-#ifdef DEV_COMMAND_CONSOLE
     virtual OdUInt32 getKeyState();
 	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-#endif // DEV_COMMAND_CONSOLE
+    // </command_console>
 
 	// OdDbLayoutManagerReactor
 	bool m_bLayoutSwitchable;
@@ -248,9 +248,9 @@ public:
 	
 	OdDbDatabasePtr m_DatabasePtr;
 
-#ifdef DEV_COMMAND_CONSOLE
+// <command_console>
 	void DeleteSelection(bool force);
-#endif // DEV_COMMAND_CONSOLE
+// </command_console>
 
 	void startDrag(const OdGePoint3d& point);
 
@@ -547,14 +547,14 @@ protected:
 public:
 	afx_msg void OnViewSetactivelayout();
 	afx_msg void OnDrawingutilitiesAudit();
-#ifdef DEV_COMMAND_CONSOLE
-	afx_msg void OnEditClearselection();
-	afx_msg void OnEditSelectall();
+    // <command_console>
+    afx_msg void OnEditClearselection();
+    afx_msg void OnEditSelectall();
 	afx_msg void OnEditConsole();
 	afx_msg void OnEditExplode();
 	afx_msg void OnEditEntget();
 	afx_msg void OnViewNamedViews();
-#endif // DEV_COMMAND_CONSOLE
+    // </command_console>
 	afx_msg void OnVectorize(); // <tas="This is the vectorize menu and toolbar button handler in Oda"</tas>
 	// <tas="Will not use"> afx_msg void OnRemoteGeomViewer();"</tas>
 	afx_msg void OnUpdateVectorize(CCmdUI* pCmdUI);
