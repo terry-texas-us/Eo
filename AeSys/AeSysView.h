@@ -169,14 +169,13 @@ protected:
 	void createDevice();
 	bool regenAbort() const noexcept override;
 
-public: 
+public: // Methods - virtuals 
 #ifdef DEV_COMMAND_CONSOLE
-	// <OdEdBaseIO virtuals>
-	OdUInt32 getKeyState();
-	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
-	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
-	void putString(const OdString& string);
-    // </OdEdBaseIO virtuals>
+
+    OdUInt32 getKeyState();
+    OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
+    OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
+    void putString(const OdString& string);
 #endif // DEV_COMMAND_CONSOLE
 public:
 	enum EStateInformationItem {

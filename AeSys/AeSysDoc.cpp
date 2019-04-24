@@ -547,61 +547,59 @@ EoDlgUserIOConsole* AeSysDoc::console() {
 #endif // DEV_COMMAND_CONSOLE
 
 #ifdef DEV_COMMAND_CONSOLE
-// <OdEdBaseIO virtuals>
 OdUInt32 AeSysDoc::getKeyState() {
-	OdUInt32 KeyState(0);
-	if (::GetKeyState(VK_CONTROL) != 0) {
-		KeyState |= MK_CONTROL;
-	}
-	if (::GetKeyState(VK_SHIFT) != 0) {
-		KeyState |= MK_SHIFT;
-	}
-	return (KeyState);
+    OdUInt32 KeyState(0);
+    if (::GetKeyState(VK_CONTROL) != 0) {
+        KeyState |= MK_CONTROL;
+    }
+    if (::GetKeyState(VK_SHIFT) != 0) {
+        KeyState |= MK_SHIFT;
+    }
+    return (KeyState);
 }
 
 OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
-	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		console()->putString(prompt);
-		return m_pMacro->getPoint(prompt, options, tracker);
-	}
-	if (m_bConsole) {
-		return m_pConsole->getPoint(prompt, options, tracker);
-	}
-	if (m_pViewer) {
-		console()->putString(prompt);
-		return m_pViewer->getPoint(prompt, options, tracker);
-	}
-	return console()->getPoint(prompt, options, tracker);
+    if (m_pMacro.get() && !m_pMacro->isEof()) {
+        console()->putString(prompt);
+        return m_pMacro->getPoint(prompt, options, tracker);
+    }
+    if (m_bConsole) {
+        return m_pConsole->getPoint(prompt, options, tracker);
+    }
+    if (m_pViewer) {
+        console()->putString(prompt);
+        return m_pViewer->getPoint(prompt, options, tracker);
+    }
+    return console()->getPoint(prompt, options, tracker);
 }
 
 OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
-	OdString sRes;
-	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		sRes = m_pMacro->getString(prompt, options, tracker);
-		putString(OdString(prompt) + L" " + sRes);
-		return sRes;
-	}
-	if (m_bConsole) {
-		return console()->getString(prompt, options, tracker);
-	}
-	if (m_pViewer) {
-		m_bConsoleResponded = false;
-		sRes = m_pViewer->getString(prompt, options, tracker);
-		if (!m_bConsoleResponded) {
-			putString(OdString(prompt) + L" " + sRes);
-		}
-		return sRes;
-	}
-	return console()->getString(prompt, options, tracker);
+    OdString sRes;
+    if (m_pMacro.get() && !m_pMacro->isEof()) {
+        sRes = m_pMacro->getString(prompt, options, tracker);
+        putString(OdString(prompt) + L" " + sRes);
+        return sRes;
+    }
+    if (m_bConsole) {
+        return console()->getString(prompt, options, tracker);
+    }
+    if (m_pViewer) {
+        m_bConsoleResponded = false;
+        sRes = m_pViewer->getString(prompt, options, tracker);
+        if (!m_bConsoleResponded) {
+            putString(OdString(prompt) + L" " + sRes);
+        }
+        return sRes;
+    }
+    return console()->getString(prompt, options, tracker);
 }
 
-void AeSysDoc::putString(const OdString& string) {
-	if (m_pViewer)
-		m_pViewer->putString(string);
+void AeSysDoc::putString(const OdString & string) {
+    if (m_pViewer)
+        m_pViewer->putString(string);
 
-	console()->putString(string);
+    console()->putString(string);
 }
-// </OdEdBaseIO virtuals>
 #endif // DEV_COMMAND_CONSOLE
 
 #ifdef DEV_COMMAND_CONSOLE

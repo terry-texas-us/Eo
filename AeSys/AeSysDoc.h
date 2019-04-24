@@ -222,12 +222,10 @@ protected:
 #endif // DEV_COMMAND_CONSOLE
 
 #ifdef DEV_COMMAND_CONSOLE
-	// <OdEdBaseIO virtuals>
-	virtual OdUInt32 getKeyState();
+    virtual OdUInt32 getKeyState();
 	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-    // </OdEdBaseIO virtuals>
 #endif // DEV_COMMAND_CONSOLE
 
 	// OdDbLayoutManagerReactor

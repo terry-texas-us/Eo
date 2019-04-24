@@ -1875,88 +1875,85 @@ public:
 };
 #endif // DEV_COMMAND_VIEW
 #ifdef DEV_COMMAND_CONSOLE
-// <OdEdBaseIO virtuals>
 OdUInt32 AeSysView::getKeyState() {
-	OdUInt32 KeyState(0);
-	if (::GetKeyState(VK_CONTROL) != 0) {
-		KeyState |= MK_CONTROL;
-	}
-	if (::GetKeyState(VK_SHIFT) != 0) {
-		KeyState |= MK_SHIFT;
-	}
-	return (KeyState);
+    OdUInt32 KeyState(0);
+    if (::GetKeyState(VK_CONTROL) != 0) {
+        KeyState |= MK_CONTROL;
+    }
+    if (::GetKeyState(VK_SHIFT) != 0) {
+        KeyState |= MK_SHIFT;
+    }
+    return (KeyState);
 }
 
 OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
-	m_sPrompt.Empty();
-	OdSaveState<CString> savePrompt(m_sPrompt);
-	putString(prompt);
+    m_sPrompt.Empty();
+    OdSaveState<CString> savePrompt(m_sPrompt);
+    putString(prompt);
 
-	OdSaveState<Mode> saved_m_mode(m_mode, kGetPoint);
+    OdSaveState<Mode> saved_m_mode(m_mode, kGetPoint);
 
-	m_response.m_type = Response::kNone;
-	m_inpOptions = options;
+    m_response.m_type = Response::kNone;
+    m_inpOptions = options;
 
-	SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_CROSS));
+    SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_CROSS));
 
-	while (theApp.PumpMessage()) {
-		switch (m_response.m_type) {
-		case Response::kPoint:
-			if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
-				SetCapture();
-			}
-			return m_response.m_point;
+    while (theApp.PumpMessage()) {
+        switch (m_response.m_type) {
+        case Response::kPoint:
+            if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
+                SetCapture();
+            }
+            return m_response.m_point;
 
-		case Response::kString:
-			throw OdEdOtherInput(m_response.m_string);
+        case Response::kString:
+            throw OdEdOtherInput(m_response.m_string);
 
-		case Response::kCancel:
-			throw OdEdCancel();
-		}
-		long Idle = 0;
-		while (theApp.OnIdle(Idle++));
-	}
-	throw OdEdCancel();
+        case Response::kCancel:
+            throw OdEdCancel();
+        }
+        long Idle = 0;
+        while (theApp.OnIdle(Idle++));
+    }
+    throw OdEdCancel();
 }
 
 OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
-	m_sPrompt.Empty();
-	OdSaveState<CString> savePrompt(m_sPrompt);
-	putString(prompt);
+    m_sPrompt.Empty();
+    OdSaveState<CString> savePrompt(m_sPrompt);
+    putString(prompt);
 
-	OdSaveState<Mode> saved_m_mode(m_mode, kGetString);
+    OdSaveState<Mode> saved_m_mode(m_mode, kGetString);
 
-	m_response.m_type = Response::kNone;
-	m_inpOptions = options;
+    m_response.m_type = Response::kNone;
+    m_inpOptions = options;
 
-	SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_IBEAM));
+    SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_IBEAM));
 
-	while (theApp.PumpMessage()) {
-		switch (m_response.m_type) {
-		case Response::kString:
-			return m_response.m_string;
+    while (theApp.PumpMessage()) {
+        switch (m_response.m_type) {
+        case Response::kString:
+            return m_response.m_string;
 
-		case Response::kCancel:
-			throw OdEdCancel();
-			break;
-		}
-		long Idle = 0;
-		while (theApp.OnIdle(Idle++));
-	}
-	throw OdEdCancel();
+        case Response::kCancel:
+            throw OdEdCancel();
+            break;
+        }
+        long Idle = 0;
+        while (theApp.OnIdle(Idle++));
+    }
+    throw OdEdCancel();
 }
 
 void AeSysView::putString(const OdString& string) {
-	m_sPrompt = (LPCWSTR) string;
-	int n = m_sPrompt.ReverseFind('\n');
-	if (n >= 0) {
-		theApp.SetStatusPaneTextAt(nStatusInfo, ((LPCWSTR) m_sPrompt) + n + 1);
-	}
-	else {
-		theApp.SetStatusPaneTextAt(nStatusInfo, m_sPrompt);
-	}
+    m_sPrompt = (LPCWSTR)string;
+    int n = m_sPrompt.ReverseFind('\n');
+    if (n >= 0) {
+        theApp.SetStatusPaneTextAt(nStatusInfo, ((LPCWSTR)m_sPrompt) + n + 1);
+    } else {
+        theApp.SetStatusPaneTextAt(nStatusInfo, m_sPrompt);
+    }
 }
-// </OdEdBaseIO virtuals>
 #endif // DEV_COMMAND_CONSOLE
 
 void AeSysView::track(OdEdInputTracker* tracker) {

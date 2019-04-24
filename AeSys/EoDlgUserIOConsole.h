@@ -21,11 +21,11 @@ class EoDlgUserIOConsole : public CDialog, public OdEdBaseIO {
 
 protected:
 	EoDlgUserIOConsole(CWnd* parent);
-// <OdRxObject> virtuals
+
 	void addRef();
 	long numRefs() const;
 	void release();
-// </OdRxObject> virtuals
+
 
 	enum { IDD = IDD_CONSOLE_DLG };
 	CStatic	m_PromptWindow;
@@ -47,10 +47,10 @@ public:
 	afx_msg void OnDestroy();
 	afx_msg void OnShowWindow(BOOL bShow, UINT nStatus);
 
-// <OdEdBaseIO> virtuals
-	virtual OdUInt32 getKeyState() {return 0;}
+public: // Methods - virtuals
+
+    virtual OdUInt32 getKeyState() {return 0;}
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
 	void putString(const OdString& string);
-// </OdEdBaseIO> virtuals
 };
 #endif // DEV_COMMAND_CONSOLE
