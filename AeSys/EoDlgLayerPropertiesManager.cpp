@@ -118,11 +118,6 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
 		}
 		MainDictionaryIterator->next();
 	}
-
-// </Teigha>
-	m_Database->writeFile(L"D:\\SkyDrive\\Autocad Files\\Drawing1.dxf", OdDb::kDxf, OdDb::vAC24);
-// </Teigha>
-
 	return 0;
 }
 ///<summary>Recursive filter tree filling helper</summary>

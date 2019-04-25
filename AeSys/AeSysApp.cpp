@@ -141,6 +141,9 @@ void removeMaterialTextureLoadingMonitor() {
     OdGiMaterialTextureEntry::desc()->delX(OdGiMaterialTextureLoadPE::desc());
 }
 
+#include "DbLibraryInfo.h"
+#include "summinfo.h"
+
 class EoDlgAbout : public CDialogEx {
 public:
     EoDlgAbout() noexcept;
@@ -152,9 +155,27 @@ protected:
 
 protected:
     DECLARE_MESSAGE_MAP()
+public:
+    virtual BOOL OnInitDialog();
 };
-EoDlgAbout::EoDlgAbout() noexcept
+
+EoDlgAbout::EoDlgAbout() noexcept 
     : CDialogEx(EoDlgAbout::IDD) {}
+
+BOOL EoDlgAbout::OnInitDialog() {
+    auto LibraryInfo {oddbGetLibraryInfo()};
+
+    auto BuildComments {LibraryInfo->getBuildComments()};
+    auto CopyRight {LibraryInfo->getCopyright()};
+
+    CDialogEx::OnInitDialog();
+
+    SetDlgItemTextW(IDC_INFO_BUILD, BuildComments);
+
+    return TRUE;  // return TRUE unless you set the focus to a control
+                  // EXCEPTION: OCX Property Pages should return FALSE
+}
+
 void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
     CDialogEx::DoDataExchange(pDX);
 }
@@ -2180,4 +2201,3 @@ void AeSysApp::OnVectorizeClearmenu() {
 void AeSysApp::OnUpdateVectorizeClearmenu(CCmdUI* pCmdUI) {
     pCmdUI->Enable(m_numGSMenuItems > 0);
 }
-

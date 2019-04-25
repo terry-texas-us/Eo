@@ -441,10 +441,11 @@
 #define IDC_INSERTION_POINT_Z           1604
 #define IDC_SCALE_Y                     1605
 #define IDC_SCALE_Z                     1606
-#define IDC_CHECK3                      1607
 #define IDC_EXPLODE                     1607
 #define IDC_INSERTION_POINT_X           1608
 #define IDC_INSERTION_POINT_ONSCREEN    1609
+#define IDC_INFO_LIBRARY                1611
+#define IDC_INFO_BUILD                  1611
 #define IDS_TOOLBAR_STANDARD            3781
 #define IDS_TOOLBAR_CUSTOMIZE           3782
 #define IDS_WINDOWS_MANAGER             3783
@@ -950,7 +951,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        349
 #define _APS_NEXT_COMMAND_VALUE         4948
-#define _APS_NEXT_CONTROL_VALUE         1610
+#define _APS_NEXT_CONTROL_VALUE         1612
 #define _APS_NEXT_SYMED_VALUE           500
 #endif
 #endif
