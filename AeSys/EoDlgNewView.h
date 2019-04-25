@@ -14,10 +14,8 @@ public:
 	CString m_sUcsName;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-protected:
-	virtual BOOL OnInitDialog() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
 
 	DECLARE_MESSAGE_MAP()
 };

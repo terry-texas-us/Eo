@@ -26,7 +26,7 @@ public: // Methods - absolute virtuals
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d GetCtrlPt() const;
+	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
     bool Is(OdUInt16 type) const noexcept override {return type == kDimensionPrimitive;}

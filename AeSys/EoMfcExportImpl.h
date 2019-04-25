@@ -41,20 +41,20 @@ public:
     static OdSmartPtr<EoApDocumentImpl> createObject(CDocument* document);
 
     ~EoApDocumentImpl();
-    virtual OdString fileName() const override;
-    virtual CDocument* cDoc() const noexcept override;
-    virtual OdDbDatabasePtr database() const override;
-    virtual void lockMode(bool includeMyLocks) const noexcept override;
-    virtual void myLockMode() const noexcept override;
-    virtual bool isQuiescent() const noexcept override;
-    virtual void* contextPtr() const noexcept override;
-    virtual void ExecuteCommand(const OdString& command, bool echo) override;
+    OdString fileName() const override;
+    CDocument* cDoc() const noexcept override;
+    OdDbDatabasePtr database() const override;
+    void lockMode(bool includeMyLocks) const noexcept override;
+    void myLockMode() const noexcept override;
+    bool isQuiescent() const noexcept override;
+    void* contextPtr() const noexcept override;
+    void ExecuteCommand(const OdString& command, bool echo) override;
     // <command_console>
     virtual OdEdBaseIO* cmdIO();
     virtual OdDbCommandContextPtr cmdCtx();
     virtual OdString recentCmd();
     // </command_console>
-    virtual OdDbSelectionSetPtr selectionSet() const override;
+    OdDbSelectionSetPtr selectionSet() const override;
 
     MfcObjectWrapper< AeSysDoc >* m_pImp;
 };

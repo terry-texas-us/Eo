@@ -17,8 +17,8 @@ public:
 	enum { IDD = IDD_TRAP_MODIFY };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	void OnOK() final;
 
 	AeSysDoc* m_Document;
 

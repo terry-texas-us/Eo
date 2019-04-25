@@ -14,9 +14,9 @@ public:
 	enum { IDD = IDD_HOME_POINT_GO };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
 
 	AeSysView* m_ActiveView;
 public:

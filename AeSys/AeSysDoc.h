@@ -26,9 +26,9 @@ class EoDlgUserIOConsole;
 class Cmd_VIEW : public OdEdCommand {
 public:
 	static const OdString name();
-	const OdString groupName() const;
-	const OdString globalName() const;
-	void execute(OdEdCommandContext* commandContext);
+	const OdString groupName() const final;
+	const OdString globalName() const final;
+	void execute(OdEdCommandContext* commandContext) final;
 	const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
 	OdInt32 commandFlags() const;
@@ -37,9 +37,9 @@ public:
 class Cmd_SELECT : public OdEdCommand {
 public:
 	static const OdString name();
-	const OdString groupName() const override;
-	const OdString globalName() const override;
-	void execute(OdEdCommandContext* commandContext);
+	const OdString groupName() const final;
+	const OdString globalName() const final;
+	void execute(OdEdCommandContext* commandContext) final;
 	const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
 	OdInt32 commandFlags() const;
@@ -48,9 +48,9 @@ public:
 class Cmd_DISPLAY_DIFFS : public OdEdCommand {
 public:
 	static const OdString name();
-	const OdString groupName() const;
-	const OdString globalName() const;
-	void execute(OdEdCommandContext* commandContext);
+	const OdString groupName() const final;
+	const OdString globalName() const final;
+	void execute(OdEdCommandContext* commandContext) final;
 	const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
 	OdInt32 commandFlags() const;
@@ -256,19 +256,19 @@ public:
 
 public:
 	BOOL OnSaveDocument(LPCWSTR pathName) override;
-	virtual BOOL OnCmdMsg(UINT nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo);
+	BOOL OnCmdMsg(UINT nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
 	BOOL OnOpenDocument(LPCWSTR pathName) override;
-	virtual void DeleteContents() override;
-	virtual BOOL CanCloseFrame(CFrameWnd* frame) override;
+	void DeleteContents() override;
+	BOOL CanCloseFrame(CFrameWnd* frame) override;
 
 public:
 	virtual ~AeSysDoc();
-	virtual BOOL DoSave(LPCWSTR pathName, BOOL replace = TRUE) override;
+	BOOL DoSave(LPCWSTR pathName, BOOL replace = TRUE) override;
 
 #ifdef _DEBUG
-	virtual void AssertValid() const override;
-	virtual void Dump(CDumpContext& dc) const override;
+	void AssertValid() const override;
+	void Dump(CDumpContext& dc) const override;
 #endif
 
 #ifdef ODAMFC_EXPORT_SYMBOL

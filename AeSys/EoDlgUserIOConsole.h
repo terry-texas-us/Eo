@@ -36,8 +36,8 @@ protected:
 	CString	m_Output;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX) override;
-	virtual BOOL OnInitDialog() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
 	afx_msg void OnPaint();
 	DECLARE_MESSAGE_MAP()
 

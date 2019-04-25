@@ -13,15 +13,14 @@ public:
 	enum { IDD = IDD_SETUP_HATCH };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-
-public:
+    void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
+    void OnOK() final;
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
+
 public:
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
 	double m_HatchXScaleFactor;
 	double m_HatchYScaleFactor;
 	double m_HatchRotationAngle;

@@ -15,6 +15,6 @@ public:
 		return m_HasFocus;
 	}
 protected:
-	virtual BOOL NotifyCommand(int notifyCode) override;
+	BOOL NotifyCommand(int notifyCode) override;
 };
 

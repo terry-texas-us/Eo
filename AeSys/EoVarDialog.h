@@ -17,7 +17,7 @@ protected:
 
 	// Generated message map functions
 	//{{AFX_MSG(EoVarDialog)
-	virtual BOOL OnInitDialog() override;
+	BOOL OnInitDialog() override;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()

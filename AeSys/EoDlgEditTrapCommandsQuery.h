@@ -13,8 +13,8 @@ public:
 	enum { IDD = IDD_EDIT_TRAPCOMMANDS_QUERY };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
 
 	CTreeCtrl m_GroupTreeViewControl;
 	CListCtrl m_GeometryListViewControl;

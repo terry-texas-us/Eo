@@ -14,9 +14,9 @@ public:
 	enum { IDD = IDD_SETUP_CONSTRAINTS_GRID };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
 
 	AeSysView* m_ActiveView;
 

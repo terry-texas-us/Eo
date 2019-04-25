@@ -15,8 +15,8 @@ public:
 	enum { IDD = IDD_FILE_MANAGE };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
 
 protected:
 	DECLARE_MESSAGE_MAP()

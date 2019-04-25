@@ -44,7 +44,7 @@ public:
 	void UpdateMDITabs(BOOL resetMDIChild);
 
 public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
+	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
 	virtual ~CMainFrame();
 #ifdef _DEBUG
@@ -88,8 +88,8 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-	virtual BOOL OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) override;
-	virtual BOOL OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bDrop) override;
+	BOOL OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) override;
+	BOOL OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bDrop) override;
 
 	/// <summary></summary>
 	/// <remarks>

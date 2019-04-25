@@ -13,9 +13,9 @@ public:
 	enum { IDD = IDD_ADD_NOTE };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
 
 	static EoDbFontDefinition sm_FontDefinition;
 	static EoGeReferenceSystem sm_ReferenceSystem;

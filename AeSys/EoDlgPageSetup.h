@@ -65,11 +65,12 @@ private:
 	CString m_yMax;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
-	virtual void OnCancel() override;
-	afx_msg void OnSelchangeScaleValues();
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
+	void OnCancel() final;
+	
+    afx_msg void OnSelchangeScaleValues();
 	afx_msg void OnSelchangeDeviceList();
 	afx_msg void OnSelChangeMediaList();
 	afx_msg void OnSelChangeQualityList();

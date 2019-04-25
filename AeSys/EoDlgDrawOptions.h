@@ -13,9 +13,9 @@ public:
 	enum { IDD = IDD_DRAW_OPTIONS };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
 
 public:
 	afx_msg void OnBnClickedPen();

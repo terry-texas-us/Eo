@@ -13,8 +13,8 @@ public:
 	enum { IDD = IDD_SET_TEXT };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog(void) override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog(void) final;
 
 public:
 	CString m_sText;

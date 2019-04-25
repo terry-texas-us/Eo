@@ -13,8 +13,8 @@ public:
 	enum { IDD = IDD_PASTE_POSITION };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	void OnOK() final;
 
 public:
 

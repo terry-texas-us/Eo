@@ -70,15 +70,15 @@ OdStaticRxObject<Cmd_DISPLAY_DIFFS> g_Cmd_DISPLAY_DIFFS;
 static void addPaperDrawingCustomization() {
     static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
     public:
-        virtual bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
+        bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
             worldDraw->geometry().polygon(4, points);
             return true;
         }
-        virtual bool drawBorder(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
+        bool drawBorder(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
             worldDraw->geometry().polygon(4, points);
             return true;
         }
-        virtual bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
+        bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
             if (points[0] == points[1] || points[1] == points[2]) {
                 return true;
             }
@@ -151,12 +151,12 @@ public:
     enum { IDD = IDD_ABOUTBOX };
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);
+    void DoDataExchange(CDataExchange* pDX) final;
 
 protected:
     DECLARE_MESSAGE_MAP()
 public:
-    virtual BOOL OnInitDialog();
+    BOOL OnInitDialog() final;
 };
 
 EoDlgAbout::EoDlgAbout() noexcept 
@@ -1980,10 +1980,11 @@ public:
     CString m_SaveName;
     BOOL m_Exit;
 
-    CFullCommandLineInfo() :
-        CCommandLineInfo(),
-        m_Exit(0) {}
-    virtual void ParseParam(LPCWSTR param, BOOL flag, BOOL last) {
+    CFullCommandLineInfo() 
+        : CCommandLineInfo()
+        , m_Exit(0) {}
+
+    void ParseParam(LPCWSTR param, BOOL flag, BOOL last) final {
         BOOL is = FALSE;
         if (flag && !_wcsnicmp(param, L"s", 1)) {
             m_SaveName = &param[1];

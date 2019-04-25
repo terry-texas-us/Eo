@@ -12,9 +12,9 @@ public:
 	enum { IDD = IDD_MOUSEKEYS };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
 
 protected:
 	DECLARE_MESSAGE_MAP()

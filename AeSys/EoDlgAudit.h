@@ -17,9 +17,8 @@ public:
 	CListCtrl m_AuditErrList;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-	virtual BOOL OnInitDialog() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
 
 	DECLARE_MESSAGE_MAP()
 };

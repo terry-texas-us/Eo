@@ -137,33 +137,33 @@ public:
     // </command_view>
 
 public:
-    virtual void OnInitialUpdate() override;
+    void OnInitialUpdate() override;
 
 protected:
-    virtual void OnDraw(CDC* deviceContext) override;  // overridden to draw this view
-    virtual BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
-    virtual void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
-    virtual void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
-    virtual void OnPrint(CDC* deviceContext, CPrintInfo* printInformation) override;
-    virtual void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+    void OnDraw(CDC* deviceContext) override;  // overridden to draw this view
+    BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
+    void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+    void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
+    void OnPrint(CDC* deviceContext, CPrintInfo* printInformation) override;
+    void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
 
-    virtual void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame) override;
-    virtual void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
+    void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame) override;
+    void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
 
-    virtual BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
-    virtual void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
+    BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
+    void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
 protected:
-    void addRef() {}
-    void release() {}
+    void addRef() override {}
+    void release() override {}
 
     AeSysDoc* GetDocument() const;
 
 protected:
     ~AeSysView();
 #ifdef _DEBUG
-    virtual void AssertValid() const;
-    virtual void Dump(CDumpContext& dc) const;
+    void AssertValid() const override;
+    void Dump(CDumpContext& dc) const override;
 #endif
 
     // <tas="Not implemented in example"</tas> void adjustDevice(OdGsDevice* pDevice);

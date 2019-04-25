@@ -38,8 +38,8 @@ EoDlgFileManage::EoDlgFileManage(CWnd* parent)
     , m_PreviewWindowHandle(0) {
 }
 
-EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
-	: CDialog(EoDlgFileManage::IDD, parent)
+EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent) 
+    : CDialog(EoDlgFileManage::IDD, parent)
     , m_Document(document)
     , m_Database(database)
     , m_ClickToColumnStatus(false)

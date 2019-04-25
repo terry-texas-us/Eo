@@ -14,10 +14,10 @@ public:
 	enum { IDD = IDD_SETUP_COLOR };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
+	BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) final;
 
 	EoCtrlColorsButton m_EvenColorsButton;
 	EoCtrlColorsButton m_OddColorsButton;

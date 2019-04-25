@@ -17,27 +17,27 @@ public:
 
 	enum { IDD = IDD_PLOTSTYLE_GENERAL_PROPERTY_PAGE };
 
-	CEdit	  m_editDescription;
+	CEdit m_editDescription;
 	CButton m_checkScalefactor;
-	CEdit   m_editScalefactor;
-	CStatic   	m_staticFilepath;
-	CStatic   	m_staticFilename;
+	CEdit m_editScalefactor;
+	CStatic m_staticFilepath;
+	CStatic m_staticFilename;
 	CStatic m_staticBitmap;
 	CStatic m_staticRegular;
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
+	void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
+    void OnOK() final;
 
 public:
 	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
 	void SetFileBufPath(const OdString sFilePath);
 
 protected:
-	virtual BOOL OnInitDialog() override;
 	afx_msg void OnChangeEditDescription();
 	afx_msg void OnCheckScalefactor();
 	afx_msg void OnEditScalefactor();
-	virtual void OnOK() override;
 
 	DECLARE_MESSAGE_MAP()
 };

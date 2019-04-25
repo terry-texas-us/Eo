@@ -13,9 +13,9 @@ public:
 	enum { IDD = IDD_PIPE_SYMBOL };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
-	virtual void OnOK() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
 
 public:
 	CListBox m_PipeSymbolsListBoxControl;

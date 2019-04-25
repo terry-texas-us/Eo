@@ -14,8 +14,8 @@ public:
 	enum { IDD = IDD_LINEWEIGHT };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog(void) override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog(void) final;
 
 private:
 	int m_OriginalLineWeight;

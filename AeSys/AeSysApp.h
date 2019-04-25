@@ -158,8 +158,8 @@ public:
 
     void SetStatusPaneTextAt(int index, LPCWSTR newText);
 
-    void addRef() {}
-    void release() {}
+    void addRef() override {}
+    void release() override {}
 
     OdDbHostAppProgressMeter* newProgressMeter() override;
     void start(const OdString& displayString = OdString::kEmpty) override;
@@ -187,7 +187,7 @@ public:
     bool getSAVEROUNDTRIP() const noexcept override { return (m_bSaveRoundTrip != 0); }
     void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override;
     OdDbUndoControllerPtr newUndoController() override;
-    virtual OdStreamBufPtr newUndoStream() override;
+    OdStreamBufPtr newUndoStream() override;
 
     bool getSavePreview() noexcept { return (m_bSavePreview != 0); }
     bool getSaveWithPassword() noexcept { return (m_bSaveWithPassword != 0); }
@@ -218,7 +218,7 @@ public:
 
     OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
 
-    virtual BOOL PreTranslateMessage(MSG* pMsg) override;
+    BOOL PreTranslateMessage(MSG* pMsg) override;
 
     bool remoteGeomViewer() const noexcept { return m_bRemoteGeomViewer; }
     void setRemoteGeomViewer() noexcept { m_bRemoteGeomViewer = true; }
@@ -229,9 +229,10 @@ public:
     static CString getApplicationPath();
 
 public:
-    virtual BOOL InitInstance(void) override;
-    virtual int ExitInstance(void) override;
-    virtual BOOL OnIdle(long count) override;
+    BOOL InitInstance(void) override;
+    int ExitInstance(void) override;
+    BOOL OnIdle(long count) override;
+    void PreLoadState() override;
 
     enum Units {
         kArchitecturalS = -1, // Embedded S format
@@ -349,7 +350,6 @@ public:
     double ParseLength(LPWSTR lengthAsString);
     double ParseLength(Units units, LPWSTR);
     double PenWidthsGet(OdInt16 colorIndex) noexcept;
-    virtual void PreLoadState() override;
     int PrimaryMode() const noexcept;
     void ReleaseSimplexStrokeFont() noexcept;
     static CString ResourceFolderPath();

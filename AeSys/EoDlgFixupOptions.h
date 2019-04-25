@@ -13,7 +13,7 @@ public:
 	enum { IDD = IDD_FIXUP_OPTIONS };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
+	void DoDataExchange(CDataExchange* pDX) final;
 
 public:
 	double m_FixupAxisTolerance;

@@ -28,7 +28,7 @@ public:
 	virtual ~ EoDlgPlotStyleManager();
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT createStructure);
-	virtual BOOL OnInitDialog() override;
+	BOOL OnInitDialog() final;
 
 	DECLARE_MESSAGE_MAP()
 };

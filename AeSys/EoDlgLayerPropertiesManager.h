@@ -15,8 +15,8 @@ public:
 	enum { IDD = IDD_LAYER_PROPERTIES_MANAGER };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog(void) override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog(void) final;
 
 	DECLARE_MESSAGE_MAP()
 

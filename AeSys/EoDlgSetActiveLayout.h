@@ -17,8 +17,8 @@ public:
 	enum { IDD = IDD_SET_ACTIVE_LAYOUT };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-	virtual BOOL OnInitDialog() override;
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
 
 protected:
 	afx_msg void OnLayoutDlgClose();

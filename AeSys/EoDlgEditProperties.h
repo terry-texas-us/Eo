@@ -10,7 +10,8 @@ public:
 	enum { IDD = IDD_PROPERTIES };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
 
 	OdDbObjectId& m_pObjectId;
 	OdResBufPtr m_pResBuf;
@@ -19,7 +20,6 @@ protected:
 	CListCtrl m_propList;
 	CString m_sValue;
 
-	virtual BOOL OnInitDialog() override;
 	afx_msg void OnSetfocusValue();
 	afx_msg void OnButton();
 	afx_msg void OnClickProplist(NMHDR* pNMHDR, LRESULT* result);

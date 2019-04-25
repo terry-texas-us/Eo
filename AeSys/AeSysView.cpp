@@ -2181,7 +2181,7 @@ struct OdExRegenCmd : OdEdCommand {
     const OdString globalName() const override {
         return L"REGEN";
     }
-    virtual OdInt32 flags() const override {
+    OdInt32 flags() const override {
         return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
     }
     void execute(OdEdCommandContext* pCmdCtx) noexcept override {
