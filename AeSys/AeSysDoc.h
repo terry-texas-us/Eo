@@ -103,7 +103,7 @@ protected:
 		OdString m_tmpPath;
 	public:
 		DataSource();
-		void Create(AeSysDoc* document, const OdGePoint3d& point = OdGePoint3d::kOrigin) noexcept;
+		void Create(AeSysDoc* document, const OdGePoint3d& point = OdGePoint3d::kOrigin);
 		bool DoDragDrop();
 		void Empty();
 		~DataSource();
@@ -222,10 +222,10 @@ protected:
 	OdString recentCmd();
 	OdString AeSysDoc::recentCmdName();
 
-    virtual OdUInt32 getKeyState();
-	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
-	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
-	void putString(const OdString& string);
+    OdUInt32 getKeyState() override;
+	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
+	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
+	void putString(const OdString& string) override;
     // </command_console>
 
 	// OdDbLayoutManagerReactor
@@ -244,7 +244,7 @@ public:
 	AeSysView* AeSysDoc::getViewer() noexcept;
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);
-	void ExecuteCommand(const OdString& command, bool bEcho = true) noexcept;
+	void ExecuteCommand(const OdString& command, bool bEcho = true);
 	
 	OdDbDatabasePtr m_DatabasePtr;
 
@@ -255,10 +255,10 @@ public:
 	void startDrag(const OdGePoint3d& point);
 
 public:
-	virtual BOOL OnSaveDocument(LPCWSTR pathName) override;
+	BOOL OnSaveDocument(LPCWSTR pathName) override;
 	virtual BOOL OnCmdMsg(UINT nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo);
-	virtual BOOL OnNewDocument() override;
-	virtual BOOL OnOpenDocument(LPCWSTR pathName) override;
+	BOOL OnNewDocument() override;
+	BOOL OnOpenDocument(LPCWSTR pathName) override;
 	virtual void DeleteContents() override;
 	virtual BOOL CanCloseFrame(CFrameWnd* frame) override;
 
@@ -308,7 +308,7 @@ public:
 
 // Text Style Table interface
 /// <summary>Add a new text style to the text style table.</summary>
-	OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr textStyles);
+	OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr& textStyles);
     OdDbTextStyleTableRecordPtr AddStandardTextStyle();
 
 // Block Table interface

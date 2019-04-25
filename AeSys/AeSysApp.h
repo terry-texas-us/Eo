@@ -56,9 +56,11 @@ class EoDlgAudit;
 class UserBreak {
 };
 
-class AeSysApp : public CWinAppEx
+class AeSysApp 
+    : public CWinAppEx
     , public ExSystemServices
-    , public ExHostAppServices {
+    , public ExHostAppServices 
+{
 protected:
     using CWinAppEx::operator new;
     using CWinAppEx::operator delete;

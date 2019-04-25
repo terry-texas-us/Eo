@@ -542,7 +542,7 @@ OdUInt32 AeSysDoc::getKeyState() {
     return (KeyState);
 }
 
-OdGePoint3d AeSysDoc::getPoint(const OdString & prompt, int options, OdEdPointTracker * tracker) {
+OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
     if (m_pMacro.get() && !m_pMacro->isEof()) {
         console()->putString(prompt);
         return m_pMacro->getPoint(prompt, options, tracker);
@@ -557,7 +557,7 @@ OdGePoint3d AeSysDoc::getPoint(const OdString & prompt, int options, OdEdPointTr
     return console()->getPoint(prompt, options, tracker);
 }
 
-OdString AeSysDoc::getString(const OdString & prompt, int options, OdEdStringTracker * tracker) {
+OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
     OdString sRes;
     if (m_pMacro.get() && !m_pMacro->isEof()) {
         sRes = m_pMacro->getString(prompt, options, tracker);
@@ -669,7 +669,7 @@ public:
         return m_bModified;
     }
 
-    void objectOpenedForModify(const OdDbDatabase*, const OdDbObject*) {
+    void objectOpenedForModify(const OdDbDatabase*, const OdDbObject*) override {
         setModified();
     }
 
@@ -677,7 +677,7 @@ public:
         setModified();
     }
 
-    OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) {
+    OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) override {
         AeSysView* pViewer = OdDbDatabaseDocPtr(m_pCmdCtx->database())->document()->getViewer();
         if (pViewer) {
             OdEdCommandPtr pRes = pViewer->command(commandName);
@@ -702,16 +702,16 @@ public:
         }
     }
 
-    void commandCancelled(OdEdCommand*, OdEdCommandContext*) {
+    void commandCancelled(OdEdCommand*, OdEdCommandContext*) override {
         undoCmd();
     }
 
-    void commandFailed(OdEdCommand*, OdEdCommandContext*) {
+    void commandFailed(OdEdCommand*, OdEdCommandContext*) override {
         undoCmd();
     }
 private:
     void undoCmd() {
-        OdDbDatabase* pDb = m_pCmdCtx->database();
+        auto pDb {m_pCmdCtx->database()};
         try {
             pDb->disableUndoRecording(true);
             pDb->undo();
@@ -727,7 +727,7 @@ private:
     }
 };
 
-void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) noexcept {
+void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
     OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
     ++m_nCmdActive;
 
@@ -738,7 +738,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) noexcept {
     try {
         OdEdCommandStackPtr CommandStack = ::odedRegCmds();
 
-        ExDbCommandContext* pExCmdCtx = static_cast<ExDbCommandContext*>(CommandContext.get());
+        ExDbCommandContext* pExCmdCtx = dynamic_cast<ExDbCommandContext*>(CommandContext.get());
         if (m_DatabasePtr->appServices()->getPICKFIRST())
             pExCmdCtx->setPickfirst(selectionSet());
 
@@ -876,7 +876,7 @@ void AeSysDoc::startDrag(const OdGePoint3d & point) {
     }
 }
 
-OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextStyleTablePtr textStyles) {
+OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextStyleTablePtr& textStyles) {
     OdDbTextStyleTableRecordPtr TextStyle = OdDbTextStyleTableRecord::createObject();
 
     try {
@@ -2864,7 +2864,8 @@ void AeSysDoc::OnFilePagesetup() {
 
 // <command_console>
 AeSysDoc::DataSource::DataSource() {}
-void AeSysDoc::DataSource::Create(AeSysDoc * document, const OdGePoint3d & point) noexcept {
+
+void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) {
     Empty();
 
     OdDbObjectIdArray objs = document->selectionSet()->objectIdArray();
@@ -3140,7 +3141,7 @@ void AeSysDoc::OnEditClearselection() {
     while (pos != NULL) {
         CView* view = GetNextView(pos);
         if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && view->GetDocument() == this) {
-            AeSysView* pDwgViewer = static_cast<AeSysView*>(view);
+            AeSysView* pDwgViewer = dynamic_cast<AeSysView*>(view);
 // <command_view>
             pDwgViewer->editorObject().unselect();
 // </command_view>
@@ -3179,7 +3180,7 @@ void AeSysDoc::OnEditSelectall() {
         CView* View = GetNextView(Position);
         if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
             // <command_view>
-            static_cast<AeSysView*>(View)->editorObject().selectionSetChanged();
+            dynamic_cast<AeSysView*>(View)->editorObject().selectionSetChanged();
             // </command_view>
         }
     }

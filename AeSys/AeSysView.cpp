@@ -1967,7 +1967,7 @@ void transform_object_set(OdDbObjectIdArray & objs, OdGeMatrix3d & xform) {
 BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoint point) {
     OdSharedPtr<AeSysDoc::ClipboardData> pData = AeSysDoc::ClipboardData::get(pDataObject);
     if (pData) {
-        AeSysDoc* pDoc = GetDocument();
+        auto pDoc {GetDocument()};
         OdDbDatabase* Database = pDoc->m_DatabasePtr;
         Database->startUndoRecord();
         // <command_view>

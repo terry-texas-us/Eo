@@ -93,12 +93,8 @@ public:
     bool OnMouseRightButtonDoubleClick(unsigned int nFlags, int x, int y);
     bool OnCtrlClick();
 
-    bool hasSelection() const {
-        return (workingSSet()->numEntities() > 0);
-    }
-    bool isSnapOn() const noexcept {
-        return m_bSnapOn;
-    }
+    bool hasSelection() const { return (workingSSet()->numEntities() > 0); }
+    bool isSnapOn() const noexcept { return m_bSnapOn; }
     bool snap(OdGePoint3d& pt, const OdGePoint3d* lastPoint);
     unsigned getSnapModes() const noexcept;
     void setSnapModes(bool snapOn, unsigned modes) noexcept;
@@ -106,7 +102,5 @@ public:
     void initSnapping(OdGsView* pView);
     void uninitSnapping(OdGsView* pView);
 
-    OdGsModel* gsModel() {
-        return m_p2dModel.get();
-    }
+    OdGsModel* gsModel() { return m_p2dModel.get(); }
 };

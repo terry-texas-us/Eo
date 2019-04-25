@@ -172,10 +172,10 @@ protected:
 
 public: // Methods - virtuals 
     // <command_console>
-    OdUInt32 getKeyState();
-    OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker);
-    OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker);
-    void putString(const OdString& string);
+    OdUInt32 getKeyState() override;
+    OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
+    OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
+    void putString(const OdString& string) override;
     // </command_console>
 public:
     enum EStateInformationItem {
@@ -973,8 +973,8 @@ protected:
 
     DECLARE_MESSAGE_MAP()
 public:
-    virtual BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
-    virtual DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
+    BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
+    DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
     BOOL OnIdle(long count);
 };
 #ifndef _DEBUG  // debug version in PegView.cpp
