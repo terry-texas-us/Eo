@@ -122,7 +122,7 @@ public:
 public:
     OdGsMarker getGSMenuItemMarker() const noexcept { return (OdGsMarker)this; }
     CMenu* CommandMenu(CMenu** ppEditMenu = 0);
-    void RefreshCommandMenu() noexcept;
+    void RefreshCommandMenu();
     UINT numCustomCommands() const noexcept { return m_numCustomCommands; }
     static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter);
 

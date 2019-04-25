@@ -590,7 +590,7 @@ CMenu* AeSysApp::CommandMenu(CMenu** toolsSubMenu) {
 }
 
 // <command_console>
-void AeSysApp::RefreshCommandMenu(void) noexcept {
+void AeSysApp::RefreshCommandMenu() {
     CMenu* ToolsSubMenu(NULL);
     CMenu* RegisteredCommandsSubMenu = CommandMenu(&ToolsSubMenu);
 
@@ -610,7 +610,7 @@ void AeSysApp::RefreshCommandMenu(void) noexcept {
     OdEdCommandStackPtr CommandStack = ::odedRegCmds();
     bool bHasNoCommand = CommandStack->newIterator()->done();
 
-    size_t ToolsMenuItem(8); // <tas="Until calculated position finished"</tas>
+    const size_t ToolsMenuItem(8); // <tas="Until calculated position finished"</tas>
     ToolsSubMenu->EnableMenuItem(ToolsMenuItem, MF_BYPOSITION | (bHasNoCommand ? MF_GRAYED : MF_ENABLED));
 
     int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
@@ -631,7 +631,7 @@ void AeSysApp::RefreshCommandMenu(void) noexcept {
                 GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 
                 MenuItemInfo.dwItemData = (LPARAM)pCmd.get();
-                VERIFY(::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo));
+                ::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
 
                 GroupCommandIterator->next();
                 CommandId++;

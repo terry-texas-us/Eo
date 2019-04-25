@@ -384,19 +384,18 @@ void AeSysDoc::layoutSwitched(const OdString & newLayoutName, const OdDbObjectId
     }
 }
 // <command_console>
-const OdString Cmd_VIEW::groupName() const {
-    return L"AeSysApp";
-}
-const OdString Cmd_VIEW::name() {
-    return L"VIEW";
-}
-const OdString Cmd_VIEW::globalName() const {
-    return name();
-}
+const OdString Cmd_VIEW::groupName() const { return L"AeSysApp"; }
+
+const OdString Cmd_VIEW::name() { return L"VIEW"; }
+
+const OdString Cmd_VIEW::globalName() const { return name(); }
+
 void Cmd_VIEW::execute(OdEdCommandContext * commandContext) {
     OdDbCommandContextPtr CommandContext(commandContext);
     OdDbDatabaseDocPtr Database = CommandContext->database();
+    
     EoDlgNamedViews NamedViewsDialog(Database->document(), theApp.GetMainWnd());
+    
     if (NamedViewsDialog.DoModal() != IDOK) {
         throw OdEdCancel();
     }
@@ -437,16 +436,13 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
     Database->pageObjects();
 }
 
-const OdString Cmd_DISPLAY_DIFFS::groupName() const {
-    return L"AeSysApp";
-}
-const OdString Cmd_DISPLAY_DIFFS::name() {
-    return L"DISPLAY_DIFFS";
-}
-const OdString Cmd_DISPLAY_DIFFS::globalName() const {
-    return name();
-}
-void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext * commandContext) {
+const OdString Cmd_DISPLAY_DIFFS::groupName() const { return L"AeSysApp"; }
+
+const OdString Cmd_DISPLAY_DIFFS::name() { return L"DISPLAY_DIFFS"; }
+
+const OdString Cmd_DISPLAY_DIFFS::globalName() const { return name(); }
+
+void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext* commandContext) {
     // Get handle of failed object and set selection to failed object in original database
     OdValuePtr vHandle = commandContext->arbitraryData(L"Handle");
     OdDbHandle hFailed = (OdUInt64)(OdInt64)(*vHandle);
@@ -637,7 +633,10 @@ OdString commandMessageCaption(const OdString & command) {
     return Caption;
 }
 
-class CmdReactor : public OdStaticRxObject<OdEdCommandStackReactor>, public OdStaticRxObject<OdDbDatabaseReactor> {
+class CmdReactor 
+    : public OdStaticRxObject<OdEdCommandStackReactor>
+    , public OdStaticRxObject<OdDbDatabaseReactor>
+{
     ODRX_NO_HEAP_OPERATORS();
     OdDbCommandContext* m_pCmdCtx;
     bool m_bModified;
@@ -692,8 +691,9 @@ public:
         return OdEdCommandPtr();
     }
 
-    void commandWillStart(OdEdCommand* pCmd, OdEdCommandContext* /*pCmdCtx*/) {
+    void commandWillStart(OdEdCommand* pCmd, OdEdCommandContext* /*pCmdCtx*/) override {
         m_sLastInput.makeUpper();
+        
         if (!GETBIT(pCmd->flags(), OdEdCommand::kNoHistory)) {
             theApp.setRecentCmd(m_sLastInput);
         }

@@ -19,15 +19,19 @@ static char THIS_FILE[] = __FILE__;
 OdDbObjectId CNamedViewListCtrl::viewId(int nItem) const {
 	return OdDbObjectId(reinterpret_cast<OdDbStub*>(GetItemData(nItem)));
 }
+
 void CNamedViewListCtrl::setViewId(int nItem, const OdDbObjectId& id) {
 	SetItemData(nItem, reinterpret_cast<DWORD>(static_cast<OdDbStub*>(id)));
 }
+
 OdDbViewTableRecordPtr CNamedViewListCtrl::view(int nItem) {
 	return viewId(nItem).safeOpenObject(OdDb::kForWrite);
 }
+
 void CNamedViewListCtrl::setView(int nItem, const OdDbViewTableRecord* pView) {
 	setViewId(nItem, pView->objectId());
 }
+
 OdString ucsString(const OdDbObject* pViewObj) {
 	OdString res;
 	OdDbAbstractViewportDataPtr pViewPE(pViewObj);
@@ -71,6 +75,7 @@ OdString ucsString(const OdDbObject* pViewObj) {
 	}
 	return res;
 }
+
 void CNamedViewListCtrl::InsertItem(int i, const OdDbViewTableRecord* pView) {
 	CListCtrl::InsertItem(i, pView->getName());
 	setView(i, pView);
@@ -83,6 +88,7 @@ void CNamedViewListCtrl::InsertItem(int i, const OdDbViewTableRecord* pView) {
 	}
 	SetItemText(i, 6, pView->perspectiveEnabled() ? L"On" : L"Off");
 }
+
 OdDbViewTableRecordPtr CNamedViewListCtrl::selectedView() {
 	const int nSelectionMark = GetSelectionMark();
 	if (nSelectionMark > - 1) {
@@ -115,33 +121,33 @@ BEGIN_MESSAGE_MAP(EoDlgNamedViews, CDialog)
 END_MESSAGE_MAP()
 
 BOOL EoDlgNamedViews::OnInitDialog() {
-	CDialog::OnInitDialog();
+    CDialog::OnInitDialog();
 
-	m_views.InsertColumn(0, L"Name", LVCFMT_LEFT, 100);
-	m_views.InsertColumn(1, L"Category", LVCFMT_LEFT, 60);
-	m_views.InsertColumn(2, L"Location", LVCFMT_LEFT, 50);
-	m_views.InsertColumn(3, L"VP", LVCFMT_LEFT, 40);
-	m_views.InsertColumn(4, L"Layers", LVCFMT_LEFT, 50);
-	m_views.InsertColumn(5, L"UCS", LVCFMT_LEFT, 60);
-	m_views.InsertColumn(6, L"Perspective", LVCFMT_LEFT, 30);
+    m_views.InsertColumn(0, L"Name", LVCFMT_LEFT, 100);
+    m_views.InsertColumn(1, L"Category", LVCFMT_LEFT, 60);
+    m_views.InsertColumn(2, L"Location", LVCFMT_LEFT, 50);
+    m_views.InsertColumn(3, L"VP", LVCFMT_LEFT, 40);
+    m_views.InsertColumn(4, L"Layers", LVCFMT_LEFT, 50);
+    m_views.InsertColumn(5, L"UCS", LVCFMT_LEFT, 60);
+    m_views.InsertColumn(6, L"Perspective", LVCFMT_LEFT, 30);
 
-	try {
-		const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
-		OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
-		int Index(0);
-		OdDbSymbolTableIteratorPtr ViewTableIterator;
-		for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
-			OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
-			m_views.InsertItem(Index++, ViewTableRecord);
-		}
-	}
-	catch(const OdError& Error) {
-		theApp.reportError(L"Error creating Named Views dialog", Error);
-		EndDialog(IDCANCEL);
-		return FALSE;
-	}
-	return TRUE;
+    try {
+        const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
+        OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
+        int Index(0);
+        OdDbSymbolTableIteratorPtr ViewTableIterator;
+        for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
+            OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
+            m_views.InsertItem(Index++, ViewTableRecord);
+        }
+    } catch (const OdError & Error) {
+        theApp.reportError(L"Error creating Named Views dialog", Error);
+        EndDialog(IDCANCEL);
+        return FALSE;
+    }
+    return TRUE;
 }
+
 void EoDlgNamedViews::OnSetcurrentButton() {
 	OdDbViewTableRecordPtr NamedView = m_views.selectedView();
 	if (NamedView.get()) {
@@ -160,6 +166,7 @@ void EoDlgNamedViews::OnSetcurrentButton() {
 void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/) {
 	OnSetcurrentButton();
 }
+
 void deleteLayerState(OdDbViewTableRecord* pNamedView) {
 	OdString sLSName = pNamedView->getLayerState();
 	if(!sLSName.isEmpty()) {
@@ -167,6 +174,7 @@ void deleteLayerState(OdDbViewTableRecord* pNamedView) {
 		pNamedView->setLayerState(L"");
 	}
 }
+
 void updateLayerState(OdDbViewTableRecord* pNamedView) {
 	OdString sLSName = pNamedView->getLayerState();
 	OdDbDatabase* pDb = pNamedView->database();
@@ -182,6 +190,7 @@ void updateLayerState(OdDbViewTableRecord* pNamedView) {
 	}
 	OdDbLayerState::save(pDb, sLSName, OdDbLayerState::kHidden|OdDbLayerState::kCurrentViewport);
 }
+
 void EoDlgNamedViews::OnNewButton() {
 	EoDlgNewView newDlg(this);
 	OdDbViewTableRecordPtr pNamedView;
@@ -231,6 +240,7 @@ void EoDlgNamedViews::OnNewButton() {
 		break;
 	}
 }
+
 void EoDlgNamedViews::OnUpdateLayersButton() {
 	const int nSelectionMark = m_views.GetSelectionMark();
 	if (nSelectionMark > - 1) {
@@ -238,6 +248,7 @@ void EoDlgNamedViews::OnUpdateLayersButton() {
 		m_views.SetItemText(nSelectionMark, 4, L"Saved");
 	}
 }
+
 void EoDlgNamedViews::OnDeleteButton() {
 	const int nSelectionMark = m_views.GetSelectionMark();
 	if (nSelectionMark > - 1) {
