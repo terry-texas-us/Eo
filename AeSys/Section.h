@@ -18,7 +18,7 @@ public:
 	~Section(void);
 
 	bool operator==(const Section& other) noexcept;
-	bool operator!=(const Section& other);
+	bool operator!=(const Section& other) noexcept;
 	void operator()(double width, double depth, long properties) noexcept;
 	void SetWidth(double width) noexcept;
 	void SetDepth(double depth) noexcept;

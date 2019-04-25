@@ -9,7 +9,7 @@ class EoDbPoint : public EoDbPrimitive {
 public: // Constructors and destructor
 
 	EoDbPoint() noexcept;
-	EoDbPoint(const OdGePoint3d& point);
+	EoDbPoint(const OdGePoint3d& point) noexcept;
 
 	EoDbPoint(const EoDbPoint& other);
     const EoDbPoint& operator=(const EoDbPoint& other);

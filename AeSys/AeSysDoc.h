@@ -217,12 +217,12 @@ protected:
 	OdSmartPtr<EoDlgUserIOConsole> m_pConsole;
 	OdSmartPtr<ExStringIO> m_pMacro;
 	OdDbCommandContextPtr cmdCtx();
-	OdEdBaseIO* cmdIO();
+	OdEdBaseIO* cmdIO() noexcept;
 	OdString commandPrompt();
 	OdString recentCmd();
 	OdString AeSysDoc::recentCmdName();
 
-    OdUInt32 getKeyState() override;
+    OdUInt32 getKeyState() noexcept override;
 	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;

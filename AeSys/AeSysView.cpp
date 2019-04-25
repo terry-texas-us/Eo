@@ -1794,7 +1794,7 @@ bool AeSysView::canClose() const {
     return true;
 }
 
-bool AeSysView::isGettingString() const {
+bool AeSysView::isGettingString() const noexcept {
     return m_mode != kQuiescent;
 }
 
@@ -1802,7 +1802,7 @@ OdString AeSysView::prompt() const {
     return (LPCWSTR) m_sPrompt;
 }
 
-int AeSysView::inpOptions() const {
+int AeSysView::inpOptions() const noexcept {
     return m_inpOptions;
 }
 
@@ -1825,7 +1825,7 @@ public:
 };
 // </command_view>
 // <command_console>
-OdUInt32 AeSysView::getKeyState() {
+OdUInt32 AeSysView::getKeyState() noexcept {
     OdUInt32 KeyState(0);
     if (::GetKeyState(VK_CONTROL) != 0) {
         KeyState |= MK_CONTROL;
@@ -2201,11 +2201,11 @@ OdEdCommandPtr AeSysView::command(const OdString & commandName) {
     }
 }
 
-EoExEditorObject& AeSysView::editorObject() {
+EoExEditorObject& AeSysView::editorObject() noexcept {
     return m_editor;
 }
 
-const EoExEditorObject& AeSysView::editorObject() const {
+const EoExEditorObject& AeSysView::editorObject() const noexcept {
     return m_editor;
 }
 

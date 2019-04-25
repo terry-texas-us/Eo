@@ -12,7 +12,7 @@ EoDbPoint::EoDbPoint() noexcept
 	m_PointDisplayMode = 1;
 }
 
-EoDbPoint::EoDbPoint(const OdGePoint3d& point)
+EoDbPoint::EoDbPoint(const OdGePoint3d& point) noexcept
     : m_Position {point}
     , m_NumberOfDatums {0}
     , m_Data {nullptr} {

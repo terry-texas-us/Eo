@@ -14,7 +14,7 @@ public: // Constructors and destructor
 
     EoDbEllipse() noexcept;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
-	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle);
+	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept;
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
 
@@ -54,8 +54,8 @@ public: // Methods - absolute virtuals
 
 public: // Methods
 	OdGePoint3d Center() const noexcept;
-	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) override;
+	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept override;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) noexcept;
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>

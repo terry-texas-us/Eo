@@ -15,7 +15,7 @@ Section::~Section(void) {
 bool Section::operator==(const Section& other) noexcept {
     return Identical(other);
 }
-bool Section::operator!=(const Section& other) {
+bool Section::operator!=(const Section& other) noexcept {
     return !Identical(other);
 }
 void Section::operator()(double width, double depth, long properties) noexcept {

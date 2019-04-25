@@ -158,8 +158,8 @@ public:
 
     void SetStatusPaneTextAt(int index, LPCWSTR newText);
 
-    void addRef() override {}
-    void release() override {}
+    void addRef() noexcept override {}
+    void release() noexcept override {}
 
     OdDbHostAppProgressMeter* newProgressMeter() override;
     void start(const OdString& displayString = OdString::kEmpty) override;
@@ -194,7 +194,7 @@ public:
 
 // <command_console>
     void setRecentCmd(const OdString& cmd);
-    const OdString& getRecentCmd() { return m_sRecentCmd; }
+    const OdString& getRecentCmd() noexcept { return m_sRecentCmd; }
 // </command_console>
 
     static inline OdString objectIdAndClassName(OdDbObjectId id) {

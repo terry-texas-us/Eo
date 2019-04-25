@@ -13,7 +13,7 @@ EoDbEllipse::EoDbEllipse() noexcept
     , m_SweepAngle(TWOPI) {
 }
 
-EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle)
+EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept
 	: m_Center(center)
     , m_MajorAxis(majorAxis)
     , m_MinorAxis(minorAxis)
@@ -117,7 +117,7 @@ EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr& database) const {
     return EoDbEllipse::Create(Ellipse);
 }
 
-void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
+void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
 	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}
@@ -144,7 +144,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	SetTo(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 }
 
-void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) {
+void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) noexcept {
 	EoDbEllipse* pArc;
 
 	double dRel[2];

@@ -117,8 +117,8 @@ public:
     static EoDbHatch* Create(OdDbHatchPtr& hatch);
 
     static void ConvertPolylineType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive);
-    static void ConvertCircularArcEdge(OdGeCurve2d* edge);
-    static void ConvertEllipticalArcEdge(OdGeCurve2d* edge);
-    static void ConvertNurbCurveEdge(OdGeCurve2d* edge);
+    static void ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept;
+    static void ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept;
+    static void ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept;
     static void ConvertEdgesType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive);
 };

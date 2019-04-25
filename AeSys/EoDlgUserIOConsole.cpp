@@ -23,11 +23,11 @@ OdString EoDlgUserIOConsole::GetLastString() {
     return (LPCWSTR)m_Output.Mid(EolDelimiter + 2);
 }
 
-void EoDlgUserIOConsole::addRef() {
+void EoDlgUserIOConsole::addRef() noexcept {
     ++m_RefCounter;
 }
 
-long EoDlgUserIOConsole::numRefs() const {
+long EoDlgUserIOConsole::numRefs() const noexcept {
     return (m_RefCounter);
 }
 

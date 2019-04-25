@@ -1088,17 +1088,17 @@ void EoDbHatch::ConvertPolylineType(int loopIndex, OdDbHatchPtr &hatchEntity, Eo
     hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
 }
 
-void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) {
+void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept {
     const OdGeCircArc2d* CircularArcEdge = (OdGeCircArc2d*) edge;
     // <tas="Properties: center, radius, startAng, endAng, isClockWise"></tas>
 }
 
-void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) {
+void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept {
     const OdGeEllipArc2d* EllipticalArcEdge = (OdGeEllipArc2d*) edge;
     // <tas="Properties: center, majorRadius, minorRadius, majorAxis, minorAxis, startAng, endAng, isClockWise"></tas>
 }
 
-void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) {
+void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept {
     const OdGeNurbCurve2d* NurbCurveEdge = (OdGeNurbCurve2d*) edge;
     // <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>
 }

@@ -125,13 +125,13 @@ public:
     void setViewportBorderProperties();
     // <command_view>
     bool canClose() const;
-    bool isGettingString() const;
+    bool isGettingString() const noexcept;
     OdString prompt() const;
-    int inpOptions() const;
+    int inpOptions() const noexcept;
     void respond(const OdString& s);
     OdEdCommandPtr command(const OdString& commandName);
-    EoExEditorObject& editorObject();
-    const EoExEditorObject& editorObject() const;
+    EoExEditorObject& editorObject() noexcept;
+    const EoExEditorObject& editorObject() const noexcept;
     bool isModelSpaceView() const;
     bool drawableVectorizationCallback(const OdGiDrawable* drawable);
     // </command_view>
@@ -154,8 +154,8 @@ protected:
     void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
 protected:
-    void addRef() override {}
-    void release() override {}
+    void addRef() noexcept override {}
+    void release() noexcept override {}
 
     AeSysDoc* GetDocument() const;
 
@@ -172,7 +172,7 @@ protected:
 
 public: // Methods - virtuals 
     // <command_console>
-    OdUInt32 getKeyState() override;
+    OdUInt32 getKeyState() noexcept override;
     OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
     OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
     void putString(const OdString& string) override;

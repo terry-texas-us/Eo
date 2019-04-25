@@ -520,7 +520,7 @@ OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
     return pRes;
 }
 
-OdEdBaseIO* AeSysDoc::cmdIO() {
+OdEdBaseIO* AeSysDoc::cmdIO() noexcept {
     return (this);
 }
 
@@ -531,7 +531,7 @@ EoDlgUserIOConsole* AeSysDoc::console() {
     return m_pConsole;
 }
 
-OdUInt32 AeSysDoc::getKeyState() {
+OdUInt32 AeSysDoc::getKeyState() noexcept {
     OdUInt32 KeyState(0);
     if (::GetKeyState(VK_CONTROL) != 0) {
         KeyState |= MK_CONTROL;

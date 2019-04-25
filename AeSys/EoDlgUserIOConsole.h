@@ -25,8 +25,8 @@ class EoDlgUserIOConsole
 protected:
 	EoDlgUserIOConsole(CWnd* parent);
 
-	void addRef() override;
-	long numRefs() const override;
+	void addRef() noexcept override;
+	long numRefs() const noexcept override;
 	void release() override;
 
 	enum { IDD = IDD_CONSOLE_DLG };
@@ -51,7 +51,7 @@ public:
 
 public: // Methods - virtuals
 
-    virtual OdUInt32 getKeyState() {return 0;}
+    virtual OdUInt32 getKeyState() noexcept {return 0;}
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
 };
