@@ -62,12 +62,14 @@ static UINT Indicators[] = {
 
 // CMainFrame construction/destruction
 
-CMainFrame::CMainFrame() :
-    m_CurrentProgress(0),
-    m_InProgress(false) {
+CMainFrame::CMainFrame()
+    : m_CurrentProgress(0)
+    , m_InProgress(false) {
     m_ApplicationLook = theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK);
 }
+
 CMainFrame::~CMainFrame() {}
+
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
     if (CMDIFrameWndEx::OnCreate(createStructure) == -1) {
         return -1;
@@ -146,12 +148,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 
     return 0;
 }
+
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
     if (!CMDIFrameWndEx::PreCreateWindow(createStructure)) {
         return FALSE;
     }
     return TRUE;
 }
+
 BOOL CMainFrame::CreateDockablePanes() {
     const CSize DefaultSize(200, 200);
 
@@ -170,6 +174,7 @@ BOOL CMainFrame::CreateDockablePanes() {
     SetDockablePanesIcons(theApp.HighColorMode());
     return TRUE;
 }
+
 void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, const OdCmColor& color) {
     CBrush Brush(RGB(color.red(), color.green(), color.blue()));
     CBrush* OldBrush = deviceContext.SelectObject(&Brush);
@@ -438,7 +443,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
                     GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 
                     MenuItemInfo.dwItemData = (LPARAM)pCmd.get();
-                    VERIFY(::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo));
+                    ::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
 
                     GroupCommandIterator->next();
                     CommandId++;

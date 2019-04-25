@@ -37,8 +37,8 @@ public:
 class Cmd_SELECT : public OdEdCommand {
 public:
 	static const OdString name();
-	const OdString groupName() const;
-	const OdString globalName() const;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* commandContext);
 	const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);

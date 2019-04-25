@@ -191,7 +191,7 @@ AeSysDoc* g_pDoc = 0;
 
 AeSysDoc::AeSysDoc() noexcept
     : m_bPartial(false)
-    , m_pViewer(0)
+    , m_pViewer(nullptr)
     , m_SaveAsType(OdDb::kDwg)
     , m_SaveAsType_(kUnknown)
     , m_SaveAsVer(OdDb::kDHL_CURRENT)
@@ -402,20 +402,19 @@ void Cmd_VIEW::execute(OdEdCommandContext * commandContext) {
     }
 }
 
-const OdString Cmd_SELECT::groupName() const {
-    return L"AeSysApp";
-}
-const OdString Cmd_SELECT::name() {
-    return L"SELECT";
-}
-const OdString Cmd_SELECT::globalName() const {
-    return name();
-}
-void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
+const OdString Cmd_SELECT::groupName() const { return L"AeSysApp"; }
+
+const OdString Cmd_SELECT::name() { return L"SELECT"; }
+
+const OdString Cmd_SELECT::globalName() const { return name(); }
+
+void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
     OdDbCommandContextPtr CommandContext(commandContext);
     OdDbDatabaseDocPtr Database = CommandContext->database();
-    AeSysDoc* Document = Database->document();
-    AeSysView* pView = Document->getViewer();
+    
+    auto Document {Database->document()};
+    auto pView {Document->getViewer()};
+    
     if (pView == NULL) {
         throw OdEdCancel();
     }
@@ -483,26 +482,26 @@ void AeSysDoc::OnVectorize(const OdString & vectorizerPath) {
 
     DocTemplate->InitialUpdateFrame(NewFrame, this);
 
-    m_pViewer = static_cast<AeSysView*>(NewFrame->GetActiveView());
+    m_pViewer = dynamic_cast<AeSysView*>(NewFrame->GetActiveView());
 }
 
 #pragma warning(pop)
 
-void AeSysDoc::OnCloseVectorizer(AeSysView * view) {
+void AeSysDoc::OnCloseVectorizer(AeSysView* view) {
     if (view != m_pViewer) {
         ATLTRACE2(atlTraceGeneral, 0, L"Vectorizer does not match expected viewer\n");
     }
-    m_pViewer = 0;
+    m_pViewer = nullptr;
 }
 void AeSysDoc::setVectorizer(AeSysView * view) {
-    ODA_ASSERT(m_pViewer == 0);
+    ODA_ASSERT(m_pViewer == nullptr);
     m_pViewer = view;
 }
 void AeSysDoc::OnVectorize() {
     OnVectorize(theApp.recentGsDevicePath());
 }
 void AeSysDoc::OnUpdateVectorize(CCmdUI * pCmdUI) {
-    pCmdUI->Enable(m_pViewer == 0 && !theApp.recentGsDevicePath().isEmpty());
+    pCmdUI->Enable(m_pViewer == nullptr && !theApp.recentGsDevicePath().isEmpty());
 }
 
 // <command_console>
@@ -808,7 +807,7 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
                     if (messageCategory == CN_COMMAND) {
                         OnVectorize((LPCWSTR)Vectorizer);
                     } else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-                        ((CCmdUI*)commandObject)->Enable(m_pViewer == 0);
+                        ((CCmdUI*)commandObject)->Enable(m_pViewer == nullptr);
                         ((CCmdUI*)commandObject)->SetCheck(Vectorizer == (LPCWSTR)theApp.recentGsDevicePath());
                     }
                     return TRUE;
