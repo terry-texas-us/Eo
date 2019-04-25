@@ -26,7 +26,7 @@ public:
     CEdit m_Y;
     CEdit m_Z;
 
-    afx_msg void OnCbnEditupdateList();
+    void OnCbnEditupdateList();
 
 protected:
     DECLARE_MESSAGE_MAP()

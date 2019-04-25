@@ -319,30 +319,30 @@ public:
     OdDbDatabasePtr Database() const;
 
 protected: // Windows messages
-    afx_msg void OnContextMenu(CWnd*, CPoint point);
+    void OnContextMenu(CWnd*, CPoint point);
 public:
-    afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg int OnCreate(LPCREATESTRUCT createStructure);
-    afx_msg void OnDestroy();
-    afx_msg void OnDrag();
-    afx_msg void OnUpdateDrag(CCmdUI* pCmdUI);
-    afx_msg BOOL OnEraseBkgnd(CDC* deviceContext);
-    afx_msg void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-    afx_msg void OnKillFocus(CWnd* newWindow);
-    afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnMButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnMButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnMouseMove(UINT nFlags, CPoint point);
-    afx_msg BOOL OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point);
-    afx_msg void OnPaint();
-    afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
-    afx_msg void OnRButtonUp(UINT nFlags, CPoint point);
-    afx_msg void OnSetFocus(CWnd* oldWindow);
-    afx_msg void OnSize(UINT type, int cx, int cy);
+    void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
+    int OnCreate(LPCREATESTRUCT createStructure);
+    void OnDestroy();
+    void OnDrag();
+    void OnUpdateDrag(CCmdUI* pCmdUI);
+    BOOL OnEraseBkgnd(CDC* deviceContext);
+    void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
+    void OnKillFocus(CWnd* newWindow);
+    void OnLButtonDown(UINT nFlags, CPoint point);
+    void OnLButtonUp(UINT nFlags, CPoint point);
+    void OnMButtonDown(UINT nFlags, CPoint point);
+    void OnMButtonUp(UINT nFlags, CPoint point);
+    void OnMouseMove(UINT nFlags, CPoint point);
+    BOOL OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point);
+    void OnPaint();
+    void OnRButtonDown(UINT nFlags, CPoint point);
+    void OnRButtonUp(UINT nFlags, CPoint point);
+    void OnSetFocus(CWnd* oldWindow);
+    void OnSize(UINT type, int cx, int cy);
 
-    afx_msg void OnViewStateInformation();
-    afx_msg void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
+    void OnViewStateInformation();
+    void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
 
 public:
     static AeSysView* GetActiveView(void);
@@ -506,17 +506,17 @@ public:
 public: // Annotate mode interface
     void DoAnnotateModeMouseMove();
 
-    afx_msg void OnAnnotateModeOptions();
-    afx_msg void OnAnnotateModeLine();
-    afx_msg void OnAnnotateModeArrow();
-    afx_msg void OnAnnotateModeBubble();
-    afx_msg void OnAnnotateModeHook();
-    afx_msg void OnAnnotateModeUnderline();
-    afx_msg void OnAnnotateModeBox();
-    afx_msg void OnAnnotateModeCutIn();
-    afx_msg void OnAnnotateModeConstructionLine();
-    afx_msg void OnAnnotateModeReturn() noexcept;
-    afx_msg void OnAnnotateModeEscape();
+    void OnAnnotateModeOptions();
+    void OnAnnotateModeLine();
+    void OnAnnotateModeArrow();
+    void OnAnnotateModeBubble();
+    void OnAnnotateModeHook();
+    void OnAnnotateModeUnderline();
+    void OnAnnotateModeBox();
+    void OnAnnotateModeCutIn();
+    void OnAnnotateModeConstructionLine();
+    void OnAnnotateModeReturn() noexcept;
+    void OnAnnotateModeEscape();
 
     /// <summary>Generates arrow heads for annotation mode.</summary>
     /// <param name="type">type of end item</param>
@@ -530,18 +530,18 @@ public: // Annotate mode interface
 public: // Draw mode interface
     void DoDrawModeMouseMove();
 
-    afx_msg void OnDrawModeOptions();
-    afx_msg void OnDrawModePoint();
-    afx_msg void OnDrawModeLine();
-    afx_msg void OnDrawModePolygon();
-    afx_msg void OnDrawModeQuad();
-    afx_msg void OnDrawModeArc();
-    afx_msg void OnDrawModeBspline();
-    afx_msg void OnDrawModeCircle();
-    afx_msg void OnDrawModeEllipse();
-    afx_msg void OnDrawModeInsert();
-    afx_msg void OnDrawModeReturn();
-    afx_msg void OnDrawModeEscape();
+    void OnDrawModeOptions();
+    void OnDrawModePoint();
+    void OnDrawModeLine();
+    void OnDrawModePolygon();
+    void OnDrawModeQuad();
+    void OnDrawModeArc();
+    void OnDrawModeBspline();
+    void OnDrawModeCircle();
+    void OnDrawModeEllipse();
+    void OnDrawModeInsert();
+    void OnDrawModeReturn();
+    void OnDrawModeEscape();
 
 private: // Draw2 mode interface
     double m_CenterLineEccentricity;	// Center line eccentricity for parallel lines
@@ -560,12 +560,12 @@ private: // Draw2 mode interface
 public:
     void DoDraw2ModeMouseMove();
 
-    afx_msg void OnDraw2ModeOptions();
+    void OnDraw2ModeOptions();
     /// <summary>Searches for an existing wall side or endcap</summary>
-    afx_msg void OnDraw2ModeJoin();
-    afx_msg void OnDraw2ModeWall();
-    afx_msg void OnDraw2ModeReturn();
-    afx_msg void OnDraw2ModeEscape();
+    void OnDraw2ModeJoin();
+    void OnDraw2ModeWall();
+    void OnDraw2ModeReturn();
+    void OnDraw2ModeEscape();
 
     bool CleanPreviousLines();
     bool StartAssemblyFromLine();
@@ -574,18 +574,18 @@ public:
     enum EElbow { Mittered, Radial };
 
 public:
-    afx_msg void OnDimensionModeOptions();
-    afx_msg void OnDimensionModeArrow();
-    afx_msg void OnDimensionModeLine();
-    afx_msg void OnDimensionModeDLine();
-    afx_msg void OnDimensionModeDLine2();
-    afx_msg void OnDimensionModeExten();
-    afx_msg void OnDimensionModeRadius();
-    afx_msg void OnDimensionModeDiameter();
-    afx_msg void OnDimensionModeAngle();
-    afx_msg void OnDimensionModeConvert();
-    afx_msg void OnDimensionModeReturn();
-    afx_msg void OnDimensionModeEscape();
+    void OnDimensionModeOptions();
+    void OnDimensionModeArrow();
+    void OnDimensionModeLine();
+    void OnDimensionModeDLine();
+    void OnDimensionModeDLine2();
+    void OnDimensionModeExten();
+    void OnDimensionModeRadius();
+    void OnDimensionModeDiameter();
+    void OnDimensionModeAngle();
+    void OnDimensionModeConvert();
+    void OnDimensionModeReturn();
+    void OnDimensionModeEscape();
 
     double m_FixupModeAxisTolerance;
     double m_FixupModeCornerSize;
@@ -593,53 +593,53 @@ public:
     EoGeLineSeg3d m_FixupModeReferenceLine;
     EoGeLineSeg3d m_FixupModeSecondLine;
 
-    afx_msg void OnFixupModeOptions();
-    afx_msg void OnFixupModeReference();
-    afx_msg void OnFixupModeMend();
-    afx_msg void OnFixupModeChamfer();
-    afx_msg void OnFixupModeFillet();
-    afx_msg void OnFixupModeSquare();
-    afx_msg void OnFixupModeParallel();
-    afx_msg void OnFixupModeReturn();
-    afx_msg void OnFixupModeEscape();
+    void OnFixupModeOptions();
+    void OnFixupModeReference();
+    void OnFixupModeMend();
+    void OnFixupModeChamfer();
+    void OnFixupModeFillet();
+    void OnFixupModeSquare();
+    void OnFixupModeParallel();
+    void OnFixupModeReturn();
+    void OnFixupModeEscape();
 
 public: // Nodal mode interface
 
     void DoNodalModeMouseMove();
 
-    afx_msg void OnNodalModeAddRemove();
-    afx_msg void OnNodalModePoint();
-    afx_msg void OnNodalModeLine();
-    afx_msg void OnNodalModeArea();
+    void OnNodalModeAddRemove();
+    void OnNodalModePoint();
+    void OnNodalModeLine();
+    void OnNodalModeArea();
     /// <summary>Translate all control points identified</summary>
-    afx_msg void OnNodalModeMove();
-    afx_msg void OnNodalModeCopy();
-    afx_msg void OnNodalModeToLine();
-    afx_msg void OnNodalModeToPolygon();
-    afx_msg void OnNodalModeEmpty();
-    afx_msg void OnNodalModeEngage();
-    afx_msg void OnNodalModeReturn();
-    afx_msg void OnNodalModeEscape();
+    void OnNodalModeMove();
+    void OnNodalModeCopy();
+    void OnNodalModeToLine();
+    void OnNodalModeToPolygon();
+    void OnNodalModeEmpty();
+    void OnNodalModeEngage();
+    void OnNodalModeReturn();
+    void OnNodalModeEscape();
 
     void ConstructPreviewGroup();
     void ConstructPreviewGroupForNodalGroups();
 
 public: // Cut mode interface
-    afx_msg void OnCutModeOptions() noexcept;
+    void OnCutModeOptions() noexcept;
     /// <summary>Cuts a primative at cursor position.</summary>
-    afx_msg void OnCutModeTorch();
+    void OnCutModeTorch();
     /// <summary>Cuts all primatives which intersect with line defined by two points.</summary>
     // Notes: Colinear fill area edges are not considered to intersect.
-    afx_msg void OnCutModeSlice();
-    afx_msg void OnCutModeField();
+    void OnCutModeSlice();
+    void OnCutModeField();
     /// <summary>Cuts a primative at two pnts and puts non-null middle piece in trap.</summary>
     // Notes:	Accuracy of arc section cuts diminishes with high
     //			eccentricities. if two cut points are coincident
     //			nothing happens.
-    afx_msg void OnCutModeClip();
-    afx_msg void OnCutModeDivide() noexcept;
-    afx_msg void OnCutModeReturn();
-    afx_msg void OnCutModeEscape();
+    void OnCutModeClip();
+    void OnCutModeDivide() noexcept;
+    void OnCutModeReturn();
+    void OnCutModeEscape();
 
 public: // Edit mode interface
     OdGeScale3d m_MirrorScaleFactors;
@@ -655,48 +655,48 @@ public: // Edit mode interface
     void SetEditModeRotationAngles(double x, double y, double z) noexcept;
     void SetEditModeMirrorScaleFactors(double sx, double sy, double sz);
 
-    afx_msg void OnEditModeOptions();
-    afx_msg void OnEditModePivot();
-    afx_msg void OnEditModeRotccw();
-    afx_msg void OnEditModeRotcw();
-    afx_msg void OnEditModeMove();
-    afx_msg void OnEditModeCopy();
-    afx_msg void OnEditModeFlip();
-    afx_msg void OnEditModeReduce();
-    afx_msg void OnEditModeEnlarge();
-    afx_msg void OnEditModeReturn() noexcept;
-    afx_msg void OnEditModeEscape();
+    void OnEditModeOptions();
+    void OnEditModePivot();
+    void OnEditModeRotccw();
+    void OnEditModeRotcw();
+    void OnEditModeMove();
+    void OnEditModeCopy();
+    void OnEditModeFlip();
+    void OnEditModeReduce();
+    void OnEditModeEnlarge();
+    void OnEditModeReturn() noexcept;
+    void OnEditModeEscape();
 
-    afx_msg void OnInsertBlockreference();
+    void OnInsertBlockreference();
 
-    afx_msg void OnTrapModeRemoveAdd();
-    afx_msg void OnTrapModePoint();
+    void OnTrapModeRemoveAdd();
+    void OnTrapModePoint();
     /// <summary>Identifies groups which intersect with a line and adds them to the trap.</summary>
-    afx_msg void OnTrapModeStitch();
+    void OnTrapModeStitch();
     /// <summary>Identifies groups which lie wholly or partially within a rectangular area.</summary>
     /// <remarks>Needs to be generalized to quad.</remarks>
-    afx_msg void OnTrapModeField();
+    void OnTrapModeField();
     /// <summary>Adds last detectable group which is not already in trap to trap</summary>
-    afx_msg void OnTrapModeLast();
-    afx_msg void OnTrapModeEngage();
-    afx_msg void OnTrapModeMenu();
-    afx_msg void OnTrapModeModify();
-    afx_msg void OnTrapModeEscape();
+    void OnTrapModeLast();
+    void OnTrapModeEngage();
+    void OnTrapModeMenu();
+    void OnTrapModeModify();
+    void OnTrapModeEscape();
 
-    afx_msg void OnTraprModeRemoveAdd();
-    afx_msg void OnTraprModePoint();
+    void OnTraprModeRemoveAdd();
+    void OnTraprModePoint();
     /// <summary>Identifies groups which intersect with a line and removes them from the trap.</summary>
-    afx_msg void OnTraprModeStitch();
+    void OnTraprModeStitch();
     /// <summary>Identifies groups which lie wholly or partially within a orthoganal rectangular area.</summary>
     // Notes: This routine fails in all but top view. !!
     // Parameters:	pt1 	one corner of the area
     //				pt2 	other corner of the area
-    afx_msg void OnTraprModeField();
-    afx_msg void OnTraprModeLast();
-    afx_msg void OnTraprModeEngage() noexcept;
-    afx_msg void OnTraprModeMenu();
-    afx_msg void OnTraprModeModify();
-    afx_msg void OnTraprModeEscape();
+    void OnTraprModeField();
+    void OnTraprModeLast();
+    void OnTraprModeEngage() noexcept;
+    void OnTraprModeMenu();
+    void OnTraprModeModify();
+    void OnTraprModeEscape();
 
 private: // Low Pressure Duct (retangular) interface
     double m_InsideRadiusFactor;
@@ -720,17 +720,17 @@ private: // Low Pressure Duct (retangular) interface
 public:
     void DoDuctModeMouseMove();
 
-    afx_msg void OnLpdModeOptions();
-    afx_msg void OnLpdModeJoin();
-    afx_msg void OnLpdModeDuct();
-    afx_msg void OnLpdModeTransition();
-    afx_msg void OnLpdModeTap();
-    afx_msg void OnLpdModeEll();
-    afx_msg void OnLpdModeTee();
-    afx_msg void OnLpdModeUpDown();
-    afx_msg void OnLpdModeSize();
-    afx_msg void OnLpdModeReturn();
-    afx_msg void OnLpdModeEscape();
+    void OnLpdModeOptions();
+    void OnLpdModeJoin();
+    void OnLpdModeDuct();
+    void OnLpdModeTransition();
+    void OnLpdModeTap();
+    void OnLpdModeEll();
+    void OnLpdModeTee();
+    void OnLpdModeUpDown();
+    void OnLpdModeSize();
+    void OnLpdModeReturn();
+    void OnLpdModeEscape();
 
     /// <summary>
     ///Locates and returns the first two lines that have an endpoint which coincides with
@@ -826,16 +826,16 @@ private: // Pipe mode interface
 public:
     void DoPipeModeMouseMove();
 
-    afx_msg void OnPipeModeOptions();
-    afx_msg void OnPipeModeLine();
-    afx_msg void OnPipeModeFitting();
-    afx_msg void OnPipeModeRise();
-    afx_msg void OnPipeModeDrop();
+    void OnPipeModeOptions();
+    void OnPipeModeLine();
+    void OnPipeModeFitting();
+    void OnPipeModeRise();
+    void OnPipeModeDrop();
     /// <summary>Generates a piping symbol at point specified if pipe section located.</summary>
-    afx_msg void OnPipeModeSymbol();
-    afx_msg void OnPipeModeWye();
-    afx_msg void OnPipeModeReturn();
-    afx_msg void OnPipeModeEscape();
+    void OnPipeModeSymbol();
+    void OnPipeModeWye();
+    void OnPipeModeReturn();
+    void OnPipeModeEscape();
 
 private: // Power mode interface
     bool m_PowerArrow;
@@ -847,15 +847,15 @@ private: // Power mode interface
 public:
     void DoPowerModeMouseMove();
 
-    afx_msg void OnPowerModeOptions() noexcept;
-    afx_msg void OnPowerModeCircuit();
-    afx_msg void OnPowerModeGround();
-    afx_msg void OnPowerModeHot();
-    afx_msg void OnPowerModeSwitch();
-    afx_msg void OnPowerModeNeutral();
-    afx_msg void OnPowerModeHome();
-    afx_msg void OnPowerModeReturn();
-    afx_msg void OnPowerModeEscape();
+    void OnPowerModeOptions() noexcept;
+    void OnPowerModeCircuit();
+    void OnPowerModeGround();
+    void OnPowerModeHot();
+    void OnPowerModeSwitch();
+    void OnPowerModeNeutral();
+    void OnPowerModeHome();
+    void OnPowerModeReturn();
+    void OnPowerModeEscape();
 
     void GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
     void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
@@ -869,107 +869,107 @@ public: // Status & Mode Line
     CMFCStatusBar& GetStatusBar(void) const;
 
 public:
-    afx_msg void OnBackgroundImageLoad();
-    afx_msg void OnBackgroundImageRemove();
-    afx_msg void OnFilePlotHalf();
-    afx_msg void OnFilePlotFull();
-    afx_msg void OnFilePlotQuarter();
-    afx_msg void OnFilePrint();
-    afx_msg void OnFind(void);
-    afx_msg void On3dViewsBack();
-    afx_msg void On3dViewsBottom();
-    afx_msg void On3dViewsFront();
-    afx_msg void On3dViewsIsometric();
-    afx_msg void On3dViewsLeft();
-    afx_msg void On3dViewsRight();
-    afx_msg void On3dViewsTop();
-    afx_msg void OnRelativeMovesEngDown();
-    afx_msg void OnRelativeMovesEngDownRotate();
-    afx_msg void OnRelativeMovesEngIn();
-    afx_msg void OnRelativeMovesEngOut();
-    afx_msg void OnRelativeMovesEngLeft();
-    afx_msg void OnRelativeMovesEngLeftRotate();
-    afx_msg void OnRelativeMovesEngRight();
-    afx_msg void OnRelativeMovesEngRightRotate();
-    afx_msg void OnRelativeMovesEngUp();
-    afx_msg void OnRelativeMovesEngUpRotate();
-    afx_msg void OnRelativeMovesRight();
-    afx_msg void OnRelativeMovesUp();
-    afx_msg void OnRelativeMovesLeft();
-    afx_msg void OnRelativeMovesDown();
-    afx_msg void OnRelativeMovesIn();
-    afx_msg void OnRelativeMovesOut();
-    afx_msg void OnRelativeMovesRightRotate();
-    afx_msg void OnRelativeMovesUpRotate();
-    afx_msg void OnRelativeMovesLeftRotate();
-    afx_msg void OnRelativeMovesDownRotate();
-    afx_msg void OnSetupScale();
-    afx_msg void OnToolsPrimitiveSnapto();
-    afx_msg void OnUpdateViewOdometer(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewTrueTypeFonts(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewBackgroundImage(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewPenwidths(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateWindowZoomWindow(CCmdUI* pCmdUI);
-    afx_msg void OnViewBackgroundImage();
-    afx_msg void OnViewTrueTypeFonts();
-    afx_msg void OnViewPenWidths();
-    afx_msg void OnViewOdometer();
-    afx_msg void OnViewRefresh();
-    afx_msg void OnViewParameters();
-    afx_msg void OnUpdateViewRendermode2doptimized(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewRendermodeWireframe(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewRendermodeHiddenline(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewRendermodeFlatshaded(CCmdUI* pCmdUI);
-    afx_msg void OnUpdateViewRendermodeSmoothshaded(CCmdUI* pCmdUI);
-    afx_msg void OnViewRendermode(UINT commandId);
-    afx_msg void OnWindowZoomSpecial();
-    afx_msg void OnWindowNormal();
-    afx_msg void OnWindowBest();
-    afx_msg void OnWindowLast();
-    afx_msg void OnWindowSheet();
-    afx_msg void OnWindowZoomIn();
-    afx_msg void OnWindowZoomOut();
-    afx_msg void OnWindowZoomWindow();
-    afx_msg void OnWindowPan();
-    afx_msg void OnWindowPanLeft();
-    afx_msg void OnWindowPanRight();
-    afx_msg void OnWindowPanUp();
-    afx_msg void OnWindowPanDown();
-    afx_msg void OnCameraRotateLeft();
-    afx_msg void OnCameraRotateRight();
-    afx_msg void OnCameraRotateUp();
-    afx_msg void OnCameraRotateDown();
-    afx_msg void OnViewWindow();
-    afx_msg void OnSetupDimLength();
-    afx_msg void OnSetupDimAngle();
-    afx_msg void OnSetupUnits();
-    afx_msg void OnSetupConstraints();
-    afx_msg void OnSetupMouseButtons();
-    afx_msg void OnModePrimitiveEdit();
-    afx_msg void OnModeGroupEdit();
-    afx_msg void OnModePrimitiveMend();
-    afx_msg void OnPrimPerpJump();
-    afx_msg void OnHelpKey();
-    afx_msg void OnOp0();
-    afx_msg void OnOp2();
-    afx_msg void OnOp3();
-    afx_msg void OnOp4();
-    afx_msg void OnOp5();
-    afx_msg void OnOp6();
-    afx_msg void OnOp7();
-    afx_msg void OnOp8();
-    afx_msg void OnReturn();
-    afx_msg void OnEscape();
-    afx_msg void OnEditFind();
-    afx_msg LRESULT OnRedraw(WPARAM wParam, LPARAM lParam);
-    afx_msg void OnRefresh();
-    afx_msg void OnViewerRegen();
+    void OnBackgroundImageLoad();
+    void OnBackgroundImageRemove();
+    void OnFilePlotHalf();
+    void OnFilePlotFull();
+    void OnFilePlotQuarter();
+    void OnFilePrint();
+    void OnFind(void);
+    void On3dViewsBack();
+    void On3dViewsBottom();
+    void On3dViewsFront();
+    void On3dViewsIsometric();
+    void On3dViewsLeft();
+    void On3dViewsRight();
+    void On3dViewsTop();
+    void OnRelativeMovesEngDown();
+    void OnRelativeMovesEngDownRotate();
+    void OnRelativeMovesEngIn();
+    void OnRelativeMovesEngOut();
+    void OnRelativeMovesEngLeft();
+    void OnRelativeMovesEngLeftRotate();
+    void OnRelativeMovesEngRight();
+    void OnRelativeMovesEngRightRotate();
+    void OnRelativeMovesEngUp();
+    void OnRelativeMovesEngUpRotate();
+    void OnRelativeMovesRight();
+    void OnRelativeMovesUp();
+    void OnRelativeMovesLeft();
+    void OnRelativeMovesDown();
+    void OnRelativeMovesIn();
+    void OnRelativeMovesOut();
+    void OnRelativeMovesRightRotate();
+    void OnRelativeMovesUpRotate();
+    void OnRelativeMovesLeftRotate();
+    void OnRelativeMovesDownRotate();
+    void OnSetupScale();
+    void OnToolsPrimitiveSnapto();
+    void OnUpdateViewOdometer(CCmdUI* pCmdUI);
+    void OnUpdateViewTrueTypeFonts(CCmdUI* pCmdUI);
+    void OnUpdateViewBackgroundImage(CCmdUI* pCmdUI);
+    void OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI);
+    void OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI);
+    void OnUpdateViewPenwidths(CCmdUI* pCmdUI);
+    void OnUpdateWindowZoomWindow(CCmdUI* pCmdUI);
+    void OnViewBackgroundImage();
+    void OnViewTrueTypeFonts();
+    void OnViewPenWidths();
+    void OnViewOdometer();
+    void OnViewRefresh();
+    void OnViewParameters();
+    void OnUpdateViewRendermode2doptimized(CCmdUI* pCmdUI);
+    void OnUpdateViewRendermodeWireframe(CCmdUI* pCmdUI);
+    void OnUpdateViewRendermodeHiddenline(CCmdUI* pCmdUI);
+    void OnUpdateViewRendermodeFlatshaded(CCmdUI* pCmdUI);
+    void OnUpdateViewRendermodeSmoothshaded(CCmdUI* pCmdUI);
+    void OnViewRendermode(UINT commandId);
+    void OnWindowZoomSpecial();
+    void OnWindowNormal();
+    void OnWindowBest();
+    void OnWindowLast();
+    void OnWindowSheet();
+    void OnWindowZoomIn();
+    void OnWindowZoomOut();
+    void OnWindowZoomWindow();
+    void OnWindowPan();
+    void OnWindowPanLeft();
+    void OnWindowPanRight();
+    void OnWindowPanUp();
+    void OnWindowPanDown();
+    void OnCameraRotateLeft();
+    void OnCameraRotateRight();
+    void OnCameraRotateUp();
+    void OnCameraRotateDown();
+    void OnViewWindow();
+    void OnSetupDimLength();
+    void OnSetupDimAngle();
+    void OnSetupUnits();
+    void OnSetupConstraints();
+    void OnSetupMouseButtons();
+    void OnModePrimitiveEdit();
+    void OnModeGroupEdit();
+    void OnModePrimitiveMend();
+    void OnPrimPerpJump();
+    void OnHelpKey();
+    void OnOp0();
+    void OnOp2();
+    void OnOp3();
+    void OnOp4();
+    void OnOp5();
+    void OnOp6();
+    void OnOp7();
+    void OnOp8();
+    void OnReturn();
+    void OnEscape();
+    void OnEditFind();
+    LRESULT OnRedraw(WPARAM wParam, LPARAM lParam);
+    void OnRefresh();
+    void OnViewerRegen();
 
 protected:
-    afx_msg void OnViewerVpregen();
-    afx_msg void OnUpdateViewerRegen(CCmdUI* pCmdUI);
+    void OnViewerVpregen();
+    void OnUpdateViewerRegen(CCmdUI* pCmdUI);
 
     DECLARE_MESSAGE_MAP()
 public:

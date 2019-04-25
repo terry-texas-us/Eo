@@ -3,29 +3,29 @@
 // EoDlgEditTrapCommandsQuery dialog
 
 class EoDlgEditTrapCommandsQuery : public CDialog {
-	DECLARE_DYNAMIC(EoDlgEditTrapCommandsQuery)
+    DECLARE_DYNAMIC(EoDlgEditTrapCommandsQuery)
 
 public:
-	EoDlgEditTrapCommandsQuery(CWnd* parent = NULL);
-	virtual ~EoDlgEditTrapCommandsQuery();
+    EoDlgEditTrapCommandsQuery(CWnd* parent = NULL);
+    virtual ~EoDlgEditTrapCommandsQuery();
 
-// Dialog Data
-	enum { IDD = IDD_EDIT_TRAPCOMMANDS_QUERY };
+    // Dialog Data
+    enum { IDD = IDD_EDIT_TRAPCOMMANDS_QUERY };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
-	BOOL OnInitDialog() final;
+    void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
 
-	CTreeCtrl m_GroupTreeViewControl;
-	CListCtrl m_GeometryListViewControl;
-	CListCtrl m_ExtraListViewControl;
+    CTreeCtrl m_GroupTreeViewControl;
+    CListCtrl m_GeometryListViewControl;
+    CListCtrl m_ExtraListViewControl;
 
 public:
-	void FillExtraList(EoDbPrimitive* primitive);
-	void FillGeometryList(EoDbPrimitive* primitive);
+    void FillExtraList(EoDbPrimitive* primitive);
+    void FillGeometryList(EoDbPrimitive* primitive);
 
-	afx_msg void OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT* result);
+    void OnTvnSelchangedGroupTree(NMHDR* pNMHDR, LRESULT* result);
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };

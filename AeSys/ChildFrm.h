@@ -1,24 +1,24 @@
 #pragma once
 
 class CChildFrame : public CMDIChildWndEx {
-	DECLARE_DYNCREATE(CChildFrame)
+    DECLARE_DYNCREATE(CChildFrame)
 public:
-	CChildFrame();
+    CChildFrame();
 
-	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
+    BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 
-	virtual ~CChildFrame();
+    virtual ~CChildFrame();
 #ifdef _DEBUG
-	void AssertValid() const override;
-	void Dump(CDumpContext& dc) const override;
+    void AssertValid() const override;
+    void Dump(CDumpContext& dc) const override;
 #endif
 
-// Generated message map functions
+    // Generated message map functions
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
-	void ActivateFrame(int nCmdShow = -1) override;
-	BOOL DestroyWindow() override;
-	afx_msg void OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd);
-	void OnUpdateFrameMenu(BOOL bActive, CWnd* pActiveWnd, HMENU hMenuAlt) override;
+    void ActivateFrame(int nCmdShow = -1) override;
+    BOOL DestroyWindow() override;
+    void OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd);
+    void OnUpdateFrameMenu(BOOL bActive, CWnd* pActiveWnd, HMENU hMenuAlt) override;
 };

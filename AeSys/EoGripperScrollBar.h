@@ -2,15 +2,13 @@
 
 class EoGripperScrollBar : public CScrollBar {
 public:
-	EoGripperScrollBar() noexcept {
-	};
+    EoGripperScrollBar() noexcept {};
 
 public:
-	virtual ~EoGripperScrollBar() {
-	};
+    virtual ~EoGripperScrollBar() {};
 
 protected:
-	afx_msg LRESULT OnNcHitTest(CPoint point);
+    LRESULT OnNcHitTest(CPoint point);
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };

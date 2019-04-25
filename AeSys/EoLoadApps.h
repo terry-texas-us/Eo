@@ -33,10 +33,10 @@ protected:
     BOOL OnInitDialog() final;
 
 protected:
-    afx_msg void OnLoadApp();
-    afx_msg void OnUnloadApp();
-    afx_msg void OnAppsListEvent();
-    afx_msg void OnDestroy();
+    void OnLoadApp();
+    void OnUnloadApp();
+    void OnAppsListEvent();
+    void OnDestroy();
 
     DECLARE_MESSAGE_MAP()
 };

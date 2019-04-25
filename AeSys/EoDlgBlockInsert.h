@@ -3,25 +3,25 @@
 // EoDlgBlockInsert dialog
 
 class EoDlgBlockInsert : public CDialog {
-	DECLARE_DYNAMIC(EoDlgBlockInsert)
+    DECLARE_DYNAMIC(EoDlgBlockInsert)
 
 public:
-	EoDlgBlockInsert(CWnd* parent = NULL);
-	EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = NULL);
-	~EoDlgBlockInsert();
+    EoDlgBlockInsert(CWnd* parent = NULL);
+    EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = NULL);
+    ~EoDlgBlockInsert();
 
-// Dialog Data
-	enum { IDD = IDD_INSERT_BLOCK };
+    // Dialog Data
+    enum { IDD = IDD_INSERT_BLOCK };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) override;
-	BOOL OnInitDialog() override;
-	void OnOK() override;
+    void DoDataExchange(CDataExchange* pDX) override;
+    BOOL OnInitDialog() override;
+    void OnOK() override;
 
-	static OdGePoint3d InsertionPoint;
-	AeSysDoc* m_Document;
+    static OdGePoint3d InsertionPoint;
+    AeSysDoc* m_Document;
 public:
-	CListBox m_BlocksListBoxControl;
+    CListBox m_BlocksListBoxControl;
     CEdit m_InsertionPointX;
     CEdit m_InsertionPointY;
     CEdit m_InsertionPointZ;
@@ -36,11 +36,11 @@ public:
 
     CButton m_Explode;
 
-    afx_msg void OnLbnSelchangeBlocksList();
-	afx_msg void OnBnClickedPurge();
+    void OnLbnSelchangeBlocksList();
+    void OnBnClickedPurge();
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 public:
-    afx_msg void OnBnClickedCancel();
+    void OnBnClickedCancel();
 };

@@ -2,46 +2,46 @@
 
 class EoMfOutputListBox : public CListBox {
 public:
-	EoMfOutputListBox();
+    EoMfOutputListBox();
 
 public:
-	virtual ~EoMfOutputListBox();
+    virtual ~EoMfOutputListBox();
 
 protected:
-	afx_msg void OnContextMenu(CWnd* pWnd, CPoint point);
-	afx_msg void OnEditCopy() noexcept;
-	afx_msg void OnEditClear() noexcept;
-	afx_msg void OnViewOutput();
-
-	DECLARE_MESSAGE_MAP()
+    void OnContextMenu(CWnd* pWnd, CPoint point);
+    void OnEditCopy() noexcept;
+    void OnEditClear() noexcept;
+    void OnViewOutput();
+    
+    DECLARE_MESSAGE_MAP()
 };
 
 class EoMfOutputDockablePane : public CDockablePane {
 public:
-	EoMfOutputDockablePane();
+    EoMfOutputDockablePane();
 
 protected:
-	CFont m_Font;
-	CMFCTabCtrl	m_wndTabs;
+    CFont m_Font;
+    CMFCTabCtrl	m_wndTabs;
 
-	EoMfOutputListBox m_OutputMessagesList;
-	EoMfOutputListBox m_OutputReportsList;
+    EoMfOutputListBox m_OutputMessagesList;
+    EoMfOutputListBox m_OutputReportsList;
 
 public:
-	virtual ~EoMfOutputDockablePane();
-	void ModifyCaption(const CString& string) {
-		SetWindowTextW(string);
-	}
-	void AddStringToMessageList(const CString& string) {
-		m_OutputMessagesList.InsertString(0, string);
-	}
-	void AddStringToReportsList(const CString& string) {
-		m_OutputReportsList.AddString(string);
-	}
-
+    virtual ~EoMfOutputDockablePane();
+    void ModifyCaption(const CString& string) {
+        SetWindowTextW(string);
+    }
+    void AddStringToMessageList(const CString& string) {
+        m_OutputMessagesList.InsertString(0, string);
+    }
+    void AddStringToReportsList(const CString& string) {
+        m_OutputReportsList.AddString(string);
+    }
+    
 protected:
-	afx_msg int OnCreate(LPCREATESTRUCT createStructure);
-	afx_msg void OnSize(UINT type, int cx, int cy);
+    int OnCreate(LPCREATESTRUCT createStructure);
+    void OnSize(UINT type, int cx, int cy);
 
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };

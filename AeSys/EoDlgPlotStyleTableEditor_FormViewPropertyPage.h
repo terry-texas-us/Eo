@@ -18,64 +18,64 @@ using namespace std;
 
 // plotstyle's linetype
 static OdString StringLineType[] = {
-	L"Solid",
-	L"Dashed",
-	L"Dotted",
-	L"Dash Dot",
-	L"Short Dash",
-	L"Medium Dash",
-	L"Long Dash",
-	L"Short Dash X2",
-	L"Medium Dash X2",
-	L"Long Dash X2",
-	L"Medium Long Dash",
-	L"Medium Dash Short Dash Short Dash",
-	L"Long Dash Short Dash",
-	L"Long Dash Dot Dot",
-	L"Long Dash Dot",
-	L"Medium Dash Dot Short Dash Dot",
-	L"Sparse Dot",
-	L"ISO Dash",
-	L"ISO Dash Space",
-	L"ISO Long Dash Dot",
-	L"ISO Long Dash Double Dot",
-	L"ISO Long Dash Triple Dot",
-	L"ISO Dot",
-	L"ISO Long Dash Short Dash",
-	L"ISO Long Dash Double Short Dash",
-	L"ISO Dash Dot",
-	L"ISO Double Dash Dot",
-	L"ISO Dash Double Dot",
-	L"ISO Double Dash Double Dot",
-	L"ISO Dash Triple Dot",
-	L"ISO Double Dash Triple Dot",
-	L"Use object linetype"
+    L"Solid",
+    L"Dashed",
+    L"Dotted",
+    L"Dash Dot",
+    L"Short Dash",
+    L"Medium Dash",
+    L"Long Dash",
+    L"Short Dash X2",
+    L"Medium Dash X2",
+    L"Long Dash X2",
+    L"Medium Long Dash",
+    L"Medium Dash Short Dash Short Dash",
+    L"Long Dash Short Dash",
+    L"Long Dash Dot Dot",
+    L"Long Dash Dot",
+    L"Medium Dash Dot Short Dash Dot",
+    L"Sparse Dot",
+    L"ISO Dash",
+    L"ISO Dash Space",
+    L"ISO Long Dash Dot",
+    L"ISO Long Dash Double Dot",
+    L"ISO Long Dash Triple Dot",
+    L"ISO Dot",
+    L"ISO Long Dash Short Dash",
+    L"ISO Long Dash Double Short Dash",
+    L"ISO Dash Dot",
+    L"ISO Double Dash Dot",
+    L"ISO Dash Double Dot",
+    L"ISO Double Dash Double Dot",
+    L"ISO Dash Triple Dot",
+    L"ISO Double Dash Triple Dot",
+    L"Use object linetype"
 };
 static OdString StringFillStyle[] = {
-	L"Solid",
-	L"Checkerboard",
-	L"Crosshatch",
-	L"Diamonds",
-	L"HorizontalBars",
-	L"SlantLeft",
-	L"SlantRight",
-	L"SquareDots",
-	L"VerticalBars",
-	L"Use object fill style"
+    L"Solid",
+    L"Checkerboard",
+    L"Crosshatch",
+    L"Diamonds",
+    L"HorizontalBars",
+    L"SlantLeft",
+    L"SlantRight",
+    L"SquareDots",
+    L"VerticalBars",
+    L"Use object fill style"
 };
 static OdString StringLineEndStyle[] = {
-	L"Butt",
-	L"Square",
-	L"Round",
-	L"Diamond",
-	L"Use object end style"
+    L"Butt",
+    L"Square",
+    L"Round",
+    L"Diamond",
+    L"Use object end style"
 };
 static OdString StringLineJoinStyle[] = {
-	L"Miter",
-	L"Bevel",
-	L"Round",
-	L"Diamond",
-	L"Use object join style"
+    L"Miter",
+    L"Bevel",
+    L"Round",
+    L"Diamond",
+    L"Use object join style"
 };
 
 
@@ -84,19 +84,17 @@ struct DIBCOLOR {
     OdUInt8 g;
     OdUInt8 r;
     OdUInt8 reserved;
-	DIBCOLOR(OdUInt8 ar, OdUInt8 ag, OdUInt8 ab)  noexcept
+    DIBCOLOR(OdUInt8 ar, OdUInt8 ag, OdUInt8 ab)  noexcept
         : r(ar)
         , g(ag)
         , b(ab)
-        , reserved(0) {
-    }
-	DIBCOLOR(COLORREF color) noexcept
+        , reserved(0) {}
+    DIBCOLOR(COLORREF color) noexcept
         : r(GetRValue(color))
         , g(GetGValue(color))
         , b(GetBValue(color))
-        , reserved(0) {
-    }
-	operator DWORD() noexcept {
+        , reserved(0) {}
+    operator DWORD() noexcept {
         return *reinterpret_cast<DWORD*>(this);
     }
 };
@@ -104,45 +102,44 @@ struct DIBCOLOR {
 class CBitmapColorInfo {
 public:
     OdUInt8 m_iItem;
-	COLORREF m_color;
-	CBitmap m_bitmap;
-	wchar_t m_name[PS_COLOR_MAX_NAME];
+    COLORREF m_color;
+    CBitmap m_bitmap;
+    wchar_t m_name[PS_COLOR_MAX_NAME];
 
-	CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const wchar_t* name);
-	CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, OdUInt8 cColorItem, int colorIndex = -1);
-	CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name);
+    CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, const wchar_t* name);
+    CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, OdUInt8 cColorItem, int colorIndex = -1);
+    CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name);
 
-	// Implementation
 protected:
-	void SetBitmapPixels(CBitmap &Bmp, DIBCOLOR *pPixels);
-	DIBCOLOR *GetBitmapPixels(CBitmap &Bmp, int &W, int &H);
-	void GetBitmapSizes(CBitmap &Bmp, int &W, int &H);
+    void SetBitmapPixels(CBitmap& Bmp, DIBCOLOR* pPixels);
+    DIBCOLOR* GetBitmapPixels(CBitmap& Bmp, int& W, int& H);
+    void GetBitmapSizes(CBitmap& Bmp, int& W, int& H);
 
 public:
-	CBitmap* CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpClone);
-	void PaintBitmap(CBitmap &Bmp, COLORREF color);
-	const bool IsColor(COLORREF color, OdUInt8 item) noexcept;
-	const OdCmEntityColor GetColor();
+    CBitmap* CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpClone);
+    void PaintBitmap(CBitmap& Bmp, COLORREF color);
+    const bool IsColor(COLORREF color, OdUInt8 item) noexcept;
+    const OdCmEntityColor GetColor();
 };
 
 typedef OdArray<CBitmapColorInfo*> OdBitmapColorInfoArray;
 
 class CPsListStyleData {
-	OdPsPlotStyle* m_pPlotStyles;
-	OdBitmapColorInfoArray* m_pPublicBitmapList;
-	CBitmapColorInfo* m_pBitmapColorInfo; 
-	int m_iActiveListIndex;
+    OdPsPlotStyle* m_pPlotStyles;
+    OdBitmapColorInfoArray* m_pPublicBitmapList;
+    CBitmapColorInfo* m_pBitmapColorInfo;
+    int m_iActiveListIndex;
 
 protected:
-	const int getPublicArrayIndexByColor(COLORREF color);
+    const int getPublicArrayIndexByColor(COLORREF color);
 
 public:
-	CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item);
+    CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item);
 
-	~CPsListStyleData();
+    ~CPsListStyleData();
 
     OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; };
-    CBitmapColorInfo*  GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; };
+    CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; };
     const int GetActiveListIndex() const noexcept { return m_iActiveListIndex; };
     const bool ReplaceBitmapColorInfo(COLORREF color, const int item);
     const bool SetActiveListIndex(const int index, const bool bBmpInfo = false);
@@ -151,100 +148,99 @@ public:
 };
 
 class EoDlgPlotStyleEditor_FormViewPropertyPage : public CPropertyPage {
-	DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
+    DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
 
-	void mtHideHelpBtn();
+    void mtHideHelpBtn();
 
-	CImageList m_imageList;
-	OdPsPlotStyleTable* m_pPlotStyleTable;
-	OdPsPlotStyle* m_pPlotStyleActive;
-	OdBitmapColorInfoArray m_bitmapList;
-	OdString m_sFileBufPath;
-	bool m_bEditChanging;
-
-public:
-	EoDlgPlotStyleEditor_FormViewPropertyPage();
-	~EoDlgPlotStyleEditor_FormViewPropertyPage();
-
-	enum { IDD = IDD_PLOTSTYLE_FORMVIEW_PROPERTY_PAGE };
-	CComboBox m_Dither;
-	CComboBox m_Grayscale;
-	CComboBox m_Linetype;
-	CComboBox m_Lineweight;
-	CComboBox m_Lineendstyle;
-	CComboBox m_Linejoinstyle;
-	CComboBox m_Fillstyle;
-	EoCtrlBitmapPickerCombo m_Color;
-	CEdit m_editDescription;
-	CEdit m_editPen;
-	CEdit m_editVirtpen;
-	CEdit m_editScreening;
-	CComboBox m_Adaptive;
-	CSpinButtonCtrl m_spinPen;
-	CSpinButtonCtrl m_spinVirtpen;
-	CSpinButtonCtrl m_spinScreening;
-	CListCtrl m_listStyles;
-	CButton m_AddstyleButton;
-	CButton m_DelstyleButton;
-	CButton m_LineweightButton;
-	CButton m_SaveButton;
-
-protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
-
-	// Implementation
-protected:
-	void initBitmapList();
-	void initAdaptiveComboBox();
-	void initGrayscaleComboBox();
-	void initDitherComboBox();
-	void initLinetypeComboBox();
-	void initLineweightComboBox();
-	void initLineendstyleComboBox();
-	void initLinejoinstyleComboBox();
-	void initFillstyleComboBox();
-	void initColorComboBox();
-	void initListCtrl();
-	const int insertItem(int index);
-	HICON initColorIcon(int width,int height, COLORREF color) noexcept;
-	void initImageList();
-
-	const int deleteCustomColor();
-	const int appendCustomColor(const int item);
-	const int replaceCustomColor(COLORREF color, const int item);
+    CImageList m_imageList;
+    OdPsPlotStyleTable* m_pPlotStyleTable;
+    OdPsPlotStyle* m_pPlotStyleActive;
+    OdBitmapColorInfoArray m_bitmapList;
+    OdString m_sFileBufPath;
+    bool m_bEditChanging;
 
 public:
-	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
-	BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags);
-	void SetFileBufPath(const OdString sFilePath);
-	void AddNewPlotStyle(LPCWSTR lpStyleName);
-	const OdPsPlotStyleTable *GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };
+    EoDlgPlotStyleEditor_FormViewPropertyPage();
+    ~EoDlgPlotStyleEditor_FormViewPropertyPage();
+
+    enum { IDD = IDD_PLOTSTYLE_FORMVIEW_PROPERTY_PAGE };
+    CComboBox m_Dither;
+    CComboBox m_Grayscale;
+    CComboBox m_Linetype;
+    CComboBox m_Lineweight;
+    CComboBox m_Lineendstyle;
+    CComboBox m_Linejoinstyle;
+    CComboBox m_Fillstyle;
+    EoCtrlBitmapPickerCombo m_Color;
+    CEdit m_editDescription;
+    CEdit m_editPen;
+    CEdit m_editVirtpen;
+    CEdit m_editScreening;
+    CComboBox m_Adaptive;
+    CSpinButtonCtrl m_spinPen;
+    CSpinButtonCtrl m_spinVirtpen;
+    CSpinButtonCtrl m_spinScreening;
+    CListCtrl m_listStyles;
+    CButton m_AddstyleButton;
+    CButton m_DelstyleButton;
+    CButton m_LineweightButton;
+    CButton m_SaveButton;
 
 protected:
-	afx_msg void OnLineweightBtn();
-	afx_msg void OnAddBtnStyle();
-	afx_msg void OnSaveBtn();
-	afx_msg void OnDelBtnStyle();
-	afx_msg void OnUpdateEditDescription() noexcept;
-	afx_msg void OnChangeEditDescription();
-	afx_msg void OnChangeEditPen();
-	afx_msg void OnChangeEditVirtPen();
-	afx_msg void OnChangeEditScreening();
-	BOOL OnInitDialog() final;
-	afx_msg void OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result);
-	afx_msg void OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result);
-	afx_msg void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept;
-	afx_msg void OnSelchangeComboColor();
-	afx_msg void OnSelendokComboColor() noexcept;
-	afx_msg void OnSelendokComboDither();
-	afx_msg void OnSelendokComboGrayScale();
-	afx_msg void OnSelendokComboLineType();
-	afx_msg void OnSelendokComboAdaptive();
-	afx_msg void OnSelendokComboLineWeight();
-	afx_msg void OnSelendokComboLineEndStyle();
-	afx_msg void OnSelendokComboLineJoinStyle();
-	afx_msg void OnSelendokComboFillStyle();
-	afx_msg void OnDestroy();
+    virtual void DoDataExchange(CDataExchange* pDX);
 
-	DECLARE_MESSAGE_MAP()
+protected:
+    void initBitmapList();
+    void initAdaptiveComboBox();
+    void initGrayscaleComboBox();
+    void initDitherComboBox();
+    void initLinetypeComboBox();
+    void initLineweightComboBox();
+    void initLineendstyleComboBox();
+    void initLinejoinstyleComboBox();
+    void initFillstyleComboBox();
+    void initColorComboBox();
+    void initListCtrl();
+    const int insertItem(int index);
+    HICON initColorIcon(int width, int height, COLORREF color) noexcept;
+    void initImageList();
+
+    const int deleteCustomColor();
+    const int appendCustomColor(const int item);
+    const int replaceCustomColor(COLORREF color, const int item);
+
+public:
+    const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
+    BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags);
+    void SetFileBufPath(const OdString sFilePath);
+    void AddNewPlotStyle(LPCWSTR lpStyleName);
+    const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };
+
+protected:
+    void OnLineweightBtn();
+    void OnAddBtnStyle();
+    void OnSaveBtn();
+    void OnDelBtnStyle();
+    void OnUpdateEditDescription() noexcept;
+    void OnChangeEditDescription();
+    void OnChangeEditPen();
+    void OnChangeEditVirtPen();
+    void OnChangeEditScreening();
+    BOOL OnInitDialog() final;
+    void OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result);
+    void OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result);
+    void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept;
+    void OnSelchangeComboColor();
+    void OnSelendokComboColor() noexcept;
+    void OnSelendokComboDither();
+    void OnSelendokComboGrayScale();
+    void OnSelendokComboLineType();
+    void OnSelendokComboAdaptive();
+    void OnSelendokComboLineWeight();
+    void OnSelendokComboLineEndStyle();
+    void OnSelendokComboLineJoinStyle();
+    void OnSelendokComboFillStyle();
+    void OnDestroy();
+
+    DECLARE_MESSAGE_MAP()
 };
