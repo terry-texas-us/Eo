@@ -187,7 +187,8 @@ public:
     CButton m_SaveButton;
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);
+    void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
 
 protected:
     void initBitmapList();
@@ -226,7 +227,6 @@ protected:
     void OnChangeEditPen();
     void OnChangeEditVirtPen();
     void OnChangeEditScreening();
-    BOOL OnInitDialog() final;
     void OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result);
     void OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result);
     void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept;

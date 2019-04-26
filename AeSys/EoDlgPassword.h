@@ -10,7 +10,7 @@ public:
 	CString m_sFileName;
 	OdPassword m_password;
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
+	void DoDataExchange(CDataExchange* pDX) final;
 
 protected:
 	DECLARE_MESSAGE_MAP()

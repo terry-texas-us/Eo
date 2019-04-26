@@ -7,7 +7,8 @@ class EoDlgDrawOptions : public CDialog {
 
 public:
     EoDlgDrawOptions(CWnd* parent = NULL);
-    virtual ~EoDlgDrawOptions();
+    
+    ~EoDlgDrawOptions();
 
     // Dialog Data
     enum { IDD = IDD_DRAW_OPTIONS };

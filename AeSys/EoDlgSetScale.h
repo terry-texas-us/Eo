@@ -3,21 +3,21 @@
 // EoDlgSetScale dialog
 
 class EoDlgSetScale : public CDialog {
-	DECLARE_DYNAMIC(EoDlgSetScale)
+    DECLARE_DYNAMIC(EoDlgSetScale)
 
 public:
-	EoDlgSetScale(CWnd* parent = NULL);
-	virtual ~EoDlgSetScale();
+    EoDlgSetScale(CWnd* parent = NULL);
+    virtual ~EoDlgSetScale();
 
-// Dialog Data
-	enum { IDD = IDD_SET_SCALE };
+    // Dialog Data
+    enum { IDD = IDD_SET_SCALE };
 
 protected:
-	virtual void DoDataExchange(CDataExchange* pDX);
+    void DoDataExchange(CDataExchange* pDX) final;
 
 public:
-	double m_Scale;
+    double m_Scale;
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };

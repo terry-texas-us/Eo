@@ -13,8 +13,8 @@ public:
     enum { IDD = IDD_DLGPROC_LPD_OPTIONS };
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);
-    virtual BOOL OnInitDialog();
+    void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
 
 public:
     double m_Width;

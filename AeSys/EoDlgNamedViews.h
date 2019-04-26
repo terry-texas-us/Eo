@@ -34,10 +34,10 @@ public:
     CNamedViewListCtrl m_views;
 
 protected:
-    virtual void DoDataExchange(CDataExchange* pDX);
+    void DoDataExchange(CDataExchange* pDX) final;
+    BOOL OnInitDialog() final;
 
 protected:
-    BOOL OnInitDialog() override;
     void OnSetcurrentButton();
     void OnDblclkNamedviews(NMHDR* pNMHDR, LRESULT* pResult);
     void OnNewButton();
