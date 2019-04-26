@@ -65,7 +65,6 @@ public:
     void setWorkingSSet(OdDbSelectionSet* selectionSet);
     void selectionSetChanged();
 
-    OdGiDrawablePtr snapDrawable() const;
     bool unselect();
 
     OdEdCommandPtr command(const OdString& sCmdName);
@@ -92,7 +91,6 @@ public:
     bool snap(OdGePoint3d& pt, const OdGePoint3d* lastPoint);
     unsigned getSnapModes() const noexcept;
     void setSnapModes(bool snapOn, unsigned modes) noexcept;
-    void resetSnapManager();
     void initSnapping(OdGsView* pView);
     void uninitSnapping(OdGsView* pView);
 

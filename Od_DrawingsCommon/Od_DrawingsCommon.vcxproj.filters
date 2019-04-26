@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
+      <Filter>Source Files\ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\DbDumper.cpp">
+      <Filter>Source Files\OdReadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\GiWorldDrawDumper.cpp">
+      <Filter>Source Files\OdReadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\ExProtocolExtension.cpp">
+      <Filter>Source Files\OdReadEx</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\EditorObject.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\ExGripManager.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\OSnapManager.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{B1A7AD4B-E5AA-4030-9F85-2944B2C14BAF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ExServices">
+      <UniqueIdentifier>{FB102660-DC1C-40F5-90D1-716DEDC81613}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\OdReadEx">
+      <UniqueIdentifier>{EB6B94DA-836A-4FA5-9258-30C75E939E14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editor">
+      <UniqueIdentifier>{FAE26759-720A-44BB-87A9-EDA39E2BCE11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{618360CD-5E01-4A04-8AAB-8D37689C484D}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

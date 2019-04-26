@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="vc15dlldbg|Win32">
+      <Configuration>vc15dlldbg</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{D9672813-34BA-4016-8D12-C8C8B60D443D}</ProjectGUID>
+    <SccProjectName />
+    <SccLocalPath />
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>Od_DrawingsCommon</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Od_DrawingsCommon</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">.lib</TargetExt>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\ODA\15\Drawings_vc15dlldbg\ThirdParty;E:\ODA\15\Drawings_vc15dlldbg\ThirdParty\activation;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Kernel\DevInclude;E:\ODA\15\Drawings_vc15dlldbg\Kernel\DevInclude\DbRoot;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4131;4244;4127</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;_TOOLKIT_IN_DLL_;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ProgramDataBaseFileName>E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg\Od_DrawingsCommon.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;_TOOLKIT_IN_DLL_;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\ODA\15\Drawings_vc15dlldbg\ThirdParty;E:\ODA\15\Drawings_vc15dlldbg\ThirdParty\activation;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Kernel\DevInclude;E:\ODA\15\Drawings_vc15dlldbg\Kernel\DevInclude\DbRoot;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\ODA\15\Drawings_vc15dlldbg\ThirdParty;E:\ODA\15\Drawings_vc15dlldbg\ThirdParty\activation;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Kernel\DevInclude;E:\ODA\15\Drawings_vc15dlldbg\Kernel\DevInclude\DbRoot;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Lib>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.h" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\DbDumper.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\GiWorldDrawDumper.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\ExProtocolExtension.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\EditorObject.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\ExGripManager.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\OSnapManager.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

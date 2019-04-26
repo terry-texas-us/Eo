@@ -22,9 +22,6 @@
     <Filter Include="Resource Files\Icons">
       <UniqueIdentifier>{8698164e-803b-4361-8555-35e7aada675d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ExServices">
-      <UniqueIdentifier>{2673127c-352e-4a70-9da1-76d9bd245ea3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Dialogs">
       <UniqueIdentifier>{7f039b16-041f-40b0-aeb1-ddd8f0b8494b}</UniqueIdentifier>
     </Filter>
@@ -34,7 +31,13 @@
     <Filter Include="Header Files\Dialogs">
       <UniqueIdentifier>{d821e470-51d2-421b-9b7f-c2ee661cb37d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\ExRender">
+    <Filter Include="Source Files\Kernel ExServices">
+      <UniqueIdentifier>{045589f8-f2bf-4a4a-b35a-9fc3415f9476}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Drawing ExServices">
+      <UniqueIdentifier>{2673127c-352e-4a70-9da1-76d9bd245ea3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Kernel ExRender">
       <UniqueIdentifier>{713709bd-6c84-4450-a3bc-04131fd744af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -427,40 +430,25 @@
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
-      <Filter>Source Files\ExRender</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
-      <Filter>Source Files\ExServices</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
-      <Filter>Source Files\ExServices</Filter>
+      <Filter>Source Files\Kernel ExRender</Filter>
     </ClCompile>
     <ClCompile Include="EoDbHatchPatternTable.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
+      <Filter>Source Files\Kernel ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
+      <Filter>Source Files\Kernel ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
+      <Filter>Source Files\Kernel ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
+      <Filter>Source Files\Kernel ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
+      <Filter>Source Files\Kernel ExServices</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

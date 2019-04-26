@@ -184,15 +184,9 @@ OdGePoint3d EoExEditorObject::toScreenCoord(const OdGePoint3d& wcsPt) const {
 unsigned EoExEditorObject::getSnapModes() const noexcept {
     return m_osnapManager.snapModes();
 }
-void EoExEditorObject::resetSnapManager() {
-    m_osnapManager.reset();
-}
 void EoExEditorObject::setSnapModes(bool snapOn, unsigned snapModes) noexcept {
     m_bSnapOn = snapOn;
     m_osnapManager.setSnapModes(snapModes);
-}
-OdGiDrawablePtr EoExEditorObject::snapDrawable() const {
-    return &m_osnapManager;
 }
 OdEdCommandPtr EoExEditorObject::command(const OdString & commandName) {
     if (commandName == m_cmd_ZOOM.globalName()) {
