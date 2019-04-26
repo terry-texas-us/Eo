@@ -710,178 +710,7 @@ void AeSysView::propagateActiveViewChanges() const {
             pVp->setVisualStyle(pObj, pView->visualStyle());
     }
 }
-void AeSysView::OnRButtonUp(UINT flags, CPoint point) {
-    if (AeSysApp::CustomRButtonUpCharacters.IsEmpty()) {
-        m_RightButton = false;
-        __super::OnRButtonUp(flags, point);
-    } else {
-        DoCustomMouseClick(AeSysApp::CustomRButtonUpCharacters);
-    }
-}
-void AeSysView::OnMouseMove(UINT flags, CPoint point) {
-    DisplayOdometer();
-    if (m_LeftButton == true) {
-        CClientDC dc(this);
-        CRect rcZoomOld;
-        rcZoomOld.SetRect(m_MouseClick.x, m_MouseClick.y, m_MousePosition.x, m_MousePosition.y);
-        rcZoomOld.NormalizeRect();
-        rcZoomOld.InflateRect(1, 1);
 
-        RedrawWindow(&rcZoomOld);
-
-        CRect rcZoom;
-        rcZoom.SetRect(m_MouseClick.x, m_MouseClick.y, point.x, point.y);
-        rcZoom.NormalizeRect();
-
-        dc.DrawFocusRect(&rcZoom);
-        m_MousePosition = point;
-    } else if (m_MiddleButton == true) {
-        OdGsViewPtr FirstView = m_pDevice->viewAt(0);
-
-        OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
-
-        DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
-        FirstView->dolly(DollyVector);
-
-        m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
-        m_ViewTransform.BuildTransformMatrix();
-
-        m_MousePosition = point;
-        PostMessageW(WM_PAINT);
-    } else if (m_RightButton == true) {
-        Orbit((double(m_MousePosition.y) - double(point.y)) / 100., (double(m_MousePosition.x) - double(point.x)) / 100.);
-        m_MousePosition = point;
-        PostMessageW(WM_PAINT);
-    }
-    __super::OnMouseMove(flags, point);
-
-    switch (theApp.CurrentMode()) {
-    case ID_MODE_ANNOTATE:
-        DoAnnotateModeMouseMove();
-        break;
-
-    case ID_MODE_DRAW:
-        DoDrawModeMouseMove();
-        break;
-
-    case ID_MODE_DRAW2:
-        DoDraw2ModeMouseMove();
-        break;
-
-    case ID_MODE_LPD:
-        DoDuctModeMouseMove();
-        break;
-
-    case ID_MODE_NODAL:
-        DoNodalModeMouseMove();
-        break;
-
-    case ID_MODE_PIPE:
-        DoPipeModeMouseMove();
-        break;
-
-    case ID_MODE_POWER:
-        DoPowerModeMouseMove();
-        break;
-
-    case ID_MODE_PRIMITIVE_EDIT:
-        PreviewPrimitiveEdit();
-        break;
-
-    case ID_MODE_PRIMITIVE_MEND:
-        PreviewMendPrimitive();
-        break;
-
-    case ID_MODE_GROUP_EDIT:
-        PreviewGroupEdit();
-        break;
-
-    }
-    if (m_RubberbandType == Lines) {
-        CDC* DeviceContext = GetDC();
-        const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
-        CPen GreyPen(PS_SOLID, 0, RubberbandColor);
-        CPen* Pen = DeviceContext->SelectObject(&GreyPen);
-
-        DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-        DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-
-        m_RubberbandLogicalEndPoint = point;
-        DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-        DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-        DeviceContext->SelectObject(Pen);
-        DeviceContext->SetROP2(DrawMode);
-        ReleaseDC(DeviceContext);
-    } else if (m_RubberbandType == Rectangles) {
-        CDC* DeviceContext = GetDC();
-        const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
-        CPen GreyPen(PS_SOLID, 0, RubberbandColor);
-        CPen* Pen = DeviceContext->SelectObject(&GreyPen);
-        CBrush* Brush = (CBrush*) DeviceContext->SelectStockObject(NULL_BRUSH);
-
-        DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
-
-        m_RubberbandLogicalEndPoint = point;
-        DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
-        DeviceContext->SelectObject(Brush);
-        DeviceContext->SelectObject(Pen);
-        DeviceContext->SetROP2(DrawMode);
-        ReleaseDC(DeviceContext);
-    }
-}
-
-void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
-    if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
-        // <command_view>
-        switch (m_mode) {
-        case kQuiescent:
-            if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
-                //getActiveView()->invalidate();
-                PostMessage(WM_PAINT);
-            }
-            break;
-        case kGetPoint:
-            m_response.m_point = m_editor.toEyeToWorld(point.x, point.y);
-            if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-                if (!m_editor.toUcsToWorld(m_response.m_point))
-                    break;
-            }
-            m_editor.snap(m_response.m_point, m_pBasePt);
-            m_response.m_type = Response::kPoint;
-            break;
-        default:
-            m_LeftButton = true;
-            m_MousePosition = point;
-            m_MouseClick = point;
-            if (m_ZoomWindow == true) {
-                m_Points.clear();
-                m_Points.append(GetWorldCoordinates(point));
-            }
-        }
-        __super::OnLButtonDown(flags, point);
-        // </command_view>
-    } else {
-        DoCustomMouseClick(AeSysApp::CustomLButtonDownCharacters);
-    }
-}
-
-void AeSysView::OnLButtonUp(UINT flags, CPoint point) {
-    if (AeSysApp::CustomLButtonUpCharacters.IsEmpty()) {
-        m_LeftButton = false;
-        if (m_ZoomWindow == true) {
-            m_Points.append(GetWorldCoordinates(point));
-            if (m_Points.length() == 2) // Zoom rectangle has been completely defined
-            {
-                ZoomWindow(m_Points[0], m_Points[1]);
-                m_ZoomWindow = false;
-                m_Points.clear();
-            }
-        }
-        __super::OnLButtonUp(flags, point);
-    } else {
-        DoCustomMouseClick(AeSysApp::CustomLButtonUpCharacters);
-    }
-}
 CRect AeSysView::viewportRect() const {
     CRect rc;
     GetClientRect(&rc);
@@ -896,19 +725,7 @@ CRect AeSysView::viewRect(OdGsView * view) {
     ur.transformBy(x);
     return CRect(OdRoundToLong(ll.x), OdRoundToLong(ur.y), OdRoundToLong(ur.x), OdRoundToLong(ll.y));
 }
-BOOL AeSysView::OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point) {
-    // <command_view>
-    //ScreenToClient(&point);
-    //if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
-    //    PostMessage(WM_PAINT);
-    //    propagateActiveViewChanges();
-    //}
-    // </command_view>
-    DollyAndZoom((zDelta > 0) ? 1. / 0.9 : 0.9);
-    InvalidateRect(NULL, TRUE);
 
-    return __super::OnMouseWheel(nFlags, zDelta, point);
-}
 inline OdGsViewPtr overallView(OdGsDevice * device) {
     OdGsViewPtr OverallView;
     OdGsPaperLayoutHelperPtr PaperLayoutHelper = OdGsPaperLayoutHelper::cast(device);
@@ -2012,26 +1829,6 @@ DROPEFFECT AeSysView::OnDragOver(COleDataObject * pDataObject, DWORD dwKeyState,
     }
     return __super::OnDragOver(pDataObject, dwKeyState, point);
 }
-void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-    switch (nChar) {
-    case VK_ESCAPE:
-        break;
-
-    case VK_F5:
-        PostMessage(WM_PAINT);
-        break;
-
-    case VK_DELETE:
-
-        // <command_console>
-        ((AeSysDoc*) GetDocument())->DeleteSelection(false);
-        // </command_console>
-
-        PostMessage(WM_PAINT);
-        break;
-    }
-    __super::OnKeyDown(nChar, nRepCnt, nFlags);
-}
 BOOL AeSysView::PreCreateWindow(CREATESTRUCT & createStructure) {
     // TODO: Modify the Window class or styles here by modifying the CREATESTRUCT
 
@@ -2103,6 +1900,7 @@ void AeSysView::respond(const OdString & s) {
     m_response.m_string = s;
 }
 // </command_view>
+
 void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
     m_response.m_string = m_inpars.result();
     switch (characterCodeValue) {
@@ -2170,6 +1968,236 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
         theApp.SetStatusPaneTextAt(nStatusInfo, m_inpars.result());
     }
     __super::OnChar(characterCodeValue, repeatCount, flags);
+}
+
+void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+    switch (nChar) {
+    case VK_ESCAPE:
+        break;
+
+    case VK_F5:
+        PostMessage(WM_PAINT);
+        break;
+
+    case VK_DELETE:
+
+        // <command_console>
+        ((AeSysDoc*) GetDocument())->DeleteSelection(false);
+        // </command_console>
+
+        PostMessage(WM_PAINT);
+        break;
+    }
+    __super::OnKeyDown(nChar, nRepCnt, nFlags);
+}
+
+void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
+    if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
+        // <command_view>
+        switch (m_mode) {
+        case kQuiescent:
+            if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
+                //getActiveView()->invalidate();
+                PostMessage(WM_PAINT);
+            }
+            break;
+        case kGetPoint:
+            m_response.m_point = m_editor.toEyeToWorld(point.x, point.y);
+            if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
+                if (!m_editor.toUcsToWorld(m_response.m_point))
+                    break;
+            }
+            m_editor.snap(m_response.m_point, m_pBasePt);
+            m_response.m_type = Response::kPoint;
+            break;
+        default:
+            m_LeftButton = true;
+            m_MousePosition = point;
+            m_MouseClick = point;
+            if (m_ZoomWindow == true) {
+                m_Points.clear();
+                m_Points.append(GetWorldCoordinates(point));
+            }
+        }
+        __super::OnLButtonDown(flags, point);
+        // </command_view>
+    } else {
+        DoCustomMouseClick(AeSysApp::CustomLButtonDownCharacters);
+    }
+}
+
+void AeSysView::OnLButtonUp(UINT flags, CPoint point) {
+    if (AeSysApp::CustomLButtonUpCharacters.IsEmpty()) {
+        m_LeftButton = false;
+        if (m_ZoomWindow == true) {
+            m_Points.append(GetWorldCoordinates(point));
+            if (m_Points.length() == 2) // Zoom rectangle has been completely defined
+            {
+                ZoomWindow(m_Points[0], m_Points[1]);
+                m_ZoomWindow = false;
+                m_Points.clear();
+            }
+        }
+        __super::OnLButtonUp(flags, point);
+    } else {
+        DoCustomMouseClick(AeSysApp::CustomLButtonUpCharacters);
+    }
+}
+
+void AeSysView::OnMButtonDown(UINT flags, CPoint point) {
+    m_MiddleButton = true;
+    m_MousePosition = point;
+    __super::OnMButtonDown(flags, point);
+}
+
+void AeSysView::OnMButtonUp(UINT flags, CPoint point) {
+    m_MiddleButton = false;
+    __super::OnMButtonUp(flags, point);
+}
+
+void AeSysView::OnMouseMove(UINT flags, CPoint point) {
+    DisplayOdometer();
+    if (m_LeftButton == true) {
+        CClientDC dc(this);
+        CRect rcZoomOld;
+        rcZoomOld.SetRect(m_MouseClick.x, m_MouseClick.y, m_MousePosition.x, m_MousePosition.y);
+        rcZoomOld.NormalizeRect();
+        rcZoomOld.InflateRect(1, 1);
+
+        RedrawWindow(&rcZoomOld);
+
+        CRect rcZoom;
+        rcZoom.SetRect(m_MouseClick.x, m_MouseClick.y, point.x, point.y);
+        rcZoom.NormalizeRect();
+
+        dc.DrawFocusRect(&rcZoom);
+        m_MousePosition = point;
+    } else if (m_MiddleButton == true) {
+        OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+
+        OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
+
+        DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
+        FirstView->dolly(DollyVector);
+
+        m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
+        m_ViewTransform.BuildTransformMatrix();
+
+        m_MousePosition = point;
+        PostMessageW(WM_PAINT);
+    } else if (m_RightButton == true) {
+        Orbit((double(m_MousePosition.y) - double(point.y)) / 100., (double(m_MousePosition.x) - double(point.x)) / 100.);
+        m_MousePosition = point;
+        PostMessageW(WM_PAINT);
+    }
+    __super::OnMouseMove(flags, point);
+
+    switch (theApp.CurrentMode()) {
+    case ID_MODE_ANNOTATE:
+        DoAnnotateModeMouseMove();
+        break;
+
+    case ID_MODE_DRAW:
+        DoDrawModeMouseMove();
+        break;
+
+    case ID_MODE_DRAW2:
+        DoDraw2ModeMouseMove();
+        break;
+
+    case ID_MODE_LPD:
+        DoDuctModeMouseMove();
+        break;
+
+    case ID_MODE_NODAL:
+        DoNodalModeMouseMove();
+        break;
+
+    case ID_MODE_PIPE:
+        DoPipeModeMouseMove();
+        break;
+
+    case ID_MODE_POWER:
+        DoPowerModeMouseMove();
+        break;
+
+    case ID_MODE_PRIMITIVE_EDIT:
+        PreviewPrimitiveEdit();
+        break;
+
+    case ID_MODE_PRIMITIVE_MEND:
+        PreviewMendPrimitive();
+        break;
+
+    case ID_MODE_GROUP_EDIT:
+        PreviewGroupEdit();
+        break;
+
+    }
+    if (m_RubberbandType == Lines) {
+        CDC* DeviceContext = GetDC();
+        const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
+        CPen GreyPen(PS_SOLID, 0, RubberbandColor);
+        CPen* Pen = DeviceContext->SelectObject(&GreyPen);
+
+        DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
+        DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
+
+        m_RubberbandLogicalEndPoint = point;
+        DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
+        DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
+        DeviceContext->SelectObject(Pen);
+        DeviceContext->SetROP2(DrawMode);
+        ReleaseDC(DeviceContext);
+    } else if (m_RubberbandType == Rectangles) {
+        CDC* DeviceContext = GetDC();
+        const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
+        CPen GreyPen(PS_SOLID, 0, RubberbandColor);
+        CPen* Pen = DeviceContext->SelectObject(&GreyPen);
+        CBrush* Brush = (CBrush*) DeviceContext->SelectStockObject(NULL_BRUSH);
+
+        DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
+
+        m_RubberbandLogicalEndPoint = point;
+        DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
+        DeviceContext->SelectObject(Brush);
+        DeviceContext->SelectObject(Pen);
+        DeviceContext->SetROP2(DrawMode);
+        ReleaseDC(DeviceContext);
+    }
+}
+
+BOOL AeSysView::OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point) {
+    // <command_view>
+    //ScreenToClient(&point);
+    //if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
+    //    PostMessage(WM_PAINT);
+    //    propagateActiveViewChanges();
+    //}
+    // </command_view>
+    DollyAndZoom((zDelta > 0) ? 1. / 0.9 : 0.9);
+    InvalidateRect(NULL, TRUE);
+
+    return __super::OnMouseWheel(nFlags, zDelta, point);
+}
+
+void AeSysView::OnRButtonDown(UINT flags, CPoint point) {
+    if (AeSysApp::CustomRButtonDownCharacters.IsEmpty()) {
+        m_RightButton = true;
+        m_MousePosition = point;
+        __super::OnRButtonDown(flags, point);
+    } else {
+        DoCustomMouseClick(AeSysApp::CustomRButtonDownCharacters);
+    }
+}
+
+void AeSysView::OnRButtonUp(UINT flags, CPoint point) {
+    if (AeSysApp::CustomRButtonUpCharacters.IsEmpty()) {
+        m_RightButton = false;
+        __super::OnRButtonUp(flags, point);
+    } else {
+        DoCustomMouseClick(AeSysApp::CustomRButtonUpCharacters);
+    }
 }
 
 struct OdExRegenCmd : OdEdCommand {
@@ -2324,24 +2352,7 @@ void AeSysView::DoCustomMouseClick(const CString & characters) {
         }
     }
 }
-void AeSysView::OnMButtonDown(UINT flags, CPoint point) {
-    m_MiddleButton = true;
-    m_MousePosition = point;
-    __super::OnMButtonDown(flags, point);
-}
-void AeSysView::OnMButtonUp(UINT flags, CPoint point) {
-    m_MiddleButton = false;
-    __super::OnMButtonUp(flags, point);
-}
-void AeSysView::OnRButtonDown(UINT flags, CPoint point) {
-    if (AeSysApp::CustomRButtonDownCharacters.IsEmpty()) {
-        m_RightButton = true;
-        m_MousePosition = point;
-        __super::OnRButtonDown(flags, point);
-    } else {
-        DoCustomMouseClick(AeSysApp::CustomRButtonDownCharacters);
-    }
-}
+
 CMFCStatusBar& AeSysView::GetStatusBar(void) const {
     return ((CMainFrame*) AfxGetMainWnd())->GetStatusBar();
 }

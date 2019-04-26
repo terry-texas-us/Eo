@@ -144,7 +144,7 @@ void removeMaterialTextureLoadingMonitor() {
 #include "DbLibraryInfo.h"
 #include "summinfo.h"
 
-class EoDlgAbout : public CDialogEx {
+class EoDlgAbout : public CDialog {
 public:
     EoDlgAbout() noexcept;
 
@@ -160,7 +160,7 @@ public:
 };
 
 EoDlgAbout::EoDlgAbout() noexcept 
-    : CDialogEx(EoDlgAbout::IDD) {}
+    : CDialog(EoDlgAbout::IDD) {}
 
 BOOL EoDlgAbout::OnInitDialog() {
     auto LibraryInfo {oddbGetLibraryInfo()};
@@ -168,7 +168,7 @@ BOOL EoDlgAbout::OnInitDialog() {
     auto BuildComments {LibraryInfo->getBuildComments()};
     auto CopyRight {LibraryInfo->getCopyright()};
 
-    CDialogEx::OnInitDialog();
+    CDialog::OnInitDialog();
 
     SetDlgItemTextW(IDC_INFO_BUILD, BuildComments);
 
@@ -177,10 +177,10 @@ BOOL EoDlgAbout::OnInitDialog() {
 }
 
 void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
-    CDialogEx::DoDataExchange(pDX);
+    CDialog::DoDataExchange(pDX);
 }
 
-BEGIN_MESSAGE_MAP(EoDlgAbout, CDialogEx)
+BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)
 END_MESSAGE_MAP()
 
 // AeSys
