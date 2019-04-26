@@ -9,11 +9,8 @@ class EoCtrlColorsButton : public CMFCButton {
     static OdUInt16 m_CurrentIndex;
     static OdUInt16 m_SelectedIndex;
 
-    enum Layouts {
-        SimpleSingleRow,
-        GridDown5RowsOddOnly,
-        GridUp5RowsEvenOnly
-    };
+    enum Layouts { SimpleSingleRow, GridDown5RowsOddOnly, GridUp5RowsEvenOnly };
+
     Layouts m_Layout;
     CSize m_CellSize;
     CSize m_CellSpacing;

@@ -18,8 +18,7 @@ class AeSysView
     // <command_console>
     , OdEdBaseIO
     // </command_console>
-    , EoExEditorObject::OleDragCallback
-{
+    , EoExEditorObject::OleDragCallback {
     // <command_view>
     friend class SaveViewParams;
     // </command_view>
@@ -36,28 +35,20 @@ class AeSysView
     // </command_view>
     mutable bool m_bRegenAbort;
     mutable bool m_bInRegen; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
-    enum PaintMode {
-        PaintMode_Redraw,
-        PaintMode_Regen
-    } m_paintMode;
+
+    enum PaintMode { PaintMode_Redraw, PaintMode_Regen };
+
+    PaintMode m_paintMode;
+
     CPoint m_oldPoint;
     HCURSOR m_hCursor;
 
-    enum Mode {
-        kQuiescent, // idle
-        kGetPoint,
-        kGetString,
-        kDragDrop
-    }
-    m_mode;
+    enum Mode { kQuiescent, kGetPoint, kGetString, kDragDrop };
+
+    Mode m_mode;
 
     struct Response {
-        enum Type {
-            kNone,
-            kPoint,
-            kString,
-            kCancel
-        };
+        enum Type { kNone, kPoint, kString, kCancel };
         Type m_type;
         OdGePoint3d m_point;
         OdString m_string;
@@ -191,11 +182,7 @@ public:
         DimAng = 0x0100,
         All = BothCounts | Pen | Line | TextHeight | WndRatio | Scale | DimLen | DimAng
     };
-    enum ERubs {
-        None,
-        Lines,
-        Rectangles
-    };
+    enum ERubs { None, Lines, Rectangles };
 
 private:
     static const double sm_MaximumWindowRatio;
@@ -571,6 +558,7 @@ public:
     bool StartAssemblyFromLine();
 
     enum EJust { Left = -1, Center, Right };
+    
     enum EElbow { Mittered, Radial };
 
 public:

@@ -28,12 +28,7 @@ public:
 	static double sm_PatternScaleY;
 
 public:
-	enum InteriorStyle {
-		kHollow,
-		kSolid,
-		kPattern,
-		kHatch
-	};
+	enum InteriorStyle { kHollow, kSolid, kPattern, kHatch };
 
 private:
 	OdInt16	m_InteriorStyle;

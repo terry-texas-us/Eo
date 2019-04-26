@@ -234,18 +234,7 @@ public:
     BOOL OnIdle(long count) override;
     void PreLoadState() override;
 
-    enum Units {
-        kArchitecturalS = -1, // Embedded S format
-        kArchitectural,
-        kEngineering,
-        kFeet,
-        kInches,
-        kMeters,
-        kMillimeters,
-        kCentimeters,
-        kDecimeters,
-        kKilometers
-    };
+    enum Units { kArchitecturalS = -1, kArchitectural, kEngineering, kFeet, kInches, kMeters, kMillimeters, kCentimeters, kDecimeters, kKilometers };
 
 private:
     int	m_ArchitecturalUnitsFractionPrecision;

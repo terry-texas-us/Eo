@@ -52,14 +52,8 @@ class EoExEditorObject {
     void dolly(int x, int y);
 
 public:
-    enum _3DViewType {
-        k3DViewTop,
-        k3DViewBottom,
-        k3DViewLeft,
-        k3DViewRight,
-        k3DViewFront,
-        k3DViewBack
-    };
+    enum _3DViewType { k3DViewTop, k3DViewBottom, k3DViewLeft, k3DViewRight, k3DViewFront, k3DViewBack };
+
     void set3DView(_3DViewType type);
 public:
     EoExEditorObject();

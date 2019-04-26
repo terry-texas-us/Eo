@@ -1,17 +1,7 @@
 #pragma once
 
-enum ETokClass {
-	Other,
-	Constant,
-	Identifier,
-	BinaryArithOp,
-	BinaryRelatOp,
-	BinaryLogicOp,
-	UnaryLogicOp,
-	AssignOp,
-	OpenParen,
-	CloseParen
-};
+enum ETokClass { Other, Constant, Identifier, BinaryArithOp, BinaryRelatOp, BinaryLogicOp, UnaryLogicOp, AssignOp, OpenParen, CloseParen };
+
 struct CD { // column definition
 	long lDef;				// data definition
 	long lTyp;				// data type

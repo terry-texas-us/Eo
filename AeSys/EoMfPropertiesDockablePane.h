@@ -17,14 +17,7 @@ protected:
     CComboBox m_wndObjectCombo;
     EoMfPropertiesMFCToolBar m_PropertiesToolBar;
 
-    enum WorkspaceTabsSubItems {
-        kTabsStyle,
-        kTabLocation,
-        kTabsAutoColor,
-        kTabIcons,
-        kTabBorderSize,
-        kActiveViewScale
-    };
+    enum WorkspaceTabsSubItems { kTabsStyle, kTabLocation, kTabsAutoColor, kTabIcons, kTabBorderSize, kActiveViewScale };
 
 public:
     virtual ~EoMfPropertiesDockablePane(void);

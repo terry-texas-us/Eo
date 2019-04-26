@@ -624,13 +624,9 @@ class RTOrbitTracker : public OdEdPointTracker {
     double  m_D; // diameter of orbit control in projected coordinates
     OdGsModelPtr    m_pModel;
 
-    enum Axis {
-        kHorizontal,
-        kVertical,
-        kPerpDir, // orbit around perpendicular to mouse direction
-        kEye,
-    }
-    m_axis;
+    enum Axis { kHorizontal, kVertical, kPerpDir, kEye, };
+    
+    Axis m_axis;
 
     void viewportDcCorners(OdGePoint2d& lowerLeft, OdGePoint2d& upperRight) const {
         const OdGePoint3d Target = m_pView->viewingMatrix() * m_pView->target();

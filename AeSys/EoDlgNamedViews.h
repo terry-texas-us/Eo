@@ -19,11 +19,7 @@ class EoDlgNamedViews : public CDialog {
 public:
     EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = NULL);
 
-    enum {
-        kUnchangedItem = 0,
-        kNewItem = 1,
-        kReplace = 2
-    };
+    enum { kUnchangedItem = 0, kNewItem = 1, kReplace = 2 };
 
     AeSysDoc* document() noexcept {
         return m_pDoc;

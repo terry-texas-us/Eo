@@ -22,24 +22,7 @@ protected:
     DECLARE_MESSAGE_MAP()
 
 public:
-    enum ColumnLabels {
-        Status,
-        Name,
-        On,
-        Freeze,
-        Lock,
-        Color,
-        Linetype,
-        Lineweight,
-        PlotStyle,
-        Plot,
-        VpFreeze,
-        VpColor,
-        VpLinetype,
-        VpLineweight,
-        VpPlotStyle,
-        Descr
-    };
+    enum ColumnLabels { Status, Name, On, Freeze, Lock, Color, Linetype, Lineweight, PlotStyle, Plot, VpFreeze, VpColor, VpLinetype, VpLineweight, VpPlotStyle, Descr };
 
     AeSysDoc* m_Document;
     OdDbDatabasePtr m_Database;
