@@ -381,12 +381,6 @@
     <ClCompile Include="EoObjectSnapManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EoExGripManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="EoExEditorObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EoLoadApps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -856,12 +850,6 @@
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="EoObjectSnapManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EoExGripManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EoExEditorObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EoLoadApps.h">

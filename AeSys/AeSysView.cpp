@@ -1628,11 +1628,12 @@ class SaveViewParams {
     HCURSOR m_Cursor;
 
 public:
+    // <tas="SaveViewParams differs from use in OdaMfcApp - line 2388"/>
     SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor) :
         m_View(view), m_Cursor(view->cursor()) {
         view->track(tracker);
         view->setCursor(cursor);
-        view->m_editor.initSnapping(view->getActiveTopView());
+        view->m_editor.initSnapping(view->getActiveTopView(), tracker);
     }
     ~SaveViewParams() {
         m_View->track(0);
@@ -2229,11 +2230,11 @@ OdEdCommandPtr AeSysView::command(const OdString & commandName) {
     }
 }
 
-EoExEditorObject& AeSysView::editorObject() noexcept {
+OdExEditorObject& AeSysView::editorObject() noexcept {
     return m_editor;
 }
 
-const EoExEditorObject& AeSysView::editorObject() const noexcept {
+const OdExEditorObject& AeSysView::editorObject() const noexcept {
     return m_editor;
 }
 

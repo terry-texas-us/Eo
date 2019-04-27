@@ -7,7 +7,7 @@
 #include "ExEdBaseIO.h"
 #include "Gs/Gs.h"
 #include "atltypes.h"
-#include "EoExEditorObject.h"
+#include "EditorObject.h"
 #include "ExEdInputParser.h"
 
 class AeSysDoc;
@@ -18,7 +18,7 @@ class AeSysView
     // <command_console>
     , OdEdBaseIO
     // </command_console>
-    , EoExEditorObject::OleDragCallback {
+    , OdExEditorObject::OleDragCallback {
     // <command_view>
     friend class SaveViewParams;
     // </command_view>
@@ -31,7 +31,7 @@ class AeSysView
 
     static UINT g_nRedrawMSG;
     // <command_view>
-    EoExEditorObject m_editor;
+    OdExEditorObject m_editor;
     // </command_view>
     mutable bool m_bRegenAbort;
     mutable bool m_bInRegen; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
@@ -121,8 +121,8 @@ public:
     int inpOptions() const noexcept;
     void respond(const OdString& s);
     OdEdCommandPtr command(const OdString& commandName);
-    EoExEditorObject& editorObject() noexcept;
-    const EoExEditorObject& editorObject() const noexcept;
+    OdExEditorObject& editorObject() noexcept;
+    const OdExEditorObject& editorObject() const noexcept;
     bool isModelSpaceView() const;
     bool drawableVectorizationCallback(const OdGiDrawable* drawable);
     // </command_view>

@@ -41,7 +41,7 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -98,7 +98,6 @@
     <ClCompile Include="EoGripperScrollBar.cpp" />
     <ClCompile Include="EoMfcExport.cpp" />
     <ClCompile Include="AeSysView.cpp" />
-    <ClCompile Include="EoExEditorObject.cpp" />
     <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
     <ClCompile Include="EoDbCharacterCellDefinition.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
@@ -129,7 +128,6 @@
     <ClCompile Include="EoVarDialog.cpp" />
     <ClCompile Include="EoVaxFloat.cpp" />
     <ClCompile Include="EoViModelView.cpp" />
-    <ClCompile Include="EoExGripManager.cpp" />
     <ClCompile Include="OFNHookProcFileTracing.cpp" />
     <ClCompile Include="EoDlgFixupOptions.cpp" />
     <ClCompile Include="EoDlgSetHomePoint.cpp" />
@@ -271,7 +269,6 @@
     <ClInclude Include="EoGripperScrollBar.h" />
     <ClInclude Include="EoMfcExport.h" />
     <ClInclude Include="AeSysView.h" />
-    <ClInclude Include="EoExEditorObject.h" />
     <ClInclude Include="EoCtrlBitmapPickerCombo.h" />
     <ClInclude Include="eodb.h" />
     <ClInclude Include="EoDbCharacterCellDefinition.h" />
@@ -353,7 +350,6 @@
     <ClInclude Include="EoPreviewDib.h" />
     <ClInclude Include="EoVarDialog.h" />
     <ClInclude Include="EoVaxFloat.h" />
-    <ClInclude Include="EoExGripManager.h" />
     <ClInclude Include="Lex.h" />
     <ClInclude Include="EoGeLineSeg3d.h" />
     <ClInclude Include="MainFrm.h" />
