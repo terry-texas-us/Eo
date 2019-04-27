@@ -1,5 +1,7 @@
 #pragma once
 
+// From OdaMfcApp\OdaMfcExport.h  (last compare 19.12)
+
 #ifdef ODAMFC_EXPORT_SYMBOL
 #   define ODAMFC_EXPORT OD_TOOLKIT_EXPORT
 #else
@@ -8,9 +10,9 @@
 
 #include "DbGsManager.h"
 
-class ODAMFC_EXPORT EoApplicationReactor : public OdRxObject {
+class ODAMFC_EXPORT OdApplicationReactor : public OdRxObject {
 public:
-    ODRX_DECLARE_MEMBERS(EoApplicationReactor);
+    ODRX_DECLARE_MEMBERS(OdApplicationReactor);
 
     // App events.
     virtual void OnBeginQuit() noexcept {}
@@ -35,13 +37,13 @@ public:
     virtual void documentActivated(CDocument* document) noexcept {}
 };
 
-typedef OdSmartPtr< EoApplicationReactor > EoApplicationReactorPtr;
+typedef OdSmartPtr< OdApplicationReactor > OdApplicationReactorPtr;
 
-ODAMFC_EXPORT void EoAddAppReactor(EoApplicationReactor* reactor);
+ODAMFC_EXPORT void OdAddAppReactor(OdApplicationReactor* reactor);
 
-class ODAMFC_EXPORT EoApDocument : public OdRxObject {
+class ODAMFC_EXPORT OdApDocument : public OdRxObject {
 public:
-    ODRX_DECLARE_MEMBERS(EoApDocument);
+    ODRX_DECLARE_MEMBERS(OdApDocument);
 
     virtual OdString fileName() const = 0;
     virtual CDocument* cDoc() const = 0;
@@ -58,8 +60,8 @@ public:
     // </command_console>
     virtual OdDbSelectionSetPtr selectionSet() const = 0;
 };
-typedef OdSmartPtr< EoApDocument > EoApDocumentPtr;
+typedef OdSmartPtr< OdApDocument > OdApDocumentPtr;
 
-ODAMFC_EXPORT EoApDocumentPtr odGetAppDocument(CDocument* document);
+ODAMFC_EXPORT OdApDocumentPtr odGetAppDocument(CDocument* document);
 ODAMFC_EXPORT OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
 ODAMFC_EXPORT bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) noexcept;

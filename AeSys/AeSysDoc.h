@@ -268,7 +268,7 @@ public:
 #endif
 
 #ifdef ODAMFC_EXPORT_SYMBOL
-    OdSmartPtr<EoApDocumentImpl> m_pRefDocument;
+    OdSmartPtr<OdApDocumentImpl> m_pRefDocument;
 #endif // ODAMFC_EXPORT_SYMBOL
 
 protected:

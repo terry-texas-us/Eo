@@ -1,6 +1,6 @@
 #pragma once
 
-// From OdaMfcApp\OdaMfcExportImpl.h
+// From OdaMfcApp\OdaMfcExportImpl.h  (last compare 19.12)
 
 #include "stdafx.h"
 #include "EoMfcExport.h"
@@ -36,11 +36,11 @@ private:
     T* m_pUnderlayObj;
 };
 
-class EoApDocumentImpl : public EoApDocument {
+class OdApDocumentImpl : public OdApDocument {
 public:
-    static OdSmartPtr<EoApDocumentImpl> createObject(CDocument* document);
+    static OdSmartPtr<OdApDocumentImpl> createObject(CDocument* document);
 
-    ~EoApDocumentImpl();
+    ~OdApDocumentImpl();
     OdString fileName() const override;
     CDocument* cDoc() const noexcept override;
     OdDbDatabasePtr database() const override;

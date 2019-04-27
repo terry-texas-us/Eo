@@ -205,7 +205,7 @@ AeSysDoc::AeSysDoc() noexcept
     g_pDoc = this;
 
 #ifdef ODAMFC_EXPORT_SYMBOL
-    m_pRefDocument = EoApDocumentImpl::createObject(this);
+    m_pRefDocument = OdApDocumentImpl::createObject(this);
 #endif // ODAMFC_EXPORT_SYMBOL
 }
 // <tas="crash with smart pointer m_DatabasePtr release"\>

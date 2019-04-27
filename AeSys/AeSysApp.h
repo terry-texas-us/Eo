@@ -108,9 +108,9 @@ private:
 
 #ifdef ODAMFC_EXPORT_SYMBOL
 public:
-    void AddReactor(EoApplicationReactor* reactor);
-    void RemoveReactor(EoApplicationReactor* reactor);
-    std::vector<OdSmartPtr<EoApplicationReactor>> m_aAppReactors;
+    void AddReactor(OdApplicationReactor* reactor);
+    void RemoveReactor(OdApplicationReactor* reactor);
+    std::vector<OdSmartPtr<OdApplicationReactor>> m_aAppReactors;
 #endif // ODAMFC_EXPORT_SYMBOL
 
 public:

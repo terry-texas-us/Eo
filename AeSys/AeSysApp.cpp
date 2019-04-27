@@ -668,13 +668,13 @@ void AeSysApp::RefreshCommandMenu() {
 // </command_console>
 
 #ifdef ODAMFC_EXPORT_SYMBOL
-void AeSysApp::AddReactor(EoApplicationReactor* reactor) {
-    if (m_aAppReactors.end() == std::find(m_aAppReactors.begin(), m_aAppReactors.end(), EoApplicationReactorPtr(reactor))) {
+void AeSysApp::AddReactor(OdApplicationReactor* reactor) {
+    if (m_aAppReactors.end() == std::find(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor))) {
         m_aAppReactors.push_back(reactor);
     }
 }
-void AeSysApp::RemoveReactor(EoApplicationReactor* reactor) {
-    m_aAppReactors.erase(std::remove(m_aAppReactors.begin(), m_aAppReactors.end(), EoApplicationReactorPtr(reactor)), m_aAppReactors.end());
+void AeSysApp::RemoveReactor(OdApplicationReactor* reactor) {
+    m_aAppReactors.erase(std::remove(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor)), m_aAppReactors.end());
 }
 #endif // ODAMFC_EXPORT_SYMBOL
 
@@ -1155,8 +1155,8 @@ BOOL AeSysApp::InitializeTeigha() {
         EoLoadApps::rxInit();
 
 #ifdef ODAMFC_EXPORT
-        EoApplicationReactor::rxInit();
-        EoApDocument::rxInit();
+        OdApplicationReactor::rxInit();
+        OdApDocument::rxInit();
 #endif // ODAMFC_EXPORT
 
         ::odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
@@ -2068,8 +2068,8 @@ OdInt16 AeSysApp::TrapHighlightColor() const noexcept {
 }
 void AeSysApp::UninitializeTeigha() noexcept {
 #ifdef ODAMFC_EXPORT
-    EoApplicationReactor::rxUninit();
-    EoApDocument::rxUninit();
+    OdApplicationReactor::rxUninit();
+    OdApDocument::rxUninit();
 #endif // ODAMFC_EXPORT
 
     EoLoadApps::rxUninit();

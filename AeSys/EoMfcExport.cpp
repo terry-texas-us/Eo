@@ -1,4 +1,4 @@
-// From OdaMfcApp\OdaMfcExport.cpp
+// From OdaMfcApp\OdaMfcExport.cpp (last compare 19.12)
 
 #include "stdafx.h"
 #include "AeSysDoc.h"
@@ -8,70 +8,70 @@
 
 #ifdef ODAMFC_EXPORT_SYMBOL
 
-ODRX_CONS_DEFINE_MEMBERS(EoApplicationReactor, OdRxObject, RXIMPL_CONSTR);
-ODRX_NO_CONS_DEFINE_MEMBERS(EoApDocument, OdRxObject);
+ODRX_CONS_DEFINE_MEMBERS(OdApplicationReactor, OdRxObject, RXIMPL_CONSTR);
+ODRX_NO_CONS_DEFINE_MEMBERS(OdApDocument, OdRxObject);
 
-OdSmartPtr<EoApDocumentImpl> EoApDocumentImpl::createObject(CDocument* document) {
-    OdSmartPtr<EoApDocumentImpl> pRes = OdRxObjectImpl<EoApDocumentImpl>::createObject();
+OdSmartPtr<OdApDocumentImpl> OdApDocumentImpl::createObject(CDocument* document) {
+    OdSmartPtr<OdApDocumentImpl> pRes = OdRxObjectImpl<OdApDocumentImpl>::createObject();
     pRes->m_pImp = new MfcObjectWrapper<AeSysDoc>((AeSysDoc*)document);
     return pRes;
 }
 
-EoApDocumentImpl::~EoApDocumentImpl() {
+OdApDocumentImpl::~OdApDocumentImpl() {
     delete m_pImp;
 }
 
-OdString EoApDocumentImpl::fileName() const {
+OdString OdApDocumentImpl::fileName() const {
     return (const wchar_t*)(*m_pImp)->GetPathName();
 }
 
-CDocument* EoApDocumentImpl::cDoc() const noexcept {
+CDocument* OdApDocumentImpl::cDoc() const noexcept {
     return (*m_pImp).get();
 }
 
-OdDbDatabasePtr EoApDocumentImpl::database() const {
+OdDbDatabasePtr OdApDocumentImpl::database() const {
     return (*m_pImp)->m_DatabasePtr;
 }
 
-void EoApDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
+void OdApDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
 
-void EoApDocumentImpl::myLockMode() const noexcept {}
+void OdApDocumentImpl::myLockMode() const noexcept {}
 
-bool EoApDocumentImpl::isQuiescent() const noexcept {
+bool OdApDocumentImpl::isQuiescent() const noexcept {
     return false;
 }
 
-void* EoApDocumentImpl::contextPtr() const noexcept {
+void* OdApDocumentImpl::contextPtr() const noexcept {
     return 0;
 }
 
 // <command_console>
-OdEdBaseIO* EoApDocumentImpl::cmdIO() {
+OdEdBaseIO* OdApDocumentImpl::cmdIO() {
     return (*m_pImp)->cmdIO();
 }
 
-OdDbCommandContextPtr EoApDocumentImpl::cmdCtx() {
+OdDbCommandContextPtr OdApDocumentImpl::cmdCtx() {
     return (*m_pImp)->cmdCtx();
 }
 
-void EoApDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
+void OdApDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
     (*m_pImp)->ExecuteCommand(command, echo);
 }
 
-OdString EoApDocumentImpl::recentCmd() {
+OdString OdApDocumentImpl::recentCmd() {
     return (*m_pImp)->recentCmd();
 }
 // </command_console>
 
-OdDbSelectionSetPtr EoApDocumentImpl::selectionSet() const {
+OdDbSelectionSetPtr OdApDocumentImpl::selectionSet() const {
     return (*m_pImp)->selectionSet();
 }
 
-EoApDocumentPtr odGetAppDocument(CDocument* document) {
+OdApDocumentPtr odGetAppDocument(CDocument* document) {
     return static_cast<AeSysDoc*>(document)->m_pRefDocument;
 }
 
-void EoAddAppReactor(EoApplicationReactor* reactor) {
+void OdAddAppReactor(OdApplicationReactor* reactor) {
     AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
     TheApp->AddReactor(reactor);
 }
