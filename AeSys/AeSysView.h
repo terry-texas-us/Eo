@@ -26,7 +26,7 @@ class AeSysView
     void destroyDevice();
     COleDropTarget m_dropTarget;
 
-    CString m_sPrompt;
+    OdString m_sPrompt;
     ExEdInputParser m_inpars;
 
     static UINT g_nRedrawMSG;
@@ -168,6 +168,9 @@ public: // Methods - virtuals
     OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
     void putString(const OdString& string) override;
     // </command_console>
+
+    bool UpdateStringTrackerCursor(void);
+
 public:
     enum EStateInformationItem {
         WorkCount = 0x0001,

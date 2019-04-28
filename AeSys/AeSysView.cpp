@@ -1023,6 +1023,7 @@ void AeSysView::createDevice() {
 void AeSysView::destroyDevice() {
     m_pDevice.release();
 }
+
 void AeSysView::OnBeginPrinting(CDC * deviceContext, CPrintInfo * printInformation) {
     ViewportPushActive();
     PushViewTransform();
@@ -1128,6 +1129,7 @@ void generateTiles(HDC hdc, RECT & drawrc, OdGsDevice * pBmpDevice, OdUInt32 nTi
         DeleteDC(bmpDC);
     }
 }
+
 void AeSysView::OnPrint(CDC * deviceContext, CPrintInfo * printInformation) {
     const OdDbDatabase* Database = getDatabase();
 
@@ -1552,6 +1554,7 @@ void AeSysView::OnPrint(CDC * deviceContext, CPrintInfo * printInformation) {
     setPlotGeneration(false);
     CView::OnPrint(deviceContext, printInformation);
 }
+
 void AeSysView::OnEndPrinting(CDC * deviceContext, CPrintInfo * printInformation) {
     PopViewTransform();
     ViewportPopActive();
@@ -1576,12 +1579,15 @@ BOOL AeSysView::OnPreparePrinting(CPrintInfo * printInformation) {
     }
     return DoPreparePrinting(printInformation);
 }
+
 void AeSysView::OnDrag() {
     exeCmd(L"dolly ");
 }
+
 void AeSysView::OnUpdateDrag(CCmdUI * pCmdUI) {
     pCmdUI->Enable(m_mode == kQuiescent);
 }
+
 void AeSysView::OnViewerRegen() {
     m_pDevice->invalidate();
     if (m_pDevice->gsModel()) {
@@ -1590,6 +1596,7 @@ void AeSysView::OnViewerRegen() {
     m_paintMode = PaintMode_Regen;
     PostMessage(WM_PAINT);
 }
+
 void AeSysView::OnViewerVpregen() {
     m_pDevice->invalidate();
     if (m_pDevice->gsModel()) {
@@ -1598,6 +1605,7 @@ void AeSysView::OnViewerVpregen() {
     m_paintMode = PaintMode_Regen;
     PostMessage(WM_PAINT);
 }
+
 void AeSysView::OnUpdateViewerRegen(CCmdUI * pCmdUI) {
     pCmdUI->Enable(m_pDevice->gsModel() != 0);
 }
@@ -1616,7 +1624,7 @@ bool AeSysView::isGettingString() const noexcept {
 }
 
 OdString AeSysView::prompt() const {
-    return (LPCWSTR) m_sPrompt;
+    return m_sPrompt;
 }
 
 int AeSysView::inpOptions() const noexcept {
@@ -1624,16 +1632,17 @@ int AeSysView::inpOptions() const noexcept {
 }
 
 class SaveViewParams {
+protected:
     AeSysView* m_View;
     HCURSOR m_Cursor;
 
 public:
-    // <tas="SaveViewParams differs from use in OdaMfcApp - line 2388"/>
-    SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor) :
-        m_View(view), m_Cursor(view->cursor()) {
+    SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor, bool snap) 
+        : m_View(view)
+        , m_Cursor(view->cursor()) {
         view->track(tracker);
         view->setCursor(cursor);
-        view->m_editor.initSnapping(view->getActiveTopView(), tracker);
+        if (snap) { view->m_editor.initSnapping(view->getActiveTopView(), tracker); }
     }
     ~SaveViewParams() {
         m_View->track(0);
@@ -1641,22 +1650,72 @@ public:
         m_View->m_editor.uninitSnapping(m_View->getActiveTopView());
     }
 };
+
+#define BLINK_CURSOR_TIMER 888
+#define BLINK_CURSOR_RATE  GetCaretBlinkTime()
+
+void CALLBACK StringTrackerTimer(HWND hWnd, UINT  nMsg, UINT  nIDTimer, DWORD dwTime);
+
+class SaveViewParams2 : public SaveViewParams {
+    bool m_bTimerSet;
+
+public:
+    SaveViewParams2(AeSysView* view, OdEdStringTracker* tracker, HCURSOR cursor)
+        : SaveViewParams(view, tracker, cursor, false) {
+        if (tracker) {
+            tracker->setCursor(true);
+            ::SetTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER, BLINK_CURSOR_RATE, (TIMERPROC) StringTrackerTimer);
+            m_bTimerSet = true;
+        } else {
+            m_bTimerSet = false;
+        }
+    }
+    ~SaveViewParams2() {
+        if (m_bTimerSet) { ::KillTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER); }
+    }
+};
+
+// Blink cursor timer
+
+bool AeSysView::UpdateStringTrackerCursor(void) {
+    if (m_mode == kGetString && m_response.m_type != Response::kString) {
+        if (m_editor.trackString(m_inpars.result())) {
+            getActiveTopView()->invalidate();
+            PostMessage(WM_PAINT);
+            return true;
+        }
+    }
+    return false;
+}
+
+void CALLBACK StringTrackerTimer(HWND hWnd, UINT nMsg, UINT nIDTimer, DWORD dwTime) {
+    try {
+        AeSysView* pViewer = (AeSysView*) CWnd::FromHandle(hWnd);
+
+        if (!pViewer->UpdateStringTrackerCursor())
+            KillTimer(hWnd, nIDTimer);
+    } catch (...) {
+        KillTimer(hWnd, nIDTimer);
+    }
+}
+
 // </command_view>
 // <command_console>
+
+/// <overrides="OdEdBaseIO">
+
 OdUInt32 AeSysView::getKeyState() noexcept {
     OdUInt32 KeyState(0);
-    if (::GetKeyState(VK_CONTROL) != 0) {
-        KeyState |= MK_CONTROL;
-    }
-    if (::GetKeyState(VK_SHIFT) != 0) {
-        KeyState |= MK_SHIFT;
-    }
+    if (::GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
+
+    if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
+
     return (KeyState);
 }
 
 OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointTracker * tracker) {
-    m_sPrompt.Empty();
-    OdSaveState<CString> savePrompt(m_sPrompt);
+    m_sPrompt.empty();
+    OdSaveState<OdString> savePrompt(m_sPrompt);
     putString(prompt);
 
     OdSaveState<Mode> saved_m_mode(m_mode, kGetPoint);
@@ -1664,14 +1723,12 @@ OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointT
     m_response.m_type = Response::kNone;
     m_inpOptions = options;
 
-    SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_CROSS));
+    SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_CROSS), !GETBIT(options, OdEd::kGptNoOSnap));
 
     while (theApp.PumpMessage()) {
         switch (m_response.m_type) {
         case Response::kPoint:
-            if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) {
-                SetCapture();
-            }
+            if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) { SetCapture(); }
             return m_response.m_point;
 
         case Response::kString:
@@ -1687,16 +1744,19 @@ OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointT
 }
 
 OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTracker * tracker) {
-    m_sPrompt.Empty();
-    OdSaveState<CString> savePrompt(m_sPrompt);
+    m_sPrompt.empty();
+    OdSaveState<OdString> savePrompt(m_sPrompt);
     putString(prompt);
 
     OdSaveState<Mode> saved_m_mode(m_mode, kGetString);
 
     m_response.m_type = Response::kNone;
+    
+    if (tracker) { m_inpars.reset(true); }
+
     m_inpOptions = options;
 
-    SaveViewParams svp(this, tracker, ::LoadCursor(0, IDC_IBEAM));
+    SaveViewParams2 svp(this, tracker, ::LoadCursor(0, IDC_IBEAM));
 
     while (theApp.PumpMessage()) {
         switch (m_response.m_type) {
@@ -1713,33 +1773,21 @@ OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTr
     throw OdEdCancel();
 }
 
-void AeSysView::putString(const OdString & string) {
-    m_sPrompt = (LPCWSTR) string;
-    int n = m_sPrompt.ReverseFind('\n');
-    if (n >= 0) {
-        theApp.SetStatusPaneTextAt(nStatusInfo, ((LPCWSTR) m_sPrompt) + n + 1);
-    } else {
-        theApp.SetStatusPaneTextAt(nStatusInfo, m_sPrompt);
-    }
+void AeSysView::putString(const OdString& string) {
+    m_sPrompt = string;
+    auto n {m_sPrompt.reverseFind('\n')};
+    
+    LPCWSTR Text {string};
+
+    if (n >= 0) { Text = Text + n + 1; }
+
+    theApp.SetStatusPaneTextAt(nStatusInfo, Text);
 }
+/// </overrides>
 // </command_console>
 
 void AeSysView::track(OdEdInputTracker * tracker) {
-    if (m_pTracker) {
-        m_pTracker->removeDrawables(getActiveTopView());
-    }
-    m_pTracker = tracker;
-
-    m_pBasePt = 0;
-    if (tracker) {
-        m_bTrackerHasDrawables = tracker->addDrawables(getActiveTopView()) != 0;
-        OdEdPointDefTrackerPtr pPointDefTracker = OdEdPointDefTracker::cast(m_pTracker);
-        if (pPointDefTracker.get()) {
-            m_basePt = pPointDefTracker->basePoint();
-            m_pBasePt = &m_basePt;
-        }
-    } else
-        m_bTrackerHasDrawables = false;
+    m_editor.setTracker(tracker);
 }
 
 HCURSOR AeSysView::cursor() const noexcept {
@@ -1961,7 +2009,7 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
             PostMessage(WM_PAINT);
         }
     }
-    if (m_sPrompt.IsEmpty()) {
+    if (m_sPrompt.isEmpty()) {
         m_sPrompt = L"command: ";
     } else if (m_inpars.result().isEmpty()) {
         theApp.SetStatusPaneTextAt(nStatusInfo, m_sPrompt);
@@ -2058,38 +2106,56 @@ void AeSysView::OnMButtonUp(UINT flags, CPoint point) {
 
 void AeSysView::OnMouseMove(UINT flags, CPoint point) {
     DisplayOdometer();
-    if (m_LeftButton == true) {
-        CClientDC dc(this);
-        CRect rcZoomOld;
-        rcZoomOld.SetRect(m_MouseClick.x, m_MouseClick.y, m_MousePosition.x, m_MousePosition.y);
-        rcZoomOld.NormalizeRect();
-        rcZoomOld.InflateRect(1, 1);
+    if (m_MousePosition != point) {
+        switch (m_mode) {
+        case kQuiescent:
+            m_editor.OnMouseMove(flags, point.x, point.y);
+            break;
 
-        RedrawWindow(&rcZoomOld);
+        case kGetPoint:
+        {
+            OdGePoint3d pt = m_editor.toEyeToWorld(point.x, point.y);
+            if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS))
+                if (!m_editor.toUcsToWorld(pt))
+                    return;
 
-        CRect rcZoom;
-        rcZoom.SetRect(m_MouseClick.x, m_MouseClick.y, point.x, point.y);
-        rcZoom.NormalizeRect();
+            if (!GETBIT(m_inpOptions, OdEd::kGptNoOSnap))
+                m_editor.snap(pt);
+            m_editor.trackPoint(pt);
+            break;
+        }
+        }
+        if (m_LeftButton == true) {
+            CClientDC dc(this);
+            CRect rcZoomOld;
+            rcZoomOld.SetRect(m_MouseClick.x, m_MouseClick.y, m_MousePosition.x, m_MousePosition.y);
+            rcZoomOld.NormalizeRect();
+            rcZoomOld.InflateRect(1, 1);
 
-        dc.DrawFocusRect(&rcZoom);
+            RedrawWindow(&rcZoomOld);
+
+            CRect rcZoom;
+            rcZoom.SetRect(m_MouseClick.x, m_MouseClick.y, point.x, point.y);
+            rcZoom.NormalizeRect();
+
+            dc.DrawFocusRect(&rcZoom);
+        } else if (m_MiddleButton == true) {
+            OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+
+            OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
+
+            DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
+            FirstView->dolly(DollyVector);
+
+            m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
+            m_ViewTransform.BuildTransformMatrix();
+
+            PostMessageW(WM_PAINT);
+        } else if (m_RightButton == true) {
+            Orbit((double(m_MousePosition.y) - double(point.y)) / 100., (double(m_MousePosition.x) - double(point.x)) / 100.);
+            PostMessageW(WM_PAINT);
+        }
         m_MousePosition = point;
-    } else if (m_MiddleButton == true) {
-        OdGsViewPtr FirstView = m_pDevice->viewAt(0);
-
-        OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
-
-        DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
-        FirstView->dolly(DollyVector);
-
-        m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
-        m_ViewTransform.BuildTransformMatrix();
-
-        m_MousePosition = point;
-        PostMessageW(WM_PAINT);
-    } else if (m_RightButton == true) {
-        Orbit((double(m_MousePosition.y) - double(point.y)) / 100., (double(m_MousePosition.x) - double(point.x)) / 100.);
-        m_MousePosition = point;
-        PostMessageW(WM_PAINT);
     }
     __super::OnMouseMove(flags, point);
 
@@ -2133,35 +2199,29 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
     case ID_MODE_GROUP_EDIT:
         PreviewGroupEdit();
         break;
-
     }
-    if (m_RubberbandType == Lines) {
-        CDC* DeviceContext = GetDC();
-        const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
-        CPen GreyPen(PS_SOLID, 0, RubberbandColor);
-        CPen* Pen = DeviceContext->SelectObject(&GreyPen);
+    if (m_RubberbandType != None) {
+        auto DeviceContext {GetDC()};
+        const int DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
+        CPen RubberbandPen(PS_SOLID, 0, RubberbandColor);
+        CPen* Pen = DeviceContext->SelectObject(&RubberbandPen);
 
-        DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-        DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
+        if (m_RubberbandType == Lines) {
+            DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
+            DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
 
-        m_RubberbandLogicalEndPoint = point;
-        DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-        DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-        DeviceContext->SelectObject(Pen);
-        DeviceContext->SetROP2(DrawMode);
-        ReleaseDC(DeviceContext);
-    } else if (m_RubberbandType == Rectangles) {
-        CDC* DeviceContext = GetDC();
-        const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
-        CPen GreyPen(PS_SOLID, 0, RubberbandColor);
-        CPen* Pen = DeviceContext->SelectObject(&GreyPen);
-        CBrush* Brush = (CBrush*) DeviceContext->SelectStockObject(NULL_BRUSH);
+            m_RubberbandLogicalEndPoint = point;
+            DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
+            DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
+        } else if (m_RubberbandType == Rectangles) {
+            CBrush* Brush {(CBrush*) DeviceContext->SelectStockObject(NULL_BRUSH)};
 
-        DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
+            DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
 
-        m_RubberbandLogicalEndPoint = point;
-        DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
-        DeviceContext->SelectObject(Brush);
+            m_RubberbandLogicalEndPoint = point;
+            DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
+            DeviceContext->SelectObject(Brush);
+        }
         DeviceContext->SelectObject(Pen);
         DeviceContext->SetROP2(DrawMode);
         ReleaseDC(DeviceContext);
