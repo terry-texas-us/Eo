@@ -9,20 +9,27 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AeSys", "AeSys\AeSys.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Od_DrawingsCommon", "Od_DrawingsCommon\Od_DrawingsCommon.vcxproj", "{D9672813-34BA-4016-8D12-C8C8B60D443D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExCommands", "ExCommands\ExCommands.vcxproj", "{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AcIdViewObj", "AcldViewObj\AcIdViewObj.vcxproj", "{DB729706-20B5-498F-9CBB-37C5ED5AE9A2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DbConstraints", "DbConstraints\DbConstraints.vcxproj", "{5B709E86-7308-4A78-851D-7C7D1ADAED6D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Win32 = Debug|Win32
 		vc15dlldbg|Win32 = vc15dlldbg|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{99616C98-7844-41E8-BC1F-B16C4044EB44}.Debug|Win32.ActiveCfg = vc15dlldbg|Win32
-		{99616C98-7844-41E8-BC1F-B16C4044EB44}.Debug|Win32.Build.0 = vc15dlldbg|Win32
 		{99616C98-7844-41E8-BC1F-B16C4044EB44}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
 		{99616C98-7844-41E8-BC1F-B16C4044EB44}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Debug|Win32.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Debug|Win32.Build.0 = vc15dlldbg|Win32
 		{D9672813-34BA-4016-8D12-C8C8B60D443D}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
 		{D9672813-34BA-4016-8D12-C8C8B60D443D}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
+		{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
+		{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
+		{DB729706-20B5-498F-9CBB-37C5ED5AE9A2}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
+		{DB729706-20B5-498F-9CBB-37C5ED5AE9A2}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
+		{5B709E86-7308-4A78-851D-7C7D1ADAED6D}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
+		{5B709E86-7308-4A78-851D-7C7D1ADAED6D}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

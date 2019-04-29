@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="vc15dlldbg|Win32">
+      <Configuration>vc15dlldbg</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{DB729706-20B5-498F-9CBB-37C5ED5AE9A2}</ProjectGUID>
+    <SccProjectName />
+    <SccLocalPath />
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>AcIdViewObj</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">$(Configuration)\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">AcIdViewObj_19.12_15</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">.tx</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\ODA\15\Drawings_vc15dlldbg\ThirdParty;E:\ODA\15\Drawings_vc15dlldbg\ThirdParty\activation;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4131;4244;4127</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;ID_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR="Debug";AcIdViewObj_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ProgramDataBaseFileName>$(SolutionDir)$(Configuration)\AcIdViewObj_19.12_15.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;ID_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR=\"Debug\";AcIdViewObj_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>E:\ODA\15\Drawings_vc15dlldbg\ThirdParty;E:\ODA\15\Drawings_vc15dlldbg\ThirdParty\activation;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>E:\ODA\15\Drawings_vc15dlldbg\ThirdParty;E:\ODA\15\Drawings_vc15dlldbg\ThirdParty\activation;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;TD_Db.lib;TD_Gi.lib;TD_Ge.lib;TD_Root.lib;TD_Alloc.lib;RText.lib;TD_DbEntities.lib;TD_DbIO.lib;TD_DbCore.lib;ATEXT.lib;ISM.lib;WipeOut.lib;AcMPolygonObj15.lib;ACCAMERA.lib;SCENEOE.lib;UTF.lib;Secur32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\ODA\15\Drawings_vc15dlldbg\exe\vc15dlldbg;E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg\AcIdViewObj.lib</ImportLibrary>
+      <ProgramDataBaseFile>E:\ODA\15\Drawings_vc15dlldbg\exe\vc15dlldbg\AcIdViewObj_19.12_15.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10000000</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewSpline.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdComplexEntity.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewArc.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdBlockReference.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewCircle.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewLine.h" />
+    <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewEllipse.h" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdBlockReference.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewCircle.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewLine.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewEllipse.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewSpline.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewArc.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdComplexEntity.cpp" />
+    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\TD_Id.cpp" />
+    <ResourceCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\IdViewObjectEnablers\IdViewObj.rc" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

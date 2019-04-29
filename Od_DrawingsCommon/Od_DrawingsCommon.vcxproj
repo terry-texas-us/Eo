@@ -55,7 +55,7 @@
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;_TOOLKIT_IN_DLL_;CMAKE_INTDIR="Debug";%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <AssemblerListingLocation>Debug</AssemblerListingLocation>
-      <ProgramDataBaseFileName>E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg\Od_DrawingsCommon.pdb</ProgramDataBaseFileName>
+      <ProgramDataBaseFileName>$(SolutionDir)$(Configuration)\Od_DrawingsCommon.pdb</ProgramDataBaseFileName>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;_TOOLKIT_IN_DLL_;CMAKE_INTDIR=\"Debug\";%(PreprocessorDefinitions)</PreprocessorDefinitions>
