@@ -436,31 +436,8 @@ void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
 	Database->pageObjects();
 }
 
-const OdString Cmd_DISPLAY_DIFFS::groupName() const { return L"AeSysApp"; }
-
-const OdString Cmd_DISPLAY_DIFFS::name() { return L"DISPLAY_DIFFS"; }
-
-const OdString Cmd_DISPLAY_DIFFS::globalName() const { return name(); }
-
-void Cmd_DISPLAY_DIFFS::execute(OdEdCommandContext * commandContext) {
-	// Get handle of failed object and set selection to failed object in original database
-	OdValuePtr vHandle = commandContext->arbitraryData(L"Handle");
-	OdDbHandle hFailed = (OdUInt64) (OdInt64) (*vHandle);
-
-	if (!hFailed.isNull()) { // Clear the value in context
-		commandContext->setArbitraryData(L"Handle", NULL);
-	}
-	OdDbDatabasePtr pNewDb = commandContext->arbitraryData(L"OdDbDatabasePtr");
-	if (pNewDb.isNull()) {
-		commandContext->userIO()->putString(L"No database passed");
-		return;
-	}
-}
 // </command_console>
 
-#pragma warning(push)
-#pragma warning(disable:4510)
-#pragma warning(disable:4610)
 struct CDocTemplateEx : CDocTemplate {
 	void SetViewToCreate(CRuntimeClass* viewClass) noexcept {
 		m_pViewClass = viewClass;
@@ -480,8 +457,6 @@ void AeSysDoc::OnVectorize(const OdString & vectorizerPath) {
 
 	m_pViewer = dynamic_cast<AeSysView*>(NewFrame->GetActiveView());
 }
-
-#pragma warning(pop)
 
 void AeSysDoc::OnCloseVectorizer(AeSysView * view) {
 	if (view != m_pViewer) {

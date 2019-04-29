@@ -45,16 +45,6 @@ public:
     OdInt32 commandFlags() const;
 };
 
-class Cmd_DISPLAY_DIFFS : public OdEdCommand {
-public:
-    static const OdString name();
-    const OdString groupName() const final;
-    const OdString globalName() const final;
-    void execute(OdEdCommandContext* commandContext) final;
-    const OdRxModule* commandApp() const;
-    void commandUndef(bool undefIt);
-    OdInt32 commandFlags() const;
-};
 // </command_console>
 
 class OdDbDatabaseDoc : public OdDbDatabase {

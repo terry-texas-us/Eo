@@ -64,7 +64,6 @@ void rxUninit_COleClientItem_handler();
 // <command_console>
 OdStaticRxObject<Cmd_VIEW> g_Cmd_VIEW;
 OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
-OdStaticRxObject<Cmd_DISPLAY_DIFFS> g_Cmd_DISPLAY_DIFFS;
 // </command_console>
 
 static void addPaperDrawingCustomization() {
@@ -119,6 +118,9 @@ static void addPaperDrawingCustomization() {
 static void removePaperDrawingCustomization() {
 	OdDbLayout::desc()->delX(OdDbLayoutPaperPE::desc());
 }
+
+/// <section="Material textures loading monitor protocol extension">
+
 static void addMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
 	public:
@@ -137,9 +139,11 @@ static void addMaterialTextureLoadingMonitor() {
 
 	OdGiMaterialTextureEntry::desc()->addX(OdGiMaterialTextureLoadPE::desc(), &s_MatLoadExt);
 }
+
 void removeMaterialTextureLoadingMonitor() {
 	OdGiMaterialTextureEntry::desc()->delX(OdGiMaterialTextureLoadPE::desc());
 }
+/// </section>
 
 #include "DbLibraryInfo.h"
 #include "summinfo.h"
@@ -1178,7 +1182,6 @@ BOOL AeSysApp::InitializeTeigha() {
 
 		CommandStack->addCommand(&g_Cmd_VIEW);
 		CommandStack->addCommand(&g_Cmd_SELECT);
-		CommandStack->addCommand(&g_Cmd_DISPLAY_DIFFS);
 		// </command_console>
 
 		/* <tas>
@@ -2033,7 +2036,6 @@ void AeSysApp::UninitializeTeigha() noexcept {
 
 		// <command_console>
 		OdEdCommandStackPtr CommandStack = odedRegCmds();
-		CommandStack->removeCmd(&g_Cmd_DISPLAY_DIFFS);
 		CommandStack->removeCmd(&g_Cmd_SELECT);
 		CommandStack->removeCmd(&g_Cmd_VIEW);
 		// </command_console>
