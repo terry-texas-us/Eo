@@ -1299,19 +1299,12 @@ BOOL AeSysApp::InitInstance() {
 	CCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
 
-	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) {
-		//CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
-		if (!MainFrame->LoadMDIState(GetRegSectionPath())) {
-			m_PegDocTemplate->OpenDocumentFile(nullptr);
-		}
-	} else { // Dispatch commands specified on the command line
-		if (!ProcessShellCommand(CommandLineInfo)) {
-			return FALSE;
-		}
-	}
-	if (!RegisterPreviewWindowClass(m_hInstance)) {
-		return FALSE;
-	}
+	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) { CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
+	// Dispatch commands specified on the command line
+	if (!ProcessShellCommand(CommandLineInfo)) { return FALSE; }
+
+	if (!RegisterPreviewWindowClass(m_hInstance)) { return FALSE; }
+
 	SetShadowFolderPath(L"AeSys Shadow Folder");
 
 	LoadSimplexStrokeFont(ResourceFolderPath() + L"Simplex.psf");
@@ -1325,6 +1318,7 @@ BOOL AeSysApp::InitInstance() {
 	m_ClipboardFormatIdentifierForEoGroups = RegisterClipboardFormatW(L"EoGroups");
 
 	m_thisThreadID = ::GetCurrentThreadId();
+
 	m_pMainWnd->ShowWindow(m_nCmdShow);
 	m_pMainWnd->UpdateWindow();
 
@@ -1977,51 +1971,6 @@ void AeSysApp::reportError(LPCWSTR caption, const OdError & error) {
 void AeSysApp::reportError(LPCWSTR caption, unsigned int error) {
 	messageBox(caption, (LPCWSTR) getErrorDescription(error), MB_OK | MB_ICONERROR);
 }
-class CFullCommandLineInfo : public CCommandLineInfo {
-public:
-	CString m_SaveName;
-	BOOL m_Exit;
-
-	CFullCommandLineInfo()
-		: CCommandLineInfo()
-		, m_Exit(0) {
-	}
-
-	void ParseParam(LPCWSTR param, BOOL flag, BOOL last) final {
-		BOOL is = FALSE;
-		if (flag && !_wcsnicmp(param, L"s", 1)) {
-			m_SaveName = &param[1];
-			is = TRUE;
-		} else if (flag && !_wcsicmp(param, L"exit")) {
-			m_Exit = true;
-			is = TRUE;
-		}
-		if (!is || last) {
-			CCommandLineInfo::ParseParam(param, flag, last);
-		}
-	}
-};
-
-BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo & commandLineInfo) {
-	CDocument* tmpDoc = nullptr;
-	if (commandLineInfo.m_nShellCommand == CCommandLineInfo::FileOpen) {
-		tmpDoc = OpenDocumentFile(commandLineInfo.m_strFileName);
-		if (!tmpDoc) {
-			return FALSE;
-		}
-	} else {
-		CWinApp::ProcessShellCommand(commandLineInfo);
-	}
-	const CFullCommandLineInfo& FullCommandLine = (CFullCommandLineInfo&) commandLineInfo;
-	if (!FullCommandLine.m_SaveName.IsEmpty()) {
-		if (!tmpDoc->OnSaveDocument(FullCommandLine.m_SaveName))
-			return FALSE;
-	}
-	if (FullCommandLine.m_Exit) {
-		PostQuitMessage(0);
-	}
-	return TRUE;
-}
 
 void AeSysApp::initPlotStyleSheetEnv() {
 	OdString StyleSheetFiles = FindConfigPath(L"PrinterStyleSheetDir");
@@ -2150,7 +2099,7 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 
 	CFileDialog dlg(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, ::AfxGetMainWnd());
 	dlg.m_ofn.lpstrTitle = L"Select Graphic System DLL";
-	
+
 	auto s_path {getApplicationPath()};
 	dlg.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
 #else // _TOOLKIT_IN_DLL_
@@ -2168,7 +2117,7 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 		::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, m_sVectorizerPath);
 		WriteProfileStringW(L"options\\vectorizers", m_sVectorizerPath, L"");
 		GetMainWnd()->SendMessage(WM_COMMAND, ID_VECTORIZE);
-	}
+}
 }
 
 void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI * pCmdUI) {

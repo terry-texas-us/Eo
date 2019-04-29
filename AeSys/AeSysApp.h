@@ -180,7 +180,6 @@ public:
 
     OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override;
     OdString getFontMapFileName() const override;
-    BOOL ProcessShellCommand(CCommandLineInfo& commandLineInfo);
 
     void initPlotStyleSheetEnv();
 
