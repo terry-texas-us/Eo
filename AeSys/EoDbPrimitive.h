@@ -81,19 +81,19 @@ public: // Methods - virtuals
 	virtual bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
-	OdInt16 ColorIndex() const noexcept {return m_ColorIndex;}
-	OdDbObjectId EntityObjectId() const noexcept {return m_EntityObjectId;}
+	OdInt16 ColorIndex() const noexcept { return m_ColorIndex; }
+	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
 	CString FormatColorIndex() const;
 	CString FormatLinetypeIndex() const;
-	OdInt16 LinetypeIndex() const noexcept {return m_LinetypeIndex;}
+	OdInt16 LinetypeIndex() const noexcept { return m_LinetypeIndex; }
 	OdInt16 LogicalColorIndex() const noexcept;
 	OdInt16 LogicalLinetypeIndex() const noexcept;
 
 	void SetColorIndex(OdInt16 colorIndex);
-	void SetColorIndex_(OdInt16 colorIndex) noexcept {m_ColorIndex = colorIndex;}
-	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept {m_EntityObjectId = entityObjectId;}
+	void SetColorIndex_(OdInt16 colorIndex) noexcept { m_ColorIndex = colorIndex; }
+	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
 	void SetLinetypeIndex(OdInt16 linetypeIndex);
-
+	void SetLinetypeIndex_(OdInt16 linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
 public: // Methods - static
 	static size_t ControlPointIndex() noexcept;
 	static OdInt16 HighlightColorIndex() noexcept;
@@ -106,5 +106,5 @@ public: // Methods - static
 	static void SetHighlightLinetypeIndex(OdInt16 linetypeIndex) noexcept;
 	static void SetLayerColorIndex(OdInt16 colorIndex) noexcept;
 	static void SetLayerLinetypeIndex(OdInt16 linetypeIndex) noexcept;
-	static OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex);
+	static OdDbObjectId LinetypeObjectFromIndex(OdInt16 linetypeIndex);
 };

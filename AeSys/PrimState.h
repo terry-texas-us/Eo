@@ -29,7 +29,7 @@ public: // Methods
 	void SetCharacterCellDefinition(const EoDbCharacterCellDefinition& characterCellDefinition) noexcept;
 	void SetColorIndex(CDC* deviceContext, OdInt16 colorIndex);
 	void SetFontDefinition(CDC* deviceContext, const EoDbFontDefinition& fontDefinition);
-	void SetLinetypeIndex(CDC* deviceContext, OdInt16 linetypeIndex);
+	void SetLinetypeIndexPs(CDC* deviceContext, OdInt16 linetypeIndex);
 	void SetPointDisplayMode(OdInt16 pointDisplayMode) noexcept;
 	void SetHatchInteriorStyle(OdInt16 interiorStyle) noexcept;
 	void SetHatchInteriorStyleIndex(size_t styleIndex) noexcept;

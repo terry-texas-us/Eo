@@ -105,7 +105,8 @@ void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	SetEntityObjectId(PolylineEntity->objectId());
 	
 	PolylineEntity->setColorIndex(m_ColorIndex);
-	SetLinetypeIndex(m_LinetypeIndex);
+	PolylineEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
+	
 	PolylineEntity->setConstantWidth(m_ConstantWidth);
 	PolylineEntity->setElevation(m_Elevation);
 	PolylineEntity->setThickness(m_Thickness);

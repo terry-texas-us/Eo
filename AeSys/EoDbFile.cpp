@@ -46,8 +46,8 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 	EoDbPolyline* Polyline = new EoDbPolyline();
 	// <tas="No vertices appended to Polyline"</tas>
 
-	Polyline->SetColorIndex(ColorIndex);
-	Polyline->SetLinetypeIndex(LinetypeIndex);
+	Polyline->SetColorIndex_(ColorIndex);
+	Polyline->SetLinetypeIndex_(LinetypeIndex);
 	primitive = Polyline;
 }
 

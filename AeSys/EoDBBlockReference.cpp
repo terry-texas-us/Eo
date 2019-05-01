@@ -72,14 +72,14 @@ void EoDbBlockReference::AddToTreeViewControl(HWND tree, HTREEITEM parent) const
 }
 
 void EoDbBlockReference::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbBlockReferencePtr BlockReferenceEntity = OdDbBlockReference::createObject();
+	auto BlockReferenceEntity {OdDbBlockReference::createObject()};
 	blockTableRecord->appendOdDbEntity(BlockReferenceEntity);
 	BlockReferenceEntity->setDatabaseDefaults();
 	
 	SetEntityObjectId(BlockReferenceEntity->objectId());
 
 	BlockReferenceEntity->setColorIndex(m_ColorIndex);
-	SetLinetypeIndex(m_LinetypeIndex);
+	BlockReferenceEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
 
 	// <tas="BlockReferenceEntity Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
 	OdDbDatabasePtr Database = BlockReferenceEntity->database();

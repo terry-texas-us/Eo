@@ -1,8 +1,8 @@
 #pragma once
 
-COLORREF ViewBackgroundColor = RGB(  0,   0,   0);
+COLORREF ViewBackgroundColor = RGB(  42,   42,   42);
 
-COLORREF RubberbandColor = RGB(0x66, 0x66, 0x66);
+COLORREF RubberbandColor = RGB(102, 102, 102);
 
 COLORREF ColorPalette[256] = {
 	RGB(  0,   0,   0), RGB(255,   0,   0), RGB(255, 255,   0), RGB(  0, 255,   0), RGB(  0, 255, 255), RGB(  0,   0, 255), RGB(255,   0, 255), RGB(255, 255, 255), RGB(128, 128, 128), RGB(192, 192, 192),
@@ -33,6 +33,8 @@ COLORREF ColorPalette[256] = {
 	RGB(  0,   0,   0), RGB(101, 101, 101), RGB(102, 102, 102), RGB(153, 153, 153), RGB(204, 204, 204), RGB(255, 255, 255)
 };
 COLORREF GreyPalette[16] = {
-	RGB(255, 255, 255), RGB(140, 140, 140), RGB(0xbe, 0xbe, 0xbe), RGB(0xdc, 0xdc, 0xdc), RGB(0xf0, 0xf0, 0xf0), RGB(0x8d, 0x8d, 0x8d), RGB(191, 191, 191), RGB(0xdd, 0xdd, 0xdd), RGB(0xf1, 0xf1, 0xf1), RGB(0x8f, 0x8f, 0x8f),
-	RGB(0xc1, 0xc1, 0xc1), RGB(223, 223, 223), RGB(0xc1, 0xc1, 0xc1), RGB(0x90, 0x90, 0x90), RGB(0xc2, 0xc2, 0xc2), RGB(0x64, 0x64, 0x64)
+	RGB(255, 255, 255), RGB(140, 140, 140), RGB(190, 190, 190), RGB(220, 220, 220), RGB(240, 240, 240), 
+						RGB(141, 141, 141), RGB(191, 191, 191), RGB(221, 221, 221), RGB(241, 241, 241), 
+						RGB(143, 143, 143), RGB(193, 193, 193), RGB(223, 223, 223), RGB(193, 193, 193), 
+						RGB(144, 144, 144), RGB(194, 194, 194), RGB(100, 100, 100)
 };

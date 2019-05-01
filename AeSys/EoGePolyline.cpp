@@ -108,9 +108,9 @@ void __End(AeSysView* view, CDC* deviceContext, OdInt16 linetypeIndex) {
 		OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 		OdDbLinetypeTableRecordPtr Linetype = Linetypes->getAt(Name).safeOpenObject(OdDb::kForRead);
 
-		pstate.SetLinetypeIndex(deviceContext, 1);
+		pstate.SetLinetypeIndexPs(deviceContext, 1);
 		__Display(view, deviceContext, pts_, Linetype);
-		pstate.SetLinetypeIndex(deviceContext, linetypeIndex);
+		pstate.SetLinetypeIndexPs(deviceContext, linetypeIndex);
 	}
 }
 void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, size_t numberOfPoints, OdGePoint3dArray& points) {

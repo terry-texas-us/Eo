@@ -56,14 +56,15 @@ void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept 
 }
 
 void EoDbLine::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbLinePtr LineEntity = OdDbLine::createObject();
+	auto LineEntity {OdDbLine::createObject()};
 	blockTableRecord->appendOdDbEntity(LineEntity);
 	LineEntity->setDatabaseDefaults();
 	
 	SetEntityObjectId(LineEntity->objectId());
 	
 	LineEntity->setColorIndex(m_ColorIndex);
-	SetLinetypeIndex(m_LinetypeIndex);
+	LineEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
+
 	LineEntity->setStartPoint(m_Line.startPoint());
 	LineEntity->setEndPoint(m_Line.endPoint());
 }
@@ -431,7 +432,6 @@ void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 // Static
 
 EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-	EoDbLine* LinePrimitive = new EoDbLine();
 	OdInt16 ColorIndex;
 	OdInt16 LinetypeIndex;
 	OdGePoint3d StartPoint;
@@ -448,11 +448,12 @@ EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
 		StartPoint = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert();
 		EndPoint = ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert();
 	}
-	LinePrimitive->SetColorIndex(ColorIndex);
-	LinePrimitive->SetLinetypeIndex(LinetypeIndex);
-	LinePrimitive->SetStartPoint(StartPoint);
-	LinePrimitive->SetEndPoint(EndPoint);
-	return (LinePrimitive);
+	auto Line {new EoDbLine()};
+	Line->SetColorIndex_(ColorIndex);
+	Line->SetLinetypeIndex_(LinetypeIndex);
+	Line->SetStartPoint(StartPoint);
+	Line->SetEndPoint(EndPoint);
+	return (Line);
 }
 
 EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {

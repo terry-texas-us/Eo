@@ -171,7 +171,7 @@ void CPrimState::SetColorIndex(CDC* deviceContext, OdInt16 colorIndex) {
 		ManagePenResources(deviceContext, colorIndex, 0, m_LinetypeIndex);
 	}
 }
-void CPrimState::SetLinetypeIndex(CDC* deviceContext, OdInt16 linetypeIndex) {
+void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, OdInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 	if (deviceContext) {
 		ManagePenResources(deviceContext, m_ColorIndex, 0, linetypeIndex);

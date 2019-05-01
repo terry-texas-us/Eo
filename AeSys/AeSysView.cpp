@@ -477,6 +477,7 @@ void AeSysView::OnInitialUpdate() {
 	CView::OnInitialUpdate();
 
 	AeSysDoc* Document = static_cast<AeSysDoc*>(GetDocument());
+
 	OdDbDatabase* Database = Document->m_DatabasePtr;
 	OdGiContextForDbDatabase::setDatabase(Database);
 
@@ -487,17 +488,20 @@ void AeSysView::OnInitialUpdate() {
 	}
 	enableGsModel(true);
 	ResetDevice(true);
+
+	Document->setVectorizer(this);
+
 	// <command_console>
-	// <command_view>
 	m_editor.initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
-	// </command_view>
 	// </command_console>
 
 	SetRenderMode(OdGsView::k2DOptimized);
 }
+
 bool AeSysView::regenAbort() const noexcept {
 	return false;
 }
+
 LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	if (m_bInRegen) {
 		return 1;
@@ -957,33 +961,26 @@ void AeSysView::fillContextualColors(OdGiContextualColorsImpl * pCtxColors) {
 #undef SET_CTXCLRTINT_ISOK
 #undef SET_CTXCLR_ISOK
 }
-// <tas="Needs to be merged with ResetDevice"</tas>
+
 void AeSysView::createDevice() {
-	CRect rc;
-	GetClientRect(&rc);
+	CRect ClientRectangle;
+	GetClientRect(&ClientRectangle);
 	try {
-		OdGsModulePtr GsModule = ::odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false);
-		OdGsDevicePtr GsDevice = GsModule->createDevice();
-		OdRxDictionaryPtr pProperties = GsDevice->properties();
-		if (pProperties.get()) {
-			if (pProperties->has(L"WindowHWND"))
-				pProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd));
-			if (pProperties->has(L"WindowHDC"))
-				pProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC));
-			if (pProperties->has(L"DoubleBufferEnabled"))
-				pProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled()));
-			if (pProperties->has(L"EnableSoftwareHLR"))
-				pProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR()));
-			if (pProperties->has(L"DiscardBackFaces"))
-				pProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces()));
-			if (pProperties->has(L"BlocksCache"))
-				pProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled()));
-			if (pProperties->has(L"EnableMultithread"))
-				pProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled()));
-			if (pProperties->has(L"MaxRegenThreads"))
-				pProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16) theApp.mtRegenThreadsCount()));
-			if (pProperties->has(L"UseTextOut"))
-				pProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
+		OdGsModulePtr GsModule {::odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false)};
+		auto GsDevice {GsModule->createDevice()};
+		
+		auto DeviceProperties {GsDevice->properties()};
+		
+		if (DeviceProperties.get()) {
+			if (DeviceProperties->has(L"WindowHWND")) { DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd)); }
+			if (DeviceProperties->has(L"WindowHDC")) { DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC)); }
+			if (DeviceProperties->has(L"DoubleBufferEnabled")) { DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled())); }
+			if (DeviceProperties->has(L"EnableSoftwareHLR")) { DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR())); }
+			if (DeviceProperties->has(L"DiscardBackFaces")) { DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces())); }
+			if (DeviceProperties->has(L"BlocksCache")) { DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled())); }
+			if (DeviceProperties->has(L"EnableMultithread")) { DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled())); }
+			if (DeviceProperties->has(L"MaxRegenThreads")) { DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16) theApp.mtRegenThreadsCount())); }
+			if (DeviceProperties->has(L"UseTextOut")) { DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut())); }
 		}
 		enableKeepPSLayoutHelperView(true);
 		enableContextualColorsManagement(theApp.enableContextualColors());
@@ -991,6 +988,7 @@ void AeSysView::createDevice() {
 		enableGsModel(theApp.useGsModel());
 
 		m_pDevice = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
+		
 		m_layoutId = m_pDevice->layoutId();
 
 		const ODCOLORREF* palette = theApp.curPalette();
@@ -998,19 +996,20 @@ void AeSysView::createDevice() {
 		pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
 		pPalCpy[0] = theApp.activeBackground();
 		m_pDevice->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
-		OdGsPaperLayoutHelperPtr pPSHelper = OdGsPaperLayoutHelper::cast(m_pDevice);
-		if (pPSHelper.isNull()) {
+		auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_pDevice)};
+		
+		if (PaperLayoutHelper.isNull()) {
 			m_bPsOverall = false;
 			m_pDevice->setBackgroundColor(pPalCpy[0]); // for model space
 		} else {
-			m_bPsOverall = (pPSHelper->overallView().get() == pPSHelper->activeView().get());
+			m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
 			m_pDevice->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
 		}
 		setPaletteBackground(theApp.activeBackground());
 
 		setViewportBorderProperties();
 
-		const OdGsDCRect gsRect(rc.left, rc.right, rc.bottom, rc.top);
+		const OdGsDCRect gsRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top);
 		m_pDevice->onSize(gsRect);
 
 		// Adding plotstyletable info
@@ -1020,6 +1019,61 @@ void AeSysView::createDevice() {
 		theApp.reportError(L"Graphic System Initialization Error", Error);
 	}
 }
+
+void AeSysView::ResetDevice(bool zoomExtents) {
+	CRect ClientRectangle;
+	GetClientRect(&ClientRectangle);
+
+	OdGsModulePtr GsModule {::odrxDynamicLinker()->loadModule(OdWinDirectXModuleName)};
+	auto GsDevice {GsModule->createDevice()};
+	
+	if (!GsDevice.isNull()) {
+		auto DeviceProperties {GsDevice->properties()};
+
+		if (DeviceProperties.get()) {
+			if (DeviceProperties->has(L"WindowHWND")) { DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd)); }
+			if (DeviceProperties->has(L"WindowHDC")) { DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC)); }
+		}
+		if (database()) {
+			enableKeepPSLayoutHelperView(true);
+			enableContextualColorsManagement(theApp.enableContextualColors());
+			setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
+			enableGsModel(theApp.useGsModel());
+
+			m_pDevice = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
+			m_layoutId = m_pDevice->layoutId();
+
+			const ODCOLORREF* palette = theApp.curPalette();
+			ODGSPALETTE pPalCpy;
+			pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
+			pPalCpy[0] = theApp.activeBackground();
+
+			m_pDevice->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
+			
+			auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_pDevice)};
+			if (PaperLayoutHelper.isNull()) {
+				m_bPsOverall = false;
+				m_pDevice->setBackgroundColor(pPalCpy[0]); // for model space
+			} else {
+				m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
+				m_pDevice->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
+			}
+			setPaletteBackground(theApp.activeBackground());
+
+			m_ModelTabIsActive = GetDocument()->m_DatabasePtr->getTILEMODE();
+			SetViewportBorderProperties(m_pDevice, m_ModelTabIsActive);
+
+			if (zoomExtents) {
+				OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+
+				OdAbstractViewPEPtr(FirstView)->zoomExtents(FirstView);
+			}
+			OnSize(0, ClientRectangle.Width(), ClientRectangle.Height());
+			RedrawWindow();
+		}
+	}
+}
+
 void AeSysView::destroyDevice() {
 	m_pDevice.release();
 }
@@ -3878,60 +3932,6 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 const ODCOLORREF* AeSysView::CurrentPalette() const {
 	const ODCOLORREF* Color = odcmAcadPalette(m_Background);
 	return Color;
-}
-void AeSysView::ResetDevice(bool zoomExtents) {
-	CRect ClientRectangle;
-	GetClientRect(&ClientRectangle);
-
-	OdGsModulePtr GsModule = ::odrxDynamicLinker()->loadModule(OdWinDirectXModuleName);
-	OdGsDevicePtr GsDevice = GsModule->createDevice();
-	if (!GsDevice.isNull()) {
-		OdRxDictionaryPtr DeviceProperties = GsDevice->properties();
-		if (DeviceProperties.get()) {
-			if (DeviceProperties->has(L"WindowHWND")) { // hWnd necessary for DirectX device
-				DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd));
-			}
-			if (DeviceProperties->has(L"WindowHDC")) { // hWindowDC necessary for Bitmap device
-				DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC));
-			}
-		}
-		if (database()) {
-			enableKeepPSLayoutHelperView(true);
-			enableContextualColorsManagement(theApp.enableContextualColors());
-			setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
-			enableGsModel(theApp.useGsModel());
-
-			m_pDevice = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
-			m_layoutId = m_pDevice->layoutId();
-
-			const ODCOLORREF* palette = theApp.curPalette();
-			ODGSPALETTE pPalCpy;
-			pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
-			pPalCpy[0] = theApp.activeBackground();
-
-			m_pDevice->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
-			OdGsPaperLayoutHelperPtr PaperLayoutHelper = OdGsPaperLayoutHelper::cast(m_pDevice);
-			if (PaperLayoutHelper.isNull()) {
-				m_bPsOverall = false;
-				m_pDevice->setBackgroundColor(pPalCpy[0]); // for model space
-			} else {
-				m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
-				m_pDevice->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
-			}
-			setPaletteBackground(theApp.activeBackground());
-
-			m_ModelTabIsActive = GetDocument()->m_DatabasePtr->getTILEMODE();
-			SetViewportBorderProperties(m_pDevice, m_ModelTabIsActive);
-
-			if (zoomExtents) {
-				OdGsViewPtr FirstView = m_pDevice->viewAt(0);
-
-				OdAbstractViewPEPtr(FirstView)->zoomExtents(FirstView);
-			}
-			OnSize(0, ClientRectangle.Width(), ClientRectangle.Height());
-			RedrawWindow();
-		}
-	}
 }
 void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
 	OdGsViewPtr FirstView = m_pDevice->viewAt(0);

@@ -90,20 +90,21 @@ void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexce
 }
 
 void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbEllipsePtr EllipseEntity = OdDbEllipse::createObject();
+	auto EllipseEntity {OdDbEllipse::createObject()};
 	blockTableRecord->appendOdDbEntity(EllipseEntity);
 	EllipseEntity->setDatabaseDefaults();
-	
+
 	SetEntityObjectId(EllipseEntity->objectId());
-	
+
 	EllipseEntity->setColorIndex(m_ColorIndex);
-	SetLinetypeIndex(m_LinetypeIndex);
-	OdGeVector3d PlaneNormal = m_MajorAxis.crossProduct(m_MinorAxis);
-	if (!PlaneNormal.isZeroLength())
-	{
+	EllipseEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
+
+	auto PlaneNormal {m_MajorAxis.crossProduct(m_MinorAxis)};
+
+	if (!PlaneNormal.isZeroLength()) {
 		PlaneNormal.normalize();
 		// <tas="Apparently some ellipse primitives have a RadiusRatio > 1."</tas>
-		const double RadiusRatio = m_MinorAxis.length() / m_MajorAxis.length();
+		const double RadiusRatio {m_MinorAxis.length() / m_MajorAxis.length()};
 		EllipseEntity->set(m_Center, PlaneNormal, m_MajorAxis, EoMin(1., RadiusRatio), 0., m_SweepAngle);
 	}
 }
@@ -979,11 +980,11 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumb
 			SweepAngle = TWOPI;
 		}
 	}	
-	EoDbEllipse* EllipsePrimitive = new EoDbEllipse(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
-	EllipsePrimitive->SetColorIndex(ColorIndex);
-	EllipsePrimitive->SetLinetypeIndex(LinetypeIndex);
+	auto Ellipse {new EoDbEllipse(CenterPoint, MajorAxis, MinorAxis, SweepAngle)};
+	Ellipse->SetColorIndex_(ColorIndex);
+	Ellipse->SetLinetypeIndex_(LinetypeIndex);
 
-	return (EllipsePrimitive);
+	return (Ellipse);
 }
 
 EoDbEllipse* EoDbEllipse::Create0(OdDbBlockTableRecordPtr& blockTableRecord) {

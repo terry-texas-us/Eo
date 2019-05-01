@@ -88,14 +88,14 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	const OdDbObjectId Linetype = entity->linetypeId();
 
 	if (Linetype == DatabasePtr->getLinetypeByBlockId()) {
-		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYBLOCK);
+		primitive->SetLinetypeIndex_(EoDbPrimitive::LINETYPE_BYBLOCK);
 	}
 	else if (Linetype == DatabasePtr->getLinetypeByLayerId()) {
-		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
+		primitive->SetLinetypeIndex_(EoDbPrimitive::LINETYPE_BYLAYER);
 	}
 	else {
 		OdString Name = entity->linetype();
-		primitive->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
+		primitive->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 	}
 
 	OdGeExtents3d extents;

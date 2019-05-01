@@ -50,7 +50,7 @@ void EoDbSpline::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	SetEntityObjectId(SplineEntity->objectId());
 
 	SplineEntity->setColorIndex(m_ColorIndex);
-	SetLinetypeIndex(m_LinetypeIndex);
+	SplineEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
 	
 	int Degree;
 	bool IsRational;
@@ -305,11 +305,11 @@ EoDbSpline* EoDbSpline::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumbe
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	}
-	EoDbSpline* SplinePrimitive = new EoDbSpline();
-	SplinePrimitive->SetColorIndex(ColorIndex);
-	SplinePrimitive->SetLinetypeIndex(LinetypeIndex);
-	SplinePrimitive->SetControlPoints(ControlPoints);
-	return (SplinePrimitive);
+	auto Spline {new EoDbSpline()};
+	Spline->SetColorIndex_(ColorIndex);
+	Spline->SetLinetypeIndex_(LinetypeIndex);
+	Spline->SetControlPoints(ControlPoints);
+	return (Spline);
 }
 
 EoDbSpline* EoDbSpline::Create(const EoDbSpline& other, OdDbDatabasePtr& database) {

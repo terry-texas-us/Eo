@@ -310,6 +310,7 @@ BOOL AeSysDoc::CanCloseFrame(CFrameWnd * frame) {
 AeSysView* AeSysDoc::getViewer() noexcept {
 	return m_pViewer;
 }
+
 void AeSysDoc::OnViewSetactivelayout() {
 	EoDlgSetActiveLayout ActiveLayoutDialog(m_DatabasePtr, theApp.GetMainWnd());
 	m_bLayoutSwitchable = true;
@@ -465,6 +466,7 @@ void AeSysDoc::OnCloseVectorizer(AeSysView * view) {
 	m_pViewer = nullptr;
 }
 void AeSysDoc::setVectorizer(AeSysView * view) {
+	// <tas="limits the command context to a single view per document. So New window crashes."/>"
 	ODA_ASSERT(m_pViewer == nullptr);
 	m_pViewer = view;
 }
@@ -2165,7 +2167,7 @@ void AeSysDoc::OnSetupLinetype() {
 	if (Dialog.DoModal() == IDOK) {
 		OdString Name = Dialog.m_Linetype->getName();
 		const OdInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
-		pstate.SetLinetypeIndex(NULL, LinetypeIndex);
+		pstate.SetLinetypeIndexPs(NULL, LinetypeIndex);
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
 	}
 }

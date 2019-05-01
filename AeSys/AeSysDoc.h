@@ -227,7 +227,8 @@ public:
 
 public:
     OdDbSelectionSetPtr selectionSet() const;
-    AeSysView* AeSysDoc::getViewer() noexcept;
+	AeSysView* AeSysDoc::getViewer() noexcept;
+
     void OnCloseVectorizer(AeSysView* view);
     void setVectorizer(AeSysView* view);
     void ExecuteCommand(const OdString& command, bool bEcho = true);

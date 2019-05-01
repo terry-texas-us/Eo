@@ -94,10 +94,10 @@ void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
     pstate.SetColorIndex(deviceContext, ColorIndex);
 
     const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
-    pstate.SetLinetypeIndex(deviceContext, 1);
+    pstate.SetLinetypeIndexPs(deviceContext, 1);
 
     DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
-    pstate.SetLinetypeIndex(deviceContext, LinetypeIndex);
+    pstate.SetLinetypeIndexPs(deviceContext, LinetypeIndex);
 }
 
 EoDbFontDefinition EoDbText::FontDefinition() const {
@@ -696,8 +696,8 @@ EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 
     EoDbText* Text = new EoDbText();
     Text->SetEntityObjectId(text->objectId());
-    Text->SetColorIndex(text->colorIndex());
-    Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+    Text->SetColorIndex_(text->colorIndex());
+    Text->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
 
     OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
 
@@ -729,8 +729,8 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 
     EoDbText* Text = new EoDbText();
     Text->SetEntityObjectId(text->objectId());
-    Text->SetColorIndex(text->colorIndex());
-    Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+    Text->SetColorIndex_(text->colorIndex());
+    Text->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
 
     OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
 

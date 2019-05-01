@@ -421,7 +421,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 
 	const OdInt16 ColorIndex = pstate.ColorIndex();
 	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
-	pstate.SetLinetypeIndex(deviceContext, 1);
+	pstate.SetLinetypeIndexPs(deviceContext, 1);
 	const int InteriorStyleIndex = pstate.HatchInteriorStyleIndex();
 
 	OdHatchPattern HatchPattern;
