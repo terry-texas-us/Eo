@@ -70,26 +70,25 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 	//	return;
 	//}
 
-	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
-	const size_t NumberOfReactors = TheApp->m_aAppReactors.size();
+	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
 
 	if (activate) {
 		if (DeactivatedDocument)
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				TheApp->m_aAppReactors[ReactorIndex]->documentToBeDeactivated(DeactivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->documentToBeDeactivated(DeactivatedDocument);
 			}
 
 		if (ActivatedDocument) {
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				TheApp->m_aAppReactors[ReactorIndex]->documentActivated(ActivatedDocument);
-				TheApp->m_aAppReactors[ReactorIndex]->documentBecameCurrent(ActivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->documentActivated(ActivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->documentBecameCurrent(ActivatedDocument);
 			}
 		}
 	}
 	else {
 		if (ActivatedDocument) {
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				TheApp->m_aAppReactors[ReactorIndex]->documentToBeActivated(ActivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->documentToBeActivated(ActivatedDocument);
 			}
 		}
 	}

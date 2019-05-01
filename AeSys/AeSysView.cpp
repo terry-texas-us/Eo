@@ -496,6 +496,7 @@ void AeSysView::OnInitialUpdate() {
 	// </command_console>
 
 	SetRenderMode(OdGsView::k2DOptimized);
+	theApp.OnModeDraw();
 }
 
 bool AeSysView::regenAbort() const noexcept {
@@ -1616,7 +1617,8 @@ void AeSysView::OnEndPrinting(CDC * deviceContext, CPrintInfo * printInformation
 BOOL AeSysView::OnPreparePrinting(CPrintInfo * printInformation) {
 	if (m_Plot) {
 		CPrintInfo pi;
-		if (AfxGetApp()->GetPrinterDeviceDefaults(&pi.m_pPD->m_pd)) {
+		
+		if (theApp.GetPrinterDeviceDefaults(&pi.m_pPD->m_pd)) {
 			HDC hDC = pi.m_pPD->m_pd.hDC;
 			if (hDC == NULL) {
 				hDC = pi.m_pPD->CreatePrinterDC();

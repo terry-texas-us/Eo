@@ -897,6 +897,9 @@
     <ClInclude Include="EoDbHatchPatternTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\psbmpchk.bmp">

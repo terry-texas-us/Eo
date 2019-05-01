@@ -350,6 +350,7 @@
     <ClInclude Include="EoPreviewDib.h" />
     <ClInclude Include="EoVarDialog.h" />
     <ClInclude Include="EoVaxFloat.h" />
+    <ClInclude Include="framework.h" />
     <ClInclude Include="Lex.h" />
     <ClInclude Include="EoGeLineSeg3d.h" />
     <ClInclude Include="MainFrm.h" />

@@ -275,10 +275,9 @@ void AeSysDoc::DeleteContents() {
 	ResetAllViews();
 
 #ifdef ODAMFC_EXPORT
-	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
-	const size_t NumberOfReactors = TheApp->m_aAppReactors.size();
+	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		TheApp->m_aAppReactors[ReactorIndex]->documentToBeDestroyed(this);
+		theApp.m_aAppReactors[ReactorIndex]->documentToBeDestroyed(this);
 	}
 #endif // ODAMFC_EXPORT
 	if (!m_DatabasePtr.isNull()) {
@@ -291,7 +290,7 @@ void AeSysDoc::DeleteContents() {
 
 #ifdef ODAMFC_EXPORT
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++)
-		TheApp->m_aAppReactors[ReactorIndex]->documentDestroyed((const wchar_t*) GetPathName());
+		theApp.m_aAppReactors[ReactorIndex]->documentDestroyed((const wchar_t*) GetPathName());
 #endif // ODAMFC_EXPORT
 }
 
@@ -893,10 +892,9 @@ void AeSysDoc::AddRegisteredApp(const OdString & name) {
 
 BOOL AeSysDoc::OnNewDocument() {
 #ifdef ODAMFC_EXPORT
-	AeSysApp* TheApp = (AeSysApp*) AfxGetApp();
-	const size_t NumberOfReactors = TheApp->m_aAppReactors.size();
+	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		TheApp->m_aAppReactors[ReactorIndex]->documentCreateStarted(this);
+		theApp.m_aAppReactors[ReactorIndex]->documentCreateStarted(this);
 	}
 #endif // ODAMFC_EXPORT
 	if (COleDocument::OnNewDocument()) {
@@ -928,21 +926,23 @@ BOOL AeSysDoc::OnNewDocument() {
 
 		m_SaveAsType_ = kPeg;
 		SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
+
 		InitializeGroupAndPrimitiveEdit();
+
 
 		if (!m_DatabasePtr.isNull()) {
 			m_DatabasePtr->appServices()->layoutManager()->addReactor(this);
 		}
 #ifdef ODAMFC_EXPORT
 		for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-			TheApp->m_aAppReactors[ReactorIndex]->documentCreated(this);
+			theApp.m_aAppReactors[ReactorIndex]->documentCreated(this);
 		}
 #endif // ODAMFC_EXPORT
 		return TRUE;
 	}
 #ifdef ODAMFC_EXPORT
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		TheApp->m_aAppReactors[ReactorIndex]->documentCreateCanceled(this);
+		theApp.m_aAppReactors[ReactorIndex]->documentCreateCanceled(this);
 	}
 #endif // ODAMFC_EXPORT
 	return FALSE;
@@ -974,6 +974,7 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 			DwgToPegFile.ConvertToPeg(this);
 			m_SaveAsType_ = FileType;
 			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
+
 			break;
 		}
 		case kPeg:
@@ -991,7 +992,7 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 			DwgToPegFile.ConvertToPeg(this);
 
 			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
-
+			
 			EoDbPegFile PegFile(m_DatabasePtr);
 			CFileException e;
 			if (PegFile.Open(file, CFile::modeRead | CFile::shareDenyNone, &e)) {
@@ -2465,13 +2466,15 @@ void AeSysDoc::OnPensTranslate() {
 	}
 	UpdateAllViews(nullptr);
 }
+
 void AeSysDoc::OnFile() {
 	CPoint Position(8, 8);
 
-	AfxGetApp()->GetMainWnd()->ClientToScreen(&Position);
+	theApp.GetMainWnd()->ClientToScreen(&Position);
 	CMenu* FileSubMenu = CMenu::FromHandle(theApp.GetAeSysSubMenu(0));
 	FileSubMenu->TrackPopupMenuEx(TPM_LEFTALIGN, Position.x, Position.y, AfxGetMainWnd(), 0);
 }
+
 void AeSysDoc::OnPrimExtractNum() {
 	AeSysView* ActiveView = AeSysView::GetActiveView();
 
@@ -2529,7 +2532,7 @@ void AeSysDoc::OnPrimExtractStr() {
 	return;
 }
 // Returns a pointer to the currently active document.
-AeSysDoc* AeSysDoc::GetDoc(void) {
+AeSysDoc* AeSysDoc::GetDoc() {
 	const CMDIFrameWndEx* Frame = (CMDIFrameWndEx*) AfxGetMainWnd();
 	if (Frame == NULL) {
 		return NULL;
@@ -2881,15 +2884,14 @@ AeSysDoc::DataSource::~DataSource() {
 void AeSysDoc::OnDrawingutilitiesAudit() {
 	const bool bFixErrors = AfxMessageBox(L"Fix any errors detected?", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES;
 
-	AeSysApp * TheApp = (AeSysApp*) AfxGetApp();
-	ODA_ASSERT(!TheApp->m_pAuditDlg);
+	ODA_ASSERT(!theApp.m_pAuditDlg);
 
-	TheApp->m_pAuditDlg = new EoDlgAudit();
-	if (!TheApp->m_pAuditDlg) {
+	theApp.m_pAuditDlg = new EoDlgAudit();
+	if (!theApp.m_pAuditDlg) {
 		AfxMessageBox(L"Error Creating Audit Dialog Object");
 		return;
 	}
-	if (!TheApp->m_pAuditDlg->Create(IDD_AUDITINFO)) {
+	if (!theApp.m_pAuditDlg->Create(IDD_AUDITINFO)) {
 		AfxMessageBox(L"Error Creating Audit Dialog Window");
 		return;
 	}
@@ -2901,22 +2903,22 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 
 		m_DatabasePtr->auditDatabase(&aiAppAudit);
 	} catch (const OdError & Error) {
-		delete TheApp->m_pAuditDlg;
-		TheApp->m_pAuditDlg = nullptr;
+		delete theApp.m_pAuditDlg;
+		theApp.m_pAuditDlg = nullptr;
 		theApp.reportError(L"Error Auditing Database...", Error);
 		AfxThrowUserException();
 	} catch (const UserBreak&) {
-		delete TheApp->m_pAuditDlg;
-		TheApp->m_pAuditDlg = nullptr;
+		delete theApp.m_pAuditDlg;
+		theApp.m_pAuditDlg = nullptr;
 	}
-	if (!TheApp->m_pAuditDlg) {
+	if (!theApp.m_pAuditDlg) {
 		return;
 	}
 	CString Title(L"Audit info - " + GetTitle());
-	TheApp->m_pAuditDlg->SetWindowText(Title);
-	TheApp->m_pAuditDlg->ShowWindow(SW_SHOW);
+	theApp.m_pAuditDlg->SetWindowText(Title);
+	theApp.m_pAuditDlg->ShowWindow(SW_SHOW);
 
-	TheApp->m_pAuditDlg = nullptr;
+	theApp.m_pAuditDlg = nullptr;
 }
 
 BOOL AeSysDoc::DoPromptFileName(CString & fileName, UINT nIDSTitle, DWORD lFlags, BOOL isOpenFileDialog, CDocTemplate * docTemplate) {

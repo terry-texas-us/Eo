@@ -72,8 +72,7 @@ OdApDocumentPtr odGetAppDocument(CDocument* document) {
 }
 
 void OdAddAppReactor(OdApplicationReactor* reactor) {
-    AeSysApp* TheApp = (AeSysApp*)AfxGetApp();
-    TheApp->AddReactor(reactor);
+    theApp.AddReactor(reactor);
 }
 
 OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {

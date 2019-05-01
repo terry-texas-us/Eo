@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "afxwinappex.h"
+
 #include "ChildFrm.h"
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
@@ -246,8 +248,6 @@ BEGIN_MESSAGE_MAP(AeSysApp, CWinAppEx)
 
 END_MESSAGE_MAP()
 
-AeSysApp::~AeSysApp() {}
-
 AeSysApp::AeSysApp() noexcept
 	: m_nProgressPos(0)
 	, m_nProgressLimit(100)
@@ -282,9 +282,6 @@ AeSysApp::AeSysApp() noexcept
 	// ODA_MT_DBIO_END
 	, m_bUseTempFiles(false)
 	, m_pagingType(0) {
-
-	m_PegDocTemplate = nullptr;
-	m_TracingDocTemplate = nullptr;
 
 	EnableHtmlHelp();
 
@@ -785,7 +782,7 @@ int	AeSysApp::ArchitecturalUnitsFractionPrecision() const  noexcept {
 	return (m_ArchitecturalUnitsFractionPrecision);
 }
 // Modifies the base accelerator table by defining the mode specific keys.
-void AeSysApp::BuildModeSpecificAcceleratorTable(void) {
+void AeSysApp::BuildModeSpecificAcceleratorTable() {
 	CMainFrame* MainFrame = (CMainFrame*) AfxGetMainWnd();
 
 	HACCEL AcceleratorTableHandle = MainFrame->m_hAccelTable;
@@ -934,6 +931,9 @@ int AeSysApp::ExitInstance() {
 
 	ReleaseSimplexStrokeFont();
 	UninitializeTeigha();
+
+	AfxOleTerm(FALSE);
+
 	return CWinAppEx::ExitInstance();
 }
 CString AeSysApp::FormatAngle(double angle, int width, int precision) const {
@@ -1198,11 +1198,22 @@ BOOL AeSysApp::InitializeTeigha() {
 	return TRUE;
 }
 BOOL AeSysApp::InitInstance() {
+
+	// InitCommonControlsEx() is required on Windows XP if an application manifest specifies use of ComCtl32.dll version 6 or later to enable visual styles. Otherwise, any window creation will fail.
+	INITCOMMONCONTROLSEX InitCtrls;
+	InitCtrls.dwSize = sizeof(InitCtrls);
+
+	// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
+	InitCtrls.dwICC = ICC_WIN95_CLASSES;
+	InitCommonControlsEx(&InitCtrls);
+
 	if (!AfxOleInit()) { // Failed to initialize OLE support for the application.
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
 	}
-	AfxEnableControlContainer(); // Enable support for containment of OLE controls.
+	AfxEnableControlContainer();
+
+	EnableTaskbarInteraction();
 
 	// Standard initialization
 
@@ -1249,15 +1260,6 @@ BOOL AeSysApp::InitInstance() {
 
 	EnableUserTools(ID_TOOLS_ENTRY, ID_USER_TOOL1, ID_USER_TOOL10, RUNTIME_CLASS(CUserTool), IDR_MENU_ARGS, IDR_MENU_DIRS);
 
-	// InitCommonControlsEx() is required on Windows XP if an application manifest specifies use of ComCtl32.dll version 6 or later to enable visual styles.
-	// Otherwise, any window creation will fail.
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
-
-	// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
-
 	CMFCButton::EnableWindowsTheming();
 
 	CWinAppEx::InitInstance();
@@ -1266,15 +1268,15 @@ BOOL AeSysApp::InitInstance() {
 		return FALSE;
 	}
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views.
+	CMultiDocTemplate* DocTemplate;
+	DocTemplate = new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView));
+	AddDocTemplate(DocTemplate);
 
-	m_PegDocTemplate = new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView));
-	AddDocTemplate(m_PegDocTemplate);
-
-	m_TracingDocTemplate = new CMultiDocTemplate(IDR_TRACINGTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView));
-	AddDocTemplate(m_TracingDocTemplate);
+	DocTemplate = new CMultiDocTemplate(IDR_TRACINGTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView));
+	AddDocTemplate(DocTemplate);
 
 	// Create main MDI Frame window
-	CMainFrame* MainFrame = new CMainFrame;
+	auto MainFrame {new CMainFrame};
 
 	if (!MainFrame || !MainFrame->LoadFrame(IDR_MAINFRAME)) {
 		delete MainFrame;
@@ -1284,7 +1286,7 @@ BOOL AeSysApp::InitInstance() {
 
 	MainFrame->DragAcceptFiles();
 
-	CDC* DeviceContext = MainFrame->GetDC();
+	auto DeviceContext {MainFrame->GetDC()};
 
 	m_DeviceWidthInPixels = static_cast<double>(DeviceContext->GetDeviceCaps(HORZRES));
 	m_DeviceHeightInPixels = static_cast<double>(DeviceContext->GetDeviceCaps(VERTRES));
@@ -1314,8 +1316,6 @@ BOOL AeSysApp::InitInstance() {
 	EoDbHatchPatternTable::LoadHatchesFromFile(ResourceFolderPath() + L"Hatches\\DefaultSet.pat");
 	LoadPenWidthsFromFile(ResourceFolderPath() + L"Pens\\Widths.txt");
 	//LoadColorPalletFromFile(ResourceFolder + L"Pens\\Colors\\Default.txt"));
-
-	OnModeDraw();
 
 	// This is the private data format used to pass EoGroups from one instance to another
 	m_ClipboardFormatIdentifierForEoGroups = RegisterClipboardFormatW(L"EoGroups");
@@ -1450,7 +1450,7 @@ void AeSysApp::OnEditCfText() noexcept {
 	m_ClipboardDataText = !m_ClipboardDataText;
 }
 
-void AeSysApp::OnFileOpen(void) {
+void AeSysApp::OnFileOpen() {
 	const DWORD Flags(OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
 	CString Filter = LoadStringResource(IDS_OPENFILE_FILTER);
 	CFileDialog FileDialog(TRUE, nullptr, nullptr, Flags, Filter);
@@ -1569,7 +1569,7 @@ void AeSysApp::OnModeRevise() {
 	EoDlgModeRevise Dialog;
 	Dialog.DoModal();
 }
-void AeSysApp::OnModeTrap(void) {
+void AeSysApp::OnModeTrap() {
 	if (m_TrapModeAddGroups) {
 		m_ModeResourceIdentifier = IDR_TRAP_MODE;
 		LoadModeResources(ID_MODE_TRAP);
@@ -1744,7 +1744,7 @@ double AeSysApp::PenWidthsGet(OdInt16 colorIndex) noexcept {
 void AeSysApp::PreLoadState() {
 	GetContextMenuManager()->AddMenu(L"My menu", IDR_CONTEXT_MENU);
 
-	// TODO: add another context menus here
+	// <tas="add other context menus here"/>
 }
 int AeSysApp::PrimaryMode() const noexcept {
 	return m_PrimaryMode;

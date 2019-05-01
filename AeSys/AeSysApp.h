@@ -151,7 +151,6 @@ public:
 
 public:
     AeSysApp() noexcept;
-    ~AeSysApp();
 
     OdString recentGsDevicePath() const;
     void setRecentGsDevicePath(const OdString& vectorizerPath);
@@ -228,8 +227,8 @@ public:
     static CString getApplicationPath();
 
 public:
-    BOOL InitInstance(void) override;
-    int ExitInstance(void) override;
+    BOOL InitInstance() override;
+    int ExitInstance() override;
     BOOL OnIdle(long count) override;
     void PreLoadState() override;
 
@@ -255,11 +254,9 @@ private:
     HMENU m_AeSysMenuHandle;
     bool m_ModeInformationOverView;
     int m_ModeResourceIdentifier;
-    CMultiDocTemplate* m_PegDocTemplate;
     int	m_PrimaryMode;
     CString m_ShadowFolderPath;
     char* m_SimplexStrokeFont;
-    CMultiDocTemplate* m_TracingDocTemplate;
     OdInt16 m_TrapHighlightColor;
     bool m_TrapHighlighted;
     bool m_TrapModeAddGroups;
@@ -283,7 +280,7 @@ public:
     void AddStringToReportList(LPCWSTR message);
 
     int	ArchitecturalUnitsFractionPrecision() const noexcept;
-    void BuildModeSpecificAcceleratorTable(void);
+    void BuildModeSpecificAcceleratorTable();
     UINT ClipboardFormatIdentifierForEoGroups() noexcept;
     static OdString ConfigurationFileFor(HKEY key, const OdString& applicationName, const OdString& configType, OdString file);
     int CurrentMode() const noexcept;
@@ -355,11 +352,11 @@ public:
     void UpdateMDITabs(BOOL resetMDIChild);
 
 public:
-    void OnAppAbout(void);
+    void OnAppAbout();
     void OnEditCfGroups() noexcept;
     void OnEditCfImage() noexcept;
     void OnEditCfText() noexcept;
-    void OnFileOpen(void);
+    void OnFileOpen();
     void OnFilePlotstylemanager();
     void OnHelpContents();
     void OnModeAnnotate();
