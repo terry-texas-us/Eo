@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "EoGsViewport.h"
+
 EoGsViewport::EoGsViewport()
     : m_DeviceHeightInPixels(0.)
     , m_DeviceWidthInPixels(0.)

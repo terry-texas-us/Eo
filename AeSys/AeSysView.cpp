@@ -26,6 +26,9 @@
 #include "EoDlgSelectIsometricView.h"
 #include "EoDlgViewParameters.h"
 
+#include "EoDbHatch.h"
+#include "EoDbPolyline.h"
+
 #include <atltypes.h>
 
 #ifdef _DEBUG
@@ -42,132 +45,6 @@ const double AeSysView::sm_MinimumWindowRatio = 0.001;
 UINT AeSysView::g_nRedrawMSG = 0;
 
 IMPLEMENT_DYNCREATE(AeSysView, CView)
-
-AeSysView::AeSysView() noexcept :
-	m_hWindowDC(0),
-	m_bRegenAbort(false),
-	m_bPsOverall(false),
-	m_mode(kQuiescent),
-	m_pTracker(0),
-	m_bTrackerHasDrawables(false),
-	m_hCursor(0),
-	m_pBasePt(0),
-	m_bInRegen(false),
-	m_paintMode(PaintMode_Regen),
-	m_bPlotPlotstyle(false),
-	m_bShowPlotstyle(false),
-	m_bPlotGrayscale(false),
-	m_pagingCounter(0),
-	m_RubberbandType(None),
-	m_LeftButton(false),
-	m_MiddleButton(false),
-	m_RightButton(false),
-	m_MousePosition(0),
-	m_ZoomWindow(false),
-	m_Points(0),
-	m_ModelTabIsActive(false) {
-	m_Background = ViewBackgroundColor;
-
-	m_PreviousOp = 0;
-	m_Plot = false;
-	m_ViewStateInformation = true;		// View state info within the view
-	m_ViewBackgroundImage = false;
-	m_ViewOdometer = true;
-	m_ViewPenWidths = false;
-	m_WorldScale = 1.;
-	m_ViewTrueTypeFonts = true;
-	m_OpHighlighted = 0;
-	m_SelectApertureSize = .005;
-	m_PlotScaleFactor = 1.0f;
-	m_GapSpaceFactor = .5;			// Edge space factor 50 percent of character height
-	m_CircleRadius = .03125;		// Circle radius
-	m_EndItemType = 1;				// Arrow type
-	m_EndItemSize = .1;				// Arrow size
-	m_BubbleRadius = .125;			// Bubble radius
-	m_NumberOfSides = 0;			// Number of sides on bubble (0 indicating circle)
-	m_EngagedPrimitive = 0;
-	m_EngagedGroup = 0;
-
-	m_CenterLineEccentricity = .5;	// Center line eccentricity for parallel lines
-	m_ContinueCorner = false;
-	m_AssemblyGroup = nullptr;
-	m_BeginSectionGroup = nullptr;
-	m_EndSectionGroup = nullptr;
-	m_BeginSectionLine = nullptr;
-	m_EndSectionLine = nullptr;
-	m_DistanceBetweenLines = .0625;
-
-	// Constraints - grid and axis
-	m_MaximumDotsPerLine = 64;
-
-	m_XGridLineSpacing = 1.;
-	m_YGridLineSpacing = 1.;
-	m_ZGridLineSpacing = 1.;
-
-	m_XGridSnapSpacing = 12.;
-	m_YGridSnapSpacing = 12.;
-	m_ZGridSnapSpacing = 12.;
-
-	m_XGridPointSpacing = 3.;
-	m_YGridPointSpacing = 3.;
-	m_ZGridPointSpacing = 0.;
-
-	m_AxisConstraintInfluenceAngle = 5.;
-	m_AxisConstraintOffsetAngle = 0.;
-
-	m_DisplayGridWithLines = false;
-	m_DisplayGridWithPoints = false;
-	m_GridSnap = false;
-
-	m_SubModeEditGroup = 0;
-	m_SubModeEditPrimitive = 0;
-
-	m_MendPrimitiveVertexIndex = 0;
-	m_PrimitiveToMend = 0;
-	m_PrimitiveToMendCopy = 0;
-
-	SetEditModeMirrorScaleFactors(-1, 1., 1.);
-	SetEditModeScaleFactors(2., 2., 2.);
-
-	SetEditModeRotationAngles(0., 0., 45.);
-
-	m_FixupModeAxisTolerance = 2.;
-	m_FixupModeCornerSize = .25;
-
-	m_GenerateTurningVanes = true;	// turning vanes generation flag
-	m_InsideRadiusFactor = 1.5;		// inside radius elbow factor
-	m_DuctSeamSize = .03125;
-	m_DuctTapSize = .09375;			// tap size
-	m_ContinueSection = false;
-	m_BeginWithTransition = false;
-	m_DuctJustification = Center;	// justification (Left, Center or Right)
-	m_TransitionSlope = 4.;
-	m_ElbowType = Mittered;			// elbow type (Mittered or Radial)
-	m_EndCapGroup = nullptr;
-	m_EndCapPoint = nullptr;
-	m_EndCapLocation = 0;
-	m_OriginalPreviousGroupDisplayed = true;
-	m_OriginalPreviousGroup = 0;
-
-	m_PreviousSection(.125, .0625, Section::Rectangular);
-	m_CurrentSection(.125, .0625, Section::Rectangular);
-	m_PipeTicSize = .03125;
-	m_PipeRiseDropRadius = .03125;
-	m_CurrentPipeSymbolIndex = 0;
-
-	// Power mode
-	m_PowerArrow = false;
-	m_PowerConductor = false;
-	m_PowerConductorSpacing = .04;
-	m_PreviousRadius = 0.;
-
-	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
-	m_Viewport.SetDeviceHeightInPixels(theApp.DeviceHeightInPixels());
-	m_Viewport.SetDeviceWidthInInches(theApp.DeviceWidthInMillimeters() / EoMmPerInch);
-	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / EoMmPerInch);
-}
-
-AeSysView::~AeSysView() {}
 
 BEGIN_MESSAGE_MAP(AeSysView, CView)
 	ON_WM_CHAR()
@@ -436,6 +313,134 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 	ON_COMMAND(ID_INSERT_BLOCKREFERENCE, &AeSysView::OnInsertBlockreference)
 END_MESSAGE_MAP()
 
+AeSysView::AeSysView() noexcept 
+	: m_hWindowDC(0)
+	, m_bRegenAbort(false)
+	, m_bPsOverall(false)
+	, m_mode(kQuiescent)
+	, m_pTracker(0)
+	, m_bTrackerHasDrawables(false)
+	, m_hCursor(0)
+	, m_pBasePt(0)
+	, m_bInRegen(false)
+	, m_paintMode(PaintMode_Regen)
+	, m_bPlotPlotstyle(false)
+	, m_bShowPlotstyle(false)
+	, m_bPlotGrayscale(false)
+	, m_pagingCounter(0)
+	, m_RubberbandType(None)
+	, m_LeftButton(false)
+	, m_MiddleButton(false)
+	, m_RightButton(false)
+	, m_MousePosition(0)
+	, m_ZoomWindow(false)
+	, m_Points(0)
+	, m_ModelTabIsActive(false)
+	, m_inpOptions(0) 
+{
+	m_Background = ViewBackgroundColor;
+
+	m_PreviousOp = 0;
+	m_Plot = false;
+	m_ViewStateInformation = true;		// View state info within the view
+	m_ViewBackgroundImage = false;
+	m_ViewOdometer = true;
+	m_ViewPenWidths = false;
+	m_WorldScale = 1.;
+	m_ViewTrueTypeFonts = true;
+	m_OpHighlighted = 0;
+	m_SelectApertureSize = .005;
+	m_PlotScaleFactor = 1.0f;
+	m_GapSpaceFactor = .5;			// Edge space factor 50 percent of character height
+	m_CircleRadius = .03125;		// Circle radius
+	m_EndItemType = 1;				// Arrow type
+	m_EndItemSize = .1;				// Arrow size
+	m_BubbleRadius = .125;			// Bubble radius
+	m_NumberOfSides = 0;			// Number of sides on bubble (0 indicating circle)
+	m_EngagedPrimitive = 0;
+	m_EngagedGroup = 0;
+
+	m_CenterLineEccentricity = .5;	// Center line eccentricity for parallel lines
+	m_ContinueCorner = false;
+	m_AssemblyGroup = nullptr;
+	m_BeginSectionGroup = nullptr;
+	m_EndSectionGroup = nullptr;
+	m_BeginSectionLine = nullptr;
+	m_EndSectionLine = nullptr;
+	m_DistanceBetweenLines = .0625;
+
+	// Constraints - grid and axis
+	m_MaximumDotsPerLine = 64;
+
+	m_XGridLineSpacing = 1.;
+	m_YGridLineSpacing = 1.;
+	m_ZGridLineSpacing = 1.;
+
+	m_XGridSnapSpacing = 12.;
+	m_YGridSnapSpacing = 12.;
+	m_ZGridSnapSpacing = 12.;
+
+	m_XGridPointSpacing = 3.;
+	m_YGridPointSpacing = 3.;
+	m_ZGridPointSpacing = 0.;
+
+	m_AxisConstraintInfluenceAngle = 5.;
+	m_AxisConstraintOffsetAngle = 0.;
+
+	m_DisplayGridWithLines = false;
+	m_DisplayGridWithPoints = false;
+	m_GridSnap = false;
+
+	m_SubModeEditGroup = 0;
+	m_SubModeEditPrimitive = 0;
+
+	m_MendPrimitiveVertexIndex = 0;
+	m_PrimitiveToMend = 0;
+	m_PrimitiveToMendCopy = 0;
+
+	SetEditModeMirrorScaleFactors(-1, 1., 1.);
+	SetEditModeScaleFactors(2., 2., 2.);
+
+	SetEditModeRotationAngles(0., 0., 45.);
+
+	m_FixupModeAxisTolerance = 2.;
+	m_FixupModeCornerSize = .25;
+
+	m_GenerateTurningVanes = true;	// turning vanes generation flag
+	m_InsideRadiusFactor = 1.5;		// inside radius elbow factor
+	m_DuctSeamSize = .03125;
+	m_DuctTapSize = .09375;			// tap size
+	m_ContinueSection = false;
+	m_BeginWithTransition = false;
+	m_DuctJustification = Center;	// justification (Left, Center or Right)
+	m_TransitionSlope = 4.;
+	m_ElbowType = Mittered;			// elbow type (Mittered or Radial)
+	m_EndCapGroup = nullptr;
+	m_EndCapPoint = nullptr;
+	m_EndCapLocation = 0;
+	m_OriginalPreviousGroupDisplayed = true;
+	m_OriginalPreviousGroup = 0;
+
+	m_PreviousSection(.125, .0625, Section::Rectangular);
+	m_CurrentSection(.125, .0625, Section::Rectangular);
+	m_PipeTicSize = .03125;
+	m_PipeRiseDropRadius = .03125;
+	m_CurrentPipeSymbolIndex = 0;
+
+	// Power mode
+	m_PowerArrow = false;
+	m_PowerConductor = false;
+	m_PowerConductorSpacing = .04;
+	m_PreviousRadius = 0.;
+
+	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
+	m_Viewport.SetDeviceHeightInPixels(theApp.DeviceHeightInPixels());
+	m_Viewport.SetDeviceWidthInInches(theApp.DeviceWidthInMillimeters() / EoMmPerInch);
+	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / EoMmPerInch);
+}
+
+AeSysView::~AeSysView() {}
+
 
 #ifdef _DEBUG
 void AeSysView::AssertValid() const {
@@ -454,8 +459,9 @@ void AeSysView::exeCmd(const OdString & commandName) {
 }
 void AeSysView::OnDraw(CDC * deviceContext) {
 	try {
-		AeSysDoc* Document = GetDocument();
+		auto Document {GetDocument()};
 		ASSERT_VALID(Document);
+		
 		if (!m_pDevice.isNull()) {
 			m_pDevice->update();
 		}
@@ -466,8 +472,8 @@ void AeSysView::OnDraw(CDC * deviceContext) {
 		UpdateStateInformation(All);
 		ModeLineDisplay();
 		ValidateRect(NULL);
-	} catch (CException * e) {
-		e->Delete();
+	} catch (CException * Exception) {
+		Exception->Delete();
 	}
 }
 
@@ -1934,11 +1940,13 @@ DROPEFFECT AeSysView::OnDragOver(COleDataObject * pDataObject, DWORD dwKeyState,
 	}
 	return __super::OnDragOver(pDataObject, dwKeyState, point);
 }
+
 BOOL AeSysView::PreCreateWindow(CREATESTRUCT & createStructure) {
-	// TODO: Modify the Window class or styles here by modifying the CREATESTRUCT
+	// <tas="Modify the Window class or styles here by modifying the CREATESTRUCT"/>
 
 	return CView::PreCreateWindow(createStructure);
 }
+
 void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {
 	CDC* DeviceContext = GetDC();
 	const COLORREF BackgroundColor = DeviceContext->GetBkColor();
@@ -1947,52 +1955,52 @@ void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {
 	int PrimitiveState = 0;
 	int iDrawMode = 0;
 
-	if ((hint & kSafe) == kSafe) {
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
 		PrimitiveState = pstate.Save();
 	}
-	if ((hint & kErase) == kErase) {
+	if ((hint & EoDb::kErase) == EoDb::kErase) {
 		iDrawMode = pstate.SetROP2(DeviceContext, R2_XORPEN);
 	}
-	if ((hint & kTrap) == kTrap) {
+	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
 		EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 	}
 	switch (hint) {
-		case kPrimitive:
-		case kPrimitiveSafe:
-		case kPrimitiveEraseSafe:
+		case EoDb::kPrimitive:
+		case EoDb::kPrimitiveSafe:
+		case EoDb::kPrimitiveEraseSafe:
 			((EoDbPrimitive*) hintObject)->Display(this, DeviceContext);
 			break;
 
-		case kGroup:
-		case kGroupSafe:
-		case kGroupEraseSafe:
-		case kGroupSafeTrap:
-		case kGroupEraseSafeTrap:
+		case EoDb::kGroup:
+		case EoDb::kGroupSafe:
+		case EoDb::kGroupEraseSafe:
+		case EoDb::kGroupSafeTrap:
+		case EoDb::kGroupEraseSafeTrap:
 			((EoDbGroup*) hintObject)->Display(this, DeviceContext);
 			break;
 
-		case kGroups:
-		case kGroupsSafe:
-		case kGroupsSafeTrap:
-		case kGroupsEraseSafeTrap:
+		case EoDb::kGroups:
+		case EoDb::kGroupsSafe:
+		case EoDb::kGroupsSafeTrap:
+		case EoDb::kGroupsEraseSafeTrap:
 			((EoDbGroupList*) hintObject)->Display(this, DeviceContext);
 			break;
 
-		case kLayer:
-		case kLayerErase:
+		case EoDb::kLayer:
+		case EoDb::kLayerErase:
 			((EoDbLayer*) hintObject)->Display(this, DeviceContext);
 			break;
 
 		default:
 			CView::OnUpdate(sender, hint, hintObject);
 	}
-	if ((hint & kTrap) == kTrap) {
+	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
 		EoDbPrimitive::SetHighlightColorIndex(0);
 	}
-	if ((hint & kErase) == kErase) {
+	if ((hint & EoDb::kErase) == EoDb::kErase) {
 		pstate.SetROP2(DeviceContext, iDrawMode);
 	}
-	if ((hint & kSafe) == kSafe) {
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
 		pstate.Restore(DeviceContext, PrimitiveState);
 	}
 	DeviceContext->SetBkColor(BackgroundColor);
@@ -2311,6 +2319,9 @@ void AeSysView::OnRButtonDown(UINT flags, CPoint point) {
 void AeSysView::OnRButtonUp(UINT flags, CPoint point) {
 	if (AeSysApp::CustomRButtonUpCharacters.IsEmpty()) {
 		m_RightButton = false;
+	
+		// <tas="Context menus using right mouse button goes here."/>
+		
 		__super::OnRButtonUp(flags, point);
 	} else {
 		DoCustomMouseClick(AeSysApp::CustomRButtonUpCharacters);
@@ -3157,7 +3168,7 @@ void AeSysView::OnPrimPerpJump() {
 	OdGePoint3d CursorPosition = GetCursorPosition();
 
 	if (SelectGroupAndPrimitive(CursorPosition) != nullptr) {
-		if (m_EngagedPrimitive->Is(kLinePrimitive)) {
+		if (m_EngagedPrimitive->Is(EoDb::kLinePrimitive)) {
 			const EoDbLine* LinePrimLine = dynamic_cast<EoDbLine*>(m_EngagedPrimitive);
 			CursorPosition = LinePrimLine->ProjPt_(m_ptCursorPosWorld);
 			SetCursorPosition(CursorPosition);
@@ -3293,10 +3304,10 @@ void AeSysView::DeleteLastGroup() {
 
 		Document->AnyLayerRemove(Group);
 		if (Document->RemoveTrappedGroup(Group) != 0) { // Display it normal color so the erase xor will work
-			Document->UpdateGroupInAllViews(kGroupSafe, Group);
+			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			UpdateStateInformation(TrapCount);
 		}
-		Document->UpdateGroupInAllViews(kGroupEraseSafe, Group);
+		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 		Document->DeletedGroupsAddTail(Group);
 		theApp.AddStringToMessageList(IDS_MSG_GROUP_ADDED_TO_DEL_GROUPS);
 	}
@@ -3429,7 +3440,7 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
 			auto Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kEllipsePrimitive)) {
+			if (Primitive->Is(EoDb::kEllipsePrimitive)) {
 				auto Arc = dynamic_cast<EoDbEllipse*>(Primitive);
 
 				if (fabs(Arc->SweepAngle() - TWOPI) <= DBL_EPSILON && (Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd()) <= DBL_EPSILON) {
@@ -3463,7 +3474,7 @@ EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d & pt) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kLinePrimitive)) {
+			if (Primitive->Is(EoDb::kLinePrimitive)) {
 				if (Primitive->SelectBy(ptView, this, ptEng)) {
 					tol = ptView.DistanceToPointXY(EoGePoint4d(ptEng, 1.));
 
@@ -3488,7 +3499,7 @@ std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
 			auto Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kLinePrimitive)) {
+			if (Primitive->Is(EoDb::kLinePrimitive)) {
 				OdGePoint3d PointOnLine;
 				if (Primitive->SelectBy(ptView, this, PointOnLine)) {
 					return {Group, dynamic_cast<EoDbLine*>(Primitive)};
@@ -3510,7 +3521,7 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d & pt) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(kTextPrimitive)) {
+			if (Primitive->Is(EoDb::kTextPrimitive)) {
 				OdGePoint3d ptProj;
 				if (dynamic_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj))
 					return dynamic_cast<EoDbText*>(Primitive);

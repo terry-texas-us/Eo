@@ -1,5 +1,9 @@
 #pragma once
 
+#include "EoGePoint3d.h"
+#include "EoGeReferenceSystem.h"
+
+class EoGeLineSeg3d;
 class EoDbPegFile;
 
 /// <summary>Compute a not so arbitrary axis for AutoCAD entities</summary>

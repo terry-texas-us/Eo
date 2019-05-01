@@ -3,6 +3,7 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoDb.h"
 #include "EoDlgFileManage.h"
 #include "EoDlgLineWeight.h"
 #include "EoDlgSetupColor.h"
@@ -504,7 +505,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR pNMHDR, LRESULT* res
 			theApp.AddStringToMessageList(ErrorDescription, Name);
 		}
 		else {
-			m_Document->UpdateLayerInAllViews(kLayerErase, Layer);
+			m_Document->UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
 			const int LayerIndex = m_Document->FindLayerAt(Name);
 			m_Document->RemoveLayerAt(LayerIndex);
 			m_LayersList.DeleteItem(SelectionMark);

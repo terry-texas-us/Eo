@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbFontDefinition.h"
+
 // EoDlgSetupNote dialog
 
 class EoDlgSetupNote : public CDialog {

@@ -24,7 +24,7 @@ void AeSysView::DoEditPrimitiveCopy() {
 		m_SubModeEditGroup->AddTail(m_SubModeEditPrimitive);
 		GetDocument()->AddWorkLayerGroup(m_SubModeEditGroup);
 
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_tmEditSeg.setToIdentity();
 	}
 }
@@ -32,9 +32,9 @@ void AeSysView::DoEditPrimitiveEscape() {
 	if (m_SubModeEditPrimitive != 0) {
 		m_tmEditSeg.invert();
 
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_SubModeEditPrimitive->TransformBy(m_tmEditSeg);
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 
 		InitializeGroupAndPrimitiveEdit();
 
@@ -71,9 +71,9 @@ void AeSysView::DoEditPrimitiveTransform(OdUInt16 operation) {
 		OriginToBeginPointMatrix.setToTranslation(m_SubModeEditBeginPoint.asVector());
 		TransformMatrix.preMultBy(OriginToBeginPointMatrix);
 		
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_SubModeEditPrimitive->TransformBy(TransformMatrix);
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 
 		m_tmEditSeg.preMultBy(TransformMatrix);
 	}
@@ -87,9 +87,9 @@ void AeSysView::PreviewPrimitiveEdit() {
 		if (theApp.IsTrapHighlighted() && GetDocument()->FindTrappedGroup(m_SubModeEditGroup) != 0)
 			EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_SubModeEditPrimitive->TransformBy(TransformMatrix);
-		GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_SubModeEditPrimitive);
+		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 
 		EoDbPrimitive::SetHighlightColorIndex(0);
 

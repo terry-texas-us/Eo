@@ -3,6 +3,12 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoGePolyline.h"
+
+#include "EoDbFile.h"
+
+#include "EoDbPolyline.h"
+
 size_t EoDbPolyline::sm_EdgeToEvaluate = 0;
 size_t EoDbPolyline::sm_Edge = 0;
 size_t EoDbPolyline::sm_PivotVertex = 0;
@@ -463,7 +469,7 @@ void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& translate, const DWORD
 }
 
 bool EoDbPolyline::Write(EoDbFile& file) const {
-	file.WriteUInt16(kPolylinePrimitive);
+	file.WriteUInt16(EoDb::kPolylinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
     file.WriteUInt16(m_Flags);

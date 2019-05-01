@@ -1,5 +1,8 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+
+#include "EoDbGroup.h"
+#include "EoDbFile.h"
+#include "EoDbTracingFile.h"
 
 EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr database) {
 }

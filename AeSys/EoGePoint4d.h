@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoGePoint3d.h"
+
 typedef CArray<EoGePoint4d, EoGePoint4d&> EoGePoint4dArray;
 
 class EoGePoint4d {

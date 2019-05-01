@@ -3,6 +3,7 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoDb.h"
 #include "EoDlgModeRevise.h"
 
 // EoDlgModeRevise dialog
@@ -54,9 +55,9 @@ void EoDlgModeRevise::OnOK() {
 	m_TextEditControl.GetWindowTextW(TextString);
 
 	if (sm_TextPrimitive != 0) {
-		Document->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, sm_TextPrimitive);
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, sm_TextPrimitive);
 		sm_TextPrimitive->SetText(TextString);
-		Document->UpdatePrimitiveInAllViews(kPrimitiveSafe, sm_TextPrimitive);
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, sm_TextPrimitive);
 	}
 	else {
         OdGeVector3d PlaneNormal;
@@ -75,7 +76,7 @@ void EoDlgModeRevise::OnOK() {
         Group->AddTail(EoDbText::Create(Text));
 
 		Document->AddWorkLayerGroup(Group);
-		Document->UpdateGroupInAllViews(kGroupSafe, Group);
+		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
 	sm_ReferenceSystem.SetOrigin(text_GetNewLinePos(sm_FontDefinition, sm_ReferenceSystem, 1., 0));
 

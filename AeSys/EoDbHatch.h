@@ -1,8 +1,8 @@
 #pragma once
 
+#include "EoDb.h"
+#include "EoDbPrimitive.h"
 #include "DbHatch.h"
-
-using namespace EoDb;
 
 /* <remarks>
 Hatch(Polygon) primitive
@@ -63,7 +63,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == kHatchPrimitive;}
+    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kHatchPrimitive;}
 bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override {return false;}
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

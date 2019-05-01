@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "EoDbBlock.h"
+
 EoDbBlock::EoDbBlock() {
 	m_wBlkTypFlgs = 0;
 }

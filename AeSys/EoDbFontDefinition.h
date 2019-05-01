@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDb.h"
+
 class EoDbFile;
 
 class EoDbFontDefinition {

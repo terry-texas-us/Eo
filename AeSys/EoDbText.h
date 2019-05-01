@@ -1,5 +1,10 @@
 #pragma once
-using namespace EoDb;
+
+#include "EoGeReferenceSystem.h"
+
+#include "EoDb.h"
+#include "EoDbFontDefinition.h"
+#include "EoDbPrimitive.h"
 
 /* <remarks>
 Text primitive in Peg files and Tracing files
@@ -45,7 +50,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-    bool Is(OdUInt16 type) const noexcept override {return type == kTextPrimitive;}
+    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kTextPrimitive;}
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -70,16 +75,16 @@ public: // Methods
 	const CString& Text() noexcept;
 	OdGePoint3d Position() const noexcept;
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition);
-	void SetHorizontalMode(HorizontalAlignment horizontalAlignment);
+	void SetHorizontalMode(EoDb::HorizontalAlignment horizontalAlignment);
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);
 	EoDbText& SetTo(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, const CString& text);
-	void SetVerticalMode(VerticalAlignment verticalAlignment);
+	void SetVerticalMode(EoDb::VerticalAlignment verticalAlignment);
 
 public: // Methods - static
     static void ConvertFractionMarkup(CString& text);
-    static HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
-	static VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
+    static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
+	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
     static OdDb::TextHorzMode ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept;
     static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
 

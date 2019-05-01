@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbLayer.h"
+
 class EoDbTracingFile : public EoDbFile {
 public:
     EoDbTracingFile(OdDbDatabasePtr database);

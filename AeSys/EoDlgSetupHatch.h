@@ -6,8 +6,8 @@ class EoDlgSetupHatch : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupHatch)
 
 public:
-	EoDlgSetupHatch(CWnd* parent = NULL);
-	virtual ~EoDlgSetupHatch();
+	EoDlgSetupHatch(CWnd* parent = NULL) noexcept;
+	~EoDlgSetupHatch();
 
 // Dialog Data
 	enum { IDD = IDD_SETUP_HATCH };

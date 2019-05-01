@@ -2,6 +2,8 @@
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
 
+#include "EoDbPegFile.h"
+
 EoDbPegFile::EoDbPegFile(OdDbDatabasePtr database)
     : EoDbFile(database) {
 }

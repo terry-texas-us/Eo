@@ -1,5 +1,8 @@
 #include "stdafx.h"
 
+#include "EoGeReferenceSystem.h"
+#include "EoGeMatrix3d.h"
+
 EoGeMatrix3d::EoGeMatrix3d()
 	: OdGeMatrix3d() {
 }

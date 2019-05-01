@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbPrimitive.h"
+
 class EoDbFile : public CFile {
 
 public:

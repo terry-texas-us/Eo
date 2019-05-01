@@ -3,6 +3,13 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoVaxFloat.h"
+
+#include "EoGePolyline.h"
+
+#include "EoDbFile.h"
+#include "EoDbHatch.h"
+
 #include "HatchPatternManager.h"
 #include "EoDbHatchPatternTable.h"
 
@@ -363,7 +370,7 @@ void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const DWORD ma
 }
 
 bool EoDbHatch::Write(EoDbFile& file) const {
-	file.WriteUInt16(kHatchPrimitive);
+	file.WriteUInt16(EoDb::kHatchPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_InteriorStyle);  // note polygon style stuffed up into unused line type on io
 	file.WriteUInt16(OdUInt16(EoMax(1U, m_InteriorStyleIndex)));
@@ -387,7 +394,7 @@ bool EoDbHatch::Write(EoDbFile& file) const {
 
 void EoDbHatch::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = OdInt8((79 + m_Vertices.size() * 12) / 32);
-	*((OdUInt16*) &buffer[4]) = OdUInt16(kHatchPrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kHatchPrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_InteriorStyle);
 	*((OdInt16*) &buffer[8]) = OdInt16(m_InteriorStyleIndex);

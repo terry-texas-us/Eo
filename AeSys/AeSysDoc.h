@@ -10,6 +10,12 @@
 
 #include "ExEdBaseIO.h"
 
+#include "EoGeUniquePoint.h"
+
+#include "EoDbText.h"
+#include "EoDbMaskedPrimitive.h"
+#include "EoDbBlock.h"
+#include "EoDbLayer.h"
 #include "EoDbLinetypeTable.h"
 
 #ifdef ODAMFC_EXPORT_SYMBOL
@@ -383,7 +389,7 @@ public: // trap interface
     POSITION GetFirstTrappedGroupPosition() const;
     EoDbGroup* GetNextTrappedGroup(POSITION& position);
     EoDbGroupList* GroupsInTrap() noexcept;
-    BOOL IsTrapEmpty() const;
+    bool IsTrapEmpty() const;
     void ModifyTrappedGroupsColorIndex(OdInt16 colorIndex);
     void ModifyTrappedGroupsLinetypeIndex(OdInt16 linetypeIndex);
     void ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, EoDbCharacterCellDefinition& cellDef, int attributes);

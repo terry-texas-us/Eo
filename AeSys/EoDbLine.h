@@ -1,6 +1,9 @@
 #pragma once
 
-using namespace EoDb;
+#include "EoGeLineSeg3d.h"
+
+#include "EoDb.h"
+#include "EoDbPrimitive.h"
 
 /* <remarks>
 Hatch(Polygon) primitive
@@ -37,7 +40,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == kLinePrimitive;}
+    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kLinePrimitive;}
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

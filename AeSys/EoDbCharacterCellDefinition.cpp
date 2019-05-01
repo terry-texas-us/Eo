@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "EoDbCharacterCellDefinition.h"
+
 EoDbCharacterCellDefinition::EoDbCharacterCellDefinition() : m_Height(.1), m_WidthFactor(1.) , m_RotationAngle(0.) , m_ObliqueAngle(0.) {
 }
 EoDbCharacterCellDefinition::EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) noexcept {

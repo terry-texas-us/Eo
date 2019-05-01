@@ -3,6 +3,10 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoDbFile.h"
+#include "EoDbBlockReference.h"
+#include "EoDbPolyline.h"
+
 EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(NULL);
 
 EoDbGroup::EoDbGroup() noexcept {}
@@ -47,7 +51,7 @@ void EoDbGroup::BreakPolylines() {
 	while (Position != 0) {
 		POSITION PrimitivePosition = Position;
         auto Primitive {GetNext(Position)};
-		if (Primitive->Is(kPolylinePrimitive)) {
+		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
 			const auto Polyline = dynamic_cast<EoDbPolyline*>(Primitive);
 			OdGePoint3dArray Points;
 			Polyline->GetAllPoints(Points);
@@ -68,7 +72,7 @@ void EoDbGroup::BreakPolylines() {
 			this->RemoveAt(PrimitivePosition);
 			delete Primitive;
 		}
-		else if (Primitive->Is(kGroupReferencePrimitive)) {
+		else if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
 			EoDbBlock* Block;
 			if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
 				Block->BreakPolylines();
@@ -84,7 +88,7 @@ void EoDbGroup::BreakSegRefs() {
 		while (Position != 0) {
             auto PrimitivePosition {Position};
             auto Primitive {GetNext(Position)};
-			if (Primitive->Is(kGroupReferencePrimitive)) {
+			if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
 				iSegRefs++;
 				EoDbBlock* Block;
 				if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
@@ -163,7 +167,7 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
-		if (Primitive->Is(kGroupReferencePrimitive)) {
+		if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
 			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name)
 				Count++;
 		}
@@ -186,7 +190,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
-		if (Primitive != pointPrimitive && Primitive->Is(kPointPrimitive)) {
+		if (Primitive != pointPrimitive && Primitive->Is(EoDb::kPointPrimitive)) {
 			return (dynamic_cast<EoDbPoint*>(Primitive));
 		}
 	}
@@ -255,7 +259,7 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCel
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
-		if (Primitive->Is(kTextPrimitive)) {
+		if (Primitive->Is(EoDb::kTextPrimitive)) {
 			dynamic_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 		}
 	}
@@ -298,7 +302,7 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 	while (Position != 0) {
         auto posPrev {Position};
         auto Primitive {GetNext(Position)};
-		if (Primitive->Is(kTextPrimitive)) {
+		if (Primitive->Is(EoDb::kTextPrimitive)) {
 			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);
 				delete Primitive;
@@ -382,7 +386,7 @@ void EoDbGroup::SortTextOnY() {
             auto pos2 {pos1};
             auto pPrim2 {GetNext(pos2)};
 
-			if (pPrim1->Is(kTextPrimitive) && pPrim2->Is(kTextPrimitive)) {
+			if (pPrim1->Is(EoDb::kTextPrimitive) && pPrim2->Is(EoDb::kTextPrimitive)) {
                 const auto dY1 {dynamic_cast<EoDbText*>(pPrim1)->Position().y};
                 const auto dY2 {dynamic_cast<EoDbText*>(pPrim2)->Position().y};
 				if (dY1 < dY2) {
@@ -391,7 +395,7 @@ void EoDbGroup::SortTextOnY() {
 					iT = i;
 				}
 			}
-			else if (pPrim1->Is(kTextPrimitive) || pPrim2->Is(kTextPrimitive)) {
+			else if (pPrim1->Is(EoDb::kTextPrimitive) || pPrim2->Is(EoDb::kTextPrimitive)) {
 				SetAt(Position, pPrim2);
 				SetAt(pos1, pPrim1);
 				iT = i;
@@ -407,7 +411,7 @@ void EoDbGroup::Square(AeSysView* view) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
-		if (Primitive->Is(kLinePrimitive)) {
+		if (Primitive->Is(EoDb::kLinePrimitive)) {
 			dynamic_cast<EoDbLine*>(Primitive)->Square(view);
 		}
 	}

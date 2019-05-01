@@ -1,5 +1,10 @@
 #pragma once
 
+#include "EoGeReferenceSystem.h"
+#include "EoDbCharacterCellDefinition.h"
+#include "EoDbFontDefinition.h"
+#include "PrimState.h"
+
 class CPrimState {
 	OdInt16 m_PointDisplayMode;
 	OdInt16 m_ColorIndex;

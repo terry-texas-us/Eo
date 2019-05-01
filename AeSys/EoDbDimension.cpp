@@ -3,6 +3,14 @@
 #include "AeSysApp.h"
 #include "AeSysView.h"
 
+#include "EoVaxFloat.h"
+
+#include "EoGePolyline.h"
+
+#include "EoDbFile.h"
+#include "EoDbDimension.h"
+#include "EoDbText.h"
+
 OdUInt16 EoDbDimension::sm_wFlags = 0;
 
 EoDbDimension::EoDbDimension()
@@ -410,11 +418,11 @@ void EoDbDimension::SetReferenceSystem(const EoGeReferenceSystem & referenceSyst
 	m_ReferenceSystem = referenceSystem;
 }
 
-void EoDbDimension::SetTextHorizontalAlignment(HorizontalAlignment horizontalAlignment) noexcept {
+void EoDbDimension::SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 }
 
-void EoDbDimension::SetTextVerticalAlignment(VerticalAlignment verticalAlignment) noexcept {
+void EoDbDimension::SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept {
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 }
 
@@ -440,7 +448,7 @@ void EoDbDimension::TranslateUsingMask(const OdGeVector3d & translate, const DWO
 }
 
 bool EoDbDimension::Write(EoDbFile & file) const {
-	file.WriteUInt16(kDimensionPrimitive);
+	file.WriteUInt16(EoDb::kDimensionPrimitive);
 
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
@@ -458,7 +466,7 @@ void EoDbDimension::Write(CFile & file, OdUInt8 * buffer) const {
 	OdUInt16 NumberOfCharacters = OdUInt16(m_strText.GetLength());
 
 	buffer[3] = OdUInt8((118 + NumberOfCharacters) / 32);
-	*((OdUInt16*) & buffer[4]) = OdUInt16(kDimensionPrimitive);
+	*((OdUInt16*) & buffer[4]) = OdUInt16(EoDb::kDimensionPrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
@@ -467,7 +475,7 @@ void EoDbDimension::Write(CFile & file, OdUInt8 * buffer) const {
 	((EoVaxPoint3d*) & buffer[20])->Convert(m_Line.endPoint());
 
 	buffer[32] = OdInt8(m_ColorIndex);
-	buffer[33] = OdInt8(kStrokeType);
+	buffer[33] = OdInt8(EoDb::kStrokeType);
 	*((OdInt16*) & buffer[34]) = 0;
 	((EoVaxFloat*) & buffer[36])->Convert(m_FontDefinition.CharacterSpacing());
 	buffer[40] = OdInt8(m_FontDefinition.Path());
@@ -523,41 +531,41 @@ EoDbDimension* EoDbDimension::ConstructFrom(OdUInt8 * primitiveBuffer, int versi
 	const auto TextColorIndex {OdInt16(primitiveBuffer[32])};
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetFontName(L"Simplex.psf");
-	FontDefinition.SetPrecision(kStrokeType);
+	FontDefinition.SetPrecision(EoDb::kStrokeType);
 	FontDefinition.SetCharacterSpacing(((EoVaxFloat*) & primitiveBuffer[36])->Convert());
 
 	switch (primitiveBuffer[40]) {
 		case 3:
-			FontDefinition.SetPath(kPathDown);
+			FontDefinition.SetPath(EoDb::kPathDown);
 			break;
 		case 2:
-			FontDefinition.SetPath(kPathUp);
+			FontDefinition.SetPath(EoDb::kPathUp);
 			break;
 		case 1:
-			FontDefinition.SetPath(kPathLeft);
+			FontDefinition.SetPath(EoDb::kPathLeft);
 			break;
 		default:
-			FontDefinition.SetPath(kPathRight);
+			FontDefinition.SetPath(EoDb::kPathRight);
 	}
 	switch (primitiveBuffer[41]) {
 		case 3:
-			FontDefinition.SetHorizontalAlignment(kAlignRight);
+			FontDefinition.SetHorizontalAlignment(EoDb::kAlignRight);
 			break;
 		case 2:
-			FontDefinition.SetHorizontalAlignment(kAlignCenter);
+			FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
 			break;
 		default:
-			FontDefinition.SetHorizontalAlignment(kAlignLeft);
+			FontDefinition.SetHorizontalAlignment(EoDb::kAlignLeft);
 	}
 	switch (primitiveBuffer[42]) {
 		case 2:
-			FontDefinition.SetVerticalAlignment(kAlignTop);
+			FontDefinition.SetVerticalAlignment(EoDb::kAlignTop);
 			break;
 		case 3:
-			FontDefinition.SetVerticalAlignment(kAlignMiddle);
+			FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
 			break;
 		default:
-			FontDefinition.SetVerticalAlignment(kAlignBottom);
+			FontDefinition.SetVerticalAlignment(EoDb::kAlignBottom);
 	}
 	EoGeReferenceSystem ReferenceSystem;
 	ReferenceSystem.SetOrigin(((EoVaxPoint3d*) & primitiveBuffer[43])->Convert());

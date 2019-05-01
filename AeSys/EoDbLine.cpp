@@ -3,6 +3,12 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoVaxFloat.h"
+
+#include "EoGePolyline.h"
+
+#include "EoDbFile.h"
+
 EoDbLine::EoDbLine() noexcept {
 }
 
@@ -226,7 +232,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 }
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
-	bool IsEqualTo = primitive->Is(kLinePrimitive);
+	bool IsEqualTo = primitive->Is(EoDb::kLinePrimitive);
 	if (IsEqualTo) {
 		IsEqualTo = m_Line.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->Line());
 	}
@@ -408,7 +414,7 @@ void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mas
 }
 
 bool EoDbLine::Write(EoDbFile& file) const {
-	file.WriteUInt16(kLinePrimitive);
+	file.WriteUInt16(EoDb::kLinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	file.WritePoint3d(m_Line.startPoint());
@@ -418,7 +424,7 @@ bool EoDbLine::Write(EoDbFile& file) const {
 
 void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) &buffer[4]) = OdUInt16(kLinePrimitive);
+	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kLinePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;

@@ -67,8 +67,8 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 			pColTbl = pCurColTbl;
 		}
 	}
-	catch (CException* e) {
-		e->Delete();
+	catch (CException* Exception) {
+		Exception->Delete();
 	}
 }
 bool EoDbLayer::IsActive() const noexcept {

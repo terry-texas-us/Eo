@@ -1,7 +1,15 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
+
+#include "EoVaxFloat.h"
+
 #include "EoDbJobFile.h"
+#include "EoDbDimension.h"
+#include "EoDbEllipse.h"
+#include "EoDbLine.h"
+#include "EoDbHatch.h"
+#include "EoDbSpline.h"
 
 EoDbJobFile::EoDbJobFile() {
 	m_Version = 3;
@@ -13,40 +21,40 @@ EoDbJobFile::~EoDbJobFile() {
 
 void EoDbJobFile::ConstructPrimitive(EoDbPrimitive *&primitive, OdInt16 PrimitiveType) {
 	switch(PrimitiveType) {
-	case kTagPrimitive:
-	case kPointPrimitive:
-		if (PrimitiveType == kTagPrimitive) {
-			*((OdUInt16*) &m_PrimBuf[4]) = kPointPrimitive;
+	case EoDb::kTagPrimitive:
+	case EoDb::kPointPrimitive:
+		if (PrimitiveType == EoDb::kTagPrimitive) {
+			*((OdUInt16*) &m_PrimBuf[4]) = EoDb::kPointPrimitive;
 			::ZeroMemory(&m_PrimBuf[20], 12);
 		}
 		primitive = EoDbPoint::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case kLinePrimitive:
+	case EoDb::kLinePrimitive:
 		primitive = EoDbLine::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case kHatchPrimitive:
+	case EoDb::kHatchPrimitive:
 		primitive = EoDbHatch::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case kEllipsePrimitive:
+	case EoDb::kEllipsePrimitive:
 		primitive = EoDbEllipse::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case kCSplinePrimitive:
-	case kSplinePrimitive:
-		if (PrimitiveType == kCSplinePrimitive) {
+	case EoDb::kCSplinePrimitive:
+	case EoDb::kSplinePrimitive:
+		if (PrimitiveType == EoDb::kCSplinePrimitive) {
 			const OdUInt16 NumberOfControlPoints = *((OdUInt16*) &m_PrimBuf[10]);
 			m_PrimBuf[3] = OdInt8((2 + NumberOfControlPoints * 3) / 8 + 1);
-			*((OdUInt16*) &m_PrimBuf[4]) = OdUInt16(kSplinePrimitive);
+			*((OdUInt16*) &m_PrimBuf[4]) = OdUInt16(EoDb::kSplinePrimitive);
 			m_PrimBuf[8] = m_PrimBuf[10];
 			m_PrimBuf[9] = m_PrimBuf[11];
 			::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
 		}
 		primitive = EoDbSpline::ConstructFrom(m_PrimBuf, 3);
 		break;
-	case kTextPrimitive:
+	case EoDb::kTextPrimitive:
 		primitive = EoDbText::ConstructFrom(m_PrimBuf, 3);
 		dynamic_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
 		break;
-	case kDimensionPrimitive:
+	case EoDb::kDimensionPrimitive:
 		primitive = EoDbDimension::ConstructFrom(m_PrimBuf, 3);
 		break;
 
@@ -202,15 +210,15 @@ int EoDbJobFile::Version() noexcept {
 }
 bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
 	switch (primitiveType) {
-	case kPointPrimitive: // 0x0100
-	case kLinePrimitive: // 0x0200
-	case kHatchPrimitive: // 0x0400
-	case kEllipsePrimitive: // 0x1003
-	case kSplinePrimitive: // 0x2000
-	case kCSplinePrimitive: // 0x2001
-	case kTextPrimitive: // 0x4000
-	case kTagPrimitive: // 0x4100
-	case kDimensionPrimitive: // 0x4200
+	case EoDb::kPointPrimitive: // 0x0100
+	case EoDb::kLinePrimitive: // 0x0200
+	case EoDb::kHatchPrimitive: // 0x0400
+	case EoDb::kEllipsePrimitive: // 0x1003
+	case EoDb::kSplinePrimitive: // 0x2000
+	case EoDb::kCSplinePrimitive: // 0x2001
+	case EoDb::kTextPrimitive: // 0x4000
+	case EoDb::kTagPrimitive: // 0x4100
+	case EoDb::kDimensionPrimitive: // 0x4200
 		return true;
 
 	default:

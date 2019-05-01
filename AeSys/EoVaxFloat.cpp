@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "EoVaxFloat.h"
+
 EoVaxFloat::EoVaxFloat() {
 	m_f = 0.f;
 }

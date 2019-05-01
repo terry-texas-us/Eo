@@ -2,8 +2,13 @@
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+
+#include "EoGePolyline.h"
+
 #include "EoDlgAnnotateOptions.h"
 #include "EoDlgSetText.h"
+
+#include "EoDbPolyline.h"
 
 OdGePoint3dArray EoViAnn_points;
 
@@ -68,7 +73,7 @@ void AeSysView::OnAnnotateModeArrow() {
 
             GenerateLineEndItem(EndItemType(), EndItemSize(), EoViAnn_points[0], CurrentPnt, Group);
 			GetDocument()->AddWorkLayerGroup(Group);
-			GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			EoViAnn_points[0] = CurrentPnt;
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 		}
@@ -95,7 +100,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		EoViAnn_points.append(CurrentPnt);
 	}
 	else {
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 		OdGePoint3d pt(CurrentPnt);
@@ -132,8 +137,8 @@ void AeSysView::OnAnnotateModeBubble() {
         Text->setHeight(ReferenceSystem.YDirection().length());
         Text->setAlignmentPoint(ReferenceSystem.Origin());
         Text->setColorIndex(2);
-        Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(kAlignCenter));
-        Text->setVerticalMode(EoDbText::ConvertVerticalMode(kAlignMiddle));
+        Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(EoDb::kAlignCenter));
+        Text->setVerticalMode(EoDbText::ConvertVerticalMode(EoDb::kAlignMiddle));
 
         Group->AddTail(EoDbText::Create(Text));
 	}
@@ -168,7 +173,7 @@ void AeSysView::OnAnnotateModeBubble() {
 
         Group->AddTail(EoDbPolyline::Create(Polyline));
 	}
-	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	EoViAnn_points[0] = CurrentPnt;
 }
 
@@ -183,7 +188,7 @@ void AeSysView::OnAnnotateModeHook() {
 		EoViAnn_points.append(CurrentPnt);
 	}
 	else {
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 		OdGePoint3d pt(CurrentPnt);
@@ -216,7 +221,7 @@ void AeSysView::OnAnnotateModeHook() {
     Group->AddTail(EoDbEllipse::Create(Ellipse));
     
 	GetDocument()->AddWorkLayerGroup(Group);
-	GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	EoViAnn_points[0] = CurrentPnt;
 }
 
@@ -225,7 +230,7 @@ void AeSysView::OnAnnotateModeUnderline() {
 
 	if (m_PreviousOp != 0) {
 		ModeLineUnhighlightOp(m_PreviousOp);
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
 	EoDbText* pText = SelectTextUsingPoint(CurrentPnt);
@@ -246,7 +251,7 @@ void AeSysView::OnAnnotateModeUnderline() {
         Group->AddTail(EoDbLine::Create(Line));
         
 		GetDocument()->AddWorkLayerGroup(Group);
-		GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
 }
 
@@ -311,7 +316,7 @@ void AeSysView::OnAnnotateModeBox() {
                 Group->AddTail(EoDbLine::Create(Line));
 			}
 			GetDocument()->AddWorkLayerGroup(Group);
-			GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 		}
 		ModeLineUnhighlightOp(m_PreviousOp);
 	}
@@ -336,7 +341,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 		if (dlg.DoModal() == IDOK) {
 			CurrentText = dlg.m_sText;
 		}
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, Group);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 
 		const int PrimitiveState = pstate.Save();
 
@@ -359,8 +364,8 @@ void AeSysView::OnAnnotateModeCutIn() {
 			pstate.SetColorIndex(DeviceContext, 2);
 
 			EoDbFontDefinition FontDefinition = pstate.FontDefinition();
-			FontDefinition.SetHorizontalAlignment(kAlignCenter);
-			FontDefinition.SetVerticalAlignment(kAlignMiddle);
+			FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
+			FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
 
 			EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 			CharacterCellDefinition.SetRotationAngle(0.);
@@ -371,8 +376,8 @@ void AeSysView::OnAnnotateModeCutIn() {
             Text->setHeight(ReferenceSystem.YDirection().length());
             Text->setRotation(ReferenceSystem.Rotation());
             Text->setAlignmentPoint(ReferenceSystem.Origin());
-            Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(kAlignCenter));
-            Text->setVerticalMode(EoDbText::ConvertVerticalMode(kAlignMiddle));
+            Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(EoDb::kAlignCenter));
+            Text->setVerticalMode(EoDbText::ConvertVerticalMode(EoDb::kAlignMiddle));
 
 //            OdGePoint3dArray BoundingBox;
 //            Text->getBoundingPoints(BoundingBox);
@@ -415,7 +420,7 @@ void AeSysView::OnAnnotateModeCutIn() {
                 EngagedLine->SetEndPoint(BoundingBox[0]);
             }
 		}
-		GetDocument()->UpdateGroupInAllViews(kGroup, Group);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroup, Group);
 		pstate.Restore(DeviceContext, PrimitiveState);
 	}
 	ReleaseDC(DeviceContext);
@@ -455,7 +460,7 @@ void AeSysView::OnAnnotateModeReturn() noexcept {
 }
 
 void AeSysView::OnAnnotateModeEscape() {
-	GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	EoViAnn_points.clear();
@@ -543,7 +548,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 
     OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+    GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
     m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
     switch (m_PreviousOp) {
@@ -557,7 +562,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
             Line->setColorIndex(1);
             Line->setLinetype(L"Continuous");
             m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
 
@@ -570,7 +575,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
             Line->setColorIndex(1);
             Line->setLinetype(L"Continuous");
             m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
         }
         EoViAnn_points[0] = m_PreviousPnt;
         break;
@@ -586,7 +591,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
             Line->setColorIndex(15);
             Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
             m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
         }
         break;
 

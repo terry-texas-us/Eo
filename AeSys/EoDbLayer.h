@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbGroupList.h"
+
 class EoDbLayer : public EoDbGroupList {
 private:
 	OdDbLayerTableRecordPtr m_Layer;

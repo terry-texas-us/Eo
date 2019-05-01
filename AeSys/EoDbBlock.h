@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbGroup.h"
+
 class EoDbBlock : public EoDbGroup {
 private:
 

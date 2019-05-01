@@ -1,6 +1,6 @@
 #pragma once
 
-class EoDbPrimitive;
+//class EoDbPrimitive;
 
 namespace EoDb {
     enum FileTypes {

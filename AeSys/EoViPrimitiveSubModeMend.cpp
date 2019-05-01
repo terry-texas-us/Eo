@@ -3,6 +3,9 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoDbHatch.h"
+#include "EoDbPolyline.h"
+
 void AeSysView::OnModePrimitiveMend() {
     const auto CurrentPnt {GetCursorPosition()};
 	EoGePoint4d ptView(CurrentPnt, 1.);
@@ -40,24 +43,24 @@ void AeSysView::OnModePrimitiveMend() {
 void AeSysView::PreviewMendPrimitive() {
     const auto CurrentPnt {GetCursorPosition()};
 	const OdGeVector3d Translate(CurrentPnt - m_MendPrimitiveBegin);
-	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
+	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
 	m_PrimitiveToMendCopy->TranslateUsingMask(Translate, m_MendPrimitiveVertexIndex);
-	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveSafe, m_PrimitiveToMendCopy);
+	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_PrimitiveToMendCopy);
 	m_MendPrimitiveBegin = CurrentPnt;
 }
 void AeSysView::MendPrimitiveReturn() {
-	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
+	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
 	// <tas="May have been broken when Assign method replaced operator=()"</tas>
 	m_PrimitiveToMend = m_PrimitiveToMendCopy;
-	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveSafe, m_PrimitiveToMend);
+	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_PrimitiveToMend);
 
 	delete m_PrimitiveToMendCopy;
 
 	theApp.LoadModeResources(theApp.PrimaryMode());
 }
 void AeSysView::MendPrimitiveEscape() {
-	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
-	GetDocument()->UpdatePrimitiveInAllViews(kPrimitiveSafe, m_PrimitiveToMend);
+	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
+	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_PrimitiveToMend);
 
 	delete m_PrimitiveToMendCopy;
 

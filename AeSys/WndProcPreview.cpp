@@ -2,6 +2,8 @@
 
 #include "AeSysView.h"
 
+#include "EoDbBlock.h"
+
 #include "Preview.h"
 
 CBitmap* WndProcPreview_Bitmap = NULL;

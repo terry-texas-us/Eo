@@ -23,7 +23,7 @@ void AeSysView::DoEditGroupCopy() {
 		Document->AddWorkLayerGroup(Group);
 		m_SubModeEditGroup = Group;
 
-		Document->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 		m_tmEditSeg.setToIdentity();
 	}
 }
@@ -31,9 +31,9 @@ void AeSysView::DoEditGroupEscape() {
 	if (m_SubModeEditGroup != 0) {
 		m_tmEditSeg.invert();
 
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
  		m_SubModeEditGroup->TransformBy(m_tmEditSeg);
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 
 		InitializeGroupAndPrimitiveEdit();
 
@@ -71,9 +71,9 @@ void AeSysView::DoEditGroupTransform(OdUInt16 operation) {
 		OriginToBeginPointMatrix.setToTranslation(m_SubModeEditBeginPoint.asVector());
 		TransformMatrix.preMultBy(OriginToBeginPointMatrix);
 
-		Document->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 		m_SubModeEditGroup->TransformBy(TransformMatrix);
-		Document->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 
 		m_tmEditSeg.preMultBy(TransformMatrix);
 	}
@@ -88,9 +88,9 @@ void AeSysView::PreviewGroupEdit() {
 		if (theApp.IsTrapHighlighted() && Document->FindTrappedGroup(m_SubModeEditGroup) != 0) {
 			EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 		}
-		Document->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 		m_SubModeEditGroup->TransformBy(tm);
-		Document->UpdateGroupInAllViews(kGroupEraseSafe, m_SubModeEditGroup);
+		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 
 		EoDbPrimitive::SetHighlightColorIndex(0);
 

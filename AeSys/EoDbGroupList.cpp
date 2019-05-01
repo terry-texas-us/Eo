@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "AeSysView.h"
 
+#include "EoDbHatch.h"
+#include "EoDbPolyline.h"
+
 POSITION EoDbGroupList::AddHead(EoDbGroup* group) {
 	return (CObList::AddHead((CObject*) group));
 }

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AeSysView.h"
 
+#include "EoDbFile.h"
+
 EoGeReferenceSystem::EoGeReferenceSystem() : m_Origin(OdGePoint3d::kOrigin), m_XDirection(OdGeVector3d::kXAxis), m_YDirection(OdGeVector3d::kYAxis) {
 }
 

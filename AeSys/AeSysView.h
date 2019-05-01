@@ -10,7 +10,20 @@
 #include "EditorObject.h"
 #include "ExEdInputParser.h"
 
+#include "EoGsViewport.h"
+#include "EoGsModelTransform.h"
+#include "EoGsViewTransform.h"
+
+#include "EoDbEllipse.h"
+#include "EoDbLine.h"
+#include "EoDbPoint.h"
+#include "EoDbGroup.h"
+#include "EoDbGroupList.h"
+#include "PrimState.h"
+#include "Section.h"
+
 class AeSysDoc;
+class EoDbText;
 
 class AeSysView
     : public CView
@@ -131,7 +144,7 @@ public:
     void OnInitialUpdate() override;
 
 protected:
-    void OnDraw(CDC* deviceContext) override;  // overridden to draw this view
+    void OnDraw(CDC* deviceContext) override;
     BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
     void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
     void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;

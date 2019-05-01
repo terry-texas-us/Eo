@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbFile.h"
+
 class AeSysDoc;
 
 class EoDbPegFile : public EoDbFile {

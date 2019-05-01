@@ -2,6 +2,8 @@
 #include "AeSysApp.h"
 #include "AeSysDoc.h"
 
+#include "PrimState.h"
+
 OdInt16	EoDbPrimitive::sm_LayerColorIndex = 1;
 OdInt16	EoDbPrimitive::sm_LayerLinetypeIndex = 1;
 OdInt16	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;

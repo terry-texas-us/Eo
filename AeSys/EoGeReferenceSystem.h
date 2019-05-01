@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoGePoint3d.h"
+
 class AeSysView;
 class EoDbCharacterCellDefinition;
 class EoDbFile;

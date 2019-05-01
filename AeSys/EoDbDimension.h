@@ -1,6 +1,9 @@
 #pragma once
 
-class EoDbPrimitive;
+#include "EoGeLineSeg3d.h"
+
+#include "EoDbFontDefinition.h"
+#include "EoDbPrimitive.h"
 
 class EoDbDimension : public EoDbPrimitive {
 	EoGeLineSeg3d m_Line;
@@ -29,7 +32,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == kDimensionPrimitive;}
+    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kDimensionPrimitive;}
     bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

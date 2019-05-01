@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoGePoint4d.h"
+
 class EoGsViewport {
 	double m_DeviceHeightInPixels;
 	double m_DeviceWidthInPixels;

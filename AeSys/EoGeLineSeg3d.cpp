@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "AeSysView.h"
 
+#include "EoGePolyline.h"
+
 EoGeLineSeg3d::EoGeLineSeg3d()
 	: OdGeLineSeg3d() {
 }

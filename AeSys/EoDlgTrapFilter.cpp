@@ -73,25 +73,25 @@ void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_ELEMENT)) {
 		switch (m_FilterPrimitiveTypeListBoxControl.GetCurSel()) {
 		case 0:
-			FilterByPrimitiveType(kEllipsePrimitive);
+			FilterByPrimitiveType(EoDb::kEllipsePrimitive);
 			break;
 		case 1:
-			FilterByPrimitiveType(kGroupReferencePrimitive);
+			FilterByPrimitiveType(EoDb::kGroupReferencePrimitive);
 			break;
 		case 2:
-			FilterByPrimitiveType(kLinePrimitive);
+			FilterByPrimitiveType(EoDb::kLinePrimitive);
 			break;
 		case 3:
-			FilterByPrimitiveType(kPointPrimitive);
+			FilterByPrimitiveType(EoDb::kPointPrimitive);
 			break;
 		case 4:
-			FilterByPrimitiveType(kTextPrimitive);
+			FilterByPrimitiveType(EoDb::kTextPrimitive);
 			break;
 		case 5:
-			FilterByPrimitiveType(kHatchPrimitive);
+			FilterByPrimitiveType(EoDb::kHatchPrimitive);
 			break;
 		case 6:
-			FilterByPrimitiveType(kPolylinePrimitive);
+			FilterByPrimitiveType(EoDb::kPolylinePrimitive);
 		}
 	}
 	CDialog::OnOK();
@@ -106,7 +106,7 @@ void EoDlgTrapFilter::FilterByColor(OdInt16 colorIndex) {
 			const EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->ColorIndex() == colorIndex) {
 				m_Document->RemoveTrappedGroup(Group);
-				m_Document->UpdateGroupInAllViews(kGroupSafe, Group);
+				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}
@@ -123,7 +123,7 @@ void EoDlgTrapFilter::FilterByLinetype(OdInt16 linetypeIndex) {
 			const EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->LinetypeIndex() == linetypeIndex) {
 				m_Document->RemoveTrappedGroup(Group);
-				m_Document->UpdateGroupInAllViews(kGroupSafe, Group);
+				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}
@@ -142,31 +142,31 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 			const EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
 			switch (primitiveType) {
-			case kLinePrimitive:
-				bFilter = Primitive->Is(kLinePrimitive);
+			case EoDb::kLinePrimitive:
+				bFilter = Primitive->Is(EoDb::kLinePrimitive);
 				break;
-			case kEllipsePrimitive:
-				bFilter = Primitive->Is(kEllipsePrimitive);
+			case EoDb::kEllipsePrimitive:
+				bFilter = Primitive->Is(EoDb::kEllipsePrimitive);
 				break;
-			case kGroupReferencePrimitive:
-				bFilter = Primitive->Is(kGroupReferencePrimitive);
+			case EoDb::kGroupReferencePrimitive:
+				bFilter = Primitive->Is(EoDb::kGroupReferencePrimitive);
 				break;
-			case kTextPrimitive:
-				bFilter = Primitive->Is(kTextPrimitive);
+			case EoDb::kTextPrimitive:
+				bFilter = Primitive->Is(EoDb::kTextPrimitive);
 				break;
-			case kHatchPrimitive:
-				bFilter = Primitive->Is(kHatchPrimitive);
+			case EoDb::kHatchPrimitive:
+				bFilter = Primitive->Is(EoDb::kHatchPrimitive);
 				break;
-			case kPolylinePrimitive:
-				bFilter = Primitive->Is(kPolylinePrimitive);
+			case EoDb::kPolylinePrimitive:
+				bFilter = Primitive->Is(EoDb::kPolylinePrimitive);
 				break;
-			case kPointPrimitive:
-				bFilter = Primitive->Is(kPointPrimitive);
+			case EoDb::kPointPrimitive:
+				bFilter = Primitive->Is(EoDb::kPointPrimitive);
 				break;
 			}
 			if (bFilter) {
 				m_Document->RemoveTrappedGroup(Group);
-				m_Document->UpdateGroupInAllViews(kGroupSafe, Group);
+				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}

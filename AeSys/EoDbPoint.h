@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoDbPrimitive.h"
+
 class EoDbPoint : public EoDbPrimitive {
 	OdInt16	m_PointDisplayMode;
 	OdGePoint3d	m_Position;
@@ -29,7 +31,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
-	bool Is(OdUInt16 type) const noexcept override {return type == kPointPrimitive;}
+	bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kPointPrimitive;}
     bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

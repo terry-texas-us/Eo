@@ -13,17 +13,17 @@ private:
 	int m_Properties;
 
 public:
-	Section(void);
+	Section();
 	Section(double width, double depth, long properties) noexcept;
-	~Section(void);
+	~Section();
 
 	bool operator==(const Section& other) noexcept;
 	bool operator!=(const Section& other) noexcept;
 	void operator()(double width, double depth, long properties) noexcept;
 	void SetWidth(double width) noexcept;
 	void SetDepth(double depth) noexcept;
-	double Width(void) const noexcept;
-	double Depth(void) const noexcept;
+	double Width() const noexcept;
+	double Depth() const noexcept;
 	bool Identical(const Section& section) noexcept;
 	bool IsRectangular() noexcept;
 	bool IsRound() noexcept;

@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#include "EoGeMatrix3d.h"
+#include "EoGePoint3d.h"
+#include "EoGePoint4d.h"
+
 EoGePoint4d::EoGePoint4d() {
 	x = 0.;
 	y = 0.;

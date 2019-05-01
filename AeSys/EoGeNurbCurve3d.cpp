@@ -1,5 +1,9 @@
 #include "stdafx.h"
 
+#include "EoGePolyline.h"
+
+#include "EoGeNurbCurve3d.h"
+
 EoGeNurbCurve3d::EoGeNurbCurve3d()
 	: OdGeNurbCurve3d() {
 }

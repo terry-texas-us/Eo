@@ -41,6 +41,8 @@
 #include "ColorMapping.h"
 #include "EoApOptions.h"
 
+#include "EoDb.h"
+
 extern COLORREF ViewBackgroundColor;
 extern COLORREF RubberbandColor;
 

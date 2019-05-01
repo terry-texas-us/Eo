@@ -1,6 +1,8 @@
 #include "stdafx.h"
 
-EoGsModelTransform::EoGsModelTransform() 
+#include "EoGsModelTransform.h"
+
+EoGsModelTransform::EoGsModelTransform()
 	: m_Depth(0) {
 	m_CurrentModelTransform.setToIdentity();
 }

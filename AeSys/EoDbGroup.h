@@ -1,9 +1,12 @@
 #pragma once
 
+#include "EoDbFontDefinition.h"
+#include "EoDbPoint.h"
 #include "DbGroup.h"
 
 class AeSysDoc;
 class EoDbBlock;
+class EoGeLineSeg3d;
 
 class EoDbGroup: public CObList {
 	static EoDbPrimitive* sm_PrimitiveToIgnore;

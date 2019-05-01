@@ -2,6 +2,8 @@
 #include "AeSysApp.h"
 //#include "AeSysView.h"
 
+#include "EoDbBlockReference.h"
+
 #include "EoDlgSetupNote.h"
 
 // EoDlgSetupNote dialog
@@ -75,7 +77,7 @@ void EoDlgSetupNote::OnOK() {
 		CString FontsItemName;
 		m_MfcFontComboControl.GetLBText(FontsIndex, FontsItemName);
 		m_FontDefinition->SetFontName(FontsItemName);
-		const EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? kTrueType : kStrokeType);
+		const EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? EoDb::kTrueType : EoDb::kStrokeType);
 		m_FontDefinition->SetPrecision(Precision);
 	}
 

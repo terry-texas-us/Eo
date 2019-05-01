@@ -1,6 +1,18 @@
 #include "stdafx.h"
 #include "AeSysApp.h"
 
+#include "EoDbFile.h"
+#include "EoDbPrimitive.h"
+#include "EoDbBlockReference.h"
+#include "EoDbDimension.h"
+#include "EoDbEllipse.h"
+#include "EoDbLine.h"
+#include "EoDbPoint.h"
+#include "EoDbHatch.h"
+#include "EoDbPolyline.h"
+#include "EoDbSpline.h"
+#include "EoDbText.h"
+
 EoDbFile::EoDbFile() {
 }
 
@@ -55,56 +67,56 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTable) {
     EoDbPrimitive* Primitive = nullptr;
     auto PrimitiveType {ReadUInt16()};
     switch (PrimitiveType) {
-    case kPointPrimitive: {
+    case EoDb::kPointPrimitive: {
         OdDbPointPtr Point = EoDbPoint::Create(blockTable, *this);
         Primitive = EoDbPoint::Create(Point);
         break;
     }
-    case kInsertPrimitive:
+    case EoDb::kInsertPrimitive:
         ConstructBlockReferencePrimitiveFromInsertPrimitive(Primitive);
         break;
-    case kGroupReferencePrimitive: {
+    case EoDb::kGroupReferencePrimitive: {
         OdDbBlockReferencePtr BlockReference = EoDbBlockReference::Create(blockTable, *this);
         Primitive = EoDbBlockReference::Create(BlockReference);
         break;
     }
-    case kLinePrimitive: {
+    case EoDb::kLinePrimitive: {
         OdDbLinePtr Line = EoDbLine::Create(blockTable, *this);
         Primitive = EoDbLine::Create(Line);
         break;
     }
-    case kHatchPrimitive: {
+    case EoDb::kHatchPrimitive: {
         OdDbHatchPtr Hatch = EoDbHatch::Create(blockTable, *this);
         Primitive = EoDbHatch::Create(Hatch);
         break;
     }
-    case kEllipsePrimitive: {
+    case EoDb::kEllipsePrimitive: {
         OdDbEllipsePtr Ellipse = EoDbEllipse::Create(blockTable, *this);
         Primitive = EoDbEllipse::Create(Ellipse);
         break;
     }
-    case kSplinePrimitive: {
+    case EoDb::kSplinePrimitive: {
         OdDbSplinePtr Spline = EoDbSpline::Create(blockTable, *this);
         Primitive = EoDbSpline::Create(Spline);
         break;
     }
-    case kCSplinePrimitive:
+    case EoDb::kCSplinePrimitive:
         ConstructPolylinePrimitiveFromCSplinePrimitive(Primitive);
         break;
-    case kPolylinePrimitive: {
+    case EoDb::kPolylinePrimitive: {
         OdDbPolylinePtr Polyline = EoDbPolyline::Create(blockTable, *this);
         Primitive = EoDbPolyline::Create(Polyline);
         break;
     }
-    case kTextPrimitive: {
+    case EoDb::kTextPrimitive: {
         OdDbTextPtr Text = EoDbText::Create(blockTable, *this);
         Primitive = EoDbText::Create(Text);
         break;
     }
-    case kTagPrimitive:
+    case EoDb::kTagPrimitive:
         ConstructPointPrimitiveFromTagPrimitive(Primitive);
         break;
-    case kDimensionPrimitive:
+    case EoDb::kDimensionPrimitive:
         Primitive = EoDbDimension::ConstructFrom(*this);
         break;
 

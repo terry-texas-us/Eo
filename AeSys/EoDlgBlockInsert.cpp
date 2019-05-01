@@ -3,6 +3,8 @@
 #include "AeSysDoc.h"
 #include "Preview.h"
 
+#include "EoDb.h"
+#include "EoDbBlockReference.h"
 #include "EoDlgBlockInsert.h"
 
 // EoDlgBlockInsert dialog
@@ -90,7 +92,7 @@ void EoDlgBlockInsert::OnOK() {
 		EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(BlockReference);
 		m_Document->AddWorkLayerGroup(Group);
-		m_Document->UpdateGroupInAllViews(kGroup, Group);
+		m_Document->UpdateGroupInAllViews(EoDb::kGroup, Group);
 	}
 	CDialog::OnOK();
 }

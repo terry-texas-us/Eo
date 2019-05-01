@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "AeSysDoc.h"
 
+#include "PrimState.h"
+#include "EoDbHatch.h"
+
 #include "EoDlgTrapModify.h"
 
 // EoDlgTrapModify dialog
@@ -10,14 +13,14 @@ IMPLEMENT_DYNAMIC(EoDlgTrapModify, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) 
-    : CDialog(EoDlgTrapModify::IDD, parent)
-    , m_Document(0) {
+EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) noexcept
+	: CDialog(EoDlgTrapModify::IDD, parent)
+	, m_Document(0) {
 }
 
-EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent) 
-    : CDialog(EoDlgTrapModify::IDD, parent)
-    , m_Document(document) {
+EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
+	: CDialog(EoDlgTrapModify::IDD, parent)
+	, m_Document(document) {
 }
 
 EoDlgTrapModify::~EoDlgTrapModify() {
@@ -42,11 +45,9 @@ void EoDlgTrapModify::OnOK() {
 
 	if (IsDlgButtonChecked(IDC_MOD_NOTE)) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_ALL);
-	}
-	else if (IsDlgButtonChecked(IDC_FONT)) {
+	} else if (IsDlgButtonChecked(IDC_FONT)) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_FONT);
-	}
-	else if (IsDlgButtonChecked(IDC_HEIGHT)) {
+	} else if (IsDlgButtonChecked(IDC_HEIGHT)) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_HEIGHT);
 	}
 
@@ -61,7 +62,7 @@ void EoDlgTrapModify::ModifyPolygons(void) {
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
-			if (Primitive->Is(kHatchPrimitive)) {
+			if (Primitive->Is(EoDb::kHatchPrimitive)) {
 				EoDbHatch* pPolygon = static_cast<EoDbHatch*>(Primitive);
 				pPolygon->SetInteriorStyle(pstate.HatchInteriorStyle());
 				pPolygon->SetInteriorStyleIndex(pstate.HatchInteriorStyleIndex());

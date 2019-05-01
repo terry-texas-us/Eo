@@ -127,14 +127,6 @@
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\ExCommands\StdAfx.cpp" />
     <ResourceCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\ExCommands\ExCommands.rc" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Extensions\IdViewObjectEnablers\AcIdViewObj.vcxproj">
-      <Project>DB729706-20B5-498F-9CBB-37C5ED5AE9A2</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\..\Extensions\DbConstraints\DbConstraints.vcxproj">
-      <Project>5B709E86-7308-4A78-851D-7C7D1ADAED6D</Project>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

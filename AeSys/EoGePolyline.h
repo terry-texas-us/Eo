@@ -1,6 +1,10 @@
 #pragma once
 
+#include "EoGePoint4d.h"
+
 class AeSysView;
+class EoGeLineSeg3d;
+
 
 namespace polyline {
 	void BeginLineStrip();

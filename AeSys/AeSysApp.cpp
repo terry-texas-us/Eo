@@ -32,6 +32,8 @@
 #include "EoPreviewDib.h"
 #include "Lex.h"
 
+#include "EoDbHatch.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -1064,22 +1066,22 @@ OdGePoint3d AeSysApp::GetCursorPosition() {
 }
 
 EoDb::FileTypes AeSysApp::GetFileType(const OdString & file) {
-	EoDb::FileTypes Type(kUnknown);
+	EoDb::FileTypes Type(EoDb::kUnknown);
 	OdString Extension = file.right(3);
 
 	if (!Extension.isEmpty()) {
 		if (Extension.iCompare(L"peg") == 0) {
-			Type = kPeg;
+			Type = EoDb::kPeg;
 		} else if (Extension.iCompare(L"tra") == 0) {
-			Type = kTracing;
+			Type = EoDb::kTracing;
 		} else if (Extension.iCompare(L"jb1") == 0) {
-			Type = kJob;
+			Type = EoDb::kJob;
 		} else if (Extension.iCompare(L"dwg") == 0) {
-			Type = kDwg;
+			Type = EoDb::kDwg;
 		} else if (Extension.iCompare(L"dxf") == 0) {
-			Type = kDxf;
+			Type = EoDb::kDxf;
 		} else if (Extension.iCompare(L"dxb") == 0) {
-			Type = kDxb;
+			Type = EoDb::kDxb;
 		}
 	}
 	return Type;

@@ -3,6 +3,8 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoDbHatch.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -147,7 +149,7 @@ void AeSysView::OnNodalModeToLine(void) {
                 Group->AddTail(EoDbLine::Create(Line));
             }
             GetDocument()->AddWorkLayerGroup(Group);
-            GetDocument()->UpdateGroupInAllViews(kGroupSafe, Group);
+            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 
             SetCursorPosition(CurrentPnt);
         }
@@ -189,7 +191,7 @@ void AeSysView::OnNodalModeToPolygon(void) {
 
 					const DWORD Mask = GetDocument()->GetPrimitiveMask(Primitive);
 					if (Mask != 0) {
-						if (Primitive->Is(kLinePrimitive)) {
+						if (Primitive->Is(EoDb::kLinePrimitive)) {
 							if ((Mask & 3) == 3) {
 								EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
 
@@ -204,10 +206,10 @@ void AeSysView::OnNodalModeToPolygon(void) {
 								NewHatch->SetVertices(Points);
 								NewGroup->AddTail(NewHatch);
 								GetDocument()->AddWorkLayerGroup(NewGroup);
-								GetDocument()->UpdateGroupInAllViews(kGroupSafe, NewGroup);
+								GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
 							}
 						}
-						else if (Primitive->Is(kHatchPrimitive)) {
+						else if (Primitive->Is(EoDb::kHatchPrimitive)) {
 							EoDbHatch* Hatch = static_cast<EoDbHatch*>(Primitive);
 							const int iPts = Hatch->NumberOfVertices();
 
@@ -224,7 +226,7 @@ void AeSysView::OnNodalModeToPolygon(void) {
 									NewHatch->SetVertices(Points);
 									NewGroup->AddTail(NewHatch);
 									GetDocument()->AddWorkLayerGroup(NewGroup);
-									GetDocument()->UpdateGroupInAllViews(kGroupSafe, NewGroup);
+									GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
 								}
 							}
 						}
@@ -312,11 +314,11 @@ void AeSysView::OnNodalModeEscape(void) {
 	}
 	else {
 		RubberBandingDisable();
-		GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 		ConstructPreviewGroup();
-		GetDocument()->UpdateGroupInAllViews(kGroupSafe, &m_PreviewGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 		m_NodalModePoints.clear();
 
@@ -337,7 +339,7 @@ void AeSysView::DoNodalModeMouseMove() {
 
 			const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
 
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 			POSITION MaskedPrimitivePosition = GetDocument()->GetFirstMaskedPrimitivePosition();
@@ -357,7 +359,7 @@ void AeSysView::DoNodalModeMouseMove() {
 				PointPrimitive->SetPointDisplayMode(8);
 				m_PreviewGroup.AddTail(PointPrimitive);
 			}
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		}
 		break;
 
@@ -369,11 +371,11 @@ void AeSysView::DoNodalModeMouseMove() {
 			EoGeMatrix3d TranslationMatrix;
 			TranslationMatrix.setToTranslation(CurrentPnt - m_NodalModePoints[0]);
 
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 			ConstructPreviewGroupForNodalGroups();
 			m_PreviewGroup.TransformBy(TranslationMatrix);
-			GetDocument()->UpdateGroupInAllViews(kGroupEraseSafe, &m_PreviewGroup);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		}
 		break;
 	}

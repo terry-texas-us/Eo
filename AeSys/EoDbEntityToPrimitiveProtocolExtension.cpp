@@ -53,6 +53,14 @@
 
 #include "StaticRxObject.h"
 
+#include "EoDbCharacterCellDefinition.h"
+
+#include "EoDbBlockReference.h"
+#include "EoDbEllipse.h"
+#include "EoDbLine.h"
+#include "EoDbHatch.h"
+#include "EoDbPolyline.h"
+#include "EoDbSpline.h"
 #include "EoDbEntityToPrimitiveProtocolExtension.h"
 
 #ifdef _DEBUG
@@ -136,15 +144,15 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 			}
 		}
 	}
-	const VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
-	const HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
+	const EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
+	const EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
 
 	OdGePoint3d AlignmentPoint = text->position();
-	if (HorizontalAlignment != kAlignLeft || VerticalAlignment != kAlignBottom)
+	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
 		AlignmentPoint = text->alignmentPoint();
 
 	EoDbFontDefinition FontDefinition;
-	FontDefinition.SetPrecision(kTrueType);
+	FontDefinition.SetPrecision(EoDb::kTrueType);
 	FontDefinition.SetFontName((PCTSTR) FileName);
 	FontDefinition.SetHorizontalAlignment(HorizontalAlignment);
 	FontDefinition.SetVerticalAlignment(VerticalAlignment);

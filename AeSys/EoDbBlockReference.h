@@ -1,6 +1,7 @@
 #pragma once
 
-using namespace EoDb;
+#include "EoDb.h"
+#include "EoDbPrimitive.h"
 
 class EoDbPegFile;
 
@@ -54,7 +55,7 @@ public: // Methods - absolute virtuals
     OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-    bool Is(OdUInt16 type) const noexcept override {return type == kGroupReferencePrimitive;}
+    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kGroupReferencePrimitive;}
     bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;

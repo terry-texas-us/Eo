@@ -1,5 +1,6 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+
+#include "PrimState.h"
 
 #include "EoDlgSetupHatch.h"
 
@@ -10,11 +11,11 @@ IMPLEMENT_DYNAMIC(EoDlgSetupHatch, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetupHatch, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetupHatch::EoDlgSetupHatch(CWnd* parent) 
-    : CDialog(EoDlgSetupHatch::IDD, parent)
-    , m_HatchXScaleFactor(0)
-    , m_HatchYScaleFactor(0)
-    , m_HatchRotationAngle(0) {
+EoDlgSetupHatch::EoDlgSetupHatch(CWnd* parent) noexcept
+	: CDialog(EoDlgSetupHatch::IDD, parent)
+	, m_HatchXScaleFactor(0)
+	, m_HatchYScaleFactor(0)
+	, m_HatchRotationAngle(0) {
 }
 
 EoDlgSetupHatch::~EoDlgSetupHatch() {

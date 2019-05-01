@@ -3,6 +3,8 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
+#include "EoDb.h"
+
 #include "Preview.h"
 
 UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARAM lParam) {
@@ -28,7 +30,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 			CFileStatus	FileStatus;
 			if (CFile::GetStatus(FilePath, FileStatus)) {
 				EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
-				if (FileType == kTracing || FileType == kJob) {
+				if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 					EoDbLayer* Layer = Document->GetLayerAt(FilePath);
 					HWND PreviewWindow = ::GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
 					if (Layer != 0) {
@@ -60,7 +62,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 		LPWSTR Name = PathFindFileName(FilePath);
 
 		EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
-		if (FileType != kTracing && FileType != kJob) {
+		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
 			theApp.WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
 			return (TRUE);
 		}
@@ -69,7 +71,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 			EoDbLayer*	Layer = Document->GetWorkLayer();
 
 			Document->TracingLoadLayer(FilePath, Layer);
-			Document->UpdateLayerInAllViews(kLayerSafe, Layer);
+			Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 			return (TRUE);
 		}
 		case IDC_MAP: {
@@ -99,7 +101,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 			}
 			if (FileOpenSuccess) {
 				Layer->MakeActive();
-				Document->UpdateLayerInAllViews(kLayerSafe, Layer);
+				Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 			}
 			return (TRUE);
 		}
@@ -145,7 +147,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 			}
 			if (FileOpenSuccess) {
 				Layer->SetIsLocked(true);
-				Document->UpdateLayerInAllViews(kLayerSafe, Layer);
+				Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 			}
 			return (TRUE);
 		}

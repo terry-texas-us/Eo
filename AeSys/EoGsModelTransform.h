@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EoGeMatrix3d.h"
+
 class EoGsModelTransform {
 	size_t m_Depth;
 
