@@ -78,18 +78,6 @@ void EoDbPoint::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Point>", this);
 }
 
-void EoDbPoint::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbPointPtr PointEntity = OdDbPoint::createObject();
-	blockTableRecord->appendOdDbEntity(PointEntity);
-	PointEntity->setDatabaseDefaults();
-	
-	SetEntityObjectId(PointEntity->objectId());
-	
-	PointEntity->setColorIndex(m_ColorIndex);
-	PointEntity->setPosition(m_Position);
-	// <tas="Data values for points?"</tas>
-}
-
 EoDbPrimitive* EoDbPoint::Clone(OdDbDatabasePtr& database) const {
     OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
     OdDbPointPtr Point = m_EntityObjectId.safeOpenObject()->clone();

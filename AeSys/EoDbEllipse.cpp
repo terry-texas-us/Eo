@@ -12,18 +12,18 @@
 #include "DbEllipse.h"
 #include "Ge/GeCircArc3d.h"
 
-EoDbEllipse::EoDbEllipse() noexcept 
+EoDbEllipse::EoDbEllipse() noexcept
 	: m_Center(OdGePoint3d::kOrigin)
-    , m_MajorAxis(OdGeVector3d::kXAxis)
-    , m_MinorAxis(OdGeVector3d::kYAxis)
-    , m_SweepAngle(TWOPI) {
+	, m_MajorAxis(OdGeVector3d::kXAxis)
+	, m_MinorAxis(OdGeVector3d::kYAxis)
+	, m_SweepAngle(TWOPI) {
 }
 
 EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept
 	: m_Center(center)
-    , m_MajorAxis(majorAxis)
-    , m_MinorAxis(minorAxis)
-    , m_SweepAngle(sweepAngle) {
+	, m_MajorAxis(majorAxis)
+	, m_MinorAxis(minorAxis)
+	, m_SweepAngle(sweepAngle) {
 	m_ColorIndex = pstate.ColorIndex();
 	m_LinetypeIndex = pstate.LinetypeIndex();
 }
@@ -71,57 +71,37 @@ const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
 }
 
 void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
-    CString Report;
-    Report += L" Color:" + FormatColorIndex();
-    Report += L" Linetype:" + FormatLinetypeIndex();
-    CString LengthAsString = theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
-    if (fabs(m_MajorAxis.lengthSqrd() - m_MinorAxis.lengthSqrd()) <= FLT_EPSILON) {
-        if (fabs(m_SweepAngle - TWOPI) <= FLT_EPSILON) {
-            Report = L"<Circle>" + Report;
-            Report += L" Radius:" + LengthAsString;
-        } else {
-            Report = L"<Arc>" + Report;
-            Report += L" Radius:" + LengthAsString;
-            Report += L" SweepAngle:" + theApp.FormatAngle(m_SweepAngle);
-        }
-    } else {
-        Report = L"<Ellipse>" + Report;
-        Report += L" MajorAxisLength:" + LengthAsString;
-    }
-    theApp.AddStringToMessageList(Report);
+	CString Report;
+	Report += L" Color:" + FormatColorIndex();
+	Report += L" Linetype:" + FormatLinetypeIndex();
+	CString LengthAsString = theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
+	if (fabs(m_MajorAxis.lengthSqrd() - m_MinorAxis.lengthSqrd()) <= FLT_EPSILON) {
+		if (fabs(m_SweepAngle - TWOPI) <= FLT_EPSILON) {
+			Report = L"<Circle>" + Report;
+			Report += L" Radius:" + LengthAsString;
+		} else {
+			Report = L"<Arc>" + Report;
+			Report += L" Radius:" + LengthAsString;
+			Report += L" SweepAngle:" + theApp.FormatAngle(m_SweepAngle);
+		}
+	} else {
+		Report = L"<Ellipse>" + Report;
+		Report += L" MajorAxisLength:" + LengthAsString;
+	}
+	theApp.AddStringToMessageList(Report);
 }
 
 void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
-		CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Arc>", this);
-}
-
-void EoDbEllipse::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	auto EllipseEntity {OdDbEllipse::createObject()};
-	blockTableRecord->appendOdDbEntity(EllipseEntity);
-	EllipseEntity->setDatabaseDefaults();
-
-	SetEntityObjectId(EllipseEntity->objectId());
-
-	EllipseEntity->setColorIndex(m_ColorIndex);
-	EllipseEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
-
-	auto PlaneNormal {m_MajorAxis.crossProduct(m_MinorAxis)};
-
-	if (!PlaneNormal.isZeroLength()) {
-		PlaneNormal.normalize();
-		// <tas="Apparently some ellipse primitives have a RadiusRatio > 1."</tas>
-		const double RadiusRatio {m_MinorAxis.length() / m_MajorAxis.length()};
-		EllipseEntity->set(m_Center, PlaneNormal, m_MajorAxis, EoMin(1., RadiusRatio), 0., m_SweepAngle);
-	}
+	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Arc>", this);
 }
 
 EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr& database) const {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(Ellipse);
+	OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject()->clone();
+	BlockTableRecord->appendOdDbEntity(Ellipse);
 
-    return EoDbEllipse::Create(Ellipse);
+	return EoDbEllipse::Create(Ellipse);
 }
 
 void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
@@ -134,11 +114,11 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept 
 		return;
 	}
 	const double SweepAngle = m_SweepAngle * Relationship;
-    
-    OdDbDatabasePtr Database = this->m_EntityObjectId.database();
-    OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    
-    EoDbEllipse* Arc = EoDbEllipse::Create3(*this, BlockTableRecord);
+
+	OdDbDatabasePtr Database = this->m_EntityObjectId.database();
+	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+	EoDbEllipse* Arc = EoDbEllipse::Create3(*this, BlockTableRecord);
 	Arc->SetTo(m_Center, m_MajorAxis, m_MinorAxis, SweepAngle);
 	newGroup->AddTail(Arc);
 
@@ -161,11 +141,10 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 
 	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1. - DBL_EPSILON) { // Put entire arc in trap
 		pArc = this;
-	}
-	else { // Something gets cut
-        OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-        
-        OdGeVector3d vPlnNorm = m_MajorAxis.crossProduct(m_MinorAxis);
+	} else { // Something gets cut
+		OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+		OdGeVector3d vPlnNorm = m_MajorAxis.crossProduct(m_MinorAxis);
 		vPlnNorm.normalize();
 
 		if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) { // Closed arc
@@ -174,15 +153,14 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 			m_MajorAxis.rotateBy(dRel[0] * TWOPI, vPlnNorm);
 			m_MinorAxis.rotateBy(dRel[0] * TWOPI, vPlnNorm);
 
-            pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
+			pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 
 			m_MajorAxis.rotateBy(m_SweepAngle, vPlnNorm);
 			m_MinorAxis.rotateBy(m_SweepAngle, vPlnNorm);
 
 			m_SweepAngle = TWOPI - m_SweepAngle;
-		}
-		else { // Arc section with a cut
-            pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
+		} else { // Arc section with a cut
+			pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 			const double dSwpAng = m_SweepAngle;
 
 			const double dAng1 = dRel[0] * m_SweepAngle;
@@ -198,20 +176,18 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 				m_MinorAxis.rotateBy(dAng1, vPlnNorm);
 				m_SweepAngle = dAng2 - dAng1;
 
-                pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
+				pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 
 				m_MajorAxis.rotateBy(m_SweepAngle, vPlnNorm);
 				m_MinorAxis.rotateBy(m_SweepAngle, vPlnNorm);
 				m_SweepAngle = dSwpAng - dAng2;
-			}
-			else if (dRel[1] < 1. - DBL_EPSILON) { // Cut section in two and place begin section in trap
+			} else if (dRel[1] < 1. - DBL_EPSILON) { // Cut section in two and place begin section in trap
 				pArc->SetSweepAngle(dAng2);
 
 				m_MajorAxis.rotateBy(dAng2, vPlnNorm);
 				m_MinorAxis.rotateBy(dAng2, vPlnNorm);
 				m_SweepAngle = dSwpAng - dAng2;
-			}
-			else { // Cut section in two and place end section in trap
+			} else { // Cut section in two and place end section in trap
 				m_SweepAngle = dAng1;
 
 				OdGeVector3d v = m_MajorAxis;
@@ -232,7 +208,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 	newGroups->AddTail(NewGroup);
 }
 
-void EoDbEllipse::Display(AeSysView* view, CDC* deviceContext) {
+void EoDbEllipse::Display(AeSysView * view, CDC * deviceContext) {
 	if (fabs(m_SweepAngle) <= DBL_EPSILON) return;
 
 	const OdInt16 ColorIndex = LogicalColorIndex();
@@ -245,62 +221,62 @@ void EoDbEllipse::Display(AeSysView* view, CDC* deviceContext) {
 	polyline::__End(view, deviceContext, LinetypeIndex);
 }
 
-void EoDbEllipse::FormatExtra(CString& extra) const {
-    extra.Empty();
-    extra += L"Color;" + FormatColorIndex() + L"\t";
-    extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
-    extra += L"Sweep Angle;" + theApp.FormatAngle(m_SweepAngle) + L"\t";
-    extra += L"Major Axis Length;" + theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
+void EoDbEllipse::FormatExtra(CString & extra) const {
+	extra.Empty();
+	extra += L"Color;" + FormatColorIndex() + L"\t";
+	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
+	extra += L"Sweep Angle;" + theApp.FormatAngle(m_SweepAngle) + L"\t";
+	extra += L"Major Axis Length;" + theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
 }
 
-void EoDbEllipse::FormatGeometry(CString& geometry) const {
+void EoDbEllipse::FormatGeometry(CString & geometry) const {
 	const OdGeVector3d Normal = m_MajorAxis.crossProduct(m_MinorAxis);
 	CString CenterString;
 	CenterString.Format(L"Center Point;%f;%f;%f\t", m_Center.x, m_Center.y, m_Center.z);
-	geometry +=  CenterString;
+	geometry += CenterString;
 	CString MajorAxisString;
-	MajorAxisString.Format(L"Major Axis;%f;%f;%f\t", m_MajorAxis.x, m_MajorAxis.y, m_MajorAxis.z); 
+	MajorAxisString.Format(L"Major Axis;%f;%f;%f\t", m_MajorAxis.x, m_MajorAxis.y, m_MajorAxis.z);
 	geometry += MajorAxisString;
 	CString MinorAxisString;
-	MinorAxisString.Format(L"Minor Axis;%f;%f;%f\t", m_MinorAxis.x, m_MinorAxis.y, m_MinorAxis.z); 
+	MinorAxisString.Format(L"Minor Axis;%f;%f;%f\t", m_MinorAxis.x, m_MinorAxis.y, m_MinorAxis.z);
 	geometry += MinorAxisString;
 	CString NormalString;
 	NormalString.Format(L"Plane Normal;%f;%f;%f\t", Normal.x, Normal.y, Normal.z);
 	geometry += NormalString;
 }
 
-void EoDbEllipse::GenPts(const OdGePlane& plane, double sweepAngle) const {
-    OdGeMatrix3d ScaleMatrix;
-    ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.));
+void EoDbEllipse::GenPts(const OdGePlane & plane, double sweepAngle) const {
+	OdGeMatrix3d ScaleMatrix;
+	ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.));
 
-    OdGeMatrix3d PlaneToWorldTransform;
-    PlaneToWorldTransform.setToPlaneToWorld(plane); // <tas=Builds a matrix which performs rotation and translation, but no scaling.</tas>
+	OdGeMatrix3d PlaneToWorldTransform;
+	PlaneToWorldTransform.setToPlaneToWorld(plane); // <tas=Builds a matrix which performs rotation and translation, but no scaling.</tas>
 
-    // Number of points based on angle and a smothness coefficient
-    const double dLen = EoMax(m_MajorAxis.length(), m_MinorAxis.length());
-    int iPts = EoMax(2, abs(EoRound(sweepAngle / TWOPI * 32.)));
-    iPts = EoMin(128, EoMax(iPts, abs(EoRound(sweepAngle * dLen / .250))));
+	// Number of points based on angle and a smothness coefficient
+	const double dLen = EoMax(m_MajorAxis.length(), m_MinorAxis.length());
+	int iPts = EoMax(2, abs(EoRound(sweepAngle / TWOPI * 32.)));
+	iPts = EoMin(128, EoMax(iPts, abs(EoRound(sweepAngle * dLen / .250))));
 
-    const double dAng = m_SweepAngle / (double(iPts) - 1.);
-    const double dCos = cos(dAng);
-    const double dSin = sin(dAng);
+	const double dAng = m_SweepAngle / (double(iPts) - 1.);
+	const double dCos = cos(dAng);
+	const double dSin = sin(dAng);
 
-    // Generate an origin-centered unit radial curve, then scale before transforming back the world
+	// Generate an origin-centered unit radial curve, then scale before transforming back the world
 
-    OdGePoint3d pt(1., 0., 0.);
+	OdGePoint3d pt(1., 0., 0.);
 
-    for (int i = 0; i < iPts; i++) {
-        polyline::SetVertex(PlaneToWorldTransform * ScaleMatrix * pt);
+	for (int i = 0; i < iPts; i++) {
+		polyline::SetVertex(PlaneToWorldTransform * ScaleMatrix * pt);
 
-        const double X = pt.x;
-        pt.x = X * dCos - pt.y * dSin;
-        pt.y = pt.y * dCos + X * dSin;
-        pt.z = 0.;
-    }
+		const double X = pt.x;
+		pt.x = X * dCos - pt.y * dSin;
+		pt.y = pt.y * dCos + X * dSin;
+		pt.z = 0.;
+	}
 }
 
-void EoDbEllipse::GetAllPoints(OdGePoint3dArray& points) const {
-	points.clear(); 
+void EoDbEllipse::GetAllPoints(OdGePoint3dArray & points) const {
+	points.clear();
 	points.append(m_Center);
 }
 
@@ -312,12 +288,12 @@ OdGePoint3d EoDbEllipse::StartPoint() const {
 	return (m_Center + m_MajorAxis);
 }
 
-void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& ptsBox) const {
+void EoDbEllipse::GetBoundingBox(OdGePoint3dArray & ptsBox) const {
 	ptsBox.setLogicalLength(4);
-	ptsBox[0] = OdGePoint3d(- 1., - 1., 0.);
-	ptsBox[1] = OdGePoint3d(1., - 1., 0.);
+	ptsBox[0] = OdGePoint3d(-1., -1., 0.);
+	ptsBox[1] = OdGePoint3d(1., -1., 0.);
 	ptsBox[2] = OdGePoint3d(1., 1., 0.);
-	ptsBox[3] = OdGePoint3d(- 1., 1., 0.);
+	ptsBox[3] = OdGePoint3d(-1., 1., 0.);
 
 	if (m_SweepAngle < 3. * TWOPI / 4.) {
 		const double dEndX = cos(m_SweepAngle);
@@ -332,15 +308,13 @@ void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& ptsBox) const {
 				ptsBox[3].x = dEndX;
 				ptsBox[3].y = dEndY;
 			}
-		}
-		else {
+		} else {
 			if (dEndY >= 0.) { // Arc ends in quadrant two
 				ptsBox[0].x = dEndX;
 				ptsBox[0].y = 0.;
 				ptsBox[1].y = 0.;
 				ptsBox[3].x = dEndX;
-			}
-			else { // Arc ends in quadrant three
+			} else { // Arc ends in quadrant three
 				ptsBox[0].y = dEndY;
 				ptsBox[1].y = dEndY;
 			}
@@ -388,7 +362,7 @@ double EoDbEllipse::SweepAngle() const noexcept {
 	return m_SweepAngle;
 }
 
-void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d* arMin, OdGePoint3d* arMax) noexcept {
+void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d * arMin, OdGePoint3d * arMax) noexcept {
 
 	const double dx = double(m_Center.x - arBeg.x);
 	const double dy = double(m_Center.y - arBeg.y);
@@ -410,28 +384,23 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 						(*arMax).x = arBeg.x;
 						(*arMax).y = arEnd.y;
 					}
-				}
-				else											// Arc ends in quadrant four
+				} else											// Arc ends in quadrant four
 					(*arMax).x = EoMax(arBeg.x, arEnd.x);
-			}
-			else {
+			} else {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					(*arMin).x = arEnd.x;
 					(*arMin).y = EoMin(arBeg.y, arEnd.y);
-				}
-				else // Arc ends in quadrant three
+				} else // Arc ends in quadrant three
 					(*arMin).y = arEnd.y;
 				(*arMax).x = arBeg.x;
 			}
-		}
-		else { // Arc begins in quadrant four
+		} else { // Arc begins in quadrant four
 			if (arEnd.x >= m_Center.x) {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
 					(*arMin).x = EoMin(arBeg.x, arEnd.x);
 					(*arMin).y = arBeg.y;
 					(*arMax).y = arEnd.y;
-				}
-				else { // Arc ends in quadrant four
+				} else { // Arc ends in quadrant four
 					if (arBeg.x < arEnd.x) { // Arc in qraudrant one only
 						(*arMin).x = arBeg.x;
 						(*arMin).y = arBeg.y;
@@ -439,18 +408,15 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 						(*arMax).y = arEnd.y;
 					}
 				}
-			}
-			else {
+			} else {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					(*arMin).x = arEnd.x;
 					(*arMin).y = arBeg.y;
-				}
-				else											// Arc ends in quadrant three
+				} else											// Arc ends in quadrant three
 					(*arMin).y = EoMin(arBeg.y, arEnd.y);
 			}
 		}
-	}
-	else {
+	} else {
 		if (arBeg.y >= m_Center.y) { // Arc begins in quadrant two
 			if (arEnd.x >= m_Center.x) {
 				if (arEnd.y >= m_Center.y) // Arc ends in quadrant one
@@ -459,8 +425,7 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 					(*arMax).x = arEnd.x;
 					(*arMax).y = arBeg.y;
 				}
-			}
-			else {
+			} else {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					if (arBeg.x > arEnd.x) { // Arc in qraudrant two only
 						(*arMin).x = arEnd.x;
@@ -468,15 +433,13 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 						(*arMax).x = arBeg.x;
 						(*arMax).y = arBeg.y;
 					}
-				}
-				else { // Arc ends in quadrant three
+				} else { // Arc ends in quadrant three
 					(*arMin).y = arEnd.y;
 					(*arMax).x = EoMax(arBeg.x, arEnd.x);
 					(*arMax).y = arBeg.y;
 				}
 			}
-		}
-		else { // Arc begins in quadrant three
+		} else { // Arc begins in quadrant three
 			if (arEnd.x >= m_Center.x) {
 				if (arEnd.y >= m_Center.y) // Arc ends in quadrant one
 					(*arMax).y = arEnd.y;
@@ -485,8 +448,7 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 					(*arMax).y = EoMax(arBeg.y, arEnd.y);
 				}
 				(*arMin).x = arBeg.x;
-			}
-			else {
+			} else {
 				if (arEnd.y >= m_Center.y)							// Arc ends in quadrant two
 					(*arMin).x = EoMin(arBeg.x, arEnd.x);
 				else { // Arc ends in quadrant three
@@ -502,14 +464,13 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 	}
 }
 
-void EoDbEllipse::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbEllipse::GetExtents(AeSysView * view, OdGeExtents3d & extents) const {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbObjectPtr Entity = m_EntityObjectId.safeOpenObject();
 		OdGeExtents3d Extents;
 		Entity->getGeomExtents(Extents);
 		extents.addExt(Extents);
-	}
-	else {
+	} else {
 		OdGePoint3dArray BoundingBox;
 		GetBoundingBox(BoundingBox);
 
@@ -519,7 +480,7 @@ void EoDbEllipse::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	}
 }
 
-bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+bool EoDbEllipse::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	// Determines if a point is on a control point of the arc.
 
 	EoGePoint4d pt[] = {EoGePoint4d(StartPoint(), 1.), EoGePoint4d(EndPoint(), 1.)};
@@ -533,7 +494,7 @@ bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& poin
 	return false;
 }
 
-int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
+int EoDbEllipse::IsWithinArea(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, OdGePoint3d * intersections) noexcept {
 	OdGeVector3d vPlnNorm = m_MajorAxis.crossProduct(m_MinorAxis);
 	vPlnNorm.normalize();
 
@@ -553,10 +514,10 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 
 	if (vPlnNorm.z < 0.) {
 		const OdGePoint3d pt = ptBeg;
-		ptBeg = ptEnd; 
-        ptEnd = pt;
+		ptBeg = ptEnd;
+		ptEnd = pt;
 
-		vPlnNorm = - vPlnNorm;
+		vPlnNorm = -vPlnNorm;
 		m_MajorAxis = ptBeg - m_Center;
 		m_MinorAxis = vPlnNorm.crossProduct(m_MajorAxis);
 	}
@@ -665,8 +626,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 	}
 	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) { // Arc is a circle in disuise
 
-	}
-	else {
+	} else {
 		if (ptBeg.x >= lowerLeftCorner.x && ptBeg.x <= upperRightCorner.x && ptBeg.y >= lowerLeftCorner.y && ptBeg.y <= upperRightCorner.y) { // Add beg point to int set
 			for (int i = iInts; i > 0; i--)
 				intersections[i] = intersections[i - 1];
@@ -686,11 +646,11 @@ OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
 	return (pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng));
 }
 
-bool EoDbEllipse::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
+bool EoDbEllipse::IsEqualTo(EoDbPrimitive * primitive) const noexcept {
 	return false;
 }
 
-bool EoDbEllipse::IsInView(AeSysView* view) const {
+bool EoDbEllipse::IsInView(AeSysView * view) const {
 	OdGePoint3dArray BoundingBox;
 
 	GetBoundingBox(BoundingBox);
@@ -710,7 +670,7 @@ bool EoDbEllipse::IsInView(AeSysView* view) const {
 	return false;
 }
 
-OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 
 	double dAPert = sm_SelectApertureSize;
@@ -724,7 +684,7 @@ OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d
 
 		const double dDis = point.DistanceToPointXY(pt);
 
-		if ( dDis < dAPert) {
+		if (dDis < dAPert) {
 			sm_ControlPointIndex = w;
 			dAPert = dDis;
 		}
@@ -732,33 +692,33 @@ OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d
 	return (sm_ControlPointIndex == SIZE_T_MAX) ? OdGePoint3d::kOrigin : ptCtrl[sm_ControlPointIndex];
 }
 
-bool EoDbEllipse::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbEllipse::SelectBy(const EoGeLineSeg3d & line, AeSysView * view, OdGePoint3dArray & intersections) {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
 	return polyline::SelectBy(line, view, intersections);
 }
 
-bool EoDbEllipse::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbEllipse::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
 	return (polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj));
 }
 
-bool EoDbEllipse::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
+bool EoDbEllipse::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
 	return polyline::SelectBy(lowerLeftCorner, upperRightCorner, view);
 }
 
-void EoDbEllipse::SetCenter(const OdGePoint3d& center) noexcept {
+void EoDbEllipse::SetCenter(const OdGePoint3d & center) noexcept {
 	m_Center = center;
 }
 
-void EoDbEllipse::SetMajorAxis(const OdGeVector3d& majorAxis) noexcept {
+void EoDbEllipse::SetMajorAxis(const OdGeVector3d & majorAxis) noexcept {
 	m_MajorAxis = majorAxis;
 }
 
-void EoDbEllipse::SetMinorAxis(const OdGeVector3d& minorAxis) noexcept {
+void EoDbEllipse::SetMinorAxis(const OdGeVector3d & minorAxis) noexcept {
 	m_MinorAxis = minorAxis;
 }
 
@@ -766,10 +726,9 @@ void EoDbEllipse::SetSweepAngle(double angle) noexcept {
 	m_SweepAngle = angle;
 }
 
-EoDbEllipse& EoDbEllipse::SetTo(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) {
+EoDbEllipse& EoDbEllipse::SetTo(const OdGePoint3d & center, const OdGeVector3d & majorAxis, const OdGeVector3d & minorAxis, double sweepAngle) {
 	OdGeVector3d PlaneNormal = majorAxis.crossProduct(minorAxis);
-	if (!PlaneNormal.isZeroLength())
-	{
+	if (!PlaneNormal.isZeroLength()) {
 		m_Center = center;
 		m_MajorAxis = majorAxis;
 		m_MinorAxis = minorAxis;
@@ -785,7 +744,7 @@ EoDbEllipse& EoDbEllipse::SetTo(const OdGePoint3d& center, const OdGeVector3d& m
 	return *this;
 }
 
-EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d& startPoint, const OdGePoint3d& intermediatePoint, const OdGePoint3d& endPoint) {
+EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const OdGePoint3d & intermediatePoint, const OdGePoint3d & endPoint) {
 	m_SweepAngle = 0.;
 
 	OdGeVector3d PlaneNormal = OdGeVector3d(intermediatePoint - startPoint).crossProduct(OdGeVector3d(endPoint - startPoint));
@@ -843,26 +802,25 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d& startPoint, const Od
 			m_SweepAngle = dMax - dMin;
 			if (dAng[1] > dMin && dAng[1] < dMax) {
 				if (dAng[0] == dMax)
-					m_SweepAngle = - m_SweepAngle;
-			}
-			else {
+					m_SweepAngle = -m_SweepAngle;
+			} else {
 				m_SweepAngle = TWOPI - m_SweepAngle;
 				if (dAng[2] == dMax)
-					m_SweepAngle = - m_SweepAngle;
+					m_SweepAngle = -m_SweepAngle;
 			}
 			OdGePoint3d ptRot = startPoint;
 			ptRot.rotateBy(HALF_PI, PlaneNormal, m_Center);
 
 			m_MajorAxis = OdGeVector3d(startPoint - m_Center);
 			m_MinorAxis = OdGeVector3d(ptRot - m_Center);
-		
+
 			SetTo(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 		}
 	}
 	return *this;
 }
 
-EoDbEllipse& EoDbEllipse::SetToCircle(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius) {
+EoDbEllipse & EoDbEllipse::SetToCircle(const OdGePoint3d & center, const OdGeVector3d & planeNormal, double radius) {
 	if (!planeNormal.isZeroLength()) {
 		OdGeVector3d PlaneNormal(planeNormal);
 		PlaneNormal.normalize();
@@ -878,7 +836,7 @@ EoDbEllipse& EoDbEllipse::SetToCircle(const OdGePoint3d& center, const OdGeVecto
 	return *this;
 }
 
-double EoDbEllipse::SwpAngToPt(const OdGePoint3d& point) {
+double EoDbEllipse::SwpAngToPt(const OdGePoint3d & point) {
 	OdGeVector3d PlaneNormal = m_MajorAxis.crossProduct(m_MinorAxis);
 	PlaneNormal.normalize();
 
@@ -895,55 +853,55 @@ double EoDbEllipse::SwpAngToPt(const OdGePoint3d& point) {
 	return (EoGeLineSeg3d(OdGePoint3d::kOrigin, StartPoint).AngleBetween_xy(EoGeLineSeg3d(OdGePoint3d::kOrigin, Point)));
 }
 
-void EoDbEllipse::TransformBy(const EoGeMatrix3d& transformMatrix) {
+void EoDbEllipse::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_Center.transformBy(transformMatrix);
 	m_MajorAxis.transformBy(transformMatrix);
 	m_MinorAxis.transformBy(transformMatrix);
 }
 
-void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) {
+void EoDbEllipse::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
 	if (mask != 0)
-		m_Center +=  translate;
+		m_Center += translate;
 }
 
-bool EoDbEllipse::Write(EoDbFile& file) const {
+bool EoDbEllipse::Write(EoDbFile & file) const {
 	file.WriteUInt16(EoDb::kEllipsePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
-	
+
 	file.WriteDouble(m_Center.x);
 	file.WriteDouble(m_Center.y);
 	file.WriteDouble(m_Center.z);
-	
+
 	file.WriteDouble(m_MajorAxis.x);
 	file.WriteDouble(m_MajorAxis.y);
 	file.WriteDouble(m_MajorAxis.z);
-	
+
 	file.WriteDouble(m_MinorAxis.x);
 	file.WriteDouble(m_MinorAxis.y);
 	file.WriteDouble(m_MinorAxis.z);
-	
+
 	file.WriteDouble(m_SweepAngle);
 
 	return true;
 }
 
-void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbEllipse::Write(CFile & file, OdUInt8 * buffer) const {
 	buffer[3] = 2;
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kEllipsePrimitive);
+	*((OdUInt16*) & buffer[4]) = OdUInt16(EoDb::kEllipsePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
-	((EoVaxPoint3d*) &buffer[8])->Convert(m_Center);
-	((EoVaxVector3d*) &buffer[20])->Convert(m_MajorAxis);
-	((EoVaxVector3d*) &buffer[32])->Convert(m_MinorAxis);
-	((EoVaxFloat*) &buffer[44])->Convert(m_SweepAngle);
+	((EoVaxPoint3d*) & buffer[8])->Convert(m_Center);
+	((EoVaxVector3d*) & buffer[20])->Convert(m_MajorAxis);
+	((EoVaxVector3d*) & buffer[32])->Convert(m_MinorAxis);
+	((EoVaxFloat*) & buffer[44])->Convert(m_SweepAngle);
 
 	file.Write(buffer, 64);
 }
 
-EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumber) {
+EoDbEllipse * EoDbEllipse::ConstructFrom(OdUInt8 * primitiveBufer, int versionNumber) {
 	OdInt16 ColorIndex;
 	OdInt16 LinetypeIndex;
 	OdGePoint3d CenterPoint;
@@ -956,36 +914,34 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumb
 		LinetypeIndex = OdInt16((primitiveBufer[4] & 0x00ff) >> 4);
 
 		OdGePoint3d BeginPoint;
-		BeginPoint = OdGePoint3d(((EoVaxFloat*) &primitiveBufer[8])->Convert(), ((EoVaxFloat*) &primitiveBufer[12])->Convert(), 0.) * 1.e-3;
-		CenterPoint = OdGePoint3d(((EoVaxFloat*) &primitiveBufer[20])->Convert(), ((EoVaxFloat*) &primitiveBufer[24])->Convert(), 0.) * 1.e-3;
-		SweepAngle = ((EoVaxFloat*) &primitiveBufer[28])->Convert();
+		BeginPoint = OdGePoint3d(((EoVaxFloat*) & primitiveBufer[8])->Convert(), ((EoVaxFloat*) & primitiveBufer[12])->Convert(), 0.) * 1.e-3;
+		CenterPoint = OdGePoint3d(((EoVaxFloat*) & primitiveBufer[20])->Convert(), ((EoVaxFloat*) & primitiveBufer[24])->Convert(), 0.) * 1.e-3;
+		SweepAngle = ((EoVaxFloat*) & primitiveBufer[28])->Convert();
 
 		if (SweepAngle < 0.) {
 			OdGePoint3d pt;
 			pt.x = (CenterPoint.x + ((BeginPoint.x - CenterPoint.x) * cos(SweepAngle) - (BeginPoint.y - CenterPoint.y) * sin(SweepAngle)));
 			pt.y = (CenterPoint.y + ((BeginPoint.x - CenterPoint.x) * sin(SweepAngle) + (BeginPoint.y - CenterPoint.y) * cos(SweepAngle)));
 			MajorAxis = pt - CenterPoint;
-		}
-		else {
+		} else {
 			MajorAxis = BeginPoint - CenterPoint;
 		}
 		MinorAxis = OdGeVector3d::kZAxis.crossProduct(MajorAxis);
 		SweepAngle = fabs(SweepAngle);
-	}
-	else {
+	} else {
 		ColorIndex = OdInt16(primitiveBufer[6]);
 		LinetypeIndex = OdInt16(primitiveBufer[7]);
 
-		CenterPoint = ((EoVaxPoint3d*) &primitiveBufer[8])->Convert();
-		MajorAxis = ((EoVaxVector3d*) &primitiveBufer[20])->Convert();
-		MinorAxis = ((EoVaxVector3d*) &primitiveBufer[32])->Convert();
+		CenterPoint = ((EoVaxPoint3d*) & primitiveBufer[8])->Convert();
+		MajorAxis = ((EoVaxVector3d*) & primitiveBufer[20])->Convert();
+		MinorAxis = ((EoVaxVector3d*) & primitiveBufer[32])->Convert();
 
-		SweepAngle = ((EoVaxFloat*) &primitiveBufer[44])->Convert();
+		SweepAngle = ((EoVaxFloat*) & primitiveBufer[44])->Convert();
 
-		if (SweepAngle > TWOPI || SweepAngle < - TWOPI) {
+		if (SweepAngle > TWOPI || SweepAngle < -TWOPI) {
 			SweepAngle = TWOPI;
 		}
-	}	
+	}
 	auto Ellipse {new EoDbEllipse(CenterPoint, MajorAxis, MinorAxis, SweepAngle)};
 	Ellipse->SetColorIndex_(ColorIndex);
 	Ellipse->SetLinetypeIndex_(LinetypeIndex);
@@ -993,21 +949,21 @@ EoDbEllipse* EoDbEllipse::ConstructFrom(OdUInt8* primitiveBufer, int versionNumb
 	return (Ellipse);
 }
 
-EoDbEllipse* EoDbEllipse::Create0(OdDbBlockTableRecordPtr& blockTableRecord) {
-    auto Ellipse {OdDbEllipse::createObject()};
-    Ellipse->setDatabaseDefaults(blockTableRecord->database());
-	
-    blockTableRecord->appendOdDbEntity(Ellipse);
-    Ellipse->setColorIndex(pstate.ColorIndex());
+EoDbEllipse* EoDbEllipse::Create0(OdDbBlockTableRecordPtr & blockTableRecord) {
+	auto Ellipse {OdDbEllipse::createObject()};
+	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	blockTableRecord->appendOdDbEntity(Ellipse);
+	Ellipse->setColorIndex(pstate.ColorIndex());
 
-    Ellipse->setLinetype(Linetype);
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+
+	Ellipse->setLinetype(Linetype);
 
 	return EoDbEllipse::Create(Ellipse);
 }
 
-EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecordPtr& blockTableRecord) {
+EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse & other, OdDbBlockTableRecordPtr & blockTableRecord) {
 	// <tas="Possibly need additional typing of the ObjecId producted by cloning"></tas>
 	OdDbEllipsePtr EllipseEntity = other.EntityObjectId().safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(EllipseEntity);
@@ -1018,98 +974,98 @@ EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecord
 	return Ellipse;
 }
 
-EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
-    auto Ellipse {new EoDbEllipse()};
-    Ellipse->SetEntityObjectId(ellipse->objectId());
+EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr & ellipse) {
+	auto Ellipse {new EoDbEllipse()};
+	Ellipse->SetEntityObjectId(ellipse->objectId());
 
-    Ellipse->m_ColorIndex = ellipse->colorIndex();
-    Ellipse->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype());
+	Ellipse->m_ColorIndex = ellipse->colorIndex();
+	Ellipse->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype());
 
-    OdGeVector3d MajorAxis(ellipse->majorAxis());
-    OdGeVector3d MinorAxis(ellipse->minorAxis());
+	OdGeVector3d MajorAxis(ellipse->majorAxis());
+	OdGeVector3d MinorAxis(ellipse->minorAxis());
 
-    double StartAngle = ellipse->startAngle();
-    double EndAngle = ellipse->endAngle();
+	double StartAngle = ellipse->startAngle();
+	double EndAngle = ellipse->endAngle();
 
-    if (StartAngle >= TWOPI) { // need to rationalize angs to first period angles in range on (0 to twopi)
-        StartAngle -= TWOPI;
-        EndAngle -= TWOPI;
-    }
-    double SweepAngle = EndAngle - StartAngle;
-    if (SweepAngle <= FLT_EPSILON)
-        SweepAngle += TWOPI;
+	if (StartAngle >= TWOPI) { // need to rationalize angs to first period angles in range on (0 to twopi)
+		StartAngle -= TWOPI;
+		EndAngle -= TWOPI;
+	}
+	double SweepAngle = EndAngle - StartAngle;
+	if (SweepAngle <= FLT_EPSILON)
+		SweepAngle += TWOPI;
 
-    if (StartAngle != 0.) {
-        MajorAxis.rotateBy(StartAngle, ellipse->normal());
-        MinorAxis.rotateBy(StartAngle, ellipse->normal());
-        if (ellipse->radiusRatio() != 1.) {
-            ATLTRACE2(atlTraceGeneral, 0, L"Ellipse: Non radial with start parameter not 0.\n");
-        }
-    }
-    Ellipse->SetCenter(ellipse->center());
-    Ellipse->SetMajorAxis(MajorAxis);
-    Ellipse->SetMinorAxis(MinorAxis);
-    Ellipse->SetSweepAngle(SweepAngle);
+	if (StartAngle != 0.) {
+		MajorAxis.rotateBy(StartAngle, ellipse->normal());
+		MinorAxis.rotateBy(StartAngle, ellipse->normal());
+		if (ellipse->radiusRatio() != 1.) {
+			ATLTRACE2(atlTraceGeneral, 0, L"Ellipse: Non radial with start parameter not 0.\n");
+		}
+	}
+	Ellipse->SetCenter(ellipse->center());
+	Ellipse->SetMajorAxis(MajorAxis);
+	Ellipse->SetMinorAxis(MinorAxis);
+	Ellipse->SetSweepAngle(SweepAngle);
 
-    return Ellipse;
+	return Ellipse;
 }
 
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
-    auto Ellipse {OdDbEllipse::createObject()};
-    Ellipse->setDatabaseDefaults(blockTableRecord->database());
-
-    blockTableRecord->appendOdDbEntity(Ellipse);
-    Ellipse->setColorIndex(pstate.ColorIndex());
-
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
-
-    Ellipse->setLinetype(Linetype);
-
-    return Ellipse;
-}
-
-OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius) {
-    auto Ellipse {OdDbEllipse::createObject()};
-    Ellipse->setDatabaseDefaults(blockTableRecord->database());
-
-    blockTableRecord->appendOdDbEntity(Ellipse);
-    OdGeCircArc3d Circle(center, normal, radius);
-
-    Ellipse->set(center, Circle.normal(), Circle.refVec() * radius, 1.);
-    return Ellipse;
-}
-
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-	auto Database {blockTableRecord->database()};
-	
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
 	auto Ellipse {OdDbEllipse::createObject()};
-    Ellipse->setDatabaseDefaults(Database);
+	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 
-    blockTableRecord->appendOdDbEntity(Ellipse);
+	blockTableRecord->appendOdDbEntity(Ellipse);
+	Ellipse->setColorIndex(pstate.ColorIndex());
 
-    Ellipse->setColorIndex(file.ReadInt16());
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+	Ellipse->setLinetype(Linetype);
 
-    Ellipse->setLinetype(Linetype);
-
-    const auto CenterPoint(file.ReadPoint3d());
-    const auto MajorAxis(file.ReadVector3d());
-    const auto MinorAxis(file.ReadVector3d());
-
-    const auto SweepAngle = file.ReadDouble();
-
-    auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};
-    if (!PlaneNormal.isZeroLength()) {
-        PlaneNormal.normalize();
-        // <tas="Apparently some ellipse primitives have a RadiusRatio > 1."></tas>
-        const double RadiusRatio = MinorAxis.length() / MajorAxis.length();
-        Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, EoMin(1., RadiusRatio), 0., SweepAngle);
-    }
-    return Ellipse;
+	return Ellipse;
 }
 
-OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double dAng) {
+OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr & blockTableRecord, const OdGePoint3d & center, const OdGeVector3d & normal, double radius) {
+	auto Ellipse {OdDbEllipse::createObject()};
+	Ellipse->setDatabaseDefaults(blockTableRecord->database());
+
+	blockTableRecord->appendOdDbEntity(Ellipse);
+	OdGeCircArc3d Circle(center, normal, radius);
+
+	Ellipse->set(center, Circle.normal(), Circle.refVec() * radius, 1.);
+	return Ellipse;
+}
+
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
+	auto Database {blockTableRecord->database()};
+
+	auto Ellipse {OdDbEllipse::createObject()};
+	Ellipse->setDatabaseDefaults(Database);
+
+	blockTableRecord->appendOdDbEntity(Ellipse);
+
+	Ellipse->setColorIndex(file.ReadInt16());
+
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+
+	Ellipse->setLinetype(Linetype);
+
+	const auto CenterPoint(file.ReadPoint3d());
+	const auto MajorAxis(file.ReadVector3d());
+	const auto MinorAxis(file.ReadVector3d());
+
+	const auto SweepAngle = file.ReadDouble();
+
+	auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};
+	if (!PlaneNormal.isZeroLength()) {
+		PlaneNormal.normalize();
+		// <tas="Apparently some ellipse primitives have a RadiusRatio > 1."></tas>
+		const double RadiusRatio = MinorAxis.length() / MajorAxis.length();
+		Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, EoMin(1., RadiusRatio), 0., SweepAngle);
+	}
+	return Ellipse;
+}
+
+OdGePoint3d pFndPtOnArc(const OdGePoint3d & center, const OdGeVector3d & majorAxis, const OdGeVector3d & minorAxis, const double dAng) {
 	OdGeMatrix3d ScaleMatrix;
 	ScaleMatrix.setToScaling(OdGeScale3d(majorAxis.length(), minorAxis.length(), 1.));
 
@@ -1123,18 +1079,18 @@ OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis
 	return (pt);
 }
 
-bool pFndCPGivRadAnd4Pts(double radius, OdGePoint3d arLn1Beg, OdGePoint3d arLn1End, OdGePoint3d arLn2Beg, OdGePoint3d arLn2End, OdGePoint3d* center) {
+bool pFndCPGivRadAnd4Pts(double radius, OdGePoint3d arLn1Beg, OdGePoint3d arLn1End, OdGePoint3d arLn2Beg, OdGePoint3d arLn2End, OdGePoint3d * center) {
 	const OdGeVector3d v1 = OdGeVector3d(arLn1End - arLn1Beg); // Determine vector defined by endpoints of first line
-    auto dV1Mag {v1.length()};
+	auto dV1Mag {v1.length()};
 	if (dV1Mag <= DBL_EPSILON)
 		return false;
 
 	OdGeVector3d v2 = OdGeVector3d(arLn2End - arLn2Beg);
-    auto dV2Mag {v2.length()};
+	auto dV2Mag {v2.length()};
 	if (dV2Mag <= DBL_EPSILON)
 		return false;
 
-    auto vPlnNorm {v1.crossProduct(v2)}; // Determine vector normal to tangent vectors
+	auto vPlnNorm {v1.crossProduct(v2)}; // Determine vector normal to tangent vectors
 	if (vPlnNorm.isZeroLength()) {
 		return false;
 	}
@@ -1144,32 +1100,32 @@ bool pFndCPGivRadAnd4Pts(double radius, OdGePoint3d arLn1Beg, OdGePoint3d arLn1E
 		return false;
 
 	EoGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(arLn1Beg, vPlnNorm));
+	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(arLn1Beg, vPlnNorm));
 
 	arLn1End.transformBy(WorldToPlaneTransform);
 	arLn2Beg.transformBy(WorldToPlaneTransform);
 	arLn2End.transformBy(WorldToPlaneTransform);
-    double dA1 {-arLn1End.y / dV1Mag};
-    double dB1 {arLn1End.x / dV1Mag};
+	double dA1 {-arLn1End.y / dV1Mag};
+	double dB1 {arLn1End.x / dV1Mag};
 	v2.x = arLn2End.x - arLn2Beg.x;
 	v2.y = arLn2End.y - arLn2Beg.y;
-    double dA2 {-v2.y / dV2Mag};
-    double dB2 {v2.x / dV2Mag};
-    double dDet {dA2 * dB1 - dA1 * dB2};
+	double dA2 {-v2.y / dV2Mag};
+	double dB2 {v2.x / dV2Mag};
+	double dDet {dA2 * dB1 - dA1 * dB2};
 
-    double dSgnRad {(arLn1End.x * arLn2End.y - arLn2End.x * arLn1End.y) >= 0. ? -fabs(radius) : fabs(radius)};
+	double dSgnRad {(arLn1End.x * arLn2End.y - arLn2End.x * arLn1End.y) >= 0. ? -fabs(radius) : fabs(radius)};
 
-    double dC1RAB1 {dSgnRad};
-    double dC2RAB2 {(arLn2Beg.x * arLn2End.y - arLn2End.x * arLn2Beg.y) / dV2Mag + dSgnRad};
+	double dC1RAB1 {dSgnRad};
+	double dC2RAB2 {(arLn2Beg.x * arLn2End.y - arLn2End.x * arLn2Beg.y) / dV2Mag + dSgnRad};
 	(*center).x = (dB2 * dC1RAB1 - dB1 * dC2RAB2) / dDet;
 	(*center).y = (dA1 * dC2RAB2 - dA2 * dC1RAB1) / dDet;
 	(*center).z = 0.;
-    WorldToPlaneTransform.invert();
+	WorldToPlaneTransform.invert();
 	*center = WorldToPlaneTransform * (*center);
 	return true;
 }
 
-int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& arP1, const OdGePoint3d& arP2, const OdGePoint3d& arP3, const OdGePoint3d& center, double& sweepAngle) {
+int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d & planeNormal, const OdGePoint3d & arP1, const OdGePoint3d & arP2, const OdGePoint3d & arP3, const OdGePoint3d & center, double& sweepAngle) {
 	double dT[3];
 	OdGePoint3d rR[3];
 
@@ -1178,7 +1134,7 @@ int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& 
 
 	// None of the points coincide with center point
 	EoGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(center, planeNormal));
+	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(center, planeNormal));
 
 	rR[0] = arP1;
 	rR[1] = arP2;
@@ -1195,12 +1151,11 @@ int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& 
 		double dTheta = dTMax - dTMin;
 		if (dT[1] > dTMin && dT[1] < dTMax) {
 			if (dT[0] == dTMax)
-				dTheta = - dTheta;
-		}
-		else {
+				dTheta = -dTheta;
+		} else {
 			dTheta = TWOPI - dTheta;
 			if (dT[2] == dTMax)
-				dTheta = - dTheta;
+				dTheta = -dTheta;
 		}
 		sweepAngle = dTheta;
 

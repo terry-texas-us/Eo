@@ -110,46 +110,6 @@ void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Hatch>", this);
 }
 
-void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
-	blockTableRecord->appendOdDbEntity(HatchEntity);
-	HatchEntity->setDatabaseDefaults();
-
-	SetEntityObjectId(HatchEntity->objectId());
-
-	HatchEntity->setAssociative(false);
-	
-	HatchEntity->setColorIndex(m_ColorIndex);
-	OdString HatchName(m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex));
-	HatchEntity->setPattern(OdDbHatch::kPreDefined, HatchName);
-	
-	const OdGeVector3d PlaneNormal = RecomputeReferenceSystem();
-	HatchEntity->setNormal(PlaneNormal);
-	
-	OdGePlane Plane(m_Vertices[0], PlaneNormal);
-	OdGeMatrix3d WorldToPlaneTransform;
-	WorldToPlaneTransform.setToWorldToPlane(Plane);
-
-	OdGePoint3d WorldOriginOnPlane = OdGePoint3d::kOrigin.orthoProject(Plane);
-	OdGeVector3d PointToPlaneVector(WorldOriginOnPlane.asVector());
-	PointToPlaneVector.transformBy(WorldToPlaneTransform);
-	HatchEntity->setElevation(PointToPlaneVector.z);
-	
-	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
-
-	OdGePoint2dArray Vertices;
-	Vertices.clear();
-	OdGeDoubleArray Bulges;
-	Bulges.clear();
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		OdGePoint3d Vertex(m_Vertices[VertexIndex]);
-		Vertex.transformBy(WorldToPlaneTransform);
-		Vertices.append(Vertex.convert2d());
-		Bulges.append(0.);
-	}
-	HatchEntity->appendLoop(OdDbHatch::kPolyline, Vertices, Bulges);
-}
-
 EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr& database) const {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	

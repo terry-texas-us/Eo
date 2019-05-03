@@ -18,19 +18,18 @@ class EoDbSpline : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;
 
 public:	// Constructors and destructor
-	
-    EoDbSpline() noexcept;
+
+	EoDbSpline() noexcept;
 	EoDbSpline(const EoDbSpline& other);
-    const EoDbSpline& operator=(const EoDbSpline& other);
+	const EoDbSpline& operator=(const EoDbSpline& other);
 
 	~EoDbSpline();
 
 public: // Methods - absolute virtuals
 
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-    void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
-    EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
+	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
@@ -38,8 +37,8 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kSplinePrimitive;}
-    bool IsEqualTo(EoDbPrimitive* primitive) const override;
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kSplinePrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -56,10 +55,10 @@ public: // Methods
 
 public: // Methods - static
 	static EoDbSpline* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-    static EoDbSpline* Create(const EoDbSpline& spline, OdDbDatabasePtr& database);
-    static EoDbSpline* Create(OdDbDatabasePtr& database);
-    static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
-    static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+	static EoDbSpline* Create(const EoDbSpline& spline, OdDbDatabasePtr& database);
+	static EoDbSpline* Create(OdDbDatabasePtr& database);
+	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
+	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 
-    static EoDbSpline* Create(OdDbSplinePtr& spline);
+	static EoDbSpline* Create(OdDbSplinePtr& spline);
 };

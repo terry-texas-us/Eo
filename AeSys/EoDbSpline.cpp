@@ -49,27 +49,6 @@ void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcep
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BSpline>", this);
 }
 
-void EoDbSpline::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbSplinePtr SplineEntity = OdDbSpline::createObject();
-	blockTableRecord->appendOdDbEntity(SplineEntity);
-	SplineEntity->setDatabaseDefaults();
-
-	SetEntityObjectId(SplineEntity->objectId());
-
-	SplineEntity->setColorIndex(m_ColorIndex);
-	SplineEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
-	
-	int Degree;
-	bool IsRational;
-	bool IsPeriodic;
-	OdGeKnotVector Knots;
-	OdGePoint3dArray ControlPoints;
-	OdGeDoubleArray Weights;
-	m_Spline.getDefinitionData(Degree, IsRational, IsPeriodic, Knots, ControlPoints, Weights);
-
-	SplineEntity->setNurbsData(Degree, false, false, false, ControlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
-}
-
 EoDbPrimitive* EoDbSpline::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbSpline::Create(*this, database));
 }

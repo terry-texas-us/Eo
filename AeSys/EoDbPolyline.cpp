@@ -103,27 +103,6 @@ void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexc
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Polyline>", this);
 }
 
-void EoDbPolyline::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	OdDbPolylinePtr PolylineEntity = OdDbPolyline::createObject();
-	blockTableRecord->appendOdDbEntity(PolylineEntity);
-	PolylineEntity->setDatabaseDefaults();
-	
-	SetEntityObjectId(PolylineEntity->objectId());
-	
-	PolylineEntity->setColorIndex(m_ColorIndex);
-	PolylineEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
-	
-	PolylineEntity->setConstantWidth(m_ConstantWidth);
-	PolylineEntity->setElevation(m_Elevation);
-	PolylineEntity->setThickness(m_Thickness);
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		PolylineEntity->addVertexAt(VertexIndex, m_Vertices[VertexIndex]);
-		PolylineEntity->setWidthsAt(VertexIndex, m_StartWidths[VertexIndex], m_EndWidths[VertexIndex]);
-		PolylineEntity->setBulgeAt(VertexIndex, m_Bulges[VertexIndex]);
-	}
-	PolylineEntity->setClosed(m_Flags == EoDbPolyline::sm_Closed);
-}
-
 EoDbPrimitive* EoDbPolyline::Clone(OdDbDatabasePtr& database) const {
 	return (EoDbPolyline::Create(*this, database));
 }

@@ -12,22 +12,21 @@ class EoDbEllipse : public EoDbPrimitive {
 
 public: // Constructors and destructor
 
-    EoDbEllipse() noexcept;
+	EoDbEllipse() noexcept;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept;
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
 
 	EoDbEllipse(const EoDbEllipse& other);
-    const EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
+	const EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
 
 	~EoDbEllipse();
 
 public: // Methods - absolute virtuals
 
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
-    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
@@ -37,8 +36,8 @@ public: // Methods - absolute virtuals
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kEllipsePrimitive;}
-    bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kEllipsePrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	/// <summary>Determines the best control point on arc within specified tolerance. Control points for arcs are the points at start and end of the sweep.</summary>
@@ -80,17 +79,17 @@ public: // Methods
 
 public: // Methods - static
 
-    static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
-    static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
+	static EoDbEllipse* ConstructFrom(OdUInt8* primitiveBufer, int versionNumber);
+	static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 
-    static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
+	static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
 
-    static EoDbEllipse* Create0(OdDbBlockTableRecordPtr& blockTableRecord);
+	static EoDbEllipse* Create0(OdDbBlockTableRecordPtr& blockTableRecord);
 
-    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
-    static OdDbEllipsePtr CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius);
-    
-    static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
+	static OdDbEllipsePtr CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius);
+
+	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 };
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double);

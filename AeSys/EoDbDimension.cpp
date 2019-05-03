@@ -70,10 +70,6 @@ void EoDbDimension::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noex
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Dimension>", this);
 }
 
-void EoDbDimension::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) noexcept {
-// <tas="AssociateWith for Dimension not finished"</tas>
-}
-
 EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr& database) const {
 	return (new EoDbDimension(*this));
 }
@@ -576,7 +572,7 @@ EoDbDimension* EoDbDimension::ConstructFrom(OdUInt8 * primitiveBuffer, int versi
 
 	primitiveBuffer[81 + TextLength] = '\0';
 	CString Text = CString((LPCSTR) & primitiveBuffer[81]);
-	
+
 	auto Dimension {new EoDbDimension()};
 	Dimension->SetColorIndex_(ColorIndex);
 	Dimension->SetLinetypeIndex_(LinetypeIndex);

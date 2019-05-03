@@ -15,7 +15,7 @@ Polyline primitive(never made it release : if already written flags not streamed
   Normal                            OdGeVector3d[20-31]
   Number of points                  OdUInt16[32-33]
   {0 or more Vertices} {Vertex, StartWidth, EndWidth, Bulge}
-                                    {OdGePoint2d, double, double, double} [34- ]
+									{OdGePoint2d, double, double, double} [34- ]
 </remarks> */
 
 class EoDbPolyline : public EoDbPrimitive {
@@ -31,8 +31,8 @@ private:
 	double m_ConstantWidth;
 	double m_Elevation;
 	double m_Thickness;
-    OdGeVector3d m_Normal;
-    OdGePoint2dArray m_Vertices;
+	OdGeVector3d m_Normal;
+	OdGePoint2dArray m_Vertices;
 	OdGeDoubleArray m_StartWidths;
 	OdGeDoubleArray m_EndWidths;
 	OdGeDoubleArray m_Bulges;
@@ -41,15 +41,14 @@ public:	// Constructors and destructor
 
 	EoDbPolyline();
 	EoDbPolyline(const EoDbPolyline& other);
-    const EoDbPolyline& operator=(const EoDbPolyline& other);
+	const EoDbPolyline& operator=(const EoDbPolyline& other);
 
 	~EoDbPolyline();
 
 public: // Methods - absolute virtuals
 
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
-    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
@@ -58,13 +57,13 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kPolylinePrimitive;}
-    bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override {return false;}
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kPolylinePrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
-    bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
-    bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
+	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
+	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
@@ -85,15 +84,15 @@ public: // Methods
 
 public: // Methods - static
 
-    // <tas="No contruction from job files."/>
+	// <tas="No contruction from job files."/>
 
-    static EoDbPolyline* Create(const EoDbPolyline& polyline, OdDbDatabasePtr database);
-    
-    static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static EoDbPolyline* Create(const EoDbPolyline& polyline, OdDbDatabasePtr database);
 
-    static EoDbPolyline* Create(OdDbPolylinePtr polyline);
-    
-    static size_t Edge() noexcept;
+	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+
+	static EoDbPolyline* Create(OdDbPolylinePtr polyline);
+
+	static size_t Edge() noexcept;
 	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 };

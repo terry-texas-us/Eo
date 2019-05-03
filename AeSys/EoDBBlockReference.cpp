@@ -11,12 +11,12 @@
 
 class EoDbPegFile;
 
-EoDbBlockReference::EoDbBlockReference() noexcept 
+EoDbBlockReference::EoDbBlockReference() noexcept
 	: m_Position(OdGePoint3d::kOrigin)
-    , m_Normal(OdGeVector3d::kZAxis)
-    , m_ScaleFactors(OdGeScale3d(1., 1., 1.))
-    , m_Rotation(0.) {
-	
+	, m_Normal(OdGeVector3d::kZAxis)
+	, m_ScaleFactors(OdGeScale3d(1., 1., 1.))
+	, m_Rotation(0.) {
+
 	m_Columns = 1;
 	m_Rows = 1;
 	m_ColumnSpacing = 0.;
@@ -59,49 +59,20 @@ const EoDbBlockReference& EoDbBlockReference::operator=(const EoDbBlockReference
 }
 
 void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const {
-    CString Report(L"<BlockReference>");
-    Report += L" Color:" + FormatColorIndex();
-    Report += L" Linetype:" + FormatLinetypeIndex();
-    Report += L" BlockName:" + m_Name;
-    theApp.AddStringToMessageList(Report);
+	CString Report(L"<BlockReference>");
+	Report += L" Color:" + FormatColorIndex();
+	Report += L" Linetype:" + FormatLinetypeIndex();
+	Report += L" BlockName:" + m_Name;
+	theApp.AddStringToMessageList(Report);
 }
 
 void EoDbBlockReference::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {return;}
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
 
 	HTREEITEM hti = CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this);
 
 	((EoDbGroup*) Block)->AddPrimsToTreeViewControl(tree, hti);
-}
-
-void EoDbBlockReference::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
-	auto BlockReferenceEntity {OdDbBlockReference::createObject()};
-	blockTableRecord->appendOdDbEntity(BlockReferenceEntity);
-	BlockReferenceEntity->setDatabaseDefaults();
-	
-	SetEntityObjectId(BlockReferenceEntity->objectId());
-
-	BlockReferenceEntity->setColorIndex(m_ColorIndex);
-	BlockReferenceEntity->setLinetype(LinetypeObjectFromIndex(m_LinetypeIndex));
-
-	// <tas="BlockReferenceEntity Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
-	OdDbDatabasePtr Database = BlockReferenceEntity->database();
-
-	OdDbBlockTablePtr BlockTable = Database->getBlockTableId().safeOpenObject(OdDb::kForRead);
-	const OdDbObjectId Block = BlockTable->getAt((LPCWSTR) m_Name);
-	
-	BlockReferenceEntity->setBlockTableRecord(Block);
-
-	BlockReferenceEntity->setPosition(m_Position);
-	BlockReferenceEntity->setNormal(m_Normal);
-	BlockReferenceEntity->setScaleFactors(m_ScaleFactors);
-	BlockReferenceEntity->setRotation(m_Rotation);
-	
-	//BlockReferenceEntity->SetColumns(m_Columns);
-	//BlockReferenceEntity->SetRows(m_Rows);
-	//BlockReferenceEntity->SetColumnSpacing(m_ColumnSpacing);
-	//BlockReferenceEntity->SetRowSpacing(m_RowSpacing);
 }
 
 EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoint) const {
@@ -114,7 +85,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	}
 	EoGeMatrix3d LeftMatrix;
 	EoGeMatrix3d RightMatrix;
-	LeftMatrix.setToTranslation(- basePoint.asVector());
+	LeftMatrix.setToTranslation(-basePoint.asVector());
 	m_ScaleFactors.getMatrix(RightMatrix);
 	LeftMatrix.preMultBy(RightMatrix);
 	RightMatrix.setToRotation(m_Rotation, OdGeVector3d::kZAxis);
@@ -127,11 +98,11 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	return LeftMatrix;
 }
 
-EoDbPrimitive* EoDbBlockReference::Clone(OdDbDatabasePtr& database) const {
+EoDbPrimitive* EoDbBlockReference::Clone(OdDbDatabasePtr & database) const {
 	return (EoDbBlockReference::Create(*this, database));
 }
 
-void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
+void EoDbBlockReference::Display(AeSysView * view, CDC * deviceContext) {
 	EoDbBlock* Block;
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0)
 		return;
@@ -141,22 +112,22 @@ void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
 	view->PopModelTransform();
 }
 
-void EoDbBlockReference::GetAllPoints(OdGePoint3dArray& points) const {
-	points.clear(); 
+void EoDbBlockReference::GetAllPoints(OdGePoint3dArray & points) const {
+	points.clear();
 	points.append(m_Position);
 }
 
-void EoDbBlockReference::FormatExtra(CString& extra) const {
+void EoDbBlockReference::FormatExtra(CString & extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
-	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t"; 
+	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	extra += L"Block Name;" + m_Name + L"\t";
 	CString Angle;
 	Angle.Format(L"Angle;%f", m_Rotation);
 	extra += Angle;
 }
 
-void EoDbBlockReference::FormatGeometry(CString& geometry) const {
+void EoDbBlockReference::FormatGeometry(CString & geometry) const {
 	CString PositionString;
 	PositionString.Format(L"Insertion Point;%f;%f;%f\t", m_Position.x, m_Position.y, m_Position.z);
 	geometry += PositionString;
@@ -165,14 +136,14 @@ void EoDbBlockReference::FormatGeometry(CString& geometry) const {
 	geometry += NormalString;
 	CString ScaleFactorsString;
 	ScaleFactorsString.Format(L"Scale Factors;%f;%f;%f\t", m_ScaleFactors.sx, m_ScaleFactors.sy, m_ScaleFactors.sz);
-	geometry +=  ScaleFactorsString;
+	geometry += ScaleFactorsString;
 }
 
 OdGePoint3d EoDbBlockReference::GetCtrlPt() const noexcept {
 	return (m_Position);
 }
 
-void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbBlockReference::GetExtents(AeSysView * view, OdGeExtents3d & extents) const {
 
 	EoDbBlock* Block;
 
@@ -187,15 +158,15 @@ OdGePoint3d	EoDbBlockReference::GoToNxtCtrlPt() const noexcept {
 	return m_Position;
 }
 
-bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
+bool EoDbBlockReference::IsEqualTo(EoDbPrimitive * primitive) const noexcept {
 	return false;
 }
 
-bool EoDbBlockReference::IsInView(AeSysView* view) const {
+bool EoDbBlockReference::IsInView(AeSysView * view) const {
 	// Test whether an instance of a block is wholly or partially within the current view volume.
 	EoDbBlock* Block;
 
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {return false;}
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	const bool bInView = Block->IsInView(view);
@@ -204,11 +175,11 @@ bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	return (bInView);
 }
 
-bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
+bool EoDbBlockReference::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const noexcept {
 	return false;
 }
 
-OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ptCtrl;
 
@@ -232,7 +203,7 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGe
 	return ptCtrl;
 }
 
-bool EoDbBlockReference::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
+bool EoDbBlockReference::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
 	EoDbBlock* Block;
 
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {
@@ -245,7 +216,7 @@ bool EoDbBlockReference::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGe
 	return (bResult);
 }
 
-bool EoDbBlockReference::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbBlockReference::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
 	bool bResult = false;
 
 	EoDbBlock* Block;
@@ -258,7 +229,7 @@ bool EoDbBlockReference::SelectBy(const EoGePoint4d& point, AeSysView* view, OdG
 	POSITION Position = Block->GetHeadPosition();
 	while (Position != 0) {
 		if ((Block->GetNext(Position))->SelectBy(point, view, ptProj)) {
-			bResult = true; 
+			bResult = true;
 			break;
 		}
 	}
@@ -267,11 +238,10 @@ bool EoDbBlockReference::SelectBy(const EoGePoint4d& point, AeSysView* view, OdG
 	return (bResult);
 }
 
-void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
+void EoDbBlockReference::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	if (m_EntityObjectId.isNull()) {
 		theApp.AddStringToMessageList(L"Expected valid entity object to exist.");
-	}
-	else {
+	} else {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject();
 		if (Entity->isKindOf(OdDbBlockReference::desc())) {
 			OdDbBlockReferencePtr BlockReference = Entity;
@@ -279,8 +249,7 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 			m_Normal = BlockReference->normal();
 			SetScaleFactors(BlockReference->scaleFactors());
 			m_Rotation = BlockReference->rotation();
-		}
-		else {
+		} else {
 			theApp.AddStringToMessageList(L"Block used for unsupported entity type. Rotation is incorrect.");
 			m_Position.transformBy(transformMatrix);
 			m_Normal.transformBy(transformMatrix);
@@ -296,18 +265,18 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, DWORD mask) {
+void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d & translate, DWORD mask) {
 	if (mask != 0) {
 		m_Position += translate;
 	}
 }
 
-bool EoDbBlockReference::Write(EoDbFile& file) const {
+bool EoDbBlockReference::Write(EoDbFile & file) const {
 	file.WriteUInt16(EoDb::kGroupReferencePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
 	file.WriteString(m_Name);
-	
+
 	file.WriteDouble(m_Position.x);
 	file.WriteDouble(m_Position.y);
 	file.WriteDouble(m_Position.z);
@@ -319,7 +288,7 @@ bool EoDbBlockReference::Write(EoDbFile& file) const {
 	file.WriteDouble(m_ScaleFactors.sx);
 	file.WriteDouble(m_ScaleFactors.sy);
 	file.WriteDouble(m_ScaleFactors.sz);
-	
+
 	file.WriteDouble(m_Rotation);
 	file.WriteUInt16(m_Columns);
 	file.WriteUInt16(m_Rows);
@@ -329,7 +298,7 @@ bool EoDbBlockReference::Write(EoDbFile& file) const {
 	return true;
 }
 
-void EoDbBlockReference::Write(CFile& file, OdUInt8* buffer) const noexcept {
+void EoDbBlockReference::Write(CFile & file, OdUInt8 * buffer) const noexcept {
 }
 
 OdUInt16 EoDbBlockReference::Columns() const noexcept {
@@ -368,11 +337,11 @@ double EoDbBlockReference::RowSpacing() const noexcept {
 	return m_RowSpacing;
 }
 
-void EoDbBlockReference::SetName(const CString& name) {
+void EoDbBlockReference::SetName(const CString & name) {
 	m_Name = name;
 }
 
-void EoDbBlockReference::SetNormal(const OdGeVector3d& normal) {
+void EoDbBlockReference::SetNormal(const OdGeVector3d & normal) {
 	m_Normal = normal;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbBlockReferencePtr BlockReference = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -380,7 +349,7 @@ void EoDbBlockReference::SetNormal(const OdGeVector3d& normal) {
 	}
 }
 
-void EoDbBlockReference::SetPosition(const OdGePoint3d& position) {
+void EoDbBlockReference::SetPosition(const OdGePoint3d & position) {
 	m_Position = position;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbBlockReferencePtr BlockReference = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -388,7 +357,7 @@ void EoDbBlockReference::SetPosition(const OdGePoint3d& position) {
 	}
 }
 
-void EoDbBlockReference::SetScaleFactors(const OdGeScale3d& scaleFactors) noexcept {
+void EoDbBlockReference::SetScaleFactors(const OdGeScale3d & scaleFactors) noexcept {
 	m_ScaleFactors = scaleFactors;
 }
 
@@ -412,24 +381,24 @@ void EoDbBlockReference::SetColumnSpacing(double columnSpacing) noexcept {
 	m_ColumnSpacing = columnSpacing;
 }
 
-EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr& database) {
+EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr & database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdDbBlockReferencePtr BlockReferenceEntity = OdDbBlockReference::createObject();
 	BlockReferenceEntity->setDatabaseDefaults(database);
 	BlockTableRecord->appendOdDbEntity(BlockReferenceEntity);
-	
+
 	EoDbBlockReference* BlockReference = new EoDbBlockReference();
 	BlockReference->SetEntityObjectId(BlockReferenceEntity->objectId());
-	
+
 	BlockReference->SetColorIndex(pstate.ColorIndex());
 	BlockReference->SetLinetypeIndex(pstate.LinetypeIndex());
-	
+
 	return BlockReference;
 }
 
 // <tas="Broken. Not doing a deep clone of block"</tas>
-EoDbBlockReference* EoDbBlockReference::Create(const EoDbBlockReference& other, OdDbDatabasePtr database) {
+EoDbBlockReference* EoDbBlockReference::Create(const EoDbBlockReference & other, OdDbDatabasePtr database) {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	OdDbBlockReferencePtr BlockReferenceEntity = other.EntityObjectId().safeOpenObject()->clone();
 	BlockTableRecord->appendOdDbEntity(BlockReferenceEntity);
@@ -441,92 +410,92 @@ EoDbBlockReference* EoDbBlockReference::Create(const EoDbBlockReference& other, 
 }
 
 OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTableRecord) {
-    OdDbBlockReferencePtr BlockReference = OdDbBlockReference::createObject();
-    BlockReference->setDatabaseDefaults(blockTableRecord->database());
+	OdDbBlockReferencePtr BlockReference = OdDbBlockReference::createObject();
+	BlockReference->setDatabaseDefaults(blockTableRecord->database());
 
-    blockTableRecord->appendOdDbEntity(BlockReference);
-    BlockReference->setColorIndex(pstate.ColorIndex());
+	blockTableRecord->appendOdDbEntity(BlockReference);
+	BlockReference->setColorIndex(pstate.ColorIndex());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
-    BlockReference->setLinetype(Linetype);
+	BlockReference->setLinetype(Linetype);
 
-    return BlockReference;
+	return BlockReference;
 }
 
-OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-    OdDbBlockReferencePtr BlockReference = OdDbBlockReference::createObject();
-    BlockReference->setDatabaseDefaults(blockTableRecord->database());
+OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
+	OdDbBlockReferencePtr BlockReference = OdDbBlockReference::createObject();
+	BlockReference->setDatabaseDefaults(blockTableRecord->database());
 
-    blockTableRecord->appendOdDbEntity(BlockReference);
+	blockTableRecord->appendOdDbEntity(BlockReference);
 
-    BlockReference->setColorIndex(file.ReadInt16());
+	BlockReference->setColorIndex(file.ReadInt16());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
 
-    BlockReference->setLinetype(Linetype);
+	BlockReference->setLinetype(Linetype);
 
-    // <tas="BlockReference Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
-    OdDbDatabasePtr Database = BlockReference->database();
+	// <tas="BlockReference Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
+	OdDbDatabasePtr Database = BlockReference->database();
 
-    OdDbBlockTablePtr BlockTable = Database->getBlockTableId().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTablePtr BlockTable = Database->getBlockTableId().safeOpenObject(OdDb::kForRead);
 
-    CString Name;
-    file.ReadString(Name);
+	CString Name;
+	file.ReadString(Name);
 
-    const auto Block {BlockTable->getAt((LPCWSTR) Name)};
+	const auto Block {BlockTable->getAt((LPCWSTR) Name)};
 
-    BlockReference->setBlockTableRecord(Block);
+	BlockReference->setBlockTableRecord(Block);
 
-    BlockReference->setPosition(file.ReadPoint3d());
-    BlockReference->setNormal(file.ReadVector3d());
+	BlockReference->setPosition(file.ReadPoint3d());
+	BlockReference->setNormal(file.ReadVector3d());
 
-    OdGeScale3d ScaleFactors;
-    ScaleFactors.sx = file.ReadDouble();
-    ScaleFactors.sy = file.ReadDouble();
-    ScaleFactors.sz = file.ReadDouble();
-    BlockReference->setScaleFactors(ScaleFactors);
+	OdGeScale3d ScaleFactors;
+	ScaleFactors.sx = file.ReadDouble();
+	ScaleFactors.sy = file.ReadDouble();
+	ScaleFactors.sz = file.ReadDouble();
+	BlockReference->setScaleFactors(ScaleFactors);
 
-    BlockReference->setRotation(file.ReadDouble());
+	BlockReference->setRotation(file.ReadDouble());
 
 // <tas="These four properties are required for OdDbMInsertBlock. Unused here.">
-    auto Columns {file.ReadUInt16()};
-    auto Rows {file.ReadUInt16()};
-    auto ColumnSpacing {file.ReadDouble()};
-    auto RowSpacing {file.ReadDouble()};
+	auto Columns {file.ReadUInt16()};
+	auto Rows {file.ReadUInt16()};
+	auto ColumnSpacing {file.ReadDouble()};
+	auto RowSpacing {file.ReadDouble()};
 // </tas>
-    return (BlockReference);
+	return (BlockReference);
 }
 
 EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockReference) {
-    auto BlockReference {new EoDbBlockReference()};
-    BlockReference->SetEntityObjectId(blockReference->objectId());
+	auto BlockReference {new EoDbBlockReference()};
+	BlockReference->SetEntityObjectId(blockReference->objectId());
 
-    BlockReference->m_ColorIndex = blockReference->colorIndex();
-    BlockReference->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype());
+	BlockReference->m_ColorIndex = blockReference->colorIndex();
+	BlockReference->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype());
 
-    OdDbBlockTableRecordPtr BlockTableRecordPtr = blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTableRecordPtr BlockTableRecordPtr = blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead);
 
-    BlockReference->SetName((LPCWSTR) BlockTableRecordPtr->getName());
-    BlockReference->SetPosition(blockReference->position());
-    BlockReference->SetNormal(blockReference->normal());
-    BlockReference->SetScaleFactors(blockReference->scaleFactors());
-    BlockReference->SetRotation(blockReference->rotation());
+	BlockReference->SetName((LPCWSTR) BlockTableRecordPtr->getName());
+	BlockReference->SetPosition(blockReference->position());
+	BlockReference->SetNormal(blockReference->normal());
+	BlockReference->SetScaleFactors(blockReference->scaleFactors());
+	BlockReference->SetRotation(blockReference->rotation());
 
-    // <tas="Block reference - attributes">
-    OdDbObjectIteratorPtr ObjectIterator = blockReference->attributeIterator();
-    for (int i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
-        OdDbAttributePtr AttributePtr = ObjectIterator->entity();
-        if (!AttributePtr.isNull()) {
-            if (!AttributePtr->isConstant() && !AttributePtr->isInvisible()) {
-                /* <tas="Attribute pointer is to OdDbText entity. The atribute data is retained by the BlockReference entity, so it can be retrieved when needed.">
-                auto AttributeText {static_cast<OdDbText*>(AttributePtr)};
-                </tas> */
-            }
-        }
-    }
-    // </tas>
+	// <tas="Block reference - attributes">
+	OdDbObjectIteratorPtr ObjectIterator = blockReference->attributeIterator();
+	for (int i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
+		OdDbAttributePtr AttributePtr = ObjectIterator->entity();
+		if (!AttributePtr.isNull()) {
+			if (!AttributePtr->isConstant() && !AttributePtr->isInvisible()) {
+				/* <tas="Attribute pointer is to OdDbText entity. The atribute data is retained by the BlockReference entity, so it can be retrieved when needed.">
+				auto AttributeText {static_cast<OdDbText*>(AttributePtr)};
+				</tas> */
+			}
+		}
+	}
+	// </tas>
 
-    return BlockReference;
+	return BlockReference;
 }
 

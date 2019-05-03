@@ -44,16 +44,15 @@ private:
 
 public:	// Constructors and destructor
 
-    EoDbHatch();
+	EoDbHatch();
 	EoDbHatch(const EoDbHatch& other);
-    const EoDbHatch& operator=(const EoDbHatch& other);
+	const EoDbHatch& operator=(const EoDbHatch& other);
 
 	~EoDbHatch();
 
 public: // Methods - absolute virtuals
 
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
-	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
@@ -63,8 +62,8 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kHatchPrimitive;}
-	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override {return false;}
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kHatchPrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -76,7 +75,7 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods
-	
+
 	int Append(const OdGePoint3d& vertex);
 	/// <summary>A Hatch is generated using line patterns.</summary>
 	void DisplayHatch(AeSysView* view, CDC* deviceContext) const;
@@ -114,6 +113,6 @@ public: // Methods - static
 	static EoDbHatch* Create(const OdDbHatchPtr& hatch);
 
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
 };
