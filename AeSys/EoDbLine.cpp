@@ -437,31 +437,6 @@ void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 
 // Static
 
-EoDbLine* EoDbLine::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-	OdInt16 ColorIndex;
-	OdInt16 LinetypeIndex;
-	OdGePoint3d StartPoint;
-	OdGePoint3d EndPoint;
-	if (versionNumber == 1) {
-		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
-		StartPoint = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert() * 1.e-3;
-		EndPoint = ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert() * 1.e-3;
-	}
-	else {
-		ColorIndex = OdInt16(primitiveBuffer[6]);
-		LinetypeIndex = OdInt16(primitiveBuffer[7]);
-		StartPoint = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert();
-		EndPoint = ((EoVaxPoint3d*) &primitiveBuffer[20])->Convert();
-	}
-	auto Line {new EoDbLine()};
-	Line->SetColorIndex_(ColorIndex);
-	Line->SetLinetypeIndex_(LinetypeIndex);
-	Line->SetStartPoint(StartPoint);
-	Line->SetEndPoint(EndPoint);
-	return (Line);
-}
-
 EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {
     auto Line {new EoDbLine()};
     Line->SetEntityObjectId(line->objectId());
@@ -489,27 +464,17 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
     return Line;
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
-    auto Line {OdDbLine::createObject()};
-    Line->setDatabaseDefaults(blockTableRecord->database());
-
-    blockTableRecord->appendOdDbEntity(Line);
-
-    Line->setStartPoint(startPoint);
-    Line->setEndPoint(endPoint);
-
-    return Line;
-}
-
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-    auto Line {OdDbLine::createObject()};
-    Line->setDatabaseDefaults(blockTableRecord->database());
+	auto Database {blockTableRecord->database()};
+
+	auto Line {OdDbLine::createObject()};
+    Line->setDatabaseDefaults(Database);
 
     blockTableRecord->appendOdDbEntity(Line);
 
     Line->setColorIndex(file.ReadInt16());
     
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
     
     Line->setLinetype(Linetype);
     
@@ -518,3 +483,48 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
     
     return (Line);
 }
+
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+	OdInt16 ColorIndex;
+	OdInt16 LinetypeIndex;
+	OdGePoint3d StartPoint;
+	OdGePoint3d EndPoint;
+	if (versionNumber == 1) {
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+		StartPoint = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3;
+		EndPoint = ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert() * 1.e-3;
+	} else {
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		LinetypeIndex = OdInt16(primitiveBuffer[7]);
+		StartPoint = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
+		EndPoint = ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert();
+	}
+
+	auto Database {blockTableRecord->database()};
+
+	auto Line {OdDbLine::createObject()};
+	Line->setDatabaseDefaults(Database);
+
+	blockTableRecord->appendOdDbEntity(Line);
+
+	Line->setColorIndex(ColorIndex);
+	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(LinetypeIndex));
+	Line->setStartPoint(StartPoint);
+	Line->setEndPoint(EndPoint);
+
+	return (Line);
+}
+
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
+	auto Line {OdDbLine::createObject()};
+	Line->setDatabaseDefaults(blockTableRecord->database());
+
+	blockTableRecord->appendOdDbEntity(Line);
+
+	Line->setStartPoint(startPoint);
+	Line->setEndPoint(endPoint);
+
+	return Line;
+}
+

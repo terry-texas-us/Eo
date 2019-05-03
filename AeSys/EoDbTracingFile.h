@@ -9,8 +9,8 @@ public:
     virtual ~EoDbTracingFile();
 
 	void ReadHeader();
-	bool ReadLayer(OdDbBlockTableRecordPtr blockTable, EoDbLayer* layer);
-	EoDbGroup* ReadGroup(OdDbBlockTableRecordPtr blockTable);
+	bool ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, EoDbLayer* layer);
+	EoDbGroup* ReadGroup(OdDbBlockTableRecordPtr blockTableRecord);
 	
 	void WriteHeader();
 	void WriteLayer(EoDbLayer* layer);

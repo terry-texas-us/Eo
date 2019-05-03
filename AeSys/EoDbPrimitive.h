@@ -4,7 +4,6 @@
 #include "EoGeReferenceSystem.h"
 
 class EoGeLineSeg3d;
-class EoDbPegFile;
 
 /// <summary>Compute a not so arbitrary axis for AutoCAD entities</summary>
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal);
@@ -111,4 +110,5 @@ public: // Methods - static
 	static void SetLayerColorIndex(OdInt16 colorIndex) noexcept;
 	static void SetLayerLinetypeIndex(OdInt16 linetypeIndex) noexcept;
 	static OdDbObjectId LinetypeObjectFromIndex(OdInt16 linetypeIndex);
+	static OdDbObjectId LinetypeObjectFromIndex0(OdDbDatabasePtr database, OdInt16 linetypeIndex);
 };

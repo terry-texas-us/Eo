@@ -1570,7 +1570,7 @@ bool AeSysDoc::TracingLoadLayer(const OdString & file, EoDbLayer * layer) {
 		if (File != 0) {
 			EoDbJobFile JobFile;
 			JobFile.ReadHeader(File);
-			JobFile.ReadLayer(File, layer);
+			JobFile.ReadLayer(m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite), File, layer);
 			return true;
 		}
 		theApp.WarningMessageBox(IDS_MSG_TRACING_OPEN_FAILURE, file);
@@ -1982,7 +1982,7 @@ void AeSysDoc::OnEditTrace() {
 
 						MemFile.Seek(96, CFile::begin);
 						EoDbJobFile JobFile;
-						JobFile.ReadMemFile(MemFile);
+						JobFile.ReadMemFile(m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite), MemFile);
 					}
 					break;
 				}
@@ -2040,7 +2040,7 @@ void AeSysDoc::OnEditTrapPaste() {
 
 					MemoryFile.Seek(96, CFile::begin);
 					EoDbJobFile JobFile;
-					JobFile.ReadMemFile(MemoryFile);
+					JobFile.ReadMemFile(m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite), MemoryFile);
 					EoGeMatrix3d TransformMatrix;
 					TransformMatrix.setToTranslation(InsertionPoint - LowerLeftExtent);
 					TransformTrappedGroups(TransformMatrix);

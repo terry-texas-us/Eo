@@ -149,9 +149,16 @@ void EoDbHatch::AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) {
 	}
 	HatchEntity->appendLoop(OdDbHatch::kPolyline, Vertices, Bulges);
 }
+
 EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbHatch::Create1(*this, database));
+	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	
+	OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject()->clone();
+	BlockTableRecord->appendOdDbEntity(Hatch);
+
+	return EoDbHatch::Create(Hatch);
 }
+
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
 	const OdInt16 ColorIndex = LogicalColorIndex();
 
@@ -839,311 +846,295 @@ void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 
-EoDbHatch* EoDbHatch::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-    OdInt16 ColorIndex;
-    OdInt16 InteriorStyle;
-    size_t InteriorStyleIndex = 0;
-    OdGePoint3d HatchOrigin;
-    OdGeVector3d HatchXAxis;
-    OdGeVector3d HatchYAxis;
-    OdGePoint3dArray Vertices;
+#include "Ge/GeCircArc2d.h"
+#include "Ge/GeEllipArc2d.h"
+#include "Ge/GeNurbCurve2d.h"
 
-    if (versionNumber == 1) {
-        ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
-
-        const double StyleDefinition = ((EoVaxFloat*) &primitiveBuffer[12])->Convert();
-        InteriorStyle = OdInt16(int(StyleDefinition) % 16);
-
-        switch (InteriorStyle) {
-        case EoDbHatch::kHatch: {
-            const double ScaleFactorX = ((EoVaxFloat*) &primitiveBuffer[16])->Convert();
-            const double ScaleFactorY = ((EoVaxFloat*) &primitiveBuffer[20])->Convert();
-            double PatternAngle = ((EoVaxFloat*) &primitiveBuffer[24])->Convert();
-
-            if (fabs(ScaleFactorX) > FLT_EPSILON && fabs(ScaleFactorY) > FLT_EPSILON) { // Have 2 hatch lines
-                InteriorStyleIndex = 2;
-                HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-                HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
-                HatchXAxis *= ScaleFactorX * 1.e-3;
-                HatchYAxis *= ScaleFactorY * 1.e-3;
-            } else if (fabs(ScaleFactorX) > FLT_EPSILON) { // Vertical hatch lines
-                InteriorStyleIndex = 1;
-                PatternAngle += HALF_PI;
-
-                HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-                HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
-                HatchXAxis *= ScaleFactorX * 1.e-3;
-            } else { // Horizontal hatch lines
-                InteriorStyleIndex = 1;
-                HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-                HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
-                HatchYAxis *= ScaleFactorY * 1.e-3;
-            }
-            break;
-        }
-        case EoDbHatch::kHollow:
-        case EoDbHatch::kSolid:
-        case EoDbHatch::kPattern:
-            HatchXAxis = OdGeVector3d::kXAxis * 1.e-3;
-            HatchYAxis = OdGeVector3d::kYAxis * 1.e-3;
-            break;
-
-        default:
-            throw L"Exception.FileJob: Unknown hatch primitive interior style.";
-        }
-        const size_t NumberOfVertices = OdUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
-
-        int BufferOffset = 36;
-        Vertices.clear();
-        for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-            Vertices.append(((EoVaxPoint3d*) &primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
-            BufferOffset += sizeof(EoVaxPoint3d);
-        }
-        HatchOrigin = Vertices[0];
-    } else {
-        ColorIndex = OdInt16(primitiveBuffer[6]);
-        InteriorStyle = OdInt8(primitiveBuffer[7]);
-        InteriorStyleIndex = *((OdInt16*) &primitiveBuffer[8]);
-        const size_t NumberOfVertices = *((OdInt16*) &primitiveBuffer[10]);
-        HatchOrigin = ((EoVaxPoint3d*) &primitiveBuffer[12])->Convert();
-        HatchXAxis = ((EoVaxVector3d*) &primitiveBuffer[24])->Convert();
-        HatchYAxis = ((EoVaxVector3d*) &primitiveBuffer[36])->Convert();
-
-        int BufferOffset = 48;
-        Vertices.clear();
-        for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-            Vertices.append(((EoVaxPoint3d*) &primitiveBuffer[BufferOffset])->Convert());
-            BufferOffset += sizeof(EoVaxPoint3d);
-        }
-    }
-    EoDbHatch* HatchPrimitive = new EoDbHatch();
-    HatchPrimitive->SetColorIndex(ColorIndex);
-    HatchPrimitive->SetInteriorStyle(InteriorStyle);
-    HatchPrimitive->SetInteriorStyleIndex(InteriorStyleIndex);
-    HatchPrimitive->SetHatchOrigin(HatchOrigin);
-    HatchPrimitive->SetHatchXAxis(HatchXAxis);
-    HatchPrimitive->SetHatchYAxis(HatchYAxis);
-
-    HatchPrimitive->SetVertices(Vertices);
-
-    return (HatchPrimitive);
+void EoDbHatch::ConvertPolylineType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
+	hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
 }
 
-EoDbHatch* EoDbHatch::Create1(const EoDbHatch& other, OdDbDatabasePtr database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    OdDbHatchPtr HatchEntity = other.EntityObjectId().safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(HatchEntity);
-
-    EoDbHatch* Hatch = new EoDbHatch(other);
-    Hatch->SetEntityObjectId(HatchEntity->objectId());
-
-    return Hatch;
+void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept {
+	const OdGeCircArc2d* CircularArcEdge = (OdGeCircArc2d*) edge;
+	// <tas="Properties: center, radius, startAng, endAng, isClockWise"></tas>
 }
 
-EoDbHatch* EoDbHatch::Create0(OdDbDatabasePtr database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept {
+	const OdGeEllipArc2d* EllipticalArcEdge = (OdGeEllipArc2d*) edge;
+	// <tas="Properties: center, majorRadius, minorRadius, majorAxis, minorAxis, startAng, endAng, isClockWise"></tas>
+}
 
-    OdDbHatchPtr HatchEntity = OdDbHatch::createObject();
-    HatchEntity->setDatabaseDefaults(database);
-    HatchEntity->setAssociative(false);
-    OdString HatchName = EoDbHatchPatternTable::LegacyHatchPatternName(pstate.HatchInteriorStyleIndex());
-    HatchEntity->setPattern(OdDbHatch::kPreDefined, HatchName);
+void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept {
+	const OdGeNurbCurve2d* NurbCurveEdge = (OdGeNurbCurve2d*) edge;
+	// <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>
+}
 
-    BlockTableRecord->appendOdDbEntity(HatchEntity);
+void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
+	EdgeArray Edges;
+	hatchEntity->getLoopAt(loopIndex, Edges);
 
-    EoDbHatch* HatchPrimitive = new EoDbHatch();
-    HatchPrimitive->SetEntityObjectId(HatchEntity->objectId());
+	double Lower {0.};
+	double Upper {1.};
+	const size_t NumberOfEdges = Edges.size();
 
-    HatchPrimitive->SetColorIndex(pstate.ColorIndex());
-    HatchPrimitive->SetInteriorStyleIndex(pstate.HatchInteriorStyleIndex());
+	for (size_t EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
+		OdGeCurve2d* Edge = Edges[EdgeIndex];
+		switch (Edge->type()) {
+			case OdGe::kLineSeg2d:
+				break;
+			case OdGe::kCircArc2d:
+				ConvertCircularArcEdge(Edge);
+				break;
+			case OdGe::kEllipArc2d:
+				ConvertEllipticalArcEdge(Edge);
+				break;
+			case OdGe::kNurbCurve2d:
+				ConvertNurbCurveEdge(Edge);
+				break;
+		}
+		// Common Edge Properties
+		OdGeInterval Interval;
+		Edge->getInterval(Interval);
+		Interval.getBounds(Lower, Upper);
 
-    return HatchPrimitive;
+		const OdGePoint2d LowerPoint(Edge->evalPoint(Lower));
+
+		hatchPrimitive->Append(OdGePoint3d(LowerPoint.x, LowerPoint.y, hatchEntity->elevation()));
+	}
+	const OdGePoint2d UpperPoint(Edges[NumberOfEdges - 1]->evalPoint(Upper));
+	hatchPrimitive->Append(OdGePoint3d(UpperPoint.x, UpperPoint.y, hatchEntity->elevation()));
+
+	// <tas="Hatch edge conversion - not considering the effect of "Closed" edge property"></tas>
+}
+
+void EoDbHatch::AppendLoop(const OdGePoint3dArray& vertices, OdDbHatchPtr& hatch) {
+	OdGeMatrix3d WorldToPlaneTransform;
+	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, hatch->normal()));
+
+	OdGePoint2dArray Vertices2;
+	Vertices2.clear();
+	OdGeDoubleArray Bulges;
+	Bulges.clear();
+	for (size_t VertexIndex = 0; VertexIndex < vertices.size(); VertexIndex++) {
+		OdGePoint3d Vertex(vertices[VertexIndex]);
+		Vertex.transformBy(WorldToPlaneTransform);
+		Vertices2.append(Vertex.convert2d());
+		Bulges.append(0.);
+	}
+	hatch->appendLoop(OdDbHatch::kPolyline, Vertices2, Bulges);
+}
+
+EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
+	auto Hatch {new EoDbHatch()};
+	Hatch->SetEntityObjectId(hatch->objectId());
+
+	Hatch->m_ColorIndex = hatch->colorIndex();
+	Hatch->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype());
+
+	if (hatch->isHatch()) {
+		switch (hatch->patternType()) {
+			case OdDbHatch::kPreDefined:
+			case OdDbHatch::kCustomDefined:
+				if (hatch->isSolidFill()) {
+					Hatch->SetInteriorStyle(EoDbHatch::kSolid);
+				} else {
+					Hatch->SetInteriorStyle(EoDbHatch::kHatch);
+					Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
+					const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
+					// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
+					Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
+				}
+				break;
+			case OdDbHatch::kUserDefined:
+				Hatch->SetInteriorStyle(EoDbHatch::kHatch);
+				Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
+				const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
+				// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
+				Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
+				break;
+		}
+	}
+	if (hatch->isGradient()) {
+		if (hatch->getGradientOneColorMode()) {
+		}
+		OdCmColorArray colors;
+		OdGeDoubleArray values;
+		hatch->getGradientColors(colors, values);
+	}
+	// <tas="Not working with associated objects. The objects are still resident just not incorporated in peg/tracing"></tas>
+	// <tas="Seed points not incorporated in peg/tracing"></tas>
+
+	const int NumberOfLoops = hatch->numLoops();
+	if (NumberOfLoops > 1) {
+		theApp.AddStringToReportList(L"Only used one loop in multiple loop Hatch.");
+	}
+	for (int i = 0; i < hatch->numLoops(); i++) {
+
+		if (hatch->loopTypeAt(i) & OdDbHatch::kPolyline) {
+			if (i == 0) {
+				// <tas="Only handling the first loop"</tas>
+				ConvertPolylineType(i, hatch, Hatch);
+			}
+		} else {
+			ConvertEdgesType(i, hatch, Hatch);
+		}
+	}
+	return Hatch;
 }
 
 OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
-    OdDbHatchPtr Hatch = OdDbLine::createObject();
+	auto Hatch {OdDbHatch::createObject()};
     Hatch->setDatabaseDefaults(blockTableRecord->database());
 
     blockTableRecord->appendOdDbEntity(Hatch);
-    Hatch->setColorIndex(pstate.ColorIndex());
+
+	Hatch->setAssociative(false);
+	Hatch->setColorIndex(pstate.ColorIndex());
 
     const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
     Hatch->setLinetype(Linetype);
 
-    return Hatch;
+	OdString HatchName = EoDbHatchPatternTable::LegacyHatchPatternName(pstate.HatchInteriorStyleIndex());
+	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
+
+	return Hatch;
 }
 
 OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-    OdDbHatchPtr Hatch = OdDbHatch::createObject();
-    blockTableRecord->appendOdDbEntity(Hatch);
+	auto Database {blockTableRecord->database()};
 
-    Hatch->setDatabaseDefaults(blockTableRecord->database());
+	auto Hatch {OdDbHatch::createObject()};
+	Hatch->setDatabaseDefaults(blockTableRecord->database());
 
-// <tas="primitive data from file input stream">
-    const auto ColorIndex {file.ReadInt16()};
-    const auto InteriorStyle {file.ReadInt16()};
-    const auto InteriorStyleIndex {file.ReadInt16()};
-    const auto NumberOfVertices {file.ReadUInt16()};
-    const auto HatchOrigin {file.ReadPoint3d()};
-    auto HatchXAxis {file.ReadVector3d()};
-    auto HatchYAxis {file.ReadVector3d()};
+	blockTableRecord->appendOdDbEntity(Hatch);
 
-    OdGePoint3dArray Vertices;
-    Vertices.setLogicalLength(NumberOfVertices);
-    for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-        Vertices[VertexIndex] = file.ReadPoint3d();
-    }
-// </tas>
+	const auto ColorIndex {file.ReadInt16()};
+	const auto InteriorStyle {file.ReadInt16()};
+	const auto InteriorStyleIndex {file.ReadInt16()};
+	const auto NumberOfVertices {file.ReadUInt16()};
+	const auto HatchOrigin {file.ReadPoint3d()};
+	auto HatchXAxis {file.ReadVector3d()};
+	auto HatchYAxis {file.ReadVector3d()};
 
-    Hatch->setAssociative(false);
+	OdGePoint3dArray Vertices;
+	Vertices.setLogicalLength(NumberOfVertices);
+	for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+		Vertices[VertexIndex] = file.ReadPoint3d();
+	}
+	Hatch->setAssociative(false);
 
-    Hatch->setColorIndex(ColorIndex);
-    OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
-    Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
+	Hatch->setColorIndex(ColorIndex);
+	OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
+	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
-    const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
+	const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
 
-    if (InteriorStyle != kHatch) {
-        HatchXAxis = ComputeArbitraryAxis(PlaneNormal);
-        HatchYAxis = PlaneNormal.crossProduct(HatchXAxis);
-    }
-    Hatch->setNormal(PlaneNormal);
-    Hatch->setElevation(ComputeElevation(Vertices[0], PlaneNormal));
+	Hatch->setNormal(PlaneNormal);
+	Hatch->setElevation(ComputeElevation(Vertices[0], PlaneNormal));
 
-    OdGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
+	EoDbHatch::AppendLoop(Vertices, Hatch);
 
-    OdGePoint2dArray Vertices2;
-    Vertices2.clear();
-    OdGeDoubleArray Bulges;
-    Bulges.clear();
-    for (size_t VertexIndex = 0; VertexIndex < Vertices.size(); VertexIndex++) {
-        OdGePoint3d Vertex(Vertices[VertexIndex]);
-        Vertex.transformBy(WorldToPlaneTransform);
-        Vertices2.append(Vertex.convert2d());
-        Bulges.append(0.);
-    }
-    Hatch->appendLoop(OdDbHatch::kPolyline, Vertices2, Bulges);
-
-    return Hatch;
+	return Hatch;
 }
 
-EoDbHatch* EoDbHatch::Create(OdDbHatchPtr& hatch) {
-    auto Hatch {new EoDbHatch()};
-    Hatch->SetEntityObjectId(hatch->objectId());
+OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+	OdInt16 ColorIndex;
+	OdInt16 InteriorStyle;
+	size_t InteriorStyleIndex = 0;
+	OdGePoint3d HatchOrigin;
+	OdGeVector3d HatchXAxis;
+	OdGeVector3d HatchYAxis;
+	OdGePoint3dArray Vertices;
 
-    Hatch->m_ColorIndex = hatch->colorIndex();
-    Hatch->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype());
+	if (versionNumber == 1) {
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
 
-    if (hatch->isHatch()) {
-        switch (hatch->patternType()) {
-        case OdDbHatch::kPreDefined:
-        case OdDbHatch::kCustomDefined:
-            if (hatch->isSolidFill()) {
-                Hatch->SetInteriorStyle(EoDbHatch::kSolid);
-            } else {
-                Hatch->SetInteriorStyle(EoDbHatch::kHatch);
-                Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
-                const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
-                // <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
-                Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
-            }
-            break;
-        case OdDbHatch::kUserDefined:
-            Hatch->SetInteriorStyle(EoDbHatch::kHatch);
-            Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
-            const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
-            // <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
-            Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
-            break;
-        }
-    }
-    if (hatch->isGradient()) {
-        if (hatch->getGradientOneColorMode()) {
-        }
-        OdCmColorArray colors;
-        OdGeDoubleArray values;
-        hatch->getGradientColors(colors, values);
-    }
-    // <tas="Not working with associated objects. The objects are still resident just not incorporated in peg/tracing"></tas>
-    // <tas="Seed points not incorporated in peg/tracing"></tas>
+		const double StyleDefinition = ((EoVaxFloat*) & primitiveBuffer[12])->Convert();
+		InteriorStyle = OdInt16(int(StyleDefinition) % 16);
 
-    const int NumberOfLoops = hatch->numLoops();
-    if (NumberOfLoops > 1) {
-        theApp.AddStringToReportList(L"Only used one loop in multiple loop Hatch.");
-    }
-    for (int i = 0; i < hatch->numLoops(); i++) {
+		switch (InteriorStyle) {
+			case EoDbHatch::kHatch:
+			{
+				const double ScaleFactorX = ((EoVaxFloat*) & primitiveBuffer[16])->Convert();
+				const double ScaleFactorY = ((EoVaxFloat*) & primitiveBuffer[20])->Convert();
+				double PatternAngle = ((EoVaxFloat*) & primitiveBuffer[24])->Convert();
 
-        if (hatch->loopTypeAt(i) & OdDbHatch::kPolyline) {
-            if (i == 0) {
-                // <tas="Only handling the first loop"</tas>
-                ConvertPolylineType(i, hatch, Hatch);
-            }
-        } else {
-            ConvertEdgesType(i, hatch, Hatch);
-        }
-    }
-    return Hatch;
-}
+				if (fabs(ScaleFactorX) > FLT_EPSILON && fabs(ScaleFactorY) > FLT_EPSILON) { // Have 2 hatch lines
+					InteriorStyleIndex = 2;
+					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
+					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+					HatchXAxis *= ScaleFactorX * 1.e-3;
+					HatchYAxis *= ScaleFactorY * 1.e-3;
+				} else if (fabs(ScaleFactorX) > FLT_EPSILON) { // Vertical hatch lines
+					InteriorStyleIndex = 1;
+					PatternAngle += HALF_PI;
 
-#include "Ge/GeCircArc2d.h"
-#include "Ge/GeEllipArc2d.h"
-#include "Ge/GeNurbCurve2d.h"
+					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
+					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+					HatchXAxis *= ScaleFactorX * 1.e-3;
+				} else { // Horizontal hatch lines
+					InteriorStyleIndex = 1;
+					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
+					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+					HatchYAxis *= ScaleFactorY * 1.e-3;
+				}
+				break;
+			}
+			case EoDbHatch::kHollow:
+			case EoDbHatch::kSolid:
+			case EoDbHatch::kPattern:
+				HatchXAxis = OdGeVector3d::kXAxis * 1.e-3;
+				HatchYAxis = OdGeVector3d::kYAxis * 1.e-3;
+				break;
 
-void EoDbHatch::ConvertPolylineType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive) {
-    hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
-}
+			default:
+				throw L"Exception.FileJob: Unknown hatch primitive interior style.";
+		}
+		const size_t NumberOfVertices = OdUInt16(((EoVaxFloat*) & primitiveBuffer[8])->Convert());
 
-void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept {
-    const OdGeCircArc2d* CircularArcEdge = (OdGeCircArc2d*) edge;
-    // <tas="Properties: center, radius, startAng, endAng, isClockWise"></tas>
-}
+		int BufferOffset = 36;
+		Vertices.clear();
+		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
+			BufferOffset += sizeof(EoVaxPoint3d);
+		}
+		HatchOrigin = Vertices[0];
+	} else {
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		InteriorStyle = OdInt8(primitiveBuffer[7]);
+		InteriorStyleIndex = *((OdInt16*) & primitiveBuffer[8]);
+		const size_t NumberOfVertices = *((OdInt16*) & primitiveBuffer[10]);
+		HatchOrigin = ((EoVaxPoint3d*) & primitiveBuffer[12])->Convert();
+		HatchXAxis = ((EoVaxVector3d*) & primitiveBuffer[24])->Convert();
+		HatchYAxis = ((EoVaxVector3d*) & primitiveBuffer[36])->Convert();
 
-void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept {
-    const OdGeEllipArc2d* EllipticalArcEdge = (OdGeEllipArc2d*) edge;
-    // <tas="Properties: center, majorRadius, minorRadius, majorAxis, minorAxis, startAng, endAng, isClockWise"></tas>
-}
+		int BufferOffset = 48;
+		Vertices.clear();
+		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert());
+			BufferOffset += sizeof(EoVaxPoint3d);
+		}
+	}
+	auto Database {blockTableRecord->database()};
 
-void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept {
-    const OdGeNurbCurve2d* NurbCurveEdge = (OdGeNurbCurve2d*) edge;
-    // <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>
-}
+	auto Hatch {OdDbHatch::createObject()};
+	Hatch->setDatabaseDefaults(Database);
 
-void EoDbHatch::ConvertEdgesType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive) {
-    EdgeArray Edges;
-    hatchEntity->getLoopAt(loopIndex, Edges);
+	blockTableRecord->appendOdDbEntity(Hatch);
 
-    double Lower {0.};
-    double Upper {1.};
-    const size_t NumberOfEdges = Edges.size();
+	Hatch->setAssociative(false);
 
-    for (size_t EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
-        OdGeCurve2d* Edge = Edges[EdgeIndex];
-        switch (Edge->type()) {
-        case OdGe::kLineSeg2d:
-            break;
-        case OdGe::kCircArc2d:
-            ConvertCircularArcEdge(Edge);
-            break;
-        case OdGe::kEllipArc2d:
-            ConvertEllipticalArcEdge(Edge);
-            break;
-        case OdGe::kNurbCurve2d:
-            ConvertNurbCurveEdge(Edge);
-            break;
-        }
-        // Common Edge Properties
-        OdGeInterval Interval;
-        Edge->getInterval(Interval);
-        Interval.getBounds(Lower, Upper);
+	Hatch->setColorIndex(ColorIndex);
+	OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
+	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
-        const OdGePoint2d LowerPoint(Edge->evalPoint(Lower));
+	const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
 
-        hatchPrimitive->Append(OdGePoint3d(LowerPoint.x, LowerPoint.y, hatchEntity->elevation()));
-    }
-    const OdGePoint2d UpperPoint(Edges[NumberOfEdges - 1]->evalPoint(Upper));
-    hatchPrimitive->Append(OdGePoint3d(UpperPoint.x, UpperPoint.y, hatchEntity->elevation()));
-    
-    // <tas="Hatch edge conversion - not considering the effect of "Closed" edge property"></tas>
+	Hatch->setNormal(PlaneNormal);
+	Hatch->setElevation(ComputeElevation(Vertices[0], PlaneNormal));
+
+	EoDbHatch::AppendLoop(Vertices, Hatch);
+
+	return (Hatch);
 }

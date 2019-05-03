@@ -2,37 +2,25 @@
 
 #include "EoGeLineSeg3d.h"
 
-#include "EoDb.h"
 #include "EoDbPrimitive.h"
-
-/* <remarks>
-Hatch(Polygon) primitive
-  Type code <0x0400>			    OdUInt16[0-1]
-  Pen color				            OdUInt16[2-3]
-  Polygon style				        OdUInt16[4-5]
-  Polygon Style Index			    OdUInt16[6-7]
-  Number of vertices			    OdUInt16[8-9]
-  Hatch origin				        OdGePoint3d[10-13][14-17][18-21]
-  Hatch/pattern reference x-axis	OdGeVector3d[22-25][26-29][30-33]
-  Hatch/pattern reference y-axis  	OdGeVector3d[34-37][38-41][42-45]
-  {0 or more points}			    OdGePoint3d[46- ]
-  </remarks> */
 
 class EoDbLine : public EoDbPrimitive {
 	EoGeLineSeg3d m_Line;
 
 public: // Constructors and destructor
+	
 	EoDbLine() noexcept;
 	EoDbLine(const EoDbLine& other);
-    const EoDbLine& operator=(const EoDbLine& other);
+	const EoDbLine& operator=(const EoDbLine& other);
 
 	~EoDbLine();
 
 public: // Methods - absolute virtuals
+	
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-    void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
-    EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
+	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
+	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& str) const override;
@@ -40,7 +28,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kLinePrimitive;}
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kLinePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -76,10 +64,11 @@ public: // Methods
 
 public: // Methods - static
 
-	static EoDbLine* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-    static EoDbLine* Create(const OdDbLinePtr& line);
+	static EoDbLine* Create(const OdDbLinePtr& line);
 
-    static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
-    static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+
+	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 };

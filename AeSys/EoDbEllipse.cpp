@@ -1080,22 +1080,24 @@ OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableReco
 }
 
 OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-    OdDbEllipsePtr Ellipse = OdDbEllipse::createObject();
-    Ellipse->setDatabaseDefaults(blockTableRecord->database());
+	auto Database {blockTableRecord->database()};
+	
+	auto Ellipse {OdDbEllipse::createObject()};
+    Ellipse->setDatabaseDefaults(Database);
 
     blockTableRecord->appendOdDbEntity(Ellipse);
 
     Ellipse->setColorIndex(file.ReadInt16());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
     Ellipse->setLinetype(Linetype);
 
-    const OdGePoint3d CenterPoint(file.ReadPoint3d());
-    const OdGeVector3d MajorAxis(file.ReadVector3d());
-    const OdGeVector3d MinorAxis(file.ReadVector3d());
+    const auto CenterPoint(file.ReadPoint3d());
+    const auto MajorAxis(file.ReadVector3d());
+    const auto MinorAxis(file.ReadVector3d());
 
-    double SweepAngle = file.ReadDouble();
+    const auto SweepAngle = file.ReadDouble();
 
     auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};
     if (!PlaneNormal.isZeroLength()) {

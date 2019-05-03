@@ -16,9 +16,6 @@ EoDbDwgToPegFile::EoDbDwgToPegFile(OdDbDatabasePtr database) {
 	m_DatabasePtr_ = database;
 }
 
-EoDbDwgToPegFile::~EoDbDwgToPegFile() {
-};
-
 void EoDbDwgToPegFile::ConvertToPeg(AeSysDoc* document) {
 	if (!m_DatabasePtr_.isNull()) {
 		ConvertHeaderSection(document);
@@ -32,27 +29,26 @@ void EoDbDwgToPegFile::ConvertToPeg(AeSysDoc* document) {
 	}
 }
 
-void EoDbDwgToPegFile::ConvertBlockTable(AeSysDoc* document) {
+void EoDbDwgToPegFile::ConvertBlockTable(not_null<AeSysDoc*> document) {
 	OdDbBlockTablePtr BlockTable = m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead);
 
     OdString ReportItem;
     theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading block table\n", (LPCWSTR) BlockTable->desc()->name()));
 
-	OdDbSymbolTableIteratorPtr Iterator = BlockTable->newIterator();
+	auto Iterator {BlockTable->newIterator()};
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbBlockTableRecordPtr Block = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
-		
-		EoDbBlock* pBlock;
-		if (document->LookupBlock((LPCWSTR) Block->getName(), pBlock)) {
-			// <tas="Block already defined? Should not occur. This is always an empty peg container?"</tas>
+		if (!Block->isLayout()) {
+			EoDbBlock* pBlock;
+			if (document->LookupBlock((LPCWSTR) Block->getName(), pBlock)) {
+				// <tas="Block already defined? Should not occur. This is always an empty peg container?"</tas>
+			}
+			const OdUInt16 BlockFlags {Block->isAnonymous() ? 1U : 0U};
+
+			pBlock = new EoDbBlock(BlockFlags, Block->origin(), Block->pathName());
+			document->InsertBlock(Block->getName(), pBlock);
 		}
-		OdUInt16 BlockFlags(0);
-		if (Block->isAnonymous()) {
-			BlockFlags |= 1U;
-		}
-		pBlock = new EoDbBlock(BlockFlags, Block->origin(), Block->pathName());
-		document->InsertBlock(Block->getName(), pBlock);
 	}
 }
 

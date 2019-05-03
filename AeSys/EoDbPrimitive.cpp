@@ -225,3 +225,19 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
 	}
 	return Linetype;
 }
+
+OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, OdInt16 linetypeIndex) {
+	OdDbObjectId Linetype = nullptr;
+
+	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+
+	if (linetypeIndex == EoDbPrimitive::LINETYPE_BYLAYER) {
+		Linetype = Linetypes->getLinetypeByLayerId();
+	} else if (linetypeIndex == EoDbPrimitive::LINETYPE_BYBLOCK) {
+		Linetype = Linetypes->getLinetypeByBlockId();
+	} else {
+		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
+		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"</tas>
+	}
+	return Linetype;
+}

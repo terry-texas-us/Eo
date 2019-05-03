@@ -14,14 +14,14 @@ public: // Constructors and destructor
 	EoDbPoint(const OdGePoint3d& point) noexcept;
 
 	EoDbPoint(const EoDbPoint& other);
-    const EoDbPoint& operator=(const EoDbPoint& other);
+	const EoDbPoint& operator=(const EoDbPoint& other);
 
 	~EoDbPoint();
 
 public: // Methods - absolute virtuals
 
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
-    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	void AssociateWith(OdDbBlockTableRecordPtr& blockTableRecord) override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
@@ -31,8 +31,8 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
-	bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kPointPrimitive;}
-    bool IsEqualTo(EoDbPrimitive* primitive) const override;
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kPointPrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -54,9 +54,9 @@ public: // Methods
 
 public: // Methods - static
 
-	static EoDbPoint* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-    static EoDbPoint* Create(OdDbPointPtr& point);
+	static EoDbPoint* Create(OdDbPointPtr& point);
 
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
-    static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+	static OdDbPointPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
 };

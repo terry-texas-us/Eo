@@ -6,7 +6,6 @@ class EoDbDwgToPegFile {
 public:
 	EoDbDwgToPegFile(OdDbDatabasePtr database);
 
-	~EoDbDwgToPegFile();
 	void ConvertToPeg(AeSysDoc* document);
 
 	void ConvertHeaderSection(AeSysDoc* document) noexcept;
@@ -18,7 +17,7 @@ public:
 	/// Local blocks containers are an unordered list of drawing entities. 
 	/// The two type of local block containers are layout and non-layout.
 	/// </summary>
-	void ConvertBlockTable(AeSysDoc* document);
+	void ConvertBlockTable(not_null<AeSysDoc*> document);
 	void ConvertBlocks(AeSysDoc* document);
 	void ConvertEntities(AeSysDoc* document);
 	void ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* document);

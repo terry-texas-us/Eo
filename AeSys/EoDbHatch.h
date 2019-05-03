@@ -64,7 +64,7 @@ public: // Methods - absolute virtuals
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
     bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kHatchPrimitive;}
-bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override {return false;}
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override {return false;}
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -76,6 +76,7 @@ bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override {return false;}
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods
+	
 	int Append(const OdGePoint3d& vertex);
 	/// <summary>A Hatch is generated using line patterns.</summary>
 	void DisplayHatch(AeSysView* view, CDC* deviceContext) const;
@@ -97,23 +98,22 @@ public: // Methods
 	void SetVertices(const OdGePoint3dArray& vertices);
 	size_t SwingVertex() const;
 
-public:
+public: // Methods - static
+
 	static size_t Edge() noexcept;
 	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 
-    static EoDbHatch* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
+	static void ConvertPolylineType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive);
+	static void ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept;
+	static void ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept;
+	static void ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept;
+	static void ConvertEdgesType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive);
 
-    static EoDbHatch* Create1(const EoDbHatch& other, OdDbDatabasePtr database);
+	static void AppendLoop(const OdGePoint3dArray& vertices, OdDbHatchPtr& hatch);
 
-    static EoDbHatch* Create0(OdDbDatabasePtr database);
-    static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+	static EoDbHatch* Create(const OdDbHatchPtr& hatch);
+
+	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
     static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-
-    static EoDbHatch* Create(OdDbHatchPtr& hatch);
-
-    static void ConvertPolylineType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive);
-    static void ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept;
-    static void ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept;
-    static void ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept;
-    static void ConvertEdgesType(int loopIndex, OdDbHatchPtr &hatchEntity, EoDbHatch* hatchPrimitive);
+	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
 };

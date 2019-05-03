@@ -304,34 +304,6 @@ void EoDbPoint::Write(CFile& file, OdUInt8* buffer) const {
 	file.Write(buffer, 32);
 }
 
-EoDbPoint* EoDbPoint::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-	EoDbPoint* PointPrimitive = 0;
-	OdInt16 ColorIndex;
-	OdInt16 PointDisplayMode;
-	OdGePoint3d Position;
-
-	if (versionNumber == 1) {
-		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
-		PointDisplayMode = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
-		Position = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert() * 1.e-3;
-	}
-	else {
-		ColorIndex = OdInt16(primitiveBuffer[6]);
-		PointDisplayMode = OdInt16(primitiveBuffer[7]);
-		Position = ((EoVaxPoint3d*) &primitiveBuffer[8])->Convert();
-	}
-    double Data[3] {0., 0., 0.};
-	Data[0] = ((EoVaxFloat*) &primitiveBuffer[20])->Convert();
-	Data[1] = ((EoVaxFloat*) &primitiveBuffer[24])->Convert();
-	Data[2] = ((EoVaxFloat*) &primitiveBuffer[28])->Convert();
-
-	PointPrimitive = new EoDbPoint(Position);
-	PointPrimitive->SetColorIndex(ColorIndex);
-	PointPrimitive->SetPointDisplayMode(PointDisplayMode);
-	PointPrimitive->SetData(3, Data);
-	return (PointPrimitive);
-}
-
 OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	OdDbPointPtr Point = OdDbPoint::createObject();
 	Point->setDatabaseDefaults(blockTableRecord->database());
@@ -343,33 +315,6 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
     // The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
 
 	return Point;
-}
-
-OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-    OdDbPointPtr Point = OdDbPoint::createObject();
-    Point->setDatabaseDefaults(blockTableRecord->database());
-
-    blockTableRecord->appendOdDbEntity(Point);
-
-    Point->setColorIndex(file.ReadInt16());
-
-    const OdInt16 PointDisplayMode = file.ReadInt16();
-
-    Point->setPosition(file.ReadPoint3d());
-
-    const auto NumberOfDatums {file.ReadUInt16()};
-    if (NumberOfDatums > 0) {
-
-        OdResBufPtr ResourceBuffer = OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys");
-
-        double Data;
-        for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
-            Data = file.ReadDouble();
-            ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data));
-        }
-        Point->setXData(ResourceBuffer);
-    }
-    return Point;
 }
 
 EoDbPoint* EoDbPoint::Create(OdDbPointPtr& point) {
@@ -395,4 +340,70 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr& point) {
     Point->SetData(NumberOfDatums, Data);
 
     return Point;
+}
+
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
+	auto Point {OdDbPoint::createObject()};
+	Point->setDatabaseDefaults(blockTableRecord->database());
+
+	blockTableRecord->appendOdDbEntity(Point);
+
+	Point->setColorIndex(file.ReadInt16());
+
+	const OdInt16 PointDisplayMode = file.ReadInt16();
+
+	Point->setPosition(file.ReadPoint3d());
+
+	const auto NumberOfDatums {file.ReadUInt16()};
+	if (NumberOfDatums > 0) {
+
+		OdResBufPtr ResourceBuffer = OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys");
+
+		double Data;
+		for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
+			Data = file.ReadDouble();
+			ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data));
+		}
+		Point->setXData(ResourceBuffer);
+	}
+	return Point;
+}
+
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+	OdInt16 ColorIndex;
+	OdInt16 PointDisplayMode;
+	OdGePoint3d Position;
+
+	if (versionNumber == 1) {
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		PointDisplayMode = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3;
+	} else {
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		PointDisplayMode = OdInt16(primitiveBuffer[7]);
+		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
+	}
+	double Data[3] {0., 0., 0.};
+	Data[0] = ((EoVaxFloat*) & primitiveBuffer[20])->Convert();
+	Data[1] = ((EoVaxFloat*) & primitiveBuffer[24])->Convert();
+	Data[2] = ((EoVaxFloat*) & primitiveBuffer[28])->Convert();
+
+	auto Database {blockTableRecord->database()};
+
+	auto Point {OdDbPoint::createObject()};
+	Point->setDatabaseDefaults(Database);
+
+	blockTableRecord->appendOdDbEntity(Point);
+	
+	Point->setColorIndex(ColorIndex);
+
+	Point->setPosition(Position);
+
+	auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
+
+	for (OdUInt16 n = 0; n < 3; n++) {
+		ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data[n]));
+	}
+	Point->setXData(ResourceBuffer);
+	return (Point);
 }

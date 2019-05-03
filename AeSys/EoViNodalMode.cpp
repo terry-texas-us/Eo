@@ -170,6 +170,8 @@ void AeSysView::OnNodalModeToPolygon(void) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP7);
 	}
 	else {
+		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
 		if (PreviousNodalCursorPosition != CurrentPnt) {
 			CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
 			const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
@@ -193,24 +195,33 @@ void AeSysView::OnNodalModeToPolygon(void) {
 					if (Mask != 0) {
 						if (Primitive->Is(EoDb::kLinePrimitive)) {
 							if ((Mask & 3) == 3) {
-								EoDbLine* LinePrimitive = static_cast<EoDbLine*>(Primitive);
+								EoDbLine* LinePrimitive = dynamic_cast<EoDbLine*>(Primitive);
 
 								Points[0] = LinePrimitive->StartPoint();
 								Points[1] = LinePrimitive->EndPoint();
 								Points[2] = Points[1] + Translate;
 								Points[3] = Points[0] + Translate;
-								// <tas="Behavior changed. Line extruded into solid hatch primitive"</tas>
+								// <tas="Behavior changed. Line extruded into solid hatch primitive"/>
+
+								auto NewHatch {EoDbHatch::Create(BlockTableRecord)};
+								NewHatch->setPattern(OdDbHatch::kPreDefined, L"SOLID");
+
+								const auto PlaneNormal {ComputeNormal(Points[1], Points[0], Points[2])};
+
+								NewHatch->setNormal(PlaneNormal);
+								NewHatch->setElevation(ComputeElevation(Points[0], PlaneNormal));
+
+								EoDbHatch::AppendLoop(Points, NewHatch);
+
 								EoDbGroup* NewGroup = new EoDbGroup;
-								EoDbHatch* NewHatch = EoDbHatch::Create0(Database());
-								NewHatch->SetInteriorStyle(EoDbHatch::kSolid);
-								NewHatch->SetVertices(Points);
-								NewGroup->AddTail(NewHatch);
+								NewGroup->AddTail(EoDbHatch::Create(NewHatch));
+
 								GetDocument()->AddWorkLayerGroup(NewGroup);
 								GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
 							}
 						}
 						else if (Primitive->Is(EoDb::kHatchPrimitive)) {
-							EoDbHatch* Hatch = static_cast<EoDbHatch*>(Primitive);
+							EoDbHatch* Hatch = dynamic_cast<EoDbHatch*>(Primitive);
 							const int iPts = Hatch->NumberOfVertices();
 
 							for (int i = 0; i < iPts; i++) {
@@ -219,12 +230,21 @@ void AeSysView::OnNodalModeToPolygon(void) {
 									Points[1] = Hatch->GetPointAt((i + 1) % iPts);
 									Points[2] = Points[1] + Translate;
 									Points[3] = Points[0] + Translate;
-									// <tas="Behavior changed. Edges of hatch extruded into solid hatch primitives"</tas>
+									// <tas="Behavior changed. Edges of hatch extruded into solid hatch primitives"/>
+
+									auto NewHatch {EoDbHatch::Create(BlockTableRecord)};
+									NewHatch->setPattern(OdDbHatch::kPreDefined, L"SOLID");
+
+									const auto PlaneNormal {ComputeNormal(Points[1], Points[0], Points[2])};
+
+									NewHatch->setNormal(PlaneNormal);
+									NewHatch->setElevation(ComputeElevation(Points[0], PlaneNormal));
+
+									EoDbHatch::AppendLoop(Points, NewHatch);
+
 									EoDbGroup* NewGroup = new EoDbGroup;
-									EoDbHatch* NewHatch = EoDbHatch::Create0(Database());
-									NewHatch->SetInteriorStyle(EoDbHatch::kSolid);
-									NewHatch->SetVertices(Points);
-									NewGroup->AddTail(NewHatch);
+									NewGroup->AddTail(EoDbHatch::Create(NewHatch));
+
 									GetDocument()->AddWorkLayerGroup(NewGroup);
 									GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
 								}

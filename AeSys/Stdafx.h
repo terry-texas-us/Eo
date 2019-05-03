@@ -11,8 +11,8 @@
 #include <memory>
 
 // <tas=uncomment to use Guidelines Support Library https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md">
-//#include <gsl/gsl>
-//using namespace gsl;
+#include <gsl/gsl>
+using namespace gsl;
 // </tas>
 
 #include "Resource.h"

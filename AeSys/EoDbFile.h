@@ -19,10 +19,9 @@ public:
     };
     OdDbDatabasePtr m_Database;
 public:
-    EoDbFile();
+    EoDbFile() noexcept;
     EoDbFile(OdDbDatabasePtr database);
     EoDbFile(const OdString& fileName, UINT openFlags);
-    virtual ~EoDbFile();
 
     void ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept;
     void ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive);
@@ -32,7 +31,7 @@ public:
     OdInt16 ReadInt16();
     OdGePoint2d ReadPoint2d();
     OdGePoint3d ReadPoint3d();
-    EoDbPrimitive* ReadPrimitive(OdDbBlockTableRecordPtr blockTable);
+    EoDbPrimitive* ReadPrimitive(OdDbBlockTableRecordPtr blockTableRecord);
     void ReadString(CString& string);
     void ReadString(OdString& string);
     OdUInt16 ReadUInt16();

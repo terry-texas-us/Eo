@@ -174,11 +174,19 @@ void AeSysView::OnDrawModeReturn() {
             return;
         }
         CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
-        m_DrawModePoints.append(CurrentPnt);
-        Group = new EoDbGroup;
-        auto Hatch {EoDbHatch::Create0(Database())};
-        Hatch->SetVertices(m_DrawModePoints);
-        Group->AddTail(Hatch);
+		m_DrawModePoints.append(CurrentPnt);
+
+		auto Hatch {EoDbHatch::Create(BlockTableRecord)};
+		
+		const auto PlaneNormal {ComputeNormal(m_DrawModePoints[1], m_DrawModePoints[0], m_DrawModePoints[2])};
+
+		Hatch->setNormal(PlaneNormal);
+		Hatch->setElevation(ComputeElevation(m_DrawModePoints[0], PlaneNormal));
+
+		EoDbHatch::AppendLoop(m_DrawModePoints, Hatch);
+
+		Group = new EoDbGroup;
+		Group->AddTail(EoDbHatch::Create(Hatch));
         GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
         break;
     }
