@@ -8,7 +8,7 @@
 #include "EoVaxFloat.h"
 
 #include "EoDbFile.h"
-
+#include "EoDbJobFile.h"
 #include "EoDlgTrapModify.h"
 
 EoDbText::EoDbText() {
@@ -54,29 +54,13 @@ void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept 
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Text>", this);
 }
 
-void EoDbText::ConvertFormattingCharacters() {
-	for (int i = 0; i < m_strText.GetLength() - 1; i++) {
-		if (m_strText[i] == '^') {
-			if (m_strText[i + 1] == '/') { // Fractions
-				const int EndCaret = m_strText.Find('^', i + 1);
-
-				if (EndCaret != -1) {
-					const int FractionBar = m_strText.Find('/', i + 2);
-					if (FractionBar != -1 && FractionBar < EndCaret) {
-						m_strText.SetAt(i++, '\\');
-						m_strText.SetAt(i, 'S');
-						m_strText.SetAt(EndCaret, ';');
-						i = EndCaret;
-					}
-				}
-			}
-		}
-	}
-}
-
 EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr& database) const {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	return (EoDbText::Create(*this, BlockTableRecord));
+
+	OdDbTextPtr Text = m_EntityObjectId.safeOpenObject()->clone();
+	BlockTableRecord->appendOdDbEntity(Text);
+
+	return EoDbText::Create(Text);
 }
 
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
@@ -367,32 +351,13 @@ void EoDbText::Write(CFile & file, OdUInt8 * buffer) const {
 	((EoVaxVector3d*) & buffer[29])->Convert(ReferenceSystem.XDirection());
 	((EoVaxVector3d*) & buffer[41])->Convert(ReferenceSystem.YDirection());
 
+	// <tas="Stacked fractions (\Snum/den;) are not being converted to legacy format (^/num/den^)"/>
 	*((OdUInt16*) & buffer[53]) = NumberOfCharacters;
 	size_t BufferOffset = 55;
 	for (size_t CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
 		buffer[BufferOffset++] = OdUInt8(m_strText[CharacterIndex]);
 	}
 	file.Write(buffer, buffer[3] * 32);
-}
-
-void EoDbText::ConvertFractionMarkup(CString & text) {
-	for (int i = 0; i < text.GetLength() - 1; i++) {
-		if (text[i] == '^') {
-			if (text[i + 1] == '/') { // Fractions
-				const int EndCaret = text.Find('^', i + 1);
-
-				if (EndCaret != -1) {
-					const int FractionBar = text.Find('/', i + 2);
-					if (FractionBar != -1 && FractionBar < EndCaret) {
-						text.SetAt(i++, '\\');
-						text.SetAt(i, 'S');
-						text.SetAt(EndCaret, ';');
-						i = EndCaret;
-					}
-				}
-			}
-		}
-	}
 }
 
 EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
@@ -470,11 +435,51 @@ OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignmen
 	return VerticalMode;
 }
 
-EoDbText* EoDbText::ConstructFrom(OdUInt8 * primitiveBuffer, int versionNumber) {
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
+	OdDbTextPtr Text = OdDbText::createObject();
+	Text->setDatabaseDefaults(blockTableRecord->database());
+
+	blockTableRecord->appendOdDbEntity(Text);
+
+	Text->setColorIndex(file.ReadInt16());
+	/* OdInt16 LinetypeIndex = */ file.ReadInt16();
+
+// <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
+	OdUInt16 Precision = EoDb::kStrokeType;
+	file.Read(&Precision, sizeof(OdUInt16));
+	OdString FontName;
+	file.ReadString(FontName);
+	OdUInt16 Path = EoDb::kPathRight;
+	file.Read(&Path, sizeof(OdUInt16));
+// </tas>
+
+	Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
+	Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
+
+	double CharacterSpacing = 0.;
+	file.Read(&CharacterSpacing, sizeof(double));
+
+	EoGeReferenceSystem ReferenceSystem;
+	ReferenceSystem.Read(file);
+
+	Text->setPosition(ReferenceSystem.Origin());
+	Text->setHeight(ReferenceSystem.YDirection().length());
+	Text->setRotation(ReferenceSystem.Rotation());
+	Text->setAlignmentPoint(Text->position());
+
+	OdString TextString;
+	file.ReadString(TextString);
+
+	Text->setTextString(TextString);
+
+	return Text;
+}
+
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
 	OdInt16 ColorIndex {1};
 	EoDbFontDefinition FontDefinition;
 	EoGeReferenceSystem ReferenceSystem;
-	CString Text;
+	OdString TextString;
 
 	FontDefinition.SetPrecision(EoDb::kStrokeType);
 	FontDefinition.SetFontName(L"Simplex.psf");
@@ -545,15 +550,15 @@ EoDbText* EoDbText::ConstructFrom(OdUInt8 * primitiveBuffer, int versionNumber) 
 		char* pChr = strtok_s((char*) & primitiveBuffer[44], "\\", &NextToken);
 
 		if (pChr == 0) {
-			Text = L"EoDbJobFile.PrimText error: Missing string terminator.";
+			TextString = L"EoDbJobFile.PrimText error: Missing string terminator.";
 		} else if (strlen(pChr) > 132) {
-			Text = L"EoDbJobFile.PrimText error: Text too long.";
+			TextString = L"EoDbJobFile.PrimText error: Text too long.";
 		} else {
 			while (*pChr != 0) {
 				if (!isprint(*pChr))* pChr = '.';
 				pChr++;
 			}
-			Text = &primitiveBuffer[44];
+			TextString = (LPCSTR) &primitiveBuffer[44];
 		}
 	} else {
 		ColorIndex = OdInt16(primitiveBuffer[6]);
@@ -597,55 +602,28 @@ EoDbText* EoDbText::ConstructFrom(OdUInt8 * primitiveBuffer, int versionNumber) 
 
 		OdInt16 TextLength = *((OdInt16*) & primitiveBuffer[53]);
 		primitiveBuffer[55 + TextLength] = '\0';
-		Text = CString((LPCSTR) & primitiveBuffer[55]);
+		TextString = (LPCSTR) & primitiveBuffer[55];
 	}
-	EoDbText* TextPrimitive = new EoDbText();
-	TextPrimitive->SetColorIndex(ColorIndex);
-	TextPrimitive->SetFontDefinition(FontDefinition);
-	TextPrimitive->SetReferenceSystem(ReferenceSystem);
-	TextPrimitive->SetText(Text);
+	EoDbJobFile::ConvertFormattingCharacters(TextString);
 
-	return (TextPrimitive);
-}
-
-OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
-	OdDbTextPtr Text = OdDbText::createObject();
+	OdDbTextPtr Text {OdDbText::createObject()};
 	Text->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Text);
 
-	Text->setColorIndex(file.ReadInt16());
-	/* OdInt16 LinetypeIndex = */ file.ReadInt16();
+	Text->setColorIndex(ColorIndex);
 
-// <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
-	OdUInt16 Precision = EoDb::kStrokeType;
-	file.Read(&Precision, sizeof(OdUInt16));
-	OdString FontName;
-	file.ReadString(FontName);
-	OdUInt16 Path = EoDb::kPathRight;
-	file.Read(&Path, sizeof(OdUInt16));
-// </tas>
-
-	Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
-	Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
-
-	double CharacterSpacing = 0.;
-	file.Read(&CharacterSpacing, sizeof(double));
-
-	EoGeReferenceSystem ReferenceSystem;
-	ReferenceSystem.Read(file);
+	Text->setHorizontalMode(ConvertHorizontalMode(FontDefinition.HorizontalAlignment()));
+	Text->setVerticalMode(ConvertVerticalMode(FontDefinition.VerticalAlignment()));
 
 	Text->setPosition(ReferenceSystem.Origin());
 	Text->setHeight(ReferenceSystem.YDirection().length());
 	Text->setRotation(ReferenceSystem.Rotation());
 	Text->setAlignmentPoint(Text->position());
 
-	OdString TextString;
-	file.ReadString(TextString);
+	Text->setTextString((LPCWSTR) TextString);
 
-	Text->setTextString(TextString);
-
-	return Text;
+	return (Text);
 }
 
 OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const OdGePoint3d & position, const OdString & textString) {
@@ -658,16 +636,6 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const O
 
 	Text->setPosition(position);
 	Text->setTextString(textString);
-
-	return Text;
-}
-
-EoDbText* EoDbText::Create(const EoDbText & other, OdDbBlockTableRecordPtr & blockTableRecord) {
-	OdDbTextPtr TextEntity = other.EntityObjectId().safeOpenObject()->clone();
-	blockTableRecord->appendOdDbEntity(TextEntity);
-
-	EoDbText* Text = new EoDbText(other);
-	Text->SetEntityObjectId(TextEntity->objectId());
 
 	return Text;
 }
@@ -710,6 +678,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr & text) {
 
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
+	
 	Text->SetText((LPCWSTR) text->textString());
 
 	return Text;

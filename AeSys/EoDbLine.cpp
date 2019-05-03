@@ -62,7 +62,7 @@ void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept 
 }
 
 EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr& database) const {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
     OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
     BlockTableRecord->appendOdDbEntity(Line);
@@ -495,7 +495,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* 
 	blockTableRecord->appendOdDbEntity(Line);
 
 	Line->setColorIndex(ColorIndex);
-	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(LinetypeIndex));
+	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
 	Line->setStartPoint(StartPoint);
 	Line->setEndPoint(EndPoint);
 

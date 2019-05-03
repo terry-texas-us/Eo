@@ -50,15 +50,15 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods
+
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
 	void SetControlPoints(const OdGePoint3dArray& controlPoints);
 
 public: // Methods - static
-	static EoDbSpline* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-	static EoDbSpline* Create(const EoDbSpline& spline, OdDbDatabasePtr& database);
-	static EoDbSpline* Create(OdDbDatabasePtr& database);
-	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
-	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 
 	static EoDbSpline* Create(OdDbSplinePtr& spline);
+
+	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
+	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
 };

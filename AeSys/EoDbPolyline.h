@@ -84,15 +84,12 @@ public: // Methods
 
 public: // Methods - static
 
-	// <tas="No contruction from job files."/>
-
-	static EoDbPolyline* Create(const EoDbPolyline& polyline, OdDbDatabasePtr database);
-
-	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static size_t Edge() noexcept;
+	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
 
 	static EoDbPolyline* Create(OdDbPolylinePtr polyline);
 
-	static size_t Edge() noexcept;
-	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
+	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	// <tas="No contruction from job files."/>
 };

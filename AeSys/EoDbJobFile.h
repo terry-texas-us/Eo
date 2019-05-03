@@ -27,4 +27,6 @@ public:
 
 	static bool IsValidPrimitive(OdInt16 primitiveType) noexcept;
 	static bool IsValidVersion1Primitive(OdInt16 primitiveType) noexcept;
+
+	static void ConvertFormattingCharacters(OdString& textString) noexcept;
 };

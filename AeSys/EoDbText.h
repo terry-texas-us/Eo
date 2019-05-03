@@ -65,7 +65,6 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public: // Methods
-	void ConvertFormattingCharacters();
 	/// <summary>Get the bounding box of text.</summary>
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	EoDbFontDefinition FontDefinition() const;
@@ -81,20 +80,19 @@ public: // Methods
 	void SetVerticalMode(EoDb::VerticalAlignment verticalAlignment);
 
 public: // Methods - static
-	static void ConvertFractionMarkup(CString& text);
 	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
 	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
 	static OdDb::TextHorzMode ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept;
 	static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
 
-	static EoDbText* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
-
-	static EoDbText* Create(const EoDbText& other, OdDbBlockTableRecordPtr& blockTableRecord);
-	static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-	static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& position, const OdString& textString);
-	static OdDbMTextPtr CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text);
 	static EoDbText* Create(OdDbTextPtr& text);
 	static EoDbText* Create(OdDbMTextPtr& text);
+
+	static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+	static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+
+	static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& position, const OdString& textString);
+	static OdDbMTextPtr CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text);
 };
 
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text);

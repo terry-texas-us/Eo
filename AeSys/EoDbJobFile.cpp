@@ -15,6 +15,7 @@ EoDbJobFile::EoDbJobFile() {
 	m_Version = 3;
 	m_PrimBuf = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
 }
+
 EoDbJobFile::~EoDbJobFile() {
 	delete[] m_PrimBuf;
 }
@@ -45,10 +46,14 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 			break;
 		}
 		case EoDb::kEllipsePrimitive:
-			primitive = EoDbEllipse::ConstructFrom(m_PrimBuf, 3);
+		{
+			auto Ellipse {EoDbEllipse::Create(blockTableRecord, m_PrimBuf, 3)};
+			primitive = EoDbEllipse::Create(Ellipse);
 			break;
+		}
 		case EoDb::kCSplinePrimitive:
 		case EoDb::kSplinePrimitive:
+		{
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
 				const OdUInt16 NumberOfControlPoints = *((OdUInt16*) & m_PrimBuf[10]);
 				m_PrimBuf[3] = OdInt8((2 + NumberOfControlPoints * 3) / 8 + 1);
@@ -57,12 +62,16 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 				m_PrimBuf[9] = m_PrimBuf[11];
 				::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
 			}
-			primitive = EoDbSpline::ConstructFrom(m_PrimBuf, 3);
+			auto Spline {EoDbSpline::Create(blockTableRecord, m_PrimBuf, 3)};
+			primitive = EoDbSpline::Create(Spline);
 			break;
+		}
 		case EoDb::kTextPrimitive:
-			primitive = EoDbText::ConstructFrom(m_PrimBuf, 3);
-			dynamic_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
+		{
+			auto Text {EoDbText::Create(blockTableRecord, m_PrimBuf, 3)};
+			primitive = EoDbText::Create(Text);
 			break;
+		}
 		case EoDb::kDimensionPrimitive:
 			primitive = EoDbDimension::ConstructFrom(m_PrimBuf, 3);
 			break;
@@ -75,17 +84,25 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive * &primitive) {
 	switch (m_PrimBuf[5]) {
 		case 17:
-			primitive = EoDbText::ConstructFrom(m_PrimBuf, 1);
-			dynamic_cast<EoDbText*>(primitive)->ConvertFormattingCharacters();
+		{
+			auto Text {EoDbText::Create(blockTableRecord, m_PrimBuf, 1)};
+			primitive = EoDbText::Create(Text);
 			break;
+		}
 		case 24:
-			primitive = EoDbSpline::ConstructFrom(m_PrimBuf, 1);
+		{
+			auto Spline {EoDbSpline::Create(blockTableRecord, m_PrimBuf, 1)};
+			primitive = EoDbSpline::Create(Spline);
 			break;
+		}
 		case 33:
-			break;
+			break; // Conic primitive
 		case 61:
-			primitive = EoDbEllipse::ConstructFrom(m_PrimBuf, 1);
+		{
+			auto Ellipse {EoDbEllipse::Create(blockTableRecord, m_PrimBuf, 1)};
+			primitive = EoDbEllipse::Create(Ellipse);
 			break;
+		}
 		case 67:
 		{
 			auto Line {EoDbLine::Create(blockTableRecord, m_PrimBuf, 1)};
@@ -211,6 +228,7 @@ bool EoDbJobFile::ReadNextPrimitive(CFile & file, OdUInt8 * buffer, OdInt16 & pr
 	}
 	return true;
 }
+
 int EoDbJobFile::Version() noexcept {
 	switch (m_PrimBuf[5]) {
 		case 17: // 0x11 text
@@ -228,6 +246,7 @@ int EoDbJobFile::Version() noexcept {
 	}
 	return (m_Version);
 }
+
 bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
 	switch (primitiveType) {
 		case EoDb::kPointPrimitive: // 0x0100
@@ -245,6 +264,7 @@ bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
 			return IsValidVersion1Primitive(primitiveType);
 	}
 }
+
 bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) noexcept {
 	const OdUInt8* PrimitiveType = (OdUInt8*) & primitiveType;
 	switch (PrimitiveType[1]) {
@@ -261,6 +281,7 @@ bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) noexcept {
 			return false;
 	}
 }
+
 void EoDbJobFile::WriteGroup(CFile & file, EoDbGroup * group) {
 	m_PrimBuf[0] = 0;
 	*((OdUInt16*) & m_PrimBuf[1]) = OdUInt16(group->GetCount());
@@ -271,12 +292,14 @@ void EoDbJobFile::WriteGroup(CFile & file, EoDbGroup * group) {
 		Primitive->Write(file, m_PrimBuf);
 	}
 }
+
 void EoDbJobFile::WriteHeader(CFile & file) {
 	::ZeroMemory(m_PrimBuf, 96);
 	m_PrimBuf[4] = 'T';
 	m_PrimBuf[5] = 'c';
 	file.Write(m_PrimBuf, 96);
 }
+
 void EoDbJobFile::WriteLayer(CFile & file, EoDbLayer * layer) {
 	layer->BreakSegRefs();
 	layer->BreakPolylines();
@@ -285,5 +308,25 @@ void EoDbJobFile::WriteLayer(CFile & file, EoDbLayer * layer) {
 	while (Position != 0) {
 		EoDbGroup* Group = layer->GetNext(Position);
 		WriteGroup(file, Group);
+	}
+}
+
+void EoDbJobFile::ConvertFormattingCharacters(OdString & textString) noexcept {
+	for (int i = 0; i < textString.getLength() - 1; i++) {
+		if (textString[i] == '^') {
+			if (textString[i + 1] == '/') { // Fractions
+				const int EndCaret = textString.find('^', i + 1);
+
+				if (EndCaret != -1) {
+					const int FractionBar = textString.find('/', i + 2);
+					if (FractionBar != -1 && FractionBar < EndCaret) {
+						textString.setAt(i++, '\\');
+						textString.setAt(i, 'S');
+						textString.setAt(EndCaret, ';');
+						i = EndCaret;
+					}
+				}
+			}
+		}
 	}
 }

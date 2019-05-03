@@ -205,29 +205,16 @@ OdGeVector3d ComputeNormal(const OdGePoint3d& pointU, const OdGePoint3d& origin,
 }
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
-	OdDbObjectId Linetype = nullptr;
-	
-	auto Document {AeSysDoc::GetDoc()};
-	if (Document != nullptr) {
-		auto Database {Document->m_DatabasePtr};
-		OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
-
-		if (linetypeIndex == EoDbPrimitive::LINETYPE_BYLAYER) {
-			Linetype = Linetypes->getLinetypeByLayerId();
-		} else if (linetypeIndex == EoDbPrimitive::LINETYPE_BYBLOCK) {
-			Linetype = Linetypes->getLinetypeByBlockId();
-		} else {
-			OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
-			Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"</tas>
-		}
-	} else {
-		ATLTRACE2("Document not associated with ChildFrame yet\n");
+	const auto Document {AeSysDoc::GetDoc()};
+	if (Document != nullptr) { 
+		return EoDbPrimitive::LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
 	}
-	return Linetype;
+	ATLTRACE2("Document not associated with ChildFrame yet\n");
+	return nullptr;
 }
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, OdInt16 linetypeIndex) {
-	OdDbObjectId Linetype = nullptr;
+	OdDbObjectId Linetype {nullptr};
 
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 
@@ -236,8 +223,8 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, O
 	} else if (linetypeIndex == EoDbPrimitive::LINETYPE_BYBLOCK) {
 		Linetype = Linetypes->getLinetypeByBlockId();
 	} else {
-		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
-		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"</tas>
+		OdString Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
+		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"/>
 	}
 	return Linetype;
 }

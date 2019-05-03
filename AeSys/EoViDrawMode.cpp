@@ -14,6 +14,12 @@
 #include "EoDbEntityToPrimitiveProtocolExtension.h"
 #include "EoDbPolyline.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 OdUInt16 PreviousDrawCommand = 0;
 
 void AeSysView::OnDrawModeOptions() {
@@ -106,8 +112,8 @@ void AeSysView::OnDrawModeBspline() {
         m_DrawModePoints.clear();
         m_DrawModePoints.append(CurrentPnt);
     } else {
-        if (!m_DrawModePoints[m_DrawModePoints.size() - 1].isEqualTo(CurrentPnt)) {
-            m_DrawModePoints.append(CurrentPnt);
+		if (!m_DrawModePoints[m_DrawModePoints.size() - 1].isEqualTo(CurrentPnt)) {
+			m_DrawModePoints.append(CurrentPnt);
         }
     }
 }
@@ -236,16 +242,24 @@ void AeSysView::OnDrawModeReturn() {
         break;
     }
     case ID_OP6: {
-        m_DrawModePoints.append(CurrentPnt);
-        const int NumberOfControlPoints = m_DrawModePoints.size();
-        Group = new EoDbGroup;
-        auto Spline {EoDbSpline::Create(Database())};
-        OdGePoint3dArray Points;
-        for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
-            Points.append(m_DrawModePoints[ControlPointIndex]);
-        }
-        Spline->SetControlPoints(Points);
-        Group->AddTail(Spline);
+		if (!m_DrawModePoints[m_DrawModePoints.size() - 1].isEqualTo(CurrentPnt)) {
+			m_DrawModePoints.append(CurrentPnt);
+		}
+		const int NumberOfControlPoints = m_DrawModePoints.size();
+		
+		auto Spline {EoDbSpline::Create(BlockTableRecord)};
+
+		const int Degree = EoMin(3, NumberOfControlPoints - 1);
+
+		OdGeKnotVector Knots;
+		EoGeNurbCurve3d::SetDefaultKnotVector(Degree, m_DrawModePoints, Knots);
+		OdGeDoubleArray Weights;
+		Weights.setLogicalLength(NumberOfControlPoints);
+
+		Spline->setNurbsData(Degree, false, false, false, m_DrawModePoints, Knots, Weights, OdGeContext::gTol.equalPoint());
+		
+		Group = new EoDbGroup;
+		Group->AddTail(EoDbSpline::Create(Spline));
         break;
     }
     case ID_OP7: {

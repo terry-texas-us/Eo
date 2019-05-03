@@ -10,6 +10,12 @@
 #include "EoDbFile.h"
 #include "EoDbSpline.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
 EoDbSpline::EoDbSpline() noexcept {
 }
 
@@ -50,7 +56,12 @@ void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcep
 }
 
 EoDbPrimitive* EoDbSpline::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbSpline::Create(*this, database));
+	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+	OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject()->clone();
+	BlockTableRecord->appendOdDbEntity(Spline);
+
+	return (EoDbSpline::Create(Spline));
 }
 
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
@@ -256,75 +267,6 @@ void EoDbSpline::Write(CFile& file, OdUInt8* buffer) const {
 
 // Static
 
-EoDbSpline* EoDbSpline::ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber) {
-	// <tas="Has not been tested since the change to EoGeNurbCurve3d internals"</tas>
-	OdInt16 ColorIndex;
-	OdInt16 LinetypeIndex;
-
-	OdGePoint3dArray ControlPoints;
-
-	if (versionNumber == 1) {
-		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
-
-		const OdUInt16 NumberOfControlPoints = OdUInt16(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
-		ControlPoints.setLogicalLength(NumberOfControlPoints);
-
-		int BufferIndex = 12;
-
-		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
-			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
-			BufferIndex += sizeof(EoVaxPoint3d);
-		}
-	}
-	else {
-		ColorIndex = OdInt16(primitiveBuffer[6]);
-		LinetypeIndex = OdInt16(primitiveBuffer[7]);
-
-		const OdUInt16 NumberOfControlPoints = *((OdInt16*) &primitiveBuffer[8]);
-		ControlPoints.setLogicalLength(NumberOfControlPoints);
-
-		int BufferIndex = 10;
-
-		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
-			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert();
-			BufferIndex += sizeof(EoVaxPoint3d);
-		}
-	}
-	auto Spline {new EoDbSpline()};
-	Spline->SetColorIndex_(ColorIndex);
-	Spline->SetLinetypeIndex_(LinetypeIndex);
-	Spline->SetControlPoints(ControlPoints);
-	return (Spline);
-}
-
-EoDbSpline* EoDbSpline::Create(const EoDbSpline& other, OdDbDatabasePtr& database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    OdDbSplinePtr SplineEntity = other.EntityObjectId().safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(SplineEntity);
-
-    EoDbSpline* Spline = new EoDbSpline(other);
-    Spline->SetEntityObjectId(SplineEntity->objectId());
-
-    return Spline;
-}
-
-EoDbSpline* EoDbSpline::Create(OdDbDatabasePtr& database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
-	OdDbSplinePtr SplineEntity = OdDbSpline::createObject();
-	SplineEntity->setDatabaseDefaults(database);
-	BlockTableRecord->appendOdDbEntity(SplineEntity);
-
-	EoDbSpline* Spline = new EoDbSpline();
-	Spline->SetEntityObjectId(SplineEntity->objectId());
-	
-	Spline->SetColorIndex(pstate.ColorIndex());
-	Spline->SetLinetypeIndex(pstate.LinetypeIndex());
-	
-	return Spline;
-}
-
 OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
     OdDbSplinePtr Spline = OdDbSpline::createObject();
     Spline->setDatabaseDefaults(blockTableRecord->database());
@@ -340,14 +282,15 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 }
 
 OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-    OdDbSplinePtr Spline = OdDbSpline::createObject();
-    Spline->setDatabaseDefaults(blockTableRecord->database());
+	auto Database {blockTableRecord->database()};
+	OdDbSplinePtr Spline = OdDbSpline::createObject();
+    Spline->setDatabaseDefaults(Database);
 
     blockTableRecord->appendOdDbEntity(Spline);
 
     Spline->setColorIndex(file.ReadInt16());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
     Spline->setLinetype(Linetype);
 
@@ -367,6 +310,62 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
     Spline->setNurbsData(Degree, false, false, false, ControlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
     
     return Spline;
+}
+
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+	OdInt16 ColorIndex;
+	OdInt16 LinetypeIndex;
+
+	OdUInt16 NumberOfControlPoints {0};
+	OdGePoint3dArray ControlPoints;
+	
+	if (versionNumber == 1) {
+		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+
+		NumberOfControlPoints = OdUInt16(((EoVaxFloat*) & primitiveBuffer[8])->Convert());
+		ControlPoints.setLogicalLength(NumberOfControlPoints);
+
+		int BufferIndex = 12;
+
+		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
+			ControlPoints[w] = ((EoVaxPoint3d*) & primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
+			BufferIndex += sizeof(EoVaxPoint3d);
+		}
+	} else {
+		ColorIndex = OdInt16(primitiveBuffer[6]);
+		LinetypeIndex = OdInt16(primitiveBuffer[7]);
+
+		NumberOfControlPoints = *((OdInt16*) & primitiveBuffer[8]);
+		ControlPoints.setLogicalLength(NumberOfControlPoints);
+
+		int BufferIndex = 10;
+
+		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
+			ControlPoints[w] = ((EoVaxPoint3d*) & primitiveBuffer[BufferIndex])->Convert();
+			BufferIndex += sizeof(EoVaxPoint3d);
+		}
+	}
+	auto Database {blockTableRecord->database()};
+
+	auto Spline {OdDbSpline::createObject()};
+	Spline->setDatabaseDefaults(Database);
+
+	blockTableRecord->appendOdDbEntity(Spline);
+
+	Spline->setColorIndex(ColorIndex);
+	Spline->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
+
+	const int Degree {EoMin(3, NumberOfControlPoints - 1)};
+
+	OdGeKnotVector Knots;
+	EoGeNurbCurve3d::SetDefaultKnotVector(Degree, ControlPoints, Knots);
+	OdGeDoubleArray Weights;
+	Weights.setLogicalLength(NumberOfControlPoints);
+
+	Spline->setNurbsData(Degree, false, false, false, ControlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
+
+	return (Spline);
 }
 
 EoDbSpline* EoDbSpline::Create(OdDbSplinePtr& spline) {

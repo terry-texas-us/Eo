@@ -104,7 +104,12 @@ void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexc
 }
 
 EoDbPrimitive* EoDbPolyline::Clone(OdDbDatabasePtr& database) const {
-	return (EoDbPolyline::Create(*this, database));
+	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+	OdDbPolylinePtr Polyline = m_EntityObjectId.safeOpenObject()->clone();
+	BlockTableRecord->appendOdDbEntity(Polyline);
+
+	return EoDbPolyline::Create(Polyline);
 }
 
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
@@ -494,17 +499,6 @@ size_t EoDbPolyline::Edge() noexcept {
 
 void EoDbPolyline::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
-}
-
-EoDbPolyline* EoDbPolyline::Create(const EoDbPolyline& polyline, OdDbDatabasePtr database) {
-    OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-    OdDbPolylinePtr PolylineEntity = polyline.EntityObjectId().safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(PolylineEntity);
-
-    EoDbPolyline* Polyline = new EoDbPolyline(polyline);
-    Polyline->SetEntityObjectId(PolylineEntity->objectId());
-
-    return Polyline;
 }
 
 OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
