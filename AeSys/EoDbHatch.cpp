@@ -718,7 +718,7 @@ void EoDbHatch::SetInteriorStyle(OdInt16 interiorStyle) noexcept {
 	m_InteriorStyle = interiorStyle;
 }
 
-void EoDbHatch::SetInteriorStyleIndex(size_t styleIndex) {
+void EoDbHatch::SetInteriorStyleIndex2(size_t styleIndex) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		
@@ -868,7 +868,7 @@ void EoDbHatch::AppendLoop(const OdGePoint3dArray& vertices, OdDbHatchPtr& hatch
 }
 
 EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
-	auto Hatch {new EoDbHatch()};
+	auto Hatch {new EoDbHatch};
 	Hatch->SetEntityObjectId(hatch->objectId());
 
 	Hatch->m_ColorIndex = hatch->colorIndex();
@@ -882,7 +882,8 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
 					Hatch->SetInteriorStyle(EoDbHatch::kSolid);
 				} else {
 					Hatch->SetInteriorStyle(EoDbHatch::kHatch);
-					Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
+					Hatch->m_InteriorStyleIndex = EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName());
+					
 					const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
 					// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
 					Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());
@@ -890,7 +891,7 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
 				break;
 			case OdDbHatch::kUserDefined:
 				Hatch->SetInteriorStyle(EoDbHatch::kHatch);
-				Hatch->SetInteriorStyleIndex(EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName()));
+				Hatch->m_InteriorStyleIndex = EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName());
 				const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
 				// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
 				Hatch->SetPatternReferenceSystem(Origin, hatch->normal(), hatch->patternAngle(), hatch->patternScale());

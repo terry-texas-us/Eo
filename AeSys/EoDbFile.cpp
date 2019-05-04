@@ -33,7 +33,7 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive
 	const auto Point(ReadPoint3d());
 
 	auto PointPrimitive {new EoDbPoint(Point)};
-	PointPrimitive->SetColorIndex(ColorIndex);
+	PointPrimitive->SetColorIndex2(ColorIndex);
 	PointPrimitive->SetPointDisplayMode(PointDisplayMode);
 	primitive = PointPrimitive;
 }
@@ -55,8 +55,8 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 	auto Polyline {new EoDbPolyline()};
 	// <tas="No vertices appended to Polyline"</tas>
 
-	Polyline->SetColorIndex_(ColorIndex);
-	Polyline->SetLinetypeIndex_(LinetypeIndex);
+	Polyline->SetColorIndex(ColorIndex);
+	Polyline->SetLinetypeIndex(LinetypeIndex);
 	primitive = Polyline;
 }
 

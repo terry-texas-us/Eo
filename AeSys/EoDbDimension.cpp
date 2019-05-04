@@ -506,8 +506,8 @@ EoDbDimension* EoDbDimension::ConstructFrom(EoDbFile & file) {
 	file.ReadString(Text);
 
 	auto Dimension {new EoDbDimension()};
-	Dimension->SetColorIndex_(ColorIndex);
-	Dimension->SetLinetypeIndex_(LinetypeIndex);
+	Dimension->SetColorIndex(ColorIndex);
+	Dimension->SetLinetypeIndex(LinetypeIndex);
 	Dimension->SetStartPoint(StartPoint);
 	Dimension->SetEndPoint(EndPoint);
 	Dimension->SetTextColorIndex(TextColorIndex);
@@ -574,8 +574,8 @@ EoDbDimension* EoDbDimension::ConstructFrom(OdUInt8 * primitiveBuffer, int versi
 	CString Text = CString((LPCSTR) & primitiveBuffer[81]);
 
 	auto Dimension {new EoDbDimension()};
-	Dimension->SetColorIndex_(ColorIndex);
-	Dimension->SetLinetypeIndex_(LinetypeIndex);
+	Dimension->SetColorIndex(ColorIndex);
+	Dimension->SetLinetypeIndex(LinetypeIndex);
 	Dimension->SetStartPoint(Line.startPoint());
 	Dimension->SetEndPoint(Line.endPoint());
 	Dimension->SetTextColorIndex(TextColorIndex);

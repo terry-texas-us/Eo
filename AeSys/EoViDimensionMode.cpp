@@ -141,8 +141,8 @@ void AeSysView::OnDimensionModeDLine(void) {
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP3);
 			}
 			EoDbDimension* DimensionPrimitive = new EoDbDimension();
-			DimensionPrimitive->SetColorIndex(1);
-			DimensionPrimitive->SetLinetypeIndex(1);
+			DimensionPrimitive->SetColorIndex2(1);
+			DimensionPrimitive->SetLinetypeIndex2(1);
 			DimensionPrimitive->SetStartPoint(PreviousDimensionCursorPosition);
 			DimensionPrimitive->SetEndPoint(ptCur);
 			DimensionPrimitive->SetTextColorIndex(5);
@@ -185,8 +185,8 @@ void AeSysView::OnDimensionModeDLine2(void) {
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
 			}
 			EoDbDimension* DimensionPrimitive = new EoDbDimension();
-			DimensionPrimitive->SetColorIndex(1);
-			DimensionPrimitive->SetLinetypeIndex(1);
+			DimensionPrimitive->SetColorIndex2(1);
+			DimensionPrimitive->SetLinetypeIndex2(1);
 			DimensionPrimitive->SetStartPoint(PreviousDimensionCursorPosition);
 			DimensionPrimitive->SetEndPoint(ptCur);
 			DimensionPrimitive->SetTextColorIndex(5);
@@ -253,8 +253,8 @@ void AeSysView::OnDimensionModeRadius(void) {
 			EoDbGroup* Group = new EoDbGroup;
 
 			EoDbDimension* DimensionPrimitive = new EoDbDimension();
-			DimensionPrimitive->SetColorIndex(1);
-			DimensionPrimitive->SetLinetypeIndex(1);
+			DimensionPrimitive->SetColorIndex2(1);
+			DimensionPrimitive->SetLinetypeIndex2(1);
 			DimensionPrimitive->SetStartPoint(ptBeg);
 			DimensionPrimitive->SetEndPoint(ptEnd);
 			DimensionPrimitive->SetTextColorIndex(5);
@@ -293,8 +293,8 @@ void AeSysView::OnDimensionModeDiameter() {
 			GenerateLineEndItem(1, .1, ptEnd, ptBeg, Group);
 
 			EoDbDimension* DimensionPrimitive = new EoDbDimension();
-			DimensionPrimitive->SetColorIndex(1);
-			DimensionPrimitive->SetLinetypeIndex(1);
+			DimensionPrimitive->SetColorIndex2(1);
+			DimensionPrimitive->SetLinetypeIndex2(1);
 			DimensionPrimitive->SetStartPoint(ptBeg);
 			DimensionPrimitive->SetEndPoint(ptEnd);
 			DimensionPrimitive->SetTextColorIndex(5);
@@ -377,8 +377,8 @@ void AeSysView::OnDimensionModeAngle(void) {
                 OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
                 EoDbEllipse* Ellipse = EoDbEllipse::Create0(BlockTableRecord);
 				Ellipse->SetTo2(CenterPoint, MajorAxis, MinorAxis, Angle);
-				Ellipse->SetColorIndex(1);
-				Ellipse->SetLinetypeIndex(1);
+				Ellipse->SetColorIndex2(1);
+				Ellipse->SetLinetypeIndex2(1);
 				Group->AddTail(Ellipse);
 
 				ptArrow = ln.startPoint();
@@ -449,8 +449,8 @@ void AeSysView::OnDimensionModeConvert(void) {
 				if (Primitive->Is(EoDb::kLinePrimitive)) {
                     auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
                     auto DimensionPrimitive {new EoDbDimension()};
-					DimensionPrimitive->SetColorIndex(LinePrimitive->ColorIndex());
-					DimensionPrimitive->SetLinetypeIndex(LinePrimitive->LinetypeIndex());
+					DimensionPrimitive->SetColorIndex2(LinePrimitive->ColorIndex());
+					DimensionPrimitive->SetLinetypeIndex2(LinePrimitive->LinetypeIndex());
 					DimensionPrimitive->SetStartPoint(LinePrimitive->StartPoint());
 					DimensionPrimitive->SetEndPoint(LinePrimitive->EndPoint());
 					DimensionPrimitive->SetFontDefinition(pstate.FontDefinition());

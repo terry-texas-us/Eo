@@ -375,7 +375,7 @@ void AeSysView::DoNodalModeMouseMove() {
 				EoGeUniquePoint* UniquePoint = GetDocument()->GetNextUniquePoint(UniquePointPosition);
 				const OdGePoint3d Point = (UniquePoint->m_Point) + Translate;
 				EoDbPoint* PointPrimitive = new EoDbPoint(Point);
-				PointPrimitive->SetColorIndex(252);
+				PointPrimitive->SetColorIndex2(252);
 				PointPrimitive->SetPointDisplayMode(8);
 				m_PreviewGroup.AddTail(PointPrimitive);
 			}
@@ -415,7 +415,7 @@ void AeSysView::ConstructPreviewGroup() {
 	while (UniquePointPosition != 0) {
 		EoGeUniquePoint* UniquePoint = GetDocument()->GetNextUniquePoint(UniquePointPosition);
 		EoDbPoint* PointPrimitive = new EoDbPoint(UniquePoint->m_Point);
-		PointPrimitive->SetColorIndex(252);
+		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		m_PreviewGroup.AddTail(PointPrimitive);
 	}
@@ -435,7 +435,7 @@ void AeSysView::ConstructPreviewGroupForNodalGroups() {
 	while (UniquePointPosition != 0) {
 		EoGeUniquePoint* UniquePoint = GetDocument()->GetNextUniquePoint(UniquePointPosition);
 		EoDbPoint* PointPrimitive = new EoDbPoint(UniquePoint->m_Point);
-		PointPrimitive->SetColorIndex(252);
+		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		m_PreviewGroup.AddTail(PointPrimitive);
 	}

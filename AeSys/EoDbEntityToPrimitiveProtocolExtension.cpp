@@ -85,25 +85,25 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdCmColor Color = entity->color();
 
 	if (Color.isByBlock()) {
-		primitive->SetColorIndex_(7); // 7 is used when entity is not in a block. Primitives are never in blocks so use 7.
+		primitive->SetColorIndex(7); // 7 is used when entity is not in a block. Primitives are never in blocks so use 7.
 	}
 	else if (Color.isByLayer()) {
-		primitive->SetColorIndex_(EoDbPrimitive::COLORINDEX_BYLAYER);
+		primitive->SetColorIndex(EoDbPrimitive::COLORINDEX_BYLAYER);
 	}
 	else {
-		primitive->SetColorIndex_(Color.colorIndex());
+		primitive->SetColorIndex(Color.colorIndex());
 	}
 	const OdDbObjectId Linetype = entity->linetypeId();
 
 	if (Linetype == DatabasePtr->getLinetypeByBlockId()) {
-		primitive->SetLinetypeIndex_(EoDbPrimitive::LINETYPE_BYBLOCK);
+		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYBLOCK);
 	}
 	else if (Linetype == DatabasePtr->getLinetypeByLayerId()) {
-		primitive->SetLinetypeIndex_(EoDbPrimitive::LINETYPE_BYLAYER);
+		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
 	}
 	else {
 		OdString Name = entity->linetype();
-		primitive->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
+		primitive->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 	}
 
 	OdGeExtents3d extents;
@@ -387,7 +387,7 @@ public:
 		OdDbFacePtr FaceEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbHatch ...\n", (PCTSTR) FaceEntity->desc()->name());
 
-		EoDbHatch* HatchPrimitive = new EoDbHatch();
+		EoDbHatch* HatchPrimitive = new EoDbHatch;
 
 		OdGePoint3d Vertex;
 		for (OdUInt16 VertexIndex = 0; VertexIndex < 4; VertexIndex++) {
@@ -563,7 +563,7 @@ public:
 		ConvertDimensionData(RotatedDimensionEntity);
 		ATLTRACE2(atlTraceGeneral, 2, L"Dimension Block Name: %s\n", (PCTSTR) Block->getName());
 
-		// <tas="Improper conversion - entity is used alot"</tas>
+		// <tas="Improper conversion - entity is used alot"/>
 		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
 		BlockReferencePrimitive->SetName((LPCWSTR) Block->getName());
 		BlockReferencePrimitive->SetPosition(OdGePoint3d::kOrigin);
@@ -587,7 +587,7 @@ public:
 		OdDbSolidPtr SolidEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbHatch ...\n", (PCTSTR) SolidEntity->desc()->name());
 
-		EoDbHatch* HatchPrimitive = new EoDbHatch();
+		EoDbHatch* HatchPrimitive = new EoDbHatch;
 		OdGePoint3d Point;
 		SolidEntity->getPointAt(0, Point);
 		HatchPrimitive->Append(Point);
@@ -674,7 +674,7 @@ public:
 		OdDbTracePtr TraceEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbHatch ...\n", (PCTSTR) TraceEntity->desc()->name());
 
-		EoDbHatch* HatchPrimitive = new EoDbHatch();
+		EoDbHatch* HatchPrimitive = new EoDbHatch;
 		OdGePoint3d Point;
 		TraceEntity->getPointAt(0, Point);
 		HatchPrimitive->Append(Point);

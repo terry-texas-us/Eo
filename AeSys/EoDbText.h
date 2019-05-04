@@ -73,11 +73,8 @@ public: // Methods
 	const CString& Text() noexcept;
 	OdGePoint3d Position() const noexcept;
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition);
-	void SetHorizontalMode(EoDb::HorizontalAlignment horizontalAlignment);
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);
-	EoDbText& SetTo(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, const CString& text);
-	void SetVerticalMode(EoDb::VerticalAlignment verticalAlignment);
 
 public: // Methods - static
 	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;

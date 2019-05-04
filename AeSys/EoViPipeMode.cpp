@@ -53,7 +53,7 @@ void AeSysView::OnPipeModeFitting() {
             CurrentPnt = SnapPointToAxis(m_PipeModePoints[0], CurrentPnt);
         }
         CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
-        HorizontalSection->SetEndPoint(CurrentPnt);
+        HorizontalSection->SetEndPoint2(CurrentPnt);
 
         auto Line {EoDbLine::Create(BlockTableRecord)};
 
@@ -305,7 +305,7 @@ void AeSysView::OnPipeModeSymbol() {
     auto SymbolEndPoint {ProjectToward(PointOnSection, EndPoint, SymbolSize[m_CurrentPipeSymbolIndex])};
     const double TicSize = m_PipeTicSize;
 
-    HorizontalSection->SetEndPoint(SymbolBeginPoint);
+    HorizontalSection->SetEndPoint2(SymbolBeginPoint);
     GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, HorizontalSection);
 
     Group = new EoDbGroup;
@@ -1005,7 +1005,7 @@ void AeSysView::OnPipeModeWye() {
 
             if (fabs(DistanceBetweenSectionPoints - DistanceToSection) <= .25) { // Just need to shift point on section and do a single 45 degree line
                 PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, DistanceToSection);
-                HorizontalSection->SetEndPoint(PointOnSection);
+                HorizontalSection->SetEndPoint2(PointOnSection);
 
                 Group = new EoDbGroup;
 
@@ -1037,7 +1037,7 @@ void AeSysView::OnPipeModeWye() {
                     PointAtBend = ProjectToward(BeginPointProjectedToSection, PointOnSection, DistanceBetweenSectionPoints - DistanceToSection);
                     PointAtBend = m_PipeModePoints[0] + OdGeVector3d(PointAtBend - BeginPointProjectedToSection);
                 }
-                HorizontalSection->SetEndPoint(PointOnSection);
+                HorizontalSection->SetEndPoint2(PointOnSection);
 
                 Group = new EoDbGroup;
                 GenerateTicMark(PointOnSection, BeginPoint, m_PipeRiseDropRadius, Group);
@@ -1166,7 +1166,7 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
     const auto EndPoint {section->EndPoint()};
     auto CutPoint {ProjectToward(point, BeginPoint, m_PipeRiseDropRadius)};
 
-    section->SetEndPoint(CutPoint);
+    section->SetEndPoint2(CutPoint);
     CutPoint = ProjectToward(point, EndPoint, m_PipeRiseDropRadius);
 
     auto Line {EoDbLine::Create(BlockTableRecord, CutPoint, EndPoint)};
@@ -1197,7 +1197,7 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d & point, E
     const auto BeginPoint {section->StartPoint()};
     const auto EndPoint {section->EndPoint()};
 
-    section->SetEndPoint(point);
+    section->SetEndPoint2(point);
     auto Line {EoDbLine::Create(BlockTableRecord, point, EndPoint)};
     Line->setColorIndex(section->ColorIndex());
     Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(section->LinetypeIndex()));

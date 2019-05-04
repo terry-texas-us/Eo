@@ -245,14 +245,14 @@ void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
-		Primitive->SetColorIndex(colorIndex);
+		Primitive->SetColorIndex2(colorIndex);
 	}
 }
 void EoDbGroup::ModifyLinetypeIndex(OdInt16 linetypeIndex) {
     auto Position {GetHeadPosition()};
 	while (Position != 0) {
         auto Primitive {GetNext(Position)};
-		Primitive->SetLinetypeIndex(linetypeIndex);
+		Primitive->SetLinetypeIndex2(linetypeIndex);
 	}
 }
 void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
@@ -271,7 +271,7 @@ void EoDbGroup::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) 
 
 		for (OdUInt16 w = 0; w < wCols; w++) {
 			if (Primitive->ColorIndex() == pCol[w]) {
-				Primitive->SetColorIndex(pColNew[w]);
+				Primitive->SetColorIndex2(pColNew[w]);
 				break;
 			}
 		}

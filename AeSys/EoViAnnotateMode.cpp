@@ -408,16 +408,16 @@ void AeSysView::OnAnnotateModeCutIn() {
                 Line->setEndPoint(BoundingBox[0]);
                 NewLine->setStartPoint(BoundingBox[1]);
 
-                EngagedLine->SetEndPoint(BoundingBox[0]);
+                EngagedLine->SetEndPoint2(BoundingBox[0]);
 				Group->AddTail(EoDbLine::Create(NewLine));
 			}
             else if (dRel[0] <= DBL_EPSILON) {
                 Line->setStartPoint(BoundingBox[1]);
-                EngagedLine->SetStartPoint(BoundingBox[1]);
+                EngagedLine->SetStartPoint2(BoundingBox[1]);
             }
             else if (dRel[1] >= 1. - DBL_EPSILON) {
                 Line->setEndPoint(BoundingBox[0]);
-                EngagedLine->SetEndPoint(BoundingBox[0]);
+                EngagedLine->SetEndPoint2(BoundingBox[0]);
             }
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroup, Group);

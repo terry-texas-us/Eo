@@ -45,10 +45,10 @@ const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 }
 
 void EoDbSpline::AddReportToMessageList(const OdGePoint3d& point) const {
-    CString Report(L"<BSpline>");
-    Report += L" Color:" + FormatColorIndex();
-    Report += L" Linetype:" + FormatLinetypeIndex();
-    theApp.AddStringToMessageList(Report);
+	CString Report(L"<BSpline>");
+	Report += L" Color:" + FormatColorIndex();
+	Report += L" Linetype:" + FormatLinetypeIndex();
+	theApp.AddStringToMessageList(Report);
 }
 
 void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
@@ -95,10 +95,10 @@ void EoDbSpline::FormatGeometry(CString& geometry) const {
 }
 
 void EoDbSpline::GetAllPoints(OdGePoint3dArray& points) const {
-    points.setLogicalLength(m_Spline.numControlPoints());
-    for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
-        points[ControlPointIndex] = m_Spline.controlPointAt(ControlPointIndex);
-    }
+	points.setLogicalLength(m_Spline.numControlPoints());
+	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
+		points[ControlPointIndex] = m_Spline.controlPointAt(ControlPointIndex);
+	}
 }
 
 OdGePoint3d EoDbSpline::GetCtrlPt() const {
@@ -108,22 +108,20 @@ OdGePoint3d EoDbSpline::GetCtrlPt() const {
 		double EndParameter;
 		Spline->getEndParam(EndParameter);
 		Spline->getPointAtParam(EndParameter / 2., Point);
-	}
-	else {
+	} else {
 		Point = m_Spline.controlPointAt(m_Spline.numControlPoints() / 2);
 	}
 	return (Point);
 }
 
-void EoDbSpline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbSpline::GetExtents(AeSysView * view, OdGeExtents3d & extents) const {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
 		OdGeExtents3d Extents;
 		Spline->getGeomExtents(Extents);
 		extents.addExt(Extents);
-		
-	}
-	else {
+
+	} else {
 		// <tas="Extents should use the points on the curve and not the control points"</tas>
 		for (OdUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
 			extents.addPoint(m_Spline.controlPointAt(w));
@@ -149,7 +147,7 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 	return (pt);
 }
 
-bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
+bool EoDbSpline::IsEqualTo(EoDbPrimitive * other) const {
 	bool IsEqual = false;
 	const OdDbObjectId OtherObjectId = other->EntityObjectId();
 	if (!m_EntityObjectId.isNull() && !OtherObjectId.isNull()) {
@@ -160,7 +158,7 @@ bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
 	return IsEqual;
 }
 
-bool EoDbSpline::IsInView(AeSysView* view) const {
+bool EoDbSpline::IsInView(AeSysView * view) const {
 	EoGePoint4d pt[2];
 	pt[0] = EoGePoint4d(m_Spline.controlPointAt(0), 1.);
 
@@ -179,23 +177,23 @@ bool EoDbSpline::IsInView(AeSysView* view) const {
 	return false;
 }
 
-bool EoDbSpline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
+bool EoDbSpline::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const noexcept {
 	return false;
 }
 
-OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {
+OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	return (point.Convert3d());
 }
 
-bool EoDbSpline::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbSpline::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
 	polyline::BeginLineStrip();
 	EoGeNurbCurve3d::GeneratePoints(m_Spline);
 
 	return (polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj));
 }
 
-bool EoDbSpline::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
+bool EoDbSpline::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
 	OdGePoint3dArray ControlPoints;
 	for (OdUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
 		ControlPoints.append(m_Spline.controlPointAt(w));
@@ -203,32 +201,15 @@ bool EoDbSpline::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d&
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, ControlPoints);
 }
 
-void EoDbSpline::Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic) {
+void EoDbSpline::Set(int degree, const OdGeKnotVector & knots, const OdGePoint3dArray & controlPoints, const OdGeDoubleArray & weights, bool isPeriodic) {
 	m_Spline.set(degree, knots, controlPoints, weights, isPeriodic);
 }
 
-void EoDbSpline::SetControlPoints(const OdGePoint3dArray& controlPoints) {
-	const int NumberOfControlPoints = controlPoints.size();
-	const int Degree = EoMin(3, NumberOfControlPoints - 1);
-
-	OdGeKnotVector Knots;
-	EoGeNurbCurve3d::SetDefaultKnotVector(Degree, controlPoints, Knots);
-	
-	OdGeDoubleArray Weights;
-	Weights.setLogicalLength(NumberOfControlPoints);
-
-	if (!m_EntityObjectId.isNull()) {
-		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Spline->setNurbsData(Degree, false, false, false, controlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
-		}
-	m_Spline.set(Degree, Knots, controlPoints, Weights);
-}
-
-void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
+void EoDbSpline::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_Spline.transformBy(transformMatrix);
 }
 
-void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) {
+void EoDbSpline::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
 	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
 		if (((mask >> ControlPointIndex) & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);
@@ -236,7 +217,7 @@ void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const DWORD m
 }
 
 // <tas="Currently allowing 1st degree (only 2 control points) splines to be saved. This likely will not load in legacy apps"</tas>
-bool EoDbSpline::Write(EoDbFile& file) const {
+bool EoDbSpline::Write(EoDbFile & file) const {
 	file.WriteUInt16(EoDb::kSplinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
@@ -248,18 +229,18 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 	return true;
 }
 
-void EoDbSpline::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbSpline::Write(CFile & file, OdUInt8 * buffer) const {
 	buffer[3] = OdInt8((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kSplinePrimitive);
+	*((OdUInt16*) & buffer[4]) = OdUInt16(EoDb::kSplinePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 
-	*((OdInt16*) &buffer[8]) = (OdInt16) m_Spline.numControlPoints();
+	*((OdInt16*) & buffer[8]) = (OdInt16) m_Spline.numControlPoints();
 
 	int i = 10;
 
 	for (OdUInt16 w = 0; w < m_Spline.numControlPoints(); w++) {
-		((EoVaxPoint3d*) &buffer[i])->Convert(m_Spline.controlPointAt(w));
+		((EoVaxPoint3d*) & buffer[i])->Convert(m_Spline.controlPointAt(w));
 		i += sizeof(EoVaxPoint3d);
 	}
 	file.Write(buffer, buffer[3] * 32);
@@ -267,58 +248,58 @@ void EoDbSpline::Write(CFile& file, OdUInt8* buffer) const {
 
 // Static
 
-OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
-    OdDbSplinePtr Spline = OdDbSpline::createObject();
-    Spline->setDatabaseDefaults(blockTableRecord->database());
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
+	OdDbSplinePtr Spline = OdDbSpline::createObject();
+	Spline->setDatabaseDefaults(blockTableRecord->database());
 
-    blockTableRecord->appendOdDbEntity(Spline);
-    Spline->setColorIndex(pstate.ColorIndex());
+	blockTableRecord->appendOdDbEntity(Spline);
+	Spline->setColorIndex(pstate.ColorIndex());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
-    Spline->setLinetype(Linetype);
+	Spline->setLinetype(Linetype);
 
-    return Spline;
+	return Spline;
 }
 
-OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
 	auto Database {blockTableRecord->database()};
 	OdDbSplinePtr Spline = OdDbSpline::createObject();
-    Spline->setDatabaseDefaults(Database);
+	Spline->setDatabaseDefaults(Database);
 
-    blockTableRecord->appendOdDbEntity(Spline);
+	blockTableRecord->appendOdDbEntity(Spline);
 
-    Spline->setColorIndex(file.ReadInt16());
+	Spline->setColorIndex(file.ReadInt16());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
-    Spline->setLinetype(Linetype);
+	Spline->setLinetype(Linetype);
 
-    const auto NumberOfControlPoints = file.ReadUInt16();
+	const auto NumberOfControlPoints = file.ReadUInt16();
 
-    const int Degree = EoMin(3, NumberOfControlPoints - 1);
+	const int Degree = EoMin(3, NumberOfControlPoints - 1);
 
-    OdGePoint3dArray ControlPoints;
-    for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
-        ControlPoints.append(file.ReadPoint3d());
-    }
-    OdGeKnotVector Knots;
-    EoGeNurbCurve3d::SetDefaultKnotVector(Degree, ControlPoints, Knots);
-    OdGeDoubleArray Weights;
-    Weights.setLogicalLength(NumberOfControlPoints);
+	OdGePoint3dArray ControlPoints;
+	for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
+		ControlPoints.append(file.ReadPoint3d());
+	}
+	OdGeKnotVector Knots;
+	EoGeNurbCurve3d::SetDefaultKnotVector(Degree, ControlPoints, Knots);
+	OdGeDoubleArray Weights;
+	Weights.setLogicalLength(NumberOfControlPoints);
 
-    Spline->setNurbsData(Degree, false, false, false, ControlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
-    
-    return Spline;
+	Spline->setNurbsData(Degree, false, false, false, ControlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
+
+	return Spline;
 }
 
-OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8 * primitiveBuffer, int versionNumber) {
 	OdInt16 ColorIndex;
 	OdInt16 LinetypeIndex;
 
 	OdUInt16 NumberOfControlPoints {0};
 	OdGePoint3dArray ControlPoints;
-	
+
 	if (versionNumber == 1) {
 		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
 		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
@@ -368,31 +349,31 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUIn
 	return (Spline);
 }
 
-EoDbSpline* EoDbSpline::Create(OdDbSplinePtr& spline) {
-    auto Spline {new EoDbSpline()};
-    Spline->SetEntityObjectId(spline->objectId());
+EoDbSpline* EoDbSpline::Create(OdDbSplinePtr & spline) {
+	auto Spline {new EoDbSpline()};
+	Spline->SetEntityObjectId(spline->objectId());
 
-    Spline->m_ColorIndex = spline->colorIndex();
-    Spline->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(spline->linetype());
+	Spline->m_ColorIndex = spline->colorIndex();
+	Spline->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(spline->linetype());
 
-    int Degree;
-    bool Rational;
-    bool Closed;
-    bool Periodic;
-    OdGePoint3dArray ControlPoints;
-    OdGeDoubleArray Weights;
-    OdGeKnotVector Knots;
-    double Tolerance;
+	int Degree;
+	bool Rational;
+	bool Closed;
+	bool Periodic;
+	OdGePoint3dArray ControlPoints;
+	OdGeDoubleArray Weights;
+	OdGeKnotVector Knots;
+	double Tolerance;
 
-    spline->getNurbsData(Degree, Rational, Closed, Periodic, ControlPoints, Knots, Weights, Tolerance);
-    
-    // <tas="Only creating non-periodic splines."></tas>
-    if (Periodic) {
-        ATLTRACE2(atlTraceGeneral, 0, L"Periodic %s was not converted ...\n", (LPCWSTR) spline->desc()->name());
-    } else {
-        Spline->Set(Degree, Knots, ControlPoints, Weights, Periodic);
-        // ConvertCurveData(entity, Spline);
-    }
+	spline->getNurbsData(Degree, Rational, Closed, Periodic, ControlPoints, Knots, Weights, Tolerance);
 
-    return Spline;
+	// <tas="Only creating non-periodic splines."></tas>
+	if (Periodic) {
+		ATLTRACE2(atlTraceGeneral, 0, L"Periodic %s was not converted ...\n", (LPCWSTR) spline->desc()->name());
+	} else {
+		Spline->Set(Degree, Knots, ControlPoints, Weights, Periodic);
+		// ConvertCurveData(entity, Spline);
+	}
+
+	return Spline;
 }

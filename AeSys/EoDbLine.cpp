@@ -355,7 +355,7 @@ bool EoDbLine::SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysVie
 	return polyline::SelectBy(pt1, pt2, view);
 }
 
-void EoDbLine::SetEndPoint(const OdGePoint3d& endPoint) {
+void EoDbLine::SetEndPoint2(const OdGePoint3d& endPoint) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		Line->setEndPoint(endPoint);
@@ -363,7 +363,7 @@ void EoDbLine::SetEndPoint(const OdGePoint3d& endPoint) {
 	m_Line.SetEndPoint(endPoint);
 }
 
-void EoDbLine::SetStartPoint(const OdGePoint3d& startPoint) {
+void EoDbLine::SetStartPoint2(const OdGePoint3d& startPoint) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		Line->setStartPoint(startPoint);
@@ -378,8 +378,8 @@ void EoDbLine::Square(AeSysView* view) {
 	const OdGePoint3d MidPoint = EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
 	const double Length = OdGeVector3d(EndPoint - StartPoint).length();
 	EndPoint = view->SnapPointToAxis(MidPoint, EndPoint);
-	SetStartPoint(ProjectToward(EndPoint, MidPoint, Length));
-	SetEndPoint(EndPoint);
+	SetStartPoint2(ProjectToward(EndPoint, MidPoint, Length));
+	SetEndPoint2(EndPoint);
 }
 
 OdGePoint3d EoDbLine::StartPoint() const {
@@ -392,10 +392,10 @@ void EoDbLine::TransformBy(const EoGeMatrix3d& transformMatrix) {
 
 void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) {
 	if ((mask & 1) == 1) {
-		SetStartPoint(m_Line.startPoint() + translate);
+		SetStartPoint2(m_Line.startPoint() + translate);
 	}
 	if ((mask & 2) == 2) {
-		SetEndPoint(m_Line.endPoint() + translate);
+		SetEndPoint2(m_Line.endPoint() + translate);
 	}
 }
 
@@ -424,7 +424,7 @@ void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 // Static
 
 EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {
-    auto Line {new EoDbLine()};
+    auto Line {new EoDbLine};
     Line->SetEntityObjectId(line->objectId());
 
     Line->m_ColorIndex = line->colorIndex();

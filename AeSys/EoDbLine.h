@@ -56,8 +56,8 @@ public: // Methods
 	double Length() const;
 	OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 	double ParametricRelationshipOf(const OdGePoint3d& point) const;
-	void SetEndPoint(const OdGePoint3d& endPoint);
-	void SetStartPoint(const OdGePoint3d& startPoint);
+	void SetEndPoint2(const OdGePoint3d& endPoint);
+	void SetStartPoint2(const OdGePoint3d& startPoint);
 	void Square(AeSysView* view);
 	OdGePoint3d StartPoint() const;
 

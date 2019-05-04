@@ -139,12 +139,12 @@ void AeSysView::OnDraw2ModeWall() {
         auto LinePrimitive {EoDbLine::Create(LineEntity)};
 
 		if (EoGeLineSeg3d(m_PreviousPnt, CurrentPnt).DirectedRelationshipOf(ptBeg) < 0) {
-			m_EndSectionLine->SetEndPoint(m_CurrentRightLine.endPoint());
-			LinePrimitive->SetStartPoint(m_CurrentLeftLine.endPoint());
+			m_EndSectionLine->SetEndPoint2(m_CurrentRightLine.endPoint());
+			LinePrimitive->SetStartPoint2(m_CurrentLeftLine.endPoint());
 		}
 		else {
-			m_EndSectionLine->SetEndPoint(m_CurrentLeftLine.endPoint());
-			LinePrimitive->SetStartPoint(m_CurrentRightLine.endPoint());
+			m_EndSectionLine->SetEndPoint2(m_CurrentLeftLine.endPoint());
+			LinePrimitive->SetStartPoint2(m_CurrentRightLine.endPoint());
 		}
 		m_EndSectionGroup->AddTail(LinePrimitive);
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, m_EndSectionGroup);
@@ -203,8 +203,8 @@ bool AeSysView::CleanPreviousLines() {
 	delete Primitive;
 	
 	POSITION Position = m_AssemblyGroup->GetTailPosition();
-	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousRightLine.endPoint());
-	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousLeftLine.endPoint());
+	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint2(PreviousRightLine.endPoint());
+	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint2(PreviousLeftLine.endPoint());
 
 	return true;
 }
@@ -231,12 +231,12 @@ bool AeSysView::StartAssemblyFromLine() {
     auto LinePrimitive {EoDbLine::Create(LineEntity)};
 
 	if (OdGeVector3d(m_CurrentLeftLine.startPoint() - Line.startPoint()).length() > OdGeVector3d(m_CurrentRightLine.startPoint() - Line.startPoint()).length()) {
-		m_BeginSectionLine->SetEndPoint(m_CurrentRightLine.startPoint());
-		LinePrimitive->SetStartPoint(m_CurrentLeftLine.startPoint());
+		m_BeginSectionLine->SetEndPoint2(m_CurrentRightLine.startPoint());
+		LinePrimitive->SetStartPoint2(m_CurrentLeftLine.startPoint());
 	}
 	else {
-		m_BeginSectionLine->SetEndPoint(m_CurrentLeftLine.startPoint());
-		LinePrimitive->SetStartPoint(m_CurrentRightLine.startPoint());
+		m_BeginSectionLine->SetEndPoint2(m_CurrentLeftLine.startPoint());
+		LinePrimitive->SetStartPoint2(m_CurrentRightLine.startPoint());
 	}
 	m_AssemblyGroup->AddTail(LinePrimitive);
 	m_BeginSectionLine = nullptr;

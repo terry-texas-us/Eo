@@ -65,7 +65,7 @@ void EoDlgTrapModify::ModifyPolygons(void) {
 			if (Primitive->Is(EoDb::kHatchPrimitive)) {
 				EoDbHatch* pPolygon = static_cast<EoDbHatch*>(Primitive);
 				pPolygon->SetInteriorStyle(pstate.HatchInteriorStyle());
-				pPolygon->SetInteriorStyleIndex(pstate.HatchInteriorStyleIndex());
+				pPolygon->SetInteriorStyleIndex2(pstate.HatchInteriorStyleIndex());
 				pPolygon->SetHatRefVecs(EoDbHatch::sm_PatternAngle, EoDbHatch::sm_PatternScaleX, EoDbHatch::sm_PatternScaleY);
 			}
 		}

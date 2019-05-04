@@ -91,11 +91,11 @@ public: // Methods
 	OdInt16 LogicalColorIndex() const noexcept;
 	OdInt16 LogicalLinetypeIndex() const noexcept;
 
-	void SetColorIndex(OdInt16 colorIndex);
-	void SetColorIndex_(OdInt16 colorIndex) noexcept { m_ColorIndex = colorIndex; }
+	void SetColorIndex(OdInt16 colorIndex) noexcept { m_ColorIndex = colorIndex; }
+	void SetColorIndex2(OdInt16 colorIndex);
 	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
-	void SetLinetypeIndex(OdInt16 linetypeIndex);
-	void SetLinetypeIndex_(OdInt16 linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
+	void SetLinetypeIndex(OdInt16 linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
+	void SetLinetypeIndex2(OdInt16 linetypeIndex);
 public: // Methods - static
 	static size_t ControlPointIndex() noexcept;
 	static OdInt16 HighlightColorIndex() noexcept;

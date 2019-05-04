@@ -52,7 +52,6 @@ public: // Methods - absolute virtuals
 public: // Methods
 
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
-	void SetControlPoints(const OdGePoint3dArray& controlPoints);
 
 public: // Methods - static
 

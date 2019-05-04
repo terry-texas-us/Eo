@@ -74,12 +74,11 @@ public: // Methods
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0., double startWidth = 0., double endWidth = 0.);
 	void GetPointAt(int vertexIndex, OdGePoint3d& point) const;
 	bool IsClosed() const noexcept;
-	void SetClosed(bool closed);
+	void SetClosed(bool closed) noexcept;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	void SetConstantWidth(double constantWidth) noexcept;
-	void SetElevation(double elevation);
+	void SetElevation(double elevation) noexcept { m_Elevation = elevation; }
 	void SetNormal(const OdGeVector3d& normal);
-	void SetPoints(const OdGePoint3dArray& points);
 	size_t SwingVertex() const;
 
 public: // Methods - static

@@ -341,15 +341,7 @@ void EoDbBlockReference::SetName(const CString & name) {
 	m_Name = name;
 }
 
-void EoDbBlockReference::SetNormal(const OdGeVector3d & normal) {
-	m_Normal = normal;
-	if (!m_EntityObjectId.isNull()) {
-		OdDbBlockReferencePtr BlockReference = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		BlockReference->setNormal(normal);
-	}
-}
-
-void EoDbBlockReference::SetPosition(const OdGePoint3d & position) {
+void EoDbBlockReference::SetPosition2(const OdGePoint3d & position) {
 	m_Position = position;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbBlockReferencePtr BlockReference = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -391,8 +383,8 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr & database) {
 	EoDbBlockReference* BlockReference = new EoDbBlockReference();
 	BlockReference->SetEntityObjectId(BlockReferenceEntity->objectId());
 
-	BlockReference->SetColorIndex(pstate.ColorIndex());
-	BlockReference->SetLinetypeIndex(pstate.LinetypeIndex());
+	BlockReference->SetColorIndex2(pstate.ColorIndex());
+	BlockReference->SetLinetypeIndex2(pstate.LinetypeIndex());
 
 	return BlockReference;
 }

@@ -248,65 +248,12 @@ void EoDbText::SetFontDefinition(const EoDbFontDefinition & fontDefinition) {
 	m_FontDefinition = fontDefinition;
 }
 
-void EoDbText::SetHorizontalMode(EoDb::HorizontalAlignment horizontalAlignment) {
-	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
-	if (!m_EntityObjectId.isNull()) {
-		OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		switch (horizontalAlignment) {
-			case EoDb::kAlignCenter:
-				Text->setHorizontalMode(OdDb::kTextCenter);
-				break;
-			case EoDb::kAlignRight:
-				Text->setHorizontalMode(OdDb::kTextRight);
-				break;
-			default:
-				Text->setHorizontalMode(OdDb::kTextLeft);
-		}
-	}
-}
-
 void EoDbText::SetReferenceSystem(const EoGeReferenceSystem & referenceSystem) noexcept {
 	m_ReferenceSystem = referenceSystem;
 }
 
-EoDbText& EoDbText::SetTo(const EoDbFontDefinition & fontDefinition, const EoGeReferenceSystem & referenceSystem, const CString & text) {
-	// <tas="Text created with "\r\n" (ctrl-enter) not correctly displayed by dwg text entity"</tas>
-	m_FontDefinition = fontDefinition;
-	m_ReferenceSystem = referenceSystem;
-	m_strText = text;
-
-	SetHorizontalMode(fontDefinition.HorizontalAlignment());
-	SetVerticalMode(fontDefinition.VerticalAlignment());
-	if (!m_EntityObjectId.isNull()) {
-		OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Text->setPosition(referenceSystem.Origin());
-		Text->setTextString((LPCWSTR) text);
-		Text->setHeight(referenceSystem.YDirection().length());
-		Text->setRotation(referenceSystem.Rotation());
-		Text->setAlignmentPoint(Text->position());
-	}
-	return (*this);
-}
-
 void EoDbText::SetText(const CString & text) {
 	m_strText = text;
-}
-
-void EoDbText::SetVerticalMode(EoDb::VerticalAlignment verticalAlignment) {
-	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
-	if (!m_EntityObjectId.isNull()) {
-		OdDbTextPtr Text = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		switch (verticalAlignment) {
-			case EoDb::kAlignTop:
-				Text->setVerticalMode(OdDb::kTextTop);
-				break;
-			case EoDb::kAlignMiddle:
-				Text->setVerticalMode(OdDb::kTextVertMid);
-				break;
-			default:
-				Text->setVerticalMode(OdDb::kTextBase);
-		}
-	}
 }
 
 const CString& EoDbText::Text() noexcept {
@@ -654,8 +601,8 @@ EoDbText* EoDbText::Create(OdDbTextPtr & text) {
 
 	EoDbText* Text = new EoDbText();
 	Text->SetEntityObjectId(text->objectId());
-	Text->SetColorIndex_(text->colorIndex());
-	Text->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+	Text->SetColorIndex(text->colorIndex());
+	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
 
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
 
@@ -688,8 +635,8 @@ EoDbText* EoDbText::Create(OdDbMTextPtr & text) {
 
 	EoDbText* Text = new EoDbText();
 	Text->SetEntityObjectId(text->objectId());
-	Text->SetColorIndex_(text->colorIndex());
-	Text->SetLinetypeIndex_(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+	Text->SetColorIndex(text->colorIndex());
+	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
 
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
 

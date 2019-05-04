@@ -60,9 +60,9 @@ void AeSysView::OnFixupModeReference(void) {
         if (PreviousFixupCommand == ID_OP2) {
             Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
             if (OdGeVector3d(ptInt - pLinePrv->EndPoint()).length() < OdGeVector3d(ptInt - pLinePrv->EndPoint()).length())
-                pLinePrv->SetStartPoint(ptInt);
+                pLinePrv->SetStartPoint2(ptInt);
             else
-                pLinePrv->SetEndPoint(ptInt);
+                pLinePrv->SetEndPoint2(ptInt);
             Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
         } else if (PreviousFixupCommand == ID_OP3) {
             if (OdGeVector3d(ptInt - m_FixupModeFirstLine.startPoint()).length() < OdGeVector3d(ptInt - m_FixupModeFirstLine.endPoint()).length())
@@ -76,8 +76,8 @@ void AeSysView::OnFixupModeReference(void) {
                 m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(ptCP));
                 m_FixupModeReferenceLine.SetStartPoint(m_FixupModeReferenceLine.ProjPt(ptCP));
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLinePrv->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLinePrv->SetEndPoint(m_FixupModeFirstLine.endPoint());
+                pLinePrv->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLinePrv->SetEndPoint2(m_FixupModeFirstLine.endPoint());
 
                 auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint())};
                 Line->setColorIndex(pLinePrv->ColorIndex());
@@ -99,8 +99,8 @@ void AeSysView::OnFixupModeReference(void) {
                 m_FixupModeReferenceLine.SetStartPoint(m_FixupModeReferenceLine.ProjPt(CenterPoint));
 
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLinePrv->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLinePrv->SetEndPoint(m_FixupModeFirstLine.endPoint());
+                pLinePrv->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLinePrv->SetEndPoint2(m_FixupModeFirstLine.endPoint());
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
 
                 const OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
@@ -157,9 +157,9 @@ void AeSysView::OnFixupModeMend(void) {
         }
         Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
         if (OdGeVector3d(ptInt - pLine->StartPoint()).length() < OdGeVector3d(ptInt - pLine->EndPoint()).length())
-            pLine->SetStartPoint(ptInt);
+            pLine->SetStartPoint2(ptInt);
         else
-            pLine->SetEndPoint(ptInt);
+            pLine->SetEndPoint2(ptInt);
         Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
     } else {
         if (!m_FixupModeFirstLine.intersectWith(m_FixupModeSecondLine, ptInt)) {
@@ -171,9 +171,9 @@ void AeSysView::OnFixupModeMend(void) {
             pLine = static_cast<EoDbLine*>(pPrimPrv);
             Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
             if (OdGeVector3d(ptInt - pLine->StartPoint()).length() < OdGeVector3d(ptInt - pLine->EndPoint()).length())
-                pLine->SetStartPoint(ptInt);
+                pLine->SetStartPoint2(ptInt);
             else
-                pLine->SetEndPoint(ptInt);
+                pLine->SetEndPoint2(ptInt);
             Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
         } else if (PreviousFixupCommand == ID_OP3) {
             if (OdGeVector3d(ptInt - m_FixupModeFirstLine.startPoint()).length() < OdGeVector3d(ptInt - m_FixupModeFirstLine.endPoint()).length())
@@ -188,8 +188,8 @@ void AeSysView::OnFixupModeMend(void) {
                 m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(ptCP));
                 m_FixupModeSecondLine.SetStartPoint(m_FixupModeSecondLine.ProjPt(ptCP));
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
+                pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
 
                 auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint())};
                 Line->setColorIndex(pLine->ColorIndex());
@@ -211,8 +211,8 @@ void AeSysView::OnFixupModeMend(void) {
                 m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(CenterPoint));
                 m_FixupModeSecondLine.SetStartPoint(m_FixupModeSecondLine.ProjPt(CenterPoint));
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
+                pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
                 const OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
                 const OdGeVector3d rPrvEndSecBeg(m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint());
                 OdGeVector3d PlaneNormal = rPrvEndInter.crossProduct(rPrvEndSecBeg);
@@ -232,9 +232,9 @@ void AeSysView::OnFixupModeMend(void) {
         Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
         pLine = static_cast<EoDbLine*>(OtherPrimitive);
         if (OdGeVector3d(ptInt - pLine->StartPoint()).length() < OdGeVector3d(ptInt - pLine->EndPoint()).length())
-            pLine->SetStartPoint(ptInt);
+            pLine->SetStartPoint2(ptInt);
         else
-            pLine->SetEndPoint(ptInt);
+            pLine->SetEndPoint2(ptInt);
         Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
         ModeLineUnhighlightOp(PreviousFixupCommand);
     }
@@ -288,20 +288,20 @@ void AeSysView::OnFixupModeChamfer(void) {
             else if (PreviousFixupCommand == ID_OP2) {
                 pLine = dynamic_cast<EoDbLine*>(pPrimPrv);
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLine->SetEndPoint(ptInt);
+                pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLine->SetEndPoint2(ptInt);
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
             } else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
                 pLine = dynamic_cast<EoDbLine*>(pPrimPrv);
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
+                pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
             }
             pLine = dynamic_cast<EoDbLine*>(OtherPrimitive);
             Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-            pLine->SetStartPoint(m_FixupModeSecondLine.startPoint());
-            pLine->SetEndPoint(m_FixupModeSecondLine.endPoint());
+            pLine->SetStartPoint2(m_FixupModeSecondLine.startPoint());
+            pLine->SetEndPoint2(m_FixupModeSecondLine.endPoint());
 
             auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint())};
             Line->setColorIndex(pLine->ColorIndex());
@@ -359,20 +359,20 @@ void AeSysView::OnFixupModeFillet(void) {
             else if (PreviousFixupCommand == ID_OP2) {
                 pLine = dynamic_cast<EoDbLine*>(pPrimPrv);
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLine->SetEndPoint(ptInt);
+                pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLine->SetEndPoint2(ptInt);
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
             } else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
                 pLine = dynamic_cast<EoDbLine*>(pPrimPrv);
                 Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, pSegPrv);
-                pLine->SetStartPoint(m_FixupModeFirstLine.startPoint());
-                pLine->SetEndPoint(m_FixupModeFirstLine.endPoint());
+                pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+                pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
             }
             pLine = dynamic_cast<EoDbLine*>(OtherPrimitive);
             Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-            pLine->SetStartPoint(m_FixupModeSecondLine.startPoint());
-            pLine->SetEndPoint(m_FixupModeSecondLine.endPoint());
+            pLine->SetStartPoint2(m_FixupModeSecondLine.startPoint());
+            pLine->SetEndPoint2(m_FixupModeSecondLine.endPoint());
 
             double SweepAngle;
             const OdGeVector3d rPrvEndInter(ptInt - m_FixupModeFirstLine.endPoint());
@@ -411,8 +411,8 @@ void AeSysView::OnFixupModeSquare(void) {
             m_FixupModeSecondLine.SetStartPoint(SnapPointToAxis(ptCurPos, m_FixupModeSecondLine.startPoint()));
             const OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
             m_FixupModeSecondLine.SetEndPoint(ProjectToward(StartPoint, ptCurPos, dLen));
-            pLine->SetStartPoint(SnapPointToGrid(m_FixupModeSecondLine.startPoint()));
-            pLine->SetEndPoint(SnapPointToGrid(m_FixupModeSecondLine.endPoint()));
+            pLine->SetStartPoint2(SnapPointToGrid(m_FixupModeSecondLine.startPoint()));
+            pLine->SetEndPoint2(SnapPointToGrid(m_FixupModeSecondLine.endPoint()));
             Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
         }
     }
@@ -432,9 +432,9 @@ void AeSysView::OnFixupModeParallel(void) {
             m_FixupModeSecondLine.set(m_FixupModeReferenceLine.ProjPt(pLine->StartPoint()), m_FixupModeReferenceLine.ProjPt(pLine->EndPoint()));
             Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
             const OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
-            pLine->SetStartPoint(ProjectToward(StartPoint, pLine->StartPoint(), theApp.DimensionLength()));
+            pLine->SetStartPoint2(ProjectToward(StartPoint, pLine->StartPoint(), theApp.DimensionLength()));
             const OdGePoint3d EndPoint = m_FixupModeSecondLine.endPoint();
-            pLine->SetEndPoint(ProjectToward(EndPoint, pLine->EndPoint(), theApp.DimensionLength()));
+            pLine->SetEndPoint2(ProjectToward(EndPoint, pLine->EndPoint(), theApp.DimensionLength()));
             Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
         }
     }

@@ -88,7 +88,7 @@ void EoDlgBlockInsert::OnOK() {
 
 		EoDbBlockReference* BlockReference = new EoDbBlockReference();
 		BlockReference->SetName(BlockName);
-		BlockReference->SetPosition(InsertionPoint);
+		BlockReference->SetPosition2(InsertionPoint);
 		EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(BlockReference);
 		m_Document->AddWorkLayerGroup(Group);

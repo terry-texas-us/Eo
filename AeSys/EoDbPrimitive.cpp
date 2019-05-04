@@ -135,7 +135,7 @@ double EoDbPrimitive::RelationshipOfPoint() noexcept {
 	return sm_RelationshipOfPoint;
 }
 
-void EoDbPrimitive::SetColorIndex(OdInt16 colorIndex) {
+void EoDbPrimitive::SetColorIndex2(OdInt16 colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -143,7 +143,7 @@ void EoDbPrimitive::SetColorIndex(OdInt16 colorIndex) {
 	}
 }
 
-void EoDbPrimitive::SetLinetypeIndex(OdInt16 linetypeIndex) {
+void EoDbPrimitive::SetLinetypeIndex2(OdInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 
 	if (!m_EntityObjectId.isNull()) {

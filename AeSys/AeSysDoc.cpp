@@ -2633,7 +2633,7 @@ void AeSysDoc::UpdateNodalList(EoDbGroup * group, EoDbPrimitive * primitive, DWO
 			AddPrimitiveBit(primitive, bit);
 			if (AddUniquePoint(point) == 1) {
 				EoDbPoint PointPrimitive(point);
-				PointPrimitive.SetColorIndex(252);
+				PointPrimitive.SetColorIndex2(252);
 				PointPrimitive.SetPointDisplayMode(8);
 				UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, &PointPrimitive);
 			}
@@ -2644,7 +2644,7 @@ void AeSysDoc::UpdateNodalList(EoDbGroup * group, EoDbPrimitive * primitive, DWO
 
 			if (RemoveUniquePoint(point) == 0) {
 				EoDbPoint PointPrimitive(point);
-				PointPrimitive.SetColorIndex(252);
+				PointPrimitive.SetColorIndex2(252);
 				PointPrimitive.SetPointDisplayMode(8);
 				UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, &PointPrimitive);
 			}
@@ -2712,7 +2712,7 @@ void AeSysDoc::DisplayUniquePoints() {
 	while (UniquePointPosition != 0) {
 		const EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
 		EoDbPoint* PointPrimitive = new EoDbPoint(UniquePoint->m_Point);
-		PointPrimitive->SetColorIndex(252);
+		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		Group.AddTail(PointPrimitive);
 	}

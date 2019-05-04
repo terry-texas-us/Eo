@@ -91,7 +91,8 @@ public: // Methods
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
 	void SetInteriorStyle(OdInt16 interiorStyle) noexcept;
-	void SetInteriorStyleIndex(size_t styleIndex);
+	void SetInteriorStyleIndex(size_t styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
+	void SetInteriorStyleIndex2(size_t styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
 	size_t SwingVertex() const;
