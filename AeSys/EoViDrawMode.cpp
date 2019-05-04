@@ -297,7 +297,7 @@ void AeSysView::OnDrawModeReturn() {
         // <tas="Ellipse major must always be longer than minor. Asserts otherwise!"</tas>
         Group = new EoDbGroup;
         auto Ellipse {EoDbEllipse::Create0(BlockTableRecord)};
-        Ellipse->SetTo(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI);
+        Ellipse->SetTo2(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI);
         Group->AddTail(Ellipse);
         break;
     }
@@ -417,11 +417,10 @@ void AeSysView::DoDrawModeMouseMove() {
             m_PreviewGroup.AddTail(EoDbLine::Create(Line));
         }
         if (NumberOfPoints == 2) {
-            auto Arc {new EoDbEllipse()};
-            Arc->SetTo3PointArc(m_DrawModePoints[0], m_DrawModePoints[1], CurrentPnt);
-            Arc->SetColorIndex(pstate.ColorIndex());
-            Arc->SetLinetypeIndex(pstate.LinetypeIndex());
-            m_PreviewGroup.AddTail(Arc);
+			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+			OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
+			Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1., 0., CircularArc.endAng());
+			m_PreviewGroup.AddTail(EoDbEllipse::Create(Ellipse));
         }
         GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
         break;
@@ -452,11 +451,19 @@ void AeSysView::DoDrawModeMouseMove() {
     case ID_OP7:
         if (m_DrawModePoints[0] != CurrentPnt) {
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-            const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-            m_PreviewGroup.AddTail(new EoDbEllipse(m_DrawModePoints[0], ActiveViewPlaneNormal, OdGeVector3d(CurrentPnt - m_DrawModePoints[0]).length()));
+			const auto Radius {(CurrentPnt - m_DrawModePoints[0]).length()};
+			const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
+			auto MajorAxis {ComputeArbitraryAxis(ActiveViewPlaneNormal)};
+			MajorAxis = MajorAxis.normalize() * Radius;
+
+			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+			
+			Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, 1.);
+			
+            m_PreviewGroup.AddTail(EoDbEllipse::Create(Ellipse));
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
         }
         break;

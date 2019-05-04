@@ -119,7 +119,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept 
 	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDbEllipse* Arc = EoDbEllipse::Create3(*this, BlockTableRecord);
-	Arc->SetTo(m_Center, m_MajorAxis, m_MinorAxis, SweepAngle);
+	Arc->SetTo2(m_Center, m_MajorAxis, m_MinorAxis, SweepAngle);
 	newGroup->AddTail(Arc);
 
 	OdGeVector3d PlaneNormal = m_MajorAxis.crossProduct(m_MinorAxis);
@@ -128,7 +128,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept 
 	m_MajorAxis.rotateBy(SweepAngle, PlaneNormal);
 	m_MinorAxis.rotateBy(SweepAngle, PlaneNormal);
 	m_SweepAngle -= SweepAngle;
-	SetTo(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
+	SetTo2(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 }
 
 void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) noexcept {
@@ -726,7 +726,7 @@ void EoDbEllipse::SetSweepAngle(double angle) noexcept {
 	m_SweepAngle = angle;
 }
 
-EoDbEllipse& EoDbEllipse::SetTo(const OdGePoint3d & center, const OdGeVector3d & majorAxis, const OdGeVector3d & minorAxis, double sweepAngle) {
+EoDbEllipse& EoDbEllipse::SetTo2(const OdGePoint3d & center, const OdGeVector3d & majorAxis, const OdGeVector3d & minorAxis, double sweepAngle) {
 	OdGeVector3d PlaneNormal = majorAxis.crossProduct(minorAxis);
 	if (!PlaneNormal.isZeroLength()) {
 		m_Center = center;
@@ -814,7 +814,7 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const O
 			m_MajorAxis = OdGeVector3d(startPoint - m_Center);
 			m_MinorAxis = OdGeVector3d(ptRot - m_Center);
 
-			SetTo(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
+			SetTo2(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 		}
 	}
 	return *this;
@@ -831,7 +831,7 @@ EoDbEllipse & EoDbEllipse::SetToCircle(const OdGePoint3d & center, const OdGeVec
 		m_MinorAxis = PlaneNormal.crossProduct(m_MajorAxis);
 		m_SweepAngle = TWOPI;
 
-		SetTo(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
+		SetTo2(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 	}
 	return *this;
 }

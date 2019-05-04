@@ -94,7 +94,6 @@ public: // Methods
 	void SetInteriorStyleIndex(size_t styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
-	void SetVertices(const OdGePoint3dArray& vertices);
 	size_t SwingVertex() const;
 
 public: // Methods - static

@@ -763,23 +763,6 @@ void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeV
 	m_HatchYAxis *= patternScale;
 }
 
-void EoDbHatch::SetVertices(const OdGePoint3dArray& vertices) {
-	if (!m_EntityObjectId.isNull()) {
-		OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		OdGePoint2dArray Vertices;
-		Vertices.clear();
-		OdGeDoubleArray Bulges;
-		Bulges.clear();
-		for (size_t VertexIndex = 0; VertexIndex < vertices.size(); VertexIndex++) {
-			Vertices.append(vertices[VertexIndex].convert2d());
-			Bulges.append(0.);
-		}
-		Hatch->appendLoop(OdDbHatch::kPolyline, Vertices, Bulges);
-	}
-	m_Vertices.clear();
-	m_Vertices.append(vertices);
-}
-
 size_t EoDbHatch::SwingVertex() const {
 	const size_t NumberOfVertices = m_Vertices.size();
 	size_t SwingVertex;

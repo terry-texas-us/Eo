@@ -70,7 +70,7 @@ public: // Methods
 	void SetMinorAxis(const OdGeVector3d& minorAxis) noexcept;
 	void SetSweepAngle(double angle) noexcept;
 	/// <summary>Ellipse is set to non-radial elliptical segment defined by a center point, a major and minor vector and a sweep ang.</summary>
-	EoDbEllipse& SetTo(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle);
+	EoDbEllipse& SetTo2(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle);
 	/// <summary>Ellipse if set to a radial arc defined by three points</summary>
 	EoDbEllipse& SetTo3PointArc(const OdGePoint3d& startPoint, const OdGePoint3d& intermediatePoint, const OdGePoint3d& endPoint);
 	EoDbEllipse& SetToCircle(const OdGePoint3d& center, const OdGeVector3d& unitNormal, double radius);

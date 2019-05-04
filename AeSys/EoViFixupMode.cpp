@@ -116,7 +116,7 @@ void AeSysView::OnFixupModeReference(void) {
 
                 EoDbGroup * Group = new EoDbGroup;
                 EoDbEllipse * Arc = EoDbEllipse::Create0(BlockTableRecord);
-                Arc->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
+                Arc->SetTo2(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
                 Group->AddTail(Arc);
                 Document->AddWorkLayerGroup(Group);
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -224,7 +224,7 @@ void AeSysView::OnFixupModeMend(void) {
                 rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
                 const OdGeVector3d MinorAxis(rTmp - CenterPoint);
                 EoDbEllipse * Arc = EoDbEllipse::Create0(BlockTableRecord);
-                Arc->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
+                Arc->SetTo2(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
                 pSegPrv->AddTail(Arc);
                 Document->UpdateGroupInAllViews(EoDb::kGroupSafe, pSegPrv);
             }
@@ -385,7 +385,7 @@ void AeSysView::OnFixupModeFillet(void) {
             rTmp.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
             const OdGeVector3d MinorAxis(rTmp - CenterPoint);
             auto Fillet {EoDbEllipse::Create0(BlockTableRecord)};
-            Fillet->SetTo(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
+            Fillet->SetTo2(CenterPoint, MajorAxis, MinorAxis, SweepAngle);
             OtherGroup->AddTail(Fillet);
 
             Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);

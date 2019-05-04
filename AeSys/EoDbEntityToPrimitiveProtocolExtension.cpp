@@ -295,7 +295,7 @@ public:
 		EoDbEllipse* ArcPrimitive = new EoDbEllipse();
 		// <tas="Encountered Circular Arc entity with zero radius. Is this valid for dwg files?"</tas>
 		if (!MajorAxis.isZeroLength() && !MinorAxis.isZeroLength()) {
-			ArcPrimitive->SetTo(Center, MajorAxis, MinorAxis, SweepAngle);
+			ArcPrimitive->SetTo2(Center, MajorAxis, MinorAxis, SweepAngle);
 		}
 		ConvertEntityData(ArcEntity, ArcPrimitive);
 		group->AddTail(ArcPrimitive);

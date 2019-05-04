@@ -376,7 +376,7 @@ void AeSysView::OnDimensionModeAngle(void) {
 
                 OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
                 EoDbEllipse* Ellipse = EoDbEllipse::Create0(BlockTableRecord);
-				Ellipse->SetTo(CenterPoint, MajorAxis, MinorAxis, Angle);
+				Ellipse->SetTo2(CenterPoint, MajorAxis, MinorAxis, Angle);
 				Ellipse->SetColorIndex(1);
 				Ellipse->SetLinetypeIndex(1);
 				Group->AddTail(Ellipse);
