@@ -73,9 +73,11 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 			break;
 		}
 		case EoDb::kDimensionPrimitive:
-			primitive = EoDbDimension::ConstructFrom(m_PrimBuf, 3);
+		{
+			auto AlignedDimension {EoDbDimension::Create(blockTableRecord, m_PrimBuf, 3)};
+			primitive = EoDbDimension::Create(AlignedDimension);
 			break;
-
+		}
 		default:
 			ConstructPrimitiveFromVersion1(blockTableRecord, primitive);
 	}

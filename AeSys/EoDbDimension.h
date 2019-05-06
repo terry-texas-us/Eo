@@ -17,6 +17,7 @@ class EoDbDimension : public EoDbPrimitive {
 	CString m_strText;
 
 public:	// Constructors and destructor
+
 	EoDbDimension();
 	EoDbDimension(const EoDbDimension& other);
     const EoDbDimension& operator=(const EoDbDimension& other);
@@ -24,6 +25,7 @@ public:	// Constructors and destructor
     ~EoDbDimension();
 
 public: // Methods - absolute virtuals
+
     void AddReportToMessageList(const OdGePoint3d& point) const override;
     void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
@@ -49,11 +51,13 @@ public: // Methods - absolute virtuals
 	void Write(CFile& file, OdUInt8* buffer) const override;
 
 public:	// Methods - virtuals
+
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) noexcept override;
 	void ModifyState() noexcept override;
 
 public:	// Methods
+
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	const EoDbFontDefinition& FontDef() noexcept;
 	const EoGeLineSeg3d& Line() noexcept;
@@ -74,12 +78,13 @@ public:	// Methods
 	const OdInt16& TextColorIndex() noexcept;
 
 private:
-	static OdUInt16 sm_wFlags;	// bit 1	clear if dimension selected at note
-							//			set if dimension selected at line
-public:
-	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-	static EoDbDimension* ConstructFrom(EoDbFile& file);
-	static EoDbDimension* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
+	static OdUInt16 sm_wFlags;	// bit 1 clear if dimension selected at note, set if dimension selected at line
 
+public: // Methods - static
 	static EoDbDimension* Create(OdDbAlignedDimensionPtr& alignedDimension);
+
+	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+
 };

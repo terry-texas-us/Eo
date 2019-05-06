@@ -966,7 +966,7 @@ BOOL AeSysDoc::OnNewDocument() {
 		OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
 		m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
-		OdDbDimStyleTableRecordPtr DimStyleTableRecord = AddStandardDimensionStyle();
+		AddStandardDimensionStyle();
 
 		AddRegisteredApp(L"AeSys");
 
@@ -1022,7 +1022,7 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 
 			OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
 
-			OdDbDimStyleTableRecordPtr DimStyleTableRecord = AddStandardDimensionStyle();
+			AddStandardDimensionStyle();
 
 			m_DatabasePtr->startUndoRecord();
 
@@ -1043,6 +1043,9 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 
 			OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+
+			AddStandardDimensionStyle();
+
 			m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
 			AddRegisteredApp(L"AeSys");

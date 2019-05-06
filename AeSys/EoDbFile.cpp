@@ -122,9 +122,11 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTableRecord)
 			ConstructPointPrimitiveFromTagPrimitive(Primitive);
 			break;
 		case EoDb::kDimensionPrimitive:
-			Primitive = EoDbDimension::ConstructFrom(*this);
+		{
+			auto AlignedDimension {EoDbDimension::Create(blockTableRecord, *this)};
+			Primitive = EoDbDimension::Create(AlignedDimension);
 			break;
-
+		}
 		default:
 			theApp.WarningMessageBox(IDS_MSG_BAD_PRIM_TYPE);
 	}

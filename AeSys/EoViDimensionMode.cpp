@@ -152,7 +152,7 @@ void AeSysView::OnDimensionModeDLine(void) {
 			AlignedDimension->setXLine2Point(CurrentPnt);
 			AlignedDimension->setDimLinePoint(CurrentPnt);
 			AlignedDimension->measurement(); // initial compute of the measurement
-			
+
 			OdDbDimStyleTablePtr DimStyleTable = Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
 			auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 			AlignedDimension->setDimensionStyle(DimStyleRecord);
@@ -193,16 +193,21 @@ void AeSysView::OnDimensionModeDLine2(void) {
 				ModeLineUnhighlightOp(PreviousDimensionCommand);
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
 			}
-			EoDbDimension* DimensionPrimitive = new EoDbDimension();
-			DimensionPrimitive->SetColorIndex2(1);
-			DimensionPrimitive->SetLinetypeIndex2(1);
-			DimensionPrimitive->SetStartPoint(PreviousDimensionPosition);
-			DimensionPrimitive->SetEndPoint(CurrentPnt);
-			DimensionPrimitive->SetTextColorIndex(5);
-			DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
-			DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
-			DimensionPrimitive->SetDefaultNote();
-			Group->AddTail(DimensionPrimitive);
+			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+
+			auto AlignedDimension {EoDbDimension::Create(BlockTableRecord)};
+			AlignedDimension->setXLine1Point(PreviousDimensionPosition);
+			AlignedDimension->setXLine2Point(CurrentPnt);
+			AlignedDimension->setDimLinePoint(CurrentPnt);
+			AlignedDimension->measurement(); // initial compute of the measurement
+
+			OdDbDimStyleTablePtr DimStyleTable = Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
+			auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
+			AlignedDimension->setDimensionStyle(DimStyleRecord);
+			AlignedDimension->downgradeOpen();
+
+			Group->AddTail(EoDbDimension::Create(AlignedDimension));
+
 			GenerateLineEndItem(1, .1, PreviousDimensionPosition, CurrentPnt, Group);
 			Document->AddWorkLayerGroup(Group);
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
