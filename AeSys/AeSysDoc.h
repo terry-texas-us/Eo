@@ -303,6 +303,8 @@ public:
     /// <summary>Add a new text style to the text style table.</summary>
     OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr& textStyles);
     OdDbTextStyleTableRecordPtr AddStandardTextStyle();
+	
+	OdDbDimStyleTableRecordPtr AddStandardDimensionStyle();
 
     // Block Table interface
     EoDbBlockTable* BlockTable() noexcept;

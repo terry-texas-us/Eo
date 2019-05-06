@@ -10,6 +10,11 @@
 #include "DbRegAppTable.h"
 #include "DbRegAppTableRecord.h"
 
+#include "DbDimStyleTable.h"
+#include "DbDimStyleTableRecord.h"
+#include "DbTextStyleTable.h"
+#include "DbTextStyleTableRecord.h"
+
 #include "Ed/EdLispEngine.h"
 #include "DbObjectContextCollection.h"
 #include "DbObjectContextManager.h"
@@ -888,6 +893,46 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddStandardTextStyle() {
 	return TextStyle;
 }
 
+OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
+	OdDbDimStyleTablePtr DimStyleTable = m_DatabasePtr->getDimStyleTableId().safeOpenObject(OdDb::kForWrite);
+	if (DimStyleTable->has(L"EoStandard")) {
+		OdDbDimStyleTableRecordPtr DimStyle = DimStyleTable->getAt(L"EoStandard").safeOpenObject(OdDb::kForRead);
+		return DimStyle;
+	}
+	OdDbDimStyleTableRecordPtr DimStyle = OdDbDimStyleTableRecord::createObject();
+	DimStyle->setName(L"EoStandard");
+	OdDbObjectId dimStyleId = DimStyleTable->add(DimStyle);
+
+	DimStyle->setDimtxsty(m_DatabasePtr->getTextStyleStandardId());
+
+	DimStyle->setDimse1(true);
+	DimStyle->setDimse2(true);
+	DimStyle->setDimtad(1); // Dimension text will be placed above the dimension line.
+	DimStyle->setDimtih(false);
+	DimStyle->setDimtoh(false);
+	DimStyle->setDimsah(true);
+
+	OdCmColor Color;
+	Color.setColorIndex(1);
+	DimStyle->setDimclrd(Color);
+	Color.setColorIndex(5);
+	DimStyle->setDimclrt(Color); // Text color
+//	DimStyle->setDimtxt(.1); // Text Height
+
+	OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForRead);
+
+	if (TextStyles->has(L"EoStandard")) {
+		auto TextStyle {TextStyles->getAt(L"EoStandard")};
+		DimStyle->setDimtxsty(TextStyle);
+	}
+
+	DimStyle->setDimasz(0.);
+
+	//	DimStyle->setDimblk(L"_None");
+	
+	return DimStyle;
+}
+
 void AeSysDoc::AddRegisteredApp(const OdString & name) {
 	OdDbRegAppTablePtr RegisteredApps = m_DatabasePtr->getRegAppTableId().safeOpenObject(OdDb::kForWrite);
 	if (!RegisteredApps->has(name)) {
@@ -920,6 +965,8 @@ BOOL AeSysDoc::OnNewDocument() {
 		}
 		OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
 		m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
+
+		OdDbDimStyleTableRecordPtr DimStyleTableRecord = AddStandardDimensionStyle();
 
 		AddRegisteredApp(L"AeSys");
 
@@ -974,6 +1021,8 @@ BOOL AeSysDoc::OnOpenDocument(LPCWSTR file) {
 			if (m_DatabasePtr->getLWDISPLAY()) m_DatabasePtr->setLWDISPLAY(false);
 
 			OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+
+			OdDbDimStyleTableRecordPtr DimStyleTableRecord = AddStandardDimensionStyle();
 
 			m_DatabasePtr->startUndoRecord();
 

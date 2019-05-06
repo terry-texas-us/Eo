@@ -1,5 +1,8 @@
 #pragma once
 
+#include "DbAlignedDimension.h"
+#include "DbRotatedDimension.h"
+
 #include "EoGeLineSeg3d.h"
 
 #include "EoDbFontDefinition.h"
@@ -74,6 +77,9 @@ private:
 	static OdUInt16 sm_wFlags;	// bit 1	clear if dimension selected at note
 							//			set if dimension selected at line
 public:
+	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static EoDbDimension* ConstructFrom(EoDbFile& file);
 	static EoDbDimension* ConstructFrom(OdUInt8* primitiveBuffer, int versionNumber);
+
+	static EoDbDimension* Create(OdDbAlignedDimensionPtr& alignedDimension);
 };

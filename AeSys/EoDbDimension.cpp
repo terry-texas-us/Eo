@@ -3,6 +3,9 @@
 #include "AeSysApp.h"
 #include "AeSysView.h"
 
+#include "DbDimStyleTableRecord.h"
+#include "DbAlignedDimension.h"
+
 #include "EoVaxFloat.h"
 
 #include "EoGePolyline.h"
@@ -131,11 +134,17 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 }
 
 void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
-	const OdInt16 ColorIndex = LogicalColorIndex();
+	OdInt16 ColorIndex = LogicalColorIndex();
 	pstate.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
 	m_Line.Display(view, deviceContext);
 
-	pstate.SetColorIndex(deviceContext, m_TextColorIndex);
+	ColorIndex = sm_HighlightColorIndex == 0 ? m_TextColorIndex : sm_HighlightColorIndex;
+	if (ColorIndex == COLORINDEX_BYLAYER) {
+		ColorIndex = sm_LayerColorIndex;
+	} else if (ColorIndex == COLORINDEX_BYBLOCK) {
+		ColorIndex = 7;
+	}
+	pstate.SetColorIndex(deviceContext, ColorIndex);
 
 	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 	pstate.SetLinetypeIndexPs(deviceContext, 1);
@@ -147,8 +156,20 @@ void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
 
 void EoDbDimension::FormatExtra(CString& extra) const {
 	extra.Empty();
-	extra += L"Color;" + FormatColorIndex() + L"\t";
-	extra += L"Linetype;" + FormatLinetypeIndex();
+	extra += L"Dimension Color;" + FormatColorIndex() + L"\t";
+	extra += L"Dimension Linetype;" + FormatLinetypeIndex() + L"\t";
+
+	extra += L"Font;" + m_FontDefinition.FontName() + L"\t";
+	extra += L"Precision;" + m_FontDefinition.FormatPrecision() + L"\t";
+	extra += L"Path;" + m_FontDefinition.FormatPath() + L"\t";
+	extra += L"Alignment;(" + m_FontDefinition.FormatHorizonatlAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")\t";
+	CString Spacing;
+	Spacing.Format(L"Spacing;%f\t", m_FontDefinition.CharacterSpacing());
+	extra += Spacing;
+	CString Length;
+	Length.Format(L"Number of Characters;%d\t", m_strText.GetLength());
+	extra += Length;
+	extra += L"Text;" + m_strText;
 }
 
 void EoDbDimension::FormatGeometry(CString& geometry) const {
@@ -160,6 +181,17 @@ void EoDbDimension::FormatGeometry(CString& geometry) const {
 	Point = m_Line.endPoint();
 	PointString.Format(L"End Point;%f;%f;%f\t", Point.x, Point.y, Point.z);
 	geometry += PointString;
+
+	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
+	const OdGePoint3d Origin = ReferenceSystem.Origin();
+	CString OriginString;
+	OriginString.Format(L"Text Position;%f;%f;%f\t", Origin.x, Origin.y, Origin.z);
+	geometry += OriginString;
+	CString VectorString;
+	VectorString.Format(L"Text X Axis;%f;%f;%f\t", ReferenceSystem.XDirection().x, ReferenceSystem.XDirection().y, ReferenceSystem.XDirection().z);
+	geometry += VectorString;
+	VectorString.Format(L"Text Y Axis;%f;%f;%f\t", ReferenceSystem.YDirection().x, ReferenceSystem.YDirection().y, ReferenceSystem.YDirection().z);
+	geometry += VectorString;
 }
 
 void EoDbDimension::GetAllPoints(OdGePoint3dArray& points) const {
@@ -492,6 +524,20 @@ void EoDbDimension::Write(CFile & file, OdUInt8 * buffer) const {
 	file.Write(buffer, buffer[3] * 32);
 }
 
+OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord) {
+	auto AlignedDimension {OdDbAlignedDimension::createObject()};
+	AlignedDimension->setDatabaseDefaults(blockTableRecord->database());
+
+	blockTableRecord->appendOdDbEntity(AlignedDimension);
+	AlignedDimension->setColorIndex(pstate.ColorIndex());
+
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+
+	AlignedDimension->setLinetype(Linetype);
+
+	return AlignedDimension;
+}
+
 EoDbDimension* EoDbDimension::ConstructFrom(EoDbFile & file) {
 	const auto ColorIndex {file.ReadInt16()};
 	const auto LinetypeIndex {file.ReadInt16()};
@@ -582,5 +628,65 @@ EoDbDimension* EoDbDimension::ConstructFrom(OdUInt8 * primitiveBuffer, int versi
 	Dimension->SetFontDefinition(FontDefinition);
 	Dimension->SetReferenceSystem(ReferenceSystem);
 	Dimension->SetText(Text);
+	return (Dimension);
+}
+
+EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) {
+	
+	if (alignedDimension->dimBlockId()) {
+		OdDbBlockTableRecordPtr Block = alignedDimension->dimBlockId().safeOpenObject(OdDb::kForRead);
+		auto DimensionBlockName {Block->getName()};
+	}
+	const auto Measurement {alignedDimension->getMeasurement()};
+	auto DimensionText {alignedDimension->dimensionText()};
+
+	OdString FormattedMeasurement;
+	if (Measurement >= 0.) {
+		alignedDimension->formatMeasurement(FormattedMeasurement, Measurement, DimensionText);
+	}
+	const auto DimensionBlockPosition {alignedDimension->dimBlockPosition()};
+	const auto DimensionBlockRotation {alignedDimension->dimBlockRotation()};
+	const auto DimensionBlockScale {alignedDimension->dimBlockScale()};
+
+	const auto TextPosition {alignedDimension->textPosition()};
+	const auto TextRotation {alignedDimension->textRotation()};
+	
+	OdDbDimStyleTableRecordPtr DimensionStyle {alignedDimension->dimensionStyle().safeOpenObject(OdDb::kForRead)};
+
+	const auto ExtensionLine1Linetype {alignedDimension->getDimExt1Linetype()};
+	const auto ExtensionLine2Linetype {alignedDimension->getDimExt2Linetype()};
+	const auto DimensionLineLinetype {alignedDimension->getDimLinetype()};
+	const auto HorizontalRotation {alignedDimension->horizontalRotation()};
+	const auto Elevation {alignedDimension->elevation()};
+	const auto Normal {alignedDimension->normal()};
+	const auto TextHeight {DimensionStyle->dimtxt()};
+
+	const auto ExtensionLine1Point {alignedDimension->xLine1Point()};
+	const auto ExtensionLine2Point {alignedDimension->xLine2Point()};
+	const auto DimensionLinePoint {alignedDimension->dimLinePoint()};
+	const auto Oblique {alignedDimension->oblique()};
+
+	auto Dimension {new EoDbDimension()};
+	Dimension->SetColorIndex(DimensionStyle->dimclrd().colorIndex());
+	//Dimension->SetLinetypeIndex(LinetypeIndex);
+	Dimension->SetStartPoint(ExtensionLine1Point);
+	Dimension->SetEndPoint(ExtensionLine2Point);
+	Dimension->SetTextColorIndex(DimensionStyle->dimclrt().colorIndex());
+
+	EoDbFontDefinition FontDefinition;
+	FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
+	Dimension->SetFontDefinition(FontDefinition);
+	
+	auto XDirection {ExtensionLine2Point - ExtensionLine1Point};
+	XDirection.normalize();
+	auto YDirection {XDirection * TextHeight};
+	YDirection.rotateBy(OdaPI2, Normal);
+	XDirection *= TextHeight * .6;
+	EoGeReferenceSystem ReferenceSystem;
+	ReferenceSystem.Set(TextPosition, XDirection, YDirection);
+	Dimension->SetReferenceSystem(ReferenceSystem);
+
+	Dimension->SetText((LPCWSTR) FormattedMeasurement);
+
 	return (Dimension);
 }

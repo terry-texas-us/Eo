@@ -56,6 +56,7 @@
 #include "EoDbCharacterCellDefinition.h"
 
 #include "EoDbBlockReference.h"
+#include "EoDbDimension.h"
 #include "EoDbEllipse.h"
 #include "EoDbLine.h"
 #include "EoDbHatch.h"
@@ -262,6 +263,18 @@ public:
 		ConvertCurveData(PolylineEntity, PolylinePrimitive);
 
 		group->AddTail(PolylinePrimitive);
+	}
+};
+
+class EoDbAlignedDimension_Converter : public EoDbConvertEntityToPrimitive {
+public:
+
+	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
+		OdDbAlignedDimensionPtr AlignedDimension = entity;
+
+		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbDimension ...\n", (LPCWSTR) AlignedDimension->desc()->name());
+
+		group->AddTail(EoDbDimension::Create(AlignedDimension));
 	}
 };
 
@@ -773,6 +786,7 @@ class Converters {
     
     OdStaticRxObject<EoDb2dPolyline_Converter> m_2dPolylineConverter;
 	OdStaticRxObject<EoDb3dPolyline_Converter> m_3dPolylineConverter;
+	OdStaticRxObject<EoDbAlignedDimension_Converter> m_AlignedDimensionConverter;
 	OdStaticRxObject<EoDbArc_Converter> m_ArcConverter;
 	OdStaticRxObject<EoDbAttributeDefinition_Converter> m_AttributeDefinitionConverter;
 	OdStaticRxObject<EoDbBlockReference_Converter> m_BlockReference;
@@ -800,6 +814,7 @@ public:
         
         OdDb2dPolyline::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_2dPolylineConverter);
 		OdDb3dPolyline::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_3dPolylineConverter);
+		OdDbAlignedDimension::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_AlignedDimensionConverter);
 		OdDbArc::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_ArcConverter);
 		OdDbAttributeDefinition::desc()->addX(EoDbConvertEntityToPrimitive::desc(),	 &m_AttributeDefinitionConverter);
 		OdDbBlockReference::desc()->addX(EoDbConvertEntityToPrimitive::desc(), &m_BlockReference);
@@ -826,6 +841,7 @@ public:
         
         OdDb2dPolyline::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDb3dPolyline::desc()->delX(EoDbConvertEntityToPrimitive::desc());
+		OdDbAlignedDimension::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbArc::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbAttributeDefinition	::desc()->delX(EoDbConvertEntityToPrimitive::desc());
 		OdDbBlockReference::desc()->delX(EoDbConvertEntityToPrimitive::desc());

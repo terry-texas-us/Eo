@@ -46,8 +46,6 @@ using namespace gsl;
 #include "DbLayerTableRecord.h"
 #include "DbLinetypeTable.h"
 #include "DbLinetypeTableRecord.h"
-#include "DbTextStyleTable.h"
-#include "DbTextStyleTableRecord.h"
 #include "DbPoint.h"
 #include "DbLine.h"
 #include "DbMText.h"
