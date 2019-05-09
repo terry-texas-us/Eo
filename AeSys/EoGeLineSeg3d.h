@@ -69,6 +69,9 @@ public: // Methods
 	/// <summary> Determines if line segment in wholly or partially contained within window passed.</summary>
 	/// <remarks> Assumes window passed with min/max corners correct.</remarks>
 	/// <returns> true line is wholly or partially within window, false otherwise</returns>
+
+	bool IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection);
+
 	bool IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const;
 	/// <summary>
 	///Evaluates the proximity of a point to a line segment.

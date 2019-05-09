@@ -181,6 +181,16 @@ bool EoGeLineSeg3d::IntersectWith_xy(const EoGeLineSeg3d& line, OdGePoint3d& int
 	}
 	return false;
 }
+
+bool EoGeLineSeg3d::IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection) {
+	OdGeLine3d InfiniteFirstLine;
+	getLine(InfiniteFirstLine);
+	OdGeLine3d InfiniteSecondLine;
+	line.getLine(InfiniteSecondLine);
+
+	return InfiniteFirstLine.intersectWith(InfiniteSecondLine, intersection);
+}
+
 bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const {
 	OdGePoint3d	pt[2];
 	pt[0] = startPoint();
