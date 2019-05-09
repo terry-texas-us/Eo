@@ -325,11 +325,11 @@ void AeSysView::OnDimensionModeDiameter() {
 		PreviousDimensionPosition = CurrentPnt;
 	}
 }
-void AeSysView::OnDimensionModeAngle(void) {
+void AeSysView::OnDimensionModeAngle() {
 	CDC* DeviceContext = GetDC();
 
 	AeSysDoc* Document = GetDocument();
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	const auto CurrentPnt {GetCursorPosition()};
 
 	static OdGePoint3d rProjPt[2];
 	static OdGePoint3d CenterPoint;
@@ -341,10 +341,10 @@ void AeSysView::OnDimensionModeAngle(void) {
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 
 		if (SelectLineBy(CurrentPnt) != 0) {
-			EoDbLine* pLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
+			auto Line {dynamic_cast<EoDbLine*>(EngagedPrimitive())};
 
 			rProjPt[0] = DetPt();
-			pLine->GetLine(ln);
+			Line->GetLine(ln);
 			PreviousDimensionCommand = ModeLineHighlightOp(ID_OP8);
 			theApp.AddStringToMessageList(L"Select the second line.");
 			iLns = 1;
@@ -352,10 +352,10 @@ void AeSysView::OnDimensionModeAngle(void) {
 	} else {
 		if (iLns == 1) {
 			if (SelectLineBy(CurrentPnt) != 0) {
-				EoDbLine* pLine = dynamic_cast<EoDbLine*>(EngagedPrimitive());
+				auto Line {dynamic_cast<EoDbLine*>(EngagedPrimitive())};
 
 				rProjPt[1] = DetPt();
-				if (ln.intersectWith(pLine->Line(), CenterPoint)) {
+				if (ln.intersectWith(Line->Line(), CenterPoint)) {
 					iLns++;
 					theApp.AddStringToMessageList(L"Specify the location for the dimension arc.");
 				}
@@ -363,35 +363,37 @@ void AeSysView::OnDimensionModeAngle(void) {
 		} else {
 			double Angle;
 
-			const OdGeVector3d vCenterToProjPt = OdGeVector3d(rProjPt[0] - CenterPoint);
-			const OdGeVector3d vCenterToCur = OdGeVector3d(CurrentPnt - CenterPoint);
-			OdGeVector3d PlaneNormal = vCenterToProjPt.crossProduct(vCenterToCur);
+			const auto vCenterToProjPt {rProjPt[0] - CenterPoint};
+			const auto vCenterToCur {CurrentPnt - CenterPoint};
+			auto PlaneNormal {vCenterToProjPt.crossProduct(vCenterToCur)};
 			PlaneNormal.normalize();
-			if (pFndSwpAngGivPlnAnd3Lns(PlaneNormal, rProjPt[0], CurrentPnt, rProjPt[1], CenterPoint, Angle)) {
-				const double dRad = OdGeVector3d(CurrentPnt - CenterPoint).length();
 
-				ln.set(ProjectToward(CenterPoint, rProjPt[0], dRad), ln.startPoint());
+			if (pFndSwpAngGivPlnAnd3Lns(PlaneNormal, rProjPt[0], CurrentPnt, rProjPt[1], CenterPoint, Angle)) {
+				const auto Radius {(CurrentPnt - CenterPoint).length()};
+
+				ln.set(ProjectToward(CenterPoint, rProjPt[0], Radius), ln.startPoint());
 				ln.endPoint().rotateBy(Angle, PlaneNormal, CenterPoint);
-				const OdGeVector3d MajorAxis = OdGeVector3d(ln.startPoint() - CenterPoint);
-				OdGePoint3d ptRot = ln.startPoint();
-				ptRot.rotateBy(HALF_PI, PlaneNormal, CenterPoint);
-				const OdGeVector3d MinorAxis = OdGeVector3d(ptRot - CenterPoint);
-				OdGePoint3d ptArrow = ln.startPoint();
+				const auto MajorAxis {ln.startPoint() - CenterPoint};
+		
+				auto ptArrow {ln.startPoint()};
 				ptArrow.rotateBy(RADIAN, PlaneNormal, CenterPoint);
-				EoDbGroup * Group = new EoDbGroup;
+				auto Group {new EoDbGroup};
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.startPoint(), Group);
 
-				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-				EoDbEllipse * Ellipse = EoDbEllipse::Create0(BlockTableRecord);
-				Ellipse->SetTo2(CenterPoint, MajorAxis, MinorAxis, Angle);
-				Ellipse->SetColorIndex2(1);
-				Ellipse->SetLinetypeIndex2(1);
-				Group->AddTail(Ellipse);
+				OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+
+				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+				Ellipse->setColorIndex(1);
+				Ellipse->setLinetype(L"Continuous");
+				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., Angle);
+
+				Group->AddTail(EoDbEllipse::Create(Ellipse));
 
 				ptArrow = ln.startPoint();
 				ptArrow.rotateBy(Angle - RADIAN, PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
+
 				const int PrimitiveState = pstate.Save();
 
 				EoDbFontDefinition FontDefinition = pstate.FontDefinition();

@@ -269,7 +269,7 @@ void AeSysView::OnDrawModeReturn() {
         }
         Group = new EoDbGroup;
 
-        const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
+		const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
         auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
         auto MajorAxis {ComputeArbitraryAxis(ActiveViewPlaneNormal)};
@@ -282,23 +282,35 @@ void AeSysView::OnDrawModeReturn() {
         break;
     }
     case ID_OP8: {
-        if (m_DrawModePoints[NumberOfPoints - 1] == CurrentPnt) {
-            theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
+		if (CurrentPnt.isEqualTo(m_DrawModePoints[0])) {
+			theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
+			return;
+		}
+		if (NumberOfPoints == 1) {
+			m_DrawModePoints.append(CurrentPnt);
+			SetCursorPosition(m_DrawModePoints[0]);
+			return;
+		}
+		if (CurrentPnt.isEqualTo(m_DrawModePoints[1])) {
+			theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
             return;
         }
-        m_DrawModePoints.append(CurrentPnt);
-        if (NumberOfPoints == 1) {
-            SetCursorPosition(m_DrawModePoints[0]);
-            return;
-        }
-        const auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
-        const auto MinorAxis {m_DrawModePoints[2] - m_DrawModePoints[0]};
-        // <tas="Ellipse major and minor axis may not properly define a plane. Memory leaks?"</tas>
-        // <tas="Ellipse major must always be longer than minor. Asserts otherwise!"</tas>
+		const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
+		
+		auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
+        const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};
+		auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
+		
+		if (OdGreater(RadiusRatio, 1.)) { // Minor axis is longer than major axis - switch
+			MajorAxis = MinorAxis;
+			RadiusRatio = 1. / RadiusRatio;
+		}
         Group = new EoDbGroup;
-        auto Ellipse {EoDbEllipse::Create0(BlockTableRecord)};
-        Ellipse->SetTo2(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI);
-        Group->AddTail(Ellipse);
+
+		auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+		Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, RadiusRatio);
+
+        Group->AddTail(EoDbEllipse::Create(Ellipse));
         break;
     }
     default:
@@ -454,9 +466,9 @@ void AeSysView::DoDrawModeMouseMove() {
 
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-			const auto Radius {(CurrentPnt - m_DrawModePoints[0]).length()};
 			const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 			auto MajorAxis {ComputeArbitraryAxis(ActiveViewPlaneNormal)};
+			const auto Radius {(CurrentPnt - m_DrawModePoints[0]).length()};
 			MajorAxis = MajorAxis.normalize() * Radius;
 
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
@@ -469,21 +481,31 @@ void AeSysView::DoDrawModeMouseMove() {
         break;
 
     case ID_OP8:
-        if (m_DrawModePoints[0] != CurrentPnt) {
+		if (!CurrentPnt.isEqualTo(m_DrawModePoints[0])) {
             m_DrawModePoints.append(CurrentPnt);
 
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
             if (NumberOfPoints == 1) {
-                auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
-                Line->setColorIndex(pstate.ColorIndex());
-                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
-                m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            } else {
-                const auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
-                const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};
+				auto Line {EoDbLine::Create(BlockTableRecord)};
+				Line->setStartPoint(m_DrawModePoints[0]);
+				Line->setEndPoint(CurrentPnt);
 
-                m_PreviewGroup.AddTail(new EoDbEllipse(m_DrawModePoints[0], MajorAxis, MinorAxis, TWOPI));
+				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+            } else {
+				const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
+				auto MajorAxis {m_DrawModePoints[1] - m_DrawModePoints[0]};
+                const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};
+				auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
+				
+				if (OdGreater(RadiusRatio, 1.)) {
+					MajorAxis = MinorAxis;
+					RadiusRatio = 1. / RadiusRatio;
+				}
+				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+				Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, RadiusRatio);
+
+				m_PreviewGroup.AddTail(EoDbEllipse::Create(Ellipse));
             }
             GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
         }

@@ -85,7 +85,6 @@ public: // Methods - static
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBufer, int versionNumber);
 
-	static EoDbEllipse* Create0(OdDbBlockTableRecordPtr& blockTableRecord);
 	static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
 
 	static OdDbEllipsePtr CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius);

@@ -901,20 +901,6 @@ void EoDbEllipse::Write(CFile & file, OdUInt8 * buffer) const {
 	file.Write(buffer, 64);
 }
 
-EoDbEllipse* EoDbEllipse::Create0(OdDbBlockTableRecordPtr & blockTableRecord) {
-	auto Ellipse {OdDbEllipse::createObject()};
-	Ellipse->setDatabaseDefaults(blockTableRecord->database());
-
-	blockTableRecord->appendOdDbEntity(Ellipse);
-	Ellipse->setColorIndex(pstate.ColorIndex());
-
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
-
-	Ellipse->setLinetype(Linetype);
-
-	return EoDbEllipse::Create(Ellipse);
-}
-
 EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse & other, OdDbBlockTableRecordPtr & blockTableRecord) {
 	// <tas="Possibly need additional typing of the ObjecId producted by cloning"></tas>
 	OdDbEllipsePtr EllipseEntity = other.EntityObjectId().safeOpenObject()->clone();
