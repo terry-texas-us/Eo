@@ -609,6 +609,8 @@ public:
     void OnFixupModeReturn();
     void OnFixupModeEscape();
 
+	void GenerateFillet(OdGePoint3d intersection, EoGeLineSeg3d previousLineSeg, EoGeLineSeg3d currentLineSeg);
+
 /// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
 /// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
 /// <Returns>
