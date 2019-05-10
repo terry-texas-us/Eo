@@ -11,8 +11,8 @@ END_MESSAGE_MAP()
 
 EoDlgFixupOptions::EoDlgFixupOptions(CWnd* parent) 
     : CDialog(EoDlgFixupOptions::IDD, parent)
-    , m_FixupAxisTolerance(0.)
-    , m_FixupModeCornerSize(0.) {
+    , m_AxisTolerance(0.)
+    , m_CornerSize(0.) {
 }
 
 EoDlgFixupOptions::~EoDlgFixupOptions() {
@@ -20,6 +20,6 @@ EoDlgFixupOptions::~EoDlgFixupOptions() {
 
 void EoDlgFixupOptions::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_FIX_AX_TOL, m_FixupAxisTolerance);
-	DDX_Text(pDX, IDC_FIX_SIZ, m_FixupModeCornerSize);
+	DDX_Text(pDX, IDC_FIX_AX_TOL, m_AxisTolerance);
+	DDX_Text(pDX, IDC_FIX_SIZ, m_CornerSize);
 }

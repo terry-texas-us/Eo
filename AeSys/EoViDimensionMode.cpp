@@ -31,7 +31,7 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
 			if (Primitive->Is(EoDb::kLinePrimitive))
-				dynamic_cast<EoDbLine*>(Primitive)->GetLine(ln);
+				ln = dynamic_cast<EoDbLine*>(Primitive)->LineSeg();
 			else if (Primitive->Is(EoDb::kDimensionPrimitive))
 				ln = dynamic_cast<EoDbDimension*>(Primitive)->Line();
 			else
@@ -69,8 +69,8 @@ void AeSysView::OnDimensionModeArrow(void) {
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->Is(EoDb::kLinePrimitive)) {
-				EoDbLine* LinePrimitive = dynamic_cast<EoDbLine*>(Primitive);
-				LinePrimitive->GetLine(TestLine);
+				auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
+				TestLine = LinePrimitive->LineSeg();
 			} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
 				EoDbDimension* DimensionPrimitive = dynamic_cast<EoDbDimension*>(Primitive);
 				TestLine = DimensionPrimitive->Line();
@@ -344,7 +344,7 @@ void AeSysView::OnDimensionModeAngle() {
 			auto Line {dynamic_cast<EoDbLine*>(EngagedPrimitive())};
 
 			rProjPt[0] = DetPt();
-			Line->GetLine(ln);
+			ln = Line->LineSeg();
 			PreviousDimensionCommand = ModeLineHighlightOp(ID_OP8);
 			theApp.AddStringToMessageList(L"Select the second line.");
 			iLns = 1;
@@ -355,7 +355,7 @@ void AeSysView::OnDimensionModeAngle() {
 				auto Line {dynamic_cast<EoDbLine*>(EngagedPrimitive())};
 
 				rProjPt[1] = DetPt();
-				if (ln.intersectWith(Line->Line(), CenterPoint)) {
+				if (ln.intersectWith(Line->LineSeg(), CenterPoint)) {
 					iLns++;
 					theApp.AddStringToMessageList(L"Specify the location for the dimension arc.");
 				}

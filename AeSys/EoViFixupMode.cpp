@@ -13,18 +13,19 @@ EoDbGroup* PreviousGroup;
 EoDbPrimitive* PreviousPrimitive;
 
 // <tas="FixupMode Axis Tolerance is not properly independent of the global Constraint influence angle"</tas>
-void AeSysView::OnFixupModeOptions(void) {
+void AeSysView::OnFixupModeOptions() {
 	EoDlgFixupOptions Dialog;
-	Dialog.m_FixupAxisTolerance = m_FixupModeAxisTolerance;
-	Dialog.m_FixupModeCornerSize = m_FixupModeCornerSize;
+	Dialog.m_AxisTolerance = m_AxisTolerance;
+	Dialog.m_CornerSize = m_CornerSize;
 	if (Dialog.DoModal() == IDOK) {
-		m_FixupModeCornerSize = EoMax(0., Dialog.m_FixupModeCornerSize);
-		m_FixupModeAxisTolerance = EoMax(0., Dialog.m_FixupAxisTolerance);
-		SetAxisConstraintInfluenceAngle(m_FixupModeAxisTolerance);
+		m_CornerSize = EoMax(0., Dialog.m_CornerSize);
+		m_AxisTolerance = EoMax(0., Dialog.m_AxisTolerance);
+		SetAxisConstraintInfluenceAngle(m_AxisTolerance);
 	}
 }
-void AeSysView::OnFixupModeReference(void) {
-	AeSysDoc* Document = GetDocument();
+
+void AeSysView::OnFixupModeReference() {
+	auto Document {GetDocument()};
 
 	auto CurrentPnt {GetCursorPosition()};
 
@@ -35,51 +36,56 @@ void AeSysView::OnFixupModeReference(void) {
 	if (ReferenceGroup != nullptr) {
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitive, ReferencePrimitive);
 	}
-	ReferenceGroup = SelectGroupAndPrimitive(CurrentPnt);
-	if (ReferenceGroup == nullptr) {
-		return;
-	}
-	ReferencePrimitive = EngagedPrimitive();
-	if (!ReferencePrimitive->Is(EoDb::kLinePrimitive)) {
-		return;
-	}
-	CurrentPnt = DetPt();
-	dynamic_cast<EoDbLine*>(ReferencePrimitive)->GetLine(m_FixupModeReferenceLine);
+	auto Selection {SelectLineUsingPoint(CurrentPnt)};
+	ReferenceGroup = std::get<0>(Selection);
+	if (ReferenceGroup == nullptr) { return; }
 
-	if (PreviousFixupCommand == 0)
+	ReferencePrimitive = std::get<1>(Selection);
+
+	m_ReferenceLineSeg = dynamic_cast<EoDbLine*>(ReferencePrimitive)->LineSeg();
+
+	if (PreviousFixupCommand == 0) {
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP1);
-	else if (PreviousFixupCommand == ID_OP1)
+	} else if (PreviousFixupCommand == ID_OP1) {
 		;
-	else {
+	} else {
 		auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
-		if (!m_FixupModeFirstLine.intersectWith(m_FixupModeReferenceLine, IntersectionPoint)) {
+		
+		if (!m_FirstLineSeg.intersectWith(m_ReferenceLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(L"Unable to determine intersection with reference line");
 			theApp.AddModeInformationToMessageList();
 			return;
 		}
 		if (PreviousFixupCommand == ID_OP2) {
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-			if ((IntersectionPoint - PreviousLine->EndPoint()).length() < (IntersectionPoint - PreviousLine->EndPoint()).length())
+			
+			if ((IntersectionPoint - PreviousLine->EndPoint()).length() < (IntersectionPoint - PreviousLine->EndPoint()).length()) {
 				PreviousLine->SetStartPoint2(IntersectionPoint);
-			else
+			} else {
 				PreviousLine->SetEndPoint2(IntersectionPoint);
+			}
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			if ((IntersectionPoint - m_FixupModeFirstLine.startPoint()).length() < (IntersectionPoint - m_FixupModeFirstLine.endPoint()).length())
-				m_FixupModeFirstLine.SetStartPoint(m_FixupModeFirstLine.endPoint());
-			m_FixupModeFirstLine.SetEndPoint(IntersectionPoint);
-			if ((IntersectionPoint - m_FixupModeReferenceLine.endPoint()).length() < (IntersectionPoint - m_FixupModeReferenceLine.startPoint()).length())
-				m_FixupModeReferenceLine.SetEndPoint(m_FixupModeReferenceLine.startPoint());
-			m_FixupModeReferenceLine.SetStartPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_FirstLineSeg.startPoint()).length() < (IntersectionPoint - m_FirstLineSeg.endPoint()).length()) {
+				m_FirstLineSeg.SetStartPoint(m_FirstLineSeg.endPoint());
+			}
+			m_FirstLineSeg.SetEndPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_ReferenceLineSeg.endPoint()).length() < (IntersectionPoint - m_ReferenceLineSeg.startPoint()).length()) {
+				m_ReferenceLineSeg.SetEndPoint(m_ReferenceLineSeg.startPoint());
+			}
+			m_ReferenceLineSeg.SetStartPoint(IntersectionPoint);
 			OdGePoint3d	ptCP;
-			if (pFndCPGivRadAnd4Pts(m_FixupModeCornerSize, m_FixupModeFirstLine.startPoint(), m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint(), m_FixupModeReferenceLine.endPoint(), &ptCP)) {
-				m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(ptCP));
-				m_FixupModeReferenceLine.SetStartPoint(m_FixupModeReferenceLine.ProjPt(ptCP));
+			
+			if (pFndCPGivRadAnd4Pts(m_CornerSize, m_FirstLineSeg.startPoint(), m_FirstLineSeg.endPoint(), m_ReferenceLineSeg.startPoint(), m_ReferenceLineSeg.endPoint(), &ptCP)) {
+				m_FirstLineSeg.SetEndPoint(m_FirstLineSeg.ProjPt(ptCP));
+				m_ReferenceLineSeg.SetStartPoint(m_ReferenceLineSeg.ProjPt(ptCP));
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				PreviousLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
-				PreviousLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
+				PreviousLine->SetStartPoint2(m_FirstLineSeg.startPoint());
+				PreviousLine->SetEndPoint2(m_FirstLineSeg.endPoint());
 
-				auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint())};
+				auto Line {EoDbLine::Create(BlockTableRecord, m_FirstLineSeg.endPoint(), m_ReferenceLineSeg.startPoint())};
 				Line->setColorIndex(PreviousLine->ColorIndex());
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 				PreviousGroup->AddTail(EoDbLine::Create(Line));
@@ -87,35 +93,39 @@ void AeSysView::OnFixupModeReference(void) {
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 			}
 		} else if (PreviousFixupCommand == ID_OP4) {
-			if ((IntersectionPoint - m_FixupModeFirstLine.startPoint()).length() < (IntersectionPoint - m_FixupModeFirstLine.endPoint()).length())
-				m_FixupModeFirstLine.SetStartPoint(m_FixupModeFirstLine.endPoint());
-			m_FixupModeFirstLine.SetEndPoint(IntersectionPoint);
-			if ((IntersectionPoint - m_FixupModeReferenceLine.endPoint()).length() < (IntersectionPoint - m_FixupModeReferenceLine.startPoint()).length())
-				m_FixupModeReferenceLine.SetEndPoint(m_FixupModeReferenceLine.startPoint());
-			m_FixupModeReferenceLine.SetStartPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_FirstLineSeg.startPoint()).length() < (IntersectionPoint - m_FirstLineSeg.endPoint()).length()) {
+				m_FirstLineSeg.SetStartPoint(m_FirstLineSeg.endPoint());
+			}
+			m_FirstLineSeg.SetEndPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_ReferenceLineSeg.endPoint()).length() < (IntersectionPoint - m_ReferenceLineSeg.startPoint()).length()) {
+				m_ReferenceLineSeg.SetEndPoint(m_ReferenceLineSeg.startPoint());
+			}
+			m_ReferenceLineSeg.SetStartPoint(IntersectionPoint);
 			OdGePoint3d	CenterPoint;
-			if (pFndCPGivRadAnd4Pts(m_FixupModeCornerSize, m_FixupModeFirstLine.startPoint(), m_FixupModeFirstLine.endPoint(), m_FixupModeReferenceLine.startPoint(), m_FixupModeReferenceLine.endPoint(), &CenterPoint)) {
-				m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(CenterPoint));
-				m_FixupModeReferenceLine.SetStartPoint(m_FixupModeReferenceLine.ProjPt(CenterPoint));
+			
+			if (pFndCPGivRadAnd4Pts(m_CornerSize, m_FirstLineSeg.startPoint(), m_FirstLineSeg.endPoint(), m_ReferenceLineSeg.startPoint(), m_ReferenceLineSeg.endPoint(), &CenterPoint)) {
+				m_FirstLineSeg.SetEndPoint(m_FirstLineSeg.ProjPt(CenterPoint));
+				m_ReferenceLineSeg.SetStartPoint(m_ReferenceLineSeg.ProjPt(CenterPoint));
 
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				PreviousLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
-				PreviousLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
+				PreviousLine->SetStartPoint2(m_FirstLineSeg.startPoint());
+				PreviousLine->SetEndPoint2(m_FirstLineSeg.endPoint());
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 
-				const auto rPrvEndInter {IntersectionPoint - m_FixupModeFirstLine.endPoint()};
-				const auto rPrvEndRefBeg {m_FixupModeReferenceLine.startPoint() - m_FixupModeFirstLine.endPoint()};
+				const auto rPrvEndInter {IntersectionPoint - m_FirstLineSeg.endPoint()};
+				const auto rPrvEndRefBeg {m_ReferenceLineSeg.startPoint() - m_FirstLineSeg.endPoint()};
 				auto PlaneNormal {rPrvEndInter.crossProduct(rPrvEndRefBeg)};
 				PlaneNormal.normalize();
 				double SweepAngle;
-				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FixupModeFirstLine.endPoint(), IntersectionPoint, m_FixupModeReferenceLine.startPoint(), CenterPoint, SweepAngle);
-				const auto MajorAxis {m_FixupModeFirstLine.endPoint() - CenterPoint};
+				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FirstLineSeg.endPoint(), IntersectionPoint, m_ReferenceLineSeg.startPoint(), CenterPoint, SweepAngle);
+				const auto MajorAxis {m_FirstLineSeg.endPoint() - CenterPoint};
 
 				auto Group {new EoDbGroup};
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 
 				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
-
 				Group->AddTail(EoDbEllipse::Create(Ellipse));
 				Document->AddWorkLayerGroup(Group);
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -125,44 +135,48 @@ void AeSysView::OnFixupModeReference(void) {
 	}
 }
 
-void AeSysView::OnFixupModeMend(void) {
-	AeSysDoc* Document = GetDocument();
+void AeSysView::OnFixupModeMend() {
+	auto Document {GetDocument()};
 
 	OdGePoint3d IntersectionPoint;
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
 	auto OtherGroup {SelectGroupAndPrimitive(GetCursorPosition())};
 	if (OtherGroup == nullptr) {
 		return;
 	}
-	EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
+	auto OtherPrimitive {EngagedPrimitive()};
+
 	if (!OtherPrimitive->Is(EoDb::kLinePrimitive)) {
 		theApp.AddStringToMessageList(L"Mending only supported in line primitives");
 		return;
 	}
-	EoDbLine* pLine = static_cast<EoDbLine*>(OtherPrimitive);
+	auto pLine {static_cast<EoDbLine*>(OtherPrimitive)};
 
-	pLine->GetLine(m_FixupModeSecondLine);
+	m_SecondLineSeg = pLine->LineSeg();
 
 	if (PreviousFixupCommand == 0) {
 		PreviousGroup = OtherGroup;
 		PreviousPrimitive = OtherPrimitive;
-		m_FixupModeFirstLine.set(m_FixupModeSecondLine.startPoint(), m_FixupModeSecondLine.endPoint());
+		m_FirstLineSeg.set(m_SecondLineSeg.startPoint(), m_SecondLineSeg.endPoint());
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP2);
 	} else if (PreviousFixupCommand == ID_OP1) {
-		if (!m_FixupModeReferenceLine.intersectWith(m_FixupModeSecondLine, IntersectionPoint)) {
+		if (!m_ReferenceLineSeg.intersectWith(m_SecondLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(L"Unable to determine intersection with reference line");
 			theApp.AddModeInformationToMessageList();
 			return;
 		}
 		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-		if ((IntersectionPoint - pLine->StartPoint()).length() < (IntersectionPoint - pLine->EndPoint()).length())
+
+		if ((IntersectionPoint - pLine->StartPoint()).length() < (IntersectionPoint - pLine->EndPoint()).length()) {
 			pLine->SetStartPoint2(IntersectionPoint);
-		else
+		} else {
 			pLine->SetEndPoint2(IntersectionPoint);
+		}
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
 	} else {
-		if (!m_FixupModeFirstLine.intersectWith(m_FixupModeSecondLine, IntersectionPoint)) {
+		
+		if (!m_FirstLineSeg.intersectWith(m_SecondLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
 			theApp.AddModeInformationToMessageList();
 			return;
@@ -170,28 +184,34 @@ void AeSysView::OnFixupModeMend(void) {
 		if (PreviousFixupCommand == ID_OP2) {
 			pLine = static_cast<EoDbLine*>(PreviousPrimitive);
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-			if ((IntersectionPoint - pLine->StartPoint()).length() < (IntersectionPoint - pLine->EndPoint()).length())
+			if ((IntersectionPoint - pLine->StartPoint()).length() < (IntersectionPoint - pLine->EndPoint()).length()) {
 				pLine->SetStartPoint2(IntersectionPoint);
-			else
+			} else {
 				pLine->SetEndPoint2(IntersectionPoint);
+			}
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			if ((IntersectionPoint - m_FixupModeFirstLine.startPoint()).length() < (IntersectionPoint - m_FixupModeFirstLine.endPoint()).length())
-				m_FixupModeFirstLine.SetStartPoint(m_FixupModeFirstLine.endPoint());
-			m_FixupModeFirstLine.SetEndPoint(IntersectionPoint);
-			if ((IntersectionPoint - m_FixupModeSecondLine.endPoint()).length() < (IntersectionPoint - m_FixupModeSecondLine.startPoint()).length())
-				m_FixupModeSecondLine.SetEndPoint(m_FixupModeSecondLine.startPoint());
-			m_FixupModeSecondLine.SetStartPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_FirstLineSeg.startPoint()).length() < (IntersectionPoint - m_FirstLineSeg.endPoint()).length()) {
+				m_FirstLineSeg.SetStartPoint(m_FirstLineSeg.endPoint());
+			}
+			m_FirstLineSeg.SetEndPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_SecondLineSeg.endPoint()).length() < (IntersectionPoint - m_SecondLineSeg.startPoint()).length()) {
+				m_SecondLineSeg.SetEndPoint(m_SecondLineSeg.startPoint());
+			}
+			m_SecondLineSeg.SetStartPoint(IntersectionPoint);
 			OdGePoint3d	ptCP;
-			if (pFndCPGivRadAnd4Pts(m_FixupModeCornerSize, m_FixupModeFirstLine.startPoint(), m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint(), m_FixupModeSecondLine.endPoint(), &ptCP)) {
+			
+			if (pFndCPGivRadAnd4Pts(m_CornerSize, m_FirstLineSeg.startPoint(), m_FirstLineSeg.endPoint(), m_SecondLineSeg.startPoint(), m_SecondLineSeg.endPoint(), &ptCP)) {
 				pLine = dynamic_cast<EoDbLine*>(PreviousPrimitive);
-				m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(ptCP));
-				m_FixupModeSecondLine.SetStartPoint(m_FixupModeSecondLine.ProjPt(ptCP));
+				m_FirstLineSeg.SetEndPoint(m_FirstLineSeg.ProjPt(ptCP));
+				m_SecondLineSeg.SetStartPoint(m_SecondLineSeg.ProjPt(ptCP));
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
-				pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
+				pLine->SetStartPoint2(m_FirstLineSeg.startPoint());
+				pLine->SetEndPoint2(m_FirstLineSeg.endPoint());
 
-				auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint())};
+				auto Line {EoDbLine::Create(BlockTableRecord, m_FirstLineSeg.endPoint(), m_SecondLineSeg.startPoint())};
 				Line->setColorIndex(pLine->ColorIndex());
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pLine->LinetypeIndex()));
 				PreviousGroup->AddTail(EoDbLine::Create(Line));
@@ -199,27 +219,32 @@ void AeSysView::OnFixupModeMend(void) {
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 			}
 		} else if (PreviousFixupCommand == ID_OP4) {
-			if ((IntersectionPoint - m_FixupModeFirstLine.startPoint()).length() < (IntersectionPoint - m_FixupModeFirstLine.endPoint()).length())
-				m_FixupModeFirstLine.SetStartPoint(m_FixupModeFirstLine.endPoint());
-			m_FixupModeFirstLine.SetEndPoint(IntersectionPoint);
-			if ((IntersectionPoint - m_FixupModeSecondLine.endPoint()).length() < (IntersectionPoint - m_FixupModeSecondLine.startPoint()).length())
-				m_FixupModeSecondLine.SetEndPoint(m_FixupModeSecondLine.startPoint());
-			m_FixupModeSecondLine.SetStartPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_FirstLineSeg.startPoint()).length() < (IntersectionPoint - m_FirstLineSeg.endPoint()).length()) {
+				m_FirstLineSeg.SetStartPoint(m_FirstLineSeg.endPoint());
+			}
+			m_FirstLineSeg.SetEndPoint(IntersectionPoint);
+			
+			if ((IntersectionPoint - m_SecondLineSeg.endPoint()).length() < (IntersectionPoint - m_SecondLineSeg.startPoint()).length()) {
+				m_SecondLineSeg.SetEndPoint(m_SecondLineSeg.startPoint());
+			}
+			m_SecondLineSeg.SetStartPoint(IntersectionPoint);
 			OdGePoint3d	CenterPoint;
-			if (pFndCPGivRadAnd4Pts(m_FixupModeCornerSize, m_FixupModeFirstLine.startPoint(), m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint(), m_FixupModeSecondLine.endPoint(), &CenterPoint)) {
+			
+			if (pFndCPGivRadAnd4Pts(m_CornerSize, m_FirstLineSeg.startPoint(), m_FirstLineSeg.endPoint(), m_SecondLineSeg.startPoint(), m_SecondLineSeg.endPoint(), &CenterPoint)) {
 				pLine = static_cast<EoDbLine*>(PreviousPrimitive);
-				m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(CenterPoint));
-				m_FixupModeSecondLine.SetStartPoint(m_FixupModeSecondLine.ProjPt(CenterPoint));
+				m_FirstLineSeg.SetEndPoint(m_FirstLineSeg.ProjPt(CenterPoint));
+				m_SecondLineSeg.SetStartPoint(m_SecondLineSeg.ProjPt(CenterPoint));
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
-				pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
-				const auto rPrvEndInter {IntersectionPoint - m_FixupModeFirstLine.endPoint()};
-				const auto rPrvEndSecBeg {m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint()};
+				pLine->SetStartPoint2(m_FirstLineSeg.startPoint());
+				pLine->SetEndPoint2(m_FirstLineSeg.endPoint());
+				const auto rPrvEndInter {IntersectionPoint - m_FirstLineSeg.endPoint()};
+				const auto rPrvEndSecBeg {m_SecondLineSeg.startPoint() - m_FirstLineSeg.endPoint()};
 				auto PlaneNormal {rPrvEndInter.crossProduct(rPrvEndSecBeg)};
 				PlaneNormal.normalize();
 				double SweepAngle;
-				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FixupModeFirstLine.endPoint(), IntersectionPoint, m_FixupModeSecondLine.startPoint(), CenterPoint, SweepAngle);
-				const auto MajorAxis {m_FixupModeFirstLine.endPoint() - CenterPoint};
+				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FirstLineSeg.endPoint(), IntersectionPoint, m_SecondLineSeg.startPoint(), CenterPoint, SweepAngle);
+				const auto MajorAxis {m_FirstLineSeg.endPoint() - CenterPoint};
 
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
@@ -230,19 +255,22 @@ void AeSysView::OnFixupModeMend(void) {
 		}
 		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
 		pLine = static_cast<EoDbLine*>(OtherPrimitive);
-		if ((IntersectionPoint - pLine->StartPoint()).length() < (IntersectionPoint - pLine->EndPoint()).length())
+		
+		if ((IntersectionPoint - pLine->StartPoint()).length() < (IntersectionPoint - pLine->EndPoint()).length()) {
 			pLine->SetStartPoint2(IntersectionPoint);
-		else
+		} else {
 			pLine->SetEndPoint2(IntersectionPoint);
+		}
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
-void AeSysView::OnFixupModeChamfer(void) {
-	AeSysDoc* Document = GetDocument();
+
+void AeSysView::OnFixupModeChamfer() {
+	auto Document {GetDocument()};
 
 	const auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
 	OdGePoint3d IntersectionPoint;
 	OdGePoint3d	ptCP;
@@ -255,54 +283,60 @@ void AeSysView::OnFixupModeChamfer(void) {
 	}
 	EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
 	pLine = static_cast<EoDbLine*>(OtherPrimitive);
-	pLine->GetLine(m_FixupModeSecondLine);
+	m_SecondLineSeg = pLine->LineSeg();
 
 	if (PreviousFixupCommand == 0) {
 		PreviousGroup = OtherGroup;
 		PreviousPrimitive = OtherPrimitive;
-		m_FixupModeFirstLine = m_FixupModeSecondLine;
+		m_FirstLineSeg = m_SecondLineSeg;
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP3);
 	} else {
+		
 		if (PreviousFixupCommand == ID_OP1) {
 			PreviousGroup = OtherGroup;
 			PreviousPrimitive = OtherPrimitive;
-			m_FixupModeFirstLine = m_FixupModeReferenceLine;
+			m_FirstLineSeg = m_ReferenceLineSeg;
 		}
-		if (!m_FixupModeFirstLine.intersectWith(m_FixupModeSecondLine, IntersectionPoint)) {
+		if (!m_FirstLineSeg.intersectWith(m_SecondLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
 			theApp.AddModeInformationToMessageList();
 			return;
 		}
-		if ((IntersectionPoint - m_FixupModeFirstLine.startPoint()).length() < (IntersectionPoint - m_FixupModeFirstLine.endPoint()).length())
-			m_FixupModeFirstLine.SetStartPoint(m_FixupModeFirstLine.endPoint());
-		m_FixupModeFirstLine.SetEndPoint(IntersectionPoint);
-		if ((IntersectionPoint - m_FixupModeSecondLine.endPoint()).length() < (IntersectionPoint - m_FixupModeSecondLine.startPoint()).length())
-			m_FixupModeSecondLine.SetEndPoint(m_FixupModeSecondLine.startPoint());
-		m_FixupModeSecondLine.SetStartPoint(IntersectionPoint);
-		if (pFndCPGivRadAnd4Pts(m_FixupModeCornerSize, m_FixupModeFirstLine.startPoint(), m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint(), m_FixupModeSecondLine.endPoint(), &ptCP)) { // Center point is defined .. determine arc endpoints
-			m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(ptCP));
-			m_FixupModeSecondLine.SetStartPoint(m_FixupModeSecondLine.ProjPt(ptCP));
+		if ((IntersectionPoint - m_FirstLineSeg.startPoint()).length() < (IntersectionPoint - m_FirstLineSeg.endPoint()).length()) {
+			m_FirstLineSeg.SetStartPoint(m_FirstLineSeg.endPoint());
+		}
+		m_FirstLineSeg.SetEndPoint(IntersectionPoint);
+		
+		if ((IntersectionPoint - m_SecondLineSeg.endPoint()).length() < (IntersectionPoint - m_SecondLineSeg.startPoint()).length()) {
+			m_SecondLineSeg.SetEndPoint(m_SecondLineSeg.startPoint());
+		}
+		m_SecondLineSeg.SetStartPoint(IntersectionPoint);
+		
+		if (pFndCPGivRadAnd4Pts(m_CornerSize, m_FirstLineSeg.startPoint(), m_FirstLineSeg.endPoint(), m_SecondLineSeg.startPoint(), m_SecondLineSeg.endPoint(), &ptCP)) { // Center point is defined .. determine arc endpoints
+			m_FirstLineSeg.SetEndPoint(m_FirstLineSeg.ProjPt(ptCP));
+			m_SecondLineSeg.SetStartPoint(m_SecondLineSeg.ProjPt(ptCP));
+			
 			if (PreviousFixupCommand == ID_OP1)
 				;
 			else if (PreviousFixupCommand == ID_OP2) {
 				pLine = dynamic_cast<EoDbLine*>(PreviousPrimitive);
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+				pLine->SetStartPoint2(m_FirstLineSeg.startPoint());
 				pLine->SetEndPoint2(IntersectionPoint);
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 			} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
 				pLine = dynamic_cast<EoDbLine*>(PreviousPrimitive);
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
-				pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
+				pLine->SetStartPoint2(m_FirstLineSeg.startPoint());
+				pLine->SetEndPoint2(m_FirstLineSeg.endPoint());
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 			}
 			pLine = dynamic_cast<EoDbLine*>(OtherPrimitive);
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-			pLine->SetStartPoint2(m_FixupModeSecondLine.startPoint());
-			pLine->SetEndPoint2(m_FixupModeSecondLine.endPoint());
+			pLine->SetStartPoint2(m_SecondLineSeg.startPoint());
+			pLine->SetEndPoint2(m_SecondLineSeg.endPoint());
 
-			auto Line {EoDbLine::Create(BlockTableRecord, m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint())};
+			auto Line {EoDbLine::Create(BlockTableRecord, m_FirstLineSeg.endPoint(), m_SecondLineSeg.startPoint())};
 			Line->setColorIndex(pLine->ColorIndex());
 			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pLine->LinetypeIndex()));
 			OtherGroup->AddTail(EoDbLine::Create(Line));
@@ -312,77 +346,83 @@ void AeSysView::OnFixupModeChamfer(void) {
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
-void AeSysView::OnFixupModeFillet(void) {
-	AeSysDoc* Document = GetDocument();
+
+void AeSysView::OnFixupModeFillet() {
+	auto Document {GetDocument()};
 
 	const auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
-	OdGePoint3d IntersectionPoint;
+	auto Selection {SelectLineUsingPoint(CurrentPnt)};
+	auto OtherGroup {std::get<0>(Selection)};
+	
+	if (OtherGroup == nullptr) { return; }
 
-	EoDbLine* pLine;
-
-	auto OtherGroup {SelectGroupAndPrimitive(CurrentPnt)};
-	EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
-	pLine = dynamic_cast<EoDbLine*>(OtherPrimitive);
-	pLine->GetLine(m_FixupModeSecondLine);
+	auto OtherPrimitive {std::get<1>(Selection)};
+	
+	auto pLine {dynamic_cast<EoDbLine*>(OtherPrimitive)};
+	m_SecondLineSeg = pLine->LineSeg();
 
 	if (PreviousFixupCommand == 0) {
 		PreviousGroup = OtherGroup;
 		PreviousPrimitive = OtherPrimitive;
-		m_FixupModeFirstLine = m_FixupModeSecondLine;
-		PreviousFixupCommand = ModeLineHighlightOp(ID_OP3);
+		m_FirstLineSeg = m_SecondLineSeg;
+		PreviousFixupCommand = ModeLineHighlightOp(ID_OP4);
 	} else {
+		OdGePoint3d IntersectionPoint;
+
 		if (PreviousFixupCommand == ID_OP1) {
 			PreviousGroup = OtherGroup;
 			PreviousPrimitive = OtherPrimitive;
-			m_FixupModeFirstLine = m_FixupModeReferenceLine;
+			m_FirstLineSeg = m_ReferenceLineSeg;
 		}
-
-		m_FixupModeFirstLine.IntersectWithInfinite(m_FixupModeSecondLine, IntersectionPoint);
-
-		if (!m_FixupModeFirstLine.intersectWith(m_FixupModeSecondLine, IntersectionPoint)) {
+		if (!m_FirstLineSeg.intersectWith(m_SecondLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
 			theApp.AddModeInformationToMessageList();
 			return;
 		}
-		if ((IntersectionPoint - m_FixupModeFirstLine.startPoint()).length() < (IntersectionPoint - m_FixupModeFirstLine.endPoint()).length())
-			m_FixupModeFirstLine.SetStartPoint(m_FixupModeFirstLine.endPoint());
-		m_FixupModeFirstLine.SetEndPoint(IntersectionPoint);
-		if ((IntersectionPoint - m_FixupModeSecondLine.endPoint()).length() < (IntersectionPoint - m_FixupModeSecondLine.startPoint()).length())
-			m_FixupModeSecondLine.SetEndPoint(m_FixupModeSecondLine.startPoint());
-		m_FixupModeSecondLine.SetStartPoint(IntersectionPoint);
+		if ((IntersectionPoint - m_FirstLineSeg.startPoint()).length() < (IntersectionPoint - m_FirstLineSeg.endPoint()).length()) {
+			m_FirstLineSeg.SetStartPoint(m_FirstLineSeg.endPoint());
+		}
+		m_FirstLineSeg.SetEndPoint(IntersectionPoint);
+		
+		if ((IntersectionPoint - m_SecondLineSeg.endPoint()).length() < (IntersectionPoint - m_SecondLineSeg.startPoint()).length()) {
+			m_SecondLineSeg.SetEndPoint(m_SecondLineSeg.startPoint());
+		}
+		m_SecondLineSeg.SetStartPoint(IntersectionPoint);
 		OdGePoint3d	CenterPoint;
-		if (pFndCPGivRadAnd4Pts(m_FixupModeCornerSize, m_FixupModeFirstLine.startPoint(), m_FixupModeFirstLine.endPoint(), m_FixupModeSecondLine.startPoint(), m_FixupModeSecondLine.endPoint(), &CenterPoint)) {
-			m_FixupModeFirstLine.SetEndPoint(m_FixupModeFirstLine.ProjPt(CenterPoint));
-			m_FixupModeSecondLine.SetStartPoint(m_FixupModeSecondLine.ProjPt(CenterPoint));
+		
+		if (pFndCPGivRadAnd4Pts(m_CornerSize, m_FirstLineSeg.startPoint(), m_FirstLineSeg.endPoint(), m_SecondLineSeg.startPoint(), m_SecondLineSeg.endPoint(), &CenterPoint)) {
+			m_FirstLineSeg.SetEndPoint(m_FirstLineSeg.ProjPt(CenterPoint));
+			m_SecondLineSeg.SetStartPoint(m_SecondLineSeg.ProjPt(CenterPoint));
+			
 			if (PreviousFixupCommand == ID_OP1)
 				;
 			else if (PreviousFixupCommand == ID_OP2) {
 				pLine = dynamic_cast<EoDbLine*>(PreviousPrimitive);
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
+				pLine->SetStartPoint2(m_FirstLineSeg.startPoint());
 				pLine->SetEndPoint2(IntersectionPoint);
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 			} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
 				pLine = dynamic_cast<EoDbLine*>(PreviousPrimitive);
 				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				pLine->SetStartPoint2(m_FixupModeFirstLine.startPoint());
-				pLine->SetEndPoint2(m_FixupModeFirstLine.endPoint());
+				pLine->SetStartPoint2(m_FirstLineSeg.startPoint());
+				pLine->SetEndPoint2(m_FirstLineSeg.endPoint());
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 			}
 			pLine = dynamic_cast<EoDbLine*>(OtherPrimitive);
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-			pLine->SetStartPoint2(m_FixupModeSecondLine.startPoint());
-			pLine->SetEndPoint2(m_FixupModeSecondLine.endPoint());
+			pLine->SetStartPoint2(m_SecondLineSeg.startPoint());
+			pLine->SetEndPoint2(m_SecondLineSeg.endPoint());
 
 			double SweepAngle;
-			const auto rPrvEndInter {IntersectionPoint - m_FixupModeFirstLine.endPoint()};
-			const auto rPrvEndSecBeg {m_FixupModeSecondLine.startPoint() - m_FixupModeFirstLine.endPoint()};
+			const auto rPrvEndInter {IntersectionPoint - m_FirstLineSeg.endPoint()};
+			const auto rPrvEndSecBeg {m_SecondLineSeg.startPoint() - m_FirstLineSeg.endPoint()};
 			auto PlaneNormal {rPrvEndInter.crossProduct(rPrvEndSecBeg)};
 			PlaneNormal.normalize();
-			pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FixupModeFirstLine.endPoint(), IntersectionPoint, m_FixupModeSecondLine.startPoint(), CenterPoint, SweepAngle);
-			const auto MajorAxis {m_FixupModeFirstLine.endPoint() - CenterPoint};
+			pFndSwpAngGivPlnAnd3Lns(PlaneNormal, m_FirstLineSeg.endPoint(), IntersectionPoint, m_SecondLineSeg.startPoint(), CenterPoint, SweepAngle);
+			const auto MajorAxis {m_FirstLineSeg.endPoint() - CenterPoint};
 
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 			Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
@@ -394,47 +434,53 @@ void AeSysView::OnFixupModeFillet(void) {
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
-void AeSysView::OnFixupModeSquare(void) {
-	AeSysDoc* Document = GetDocument();
 
-	OdGePoint3d CurrentPnt = GetCursorPosition();
+void AeSysView::OnFixupModeSquare() {
+	auto Document {GetDocument()};
+
+	auto CurrentPnt {GetCursorPosition()};
 
 	EoDbLine* pLine;
 	auto OtherGroup {SelectGroupAndPrimitive(CurrentPnt)};
+	
 	if (OtherGroup != nullptr) {
-		EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
+		auto OtherPrimitive {EngagedPrimitive()};
 		CurrentPnt = DetPt();
+		
 		if (OtherPrimitive->Is(EoDb::kLinePrimitive)) {
 			pLine = static_cast<EoDbLine*>(OtherPrimitive);
-			pLine->GetLine(m_FixupModeSecondLine);
-			const double dLen = m_FixupModeSecondLine.length();
+			m_SecondLineSeg = pLine->LineSeg();
+			const double dLen = m_SecondLineSeg.length();
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-			m_FixupModeSecondLine.SetStartPoint(SnapPointToAxis(CurrentPnt, m_FixupModeSecondLine.startPoint()));
-			const OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
-			m_FixupModeSecondLine.SetEndPoint(ProjectToward(StartPoint, CurrentPnt, dLen));
-			pLine->SetStartPoint2(SnapPointToGrid(m_FixupModeSecondLine.startPoint()));
-			pLine->SetEndPoint2(SnapPointToGrid(m_FixupModeSecondLine.endPoint()));
+			m_SecondLineSeg.SetStartPoint(SnapPointToAxis(CurrentPnt, m_SecondLineSeg.startPoint()));
+			const OdGePoint3d StartPoint = m_SecondLineSeg.startPoint();
+			m_SecondLineSeg.SetEndPoint(ProjectToward(StartPoint, CurrentPnt, dLen));
+			pLine->SetStartPoint2(SnapPointToGrid(m_SecondLineSeg.startPoint()));
+			pLine->SetEndPoint2(SnapPointToGrid(m_SecondLineSeg.endPoint()));
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
 		}
 	}
 }
-void AeSysView::OnFixupModeParallel(void) {
-	AeSysDoc* Document = GetDocument();
+
+void AeSysView::OnFixupModeParallel() {
+	auto Document {GetDocument()};
 
 	const auto CurrentPnt {GetCursorPosition()};
 
 	EoDbLine* pLine;
 	auto OtherGroup {SelectGroupAndPrimitive(CurrentPnt)};
+	
 	if (ReferenceGroup != nullptr && OtherGroup != nullptr) {
-		EoDbPrimitive* OtherPrimitive = EngagedPrimitive();
+		auto OtherPrimitive {EngagedPrimitive()};
+		
 		if (OtherPrimitive->Is(EoDb::kLinePrimitive)) {
 			pLine = static_cast<EoDbLine*>(OtherPrimitive);
 
-			m_FixupModeSecondLine.set(m_FixupModeReferenceLine.ProjPt(pLine->StartPoint()), m_FixupModeReferenceLine.ProjPt(pLine->EndPoint()));
+			m_SecondLineSeg.set(m_ReferenceLineSeg.ProjPt(pLine->StartPoint()), m_ReferenceLineSeg.ProjPt(pLine->EndPoint()));
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, OtherGroup);
-			const OdGePoint3d StartPoint = m_FixupModeSecondLine.startPoint();
+			const OdGePoint3d StartPoint = m_SecondLineSeg.startPoint();
 			pLine->SetStartPoint2(ProjectToward(StartPoint, pLine->StartPoint(), theApp.DimensionLength()));
-			const OdGePoint3d EndPoint = m_FixupModeSecondLine.endPoint();
+			const OdGePoint3d EndPoint = m_SecondLineSeg.endPoint();
 			pLine->SetEndPoint2(ProjectToward(EndPoint, pLine->EndPoint(), theApp.DimensionLength()));
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, OtherGroup);
 		}
@@ -442,7 +488,7 @@ void AeSysView::OnFixupModeParallel(void) {
 }
 
 void AeSysView::OnFixupModeReturn() {
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
 
 	if (ReferenceGroup != nullptr) {
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitive, ReferencePrimitive);
@@ -453,7 +499,7 @@ void AeSysView::OnFixupModeReturn() {
 }
 
 void AeSysView::OnFixupModeEscape() {
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
 
 	if (ReferenceGroup != nullptr) {
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitive, ReferencePrimitive);

@@ -294,7 +294,7 @@ void AeSysView::OnLpdModeSize() {
             POSITION Position = m_EndCapGroup->Find(m_EndCapPoint);
             m_EndCapGroup->GetNext(Position);
             auto pLine {dynamic_cast<EoDbLine*>(m_EndCapGroup->GetAt(Position))};
-            auto Line = pLine->Line();
+            auto Line = pLine->LineSeg();
             Angle = fmod(Line.AngleFromXAxis_xy(), PI);
             if (Angle <= RADIAN)
                 Angle += PI;
@@ -864,8 +864,7 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, double
 	EoDbLine* RightLinePrimitive = 0;
 	int DirectedRelationship = 0;
 
-	EoGeLineSeg3d TestLine;
-	testLinePrimitive->GetLine(TestLine);
+	auto TestLine {testLinePrimitive->LineSeg()};
 
 	const double TestLineAngle = fmod(TestLine.AngleFromXAxis_xy(), PI);
 
@@ -879,8 +878,8 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, double
 			if (Primitive == testLinePrimitive || !Primitive->Is(EoDb::kLinePrimitive))
 				continue;
 
-			EoDbLine* LinePrimitive = dynamic_cast<EoDbLine*>(Primitive);
-			LinePrimitive->GetLine(Line);
+			auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
+			Line = LinePrimitive->LineSeg();
 			if (Line.startPoint() == TestLine.startPoint() || Line.startPoint() == TestLine.endPoint()) { // Exchange points
 				const OdGePoint3d Point = Line.startPoint();
 				Line.SetStartPoint(Line.endPoint());

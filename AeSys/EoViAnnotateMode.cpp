@@ -346,7 +346,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 		const int PrimitiveState = pstate.Save();
 
 		if (!CurrentText.IsEmpty()) {
-            auto LineSeg {EngagedLine->Line()};
+            auto LineSeg {EngagedLine->LineSeg()};
 			double dAng = LineSeg.AngleFromXAxis_xy();
 			if (dAng > .25 * TWOPI && dAng <  .75 * TWOPI)
 				dAng += PI;

@@ -594,11 +594,11 @@ public:
     void OnDimensionModeReturn();
     void OnDimensionModeEscape();
 
-    double m_FixupModeAxisTolerance;
-    double m_FixupModeCornerSize;
-    EoGeLineSeg3d m_FixupModeFirstLine;
-    EoGeLineSeg3d m_FixupModeReferenceLine;
-    EoGeLineSeg3d m_FixupModeSecondLine;
+    double m_AxisTolerance;
+    double m_CornerSize;
+    EoGeLineSeg3d m_FirstLineSeg;
+    EoGeLineSeg3d m_ReferenceLineSeg;
+    EoGeLineSeg3d m_SecondLineSeg;
 
     void OnFixupModeOptions();
     void OnFixupModeReference();

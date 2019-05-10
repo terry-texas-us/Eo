@@ -5,7 +5,7 @@
 #include "EoDbPrimitive.h"
 
 class EoDbLine : public EoDbPrimitive {
-	EoGeLineSeg3d m_Line;
+	EoGeLineSeg3d m_LineSeg;
 
 public: // Constructors and destructor
 	
@@ -49,17 +49,16 @@ public: // Methods - virtuals
 
 public: // Methods
 
-	OdGePoint3d EndPoint() const;
-	void GetLine(EoGeLineSeg3d& line) const;
-	void GetPoints(OdGePoint3d& startPoint, OdGePoint3d& endPoint);
-	EoGeLineSeg3d Line() const;
-	double Length() const;
+	OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
+	EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
+	double Length()  const { return (m_LineSeg.length()); }
 	OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 	double ParametricRelationshipOf(const OdGePoint3d& point) const;
 	void SetEndPoint2(const OdGePoint3d& endPoint);
 	void SetStartPoint2(const OdGePoint3d& startPoint);
 	void Square(AeSysView* view);
-	OdGePoint3d StartPoint() const;
+	OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
+
 
 public: // Methods - static
 

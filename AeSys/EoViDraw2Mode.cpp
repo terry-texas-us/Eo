@@ -209,7 +209,7 @@ bool AeSysView::CleanPreviousLines() {
 	return true;
 }
 bool AeSysView::StartAssemblyFromLine() {
-	EoGeLineSeg3d Line = m_BeginSectionLine->Line();
+	EoGeLineSeg3d Line = m_BeginSectionLine->LineSeg();
 
 	const bool ParallelLines = Line.isParallelTo(m_CurrentReferenceLine);
 	if (ParallelLines) return false;

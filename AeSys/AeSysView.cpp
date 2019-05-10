@@ -403,8 +403,8 @@ AeSysView::AeSysView() noexcept
 
 	SetEditModeRotationAngles(0., 0., 45.);
 
-	m_FixupModeAxisTolerance = 2.;
-	m_FixupModeCornerSize = .25;
+	m_AxisTolerance = 2.;
+	m_CornerSize = .25;
 
 	m_GenerateTurningVanes = true;	// turning vanes generation flag
 	m_InsideRadiusFactor = 1.5;		// inside radius elbow factor

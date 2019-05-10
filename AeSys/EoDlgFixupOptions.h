@@ -16,8 +16,8 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 
 public:
-	double m_FixupAxisTolerance;
-	double m_FixupModeCornerSize;
+	double m_AxisTolerance;
+	double m_CornerSize;
 
 protected:
 	DECLARE_MESSAGE_MAP()
