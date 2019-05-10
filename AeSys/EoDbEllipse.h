@@ -93,10 +93,3 @@ public: // Methods - static
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double);
 int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d&, const OdGePoint3d&, const OdGePoint3d&, const OdGePoint3d&, double& sweepAngle);
-/// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
-/// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
-/// <Returns>
-/// true    center point determined
-/// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
-/// </Returns>
-bool pFndCPGivRadAnd4Pts(double radius, OdGePoint3d, OdGePoint3d, OdGePoint3d, OdGePoint3d, OdGePoint3d*);

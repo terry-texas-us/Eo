@@ -1079,52 +1079,6 @@ OdGePoint3d pFndPtOnArc(const OdGePoint3d & center, const OdGeVector3d & majorAx
 	return (pt);
 }
 
-bool pFndCPGivRadAnd4Pts(double radius, OdGePoint3d arLn1Beg, OdGePoint3d arLn1End, OdGePoint3d arLn2Beg, OdGePoint3d arLn2End, OdGePoint3d * center) {
-	const OdGeVector3d v1 = OdGeVector3d(arLn1End - arLn1Beg); // Determine vector defined by endpoints of first line
-	auto dV1Mag {v1.length()};
-	if (dV1Mag <= DBL_EPSILON)
-		return false;
-
-	OdGeVector3d v2 = OdGeVector3d(arLn2End - arLn2Beg);
-	auto dV2Mag {v2.length()};
-	if (dV2Mag <= DBL_EPSILON)
-		return false;
-
-	auto vPlnNorm {v1.crossProduct(v2)}; // Determine vector normal to tangent vectors
-	if (vPlnNorm.isZeroLength()) {
-		return false;
-	}
-	vPlnNorm.normalize();
-
-	if (fabs((vPlnNorm.dotProduct(OdGeVector3d(arLn2Beg - arLn1Beg)))) > DBL_EPSILON) // Four points are not coplanar
-		return false;
-
-	EoGeMatrix3d WorldToPlaneTransform;
-	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(arLn1Beg, vPlnNorm));
-
-	arLn1End.transformBy(WorldToPlaneTransform);
-	arLn2Beg.transformBy(WorldToPlaneTransform);
-	arLn2End.transformBy(WorldToPlaneTransform);
-	double dA1 {-arLn1End.y / dV1Mag};
-	double dB1 {arLn1End.x / dV1Mag};
-	v2.x = arLn2End.x - arLn2Beg.x;
-	v2.y = arLn2End.y - arLn2Beg.y;
-	double dA2 {-v2.y / dV2Mag};
-	double dB2 {v2.x / dV2Mag};
-	double dDet {dA2 * dB1 - dA1 * dB2};
-
-	double dSgnRad {(arLn1End.x * arLn2End.y - arLn2End.x * arLn1End.y) >= 0. ? -fabs(radius) : fabs(radius)};
-
-	double dC1RAB1 {dSgnRad};
-	double dC2RAB2 {(arLn2Beg.x * arLn2End.y - arLn2End.x * arLn2Beg.y) / dV2Mag + dSgnRad};
-	(*center).x = (dB2 * dC1RAB1 - dB1 * dC2RAB2) / dDet;
-	(*center).y = (dA1 * dC2RAB2 - dA2 * dC1RAB1) / dDet;
-	(*center).z = 0.;
-	WorldToPlaneTransform.invert();
-	*center = WorldToPlaneTransform * (*center);
-	return true;
-}
-
 int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d & planeNormal, const OdGePoint3d & arP1, const OdGePoint3d & arP2, const OdGePoint3d & arP3, const OdGePoint3d & center, double& sweepAngle) {
 	double dT[3];
 	OdGePoint3d rR[3];
