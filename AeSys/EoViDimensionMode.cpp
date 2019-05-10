@@ -340,25 +340,34 @@ void AeSysView::OnDimensionModeAngle() {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 
-		if (SelectLineBy(CurrentPnt) != 0) {
-			auto Line {dynamic_cast<EoDbLine*>(EngagedPrimitive())};
+		auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-			rProjPt[0] = DetPt();
-			ln = Line->LineSeg();
-			PreviousDimensionCommand = ModeLineHighlightOp(ID_OP8);
-			theApp.AddStringToMessageList(L"Select the second line.");
-			iLns = 1;
-		}
+		if (std::get<0>(Selection) == nullptr) { return; }
+
+		auto Primitive {std::get<1>(Selection)};
+
+		auto Line {dynamic_cast<EoDbLine*>(Primitive)};
+		ln = Line->LineSeg();
+		rProjPt[0] = ln.ProjPt(CurrentPnt);
+
+		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP8);
+		theApp.AddStringToMessageList(L"Select the second line.");
+		iLns = 1;
 	} else {
 		if (iLns == 1) {
-			if (SelectLineBy(CurrentPnt) != 0) {
-				auto Line {dynamic_cast<EoDbLine*>(EngagedPrimitive())};
+			auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-				rProjPt[1] = DetPt();
-				if (ln.intersectWith(Line->LineSeg(), CenterPoint)) {
-					iLns++;
-					theApp.AddStringToMessageList(L"Specify the location for the dimension arc.");
-				}
+			if (std::get<0>(Selection) == nullptr) { return; }
+
+			auto Primitive {std::get<1>(Selection)};
+
+			auto Line {dynamic_cast<EoDbLine*>(Primitive)};
+
+			rProjPt[1] = Line->LineSeg().ProjPt(CurrentPnt);
+
+			if (ln.intersectWith(Line->LineSeg(), CenterPoint)) {
+				iLns++;
+				theApp.AddStringToMessageList(L"Specify the location for the dimension arc.");
 			}
 		} else {
 			double Angle;

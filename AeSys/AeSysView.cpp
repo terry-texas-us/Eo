@@ -3454,41 +3454,6 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 	return {nullptr, nullptr};
 }
 
-EoDbGroup* AeSysView::SelectLineBy(const OdGePoint3d & pt) {
-	m_EngagedGroup = 0;
-	m_EngagedPrimitive = 0;
-
-	OdGePoint3d ptEng;
-
-	EoGePoint4d ptView(pt, 1.);
-	ModelViewTransformPoint(ptView);
-
-	double tol = m_SelectApertureSize;
-
-	EoGeMatrix3d TransformMatrix = ModelViewMatrix();
-	TransformMatrix.invert();
-
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kLinePrimitive)) {
-				if (Primitive->SelectBy(ptView, this, ptEng)) {
-					tol = ptView.DistanceToPointXY(EoGePoint4d(ptEng, 1.));
-
-					m_ptDet = ptEng;
-					m_ptDet.transformBy(TransformMatrix);
-					m_EngagedGroup = Group;
-					m_EngagedPrimitive = Primitive;
-				}
-			}
-		}
-	}
-	return (m_EngagedGroup);
-}
-
 std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d & point) {
 	EoGePoint4d ptView(point, 1.);
 	ModelViewTransformPoint(ptView);
