@@ -609,6 +609,7 @@ public:
     void OnFixupModeReturn();
     void OnFixupModeEscape();
 
+	void GenerateChamfer(OdGePoint3d intersection, EoGeLineSeg3d previousLineSeg, EoGeLineSeg3d currentLineSeg);
 	void GenerateFillet(OdGePoint3d intersection, EoGeLineSeg3d previousLineSeg, EoGeLineSeg3d currentLineSeg);
 
 /// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>

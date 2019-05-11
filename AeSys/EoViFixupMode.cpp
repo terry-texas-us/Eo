@@ -50,8 +50,6 @@ void AeSysView::OnFixupModeReference() {
 	} else if (PreviousFixupCommand == ID_OP1) {
 		;
 	} else {
-		auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
-
 		OdGePoint3d IntersectionPoint;
 
 		if (!m_PreviousLineSeg.intersectWith(m_ReferenceLineSeg, IntersectionPoint)) {
@@ -61,40 +59,16 @@ void AeSysView::OnFixupModeReference() {
 		if (PreviousFixupCommand == ID_OP2) {
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
 			
-			if ((IntersectionPoint - PreviousLine->EndPoint()).length() < (IntersectionPoint - PreviousLine->EndPoint()).length()) {
+			auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
+
+			if ((IntersectionPoint - PreviousLine->StartPoint()).length() < (IntersectionPoint - PreviousLine->EndPoint()).length()) {
 				PreviousLine->SetStartPoint2(IntersectionPoint);
 			} else {
 				PreviousLine->SetEndPoint2(IntersectionPoint);
 			}
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			
-			if ((IntersectionPoint - m_PreviousLineSeg.startPoint()).length() < (IntersectionPoint - m_PreviousLineSeg.endPoint()).length()) {
-				m_PreviousLineSeg.SetStartPoint(m_PreviousLineSeg.endPoint());
-			}
-			m_PreviousLineSeg.SetEndPoint(IntersectionPoint);
-			
-			if ((IntersectionPoint - m_ReferenceLineSeg.endPoint()).length() < (IntersectionPoint - m_ReferenceLineSeg.startPoint()).length()) {
-				m_ReferenceLineSeg.SetEndPoint(m_ReferenceLineSeg.startPoint());
-			}
-			m_ReferenceLineSeg.SetStartPoint(IntersectionPoint);
-			OdGePoint3d	CenterPoint;
-			
-			if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, m_PreviousLineSeg, m_ReferenceLineSeg, CenterPoint)) {
-				m_PreviousLineSeg.SetEndPoint(m_PreviousLineSeg.ProjPt(CenterPoint));
-				m_ReferenceLineSeg.SetStartPoint(m_ReferenceLineSeg.ProjPt(CenterPoint));
-				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				PreviousLine->SetStartPoint2(m_PreviousLineSeg.startPoint());
-				PreviousLine->SetEndPoint2(m_PreviousLineSeg.endPoint());
-
-				OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-				auto Line {EoDbLine::Create(BlockTableRecord, m_PreviousLineSeg.endPoint(), m_ReferenceLineSeg.startPoint())};
-				Line->setColorIndex(PreviousLine->ColorIndex());
-				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
-				PreviousGroup->AddTail(EoDbLine::Create(Line));
-
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
-			}
+			GenerateChamfer(IntersectionPoint, m_PreviousLineSeg, m_ReferenceLineSeg);
 		} else if (PreviousFixupCommand == ID_OP4) {
 			GenerateFillet(IntersectionPoint, m_PreviousLineSeg, m_ReferenceLineSeg);
 		}
@@ -154,35 +128,7 @@ void AeSysView::OnFixupModeMend() {
 			}
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			
-			if ((IntersectionPoint - m_PreviousLineSeg.startPoint()).length() < (IntersectionPoint - m_PreviousLineSeg.endPoint()).length()) {
-				m_PreviousLineSeg.SetStartPoint(m_PreviousLineSeg.endPoint());
-			}
-			m_PreviousLineSeg.SetEndPoint(IntersectionPoint);
-			
-			if ((IntersectionPoint - m_CurrentLineSeg.endPoint()).length() < (IntersectionPoint - m_CurrentLineSeg.startPoint()).length()) {
-				m_CurrentLineSeg.SetEndPoint(m_CurrentLineSeg.startPoint());
-			}
-			m_CurrentLineSeg.SetStartPoint(IntersectionPoint);
-			OdGePoint3d	CenterPoint;
-			
-			if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, m_PreviousLineSeg, m_CurrentLineSeg, CenterPoint)) {
-				auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
-				m_PreviousLineSeg.SetEndPoint(m_PreviousLineSeg.ProjPt(CenterPoint));
-				m_CurrentLineSeg.SetStartPoint(m_CurrentLineSeg.ProjPt(CenterPoint));
-				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				PreviousLine->SetStartPoint2(m_PreviousLineSeg.startPoint());
-				PreviousLine->SetEndPoint2(m_PreviousLineSeg.endPoint());
-
-				OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-
-				auto Line {EoDbLine::Create(BlockTableRecord, m_PreviousLineSeg.endPoint(), m_CurrentLineSeg.startPoint())};
-				Line->setColorIndex(PreviousLine->ColorIndex());
-				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
-				PreviousGroup->AddTail(EoDbLine::Create(Line));
-
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
-			}
+			GenerateChamfer(IntersectionPoint, m_PreviousLineSeg, m_CurrentLineSeg);
 		} else if (PreviousFixupCommand == ID_OP4) {
 			GenerateFillet(IntersectionPoint, m_PreviousLineSeg, m_CurrentLineSeg);
 		}
@@ -200,13 +146,6 @@ void AeSysView::OnFixupModeMend() {
 }
 
 void AeSysView::OnFixupModeChamfer() {
-	auto Document {GetDocument()};
-
-	const auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-
-	OdGePoint3d IntersectionPoint;
-
 	auto Selection {SelectLineUsingPoint(GetCursorPosition())};
 	CurrentGroup = std::get<0>(Selection);
 
@@ -231,52 +170,13 @@ void AeSysView::OnFixupModeChamfer() {
 			PreviousPrimitive = CurrentPrimitive;
 			m_PreviousLineSeg = m_ReferenceLineSeg;
 		}
+		OdGePoint3d IntersectionPoint;
 		if (!m_PreviousLineSeg.intersectWith(m_CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
 			return;
 		}
-		if ((IntersectionPoint - m_PreviousLineSeg.startPoint()).length() < (IntersectionPoint - m_PreviousLineSeg.endPoint()).length()) {
-			m_PreviousLineSeg.SetStartPoint(m_PreviousLineSeg.endPoint());
-		}
-		m_PreviousLineSeg.SetEndPoint(IntersectionPoint);
-		
-		if ((IntersectionPoint - m_CurrentLineSeg.endPoint()).length() < (IntersectionPoint - m_CurrentLineSeg.startPoint()).length()) {
-			m_CurrentLineSeg.SetEndPoint(m_CurrentLineSeg.startPoint());
-		}
-		m_CurrentLineSeg.SetStartPoint(IntersectionPoint);
-		
-		OdGePoint3d	CenterPoint;
-		if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, m_PreviousLineSeg, m_CurrentLineSeg, CenterPoint)) {
-			m_PreviousLineSeg.SetEndPoint(m_PreviousLineSeg.ProjPt(CenterPoint));
-			m_CurrentLineSeg.SetStartPoint(m_CurrentLineSeg.ProjPt(CenterPoint));
-			
-			if (PreviousFixupCommand == ID_OP1)
-				;
-			else if (PreviousFixupCommand == ID_OP2) {
-				auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
-				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				PreviousLine->SetStartPoint2(m_PreviousLineSeg.startPoint());
-				PreviousLine->SetEndPoint2(IntersectionPoint);
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
-			} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
-				auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
-				Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-				PreviousLine->SetStartPoint2(m_PreviousLineSeg.startPoint());
-				PreviousLine->SetEndPoint2(m_PreviousLineSeg.endPoint());
-				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
-			}
-			auto CurrentLine {dynamic_cast<EoDbLine*>(CurrentPrimitive)};
-			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, CurrentGroup);
-			CurrentLine->SetStartPoint2(m_CurrentLineSeg.startPoint());
-			CurrentLine->SetEndPoint2(m_CurrentLineSeg.endPoint());
+		GenerateChamfer(IntersectionPoint, m_PreviousLineSeg, m_CurrentLineSeg);
 
-			auto Line {EoDbLine::Create(BlockTableRecord, m_PreviousLineSeg.endPoint(), m_CurrentLineSeg.startPoint())};
-			Line->setColorIndex(CurrentLine->ColorIndex());
-			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(CurrentLine->LinetypeIndex()));
-			CurrentGroup->AddTail(EoDbLine::Create(Line));
-
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, CurrentGroup);
-		}
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
@@ -285,8 +185,10 @@ void AeSysView::OnFixupModeFillet() {
 	auto Selection {SelectLineUsingPoint(GetCursorPosition())};
 	CurrentGroup = std::get<0>(Selection);
 	
-	if (CurrentGroup == nullptr) { return; }
-
+	if (CurrentGroup == nullptr) {
+		theApp.AddStringToMessageList(L"0 lines found");
+		return;
+	}
 	CurrentPrimitive = std::get<1>(Selection);
 	auto CurrentLine {dynamic_cast<EoDbLine*>(CurrentPrimitive)};
 
@@ -298,6 +200,7 @@ void AeSysView::OnFixupModeFillet() {
 		m_PreviousLineSeg = m_CurrentLineSeg;
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP4);
 	} else {
+		
 		if (PreviousFixupCommand == ID_OP1) {
 			PreviousGroup = CurrentGroup;
 			PreviousPrimitive = CurrentPrimitive;
@@ -309,7 +212,7 @@ void AeSysView::OnFixupModeFillet() {
 			return;
 		}
 		GenerateFillet(IntersectionPoint, m_PreviousLineSeg, m_CurrentLineSeg);
-		
+
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
@@ -370,25 +273,72 @@ void AeSysView::OnFixupModeParallel() {
 }
 
 void AeSysView::OnFixupModeReturn() {
-	auto Document {GetDocument()};
-
-	if (ReferenceGroup != nullptr) {
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitive, ReferencePrimitive);
-		ReferenceGroup = nullptr;
-		ReferencePrimitive = nullptr;
-	}
-	ModeLineUnhighlightOp(PreviousFixupCommand);
 }
 
 void AeSysView::OnFixupModeEscape() {
-	auto Document {GetDocument()};
+	ReferenceGroup = nullptr;
+	ReferencePrimitive = nullptr;
 
-	if (ReferenceGroup != nullptr) {
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitive, ReferencePrimitive);
-		ReferenceGroup = nullptr;
-		ReferencePrimitive = nullptr;
-	}
+	CurrentGroup = nullptr;
+	CurrentPrimitive = nullptr;
+
+	PreviousGroup = nullptr;
+	PreviousPrimitive = nullptr;
+	theApp.AddStringToMessageList(L"*cancel*");
+
 	ModeLineUnhighlightOp(PreviousFixupCommand);
+}
+
+void AeSysView::GenerateChamfer(OdGePoint3d intersection, EoGeLineSeg3d previousLineSeg, EoGeLineSeg3d currentLineSeg) {
+	if ((intersection - previousLineSeg.startPoint()).length() < (intersection - previousLineSeg.endPoint()).length()) {
+		previousLineSeg.SetStartPoint(previousLineSeg.endPoint());
+	}
+	previousLineSeg.SetEndPoint(intersection);
+
+	if ((intersection - currentLineSeg.endPoint()).length() < (intersection - currentLineSeg.startPoint()).length()) {
+		currentLineSeg.SetEndPoint(currentLineSeg.startPoint());
+	}
+	currentLineSeg.SetStartPoint(intersection);
+
+	OdGePoint3d	CenterPoint;
+	if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, previousLineSeg, currentLineSeg, CenterPoint)) {
+		auto Document {GetDocument()};
+
+		previousLineSeg.SetEndPoint(previousLineSeg.ProjPt(CenterPoint));
+		currentLineSeg.SetStartPoint(currentLineSeg.ProjPt(CenterPoint));
+
+		auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
+		if (PreviousFixupCommand == ID_OP1)
+			;
+		else if (PreviousFixupCommand == ID_OP2) {
+			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
+			PreviousLine->SetStartPoint2(previousLineSeg.startPoint());
+			PreviousLine->SetEndPoint2(intersection);
+			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
+		} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
+			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
+			PreviousLine->SetStartPoint2(previousLineSeg.startPoint());
+			PreviousLine->SetEndPoint2(previousLineSeg.endPoint());
+			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
+		}
+		if (CurrentPrimitive != nullptr) {
+			auto CurrentLine {dynamic_cast<EoDbLine*>(CurrentPrimitive)};
+			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, CurrentGroup);
+			CurrentLine->SetStartPoint2(currentLineSeg.startPoint());
+			CurrentLine->SetEndPoint2(currentLineSeg.endPoint());
+			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, CurrentGroup);
+		}
+
+		OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+		auto Line {EoDbLine::Create(BlockTableRecord, previousLineSeg.endPoint(), currentLineSeg.startPoint())};
+		Line->setColorIndex(PreviousLine->ColorIndex());
+		Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
+
+		auto Group {new EoDbGroup};
+		Group->AddTail(EoDbLine::Create(Line));
+		Document->AddWorkLayerGroup(Group);
+		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+	}
 }
 
 void AeSysView::GenerateFillet(OdGePoint3d intersection, EoGeLineSeg3d previousLineSeg, EoGeLineSeg3d currentLineSeg) {
@@ -409,17 +359,17 @@ void AeSysView::GenerateFillet(OdGePoint3d intersection, EoGeLineSeg3d previousL
 		previousLineSeg.SetEndPoint(previousLineSeg.ProjPt(CenterPoint));
 		currentLineSeg.SetStartPoint(currentLineSeg.ProjPt(CenterPoint));
 
+		auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
+
 		if (PreviousFixupCommand == ID_OP1)
 			;
 		else if (PreviousFixupCommand == ID_OP2) {
-			auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
 			PreviousLine->SetStartPoint2(previousLineSeg.startPoint());
 			PreviousLine->SetEndPoint2(intersection);
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
 		} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
 			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, PreviousGroup);
-			auto PreviousLine {dynamic_cast<EoDbLine*>(PreviousPrimitive)};
 			PreviousLine->SetStartPoint2(previousLineSeg.startPoint());
 			PreviousLine->SetEndPoint2(previousLineSeg.endPoint());
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, PreviousGroup);
@@ -440,6 +390,8 @@ void AeSysView::GenerateFillet(OdGePoint3d intersection, EoGeLineSeg3d previousL
 		OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 		Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
+		Ellipse->setColorIndex(PreviousLine->ColorIndex());
+		Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 
 		auto Group {new EoDbGroup};
 		Group->AddTail(EoDbEllipse::Create(Ellipse));
