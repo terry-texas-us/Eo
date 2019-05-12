@@ -328,9 +328,9 @@ void AeSysView::OnAnnotateModeCutIn() {
     auto CurrentPnt {GetCursorPosition()};
 
     auto Selection {SelectLineUsingPoint(CurrentPnt)};
-    auto Group {std::get<0>(Selection)};
+    auto Group {get<0>(Selection)};
     if (Group != nullptr) {
-        auto EngagedLine {std::get<1>(Selection)};
+        auto EngagedLine {get<1>(Selection)};
         CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
 
 		CString CurrentText;

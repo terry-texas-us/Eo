@@ -342,9 +342,9 @@ void AeSysView::OnDimensionModeAngle() {
 
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-		if (std::get<0>(Selection) == nullptr) { return; }
+		if (get<0>(Selection) == nullptr) { return; }
 
-		auto Primitive {std::get<1>(Selection)};
+		auto Primitive {get<1>(Selection)};
 
 		auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 		ln = Line->LineSeg();
@@ -357,9 +357,9 @@ void AeSysView::OnDimensionModeAngle() {
 		if (iLns == 1) {
 			auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-			if (std::get<0>(Selection) == nullptr) { return; }
+			if (get<0>(Selection) == nullptr) { return; }
 
-			auto Primitive {std::get<1>(Selection)};
+			auto Primitive {get<1>(Selection)};
 
 			auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 

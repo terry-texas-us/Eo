@@ -210,14 +210,14 @@ void AeSysView::OnDrawModeReturn() {
         m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
         auto GroupPair {EoDbGroup::Create(Database())};
-        Group = std::get<0>(GroupPair);
+        Group = get<0>(GroupPair);
 
         for (int i = 0; i < 4; i++) {
             auto Line {EoDbLine::Create(BlockTableRecord)};
             Line->setStartPoint(m_DrawModePoints[i]);
             Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
 
-            std::get<1>(GroupPair)->append(Line->objectId());
+            get<1>(GroupPair)->append(Line->objectId());
 
             Group->AddTail(EoDbLine::Create(Line));
         }

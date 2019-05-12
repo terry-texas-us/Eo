@@ -3433,7 +3433,7 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d & point) {
 	return nullptr;
 }
 
-std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint3d & point, double tolerance) {
+pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint3d & point, double tolerance) {
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group = GetNextVisibleGroup(GroupPosition);
@@ -3454,7 +3454,7 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 	return {nullptr, nullptr};
 }
 
-std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d & point) {
+pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d & point) {
 	EoGePoint4d ptView(point, 1.);
 	ModelViewTransformPoint(ptView);
 

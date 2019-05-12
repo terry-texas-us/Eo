@@ -510,6 +510,9 @@
 #define IDS_METRIC_UNITS                3845
 #define IDS_PRIMITIVE_FILTER_LIST       3846
 #define IDS_MSG_INVALID_TRACING_FILE_NAME 3847
+#define IDS_NO_INTERSECTION_WITH_REFERENCE 3848
+#define IDS_SELECTIONS_DO_NOT_INTERSECT 3849
+#define IDS_SELECTED_LINES_DO_NOT_INTERSECT 3849
 #define ID_OP0                          4112
 #define ID_OP1                          4113
 #define ID_OP2                          4114

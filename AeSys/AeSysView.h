@@ -367,9 +367,9 @@ public:
     void SetCursorPosition(const OdGePoint3d& point);
     void SetModeCursor(int mode);
 
-    std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
-    std::pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
-    std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor);
+    pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
+    pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
+    pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor);
     EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
     EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
     EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
@@ -593,7 +593,19 @@ public:
     void OnDimensionModeReturn();
     void OnDimensionModeEscape();
 
-    double m_AxisTolerance;
+public: // Fixup mode interface
+
+	enum CornerFlags {
+		kTrimPreviousToIntersection = 0x001,
+		kTrimCurrentToIntersection = 0x002,
+		kTrimPreviousToSize = 0x004,
+		kTrimCurrentToSize = 0x008,
+		kChamfer = 0x100,
+		kFillet = 0x200,
+		kCircle = 0x400
+	};
+
+	double m_AxisTolerance;
     double m_CornerSize;
 
     void OnFixupModeOptions();
@@ -606,7 +618,7 @@ public:
     void OnFixupModeReturn();
     void OnFixupModeEscape();
 
-	void GenerateCorner(OdGePoint3d intersection, std::pair<EoDbGroup*, EoDbPrimitive*> previousSelection, EoGeLineSeg3d currentLineSeg, int cornerType);
+	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, int cornerType);
 
 /// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
 /// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>

@@ -4,6 +4,10 @@
 #include "EoDbPoint.h"
 #include "DbGroup.h"
 
+using namespace std;
+typedef pair<EoDbGroup*, EoDbPrimitive*> SelectionPair;
+enum GroupPrimitvePair { tGroup, tPrimitive };
+
 class AeSysDoc;
 class EoDbBlock;
 class EoGeLineSeg3d;
@@ -59,5 +63,5 @@ public:
 public: // Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
 
-    static std::pair<EoDbGroup*, OdDbGroupPtr> EoDbGroup::Create(OdDbDatabasePtr database);
+    static pair<EoDbGroup*, OdDbGroupPtr> EoDbGroup::Create(OdDbDatabasePtr database);
 };

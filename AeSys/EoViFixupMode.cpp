@@ -4,13 +4,11 @@
 #include "AeSysView.h"
 #include "EoDlgFixupOptions.h"
 
-using namespace std;
+SelectionPair ReferenceSelection {nullptr, nullptr};
+SelectionPair PreviousSelection {nullptr, nullptr};
+SelectionPair CurrentSelection {nullptr, nullptr};
 
 OdUInt16 PreviousFixupCommand = 0;
-
-pair<EoDbGroup*, EoDbPrimitive*> ReferenceSelection {nullptr, nullptr};
-pair<EoDbGroup*, EoDbPrimitive*> PreviousSelection {nullptr, nullptr};
-pair<EoDbGroup*, EoDbPrimitive*> CurrentSelection {nullptr, nullptr};
 
 // <tas="FixupMode Axis Tolerance is not properly independent of the global Constraint influence angle"</tas>
 void AeSysView::OnFixupModeOptions() {
@@ -29,14 +27,9 @@ void AeSysView::OnFixupModeReference() {
 
 	CurrentSelection = {nullptr, nullptr};
 	
-	if (get<0>(ReferenceSelection) != nullptr) {
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitive, get<1>(ReferenceSelection));
-	}
 	ReferenceSelection = SelectLineUsingPoint(GetCursorPosition());
 
-	if (get<0>(ReferenceSelection) == nullptr) { return; }
-
-	auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<1>(ReferenceSelection))->LineSeg()};
+	if (get<tGroup>(ReferenceSelection) == nullptr) { return; }
 
 	if (PreviousFixupCommand == 0) {
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP1);
@@ -44,27 +37,27 @@ void AeSysView::OnFixupModeReference() {
 		;
 	} else {
 		OdGePoint3d IntersectionPoint;
-		auto PreviousLineSeg {dynamic_cast<EoDbLine*>(get<1>(PreviousSelection))->LineSeg()};
+		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(ReferenceSelection))->LineSeg()};
+		auto PreviousLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(PreviousSelection))};
+		auto PreviousLineSeg {PreviousLine->LineSeg()};
 
 		if (!PreviousLineSeg.intersectWith(ReferenceLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Unable to determine intersection with reference line");
+			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
 		if (PreviousFixupCommand == ID_OP2) {
-			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(PreviousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
 			
-			auto PreviousLine {dynamic_cast<EoDbLine*>(get<1>(PreviousSelection))};
-
-			if ((IntersectionPoint - PreviousLine->StartPoint()).length() < (IntersectionPoint - PreviousLine->EndPoint()).length()) {
+			if ((IntersectionPoint - PreviousLineSeg.startPoint()).length() < (IntersectionPoint - PreviousLineSeg.endPoint()).length()) {
 				PreviousLine->SetStartPoint2(IntersectionPoint);
 			} else {
 				PreviousLine->SetEndPoint2(IntersectionPoint);
 			}
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(PreviousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceLineSeg, 3);
+			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, 0x104);
 		} else if (PreviousFixupCommand == ID_OP4) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceLineSeg, 4);
+			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, 0x204);
 		}
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
@@ -74,14 +67,12 @@ void AeSysView::OnFixupModeMend() {
 	auto Document {GetDocument()};
 
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
-	auto CurrentGroup {get<0>(CurrentSelection)};
 	
-	if (CurrentGroup == nullptr) {
+	if (get<tGroup>(CurrentSelection) == nullptr) {
 		theApp.AddStringToMessageList(L"0 lines found");
 		return;
 	}
-	auto CurrentPrimitive {get<1>(CurrentSelection)};
-	auto CurrentLine {dynamic_cast<EoDbLine*>(CurrentPrimitive)};
+	auto CurrentLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(CurrentSelection))};
 	auto CurrentLineSeg {CurrentLine->LineSeg()};
 	
 	OdGePoint3d IntersectionPoint;
@@ -90,50 +81,49 @@ void AeSysView::OnFixupModeMend() {
 		PreviousSelection = CurrentSelection;
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP2);
 	} else if (PreviousFixupCommand == ID_OP1) {
-		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<1>(ReferenceSelection))->LineSeg()};
+		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(ReferenceSelection))->LineSeg()};
 		if (!ReferenceLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Unable to determine intersection with reference line");
+			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, CurrentGroup);
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
 
 		if ((IntersectionPoint - CurrentLine->StartPoint()).length() < (IntersectionPoint - CurrentLine->EndPoint()).length()) {
 			CurrentLine->SetStartPoint2(IntersectionPoint);
 		} else {
 			CurrentLine->SetEndPoint2(IntersectionPoint);
 		}
-		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, CurrentGroup);
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 	} else {
-		auto PreviousLineSeg {dynamic_cast<EoDbLine*>(get<1>(PreviousSelection))->LineSeg()};
+		auto PreviousLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(PreviousSelection))};
+		auto PreviousLineSeg {PreviousLine->LineSeg()};
 
 		if (!PreviousLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
+			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
 		if (PreviousFixupCommand == ID_OP2) {
-			auto PreviousLine {dynamic_cast<EoDbLine*>(get<1>(PreviousSelection))};
-			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(PreviousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
 			
-			if ((IntersectionPoint - PreviousLine->StartPoint()).length() < (IntersectionPoint - PreviousLine->EndPoint()).length()) {
+			if ((IntersectionPoint - PreviousLineSeg.startPoint()).length() < (IntersectionPoint - PreviousLineSeg.endPoint()).length()) {
 				PreviousLine->SetStartPoint2(IntersectionPoint);
 			} else {
 				PreviousLine->SetEndPoint2(IntersectionPoint);
 			}
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(PreviousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentLineSeg, 3);
+			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x10c);
 		} else if (PreviousFixupCommand == ID_OP4) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentLineSeg, 4);
+			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x20c);
 		}
-		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, CurrentGroup);
-		auto CurrentLine {dynamic_cast<EoDbLine*>(CurrentPrimitive)};
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
 		
-		if ((IntersectionPoint - CurrentLine->StartPoint()).length() < (IntersectionPoint - CurrentLine->EndPoint()).length()) {
+		if ((IntersectionPoint - CurrentLineSeg.startPoint()).length() < (IntersectionPoint - CurrentLineSeg.endPoint()).length()) {
 			CurrentLine->SetStartPoint2(IntersectionPoint);
 		} else {
 			CurrentLine->SetEndPoint2(IntersectionPoint);
 		}
-		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, CurrentGroup);
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
@@ -141,11 +131,11 @@ void AeSysView::OnFixupModeMend() {
 void AeSysView::OnFixupModeChamfer() {
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 
-	if (get<0>(CurrentSelection) == nullptr) {
+	if (get<tGroup>(CurrentSelection) == nullptr) {
 		theApp.AddStringToMessageList(L"0 lines found");
 		return;
 	}
-	auto CurrentLineSeg {dynamic_cast<EoDbLine*>(get<1>(CurrentSelection))->LineSeg()};
+	auto CurrentLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(CurrentSelection))->LineSeg()};
 
 	OdGePoint3d IntersectionPoint;
 
@@ -153,23 +143,23 @@ void AeSysView::OnFixupModeChamfer() {
 		PreviousSelection = CurrentSelection;
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP3);
 	} else if (PreviousFixupCommand == ID_OP1) {
-		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<1>(ReferenceSelection))->LineSeg()};
+		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(ReferenceSelection))->LineSeg()};
 
 		if (!ReferenceLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
+			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentLineSeg, 3);
+		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, 0x108);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	} else {
-		auto PreviousLineSeg {dynamic_cast<EoDbLine*>(get<1>(PreviousSelection))->LineSeg()};
+		auto PreviousLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(PreviousSelection))->LineSeg()};
 
 		if (!PreviousLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
+			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentLineSeg, 3);
+		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x10c);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
@@ -178,11 +168,11 @@ void AeSysView::OnFixupModeChamfer() {
 void AeSysView::OnFixupModeFillet() {
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 	
-	if (get<0>(CurrentSelection) == nullptr) {
+	if (get<tGroup>(CurrentSelection) == nullptr) {
 		theApp.AddStringToMessageList(L"0 lines found");
 		return;
 	}
-	auto CurrentLineSeg {dynamic_cast<EoDbLine*>(get<1>(CurrentSelection))->LineSeg()};
+	auto CurrentLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(CurrentSelection))->LineSeg()};
 
 	OdGePoint3d IntersectionPoint;
 
@@ -190,23 +180,23 @@ void AeSysView::OnFixupModeFillet() {
 		PreviousSelection = CurrentSelection;
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP4);
 	} else if (PreviousFixupCommand == ID_OP1) {
-		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<1>(ReferenceSelection))->LineSeg()};
+		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(ReferenceSelection))->LineSeg()};
 
 		if (!ReferenceLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
+			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentLineSeg, 4);
+		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, 0x208);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	} else {
-		auto PreviousLineSeg {dynamic_cast<EoDbLine*>(get<1>(PreviousSelection))->LineSeg()};
+		auto PreviousLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(PreviousSelection))->LineSeg()};
 
 		if (!PreviousLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
-			theApp.AddStringToMessageList(L"Selected lines do not define an intersection");
+			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentLineSeg, 4);
+		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x20c);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
@@ -219,51 +209,51 @@ void AeSysView::OnFixupModeSquare() {
 
 	CurrentSelection = SelectLineUsingPoint(CurrentPnt);
 
-	if (get<0>(CurrentSelection) == nullptr) { return; }
+	if (get<tGroup>(CurrentSelection) == nullptr) { return; }
 
-	auto CurrentPrimitive {get<1>(CurrentSelection)};
-	auto CurrentLine {dynamic_cast<EoDbLine*>(CurrentPrimitive)};
-	auto CurrentLineSeg {dynamic_cast<EoDbLine*>(get<1>(CurrentSelection))->LineSeg()};
+	auto CurrentLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(CurrentSelection))};
+	auto CurrentLineSeg {CurrentLine->LineSeg()};
 
 	CurrentPnt = CurrentLineSeg.ProjPt(CurrentPnt);
 
 	const double CurrentLineSegLength = CurrentLineSeg.length();
-	Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(CurrentSelection));
+	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
 	
-	auto StartPoint {SnapPointToAxis(CurrentPnt, CurrentLineSeg.startPoint())};
-	auto EndPoint {ProjectToward(StartPoint, CurrentPnt, CurrentLineSegLength)};
+	const auto StartPoint {SnapPointToAxis(CurrentPnt, CurrentLineSeg.startPoint())};
+	const auto EndPoint {ProjectToward(StartPoint, CurrentPnt, CurrentLineSegLength)};
 
-	CurrentLineSeg.set(StartPoint, EndPoint);
+	CurrentLine->SetStartPoint2(SnapPointToGrid(StartPoint));
+	CurrentLine->SetEndPoint2(SnapPointToGrid(EndPoint));
 
-	CurrentLine->SetStartPoint2(SnapPointToGrid(CurrentLineSeg.startPoint()));
-	CurrentLine->SetEndPoint2(SnapPointToGrid(CurrentLineSeg.endPoint()));
-
-	Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(CurrentSelection));
+	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 }
 
 void AeSysView::OnFixupModeParallel() {
 	auto Document {GetDocument()};
 
-	if (get<0>(ReferenceSelection) == nullptr) {
+	if (get<tGroup>(ReferenceSelection) == nullptr) {
 		theApp.AddStringToMessageList(L"Reference line must be selected first.");
 		return;
 	}
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 
-	if (get<0>(CurrentSelection) == nullptr) { return; }
+	if (get<tGroup>(CurrentSelection) == nullptr) { return; }
 
-	auto CurrentLine {dynamic_cast<EoDbLine*>(get<1>(CurrentSelection))};
+	auto CurrentLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(CurrentSelection))};
 	auto CurrentLineSeg {CurrentLine->LineSeg()};
 
-	auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<1>(ReferenceSelection))->LineSeg()};
+	auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(get<tPrimitive>(ReferenceSelection))->LineSeg()};
 
 	CurrentLineSeg.set(ReferenceLineSeg.ProjPt(CurrentLine->StartPoint()), ReferenceLineSeg.ProjPt(CurrentLine->EndPoint()));
-	Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(CurrentSelection));
+	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
+
 	const auto StartPoint {CurrentLineSeg.startPoint()};
-	CurrentLine->SetStartPoint2(ProjectToward(StartPoint, CurrentLine->StartPoint(), theApp.DimensionLength()));
 	const auto EndPoint {CurrentLineSeg.endPoint()};
+
+	CurrentLine->SetStartPoint2(ProjectToward(StartPoint, CurrentLine->StartPoint(), theApp.DimensionLength()));
 	CurrentLine->SetEndPoint2(ProjectToward(EndPoint, CurrentLine->EndPoint(), theApp.DimensionLength()));
-	Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(CurrentSelection));
+
+	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 }
 
 void AeSysView::OnFixupModeReturn() {
@@ -279,61 +269,63 @@ void AeSysView::OnFixupModeEscape() {
 	ModeLineUnhighlightOp(PreviousFixupCommand);
 }
 
-void AeSysView::GenerateCorner(OdGePoint3d intersection, pair<EoDbGroup*, EoDbPrimitive*> previousSelection, EoGeLineSeg3d currentLineSeg, int cornerType) {
+void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, int cornerType) {
 	
-	auto PreviousLine {dynamic_cast<EoDbLine*>(get<1>(previousSelection))};
+	auto PreviousLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(previousSelection))};
 	auto PreviousLineSeg {PreviousLine->LineSeg()};
+
+	auto CurrentLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(currentSelection))};
+	auto CurrentLineSeg {CurrentLine->LineSeg()};
 
 	if ((intersection - PreviousLineSeg.startPoint()).length() < (intersection - PreviousLineSeg.endPoint()).length()) {
 		PreviousLineSeg.SetStartPoint(PreviousLineSeg.endPoint());
 	}
 	PreviousLineSeg.SetEndPoint(intersection);
 
-	if ((intersection - currentLineSeg.endPoint()).length() < (intersection - currentLineSeg.startPoint()).length()) {
-		currentLineSeg.SetEndPoint(currentLineSeg.startPoint());
+	if ((intersection - CurrentLineSeg.endPoint()).length() < (intersection - CurrentLineSeg.startPoint()).length()) {
+		CurrentLineSeg.SetEndPoint(CurrentLineSeg.startPoint());
 	}
-	currentLineSeg.SetStartPoint(intersection);
+	CurrentLineSeg.SetStartPoint(intersection);
 
 	OdGePoint3d	CenterPoint;
-	if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, PreviousLineSeg, currentLineSeg, CenterPoint)) {
+	if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, PreviousLineSeg, CurrentLineSeg, CenterPoint)) {
 		auto Document {GetDocument()};
 
 		PreviousLineSeg.SetEndPoint(PreviousLineSeg.ProjPt(CenterPoint));
-		currentLineSeg.SetStartPoint(currentLineSeg.ProjPt(CenterPoint));
+		CurrentLineSeg.SetStartPoint(CurrentLineSeg.ProjPt(CenterPoint));
 
 		if (PreviousFixupCommand == ID_OP1)
 			;
 		else if (PreviousFixupCommand == ID_OP2) {
-			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(previousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
 			PreviousLine->SetStartPoint2(PreviousLineSeg.startPoint());
 			PreviousLine->SetEndPoint2(intersection);
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(previousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
 		} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
-			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(previousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
 			PreviousLine->SetStartPoint2(PreviousLineSeg.startPoint());
 			PreviousLine->SetEndPoint2(PreviousLineSeg.endPoint());
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(previousSelection));
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
 		}
-		if (get<1>(CurrentSelection) != nullptr) {
-			auto CurrentLine {dynamic_cast<EoDbLine*>(get<1>(CurrentSelection))};
-			Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, get<0>(CurrentSelection));
-			CurrentLine->SetStartPoint2(currentLineSeg.startPoint());
-			CurrentLine->SetEndPoint2(currentLineSeg.endPoint());
-			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, get<0>(CurrentSelection));
+		if ((cornerType & kTrimCurrentToSize) == kTrimCurrentToSize) {
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
+			CurrentLine->SetStartPoint2(CurrentLineSeg.startPoint());
+			CurrentLine->SetEndPoint2(CurrentLineSeg.endPoint());
+			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 		}
 		OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		auto Group {new EoDbGroup};
 
-		if (cornerType == 3) {
-			auto Line {EoDbLine::Create(BlockTableRecord, PreviousLineSeg.endPoint(), currentLineSeg.startPoint())};
+		if ((cornerType & kChamfer) == kChamfer) {
+			auto Line {EoDbLine::Create(BlockTableRecord, PreviousLineSeg.endPoint(), CurrentLineSeg.startPoint())};
 			Line->setColorIndex(PreviousLine->ColorIndex());
 			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 			Group->AddTail(EoDbLine::Create(Line));
-		} else if (cornerType == 4) {
-			auto PlaneNormal {(intersection - PreviousLineSeg.endPoint()).crossProduct(currentLineSeg.startPoint() - PreviousLineSeg.endPoint())};
+		} else if ((cornerType & kFillet) == kFillet) {
+			auto PlaneNormal {(intersection - PreviousLineSeg.endPoint()).crossProduct(CurrentLineSeg.startPoint() - PreviousLineSeg.endPoint())};
 			PlaneNormal.normalize();
 			double SweepAngle;
-			pFndSwpAngGivPlnAnd3Lns(PlaneNormal, PreviousLineSeg.endPoint(), intersection, currentLineSeg.startPoint(), CenterPoint, SweepAngle);
+			pFndSwpAngGivPlnAnd3Lns(PlaneNormal, PreviousLineSeg.endPoint(), intersection, CurrentLineSeg.startPoint(), CenterPoint, SweepAngle);
 			const auto MajorAxis {PreviousLineSeg.endPoint() - CenterPoint};
 
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};

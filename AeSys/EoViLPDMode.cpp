@@ -5,7 +5,7 @@
 
 #include "EoDlgLowPressureDuctOptions.h"
 
-std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor) {
+pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor) {
     auto GroupPosition {GetFirstVisibleGroupPosition()};
     while (GroupPosition != nullptr) {
         auto Group = GetNextVisibleGroup(GroupPosition);
@@ -40,10 +40,10 @@ void AeSysView::OnLpdModeJoin() {
     const auto CurrentPnt {GetCursorPosition()};
     
     auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-    m_EndCapGroup = std::get<0>(Selection);
+    m_EndCapGroup = get<0>(Selection);
 
     if (m_EndCapGroup != nullptr) {
-        m_EndCapPoint = std::get<1>(Selection);
+        m_EndCapPoint = get<1>(Selection);
 
         m_PreviousPnt = m_EndCapPoint->Position();
         m_PreviousSection.SetWidth(m_EndCapPoint->DataAt(0));
@@ -141,9 +141,9 @@ void AeSysView::OnLpdModeTap() {
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
     auto Selection {SelectLineUsingPoint(CurrentPnt)};
-    auto Group {std::get<0>(Selection)};
+    auto Group {get<0>(Selection)};
     if (Group != nullptr) {
-        auto LinePrimitive {std::get<1>(Selection)};
+        auto LinePrimitive {get<1>(Selection)};
 		const OdGePoint3d TestPoint(CurrentPnt);
 		
         CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
@@ -198,7 +198,7 @@ void AeSysView::OnLpdModeEll() {
 	}
     if (m_PreviousOp == ID_OP2) {
         auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-        auto ExistingGroup {std::get<0>(Selection)};
+        auto ExistingGroup {get<0>(Selection)};
 
 		if (ExistingGroup == nullptr) {
 			theApp.AddStringToMessageList(IDS_MSG_LPD_NO_END_CAP_LOC);
@@ -359,10 +359,10 @@ void AeSysView::DoDuctModeMouseMove() {
 			GenerateRectangularSection(PreviousReferenceLine, m_CenterLineEccentricity, m_PreviousSection, &m_PreviewGroup);
 		}
         auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-        auto ExistingGroup {std::get<0>(Selection)};
+        auto ExistingGroup {get<0>(Selection)};
 
         if (ExistingGroup != nullptr) {
-            auto EndPointPrimitive {std::get<1>(Selection)};
+            auto EndPointPrimitive {get<1>(Selection)};
             CurrentPnt = EndPointPrimitive->Position();
 			Section ExistingSection(EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular);
 

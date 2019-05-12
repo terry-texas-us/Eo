@@ -22,10 +22,10 @@ void AeSysView::OnPowerModeCircuit() {
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
     auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-    auto Group {std::get<0>(Selection)};
+    auto Group {get<0>(Selection)};
 
     if (Group != nullptr) {
-        auto SymbolCircle {std::get<1>(Selection)};
+        auto SymbolCircle {get<1>(Selection)};
         CurrentPnt = SymbolCircle->Center();
 		
         const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
@@ -102,9 +102,9 @@ void AeSysView::OnPowerModeHome() {
 	if (!m_PowerArrow || (PointOnCircuit != CurrentPnt)) {
 		m_PowerArrow = false;
         auto Selection {SelectLineUsingPoint(CurrentPnt)};
-        auto Group {std::get<0>(Selection)};
+        auto Group {get<0>(Selection)};
         if (Group != nullptr) {
-            auto Circuit {std::get<1>(Selection)};
+            auto Circuit {get<1>(Selection)};
             CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= .5) {
 				m_CircuitEndPoint = Circuit->EndPoint();
@@ -142,10 +142,10 @@ void AeSysView::DoPowerModeMouseMove() {
             m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
             auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-            auto Group {std::get<0>(Selection)};
+            auto Group {get<0>(Selection)};
 
             if (Group != nullptr) {
-                auto SymbolCircle {std::get<1>(Selection)};
+                auto SymbolCircle {get<1>(Selection)};
                 const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
 
                 CurrentPnt = SymbolCircle->Center();
@@ -182,9 +182,9 @@ void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	if (!m_PowerConductor || PointOnCircuit != CurrentPnt) {
 		m_PowerConductor = false;
         auto Selection {SelectLineUsingPoint(CurrentPnt)};
-        auto Group {std::get<0>(Selection)};
+        auto Group {get<0>(Selection)};
         if (Group != nullptr) {
-            auto Circuit {std::get<1>(Selection)};
+            auto Circuit {get<1>(Selection)};
 		    CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 
             const auto BeginPoint {Circuit->StartPoint()};
