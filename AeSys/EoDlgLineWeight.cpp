@@ -14,8 +14,8 @@ END_MESSAGE_MAP()
 
 EoDlgLineWeight::EoDlgLineWeight(CWnd* parent)
 	: CDialog(EoDlgLineWeight::IDD, parent)
-    , m_OriginalLineWeight(0)
-    , m_LineWeight(OdDb::LineWeight(0)) {
+	, m_OriginalLineWeight(0)
+	, m_LineWeight(OdDb::LineWeight(0)) {
 }
 
 EoDlgLineWeight::EoDlgLineWeight(int originalLineWeight, CWnd* parent)
@@ -42,12 +42,12 @@ BOOL EoDlgLineWeight::OnInitDialog(void) {
 		m_LineWeightList.InsertString(Index, CMainFrame::StringByLineWeight(Index - 1, true));
 		m_LineWeightList.SetItemData(Index, (DWORD_PTR) CMainFrame::LineWeightByIndex(char(Index - 1)));
 	}
-    CString OriginalLineWeight = CMainFrame::StringByLineWeight(m_OriginalLineWeight, false);
-    m_LineWeightList.SelectString(- 1, OriginalLineWeight);
+	CString OriginalLineWeight = CMainFrame::StringByLineWeight(m_OriginalLineWeight, false);
+	m_LineWeightList.SelectString(-1, OriginalLineWeight);
 
-    CString Text(L"Original : " + OriginalLineWeight);
+	CString Text(L"Original : " + OriginalLineWeight);
 
-    GetDlgItem(IDC_STATIC_LINEWEIGHT_ORIGINAL)->SetWindowTextW(Text);
+	GetDlgItem(IDC_STATIC_LINEWEIGHT_ORIGINAL)->SetWindowTextW(Text);
 	return TRUE;
 }
 

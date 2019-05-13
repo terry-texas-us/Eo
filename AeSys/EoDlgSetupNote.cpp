@@ -13,22 +13,22 @@ IMPLEMENT_DYNAMIC(EoDlgSetupNote, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetupNote, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetupNote::EoDlgSetupNote(CWnd* parent) 
-    : CDialog(EoDlgSetupNote::IDD, parent)
-    , m_FontDefinition(0)
-    , m_Height(0.)
-    , m_WidthFactor(0.)
-    , m_ObliqueAngle(0.)
-    , m_RotationAngle(0.) {
+EoDlgSetupNote::EoDlgSetupNote(CWnd* parent)
+	: CDialog(EoDlgSetupNote::IDD, parent)
+	, m_FontDefinition(0)
+	, m_Height(0.)
+	, m_WidthFactor(0.)
+	, m_ObliqueAngle(0.)
+	, m_RotationAngle(0.) {
 }
 
-EoDlgSetupNote::EoDlgSetupNote(EoDbFontDefinition* fontDefinition, CWnd* parent) 
-    : CDialog(EoDlgSetupNote::IDD, parent)
-    , m_FontDefinition(fontDefinition)
-    , m_Height(0)
-    , m_WidthFactor(0)
-    , m_ObliqueAngle(0)
-    , m_RotationAngle(0) {
+EoDlgSetupNote::EoDlgSetupNote(EoDbFontDefinition* fontDefinition, CWnd* parent)
+	: CDialog(EoDlgSetupNote::IDD, parent)
+	, m_FontDefinition(fontDefinition)
+	, m_Height(0)
+	, m_WidthFactor(0)
+	, m_ObliqueAngle(0)
+	, m_RotationAngle(0) {
 }
 
 EoDlgSetupNote::~EoDlgSetupNote() {
@@ -46,7 +46,7 @@ BOOL EoDlgSetupNote::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_MfcFontComboControl.Setup(TRUETYPE_FONTTYPE);
 	m_MfcFontComboControl.AddString(L"Simplex.psf");
-	m_MfcFontComboControl.SelectString(- 1, m_FontDefinition->FontName());
+	m_MfcFontComboControl.SelectString(-1, m_FontDefinition->FontName());
 
 	CString Spacing;
 	Spacing.Format(L"%8.4f", m_FontDefinition->CharacterSpacing());

@@ -10,8 +10,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-EoDlgAudit::EoDlgAudit(CWnd* parent) 
-    : EoVarDialog(EoDlgAudit::IDD, parent) {
+EoDlgAudit::EoDlgAudit(CWnd* parent)
+	: EoVarDialog(EoDlgAudit::IDD, parent) {
 }
 
 void EoDlgAudit::DoDataExchange(CDataExchange* pDX) {
@@ -28,13 +28,13 @@ BOOL EoDlgAudit::OnInitDialog() {
 	EoVarDialog::OnInitDialog();
 
 	m_AuditInfoList.InsertColumn(0, L"Name", LVCFMT_LEFT, 400);
-	m_AuditInfoList.DeleteAllItems();  
+	m_AuditInfoList.DeleteAllItems();
 
 	m_AuditErrList.InsertColumn(0, L"Name", LVCFMT_LEFT, 100);
 	m_AuditErrList.InsertColumn(1, L"Value", LVCFMT_LEFT, 100);
 	m_AuditErrList.InsertColumn(2, L"Validation", LVCFMT_LEFT, 100);
 	m_AuditErrList.InsertColumn(3, L"Default value", LVCFMT_LEFT, 100);
-	m_AuditErrList.DeleteAllItems();  
+	m_AuditErrList.DeleteAllItems();
 
 	initResizeHelper();
 	m_resizeHelper.Fix(IDC_AUDITSUM_LIST, EoDialogResizeHelper::kLeftRight, EoDialogResizeHelper::kNoVFix);
@@ -44,19 +44,18 @@ BOOL EoDlgAudit::OnInitDialog() {
 
 	return TRUE;
 }
-void EoDlgAudit::printReport (OdDbAuditInfo* auditInfo) {
+void EoDlgAudit::printReport(OdDbAuditInfo* auditInfo) {
 	if (auditInfo->getLastInfo().bIsError) {
 		const int NumberOfAuditErrors = m_AuditErrList.GetItemCount();
-		m_AuditErrList.InsertItem (NumberOfAuditErrors, auditInfo->getLastInfo().strName);
-		m_AuditErrList.SetItemText (NumberOfAuditErrors, 1, auditInfo->getLastInfo().strValue);
-		m_AuditErrList.SetItemText (NumberOfAuditErrors, 2, auditInfo->getLastInfo().strValidation);
-		m_AuditErrList.SetItemText (NumberOfAuditErrors, 3, auditInfo->getLastInfo().strDefaultValue);
-	}
-	else {
-		m_AuditInfoList.InsertItem (m_AuditInfoList.GetItemCount(), auditInfo->getLastInfo().strName);
+		m_AuditErrList.InsertItem(NumberOfAuditErrors, auditInfo->getLastInfo().strName);
+		m_AuditErrList.SetItemText(NumberOfAuditErrors, 1, auditInfo->getLastInfo().strValue);
+		m_AuditErrList.SetItemText(NumberOfAuditErrors, 2, auditInfo->getLastInfo().strValidation);
+		m_AuditErrList.SetItemText(NumberOfAuditErrors, 3, auditInfo->getLastInfo().strDefaultValue);
+	} else {
+		m_AuditInfoList.InsertItem(m_AuditInfoList.GetItemCount(), auditInfo->getLastInfo().strName);
 	}
 }
 void EoDlgAudit::OnCancel() {
-	DestroyWindow ();
+	DestroyWindow();
 	delete this;
 }

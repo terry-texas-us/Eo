@@ -11,10 +11,10 @@ BEGIN_MESSAGE_MAP(EoDlgSetUnitsAndPrecision, CDialog)
 	ON_BN_CLICKED(IDC_METRIC, &EoDlgSetUnitsAndPrecision::OnBnClickedMetric)
 END_MESSAGE_MAP()
 
-EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent) 
-    : CDialog(EoDlgSetUnitsAndPrecision::IDD, parent)
-    , m_Units(AeSysApp::kInches)
-    , m_Precision(8) {
+EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent)
+	: CDialog(EoDlgSetUnitsAndPrecision::IDD, parent)
+	, m_Units(AeSysApp::kInches)
+	, m_Precision(8) {
 }
 
 EoDlgSetUnitsAndPrecision::~EoDlgSetUnitsAndPrecision() {
@@ -45,35 +45,35 @@ BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 }
 void EoDlgSetUnitsAndPrecision::OnOK() {
 	switch (GetCheckedRadioButton(IDC_ARCHITECTURAL, IDC_METRIC)) {
-	case IDC_ARCHITECTURAL:
-		m_Units = AeSysApp::kArchitectural;
-		break;
-	case IDC_ENGINEERING:
-		m_Units = AeSysApp::kEngineering;
-		break;
-	case IDC_FEET:
-		m_Units = AeSysApp::kFeet;
-		break;
-	case IDC_INCHES:
-		m_Units = AeSysApp::kInches;
-		break;
-	default:
-		switch (m_MetricUnitsListBoxControl.GetCurSel()) {
-		case 0:
-			m_Units = AeSysApp::kMeters;
+		case IDC_ARCHITECTURAL:
+			m_Units = AeSysApp::kArchitectural;
 			break;
-		case 1:
-			m_Units = AeSysApp::kMillimeters;
+		case IDC_ENGINEERING:
+			m_Units = AeSysApp::kEngineering;
 			break;
-		case 2:
-			m_Units = AeSysApp::kCentimeters;
+		case IDC_FEET:
+			m_Units = AeSysApp::kFeet;
 			break;
-		case 3:
-			m_Units = AeSysApp::kDecimeters;
+		case IDC_INCHES:
+			m_Units = AeSysApp::kInches;
 			break;
 		default:
-			m_Units = AeSysApp::kKilometers;
-		}
+			switch (m_MetricUnitsListBoxControl.GetCurSel()) {
+				case 0:
+					m_Units = AeSysApp::kMeters;
+					break;
+				case 1:
+					m_Units = AeSysApp::kMillimeters;
+					break;
+				case 2:
+					m_Units = AeSysApp::kCentimeters;
+					break;
+				case 3:
+					m_Units = AeSysApp::kDecimeters;
+					break;
+				default:
+					m_Units = AeSysApp::kKilometers;
+			}
 	}
 	CDialog::OnOK();
 }

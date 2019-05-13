@@ -9,9 +9,9 @@ IMPLEMENT_DYNAMIC(EoDlgSetScale, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetScale, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetScale::EoDlgSetScale(CWnd* parent) 
-    : CDialog(EoDlgSetScale::IDD, parent)
-    , m_Scale(0) {
+EoDlgSetScale::EoDlgSetScale(CWnd* parent)
+	: CDialog(EoDlgSetScale::IDD, parent)
+	, m_Scale(0) {
 }
 
 EoDlgSetScale::~EoDlgSetScale() {

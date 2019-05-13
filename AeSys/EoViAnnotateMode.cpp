@@ -20,12 +20,11 @@ void AeSysView::OnAnnotateModeOptions() {
 }
 
 void AeSysView::OnAnnotateModeLine() {
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
-	}
-	else {
+	} else {
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP2, EoViAnn_points[0], CurrentPnt)) {
 			EoDbGroup* Group = new EoDbGroup;
 			GetDocument()->AddWorkLayerGroup(Group);
@@ -33,16 +32,16 @@ void AeSysView::OnAnnotateModeLine() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-            auto Line {EoDbLine::Create(BlockTableRecord)};
-            Line->setStartPoint(EoViAnn_points[0]);
-            Line->setEndPoint(CurrentPnt);
-            Line->setColorIndex(1);
-            Line->setLinetype(L"Continuous");
-           
-            Group->AddTail(EoDbLine::Create(Line));
-            
-            EoViAnn_points[0] = CurrentPnt;
+			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			auto Line {EoDbLine::Create(BlockTableRecord)};
+			Line->setStartPoint(EoViAnn_points[0]);
+			Line->setEndPoint(CurrentPnt);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+
+			Group->AddTail(EoDbLine::Create(Line));
+
+			EoViAnn_points[0] = CurrentPnt;
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 		}
 	}
@@ -50,28 +49,27 @@ void AeSysView::OnAnnotateModeLine() {
 }
 
 void AeSysView::OnAnnotateModeArrow() {
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
-	}
-	else {
+	} else {
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP3, EoViAnn_points[0], CurrentPnt)) {
 			EoDbGroup* Group = new EoDbGroup;
 
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-            auto Line {EoDbLine::Create(BlockTableRecord)};
-            Line->setStartPoint(EoViAnn_points[0]);
-            Line->setEndPoint(CurrentPnt);
-            Line->setColorIndex(1);
-            Line->setLinetype(L"Continuous");
+			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			auto Line {EoDbLine::Create(BlockTableRecord)};
+			Line->setStartPoint(EoViAnn_points[0]);
+			Line->setEndPoint(CurrentPnt);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
 
-            Group->AddTail(EoDbLine::Create(Line));
+			Group->AddTail(EoDbLine::Create(Line));
 
-            GenerateLineEndItem(EndItemType(), EndItemSize(), EoViAnn_points[0], CurrentPnt, Group);
+			GenerateLineEndItem(EndItemType(), EndItemSize(), EoViAnn_points[0], CurrentPnt, Group);
 			GetDocument()->AddWorkLayerGroup(Group);
 			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			EoViAnn_points[0] = CurrentPnt;
@@ -83,9 +81,9 @@ void AeSysView::OnAnnotateModeArrow() {
 
 void AeSysView::OnAnnotateModeBubble() {
 	static CString CurrentText;
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	EoDlgSetText dlg;
 	dlg.m_strTitle = L"Set Bubble Text";
@@ -98,8 +96,7 @@ void AeSysView::OnAnnotateModeBubble() {
 	if (m_PreviousOp == 0) { // No operation pending
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
-	}
-	else {
+	} else {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
@@ -109,124 +106,122 @@ void AeSysView::OnAnnotateModeBubble() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-            auto Line {EoDbLine::Create(BlockTableRecord)};
-            Line->setStartPoint(EoViAnn_points[0]);
-            Line->setEndPoint(pt);
-            Line->setColorIndex(1);
-            Line->setLinetype(L"Continuous");
+			auto Line {EoDbLine::Create(BlockTableRecord)};
+			Line->setStartPoint(EoViAnn_points[0]);
+			Line->setEndPoint(pt);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
 
-            Group->AddTail(EoDbLine::Create(Line));
+			Group->AddTail(EoDbLine::Create(Line));
 		}
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 
-    const auto ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
-    auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
-    MajorAxis.normalize();
+	const auto ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+	MajorAxis.normalize();
 
-    if (!CurrentText.IsEmpty()) {
-        OdGeVector3d MinorAxis {MajorAxis};
+	if (!CurrentText.IsEmpty()) {
+		OdGeVector3d MinorAxis {MajorAxis};
 		MinorAxis.rotateBy(HALF_PI, ActiveViewPlaneNormal);
 
-		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis *.06, MinorAxis * .1);
+		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis * .06, MinorAxis * .1);
 
-        OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
+		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
 
-        Text->setNormal(ActiveViewPlaneNormal);
-        Text->setRotation(ReferenceSystem.Rotation());
-        Text->setHeight(ReferenceSystem.YDirection().length());
-        Text->setAlignmentPoint(ReferenceSystem.Origin());
-        Text->setColorIndex(2);
-        Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(EoDb::kAlignCenter));
-        Text->setVerticalMode(EoDbText::ConvertVerticalMode(EoDb::kAlignMiddle));
+		Text->setNormal(ActiveViewPlaneNormal);
+		Text->setRotation(ReferenceSystem.Rotation());
+		Text->setHeight(ReferenceSystem.YDirection().length());
+		Text->setAlignmentPoint(ReferenceSystem.Origin());
+		Text->setColorIndex(2);
+		Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(EoDb::kAlignCenter));
+		Text->setVerticalMode(EoDbText::ConvertVerticalMode(EoDb::kAlignMiddle));
 
-        Group->AddTail(EoDbText::Create(Text));
+		Group->AddTail(EoDbText::Create(Text));
 	}
-    if (NumberOfSides() == 0) {
-        auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-        Ellipse->setColorIndex(1);
-        Ellipse->setLinetype(L"Continuous");
+	if (NumberOfSides() == 0) {
+		auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+		Ellipse->setColorIndex(1);
+		Ellipse->setLinetype(L"Continuous");
 
-        Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis * BubbleRadius(), 1.);
-        Group->AddTail(EoDbEllipse::Create(Ellipse));
-	}
-    else {
-        auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
+		Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis * BubbleRadius(), 1.);
+		Group->AddTail(EoDbEllipse::Create(Ellipse));
+	} else {
+		auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
-        Polyline->setColorIndex(1);
-        Polyline->setLinetype(L"Continuous");
-        Polyline->setClosed(true);
+		Polyline->setColorIndex(1);
+		Polyline->setLinetype(L"Continuous");
+		Polyline->setClosed(true);
 
-        OdGePoint3dArray Points;
-        polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
+		OdGePoint3dArray Points;
+		polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
 
-        OdGeMatrix3d WorldToPlaneTransform;
-        WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
+		OdGeMatrix3d WorldToPlaneTransform;
+		WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
 
 		for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
 			auto Vertex = Points[VertexIndex];
 			Vertex.transformBy(WorldToPlaneTransform);
-            Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
+			Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
 		}
 		Polyline->setNormal(ActiveViewPlaneNormal);
-        Polyline->setElevation(ComputeElevation(CurrentPnt, ActiveViewPlaneNormal));
+		Polyline->setElevation(ComputeElevation(CurrentPnt, ActiveViewPlaneNormal));
 
-        Group->AddTail(EoDbPolyline::Create(Polyline));
+		Group->AddTail(EoDbPolyline::Create(Polyline));
 	}
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	EoViAnn_points[0] = CurrentPnt;
 }
 
 void AeSysView::OnAnnotateModeHook() {
-    auto CurrentPnt {GetCursorPosition()};
-    auto Group {new EoDbGroup};
+	auto CurrentPnt {GetCursorPosition()};
+	auto Group {new EoDbGroup};
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    if (m_PreviousOp == 0) {
+	if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
-	}
-	else {
+	} else {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 		OdGePoint3d pt(CurrentPnt);
 
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP5, EoViAnn_points[0], pt)) {
-            if (m_PreviousOp == ID_OP3) {
-                GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
-            }
-            auto Line {EoDbLine::Create(BlockTableRecord)};
-            Line->setStartPoint(EoViAnn_points[0]);
-            Line->setEndPoint(pt);
-            Line->setColorIndex(1);
-            Line->setLinetype(L"Continuous");
+			if (m_PreviousOp == ID_OP3) {
+				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
+			}
+			auto Line {EoDbLine::Create(BlockTableRecord)};
+			Line->setStartPoint(EoViAnn_points[0]);
+			Line->setEndPoint(pt);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
 
-            Group->AddTail(EoDbLine::Create(Line));
-        }
+			Group->AddTail(EoDbLine::Create(Line));
+		}
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
 
-    auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-    Ellipse->setColorIndex(1);
-    Ellipse->setLinetype(L"Continuous");
+	auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+	Ellipse->setColorIndex(1);
+	Ellipse->setLinetype(L"Continuous");
 
-    auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
-    MajorAxis.normalize();
-    MajorAxis *= CircleRadius();
+	auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
+	MajorAxis.normalize();
+	MajorAxis *= CircleRadius();
 
-    Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.);
-    Group->AddTail(EoDbEllipse::Create(Ellipse));
-    
+	Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.);
+	Group->AddTail(EoDbEllipse::Create(Ellipse));
+
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	EoViAnn_points[0] = CurrentPnt;
 }
 
 void AeSysView::OnAnnotateModeUnderline() {
-    const auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 
 	if (m_PreviousOp != 0) {
 		ModeLineUnhighlightOp(m_PreviousOp);
@@ -240,23 +235,23 @@ void AeSysView::OnAnnotateModeUnderline() {
 
 		EoDbGroup* Group = new EoDbGroup;
 
-        OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-        auto Line {EoDbLine::Create(BlockTableRecord)};
-        Line->setStartPoint(Underline[0]);
-        Line->setEndPoint(Underline[1]);
-        
-        Line->setLinetype(L"Continuous");
+		auto Line {EoDbLine::Create(BlockTableRecord)};
+		Line->setStartPoint(Underline[0]);
+		Line->setEndPoint(Underline[1]);
 
-        Group->AddTail(EoDbLine::Create(Line));
-        
+		Line->setLinetype(L"Continuous");
+
+		Group->AddTail(EoDbLine::Create(Line));
+
 		GetDocument()->AddWorkLayerGroup(Group);
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
 }
 
 void AeSysView::OnAnnotateModeBox() {
-    const auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp != ID_OP7) {
 		if (m_PreviousOp != 0) {
 			RubberBandingDisable();
@@ -265,8 +260,7 @@ void AeSysView::OnAnnotateModeBox() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP7);
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
-	}
-	else {
+	} else {
 		OdGePoint3dArray ptsBox1;
 		OdGePoint3dArray ptsBox2;
 		bool bG1Flg = false;
@@ -304,16 +298,16 @@ void AeSysView::OnAnnotateModeBox() {
 
 			EoDbGroup* Group = new EoDbGroup;
 
-            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 			for (int i = 0; i < 4; i++) {
-                auto Line {EoDbLine::Create(BlockTableRecord)};
-                Line->setStartPoint(JoinedBoxes[i]);
-                Line->setEndPoint(JoinedBoxes[(i + 1) % 4]);
-                Line->setColorIndex(1);
-                Line->setLinetype(L"Continuous");
+				auto Line {EoDbLine::Create(BlockTableRecord)};
+				Line->setStartPoint(JoinedBoxes[i]);
+				Line->setEndPoint(JoinedBoxes[(i + 1) % 4]);
+				Line->setColorIndex(1);
+				Line->setLinetype(L"Continuous");
 
-                Group->AddTail(EoDbLine::Create(Line));
+				Group->AddTail(EoDbLine::Create(Line));
 			}
 			GetDocument()->AddWorkLayerGroup(Group);
 			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -323,15 +317,15 @@ void AeSysView::OnAnnotateModeBox() {
 }
 
 void AeSysView::OnAnnotateModeCutIn() {
-    auto DeviceContext {GetDC()};
+	auto DeviceContext {GetDC()};
 
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
-    auto Selection {SelectLineUsingPoint(CurrentPnt)};
-    auto Group {get<0>(Selection)};
-    if (Group != nullptr) {
-        auto EngagedLine {get<1>(Selection)};
-        CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
+	auto Selection {SelectLineUsingPoint(CurrentPnt)};
+	auto Group {get<0>(Selection)};
+	if (Group != nullptr) {
+		auto EngagedLine {get<1>(Selection)};
+		CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
 
 		CString CurrentText;
 
@@ -346,16 +340,16 @@ void AeSysView::OnAnnotateModeCutIn() {
 		const int PrimitiveState = pstate.Save();
 
 		if (!CurrentText.IsEmpty()) {
-            auto LineSeg {EngagedLine->LineSeg()};
+			auto LineSeg {EngagedLine->LineSeg()};
 			double dAng = LineSeg.AngleFromXAxis_xy();
-			if (dAng > .25 * TWOPI && dAng <  .75 * TWOPI)
+			if (dAng > .25 * TWOPI && dAng < .75 * TWOPI)
 				dAng += PI;
 
-            const auto PlaneNormal {CameraDirection()};
-            auto MinorAxis {ViewUp()};
+			const auto PlaneNormal {CameraDirection()};
+			auto MinorAxis {ViewUp()};
 			MinorAxis.rotateBy(dAng, PlaneNormal);
 			OdGeVector3d MajorAxis = MinorAxis;
-			MajorAxis.rotateBy(- HALF_PI, PlaneNormal);
+			MajorAxis.rotateBy(-HALF_PI, PlaneNormal);
 			MajorAxis *= .06;
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
@@ -370,20 +364,20 @@ void AeSysView::OnAnnotateModeCutIn() {
 			EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 			CharacterCellDefinition.SetRotationAngle(0.);
 			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
-            OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-            OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
-            
-            Text->setHeight(ReferenceSystem.YDirection().length());
-            Text->setRotation(ReferenceSystem.Rotation());
-            Text->setAlignmentPoint(ReferenceSystem.Origin());
-            Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(EoDb::kAlignCenter));
-            Text->setVerticalMode(EoDbText::ConvertVerticalMode(EoDb::kAlignMiddle));
+			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
+
+			Text->setHeight(ReferenceSystem.YDirection().length());
+			Text->setRotation(ReferenceSystem.Rotation());
+			Text->setAlignmentPoint(ReferenceSystem.Origin());
+			Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(EoDb::kAlignCenter));
+			Text->setVerticalMode(EoDbText::ConvertVerticalMode(EoDb::kAlignMiddle));
 
 //            OdGePoint3dArray BoundingBox;
 //            Text->getBoundingPoints(BoundingBox);
 
-            auto TextPrimitive {EoDbText::Create(Text)};
-            Group->AddTail(TextPrimitive);
+			auto TextPrimitive {EoDbText::Create(Text)};
+			Group->AddTail(TextPrimitive);
 
 			pstate.SetColorIndex(DeviceContext, ColorIndex);
 
@@ -400,25 +394,23 @@ void AeSysView::OnAnnotateModeCutIn() {
 			dRel[0] = EngagedLine->ParametricRelationshipOf(BoundingBox[0]);
 			dRel[1] = EngagedLine->ParametricRelationshipOf(BoundingBox[1]);
 
-            OdDbLinePtr Line {EngagedLine->EntityObjectId().safeOpenObject(OdDb::kForWrite)};
-            if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) {
-                OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-                OdDbLinePtr NewLine {Line->clone()};
-                BlockTableRecord->appendOdDbEntity(NewLine);
-                Line->setEndPoint(BoundingBox[0]);
-                NewLine->setStartPoint(BoundingBox[1]);
+			OdDbLinePtr Line {EngagedLine->EntityObjectId().safeOpenObject(OdDb::kForWrite)};
+			if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) {
+				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+				OdDbLinePtr NewLine {Line->clone()};
+				BlockTableRecord->appendOdDbEntity(NewLine);
+				Line->setEndPoint(BoundingBox[0]);
+				NewLine->setStartPoint(BoundingBox[1]);
 
-                EngagedLine->SetEndPoint2(BoundingBox[0]);
+				EngagedLine->SetEndPoint(BoundingBox[0]);
 				Group->AddTail(EoDbLine::Create(NewLine));
+			} else if (dRel[0] <= DBL_EPSILON) {
+				Line->setStartPoint(BoundingBox[1]);
+				EngagedLine->SetStartPoint(BoundingBox[1]);
+			} else if (dRel[1] >= 1. - DBL_EPSILON) {
+				Line->setEndPoint(BoundingBox[0]);
+				EngagedLine->SetEndPoint(BoundingBox[0]);
 			}
-            else if (dRel[0] <= DBL_EPSILON) {
-                Line->setStartPoint(BoundingBox[1]);
-                EngagedLine->SetStartPoint2(BoundingBox[1]);
-            }
-            else if (dRel[1] >= 1. - DBL_EPSILON) {
-                Line->setEndPoint(BoundingBox[0]);
-                EngagedLine->SetEndPoint2(BoundingBox[0]);
-            }
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroup, Group);
 		pstate.Restore(DeviceContext, PrimitiveState);
@@ -427,28 +419,27 @@ void AeSysView::OnAnnotateModeCutIn() {
 }
 
 void AeSysView::OnAnnotateModeConstructionLine() {
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	if (m_PreviousOp != ID_OP9) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP9);
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);
-	}
-	else {
+	} else {
 		CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
 		EoViAnn_points.append(ProjectToward(EoViAnn_points[1], EoViAnn_points[0], 96.));
 
-        auto Group {new EoDbGroup};
+		auto Group {new EoDbGroup};
 
-        auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[1], EoViAnn_points[2])};
+		auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[1], EoViAnn_points[2])};
 		Line->setColorIndex(15);
 		Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
-        Group->AddTail(EoDbLine::Create(Line));
+		Group->AddTail(EoDbLine::Create(Line));
 
-        GetDocument()->AddWorkLayerGroup(Group);
+		GetDocument()->AddWorkLayerGroup(Group);
 		ModeLineUnhighlightOp(m_PreviousOp);
 		EoViAnn_points.clear();
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -467,23 +458,21 @@ void AeSysView::OnAnnotateModeEscape() {
 	ModeLineUnhighlightOp(m_PreviousOp);
 }
 
-bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const {
+bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d & startPoint, OdGePoint3d & endPoint) const {
 	const double LineSegmentLength = OdGeVector3d(endPoint - startPoint).length();
 
 	double BeginDistance = 0.;
 
 	if (beginType == ID_OP4) {
 		BeginDistance = BubbleRadius();
-	}
-	else if (beginType == ID_OP5) {
+	} else if (beginType == ID_OP5) {
 		BeginDistance = CircleRadius();
 	}
 	double EndDistance = 0.;
 
 	if (endType == ID_OP4) {
 		EndDistance = BubbleRadius();
-	}
-	else if (endType == ID_OP5)
+	} else if (endType == ID_OP5)
 		EndDistance = CircleRadius();
 
 	if (LineSegmentLength > BeginDistance + EndDistance + DBL_EPSILON) {
@@ -492,8 +481,7 @@ bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& 
 		if (EndDistance != 0.)
 			endPoint = ProjectToward(endPoint, startPoint, EndDistance);
 		return true;
-	}
-	else {
+	} else {
 		theApp.AddModeInformationToMessageList();
 		return false;
 	}
@@ -513,7 +501,7 @@ void AeSysView::SetCircleRadius(double radius) noexcept {
 CString AeSysView::DefaultText() const {
 	return m_DefaultText;
 }
-void AeSysView::SetDefaultText(const CString& text) {
+void AeSysView::SetDefaultText(const CString & text) {
 	m_DefaultText = text;
 }
 double AeSysView::EndItemSize() const noexcept {
@@ -542,114 +530,112 @@ void AeSysView::SetNumberOfSides(int number) noexcept {
 }
 
 void AeSysView::DoAnnotateModeMouseMove() {
-    auto CurrentPnt {GetCursorPosition()};
-    const int NumberOfPoints = EoViAnn_points.size();
-    EoViAnn_points.append(CurrentPnt);
+	auto CurrentPnt {GetCursorPosition()};
+	const int NumberOfPoints = EoViAnn_points.size();
+	EoViAnn_points.append(CurrentPnt);
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-    m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-    switch (m_PreviousOp) {
-    case ID_OP2:
-    case ID_OP3:
-        if (EoViAnn_points[0] != CurrentPnt) {
-            if (m_PreviousOp == ID_OP3) {
-                GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], &m_PreviewGroup);
-            }
-            auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], CurrentPnt)};
-            Line->setColorIndex(1);
-            Line->setLinetype(L"Continuous");
-            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-        }
-        break;
+	switch (m_PreviousOp) {
+		case ID_OP2:
+		case ID_OP3:
+			if (EoViAnn_points[0] != CurrentPnt) {
+				if (m_PreviousOp == ID_OP3) {
+					GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], &m_PreviewGroup);
+				}
+				auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], CurrentPnt)};
+				Line->setColorIndex(1);
+				Line->setLinetype(L"Continuous");
+				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+			}
+			break;
 
-    case ID_OP4:
-    case ID_OP5:
-    {
-        OdGePoint3d m_PreviousPnt(EoViAnn_points[0]);
-        if (CorrectLeaderEndpoints(m_PreviousOp, 0, EoViAnn_points[0], EoViAnn_points[1])) {
-            auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], EoViAnn_points[1])};
-            Line->setColorIndex(1);
-            Line->setLinetype(L"Continuous");
-            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-        }
-        EoViAnn_points[0] = m_PreviousPnt;
-        break;
-    }
-    case ID_OP9:
-        if (EoViAnn_points[0] != CurrentPnt) {
-            CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
+		case ID_OP4:
+		case ID_OP5:
+		{
+			OdGePoint3d m_PreviousPnt(EoViAnn_points[0]);
+			if (CorrectLeaderEndpoints(m_PreviousOp, 0, EoViAnn_points[0], EoViAnn_points[1])) {
+				auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], EoViAnn_points[1])};
+				Line->setColorIndex(1);
+				Line->setLinetype(L"Continuous");
+				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+			}
+			EoViAnn_points[0] = m_PreviousPnt;
+			break;
+		}
+		case ID_OP9:
+			if (EoViAnn_points[0] != CurrentPnt) {
+				CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
 
-            EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
-            EoViAnn_points.append(ProjectToward(EoViAnn_points[2], EoViAnn_points[0], 96.));
+				EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
+				EoViAnn_points.append(ProjectToward(EoViAnn_points[2], EoViAnn_points[0], 96.));
 
-            auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[2], EoViAnn_points[3])};
-            Line->setColorIndex(15);
-            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
-            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-        }
-        break;
+				auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[2], EoViAnn_points[3])};
+				Line->setColorIndex(15);
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
+				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+			}
+			break;
 
-    }
-    EoViAnn_points.setLogicalLength(NumberOfPoints);
+	}
+	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
-void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
-    const auto PlaneNormal {CameraDirection()};
+void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d & startPoint, const OdGePoint3d & endPoint, EoDbGroup * group) {
+	const auto PlaneNormal {CameraDirection()};
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdGePoint3dArray ItemPoints;
 	ItemPoints.clear();
 
-    auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
+	auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
-    Polyline->setColorIndex(1);
-    Polyline->setLinetype(L"Continuous");
+	Polyline->setColorIndex(1);
+	Polyline->setLinetype(L"Continuous");
 
-    if (type == 1 || type == 2) { // open arrow or closed arrow
-        const auto Angle {.244978663127};
-        const auto Size {size / .970142500145};
+	if (type == 1 || type == 2) { // open arrow or closed arrow
+		const auto Angle {.244978663127};
+		const auto Size {size / .970142500145};
 
-        auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
+		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 
-        ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
-		ItemPoints.append(endPoint);
-		ItemPoints.append(BasePoint.rotateBy(- 2. * Angle, PlaneNormal, endPoint));
-
-        if (type == 2) {
-            Polyline->setClosed(true);
-        }
-	}
-	else if (type == 3) { // half arrow
-        const auto Angle {9.96686524912e-2};
-        const auto Size {size / .99503719021};
-
-        auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(endPoint);
-    }
-	else { // hash
-        const auto Angle {.785398163397};
-        const auto Size {.5 * size / .707106781187};
+		ItemPoints.append(BasePoint.rotateBy(-2. * Angle, PlaneNormal, endPoint));
 
-        auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
+		if (type == 2) {
+			Polyline->setClosed(true);
+		}
+	} else if (type == 3) { // half arrow
+		const auto Angle {9.96686524912e-2};
+		const auto Size {size / .99503719021};
+
+		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
+		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
+		ItemPoints.append(endPoint);
+	} else { // hash
+		const auto Angle {.785398163397};
+		const auto Size {.5 * size / .707106781187};
+
+		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(BasePoint.rotateBy(PI, PlaneNormal, endPoint));
-    }
-    OdGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
+	}
+	OdGeMatrix3d WorldToPlaneTransform;
+	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
-    for (size_t VertexIndex = 0; VertexIndex < ItemPoints.size(); VertexIndex++) {
-        auto Vertex = ItemPoints[VertexIndex];
-        Vertex.transformBy(WorldToPlaneTransform);
-        Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
-    }
-    Polyline->setNormal(PlaneNormal);
-    Polyline->setElevation(ComputeElevation(endPoint, PlaneNormal));
-    group->AddTail(EoDbPolyline::Create(Polyline));
+	for (size_t VertexIndex = 0; VertexIndex < ItemPoints.size(); VertexIndex++) {
+		auto Vertex = ItemPoints[VertexIndex];
+		Vertex.transformBy(WorldToPlaneTransform);
+		Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
+	}
+	Polyline->setNormal(PlaneNormal);
+	Polyline->setElevation(ComputeElevation(endPoint, PlaneNormal));
+	group->AddTail(EoDbPolyline::Create(Polyline));
 }

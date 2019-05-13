@@ -9,8 +9,8 @@ IMPLEMENT_DYNAMIC(EoDlgSetText, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetText, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetText::EoDlgSetText(CWnd* parent) 
-    : CDialog(EoDlgSetText::IDD, parent) {
+EoDlgSetText::EoDlgSetText(CWnd* parent)
+	: CDialog(EoDlgSetText::IDD, parent) {
 }
 
 EoDlgSetText::~EoDlgSetText() {

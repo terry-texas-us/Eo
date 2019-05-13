@@ -8,7 +8,7 @@ void AeSysView::OnModeGroupEdit() {
 
 	m_SubModeEditBeginPoint = GetCursorPosition();
 
-    auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
+	auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
 
 	if (Group != nullptr) {
 		m_SubModeEditGroup = Group;
@@ -32,7 +32,7 @@ void AeSysView::DoEditGroupEscape() {
 		m_tmEditSeg.invert();
 
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
- 		m_SubModeEditGroup->TransformBy(m_tmEditSeg);
+		m_SubModeEditGroup->TransformBy(m_tmEditSeg);
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 
 		InitializeGroupAndPrimitiveEdit();
@@ -44,25 +44,21 @@ void AeSysView::DoEditGroupTransform(OdUInt16 operation) {
 	AeSysDoc* Document = GetDocument();
 	if (m_SubModeEditGroup != 0) {
 		EoGeMatrix3d TransformMatrix;
-		TransformMatrix.setToTranslation(- m_SubModeEditBeginPoint.asVector());
+		TransformMatrix.setToTranslation(-m_SubModeEditBeginPoint.asVector());
 
 		if (operation == ID_OP2) {
 			TransformMatrix.preMultBy(EditModeRotationMatrix());
-		}
-		else if (operation == ID_OP3) {
+		} else if (operation == ID_OP3) {
 			TransformMatrix.preMultBy(EditModeInvertedRotationMatrix());
-		}
-		else if (operation == ID_OP6) {
+		} else if (operation == ID_OP6) {
 			EoGeMatrix3d ScaleMatrix;
 			EditModeMirrorScaleFactors().getMatrix(ScaleMatrix);
 			TransformMatrix.preMultBy(ScaleMatrix);
-		}
-		else if (operation == ID_OP7) {
+		} else if (operation == ID_OP7) {
 			EoGeMatrix3d ScaleMatrix;
 			EditModeScaleFactors().inverse().getMatrix(ScaleMatrix);
 			TransformMatrix.preMultBy(ScaleMatrix);
-		}
-		else if (operation == ID_OP8) {
+		} else if (operation == ID_OP8) {
 			EoGeMatrix3d ScaleMatrix;
 			EditModeScaleFactors().getMatrix(ScaleMatrix);
 			TransformMatrix.preMultBy(ScaleMatrix);

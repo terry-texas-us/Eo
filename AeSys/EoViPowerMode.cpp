@@ -10,60 +10,57 @@ void AeSysView::OnPowerModeOptions() noexcept {
 }
 
 void AeSysView::OnPowerModeCircuit() {
-    auto CurrentPnt {GetCursorPosition()};
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	auto CurrentPnt {GetCursorPosition()};
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    const auto ColorIndex {pstate.ColorIndex()};
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {pstate.ColorIndex()};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	m_PowerArrow = false;
 	m_PowerConductor = false;
 
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-    auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-    auto Group {get<0>(Selection)};
+	auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
+	auto Group {get<0>(Selection)};
 
-    if (Group != nullptr) {
-        auto SymbolCircle {get<1>(Selection)};
-        CurrentPnt = SymbolCircle->Center();
-		
-        const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
+	if (Group != nullptr) {
+		auto SymbolCircle {get<1>(Selection)};
+		CurrentPnt = SymbolCircle->Center();
+
+		const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
 
 		if (m_PowerModePoints.empty()) {
 			m_PowerModePoints.append(CurrentPnt);
 			m_PreviousOp = ModeLineHighlightOp(ID_OP2);
-		}
-		else {
+		} else {
 			Group = new EoDbGroup;
 			GetDocument()->AddWorkLayerGroup(Group);
 
-            const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
-            const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius)};
-            auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
-            Line->setColorIndex(ColorIndex);
-            Line->setLinetype(Linetype);
-            Group->AddTail(EoDbLine::Create(Line));
-            m_PowerModePoints[0] = CurrentPnt;
+			const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
+			const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius)};
+			auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
+			Line->setColorIndex(ColorIndex);
+			Line->setLinetype(Linetype);
+			Group->AddTail(EoDbLine::Create(Line));
+			m_PowerModePoints[0] = CurrentPnt;
 		}
 		m_PreviousRadius = CurrentRadius;
-	}
-	else {
+	} else {
 		if (m_PowerModePoints.empty()) {
 			m_PowerModePoints.append(CurrentPnt);
-		}
-		else {
+		} else {
 			CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
 
 			Group = new EoDbGroup;
 			GetDocument()->AddWorkLayerGroup(Group);
 
-            const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
-            const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], 0.)};
-            auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
-            Line->setColorIndex(ColorIndex);
-            Line->setLinetype(Linetype);
-            Group->AddTail(EoDbLine::Create(Line));
+			const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
+			const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], 0.)};
+			auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
+			Line->setColorIndex(ColorIndex);
+			Line->setLinetype(Linetype);
+			Group->AddTail(EoDbLine::Create(Line));
 
 			m_PowerModePoints[0] = CurrentPnt;
 		}
@@ -91,7 +88,7 @@ void AeSysView::OnPowerModeNeutral() {
 void AeSysView::OnPowerModeHome() {
 	static OdGePoint3d PointOnCircuit;
 
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
 	m_PowerConductor = false;
 	m_PreviousOp = 0;
@@ -101,17 +98,16 @@ void AeSysView::OnPowerModeHome() {
 
 	if (!m_PowerArrow || (PointOnCircuit != CurrentPnt)) {
 		m_PowerArrow = false;
-        auto Selection {SelectLineUsingPoint(CurrentPnt)};
-        auto Group {get<0>(Selection)};
-        if (Group != nullptr) {
-            auto Circuit {get<1>(Selection)};
-            CurrentPnt = Circuit->ProjPt_(CurrentPnt);
+		auto Selection {SelectLineUsingPoint(CurrentPnt)};
+		auto Group {get<0>(Selection)};
+		if (Group != nullptr) {
+			auto Circuit {get<1>(Selection)};
+			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= .5) {
 				m_CircuitEndPoint = Circuit->EndPoint();
 				if (CurrentPnt.distanceTo(Circuit->StartPoint()) <= .1)
 					CurrentPnt = Circuit->StartPoint();
-			}
-			else {
+			} else {
 				m_CircuitEndPoint = Circuit->StartPoint();
 				if (CurrentPnt.distanceTo(Circuit->EndPoint()) <= .1)
 					CurrentPnt = Circuit->EndPoint();
@@ -121,8 +117,7 @@ void AeSysView::OnPowerModeHome() {
 			CurrentPnt = ProjectToward(CurrentPnt, m_CircuitEndPoint, m_PowerConductorSpacing);
 			SetCursorPosition(CurrentPnt);
 		}
-	}
-	else {
+	} else {
 		m_PowerArrow = CurrentPnt.distanceTo(m_CircuitEndPoint) > m_PowerConductorSpacing;
 		GenerateHomeRunArrow(CurrentPnt, m_CircuitEndPoint);
 		CurrentPnt = ProjectToward(CurrentPnt, m_CircuitEndPoint, m_PowerConductorSpacing);
@@ -132,46 +127,46 @@ void AeSysView::OnPowerModeHome() {
 }
 
 void AeSysView::DoPowerModeMouseMove() {
-    auto CurrentPnt {GetCursorPosition()};
-    const auto NumberOfPoints {m_PowerModePoints.size()};
+	auto CurrentPnt {GetCursorPosition()};
+	const auto NumberOfPoints {m_PowerModePoints.size()};
 
-    switch (m_PreviousOp) {
-    case ID_OP2:
-        if (m_PowerModePoints[0] != CurrentPnt) {
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-            m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+	switch (m_PreviousOp) {
+		case ID_OP2:
+			if (m_PowerModePoints[0] != CurrentPnt) {
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-            auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-            auto Group {get<0>(Selection)};
+				auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
+				auto Group {get<0>(Selection)};
 
-            if (Group != nullptr) {
-                auto SymbolCircle {get<1>(Selection)};
-                const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
+				if (Group != nullptr) {
+					auto SymbolCircle {get<1>(Selection)};
+					const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
 
-                CurrentPnt = SymbolCircle->Center();
-                CurrentPnt = ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius);
-            } else {
-                CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
-            }
-            const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
+					CurrentPnt = SymbolCircle->Center();
+					CurrentPnt = ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius);
+				} else {
+					CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
+				}
+				const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
 
-            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-            auto Line {EoDbLine::Create(BlockTableRecord, pt1, CurrentPnt)};
-            Line->setColorIndex(pstate.ColorIndex());
-            Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
-            m_PreviewGroup.AddTail(EoDbLine::Create(Line));
+				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+				auto Line {EoDbLine::Create(BlockTableRecord, pt1, CurrentPnt)};
+				Line->setColorIndex(pstate.ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-        }
-        break;
-    }
-    m_PowerModePoints.setLogicalLength(NumberOfPoints);
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+			}
+			break;
+	}
+	m_PowerModePoints.setLogicalLength(NumberOfPoints);
 }
 
 void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	static OdGePoint3d PointOnCircuit;
 
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
 	m_PowerArrow = false;
 	m_PreviousOp = 0;
@@ -181,29 +176,27 @@ void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 
 	if (!m_PowerConductor || PointOnCircuit != CurrentPnt) {
 		m_PowerConductor = false;
-        auto Selection {SelectLineUsingPoint(CurrentPnt)};
-        auto Group {get<0>(Selection)};
-        if (Group != nullptr) {
-            auto Circuit {get<1>(Selection)};
-		    CurrentPnt = Circuit->ProjPt_(CurrentPnt);
+		auto Selection {SelectLineUsingPoint(CurrentPnt)};
+		auto Group {get<0>(Selection)};
+		if (Group != nullptr) {
+			auto Circuit {get<1>(Selection)};
+			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 
-            const auto BeginPoint {Circuit->StartPoint()};
+			const auto BeginPoint {Circuit->StartPoint()};
 			m_CircuitEndPoint = Circuit->EndPoint();
 
 			if (fabs(m_CircuitEndPoint.x - BeginPoint.x) > .025) {
 				if (BeginPoint.x > m_CircuitEndPoint.x)
 					m_CircuitEndPoint = BeginPoint;
-			}
-			else if (BeginPoint.y > m_CircuitEndPoint.y)
+			} else if (BeginPoint.y > m_CircuitEndPoint.y)
 				m_CircuitEndPoint = BeginPoint;
 
 			GeneratePowerConductorSymbol(conductorType, CurrentPnt, m_CircuitEndPoint);
 			CurrentPnt = ProjectToward(CurrentPnt, m_CircuitEndPoint, m_PowerConductorSpacing);
 			SetCursorPosition(CurrentPnt);
-			m_PowerConductor = CurrentPnt.distanceTo(m_CircuitEndPoint) >  m_PowerConductorSpacing;
+			m_PowerConductor = CurrentPnt.distanceTo(m_CircuitEndPoint) > m_PowerConductorSpacing;
 		}
-	}
-	else {
+	} else {
 		GeneratePowerConductorSymbol(conductorType, CurrentPnt, m_CircuitEndPoint);
 		CurrentPnt = ProjectToward(CurrentPnt, m_CircuitEndPoint, m_PowerConductorSpacing);
 		SetCursorPosition(CurrentPnt);
@@ -223,125 +216,125 @@ void AeSysView::OnPowerModeEscape() {
 	m_PowerModePoints.clear();
 
 	ModeLineUnhighlightOp(m_PreviousOp);
-    m_PreviousOp = 0;
+	m_PreviousOp = 0;
 
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 }
 
-void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
-    const auto PlaneNormal {CameraDirection()};
+void AeSysView::GenerateHomeRunArrow(const OdGePoint3d & pointOnCircuit, const OdGePoint3d & endPoint) {
+	const auto PlaneNormal {CameraDirection()};
 
-    OdGePoint3dArray Points;
+	OdGePoint3dArray Points;
 	Points.setLogicalLength(3);
 
 	Points[0] = ProjectToward(pointOnCircuit, endPoint, .05);
 
 	EoGeLineSeg3d Circuit(Points[0], endPoint);
 
-	Circuit.ProjPtFrom_xy(0., - .075, Points[0]);
+	Circuit.ProjPtFrom_xy(0., -.075, Points[0]);
 	Points[1] = pointOnCircuit;
 	Circuit.ProjPtFrom_xy(0., .075, Points[2]);
 
-    auto Group {new EoDbGroup};
+	auto Group {new EoDbGroup};
 	GetDocument()->AddWorkLayerGroup(Group);
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
+	auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 
-    Polyline->setColorIndex(2);
-    Polyline->setLinetype(L"Continuous");
+	Polyline->setColorIndex(2);
+	Polyline->setLinetype(L"Continuous");
 
-    OdGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
+	OdGeMatrix3d WorldToPlaneTransform;
+	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
-    for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
-        auto Vertex = Points[VertexIndex];
-        Vertex.transformBy(WorldToPlaneTransform);
-        Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
-    }
-    Polyline->setNormal(PlaneNormal);
-    Polyline->setElevation(ComputeElevation(endPoint, PlaneNormal));
-    Group->AddTail(EoDbPolyline::Create(Polyline));
+	for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
+		auto Vertex = Points[VertexIndex];
+		Vertex.transformBy(WorldToPlaneTransform);
+		Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
+	}
+	Polyline->setNormal(PlaneNormal);
+	Polyline->setElevation(ComputeElevation(endPoint, PlaneNormal));
+	Group->AddTail(EoDbPolyline::Create(Polyline));
 
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 }
-void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
-    const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
+void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d & pointOnCircuit, const OdGePoint3d & endPoint) {
+	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
-    OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	OdGePoint3d Points[5];
 	EoGeLineSeg3d Circuit(pointOnCircuit, endPoint);
 	OdDbLinePtr Line;
 
-    auto Group {new EoDbGroup};
+	auto Group {new EoDbGroup};
 
 	switch (conductorType) {
-    case ID_OP4:
-    {
-        Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
-        Circuit.ProjPtFrom_xy(0., .075, Points[1]);
-        Circuit.ProjPtFrom_xy(0., .0875, Points[2]);
+		case ID_OP4:
+		{
+			Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
+			Circuit.ProjPtFrom_xy(0., .075, Points[1]);
+			Circuit.ProjPtFrom_xy(0., .0875, Points[2]);
 
-        Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
-        Line->setColorIndex(1);
-        Line->setLinetype(L"Continuous");
-        Group->AddTail(EoDbLine::Create(Line));
+			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+			Group->AddTail(EoDbLine::Create(Line));
 
-        auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, Points[2], ActiveViewPlaneNormal, .0125)};
-        Circle->setColorIndex(1);
-        Circle->setLinetype(L"Continuous");
-        Group->AddTail(EoDbEllipse::Create(Circle));
-        break;
-    }
-	case ID_OP5:
-		Circuit.ProjPtFrom_xy(0., - .1, Points[0]);
-		Circuit.ProjPtFrom_xy(0., .1, Points[1]);
-		Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
-        Line->setColorIndex(1);
-        Line->setLinetype(L"Continuous");
-        Group->AddTail(EoDbLine::Create(Line));
-		break;
+			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, Points[2], ActiveViewPlaneNormal, .0125)};
+			Circle->setColorIndex(1);
+			Circle->setLinetype(L"Continuous");
+			Group->AddTail(EoDbEllipse::Create(Circle));
+			break;
+		}
+		case ID_OP5:
+			Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
+			Circuit.ProjPtFrom_xy(0., .1, Points[1]);
+			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+			Group->AddTail(EoDbLine::Create(Line));
+			break;
 
-	case ID_OP6:
-		Circuit.ProjPtFrom_xy(0., - .1, Points[0]);
-		Circuit.ProjPtFrom_xy(0., .05, Points[1]);
+		case ID_OP6:
+			Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
+			Circuit.ProjPtFrom_xy(0., .05, Points[1]);
 
-		Points[2] = ProjectToward(pointOnCircuit, endPoint, .025);
+			Points[2] = ProjectToward(pointOnCircuit, endPoint, .025);
 
-		EoGeLineSeg3d(Points[2], endPoint).ProjPtFrom_xy(0., .075, Points[3]);
-		EoGeLineSeg3d(pointOnCircuit, endPoint).ProjPtFrom_xy(0., .1, Points[4]);
-		
-		Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
-        Line->setColorIndex(1);
-        Line->setLinetype(L"Continuous");
-        Group->AddTail(EoDbLine::Create(Line));
+			EoGeLineSeg3d(Points[2], endPoint).ProjPtFrom_xy(0., .075, Points[3]);
+			EoGeLineSeg3d(pointOnCircuit, endPoint).ProjPtFrom_xy(0., .1, Points[4]);
 
-        Line = EoDbLine::Create(BlockTableRecord, Points[1], Points[3]);
-        Line->setColorIndex(1);
-        Line->setLinetype(L"Continuous");
-        Group->AddTail(EoDbLine::Create(Line));
+			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+			Group->AddTail(EoDbLine::Create(Line));
 
-        Line = EoDbLine::Create(BlockTableRecord, Points[3], Points[4]);
-        Line->setColorIndex(1);
-        Line->setLinetype(L"Continuous");
-        Group->AddTail(EoDbLine::Create(Line));
-        break;
+			Line = EoDbLine::Create(BlockTableRecord, Points[1], Points[3]);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+			Group->AddTail(EoDbLine::Create(Line));
 
-	case ID_OP7:
-		Circuit.ProjPtFrom_xy(0., - .05, Points[0]);
-		Circuit.ProjPtFrom_xy(0., .05, Points[1]);
-		Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
-        Line->setColorIndex(1);
-        Line->setLinetype(L"Continuous");
-        Group->AddTail(EoDbLine::Create(Line));
-        break;
+			Line = EoDbLine::Create(BlockTableRecord, Points[3], Points[4]);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+			Group->AddTail(EoDbLine::Create(Line));
+			break;
 
-	default:
-		delete Group;
-		return;
+		case ID_OP7:
+			Circuit.ProjPtFrom_xy(0., -.05, Points[0]);
+			Circuit.ProjPtFrom_xy(0., .05, Points[1]);
+			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
+			Line->setColorIndex(1);
+			Line->setLinetype(L"Continuous");
+			Group->AddTail(EoDbLine::Create(Line));
+			break;
+
+		default:
+			delete Group;
+			return;
 	}
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);

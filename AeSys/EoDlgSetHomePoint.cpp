@@ -15,14 +15,14 @@ END_MESSAGE_MAP()
 
 OdGePoint3d EoDlgSetHomePoint::m_CursorPosition = OdGePoint3d::kOrigin;
 
-EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* parent) 
-    : CDialog(EoDlgSetHomePoint::IDD, parent)
-    , m_ActiveView(0) {
+EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* parent)
+	: CDialog(EoDlgSetHomePoint::IDD, parent)
+	, m_ActiveView(0) {
 }
 
-EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent) 
-    : CDialog(EoDlgSetHomePoint::IDD, parent)
-    , m_ActiveView(activeView) {
+EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent)
+	: CDialog(EoDlgSetHomePoint::IDD, parent)
+	, m_ActiveView(activeView) {
 }
 
 EoDlgSetHomePoint::~EoDlgSetHomePoint() {
@@ -71,17 +71,17 @@ void EoDlgSetHomePoint::OnOK() {
 
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {
-		case 9:
-			m_ActiveView->SetGridOrigin(m_CursorPosition);
-			break;
-		case 10:
-			AeSysDoc::GetDoc()->SetTrapPivotPoint(m_CursorPosition);
-			break;
-		case 11:
-			m_ActiveView->SetCameraTarget(m_CursorPosition);
-			break;
-		default:
-			theApp.HomePointSave(NamesItemIndex, m_CursorPosition);
+			case 9:
+				m_ActiveView->SetGridOrigin(m_CursorPosition);
+				break;
+			case 10:
+				AeSysDoc::GetDoc()->SetTrapPivotPoint(m_CursorPosition);
+				break;
+			case 11:
+				m_ActiveView->SetCameraTarget(m_CursorPosition);
+				break;
+			default:
+				theApp.HomePointSave(NamesItemIndex, m_CursorPosition);
 		}
 		CDialog::OnOK();
 	}
@@ -89,21 +89,21 @@ void EoDlgSetHomePoint::OnOK() {
 void EoDlgSetHomePoint::OnCbnEditupdateList() {
 	CString NamesItem;
 	m_HomePointNames.GetWindowTextW(NamesItem);
-	const int NamesItemIndex = m_HomePointNames.FindString(- 1, NamesItem);
+	const int NamesItemIndex = m_HomePointNames.FindString(-1, NamesItem);
 
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {
-		case 9:
-			m_ActiveView->SetGridOrigin(m_CursorPosition);
-			break;
-		case 10:
-			AeSysDoc::GetDoc()->SetTrapPivotPoint(m_CursorPosition);
-			break;
-		case 11:
-			m_ActiveView->SetCameraTarget(m_CursorPosition);
-			break;
-		default:
-			theApp.HomePointSave(NamesItemIndex, m_CursorPosition);
+			case 9:
+				m_ActiveView->SetGridOrigin(m_CursorPosition);
+				break;
+			case 10:
+				AeSysDoc::GetDoc()->SetTrapPivotPoint(m_CursorPosition);
+				break;
+			case 11:
+				m_ActiveView->SetCameraTarget(m_CursorPosition);
+				break;
+			default:
+				theApp.HomePointSave(NamesItemIndex, m_CursorPosition);
 		}
 		CDialog::OnOK();
 	}

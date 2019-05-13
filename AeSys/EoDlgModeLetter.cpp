@@ -16,8 +16,8 @@ END_MESSAGE_MAP()
 
 OdGePoint3d EoDlgModeLetter::m_Point = OdGePoint3d::kOrigin;
 
-EoDlgModeLetter::EoDlgModeLetter(CWnd* parent) 
-    : CDialog(EoDlgModeLetter::IDD, parent) {
+EoDlgModeLetter::EoDlgModeLetter(CWnd* parent)
+	: CDialog(EoDlgModeLetter::IDD, parent) {
 }
 
 EoDlgModeLetter::~EoDlgModeLetter() {
@@ -44,32 +44,32 @@ void EoDlgModeLetter::OnOK() {
 	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
 
 	if (m_TextEditControl.GetWindowTextLengthW() != 0) {
-        CString TextEditControl;
-        m_TextEditControl.GetWindowTextW(TextEditControl);
-        m_TextEditControl.SetWindowTextW(L"");
+		CString TextEditControl;
+		m_TextEditControl.GetWindowTextW(TextEditControl);
+		m_TextEditControl.SetWindowTextW(L"");
 
-        EoDbText* TextPrimitive;
+		EoDbText* TextPrimitive;
 
-        const int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
-        if (HardLineBreakPosition == -1) { // single line text
-            OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-            OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) TextEditControl);
-            Text->setHeight(ReferenceSystem.YDirection().length());
-            Text->setRotation(ReferenceSystem.Rotation());
-            Text->setAlignmentPoint(Text->position());
+		const int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
+		if (HardLineBreakPosition == -1) { // single line text
+			OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) TextEditControl);
+			Text->setHeight(ReferenceSystem.YDirection().length());
+			Text->setRotation(ReferenceSystem.Rotation());
+			Text->setAlignmentPoint(Text->position());
 
-            TextPrimitive = EoDbText::Create(Text);
-        } else {
-            TextEditControl.Replace(L"\r\n", L"\\P");
-            OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-            OdDbMTextPtr MText = EoDbText::CreateM(BlockTableRecord, TextEditControl.GetBuffer());
-            MText->setLocation(ReferenceSystem.Origin());
-            MText->setTextHeight(ReferenceSystem.YDirection().length());
-            MText->setRotation(ReferenceSystem.Rotation());
+			TextPrimitive = EoDbText::Create(Text);
+		} else {
+			TextEditControl.Replace(L"\r\n", L"\\P");
+			OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+			OdDbMTextPtr MText = EoDbText::CreateM(BlockTableRecord, TextEditControl.GetBuffer());
+			MText->setLocation(ReferenceSystem.Origin());
+			MText->setTextHeight(ReferenceSystem.YDirection().length());
+			MText->setRotation(ReferenceSystem.Rotation());
 
-            TextPrimitive = EoDbText::Create(MText);
-        }
-      	EoDbGroup* Group = new EoDbGroup;
+			TextPrimitive = EoDbText::Create(MText);
+		}
+		EoDbGroup* Group = new EoDbGroup;
 		Group->AddTail(TextPrimitive);
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);

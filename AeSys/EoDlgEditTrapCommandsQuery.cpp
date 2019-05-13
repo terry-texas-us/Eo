@@ -11,8 +11,8 @@ BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
 	ON_NOTIFY(TVN_SELCHANGED, IDC_GROUP_TREE, &EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree)
 END_MESSAGE_MAP()
 
-EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent) 
-    : CDialog(EoDlgEditTrapCommandsQuery::IDD, parent) {
+EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent)
+	: CDialog(EoDlgEditTrapCommandsQuery::IDD, parent) {
 }
 
 EoDlgEditTrapCommandsQuery::~EoDlgEditTrapCommandsQuery() {
@@ -43,7 +43,7 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	TreeView_Expand(hWndGroupTree, htiGroupList, TVE_EXPAND);
 	return TRUE;
 }
-void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT* result) {
+void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* pNMHDR, LRESULT* result) {
 	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
 
 	wchar_t szText[256];
@@ -61,10 +61,8 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT
 	m_GeometryListViewControl.DeleteAllItems();
 
 	if (wcscmp(item.pszText, L"<Groups>") == 0) {
-	}
-	else if (wcscmp(item.pszText, L"<Group>") == 0) {
-	}
-	else {
+	} else if (wcscmp(item.pszText, L"<Group>") == 0) {
+	} else {
 		EoDbPrimitive* Primitive = (EoDbPrimitive*) item.lParam;
 		FillExtraList(Primitive);
 		FillGeometryList(Primitive);
@@ -73,7 +71,7 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR *pNMHDR, LRESULT
 }
 void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 	wchar_t szBuf[64];
-    wmemset(szBuf, 0, 64);
+	wmemset(szBuf, 0, 64);
 
 	int iItem = 0;
 
@@ -81,7 +79,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 	primitive->FormatExtra(Extra);
 
 	size_t nOff = 0;
-	for (size_t nDel = Extra.Mid(nOff).Find(';'); nDel != - 1;) {
+	for (size_t nDel = Extra.Mid(nOff).Find(';'); nDel != -1;) {
 		wcscpy_s(szBuf, Extra.Mid(nOff, nDel));
 
 		m_ExtraListViewControl.InsertItem(iItem, szBuf);
@@ -97,7 +95,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 		nDel = Extra.Mid(nOff).Find(';');
 	}
 }
-void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive* primitive) {
+void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive * primitive) {
 	wchar_t szBuf[64];
 	int iItem = 0;
 
@@ -105,7 +103,7 @@ void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive* primitive) {
 	primitive->FormatGeometry(strBuf);
 
 	size_t nOff = 0;
-	for (size_t nDel = strBuf.Mid(nOff).Find(';'); nDel != - 1;) {
+	for (size_t nDel = strBuf.Mid(nOff).Find(';'); nDel != -1;) {
 		wcscpy_s(szBuf, 64, strBuf.Mid(nOff, nDel));
 		m_GeometryListViewControl.InsertItem(iItem, szBuf);
 		nOff += nDel + 1;

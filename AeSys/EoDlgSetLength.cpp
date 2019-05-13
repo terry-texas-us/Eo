@@ -10,9 +10,9 @@ IMPLEMENT_DYNAMIC(EoDlgSetLength, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetLength, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetLength::EoDlgSetLength(CWnd* parent) 
-    : CDialog(EoDlgSetLength::IDD, parent)
-    , m_Length(0.) {
+EoDlgSetLength::EoDlgSetLength(CWnd* parent)
+	: CDialog(EoDlgSetLength::IDD, parent)
+	, m_Length(0.) {
 }
 
 EoDlgSetLength::~EoDlgSetLength() {

@@ -15,20 +15,20 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
-    : CDialog(EoDlgLayerPropertiesManager::IDD, parent)
-    , m_DeltaHeight(0)
-    , m_DeltaWidth(0)
-    , m_InititialHeight(0)
-    , m_InititialWidth(0) {
+	: CDialog(EoDlgLayerPropertiesManager::IDD, parent)
+	, m_DeltaHeight(0)
+	, m_DeltaWidth(0)
+	, m_InititialHeight(0)
+	, m_InititialWidth(0) {
 }
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent)
-    : CDialog(EoDlgLayerPropertiesManager::IDD, parent)
-    , m_Database(database)
-    , m_DeltaHeight(0)
-    , m_DeltaWidth(0)
-    , m_InititialHeight(0)
-    , m_InititialWidth(0) {
+	: CDialog(EoDlgLayerPropertiesManager::IDD, parent)
+	, m_Database(database)
+	, m_DeltaHeight(0)
+	, m_DeltaWidth(0)
+	, m_InititialHeight(0)
+	, m_InititialWidth(0) {
 }
 
 EoDlgLayerPropertiesManager::~EoDlgLayerPropertiesManager() {
@@ -39,8 +39,8 @@ void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_LAYER_FILTER_TREE, m_TreeFilters);
 }
 int EoDlgLayerPropertiesManager::OnCreate(LPCREATESTRUCT createStructure) {
-	if (CDialog::OnCreate(createStructure) == - 1) {
-		return - 1;
+	if (CDialog::OnCreate(createStructure) == -1) {
+		return -1;
 	}
 	m_InititialWidth = createStructure->cx;
 	m_InititialHeight = createStructure->cy;
@@ -64,11 +64,11 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* pNMHDR, LRE
 		if (HTREEITEM SelectedItem = m_TreeFilters.GetSelectedItem()) {
 			OdLyLayerFilter* Filter = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(SelectedItem);
 			if (Filter->dynamicallyGenerated()) return;
-			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES ) return;
+			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) return;
 			Filter->parent()->removeNested(Filter);
 			m_TreeFilters.DeleteItem(SelectedItem);
 
-			const OdLyLayerFilter* Root = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem());
+			const OdLyLayerFilter * Root = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem());
 			::odlyGetLayerFilterManager(m_Database)->setFilters(Root, Root);
 		}
 	}
@@ -91,28 +91,24 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
 	ATLTRACE2(atlTraceGeneral, 0, L"Main dictionary contains %i entries\n", MainDictionary->numEntries());
 // </tas>
 	OdDbDictionaryIteratorPtr MainDictionaryIterator = MainDictionary->newIterator();
-	while (!MainDictionaryIterator->done())
-	{
+	while (!MainDictionaryIterator->done()) {
 		const OdDbObjectId MainDictionaryEntryObjectId = MainDictionaryIterator->objectId();
 		ATLTRACE2(atlTraceGeneral, 0, L"<%4s> \"%s\"\n", MainDictionaryEntryObjectId.getHandle().ascii().c_str(), MainDictionaryIterator->name().c_str());
 		if (MainDictionaryIterator->objectId() == m_Database->getLayoutDictionaryId()) {
 			OdDbDictionaryPtr LayoutDictionary = m_Database->getLayoutDictionaryId().safeOpenObject(OdDb::kForRead);
 			OdDbDictionaryIteratorPtr LayoutDictionaryIterator = LayoutDictionary->newIterator();
-			while (!LayoutDictionaryIterator->done())
-			{
+			while (!LayoutDictionaryIterator->done()) {
 				const OdDbObjectId LayoutDictionaryEntryObjectId = LayoutDictionaryIterator->objectId();
 				ATLTRACE2(atlTraceGeneral, 0, L"    <%4s> \"%s\"\n", LayoutDictionaryEntryObjectId.getHandle().ascii().c_str(), LayoutDictionaryIterator->name().c_str());
 				LayoutDictionaryIterator->next();
 			}
-		}
-		else if (MainDictionaryIterator->objectId() == m_Database->getScaleListDictionaryId()) {
+		} else if (MainDictionaryIterator->objectId() == m_Database->getScaleListDictionaryId()) {
 			OdDbDictionaryPtr ScaleListDictionary = m_Database->getScaleListDictionaryId().safeOpenObject(OdDb::kForRead);
 			OdDbDictionaryIteratorPtr ScaleListDictionaryIterator = ScaleListDictionary->newIterator();
-			while (!ScaleListDictionaryIterator->done())
-			{
+			while (!ScaleListDictionaryIterator->done()) {
 				const OdDbObjectId ScaleListDictionaryEntryObjectId = ScaleListDictionaryIterator->objectId();
 				ATLTRACE2(atlTraceGeneral, 2, L"    <%4s> \"%s\"\n", ScaleListDictionaryEntryObjectId.getHandle().ascii().c_str(), ScaleListDictionaryIterator->name().c_str());
-		
+
 				ScaleListDictionaryIterator->next();
 			}
 		}
@@ -121,10 +117,10 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
 	return 0;
 }
 ///<summary>Recursive filter tree filling helper</summary>
-static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
+static void UpdateFilterTree(CTreeCtrl & tree, HTREEITEM parent, const OdLyLayerFilter * root, const OdLyLayerFilter * current) {
 	if (root) {
 		HTREEITEM TreeItem = tree.InsertItem(root->name(), parent);
-		tree.SetItemData(TreeItem, (DWORD)(void*) root);
+		tree.SetItemData(TreeItem, (DWORD) (void*) root);
 		const int Image = root->isIdFilter() ? 2 : 1;
 		tree.SetItemImage(TreeItem, Image, Image);
 		for (size_t FilterIndex = 0; FilterIndex < root->getNestedFilters().length(); FilterIndex++) {
@@ -139,7 +135,7 @@ void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	m_TreeFilters.DeleteAllItems();
 	OdLyLayerFilterManagerPtr FilterManager = ::odlyGetLayerFilterManager(m_Database);
 	OdLyLayerFilterPtr pCurrent;
-	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk ) {
+	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk) {
 		return;
 	}
 	UpdateFilterTree(m_TreeFilters, TVI_ROOT, m_RootFilter, pCurrent);
@@ -154,7 +150,7 @@ void EoDlgLayerPropertiesManager::OnSize(UINT type, int newWidth, int newHeight)
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
-		itemRect.right  += (dlgRect.Width() - m_DeltaWidth);
+		itemRect.right += (dlgRect.Width() - m_DeltaWidth);
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->MoveWindow(itemRect);
 	}
 	if (GetDlgItem(IDC_STATIC_LAYER_STATISTIC)) {
@@ -197,30 +193,30 @@ void EoDlgLayerPropertiesManager::OnSizing(UINT side, LPRECT rectangle) {
 
 	if (rct.Width() < m_InititialWidth) {
 		switch (side) {
-		case WMSZ_LEFT:
-		case WMSZ_BOTTOMLEFT:
-		case WMSZ_TOPLEFT:
-			rectangle->left = rectangle->right - m_InititialWidth;
-			break;
-		case WMSZ_RIGHT:
-		case WMSZ_BOTTOMRIGHT:
-		case WMSZ_TOPRIGHT:
-			rectangle->right = rectangle->left + m_InititialWidth;
-			break;
+			case WMSZ_LEFT:
+			case WMSZ_BOTTOMLEFT:
+			case WMSZ_TOPLEFT:
+				rectangle->left = rectangle->right - m_InititialWidth;
+				break;
+			case WMSZ_RIGHT:
+			case WMSZ_BOTTOMRIGHT:
+			case WMSZ_TOPRIGHT:
+				rectangle->right = rectangle->left + m_InititialWidth;
+				break;
 		}
 	}
 	if (rct.Height() < m_InititialHeight) {
 		switch (side) {
-		case WMSZ_BOTTOM:
-		case WMSZ_BOTTOMLEFT:
-		case WMSZ_BOTTOMRIGHT:
-			rectangle->bottom = rectangle->top + m_InititialHeight;
-			break;
-		case WMSZ_TOP:
-		case WMSZ_TOPLEFT:
-		case WMSZ_TOPRIGHT:
-			rectangle->top= rectangle->bottom - m_InititialHeight;
-			break;
+			case WMSZ_BOTTOM:
+			case WMSZ_BOTTOMLEFT:
+			case WMSZ_BOTTOMRIGHT:
+				rectangle->bottom = rectangle->top + m_InititialHeight;
+				break;
+			case WMSZ_TOP:
+			case WMSZ_TOPLEFT:
+			case WMSZ_TOPRIGHT:
+				rectangle->top = rectangle->bottom - m_InititialHeight;
+				break;
 		}
 	}
 }

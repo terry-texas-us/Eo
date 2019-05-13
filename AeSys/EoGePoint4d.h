@@ -12,16 +12,16 @@ public:
 private:
 	double w;
 public:
-	double W() const noexcept {return w;}
+	double W() const noexcept { return w; }
 
 public: // Constructors and destructor
-	
-    EoGePoint4d();
+
+	EoGePoint4d();
 	EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept;
 
 public: // Operators
 
-    void operator/=(const double t) noexcept;
+	void operator/=(const double t) noexcept;
 
 	EoGePoint4d operator+(const OdGeVector3d& vector);
 	EoGePoint4d operator-(const OdGeVector3d& vector);
