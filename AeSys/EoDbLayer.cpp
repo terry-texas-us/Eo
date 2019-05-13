@@ -13,6 +13,25 @@ EoDbLayer::EoDbLayer(const OdString& name, OdUInt16 stateFlags) {
 	m_TracingFlags = 0;
 	m_StateFlags = stateFlags;
 }
+
+void EoDbLayer::BuildVisibleGroupList(AeSysView* view) {
+	if (IsOff()) { return; }
+
+	if (!IsCurrent() && !IsActive()) { return; }
+
+	auto Document {AeSysDoc::GetDoc()};
+
+	auto GroupPosition {GetHeadPosition()};
+
+	while (GroupPosition != 0) {
+		auto Group {GetNext(GroupPosition)};
+
+		if (Group->IsInView(view)) {
+			Document->AddGroupToAllViews(Group);
+		}
+	}
+}
+
 COLORREF EoDbLayer::Color() const {
 	return ColorPalette[m_Layer->colorIndex()];
 }

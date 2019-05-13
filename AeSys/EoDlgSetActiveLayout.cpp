@@ -8,10 +8,10 @@
 
 EoDlgSetActiveLayout::EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent)
 	: CDialog(EoDlgSetActiveLayout::IDD, parent)
-    , m_pDb(database)
-    , m_nOldActiveLayout(0)
-    , m_bCreateNewLayout(false)
-    , m_nNewActiveLayout(0) {
+	, m_pDb(database)
+	, m_nOldActiveLayout(0)
+	, m_bCreateNewLayout(false)
+	, m_nNewActiveLayout(0) {
 }
 
 void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* pDX) {
@@ -31,7 +31,7 @@ END_MESSAGE_MAP()
 
 BOOL EoDlgSetActiveLayout::OnInitDialog() {
 	CDialog::OnInitDialog();
-	FillListBox();  
+	FillListBox();
 	return TRUE;
 }
 void EoDlgSetActiveLayout::FillListBox() {
@@ -43,7 +43,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		OdDbDictionaryIteratorPtr LayoutIterator = LayoutDictionary->newIterator();
 		const OdDbObjectId ActiveLayoutBlockTableRecord = Database->getActiveLayoutBTRId();
 
-		m_nOldActiveLayout = - 1;
+		m_nOldActiveLayout = -1;
 		while (!LayoutIterator->done()) {
 			OdDbLayoutPtr Layout = LayoutIterator->objectId().safeOpenObject();
 			n = Layout->getTabOrder();
@@ -65,8 +65,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		m_nNewActiveLayout = m_nOldActiveLayout;
 
 		GetDlgItem(IDC_NEWNAME)->SetWindowText(items[m_nOldActiveLayout]);
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError & Error) {
 		theApp.reportError(L"Error Selecting Layout", Error);
 	}
 }
@@ -107,8 +106,7 @@ void EoDlgSetActiveLayout::OnRename() {
 	if (newName != oldName) {
 		try {
 			m_pDb->renameLayout(OdString(oldName), OdString(newName));
-		}
-		catch (const OdError& Error) {
+		} catch (const OdError & Error) {
 			theApp.reportError(L"Error Renaming Layout", Error);
 			return;
 		}
@@ -124,8 +122,7 @@ void EoDlgSetActiveLayout::OnDelete() {
 	try {
 		m_pDb->startUndoRecord();
 		m_pDb->deleteLayout(OdString(currName));
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError & Error) {
 		theApp.reportError(L"Error Deleting Layout", Error);
 		m_pDb->disableUndoRecording(true);
 		m_pDb->undo();
@@ -144,8 +141,7 @@ void EoDlgSetActiveLayout::OnCopy() {
 	try {
 		OdDbLayoutPtr pLayout = pLManager->findLayoutNamed(m_pDb, strName).safeOpenObject();
 		pLManager->cloneLayout(m_pDb, pLayout, OdString(strNewName));
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError & Error) {
 		theApp.reportError(L"Error Cloning Layout", Error);
 		return;
 	}
@@ -157,8 +153,7 @@ void EoDlgSetActiveLayout::OnNew() {
 
 	try {
 		m_pDb->createLayout(OdString(strNewName));
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError & Error) {
 		theApp.reportError(L"Error Creating Layout", Error);
 		return;
 	}
@@ -167,7 +162,7 @@ void EoDlgSetActiveLayout::OnNew() {
 void EoDlgSetActiveLayout::OnFromTemplate() {
 	CString Filter(L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||");
 	CString FileName = theApp.BrowseWithPreview(/*GetMainWnd()->*/GetSafeHwnd(), Filter);
-	if(FileName.GetLength() == 0)
+	if (FileName.GetLength() == 0)
 		return;
 
 	OdDbDatabasePtr Database = theApp.readFile(OdString(FileName));
@@ -183,8 +178,7 @@ void EoDlgSetActiveLayout::OnFromTemplate() {
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
 	try {
 		pLManager->cloneLayout(m_pDb, pLayout, OdString(strNewName));
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError & Error) {
 		theApp.reportError(L"Error Cloning Layout", Error);
 		return;
 	}

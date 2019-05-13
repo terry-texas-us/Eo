@@ -20,14 +20,14 @@ public:	// Constructors and destructor
 
 	EoDbDimension();
 	EoDbDimension(const EoDbDimension& other);
-    const EoDbDimension& operator=(const EoDbDimension& other);
+	const EoDbDimension& operator=(const EoDbDimension& other);
 
-    ~EoDbDimension();
+	~EoDbDimension();
 
 public: // Methods - absolute virtuals
 
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
-    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
@@ -36,8 +36,8 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kDimensionPrimitive;}
-    bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kDimensionPrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

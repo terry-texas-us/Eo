@@ -46,18 +46,11 @@ void AeSysView::OnFixupModeReference() {
 			return;
 		}
 		if (PreviousFixupCommand == ID_OP2) {
-			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
-			
-			if ((IntersectionPoint - PreviousLineSeg.startPoint()).length() < (IntersectionPoint - PreviousLineSeg.endPoint()).length()) {
-				PreviousLine->SetStartPoint2(IntersectionPoint);
-			} else {
-				PreviousLine->SetEndPoint2(IntersectionPoint);
-			}
-			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
+			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, kTrimPreviousToIntersection);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, 0x104);
+			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, kTrimPreviousToSize | kChamfer);
 		} else if (PreviousFixupCommand == ID_OP4) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, 0x204);
+			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, kTrimPreviousToSize | kFillet);
 		}
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
@@ -86,14 +79,8 @@ void AeSysView::OnFixupModeMend() {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
-
-		if ((IntersectionPoint - CurrentLine->StartPoint()).length() < (IntersectionPoint - CurrentLine->EndPoint()).length()) {
-			CurrentLine->SetStartPoint2(IntersectionPoint);
-		} else {
-			CurrentLine->SetEndPoint2(IntersectionPoint);
-		}
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
+		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, kTrimCurrentToIntersection);
+		ModeLineUnhighlightOp(PreviousFixupCommand);
 	} else {
 		auto PreviousLine {dynamic_cast<EoDbLine*>(get<tPrimitive>(PreviousSelection))};
 		auto PreviousLineSeg {PreviousLine->LineSeg()};
@@ -103,27 +90,12 @@ void AeSysView::OnFixupModeMend() {
 			return;
 		}
 		if (PreviousFixupCommand == ID_OP2) {
-			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
-			
-			if ((IntersectionPoint - PreviousLineSeg.startPoint()).length() < (IntersectionPoint - PreviousLineSeg.endPoint()).length()) {
-				PreviousLine->SetStartPoint2(IntersectionPoint);
-			} else {
-				PreviousLine->SetEndPoint2(IntersectionPoint);
-			}
-			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
+			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection);
 		} else if (PreviousFixupCommand == ID_OP3) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x10c);
+			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, kTrimPreviousToSize | kTrimCurrentToIntersection | kChamfer);
 		} else if (PreviousFixupCommand == ID_OP4) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x20c);
+			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, kTrimPreviousToSize | kTrimCurrentToIntersection | kFillet);
 		}
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
-		
-		if ((IntersectionPoint - CurrentLineSeg.startPoint()).length() < (IntersectionPoint - CurrentLineSeg.endPoint()).length()) {
-			CurrentLine->SetStartPoint2(IntersectionPoint);
-		} else {
-			CurrentLine->SetEndPoint2(IntersectionPoint);
-		}
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
 }
@@ -149,7 +121,7 @@ void AeSysView::OnFixupModeChamfer() {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, 0x108);
+		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, kTrimCurrentToSize | kChamfer);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	} else {
@@ -159,7 +131,8 @@ void AeSysView::OnFixupModeChamfer() {
 			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x10c);
+		auto CornerType {(PreviousFixupCommand == ID_OP2 ? kTrimPreviousToIntersection : kTrimPreviousToSize) | kTrimCurrentToSize | kChamfer};
+		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, CornerType);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
@@ -186,7 +159,7 @@ void AeSysView::OnFixupModeFillet() {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, 0x208);
+		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, kTrimCurrentToSize | kFillet);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	} else {
@@ -196,7 +169,8 @@ void AeSysView::OnFixupModeFillet() {
 			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, 0x20c);
+		auto CornerType {(PreviousFixupCommand == ID_OP2 ? kTrimPreviousToIntersection : kTrimPreviousToSize) | kTrimCurrentToSize | kFillet};
+		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, CornerType);
 
 		ModeLineUnhighlightOp(PreviousFixupCommand);
 	}
@@ -222,8 +196,8 @@ void AeSysView::OnFixupModeSquare() {
 	const auto StartPoint {SnapPointToAxis(CurrentPnt, CurrentLineSeg.startPoint())};
 	const auto EndPoint {ProjectToward(StartPoint, CurrentPnt, CurrentLineSegLength)};
 
-	CurrentLine->SetStartPoint2(SnapPointToGrid(StartPoint));
-	CurrentLine->SetEndPoint2(SnapPointToGrid(EndPoint));
+	CurrentLine->SetStartPoint(SnapPointToGrid(StartPoint));
+	CurrentLine->SetEndPoint(SnapPointToGrid(EndPoint));
 
 	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 }
@@ -250,8 +224,8 @@ void AeSysView::OnFixupModeParallel() {
 	const auto StartPoint {CurrentLineSeg.startPoint()};
 	const auto EndPoint {CurrentLineSeg.endPoint()};
 
-	CurrentLine->SetStartPoint2(ProjectToward(StartPoint, CurrentLine->StartPoint(), theApp.DimensionLength()));
-	CurrentLine->SetEndPoint2(ProjectToward(EndPoint, CurrentLine->EndPoint(), theApp.DimensionLength()));
+	CurrentLine->SetStartPoint(ProjectToward(StartPoint, CurrentLine->StartPoint(), theApp.DimensionLength()));
+	CurrentLine->SetEndPoint(ProjectToward(EndPoint, CurrentLine->EndPoint(), theApp.DimensionLength()));
 
 	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 }
@@ -292,50 +266,55 @@ void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousS
 		auto Document {GetDocument()};
 
 		PreviousLineSeg.SetEndPoint(PreviousLineSeg.ProjPt(CenterPoint));
-		CurrentLineSeg.SetStartPoint(CurrentLineSeg.ProjPt(CenterPoint));
 
-		if (PreviousFixupCommand == ID_OP1)
-			;
-		else if (PreviousFixupCommand == ID_OP2) {
+		if (GETBIT(cornerType, kTrimPrevious)) {
+			auto StartPoint {PreviousLineSeg.startPoint()};
+			auto EndPoint { GETBIT(cornerType, kTrimPreviousToSize) ? PreviousLineSeg.endPoint() : intersection };
+
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
-			PreviousLine->SetStartPoint2(PreviousLineSeg.startPoint());
-			PreviousLine->SetEndPoint2(intersection);
-			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
-		} else if (PreviousFixupCommand == ID_OP3 || PreviousFixupCommand == ID_OP4) {
-			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
-			PreviousLine->SetStartPoint2(PreviousLineSeg.startPoint());
-			PreviousLine->SetEndPoint2(PreviousLineSeg.endPoint());
+			PreviousLine->SetStartPoint(StartPoint);
+			PreviousLine->SetEndPoint(EndPoint);
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
 		}
-		if ((cornerType & kTrimCurrentToSize) == kTrimCurrentToSize) {
+		if (GETBIT(cornerType, kTrimCurrent)) {
+			auto StartPoint {GETBIT(cornerType, kTrimCurrentToSize) ? CurrentLineSeg.ProjPt(CenterPoint) : intersection};
+			auto EndPoint {CurrentLineSeg.endPoint()};
+
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
-			CurrentLine->SetStartPoint2(CurrentLineSeg.startPoint());
-			CurrentLine->SetEndPoint2(CurrentLineSeg.endPoint());
+			CurrentLine->SetStartPoint(StartPoint);
+			CurrentLine->SetEndPoint(EndPoint);
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 		}
-		OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-		auto Group {new EoDbGroup};
+		CurrentLineSeg.SetStartPoint(CurrentLineSeg.ProjPt(CenterPoint));
 
-		if ((cornerType & kChamfer) == kChamfer) {
-			auto Line {EoDbLine::Create(BlockTableRecord, PreviousLineSeg.endPoint(), CurrentLineSeg.startPoint())};
-			Line->setColorIndex(PreviousLine->ColorIndex());
-			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
-			Group->AddTail(EoDbLine::Create(Line));
-		} else if ((cornerType & kFillet) == kFillet) {
-			auto PlaneNormal {(intersection - PreviousLineSeg.endPoint()).crossProduct(CurrentLineSeg.startPoint() - PreviousLineSeg.endPoint())};
-			PlaneNormal.normalize();
-			double SweepAngle;
-			pFndSwpAngGivPlnAnd3Lns(PlaneNormal, PreviousLineSeg.endPoint(), intersection, CurrentLineSeg.startPoint(), CenterPoint, SweepAngle);
-			const auto MajorAxis {PreviousLineSeg.endPoint() - CenterPoint};
+		if (!GETBIT(cornerType, kCorner)) {
+			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+			auto Group {new EoDbGroup};
 
-			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-			Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
-			Ellipse->setColorIndex(PreviousLine->ColorIndex());
-			Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
-			Group->AddTail(EoDbEllipse::Create(Ellipse));
+			auto StartPoint {PreviousLineSeg.endPoint()};
+			auto EndPoint {CurrentLineSeg.startPoint()};
+
+			if (GETBIT(cornerType, kChamfer)) {
+				auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};
+				Line->setColorIndex(PreviousLine->ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
+				Group->AddTail(EoDbLine::Create(Line));
+			} else if (GETBIT(cornerType, kFillet)) {
+				auto PlaneNormal {(intersection - StartPoint).crossProduct(EndPoint - StartPoint)};
+				PlaneNormal.normalize();
+				double SweepAngle;
+				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, StartPoint, intersection, EndPoint, CenterPoint, SweepAngle);
+				const auto MajorAxis {StartPoint - CenterPoint};
+
+				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
+				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
+				Ellipse->setColorIndex(PreviousLine->ColorIndex());
+				Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
+				Group->AddTail(EoDbEllipse::Create(Ellipse));
+			}
+			Document->AddWorkLayerGroup(Group);
+			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 		}
-		Document->AddWorkLayerGroup(Group);
-		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
 }
 

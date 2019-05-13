@@ -59,7 +59,6 @@ void CChildFrame::Dump(CDumpContext& dc) const {
 void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd) {
 	CMDIChildWndEx::OnMDIActivate(activate, activateWnd, deactivateWnd);
 
-#ifdef ODAMFC_EXPORT
 	CFrameWnd* ActivatedFrame = (CFrameWnd*) activateWnd;
 	CFrameWnd* DeactivatedFrame = (CFrameWnd*) deactivateWnd;
 
@@ -92,7 +91,6 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 			}
 		}
 	}
-#endif // ODAMFC_EXPORT
 }
 
 static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* database) {

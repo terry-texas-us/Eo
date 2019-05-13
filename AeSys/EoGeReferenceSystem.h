@@ -12,27 +12,27 @@ class EoGeReferenceSystem {
 	OdGeVector3d m_YDirection;
 
 public: // Constructors and destructor
-	
-    EoGeReferenceSystem();
-    EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition);
-    EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
-    EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition);
+
+	EoGeReferenceSystem();
+	EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition);
+	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
+	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition);
 
 	EoGeReferenceSystem(const EoGeReferenceSystem& other);
-    EoGeReferenceSystem& operator=(const EoGeReferenceSystem& other) noexcept;
+	EoGeReferenceSystem& operator=(const EoGeReferenceSystem& other) noexcept;
 
 	~EoGeReferenceSystem() {
 	}
 
 public: // Methods
 
-    void GetUnitNormal(OdGeVector3d& normal);
+	void GetUnitNormal(OdGeVector3d& normal);
 	OdGePoint3d Origin() const noexcept;
 	void Read(EoDbFile& file);
 	/// <summary>Takes the current reference directions and rescales using passed character cell state.</summary>
 	void Rescale(const EoDbCharacterCellDefinition& characterCellDefinition);
-    double Rotation() const noexcept;
-    void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
+	double Rotation() const noexcept;
+	void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	void SetOrigin(const OdGePoint3d& origin) noexcept;
 	void SetXDirection(const OdGeVector3d& xDirection) noexcept;
 	void SetYDirection(const OdGeVector3d& yDirection) noexcept;

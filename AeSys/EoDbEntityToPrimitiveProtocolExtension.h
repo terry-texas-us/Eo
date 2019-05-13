@@ -4,9 +4,9 @@
 
 class EoDbConvertEntityToPrimitive : public OdRxObject {
 public:
-  ODRX_DECLARE_MEMBERS(EoDbConvertEntityToPrimitive);
+	ODRX_DECLARE_MEMBERS(EoDbConvertEntityToPrimitive);
 
-  virtual void Convert(OdDbEntity* entity, EoDbGroup* group);
+	virtual void Convert(OdDbEntity* entity, EoDbGroup* group);
 };
 class Converters;
 

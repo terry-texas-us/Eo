@@ -35,27 +35,27 @@ class EoDbBlockReference : public EoDbPrimitive {
 	double m_RowSpacing;
 
 public: // Constructors and destructor
-	
-    EoDbBlockReference() noexcept;
-	EoDbBlockReference(const EoDbBlockReference& other);
-    const EoDbBlockReference& operator=(const EoDbBlockReference& other);
 
-    ~EoDbBlockReference();
+	EoDbBlockReference() noexcept;
+	EoDbBlockReference(const EoDbBlockReference& other);
+	const EoDbBlockReference& operator=(const EoDbBlockReference& other);
+
+	~EoDbBlockReference();
 
 public: // Methods - absolute virtuals
-    
-    void AddReportToMessageList(const OdGePoint3d& point) const override;
-    void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
+
+	void AddReportToMessageList(const OdGePoint3d& point) const override;
+	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
 	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
-    void GetAllPoints(OdGePoint3dArray& points) const override;
-    OdGePoint3d	GetCtrlPt() const noexcept override;
+	void GetAllPoints(OdGePoint3dArray& points) const override;
+	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-    bool Is(OdUInt16 type) const noexcept override {return type == EoDb::kGroupReferencePrimitive;}
-    bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
+	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kGroupReferencePrimitive; }
+	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
 	void Read(CFile&);
@@ -70,7 +70,7 @@ public: // Methods - absolute virtuals
 
 public: // Methods
 
-    EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
+	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
 	OdUInt16 Columns() const noexcept;
 	double ColumnSpacing() const noexcept;
 	CString Name() const;
@@ -95,9 +95,9 @@ public: // Methods
 public: // Methods - static
 
 	static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
-    static EoDbBlockReference* Create(OdDbDatabasePtr& database);
-    static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
-    static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
+	static EoDbBlockReference* Create(OdDbDatabasePtr& database);
+	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
+	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 
-    static EoDbBlockReference* Create(OdDbBlockReferencePtr line);
+	static EoDbBlockReference* Create(OdDbBlockReferencePtr line);
 };

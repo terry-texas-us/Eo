@@ -9,7 +9,7 @@ public: // Constructors and destructor
 
 	enum TabsStyle { None, Standard, Grouped };
 
-    TabsStyle m_nTabsStyle;
+	TabsStyle m_nTabsStyle;
 
 	CMDITabInfo m_MdiTabInfo;
 

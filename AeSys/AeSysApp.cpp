@@ -65,10 +65,8 @@ void rxInit_COleClientItem_handler();
 void rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
 
-// <command_console>
 OdStaticRxObject<Cmd_VIEW> g_Cmd_VIEW;
 OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
-// </command_console>
 
 static void addPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
@@ -267,7 +265,7 @@ AeSysApp::AeSysApp() noexcept
 	, m_bContextColors(TRUE)
 	, m_bTTFPolyDraw(FALSE)
 	, m_bTTFTextOut(0)
-	, m_background(0)
+	, m_background(ViewBackgroundColor)
 	, m_thisThreadID(0)
 	, m_numCustomCommands(0)
 	, m_bLoading(false)
@@ -557,14 +555,13 @@ OdStreamBufPtr AeSysApp::newUndoStream() {
 	return OdRxObjectImpl<OdMemFileStreamImpl<OdStreamBuf> >::createObject();
 }
 
-// <command_console>
 void AeSysApp::setRecentCmd(const OdString & command) {
+
 	if (!command.isEmpty() && command != m_sRecentCmd) {
 		m_sRecentCmd = command;
 		WriteProfileStringW(L"options", L"Recent Command", m_sRecentCmd);
 	}
 }
-// </command_console>
 
 CMenu* AeSysApp::CommandMenu(CMenu * *toolsSubMenu) {
 	MENUITEMINFO MenuItemInfo;
@@ -614,7 +611,6 @@ CMenu* AeSysApp::CommandMenu(CMenu * *toolsSubMenu) {
 	return (RegisteredCommandsSubMenu);
 }
 
-// <command_console>
 void AeSysApp::RefreshCommandMenu() {
 	CMenu* ToolsSubMenu(NULL);
 	CMenu* RegisteredCommandsSubMenu = CommandMenu(&ToolsSubMenu);
@@ -632,8 +628,8 @@ void AeSysApp::RefreshCommandMenu() {
 	MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 	MenuItemInfo.fMask = MIIM_DATA;
 
-	OdEdCommandStackPtr CommandStack = ::odedRegCmds();
-	bool bHasNoCommand = CommandStack->newIterator()->done();
+	auto CommandStack {::odedRegCmds()};
+	bool bHasNoCommand {CommandStack->newIterator()->done()};
 
 	const size_t ToolsMenuItem(8); // <tas="Until calculated position finished"</tas>
 	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, MF_BYPOSITION | (bHasNoCommand ? MF_GRAYED : MF_ENABLED));
@@ -669,18 +665,16 @@ void AeSysApp::RefreshCommandMenu() {
 	}
 	m_numCustomCommands = CommandId - _APS_NEXT_COMMAND_VALUE - 100;
 }
-// </command_console>
 
-#ifdef ODAMFC_EXPORT_SYMBOL
 void AeSysApp::AddReactor(OdApplicationReactor * reactor) {
 	if (m_aAppReactors.end() == std::find(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor))) {
 		m_aAppReactors.push_back(reactor);
 	}
 }
+
 void AeSysApp::RemoveReactor(OdApplicationReactor * reactor) {
 	m_aAppReactors.erase(std::remove(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor)), m_aAppReactors.end());
 }
-#endif // ODAMFC_EXPORT_SYMBOL
 
 OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 	CMainFrame* MainFrame = (CMainFrame*) GetMainWnd();
@@ -864,6 +858,7 @@ double AeSysApp::EngagedAngle() const noexcept {
 double AeSysApp::EngagedLength() const noexcept {
 	return (m_EngagedLength);
 }
+
 CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter) {
 	CString FileName;
 	const DWORD Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
@@ -922,9 +917,7 @@ int AeSysApp::ExitInstance() {
 	theApp.WriteInt(L"Background colour", m_background);
 	theApp.WriteInt(L"Save DWG with password", m_bSaveWithPassword);
 	theApp.WriteString(L"recent GS", m_sVectorizerPath);
-	// <command_console>
 	theApp.WriteString(L"Recent Command", m_sRecentCmd);
-	// </command_console>
 	theApp.WriteInt(L"Fill TTF text", (int) getTEXTFILL());
 
 	SetRegistryBase(L"Options");
@@ -1161,10 +1154,8 @@ BOOL AeSysApp::InitializeTeigha() {
 
 		EoLoadApps::rxInit();
 
-#ifdef ODAMFC_EXPORT
 		OdApplicationReactor::rxInit();
 		OdApDocument::rxInit();
-#endif // ODAMFC_EXPORT
 
 		::odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
 		::odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
@@ -1179,12 +1170,9 @@ BOOL AeSysApp::InitializeTeigha() {
 		::rxInit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
 
-		// <command_console>
-		OdEdCommandStackPtr CommandStack = odedRegCmds();
-
+		auto CommandStack {::odedRegCmds()};
 		CommandStack->addCommand(&g_Cmd_VIEW);
 		CommandStack->addCommand(&g_Cmd_SELECT);
-		// </command_console>
 
 		/* <tas>
 		rxInitMaterialsEditorObjects();
@@ -1199,6 +1187,7 @@ BOOL AeSysApp::InitializeTeigha() {
 
 	return TRUE;
 }
+
 BOOL AeSysApp::InitInstance() {
 
 	// InitCommonControlsEx() is required on Windows XP if an application manifest specifies use of ComCtl32.dll version 6 or later to enable visual styles. Otherwise, any window creation will fail.
@@ -1240,12 +1229,10 @@ BOOL AeSysApp::InitInstance() {
 	m_isDwgOut = theApp.GetInt(L"View object in DWG format", 0);
 	m_bSaveRoundTrip = theApp.GetInt(L"Save round trip information", 1);
 	m_bSavePreview = theApp.GetInt(L"Save Preview", 0);
-	m_background = theApp.GetInt(L"Background colour", 0);
+	m_background = theApp.GetInt(L"Background colour", ViewBackgroundColor);
 	m_bSaveWithPassword = theApp.GetInt(L"Save DWG with password", 0);
 	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
-	// <command_console>
 	m_sRecentCmd = theApp.GetString(L"Recent Command", L"");
-	// </command_console>
 	setTEXTFILL(theApp.GetInt(L"Fill TTF text", 1) != 0);
 	SetRegistryBase(L"MFC Auto");
 
@@ -1845,13 +1832,16 @@ void AeSysApp::ReleaseSimplexStrokeFont() noexcept {
 		delete[] m_SimplexStrokeFont;
 	}
 }
+
 OdString AeSysApp::recentGsDevicePath() const {
 	return m_sVectorizerPath;
 }
+
 void AeSysApp::setRecentGsDevicePath(const OdString & vectorizerPath) {
 	WriteProfileStringW(L"options", L"recent GS", vectorizerPath);
 	m_sVectorizerPath = vectorizerPath;
 }
+
 void AeSysApp::SetStatusPaneTextAt(int index, LPCWSTR newText) {
 	((CMainFrame*) GetMainWnd())->SetStatusPaneTextAt(index, newText);
 }
@@ -2023,11 +2013,9 @@ char* AeSysApp::SimplexStrokeFont() noexcept {
 OdInt16 AeSysApp::TrapHighlightColor() const noexcept {
 	return m_TrapHighlightColor;
 }
-void AeSysApp::UninitializeTeigha() noexcept {
-#ifdef ODAMFC_EXPORT
+void AeSysApp::UninitializeTeigha() {
 	OdApplicationReactor::rxUninit();
 	OdApDocument::rxUninit();
-#endif // ODAMFC_EXPORT
 
 	EoLoadApps::rxUninit();
 
@@ -2036,11 +2024,9 @@ void AeSysApp::UninitializeTeigha() noexcept {
 		rxUninitMaterialsEditorObjects();
 		   </tas> */
 
-		// <command_console>
-		OdEdCommandStackPtr CommandStack = odedRegCmds();
+		auto CommandStack {::odedRegCmds()};
 		CommandStack->removeCmd(&g_Cmd_SELECT);
 		CommandStack->removeCmd(&g_Cmd_VIEW);
-		// </command_console>
 
 		OdDbDatabaseDoc::rxUninit();
 
@@ -2060,18 +2046,18 @@ void AeSysApp::UpdateMDITabs(BOOL resetMDIChild) {
 	((CMainFrame*) AfxGetMainWnd())->UpdateMDITabs(resetMDIChild);
 }
 BOOL AeSysApp::OnIdle(long count) {
-#ifdef ODAMFC_EXPORT_SYMBOL
-	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex)
+
+	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
 		m_aAppReactors[ReactorIndex]->OnIdle(count);
-#endif // ODAMFC_EXPORT_SYMBOL
+	}
 	return __super::OnIdle(count);
 }
 
 BOOL AeSysApp::PreTranslateMessage(MSG * message) {
-#ifdef ODAMFC_EXPORT_SYMBOL
-	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex)
+
+	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
 		m_aAppReactors[ReactorIndex]->OnPreTranslateMessage(message);
-#endif // ODAMFC_EXPORT_SYMBOL
+	}
 	return __super::PreTranslateMessage(message);
 }
 
@@ -2097,7 +2083,6 @@ bool addGsMenuItem(CMenu * vectorizePopupMenu, DWORD & numberOfVectorizers, LPCW
 }
 
 void AeSysApp::OnVectorizeAddVectorizerDLL() {
-#ifdef _TOOLKIT_IN_DLL_
 	const DWORD Flags {OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST};
 	CString Filter {L"Graphic System DLL (*."  VECTORIZATION_MODULE_EXTENSION_W  L")|*." VECTORIZATION_MODULE_EXTENSION_W  L"|Windows DLL (*.dll)|*.dll||"};
 
@@ -2106,15 +2091,11 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 
 	auto s_path {getApplicationPath()};
 	dlg.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
-#else // _TOOLKIT_IN_DLL_
-	CStaticAppSelDlg dlg(::AfxGetMainWnd());
-#endif // _TOOLKIT_IN_DLL_
 
 	if (dlg.DoModal() == IDOK) {
 		m_sVectorizerPath = (LPCWSTR) dlg.GetFileName();
-#ifdef _TOOLKIT_IN_DLL_
 		m_sVectorizerPath.replace(TD_DLL_VERSION_SUFFIX_STR, L"");
-#endif // _TOOLKIT_IN_DLL_
+
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
 

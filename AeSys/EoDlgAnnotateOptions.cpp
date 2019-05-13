@@ -11,20 +11,20 @@ IMPLEMENT_DYNAMIC(EoDlgAnnotateOptions, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgAnnotateOptions, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent) 
-    : CDialog(EoDlgAnnotateOptions::IDD, parent)
+EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent)
+	: CDialog(EoDlgAnnotateOptions::IDD, parent)
 	, m_ActiveView(0)
-    , m_GapSpaceFactor(0)
-    , m_CircleRadius(0)
-    , m_EndItemSize(0)
-    , m_BubbleRadius(0)
-    , m_NumberOfSides(0)
-    , m_DefaultText(L"") {
+	, m_GapSpaceFactor(0)
+	, m_CircleRadius(0)
+	, m_EndItemSize(0)
+	, m_BubbleRadius(0)
+	, m_NumberOfSides(0)
+	, m_DefaultText(L"") {
 }
 
-EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent) 
-    : CDialog(EoDlgAnnotateOptions::IDD, parent)
-    , m_ActiveView(view) {
+EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
+	: CDialog(EoDlgAnnotateOptions::IDD, parent)
+	, m_ActiveView(view) {
 	m_GapSpaceFactor = view->GapSpaceFactor();
 	m_CircleRadius = view->CircleRadius();
 	m_EndItemSize = view->EndItemSize();

@@ -15,7 +15,7 @@ EoDbLine::EoDbLine() noexcept {
 EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-	
+
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
 	m_LineSeg = other.m_LineSeg;
@@ -27,7 +27,7 @@ EoDbLine::~EoDbLine() {
 const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-	
+
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
 	m_LineSeg = other.m_LineSeg;
@@ -64,29 +64,29 @@ void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept 
 EoDbPrimitive* EoDbLine::Clone(OdDbDatabasePtr& database) const {
 	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-    OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
-    BlockTableRecord->appendOdDbEntity(Line);
+	OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+	BlockTableRecord->appendOdDbEntity(Line);
 
-    return EoDbLine::Create(Line);
+	return EoDbLine::Create(Line);
 }
 
 void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
 	EoGeLineSeg3d LineSeg;
 
 	if (m_LineSeg.CutAt(point, LineSeg) != 0) {
-        OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
-        Line->setStartPoint(m_LineSeg.startPoint());
-        Line->setEndPoint(m_LineSeg.endPoint());
+		OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
+		Line->setStartPoint(m_LineSeg.startPoint());
+		Line->setEndPoint(m_LineSeg.endPoint());
 
-        OdDbBlockTableRecordPtr BlockTableRecord = m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		OdDbBlockTableRecordPtr BlockTableRecord = m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-        OdDbLinePtr NewLine {m_EntityObjectId.safeOpenObject()->clone()};
-        BlockTableRecord->appendOdDbEntity(NewLine);
+		OdDbLinePtr NewLine {m_EntityObjectId.safeOpenObject()->clone()};
+		BlockTableRecord->appendOdDbEntity(NewLine);
 
-        NewLine->setStartPoint(LineSeg.startPoint());
-        NewLine->setEndPoint(LineSeg.endPoint());
+		NewLine->setStartPoint(LineSeg.startPoint());
+		NewLine->setEndPoint(LineSeg.endPoint());
 
-        newGroup->AddTail(EoDbLine::Create(NewLine));
+		newGroup->AddTail(EoDbLine::Create(NewLine));
 	}
 }
 
@@ -98,52 +98,49 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 	m_LineSeg.ParametricRelationshipOf(points[1], SecondPointParameter);
 
 	if (FirstPointParameter <= DBL_EPSILON && SecondPointParameter >= 1. - DBL_EPSILON) { // Put entire line in trap
-        LineIn = this;
-	}
-	else { // Something gets cut
-        OdDbBlockTableRecordPtr BlockTableRecord = m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		LineIn = this;
+	} else { // Something gets cut
+		OdDbBlockTableRecordPtr BlockTableRecord = m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-        OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
-        BlockTableRecord->appendOdDbEntity(Line);
+		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+		BlockTableRecord->appendOdDbEntity(Line);
 
 		if (FirstPointParameter > DBL_EPSILON && SecondPointParameter < 1. - DBL_EPSILON) { // Cut section out of middle
-            Line->setStartPoint(points[1]);
+			Line->setStartPoint(points[1]);
 
-            auto Group {new EoDbGroup};
+			auto Group {new EoDbGroup};
 			Group->AddTail(EoDbLine::Create(Line));
-            groupsOut->AddTail(Group);
+			groupsOut->AddTail(Group);
 
-            OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
-            Line->setStartPoint(points[0]);
-            Line->setEndPoint(points[1]);
-            BlockTableRecord->appendOdDbEntity(Line);
-            LineIn = EoDbLine::Create(Line);
-            
-            Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-            Line->setEndPoint(points[0]);
-            m_LineSeg.SetEndPoint(points[0]);
-        }
-		else if (SecondPointParameter < 1. - DBL_EPSILON) { // Cut in two and place begin section in trap
-            Line->setEndPoint(points[1]);
-            LineIn = EoDbLine::Create(Line);
-            Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-            Line->setStartPoint(points[1]);
-            m_LineSeg.SetStartPoint(points[1]);
+			OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+			Line->setStartPoint(points[0]);
+			Line->setEndPoint(points[1]);
+			BlockTableRecord->appendOdDbEntity(Line);
+			LineIn = EoDbLine::Create(Line);
+
+			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+			Line->setEndPoint(points[0]);
+			m_LineSeg.SetEndPoint(points[0]);
+		} else if (SecondPointParameter < 1. - DBL_EPSILON) { // Cut in two and place begin section in trap
+			Line->setEndPoint(points[1]);
+			LineIn = EoDbLine::Create(Line);
+			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+			Line->setStartPoint(points[1]);
+			m_LineSeg.SetStartPoint(points[1]);
+		} else { // Cut in two and place end section in trap
+			Line->setStartPoint(points[0]);
+			LineIn = EoDbLine::Create(Line);
+			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+			Line->setEndPoint(points[0]);
+			m_LineSeg.SetEndPoint(points[0]);
 		}
-		else { // Cut in two and place end section in trap
-            Line->setStartPoint(points[0]);
-            LineIn = EoDbLine::Create(Line);
-            Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-            Line->setEndPoint(points[0]);
-            m_LineSeg.SetEndPoint(points[0]);
-		}
-        auto Group {new EoDbGroup};
+		auto Group {new EoDbGroup};
 		Group->AddTail(this);
-        groupsOut->AddTail(Group);
+		groupsOut->AddTail(Group);
 	}
-    auto GroupIn {new EoDbGroup};
+	auto GroupIn {new EoDbGroup};
 	GroupIn->AddTail(LineIn);
-    groupsIn->AddTail(GroupIn);
+	groupsIn->AddTail(GroupIn);
 }
 
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
@@ -213,7 +210,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	return (sm_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint());
 }
 
-bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
+bool EoDbLine::IsEqualTo(EoDbPrimitive * primitive)  const {
 	bool IsEqualTo = primitive->Is(EoDb::kLinePrimitive);
 	if (IsEqualTo) {
 		IsEqualTo = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());
@@ -221,14 +218,14 @@ bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
 	return IsEqualTo;
 }
 
-bool EoDbLine::IsInView(AeSysView* view) const {
+bool EoDbLine::IsInView(AeSysView * view) const {
 	EoGePoint4d pt[] = {EoGePoint4d(m_LineSeg.startPoint(), 1.), EoGePoint4d(m_LineSeg.endPoint(), 1.)};
 	view->ModelViewTransformPoints(2, &pt[0]);
 
 	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
 }
 
-bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+bool EoDbLine::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	EoGePoint4d pt;
 
 	pt = EoGePoint4d(m_LineSeg.startPoint(), 1.);
@@ -246,7 +243,7 @@ bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 	return false;
 }
 
-int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
+int EoDbLine::IsWithinArea(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, OdGePoint3d * intersections) noexcept {
 	int i;
 	int iLoc[2];
 
@@ -264,16 +261,13 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 		if ((iLoc[i] & 1) != 0) { // Clip against top
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (upperRightCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
 			intersections[i].y = upperRightCorner.y;
-		}
-		else if ((iLoc[i] & 2) != 0) { // Clip against bottom
+		} else if ((iLoc[i] & 2) != 0) { // Clip against bottom
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (lowerLeftCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
 			intersections[i].y = lowerLeftCorner.y;
-		}
-		else if ((iLoc[i] & 4) != 0) { // Clip against right
+		} else if ((iLoc[i] & 4) != 0) { // Clip against right
 			intersections[i].y = intersections[i].y + (intersections[1].y - intersections[0].y) * (upperRightCorner.x - intersections[i].x) / (intersections[1].x - intersections[0].x);
 			intersections[i].x = upperRightCorner.x;
-		}
-		else if ((iLoc[i] & 8) != 0) { // Clip against left
+		} else if ((iLoc[i] & 8) != 0) { // Clip against left
 			intersections[i].y = intersections[i].y + (intersections[1].y - intersections[0].y) * (lowerLeftCorner.x - intersections[i].x) / (intersections[1].x - intersections[0].x);
 			intersections[i].x = lowerLeftCorner.x;
 		}
@@ -282,17 +276,17 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 	return (2);
 }
 
-OdGePoint3d EoDbLine::ProjPt_(const OdGePoint3d& point) const {
+OdGePoint3d EoDbLine::ProjPt_(const OdGePoint3d & point) const {
 	return (m_LineSeg.ProjPt(point));
 }
 
-double EoDbLine::ParametricRelationshipOf(const OdGePoint3d& point) const {
+double EoDbLine::ParametricRelationshipOf(const OdGePoint3d & point) const {
 	double dRel;
 	m_LineSeg.ParametricRelationshipOf(point, dRel);
 	return dRel;
 }
 
-OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
 
@@ -307,75 +301,75 @@ OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& p
 
 		if (Distance < Aperture) {
 			sm_ControlPointIndex = ControlPointIndex;
-			ControlPoint = ControlPointIndex == 0 ?  m_LineSeg.startPoint() : m_LineSeg.endPoint();
+			ControlPoint = ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint();
 			Aperture = Distance;
 		}
 	}
 	return ControlPoint;
 }
 
-bool EoDbLine::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbLine::SelectBy(const EoGeLineSeg3d & line, AeSysView * view, OdGePoint3dArray & intersections) {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
 	return polyline::SelectBy(line, view, intersections);
 }
 
-bool EoDbLine::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbLine::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
 	return polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj);
 }
 
-bool EoDbLine::SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysView* view) const {
+bool EoDbLine::SelectBy(const OdGePoint3d & pt1, const OdGePoint3d & pt2, AeSysView * view) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
 	return polyline::SelectBy(pt1, pt2, view);
 }
 
-void EoDbLine::SetEndPoint2(const OdGePoint3d& endPoint) {
-	if (!m_EntityObjectId.isNull()) {
-		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Line->setEndPoint(endPoint);
-	}
+void EoDbLine::SetEndPoint(const OdGePoint3d & endPoint) {
+	OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
+	Line->setEndPoint(endPoint);
+	Line->downgradeOpen();
+
 	m_LineSeg.SetEndPoint(endPoint);
 }
 
-void EoDbLine::SetStartPoint2(const OdGePoint3d& startPoint) {
-	if (!m_EntityObjectId.isNull()) {
-		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Line->setStartPoint(startPoint);
-	}
+void EoDbLine::SetStartPoint(const OdGePoint3d & startPoint) {
+	OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
+	Line->setStartPoint(startPoint);
+	Line->downgradeOpen();
+
 	m_LineSeg.SetStartPoint(startPoint);
 }
 
-void EoDbLine::Square(AeSysView* view) {
-	const OdGePoint3d StartPoint = view->SnapPointToGrid(m_LineSeg.startPoint());
-	OdGePoint3d EndPoint = view->SnapPointToGrid(m_LineSeg.endPoint());
+void EoDbLine::Square(AeSysView * view) {
+	const auto StartPoint {view->SnapPointToGrid(m_LineSeg.startPoint())};
+	auto EndPoint {view->SnapPointToGrid(m_LineSeg.endPoint())};
 
-	const OdGePoint3d MidPoint = EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
-	const double Length = OdGeVector3d(EndPoint - StartPoint).length();
+	const auto MidPoint {EoGeLineSeg3d(StartPoint, EndPoint).midPoint()};
+	const auto Length {OdGeVector3d(EndPoint - StartPoint).length()};
 	EndPoint = view->SnapPointToAxis(MidPoint, EndPoint);
-	SetStartPoint2(ProjectToward(EndPoint, MidPoint, Length));
-	SetEndPoint2(EndPoint);
+	SetStartPoint(ProjectToward(EndPoint, MidPoint, Length));
+	SetEndPoint(EndPoint);
 }
 
-void EoDbLine::TransformBy(const EoGeMatrix3d& transformMatrix) {
+void EoDbLine::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_LineSeg.transformBy(transformMatrix);
 }
 
-void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) {
+void EoDbLine::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
 	if ((mask & 1) == 1) {
-		SetStartPoint2(m_LineSeg.startPoint() + translate);
+		SetStartPoint(m_LineSeg.startPoint() + translate);
 	}
 	if ((mask & 2) == 2) {
-		SetEndPoint2(m_LineSeg.endPoint() + translate);
+		SetEndPoint(m_LineSeg.endPoint() + translate);
 	}
 }
 
-bool EoDbLine::Write(EoDbFile& file) const {
+bool EoDbLine::Write(EoDbFile & file) const {
 	file.WriteUInt16(EoDb::kLinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
@@ -384,69 +378,69 @@ bool EoDbLine::Write(EoDbFile& file) const {
 	return true;
 }
 
-void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbLine::Write(CFile & file, OdUInt8 * buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) &buffer[4]) = OdUInt16(EoDb::kLinePrimitive);
+	*((OdUInt16*) & buffer[4]) = OdUInt16(EoDb::kLinePrimitive);
 	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
-	((EoVaxPoint3d*) &buffer[8])->Convert(m_LineSeg.startPoint());
-	((EoVaxPoint3d*) &buffer[20])->Convert(m_LineSeg.endPoint());
+	((EoVaxPoint3d*) & buffer[8])->Convert(m_LineSeg.startPoint());
+	((EoVaxPoint3d*) & buffer[20])->Convert(m_LineSeg.endPoint());
 
 	file.Write(buffer, 32);
 }
 
 // Static
 
-EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {
-    auto Line {new EoDbLine};
-    Line->SetEntityObjectId(line->objectId());
+EoDbLine * EoDbLine::Create(const OdDbLinePtr & line) {
+	auto Line {new EoDbLine};
+	Line->SetEntityObjectId(line->objectId());
 
-    Line->m_ColorIndex = line->colorIndex();
-    Line->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype());
+	Line->m_ColorIndex = line->colorIndex();
+	Line->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype());
 
-    Line->m_LineSeg.SetStartPoint(line->startPoint());
-    Line->m_LineSeg.SetEndPoint(line->endPoint());
+	Line->m_LineSeg.SetStartPoint(line->startPoint());
+	Line->m_LineSeg.SetEndPoint(line->endPoint());
 
-    return Line;
+	return Line;
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
-    auto Line {OdDbLine::createObject()};
-    Line->setDatabaseDefaults(blockTableRecord->database());
+	auto Line {OdDbLine::createObject()};
+	Line->setDatabaseDefaults(blockTableRecord->database());
 
-    blockTableRecord->appendOdDbEntity(Line);
-    Line->setColorIndex(pstate.ColorIndex());
+	blockTableRecord->appendOdDbEntity(Line);
+	Line->setColorIndex(pstate.ColorIndex());
 
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
-    Line->setLinetype(Linetype);
+	Line->setLinetype(Linetype);
 
-    return Line;
+	return Line;
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
 	auto Database {blockTableRecord->database()};
 
 	auto Line {OdDbLine::createObject()};
-    Line->setDatabaseDefaults(Database);
+	Line->setDatabaseDefaults(Database);
 
-    blockTableRecord->appendOdDbEntity(Line);
+	blockTableRecord->appendOdDbEntity(Line);
 
-    Line->setColorIndex(file.ReadInt16());
-    
-    const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
-    
-    Line->setLinetype(Linetype);
-    
-    Line->setStartPoint(file.ReadPoint3d());
-    Line->setEndPoint(file.ReadPoint3d());
-    
-    return (Line);
+	Line->setColorIndex(file.ReadInt16());
+
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+
+	Line->setLinetype(Linetype);
+
+	Line->setStartPoint(file.ReadPoint3d());
+	Line->setEndPoint(file.ReadPoint3d());
+
+	return (Line);
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8 * primitiveBuffer, int versionNumber) {
 	OdInt16 ColorIndex;
 	OdInt16 LinetypeIndex;
 	OdGePoint3d StartPoint;
@@ -478,7 +472,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* 
 	return (Line);
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d & startPoint, const OdGePoint3d & endPoint) {
 	auto Line {OdDbLine::createObject()};
 	Line->setDatabaseDefaults(blockTableRecord->database());
 

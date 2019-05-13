@@ -31,9 +31,7 @@
 
 #include "ExStringIO.h"
 
-// <command_console>
 #include "EoDlgUserIOConsole.h"
-// </command_console>
 
 #include "EoGePoint4d.h"
 #include "EoGeMatrix3d.h"
@@ -186,13 +184,13 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 	ON_COMMAND(ID_FILE_PAGESETUP, &AeSysDoc::OnFilePagesetup)
 	ON_COMMAND(ID_VIEW_SETACTIVELAYOUT, &AeSysDoc::OnViewSetactivelayout)
 	ON_COMMAND(ID_DRAWINGUTILITIES_AUDIT, &AeSysDoc::OnDrawingutilitiesAudit)
-	// <command_console>
+
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_CLEAR, &AeSysDoc::OnEditClearselection)
 	ON_COMMAND(ID_EDIT_CONSOLE, &AeSysDoc::OnEditConsole)
 	ON_COMMAND(ID_VIEW_NAMEDVIEWS, &AeSysDoc::OnViewNamedViews)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_SELECTALL, &AeSysDoc::OnEditSelectall)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_ENTGET, &AeSysDoc::OnEditEntget)
-	// </command_console>
+
 	ON_COMMAND(ID_VECTORIZE, &AeSysDoc::OnVectorize)
 	ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
 END_MESSAGE_MAP()
@@ -211,25 +209,19 @@ AeSysDoc::AeSysDoc() noexcept
 	, m_SaveAsType(OdDb::kDwg)
 	, m_SaveAsType_(EoDb::kUnknown)
 	, m_SaveAsVer(OdDb::kDHL_CURRENT)
-	// <command_console>
 	, m_bConsole(false)
 	, m_bConsoleResponded(false)
 	, m_nCmdActive(0)
-	// </command_console>
 	, m_bLayoutSwitchable(false)
 	, m_bDisableClearSel(false) {
 	m_WorkLayer = NULL;
 	g_pDoc = this;
 
-#ifdef ODAMFC_EXPORT_SYMBOL
 	m_pRefDocument = OdApDocumentImpl::createObject(this);
-#endif // ODAMFC_EXPORT_SYMBOL
 }
 // <tas="crash with smart pointer m_DatabasePtr release"\>
 AeSysDoc::~AeSysDoc() {
-#ifdef ODAMFC_EXPORT_SYMBOL
 	m_pRefDocument->m_pImp->SetNull();
-#endif // ODAMFC_EXPORT_SYMBOL
 }
 
 BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
@@ -291,12 +283,11 @@ void AeSysDoc::DeleteContents() {
 
 	ResetAllViews();
 
-#ifdef ODAMFC_EXPORT
 	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
+	
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->documentToBeDestroyed(this);
 	}
-#endif // ODAMFC_EXPORT
 	if (!m_DatabasePtr.isNull()) {
 		m_DatabasePtr->appServices()->layoutManager()->removeReactor(this);
 	}
@@ -305,10 +296,9 @@ void AeSysDoc::DeleteContents() {
 
 	COleDocument::DeleteContents();
 
-#ifdef ODAMFC_EXPORT
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++)
+	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->documentDestroyed((const wchar_t*) GetPathName());
-#endif // ODAMFC_EXPORT
+	}
 }
 
 // <command_view>
@@ -400,11 +390,9 @@ void AeSysDoc::layoutSwitched(const OdString & newLayoutName, const OdDbObjectId
 		}
 	}
 }
-// <command_console>
+
 const OdString Cmd_VIEW::groupName() const { return L"AeSysApp"; }
-
 const OdString Cmd_VIEW::name() { return L"VIEW"; }
-
 const OdString Cmd_VIEW::globalName() const { return name(); }
 
 void Cmd_VIEW::execute(OdEdCommandContext * commandContext) {
@@ -419,9 +407,7 @@ void Cmd_VIEW::execute(OdEdCommandContext * commandContext) {
 }
 
 const OdString Cmd_SELECT::groupName() const { return L"AeSysApp"; }
-
 const OdString Cmd_SELECT::name() { return L"SELECT"; }
-
 const OdString Cmd_SELECT::globalName() const { return name(); }
 
 void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
@@ -440,7 +426,6 @@ void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
 	pIO->setPickfirst(0);
 	int iOpt = OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty;
 
-	// <command_view>
 	OdDbSelectionSetPtr pSSet;
 	try {
 		pSSet = pIO->select(OdString::kEmpty, iOpt, pView->editorObject().workingSSet());
@@ -449,11 +434,9 @@ void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
 		throw OdEdCancel();
 	}
 	pView->editorObject().selectionSetChanged();
-	// </command_view>
+
 	Database->pageObjects();
 }
-
-// </command_console>
 
 struct CDocTemplateEx : CDocTemplate {
 	void SetViewToCreate(CRuntimeClass* viewClass) noexcept {
@@ -493,7 +476,6 @@ void AeSysDoc::OnUpdateVectorize(CCmdUI * pCmdUI) {
 	pCmdUI->Enable(m_pViewer == nullptr && !theApp.recentGsDevicePath().isEmpty());
 }
 
-// <command_console>
 OdDbCommandContextPtr AeSysDoc::cmdCtx() {
 	if (m_pCmdCtx.isNull()) {
 		m_pCmdCtx = ExDbCommandContext::createObject(cmdIO(), m_DatabasePtr);
@@ -502,12 +484,12 @@ OdDbCommandContextPtr AeSysDoc::cmdCtx() {
 }
 
 OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
-	OdDbCommandContext* pCtx = const_cast<AeSysDoc*>(this)->cmdCtx();
-	OdDbSelectionSetPtr pRes = pCtx->arbitraryData(L"AeSysApp Working Selection Set");
+	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->cmdCtx();
+	OdDbSelectionSetPtr pRes = CommandContext->arbitraryData(L"AeSysApp Working Selection Set");
 
 	if (pRes.isNull()) {
 		pRes = OdDbSelectionSet::createObject(m_DatabasePtr);
-		pCtx->setArbitraryData(L"OdaMfcApp Working Selection Set", pRes);
+		CommandContext->setArbitraryData(L"AeSysApp Working Selection Set", pRes);
 	}
 	ATLTRACE2(atlTraceGeneral, 0, L"Working Selection set contains %d items\n", pRes->numEntities());
 	return pRes;
@@ -518,13 +500,12 @@ OdEdBaseIO* AeSysDoc::cmdIO() noexcept {
 }
 
 EoDlgUserIOConsole* AeSysDoc::console() {
+	
 	if (m_pConsole.isNull()) {
 		m_pConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd());
 	}
 	return m_pConsole;
 }
-
-/// <overrides="OdEdBaseIO">
 
 OdUInt32 AeSysDoc::getKeyState() noexcept {
 	OdUInt32 KeyState(0);
@@ -574,7 +555,6 @@ void AeSysDoc::putString(const OdString & string) {
 
 	console()->putString(string);
 }
-/// </overrides>
 
 OdString AeSysDoc::recentCmd() {
 	return theApp.getRecentCmd();
@@ -589,7 +569,7 @@ OdString AeSysDoc::commandPrompt() {
 }
 
 void AeSysDoc::OnEditConsole() {
-	OdEdCommandStackPtr CommandStack = ::odedRegCmds();
+	auto CommandStack {::odedRegCmds()};
 	OdDbCommandContextPtr CommandContext(cmdCtx());
 	OdSaveState<bool> saveConsoleMode(m_bConsole, true);
 
@@ -636,25 +616,33 @@ class CmdReactor
 		m_bModified = true;
 		m_pCmdCtx->database()->removeReactor(this);
 	}
+
 public:
-	CmdReactor(OdDbCommandContext* pCmdCtx) :
-		m_pCmdCtx(pCmdCtx), m_bModified(false) {
+
+	CmdReactor(OdDbCommandContext* pCmdCtx) 
+		: m_pCmdCtx(pCmdCtx)
+		, m_bModified(false) {
 		ODA_ASSERT(m_pCmdCtx);
 		::odedRegCmds()->addReactor(this);
 		m_pCmdCtx->database()->addReactor(this);
 	}
+
 	~CmdReactor() {
 		::odedRegCmds()->removeReactor(this);
+
 		if (!m_bModified) {
 			m_pCmdCtx->database()->removeReactor(this);
 		}
 	}
+
 	void setLastInput(const OdString& sLastInput) {
 		m_sLastInput = sLastInput;
 	}
+	
 	const OdString& lastInput() const noexcept {
 		return m_sLastInput;
 	}
+	
 	bool isDatabaseModified() const noexcept {
 		return m_bModified;
 	}
@@ -726,7 +714,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	CmdReactor cr(CommandContext);
 
 	try {
-		OdEdCommandStackPtr CommandStack = ::odedRegCmds();
+		auto CommandStack {::odedRegCmds()};
 
 		ExDbCommandContext* pExCmdCtx = dynamic_cast<ExDbCommandContext*>(CommandContext.get());
 		if (m_DatabasePtr->appServices()->getPICKFIRST())
@@ -780,7 +768,6 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	}
 	//static_cast<ExDbCommandContext*>(pCmdCtx.get())->setMacroIOPresent(false);
 }
-// </command_console>
 
 BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO * handlerInfo) {
 	if (handlerInfo == NULL) {
@@ -846,7 +833,6 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 	return COleDocument::OnCmdMsg(commandId, messageCategory, commandObject, handlerInfo);
 }
 
-// <command_console>
 void AeSysDoc::DeleteSelection(bool force) {
 	if (m_DatabasePtr->appServices()->getPICKFIRST() && selectionSet()->numEntities()) {
 		if (force) {
@@ -856,7 +842,6 @@ void AeSysDoc::DeleteSelection(bool force) {
 		}
 	}
 }
-// </command_console>
 
 void AeSysDoc::startDrag(const OdGePoint3d & point) {
 	DataSource ds;
@@ -948,12 +933,11 @@ void AeSysDoc::AddRegisteredApp(const OdString & name) {
 }
 
 BOOL AeSysDoc::OnNewDocument() {
-#ifdef ODAMFC_EXPORT
 	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
+
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->documentCreateStarted(this);
 	}
-#endif // ODAMFC_EXPORT
 	if (COleDocument::OnNewDocument()) {
 		OdDbDatabaseDoc::setDocToAssign(this);
 		try { // create *database* populated with the default set of objects(all tables, ModelSpace and PaperSpace blocks etc.)
@@ -992,18 +976,14 @@ BOOL AeSysDoc::OnNewDocument() {
 		if (!m_DatabasePtr.isNull()) {
 			m_DatabasePtr->appServices()->layoutManager()->addReactor(this);
 		}
-#ifdef ODAMFC_EXPORT
 		for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 			theApp.m_aAppReactors[ReactorIndex]->documentCreated(this);
 		}
-#endif // ODAMFC_EXPORT
 		return TRUE;
 	}
-#ifdef ODAMFC_EXPORT
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->documentCreateCanceled(this);
 	}
-#endif // ODAMFC_EXPORT
 	return FALSE;
 }
 
@@ -1297,6 +1277,16 @@ int AeSysDoc::NumberOfGroupsInActiveLayers() {
 	}
 	return iCount;
 }
+
+void AeSysDoc::BuildVisibleGroupList(AeSysView* view) {
+	RemoveAllGroupsFromAllViews();
+
+	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
+		auto Layer {GetLayerAt(LayerIndex)};
+		Layer->BuildVisibleGroupList(view);
+	}
+}
+
 
 void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) {
 	try {
@@ -2608,41 +2598,52 @@ AeSysDoc* AeSysDoc::GetDoc() {
 
 	return (Child == NULL) ? NULL : (AeSysDoc*) Child->GetActiveDocument();
 }
+
 void AeSysDoc::AddGroupToAllViews(EoDbGroup * group) {
-	POSITION ViewPosition = GetFirstViewPosition();
+	auto ViewPosition {GetFirstViewPosition()};
+
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
-		View->AddGroup(group);
+		auto View {(AeSysView*) GetNextView(ViewPosition)};
+		View->AddVisibleGroup(group);
 	}
 }
+
 void AeSysDoc::AddGroupsToAllViews(EoDbGroupList * groups) {
-	POSITION ViewPosition = GetFirstViewPosition();
+	auto ViewPosition {GetFirstViewPosition()};
+
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
-		View->AddGroups(groups);
+		auto View {(AeSysView*) GetNextView(ViewPosition)};
+		View->AddVisibleGroups(groups);
 	}
 }
+
 void AeSysDoc::RemoveAllGroupsFromAllViews() {
-	POSITION ViewPosition = GetFirstViewPosition();
+	auto ViewPosition {GetFirstViewPosition()};
+
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
-		View->RemoveAllGroups();
+		auto View {(AeSysView*) GetNextView(ViewPosition)};
+		View->RemoveAllVisibleGroups();
 	}
 }
+
 void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup * group) {
-	POSITION ViewPosition = GetFirstViewPosition();
+	auto ViewPosition {GetFirstViewPosition()};
+
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
-		View->RemoveGroup(group);
+		auto View {(AeSysView*) GetNextView(ViewPosition)};
+		View->RemoveVisibleGroup(group);
 	}
 }
+
 void AeSysDoc::ResetAllViews() {
-	POSITION ViewPosition = GetFirstViewPosition();
+	auto ViewPosition {GetFirstViewPosition()};
+
 	while (ViewPosition != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(ViewPosition);
+		auto View {(AeSysView*) GetNextView(ViewPosition)};
 		View->ResetView();
 	}
 }
+
 void AeSysDoc::OnHelpKey() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_DRAW:
@@ -2664,7 +2665,7 @@ void AeSysDoc::OnHelpKey() {
 }
 
 void AeSysDoc::DeleteNodalResources() {
-	POSITION UniquePointPosition = GetFirstUniquePointPosition();
+	POSITION UniquePointPosition = m_UniquePoints.GetHeadPosition();
 	while (UniquePointPosition != 0) {
 		delete GetNextUniquePoint(UniquePointPosition);
 	}
@@ -2732,38 +2733,43 @@ void AeSysDoc::RemoveAllMaskedPrimitives() {
 }
 
 int AeSysDoc::AddUniquePoint(const OdGePoint3d & point) {
-	POSITION UniquePointPosition = GetFirstUniquePointPosition();
+	auto UniquePointPosition {m_UniquePoints.GetHeadPosition()};
+
 	while (UniquePointPosition != 0) {
-		EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
-		if (point == UniquePoint->m_Point) {
+		auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
+		
+		if ((point - UniquePoint->m_Point).length() <= OdGeContext::gTol.equalPoint()) {
+
+//		if (point == UniquePoint->m_Point) {
 			(UniquePoint->m_References)++;
 			return (UniquePoint->m_References);
 		}
 	}
-	AddUniquePoint(new EoGeUniquePoint(1, point));
+	m_UniquePoints.AddTail(new EoGeUniquePoint(1, point));
 	return (1);
 }
-POSITION AeSysDoc::AddUniquePoint(EoGeUniquePoint * uniquePoint) {
-	return m_UniquePoints.AddTail((CObject*) uniquePoint);
-}
-POSITION AeSysDoc::GetFirstUniquePointPosition() const {
-	return m_UniquePoints.GetHeadPosition();
-}
+
 EoGeUniquePoint* AeSysDoc::GetNextUniquePoint(POSITION & position) {
 	return (EoGeUniquePoint*) m_UniquePoints.GetNext(position);
 }
+
 void AeSysDoc::RemoveUniquePointAt(POSITION position) {
 	m_UniquePoints.RemoveAt(position);
 }
+
 void AeSysDoc::RemoveAllUniquePoints() {
 	m_UniquePoints.RemoveAll();
 }
+
 void AeSysDoc::DisplayUniquePoints() {
+	if (m_UniquePoints.IsEmpty()) { return; }
+
 	EoDbGroup Group;
-	POSITION UniquePointPosition = GetFirstUniquePointPosition();
+	POSITION UniquePointPosition {m_UniquePoints.GetHeadPosition()};
+	
 	while (UniquePointPosition != 0) {
-		const EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
-		EoDbPoint* PointPrimitive = new EoDbPoint(UniquePoint->m_Point);
+		const auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
+		auto PointPrimitive {new EoDbPoint(UniquePoint->m_Point)};
 		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		Group.AddTail(PointPrimitive);
@@ -2771,10 +2777,11 @@ void AeSysDoc::DisplayUniquePoints() {
 	UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &Group);
 	Group.DeletePrimitivesAndRemoveAll();
 }
+
 int AeSysDoc::RemoveUniquePoint(const OdGePoint3d & point) {
 	int References = 0;
 
-	POSITION UniquePointPosition = GetFirstUniquePointPosition();
+	POSITION UniquePointPosition = m_UniquePoints.GetHeadPosition();
 	while (UniquePointPosition != 0) {
 		POSITION Position = UniquePointPosition;
 		EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
@@ -2790,6 +2797,7 @@ int AeSysDoc::RemoveUniquePoint(const OdGePoint3d & point) {
 	}
 	return References;
 }
+
 void AeSysDoc::AddPrimitiveBit(EoDbPrimitive * primitive, int bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive = 0;
 
@@ -3176,18 +3184,17 @@ BOOL AeSysDoc::DoPromptFileName(CString & fileName, UINT nIDSTitle, DWORD lFlags
 	return nResult == IDOK;
 }
 
-// <command_console>
 void AeSysDoc::OnEditClearselection() {
 	if (m_bDisableClearSel) return;
+	
 	bool cleared = false;
 	POSITION pos = GetFirstViewPosition();
+	
 	while (pos != NULL) {
 		CView* view = GetNextView(pos);
 		if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && view->GetDocument() == this) {
 			AeSysView* pDwgViewer = dynamic_cast<AeSysView*>(view);
-// <command_view>
 			pDwgViewer->editorObject().unselect();
-// </command_view>
 			cleared = true;
 		}
 	}
@@ -3219,13 +3226,12 @@ void AeSysDoc::OnEditSelectall() {
 	ExecuteCommand(L"select single all");
 	m_bDisableClearSel = false;
 	POSITION Position = GetFirstViewPosition();
+	
 	while (Position != NULL) {
 		CView* View = GetNextView(Position);
+
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
-			// <command_view>
 			dynamic_cast<AeSysView*>(View)->editorObject().selectionSetChanged();
-			// </command_view>
 		}
 	}
 }
-// </command_console>

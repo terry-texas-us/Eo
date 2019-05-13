@@ -10,15 +10,15 @@ void AeSysView::OnCutModeOptions(void) noexcept {
 void AeSysView::OnCutModeTorch(void) {
 	AeSysDoc* Document = GetDocument();
 
-    const auto pt {GetCursorPosition()};
-    auto Groups {new EoDbGroupList};
+	const auto pt {GetCursorPosition()};
+	auto Groups {new EoDbGroupList};
 
 	OdGePoint3d ptCut;
 
 	EoGePoint4d ptView(pt, 1.);
 	ModelViewTransformPoint(ptView);
 
-    auto GroupPosition {GetFirstVisibleGroupPosition()};
+	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
 
@@ -44,26 +44,25 @@ void AeSysView::OnCutModeTorch(void) {
 	delete Groups;
 }
 void AeSysView::OnCutModeSlice(void) {
-    const auto ptCur {GetCursorPosition()};
+	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP2) {
 		rPrvPos = ptCur;
 		RubberBandingStartAtEnable(ptCur, Lines);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP2);
-	}
-	else {
-        const auto pt1 {rPrvPos};
-        const auto pt2 {ptCur};
+	} else {
+		const auto pt1 {rPrvPos};
+		const auto pt2 {ptCur};
 
-        auto Document {GetDocument()};
+		auto Document {GetDocument()};
 
-        auto Groups {new EoDbGroupList};
+		auto Groups {new EoDbGroupList};
 
 		OdGePoint3dArray Intersections;
 
 		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.), EoGePoint4d(pt2, 1.)};
 		ModelViewTransformPoints(2, ptView);
 
-        auto TransformMatrix {ModelViewMatrix()};
+		auto TransformMatrix {ModelViewMatrix()};
 		TransformMatrix.invert();
 
 		POSITION GroupPosition = GetFirstVisibleGroupPosition();
@@ -107,8 +106,7 @@ void AeSysView::OnCutModeField(void) {
 		rPrvPos = ptCur;
 		RubberBandingStartAtEnable(ptCur, Rectangles);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP4);
-	}
-	else {
+	} else {
 		OdGePoint3d rLL, rUR;
 
 		rLL.x = EoMin(rPrvPos.x, ptCur.x);
@@ -187,8 +185,7 @@ void AeSysView::OnCutModeClip(void) {
 	if (wPrvKeyDwn != ID_OP7) {
 		rPrvPos = ptCur;
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP7);
-	}
-	else {
+	} else {
 		const OdGePoint3d pt1 = rPrvPos;
 		const OdGePoint3d pt2 = ptCur;
 

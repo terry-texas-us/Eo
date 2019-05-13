@@ -14,9 +14,9 @@ END_MESSAGE_MAP()
 
 EoDlgSelectIsometricView::EoDlgSelectIsometricView(CWnd* parent)
 	: CDialog(EoDlgSelectIsometricView::IDD, parent)
-    , m_LeftRight(0)
-    , m_FrontBack(0)
-    , m_AboveUnder(0) {
+	, m_LeftRight(0)
+	, m_FrontBack(0)
+	, m_AboveUnder(0) {
 
 }
 

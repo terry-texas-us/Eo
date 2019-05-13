@@ -64,6 +64,7 @@
       </AssemblyDebug>
       <SubSystem>Windows</SubSystem>
       <ImageHasSafeExceptionHandlers />
+      <Profile>true</Profile>
     </Link>
     <Bscmake />
   </ItemDefinitionGroup>

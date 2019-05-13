@@ -7,7 +7,7 @@
 #include "EoDbPolyline.h"
 
 void AeSysView::OnModePrimitiveMend() {
-    const auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 	EoGePoint4d ptView(CurrentPnt, 1.);
 	ModelViewTransformPoint(ptView);
 
@@ -41,7 +41,7 @@ void AeSysView::OnModePrimitiveMend() {
 	}
 }
 void AeSysView::PreviewMendPrimitive() {
-    const auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 	const OdGeVector3d Translate(CurrentPnt - m_MendPrimitiveBegin);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
 	m_PrimitiveToMendCopy->TranslateUsingMask(Translate, m_MendPrimitiveVertexIndex);

@@ -23,6 +23,7 @@ public:
 	~EoDbLayer() {}
 	COLORREF Color() const;
 	OdInt16 ColorIndex() const;
+	void BuildVisibleGroupList(AeSysView* view);
 	void Display(AeSysView* view, CDC* deviceContext);
 	void Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap);
 	bool IsActive() const noexcept;

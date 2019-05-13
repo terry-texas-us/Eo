@@ -9,9 +9,9 @@ IMPLEMENT_DYNAMIC(EoDlgSetAngle, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgSetAngle::EoDlgSetAngle(CWnd* parent) 
-    : CDialog(EoDlgSetAngle::IDD, parent)
-    , m_dAngle(0) {
+EoDlgSetAngle::EoDlgSetAngle(CWnd* parent)
+	: CDialog(EoDlgSetAngle::IDD, parent)
+	, m_dAngle(0) {
 }
 
 EoDlgSetAngle::~EoDlgSetAngle() {
@@ -20,7 +20,7 @@ EoDlgSetAngle::~EoDlgSetAngle() {
 void EoDlgSetAngle::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Text(pDX, IDC_ANGLE, m_dAngle);
-	DDV_MinMaxDouble(pDX, m_dAngle, - 360., 360.);
+	DDV_MinMaxDouble(pDX, m_dAngle, -360., 360.);
 }
 BOOL EoDlgSetAngle::OnInitDialog() {
 	CDialog::OnInitDialog();

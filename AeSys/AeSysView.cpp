@@ -457,17 +457,22 @@ AeSysDoc* AeSysView::GetDocument() const { // non-debug version is inline
 void AeSysView::exeCmd(const OdString & commandName) {
 	GetDocument()->ExecuteCommand(commandName);
 }
+
 void AeSysView::OnDraw(CDC * deviceContext) {
 	try {
 		auto Document {GetDocument()};
 		ASSERT_VALID(Document);
 		
-		if (!m_pDevice.isNull()) {
-			m_pDevice->update();
-		}
 		BackgroundImageDisplay(deviceContext);
 		DisplayGrid(deviceContext);
-		Document->DisplayAllLayers(this, deviceContext);
+
+		if (m_pDevice.isNull()) {
+			Document->DisplayAllLayers(this, deviceContext);
+		} else {
+			Document->BuildVisibleGroupList(this);
+			// <tas="background and grid display are obscurred by this update."/>
+			m_pDevice->update();
+		}
 		Document->DisplayUniquePoints();
 		UpdateStateInformation(All);
 		ModeLineDisplay();
@@ -497,9 +502,7 @@ void AeSysView::OnInitialUpdate() {
 
 	Document->setVectorizer(this);
 
-	// <command_console>
 	m_editor.initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
-	// </command_console>
 
 	SetRenderMode(OdGsView::k2DOptimized);
 	theApp.OnModeDraw();
@@ -575,8 +578,8 @@ void AeSysView::OnSize(UINT type, int cx, int cy) {
 			SetViewportSize(cx, cy);
 			m_pDevice->onSize(OdGsDCRect(0, cx, cy, 0));
 
-			const OdGePoint3d Target = OdGePoint3d(m_ViewTransform.FieldWidth() / 2., m_ViewTransform.FieldHeight() / 2., 0.);
-			const OdGePoint3d Position = Target + (OdGeVector3d::kZAxis * m_ViewTransform.LensLength());
+			const auto Target {OdGePoint3d(m_ViewTransform.FieldWidth() / 2., m_ViewTransform.FieldHeight() / 2., 0.)};
+			const auto Position {Target + (OdGeVector3d::kZAxis * m_ViewTransform.LensLength())};
 			OdGsViewPtr FirstView = m_pDevice->viewAt(0);
 			FirstView->setView(Position, Target, OdGeVector3d::kYAxis, m_ViewTransform.FieldWidth(), m_ViewTransform.FieldHeight());
 
@@ -591,9 +594,7 @@ void AeSysView::OnDestroy() {
 	AeSysDoc* Document = GetDocument();
 	Document->OnCloseVectorizer(this);
 
-	// <command_view>
 	m_editor.uninitialize();
-	// </command_view>
 	destroyDevice();
 
 	m_pPrinterDevice.release();
@@ -1699,6 +1700,7 @@ protected:
 	HCURSOR m_Cursor;
 
 public:
+
 	SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor, bool snap)
 		: m_View(view)
 		, m_Cursor(view->cursor()) {
@@ -1762,9 +1764,6 @@ void CALLBACK StringTrackerTimer(HWND hWnd, UINT nMsg, UINT nIDTimer, DWORD dwTi
 }
 
 // </command_view>
-// <command_console>
-
-/// <overrides="OdEdBaseIO">
 
 OdUInt32 AeSysView::getKeyState() noexcept {
 	OdUInt32 KeyState(0);
@@ -1845,8 +1844,6 @@ void AeSysView::putString(const OdString & string) {
 
 	theApp.SetStatusPaneTextAt(nStatusInfo, Text);
 }
-/// </overrides>
-// </command_console>
 
 void AeSysView::track(OdEdInputTracker * tracker) {
 	m_editor.setTracker(tracker);
@@ -1898,9 +1895,9 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 		auto pDoc {GetDocument()};
 		OdDbDatabase* Database = pDoc->m_DatabasePtr;
 		Database->startUndoRecord();
-		// <command_view>
+
 		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.toEyeToWorld(point.x, point.y) - pData->pickPoint());
-		// </command_view>
+
 		if (m_mode == kDragDrop) {
 			OdDbSelectionSetPtr pSSet = pDoc->selectionSet();
 			OdDbEntityPtr pEnt;
@@ -1943,8 +1940,8 @@ DROPEFFECT AeSysView::OnDragOver(COleDataObject * pDataObject, DWORD dwKeyState,
 
 BOOL AeSysView::PreCreateWindow(CREATESTRUCT & createStructure) {
 	// <tas="Modify the Window class or styles here by modifying the CREATESTRUCT"/>
-
-	return CView::PreCreateWindow(createStructure);
+	
+return CView::PreCreateWindow(createStructure);
 }
 
 void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {
@@ -2007,12 +2004,10 @@ void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {
 	ReleaseDC(DeviceContext);
 }
 
-// <command_view>
 void AeSysView::respond(const OdString & s) {
 	m_response.m_type = Response::kString;
 	m_response.m_string = s;
 }
-// </command_view>
 
 void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 	m_response.m_string = m_inpars.result();
@@ -2029,11 +2024,9 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 
 			switch (m_mode) {
 				case kQuiescent:
-					// <command_view>
 					if (m_editor.unselect()) {
 						PostMessage(WM_PAINT);
 					}
-					// </command_view>
 					break;
 
 				case kGetPoint:
@@ -2093,11 +2086,7 @@ void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		case VK_DELETE:
-
-			// <command_console>
 			((AeSysDoc*) GetDocument())->DeleteSelection(false);
-			// </command_console>
-
 			PostMessage(WM_PAINT);
 			break;
 	}
@@ -2106,7 +2095,7 @@ void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 	if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
-		// <command_view>
+
 		switch (m_mode) {
 			case kQuiescent:
 				if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
@@ -2133,7 +2122,7 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 				}
 		}
 		__super::OnLButtonDown(flags, point);
-		// </command_view>
+
 	} else {
 		DoCustomMouseClick(AeSysApp::CustomLButtonDownCharacters);
 	}
@@ -2171,6 +2160,7 @@ void AeSysView::OnMButtonUp(UINT flags, CPoint point) {
 void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 	DisplayOdometer();
 	if (m_MousePosition != point) {
+		
 		switch (m_mode) {
 			case kQuiescent:
 				m_editor.OnMouseMove(flags, point.x, point.y);
@@ -2293,15 +2283,14 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 }
 
 BOOL AeSysView::OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point) {
-	// <command_view>
 	//ScreenToClient(&point);
+
 	//if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
 	//    PostMessage(WM_PAINT);
 	//    propagateActiveViewChanges();
 	//}
-	// </command_view>
 	DollyAndZoom((zDelta > 0) ? 1. / 0.9 : 0.9);
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 
 	return __super::OnMouseWheel(nFlags, zDelta, point);
 }
@@ -2345,7 +2334,6 @@ struct OdExRegenCmd : OdEdCommand {
 	}
 };
 
-// <command_view>
 OdEdCommandPtr AeSysView::command(const OdString & commandName) {
 	if (commandName.iCompare(L"REGEN") == 0) {
 		OdSmartPtr<OdExRegenCmd> c = OdRxObjectImpl<OdExRegenCmd>::createObject();
@@ -2381,7 +2369,6 @@ bool AeSysView::drawableVectorizationCallback(const OdGiDrawable * drawable) {
 	}
 	return true;
 }
-// </command_view>
 
 BOOL AeSysView::OnIdle(long count) {
 	if (!m_pDevice->isValid()) {
@@ -2630,12 +2617,12 @@ void AeSysView::DisplayPixel(CDC * deviceContext, COLORREF cr, const OdGePoint3d
 	}
 }
 void AeSysView::Orbit(double x, double y) {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	FirstView->orbit(x, y);
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::Dolly() {
 	CPoint Point;
@@ -2658,18 +2645,18 @@ void AeSysView::Dolly() {
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 
 	SetCursorPosition(FirstView->target());
 }
 void AeSysView::DollyAndZoom(double zoomFactor) {
 	Dolly();
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 	FirstView->zoom(zoomFactor);
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 
 	SetCursorPosition(FirstView->target());
 }
@@ -2681,94 +2668,97 @@ void AeSysView::OnSetupScale() {
 	}
 }
 void AeSysView::On3dViewsTop() {
-	OdGsView* FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
-	const OdGePoint3d Target(FirstView->target());
-	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * FirstView->lensLength());
-	OdGeVector3d UpVector(OdGeVector3d::kYAxis);
+	const auto Target(FirstView->target());
+	const auto Position(Target + OdGeVector3d::kZAxis * FirstView->lensLength());
+	auto UpVector(OdGeVector3d::kYAxis);
 
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
+
 void AeSysView::On3dViewsBottom() {
-	OdGsView* FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
-	const OdGePoint3d Target(FirstView->target());
-	const OdGePoint3d Position(Target - OdGeVector3d::kZAxis);
-	OdGeVector3d UpVector(OdGeVector3d::kYAxis);
+	const auto Target(FirstView->target());
+	const auto Position(Target - OdGeVector3d::kZAxis);
+	auto UpVector(OdGeVector3d::kYAxis);
 
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::On3dViewsLeft() {
-	OdGsView* FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
-	const OdGePoint3d Target(FirstView->target());
-	const OdGePoint3d Position(Target - OdGeVector3d::kXAxis * FirstView->lensLength());
-	OdGeVector3d UpVector(OdGeVector3d::kZAxis);
+	const auto Target(FirstView->target());
+	const auto Position(Target - OdGeVector3d::kXAxis * FirstView->lensLength());
+	auto UpVector(OdGeVector3d::kZAxis);
 
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::On3dViewsRight() {
-	OdGsView* FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
-	const OdGePoint3d Target(FirstView->target());
-	const OdGePoint3d Position(Target + OdGeVector3d::kXAxis * FirstView->lensLength());
-	OdGeVector3d UpVector(OdGeVector3d::kZAxis);
+	const auto Target(FirstView->target());
+	const auto Position(Target + OdGeVector3d::kXAxis * FirstView->lensLength());
+	auto UpVector(OdGeVector3d::kZAxis);
 
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
+
 void AeSysView::On3dViewsFront() {
-	OdGsView* FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
-	const OdGePoint3d Target(FirstView->target());
-	const OdGePoint3d Position(Target - OdGeVector3d::kYAxis * FirstView->lensLength());
-	OdGeVector3d UpVector(OdGeVector3d::kZAxis);
+	const auto Target(FirstView->target());
+	const auto Position(Target - OdGeVector3d::kYAxis * FirstView->lensLength());
+	auto UpVector(OdGeVector3d::kZAxis);
 
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
+
 void AeSysView::On3dViewsBack() {
-	OdGsView* FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
-	const OdGePoint3d Target(FirstView->target());
-	const OdGePoint3d Position(Target + OdGeVector3d::kYAxis * FirstView->lensLength());
-	OdGeVector3d UpVector(OdGeVector3d::kZAxis);
+	const auto Target(FirstView->target());
+	const auto Position(Target + OdGeVector3d::kYAxis * FirstView->lensLength());
+	auto UpVector(OdGeVector3d::kZAxis);
 
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::On3dViewsIsometric() {
 	static int LeftRight = 0;
@@ -2790,13 +2780,13 @@ void AeSysView::On3dViewsIsometric() {
 		Direction.y = FrontBack == 0 ? .5773503 : -.5773503;
 		Direction.z = AboveUnder == 0 ? -.5773503 : .5773503;
 
-		OdGsView* FirstView = m_pDevice->viewAt(0);
+		auto FirstView {m_pDevice->viewAt(0)};
 
 		m_ViewTransform.EnablePerspective(false);
 
-		const OdGePoint3d Target(FirstView->target());
-		const OdGePoint3d Position(Target - Direction * FirstView->lensLength());
-		OdGeVector3d UpVector = Direction.crossProduct(OdGeVector3d::kZAxis);
+		const auto Target(FirstView->target());
+		const auto Position(Target - Direction * FirstView->lensLength());
+		auto UpVector {Direction.crossProduct(OdGeVector3d::kZAxis)};
 		UpVector = UpVector.crossProduct(Direction);
 		UpVector.normalize();
 
@@ -2804,7 +2794,7 @@ void AeSysView::On3dViewsIsometric() {
 
 		m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 		m_ViewTransform.BuildTransformMatrix();
-		InvalidateRect(NULL, TRUE);
+		InvalidateRect(nullptr);
 	}
 }
 void AeSysView::OnCameraRotateLeft() {
@@ -2833,11 +2823,11 @@ void AeSysView::OnViewParameters() {
 }
 void AeSysView::OnViewTrueTypeFonts() {
 	m_ViewTrueTypeFonts = !m_ViewTrueTypeFonts;
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnViewPenWidths() {
 	m_ViewPenWidths = !m_ViewPenWidths;
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnViewRendermode(UINT commandId) {
 	const OdGsView::RenderMode RenderMode = OdGsView::RenderMode(commandId - ID_VIEW_RENDERMODE_2DOPTIMIZED);
@@ -2860,10 +2850,10 @@ void AeSysView::OnUpdateWindowZoomWindow(CCmdUI * pCmdUI) {
 }
 void AeSysView::OnViewOdometer() {
 	m_ViewOdometer = !m_ViewOdometer;
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnViewRefresh() {
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnUpdateViewRendermode2doptimized(CCmdUI * pCmdUI) {
 	pCmdUI->SetCheck(RenderMode() == OdGsView::k2DOptimized ? MF_CHECKED : MF_UNCHECKED);
@@ -2886,8 +2876,8 @@ void AeSysView::OnWindowNormal() {
 	DollyAndZoom(m_ViewTransform.FieldWidth() / m_Viewport.WidthInInches());
 }
 void AeSysView::OnWindowBest() {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
-	OdAbstractViewPEPtr AbstractView = OdAbstractViewPEPtr(FirstView);
+	auto FirstView {m_pDevice->viewAt(0)};
+	auto AbstractView {OdAbstractViewPEPtr(FirstView)};
 
 	AbstractView->zoomExtents(FirstView);
 
@@ -2897,15 +2887,15 @@ void AeSysView::OnWindowBest() {
 	m_ViewTransform.BuildTransformMatrix();
 
 	SetCursorPosition(FirstView->target());
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowLast() {
 	ExchangeActiveAndPreviousModelViews();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowSheet() {
 	ModelViewInitialize();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowZoomIn() {
 	DollyAndZoom(1. / 0.9);
@@ -2915,47 +2905,47 @@ void AeSysView::OnWindowZoomOut() {
 }
 void AeSysView::OnWindowPan() {
 	Dolly();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanLeft() {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 	const double Delta = -1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
 
 	FirstView->dolly(OdGeVector3d(Delta, 0., 0.));
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanRight() {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 	const double Delta = 1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
 
 	FirstView->dolly(OdGeVector3d(Delta, 0., 0.));
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanUp() {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 	const double Delta = 1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
 
 	FirstView->dolly(OdGeVector3d(0., Delta, 0.));
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanDown() {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	auto FirstView {m_pDevice->viewAt(0)};
 	const double Delta = -1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
 
 	FirstView->dolly(OdGeVector3d(0., Delta, 0.));
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowZoomSpecial() {
 	EoDlgViewZoom ViewZoomDialog(this);
@@ -2966,7 +2956,7 @@ void AeSysView::OnWindowZoomSpecial() {
 	if (ViewZoomDialog.DoModal() == IDOK) {
 		CopyActiveModelViewToPreviousModelView();
 		DollyAndZoom(ViewZoomDialog.m_ZoomFactor / ZoomFactor);
-		InvalidateRect(NULL, TRUE);
+		InvalidateRect(nullptr);
 	}
 }
 void AeSysView::OnSetupDimLength() {
@@ -3266,7 +3256,7 @@ void AeSysView::OnBackgroundImageLoad() {
 
 		BitmapFile.Load(dlg.GetPathName(), m_BackgroundImageBitmap, m_BackgroundImagePalette);
 		m_ViewBackgroundImage = true;
-		InvalidateRect(NULL, TRUE);
+		InvalidateRect(nullptr);
 	}
 }
 void AeSysView::OnBackgroundImageRemove() {
@@ -3275,12 +3265,12 @@ void AeSysView::OnBackgroundImageRemove() {
 		m_BackgroundImagePalette.DeleteObject();
 		m_ViewBackgroundImage = false;
 
-		InvalidateRect(NULL, TRUE);
+		InvalidateRect(nullptr);
 	}
 }
 void AeSysView::OnViewBackgroundImage() {
 	m_ViewBackgroundImage = !m_ViewBackgroundImage;
-	InvalidateRect(NULL, TRUE);
+	InvalidateRect(nullptr);
 }
 void AeSysView::OnUpdateViewBackgroundImage(CCmdUI * pCmdUI) {
 	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != 0);
@@ -3295,14 +3285,25 @@ void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI * pCmdUI) {
 void AeSysView::OnUpdateViewPenwidths(CCmdUI * pCmdUI) {
 	pCmdUI->SetCheck(m_ViewPenWidths);
 }
-void AeSysView::DeleteLastGroup() {
+
+EoDbGroup* AeSysView::RemoveLastVisibleGroup() {
+
 	if (m_VisibleGroupList.IsEmpty()) {
 		theApp.AddStringToMessageList(IDS_MSG_NO_DET_GROUPS_IN_VIEW);
+		return nullptr;
 	} else {
-		AeSysDoc* Document = GetDocument();
-		EoDbGroup* Group = m_VisibleGroupList.RemoveTail();
+		return m_VisibleGroupList.RemoveTail();
+	}
+}
+
+void AeSysView::DeleteLastGroup() {
+	auto Group {RemoveLastVisibleGroup()};
+
+	if (Group != nullptr) {
+		auto Document {GetDocument()};
 
 		Document->AnyLayerRemove(Group);
+
 		if (Document->RemoveTrappedGroup(Group) != 0) { // Display it normal color so the erase xor will work
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			UpdateStateInformation(TrapCount);
@@ -3312,18 +3313,7 @@ void AeSysView::DeleteLastGroup() {
 		theApp.AddStringToMessageList(IDS_MSG_GROUP_ADDED_TO_DEL_GROUPS);
 	}
 }
-POSITION AeSysView::GetFirstVisibleGroupPosition() const {
-	return m_VisibleGroupList.GetHeadPosition();
-}
-POSITION AeSysView::GetLastGroupPosition() const {
-	return m_VisibleGroupList.GetTailPosition();
-}
-EoDbGroup* AeSysView::GetNextVisibleGroup(POSITION & position) {
-	return m_VisibleGroupList.GetNext(position);
-}
-EoDbGroup* AeSysView::GetPreviousGroup(POSITION & position) {
-	return m_VisibleGroupList.GetPrev(position);
-}
+
 bool AeSysView::ViewTrueTypeFonts() noexcept {
 	return m_ViewTrueTypeFonts;
 }
@@ -3347,18 +3337,7 @@ bool AeSysView::PenWidthsOn() noexcept {
 double AeSysView::WorldScale() const noexcept {
 	return m_WorldScale;
 }
-POSITION AeSysView::AddGroup(EoDbGroup * group) {
-	return m_VisibleGroupList.AddTail(group);
-}
-void AeSysView::AddGroups(EoDbGroupList * groups) {
-	return m_VisibleGroupList.AddTail(groups);
-}
-POSITION AeSysView::RemoveGroup(EoDbGroup * group) {
-	return m_VisibleGroupList.Remove(group);
-}
-void AeSysView::RemoveAllGroups() {
-	m_VisibleGroupList.RemoveAll();
-}
+
 void AeSysView::ResetView() noexcept {
 	m_EngagedGroup = 0;
 	m_EngagedPrimitive = 0;
@@ -3735,7 +3714,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 		m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 		m_ViewTransform.BuildTransformMatrix();
 
-		InvalidateRect(NULL, TRUE);
+		InvalidateRect(nullptr);
 
 		ptView = EoGePoint4d(cursorPosition, 1.);
 		ModelViewTransformPoint(ptView);
@@ -3921,7 +3900,7 @@ void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
 			::MessageBoxW(0, L"Render mode is not supported by the current device", L"Teigha", MB_ICONWARNING);
 		} else {
 			m_ViewTransform.SetRenderMode(renderMode);
-			InvalidateRect(NULL, TRUE);
+			InvalidateRect(nullptr);
 		}
 	}
 }
@@ -3954,7 +3933,7 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 		const double wf = FirstView->fieldWidth() / Vector.x;
 		const double hf = FirstView->fieldHeight() / Vector.y;
 		FirstView->zoom(odmin(wf, hf));
-		InvalidateRect(NULL, TRUE);
+		InvalidateRect(nullptr);
 	}
 }
 void AeSysView::OnInsertBlockreference() {

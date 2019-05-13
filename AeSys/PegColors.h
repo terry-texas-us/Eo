@@ -1,6 +1,6 @@
 #pragma once
 
-COLORREF ViewBackgroundColor = RGB(  42,   42,   42);
+COLORREF ViewBackgroundColor = RGB(  42,  42,  42);
 
 COLORREF RubberbandColor = RGB(102, 102, 102);
 

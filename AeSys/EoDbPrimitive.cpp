@@ -15,14 +15,14 @@ double EoDbPrimitive::sm_SelectApertureSize = .02;
 
 EoDbPrimitive::EoDbPrimitive() noexcept
 	: m_LayerId(NULL)
-    , m_ColorIndex(1)
-    , m_LinetypeIndex(1) {
+	, m_ColorIndex(1)
+	, m_LinetypeIndex(1) {
 }
 
 EoDbPrimitive::EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex)
 	: m_LayerId(NULL)
-    , m_ColorIndex(colorIndex)
-    , m_LinetypeIndex(linetypeIndex) {
+	, m_ColorIndex(colorIndex)
+	, m_LinetypeIndex(linetypeIndex) {
 }
 
 EoDbPrimitive::~EoDbPrimitive() {
@@ -52,11 +52,9 @@ CString EoDbPrimitive::FormatColorIndex() const {
 	CString str;
 	if (m_ColorIndex == COLORINDEX_BYLAYER) {
 		str = L"ByLayer";
-	}
-	else if (m_ColorIndex == COLORINDEX_BYBLOCK) {
+	} else if (m_ColorIndex == COLORINDEX_BYBLOCK) {
 		str = L"ByBlock";
-	}
-	else {
+	} else {
 		wchar_t szBuf[16];
 		_itow_s(m_ColorIndex, szBuf, 16, 10);
 		str = szBuf;
@@ -68,11 +66,9 @@ CString EoDbPrimitive::FormatLinetypeIndex() const {
 	CString str;
 	if (m_LinetypeIndex == LINETYPE_BYLAYER) {
 		str = L"ByLayer";
-	}
-	else if (m_LinetypeIndex == LINETYPE_BYBLOCK) {
+	} else if (m_LinetypeIndex == LINETYPE_BYBLOCK) {
 		str = L"ByBlock";
-	}
-	else {
+	} else {
 		wchar_t szBuf[16];
 		_itow_s(m_LinetypeIndex, szBuf, 16, 10);
 		str = szBuf;
@@ -84,8 +80,7 @@ OdInt16 EoDbPrimitive::LogicalColorIndex() const noexcept {
 	OdInt16 ColorIndex = sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex;
 	if (ColorIndex == COLORINDEX_BYLAYER) {
 		ColorIndex = sm_LayerColorIndex;
-	}
-	else if (ColorIndex == COLORINDEX_BYBLOCK) {
+	} else if (ColorIndex == COLORINDEX_BYBLOCK) {
 		ColorIndex = 7;
 	}
 	return (ColorIndex);
@@ -95,8 +90,7 @@ OdInt16 EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
 	OdInt16 LinetypeIndex = sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex;
 	if (LinetypeIndex == LINETYPE_BYLAYER) {
 		LinetypeIndex = sm_LayerLinetypeIndex;
-	}
-	else if (LinetypeIndex == LINETYPE_BYBLOCK) {
+	} else if (LinetypeIndex == LINETYPE_BYBLOCK) {
 		LinetypeIndex = 1;
 	}
 	return (LinetypeIndex);
@@ -170,43 +164,42 @@ void EoDbPrimitive::SetHighlightLinetypeIndex(OdInt16 linetypeIndex) noexcept {
 	sm_HighlightLinetypeIndex = linetypeIndex;
 }
 
-OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
+OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d & normal) {
 	const double Epsilon = 1. / 64.;
 
 	OdGeVector3d ArbitraryAxis;
 	if ((fabs(normal.x) < Epsilon) && (fabs(normal.y) < Epsilon)) {
 		ArbitraryAxis = OdGeVector3d::kYAxis.crossProduct(normal);
-	}
-	else {
+	} else {
 		ArbitraryAxis = OdGeVector3d::kZAxis.crossProduct(normal);
 	}
 	return ArbitraryAxis;
 }
 
-double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal) {
-    OdGePlane Plane(point, normal);
+double ComputeElevation(const OdGePoint3d & point, const OdGeVector3d & normal) {
+	OdGePlane Plane(point, normal);
 
-    OdGeMatrix3d WorldToPlaneTransform;
-    WorldToPlaneTransform.setToWorldToPlane(Plane);
+	OdGeMatrix3d WorldToPlaneTransform;
+	WorldToPlaneTransform.setToWorldToPlane(Plane);
 
-    auto OriginOnPlane {OdGePoint3d::kOrigin.orthoProject(Plane)};
-    auto OriginToPlaneVector {OriginOnPlane.asVector()};
-    OriginToPlaneVector.transformBy(WorldToPlaneTransform);
+	auto OriginOnPlane {OdGePoint3d::kOrigin.orthoProject(Plane)};
+	auto OriginToPlaneVector {OriginOnPlane.asVector()};
+	OriginToPlaneVector.transformBy(WorldToPlaneTransform);
 
-    return OriginToPlaneVector.z;
+	return OriginToPlaneVector.z;
 }
 // <summary>Computes the plane normal. Expects uAxis = pointU - origin and vAxis = pointV - origin to be non-collinear.</summary>
-OdGeVector3d ComputeNormal(const OdGePoint3d& pointU, const OdGePoint3d& origin, const OdGePoint3d& pointV) {
-    auto Normal = OdGeVector3d(pointU - origin).crossProduct(OdGeVector3d(pointV - origin));
-    if (Normal.isZeroLength()) {
-        return OdGeVector3d::kZAxis;
-    }
-    return Normal.normalize();
+OdGeVector3d ComputeNormal(const OdGePoint3d & pointU, const OdGePoint3d & origin, const OdGePoint3d & pointV) {
+	auto Normal = OdGeVector3d(pointU - origin).crossProduct(OdGeVector3d(pointV - origin));
+	if (Normal.isZeroLength()) {
+		return OdGeVector3d::kZAxis;
+	}
+	return Normal.normalize();
 }
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
 	const auto Document {AeSysDoc::GetDoc()};
-	if (Document != nullptr) { 
+	if (Document != nullptr) {
 		return EoDbPrimitive::LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
 	}
 	ATLTRACE2("Document not associated with ChildFrame yet\n");

@@ -4,14 +4,14 @@
 
 class EoDbTracingFile : public EoDbFile {
 public:
-    EoDbTracingFile(OdDbDatabasePtr database);
-    EoDbTracingFile(const OdString& fileName, UINT openFlags);
-    virtual ~EoDbTracingFile();
+	EoDbTracingFile(OdDbDatabasePtr database);
+	EoDbTracingFile(const OdString& fileName, UINT openFlags);
+	virtual ~EoDbTracingFile();
 
 	void ReadHeader();
 	bool ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, EoDbLayer* layer);
 	EoDbGroup* ReadGroup(OdDbBlockTableRecordPtr blockTableRecord);
-	
+
 	void WriteHeader();
 	void WriteLayer(EoDbLayer* layer);
 };

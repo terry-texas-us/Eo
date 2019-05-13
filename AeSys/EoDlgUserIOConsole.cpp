@@ -1,6 +1,5 @@
 #include "stdafx.h"
 
-// <command_console>
 #include "AeSysApp.h"
 #include "DbCommandContext.h"
 #include "DbSSet.h"
@@ -169,4 +168,3 @@ void EoDlgUserIOConsole::OnShowWindow(BOOL show, UINT status) {
 	auto EditControl {(CEdit*) GetDlgItem(IDC_PROMPT)};
 	EditControl->LineScroll(EditControl->GetLineCount());
 }
-// </command_console>

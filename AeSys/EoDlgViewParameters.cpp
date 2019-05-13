@@ -23,8 +23,8 @@ END_MESSAGE_MAP()
 
 EoDlgViewParameters::EoDlgViewParameters(CWnd* parent)
 	: CDialog(EoDlgViewParameters::IDD, parent)
-    , m_PerspectiveProjection(FALSE)
-    , m_ModelView(0) {
+	, m_PerspectiveProjection(FALSE)
+	, m_ModelView(0) {
 }
 
 EoDlgViewParameters::~EoDlgViewParameters() {
@@ -78,8 +78,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 
 	if (UpVector.isZeroLength()) {
 		UpVector = OdGeVector3d::kYAxis;
-	}
-	else {
+	} else {
 		UpVector.normalize();
 	}
 	ModelView->SetLensLength(LensLength);
@@ -92,15 +91,14 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	double FieldHeight(ModelView->FieldHeight());
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
-	}
-	else {
+	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
 	ModelView->SetView(Position, Target, UpVector, FieldWidth, FieldHeight);
 	ModelView->BuildTransformMatrix();
 
 	ActiveView->SetViewTransform(*ModelView);
-	ActiveView->InvalidateRect(NULL, TRUE);
+	ActiveView->InvalidateRect(nullptr);
 
 	GetDlgItem(IDC_APPLY)->EnableWindow(FALSE);
 }

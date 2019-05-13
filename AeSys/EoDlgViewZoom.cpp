@@ -8,9 +8,9 @@ IMPLEMENT_DYNAMIC(EoDlgViewZoom, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgViewZoom, CDialog)
 END_MESSAGE_MAP()
 
-EoDlgViewZoom::EoDlgViewZoom(CWnd* parent) 
-    : CDialog(EoDlgViewZoom::IDD, parent)
-    , m_ZoomFactor(1.) {
+EoDlgViewZoom::EoDlgViewZoom(CWnd* parent)
+	: CDialog(EoDlgViewZoom::IDD, parent)
+	, m_ZoomFactor(1.) {
 }
 
 EoDlgViewZoom::~EoDlgViewZoom() {
