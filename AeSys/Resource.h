@@ -101,6 +101,7 @@
 #define IDR_NODAL_MODE                  278
 #define IDR_NODALR_MODE                 279
 #define IDR_LPD_MODE                    280
+#define IDR_MAINFRAME_ORIGINAL          281
 #define IDD_LAYER_PROPERTIES_MANAGER    286
 #define IDB_LAYER_FILTERS               287
 #define IDB_LAYER_STATES                288
@@ -511,7 +512,6 @@
 #define IDS_PRIMITIVE_FILTER_LIST       3846
 #define IDS_MSG_INVALID_TRACING_FILE_NAME 3847
 #define IDS_NO_INTERSECTION_WITH_REFERENCE 3848
-#define IDS_SELECTIONS_DO_NOT_INTERSECT 3849
 #define IDS_SELECTED_LINES_DO_NOT_INTERSECT 3849
 #define ID_OP0                          4112
 #define ID_OP1                          4113

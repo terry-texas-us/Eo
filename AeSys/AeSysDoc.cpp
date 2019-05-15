@@ -485,11 +485,11 @@ OdDbCommandContextPtr AeSysDoc::cmdCtx() {
 
 OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
 	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->cmdCtx();
-	OdDbSelectionSetPtr pRes = CommandContext->arbitraryData(L"AeSysApp Working Selection Set");
+	OdDbSelectionSetPtr pRes = CommandContext->arbitraryData(L"OdaMfcApp Working Selection Set");
 
 	if (pRes.isNull()) {
 		pRes = OdDbSelectionSet::createObject(m_DatabasePtr);
-		CommandContext->setArbitraryData(L"AeSysApp Working Selection Set", pRes);
+		CommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", pRes);
 	}
 	ATLTRACE2(atlTraceGeneral, 0, L"Working Selection set contains %d items\n", pRes->numEntities());
 	return pRes;
@@ -839,6 +839,9 @@ void AeSysDoc::DeleteSelection(bool force) {
 			ExecuteCommand(L"ForceErase");
 		} else {
 			ExecuteCommand(L"erase");
+		}
+		if (m_pViewer) {
+			m_pViewer->editorObject().Set_Entity_centers();
 		}
 	}
 }
@@ -2281,15 +2284,14 @@ void AeSysDoc::OnToolsGroupBreak() {
 	ActiveView->BreakAllSegRefs();
 }
 void AeSysDoc::OnToolsGroupDelete() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-
-	const OdGePoint3d pt = ActiveView->GetCursorPosition();
-
-	auto Group {ActiveView->SelectGroupAndPrimitive(pt)};
+	auto ActiveView {AeSysView::GetActiveView()};
+	const auto CurrentPnt {ActiveView->GetCursorPosition()};
+	auto Group {ActiveView->SelectGroupAndPrimitive(CurrentPnt)};
 
 	if (Group != nullptr) {
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
+
 		if (RemoveTrappedGroup(Group) != NULL) {
 			ActiveView->UpdateStateInformation(AeSysView::TrapCount);
 		}
