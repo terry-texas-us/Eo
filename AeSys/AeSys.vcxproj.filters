@@ -453,6 +453,21 @@
     <ClCompile Include="OSnapManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
+      <Filter>Source Files\Drawing ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
+      <Filter>Source Files\Drawing ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
+      <Filter>Source Files\Drawing ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
+      <Filter>Source Files\Drawing ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
+      <Filter>Source Files\Drawing ExServices</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AeSys.rc2">

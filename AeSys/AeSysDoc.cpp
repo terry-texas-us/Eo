@@ -3191,21 +3191,23 @@ BOOL AeSysDoc::DoPromptFileName(CString & fileName, UINT nIDSTitle, DWORD lFlags
 }
 
 void AeSysDoc::OnEditClearselection() {
-	if (m_bDisableClearSel) return;
 	
-	bool cleared = false;
-	POSITION pos = GetFirstViewPosition();
+	if (m_bDisableClearSel) { return; }
 	
-	while (pos != NULL) {
-		CView* view = GetNextView(pos);
-		if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && view->GetDocument() == this) {
-			AeSysView* pDwgViewer = dynamic_cast<AeSysView*>(view);
-			pDwgViewer->editorObject().unselect();
+	auto cleared {false};
+	auto ViewPosition {GetFirstViewPosition()};
+	
+	while (ViewPosition != NULL) {
+		auto View {GetNextView(ViewPosition)};
+
+		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0 && View->GetDocument() == this) {
+			dynamic_cast<AeSysView*>(View)->editorObject().unselect();
 			cleared = true;
 		}
 	}
-	if (!cleared) // No view found
+	if (!cleared) { // No view found
 		selectionSet()->clear();
+	}
 }
 
 void AeSysDoc::OnEditExplode() {

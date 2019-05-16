@@ -3,11 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 16.0.28803.202
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AeSys", "AeSys\AeSys.vcxproj", "{99616C98-7844-41E8-BC1F-B16C4044EB44}"
-	ProjectSection(ProjectDependencies) = postProject
-		{D9672813-34BA-4016-8D12-C8C8B60D443D} = {D9672813-34BA-4016-8D12-C8C8B60D443D}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Od_DrawingsCommon", "Od_DrawingsCommon\Od_DrawingsCommon.vcxproj", "{D9672813-34BA-4016-8D12-C8C8B60D443D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ExCommands", "ExCommands\ExCommands.vcxproj", "{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -40,17 +35,6 @@ Global
 		{99616C98-7844-41E8-BC1F-B16C4044EB44}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
 		{99616C98-7844-41E8-BC1F-B16C4044EB44}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
 		{99616C98-7844-41E8-BC1F-B16C4044EB44}.vc15dlldbg|x64.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Debug|Win32.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Debug|Win32.Build.0 = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Debug|x64.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Debug|x64.Build.0 = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Release|Win32.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Release|Win32.Build.0 = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Release|x64.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.Release|x64.Build.0 = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.vc15dlldbg|Win32.ActiveCfg = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.vc15dlldbg|Win32.Build.0 = vc15dlldbg|Win32
-		{D9672813-34BA-4016-8D12-C8C8B60D443D}.vc15dlldbg|x64.ActiveCfg = vc15dlldbg|Win32
 		{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}.Debug|Win32.ActiveCfg = vc15dlldbg|Win32
 		{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}.Debug|Win32.Build.0 = vc15dlldbg|Win32
 		{B7BB0D34-A6F7-40FB-BD21-C60C17C98775}.Debug|x64.ActiveCfg = vc15dlldbg|Win32

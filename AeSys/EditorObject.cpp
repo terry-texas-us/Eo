@@ -373,22 +373,23 @@ bool OdExEditorObject::snap(OdGePoint3d & pt, const OdGePoint3d * pLastPt) {
 }
 
 bool OdExEditorObject::unselect() {
-	bool bRes = false;
-	OdDbSelectionSetPtr pSSet = workingSSet();
-	OdDbSelectionSetIteratorPtr pIter = pSSet->newIterator();
-	while (!pIter->done()) {
-		OdDbEntityPtr pEnt = OdDbEntity::cast(pIter->objectId().openObject());
-		if (pEnt.get()) {
-			pEnt->highlight(false);
+	auto bRes {false};
+	auto WorkingSelectionSet {workingSSet()};
+	OdDbSelectionSetIteratorPtr SelectionSetIterator {WorkingSelectionSet->newIterator()};
+	
+	while (!SelectionSetIterator->done()) {
+		auto Entity {OdDbEntity::cast(SelectionSetIterator->objectId().openObject())};
+
+		if (Entity.get()) {
+			Entity->highlight(false);
 			bRes = true;
 		}
-		pIter->next();
+		SelectionSetIterator->next();
 	}
-	// Don't clear working selection set to prevent previous selection modification
-	//pSSet->clear();
-	pSSet = OdDbSelectionSet::createObject(pSSet->database());
-	setWorkingSelectionSet(m_pCmdCtx, pSSet);
-	m_gripManager.selectionSetChanged(pSSet);
+	// Don't clear working selection set 'WorkingSelectionSet->clear()' to prevent previous selection modification
+	WorkingSelectionSet = OdDbSelectionSet::createObject(WorkingSelectionSet->database());
+	setWorkingSelectionSet(m_pCmdCtx, WorkingSelectionSet);
+	m_gripManager.selectionSetChanged(WorkingSelectionSet);
 	return bRes;
 }
 

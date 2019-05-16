@@ -76,15 +76,6 @@
   <ItemGroup>
     <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.h" />
     <ClInclude Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.h" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\DbDumper.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\GiWorldDrawDumper.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\ExProtocolExtension.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.cpp" />
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
