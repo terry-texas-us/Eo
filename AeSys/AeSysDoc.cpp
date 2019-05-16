@@ -188,6 +188,10 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_CLEAR, &AeSysDoc::OnEditClearselection)
 	ON_COMMAND(ID_EDIT_CONSOLE, &AeSysDoc::OnEditConsole)
 	ON_COMMAND(ID_VIEW_NAMEDVIEWS, &AeSysDoc::OnViewNamedViews)
+	ON_COMMAND(ID_EDIT_UNDO, OnEditUndo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdateEditUndo)
+	ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdateEditRedo)
+	ON_COMMAND(ID_EDIT_REDO, OnEditRedo)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_SELECTALL, &AeSysDoc::OnEditSelectall)
 	ON_COMMAND(ID_SELECTIONSETCOMMANDS_ENTGET, &AeSysDoc::OnEditEntget)
 
@@ -3220,6 +3224,29 @@ void AeSysDoc::OnEditEntget() {
 
 void AeSysDoc::OnViewNamedViews() {
 	ExecuteCommand(L"VIEW");
+}
+
+void AeSysDoc::OnEditUndo() {
+	m_bLayoutSwitchable = true;
+	m_DatabasePtr->undo();
+	m_bLayoutSwitchable = false;
+	UpdateAllViews(nullptr);
+}
+
+void AeSysDoc::OnUpdateEditUndo(CCmdUI* pCmdUI) {
+	theApp.RefreshCommandMenu();
+	pCmdUI->Enable(m_DatabasePtr->hasUndo() ? TRUE : FALSE);
+}
+
+void AeSysDoc::OnEditRedo() {
+	m_bLayoutSwitchable = true;
+	m_DatabasePtr->redo();
+	m_bLayoutSwitchable = false;
+	UpdateAllViews(nullptr);
+}
+
+void AeSysDoc::OnUpdateEditRedo(CCmdUI * pCmdUI) {
+	pCmdUI->Enable(m_DatabasePtr->hasRedo() ? TRUE : FALSE);
 }
 
 void AeSysDoc::OnEditSelectall() {

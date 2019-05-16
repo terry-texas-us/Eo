@@ -22,7 +22,7 @@ void AeSysView::OnPowerModeCircuit() {
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 	auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 
 	if (Group != nullptr) {
 		auto SymbolCircle {get<1>(Selection)};
@@ -99,7 +99,7 @@ void AeSysView::OnPowerModeHome() {
 	if (!m_PowerArrow || (PointOnCircuit != CurrentPnt)) {
 		m_PowerArrow = false;
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
-		auto Group {get<0>(Selection)};
+		auto Group {get<tGroup>(Selection)};
 		if (Group != nullptr) {
 			auto Circuit {get<1>(Selection)};
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
@@ -137,7 +137,7 @@ void AeSysView::DoPowerModeMouseMove() {
 				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 				auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-				auto Group {get<0>(Selection)};
+				auto Group {get<tGroup>(Selection)};
 
 				if (Group != nullptr) {
 					auto SymbolCircle {get<1>(Selection)};
@@ -177,7 +177,7 @@ void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
 	if (!m_PowerConductor || PointOnCircuit != CurrentPnt) {
 		m_PowerConductor = false;
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
-		auto Group {get<0>(Selection)};
+		auto Group {get<tGroup>(Selection)};
 		if (Group != nullptr) {
 			auto Circuit {get<1>(Selection)};
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);

@@ -39,6 +39,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 	OdDbLinetypeTablePtr Linetypes = database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite);
 
 	CStdioFile fl;
+	
 	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
 
 		OdUInt16 MaxNumberOfDashes = 12;
@@ -48,7 +49,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 
 		while (fl.ReadString(Line) != 0) {
 			int NextToken = 0;
-			OdUInt16 Label = OdUInt16(_wtoi(Line.Tokenize(L"=", NextToken)));
+			/* OdUInt16 Label = */ OdUInt16(_wtoi(Line.Tokenize(L"=", NextToken)));
 
 			OdString Name = Line.Tokenize(L",", NextToken);
 			OdString Comments = Line.Tokenize(L"\n", NextToken);
@@ -64,6 +65,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 				MaxNumberOfDashes = NumberOfDashes;
 			}
 			double PatternLength = 0.;
+			
 			for (OdUInt16 DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 				DashLengths[DashIndex] = _wtof(Line.Tokenize(L",\n", NextToken));
 				PatternLength += DashLengths[DashIndex];

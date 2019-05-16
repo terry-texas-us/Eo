@@ -63,7 +63,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 	const OdUInt16 NumberOfLinetypes = ReadUInt16();
 	double* DashLength = new double[32];
 
-	for (OdUInt16 n = 0; n < NumberOfLinetypes; n++) {
+	for (OdUInt16 LinetypeIndex = 0; LinetypeIndex < NumberOfLinetypes; LinetypeIndex++) {
 		OdString Name;
 		ReadString(Name);
 				
@@ -76,8 +76,8 @@ void EoDbPegFile::ReadLinetypesTable() {
 		double PatternLength;
 		PatternLength = ReadDouble();
 
-		for (OdUInt16 n = 0; n < NumberOfDashes; n++) {
-			DashLength[n] = ReadDouble();
+		for (auto DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
+			DashLength[DashIndex] = ReadDouble();
 		}
 		if (Linetypes->getAt(Name).isNull()) {
 			OdDbLinetypeTableRecordPtr Linetype = OdDbLinetypeTableRecord::createObject();

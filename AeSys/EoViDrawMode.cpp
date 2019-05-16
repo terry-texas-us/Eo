@@ -213,7 +213,7 @@ void AeSysView::OnDrawModeReturn() {
 			m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
 			auto GroupPair {EoDbGroup::Create(Database())};
-			Group = get<0>(GroupPair);
+			Group = get<tGroup>(GroupPair);
 
 			for (int i = 0; i < 4; i++) {
 				auto Line {EoDbLine::Create(BlockTableRecord)};

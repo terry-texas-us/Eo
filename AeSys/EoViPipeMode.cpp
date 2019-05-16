@@ -43,7 +43,7 @@ void AeSysView::OnPipeModeFitting() {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group != nullptr) {
 		auto HorizontalSection {get<1>(Selection)};
 		const auto BeginPoint {HorizontalSection->StartPoint()};
@@ -83,11 +83,11 @@ void AeSysView::OnPipeModeFitting() {
 			OnPipeModeEscape();
 		}
 	} else {
-		auto Selection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
-		Group = get<0>(Selection);
+		auto CircleSelection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
+		Group = get<tGroup>(CircleSelection);
 
 		if (Group != nullptr) {
-			auto VerticalSection = get<1>(Selection);
+			auto VerticalSection = get<1>(CircleSelection);
 			CurrentPnt = VerticalSection->Center();
 
 			if (m_PipeModePoints.empty()) {
@@ -126,7 +126,7 @@ void AeSysView::OnPipeModeRise() {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {std::get<0>(Selection)};
+	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) { // On an existing horizontal pipe section
 		auto HorizontalSection {get<1>(Selection)};
 		CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
@@ -143,11 +143,11 @@ void AeSysView::OnPipeModeRise() {
 		}
 		m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 	} else {
-		auto Selection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
-		Group = get<0>(Selection);
+		auto CircleSelection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
+		Group = get<0>(CircleSelection);
 
 		if (Group != nullptr) { // On an existing vertical pipe section
-			auto VerticalSection = get<1>(Selection);
+			auto VerticalSection = get<1>(CircleSelection);
 			CurrentPnt = VerticalSection->Center();
 
 			if (m_PipeModePoints.empty()) {
@@ -196,7 +196,7 @@ void AeSysView::OnPipeModeDrop() {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group != nullptr) { // On an existing horizontal pipe section
 		auto HorizontalSection {get<1>(Selection)};
 		CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
@@ -213,11 +213,11 @@ void AeSysView::OnPipeModeDrop() {
 		}
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	} else {
-		auto Selection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
-		Group = get<0>(Selection);
+		auto CircleSelection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
+		Group = get<tGroup>(CircleSelection);
 
 		if (Group != nullptr) { // On an existing vertical pipe section
-			auto VerticalSection = get<1>(Selection);
+			auto VerticalSection = get<1>(CircleSelection);
 			CurrentPnt = VerticalSection->Center();
 
 			if (m_PipeModePoints.empty()) {
@@ -281,7 +281,7 @@ void AeSysView::OnPipeModeSymbol() {
 	m_PipeModePoints.setLogicalLength(2);
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group == nullptr) {
 		return;
 	}
@@ -988,7 +988,7 @@ void AeSysView::OnPipeModeWye() {
 		return;
 	}
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group != nullptr) {
 		auto HorizontalSection {get<1>(Selection)};
 		auto PointOnSection {HorizontalSection->ProjPt_(CurrentPnt)};

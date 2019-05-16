@@ -20,7 +20,7 @@ void AeSysView::OnDraw2ModeJoin() {
 	CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group != nullptr) {
 		auto Line {get<1>(Selection)};
 		CurrentPnt = Line->ProjPt_(CurrentPnt);

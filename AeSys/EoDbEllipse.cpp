@@ -747,16 +747,17 @@ EoDbEllipse& EoDbEllipse::SetTo2(const OdGePoint3d & center, const OdGeVector3d 
 EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const OdGePoint3d & intermediatePoint, const OdGePoint3d & endPoint) {
 	m_SweepAngle = 0.;
 
-	OdGeVector3d PlaneNormal = OdGeVector3d(intermediatePoint - startPoint).crossProduct(OdGeVector3d(endPoint - startPoint));
+	auto PlaneNormal {OdGeVector3d(intermediatePoint - startPoint).crossProduct(OdGeVector3d(endPoint - startPoint))};
+
 	if (PlaneNormal.isZeroLength()) {
 		return *this;
 	}
 	PlaneNormal.normalize();
 
-	// Build transformation matrix which will get int and end points to z=0 plane with beg point as origin
+	// Build transformation matrix which will get intermediate and end points to z=0 plane with start point as origin
 
-	EoGeMatrix3d tm;
-	tm.setToWorldToPlane(OdGePlane(startPoint, PlaneNormal));
+	EoGeMatrix3d WorldToPlaneAtStartPoint;
+	WorldToPlaneAtStartPoint.setToWorldToPlane(OdGePlane(startPoint, PlaneNormal));
 
 	OdGePoint3d pt[3];
 
@@ -764,8 +765,8 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const O
 	pt[1] = intermediatePoint;
 	pt[2] = endPoint;
 
-	pt[1].transformBy(tm);
-	pt[2].transformBy(tm);
+	pt[1].transformBy(WorldToPlaneAtStartPoint);
+	pt[2].transformBy(WorldToPlaneAtStartPoint);
 
 	const double dDet = (pt[1].x * pt[2].y - pt[2].x * pt[1].y);
 
@@ -775,22 +776,21 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const O
 		m_Center.x = (pt[1].x - pt[1].y * dT) * .5;
 		m_Center.y = (pt[1].y + pt[1].x * dT) * .5;
 		m_Center.z = 0.;
-		tm.invert();
+		WorldToPlaneAtStartPoint.invert();
 
 		// Transform back to original plane
-		m_Center.transformBy(tm);
+		m_Center.transformBy(WorldToPlaneAtStartPoint);
 
 		// None of the points coincide with center point
-
-		EoGeMatrix3d tm;
-		tm.setToWorldToPlane(OdGePlane(m_Center, PlaneNormal));
+		EoGeMatrix3d WorldToPlaneAtCenterPointTransform;
+		WorldToPlaneAtCenterPointTransform.setToWorldToPlane(OdGePlane(m_Center, PlaneNormal));
 		double dAng[3];
 
 		pt[1] = intermediatePoint;
 		pt[2] = endPoint;
 
 		for (int i = 0; i < 3; i++) { // Translate points into z=0 plane with center point at origin
-			pt[i].transformBy(tm);
+			pt[i].transformBy(WorldToPlaneAtCenterPointTransform);
 			dAng[i] = atan2(pt[i].y, pt[i].x);
 			if (dAng[i] < 0.)
 				dAng[i] += TWOPI;
@@ -800,7 +800,9 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const O
 
 		if (fabs(dAng[1] - dMax) > DBL_EPSILON && fabs(dAng[1] - dMin) > DBL_EPSILON) { // Inside line is not colinear with outside lines
 			m_SweepAngle = dMax - dMin;
+			
 			if (dAng[1] > dMin && dAng[1] < dMax) {
+			
 				if (dAng[0] == dMax)
 					m_SweepAngle = -m_SweepAngle;
 			} else {

@@ -322,7 +322,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 	auto CurrentPnt {GetCursorPosition()};
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group != nullptr) {
 		auto EngagedLine {get<1>(Selection)};
 		CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
@@ -396,7 +396,6 @@ void AeSysView::OnAnnotateModeCutIn() {
 
 			OdDbLinePtr Line {EngagedLine->EntityObjectId().safeOpenObject(OdDb::kForWrite)};
 			if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) {
-				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 				OdDbLinePtr NewLine {Line->clone()};
 				BlockTableRecord->appendOdDbEntity(NewLine);
 				Line->setEndPoint(BoundingBox[0]);
@@ -557,7 +556,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 		case ID_OP4:
 		case ID_OP5:
 		{
-			OdGePoint3d m_PreviousPnt(EoViAnn_points[0]);
+			m_PreviousPnt = EoViAnn_points[0];
 			if (CorrectLeaderEndpoints(m_PreviousOp, 0, EoViAnn_points[0], EoViAnn_points[1])) {
 				auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], EoViAnn_points[1])};
 				Line->setColorIndex(1);

@@ -23,8 +23,6 @@ void AeSysView::OnFixupModeOptions() {
 }
 
 void AeSysView::OnFixupModeReference() {
-	auto Document {GetDocument()};
-
 	CurrentSelection = {nullptr, nullptr};
 	
 	ReferenceSelection = SelectLineUsingPoint(GetCursorPosition());
@@ -57,8 +55,6 @@ void AeSysView::OnFixupModeReference() {
 }
 
 void AeSysView::OnFixupModeMend() {
-	auto Document {GetDocument()};
-
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 	
 	if (get<tGroup>(CurrentSelection) == nullptr) {

@@ -25,7 +25,7 @@ public:
 		if (QueryPerformanceFrequency(&m_pc0)) {
 			const double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
 			OdString NewText;
-			OdString OperationName {operationName ? operationName : L"Operation"};
+			auto OperationName {operationName ? operationName : L"Operation"};
 			NewText.format(L"%s Time: %.6f sec.", OperationName, loadTime);
 			SetStatusPaneTextAt(wcscmp(L"Redraw", OperationName) == 0 ? nStatusProgress : nStatusInfo, NewText);
 		}

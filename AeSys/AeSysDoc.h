@@ -539,6 +539,10 @@ public:
 	void OnEditExplode();
 	void OnEditEntget();
 	void OnViewNamedViews();
+	void OnEditUndo();
+	void OnUpdateEditUndo(CCmdUI* pCmdUI);
+	void OnUpdateEditRedo(CCmdUI* pCmdUI);
+	void OnEditRedo();
 	// </command_console>
 	void OnVectorize(); // <tas="This is the vectorize menu and toolbar button handler in Oda"</tas>
 	// <tas="Will not use"> void OnRemoteGeomViewer();"</tas>

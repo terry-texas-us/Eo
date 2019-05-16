@@ -313,7 +313,7 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
 
 	Point->SetPointDisplayMode(pstate.PointDisplayMode());
 
-	auto NumberOfDatums {0U};
+	OdUInt16 NumberOfDatums {0};
 	double Data[] {0., 0., 0.};
 	auto ResourceBuffer = point->xData(L"AeSys");
 

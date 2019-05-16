@@ -40,7 +40,7 @@ void AeSysView::OnLpdModeJoin() {
 	const auto CurrentPnt {GetCursorPosition()};
 
 	auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-	m_EndCapGroup = get<0>(Selection);
+	m_EndCapGroup = get<tGroup>(Selection);
 
 	if (m_EndCapGroup != nullptr) {
 		m_EndCapPoint = get<1>(Selection);
@@ -140,7 +140,7 @@ void AeSysView::OnLpdModeTap() {
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<0>(Selection)};
+	auto Group {get<tGroup>(Selection)};
 	if (Group != nullptr) {
 		auto LinePrimitive {get<1>(Selection)};
 		const OdGePoint3d TestPoint(CurrentPnt);
@@ -194,7 +194,7 @@ void AeSysView::OnLpdModeEll() {
 	}
 	if (m_PreviousOp == ID_OP2) {
 		auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-		auto ExistingGroup {get<0>(Selection)};
+		auto ExistingGroup {get<tGroup>(Selection)};
 
 		if (ExistingGroup == nullptr) {
 			theApp.AddStringToMessageList(IDS_MSG_LPD_NO_END_CAP_LOC);
@@ -354,7 +354,7 @@ void AeSysView::DoDuctModeMouseMove() {
 			GenerateRectangularSection(PreviousReferenceLine, m_CenterLineEccentricity, m_PreviousSection, &m_PreviewGroup);
 		}
 		auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-		auto ExistingGroup {get<0>(Selection)};
+		auto ExistingGroup {get<tGroup>(Selection)};
 
 		if (ExistingGroup != nullptr) {
 			auto EndPointPrimitive {get<1>(Selection)};

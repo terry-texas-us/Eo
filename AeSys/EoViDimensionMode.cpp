@@ -342,7 +342,7 @@ void AeSysView::OnDimensionModeAngle() {
 
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-		if (get<0>(Selection) == nullptr) { return; }
+		if (get<tGroup>(Selection) == nullptr) { return; }
 
 		auto Primitive {get<1>(Selection)};
 
@@ -357,7 +357,7 @@ void AeSysView::OnDimensionModeAngle() {
 		if (iLns == 1) {
 			auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-			if (get<0>(Selection) == nullptr) { return; }
+			if (get<tGroup>(Selection) == nullptr) { return; }
 
 			auto Primitive {get<1>(Selection)};
 

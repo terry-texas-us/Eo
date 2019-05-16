@@ -451,10 +451,10 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	BlockReference->setRotation(file.ReadDouble());
 
 // <tas="These four properties are required for OdDbMInsertBlock. Unused here.">
-	auto Columns {file.ReadUInt16()};
-	auto Rows {file.ReadUInt16()};
-	auto ColumnSpacing {file.ReadDouble()};
-	auto RowSpacing {file.ReadDouble()};
+	/* auto Columns = */ file.ReadUInt16();
+	/* auto Rows = */ file.ReadUInt16();
+	/* auto ColumnSpacing = */ file.ReadDouble();
+	/* auto RowSpacing = */ file.ReadDouble();
 // </tas>
 	return (BlockReference);
 }

@@ -623,8 +623,7 @@ bool OdBaseGripManager::onMouseDown(int x, int y, bool bShift) {
 			while ((it != m_aGripData.end()) && bMakeHot) {
 				const OdExGripDataPtrArray& aData = it->second.m_pDataArray;
 
-				const OdUInt32 iSize = aData.size();
-				for (OdUInt32 i = 0; i < iSize; i++) {
+				for (OdUInt32 i = 0; i < aData.size(); i++) {
 					if (OdDbGripOperations::kHotGrip == aData[i]->status()) {
 						bMakeHot = false;
 						break;
@@ -632,8 +631,8 @@ bool OdBaseGripManager::onMouseDown(int x, int y, bool bShift) {
 				}
 				for (OdUInt32 i = 0; (i < it->second.m_pDataSub.size()) && bMakeHot; i++) {
 					const OdExGripDataPtrArray& aData = it->second.m_pDataSub.at(i).m_pSubData;
-					const OdUInt32 iSize = aData.size();
-					for (OdUInt32 j = 0; j < iSize; j++) {
+
+					for (OdUInt32 j = 0; j < aData.size(); j++) {
 						if (OdDbGripOperations::kHotGrip == aData[j]->status()) {
 							bMakeHot = false;
 							break;
@@ -743,8 +742,8 @@ bool OdExGripManager::onMouseDown(int x, int y, bool bShift) {
 		OdExGripDragPtr pDrag;
 		{
 			const OdExGripDataPtrArray& aData = it->second.m_pDataArray;
-			const OdUInt32 iSize = aData.size();
-			for (OdUInt32 i = 0; i < iSize; i++) {
+
+			for (OdUInt32 i = 0; i < aData.size(); i++) {
 				if (OdDbGripOperations::kDragImageGrip == aData[i]->status()) {
 					bActive = true;
 					pDrag = OdExGripDrag::createObject(it->first, this);
@@ -753,8 +752,8 @@ bool OdExGripManager::onMouseDown(int x, int y, bool bShift) {
 			}
 			for (OdUInt32 i = 0; (i < it->second.m_pDataSub.size()) && !bActive; i++) {
 				const OdExGripDataPtrArray& aData = it->second.m_pDataSub.at(i).m_pSubData;
-				const OdUInt32 iSize = aData.size();
-				for (OdUInt32 j = 0; j < iSize; j++) {
+
+				for (OdUInt32 j = 0; j < aData.size(); j++) {
 					if (OdDbGripOperations::kDragImageGrip == aData[j]->status()) {
 						bActive = true;
 						pDrag = OdExGripDrag::createObject(it->second.m_pDataSub.at(i).m_entPath, this);
