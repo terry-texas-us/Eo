@@ -88,6 +88,9 @@
     </ClCompile>
     <ClCompile Include="AeSysApp.cpp" />
     <ClCompile Include="AeSysDoc.cpp" />
+    <ClCompile Include="EditorObject.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="EoAppAuditInfo.cpp" />
     <ClCompile Include="EoDbHatchPatternTable.cpp" />
     <ClCompile Include="EoDialogResizeHelper.cpp" />
@@ -129,6 +132,9 @@
     <ClCompile Include="EoVarDialog.cpp" />
     <ClCompile Include="EoVaxFloat.cpp" />
     <ClCompile Include="EoViModelView.cpp" />
+    <ClCompile Include="ExGripManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="OFNHookProcFileTracing.cpp" />
     <ClCompile Include="EoDlgFixupOptions.cpp" />
     <ClCompile Include="EoDlgSetHomePoint.cpp" />
@@ -204,6 +210,9 @@
     <ClCompile Include="EoGsModelTransform.cpp" />
     <ClCompile Include="EoGsViewTransform.cpp" />
     <ClCompile Include="EoObjectSnapManager.cpp" />
+    <ClCompile Include="OSnapManager.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="PrimState.cpp" />
     <ClCompile Include="EoGeReferenceSystem.cpp" />
     <ClCompile Include="Section.cpp" />
@@ -259,6 +268,7 @@
   <ItemGroup>
     <ClInclude Include="AeSysApp.h" />
     <ClInclude Include="AeSysDoc.h" />
+    <ClInclude Include="EditorObject.h" />
     <ClInclude Include="EoAppAuditInfo.h" />
     <ClInclude Include="EoDbHatchPatternTable.h" />
     <ClInclude Include="EoDialogResizeHelper.h" />
@@ -351,6 +361,7 @@
     <ClInclude Include="EoPreviewDib.h" />
     <ClInclude Include="EoVarDialog.h" />
     <ClInclude Include="EoVaxFloat.h" />
+    <ClInclude Include="ExGripManager.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Lex.h" />
     <ClInclude Include="EoGeLineSeg3d.h" />
@@ -359,6 +370,7 @@
     <ClInclude Include="EoGsModelTransform.h" />
     <ClInclude Include="EoGsViewTransform.h" />
     <ClInclude Include="EoObjectSnapManager.h" />
+    <ClInclude Include="OSnapManager.h" />
     <ClInclude Include="PegColors.h" />
     <ClInclude Include="Preview.h" />
     <ClInclude Include="PrimState.h" />

@@ -444,6 +444,15 @@
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
       <Filter>Source Files\Kernel ExServices</Filter>
     </ClCompile>
+    <ClCompile Include="EditorObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ExGripManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OSnapManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AeSys.rc2">
@@ -898,6 +907,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ExGripManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OSnapManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -84,9 +84,6 @@
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\DbDumper.cpp" />
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\GiWorldDrawDumper.cpp" />
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\OdReadEx\ExProtocolExtension.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\EditorObject.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\ExGripManager.cpp" />
-    <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor\OSnapManager.cpp" />
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\toString.cpp" />
     <ClCompile Include="E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Common\ExSelectionUtils.cpp" />
   </ItemGroup>
