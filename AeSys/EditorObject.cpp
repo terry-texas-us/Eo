@@ -1297,11 +1297,13 @@ public:
 				m_pathes.push_back(gsPath);
 				pEnt->dragStatus(OdDb::kDragStart);
 			} else {
-				for (OdUInt32 i = 0; i < pIter->subentCount(); ++i) {
+				for (unsigned i = 0; i < pIter->subentCount(); ++i) {
 					OdDbFullSubentPath p;
+
 					if (pIter->getSubentity(i, p)) {
 						OdGsMarkerArray gsMarkers;
 						pEnt->getGsMarkersAtSubentPath(p, gsMarkers);
+
 						if (!gsMarkers.isEmpty()) {
 							for (OdGsMarkerArray::iterator sm = gsMarkers.begin(); sm != gsMarkers.end(); ++sm) {
 								OdExCollideGsPath* gsPath = new OdExCollideGsPath;
@@ -1321,7 +1323,7 @@ public:
 			pIter->next();
 		}
 
-		for (OdUInt32 i = 0; i < m_pathes.size(); ++i) {
+		for (unsigned i = 0; i < m_pathes.size(); ++i) {
 			m_pModel->highlight((m_pathes[i]->operator const OdGiPathNode & ()), false);
 			inputArray.push_back(&(m_pathes[i]->operator const OdGiPathNode & ()));
 		}
@@ -1329,14 +1331,14 @@ public:
 
 	virtual ~CollideMoveTracker() {
 		if (!m_prevHLPathes.empty()) {
-			for (OdUInt32 i = 0; i < m_prevHLPathes.size(); ++i) {
+			for (unsigned i = 0; i < m_prevHLPathes.size(); ++i) {
 				m_pModel->highlight(m_prevHLPathes[i]->operator const OdGiPathNode & (), false);
 				delete m_prevHLPathes[i];
 			}
 			m_prevHLPathes.clear();
 		}
 		inputArray.clear();
-		for (OdUInt32 i = 0; i < m_pathes.size(); ++i) {
+		for (unsigned i = 0; i < m_pathes.size(); ++i) {
 			delete m_pathes[i];
 		}
 		m_pathes.clear();
@@ -1435,14 +1437,14 @@ void CollideMoveTracker::doCollideWithAll() {
 void CollideMoveTracker::highlight(OdArray< OdExCollideGsPath* >& newPathes) {
   //1) Unhighlight old pathes
 	if (!m_prevHLPathes.empty()) {
-		for (OdUInt32 i = 0; i < m_prevHLPathes.size(); ++i) {
+		for (unsigned i = 0; i < m_prevHLPathes.size(); ++i) {
 			m_pModel->highlight(m_prevHLPathes[i]->operator const OdGiPathNode & (), false);
 			delete m_prevHLPathes[i];
 		}
 		m_prevHLPathes.clear();
 	}
   //2) Highlight new pathes
-	for (OdUInt32 i = 0; i < newPathes.size(); ++i) {
+	for (unsigned i = 0; i < newPathes.size(); ++i) {
 		m_pModel->highlight(newPathes[i]->operator const OdGiPathNode & (), true);
 		m_prevHLPathes.push_back(newPathes[i]);
 	}
@@ -1563,13 +1565,13 @@ void OdExCollideAllCmd::execute(OdEdCommandContext * edCommandContext) {
 	pView->collide(NULL, 0, &reactor, NULL, 0, &cdCtx);
 
 	OdArray< OdExCollideGsPath* > & pathes = reactor.pathes();
-	for (OdUInt32 i = 0; i < pathes.size(); ++i) {
+	for (unsigned i = 0; i < pathes.size(); ++i) {
 		const OdGiPathNode* p = &(pathes[i]->operator const OdGiPathNode & ());
 		pModel->highlight(*p);
 		//delete pathes[i];
 	}
 	pIO->getInt(L"Specify any number to exit", 0, 0);
-	for (OdUInt32 i = 0; i < pathes.size(); ++i) {
+	for (unsigned i = 0; i < pathes.size(); ++i) {
 		const OdGiPathNode* p = &(pathes[i]->operator const OdGiPathNode & ());
 		pModel->highlight(*p, false);
 		delete pathes[i];

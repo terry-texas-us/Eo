@@ -53,7 +53,7 @@ BOOL EoLoadApps::OnInitDialog() {
 
 	m_LoadedApps->m_pListBox = &m_AppsList;
 
-	for (OdUInt32 i = 0; i < m_LoadedApps->size(); ++i) {
+	for (unsigned i = 0; i < m_LoadedApps->size(); ++i) {
 		const int n = m_AppsList.AddString(m_LoadedApps->at(i));
 		OdRxModulePtr pModule = ::odrxDynamicLinker()->loadModule(m_LoadedApps->at(i));
 		m_AppsList.SetItemData(n, (LPARAM) pModule.get());

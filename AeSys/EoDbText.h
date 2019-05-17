@@ -79,8 +79,8 @@ public: // Methods
 public: // Methods - static
 	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
 	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
-	static OdDb::TextHorzMode ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept;
-	static OdDb::TextVertMode ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept;
+	static OdDb::TextHorzMode ConvertHorizontalMode(const unsigned horizontalAlignment) noexcept;
+	static OdDb::TextVertMode ConvertVerticalMode(const unsigned verticalAlignment) noexcept;
 
 	static EoDbText* Create(OdDbTextPtr& text);
 	static EoDbText* Create(OdDbMTextPtr& text);

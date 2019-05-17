@@ -344,7 +344,7 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertM
 	return VerticalAlignment;
 }
 
-OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const OdUInt16 horizontalAlignment) noexcept {
+OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const unsigned horizontalAlignment) noexcept {
 	OdDb::TextHorzMode HorizontalMode = OdDb::kTextLeft;
 
 	switch (horizontalAlignment) {
@@ -362,7 +362,7 @@ OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const OdUInt16 horizontalAlig
 	return HorizontalMode;
 }
 
-OdDb::TextVertMode EoDbText::ConvertVerticalMode(const OdUInt16 verticalAlignment) noexcept {
+OdDb::TextVertMode EoDbText::ConvertVerticalMode(const unsigned verticalAlignment) noexcept {
 	OdDb::TextVertMode VerticalMode = OdDb::kTextBottom;
 
 	switch (verticalAlignment) {
