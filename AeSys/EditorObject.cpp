@@ -1344,7 +1344,7 @@ public:
 		m_pView->update();
 	}
 
-	virtual void setValue(const OdGePoint3d & value) override {
+	void setValue(const OdGePoint3d & value) override {
 		const OdGeMatrix3d matNewTransform = getTransform(value);
 		// Compensate previous transform
 		OdGeMatrix3d xTrans = m_xForm.inverse();
@@ -1361,14 +1361,14 @@ public:
 
 	virtual void highlight(OdArray< OdExCollideGsPath* > & newPathes);
 
-	virtual int addDrawables(OdGsView * pView) override {
+	int addDrawables(OdGsView * pView) override {
 		for (int i = m_ents.size() - 1; i >= 0; --i) {
 			pView->add(m_ents[i], 0);
 		}
 		return 1;
 	}
 
-	virtual void removeDrawables(OdGsView * pView) override {
+	void removeDrawables(OdGsView * pView) override {
 		for (int i = m_ents.size() - 1; i >= 0; --i) {
 			pView->erase(m_ents[i]);
 		}
@@ -1412,8 +1412,9 @@ void CollideMoveTracker::doCollideWithAll() {
 		};
 		~OdExCollisionDetectionReactor() {
 		}
-		virtual OdUInt32 collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
+		OdUInt32 collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
 			OdExCollideGsPath* p = fromGiPath(pPathNode2, !m_bDynHLT);
+		
 			if (p || pPathNode2->persistentDrawableId()) {
 				m_pathes.push_back(p);
 			}
@@ -1520,7 +1521,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext * edCommandContext) {
 		};
 		~OdExCollisionDetectionReactor() {
 		}
-		virtual OdUInt32 collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
+		OdUInt32 collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
 			OdExCollideGsPath* p1 = fromGiPath(pPathNode1, !m_bDynHLT);
 			OdExCollideGsPath* p2 = fromGiPath(pPathNode2, !m_bDynHLT);
 			m_pathes.push_back(p1);

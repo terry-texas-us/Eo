@@ -60,7 +60,7 @@ public:
 		}
 	}
 
-	virtual void setValue(const OdGePoint3d& value) override {
+	void setValue(const OdGePoint3d& value) override {
 	}
 
 	OdEdPointTrackerWithSnapInfo(const OdDbObjectIdArray& srcObj) {
@@ -68,8 +68,8 @@ public:
 		m_SnapContext.bValid = false;
 	}
 
-	virtual int addDrawables(OdGsView*) override { return 0; }
-	virtual void removeDrawables(OdGsView*) override {}
+	int addDrawables(OdGsView*) override { return 0; }
+	void removeDrawables(OdGsView*) override {}
 
 private:
 	OdDbObjectIdArray m_srcObj;
