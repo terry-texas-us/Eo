@@ -180,11 +180,11 @@ void updateLayerState(OdDbViewTableRecord* pNamedView) {
 	OdDbDatabase* pDb = pNamedView->database();
 	if(sLSName.isEmpty()) {
 		OdString name;
-		name.format(OD_T("ACAD_VIEWS_%s"), pNamedView->getName().c_str());
+		name.format(L"ACAD_VIEWS_%s", pNamedView->getName().c_str());
 		sLSName = name;
 		int i = 1;
 		while (OdDbLayerState::has(pDb, sLSName)) {
-			sLSName.format(OD_T("%s(%d)"), name.c_str(), ++i);
+			sLSName.format(L"%s(%d)", name.c_str(), ++i);
 		}
 		pNamedView->setLayerState(sLSName);
 	}

@@ -54,11 +54,9 @@ void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept 
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Text>", this);
 }
 
-EoDbPrimitive* EoDbText::Clone(OdDbDatabasePtr& database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbPrimitive* EoDbText::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbTextPtr Text = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(Text);
+	blockTableRecord->appendOdDbEntity(Text);
 
 	return EoDbText::Create(Text);
 }

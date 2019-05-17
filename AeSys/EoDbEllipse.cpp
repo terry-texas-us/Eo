@@ -95,11 +95,9 @@ void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexce
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Arc>", this);
 }
 
-EoDbPrimitive* EoDbEllipse::Clone(OdDbDatabasePtr& database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbPrimitive* EoDbEllipse::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(Ellipse);
+	blockTableRecord->appendOdDbEntity(Ellipse);
 
 	return EoDbEllipse::Create(Ellipse);
 }

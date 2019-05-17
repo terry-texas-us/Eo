@@ -78,10 +78,9 @@ void EoDbPoint::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Point>", this);
 }
 
-EoDbPrimitive* EoDbPoint::Clone(OdDbDatabasePtr & database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+EoDbPrimitive* EoDbPoint::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbPointPtr Point = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(Point);
+	blockTableRecord->appendOdDbEntity(Point);
 
 	return EoDbPoint::Create(Point);
 }

@@ -18,7 +18,8 @@ void AeSysView::OnModePrimitiveEdit() {
 }
 void AeSysView::DoEditPrimitiveCopy() {
 	if (m_SubModeEditPrimitive != 0) {
-		EoDbPrimitive* Primitive = m_SubModeEditPrimitive->Clone(Database());
+		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		EoDbPrimitive* Primitive = m_SubModeEditPrimitive->Clone(BlockTableRecord);
 		m_SubModeEditPrimitive = Primitive;
 		m_SubModeEditGroup = new EoDbGroup;
 		m_SubModeEditGroup->AddTail(m_SubModeEditPrimitive);

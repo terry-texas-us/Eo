@@ -19,7 +19,7 @@ public: // Methods - absolute virtuals
 	
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	EoDbPrimitive* Clone(OdDbDatabasePtr& database) const override;
+	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& str) const override;

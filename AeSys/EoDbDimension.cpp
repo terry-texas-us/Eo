@@ -74,11 +74,9 @@ void EoDbDimension::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noex
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Dimension>", this);
 }
 
-EoDbPrimitive* EoDbDimension::Clone(OdDbDatabasePtr& database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbPrimitive* EoDbDimension::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbAlignedDimensionPtr AlignedDimension = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(AlignedDimension);
+	blockTableRecord->appendOdDbEntity(AlignedDimension);
 
 	return EoDbDimension::Create(AlignedDimension);
 }

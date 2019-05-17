@@ -98,8 +98,8 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	return LeftMatrix;
 }
 
-EoDbPrimitive* EoDbBlockReference::Clone(OdDbDatabasePtr & database) const {
-	return (EoDbBlockReference::Create(*this, database));
+EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
+	return (EoDbBlockReference::Create(*this, blockTableRecord->database()));
 }
 
 void EoDbBlockReference::Display(AeSysView * view, CDC * deviceContext) {

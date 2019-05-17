@@ -430,10 +430,10 @@ void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
 	pIO->setPickfirst(0);
 	int iOpt = OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty;
 
-	OdDbSelectionSetPtr pSSet;
+	OdDbSelectionSetPtr SelectionSet;
 	try {
-		pSSet = pIO->select(OdString::kEmpty, iOpt, pView->editorObject().workingSSet());
-		pView->editorObject().setWorkingSSet(pSSet);
+		SelectionSet = pIO->select(OdString::kEmpty, iOpt, pView->editorObject().workingSSet());
+		pView->editorObject().setWorkingSSet(SelectionSet);
 	} catch (const OdError&) {
 		throw OdEdCancel();
 	}
@@ -623,8 +623,8 @@ class CmdReactor
 
 public:
 
-	CmdReactor(OdDbCommandContext* pCmdCtx) 
-		: m_pCmdCtx(pCmdCtx)
+	CmdReactor(OdDbCommandContext* dbCommandContext)
+		: m_pCmdCtx(dbCommandContext)
 		, m_bModified(false) {
 		ODA_ASSERT(m_pCmdCtx);
 		::odedRegCmds()->addReactor(this);
@@ -673,7 +673,7 @@ public:
 		return OdEdCommandPtr();
 	}
 
-	void commandWillStart(OdEdCommand* pCmd, OdEdCommandContext* /*pCmdCtx*/) override {
+	void commandWillStart(OdEdCommand* pCmd, OdEdCommandContext* /*edCommandContext*/) override {
 		m_sLastInput.makeUpper();
 
 		if (!GETBIT(pCmd->flags(), OdEdCommand::kNoHistory)) {
@@ -721,9 +721,10 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 		auto CommandStack {::odedRegCmds()};
 
 		ExDbCommandContext* pExCmdCtx = dynamic_cast<ExDbCommandContext*>(CommandContext.get());
-		if (m_DatabasePtr->appServices()->getPICKFIRST())
+		
+		if (m_DatabasePtr->appServices()->getPICKFIRST()) {
 			pExCmdCtx->setPickfirst(selectionSet());
-
+		}
 		if (command[0] == '(') {
 			OdEdLispModulePtr lspMod = odrxDynamicLinker()->loadApp(OdLspModuleName);
 			if (!lspMod.isNull())
@@ -763,14 +764,13 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 		}
 		cmdIO()->putString(err.description());
 	}
-	if ((cr.isDatabaseModified() || selectionSet()->numEntities()) /*&& 0 != cr.lastInput().iCompare(L"SELECT")*/) {
-		//selectionSet()->clear();
-		// Call here OdExEditorObject::unselect() instead sset->clear(), if you want affect changes on grip points and etc.
-		if (0 != cr.lastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2)
+	if ((cr.isDatabaseModified() || selectionSet()->numEntities())) {
+
+		if (0 != cr.lastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
 			OnEditClearselection();
+		}
 		UpdateAllViews(nullptr);
 	}
-	//static_cast<ExDbCommandContext*>(pCmdCtx.get())->setMacroIOPresent(false);
 }
 
 BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO * handlerInfo) {
@@ -838,7 +838,9 @@ BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject
 }
 
 void AeSysDoc::DeleteSelection(bool force) {
+
 	if (m_DatabasePtr->appServices()->getPICKFIRST() && selectionSet()->numEntities()) {
+
 		if (force) {
 			ExecuteCommand(L"ForceErase");
 		} else {
@@ -3215,7 +3217,8 @@ void AeSysDoc::OnEditExplode() {
 }
 
 void AeSysDoc::OnEditEntget() {
-	OdDbSelectionSetIteratorPtr SelectionSetIterator = selectionSet()->newIterator();
+	OdDbSelectionSetIteratorPtr SelectionSetIterator {selectionSet()->newIterator()};
+
 	if (!SelectionSetIterator->done()) {
 		OdDbObjectId selId = SelectionSetIterator->objectId();
 		EoDlgEditProperties EditPropertiesDialog(selId, theApp.GetMainWnd());

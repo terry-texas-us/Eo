@@ -109,11 +109,9 @@ void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Hatch>", this);
 }
 
-EoDbPrimitive* EoDbHatch::Clone(OdDbDatabasePtr& database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbPrimitive* EoDbHatch::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(Hatch);
+	blockTableRecord->appendOdDbEntity(Hatch);
 
 	return EoDbHatch::Create(Hatch);
 }

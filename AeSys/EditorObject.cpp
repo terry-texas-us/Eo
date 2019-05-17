@@ -47,25 +47,25 @@ public:
 class EnableEnhRectFrame {
 	OdEdCommandContext* m_pCmdCtx;
 public:
-	EnableEnhRectFrame(OdEdCommandContext* pCmdCtx)
-		: m_pCmdCtx(pCmdCtx) {
-		m_pCmdCtx->setArbitraryData(OD_T("ExDbCommandContext_EnhRectFrame"), OdRxVariantValue(true));
+	EnableEnhRectFrame(OdEdCommandContext* edCommandContext)
+		: m_pCmdCtx(edCommandContext) {
+		m_pCmdCtx->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", OdRxVariantValue(true));
 	}
-	~EnableEnhRectFrame() { m_pCmdCtx->setArbitraryData(OD_T("ExDbCommandContext_EnhRectFrame"), NULL); }
+	~EnableEnhRectFrame() { m_pCmdCtx->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", NULL); }
 };
 
 
-void setWorkingSelectionSet(OdDbCommandContext* pCmdCtx, OdDbSelectionSet* pSSet) {
-	pCmdCtx->setArbitraryData(OD_T("OdaMfcApp Working Selection Set"), pSSet);
+void setWorkingSelectionSet(OdDbCommandContext* dbCommandContext, OdDbSelectionSet* selectionSet) {
+	dbCommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", selectionSet);
 }
 
-OdDbSelectionSetPtr workingSelectionSet(OdDbCommandContext* pCmdCtx) {
+OdDbSelectionSetPtr workingSelectionSet(OdDbCommandContext* dbCommandContext) {
 	OdDbSelectionSetPtr pRes;
-	if (pCmdCtx) {
-		pRes = pCmdCtx->arbitraryData(OD_T("OdaMfcApp Working Selection Set"));
+	if (dbCommandContext) {
+		pRes = dbCommandContext->arbitraryData(L"OdaMfcApp Working Selection Set");
 		if (pRes.isNull()) {
-			pRes = OdDbSelectionSet::createObject(pCmdCtx->database());
-			setWorkingSelectionSet(pCmdCtx, pRes);
+			pRes = OdDbSelectionSet::createObject(dbCommandContext->database());
+			setWorkingSelectionSet(dbCommandContext, pRes);
 		}
 	}
 	return pRes;
@@ -106,9 +106,9 @@ OdExEditorObject::OdExEditorObject()
 	SETBIT(m_flags, kSnapOn, true);
 }
 
-void OdExEditorObject::initialize(OdGsDevice* pDevice, OdDbCommandContext* pCmdCtx) {
+void OdExEditorObject::initialize(OdGsDevice* pDevice, OdDbCommandContext* dbCommandContext) {
 	m_pDevice = pDevice;
-	m_pCmdCtx = pCmdCtx;
+	m_pCmdCtx = dbCommandContext;
 
 	m_p2dModel = pDevice->createModel();
 
@@ -119,16 +119,17 @@ void OdExEditorObject::initialize(OdGsDevice* pDevice, OdDbCommandContext* pCmdC
 		m_p2dModel->setVisualStyle(OdDbDictionary::cast(m_pCmdCtx->database()->getVisualStyleDictionaryId().openObject())->getAt(OdDb::kszVS2DWireframe));
 	}
 
-	m_gripManager.init(pDevice, m_p2dModel, pCmdCtx, workingSelectionSet);
+	m_gripManager.init(pDevice, m_p2dModel, dbCommandContext, workingSelectionSet);
 
 	Set_Entity_centers();
 }
 
 void OdExEditorObject::uninitialize() {
-	OdDbSelectionSetPtr pSSet = workingSSet();
-	if (pSSet.get()) {
-		pSSet->clear();
-		m_gripManager.selectionSetChanged(pSSet);
+	auto SelectionSet {workingSSet()};
+
+	if (SelectionSet.get()) {
+		SelectionSet->clear();
+		m_gripManager.selectionSetChanged(SelectionSet);
 	}
 	m_gripManager.uninit();
 
@@ -150,8 +151,8 @@ OdDbSelectionSetPtr OdExEditorObject::workingSSet() const {
 	return workingSelectionSet(m_pCmdCtx);
 }
 
-void OdExEditorObject::setWorkingSSet(OdDbSelectionSet* pSSet) {
-	setWorkingSelectionSet(m_pCmdCtx, pSSet);
+void OdExEditorObject::setWorkingSSet(OdDbSelectionSet* selectionSet) {
+	setWorkingSelectionSet(m_pCmdCtx, selectionSet);
 }
 
 void OdExEditorObject::selectionSetChanged() {
@@ -415,7 +416,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 	try {
 	  // Should be here I guess.
 		if (pDragCallback && !bShift) {
-			OdDbSelectionSetPtr pWorkSet = workingSSet();
+			auto pWorkSet {workingSSet()};
 			OdDbSelectionSetPtr pAtPointSet = OdDbSelectionSet::select(activeVpId(), 1, &pt, OdDbVisualSelection::kPoint, bCtrl ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
 			OdDbSelectionSetIteratorPtr pIter = pAtPointSet->newIterator();
 			while (!pIter->done()) {
@@ -458,13 +459,13 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 		iOpt |= OdEd::kSelAllowSubents;
 	}
 
-	OdDbSelectionSetPtr pSSet;
+	OdDbSelectionSetPtr SelectionSet;
 	const bool savedSnapMode = isSnapOn();
 	try {
 		EnableEnhRectFrame _enhRect(m_pCmdCtx);
 		setSnapOn(false);
-		pSSet = pIO->select(OdString::kEmpty, iOpt, workingSSet());
-		setWorkingSSet(pSSet);
+		SelectionSet = pIO->select(OdString::kEmpty, iOpt, workingSSet());
+		setWorkingSSet(SelectionSet);
 		setSnapOn(savedSnapMode);
 	} catch (const OdError&) {
 		setSnapOn(savedSnapMode);
@@ -549,13 +550,8 @@ void OdExEditorObject::zoomAt(OdGsView * pView, int x, int y, short zDelta) {
 	dolly(pView, vx, vy);
 }
 
-const OdString OdExZoomCmd::groupName() const {
-	return globalName();
-}
-
-const OdString OdExZoomCmd::globalName() const {
-	return OD_T("ZOOM");
-}
+const OdString OdExZoomCmd::groupName() const { return globalName(); }
+const OdString OdExZoomCmd::globalName() const { return L"ZOOM"; }
 
 void zoom_window(OdGePoint3d & pt1, OdGePoint3d & pt2, OdGsView * pView) {
 	const OdGeMatrix3d xWorldToEye = OdAbstractViewPEPtr(pView)->worldToEye(pView);
@@ -664,12 +660,12 @@ public:
 	void removeDrawables(OdGsView * pView) override {}
 };
 
-void OdExZoomCmd::execute(OdEdCommandContext* pCmdCtx) {
-	OdDbCommandContextPtr pDbCmdCtx(pCmdCtx);
+void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
+	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 
-	const OdChar* szKeywords = OD_T("All Center Dynamic Extents Previous Scale Window Object");
+	const OdChar* szKeywords = L"All Center Dynamic Extents Previous Scale Window Object";
 
 	OdDbObjectPtr pVpObj = pDb->activeViewportId().safeOpenObject(OdDb::kForWrite);
 	OdDbAbstractViewportDataPtr pAVD(pVpObj);
@@ -679,21 +675,17 @@ void OdExZoomCmd::execute(OdEdCommandContext* pCmdCtx) {
 	OdGePoint3d pt1, pt2;
 
 	try {
-		pt1 = pIO->getPoint(L"Specify corner of window, enter a scale factor (nX or nXP), or\n"
-			L"[All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>:",
-			OdEd::kInpThrowEmpty | OdEd::kInpThrowOther | OdEd::kGptNoOSnap, 0, szKeywords);
+		pt1 = pIO->getPoint(L"Specify corner of window, enter a scale factor (nX or nXP), or\n[All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>:", OdEd::kInpThrowEmpty | OdEd::kInpThrowOther | OdEd::kGptNoOSnap, 0, szKeywords);
 
-		pt2 = pIO->getPoint(OD_T("Specify opposite corner:"), OdEd::kGptNoUCS | OdEd::kGptRectFrame | OdEd::kGptNoOSnap);
+		pt2 = pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame | OdEd::kGptNoOSnap);
 		zoom_window(pt1, pt2, pView);
 	} catch (const OdEdEmptyInput) // real time
 	{
 		OdStaticRxObject<RTZoomTracker> tracker;
 		for (;;) {
 			try {
-				tracker.init(pView, pIO->getPoint(OD_T("Press ESC or ENTER to exit."),
-					OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptBeginDrag | OdEd::kGptNoOSnap));
-				pIO->getPoint(OD_T("Press ESC or ENTER to exit."),
-					OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptEndDrag | OdEd::kGptNoOSnap, 0, OdString::kEmpty, &tracker);
+				tracker.init(pView, pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptBeginDrag | OdEd::kGptNoOSnap));
+				pIO->getPoint(L"Press ESC or ENTER to exit."), OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptEndDrag | OdEd::kGptNoOSnap, 0, OdString::kEmpty, &tracker;
 			} catch (const OdEdCancel) {
 				break;
 			}
@@ -704,15 +696,15 @@ void OdExZoomCmd::execute(OdEdCommandContext* pCmdCtx) {
 		const double scale = odStrToD(otherInput.string(), &pEnd);
 		if (pEnd > otherInput.string().c_str()) {
 			OdString sEnd(pEnd);
-			if (sEnd.iCompare(OD_T("X")) == 0) {
+			if (sEnd.iCompare(L"X") == 0) {
 				pView->zoom(scale);
-			} else if (sEnd.iCompare(OD_T("XP")) == 0) {
+			} else if (sEnd.iCompare(L"XP") == 0) {
 				zoom_scaleXP(scale);
 			} else if (!*pEnd) {
 				pView->zoom(scale);
 			}
 		}
-		pIO->putString(OD_T("Requires a distance, numberX, or option keyword."));
+		pIO->putString(L"Requires a distance, numberX, or option keyword.");
 	} catch (const OdEdKeyword & kw) {
 		switch (kw.keywordIndex()) {
 			case 0: // All
@@ -729,8 +721,8 @@ void OdExZoomCmd::execute(OdEdCommandContext* pCmdCtx) {
 			case 5: // Scale
 				break;
 			case 6: // Window
-				pt1 = pIO->getPoint(OD_T("Specify first corner:"), OdEd::kGptNoUCS | OdEd::kGptNoOSnap);
-				pt2 = pIO->getPoint(OD_T("Specify opposite corner:"), OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptRectFrame);
+				pt1 = pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS | OdEd::kGptNoOSnap);
+				pt2 = pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptRectFrame);
 				::zoom_window(pt1, pt2, pView);
 				break;
 			case 7: // Object
@@ -748,7 +740,7 @@ const OdString OdEx3dOrbitCmd::groupName() const {
 }
 
 const OdString OdEx3dOrbitCmd::globalName() const {
-	return OD_T("3DORBIT");
+	return L"3DORBIT";
 }
 
 class OrbitCtrl : public OdGiDrawableImpl<> {
@@ -983,8 +975,8 @@ public:
 	}
 };
 
-void OdEx3dOrbitCmd::execute(OdEdCommandContext * pCmdCtx) {
-	OdDbCommandContextPtr pDbCmdCtx(pCmdCtx);
+void OdEx3dOrbitCmd::execute(OdEdCommandContext * edCommandContext) {
+	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 
@@ -1005,17 +997,15 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext * pCmdCtx) {
 	}
 	//
 
-	OdRxVariantValue interactiveMode = (OdRxVariantValue) pCmdCtx->arbitraryData(OD_T("OdaMfcApp InteractiveMode"));
-	OdRxVariantValue interactiveFrameRate = (OdRxVariantValue) pCmdCtx->arbitraryData(OD_T("OdaMfcApp InteractiveFrameRate"));
+	OdRxVariantValue interactiveMode = (OdRxVariantValue) edCommandContext->arbitraryData(L"OdaMfcApp InteractiveMode");
+	OdRxVariantValue interactiveFrameRate = (OdRxVariantValue) edCommandContext->arbitraryData(L"OdaMfcApp InteractiveFrameRate");
 	ViewInteractivityMode mode(interactiveMode, interactiveFrameRate, pView);
 
 	OdStaticRxObject<RTOrbitTracker> tracker;
 	for (;;) {
 		try {
-			tracker.init(pView, pIO->getPoint(OD_T("Press ESC or ENTER to exit."),
-				OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, 0, OdString::kEmpty, &tracker));
-			pIO->getPoint(OD_T("Press ESC or ENTER to exit."),
-				OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, 0, OdString::kEmpty, &tracker);
+			tracker.init(pView, pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, 0, OdString::kEmpty, &tracker));
+			pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, 0, OdString::kEmpty, &tracker);
 			tracker.reset();
 		} catch (const OdEdCancel) {
 			break;
@@ -1060,13 +1050,8 @@ bool OdExEditorObject::OnZoomWindowEndDrag(int x, int y) {
 
 // Dolly command
 
-const OdString OdExDollyCmd::groupName() const {
-	return globalName();
-}
-
-const OdString OdExDollyCmd::globalName() const {
-	return OD_T("DOLLY");
-}
+const OdString OdExDollyCmd::groupName() const { return globalName(); }
+const OdString OdExDollyCmd::globalName() const { return L"DOLLY"; }
 
 class RTDollyTracker : public OdEdPointTracker {
 	OdGsView* m_pView;
@@ -1100,8 +1085,8 @@ public:
 	}
 };
 
-void OdExDollyCmd::execute(OdEdCommandContext * pCmdCtx) {
-	OdDbCommandContextPtr pDbCmdCtx(pCmdCtx);
+void OdExDollyCmd::execute(OdEdCommandContext * edCommandContext) {
+	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 
@@ -1122,17 +1107,15 @@ void OdExDollyCmd::execute(OdEdCommandContext * pCmdCtx) {
 	}
 	//
 
-	OdRxVariantValue interactiveMode = (OdRxVariantValue) pCmdCtx->arbitraryData(OD_T("OdaMfcApp InteractiveMode"));
-	OdRxVariantValue interactiveFrameRate = (OdRxVariantValue) pCmdCtx->arbitraryData(OD_T("OdaMfcApp InteractiveFrameRate"));
+	OdRxVariantValue interactiveMode = (OdRxVariantValue) edCommandContext->arbitraryData(L"OdaMfcApp InteractiveMode");
+	OdRxVariantValue interactiveFrameRate = (OdRxVariantValue) edCommandContext->arbitraryData(L"OdaMfcApp InteractiveFrameRate");
 	ViewInteractivityMode mode(interactiveMode, interactiveFrameRate, pView);
 
 	OdStaticRxObject<RTDollyTracker> tracker;
 	for (;;) {
 		try {
-			tracker.init(pView, pIO->getPoint(OD_T("Press ESC or ENTER to exit."),
-				OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, 0, OdString::kEmpty, &tracker));
-			pIO->getPoint(OD_T("Press ESC or ENTER to exit."),
-				OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, 0, OdString::kEmpty, &tracker);
+			tracker.init(pView, pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, 0, OdString::kEmpty, &tracker));
+			pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, 0, OdString::kEmpty, &tracker);
 			tracker.reset();
 		} catch (const OdEdCancel) {
 			break;
@@ -1141,33 +1124,28 @@ void OdExDollyCmd::execute(OdEdCommandContext * pCmdCtx) {
 }
 
 //Interactivity commands
-const OdString OdExInteractivityModeCmd::groupName() const {
-	return globalName();
-}
-const OdString OdExInteractivityModeCmd::globalName() const {
-	return OD_T("INTERACTIVITY");
-}
-void OdExInteractivityModeCmd::execute(OdEdCommandContext * pCmdCtx) {
-	OdDbCommandContextPtr pDbCmdCtx(pCmdCtx);
+const OdString OdExInteractivityModeCmd::groupName() const { return globalName(); }
+const OdString OdExInteractivityModeCmd::globalName() const { return L"INTERACTIVITY"; }
+
+void OdExInteractivityModeCmd::execute(OdEdCommandContext * edCommandContext) {
+	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 
-	bool enable = pIO->getInt(OD_T("\nSet 0 to disable or non-zero to enable Interactivity Mode: ")) != 0;
+	bool enable = pIO->getInt(L"\nSet 0 to disable or non-zero to enable Interactivity Mode: ") != 0;
+	
 	if (enable) {
-		double frameRate = pIO->getReal(OD_T("\nSpecify frame rate (Hz): "));
-		pCmdCtx->setArbitraryData(OD_T("OdaMfcApp InteractiveMode"), OdRxVariantValue(true));
-		pCmdCtx->setArbitraryData(OD_T("OdaMfcApp InteractiveFrameRate"), OdRxVariantValue(frameRate));
+		double frameRate = pIO->getReal(L"\nSpecify frame rate (Hz): ");
+		edCommandContext->setArbitraryData(L"OdaMfcApp InteractiveMode", OdRxVariantValue(true));
+		edCommandContext->setArbitraryData(L"OdaMfcApp InteractiveFrameRate", OdRxVariantValue(frameRate));
 	} else {
-		pCmdCtx->setArbitraryData(OD_T("OdaMfcApp InteractiveMode"), OdRxVariantValue(false));
+		edCommandContext->setArbitraryData(L"OdaMfcApp InteractiveMode", OdRxVariantValue(false));
 	}
 }
 
 //Collision detection commands
-const OdString OdExCollideCmd::groupName() const {
-	return globalName();
-}
-const OdString OdExCollideCmd::globalName() const {
-	return OD_T("COLLIDE");
-}
+const OdString OdExCollideCmd::groupName() const { return globalName(); }
+const OdString OdExCollideCmd::globalName() const { return L"COLLIDE"; }
+
 #include "Gs/GsModel.h"
 #include "Gi/GiPathNode.h"
 #include "DbBlockReference.h"
@@ -1280,11 +1258,11 @@ protected:
 		return mRet;
 	}
 public:
-	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet * pSSet, OdDbDatabasePtr pDb, OdGsView * pView, bool bDynHLT)
+	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet * selectionSet, OdDbDatabasePtr pDb, OdGsView * pView, bool bDynHLT)
 		: m_ptBase(ptBase), m_bDynHLT(bDynHLT) {
 		m_pDb = pDb;
 		m_pView = pView;
-		OdDbSelectionSetIteratorPtr pIter = pSSet->newIterator();
+		OdDbSelectionSetIteratorPtr pIter = selectionSet->newIterator();
 		m_pModel = NULL;
 
 		//obtain GsModel
@@ -1472,7 +1450,7 @@ void CollideMoveTracker::highlight(OdArray< OdExCollideGsPath* >& newPathes) {
 }
 
 
-void OdExCollideCmd::execute(OdEdCommandContext* pCmdCtx) {
+void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	class OdExTransactionSaver {
 	private:
 		OdDbDatabasePtr m_pDb;
@@ -1497,11 +1475,11 @@ void OdExCollideCmd::execute(OdEdCommandContext* pCmdCtx) {
 		}
 	};
 
-	OdDbCommandContextPtr pDbCmdCtx(pCmdCtx);
+	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 
-	OdRxVariantValue dynHlt = (OdRxVariantValue) pCmdCtx->arbitraryData(OD_T("DynamicSubEntHlt"));
+	OdRxVariantValue dynHlt = (OdRxVariantValue) edCommandContext->arbitraryData(L"DynamicSubEntHlt");
 	const bool bDynHLT = (bool) (dynHlt);
 
 	//Get active view
@@ -1517,30 +1495,25 @@ void OdExCollideCmd::execute(OdEdCommandContext* pCmdCtx) {
 		throw OdEdCancel();
 	}
 
-	OdDbSelectionSetPtr pSSet = pIO->select(L"Collide: Select objects to be checked:", OdEd::kSelAllowObjects | OdEd::kSelAllowSubents | OdEd::kSelLeaveHighlighted);
+	OdDbSelectionSetPtr SelectionSet = pIO->select(L"Collide: Select objects to be checked:", OdEd::kSelAllowObjects | OdEd::kSelAllowSubents | OdEd::kSelLeaveHighlighted);
 
-	if (!pSSet->numEntities()) throw OdEdCancel();
+	if (!SelectionSet->numEntities()) throw OdEdCancel();
 
 	OdExTransactionSaver saver(pDb);
 	saver.startTransaction();
 
 	const OdGePoint3d ptBase = pIO->getPoint(L"Collide: Specify base point:");
 
-	CollideMoveTracker tracker(ptBase, pSSet, pDb, pView, bDynHLT);
+	CollideMoveTracker tracker(ptBase, SelectionSet, pDb, pView, bDynHLT);
 	const OdGePoint3d ptOffset = pIO->getPoint(L"Collide: Specify second point:", OdEd::kGdsFromLastPoint | OdEd::kGptRubberBand, 0, OdString::kEmpty, &tracker);
 }
 
 
 //Collision detection commands
-const OdString OdExCollideAllCmd::groupName() const {
-	return globalName();
-}
+const OdString OdExCollideAllCmd::groupName() const { return globalName(); }
+const OdString OdExCollideAllCmd::globalName() const { return L"COLLIDEALL"; }
 
-const OdString OdExCollideAllCmd::globalName() const {
-	return OD_T("COLLIDEALL");
-}
-
-void OdExCollideAllCmd::execute(OdEdCommandContext * pCmdCtx) {
+void OdExCollideAllCmd::execute(OdEdCommandContext * edCommandContext) {
 	class OdExCollisionDetectionReactor : public OdGsCollisionDetectionReactor {
 		OdArray< OdExCollideGsPath* > m_pathes;
 		bool m_bDynHLT;
@@ -1560,7 +1533,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext * pCmdCtx) {
 		OdArray< OdExCollideGsPath* >& pathes() { return m_pathes; }
 	};
 
-	OdDbCommandContextPtr pDbCmdCtx(pCmdCtx);
+	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 
@@ -1578,12 +1551,12 @@ void OdExCollideAllCmd::execute(OdEdCommandContext * pCmdCtx) {
 	}
 	OdGsModel* pModel = pView->getModelList()[0];
 
-	int nChoise = pIO->getInt(OD_T("Input 1 to detect only intersections, any other to detect all"), 0, 0);
+	int nChoise = pIO->getInt(L"Input 1 to detect only intersections, any other to detect all", 0, 0);
 
 	OdGsCollisionDetectionContext cdCtx;
 	cdCtx.setIntersectionOnly(nChoise == 1);
 
-	OdRxVariantValue dynHlt = (OdRxVariantValue) pCmdCtx->arbitraryData(OD_T("DynamicSubEntHlt"));
+	OdRxVariantValue dynHlt = (OdRxVariantValue) edCommandContext->arbitraryData(L"DynamicSubEntHlt");
 	const bool bDynHLT = (bool) (dynHlt);
 
 	OdExCollisionDetectionReactor reactor(dynHlt);
@@ -1596,7 +1569,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext * pCmdCtx) {
 		pModel->highlight(*p);
 		//delete pathes[i];
 	}
-	pIO->getInt(OD_T("Specify any number to exit"), 0, 0);
+	pIO->getInt(L"Specify any number to exit", 0, 0);
 	for (OdUInt32 i = 0; i < pathes.size(); ++i) {
 		const OdGiPathNode* p = &(pathes[i]->operator const OdGiPathNode & ());
 		pModel->highlight(*p, false);

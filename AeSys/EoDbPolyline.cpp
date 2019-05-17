@@ -102,11 +102,9 @@ void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexc
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Polyline>", this);
 }
 
-EoDbPrimitive* EoDbPolyline::Clone(OdDbDatabasePtr& database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbPolylinePtr Polyline = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(Polyline);
+	blockTableRecord->appendOdDbEntity(Polyline);
 
 	return EoDbPolyline::Create(Polyline);
 }

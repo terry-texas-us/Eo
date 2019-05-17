@@ -398,7 +398,7 @@ public:
 			tracker._size.set(double(size.cx) * s, double(size.cy) * s);
 
 			OdString sPmt;
-			sPmt.format(OD_T("Specify size <%g>:"), tracker._size.length());
+			sPmt.format(L"Specify size <%g>:", tracker._size.length());
 			tracker.setValue(UserIO->getDist(sPmt, 0, 0., OdString::kEmpty, &tracker));
 
 			OdDbBlockTableRecordPtr pSpace = Database->getActiveLayoutBTRId().safeOpenObject(OdDb::kForWrite);

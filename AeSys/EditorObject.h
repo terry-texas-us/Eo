@@ -16,42 +16,42 @@ class OdExZoomCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
 	const OdString globalName() const override;
-	void execute(OdEdCommandContext* pCmdCtx) override;
+	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdEx3dOrbitCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
 	const OdString globalName() const override;
-	void execute(OdEdCommandContext* pCmdCtx) override;
+	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExDollyCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
 	const OdString globalName() const override;
-	void execute(OdEdCommandContext* pCmdCtx) override;
+	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExInteractivityModeCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
 	const OdString globalName() const override;
-	void execute(OdEdCommandContext* pCmdCtx) override;
+	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExCollideCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
 	const OdString globalName() const override;
-	void execute(OdEdCommandContext* pCmdCtx) override;
+	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExCollideAllCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
 	const OdString globalName() const override;
-	void execute(OdEdCommandContext* pCmdCtx) override;
+	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExEditorObject {
@@ -111,12 +111,12 @@ public:
 public:
 	OdExEditorObject();
 
-	void initialize(OdGsDevice* pDevice, OdDbCommandContext* pCmdCtx);
+	void initialize(OdGsDevice* pDevice, OdDbCommandContext* dbCommandContext);
 	OdGsLayoutHelper* device() { return m_pDevice; }
 	void uninitialize();
 
 	OdDbSelectionSetPtr workingSSet() const;
-	void setWorkingSSet(OdDbSelectionSet* pSSet);
+	void setWorkingSSet(OdDbSelectionSet* selectionSet);
 	void selectionSetChanged();
 
 	OdGiDrawablePtr snapDrawable() const;

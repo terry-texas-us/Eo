@@ -44,7 +44,7 @@ public: // Constructors and destructor
 
 public: // Methods - absolute virtuals
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;
-	virtual EoDbPrimitive* Clone(OdDbDatabasePtr& database) const = 0;
+	virtual EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const = 0;
 	virtual void Display(AeSysView* view, CDC* deviceContext) = 0;
 	virtual void AddReportToMessageList(const OdGePoint3d& point) const = 0;
 	virtual void FormatExtra(CString& extra) const = 0;

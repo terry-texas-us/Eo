@@ -33,7 +33,8 @@ void AeSysView::OnModePrimitiveMend() {
 	m_MendPrimitiveBegin = CurrentPnt;
 
 	if (m_PrimitiveToMend != 0) {
-		m_PrimitiveToMendCopy = m_PrimitiveToMend->Clone(Database());
+		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		m_PrimitiveToMendCopy = m_PrimitiveToMend->Clone(BlockTableRecord);
 		m_MendPrimitiveBegin = m_PrimitiveToMend->SelectAtControlPoint(this, ptView);
 		m_MendPrimitiveVertexIndex = 1 << EoDbPrimitive::ControlPointIndex();
 

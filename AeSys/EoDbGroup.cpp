@@ -13,19 +13,21 @@ EoDbGroup::EoDbGroup() noexcept {}
 
 EoDbGroup::EoDbGroup(const EoDbBlock& block) {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
+	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	auto Position {block.GetHeadPosition()};
 	while (Position != 0) {
-		AddTail((block.GetNext(Position))->Clone(Database));
+		AddTail((block.GetNext(Position))->Clone(BlockTableRecord));
 	}
 }
 
 EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
+	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	auto Position {group.GetHeadPosition()};
 	while (Position != 0) {
-		AddTail((group.GetNext(Position))->Clone(Database));
+		AddTail((group.GetNext(Position))->Clone(BlockTableRecord));
 	}
 }
 

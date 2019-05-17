@@ -55,11 +55,9 @@ void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcep
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BSpline>", this);
 }
 
-EoDbPrimitive* EoDbSpline::Clone(OdDbDatabasePtr& database) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-
+EoDbPrimitive* EoDbSpline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject()->clone();
-	BlockTableRecord->appendOdDbEntity(Spline);
+	blockTableRecord->appendOdDbEntity(Spline);
 
 	return (EoDbSpline::Create(Spline));
 }

@@ -21,28 +21,29 @@ class OdExGripData : public OdGiDrawableImpl<> {
 public:
 	OdExGripData();
 	virtual ~OdExGripData();
-	static OdExGripDataPtr createObject(OdDbStub* id, OdDbGripDataPtr pData, const OdGePoint3d& pt, OdBaseGripManager* pOwner);
-	static OdExGripDataPtr createObject(OdDbBaseFullSubentPath entPath, OdDbGripDataPtr pData, const OdGePoint3d& pt, OdBaseGripManager* pOwner);
+	static OdExGripDataPtr createObject(OdDbStub* id, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* pOwner);
+	static OdExGripDataPtr createObject(OdDbBaseFullSubentPath entPath, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* pOwner);
 
 	virtual OdUInt32 subSetAttributes(OdGiDrawableTraits* pTraits) const override;
 	virtual bool subWorldDraw(OdGiWorldDraw* pWorldDraw) const override;
 	virtual void subViewportDraw(OdGiViewportDraw* pViewportDraw) const override;
 
-	OdDbGripOperations::DrawType status() const { return m_status; }
-	bool isInvisible() const { return m_bInvisible; }
-	bool isShared() const { return m_bShared; }
-	OdGePoint3d point() const { return m_point; }
+	OdDbGripOperations::DrawType status() const noexcept { return m_status; }
+	bool isInvisible() const noexcept { return m_bInvisible; }
+	bool isShared() const noexcept { return m_bShared; }
+	OdGePoint3d point() const noexcept { return m_point; }
 	OdDbGripDataPtr data() const { return m_pData; }
 	OdDbStub* entityId() const { return m_entPath.objectIds().last(); }
+	
 	bool entPath(OdDbBaseFullSubentPath* pPath = NULL) const {
 		if (pPath)
 			* pPath = m_entPath;
 		return m_entPath.subentId() != OdDbSubentId();
 	}
 
-	void setStatus(OdDbGripOperations::DrawType val) { m_status = val; }
-	void setInvisible(bool val) { m_bInvisible = val; }
-	void setShared(bool val) { m_bShared = val; }
+	void setStatus(OdDbGripOperations::DrawType val) noexcept { m_status = val; }
+	void setInvisible(bool val) noexcept { m_bInvisible = val; }
+	void setShared(bool val) noexcept { m_bShared = val; }
 
 private:
 	bool computeDragPoint(OdGePoint3d& ptOverride) const;
@@ -62,8 +63,8 @@ typedef OdSmartPtr<class OdExGripDrag> OdExGripDragPtr;
 
 class OdExGripDrag : public OdGiDrawableImpl<> {
 public:
-	OdExGripDrag();
-	virtual ~OdExGripDrag();
+	OdExGripDrag() noexcept;
+	~OdExGripDrag();
 	static OdExGripDragPtr createObject(OdDbStub* id, OdBaseGripManager* pOwner);
 	static OdExGripDragPtr createObject(OdDbBaseFullSubentPath entPath, OdBaseGripManager* pOwner);
 
@@ -104,7 +105,7 @@ public:
 	virtual void onModified(OdGiDrawable* pGrip) = 0;
 	virtual bool onMouseDown(int x, int y, bool bShift);
 
-	virtual void selectionSetChanged(OdSelectionSet* pSSet);
+	virtual void selectionSetChanged(OdSelectionSet* selectionSet);
 
 	virtual OdGiDrawablePtr cloneEntity(OdDbStub* id) = 0;
 	virtual OdGiDrawablePtr openObject(OdDbStub* id, bool isForWriteMode = false) = 0;
@@ -120,7 +121,7 @@ public:
 	virtual void subentGripStatus(OdGiDrawable* pEntity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) = 0;
 	virtual void gripStatus(OdGiDrawable* pEntity, OdDb::GripStat st) = 0;
 	virtual void dragStatus(OdGiDrawable* pEntity, OdDb::DragStat st) = 0;
-	virtual bool isModel(OdGiDrawable*) { return true; }
+	virtual bool isModel(OdGiDrawable*) noexcept { return true; }
 
 	// Hover control.
 	bool startHover(int x, int y);
@@ -150,14 +151,14 @@ protected:
 	OdGeVector3d activeViewDirection() const;
 	virtual OdGePoint3d eyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const = 0;
 
-	virtual OdGsModel* getGsModel() { return NULL; }
-	virtual OdGsLayoutHelper* getGsLayoutHelper() { return NULL; }
+	virtual OdGsModel* getGsModel() noexcept { return NULL; }
+	virtual OdGsLayoutHelper* getGsLayoutHelper() noexcept { return NULL; }
 
 	bool m_bDisabled;
 	virtual void disable(bool bDisable);
 
 public:
-	bool isDisabled() { return m_bDisabled; }
+	bool isDisabled() noexcept { return m_bDisabled; }
 
 	struct OdExGripDataSubent {
 		OdDbBaseFullSubentPath m_entPath;
@@ -206,16 +207,16 @@ public:
 typedef OdSmartPtr<OdExGripDbReactor> OdExGripDbReactorPtr;
 
 class OdDbCommandContext;
-typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* pCmdCtx);
+typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);
 
-typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* pCmdCtx);
+typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);
 
 class OdExGripManager : public OdBaseGripManager {
 public:
   // Construction. Initialization.
 	OdExGripManager();
 	virtual ~OdExGripManager();
-	void init(OdGsDevice* pDevice, OdGsModel* pGsModel, OdDbCommandContext* pCmdCtx, GetSelectionSetPtr getSSet);
+	void init(OdGsDevice* pDevice, OdGsModel* pGsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr getSSet);
 	void uninit();
 
 	// OdEdPointTracker protocol
@@ -224,7 +225,7 @@ public:
 
 	virtual void onModified(OdGiDrawable* pGrip) override;
 
-	virtual OdGiDrawablePtr cloneEntity(OdDbStub* id) override;
+	OdGiDrawablePtr cloneEntity(OdDbStub* id) override;
 	virtual OdGiDrawablePtr openObject(OdDbStub* id, bool isForWriteMode = false) override;
 	virtual OdResult getGripPointsAtSubentPath(OdGiDrawable* pEntity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const override;
 	virtual OdResult getGripPoints(OdGiDrawable* pEntity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const override;
@@ -235,7 +236,7 @@ public:
 	virtual void subentGripStatus(OdGiDrawable* pEntity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) override;
 	virtual void gripStatus(OdGiDrawable* pEntity, OdDb::GripStat st) override;
 	virtual void dragStatus(OdGiDrawable* pEntity, OdDb::DragStat st) override;
-	virtual bool isModel(OdGiDrawable* pEntity) override;
+	virtual bool isModel(OdGiDrawable* pEntity) noexcept override;
 
 	// Events from Windows.
 	virtual bool onMouseDown(int x, int y, bool bShift) override;
@@ -259,8 +260,8 @@ private:
 	OdGsLayoutHelperPtr m_pDevice;
 	OdDbCommandContext* m_pCmdCtx;
 	OdGsModel* m_pGsModel;
-	virtual OdGsModel* getGsModel() override { return m_pGsModel; }
-	virtual OdGsLayoutHelper* getGsLayoutHelper() override { return m_pDevice.get(); }
+	virtual OdGsModel* getGsModel() noexcept override { return m_pGsModel; }
+	virtual OdGsLayoutHelper* getGsLayoutHelper() noexcept override { return m_pDevice.get(); }
 	virtual void disable(bool bDisable) override;
 private:
 	OdStaticRxObject<OdExGripDbReactor> m_cDbReactor;
@@ -272,7 +273,7 @@ private:
 		OdExGripManager* m_parent;
 		const OdString groupName() const override { return L"EDIT"; }
 		const OdString globalName() const override { return L"GROUP_STRETCH"; }
-		void execute(OdEdCommandContext* pCmdCtx) override;
+		void execute(OdEdCommandContext* edCommandContext) override;
 	};
 	OdStaticRxObject<OdExGripCommand> m_gripStretchCommand;
 	friend struct OdExGripCommand;

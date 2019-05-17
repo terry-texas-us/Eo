@@ -1892,16 +1892,16 @@ void transform_object_set(OdDbObjectIdArray & objs, OdGeMatrix3d & xform) {
 BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoint point) {
 	OdSharedPtr<AeSysDoc::ClipboardData> pData = AeSysDoc::ClipboardData::get(pDataObject);
 	if (pData) {
-		auto pDoc {GetDocument()};
-		OdDbDatabase* Database = pDoc->m_DatabasePtr;
+		auto Document {GetDocument()};
+		OdDbDatabase* Database = Document->m_DatabasePtr;
 		Database->startUndoRecord();
 
 		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.toEyeToWorld(point.x, point.y) - pData->pickPoint());
 
 		if (m_mode == kDragDrop) {
-			OdDbSelectionSetPtr pSSet = pDoc->selectionSet();
+			auto SelectionSet {Document->selectionSet()};
 			OdDbEntityPtr pEnt;
-			OdDbObjectIdArray objs = pSSet->objectIdArray();
+			OdDbObjectIdArray objs = SelectionSet->objectIdArray();
 			if (::GetKeyState(VK_CONTROL) & 0xff00) {
 				OdDbIdMappingPtr pIdMapping = OdDbIdMapping::createObject();
 				OdDbDatabase* pHostDb = Database;
@@ -2086,7 +2086,7 @@ void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			break;
 
 		case VK_DELETE:
-			((AeSysDoc*) GetDocument())->DeleteSelection(false);
+			GetDocument()->DeleteSelection(false);
 			PostMessage(WM_PAINT);
 			break;
 	}
@@ -2329,7 +2329,7 @@ struct OdExRegenCmd : OdEdCommand {
 	OdInt32 flags() const override {
 		return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
 	}
-	void execute(OdEdCommandContext* pCmdCtx) noexcept override {
+	void execute(OdEdCommandContext* edCommandContext) noexcept override {
 		// <tas="placeholder until implemented" m_pView->OnViewerRegen();"</tas>
 	}
 };
