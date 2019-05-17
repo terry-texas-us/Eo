@@ -87,7 +87,7 @@ private:
 
 	OdString m_sVectorizerPath;
 
-	OdString m_sRecentCmd;
+	OdString m_RecentCommand;
 
 	bool m_bPartial;
 	bool m_bRecover;
@@ -186,8 +186,8 @@ public:
 	bool getSavePreview() noexcept { return (m_bSavePreview != 0); }
 	bool getSaveWithPassword() noexcept { return (m_bSaveWithPassword != 0); }
 
-	void setRecentCmd(const OdString & cmd);
-	const OdString& getRecentCmd() noexcept { return m_sRecentCmd; }
+	void setRecentCmd(const OdString& command);
+	const OdString& getRecentCmd() noexcept { return m_RecentCommand; }
 
 	static inline OdString objectIdAndClassName(OdDbObjectId id) {
 		return objectIdAndClassName(id.openObject());

@@ -675,13 +675,13 @@ public:
 		return OdEdCommandPtr();
 	}
 
-	void commandWillStart(OdEdCommand* pCmd, OdEdCommandContext* /*edCommandContext*/) override {
+	void commandWillStart(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
 		m_sLastInput.makeUpper();
 
-		if (!GETBIT(pCmd->flags(), OdEdCommand::kNoHistory)) {
+		if (!GETBIT(command->flags(), OdEdCommand::kNoHistory)) {
 			theApp.setRecentCmd(m_sLastInput);
 		}
-		if (!GETBIT(pCmd->flags(), OdEdCommand::kNoUndoMarker)) {
+		if (!GETBIT(command->flags(), OdEdCommand::kNoUndoMarker)) {
 			m_pCmdCtx->database()->startUndoRecord();
 		}
 	}
@@ -3261,10 +3261,10 @@ void AeSysDoc::OnEditSelectall() {
 	m_bDisableClearSel = true;
 	ExecuteCommand(L"select single all");
 	m_bDisableClearSel = false;
-	auto ViewPosition{ GetFirstViewPosition() };
+	auto ViewPosition {GetFirstViewPosition()};
 
 	while (ViewPosition != NULL) {
-		CView* View = GetNextView(ViewPosition);
+		auto View {GetNextView(ViewPosition)};
 
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
 			dynamic_cast<AeSysView*>(View)->editorObject().selectionSetChanged();

@@ -1754,10 +1754,11 @@ bool AeSysView::UpdateStringTrackerCursor(void) {
 
 void CALLBACK StringTrackerTimer(HWND hWnd, UINT nMsg, UINT nIDTimer, DWORD dwTime) {
 	try {
-		AeSysView* pViewer = (AeSysView*) CWnd::FromHandle(hWnd);
+		auto View {(AeSysView*)CWnd::FromHandle(hWnd)};
 
-		if (!pViewer->UpdateStringTrackerCursor())
+		if (!View->UpdateStringTrackerCursor()) {
 			KillTimer(hWnd, nIDTimer);
+		}
 	} catch (...) {
 		KillTimer(hWnd, nIDTimer);
 	}

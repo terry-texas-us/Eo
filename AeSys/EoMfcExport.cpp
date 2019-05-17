@@ -15,13 +15,21 @@ OdSmartPtr<OdApDocumentImpl> OdApDocumentImpl::createObject(CDocument* document)
 	return pRes;
 }
 
-OdApDocumentImpl::~OdApDocumentImpl() { delete m_pImp; }
+OdApDocumentImpl::~OdApDocumentImpl() {
+	delete m_pImp;
+}
 
-OdString OdApDocumentImpl::fileName() const { return (const wchar_t*) (*m_pImp)->GetPathName(); }
+OdString OdApDocumentImpl::fileName() const {
+	return (const wchar_t*) (*m_pImp)->GetPathName();
+}
 
-CDocument* OdApDocumentImpl::cDoc() const noexcept { return (*m_pImp).get(); }
+CDocument* OdApDocumentImpl::cDoc() const noexcept {
+	return (*m_pImp).get();
+}
 
-OdDbDatabasePtr OdApDocumentImpl::database() const { return (*m_pImp)->m_DatabasePtr; }
+OdDbDatabasePtr OdApDocumentImpl::database() const {
+	return (*m_pImp)->m_DatabasePtr;
+}
 
 void OdApDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
 
@@ -31,19 +39,33 @@ bool OdApDocumentImpl::isQuiescent() const noexcept { return false; }
 
 void* OdApDocumentImpl::contextPtr() const noexcept { return 0; }
 
-OdEdBaseIO* OdApDocumentImpl::cmdIO() { return (*m_pImp)->cmdIO(); }
+OdEdBaseIO* OdApDocumentImpl::cmdIO() {
+	return (*m_pImp)->cmdIO();
+}
 
-OdDbCommandContextPtr OdApDocumentImpl::cmdCtx() { return (*m_pImp)->cmdCtx(); }
+OdDbCommandContextPtr OdApDocumentImpl::cmdCtx() {
+	return (*m_pImp)->cmdCtx();
+}
 
-void OdApDocumentImpl::ExecuteCommand(const OdString& command, bool echo) { (*m_pImp)->ExecuteCommand(command, echo); }
+void OdApDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
+	(*m_pImp)->ExecuteCommand(command, echo);
+}
 
-OdString OdApDocumentImpl::recentCmd() { return (*m_pImp)->recentCmd(); }
+OdString OdApDocumentImpl::recentCmd() {
+	return (*m_pImp)->recentCmd();
+}
 
-OdDbSelectionSetPtr OdApDocumentImpl::selectionSet() const { return (*m_pImp)->selectionSet(); }
+OdDbSelectionSetPtr OdApDocumentImpl::selectionSet() const {
+	return (*m_pImp)->selectionSet();
+}
 
-OdApDocumentPtr odGetAppDocument(CDocument* document) { return static_cast<AeSysDoc*>(document)->m_pRefDocument; }
+OdApDocumentPtr odGetAppDocument(CDocument* document) {
+	return static_cast<AeSysDoc*>(document)->m_pRefDocument;
+}
 
-void OdAddAppReactor(OdApplicationReactor* reactor) { theApp.AddReactor(reactor); }
+void OdAddAppReactor(OdApplicationReactor* reactor) {
+	theApp.AddReactor(reactor);
+}
 
 OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 	auto ViewPosition {document->GetFirstViewPosition()};
@@ -52,8 +74,7 @@ OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 		auto View {document->GetNextView(ViewPosition)};
 
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
-			auto pViewer {(AeSysView*) View};
-			return pViewer->m_pDevice;
+			return ((AeSysView*) View)->m_pDevice;
 		}
 	}
 	return OdGsLayoutHelperPtr();
@@ -67,8 +88,7 @@ bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) {
 		auto View {document->GetNextView(ViewPosition)};
 		
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
-			auto pViewer {(AeSysView*) View};
-			return pViewer->editorObject().snap(point, 0);
+			return ((AeSysView*)View)->editorObject().snap(point, 0);
 		}
 	}
 	return false;

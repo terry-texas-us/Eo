@@ -555,11 +555,11 @@ OdStreamBufPtr AeSysApp::newUndoStream() {
 	return OdRxObjectImpl<OdMemFileStreamImpl<OdStreamBuf> >::createObject();
 }
 
-void AeSysApp::setRecentCmd(const OdString & command) {
+void AeSysApp::setRecentCmd(const OdString& command) {
 
-	if (!command.isEmpty() && command != m_sRecentCmd) {
-		m_sRecentCmd = command;
-		WriteProfileStringW(L"options", L"Recent Command", m_sRecentCmd);
+	if (!command.isEmpty() && command != m_RecentCommand) {
+		m_RecentCommand = command;
+		WriteProfileStringW(L"options", L"Recent Command", m_RecentCommand);
 	}
 }
 
@@ -917,7 +917,7 @@ int AeSysApp::ExitInstance() {
 	theApp.WriteInt(L"Background colour", m_background);
 	theApp.WriteInt(L"Save DWG with password", m_bSaveWithPassword);
 	theApp.WriteString(L"recent GS", m_sVectorizerPath);
-	theApp.WriteString(L"Recent Command", m_sRecentCmd);
+	theApp.WriteString(L"Recent Command", m_RecentCommand);
 	theApp.WriteInt(L"Fill TTF text", (int) getTEXTFILL());
 
 	SetRegistryBase(L"Options");
@@ -1232,7 +1232,7 @@ BOOL AeSysApp::InitInstance() {
 	m_background = theApp.GetInt(L"Background colour", ViewBackgroundColor);
 	m_bSaveWithPassword = theApp.GetInt(L"Save DWG with password", 0);
 	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
-	m_sRecentCmd = theApp.GetString(L"Recent Command", L"");
+	m_RecentCommand = theApp.GetString(L"Recent Command", L"");
 	setTEXTFILL(theApp.GetInt(L"Fill TTF text", 1) != 0);
 	SetRegistryBase(L"MFC Auto");
 
