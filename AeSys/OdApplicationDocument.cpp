@@ -3,63 +3,63 @@
 #include "stdafx.h"
 #include "AeSysDoc.h"
 #include "AeSysApp.h"
-#include "EoMfcExportImpl.h"
 #include "AeSysView.h"
+#include "OdApplicationImpl.h"
 
 ODRX_CONS_DEFINE_MEMBERS(OdApplicationReactor, OdRxObject, RXIMPL_CONSTR);
-ODRX_NO_CONS_DEFINE_MEMBERS(OdApDocument, OdRxObject);
+ODRX_NO_CONS_DEFINE_MEMBERS(OdApplicationDocument, OdRxObject);
 
-OdSmartPtr<OdApDocumentImpl> OdApDocumentImpl::createObject(CDocument* document) {
-	OdSmartPtr<OdApDocumentImpl> pRes = OdRxObjectImpl<OdApDocumentImpl>::createObject();
+OdSmartPtr<OdApplicationDocumentImpl> OdApplicationDocumentImpl::createObject(CDocument* document) {
+	OdSmartPtr<OdApplicationDocumentImpl> pRes = OdRxObjectImpl<OdApplicationDocumentImpl>::createObject();
 	pRes->m_pImp = new MfcObjectWrapper<AeSysDoc>((AeSysDoc*) document);
 	return pRes;
 }
 
-OdApDocumentImpl::~OdApDocumentImpl() {
+OdApplicationDocumentImpl::~OdApplicationDocumentImpl() {
 	delete m_pImp;
 }
 
-OdString OdApDocumentImpl::fileName() const {
+OdString OdApplicationDocumentImpl::fileName() const {
 	return (const wchar_t*) (*m_pImp)->GetPathName();
 }
 
-CDocument* OdApDocumentImpl::cDoc() const noexcept {
+CDocument* OdApplicationDocumentImpl::cDoc() const noexcept {
 	return (*m_pImp).get();
 }
 
-OdDbDatabasePtr OdApDocumentImpl::database() const {
+OdDbDatabasePtr OdApplicationDocumentImpl::database() const {
 	return (*m_pImp)->m_DatabasePtr;
 }
 
-void OdApDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
+void OdApplicationDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
 
-void OdApDocumentImpl::myLockMode() const noexcept {}
+void OdApplicationDocumentImpl::myLockMode() const noexcept {}
 
-bool OdApDocumentImpl::isQuiescent() const noexcept { return false; }
+bool OdApplicationDocumentImpl::isQuiescent() const noexcept { return false; }
 
-void* OdApDocumentImpl::contextPtr() const noexcept { return 0; }
+void* OdApplicationDocumentImpl::contextPtr() const noexcept { return 0; }
 
-OdEdBaseIO* OdApDocumentImpl::cmdIO() {
+OdEdBaseIO* OdApplicationDocumentImpl::cmdIO() {
 	return (*m_pImp)->cmdIO();
 }
 
-OdDbCommandContextPtr OdApDocumentImpl::cmdCtx() {
+OdDbCommandContextPtr OdApplicationDocumentImpl::cmdCtx() {
 	return (*m_pImp)->cmdCtx();
 }
 
-void OdApDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
+void OdApplicationDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
 	(*m_pImp)->ExecuteCommand(command, echo);
 }
 
-OdString OdApDocumentImpl::recentCmd() {
+OdString OdApplicationDocumentImpl::recentCmd() {
 	return (*m_pImp)->recentCmd();
 }
 
-OdDbSelectionSetPtr OdApDocumentImpl::selectionSet() const {
+OdDbSelectionSetPtr OdApplicationDocumentImpl::selectionSet() const {
 	return (*m_pImp)->selectionSet();
 }
 
-OdApDocumentPtr odGetAppDocument(CDocument* document) {
+OdApDocumentPtr odGetApplicationDocument(CDocument* document) {
 	return static_cast<AeSysDoc*>(document)->m_pRefDocument;
 }
 

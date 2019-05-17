@@ -221,7 +221,7 @@ AeSysDoc::AeSysDoc() noexcept
 	m_WorkLayer = NULL;
 	g_pDoc = this;
 
-	m_pRefDocument = OdApDocumentImpl::createObject(this);
+	m_pRefDocument = OdApplicationDocumentImpl::createObject(this);
 }
 // <tas="crash with smart pointer m_DatabasePtr release"\>
 AeSysDoc::~AeSysDoc() {

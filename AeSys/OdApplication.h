@@ -31,13 +31,13 @@ public:
 	virtual void documentActivated(CDocument* document) noexcept {}
 };
 
-typedef OdSmartPtr< OdApplicationReactor > OdApplicationReactorPtr;
+typedef OdSmartPtr<OdApplicationReactor> OdApplicationReactorPtr;
 
 __declspec(dllexport) void OdAddAppReactor(OdApplicationReactor* reactor);
 
-class __declspec(dllexport) OdApDocument : public OdRxObject {
+class __declspec(dllexport) OdApplicationDocument : public OdRxObject {
 public:
-	ODRX_DECLARE_MEMBERS(OdApDocument);
+	ODRX_DECLARE_MEMBERS(OdApplicationDocument);
 
 	virtual OdString fileName() const = 0;
 	virtual CDocument* cDoc() const = 0;
@@ -47,15 +47,15 @@ public:
 	virtual bool isQuiescent() const = 0;
 	virtual void* contextPtr() const = 0;
 	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
-	// <command_console>
+
 	virtual OdEdBaseIO* cmdIO() = 0;
 	virtual OdDbCommandContextPtr cmdCtx() = 0;
 	virtual OdString recentCmd() = 0;
-	// </command_console>
+
 	virtual OdDbSelectionSetPtr selectionSet() const = 0;
 };
-typedef OdSmartPtr< OdApDocument > OdApDocumentPtr;
+typedef OdSmartPtr<OdApplicationDocument> OdApDocumentPtr;
 
-__declspec(dllexport) OdApDocumentPtr odGetAppDocument(CDocument* document);
+__declspec(dllexport) OdApDocumentPtr odGetApplicationDocument(CDocument* document);
 __declspec(dllexport) OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
 __declspec(dllexport) bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point);

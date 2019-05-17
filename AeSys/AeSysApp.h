@@ -34,7 +34,7 @@
 #include "Ed/EdCommandStack.h"
 
 #include "ExDbCommandContext.h"
-#include "EoMfcExport.h"
+#include "OdApplication.h"
 
 #include "ColorMapping.h"
 #include "EoApOptions.h"
@@ -93,9 +93,7 @@ private:
 	bool m_bRecover;
 	bool m_bLoading;
 
-	// ODA_MT_DBIO_BEGIN
 	bool m_bUseMTLoading;
-	// ODA_MT_DBIO_END
 
 	bool m_bRemoteGeomViewer;
 	int m_pagingType;
@@ -109,15 +107,12 @@ public:
 	void RemoveReactor(OdApplicationReactor* reactor);
 	std::vector<OdSmartPtr<OdApplicationReactor>> m_aAppReactors;
 
-public:
 	OdDbDatabasePtr openFile(LPCWSTR pathName);
 	void setPartialOption(bool partial) noexcept { m_bPartial = partial; }
 	void setRecoverOption(bool recover) noexcept { m_bRecover = recover; }
-	// ODA_MT_DBIO_BEGIN
-	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
-	// ODA_MT_DBIO_END
 
-public:
+	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
+
 	OdGsMarker getGSMenuItemMarker() const noexcept { return (OdGsMarker) this; }
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
 	void RefreshCommandMenu();
@@ -289,6 +284,7 @@ public:
 	double EngagedLength() const noexcept;
 	CString FormatAngle(double angle, int width = 8, int precision = 3) const;
 	CString FormatLength(double length, Units units, int width = 16, int precision = 8) const;
+	
 	/// <summary>
 	///Produces a string formatted to type units from a "length" value
 	///ArchitecturalS units formatted as follows:
@@ -308,6 +304,7 @@ public:
 	HMENU GetAeSysMenu() noexcept;
 	HMENU GetAeSysSubMenu(int position) noexcept;
 	Units GetUnits() noexcept;
+	
 	/// <summary>Finds the greatest common divisor of arbitrary integers.</summary>
 	/// <returns>First number if second number is zero, greatest common divisor otherwise.</returns>
 	int GreatestCommonDivisor(const int number1, const int number2) const noexcept;

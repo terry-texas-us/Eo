@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "AeSysDoc.h"
 
-#include "EoMfcExport.h"
+#include "OdApplication.h"
 
 class AeSysDoc;
 
@@ -39,11 +39,11 @@ private:
 	T* m_pUnderlayObj;
 };
 
-class OdApDocumentImpl : public OdApDocument {
+class OdApplicationDocumentImpl : public OdApplicationDocument {
 public:
-	static OdSmartPtr<OdApDocumentImpl> createObject(CDocument* document);
+	static OdSmartPtr<OdApplicationDocumentImpl> createObject(CDocument* document);
 
-	~OdApDocumentImpl();
+	~OdApplicationDocumentImpl();
 	OdString fileName() const override;
 	CDocument* cDoc() const noexcept override;
 	OdDbDatabasePtr database() const override;
@@ -59,5 +59,5 @@ public:
 
 	OdDbSelectionSetPtr selectionSet() const override;
 
-	MfcObjectWrapper< AeSysDoc >* m_pImp;
+	MfcObjectWrapper<AeSysDoc>* m_pImp;
 };

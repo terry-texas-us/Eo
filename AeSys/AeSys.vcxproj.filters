@@ -387,9 +387,6 @@
     <ClCompile Include="AeSysApp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EoMfcExport.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EoDialogResizeHelper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -467,6 +464,9 @@
     </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
       <Filter>Source Files\Drawing ExServices</Filter>
+    </ClCompile>
+    <ClCompile Include="OdApplicationDocument.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -882,12 +882,6 @@
     <ClInclude Include="AeSysApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EoMfcExportImpl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EoMfcExport.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="EoDialogResizeHelper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -931,6 +925,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="OSnapManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OdApplication.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OdApplicationImpl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

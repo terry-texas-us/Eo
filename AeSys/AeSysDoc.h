@@ -18,7 +18,7 @@
 #include "EoDbLayer.h"
 #include "EoDbLinetypeTable.h"
 
-# include "EoMfcExportImpl.h"
+# include "OdApplicationImpl.h"
 
 class AeSysDoc;
 class AeSysView;
@@ -254,7 +254,7 @@ public:
 	void Dump(CDumpContext& dc) const override;
 #endif
 
-	OdSmartPtr<OdApDocumentImpl> m_pRefDocument;
+	OdSmartPtr<OdApplicationDocumentImpl> m_pRefDocument;
 
 protected:
 	void OnVectorize(const OdString& vectorizerPath);

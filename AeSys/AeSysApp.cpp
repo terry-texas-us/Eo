@@ -666,13 +666,13 @@ void AeSysApp::RefreshCommandMenu() {
 	m_numCustomCommands = CommandId - _APS_NEXT_COMMAND_VALUE - 100;
 }
 
-void AeSysApp::AddReactor(OdApplicationReactor * reactor) {
+void AeSysApp::AddReactor(OdApplicationReactor* reactor) {
 	if (m_aAppReactors.end() == std::find(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor))) {
 		m_aAppReactors.push_back(reactor);
 	}
 }
 
-void AeSysApp::RemoveReactor(OdApplicationReactor * reactor) {
+void AeSysApp::RemoveReactor(OdApplicationReactor* reactor) {
 	m_aAppReactors.erase(std::remove(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor)), m_aAppReactors.end());
 }
 
@@ -680,11 +680,9 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 	CMainFrame* MainFrame = (CMainFrame*) GetMainWnd();
 	OdDbDatabasePtr Database;
 
-	// ODA_MT_DBIO_BEGIN
 	OdInt16 nMode = getMtMode();
 	SETBIT(nMode, 1, m_bUseMTLoading);
 	setMtMode(nMode);
-	// ODA_MT_DBIO_END
 
 	// open an existing document
 	MainFrame->StartTimer();
@@ -1155,7 +1153,7 @@ BOOL AeSysApp::InitializeTeigha() {
 		EoLoadApps::rxInit();
 
 		OdApplicationReactor::rxInit();
-		OdApDocument::rxInit();
+		OdApplicationDocument::rxInit();
 
 		::odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
 		::odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
@@ -2015,7 +2013,7 @@ OdInt16 AeSysApp::TrapHighlightColor() const noexcept {
 }
 void AeSysApp::UninitializeTeigha() {
 	OdApplicationReactor::rxUninit();
-	OdApDocument::rxUninit();
+	OdApplicationDocument::rxUninit();
 
 	EoLoadApps::rxUninit();
 

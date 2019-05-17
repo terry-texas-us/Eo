@@ -105,7 +105,7 @@
     <ClCompile Include="EoDlgNewView.cpp" />
     <ClCompile Include="EoDlgPassword.cpp" />
     <ClCompile Include="EoGripperScrollBar.cpp" />
-    <ClCompile Include="EoMfcExport.cpp" />
+    <ClCompile Include="OdApplicationDocument.cpp" />
     <ClCompile Include="AeSysView.cpp" />
     <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
     <ClCompile Include="EoDbCharacterCellDefinition.cpp" />
@@ -283,7 +283,7 @@
     <ClInclude Include="EoDlgNewView.h" />
     <ClInclude Include="EoDlgPassword.h" />
     <ClInclude Include="EoGripperScrollBar.h" />
-    <ClInclude Include="EoMfcExport.h" />
+    <ClInclude Include="OdApplication.h" />
     <ClInclude Include="AeSysView.h" />
     <ClInclude Include="EoCtrlBitmapPickerCombo.h" />
     <ClInclude Include="eodb.h" />
@@ -352,7 +352,7 @@
     <ClInclude Include="EoDlgLineWeight.h" />
     <ClInclude Include="EoGsAbstractView.h" />
     <ClInclude Include="EoLoadApps.h" />
-    <ClInclude Include="EoMfcExportImpl.h" />
+    <ClInclude Include="OdApplicationImpl.h" />
     <ClInclude Include="EoMfOutputDockablePane.h" />
     <ClInclude Include="EoMfPropertiesDockablePane.h" />
     <ClInclude Include="EoDbBitmapFile.h" />
