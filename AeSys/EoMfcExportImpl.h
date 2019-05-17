@@ -3,6 +3,8 @@
 // From OdaMfcApp\OdaMfcExportImpl.h  (last compare 19.12)
 
 #include "stdafx.h"
+#include "AeSysDoc.h"
+
 #include "EoMfcExport.h"
 
 class AeSysDoc;
@@ -50,11 +52,11 @@ public:
 	bool isQuiescent() const noexcept override;
 	void* contextPtr() const noexcept override;
 	void ExecuteCommand(const OdString& command, bool echo) override;
-	// <command_console>
-	virtual OdEdBaseIO* cmdIO();
-	virtual OdDbCommandContextPtr cmdCtx();
-	virtual OdString recentCmd();
-	// </command_console>
+
+	OdEdBaseIO* cmdIO() override;
+	OdDbCommandContextPtr cmdCtx() override;
+	OdString recentCmd() override;
+
 	OdDbSelectionSetPtr selectionSet() const override;
 
 	MfcObjectWrapper< AeSysDoc >* m_pImp;

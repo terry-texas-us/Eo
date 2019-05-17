@@ -347,6 +347,7 @@ void AeSysDoc::layoutSwitched(const OdString & newLayoutName, const OdDbObjectId
 		while (pos != NULL) {
 			const CView* view = GetNextView(pos);
 			if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
+
 				if (view->GetDocument() == this) {
 					const CWnd* pParent = view->GetParent();
 					// Get prev params
@@ -370,6 +371,7 @@ void AeSysDoc::layoutSwitched(const OdString & newLayoutName, const OdDbObjectId
 					OnVectorize();
 					// Search again for new view
 					POSITION pos = GetFirstViewPosition();
+
 					while (pos != NULL) {
 						const CView* view = GetNextView(pos);
 						if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
@@ -489,14 +491,14 @@ OdDbCommandContextPtr AeSysDoc::cmdCtx() {
 
 OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
 	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->cmdCtx();
-	OdDbSelectionSetPtr pRes = CommandContext->arbitraryData(L"OdaMfcApp Working Selection Set");
+	OdDbSelectionSetPtr SelectionSet {CommandContext->arbitraryData(L"OdaMfcApp Working Selection Set")};
 
-	if (pRes.isNull()) {
-		pRes = OdDbSelectionSet::createObject(m_DatabasePtr);
-		CommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", pRes);
+	if (SelectionSet.isNull()) {
+		SelectionSet = OdDbSelectionSet::createObject(m_DatabasePtr);
+		CommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", SelectionSet);
 	}
-	ATLTRACE2(atlTraceGeneral, 0, L"Working Selection set contains %d items\n", pRes->numEntities());
-	return pRes;
+	ATLTRACE2(atlTraceGeneral, 0, L"Working Selection set contains %d items\n", SelectionSet->numEntities());
+	return SelectionSet;
 }
 
 OdEdBaseIO* AeSysDoc::cmdIO() noexcept {
@@ -715,7 +717,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 
 	OdDbCommandContextPtr CommandContext(cmdCtx());
 
-	CmdReactor cr(CommandContext);
+	CmdReactor CommandReactor(CommandContext);
 
 	try {
 		auto CommandStack {::odedRegCmds()};
@@ -736,7 +738,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 					CommandContext->userIO()->putString(commandPrompt() + L" " + s);
 				}
 				s.makeUpper();
-				cr.setLastInput(s);
+				CommandReactor.setLastInput(s);
 				CommandStack->executeCommand(s, CommandContext);
 			} else {
 				m_pMacro = ExStringIO::create(command);
@@ -744,7 +746,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 					try {
 						s = CommandContext->userIO()->getString(commandPrompt());
 						s.makeUpper();
-						cr.setLastInput(s);
+						CommandReactor.setLastInput(s);
 					} catch (const OdEdEmptyInput) {
 						s = recentCmdName();
 					}
@@ -764,9 +766,9 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 		}
 		cmdIO()->putString(err.description());
 	}
-	if ((cr.isDatabaseModified() || selectionSet()->numEntities())) {
+	if ((CommandReactor.isDatabaseModified() || selectionSet()->numEntities())) {
 
-		if (0 != cr.lastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
+		if (0 != CommandReactor.lastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
 			OnEditClearselection();
 		}
 		UpdateAllViews(nullptr);
@@ -3259,10 +3261,10 @@ void AeSysDoc::OnEditSelectall() {
 	m_bDisableClearSel = true;
 	ExecuteCommand(L"select single all");
 	m_bDisableClearSel = false;
-	POSITION Position = GetFirstViewPosition();
-	
-	while (Position != NULL) {
-		CView* View = GetNextView(Position);
+	auto ViewPosition{ GetFirstViewPosition() };
+
+	while (ViewPosition != NULL) {
+		CView* View = GetNextView(ViewPosition);
 
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
 			dynamic_cast<AeSysView*>(View)->editorObject().selectionSetChanged();

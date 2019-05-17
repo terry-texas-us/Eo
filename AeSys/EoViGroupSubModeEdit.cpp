@@ -95,13 +95,16 @@ void AeSysView::PreviewGroupEdit() {
 		m_SubModeEditBeginPoint = m_SubModeEditEndPoint;
 	}
 }
+
 void AeSysDoc::InitializeGroupAndPrimitiveEdit() {
-	POSITION Position = GetFirstViewPosition();
-	while (Position != 0) {
-		AeSysView* View = (AeSysView*) GetNextView(Position);
+	auto ViewPosition {GetFirstViewPosition()};
+
+	while (ViewPosition != 0) {
+		auto View {(AeSysView*)GetNextView(ViewPosition)};
 		View->InitializeGroupAndPrimitiveEdit();
 	}
 }
+
 void AeSysView::InitializeGroupAndPrimitiveEdit() {
 	m_SubModeEditBeginPoint = OdGePoint3d::kOrigin;
 	m_SubModeEditEndPoint = m_SubModeEditBeginPoint;

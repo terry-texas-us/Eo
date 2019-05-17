@@ -21,13 +21,13 @@ public:
 	virtual void documentCreateStarted(CDocument* document) noexcept {}
 	virtual void documentCreated(CDocument* document) noexcept {}
 	virtual void documentToBeDestroyed(CDocument* document) noexcept {}
-	virtual void documentDestroyed(const OdString& document) noexcept {}
+	virtual void documentDestroyed(const OdString& pathName) noexcept {}
 	virtual void documentCreateCanceled(CDocument* document) noexcept {}
 
 	virtual void documentBecameCurrent(CDocument* document) noexcept {}
 	virtual void documentToBeActivated(CDocument* document) noexcept {}
 	virtual void documentToBeDeactivated(CDocument* document) noexcept {}
-	virtual void documentActivationModified(bool document) noexcept {}
+	virtual void documentActivationModified(bool modified) noexcept {}
 	virtual void documentActivated(CDocument* document) noexcept {}
 };
 

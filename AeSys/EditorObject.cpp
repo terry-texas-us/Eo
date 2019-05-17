@@ -404,32 +404,30 @@ void OdExEditorObject::OnDestroy() {
 	m_pCmdCtx = 0;
 }
 
-bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
-	OleDragCallback * pDragCallback) {
-	const bool bShift = (OdEdBaseIO::kShiftIsDown & nFlags) != 0;
-	const bool bCtrl = (OdEdBaseIO::kControlIsDown & nFlags) != 0;
-	const OdGePoint3d pt = toEyeToWorld(x, y);
+bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback * pDragCallback) {
+	const bool ShiftIsDown {(OdEdBaseIO::kShiftIsDown & nFlags) != 0};
+	const bool ControlIsDown {(OdEdBaseIO::kControlIsDown & nFlags) != 0};
+	const auto pt {toEyeToWorld(x, y)};
 
-	if (m_gripManager.onMouseDown(x, y, bShift))
-		return true;
+	if (m_gripManager.onMouseDown(x, y, ShiftIsDown)) { return true; }
 
 	try {
-	  // Should be here I guess.
-		if (pDragCallback && !bShift) {
-			auto pWorkSet {workingSSet()};
-			OdDbSelectionSetPtr pAtPointSet = OdDbSelectionSet::select(activeVpId(), 1, &pt, OdDbVisualSelection::kPoint, bCtrl ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
+		if (pDragCallback && !ShiftIsDown) {
+			auto WorkingSelectionSet {workingSSet()};
+			OdDbSelectionSetPtr pAtPointSet = OdDbSelectionSet::select(activeVpId(), 1, &pt, OdDbVisualSelection::kPoint, ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
 			OdDbSelectionSetIteratorPtr pIter = pAtPointSet->newIterator();
 			while (!pIter->done()) {
-				if (pWorkSet->isMember(pIter->objectId()) && !bCtrl) {
+				
+				if (WorkingSelectionSet->isMember(pIter->objectId()) && !ControlIsDown) {
 					pIter.release();
 					break;
 				}
 				pIter->next();
 			}
 			if (pIter.isNull()) {
+				
 				if (pDragCallback->beginDragCallback(pt)) {
-				  // Not good idea to clear selection set if already selected object has been selected, but if selection
-				  // set is being cleared - items must be unhighlighted too.
+				  // Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
 				  //workingSSet()->clear();
 				  //selectionSetChanged();
 					unselect();
@@ -441,13 +439,13 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 		return(false);
 	}
 
-	OdDbUserIO* pIO = m_pCmdCtx->dbUserIO();
-	pIO->setLASTPOINT(pt);
-	pIO->setPickfirst(0);
+	auto UserIO {m_pCmdCtx->dbUserIO()};
+	UserIO->setLASTPOINT(pt);
+	UserIO->setPickfirst(0);
 
 	int iOpt = OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces;
 	if (hasDatabase()) {
-		if (bShift) {
+		if (ShiftIsDown) {
 			if (m_pCmdCtx->database()->appServices()->getPICKADD() > 0)
 				iOpt |= OdEd::kSelRemove;
 		} else {
@@ -455,7 +453,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 				unselect();
 		}
 	}
-	if (bCtrl) {
+	if (ControlIsDown) {
 		iOpt |= OdEd::kSelAllowSubents;
 	}
 
@@ -464,7 +462,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 	try {
 		EnableEnhRectFrame _enhRect(m_pCmdCtx);
 		setSnapOn(false);
-		SelectionSet = pIO->select(OdString::kEmpty, iOpt, workingSSet());
+		SelectionSet = UserIO->select(OdString::kEmpty, iOpt, workingSSet());
 		setWorkingSSet(SelectionSet);
 		setSnapOn(savedSnapMode);
 	} catch (const OdError&) {
