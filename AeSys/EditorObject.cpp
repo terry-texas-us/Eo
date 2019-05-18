@@ -25,7 +25,7 @@
 static const int SNAP_SIZE = 10;
 
 class ViewInteractivityMode {
-	bool      m_enabled;
+	bool m_enabled;
 	OdGsView* m_pView;
 public:
 	ViewInteractivityMode(OdRxVariantValue enable, OdRxVariantValue frameRate, OdGsView* pView) {
@@ -73,29 +73,29 @@ OdDbSelectionSetPtr workingSelectionSet(OdDbCommandContext* dbCommandContext) {
 
 
 class XFormDrawable : public OdGiDrawableImpl<OdGiDrawable> {
-	OdGiDrawablePtr     m_pDrawable;
+	OdGiDrawablePtr m_Drawable;
 	const OdGeMatrix3d* m_pXForm;
 protected:
 	XFormDrawable() : m_pXForm(0) {}
 public:
-	static OdGiDrawablePtr createObject(OdGiDrawable* pDrawable, const OdGeMatrix3d& xForm) {
+	static OdGiDrawablePtr createObject(OdGiDrawable* drawable, const OdGeMatrix3d& xForm) {
 		OdSmartPtr<XFormDrawable> pRes = OdRxObjectImpl<XFormDrawable>::createObject();
-		pRes->m_pDrawable = pDrawable;
+		pRes->m_Drawable = drawable;
 		pRes->m_pXForm = &xForm;
 		return pRes;
 	}
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
 		return kDrawableUsesNesting;
 	}
 
-	bool subWorldDraw(OdGiWorldDraw* pWd) const override {
-		OdGiModelTransformSaver mt(pWd->geometry(), *m_pXForm);
-		pWd->geometry().draw(m_pDrawable);
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override {
+		OdGiModelTransformSaver mt(worldDraw->geometry(), *m_pXForm);
+		worldDraw->geometry().draw(m_Drawable);
 		return true;
 	}
 
-	void subViewportDraw(OdGiViewportDraw*) const override {}
+	void subViewportDraw(OdGiViewportDraw*) const noexcept override {}
 };
 
 
@@ -242,7 +242,7 @@ OdGePoint3d OdExEditorObject::toScreenCoord(int x, int y) const {
 }
 
 OdGePoint3d OdExEditorObject::toScreenCoord(const OdGePoint3d& wcsPt) const {
-  // To DCS
+	// To DCS
 	OdGePoint3d scrPt(wcsPt);
 	const OdGsView* pView = activeView();
 	OdGsClientViewInfo viewInfo;
@@ -427,9 +427,9 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 			if (pIter.isNull()) {
 				
 				if (pDragCallback->beginDragCallback(pt)) {
-				  // Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
-				  //workingSSet()->clear();
-				  //selectionSetChanged();
+					// Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
+					//workingSSet()->clear();
+					//selectionSetChanged();
 					unselect();
 					return(true);
 				}
@@ -482,7 +482,7 @@ bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, 
 	m_pDevice->setActiveViewport(OdGePoint2d(x, y));
 	const bool bChanged = pView != activeView();
 	if (bChanged) {
-	  // @@@ probably move this code to GsLayoutHelper's?
+		// @@@ probably move this code to GsLayoutHelper's?
 		OdDbObjectPtr pObj = activeVpId().safeOpenObject();
 		OdDbDatabase* pDb = pObj->database();
 		if (pDb->getTILEMODE())
@@ -577,7 +577,7 @@ void zoom_window2(const OdGePoint3d & pt1, const OdGePoint3d & pt2, OdGsView * p
 	zoom_window(pt1c, pt2c, pView);
 }
 
-void zoom_scale(double factor) {
+void zoom_scale(double factor) noexcept {
 }
 
 static bool getLayoutExtents(const OdDbObjectId & spaceId, const OdGsView * pView, OdGeBoundBlock3d & bbox) {
@@ -609,8 +609,7 @@ void zoom_extents(OdGsView * pView, OdDbObject * pVpObj) {
 		bBboxValid = ::getLayoutExtents(pDb->getPaperSpaceId(), pView, bbox);
 	}
 
-	if (!bBboxValid) {
-	  // set to somewhat reasonable (e.g. paper size)
+	if (!bBboxValid) { // set to somewhat reasonable (e.g. paper size)
 		if (pDb->getMEASUREMENT() == OdDb::kMetric) {
 			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(297., 210., 0.)); // set to papersize ISO A4 (portrait)
 		} else {
@@ -622,16 +621,16 @@ void zoom_extents(OdGsView * pView, OdDbObject * pVpObj) {
 	pVpPE->zoomExtents(pView, &bbox);
 }
 
-void zoom_scaleXP(double factor) {
+void zoom_scaleXP(double factor) noexcept {
 }
 
 // Zoom command
 
 class RTZoomTracker : public OdEdPointTracker {
 	OdGsView* m_pView;
-	double      m_base;
-	double      m_fw;
-	double      m_fh;
+	double m_base;
+	double m_fw;
+	double m_fh;
 public:
 	void init(OdGsView* pView, const OdGePoint3d& base) {
 		m_pView = pView;
@@ -654,8 +653,8 @@ public:
 			m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel
 		);
 	}
-	int addDrawables(OdGsView* /*pView*/) override { return 1; }
-	void removeDrawables(OdGsView * pView) override {}
+	int addDrawables(OdGsView* /*pView*/) noexcept override { return 1; }
+	void removeDrawables(OdGsView * pView) noexcept override {}
 };
 
 void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
@@ -743,10 +742,10 @@ const OdString OdEx3dOrbitCmd::globalName() const {
 
 class OrbitCtrl : public OdGiDrawableImpl<> {
 public:
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
-	bool subWorldDraw(OdGiWorldDraw* pWd) const override {
+	bool subWorldDraw(OdGiWorldDraw* pWd) const noexcept override {
 		return false;
 	}
 	void subViewportDraw(OdGiViewportDraw* pVd) const override {
@@ -776,16 +775,16 @@ public:
 
 class RTOrbitTracker : public OdEdPointTracker {
 	OdGsView* m_pView;
-	OdGePoint3d     m_pt;
+	OdGePoint3d m_pt;
 	OdGiDrawablePtr m_pDrw;
-	OdGePoint3d     m_pos;
-	OdGePoint3d     m_trg;
-	OdGeVector3d    m_up;
-	OdGeVector3d    m_x;
-	OdGePoint3d     m_viewCenter;
-	OdGeMatrix3d    m_initViewingMatrixInv;
-	double          m_D; // diameter of orbit control in projected coordinates
-	OdGsModelPtr    m_pModel;
+	OdGePoint3d m_pos;
+	OdGePoint3d m_trg;
+	OdGeVector3d m_up;
+	OdGeVector3d m_x;
+	OdGePoint3d m_viewCenter;
+	OdGeMatrix3d m_initViewingMatrixInv;
+	double m_D; // diameter of orbit control in projected coordinates
+	OdGsModelPtr m_pModel;
 
 	enum Axis {
 		kHorizontal,
@@ -809,7 +808,7 @@ public:
 		: m_pView(0)
 		, m_D(0) {
 	}
-	void reset() { m_pView = 0; }
+	void reset() noexcept { m_pView = 0; }
 	void init(OdGsView* pView, const OdGePoint3d& pt) {
 		m_pView = pView;
 		m_pos = pView->position();
@@ -1053,13 +1052,13 @@ const OdString OdExDollyCmd::globalName() const { return L"DOLLY"; }
 
 class RTDollyTracker : public OdEdPointTracker {
 	OdGsView* m_pView;
-	OdGePoint3d     m_pt;
-	OdGePoint3d     m_pos;
+	OdGePoint3d m_pt;
+	OdGePoint3d m_pos;
 public:
 	RTDollyTracker()
 		: m_pView(0) {
 	}
-	void reset() { m_pView = 0; }
+	void reset() noexcept { m_pView = 0; }
 	void init(OdGsView* pView, const OdGePoint3d& pt) {
 		m_pView = pView;
 		m_pos = pView->position();
@@ -1076,11 +1075,8 @@ public:
 		}
 	}
 
-	int addDrawables(OdGsView* /*pView*/) override {
-		return 0;
-	}
-	void removeDrawables(OdGsView* /*pView*/) override {
-	}
+	int addDrawables(OdGsView* /*pView*/) noexcept override { return 0; }
+	void removeDrawables(OdGsView* /*pView*/) noexcept override { }
 };
 
 void OdExDollyCmd::execute(OdEdCommandContext * edCommandContext) {
@@ -1152,22 +1148,22 @@ class OdExCollideGsPath {
 	struct Node : OdGiPathNode {
 		const Node* m_pParent;
 		OdDbStub* m_pId;
-		OdGiDrawablePtr m_pDrawable;
-		OdGsMarker        m_gsMarker;
+		OdGiDrawablePtr m_Drawable;
+		OdGsMarker m_gsMarker;
 
-		const OdGiPathNode* parent() const override { return m_pParent; }
-		OdDbStub* persistentDrawableId() const override { return m_pId; }
-		const OdGiDrawable* transientDrawable() const override { return m_pDrawable; }
-		OdGsMarker selectionMarker() const override { return m_gsMarker; }
+		const OdGiPathNode* parent() const noexcept override { return m_pParent; }
+		OdDbStub* persistentDrawableId() const noexcept override { return m_pId; }
+		const OdGiDrawable* transientDrawable() const override { return m_Drawable; }
+		OdGsMarker selectionMarker() const noexcept override { return m_gsMarker; }
 	};
 	const Node* m_pLeaf;
 
-	void add(const OdGiDrawable* pDrawable, const OdDbObjectId& drawableId, OdGsMarker gsMarker = -1) {
+	void add(const OdGiDrawable* drawable, const OdDbObjectId& drawableId, OdGsMarker gsMarker = -1) {
 		Node* pNode = new Node();
 		pNode->m_pParent = m_pLeaf;
 		m_pLeaf = pNode;
 
-		pNode->m_pDrawable = pDrawable;
+		pNode->m_Drawable = drawable;
 		pNode->m_pId = drawableId;
 		pNode->m_gsMarker = gsMarker;
 	}
@@ -1226,17 +1222,15 @@ public:
 		add(pDrawable->isPersistent() ? 0 : pDrawable, pDrawable->id(), gsMarker);
 	}
 
-	operator const OdGiPathNode& () const {
-		return *m_pLeaf;
-	}
+	operator const OdGiPathNode& () const noexcept { return *m_pLeaf; }
 };
 
 #define STL_USING_MAP
 #include "OdaSTL.h"
 
 class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
-	OdArray<OdDbEntityPtr>  m_ents;   // Selection set entities
-	OdGeMatrix3d            m_xForm;  // Last transformation
+	OdArray<OdDbEntityPtr> m_ents; // Selection set entities
+	OdGeMatrix3d m_xForm; // Last transformation
 
 	OdArray< OdExCollideGsPath* > m_pathes;
 	OdArray< OdExCollideGsPath* > m_prevHLPathes;
@@ -1244,8 +1238,8 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 	OdArray< const OdGiPathNode* > inputArray;
 
 protected:
-	OdGePoint3d             m_ptBase;
-	OdDbDatabasePtr         m_pDb;
+	OdGePoint3d m_ptBase;
+	OdDbDatabasePtr m_pDb;
 	OdGsView* m_pView;
 	OdGsModel* m_pModel;
 	bool m_bDynHLT;
@@ -1435,7 +1429,7 @@ void CollideMoveTracker::doCollideWithAll() {
 }
 
 void CollideMoveTracker::highlight(OdArray< OdExCollideGsPath* >& newPathes) {
-  //1) Unhighlight old pathes
+	// 1) Unhighlight old pathes
 	if (!m_prevHLPathes.empty()) {
 		for (unsigned i = 0; i < m_prevHLPathes.size(); ++i) {
 			m_pModel->highlight(m_prevHLPathes[i]->operator const OdGiPathNode & (), false);
@@ -1443,7 +1437,7 @@ void CollideMoveTracker::highlight(OdArray< OdExCollideGsPath* >& newPathes) {
 		}
 		m_prevHLPathes.clear();
 	}
-  //2) Highlight new pathes
+	// 2) Highlight new pathes
 	for (unsigned i = 0; i < newPathes.size(); ++i) {
 		m_pModel->highlight(newPathes[i]->operator const OdGiPathNode & (), true);
 		m_prevHLPathes.push_back(newPathes[i]);

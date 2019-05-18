@@ -54,7 +54,7 @@ public: // Methods - absolute virtuals
 public: // Methods
 	OdGePoint3d Center() const noexcept;
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept override;
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database) noexcept;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr& database);
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>

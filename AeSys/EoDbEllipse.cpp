@@ -129,7 +129,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept 
 	SetTo2(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 }
 
-void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) noexcept {
+void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) {
 	EoDbEllipse* pArc;
 
 	double dRel[2];

@@ -28,11 +28,11 @@ public:
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
-	OdDbGripOperations::DrawType status() const noexcept { return m_status; }
-	bool isInvisible() const noexcept { return m_bInvisible; }
-	bool isShared() const noexcept { return m_bShared; }
+	OdDbGripOperations::DrawType status() const noexcept { return m_Status; }
+	bool isInvisible() const noexcept { return m_Invisible; }
+	bool isShared() const noexcept { return m_Shared; }
 	OdGePoint3d point() const noexcept { return m_point; }
-	OdDbGripDataPtr data() const { return m_pData; }
+	OdDbGripDataPtr GripData() const { return m_GripData; }
 	OdDbStub* entityId() const { return m_entPath.objectIds().last(); }
 	
 	bool entPath(OdDbBaseFullSubentPath* pPath = NULL) const {
@@ -41,18 +41,18 @@ public:
 		return m_entPath.subentId() != OdDbSubentId();
 	}
 
-	void setStatus(OdDbGripOperations::DrawType val) noexcept { m_status = val; }
-	void setInvisible(bool val) noexcept { m_bInvisible = val; }
-	void setShared(bool val) noexcept { m_bShared = val; }
+	void setStatus(OdDbGripOperations::DrawType status) noexcept { m_Status = status; }
+	void setInvisible(bool invisible) noexcept { m_Invisible = invisible; }
+	void setShared(bool shared) noexcept { m_Shared = shared; }
 
 private:
 	bool computeDragPoint(OdGePoint3d& ptOverride) const;
 
-	OdDbGripOperations::DrawType m_status;
-	bool m_bInvisible;
-	bool m_bShared;
+	OdDbGripOperations::DrawType m_Status;
+	bool m_Invisible;
+	bool m_Shared;
 	OdGePoint3d m_point;
-	OdDbGripDataPtr m_pData;
+	OdDbGripDataPtr m_GripData;
 	OdDbBaseFullSubentPath m_entPath;
 	OdBaseGripManager* m_pOwner;
 };
@@ -154,11 +154,11 @@ protected:
 	virtual OdGsModel* getGsModel() noexcept { return NULL; }
 	virtual OdGsLayoutHelper* getGsLayoutHelper() noexcept { return NULL; }
 
-	bool m_bDisabled;
-	virtual void disable(bool bDisable);
+	bool m_Disabled;
+	virtual void disable(bool disable) noexcept;
 
 public:
-	bool isDisabled() noexcept { return m_bDisabled; }
+	bool isDisabled() noexcept { return m_Disabled; }
 
 	struct OdExGripDataSubent {
 		OdDbBaseFullSubentPath m_entPath;
@@ -166,7 +166,7 @@ public:
 	};
 	struct OdExGripDataExt {
 		OdExGripDataPtrArray m_pDataArray;
-		OdArray<OdExGripDataSubent> m_pDataSub;
+		OdArray<OdExGripDataSubent> m_GripDataSubEntity;
 	};
 	//
 	typedef std::map<OdDbStub*, OdExGripDataExt> GripDataMap;
@@ -196,7 +196,7 @@ protected:
 class OdExGripDbReactor : public OdDbDatabaseReactor {
 public:
 	OdExGripDbReactor() noexcept;
-	void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj) override;
+	void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj) noexcept override;
 	void objectModified(const OdDbDatabase* pDb, const OdDbObject* pDbObj) override;
 	void objectErased(const OdDbDatabase* pDb, const OdDbObject* pDbObj, bool pErased = true) override;
 
@@ -262,7 +262,7 @@ private:
 	OdGsModel* m_pGsModel;
 	OdGsModel* getGsModel() noexcept override { return m_pGsModel; }
 	OdGsLayoutHelper* getGsLayoutHelper() noexcept override { return m_pDevice.get(); }
-	void disable(bool bDisable) override;
+	void disable(bool disable) noexcept override;
 private:
 	OdStaticRxObject<OdExGripDbReactor> m_cDbReactor;
 

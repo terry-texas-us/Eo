@@ -56,21 +56,21 @@ public:
 
 class OdExEditorObject {
 
-	OdGsLayoutHelperPtr               m_pDevice;
-	OdStaticRxObject<OSnapManager>    m_osnapMan;
+	OdGsLayoutHelperPtr m_pDevice;
+	OdStaticRxObject<OSnapManager> m_osnapMan;
 	OdStaticRxObject<OdExGripManager> m_gripManager;
-	OdGsModelPtr                      m_p2dModel;
+	OdGsModelPtr m_p2dModel;
 	OdDbCommandContext* m_pCmdCtx;
 
-	OdStaticRxObject<OdExZoomCmd>     m_cmd_ZOOM;
-	OdStaticRxObject<OdEx3dOrbitCmd>  m_cmd_3DORBIT;
-	OdStaticRxObject<OdExDollyCmd>    m_cmd_DOLLY;
-	OdStaticRxObject<OdExInteractivityModeCmd>    m_cmd_INTERACTIVITY;
-	OdStaticRxObject<OdExCollideCmd>  m_cmd_COLLIDE;
-	OdStaticRxObject<OdExCollideAllCmd>  m_cmd_COLLIDE_ALL;
+	OdStaticRxObject<OdExZoomCmd> m_cmd_ZOOM;
+	OdStaticRxObject<OdEx3dOrbitCmd> m_cmd_3DORBIT;
+	OdStaticRxObject<OdExDollyCmd> m_cmd_DOLLY;
+	OdStaticRxObject<OdExInteractivityModeCmd> m_cmd_INTERACTIVITY;
+	OdStaticRxObject<OdExCollideCmd> m_cmd_COLLIDE;
+	OdStaticRxObject<OdExCollideAllCmd> m_cmd_COLLIDE_ALL;
 
-	OdEdInputTrackerPtr               m_pTracker;
-	OdGePoint3d                       m_basePt;
+	OdEdInputTrackerPtr m_pTracker;
+	OdGePoint3d m_basePt;
 	const OdGePoint3d* m_pBasePt;
 
 	enum Flags {
@@ -79,7 +79,7 @@ class OdExEditorObject {
 		kDragging = 16,
 		kTrackerHasDrawables = 32,
 	};
-	OdUInt32                          m_flags;
+	OdUInt32 m_flags;
 public:
 	void transformSSetBy(const OdGeMatrix3d& xfm);
 
@@ -133,20 +133,20 @@ public:
 	public:
 		virtual bool beginDragCallback(const OdGePoint3d& pt) = 0;
 	};
-	bool   OnSize(unsigned int nFlags, int w, int h);
-	bool   OnPaintFrame(unsigned int nFlags = 0, OdGsDCRect* pUpdatedRect = 0);
-	bool   OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback* pDragCallback = 0);
-	bool   OnMouseMove(unsigned int nFlags, int x, int y);
-	bool   OnMouseWheel(unsigned int nFlags, int x, int y, short zDelta);
-	bool   OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, int y);
-	bool   OnMouseRightButtonDoubleClick(unsigned int nFlags, int x, int y);
-	bool   OnCtrlClick();
-	void   OnDestroy();
+	bool OnSize(unsigned int nFlags, int w, int h);
+	bool OnPaintFrame(unsigned int nFlags = 0, OdGsDCRect* pUpdatedRect = 0);
+	bool OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback* pDragCallback = 0);
+	bool OnMouseMove(unsigned int nFlags, int x, int y);
+	bool OnMouseWheel(unsigned int nFlags, int x, int y, short zDelta);
+	bool OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, int y);
+	bool OnMouseRightButtonDoubleClick(unsigned int nFlags, int x, int y);
+	bool OnCtrlClick();
+	void OnDestroy();
 
 	bool hasSelection() const { return (workingSSet()->numEntities() > 0); }
-	bool isSnapOn() const { return GETBIT(m_flags, kSnapOn); }
-	void setSnapOn(bool bOn) { SETBIT(m_flags, kSnapOn, bOn); }
-	bool isOrbitOn() const { return GETBIT(m_flags, kOrbitOn); }
+	bool isSnapOn() const noexcept { return GETBIT(m_flags, kSnapOn); }
+	void setSnapOn(bool bOn) noexcept { SETBIT(m_flags, kSnapOn, bOn); }
+	bool isOrbitOn() const noexcept { return GETBIT(m_flags, kOrbitOn); }
 
 	void turnOrbitOn(bool bOn);
 	bool OnOrbitBeginDrag(int x, int y);
