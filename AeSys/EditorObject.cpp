@@ -85,7 +85,7 @@ public:
 		return pRes;
 	}
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits*) const override {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override {
 		return kDrawableUsesNesting;
 	}
 
@@ -743,7 +743,7 @@ const OdString OdEx3dOrbitCmd::globalName() const {
 
 class OrbitCtrl : public OdGiDrawableImpl<> {
 public:
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* pTraits) const override {
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
 	bool subWorldDraw(OdGiWorldDraw* pWd) const override {

@@ -333,7 +333,7 @@ void EoObjectSnapManager::invalidateViewport(const OdGePoint3d & point) const {
 		m_pView->invalidate(rc);
 	}
 }
-OdUInt32 EoObjectSnapManager::subSetAttributes(OdGiDrawableTraits * traits) const noexcept {
+OdUInt32 EoObjectSnapManager::subSetAttributes(OdGiDrawableTraits * drawableTraits) const noexcept {
 	return kDrawableNone;
 }
 bool EoObjectSnapManager::subWorldDraw(OdGiWorldDraw * worldDraw) const noexcept {

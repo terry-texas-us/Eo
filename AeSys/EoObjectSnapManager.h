@@ -48,7 +48,7 @@ class EoObjectSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSe
 
 	HistEntryArray m_centers;
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* traits) const noexcept override;
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 

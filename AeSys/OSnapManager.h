@@ -140,7 +140,7 @@ class OdBaseSnapManager
 
 	HistEntryArray m_centers;
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits*) const override;
+	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* pWd) const override;
 	void subViewportDraw(OdGiViewportDraw*) const override;
 

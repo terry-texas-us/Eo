@@ -362,7 +362,7 @@ void OdBaseSnapManager::invalidateViewport(const OdGePoint3d & point) const {
 	}
 }
 
-OdUInt32 OdBaseSnapManager::subSetAttributes(OdGiDrawableTraits*) const {
+OdUInt32 OdBaseSnapManager::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
 	return kDrawableNone;
 }
 
