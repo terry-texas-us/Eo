@@ -94,7 +94,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcep
 	SetDefaultNote();
 }
 
-void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) noexcept {
+void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr& database) {
 	EoDbDimension* pDim;
 	double	dRel[2];
 

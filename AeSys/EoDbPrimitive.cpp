@@ -31,7 +31,7 @@ EoDbPrimitive::~EoDbPrimitive() {
 void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
 }
 
-void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr& database) noexcept {
+void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr& database) {
 }
 
 int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
