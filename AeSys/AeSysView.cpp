@@ -502,7 +502,7 @@ void AeSysView::OnInitialUpdate() {
 
 	Document->setVectorizer(this);
 
-	m_editor.Initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
+	m_editor.Initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->CommandContext());
 
 	SetRenderMode(OdGsView::k2DOptimized);
 	theApp.OnModeDraw();
@@ -2047,7 +2047,7 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 						case kQuiescent:
 							if (m_response.m_string.isEmpty()) {
 								// <command_console>
-								GetDocument()->ExecuteCommand(GetDocument()->recentCmdName());
+								GetDocument()->ExecuteCommand(GetDocument()->RecentCommandName());
 								// </command_console>
 							} else {
 								GetDocument()->ExecuteCommand(m_response.m_string);

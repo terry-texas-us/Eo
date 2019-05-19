@@ -555,7 +555,7 @@ OdStreamBufPtr AeSysApp::newUndoStream() {
 	return OdRxObjectImpl<OdMemFileStreamImpl<OdStreamBuf> >::createObject();
 }
 
-void AeSysApp::setRecentCmd(const OdString& command) {
+void AeSysApp::SetRecentCommand(const OdString& command) {
 
 	if (!command.isEmpty() && command != m_RecentCommand) {
 		m_RecentCommand = command;

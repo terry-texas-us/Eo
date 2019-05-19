@@ -48,9 +48,9 @@ public:
 	virtual void* contextPtr() const = 0;
 	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
 
-	virtual OdEdBaseIO* cmdIO() = 0;
-	virtual OdDbCommandContextPtr cmdCtx() = 0;
-	virtual OdString recentCmd() = 0;
+	virtual OdEdBaseIO* BaseIO() = 0;
+	virtual OdDbCommandContextPtr CommandContext() = 0;
+	virtual OdString RecentCommand() = 0;
 
 	virtual OdDbSelectionSetPtr selectionSet() const = 0;
 };

@@ -53,9 +53,9 @@ public:
 	void* contextPtr() const noexcept override;
 	void ExecuteCommand(const OdString& command, bool echo) override;
 
-	OdEdBaseIO* cmdIO() override;
-	OdDbCommandContextPtr cmdCtx() override;
-	OdString recentCmd() override;
+	OdEdBaseIO* BaseIO() override;
+	OdDbCommandContextPtr CommandContext() override;
+	OdString RecentCommand() override;
 
 	OdDbSelectionSetPtr selectionSet() const override;
 

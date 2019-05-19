@@ -491,7 +491,7 @@ OdBaseGripManager::OdBaseGripManager() noexcept {
 
 OdExGripManager::OdExGripManager() noexcept {
 	m_pDevice = 0;
-	m_pCmdCtx = 0;
+	m_CommandContext = 0;
 	m_pGsModel = 0;
 
 	m_cDbReactor.m_pOwner = this;
@@ -509,10 +509,10 @@ OdExGripManager::~OdExGripManager() {
 void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel * gsModel, OdDbCommandContext * dbCommandContext, GetSelectionSetPtr pGetSSet) {
 	m_pDevice = device;
 	m_pGsModel = gsModel;
-	m_pCmdCtx = dbCommandContext;
+	m_CommandContext = dbCommandContext;
 
-	if (m_pCmdCtx->baseDatabase()) {
-		OdDbDatabase* pDb = m_pCmdCtx->database();
+	if (m_CommandContext->baseDatabase()) {
+		OdDbDatabase* pDb = m_CommandContext->database();
 		Disable(false);
 
 		OdDbHostAppServices* pAppSvcs = pDb->appServices();
@@ -527,9 +527,9 @@ void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel * gsModel, OdDbCo
 }
 
 void OdExGripManager::Uninitialize() {
-	if (m_pCmdCtx) {
+	if (m_CommandContext) {
 		Disable(true);
-		m_pCmdCtx = 0;
+		m_CommandContext = 0;
 	}
 	m_pDevice = 0;
 }
@@ -537,7 +537,7 @@ void OdExGripManager::Uninitialize() {
 void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext * edCommandContext) {
 	bool bOk = true;
 	try {
-		const OdGePoint3d ptFinal = m_parent->m_pCmdCtx->dbUserIO()->getPoint(L"Specify stretch point or [Base point/Copy/Undo/eXit]:", OdEd::kGptNoLimCheck | OdEd::kGptDefault | OdEd::kGptNoUCS, &m_parent->m_ptBasePoint, L"Base Copy Undo eXit", m_parent);
+		const OdGePoint3d ptFinal = m_parent->m_CommandContext->dbUserIO()->getPoint(L"Specify stretch point or [Base point/Copy/Undo/eXit]:", OdEd::kGptNoLimCheck | OdEd::kGptDefault | OdEd::kGptNoUCS, &m_parent->m_ptBasePoint, L"Base Copy Undo eXit", m_parent);
 
 		for (unsigned i = 0; i < m_parent->m_aDrags.size(); i++) {
 			m_parent->m_aDrags[i]->moveEntity(m_parent->EyeToUcsPlane(ptFinal, m_parent->m_ptBasePoint));
@@ -778,8 +778,8 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 			}
 		}
 	}
-	m_pCmdCtx->database()->startUndoRecord();
-	::odedRegCmds()->executeCommand(&m_gripStretchCommand, m_pCmdCtx);
+	m_CommandContext->database()->startUndoRecord();
+	::odedRegCmds()->executeCommand(&m_gripStretchCommand, m_CommandContext);
 
 	iSize = aActiveKeys.size();
 	for (unsigned i = 0; i < iSize; i++)
@@ -1234,7 +1234,7 @@ void OdExGripManager::ShowGrip(OdExGripData* pGrip, bool model) {
 	  //for( i = 0; i < iSize; i++ )
 	  //  if(bModel==(pPaperHelper->viewAt(i) != pPaperHelper->overallView()))
 	  //    pPaperHelper->viewAt( i )->add( pGrip, m_pGsModel );
-		OdDbObjectPtr pVpObj = m_pCmdCtx->database()->activeViewportId().openObject();
+		OdDbObjectPtr pVpObj = m_CommandContext->database()->activeViewportId().openObject();
 		OdDbAbstractViewportDataPtr pAVD = OdDbAbstractViewportDataPtr(pVpObj);
 	
 		if (!pAVD.isNull() && pAVD->gsView(pVpObj)) {
@@ -1309,7 +1309,7 @@ void OdExGripManager::DraggingStopped() {
 
 OdSelectionSetPtr OdExGripManager::WorkingSelectionSet() const {
 	if (m_pGetSelectionSetPtr) {
-		return OdSelectionSet::cast(m_pGetSelectionSetPtr(m_pCmdCtx));
+		return OdSelectionSet::cast(m_pGetSelectionSetPtr(m_CommandContext));
 	}
 	return OdSelectionSetPtr();
 }
@@ -1417,7 +1417,7 @@ void OdBaseGripManager::Disable(bool disable) noexcept {
 
 void OdExGripManager::Disable(bool disable) noexcept {
 	if (m_Disabled != disable) {
-		OdDbDatabase* pDb = m_pCmdCtx->database();
+		OdDbDatabase* pDb = m_CommandContext->database();
 		m_Disabled = disable;
 		
 		if (disable) {

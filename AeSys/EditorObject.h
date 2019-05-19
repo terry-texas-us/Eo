@@ -56,11 +56,11 @@ public:
 
 class OdExEditorObject {
 
-	OdGsLayoutHelperPtr m_pDevice;
-	OdStaticRxObject<OSnapManager> m_osnapMan;
-	OdStaticRxObject<OdExGripManager> m_gripManager;
+	OdGsLayoutHelperPtr m_LayoutHelper;
+	OdStaticRxObject<OSnapManager> m_ObjectSnapManager;
+	OdStaticRxObject<OdExGripManager> m_GripManager;
 	OdGsModelPtr m_p2dModel;
-	OdDbCommandContext* m_pCmdCtx;
+	OdDbCommandContext* m_CommandContext;
 
 	OdStaticRxObject<OdExZoomCmd> m_cmd_ZOOM;
 	OdStaticRxObject<OdEx3dOrbitCmd> m_cmd_3DORBIT;
@@ -110,7 +110,6 @@ public:
 	OdExEditorObject();
 
 	void Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext);
-	OdGsLayoutHelper* Device() { return m_pDevice; }
 	void Uninitialize();
 
 	OdDbSelectionSetPtr workingSSet() const;
@@ -163,12 +162,12 @@ public:
 	inline OdGsModel* GsModel() { return m_p2dModel.get(); }
 
 	void Recalc_Entity_centers(void) {
-		m_osnapMan.Recalc_Entity_centers();
+		m_ObjectSnapManager.Recalc_Entity_centers();
 	}
 
 	void Set_Entity_centers() {
 		if (HasDatabase()) {
-			m_osnapMan.Set_Entity_centers(m_pCmdCtx->database());
+			m_ObjectSnapManager.Set_Entity_centers(m_CommandContext->database());
 		}
 	}
 
@@ -181,9 +180,9 @@ public:
 
 
 inline OdGiDrawablePtr OdExEditorObject::SnapDrawable() const {
-	return &m_osnapMan;
+	return &m_ObjectSnapManager;
 }
 
 inline void OdExEditorObject::ResetSnapManager() {
-	m_osnapMan.reset();
+	m_ObjectSnapManager.reset();
 }

@@ -79,7 +79,7 @@ protected:
 
 	AeSysView* m_pViewer;
 
-	EoDlgUserIOConsole* console();
+	EoDlgUserIOConsole* UserIOConsole();
 	bool m_bConsole;
 	bool m_bConsoleResponded;
 	int m_nCmdActive;
@@ -195,16 +195,16 @@ protected:
 
 	BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* documentTemplate);
 
-	OdDbCommandContextPtr m_pCmdCtx;
+	OdDbCommandContextPtr m_CommandContext;
 
 	// <command_console>
-	OdSmartPtr<EoDlgUserIOConsole> m_pConsole;
+	OdSmartPtr<EoDlgUserIOConsole> m_UserIOConsole;
 	OdSmartPtr<ExStringIO> m_pMacro;
-	OdDbCommandContextPtr cmdCtx();
-	OdEdBaseIO* cmdIO() noexcept;
-	OdString commandPrompt();
-	OdString recentCmd();
-	OdString AeSysDoc::recentCmdName();
+	OdDbCommandContextPtr CommandContext();
+	OdEdBaseIO* BaseIO() noexcept;
+	OdString CommandPrompt();
+	OdString RecentCommand();
+	OdString AeSysDoc::RecentCommandName();
 
 	OdUInt32 getKeyState() noexcept override;
 	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;

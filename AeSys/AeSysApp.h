@@ -181,8 +181,8 @@ public:
 	bool getSavePreview() noexcept { return (m_bSavePreview != 0); }
 	bool getSaveWithPassword() noexcept { return (m_bSaveWithPassword != 0); }
 
-	void setRecentCmd(const OdString& command);
-	const OdString& getRecentCmd() noexcept { return m_RecentCommand; }
+	void SetRecentCommand(const OdString& command);
+	const OdString& GetRecentCmd() noexcept { return m_RecentCommand; }
 
 	static inline OdString objectIdAndClassName(OdDbObjectId id) {
 		return objectIdAndClassName(id.openObject());

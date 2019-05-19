@@ -45,13 +45,13 @@ public:
 };
 
 class EnableEnhRectFrame {
-	OdEdCommandContext* m_pCmdCtx;
+	OdEdCommandContext* m_CommandContext;
 public:
 	EnableEnhRectFrame(OdEdCommandContext* edCommandContext)
-		: m_pCmdCtx(edCommandContext) {
-		m_pCmdCtx->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", OdRxVariantValue(true));
+		: m_CommandContext(edCommandContext) {
+		m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", OdRxVariantValue(true));
 	}
-	~EnableEnhRectFrame() { m_pCmdCtx->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", NULL); }
+	~EnableEnhRectFrame() { m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", NULL); }
 };
 
 
@@ -103,14 +103,14 @@ public:
 
 OdExEditorObject::OdExEditorObject()
 	: m_flags(0)
-	, m_pCmdCtx(0)
+	, m_CommandContext(0)
 	, m_pBasePt(0) {
 	SETBIT(m_flags, kSnapOn, true);
 }
 
 void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext) {
-	m_pDevice = device;
-	m_pCmdCtx = dbCommandContext;
+	m_LayoutHelper = device;
+	m_CommandContext = dbCommandContext;
 
 	m_p2dModel = device->createModel();
 
@@ -118,10 +118,10 @@ void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* dbComm
 		m_p2dModel->setRenderType(OdGsModel::kDirect); // Skip Z-buffer for 2d drawables.
 		m_p2dModel->setEnableViewExtentsCalculation(false); // Skip extents calculation.
 		m_p2dModel->setRenderModeOverride(OdGsView::k2DOptimized); // Setup 2dWireframe mode for all underlying geometry.
-		m_p2dModel->setVisualStyle(OdDbDictionary::cast(m_pCmdCtx->database()->getVisualStyleDictionaryId().openObject())->getAt(OdDb::kszVS2DWireframe));
+		m_p2dModel->setVisualStyle(OdDbDictionary::cast(m_CommandContext->database()->getVisualStyleDictionaryId().openObject())->getAt(OdDb::kszVS2DWireframe));
 	}
   // <tas="WorkingSelectionSet is only defined as function, init expecting 'typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);', I guess this is ok."/>
-	m_gripManager.Initialize(device, m_p2dModel, dbCommandContext, WorkingSelectionSet);
+	m_GripManager.Initialize(device, m_p2dModel, dbCommandContext, WorkingSelectionSet);
 
 	Set_Entity_centers();
 }
@@ -131,42 +131,42 @@ void OdExEditorObject::Uninitialize() {
 
 	if (SelectionSet.get()) {
 		SelectionSet->clear();
-		m_gripManager.SelectionSetChanged(SelectionSet);
+		m_GripManager.SelectionSetChanged(SelectionSet);
 	}
-	m_gripManager.Uninitialize();
+	m_GripManager.Uninitialize();
 
-	m_pDevice.release();
-	m_pCmdCtx = 0;
+	m_LayoutHelper.release();
+	m_CommandContext = 0;
 }
 
 void OdExEditorObject::InitializeSnapping(OdGsView* view, OdEdInputTracker* tracker) {
-	m_osnapMan.track(tracker);
-	view->add(&m_osnapMan, m_p2dModel);
+	m_ObjectSnapManager.track(tracker);
+	view->add(&m_ObjectSnapManager, m_p2dModel);
 }
 
 void OdExEditorObject::UninitializeSnapping(OdGsView* view) {
-	view->erase(&m_osnapMan);
-	m_osnapMan.track(NULL);
+	view->erase(&m_ObjectSnapManager);
+	m_ObjectSnapManager.track(NULL);
 }
 
 OdDbSelectionSetPtr OdExEditorObject::workingSSet() const {
-	return WorkingSelectionSet(m_pCmdCtx);
+	return WorkingSelectionSet(m_CommandContext);
 }
 
 void OdExEditorObject::SetWorkingSelectionSet(OdDbSelectionSet* selectionSet) {
-	setWorkingSelectionSet(m_pCmdCtx, selectionSet);
+	setWorkingSelectionSet(m_CommandContext, selectionSet);
 }
 
 void OdExEditorObject::SelectionSetChanged() {
-	m_gripManager.SelectionSetChanged(workingSSet());
+	m_GripManager.SelectionSetChanged(workingSSet());
 }
 
 const OdGsView* OdExEditorObject::ActiveView() const {
-	return m_pDevice->activeView();
+	return m_LayoutHelper->activeView();
 }
 
 OdGsView* OdExEditorObject::ActiveView() {
-	return m_pDevice->activeView();
+	return m_LayoutHelper->activeView();
 }
 
 const OdGsView* OdExEditorObject::ActiveTopView() const {
@@ -174,8 +174,8 @@ const OdGsView* OdExEditorObject::ActiveTopView() const {
 
 	if (HasDatabase()) {
 
-		if (!m_pCmdCtx->database()->getTILEMODE()) {
-			OdDbObjectPtr ActiveViewport {m_pCmdCtx->database()->activeViewportId().safeOpenObject()};
+		if (!m_CommandContext->database()->getTILEMODE()) {
+			OdDbObjectPtr ActiveViewport {m_CommandContext->database()->activeViewportId().safeOpenObject()};
 			OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
 
 			if (!AbstractViewportData.isNull() && AbstractViewportData->gsView(ActiveViewport)) {
@@ -270,29 +270,29 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
 	return scrPt;
 }
 
-bool OdExEditorObject::OnSize(unsigned int nFlags, int w, int h) {
-	if (m_pDevice.get()) {
-		m_pDevice->onSize(OdGsDCRect(0, w, h, 0));
+bool OdExEditorObject::OnSize(unsigned int flags, int w, int h) {
+	if (m_LayoutHelper.get()) {
+		m_LayoutHelper->onSize(OdGsDCRect(0, w, h, 0));
 		return true;
 	}
 	return false;
 }
 
-bool OdExEditorObject::OnPaintFrame(unsigned int nFlags, OdGsDCRect * pUpdatedRect) {
-	if (m_pDevice.get() && !m_pDevice->isValid()) {
-		m_pDevice->update(pUpdatedRect);
+bool OdExEditorObject::OnPaintFrame(unsigned int flags, OdGsDCRect* updatedRect) {
+	if (m_LayoutHelper.get() && !m_LayoutHelper->isValid()) {
+		m_LayoutHelper->update(updatedRect);
 		return true;
 	}
 	return false;
 }
 
 unsigned OdExEditorObject::GetSnapModes() const {
-	return m_osnapMan.snapModes();
+	return m_ObjectSnapManager.snapModes();
 }
 
 void OdExEditorObject::SetSnapModes(bool snapOn, unsigned snapModes) {
 	SETBIT(m_flags, kSnapOn, snapOn);
-	m_osnapMan.SetSnapModes(snapModes);
+	m_ObjectSnapManager.SetSnapModes(snapModes);
 }
 
 OdEdCommandPtr OdExEditorObject::Command(const OdString & commandName) {
@@ -373,10 +373,10 @@ void OdExEditorObject::Set3DView(_3DViewType type) {
 bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 	if (IsSnapOn()) {
 
-		if (m_osnapMan.snap(ActiveView(), point, m_pBasePt)) {
+		if (m_ObjectSnapManager.snap(ActiveView(), point, m_pBasePt)) {
 			
 			if (!m_p2dModel.isNull()) {
-				m_p2dModel->onModified(&m_osnapMan, (OdGiDrawable*)0);
+				m_p2dModel->onModified(&m_ObjectSnapManager, (OdGiDrawable*)0);
 			}
 			return true;
 		}
@@ -400,19 +400,19 @@ bool OdExEditorObject::Unselect() {
 	}
 	// Don't clear working selection set 'WorkingSelectionSet->clear()' to prevent previous selection modification
 	WorkingSelectionSet = OdDbSelectionSet::createObject(WorkingSelectionSet->database());
-	setWorkingSelectionSet(m_pCmdCtx, WorkingSelectionSet);
-	m_gripManager.SelectionSetChanged(WorkingSelectionSet);
+	setWorkingSelectionSet(m_CommandContext, WorkingSelectionSet);
+	m_GripManager.SelectionSetChanged(WorkingSelectionSet);
 	return bRes;
 }
 
 bool OdExEditorObject::OnCtrlClick() {
-	return m_gripManager.onControlClick();
+	return m_GripManager.onControlClick();
 }
 
 void OdExEditorObject::OnDestroy() {
-	m_pDevice.release();
+	m_LayoutHelper.release();
 	m_p2dModel.release();
-	m_pCmdCtx = 0;
+	m_CommandContext = 0;
 }
 
 bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback * pDragCallback) {
@@ -420,7 +420,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 	const bool ControlIsDown {(OdEdBaseIO::kControlIsDown & nFlags) != 0};
 	const auto pt {ToEyeToWorld(x, y)};
 
-	if (m_gripManager.OnMouseDown(x, y, ShiftIsDown)) { return true; }
+	if (m_GripManager.OnMouseDown(x, y, ShiftIsDown)) { return true; }
 
 	try {
 		if (pDragCallback && !ShiftIsDown) {
@@ -450,17 +450,17 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 		return(false);
 	}
 
-	auto UserIO {m_pCmdCtx->dbUserIO()};
+	auto UserIO {m_CommandContext->dbUserIO()};
 	UserIO->setLASTPOINT(pt);
 	UserIO->setPickfirst(0);
 
 	int iOpt = OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces;
 	if (HasDatabase()) {
 		if (ShiftIsDown) {
-			if (m_pCmdCtx->database()->appServices()->getPICKADD() > 0)
+			if (m_CommandContext->database()->appServices()->getPICKADD() > 0)
 				iOpt |= OdEd::kSelRemove;
 		} else {
-			if (m_pCmdCtx->database()->appServices()->getPICKADD() == 0)
+			if (m_CommandContext->database()->appServices()->getPICKADD() == 0)
 				Unselect();
 		}
 	}
@@ -471,7 +471,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 	OdDbSelectionSetPtr SelectionSet;
 	const bool savedSnapMode = IsSnapOn();
 	try {
-		EnableEnhRectFrame _enhRect(m_pCmdCtx);
+		EnableEnhRectFrame _enhRect(m_CommandContext);
 		SetSnapOn(false);
 		SelectionSet = UserIO->select(OdString::kEmpty, iOpt, workingSSet());
 		SetWorkingSelectionSet(SelectionSet);
@@ -490,7 +490,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 
 bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, int y) {
 	auto View {ActiveView()};
-	m_pDevice->setActiveViewport(OdGePoint2d(x, y));
+	m_LayoutHelper->setActiveViewport(OdGePoint2d(x, y));
 	const bool Changed {View != ActiveView()};
 
 	if (Changed) {
@@ -521,7 +521,7 @@ bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned int nFlags, int x,
 }
 
 bool OdExEditorObject::OnMouseMove(unsigned int flags, int x, int y) {
-	return m_gripManager.OnMouseMove(x, y);
+	return m_GripManager.OnMouseMove(x, y);
 }
 
 void OdExEditorObject::Dolly(int x, int y) {
@@ -1629,5 +1629,5 @@ bool OdExEditorObject::TrackPoint(const OdGePoint3d& point) {
 }
 
 bool OdExEditorObject::HasDatabase() const {
-	return m_pCmdCtx->baseDatabase() != 0;
+	return m_CommandContext->baseDatabase() != 0;
 }

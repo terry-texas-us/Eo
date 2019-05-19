@@ -483,15 +483,15 @@ void AeSysDoc::OnUpdateVectorize(CCmdUI * pCmdUI) {
 	pCmdUI->Enable(m_pViewer == nullptr && !theApp.recentGsDevicePath().isEmpty());
 }
 
-OdDbCommandContextPtr AeSysDoc::cmdCtx() {
-	if (m_pCmdCtx.isNull()) {
-		m_pCmdCtx = ExDbCommandContext::createObject(cmdIO(), m_DatabasePtr);
+OdDbCommandContextPtr AeSysDoc::CommandContext() {
+	if (m_CommandContext.isNull()) {
+		m_CommandContext = ExDbCommandContext::createObject(BaseIO(), m_DatabasePtr);
 	}
-	return m_pCmdCtx;
+	return m_CommandContext;
 }
 
 OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
-	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->cmdCtx();
+	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->CommandContext();
 	OdDbSelectionSetPtr SelectionSet {CommandContext->arbitraryData(L"OdaMfcApp Working Selection Set")};
 
 	if (SelectionSet.isNull()) {
@@ -502,16 +502,16 @@ OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
 	return SelectionSet;
 }
 
-OdEdBaseIO* AeSysDoc::cmdIO() noexcept {
+OdEdBaseIO* AeSysDoc::BaseIO() noexcept {
 	return (this);
 }
 
-EoDlgUserIOConsole* AeSysDoc::console() {
+EoDlgUserIOConsole* AeSysDoc::UserIOConsole() {
 	
-	if (m_pConsole.isNull()) {
-		m_pConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd());
+	if (m_UserIOConsole.isNull()) {
+		m_UserIOConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd());
 	}
-	return m_pConsole;
+	return m_UserIOConsole;
 }
 
 OdUInt32 AeSysDoc::getKeyState() noexcept {
@@ -528,13 +528,13 @@ OdGePoint3d AeSysDoc::getPoint(const OdString & prompt, int options, OdEdPointTr
 		OdString strRes = getString(prompt, options, 0);
 		throw OdEdOtherInput(strRes);
 	}
-	if (m_bConsole) { return m_pConsole->getPoint(prompt, options, tracker); }
+	if (m_bConsole) { return m_UserIOConsole->getPoint(prompt, options, tracker); }
 
 	if (m_pViewer) {
-		console()->putString(prompt);
+		UserIOConsole()->putString(prompt);
 		return m_pViewer->getPoint(prompt, options, tracker);
 	}
-	return console()->getPoint(prompt, options, tracker);
+	return UserIOConsole()->getPoint(prompt, options, tracker);
 }
 
 OdString AeSysDoc::getString(const OdString & prompt, int options, OdEdStringTracker * tracker) {
@@ -544,7 +544,7 @@ OdString AeSysDoc::getString(const OdString & prompt, int options, OdEdStringTra
 		putString(prompt + L" " + sRes);
 		return sRes;
 	}
-	if (m_bConsole) { return console()->getString(prompt, options, tracker); }
+	if (m_bConsole) { return UserIOConsole()->getString(prompt, options, tracker); }
 
 	if (m_pViewer) {
 		m_bConsoleResponded = prompt.isEmpty();
@@ -554,43 +554,43 @@ OdString AeSysDoc::getString(const OdString & prompt, int options, OdEdStringTra
 
 		return sRes;
 	}
-	return console()->getString(prompt, options, tracker);
+	return UserIOConsole()->getString(prompt, options, tracker);
 }
 
 void AeSysDoc::putString(const OdString & string) {
 	if (m_pViewer) { m_pViewer->putString(string); }
 
-	console()->putString(string);
+	UserIOConsole()->putString(string);
 }
 
-OdString AeSysDoc::recentCmd() {
-	return theApp.getRecentCmd();
+OdString AeSysDoc::RecentCommand() {
+	return theApp.GetRecentCmd();
 }
 
-OdString AeSysDoc::recentCmdName() {
-	return theApp.getRecentCmd().spanExcluding(L" \n");
+OdString AeSysDoc::RecentCommandName() {
+	return theApp.GetRecentCmd().spanExcluding(L" \n");
 }
 
-OdString AeSysDoc::commandPrompt() {
+OdString AeSysDoc::CommandPrompt() {
 	return L"Command:";
 }
 
 void AeSysDoc::OnEditConsole() {
 	auto CommandStack {::odedRegCmds()};
-	OdDbCommandContextPtr CommandContext(cmdCtx());
+	OdDbCommandContextPtr CommandContext(CommandContext());
 	OdSaveState<bool> saveConsoleMode(m_bConsole, true);
 
 	try {
 		if (m_pViewer && m_pViewer->isGettingString()) {
 
-			m_pViewer->respond(console()->getString(m_pViewer->prompt(), m_pViewer->inpOptions(), 0));
+			m_pViewer->respond(UserIOConsole()->getString(m_pViewer->prompt(), m_pViewer->inpOptions(), 0));
 			m_bConsoleResponded = true;
 
 		} else {
 			for (;;) {
-				OdString CommandName = CommandContext->userIO()->getString(commandPrompt(), 0, L"");
+				OdString CommandName = CommandContext->userIO()->getString(CommandPrompt(), 0, L"");
 				if (CommandName.isEmpty()) {
-					CommandName = recentCmdName();
+					CommandName = RecentCommandName();
 
 					if (!CommandName.isEmpty()) {
 						CommandContext->userIO()->putString(CommandName);
@@ -615,39 +615,39 @@ class CmdReactor
 	: public OdStaticRxObject<OdEdCommandStackReactor>
 	, public OdStaticRxObject<OdDbDatabaseReactor> {
 	ODRX_NO_HEAP_OPERATORS();
-	OdDbCommandContext* m_pCmdCtx;
+	OdDbCommandContext* m_CommandContext;
 	bool m_bModified;
-	OdString m_sLastInput;
+	OdString m_LastInput;
 
 	void setModified() {
 		m_bModified = true;
-		m_pCmdCtx->database()->removeReactor(this);
+		m_CommandContext->database()->removeReactor(this);
 	}
 
 public:
 
 	CmdReactor(OdDbCommandContext* dbCommandContext)
-		: m_pCmdCtx(dbCommandContext)
+		: m_CommandContext(dbCommandContext)
 		, m_bModified(false) {
-		ODA_ASSERT(m_pCmdCtx);
+		ODA_ASSERT(m_CommandContext);
 		::odedRegCmds()->addReactor(this);
-		m_pCmdCtx->database()->addReactor(this);
+		m_CommandContext->database()->addReactor(this);
 	}
 
 	~CmdReactor() {
 		::odedRegCmds()->removeReactor(this);
 
 		if (!m_bModified) {
-			m_pCmdCtx->database()->removeReactor(this);
+			m_CommandContext->database()->removeReactor(this);
 		}
 	}
 
-	void setLastInput(const OdString& sLastInput) {
-		m_sLastInput = sLastInput;
+	void SetLastInput(const OdString& lastInput) {
+		m_LastInput = lastInput;
 	}
 	
-	const OdString& lastInput() const noexcept {
-		return m_sLastInput;
+	const OdString& LastInput() const noexcept {
+		return m_LastInput;
 	}
 	
 	bool isDatabaseModified() const noexcept {
@@ -663,7 +663,7 @@ public:
 	}
 
 	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) override {
-		AeSysView* pViewer = OdDbDatabaseDocPtr(m_pCmdCtx->database())->document()->getViewer();
+		AeSysView* pViewer = OdDbDatabaseDocPtr(m_CommandContext->database())->document()->getViewer();
 		if (pViewer) {
 			OdEdCommandPtr pRes = pViewer->command(commandName);
 			if (pRes.get()) {
@@ -672,18 +672,18 @@ public:
 		}
 		OdString String;
 		String.format(L"Unknown command \"%ls\".", commandName.c_str());
-		m_pCmdCtx->userIO()->putString(String);
+		m_CommandContext->userIO()->putString(String);
 		return OdEdCommandPtr();
 	}
 
 	void commandWillStart(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
-		m_sLastInput.makeUpper();
+		m_LastInput.makeUpper();
 
 		if (!GETBIT(command->flags(), OdEdCommand::kNoHistory)) {
-			theApp.setRecentCmd(m_sLastInput);
+			theApp.SetRecentCommand(m_LastInput);
 		}
 		if (!GETBIT(command->flags(), OdEdCommand::kNoUndoMarker)) {
-			m_pCmdCtx->database()->startUndoRecord();
+			m_CommandContext->database()->startUndoRecord();
 		}
 	}
 
@@ -696,7 +696,7 @@ public:
 	}
 private:
 	void undoCmd() {
-		auto pDb {m_pCmdCtx->database()};
+		auto pDb {m_CommandContext->database()};
 		try {
 			pDb->disableUndoRecording(true);
 			pDb->undo();
@@ -716,7 +716,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
 	++m_nCmdActive;
 
-	OdDbCommandContextPtr CommandContext(cmdCtx());
+	OdDbCommandContextPtr CommandContext(CommandContext());
 
 	CmdReactor CommandReactor(CommandContext);
 
@@ -736,20 +736,20 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 			OdString s = command.spanExcluding(L" \t\r\n");
 			if (s.getLength() == command.getLength()) {
 				if (echo) {
-					CommandContext->userIO()->putString(commandPrompt() + L" " + s);
+					CommandContext->userIO()->putString(CommandPrompt() + L" " + s);
 				}
 				s.makeUpper();
-				CommandReactor.setLastInput(s);
+				CommandReactor.SetLastInput(s);
 				CommandStack->executeCommand(s, CommandContext);
 			} else {
 				m_pMacro = ExStringIO::create(command);
 				while (!m_pMacro->isEof()) {
 					try {
-						s = CommandContext->userIO()->getString(commandPrompt());
+						s = CommandContext->userIO()->getString(CommandPrompt());
 						s.makeUpper();
-						CommandReactor.setLastInput(s);
+						CommandReactor.SetLastInput(s);
 					} catch (const OdEdEmptyInput) {
-						s = recentCmdName();
+						s = RecentCommandName();
 					}
 					CommandStack->executeCommand(s, CommandContext);
 				}
@@ -765,11 +765,11 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 		if (!m_bConsole) {
 			theApp.reportError(commandMessageCaption(command), err);
 		}
-		cmdIO()->putString(err.description());
+		BaseIO()->putString(err.description());
 	}
 	if ((CommandReactor.isDatabaseModified() || selectionSet()->numEntities())) {
 
-		if (0 != CommandReactor.lastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
+		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
 			OnEditClearselection();
 		}
 		UpdateAllViews(nullptr);

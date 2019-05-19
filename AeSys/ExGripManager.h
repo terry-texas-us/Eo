@@ -255,7 +255,7 @@ private:
 	OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
 
 	OdGsLayoutHelperPtr m_pDevice;
-	OdDbCommandContext* m_pCmdCtx;
+	OdDbCommandContext* m_CommandContext;
 	OdGsModel* m_pGsModel;
 	OdGsModel* GetGsModel() noexcept override { return m_pGsModel; }
 	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_pDevice.get(); }

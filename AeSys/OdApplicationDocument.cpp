@@ -39,20 +39,20 @@ bool OdApplicationDocumentImpl::isQuiescent() const noexcept { return false; }
 
 void* OdApplicationDocumentImpl::contextPtr() const noexcept { return 0; }
 
-OdEdBaseIO* OdApplicationDocumentImpl::cmdIO() {
-	return (*m_pImp)->cmdIO();
+OdEdBaseIO* OdApplicationDocumentImpl::BaseIO() {
+	return (*m_pImp)->BaseIO();
 }
 
-OdDbCommandContextPtr OdApplicationDocumentImpl::cmdCtx() {
-	return (*m_pImp)->cmdCtx();
+OdDbCommandContextPtr OdApplicationDocumentImpl::CommandContext() {
+	return (*m_pImp)->CommandContext();
 }
 
 void OdApplicationDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
 	(*m_pImp)->ExecuteCommand(command, echo);
 }
 
-OdString OdApplicationDocumentImpl::recentCmd() {
-	return (*m_pImp)->recentCmd();
+OdString OdApplicationDocumentImpl::RecentCommand() {
+	return (*m_pImp)->RecentCommand();
 }
 
 OdDbSelectionSetPtr OdApplicationDocumentImpl::selectionSet() const {
