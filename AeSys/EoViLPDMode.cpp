@@ -555,8 +555,7 @@ void AeSysView::GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, Eo
 }
 
 void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d & previousReferenceLine, Section previousSection, EoGeLineSeg3d & currentReferenceLine, Section currentSection, EoDbGroup * group, bool generateEndCaps) {
-	if (previousReferenceLine.isParallelTo(currentReferenceLine))
-		return;
+	if (previousReferenceLine.isParallelTo(currentReferenceLine)) { return; }
 
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 

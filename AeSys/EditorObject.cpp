@@ -98,7 +98,7 @@ public:
 		return true;
 	}
 
-	void subViewportDraw(OdGiViewportDraw*) const noexcept override {}
+	void subViewportDraw(OdGiViewportDraw* viewportDraw) const noexcept override {}
 };
 
 
@@ -124,7 +124,7 @@ void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* dbComm
   // <tas="WorkingSelectionSet is only defined as function, init expecting 'typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);', I guess this is ok."/>
 	m_GripManager.Initialize(device, m_p2dModel, dbCommandContext, WorkingSelectionSet);
 
-	Set_Entity_centers();
+	SetEntityCenters();
 }
 
 void OdExEditorObject::Uninitialize() {
@@ -140,14 +140,14 @@ void OdExEditorObject::Uninitialize() {
 	m_CommandContext = 0;
 }
 
-void OdExEditorObject::InitializeSnapping(OdGsView* view, OdEdInputTracker* tracker) {
-	m_ObjectSnapManager.track(tracker);
+void OdExEditorObject::InitializeSnapping(OdGsView* view, OdEdInputTracker* inputTracker) {
+	m_ObjectSnapManager.Track(inputTracker);
 	view->add(&m_ObjectSnapManager, m_p2dModel);
 }
 
 void OdExEditorObject::UninitializeSnapping(OdGsView* view) {
 	view->erase(&m_ObjectSnapManager);
-	m_ObjectSnapManager.track(NULL);
+	m_ObjectSnapManager.Track(NULL);
 }
 
 OdDbSelectionSetPtr OdExEditorObject::workingSSet() const {
@@ -288,7 +288,7 @@ bool OdExEditorObject::OnPaintFrame(unsigned int flags, OdGsDCRect* updatedRect)
 }
 
 unsigned OdExEditorObject::GetSnapModes() const {
-	return m_ObjectSnapManager.snapModes();
+	return m_ObjectSnapManager.SnapModes();
 }
 
 void OdExEditorObject::SetSnapModes(bool snapOn, unsigned snapModes) {
@@ -374,7 +374,7 @@ void OdExEditorObject::Set3DView(_3DViewType type) {
 bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 	if (IsSnapOn()) {
 
-		if (m_ObjectSnapManager.snap(ActiveView(), point, m_pBasePt)) {
+		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_pBasePt)) {
 			
 			if (!m_p2dModel.isNull()) {
 				m_p2dModel->onModified(&m_ObjectSnapManager, (OdGiDrawable*)0);
@@ -757,17 +757,17 @@ public:
 	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
-	bool subWorldDraw(OdGiWorldDraw* pWd) const noexcept override {
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept override {
 		return false;
 	}
-	void subViewportDraw(OdGiViewportDraw* pVd) const override {
-		const OdGiViewport& vp = pVd->viewport();
-		OdGiGeometry& geom = pVd->geometry();
-		pVd->subEntityTraits().setColor(OdCmEntityColor::kACIGreen);
-		pVd->subEntityTraits().setFillType(kOdGiFillNever);
+	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override {
+		const OdGiViewport& vp = viewportDraw->viewport();
+		OdGiGeometry& geom = viewportDraw->geometry();
+		viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACIGreen);
+		viewportDraw->subEntityTraits().setFillType(kOdGiFillNever);
 
 		OdGiModelTransformSaver mt(geom, vp.getEyeToModelTransform());
-		OdGiDrawFlagsHelper _dfh(pVd->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
+		OdGiDrawFlagsHelper _dfh(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
 
 		OdGePoint3d pt1;
 		OdGePoint2d pt2;
@@ -1582,17 +1582,17 @@ void OdExCollideAllCmd::execute(OdEdCommandContext * edCommandContext) {
 }
 
 
-void OdExEditorObject::SetTracker(OdEdInputTracker* tracker) {
+void OdExEditorObject::SetTracker(OdEdInputTracker* inputTracker) {
 	if (m_InputTracker.get()) {
 		m_InputTracker->removeDrawables(ActiveTopView());
 	}
-	m_InputTracker = tracker;
+	m_InputTracker = inputTracker;
 
 	m_pBasePt = 0;
 	
-	if (tracker) {
-		SETBIT(m_flags, kTrackerHasDrawables, tracker->addDrawables(ActiveTopView()) != 0);
-		OdEdPointDefTrackerPtr pPointDefTracker = OdEdPointDefTracker::cast(tracker);
+	if (inputTracker) {
+		SETBIT(m_flags, kTrackerHasDrawables, inputTracker->addDrawables(ActiveTopView()) != 0);
+		OdEdPointDefTrackerPtr pPointDefTracker = OdEdPointDefTracker::cast(inputTracker);
 
 		if (pPointDefTracker.get()) {
 			m_basePt = pPointDefTracker->basePoint();

@@ -217,8 +217,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	for (OdUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
 		
-		if (!Layer)
-			return;
+		if (!Layer) { return; }
 
 		OdString LayerName = Layer->Name();
 		const OdDbObjectId LayerObjectId = Layers->getAt(LayerName);

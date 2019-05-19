@@ -47,8 +47,8 @@ public:
 
 	virtual void getSnapModes(const OdDbEntity* pEnt, OdArray<OdDb::OsnapMode>& snapModes) {
 		OdDbCurvePtr pCurve = OdDbCurve::cast(pEnt);
-		if (pCurve.isNull())
-			return;
+		
+		if (pCurve.isNull()) { return; }
 
 		if (pCurve->isA()->isEqualTo(OdDbLine::desc()) || pCurve->isA()->isEqualTo(OdDbArc::desc())) {
 			snapModes.append(OdDb::kOsModeEnd);
@@ -82,18 +82,18 @@ class OdBaseSnapManager
 
 	OdGsView* m_View;
 	OdGePoint3d* m_PickPoint;
-	const OdGePoint3d* m_pLastPoint;
-	OdGePoint3dArray m_snapPointsBuff;
-	OdEdInputTracker* m_pTracker;
+	const OdGePoint3d* m_LastPoint;
+	OdGePoint3dArray m_SnapPoints;
+	OdEdInputTracker* m_InputTracker;
 
-	double m_dWorldToDevice;
-	double m_dNearDist;
+	double m_WorldToDevice;
+	double m_NearDist;
 	OdGePoint3d m_snapPoint;
 	OdDb::OsnapMode m_mode;
-	bool m_bRedraw;
-	double m_hitRadius;
+	bool m_Redraw;
+	double m_HitRadius;
 
-	OdInt32 getAperture(OdDbDatabase* pDb) const;
+	OdInt32 GetAperture(OdDbDatabase* database) const;
 
 	struct SubentId {
 		SubentId() {}
@@ -131,61 +131,64 @@ class OdBaseSnapManager
 
 	SelectedEntityDataArray m_selectedEntityDataArray;
 
-	void checkSnapPoints(const SelectedEntityData& data, const OdGeMatrix3d& xWorldToEye);
+	void CheckSnapPoints(const SelectedEntityData& data, const OdGeMatrix3d& xWorldToEye);
 
-	bool checkpoint(OdDb::OsnapMode osm, const OdGePoint3d& point);
+	bool Checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point);
 
 	typedef OdArray<HistEntry> HistEntryArray;
-	static bool appendToQueue(HistEntryArray& array, const HistEntry& entry);
+	static bool AppendToQueue(HistEntryArray& array, const HistEntry& entry);
 
 	HistEntryArray m_centers;
 
 	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
-	bool subWorldDraw(OdGiWorldDraw* pWd) const override;
-	void subViewportDraw(OdGiViewportDraw*) const override;
+	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
+	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
 	bool selected(const OdGiDrawableDesc& pDrawableDesc) override;
 	OdUInt32 selected(const OdGiPathNode& pathNode, const OdGiViewport& viewInfo) override;
-	void invalidateViewport(const OdGePoint3d& point) const;
-	void invalidateViewport(const HistEntryArray& centers) const;
+	void InvalidateViewport(const OdGePoint3d& point) const;
+	void InvalidateViewport(const HistEntryArray& centers) const;
 protected:
 	OdBaseSnapManager() noexcept;
 public:
-	void track(OdEdInputTracker* pTracker);
+	void Track(OdEdInputTracker* inputTracker);
 
-	bool snap(OdGsView* pView, OdGePoint3d& point, const OdGePoint3d* pLastPoint);
+	bool Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint);
 
-	virtual unsigned snapModes() const = 0;
-	virtual unsigned toSnapModes(OdDb::OsnapMode mode) const noexcept {
+	virtual unsigned SnapModes() const = 0;
+
+	virtual unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept {
 	  // was temporary moved into OSnapManager // return 1 << mode;
 		return 1 << (mode + 1);
 	}
-	virtual OdCmEntityColor snapTrueColor() const {
+
+	virtual OdCmEntityColor SnapTrueColor() const {
 		OdCmEntityColor color;
 		color.setColorIndex(OdCmEntityColor::kACIYellow);
 		return color;
 	}
-	virtual OdCmEntityColor centerTrueColor() const {
+
+	virtual OdCmEntityColor CenterTrueColor() const {
 		OdCmEntityColor color;
 		color.setColorIndex(OdCmEntityColor::kACIforeground);
 		return color;
 	}
 
-	void reset();
+	void Reset();
 
-	void Recalc_Entity_centers();
-	virtual bool Set_Entity_centers(OdRxObject * pRxDb);
-	void Set_Entity_centers(OdDbBlockTableRecord * pBTR, const OdGeMatrix3d & matrix = OdGeMatrix3d::kIdentity);
+	void RecalculateEntityCenters();
+	virtual bool SetEntityCenters(OdRxObject* rxObject);
+	void SetEntityCenters(OdDbBlockTableRecord* blockTableRecord, const OdGeMatrix3d & matrix = OdGeMatrix3d::kIdentity);
 };
 
 class OSnapManager : public OdBaseSnapManager {
-	unsigned m_nSnapModes;
+	unsigned m_SnapModes;
 protected:
 	OSnapManager() noexcept;
 public:
-	unsigned snapModes() const noexcept override;
-	void SetSnapModes(unsigned nSnapModes) noexcept;
+	unsigned SnapModes() const noexcept override;
+	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	unsigned toSnapModes(OdDb::OsnapMode mode) const noexcept override { return 1 << mode; }
+	unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept override { return 1 << mode; }
 };

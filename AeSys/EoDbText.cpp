@@ -794,8 +794,8 @@ int TextLengthSansFormattingCharacters(const CString & text) {
 }
 
 void DisplayText(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, const CString & text) {
-	if (text.IsEmpty())
-		return;
+
+	if (text.IsEmpty()) { return; }
 
 	if (HasFormattingCharacters(text)) {
 		DisplayTextWithFormattingCharacters(view, deviceContext, fontDefinition, referenceSystem, text);

@@ -104,8 +104,8 @@ EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecor
 
 void EoDbBlockReference::Display(AeSysView * view, CDC * deviceContext) {
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0)
-		return;
+
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	Block->Display(view, deviceContext);

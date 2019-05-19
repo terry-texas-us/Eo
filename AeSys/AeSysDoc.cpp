@@ -850,7 +850,7 @@ void AeSysDoc::DeleteSelection(bool force) {
 			ExecuteCommand(L"erase");
 		}
 		if (m_pViewer) {
-			m_pViewer->editorObject().Set_Entity_centers();
+			m_pViewer->editorObject().SetEntityCenters();
 		}
 	}
 }

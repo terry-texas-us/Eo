@@ -360,9 +360,9 @@ public:
 		OdSmartPtr<OdDbUserIO> UserIO = CommandContext->userIO();
 
 		COleInsertDialog OleInsertDialog;
-		if (OleInsertDialog.DoModal() != IDOK) {
-			return;
-		}
+		
+		if (OleInsertDialog.DoModal() != IDOK) { return; }
+
 		COleDocument* OleDocument = Database->document();
 
 		OdStaticRxObject<TRACKER> tracker;

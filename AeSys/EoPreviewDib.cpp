@@ -13,10 +13,10 @@ void EoPreviewDib::SetPreviewFile(LPCWSTR fileName) {
 	m_odImage.wmf.clear();
 	m_odImage.png.clear();
 
-	if (!FileName.GetLength()) {
-		return;
-	}
+	if (!FileName.GetLength()) { return; }
+
 	CString Extension = FileName.Right(4);
+	
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
 		OdStreamBufPtr FileStreamBuffer(theApp.createFile(OdString((LPCWSTR) FileName)));
 		try {
@@ -119,15 +119,15 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
         OdUInt8* p = (OdUInt8*)m_odImage.wmf.begin();
 		mfHeader = (METAHEADER*) (p + seekpos);
 
-		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) {
-			return;
-		}
+		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) { return; }
+
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
 		HENHMETAFILE m_emf;
 		m_emf = ::SetWinMetaFileBits(dwSize, (const OdUInt8*)mfHeader, NULL, NULL);
 
 		CSize size(0, 0);
+		
 		if (aldusMFHeader) {
 			size.cx = 254 * (aldusMFHeader->bbox.right - aldusMFHeader->bbox.left) / aldusMFHeader->inch;
 			size.cy = 254 * (aldusMFHeader->bbox.bottom - aldusMFHeader->bbox.top) / aldusMFHeader->inch;

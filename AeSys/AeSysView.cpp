@@ -318,8 +318,8 @@ AeSysView::AeSysView() noexcept
 	, m_bRegenAbort(false)
 	, m_bPsOverall(false)
 	, m_mode(kQuiescent)
-	, m_pTracker(0)
-	, m_bTrackerHasDrawables(false)
+	, m_InputTracker(nullptr)
+	, m_InputTrackerHasDrawables(false)
 	, m_hCursor(0)
 	, m_pBasePt(0)
 	, m_bInRegen(false)
@@ -1684,14 +1684,14 @@ protected:
 
 public:
 
-	SaveViewParams(AeSysView* view, OdEdInputTracker* tracker, HCURSOR cursor, bool snap)
+	SaveViewParams(AeSysView* view, OdEdInputTracker* inputTracker, HCURSOR cursor, bool snap)
 		: m_View(view)
 		, m_Cursor(view->cursor()) {
-		view->track(tracker);
+		view->track(inputTracker);
 		view->setCursor(cursor);
 		
 		if (snap) {
-			view->m_editor.InitializeSnapping(view->getActiveTopView(), tracker);
+			view->m_editor.InitializeSnapping(view->getActiveTopView(), inputTracker);
 		}
 	}
 	~SaveViewParams() {
@@ -1832,8 +1832,8 @@ void AeSysView::putString(const OdString & string) {
 	theApp.SetStatusPaneTextAt(nStatusInfo, Text);
 }
 
-void AeSysView::track(OdEdInputTracker* tracker) {
-	m_editor.SetTracker(tracker);
+void AeSysView::track(OdEdInputTracker* inputTracker) {
+	m_editor.SetTracker(inputTracker);
 }
 
 HCURSOR AeSysView::cursor() const noexcept {
@@ -2046,9 +2046,9 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 			}
 			break;
 	}
-	if (m_pTracker && m_mode == kGetString && m_response.m_type != Response::kString && m_inpars.result() != (LPCWSTR) m_response.m_string) {
-		static_cast<OdEdStringTracker*>(m_pTracker)->setValue(m_inpars.result());
-		if (m_bTrackerHasDrawables) {
+	if (m_InputTracker && m_mode == kGetString && m_response.m_type != Response::kString && m_inpars.result() != (LPCWSTR) m_response.m_string) {
+		static_cast<OdEdStringTracker*>(m_InputTracker)->setValue(m_inpars.result());
+		if (m_InputTrackerHasDrawables) {
 			getActiveTopView()->invalidate();
 			PostMessage(WM_PAINT);
 		}
@@ -3588,9 +3588,9 @@ void AeSysView::OnFind(void) {
 	}
 }
 void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton * findComboBox, CString & findText) {
-	if (findComboBox == NULL) {
-		return;
-	}
+
+	if (findComboBox == NULL) { return; }
+
 	const BOOL IsLastCommandFromButton = CMFCToolBar::IsLastCommandFromButton(findComboBox);
 
 	if (IsLastCommandFromButton) {

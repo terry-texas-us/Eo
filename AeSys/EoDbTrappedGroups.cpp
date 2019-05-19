@@ -18,12 +18,13 @@ POSITION AeSysDoc::AddGroupToTrap(EoDbGroup* group) {
 }
 
 void AeSysDoc::CompressTrappedGroups() {
-	if (m_TrappedGroupList.GetCount() <= 1) {
-		return;
-	}
+	
+	if (m_TrappedGroupList.GetCount() <= 1) { return; }
+	
 	EoDbGroup* NewGroup = new EoDbGroup;
 
 	POSITION GroupPosition = m_TrappedGroupList.GetHeadPosition();
+	
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = m_TrappedGroupList.GetNext(GroupPosition);
 
@@ -148,9 +149,9 @@ void AeSysDoc::DeleteAllTrappedGroups() {
 }
 
 void AeSysDoc::ExpandTrappedGroups() {
-	if (m_TrappedGroupList.IsEmpty()) {
-		return;
-	}
+	
+	if (m_TrappedGroupList.IsEmpty()) { return; }
+	
 	EoDbGroup* Group;
 	EoDbGroup* NewGroup;
 	EoDbPrimitive* Primitive;

@@ -214,7 +214,6 @@
     <ClCompile Include="ModeLine.cpp" />
     <ClCompile Include="EoGsModelTransform.cpp" />
     <ClCompile Include="EoGsViewTransform.cpp" />
-    <ClCompile Include="EoObjectSnapManager.cpp" />
     <ClCompile Include="OSnapManager.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -374,7 +373,6 @@
     <ClInclude Include="EoGeMatrix3d.h" />
     <ClInclude Include="EoGsModelTransform.h" />
     <ClInclude Include="EoGsViewTransform.h" />
-    <ClInclude Include="EoObjectSnapManager.h" />
     <ClInclude Include="OSnapManager.h" />
     <ClInclude Include="PegColors.h" />
     <ClInclude Include="Preview.h" />

@@ -390,18 +390,14 @@ OdUInt32 OdExGripData::subSetAttributes(OdGiDrawableTraits* drawableTraits) cons
 	return kDrawableRegenDraw;
 }
 
-bool OdExGripData::subWorldDraw(OdGiWorldDraw * worldDraw) const {
+bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 	double dGripSize = m_pOwner->m_GRIPSIZE;
 
 	if (!worldDraw->context() || !worldDraw->context()->database()) {
 		dGripSize = m_pOwner->m_GRIPSIZE;
 	}
-	//else
-	//{
-	//  // Here is the design flaw:
-	//  // ARX help says that grip size passed in callback below should be
-	//  // calculated individually for each viewport.
-	//}
+
+	// Here is the design flaw: ARX help says that grip size passed in callback below should be calculated individually for each viewport.
 
 	if (GripData().get() && GripData()->worldDraw()) {
 		OdGePoint3d ptComputed;
@@ -1289,14 +1285,15 @@ void OdExGripManager::removeDrawables(OdGsView* view) {
 	}
 }
 
-inline void resetDragging(OdGsDevice * pDevice, bool bOp) {
-	if (!pDevice)
-		return;
+inline void resetDragging(OdGsDevice* pDevice, bool bOp) {
+	if (!pDevice) { return; }
+
 	OdRxDictionaryPtr pProps = pDevice->properties();
-	if (pProps.isNull())
-		return;
-	if (!pProps->has(L"DrawDragging"))
-		return;
+
+	if (pProps.isNull()) { return; }
+
+	if (!pProps->has(L"DrawDragging")) { return; }
+
 	pProps->putAt(L"DrawDragging", OdRxVariantValue(bOp));
 }
 

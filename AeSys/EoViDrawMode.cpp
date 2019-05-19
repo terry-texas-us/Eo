@@ -174,8 +174,7 @@ void AeSysView::OnDrawModeReturn() {
 		}
 		case ID_OP3:
 		{
-			if (NumberOfPoints == 1)
-				return;
+			if (NumberOfPoints == 1) { return; }
 
 			if (m_DrawModePoints[NumberOfPoints - 1] == CurrentPnt) {
 				theApp.AddStringToMessageList(IDS_MSG_PTS_COINCIDE);
@@ -207,8 +206,7 @@ void AeSysView::OnDrawModeReturn() {
 			CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
 			m_DrawModePoints.append(CurrentPnt);
 
-			if (NumberOfPoints == 1)
-				return;
+			if (NumberOfPoints == 1) { return; }
 
 			m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
@@ -234,8 +232,7 @@ void AeSysView::OnDrawModeReturn() {
 			}
 			m_DrawModePoints.append(CurrentPnt);
 
-			if (NumberOfPoints == 1)
-				return;
+			if (NumberOfPoints == 1) { return; }
 
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 			OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);

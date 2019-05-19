@@ -189,9 +189,7 @@ void AeSysView::OnCutModeClip(void) {
 		const OdGePoint3d pt1 = rPrvPos;
 		const OdGePoint3d pt2 = ptCur;
 
-		if (pt1 == pt2) {
-			return;
-		}
+		if (pt1 == pt2) { return; }
 
 		double dRel[2];
 		OdGePoint3d	ptCut[2];

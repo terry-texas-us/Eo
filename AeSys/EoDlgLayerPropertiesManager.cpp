@@ -135,9 +135,9 @@ void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	m_TreeFilters.DeleteAllItems();
 	OdLyLayerFilterManagerPtr FilterManager = ::odlyGetLayerFilterManager(m_Database);
 	OdLyLayerFilterPtr pCurrent;
-	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk) {
-		return;
-	}
+	
+	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk) { return; }
+
 	UpdateFilterTree(m_TreeFilters, TVI_ROOT, m_RootFilter, pCurrent);
 	m_TreeFilters.SetItemImage(m_TreeFilters.GetRootItem(), 0, 0);
 }

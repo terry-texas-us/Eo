@@ -3,9 +3,8 @@
 #include "AeSysView.h"
 
 void AeSysView::ModeLineDisplay() {
-	if (theApp.CurrentMode() == 0) {
-		return;
-	}
+	if (theApp.CurrentMode() == 0) { return; }
+
 	m_OpHighlighted = 0;
 
 	CString ModeInformation = theApp.LoadStringResource(UINT(theApp.CurrentMode()));
@@ -98,9 +97,8 @@ OdUInt16 AeSysView::ModeLineHighlightOp(OdUInt16 command) {
 	return (command);
 }
 void AeSysView::ModeLineUnhighlightOp(OdUInt16& command) {
-	if (command == 0 || m_OpHighlighted == 0) {
-		return;
-	}
+	if (command == 0 || m_OpHighlighted == 0) { return; }
+
 	const int PaneIndex = ::nStatusOp0 + m_OpHighlighted - ID_OP0;
 
 	GetStatusBar().SetPaneTextColor(PaneIndex);

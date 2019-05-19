@@ -64,8 +64,8 @@ class AeSysView
 	Response m_response;
 	int m_inpOptions;
 
-	OdEdInputTracker* m_pTracker;
-	bool m_bTrackerHasDrawables;
+	OdEdInputTracker* m_InputTracker;
+	bool m_InputTrackerHasDrawables;
 	OdGePoint3d m_basePt;
 	const OdGePoint3d* m_pBasePt;
 
@@ -111,7 +111,7 @@ public:
 	const OdGsView* getActiveTopView() const;
 	void propagateActiveViewChanges() const;
 
-	void track(OdEdInputTracker* tracker);
+	void track(OdEdInputTracker* inputTracker);
 	void setCursor(HCURSOR cursor) noexcept;
 	HCURSOR cursor() const noexcept;
 

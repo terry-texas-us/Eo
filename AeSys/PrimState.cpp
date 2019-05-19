@@ -38,8 +38,8 @@ size_t CPrimState::HatchInteriorStyleIndex() const noexcept {
 	return (m_HatchInteriorStyleIndex);
 }
 void CPrimState::Restore(CDC* deviceContext, int iSaveId) {
-	if (iSaveId >= sizeof(psSav) / sizeof(psSav[0]))
-		return;
+	
+	if (iSaveId >= sizeof(psSav) / sizeof(psSav[0])) { return; }
 
 	if (psSav[iSaveId] != 0) {
 		SetPen(NULL, deviceContext, psSav[iSaveId]->ColorIndex(), psSav[iSaveId]->LinetypeIndex());

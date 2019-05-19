@@ -154,24 +154,24 @@ public:
 
 	bool Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint = 0);
 	unsigned GetSnapModes() const;
-	void SetSnapModes(bool bSnapOn, unsigned modes);
+	void SetSnapModes(bool snapOn, unsigned snapModes);
 	void ResetSnapManager();
-	void InitializeSnapping(OdGsView* view, OdEdInputTracker* tracker);
+	void InitializeSnapping(OdGsView* view, OdEdInputTracker* inputTracker);
 	void UninitializeSnapping(OdGsView* view);
 
 	inline OdGsModel* GsModel() { return m_p2dModel.get(); }
 
-	void Recalc_Entity_centers(void) {
-		m_ObjectSnapManager.Recalc_Entity_centers();
+	void RecalculateEntityCenters() {
+		m_ObjectSnapManager.RecalculateEntityCenters();
 	}
 
-	void Set_Entity_centers() {
+	void SetEntityCenters() {
 		if (HasDatabase()) {
-			m_ObjectSnapManager.Set_Entity_centers(m_CommandContext->database());
+			m_ObjectSnapManager.SetEntityCenters(m_CommandContext->database());
 		}
 	}
 
-	void SetTracker(OdEdInputTracker* tracker);
+	void SetTracker(OdEdInputTracker* inputTracker);
 
 	bool TrackString(const OdString& value);
 	bool TrackPoint(const OdGePoint3d& point);
@@ -184,5 +184,5 @@ inline OdGiDrawablePtr OdExEditorObject::SnapDrawable() const {
 }
 
 inline void OdExEditorObject::ResetSnapManager() {
-	m_ObjectSnapManager.reset();
+	m_ObjectSnapManager.Reset();
 }

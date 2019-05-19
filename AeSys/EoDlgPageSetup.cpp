@@ -221,9 +221,8 @@ void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString& deviceName, OdString ca
 	OdString PlotCfgName = m_PlotSettings.getPlotCfgName();
 	OdString CanonicalMediaName = m_PlotSettings.getCanonicalMediaName();
 
-	if (validNames && deviceName == PlotCfgName && CanonicalMediaName == canonicalMediaName) {
-		return;
-	}
+	if (validNames && deviceName == PlotCfgName && CanonicalMediaName == canonicalMediaName) { return; }
+
 	if (m_PlotSettingsValidator->setPlotCfgName(&m_PlotSettings, deviceName, canonicalMediaName) != eOk) // good device, but wrong paper
 	{
 		if (m_PlotSettingsValidator->setPlotCfgName(&m_PlotSettings, deviceName) != eOk) { // wrong device
@@ -470,9 +469,8 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 
 	m_PlotDeviceName.SelectString(0, DeviceName);
 
-	if (!FillPaperSizes()) { // failed?
-		return;
-	}
+	if (!FillPaperSizes()) { return; }
+
 	OdString LocaleMediaName = m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, m_PlotSettings.getCanonicalMediaName());
 
 	if (m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, LocaleMediaName)) == LB_ERR) {
@@ -882,18 +880,19 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 		OdDbSystemServices* SystemServices = odSystemServices();
 		OdString sPath = LPCWSTR(tmp);
 		sPath = m_PlotSettings.database()->appServices()->findFile(sPath);
-		if (sPath.isEmpty()) {
-			return;
-		}
+		
+		if (sPath.isEmpty()) { return; }
+
 		OdStreamBufPtr StreamBuffer;
+		
 		if (SystemServices->accessFile(sPath, Oda::kFileRead)) {
 			bSucc = true;
 			StreamBuffer = SystemServices->createFile(sPath);
 		}
-		if (!bSucc) {
-			return;
-		}
+		if (!bSucc) { return; }
+
 		OdPsPlotStyleTablePtr PlotStyleTable;
+		
 		if (StreamBuffer.get()) {
 			OdPsPlotStyleServicesPtr PlotStyleServices = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);
 			if (PlotStyleServices.get()) {

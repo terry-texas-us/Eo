@@ -108,9 +108,8 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept 
 	}
 	const double Relationship = SwpAngToPt(point) / m_SweepAngle;
 
-	if (Relationship <= DBL_EPSILON || Relationship >= 1. - DBL_EPSILON) {
-		return;
-	}
+	if (Relationship <= DBL_EPSILON || Relationship >= 1. - DBL_EPSILON) { return; }
+
 	const double SweepAngle = m_SweepAngle * Relationship;
 
 	OdDbDatabasePtr Database = this->m_EntityObjectId.database();

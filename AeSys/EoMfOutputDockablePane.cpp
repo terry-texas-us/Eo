@@ -83,9 +83,8 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 		CMenu* SubMenu = Menu.GetSubMenu(0);
 		CMFCPopupMenu* PopupMenu = new CMFCPopupMenu;
 
-		if (!PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE)) {
-			return;
-		}
+		if (!PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE)) { return; }
+
 		((CMDIFrameWndEx*) AfxGetMainWnd())->OnShowPopupMenu(PopupMenu);
 		UpdateDialogControls(this, FALSE);
 	}

@@ -282,9 +282,9 @@ void AeSysView::OnPipeModeSymbol() {
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {get<tGroup>(Selection)};
-	if (Group == nullptr) {
-		return;
-	}
+	
+	if (Group == nullptr) { return; }
+
 	auto HorizontalSection {get<1>(Selection)};
 
 	EoDlgPipeSymbol Dialog;

@@ -161,9 +161,9 @@ void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_PropertyGrid.IsAlphabeticMode());
 }
 void EoMfPropertiesDockablePane::AdjustLayout() {
-	if (GetSafeHwnd() == NULL) {
-		return;
-	}
+	
+	if (GetSafeHwnd() == NULL) { return; }
+
 	CRect rectClient,rectCombo;
 	GetClientRect(rectClient);
 

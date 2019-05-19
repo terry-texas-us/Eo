@@ -32,10 +32,8 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	CFileException e;
 	CStdioFile fl;
 
-	if (!fl.Open(fileName, CFile::modeRead | CFile::typeText, &e)) {
-		// <tas="failure to open and then continue Pattern file, but still continues."</tas>
-		return;
-	}
+	if (!fl.Open(fileName, CFile::modeRead | CFile::typeText, &e)) { return; }
+	// <tas="failure to open and then continue Pattern file, but still continues."</tas>
 
 	OdHatchPatternManager* Manager = theApp.patternManager();
 

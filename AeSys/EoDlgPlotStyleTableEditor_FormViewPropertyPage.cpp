@@ -583,9 +583,9 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 	m_bEditChanging = true;
 
 	const int iItem = m_listStyles.GetSelectionMark();
-	if (iItem < 0) {
-		return;
-	}
+	
+	if (iItem < 0) { return; }
+
 	CPsListStyleData *pPsListStyleData = (CPsListStyleData*)(m_listStyles.GetItemData(iItem));
 	OdPsPlotStyle* pPs = pPsListStyleData->GetOdPsPlotStyle();
 	CString pVal;
@@ -918,9 +918,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::SetFileBufPath(const OdString sF
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSaveBtn() {
 	CString sPath = (LPCWSTR)m_sFileBufPath;
 
-	if (!DoPromptFileName(sPath, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST))
-		return;	// don't even attempt to save
-
+	if (!DoPromptFileName(sPath, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST)) { return; } // don't even attempt to save
 
 	OdStreamBufPtr pFileBuf;
 	OdDbSystemServices* pSs = odSystemServices();

@@ -162,18 +162,18 @@ void EoDlgSetActiveLayout::OnNew() {
 void EoDlgSetActiveLayout::OnFromTemplate() {
 	CString Filter(L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||");
 	CString FileName = theApp.BrowseWithPreview(/*GetMainWnd()->*/GetSafeHwnd(), Filter);
-	if (FileName.GetLength() == 0)
-		return;
+	
+	if (FileName.GetLength() == 0) { return; }
 
 	OdDbDatabasePtr Database = theApp.readFile(OdString(FileName));
-	if (Database.isNull()) {
-		return;
-	}
+	
+	if (Database.isNull()) { return; }
+
 	OdDbLayoutManagerPtr pLManager = m_pDb->appServices()->layoutManager();
 	OdDbLayoutPtr pLayout = OdDbLayout::cast(pLManager->findLayoutNamed(Database, L"Layout1").openObject());
-	if (pLayout.isNull()) {
-		return;
-	}
+	
+	if (pLayout.isNull()) { return; }
+
 	CString strNewName;
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
 	try {

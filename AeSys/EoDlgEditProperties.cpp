@@ -103,18 +103,17 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 }
 void EoDlgEditProperties::OnButton() {
 	UpdateData();
-	if (m_nCurItem == -1) {
-		return;
-	}
+	
+	if (m_nCurItem == -1) { return; }
+	
 	OdResBufPtr rb = m_pResBuf;
 	int i = 0;
 	while (!rb.isNull() && i < m_nCurItem) {
 		++i;
 		rb = rb->next();
 	}
-	if (rb.isNull()) {
-		return;
-	}
+	if (rb.isNull()) { return; }
+
 	switch (rb->restype()) {
 		case OdResBuf::kRtColor:
 			rb->setColor(OdDbUnitsFormatter::unformatColor((LPCWSTR) m_sValue));

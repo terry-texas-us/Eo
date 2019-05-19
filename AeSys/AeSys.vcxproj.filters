@@ -378,9 +378,6 @@
     <ClCompile Include="EoDlgUserIOConsole.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="EoObjectSnapManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="EoLoadApps.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -872,9 +869,6 @@
     </ClInclude>
     <ClInclude Include="EoDlgUserIOConsole.h">
       <Filter>Header Files\Dialogs</Filter>
-    </ClInclude>
-    <ClInclude Include="EoObjectSnapManager.h">
-      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EoLoadApps.h">
       <Filter>Header Files</Filter>
