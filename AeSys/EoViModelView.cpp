@@ -59,7 +59,7 @@ OdGeVector3d AeSysView::ViewUp() const noexcept {
 	return m_ViewTransform.ViewUp();
 }
 void AeSysView::ModelViewInitialize() {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 	SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
 }

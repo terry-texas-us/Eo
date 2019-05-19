@@ -490,7 +490,7 @@ OdBaseGripManager::OdBaseGripManager() noexcept {
 }
 
 OdExGripManager::OdExGripManager() noexcept {
-	m_pDevice = 0;
+	m_LayoutHelper = 0;
 	m_CommandContext = 0;
 	m_pGsModel = 0;
 
@@ -507,7 +507,7 @@ OdExGripManager::~OdExGripManager() {
 }
 
 void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel * gsModel, OdDbCommandContext * dbCommandContext, GetSelectionSetPtr pGetSSet) {
-	m_pDevice = device;
+	m_LayoutHelper = device;
 	m_pGsModel = gsModel;
 	m_CommandContext = dbCommandContext;
 
@@ -531,7 +531,7 @@ void OdExGripManager::Uninitialize() {
 		Disable(true);
 		m_CommandContext = 0;
 	}
-	m_pDevice = 0;
+	m_LayoutHelper = 0;
 }
 
 void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext * edCommandContext) {
@@ -1227,8 +1227,8 @@ void OdBaseGripManager::UpdateInvisibleGrips() {
 }
 
 void OdExGripManager::ShowGrip(OdExGripData* pGrip, bool model) {
-	OdGsPaperLayoutHelperPtr pPaperHelper = OdGsPaperLayoutHelper::cast(m_pDevice);
-	const OdUInt32 iSize = m_pDevice->numViews();
+	OdGsPaperLayoutHelperPtr pPaperHelper = OdGsPaperLayoutHelper::cast(m_LayoutHelper);
+	const OdUInt32 iSize = m_LayoutHelper->numViews();
 	
 	if (pPaperHelper.get()) {
 	  //for( i = 0; i < iSize; i++ )
@@ -1243,21 +1243,22 @@ void OdExGripManager::ShowGrip(OdExGripData* pGrip, bool model) {
 			pPaperHelper->overallView()->add(pGrip, m_pGsModel);
 		}
 	} else {
-		for (unsigned i = 0; i < iSize; i++)
-			m_pDevice->viewAt(i)->add(pGrip, m_pGsModel);
+		for (unsigned i = 0; i < iSize; i++) {
+			m_LayoutHelper->viewAt(i)->add(pGrip, m_pGsModel);
+		}
 	}
 }
 
 void OdExGripManager::HideGrip(OdExGripData * grip, bool model) {
-	OdGsPaperLayoutHelperPtr pPaperHelper = OdGsPaperLayoutHelper::cast(m_pDevice);
-	const OdUInt32 iSize = m_pDevice->numViews();
+	OdGsPaperLayoutHelperPtr pPaperHelper = OdGsPaperLayoutHelper::cast(m_LayoutHelper);
+	const OdUInt32 iSize = m_LayoutHelper->numViews();
 
 	if (pPaperHelper.get()) {
 		for (unsigned i = 0; i < iSize; i++)
-			m_pDevice->viewAt(i)->erase(grip);
+			m_LayoutHelper->viewAt(i)->erase(grip);
 	} else {
 		for (unsigned i = 0; i < iSize; i++)
-			m_pDevice->viewAt(i)->erase(grip);
+			m_LayoutHelper->viewAt(i)->erase(grip);
 	}
 }
 
@@ -1270,7 +1271,7 @@ void OdBaseGripManager::setValue(const OdGePoint3d & ptValue) {
 }
 
 int OdExGripManager::addDrawables(OdGsView* view) {
-	ODA_ASSERT(view->device() == m_pDevice->underlyingDevice().get());
+	ODA_ASSERT(view->device() == m_LayoutHelper->underlyingDevice().get());
 
 	const OdUInt32 iSize = m_aDrags.size();
 
@@ -1300,11 +1301,11 @@ inline void resetDragging(OdGsDevice * pDevice, bool bOp) {
 }
 
 void OdExGripManager::DraggingStarted() {
-	::resetDragging(m_pDevice, true);
+	::resetDragging(m_LayoutHelper, true);
 }
 
 void OdExGripManager::DraggingStopped() {
-	::resetDragging(m_pDevice, false);
+	::resetDragging(m_LayoutHelper, false);
 }
 
 OdSelectionSetPtr OdExGripManager::WorkingSelectionSet() const {
@@ -1315,7 +1316,7 @@ OdSelectionSetPtr OdExGripManager::WorkingSelectionSet() const {
 }
 
 OdGsView* OdExGripManager::ActiveGsView() const {
-	return m_pDevice->activeView();
+	return m_LayoutHelper->activeView();
 }
 
 OdDbStub* OdBaseGripManager::ActiveViewportId() const {

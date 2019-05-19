@@ -466,12 +466,12 @@ void AeSysView::OnDraw(CDC * deviceContext) {
 		BackgroundImageDisplay(deviceContext);
 		DisplayGrid(deviceContext);
 
-		if (m_pDevice.isNull()) {
+		if (m_LayoutHelper.isNull()) {
 			Document->DisplayAllLayers(this, deviceContext);
 		} else {
 			Document->BuildVisibleGroupList(this);
 			// <tas="background and grid display are obscurred by this update."/>
-			m_pDevice->update();
+			m_LayoutHelper->update();
 		}
 		Document->DisplayUniquePoints();
 		UpdateStateInformation(All);
@@ -502,7 +502,7 @@ void AeSysView::OnInitialUpdate() {
 
 	Document->setVectorizer(this);
 
-	m_editor.Initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->CommandContext());
+	m_editor.Initialize(m_LayoutHelper, static_cast<AeSysDoc*>(GetDocument())->CommandContext());
 
 	SetRenderMode(OdGsView::k2DOptimized);
 	theApp.OnModeDraw();
@@ -523,9 +523,9 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	if (!regenAbort()) {
 		try {
 			MainFrame->StartTimer();
-			if (m_pDevice.get()) {
+			if (m_LayoutHelper.get()) {
 				setViewportBorderProperties();
-				m_pDevice->update();
+				m_LayoutHelper->update();
 			}
 			if (!regenAbort()) {
 				MainFrame->StopTimer((m_paintMode == PaintMode_Regen) ? L"Regen" : L"Redraw");
@@ -572,15 +572,15 @@ BOOL AeSysView::OnEraseBkgnd(CDC * deviceContext) {
 }
 void AeSysView::OnSize(UINT type, int cx, int cy) {
 	if (cx && cy) {
-		if (m_pDevice.isNull()) {
+		if (m_LayoutHelper.isNull()) {
 			__super::OnSize(type, cx, cy);
 		} else {
 			SetViewportSize(cx, cy);
-			m_pDevice->onSize(OdGsDCRect(0, cx, cy, 0));
+			m_LayoutHelper->onSize(OdGsDCRect(0, cx, cy, 0));
 
 			const auto Target {OdGePoint3d(m_ViewTransform.FieldWidth() / 2., m_ViewTransform.FieldHeight() / 2., 0.)};
 			const auto Position {Target + (OdGeVector3d::kZAxis * m_ViewTransform.LensLength())};
-			OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+			OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 			FirstView->setView(Position, Target, OdGeVector3d::kYAxis, m_ViewTransform.FieldWidth(), m_ViewTransform.FieldHeight());
 
 			m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
@@ -610,10 +610,10 @@ int AeSysView::OnCreate(LPCREATESTRUCT createStructure) {
 	return 0;
 }
 OdGsView* AeSysView::getActiveView() {
-	return m_pDevice->activeView();
+	return m_LayoutHelper->activeView();
 }
 const OdGsView* AeSysView::getActiveView() const {
-	return m_pDevice->activeView();
+	return m_LayoutHelper->activeView();
 }
 OdGsView* AeSysView::getActiveTopView() {
 	OdGsView* ActiveView = getActiveView();
@@ -723,21 +723,6 @@ void AeSysView::propagateActiveViewChanges() const {
 	}
 }
 
-CRect AeSysView::viewportRect() const {
-	CRect rc;
-	GetClientRect(&rc);
-	return rc;
-}
-CRect AeSysView::viewRect(OdGsView * view) {
-	OdGePoint3d ll;
-	OdGePoint3d ur;
-	view->getViewport((OdGePoint2d&) ll, (OdGePoint2d&) ur);
-	const OdGeMatrix3d x = view->screenMatrix();
-	ll.transformBy(x);
-	ur.transformBy(x);
-	return CRect(OdRoundToLong(ll.x), OdRoundToLong(ur.y), OdRoundToLong(ur.x), OdRoundToLong(ll.y));
-}
-
 inline OdGsViewPtr overallView(OdGsDevice * device) {
 	OdGsViewPtr OverallView;
 	OdGsPaperLayoutHelperPtr PaperLayoutHelper = OdGsPaperLayoutHelper::cast(device);
@@ -755,14 +740,14 @@ inline OdGsViewPtr activeView(OdGsDevice * device) {
 	return ActiveView;
 }
 void AeSysView::setViewportBorderProperties() {
-	OdGsViewPtr OverallView = overallView(m_pDevice);
-	OdGsViewPtr ActiveView = activeView(m_pDevice);
+	OdGsViewPtr OverallView = overallView(m_LayoutHelper);
+	OdGsViewPtr ActiveView = activeView(m_LayoutHelper);
 
-	const int NumberOfViews = m_pDevice->numViews();
+	const int NumberOfViews = m_LayoutHelper->numViews();
 	if (NumberOfViews > 1) {
 		for (int i = 0; i < NumberOfViews; ++i) {
-			OdGsViewPtr View = m_pDevice->viewAt(i);
-			if ((View == OverallView) || (OdGsPaperLayoutHelper::cast(m_pDevice).get() && (View != ActiveView))) {
+			OdGsViewPtr View = m_LayoutHelper->viewAt(i);
+			if ((View == OverallView) || (OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && (View != ActiveView))) {
 				// no border
 				View->setViewportBorderVisibility(false);
 			} else if (View != ActiveView) {
@@ -995,30 +980,30 @@ void AeSysView::createDevice() {
 		setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
 		enableGsModel(theApp.useGsModel());
 
-		m_pDevice = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
+		m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
 		
-		m_layoutId = m_pDevice->layoutId();
+		m_layoutId = m_LayoutHelper->layoutId();
 
 		const ODCOLORREF* palette = theApp.curPalette();
 		ODGSPALETTE pPalCpy;
 		pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
 		pPalCpy[0] = theApp.activeBackground();
-		m_pDevice->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
-		auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_pDevice)};
+		m_LayoutHelper->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
+		auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 		
 		if (PaperLayoutHelper.isNull()) {
 			m_bPsOverall = false;
-			m_pDevice->setBackgroundColor(pPalCpy[0]); // for model space
+			m_LayoutHelper->setBackgroundColor(pPalCpy[0]); // for model space
 		} else {
 			m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
-			m_pDevice->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
+			m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
 		}
 		setPaletteBackground(theApp.activeBackground());
 
 		setViewportBorderProperties();
 
 		const OdGsDCRect gsRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top);
-		m_pDevice->onSize(gsRect);
+		m_LayoutHelper->onSize(gsRect);
 
 		// Adding plotstyletable info
 		preparePlotstyles();
@@ -1048,31 +1033,31 @@ void AeSysView::ResetDevice(bool zoomExtents) {
 			setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
 			enableGsModel(theApp.useGsModel());
 
-			m_pDevice = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
-			m_layoutId = m_pDevice->layoutId();
+			m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
+			m_layoutId = m_LayoutHelper->layoutId();
 
 			const ODCOLORREF* palette = theApp.curPalette();
 			ODGSPALETTE pPalCpy;
 			pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
 			pPalCpy[0] = theApp.activeBackground();
 
-			m_pDevice->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
+			m_LayoutHelper->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
 			
-			auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_pDevice)};
+			auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 			if (PaperLayoutHelper.isNull()) {
 				m_bPsOverall = false;
-				m_pDevice->setBackgroundColor(pPalCpy[0]); // for model space
+				m_LayoutHelper->setBackgroundColor(pPalCpy[0]); // for model space
 			} else {
 				m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
-				m_pDevice->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
+				m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
 			}
 			setPaletteBackground(theApp.activeBackground());
 
 			m_ModelTabIsActive = GetDocument()->m_DatabasePtr->getTILEMODE();
-			SetViewportBorderProperties(m_pDevice, m_ModelTabIsActive);
+			SetViewportBorderProperties(m_LayoutHelper, m_ModelTabIsActive);
 
 			if (zoomExtents) {
-				OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+				OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 
 				OdAbstractViewPEPtr(FirstView)->zoomExtents(FirstView);
 			}
@@ -1083,7 +1068,7 @@ void AeSysView::ResetDevice(bool zoomExtents) {
 }
 
 void AeSysView::destroyDevice() {
-	m_pDevice.release();
+	m_LayoutHelper.release();
 }
 
 void AeSysView::OnBeginPrinting(CDC * deviceContext, CPrintInfo * printInformation) {
@@ -1591,23 +1576,21 @@ void AeSysView::OnPrint(CDC * deviceContext, CPrintInfo * printInformation) {
 		const long y1 = long((-offsetY + dry1) * koeffY);
 		const long y2 = long((-offsetY + dry2) * koeffY);
 
-		OdGsDCRect viewportRect;
+		OdGsDCRect ViewportRectangle;
+		
 		if (IsPrint180Degrees || IsPrint90Degrees) {
-			//viewportRect = OdGsDCRect(x1, x2, y1, y2);
-			viewportRect = OdGsDCRect(x2, x1, y1, y2);
+			ViewportRectangle = OdGsDCRect(x2, x1, y1, y2);
 		} else if (IsPrint0Degrees || IsPrint270Degrees) {
-			//viewportRect = OdGsDCRect(x2, x1, y2, y1);
-			viewportRect = OdGsDCRect(x1, x2, y2, y1);
+			ViewportRectangle = OdGsDCRect(x1, x2, y2, y1);
 		} else { // preview
-			//viewportRect = OdGsDCRect(x2, x1, y2, y1);
-			viewportRect = OdGsDCRect(x1, x2, y2, y1);
+			ViewportRectangle = OdGsDCRect(x1, x2, y2, y1);
 		}
 		if (!IsPlotViaBitmap) {
-			m_pPrinterDevice->onSize(viewportRect);
+			m_pPrinterDevice->onSize(ViewportRectangle);
 			m_pPrinterDevice->properties()->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) deviceContext->m_hDC));
 			m_pPrinterDevice->update(0);
 		} else {
-			CRect rc(viewportRect.m_min.x, viewportRect.m_max.y, viewportRect.m_max.x, viewportRect.m_min.y);
+			CRect rc(ViewportRectangle.m_min.x, ViewportRectangle.m_max.y, ViewportRectangle.m_max.x, ViewportRectangle.m_min.y);
 			generateTiles(deviceContext->m_hDC, rc, m_pPrinterDevice, 1000, 1000);
 		}
 	} else {
@@ -1652,25 +1635,25 @@ void AeSysView::OnUpdateDrag(CCmdUI * pCmdUI) {
 }
 
 void AeSysView::OnViewerRegen() {
-	m_pDevice->invalidate();
-	if (m_pDevice->gsModel()) {
-		m_pDevice->gsModel()->invalidate(OdGsModel::kInvalidateAll);
+	m_LayoutHelper->invalidate();
+	if (m_LayoutHelper->gsModel()) {
+		m_LayoutHelper->gsModel()->invalidate(OdGsModel::kInvalidateAll);
 	}
 	m_paintMode = PaintMode_Regen;
 	PostMessage(WM_PAINT);
 }
 
 void AeSysView::OnViewerVpregen() {
-	m_pDevice->invalidate();
-	if (m_pDevice->gsModel()) {
-		m_pDevice->gsModel()->invalidate(getActiveView());
+	m_LayoutHelper->invalidate();
+	if (m_LayoutHelper->gsModel()) {
+		m_LayoutHelper->gsModel()->invalidate(getActiveView());
 	}
 	m_paintMode = PaintMode_Regen;
 	PostMessage(WM_PAINT);
 }
 
 void AeSysView::OnUpdateViewerRegen(CCmdUI * pCmdUI) {
-	pCmdUI->Enable(m_pDevice->gsModel() != 0);
+	pCmdUI->Enable(m_LayoutHelper->gsModel() != 0);
 }
 
 // <command_view>
@@ -2199,7 +2182,7 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 
 			dc.DrawFocusRect(&rcZoom);
 		} else if (m_MiddleButton == true) {
-			OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+			OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 
 			OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
 
@@ -2323,27 +2306,25 @@ void AeSysView::OnRButtonUp(UINT flags, CPoint point) {
 }
 
 struct OdExRegenCmd : OdEdCommand {
-	OdGsLayoutHelper* m_pDevice;
-	AeSysView* m_pView;
-	const OdString groupName() const override {
-		return L"REGEN";
-	}
-	const OdString globalName() const override {
-		return L"REGEN";
-	}
+	OdGsLayoutHelper* m_LayoutHelper;
+	AeSysView* m_View;
+	const OdString groupName() const override { return L"REGEN"; }
+	const OdString globalName() const override { return L"REGEN"; }
+
 	OdInt32 flags() const override {
 		return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
 	}
+
 	void execute(OdEdCommandContext* edCommandContext) noexcept override {
-		// <tas="placeholder until implemented" m_pView->OnViewerRegen();"</tas>
+		// <tas="placeholder until implemented" m_View->OnViewerRegen();"</tas>
 	}
 };
 
 OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 	if (commandName.iCompare(L"REGEN") == 0) {
 		OdSmartPtr<OdExRegenCmd> c = OdRxObjectImpl<OdExRegenCmd>::createObject();
-		c->m_pView = this;
-		c->m_pDevice = m_pDevice;
+		c->m_View = this;
+		c->m_LayoutHelper = m_LayoutHelper;
 		return c;
 	} else {
 		return m_editor.Command(commandName);
@@ -2376,7 +2357,7 @@ bool AeSysView::drawableVectorizationCallback(const OdGiDrawable * drawable) {
 }
 
 BOOL AeSysView::OnIdle(long count) {
-	if (!m_pDevice->isValid()) {
+	if (!m_LayoutHelper->isValid()) {
 		PostMessage(WM_PAINT);
 	}
 	return TRUE;
@@ -2622,7 +2603,7 @@ void AeSysView::DisplayPixel(CDC * deviceContext, COLORREF cr, const OdGePoint3d
 	}
 }
 void AeSysView::Orbit(double x, double y) {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	FirstView->orbit(x, y);
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
@@ -2634,7 +2615,7 @@ void AeSysView::Dolly() {
 	::GetCursorPos(&Point);
 	ScreenToClient(&Point);
 
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 	OdGePoint3d Position(FirstView->position());
 	Position.transformBy(FirstView->worldToDeviceMatrix());
 
@@ -2656,7 +2637,7 @@ void AeSysView::Dolly() {
 }
 void AeSysView::DollyAndZoom(double zoomFactor) {
 	Dolly();
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 	FirstView->zoom(zoomFactor);
 
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
@@ -2673,7 +2654,7 @@ void AeSysView::OnSetupScale() {
 	}
 }
 void AeSysView::On3dViewsTop() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
@@ -2689,7 +2670,7 @@ void AeSysView::On3dViewsTop() {
 }
 
 void AeSysView::On3dViewsBottom() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
@@ -2704,7 +2685,7 @@ void AeSysView::On3dViewsBottom() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::On3dViewsLeft() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
@@ -2719,7 +2700,7 @@ void AeSysView::On3dViewsLeft() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::On3dViewsRight() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
@@ -2735,7 +2716,7 @@ void AeSysView::On3dViewsRight() {
 }
 
 void AeSysView::On3dViewsFront() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
@@ -2751,7 +2732,7 @@ void AeSysView::On3dViewsFront() {
 }
 
 void AeSysView::On3dViewsBack() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 
 	m_ViewTransform.EnablePerspective(false);
 
@@ -2785,7 +2766,7 @@ void AeSysView::On3dViewsIsometric() {
 		Direction.y = FrontBack == 0 ? .5773503 : -.5773503;
 		Direction.z = AboveUnder == 0 ? -.5773503 : .5773503;
 
-		auto FirstView {m_pDevice->viewAt(0)};
+		auto FirstView {m_LayoutHelper->viewAt(0)};
 
 		m_ViewTransform.EnablePerspective(false);
 
@@ -2881,7 +2862,7 @@ void AeSysView::OnWindowNormal() {
 	DollyAndZoom(m_ViewTransform.FieldWidth() / m_Viewport.WidthInInches());
 }
 void AeSysView::OnWindowBest() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 	auto AbstractView {OdAbstractViewPEPtr(FirstView)};
 
 	AbstractView->zoomExtents(FirstView);
@@ -2913,7 +2894,7 @@ void AeSysView::OnWindowPan() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanLeft() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = -1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
 
 	FirstView->dolly(OdGeVector3d(Delta, 0., 0.));
@@ -2923,7 +2904,7 @@ void AeSysView::OnWindowPanLeft() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanRight() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = 1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
 
 	FirstView->dolly(OdGeVector3d(Delta, 0., 0.));
@@ -2933,7 +2914,7 @@ void AeSysView::OnWindowPanRight() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanUp() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = 1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
 
 	FirstView->dolly(OdGeVector3d(0., Delta, 0.));
@@ -2943,7 +2924,7 @@ void AeSysView::OnWindowPanUp() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::OnWindowPanDown() {
-	auto FirstView {m_pDevice->viewAt(0)};
+	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = -1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
 
 	FirstView->dolly(OdGeVector3d(0., Delta, 0.));
@@ -3699,7 +3680,7 @@ OdGePoint3d AeSysView::GetCursorPosition() {
 	return (m_ptCursorPosWorld);
 }
 OdGePoint3d AeSysView::GetWorldCoordinates(CPoint point) {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 	OdGePoint3d WCSPoint(point.x, point.y, 0.);
 
 	WCSPoint.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
@@ -3712,7 +3693,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 	ModelViewTransformPoint(ptView);
 
 	if (!ptView.IsInView()) { // Redefine the view so position becomes camera target
-		OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+		OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 		const OdGeVector3d DollyVector(cursorPosition - FirstView->target());
 		FirstView->dolly(DollyVector);
 
@@ -3896,7 +3877,7 @@ const ODCOLORREF* AeSysView::CurrentPalette() const {
 	return Color;
 }
 void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 
 	if (FirstView->mode() != renderMode) {
 		FirstView->setMode(renderMode);
@@ -3924,7 +3905,7 @@ void AeSysView::SetViewportBorderProperties(OdGsDevice * device, bool modelLayou
 	}
 }
 void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
-	OdGsViewPtr FirstView = m_pDevice->viewAt(0);
+	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 
 	const OdGeMatrix3d WorldToEye = OdAbstractViewPEPtr(FirstView)->worldToEye(FirstView);
 	point1.transformBy(WorldToEye);

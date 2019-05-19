@@ -74,7 +74,7 @@ OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 		auto View {document->GetNextView(ViewPosition)};
 
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
-			return ((AeSysView*) View)->m_pDevice;
+			return ((AeSysView*) View)->m_LayoutHelper;
 		}
 	}
 	return OdGsLayoutHelperPtr();

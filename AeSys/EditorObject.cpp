@@ -26,21 +26,22 @@ static const int SNAP_SIZE = 10;
 
 class ViewInteractivityMode {
 	bool m_enabled;
-	OdGsView* m_pView;
+	OdGsView* m_View;
 public:
-	ViewInteractivityMode(OdRxVariantValue enable, OdRxVariantValue frameRate, OdGsView* pView) {
+	ViewInteractivityMode(OdRxVariantValue enable, OdRxVariantValue frameRate, OdGsView* view) {
 		m_enabled = false;
-		m_pView = pView;
+		m_View = view;
+		
 		if (!enable.isNull()) {
 			m_enabled = (bool) (enable);
 			if (m_enabled && !frameRate.isNull()) {
 				const double rate = (double) (((frameRate.get())->getDouble()));
-				pView->beginInteractivity(rate);
+				view->beginInteractivity(rate);
 			}
 		}
 	}
 	~ViewInteractivityMode() {
-		if (m_enabled) m_pView->endInteractivity();
+		if (m_enabled) { m_View->endInteractivity(); }
 	}
 };
 
@@ -642,34 +643,30 @@ void zoom_scaleXP(double factor) noexcept {
 // Zoom command
 
 class RTZoomTracker : public OdEdPointTracker {
-	OdGsView* m_pView;
+	OdGsView* m_View;
 	double m_base;
 	double m_fw;
 	double m_fh;
 public:
-	void init(OdGsView* pView, const OdGePoint3d& base) {
-		m_pView = pView;
-		m_fw = pView->fieldWidth();
-		m_fh = pView->fieldHeight();
-		m_base = (m_pView->projectionMatrix() * m_pView->viewingMatrix() * base).y;
+	void init(OdGsView* view, const OdGePoint3d& base) {
+		m_View = view;
+		m_fw = view->fieldWidth();
+		m_fh = view->fieldHeight();
+		m_base = (m_View->projectionMatrix() * m_View->viewingMatrix() * base).y;
 	}
 
 	void setValue(const OdGePoint3d& value) override {
-		const OdGeMatrix3d xWorldToNDC = m_pView->projectionMatrix() * m_pView->viewingMatrix();
-		const OdGePoint3d pt2 = xWorldToNDC * value;
+		const auto xWorldToNDC {m_View->projectionMatrix() * m_View->viewingMatrix()};
+		const auto pt2 {xWorldToNDC * value};
 		double fac = 1. + fabs(pt2.y - m_base) * 1.5;
-		if (pt2.y > m_base)
+		
+		if (pt2.y > m_base) {
 			fac = 1. / fac;
-		m_pView->setView(m_pView->position(),
-			m_pView->target(),
-			m_pView->upVector(),
-			m_fw * fac,
-			m_fh * fac,
-			m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel
-		);
+		}
+		m_View->setView(m_View->position(), m_View->target(), m_View->upVector(), m_fw * fac, m_fh * fac, m_View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 	}
-	int addDrawables(OdGsView* /*pView*/) noexcept override { return 1; }
-	void removeDrawables(OdGsView * pView) noexcept override {}
+	int addDrawables(OdGsView* view) noexcept override { return 1; }
+	void removeDrawables(OdGsView* view) noexcept override {}
 };
 
 void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
@@ -789,7 +786,7 @@ public:
 };
 
 class RTOrbitTracker : public OdEdPointTracker {
-	OdGsView* m_pView;
+	OdGsView* m_View;
 	OdGePoint3d m_pt;
 	OdGiDrawablePtr m_pDrw;
 	OdGePoint3d m_pos;
@@ -810,28 +807,28 @@ class RTOrbitTracker : public OdEdPointTracker {
 	m_axis;
 
 	void viewportDcCorners(OdGePoint2d& lower_left, OdGePoint2d& upper_right) const {
-		const OdGePoint3d target = m_pView->viewingMatrix() * m_pView->target();
-		const double halfFieldWidth = m_pView->fieldWidth() / 2.0;
-		const double halfFieldHeight = m_pView->fieldHeight() / 2.0;
-		lower_left.x = target.x - halfFieldWidth;
-		lower_left.y = target.y - halfFieldHeight;
-		upper_right.x = target.x + halfFieldWidth;
-		upper_right.y = target.y + halfFieldHeight;
+		const auto Target {m_View->viewingMatrix() * m_View->target()};
+		const double HalfFieldWidth = m_View->fieldWidth() / 2.0;
+		const double HalfFieldHeight = m_View->fieldHeight() / 2.0;
+		lower_left.x = Target.x - HalfFieldWidth;
+		lower_left.y = Target.y - HalfFieldHeight;
+		upper_right.x = Target.x + HalfFieldWidth;
+		upper_right.y = Target.y + HalfFieldHeight;
 	}
 public:
 	RTOrbitTracker()
-		: m_pView(0)
+		: m_View(nullptr)
 		, m_D(0) {
 	}
-	void reset() noexcept { m_pView = 0; }
-	void init(OdGsView* pView, const OdGePoint3d& pt) {
-		m_pView = pView;
-		m_pos = pView->position();
-		m_trg = pView->target();
-		m_up = pView->upVector();
-		m_x = m_up.crossProduct(pView->target() - m_pos).normal();
+	void reset() noexcept { m_View = nullptr; }
+	void init(OdGsView* view, const OdGePoint3d& pt) {
+		m_View = view;
+		m_pos = view->position();
+		m_trg = view->target();
+		m_up = view->upVector();
+		m_x = m_up.crossProduct(view->target() - m_pos).normal();
 
-		m_initViewingMatrixInv = m_pView->viewingMatrix();
+		m_initViewingMatrixInv = m_View->viewingMatrix();
 		m_pt = m_initViewingMatrixInv * pt;
 		m_pt.z = 0.;
 		m_initViewingMatrixInv.invert();
@@ -879,51 +876,54 @@ public:
 		bool bComputeExtents = true;
 		{ // Try to extract cached extents
 			OdGsClientViewInfo viewInfo;
-			pView->clientViewInfo(viewInfo);
+			view->clientViewInfo(viewInfo);
 			OdDbObjectId spaceId;
 			if (!GETBIT(viewInfo.viewportFlags, OdGsClientViewInfo::kDependentGeometry))
-				spaceId = OdDbDatabasePtr(pView->userGiContext()->database())->getModelSpaceId();
+				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getModelSpaceId();
 			else
-				spaceId = OdDbDatabasePtr(pView->userGiContext()->database())->getPaperSpaceId();
+				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getPaperSpaceId();
 			OdDbObjectPtr pBTR = spaceId.openObject();
 			OdGeExtents3d wcsExt;
 			if (pBTR->gsNode() && pBTR->gsNode()->extents(wcsExt))
 				m_viewCenter = wcsExt.center(), bComputeExtents = false;
 		}
 		if (bComputeExtents) { // Compute extents if no extents cached
-			OdAbstractViewPEPtr pAView = pView;
+			OdAbstractViewPEPtr pAView = view;
 			OdGeBoundBlock3d extents;
-			pAView->viewExtents(pView, extents);
+			pAView->viewExtents(view, extents);
 			m_viewCenter = extents.center();
 			m_viewCenter.transformBy(m_initViewingMatrixInv);
 		}
 	}
 
 	double angle(const OdGePoint3d& value) const {
-		const OdGePoint3d pt2 = m_pView->viewingMatrix() * value;
+		const auto pt2 {m_View->viewingMatrix() * value};
 		double dist = 0.0;
-		if (m_axis == kHorizontal)
+
+		if (m_axis == kHorizontal) {
 			dist = pt2.y - m_pt.y;
-		else if (m_axis == kVertical)
+		}
+		else if (m_axis == kVertical) {
 			dist = pt2.x - m_pt.x;
+		}
 		return dist * OdaPI / m_D;
 	}
 
 	double angleZ(const OdGePoint3d & value) const {
-		OdGePoint3d pt2 = m_pView->viewingMatrix() * value;
-		OdGePoint3d targ = m_pView->viewingMatrix() * m_viewCenter;
+		OdGePoint3d pt2 = m_View->viewingMatrix() * value;
+		OdGePoint3d targ = m_View->viewingMatrix() * m_viewCenter;
 		pt2.z = targ.z = m_pt.z;
 		return (pt2 - targ).angleTo((m_pt - targ), OdGeVector3d::kZAxis);
 	}
 
 	double anglePerp(const OdGePoint3d & value) const {
-		OdGePoint3d pt2 = m_pView->viewingMatrix() * value;
+		OdGePoint3d pt2 = m_View->viewingMatrix() * value;
 		pt2.z = 0.0;
 		return pt2.distanceTo(m_pt)* OdaPI / m_D;
 	}
 
 	void setValue(const OdGePoint3d & value) override {
-		if (m_pView) {
+		if (m_View) {
 			OdGeMatrix3d x;
 			switch (m_axis) {
 				case kHorizontal:
@@ -938,7 +938,7 @@ public:
 				case kPerpDir:
 				{
 					OdGePoint3d value1 = value;
-					value1.transformBy(m_pView->viewingMatrix());
+					value1.transformBy(m_View->viewingMatrix());
 					value1.z = 0.0;
 					const OdGeVector2d dir = (value1 - m_pt).convert2d();
 					const OdGeVector2d perp = dir.perpVector();
@@ -956,13 +956,7 @@ public:
 			newPosDir *= m_pos.distanceTo(m_trg);
 			newPos = newTarget + newPosDir;
 
-			m_pView->setView(newPos,
-				newTarget,
-				x * m_up,
-				m_pView->fieldWidth(),
-				m_pView->fieldHeight(),
-				m_pView->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel
-			);
+			m_View->setView(newPos, newTarget, x * m_up, m_View->fieldWidth(), m_View->fieldHeight(), m_View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 		}
 	}
 
@@ -1066,32 +1060,32 @@ const OdString OdExDollyCmd::groupName() const { return globalName(); }
 const OdString OdExDollyCmd::globalName() const { return L"DOLLY"; }
 
 class RTDollyTracker : public OdEdPointTracker {
-	OdGsView* m_pView;
-	OdGePoint3d m_pt;
-	OdGePoint3d m_pos;
+	OdGsView* m_View;
+	OdGePoint3d m_Point;
+	OdGePoint3d m_Position;
 public:
 	RTDollyTracker()
-		: m_pView(0) {
+		: m_View(nullptr) {
 	}
-	void reset() noexcept { m_pView = 0; }
-	void init(OdGsView* pView, const OdGePoint3d& pt) {
-		m_pView = pView;
-		m_pos = pView->position();
-		m_pt = pt - m_pos.asVector();
+	void reset() noexcept { m_View = nullptr; }
+	void init(OdGsView* view, const OdGePoint3d& point) {
+		m_View = view;
+		m_Position = view->position();
+		m_Point = point - m_Position.asVector();
 	}
 
 	void setValue(const OdGePoint3d& value) override {
-		if (m_pView) {
-			auto Delta {(m_pt - (value - m_pos)).asVector()};
-			m_pt = value - m_pos.asVector();
-			Delta.transformBy(m_pView->viewingMatrix());
-			m_pView->dolly(Delta.x, Delta.y, Delta.z);
-			m_pos = m_pView->position();
+		if (m_View) {
+			auto Delta {(m_Point - (value - m_Position)).asVector()};
+			m_Point = value - m_Position.asVector();
+			Delta.transformBy(m_View->viewingMatrix());
+			m_View->dolly(Delta.x, Delta.y, Delta.z);
+			m_Position = m_View->position();
 		}
 	}
 
-	int addDrawables(OdGsView* /*pView*/) noexcept override { return 0; }
-	void removeDrawables(OdGsView* /*pView*/) noexcept override { }
+	int addDrawables(OdGsView* view) noexcept override { return 0; }
+	void removeDrawables(OdGsView* view) noexcept override { }
 };
 
 void OdExDollyCmd::execute(OdEdCommandContext * edCommandContext) {
@@ -1255,7 +1249,7 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 protected:
 	OdGePoint3d m_ptBase;
 	OdDbDatabasePtr m_pDb;
-	OdGsView* m_pView;
+	OdGsView* m_View;
 	OdGsModel* m_pModel;
 	bool m_bDynHLT;
 
@@ -1265,10 +1259,10 @@ protected:
 		return mRet;
 	}
 public:
-	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet * selectionSet, OdDbDatabasePtr pDb, OdGsView * pView, bool bDynHLT)
+	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet* selectionSet, OdDbDatabasePtr pDb, OdGsView* view, bool bDynHLT)
 		: m_ptBase(ptBase), m_bDynHLT(bDynHLT) {
 		m_pDb = pDb;
-		m_pView = pView;
+		m_View = view;
 		OdDbSelectionSetIteratorPtr pIter = selectionSet->newIterator();
 		m_pModel = NULL;
 
@@ -1351,8 +1345,8 @@ public:
 			delete m_pathes[i];
 		}
 		m_pathes.clear();
-		m_pView->invalidate();
-		m_pView->update();
+		m_View->invalidate();
+		m_View->update();
 	}
 
 	void setValue(const OdGePoint3d & value) override {
@@ -1437,7 +1431,7 @@ void CollideMoveTracker::doCollideWithAll() {
 
 	OdExCollisionDetectionReactor reactor(m_bDynHLT);
 
-	m_pView->collide(inputArray.asArrayPtr(), inputArray.size(), &reactor, NULL, 0);
+	m_View->collide(inputArray.asArrayPtr(), inputArray.size(), &reactor, NULL, 0);
 
 
 	highlight(reactor.pathes());
@@ -1458,7 +1452,6 @@ void CollideMoveTracker::highlight(OdArray< OdExCollideGsPath* >& newPathes) {
 		m_prevHLPathes.push_back(newPathes[i]);
 	}
 }
-
 
 void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	class OdExTransactionSaver {

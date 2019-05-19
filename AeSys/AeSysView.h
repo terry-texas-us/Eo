@@ -90,13 +90,10 @@ protected:
 
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
 
-	OdGsLayoutHelperPtr m_pDevice;
+	OdGsLayoutHelperPtr m_LayoutHelper;
 	OdGsLayoutHelperPtr m_pPrinterDevice;
 	HDC m_hWindowDC;
 	int m_pagingCounter;
-
-	CRect viewportRect() const;
-	static CRect viewRect(OdGsView*);
 
 	AeSysView() noexcept; // protected constructor used by dynamic creation
 

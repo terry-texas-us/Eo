@@ -60,7 +60,7 @@ public:
 		}
 	}
 
-	void setValue(const OdGePoint3d& value) override {
+	void setValue(const OdGePoint3d& value) noexcept override {
 	}
 
 	OdEdPointTrackerWithSnapInfo(const OdDbObjectIdArray& srcObj) {
@@ -80,8 +80,8 @@ class OdBaseSnapManager
 	, public OdGsSelectionReactor {
 // TODO move using of OdDbdatabase, OdDbObject & OdDbObjectId into OSnapManager
 
-	OdGsView* m_pView;
-	OdGePoint3d* m_pPickPoint;
+	OdGsView* m_View;
+	OdGePoint3d* m_PickPoint;
 	const OdGePoint3d* m_pLastPoint;
 	OdGePoint3dArray m_snapPointsBuff;
 	OdEdInputTracker* m_pTracker;
@@ -100,7 +100,7 @@ class OdBaseSnapManager
 		OdDbObjectIdArray m_path;
 		OdGsMarker m_gsMarker;
 		SubentId(const OdGiPathNode& giPath);
-		bool operator == (const SubentId& op) const;
+		bool operator== (const SubentId& op) const;
 	};
 
 	struct HistEntry {
@@ -110,7 +110,7 @@ class OdBaseSnapManager
 			: m_subentId(subentId)
 			, m_point(point) {
 		}
-		bool operator == (const HistEntry& op) const {
+		bool operator== (const HistEntry& op) const {
 			return op.m_subentId == m_subentId;
 		}
 
@@ -149,14 +149,14 @@ class OdBaseSnapManager
 	void invalidateViewport(const OdGePoint3d& point) const;
 	void invalidateViewport(const HistEntryArray& centers) const;
 protected:
-	OdBaseSnapManager();
+	OdBaseSnapManager() noexcept;
 public:
 	void track(OdEdInputTracker* pTracker);
 
 	bool snap(OdGsView* pView, OdGePoint3d& point, const OdGePoint3d* pLastPoint);
 
 	virtual unsigned snapModes() const = 0;
-	virtual unsigned toSnapModes(OdDb::OsnapMode mode) const {
+	virtual unsigned toSnapModes(OdDb::OsnapMode mode) const noexcept {
 	  // was temporary moved into OSnapManager // return 1 << mode;
 		return 1 << (mode + 1);
 	}
@@ -181,11 +181,11 @@ public:
 class OSnapManager : public OdBaseSnapManager {
 	unsigned m_nSnapModes;
 protected:
-	OSnapManager();
+	OSnapManager() noexcept;
 public:
-	unsigned snapModes() const override;
-	void SetSnapModes(unsigned nSnapModes);
+	unsigned snapModes() const noexcept override;
+	void SetSnapModes(unsigned nSnapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	unsigned toSnapModes(OdDb::OsnapMode mode) const override { return 1 << mode; }
+	unsigned toSnapModes(OdDb::OsnapMode mode) const noexcept override { return 1 << mode; }
 };

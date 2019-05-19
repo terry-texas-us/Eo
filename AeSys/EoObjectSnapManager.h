@@ -9,8 +9,8 @@ class EoObjectSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSe
 	void checkSnapPoints(const OdDbEntity* entity, const OdGiPathNode& pathNode, unsigned snapModes, OdGsMarker gsMarker, const OdGeMatrix3d& xModelToWorld, const OdGeMatrix3d& xWorldToModel, const OdGeMatrix3d& xWorldToEye);
 	bool checkpoint(OdDb::OsnapMode osm, const OdGePoint3d& point);
 
-	OdGsView* m_pView;
-	OdGePoint3d* m_pPickPoint;
+	OdGsView* m_View;
+	OdGePoint3d* m_PickPoint;
 	const OdGePoint3d* m_pLastPoint;
 	unsigned m_nSnapModes;
 	OdGePoint3dArray m_snapPointsBuff;

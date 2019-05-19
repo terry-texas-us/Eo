@@ -11,17 +11,6 @@
 
 #define snapPtSize 5
 
-EoObjectSnapManager::EoObjectSnapManager()
-	: m_pView(0)
-	, m_pPickPoint(0)
-	, m_pLastPoint(0)
-	, m_nSnapModes(0xFFFFFFFF)
-	, m_dWorldToDevice(0.)
-	, m_dNearDist(0.)
-	, m_mode(OdDb::OsnapMode(0))
-	, m_bRedraw(false) {
-}
-
 EoObjectSnapManager::SubentId::SubentId(const OdGiPathNode& pathNode) {
 	m_gsMarker = pathNode.selectionMarker();
 	const OdGiPathNode* pGiPath = &pathNode;
@@ -30,25 +19,38 @@ EoObjectSnapManager::SubentId::SubentId(const OdGiPathNode& pathNode) {
 		pGiPath = pGiPath->parent();
 	} while (pGiPath);
 }
+
 bool EoObjectSnapManager::SubentId::operator==(const SubentId& other) const {
-	if (m_gsMarker != other.m_gsMarker) {
-		return false;
-	}
-	if (m_path.size() != other.m_path.size()) {
-		return false;
-	}
-	OdGePoint3dArray::size_type i;
-	for (i = 0; i < m_path.size(); ++i) {
-		if (m_path[i] != other.m_path[i]) {
-			return false;
-		}
+	if (m_gsMarker != other.m_gsMarker) { return false; }
+	
+	if (m_path.size() != other.m_path.size()) { return false; }
+
+	for (unsigned i = 0; i < m_path.size(); ++i) {
+		
+		if (m_path[i] != other.m_path[i]) { return false; }
 	}
 	return true;
+}
+
+#define hitradius 15
+
+#define maxhistory 7
+
+EoObjectSnapManager::EoObjectSnapManager()
+	: m_View(nullptr)
+	, m_PickPoint(nullptr)
+	, m_pLastPoint(0)
+	, m_nSnapModes(0xFFFFFFFF)
+	, m_dWorldToDevice(0.)
+	, m_dNearDist(0.)
+	, m_mode(OdDb::OsnapMode(0))
+	, m_bRedraw(false) {
 }
 
 void EoObjectSnapManager::reset() {
 	m_centers.clear();
 }
+
 void EoObjectSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	OdGePoint3d pts[4];
 	OdGiViewportGeometry& ViewportGeometry = viewportDraw->geometry();
@@ -176,9 +178,10 @@ void EoObjectSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const 
 	}
 	OdGsMarker gsMarker = 0;
 	if (m_centers.size()) {
-		OdGePoint3dArray::size_type i;
+
 		viewportDraw->subEntityTraits().setColor(7);
-		for (i = 0; i < m_centers.size(); ++i) {
+
+		for (unsigned i = 0; i < m_centers.size(); ++i) {
 			traits.setSelectionMarker(++gsMarker);
 			const OdGePoint3d& cntr = xWorldToEye * m_centers[i].m_point;
 			pts[0].set(cntr.x, cntr.y + s, 0.0);
@@ -193,11 +196,11 @@ void EoObjectSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const 
 
 void EoObjectSnapManager::invalidateViewport(const EoObjectSnapManager::HistEntryArray & centers) const {
 	OdGePoint3d pt;
-	const OdGeMatrix3d xWorldToScr = m_pView->worldToDeviceMatrix();
+	const auto xWorldToScr {m_View->worldToDeviceMatrix()};
 
 	OdGsDCRect rc;
-	OdGePoint3dArray::size_type i;
-	for (i = 0; i < centers.size(); ++i) {
+
+	for (unsigned i = 0; i < centers.size(); ++i) {
 		pt = xWorldToScr * centers[i].m_point;
 
 		rc.m_min.x = OdRoundToLong(pt.x);
@@ -209,13 +212,13 @@ void EoObjectSnapManager::invalidateViewport(const EoObjectSnapManager::HistEntr
 		rc.m_max.x += snapPtSize;
 		rc.m_max.y += snapPtSize;
 
-		m_pView->invalidate(rc);
+		m_View->invalidate(rc);
 	}
 }
 
 void EoObjectSnapManager::invalidateViewport(const OdGePoint3d & point) const {
 	OdGePoint3d pt;
-	const OdGeMatrix3d xWorldToScr = m_pView->worldToDeviceMatrix();
+	const OdGeMatrix3d xWorldToScr = m_View->worldToDeviceMatrix();
 
 	OdGsDCRect rc;
 	if (m_mode) {
@@ -330,25 +333,23 @@ void EoObjectSnapManager::invalidateViewport(const OdGePoint3d & point) const {
 		break;
 		}
 		*/
-		m_pView->invalidate(rc);
+		m_View->invalidate(rc);
 	}
 }
+
 OdUInt32 EoObjectSnapManager::subSetAttributes(OdGiDrawableTraits * drawableTraits) const noexcept {
 	return kDrawableNone;
 }
+
 bool EoObjectSnapManager::subWorldDraw(OdGiWorldDraw * worldDraw) const noexcept {
 	return false;
 }
 
-#define hitradius 15
-
-#define maxhistory 7
-
-bool EoObjectSnapManager::snap(OdGsView * view, OdGePoint3d & point, const OdGePoint3d * lastPoint) {
+bool EoObjectSnapManager::snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 	m_bRedraw = false;
 	m_snapPointsBuff.clear();
-	m_pView = view;
-	m_pPickPoint = &point;
+	m_View = view;
+	m_PickPoint = &point;
 	m_pLastPoint = lastPoint;
 
 	HistEntryArray prevCenters(m_centers);
@@ -415,18 +416,17 @@ bool EoObjectSnapManager::selected(const OdGiDrawableDesc&) noexcept {
 	return false;
 }
 
-bool EoObjectSnapManager::checkpoint(OdDb::OsnapMode osm, const OdGePoint3d & point) {
-	//double dist = (point - *m_pPickPoint).length() * m_dWorldToDevice;
-	const OdGeMatrix3d xWorldToScr = m_pView->worldToDeviceMatrix();
-	const OdGePoint2d p1((xWorldToScr * *m_pPickPoint).convert2d());
-	const OdGePoint2d p2((xWorldToScr * point).convert2d());
-	const double dist = (p1 - p2).length();
+bool EoObjectSnapManager::checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d & point) {
+	const auto WorldToDeviceTransform {m_View->worldToDeviceMatrix()};
+	const auto p1((WorldToDeviceTransform * *m_PickPoint).convert2d());
+	const auto p2((WorldToDeviceTransform * point).convert2d());
+	const double dist {(p1 - p2).length()};
 
 	if (dist < hitradius) {
-		if (dist < m_dNearDist && osm <= m_mode) {
+		if (dist < m_dNearDist && objectSnapMode <= m_mode) {
 			m_dNearDist = dist;
 			m_snapPoint = point;
-			m_mode = osm;
+			m_mode = objectSnapMode;
 			return true;
 		}
 	}
@@ -447,17 +447,19 @@ bool EoObjectSnapManager::appendToQueue(EoObjectSnapManager::HistEntryArray & ar
 	return false;
 }
 
-void EoObjectSnapManager::checkSnapPoints(const OdDbEntity * entity, const OdGiPathNode & pathNode, unsigned snapModes, OdGsMarker gsMarker, const OdGeMatrix3d & xModelToWorld, const OdGeMatrix3d & xWorldToModel, const OdGeMatrix3d & xWorldToEye) {
-	const OdGePoint3d modelPickPt = xWorldToModel * *m_pPickPoint;
+void EoObjectSnapManager::checkSnapPoints(const OdDbEntity* entity, const OdGiPathNode& pathNode, unsigned snapModes, OdGsMarker gsMarker, const OdGeMatrix3d& xModelToWorld, const OdGeMatrix3d& xWorldToModel, const OdGeMatrix3d& xWorldToEye) {
+	const auto modelPickPt {xWorldToModel * *m_PickPoint};
 	OdGePoint3d modelLastPt;
+
 	if (m_pLastPoint) {
 		modelLastPt = xWorldToModel * *m_pLastPoint;
 	}
 	for (OdDb::OsnapMode osm = OdDb::kOsModeEnd; osm <= OdDb::kOsModeNear; osm = OdDb::OsnapMode(osm + 1)) {
 		if (snapModes & (1 << osm)) {
+
 			if (entity->getOsnapPoints(OdDb::OsnapMode(osm), gsMarker, modelPickPt, modelLastPt, xWorldToEye, m_snapPointsBuff) == eOk) {
-				OdGePoint3dArray::size_type i;
-				for (i = 0; i < m_snapPointsBuff.size(); ++i) {
+
+				for (unsigned i = 0; i < m_snapPointsBuff.size(); ++i) {
 					OdGePoint3d& point = m_snapPointsBuff[i];
 					point.transformBy(xModelToWorld);
 					checkpoint(OdDb::OsnapMode(osm), point);
@@ -473,6 +475,7 @@ void EoObjectSnapManager::checkSnapPoints(const OdDbEntity * entity, const OdGiP
 		}
 	}
 }
+
 OdUInt32 EoObjectSnapManager::selected(const OdGiPathNode & pathNode, const OdGiViewport & viewport) {
 	if (pathNode.transientDrawable() == this) {
 		const OdGsMarker gsMarker = pathNode.selectionMarker();

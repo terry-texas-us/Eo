@@ -254,11 +254,11 @@ private:
 
 	OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
 
-	OdGsLayoutHelperPtr m_pDevice;
+	OdGsLayoutHelperPtr m_LayoutHelper;
 	OdDbCommandContext* m_CommandContext;
 	OdGsModel* m_pGsModel;
 	OdGsModel* GetGsModel() noexcept override { return m_pGsModel; }
-	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_pDevice.get(); }
+	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_LayoutHelper.get(); }
 	void Disable(bool disable) noexcept override;
 private:
 	OdStaticRxObject<OdExGripDbReactor> m_cDbReactor;
