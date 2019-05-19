@@ -54,7 +54,7 @@ void EoObjectSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const 
 	OdGiViewportGeometry& ViewportGeometry = viewportDraw->geometry();
 	const OdGiViewport& Viewport = viewportDraw->viewport();
 	const OdGeMatrix3d xWorldToEye = Viewport.getWorldToEyeTransform();
-	Viewport.getNumPixelsInUnitSquare(Viewport.getCameraTarget() /*OdGePoint3d::kOrigin*/, (OdGePoint2d&) pts[0]);
+	Viewport.getNumPixelsInUnitSquare(Viewport.getCameraTarget(), (OdGePoint2d&) pts[0]);
 	const double pix = 1. / pts[0].x;
 	const double s = snapPtSize * pix;
 
@@ -402,12 +402,15 @@ bool EoObjectSnapManager::snap(OdGsView * view, OdGePoint3d & point, const OdGeP
 	}
 	return bRes | m_bRedraw;
 }
+
 unsigned EoObjectSnapManager::snapModes() const noexcept {
 	return m_nSnapModes;
 }
-void EoObjectSnapManager::setSnapModes(unsigned snapModes) noexcept {
+
+void EoObjectSnapManager::SetSnapModes(unsigned snapModes) noexcept {
 	m_nSnapModes = snapModes;
 }
+
 bool EoObjectSnapManager::selected(const OdGiDrawableDesc&) noexcept {
 	return false;
 }

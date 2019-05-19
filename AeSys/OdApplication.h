@@ -18,17 +18,17 @@ public:
 	virtual void OnQuitWillStart() noexcept {}
 
 	// Document events.
-	virtual void documentCreateStarted(CDocument* document) noexcept {}
-	virtual void documentCreated(CDocument* document) noexcept {}
-	virtual void documentToBeDestroyed(CDocument* document) noexcept {}
-	virtual void documentDestroyed(const OdString& pathName) noexcept {}
-	virtual void documentCreateCanceled(CDocument* document) noexcept {}
+	virtual void DocumentCreateStarted(CDocument* document) noexcept {}
+	virtual void DocumentCreated(CDocument* document) noexcept {}
+	virtual void DocumentToBeDestroyed(CDocument* document) noexcept {}
+	virtual void DocumentDestroyed(const OdString& pathName) noexcept {}
+	virtual void DocumentCreateCanceled(CDocument* document) noexcept {}
 
-	virtual void documentBecameCurrent(CDocument* document) noexcept {}
-	virtual void documentToBeActivated(CDocument* document) noexcept {}
-	virtual void documentToBeDeactivated(CDocument* document) noexcept {}
-	virtual void documentActivationModified(bool modified) noexcept {}
-	virtual void documentActivated(CDocument* document) noexcept {}
+	virtual void DocumentBecameCurrent(CDocument* document) noexcept {}
+	virtual void DocumentToBeActivated(CDocument* document) noexcept {}
+	virtual void DocumentToBeDeactivated(CDocument* document) noexcept {}
+	virtual void DocumentActivationModified(bool modified) noexcept {}
+	virtual void DocumentActivated(CDocument* document) noexcept {}
 };
 
 typedef OdSmartPtr<OdApplicationReactor> OdApplicationReactorPtr;

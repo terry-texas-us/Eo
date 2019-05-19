@@ -74,20 +74,20 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 	if (activate) {
 		if (DeactivatedDocument)
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				theApp.m_aAppReactors[ReactorIndex]->documentToBeDeactivated(DeactivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->DocumentToBeDeactivated(DeactivatedDocument);
 			}
 
 		if (ActivatedDocument) {
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				theApp.m_aAppReactors[ReactorIndex]->documentActivated(ActivatedDocument);
-				theApp.m_aAppReactors[ReactorIndex]->documentBecameCurrent(ActivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->DocumentActivated(ActivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->DocumentBecameCurrent(ActivatedDocument);
 			}
 		}
 	}
 	else {
 		if (ActivatedDocument) {
 			for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				theApp.m_aAppReactors[ReactorIndex]->documentToBeActivated(ActivatedDocument);
+				theApp.m_aAppReactors[ReactorIndex]->DocumentToBeActivated(ActivatedDocument);
 			}
 		}
 	}

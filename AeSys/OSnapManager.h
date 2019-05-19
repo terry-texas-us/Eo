@@ -184,7 +184,7 @@ protected:
 	OSnapManager();
 public:
 	unsigned snapModes() const override;
-	void setSnapModes(unsigned nSnapModes);
+	void SetSnapModes(unsigned nSnapModes);
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
 	unsigned toSnapModes(OdDb::OsnapMode mode) const override { return 1 << mode; }

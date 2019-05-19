@@ -69,7 +69,7 @@ class OdExEditorObject {
 	OdStaticRxObject<OdExCollideCmd> m_cmd_COLLIDE;
 	OdStaticRxObject<OdExCollideAllCmd> m_cmd_COLLIDE_ALL;
 
-	OdEdInputTrackerPtr m_pTracker;
+	OdEdInputTrackerPtr m_InputTracker;
 	OdGePoint3d m_basePt;
 	const OdGePoint3d* m_pBasePt;
 
@@ -81,18 +81,16 @@ class OdExEditorObject {
 	};
 	OdUInt32 m_flags;
 public:
-	void transformSSetBy(const OdGeMatrix3d& xfm);
+	const OdGsView* ActiveView() const;
+	OdGsView* ActiveView();
+	const OdGsView* ActiveTopView() const;
+	OdGsView* ActiveTopView();
+	OdDbObjectId ActiveViewportId() const;
+	void UcsPlane(OdGePlane& plane) const;
+	void Dolly(int x, int y);
 
-	const OdGsView* activeView() const;
-	OdGsView* activeView();
-	const OdGsView* activeTopView() const;
-	OdGsView* activeTopView();
-	OdDbObjectId activeVpId() const;
-	void ucsPlane(OdGePlane& plane) const;
-	void dolly(int x, int y);
-
-	static void zoomAt(OdGsView* pView, int x, int y, short zDelta);
-	static void dolly(OdGsView* pView, int x, int y);
+	static void ZoomAt(OdGsView* view, int x, int y, short zDelta);
+	static void Dolly(OdGsView* view, int x, int y);
 
 public:
 	enum _3DViewType {
@@ -107,27 +105,27 @@ public:
 		k3DViewNE,
 		k3DViewNW
 	};
-	void set3DView(_3DViewType type);
+	void Set3DView(_3DViewType type);
 public:
 	OdExEditorObject();
 
-	void initialize(OdGsDevice* pDevice, OdDbCommandContext* dbCommandContext);
-	OdGsLayoutHelper* device() { return m_pDevice; }
-	void uninitialize();
+	void Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext);
+	OdGsLayoutHelper* Device() { return m_pDevice; }
+	void Uninitialize();
 
 	OdDbSelectionSetPtr workingSSet() const;
-	void setWorkingSSet(OdDbSelectionSet* selectionSet);
-	void selectionSetChanged();
+	void SetWorkingSelectionSet(OdDbSelectionSet* selectionSet);
+	void SelectionSetChanged();
 
-	OdGiDrawablePtr snapDrawable() const;
-	bool unselect();
+	OdGiDrawablePtr SnapDrawable() const;
+	bool Unselect();
 
-	OdEdCommandPtr command(const OdString& sCmdName);
+	OdEdCommandPtr Command(const OdString& commandName);
 
-	OdGePoint3d toEyeToWorld(int x, int y) const;
-	bool toUcsToWorld(OdGePoint3d& wcsPt) const;
-	OdGePoint3d toScreenCoord(int x, int y) const;
-	OdGePoint3d toScreenCoord(const OdGePoint3d& wcsPt) const;
+	OdGePoint3d ToEyeToWorld(int x, int y) const;
+	bool ToUcsToWorld(OdGePoint3d& wcsPt) const;
+	OdGePoint3d ToScreenCoord(int x, int y) const;
+	OdGePoint3d ToScreenCoord(const OdGePoint3d& wcsPt) const;
 
 	class OleDragCallback {
 	public:
@@ -136,55 +134,56 @@ public:
 	bool OnSize(unsigned int nFlags, int w, int h);
 	bool OnPaintFrame(unsigned int nFlags = 0, OdGsDCRect* pUpdatedRect = 0);
 	bool OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback* pDragCallback = 0);
-	bool OnMouseMove(unsigned int nFlags, int x, int y);
+	bool OnMouseMove(unsigned int flags, int x, int y);
 	bool OnMouseWheel(unsigned int nFlags, int x, int y, short zDelta);
 	bool OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, int y);
 	bool OnMouseRightButtonDoubleClick(unsigned int nFlags, int x, int y);
 	bool OnCtrlClick();
 	void OnDestroy();
 
-	bool hasSelection() const { return (workingSSet()->numEntities() > 0); }
-	bool isSnapOn() const noexcept { return GETBIT(m_flags, kSnapOn); }
-	void setSnapOn(bool bOn) noexcept { SETBIT(m_flags, kSnapOn, bOn); }
-	bool isOrbitOn() const noexcept { return GETBIT(m_flags, kOrbitOn); }
+	bool HasSelection() const { return (workingSSet()->numEntities() > 0); }
+	bool IsSnapOn() const noexcept { return GETBIT(m_flags, kSnapOn); }
+	void SetSnapOn(bool snapOn) noexcept { SETBIT(m_flags, kSnapOn, snapOn); }
+	bool IsOrbitOn() const noexcept { return GETBIT(m_flags, kOrbitOn); }
 
-	void turnOrbitOn(bool bOn);
+	void TurnOrbitOn(bool orbitOn);
 	bool OnOrbitBeginDrag(int x, int y);
 	bool OnOrbitEndDrag(int x, int y);
 
 	bool OnZoomWindowBeginDrag(int x, int y);
 	bool OnZoomWindowEndDrag(int x, int y);
 
-	bool snap(OdGePoint3d& pt, const OdGePoint3d* pLastPt = 0);
-	unsigned getSnapModes() const;
-	void setSnapModes(bool bSnapOn, unsigned modes);
-	void resetSnapManager();
-	void initSnapping(OdGsView* pView, OdEdInputTracker* pTracker);
-	void uninitSnapping(OdGsView* pView);
+	bool Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint = 0);
+	unsigned GetSnapModes() const;
+	void SetSnapModes(bool bSnapOn, unsigned modes);
+	void ResetSnapManager();
+	void InitializeSnapping(OdGsView* view, OdEdInputTracker* tracker);
+	void UninitializeSnapping(OdGsView* view);
 
-	inline OdGsModel* gsModel() { return m_p2dModel.get(); }
+	inline OdGsModel* GsModel() { return m_p2dModel.get(); }
 
 	void Recalc_Entity_centers(void) {
 		m_osnapMan.Recalc_Entity_centers();
 	}
 
 	void Set_Entity_centers() {
-		if (hasDatabase())
+		if (HasDatabase()) {
 			m_osnapMan.Set_Entity_centers(m_pCmdCtx->database());
+		}
 	}
 
-	void setTracker(OdEdInputTracker* pTracker);
-	bool updateStringTrackerCursor();
-	bool trackString(const OdString& value);
-	bool trackPoint(const OdGePoint3d& pt);
-	bool hasDatabase() const;
+	void SetTracker(OdEdInputTracker* tracker);
+
+	bool TrackString(const OdString& value);
+	bool TrackPoint(const OdGePoint3d& point);
+	bool HasDatabase() const;
 };
 
 
-inline OdGiDrawablePtr OdExEditorObject::snapDrawable() const {
+inline OdGiDrawablePtr OdExEditorObject::SnapDrawable() const {
 	return &m_osnapMan;
 }
 
-inline void OdExEditorObject::resetSnapManager() {
+inline void OdExEditorObject::ResetSnapManager() {
 	m_osnapMan.reset();
 }

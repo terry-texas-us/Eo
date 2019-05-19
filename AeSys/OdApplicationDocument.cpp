@@ -88,7 +88,7 @@ bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) {
 		auto View {document->GetNextView(ViewPosition)};
 		
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
-			return ((AeSysView*)View)->editorObject().snap(point, 0);
+			return ((AeSysView*)View)->editorObject().Snap(point, 0);
 		}
 	}
 	return false;

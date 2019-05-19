@@ -502,7 +502,7 @@ void AeSysView::OnInitialUpdate() {
 
 	Document->setVectorizer(this);
 
-	m_editor.initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
+	m_editor.Initialize(m_pDevice, static_cast<AeSysDoc*>(GetDocument())->cmdCtx());
 
 	SetRenderMode(OdGsView::k2DOptimized);
 	theApp.OnModeDraw();
@@ -594,7 +594,7 @@ void AeSysView::OnDestroy() {
 	AeSysDoc* Document = GetDocument();
 	Document->OnCloseVectorizer(this);
 
-	m_editor.uninitialize();
+	m_editor.Uninitialize();
 	destroyDevice();
 
 	m_pPrinterDevice.release();
@@ -1706,12 +1706,15 @@ public:
 		, m_Cursor(view->cursor()) {
 		view->track(tracker);
 		view->setCursor(cursor);
-		if (snap) { view->m_editor.initSnapping(view->getActiveTopView(), tracker); }
+		
+		if (snap) {
+			view->m_editor.InitializeSnapping(view->getActiveTopView(), tracker);
+		}
 	}
 	~SaveViewParams() {
 		m_View->track(0);
 		m_View->setCursor(m_Cursor);
-		m_View->m_editor.uninitSnapping(m_View->getActiveTopView());
+		m_View->m_editor.UninitializeSnapping(m_View->getActiveTopView());
 	}
 };
 
@@ -1743,7 +1746,7 @@ public:
 
 bool AeSysView::UpdateStringTrackerCursor(void) {
 	if (m_mode == kGetString && m_response.m_type != Response::kString) {
-		if (m_editor.trackString(m_inpars.result())) {
+		if (m_editor.TrackString(m_inpars.result())) {
 			getActiveTopView()->invalidate();
 			PostMessage(WM_PAINT);
 			return true;
@@ -1846,8 +1849,8 @@ void AeSysView::putString(const OdString & string) {
 	theApp.SetStatusPaneTextAt(nStatusInfo, Text);
 }
 
-void AeSysView::track(OdEdInputTracker * tracker) {
-	m_editor.setTracker(tracker);
+void AeSysView::track(OdEdInputTracker* tracker) {
+	m_editor.SetTracker(tracker);
 }
 
 HCURSOR AeSysView::cursor() const noexcept {
@@ -1897,7 +1900,7 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 		OdDbDatabase* Database = Document->m_DatabasePtr;
 		Database->startUndoRecord();
 
-		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.toEyeToWorld(point.x, point.y) - pData->pickPoint());
+		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - pData->pickPoint());
 
 		if (m_mode == kDragDrop) {
 			auto SelectionSet {Document->selectionSet()};
@@ -2025,7 +2028,7 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 
 			switch (m_mode) {
 				case kQuiescent:
-					if (m_editor.unselect()) {
+					if (m_editor.Unselect()) {
 						PostMessage(WM_PAINT);
 					}
 					break;
@@ -2105,12 +2108,12 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 				}
 				break;
 			case kGetPoint:
-				m_response.m_point = m_editor.toEyeToWorld(point.x, point.y);
+				m_response.m_point = m_editor.ToEyeToWorld(point.x, point.y);
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-					if (!m_editor.toUcsToWorld(m_response.m_point))
+					if (!m_editor.ToUcsToWorld(m_response.m_point))
 						break;
 				}
-				m_editor.snap(m_response.m_point, m_pBasePt);
+				m_editor.Snap(m_response.m_point, m_pBasePt);
 				m_response.m_type = Response::kPoint;
 				break;
 			default:
@@ -2169,14 +2172,15 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 
 			case kGetPoint:
 			{
-				OdGePoint3d pt = m_editor.toEyeToWorld(point.x, point.y);
+				OdGePoint3d pt = m_editor.ToEyeToWorld(point.x, point.y);
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS))
-					if (!m_editor.toUcsToWorld(pt))
+					if (!m_editor.ToUcsToWorld(pt))
 						return;
 
-				if (!GETBIT(m_inpOptions, OdEd::kGptNoOSnap))
-					m_editor.snap(pt);
-				m_editor.trackPoint(pt);
+				if (!GETBIT(m_inpOptions, OdEd::kGptNoOSnap)) {
+					m_editor.Snap(pt);
+				}
+				m_editor.TrackPoint(pt);
 				break;
 			}
 		}
@@ -2335,14 +2339,14 @@ struct OdExRegenCmd : OdEdCommand {
 	}
 };
 
-OdEdCommandPtr AeSysView::command(const OdString & commandName) {
+OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 	if (commandName.iCompare(L"REGEN") == 0) {
 		OdSmartPtr<OdExRegenCmd> c = OdRxObjectImpl<OdExRegenCmd>::createObject();
 		c->m_pView = this;
 		c->m_pDevice = m_pDevice;
 		return c;
 	} else {
-		return m_editor.command(commandName);
+		return m_editor.Command(commandName);
 	}
 }
 

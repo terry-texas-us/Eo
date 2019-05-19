@@ -290,7 +290,7 @@ void AeSysDoc::DeleteContents() {
 	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
 	
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->documentToBeDestroyed(this);
+		theApp.m_aAppReactors[ReactorIndex]->DocumentToBeDestroyed(this);
 	}
 	if (!m_DatabasePtr.isNull()) {
 		m_DatabasePtr->appServices()->layoutManager()->removeReactor(this);
@@ -301,7 +301,7 @@ void AeSysDoc::DeleteContents() {
 	COleDocument::DeleteContents();
 
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->documentDestroyed((const wchar_t*) GetPathName());
+		theApp.m_aAppReactors[ReactorIndex]->DocumentDestroyed((const wchar_t*) GetPathName());
 	}
 }
 
@@ -416,7 +416,7 @@ const OdString Cmd_SELECT::groupName() const { return L"AeSysApp"; }
 const OdString Cmd_SELECT::name() { return L"SELECT"; }
 const OdString Cmd_SELECT::globalName() const { return name(); }
 
-void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
+void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	OdDbCommandContextPtr CommandContext(commandContext);
 	OdDbDatabaseDocPtr Database = CommandContext->database();
 
@@ -435,11 +435,12 @@ void Cmd_SELECT::execute(OdEdCommandContext * commandContext) {
 	OdDbSelectionSetPtr SelectionSet;
 	try {
 		SelectionSet = pIO->select(OdString::kEmpty, iOpt, pView->editorObject().workingSSet());
-		pView->editorObject().setWorkingSSet(SelectionSet);
-	} catch (const OdError&) {
+		pView->editorObject().SetWorkingSelectionSet(SelectionSet);
+	}
+	catch (const OdError&) {
 		throw OdEdCancel();
 	}
-	pView->editorObject().selectionSetChanged();
+	pView->editorObject().SelectionSetChanged();
 
 	Database->pageObjects();
 }
@@ -947,7 +948,7 @@ BOOL AeSysDoc::OnNewDocument() {
 	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
 
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->documentCreateStarted(this);
+		theApp.m_aAppReactors[ReactorIndex]->DocumentCreateStarted(this);
 	}
 	if (COleDocument::OnNewDocument()) {
 		OdDbDatabaseDoc::setDocToAssign(this);
@@ -988,12 +989,12 @@ BOOL AeSysDoc::OnNewDocument() {
 			m_DatabasePtr->appServices()->layoutManager()->addReactor(this);
 		}
 		for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-			theApp.m_aAppReactors[ReactorIndex]->documentCreated(this);
+			theApp.m_aAppReactors[ReactorIndex]->DocumentCreated(this);
 		}
 		return TRUE;
 	}
 	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->documentCreateCanceled(this);
+		theApp.m_aAppReactors[ReactorIndex]->DocumentCreateCanceled(this);
 	}
 	return FALSE;
 }
@@ -3205,7 +3206,7 @@ void AeSysDoc::OnEditClearselection() {
 		auto View {GetNextView(ViewPosition)};
 
 		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0 && View->GetDocument() == this) {
-			dynamic_cast<AeSysView*>(View)->editorObject().unselect();
+			dynamic_cast<AeSysView*>(View)->editorObject().Unselect();
 			cleared = true;
 		}
 	}
@@ -3267,7 +3268,7 @@ void AeSysDoc::OnEditSelectall() {
 		auto View {GetNextView(ViewPosition)};
 
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
-			dynamic_cast<AeSysView*>(View)->editorObject().selectionSetChanged();
+			dynamic_cast<AeSysView*>(View)->editorObject().SelectionSetChanged();
 		}
 	}
 }

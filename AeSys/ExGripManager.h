@@ -72,8 +72,8 @@ public:
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
-	void cloneEntity();
-	void cloneEntity(const OdGePoint3d& ptMoveAt);
+	void CloneEntity();
+	void CloneEntity(const OdGePoint3d& ptMoveAt);
 	void moveEntity(const OdGePoint3d& ptMoveAt);
 	void notifyDragStarted();
 	void notifyDragEnded();
@@ -102,63 +102,62 @@ public: // Construction. Initialization.
 	void setValue(const OdGePoint3d& ptValue) override;
 
 	// Events from Windows.
-	virtual void onModified(OdGiDrawable* pGrip) = 0;
-	virtual bool onMouseDown(int x, int y, bool bShift);
+	virtual void OnModified(OdGiDrawable* pGrip) = 0;
+	virtual bool OnMouseDown(int x, int y, bool shiftIsDown);
 
-	virtual void selectionSetChanged(OdSelectionSet* selectionSet);
+	virtual void SelectionSetChanged(OdSelectionSet* selectionSet);
 
-	virtual OdGiDrawablePtr cloneEntity(OdDbStub* id) = 0;
-	virtual OdGiDrawablePtr openObject(OdDbStub* id, bool isForWriteMode = false) = 0;
+	virtual OdGiDrawablePtr CloneEntity(OdDbStub* id) = 0;
+	virtual OdGiDrawablePtr OpenObject(OdDbStub* id, bool isForWriteMode = false) = 0;
 	// alternative to OdDbGripPointsPE methods
 	// possible TODO instead next methods
 	// (redesign OdDbGripPointsPE to use OdGiDrawable & use some base class of it instead OdDgGripPointsPE) 
-	virtual OdResult getGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const = 0;
-	virtual OdResult getGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const = 0;
-	virtual OdResult getGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const = 0;
-	virtual OdResult moveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, OdUInt32 bitflags) = 0;
-	virtual OdResult moveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) = 0;
-	virtual OdResult moveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) = 0;
-	virtual void subentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) = 0;
-	virtual void gripStatus(OdGiDrawable* entity, OdDb::GripStat st) = 0;
-	virtual void dragStatus(OdGiDrawable* entity, OdDb::DragStat st) = 0;
-	virtual bool isModel(OdGiDrawable*) noexcept { return true; }
+	virtual OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const = 0;
+	virtual OdResult GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const = 0;
+	virtual OdResult GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const = 0;
+	virtual OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, OdUInt32 bitflags) = 0;
+	virtual OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) = 0;
+	virtual OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) = 0;
+	virtual void SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) = 0;
+	virtual void GripStatus(OdGiDrawable* entity, OdDb::GripStat st) = 0;
+	virtual void DragStatus(OdGiDrawable* entity, OdDb::DragStat st) = 0;
+	virtual bool IsModel(OdGiDrawable*) noexcept { return true; }
 
 	// Hover control.
-	bool startHover(int x, int y);
-	bool endHover();
+	bool StartHover(int x, int y);
+	bool EndHover();
 
 	// Grip selection.
-	void updateEntityGrips(OdDbStub* id);
-	void removeEntityGrips(OdDbStub* id, bool bFireDone);
-	void updateInvisibleGrips();
+	void UpdateEntityGrips(OdDbStub* id);
+	void RemoveEntityGrips(OdDbStub* id, bool bFireDone);
+	void UpdateInvisibleGrips();
 
-	// Dragging.
-	virtual void draggingStarted() = 0;
-	virtual void draggingStopped() = 0;
+	virtual void DraggingStarted() = 0;
+	virtual void DraggingStopped() = 0;
 
 	//bool handleMappedRtClk( OdExGripDataPtrArray &aActiveKeys, int x, int y );
 
-	void locateGripsAt(int x, int y, OdExGripDataPtrArray& aResult);
-	void locateGripsByStatus(OdDbGripOperations::DrawType eStatus, OdExGripDataPtrArray& aResult);
+	void LocateGripsAt(int x, int y, OdExGripDataPtrArray& aResult);
+	void LocateGripsByStatus(OdDbGripOperations::DrawType eStatus, OdExGripDataPtrArray& aResult);
 protected:
   // Adds/Removes drawables to/from viewports.
-	virtual void showGrip(OdExGripData* pGrip, bool bModel) = 0;
-	virtual void hideGrip(OdExGripData* pGrip, bool bModel) = 0;
+	virtual void ShowGrip(OdExGripData* grip, bool model) = 0;
+	virtual void HideGrip(OdExGripData* grip, bool model) = 0;
 
-	virtual OdGsView* activeGsView() const = 0;
-	virtual OdDbStub* activeVpId() const;
-	double activeViewUnitSize() const;
-	OdGeVector3d activeViewDirection() const;
-	virtual OdGePoint3d eyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const = 0;
+	virtual OdGsView* ActiveGsView() const = 0;
+	virtual OdDbStub* ActiveViewportId() const;
+	double ActiveViewUnitSize() const;
+	OdGeVector3d ActiveViewDirection() const;
+	virtual OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const = 0;
 
-	virtual OdGsModel* getGsModel() noexcept { return NULL; }
-	virtual OdGsLayoutHelper* getGsLayoutHelper() noexcept { return NULL; }
+	virtual OdGsModel* GetGsModel() noexcept { return NULL; }
+	virtual OdGsLayoutHelper* GetGsLayoutHelper() noexcept { return NULL; }
 
 	bool m_Disabled;
-	virtual void disable(bool disable) noexcept;
+	virtual void Disable(bool disable) noexcept;
 
 public:
-	bool isDisabled() noexcept { return m_Disabled; }
+	bool IsDisabled() noexcept { return m_Disabled; }
 
 	struct OdExGripDataSubent {
 		OdDbBaseFullSubentPath m_entPath;
@@ -173,7 +172,7 @@ public:
 	GripDataMap m_aGripData;
 protected:
 
-	OdExGripDataPtrArray m_aHoverGrips;
+	OdExGripDataPtrArray m_HoverGripsData;
 
 	OdGePoint3d m_ptBasePoint;
 	OdGePoint3d m_ptLastPoint;
@@ -186,7 +185,7 @@ protected:
 	OdCmEntityColor m_GRIPHOT;
 
 	// Selection set.
-	virtual OdSelectionSetPtr workingSelectionSet() const = 0;
+	virtual OdSelectionSetPtr WorkingSelectionSet() const = 0;
 	friend class OdExGripData;
 	friend class OdExGripDrag;
 };
@@ -216,58 +215,56 @@ class OdExGripManager : public OdBaseGripManager {
 public: // Construction. Initialization.
 	OdExGripManager() noexcept;
 	~OdExGripManager();
-	void init(OdGsDevice* pDevice, OdGsModel* pGsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr getSSet);
-	void uninit();
+	void Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr getSSet);
+	void Uninitialize();
 
 	// OdEdPointTracker protocol
-	int addDrawables(OdGsView* pView) override;
-	void removeDrawables(OdGsView* pView) override;
+	int addDrawables(OdGsView* view) override;
+	void removeDrawables(OdGsView* view) override;
 
-	void onModified(OdGiDrawable* pGrip) override;
-
-	OdGiDrawablePtr cloneEntity(OdDbStub* id) override;
-	OdGiDrawablePtr openObject(OdDbStub* id, bool isForWriteMode = false) override;
-	OdResult getGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const override;
-	OdResult getGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const override;
-	OdResult getGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const override;
-	OdResult moveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, OdUInt32 bitflags) override;
-	OdResult moveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) override;
-	OdResult moveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
-	void subentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) override;
-	void gripStatus(OdGiDrawable* entity, OdDb::GripStat st) override;
-	void dragStatus(OdGiDrawable* entity, OdDb::DragStat st) override;
-	bool isModel(OdGiDrawable* entity) noexcept override;
+	void OnModified(OdGiDrawable* pGrip) override;
+	OdGiDrawablePtr CloneEntity(OdDbStub* id) override;
+	OdGiDrawablePtr OpenObject(OdDbStub* id, bool isForWriteMode = false) override;
+	OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const override;
+	OdResult GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const override;
+	OdResult GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const override;
+	OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, OdUInt32 bitflags) override;
+	OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) override;
+	OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
+	void SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) override;
+	void GripStatus(OdGiDrawable* entity, OdDb::GripStat st) override;
+	void DragStatus(OdGiDrawable* entity, OdDb::DragStat st) override;
+	bool IsModel(OdGiDrawable* entity) noexcept override;
 
 	// Events from Windows.
-	bool onMouseDown(int x, int y, bool bShift) override;
-	bool onMouseMove(int x, int y);
+	bool OnMouseDown(int x, int y, bool shiftIsDown) override;
+	bool OnMouseMove(int x, int y);
 	bool onControlClick();
 
-	// Dragging.
-	void draggingStarted() override;
-	void draggingStopped() override;
+	void DraggingStarted() override;
+	void DraggingStopped() override;
 private:
 	bool handleMappedRtClk(OdExGripDataPtrArray& aActiveKeys, int x, int y);
 
    // Adds/Removes drawables to/from viewports.
-	void showGrip(OdExGripData* pGrip, bool bModel) override;
-	void hideGrip(OdExGripData* pGrip, bool bModel) override;
+	void ShowGrip(OdExGripData* pGrip, bool bModel) override;
+	void HideGrip(OdExGripData* grip, bool model) override;
 
-	OdGsView* activeGsView() const override;
+	OdGsView* ActiveGsView() const override;
 
-	OdGePoint3d eyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
+	OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
 
 	OdGsLayoutHelperPtr m_pDevice;
 	OdDbCommandContext* m_pCmdCtx;
 	OdGsModel* m_pGsModel;
-	OdGsModel* getGsModel() noexcept override { return m_pGsModel; }
-	OdGsLayoutHelper* getGsLayoutHelper() noexcept override { return m_pDevice.get(); }
-	void disable(bool disable) noexcept override;
+	OdGsModel* GetGsModel() noexcept override { return m_pGsModel; }
+	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_pDevice.get(); }
+	void Disable(bool disable) noexcept override;
 private:
 	OdStaticRxObject<OdExGripDbReactor> m_cDbReactor;
 
 	// Selection set.
-	OdSelectionSetPtr workingSelectionSet() const override;
+	OdSelectionSetPtr WorkingSelectionSet() const override;
 	GetSelectionSetPtr m_pGetSelectionSetPtr;
 	struct OdExGripCommand : OdEdCommand {
 		OdExGripManager* m_parent;

@@ -65,6 +65,6 @@ protected:
 public:
 	bool snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint);
 	unsigned snapModes() const noexcept;
-	void setSnapModes(unsigned snapModes) noexcept;
+	void SetSnapModes(unsigned snapModes) noexcept;
 	void reset();
 };

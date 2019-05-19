@@ -63,8 +63,8 @@ unsigned OSnapManager::snapModes() const {
 	return m_nSnapModes;
 }
 
-void OSnapManager::setSnapModes(unsigned nSnapModes) {
-	m_nSnapModes = nSnapModes;
+void OSnapManager::SetSnapModes(unsigned snapModes) {
+	m_nSnapModes = snapModes;
 }
 
 void OdBaseSnapManager::reset() {
