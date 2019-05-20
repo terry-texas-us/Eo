@@ -174,9 +174,9 @@ protected:
 
 	OdExGripDataPtrArray m_HoverGripsData;
 
-	OdGePoint3d m_ptBasePoint;
-	OdGePoint3d m_ptLastPoint;
-	OdExGripDragPtrArray m_aDrags;
+	OdGePoint3d m_BasePoint;
+	OdGePoint3d m_LastPoint;
+	OdExGripDragPtrArray m_GripDrags;
 
 	int m_GRIPSIZE;
 	int m_GRIPOBJLIMIT;

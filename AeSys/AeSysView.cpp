@@ -609,35 +609,44 @@ int AeSysView::OnCreate(LPCREATESTRUCT createStructure) {
 	}
 	return 0;
 }
+
 OdGsView* AeSysView::getActiveView() {
 	return m_LayoutHelper->activeView();
 }
+
 const OdGsView* AeSysView::getActiveView() const {
 	return m_LayoutHelper->activeView();
 }
+
 OdGsView* AeSysView::getActiveTopView() {
-	OdGsView* ActiveView = getActiveView();
+	auto ActiveView {getActiveView()};
+
 	if (!getDatabase()->getTILEMODE()) {
-		OdDbObjectPtr ActiveViewport = getDatabase()->activeViewportId().safeOpenObject();
-		OdDbAbstractViewportDataPtr ViewportData(ActiveViewport);
-		if (!ViewportData.isNull() && ViewportData->gsView(ActiveViewport)) {
-			ActiveView = ViewportData->gsView(ActiveViewport);
+		auto ActiveViewport {getDatabase()->activeViewportId().safeOpenObject()};
+		OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
+
+		if (!AbstractViewportData.isNull() && AbstractViewportData->gsView(ActiveViewport)) {
+			ActiveView = AbstractViewportData->gsView(ActiveViewport);
 		}
 	}
 	return (ActiveView);
 }
+
 const OdGsView* AeSysView::getActiveTopView() const {
-	const OdGsView* ActiveView = getActiveView();
+	auto ActiveView {getActiveView()};
+
 	if (!getDatabase()->getTILEMODE()) {
-		OdDbObjectPtr ActiveViewport = getDatabase()->activeViewportId().safeOpenObject();
-		OdDbAbstractViewportDataPtr ViewportData(ActiveViewport);
-		if (!ViewportData.isNull() && ViewportData->gsView(ActiveViewport)) {
-			ActiveView = ViewportData->gsView(ActiveViewport);
+		auto ActiveViewport {getDatabase()->activeViewportId().safeOpenObject()};
+		OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
+
+		if (!AbstractViewportData.isNull() && AbstractViewportData->gsView(ActiveViewport)) {
+			ActiveView = AbstractViewportData->gsView(ActiveViewport);
 		}
 	}
 	return (ActiveView);
 }
-inline bool requireAutoRegen(OdGsView * view) {
+
+inline bool requireAutoRegen(OdGsView* view) {
 	OdGsDevice* Device = view->device();
 	if (!Device) {
 		return false;
@@ -723,14 +732,16 @@ void AeSysView::propagateActiveViewChanges() const {
 	}
 }
 
-inline OdGsViewPtr overallView(OdGsDevice * device) {
+inline OdGsViewPtr overallView(OdGsDevice* device) {
 	OdGsViewPtr OverallView;
-	OdGsPaperLayoutHelperPtr PaperLayoutHelper = OdGsPaperLayoutHelper::cast(device);
+	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(device)};
+	
 	if (PaperLayoutHelper.get()) {
 		OverallView = PaperLayoutHelper->overallView();
 	}
 	return OverallView;
 }
+
 inline OdGsViewPtr activeView(OdGsDevice * device) {
 	OdGsViewPtr ActiveView;
 	OdGsLayoutHelperPtr LayoutHelper = OdGsLayoutHelper::cast(device);
@@ -739,16 +750,18 @@ inline OdGsViewPtr activeView(OdGsDevice * device) {
 	}
 	return ActiveView;
 }
-void AeSysView::setViewportBorderProperties() {
-	OdGsViewPtr OverallView = overallView(m_LayoutHelper);
-	OdGsViewPtr ActiveView = activeView(m_LayoutHelper);
 
-	const int NumberOfViews = m_LayoutHelper->numViews();
+void AeSysView::setViewportBorderProperties() {
+	auto OverallView {overallView(m_LayoutHelper)};
+	auto ActiveView {activeView(m_LayoutHelper)};
+
+	const auto NumberOfViews {m_LayoutHelper->numViews()};
+	
 	if (NumberOfViews > 1) {
 		for (int i = 0; i < NumberOfViews; ++i) {
-			OdGsViewPtr View = m_LayoutHelper->viewAt(i);
-			if ((View == OverallView) || (OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && (View != ActiveView))) {
-				// no border
+			OdGsViewPtr View {m_LayoutHelper->viewAt(i)};
+			
+			if ((View == OverallView) || (OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && (View != ActiveView))) { // no border
 				View->setViewportBorderVisibility(false);
 			} else if (View != ActiveView) {
 				View->setViewportBorderVisibility(true);
@@ -1177,12 +1190,13 @@ void generateTiles(HDC hdc, RECT & drawrc, OdGsDevice * pBmpDevice, OdUInt32 nTi
 	}
 }
 
-void AeSysView::OnPrint(CDC * deviceContext, CPrintInfo * printInformation) {
-	const OdDbDatabase* Database = getDatabase();
+void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
+	const auto Database {getDatabase()};
 
-	OdDbObjectPtr ActiveViewport = Database->activeViewportId().safeOpenObject(OdDb::kForWrite);
+	auto ActiveViewport {Database->activeViewportId().safeOpenObject(OdDb::kForWrite)};
 	OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
-	const OdGsView* View = getActiveView();
+	const auto View {getActiveView()};
+
 	if (View) {
 		AbstractViewportData->setView(ActiveViewport, View);
 	}
@@ -2147,7 +2161,7 @@ void AeSysView::OnMButtonUp(UINT flags, CPoint point) {
 void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 	DisplayOdometer();
 	if (m_MousePosition != point) {
-		
+
 		switch (m_mode) {
 			case kQuiescent:
 				m_editor.OnMouseMove(flags, point.x, point.y);
@@ -2155,15 +2169,16 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 
 			case kGetPoint:
 			{
-				OdGePoint3d pt = m_editor.ToEyeToWorld(point.x, point.y);
-				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS))
-					if (!m_editor.ToUcsToWorld(pt))
-						return;
+				auto Point {m_editor.ToEyeToWorld(point.x, point.y)};
+
+				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
+					if (!m_editor.ToUcsToWorld(Point)) { return; }
+				}
 
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoOSnap)) {
-					m_editor.Snap(pt);
+					m_editor.Snap(Point);
 				}
-				m_editor.TrackPoint(pt);
+				m_editor.TrackPoint(Point);
 				break;
 			}
 		}
@@ -2181,8 +2196,9 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 			rcZoom.NormalizeRect();
 
 			dc.DrawFocusRect(&rcZoom);
-		} else if (m_MiddleButton == true) {
-			OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
+		}
+		else if (m_MiddleButton == true) {
+			OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
 
 			OdGeVector3d DollyVector(double(m_MousePosition.x) - double(point.x), double(m_MousePosition.y) - double(point.y), 0.);
 
@@ -2193,7 +2209,8 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 			m_ViewTransform.BuildTransformMatrix();
 
 			PostMessageW(WM_PAINT);
-		} else if (m_RightButton == true) {
+		}
+		else if (m_RightButton == true) {
 			Orbit((double(m_MousePosition.y) - double(point.y)) / 100., (double(m_MousePosition.x) - double(point.x)) / 100.);
 			PostMessageW(WM_PAINT);
 		}
@@ -2255,8 +2272,9 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 			m_RubberbandLogicalEndPoint = point;
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-		} else if (m_RubberbandType == Rectangles) {
-			CBrush* Brush {(CBrush*) DeviceContext->SelectStockObject(NULL_BRUSH)};
+		}
+		else if (m_RubberbandType == Rectangles) {
+			CBrush* Brush {(CBrush*)DeviceContext->SelectStockObject(NULL_BRUSH)};
 
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
 

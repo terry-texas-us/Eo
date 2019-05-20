@@ -32,48 +32,51 @@ void CNamedViewListCtrl::setView(int nItem, const OdDbViewTableRecord* pView) {
 	setViewId(nItem, pView->objectId());
 }
 
-OdString ucsString(const OdDbObject* pViewObj) {
-	OdString res;
-	OdDbAbstractViewportDataPtr pViewPE(pViewObj);
-	switch (pViewPE->orthoUcs(pViewObj)) {
-	case OdDb::kTopView:
-		res = L"Top";
-		break;
-	case OdDb::kBottomView:
-		res = L"Bottom";
-		break;
-	case OdDb::kFrontView:
-		res = L"Front";
-		break;
-	case OdDb::kBackView:
-		res = L"Back";
-		break;
-	case OdDb::kLeftView:
-		res = L"Left";
-		break;
-	case OdDb::kRightView:
-		res = L"Right";
-		break;
-	default: {
-			OdDbUCSTableRecordPtr pUCS = OdDbObjectId(pViewPE->ucsName(pViewObj)).openObject();
+OdString ucsString(const OdDbObject* viewport) {
+	OdString Result;
+	OdDbAbstractViewportDataPtr AbstractViewportData(viewport);
+	
+	switch (AbstractViewportData->orthoUcs(viewport)) {
+		case OdDb::kTopView:
+			Result = L"Top";
+			break;
+		case OdDb::kBottomView:
+			Result = L"Bottom";
+			break;
+		case OdDb::kFrontView:
+			Result = L"Front";
+			break;
+		case OdDb::kBackView:
+			Result = L"Back";
+			break;
+		case OdDb::kLeftView:
+			Result = L"Left";
+			break;
+		case OdDb::kRightView:
+			Result = L"Right";
+			break;
+		default: {
+			OdDbUCSTableRecordPtr pUCS = OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject();
+
 			if (pUCS.get()) {
-				res = pUCS->getName();
+				Result = pUCS->getName();
 			}
 			else {
-				OdGePoint3d origin;
-				OdGeVector3d xAxis, yAxis;
-				pViewPE->getUcs(pViewObj, origin, xAxis, yAxis);
-				if (origin==OdGePoint3d::kOrigin && xAxis==OdGeVector3d::kXAxis && yAxis==OdGeVector3d::kYAxis) {
-					res = L"World";
+				OdGePoint3d Origin;
+				OdGeVector3d XAxis;
+				OdGeVector3d YAxis;
+				AbstractViewportData->getUcs(viewport, Origin, XAxis, YAxis);
+
+				if (Origin == OdGePoint3d::kOrigin && XAxis == OdGeVector3d::kXAxis && YAxis == OdGeVector3d::kYAxis) {
+					Result = L"World";
 				}
 				else {
-					res = L"Unnamed";
+					Result = L"Unnamed";
 				}
 			}
 		}
-		break;
 	}
-	return res;
+	return Result;
 }
 
 void CNamedViewListCtrl::InsertItem(int i, const OdDbViewTableRecord* pView) {
