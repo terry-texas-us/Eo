@@ -31,7 +31,7 @@ public:
 	OdDbGripOperations::DrawType status() const noexcept { return m_Status; }
 	bool isInvisible() const noexcept { return m_Invisible; }
 	bool isShared() const noexcept { return m_Shared; }
-	OdGePoint3d point() const noexcept { return m_point; }
+	OdGePoint3d point() const noexcept { return m_Point; }
 	OdDbGripDataPtr GripData() const { return m_GripData; }
 	OdDbStub* entityId() const { return m_entPath.objectIds().last(); }
 	
@@ -51,7 +51,7 @@ private:
 	OdDbGripOperations::DrawType m_Status;
 	bool m_Invisible;
 	bool m_Shared;
-	OdGePoint3d m_point;
+	OdGePoint3d m_Point;
 	OdDbGripDataPtr m_GripData;
 	OdDbBaseFullSubentPath m_entPath;
 	OdBaseGripManager* m_pOwner;

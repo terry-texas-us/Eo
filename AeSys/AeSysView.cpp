@@ -1777,7 +1777,7 @@ OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointT
 		switch (m_response.m_type) {
 			case Response::kPoint:
 				if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) { SetCapture(); }
-				return m_response.m_point;
+				return m_response.m_Point;
 
 			case Response::kString:
 				throw OdEdOtherInput(m_response.m_string);
@@ -2091,12 +2091,12 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 				}
 				break;
 			case kGetPoint:
-				m_response.m_point = m_editor.ToEyeToWorld(point.x, point.y);
+				m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-					if (!m_editor.ToUcsToWorld(m_response.m_point))
+					if (!m_editor.ToUcsToWorld(m_response.m_Point))
 						break;
 				}
-				m_editor.Snap(m_response.m_point, m_pBasePt);
+				m_editor.Snap(m_response.m_Point, m_pBasePt);
 				m_response.m_type = Response::kPoint;
 				break;
 			default:

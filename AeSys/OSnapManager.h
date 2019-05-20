@@ -28,34 +28,34 @@ class OdEdPointTrackerWithSnapInfo : public OdStaticRxObject<OdEdPointTracker> {
 public:
 
 	struct SnapContext {
-		bool bValid;
-		OdDbObjectId entId;
+		bool mValid;
+		OdDbObjectId mEntityObjectId;
 
-		OdGePoint3d point;
-		OdGePoint3d* pLastPoint;
+		OdGePoint3d mPoint;
+		OdGePoint3d* mLastPoint;
 
-		OdDb::OsnapMode mode;
-		OdGsMarker marker;
+		OdDb::OsnapMode mMode;
+		OdGsMarker mMarker;
 
 	}
 	m_SnapContext;
 
 
-	virtual bool isTargetEntity(const OdDbEntity* pEnt) const {
-		return m_srcObj.contains(pEnt->objectId());
+	virtual bool IsTargetEntity(const OdDbEntity* entity) const {
+		return m_ObjectIds.contains(entity->objectId());
 	}
 
-	virtual void getSnapModes(const OdDbEntity* pEnt, OdArray<OdDb::OsnapMode>& snapModes) {
-		OdDbCurvePtr pCurve = OdDbCurve::cast(pEnt);
+	virtual void GetSnapModes(const OdDbEntity* entity, OdArray<OdDb::OsnapMode>& snapModes) {
+		auto Curve {OdDbCurve::cast(entity)};
 		
-		if (pCurve.isNull()) { return; }
+		if (Curve.isNull()) { return; }
 
-		if (pCurve->isA()->isEqualTo(OdDbLine::desc()) || pCurve->isA()->isEqualTo(OdDbArc::desc())) {
+		if (Curve->isA()->isEqualTo(OdDbLine::desc()) || Curve->isA()->isEqualTo(OdDbArc::desc())) {
 			snapModes.append(OdDb::kOsModeEnd);
 			snapModes.append(OdDb::kOsModeMid);
 		}
 
-		if (pCurve->isA()->isEqualTo(OdDbCircle::desc())) {
+		if (Curve->isA()->isEqualTo(OdDbCircle::desc())) {
 			snapModes.append(OdDb::kOsModeCen);
 		}
 	}
@@ -63,16 +63,16 @@ public:
 	void setValue(const OdGePoint3d& value) noexcept override {
 	}
 
-	OdEdPointTrackerWithSnapInfo(const OdDbObjectIdArray& srcObj) {
-		m_srcObj = srcObj;
-		m_SnapContext.bValid = false;
+	OdEdPointTrackerWithSnapInfo(const OdDbObjectIdArray& objectIds) {
+		m_ObjectIds = objectIds;
+		m_SnapContext.mValid = false;
 	}
 
-	int addDrawables(OdGsView*) override { return 0; }
-	void removeDrawables(OdGsView*) override {}
+	int addDrawables(OdGsView* view) override { return 0; }
+	void removeDrawables(OdGsView* view) override {}
 
 private:
-	OdDbObjectIdArray m_srcObj;
+	OdDbObjectIdArray m_ObjectIds;
 };
 
 class OdBaseSnapManager 
@@ -88,8 +88,8 @@ class OdBaseSnapManager
 
 	double m_WorldToDevice;
 	double m_NearDist;
-	OdGePoint3d m_snapPoint;
-	OdDb::OsnapMode m_mode;
+	OdGePoint3d m_SnapPoint;
+	OdDb::OsnapMode m_SnapMode;
 	bool m_Redraw;
 	double m_HitRadius;
 
@@ -97,54 +97,56 @@ class OdBaseSnapManager
 
 	struct SubentId {
 		SubentId() {}
-		OdDbObjectIdArray m_path;
-		OdGsMarker m_gsMarker;
-		SubentId(const OdGiPathNode& giPath);
-		bool operator== (const SubentId& op) const;
+		OdDbObjectIdArray m_Path;
+		OdGsMarker m_Marker;
+		SubentId(const OdGiPathNode& pathNode);
+		bool operator==(const SubentId& other) const;
 	};
 
 	struct HistEntry {
-		HistEntry() {
-		}
+		HistEntry() {}
 		HistEntry(const SubentId& subentId, const OdGePoint3d& point)
-			: m_subentId(subentId)
-			, m_point(point) {
+			: m_SubentId(subentId)
+			, m_Point(point) {
 		}
-		bool operator== (const HistEntry& op) const {
-			return op.m_subentId == m_subentId;
+		bool operator==(const HistEntry& other) const {
+			return other.m_SubentId == m_SubentId;
 		}
 
-		SubentId m_subentId;
-		OdGePoint3d m_point;
+		SubentId m_SubentId;
+		OdGePoint3d m_Point;
 	};
 
 	struct SelectedEntityData {
-		SubentId subentId;
-		OdGeMatrix3d xModelToWorld;
-		void set(const OdGiPathNode& gipath) {
-			subentId = gipath;
-			if (gipath.modelToWorld())
-				xModelToWorld = *gipath.modelToWorld();
+		SubentId SubentId;
+		OdGeMatrix3d ModelToWorldTransform;
+		
+		void set(const OdGiPathNode& pathNode) {
+			SubentId = pathNode;
+			
+			if (pathNode.modelToWorld()) {
+				ModelToWorldTransform = *pathNode.modelToWorld();
+			}
 		}
 	};
 	typedef OdArray<SelectedEntityData> SelectedEntityDataArray;
 
-	SelectedEntityDataArray m_selectedEntityDataArray;
+	SelectedEntityDataArray m_SelectedEntityData;
 
-	void CheckSnapPoints(const SelectedEntityData& data, const OdGeMatrix3d& xWorldToEye);
+	void CheckSnapPoints(const SelectedEntityData& data, const OdGeMatrix3d& worldToEyeTransform);
 
 	bool Checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point);
 
 	typedef OdArray<HistEntry> HistEntryArray;
 	static bool AppendToQueue(HistEntryArray& array, const HistEntry& entry);
 
-	HistEntryArray m_centers;
+	HistEntryArray m_Centers;
 
 	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
-	bool selected(const OdGiDrawableDesc& pDrawableDesc) override;
+	bool selected(const OdGiDrawableDesc& drawableDesc) override;
 	OdUInt32 selected(const OdGiPathNode& pathNode, const OdGiViewport& viewInfo) override;
 	void InvalidateViewport(const OdGePoint3d& point) const;
 	void InvalidateViewport(const HistEntryArray& centers) const;
@@ -163,15 +165,15 @@ public:
 	}
 
 	virtual OdCmEntityColor SnapTrueColor() const {
-		OdCmEntityColor color;
-		color.setColorIndex(OdCmEntityColor::kACIYellow);
-		return color;
+		OdCmEntityColor Color;
+		Color.setColorIndex(OdCmEntityColor::kACIYellow);
+		return Color;
 	}
 
 	virtual OdCmEntityColor CenterTrueColor() const {
-		OdCmEntityColor color;
-		color.setColorIndex(OdCmEntityColor::kACIforeground);
-		return color;
+		OdCmEntityColor Color;
+		Color.setColorIndex(OdCmEntityColor::kACIforeground);
+		return Color;
 	}
 
 	void Reset();

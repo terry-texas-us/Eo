@@ -317,7 +317,7 @@ OdExGripDataPtr OdExGripData::createObject(OdDbStub * id, OdDbGripDataPtr gripDa
 	pRes->m_entPath.objectIds().append(id);
 	pRes->m_GripData = gripData;
 	pRes->m_pOwner = pOwner;
-	pRes->m_point = point;
+	pRes->m_Point = point;
 	return pRes;
 }
 
@@ -326,7 +326,7 @@ OdExGripDataPtr OdExGripData::createObject(OdDbBaseFullSubentPath entPath, OdDbG
 	pRes->m_entPath = entPath;
 	pRes->m_GripData = gripData;
 	pRes->m_pOwner = pOwner;
-	pRes->m_point = point;
+	pRes->m_Point = point;
 	return pRes;
 }
 
@@ -334,7 +334,7 @@ OdExGripData::OdExGripData() noexcept {
 	m_Status = OdDbGripOperations::kWarmGrip;
 	m_Invisible = false;
 	m_Shared = false;
-	m_point = OdGePoint3d::kOrigin;
+	m_Point = OdGePoint3d::kOrigin;
 	//m_entPath = OdDbBaseFullSubentPath();
 	//m_GripData = 0;
 	m_pOwner = 0;
@@ -406,7 +406,7 @@ bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 		if (computeDragPoint(ptComputed)) {
 			pDrawAtDrag = &ptComputed;
 		}
-		OdGiDrawFlagsHelper _dfh(worldDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
+		OdGiDrawFlagsHelper DrawFlagsHelper(worldDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
 		
 		return((*GripData()->worldDraw())((OdDbGripData*)GripData().get(), worldDraw, entityId(), status(), pDrawAtDrag, dGripSize));
 	}
@@ -420,7 +420,7 @@ void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	if (computeDragPoint(ptComputed)) {
 		pDrawAtDrag = &ptComputed;
 	}
-	OdGiDrawFlagsHelper _dfh(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
+	OdGiDrawFlagsHelper DrawFlagsHelper(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
 
 	bool bDefault = true;
 	

@@ -58,7 +58,7 @@ class AeSysView
 	struct Response {
 		enum Type { kNone, kPoint, kString, kCancel };
 		Type m_type;
-		OdGePoint3d m_point;
+		OdGePoint3d m_Point;
 		OdString m_string;
 	};
 	Response m_response;

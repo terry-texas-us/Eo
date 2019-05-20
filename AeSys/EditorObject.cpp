@@ -767,7 +767,7 @@ public:
 		viewportDraw->subEntityTraits().setFillType(kOdGiFillNever);
 
 		OdGiModelTransformSaver mt(geom, vp.getEyeToModelTransform());
-		OdGiDrawFlagsHelper _dfh(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
+		OdGiDrawFlagsHelper DrawFlagsHelper(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
 
 		OdGePoint3d pt1;
 		OdGePoint2d pt2;
@@ -788,13 +788,13 @@ public:
 class RTOrbitTracker : public OdEdPointTracker {
 	OdGsView* m_View;
 	OdGePoint3d m_pt;
-	OdGiDrawablePtr m_pDrw;
-	OdGePoint3d m_pos;
-	OdGePoint3d m_trg;
-	OdGeVector3d m_up;
-	OdGeVector3d m_x;
-	OdGePoint3d m_viewCenter;
-	OdGeMatrix3d m_initViewingMatrixInv;
+	OdGiDrawablePtr m_Drawable;
+	OdGePoint3d m_Position;
+	OdGePoint3d m_Target;
+	OdGeVector3d m_UpVector;
+	OdGeVector3d m_X;
+	OdGePoint3d m_ViewCenter;
+	OdGeMatrix3d m_InitialViewingMatrixInverted;
 	double m_D; // diameter of orbit control in projected coordinates
 	OdGsModelPtr m_pModel;
 
@@ -823,15 +823,15 @@ public:
 	void reset() noexcept { m_View = nullptr; }
 	void init(OdGsView* view, const OdGePoint3d& pt) {
 		m_View = view;
-		m_pos = view->position();
-		m_trg = view->target();
-		m_up = view->upVector();
-		m_x = m_up.crossProduct(view->target() - m_pos).normal();
+		m_Position = view->position();
+		m_Target = view->target();
+		m_UpVector = view->upVector();
+		m_X = m_UpVector.crossProduct(view->target() - m_Position).normal();
 
-		m_initViewingMatrixInv = m_View->viewingMatrix();
-		m_pt = m_initViewingMatrixInv * pt;
+		m_InitialViewingMatrixInverted = m_View->viewingMatrix();
+		m_pt = m_InitialViewingMatrixInverted * pt;
 		m_pt.z = 0.;
-		m_initViewingMatrixInv.invert();
+		m_InitialViewingMatrixInverted.invert();
 
 		OdGePoint3d pt1;
 		OdGePoint2d pt2;
@@ -884,15 +884,16 @@ public:
 				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getPaperSpaceId();
 			OdDbObjectPtr pBTR = spaceId.openObject();
 			OdGeExtents3d wcsExt;
-			if (pBTR->gsNode() && pBTR->gsNode()->extents(wcsExt))
-				m_viewCenter = wcsExt.center(), bComputeExtents = false;
+			if (pBTR->gsNode() && pBTR->gsNode()->extents(wcsExt)) {
+				m_ViewCenter = wcsExt.center(), bComputeExtents = false;
+			}
 		}
 		if (bComputeExtents) { // Compute extents if no extents cached
 			OdAbstractViewPEPtr pAView = view;
 			OdGeBoundBlock3d extents;
 			pAView->viewExtents(view, extents);
-			m_viewCenter = extents.center();
-			m_viewCenter.transformBy(m_initViewingMatrixInv);
+			m_ViewCenter = extents.center();
+			m_ViewCenter.transformBy(m_InitialViewingMatrixInverted);
 		}
 	}
 
@@ -911,7 +912,7 @@ public:
 
 	double angleZ(const OdGePoint3d & value) const {
 		OdGePoint3d pt2 = m_View->viewingMatrix() * value;
-		OdGePoint3d targ = m_View->viewingMatrix() * m_viewCenter;
+		OdGePoint3d targ = m_View->viewingMatrix() * m_ViewCenter;
 		pt2.z = targ.z = m_pt.z;
 		return (pt2 - targ).angleTo((m_pt - targ), OdGeVector3d::kZAxis);
 	}
@@ -927,13 +928,13 @@ public:
 			OdGeMatrix3d x;
 			switch (m_axis) {
 				case kHorizontal:
-					x.setToRotation(-angle(value), m_x, m_viewCenter);
+					x.setToRotation(-angle(value), m_X, m_ViewCenter);
 					break;
 				case kVertical:
-					x.setToRotation(-angle(value), m_up, m_viewCenter);
+					x.setToRotation(-angle(value), m_UpVector, m_ViewCenter);
 					break;
 				case kEye:
-					x.setToRotation(-angleZ(value), m_trg - m_pos, m_viewCenter);
+					x.setToRotation(-angleZ(value), m_Target - m_Position, m_ViewCenter);
 					break;
 				case kPerpDir:
 				{
@@ -944,24 +945,24 @@ public:
 					const OdGeVector2d perp = dir.perpVector();
 					OdGeVector3d perp3d(perp.x, perp.y, 0.0);
 					perp3d.normalizeGetLength();
-					perp3d.transformBy(m_initViewingMatrixInv);
-					x.setToRotation(-anglePerp(value), perp3d, m_viewCenter);
+					perp3d.transformBy(m_InitialViewingMatrixInverted);
+					x.setToRotation(-anglePerp(value), perp3d, m_ViewCenter);
 					break;
 				}
 			}
-			OdGePoint3d newPos = x * m_pos;
-			const OdGePoint3d newTarget = x * m_trg;
+			OdGePoint3d newPos = x * m_Position;
+			const OdGePoint3d newTarget = x * m_Target;
 			OdGeVector3d newPosDir = newPos - newTarget;
 			newPosDir.normalizeGetLength();
-			newPosDir *= m_pos.distanceTo(m_trg);
+			newPosDir *= m_Position.distanceTo(m_Target);
 			newPos = newTarget + newPosDir;
 
-			m_View->setView(newPos, newTarget, x * m_up, m_View->fieldWidth(), m_View->fieldHeight(), m_View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
+			m_View->setView(newPos, newTarget, x * m_UpVector, m_View->fieldWidth(), m_View->fieldHeight(), m_View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 		}
 	}
 
 	int addDrawables(OdGsView * pView) override {
-		m_pDrw = OdRxObjectImpl<OrbitCtrl>::createObject();
+		m_Drawable = OdRxObjectImpl<OrbitCtrl>::createObject();
 		if (m_pModel.isNull()) {
 			m_pModel = pView->device()->createModel();
 			if (!m_pModel.isNull()) {
@@ -972,12 +973,12 @@ public:
 				if (visualStyleId) m_pModel->setVisualStyle(visualStyleId); // 2dWireframe visual style.
 			}
 		}
-		pView->add(m_pDrw, m_pModel.get());
+		pView->add(m_Drawable, m_pModel.get());
 		return 1;
 	}
 
 	void removeDrawables(OdGsView * pView) override {
-		pView->erase(m_pDrw);
+		pView->erase(m_Drawable);
 	}
 };
 
@@ -1158,12 +1159,12 @@ class OdExCollideGsPath {
 		const Node* m_pParent;
 		OdDbStub* m_pId;
 		OdGiDrawablePtr m_Drawable;
-		OdGsMarker m_gsMarker;
+		OdGsMarker m_Marker;
 
 		const OdGiPathNode* parent() const noexcept override { return m_pParent; }
 		OdDbStub* persistentDrawableId() const noexcept override { return m_pId; }
 		const OdGiDrawable* transientDrawable() const override { return m_Drawable; }
-		OdGsMarker selectionMarker() const noexcept override { return m_gsMarker; }
+		OdGsMarker selectionMarker() const noexcept override { return m_Marker; }
 	};
 	const Node* m_pLeaf;
 
@@ -1174,7 +1175,7 @@ class OdExCollideGsPath {
 
 		pNode->m_Drawable = drawable;
 		pNode->m_pId = drawableId;
-		pNode->m_gsMarker = gsMarker;
+		pNode->m_Marker = gsMarker;
 	}
 
 	void addNode(OdDbObjectIdArray::const_iterator& iter) {
