@@ -718,9 +718,9 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 	if (handleMappedRtClk(aActiveKeys, x, y)) { return true; }
 
 	OdUInt32 iSize = aActiveKeys.size();
-	for (unsigned i = 0; i < iSize; i++)
+	for (unsigned i = 0; i < iSize; i++) {
 		aActiveKeys[i]->setStatus(OdDbGripOperations::kDragImageGrip);
-
+	}
 	GripDataMap::const_iterator it = m_aGripData.begin();
 	while (it != m_aGripData.end()) {
 		bool bActive = false;
@@ -729,6 +729,7 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 			const OdExGripDataPtrArray& aData = it->second.m_pDataArray;
 
 			for (unsigned i = 0; i < aData.size(); i++) {
+
 				if (OdDbGripOperations::kDragImageGrip == aData[i]->status()) {
 					bActive = true;
 					pDrag = OdExGripDrag::createObject(it->first, this);
@@ -739,6 +740,7 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 				const OdExGripDataPtrArray& aData = it->second.m_GripDataSubEntity.at(i).m_pSubData;
 
 				for (OdUInt32 j = 0; j < aData.size(); j++) {
+
 					if (OdDbGripOperations::kDragImageGrip == aData[j]->status()) {
 						bActive = true;
 						pDrag = OdExGripDrag::createObject(it->second.m_GripDataSubEntity.at(i).m_entPath, this);
@@ -748,8 +750,6 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 			}
 		}
 		if (bActive) {
-		  //pDrag->entityId = it->first;
-		  //pDrag->m_pOwner = this;
 			m_GripDrags.push_back(pDrag);
 		}
 		it++;
@@ -764,7 +764,7 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 	m_BasePoint = aKeys.first()->point();
 	m_LastPoint = m_BasePoint;
 	{
-	  // Use alternative point if needed.
+		// Use alternative point if needed.
 		auto FirstGripData = aKeys.first()->GripData();
 		
 		if (0 != FirstGripData.get()) {
@@ -778,16 +778,9 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 	::odedRegCmds()->executeCommand(&m_gripStretchCommand, m_CommandContext);
 
 	iSize = aActiveKeys.size();
-	for (unsigned i = 0; i < iSize; i++)
+	for (unsigned i = 0; i < iSize; i++) {
 		aActiveKeys[i]->setStatus(OdDbGripOperations::kWarmGrip);
-
-	  //  } // of else of if ( bShift )
-	  //}
-	  //else
-	  //{
-	  //  return false;
-	  //}
-
+	}
 	return true;
 }
 

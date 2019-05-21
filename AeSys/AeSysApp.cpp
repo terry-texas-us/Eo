@@ -256,32 +256,38 @@ AeSysApp::AeSysApp() noexcept
 	, m_bUseGsModel(TRUE)
 	, m_numGSMenuItems(0)
 	, m_bDiscardBackFaces(1)
+	, m_bEnableHLR(0)
+	, m_bContextColors(1)
+	, m_bTTFPolyDraw(0)
+	, m_bTTFTextOut(0)
+	, m_bTTFCache(0)
+	, m_bDynamicSubEntHlt(0)
+	, m_bGDIGradientsAsBitmap(0)
+	, m_bGDIGradientsAsPolys(0)
+	, m_nGDIGradientsAsPolysThreshold(10)
+	, m_bDisableAutoRegen(0)
+	, m_bLoading(false)
+	, m_bRemoteGeomViewer(false)
+	, m_bSupportFileSelectionViaDialog(true)
+	// ODA_MT_DBIO_BEGIN
+	, m_bUseMTLoading(false)
+	// ODA_MT_DBIO_END
+	, m_bUseTempFiles(false)
+	, m_pagingType(0)
+
 	, m_bEnableDoubleBuffer(1)
 	, m_bBlocksCache(0)
 	, m_bGsDevMultithread(0)
 	, m_nMtRegenThreads(4)
 	, m_bEnablePrintPreviewViaBitmap(1)
-	, m_bEnableHLR(0)
-	, m_bContextColors(TRUE)
-	, m_bTTFPolyDraw(FALSE)
-	, m_bTTFTextOut(0)
 	, m_background(ViewBackgroundColor)
 	, m_thisThreadID(0)
 	, m_numCustomCommands(0)
-	, m_bLoading(false)
-	, m_bRemoteGeomViewer(false)
-	, m_bSupportFileSelectionViaDialog(true)
-	, m_isDwgOut(0)
 	, m_bSaveRoundTrip(1)
 	, m_bSavePreview(0)
 	, m_bSaveWithPassword(0)
 	, m_bPartial(false)
-	, m_bRecover(false)
-	// ODA_MT_DBIO_BEGIN
-	, m_bUseMTLoading(false)
-	// ODA_MT_DBIO_END
-	, m_bUseTempFiles(false)
-	, m_pagingType(0) {
+	, m_bRecover(false) {
 
 	EnableHtmlHelp();
 
@@ -357,14 +363,31 @@ AeSysApp theApp; // The one and only AeSys object
 const ODCOLORREF* AeSysApp::curPalette() const {
 	return odcmAcadPalette(m_background);
 }
-OdGsDevicePtr AeSysApp::gsBitmapDevice() {
+
+OdGsDevicePtr AeSysApp::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, OdUInt32 flags) {
 	try {
-		OdGsModulePtr GsModule = ::odrxDynamicLinker()->loadModule(m_sVectorizerPath);
-		return GsModule->createBitmapDevice();
-	} catch (const OdError&) {
+		OdGsModulePtr Module;
+
+		if (GETBIT(flags, kFor2dExportRender)) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
+
+			if (GETBIT(flags, kFor2dExportRenderHLR)) { return OdGsDevicePtr(); }
+
+			// Try to export shaded viewports using OpenGL device.
+			Module = ::odrxDynamicLinker()->loadModule(OdWinOpenGLModuleName);
+		}
+		// Use currently selected device for thumbnails and etc.
+		if (Module.isNull()) {
+			Module = ::odrxDynamicLinker()->loadModule(m_sVectorizerPath);
+		}
+		if (Module.isNull()) { return OdGsDevicePtr(); }
+
+		return Module->createBitmapDevice();
+	}
+	catch (const OdError& Error) {
 	}
 	return OdGsDevicePtr();
 }
+
 bool AeSysApp::getPassword(const OdString& dwgName, bool /*isXref*/, OdPassword& password) {
 	EoDlgPassword pwdDlg;
 	pwdDlg.m_sFileName = (LPCWSTR) dwgName;
@@ -525,16 +548,6 @@ CString AeSysApp::getApplicationPath() {
 		return (FilePath.Left(Delimiter));
 	}
 	return L"";
-}
-
-OdString AeSysApp::objectIdAndClassName(const OdDbObject * object) {
-	OdString Name;
-	if (object) {
-		Name = object->objectId().getHandle().ascii() + L" : " + object->isA()->name();
-	} else {
-		Name = L"0 : (null)";
-	}
-	return Name;
 }
 
 void AeSysApp::auditPrintReport(OdAuditInfo * auditInfo, const OdString & line, int printDest) const {
@@ -857,7 +870,7 @@ double AeSysApp::EngagedLength() const noexcept {
 	return (m_EngagedLength);
 }
 
-CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter) {
+CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool multiple) {
 	CString FileName;
 	const DWORD Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
@@ -909,7 +922,6 @@ int AeSysApp::ExitInstance() {
 	theApp.WriteInt(L"Contextual Colors", m_bContextColors);
 	theApp.WriteInt(L"TTF PolyDraw", m_bTTFPolyDraw);
 	theApp.WriteInt(L"TTF TextOut", m_bTTFTextOut);
-	theApp.WriteInt(L"View object in DWG format", m_isDwgOut);
 	theApp.WriteInt(L"Save round trip information", m_bSaveRoundTrip);
 	theApp.WriteInt(L"Save Preview", m_bSavePreview);
 	theApp.WriteInt(L"Background colour", m_background);
@@ -1213,6 +1225,7 @@ BOOL AeSysApp::InitInstance() {
 	m_Options.Load();
 
 	SetRegistryBase(L"ODA View");
+
 	m_bDiscardBackFaces = theApp.GetInt(L"Discard Back Faces", 1);
 	m_bEnableDoubleBuffer = theApp.GetInt(L"Enable Double Buffer", 1); // <tas="TRUE unless debugging"</tas>
 	m_bBlocksCache = theApp.GetInt(L"Enable Blocks Cache", 0); // 1
@@ -1224,14 +1237,26 @@ BOOL AeSysApp::InitInstance() {
 	m_bContextColors = theApp.GetInt(L"Contextual Colors", 1);
 	m_bTTFPolyDraw = theApp.GetInt(L"TTF PolyDraw", 0);
 	m_bTTFTextOut = theApp.GetInt(L"TTF TextOut", 0);
-	m_isDwgOut = theApp.GetInt(L"View object in DWG format", 0);
+
+	m_bTTFCache = theApp.GetInt(L"TTF Cache", 0);
+	m_bDynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", 0);
+	m_bGDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", 1);
+	m_bGDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", 0);
+	m_nGDIGradientsAsPolysThreshold = (BYTE)GetInt(L"GDI Gradients as Polys Threshold", 10);
+
+	m_bDisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", 0);
+
+//	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
+
 	m_bSaveRoundTrip = theApp.GetInt(L"Save round trip information", 1);
 	m_bSavePreview = theApp.GetInt(L"Save Preview", 0);
 	m_background = theApp.GetInt(L"Background colour", ViewBackgroundColor);
 	m_bSaveWithPassword = theApp.GetInt(L"Save DWG with password", 0);
 	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
 	m_RecentCommand = theApp.GetString(L"Recent Command", L"");
+	int nFillTtf = theApp.GetInt(L"Fill TTF text", 1);
 	setTEXTFILL(theApp.GetInt(L"Fill TTF text", 1) != 0);
+	
 	SetRegistryBase(L"MFC Auto");
 
 	lex::Init();
@@ -1957,9 +1982,6 @@ int AeSysApp::messageBox(LPCWSTR caption, LPCWSTR text, UINT type) {
 		hWnd = MainWnd->m_hWnd;
 	}
 	return ::MessageBoxW(hWnd, text, caption, type);
-}
-void AeSysApp::reportError(LPCWSTR caption, const OdError & error) {
-	messageBox(caption, (LPCWSTR) error.description(), MB_OK | MB_ICONERROR);
 }
 void AeSysApp::reportError(LPCWSTR caption, unsigned int error) {
 	messageBox(caption, (LPCWSTR) getErrorDescription(error), MB_OK | MB_ICONERROR);

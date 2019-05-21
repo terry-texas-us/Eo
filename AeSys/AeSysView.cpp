@@ -318,10 +318,7 @@ AeSysView::AeSysView() noexcept
 	, m_bRegenAbort(false)
 	, m_bPsOverall(false)
 	, m_mode(kQuiescent)
-	, m_InputTracker(nullptr)
-	, m_InputTrackerHasDrawables(false)
 	, m_hCursor(0)
-	, m_pBasePt(0)
 	, m_bInRegen(false)
 	, m_paintMode(PaintMode_Regen)
 	, m_bPlotPlotstyle(false)
@@ -659,38 +656,33 @@ inline bool requireAutoRegen(OdGsView* view) {
 	}
 	return false;
 }
-void AeSysView::propagateActiveViewChanges() const {
+void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 	// @@@ probably move this functionality into GsLayoutHelper's?
-	OdGsViewPtr pView = getActiveView();
+	OdGsViewPtr View {getActiveView()};
 	OdGsClientViewInfo ClientViewInfo;
-	pView->clientViewInfo(ClientViewInfo);
+	View->clientViewInfo(ClientViewInfo);
 	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject(OdDb::kForWrite);
 	OdAbstractViewPEPtr pVp(pObj);
 
 	if (!pVp.isNull()) {
-		const OdGePoint3d ptTarget(pView->target());
-		OdGeVector3d vecDir(pView->position() - ptTarget);
-		const OdGeVector3d vecUp(pView->upVector());
-		const double dFieldWidth = pView->fieldWidth();
-		const double dFieldHeight = pView->fieldHeight();
-		const bool bPersp = pView->isPerspective();
-		const double dLensLength = pView->lensLength();
+		const OdGePoint3d ptTarget(View->target());
+		OdGeVector3d vecDir(View->position() - ptTarget);
+		const OdGeVector3d vecUp(View->upVector());
+		const auto dFieldWidth {View->fieldWidth()};
+		const auto dFieldHeight {View->fieldHeight()};
+		const auto bPersp {View->isPerspective()};
+		const auto dLensLength {View->lensLength()};
+		
 		if (vecDir.isZeroLength()) {
-			vecDir = pView->viewingMatrix().inverse().getCsZAxis();
+			vecDir = View->viewingMatrix().inverse().getCsZAxis();
 			if (vecDir.isZeroLength())
 				vecDir = OdGeVector3d::kZAxis;
 			else
 				vecDir.normalize();
 		}
-		if (!pVp->target(pObj).isEqualTo(ptTarget) ||
-			!pVp->direction(pObj).isEqualTo(vecDir) ||
-			!pVp->upVector(pObj).isEqualTo(vecUp) ||
-			!OdEqual(pVp->fieldWidth(pObj), dFieldWidth) || !OdEqual(pVp->fieldHeight(pObj), dFieldHeight) ||
-			pVp->isPerspective(pObj) != bPersp || !OdEqual(pVp->lensLength(pObj), dLensLength)) {
+		if (!pVp->target(pObj).isEqualTo(ptTarget) || !pVp->direction(pObj).isEqualTo(vecDir) || !pVp->upVector(pObj).isEqualTo(vecUp) || !OdEqual(pVp->fieldWidth(pObj), dFieldWidth) || !OdEqual(pVp->fieldHeight(pObj), dFieldHeight) || pVp->isPerspective(pObj) != bPersp || !OdEqual(pVp->lensLength(pObj), dLensLength)) {
 			OdGeVector2d viewOffset;
-			if (pVp->direction(pObj).isEqualTo(vecDir) &&
-				pVp->upVector(pObj).isEqualTo(vecUp) &&
-				!bPersp && !pVp->isPerspective(pObj)) {
+			if (pVp->direction(pObj).isEqualTo(vecDir) && pVp->upVector(pObj).isEqualTo(vecUp) && !bPersp && !pVp->isPerspective(pObj)) {
 				const OdGeVector3d vecX = vecUp.crossProduct(vecDir).normal();
 				viewOffset = pVp->viewOffset(pObj);
 				const OdGePoint3d prevTarg = pVp->target(pObj) - vecX * viewOffset.x - vecUp * viewOffset.y;
@@ -700,12 +692,12 @@ void AeSysView::propagateActiveViewChanges() const {
 			pVp->setView(pObj, ptTarget, vecDir, vecUp, dFieldWidth, dFieldHeight, bPersp, viewOffset);
 			pVp->setLensLength(pObj, dLensLength);
 			// Auto regen
-			if (requireAutoRegen(pView)) {
+			if (!theApp.disableAutoRegen() && requireAutoRegen(View)) {
 				const_cast<AeSysView*>(this)->OnViewerRegen();
 			}
 		}
 		OdDb::RenderMode rm = OdDb::k2DOptimized;
-		switch (pView->mode()) {
+		switch (View->mode()) {
 			case OdGsView::kWireframe:
 				rm = OdDb::kWireframe;
 				break;
@@ -725,10 +717,14 @@ void AeSysView::propagateActiveViewChanges() const {
 				rm = OdDb::kGouraudShadedWithWireframe;
 				break;
 		}
-		if (pVp->renderMode(pObj) != rm)
+		if (pVp->renderMode(pObj) != rm) {
 			pVp->setRenderMode(pObj, rm);
-		if (pVp->visualStyle(pObj) != OdDbObjectId(pView->visualStyle()))
-			pVp->setVisualStyle(pObj, pView->visualStyle());
+		}
+		OdDbObjectId vs(View->visualStyle());
+
+		if ((pVp->visualStyle(pObj) != vs) && !vs.isNull()) {
+			pVp->setVisualStyle(pObj, View->visualStyle());
+		}
 	}
 }
 
@@ -978,15 +974,33 @@ void AeSysView::createDevice() {
 		auto DeviceProperties {GsDevice->properties()};
 		
 		if (DeviceProperties.get()) {
-			if (DeviceProperties->has(L"WindowHWND")) { DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd)); }
-			if (DeviceProperties->has(L"WindowHDC")) { DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC)); }
-			if (DeviceProperties->has(L"DoubleBufferEnabled")) { DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled())); }
-			if (DeviceProperties->has(L"EnableSoftwareHLR")) { DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR())); }
-			if (DeviceProperties->has(L"DiscardBackFaces")) { DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces())); }
-			if (DeviceProperties->has(L"BlocksCache")) { DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled())); }
-			if (DeviceProperties->has(L"EnableMultithread")) { DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled())); }
-			if (DeviceProperties->has(L"MaxRegenThreads")) { DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16) theApp.mtRegenThreadsCount())); }
-			if (DeviceProperties->has(L"UseTextOut")) { DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut())); }
+			if (DeviceProperties->has(L"WindowHWND")) { 
+				DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd)); 
+			}
+			if (DeviceProperties->has(L"WindowHDC")) { 
+				DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC)); 
+			}
+			if (DeviceProperties->has(L"DoubleBufferEnabled")) { 
+				DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled())); 
+			}
+			if (DeviceProperties->has(L"EnableSoftwareHLR")) { 
+				DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR())); 
+			}
+			if (DeviceProperties->has(L"DiscardBackFaces")) { 
+				DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces())); 
+			}
+			if (DeviceProperties->has(L"BlocksCache")) { 
+				DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled())); 
+			}
+			if (DeviceProperties->has(L"EnableMultithread")) { 
+				DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled())); 
+			}
+			if (DeviceProperties->has(L"MaxRegenThreads")) { 
+				DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16) theApp.mtRegenThreadsCount())); 
+			}
+			if (DeviceProperties->has(L"UseTextOut")) { 
+				DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut())); 
+			}
 		}
 		enableKeepPSLayoutHelperView(true);
 		enableContextualColorsManagement(theApp.enableContextualColors());
@@ -1679,18 +1693,6 @@ bool AeSysView::canClose() const {
 	return true;
 }
 
-bool AeSysView::isGettingString() const noexcept {
-	return m_mode != kQuiescent;
-}
-
-OdString AeSysView::prompt() const {
-	return m_sPrompt;
-}
-
-int AeSysView::inpOptions() const noexcept {
-	return m_inpOptions;
-}
-
 class SaveViewParams {
 protected:
 	AeSysView* m_View;
@@ -2011,6 +2013,8 @@ void AeSysView::respond(const OdString & s) {
 }
 
 void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
+	__super::OnChar(characterCodeValue, repeatCount, flags);
+
 	m_response.m_string = m_inpars.result();
 	switch (characterCodeValue) {
 		case VK_BACK:
@@ -2060,9 +2064,8 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 			}
 			break;
 	}
-	if (m_InputTracker && m_mode == kGetString && m_response.m_type != Response::kString && m_inpars.result() != (LPCWSTR) m_response.m_string) {
-		static_cast<OdEdStringTracker*>(m_InputTracker)->setValue(m_inpars.result());
-		if (m_InputTrackerHasDrawables) {
+	if (m_mode == kGetString && m_response.m_type != Response::kString && m_inpars.result() != m_response.m_string) {
+		if (m_editor.TrackString(m_inpars.result())) {
 			getActiveTopView()->invalidate();
 			PostMessage(WM_PAINT);
 		}
@@ -2074,7 +2077,6 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 	} else {
 		theApp.SetStatusPaneTextAt(nStatusInfo, m_inpars.result());
 	}
-	__super::OnChar(characterCodeValue, repeatCount, flags);
 }
 
 void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
@@ -2096,6 +2098,7 @@ void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 	if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
+		__super::OnLButtonDown(flags, point);
 
 		switch (m_mode) {
 			case kQuiescent:
@@ -2106,23 +2109,24 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 				break;
 			case kGetPoint:
 				m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
+				
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
 					if (!m_editor.ToUcsToWorld(m_response.m_Point))
 						break;
 				}
-				m_editor.Snap(m_response.m_Point, m_pBasePt);
+				m_editor.Snap(m_response.m_Point);
 				m_response.m_type = Response::kPoint;
 				break;
 			default:
 				m_LeftButton = true;
 				m_MousePosition = point;
 				m_MouseClick = point;
+				
 				if (m_ZoomWindow == true) {
 					m_Points.clear();
 					m_Points.append(GetWorldCoordinates(point));
 				}
 		}
-		__super::OnLButtonDown(flags, point);
 
 	} else {
 		DoCustomMouseClick(AeSysApp::CustomLButtonDownCharacters);
@@ -2360,18 +2364,6 @@ const OdExEditorObject& AeSysView::editorObject() const noexcept {
 bool AeSysView::isModelSpaceView() const {
 	return (getDatabase()->getTILEMODE());
 	//return m_bPsOverall;
-}
-
-bool AeSysView::drawableVectorizationCallback(const OdGiDrawable * drawable) {
-	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
-		//++m_pagingCounter;
-		//if (m_pagingCounter > 99)
-		{
-			//m_pagingCounter = 0;
-			getDatabase()->pageObjects();
-		}
-	}
-	return true;
 }
 
 BOOL AeSysView::OnIdle(long count) {

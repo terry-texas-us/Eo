@@ -69,6 +69,7 @@ private:
 	int m_nProgressPos;
 	int m_nPercent;
 	CString m_Msg;
+
 	BOOL m_bDiscardBackFaces;
 	BOOL m_bEnableDoubleBuffer;
 	BOOL m_bBlocksCache;
@@ -80,15 +81,18 @@ private:
 	BOOL m_bContextColors;
 	BOOL m_bTTFPolyDraw;
 	BOOL m_bTTFTextOut;
+	BOOL m_bTTFCache;
+	BOOL m_bDynamicSubEntHlt;
+	BOOL m_bGDIGradientsAsBitmap;
+	BOOL m_bGDIGradientsAsPolys;
+	BYTE m_nGDIGradientsAsPolysThreshold;
+	BOOL m_bDisableAutoRegen;
 	ODCOLORREF m_background;
 	DWORD m_thisThreadID;
 	UINT m_numCustomCommands;
 	DWORD m_numGSMenuItems;
-
 	OdString m_sVectorizerPath;
-
 	OdString m_RecentCommand;
-
 	bool m_bPartial;
 	bool m_bRecover;
 	bool m_bLoading;
@@ -101,6 +105,7 @@ private:
 	CStringArray m_tempFilesList;
 	bool m_bSupportFileSelectionViaDialog;
 
+//	void UpdateFieldDisplay();
 public:
 
 	void AddReactor(OdApplicationReactor* reactor);
@@ -117,7 +122,7 @@ public:
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
 	void RefreshCommandMenu();
 	UINT numCustomCommands() const noexcept { return m_numCustomCommands; }
-	static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter);
+	static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool multiple = false);
 
 	bool printingViaBitmap() const noexcept { return m_bEnablePrintPreviewViaBitmap != 0; }
 	bool doubleBufferEnabled() const noexcept { return m_bEnableDoubleBuffer != 0; }
@@ -129,15 +134,25 @@ public:
 	bool enableContextualColors() const noexcept { return m_bContextColors != 0; }
 	bool enableTTFPolyDraw() const noexcept { return m_bTTFPolyDraw != 0; }
 	bool enableTTFTextOut() const noexcept { return m_bTTFTextOut != 0; }
+	bool enableTTFCache() const { return m_bTTFCache != 0; }
+	bool enableDynamicSubEntHlt() const { return m_bDynamicSubEntHlt != 0; }
+	bool enableGDIGradientsAsBitmap() const { return m_bGDIGradientsAsBitmap != 0; }
+	bool enableGDIGradientsAsPolys() const { return m_bGDIGradientsAsPolys != 0; }
+	BYTE gdiGradientsAsPolysThreshold() const { return m_nGDIGradientsAsPolysThreshold; }
+	bool disableAutoRegen() const { return m_bDisableAutoRegen != 0; }
 	bool discardBackFaces() const noexcept { return m_bDiscardBackFaces != 0; }
-
-	BOOL m_isDwgOut;
+	enum DisplayFields {
+		kSchemaFields,
+		kDxfFields,
+		kDwgFields
+	};
+	int  m_displayFields;
 	BOOL m_bSaveRoundTrip;
 	BOOL m_bSavePreview;
 	BOOL m_bSaveWithPassword;
 
 	EoDlgAudit* m_pAuditDlg;
-	//CTaskBarWin7Ext m_tbExt;
+//	CTaskBarWin7Ext m_tbExt;
 	OdMutexPtr m_pMeterMutex;
 
 public:
@@ -156,27 +171,37 @@ public:
 	void stop() override;
 	void meterProgress() override;
 	void setLimit(int max) noexcept override;
-
-	int ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
+	
 	void warning(const char* warnVisGroup, const OdString& message) override;
+	int ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
 	void WarningMessageBox(UINT stringResourceIdentifier);
 	void WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
-
 	int messageBox(LPCWSTR caption, LPCWSTR text, UINT type);
-	void reportError(LPCWSTR caption, const OdError& error);
+	void reportError(LPCWSTR caption, const OdError& error) {
+		messageBox(caption, (LPCWSTR)error.description(), MB_OK | MB_ICONERROR);
+	}
 	void reportError(LPCWSTR caption, unsigned int error);
 
 	OdRxClass* databaseClass() const override;
 
 	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override;
 	OdString getFontMapFileName() const override;
+//	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType);
 
+//	const OdString product();
+
+//	virtual OdString getTempPath() const;
+
+//	BOOL ProcessShellCommand(CCommandLineInfo& rCmdInfo);
+	
 	void initPlotStyleSheetEnv();
 
 	bool getSAVEROUNDTRIP() const noexcept override { return (m_bSaveRoundTrip != 0); }
-	void auditPrintReport(OdAuditInfo * auditInfo, const OdString & line, int printDest) const override;
+	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override;
 	OdDbUndoControllerPtr newUndoController() override;
 	OdStreamBufPtr newUndoStream() override;
+
+//	void OnOptionsRenderingdeviceVectorize();
 
 	bool getSavePreview() noexcept { return (m_bSavePreview != 0); }
 	bool getSaveWithPassword() noexcept { return (m_bSaveWithPassword != 0); }
@@ -187,14 +212,23 @@ public:
 	static inline OdString objectIdAndClassName(OdDbObjectId id) {
 		return objectIdAndClassName(id.openObject());
 	}
-	static OdString objectIdAndClassName(const OdDbObject * object);
+
+	static inline OdString objectIdAndClassName(const OdDbObject* object) {
+		if (object) {
+			return OdString().format(L"%02I64X : <%ls>", OdUInt64(object->objectId().getHandle()), object->isA()->name().c_str());
+		}
+		return OdString(L"00 : < >");
+	}
+
 	const ODCOLORREF activeBackground() const noexcept { return m_background; }
-	void setActiveBackground(const ODCOLORREF & color) noexcept { m_background = color & 0xffffff; }
+	void setActiveBackground(const ODCOLORREF& color) noexcept { m_background = color & 0xffffff; }
 	const ODCOLORREF* curPalette() const;
 
-	OdGsDevicePtr gsBitmapDevice();
+	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = nullptr, OdDbBaseDatabase* database = nullptr, OdUInt32 flags = 0);
 
-	bool getPassword(const OdString & dwgName, bool isXref, OdPassword & password) override;
+//	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
+//	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
+	bool getPassword(const OdString& dwgName, bool isXref, OdPassword & password) override;
 
 	OdDbPageControllerPtr newPageController() override;
 	int setPagingType(int pagingType) noexcept;
@@ -203,15 +237,15 @@ public:
 	bool setUndoType(bool useTempFiles) noexcept;
 	bool undoType() const noexcept { return m_bUseTempFiles; }
 
-	OdString fileDialog(int flags, const OdString & prompt = OdString::kEmpty, const OdString & defExt = OdString::kEmpty, const OdString & fileName = OdString::kEmpty, const OdString & filter = OdString::kEmpty) override;
+	OdString fileDialog(int flags, const OdString & prompt = OdString::kEmpty, const OdString & defExt = OdString::kEmpty, const OdString & fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
 
-	BOOL PreTranslateMessage(MSG * pMsg) override;
+	BOOL PreTranslateMessage(MSG* message) override;
 
 	bool remoteGeomViewer() const noexcept { return m_bRemoteGeomViewer; }
 	void setRemoteGeomViewer() noexcept { m_bRemoteGeomViewer = true; }
 
 	bool supportFileSelectionViaDialog() const noexcept { return m_bSupportFileSelectionViaDialog; }
-	void setSupportFileSelectionViaDialog(bool b) noexcept { m_bSupportFileSelectionViaDialog = b; }
+	void setSupportFileSelectionViaDialog(bool supportFileSelectionViaDialog) noexcept { m_bSupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
 
 	static CString getApplicationPath();
 

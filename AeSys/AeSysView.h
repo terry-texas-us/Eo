@@ -64,15 +64,9 @@ class AeSysView
 	Response m_response;
 	int m_inpOptions;
 
-	OdEdInputTracker* m_InputTracker;
-	bool m_InputTrackerHasDrawables;
-	OdGePoint3d m_basePt;
-	const OdGePoint3d* m_pBasePt;
-
 	void exeCmd(const OdString& szCmdStr);
-	// <OleDragCallback virtual>
 	bool beginDragCallback(const OdGePoint3d& point) override;
-	// </OleDragCallback virtual>
+
 protected:
 	using CView::operator new;
 	using CView::operator delete;
@@ -95,6 +89,9 @@ protected:
 	HDC m_hWindowDC;
 	int m_pagingCounter;
 
+//	CRect viewportRect() const;
+//	static CRect viewRect(OdGsView*);
+
 	AeSysView() noexcept; // protected constructor used by dynamic creation
 
 	void preparePlotstyles(const OdDbLayout* pLayout = NULL, bool bForceReload = false);
@@ -109,7 +106,9 @@ public:
 	const OdGsView* getActiveView() const;
 	OdGsView* getActiveTopView();
 	const OdGsView* getActiveTopView() const;
-	void propagateActiveViewChanges() const;
+//	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
+	void propagateActiveViewChanges(bool forceAutoRegen = false) const;
+//	void recreateDevice() { createDevice(true); }
 
 	void track(OdEdInputTracker* inputTracker);
 	void setCursor(HCURSOR cursor) noexcept;
@@ -118,15 +117,18 @@ public:
 	void setViewportBorderProperties();
 	// <command_view>
 	bool canClose() const;
-	bool isGettingString() const noexcept;
-	OdString prompt() const;
-	int inpOptions() const noexcept;
+	bool isGettingString() const noexcept { return m_mode != kQuiescent; }
+	OdString prompt() const { return m_sPrompt; }
+	int inpOptions() const noexcept { return m_inpOptions; }
 	void respond(const OdString& s);
 	OdEdCommandPtr command(const OdString& commandName);
 	OdExEditorObject& editorObject() noexcept;
 	const OdExEditorObject& editorObject() const noexcept;
 	bool isModelSpaceView() const;
-	bool drawableVectorizationCallback(const OdGiDrawable* drawable);
+
+//	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const;
+//	OdUInt32 drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags);
+
 	// </command_view>
 
 public:
@@ -134,15 +136,15 @@ public:
 
 protected:
 	void OnDraw(CDC* deviceContext) override;
-	BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
-	void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
-	void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
 	void OnPrint(CDC* deviceContext, CPrintInfo* printInformation) override;
 	void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+	void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+	BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
+
+	void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
 
 	void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame) override;
 	void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
-
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
@@ -159,7 +161,7 @@ protected:
 	void Dump(CDumpContext& dc) const override;
 #endif
 
-	// <tas="Not implemented in example"</tas> void adjustDevice(OdGsDevice* pDevice);
+//	void adjustDevice(OdGsDevice* device);
 	void createDevice();
 	bool regenAbort() const noexcept override;
 
