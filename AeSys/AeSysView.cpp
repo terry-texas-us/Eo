@@ -964,63 +964,138 @@ void AeSysView::fillContextualColors(OdGiContextualColorsImpl * pCtxColors) {
 #undef SET_CTXCLR_ISOK
 }
 
-void AeSysView::createDevice() {
+/* <tas="MaterialsEditor required for additional GLES device settings">
+	bool odExGLES2CompositeMfSetting(); // Defined in MaterialsEditor.cpp
+	bool odExGLES2VisualStylesSetting(); // Defined in MaterialsEditor.cpp
+	bool odExGLES2OverlaysSetting(); // Defined in MaterialsEditor.cpp
+	bool odExGLES2OITSetting(); // Defined in MaterialsEditor.cpp
+	bool odExGLES2SceneGraphSetting(); // Defined in MaterialsEditor.cpp
+	bool odExGLES2ExtendedMaterialsSetting(); // Defined in MaterialsEditor.cpp
+	OdIntPtr odExGLES2SceneGraphOptions(); // Defined in MaterialsEditor.cpp
+	const OdString& odExLoadGsStateSetting(); // Defined in MaterialsEditor.cpp
+   </tas> */
+
+void AeSysView::createDevice(bool recreate) {
 	CRect ClientRectangle;
 	GetClientRect(&ClientRectangle);
 	try {
-		OdGsModulePtr GsModule {::odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false)};
-		auto GsDevice {GsModule->createDevice()};
-		
-		auto DeviceProperties {GsDevice->properties()};
-		
-		if (DeviceProperties.get()) {
-			if (DeviceProperties->has(L"WindowHWND")) { 
-				DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd)); 
-			}
-			if (DeviceProperties->has(L"WindowHDC")) { 
-				DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC)); 
-			}
-			if (DeviceProperties->has(L"DoubleBufferEnabled")) { 
-				DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled())); 
-			}
-			if (DeviceProperties->has(L"EnableSoftwareHLR")) { 
-				DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR())); 
-			}
-			if (DeviceProperties->has(L"DiscardBackFaces")) { 
-				DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces())); 
-			}
-			if (DeviceProperties->has(L"BlocksCache")) { 
-				DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled())); 
-			}
-			if (DeviceProperties->has(L"EnableMultithread")) { 
-				DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled())); 
-			}
-			if (DeviceProperties->has(L"MaxRegenThreads")) { 
-				DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16) theApp.mtRegenThreadsCount())); 
-			}
-			if (DeviceProperties->has(L"UseTextOut")) { 
-				DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut())); 
-			}
-		}
-		enableKeepPSLayoutHelperView(true);
-		enableContextualColorsManagement(theApp.enableContextualColors());
-		setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
-		enableGsModel(theApp.useGsModel());
+		OdArray<OdGsViewPtr> m_prevViews;
+		OdGsModelPtr m_pModel;
 
-		m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
-		
+		if (!recreate) {
+			OdGsModulePtr GsModule {::odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false)};
+			auto GsDevice {GsModule->createDevice()};
+
+			auto DeviceProperties {GsDevice->properties()};
+
+			if (DeviceProperties.get()) {
+				if (DeviceProperties->has(L"WindowHWND")) {
+					DeviceProperties->putAt("WindowHWND", OdRxVariantValue((OdIntPtr)m_hWnd));
+				}
+				if (DeviceProperties->has(L"WindowHDC")) {
+					DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr)m_hWindowDC));
+				}
+				if (DeviceProperties->has(L"DoubleBufferEnabled")) {
+					DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled()));
+				}
+				if (DeviceProperties->has(L"EnableSoftwareHLR")) {
+					DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR()));
+				}
+				if (DeviceProperties->has(L"DiscardBackFaces")) {
+					DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces()));
+				}
+				if (DeviceProperties->has(L"BlocksCache")) {
+					DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled()));
+				}
+				if (DeviceProperties->has(L"EnableMultithread")) {
+					DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled()));
+				}
+				if (DeviceProperties->has(L"MaxRegenThreads")) {
+					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16)theApp.mtRegenThreadsCount()));
+				}
+				if (DeviceProperties->has(L"UseTextOut")) {
+					DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
+				}
+				if (DeviceProperties->has(L"UseTTFCache")) {
+					DeviceProperties->putAt(L"UseTTFCache", OdRxVariantValue(theApp.enableTTFCache()));
+				}
+				if (DeviceProperties->has(L"DynamicSubEntHlt")) {
+					DeviceProperties->putAt(L"DynamicSubEntHlt", OdRxVariantValue(theApp.enableDynamicSubEntHlt()));
+				}
+			/* <tas="MaterialsEditor required for additional GLES device settings">
+				if (DeviceProperties->has(L"UseCompositeMetafiles")) {
+					DeviceProperties->putAt(L"UseCompositeMetafiles", OdRxVariantValue(odExGLES2CompositeMfSetting()));
+				}
+				if (DeviceProperties->has(L"RenderSettingsDlg") && odExGLES2CompositeMfSetting()) {
+					DeviceProperties->putAt(L"RenderSettingsDlg", OdRxVariantValue((OdIntPtr)AfxGetMainWnd()->GetSafeHwnd()));
+				}
+				if (DeviceProperties->has(L"UseVisualStyles")) {
+					DeviceProperties->putAt(L"UseVisualStyles", OdRxVariantValue(odExGLES2VisualStylesSetting()));
+				}
+				if (DeviceProperties->has(L"UseOverlays")) {
+					DeviceProperties->putAt(L"UseOverlays", OdRxVariantValue(odExGLES2OverlaysSetting()));
+				}
+				if (DeviceProperties->has(L"UseSceneGraph")) {
+					DeviceProperties->putAt(L"UseSceneGraph", OdRxVariantValue(odExGLES2SceneGraphSetting()));
+				}
+				if (DeviceProperties->has(L"SceneGraphOptions")) {
+					DeviceProperties->putAt(L"SceneGraphOptions", OdRxVariantValue(odExGLES2SceneGraphOptions()));
+				}
+				if (DeviceProperties->has(L"UseExtendedMaterials")) {
+					DeviceProperties->putAt(L"UseExtendedMaterials", OdRxVariantValue(odExGLES2ExtendedMaterialsSetting()));
+				}
+				if (!odExGLES2OITSetting() && DeviceProperties->has(L"BlendingMode")) { // Disable Order Independent Transparency if this is required
+					DeviceProperties->putAt(L"BlendingMode", OdRxVariantValue(OdUInt32(0)));
+				}
+				if (DeviceProperties->has(L"GradientsAsBitmap")) {
+					DeviceProperties->putAt(L"GradientsAsBitmap", OdRxVariantValue(theApp.enableGDIGradientsAsBitmap()));
+				}
+			   </tas> */
+			}
+			enableKeepPSLayoutHelperView(true);
+			enableContextualColorsManagement(theApp.enableContextualColors());
+			setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
+			enableGsModel(theApp.useGsModel());
+
+			m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
+
+		/* <tas="MaterialsEditor required for additional GLES device settings">
+			if (!odExLoadGsStateSetting().isEmpty()) {
+				if (m_LayoutHelper->supportLayoutGsStateSaving()) {
+					auto File {::odrxSystemServices()->createFile(odExLoadGsStateSetting(), Oda::kFileRead, Oda::kShareDenyWrite, Oda::kOpenExisting)};
+
+					if (!m_LayoutHelper->restoreLayoutGsState(File)) {
+						MessageBox(L"Failed to load Gs State.", L"Gs Error", MB_ICONERROR);
+					}
+				}
+			}
+		   </tas> */
+		} else { // Store current device views to keep cache alive, detach views from exist device, create new helper for exist device, and release existing helper device
+			auto LayoutHelperIn {m_LayoutHelper};
+			for (auto ViewIndex = 0; ViewIndex < LayoutHelperIn->numViews(); ViewIndex++) {
+				m_prevViews.append(LayoutHelperIn->viewAt(ViewIndex));
+			}
+			m_pModel = LayoutHelperIn->gsModel();
+			LayoutHelperIn->eraseAllViews();
+
+			auto LayoutHelperOut {OdDbGsManager::setupActiveLayoutViews(LayoutHelperIn->underlyingDevice(), this)};
+
+			m_LayoutHelper = LayoutHelperOut;
+			LayoutHelperIn.release();
+			m_editor.Initialize(m_LayoutHelper, static_cast<AeSysDoc*>(GetDocument())->CommandContext());
+		}
 		m_layoutId = m_LayoutHelper->layoutId();
 
-		const ODCOLORREF* palette = theApp.curPalette();
-		ODGSPALETTE pPalCpy;
-		pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
-		pPalCpy[0] = theApp.activeBackground();
-		m_LayoutHelper->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
+		const ODCOLORREF* Palette = theApp.curPalette();
+		ODGSPALETTE PaletteCopy;
+		PaletteCopy.insert(PaletteCopy.begin(), Palette, Palette + 256);
+		PaletteCopy[0] = theApp.activeBackground();
+		m_LayoutHelper->setLogicalPalette(PaletteCopy.asArrayPtr(), 256);
 		auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
-		
+
 		if (PaperLayoutHelper.isNull()) {
 			m_bPsOverall = false;
-			m_LayoutHelper->setBackgroundColor(pPalCpy[0]); // for model space
+			m_LayoutHelper->setBackgroundColor(PaletteCopy[0]); // for model space
 		} else {
 			m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
 			m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
@@ -1029,12 +1104,28 @@ void AeSysView::createDevice() {
 
 		setViewportBorderProperties();
 
-		const OdGsDCRect gsRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top);
+		OdGsDCRect gsRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top);
 		m_LayoutHelper->onSize(gsRect);
 
-		// Adding plotstyletable info
-		preparePlotstyles();
-	} catch (const OdError & Error) {
+		preparePlotstyles(NULL, recreate);
+
+		if (recreate) {
+			// Call update to share cache from exist views
+			m_LayoutHelper->update();
+			// Invalidate views for exist Gs model (i. e. remove unused drawables and mark view props as invalid)
+			if (!m_pModel.isNull()) {
+				auto Views {m_prevViews.asArrayPtr()};
+				OdUInt32 nViews = m_prevViews.size();
+
+				for (OdUInt32 nView = 0; nView < nViews; nView++) {
+					m_pModel->invalidate(Views[nView]);
+				}
+			}
+			// Release exist views to detach from Gs and keep released slots free.
+			m_prevViews.clear();
+		}
+	}
+	catch (const OdError & Error) {
 		destroyDevice();
 		theApp.reportError(L"Graphic System Initialization Error", Error);
 	}
@@ -1063,17 +1154,17 @@ void AeSysView::ResetDevice(bool zoomExtents) {
 			m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
 			m_layoutId = m_LayoutHelper->layoutId();
 
-			const ODCOLORREF* palette = theApp.curPalette();
-			ODGSPALETTE pPalCpy;
-			pPalCpy.insert(pPalCpy.begin(), palette, palette + 256);
-			pPalCpy[0] = theApp.activeBackground();
+			const ODCOLORREF* Palette = theApp.curPalette();
+			ODGSPALETTE PaletteCopy;
+			PaletteCopy.insert(PaletteCopy.begin(), Palette, Palette + 256);
+			PaletteCopy[0] = theApp.activeBackground();
 
-			m_LayoutHelper->setLogicalPalette(pPalCpy.asArrayPtr(), 256);
+			m_LayoutHelper->setLogicalPalette(PaletteCopy.asArrayPtr(), 256);
 			
 			auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 			if (PaperLayoutHelper.isNull()) {
 				m_bPsOverall = false;
-				m_LayoutHelper->setBackgroundColor(pPalCpy[0]); // for model space
+				m_LayoutHelper->setBackgroundColor(PaletteCopy[0]); // for model space
 			} else {
 				m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
 				m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
@@ -2012,6 +2103,24 @@ void AeSysView::respond(const OdString & s) {
 	m_response.m_string = s;
 }
 
+CRect AeSysView::viewportRect() const
+{
+	CRect ClientRectangle;
+	GetClientRect(&ClientRectangle);
+	return ClientRectangle;
+}
+
+CRect AeSysView::viewRect(OdGsView* view)
+{
+	OdGePoint3d LowerLeftPoint;
+	OdGePoint3d UpperRightPoint;
+	view->getViewport((OdGePoint2d&)LowerLeftPoint, (OdGePoint2d&)UpperRightPoint);
+	OdGeMatrix3d ScreenMatrix = view->screenMatrix();
+	LowerLeftPoint.transformBy(ScreenMatrix);
+	UpperRightPoint.transformBy(ScreenMatrix);
+	return CRect(OdRoundToLong(LowerLeftPoint.x), OdRoundToLong(UpperRightPoint.y), OdRoundToLong(UpperRightPoint.x), OdRoundToLong(LowerLeftPoint.y));
+}
+
 void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 	__super::OnChar(characterCodeValue, repeatCount, flags);
 
@@ -2364,6 +2473,22 @@ const OdExEditorObject& AeSysView::editorObject() const noexcept {
 bool AeSysView::isModelSpaceView() const {
 	return (getDatabase()->getTILEMODE());
 	//return m_bPsOverall;
+}
+
+OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
+
+	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
+		return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId) | kDrawableFilterAppRangeStart;
+	}
+	return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId);
+}
+
+OdUInt32 AeSysView::drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags) {
+	
+	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
+		getDatabase()->pageObjects();
+	}
+	return OdGiContextForDbDatabase::drawableFilterFunction(functionId & ~kDrawableFilterAppRangeMask, drawable, flags);
 }
 
 BOOL AeSysView::OnIdle(long count) {

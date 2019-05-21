@@ -89,8 +89,8 @@ protected:
 	HDC m_hWindowDC;
 	int m_pagingCounter;
 
-//	CRect viewportRect() const;
-//	static CRect viewRect(OdGsView*);
+	CRect viewportRect() const;
+	static CRect viewRect(OdGsView*);
 
 	AeSysView() noexcept; // protected constructor used by dynamic creation
 
@@ -106,9 +106,9 @@ public:
 	const OdGsView* getActiveView() const;
 	OdGsView* getActiveTopView();
 	const OdGsView* getActiveTopView() const;
-//	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
+	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
 	void propagateActiveViewChanges(bool forceAutoRegen = false) const;
-//	void recreateDevice() { createDevice(true); }
+	void recreateDevice() { createDevice(true); }
 
 	void track(OdEdInputTracker* inputTracker);
 	void setCursor(HCURSOR cursor) noexcept;
@@ -126,8 +126,8 @@ public:
 	const OdExEditorObject& editorObject() const noexcept;
 	bool isModelSpaceView() const;
 
-//	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const;
-//	OdUInt32 drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags);
+	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const;
+	OdUInt32 drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags);
 
 	// </command_view>
 
@@ -162,7 +162,7 @@ protected:
 #endif
 
 //	void adjustDevice(OdGsDevice* device);
-	void createDevice();
+	void createDevice(bool recreate = false);
 	bool regenAbort() const noexcept override;
 
 public: // Methods - virtuals 
