@@ -167,9 +167,8 @@ public:
 		OdExGripDataPtrArray m_pDataArray;
 		OdArray<OdExGripDataSubent> m_GripDataSubEntity;
 	};
-	//
 	typedef std::map<OdDbStub*, OdExGripDataExt> GripDataMap;
-	GripDataMap m_aGripData;
+	GripDataMap m_GripData;
 protected:
 
 	OdExGripDataPtrArray m_HoverGripsData;

@@ -215,7 +215,7 @@ protected:
 	// OdDbLayoutManagerReactor
 	bool m_bLayoutSwitchable;
 	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
-	bool m_bDisableClearSel;
+	bool m_DisableClearSelection;
 
 public:
 	bool m_bPartial;

@@ -1169,6 +1169,7 @@ BOOL AeSysApp::InitializeTeigha() {
 
 		::odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
 		::odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
+		::odrxDynamicLinker()->loadModule(OdExCommandsModuleName);
 		::odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName); // PlotSettingsValidator module (To include support for plot settings)
 
 		addPaperDrawingCustomization();

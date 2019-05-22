@@ -217,7 +217,7 @@ AeSysDoc::AeSysDoc() noexcept
 	, m_bConsoleResponded(false)
 	, m_nCmdActive(0)
 	, m_bLayoutSwitchable(false)
-	, m_bDisableClearSel(false) {
+	, m_DisableClearSelection(false) {
 	m_WorkLayer = NULL;
 	g_pDoc = this;
 
@@ -3197,9 +3197,9 @@ BOOL AeSysDoc::DoPromptFileName(CString & fileName, UINT nIDSTitle, DWORD lFlags
 
 void AeSysDoc::OnEditClearselection() {
 	
-	if (m_bDisableClearSel) { return; }
+	if (m_DisableClearSelection) { return; }
 	
-	auto cleared {false};
+	auto Cleared {false};
 	auto ViewPosition {GetFirstViewPosition()};
 	
 	while (ViewPosition != NULL) {
@@ -3207,10 +3207,10 @@ void AeSysDoc::OnEditClearselection() {
 
 		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0 && View->GetDocument() == this) {
 			dynamic_cast<AeSysView*>(View)->editorObject().Unselect();
-			cleared = true;
+			Cleared = true;
 		}
 	}
-	if (!cleared) { // No view found
+	if (!Cleared) { // No view found
 		selectionSet()->clear();
 	}
 }
@@ -3259,9 +3259,9 @@ void AeSysDoc::OnUpdateEditRedo(CCmdUI * pCmdUI) {
 
 void AeSysDoc::OnEditSelectall() {
 	OnEditClearselection();
-	m_bDisableClearSel = true;
+	m_DisableClearSelection = true;
 	ExecuteCommand(L"select single all");
-	m_bDisableClearSel = false;
+	m_DisableClearSelection = false;
 	auto ViewPosition {GetFirstViewPosition()};
 
 	while (ViewPosition != NULL) {
