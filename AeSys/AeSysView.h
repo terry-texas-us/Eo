@@ -236,7 +236,6 @@ private:
 	bool m_ZoomWindow;
 	OdGePoint3dArray m_Points;
 
-	bool m_ModelTabIsActive;
 	ODCOLORREF m_Background;
 
 	OdGePoint3d m_ptDet;
@@ -300,13 +299,10 @@ public:
 	void ZoomWindow(OdGePoint3d point1, OdGePoint3d point2);
 
 public:
-	void ResetDevice(bool zoomExtents = FALSE);
 	void SetRenderMode(OdGsView::RenderMode renderMode);
 	OdGsView::RenderMode RenderMode() const noexcept {
 		return m_ViewTransform.RenderMode();
 	}
-	void SetViewportBorderProperties(OdGsDevice* device, bool model);
-
 	const ODCOLORREF* CurrentPalette() const;
 public:
 	OdDbDatabasePtr Database() const;

@@ -332,7 +332,6 @@ AeSysView::AeSysView() noexcept
 	, m_MousePosition(0)
 	, m_ZoomWindow(false)
 	, m_Points(0)
-	, m_ModelTabIsActive(false)
 	, m_inpOptions(0) 
 {
 	m_Background = ViewBackgroundColor;
@@ -446,16 +445,18 @@ void AeSysView::AssertValid() const {
 void AeSysView::Dump(CDumpContext & dc) const {
 	CView::Dump(dc);
 }
-AeSysDoc* AeSysView::GetDocument() const { // non-debug version is inline
+AeSysDoc* AeSysView::GetDocument() const {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(AeSysDoc)));
 	return (AeSysDoc*) m_pDocument;
 }
 #endif //_DEBUG
+
 void AeSysView::exeCmd(const OdString & commandName) {
 	GetDocument()->ExecuteCommand(commandName);
+	propagateActiveViewChanges(true);
 }
 
-void AeSysView::OnDraw(CDC * deviceContext) {
+void AeSysView::OnDraw(CDC* deviceContext) {
 	try {
 		auto Document {GetDocument()};
 		ASSERT_VALID(Document);
@@ -492,10 +493,10 @@ void AeSysView::OnInitialUpdate() {
 	m_hWindowDC = ::GetDC(m_hWnd);
 
 	if (!g_nRedrawMSG) {
-		g_nRedrawMSG = ::RegisterWindowMessageW(L"OdaMfcApp::AeSysView::WM_REDRAW");
+		g_nRedrawMSG = ::RegisterWindowMessageW(L"AeSysApp::AeSysView::WM_REDRAW");
 	}
 	enableGsModel(true);
-	ResetDevice(true);
+	createDevice();
 
 	Document->setVectorizer(this);
 
@@ -567,6 +568,7 @@ BOOL AeSysView::OnEraseBkgnd(CDC * deviceContext) {
 
 	return __super::OnEraseBkgnd(deviceContext);
 }
+
 void AeSysView::OnSize(UINT type, int cx, int cy) {
 	if (cx && cy) {
 		if (m_LayoutHelper.isNull()) {
@@ -587,6 +589,7 @@ void AeSysView::OnSize(UINT type, int cx, int cy) {
 		}
 	}
 }
+
 void AeSysView::OnDestroy() {
 	AeSysDoc* Document = GetDocument();
 	Document->OnCloseVectorizer(this);
@@ -754,22 +757,25 @@ void AeSysView::setViewportBorderProperties() {
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	
 	if (NumberOfViews > 1) {
-		for (int i = 0; i < NumberOfViews; ++i) {
-			OdGsViewPtr View {m_LayoutHelper->viewAt(i)};
+		for (int ViewIndex = 0; ViewIndex < NumberOfViews; ++ViewIndex) {
+			OdGsViewPtr View {m_LayoutHelper->viewAt(ViewIndex)};
 			
-			if ((View == OverallView) || (OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && (View != ActiveView))) { // no border
+			// If the model layout is active, and it has more then one viewport then make their borders visible.
+			// If a paper layout is active, then make visible the borders of all but the overall viewport.
+
+			if ((View == OverallView) || (OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && (View != ActiveView))) {
 				View->setViewportBorderVisibility(false);
 			} else if (View != ActiveView) {
 				View->setViewportBorderVisibility(true);
 				View->setViewportBorderProperties(theApp.curPalette()[7], 2);
 			} else {
 				View->setViewportBorderVisibility(true);
-				// pView->setViewportBorderProperties(theApp.curPalette()[7], 5); - GU: todo (won't work after move clear to view::update)
 				View->setViewportBorderProperties(theApp.curPalette()[7], 2);
 			}
 		}
 	}
 }
+
 OdGiContext::PStyleType AeSysView::plotStyleType() const {
 	if (isPlotGeneration() ? !m_bPlotPlotstyle : !m_bShowPlotstyle) {
 		return kPsNone;
@@ -1104,9 +1110,18 @@ void AeSysView::createDevice(bool recreate) {
 
 		setViewportBorderProperties();
 
-		OdGsDCRect gsRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top);
-		m_LayoutHelper->onSize(gsRect);
+		if (ClientRectangle.Width() && ClientRectangle.Height()) {
+			m_LayoutHelper->onSize(OdGsDCRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top));
 
+			OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
+
+			SetViewportSize(ClientRectangle.Width(), ClientRectangle.Height());
+
+			m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
+			m_ViewTransform.BuildTransformMatrix();
+
+			m_OverviewViewTransform = m_ViewTransform;
+		}
 		preparePlotstyles(NULL, recreate);
 
 		if (recreate) {
@@ -1128,60 +1143,6 @@ void AeSysView::createDevice(bool recreate) {
 	catch (const OdError & Error) {
 		destroyDevice();
 		theApp.reportError(L"Graphic System Initialization Error", Error);
-	}
-}
-
-void AeSysView::ResetDevice(bool zoomExtents) {
-	CRect ClientRectangle;
-	GetClientRect(&ClientRectangle);
-
-	OdGsModulePtr GsModule {::odrxDynamicLinker()->loadModule(OdWinDirectXModuleName)};
-	auto GsDevice {GsModule->createDevice()};
-	
-	if (!GsDevice.isNull()) {
-		auto DeviceProperties {GsDevice->properties()};
-
-		if (DeviceProperties.get()) {
-			if (DeviceProperties->has(L"WindowHWND")) { DeviceProperties->putAt(L"WindowHWND", OdRxVariantValue((OdIntPtr) m_hWnd)); }
-			if (DeviceProperties->has(L"WindowHDC")) { DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) m_hWindowDC)); }
-		}
-		if (database()) {
-			enableKeepPSLayoutHelperView(true);
-			enableContextualColorsManagement(theApp.enableContextualColors());
-			setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
-			enableGsModel(theApp.useGsModel());
-
-			m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
-			m_layoutId = m_LayoutHelper->layoutId();
-
-			const ODCOLORREF* Palette = theApp.curPalette();
-			ODGSPALETTE PaletteCopy;
-			PaletteCopy.insert(PaletteCopy.begin(), Palette, Palette + 256);
-			PaletteCopy[0] = theApp.activeBackground();
-
-			m_LayoutHelper->setLogicalPalette(PaletteCopy.asArrayPtr(), 256);
-			
-			auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
-			if (PaperLayoutHelper.isNull()) {
-				m_bPsOverall = false;
-				m_LayoutHelper->setBackgroundColor(PaletteCopy[0]); // for model space
-			} else {
-				m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
-				m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
-			}
-			setPaletteBackground(theApp.activeBackground());
-
-			m_ModelTabIsActive = GetDocument()->m_DatabasePtr->getTILEMODE();
-			SetViewportBorderProperties(m_LayoutHelper, m_ModelTabIsActive);
-
-			if (zoomExtents) {
-				OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
-
-				OdAbstractViewPEPtr(FirstView)->zoomExtents(FirstView);
-			}
-			OnSize(0, ClientRectangle.Width(), ClientRectangle.Height());
-			RedrawWindow();
-		}
 	}
 }
 
@@ -4025,20 +3986,7 @@ void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
 		}
 	}
 }
-/// <remarks>
-/// If the model tab is active, and it has more then one viewport then make their borders visible.
-/// If a layout tab is active, then make visible the borders of all but the overall viewport.
-/// </remarks>
-void AeSysView::SetViewportBorderProperties(OdGsDevice * device, bool modelLayout) {
-	const int NumberOfViews = device->numViews();
-	if (NumberOfViews > 1) {
-		for (int ViewIndex = (modelLayout ? 0 : 1); ViewIndex < NumberOfViews; ++ViewIndex) {
-			OdGsViewPtr View = device->viewAt(ViewIndex);
-			View->setViewportBorderVisibility(true);
-			View->setViewportBorderProperties(CurrentPalette()[7], 1);
-		}
-	}
-}
+
 void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 
