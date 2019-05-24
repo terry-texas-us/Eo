@@ -450,7 +450,8 @@ struct CDocTemplateEx : CDocTemplate {
 		m_pViewClass = viewClass;
 	}
 };
-void AeSysDoc::OnVectorize(const OdString & vectorizerPath) {
+
+void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 	// <tas="likely misused in AeSys environment"</tas>
 	theApp.setRecentGsDevicePath(vectorizerPath);
 
@@ -560,6 +561,7 @@ OdString AeSysDoc::getString(const OdString & prompt, int options, OdEdStringTra
 void AeSysDoc::putString(const OdString & string) {
 	if (m_pViewer) { m_pViewer->putString(string); }
 
+	theApp.AddStringToMessageList(string);
 	UserIOConsole()->putString(string);
 }
 

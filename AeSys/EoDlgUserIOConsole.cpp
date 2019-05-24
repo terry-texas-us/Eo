@@ -36,7 +36,7 @@ void EoDlgUserIOConsole::release() {
 	if (!(--m_RefCounter)) { delete this; }
 }
 
-void EoDlgUserIOConsole::DoDataExchange(CDataExchange * pDX) {
+void EoDlgUserIOConsole::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PROMPT, m_PromptWindow);
 	DDX_Text(pDX, IDC_INPUT, m_Input);
@@ -50,16 +50,16 @@ BEGIN_MESSAGE_MAP(EoDlgUserIOConsole, CDialog)
 	ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
-OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd * parent) {
+OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd* parent) {
 	return OdSmartPtr<EoDlgUserIOConsole>(new EoDlgUserIOConsole(parent), kOdRxObjAttach);
 }
 
-void EoDlgUserIOConsole::Echo(const OdString & string) {
+void EoDlgUserIOConsole::Echo(const OdString& string) {
 	m_Output += L" ";
 	m_Output += (LPCWSTR) string;
 }
 
-OdString EoDlgUserIOConsole::getString(const OdString & prompt, int options, OdEdStringTracker * tracker) {
+OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
 	putString(prompt);
 	m_Input.Empty();
 	m_Prompt = m_Output;
@@ -75,7 +75,7 @@ OdString EoDlgUserIOConsole::getString(const OdString & prompt, int options, OdE
 
 const int kMaxStringLength = 128;
 
-void EoDlgUserIOConsole::AddString(const CString & string) {
+void EoDlgUserIOConsole::AddString(const CString& string) {
 	CString& OutputString = m_Output;
 
 	if (string.GetLength() <= kMaxStringLength) {
@@ -101,7 +101,7 @@ void EoDlgUserIOConsole::AddString(const CString & string) {
 	}
 }
 
-void EoDlgUserIOConsole::AddOut(const CString & string) {
+void EoDlgUserIOConsole::AddOut(const CString& string) {
 	int n = 0;
 	int n0 = 0;
 	while ((n = string.Find('\n', n0)) > -1) {
@@ -112,7 +112,7 @@ void EoDlgUserIOConsole::AddOut(const CString & string) {
 	AddString(string.Mid(n0, n - n0));
 }
 
-void EoDlgUserIOConsole::putString(const OdString & string) {
+void EoDlgUserIOConsole::putString(const OdString& string) {
 	AddOut((LPCWSTR) string);
 }
 
@@ -130,7 +130,7 @@ void EoDlgUserIOConsole::OnPaint() {
 	m_PromptWindow.SetFont(&m_Font);
 }
 
-void EoDlgUserIOConsole::OnSize(UINT nType, int cx, int cy) {
+void EoDlgUserIOConsole::OnSize(UINT type, int cx, int cy) {
 	CRect PromptRect;
 	CRect InputRect;
 	GetDlgItem(IDC_PROMPT)->GetWindowRect(&PromptRect);
@@ -139,7 +139,7 @@ void EoDlgUserIOConsole::OnSize(UINT nType, int cx, int cy) {
 	ScreenToClient(InputRect);
 	const auto Border {PromptRect.left};
 	const auto EditHeight {InputRect.Height()};
-	CDialog::OnSize(nType, cx, cy);
+	CDialog::OnSize(type, cx, cy);
 	PromptRect.right = cx - Border;
 	PromptRect.bottom = cy - Border - EditHeight;
 	GetDlgItem(IDC_PROMPT)->MoveWindow(PromptRect);

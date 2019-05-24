@@ -451,12 +451,12 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 	} catch (const OdError&) {
 		return(false);
 	}
-
 	auto UserIO {m_CommandContext->dbUserIO()};
 	UserIO->setLASTPOINT(pt);
 	UserIO->setPickfirst(0);
 
 	int iOpt = OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces;
+	
 	if (HasDatabase()) {
 		if (ShiftIsDown) {
 			if (m_CommandContext->database()->appServices()->getPICKADD() > 0)

@@ -451,7 +451,7 @@ AeSysDoc* AeSysView::GetDocument() const {
 }
 #endif //_DEBUG
 
-void AeSysView::exeCmd(const OdString & commandName) {
+void AeSysView::exeCmd(const OdString& commandName) {
 	GetDocument()->ExecuteCommand(commandName);
 	propagateActiveViewChanges(true);
 }
@@ -485,9 +485,9 @@ void AeSysView::OnInitialUpdate() {
 
 	CView::OnInitialUpdate();
 
-	AeSysDoc* Document = static_cast<AeSysDoc*>(GetDocument());
+	AeSysDoc* Document {static_cast<AeSysDoc*>(GetDocument())};
 
-	OdDbDatabase* Database = Document->m_DatabasePtr;
+	OdDbDatabase* Database {Document->m_DatabasePtr};
 	OdGiContextForDbDatabase::setDatabase(Database);
 
 	m_hWindowDC = ::GetDC(m_hWnd);
@@ -495,14 +495,15 @@ void AeSysView::OnInitialUpdate() {
 	if (!g_nRedrawMSG) {
 		g_nRedrawMSG = ::RegisterWindowMessageW(L"AeSysApp::AeSysView::WM_REDRAW");
 	}
-	enableGsModel(true);
 	createDevice();
-
+		if (m_LayoutHelper.isNull()) {
+		GetParent()->PostMessage(WM_CLOSE);
+		return;
+	}
 	Document->setVectorizer(this);
 
-	m_editor.Initialize(m_LayoutHelper, static_cast<AeSysDoc*>(GetDocument())->CommandContext());
+	m_editor.Initialize(m_LayoutHelper, Document->CommandContext());
 
-	SetRenderMode(OdGsView::k2DOptimized);
 	theApp.OnModeDraw();
 }
 
@@ -511,13 +512,14 @@ bool AeSysView::regenAbort() const noexcept {
 }
 
 LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
-	if (m_bInRegen) {
-		return 1;
-	}
+
+	if (m_bInRegen) { return 1; }
+
 	m_bInRegen = true;
 	m_bRegenAbort = false;
 
-	CMainFrame* MainFrame = (CMainFrame*) theApp.GetMainWnd();
+	auto  MainFrame {(CMainFrame*)theApp.GetMainWnd()};
+
 	if (!regenAbort()) {
 		try {
 			MainFrame->StartTimer();
@@ -528,7 +530,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 			if (!regenAbort()) {
 				MainFrame->StopTimer((m_paintMode == PaintMode_Regen) ? L"Regen" : L"Redraw");
 			}
-		} catch (const OdError & Error) {
+		} catch (const OdError& Error) {
 			theApp.reportError(L"Rendering aborted", Error);
 			GetParent()->PostMessage(WM_CLOSE);
 		} catch (const UserBreak&) {
@@ -547,6 +549,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	m_paintMode = PaintMode_Redraw;
 	return 1;
 }
+
 void AeSysView::OnPaint(void) {
 	/* <tas="Code section to enable when custom redraw message processing added">
 		m_bRegenAbort = true;
@@ -1889,7 +1892,7 @@ OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTr
 	throw OdEdCancel();
 }
 
-void AeSysView::putString(const OdString & string) {
+void AeSysView::putString(const OdString& string) {
 	m_sPrompt = string;
 	auto n {m_sPrompt.reverseFind('\n')};
 
@@ -1897,6 +1900,7 @@ void AeSysView::putString(const OdString & string) {
 
 	if (n >= 0) { Text = Text + n + 1; }
 
+	theApp.AddStringToMessageList(Text);
 	theApp.SetStatusPaneTextAt(nStatusInfo, Text);
 }
 
@@ -2173,7 +2177,6 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 		switch (m_mode) {
 			case kQuiescent:
 				if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
-					//getActiveView()->invalidate();
 					PostMessage(WM_PAINT);
 				}
 				break;
@@ -2187,15 +2190,15 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 				m_editor.Snap(m_response.m_Point);
 				m_response.m_type = Response::kPoint;
 				break;
-			default:
-				m_LeftButton = true;
-				m_MousePosition = point;
-				m_MouseClick = point;
-				
-				if (m_ZoomWindow == true) {
-					m_Points.clear();
-					m_Points.append(GetWorldCoordinates(point));
-				}
+//			default:
+//				m_LeftButton = true;
+//				m_MousePosition = point;
+//				m_MouseClick = point;
+//				
+//				if (m_ZoomWindow == true) {
+//					m_Points.clear();
+//					m_Points.append(GetWorldCoordinates(point));
+//				}
 		}
 
 	} else {
@@ -2204,18 +2207,33 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 }
 
 void AeSysView::OnLButtonUp(UINT flags, CPoint point) {
+	
 	if (AeSysApp::CustomLButtonUpCharacters.IsEmpty()) {
-		m_LeftButton = false;
-		if (m_ZoomWindow == true) {
-			m_Points.append(GetWorldCoordinates(point));
-			if (m_Points.length() == 2) // Zoom rectangle has been completely defined
-			{
-				ZoomWindow(m_Points[0], m_Points[1]);
-				m_ZoomWindow = false;
-				m_Points.clear();
-			}
-		}
+
 		__super::OnLButtonUp(flags, point);
+
+		if (m_mode == kGetPoint && GetCapture() == this) {
+			m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
+			
+			if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
+
+				if (!m_editor.ToUcsToWorld(m_response.m_Point)) { return; }
+			}
+			m_response.m_type = Response::kPoint;
+			ReleaseCapture();
+		}
+		m_editor.SetEntityCenters();
+
+//		m_LeftButton = false;
+//		if (m_ZoomWindow == true) {
+//			m_Points.append(GetWorldCoordinates(point));
+//			if (m_Points.length() == 2) // Zoom rectangle has been completely defined
+//			{
+//				ZoomWindow(m_Points[0], m_Points[1]);
+//				m_ZoomWindow = false;
+//				m_Points.clear();
+//			}
+//		}
 	} else {
 		DoCustomMouseClick(AeSysApp::CustomLButtonUpCharacters);
 	}
