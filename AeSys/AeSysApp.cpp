@@ -953,6 +953,18 @@ CString AeSysApp::FormatLength(double length, Units units, int width, int precis
 	FormatLength_s(LengthAsString, 32, units, length, width, precision);
 	return CString(LengthAsString).TrimLeft();
 }
+
+/// <summary>
+///Produces a string formatted to type units from a "length" value
+///ArchitecturalS units formatted as follows:
+///	\S[feet]'[inches].[fraction numerator]/[fraction denominator];"
+///Architectural units formatted as follows:
+///	[feet]'[inches].[fraction numerator] [fraction denominator]"
+///Engineering units formatted as follows:
+///	[feet]'[inches].[decimal inches]"
+///All other units formatted using floating decimal.
+/// </summary>
+
 void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const {
 	wchar_t szBuf[16];
 
@@ -1109,6 +1121,10 @@ HMENU AeSysApp::GetAeSysSubMenu(int position) noexcept {
 AeSysApp::Units AeSysApp::GetUnits() noexcept {
 	return (m_Units);
 }
+
+/// <summary>Finds the greatest common divisor of arbitrary integers.</summary>
+/// <returns>First number if second number is zero, greatest common divisor otherwise.</returns>
+
 int AeSysApp::GreatestCommonDivisor(const int number1, const int number2) const noexcept {
 	int ReturnValue = abs(number1);
 	int Divisor = abs(number2);
@@ -1262,10 +1278,10 @@ BOOL AeSysApp::InitInstance() {
 
 	lex::Init();
 
-	// Initialize all Managers for usage. They are automatically constructed if not yet present
-	InitContextMenuManager();
+	// Initialize application managers for usage. They are automatically constructed if not yet present
+	InitContextMenuManager(); // Manages shortcut menus, also known as context menus.
 	InitKeyboardManager(); // Manages shortcut key tables for the main frame window and child frame windows.
-	InitTooltipManager();
+	InitTooltipManager(); // Maintains runtime information about tooltips.
 
 	CMFCToolTipInfo params;
 	params.m_bVislManagerTheme = TRUE;
@@ -1976,17 +1992,6 @@ void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string) 
 
 	::MessageBoxW(0, Text, Caption, MB_ICONWARNING | MB_OK);
 }
-int AeSysApp::messageBox(LPCWSTR caption, LPCWSTR text, UINT type) {
-	CWnd* MainWnd = GetMainWnd();
-	HWND hWnd = 0;
-	if (MainWnd) {
-		hWnd = MainWnd->m_hWnd;
-	}
-	return ::MessageBoxW(hWnd, text, caption, type);
-}
-void AeSysApp::reportError(LPCWSTR caption, unsigned int error) {
-	messageBox(caption, (LPCWSTR) getErrorDescription(error), MB_OK | MB_ICONERROR);
-}
 
 void AeSysApp::initPlotStyleSheetEnv() {
 	OdString StyleSheetFiles = FindConfigPath(L"PrinterStyleSheetDir");
@@ -2074,7 +2079,7 @@ BOOL AeSysApp::OnIdle(long count) {
 	return __super::OnIdle(count);
 }
 
-BOOL AeSysApp::PreTranslateMessage(MSG * message) {
+BOOL AeSysApp::PreTranslateMessage(MSG* message) {
 
 	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
 		m_aAppReactors[ReactorIndex]->OnPreTranslateMessage(message);

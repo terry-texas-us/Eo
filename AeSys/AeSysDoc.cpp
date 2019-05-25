@@ -98,7 +98,7 @@ OdDbDatabaseDoc::OdDbDatabaseDoc() noexcept
 AeSysDoc* OdDbDatabaseDoc::document() const noexcept {
 	return m_pDoc;
 }
-void OdDbDatabaseDoc::setDocToAssign(AeSysDoc * document) noexcept {
+void OdDbDatabaseDoc::setDocToAssign(AeSysDoc* document) noexcept {
 	g_pDoc = document;
 }
 

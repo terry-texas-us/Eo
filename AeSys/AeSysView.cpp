@@ -2554,7 +2554,7 @@ void AeSysView::OnPrepareDC(CDC * deviceContext, CPrintInfo * printInformation) 
 void AeSysView::OnContextMenu(CWnd*, CPoint point) {
 	theApp.ShowPopupMenu(IDR_CONTEXT_MENU, point, this);
 }
-void AeSysView::DoCustomMouseClick(const CString & characters) {
+void AeSysView::DoCustomMouseClick(const CString& characters) {
 	int Position = 0;
 
 	while (Position < characters.GetLength()) {
