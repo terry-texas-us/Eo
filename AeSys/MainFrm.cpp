@@ -385,7 +385,7 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
 		ENSURE(ActiveChildWindow);
 		CDocument* ActiveDocument = ActiveChildWindow->GetActiveDocument();
 		ENSURE(ActiveDocument);
-		OdDbDatabasePtr Database = ((AeSysDoc*) ActiveDocument)->m_DatabasePtr;
+		OdDbDatabasePtr Database {dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr};
 
 		popupMenu->RemoveAllItems();
 

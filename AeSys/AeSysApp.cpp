@@ -248,6 +248,99 @@ BEGIN_MESSAGE_MAP(AeSysApp, CWinAppEx)
 
 END_MESSAGE_MAP()
 
+
+/// <remarks> Specialization of CCommandLineInfo to add the following switches: bat:, ld:, scr:, exe:, s:, and exit</remarks>
+
+class CFullCommandLineInfo : public CCommandLineInfo {
+public:
+	CString m_SaveName;
+	BOOL m_Exit;
+	CStringArray m_AppsToLoad;
+	CStringArray m_CommandsToExecute;
+	CString m_ScriptToExecute;
+	CString m_BatToExecute;
+
+	CFullCommandLineInfo() noexcept
+		: CCommandLineInfo()
+		, m_Exit(0) {
+	}
+
+	void ParseParam(LPCWSTR parameter, BOOL flag, BOOL last) override /* CCommandLineInfo */ {
+		bool is {false};
+
+		if (flag) {
+
+			if (!_wcsnicmp(parameter, L"bat:", 4)) {
+				m_BatToExecute = &parameter[4];
+				is = true;
+			} else if (!_wcsnicmp(parameter, L"ld:", 3)) {
+				m_AppsToLoad.Add(&parameter[3]);
+				is = true;
+			} else if (!_wcsnicmp(parameter, L"scr:", 4)) {
+				m_ScriptToExecute = &parameter[4];
+				is = true;
+			} else if (!_wcsnicmp(parameter, L"ex:", 3)) {
+				m_CommandsToExecute.Add(&parameter[3]);
+				is = true;
+			} else if (!_wcsnicmp(parameter, L"s:", 2)) {
+				m_SaveName = &parameter[2];
+				is = true;
+			} else if (!_wcsicmp(parameter, L"exit")) {
+				m_Exit = true;
+				is = true;
+			}
+		}
+		if (!is || last) {
+			CCommandLineInfo::ParseParam(parameter, flag, last);
+		}
+	}
+};
+
+BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
+	CFullCommandLineInfo& FullCommandLineInfo {(CFullCommandLineInfo&)commandLineInfo};
+
+	if (!FullCommandLineInfo.m_BatToExecute.IsEmpty()) { 
+		_wsystem((LPCTSTR)FullCommandLineInfo.m_BatToExecute); 
+	}
+
+	for (auto Index = 0; Index < FullCommandLineInfo.m_AppsToLoad.GetCount(); ++Index) {
+		odrxDynamicLinker()->loadModule(OdString((LPCTSTR)FullCommandLineInfo.m_AppsToLoad.GetAt(Index)), false);
+	}
+	AeSysDoc* TemporaryDocument {nullptr};
+
+	if (commandLineInfo.m_nShellCommand == CCommandLineInfo::FileOpen) {
+		TemporaryDocument = dynamic_cast<AeSysDoc*>(OpenDocumentFile(commandLineInfo.m_strFileName));
+
+		if (!TemporaryDocument) { return FALSE; }
+
+		if (!FullCommandLineInfo.m_ScriptToExecute.IsEmpty()) {
+			CStdioFile scrFile(FullCommandLineInfo.m_ScriptToExecute, CFile::modeRead);
+			CString strCmd;
+			
+			while (scrFile.ReadString(strCmd)) {
+				
+				if (!strCmd.IsEmpty() && strCmd[0] != _T('#')) {
+					TemporaryDocument->ExecuteCommand(OdString((LPCTSTR)strCmd));
+				}
+			}
+		}
+		for (int idx = 0; idx < FullCommandLineInfo.m_CommandsToExecute.GetCount(); ++idx) {
+			TemporaryDocument->ExecuteCommand(OdString((LPCTSTR)FullCommandLineInfo.m_CommandsToExecute.GetAt(idx)));
+		}
+	}
+	else {
+		CWinAppEx::ProcessShellCommand(commandLineInfo);
+	}
+	if (!FullCommandLineInfo.m_SaveName.IsEmpty()) {
+
+		if (!TemporaryDocument->OnSaveDocument(FullCommandLineInfo.m_SaveName)) { return FALSE; }
+	}
+	if (FullCommandLineInfo.m_Exit) {
+		PostQuitMessage(0);
+	}
+	return TRUE;
+}
+
 AeSysApp::AeSysApp() noexcept
 	: m_nProgressPos(0)
 	, m_nProgressLimit(100)
@@ -283,6 +376,7 @@ AeSysApp::AeSysApp() noexcept
 	, m_background(ViewBackgroundColor)
 	, m_thisThreadID(0)
 	, m_numCustomCommands(0)
+	, m_displayFields(0)
 	, m_bSaveRoundTrip(1)
 	, m_bSavePreview(0)
 	, m_bSaveWithPassword(0)
@@ -518,26 +612,6 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 		}
 	}
 	return FilePathAndName;
-}
-
-OdString AeSysApp::getFontMapFileName() const {
-	OdString subkey;
-	wchar_t fontMapFile[EO_REGISTRY_MAX_PATH];
-	wchar_t expandedPath[EO_REGISTRY_MAX_PATH];
-
-	subkey = GetRegistryAcadProfilesKey();
-	if (!subkey.isEmpty()) {
-		subkey += L"\\Editor Configuration";
-		// get the value for the ACAD entry in the registry
-
-		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"FontMappingFile", fontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
-			return L"";
-		}
-		ExpandEnvironmentStringsW(fontMapFile, expandedPath, EO_REGISTRY_MAX_PATH);
-		return OdString(expandedPath);
-	} else {
-		return L"";
-	}
 }
 
 CString AeSysApp::getApplicationPath() {
@@ -1259,7 +1333,7 @@ BOOL AeSysApp::InitInstance() {
 	m_bDynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", 0);
 	m_bGDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", 1);
 	m_bGDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", 0);
-	m_nGDIGradientsAsPolysThreshold = (BYTE)GetInt(L"GDI Gradients as Polys Threshold", 10);
+	m_nGDIGradientsAsPolysThreshold = static_cast<BYTE>(GetInt(L"GDI Gradients as Polys Threshold", 10));
 
 	m_bDisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", 0);
 
@@ -1330,7 +1404,7 @@ BOOL AeSysApp::InitInstance() {
 	RefreshCommandMenu();
 
 	// Parse command line for standard shell commands, DDE, file open
-	CCommandLineInfo CommandLineInfo;
+	CFullCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
 
 	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) { CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
@@ -1779,6 +1853,10 @@ int AeSysApp::PrimaryMode() const noexcept {
 	return m_PrimaryMode;
 }
 
+const OdString AeSysApp::product() {
+	return L"AeSys Application";
+}
+
 bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept {
 	bool rv = false;
 	HKEY hKey;
@@ -1865,6 +1943,58 @@ OdString GetRegistryAcadProfilesKey() {
 	subkey += profile;
 
 	return subkey;
+}
+
+OdString AeSysApp::getSubstituteFont(const OdString& fontName, OdFontType fontType) {
+	return OdString(L"simplex.shx");
+}
+
+OdString AeSysApp::getFontMapFileName() const {
+	OdString subkey;
+	wchar_t fontMapFile[EO_REGISTRY_MAX_PATH];
+	wchar_t expandedPath[EO_REGISTRY_MAX_PATH];
+
+	subkey = GetRegistryAcadProfilesKey();
+	if (!subkey.isEmpty()) {
+		subkey += L"\\Editor Configuration";
+
+		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"FontMappingFile", fontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
+			return L"";
+		}
+		ExpandEnvironmentStringsW(fontMapFile, expandedPath, EO_REGISTRY_MAX_PATH);
+		return OdString(expandedPath);
+	}
+	else {
+		return L"C:\\acad.fmp";
+	}
+}
+
+OdString AeSysApp::getTempPath() const {
+	OdString subkey;
+	TCHAR tempPath[MAX_PATH];
+
+	subkey = GetRegistryAcadProfilesKey();
+
+	if (!subkey.isEmpty()) {
+		subkey += L"\\General Configuration";
+		
+		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"TempDirectory", tempPath, MAX_PATH) == 0) {
+			return OdDbHostAppServices::getTempPath();
+		}
+		if (_waccess(tempPath, 0)) {
+			return OdDbHostAppServices::getTempPath();
+		} else {
+			OdString ret(tempPath, (int)odStrLen(tempPath));
+
+			if (ret.getAt(ret.getLength() - 1) != OdChar('\\')) {
+				ret += OdChar('\\');
+			}
+			return ret;
+		}
+	}
+	else {
+		return OdDbHostAppServices::getTempPath();
+	}
 }
 
 void AeSysApp::ReleaseSimplexStrokeFont() noexcept {

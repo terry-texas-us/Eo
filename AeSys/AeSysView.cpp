@@ -447,7 +447,7 @@ void AeSysView::Dump(CDumpContext & dc) const {
 }
 AeSysDoc* AeSysView::GetDocument() const {
 	ASSERT(m_pDocument->IsKindOf(RUNTIME_CLASS(AeSysDoc)));
-	return (AeSysDoc*) m_pDocument;
+	return dynamic_cast<AeSysDoc*>(m_pDocument);
 }
 #endif //_DEBUG
 
@@ -485,7 +485,7 @@ void AeSysView::OnInitialUpdate() {
 
 	CView::OnInitialUpdate();
 
-	AeSysDoc* Document {static_cast<AeSysDoc*>(GetDocument())};
+	auto Document {GetDocument()};
 
 	OdDbDatabase* Database {Document->m_DatabasePtr};
 	OdGiContextForDbDatabase::setDatabase(Database);
@@ -1091,7 +1091,7 @@ void AeSysView::createDevice(bool recreate) {
 
 			m_LayoutHelper = LayoutHelperOut;
 			LayoutHelperIn.release();
-			m_editor.Initialize(m_LayoutHelper, static_cast<AeSysDoc*>(GetDocument())->CommandContext());
+			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext());
 		}
 		m_layoutId = m_LayoutHelper->layoutId();
 

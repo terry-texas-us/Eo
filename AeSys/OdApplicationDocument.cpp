@@ -11,7 +11,7 @@ ODRX_NO_CONS_DEFINE_MEMBERS(OdApplicationDocument, OdRxObject);
 
 OdSmartPtr<OdApplicationDocumentImpl> OdApplicationDocumentImpl::createObject(CDocument* document) {
 	OdSmartPtr<OdApplicationDocumentImpl> pRes = OdRxObjectImpl<OdApplicationDocumentImpl>::createObject();
-	pRes->m_pImp = new MfcObjectWrapper<AeSysDoc>((AeSysDoc*) document);
+	pRes->m_pImp = new MfcObjectWrapper<AeSysDoc>(dynamic_cast<AeSysDoc*>(document));
 	return pRes;
 }
 

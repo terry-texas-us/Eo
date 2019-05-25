@@ -169,27 +169,25 @@ public:
 
 	void SetStatusPaneTextAt(int index, LPCWSTR newText); // AeSys
 
-	void addRef() noexcept override {}
-	void release() noexcept override {}
+	void addRef() noexcept override /* ExHostAppServices */ {}
+	void release() noexcept override /* ExHostAppServices */ {}
 
-	OdDbHostAppProgressMeter* newProgressMeter() override;
-	void start(const OdString& displayString = OdString::kEmpty) override;
-	void stop() override;
-	void meterProgress() override;
-	void setLimit(int max) noexcept override;
-	void warning(const char* warnVisGroup, const OdString& message) override;
+	OdDbHostAppProgressMeter* newProgressMeter() override /* ExHostAppServices */;
+	void start(const OdString& displayString = OdString::kEmpty) override /* ExHostAppServices */;
+	void stop() override /* ExHostAppServices */;
+	void meterProgress() override /* ExHostAppServices */;
+	void setLimit(int max) noexcept override /* ExHostAppServices */;
+	void warning(const char* warnVisGroup, const OdString& message) override /* ExHostAppServices */;
 	
 	static int messageBox(HWND parent, LPCTSTR caption, LPCTSTR text, UINT type) noexcept {
 		return ::MessageBox(parent, text, caption, type);
 	}
 	int messageBox(LPCTSTR caption, LPCTSTR text, UINT type) {
 		auto MainWindow {GetMainWnd()};
-		HWND hWnd {0};
+		
+		if (MainWindow == 0) { return 0; }
 
-		if (MainWindow) {
-			hWnd = MainWindow->m_hWnd;
-		}
-		return messageBox(hWnd, caption, text, type);
+		return messageBox(MainWindow->m_hWnd, caption, text, type);
 	}
 	void reportError(HWND parent, LPCTSTR contextMessage, const OdError& error) {
 		messageBox(parent, contextMessage, (LPCTSTR)error.description(), MB_OK | MB_ICONERROR);
@@ -201,28 +199,26 @@ public:
 		messageBox(contextMessage, (LPCWSTR)getErrorDescription(error), MB_OK | MB_ICONERROR);
 	}
 
-	OdRxClass* databaseClass() const override;
+	OdRxClass* databaseClass() const override /* ExHostAppServices */;
+	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override /* ExHostAppServices */;
+	OdString getFontMapFileName() const override /* ExHostAppServices */;
+	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType) override /* ExHostAppServices */;
+	const OdString product() override /* ExHostAppServices */;
 
-	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override;
-	OdString getFontMapFileName() const override;
-//	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType);
+	virtual OdString getTempPath() const override /* ExSystemServices*/;
 
-//	const OdString product();
-
-//	virtual OdString getTempPath() const;
-
-//	BOOL ProcessShellCommand(CCommandLineInfo& rCmdInfo);
+	BOOL ProcessShellCommand(CCommandLineInfo& rCmdInfo);
 	
 	void initPlotStyleSheetEnv();
 
-	BOOL InitInstance() override;
-	int ExitInstance() override;
-	BOOL OnIdle(long count) override;
+	BOOL InitInstance() override /* CWinAppEx (CWinThread) */;
+	int ExitInstance() override /* CWinAppEx (CWinThread) */;
+	BOOL OnIdle(long count) override /* CWinAppEx (CWinThread) */;
 
-	bool getSAVEROUNDTRIP() const noexcept override { return (m_bSaveRoundTrip != 0); }
-	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override;
-	OdDbUndoControllerPtr newUndoController() override;
-	OdStreamBufPtr newUndoStream() override;
+	bool getSAVEROUNDTRIP() const noexcept { return (m_bSaveRoundTrip != 0); }
+	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override /* ExHostAppServices */;
+	OdDbUndoControllerPtr newUndoController() override /* ExHostAppServices */;
+	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
 
 //	void OnOptionsRenderingdeviceVectorize();
 

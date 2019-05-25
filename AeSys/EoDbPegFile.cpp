@@ -23,7 +23,7 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 	}
 }
 
-void EoDbPegFile::ReadHeaderSection(AeSysDoc*) {
+void EoDbPegFile::ReadHeaderSection(AeSysDoc* document) {
 	if (ReadUInt16() != kHeaderSection) {
 		throw L"Exception ReadHeaderSection: Expecting sentinel kHeaderSection.";
 	}
@@ -45,7 +45,7 @@ void EoDbPegFile::ReadTablesSection(AeSysDoc* document) {
 		throw L"Exception ReadTablesSection: Expecting sentinel kEndOfSection.";
 	}
 }
-void EoDbPegFile::ReadViewportTable(AeSysDoc*) {
+void EoDbPegFile::ReadViewportTable(AeSysDoc* document) {
 	if (ReadUInt16() != kViewPortTable) {
 		throw L"Exception ReadViewportTable: Expecting sentinel kViewPortTable.";
 	}
@@ -262,7 +262,7 @@ void EoDbPegFile::Unload(AeSysDoc* document) {
 
 	CFile::Flush();
 }
-void EoDbPegFile::WriteHeaderSection(AeSysDoc*) {
+void EoDbPegFile::WriteHeaderSection(AeSysDoc* document) {
 	WriteUInt16(kHeaderSection);
 
 	// header variable items go here
@@ -277,7 +277,7 @@ void EoDbPegFile::WriteTablesSection(AeSysDoc* document) {
 	WriteLayerTable(document);
 	WriteUInt16(kEndOfSection);
 }
-void EoDbPegFile::WriteVPortTable(AeSysDoc*) {
+void EoDbPegFile::WriteVPortTable(AeSysDoc* document) {
 	WriteUInt16(kViewPortTable);
 	WriteUInt16(0);
 	WriteUInt16(kEndOfTable);

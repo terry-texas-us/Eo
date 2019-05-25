@@ -2603,13 +2603,13 @@ void AeSysDoc::OnPrimExtractStr() {
 }
 // Returns a pointer to the currently active document.
 AeSysDoc* AeSysDoc::GetDoc() {
-	const CMDIFrameWndEx* Frame = (CMDIFrameWndEx*) AfxGetMainWnd();
-	if (Frame == NULL) {
-		return NULL;
-	}
-	CMDIChildWndEx* Child = (CMDIChildWndEx*) Frame->MDIGetActive();
+	const CMDIFrameWndEx* Frame {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};
+	
+	if (Frame == nullptr) { return nullptr; }
+	
+	CMDIChildWndEx* Child {dynamic_cast<CMDIChildWndEx*>(Frame->MDIGetActive())};
 
-	return (Child == NULL) ? NULL : (AeSysDoc*) Child->GetActiveDocument();
+	return (Child == nullptr) ? nullptr : dynamic_cast<AeSysDoc*>(Child->GetActiveDocument());
 }
 
 void AeSysDoc::AddGroupToAllViews(EoDbGroup * group) {

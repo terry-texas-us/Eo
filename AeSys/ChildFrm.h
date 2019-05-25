@@ -3,11 +3,11 @@
 class CChildFrame : public CMDIChildWndEx {
 	DECLARE_DYNCREATE(CChildFrame)
 public:
-	CChildFrame();
+	CChildFrame() noexcept;
 
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 
-	virtual ~CChildFrame();
+	~CChildFrame();
 #ifdef _DEBUG
 	void AssertValid() const override;
 	void Dump(CDumpContext& dc) const override;

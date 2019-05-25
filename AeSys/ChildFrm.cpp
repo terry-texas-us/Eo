@@ -18,7 +18,7 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_WM_MDIACTIVATE()
 END_MESSAGE_MAP()
 
-CChildFrame::CChildFrame() {
+CChildFrame::CChildFrame() noexcept {
 }
 CChildFrame::~CChildFrame() {
 }
@@ -28,13 +28,12 @@ void CChildFrame::ActivateFrame(int nCmdShow) {
 	CMDIChildWndEx::ActivateFrame(nCmdShow);
 }
 BOOL CChildFrame::DestroyWindow() {
-	CDC* DeviceContext = GetDC();
+	auto DeviceContext {GetDC()};
 
-	// Stock objects are never left "current" so it is safe to delete whatever the old object is
-
-	DeviceContext->SelectStockObject(BLACK_PEN)->DeleteObject();
-	DeviceContext->SelectStockObject(WHITE_BRUSH)->DeleteObject();
-
+	if (DeviceContext) { // Stock objects are never left "current" so it is safe to delete whatever the old object is
+		DeviceContext->SelectStockObject(BLACK_PEN)->DeleteObject();
+		DeviceContext->SelectStockObject(WHITE_BRUSH)->DeleteObject();
+	}
 	return CMDIChildWndEx::DestroyWindow();
 }
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
@@ -59,15 +58,11 @@ void CChildFrame::Dump(CDumpContext& dc) const {
 void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd) {
 	CMDIChildWndEx::OnMDIActivate(activate, activateWnd, deactivateWnd);
 
-	CFrameWnd* ActivatedFrame = (CFrameWnd*) activateWnd;
-	CFrameWnd* DeactivatedFrame = (CFrameWnd*) deactivateWnd;
+	auto ActivatedFrame {dynamic_cast<CFrameWnd*>(activateWnd)};
+	auto DeactivatedFrame {dynamic_cast<CFrameWnd*>(deactivateWnd)};
 
-	CDocument* ActivatedDocument = ActivatedFrame != 0 ? ActivatedFrame->GetActiveDocument() : 0;
-	CDocument* DeactivatedDocument = DeactivatedFrame != 0 ? DeactivatedFrame->GetActiveDocument() : 0;
-
-	//if (ActivatedDocument == DeactivatedDocument) {
-	//	return;
-	//}
+	CDocument* ActivatedDocument = ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr;
+	CDocument* DeactivatedDocument = DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr;
 
 	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
 
@@ -119,7 +114,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		MenuItemInfo.fType = MFT_STRING;
 		MenuItemInfo.fState = MFS_ENABLED;
 		MenuItemInfo.wID = ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE;
-		MenuItemInfo.dwItemData = (UINT) ScaleMenuPosition;
+		MenuItemInfo.dwItemData = {ScaleMenuPosition};
 		MenuItemInfo.dwTypeData = (LPWSTR) (LPCWSTR) ScaleName;
 
 		if (ScaleIdentifier == CurrentScaleIdentifier) {
@@ -135,15 +130,16 @@ const int kAnnotationScalesMenuPosition(19);
 void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuAlt) {
 	CMDIChildWndEx::OnUpdateFrameMenu(active, activeWindow, menuAlt);
 
-	CDocument* ActiveDocument = GetActiveDocument();
+	CDocument* ActiveDocument {GetActiveDocument()};
+	
 	if (active && ActiveDocument) {
-		const CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
+		const CMenu* TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		ENSURE(TopMenu);
 
-		CMenu* ScalesSubMenu = TopMenu->GetSubMenu(kViewMenuPosition)->GetSubMenu(kAnnotationScalesMenuPosition);
+		auto ScalesSubMenu {TopMenu->GetSubMenu(kViewMenuPosition)->GetSubMenu(kAnnotationScalesMenuPosition)};
 
 		if (ScalesSubMenu) {
-			UpdateAnnotationScalesPopupMenu(ScalesSubMenu, ((AeSysDoc*) ActiveDocument)->m_DatabasePtr);
+			UpdateAnnotationScalesPopupMenu(ScalesSubMenu, dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr);
 		}
 	}
 }
