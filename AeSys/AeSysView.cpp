@@ -1153,7 +1153,7 @@ void AeSysView::destroyDevice() {
 	m_LayoutHelper.release();
 }
 
-void AeSysView::OnBeginPrinting(CDC * deviceContext, CPrintInfo * printInformation) {
+void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) {
 	ViewportPushActive();
 	PushViewTransform();
 

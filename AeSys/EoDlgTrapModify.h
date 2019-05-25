@@ -11,7 +11,7 @@ class EoDlgTrapModify : public CDialog {
 public:
 	EoDlgTrapModify(CWnd* parent = NULL) noexcept;
 	EoDlgTrapModify(AeSysDoc* document, CWnd* parent = NULL);
-	virtual ~EoDlgTrapModify();
+	~EoDlgTrapModify();
 
 // Dialog Data
 	enum { IDD = IDD_TRAP_MODIFY };

@@ -1048,13 +1048,14 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		wcscpy_s(lengthAsString, bufSize, (length >= 0.) ? L" " : L"-");
 		ScaledLength = fabs(ScaledLength);
 
-		int Feet = int(ScaledLength / 12.);
-		int Inches = abs(int(fmod(ScaledLength, 12.)));
+		auto Feet {static_cast<int>(ScaledLength / 12.)};
+		auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
 
-		const int FractionPrecision = ArchitecturalUnitsFractionPrecision();
-		int Numerator = int(fabs(fmod(ScaledLength, 1.)) * (double) (FractionPrecision) +.5);	// Numerator of fractional component of inches
+		const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
+		auto Numerator {int(fabs(fmod(ScaledLength, 1.)) * static_cast<double>(FractionPrecision) + .5)};	// Numerator of fractional component of inches
 
 		if (Numerator == FractionPrecision) {
+
 			if (Inches == 11) {
 				Feet++;
 				Inches = 0;
@@ -1069,6 +1070,7 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 
 		_itow_s(Inches, szBuf, 16, 10);
 		wcscat_s(lengthAsString, bufSize, szBuf);
+		
 		if (Numerator > 0) {
 			wcscat_s(lengthAsString, bufSize, (units == kArchitecturalS) ? L"\\S" : L"·" /* middle dot [U+00B7] */);
 			const int	iGrtComDivisor = GreatestCommonDivisor(Numerator, FractionPrecision);
@@ -1079,7 +1081,8 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 			wcscat_s(lengthAsString, bufSize, L"/");
 			_itow_s(Denominator, szBuf, 16, 10);
 			wcscat_s(lengthAsString, bufSize, szBuf);
-			if (units == kArchitecturalS) wcscat_s(lengthAsString, bufSize, L";");
+
+			if (units == kArchitecturalS) { wcscat_s(lengthAsString, bufSize, L";"); }
 		}
 		wcscat_s(lengthAsString, bufSize, L"\"");
 	} else if (units == kEngineering) {
@@ -1333,7 +1336,7 @@ BOOL AeSysApp::InitInstance() {
 	m_bDynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", 0);
 	m_bGDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", 1);
 	m_bGDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", 0);
-	m_nGDIGradientsAsPolysThreshold = static_cast<BYTE>(GetInt(L"GDI Gradients as Polys Threshold", 10));
+	m_nGDIGradientsAsPolysThreshold = narrow_cast<BYTE>(GetInt(L"GDI Gradients as Polys Threshold", 10));
 
 	m_bDisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", 0);
 

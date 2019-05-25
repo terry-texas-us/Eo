@@ -35,12 +35,13 @@ public:
 		if (!enable.isNull()) {
 			m_enabled = (bool) (enable);
 			if (m_enabled && !frameRate.isNull()) {
-				const double rate = (double) (((frameRate.get())->getDouble()));
+				const auto rate {frameRate.get()->getDouble()};
 				view->beginInteractivity(rate);
 			}
 		}
 	}
 	~ViewInteractivityMode() {
+		
 		if (m_enabled) { m_View->endInteractivity(); }
 	}
 };

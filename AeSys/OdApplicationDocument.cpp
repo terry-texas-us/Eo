@@ -60,7 +60,7 @@ OdDbSelectionSetPtr OdApplicationDocumentImpl::selectionSet() const {
 }
 
 OdApDocumentPtr odGetApplicationDocument(CDocument* document) {
-	return static_cast<AeSysDoc*>(document)->m_pRefDocument;
+	return dynamic_cast<AeSysDoc*>(document)->m_pRefDocument;
 }
 
 void OdAddAppReactor(OdApplicationReactor* reactor) {

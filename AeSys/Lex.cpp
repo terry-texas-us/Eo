@@ -182,7 +182,7 @@ void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) noexc
 			// integer to string
 		}
 		else {
-			pdVal[0] = (double) piVal[0];
+			pdVal[0] = static_cast<double>(piVal[0]);
 			*alDef = MAKELONG(1, 2);
 		}
 	}
@@ -195,6 +195,7 @@ void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) noexc
 		}
 	}
 }
+
 void lex::ConvertStringToVal(int aiTyp, long alDef, LPTSTR aszVal, long* alDefReq, void* aVal) {
 	if (LOWORD(alDef) <= 0) throw L"Empty string";
 
@@ -216,15 +217,17 @@ void lex::ConvertStringToVal(int aiTyp, long alDef, LPTSTR aszVal, long* alDefRe
 	else {
 		double *pVal = (double *) aVal;
 
-		if (iTyp == TOK_INTEGER)
-			*pVal = (double) _wtoi(szTok);
-		else if (iTyp == TOK_REAL)
+		if (iTyp == TOK_INTEGER) {
+			*pVal = static_cast<double>(_wtoi(szTok));
+		} else if (iTyp == TOK_REAL) {
 			*pVal = _wtof(szTok);
-		else
+		} else {
 			throw L"String format conversion error";
+		}
 		*alDefReq = MAKELONG(1, 2);
 	}
 }
+
 void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 	wchar_t szTok[256];
 
@@ -388,13 +391,14 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 						if ((lOp1[0] >= 0 && lOp1[0] > DBL_MAX_10_EXP) || (lOp1[0] < 0 && lOp1[0] < DBL_MIN_10_EXP))
 							throw L"Exponentiation error";
 
-						lOp1[0] = (int) pow((double) lOp2[0], lOp1[0]);
+						lOp1[0] = static_cast<int>(pow(static_cast<double>(lOp2[0]), lOp1[0]));
 					}
 					else if (iTyp1 == TOK_REAL) {
-						const int iExp = (int) dOp1[0];
+						const int iExp = static_cast<int>(dOp1[0]);
 
-						if ((iExp >= 0 && iExp > DBL_MAX_10_EXP) || (iExp < 0 && iExp < DBL_MIN_10_EXP))
+						if ((iExp >= 0 && iExp > DBL_MAX_10_EXP) || (iExp < 0 && iExp < DBL_MIN_10_EXP)) {
 							throw L"Exponentiation error";
+						}
 						dOp1[0] = pow(dOp2[0], dOp1[0]);
 					}
 				}

@@ -192,8 +192,9 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.GetLength(), NULL);
 	}
 }
+
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
-	const double PixelsPerLogicalMillimeter = static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / EoMmPerInch;
+	const double PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / EoMmPerInch};
 	const int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + .5);
 
 	LOGBRUSH Brush;
@@ -213,12 +214,15 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 	deviceContext.SelectObject(OldPen);
 
 	ItemRectangle.SetRect(ItemRectangle.right + 8, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
+
 	if (ItemRectangle.left <= itemRectangle.right) {
 		OdString String = CMainFrame::StringByLineWeight(lineWeight, false);
 		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, String.getLength(), NULL);
 	}
 }
+
 void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const CString& textOut, const OdDbDatabasePtr& database) {
+
 	if (database->getPSTYLEMODE() == 1) {
 		const COLORREF OldTextColor = deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT));
 		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), NULL);
@@ -227,6 +231,7 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), NULL);
 	}
 }
+
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
 	const CSize SmallIconSize(::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
 	HINSTANCE ResourceHandle(::AfxGetResourceHandle());

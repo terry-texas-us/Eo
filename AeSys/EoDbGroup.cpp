@@ -7,7 +7,7 @@
 #include "EoDbBlockReference.h"
 #include "EoDbPolyline.h"
 
-EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(NULL);
+EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(nullptr);
 
 EoDbGroup::EoDbGroup() noexcept {}
 

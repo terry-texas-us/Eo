@@ -16,20 +16,20 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-OdDbObjectId CNamedViewListCtrl::viewId(int nItem) const {
-	return OdDbObjectId(reinterpret_cast<OdDbStub*>(GetItemData(nItem)));
+OdDbObjectId CNamedViewListCtrl::viewId(int item) const {
+	return OdDbObjectId(reinterpret_cast<OdDbStub*>(GetItemData(item)));
 }
 
 void CNamedViewListCtrl::setViewId(int nItem, const OdDbObjectId& id) {
 	SetItemData(nItem, reinterpret_cast<DWORD>(static_cast<OdDbStub*>(id)));
 }
 
-OdDbViewTableRecordPtr CNamedViewListCtrl::view(int nItem) {
-	return viewId(nItem).safeOpenObject(OdDb::kForWrite);
+OdDbViewTableRecordPtr CNamedViewListCtrl::view(int item) {
+	return viewId(item).safeOpenObject(OdDb::kForWrite);
 }
 
-void CNamedViewListCtrl::setView(int nItem, const OdDbViewTableRecord* pView) {
-	setViewId(nItem, pView->objectId());
+void CNamedViewListCtrl::setView(int item, const OdDbViewTableRecord* view) {
+	setViewId(item, view->objectId());
 }
 
 OdString ucsString(const OdDbObject* viewport) {
@@ -56,7 +56,7 @@ OdString ucsString(const OdDbObject* viewport) {
 			Result = L"Right";
 			break;
 		default: {
-			OdDbUCSTableRecordPtr pUCS = OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject();
+			OdDbUCSTableRecordPtr pUCS {OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject()};
 
 			if (pUCS.get()) {
 				Result = pUCS->getName();

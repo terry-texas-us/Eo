@@ -295,18 +295,18 @@ void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 
 	Iterator = Linetypes->newIterator();
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
-		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
+		OdDbLinetypeTableRecordPtr Linetype {Iterator->getRecordId().safeOpenObject(OdDb::kForRead)};
 		WriteString(Linetype->getName());
 		WriteUInt16(0);
 		WriteString(Linetype->comments());
 
-		const OdUInt16 DefinitionLength = static_cast<OdUInt16>(Linetype->numDashes());
+		const auto DefinitionLength {narrow_cast<OdUInt16>(Linetype->numDashes())};
 		WriteUInt16(DefinitionLength);
 
-		const double PatternLength = Linetype->patternLength();
+		const double PatternLength {Linetype->patternLength()};
 		WriteDouble(PatternLength);
 
-		for (OdUInt16 DashIndex = 0; DashIndex < DefinitionLength; DashIndex++) {
+		for (auto DashIndex = 0; DashIndex < DefinitionLength; DashIndex++) {
 			WriteDouble(Linetype->dashLengthAt(DashIndex));
 		}
 	}	

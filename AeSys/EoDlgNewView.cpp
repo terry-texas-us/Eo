@@ -41,25 +41,29 @@ OdString ucsString(const OdDbObject* pViewObj);
 BOOL EoDlgNewView::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	EoDlgNamedViews* pParent = static_cast<EoDlgNamedViews*>(GetParent());
-	const OdDbDatabase* pDb = pParent->database();
+	auto Parent {dynamic_cast<EoDlgNamedViews*>(GetParent())};
+	const auto Database {Parent->database()};
 	OdDbSymbolTablePtr pTable;
 	OdDbSymbolTableIteratorPtr pIter;
 
-	pTable = pDb->getViewTableId().safeOpenObject();
+	pTable = Database->getViewTableId().safeOpenObject();
+	
 	for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
 		OdDbViewTableRecordPtr pView = pIter->getRecordId().openObject();
 		OdString sCategory = pView->getCategoryName();
+		
 		if (!sCategory.isEmpty()) {
+			
 			if (m_categories.FindString(-1, sCategory) == -1) {
 				m_categories.AddString(sCategory);
 			}
 		}
 	}
-	pTable = pDb->getUCSTableId().safeOpenObject();
+	pTable = Database->getUCSTableId().safeOpenObject();
 	m_UCSs.AddString(L"World");
 
-	m_sUcsName = (LPCWSTR) ucsString(pDb->activeViewportId().safeOpenObject());
+	m_sUcsName = (LPCWSTR) ucsString(Database->activeViewportId().safeOpenObject());
+	
 	if (m_sUcsName == L"Unnamed") {
 		m_UCSs.AddString(m_sUcsName);
 	}

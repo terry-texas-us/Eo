@@ -12,7 +12,7 @@ class EoGsViewport {
 
 public: // Constructors and destructors
 
-	EoGsViewport();
+	EoGsViewport() noexcept;
 	EoGsViewport(const EoGsViewport& other) noexcept;
 
 	~EoGsViewport();

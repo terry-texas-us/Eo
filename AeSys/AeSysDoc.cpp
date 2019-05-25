@@ -305,17 +305,16 @@ void AeSysDoc::DeleteContents() {
 	}
 }
 
-// <command_view>
-BOOL AeSysDoc::CanCloseFrame(CFrameWnd * frame) {
-	CView* ActiveView = frame->GetActiveView();
+BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
+	auto ActiveView {frame->GetActiveView()};
+
 	if (ActiveView->IsKindOf(&AeSysView::classAeSysView)) {
-		if (!static_cast<AeSysView*>(ActiveView)->canClose()) {
-			return FALSE;
-		}
+
+		if (!dynamic_cast<AeSysView*>(ActiveView)->canClose()) { return FALSE; }
+
 	}
 	return CDocument::CanCloseFrame(frame);
 }
-// </command_view>
 
 AeSysView* AeSysDoc::getViewer() noexcept {
 	return m_pViewer;
@@ -1147,17 +1146,20 @@ void AeSysDoc::Dump(CDumpContext & dc) const {
 }
 #endif //_DEBUG
 
-void AeSysDoc::UpdateGroupInAllViews(LPARAM hint, EoDbGroup * group) {
-	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(group));
+void AeSysDoc::UpdateGroupInAllViews(LPARAM hint, EoDbGroup* group) {
+	CDocument::UpdateAllViews(nullptr, hint, group);
 }
-void AeSysDoc::UpdateGroupsInAllViews(LPARAM hint, EoDbGroupList * groups) {
-	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(groups));
+
+void AeSysDoc::UpdateGroupsInAllViews(LPARAM hint, EoDbGroupList* groups) {
+	CDocument::UpdateAllViews(nullptr, hint, groups);
 }
-void AeSysDoc::UpdateLayerInAllViews(LPARAM hint, EoDbLayer * layer) {
-	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(layer));
+
+void AeSysDoc::UpdateLayerInAllViews(LPARAM hint, EoDbLayer* layer) {
+	CDocument::UpdateAllViews(nullptr, hint, layer);
 }
-void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive * primitive) {
-	CDocument::UpdateAllViews(nullptr, hint, static_cast<CObject*>(primitive));
+
+void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive) {
+	CDocument::UpdateAllViews(nullptr, hint, primitive);
 }
 
 void AeSysDoc::AddTextBlock(LPWSTR text) {
@@ -2349,7 +2351,7 @@ void AeSysDoc::OnToolsPrimitiveSnaptoendpoint() {
 		ActiveView->EngagedPrimitive()->AddReportToMessageList(ptEng);
 		ActiveView->SetCursorPosition(ptEng);
 	}
-	EoDbGroup::SetPrimitiveToIgnore(static_cast<EoDbPrimitive*>(NULL));
+	EoDbGroup::SetPrimitiveToIgnore(static_cast<EoDbPrimitive*>(nullptr));
 }
 void AeSysDoc::OnPrimGotoCenterPoint() {
 	AeSysView* ActiveView = AeSysView::GetActiveView();

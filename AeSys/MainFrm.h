@@ -23,7 +23,7 @@ public:
 		QueryPerformanceCounter(&m_pc1);
 		m_pc1.QuadPart -= m_pc0.QuadPart;
 		if (QueryPerformanceFrequency(&m_pc0)) {
-			const double loadTime = ((double) m_pc1.QuadPart) / ((double) m_pc0.QuadPart);
+			const auto loadTime {static_cast<double>(m_pc1.QuadPart) / static_cast<double>(m_pc0.QuadPart)};
 			OdString NewText;
 			auto OperationName {operationName ? operationName : L"Operation"};
 			NewText.format(L"%s Time: %.6f sec.", OperationName, loadTime);

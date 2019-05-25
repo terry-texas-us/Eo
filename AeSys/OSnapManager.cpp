@@ -391,16 +391,16 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 
 	const auto pt {(view->worldToDeviceMatrix() * point).convert2d()};
 	OdGsDCPoint DcPoints[2];
-	const auto Aperture {GetAperture(static_cast<OdDbDatabase*>(view->userGiContext()->database()))};
+	const auto Aperture {GetAperture(dynamic_cast<OdDbDatabase*>(view->userGiContext()->database()))};
 
 	DcPoints[0].x = OdRoundToLong(pt.x) - Aperture;
 	DcPoints[1].x = DcPoints[0].x + Aperture * 2;
 	DcPoints[0].y = OdRoundToLong(pt.y) - Aperture;
 	DcPoints[1].y = DcPoints[0].y + Aperture * 2;
-	m_HitRadius = (double) Aperture;
+	m_HitRadius = static_cast<double>(Aperture);
 	m_WorldToDevice = view->worldToDeviceMatrix().getCsXAxis().length();
 
-	OdGsViewImpl* pViewImpl = dynamic_cast<OdGsViewImpl*>(view);
+	auto pViewImpl {dynamic_cast<OdGsViewImpl*>(view)};
 	
 	if (pViewImpl) { pViewImpl->setSnapping(true); }
 

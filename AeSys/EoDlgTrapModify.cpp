@@ -15,7 +15,7 @@ END_MESSAGE_MAP()
 
 EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) noexcept
 	: CDialog(EoDlgTrapModify::IDD, parent)
-	, m_Document(0) {
+	, m_Document(nullptr) {
 }
 
 EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
@@ -29,6 +29,7 @@ EoDlgTrapModify::~EoDlgTrapModify() {
 void EoDlgTrapModify::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 }
+
 void EoDlgTrapModify::OnOK() {
 	if (IsDlgButtonChecked(IDC_MOD_PEN)) {
 		m_Document->ModifyTrappedGroupsColorIndex(pstate.ColorIndex());
@@ -63,7 +64,7 @@ void EoDlgTrapModify::ModifyPolygons(void) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
 			if (Primitive->Is(EoDb::kHatchPrimitive)) {
-				EoDbHatch* pPolygon = static_cast<EoDbHatch*>(Primitive);
+				auto pPolygon {dynamic_cast<EoDbHatch*>(Primitive)};
 				pPolygon->SetInteriorStyle(pstate.HatchInteriorStyle());
 				pPolygon->SetInteriorStyleIndex2(pstate.HatchInteriorStyleIndex());
 				pPolygon->SetHatRefVecs(EoDbHatch::sm_PatternAngle, EoDbHatch::sm_PatternScaleX, EoDbHatch::sm_PatternScaleY);
