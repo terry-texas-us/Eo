@@ -477,7 +477,7 @@ OdGsDevicePtr AeSysApp::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* datab
 
 		return Module->createBitmapDevice();
 	}
-	catch (const OdError& Error) {
+	catch (const OdError&) {
 	}
 	return OdGsDevicePtr();
 }
@@ -764,7 +764,7 @@ void AeSysApp::RemoveReactor(OdApplicationReactor* reactor) {
 }
 
 OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
-	CMainFrame* MainFrame = (CMainFrame*) GetMainWnd();
+	auto MainFrame {dynamic_cast<CMainFrame*>(GetMainWnd())};
 	OdDbDatabasePtr Database;
 
 	OdInt16 nMode = getMtMode();
@@ -830,19 +830,23 @@ void AeSysApp::AddModeInformationToMessageList() {
 	ResourceString = ResourceString.Tokenize(L"\n", NextToken);
 	AddStringToMessageList(ResourceString);
 }
+
 void AeSysApp::AddStringToMessageList(LPCWSTR message) {
-	CMainFrame* MainFrame = (CMainFrame*) (AfxGetMainWnd());
+	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
 	MainFrame->GetOutputPane().AddStringToMessageList(message);
+	
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
 }
+
 void AeSysApp::AddStringToMessageList(LPCWSTR message, LPCWSTR string) {
 	CString FormatString;
 	FormatString.Format(message, string);
 	AddStringToMessageList(FormatString);
 }
+
 void AeSysApp::AddStringToMessageList(UINT stringResourceIdentifier) {
 	CString ResourceString = LoadStringResource(stringResourceIdentifier);
 	AddStringToMessageList(ResourceString);
@@ -852,9 +856,10 @@ void AeSysApp::AddStringToMessageList(UINT stringResourceIdentifier, LPCWSTR str
 	AddStringToMessageList(FormatSpecification, string);
 }
 void AeSysApp::AddStringToReportList(LPCWSTR message) {
-	CMainFrame* MainFrame = (CMainFrame*) (AfxGetMainWnd());
+	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
 	MainFrame->GetOutputPane().AddStringToReportsList(message);
+	
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
@@ -864,18 +869,18 @@ int	AeSysApp::ArchitecturalUnitsFractionPrecision() const  noexcept {
 }
 // Modifies the base accelerator table by defining the mode specific keys.
 void AeSysApp::BuildModeSpecificAcceleratorTable() {
-	CMainFrame* MainFrame = (CMainFrame*) AfxGetMainWnd();
+	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
-	HACCEL AcceleratorTableHandle = MainFrame->m_hAccelTable;
+	auto AcceleratorTableHandle {MainFrame->m_hAccelTable};
 	::DestroyAcceleratorTable(AcceleratorTableHandle);
 
-	HACCEL ModeAcceleratorTableHandle = ::LoadAccelerators(m_hInstance, MAKEINTRESOURCE(m_ModeResourceIdentifier));
-	int ModeAcceleratorTableEntries = ::CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0);
+	auto ModeAcceleratorTableHandle {::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCE(m_ModeResourceIdentifier))};
+	auto ModeAcceleratorTableEntries {::CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0)};
 
-	AcceleratorTableHandle = ::LoadAccelerators(m_hInstance, MAKEINTRESOURCE(IDR_MAINFRAME));
-	const int AcceleratorTableEntries = ::CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0);
+	AcceleratorTableHandle = ::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCE(IDR_MAINFRAME));
+	const int AcceleratorTableEntries {::CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
 
-	LPACCEL ModifiedAcceleratorTable = new ACCEL[AcceleratorTableEntries + ModeAcceleratorTableEntries];
+	LPACCEL ModifiedAcceleratorTable {new ACCEL[AcceleratorTableEntries + ModeAcceleratorTableEntries]};
 
 	::CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
 	::CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
@@ -884,6 +889,7 @@ void AeSysApp::BuildModeSpecificAcceleratorTable() {
 
 	delete[] ModifiedAcceleratorTable;
 }
+
 UINT AeSysApp::ClipboardFormatIdentifierForEoGroups()  noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
@@ -2016,14 +2022,16 @@ void AeSysApp::setRecentGsDevicePath(const OdString & vectorizerPath) {
 }
 
 void AeSysApp::SetStatusPaneTextAt(int index, LPCWSTR newText) {
-	((CMainFrame*) GetMainWnd())->SetStatusPaneTextAt(index, newText);
+	dynamic_cast<CMainFrame*>(GetMainWnd())->SetStatusPaneTextAt(index, newText);
 }
+
 OdDbHostAppProgressMeter* AeSysApp::newProgressMeter() {
-	if (m_thisThreadID != ::GetCurrentThreadId()) { // disable access from other threads
-		return 0;
-	}
+
+	if (m_thisThreadID != ::GetCurrentThreadId()) { return 0; }
+
 	return ExHostAppServices::newProgressMeter();
 }
+
 void AeSysApp::start(const OdString & displayString) {
 	m_Msg = (LPCWSTR) displayString;
 	m_nProgressPos = 0;
@@ -2078,13 +2086,15 @@ void AeSysApp::meterProgress() {
 					}
 				}
 			}
-		} execArg(Percent, (CMainFrame*) GetMainWnd(), this);
+		} execArg(Percent, dynamic_cast<CMainFrame*>(GetMainWnd()), this);
 		odExecuteMainThreadAction(StatUpdater::Exec, &execArg);
 	}
 }
+
 void AeSysApp::setLimit(int max) noexcept {
 	m_nProgressLimit = max ? max : 1;
 }
+
 int AeSysApp::ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
 	CString FormatSpecification = LoadStringResource(stringResourceIdentifier);
 
@@ -2097,6 +2107,7 @@ int AeSysApp::ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
 
 	return (::MessageBoxW(0, Text, Caption, MB_ICONINFORMATION | MB_YESNOCANCEL | MB_DEFBUTTON2));
 }
+
 void AeSysApp::warning(const char* warnVisGroup, const OdString & text) {
 	if (m_bLoading && (!warnVisGroup || !*warnVisGroup) && !m_bUseMTLoading) {
 		if (::MessageBoxW(NULL, text + L"\n\nDo you want to proceed ?", L"Warning!", MB_ICONWARNING | MB_YESNO) == IDNO) {
@@ -2201,9 +2212,11 @@ void AeSysApp::UninitializeTeigha() {
 		theApp.reportError(L"", Error);
 	}
 }
+
 void AeSysApp::UpdateMDITabs(BOOL resetMDIChild) {
-	((CMainFrame*) AfxGetMainWnd())->UpdateMDITabs(resetMDIChild);
+	dynamic_cast<CMainFrame*>(AfxGetMainWnd())->UpdateMDITabs(resetMDIChild);
 }
+
 BOOL AeSysApp::OnIdle(long count) {
 
 	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {

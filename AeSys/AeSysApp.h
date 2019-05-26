@@ -110,6 +110,7 @@ private:
 
 //	void UpdateFieldDisplay();
 public:
+	UINT m_ApplicationLook;
 
 	void AddReactor(OdApplicationReactor* reactor);
 	void RemoveReactor(OdApplicationReactor* reactor);

@@ -388,6 +388,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLinetypeComboBox() {
 	}
 	m_Linetype.SetCurSel(31);
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	m_Lineweight.AddString(L"Use object lineweight");
 	const bool bInch = m_pPlotStyleTable->isDisplayCustomLineweightUnits();
@@ -395,11 +396,12 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	for (size_t i = 0; i < m_pPlotStyleTable->lineweightSize(); i++)
 	{
 		CString lineweight;
-		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), sUnits);
+		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), (LPCWSTR) sUnits);
 		m_Lineweight.AddString(lineweight);
 	}
 	m_Lineweight.SetCurSel(0);
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineendstyleComboBox() {
 	for (int i = 0; i < 5; i++)
 	{

@@ -518,7 +518,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	m_bInRegen = true;
 	m_bRegenAbort = false;
 
-	auto  MainFrame {(CMainFrame*)theApp.GetMainWnd()};
+	auto MainFrame {dynamic_cast<CMainFrame*>(theApp.GetMainWnd())};
 
 	if (!regenAbort()) {
 		try {
@@ -2484,15 +2484,13 @@ OdDbDatabasePtr AeSysView::Database() const {
 }
 
 void AeSysView::OnActivateFrame(UINT state, CFrameWnd * deactivateFrame) {
-	ATLTRACE2(atlTraceGeneral, 1, L"AeSysView<%08.8lx>::OnActivateFrame(%i, %08.8lx)\n", this, state, deactivateFrame);
-
 	CView::OnActivateFrame(state, deactivateFrame);
 }
 void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deactiveView) {
-	ATLTRACE2(atlTraceGeneral, 1, L"AeSysView<%08.8lx>::OnActivateView(%i, %08.8lx, %08.8lx))\n", this, activate, activateView, deactiveView);
+	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
-	CMainFrame* MainFrame = (CMainFrame*) (AfxGetMainWnd());
 	if (activate) {
+
 		if (::CopyAcceleratorTable(MainFrame->m_hAccelTable, NULL, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 			theApp.BuildModeSpecificAcceleratorTable();
 		}
@@ -2504,14 +2502,16 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 	CView::OnActivateView(activate, activateView, deactiveView);
 }
 void AeSysView::OnSetFocus(CWnd * oldWindow) {
-	CMainFrame* MainFrame = (CMainFrame*) (AfxGetMainWnd());
+	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
+
 	if (::CopyAcceleratorTable(MainFrame->m_hAccelTable, NULL, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 		theApp.BuildModeSpecificAcceleratorTable();
 	}
 	CView::OnSetFocus(oldWindow);
 }
-void AeSysView::OnKillFocus(CWnd * newWindow) {
-	HACCEL AcceleratorTableHandle = ((CMainFrame*) AfxGetMainWnd())->m_hAccelTable;
+
+void AeSysView::OnKillFocus(CWnd* newWindow) {
+	auto AcceleratorTableHandle = dynamic_cast<CMainFrame*>(AfxGetMainWnd())->m_hAccelTable;
 
 	::DestroyAcceleratorTable(AcceleratorTableHandle);
 
@@ -2568,15 +2568,17 @@ void AeSysView::DoCustomMouseClick(const CString& characters) {
 	}
 }
 
-CMFCStatusBar& AeSysView::GetStatusBar(void) const {
-	return ((CMainFrame*) AfxGetMainWnd())->GetStatusBar();
+CMFCStatusBar& AeSysView::GetStatusBar() const {
+	return dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetStatusBar();
 }
+
 void AeSysView::PopViewTransform() {
 	if (!m_ViewTransforms.IsEmpty()) {
 		m_ViewTransform = m_ViewTransforms.RemoveTail();
 	}
 	m_ViewTransform.BuildTransformMatrix();
 }
+
 void AeSysView::PushViewTransform() {
 	m_ViewTransforms.AddTail(m_ViewTransform);
 }
@@ -3286,15 +3288,17 @@ AeSysView* AeSysView::GetActiveView(void) {
 	}
 	return (AeSysView*) View;
 }
-void AeSysView::OnUpdateViewOdometer(CCmdUI * pCmdUI) {
+
+void AeSysView::OnUpdateViewOdometer(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ViewOdometer);
 }
+
 void AeSysView::DisplayOdometer() {
-	const OdGePoint3d pt = GetCursorPosition();
-	m_vRelPos = pt - GridOrigin();
+	const auto Point {GetCursorPosition()};
+	m_vRelPos = Point - GridOrigin();
 
 	if (m_ViewOdometer) {
-		const AeSysApp::Units Units = theApp.GetUnits();
+		const auto Units {theApp.GetUnits()};
 
 		CString Position;
 		Position += theApp.FormatLength(m_vRelPos.x, Units) + L", ";
@@ -3302,51 +3306,22 @@ void AeSysView::DisplayOdometer() {
 		Position += theApp.FormatLength(m_vRelPos.z, Units);
 
 		if (m_RubberbandType == Lines) {
-			EoGeLineSeg3d Line(m_RubberbandBeginPoint, pt);
+			EoGeLineSeg3d Line(m_RubberbandBeginPoint, Point);
 
-			const double LineLength = Line.length();
-			const double AngleInXYPlane = Line.AngleFromXAxis_xy();
+			const auto LineLength {Line.length()};
+			const auto AngleInXYPlane {Line.AngleFromXAxis_xy()};
 
 			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
 		}
-		CMainFrame* MainFrame = (CMainFrame*) (AfxGetMainWnd());
+		auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, Position);
-
-#if	defined(LEGACY_ODOMETER)
-		CDC* DeviceContext = GetDC();
-
-		CFont* Font = (CFont*) DeviceContext->SelectStockObject(ANSI_VAR_FONT);
-		UINT nTextAlign = DeviceContext->SetTextAlign(TA_LEFT | TA_TOP);
-		COLORREF crText = DeviceContext->SetTextColor(AppGetTextCol());
-		COLORREF crBk = DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff);
-
-		CRect ClientRect;
-		GetClientRect(&ClientRect);
-		TEXTMETRIC tm;
-		DeviceContext->GetTextMetrics(&tm);
-
-		int iLeft = ClientRect.right - 16 * tm.tmAveCharWidth;
-
-		CRect rc(iLeft, ClientRect.top, ClientRect.right, ClientRect.top + tm.tmHeight);
-		DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, theApp.FormatLength(m_vRelPos.x, Units), (UINT) Length.GetLength(), 0);
-
-		rc.SetRect(iLeft, ClientRect.top + 1 * tm.tmHeight, ClientRect.right, ClientRect.top + 2 * tm.tmHeight);
-		DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, theApp.FormatLength(m_vRelPos.y, Units), (UINT) Length.GetLength(), 0);
-
-		rc.SetRect(iLeft, ClientRect.top + 2 * tm.tmHeight, ClientRect.right, ClientRect.top + 3 * tm.tmHeight);
-		DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, theApp.FormatLength(m_vRelPos.z, Units), (UINT) Length.GetLength(), 0);
-
-		DeviceContext->SetBkColor(crBk);
-		DeviceContext->SetTextColor(crText);
-		DeviceContext->SetTextAlign(nTextAlign);
-		DeviceContext->SelectObject(Font);
-		ReleaseDC(DeviceContext);
-#endif // LEGACY_ODOMETER
 	}
 }
+
 void AeSysView::OnUpdateViewTrueTypeFonts(CCmdUI * pCmdUI) {
 	pCmdUI->SetCheck(m_ViewTrueTypeFonts);
 }
+
 void AeSysView::OnBackgroundImageLoad() {
 	CFileDialog dlg(TRUE, L"bmp", L"*.bmp");
 	dlg.m_ofn.lpstrTitle = L"Load Background Image";
@@ -3359,6 +3334,7 @@ void AeSysView::OnBackgroundImageLoad() {
 		InvalidateRect(nullptr);
 	}
 }
+
 void AeSysView::OnBackgroundImageRemove() {
 	if ((HBITMAP) m_BackgroundImageBitmap != 0) {
 		m_BackgroundImageBitmap.DeleteObject();
@@ -3695,7 +3671,7 @@ void AeSysView::OnEscape() {
 }
 void AeSysView::OnFind(void) {
 	CString FindComboText;
-	VerifyFindString(((CMainFrame*) AfxGetMainWnd())->GetFindCombo(), FindComboText);
+	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
 
 	if (!FindComboText.IsEmpty()) {
 		ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnFind() ComboText = %s\n", FindComboText);
@@ -3739,7 +3715,6 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton * findComboBox, CStri
 	}
 }
 void AeSysView::OnEditFind() {
-	ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnEditFind() - Entering\n");
 }
 // Disables rubberbanding.
 void AeSysView::RubberBandingDisable() {
@@ -3902,7 +3877,7 @@ void AeSysView::SetWorldScale(const double scale) {
 		m_WorldScale = scale;
 		UpdateStateInformation(Scale);
 
-		CMainFrame* MainFrame = (CMainFrame*) (AfxGetMainWnd());
+		auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 		MainFrame->GetPropertiesPane().GetActiveViewScaleProperty().SetValue(m_WorldScale);
 	}
 }

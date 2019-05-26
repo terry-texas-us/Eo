@@ -36,7 +36,6 @@ public:
 	void SetStatusPaneTextColorAt(int index, COLORREF textColor = COLORREF(-1));
 
 private:
-	UINT m_ApplicationLook;
 	int m_CurrentProgress;
 	bool m_InProgress;
 
@@ -91,11 +90,7 @@ protected:
 	BOOL OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) override;
 	BOOL OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bDrop) override;
 
-	/// <summary></summary>
-	/// <remarks>
-	// CBRS_FLOAT_MULTI allows panes to float together in a single window. By default, panes only float individually.
-	/// </remarks>
-	BOOL CreateDockablePanes();
+	BOOL CreateDockingWindows();
 	void SetDockablePanesIcons(bool highColorMode);
 	void ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu);
 	void ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu);

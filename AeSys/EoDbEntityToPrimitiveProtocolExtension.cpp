@@ -710,7 +710,7 @@ class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbViewportPtr ViewportEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) ViewportEntity->desc()->name());
+		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (LPCWSTR) ViewportEntity->desc()->name());
 
 		ATLTRACE2(atlTraceGeneral, 2, L"Back Clip Distance: %f\n", ViewportEntity->backClipDistance());
 		ATLTRACE2(atlTraceGeneral, 2, L"Back Clip On: %i\n", ViewportEntity->isBackClipOn());
@@ -721,7 +721,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 2, L"Front Clip at Eye: %i\n", ViewportEntity->isFrontClipAtEyeOn());
 		ATLTRACE2(atlTraceGeneral, 2, L"Front Clip Distance: %f\n", ViewportEntity->frontClipDistance());
 		ATLTRACE2(atlTraceGeneral, 2, L"Front Clip On: %i\n", ViewportEntity->isFrontClipOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"Plot style sheet: %i\n", ViewportEntity->effectivePlotStyleSheet());
+		ATLTRACE2(atlTraceGeneral, 2, L"Plot style sheet: %s\n", (LPCWSTR) ViewportEntity->effectivePlotStyleSheet());
 
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
@@ -768,7 +768,7 @@ public:
 
 		if (!ViewportEntity->ucsName().isNull()) {
 			OdDbUCSTableRecordPtr UCS = ViewportEntity->ucsName().safeOpenObject(OdDb::kForRead);
-			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: \n", UCS->getName());
+			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: %s\n", (LPCWSTR) UCS->getName());
 		}
 		else {
 			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: Null");

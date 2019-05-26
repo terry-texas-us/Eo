@@ -65,7 +65,7 @@ static UINT Indicators[] = {
 CMainFrame::CMainFrame()
 	: m_CurrentProgress(0)
 	, m_InProgress(false) {
-	m_ApplicationLook = theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK);
+	theApp.m_ApplicationLook = theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK);
 }
 
 CMainFrame::~CMainFrame() {}
@@ -74,7 +74,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	if (CMDIFrameWndEx::OnCreate(createStructure) == -1) {
 		return -1;
 	}
-	OnApplicationLook(m_ApplicationLook);
 	UpdateMDITabs(FALSE);
 
 	if (!m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE)) {
@@ -91,6 +90,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	// Prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 	const DWORD Style(WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+	
 	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create toolbar\n");
 		return -1;
@@ -98,7 +98,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	m_StandardToolBar.SetWindowTextW(L"Standard");
 	m_StandardToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...");
 
-	InitUserToolbars(NULL, FirstUserToolBarId, LastUserToolBarId);
+	InitUserToolbars(nullptr, FirstUserToolBarId, LastUserToolBarId);
 
 	if (!m_StatusBar.Create(this)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create status bar\n");
@@ -110,34 +110,37 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	m_StatusBar.SetPaneStyle(nStatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
 	m_StatusBar.SetPaneWidth(nStatusProgress, 96);
 
-	if (!CreateDockablePanes()) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create dockable panes\n");
-		return -1;
-	}
 	m_MenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_StandardToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	m_PropertiesPane.EnableDocking(CBRS_ALIGN_ANY);
-	m_OutputPane.EnableDocking(CBRS_ALIGN_ANY);
-
 	EnableDocking(CBRS_ALIGN_ANY);
-
 	DockPane(&m_MenuBar);
 	DockPane(&m_StandardToolBar);
-	DockPane(&m_PropertiesPane);
-	DockPane(&m_OutputPane);
 
+	CDockingManager::SetDockingMode(DT_SMART);
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
+
+	if (!CreateDockingWindows()) {
+		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create docking windows\n");
+		return -1;
+	}
+	m_OutputPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_OutputPane);
+	m_PropertiesPane.EnableDocking(CBRS_ALIGN_ANY);
+	DockPane(&m_PropertiesPane);
+
+	OnApplicationLook(theApp.m_ApplicationLook);
 
 	EnableWindowsDialog(ID_WINDOW_MANAGER, IDS_WINDOWS_MANAGER, TRUE);
 
 	// Enable automatic creation and management of the pop-up pane menu, which displays a list of application panes.
-	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...", ID_VIEW_TOOLBARS, FALSE, FALSE);
+	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...", ID_VIEW_TOOLBARS);
 	EnableFullScreenMode(ID_VIEW_FULLSCREEN);
 	EnableFullScreenMainMenu(TRUE);
 
 	CMFCToolBar::EnableQuickCustomization();
 
-	if (CMFCToolBar::GetUserImages() == NULL) { // load user-defined toolbar images
+	if (CMFCToolBar::GetUserImages() == nullptr) { // load user-defined toolbar images
+
 		if (m_UserImages.Load(L"res\\UserImages.bmp")) {
 			m_UserImages.SetImageSize(CSize(16, 16), FALSE);
 			CMFCToolBar::SetUserImages(&m_UserImages);
@@ -156,17 +159,19 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
 	return TRUE;
 }
 
-BOOL CMainFrame::CreateDockablePanes() {
+BOOL CMainFrame::CreateDockingWindows() {
 	const CSize DefaultSize(200, 200);
 
 	const DWORD SharedStyles(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI);
 
-	CString Caption = theApp.LoadStringResource(IDS_OUTPUT);
+	auto Caption {theApp.LoadStringResource(IDS_OUTPUT)};
+	
 	if (!m_OutputPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_OUTPUTWND, SharedStyles | CBRS_BOTTOM)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create Output pane\n");
 		return FALSE;
 	}
 	Caption = theApp.LoadStringResource(IDS_PROPERTIES);
+	
 	if (!m_PropertiesPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_PROPERTIESWND, SharedStyles | CBRS_RIGHT)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create Properties pane\n");
 		return FALSE;
@@ -233,13 +238,10 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 }
 
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
-	const CSize SmallIconSize(::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON));
-	HINSTANCE ResourceHandle(::AfxGetResourceHandle());
-
-	HICON PropertiesPaneIcon = (HICON) ::LoadImage(ResourceHandle, MAKEINTRESOURCE(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, SmallIconSize.cx, SmallIconSize.cy, 0);
+	HICON PropertiesPaneIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_PropertiesPane.SetIcon(PropertiesPaneIcon, FALSE);
 
-	HICON OutputPaneIcon = (HICON) ::LoadImage(ResourceHandle, MAKEINTRESOURCE(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, SmallIconSize.cx, SmallIconSize.cy, 0);
+	HICON OutputPaneIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
 	m_OutputPane.SetIcon(OutputPaneIcon, FALSE);
 
 	UpdateMDITabbedBarsIcons();
@@ -297,15 +299,15 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
 	return 0;
 }
 void CMainFrame::OnApplicationLook(UINT look) {
-	m_ApplicationLook = look;
+	theApp.m_ApplicationLook = look;
 
-	switch (m_ApplicationLook) {
+	switch (theApp.m_ApplicationLook) {
 		case ID_VIEW_APPLOOK_WINDOWS_7:
 			CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
 			break;
 
 		default:
-			switch (m_ApplicationLook) {
+			switch (theApp.m_ApplicationLook) {
 				case ID_VIEW_APPLOOK_OFF_2007_BLUE:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_LunaBlue);
 					break;
@@ -324,19 +326,21 @@ void CMainFrame::OnApplicationLook(UINT look) {
 			}
 			CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2007));
 	}
-	CDockingManager* DockingManager = GetDockingManager();
+	auto DockingManager {GetDockingManager()};
 	ASSERT_VALID(DockingManager);
 	DockingManager->AdjustPaneFrames();
 	DockingManager->SetDockingMode(DT_SMART);
 
 	RecalcLayout();
-	RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_FRAME | RDW_ERASE | RDW_UPDATENOW);
+	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 
-	theApp.WriteInt(L"ApplicationLook", m_ApplicationLook);
+	theApp.WriteInt(L"ApplicationLook", theApp.m_ApplicationLook);
 }
-void CMainFrame::OnUpdateApplicationLook(CCmdUI * pCmdUI) {
-	pCmdUI->SetRadio(m_ApplicationLook == pCmdUI->m_nID);
+
+void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
+	pCmdUI->SetRadio(theApp.m_ApplicationLook == pCmdUI->m_nID);
 }
+
 BOOL CMainFrame::LoadFrame(UINT resourceId, DWORD defaultStyle, CWnd * parentWindow, CCreateContext * createContext) {
 	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) {
 		return FALSE;
@@ -676,8 +680,6 @@ void CMainFrame::OnUpdateMdiTabbed(CCmdUI * pCmdUI) {
 	pCmdUI->SetCheck();
 }
 void CMainFrame::OnDestroy() {
-	ATLTRACE2(atlTraceGeneral, 1, L"CMainFrame::OnDestroy() - Entering\n");
-
 	PostQuitMessage(0); 		// Force WM_QUIT message to terminate message loop
 }
 
@@ -825,4 +827,3 @@ CString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) {
 	}
 	return LineWeightText;
 }
-

@@ -1215,7 +1215,7 @@ void OdExGripManager::ShowGrip(OdExGripData* gripData, bool model) {
 			PaperLayoutHelper->overallView()->add(gripData, m_pGsModel);
 		}
 	} else {
-		for (unsigned i = 0; i < NumberOfViews; i++) {
+		for (auto i = 0; i < NumberOfViews; i++) {
 			m_LayoutHelper->viewAt(i)->add(gripData, m_pGsModel);
 		}
 	}
@@ -1226,11 +1226,13 @@ void OdExGripManager::HideGrip(OdExGripData* gripData, bool model) {
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 
 	if (PaperLayoutHelper.get()) {
-		for (unsigned i = 0; i < NumberOfViews; i++)
+		for (auto i = 0; i < NumberOfViews; i++) {
 			m_LayoutHelper->viewAt(i)->erase(gripData);
+		}
 	} else {
-		for (unsigned i = 0; i < NumberOfViews; i++)
+		for (auto i = 0; i < NumberOfViews; i++) {
 			m_LayoutHelper->viewAt(i)->erase(gripData);
+		}
 	}
 }
 
