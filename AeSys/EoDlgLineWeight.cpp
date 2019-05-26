@@ -38,14 +38,15 @@ BOOL EoDlgLineWeight::OnInitDialog(void) {
 
 	m_LineWeightList.InsertString(0, CMainFrame::StringByLineWeight(OdDb::kLnWtByLwDefault, false));
 	m_LineWeightList.SetItemData(0, (DWORD_PTR) OdDb::kLnWtByLwDefault);
-	for (int Index = 1; Index < 25; ++Index) {
+	
+	for (auto Index = 1; Index < 25; ++Index) {
 		m_LineWeightList.InsertString(Index, CMainFrame::StringByLineWeight(Index - 1, true));
 		m_LineWeightList.SetItemData(Index, (DWORD_PTR) CMainFrame::LineWeightByIndex(char(Index - 1)));
 	}
-	CString OriginalLineWeight = CMainFrame::StringByLineWeight(m_OriginalLineWeight, false);
+	OdString OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
 	m_LineWeightList.SelectString(-1, OriginalLineWeight);
 
-	CString Text(L"Original : " + OriginalLineWeight);
+	OdString Text(L"Original : " + OriginalLineWeight);
 
 	GetDlgItem(IDC_STATIC_LINEWEIGHT_ORIGINAL)->SetWindowTextW(Text);
 	return TRUE;

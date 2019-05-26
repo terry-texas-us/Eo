@@ -1834,11 +1834,11 @@ void AeSysDoc::OnEditSegToWork() {
 	}
 }
 void AeSysDoc::OnFileQuery() {
-	const OdGePoint3d pt = theApp.GetCursorPosition();
+	const auto pt {theApp.GetCursorPosition()};
 
-	const EoDbLayer* Layer = SelectLayerBy(pt);
+	const auto Layer {SelectLayerBy(pt)};
 
-	if (Layer != 0) {
+	if (Layer != nullptr) {
 		CPoint CurrentPosition;
 		::GetCursorPos(&CurrentPosition);
 
@@ -1846,8 +1846,8 @@ void AeSysDoc::OnFileQuery() {
 
 		const int MenuResource = (Layer->IsInternal()) ? IDR_LAYER : IDR_TRACING;
 
-		HMENU LayerTracingMenu = ::LoadMenu(theApp.GetInstance(), MAKEINTRESOURCE(MenuResource));
-		CMenu* SubMenu = CMenu::FromHandle(::GetSubMenu(LayerTracingMenu, 0));
+		auto LayerTracingMenu {::LoadMenu(theApp.GetInstance(), MAKEINTRESOURCE(MenuResource))};
+		auto SubMenu {CMenu::FromHandle(::GetSubMenu(LayerTracingMenu, 0))};
 
 		SubMenu->ModifyMenu(0, MF_BYPOSITION | MF_STRING, 0, m_IdentifiedLayerName);
 

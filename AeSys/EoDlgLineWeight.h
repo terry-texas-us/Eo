@@ -8,7 +8,7 @@ class EoDlgLineWeight : public CDialog {
 public:
     EoDlgLineWeight(CWnd* parent = NULL);
     EoDlgLineWeight(int originalLineWeight, CWnd* parent = NULL);
-    virtual ~EoDlgLineWeight();
+    ~EoDlgLineWeight();
 
     // Dialog Data
     enum { IDD = IDD_LINEWEIGHT };

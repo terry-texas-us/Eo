@@ -1997,10 +1997,10 @@ DROPEFFECT AeSysView::OnDragOver(COleDataObject * pDataObject, DWORD dwKeyState,
 	return __super::OnDragOver(pDataObject, dwKeyState, point);
 }
 
-BOOL AeSysView::PreCreateWindow(CREATESTRUCT & createStructure) {
+BOOL AeSysView::PreCreateWindow(CREATESTRUCT& createStructure) {
 	// <tas="Modify the Window class or styles here by modifying the CREATESTRUCT"/>
-	
-return CView::PreCreateWindow(createStructure);
+
+	return CView::PreCreateWindow(createStructure);
 }
 
 void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {

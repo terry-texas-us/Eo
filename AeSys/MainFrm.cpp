@@ -194,7 +194,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	ItemRectangle.SetRect(ItemRectangle.right + 4, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 	if (ItemRectangle.left <= itemRectangle.right) {
 		CString ColorName = color.colorNameForDisplay();
-		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.GetLength(), NULL);
+		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.GetLength(), nullptr);
 	}
 }
 
@@ -221,8 +221,8 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 	ItemRectangle.SetRect(ItemRectangle.right + 8, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 
 	if (ItemRectangle.left <= itemRectangle.right) {
-		OdString String = CMainFrame::StringByLineWeight(lineWeight, false);
-		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, String.getLength(), NULL);
+		OdString String {CMainFrame::StringByLineWeight(lineWeight, false)};
+		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, String.getLength(), nullptr);
 	}
 }
 
@@ -230,10 +230,10 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 
 	if (database->getPSTYLEMODE() == 1) {
 		const COLORREF OldTextColor = deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT));
-		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), NULL);
+		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), nullptr);
 		deviceContext.SetTextColor(OldTextColor);
 	} else {
-		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), NULL);
+		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), nullptr);
 	}
 }
 
@@ -263,8 +263,9 @@ void CMainFrame::Dump(CDumpContext & dc) const {
 void CMainFrame::OnWindowManager() {
 	ShowWindowsDialog();
 }
+
 void CMainFrame::OnViewCustomize() {
-	CMFCToolBarsCustomizeDialog* Dialog = new CMFCToolBarsCustomizeDialog(this, TRUE);
+	auto Dialog {new CMFCToolBarsCustomizeDialog(this, TRUE)};
 	Dialog->EnableUserDefinedToolbars();
 
 	// Setup combobox:
@@ -272,19 +273,21 @@ void CMainFrame::OnViewCustomize() {
 
 	Dialog->Create();
 }
+
 LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM name) {
-	LRESULT Result = CMDIFrameWndEx::OnToolbarCreateNew(wp, name);
-	if (Result == 0) {
-		return 0;
-	}
-	CMFCToolBar* UserToolbar = (CMFCToolBar*) Result;
+	auto Result {CMDIFrameWndEx::OnToolbarCreateNew(wp, name)};
+	
+	if (Result == 0) { return 0; }
+
+	auto UserToolbar {(CMFCToolBar*)Result};
 	ASSERT_VALID(UserToolbar);
 
-	CString Customize = theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE);
+	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
 
 	UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
 	return Result;
 }
+
 LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
 	switch (toolbarResourceId) {
 		case IDR_MAINFRAME:
@@ -342,47 +345,49 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
 }
 
 BOOL CMainFrame::LoadFrame(UINT resourceId, DWORD defaultStyle, CWnd * parentWindow, CCreateContext * createContext) {
-	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) {
-		return FALSE;
-	}
+	
+	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) { return FALSE; }
+
 	// Add some tools for example....
 	CUserToolsManager* UserToolsManager = theApp.GetUserToolsManager();
-	if (UserToolsManager != NULL && UserToolsManager->GetUserTools().IsEmpty()) {
-		CUserTool* Tool1 = UserToolsManager->CreateNewTool();
+	if (UserToolsManager != nullptr && UserToolsManager->GetUserTools().IsEmpty()) {
+		auto Tool1 {UserToolsManager->CreateNewTool()};
 		Tool1->m_strLabel = L"&Notepad";
 		Tool1->SetCommand(L"notepad.exe");
 
-		CUserTool* Tool2 = UserToolsManager->CreateNewTool();
+		auto Tool2 {UserToolsManager->CreateNewTool()};
 		Tool2->m_strLabel = L"Paint &Brush";
 		Tool2->SetCommand(L"mspaint.exe");
 
-		CUserTool* Tool3 = UserToolsManager->CreateNewTool();
+		auto Tool3 {UserToolsManager->CreateNewTool()};
 		Tool3->m_strLabel = L"Fanning, Fanning & Associates On-&Line";
 		Tool3->SetCommand(L"http://www.fanningfanning.com");
 	}
 
 	// Enable customization button for all user toolbars
-	CString Customize = theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE);
+	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
 
-	for (int i = 0; i < MaximumUserToolbars; i++) {
-		CMFCToolBar* UserToolbar = GetUserToolBarByIndex(i);
-		if (UserToolbar != NULL) {
+	for (auto i = 0; i < MaximumUserToolbars; i++) {
+		auto UserToolbar {GetUserToolBarByIndex(i)};
+
+		if (UserToolbar != nullptr) {
 			UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
 		}
 	}
 	return TRUE;
 }
+
 LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, LPARAM point) {
 	CMenu PopupToolbarMenu;
 	VERIFY(PopupToolbarMenu.LoadMenu(IDR_POPUP_TOOLBAR));
 
-	CMenu* SubMenu = PopupToolbarMenu.GetSubMenu(0);
-	ASSERT(SubMenu != NULL);
+	auto SubMenu {PopupToolbarMenu.GetSubMenu(0)};
+	ASSERT(SubMenu != nullptr);
 
 	if (SubMenu) {
 		const CPoint Point(AFX_GET_X_LPARAM(point), AFX_GET_Y_LPARAM(point));
 
-		CMFCPopupMenu* PopupMenu = new CMFCPopupMenu;
+		auto PopupMenu {new CMFCPopupMenu};
 		PopupMenu->Create(this, Point.x, Point.y, SubMenu->Detach());
 	}
 	return 0;
@@ -392,7 +397,7 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
 	CFrameWnd* ActiveChildWindow(GetActiveFrame());
 	try {
 		ENSURE(ActiveChildWindow);
-		CDocument* ActiveDocument = ActiveChildWindow->GetActiveDocument();
+		auto ActiveDocument {ActiveChildWindow->GetActiveDocument()};
 		ENSURE(ActiveDocument);
 		OdDbDatabasePtr Database {dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr};
 
@@ -403,12 +408,13 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
 		OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
 
 		size_t ScaleMenuPosition = 1;
-		OdIntPtr CurrentScaleIdentifier = Database->getCANNOSCALE()->uniqueIdentifier();
-		for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
-			OdString ScaleName = (LPWSTR) (LPCWSTR) ScalesCollectionIterator->getContext()->getName();
-			OdIntPtr ScaleIdentifier = ScalesCollectionIterator->getContext()->uniqueIdentifier();
+		auto CurrentScaleIdentifier {Database->getCANNOSCALE()->uniqueIdentifier()};
 
-			CMFCToolBarMenuButton MenuButton(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE, NULL, -1, ScaleName);
+		for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
+			auto ScaleName {ScalesCollectionIterator->getContext()->getName()};
+			auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
+
+			CMFCToolBarMenuButton MenuButton(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE, nullptr, -1, ScaleName);
 
 			if (ScaleIdentifier == CurrentScaleIdentifier) {
 				MenuButton.SetStyle(TBBS_CHECKED);
@@ -435,16 +441,20 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 		bool bHasNoCommand = CommandStack->newIterator()->done();
 
 		int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
+
 		if (!bHasNoCommand) {
 			OdRxIteratorPtr CommandStackGroupIterator = CommandStack->newGroupIterator();
+
 			while (!CommandStackGroupIterator->done()) {
 				OdRxDictionaryPtr Group = CommandStackGroupIterator->object();
 				CMenu GroupMenu;
 				GroupMenu.CreateMenu();
 				OdRxIteratorPtr GroupCommandIterator = Group->newIterator(OdRx::kDictSorted);
 				OdString GroupName;
+
 				while (!GroupCommandIterator->done()) {
 					OdEdCommandPtr pCmd = GroupCommandIterator->object().get();
+
 					if (GroupName.isEmpty()) {
 						GroupName = pCmd->groupName();
 					}
@@ -470,13 +480,15 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 }
 // </command_console>
 
-BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu * popupMenu) {
+BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	CMDIFrameWndEx::OnShowPopupMenu(popupMenu);
-	if (popupMenu != NULL) {
+	
+	if (popupMenu != nullptr) {
+
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VECTORIZE_CLEARMENU) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) {
-				return FALSE;
-			}
+
+			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+
 			CRegKey RegistryKey;
 			RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
 
@@ -486,8 +498,9 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu * popupMenu) {
 			DWORD PathSize;
 			for (;;) {
 				PathSize = _MAX_FNAME + _MAX_EXT;
-				const DWORD ReturnValue = ::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, NULL, NULL, NULL, NULL);
+				const DWORD ReturnValue = ::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, nullptr, nullptr, nullptr, nullptr);
 				VectorizerPath.ReleaseBuffer();
+
 				if (ReturnValue != ERROR_SUCCESS) {
 					break;
 				} else {
@@ -501,21 +514,21 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu * popupMenu) {
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_TOOLS_REGISTEREDCOMMANDS) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) {
-				return FALSE;
-			}
+			
+			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+
 			ShowRegisteredCommandsPopupMenu(popupMenu);
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_TOOLBARS) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) {
-				return FALSE;
-			}
+
+			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+
 			popupMenu->RemoveAllItems();
 
 			CMenu menu;
 			VERIFY(menu.LoadMenu(IDR_POPUP_TOOLBAR));
 
-			CMenu* PopupSubMenu = menu.GetSubMenu(0);
+			auto PopupSubMenu {menu.GetSubMenu(0)};
 			ASSERT(PopupSubMenu != NULL);
 
 			if (PopupSubMenu) {
@@ -523,14 +536,15 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu * popupMenu) {
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_ANNOTATIONSCALES) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) {
-				return FALSE;
-			}
+			
+			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+
 			ShowAnnotationScalesPopupMenu(popupMenu);
 		}
 	}
 	return TRUE;
 }
+
 void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 	switch (theApp.m_Options.m_nTabsStyle) {
 		case EoApOptions::None:
@@ -546,7 +560,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
 			} else {
-				HWND ActiveWnd = (HWND) m_wndClientArea.SendMessage(WM_MDIGETACTIVE);
+				HWND ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
 				m_wndClientArea.PostMessage(WM_MDICASCADE);
 				::BringWindowToTop(ActiveWnd);
 			}
@@ -554,17 +568,11 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		}
 		case EoApOptions::Standard:
 		{
-			HWND ActiveWnd = (HWND) m_wndClientArea.SendMessage(WM_MDIGETACTIVE);
+			HWND ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
 			m_wndClientArea.PostMessage(WM_MDIMAXIMIZE, LPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
-			EnableMDITabs(TRUE,
-				theApp.m_Options.m_MdiTabInfo.m_bTabIcons,
-				theApp.m_Options.m_MdiTabInfo.m_tabLocation,
-				theApp.m_Options.m_MdiTabInfo.m_bTabCloseButton,
-				theApp.m_Options.m_MdiTabInfo.m_style,
-				theApp.m_Options.m_MdiTabInfo.m_bTabCustomTooltips,
-				theApp.m_Options.m_MdiTabInfo.m_bActiveTabCloseButton);
+			EnableMDITabs(TRUE, theApp.m_Options.m_MdiTabInfo.m_bTabIcons, theApp.m_Options.m_MdiTabInfo.m_tabLocation, theApp.m_Options.m_MdiTabInfo.m_bTabCloseButton, theApp.m_Options.m_MdiTabInfo.m_style, theApp.m_Options.m_MdiTabInfo.m_bTabCustomTooltips, theApp.m_Options.m_MdiTabInfo.m_bActiveTabCloseButton);
 
 			GetMDITabs().EnableAutoColor(theApp.m_Options.m_MdiTabInfo.m_bAutoColor);
 			GetMDITabs().EnableTabDocumentsMenu(theApp.m_Options.m_MdiTabInfo.m_bDocumentMenu);
@@ -575,7 +583,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		}
 		case EoApOptions::Grouped:
 		{
-			HWND ActiveWnd = (HWND) m_wndClientArea.SendMessage(WM_MDIGETACTIVE);
+			auto ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
 			m_wndClientArea.PostMessage(WM_MDIMAXIMIZE, LPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
@@ -584,6 +592,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		}
 	}
 	CList<UINT, UINT> lstCommands;
+	
 	if (AreMDITabs(NULL)) {
 		lstCommands.AddTail(ID_WINDOW_ARRANGE);
 		lstCommands.AddTail(ID_WINDOW_CASCADE);
@@ -591,15 +600,18 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		lstCommands.AddTail(ID_WINDOW_TILE_VERT);
 	}
 	CMFCToolBar::SetNonPermittedCommands(lstCommands);
+	
 	if (resetMDIChild) {
-		const BOOL bMaximize = theApp.m_Options.m_nTabsStyle != EoApOptions::None;
+		const auto Maximize {theApp.m_Options.m_nTabsStyle != EoApOptions::None};
 
-		HWND hwndT = ::GetWindow(m_hWndMDIClient, GW_CHILD);
+		auto hwndT {::GetWindow(m_hWndMDIClient, GW_CHILD)};
 		while (hwndT != NULL) {
 			CMDIChildWndEx* pFrame = DYNAMIC_DOWNCAST(CMDIChildWndEx, CWnd::FromHandle(hwndT));
+			
 			if (pFrame != NULL) {
 				ASSERT_VALID(pFrame);
-				if (bMaximize) {
+				
+				if (Maximize) {
 					pFrame->ModifyStyle(WS_SYSMENU, 0);
 				} else {
 					pFrame->ModifyStyle(0, WS_SYSMENU);
@@ -608,77 +620,83 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 					// Force a resize to happen on all the "restored" MDI child windows
 					CRect rectFrame;
 					pFrame->GetWindowRect(rectFrame);
-					pFrame->SetWindowPos(NULL, -1, -1, rectFrame.Width() + 1, rectFrame.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
-					pFrame->SetWindowPos(NULL, -1, -1, rectFrame.Width(), rectFrame.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+					pFrame->SetWindowPos(nullptr, -1, -1, rectFrame.Width() + 1, rectFrame.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
+					pFrame->SetWindowPos(nullptr, -1, -1, rectFrame.Width(), rectFrame.Height(), SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOMOVE);
 				}
 			}
 			hwndT = ::GetWindow(hwndT, GW_HWNDNEXT);
 		}
-		if (bMaximize) {
+		if (Maximize) {
 			m_MenuBar.SetMaximizeMode(FALSE);
 		}
 	}
 	if (m_PropertiesPane.IsAutoHideMode()) {
 		m_PropertiesPane.BringWindowToTop();
-		CPaneDivider* Divider = m_PropertiesPane.GetDefaultPaneDivider();
-		if (Divider != NULL) {
+		auto Divider {m_PropertiesPane.GetDefaultPaneDivider()};
+		
+		if (Divider != nullptr) {
 			Divider->BringWindowToTop();
 		}
 	}
 	CMDIFrameWndEx::m_bDisableSetRedraw = theApp.m_Options.m_bDisableSetRedraw;
 
 	RecalcLayout();
-	RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
+	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
 }
 
 // CMainFrame message handlers
 
 BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bDrop) {
-	if (bDrop || !theApp.m_Options.m_bTabsContextMenu) {
-		return FALSE;
-	}
+
+	if (bDrop || !theApp.m_Options.m_bTabsContextMenu) { return FALSE; }
+
 	CMenu menu;
 	VERIFY(menu.LoadMenu(IDR_POPUP_MDITABS));
 
-	CMenu* PopupSubMenu = menu.GetSubMenu(0);
-	ASSERT(PopupSubMenu != NULL);
+	auto PopupSubMenu {menu.GetSubMenu(0)};
+	ASSERT(PopupSubMenu != nullptr);
 
 	if (PopupSubMenu) {
+		
 		if ((dwAllowedItems & AFX_MDI_CAN_BE_DOCKED) == 0) {
 			PopupSubMenu->DeleteMenu(ID_MDI_TABBED, MF_BYCOMMAND);
 		}
-		CMFCPopupMenu* pPopupMenu = new CMFCPopupMenu;
-		if (pPopupMenu) {
-			pPopupMenu->SetAutoDestroy(FALSE);
-			pPopupMenu->Create(this, point.x, point.y, PopupSubMenu->GetSafeHmenu());
+		auto PopupMenu {new CMFCPopupMenu};
+		
+		if (PopupMenu) {
+			PopupMenu->SetAutoDestroy(FALSE);
+			PopupMenu->Create(this, point.x, point.y, PopupSubMenu->GetSafeHmenu());
 		}
 	}
 	return TRUE;
 }
-LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
-	CMFCTabToolTipInfo* pInfo = (CMFCTabToolTipInfo*) lp;
-	ASSERT(pInfo != NULL);
 
-	if (pInfo) {
-		ASSERT_VALID(pInfo->m_pTabWnd);
-		if (!pInfo->m_pTabWnd->IsMDITab()) {
-			return 0;
-		}
-		pInfo->m_strText.Format(L"Tab #%d Custom Tooltip", pInfo->m_nTabIndex + 1);
+LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
+	auto TabToolTipInfo {(CMFCTabToolTipInfo*)lp};
+	ASSERT(TabToolTipInfo != nullptr);
+
+	if (TabToolTipInfo) {
+		ASSERT_VALID(TabToolTipInfo->m_pTabWnd);
+		if (!TabToolTipInfo->m_pTabWnd->IsMDITab()) { return 0; }
+		TabToolTipInfo->m_strText.Format(L"Tab #%d Custom Tooltip", TabToolTipInfo->m_nTabIndex + 1);
 	}
 	return 0;
 }
+
 void CMainFrame::OnMdiTabbed() {
-	CMDIChildWndEx* pMDIChild = DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIGetActive());
-	if (pMDIChild == NULL) {
+	auto pMDIChild {DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIGetActive())};
+	
+	if (pMDIChild == nullptr) {
 		ASSERT(FALSE);
 		return;
 	}
 	TabbedDocumentToControlBar(pMDIChild);
 }
-void CMainFrame::OnUpdateMdiTabbed(CCmdUI * pCmdUI) {
+
+void CMainFrame::OnUpdateMdiTabbed(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck();
 }
+
 void CMainFrame::OnDestroy() {
 	PostQuitMessage(0); 		// Force WM_QUIT message to terminate message loop
 }
@@ -686,12 +704,14 @@ void CMainFrame::OnDestroy() {
 void CMainFrame::SetStatusPaneTextAt(int index, LPCWSTR newText) {
 	m_StatusBar.SetPaneText(index, newText);
 }
+
 void CMainFrame::SetStatusPaneTextColorAt(int index, COLORREF textColor) {
 	m_StatusBar.SetPaneTextColor(index, textColor);
 }
+
 static UINT_PTR TimerId = 2;
 
-void CMainFrame::OnStartProgress(void) {
+void CMainFrame::OnStartProgress() {
 	if (m_InProgress) {
 		KillTimer(TimerId);
 		m_StatusBar.EnablePaneProgressBar(nStatusProgress, -1);
@@ -707,8 +727,8 @@ void CMainFrame::OnStartProgress(void) {
 
 	TimerId = SetTimer(2, 1, NULL);
 }
+
 void CMainFrame::OnTimer(UINT_PTR nIDEvent) {
-	ATLTRACE2(atlTraceGeneral, 0, L"CMainFrame::OnTimer(%i)\n", nIDEvent);
 
 	if (nIDEvent == TimerId) {
 		m_CurrentProgress += 10;
@@ -719,33 +739,36 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent) {
 		m_StatusBar.SetPaneProgress(nStatusProgress, m_CurrentProgress);
 	}
 }
+
 void CMainFrame::OnViewFullScreen(void) {
 	ShowFullScreen();
 }
-CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo(void) {
-	CMFCToolBarComboBoxButton* FoundCombo = NULL;
+
+CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo() {
+	CMFCToolBarComboBoxButton* FoundCombo = nullptr;
 
 	CObList ButtonsList;
 	if (CMFCToolBar::GetCommandButtons(ID_EDIT_FIND_COMBO, ButtonsList) > 0) {
-		for (POSITION Position = ButtonsList.GetHeadPosition(); FoundCombo == NULL && Position != NULL; ) {
-			CMFCToolBarComboBoxButton* Combo = DYNAMIC_DOWNCAST(CMFCToolBarComboBoxButton, ButtonsList.GetNext(Position));
+		for (POSITION Position = ButtonsList.GetHeadPosition(); FoundCombo == nullptr && Position != nullptr; ) {
+			auto Combo {DYNAMIC_DOWNCAST(CMFCToolBarComboBoxButton, ButtonsList.GetNext(Position))};
 
-			if (Combo != NULL && Combo->GetEditCtrl()->GetSafeHwnd() == ::GetFocus()) {
+			if (Combo != nullptr && Combo->GetEditCtrl()->GetSafeHwnd() == ::GetFocus()) {
 				FoundCombo = Combo;
 			}
 		}
 	}
 	return FoundCombo;
 }
+
 HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept {
 	TV_INSERTSTRUCT tvIS;
 	tvIS.hParent = parent;
 	tvIS.hInsertAfter = TVI_LAST;
 	tvIS.item.mask = TVIF_TEXT | TVIF_PARAM;
-	tvIS.item.hItem = NULL;
+	tvIS.item.hItem = nullptr;
 	tvIS.item.iImage = 0;
 
-	tvIS.item.pszText = (LPWSTR) text;
+	tvIS.item.pszText = text;
 	tvIS.item.lParam = (LPARAM) object;
 	return TreeView_InsertItem(tree, &tvIS);
 }
@@ -807,11 +830,12 @@ OdDb::LineWeight CMainFrame::LineWeightByIndex(char lineWeight) noexcept {
 	}
 	return OdDb::kLnWtByLayer;
 }
-CString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) {
+
+OdString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) {
 	if (lineWeightByIndex) {
-		lineWeight = LineWeightByIndex(char(lineWeight));
+		lineWeight = LineWeightByIndex(narrow_cast<char>(lineWeight));
 	}
-	CString LineWeightText = L"";
+	OdString LineWeightText {L""};
 	switch (lineWeight) {
 		case OdDb::kLnWtByLayer:
 			LineWeightText = L"Layer";
@@ -823,7 +847,7 @@ CString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) {
 			LineWeightText = L"Default";
 			break;
 		default:
-			LineWeightText.Format(L"%1.2f mm", (float) lineWeight / 100);
+			LineWeightText.format(L"%1.2f mm", (float) lineWeight / 100);
 	}
 	return LineWeightText;
 }

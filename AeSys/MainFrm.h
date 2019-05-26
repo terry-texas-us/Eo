@@ -45,7 +45,7 @@ public:
 public:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
-	virtual ~CMainFrame();
+	~CMainFrame();
 #ifdef _DEBUG
 	void AssertValid() const override;
 	void Dump(CDumpContext& dc) const override;
@@ -58,7 +58,7 @@ public:
 	static CMFCToolBarComboBoxButton* GetFindCombo(void);
 	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept;
 	static OdDb::LineWeight LineWeightByIndex(char lineWeight) noexcept;
-	static CString StringByLineWeight(int lineWeight, bool lineWeightByIndex);
+	static OdString StringByLineWeight(int lineWeight, bool lineWeightByIndex);
 
 protected:  // control bar embedded members
 	CMFCMenuBar m_MenuBar;

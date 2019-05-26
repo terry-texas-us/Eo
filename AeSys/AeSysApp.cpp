@@ -36,8 +36,6 @@
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
 #endif
 
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
@@ -1376,16 +1374,17 @@ BOOL AeSysApp::InitInstance() {
 
 	CWinAppEx::InitInstance();
 
-	if (InitializeTeigha() == FALSE) {
-		return FALSE;
-	}
+	if (InitializeTeigha() == FALSE) { return FALSE; }
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views.
-	CMultiDocTemplate* DocTemplate;
-	DocTemplate = new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView));
-	AddDocTemplate(DocTemplate);
+	auto AeSysDocTemplate {new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
 
-	DocTemplate = new CMultiDocTemplate(IDR_TRACINGTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView));
-	AddDocTemplate(DocTemplate);
+	if (!AeSysDocTemplate) { return FALSE; }
+	AddDocTemplate(AeSysDocTemplate);
+
+	auto TracingDocTemplate {new CMultiDocTemplate(IDR_TRACINGTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
+
+	if (!TracingDocTemplate) { return FALSE; }
+	AddDocTemplate(TracingDocTemplate);
 
 	// Create main MDI Frame window
 	auto MainFrame {new CMainFrame};
@@ -1396,7 +1395,7 @@ BOOL AeSysApp::InitInstance() {
 	}
 	m_pMainWnd = MainFrame;
 
-	MainFrame->DragAcceptFiles();
+	m_pMainWnd->DragAcceptFiles();
 
 	auto DeviceContext {MainFrame->GetDC()};
 
@@ -1416,7 +1415,11 @@ BOOL AeSysApp::InitInstance() {
 	CFullCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
 
-	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) { CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
+//	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew){ CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
+
+	EnableShellOpen();
+	RegisterShellFileTypes(TRUE);
+
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(CommandLineInfo)) { return FALSE; }
 
