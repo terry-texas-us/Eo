@@ -75,12 +75,6 @@ UINT AFXAPI HashKey(CString& str) noexcept {
 	return nHash;
 }
 
-#ifdef _DEBUG
-// #define new DEBUG_NEW
-#undef THIS_FILE
-static char THIS_FILE[] = __FILE__;
-#endif
-
 // AeSysDoc
 
 IMPLEMENT_DYNCREATE(AeSysDoc, CDocument)
@@ -233,16 +227,19 @@ BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
 
 	CString PathName(pathName);
 	if (PathName.IsEmpty()) { // Save As
-		CDocTemplate* DocTemplate = GetDocTemplate();
+		auto DocTemplate {GetDocTemplate()};
 
 		PathName = m_strPathName;
+		
 		if (replace && PathName.IsEmpty()) {
 			PathName = m_strTitle;
-			const int BadCharacterPosition = PathName.FindOneOf(L" #%;/\\");
+			const int BadCharacterPosition {PathName.FindOneOf(L" #%;/\\")};
+
 			if (BadCharacterPosition != -1) {
 				PathName.ReleaseBuffer(BadCharacterPosition);
 			}
 			CString Extension;
+
 			if (DocTemplate->GetDocString(Extension, CDocTemplate::filterExt) && !Extension.IsEmpty()) {
 				ASSERT(Extension[0] == '.');
 				PathName += Extension;
@@ -327,7 +324,7 @@ void AeSysDoc::OnViewSetactivelayout() {
 		try {
 			m_DatabasePtr->startUndoRecord();
 			m_DatabasePtr->setCurrentLayout(OdString(ActiveLayoutDialog.m_sNewLayoutName));
-		} catch (const OdError & Error) {
+		} catch (const OdError& Error) {
 			theApp.reportError(L"Error Setting Layout...", Error);
 			m_DatabasePtr->disableUndoRecording(true);
 			m_DatabasePtr->undo();
@@ -336,27 +333,27 @@ void AeSysDoc::OnViewSetactivelayout() {
 	}
 	m_bLayoutSwitchable = false;
 }
-void AeSysDoc::layoutSwitched(const OdString & newLayoutName, const OdDbObjectId & newLayout) {
-	// AMark : Prevent Zoom/Rotate crashes
-	// AMark : Prevent Undo/Redo crashes
+void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) {
 	if (m_bLayoutSwitchable) {
-		// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added
-		// into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
-		POSITION pos = GetFirstViewPosition();
-		while (pos != NULL) {
-			const CView* view = GetNextView(pos);
+		// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
+		auto ViewPosition {GetFirstViewPosition()};
+		
+		while (ViewPosition != nullptr) {
+			const auto view {GetNextView(ViewPosition)};
+
 			if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
 
 				if (view->GetDocument() == this) {
-					const CWnd* pParent = view->GetParent();
+					const auto pParent {view->GetParent()};
 					// Get prev params
 					const bool bIconic = pParent->IsIconic() != FALSE;
 					const bool bZoomed = pParent->IsZoomed() != FALSE;
 					CRect wRect;
 					pParent->GetWindowRect(&wRect);
-					POINT point1, point2;
+					POINT point1;
 					point1.x = wRect.left;
 					point1.y = wRect.top;
+					POINT point2;
 					point2.x = wRect.right;
 					point2.y = wRect.bottom;
 					pParent->GetParent()->ScreenToClient(&point1);
@@ -369,19 +366,24 @@ void AeSysDoc::layoutSwitched(const OdString & newLayoutName, const OdDbObjectId
 					view->GetParent()->SendMessage(WM_CLOSE);
 					OnVectorize();
 					// Search again for new view
-					POSITION pos = GetFirstViewPosition();
+					auto ViewPosition {GetFirstViewPosition()};
 
-					while (pos != NULL) {
-						const CView* view = GetNextView(pos);
+					while (ViewPosition != nullptr) {
+						const auto view {GetNextView(ViewPosition)};
+
 						if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
+
 							if (view->GetDocument() == this) {
-								CWnd* pParent = view->GetParent();
+								auto pParent {view->GetParent()};
+								
 								if (bZoomed) {
+									
 									if (!pParent->IsZoomed()) {
 										reinterpret_cast<CMDIChildWnd*>(pParent)->MDIMaximize();
 									}
 								} else {
 									reinterpret_cast<CMDIChildWnd*>(pParent)->MDIRestore();
+									
 									if (!bIconic) {
 										pParent->SetWindowPos(NULL, wRect.left, wRect.top, wRect.right - wRect.left, wRect.bottom - wRect.top, SWP_NOZORDER);
 									}
@@ -453,32 +455,35 @@ struct CDocTemplateEx : CDocTemplate {
 void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 	theApp.setRecentGsDevicePath(vectorizerPath);
 
-	CDocTemplateEx* DocTemplate = (CDocTemplateEx*) GetDocTemplate();
+	auto DocTemplate {dynamic_cast<CDocTemplateEx*>(GetDocTemplate())};
 	ASSERT_VALID(DocTemplate);
 
 	DocTemplate->SetViewToCreate(RUNTIME_CLASS(AeSysView));
-	CFrameWnd* NewFrame = DocTemplate->CreateNewFrame(this, NULL);
+	auto NewFrame {DocTemplate->CreateNewFrame(this, NULL)};
 
 	DocTemplate->InitialUpdateFrame(NewFrame, this);
 
 	m_pViewer = dynamic_cast<AeSysView*>(NewFrame->GetActiveView());
 }
 
-void AeSysDoc::OnCloseVectorizer(AeSysView * view) {
+void AeSysDoc::OnCloseVectorizer(AeSysView* view) {
 	if (view != m_pViewer) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Vectorizer does not match expected viewer\n");
 	}
 	m_pViewer = nullptr;
 }
-void AeSysDoc::setVectorizer(AeSysView * view) {
+
+void AeSysDoc::setVectorizer(AeSysView* view) {
 	// <tas="limits the command context to a single view per document. So New window crashes."/>"
 	ODA_ASSERT(m_pViewer == nullptr);
 	m_pViewer = view;
 }
+
 void AeSysDoc::OnVectorize() {
 	OnVectorize(theApp.recentGsDevicePath());
 }
-void AeSysDoc::OnUpdateVectorize(CCmdUI * pCmdUI) {
+
+void AeSysDoc::OnUpdateVectorize(CCmdUI* pCmdUI) {
 	pCmdUI->Enable(m_pViewer == nullptr && !theApp.recentGsDevicePath().isEmpty());
 }
 
@@ -2613,20 +2618,20 @@ AeSysDoc* AeSysDoc::GetDoc() {
 	return (Child == nullptr) ? nullptr : dynamic_cast<AeSysDoc*>(Child->GetActiveDocument());
 }
 
-void AeSysDoc::AddGroupToAllViews(EoDbGroup * group) {
+void AeSysDoc::AddGroupToAllViews(EoDbGroup* group) {
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != 0) {
-		auto View {(AeSysView*) GetNextView(ViewPosition)};
+	while (ViewPosition != nullptr) {
+		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
 		View->AddVisibleGroup(group);
 	}
 }
 
-void AeSysDoc::AddGroupsToAllViews(EoDbGroupList * groups) {
+void AeSysDoc::AddGroupsToAllViews(EoDbGroupList* groups) {
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != 0) {
-		auto View {(AeSysView*) GetNextView(ViewPosition)};
+	while (ViewPosition != nullptr) {
+		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
 		View->AddVisibleGroups(groups);
 	}
 }
@@ -2634,8 +2639,8 @@ void AeSysDoc::AddGroupsToAllViews(EoDbGroupList * groups) {
 void AeSysDoc::RemoveAllGroupsFromAllViews() {
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != 0) {
-		auto View {(AeSysView*) GetNextView(ViewPosition)};
+	while (ViewPosition != nullptr) {
+		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
 		View->RemoveAllVisibleGroups();
 	}
 }
@@ -2643,8 +2648,8 @@ void AeSysDoc::RemoveAllGroupsFromAllViews() {
 void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup * group) {
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != 0) {
-		auto View {(AeSysView*) GetNextView(ViewPosition)};
+	while (ViewPosition != nullptr) {
+		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
 		View->RemoveVisibleGroup(group);
 	}
 }
@@ -2652,8 +2657,8 @@ void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup * group) {
 void AeSysDoc::ResetAllViews() {
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != 0) {
-		auto View {(AeSysView*) GetNextView(ViewPosition)};
+	while (ViewPosition != nullptr) {
+		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
 		View->ResetView();
 	}
 }
@@ -3205,7 +3210,7 @@ void AeSysDoc::OnEditClearselection() {
 	auto Cleared {false};
 	auto ViewPosition {GetFirstViewPosition()};
 	
-	while (ViewPosition != NULL) {
+	while (ViewPosition != nullptr) {
 		auto View {GetNextView(ViewPosition)};
 
 		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0 && View->GetDocument() == this) {
@@ -3267,7 +3272,7 @@ void AeSysDoc::OnEditSelectall() {
 	m_DisableClearSelection = false;
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != NULL) {
+	while (ViewPosition != nullptr) {
 		auto View {GetNextView(ViewPosition)};
 
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {

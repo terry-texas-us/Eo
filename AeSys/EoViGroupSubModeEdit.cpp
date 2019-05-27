@@ -99,8 +99,8 @@ void AeSysView::PreviewGroupEdit() {
 void AeSysDoc::InitializeGroupAndPrimitiveEdit() {
 	auto ViewPosition {GetFirstViewPosition()};
 
-	while (ViewPosition != 0) {
-		auto View {(AeSysView*)GetNextView(ViewPosition)};
+	while (ViewPosition != nullptr) {
+		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
 		View->InitializeGroupAndPrimitiveEdit();
 	}
 }

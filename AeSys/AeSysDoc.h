@@ -246,7 +246,7 @@ public:
 	BOOL CanCloseFrame(CFrameWnd* frame) override;
 
 public:
-	virtual ~AeSysDoc();
+	~AeSysDoc();
 	BOOL DoSave(LPCWSTR pathName, BOOL replace = TRUE) override;
 
 #ifdef _DEBUG
