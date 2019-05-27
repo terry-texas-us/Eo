@@ -114,8 +114,7 @@ void AeSysView::OnEditModeCopy() {
 	if (m_PreviousOp != ID_OP5) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
-	}
-	else {
+	} else {
 		ModeLineUnhighlightOp(m_PreviousOp);
 		RubberBandingDisable();
 		Document->CopyTrappedGroups(CurrentPnt - Document->TrapPivotPoint());

@@ -38,8 +38,7 @@ CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) noexcep
 			d = (d * wndWid) / w;
 			w = wndWid;
 		}
-	}
-	else {
+	} else {
 		w = __min(bmpWid, wndWid);
 		d = (bmpDep * w) / bmpWid;
 		if (d > wndDep) {
@@ -111,8 +110,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 		dwIsAldus = *((DWORD*)m_odImage.wmf.begin());
 		if (dwIsAldus != ALDUSKEY) {
 			seekpos = 0;
-		}
-		else {
+		} else {
 			aldusMFHeader = (ALDUSMFHEADER*) m_odImage.wmf.begin();
 			seekpos = ALDUSMFHEADERSIZE;
 		}

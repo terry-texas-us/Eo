@@ -96,9 +96,9 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 		CString string; 
 		if (drawItemStruct->itemID != -1) 
 			GetLBText(drawItemStruct->itemID, string); 
-		if (string.IsEmpty()) 
+		if (string.IsEmpty()) {
 			DrawBitmap(bitmap, DeviceContext, drawItemStruct->rcItem);
-		else {
+		} else {
 			CPoint point;
 			point.x = drawItemStruct->rcItem.left + 2;
 			point.y = drawItemStruct->rcItem.top + ((drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2) - (m_ItemHeight / 2); 

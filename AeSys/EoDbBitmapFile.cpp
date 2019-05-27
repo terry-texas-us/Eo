@@ -27,15 +27,13 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 
 	if (ds.dsBmih.biClrUsed != 0) {
 		nColors = ds.dsBmih.biClrUsed;
-	}
-	else {
+	} else {
 		nColors = 1 << ds.dsBmih.biBitCount;
 	}
 	// Create a halftone palette if the DIB section contains more than 256 colors
 	if (nColors > 256) {
 		palReference.CreateHalftonePalette(&dc);
-	}
-	else { // Create a custom palette from the DIB section's color table
+	} else { // Create a custom palette from the DIB section's color table
 		RGBQUAD* pRGB = new RGBQUAD[nColors];
 
 		CDC dcMem;

@@ -131,7 +131,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
         break;
     }
     case kActiveViewScale: {
-        AeSysView* ActiveView = AeSysView::GetActiveView();
+		auto ActiveView {AeSysView::GetActiveView()};
         ActiveView->SetWorldScale(Property->GetValue().dblVal);
         ActiveView->UpdateStateInformation(AeSysView::Scale);
         return LRESULT(0);
@@ -218,7 +218,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	m_PropertyGrid.AddProperty(WorkspaceTabsGroup);
 
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	const double Scale = (ActiveView) ? ActiveView->WorldScale() : 1.;
 

@@ -190,9 +190,9 @@ void EoDbLine::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	if (sm_ControlPointIndex == 0)
 		sm_ControlPointIndex = 1;
-	else if (sm_ControlPointIndex == 1)
+	else if (sm_ControlPointIndex == 1) {
 		sm_ControlPointIndex = 0;
-	else { // Initial rock .. jump to point at lower left or down if vertical
+	} else { // Initial rock .. jump to point at lower left or down if vertical
 		const OdGePoint3d ptBeg = m_LineSeg.startPoint();
 		const OdGePoint3d ptEnd = m_LineSeg.endPoint();
 

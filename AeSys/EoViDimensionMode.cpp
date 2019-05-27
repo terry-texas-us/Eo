@@ -189,9 +189,9 @@ void AeSysView::OnDimensionModeDLine2(void) {
 		RubberBandingDisable();
 		if (PreviousDimensionPosition != CurrentPnt) {
 			EoDbGroup* Group = new EoDbGroup;
-			if (PreviousDimensionCommand == ID_OP4)
+			if (PreviousDimensionCommand == ID_OP4) {
 				GenerateLineEndItem(1, .1, CurrentPnt, PreviousDimensionPosition, Group);
-			else {
+			} else {
 				ModeLineUnhighlightOp(PreviousDimensionCommand);
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
 			}

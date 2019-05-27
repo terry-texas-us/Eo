@@ -90,8 +90,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	}
 	else if (Color.isByLayer()) {
 		primitive->SetColorIndex(EoDbPrimitive::COLORINDEX_BYLAYER);
-	}
-	else {
+	} else {
 		primitive->SetColorIndex(Color.colorIndex());
 	}
 	const OdDbObjectId Linetype = entity->linetypeId();
@@ -101,8 +100,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	}
 	else if (Linetype == DatabasePtr->getLinetypeByLayerId()) {
 		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
-	}
-	else {
+	} else {
 		OdString Name = entity->linetype();
 		primitive->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 	}
@@ -129,12 +127,13 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = TextStyleObjectId.safeOpenObject(OdDb::kForRead);
 
 	OdString FileName;
+
 	if (TextStyleTableRecordPtr->isShapeFile()) {
 		FileName = L"Standard";
-	}
-	else {
+	} else {
 		FileName = TextStyleTableRecordPtr->fileName();
 		const int nExt = FileName.reverseFind('.');
+
 		if (nExt != - 1) {
 			if (FileName.mid(nExt).compare(L".shx") == 0) {
 				FileName = FileName.left(nExt);
@@ -523,8 +522,7 @@ public:
 		ATLTRACE2(atlTraceGeneral, 2, L"Graphics Metafile type: ");
 		if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kNoMetafile) {
 			ATLTRACE2(atlTraceGeneral, 2, L"No Metafile\n");
-		}
-		else {
+		} else {
 			if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kBoundingBox) {
 				ATLTRACE2(atlTraceGeneral, 2, L"Bounding Box\n");
 			}
@@ -658,8 +656,7 @@ public:
 		// <tas="Only creating non-periodic splines."</tas>
 		if (Periodic) {
 			ATLTRACE2(atlTraceGeneral, 0, L"Periodic %s was not converted ...\n", (PCTSTR) SplineEntity->desc()->name());
-		}
-		else {
+		} else {
 			EoDbSpline* SplinePrimitive = new EoDbSpline();
 			SplinePrimitive->Set(Degree, Knots, ControlPoints, Weights, Periodic);
 			ConvertCurveData(entity, SplinePrimitive);
@@ -730,8 +727,7 @@ public:
 			for (int i = 0; i < (int) layerIds.length(); i++) {
 				ATLTRACE2(atlTraceGeneral, 2, L"%i  ", layerIds[i]);
 			}
-		}
-		else {
+		} else {
 			ATLTRACE2(atlTraceGeneral, 2, L"Frozen Layers: None\n");
 		}
 
@@ -769,8 +765,7 @@ public:
 		if (!ViewportEntity->ucsName().isNull()) {
 			OdDbUCSTableRecordPtr UCS = ViewportEntity->ucsName().safeOpenObject(OdDb::kForRead);
 			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: %s\n", (LPCWSTR) UCS->getName());
-		}
-		else {
+		} else {
 			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: Null");
 		}
 		ATLTRACE2(atlTraceGeneral, 2, L"View Center: %f, %f\n", ViewportEntity->viewCenter());

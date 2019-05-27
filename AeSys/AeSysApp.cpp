@@ -323,8 +323,7 @@ BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 		for (int idx = 0; idx < FullCommandLineInfo.m_CommandsToExecute.GetCount(); ++idx) {
 			TemporaryDocument->ExecuteCommand(OdString((LPCTSTR)FullCommandLineInfo.m_CommandsToExecute.GetAt(idx)));
 		}
-	}
-	else {
+	} else {
 		CWinAppEx::ProcessShellCommand(commandLineInfo);
 	}
 	if (!FullCommandLineInfo.m_SaveName.IsEmpty()) {
@@ -1155,7 +1154,7 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 }
 
 OdGePoint3d AeSysApp::GetCursorPosition() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 	return (ActiveView) ? ActiveView->GetCursorPosition() : OdGePoint3d::kOrigin;
 }
 
@@ -1488,14 +1487,16 @@ void AeSysApp::LoadModeResources(int mode) {
 	m_CurrentMode = mode;
 	AddModeInformationToMessageList();
 
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-	if (ActiveView != 0) {
+	auto ActiveView {AeSysView::GetActiveView()};
+
+	if (ActiveView != nullptr) {
 		ActiveView->SetModeCursor(m_CurrentMode);
 		ActiveView->ModeLineDisplay();
 		ActiveView->RubberBandingDisable();
 	}
 }
-void AeSysApp::LoadPenWidthsFromFile(const CString & fileName) {
+
+void AeSysApp::LoadPenWidthsFromFile(const CString& fileName) {
 	CStdioFile fl;
 
 	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
@@ -1811,9 +1812,9 @@ double AeSysApp::ParseLength(Units units, LPWSTR aszLen) {
 		lex::Parse(aszLen);
 		lex::EvalTokenStream(&iTokId, &lDef, &iTyp, (void*) dVal);
 
-		if (iTyp == lex::TOK_LENGTH_OPERAND)
+		if (iTyp == lex::TOK_LENGTH_OPERAND) {
 			return (dVal[0]);
-		else {
+		} else {
 			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &lDef, dVal);
 
 			switch (units) {
@@ -1973,8 +1974,7 @@ OdString AeSysApp::getFontMapFileName() const {
 		}
 		ExpandEnvironmentStringsW(fontMapFile, expandedPath, EO_REGISTRY_MAX_PATH);
 		return OdString(expandedPath);
-	}
-	else {
+	} else {
 		return L"C:\\acad.fmp";
 	}
 }
@@ -2001,8 +2001,7 @@ OdString AeSysApp::getTempPath() const {
 			}
 			return ret;
 		}
-	}
-	else {
+	} else {
 		return OdDbHostAppServices::getTempPath();
 	}
 }

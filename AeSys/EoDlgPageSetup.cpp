@@ -1020,9 +1020,11 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	// Workaround, unfortunately can't get screen plane point from IO stream.
 	CMDIChildWnd* ChildWindow = (((CMDIFrameWnd*) theApp.GetMainWnd())->MDIGetActive());
 
-	CView* ActiveView = ChildWindow->GetActiveView();
+	auto ActiveView {ChildWindow->GetActiveView()};
+
 	if (CString(ActiveView->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
-		AeSysView* View = static_cast<AeSysView*>(ActiveView);
+		auto View {dynamic_cast<AeSysView*>(ActiveView)};
+
 		if (View->isModelSpaceView()) {
 			FirstCorner = View->editorObject().ToScreenCoord(FirstCorner);
 			OppositeCorner = View->editorObject().ToScreenCoord(OppositeCorner);

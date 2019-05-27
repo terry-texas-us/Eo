@@ -337,7 +337,7 @@ public: // Input message handler member functions
 	void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
 
 public:
-	static AeSysView* GetActiveView(void);
+	static AeSysView* GetActiveView();
 
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, CString& findText);
 

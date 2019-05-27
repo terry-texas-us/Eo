@@ -101,10 +101,10 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 	m_Line.ParametricRelationshipOf(points[0], dRel[0]);
 	m_Line.ParametricRelationshipOf(points[1], dRel[1]);
 
-	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1. - DBL_EPSILON)
+	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1. - DBL_EPSILON) {
 		// Put entire dimension in trap
 		pDim = this;
-	else { // Something gets cut
+	} else { // Something gets cut
 		pDim = new EoDbDimension(*this);
 		if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) { // Cut section out of middle
 			pDim->SetStartPoint(points[1]);
@@ -222,9 +222,9 @@ void EoDbDimension::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 	if (sm_ControlPointIndex == 0)
 		sm_ControlPointIndex = 1;
-	else if (sm_ControlPointIndex == 1)
+	else if (sm_ControlPointIndex == 1) {
 		sm_ControlPointIndex = 0;
-	else { // Initial rock .. jump to point at lower left or down if vertical
+	} else { // Initial rock .. jump to point at lower left or down if vertical
 		const OdGePoint3d ptBeg = m_Line.startPoint();
 		const OdGePoint3d ptEnd = m_Line.endPoint();
 
@@ -401,7 +401,7 @@ const OdInt16& EoDbDimension::TextColorIndex() noexcept {
 }
 
 void EoDbDimension::SetDefaultNote() {
-	const AeSysView* ActiveView = AeSysView::GetActiveView();
+	const auto ActiveView {AeSysView::GetActiveView()};
 
 	m_ReferenceSystem.SetOrigin(m_Line.midPoint());
 	double dAng = 0.;

@@ -210,8 +210,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 		if (Group->IsEmpty()) {
 			delete Group;
 			EntitiesNotLoaded++;
-		}
-		else {
+		} else {
 			Layer->AddTail(Group);
 		}
 	}
@@ -249,8 +248,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 		if (Group->IsEmpty()) {
 			delete Group;
 			EntitiesNotLoaded++;
-		}
-		else {
+		} else {
 			Layer->AddTail(Group);
 		}
 	}

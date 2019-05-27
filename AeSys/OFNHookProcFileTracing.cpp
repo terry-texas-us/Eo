@@ -8,8 +8,7 @@
 #include "Preview.h"
 
 UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARAM lParam) {
-	AeSysDoc* Document = AeSysDoc::GetDoc();
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto Document {AeSysDoc::GetDoc()};
 
 	switch (uiMsg) {
 	case WM_INITDIALOG:
@@ -35,8 +34,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 					HWND PreviewWindow = ::GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
 					if (Layer != 0) {
 						_WndProcPreviewUpdate(PreviewWindow, Layer);
-					}
-					else {
+					} else {
 						Layer = new EoDbLayer(L"",  EoDbLayer::kIsResident | EoDbLayer::kIsInternal | EoDbLayer::kIsActive);
 
 						Document->TracingLoadLayer(FilePath, Layer);
@@ -83,8 +81,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 					theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
 				else
 					FileOpenSuccess = true;
-			}
-			else {
+			} else {
 				OdDbLayerTablePtr Layers = Document->LayerTable(OdDb::kForWrite);
 				OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
 				LayerTableRecord->setName(Name);
@@ -93,8 +90,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 				FileOpenSuccess = Document->TracingLoadLayer(FilePath, Layer);
 				if (FileOpenSuccess) {
 					Document->AddLayerTo(Layers, Layer);
-				}
-				else {
+				} else {
 					delete Layer;
 					LayerTableRecord->erase(true);
 				}
@@ -112,7 +108,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 
 			Document->RemoveAllTrappedGroups();
 			Document->AddGroupsToTrap(pLayer);
-			Document->CopyTrappedGroupsToClipboard(ActiveView);
+			Document->CopyTrappedGroupsToClipboard(AeSysView::GetActiveView());
 			Document->RemoveAllTrappedGroups();
 
 			pLayer->DeleteGroupsAndRemoveAll();
@@ -129,8 +125,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 					theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
 				else
 					FileOpenSuccess = true;
-			}
-			else {
+			} else {
 				OdDbLayerTablePtr Layers = Document->LayerTable(OdDb::kForWrite);
 				OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
 				LayerTableRecord->setName(Name);
@@ -139,8 +134,7 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 				FileOpenSuccess = Document->TracingLoadLayer(FilePath, Layer);
 				if (FileOpenSuccess) {
 					Document->AddLayerTo(Layers, Layer);
-				}
-				else {
+				} else {
 					delete Layer;
 					LayerTableRecord->erase(true);
 				}

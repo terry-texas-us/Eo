@@ -157,8 +157,7 @@ EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint
 	if (fabs(DotProduct) > DBL_EPSILON) {
 		const OdGeVector3d vPtPt0(startPoint.Convert3d() - pointOnPlane.Convert3d());
 		LineVector *= (planeNormal.dotProduct(vPtPt0)) / DotProduct;
-	}
-	else { // Line and the plane are parallel .. force return to start point
+	} else { // Line and the plane are parallel .. force return to start point
 		LineVector *= 0.;
 	}
 	return (startPoint - LineVector);

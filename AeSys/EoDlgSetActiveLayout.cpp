@@ -84,8 +84,7 @@ void EoDlgSetActiveLayout::OnSelchangeLayoutlist() {
 		GetDlgItem(IDC_DELETE)->EnableWindow(TRUE);
 		pNewName->EnableWindow(TRUE);
 		pNewName->SetWindowText(m_sNewLayoutName);
-	}
-	else {
+	} else {
 		GetDlgItem(IDC_RENAME)->EnableWindow(FALSE);
 		GetDlgItem(IDC_DELETE)->EnableWindow(FALSE);
 		pNewName->EnableWindow(FALSE);

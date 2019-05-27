@@ -480,8 +480,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* p
 			}
 			m_DelstyleButton.EnableWindow(FALSE);
 			m_listStyles.EnableWindow(TRUE);
-		}
-		else {
+		} else {
 			while (pChildWnd) {
 				pChildWnd->EnableWindow(TRUE);
 				pChildWnd = pChildWnd->GetWindow(GW_HWNDNEXT);
@@ -514,8 +513,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 
 	if (!m_spinScreening.GetPos()) {
 		m_editScreening.SetWindowText(L"Automatic");
-	}
-	else {
+	} else {
 		CString buffer;
 		buffer.Format(L"%d", num);
 		m_editScreening.SetWindowText(buffer);
@@ -543,8 +541,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 
 	if (!m_spinPen.GetPos()) {
 		m_editPen.SetWindowText(L"Automatic");
-	}
-	else {
+	} else {
 		wchar_t buffer[256];
 		_itot(num, buffer, 10);
 		m_editPen.SetWindowText(buffer);
@@ -572,8 +569,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 
 	if (!m_spinVirtpen.GetPos()) {
 		m_editVirtpen.SetWindowText(L"Automatic");
-	}
-	else {
+	} else {
 		wchar_t buffer[256];
 		_itot(num, buffer, 10);
 		m_editVirtpen.SetWindowText(buffer);
@@ -757,8 +753,7 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 	if (m_pPlotStyleTable->isAciTableAvailable()) {
 		m_AddstyleButton.EnableWindow(FALSE);
 		m_DelstyleButton.EnableWindow(FALSE);
-	}
-	else {
+	} else {
 		m_AddstyleButton.EnableWindow(TRUE);
 		m_DelstyleButton.EnableWindow(FALSE);
 	}
@@ -781,8 +776,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 			m_Color.SetCurSel(replaceCustomColor(color, cListStylesItem));
 			intColorPolicy = 3;
 		}
-	}
-	else {
+	} else {
 		pPsListStyleData->SetActiveListIndex(CurrentSelection);
 		if (CurrentSelection) intColorPolicy = 5;
 	}

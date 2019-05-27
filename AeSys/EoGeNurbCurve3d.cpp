@@ -80,8 +80,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 			}
 		}
 		iPts = iPts2 + 1;
-	}
-	else { // either Order greater than number of control points or all control points coincidental
+	} else { // either Order greater than number of control points or all control points coincidental
 		iPts = 2;
 		polyline::SetVertex(spline.startPoint());
 	}
@@ -105,13 +104,11 @@ void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& c
 		}
 		else if (KnotIndex >= NumberOfControlPoints + 1) { // End of curve
 			knots.append(knots[KnotIndex - 1]);
-		}
-		else {
+		} else {
 			const int i2 = KnotIndex - Order;
 			if (controlPoints[i2] == controlPoints[i2 + 1]) { // Repeating vertices
 				knots.append(knots[KnotIndex - 1]);
-			}
-			else { // Successive internal vectors
+			} else { // Successive internal vectors
 				knots.append(knots[KnotIndex - 1] + 1.);
 			}
 		}

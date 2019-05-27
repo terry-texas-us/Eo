@@ -103,8 +103,7 @@ void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* pNMHDR, L
 		EoLineweightData* LineweightDataItem = (EoLineweightData*) m_LineweightsListCtrl.GetItemData(pItem->iItem);
 		if (m_InchesButton.GetCheck()) {
 			LineweightDataItem->m_Value = INCHTOMM(_wtof(pItem->pszText));
-		}
-		else {
+		} else {
 			LineweightDataItem->m_Value = _wtof(pItem->pszText);
 		}
 	}
@@ -244,8 +243,7 @@ BOOL EoDlgPlotStyleEditLineweight::OnInitDialog() {
 	}
 	if (m_PlotStyleTable->isDisplayCustomLineweightUnits()) {
 		m_InchesButton.SetCheck(1);
-	}
-	else {
+	} else {
 		m_MillimetrsButton.SetCheck(1);
 	}
 	InitializeLineweightsListCtrlImages();

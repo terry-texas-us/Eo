@@ -79,8 +79,7 @@ OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(double influenceAngle, double axisOff
 					pt.x = 0.;
 					pt.z = 0.;
 				}
-		}
-		else {
+		} else {
 			dLen = sqrt(dX + dY);
 			if (dLen > DBL_EPSILON)					// Not already on the z-axis
 				if (dLen / fabs(pt.z) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to z-axis
@@ -130,8 +129,7 @@ void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
 			view->DoViewportProjection(pnt, 2, pt);
 			deviceContext->Polyline(pnt, 2);
 		}
-	}
-	else {
+	} else {
 		polyline::BeginLineStrip();
 		polyline::SetVertex(startPoint());
 		polyline::SetVertex(endPoint());
@@ -223,8 +221,7 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 		else if ((iOut[i] & 4) == 4) {
 			pt[i].y = pt[i].y + dY * (upperRightPoint.x - pt[i].x) / dX;
 			pt[i].x = upperRightPoint.x;
-		}
-		else {
+		} else {
 			pt[i].y = pt[i].y + dY * (lowerLeftPoint.x - pt[i].x) / dX;
 			pt[i].x = lowerLeftPoint.x;
 		}
@@ -248,8 +245,7 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert
 	if (dDivr <= DBL_EPSILON) {
 		relationship = 0.;
 		DistanceSquared = dPBegX * dPBegX + dPBegY * dPBegY;
-	}
-	else {
+	} else {
 		relationship = - (dPBegX * dBegEndX + dPBegY * dBegEndY) / dDivr;
 		relationship = EoMax(0., EoMin(1., relationship));
 		const double dx = dPBegX + relationship * dBegEndX;

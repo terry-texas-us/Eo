@@ -63,8 +63,7 @@ int CPrimState::Save() {
 
 	if (iSaveId < 0) {
 		theApp.WarningMessageBox(IDS_MSG_SAVE_STATE_LIST_ERROR);
-	}
-	else {
+	} else {
 		SetHatchInteriorStyle(pstate.HatchInteriorStyle());
 		psSav[iSaveId] = new CPrimState;
 		*psSav[iSaveId] = pstate;

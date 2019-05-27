@@ -134,8 +134,7 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 		if (Layers->has(Name)) { // should be the default layer (0) on a load
 			LayerTableRecord = Layers->getAt(Name).safeOpenObject(OdDb::kForWrite);
 			Layer = document->GetLayerAt(Name);
-		}
-		else {
+		} else {
 			LayerTableRecord = OdDbLayerTableRecord::createObject();
 			Layer = new EoDbLayer(LayerTableRecord);
 			LayerTableRecord->setName(Name);
@@ -153,8 +152,7 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 		OdDbObjectId Linetype;
 		if (LinetypeName.iCompare(L"Continuous") == 0) {
 			Linetype = m_Database->getLinetypeContinuousId();
-		}
-		else {
+		} else {
 			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 			Linetype = Linetypes->getAt(LinetypeName);	
 		}
@@ -237,8 +235,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 				}
 				Layer->AddTail(Group);
 			}
-		}
-		else {
+		} else {
 			OdString PathName = GetFilePath();
 			PathName.replace(GetFileName(), Layer->Name());
 			document->TracingLoadLayer(PathName, Layer);

@@ -25,8 +25,7 @@ void EoGsViewTransform::BuildTransformMatrix() {
 	m_Matrix.SetToViewTransform(Position(), Target(), ViewUp());
 	if (IsPerspectiveOn()) {
 		m_ProjectionMatrix.SetToPerspectiveProjection(m_FieldWidthMinimum, m_FieldWidthMaximum, m_FieldHeightMinimum, m_FieldHeightMaximum, m_NearClipDistance, m_FarClipDistance);
-	}
-	else {
+	} else {
 		m_ProjectionMatrix.SetToParallelProjection(m_FieldWidthMinimum, m_FieldWidthMaximum, m_FieldHeightMinimum, m_FieldHeightMaximum, m_NearClipDistance, m_FarClipDistance);
 	}
 	m_ViewMatrix = m_Matrix;

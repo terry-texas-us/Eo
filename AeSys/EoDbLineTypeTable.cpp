@@ -22,8 +22,7 @@ OdUInt16 EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	}
 	else if (name.iCompare(L"ByLayer") == 0) {
 		Index = EoDbPrimitive::LINETYPE_BYLAYER;
-	}
-	else {
+	} else {
 		while (Index < NumberOfLegacyLinetypes && name.iCompare(LegacyLinetypes[Index]) != 0) {
 			Index++;
 		}

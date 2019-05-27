@@ -117,7 +117,7 @@ void AeSysView::OnAnnotateModeBubble() {
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 
-	const auto ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 	auto MajorAxis = ComputeArbitraryAxis(ActiveViewPlaneNormal);
 	MajorAxis.normalize();
 
@@ -202,7 +202,7 @@ void AeSysView::OnAnnotateModeHook() {
 		}
 	}
 	m_PreviousOp = ModeLineHighlightOp(ID_OP5);
-	const OdGeVector3d ActiveViewPlaneNormal = GetActiveView()->CameraDirection();
+	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
 	auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 	Ellipse->setColorIndex(1);

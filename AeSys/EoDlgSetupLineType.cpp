@@ -69,7 +69,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 				const OdInt16 ColorIndex = pstate.ColorIndex();
 				pstate.SetPen(nullptr, &DeviceContext, 0, EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 
-				AeSysView* ActiveView = AeSysView::GetActiveView();
+				auto ActiveView {AeSysView::GetActiveView()};
 
 				ActiveView->ViewportPushActive();
 				ActiveView->PushViewTransform();

@@ -41,8 +41,7 @@ BOOL EoDlgModeRevise::OnInitDialog() {
 		sm_FontDefinition = sm_TextPrimitive->FontDefinition();
 		sm_ReferenceSystem = sm_TextPrimitive->ReferenceSystem();
 		m_TextEditControl.SetWindowTextW(sm_TextPrimitive->Text());
-	}
-	else {
+	} else {
 		EndDialog(TRUE);
 	}
 	return TRUE;
@@ -58,22 +57,21 @@ void EoDlgModeRevise::OnOK() {
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, sm_TextPrimitive);
 		sm_TextPrimitive->SetText(TextString);
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, sm_TextPrimitive);
-	}
-	else {
-        OdGeVector3d PlaneNormal;
-        sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
-        OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-        OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), (LPCWSTR) TextString);
+	} else {
+		OdGeVector3d PlaneNormal;
+		sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
+		OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), (LPCWSTR)TextString);
 
-        Text->setNormal(PlaneNormal);
-        Text->setRotation(sm_ReferenceSystem.Rotation());
-        Text->setHeight(sm_ReferenceSystem.YDirection().length());
-        Text->setAlignmentPoint(sm_ReferenceSystem.Origin());
-        Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(sm_FontDefinition.HorizontalAlignment()));
-        Text->setVerticalMode(EoDbText::ConvertVerticalMode(sm_FontDefinition.VerticalAlignment()));
+		Text->setNormal(PlaneNormal);
+		Text->setRotation(sm_ReferenceSystem.Rotation());
+		Text->setHeight(sm_ReferenceSystem.YDirection().length());
+		Text->setAlignmentPoint(sm_ReferenceSystem.Origin());
+		Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(sm_FontDefinition.HorizontalAlignment()));
+		Text->setVerticalMode(EoDbText::ConvertVerticalMode(sm_FontDefinition.VerticalAlignment()));
 
-        EoDbGroup* Group = new EoDbGroup;
-        Group->AddTail(EoDbText::Create(Text));
+		EoDbGroup* Group = new EoDbGroup;
+		Group->AddTail(EoDbText::Create(Text));
 
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);

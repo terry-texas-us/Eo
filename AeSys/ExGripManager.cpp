@@ -836,8 +836,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 
 	if (selectionSet->numEntities() > (unsigned)m_GRIPOBJLIMIT) {
 		Disable(true);
-	}
-	else {
+	} else {
 		if (IsDisabled()) {
 			bRestoreOld = true;
 		}
@@ -1403,8 +1402,7 @@ void OdExGripManager::Disable(bool disable) noexcept {
 		
 		if (disable) {
 			pDb->removeReactor(&m_cDbReactor);
-		}
-		else {
+		} else {
 			pDb->addReactor(&m_cDbReactor);
 		}
 	}

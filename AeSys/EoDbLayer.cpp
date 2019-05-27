@@ -77,8 +77,7 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 						EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 						Group->Display(view, deviceContext);
 						EoDbPrimitive::SetHighlightColorIndex(0);
-					}
-					else {
+					} else {
 						Group->Display(view, deviceContext);
 					}
 				}
@@ -122,16 +121,14 @@ OdString EoDbLayer::LinetypeName() {
 void EoDbLayer::MakeInternal(bool isInternal) noexcept {
 	if (isInternal) {
 		m_StateFlags |= kIsInternal;
-	}
-	else {
+	} else {
 		m_StateFlags &= ~kIsInternal;
 	}
 }
 void EoDbLayer::MakeResident(bool isResident) noexcept {
 	if (isResident) {
 		m_StateFlags |= kIsResident;
-	}
-	else {
+	} else {
 		m_StateFlags &= ~kIsResident;
 	}
 }
@@ -158,8 +155,7 @@ void EoDbLayer::SetIsOff(bool isOff) {
 	if (isOff) {
 		m_StateFlags &= ~(kIsCurrent | kIsActive | kIsLocked);
 		m_StateFlags |= kIsOff;
-	}
-	else {
+	} else {
 		MakeActive();
 	}
 	m_Layer->upgradeOpen();
@@ -177,8 +173,7 @@ void EoDbLayer::SetIsLocked(bool isLocked) {
 		m_StateFlags &= ~(kIsCurrent | kIsActive | kIsOff);
 		m_StateFlags |= kIsLocked;
 		Transparency.setAlpha(OdUInt8(96));
-	}
-	else {
+	} else {
 		MakeActive();
 		Transparency.setAlpha(OdUInt8(255));
 	}

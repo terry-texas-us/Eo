@@ -36,8 +36,7 @@ void AeSysView::OnTrapModeStitch() {
 		m_PreviousPnt = GetCursorPosition();
 		RubberBandingStartAtEnable(m_PreviousPnt, Lines);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
-	}
-	else {
+	} else {
 		const OdGePoint3d pt = GetCursorPosition();
 
 		if (m_PreviousPnt == pt) { return; }
@@ -68,8 +67,7 @@ void AeSysView::OnTrapModeField() {
 		m_PreviousPnt = GetCursorPosition();
 		RubberBandingStartAtEnable(m_PreviousPnt, Rectangles);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
-	}
-	else {
+	} else {
 		const OdGePoint3d pt = GetCursorPosition();
 		if (m_PreviousPnt == pt) return;
 
@@ -145,8 +143,7 @@ void AeSysView::OnTrapModeModify() {
 		if (Dialog.DoModal() == IDOK) {
 			GetDocument()->UpdateAllViews(nullptr);
 		}
-	}
-	else {
+	} else {
 		theApp.AddModeInformationToMessageList();
 	}
 }
@@ -187,8 +184,7 @@ void AeSysView::OnTraprModeStitch() {
 		m_PreviousPnt = GetCursorPosition();
 		RubberBandingStartAtEnable(m_PreviousPnt, Lines);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
-	}
-	else {
+	} else {
 		const OdGePoint3d pt = GetCursorPosition();
 
 		if (m_PreviousPnt == pt) { return; }
@@ -220,8 +216,7 @@ void AeSysView::OnTraprModeField() {
 		m_PreviousPnt = GetCursorPosition();
 		RubberBandingStartAtEnable(m_PreviousPnt, Rectangles);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
-	}
-	else {
+	} else {
 		const OdGePoint3d pt = GetCursorPosition();
 
 		if (m_PreviousPnt == pt) return;
@@ -281,11 +276,11 @@ void AeSysView::OnTraprModeModify() {
 		if (Dialog.DoModal() == IDOK) {
 			GetDocument()->UpdateAllViews(nullptr);
 		}
-	}
-	else {
+	} else {
 		theApp.AddModeInformationToMessageList();
 	}
 }
+
 void AeSysView::OnTraprModeEscape() {
 	RubberBandingDisable();
 	ModeLineUnhighlightOp(m_PreviousOp);

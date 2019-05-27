@@ -1446,16 +1446,16 @@ bool AeSysDoc::LayerMelt(OdString & name) {
 	delete[] of.lpstrFile;
 	return (bRetVal);
 }
+
 void AeSysDoc::PenTranslation(OdUInt16 wCols, OdInt16 * pColNew, OdInt16 * pCol) {
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		EoDbLayer* Layer = GetLayerAt(LayerIndex);
 		Layer->PenTranslation(wCols, pColNew, pCol);
 	}
 }
-EoDbLayer* AeSysDoc::SelectLayerBy(const OdGePoint3d & point) {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
 
-	auto Group {ActiveView->SelectGroupAndPrimitive(point)};
+EoDbLayer* AeSysDoc::SelectLayerBy(const OdGePoint3d & point) {
+	auto Group {AeSysView::GetActiveView()->SelectGroupAndPrimitive(point)};
 
 	if (Group != nullptr) {
 		for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
@@ -2006,14 +2006,14 @@ void AeSysDoc::OnPensRemoveUnusedLinetypes() {
 		}
 	}
 }
+
 void AeSysDoc::OnPurgeUnreferencedBlocks() {
 	PurgeUnreferencedBlocks();
 }
-void AeSysDoc::OnEditImageToClipboard() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
 
+void AeSysDoc::OnEditImageToClipboard() {
 	HDC hdcEMF = ::CreateEnhMetaFile(0, 0, 0, 0);
-	DisplayAllLayers(ActiveView, CDC::FromHandle(hdcEMF));
+	DisplayAllLayers(AeSysView::GetActiveView(), CDC::FromHandle(hdcEMF));
 	HENHMETAFILE hemf = ::CloseEnhMetaFile(hdcEMF);
 
 	::OpenClipboard(NULL);
@@ -2021,6 +2021,7 @@ void AeSysDoc::OnEditImageToClipboard() {
 	::SetClipboardData(CF_ENHMETAFILE, hemf);
 	::CloseClipboard();
 }
+
 void AeSysDoc::OnEditTrace() {
 	if (::OpenClipboard(NULL)) {
 		wchar_t sBuf[16];
@@ -2061,20 +2062,22 @@ void AeSysDoc::OnEditTrapDelete() {
 	UpdateAllViews(nullptr);
 	OnEditTrapQuit();
 }
+
 void AeSysDoc::OnEditTrapQuit() {
 	RemoveAllTrappedGroups();
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
+
 void AeSysDoc::OnEditTrapCopy() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-	CopyTrappedGroupsToClipboard(ActiveView);
+	CopyTrappedGroupsToClipboard(AeSysView::GetActiveView());
 }
+
 void AeSysDoc::OnEditTrapCut() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-	CopyTrappedGroupsToClipboard(ActiveView);
+	CopyTrappedGroupsToClipboard(AeSysView::GetActiveView());
 	DeleteAllTrappedGroups();
 	UpdateAllViews(nullptr);
 }
+
 void AeSysDoc::OnEditTrapPaste() {
 	if (::OpenClipboard(NULL)) {
 		const UINT nClipboardFormat = theApp.ClipboardFormatIdentifierForEoGroups();
@@ -2140,11 +2143,13 @@ void AeSysDoc::OnEditTrapPaste() {
 	} else
 		theApp.WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
 }
+
 void AeSysDoc::OnEditTrapWork() {
 	RemoveAllTrappedGroups();
 	AddGroupsToTrap(GetWorkLayer());
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
+
 void AeSysDoc::OnEditTrapWorkAndActive() {
 	RemoveAllTrappedGroups();
 
@@ -2156,12 +2161,15 @@ void AeSysDoc::OnEditTrapWorkAndActive() {
 	}
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
+
 void AeSysDoc::OnTrapCommandsCompress() {
 	CompressTrappedGroups();
 }
+
 void AeSysDoc::OnTrapCommandsExpand() {
 	ExpandTrappedGroups();
 }
+
 void AeSysDoc::OnTrapCommandsInvert() {
 	const int NumberOfLayers = GetLayerTableSize();
 	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
@@ -2182,8 +2190,7 @@ void AeSysDoc::OnTrapCommandsInvert() {
 	UpdateAllViews(nullptr);
 }
 void AeSysDoc::OnTrapCommandsSquare() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
-	SquareTrappedGroups(ActiveView);
+	SquareTrappedGroups(AeSysView::GetActiveView());
 }
 void AeSysDoc::OnTrapCommandsQuery() {
 	EoDlgEditTrapCommandsQuery Dialog;
@@ -2288,18 +2295,20 @@ void AeSysDoc::OnSetupNote() {
 		CharacterCellDefinition.SetObliqueAngle(EoToRadian(Dialog.m_ObliqueAngle));
 		pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
-		AeSysView* ActiveView = AeSysView::GetActiveView();
+		auto ActiveView {AeSysView::GetActiveView()};
 		CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : NULL;
 
 		pstate.SetFontDefinition(DeviceContext, FontDefinition);
 	}
 }
+
 void AeSysDoc::OnToolsGroupBreak() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	ActiveView->BreakAllPolylines();
 	ActiveView->BreakAllSegRefs();
 }
+
 void AeSysDoc::OnToolsGroupDelete() {
 	auto ActiveView {AeSysView::GetActiveView()};
 	const auto CurrentPnt {ActiveView->GetCursorPosition()};
@@ -2317,11 +2326,11 @@ void AeSysDoc::OnToolsGroupDelete() {
 		theApp.AddStringToMessageList(IDS_MSG_GROUP_ADDED_TO_DEL_GROUPS);
 	}
 }
-void AeSysDoc::OnToolsGroupDeletelast() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
 
-	ActiveView->DeleteLastGroup();
+void AeSysDoc::OnToolsGroupDeletelast() {
+	AeSysView::GetActiveView()->DeleteLastGroup();
 }
+
 void AeSysDoc::OnToolsGroupExchange() {
 	if (m_DeletedGroupList.GetSize() > 1) {
 		EoDbGroup* TailGroup = DeletedGroupsRemoveTail();
@@ -2330,8 +2339,9 @@ void AeSysDoc::OnToolsGroupExchange() {
 		DeletedGroupsAddHead(TailGroup);
 	}
 }
+
 void AeSysDoc::OnToolsPrimitiveSnaptoendpoint() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	EoGePoint4d ptView(ActiveView->GetCursorPosition(), 1.);
 	ActiveView->ModelViewTransformPoint(ptView);
@@ -2357,17 +2367,20 @@ void AeSysDoc::OnToolsPrimitiveSnaptoendpoint() {
 	}
 	EoDbGroup::SetPrimitiveToIgnore(static_cast<EoDbPrimitive*>(nullptr));
 }
+
 void AeSysDoc::OnPrimGotoCenterPoint() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
+
 	if (ActiveView->GroupIsEngaged()) {
 		const OdGePoint3d pt = ActiveView->EngagedPrimitive()->GetCtrlPt();
 		ActiveView->SetCursorPosition(pt);
 	}
 }
+
 void AeSysDoc::OnToolsPrimitiveDelete() {
 	const OdGePoint3d pt = theApp.GetCursorPosition();
 
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	auto Group {ActiveView->SelectGroupAndPrimitive(pt)};
 
@@ -2400,7 +2413,7 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 	}
 }
 void AeSysDoc::OnPrimModifyAttributes() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	const OdGePoint3d pt = ActiveView->GetCursorPosition();
 
@@ -2552,7 +2565,7 @@ void AeSysDoc::OnFile() {
 }
 
 void AeSysDoc::OnPrimExtractNum() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	const OdGePoint3d pt = ActiveView->GetCursorPosition();
 
@@ -2586,7 +2599,7 @@ void AeSysDoc::OnPrimExtractNum() {
 	}
 }
 void AeSysDoc::OnPrimExtractStr() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	const OdGePoint3d pt = ActiveView->GetCursorPosition();
 

@@ -19,8 +19,7 @@ void AeSysView::OnNodalModeAddRemove(void) {
 	theApp.m_NodalModeAddGroups = !theApp.m_NodalModeAddGroups;
 	if (theApp.m_NodalModeAddGroups) {
 		SetModeCursor(ID_MODE_NODAL);
-	}
-	else {
+	} else {
 		SetModeCursor(ID_MODE_NODALR);
 	}
 }
@@ -68,8 +67,7 @@ void AeSysView::OnNodalModeArea(void) {
 		PreviousNodalCursorPosition = CurrentPnt;
 		RubberBandingStartAtEnable(CurrentPnt, Rectangles);
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP3);
-	}
-	else {
+	} else {
 		if (PreviousNodalCursorPosition != CurrentPnt) {
 			OdGePoint3dArray Points;
 			OdGePoint3d	MinExtent;
@@ -106,8 +104,7 @@ void AeSysView::OnNodalModeMove(void) {
 		m_NodalModePoints.append(CurrentPnt);
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
 		ConstructPreviewGroup();
-	}
-	else {
+	} else {
 		OnNodalModeReturn();
 	}
 }
@@ -119,8 +116,7 @@ void AeSysView::OnNodalModeCopy(void) {
 		m_NodalModePoints.append(CurrentPnt);
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
 		ConstructPreviewGroupForNodalGroups();
-	}
-	else {
+	} else {
 		OnNodalModeReturn();
 	}
 }
@@ -168,8 +164,7 @@ void AeSysView::OnNodalModeToPolygon(void) {
 		PreviousNodalCursorPosition = CurrentPnt;
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP7);
-	}
-	else {
+	} else {
 		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 		if (PreviousNodalCursorPosition != CurrentPnt) {
@@ -331,8 +326,7 @@ void AeSysView::OnNodalModeEscape(void) {
 	if (PreviousNodalCommand == 0) {
 		GetDocument()->DisplayUniquePoints();
 		GetDocument()->DeleteNodalResources();
-	}
-	else {
+	} else {
 		RubberBandingDisable();
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 

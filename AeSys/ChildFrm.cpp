@@ -78,8 +78,7 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 				theApp.m_aAppReactors[ReactorIndex]->DocumentBecameCurrent(ActivatedDocument);
 			}
 		}
-	}
-	else {
+	} else {
 		if (ActivatedDocument) {
 			for (auto ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 				theApp.m_aAppReactors[ReactorIndex]->DocumentToBeActivated(ActivatedDocument);

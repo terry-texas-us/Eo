@@ -140,8 +140,7 @@ public:
 				throw OdError(msg2);
 			}
 			END_CATCH
-		}
-		else {
+		} else {
 			// loading database is not associated with COdaMfcApp (COleDocument)
 			// so do not load OLE object - just store its data.
 			if (m_pRawData.isNull()) {

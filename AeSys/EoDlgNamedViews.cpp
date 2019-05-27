@@ -60,8 +60,7 @@ OdString ucsString(const OdDbObject* viewport) {
 
 			if (pUCS.get()) {
 				Result = pUCS->getName();
-			}
-			else {
+			} else {
 				OdGePoint3d Origin;
 				OdGeVector3d XAxis;
 				OdGeVector3d YAxis;
@@ -69,8 +68,7 @@ OdString ucsString(const OdDbObject* viewport) {
 
 				if (Origin == OdGePoint3d::kOrigin && XAxis == OdGeVector3d::kXAxis && YAxis == OdGeVector3d::kYAxis) {
 					Result = L"World";
-				}
-				else {
+				} else {
 					Result = L"Unnamed";
 				}
 			}
@@ -206,8 +204,7 @@ void EoDlgNamedViews::OnNewButton() {
 				continue;
 			pNamedView = m_views.view(i);
 			m_views.DeleteItem(i);
-		}
-		else {
+		} else {
 			OdDbViewTablePtr pViewTable = pDb->getViewTableId().safeOpenObject(OdDb::kForWrite);
 			pNamedView = OdDbViewTableRecord::createObject();
 			pNamedView->setName(OdString(newDlg.m_sViewName));

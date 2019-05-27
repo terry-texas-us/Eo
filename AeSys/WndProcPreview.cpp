@@ -28,8 +28,8 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 }
 LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lParam) {
 	switch (message) {
-	case WM_CREATE: {
-			AeSysView* ActiveView = AeSysView::GetActiveView();
+		case WM_CREATE: {
+			auto ActiveView {AeSysView::GetActiveView()};
 			CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : NULL;
 
 			CRect rc;
@@ -39,14 +39,14 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lPa
 		}
 		return (FALSE);
 
-	case WM_DESTROY:
-		if (WndProcPreview_Bitmap != NULL) {
-			delete WndProcPreview_Bitmap;
-			WndProcPreview_Bitmap = NULL;
-		}
-		return (FALSE);
+		case WM_DESTROY:
+			if (WndProcPreview_Bitmap != NULL) {
+				delete WndProcPreview_Bitmap;
+				WndProcPreview_Bitmap = NULL;
+			}
+			return (FALSE);
 
-	case WM_PAINT: {
+		case WM_PAINT: {
 			PAINTSTRUCT ps;
 
 			CRect rc;
@@ -67,12 +67,12 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lPa
 			::EndPaint(hwnd, &ps);
 		}
 
-		return (FALSE);
+					   return (FALSE);
 
-	case WM_LBUTTONDOWN:
-		::SetFocus(hwnd);
-		ATLTRACE2(atlTraceGeneral, 0, L"Preview WM_LBUTTONDOWN message\n");
-		return (FALSE);
+		case WM_LBUTTONDOWN:
+			::SetFocus(hwnd);
+			ATLTRACE2(atlTraceGeneral, 0, L"Preview WM_LBUTTONDOWN message\n");
+			return (FALSE);
 
 	}
 	return DefWindowProc(hwnd, message, nParam, lParam);
@@ -93,7 +93,7 @@ void WndProcPreviewClear(HWND previewWindow) {
 }
 
 void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	CRect rc;
 	::GetClientRect(previewWindow, &rc);
@@ -122,8 +122,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	const double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
-	}
-	else {
+	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
 	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
@@ -143,7 +142,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 }
 
 void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	CRect rc;
 	::GetClientRect(previewWindow, &rc);
@@ -172,8 +171,7 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	const double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
-	}
-	else {
+	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
 	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);

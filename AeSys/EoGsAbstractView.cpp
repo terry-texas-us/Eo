@@ -70,8 +70,7 @@ void EoGsAbstractView::AdjustWindow(const double aspectRatio) noexcept {
 		const double Adjustment = (FieldHeight / aspectRatio - FieldWidth) * 0.5;
 		m_FieldWidthMinimum -= Adjustment;
 		m_FieldWidthMaximum += Adjustment;
-	}
-	else {
+	} else {
 		const double Adjustment = (FieldWidth * aspectRatio - FieldHeight) * 0.5;
 		m_FieldHeightMinimum -= Adjustment;
 		m_FieldHeightMaximum += Adjustment;
@@ -137,8 +136,7 @@ void EoGsAbstractView::SetLensLength(const double length) noexcept {
 void EoGsAbstractView::EnablePerspective(bool enabled) noexcept {
 	if (enabled) {
 		m_ViewMode |= AV_PERSPECTIVE;
-	}
-	else {
+	} else {
 		m_ViewMode &= ~AV_PERSPECTIVE;
 	}
 }

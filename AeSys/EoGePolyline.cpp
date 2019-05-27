@@ -100,8 +100,7 @@ void __End(AeSysView* view, CDC* deviceContext, OdInt16 linetypeIndex) {
 				return;
 			}
 		}
-	}
-	else {
+	} else {
 		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
 		OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
 

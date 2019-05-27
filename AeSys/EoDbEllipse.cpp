@@ -416,9 +416,9 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 	} else {
 		if (arBeg.y >= m_Center.y) { // Arc begins in quadrant two
 			if (arEnd.x >= m_Center.x) {
-				if (arEnd.y >= m_Center.y) // Arc ends in quadrant one
+				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
 					(*arMax).y = EoMax(arBeg.y, arEnd.y);
-				else { // Arc ends in quadrant four
+				} else { // Arc ends in quadrant four
 					(*arMax).x = arEnd.x;
 					(*arMax).y = arBeg.y;
 				}
@@ -438,17 +438,17 @@ void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d
 			}
 		} else { // Arc begins in quadrant three
 			if (arEnd.x >= m_Center.x) {
-				if (arEnd.y >= m_Center.y) // Arc ends in quadrant one
+				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
 					(*arMax).y = arEnd.y;
-				else { // Arc ends in quadrant four
+				} else { // Arc ends in quadrant four
 					(*arMax).x = arEnd.x;
 					(*arMax).y = EoMax(arBeg.y, arEnd.y);
 				}
 				(*arMin).x = arBeg.x;
 			} else {
-				if (arEnd.y >= m_Center.y)							// Arc ends in quadrant two
+				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					(*arMin).x = EoMin(arBeg.x, arEnd.x);
-				else { // Arc ends in quadrant three
+				} else { // Arc ends in quadrant three
 					if (arBeg.x < arEnd.x) { // Arc in qraudrant three only
 						(*arMin).x = arBeg.x;
 						(*arMin).y = arEnd.y;

@@ -42,8 +42,7 @@ void EoCtrlColorsButton::DrawCell(CDC* deviceContext, OdUInt16 index, COLORREF c
 			CBrush FrameBrush;
 			if (index == m_CurrentIndex) {
 				FrameBrush.CreateSysColorBrush(COLOR_HIGHLIGHT);
-			}
-			else {
+			} else {
 				FrameBrush.CreateSysColorBrush(COLOR_WINDOWFRAME);
 			}
 			deviceContext->FrameRect(&CellRectangle, &FrameBrush);

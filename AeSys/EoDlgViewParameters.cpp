@@ -38,7 +38,7 @@ void EoDlgViewParameters::DoDataExchange(CDataExchange* pDX) {
 // EoDlgViewParameters message handlers
 
 void EoDlgViewParameters::OnBnClickedApply() {
-	AeSysView* ActiveView = AeSysView::GetActiveView();
+	auto ActiveView {AeSysView::GetActiveView()};
 
 	EoGsViewport Viewport;
 	ActiveView->ModelViewGetViewport(Viewport);

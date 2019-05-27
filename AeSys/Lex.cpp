@@ -96,8 +96,7 @@ void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) n
 		memmove(&acPic[1], acVal, *aiLen);
 		acPic[++*aiLen] = '\'';
 		acPic[++*aiLen] = '\0';
-	}
-	else {
+	} else {
 		wchar_t cVal[32];
 		long* lVal = (long*) cVal;
 		double* dVal = (double*) cVal;
@@ -126,8 +125,7 @@ void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) n
 				_ltow(*lVal, &acPic[iLnLoc], 10);
 				iVLen = (int) wcslen(&acPic[iLnLoc]);
 				iLnLoc += iVLen;
-			}
-			else {
+			} else {
 				memcpy(dVal, &acVal[iValId], 8);
 				iValId += 8;
 				if (lTyp == TOK_REAL) {
@@ -150,14 +148,15 @@ void lex::ConvertValToString(LPTSTR acVal, CD* arCD, LPTSTR acPic, int* aiLen) n
 			if (iLen != 1 && (i1 % iDim) == iDim - 1)
 				acPic[iLnLoc++] = ']';
 		}
-		if (iDim == iLen)
+		if (iDim == iLen) {
 			*aiLen = iLnLoc - 1;
-		else {
+		} else {
 			acPic[iLnLoc] = ']';
 			*aiLen = iLnLoc;
 		}
 	}
 }
+
 void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) noexcept {
 	if (aiTyp == aiTypReq) return;
 
@@ -171,8 +170,7 @@ void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) noexc
 		if (aiTypReq == TOK_INTEGER) {
 			piVal[0] = _wtoi(szVal);
 			*alDef = MAKELONG(1, 1);
-		}
-		else {
+		} else {
 			pdVal[0] = _wtof(szVal);
 			*alDef = MAKELONG(1, 2);
 		}
@@ -180,13 +178,11 @@ void lex::ConvertValTyp(int aiTyp, int aiTypReq, long* alDef, void* apVal) noexc
 	else if (aiTyp == TOK_INTEGER) {
 		if (aiTypReq == TOK_STRING) {
 			// integer to string
-		}
-		else {
+		} else {
 			pdVal[0] = static_cast<double>(piVal[0]);
 			*alDef = MAKELONG(1, 2);
 		}
-	}
-	else {
+	} else {
 		if (aiTypReq == TOK_STRING) {
 			// real to string
 		}
@@ -213,8 +209,7 @@ void lex::ConvertStringToVal(int aiTyp, long alDef, LPTSTR aszVal, long* alDefRe
 		else
 			throw L"String format conversion error";
 		*alDefReq = MAKELONG(1, 1);
-	}
-	else {
+	} else {
 		double *pVal = (double *) aVal;
 
 		if (iTyp == TOK_INTEGER) {
@@ -276,8 +271,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 			iTyp1 = iTokTyp;
 			lDef1 = lValues[iValLoc[iTokLoc]];
 			memcpy(cOp1, &lValues[iValLoc[iTokLoc] + 1], HIWORD(lDef1) * 4);
-		}
-		else { // Token is an operator .. Pop an operand from operand stack
+		} else { // Token is an operator .. Pop an operand from operand stack
 			if (iOpStkTop == 0) throw L"Operand stack is empty";
 
 			iTyp1 = iOpStkTyp[iOpStkTop];
@@ -318,8 +312,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 					ConvertValTyp(iTyp1, iTyp, &lDef1, lOp1);
 					iTyp1 = iTyp;
 					iLen1 = HIWORD(lDef1);
-				}
-				else {
+				} else {
 					iTyp = EoMin(iTyp1, TOK_REAL);
 					if (iTyp2 < iTyp) { // Convert second operand
 						ConvertValTyp(iTyp2, iTyp, &lDef2, lOp2);
@@ -335,8 +328,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 						wcscpy(cOp1, _tcscat(cOp2, cOp1));
 						iLen1 = 1 + (iDim - 1) / 4;
 						lDef1 = MAKELONG(iDim, iLen1);
-					}
-					else {
+					} else {
 						if (iTyp1 == TOK_INTEGER)
 							lOp1[0] += lOp2[0];
 						else
@@ -352,9 +344,9 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 				}
 				else if (iTokTyp == TOK_MULTIPLY) {
 					if (iTyp1 == TOK_STRING) throw L"Can not mutiply strings";
-					if (iTyp1 == TOK_INTEGER)
+					if (iTyp1 == TOK_INTEGER) {
 						lOp1[0] *= lOp2[0];
-					else {
+					} else {
 						if (iTyp1 == TOK_REAL)
 							iTyp1 = iTyp2;
 						else if (iTyp2 == TOK_REAL)
@@ -713,9 +705,9 @@ LPTSTR lex::ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) noexc
 				break;
 			}
 		}
-		else if (isalnum(*pIn))
+		else if (isalnum(*pIn)) {
 			;
-		else { // allow some peg specials
+		} else { // allow some peg specials
 			if (!(*pIn == '_' || *pIn == '$' || *pIn == '.' || *pIn == '-' || *pIn == ':' || *pIn == '\\'))
 				break;
 		}

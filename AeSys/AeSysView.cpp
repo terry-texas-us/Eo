@@ -3272,23 +3272,23 @@ void AeSysView::OnPrimPerpJump() {
 void AeSysView::OnHelpKey() {
 	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/menu_mode.htm", HH_DISPLAY_TOPIC, NULL);
 }
-AeSysView* AeSysView::GetActiveView(void) {
-	const CMDIFrameWndEx* MDIFrameWnd = (CMDIFrameWndEx*) AfxGetMainWnd();
 
-	if (MDIFrameWnd == NULL) {
-		return NULL;
-	}
+AeSysView* AeSysView::GetActiveView() {
+	const auto MDIFrameWnd {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};
+
+	if (MDIFrameWnd == nullptr) { return nullptr; }
+
 	const CMDIChildWndEx* MDIChildWnd = DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIFrameWnd->MDIGetActive());
 
-	if (MDIChildWnd == NULL) {
-		return NULL;
-	}
-	CView* View = MDIChildWnd->GetActiveView();
+	if (MDIChildWnd == nullptr) { return nullptr; }
 
-	if (!View->IsKindOf(RUNTIME_CLASS(AeSysView))) { // View is the wrong kind (this could occur with splitter windows, or additional views in a single document.
-		return NULL;
-	}
-	return (AeSysView*) View;
+	auto View {MDIChildWnd->GetActiveView()};
+
+	// View can be wrong kind with splitter windows, or additional views in a single document.
+
+	if (!View->IsKindOf(RUNTIME_CLASS(AeSysView))) { return nullptr; }
+
+	return dynamic_cast<AeSysView*>(View);
 }
 
 void AeSysView::OnUpdateViewOdometer(CCmdUI* pCmdUI) {

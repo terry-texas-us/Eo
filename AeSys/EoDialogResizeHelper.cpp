@@ -49,27 +49,23 @@ void EoDialogResizeHelper::OnSize() {
 			// might go easier ;-)
 			if (hFix & kLeft) {
 				currCtrlSize.left = it->m_origSize.left;
-			} 
-			else {
+			} else {
 				currCtrlSize.left = ((hFix & kWidth) && (hFix & kRight)) ? (it->m_origSize.left + currParentSize.Width() - m_origParentSize.Width()) : (long) (it->m_origSize.left * xRatio);
 			}
 			if (hFix & kRight) {
 				currCtrlSize.right = it->m_origSize.right + currParentSize.Width() - m_origParentSize.Width();
-			} 
-			else {
+			} else {
 				currCtrlSize.right = (hFix & kWidth) ? (currCtrlSize.left + it->m_origSize.Width()) : (long) (it->m_origSize.right * xRatio);
 			}
 
 			if (vFix & kTop) {
 				currCtrlSize.top = it->m_origSize.top;
-			}
-			else {
+			} else {
 				currCtrlSize.top = ((vFix & kHeight) && (vFix & kBottom)) ? (it->m_origSize.top + currParentSize.Height() - m_origParentSize.Height()) : (long) (it->m_origSize.top * yRatio);
 			}
 			if (vFix & kBottom) {
 				currCtrlSize.bottom = it->m_origSize.bottom + currParentSize.Height() - m_origParentSize.Height();
-			}
-			else {
+			} else {
 				currCtrlSize.bottom = (vFix & kHeight) ? (currCtrlSize.top + it->m_origSize.Height()) : (long) (it->m_origSize.bottom * yRatio);
 			}
 			// resize child window
