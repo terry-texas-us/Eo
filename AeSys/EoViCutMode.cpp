@@ -7,8 +7,9 @@ OdGePoint3d rPrvPos;
 
 void AeSysView::OnCutModeOptions(void) noexcept {
 }
+
 void AeSysView::OnCutModeTorch(void) {
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
 
 	const auto pt {GetCursorPosition()};
 	auto Groups {new EoDbGroupList};
@@ -43,6 +44,7 @@ void AeSysView::OnCutModeTorch(void) {
 	Document->UpdateGroupsInAllViews(EoDb::kGroupsSafe, Groups);
 	delete Groups;
 }
+
 void AeSysView::OnCutModeSlice(void) {
 	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP2) {
@@ -120,10 +122,10 @@ void AeSysView::OnCutModeField(void) {
 		EoDbGroup* Group;
 		EoDbPrimitive* Primitive;
 
-		int 	iInts;
+		int iInts;
 		OdGePoint3d	Intersections[10];
 
-		AeSysDoc* Document = GetDocument();
+		auto Document {GetDocument()};
 
 		const OdInt16 ColorIndex = pstate.ColorIndex();
 		const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
@@ -197,7 +199,7 @@ void AeSysView::OnCutModeClip(void) {
 		const OdInt16 ColorIndex = pstate.ColorIndex();
 		const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 
-		AeSysDoc* Document = GetDocument();
+		auto Document {GetDocument()};
 
 		EoGeMatrix3d TransformMatrix = ModelViewMatrix();
 		TransformMatrix.invert();

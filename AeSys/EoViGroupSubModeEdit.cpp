@@ -15,18 +15,20 @@ void AeSysView::OnModeGroupEdit() {
 		theApp.LoadModeResources(ID_MODE_GROUP_EDIT);
 	}
 }
-void AeSysView::DoEditGroupCopy() {
-	AeSysDoc* Document = GetDocument();
-	if (m_SubModeEditGroup != 0) {
-		EoDbGroup* Group = new EoDbGroup(*m_SubModeEditGroup);
 
-		Document->AddWorkLayerGroup(Group);
+void AeSysView::DoEditGroupCopy() {
+
+	if (m_SubModeEditGroup != 0) {
+		auto Group {new EoDbGroup(*m_SubModeEditGroup)};
+
+		GetDocument()->AddWorkLayerGroup(Group);
 		m_SubModeEditGroup = Group;
 
-		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 		m_tmEditSeg.setToIdentity();
 	}
 }
+
 void AeSysView::DoEditGroupEscape() {
 	if (m_SubModeEditGroup != 0) {
 		m_tmEditSeg.invert();
@@ -40,8 +42,9 @@ void AeSysView::DoEditGroupEscape() {
 		theApp.LoadModeResources(theApp.PrimaryMode());
 	}
 }
+
 void AeSysView::DoEditGroupTransform(OdUInt16 operation) {
-	AeSysDoc* Document = GetDocument();
+
 	if (m_SubModeEditGroup != 0) {
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(-m_SubModeEditBeginPoint.asVector());
@@ -67,15 +70,17 @@ void AeSysView::DoEditGroupTransform(OdUInt16 operation) {
 		OriginToBeginPointMatrix.setToTranslation(m_SubModeEditBeginPoint.asVector());
 		TransformMatrix.preMultBy(OriginToBeginPointMatrix);
 
-		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 		m_SubModeEditGroup->TransformBy(TransformMatrix);
-		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
+		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
 
 		m_tmEditSeg.preMultBy(TransformMatrix);
 	}
 }
+
 void AeSysView::PreviewGroupEdit() {
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
+
 	if (m_SubModeEditGroup != 0) {
 		m_SubModeEditEndPoint = GetCursorPosition();
 		EoGeMatrix3d tm;

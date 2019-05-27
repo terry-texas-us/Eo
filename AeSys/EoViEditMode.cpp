@@ -56,15 +56,12 @@ void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) {
 }
 
 void AeSysView::OnEditModePivot() {
-	AeSysDoc* Document = GetDocument();
-
-	const OdGePoint3d pt = GetCursorPosition();
-	Document->SetTrapPivotPoint(pt);
-	// pSetSegPos(pTRAP_PVT_MRK_ID, pt);
+	const auto CurrentPnt {GetCursorPosition()};
+	GetDocument()->SetTrapPivotPoint(CurrentPnt);
 }
+
 void AeSysView::OnEditModeRotccw() {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d PivotPoint(Document->TrapPivotPoint());
+	OdGePoint3d PivotPoint(GetDocument()->TrapPivotPoint());
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -74,12 +71,11 @@ void AeSysView::OnEditModeRotccw() {
 	EoGeMatrix3d OriginToPivotPointMatrix;
 	OriginToPivotPointMatrix.setToTranslation(PivotPoint.asVector());
 	TransformMatrix.preMultBy(OriginToPivotPointMatrix);
-	Document->TransformTrappedGroups(TransformMatrix);
+	GetDocument()->TransformTrappedGroups(TransformMatrix);
 }
 
 void AeSysView::OnEditModeRotcw() {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d PivotPoint(Document->TrapPivotPoint());
+	OdGePoint3d PivotPoint(GetDocument()->TrapPivotPoint());
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -90,48 +86,45 @@ void AeSysView::OnEditModeRotcw() {
 	EoGeMatrix3d OriginToPivotPointMatrix;
 	OriginToPivotPointMatrix.setToTranslation(PivotPoint.asVector());
 	TransformMatrix.preMultBy(OriginToPivotPointMatrix);
-	Document->TransformTrappedGroups(TransformMatrix);
+	GetDocument()->TransformTrappedGroups(TransformMatrix);
 }
-void AeSysView::OnEditModeMove() {
-	AeSysDoc* Document = GetDocument();
 
-	const OdGePoint3d pt = GetCursorPosition();
+void AeSysView::OnEditModeMove() {
+	auto Document {GetDocument()};
+	const auto CurrentPnt {GetCursorPosition()};
+
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
-		RubberBandingStartAtEnable(pt, Lines);
-	}
-	else {
+		RubberBandingStartAtEnable(CurrentPnt, Lines);
+	} else {
 		EoGeMatrix3d tm;
-		tm.setToTranslation(pt - Document->TrapPivotPoint());
+		tm.setToTranslation(CurrentPnt - Document->TrapPivotPoint());
 
 		ModeLineUnhighlightOp(m_PreviousOp);
 		RubberBandingDisable();
 		Document->TransformTrappedGroups(tm);
 	}
-	Document->SetTrapPivotPoint(pt);
-	// pSetSegPos(pTRAP_PVT_MRK_ID, pt);
+	Document->SetTrapPivotPoint(CurrentPnt);
 }
 
 void AeSysView::OnEditModeCopy() {
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
+	const auto CurrentPnt {GetCursorPosition()};
 
-	const OdGePoint3d pt = GetCursorPosition();
 	if (m_PreviousOp != ID_OP5) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP5);
-		RubberBandingStartAtEnable(pt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, Lines);
 	}
 	else {
 		ModeLineUnhighlightOp(m_PreviousOp);
 		RubberBandingDisable();
-		Document->CopyTrappedGroups(pt - Document->TrapPivotPoint());
+		Document->CopyTrappedGroups(CurrentPnt - Document->TrapPivotPoint());
 	}
-	Document->SetTrapPivotPoint(pt);
-	// pSetSegPos(pTRAP_PVT_MRK_ID, pt);
+	Document->SetTrapPivotPoint(CurrentPnt);
 }
 
 void AeSysView::OnEditModeFlip() {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d PivotPoint(Document->TrapPivotPoint());
+	OdGePoint3d PivotPoint(GetDocument()->TrapPivotPoint());
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -141,12 +134,11 @@ void AeSysView::OnEditModeFlip() {
 	EoGeMatrix3d OriginToPivotPointMatrix;
 	OriginToPivotPointMatrix.setToTranslation(PivotPoint.asVector());
 	TransformMatrix.preMultBy(OriginToPivotPointMatrix);
-	Document->TransformTrappedGroups(TransformMatrix);
+	GetDocument()->TransformTrappedGroups(TransformMatrix);
 }
 
 void AeSysView::OnEditModeReduce() {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d PivotPoint(Document->TrapPivotPoint());
+	auto PivotPoint {GetDocument()->TrapPivotPoint()};
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -156,12 +148,11 @@ void AeSysView::OnEditModeReduce() {
 	EoGeMatrix3d OriginToPivotPointMatrix;
 	OriginToPivotPointMatrix.setToTranslation(PivotPoint.asVector());
 	TransformMatrix.preMultBy(OriginToPivotPointMatrix);
-	Document->TransformTrappedGroups(TransformMatrix);
+	GetDocument()->TransformTrappedGroups(TransformMatrix);
 }
 
 void AeSysView::OnEditModeEnlarge() {
-	AeSysDoc* Document = GetDocument();
-	OdGePoint3d PivotPoint(Document->TrapPivotPoint());
+	auto PivotPoint {GetDocument()->TrapPivotPoint()};
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -171,7 +162,7 @@ void AeSysView::OnEditModeEnlarge() {
 	EoGeMatrix3d OriginToPivotPointMatrix;
 	OriginToPivotPointMatrix.setToTranslation(PivotPoint.asVector());
 	TransformMatrix.preMultBy(OriginToPivotPointMatrix);
-	Document->TransformTrappedGroups(TransformMatrix);
+	GetDocument()->TransformTrappedGroups(TransformMatrix);
 }
 
 void AeSysView::OnEditModeReturn() noexcept {

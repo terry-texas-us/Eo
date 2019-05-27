@@ -53,8 +53,8 @@ void AeSysView::OnDimensionModeOptions(void) {
 }
 
 void AeSysView::OnDimensionModeArrow(void) {
-	AeSysDoc* Document = GetDocument();
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	auto Document {GetDocument()};
+	const auto CurrentPnt {GetCursorPosition()};
 
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
@@ -68,6 +68,7 @@ void AeSysView::OnDimensionModeArrow(void) {
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+
 			if (Primitive->Is(EoDb::kLinePrimitive)) {
 				auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 				TestLine = LinePrimitive->LineSeg();
@@ -84,6 +85,7 @@ void AeSysView::OnDimensionModeArrow(void) {
 				OdGePoint3d pt;
 
 				EoDbGroup* NewGroup = new EoDbGroup;
+
 				if (dRel <= .5) {
 					GenerateLineEndItem(1, .1, TestLine.endPoint(), TestLine.startPoint(), NewGroup);
 					pt = TestLine.startPoint();
@@ -178,7 +180,7 @@ void AeSysView::OnDimensionModeDLine(void) {
 }
 
 void AeSysView::OnDimensionModeDLine2(void) {
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
 	const OdGePoint3d CurrentPnt = GetCursorPosition();
 	if (PreviousDimensionCommand == 0) {
 		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
@@ -250,8 +252,8 @@ void AeSysView::OnDimensionModeExten(void) {
 	}
 }
 void AeSysView::OnDimensionModeRadius(void) {
-	AeSysDoc* Document = GetDocument();
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	auto Document {GetDocument()};
+	const auto CurrentPnt {GetCursorPosition()};
 
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const OdGePoint3d ptEnd = DetPt();
@@ -287,8 +289,8 @@ void AeSysView::OnDimensionModeRadius(void) {
 	}
 }
 void AeSysView::OnDimensionModeDiameter() {
-	AeSysDoc* Document = GetDocument();
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	auto Document {GetDocument()};
+	const auto CurrentPnt {GetCursorPosition()};
 
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const OdGePoint3d ptEnd = DetPt();
@@ -326,9 +328,9 @@ void AeSysView::OnDimensionModeDiameter() {
 	}
 }
 void AeSysView::OnDimensionModeAngle() {
-	CDC* DeviceContext = GetDC();
+	auto DeviceContext {GetDC()};
 
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
 
 	static OdGePoint3d rProjPt[2];

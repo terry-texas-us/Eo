@@ -594,8 +594,7 @@ void AeSysView::OnSize(UINT type, int cx, int cy) {
 }
 
 void AeSysView::OnDestroy() {
-	AeSysDoc* Document = GetDocument();
-	Document->OnCloseVectorizer(this);
+	GetDocument()->OnCloseVectorizer(this);
 
 	m_editor.Uninitialize();
 	destroyDevice();
@@ -785,32 +784,37 @@ OdGiContext::PStyleType AeSysView::plotStyleType() const {
 	}
 	return getDatabase()->getPSTYLEMODE() ? kPsByColor : kPsByName;
 }
+
 void AeSysView::plotStyle(OdDbStub * psNameId, OdPsPlotStyleData & plotStyleData) const {
 	OdGiContextForDbDatabase::plotStyle(psNameId, plotStyleData);
 	if (m_bPlotGrayscale) { // #4203 : make grayscale preview if printer doesn't support color mode
 		plotStyleData.setColorPolicy(plotStyleData.colorPolicy() | 2);
 	}
 }
-void AeSysView::preparePlotstyles(const OdDbLayout * pLayout, bool bForceReload) {
-	if (m_pPlotStyleTable.get() && !bForceReload) {
-		return;
-	}
-	const OdDbDatabase* Database = GetDocument()->m_DatabasePtr;
+
+void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
+	
+	if (m_pPlotStyleTable.get() && !bForceReload) { return; }
+
+	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
 	OdDbLayoutPtr pCurrLayout;
-	if (!pLayout) {
+	
+	if (!layout) {
 		OdDbBlockTableRecordPtr pLayoutBlock = Database->getActiveLayoutBTRId().safeOpenObject();
 		pCurrLayout = pLayoutBlock->getLayoutId().safeOpenObject();
-		pLayout = pCurrLayout;
+		layout = pCurrLayout;
 	}
-	m_bPlotPlotstyle = pLayout->plotPlotStyles();
-	m_bShowPlotstyle = pLayout->showPlotStyles();
+	m_bPlotPlotstyle = layout->plotPlotStyles();
+	m_bShowPlotstyle = layout->showPlotStyles();
 
 	if (isPlotGeneration() ? m_bPlotPlotstyle : m_bShowPlotstyle) {
-		OdString pssFile(pLayout->getCurrentStyleSheet());
+		OdString pssFile(layout->getCurrentStyleSheet());
+
 		if (!pssFile.isEmpty()) {
-			OdString testpath = Database->appServices()->findFile(pssFile);
+			auto testpath {Database->appServices()->findFile(pssFile)};
+
 			if (!testpath.isEmpty()) {
-				OdStreamBufPtr pFileBuf = odSystemServices()->createFile(testpath);
+				auto pFileBuf {odSystemServices()->createFile(testpath)};
 
 				if (pFileBuf.get()) {
 					loadPlotStyleTable(pFileBuf);
@@ -2121,9 +2125,7 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 					switch (m_mode) {
 						case kQuiescent:
 							if (m_response.m_string.isEmpty()) {
-								// <command_console>
 								GetDocument()->ExecuteCommand(GetDocument()->RecentCommandName());
-								// </command_console>
 							} else {
 								GetDocument()->ExecuteCommand(m_response.m_string);
 							}
@@ -4000,7 +4002,7 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 }
 void AeSysView::OnInsertBlockreference() {
 	// <tas="Just a placeholder for BlockReference. It works but position, scale & rotation need to be specified."</tas>
-	AeSysDoc* Document = GetDocument();
+	auto Document {GetDocument()};
 
 	if (Document->BlockTableSize() > 0) {
 		EoDlgBlockInsert Dialog(Document);
