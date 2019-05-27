@@ -188,8 +188,6 @@ void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
 BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)
 END_MESSAGE_MAP()
 
-// AeSys
-
 BEGIN_MESSAGE_MAP(AeSysApp, CWinAppEx)
 	ON_COMMAND(ID_APP_ABOUT, &AeSysApp::OnAppAbout)
 	// Standard file based document commands
@@ -450,7 +448,7 @@ static OdString FindConfigFile(const OdString& configType, OdString file, OdDbSy
 	return OdString::kEmpty;
 }
 
-AeSysApp theApp; // The one and only AeSys object
+AeSysApp theApp;
 
 const ODCOLORREF* AeSysApp::curPalette() const {
 	return odcmAcadPalette(m_background);
@@ -1415,7 +1413,7 @@ BOOL AeSysApp::InitInstance() {
 	CFullCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
 
-//	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew){ CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
+	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew){ CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
 
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);

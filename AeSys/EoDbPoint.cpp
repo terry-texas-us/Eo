@@ -317,7 +317,7 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
 	auto ResourceBuffer = point->xData(L"AeSys");
 
 	if (!ResourceBuffer.isNull()) {
-		auto Name {ResourceBuffer->getString()}; // not testing for expected value L"AeSys"
+		auto Name {ResourceBuffer->getString()};
 		ResourceBuffer = ResourceBuffer->next();
 		while (!ResourceBuffer.isNull()) {
 			Data[NumberOfDatums++] = ResourceBuffer->getDouble(); // not testing for more than 3 datums. boom
@@ -342,12 +342,12 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbF
 	Point->setPosition(file.ReadPoint3d());
 
 	const auto NumberOfDatums {file.ReadUInt16()};
+	
 	if (NumberOfDatums > 0) {
-
-		OdResBufPtr ResourceBuffer = OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys");
+		auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 
 		double Data;
-		for (OdUInt16 n = 0; n < NumberOfDatums; n++) {
+		for (auto n = 0; n < NumberOfDatums; n++) {
 			Data = file.ReadDouble();
 			ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data));
 		}

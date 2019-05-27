@@ -451,7 +451,6 @@ struct CDocTemplateEx : CDocTemplate {
 };
 
 void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
-	// <tas="likely misused in AeSys environment"</tas>
 	theApp.setRecentGsDevicePath(vectorizerPath);
 
 	CDocTemplateEx* DocTemplate = (CDocTemplateEx*) GetDocTemplate();

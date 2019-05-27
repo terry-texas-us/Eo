@@ -168,7 +168,7 @@ public:
 //	void setStatusText(LPCTSTR msg);
 //	void setStatusText(int nCol, LPCTSTR msg);
 
-	void SetStatusPaneTextAt(int index, LPCWSTR newText); // AeSys
+	void SetStatusPaneTextAt(int index, LPCWSTR newText);
 
 	void addRef() noexcept override /* ExHostAppServices */ {}
 	void release() noexcept override /* ExHostAppServices */ {}
