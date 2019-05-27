@@ -47,8 +47,8 @@ BOOL EoDlgModeRevise::OnInitDialog() {
 	return TRUE;
 }
 void EoDlgModeRevise::OnOK() {
-	AeSysDoc* Document = AeSysDoc::GetDoc();
-	OdDbDatabasePtr Database = Document->m_DatabasePtr;
+	auto Document {AeSysDoc::GetDoc()};
+	auto Database {Document->m_DatabasePtr};
 
 	CString TextString;
 	m_TextEditControl.GetWindowTextW(TextString);

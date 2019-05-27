@@ -3883,17 +3883,20 @@ void AeSysView::SetWorldScale(const double scale) {
 		MainFrame->GetPropertiesPane().GetActiveViewScaleProperty().SetValue(m_WorldScale);
 	}
 }
+
 void AeSysView::OnViewStateInformation() {
 	m_ViewStateInformation = !m_ViewStateInformation;
 	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
+
 void AeSysView::OnUpdateViewStateinformation(CCmdUI * pCmdUI) {
 	pCmdUI->SetCheck(m_ViewStateInformation);
 }
+
 void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 	if (m_ViewStateInformation) {
-		AeSysDoc* Document = AeSysDoc::GetDoc();
-		CDC* DeviceContext = GetDC();
+		auto Document {AeSysDoc::GetDoc()};
+		auto DeviceContext {GetDC()};
 
 		CFont* Font = (CFont*) DeviceContext->SelectStockObject(ANSI_VAR_FONT);
 		const UINT nTextAlign = DeviceContext->SetTextAlign(TA_LEFT | TA_TOP);

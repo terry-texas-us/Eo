@@ -102,16 +102,17 @@ void __End(AeSysView* view, CDC* deviceContext, OdInt16 linetypeIndex) {
 		}
 	} else {
 		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
-		OdDbDatabasePtr Database = AeSysDoc::GetDoc()->m_DatabasePtr;
+		auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
 
-		OdDbLinetypeTablePtr Linetypes = Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
-		OdDbLinetypeTableRecordPtr Linetype = Linetypes->getAt(Name).safeOpenObject(OdDb::kForRead);
+		OdDbLinetypeTablePtr Linetypes {Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+		OdDbLinetypeTableRecordPtr Linetype {Linetypes->getAt(Name).safeOpenObject(OdDb::kForRead)};
 
 		pstate.SetLinetypeIndexPs(deviceContext, 1);
 		__Display(view, deviceContext, pts_, Linetype);
 		pstate.SetLinetypeIndexPs(deviceContext, linetypeIndex);
 	}
 }
+
 void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, size_t numberOfPoints, OdGePoint3dArray& points) {
 	OdGeVector3d MajorAxis = ComputeArbitraryAxis(planeNormal);
 	MajorAxis.normalize();

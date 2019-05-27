@@ -5,7 +5,7 @@ int AeSysDoc::GetBlockReferenceCount(const CString& name) {
 	int Count = 0;
 
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
-		EoDbLayer* Layer = GetLayerAt(LayerIndex);
+		auto Layer {GetLayerAt(LayerIndex)};
 		Count += Layer->GetBlockReferenceCount(name);
 	}
 	CString Key;

@@ -201,7 +201,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 		const OdDbObjectId EntityObjectId = EntityIterator->objectId();
 		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
 
-		EoDbLayer* Layer = document->GetLayerAt(Entity->layer());
+		auto Layer {document->GetLayerAt(Entity->layer())};
 
 		EoDbGroup* Group = new EoDbGroup();
 		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
@@ -239,7 +239,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 		OdDbObjectId EntityObjectId = EntityIterator->objectId();
 		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
 
-		EoDbLayer* Layer = document->GetLayerAt(Entity->layer());
+		auto Layer {document->GetLayerAt(Entity->layer())};
 
 		EoDbGroup* Group = new EoDbGroup();
 		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;

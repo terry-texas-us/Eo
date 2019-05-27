@@ -213,7 +213,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	const OdUInt16 NumberOfLayers = ReadUInt16();
 	
 	for (OdUInt16 LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
-		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
+		auto Layer {document->GetLayerAt(LayerIndex)};
 		
 		if (!Layer) { return; }
 
@@ -318,7 +318,8 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	WriteUInt16(OdUInt16(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
-		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
+		auto Layer {document->GetLayerAt(LayerIndex)};
+
 		if (Layer->IsResident()) {
 			WriteString(Layer->Name());
 			WriteUInt16(Layer->StateFlags() & 0x003c); // used to be separate set of state flags for tracings (only used bits 3-6)
@@ -380,7 +381,8 @@ void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 	WriteUInt16(OdUInt16(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
-		EoDbLayer* Layer = document->GetLayerAt(LayerIndex);
+		auto Layer {document->GetLayerAt(LayerIndex)};
+		
 		if (Layer->IsInternal()) {
 			WriteUInt16(OdUInt16(Layer->GetCount()));
 
@@ -389,9 +391,9 @@ void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 				EoDbGroup* Group = Layer->GetNext(Position);
 				Group->Write(*this);
 			}
-		}
-		else
+		} else {
 			WriteUInt16(0);
+		}
 	}
 	WriteUInt16(kEndOfSection);
 }

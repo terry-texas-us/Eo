@@ -35,8 +35,8 @@ BOOL EoDlgModeLetter::OnInitDialog() {
 	return TRUE;
 }
 void EoDlgModeLetter::OnOK() {
-	AeSysDoc* Document = AeSysDoc::GetDoc();
-	OdDbDatabasePtr Database = Document->m_DatabasePtr;
+	auto Document {AeSysDoc::GetDoc()};
+	auto Database {Document->m_DatabasePtr};
 
 	const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 	EoGeReferenceSystem ReferenceSystem(m_Point, AeSysView::GetActiveView(), CharacterCellDefinition);

@@ -30,9 +30,10 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 			if (CFile::GetStatus(FilePath, FileStatus)) {
 				EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
 				if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
-					EoDbLayer* Layer = Document->GetLayerAt(FilePath);
+					auto Layer {Document->GetLayerAt(FilePath)};
 					HWND PreviewWindow = ::GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
-					if (Layer != 0) {
+
+					if (Layer != nullptr) {
 						_WndProcPreviewUpdate(PreviewWindow, Layer);
 					} else {
 						Layer = new EoDbLayer(L"",  EoDbLayer::kIsResident | EoDbLayer::kIsInternal | EoDbLayer::kIsActive);
@@ -75,12 +76,15 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 		case IDC_MAP: {
 			bool FileOpenSuccess = false;
 
-			EoDbLayer* Layer = Document->GetLayerAt(Name);
-			if (Layer != 0) {
-				if (Layer->IsCurrent())
+			auto Layer {Document->GetLayerAt(Name)};
+			
+			if (Layer != nullptr) {
+
+				if (Layer->IsCurrent()) {
 					theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
-				else
+				} else {
 					FileOpenSuccess = true;
+				}
 			} else {
 				OdDbLayerTablePtr Layers = Document->LayerTable(OdDb::kForWrite);
 				OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
@@ -119,12 +123,15 @@ UINT CALLBACK OFNHookProcFileTracing(HWND hDlg, UINT uiMsg, WPARAM wParam, LPARA
 		case IDC_VIEW:
 			bool FileOpenSuccess = false;
 
-			EoDbLayer* Layer = Document->GetLayerAt(Name);
-			if (Layer != 0) {
-				if (Layer->IsCurrent())
+			auto Layer {Document->GetLayerAt(Name)};
+
+			if (Layer != nullptr) {
+
+				if (Layer->IsCurrent()) {
 					theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
-				else
+				} else {
 					FileOpenSuccess = true;
+				}
 			} else {
 				OdDbLayerTablePtr Layers = Document->LayerTable(OdDb::kForWrite);
 				OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();

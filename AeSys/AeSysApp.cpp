@@ -921,7 +921,7 @@ double AeSysApp::DimensionLength() const  noexcept {
 	return (m_DimensionLength);
 }
 void AeSysApp::EditColorPalette() {
-	CHOOSECOLOR 	cc;
+	CHOOSECOLOR cc;
 	::ZeroMemory(&cc, sizeof(CHOOSECOLOR));
 	cc.lStructSize = sizeof(CHOOSECOLOR);
 

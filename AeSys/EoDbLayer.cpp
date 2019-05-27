@@ -52,7 +52,7 @@ void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap) {
 	ATLTRACE2(atlTraceGeneral, 1, L"EoDbLayer<%08.8lx>::Display(%08.8lx, %08.8lx, %i) + Name: %s\n", this, view, deviceContext, identifyTrap, (LPCWSTR) this->Name());
 
-	AeSysDoc* Document = AeSysDoc::GetDoc();
+	auto Document {AeSysDoc::GetDoc()};
 
 	try {
 		if (!IsOff()) {

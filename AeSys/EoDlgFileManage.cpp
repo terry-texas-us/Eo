@@ -273,7 +273,7 @@ BOOL EoDlgFileManage::OnInitDialog(void) {
 
 	OdDbLayerTablePtr Layers = m_Document->LayerTable(OdDb::kForRead);
 	for (int LayerIndex = 0; LayerIndex < m_Document->GetLayerTableSize(); LayerIndex++) {
-		const EoDbLayer* Layer = m_Document->GetLayerAt(LayerIndex);
+		const auto Layer {m_Document->GetLayerAt(LayerIndex)};
 
 		m_LayersList.InsertItem(LayerIndex, Layer->Name());
 		m_LayersList.SetItemData(LayerIndex, DWORD_PTR(Layer));

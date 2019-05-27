@@ -221,9 +221,8 @@ bool EoDbBlockReference::SelectBy(const EoGePoint4d & point, AeSysView * view, O
 
 	EoDbBlock* Block;
 
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {
-		return (bResult);
-	}
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return bResult; }
+
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 
 	POSITION Position = Block->GetHeadPosition();

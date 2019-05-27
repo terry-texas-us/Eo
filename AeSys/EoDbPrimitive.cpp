@@ -199,6 +199,7 @@ OdGeVector3d ComputeNormal(const OdGePoint3d & pointU, const OdGePoint3d & origi
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(OdInt16 linetypeIndex) {
 	const auto Document {AeSysDoc::GetDoc()};
+	
 	if (Document != nullptr) {
 		return EoDbPrimitive::LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
 	}
