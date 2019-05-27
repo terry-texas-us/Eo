@@ -15,7 +15,7 @@ public:
 
 protected:
     void DoDataExchange(CDataExchange* pDX) final;
-    BOOL OnInitDialog(void) final;
+    BOOL OnInitDialog() final;
 
 private:
     int m_OriginalLineWeight;

@@ -525,7 +525,7 @@ public: // Generated message map functions
 	void OnTrapCommandsSquare();
 	void OnTrapCommandsUnblock();
 	// Returns a pointer to the currently active document.
-	static AeSysDoc* GetDoc(void);
+	static AeSysDoc* GetDoc();
 
 protected:
 	DECLARE_MESSAGE_MAP()

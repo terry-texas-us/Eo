@@ -14,7 +14,7 @@ public:
 
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
-	BOOL OnInitDialog(void) final;
+	BOOL OnInitDialog() final;
 
 public:
 	CString m_sText;

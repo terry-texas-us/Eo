@@ -74,7 +74,7 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* pNMHDR, LRE
 	}
 	*result = 0;
 }
-BOOL EoDlgLayerPropertiesManager::OnInitDialog(void) {
+BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	CBitmap Bitmap;

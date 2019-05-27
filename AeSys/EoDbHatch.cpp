@@ -565,37 +565,38 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 }
 
-void EoDbHatch::DisplaySolid(AeSysView * view, CDC * deviceContext) const {
-	size_t NumberOfVertices = m_Vertices.size();
+void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
+	auto NumberOfVertices {m_Vertices.size()};
+	
 	if (NumberOfVertices >= 2) {
 		EoGePoint4dArray Vertices;
 
 		Vertices.SetSize(NumberOfVertices);
 
-		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 			Vertices[VertexIndex] = EoGePoint4d(m_Vertices[VertexIndex], 1.);
 		}
 		view->ModelViewTransformPoints(Vertices);
 		EoGePoint4d::ClipPolygon(Vertices);
 
 		NumberOfVertices = Vertices.GetSize();
-		CPoint* pnt = new CPoint[NumberOfVertices];
+		auto Points {new CPoint[NumberOfVertices]};
 
-		view->DoViewportProjection(pnt, Vertices);
+		view->DoViewportProjection(Points, Vertices);
 
 		if (m_InteriorStyle == EoDbHatch::kSolid) {
 			CBrush Brush(pColTbl[pstate.ColorIndex()]);
-			CBrush* pBrushOld = deviceContext->SelectObject(&Brush);
-			deviceContext->Polygon(pnt, NumberOfVertices);
-			deviceContext->SelectObject(pBrushOld);
+			auto OldBrush {deviceContext->SelectObject(&Brush)};
+			deviceContext->Polygon(Points, NumberOfVertices);
+			deviceContext->SelectObject(OldBrush);
 		} else if (m_InteriorStyle == EoDbHatch::kHollow) {
-			CBrush* pBrushOld = (CBrush*) deviceContext->SelectStockObject(NULL_BRUSH);
-			deviceContext->Polygon(pnt, NumberOfVertices);
-			deviceContext->SelectObject(pBrushOld);
+			auto OldBrush {dynamic_cast<CBrush*>(deviceContext->SelectStockObject(NULL_BRUSH))};
+			deviceContext->Polygon(Points, NumberOfVertices);
+			deviceContext->SelectObject(OldBrush);
 		} else {
-			deviceContext->Polygon(pnt, NumberOfVertices);
+			deviceContext->Polygon(Points, NumberOfVertices);
 		}
-		delete[] pnt;
+		delete[] Points;
 	}
 }
 

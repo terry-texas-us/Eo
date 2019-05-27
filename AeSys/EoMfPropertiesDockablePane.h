@@ -20,7 +20,7 @@ protected:
 	enum WorkspaceTabsSubItems { kTabsStyle, kTabLocation, kTabsAutoColor, kTabIcons, kTabBorderSize, kActiveViewScale };
 
 public:
-	virtual ~EoMfPropertiesDockablePane(void);
+	virtual ~EoMfPropertiesDockablePane();
 
 protected:
 	int OnCreate(LPCREATESTRUCT createStructure);
@@ -30,9 +30,9 @@ protected:
 
 	LRESULT OnPropertyChanged(WPARAM, LPARAM);
 
-	void OnExpandAllProperties(void);
-	void OnProperties1(void);
-	void OnSortProperties(void);
+	void OnExpandAllProperties();
+	void OnProperties1();
+	void OnSortProperties();
 	void OnUpdateExpandAllProperties(CCmdUI* pCmdUI);
 	void OnUpdateProperties1(CCmdUI* pCmdUI);
 	void OnUpdateSortProperties(CCmdUI* pCmdUI);
@@ -40,16 +40,16 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	void AdjustLayout(void) override;
-	void InitializePropertyGrid(void);
-	void SetPropertyGridFont(void);
-	void SetWorkspaceTabsSubItemsState(void);
+	void AdjustLayout() override;
+	void InitializePropertyGrid();
+	void SetPropertyGridFont();
+	void SetWorkspaceTabsSubItemsState();
 
 public:
-	CMFCPropertyGridCtrl& GetPropertyGridCtrl(void) noexcept {
+	CMFCPropertyGridCtrl& GetPropertyGridCtrl() noexcept {
 		return m_PropertyGrid;
 	}
-	CMFCPropertyGridProperty& GetActiveViewScaleProperty(void) {
+	CMFCPropertyGridProperty& GetActiveViewScaleProperty() {
 		return *m_PropertyGrid.FindItemByData(kActiveViewScale);
 	}
 };

@@ -21,7 +21,7 @@ void EoDlgSetText::DoDataExchange(CDataExchange* pDX) {
 	DDX_Text(pDX, IDC_TEXT, m_sText);
 }
 
-BOOL EoDlgSetText::OnInitDialog(void) {
+BOOL EoDlgSetText::OnInitDialog() {
 	if (!m_strTitle.IsEmpty()) {
 		SetWindowTextW(m_strTitle);
 	}

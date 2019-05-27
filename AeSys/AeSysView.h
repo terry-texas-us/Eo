@@ -172,7 +172,7 @@ public: // Methods - virtuals
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
 
-	bool UpdateStringTrackerCursor(void);
+	bool UpdateStringTrackerCursor();
 
 public:
 	enum EStateInformationItem {
@@ -889,7 +889,7 @@ public: // Status & Mode Line
 	OdUInt16 ModeLineHighlightOp(OdUInt16 op);
 	void ModeLineUnhighlightOp(OdUInt16& op);
 
-	CMFCStatusBar& GetStatusBar(void) const;
+	CMFCStatusBar& GetStatusBar() const;
 
 public:
 	void OnBackgroundImageLoad();
@@ -898,7 +898,7 @@ public:
 	void OnFilePlotFull();
 	void OnFilePlotQuarter();
 	void OnFilePrint();
-	void OnFind(void);
+	void OnFind();
 	void On3dViewsBack();
 	void On3dViewsBottom();
 	void On3dViewsFront();

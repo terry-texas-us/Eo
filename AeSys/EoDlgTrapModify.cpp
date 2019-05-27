@@ -54,7 +54,7 @@ void EoDlgTrapModify::OnOK() {
 
 	CDialog::OnOK();
 }
-void EoDlgTrapModify::ModifyPolygons(void) {
+void EoDlgTrapModify::ModifyPolygons() {
 	POSITION Position = m_Document->GetFirstTrappedGroupPosition();
 	while (Position != 0) {
 		const EoDbGroup* Group = m_Document->GetNextTrappedGroup(Position);

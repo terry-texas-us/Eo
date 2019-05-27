@@ -33,7 +33,7 @@ void EoDlgLineWeight::DoDataExchange(CDataExchange* pDX) {
 }
 
 
-BOOL EoDlgLineWeight::OnInitDialog(void) {
+BOOL EoDlgLineWeight::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	m_LineWeightList.InsertString(0, CMainFrame::StringByLineWeight(OdDb::kLnWtByLwDefault, false));

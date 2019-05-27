@@ -44,7 +44,7 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 	return (point);
 }
 
-void AeSysView::OnDimensionModeOptions(void) {
+void AeSysView::OnDimensionModeOptions() {
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -52,7 +52,7 @@ void AeSysView::OnDimensionModeOptions(void) {
 	PreviousDimensionPosition = GetCursorPosition();
 }
 
-void AeSysView::OnDimensionModeArrow(void) {
+void AeSysView::OnDimensionModeArrow() {
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
 
@@ -135,7 +135,7 @@ void AeSysView::OnDimensionModeLine() {
 	RubberBandingStartAtEnable(CurrentPnt, Lines);
 }
 
-void AeSysView::OnDimensionModeDLine(void) {
+void AeSysView::OnDimensionModeDLine() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousDimensionCommand == ID_OP3 || PreviousDimensionCommand == ID_OP4) {
 		RubberBandingDisable();
@@ -179,7 +179,7 @@ void AeSysView::OnDimensionModeDLine(void) {
 	RubberBandingStartAtEnable(CurrentPnt, Lines);
 }
 
-void AeSysView::OnDimensionModeDLine2(void) {
+void AeSysView::OnDimensionModeDLine2() {
 	auto Document {GetDocument()};
 	const OdGePoint3d CurrentPnt = GetCursorPosition();
 	if (PreviousDimensionCommand == 0) {
@@ -223,7 +223,7 @@ void AeSysView::OnDimensionModeDLine2(void) {
 	SetCursorPosition(CurrentPnt);
 	RubberBandingStartAtEnable(CurrentPnt, Lines);
 }
-void AeSysView::OnDimensionModeExten(void) {
+void AeSysView::OnDimensionModeExten() {
 	auto Document {GetDocument()};
 	auto CurrentPnt {GetCursorPosition()};
 	if (PreviousDimensionCommand != ID_OP5) {
@@ -251,7 +251,7 @@ void AeSysView::OnDimensionModeExten(void) {
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 	}
 }
-void AeSysView::OnDimensionModeRadius(void) {
+void AeSysView::OnDimensionModeRadius() {
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
 
@@ -441,7 +441,7 @@ void AeSysView::OnDimensionModeAngle() {
 		}
 	}
 }
-void AeSysView::OnDimensionModeConvert(void) {
+void AeSysView::OnDimensionModeConvert() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
@@ -522,7 +522,7 @@ void AeSysView::OnDimensionModeConvert(void) {
 	}
 	PreviousDimensionPosition = CurrentPnt;
 }
-void AeSysView::OnDimensionModeReturn(void) {
+void AeSysView::OnDimensionModeReturn() {
 	const OdGePoint3d CurrentPnt = GetCursorPosition();
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
@@ -530,7 +530,7 @@ void AeSysView::OnDimensionModeReturn(void) {
 	}
 	PreviousDimensionPosition = CurrentPnt;
 }
-void AeSysView::OnDimensionModeEscape(void) {
+void AeSysView::OnDimensionModeEscape() {
 	const OdGePoint3d CurrentPnt = GetCursorPosition();
 
 	RubberBandingDisable();

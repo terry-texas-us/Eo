@@ -76,7 +76,7 @@ public: // Methods
 	bool IsPerspectiveOn() const noexcept;
 	double LensLength() const noexcept;
 	double NearClipDistance() const noexcept;
-	OdGePoint3d Position(void) const noexcept;
+	OdGePoint3d Position() const noexcept;
 	OdGsView::RenderMode RenderMode() const noexcept;
 	void SetFarClipDistance(const double distance) noexcept;
 	void SetLensLength(const double length) noexcept;
@@ -88,6 +88,6 @@ public: // Methods
 	void SetTarget(const OdGePoint3d& target) noexcept;
 	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight);
 	void SetViewUp(const OdGeVector3d& upVector);
-	OdGePoint3d Target(void) const noexcept;
+	OdGePoint3d Target() const noexcept;
 	OdGeVector3d ViewUp() const noexcept;
 };

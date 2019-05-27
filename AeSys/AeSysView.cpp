@@ -550,7 +550,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	return 1;
 }
 
-void AeSysView::OnPaint(void) {
+void AeSysView::OnPaint() {
 	/* <tas="Code section to enable when custom redraw message processing added">
 		m_bRegenAbort = true;
 
@@ -1802,7 +1802,7 @@ public:
 
 // Blink cursor timer
 
-bool AeSysView::UpdateStringTrackerCursor(void) {
+bool AeSysView::UpdateStringTrackerCursor() {
 	if (m_mode == kGetString && m_response.m_type != Response::kString) {
 		if (m_editor.TrackString(m_inpars.result())) {
 			getActiveTopView()->invalidate();
@@ -2007,28 +2007,25 @@ BOOL AeSysView::PreCreateWindow(CREATESTRUCT& createStructure) {
 	return CView::PreCreateWindow(createStructure);
 }
 
-void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {
-	CDC* DeviceContext = GetDC();
-	const COLORREF BackgroundColor = DeviceContext->GetBkColor();
+void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
+	auto DeviceContext {GetDC()};
+	const auto BackgroundColor {DeviceContext->GetBkColor()};
 	DeviceContext->SetBkColor(ViewBackgroundColor);
 
-	int PrimitiveState = 0;
-	int iDrawMode = 0;
+	int PrimitiveState {0};
+	int DrawMode {0};
 
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
-		PrimitiveState = pstate.Save();
-	}
-	if ((hint & EoDb::kErase) == EoDb::kErase) {
-		iDrawMode = pstate.SetROP2(DeviceContext, R2_XORPEN);
-	}
-	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
-		EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
-	}
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) { PrimitiveState = pstate.Save(); }
+
+	if ((hint & EoDb::kErase) == EoDb::kErase) { DrawMode = pstate.SetROP2(DeviceContext, R2_XORPEN); }
+
+	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor()); }
+
 	switch (hint) {
 		case EoDb::kPrimitive:
 		case EoDb::kPrimitiveSafe:
 		case EoDb::kPrimitiveEraseSafe:
-			((EoDbPrimitive*) hintObject)->Display(this, DeviceContext);
+			dynamic_cast<EoDbPrimitive*>(hintObject)->Display(this, DeviceContext);
 			break;
 
 		case EoDb::kGroup:
@@ -2036,33 +2033,30 @@ void AeSysView::OnUpdate(CView * sender, LPARAM hint, CObject * hintObject) {
 		case EoDb::kGroupEraseSafe:
 		case EoDb::kGroupSafeTrap:
 		case EoDb::kGroupEraseSafeTrap:
-			((EoDbGroup*) hintObject)->Display(this, DeviceContext);
+			dynamic_cast<EoDbGroup*>(hintObject)->Display(this, DeviceContext);
 			break;
 
 		case EoDb::kGroups:
 		case EoDb::kGroupsSafe:
 		case EoDb::kGroupsSafeTrap:
 		case EoDb::kGroupsEraseSafeTrap:
-			((EoDbGroupList*) hintObject)->Display(this, DeviceContext);
+			dynamic_cast<EoDbGroupList*>(hintObject)->Display(this, DeviceContext);
 			break;
 
 		case EoDb::kLayer:
 		case EoDb::kLayerErase:
-			((EoDbLayer*) hintObject)->Display(this, DeviceContext);
+			dynamic_cast<EoDbLayer*>(hintObject)->Display(this, DeviceContext);
 			break;
 
 		default:
 			CView::OnUpdate(sender, hint, hintObject);
 	}
-	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
-		EoDbPrimitive::SetHighlightColorIndex(0);
-	}
-	if ((hint & EoDb::kErase) == EoDb::kErase) {
-		pstate.SetROP2(DeviceContext, iDrawMode);
-	}
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
-		pstate.Restore(DeviceContext, PrimitiveState);
-	}
+	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(0); }
+
+	if ((hint & EoDb::kErase) == EoDb::kErase) { pstate.SetROP2(DeviceContext, DrawMode); }
+
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) { pstate.Restore(DeviceContext, PrimitiveState); }
+
 	DeviceContext->SetBkColor(BackgroundColor);
 	ReleaseDC(DeviceContext);
 }
@@ -2368,7 +2362,7 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
 		}
 		else if (m_RubberbandType == Rectangles) {
-			CBrush* Brush {(CBrush*)DeviceContext->SelectStockObject(NULL_BRUSH)};
+			auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
 
@@ -3671,7 +3665,7 @@ void AeSysView::OnEscape() {
 			break;
 	}
 }
-void AeSysView::OnFind(void) {
+void AeSysView::OnFind() {
 	CString FindComboText;
 	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
 
@@ -3721,7 +3715,7 @@ void AeSysView::OnEditFind() {
 // Disables rubberbanding.
 void AeSysView::RubberBandingDisable() {
 	if (m_RubberbandType != None) {
-		CDC* DeviceContext = GetDC();
+		auto DeviceContext {GetDC()};
 		const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
 		CPen GreyPen(PS_SOLID, 0, RubberbandColor);
 		CPen* Pen = DeviceContext->SelectObject(&GreyPen);
@@ -3730,7 +3724,7 @@ void AeSysView::RubberBandingDisable() {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
 		} else if (m_RubberbandType == Rectangles) {
-			CBrush* Brush = (CBrush*) DeviceContext->SelectStockObject(NULL_BRUSH);
+			auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
 			DeviceContext->SelectObject(Brush);
 		}

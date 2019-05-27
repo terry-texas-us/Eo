@@ -15,7 +15,7 @@ double NodalModePickTolerance = .05;
 OdUInt16 PreviousNodalCommand = 0;
 OdGePoint3d PreviousNodalCursorPosition;
 
-void AeSysView::OnNodalModeAddRemove(void) {
+void AeSysView::OnNodalModeAddRemove() {
 	theApp.m_NodalModeAddGroups = !theApp.m_NodalModeAddGroups;
 	if (theApp.m_NodalModeAddGroups) {
 		SetModeCursor(ID_MODE_NODAL);
@@ -23,7 +23,7 @@ void AeSysView::OnNodalModeAddRemove(void) {
 		SetModeCursor(ID_MODE_NODALR);
 	}
 }
-void AeSysView::OnNodalModePoint(void) {
+void AeSysView::OnNodalModePoint() {
     const auto CurrentPnt {GetCursorPosition()};
 	OdGePoint3dArray Points;
 
@@ -46,7 +46,7 @@ void AeSysView::OnNodalModePoint(void) {
 		}
 	}
 }
-void AeSysView::OnNodalModeLine(void) {
+void AeSysView::OnNodalModeLine() {
     const auto CurrentPnt {GetCursorPosition()};
 	OdGePoint3dArray Points;
     auto Group {SelectGroupAndPrimitive(CurrentPnt)};
@@ -61,7 +61,7 @@ void AeSysView::OnNodalModeLine(void) {
 		}
 	}
 }
-void AeSysView::OnNodalModeArea(void) {
+void AeSysView::OnNodalModeArea() {
     const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP3) {
 		PreviousNodalCursorPosition = CurrentPnt;
@@ -96,7 +96,7 @@ void AeSysView::OnNodalModeArea(void) {
 		ModeLineUnhighlightOp(PreviousNodalCommand);
 	}
 }
-void AeSysView::OnNodalModeMove(void) {
+void AeSysView::OnNodalModeMove() {
     const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP4) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP4);
@@ -108,7 +108,7 @@ void AeSysView::OnNodalModeMove(void) {
 		OnNodalModeReturn();
 	}
 }
-void AeSysView::OnNodalModeCopy(void) {
+void AeSysView::OnNodalModeCopy() {
     const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP5) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP5);
@@ -121,7 +121,7 @@ void AeSysView::OnNodalModeCopy(void) {
 	}
 }
 
-void AeSysView::OnNodalModeToLine(void) {
+void AeSysView::OnNodalModeToLine() {
     auto CurrentPnt {GetCursorPosition()};
     if (PreviousNodalCommand != ID_OP6) {
         PreviousNodalCursorPosition = CurrentPnt;
@@ -157,7 +157,7 @@ void AeSysView::OnNodalModeToLine(void) {
 /// <remarks>
 /// The pen color used for any polygons added to drawing is the current pen color and not the pen color of the reference primitives.
 /// </remarks>
-void AeSysView::OnNodalModeToPolygon(void) {
+void AeSysView::OnNodalModeToPolygon() {
     auto CurrentPnt {GetCursorPosition()};
 
 	if (PreviousNodalCommand != ID_OP7) {
@@ -256,10 +256,10 @@ void AeSysView::OnNodalModeToPolygon(void) {
 		}
 	}
 }
-void AeSysView::OnNodalModeEmpty(void) {
+void AeSysView::OnNodalModeEmpty() {
 	OnNodalModeEscape();
 }
-void AeSysView::OnNodalModeEngage(void) {
+void AeSysView::OnNodalModeEngage() {
 	if (GroupIsEngaged()) {
 		const DWORD Mask = GetDocument()->GetPrimitiveMask(EngagedPrimitive());
 		OdGePoint3dArray Points;
@@ -271,7 +271,7 @@ void AeSysView::OnNodalModeEngage(void) {
 		}
 	}
 }
-void AeSysView::OnNodalModeReturn(void) {
+void AeSysView::OnNodalModeReturn() {
     auto CurrentPnt {GetCursorPosition()};
 
 	switch (PreviousNodalCommand) {
@@ -322,7 +322,7 @@ void AeSysView::OnNodalModeReturn(void) {
 	RubberBandingDisable();
 	ModeLineUnhighlightOp(PreviousNodalCommand);
 }
-void AeSysView::OnNodalModeEscape(void) {
+void AeSysView::OnNodalModeEscape() {
 	if (PreviousNodalCommand == 0) {
 		GetDocument()->DisplayUniquePoints();
 		GetDocument()->DeleteNodalResources();

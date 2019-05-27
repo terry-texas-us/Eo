@@ -23,7 +23,7 @@ protected:
 	AeSysDoc* m_Document;
 
 public:
-	void ModifyPolygons(void);
+	void ModifyPolygons();
 
 protected:
 	DECLARE_MESSAGE_MAP()

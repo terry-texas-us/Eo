@@ -197,30 +197,30 @@ void EoDlgFileManage::OnBnClickedSetcurrent() {
 		LayerTableRecord->downgradeOpen();
 	}
 }
+
 void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct) {
 	if (controlIdentifier == IDC_LAYERS_LIST_CONTROL) {
 		switch (drawItemStruct->itemAction) {
 			case ODA_DRAWENTIRE:
 			{
-//clear item
 				CRect rcItem(drawItemStruct->rcItem);
 				CDC DeviceContext;
-				const COLORREF rgbBkgnd = ::GetSysColor((drawItemStruct->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW);
+				const COLORREF BackgroundColor {::GetSysColor((drawItemStruct->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
 				DeviceContext.Attach(drawItemStruct->hDC);
-				CBrush br(rgbBkgnd);
-				DeviceContext.FillRect(rcItem, &br);
-				if (drawItemStruct->itemState & ODS_FOCUS) {
-					DeviceContext.DrawFocusRect(rcItem);
-				}
-				const int itemID = drawItemStruct->itemID;
-				if (itemID != -1) {
-					// The text color is stored as the item data.
-					const COLORREF rgbText = (drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
-					DeviceContext.SetBkColor(rgbBkgnd);
-					DeviceContext.SetTextColor(rgbText);
+				CBrush BackgroundBrush(BackgroundColor);
+				DeviceContext.FillRect(rcItem, &BackgroundBrush);
+
+				if (drawItemStruct->itemState & ODS_FOCUS) { DeviceContext.DrawFocusRect(rcItem); }
+
+				const int ItemID {narrow_cast<int>(drawItemStruct->itemID)};
+
+				if (ItemID != -1) { // The text color is stored as the item data.
+					const COLORREF TextColor {(drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT)};
+					DeviceContext.SetBkColor(BackgroundColor);
+					DeviceContext.SetTextColor(TextColor);
 					for (int labelIndex = 0; labelIndex < m_NumberOfColumns; ++labelIndex) {
-						m_LayersList.GetSubItemRect(itemID, labelIndex, LVIR_LABEL, rcItem);
-						DrawItem(DeviceContext, itemID, labelIndex, rcItem);
+						m_LayersList.GetSubItemRect(ItemID, labelIndex, LVIR_LABEL, rcItem);
+						DrawItem(DeviceContext, ItemID, labelIndex, rcItem);
 					}
 				}
 				DeviceContext.Detach();
@@ -239,7 +239,8 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 	}
 	CDialog::OnDrawItem(controlIdentifier, drawItemStruct);
 }
-BOOL EoDlgFileManage::OnInitDialog(void) {
+
+BOOL EoDlgFileManage::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	CString CaptionText;

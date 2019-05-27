@@ -182,7 +182,7 @@ BOOL CMainFrame::CreateDockingWindows() {
 
 void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, const OdCmColor& color) {
 	CBrush Brush(RGB(color.red(), color.green(), color.blue()));
-	CBrush* OldBrush = deviceContext.SelectObject(&Brush);
+	auto OldBrush {deviceContext.SelectObject(&Brush)};
 	CRect ItemRectangle(itemRectangle);
 	ItemRectangle.DeflateRect(1, 1);
 	ItemRectangle.right = ItemRectangle.left + ItemRectangle.Height();
@@ -192,9 +192,10 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	FrameBrush.CreateSysColorBrush(COLOR_WINDOWFRAME);
 	deviceContext.FrameRect(&ItemRectangle, &FrameBrush);
 	ItemRectangle.SetRect(ItemRectangle.right + 4, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
+
 	if (ItemRectangle.left <= itemRectangle.right) {
-		CString ColorName = color.colorNameForDisplay();
-		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.GetLength(), nullptr);
+		OdString ColorName = color.colorNameForDisplay();
+		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.getLength(), nullptr);
 	}
 }
 
@@ -740,7 +741,7 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent) {
 	}
 }
 
-void CMainFrame::OnViewFullScreen(void) {
+void CMainFrame::OnViewFullScreen() {
 	ShowFullScreen();
 }
 

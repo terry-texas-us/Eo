@@ -212,7 +212,7 @@ AeSysDoc::AeSysDoc() noexcept
 	, m_nCmdActive(0)
 	, m_bLayoutSwitchable(false)
 	, m_DisableClearSelection(false) {
-	m_WorkLayer = NULL;
+	m_WorkLayer = nullptr;
 	g_pDoc = this;
 
 	m_pRefDocument = OdApplicationDocumentImpl::createObject(this);
@@ -274,7 +274,7 @@ BOOL AeSysDoc::DoSave(LPCWSTR pathName, BOOL replace) {
 void AeSysDoc::DeleteContents() {
 	RemoveAllBlocks();
 	RemoveAllLayers();
-	m_WorkLayer = NULL;
+	m_WorkLayer = nullptr;
 	DeletedGroupsRemoveGroups();
 
 	RemoveAllTrappedGroups();
@@ -424,9 +424,8 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	auto Document {Database->document()};
 	auto pView {Document->getViewer()};
 
-	if (pView == NULL) {
-		throw OdEdCancel();
-	}
+	if (pView == nullptr) { throw OdEdCancel(); }
+
 	Document->OnEditClearselection();
 	Document->UpdateAllViews(nullptr);
 	OdDbUserIO* pIO = CommandContext->dbUserIO();
@@ -1225,7 +1224,8 @@ POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup * group) {
 }
 
 EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
-	EoDbGroup* Group = NULL;
+	EoDbGroup* Group {nullptr};
+
 	if (!m_DeletedGroupList.IsEmpty()) {
 		Group = m_DeletedGroupList.RemoveHead();
 		Group->UndoErase();
@@ -1235,14 +1235,17 @@ EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
 void AeSysDoc::DeletedGroupsRemoveGroups() {
 	m_DeletedGroupList.DeleteGroupsAndRemoveAll();
 }
+
 EoDbGroup* AeSysDoc::DeletedGroupsRemoveTail() {
-	EoDbGroup* Group = NULL;
+	EoDbGroup* Group {nullptr};
+
 	if (!m_DeletedGroupList.IsEmpty()) {
 		Group = m_DeletedGroupList.RemoveTail();
 		Group->UndoErase();
 	}
 	return (Group);
 }
+
 void AeSysDoc::DeletedGroupsRestore() {
 	// <tas="UndoErase group is restored to original layer. If this is desired behavior need to revise AddWorkLayerGroup call."</tas>
 	if (!m_DeletedGroupList.IsEmpty()) {
@@ -1262,8 +1265,8 @@ int AeSysDoc::LinetypeIndexReferenceCount(OdInt16 linetypeIndex) {
 	CString Key;
 	EoDbBlock* Block;
 
-	POSITION Position = m_BlockTable.GetStartPosition();
-	while (Position != NULL) {
+	POSITION Position {m_BlockTable.GetStartPosition()};
+	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 		Count += Block->GetLinetypeIndexRefCount(linetypeIndex);
 	}
@@ -1510,7 +1513,7 @@ int AeSysDoc::RemoveEmptyNotesAndDelete() {
 	EoDbBlock* Block;
 
 	POSITION Position = m_BlockTable.GetStartPosition();
-	while (Position != NULL) {
+	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 	}
 	return (iCount);
@@ -1529,7 +1532,7 @@ int AeSysDoc::RemoveEmptyGroups() {
 	EoDbBlock* Block;
 
 	POSITION Position = m_BlockTable.GetStartPosition();
-	while (Position != NULL) {
+	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 	}
 	return (iCount);
@@ -2358,7 +2361,7 @@ void AeSysDoc::OnToolsGroupDelete() {
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
 
-		if (RemoveTrappedGroup(Group) != NULL) {
+		if (RemoveTrappedGroup(Group) != nullptr) {
 			ActiveView->UpdateStateInformation(AeSysView::TrapCount);
 		}
 		UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);

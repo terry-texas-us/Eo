@@ -16,7 +16,7 @@ public:
 
 protected:
     void DoDataExchange(CDataExchange* pDX) final;
-    BOOL OnInitDialog(void) final;
+    BOOL OnInitDialog() final;
 
     DECLARE_MESSAGE_MAP()
 

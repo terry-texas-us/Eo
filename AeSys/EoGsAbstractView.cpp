@@ -76,7 +76,7 @@ void EoGsAbstractView::AdjustWindow(const double aspectRatio) noexcept {
 		m_FieldHeightMaximum += Adjustment;
 	}
 }
-double EoGsAbstractView::FarClipDistance(void) const noexcept {
+double EoGsAbstractView::FarClipDistance() const noexcept {
 	return m_FarClipDistance;
 }
 double EoGsAbstractView::FieldHeight() const noexcept {
@@ -112,10 +112,10 @@ bool EoGsAbstractView::IsPerspectiveOn() const noexcept {
 double EoGsAbstractView::LensLength() const noexcept {
 	return m_LensLength;
 }
-double EoGsAbstractView::NearClipDistance(void) const noexcept {
+double EoGsAbstractView::NearClipDistance() const noexcept {
 	return m_NearClipDistance;
 }
-OdGePoint3d EoGsAbstractView::Position(void) const noexcept {
+OdGePoint3d EoGsAbstractView::Position() const noexcept {
 	return m_Position;
 }
 OdGsView::RenderMode EoGsAbstractView::RenderMode() const noexcept {
@@ -172,7 +172,7 @@ void EoGsAbstractView::SetProjectionPlaneField(const double uMin, const double v
 	m_FieldWidthMaximum = uMax;
 	m_FieldHeightMaximum = vMax;
 }
-OdGePoint3d EoGsAbstractView::Target(void) const noexcept {
+OdGePoint3d EoGsAbstractView::Target() const noexcept {
 	return m_Target;
 }
 OdGeVector3d EoGsAbstractView::ViewUp() const noexcept {

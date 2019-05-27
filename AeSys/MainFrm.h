@@ -55,7 +55,7 @@ public:
 	static void DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, const OdCmColor& color);
 	static void DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight);
 	static void DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const CString& textOut, const OdDbDatabasePtr& database);
-	static CMFCToolBarComboBoxButton* GetFindCombo(void);
+	static CMFCToolBarComboBoxButton* GetFindCombo();
 	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept;
 	static OdDb::LineWeight LineWeightByIndex(char lineWeight) noexcept;
 	static OdString StringByLineWeight(int lineWeight, bool lineWeightByIndex);
@@ -74,8 +74,8 @@ protected:
 	void OnWindowManager();
 	void OnMdiTabbed();
 	void OnUpdateMdiTabbed(CCmdUI* pCmdUI);
-	void OnViewCustomize(void);
-	void OnViewFullScreen(void);
+	void OnViewCustomize();
+	void OnViewFullScreen();
 	LRESULT OnToolbarContextMenu(WPARAM, LPARAM);
 	void OnApplicationLook(UINT id);
 	void OnUpdateApplicationLook(CCmdUI* pCmdUI);
@@ -96,15 +96,15 @@ protected:
 	void ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu);
 
 public:
-	void OnStartProgress(void);
+	void OnStartProgress();
 
-	CMFCStatusBar& GetStatusBar(void) noexcept {
+	CMFCStatusBar& GetStatusBar() noexcept {
 		return m_StatusBar;
 	}
-	EoMfOutputDockablePane& GetOutputPane(void) noexcept {
+	EoMfOutputDockablePane& GetOutputPane() noexcept {
 		return m_OutputPane;
 	}
-	EoMfPropertiesDockablePane& GetPropertiesPane(void) noexcept {
+	EoMfPropertiesDockablePane& GetPropertiesPane() noexcept {
 		return m_PropertiesPane;
 	}
 };
