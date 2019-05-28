@@ -3665,37 +3665,37 @@ void AeSysView::OnEscape() {
 			break;
 	}
 }
+
 void AeSysView::OnFind() {
-	CString FindComboText;
+	OdString FindComboText;
 	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
 
-	if (!FindComboText.IsEmpty()) {
-		ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnFind() ComboText = %s\n", FindComboText);
+	if (!FindComboText.isEmpty()) {
+		ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnFind() ComboText = %s\n", (LPCWSTR) FindComboText);
 	}
 }
-void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton * findComboBox, CString & findText) {
 
-	if (findComboBox == NULL) { return; }
+void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText) {
 
-	const BOOL IsLastCommandFromButton = CMFCToolBar::IsLastCommandFromButton(findComboBox);
+	if (findComboBox == nullptr) { return; }
 
-	if (IsLastCommandFromButton) {
-		findText = findComboBox->GetText();
-	}
-	CComboBox* ComboBox = findComboBox->GetComboBox();
+	const auto IsLastCommandFromButton {CMFCToolBar::IsLastCommandFromButton(findComboBox)};
 
-	if (!findText.IsEmpty()) {
-		const int Count = ComboBox->GetCount();
-		int Position = 0;
+	if (IsLastCommandFromButton) { findText = findComboBox->GetText(); }
+
+	auto ComboBox {findComboBox->GetComboBox()};
+
+	if (!findText.isEmpty()) {
+		const auto Count {ComboBox->GetCount()};
+		auto Position {0};
 
 		while (Position < Count) {
 			CString LBText;
 			ComboBox->GetLBText(Position, LBText);
 
-			if (LBText.GetLength() == findText.GetLength()) {
-				if (LBText == findText) {
-					break;
-				}
+			if (LBText.GetLength() == findText.getLength()) {
+
+				if ((LPCWSTR) LBText == findText) { break; }
 			}
 			Position++;
 		}
@@ -3705,11 +3705,10 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton * findComboBox, CStri
 		ComboBox->InsertString(0, findText);
 		ComboBox->SetCurSel(0);
 
-		if (!IsLastCommandFromButton) {
-			findComboBox->SetText(findText);
-		}
+		if (!IsLastCommandFromButton) { findComboBox->SetText(findText); }
 	}
 }
+
 void AeSysView::OnEditFind() {
 }
 // Disables rubberbanding.

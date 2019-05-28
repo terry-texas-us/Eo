@@ -339,7 +339,7 @@ public: // Input message handler member functions
 public:
 	static AeSysView* GetActiveView();
 
-	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, CString& findText);
+	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
 
 	bool m_ViewStateInformation;
 	void UpdateStateInformation(EStateInformationItem item);

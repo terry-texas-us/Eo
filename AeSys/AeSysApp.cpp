@@ -1350,7 +1350,7 @@ BOOL AeSysApp::InitInstance() {
 	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
 	m_RecentCommand = theApp.GetString(L"Recent Command", L"");
 	int nFillTtf = theApp.GetInt(L"Fill TTF text", 1);
-	setTEXTFILL(theApp.GetInt(L"Fill TTF text", 1) != 0);
+	setTEXTFILL(nFillTtf != 0);
 	
 	SetRegistryBase(L"MFC Auto");
 

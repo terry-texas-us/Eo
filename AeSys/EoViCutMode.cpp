@@ -150,8 +150,9 @@ void AeSysView::OnCutModeField() {
 				Group->RemoveAt(posPrimPrv);
 
 				for (int i = 0; i < iInts; i += 2) {
-					if (i != 0)
-						GroupsOut->RemoveTail();
+					
+					if (i != 0) { GroupsOut->RemoveTail(); }
+					
 					Primitive->CutAt2Points(&Intersections[i], GroupsOut, GroupsIn, Database());
 				}
 			}

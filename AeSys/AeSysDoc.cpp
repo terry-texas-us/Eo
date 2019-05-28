@@ -77,7 +77,7 @@ UINT AFXAPI HashKey(CString& str) noexcept {
 
 // AeSysDoc
 
-IMPLEMENT_DYNCREATE(AeSysDoc, CDocument)
+IMPLEMENT_DYNCREATE(AeSysDoc, COleDocument)
 
 #define NEW_CONSTR(CLASS) OdSmartPtr<CLASS>(new CLASS, kOdRxObjAttach)
 

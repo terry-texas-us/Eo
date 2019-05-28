@@ -88,7 +88,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
 	}
 }
 
-void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr& database) {
+void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) {
 	EoDbLine* LineIn;
 	double FirstPointParameter;
 	double SecondPointParameter;
