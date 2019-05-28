@@ -4,15 +4,15 @@
 
 #ifdef _DEBUG
 #undef THIS_FILE
-static char THIS_FILE[]=__FILE__;
+static char THIS_FILE[] = __FILE__;
 #define new DEBUG_NEW
 #endif
 
-EoAppAuditInfo::EoAppAuditInfo() {
-	m_pHostAppServices = NULL;
+EoAppAuditInfo::EoAppAuditInfo() noexcept {
+	m_pHostAppServices = nullptr;
 }
 const OdDbAuditInfo::MsgInfo& EoAppAuditInfo::getLastInfo() {
-	return OdDbAuditInfo::getLastInfo(); 
+	return OdDbAuditInfo::getLastInfo();
 }
 void EoAppAuditInfo::setLastInfo(OdDbAuditInfo::MsgInfo& messageInfo) {
 	OdDbAuditInfo::setLastInfo(messageInfo);
@@ -56,7 +56,7 @@ void EoAppAuditInfo::printError(const OdString& name, const OdString& value, con
 	}
 	if (!defaultValue.isEmpty()) {
 		Line += ((fixErrors()) ? L"Replaced by " : L"Default value is ") + defaultValue + L".";
-		}
+	}
 	m_pHostAppServices->auditPrintReport(this, Line, getPrintDest());
 	ATLTRACE2(atlTraceGeneral, 0, "%ls\n", Line.c_str());
 }

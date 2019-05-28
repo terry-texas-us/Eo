@@ -84,7 +84,7 @@ void AeSysView::OnLpdModeDuct() {
 		EoGeLineSeg3d ReferenceLine(m_CurrentReferenceLine);
 
 		if (m_BeginWithTransition) {
-			if (TransitionLength != 0.) {
+			if (TransitionLength != 0.0) {
 				ReferenceLine.SetEndPoint(ReferenceLine.ProjToEndPt(TransitionLength));
 
 				auto Group {new EoDbGroup};
@@ -110,7 +110,7 @@ void AeSysView::OnLpdModeDuct() {
 				ReferenceLine.SetEndPoint(m_CurrentReferenceLine.endPoint());
 				m_ContinueSection = true;
 			}
-			if (TransitionLength != 0.) {
+			if (TransitionLength != 0.0) {
 				EoDbGroup* Group = new EoDbGroup;
 				GetDocument()->AddWorkLayerGroup(Group);
 				GenerateTransition(ReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection, Group);
@@ -284,7 +284,7 @@ void AeSysView::OnLpdModeUpDown() {
 void AeSysView::OnLpdModeSize() {
 	const auto CurrentPnt {GetCursorPosition()};
 
-	double Angle = 0.;
+	double Angle = 0.0;
 	if (m_EndCapPoint != nullptr) {
 		if (m_EndCapPoint->ColorIndex() == 15) {
 			POSITION Position = m_EndCapGroup->Find(m_EndCapPoint);
@@ -383,7 +383,7 @@ void AeSysView::DoDuctModeMouseMove() {
 			EoGeLineSeg3d ReferenceLine(m_CurrentReferenceLine);
 
 			if (m_BeginWithTransition) {
-				if (TransitionLength != 0.) {
+				if (TransitionLength != 0.0) {
 					ReferenceLine.SetEndPoint(ReferenceLine.ProjToEndPt(TransitionLength));
 					GenerateTransition(ReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection, &m_PreviewGroup);
 					ReferenceLine.SetStartPoint(ReferenceLine.endPoint());
@@ -399,7 +399,7 @@ void AeSysView::DoDuctModeMouseMove() {
 					ReferenceLine.SetStartPoint(ReferenceLine.endPoint());
 					ReferenceLine.SetEndPoint(m_CurrentReferenceLine.endPoint());
 				}
-				if (TransitionLength != 0.) {
+				if (TransitionLength != 0.0) {
 					GenerateTransition(ReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection, &m_PreviewGroup);
 				}
 			}
@@ -449,7 +449,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d & existingSec
 	IntersectionPoint = existingSectionReferenceLine.ProjPt(CurrentReferenceLine.startPoint());
 	double Relationship;
 	if (existingSectionReferenceLine.ParametricRelationshipOf(IntersectionPoint, Relationship)) {
-		if (fabs(Relationship) > FLT_EPSILON && fabs(Relationship - 1.) > FLT_EPSILON) { // need to add a section either from the elbow or the existing section
+		if (fabs(Relationship) > FLT_EPSILON && fabs(Relationship - 1.0) > FLT_EPSILON) { // need to add a section either from the elbow or the existing section
 			const double SectionLength = existingSectionReferenceLine.length();
 			double DistanceToBeginPoint = Relationship * SectionLength;
 			if (Relationship > FLT_EPSILON && Relationship < 1. - FLT_EPSILON) { // section from the elbow
@@ -486,9 +486,9 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d & existingSec
 		Points.setLogicalLength(5);
 
 		Points[2] = ProjectToward(rPar[0][1], rPar[1][1], dEcc2 * m_PreviousSection.Width());
-		EoGeLineSeg3d(Points[2], rPar[1][1]).ProjPtFrom_xy(0., m_DuctSeamSize, Points[3]);
+		EoGeLineSeg3d(Points[2], rPar[1][1]).ProjPtFrom_xy(0.0, m_DuctSeamSize, Points[3]);
 		dDSiz = dDSiz / m_PreviousSection.Width() * m_PreviousSection.Width();
-		EoGeLineSeg3d(Points[2], rPar[1][1]).ProjPtFrom_xy(0., dDSiz + m_DuctSeamSize, Points[4]);
+		EoGeLineSeg3d(Points[2], rPar[1][1]).ProjPtFrom_xy(0.0, dDSiz + m_DuctSeamSize, Points[4]);
 		EoDbGroup* Group = new EoDbGroup;
 		GetDocument()->AddWorkLayerGroup(Group);
 
@@ -643,8 +643,8 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d & referenceLine, double
 }
 
 void AeSysView::GenSizeNote(const OdGePoint3d & position, double angle, Section section) {
-	const auto XDirection {OdGeVector3d(0.06, 0., 0.).rotateBy(angle, OdGeVector3d::kZAxis)};
-	const auto YDirection {OdGeVector3d(0., 0.1, 0.).rotateBy(angle, OdGeVector3d::kZAxis)};
+	const auto XDirection {OdGeVector3d(0.06, 0.0, 0.0).rotateBy(angle, OdGeVector3d::kZAxis)};
+	const auto YDirection {OdGeVector3d(0.0, 0.1, 0.0).rotateBy(angle, OdGeVector3d::kZAxis)};
 	EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
 	OdGeVector3d PlaneNormal;
 	ReferenceSystem.GetUnitNormal(PlaneNormal);
@@ -663,7 +663,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d & position, double angle, Section 
 	FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
 
 	auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
-	CharacterCellDefinition.SetRotationAngle(0.);
+	CharacterCellDefinition.SetRotationAngle(0.0);
 	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 	auto Group {new EoDbGroup};

@@ -12,7 +12,7 @@ void AeSysView::OnTrapModeRemoveAdd() {
 }
 
 void AeSysView::OnTrapModePoint() {
-	EoGePoint4d ptView(GetCursorPosition(), 1.);
+	EoGePoint4d ptView(GetCursorPosition(), 1.0);
 	ModelViewTransformPoint(ptView);
 
 	EoDbHatch::SetEdgeToEvaluate(0);
@@ -41,7 +41,7 @@ void AeSysView::OnTrapModeStitch() {
 
 		if (m_PreviousPnt == pt) { return; }
 
-		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.), EoGePoint4d(pt, 1.)};
+		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(pt, 1.0)};
 
 		ModelViewTransformPoints(2, ptView);
 
@@ -71,7 +71,7 @@ void AeSysView::OnTrapModeField() {
 		const OdGePoint3d pt = GetCursorPosition();
 		if (m_PreviousPnt == pt) return;
 
-		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.), EoGePoint4d(pt, 1.)};
+		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(pt, 1.0)};
 
 		ModelViewTransformPoints(2, ptView);
 
@@ -130,8 +130,8 @@ void AeSysView::OnTrapModeEngage() {
 void AeSysView::OnTrapModeMenu() {
 	CPoint CurrentPosition;
 	::GetCursorPos(&CurrentPosition);
-	HMENU TrapMenu = ::LoadMenu(theApp.GetInstance(), MAKEINTRESOURCE(IDR_TRAP));
-	CMenu* SubMenu = CMenu::FromHandle(::GetSubMenu(TrapMenu, 0));
+	auto TrapMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
+	auto SubMenu {CMenu::FromHandle(::GetSubMenu(TrapMenu, 0))};
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), 0);
 	::DestroyMenu(TrapMenu);
 }
@@ -160,7 +160,7 @@ void AeSysView::OnTraprModeRemoveAdd() {
 void AeSysView::OnTraprModePoint() {
 	auto Document {GetDocument()};
 
-	EoGePoint4d ptView(GetCursorPosition(), 1.);
+	EoGePoint4d ptView(GetCursorPosition(), 1.0);
 	ModelViewTransformPoint(ptView);
 
 	EoDbHatch::SetEdgeToEvaluate(0);
@@ -191,7 +191,7 @@ void AeSysView::OnTraprModeStitch() {
 
 		auto Document {GetDocument()};
 
-		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.), EoGePoint4d(pt, 1.)};
+		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(pt, 1.0)};
 
 		ModelViewTransformPoints(2, ptView);
 
@@ -223,7 +223,7 @@ void AeSysView::OnTraprModeField() {
 
 		auto Document {GetDocument()};
 
-		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.), EoGePoint4d(pt, 1.)};
+		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(pt, 1.0)};
 
 		ModelViewTransformPoints(2, ptView);
 
@@ -262,8 +262,8 @@ void AeSysView::OnTraprModeEngage() noexcept {
 void AeSysView::OnTraprModeMenu() {
 	CPoint CurrentPosition;
 	::GetCursorPos(&CurrentPosition);
-	HMENU TrapMenu = ::LoadMenu(theApp.GetInstance(), MAKEINTRESOURCE(IDR_TRAP));
-	CMenu* SubMenu = CMenu::FromHandle(::GetSubMenu(TrapMenu, 0));
+	auto TrapMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
+	auto SubMenu {CMenu::FromHandle(::GetSubMenu(TrapMenu, 0))};
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), 0);
 	::DestroyMenu(TrapMenu);
 }

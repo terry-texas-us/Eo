@@ -927,7 +927,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 		DimStyle->setDimtxsty(TextStyle);
 	}
 
-	DimStyle->setDimasz(0.);
+	DimStyle->setDimasz(0.0);
 
 	//	DimStyle->setDimblk(L"_None");
 	
@@ -1199,7 +1199,7 @@ void AeSysDoc::AddTextBlock(LPWSTR text) {
 			AddWorkLayerGroup(Group);
 			UpdateGroupInAllViews(EoDb::kGroup, Group);
 		}
-		ReferenceSystem.SetOrigin(text_GetNewLinePos(FontDefinition, ReferenceSystem, 1., 0));
+		ReferenceSystem.SetOrigin(text_GetNewLinePos(FontDefinition, ReferenceSystem, 1.0, 0));
 		pText = wcstok_s(nullptr, L"\r", &NextToken);
 		if (pText == 0)
 			break;
@@ -1877,7 +1877,7 @@ void AeSysDoc::OnFileQuery() {
 
 		const int MenuResource = (Layer->IsInternal()) ? IDR_LAYER : IDR_TRACING;
 
-		auto LayerTracingMenu {::LoadMenu(theApp.GetInstance(), MAKEINTRESOURCE(MenuResource))};
+		auto LayerTracingMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(MenuResource))};
 		auto SubMenu {CMenu::FromHandle(::GetSubMenu(LayerTracingMenu, 0))};
 
 		SubMenu->ModifyMenu(0, MF_BYPOSITION | MF_STRING, 0, m_IdentifiedLayerName);
@@ -2386,7 +2386,7 @@ void AeSysDoc::OnToolsGroupExchange() {
 void AeSysDoc::OnToolsPrimitiveSnaptoendpoint() {
 	auto ActiveView {AeSysView::GetActiveView()};
 
-	EoGePoint4d ptView(ActiveView->GetCursorPosition(), 1.);
+	EoGePoint4d ptView(ActiveView->GetCursorPosition(), 1.0);
 	ActiveView->ModelViewTransformPoint(ptView);
 
 	if (ActiveView->GroupIsEngaged()) {
@@ -2509,7 +2509,7 @@ void AeSysDoc::OnFileTracing() {
 	of.Flags = OFN_EXPLORER | OFN_ENABLETEMPLATE | OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 	of.lpstrDefExt = L"tra";
 	of.lpfnHook = OFNHookProcFileTracing;
-	of.lpTemplateName = MAKEINTRESOURCE(IDD_TRACING_EX);
+	of.lpTemplateName = MAKEINTRESOURCEW(IDD_TRACING_EX);
 
 	if (GetOpenFileNameW(&of)) {
 		FilterIndex = of.nFilterIndex;

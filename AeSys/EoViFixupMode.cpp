@@ -16,8 +16,8 @@ void AeSysView::OnFixupModeOptions() {
 	Dialog.m_AxisTolerance = m_AxisTolerance;
 	Dialog.m_CornerSize = m_CornerSize;
 	if (Dialog.DoModal() == IDOK) {
-		m_CornerSize = EoMax(0., Dialog.m_CornerSize);
-		m_AxisTolerance = EoMax(0., Dialog.m_AxisTolerance);
+		m_CornerSize = EoMax(0.0, Dialog.m_CornerSize);
+		m_AxisTolerance = EoMax(0.0, Dialog.m_AxisTolerance);
 		SetAxisConstraintInfluenceAngle(m_AxisTolerance);
 	}
 }
@@ -303,7 +303,7 @@ void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousS
 				const auto MajorAxis {StartPoint - CenterPoint};
 
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., SweepAngle);
+				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1.0, 0.0, SweepAngle);
 				Ellipse->setColorIndex(PreviousLine->ColorIndex());
 				Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 				Group->AddTail(EoDbEllipse::Create(Ellipse));
@@ -362,7 +362,7 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGe
 	const double dC2RAB2 {(SecondLineStartPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * SecondLineStartPoint.y) / SecondLineVectorLength + SignedRadius};
 	center.x = (SecondLineB * dC1RAB1 - FirstLineB * dC2RAB2) / Determinant;
 	center.y = (FirstLineA * dC2RAB2 - SecondLineA * dC1RAB1) / Determinant;
-	center.z = 0.;
+	center.z = 0.0;
 	WorldToPlaneTransform.invert();
 	center.transformBy(WorldToPlaneTransform);
 	return true;

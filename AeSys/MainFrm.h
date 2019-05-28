@@ -69,21 +69,22 @@ protected:  // control bar embedded members
 	CMFCToolBarImages m_UserImages;
 
 protected:
-	int OnCreate(LPCREATESTRUCT createStructure);
-	void OnDestroy();
+	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
+	void OnDestroy(); // hides non-virtual function of parent
+	LRESULT OnToolbarContextMenu(WPARAM, LPARAM); // hides non-virtual function of parent
+	void OnTimer(UINT_PTR nIDEvent); // hides non-virtual function of parent
+	LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp); // hides non-virtual function of parent
+
 	void OnWindowManager();
 	void OnMdiTabbed();
 	void OnUpdateMdiTabbed(CCmdUI* pCmdUI);
 	void OnViewCustomize();
 	void OnViewFullScreen();
-	LRESULT OnToolbarContextMenu(WPARAM, LPARAM);
 	void OnApplicationLook(UINT id);
 	void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 
 	LRESULT OnGetTabToolTip(WPARAM wp, LPARAM lp);
-	void OnTimer(UINT_PTR nIDEvent);
 	LRESULT OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam);
-	LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp);
 
 	DECLARE_MESSAGE_MAP()
 

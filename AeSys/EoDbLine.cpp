@@ -217,7 +217,7 @@ bool EoDbLine::IsEqualTo(EoDbPrimitive * primitive)  const {
 }
 
 bool EoDbLine::IsInView(AeSysView * view) const {
-	EoGePoint4d pt[] = {EoGePoint4d(m_LineSeg.startPoint(), 1.), EoGePoint4d(m_LineSeg.endPoint(), 1.)};
+	EoGePoint4d pt[] = {EoGePoint4d(m_LineSeg.startPoint(), 1.0), EoGePoint4d(m_LineSeg.endPoint(), 1.0)};
 	view->ModelViewTransformPoints(2, &pt[0]);
 
 	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
@@ -226,13 +226,13 @@ bool EoDbLine::IsInView(AeSysView * view) const {
 bool EoDbLine::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	EoGePoint4d pt;
 
-	pt = EoGePoint4d(m_LineSeg.startPoint(), 1.);
+	pt = EoGePoint4d(m_LineSeg.startPoint(), 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize)
 		return true;
 
-	pt = EoGePoint4d(m_LineSeg.endPoint(), 1.);
+	pt = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize)
@@ -291,7 +291,7 @@ OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView * view, const EoGePoint4d &
 	double Aperture = sm_SelectApertureSize;
 
 	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
-		EoGePoint4d pt(ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint(), 1.);
+		EoGePoint4d pt(ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint(), 1.0);
 
 		view->ModelViewTransformPoint(pt);
 

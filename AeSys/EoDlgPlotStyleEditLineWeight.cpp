@@ -63,7 +63,7 @@ void EoDlgPlotStyleEditLineweight::OnOK() {
 		for (int j = 0; j < iLineweightQnt; j++) {
 			if (m_LineweightData[j].m_OldIdx == lineweight) {
 				if (m_LineweightData[j].m_OldIdx != m_LineweightData[j].m_NewIdx) {
-					PlotStyleData.setLineweight(double(m_LineweightData[j].m_NewIdx) + 1.);
+					PlotStyleData.setLineweight(double(m_LineweightData[j].m_NewIdx) + 1.0);
 					PlotStyle->setData(PlotStyleData);
 				}
 				break;
@@ -140,25 +140,30 @@ void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
 		m_LineweightsListCtrl.SetItem(&lvi);
 	}
 }
+
 void EoDlgPlotStyleEditLineweight::OnRadioMillimetrs() {
 	SetUnitIntoList(false);
 }
+
 void EoDlgPlotStyleEditLineweight::OnRadioInches() {
 	SetUnitIntoList(true);
 }
+
 const bool EoDlgPlotStyleEditLineweight::SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept {
-	if (!plotStyleTable) {
-		return false;
-	}
+	
+	if (!plotStyleTable) { return false; }
+	
 	m_PlotStyleTable = plotStyleTable;
 	return true;
 }
+
 void EoDlgPlotStyleEditLineweight::InitializeLineweightsListCtrlImages() {
 	VERIFY(m_ListCtrlImages.Create(IDB_PS_BITMAP_WHITE, 16, 3, RGB(255, 255, 255)));
-	HBITMAP Bitmap = (HBITMAP)::LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDB_PS_BITMAP_CHECK), IMAGE_BITMAP, 16, 16, LR_CREATEDIBSECTION); 
+	auto Bitmap {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDB_PS_BITMAP_CHECK), IMAGE_BITMAP, 16, 16, LR_CREATEDIBSECTION))};
 	m_ListCtrlImages.Add(CBitmap::FromHandle(Bitmap), RGB(255, 255, 255));
 	m_LineweightsListCtrl.SetImageList(&m_ListCtrlImages, LVSIL_SMALL);
 }
+
 void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	delete m_LineweightData;
 	m_LineweightData = 0;
@@ -179,18 +184,21 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	OdGeIntArray useLineWeightIndex;
 	OdPsPlotStylePtr pPs;
 	OdPsPlotStyleData OdPsData;
-	const size_t NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
+	const size_t NumberOfPlotStyles {m_PlotStyleTable->plotStyleSize()};
+
 	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
 		pPs = m_PlotStyleTable->plotStyleAt(PlotStyleIndex);
 		pPs->getData(OdPsData);
 		const size_t value = (size_t) OdPsData.lineweight() - 1;
 		size_t nIndex;
+
 		if (!useLineWeightIndex.find(value, nIndex)) {
 			useLineWeightIndex.push_back(value);
 		}
 	}
 	m_LineweightData = new EoLineweightData[m_PlotStyleTable->lineweightSize()];
 	const bool bInch = m_PlotStyleTable->isDisplayCustomLineweightUnits();
+
 	for (size_t i = 0; i < m_PlotStyleTable->lineweightSize(); i++) {
 		m_LineweightData[i].m_OldIdx = i;
 		m_LineweightData[i].m_NewIdx = i;

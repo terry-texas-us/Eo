@@ -162,7 +162,7 @@ EoDbGroup* EoDbGroupList::SelectGroupBy(const OdGePoint3d & point) {
 
 	EoDbGroup* pPicSeg = 0;
 
-	EoGePoint4d ptView(point, 1.);
+	EoGePoint4d ptView(point, 1.0);
 	ActiveView->ModelViewTransformPoint(ptView);
 
 	double dPicApert = ActiveView->SelectApertureSize();

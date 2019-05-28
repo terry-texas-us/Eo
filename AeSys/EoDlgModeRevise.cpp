@@ -76,7 +76,7 @@ void EoDlgModeRevise::OnOK() {
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
-	sm_ReferenceSystem.SetOrigin(text_GetNewLinePos(sm_FontDefinition, sm_ReferenceSystem, 1., 0));
+	sm_ReferenceSystem.SetOrigin(text_GetNewLinePos(sm_FontDefinition, sm_ReferenceSystem, 1.0, 0));
 
 	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(sm_ReferenceSystem.Origin());
 	if (sm_TextPrimitive != 0) {

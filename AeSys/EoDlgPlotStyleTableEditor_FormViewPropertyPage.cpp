@@ -132,21 +132,23 @@ void CBitmapColorInfo::SetBitmapPixels(CBitmap &Bmp, DIBCOLOR *pPixels) {
 	SetDIBits(dcMem.m_hDC, (HBITMAP) Bmp.m_hObject, 0, H, pPixels, &bi, DIB_RGB_COLORS); 
 	delete pPixels;
 }
+
 CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpClone) {
 	ASSERT(pBmpClone);
 	ASSERT(pBmpSource);
 	ASSERT(pBmpSource != pBmpClone);
-	if (!pBmpClone && !pBmpSource && (pBmpSource == pBmpClone)) return NULL;
+
+	if (!pBmpClone && !pBmpSource && (pBmpSource == pBmpClone)) { return NULL; }
 
 	BITMAP bmp; 
 	DWORD dw;
     OdUInt8 *pb;
 	((CBitmap*)pBmpSource)->GetBitmap(&bmp); 
 
-	CClientDC dc(NULL);
+	CClientDC ClientDeviceContext(NULL);
 	CDC cdc;
-	cdc.CreateCompatibleDC(&dc);
-	pBmpClone->CreateCompatibleBitmap(&dc, bmp.bmWidth, bmp.bmHeight);
+	cdc.CreateCompatibleDC(&ClientDeviceContext);
+	pBmpClone->CreateCompatibleBitmap(&ClientDeviceContext, bmp.bmWidth, bmp.bmHeight);
 
 	dw = bmp.bmWidthBytes*bmp.bmHeight;
 	pb = new OdUInt8[dw];
@@ -154,12 +156,14 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpC
 	pBmpClone->SetBitmapBits(dw, pb);
 	delete[]pb;
 
-	int W, H; 
+	int W;
+	int H;
 	DIBCOLOR *buf = GetBitmapPixels(*(CBitmap*)pBmpSource, W, H);
 	SetBitmapPixels(*pBmpClone, buf);
 
 	return pBmpClone;
 }
+
 void CBitmapColorInfo::PaintBitmap(CBitmap &Bmp, COLORREF color) {
 	int W, H; 
 	DIBCOLOR *buf = GetBitmapPixels(Bmp, W, H);
@@ -198,36 +202,35 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, OdUIn
 			wcscpy(m_name, (LPCWSTR) clrName);
 		}
 }
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, const wchar_t* name) :
+
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name) :
 	m_iItem(0xff) {
-		m_color = (m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
-		CloneBitmap(pBitmap, &m_bitmap);
-		PaintBitmap(m_bitmap, color);
-		_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
+	m_color = (m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
+	CloneBitmap(bitmap, &m_bitmap);
+	PaintBitmap(m_bitmap, color);
+	_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
-CBitmapColorInfo::CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name) 
-    : m_iItem(0xff)
-    , m_color(0) {
-		HBITMAP hBmp;
-		hBmp = (HBITMAP)::LoadImage(AfxGetInstanceHandle(), 
-			lpszResourceName, IMAGE_BITMAP, 13,13, LR_CREATEDIBSECTION ); 
-		const CBitmap *bitmap = CBitmap::FromHandle(hBmp);
-		CloneBitmap(bitmap, &m_bitmap);
-		_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
+
+CBitmapColorInfo::CBitmapColorInfo(LPCWSTR resourceName, const wchar_t* name)
+	: m_iItem(0xff)
+	, m_color(0) {
+	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
+	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
+	CloneBitmap(Bitmap, &m_bitmap);
+	_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
+
 const int CPsListStyleData::getPublicArrayIndexByColor(COLORREF color) {
 
-	for (UINT i = 0; i < m_pPublicBitmapList->size(); i++)
-	{
-		const OdCmEntityColor cl = OdCmEntityColor(GetRValue(color), GetGValue(color), GetBValue(color));
-		if ((*m_pPublicBitmapList)[i]->GetColor() == cl)
-		{
-			return i;
-		}
+	for (unsigned i = 0; i < m_pPublicBitmapList->size(); i++) {
+		const OdCmEntityColor EntityColor {OdCmEntityColor(GetRValue(color), GetGValue(color), GetBValue(color))};
+
+		if ((*m_pPublicBitmapList)[i]->GetColor() == EntityColor) { return i; }
 	}
 	return -1;
 
 }
+
 CPsListStyleData::CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item) 
     : m_pPlotStyles(pPs)
     , m_pPublicBitmapList(pPublicBitmapList)
@@ -713,7 +716,7 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	return nItem;
 }
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initBitmapList() {
-	CBitmapColorInfo *pBitmapColorInfo = new CBitmapColorInfo(MAKEINTRESOURCE(IDB_SELECT_TRUE_COLOR), L"Select true color...");
+	CBitmapColorInfo *pBitmapColorInfo = new CBitmapColorInfo(MAKEINTRESOURCEW(IDB_SELECT_TRUE_COLOR), L"Select true color...");
 	const CBitmap *bitmapSrc = &(pBitmapColorInfo->m_bitmap); 
 
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255,255,255), L"Use object color"));
@@ -867,7 +870,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::AddNewPlotStyle(LPCWSTR styleNam
 	m_listStyles.SetSelectionMark(ItemIndex);
 }
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
-	DialogBox(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDD_PS_DLG_ADDPS), m_hWnd, Dlg_Proc); 
+	DialogBox(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDD_PS_DLG_ADDPS), m_hWnd, Dlg_Proc); 
 	m_listStyles.SetFocus();
 }
 BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags/*, BOOL bOpenFileDialog*/) {

@@ -99,15 +99,15 @@ struct EoPlotUnitsInfo {
 	const wchar_t* m_Name2;
 
 	static const wchar_t* GetTextByValue(double value, const EoPlotUnitsInfo& info) noexcept {
-		return (fabs(value) <= 1.) ? info.m_Name1 : info.m_Name2;
+		return (fabs(value) <= 1.0) ? info.m_Name1 : info.m_Name2;
 	}
 };
 
 static EoPlotUnitsInfo PlotUnitsInfo[] = {
 	{kMmPerInch, L"inch", L"inches"},
-{1., L"mm", L"mm"},
-{1., L"pixel", L"pixels"},
-{1., L"unit", L"units"}
+{1.0, L"mm", L"mm"},
+{1.0, L"pixel", L"pixels"},
+{1.0, L"unit", L"units"}
 };
 
 // EoDlgPageSetup
@@ -116,13 +116,13 @@ EoDlgPageSetup::EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUs
 	: CDialog(EoDlgPageSetup::IDD, NULL), m_PlotSettings(plotSettings), m_pIO(pIO) {
 	m_CustomDPI = 0;
 	m_CenterThePlot = 0;
-	m_OffsetX = 0.;
-	m_OffsetY = 0.;
+	m_OffsetX = 0.0;
+	m_OffsetY = 0.0;
 	m_PaperImageOriginX = L"0.";
 	m_PaperImageOriginY = L"0.";
 	m_DrawingOrientation = 0;
-	m_PaperScaleUnit = 0.;
-	m_DrawingScaleUnit = 0.;
+	m_PaperScaleUnit = 0.0;
+	m_DrawingScaleUnit = 0.0;
 	m_FitToPaper = 0;
 	m_LeftMargin = L"0.";
 	m_RightMargin = L"0.";
@@ -673,7 +673,7 @@ void EoDlgPageSetup::OnSelChangePlotAreaType() {
 		// Dialog has kFit2Paper disabled, but validator don't clear kFit2Paper flag.
 		// Validator also don't change PlotOrigin to 0,0, if plotsenteres was true, but it change scale to 1:1 if fittopaper was true
 		if (m_CenterThePlot) {
-			m_PlotSettingsValidator->setPlotOrigin(&m_PlotSettings, 0., 0.);
+			m_PlotSettingsValidator->setPlotOrigin(&m_PlotSettings, 0.0, 0.0);
 		}
 		if (m_FitToPaper) {
 			m_PlotSettingsValidator->setUseStandardScale(&m_PlotSettings, false);
@@ -959,7 +959,7 @@ void EoDlgPageSetup::UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, 
 	if (m_PlotSettings.useStandardScale()) {
 		double StandardScale;
 		m_PlotSettings.getStdScale(StandardScale);
-		if (StandardScale != 0.) { // skip Fit to paper
+		if (StandardScale != 0.0) { // skip Fit to paper
 			m_PlotSettingsValidator->setCustomPrintScale(&m_PlotSettings, StandardScale, 1. / ConversionFactor);
 		}
 	} else {

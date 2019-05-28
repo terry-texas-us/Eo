@@ -19,6 +19,7 @@ protected:
 public:
 	void ActivateFrame(int nCmdShow = -1) override;
 	BOOL DestroyWindow() override;
-	void OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd);
 	void OnUpdateFrameMenu(BOOL bActive, CWnd* pActiveWnd, HMENU hMenuAlt) override;
+
+	void OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd); // hides non-virtual function of parent
 };

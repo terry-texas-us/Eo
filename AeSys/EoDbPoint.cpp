@@ -90,7 +90,7 @@ void EoDbPoint::Display(AeSysView * view, CDC * deviceContext) {
 
 	const COLORREF HotColor = theApp.GetHotColor(ColorIndex);
 
-	EoGePoint4d pt(m_Position, 1.);
+	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	if (pt.IsInView()) {
@@ -175,7 +175,7 @@ bool EoDbPoint::IsEqualTo(EoDbPrimitive * primitive) const {
 }
 
 bool EoDbPoint::IsInView(AeSysView * view) const {
-	EoGePoint4d pt(m_Position, 1.);
+	EoGePoint4d pt(m_Position, 1.0);
 
 	view->ModelViewTransformPoint(pt);
 
@@ -183,14 +183,14 @@ bool EoDbPoint::IsInView(AeSysView * view) const {
 }
 
 bool EoDbPoint::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const {
-	EoGePoint4d pt(m_Position, 1.);
+	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
 }
 
 OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
-	EoGePoint4d pt(m_Position, 1.);
+	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	sm_ControlPointIndex = (point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? 0 : SIZE_T_MAX;
@@ -198,7 +198,7 @@ OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView * view, const EoGePoint4d 
 }
 
 bool EoDbPoint::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
-	EoGePoint4d pt(m_Position, 1.);
+	EoGePoint4d pt(m_Position, 1.0);
 
 	view->ModelViewTransformPoint(pt);
 
@@ -208,7 +208,7 @@ bool EoDbPoint::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3
 }
 
 bool EoDbPoint::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
-	EoGePoint4d pt(m_Position, 1.);
+	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	return ((pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y) ? true : false);
@@ -313,7 +313,7 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
 	Point->SetPointDisplayMode(pstate.PointDisplayMode());
 
 	OdUInt16 NumberOfDatums {0};
-	double Data[] {0., 0., 0.};
+	double Data[] {0.0, 0.0, 0.};
 	auto ResourceBuffer = point->xData(L"AeSys");
 
 	if (!ResourceBuffer.isNull()) {
@@ -370,7 +370,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 		PointDisplayMode = OdInt16(primitiveBuffer[7]);
 		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
 	}
-	double Data[3] {0., 0., 0.};
+	double Data[3] {0.0, 0.0, 0.};
 	Data[0] = ((EoVaxFloat*) & primitiveBuffer[20])->Convert();
 	Data[1] = ((EoVaxFloat*) & primitiveBuffer[24])->Convert();
 	Data[2] = ((EoVaxFloat*) & primitiveBuffer[28])->Convert();

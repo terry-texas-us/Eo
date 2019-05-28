@@ -236,7 +236,7 @@ void AeSysView::OnDrawModeReturn() {
 
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 			OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
-			Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1., 0., CircularArc.endAng());
+			Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1.0, 0.0, CircularArc.endAng());
 
 			Group = new EoDbGroup;
 			Group->AddTail({EoDbEllipse::Create(Ellipse)});
@@ -279,7 +279,7 @@ void AeSysView::OnDrawModeReturn() {
 			MajorAxis.normalize();
 			MajorAxis *= OdGeVector3d(CurrentPnt - m_DrawModePoints[0]).length();
 
-			Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, 1.);
+			Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, 1.0);
 			Group->AddTail(EoDbEllipse::Create(Ellipse));
 
 			break;
@@ -305,7 +305,7 @@ void AeSysView::OnDrawModeReturn() {
 			const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};
 			auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
 
-			if (OdGreater(RadiusRatio, 1.)) { // Minor axis is longer than major axis - switch
+			if (OdGreater(RadiusRatio, 1.0)) { // Minor axis is longer than major axis - switch
 				MajorAxis = MinorAxis;
 				RadiusRatio = 1. / RadiusRatio;
 			}
@@ -437,7 +437,7 @@ void AeSysView::DoDrawModeMouseMove() {
 			if (NumberOfPoints == 2) {
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 				OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
-				Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1., 0., CircularArc.endAng());
+				Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1.0, 0.0, CircularArc.endAng());
 				m_PreviewGroup.AddTail(EoDbEllipse::Create(Ellipse));
 			}
 			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
@@ -479,7 +479,7 @@ void AeSysView::DoDrawModeMouseMove() {
 
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 
-				Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, 1.);
+				Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, 1.0);
 
 				m_PreviewGroup.AddTail(EoDbEllipse::Create(Ellipse));
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
@@ -504,7 +504,7 @@ void AeSysView::DoDrawModeMouseMove() {
 					const auto MinorAxis {CurrentPnt - m_DrawModePoints[0]};
 					auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
 
-					if (OdGreater(RadiusRatio, 1.)) {
+					if (OdGreater(RadiusRatio, 1.0)) {
 						MajorAxis = MinorAxis;
 						RadiusRatio = 1. / RadiusRatio;
 					}

@@ -2,7 +2,7 @@
 
 #include "EoDbCharacterCellDefinition.h"
 
-EoDbCharacterCellDefinition::EoDbCharacterCellDefinition() : m_Height(.1), m_WidthFactor(1.) , m_RotationAngle(0.) , m_ObliqueAngle(0.) {
+EoDbCharacterCellDefinition::EoDbCharacterCellDefinition() : m_Height(.1), m_WidthFactor(1.0) , m_RotationAngle(0.0) , m_ObliqueAngle(0.0) {
 }
 EoDbCharacterCellDefinition::EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) noexcept {
 	m_Height = other.m_Height;

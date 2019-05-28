@@ -3,8 +3,8 @@
 #include "Section.h"
 
 Section::Section()
-	: m_Width(0.)
-	, m_Depth(0.)
+	: m_Width(0.0)
+	, m_Depth(0.0)
 	, m_Properties(0) {
 }
 Section::Section(double width, double depth, long properties) noexcept {

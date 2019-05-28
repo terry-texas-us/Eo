@@ -379,7 +379,7 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d & point, AeSysV
 		if (EoDbPrimitive::ControlPointIndex() != SIZE_T_MAX) {
 			EngagedPrimitive = Primitive;
 
-			EoGePoint4d ptView4(pt, 1.);
+			EoGePoint4d ptView4(pt, 1.0);
 			view->ModelViewTransformPoint(ptView4);
 			*ptCtrl = ptView4.Convert3d();
 		}
@@ -393,7 +393,7 @@ EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d & point, AeSysView
 		auto Primitive {GetNext(PrimitivePosition)};
 
 		if (Primitive->SelectBy(point, view, pDetPt)) {
-			dPicApert = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.));
+			dPicApert = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.0));
 			return (Primitive);
 		}
 	}

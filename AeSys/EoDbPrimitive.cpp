@@ -10,7 +10,7 @@ OdInt16	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
 OdInt16	EoDbPrimitive::sm_HighlightColorIndex = 0;
 
 size_t EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
-double EoDbPrimitive::sm_RelationshipOfPoint = 0.;
+double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
 EoDbPrimitive::EoDbPrimitive() noexcept

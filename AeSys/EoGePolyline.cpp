@@ -44,9 +44,9 @@ void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArra
 			vDash *= SectionLength / dVecLen;
 			pt[1] = pt[0] + vDash;
 			dRemDisToEnd -= SectionLength;
-			if (linetype->dashLengthAt(DashIndex) >= 0.) {
-				ln[0] = EoGePoint4d(pt[0], 1.);
-				ln[1] = EoGePoint4d(pt[1], 1.);
+			if (linetype->dashLengthAt(DashIndex) >= 0.0) {
+				ln[0] = EoGePoint4d(pt[0], 1.0);
+				ln[1] = EoGePoint4d(pt[1], 1.0);
 
 				view->ModelViewTransformPoints(2, ln);
 
@@ -60,11 +60,11 @@ void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArra
 			SectionLength = EoMax(.025/* * 96.*/, fabs(linetype->dashLengthAt(DashIndex)));
 		}
 		if (dRemDisToEnd > DBL_EPSILON) { // Partial component of dash section must produced
-			if (linetype->dashLengthAt(DashIndex) >= 0.) {
+			if (linetype->dashLengthAt(DashIndex) >= 0.0) {
 				pt[1] = pointsArray[i + 1].Convert3d();
 
-				ln[0] = EoGePoint4d(pt[0], 1.);
-				ln[1] = EoGePoint4d(pt[1], 1.);
+				ln[0] = EoGePoint4d(pt[0], 1.0);
+				ln[1] = EoGePoint4d(pt[1], 1.0);
 
 				view->ModelViewTransformPoints(2, ln);
 
@@ -122,7 +122,7 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	MinorAxis *= radius;
 
 	OdGeMatrix3d ScaleMatrix;
-	ScaleMatrix.setToScaling(OdGeScale3d(MajorAxis.length(), MinorAxis.length(), 1.));
+	ScaleMatrix.setToScaling(OdGeScale3d(MajorAxis.length(), MinorAxis.length(), 1.0));
 
 	EoGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(centerPoint, MajorAxis, MinorAxis));
@@ -133,12 +133,12 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	const double CosIncrement = cos(AngleIncrement);
 	const double SinIncrement = sin(AngleIncrement);
 	points.setLogicalLength(numberOfPoints);
-	points[0].set(1., 0., 0.);
+	points[0].set(1.0, 0.0, 0.0);
 
 	for (size_t PointIndex = 0; PointIndex < numberOfPoints - 1; PointIndex++) {
 		points[PointIndex + 1].x = points[PointIndex].x * CosIncrement - points[PointIndex].y * SinIncrement;
 		points[PointIndex + 1].y = points[PointIndex].y * CosIncrement + points[PointIndex].x * SinIncrement;
-		points[PointIndex + 1].z = 0.;
+		points[PointIndex + 1].z = 0.0;
 	}
 	for (size_t PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		points[PointIndex].transformBy(PlaneToWorldTransform);
@@ -207,11 +207,11 @@ bool SelectBy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPo
 }
 // <tas="Not considering possible closure"</tas>
 bool SelectUsingRectangle(AeSysView* view, const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, const OdGePoint3dArray& points) {
-	EoGePoint4d ptBeg(points[0], 1.);
+	EoGePoint4d ptBeg(points[0], 1.0);
 	view->ModelViewTransformPoint(ptBeg);
 
 	for (OdUInt16 w = 1; w < points.size(); w++) {
-		EoGePoint4d ptEnd(points[w], 1.);
+		EoGePoint4d ptEnd(points[w], 1.0);
 		view->ModelViewTransformPoint(ptEnd);
 
 		EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
@@ -223,7 +223,7 @@ bool SelectUsingRectangle(AeSysView* view, const OdGePoint3d& lowerLeftCorner, c
 	return false;
 }
 void SetVertex(const OdGePoint3d& point) {
-	EoGePoint4d Point4(point, 1.);
+	EoGePoint4d Point4(point, 1.0);
 	pts_.Add(Point4);
 }
 

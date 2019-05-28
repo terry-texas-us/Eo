@@ -15,9 +15,9 @@ END_MESSAGE_MAP()
 
 EoDlgLowPressureDuctOptions::EoDlgLowPressureDuctOptions(CWnd* parent)
 	: CDialog(EoDlgLowPressureDuctOptions::IDD, parent)
-	, m_Width(0.)
-	, m_Depth(0.)
-	, m_RadiusFactor(0.)
+	, m_Width(0.0)
+	, m_Depth(0.0)
+	, m_RadiusFactor(0.0)
 	, m_GenerateVanes(false)
 	, m_Justification(0)
 	, m_BeginWithTransition(false) {

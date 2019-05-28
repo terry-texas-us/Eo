@@ -93,9 +93,9 @@ void EoDbPegFile::ReadLinetypesTable() {
 					Linetype->setShapeStyleAt(DashIndex, OdDbObjectId::kNull);
 					Linetype->setShapeNumberAt(DashIndex, 0);
 					Linetype->setTextAt(DashIndex, L" ");
-					Linetype->setShapeScaleAt(DashIndex, 1.);
-					Linetype->setShapeOffsetAt(DashIndex, OdGeVector2d(0., 0.));
-					Linetype->setShapeRotationAt(DashIndex, 0.);
+					Linetype->setShapeScaleAt(DashIndex, 1.0);
+					Linetype->setShapeOffsetAt(DashIndex, OdGeVector2d(0.0, 0.0));
+					Linetype->setShapeRotationAt(DashIndex, 0.0);
 					Linetype->setShapeIsUcsOrientedAt(DashIndex, false);
 				}
 			}

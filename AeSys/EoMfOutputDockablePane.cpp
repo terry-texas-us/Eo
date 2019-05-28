@@ -78,7 +78,7 @@ END_MESSAGE_MAP()
 void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 	if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
 		CMenu Menu;
-		Menu.LoadMenu(IDR_OUTPUT_POPUP);
+		Menu.LoadMenuW(IDR_OUTPUT_POPUP);
 
 		CMenu* SubMenu = Menu.GetSubMenu(0);
 		CMFCPopupMenu* PopupMenu = new CMFCPopupMenu;

@@ -14,13 +14,13 @@ class EoDbPegFile;
 EoDbBlockReference::EoDbBlockReference() noexcept
 	: m_Position(OdGePoint3d::kOrigin)
 	, m_Normal(OdGeVector3d::kZAxis)
-	, m_ScaleFactors(OdGeScale3d(1., 1., 1.))
-	, m_Rotation(0.) {
+	, m_ScaleFactors(OdGeScale3d(1.0, 1.0, 1.0))
+	, m_Rotation(0.0) {
 
 	m_Columns = 1;
 	m_Rows = 1;
-	m_ColumnSpacing = 0.;
-	m_RowSpacing = 0.;
+	m_ColumnSpacing = 0.0;
+	m_RowSpacing = 0.0;
 }
 
 EoDbBlockReference::EoDbBlockReference(const EoDbBlockReference& other) {

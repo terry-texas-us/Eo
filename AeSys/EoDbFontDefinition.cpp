@@ -9,7 +9,7 @@ EoDbFontDefinition::EoDbFontDefinition()
     , m_Path(EoDb::kPathRight)
     , m_HorizontalAlignment(EoDb::kAlignLeft)
     , m_VerticalAlignment(EoDb::kAlignBottom)
-    , m_CharacterSpacing(0.) {
+    , m_CharacterSpacing(0.0) {
 }
 EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
 	m_Precision = other.m_Precision;

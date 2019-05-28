@@ -22,7 +22,7 @@ inline int EoRound(const double number) noexcept { // closest integer
 	return  (int) (number + 0.5);
 }
 inline double EoRound(const double number, int precision) {
-	precision = (number >= 1.) ? precision - int(log10(number)) - 1 : precision;
+	precision = (number >= 1.0) ? precision - int(log10(number)) - 1 : precision;
 	CString FormatSpecification;
 	FormatSpecification.Format(L"%%16.%if", precision);
 	CString NumberAsString;

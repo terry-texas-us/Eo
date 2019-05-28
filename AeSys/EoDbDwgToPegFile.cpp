@@ -89,12 +89,12 @@ void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {
 }
 
 void EoDbDwgToPegFile::ConvertViewportTable(AeSysDoc* document) {
-	OdDbViewportTablePtr Viewports = m_DatabasePtr_->getViewportTableId().safeOpenObject(OdDb::kForRead);
+	OdDbViewportTablePtr ViewportTable {m_DatabasePtr_->getViewportTableId().safeOpenObject(OdDb::kForRead)};
 
     OdString ReportItem;
-    theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading viewport definitions ...\n", (LPCWSTR) Viewports->desc()->name()));
+    theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading viewport definitions ...\n", (LPCWSTR)ViewportTable->desc()->name()));
 
-	OdDbSymbolTableIteratorPtr Iterator = Viewports->newIterator();
+	OdDbSymbolTableIteratorPtr Iterator {ViewportTable->newIterator()};
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbViewportTableRecordPtr Viewport = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);

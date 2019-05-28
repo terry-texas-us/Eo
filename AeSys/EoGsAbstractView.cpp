@@ -6,13 +6,13 @@ EoGsAbstractView::EoGsAbstractView() {
 	m_ViewMode = 0; // Parallel projection, No front clipping, No back clipping, 
 	m_RenderMode = OdGsView::k2DOptimized;
 
-	m_Elevation = 0.;
+	m_Elevation = 0.0;
 	m_LensLength = 50.;
 
 	m_Position = OdGePoint3d::kOrigin + OdGeVector3d::kZAxis * m_LensLength;
 	SetTarget(OdGePoint3d::kOrigin);
 	SetViewUp(OdGeVector3d::kYAxis);
-	m_TwistAngle = 0.;
+	m_TwistAngle = 0.0;
 	m_FieldWidthMinimum = - 0.5;
 	m_FieldHeightMinimum = - 0.5;
 	m_FieldWidthMaximum = 0.5;

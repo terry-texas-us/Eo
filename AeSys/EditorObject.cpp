@@ -222,7 +222,7 @@ OdGePoint3d OdExEditorObject::ToEyeToWorld(int x, int y) const {
 		wcsPt.z = View->projectionMatrix()(2, 3);
 	}
 	wcsPt.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
-	wcsPt.z = 0.;
+	wcsPt.z = 0.0;
 	// eye CS at this point.
 
 	wcsPt.transformBy(OdAbstractViewPEPtr(View)->eyeToWorld(View));
@@ -249,7 +249,7 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(int x, int y) const {
 	OdGePoint3d scrPt(x, y, 0.0);
 	const auto View {ActiveView()};
 	scrPt.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
-	scrPt.z = 0.;
+	scrPt.z = 0.0;
 	return scrPt;
 }
 
@@ -269,7 +269,7 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
 	
 	scrPt.x = vecX.dotProduct(wcsPt - prTarg);
 	scrPt.y = vecY.dotProduct(wcsPt - prTarg);
-	scrPt.z = 0.;
+	scrPt.z = 0.0;
 	return scrPt;
 }
 
@@ -629,9 +629,9 @@ void zoom_extents(OdGsView * pView, OdDbObject * pVpObj) {
 
 	if (!bBboxValid) { // set to somewhat reasonable (e.g. paper size)
 		if (pDb->getMEASUREMENT() == OdDb::kMetric) {
-			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(297., 210., 0.)); // set to papersize ISO A4 (portrait)
+			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(297., 210., 0.0)); // set to papersize ISO A4 (portrait)
 		} else {
-			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(11., 8.5, 0.)); // ANSI A (8.50 x 11.00) (landscape)
+			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(11., 8.5, 0.0)); // ANSI A (8.50 x 11.00) (landscape)
 		}
 		bbox.transformBy(pView->viewingMatrix());
 	}
@@ -778,10 +778,10 @@ public:
 		((OdGePoint2d&) pt1) += (pt2.asVector() / 2.);
 		geom.circle(pt1, r, OdGeVector3d::kZAxis);
 
-		geom.circle(pt1 + OdGeVector3d(0., r, 0.), r / 20., OdGeVector3d::kZAxis);
-		geom.circle(pt1 + OdGeVector3d(0., -r, 0.), r / 20., OdGeVector3d::kZAxis);
-		geom.circle(pt1 + OdGeVector3d(r, 0., 0.), r / 20., OdGeVector3d::kZAxis);
-		geom.circle(pt1 + OdGeVector3d(-r, 0., 0.), r / 20., OdGeVector3d::kZAxis);
+		geom.circle(pt1 + OdGeVector3d(0.0, r, 0.0), r / 20., OdGeVector3d::kZAxis);
+		geom.circle(pt1 + OdGeVector3d(0.0, -r, 0.0), r / 20., OdGeVector3d::kZAxis);
+		geom.circle(pt1 + OdGeVector3d(r, 0.0, 0.0), r / 20., OdGeVector3d::kZAxis);
+		geom.circle(pt1 + OdGeVector3d(-r, 0.0, 0.0), r / 20., OdGeVector3d::kZAxis);
 	}
 };
 
@@ -830,7 +830,7 @@ public:
 
 		m_InitialViewingMatrixInverted = m_View->viewingMatrix();
 		m_pt = m_InitialViewingMatrixInverted * pt;
-		m_pt.z = 0.;
+		m_pt.z = 0.0;
 		m_InitialViewingMatrixInverted.invert();
 
 		OdGePoint3d pt1;

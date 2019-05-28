@@ -86,10 +86,10 @@ void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCe
 double EoGeReferenceSystem::Rotation() const noexcept {
 	const OdGeVector3d HorizontalAxis = m_XDirection;
 
-	double Angle = 0.;
+	double Angle = 0.0;
 
 	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
-	if (Angle < 0.) {
+	if (Angle < 0.0) {
 		Angle += TWOPI;
 	}
 	return (Angle);

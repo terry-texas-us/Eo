@@ -8,7 +8,7 @@
 
 void AeSysView::OnModePrimitiveMend() {
 	const auto CurrentPnt {GetCursorPosition()};
-	EoGePoint4d ptView(CurrentPnt, 1.);
+	EoGePoint4d ptView(CurrentPnt, 1.0);
 	ModelViewTransformPoint(ptView);
 
 	m_PrimitiveToMend = 0;

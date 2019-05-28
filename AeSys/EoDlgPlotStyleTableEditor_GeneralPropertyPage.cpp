@@ -170,12 +170,11 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	if (m_pPlotStyleTable->isAciTableAvailable())
 		m_staticRegular.SetWindowText(L"Legacy (can be used to import old DWGs)");
 
-	HBITMAP hBmp = (HBITMAP)::LoadImage(AfxGetInstanceHandle(),
-		MAKEINTRESOURCE(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS);
+	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))};
 
-	CClientDC dc(&m_staticBitmap);
-	DrawTransparentBitmap(dc.m_hDC, hBmp, 0, 0, 0x00FFFFFF);
-	m_staticBitmap.SetBitmap(hBmp);
+	CClientDC ClientDeviceContext(&m_staticBitmap);
+	DrawTransparentBitmap(ClientDeviceContext.m_hDC, BitmapHandle, 0, 0, 0x00FFFFFF);
+	m_staticBitmap.SetBitmap(BitmapHandle);
 
 	return TRUE;
 

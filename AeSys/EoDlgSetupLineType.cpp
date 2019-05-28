@@ -80,13 +80,13 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 				const double FieldHeight = (double(SubItemRectangle.bottom) + double(SubItemRectangle.top)) / double(DeviceContext.GetDeviceCaps(LOGPIXELSY));
 				ActiveView->ModelViewInitialize();
 
-				ActiveView->SetViewWindow(0., 0., FieldWidth, FieldHeight);
+				ActiveView->SetViewWindow(0.0, 0.0, FieldWidth, FieldHeight);
 				ActiveView->SetCameraTarget(OdGePoint3d::kOrigin);
 				ActiveView->SetCameraPosition(OdGeVector3d::kZAxis);
 				const double FieldWidthMinimum = double(SubItemRectangle.left) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
 				const double FieldWidthMaximum = double(SubItemRectangle.right) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX));
 
-				EoGeLineSeg3d Line = EoGeLineSeg3d(OdGePoint3d(FieldWidthMinimum, FieldHeight / 2., 0.), OdGePoint3d(FieldWidthMaximum, FieldHeight / 2., 0.));
+				EoGeLineSeg3d Line = EoGeLineSeg3d(OdGePoint3d(FieldWidthMinimum, FieldHeight / 2., 0.0), OdGePoint3d(FieldWidthMaximum, FieldHeight / 2., 0.0));
 				Line.Display(ActiveView, &DeviceContext);
 
 				ActiveView->PopViewTransform();

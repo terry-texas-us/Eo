@@ -19,7 +19,7 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	Class.cbWndExtra = 0;
 	Class.hInstance = instance;
 	Class.hIcon = 0;
-	Class.hCursor = (HCURSOR) ::LoadImage(HINSTANCE(NULL), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE);
+	Class.hCursor = static_cast<HCURSOR>(::LoadImageW(HINSTANCE(NULL), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
 	Class.hbrBackground	= (HBRUSH) ::GetStockObject(BLACK_BRUSH);
 	Class.lpszMenuName = 0;
 	Class.lpszClassName	= L"PreviewWindow";
@@ -125,7 +125,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
-	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
+	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
 	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
 
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
@@ -174,7 +174,7 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
-	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.);
+	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
 	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
 
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);

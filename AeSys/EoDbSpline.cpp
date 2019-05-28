@@ -158,12 +158,12 @@ bool EoDbSpline::IsEqualTo(EoDbPrimitive * other) const {
 
 bool EoDbSpline::IsInView(AeSysView * view) const {
 	EoGePoint4d pt[2];
-	pt[0] = EoGePoint4d(m_Spline.controlPointAt(0), 1.);
+	pt[0] = EoGePoint4d(m_Spline.controlPointAt(0), 1.0);
 
 	view->ModelViewTransformPoint(pt[0]);
 
 	for (OdUInt16 w = 1; w < m_Spline.numControlPoints(); w++) {
-		pt[1] = EoGePoint4d(m_Spline.controlPointAt(w), 1.);
+		pt[1] = EoGePoint4d(m_Spline.controlPointAt(w), 1.0);
 
 		view->ModelViewTransformPoint(pt[1]);
 

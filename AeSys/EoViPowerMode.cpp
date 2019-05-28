@@ -56,7 +56,7 @@ void AeSysView::OnPowerModeCircuit() {
 			GetDocument()->AddWorkLayerGroup(Group);
 
 			const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
-			const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], 0.)};
+			const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], 0.0)};
 			auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -65,7 +65,7 @@ void AeSysView::OnPowerModeCircuit() {
 			m_PowerModePoints[0] = CurrentPnt;
 		}
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
-		m_PreviousRadius = 0.;
+		m_PreviousRadius = 0.0;
 	}
 }
 
@@ -232,9 +232,9 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d & pointOnCircuit, const O
 
 	EoGeLineSeg3d Circuit(Points[0], endPoint);
 
-	Circuit.ProjPtFrom_xy(0., -.075, Points[0]);
+	Circuit.ProjPtFrom_xy(0.0, -.075, Points[0]);
 	Points[1] = pointOnCircuit;
-	Circuit.ProjPtFrom_xy(0., .075, Points[2]);
+	Circuit.ProjPtFrom_xy(0.0, .075, Points[2]);
 
 	auto Group {new EoDbGroup};
 	GetDocument()->AddWorkLayerGroup(Group);
@@ -274,9 +274,9 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 	switch (conductorType) {
 		case ID_OP4:
 		{
-			Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
-			Circuit.ProjPtFrom_xy(0., .075, Points[1]);
-			Circuit.ProjPtFrom_xy(0., .0875, Points[2]);
+			Circuit.ProjPtFrom_xy(0.0, -.1, Points[0]);
+			Circuit.ProjPtFrom_xy(0.0, .075, Points[1]);
+			Circuit.ProjPtFrom_xy(0.0, .0875, Points[2]);
 
 			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
 			Line->setColorIndex(1);
@@ -290,8 +290,8 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 			break;
 		}
 		case ID_OP5:
-			Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
-			Circuit.ProjPtFrom_xy(0., .1, Points[1]);
+			Circuit.ProjPtFrom_xy(0.0, -.1, Points[0]);
+			Circuit.ProjPtFrom_xy(0.0, .1, Points[1]);
 			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
 			Line->setColorIndex(1);
 			Line->setLinetype(L"Continuous");
@@ -299,13 +299,13 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 			break;
 
 		case ID_OP6:
-			Circuit.ProjPtFrom_xy(0., -.1, Points[0]);
-			Circuit.ProjPtFrom_xy(0., .05, Points[1]);
+			Circuit.ProjPtFrom_xy(0.0, -.1, Points[0]);
+			Circuit.ProjPtFrom_xy(0.0, .05, Points[1]);
 
 			Points[2] = ProjectToward(pointOnCircuit, endPoint, .025);
 
-			EoGeLineSeg3d(Points[2], endPoint).ProjPtFrom_xy(0., .075, Points[3]);
-			EoGeLineSeg3d(pointOnCircuit, endPoint).ProjPtFrom_xy(0., .1, Points[4]);
+			EoGeLineSeg3d(Points[2], endPoint).ProjPtFrom_xy(0.0, .075, Points[3]);
+			EoGeLineSeg3d(pointOnCircuit, endPoint).ProjPtFrom_xy(0.0, .1, Points[4]);
 
 			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
 			Line->setColorIndex(1);
@@ -324,8 +324,8 @@ void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGeP
 			break;
 
 		case ID_OP7:
-			Circuit.ProjPtFrom_xy(0., -.05, Points[0]);
-			Circuit.ProjPtFrom_xy(0., .05, Points[1]);
+			Circuit.ProjPtFrom_xy(0.0, -.05, Points[0]);
+			Circuit.ProjPtFrom_xy(0.0, .05, Points[1]);
 			Line = EoDbLine::Create(BlockTableRecord, Points[0], Points[1]);
 			Line->setColorIndex(1);
 			Line->setLinetype(L"Continuous");

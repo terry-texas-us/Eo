@@ -63,7 +63,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 				DashLengths = new double[NumberOfDashes];
 				MaxNumberOfDashes = NumberOfDashes;
 			}
-			double PatternLength = 0.;
+			double PatternLength = 0.0;
 			
 			for (OdUInt16 DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 				DashLengths[DashIndex] = _wtof(Line.Tokenize(L",\n", NextToken));
@@ -81,9 +81,9 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 					Linetype->setShapeStyleAt(DashIndex, OdDbObjectId::kNull);
 					Linetype->setShapeNumberAt(DashIndex, 0);
 					Linetype->setTextAt(DashIndex, L" ");
-					Linetype->setShapeScaleAt(DashIndex, 1.);
-					Linetype->setShapeOffsetAt(DashIndex, OdGeVector2d(0., 0.));
-					Linetype->setShapeRotationAt(DashIndex, 0.);
+					Linetype->setShapeScaleAt(DashIndex, 1.0);
+					Linetype->setShapeOffsetAt(DashIndex, OdGeVector2d(0.0, 0.0));
+					Linetype->setShapeRotationAt(DashIndex, 0.0);
 					Linetype->setShapeIsUcsOrientedAt(DashIndex, false);
 				}
 				Linetypes->add(Linetype);

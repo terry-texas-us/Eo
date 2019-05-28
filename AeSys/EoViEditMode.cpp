@@ -51,7 +51,7 @@ void AeSysView::SetEditModeRotationAngles(double x, double y, double z) noexcept
 OdGeScale3d AeSysView::EditModeMirrorScaleFactors() const noexcept {
 	return m_MirrorScaleFactors;
 }
-void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) {
+void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept {
 	m_MirrorScaleFactors.set(sx, sy, sz);
 }
 

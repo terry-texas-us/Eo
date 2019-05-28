@@ -16,30 +16,30 @@ EoGeLineSeg3d::~EoGeLineSeg3d() {
 }
 double EoGeLineSeg3d::AngleBetween_xy(const EoGeLineSeg3d& line) const {
 	OdGeVector3d v1(endPoint() - startPoint()); 
-	v1.z = 0.;
+	v1.z = 0.0;
 	OdGeVector3d v2(line.endPoint() - line.startPoint());
-	v2.z = 0.;
+	v2.z = 0.0;
 
 	const double dSumProd = v1.lengthSqrd() * v2.lengthSqrd();
 
 	if (dSumProd > DBL_EPSILON) {
 		double dVal = v1.dotProduct(v2) / sqrt(dSumProd);
 
-		dVal = EoMax(- 1., EoMin(1., dVal));
+		dVal = EoMax(- 1.0, EoMin(1.0, dVal));
 
 		return (acos(dVal));
 	}
-	return (0.);
+	return (0.0);
 }
 double EoGeLineSeg3d::AngleFromXAxis_xy() const {
 	const OdGeVector3d Vector(endPoint() - startPoint());
 
-	double Angle = 0.;
+	double Angle = 0.0;
 
 	if (fabs(Vector.x) > DBL_EPSILON || fabs(Vector.y) > DBL_EPSILON) {
 		Angle = atan2(Vector.y, Vector.x);
 
-		if (Angle < 0.)
+		if (Angle < 0.0)
 			Angle += TWOPI;
 	}
 	return (Angle);
@@ -68,23 +68,23 @@ OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(double influenceAngle, double axisOff
 			dLen = sqrt(dY + dZ);
 			if (dLen > DBL_EPSILON) 				// Not already on the x-axis
 				if (dLen / fabs(pt.x) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to x-axis
-					pt.y = 0.;
-					pt.z = 0.;
+					pt.y = 0.0;
+					pt.z = 0.0;
 				}
 		}
 		else if (dY >= dZ) { // Major component of line is along y-axis
 			dLen = sqrt(dX + dZ);
 			if (dLen > DBL_EPSILON)					// Not already on the y-axis
 				if (dLen / fabs(pt.y) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to y-axis
-					pt.x = 0.;
-					pt.z = 0.;
+					pt.x = 0.0;
+					pt.z = 0.0;
 				}
 		} else {
 			dLen = sqrt(dX + dY);
 			if (dLen > DBL_EPSILON)					// Not already on the z-axis
 				if (dLen / fabs(pt.z) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to z-axis
-					pt.x = 0.;
-					pt.y = 0.;
+					pt.x = 0.0;
+					pt.y = 0.0;
 				}
 		}
 	}
@@ -120,7 +120,7 @@ void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
 	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
 
 	if (EoDbPrimitive::IsSupportedLinetype(LinetypeIndex)) {
-		EoGePoint4d pt[] = {EoGePoint4d(startPoint(), 1.), EoGePoint4d(endPoint(), 1.)};
+		EoGePoint4d pt[] = {EoGePoint4d(startPoint(), 1.0), EoGePoint4d(endPoint(), 1.0)};
 
 		view->ModelViewTransformPoints(2, pt);
 
@@ -155,8 +155,8 @@ bool EoGeLineSeg3d::GetParallels(double distanceBetweenLines, double eccentricit
 		const double X = (endPoint().y - startPoint().y) * distanceBetweenLines / LengthOfLines;
 		const double Y = (endPoint().x - startPoint().x) * distanceBetweenLines / LengthOfLines;
 
-		leftLine.translateBy(OdGeVector3d(- X * eccentricity, Y * eccentricity, 0.));
-		rightLine.translateBy(OdGeVector3d(X * (1. - eccentricity), - Y * (1. - eccentricity), 0.));
+		leftLine.translateBy(OdGeVector3d(- X * eccentricity, Y * eccentricity, 0.0));
+		rightLine.translateBy(OdGeVector3d(X * (1. - eccentricity), - Y * (1. - eccentricity), 0.0));
 
 		return true;
 	}
@@ -243,11 +243,11 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert
 	double DistanceSquared;
 
 	if (dDivr <= DBL_EPSILON) {
-		relationship = 0.;
+		relationship = 0.0;
 		DistanceSquared = dPBegX * dPBegX + dPBegY * dPBegY;
 	} else {
 		relationship = - (dPBegX * dBegEndX + dPBegY * dBegEndY) / dDivr;
-		relationship = EoMax(0., EoMin(1., relationship));
+		relationship = EoMax(0.0, EoMin(1.0, relationship));
 		const double dx = dPBegX + relationship * dBegEndX;
 		const double dy = dPBegY + relationship * dBegEndY;
 		DistanceSquared = dx * dx + dy * dy;

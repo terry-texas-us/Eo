@@ -6,7 +6,7 @@ struct EoLineweightData {
     int m_OldIdx;
     int m_NewIdx;
     double m_Value;
-    EoLineweightData() : m_OldIdx(-1), m_NewIdx(-1), m_Value(0.) {};
+    EoLineweightData() : m_OldIdx(-1), m_NewIdx(-1), m_Value(0.0) {};
 };
 
 class EoDlgPlotStyleEditLineweight : public CDialog {

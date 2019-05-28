@@ -398,7 +398,7 @@ public:
 
 			OdString sPmt;
 			sPmt.format(L"Specify size <%g>:", tracker._size.length());
-			tracker.setValue(UserIO->getDist(sPmt, 0, 0., OdString::kEmpty, &tracker));
+			tracker.setValue(UserIO->getDist(sPmt, 0, 0.0, OdString::kEmpty, &tracker));
 
 			OdDbBlockTableRecordPtr pSpace = Database->getActiveLayoutBTRId().safeOpenObject(OdDb::kForWrite);
 			pItem->m_frameId = pSpace->appendOdDbEntity(pOleFrame);

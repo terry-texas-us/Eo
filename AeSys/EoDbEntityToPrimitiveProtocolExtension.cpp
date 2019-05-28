@@ -178,7 +178,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 void ConvertDimensionData(OdDbDimension* dimension) {
 	OdDbBlockTableRecordPtr Block = dimension->dimBlockId().safeOpenObject(OdDb::kForRead);
 	
-	if (dimension->getMeasurement() >= 0.) {
+	if (dimension->getMeasurement() >= 0.0) {
 		OdString formattedMeasurement;
 		dimension->formatMeasurement(formattedMeasurement, dimension->getMeasurement(), dimension->dimensionText());
 	}
@@ -579,8 +579,8 @@ public:
 		BlockReferencePrimitive->SetName((LPCWSTR) Block->getName());
 		BlockReferencePrimitive->SetPosition(OdGePoint3d::kOrigin);
 		BlockReferencePrimitive->SetNormal(OdGeVector3d::kZAxis);
-		BlockReferencePrimitive->SetScaleFactors(OdGeScale3d(1., 1., 1.));
-		BlockReferencePrimitive->SetRotation(0.);
+		BlockReferencePrimitive->SetScaleFactors(OdGeScale3d(1.0, 1.0, 1.0));
+		BlockReferencePrimitive->SetRotation(0.0);
 
 		ConvertEntityData(RotatedDimensionEntity, BlockReferencePrimitive);
 		group->AddTail(BlockReferencePrimitive);

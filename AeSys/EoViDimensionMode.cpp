@@ -396,7 +396,7 @@ void AeSysView::OnDimensionModeAngle() {
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 				Ellipse->setColorIndex(1);
 				Ellipse->setLinetype(L"Continuous");
-				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1., 0., Angle);
+				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1.0, 0.0, Angle);
 
 				Group->AddTail(EoDbEllipse::Create(Ellipse));
 
@@ -413,7 +413,7 @@ void AeSysView::OnDimensionModeAngle() {
 				pstate.SetFontDefinition(DeviceContext, FontDefinition);
 
 				EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-				CharacterCellDefinition.SetRotationAngle(0.);
+				CharacterCellDefinition.SetRotationAngle(0.0);
 				CharacterCellDefinition.SetHeight(.1);
 				pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
@@ -454,7 +454,7 @@ void AeSysView::OnDimensionModeConvert() {
 
 	POSITION posPrimCur;
 
-	EoGePoint4d ptView(CurrentPnt, 1.);
+	EoGePoint4d ptView(CurrentPnt, 1.0);
 	ModelViewTransformPoint(ptView);
 
 	POSITION GroupPosition = GetFirstVisibleGroupPosition();

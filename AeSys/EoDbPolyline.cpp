@@ -15,9 +15,9 @@ size_t EoDbPolyline::sm_PivotVertex = 0;
 
 EoDbPolyline::EoDbPolyline()
 	: m_Flags(0)
-	, m_ConstantWidth(0.)
-	, m_Elevation(0.)
-	, m_Thickness(0.)
+	, m_ConstantWidth(0.0)
+	, m_Elevation(0.0)
+	, m_Thickness(0.0)
 	, m_Normal(OdGeVector3d::kZAxis) {
 	m_Vertices.clear();
 	m_StartWidths.clear();
@@ -239,12 +239,12 @@ bool EoDbPolyline::IsInView(AeSysView * view) const {
 	OdGePoint3d Point;
 	EoGePoint4d	pt[2];
 	GetPointAt(0, Point);
-	pt[0] = EoGePoint4d(Point, 1.);
+	pt[0] = EoGePoint4d(Point, 1.0);
 	view->ModelViewTransformPoint(pt[0]);
 
 	for (size_t VertexIndex = 1; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		GetPointAt(VertexIndex, Point);
-		pt[1] = EoGePoint4d(Point, 1.);
+		pt[1] = EoGePoint4d(Point, 1.0);
 		view->ModelViewTransformPoint(pt[1]);
 
 		if (EoGePoint4d::ClipLine(pt[0], pt[1]))
@@ -267,7 +267,7 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point)
 	}
 	OdGePoint3d Point;
 	GetPointAt(sm_PivotVertex, Point);
-	EoGePoint4d ptCtrl(Point, 1.);
+	EoGePoint4d ptCtrl(Point, 1.0);
 	view->ModelViewTransformPoint(ptCtrl);
 
 	if (ptCtrl.DistanceToPointXY(point) >= sm_SelectApertureSize) { // Not on proper vertex
@@ -294,7 +294,7 @@ OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView * view, const EoGePoint
 	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		OdGePoint3d Point;
 		GetPointAt(VertexIndex, Point);
-		EoGePoint4d pt(Point, 1.);
+		EoGePoint4d pt(Point, 1.0);
 		view->ModelViewTransformPoint(pt);
 
 		const double dDis = point.DistanceToPointXY(pt);
@@ -321,8 +321,8 @@ bool EoDbPolyline::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoi
 		GetPointAt(sm_EdgeToEvaluate - 1, StartPoint);
 		OdGePoint3d EndPoint;
 		GetPointAt(sm_EdgeToEvaluate % NumberOfVertices, EndPoint);
-		EoGePoint4d ptBeg(StartPoint, 1.);
-		EoGePoint4d ptEnd(EndPoint, 1.);
+		EoGePoint4d ptBeg(StartPoint, 1.0);
+		EoGePoint4d ptEnd(EndPoint, 1.0);
 
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
@@ -339,13 +339,13 @@ bool EoDbPolyline::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoi
 
 		OdGePoint3d StartPoint;
 		GetPointAt(0, StartPoint);
-		EoGePoint4d ptBeg(StartPoint, 1.);
+		EoGePoint4d ptBeg(StartPoint, 1.0);
 		view->ModelViewTransformPoint(ptBeg);
 
 		for (size_t VertexIndex = 1; VertexIndex <= NumberofEdges; VertexIndex++) {
 			OdGePoint3d EndPoint;
 			GetPointAt(VertexIndex % NumberOfVertices, EndPoint);
-			EoGePoint4d ptEnd(EndPoint, 1.);
+			EoGePoint4d ptEnd(EndPoint, 1.0);
 			view->ModelViewTransformPoint(ptEnd);
 
 			EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());

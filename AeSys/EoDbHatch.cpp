@@ -17,7 +17,7 @@ size_t EoDbHatch::sm_EdgeToEvaluate = 0;
 size_t EoDbHatch::sm_Edge = 0;
 size_t EoDbHatch::sm_PivotVertex = 0;
 
-double EoDbHatch::sm_PatternAngle = 0.;
+double EoDbHatch::sm_PatternAngle = 0.0;
 double EoDbHatch::sm_PatternScaleX = .1;
 double EoDbHatch::sm_PatternScaleY = .1;
 
@@ -216,11 +216,11 @@ OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
 bool EoDbHatch::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[2];
 
-	pt[0] = EoGePoint4d(m_Vertices[0], 1.);
+	pt[0] = EoGePoint4d(m_Vertices[0], 1.0);
 	view->ModelViewTransformPoint(pt[0]);
 
 	for (int i = m_Vertices.size() - 1; i >= 0; i--) {
-		pt[1] = EoGePoint4d(m_Vertices[i], 1.);
+		pt[1] = EoGePoint4d(m_Vertices[i], 1.0);
 		view->ModelViewTransformPoint(pt[1]);
 
 		if (EoGePoint4d::ClipLine(pt[0], pt[1]))
@@ -231,7 +231,7 @@ bool EoDbHatch::IsInView(AeSysView* view) const {
 }
 bool EoDbHatch::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		EoGePoint4d pt(m_Vertices[VertexIndex], 1.);
+		EoGePoint4d pt(m_Vertices[VertexIndex], 1.0);
 		view->ModelViewTransformPoint(pt);
 
 		if (point.DistanceToPointXY(pt) < sm_SelectApertureSize)
@@ -246,7 +246,7 @@ OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 	sm_PivotVertex = m_Vertices.size();
 
 	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		EoGePoint4d pt(m_Vertices[VertexIndex], 1.);
+		EoGePoint4d pt(m_Vertices[VertexIndex], 1.0);
 		view->ModelViewTransformPoint(pt);
 
 		const double dDis = point.DistanceToPointXY(pt);
@@ -272,8 +272,8 @@ bool EoDbHatch::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d 
 bool EoDbHatch::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
 	const size_t NumberOfVertices = m_Vertices.size();
 	if (sm_EdgeToEvaluate > 0 && sm_EdgeToEvaluate <= NumberOfVertices) { // Evaluate specified edge of polygon
-		EoGePoint4d ptBeg(m_Vertices[sm_EdgeToEvaluate - 1], 1.);
-		EoGePoint4d ptEnd(m_Vertices[sm_EdgeToEvaluate % NumberOfVertices], 1.);
+		EoGePoint4d ptBeg(m_Vertices[sm_EdgeToEvaluate - 1], 1.0);
+		EoGePoint4d ptEnd(m_Vertices[sm_EdgeToEvaluate % NumberOfVertices], 1.0);
 
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
@@ -284,11 +284,11 @@ bool EoDbHatch::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3
 			return true;
 		}
 	} else { // Evaluate entire polygon
-		EoGePoint4d ptBeg(m_Vertices[0], 1.);
+		EoGePoint4d ptBeg(m_Vertices[0], 1.0);
 		view->ModelViewTransformPoint(ptBeg);
 
 		for (size_t VertexIndex = 1; VertexIndex <= NumberOfVertices; VertexIndex++) {
-			EoGePoint4d ptEnd(m_Vertices[VertexIndex % NumberOfVertices], 1.);
+			EoGePoint4d ptEnd(m_Vertices[VertexIndex % NumberOfVertices], 1.0);
 			view->ModelViewTransformPoint(ptEnd);
 
 			EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
@@ -446,7 +446,7 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 			}
 		}
 		OdGeVector2d PatternOffset(HatchPatternLine.m_patternOffset);
-		if (PatternOffset.y < 0.) {
+		if (PatternOffset.y < 0.0) {
 			PatternOffset.negate();
 		}
 		// Determine where first scan position is
@@ -490,8 +490,8 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 
 			if (HatchPatternLine.m_dashes.isEmpty()) {
 				for (int EdgePairIndex = 1; EdgePairIndex <= (iEndEdg - iBegEdg) / 2; EdgePairIndex++) {
-					const OdGePoint3d StartPoint(Edges[CurrentEdgeIndex].dX, dScan, 0.);
-					const OdGePoint3d EndPoint(Edges[CurrentEdgeIndex + 1].dX, dScan, 0.);
+					const OdGePoint3d StartPoint(Edges[CurrentEdgeIndex].dX, dScan, 0.0);
+					const OdGePoint3d EndPoint(Edges[CurrentEdgeIndex + 1].dX, dScan, 0.0);
 					if (!StartPoint.isEqualTo(EndPoint)) {
 						EoGeLineSeg3d Line(StartPoint, EndPoint);
 						Line.transformBy(tmInv);
@@ -527,8 +527,8 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 					double DistanceToRightEdge = Edges[CurrentEdgeIndex + 1].dX - Edges[CurrentEdgeIndex].dX;
 					while (CurrentDashLength <= DistanceToRightEdge + DBL_EPSILON) {
 						EndPoint.x = StartPoint.x + CurrentDashLength;
-						if (HatchPatternLine.m_dashes[DashIndex] >= 0.) {
-							if (HatchPatternLine.m_dashes[DashIndex] == 0.) {
+						if (HatchPatternLine.m_dashes[DashIndex] >= 0.0) {
+							if (HatchPatternLine.m_dashes[DashIndex] == 0.0) {
 								OdGePoint3d Dot(StartPoint);
 								Dot.transformBy(tmInv);
 								view->DisplayPixel(deviceContext, theApp.GetHotColor(ColorIndex), Dot);
@@ -543,7 +543,7 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 						CurrentDashLength = fabs(HatchPatternLine.m_dashes[DashIndex]);
 						StartPoint.x = EndPoint.x;
 					}
-					if (HatchPatternLine.m_dashes[DashIndex] >= 0.) {
+					if (HatchPatternLine.m_dashes[DashIndex] >= 0.0) {
 						EndPoint.x = Edges[CurrentEdgeIndex + 1].dX;
 						if (!StartPoint.isEqualTo(EndPoint)) {
 							EoGeLineSeg3d Line(StartPoint, EndPoint);
@@ -574,7 +574,7 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 		Vertices.SetSize(NumberOfVertices);
 
 		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			Vertices[VertexIndex] = EoGePoint4d(m_Vertices[VertexIndex], 1.);
+			Vertices[VertexIndex] = EoGePoint4d(m_Vertices[VertexIndex], 1.0);
 		}
 		view->ModelViewTransformPoints(Vertices);
 		EoGePoint4d::ClipPolygon(Vertices);
@@ -628,7 +628,7 @@ bool EoDbHatch::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point) no
 	if (sm_PivotVertex >= NumberOfVertices) { // Not engaged at a vertex
 		return false;
 	}
-	EoGePoint4d ptCtrl(m_Vertices[sm_PivotVertex], 1.);
+	EoGePoint4d ptCtrl(m_Vertices[sm_PivotVertex], 1.0);
 	view->ModelViewTransformPoint(ptCtrl);
 
 	if (ptCtrl.DistanceToPointXY(point) >= sm_SelectApertureSize) { // Not on proper vertex
@@ -839,7 +839,7 @@ void EoDbHatch::AppendLoop(const OdGePoint3dArray & vertices, OdDbHatchPtr & hat
 		OdGePoint3d Vertex(vertices[VertexIndex]);
 		Vertex.transformBy(WorldToPlaneTransform);
 		Vertices2.append(Vertex.convert2d());
-		Bulges.append(0.);
+		Bulges.append(0.0);
 	}
 	hatch->appendLoop(OdDbHatch::kPolyline, Vertices2, Bulges);
 }
@@ -981,21 +981,21 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 
 				if (fabs(ScaleFactorX) > FLT_EPSILON && fabs(ScaleFactorY) > FLT_EPSILON) { // Have 2 hatch lines
 					InteriorStyleIndex = 2;
-					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.0);
+					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.0);
 					HatchXAxis *= ScaleFactorX * 1.e-3;
 					HatchYAxis *= ScaleFactorY * 1.e-3;
 				} else if (fabs(ScaleFactorX) > FLT_EPSILON) { // Vertical hatch lines
 					InteriorStyleIndex = 1;
 					PatternAngle += HALF_PI;
 
-					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.0);
+					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.0);
 					HatchXAxis *= ScaleFactorX * 1.e-3;
 				} else { // Horizontal hatch lines
 					InteriorStyleIndex = 1;
-					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.);
-					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.);
+					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.0);
+					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.0);
 					HatchYAxis *= ScaleFactorY * 1.e-3;
 				}
 				break;

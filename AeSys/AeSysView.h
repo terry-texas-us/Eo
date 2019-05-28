@@ -126,8 +126,8 @@ public:
 	const OdExEditorObject& editorObject() const noexcept;
 	bool isModelSpaceView() const;
 
-	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const;
-	OdUInt32 drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags);
+	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const override; // OdGiContextForDbDatabase
+	OdUInt32 drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags) override; // OdGiContextForDbDatabase
 
 	// </command_view>
 
@@ -676,7 +676,7 @@ public: // Edit mode interface
 	OdGeScale3d EditModeScaleFactors() const noexcept;
 	void SetEditModeScaleFactors(const double sx, const double sy, const double sz) noexcept;
 	void SetEditModeRotationAngles(double x, double y, double z) noexcept;
-	void SetEditModeMirrorScaleFactors(double sx, double sy, double sz);
+	void SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept;
 
 	void OnEditModeOptions();
 	void OnEditModePivot();
@@ -985,7 +985,7 @@ public:
 	void OnOp8();
 	void OnReturn();
 	void OnEscape();
-	void OnEditFind();
+	void OnEditFind() noexcept;
 	LRESULT OnRedraw(WPARAM wParam, LPARAM lParam);
 	void OnRefresh();
 	void OnViewerRegen();

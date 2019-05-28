@@ -5,10 +5,10 @@
 #include "EoGePoint4d.h"
 
 EoGePoint4d::EoGePoint4d() {
-	x = 0.;
-	y = 0.;
-	z = 0.;
-	w = 1.;
+	x = 0.0;
+	y = 0.0;
+	z = 0.0;
+	w = 1.0;
 }
 EoGePoint4d::EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept {
 	x = initialPoint.x;
@@ -53,9 +53,9 @@ bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	int OutCodeB = 0;
 
 	for (int iBC = 0; iBC < 6; iBC++) {
-		if (BoundaryCodeA[iBC] <= 0.)
+		if (BoundaryCodeA[iBC] <= 0.0)
 			OutCodeA |= (1 << iBC);
-		if (BoundaryCodeB[iBC] <= 0.)
+		if (BoundaryCodeB[iBC] <= 0.0)
 			OutCodeB |= (1 << iBC);
 	}
 
@@ -64,17 +64,17 @@ bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	if ((OutCodeA | OutCodeB) == 0)
 		return true;
 
-	double dTIn = 0.;
-	double dTOut = 1.;
+	double dTIn = 0.0;
+	double dTOut = 1.0;
 
 	double dTHit;
 
 	for (int i = 0; i < 6; i++) {
-		if (BoundaryCodeB[i] < 0.) {
+		if (BoundaryCodeB[i] < 0.0) {
 			dTHit = BoundaryCodeA[i] / (BoundaryCodeA[i] - BoundaryCodeB[i]);
 			dTOut = EoMin(dTOut, dTHit);
 		}
-		else if (BoundaryCodeA[i] < 0.) {
+		else if (BoundaryCodeA[i] < 0.0) {
 			dTHit = BoundaryCodeA[i] / (BoundaryCodeA[i] - BoundaryCodeB[i]);
 			dTIn = EoMax(dTIn, dTHit);
 		}
@@ -93,11 +93,11 @@ bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 }
 void EoGePoint4d::ClipPolygon(EoGePoint4dArray& pointsArray) {
 	static OdGePoint3d pointsOnClipPlanes[] = {
-		OdGePoint3d(- 1., 0., 0.), OdGePoint3d(1., 0., 0.), OdGePoint3d(0., - 1., 0.), OdGePoint3d(0., 1., 0.), OdGePoint3d(0., 0., - 1.), OdGePoint3d(0., 0., 1.)
+		OdGePoint3d(- 1.0, 0.0, 0.0), OdGePoint3d(1.0, 0.0, 0.0), OdGePoint3d(0.0, - 1.0, 0.0), OdGePoint3d(0.0, 1.0, 0.0), OdGePoint3d(0.0, 0.0, - 1.0), OdGePoint3d(0.0, 0.0, 1.0)
 	};
 
 	static OdGeVector3d vPln[] = {
-		OdGeVector3d(1., 0., 0.), OdGeVector3d(- 1., 0., 0.), OdGeVector3d(0., 1., 0.), OdGeVector3d(0., - 1., 0.), OdGeVector3d(0., 0., 1.), OdGeVector3d(0., 0., - 1.)
+		OdGeVector3d(1.0, 0.0, 0.0), OdGeVector3d(- 1.0, 0.0, 0.0), OdGeVector3d(0.0, 1.0, 0.0), OdGeVector3d(0.0, - 1.0, 0.0), OdGeVector3d(0.0, 0.0, 1.0), OdGeVector3d(0.0, 0.0, - 1.0)
 	};
 
 	EoGePoint4dArray PointsArrayOut;
@@ -136,7 +136,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 		bEdgeVis[1] = OdGeVector3d(ptEdge[1].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
 
 		if (bEdgeVis[0] != bEdgeVis[1]) { // Vetices of edge on opposite sides of clip plane
-			pt = IntersectionWithPln4(ptEdge[0], ptEdge[1], EoGePoint4d(pointOnPlane, 1.), planeNormal);
+			pt = IntersectionWithPln4(ptEdge[0], ptEdge[1], EoGePoint4d(pointOnPlane, 1.0), planeNormal);
 			pointsArrayOut.Add(pt);
 		}
 		if (bEdgeVis[1]) {
@@ -146,7 +146,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 		bEdgeVis[0] = bEdgeVis[1];
 	}
 	if (pointsArrayOut.GetSize() != 0 && bEdgeVis[0] != bVisVer0) { // first and last vertices on opposite sides of clip plane
-		pt = IntersectionWithPln4(ptEdge[0], pointsArrayIn[0], EoGePoint4d(pointOnPlane, 1.), planeNormal);
+		pt = IntersectionWithPln4(ptEdge[0], pointsArrayIn[0], EoGePoint4d(pointOnPlane, 1.0), planeNormal);
 		pointsArrayOut.Add(pt);
 	}
 }
@@ -158,7 +158,7 @@ EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint
 		const OdGeVector3d vPtPt0(startPoint.Convert3d() - pointOnPlane.Convert3d());
 		LineVector *= (planeNormal.dotProduct(vPtPt0)) / DotProduct;
 	} else { // Line and the plane are parallel .. force return to start point
-		LineVector *= 0.;
+		LineVector *= 0.0;
 	}
 	return (startPoint - LineVector);
 }
@@ -172,9 +172,9 @@ double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept {
 	return sqrt(X * X + Y * Y);
 }
 bool EoGePoint4d::IsInView() noexcept {
-	if (w + x <= 0. || w - x <= 0.) return false;
-	if (w + y <= 0. || w - y <= 0.) return false;
-	if (w + z <= 0. || w - z <= 0.) return false;
+	if (w + x <= 0. || w - x <= 0.0) return false;
+	if (w + y <= 0. || w - y <= 0.0) return false;
+	if (w + z <= 0. || w - z <= 0.0) return false;
 
 	return true;
 }

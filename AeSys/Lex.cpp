@@ -366,7 +366,7 @@ void lex::EvalTokenStream(int* aiTokId, long* alDef, int* aiTyp, void* apOp) {
 						lOp1[0] = lOp2[0] / lOp1[0];
 					}
 					else if (iTyp1 <= iTyp2) {
-						if (dOp1[0] == 0.) throw L"Attempting to divide by 0.";
+						if (dOp1[0] == 0.0) throw L"Attempting to divide by 0.";
 						if (iTyp1 == iTyp2)
 							iTyp1 = TOK_REAL;
 						else if (iTyp1 == TOK_REAL)
@@ -556,14 +556,14 @@ void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, double* adOp) {
 		break;
 
 	case TOK_ACOS:
-		if (fabs(adOp[0]) > 1.)
+		if (fabs(adOp[0]) > 1.0)
 			throw L"Math error: acos of a value greater than 1.";
 		else
 			adOp[0] = acos(EoToDegree(adOp[0]));
 		break;
 
 	case TOK_ASIN:
-		if (fabs(adOp[0]) > 1.)
+		if (fabs(adOp[0]) > 1.0)
 			throw L"Math error: asin of a value greater than 1.";
 		else
 			adOp[0] = asin(EoToDegree(adOp[0]));
@@ -590,14 +590,14 @@ void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, double* adOp) {
 		break;
 
 	case TOK_LN:
-		if (adOp[0] <= 0.)
+		if (adOp[0] <= 0.0)
 			throw L"Math error: ln of a non-positive number";
 		else
 			adOp[0] = log(adOp[0]);
 		break;
 
 	case TOK_LOG:
-		if (adOp[0] <= 0.)
+		if (adOp[0] <= 0.0)
 			throw L"Math error: log of a non-positive number";
 		else
 			adOp[0] = log10(adOp[0]);
@@ -608,7 +608,7 @@ void lex::UnaryOp(int aiTokTyp, int* aiTyp, long* alDef, double* adOp) {
 		break;
 
 	case TOK_SQRT:
-		if (adOp[0] < 0.)
+		if (adOp[0] < 0.0)
 			throw L"Math error: sqrt of a negative number";
 		else
 			adOp[0] = sqrt(adOp[0]);

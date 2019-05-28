@@ -58,9 +58,9 @@ public: // Methods
 	/// <param name="eccentricity">
 	/// In general; left is (eccentricity * distanceBetweenLines) to the left of this line.
 	///			 right is distanceBetweenLines to the right of the left line
-	/// Left Justifification (0.) left line on this line and right line is distanceBetweenLines to right of this line
+	/// Left Justifification (0.0) left line on this line and right line is distanceBetweenLines to right of this line
 	/// Center Justification (.5) left and right lines the same distance from this line
-	/// Right Justifification (1.) right line on this line and left line is distanceBetweenLines to left of this line
+	/// Right Justifification (1.0) right line on this line and left line is distanceBetweenLines to left of this line
 	/// </param>
 	bool GetParallels(double dDis, double eccentricity, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) const;
 	/// <summary>Determines intersection of two lines.</summary>

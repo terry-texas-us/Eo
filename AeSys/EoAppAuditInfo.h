@@ -4,7 +4,7 @@
 
 class EoAppAuditInfo : public OdDbAuditInfo {
 public:
-	EoAppAuditInfo();
+	EoAppAuditInfo() noexcept;
 	virtual ~EoAppAuditInfo() {
 	}
 

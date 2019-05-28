@@ -71,9 +71,9 @@ CMainFrame::CMainFrame()
 CMainFrame::~CMainFrame() {}
 
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
-	if (CMDIFrameWndEx::OnCreate(createStructure) == -1) {
-		return -1;
-	}
+	
+	if (CMDIFrameWndEx::OnCreate(createStructure) == -1) { return -1; }
+
 	UpdateMDITabs(FALSE);
 
 	if (!m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE)) {
@@ -239,10 +239,10 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 }
 
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
-	HICON PropertiesPaneIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	auto PropertiesPaneIcon {static_cast<HICON>(::LoadImageW(::AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0))};
 	m_PropertiesPane.SetIcon(PropertiesPaneIcon, FALSE);
 
-	HICON OutputPaneIcon = (HICON) ::LoadImage(::AfxGetResourceHandle(), MAKEINTRESOURCE(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0);
+	auto OutputPaneIcon {static_cast<HICON>(::LoadImageW(::AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0))};
 	m_OutputPane.SetIcon(OutputPaneIcon, FALSE);
 
 	UpdateMDITabbedBarsIcons();
@@ -380,7 +380,7 @@ BOOL CMainFrame::LoadFrame(UINT resourceId, DWORD defaultStyle, CWnd * parentWin
 
 LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, LPARAM point) {
 	CMenu PopupToolbarMenu;
-	VERIFY(PopupToolbarMenu.LoadMenu(IDR_POPUP_TOOLBAR));
+	VERIFY(PopupToolbarMenu.LoadMenuW(IDR_POPUP_TOOLBAR));
 
 	auto SubMenu {PopupToolbarMenu.GetSubMenu(0)};
 	ASSERT(SubMenu != nullptr);
@@ -527,7 +527,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			popupMenu->RemoveAllItems();
 
 			CMenu menu;
-			VERIFY(menu.LoadMenu(IDR_POPUP_TOOLBAR));
+			VERIFY(menu.LoadMenuW(IDR_POPUP_TOOLBAR));
 
 			auto PopupSubMenu {menu.GetSubMenu(0)};
 			ASSERT(PopupSubMenu != NULL);
@@ -652,7 +652,7 @@ BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOO
 	if (bDrop || !theApp.m_Options.m_bTabsContextMenu) { return FALSE; }
 
 	CMenu menu;
-	VERIFY(menu.LoadMenu(IDR_POPUP_MDITABS));
+	VERIFY(menu.LoadMenuW(IDR_POPUP_MDITABS));
 
 	auto PopupSubMenu {menu.GetSubMenu(0)};
 	ASSERT(PopupSubMenu != nullptr);

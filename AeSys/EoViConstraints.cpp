@@ -6,17 +6,17 @@
 
 void AeSysView::InitializeConstraints() noexcept {
 	m_AxisConstraintInfluenceAngle = 5.;
-	m_AxisConstraintOffsetAngle = 0.;
+	m_AxisConstraintOffsetAngle = 0.0;
 
-	m_XGridSnapSpacing = 1.;
-	m_YGridSnapSpacing = 1.;
-	m_ZGridSnapSpacing = 1.;
-	m_XGridLineSpacing = 12.;
-	m_YGridLineSpacing = 12.;
-	m_ZGridLineSpacing = 12.;
-	m_XGridPointSpacing = 3.;
-	m_YGridPointSpacing = 3.;
-	m_ZGridPointSpacing = 0.;
+	m_XGridSnapSpacing = 1.0;
+	m_YGridSnapSpacing = 1.0;
+	m_ZGridSnapSpacing = 1.0;
+	m_XGridLineSpacing = 12.0;
+	m_YGridLineSpacing = 12.0;
+	m_ZGridLineSpacing = 12.0;
+	m_XGridPointSpacing = 3.0;
+	m_YGridPointSpacing = 3.0;
+	m_ZGridPointSpacing = 0.0;
 	m_MaximumDotsPerLine = 64;
 
 	m_DisplayGridWithLines = false;

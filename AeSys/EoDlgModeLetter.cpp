@@ -74,7 +74,7 @@ void EoDlgModeLetter::OnOK() {
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
-	m_Point = text_GetNewLinePos(FontDefinition, ReferenceSystem, 1., 0);
+	m_Point = text_GetNewLinePos(FontDefinition, ReferenceSystem, 1.0, 0);
 	m_TextEditControl.SetFocus();
 
 	CDialog::OnOK();

@@ -20,23 +20,23 @@ END_MESSAGE_MAP()
 EoDlgEditOptions::EoDlgEditOptions(CWnd* parent)
 	: CDialog(EoDlgEditOptions::IDD, parent)
 	, m_ActiveView(0)
-	, m_ScaleFactorX(0.)
-	, m_ScaleFactorY(0.)
-	, m_ScaleFactorZ(0.)
-	, m_EditModeRotationAngleX(0.)
-	, m_EditModeRotationAngleY(0.)
-	, m_EditModeRotationAngleZ(0.) {
+	, m_ScaleFactorX(0.0)
+	, m_ScaleFactorY(0.0)
+	, m_ScaleFactorZ(0.0)
+	, m_EditModeRotationAngleX(0.0)
+	, m_EditModeRotationAngleY(0.0)
+	, m_EditModeRotationAngleZ(0.0) {
 }
 
 EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* parent)
 	: CDialog(EoDlgEditOptions::IDD, parent)
 	, m_ActiveView(view)
-	, m_ScaleFactorX(0.)
-	, m_ScaleFactorY(0.)
-	, m_ScaleFactorZ(0.)
-	, m_EditModeRotationAngleX(0.)
-	, m_EditModeRotationAngleY(0.)
-	, m_EditModeRotationAngleZ(0.) {
+	, m_ScaleFactorX(0.0)
+	, m_ScaleFactorY(0.0)
+	, m_ScaleFactorZ(0.0)
+	, m_EditModeRotationAngleX(0.0)
+	, m_EditModeRotationAngleY(0.0)
+	, m_EditModeRotationAngleZ(0.0) {
 
 }
 
@@ -64,9 +64,9 @@ void EoDlgEditOptions::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgEditOptions::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	if (m_ActiveView->m_MirrorScaleFactors.sx < 0.) {
+	if (m_ActiveView->m_MirrorScaleFactors.sx < 0.0) {
 		m_MirrorXButton.SetCheck(BST_CHECKED);
-	} else if (m_ActiveView->m_MirrorScaleFactors.sy < 0.) {
+	} else if (m_ActiveView->m_MirrorScaleFactors.sy < 0.0) {
 		m_MirrorYButton.SetCheck(BST_CHECKED);
 	} else {
 		m_MirrorZButton.SetCheck(BST_CHECKED);
@@ -75,11 +75,11 @@ BOOL EoDlgEditOptions::OnInitDialog() {
 }
 void EoDlgEditOptions::OnOK() {
 	if (m_MirrorXButton.GetCheck() == BST_CHECKED) {
-		m_ActiveView->SetEditModeMirrorScaleFactors(-1, 1., 1.);
+		m_ActiveView->SetEditModeMirrorScaleFactors(-1.0, 1.0, 1.0);
 	} else if (m_MirrorYButton.GetCheck() == BST_CHECKED) {
-		m_ActiveView->SetEditModeMirrorScaleFactors(1., -1., 1.);
+		m_ActiveView->SetEditModeMirrorScaleFactors(1.0, -1.0, 1.0);
 	} else {
-		m_ActiveView->SetEditModeMirrorScaleFactors(1., 1., -1.);
+		m_ActiveView->SetEditModeMirrorScaleFactors(1.0, 1.0, -1.0);
 	}
 	CDialog::OnOK();
 }

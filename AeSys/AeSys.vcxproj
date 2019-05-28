@@ -40,7 +40,7 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Examples\Editor;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -107,7 +107,9 @@
     <ClCompile Include="EoDlgPassword.cpp" />
     <ClCompile Include="EoGripperScrollBar.cpp" />
     <ClCompile Include="OdApplicationDocument.cpp" />
-    <ClCompile Include="AeSysView.cpp" />
+    <ClCompile Include="AeSysView.cpp">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Level4</WarningLevel>
+    </ClCompile>
     <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
     <ClCompile Include="EoDbCharacterCellDefinition.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
@@ -224,6 +226,7 @@
     <ClCompile Include="EoDlgSelectIsometricView.cpp" />
     <ClCompile Include="Stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Create</PrecompiledHeader>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Level4</WarningLevel>
     </ClCompile>
     <ClCompile Include="EoDlgTrapFilter.cpp" />
     <ClCompile Include="EoDlgViewParameters.cpp" />

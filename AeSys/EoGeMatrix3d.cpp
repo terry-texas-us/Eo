@@ -13,15 +13,15 @@ EoGeMatrix3d::~EoGeMatrix3d() {
 EoGeMatrix3d& EoGeMatrix3d::SetTo3AxisRotation(const OdGeVector3d& rotationAngles) {
 	setToIdentity();
 	EoGeMatrix3d RotationMatrix;
-	if (fabs(rotationAngles.x) != 0.) {
+	if (fabs(rotationAngles.x) != 0.0) {
 		RotationMatrix.setToRotation(EoArcLength(rotationAngles.x), OdGeVector3d::kXAxis);
 		preMultBy(RotationMatrix);
 	}
-	if (fabs(rotationAngles.y) != 0.) {
+	if (fabs(rotationAngles.y) != 0.0) {
 		RotationMatrix.setToRotation(EoArcLength(rotationAngles.y), OdGeVector3d::kYAxis);
 		preMultBy(RotationMatrix);
 	}
-	if (fabs(rotationAngles.z) != 0.) {
+	if (fabs(rotationAngles.z) != 0.0) {
 		RotationMatrix.setToRotation(EoArcLength(rotationAngles.z), OdGeVector3d::kZAxis);
 		preMultBy(RotationMatrix);
 	}
@@ -57,8 +57,8 @@ EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax,
 	entry[2][2] = - (farClipDistance + nearClipDistance) / NExtent;
 	entry[2][3] = - 2. * farClipDistance * nearClipDistance / NExtent;
 
-	entry[3][2] = - 1.;
-	entry[3][3] = 0.;
+	entry[3][2] = - 1.0;
+	entry[3][3] = 0.0;
 
 	return *this;
 }
@@ -100,7 +100,7 @@ OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& ref
 	const double XDirectionLength = referenceSystem.XDirection().length();
 	const double YDirectionLength = referenceSystem.YDirection().length();
 	if (XDirectionLength > DBL_EPSILON && YDirectionLength > DBL_EPSILON) {
-		ScaleMatrix.setToScaling(OdGeScale3d(1. / XDirectionLength, 1. / YDirectionLength, 1.));
+		ScaleMatrix.setToScaling(OdGeScale3d(1. / XDirectionLength, 1. / YDirectionLength, 1.0));
 
 		OdGeMatrix3d ToWorld(referenceSystem.TransformMatrix());
 		ToWorld.preMultBy(ScaleMatrix);

@@ -3,12 +3,12 @@
 #include "EoGsViewport.h"
 
 EoGsViewport::EoGsViewport() noexcept
-	: m_DeviceHeightInPixels(0.)
-	, m_DeviceWidthInPixels(0.)
-	, m_DeviceHeightInInches(0.)
-	, m_DeviceWidthInInches(0.)
-	, m_HeightInPixels(0.)
-	, m_WidthInPixels(0.) {
+	: m_DeviceHeightInPixels(0.0)
+	, m_DeviceWidthInPixels(0.0)
+	, m_DeviceHeightInInches(0.0)
+	, m_DeviceWidthInInches(0.0)
+	, m_HeightInPixels(0.0)
+	, m_WidthInPixels(0.0) {
 }
 
 EoGsViewport::~EoGsViewport() {
@@ -36,8 +36,8 @@ EoGsViewport& EoGsViewport::operator=(const EoGsViewport& viewport) noexcept {
 CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
 	CPoint pnt;
 
-	pnt.x = EoRound((point.x / point.W() + 1.) * ((m_WidthInPixels - 1.) / 2.));
-	pnt.y = EoRound((-point.y / point.W() + 1.) * ((m_HeightInPixels - 1.) / 2.));
+	pnt.x = EoRound((point.x / point.W() + 1.0) * ((m_WidthInPixels - 1.0) / 2.));
+	pnt.y = EoRound((-point.y / point.W() + 1.0) * ((m_HeightInPixels - 1.0) / 2.));
 
 	return pnt;
 }
@@ -56,8 +56,8 @@ void EoGsViewport::DoProjection(CPoint* pnt, EoGePoint4dArray& points) const {
 }
 
 void EoGsViewport::DoProjectionInverse(OdGePoint3d & point) const noexcept {
-	point.x = (point.x * 2.) / (m_WidthInPixels - 1.) - 1.;
-	point.y = -((point.y * 2.) / (m_HeightInPixels - 1.) - 1.);
+	point.x = (point.x * 2.) / (m_WidthInPixels - 1.0) - 1.0;
+	point.y = -((point.y * 2.) / (m_HeightInPixels - 1.0) - 1.0);
 }
 
 double EoGsViewport::HeightInPixels() const noexcept {

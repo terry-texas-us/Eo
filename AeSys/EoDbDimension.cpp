@@ -245,7 +245,7 @@ bool EoDbDimension::IsEqualTo(EoDbPrimitive * primitive) const noexcept {
 }
 
 bool EoDbDimension::IsInView(AeSysView * view) const {
-	EoGePoint4d pt[] = {EoGePoint4d(m_Line.startPoint(), 1.), EoGePoint4d(m_Line.endPoint(), 1.)};
+	EoGePoint4d pt[] = {EoGePoint4d(m_Line.startPoint(), 1.0), EoGePoint4d(m_Line.endPoint(), 1.0)};
 
 	view->ModelViewTransformPoints(2, &pt[0]);
 
@@ -254,7 +254,7 @@ bool EoDbDimension::IsInView(AeSysView * view) const {
 
 bool EoDbDimension::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
-		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.);
+		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.0);
 
 		view->ModelViewTransformPoint(pt);
 
@@ -307,7 +307,7 @@ OdGePoint3d EoDbDimension::SelectAtControlPoint(AeSysView * view, const EoGePoin
 	double Aperture = sm_SelectApertureSize;
 
 	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
-		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.);
+		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.0);
 
 		view->ModelViewTransformPoint(pt);
 
@@ -326,8 +326,8 @@ bool EoDbDimension::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePo
 	sm_wFlags &= ~0x0003;
 
 	EoGePoint4d pt[4];
-	pt[0] = EoGePoint4d(m_Line.startPoint(), 1.);
-	pt[1] = EoGePoint4d(m_Line.endPoint(), 1.);
+	pt[0] = EoGePoint4d(m_Line.startPoint(), 1.0);
+	pt[1] = EoGePoint4d(m_Line.endPoint(), 1.0);
 	view->ModelViewTransformPoints(2, &pt[0]);
 
 	EoGeLineSeg3d ln;
@@ -338,12 +338,12 @@ bool EoDbDimension::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePo
 		return true;
 	}
 	OdGePoint3dArray ptsExt;
-	GetBoundingBox(ptsExt, 0.);
+	GetBoundingBox(ptsExt, 0.0);
 
-	pt[0] = EoGePoint4d(ptsExt[0], 1.);
-	pt[1] = EoGePoint4d(ptsExt[1], 1.);
-	pt[2] = EoGePoint4d(ptsExt[2], 1.);
-	pt[3] = EoGePoint4d(ptsExt[3], 1.);
+	pt[0] = EoGePoint4d(ptsExt[0], 1.0);
+	pt[1] = EoGePoint4d(ptsExt[1], 1.0);
+	pt[2] = EoGePoint4d(ptsExt[2], 1.0);
+	pt[3] = EoGePoint4d(ptsExt[3], 1.0);
 	view->ModelViewTransformPoints(4, pt);
 
 	for (size_t n = 0; n < 4; n++) {
@@ -370,7 +370,7 @@ bool EoDbDimension::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoin
 
 	if (!polyline::SelectBy(lowerLeftCorner, upperRightCorner, view)) {
 		OdGePoint3dArray Points;
-		GetBoundingBox(Points, 0.);
+		GetBoundingBox(Points, 0.0);
 		return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 	}
 	return true;
@@ -404,7 +404,7 @@ void EoDbDimension::SetDefaultNote() {
 	const auto ActiveView {AeSysView::GetActiveView()};
 
 	m_ReferenceSystem.SetOrigin(m_Line.midPoint());
-	double dAng = 0.;
+	double dAng = 0.0;
 	const wchar_t cText0 = m_strText[0];
 	if (cText0 != 'R' && cText0 != 'D') {
 		dAng = m_Line.AngleFromXAxis_xy();
@@ -414,7 +414,7 @@ void EoDbDimension::SetDefaultNote() {
 			dDis = -dDis;
 		}
 		OdGePoint3d Origin;
-		EoGeLineSeg3d(m_ReferenceSystem.Origin(), m_Line.endPoint()).ProjPtFrom_xy(0., dDis, Origin);
+		EoGeLineSeg3d(m_ReferenceSystem.Origin(), m_Line.endPoint()).ProjPtFrom_xy(0.0, dDis, Origin);
 		m_ReferenceSystem.SetOrigin(Origin);
 	}
 	const OdGeVector3d vPlnNorm = ActiveView->CameraDirection();
@@ -538,7 +538,7 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 	auto DimensionText {alignedDimension->dimensionText()};
 
 	OdString FormattedMeasurement;
-	if (Measurement >= 0.) {
+	if (Measurement >= 0.0) {
 		alignedDimension->formatMeasurement(FormattedMeasurement, Measurement, DimensionText);
 	}
 	const auto DimensionBlockPosition {alignedDimension->dimBlockPosition()};

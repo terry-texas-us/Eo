@@ -220,7 +220,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	auto ActiveView {AeSysView::GetActiveView()};
 
-	const double Scale = (ActiveView) ? ActiveView->WorldScale() : 1.;
+	const double Scale = (ActiveView) ? ActiveView->WorldScale() : 1.0;
 
 	CMFCPropertyGridProperty* ActiveViewGroup = new CMFCPropertyGridProperty(L"Active View");
 	CMFCPropertyGridProperty* WorldScaleProperty = new CMFCPropertyGridProperty(L"World Scale", (_variant_t) Scale, L"Specifies the world scale used in the Active View", kActiveViewScale);
@@ -263,7 +263,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	pProp = new CMFCPropertyGridProperty( L"Y", (_variant_t) 3., L"Specifies the point grid y spacing");
 	PointGrid->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( L"Z", (_variant_t) 0., L"Specifies the point grid z spacing");
+	pProp = new CMFCPropertyGridProperty( L"Z", (_variant_t) 0.0, L"Specifies the point grid z spacing");
 	PointGrid->AddSubItem(pProp);
 
 	m_PropertyGrid.AddProperty(PointGrid);

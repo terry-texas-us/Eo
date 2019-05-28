@@ -41,7 +41,7 @@
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
 
 double dPWids[] = {
-	0., .0075, .015, .02, .03, .0075, .015, .0225, .03, .0075, .015, .0225, .03, .0075, .015, .0225
+	0.0, .0075, .015, .02, .03, .0075, .015, .0225, .03, .0075, .015, .0225, .03, .0075, .015, .0225
 };
 
 #include "PegColors.h"
@@ -85,7 +85,7 @@ static void addPaperDrawingCustomization() {
 			OdGiGeometry& Geometry = worldDraw->geometry();
 			OdGePoint3d Dash1[2];
 			OdGePoint3d Dash2[2];
-			OdGeVector3d Step = (points[1] - points[0]) / (double(NumberOfDashes) * 2. + 1.);
+			OdGeVector3d Step = (points[1] - points[0]) / (double(NumberOfDashes) * 2. + 1.0);
 			Dash1[0] = points[0];
 			Dash2[0] = points[2];
 			for (int i = 0; i <= NumberOfDashes; ++i) {
@@ -97,7 +97,7 @@ static void addPaperDrawingCustomization() {
 				Dash2[0] = Dash2[1] - Step;
 			}
 			NumberOfDashes = int((points[2] - points[1]).length() / Step.length() - 1) / 2;
-			Step = (points[2] - points[1]) / (double(NumberOfDashes) * 2. + 1.);
+			Step = (points[2] - points[1]) / (double(NumberOfDashes) * 2. + 1.0);
 			Dash1[0] = points[1];
 			Dash2[0] = points[3];
 			for (int i = 0; i <= NumberOfDashes; ++i) {
@@ -381,8 +381,8 @@ AeSysApp::AeSysApp() noexcept
 	EnableHtmlHelp();
 
 	// Detect color depth. 256 color toolbars can be used in the high or true color modes only (bits per pixel is > 8):
-	CClientDC dc(AfxGetMainWnd());
-	m_HighColorMode = dc.GetDeviceCaps(BITSPIXEL) > 8;
+	CClientDC ClientDeviceContext(AfxGetMainWnd());
+	m_HighColorMode = ClientDeviceContext.GetDeviceCaps(BITSPIXEL) > 8;
 
 	m_ClipboardDataImage = false;
 	m_ClipboardDataEoGroups = true;
@@ -392,17 +392,17 @@ AeSysApp::AeSysApp() noexcept
 	m_NodalModeAddGroups = true;
 	m_ClipboardFormatIdentifierForEoGroups = 0;
 	m_CurrentMode = 0;
-	m_EngagedLength = 0.;
-	m_EngagedAngle = 0.;
+	m_EngagedLength = 0.0;
+	m_EngagedAngle = 0.0;
 	m_DimensionLength = 0.125;
 	m_DimensionAngle = 45.;
 	m_Units = kInches;
 	m_ArchitecturalUnitsFractionPrecision = 16;
 	m_SimplexStrokeFont = nullptr;
-	m_DeviceHeightInMillimeters = 0.;
-	m_DeviceHeightInPixels = 0.;
-	m_DeviceWidthInMillimeters = 0.;
-	m_DeviceWidthInPixels = 0.;
+	m_DeviceHeightInMillimeters = 0.0;
+	m_DeviceHeightInPixels = 0.0;
+	m_DeviceWidthInMillimeters = 0.0;
+	m_DeviceWidthInPixels = 0.0;
 
 	m_AeSysMenuHandle = nullptr;
 	m_ModeResourceIdentifier = 0;
@@ -869,10 +869,10 @@ void AeSysApp::BuildModeSpecificAcceleratorTable() {
 	auto AcceleratorTableHandle {MainFrame->m_hAccelTable};
 	::DestroyAcceleratorTable(AcceleratorTableHandle);
 
-	auto ModeAcceleratorTableHandle {::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCE(m_ModeResourceIdentifier))};
+	auto ModeAcceleratorTableHandle {::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(m_ModeResourceIdentifier))};
 	auto ModeAcceleratorTableEntries {::CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0)};
 
-	AcceleratorTableHandle = ::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCE(IDR_MAINFRAME));
+	AcceleratorTableHandle = ::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME));
 	const int AcceleratorTableEntries {::CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
 
 	LPACCEL ModifiedAcceleratorTable {new ACCEL[AcceleratorTableEntries + ModeAcceleratorTableEntries]};
@@ -1046,14 +1046,14 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 	double ScaledLength = length * AeSysView::GetActiveView()->WorldScale();
 
 	if (units == kArchitectural || units == kArchitecturalS) {
-		wcscpy_s(lengthAsString, bufSize, (length >= 0.) ? L" " : L"-");
+		wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
 		ScaledLength = fabs(ScaledLength);
 
 		auto Feet {static_cast<int>(ScaledLength / 12.)};
 		auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
 
 		const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
-		auto Numerator {int(fabs(fmod(ScaledLength, 1.)) * static_cast<double>(FractionPrecision) + .5)};	// Numerator of fractional component of inches
+		auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + .5)};	// Numerator of fractional component of inches
 
 		if (Numerator == FractionPrecision) {
 
@@ -1087,10 +1087,10 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		}
 		wcscat_s(lengthAsString, bufSize, L"\"");
 	} else if (units == kEngineering) {
-		wcscpy_s(lengthAsString, bufSize, (length >= 0.) ? L" " : L"-");
+		wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
 		ScaledLength = fabs(ScaledLength);
 
-		const int Precision = (ScaledLength >= 1.) ? precision - int(log10(ScaledLength)) - 1 : precision;
+		const int Precision = (ScaledLength >= 1.0) ? precision - int(log10(ScaledLength)) - 1 : precision;
 
 		if (Precision >= 0) {
 			_itow_s(int(ScaledLength / 12.), szBuf, 16, 10);
@@ -1232,7 +1232,7 @@ void AeSysApp::InitGbls(CDC * deviceContext) {
 
 	EoDbHatch::sm_PatternScaleX = .1;
 	EoDbHatch::sm_PatternScaleY = .1;
-	EoDbHatch::sm_PatternAngle = 0.;
+	EoDbHatch::sm_PatternAngle = 0.0;
 
 	const EoDbCharacterCellDefinition CharacterCellDefinition;
 	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
@@ -1404,7 +1404,7 @@ BOOL AeSysApp::InitInstance() {
 	InitGbls(DeviceContext);
 	MainFrame->ReleaseDC(DeviceContext);
 
-	m_AeSysMenuHandle = ::LoadMenu(m_hInstance, MAKEINTRESOURCE(IDR_AESYSTYPE));
+	m_AeSysMenuHandle = ::LoadMenuW(m_hInstance, MAKEINTRESOURCEW(IDR_AESYSTYPE));
 
 	RefreshCommandMenu();
 
@@ -1533,7 +1533,7 @@ void AeSysApp::LoadSimplexStrokeFont(const CString & pathName) {
 		}
 		CloseHandle(OpenHandle);
 	} else {
-		HRSRC ResourceHandle = FindResourceW(NULL, MAKEINTRESOURCE(IDR_PEGSTROKEFONT), L"STROKEFONT");
+		HRSRC ResourceHandle = FindResourceW(NULL, MAKEINTRESOURCEW(IDR_PEGSTROKEFONT), L"STROKEFONT");
 		if (ResourceHandle != NULL) {
 			const int ResourceSize = SizeofResource(NULL, ResourceHandle);
 			m_SimplexStrokeFont = new char[ResourceSize];
@@ -1848,7 +1848,7 @@ double AeSysApp::ParseLength(Units units, LPWSTR aszLen) {
 		return (dVal[0]);
 	} catch (const LPWSTR szMessage) {
 		::MessageBoxW(0, szMessage, 0, MB_ICONWARNING | MB_OK);
-		return (0.);
+		return (0.0);
 	}
 }
 double AeSysApp::PenWidthsGet(OdInt16 colorIndex) noexcept {

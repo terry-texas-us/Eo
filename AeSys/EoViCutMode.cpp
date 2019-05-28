@@ -16,7 +16,7 @@ void AeSysView::OnCutModeTorch() {
 
 	OdGePoint3d ptCut;
 
-	EoGePoint4d ptView(pt, 1.);
+	EoGePoint4d ptView(pt, 1.0);
 	ModelViewTransformPoint(ptView);
 
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
@@ -61,7 +61,7 @@ void AeSysView::OnCutModeSlice() {
 
 		OdGePoint3dArray Intersections;
 
-		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.), EoGePoint4d(pt2, 1.)};
+		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.0), EoGePoint4d(pt2, 1.0)};
 		ModelViewTransformPoints(2, ptView);
 
 		auto TransformMatrix {ModelViewMatrix()};
@@ -205,7 +205,7 @@ void AeSysView::OnCutModeClip() {
 		EoGeMatrix3d TransformMatrix = ModelViewMatrix();
 		TransformMatrix.invert();
 
-		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.), EoGePoint4d(pt2, 1.)};
+		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.0), EoGePoint4d(pt2, 1.0)};
 
 		ModelViewTransformPoints(2, ptView);
 

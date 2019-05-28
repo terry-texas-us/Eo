@@ -144,7 +144,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		Ellipse->setColorIndex(1);
 		Ellipse->setLinetype(L"Continuous");
 
-		Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis * BubbleRadius(), 1.);
+		Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis * BubbleRadius(), 1.0);
 		Group->AddTail(EoDbEllipse::Create(Ellipse));
 	} else {
 		auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
@@ -212,7 +212,7 @@ void AeSysView::OnAnnotateModeHook() {
 	MajorAxis.normalize();
 	MajorAxis *= CircleRadius();
 
-	Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.);
+	Ellipse->set(CurrentPnt, ActiveViewPlaneNormal, MajorAxis, 1.0);
 	Group->AddTail(EoDbEllipse::Create(Ellipse));
 
 	GetDocument()->AddWorkLayerGroup(Group);
@@ -362,7 +362,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
 
 			EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-			CharacterCellDefinition.SetRotationAngle(0.);
+			CharacterCellDefinition.SetRotationAngle(0.0);
 			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
@@ -460,14 +460,14 @@ void AeSysView::OnAnnotateModeEscape() {
 bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d & startPoint, OdGePoint3d & endPoint) const {
 	const double LineSegmentLength = OdGeVector3d(endPoint - startPoint).length();
 
-	double BeginDistance = 0.;
+	double BeginDistance = 0.0;
 
 	if (beginType == ID_OP4) {
 		BeginDistance = BubbleRadius();
 	} else if (beginType == ID_OP5) {
 		BeginDistance = CircleRadius();
 	}
-	double EndDistance = 0.;
+	double EndDistance = 0.0;
 
 	if (endType == ID_OP4) {
 		EndDistance = BubbleRadius();
@@ -475,9 +475,9 @@ bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d &
 		EndDistance = CircleRadius();
 
 	if (LineSegmentLength > BeginDistance + EndDistance + DBL_EPSILON) {
-		if (BeginDistance != 0.)
+		if (BeginDistance != 0.0)
 			startPoint = ProjectToward(startPoint, endPoint, BeginDistance);
-		if (EndDistance != 0.)
+		if (EndDistance != 0.0)
 			endPoint = ProjectToward(endPoint, startPoint, EndDistance);
 		return true;
 	} else {

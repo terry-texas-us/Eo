@@ -11,8 +11,8 @@ END_MESSAGE_MAP()
 
 EoDlgFixupOptions::EoDlgFixupOptions(CWnd* parent)
 	: CDialog(EoDlgFixupOptions::IDD, parent)
-	, m_AxisTolerance(0.)
-	, m_CornerSize(0.) {
+	, m_AxisTolerance(0.0)
+	, m_CornerSize(0.0) {
 }
 
 EoDlgFixupOptions::~EoDlgFixupOptions() {

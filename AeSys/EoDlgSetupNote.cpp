@@ -16,10 +16,10 @@ END_MESSAGE_MAP()
 EoDlgSetupNote::EoDlgSetupNote(CWnd* parent)
 	: CDialog(EoDlgSetupNote::IDD, parent)
 	, m_FontDefinition(0)
-	, m_Height(0.)
-	, m_WidthFactor(0.)
-	, m_ObliqueAngle(0.)
-	, m_RotationAngle(0.) {
+	, m_Height(0.0)
+	, m_WidthFactor(0.0)
+	, m_ObliqueAngle(0.0)
+	, m_RotationAngle(0.0) {
 }
 
 EoDlgSetupNote::EoDlgSetupNote(EoDbFontDefinition* fontDefinition, CWnd* parent)
