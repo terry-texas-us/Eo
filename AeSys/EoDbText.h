@@ -8,15 +8,15 @@
 
 /* <remarks>
 Text primitive in Peg files and Tracing files
-  Type code <0x4000>        OdUInt16[0-1]
-  Pen color                 OdUInt16[2-3]
-  Line type                 OdUInt16[4-5]
+  Type code <0x4000>        unsigned short[0-1]
+  Pen color                 unsigned short[2-3]
+  Line type                 unsigned short[4-5]
   Font definition
-	Text precision          OdUInt16[6-7]
+	Text precision          unsigned short[6-7]
 	Text font name          string
-	Text path               OdUInt16
-	Horizontal alignment    OdUInt16
-	Vertical alignment      OdUInt16
+	Text path               unsigned short
+	Horizontal alignment    unsigned short
+	Vertical alignment      unsigned short
 	Character spacing       double
   Insertion point           OdGePoint3d
   Local reference x-axis    OdGeVector3d
@@ -49,7 +49,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kTextPrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kTextPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -62,7 +62,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const override;
+	void Write(CFile& file, unsigned char* buffer) const override;
 
 public: // Methods
 	/// <summary>Get the bounding box of text.</summary>
@@ -86,7 +86,7 @@ public: // Methods - static
 	static EoDbText* Create(OdDbMTextPtr& text);
 
 	static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-	static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+	static OdDbTextPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 
 	static OdDbTextPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& position, const OdString& textString);
 	static OdDbMTextPtr CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text);

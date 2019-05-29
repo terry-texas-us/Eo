@@ -5,7 +5,7 @@
 
 #include "EoDlgLowPressureDuctOptions.h"
 
-pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor) {
+pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor) {
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group = GetNextVisibleGroup(GroupPosition);
@@ -509,7 +509,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d & existingSec
 	}
 */
 }
-void AeSysView::GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, EoGeLineSeg3d & referenceLine, EoDbGroup * group) {
+void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section section, EoGeLineSeg3d & referenceLine, EoDbGroup * group) {
 	const double SectionLength = referenceLine.length();
 
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
@@ -682,7 +682,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d & position, double angle, Section 
 
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
-	pstate.Restore(DeviceContext, PrimitiveState);
+	pstate.Restore(*DeviceContext, PrimitiveState);
 	ReleaseDC(DeviceContext);
 }
 

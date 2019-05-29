@@ -7,10 +7,10 @@
 
 /* <remarks>
 Spline primitive
-  Type code <0x2000>                OdUInt16[0-1]
-  Pen color                         OdUInt16[2-3]
-  Line type                         OdUInt16[4-5]
-  Number of control points          OdUInt16[6-7]
+  Type code <0x2000>                unsigned short[0-1]
+  Pen color                         unsigned short[2-3]
+  Line type                         unsigned short[4-5]
+  Number of control points          unsigned short[6-7]
   {0 or more control points}        OdGePoint3d[8- ]
 </remarks> */
 
@@ -37,7 +37,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kSplinePrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kSplinePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
@@ -47,7 +47,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD)override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const override;
+	void Write(CFile& file, unsigned char* buffer) const override;
 
 public: // Methods
 
@@ -59,5 +59,5 @@ public: // Methods - static
 
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 };

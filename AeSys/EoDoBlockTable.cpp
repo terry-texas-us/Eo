@@ -27,8 +27,8 @@ bool AeSysDoc::BlockTableIsEmpty() {
 	return m_BlockTable.IsEmpty() == TRUE;
 }
 
-OdUInt16 AeSysDoc::BlockTableSize() {
-	return (OdUInt16(m_BlockTable.GetSize()));
+unsigned short AeSysDoc::BlockTableSize() {
+	return (unsigned short(m_BlockTable.GetSize()));
 }
 
 POSITION AeSysDoc::GetFirstBlockPosition() {

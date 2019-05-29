@@ -108,21 +108,21 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 
 		newDC.Attach(dc);
 		dwIsAldus = *((DWORD*)m_odImage.wmf.begin());
+		
 		if (dwIsAldus != ALDUSKEY) {
 			seekpos = 0;
 		} else {
 			aldusMFHeader = (ALDUSMFHEADER*) m_odImage.wmf.begin();
 			seekpos = ALDUSMFHEADERSIZE;
 		}
-        OdUInt8* p = (OdUInt8*)m_odImage.wmf.begin();
+		unsigned char* p = (unsigned char*)m_odImage.wmf.begin();
 		mfHeader = (METAHEADER*) (p + seekpos);
 
 		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) { return; }
 
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
-		HENHMETAFILE m_emf;
-		m_emf = ::SetWinMetaFileBits(dwSize, (const OdUInt8*)mfHeader, NULL, NULL);
+		auto MetaFileHandle {::SetWinMetaFileBits(dwSize, (const unsigned char*)mfHeader, NULL, NULL)};
 
 		CSize size(0, 0);
 		
@@ -132,6 +132,6 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 		}
 		cr = Calc(size.cx, size.cy, width, height);
 		cr.OffsetRect(X, Y);
-		newDC.PlayMetaFile(m_emf, &cr );
+		newDC.PlayMetaFile(MetaFileHandle, &cr );
 	}
 }

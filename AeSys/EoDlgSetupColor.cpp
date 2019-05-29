@@ -68,8 +68,8 @@ BOOL EoDlgSetupColor::OnInitDialog() {
 	return TRUE;
 }
 void EoDlgSetupColor::OnOK() {
-	m_ColorIndex = OdUInt16(GetDlgItemInt(IDC_COLOR_EDIT));
-	m_ColorIndex = EoMin(m_ColorIndex, OdUInt16(255));
+	m_ColorIndex = unsigned short(GetDlgItemInt(IDC_COLOR_EDIT));
+	m_ColorIndex = EoMin(m_ColorIndex, unsigned short(255));
 	CDialog::OnOK();
 }
 void EoDlgSetupColor::OnClickedNamedColors() {
@@ -97,7 +97,7 @@ void EoDlgSetupColor::OnBnClickedBylayerButton() {
 	CDialog::OnOK();
 }
 void EoDlgSetupColor::OnChangeColorEdit() {
-	const OdUInt16 Index = OdUInt16(GetDlgItemInt(IDC_COLOR_EDIT));
+	const unsigned short Index = unsigned short(GetDlgItemInt(IDC_COLOR_EDIT));
 	DrawSelectionInformation(Index);
 }
 BOOL EoDlgSetupColor::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) {
@@ -106,7 +106,7 @@ BOOL EoDlgSetupColor::OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* result) {
 	DrawSelectionInformation(((EoCtrlColorsButton*) ColorsButton)->m_SubItem);
 	return CDialog::OnNotify(wParam, lParam, result);
 }
-void EoDlgSetupColor::DrawSelectionInformation(OdUInt16 index) {
+void EoDlgSetupColor::DrawSelectionInformation(unsigned short index) {
 	SetDlgItemInt(IDC_INDEX_COLOR, index, FALSE);
 
 	m_SelectionButton.SetSequenceRange(index, index);

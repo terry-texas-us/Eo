@@ -163,7 +163,7 @@ void AeSysView::DoPowerModeMouseMove() {
 	m_PowerModePoints.setLogicalLength(NumberOfPoints);
 }
 
-void AeSysView::DoPowerModeConductor(OdUInt16 conductorType) {
+void AeSysView::DoPowerModeConductor(unsigned short conductorType) {
 	static OdGePoint3d PointOnCircuit;
 
 	auto CurrentPnt {GetCursorPosition()};
@@ -260,7 +260,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d & pointOnCircuit, const O
 
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 }
-void AeSysView::GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d & pointOnCircuit, const OdGePoint3d & endPoint) {
+void AeSysView::GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d & pointOnCircuit, const OdGePoint3d & endPoint) {
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);

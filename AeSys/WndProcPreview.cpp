@@ -132,7 +132,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 
 	const int PrimitiveState = pstate.Save();
 	block->Display(ActiveView, &dcMem);
-	pstate.Restore(&dcMem, PrimitiveState);
+	pstate.Restore(dcMem, PrimitiveState);
 
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();
@@ -181,7 +181,7 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	
 	const int PrimitiveState = pstate.Save();
 	groups->Display(ActiveView, &dcMem);
-	pstate.Restore(&dcMem, PrimitiveState);
+	pstate.Restore(dcMem, PrimitiveState);
 
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();

@@ -66,7 +66,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 
 				m_LinetypesListControl.GetSubItemRect(Item, Appearance, LVIR_LABEL, SubItemRectangle);
 
-				const OdInt16 ColorIndex = pstate.ColorIndex();
+				const short ColorIndex = pstate.ColorIndex();
 				pstate.SetPen(nullptr, &DeviceContext, 0, EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 
 				auto ActiveView {AeSysView::GetActiveView()};

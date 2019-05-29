@@ -883,11 +883,11 @@ bool EoDbEllipse::Write(EoDbFile & file) const {
 	return true;
 }
 
-void EoDbEllipse::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 2;
-	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kEllipsePrimitive);
-	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<OdInt8>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
+	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_Center);
@@ -1000,17 +1000,17 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord, E
 	return Ellipse;
 }
 
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBufer, int versionNumber) {
-	OdInt16 ColorIndex;
-	OdInt16 LinetypeIndex;
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBufer, int versionNumber) {
+	short ColorIndex;
+	short LinetypeIndex;
 	OdGePoint3d CenterPoint;
 	OdGeVector3d MajorAxis;
 	OdGeVector3d MinorAxis;
 	double SweepAngle;
 
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<OdInt16>(primitiveBufer[4] & 0x000f);
-		LinetypeIndex = static_cast<OdInt16>((primitiveBufer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<short>(primitiveBufer[4] & 0x000f);
+		LinetypeIndex = static_cast<short>((primitiveBufer[4] & 0x00ff) >> 4);
 
 		OdGePoint3d BeginPoint;
 		BeginPoint = OdGePoint3d(((EoVaxFloat*) & primitiveBufer[8])->Convert(), ((EoVaxFloat*) & primitiveBufer[12])->Convert(), 0.0) * 1.e-3;
@@ -1028,8 +1028,8 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, OdU
 		MinorAxis = OdGeVector3d::kZAxis.crossProduct(MajorAxis);
 		SweepAngle = fabs(SweepAngle);
 	} else {
-		ColorIndex = static_cast<OdInt16>(primitiveBufer[6]);
-		LinetypeIndex = static_cast<OdInt16>(primitiveBufer[7]);
+		ColorIndex = static_cast<short>(primitiveBufer[6]);
+		LinetypeIndex = static_cast<short>(primitiveBufer[7]);
 
 		CenterPoint = ((EoVaxPoint3d*) & primitiveBufer[8])->Convert();
 		MajorAxis = ((EoVaxVector3d*) & primitiveBufer[20])->Convert();

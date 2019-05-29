@@ -5,8 +5,8 @@
 class EoDbLayer : public EoDbGroupList {
 private:
 	OdDbLayerTableRecordPtr m_Layer;
-	OdUInt16 m_StateFlags;	
-	OdUInt16 m_TracingFlags;
+	unsigned short m_StateFlags;	
+	unsigned short m_TracingFlags;
 
 public:
 	enum StateFlags {
@@ -18,11 +18,11 @@ public:
 		kIsOff = 0x0020
 	};
 	EoDbLayer(OdDbLayerTableRecordPtr layer);
-	EoDbLayer(const OdString& name, OdUInt16 flags);
+	EoDbLayer(const OdString& name, unsigned short flags);
 
 	~EoDbLayer() {}
 	COLORREF Color() const;
-	OdInt16 ColorIndex() const;
+	short ColorIndex() const;
 	void BuildVisibleGroupList(AeSysView* view);
 	void Display(AeSysView* view, CDC* deviceContext);
 	void Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap);
@@ -32,23 +32,23 @@ public:
 	bool IsLocked() const noexcept;
 	bool IsOff() const noexcept;
 	bool IsResident() const noexcept;
-	OdInt16 LinetypeIndex();
+	short LinetypeIndex();
 	OdString LinetypeName();
 	void MakeActive();
 	void MakeCurrent() noexcept;
 	void MakeInternal(bool isInternal) noexcept;
 	void MakeResident(bool isResident) noexcept;
 	OdString Name() const;
-	void PenTranslation(OdUInt16, OdInt16*, OdInt16*);
-	void SetColorIndex(OdInt16 colorIndex);
+	void PenTranslation(unsigned short, short*, short*);
+	void SetColorIndex(short colorIndex);
 	void SetIsFrozen(bool isFrozen);
 	void SetIsLocked(bool isLocked);
 	void SetIsOff(bool isOff);
 	void SetLinetype(OdDbObjectId linetype);
 	void SetName(const OdString& name);
-	void SetStateFlags(OdUInt16 flags) noexcept;
+	void SetStateFlags(unsigned short flags) noexcept;
 	void SetTransparency(const OdCmTransparency& transparency);
-	OdUInt16 StateFlags() const noexcept;
+	unsigned short StateFlags() const noexcept;
 	OdDbLayerTableRecordPtr TableRecord() const;
 };
 

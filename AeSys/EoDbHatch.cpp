@@ -117,7 +117,7 @@ EoDbPrimitive* EoDbHatch::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 }
 
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
-	const OdInt16 ColorIndex = LogicalColorIndex();
+	const short ColorIndex = LogicalColorIndex();
 
 	pstate.SetColorIndex(deviceContext, ColorIndex);
 	pstate.SetHatchInteriorStyle(m_InteriorStyle);
@@ -329,8 +329,8 @@ bool EoDbHatch::Write(EoDbFile & file) const {
 	file.WriteUInt16(EoDb::kHatchPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_InteriorStyle);  // note polygon style stuffed up into unused line type on io
-	file.WriteUInt16(static_cast<OdUInt16>(EoMax(1U, m_InteriorStyleIndex)));
-	file.WriteUInt16(static_cast<OdUInt16>(m_Vertices.size()));
+	file.WriteUInt16(static_cast<unsigned short>(EoMax(1U, m_InteriorStyleIndex)));
+	file.WriteUInt16(static_cast<unsigned short>(m_Vertices.size()));
 	file.WritePoint3d(m_HatchOrigin);
 
 	file.WriteDouble(m_HatchXAxis.x);
@@ -348,13 +348,13 @@ bool EoDbHatch::Write(EoDbFile & file) const {
 	return true;
 }
 
-void EoDbHatch::Write(CFile& file, OdUInt8* buffer) const {
-	buffer[3] = static_cast<OdInt8>((79 + m_Vertices.size() * 12) / 32);
-	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kHatchPrimitive);
-	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<OdInt8>(m_InteriorStyle);
-	*((OdInt16*) & buffer[8]) = static_cast<OdInt16>(m_InteriorStyleIndex);
-	*((OdInt16*) & buffer[10]) = static_cast<OdInt16>(m_Vertices.size());
+void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
+	buffer[3] = static_cast<signed char>((79 + m_Vertices.size() * 12) / 32);
+	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kHatchPrimitive);
+	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<signed char>(m_InteriorStyle);
+	*((short*) & buffer[8]) = static_cast<short>(m_InteriorStyleIndex);
+	*((short*) & buffer[10]) = static_cast<short>(m_Vertices.size());
 
 	((EoVaxPoint3d*) & buffer[12])->Convert(m_HatchOrigin);
 	((EoVaxVector3d*) & buffer[24])->Convert(m_HatchXAxis);
@@ -382,8 +382,8 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 
 	EoEdge Edges[128];
 
-	const OdInt16 ColorIndex = pstate.ColorIndex();
-	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const short ColorIndex = pstate.ColorIndex();
+	const short LinetypeIndex = pstate.LinetypeIndex();
 	pstate.SetLinetypeIndexPs(deviceContext, 1);
 	const int InteriorStyleIndex = pstate.HatchInteriorStyleIndex();
 
@@ -694,7 +694,7 @@ void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double 
 	m_HatchYAxis *= patternScaleY;
 }
 
-void EoDbHatch::SetInteriorStyle(OdInt16 interiorStyle) noexcept {
+void EoDbHatch::SetInteriorStyle(short interiorStyle) noexcept {
 	m_InteriorStyle = interiorStyle;
 }
 
@@ -961,9 +961,9 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	return Hatch;
 }
 
-OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8 * primitiveBuffer, int versionNumber) {
-	OdInt16 ColorIndex;
-	OdInt16 InteriorStyle;
+OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+	short ColorIndex;
+	short InteriorStyle;
 	unsigned InteriorStyleIndex {0};
 	OdGePoint3d HatchOrigin;
 	OdGeVector3d HatchXAxis;
@@ -971,10 +971,10 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 	OdGePoint3dArray Vertices;
 
 	if (versionNumber == 1) {
-		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
+		ColorIndex = short(primitiveBuffer[4] & 0x000f);
 
 		const double StyleDefinition = ((EoVaxFloat*) & primitiveBuffer[12])->Convert();
-		InteriorStyle = OdInt16(int(StyleDefinition) % 16);
+		InteriorStyle = short(int(StyleDefinition) % 16);
 
 		switch (InteriorStyle) {
 			case EoDbHatch::kHatch:
@@ -1014,7 +1014,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 			default:
 				throw L"Exception.FileJob: Unknown hatch primitive interior style.";
 		}
-		const auto NumberOfVertices {static_cast<OdUInt16>(((EoVaxFloat*)& primitiveBuffer[8])->Convert())};
+		const auto NumberOfVertices {static_cast<unsigned short>(((EoVaxFloat*)& primitiveBuffer[8])->Convert())};
 
 		int BufferOffset = 36;
 		Vertices.clear();
@@ -1024,17 +1024,17 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 		}
 		HatchOrigin = Vertices[0];
 	} else {
-		ColorIndex = OdInt16(primitiveBuffer[6]);
-		InteriorStyle = OdInt8(primitiveBuffer[7]);
-		InteriorStyleIndex = *((OdInt16*) & primitiveBuffer[8]);
-		const auto NumberOfVertices = *((OdInt16*) & primitiveBuffer[10]);
+		ColorIndex = short(primitiveBuffer[6]);
+		InteriorStyle = signed char(primitiveBuffer[7]);
+		InteriorStyleIndex = *((short*) & primitiveBuffer[8]);
+		const auto NumberOfVertices = *((short*) & primitiveBuffer[10]);
 		HatchOrigin = ((EoVaxPoint3d*) & primitiveBuffer[12])->Convert();
 		HatchXAxis = ((EoVaxVector3d*) & primitiveBuffer[24])->Convert();
 		HatchYAxis = ((EoVaxVector3d*) & primitiveBuffer[36])->Convert();
 
 		int BufferOffset = 48;
 		Vertices.clear();
-		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+		for (auto VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert());
 			BufferOffset += sizeof(EoVaxPoint3d);
 		}

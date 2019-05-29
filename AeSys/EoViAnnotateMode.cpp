@@ -319,6 +319,8 @@ void AeSysView::OnAnnotateModeBox() {
 void AeSysView::OnAnnotateModeCutIn() {
 	auto DeviceContext {GetDC()};
 
+	if (DeviceContext == nullptr) { return; }
+
 	auto CurrentPnt {GetCursorPosition()};
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
@@ -354,7 +356,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
 
-			const OdInt16 ColorIndex = pstate.ColorIndex();
+			const short ColorIndex = pstate.ColorIndex();
 			pstate.SetColorIndex(DeviceContext, 2);
 
 			EoDbFontDefinition FontDefinition = pstate.FontDefinition();
@@ -412,7 +414,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			}
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroup, Group);
-		pstate.Restore(DeviceContext, PrimitiveState);
+		pstate.Restore(*DeviceContext, PrimitiveState);
 	}
 	ReleaseDC(DeviceContext);
 }

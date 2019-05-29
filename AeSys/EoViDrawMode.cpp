@@ -20,7 +20,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-OdUInt16 PreviousDrawCommand = 0;
+unsigned short PreviousDrawCommand = 0;
 
 void AeSysView::OnDrawModeOptions() {
 	AeSysDoc::GetDoc()->OnSetupOptionsDraw();

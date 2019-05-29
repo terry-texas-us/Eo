@@ -52,14 +52,13 @@ void AeSysView::ModeLineDisplay() {
 	}
 	ReleaseDC(DeviceContext);
 }
-OdUInt16 AeSysView::ModeLineHighlightOp(OdUInt16 command) {
+unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 	ModeLineUnhighlightOp(m_OpHighlighted);
 
 	m_OpHighlighted = command;
 
-	if (command == 0) {
-		return 0;
-	}
+	if (command == 0) { return 0; }
+
 	const int PaneIndex = ::nStatusOp0 + m_OpHighlighted - ID_OP0;
 
 	GetStatusBar().SetPaneTextColor(PaneIndex, RGB(255, 0, 0));
@@ -96,7 +95,8 @@ OdUInt16 AeSysView::ModeLineHighlightOp(OdUInt16 command) {
 	}
 	return (command);
 }
-void AeSysView::ModeLineUnhighlightOp(OdUInt16& command) {
+
+void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 	if (command == 0 || m_OpHighlighted == 0) { return; }
 
 	const int PaneIndex = ::nStatusOp0 + m_OpHighlighted - ID_OP0;

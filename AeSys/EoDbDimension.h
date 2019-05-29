@@ -11,7 +11,7 @@
 class EoDbDimension : public EoDbPrimitive {
 	EoGeLineSeg3d m_Line;
 
-	OdInt16	m_TextColorIndex;
+	short	m_TextColorIndex;
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
@@ -36,7 +36,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kDimensionPrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kDimensionPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -48,7 +48,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const override;
+	void Write(CFile& file, unsigned char* buffer) const override;
 
 public:	// Methods - virtuals
 
@@ -72,19 +72,19 @@ public:	// Methods
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& str);
 	void SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept;
-	void SetTextColorIndex(OdInt16 colorIndex) noexcept;
+	void SetTextColorIndex(short colorIndex) noexcept;
 	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept;
 	const CString& Text() noexcept;
-	const OdInt16& TextColorIndex() noexcept;
+	const short& TextColorIndex() noexcept;
 
 private:
-	static OdUInt16 sm_wFlags;	// bit 1 clear if dimension selected at note, set if dimension selected at line
+	static unsigned short sm_wFlags;	// bit 1 clear if dimension selected at note, set if dimension selected at line
 
 public: // Methods - static
 	static EoDbDimension* Create(OdDbAlignedDimensionPtr& alignedDimension);
 
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 
 };

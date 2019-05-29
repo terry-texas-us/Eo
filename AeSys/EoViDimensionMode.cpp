@@ -12,7 +12,7 @@
 
 double DimensionModePickTolerance = .05;
 OdGePoint3d PreviousDimensionPosition;
-OdUInt16 PreviousDimensionCommand = 0;
+unsigned short PreviousDimensionCommand = 0;
 
 OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 	const auto Document {AeSysDoc::GetDoc()};
@@ -434,7 +434,7 @@ void AeSysView::OnDimensionModeAngle() {
 
 				Document->AddWorkLayerGroup(Group);
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
-				pstate.Restore(DeviceContext, PrimitiveState);
+				pstate.Restore(*DeviceContext, PrimitiveState);
 			}
 			ModeLineUnhighlightOp(PreviousDimensionCommand);
 			theApp.AddModeInformationToMessageList();

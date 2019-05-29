@@ -183,7 +183,7 @@ void ConvertDimensionData(OdDbDimension* dimension) {
 		dimension->formatMeasurement(formattedMeasurement, dimension->getMeasurement(), dimension->dimensionText());
 	}
 	//OdCmColor bgrndTxtColor;
-	//OdUInt16 bgrndTxtFlags = dimension->getBgrndTxtColor(bgrndTxtColor));
+	//unsigned short bgrndTxtFlags = dimension->getBgrndTxtColor(bgrndTxtColor));
 };
 
 void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
@@ -399,10 +399,10 @@ public:
 		OdDbFacePtr FaceEntity = entity;
 		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbHatch ...\n", (PCTSTR) FaceEntity->desc()->name());
 
-		EoDbHatch* HatchPrimitive = new EoDbHatch;
+		auto HatchPrimitive {new EoDbHatch};
 
 		OdGePoint3d Vertex;
-		for (unsigned VertexIndex = 0; VertexIndex < 4; VertexIndex++) {
+		for (unsigned short VertexIndex = 0; VertexIndex < 4; VertexIndex++) {
 			FaceEntity->getVertexAt(VertexIndex, Vertex);
 			HatchPrimitive->Append(Vertex);
 		}
@@ -644,7 +644,7 @@ public:
 			ATLTRACE2(atlTraceGeneral, 2, L"Control Point: %f, %f, %f\n",  ControlPoints[n]);
 		}
 		ATLTRACE2(atlTraceGeneral, 0, L"Number of Knots: %i\n", Knots.length());
-		for (unsigned n = 0; n < Knots.length(); n++) {
+		for (auto n = 0; n < Knots.length(); n++) {
 			ATLTRACE2(atlTraceGeneral, 0, L"Knot: %f\n", Knots[n]);
 		}
 		if (Rational) {

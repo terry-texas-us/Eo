@@ -13,20 +13,20 @@
 
 EoDbJobFile::EoDbJobFile() {
 	m_Version = 3;
-	m_PrimBuf = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
+	m_PrimBuf = new unsigned char[EoDbPrimitive::BUFFER_SIZE];
 }
 
 EoDbJobFile::~EoDbJobFile() {
 	delete[] m_PrimBuf;
 }
 
-void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive, OdInt16 PrimitiveType) {
+void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive, short PrimitiveType) {
 	switch (PrimitiveType) {
 		case EoDb::kTagPrimitive:
 		case EoDb::kPointPrimitive:
 		{
 			if (PrimitiveType == EoDb::kTagPrimitive) {
-				*((OdUInt16*) & m_PrimBuf[4]) = EoDb::kPointPrimitive;
+				*((unsigned short*) & m_PrimBuf[4]) = EoDb::kPointPrimitive;
 				::ZeroMemory(&m_PrimBuf[20], 12);
 			}
 			auto Point {EoDbPoint::Create(blockTableRecord, m_PrimBuf, 3)};
@@ -55,9 +55,9 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 		case EoDb::kSplinePrimitive:
 		{
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
-				const OdUInt16 NumberOfControlPoints = *((OdUInt16*) & m_PrimBuf[10]);
-				m_PrimBuf[3] = OdInt8((2 + NumberOfControlPoints * 3) / 8 + 1);
-				*((OdUInt16*) & m_PrimBuf[4]) = OdUInt16(EoDb::kSplinePrimitive);
+				const unsigned short NumberOfControlPoints = *((unsigned short*) & m_PrimBuf[10]);
+				m_PrimBuf[3] = signed char((2 + NumberOfControlPoints * 3) / 8 + 1);
+				*((unsigned short*) & m_PrimBuf[4]) = unsigned short(EoDb::kSplinePrimitive);
 				m_PrimBuf[8] = m_PrimBuf[10];
 				m_PrimBuf[9] = m_PrimBuf[11];
 				::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
@@ -129,7 +129,7 @@ void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTa
 }
 
 bool EoDbJobFile::GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFile & file, EoDbPrimitive * &primitive) {
-	OdInt16 PrimitiveType = 0;
+	short PrimitiveType = 0;
 	do {
 		if (!ReadNextPrimitive(file, m_PrimBuf, PrimitiveType)) {
 			return false;
@@ -150,7 +150,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 		}
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const OdUInt16 wPrims = *((OdUInt16*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
+		const unsigned short wPrims = *((unsigned short*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
 		for (unsigned w = 1; w < wPrims; w++) {
 			try {
 				Position = file.GetPosition();
@@ -210,11 +210,11 @@ void EoDbJobFile::ReadMemFile(OdDbBlockTableRecordPtr blockTableRecord, CFile & 
 	}
 }
 
-bool EoDbJobFile::ReadNextPrimitive(CFile & file, OdUInt8 * buffer, OdInt16 & primitiveType) {
+bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType) {
 	if (file.Read(buffer, 32) < 32) {
 		return false;
 	}
-	primitiveType = *((OdInt16*) & buffer[4]);
+	primitiveType = *((short*) & buffer[4]);
 
 	if (!IsValidPrimitive(primitiveType)) {
 		throw L"Exception.FileJob: Invalid primitive type.";
@@ -251,7 +251,7 @@ int EoDbJobFile::Version() noexcept {
 	return (m_Version);
 }
 
-bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
+bool EoDbJobFile::IsValidPrimitive(short primitiveType) noexcept {
 	switch (primitiveType) {
 		case EoDb::kPointPrimitive: // 0x0100
 		case EoDb::kLinePrimitive: // 0x0200
@@ -269,8 +269,8 @@ bool EoDbJobFile::IsValidPrimitive(OdInt16 primitiveType) noexcept {
 	}
 }
 
-bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) noexcept {
-	const OdUInt8* PrimitiveType = (OdUInt8*) & primitiveType;
+bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
+	const unsigned char* PrimitiveType = (unsigned char*)& primitiveType;
 	switch (PrimitiveType[1]) {
 		case 17: // 0x11 text
 		case 24: // 0x18 bspline
@@ -288,7 +288,7 @@ bool EoDbJobFile::IsValidVersion1Primitive(OdInt16 primitiveType) noexcept {
 
 void EoDbJobFile::WriteGroup(CFile & file, EoDbGroup * group) {
 	m_PrimBuf[0] = 0;
-	*((OdUInt16*) & m_PrimBuf[1]) = OdUInt16(group->GetCount());
+	*((unsigned short*) & m_PrimBuf[1]) = unsigned short(group->GetCount());
 
 	POSITION Position = group->GetHeadPosition();
 	while (Position != 0) {

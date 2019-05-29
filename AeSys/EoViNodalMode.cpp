@@ -12,7 +12,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 double NodalModePickTolerance = .05;
-OdUInt16 PreviousNodalCommand = 0;
+unsigned short PreviousNodalCommand = 0;
 OdGePoint3d PreviousNodalCursorPosition;
 
 void AeSysView::OnNodalModeAddRemove() {
@@ -248,7 +248,7 @@ void AeSysView::OnNodalModeToPolygon() {
 					}
 				}
 			}
-			pstate.Restore(DeviceContext, PrimitiveState);
+			pstate.Restore(*DeviceContext, PrimitiveState);
 
 			SetCursorPosition(CurrentPnt);
 			RubberBandingDisable();

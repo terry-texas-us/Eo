@@ -34,7 +34,7 @@ public:
 	void GetExtents_(AeSysView* view, OdGeExtents3d& extents);
 	EoDbPrimitive* GetNext(POSITION& position) const;
 	EoDbPoint* GetFirstDifferentPoint(EoDbPoint* pointPrimitive);
-	int GetLinetypeIndexRefCount(OdInt16 linetypeIndex);
+	int GetLinetypeIndexRefCount(short linetypeIndex);
 	void InsertBefore(POSITION position, EoDbGroup* group);
 	bool IsInView(AeSysView* view) const;
 	/// <summary>Determines if input point lies on any primitive in the group</summary>
@@ -42,9 +42,9 @@ public:
 	/// <summary>Checks if this group is persistent</summary>
 	/// <returns>true if the group will be appended to the database and saved to file, false if group is temporary ie used in dynamic previews</returns>
 	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
-	void ModifyColorIndex(OdInt16 colorIndex);
-	void ModifyLinetypeIndex(OdInt16 linetypeIndex);
-	void PenTranslation(OdUInt16, OdInt16*, OdInt16*);
+	void ModifyColorIndex(short colorIndex);
+	void ModifyLinetypeIndex(short linetypeIndex);
+	void PenTranslation(unsigned short, short*, short*);
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	/// <summary>Picks a prim if close enough to point.  Working in view space.</summary>
@@ -58,7 +58,7 @@ public:
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
 	void UndoErase();
 	void Write(EoDbFile& file);
-	void Write(CFile& file, OdUInt8* buffer);
+	void Write(CFile& file, unsigned char* buffer);
 
 public: // Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;

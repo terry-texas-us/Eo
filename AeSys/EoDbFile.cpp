@@ -39,12 +39,12 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive
 }
 
 void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive) {
-	const OdInt16 ColorIndex {ReadInt16()};
-	const OdInt16 LinetypeIndex {ReadInt16()};
+	const short ColorIndex {ReadInt16()};
+	const short LinetypeIndex {ReadInt16()};
 
-	Seek(sizeof(OdUInt16), CFile::current);
-	const OdUInt16 NumberOfPoints = ReadUInt16();
-	Seek(sizeof(OdUInt16), CFile::current);
+	Seek(sizeof(unsigned short), CFile::current);
+	const unsigned short NumberOfPoints = ReadUInt16();
+	Seek(sizeof(unsigned short), CFile::current);
 	Seek(3 * sizeof(double), CFile::current);
 	Seek(3 * sizeof(double), CFile::current);
 	OdGePoint3dArray Points;
@@ -157,9 +157,9 @@ double EoDbFile::ReadDouble() {
 	return number;
 }
 
-OdInt16 EoDbFile::ReadInt16() {
-	OdInt16 number;
-	Read(&number, sizeof(OdInt16));
+short EoDbFile::ReadInt16() {
+	short number;
+	Read(&number, sizeof(short));
 	return number;
 }
 
@@ -178,9 +178,9 @@ OdGePoint3d EoDbFile::ReadPoint3d() {
 	return Point;
 }
 
-OdUInt16 EoDbFile::ReadUInt16() {
-	OdUInt16 number;
-	Read(&number, sizeof(OdUInt16));
+unsigned short EoDbFile::ReadUInt16() {
+	unsigned short number;
+	Read(&number, sizeof(unsigned short));
 	return number;
 }
 
@@ -196,8 +196,8 @@ void EoDbFile::WriteDouble(double number) {
 	Write(&number, sizeof(double));
 }
 
-void EoDbFile::WriteInt16(OdInt16 number) {
-	Write(&number, sizeof(OdInt16));
+void EoDbFile::WriteInt16(short number) {
+	Write(&number, sizeof(short));
 }
 
 void EoDbFile::WritePoint2d(const OdGePoint2d & point) {
@@ -214,7 +214,7 @@ void EoDbFile::WritePoint3d(const OdGePoint3d & point) {
 void EoDbFile::WriteString(const CString & string) {
 	const int NumberOfCharacters = string.GetLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c = OdUInt8(string.GetAt(n));
+		const char c = unsigned char(string.GetAt(n));
 		Write(&c, 1);
 	}
 	Write("\t", 1);
@@ -223,14 +223,14 @@ void EoDbFile::WriteString(const CString & string) {
 void EoDbFile::WriteString(const OdString & string) {
 	const int NumberOfCharacters = string.getLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c = OdUInt8(string.getAt(n));
+		const char c = unsigned char(string.getAt(n));
 		Write(&c, 1);
 	}
 	Write("\t", 1);
 }
 
-void EoDbFile::WriteUInt16(OdUInt16 number) {
-	Write(&number, sizeof(OdUInt16));
+void EoDbFile::WriteUInt16(unsigned short number) {
+	Write(&number, sizeof(unsigned short));
 }
 
 void EoDbFile::WriteVector3d(const OdGeVector3d & vector) {

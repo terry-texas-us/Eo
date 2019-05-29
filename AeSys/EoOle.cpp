@@ -27,7 +27,7 @@ class OleDwgItem : public COleClientItem, public OdOleItemHandler {
 				m_hFile = 0;
 		}
 		UINT Read(void* lpBuf, UINT nCount) {
-			OdUInt32 nBytesLeft = OdUInt32(m_stream.length()-m_stream.tell());
+			unsigned long nBytesLeft = unsigned long(m_stream.length()-m_stream.tell());
 			if (nBytesLeft < nCount) {
 				nCount = nBytesLeft;
 			}
@@ -234,13 +234,13 @@ public:
 		}
 		return (m_bMoniker != 0);
 	}
-	OdUInt32 getCompoundDocumentDataSize() const {
+	unsigned long getCompoundDocumentDataSize() const {
 		if (m_pRawData.get()) {
 			return m_pRawData->getCompoundDocumentDataSize();
 		}
 		OdMemoryStreamPtr pBuff = OdMemoryStream::createNew();
 		save(*pBuff.get());
-		return (OdUInt32)pBuff->tell();
+		return (unsigned long)pBuff->tell();
 	}
 	void getCompoundDocument(OdStreamBuf& stream) const {
 		if (m_pRawData.get()) {
@@ -249,7 +249,7 @@ public:
 		}
 		save(stream);
 	}
-	void setCompoundDocument(OdUInt32 nDataSize, OdStreamBuf& stream) {
+	void setCompoundDocument(unsigned long nDataSize, OdStreamBuf& stream) {
 		if (m_pRawData.get()) {
 			m_pRawData->setCompoundDocument(nDataSize, stream);
 			return ;
@@ -269,7 +269,7 @@ public:
 				CSize oldSize(pOleFrame->unhandled_himetricWidth(), pOleFrame->unhandled_himetricHeight());
 				if (oldSize != CSize(0, 0) && newSize != oldSize) {
 					OdGeScale3d s;
-					pOleFrame->unhandled_setHimetricSize(OdUInt16(s.sx = newSize.cx), OdUInt16(s.sy = newSize.cy));
+					pOleFrame->unhandled_setHimetricSize(unsigned short(s.sx = newSize.cx), unsigned short(s.sy = newSize.cy));
 					s.sz = 1.0;
 					s.sx /= oldSize.cx;
 					s.sy /= oldSize.cy;
@@ -387,7 +387,7 @@ public:
 			if (!pItem->GetExtent(&size)) {
 				size = CSize(1000, 1000);
 			}
-			pOleFrame->unhandled_setHimetricSize(OdUInt16(size.cx), OdUInt16(size.cy));
+			pOleFrame->unhandled_setHimetricSize(unsigned short(size.cx), unsigned short(size.cy));
 
 			tracker._orig = UserIO->getPoint(L"Specify insertion point <0,0>:");
 

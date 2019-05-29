@@ -95,14 +95,16 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		}
 	}
 	if (theApp.IsClipboardDataImage()) {
-		const int PrimitiveState = pstate.Save();
+		const int PrimitiveState {pstate.Save()};
 
-		HDC MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
+		auto MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
 		m_TrappedGroupList.Display(view, CDC::FromHandle(MetaFile));
-		HENHMETAFILE hemf = ::CloseEnhMetaFile(MetaFile);
-		::SetClipboardData(CF_ENHMETAFILE, hemf);
+		auto MetaFileHandle {::CloseEnhMetaFile(MetaFile)};
+		::SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
 
-		pstate.Restore(CDC::FromHandle(MetaFile), PrimitiveState);
+		auto DeviceContext {CDC::FromHandle(MetaFile)};
+		
+		if (DeviceContext) { pstate.Restore(*DeviceContext, PrimitiveState); }
 	}
 	if (theApp.IsClipboardDataGroups()) {
 		CMemFile MemoryFile;
@@ -110,7 +112,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.SetLength(96);
 		MemoryFile.SeekToEnd();
 
-		OdUInt8* Buffer = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
+		unsigned char* Buffer = new unsigned char[EoDbPrimitive::BUFFER_SIZE];
 		m_TrappedGroupList.Write(MemoryFile, Buffer);
 		delete[] Buffer;
 
@@ -202,11 +204,11 @@ bool AeSysDoc::IsTrapEmpty() const {
 	return m_TrappedGroupList.IsEmpty();
 }
 
-void AeSysDoc::ModifyTrappedGroupsColorIndex(OdInt16 colorIndex) {
+void AeSysDoc::ModifyTrappedGroupsColorIndex(short colorIndex) {
 	m_TrappedGroupList.ModifyColorIndex(colorIndex);
 }
 
-void AeSysDoc::ModifyTrappedGroupsLinetypeIndex(OdInt16 linetypeIndex) {
+void AeSysDoc::ModifyTrappedGroupsLinetypeIndex(short linetypeIndex) {
 	m_TrappedGroupList.ModifyLinetypeIndex(linetypeIndex);
 }
 

@@ -31,7 +31,7 @@ public:
 	enum InteriorStyle { kHollow, kSolid, kPattern, kHatch };
 
 private:
-	OdInt16	m_InteriorStyle;
+	short	m_InteriorStyle;
 	unsigned m_InteriorStyleIndex;
 	OdGePoint3d	m_HatchOrigin;
 	OdGeVector3d m_HatchXAxis;
@@ -62,7 +62,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kHatchPrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kHatchPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -72,7 +72,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const override;
+	void Write(CFile& file, unsigned char* buffer) const override;
 
 public: // Methods
 
@@ -90,7 +90,7 @@ public: // Methods
 	void SetHatchXAxis(const OdGeVector3d& xAxis) noexcept;
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
-	void SetInteriorStyle(OdInt16 interiorStyle) noexcept;
+	void SetInteriorStyle(short interiorStyle) noexcept;
 	void SetInteriorStyleIndex(unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
 	void SetInteriorStyleIndex2(unsigned styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);
@@ -114,5 +114,5 @@ public: // Methods - static
 
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 };

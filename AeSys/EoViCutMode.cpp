@@ -2,7 +2,7 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-OdUInt16 wPrvKeyDwn = 0;
+unsigned short wPrvKeyDwn = 0;
 OdGePoint3d rPrvPos;
 
 void AeSysView::OnCutModeOptions() noexcept {
@@ -127,8 +127,8 @@ void AeSysView::OnCutModeField() {
 
 		auto Document {GetDocument()};
 
-		const OdInt16 ColorIndex = pstate.ColorIndex();
-		const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
+		const short ColorIndex = pstate.ColorIndex();
+		const short LinetypeIndex = pstate.LinetypeIndex();
 
 		EoDbGroupList* GroupsOut = new EoDbGroupList;
 		EoDbGroupList* GroupsIn = new EoDbGroupList;
@@ -197,8 +197,8 @@ void AeSysView::OnCutModeClip() {
 		double dRel[2];
 		OdGePoint3d	ptCut[2];
 
-		const OdInt16 ColorIndex = pstate.ColorIndex();
-		const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
+		const short ColorIndex = pstate.ColorIndex();
+		const short LinetypeIndex = pstate.LinetypeIndex();
 
 		auto Document {GetDocument()};
 

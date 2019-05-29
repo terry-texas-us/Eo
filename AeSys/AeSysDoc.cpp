@@ -514,8 +514,8 @@ EoDlgUserIOConsole* AeSysDoc::UserIOConsole() {
 	return m_UserIOConsole;
 }
 
-OdUInt32 AeSysDoc::getKeyState() noexcept {
-	OdUInt32 KeyState(0);
+unsigned long AeSysDoc::getKeyState() noexcept {
+	unsigned long KeyState(0);
 	if (::GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
 
 	if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
@@ -1262,7 +1262,7 @@ void AeSysDoc::DeletedGroupsRestore() {
 	}
 }
 
-int AeSysDoc::LinetypeIndexReferenceCount(OdInt16 linetypeIndex) {
+int AeSysDoc::LinetypeIndexReferenceCount(short linetypeIndex) {
 	int Count = 0;
 
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
@@ -1342,7 +1342,7 @@ void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) {
 			auto Layer {GetLayerAt(LayerIndex)};
 			Layer->Display_(view, deviceContext, IdentifyTrap);
 		}
-		pstate.Restore(deviceContext, PrimitiveState);
+		pstate.Restore(*deviceContext, PrimitiveState);
 
 		deviceContext->SetBkColor(BackgroundColor);
 	} catch (CException* Exception) {
@@ -1372,7 +1372,7 @@ EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
 }
 
 int AeSysDoc::FindLayerAt(const OdString& name) const {
-	for (OdUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
+	for (unsigned short LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
 		const auto Layer {m_LayerTable.GetAt(LayerIndex)};
 		
 		if (name.iCompare(Layer->Name()) == 0) { return (LayerIndex); }
@@ -1385,7 +1385,7 @@ OdDbLayerTablePtr AeSysDoc::LayerTable(OdDb::OpenMode openMode) {
 }
 
 void AeSysDoc::RemoveAllLayers() {
-	for (OdUInt16 LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
+	for (unsigned short LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
 		EoDbLayer* Layer = m_LayerTable.GetAt(LayerIndex);
 		if (Layer) {
 			Layer->DeleteGroupsAndRemoveAll();
@@ -1472,7 +1472,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	return (bRetVal);
 }
 
-void AeSysDoc::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
+void AeSysDoc::PenTranslation(unsigned short wCols, short* pColNew, short* pCol) {
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		Layer->PenTranslation(wCols, pColNew, pCol);
@@ -2059,13 +2059,13 @@ void AeSysDoc::OnPurgeUnreferencedBlocks() {
 }
 
 void AeSysDoc::OnEditImageToClipboard() {
-	HDC MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
+	auto MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
 	DisplayAllLayers(AeSysView::GetActiveView(), CDC::FromHandle(MetaFile));
-	HENHMETAFILE hemf {::CloseEnhMetaFile(MetaFile)};
+	auto MetaFileHandle {::CloseEnhMetaFile(MetaFile)};
 
 	::OpenClipboard(nullptr);
 	::EmptyClipboard();
-	::SetClipboardData(CF_ENHMETAFILE, hemf);
+	::SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
 	::CloseClipboard();
 }
 
@@ -2264,7 +2264,7 @@ void AeSysDoc::OnTrapCommandsBlock() {
 		return;
 
 	EoDbBlock * Block;
-	OdUInt16 w = BlockTableSize();
+	unsigned short w = BlockTableSize();
 	wchar_t szBlkNam[16];
 
 	do {
@@ -2310,7 +2310,7 @@ void AeSysDoc::OnSetupLinetype() {
 
 	if (Dialog.DoModal() == IDOK) {
 		OdString Name = Dialog.m_Linetype->getName();
-		const OdInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
+		const short LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
 		pstate.SetLinetypeIndexPs(nullptr, LinetypeIndex);
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
 	}
@@ -2592,16 +2592,16 @@ void AeSysDoc::OnPensTranslate() {
 	// <tas="OnPensTranslate would be more useful if the file name could be selected. Currently fixed as xlate.txt"</tas>
 	if (fl.Open(AeSysApp::ResourceFolderPath() + L"\\Pens\\xlate.txt", CFile::modeRead | CFile::typeText)) {
 		wchar_t pBuf[128];
-		OdUInt16 wCols = 0;
+		unsigned short wCols = 0;
 
 		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr)
 			wCols++;
 
 		if (wCols > 0) {
-			OdInt16* pColNew = new OdInt16[wCols];
-			OdInt16* pCol = new OdInt16[wCols];
+			short* pColNew = new short[wCols];
+			short* pCol = new short[wCols];
 
-			OdUInt16 w = 0;
+			unsigned short w = 0;
 
 			fl.SeekToBegin();
 
@@ -2609,8 +2609,8 @@ void AeSysDoc::OnPensTranslate() {
 
 			while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr) {
 				NextToken = nullptr;
-				pCol[w] = OdInt16(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
-				pColNew[w++] = OdInt16(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
+				pCol[w] = short(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
+				pColNew[w++] = short(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
 			}
 			PenTranslation(wCols, pColNew, pCol);
 

@@ -80,11 +80,11 @@ static OdString StringLineJoinStyle[] = {
 
 
 struct DIBCOLOR {
-    OdUInt8 b;
-    OdUInt8 g;
-    OdUInt8 r;
-    OdUInt8 reserved;
-    DIBCOLOR(OdUInt8 ar, OdUInt8 ag, OdUInt8 ab)  noexcept
+	unsigned char b;
+	unsigned char g;
+	unsigned char r;
+	unsigned char reserved;
+    DIBCOLOR(unsigned char ar, unsigned char ag, unsigned char ab)  noexcept
         : r(ar)
         , g(ag)
         , b(ab)
@@ -101,13 +101,13 @@ struct DIBCOLOR {
 
 class CBitmapColorInfo {
 public:
-    OdUInt8 m_iItem;
+	unsigned char m_iItem;
     COLORREF m_color;
     CBitmap m_bitmap;
     wchar_t m_name[PS_COLOR_MAX_NAME];
 
     CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, const wchar_t* name);
-    CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, OdUInt8 cColorItem, int colorIndex = -1);
+    CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, unsigned char cColorItem, int colorIndex = -1);
     CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name);
 
 protected:
@@ -118,7 +118,7 @@ protected:
 public:
     CBitmap* CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpClone);
     void PaintBitmap(CBitmap& Bmp, COLORREF color);
-    const bool IsColor(COLORREF color, OdUInt8 item) noexcept;
+    const bool IsColor(COLORREF color, unsigned char item) noexcept;
     const OdCmEntityColor GetColor();
 };
 

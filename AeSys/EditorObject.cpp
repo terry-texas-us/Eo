@@ -89,7 +89,7 @@ public:
 		return pRes;
 	}
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
+	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
 		return kDrawableUsesNesting;
 	}
 
@@ -754,7 +754,7 @@ const OdString OdEx3dOrbitCmd::globalName() const {
 
 class OrbitCtrl : public OdGiDrawableImpl<> {
 public:
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
+	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept override {
@@ -1425,13 +1425,13 @@ void CollideMoveTracker::doCollideWithAll() {
 		};
 		~OdExCollisionDetectionReactor() {
 		}
-		OdUInt32 collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
+		unsigned long collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
 			OdExCollideGsPath* p = fromGiPath(pPathNode2, !m_bDynHLT);
 		
 			if (p || pPathNode2->persistentDrawableId()) {
 				m_pathes.push_back(p);
 			}
-			return OdUInt32(OdGsCollisionDetectionReactor::kContinue);
+			return unsigned long(OdGsCollisionDetectionReactor::kContinue);
 		}
 
 		OdArray< OdExCollideGsPath* >& pathes() { return m_pathes; }
@@ -1538,12 +1538,12 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 		};
 		~OdExCollisionDetectionReactor() {
 		}
-		OdUInt32 collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
+		unsigned long collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
 			OdExCollideGsPath* p1 = fromGiPath(pPathNode1, !m_bDynHLT);
 			OdExCollideGsPath* p2 = fromGiPath(pPathNode2, !m_bDynHLT);
 			m_pathes.push_back(p1);
 			m_pathes.push_back(p2);
-			return OdUInt32(OdGsCollisionDetectionReactor::kContinue);
+			return unsigned long(OdGsCollisionDetectionReactor::kContinue);
 		}
 
 		OdArray< OdExCollideGsPath* >& pathes() { return m_pathes; }

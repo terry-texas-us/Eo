@@ -59,7 +59,7 @@ void EoDbTracingFile::WriteHeader() {
 void EoDbTracingFile::WriteLayer(EoDbLayer * layer) {
 	WriteUInt16(kGroupsSection);
 
-	WriteUInt16(OdUInt16(layer->GetCount()));
+	WriteUInt16(unsigned short(layer->GetCount()));
 
 	POSITION Position = layer->GetHeadPosition();
 	while (Position != 0) {

@@ -8,7 +8,7 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
 	m_StateFlags = kIsResident | kIsInternal | kIsActive;
 	const OdDbObjectId LinetypeObjectId = layer->linetypeObjectId();
 }
-EoDbLayer::EoDbLayer(const OdString& name, OdUInt16 stateFlags) {
+EoDbLayer::EoDbLayer(const OdString& name, unsigned short stateFlags) {
 	// <tas="need to check this .. no defaults"></tas>
 	m_TracingFlags = 0;
 	m_StateFlags = stateFlags;
@@ -35,7 +35,7 @@ void EoDbLayer::BuildVisibleGroupList(AeSysView* view) {
 COLORREF EoDbLayer::Color() const {
 	return ColorPalette[m_Layer->colorIndex()];
 }
-OdInt16 EoDbLayer::ColorIndex() const {
+short EoDbLayer::ColorIndex() const {
 	return m_Layer->colorIndex();
 }
 void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
@@ -110,7 +110,7 @@ bool EoDbLayer::IsCurrent() const {
 
 	return ((m_StateFlags & kIsCurrent) == kIsCurrent);
 }
-OdInt16 EoDbLayer::LinetypeIndex() {
+short EoDbLayer::LinetypeIndex() {
 	OdDbLinetypeTableRecordPtr Linetype = m_Layer->linetypeObjectId().safeOpenObject();
 	return EoDbLinetypeTable::LegacyLinetypeIndex(Linetype->getName());
 }
@@ -172,10 +172,10 @@ void EoDbLayer::SetIsLocked(bool isLocked) {
 	if (isLocked) {
 		m_StateFlags &= ~(kIsCurrent | kIsActive | kIsOff);
 		m_StateFlags |= kIsLocked;
-		Transparency.setAlpha(OdUInt8(96));
+		Transparency.setAlpha(unsigned char(96));
 	} else {
 		MakeActive();
-		Transparency.setAlpha(OdUInt8(255));
+		Transparency.setAlpha(unsigned char(255));
 	}
 	m_Layer->upgradeOpen();
 	m_Layer->setTransparency(Transparency);
@@ -189,7 +189,7 @@ void EoDbLayer::MakeCurrent() noexcept {
 OdString EoDbLayer::Name() const {
 	return m_Layer->getName();
 }
-void EoDbLayer::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) {
+void EoDbLayer::PenTranslation(unsigned short wCols, short* pColNew, short* pCol) {
 	for (int i = 0; i < wCols; i++) {
 		if (m_Layer->colorIndex() == pCol[i]) {
 			m_Layer->setColorIndex(pColNew[i]);
@@ -198,7 +198,7 @@ void EoDbLayer::PenTranslation(OdUInt16 wCols, OdInt16* pColNew, OdInt16* pCol) 
 	}
 	EoDbGroupList::PenTranslation(wCols, pColNew, pCol);
 }
-void EoDbLayer::SetColorIndex(OdInt16 colorIndex) {
+void EoDbLayer::SetColorIndex(short colorIndex) {
 	m_Layer->upgradeOpen();
 	m_Layer->setColorIndex(colorIndex);
 	m_Layer->downgradeOpen();
@@ -213,7 +213,7 @@ void EoDbLayer::SetName(const OdString& name) {
 	m_Layer->setName(name);
 	m_Layer->downgradeOpen();
 }
-void EoDbLayer::SetStateFlags(OdUInt16 flags) noexcept {
+void EoDbLayer::SetStateFlags(unsigned short flags) noexcept {
 	m_StateFlags = flags;
 }
 void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
@@ -221,7 +221,7 @@ void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
 	m_Layer->setTransparency(transparency);
 	m_Layer->downgradeOpen();
 }
-OdUInt16 EoDbLayer::StateFlags() const noexcept {
+unsigned short EoDbLayer::StateFlags() const noexcept {
 	return m_StateFlags;
 }
 

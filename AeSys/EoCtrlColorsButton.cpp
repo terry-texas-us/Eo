@@ -4,8 +4,8 @@
 #include "EoCtrlColorsButton.h"
 
 COLORREF* EoCtrlColorsButton::m_Palette;
-OdUInt16 EoCtrlColorsButton::m_CurrentIndex;
-OdUInt16 EoCtrlColorsButton::m_SelectedIndex;
+unsigned short EoCtrlColorsButton::m_CurrentIndex;
+unsigned short EoCtrlColorsButton::m_SelectedIndex;
 
 IMPLEMENT_DYNAMIC(EoCtrlColorsButton, CMFCButton)
 
@@ -33,7 +33,7 @@ EoCtrlColorsButton::EoCtrlColorsButton() {
 }
 EoCtrlColorsButton::~EoCtrlColorsButton() {
 }
-void EoCtrlColorsButton::DrawCell(CDC* deviceContext, OdUInt16 index, COLORREF color) {
+void EoCtrlColorsButton::DrawCell(CDC* deviceContext, unsigned short index, COLORREF color) {
 	if (index != 0) {
 		CRect CellRectangle;
 		SubItemRectangleByIndex(index, CellRectangle);
@@ -78,7 +78,7 @@ CSize EoCtrlColorsButton::SizeToContent(BOOL calculateOnly) {
 	}
 	return Size;
 }
-void EoCtrlColorsButton::SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle) noexcept {
+void EoCtrlColorsButton::SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept {
 	rectangle.top = m_Margins.cx + m_CellSpacing.cy;
 	rectangle.left = m_Margins.cy + m_CellSpacing.cx;
 
@@ -98,20 +98,20 @@ void EoCtrlColorsButton::SubItemRectangleByIndex(OdUInt16 index, CRect& rectangl
 	rectangle.right = rectangle.left + m_CellSize.cx;
 }
 
-OdUInt16 EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
+unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
 	CRect Rectangle;
 	Rectangle.SetRectEmpty();
 
 	switch (m_Layout) {
 		case SimpleSingleRow:
-			for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+			for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				SubItemRectangleByIndex(Index, Rectangle);
 
 				if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 			}
 			break;
 		case GridDown5RowsOddOnly:
-			for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+			for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if ((Index % 2) != 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
 
@@ -120,7 +120,7 @@ OdUInt16 EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
 			}
 			break;
 		case GridUp5RowsEvenOnly:
-			for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+			for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if ((Index % 2) == 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
 
@@ -134,7 +134,7 @@ OdUInt16 EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
 void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle */, UINT /* state */) {
 	m_SelectedIndex = 0;
 
-	for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+	for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 		if (m_Layout == SimpleSingleRow) {
 			DrawCell(deviceContext, Index, m_Palette[Index]);
 		}
@@ -218,7 +218,7 @@ void EoCtrlColorsButton::OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags) {
 	CMFCButton::OnKeyDown(keyCode, repeatCount, flags);
 }
 void EoCtrlColorsButton::OnLButtonUp(UINT flags, CPoint point) {
-	const OdUInt16 CurrentSubItem = SubItemByPoint(point);
+	const unsigned short CurrentSubItem = SubItemByPoint(point);
 	if (CurrentSubItem != 0) {
 		m_SubItem = CurrentSubItem;
 	}

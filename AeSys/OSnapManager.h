@@ -93,7 +93,7 @@ class OdBaseSnapManager
 	bool m_Redraw;
 	double m_HitRadius;
 
-	OdInt32 GetAperture(OdDbDatabase* database) const;
+	long GetAperture(OdDbDatabase* database) const;
 
 	struct SubentId {
 		SubentId() {}
@@ -142,12 +142,12 @@ class OdBaseSnapManager
 
 	HistEntryArray m_Centers;
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
+	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
 	bool selected(const OdGiDrawableDesc& drawableDesc) override;
-	OdUInt32 selected(const OdGiPathNode& pathNode, const OdGiViewport& viewInfo) override;
+	unsigned long selected(const OdGiPathNode& pathNode, const OdGiViewport& viewInfo) override;
 	void InvalidateViewport(const OdGePoint3d& point) const;
 	void InvalidateViewport(const HistEntryArray& centers) const;
 protected:

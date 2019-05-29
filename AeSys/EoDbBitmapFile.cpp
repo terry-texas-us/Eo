@@ -45,10 +45,10 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 
 		const UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * (NumberOfColors - 1));
 
-		LOGPALETTE* pLogPal = (LOGPALETTE*) new OdUInt8[nSize];
+		LOGPALETTE* pLogPal = (LOGPALETTE*) new unsigned char[nSize];
 
 		pLogPal->palVersion = 0x300;
-		pLogPal->palNumEntries = OdUInt16(NumberOfColors);
+		pLogPal->palNumEntries = unsigned short(NumberOfColors);
 
 		for (int i = 0; i < NumberOfColors; i++) {
 			pLogPal->palPalEntry[i].peRed = RGBQuad[i].rgbRed;

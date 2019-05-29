@@ -453,7 +453,7 @@ const ODCOLORREF* AeSysApp::curPalette() const {
 	return odcmAcadPalette(m_background);
 }
 
-OdGsDevicePtr AeSysApp::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, OdUInt32 flags) {
+OdGsDevicePtr AeSysApp::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, unsigned long flags) {
 	try {
 		OdGsModulePtr Module;
 
@@ -764,7 +764,7 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(GetMainWnd())};
 	OdDbDatabasePtr Database;
 
-	OdInt16 nMode = getMtMode();
+	short nMode = getMtMode();
 	SETBIT(nMode, 1, m_bUseMTLoading);
 	setMtMode(nMode);
 
@@ -844,7 +844,7 @@ void AeSysApp::AddStringToMessageList(LPCWSTR message, LPCWSTR string) {
 	AddStringToMessageList(FormatString);
 }
 
-void AeSysApp::AddStringToMessageList(UINT stringResourceIdentifier) {
+void AeSysApp::AddStringToMessageList(unsigned int stringResourceIdentifier) {
 	CString ResourceString = LoadStringResource(stringResourceIdentifier);
 	AddStringToMessageList(ResourceString);
 }
@@ -1184,7 +1184,7 @@ EoDb::FileTypes AeSysApp::GetFileType(const OdString & file) {
 	return Type;
 }
 
-COLORREF AeSysApp::GetHotColor(OdInt16 colorIndex) noexcept {
+COLORREF AeSysApp::GetHotColor(short colorIndex) noexcept {
 	return (ColorPalette[colorIndex]);
 }
 HINSTANCE AeSysApp::GetInstance() noexcept {
@@ -1861,7 +1861,7 @@ double AeSysApp::ParseLength(Units units, LPWSTR aszLen) {
 		return (0.0);
 	}
 }
-double AeSysApp::PenWidthsGet(OdInt16 colorIndex) noexcept {
+double AeSysApp::PenWidthsGet(short colorIndex) noexcept {
 	return (dPWids[colorIndex]);
 }
 /// <remarks> Processing occurs immediately before the framework loads the application state from the registry. </remarks>
@@ -2193,7 +2193,7 @@ CString AeSysApp::ShadowFolderPath() const noexcept {
 char* AeSysApp::SimplexStrokeFont() noexcept {
 	return m_SimplexStrokeFont;
 }
-OdInt16 AeSysApp::TrapHighlightColor() const noexcept {
+short AeSysApp::TrapHighlightColor() const noexcept {
 	return m_TrapHighlightColor;
 }
 void AeSysApp::UninitializeTeigha() {

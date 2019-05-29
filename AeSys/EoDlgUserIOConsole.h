@@ -53,7 +53,7 @@ public:
 
 public: // Methods - virtuals
 
-	OdUInt32 getKeyState() noexcept override { return 0; }
+	unsigned long getKeyState() noexcept override { return 0; }
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
 };

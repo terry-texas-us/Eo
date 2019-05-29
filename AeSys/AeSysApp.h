@@ -244,7 +244,7 @@ public:
 	void setActiveBackground(const ODCOLORREF& color) noexcept { m_background = color & 0xffffff; }
 	const ODCOLORREF* curPalette() const;
 
-	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = nullptr, OdDbBaseDatabase* database = nullptr, OdUInt32 flags = 0);
+	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = nullptr, OdDbBaseDatabase* database = nullptr, unsigned long flags = 0);
 
 //	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 //	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
@@ -299,7 +299,7 @@ private:
 	int	m_PrimaryMode;
 	CString m_ShadowFolderPath;
 	char* m_SimplexStrokeFont;
-	OdInt16 m_TrapHighlightColor;
+	short m_TrapHighlightColor;
 	bool m_TrapHighlighted;
 	bool m_TrapModeAddGroups;
 	Units m_Units;
@@ -317,7 +317,7 @@ public:
 	void AddModeInformationToMessageList();
 	void AddStringToMessageList(LPCWSTR message);
 	void AddStringToMessageList(LPCWSTR message, LPCWSTR string);
-	void AddStringToMessageList(UINT stringResourceIdentifier);
+	void AddStringToMessageList(unsigned int stringResourceIdentifier);
 	void AddStringToMessageList(UINT stringResourceIdentifier, LPCWSTR string);
 	void AddStringToReportList(LPCWSTR message);
 
@@ -345,7 +345,7 @@ public:
 	void FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
 	OdGePoint3d GetCursorPosition();
 	static EoDb::FileTypes GetFileType(const OdString& file);
-	COLORREF GetHotColor(OdInt16 colorIndex) noexcept;
+	COLORREF GetHotColor(short colorIndex) noexcept;
 	HINSTANCE GetInstance() noexcept;
 	HWND GetSafeHwnd();
 	HMENU GetAeSysMenu() noexcept;
@@ -370,7 +370,7 @@ public:
 	bool ModeInformationOverView() const noexcept;
 	double ParseLength(LPWSTR lengthAsString);
 	double ParseLength(Units units, LPWSTR);
-	double PenWidthsGet(OdInt16 colorIndex) noexcept;
+	double PenWidthsGet(short colorIndex) noexcept;
 	int PrimaryMode() const noexcept;
 	void ReleaseSimplexStrokeFont() noexcept;
 	static CString ResourceFolderPath();
@@ -383,7 +383,7 @@ public:
 	void SetUnits(Units units) noexcept;
 	CString ShadowFolderPath() const noexcept;
 	char* SimplexStrokeFont() noexcept;
-	OdInt16 TrapHighlightColor() const noexcept;
+	short TrapHighlightColor() const noexcept;
 	void UninitializeTeigha();
 	void UpdateMDITabs(BOOL resetMDIChild);
 

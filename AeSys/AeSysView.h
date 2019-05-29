@@ -96,7 +96,7 @@ protected:
 
 	void preparePlotstyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
 
-	OdUInt32 glyphSize(GlyphType glyphType) const override;
+	unsigned long glyphSize(GlyphType glyphType) const override;
 	void fillContextualColors(OdGiContextualColorsImpl* pCtxColors) override;
 
 	DECLARE_DYNCREATE(AeSysView)
@@ -127,7 +127,7 @@ public:
 	bool isModelSpaceView() const;
 
 	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const override; // OdGiContextForDbDatabase
-	OdUInt32 drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags) override; // OdGiContextForDbDatabase
+	unsigned long drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) override; // OdGiContextForDbDatabase
 
 	// </command_view>
 
@@ -167,7 +167,7 @@ protected:
 
 public: // Methods - virtuals 
 
-	OdUInt32 getKeyState() noexcept override;
+	unsigned long getKeyState() noexcept override;
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
@@ -202,13 +202,13 @@ private:
 	CPalette m_BackgroundImagePalette;
 	EoDbPrimitive* m_EngagedPrimitive;
 	EoDbGroup* m_EngagedGroup;
-	OdUInt16 m_OpHighlighted;
+	unsigned short m_OpHighlighted;
 	EoGsViewTransform m_OverviewViewTransform;
 	bool m_Plot;
 	float m_PlotScaleFactor;
 	EoDbGroup m_PreviewGroup;
 	EoGsViewTransform m_PreviousViewTransform;
-	OdUInt16 m_PreviousOp;
+	unsigned short m_PreviousOp;
 	OdGePoint3d m_PreviousPnt;
 	double m_SelectApertureSize;
 	bool m_ViewBackgroundImage;
@@ -319,7 +319,7 @@ public: // Input message handler member functions
 	void OnMButtonDown(UINT nFlags, CPoint point);
 	void OnMButtonUp(UINT nFlags, CPoint point);
 	void OnMouseMove(UINT nFlags, CPoint point);
-	BOOL OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point);
+	BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint point);
 	void OnRButtonDown(UINT nFlags, CPoint point);
 	void OnRButtonUp(UINT nFlags, CPoint point);
 
@@ -355,7 +355,7 @@ public:
 
 	pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
-	pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, OdInt16 pointColor);
+	pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
@@ -461,8 +461,8 @@ public: // Group and Primitive operations
 	void InitializeGroupAndPrimitiveEdit();
 	void DoEditGroupCopy();
 	void DoEditGroupEscape();
-	void DoEditGroupTransform(OdUInt16 operation);
-	void DoEditPrimitiveTransform(OdUInt16 operation);
+	void DoEditGroupTransform(unsigned short operation);
+	void DoEditPrimitiveTransform(unsigned short operation);
 	void DoEditPrimitiveCopy();
 	void DoEditPrimitiveEscape();
 	void PreviewPrimitiveEdit();
@@ -784,7 +784,7 @@ public:
 	/// <summary>Generates rise or drop fitting.</summary>
 	/// <param name="riseDropIndicator">	rise or drop indicator; 1 rise, 2 drop</param>
 	/// <param name="section">horizontal section width and depth</param>
-	void GenerateRiseDrop(OdUInt16 riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group);
+	void GenerateRiseDrop(unsigned short riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group);
 	/// <summary>Generates rectangular section using a set of parallel lines.</summary>
 	/// <param name="section">width and depth of section</param>
 	/// <param name="group"></param>
@@ -880,14 +880,14 @@ public:
 	void OnPowerModeReturn();
 	void OnPowerModeEscape();
 
-	void GeneratePowerConductorSymbol(OdUInt16 conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
+	void GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
 	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
-	void DoPowerModeConductor(OdUInt16 conductorType);
+	void DoPowerModeConductor(unsigned short conductorType);
 
 public: // Status & Mode Line
 	void ModeLineDisplay();
-	OdUInt16 ModeLineHighlightOp(OdUInt16 op);
-	void ModeLineUnhighlightOp(OdUInt16& op);
+	unsigned short ModeLineHighlightOp(unsigned short op);
+	void ModeLineUnhighlightOp(unsigned short& op);
 
 	CMFCStatusBar& GetStatusBar() const;
 

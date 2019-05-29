@@ -35,7 +35,7 @@ public: // Methods
 	/// <returns> Point after snap </returns>
 	OdGePoint3d ConstrainToAxis(double influenceAngle, double offsetAngle) const;
 	/// <summary>Cuts a line a point.</summary>
-	OdUInt16 CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line);
+	unsigned short CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line);
 	/// <summary>Determines which side of a directed line a point is on.</summary>
 	/// <remarks>
 	///Relation is found using determinant (3rd order).

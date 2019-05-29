@@ -12,8 +12,8 @@ const wchar_t* EoDbHatchPatternTable::LegacyHatchPatterns[] = {
 	L"NET3", L"PLAST", L"PLASTI", L"SACNCR", L"SQUARE", L"STARS", L"SWAMP", L"TRANS", L"TRIANG", L"ZIGZAG"
 };
 
-OdUInt16 EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& name) {
-	OdUInt16 Index = 0;
+unsigned short EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& name) {
+	unsigned short Index = 0;
 	while (Index < ms_NumberOfLegacyHatchPatterns && name.iCompare(LegacyHatchPatterns[Index]) != 0) {
 		Index++;
 	}

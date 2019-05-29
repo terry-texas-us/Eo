@@ -143,7 +143,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpC
 
 	BITMAP bmp; 
 	DWORD dw;
-    OdUInt8 *pb;
+	unsigned char*pb;
 	((CBitmap*)pBmpSource)->GetBitmap(&bmp); 
 
 	CClientDC ClientDeviceContext(nullptr);
@@ -152,7 +152,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpC
 	pBmpClone->CreateCompatibleBitmap(&ClientDeviceContext, bmp.bmWidth, bmp.bmHeight);
 
 	dw = bmp.bmWidthBytes*bmp.bmHeight;
-	pb = new OdUInt8[dw];
+	pb = new unsigned char[dw];
 	dw = pBmpSource->GetBitmapBits(dw, pb); 
 	pBmpClone->SetBitmapBits(dw, pb);
 	delete[]pb;
@@ -178,15 +178,15 @@ void CBitmapColorInfo::PaintBitmap(CBitmap &Bmp, COLORREF color) {
 }
 const OdCmEntityColor CBitmapColorInfo::GetColor() {
 
-	const OdCmEntityColor color = OdCmEntityColor((OdUInt8)((m_color >> 16) & 0xFF), 
-		(OdUInt8)((m_color >> 8) & 0xFF), (OdUInt8)(m_color & 0xFF));
+	const OdCmEntityColor color = OdCmEntityColor((unsigned char)((m_color >> 16) & 0xFF),
+		(unsigned char)((m_color >> 8) & 0xFF), (unsigned char)(m_color & 0xFF));
 	return color;
 }
-const bool CBitmapColorInfo::IsColor(COLORREF color, OdUInt8 item) noexcept {
+const bool CBitmapColorInfo::IsColor(COLORREF color, unsigned char item) noexcept {
 	color = (item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
 	return m_color == color;
 }
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, OdUInt8 cColorItem, int colorIndex) :
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, unsigned char cColorItem, int colorIndex) :
 	m_iItem(cColorItem) {
 
 		m_color = (m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
@@ -242,7 +242,7 @@ CPsListStyleData::CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* p
 	pPs->getData(OdPsData);
 	const OdCmEntityColor cL = OdPsData.color();
 
-	OdUInt32 rgb;
+	unsigned long rgb;
 	if (cL.isByACI())
 		rgb = odcmLookupRGB(cL.colorIndex(), odcmAcadLightPalette());
 	else
@@ -275,7 +275,7 @@ const bool CPsListStyleData::ReplaceBitmapColorInfo(COLORREF color, const int it
 	m_iActiveListIndex = getPublicArrayIndexByColor(color);
 
 	if (m_iActiveListIndex < 0) 
-		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, (OdUInt8)item);
+		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, (unsigned char)item);
 
 	return true;
 
@@ -436,7 +436,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 			item = m_Color.AddBitmap(nullptr, m_bitmapList[i]->m_name);
 		else
 			item = m_Color.AddBitmap(&m_bitmapList[i]->m_bitmap, m_bitmapList[i]->m_name);
-		m_bitmapList[i]->m_iItem = (OdUInt8)item;
+		m_bitmapList[i]->m_iItem = (unsigned char)item;
 	}
 	m_Color.SetCurSel(0);
 }
@@ -463,7 +463,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* p
 	m_spinScreening.SetPos(OdPsData.screening());
 	m_Adaptive.SelectString(-1,OdPsData.isAdaptiveLinetype() ? L"On" : L"Off");
 	m_Linetype.SetCurSel(OdPsData.linetype());
-	m_Lineweight.SetCurSel((OdUInt32)OdPsData.lineweight());
+	m_Lineweight.SetCurSel((unsigned long)OdPsData.lineweight());
 	m_Lineendstyle.SetCurSel(OdPsData.endStyle());
 	m_Linejoinstyle.SetCurSel(OdPsData.joinStyle() < 5 ? OdPsData.joinStyle() : 4);
 	m_Fillstyle.SetCurSel(OdPsData.fillStyle() - 64);
@@ -512,7 +512,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 		num = 0;
 		m_spinScreening.SetPos(num);
 	}
-	OdPsData.setPhysicalPenNumber((OdInt16)num);
+	OdPsData.setPhysicalPenNumber((short)num);
 	m_pPlotStyleActive->setData(OdPsData);
 
 	if (!m_spinScreening.GetPos()) {
@@ -540,7 +540,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 		num = 0;
 		m_spinPen.SetPos(num);
 	}
-	OdPsData.setPhysicalPenNumber((OdInt16)num);
+	OdPsData.setPhysicalPenNumber((short)num);
 	m_pPlotStyleActive->setData(OdPsData);
 
 	if (!m_spinPen.GetPos()) {
@@ -568,7 +568,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 		num = 0;
 		m_spinVirtpen.SetPos(num);
 	}
-	OdPsData.setVirtualPenNumber((OdInt16)num);
+	OdPsData.setVirtualPenNumber((short)num);
 	m_pPlotStyleActive->setData(OdPsData);
 
 	if (!m_spinVirtpen.GetPos()) {
@@ -769,7 +769,7 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 }
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 	// TODO: Add your control notification handler code here
-	OdInt16 intColorPolicy = 1;
+	short intColorPolicy = 1;
 	const int CurrentSelection = m_Color.GetCurSel();
 	const int cListStylesItem = m_listStyles.GetSelectionMark();
 	CPsListStyleData *pPsListStyleData = (CPsListStyleData*)(m_listStyles.GetItemData(cListStylesItem));
@@ -939,6 +939,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSaveBtn() {
 		return;
 	}
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnLineweightBtn() {
 	EoDlgPlotStyleEditLineweight PsEditLineweightDlg;
 	PsEditLineweightDlg.SetPlotStyleTable(m_pPlotStyleTable);
@@ -953,15 +954,17 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnLineweightBtn() {
 		m_Lineweight.ResetContent();
 		initLineweightComboBox();
 		m_pPlotStyleActive->getData(OdPsData);
-		m_Lineweight.SetCurSel((OdUInt32)OdPsData.lineweight());
+		m_Lineweight.SetCurSel((unsigned long)OdPsData.lineweight());
 	}
 }
+
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::deleteCustomColor() {
 	if (m_Color.GetCount() > PS_COMBO_COLOR_POSITION+1)
 		m_Color.DeleteString(PS_COMBO_COLOR_POSITION);
 
 	return 0;
 }
+
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::appendCustomColor(const int item) {
 	const CPsListStyleData* pPsListStyleData = (CPsListStyleData*)(m_listStyles.GetItemData(item));
 	const CBitmapColorInfo* pBitmapColorInfo = pPsListStyleData->GetBitmapColorInfo();
@@ -971,6 +974,7 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::appendCustomColor(const int
 	return m_Color.InsertBitmap(PS_COMBO_COLOR_POSITION, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
 
 }
+
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::replaceCustomColor(COLORREF color, const int item) {
 	CPsListStyleData* pPsListStyleData = (CPsListStyleData*)(m_listStyles.GetItemData(item));
 	pPsListStyleData->ReplaceBitmapColorInfo(color, item);

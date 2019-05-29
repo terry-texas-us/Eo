@@ -7,16 +7,16 @@ class EoDbPegFile;
 
 /* <remarks>
 GroupReference(SegRef) primitive in Peg files and Tracing files
-  Type code <0x0102>	            OdUInt16[0-1]
-  Pen color				            OdUInt16[2-3]
-  Line type				            OdUInt16[4-5]
+  Type code <0x0102>	            unsigned short[0-1]
+  Pen color				            unsigned short[2-3]
+  Line type				            unsigned short[4-5]
   Group name			            string
   Insertion point		            OdGePoint3d
   Local normal vector	            OdGeVector3d
   Scale factors(x, y, z)            OdGeVector3d
   Rotation				            double
-  Number of columns		            OdUInt16
-  Number of rows		            OdUInt16
+  Number of columns		            unsigned short
+  Number of rows		            unsigned short
   Column spacing		            double
   Row spacing			            double
 </remarks> */
@@ -29,9 +29,9 @@ class EoDbBlockReference : public EoDbPrimitive {
 	double m_Rotation;
 
 // Multiple inserts - not implemented
-	OdUInt16 m_Columns;
+	unsigned short m_Columns;
 	double m_ColumnSpacing;
-	OdUInt16 m_Rows;
+	unsigned short m_Rows;
 	double m_RowSpacing;
 
 public: // Constructors and destructor
@@ -54,7 +54,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kGroupReferencePrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kGroupReferencePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
@@ -66,18 +66,18 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const noexcept override;
+	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
 public: // Methods
 
 	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
-	OdUInt16 Columns() const noexcept;
+	unsigned short Columns() const noexcept;
 	double ColumnSpacing() const noexcept;
 	CString Name() const;
 	OdGeVector3d Normal() const noexcept;
 	OdGePoint3d Position() const noexcept;
 	double Rotation() const noexcept;
-	OdUInt16 Rows() const noexcept;
+	unsigned short Rows() const noexcept;
 	double RowSpacing() const noexcept;
 	OdGeScale3d ScaleFactors() const noexcept;
 
@@ -87,9 +87,9 @@ public: // Methods
 	void SetPosition2(const OdGePoint3d& position);
 	void SetScaleFactors(const OdGeScale3d& scaleFactors) noexcept;
 	void SetRotation(double rotation) noexcept;
-	void SetRows(OdUInt16 rows) noexcept;
+	void SetRows(unsigned short rows) noexcept;
 	void SetRowSpacing(double rowSpacing) noexcept;
-	void SetColumns(OdUInt16 columns) noexcept;
+	void SetColumns(unsigned short columns) noexcept;
 	void SetColumnSpacing(double columnSpacing) noexcept;
 
 public: // Methods - static

@@ -70,7 +70,7 @@ void OdBaseSnapManager::Reset() {
 	m_Centers.clear();
 }
 
-OdInt32 OdBaseSnapManager::GetAperture(OdDbDatabase* database) const {
+long OdBaseSnapManager::GetAperture(OdDbDatabase* database) const {
 	return database->appServices()->getAPERTURE();
 }
 
@@ -85,7 +85,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 
 	OdGiSubEntityTraits& SubEntityTraits = viewportDraw->subEntityTraits();
 	OdGiDrawFlagsHelper DrawFlagsHelper(SubEntityTraits, OdGiSubEntityTraits::kDrawNoPlotstyle);
-	if ((m_SnapMode > 0) && ((OdUInt32)m_SnapMode < 100)) {
+	if ((m_SnapMode > 0) && ((unsigned long)m_SnapMode < 100)) {
 		SubEntityTraits.setTrueColor(SnapTrueColor());
 
 		SubEntityTraits.setFillType(kOdGiFillNever);
@@ -360,7 +360,7 @@ void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 	}
 }
 
-OdUInt32 OdBaseSnapManager::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
+unsigned long OdBaseSnapManager::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
 	return kDrawableNone;
 }
 
@@ -414,10 +414,10 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 
 	if (pViewImpl) { pViewImpl->setSnapping(false); }
 
-	if (m_SnapMode > 0 && (OdUInt32)m_SnapMode < 100) {
+	if (m_SnapMode > 0 && (unsigned long)m_SnapMode < 100) {
 		point = m_SnapPoint;
 	} else {
-		if (PreviousMode > 0 && (OdUInt32)PreviousMode < 100) { InvalidateViewport(PreviousPoint); }
+		if (PreviousMode > 0 && (unsigned long)PreviousMode < 100) { InvalidateViewport(PreviousPoint); }
 
 		m_SnapMode = OdDb::OsnapMode(0);
 	}
@@ -551,7 +551,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	}
 }
 
-OdUInt32 OdBaseSnapManager::selected(const OdGiPathNode & pathNode, const OdGiViewport & viewInfo) {
+unsigned long OdBaseSnapManager::selected(const OdGiPathNode & pathNode, const OdGiViewport & viewInfo) {
 	if (pathNode.transientDrawable() == this) {
 		const auto Marker {pathNode.selectionMarker()};
 
@@ -560,16 +560,16 @@ OdUInt32 OdBaseSnapManager::selected(const OdGiPathNode & pathNode, const OdGiVi
 				Checkpoint(OdDb::kOsModeCen, m_Centers[Marker].m_Point);
 			}
 		}
-		return OdUInt32(kContinue);
+		return unsigned long(kContinue);
 	}
 
 	auto Entity {OdDbEntity::cast(OdDbObjectId(pathNode.persistentDrawableId()).openObject())};
 
-	if (Entity.isNull()) { return OdUInt32(kSkipDrawable); }
+	if (Entity.isNull()) { return unsigned long(kSkipDrawable); }
 
 	m_SelectedEntityData.append()->set(pathNode);
 
-	return OdUInt32(kSkipDrawable);
+	return unsigned long(kSkipDrawable);
 }
 
 void OdBaseSnapManager::RecalculateEntityCenters() {
@@ -639,7 +639,7 @@ void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord,
 		OdGePoint3dArray snapPoints;
 		Entity->getOsnapPoints(OdDb::kOsModeCen, OdGsMarker(), OdGePoint3d::kOrigin, OdGePoint3d::kOrigin, OdGeMatrix3d(), snapPoints);
 
-		for (OdUInt32 i = 0; i < snapPoints.size() && m_Centers.size() < nMaxHist; i++) {
+		for (unsigned long i = 0; i < snapPoints.size() && m_Centers.size() < nMaxHist; i++) {
 			m_Centers.append(HistEntry(dd, snapPoints[i].transformBy(matrix)));
 		}
 	}

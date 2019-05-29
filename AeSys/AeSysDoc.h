@@ -34,7 +34,7 @@ public:
 	void execute(OdEdCommandContext* commandContext) final;
 	const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
-	OdInt32 commandFlags() const;
+	long commandFlags() const;
 };
 
 class Cmd_SELECT : public OdEdCommand {
@@ -45,7 +45,7 @@ public:
 	void execute(OdEdCommandContext* commandContext) final;
 	const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
-	OdInt32 commandFlags() const;
+	long commandFlags() const;
 };
 
 class OdDbDatabaseDoc : public OdDbDatabase {
@@ -207,7 +207,7 @@ protected:
 	OdString RecentCommand();
 	OdString AeSysDoc::RecentCommandName();
 
-	OdUInt32 getKeyState() noexcept override;
+	unsigned long getKeyState() noexcept override;
 	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
@@ -298,7 +298,7 @@ public:
 	// Block Table interface
 	EoDbBlockTable* BlockTable() noexcept;
 	bool BlockTableIsEmpty();
-	OdUInt16 BlockTableSize();
+	unsigned short BlockTableSize();
 	int GetBlockReferenceCount(const CString& name);
 	POSITION GetFirstBlockPosition();
 	void GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block);
@@ -309,7 +309,7 @@ public:
 	void InsertBlock(const OdString& name, EoDbBlock* block);
 	/// <summary>A layer is converted to a tracing or a job file</summary>
 	bool LayerMelt(OdString& name);
-	int LinetypeIndexReferenceCount(OdInt16 linetypeIndex);
+	int LinetypeIndexReferenceCount(short linetypeIndex);
 	void GetExtents___(AeSysView* view, OdGeExtents3d& extents);
 	int NumberOfGroupsInWorkLayer();
 	int NumberOfGroupsInActiveLayers();
@@ -332,7 +332,7 @@ public:
 	void RemoveLayerAt(int layerIndex);
 	void RemoveEmptyLayers();
 	EoDbLayer* SelectLayerBy(const OdGePoint3d& point);
-	void PenTranslation(OdUInt16, OdInt16*, OdInt16*);
+	void PenTranslation(unsigned short, short*, short*);
 	void PurgeDuplicateObjects();
 	int RemoveEmptyNotesAndDelete();
 	int RemoveEmptyGroups();
@@ -384,8 +384,8 @@ public: // trap interface
 	EoDbGroup* GetNextTrappedGroup(POSITION& position);
 	EoDbGroupList* GroupsInTrap() noexcept;
 	bool IsTrapEmpty() const;
-	void ModifyTrappedGroupsColorIndex(OdInt16 colorIndex);
-	void ModifyTrappedGroupsLinetypeIndex(OdInt16 linetypeIndex);
+	void ModifyTrappedGroupsColorIndex(short colorIndex);
+	void ModifyTrappedGroupsLinetypeIndex(short linetypeIndex);
 	void ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, EoDbCharacterCellDefinition& cellDef, int attributes);
 	void RemoveAllTrappedGroups();
 	EoDbGroup* RemoveLastTrappedGroup();

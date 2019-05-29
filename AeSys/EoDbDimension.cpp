@@ -15,7 +15,7 @@
 #include "EoDbDimension.h"
 #include "EoDbText.h"
 
-OdUInt16 EoDbDimension::sm_wFlags = 0;
+unsigned short EoDbDimension::sm_wFlags = 0;
 
 EoDbDimension::EoDbDimension()
 	: m_TextColorIndex(1) {
@@ -137,7 +137,7 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 }
 
 void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
-	OdInt16 ColorIndex = LogicalColorIndex();
+	short ColorIndex = LogicalColorIndex();
 	pstate.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
 	m_Line.Display(view, deviceContext);
 
@@ -149,7 +149,7 @@ void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
 	}
 	pstate.SetColorIndex(deviceContext, ColorIndex);
 
-	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const short LinetypeIndex = pstate.LinetypeIndex();
 	pstate.SetLinetypeIndexPs(deviceContext, 1);
 
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
@@ -381,7 +381,7 @@ void EoDbDimension::SetText(const CString & str) {
 	m_strText = str;
 }
 
-void EoDbDimension::SetTextColorIndex(OdInt16 colorIndex) noexcept {
+void EoDbDimension::SetTextColorIndex(short colorIndex) noexcept {
 	m_TextColorIndex = colorIndex;
 }
 
@@ -393,7 +393,7 @@ const CString& EoDbDimension::Text() noexcept {
 	return m_strText;
 }
 
-const OdInt16& EoDbDimension::TextColorIndex() noexcept {
+const short& EoDbDimension::TextColorIndex() noexcept {
 	return m_TextColorIndex;
 }
 
@@ -490,25 +490,25 @@ bool EoDbDimension::Write(EoDbFile & file) const {
 	return true;
 }
 
-void EoDbDimension::Write(CFile& file, OdUInt8* buffer) const {
-	OdUInt16 NumberOfCharacters {static_cast<OdUInt16>(m_strText.GetLength())};
+void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
+	unsigned short NumberOfCharacters {static_cast<unsigned short>(m_strText.GetLength())};
 
-	buffer[3] = static_cast<OdUInt8>((118 + NumberOfCharacters) / 32);
-	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kDimensionPrimitive);
-	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<OdInt8>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[3] = static_cast<unsigned char>((118 + NumberOfCharacters) / 32);
+	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kDimensionPrimitive);
+	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_Line.startPoint());
 	((EoVaxPoint3d*) & buffer[20])->Convert(m_Line.endPoint());
 
-	buffer[32] = static_cast<OdInt8>(m_ColorIndex);
-	buffer[33] = static_cast<OdInt8>(EoDb::kStrokeType);
-	*((OdInt16*) & buffer[34]) = 0;
+	buffer[32] = static_cast<signed char>(m_ColorIndex);
+	buffer[33] = static_cast<signed char>(EoDb::kStrokeType);
+	*((short*) & buffer[34]) = 0;
 	((EoVaxFloat*) & buffer[36])->Convert(m_FontDefinition.CharacterSpacing());
-	buffer[40] = static_cast<OdInt8>(m_FontDefinition.Path());
-	buffer[41] = static_cast<OdInt8>(m_FontDefinition.HorizontalAlignment());
-	buffer[42] = static_cast<OdInt8>(m_FontDefinition.VerticalAlignment());
+	buffer[40] = static_cast<signed char>(m_FontDefinition.Path());
+	buffer[41] = static_cast<signed char>(m_FontDefinition.HorizontalAlignment());
+	buffer[42] = static_cast<signed char>(m_FontDefinition.VerticalAlignment());
 
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
 
@@ -516,10 +516,10 @@ void EoDbDimension::Write(CFile& file, OdUInt8* buffer) const {
 	((EoVaxVector3d*) & buffer[55])->Convert(ReferenceSystem.XDirection());
 	((EoVaxVector3d*) & buffer[67])->Convert(ReferenceSystem.YDirection());
 
-	*((OdInt16*) & buffer[79]) = NumberOfCharacters;
+	*((short*) & buffer[79]) = NumberOfCharacters;
 	unsigned BufferOffset = 81;
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
-		buffer[BufferOffset++] = static_cast<OdUInt8>(m_strText[CharacterIndex]);
+		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[CharacterIndex]);
 	}
 	file.Write(buffer, buffer[3] * 32);
 }
@@ -644,13 +644,13 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	return (AlignedDimension);
 }
 
-OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
-	const auto ColorIndex {static_cast<OdInt16>(primitiveBuffer[6])};
-	const auto LinetypeIndex {static_cast<OdInt16>(primitiveBuffer[7])};
+OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+	const auto ColorIndex {static_cast<short>(primitiveBuffer[6])};
+	const auto LinetypeIndex {static_cast<short>(primitiveBuffer[7])};
 	EoGeLineSeg3d Line;
 	Line.set(((EoVaxPoint3d*) & primitiveBuffer[8])->Convert(), ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert());
 
-	const auto TextColorIndex {static_cast<OdInt16>(primitiveBuffer[32])};
+	const auto TextColorIndex {static_cast<short>(primitiveBuffer[32])};
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetFontName(L"Simplex.psf");
 	FontDefinition.SetPrecision(EoDb::kStrokeType);
@@ -694,7 +694,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	ReferenceSystem.SetXDirection(((EoVaxVector3d*) & primitiveBuffer[55])->Convert());
 	ReferenceSystem.SetYDirection(((EoVaxVector3d*) & primitiveBuffer[67])->Convert());
 
-	OdInt16 TextLength = *((OdInt16*) & primitiveBuffer[79]);
+	short TextLength = *((short*) & primitiveBuffer[79]);
 
 	primitiveBuffer[81 + TextLength] = '\0';
 	CString Text = CString((LPCSTR) & primitiveBuffer[81]);

@@ -79,7 +79,7 @@ class OdExEditorObject {
 		kDragging = 16,
 		kTrackerHasDrawables = 32,
 	};
-	OdUInt32 m_flags;
+	unsigned long m_flags;
 public:
 	const OdGsView* ActiveView() const;
 	OdGsView* ActiveView();

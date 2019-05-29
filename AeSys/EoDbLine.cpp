@@ -142,8 +142,8 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 }
 
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
-	const OdInt16 ColorIndex = LogicalColorIndex();
-	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const short ColorIndex = LogicalColorIndex();
+	const short LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -373,11 +373,11 @@ bool EoDbLine::Write(EoDbFile& file) const {
 	return true;
 }
 
-void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbLine::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kLinePrimitive);
-	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<OdInt8>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kLinePrimitive);
+	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_LineSeg.startPoint());
@@ -435,20 +435,20 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
 	return (Line);
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
-	OdInt16 ColorIndex {0};
-	OdInt16 LinetypeIndex {0};
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+	short ColorIndex {0};
+	short LinetypeIndex {0};
 	OdGePoint3d StartPoint;
 	OdGePoint3d EndPoint;
 
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<OdInt16>(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = static_cast<OdInt16>((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
 		StartPoint = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3;
 		EndPoint = ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert() * 1.e-3;
 	} else {
-		ColorIndex = static_cast<OdInt16>(primitiveBuffer[6]);
-		LinetypeIndex = static_cast<OdInt16>(primitiveBuffer[7]);
+		ColorIndex = static_cast<short>(primitiveBuffer[6]);
+		LinetypeIndex = static_cast<short>(primitiveBuffer[7]);
 		StartPoint = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
 		EndPoint = ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert();
 	}

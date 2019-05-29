@@ -6,8 +6,8 @@ class EoCtrlColorsButton : public CMFCButton {
 	DECLARE_DYNAMIC(EoCtrlColorsButton)
 
 	static COLORREF* m_Palette;
-	static OdUInt16 m_CurrentIndex;
-	static OdUInt16 m_SelectedIndex;
+	static unsigned short m_CurrentIndex;
+	static unsigned short m_SelectedIndex;
 
 	enum Layouts { SimpleSingleRow, GridDown5RowsOddOnly, GridUp5RowsEvenOnly };
 
@@ -15,13 +15,13 @@ class EoCtrlColorsButton : public CMFCButton {
 	CSize m_CellSize;
 	CSize m_CellSpacing;
 	CSize m_Margins;
-	OdUInt16 m_BeginIndex;
-	OdUInt16 m_EndIndex;
-	OdUInt16 m_SubItem;
+	unsigned short m_BeginIndex;
+	unsigned short m_EndIndex;
+	unsigned short m_SubItem;
 
-	void DrawCell(CDC* deviceContext, OdUInt16 index, COLORREF color);
-	OdUInt16 SubItemByPoint(const CPoint& point) noexcept;
-	void SubItemRectangleByIndex(OdUInt16 index, CRect& rectangle) noexcept;
+	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
+	unsigned short SubItemByPoint(const CPoint& point) noexcept;
+	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept;
 
 public:
 
@@ -29,7 +29,7 @@ public:
 
 	virtual ~EoCtrlColorsButton();
 
-	static void SetCurrentIndex(const OdUInt16 index) noexcept {
+	static void SetCurrentIndex(const unsigned short index) noexcept {
 		m_CurrentIndex = index;
 	}
 	static void SetPalette(COLORREF* palette) noexcept {
@@ -39,7 +39,7 @@ public:
 		m_Layout = layout;
 		m_CellSize = cellSize;
 	}
-	void SetSequenceRange(const OdUInt16 beginIndex, const OdUInt16 endIndex) noexcept {
+	void SetSequenceRange(const unsigned short beginIndex, const unsigned short endIndex) noexcept {
 		m_BeginIndex = beginIndex;
 		m_EndIndex = endIndex;
 	}

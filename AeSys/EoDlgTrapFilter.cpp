@@ -56,7 +56,7 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 }
 void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN)) {
-		const OdInt16 ColorIndex = OdInt16(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 0, FALSE));
+		const short ColorIndex = short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 0, FALSE));
 		FilterByColor(ColorIndex);
 	}
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE)) {
@@ -65,7 +65,7 @@ void EoDlgTrapFilter::OnOK() {
 		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, (LPWSTR) Name, sizeof(Name) / sizeof(wchar_t))) {
 			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 			if (!Linetypes->getAt(Name).isNull()) {
-				OdInt16 LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
+				short LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
 				FilterByLinetype(LinetypeIndex);
 			}
 		}
@@ -96,7 +96,7 @@ void EoDlgTrapFilter::OnOK() {
 	}
 	CDialog::OnOK();
 }
-void EoDlgTrapFilter::FilterByColor(OdInt16 colorIndex) {
+void EoDlgTrapFilter::FilterByColor(short colorIndex) {
 	POSITION GroupPosition = m_Document->GetFirstTrappedGroupPosition();
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = m_Document->GetNextTrappedGroup(GroupPosition);
@@ -113,7 +113,7 @@ void EoDlgTrapFilter::FilterByColor(OdInt16 colorIndex) {
 	}
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
-void EoDlgTrapFilter::FilterByLinetype(OdInt16 linetypeIndex) {
+void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
 	POSITION GroupPosition = m_Document->GetFirstTrappedGroupPosition();
 	while (GroupPosition != 0) {
 		EoDbGroup* Group = m_Document->GetNextTrappedGroup(GroupPosition);

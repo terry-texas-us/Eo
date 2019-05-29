@@ -5,15 +5,15 @@
 
 /* <remarks>
 Polyline primitive(never made it release : if already written flags not streamed)
-  Type code <0x2002>                OdUInt16[0-1]
-  Pen color                         OdUInt16[2-3]
-  Line type                         OdUInt16[4-5]
-  Flags                             OdUInt16[6-7]
+  Type code <0x2002>                unsigned short[0-1]
+  Pen color                         unsigned short[2-3]
+  Line type                         unsigned short[4-5]
+  Flags                             unsigned short[6-7]
   Constant width                    double[8-11]
   Elevation                         double[12-15]
   Thickness                         double[16-19]
   Normal                            OdGeVector3d[20-31]
-  Number of points                  OdUInt16[32-33]
+  Number of points                  unsigned short[32-33]
   {0 or more Vertices} {Vertex, StartWidth, EndWidth, Bulge}
 									{OdGePoint2d, double, double, double} [34- ]
 </remarks> */
@@ -24,10 +24,10 @@ class EoDbPolyline : public EoDbPrimitive {
 	static unsigned sm_PivotVertex;
 
 public:
-	static const OdUInt16 sm_Closed = 0x0001;
+	static const unsigned short sm_Closed = 0x0001;
 
 private:
-	OdUInt16 m_Flags;
+	unsigned short m_Flags;
 	double m_ConstantWidth;
 	double m_Elevation;
 	double m_Thickness;
@@ -57,7 +57,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kPolylinePrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kPolylinePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
@@ -67,7 +67,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const noexcept override;
+	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
 public: // Methods
 

@@ -857,7 +857,7 @@ static bool GetAcadProfileRegistryDWORD(LPCWSTR pSubkey, LPCWSTR pName, DWORD & 
 	return false;
 }
 
-OdUInt32 AeSysView::glyphSize(GlyphType glyphType) const {
+unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
 	bool Processed {false};
 	DWORD val {0};
 
@@ -869,7 +869,7 @@ OdUInt32 AeSysView::glyphSize(GlyphType glyphType) const {
 			Processed = GetAcadProfileRegistryDWORD(L"Dialogs\\AcCamera", L"GlyphSize", val);
 			break;
 	}
-	if (Processed) { return narrow_cast<OdUInt32>(val); }
+	if (Processed) { return narrow_cast<unsigned long>(val); }
 
 	return OdGiContextForDbDatabase::glyphSize(glyphType);
 }
@@ -1035,7 +1035,7 @@ void AeSysView::createDevice(bool recreate) {
 					DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled()));
 				}
 				if (DeviceProperties->has(L"MaxRegenThreads")) {
-					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((OdUInt16)theApp.mtRegenThreadsCount()));
+					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((unsigned short)theApp.mtRegenThreadsCount()));
 				}
 				if (DeviceProperties->has(L"UseTextOut")) {
 					DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
@@ -1069,7 +1069,7 @@ void AeSysView::createDevice(bool recreate) {
 					DeviceProperties->putAt(L"UseExtendedMaterials", OdRxVariantValue(odExGLES2ExtendedMaterialsSetting()));
 				}
 				if (!odExGLES2OITSetting() && DeviceProperties->has(L"BlendingMode")) { // Disable Order Independent Transparency if this is required
-					DeviceProperties->putAt(L"BlendingMode", OdRxVariantValue(OdUInt32(0)));
+					DeviceProperties->putAt(L"BlendingMode", OdRxVariantValue(unsigned long(0)));
 				}
 				if (DeviceProperties->has(L"GradientsAsBitmap")) {
 					DeviceProperties->putAt(L"GradientsAsBitmap", OdRxVariantValue(theApp.enableGDIGradientsAsBitmap()));
@@ -1195,12 +1195,12 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 
 #include "BmpTilesGen.h"
 
-void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, OdUInt32 nTileWidth, OdUInt32 nTileHeight) {
+void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, unsigned long nTileWidth, unsigned long nTileHeight) {
 	CRect destRectangle {drawRectangle};
 	destRectangle.NormalizeRect();
 	OdGsDCRect step(0, 0, 0, 0);
 	OdGsDCRect rc(drawRectangle.left, drawRectangle.right, drawRectangle.bottom, drawRectangle.top);
-	const OdUInt32 nWidth = abs(rc.m_max.x - rc.m_min.x);
+	const unsigned long nWidth = abs(rc.m_max.x - rc.m_min.x);
 	rc.m_max.x -= rc.m_min.x;
 
 	if (rc.m_max.x < 0) {
@@ -1211,7 +1211,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, O
 		rc.m_min.x = 0;
 		step.m_max.x = nTileWidth;
 	}
-	const OdUInt32 nHeight = abs(rc.m_max.y - rc.m_min.y);
+	const unsigned long nHeight = abs(rc.m_max.y - rc.m_min.y);
 	rc.m_max.y -= rc.m_min.y;
 
 	if (rc.m_max.y < 0) {
@@ -1222,8 +1222,8 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, O
 		rc.m_min.y = 0;
 		step.m_max.y = nTileHeight;
 	}
-	const OdInt32 m = nWidth / nTileWidth + (nWidth % nTileWidth ? 1 : 0);
-	const OdInt32 n = nHeight / nTileHeight + (nHeight % nTileHeight ? 1 : 0);
+	const long m = nWidth / nTileWidth + (nWidth % nTileWidth ? 1 : 0);
+	const long n = nHeight / nTileHeight + (nHeight % nTileHeight ? 1 : 0);
 
 	BmpTilesGen tilesGen(pBmpDevice, rc);
 	pBmpDevice->onSize(rc);
@@ -1257,8 +1257,8 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, O
 
 		if (hBmp) {
 			HBITMAP hOld = (HBITMAP) SelectObject(bmpDC, hBmp);
-			for (OdInt32 i = 0; i < m; ++i) {
-				for (OdInt32 j = 0; j < n; ++j) {
+			for (long i = 0; i < m; ++i) {
+				for (long j = 0; j < n; ++j) {
 					const int minx = rc.m_min.x + i * dx;
 					const int maxx = minx + dx;
 					const int miny = rc.m_min.y + j * dy;
@@ -1267,7 +1267,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, O
 					// render wider then a tile area to reduce gaps in lines.
 					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
 
-					pImg->scanLines((OdUInt8*) pBuf, 0, nTileHeight);
+					pImg->scanLines((unsigned char*) pBuf, 0, nTileHeight);
 					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), nTileWidth, nTileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
 				}
 			}
@@ -1334,7 +1334,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			}
 			if (/*IsPlotViaBitmap &&*/ GsPrinterDevice->properties()->has(L"DPI")) { // #9633 (1)
 				const int MinimumLogicalPixels = odmin(deviceContext->GetDeviceCaps(LOGPIXELSX), deviceContext->GetDeviceCaps(LOGPIXELSY));
-				GsPrinterDevice->properties()->putAt(L"DPI", OdRxVariantValue((OdUInt32) MinimumLogicalPixels));
+				GsPrinterDevice->properties()->putAt(L"DPI", OdRxVariantValue((unsigned long) MinimumLogicalPixels));
 			}
 			m_pPrinterDevice = OdDbGsManager::setupActiveLayoutViews(GsPrinterDevice, this);
 			preparePlotstyles();
@@ -1842,8 +1842,8 @@ void CALLBACK StringTrackerTimer(HWND hWnd, UINT nMsg, UINT nIDTimer, DWORD dwTi
 
 // </command_view>
 
-OdUInt32 AeSysView::getKeyState() noexcept {
-	OdUInt32 KeyState(0);
+unsigned long AeSysView::getKeyState() noexcept {
+	unsigned long KeyState(0);
 	if (::GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
 
 	if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
@@ -2029,6 +2029,9 @@ BOOL AeSysView::PreCreateWindow(CREATESTRUCT& createStructure) {
 
 void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 	auto DeviceContext {GetDC()};
+
+	if (DeviceContext == nullptr) { return; }
+
 	const auto BackgroundColor {DeviceContext->GetBkColor()};
 	DeviceContext->SetBkColor(ViewBackgroundColor);
 
@@ -2037,7 +2040,7 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 
 	if ((hint & EoDb::kSafe) == EoDb::kSafe) { PrimitiveState = pstate.Save(); }
 
-	if ((hint & EoDb::kErase) == EoDb::kErase) { DrawMode = pstate.SetROP2(DeviceContext, R2_XORPEN); }
+	if ((hint & EoDb::kErase) == EoDb::kErase) { DrawMode = pstate.SetROP2(*DeviceContext, R2_XORPEN); }
 
 	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor()); }
 
@@ -2073,9 +2076,9 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 	}
 	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(0); }
 
-	if ((hint & EoDb::kErase) == EoDb::kErase) { pstate.SetROP2(DeviceContext, DrawMode); }
+	if ((hint & EoDb::kErase) == EoDb::kErase) { pstate.SetROP2(*DeviceContext, DrawMode); }
 
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) { pstate.Restore(DeviceContext, PrimitiveState); }
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) { pstate.Restore(*DeviceContext, PrimitiveState); }
 
 	DeviceContext->SetBkColor(BackgroundColor);
 	ReleaseDC(DeviceContext);
@@ -2402,7 +2405,7 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 	}
 }
 
-BOOL AeSysView::OnMouseWheel(UINT nFlags, OdInt16 zDelta, CPoint point) {
+BOOL AeSysView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point) {
 	//ScreenToClient(&point);
 
 	//if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
@@ -2443,7 +2446,7 @@ struct OdExRegenCmd : OdEdCommand {
 	const OdString groupName() const override { return L"REGEN"; }
 	const OdString globalName() const override { return L"REGEN"; }
 
-	OdInt32 flags() const override {
+	long flags() const override {
 		return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
 	}
 
@@ -2484,7 +2487,7 @@ OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
 	return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId);
 }
 
-OdUInt32 AeSysView::drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, OdUInt32 flags) {
+unsigned long AeSysView::drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) {
 	
 	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
 		getDatabase()->pageObjects();
@@ -3754,9 +3757,12 @@ void AeSysView::OnEditFind() noexcept {
 void AeSysView::RubberBandingDisable() {
 	if (m_RubberbandType != None) {
 		auto DeviceContext {GetDC()};
-		const int DrawMode = DeviceContext->SetROP2(R2_XORPEN);
+
+		if (DeviceContext == nullptr) { return; }
+
+		const int DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen GreyPen(PS_SOLID, 0, RubberbandColor);
-		CPen* Pen = DeviceContext->SelectObject(&GreyPen);
+		CPen* Pen {DeviceContext->SelectObject(&GreyPen)};
 
 		if (m_RubberbandType == Lines) {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
@@ -3838,7 +3844,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 	::SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
 void AeSysView::SetModeCursor(int mode) {
-	OdUInt16 ResourceIdentifier {0};
+	unsigned short ResourceIdentifier {0};
 
 	switch (mode) {
 		case ID_MODE_ANNOTATE:

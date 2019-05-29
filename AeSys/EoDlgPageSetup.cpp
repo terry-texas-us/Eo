@@ -561,7 +561,7 @@ bool EoDlgPageSetup::FillPaperSizes() {
 
 	m_PaperSize.ResetContent();
 
-	for (OdUInt32 MediaIndex = 0; MediaIndex < CanonicalMediaNames.size(); ++MediaIndex) {
+	for (unsigned long MediaIndex = 0; MediaIndex < CanonicalMediaNames.size(); ++MediaIndex) {
 		m_PaperSize.AddString(m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, MediaIndex));
 	}
 	UpdateData(FALSE);

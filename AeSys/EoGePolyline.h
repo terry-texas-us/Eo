@@ -10,7 +10,7 @@ namespace polyline {
 	void BeginLineStrip();
 	void BeginLineLoop();
 	void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArray, OdDbLinetypeTableRecordPtr linetype);
-	void __End(AeSysView* view, CDC* deviceContext, OdInt16 linetypeIndex);
+	void __End(AeSysView* view, CDC* deviceContext, short linetypeIndex);
 	/// <summary>Determines points necessary to represent an N-Polygon with line segments.</summary>
 	void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, unsigned numberOfPoints, OdGePoint3dArray& points);
 	/// <summary>Determines how many times (if any), a line segment intersects with polyline.</summary>

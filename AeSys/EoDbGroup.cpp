@@ -213,7 +213,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint * pointPrimitive) {
 	return 0;
 }
 
-int EoDbGroup::GetLinetypeIndexRefCount(OdInt16 linetypeIndex) {
+int EoDbGroup::GetLinetypeIndexRefCount(short linetypeIndex) {
 	int Count = 0;
 
 	auto PrimitivePosition {GetHeadPosition()};
@@ -262,7 +262,7 @@ bool EoDbGroup::IsOn(const EoGePoint4d & point, AeSysView * view) const {
 	return false;
 }
 
-void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
+void EoDbGroup::ModifyColorIndex(short colorIndex) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
@@ -270,7 +270,7 @@ void EoDbGroup::ModifyColorIndex(OdInt16 colorIndex) {
 	}
 }
 
-void EoDbGroup::ModifyLinetypeIndex(OdInt16 linetypeIndex) {
+void EoDbGroup::ModifyLinetypeIndex(short linetypeIndex) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
@@ -288,7 +288,7 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition & fontDefinition, EoDbCharacterCe
 	}
 }
 
-void EoDbGroup::PenTranslation(OdUInt16 numberOfColors, OdInt16 * pColNew, OdInt16 * pCol) {
+void EoDbGroup::PenTranslation(unsigned short numberOfColors, short * pColNew, short * pCol) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
@@ -463,7 +463,7 @@ void EoDbGroup::TransformBy(const EoGeMatrix3d & transformMatrix) {
 }
 
 void EoDbGroup::Write(EoDbFile & file) {
-	file.WriteUInt16(OdUInt16(GetCount()));
+	file.WriteUInt16(unsigned short(GetCount()));
 
 	for (auto PrimitivePosition = GetHeadPosition(); PrimitivePosition != nullptr;) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -471,11 +471,11 @@ void EoDbGroup::Write(EoDbFile & file) {
 	}
 }
 
-void EoDbGroup::Write(CFile & file, OdUInt8 * buffer) {
+void EoDbGroup::Write(CFile& file, unsigned char* buffer) {
 	// group flags
 	buffer[0] = 0;
 	// number of primitives in group
-	*((OdInt16*) & buffer[1]) = OdInt16(GetCount());
+	*((short*) & buffer[1]) = short(GetCount());
 
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {

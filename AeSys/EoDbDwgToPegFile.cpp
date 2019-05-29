@@ -43,7 +43,7 @@ void EoDbDwgToPegFile::ConvertBlockTable(not_null<AeSysDoc*> document) {
 		if (document->LookupBlock((LPCWSTR) Block->getName(), pBlock)) {
 			// <tas="Block already defined? Should not occur. This is always an empty peg container?"</tas>
 		}
-		const OdUInt16 BlockFlags {Block->isAnonymous() ? 1U : 0U};
+		const unsigned short BlockFlags {Block->isAnonymous() ? 1U : 0U};
 
 		pBlock = new EoDbBlock(BlockFlags, Block->origin(), Block->pathName());
 		document->InsertBlock(Block->getName(), pBlock);

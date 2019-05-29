@@ -28,21 +28,21 @@ public:
 	void ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive);
 
 	double ReadDouble();
-	OdInt16 ReadInt16();
+	short ReadInt16();
 	OdGePoint2d ReadPoint2d();
 	OdGePoint3d ReadPoint3d();
 	EoDbPrimitive* ReadPrimitive(OdDbBlockTableRecordPtr blockTableRecord);
 	void ReadString(CString& string);
 	void ReadString(OdString& string);
-	OdUInt16 ReadUInt16();
+	unsigned short ReadUInt16();
 	OdGeVector3d ReadVector3d();
 
 	void WriteDouble(double number);
-	void WriteInt16(OdInt16 number);
+	void WriteInt16(short number);
 	void WritePoint2d(const OdGePoint2d& point);
 	void WritePoint3d(const OdGePoint3d& point);
 	void WriteString(const CString& string);
 	void WriteString(const OdString& string);
-	void WriteUInt16(OdUInt16 number);
+	void WriteUInt16(unsigned short number);
 	void WriteVector3d(const OdGeVector3d& vector);
 };

@@ -110,8 +110,8 @@ EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) con
 }
 
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
-	const OdInt16 ColorIndex = LogicalColorIndex();
-	const OdInt16 LinetypeIndex = LogicalLinetypeIndex();
+	const short ColorIndex = LogicalColorIndex();
+	const short LinetypeIndex = LogicalLinetypeIndex();
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -418,7 +418,7 @@ bool EoDbPolyline::Write(EoDbFile & file) const {
 	file.WriteDouble(m_Thickness);
 	file.WriteVector3d(m_Normal);
 
-	file.WriteUInt16(static_cast<OdUInt16>(m_Vertices.size()));
+	file.WriteUInt16(static_cast<unsigned short>(m_Vertices.size()));
 
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		file.WritePoint2d(m_Vertices[VertexIndex]);
@@ -430,7 +430,7 @@ bool EoDbPolyline::Write(EoDbFile & file) const {
 }
 
 /// <remarks> Job (.jb1) files did not have a polyline primitive</remarks>
-void EoDbPolyline::Write(CFile& file, OdUInt8* buffer) const noexcept {
+void EoDbPolyline::Write(CFile& file, unsigned char* buffer) const noexcept {
 };
 
 unsigned EoDbPolyline::SwingVertex() const {
@@ -481,7 +481,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 
 	Polyline->setLinetype(Linetype);
 
-	OdUInt16 Flags = file.ReadUInt16();
+	unsigned short Flags = file.ReadUInt16();
 	auto Closed {(Flags && sm_Closed) == sm_Closed};
 	Polyline->setClosed(Closed);
 
@@ -513,7 +513,7 @@ EoDbPolyline* EoDbPolyline::Create(OdDbPolylinePtr polyline) {
 	auto StartWidth {0.};
 	auto EndWidth {0.};
 
-	for (auto VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 		polyline->getPointAt(VertexIndex, Vertex);
 		polyline->getWidthsAt(VertexIndex, StartWidth, EndWidth);
 

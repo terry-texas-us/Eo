@@ -86,7 +86,7 @@ EoDbPrimitive* EoDbPoint::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 }
 
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
-	const OdInt16 ColorIndex = LogicalColorIndex();
+	const short ColorIndex = LogicalColorIndex();
 
 	const COLORREF HotColor = theApp.GetHotColor(ColorIndex);
 
@@ -214,7 +214,7 @@ bool EoDbPoint::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& 
 	return ((pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y) ? true : false);
 }
 
-double EoDbPoint::DataAt(OdUInt16 dataIndex) const noexcept {
+double EoDbPoint::DataAt(unsigned short dataIndex) const noexcept {
 	return (m_Data[dataIndex]);
 }
 
@@ -222,7 +222,7 @@ OdGePoint3d EoDbPoint::Position() const noexcept {
 	return (m_Position);
 }
 
-OdInt16 EoDbPoint::PointDisplayMode() const noexcept {
+short EoDbPoint::PointDisplayMode() const noexcept {
 	return (m_PointDisplayMode);
 }
 
@@ -231,7 +231,7 @@ void EoDbPoint::ModifyState() noexcept {
 	m_PointDisplayMode = pstate.PointDisplayMode();
 }
 
-void EoDbPoint::SetData(OdUInt16 numberOfDatums, double* data) {
+void EoDbPoint::SetData(unsigned short numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
 
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
@@ -244,7 +244,7 @@ void EoDbPoint::SetData(OdUInt16 numberOfDatums, double* data) {
 	}
 }
 
-void EoDbPoint::SetPointDisplayMode(OdInt16 displayMode) noexcept {
+void EoDbPoint::SetPointDisplayMode(short displayMode) noexcept {
 	m_PointDisplayMode = displayMode;
 }
 
@@ -271,11 +271,11 @@ bool EoDbPoint::Write(EoDbFile & file) const {
 	return true;
 }
 
-void EoDbPoint::Write(CFile& file, OdUInt8* buffer) const {
+void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kPointPrimitive);
-	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<OdInt8>(m_PointDisplayMode);
+	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kPointPrimitive);
+	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<signed char>(m_PointDisplayMode);
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_Position);
 
@@ -311,7 +311,7 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
 
 	Point->SetPointDisplayMode(pstate.PointDisplayMode());
 
-	OdUInt16 NumberOfDatums {0};
+	unsigned short NumberOfDatums {0};
 	double Data[] {0.0, 0.0, 0.};
 	auto ResourceBuffer = point->xData(L"AeSys");
 
@@ -336,7 +336,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 
 	Point->setColorIndex(file.ReadInt16());
 
-	const OdInt16 PointDisplayMode = file.ReadInt16();
+	const short PointDisplayMode = file.ReadInt16();
 
 	Point->setPosition(file.ReadPoint3d());
 
@@ -355,18 +355,18 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 	return Point;
 }
 
-OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
-	OdInt16 ColorIndex {0};
-	OdInt16 PointDisplayMode {0};
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+	short ColorIndex {0};
+	short PointDisplayMode {0};
 	OdGePoint3d Position;
 
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<OdInt16>(primitiveBuffer[4] & 0x000f);
-		PointDisplayMode = static_cast<OdInt16>((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
+		PointDisplayMode = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
 		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3;
 	} else {
-		ColorIndex = static_cast<OdInt16>(primitiveBuffer[6]);
-		PointDisplayMode = static_cast<OdInt16>(primitiveBuffer[7]);
+		ColorIndex = static_cast<short>(primitiveBuffer[6]);
+		PointDisplayMode = static_cast<short>(primitiveBuffer[7]);
 		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
 	}
 	double Data[3] {0.0, 0.0, 0.};

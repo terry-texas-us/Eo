@@ -3,9 +3,9 @@
 #include "EoDbPrimitive.h"
 
 class EoDbPoint : public EoDbPrimitive {
-	OdInt16	m_PointDisplayMode;
+	short	m_PointDisplayMode;
 	OdGePoint3d	m_Position;
-	OdUInt16 m_NumberOfDatums;
+	unsigned short m_NumberOfDatums;
 	double* m_Data;
 
 public: // Constructors and destructor
@@ -30,7 +30,7 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kPointPrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kPointPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -40,16 +40,16 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const override;
+	void Write(CFile& file, unsigned char* buffer) const override;
 
 public: // Methods
 
-	double DataAt(OdUInt16 dataIndex) const noexcept;
+	double DataAt(unsigned short dataIndex) const noexcept;
 	void ModifyState() noexcept override;
-	OdInt16 PointDisplayMode() const noexcept;
+	short PointDisplayMode() const noexcept;
 	OdGePoint3d Position() const noexcept;
-	void SetData(OdUInt16 numberOfDatums, double* data);
-	void SetPointDisplayMode(OdInt16 displayMode) noexcept;
+	void SetData(unsigned short numberOfDatums, double* data);
+	void SetPointDisplayMode(short displayMode) noexcept;
 
 public: // Methods - static
 
@@ -57,5 +57,5 @@ public: // Methods - static
 
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-	static OdDbPointPtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber);
+	static OdDbPointPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 };

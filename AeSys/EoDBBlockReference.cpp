@@ -297,10 +297,10 @@ bool EoDbBlockReference::Write(EoDbFile & file) const {
 	return true;
 }
 
-void EoDbBlockReference::Write(CFile & file, OdUInt8 * buffer) const noexcept {
+void EoDbBlockReference::Write(CFile& file, unsigned char* buffer) const noexcept {
 }
 
-OdUInt16 EoDbBlockReference::Columns() const noexcept {
+unsigned short EoDbBlockReference::Columns() const noexcept {
 	return m_Columns;
 }
 
@@ -328,7 +328,7 @@ OdGeVector3d EoDbBlockReference::Normal() const noexcept {
 	return m_Normal;
 }
 
-OdUInt16 EoDbBlockReference::Rows() const noexcept {
+unsigned short EoDbBlockReference::Rows() const noexcept {
 	return m_Rows;
 }
 
@@ -356,7 +356,7 @@ void EoDbBlockReference::SetRotation(double rotation) noexcept {
 	m_Rotation = rotation;
 }
 
-void EoDbBlockReference::SetRows(OdUInt16 rows) noexcept {
+void EoDbBlockReference::SetRows(unsigned short rows) noexcept {
 	m_Rows = rows;
 }
 
@@ -364,7 +364,7 @@ void EoDbBlockReference::SetRowSpacing(double rowSpacing) noexcept {
 	m_RowSpacing = rowSpacing;
 }
 
-void EoDbBlockReference::SetColumns(OdUInt16 columns) noexcept {
+void EoDbBlockReference::SetColumns(unsigned short columns) noexcept {
 	m_Columns = columns;
 }
 

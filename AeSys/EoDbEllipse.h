@@ -36,7 +36,7 @@ public: // Methods - absolute virtuals
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-	bool Is(OdUInt16 type) const noexcept override { return type == EoDb::kEllipsePrimitive; }
+	bool Is(unsigned short type) const noexcept override { return type == EoDb::kEllipsePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -49,7 +49,7 @@ public: // Methods - absolute virtuals
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
 	bool Write(EoDbFile& file) const override;
-	void Write(CFile& file, OdUInt8* buffer) const override;
+	void Write(CFile& file, unsigned char* buffer) const override;
 
 public: // Methods
 	OdGePoint3d Center() const noexcept;
@@ -83,7 +83,7 @@ public: // Methods - static
 
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBufer, int versionNumber);
+	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBufer, int versionNumber);
 
 	static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
 

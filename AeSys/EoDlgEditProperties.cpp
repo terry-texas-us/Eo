@@ -130,10 +130,10 @@ void EoDlgEditProperties::OnButton() {
 					rb->setBool(_wtoi(m_sValue) != 0);
 					break;
 				case OdDxfCode::Integer8:
-					rb->setInt8(OdInt8(_wtoi(m_sValue)));
+					rb->setInt8(signed char(_wtoi(m_sValue)));
 					break;
 				case OdDxfCode::Integer16:
-					rb->setInt16(OdInt16(_wtoi(m_sValue)));
+					rb->setInt16(short(_wtoi(m_sValue)));
 					break;
 				case OdDxfCode::Integer32:
 					rb->setInt32(_wtoi(m_sValue));

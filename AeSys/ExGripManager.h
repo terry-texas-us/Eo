@@ -24,7 +24,7 @@ public:
 	static OdExGripDataPtr createObject(OdDbStub* id, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* owner);
 	static OdExGripDataPtr createObject(OdDbBaseFullSubentPath entPath, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* owner);
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
+	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
@@ -68,7 +68,7 @@ public:
 	static OdExGripDragPtr createObject(OdDbStub* id, OdBaseGripManager* owner);
 	static OdExGripDragPtr createObject(OdDbBaseFullSubentPath entPath, OdBaseGripManager* owner);
 
-	OdUInt32 subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
+	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
@@ -112,10 +112,10 @@ public: // Construction. Initialization.
 	// alternative to OdDbGripPointsPE methods
 	// possible TODO instead next methods
 	// (redesign OdDbGripPointsPE to use OdGiDrawable & use some base class of it instead OdDgGripPointsPE) 
-	virtual OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const = 0;
+	virtual OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const unsigned long bitflags) const = 0;
 	virtual OdResult GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const = 0;
 	virtual OdResult GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const = 0;
-	virtual OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, OdUInt32 bitflags) = 0;
+	virtual OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) = 0;
 	virtual OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) = 0;
 	virtual OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) = 0;
 	virtual void SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) = 0;
@@ -224,10 +224,10 @@ public: // Construction. Initialization.
 	void OnModified(OdGiDrawable* pGrip) override;
 	OdGiDrawablePtr CloneEntity(OdDbStub* id) override;
 	OdGiDrawablePtr OpenObject(OdDbStub* id, bool isForWriteMode = false) override;
-	OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const OdUInt32 bitflags) const override;
+	OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const unsigned long bitflags) const override;
 	OdResult GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const override;
 	OdResult GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const override;
-	OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, OdUInt32 bitflags) override;
+	OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) override;
 	OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) override;
 	OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 	void SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) override;

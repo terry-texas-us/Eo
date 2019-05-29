@@ -16,30 +16,30 @@ class EoDbGroup;
 
 class EoDbPrimitive : public CObject {
 public:
-	static const OdUInt16 BUFFER_SIZE = 2048;
+	static const unsigned short BUFFER_SIZE = 2048;
 
-	static const OdInt16 COLORINDEX_BYBLOCK = 0x0000;
-	static const OdInt16 COLORINDEX_BYLAYER = 256;
-	static const OdInt16 LINETYPE_BYBLOCK = 32766;
-	static const OdInt16 LINETYPE_BYLAYER = 32767;
+	static const short COLORINDEX_BYBLOCK = 0x0000;
+	static const short COLORINDEX_BYLAYER = 256;
+	static const short LINETYPE_BYBLOCK = 32766;
+	static const short LINETYPE_BYLAYER = 32767;
 
 protected:
 	OdDbObjectId m_LayerId;
-	OdInt16	m_ColorIndex;
-	OdInt16	m_LinetypeIndex;
+	short	m_ColorIndex;
+	short	m_LinetypeIndex;
 	OdDbObjectId m_EntityObjectId;
 
-	static	OdInt16	sm_LayerColorIndex;
-	static	OdInt16	sm_LayerLinetypeIndex;
-	static	OdInt16	sm_HighlightColorIndex;
-	static	OdInt16	sm_HighlightLinetypeIndex;
+	static	short	sm_LayerColorIndex;
+	static	short	sm_LayerLinetypeIndex;
+	static	short	sm_HighlightColorIndex;
+	static	short	sm_HighlightLinetypeIndex;
 	static	unsigned sm_ControlPointIndex;
 	static	double 	sm_RelationshipOfPoint;
 	static	double sm_SelectApertureSize;
 
 public: // Constructors and destructor
 	EoDbPrimitive() noexcept;
-	EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex);
+	EoDbPrimitive(short colorIndex, short linetypeIndex);
 	virtual ~EoDbPrimitive();
 
 public: // Methods - absolute virtuals
@@ -53,7 +53,7 @@ public: // Methods - absolute virtuals
 	virtual OdGePoint3d GetCtrlPt() const = 0;
 	virtual void GetExtents(AeSysView* view, OdGeExtents3d& extents) const = 0;
 	virtual OdGePoint3d GoToNxtCtrlPt() const = 0;
-	virtual bool Is(OdUInt16 type) const = 0;
+	virtual bool Is(unsigned short type) const = 0;
 	virtual bool IsEqualTo(EoDbPrimitive* primitive) const = 0;
 	/// <summary>Tests whether a line is wholly or partially within the current view volume.</summary>
 	virtual bool IsInView(AeSysView* view) const = 0;
@@ -67,7 +67,7 @@ public: // Methods - absolute virtuals
 	virtual void TransformBy(const EoGeMatrix3d& transformMatrix) = 0;
 	virtual void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) = 0;
 	virtual bool Write(EoDbFile& file) const = 0;
-	virtual void Write(CFile& file, OdUInt8* buffer) const = 0;
+	virtual void Write(CFile& file, unsigned char* buffer) const = 0;
 
 public: // Methods - virtuals
 	virtual void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup);
@@ -83,31 +83,31 @@ public: // Methods - virtuals
 	virtual bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
-	OdInt16 ColorIndex() const noexcept { return m_ColorIndex; }
+	short ColorIndex() const noexcept { return m_ColorIndex; }
 	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
 	CString FormatColorIndex() const;
 	CString FormatLinetypeIndex() const;
-	OdInt16 LinetypeIndex() const noexcept { return m_LinetypeIndex; }
-	OdInt16 LogicalColorIndex() const noexcept;
-	OdInt16 LogicalLinetypeIndex() const noexcept;
+	short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
+	short LogicalColorIndex() const noexcept;
+	short LogicalLinetypeIndex() const noexcept;
 
-	void SetColorIndex(OdInt16 colorIndex) noexcept { m_ColorIndex = colorIndex; }
-	void SetColorIndex2(OdInt16 colorIndex);
+	void SetColorIndex(short colorIndex) noexcept { m_ColorIndex = colorIndex; }
+	void SetColorIndex2(short colorIndex);
 	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
-	void SetLinetypeIndex(OdInt16 linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
-	void SetLinetypeIndex2(OdInt16 linetypeIndex);
+	void SetLinetypeIndex(short linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
+	void SetLinetypeIndex2(short linetypeIndex);
 public: // Methods - static
 	static unsigned ControlPointIndex() noexcept;
-	static OdInt16 HighlightColorIndex() noexcept;
-	static OdInt16 HighlightLinetypeIndex() noexcept;
+	static short HighlightColorIndex() noexcept;
+	static short HighlightLinetypeIndex() noexcept;
 	static bool IsSupportedLinetype(int linetype) noexcept;
-	static OdInt16 LayerColorIndex() noexcept;
-	static OdInt16 LayerLinetypeIndex() noexcept;
+	static short LayerColorIndex() noexcept;
+	static short LayerLinetypeIndex() noexcept;
 	static double RelationshipOfPoint() noexcept;
-	static void SetHighlightColorIndex(OdInt16 colorIndex) noexcept;
-	static void SetHighlightLinetypeIndex(OdInt16 linetypeIndex) noexcept;
-	static void SetLayerColorIndex(OdInt16 colorIndex) noexcept;
-	static void SetLayerLinetypeIndex(OdInt16 linetypeIndex) noexcept;
-	static OdDbObjectId LinetypeObjectFromIndex(OdInt16 linetypeIndex);
-	static OdDbObjectId LinetypeObjectFromIndex0(OdDbDatabasePtr database, OdInt16 linetypeIndex);
+	static void SetHighlightColorIndex(short colorIndex) noexcept;
+	static void SetHighlightLinetypeIndex(short linetypeIndex) noexcept;
+	static void SetLayerColorIndex(short colorIndex) noexcept;
+	static void SetLayerLinetypeIndex(short linetypeIndex) noexcept;
+	static OdDbObjectId LinetypeObjectFromIndex(short linetypeIndex);
+	static OdDbObjectId LinetypeObjectFromIndex0(OdDbDatabasePtr database, short linetypeIndex);
 };

@@ -93,8 +93,8 @@ OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(double influenceAngle, double axisOff
 	return (pt);
 }
 // <tas="CutAt point does not do on the line checks"</tas>
-OdUInt16 EoGeLineSeg3d::CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line) {
-	OdUInt16 wRet = 0;
+unsigned short EoGeLineSeg3d::CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line) {
+	unsigned short wRet = 0;
 
 	line = *this;
 
@@ -117,7 +117,7 @@ int EoGeLineSeg3d::DirectedRelationshipOf(const OdGePoint3d& point) const {
 		return 0;
 }
 void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
-	const OdInt16 LinetypeIndex = pstate.LinetypeIndex();
+	const short LinetypeIndex = pstate.LinetypeIndex();
 
 	if (EoDbPrimitive::IsSupportedLinetype(LinetypeIndex)) {
 		EoGePoint4d pt[] = {EoGePoint4d(startPoint(), 1.0), EoGePoint4d(endPoint(), 1.0)};

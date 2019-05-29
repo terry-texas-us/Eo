@@ -8,7 +8,7 @@ SelectionPair ReferenceSelection {nullptr, nullptr};
 SelectionPair PreviousSelection {nullptr, nullptr};
 SelectionPair CurrentSelection {nullptr, nullptr};
 
-OdUInt16 PreviousFixupCommand = 0;
+unsigned short PreviousFixupCommand = 0;
 
 // <tas="FixupMode Axis Tolerance is not properly independent of the global Constraint influence angle"</tas>
 void AeSysView::OnFixupModeOptions() {
