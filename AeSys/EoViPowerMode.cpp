@@ -249,7 +249,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d & pointOnCircuit, const O
 	OdGeMatrix3d WorldToPlaneTransform;
 	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
-	for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
 		auto Vertex = Points[VertexIndex];
 		Vertex.transformBy(WorldToPlaneTransform);
 		Polyline->addVertexAt(VertexIndex, Vertex.convert2d());

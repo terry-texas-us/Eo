@@ -128,7 +128,7 @@ void EoDbGroup::DeletePrimitivesAndRemoveAll() {
 	RemoveAll();
 }
 
-void EoDbGroup::Display(AeSysView * view, CDC * deviceContext) {
+void EoDbGroup::Display(AeSysView* view, CDC* deviceContext) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};

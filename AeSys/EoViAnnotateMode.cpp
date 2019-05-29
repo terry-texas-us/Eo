@@ -159,7 +159,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		OdGeMatrix3d WorldToPlaneTransform;
 		WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
 
-		for (size_t VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
+		for (unsigned VertexIndex = 0; VertexIndex < Points.size(); VertexIndex++) {
 			auto Vertex = Points[VertexIndex];
 			Vertex.transformBy(WorldToPlaneTransform);
 			Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
@@ -629,7 +629,7 @@ void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d & s
 	OdGeMatrix3d WorldToPlaneTransform;
 	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
-	for (size_t VertexIndex = 0; VertexIndex < ItemPoints.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < ItemPoints.size(); VertexIndex++) {
 		auto Vertex = ItemPoints[VertexIndex];
 		Vertex.transformBy(WorldToPlaneTransform);
 		Polyline->addVertexAt(VertexIndex, Vertex.convert2d());

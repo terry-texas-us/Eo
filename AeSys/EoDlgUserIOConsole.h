@@ -14,7 +14,7 @@ class EoDlgUserIOConsole
 	using CDialog::operator new;
 	using CDialog::operator delete;
 
-	size_t m_RefCounter;
+	unsigned m_RefCounter;
 	int m_NumberOfStrings;
 	CFont m_Font;
 

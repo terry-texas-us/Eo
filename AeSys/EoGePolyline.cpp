@@ -113,7 +113,7 @@ void __End(AeSysView* view, CDC* deviceContext, OdInt16 linetypeIndex) {
 	}
 }
 
-void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, size_t numberOfPoints, OdGePoint3dArray& points) {
+void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, unsigned numberOfPoints, OdGePoint3dArray& points) {
 	OdGeVector3d MajorAxis = ComputeArbitraryAxis(planeNormal);
 	MajorAxis.normalize();
 	OdGeVector3d MinorAxis = planeNormal.crossProduct(MajorAxis);
@@ -135,12 +135,12 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	points.setLogicalLength(numberOfPoints);
 	points[0].set(1.0, 0.0, 0.0);
 
-	for (size_t PointIndex = 0; PointIndex < numberOfPoints - 1; PointIndex++) {
+	for (unsigned PointIndex = 0; PointIndex < numberOfPoints - 1; PointIndex++) {
 		points[PointIndex + 1].x = points[PointIndex].x * CosIncrement - points[PointIndex].y * SinIncrement;
 		points[PointIndex + 1].y = points[PointIndex].y * CosIncrement + points[PointIndex].x * SinIncrement;
 		points[PointIndex + 1].z = 0.0;
 	}
-	for (size_t PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
+	for (unsigned PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		points[PointIndex].transformBy(PlaneToWorldTransform);
 	}
 }

@@ -117,20 +117,20 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	return 0;
 }
 ///<summary>Recursive filter tree filling helper</summary>
-static void UpdateFilterTree(CTreeCtrl & tree, HTREEITEM parent, const OdLyLayerFilter * root, const OdLyLayerFilter * current) {
+static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
 	if (root) {
 		HTREEITEM TreeItem = tree.InsertItem(root->name(), parent);
 		tree.SetItemData(TreeItem, (DWORD) (void*) root);
 		const int Image = root->isIdFilter() ? 2 : 1;
 		tree.SetItemImage(TreeItem, Image, Image);
-		for (size_t FilterIndex = 0; FilterIndex < root->getNestedFilters().length(); FilterIndex++) {
+		
+		for (unsigned FilterIndex = 0; FilterIndex < root->getNestedFilters().length(); FilterIndex++) {
 			UpdateFilterTree(tree, TreeItem, root->getNestedFilters()[FilterIndex], current);
 		}
-		if (current == root) {
-			tree.SelectItem(TreeItem);
-		}
+		if (current == root) { tree.SelectItem(TreeItem); }
 	}
 }
+
 void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	m_TreeFilters.DeleteAllItems();
 	OdLyLayerFilterManagerPtr FilterManager = ::odlyGetLayerFilterManager(m_Database);

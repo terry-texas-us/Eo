@@ -14,7 +14,7 @@ class EoDlgPlotStyleEditLineweight : public CDialog {
 
     OdPsPlotStyleTable* m_PlotStyleTable;
     CImageList m_ListCtrlImages;
-    size_t m_InitialSelection;
+    unsigned m_InitialSelection;
     EoLineweightData* m_LineweightData;
 
 public:

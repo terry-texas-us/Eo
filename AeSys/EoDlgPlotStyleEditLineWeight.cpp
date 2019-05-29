@@ -53,15 +53,17 @@ void EoDlgPlotStyleEditLineweight::OnOK() {
 	// <tas="Is extra validation needed here?"</tas>
 	OnButtonSortlineweight();
 	m_PlotStyleTable->setDisplayCustomLineweightUnits(m_InchesButton.GetCheck() ? true : false);
-	const size_t NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
+	const auto NumberOfPlotStyles = m_PlotStyleTable->plotStyleSize();
 	OdPsPlotStyleData PlotStyleData;
 	const int iLineweightQnt = m_PlotStyleTable->lineweightSize();
-	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
+	
+	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
 		OdPsPlotStylePtr PlotStyle = m_PlotStyleTable->plotStyleAt(PlotStyleIndex);
 		PlotStyle->getData(PlotStyleData);
 		const int lineweight = (int) PlotStyleData.lineweight() - 1;
 		for (int j = 0; j < iLineweightQnt; j++) {
 			if (m_LineweightData[j].m_OldIdx == lineweight) {
+				
 				if (m_LineweightData[j].m_OldIdx != m_LineweightData[j].m_NewIdx) {
 					PlotStyleData.setLineweight(double(m_LineweightData[j].m_NewIdx) + 1.0);
 					PlotStyle->setData(PlotStyleData);
@@ -184,22 +186,20 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	OdGeIntArray useLineWeightIndex;
 	OdPsPlotStylePtr pPs;
 	OdPsPlotStyleData OdPsData;
-	const size_t NumberOfPlotStyles {m_PlotStyleTable->plotStyleSize()};
+	const auto NumberOfPlotStyles {m_PlotStyleTable->plotStyleSize()};
 
-	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
+	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
 		pPs = m_PlotStyleTable->plotStyleAt(PlotStyleIndex);
 		pPs->getData(OdPsData);
-		const size_t value = (size_t) OdPsData.lineweight() - 1;
-		size_t nIndex;
+		const auto value {static_cast<int>(OdPsData.lineweight()) - 1};
+		unsigned nIndex;
 
-		if (!useLineWeightIndex.find(value, nIndex)) {
-			useLineWeightIndex.push_back(value);
-		}
+		if (!useLineWeightIndex.find(value, nIndex)) { useLineWeightIndex.push_back(value); }
 	}
 	m_LineweightData = new EoLineweightData[m_PlotStyleTable->lineweightSize()];
 	const bool bInch = m_PlotStyleTable->isDisplayCustomLineweightUnits();
 
-	for (size_t i = 0; i < m_PlotStyleTable->lineweightSize(); i++) {
+	for (unsigned i = 0; i < m_PlotStyleTable->lineweightSize(); i++) {
 		m_LineweightData[i].m_OldIdx = i;
 		m_LineweightData[i].m_NewIdx = i;
 		m_LineweightData[i].m_Value = m_PlotStyleTable->getLineweightAt(i);
@@ -207,12 +207,11 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		CString lineweight;
 		lineweight.Format(L"%.4f", bInch ? MMTOINCH(m_LineweightData[i].m_Value) : m_LineweightData[i].m_Value);
 		bool isUse = false;
-		size_t nIndex;
+		unsigned nIndex;
 
-		if (useLineWeightIndex.find(i, nIndex)) {
-			isUse = true;
-		}
-		const size_t item = InsertLineweightAt(i, lineweight, isUse);
+		if (useLineWeightIndex.find(i, nIndex)) { isUse = true; }
+
+		const auto item {InsertLineweightAt(i, lineweight, isUse)};
 		m_LineweightsListCtrl.SetItemData(item, (DWORD) &m_LineweightData[i]);
 	}
 	m_LineweightsListCtrl.SetItemState(m_InitialSelection, LVIS_SELECTED, LVIS_SELECTED);

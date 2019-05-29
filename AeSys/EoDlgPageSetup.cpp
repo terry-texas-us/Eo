@@ -844,22 +844,23 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString> & arrFiles, const C
 }
 void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 	USES_CONVERSION;
+
 	if (fillCombo) {
 		OdArray<const OdChar*> StyleList;
 		m_PlotSettingsValidator->plotStyleSheetList(StyleList);
 
 		m_PlotStyleFiles.AddString(L"None");
-		for (size_t StyleIndex = 0; StyleIndex < StyleList.length(); StyleIndex++) {
+		for (unsigned StyleIndex = 0; StyleIndex < StyleList.length(); StyleIndex++) {
 			m_PlotStyleFiles.AddString(W2T((wchar_t*) (StyleList[StyleIndex])));
 		}
 	}
 	int StyleIndex = 0;
 	OdString StyleSheet = m_PlotSettings.getCurrentStyleSheet();
+
 	if (!StyleSheet.isEmpty()) {
 		StyleIndex = m_PlotStyleFiles.FindStringExact(0, StyleSheet);
-		if (StyleIndex == -1) {
-			StyleIndex = 0;
-		}
+
+		if (StyleIndex == -1) { StyleIndex = 0; }
 	}
 	m_PlotStyleFiles.SetCurSel(StyleIndex);
 	OnSelChangePlotStyleFiles();

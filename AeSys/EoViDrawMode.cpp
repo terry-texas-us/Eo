@@ -382,7 +382,7 @@ void AeSysView::DoDrawModeMouseMove() {
 				OdGeMatrix3d WorldToPlaneTransform;
 				WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));
 
-				for (size_t VertexIndex = 0; VertexIndex < m_DrawModePoints.size(); VertexIndex++) {
+				for (unsigned VertexIndex = 0; VertexIndex < m_DrawModePoints.size(); VertexIndex++) {
 					auto Vertex {m_DrawModePoints[VertexIndex]};
 					Vertex.transformBy(WorldToPlaneTransform);
 					Polyline->addVertexAt(VertexIndex, Vertex.convert2d());
@@ -410,7 +410,7 @@ void AeSysView::DoDrawModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-				for (size_t PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
+				for (unsigned PointsIndex = 0; PointsIndex < m_DrawModePoints.size() - 1; PointsIndex++) {
 					const auto StartPoint {m_DrawModePoints[PointsIndex]};
 					const auto EndPoint {m_DrawModePoints[(PointsIndex + 1) % 4]};
 					auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};

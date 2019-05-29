@@ -224,11 +224,11 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 
 		if (Layer->IsInternal()) {
 			for (unsigned GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
-				const size_t NumberOfPrimitives = ReadUInt16();
+				const auto NumberOfPrimitives {ReadUInt16()};
 				
 				EoDbGroup* Group = new EoDbGroup;
 				
-				for (size_t PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
+				for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
                     EoDbPrimitive* Primitive = ReadPrimitive(ModelSpaceBlock);
 					Group->AddTail(Primitive);
 				}

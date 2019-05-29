@@ -38,7 +38,7 @@ void AeSysView::OnNodalModePoint() {
 			const DWORD Mask = GetDocument()->GetPrimitiveMask(Primitive);
 			Primitive->GetAllPoints(Points);
 
-			for (size_t i = 0; i < Points.size(); i++) {
+			for (unsigned i = 0; i < Points.size(); i++) {
 				if (OdGeVector3d(CurrentPnt - Points[i]).length() <= NodalModePickTolerance) {
 					GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
 				}
@@ -56,7 +56,7 @@ void AeSysView::OnNodalModeLine() {
 		const DWORD Mask = GetDocument()->GetPrimitiveMask(Primitive);
 		Primitive->GetAllPoints(Points);
 
-		for (size_t i = 0; i < Points.size(); i++) {
+		for (unsigned i = 0; i < Points.size(); i++) {
 			GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
 		}
 	}
@@ -84,7 +84,7 @@ void AeSysView::OnNodalModeArea() {
 					const DWORD Mask = GetDocument()->GetPrimitiveMask(Primitive);
 					Primitive->GetAllPoints(Points);
 
-					for (size_t i = 0; i < Points.size(); i++) {
+					for (unsigned i = 0; i < Points.size(); i++) {
 						if (ContainmentOf(Points[i], MinExtent, MaxExtent)) {
 							GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
 						}
@@ -266,7 +266,7 @@ void AeSysView::OnNodalModeEngage() {
 
 		EngagedPrimitive()->GetAllPoints(Points);
 
-		for (size_t i = 0; i < Points.size(); i++) {
+		for (unsigned i = 0; i < Points.size(); i++) {
 			GetDocument()->UpdateNodalList(EngagedGroup(), EngagedPrimitive(), Mask, i, Points[i]);
 		}
 	}

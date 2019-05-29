@@ -34,7 +34,7 @@ OdInt16 CPrimState::PointDisplayMode() const noexcept {
 OdInt16 CPrimState::HatchInteriorStyle() const noexcept {
 	return (m_HatchInteriorStyle);
 }
-size_t CPrimState::HatchInteriorStyleIndex() const noexcept {
+unsigned CPrimState::HatchInteriorStyleIndex() const noexcept {
 	return (m_HatchInteriorStyleIndex);
 }
 void CPrimState::Restore(CDC* deviceContext, int iSaveId) {
@@ -206,6 +206,6 @@ void CPrimState::SetPointDisplayMode(OdInt16 pointDisplayMode) noexcept {
 void CPrimState::SetHatchInteriorStyle(OdInt16 interiorStyle) noexcept {
 	m_HatchInteriorStyle = interiorStyle;
 }
-void CPrimState::SetHatchInteriorStyleIndex(size_t styleIndex) noexcept {
+void CPrimState::SetHatchInteriorStyleIndex(unsigned styleIndex) noexcept {
 	m_HatchInteriorStyleIndex = styleIndex;
 }

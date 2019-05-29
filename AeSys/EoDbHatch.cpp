@@ -13,9 +13,9 @@
 #include "HatchPatternManager.h"
 #include "EoDbHatchPatternTable.h"
 
-size_t EoDbHatch::sm_EdgeToEvaluate = 0;
-size_t EoDbHatch::sm_Edge = 0;
-size_t EoDbHatch::sm_PivotVertex = 0;
+unsigned EoDbHatch::sm_EdgeToEvaluate = 0;
+unsigned EoDbHatch::sm_Edge = 0;
+unsigned EoDbHatch::sm_PivotVertex = 0;
 
 double EoDbHatch::sm_PatternAngle = 0.0;
 double EoDbHatch::sm_PatternScaleX = .1;
@@ -31,7 +31,7 @@ struct EoEdge {
 	};
 };
 
-EoDbHatch::EoDbHatch()
+EoDbHatch::EoDbHatch() noexcept
 	: m_InteriorStyle(EoDbHatch::kHatch)
 	, m_InteriorStyleIndex(1)
 	, m_Vertices(0)
@@ -78,7 +78,7 @@ const EoDbHatch& EoDbHatch::operator=(const EoDbHatch& other) {
 }
 
 void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
-	const size_t NumberOfVertices = m_Vertices.size();
+	const unsigned NumberOfVertices = m_Vertices.size();
 
 	if (sm_Edge > 0 && sm_Edge <= NumberOfVertices) {
 		OdGePoint3d StartPoint = m_Vertices[sm_Edge - 1];
@@ -150,7 +150,8 @@ void EoDbHatch::FormatGeometry(CString& geometry) const {
 	YAxisString.Format(L"Y Axis;%f;%f;%f\t", m_HatchYAxis.x, m_HatchYAxis.y, m_HatchYAxis.z);
 	geometry += YAxisString;
 	CString VertexString;
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		VertexString.Format(L"Vertex;%f;%f;%f\t", m_Vertices[VertexIndex].x, m_Vertices[VertexIndex].y, m_Vertices[VertexIndex].z);
 		geometry += VertexString;
 	}
@@ -158,30 +159,32 @@ void EoDbHatch::FormatGeometry(CString& geometry) const {
 
 void EoDbHatch::GetAllPoints(OdGePoint3dArray& points) const {
 	points.empty();
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		points.append(m_Vertices[VertexIndex]);
 	}
 }
 
 OdGePoint3d EoDbHatch::GetCtrlPt() const {
-	const size_t StartPointIndex = sm_Edge - 1;
-	const size_t EndPointIndex = sm_Edge % m_Vertices.size();
+	const unsigned StartPointIndex = sm_Edge - 1;
+	const unsigned EndPointIndex = sm_Edge % m_Vertices.size();
 	return (EoGeLineSeg3d(m_Vertices[StartPointIndex], m_Vertices[EndPointIndex]).midPoint());
 };
 
 void EoDbHatch::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		extents.addPoint(m_Vertices[VertexIndex]);
 	}
 }
 
 OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
-	const size_t NumberOfVertices = m_Vertices.size();
+	const auto NumberOfVertices {m_Vertices.size()};
+
 	if (sm_PivotVertex >= NumberOfVertices) { // have not yet rocked to a vertex
-		const size_t StartVertexIndex = sm_Edge - 1;
+		const auto StartVertexIndex {sm_Edge - 1};
 		const OdGePoint3d StartPoint(m_Vertices[StartVertexIndex]);
-		const size_t EndVertexIndex = sm_Edge % NumberOfVertices;
+		const auto EndVertexIndex {sm_Edge % NumberOfVertices};
 		const OdGePoint3d EndPoint(m_Vertices[EndVertexIndex]);
+
 		if (EndPoint.x > StartPoint.x) {
 			sm_PivotVertex = StartVertexIndex;
 		} else if (EndPoint.x < StartPoint.x) {
@@ -230,12 +233,11 @@ bool EoDbHatch::IsInView(AeSysView* view) const {
 	return false;
 }
 bool EoDbHatch::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		EoGePoint4d pt(m_Vertices[VertexIndex], 1.0);
 		view->ModelViewTransformPoint(pt);
 
-		if (point.DistanceToPointXY(pt) < sm_SelectApertureSize)
-			return true;
+		if (point.DistanceToPointXY(pt) < sm_SelectApertureSize) { return true; }
 	}
 	return false;
 }
@@ -245,7 +247,7 @@ OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 
 	sm_PivotVertex = m_Vertices.size();
 
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		EoGePoint4d pt(m_Vertices[VertexIndex], 1.0);
 		view->ModelViewTransformPoint(pt);
 
@@ -263,14 +265,14 @@ OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 }
 bool EoDbHatch::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
 	OdGePoint3dArray Points;
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		Points.append(m_Vertices[VertexIndex]);
 	}
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
 bool EoDbHatch::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
-	const size_t NumberOfVertices = m_Vertices.size();
+	const auto NumberOfVertices {m_Vertices.size()};
 	if (sm_EdgeToEvaluate > 0 && sm_EdgeToEvaluate <= NumberOfVertices) { // Evaluate specified edge of polygon
 		EoGePoint4d ptBeg(m_Vertices[sm_EdgeToEvaluate - 1], 1.0);
 		EoGePoint4d ptEnd(m_Vertices[sm_EdgeToEvaluate % NumberOfVertices], 1.0);
@@ -287,7 +289,7 @@ bool EoDbHatch::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3
 		EoGePoint4d ptBeg(m_Vertices[0], 1.0);
 		view->ModelViewTransformPoint(ptBeg);
 
-		for (size_t VertexIndex = 1; VertexIndex <= NumberOfVertices; VertexIndex++) {
+		for (unsigned VertexIndex = 1; VertexIndex <= NumberOfVertices; VertexIndex++) {
 			EoGePoint4d ptEnd(m_Vertices[VertexIndex % NumberOfVertices], 1.0);
 			view->ModelViewTransformPoint(ptEnd);
 
@@ -308,14 +310,15 @@ void EoDbHatch::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_HatchOrigin.transformBy(transformMatrix);
 	m_HatchXAxis.transformBy(transformMatrix);
 	m_HatchYAxis.transformBy(transformMatrix);
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++)
+	
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++)
 		m_Vertices[VertexIndex].transformBy(transformMatrix);
 }
 
 void EoDbHatch::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
 	// nothing done to hatch coordinate origin
 
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		if (((mask >> VertexIndex) & 1UL) == 1) {
 			m_Vertices[VertexIndex] += translate;
 		}
@@ -326,8 +329,8 @@ bool EoDbHatch::Write(EoDbFile & file) const {
 	file.WriteUInt16(EoDb::kHatchPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_InteriorStyle);  // note polygon style stuffed up into unused line type on io
-	file.WriteUInt16(OdUInt16(EoMax(1U, m_InteriorStyleIndex)));
-	file.WriteUInt16(OdUInt16(m_Vertices.size()));
+	file.WriteUInt16(static_cast<OdUInt16>(EoMax(1U, m_InteriorStyleIndex)));
+	file.WriteUInt16(static_cast<OdUInt16>(m_Vertices.size()));
 	file.WritePoint3d(m_HatchOrigin);
 
 	file.WriteDouble(m_HatchXAxis.x);
@@ -339,19 +342,19 @@ bool EoDbHatch::Write(EoDbFile & file) const {
 	file.WriteDouble(m_HatchYAxis.z);
 
 
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		file.WritePoint3d(m_Vertices[VertexIndex]);
 	}
 	return true;
 }
 
-void EoDbHatch::Write(CFile & file, OdUInt8 * buffer) const {
-	buffer[3] = OdInt8((79 + m_Vertices.size() * 12) / 32);
-	*((OdUInt16*) & buffer[4]) = OdUInt16(EoDb::kHatchPrimitive);
-	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = OdInt8(m_InteriorStyle);
-	*((OdInt16*) & buffer[8]) = OdInt16(m_InteriorStyleIndex);
-	*((OdInt16*) & buffer[10]) = OdInt16(m_Vertices.size());
+void EoDbHatch::Write(CFile& file, OdUInt8* buffer) const {
+	buffer[3] = static_cast<OdInt8>((79 + m_Vertices.size() * 12) / 32);
+	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kHatchPrimitive);
+	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<OdInt8>(m_InteriorStyle);
+	*((OdInt16*) & buffer[8]) = static_cast<OdInt16>(m_InteriorStyleIndex);
+	*((OdInt16*) & buffer[10]) = static_cast<OdInt16>(m_Vertices.size());
 
 	((EoVaxPoint3d*) & buffer[12])->Convert(m_HatchOrigin);
 	((EoVaxVector3d*) & buffer[24])->Convert(m_HatchXAxis);
@@ -359,7 +362,7 @@ void EoDbHatch::Write(CFile & file, OdUInt8 * buffer) const {
 
 	int i = 48;
 
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		((EoVaxPoint3d*) & buffer[i])->Convert(m_Vertices[VertexIndex]);
 		i += sizeof(EoVaxPoint3d);
 	}
@@ -386,11 +389,11 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 
 	OdHatchPattern HatchPattern;
 	EoDbHatchPatternTable::RetrieveHatchPattern(EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex), HatchPattern);
-	const size_t NumberOfPatterns = HatchPattern.size();
+	const auto NumberOfPatterns = HatchPattern.size();
 
 	OdHatchPatternLine HatchPatternLine;
 
-	for (size_t PatternIndex = 0; PatternIndex < NumberOfPatterns; PatternIndex++) {
+	for (unsigned PatternIndex = 0; PatternIndex < NumberOfPatterns; PatternIndex++) {
 		HatchPatternLine = HatchPattern.getAt(PatternIndex);
 		const int NumberOfDashesInPattern = HatchPatternLine.m_dashes.size();
 		double TotalPatternLength = 0;
@@ -624,7 +627,7 @@ int EoDbHatch::NumberOfVertices() const {
 }
 
 bool EoDbHatch::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point) noexcept {
-	const size_t NumberOfVertices = m_Vertices.size();
+	const auto NumberOfVertices = m_Vertices.size();
 	if (sm_PivotVertex >= NumberOfVertices) { // Not engaged at a vertex
 		return false;
 	}
@@ -695,16 +698,16 @@ void EoDbHatch::SetInteriorStyle(OdInt16 interiorStyle) noexcept {
 	m_InteriorStyle = interiorStyle;
 }
 
-void EoDbHatch::SetInteriorStyleIndex2(size_t styleIndex) {
+void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 
-		OdHatchPatternManager* Manager = theApp.patternManager();
+		auto HatchPatternManager {theApp.patternManager()};
 
-		OdString HatchName = m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex);
+		OdString HatchName {m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
 		OdHatchPattern HatchPattern;
 
-		if (Manager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
+		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
 			OdString ReportItem;
 			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", (LPCWSTR) HatchName, (LPCWSTR) Hatch->patternName());
 			theApp.AddStringToReportList(ReportItem);
@@ -723,7 +726,7 @@ void EoDbHatch::SetLoopAt(int loopIndex, const OdDbHatchPtr & hatchEntity) {
 	const auto Result {hatchEntity->getPlane(Plane, ResultPlanarity)};
 	OdGeMatrix3d PlaneToWorld {(Result == eOk && ResultPlanarity == OdDb::kPlanar) ? PlaneToWorld.setToPlaneToWorld(Plane) : OdGeMatrix3d::kIdentity};
 
-	for (size_t VertexIndex = 0; VertexIndex < m_Vertices2d.size(); VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices2d.size(); VertexIndex++) {
 		auto Vertex {OdGePoint3d(m_Vertices2d[VertexIndex].x, m_Vertices2d[VertexIndex].y, hatchEntity->elevation())};
 		Vertex.transformBy(PlaneToWorld);
 		m_Vertices.append(Vertex);
@@ -739,9 +742,9 @@ void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d & origin, const OdGe
 	m_HatchYAxis *= patternScale;
 }
 
-size_t EoDbHatch::SwingVertex() const {
-	const size_t NumberOfVertices = m_Vertices.size();
-	size_t SwingVertex;
+unsigned EoDbHatch::SwingVertex() const {
+	const auto NumberOfVertices {m_Vertices.size()};
+	unsigned SwingVertex;
 
 	if (sm_PivotVertex == 0) {
 		SwingVertex = (sm_Edge == 1) ? 1 : NumberOfVertices - 1;
@@ -755,11 +758,11 @@ size_t EoDbHatch::SwingVertex() const {
 
 // Methods - static
 
-size_t EoDbHatch::Edge() noexcept {
+unsigned EoDbHatch::Edge() noexcept {
 	return sm_Edge;
 }
 
-void EoDbHatch::SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept {
+void EoDbHatch::SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 
@@ -795,9 +798,9 @@ void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr & hatchEntity
 
 	double Lower {0.};
 	double Upper {1.};
-	const size_t NumberOfEdges = Edges.size();
+	const auto NumberOfEdges {Edges.size()};
 
-	for (size_t EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
+	for (unsigned EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
 		OdGeCurve2d* Edge = Edges[EdgeIndex];
 		switch (Edge->type()) {
 			case OdGe::kLineSeg2d:
@@ -835,7 +838,8 @@ void EoDbHatch::AppendLoop(const OdGePoint3dArray & vertices, OdDbHatchPtr & hat
 	Vertices2.clear();
 	OdGeDoubleArray Bulges;
 	Bulges.clear();
-	for (size_t VertexIndex = 0; VertexIndex < vertices.size(); VertexIndex++) {
+
+	for (unsigned VertexIndex = 0; VertexIndex < vertices.size(); VertexIndex++) {
 		OdGePoint3d Vertex(vertices[VertexIndex]);
 		Vertex.transformBy(WorldToPlaneTransform);
 		Vertices2.append(Vertex.convert2d());
@@ -938,7 +942,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 
 	OdGePoint3dArray Vertices;
 	Vertices.setLogicalLength(NumberOfVertices);
-	for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+	for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 		Vertices[VertexIndex] = file.ReadPoint3d();
 	}
 	Hatch->setAssociative(false);
@@ -960,7 +964,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8 * primitiveBuffer, int versionNumber) {
 	OdInt16 ColorIndex;
 	OdInt16 InteriorStyle;
-	size_t InteriorStyleIndex = 0;
+	unsigned InteriorStyleIndex {0};
 	OdGePoint3d HatchOrigin;
 	OdGeVector3d HatchXAxis;
 	OdGeVector3d HatchYAxis;
@@ -1010,11 +1014,11 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 			default:
 				throw L"Exception.FileJob: Unknown hatch primitive interior style.";
 		}
-		const size_t NumberOfVertices = OdUInt16(((EoVaxFloat*) & primitiveBuffer[8])->Convert());
+		const auto NumberOfVertices {static_cast<OdUInt16>(((EoVaxFloat*)& primitiveBuffer[8])->Convert())};
 
 		int BufferOffset = 36;
 		Vertices.clear();
-		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
 			BufferOffset += sizeof(EoVaxPoint3d);
 		}
@@ -1023,14 +1027,14 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 		ColorIndex = OdInt16(primitiveBuffer[6]);
 		InteriorStyle = OdInt8(primitiveBuffer[7]);
 		InteriorStyleIndex = *((OdInt16*) & primitiveBuffer[8]);
-		const size_t NumberOfVertices = *((OdInt16*) & primitiveBuffer[10]);
+		const auto NumberOfVertices = *((OdInt16*) & primitiveBuffer[10]);
 		HatchOrigin = ((EoVaxPoint3d*) & primitiveBuffer[12])->Convert();
 		HatchXAxis = ((EoVaxVector3d*) & primitiveBuffer[24])->Convert();
 		HatchYAxis = ((EoVaxVector3d*) & primitiveBuffer[36])->Convert();
 
 		int BufferOffset = 48;
 		Vertices.clear();
-		for (size_t VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert());
 			BufferOffset += sizeof(EoVaxPoint3d);
 		}

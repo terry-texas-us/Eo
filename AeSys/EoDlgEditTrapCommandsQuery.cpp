@@ -78,15 +78,15 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 	CString Extra;
 	primitive->FormatExtra(Extra);
 
-	size_t nOff = 0;
-	for (size_t nDel = Extra.Mid(nOff).Find(';'); nDel != -1;) {
+	unsigned nOff {0};
+	for (auto nDel = Extra.Mid(nOff).Find(';'); nDel != -1;) {
 		wcscpy_s(szBuf, Extra.Mid(nOff, nDel));
 
 		m_ExtraListViewControl.InsertItem(iItem, szBuf);
 
 		nOff += nDel + 1;
 		nDel = Extra.Mid(nOff).Find('\t');
-		const size_t nLen = min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1);
+		const unsigned nLen = min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1);
 		wcscpy_s(szBuf, 64, Extra.Mid(nOff, nLen));
 
 		m_ExtraListViewControl.SetItemText(iItem++, 1, szBuf);
@@ -102,8 +102,8 @@ void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive * primitive) {
 	CString strBuf;
 	primitive->FormatGeometry(strBuf);
 
-	size_t nOff = 0;
-	for (size_t nDel = strBuf.Mid(nOff).Find(';'); nDel != -1;) {
+	unsigned nOff {0};
+	for (auto nDel = strBuf.Mid(nOff).Find(';'); nDel != -1;) {
 		wcscpy_s(szBuf, 64, strBuf.Mid(nOff, nDel));
 		m_GeometryListViewControl.InsertItem(iItem, szBuf);
 		nOff += nDel + 1;

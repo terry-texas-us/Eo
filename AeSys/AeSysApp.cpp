@@ -677,11 +677,11 @@ CMenu* AeSysApp::CommandMenu(CMenu * *toolsSubMenu) {
 
 	for (int ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
 		MenuItemInfo.dwTypeData = NULL;
-		ToolsSubMenu->GetMenuItemInfoW(size_t(ToolsMenuItem), &MenuItemInfo, TRUE);
+		ToolsSubMenu->GetMenuItemInfoW(unsigned(ToolsMenuItem), &MenuItemInfo, TRUE);
 
 		const int SizeOfMenuName = ++MenuItemInfo.cch;
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
-		ToolsSubMenu->GetMenuItemInfoW(size_t(ToolsMenuItem), &MenuItemInfo, TRUE);
+		ToolsSubMenu->GetMenuItemInfoW(unsigned(ToolsMenuItem), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
 
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.CompareNoCase(L"Registered &Commands") == 0) {
@@ -713,7 +713,7 @@ void AeSysApp::RefreshCommandMenu() {
 	auto CommandStack {::odedRegCmds()};
 	bool bHasNoCommand {CommandStack->newIterator()->done()};
 
-	const size_t ToolsMenuItem(8); // <tas="Until calculated position finished"</tas>
+	const unsigned ToolsMenuItem(8); // <tas="Until calculated position finished"</tas>
 	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, MF_BYPOSITION | (bHasNoCommand ? MF_GRAYED : MF_ENABLED));
 
 	int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
@@ -2219,7 +2219,7 @@ void AeSysApp::UpdateMDITabs(BOOL resetMDIChild) {
 
 BOOL AeSysApp::OnIdle(long count) {
 
-	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
+	for (unsigned ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
 		m_aAppReactors[ReactorIndex]->OnIdle(count);
 	}
 	return __super::OnIdle(count);
@@ -2227,7 +2227,7 @@ BOOL AeSysApp::OnIdle(long count) {
 
 BOOL AeSysApp::PreTranslateMessage(MSG* message) {
 
-	for (size_t ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
+	for (unsigned ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
 		m_aAppReactors[ReactorIndex]->OnPreTranslateMessage(message);
 	}
 	return __super::PreTranslateMessage(message);

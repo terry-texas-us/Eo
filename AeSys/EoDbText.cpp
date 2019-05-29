@@ -144,7 +144,7 @@ bool EoDbText::IsInView(AeSysView* view) const {
 
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
 
-	for (size_t n = 0; n <= 2; ) {
+	for (unsigned n = 0; n <= 2; ) {
 		pt[0] = EoGePoint4d(BoundingBox[n++], 1.0);
 		pt[1] = EoGePoint4d(BoundingBox[n++], 1.0);
 
@@ -232,10 +232,9 @@ bool EoDbText::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d
 
 	view->ModelViewTransformPoints(4, pt0);
 
-	for (size_t n = 0; n < 4; n++) {
-		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) {
-			return false;
-		}
+	for (unsigned n = 0; n < 4; n++) {
+		
+		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
 	}
 	ptProj = point.Convert3d();
 
@@ -298,9 +297,10 @@ void EoDbText::Write(CFile & file, OdUInt8 * buffer) const {
 
 	// <tas="Stacked fractions (\Snum/den;) are not being converted to legacy format (^/num/den^)"/>
 	*((OdUInt16*) & buffer[53]) = NumberOfCharacters;
-	size_t BufferOffset = 55;
-	for (size_t CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
-		buffer[BufferOffset++] = OdUInt8(m_strText[CharacterIndex]);
+	unsigned BufferOffset = 55;
+	
+	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
+		buffer[BufferOffset++] = static_cast<OdUInt8>(m_strText[CharacterIndex]);
 	}
 	file.Write(buffer, buffer[3] * 32);
 }

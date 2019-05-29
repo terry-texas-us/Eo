@@ -517,7 +517,7 @@ void EoDbDimension::Write(CFile& file, OdUInt8* buffer) const {
 	((EoVaxVector3d*) & buffer[67])->Convert(ReferenceSystem.YDirection());
 
 	*((OdInt16*) & buffer[79]) = NumberOfCharacters;
-	size_t BufferOffset = 81;
+	unsigned BufferOffset = 81;
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
 		buffer[BufferOffset++] = static_cast<OdUInt8>(m_strText[CharacterIndex]);
 	}

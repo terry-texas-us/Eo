@@ -18,9 +18,9 @@ Hatch(Polygon) primitive
 </remarks> */
 
 class EoDbHatch : public EoDbPrimitive {
-	static size_t sm_EdgeToEvaluate;
-	static size_t sm_Edge;
-	static size_t sm_PivotVertex;
+	static unsigned sm_EdgeToEvaluate;
+	static unsigned sm_Edge;
+	static unsigned sm_PivotVertex;
 
 public:
 	static double sm_PatternAngle;
@@ -32,7 +32,7 @@ public:
 
 private:
 	OdInt16	m_InteriorStyle;
-	size_t m_InteriorStyleIndex;
+	unsigned m_InteriorStyleIndex;
 	OdGePoint3d	m_HatchOrigin;
 	OdGeVector3d m_HatchXAxis;
 	OdGeVector3d m_HatchYAxis;
@@ -44,7 +44,7 @@ private:
 
 public:	// Constructors and destructor
 
-	EoDbHatch();
+	EoDbHatch() noexcept;
 	EoDbHatch(const EoDbHatch& other);
 	const EoDbHatch& operator=(const EoDbHatch& other);
 
@@ -91,16 +91,16 @@ public: // Methods
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
 	void SetInteriorStyle(OdInt16 interiorStyle) noexcept;
-	void SetInteriorStyleIndex(size_t styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
-	void SetInteriorStyleIndex2(size_t styleIndex);
+	void SetInteriorStyleIndex(unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
+	void SetInteriorStyleIndex2(unsigned styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
-	size_t SwingVertex() const;
+	unsigned SwingVertex() const;
 
 public: // Methods - static
 
-	static size_t Edge() noexcept;
-	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
+	static unsigned Edge() noexcept;
+	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
 
 	static void ConvertPolylineType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive);
 	static void ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept;

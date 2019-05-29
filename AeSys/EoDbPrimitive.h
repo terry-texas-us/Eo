@@ -33,7 +33,7 @@ protected:
 	static	OdInt16	sm_LayerLinetypeIndex;
 	static	OdInt16	sm_HighlightColorIndex;
 	static	OdInt16	sm_HighlightLinetypeIndex;
-	static	size_t sm_ControlPointIndex;
+	static	unsigned sm_ControlPointIndex;
 	static	double 	sm_RelationshipOfPoint;
 	static	double sm_SelectApertureSize;
 
@@ -97,7 +97,7 @@ public: // Methods
 	void SetLinetypeIndex(OdInt16 linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
 	void SetLinetypeIndex2(OdInt16 linetypeIndex);
 public: // Methods - static
-	static size_t ControlPointIndex() noexcept;
+	static unsigned ControlPointIndex() noexcept;
 	static OdInt16 HighlightColorIndex() noexcept;
 	static OdInt16 HighlightLinetypeIndex() noexcept;
 	static bool IsSupportedLinetype(int linetype) noexcept;

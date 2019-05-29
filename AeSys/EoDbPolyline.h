@@ -19,9 +19,9 @@ Polyline primitive(never made it release : if already written flags not streamed
 </remarks> */
 
 class EoDbPolyline : public EoDbPrimitive {
-	static size_t sm_EdgeToEvaluate;
-	static size_t sm_Edge;
-	static size_t sm_PivotVertex;
+	static unsigned sm_EdgeToEvaluate;
+	static unsigned sm_Edge;
+	static unsigned sm_PivotVertex;
 
 public:
 	static const OdUInt16 sm_Closed = 0x0001;
@@ -79,12 +79,12 @@ public: // Methods
 	void SetConstantWidth(double constantWidth) noexcept;
 	void SetElevation(double elevation) noexcept { m_Elevation = elevation; }
 	void SetNormal(const OdGeVector3d& normal);
-	size_t SwingVertex() const;
+	unsigned SwingVertex() const;
 
 public: // Methods - static
 
-	static size_t Edge() noexcept;
-	static void SetEdgeToEvaluate(size_t edgeToEvaluate) noexcept;
+	static unsigned Edge() noexcept;
+	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
 
 	static EoDbPolyline* Create(OdDbPolylinePtr polyline);
 

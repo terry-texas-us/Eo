@@ -47,10 +47,11 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
 					EnableWindow(hOkBtn, FALSE);
 					return;
 				}
-				for (size_t PlotStyleIndex = 0; PlotStyleIndex < pPsTab->plotStyleSize(); PlotStyleIndex++) {
+				for (unsigned PlotStyleIndex = 0; PlotStyleIndex < pPsTab->plotStyleSize(); PlotStyleIndex++) {
 					pPs = pPsTab->plotStyleAt(PlotStyleIndex);
 					CString name = (LPCWSTR)pPs->localizedName();
 					name.MakeLower();
+
 					if (name == newName) {
 						CString sInfo;
 						sInfo.Format(L"A style named <%s> already exists.", sString);
@@ -395,9 +396,9 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLinetypeComboBox() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	m_Lineweight.AddString(L"Use object lineweight");
 	const bool bInch = m_pPlotStyleTable->isDisplayCustomLineweightUnits();
-	CString sUnits = bInch ? L"''" : L" mm";
-	for (size_t i = 0; i < m_pPlotStyleTable->lineweightSize(); i++)
-	{
+	OdString sUnits = bInch ? L"''" : L" mm";
+	
+	for (unsigned i = 0; i < m_pPlotStyleTable->lineweightSize(); i++) {
 		CString lineweight;
 		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), (LPCWSTR) sUnits);
 		m_Lineweight.AddString(lineweight);
@@ -429,7 +430,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initFillstyleComboBox() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 	int item = -1;
 
-	for (size_t i = 0; i < m_bitmapList.size(); i++)
+	for (unsigned i = 0; i < m_bitmapList.size(); i++)
 	{
 		if (!i )
 			item = m_Color.AddBitmap(NULL, m_bitmapList[i]->m_name);
@@ -663,18 +664,20 @@ HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width,int hei
 
 	return hIcon;
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initImageList() {
 	m_imageList.Create(16, 16, ILC_COLORDDB/*ILC_COLOR32*/, 0, 0);
 
-	const size_t NumberOfPlotStyles = m_pPlotStyleTable->plotStyleSize();
+	const auto NumberOfPlotStyles = m_pPlotStyleTable->plotStyleSize();
 	const ODCOLORREF* LightPalette = odcmAcadLightPalette();
-	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
+	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
 		m_imageList.Add(initColorIcon(16, 16, LightPalette[PlotStyleIndex + 1])); 
 	}
 	if (m_pPlotStyleTable->isAciTableAvailable()) {
 		m_listStyles.SetImageList(&m_imageList, LVSIL_SMALL);
 	}
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
 	LV_COLUMN lvColumn;
 	::ZeroMemory(&lvColumn, sizeof(LV_COLUMN));
@@ -682,11 +685,12 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
 	lvColumn.fmt = LVCFMT_CENTER;
 	m_listStyles.InsertColumn(1, &lvColumn);
 
-	const size_t NumberOfPlotStyles = m_pPlotStyleTable->plotStyleSize();
-	for (size_t PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
+	const auto NumberOfPlotStyles = m_pPlotStyleTable->plotStyleSize();
+	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++ ) {
 		insertItem(PlotStyleIndex);
 	}
 }
+
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	m_listStyles.LockWindowUpdate();	// ***** lock window updates while filling list *****
 

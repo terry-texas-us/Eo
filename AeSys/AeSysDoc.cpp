@@ -284,9 +284,9 @@ void AeSysDoc::DeleteContents() {
 
 	ResetAllViews();
 
-	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
+	const unsigned NumberOfReactors {theApp.m_aAppReactors.size()};
 	
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
+	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->DocumentToBeDestroyed(this);
 	}
 	if (!m_DatabasePtr.isNull()) {
@@ -297,7 +297,7 @@ void AeSysDoc::DeleteContents() {
 
 	COleDocument::DeleteContents();
 
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
+	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->DocumentDestroyed((const wchar_t*) GetPathName());
 	}
 }
@@ -949,9 +949,9 @@ void AeSysDoc::AddRegisteredApp(const OdString & name) {
 }
 
 BOOL AeSysDoc::OnNewDocument() {
-	const size_t NumberOfReactors = theApp.m_aAppReactors.size();
+	const auto NumberOfReactors {theApp.m_aAppReactors.size()};
 
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
+	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->DocumentCreateStarted(this);
 	}
 	if (COleDocument::OnNewDocument()) {
@@ -992,12 +992,12 @@ BOOL AeSysDoc::OnNewDocument() {
 		if (!m_DatabasePtr.isNull()) {
 			m_DatabasePtr->appServices()->layoutManager()->addReactor(this);
 		}
-		for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
+		for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 			theApp.m_aAppReactors[ReactorIndex]->DocumentCreated(this);
 		}
 		return TRUE;
 	}
-	for (size_t ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
+	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 		theApp.m_aAppReactors[ReactorIndex]->DocumentCreateCanceled(this);
 	}
 	return FALSE;
@@ -2158,9 +2158,9 @@ void AeSysDoc::OnEditTrapPaste() {
 			if (ClipboardDataHandle != NULL) {
 				const char* ClipboardData = (char*) GlobalLock(ClipboardDataHandle);
 				if (ClipboardData != NULL) {
-					const size_t ClipboardDataSize = GlobalSize(ClipboardDataHandle);
+					const unsigned ClipboardDataSize = GlobalSize(ClipboardDataHandle);
 					wchar_t* Text = new wchar_t[ClipboardDataSize];
-					for (size_t i = 0; i < ClipboardDataSize; i++) {
+					for (unsigned i = 0; i < ClipboardDataSize; i++) {
 						Text[i] = (wchar_t) ClipboardData[i];
 					}
 					GlobalUnlock(ClipboardDataHandle);
@@ -2172,9 +2172,9 @@ void AeSysDoc::OnEditTrapPaste() {
 			HGLOBAL ClipboardDataHandle = GetClipboardData(CF_UNICODETEXT);
 
 			const wchar_t* ClipboardData = (wchar_t*) GlobalLock(ClipboardDataHandle);
-			const size_t ClipboardDataSize = GlobalSize(ClipboardDataHandle);
+			const unsigned ClipboardDataSize = GlobalSize(ClipboardDataHandle);
 			wchar_t* Text = new wchar_t[ClipboardDataSize];
-			for (size_t i = 0; i < ClipboardDataSize; i++) {
+			for (unsigned i = 0; i < ClipboardDataSize; i++) {
 				Text[i] = ClipboardData[i];
 			}
 			GlobalUnlock(ClipboardDataHandle);

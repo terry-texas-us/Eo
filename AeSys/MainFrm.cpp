@@ -408,7 +408,7 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
 		OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
 		OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
 
-		size_t ScaleMenuPosition = 1;
+		unsigned ScaleMenuPosition {1};
 		auto CurrentScaleIdentifier {Database->getCANNOSCALE()->uniqueIdentifier()};
 
 		for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {

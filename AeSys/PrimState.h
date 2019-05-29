@@ -12,7 +12,7 @@ class CPrimState {
 	EoDbFontDefinition m_FontDefinition;
 	EoDbCharacterCellDefinition m_CharacterCellDefinition;
 	OdInt16 m_HatchInteriorStyle;
-	size_t m_HatchInteriorStyleIndex;
+	unsigned m_HatchInteriorStyleIndex;
 
 public: // Constructors and destructor
 
@@ -24,7 +24,7 @@ public: // Methods
 	OdInt16 ColorIndex() const noexcept;
 	EoDbFontDefinition FontDefinition() const noexcept;
 	OdInt16 HatchInteriorStyle() const noexcept;
-	size_t HatchInteriorStyleIndex() const noexcept;
+	unsigned HatchInteriorStyleIndex() const noexcept;
 	OdInt16 LinetypeIndex() const noexcept;
 	/// <summary>Manages a small set of pen definitions.</summary>
 	void ManagePenResources(CDC* deviceContext, OdInt16 colorIndex, int penWidth, OdInt16 linetypeIndex);
@@ -37,7 +37,7 @@ public: // Methods
 	void SetLinetypeIndexPs(CDC* deviceContext, OdInt16 linetypeIndex);
 	void SetPointDisplayMode(OdInt16 pointDisplayMode) noexcept;
 	void SetHatchInteriorStyle(OdInt16 interiorStyle) noexcept;
-	void SetHatchInteriorStyleIndex(size_t styleIndex) noexcept;
+	void SetHatchInteriorStyleIndex(unsigned styleIndex) noexcept;
 	void SetPen(AeSysView* view, CDC* deviceContext, OdInt16 colorIndex, OdInt16 linetypeIndex) noexcept;
 	int SetROP2(CDC* deviceContext, int drawMode);
 	void SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment);

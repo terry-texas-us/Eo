@@ -9,7 +9,7 @@ OdInt16	EoDbPrimitive::sm_LayerLinetypeIndex = 1;
 OdInt16	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
 OdInt16	EoDbPrimitive::sm_HighlightColorIndex = 0;
 
-size_t EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
+unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
@@ -101,7 +101,7 @@ void EoDbPrimitive::ModifyState() noexcept {
 	m_LinetypeIndex = pstate.LinetypeIndex();
 }
 
-size_t EoDbPrimitive::ControlPointIndex() noexcept {
+unsigned EoDbPrimitive::ControlPointIndex() noexcept {
 	return sm_ControlPointIndex;
 }
 

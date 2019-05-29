@@ -35,7 +35,7 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	if (!fl.Open(fileName, CFile::modeRead | CFile::typeText, &e)) { return; }
 	// <tas="failure to open and then continue Pattern file, but still continues."</tas>
 
-	OdHatchPatternManager* Manager = theApp.patternManager();
+	auto HatchPatternManager {theApp.patternManager()};
 
 	OdString PatternName;
 	OdHatchPattern HatchPattern;
@@ -43,8 +43,9 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	wchar_t	LineText[128];
 	while (fl.ReadString(LineText, sizeof(LineText) / sizeof(wchar_t) - 1)) {
 		if (LineText[0] == '*') { // New Hatch pattern
+
 			if (!PatternName.isEmpty()) {
-				Manager->appendPattern(OdDbHatch::kCustomDefined, PatternName, HatchPattern);
+				HatchPatternManager->appendPattern(OdDbHatch::kCustomDefined, PatternName, HatchPattern);
 				HatchPattern.clear();
 			}
 			LPWSTR NextToken = nullptr;
