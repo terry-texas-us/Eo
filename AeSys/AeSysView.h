@@ -94,7 +94,7 @@ protected:
 
 	AeSysView() noexcept; // protected constructor used by dynamic creation
 
-	void preparePlotstyles(const OdDbLayout* pLayout = NULL, bool bForceReload = false);
+	void preparePlotstyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
 
 	OdUInt32 glyphSize(GlyphType glyphType) const override;
 	void fillContextualColors(OdGiContextualColorsImpl* pCtxColors) override;

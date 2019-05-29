@@ -6,8 +6,8 @@ class EoDlgTrapFilter : public CDialog {
 	DECLARE_DYNAMIC(EoDlgTrapFilter)
 
 public:
-	EoDlgTrapFilter(CWnd* parent = NULL);
-	EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = NULL);
+	EoDlgTrapFilter(CWnd* parent = nullptr);
+	EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
 	virtual ~EoDlgTrapFilter();
 
 // Dialog Data

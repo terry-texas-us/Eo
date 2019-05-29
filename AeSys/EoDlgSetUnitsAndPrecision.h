@@ -6,7 +6,7 @@ class EoDlgSetUnitsAndPrecision : public CDialog {
     DECLARE_DYNAMIC(EoDlgSetUnitsAndPrecision)
 
 public:
-    EoDlgSetUnitsAndPrecision(CWnd* parent = NULL);
+    EoDlgSetUnitsAndPrecision(CWnd* parent = nullptr);
     virtual ~EoDlgSetUnitsAndPrecision();
 
     // Dialog Data

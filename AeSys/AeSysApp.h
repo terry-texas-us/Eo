@@ -186,7 +186,7 @@ public:
 	int messageBox(LPCTSTR caption, LPCTSTR text, UINT type) {
 		auto MainWindow {GetMainWnd()};
 		
-		if (MainWindow == 0) { return 0; }
+		if (MainWindow == nullptr) { return 0; }
 
 		return messageBox(MainWindow->m_hWnd, caption, text, type);
 	}

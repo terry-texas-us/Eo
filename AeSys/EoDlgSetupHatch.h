@@ -6,7 +6,7 @@ class EoDlgSetupHatch : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupHatch)
 
 public:
-	EoDlgSetupHatch(CWnd* parent = NULL) noexcept;
+	EoDlgSetupHatch(CWnd* parent = nullptr) noexcept;
 	~EoDlgSetupHatch();
 
 // Dialog Data

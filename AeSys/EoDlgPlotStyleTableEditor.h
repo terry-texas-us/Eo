@@ -11,7 +11,7 @@ class EoDlgPlotStyleManager : public CPropertySheet {
     OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
 
 public:
-    EoDlgPlotStyleManager(CWnd* pParentWnd = NULL);
+    EoDlgPlotStyleManager(CWnd* pParentWnd = nullptr);
     const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
     void SetFileBufPath(const OdString sFilePath);
     OdPsPlotStyleTablePtr GetPlotStyleTable() const;

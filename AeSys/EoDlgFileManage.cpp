@@ -32,7 +32,7 @@ END_MESSAGE_MAP()
 
 EoDlgFileManage::EoDlgFileManage(CWnd* parent)
 	: CDialog(EoDlgFileManage::IDD, parent)
-	, m_Document(NULL)
+	, m_Document(nullptr)
 	, m_ClickToColumnStatus(false)
 	, m_Description(0)
 	, m_NumberOfColumns(0)
@@ -75,7 +75,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case Name:
 			ItemName = Layer->Name();
-			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), NULL);
+			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
 			break;
 		case On:
 			m_StateImages.Draw(&deviceContext, Layer->IsOff() ? 3 : 2, ((CRect&) itemRectangle).TopLeft(), ILD_TRANSPARENT);
@@ -91,7 +91,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case Linetype:
 			ItemName = OdDbSymUtil::getSymbolName(LayerTableRecord->linetypeObjectId());
-			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), NULL);
+			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
 			break;
 		case Lineweight:
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight());
@@ -111,7 +111,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 				}
 			} else {
 				ItemName = LayerTableRecord->description();
-				deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), NULL);
+				deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
 			}
 			break;
 		case VpColor:
@@ -119,7 +119,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case VpLinetype:
 			ItemName = OdDbSymUtil::getSymbolName(LayerTableRecord->linetypeObjectId(m_ActiveViewport));
-			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), NULL);
+			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
 			break;
 		case VpLineweight:
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight(m_ActiveViewport));
@@ -286,9 +286,10 @@ BOOL EoDlgFileManage::OnInitDialog() {
 	CString BlockName;
 	EoDbBlock* Block;
 
-	POSITION Position = m_Document->GetFirstBlockPosition();
-	while (Position != NULL) {
+	auto Position {m_Document->GetFirstBlockPosition()};
+	while (Position != nullptr) {
 		m_Document->GetNextBlock(Position, BlockName, Block);
+
 		if (!Block->IsAnonymous()) {
 			const int ItemIndex = m_BlocksList.AddString(BlockName);
 			m_BlocksList.SetItemData(ItemIndex, DWORD_PTR(Block));

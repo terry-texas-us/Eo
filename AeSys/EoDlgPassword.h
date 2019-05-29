@@ -2,7 +2,7 @@
 
 class EoDlgPassword : public CDialog {
 public:
-	EoDlgPassword(CWnd* parent = NULL);
+	EoDlgPassword(CWnd* parent = nullptr);
 
 	enum { IDD = IDD_PASSWORD_DLG };
 

@@ -907,40 +907,36 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, Eo
 	}
 }
 
-bool DisplayTextUsingWindowsFontOutline(CDC * deviceContext, int x, int y, const CString & text) {
+bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const CString& text) {
 	deviceContext->BeginPath();
 	deviceContext->TextOutW(x, y, text);
 	deviceContext->EndPath();
 
-	int nNumPts = deviceContext->GetPath(NULL, NULL, 0);
-	if (nNumPts == 0) {
-		return true;
-	}
+	int nNumPts = deviceContext->GetPath(nullptr, nullptr, 0);
+
+	if (nNumPts == 0) { return true; }
 
 	// Allocate memory to hold points and stroke types from the path.
-	LPPOINT lpPoints = NULL;
-	LPBYTE lpTypes = NULL;
+	LPPOINT lpPoints {nullptr};
+	LPBYTE lpTypes {nullptr};
 	try {
 		lpPoints = new POINT[nNumPts];
 		lpTypes = new BYTE[nNumPts];
 	} catch (CException * Exception) {
 		delete[] lpPoints;
-		lpPoints = NULL;
+		lpPoints = nullptr;
 		delete[] lpTypes;
-		lpTypes = NULL;
+		lpTypes = nullptr;
 		Exception->Delete();
 	}
-	if (lpPoints == NULL || lpTypes == NULL) {
-		return true;
-	}
+	
+	if (lpPoints == nullptr || lpTypes == nullptr) { return true; }
 	// Now that we have the memory, really get the path data.
 	nNumPts = deviceContext->GetPath(lpPoints, lpTypes, nNumPts);
 
 	// If it worked, draw the lines.
 
-	if (nNumPts != -1) {
-		deviceContext->PolyDraw(lpPoints, lpTypes, nNumPts);
-	}
+	if (nNumPts != -1) { deviceContext->PolyDraw(lpPoints, lpTypes, nNumPts); }
 
 	// Release the memory we used
 	delete[] lpPoints;
@@ -948,9 +944,9 @@ bool DisplayTextUsingWindowsFontOutline(CDC * deviceContext, int x, int y, const
 	return true;
 }
 
-bool DisplayTextSegmentUsingTrueTypeFont(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, int startPosition, int numberOfCharacters, const CString & text) {
-	if (numberOfCharacters <= 0)
-		return true;
+bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
+
+	if (numberOfCharacters <= 0) { return true; }
 
 	const OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 

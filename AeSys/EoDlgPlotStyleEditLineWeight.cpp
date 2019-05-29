@@ -33,7 +33,7 @@ END_MESSAGE_MAP()
 
 EoDlgPlotStyleEditLineweight::EoDlgPlotStyleEditLineweight(CWnd* parent) 
 	: CDialog(EoDlgPlotStyleEditLineweight::IDD, parent) {
-	m_PlotStyleTable = NULL;
+	m_PlotStyleTable = nullptr;
 	m_InitialSelection = 0;
 	m_LineweightData = 0;
 }

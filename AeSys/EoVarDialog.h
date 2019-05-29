@@ -5,8 +5,8 @@
 
 class EoVarDialog : public CDialog {
 public:
-	EoVarDialog(LPCWSTR lpszTemplateName, CWnd* pParentWnd = NULL);
-	EoVarDialog(UINT nIDTemplate, CWnd* parent = NULL);
+	EoVarDialog(LPCWSTR lpszTemplateName, CWnd* pParentWnd = nullptr);
+	EoVarDialog(UINT nIDTemplate, CWnd* parent = nullptr);
 
 protected:
 	EoDialogResizeHelper m_resizeHelper;

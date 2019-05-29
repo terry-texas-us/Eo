@@ -499,7 +499,7 @@ OdDbPageControllerPtr AeSysApp::newPageController() {
 			return OdRxObjectImpl<ExPageController>::createObject();
 	}
 	// Paging is not used.
-	return (OdDbPageController*) 0;
+	return (OdDbPageController*) nullptr;
 }
 
 int AeSysApp::setPagingType(int pagingType) noexcept {
@@ -645,17 +645,17 @@ void AeSysApp::SetRecentCommand(const OdString& command) {
 	}
 }
 
-CMenu* AeSysApp::CommandMenu(CMenu * *toolsSubMenu) {
+CMenu* AeSysApp::CommandMenu(CMenu* *toolsSubMenu) {
 	MENUITEMINFO MenuItemInfo;
 	MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 	MenuItemInfo.fMask = MIIM_STRING | MIIM_FTYPE | MIIM_SUBMENU | MIIM_ID;
 
 	CString MenuName;
-	CMenu* ToolsSubMenu(NULL);
-	CMenu* TopMenu = CMenu::FromHandle(theApp.GetAeSysMenu());
+	CMenu* ToolsSubMenu {nullptr};
+	CMenu* TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 
 	for (int Item = TopMenu->GetMenuItemCount() - 1; Item >= 0; Item--) {
-		MenuItemInfo.dwTypeData = NULL;
+		MenuItemInfo.dwTypeData = nullptr;
 		TopMenu->GetMenuItemInfoW(Item, &MenuItemInfo, TRUE);
 
 		const int SizeOfMenuName = ++MenuItemInfo.cch;
@@ -668,20 +668,19 @@ CMenu* AeSysApp::CommandMenu(CMenu * *toolsSubMenu) {
 			break;
 		}
 	}
-	ASSERT(ToolsSubMenu != NULL);
-	if (toolsSubMenu) {
-		*toolsSubMenu = ToolsSubMenu;
-	}
+	ASSERT(ToolsSubMenu != nullptr);
 
-	CMenu* RegisteredCommandsSubMenu(NULL);
+	if (toolsSubMenu) { *toolsSubMenu = ToolsSubMenu; }
+
+	CMenu* RegisteredCommandsSubMenu {nullptr};
 
 	for (int ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
-		MenuItemInfo.dwTypeData = NULL;
-		ToolsSubMenu->GetMenuItemInfoW(unsigned(ToolsMenuItem), &MenuItemInfo, TRUE);
+		MenuItemInfo.dwTypeData = nullptr;
+		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
 
 		const int SizeOfMenuName = ++MenuItemInfo.cch;
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
-		ToolsSubMenu->GetMenuItemInfoW(unsigned(ToolsMenuItem), &MenuItemInfo, TRUE);
+		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
 
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.CompareNoCase(L"Registered &Commands") == 0) {
@@ -689,19 +688,19 @@ CMenu* AeSysApp::CommandMenu(CMenu * *toolsSubMenu) {
 			break;
 		}
 	}
-	ENSURE(RegisteredCommandsSubMenu != NULL);
+	ENSURE(RegisteredCommandsSubMenu != nullptr);
 	return (RegisteredCommandsSubMenu);
 }
 
 void AeSysApp::RefreshCommandMenu() {
-	CMenu* ToolsSubMenu(NULL);
-	CMenu* RegisteredCommandsSubMenu = CommandMenu(&ToolsSubMenu);
+	CMenu* ToolsSubMenu {nullptr};
+	CMenu* RegisteredCommandsSubMenu {CommandMenu(&ToolsSubMenu)};
 
 	for (int Item = RegisteredCommandsSubMenu->GetMenuItemCount() - 1; Item >= 0; Item--) {
-		CMenu* SubMenu = RegisteredCommandsSubMenu->GetSubMenu(Item);
-		if (SubMenu) {
-			SubMenu->DestroyMenu();
-		}
+		CMenu* SubMenu {RegisteredCommandsSubMenu->GetSubMenu(Item)};
+
+		if (SubMenu) { SubMenu->DestroyMenu(); }
+
 		RegisteredCommandsSubMenu->DeleteMenu(Item, MF_BYPOSITION);
 	}
 	ENSURE(RegisteredCommandsSubMenu->GetMenuItemCount() == 0);
@@ -711,29 +710,32 @@ void AeSysApp::RefreshCommandMenu() {
 	MenuItemInfo.fMask = MIIM_DATA;
 
 	auto CommandStack {::odedRegCmds()};
-	bool bHasNoCommand {CommandStack->newIterator()->done()};
+	bool HasNoCommand {CommandStack->newIterator()->done()};
 
-	const unsigned ToolsMenuItem(8); // <tas="Until calculated position finished"</tas>
-	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, MF_BYPOSITION | (bHasNoCommand ? MF_GRAYED : MF_ENABLED));
+	const unsigned ToolsMenuItem {8}; // <tas="Until calculated ToolsMenu position finished. Menu resource which change the location of Registered Commands location break."</tas>
+	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, MF_BYPOSITION | (HasNoCommand ? MF_GRAYED : MF_ENABLED));
 
 	int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
-	if (!bHasNoCommand) {
-		OdRxIteratorPtr CommandStackGroupIterator = CommandStack->newGroupIterator();
+
+	if (!HasNoCommand) {
+		auto CommandStackGroupIterator = CommandStack->newGroupIterator();
+
 		while (!CommandStackGroupIterator->done()) {
-			OdRxDictionaryPtr Group = CommandStackGroupIterator->object();
+			OdRxDictionaryPtr Group {CommandStackGroupIterator->object()};
 			CMenu GroupMenu;
 			GroupMenu.CreateMenu();
-			OdRxIteratorPtr GroupCommandIterator = Group->newIterator(OdRx::kDictSorted);
+			OdRxIteratorPtr GroupCommandIterator {Group->newIterator(OdRx::kDictSorted)};
 			OdString GroupName;
+
 			while (!GroupCommandIterator->done()) {
-				OdEdCommandPtr pCmd = GroupCommandIterator->object().get();
-				if (GroupName.isEmpty()) {
-					GroupName = pCmd->groupName();
-				}
-				OdString CommandName(pCmd->globalName());
+				OdEdCommandPtr Command {GroupCommandIterator->object().get()};
+				
+				if (GroupName.isEmpty()) { GroupName = Command->groupName(); }
+
+				OdString CommandName(Command->globalName());
 				GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 
-				MenuItemInfo.dwItemData = (LPARAM) pCmd.get();
+				MenuItemInfo.dwItemData = (LPARAM)Command.get();
 				::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
 
 				GroupCommandIterator->next();
@@ -800,15 +802,15 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 			m_bLoading = false;
 		}
 	} catch (const OdError & Error) {
-		Database = 0;
+		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
 		reportError(L"Loading Error...", Error);
 	} catch (const UserBreak&) {
-		Database = 0;
+		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
 		SetStatusPaneTextAt(1, L"Operation was canceled by user.");
 	} catch (std::bad_alloc&) {
-		Database = 0;
+		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
 		SetStatusPaneTextAt(1, L"Memory Allocation Error...");
 	}
@@ -934,7 +936,7 @@ void AeSysApp::EditColorPalette() {
 	cc.lpCustColors = GreyPalette;
 	::ChooseColor(&cc);
 
-	::MessageBoxW(0, L"The background color is no longer associated with the pen Color Palette.", L"Deprecation Notice", MB_OK | MB_ICONINFORMATION);
+	::MessageBoxW(nullptr, L"The background color is no longer associated with the pen Color Palette.", L"Deprecation Notice", MB_OK | MB_ICONINFORMATION);
 
 	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
@@ -950,12 +952,14 @@ CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool mult
 	const DWORD Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
 	HINSTANCE hinstLib = LoadLibraryW(LibraryFileName);
-	if (NULL != hinstLib) {
+	
+	if (hinstLib != nullptr) {
 		ODA_OPEN_DLGPROC fpDlgProc = (ODA_OPEN_DLGPROC) GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg");
-		if (NULL != fpDlgProc) {
+		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
 			OpenWithPreviewDlg* OpenWithPreviewDialog;
 			(fpDlgProc) (&statDib, parentWindow, NULL, filter, Flags, &OpenWithPreviewDialog);
+
 			if (IDOK == OpenWithPreviewDialog->ShowModal()) {
 				long nSize = MAX_PATH;
 				OpenWithPreviewDialog->GetFullFileName(FileName.GetBuffer(nSize), nSize);
@@ -976,7 +980,7 @@ CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool mult
 		of.nFilterIndex = 1;
 		of.lpstrFile = FileName.GetBuffer(MAX_PATH);
 		of.nMaxFile = MAX_PATH;
-		of.lpstrInitialDir = NULL;
+		of.lpstrInitialDir = nullptr;
 		of.Flags = Flags;
 
 		GetOpenFileNameW(&of);
@@ -1286,7 +1290,7 @@ BOOL AeSysApp::InitializeTeigha() {
 		theApp.reportError(L"odInitialize error", Error);
 		return FALSE;
 	} catch (...) {
-		::MessageBoxW(0, L"odInitialize error", L"Teigha", MB_ICONERROR | MB_OK);
+		::MessageBoxW(nullptr, L"odInitialize error", L"Teigha", MB_ICONERROR | MB_OK);
 		return FALSE;
 	}
 
@@ -1520,40 +1524,46 @@ void AeSysApp::LoadPenWidthsFromFile(const CString& fileName) {
 /// The font is exactly 16384 bytes and defines a 96 character font set with a maximum of 4096 stokes
 /// </remarks>
 void AeSysApp::LoadSimplexStrokeFont(const CString & pathName) {
-	HANDLE OpenHandle = CreateFileW(pathName, GENERIC_READ, FILE_SHARE_READ, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+	auto OpenHandle {CreateFileW(pathName, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
+	
 	if (OpenHandle != INVALID_HANDLE_VALUE) {
-		if (SetFilePointer(OpenHandle, 0, 0, FILE_BEGIN) != (DWORD) -1) {
-			if (!m_SimplexStrokeFont) {
-				m_SimplexStrokeFont = new char[16384];
-			}
+
+		if (SetFilePointer(OpenHandle, 0, nullptr, FILE_BEGIN) != (DWORD) -1) {
+
+			if (!m_SimplexStrokeFont) { m_SimplexStrokeFont = new char[16384]; }
+
 			DWORD NumberOfBytesRead;
-			if (!ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, 0)) {
-				ReleaseSimplexStrokeFont();
-			}
+			
+			if (!ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, nullptr)) { ReleaseSimplexStrokeFont(); }
 		}
 		CloseHandle(OpenHandle);
 	} else {
-		HRSRC ResourceHandle = FindResourceW(NULL, MAKEINTRESOURCEW(IDR_PEGSTROKEFONT), L"STROKEFONT");
-		if (ResourceHandle != NULL) {
-			const int ResourceSize = SizeofResource(NULL, ResourceHandle);
+		HRSRC ResourceHandle = FindResourceW(nullptr, MAKEINTRESOURCEW(IDR_PEGSTROKEFONT), L"STROKEFONT");
+
+		if (ResourceHandle != nullptr) {
+			const auto ResourceSize {SizeofResource(nullptr, ResourceHandle)};
 			m_SimplexStrokeFont = new char[ResourceSize];
-			LPVOID Resource = LockResource(LoadResource(NULL, ResourceHandle));
+			auto Resource {LockResource(LoadResource(nullptr, ResourceHandle))};
 			memcpy_s(m_SimplexStrokeFont, ResourceSize, Resource, ResourceSize);
 		}
 	}
 }
+
 CString AeSysApp::LoadStringResource(UINT resourceIdentifier) const {
 	CString String;
 	VERIFY(String.LoadStringW(resourceIdentifier) == TRUE);
 	return String;
 }
+
 bool AeSysApp::ModeInformationOverView() const noexcept {
 	return m_ModeInformationOverView;
 }
+
 void AeSysApp::OnAppAbout() {
 	EoDlgAbout dlg;
 	dlg.DoModal();
 }
+
 void AeSysApp::OnEditCfGroups() noexcept {
 	m_ClipboardDataEoGroups = !m_ClipboardDataEoGroups;
 }
@@ -1587,7 +1597,7 @@ void AeSysApp::OnFilePlotstylemanager() {
 	OPENFILENAME of;
 	::ZeroMemory(&of, sizeof(OPENFILENAME));
 	of.lStructSize = sizeof(OPENFILENAME);
-	of.hwndOwner = 0;
+	of.hwndOwner = nullptr;
 	of.hInstance = theApp.GetInstance();
 	of.lpstrFilter = L"Plot Style Files\0*.ctb;*.stb\0All Files\0*.*\0\0";
 	of.lpstrFile = new wchar_t[MAX_PATH];
@@ -1847,7 +1857,7 @@ double AeSysApp::ParseLength(Units units, LPWSTR aszLen) {
 		}
 		return (dVal[0]);
 	} catch (const LPWSTR szMessage) {
-		::MessageBoxW(0, szMessage, 0, MB_ICONWARNING | MB_OK);
+		::MessageBoxW(nullptr, szMessage, nullptr, MB_ICONWARNING | MB_OK);
 		return (0.0);
 	}
 }
@@ -1869,34 +1879,32 @@ const OdString AeSysApp::product() {
 }
 
 bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept {
-	bool rv = false;
-	HKEY hKey;
-	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-		DWORD dwSize = EO_REGISTRY_BUFFER_SIZE;
+	bool ReturnValue {false};
+	HKEY OpenedKey;
+	
+	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
+		DWORD dwSize {EO_REGISTRY_BUFFER_SIZE};
 		unsigned char data[EO_REGISTRY_BUFFER_SIZE];
 		memset(data, 0, EO_REGISTRY_BUFFER_SIZE);
 
 		wchar_t data_t[EO_REGISTRY_BUFFER_SIZE];
 		wmemset(data_t, 0, EO_REGISTRY_BUFFER_SIZE);
 
-		if (RegQueryValueExW(hKey, name, 0, 0, data, &dwSize) == ERROR_SUCCESS) {
+		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, data, &dwSize) == ERROR_SUCCESS) {
 			memcpy_s(&data_t, EO_REGISTRY_BUFFER_SIZE, &data, dwSize);
-			rv = true;
+			ReturnValue = true;
 		} else {
-			if (ERROR_SUCCESS == RegEnumKeyExW(hKey, 0, data_t, &dwSize, NULL, NULL, NULL, NULL)) {
-				rv = true;
-			}
+			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, data_t, &dwSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
 		}
 		if (size < EO_REGISTRY_BUFFER_SIZE) {
-
 			swprintf(value, L"%s\0", data_t);
 		} else {
 			wcsncpy(value, data_t, size - 1);
 			value[size - 1] = '\0';
 		}
-		RegCloseKey(hKey);
+		RegCloseKey(OpenedKey);
 	}
-	return rv;
+	return ReturnValue;
 }
 
 OdString GetRegistryAcadLocation() {
@@ -2027,7 +2035,7 @@ void AeSysApp::SetStatusPaneTextAt(int index, LPCWSTR newText) {
 
 OdDbHostAppProgressMeter* AeSysApp::newProgressMeter() {
 
-	if (m_thisThreadID != ::GetCurrentThreadId()) { return 0; }
+	if (m_thisThreadID != ::GetCurrentThreadId()) { return nullptr; }
 
 	return ExHostAppServices::newProgressMeter();
 }
@@ -2105,16 +2113,17 @@ int AeSysApp::ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
 	CString Text = FormattedResourceString.Tokenize(L"\t", NextToken);
 	CString Caption = FormattedResourceString.Tokenize(L"\n", NextToken);
 
-	return (::MessageBoxW(0, Text, Caption, MB_ICONINFORMATION | MB_YESNOCANCEL | MB_DEFBUTTON2));
+	return (::MessageBoxW(nullptr, Text, Caption, MB_ICONINFORMATION | MB_YESNOCANCEL | MB_DEFBUTTON2));
 }
 
-void AeSysApp::warning(const char* warnVisGroup, const OdString & text) {
+void AeSysApp::warning(const char* warnVisGroup, const OdString& text) {
+
 	if (m_bLoading && (!warnVisGroup || !*warnVisGroup) && !m_bUseMTLoading) {
-		if (::MessageBoxW(NULL, text + L"\n\nDo you want to proceed ?", L"Warning!", MB_ICONWARNING | MB_YESNO) == IDNO) {
-			throw UserBreak();
-		}
+
+		if (::MessageBoxW(nullptr, text + L"\n\nDo you want to proceed ?", L"Warning!", MB_ICONWARNING | MB_YESNO) == IDNO) { throw UserBreak(); }
 	}
 }
+
 void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier) {
 	CString ResourceString = LoadStringResource(stringResourceIdentifier);
 
@@ -2122,8 +2131,9 @@ void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier) {
 	CString Text = ResourceString.Tokenize(L"\t", NextToken);
 	CString Caption = ResourceString.Tokenize(L"\n", NextToken);
 
-	::MessageBoxW(0, Text, Caption, MB_ICONWARNING | MB_OK);
+	::MessageBoxW(nullptr, Text, Caption, MB_ICONWARNING | MB_OK);
 }
+
 void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
 	CString FormatSpecification = LoadStringResource(stringResourceIdentifier);
 
@@ -2134,19 +2144,22 @@ void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string) 
 	CString Text = FormattedResourceString.Tokenize(L"\t", NextToken);
 	CString Caption = FormattedResourceString.Tokenize(L"\n", NextToken);
 
-	::MessageBoxW(0, Text, Caption, MB_ICONWARNING | MB_OK);
+	::MessageBoxW(nullptr, Text, Caption, MB_ICONWARNING | MB_OK);
 }
 
 void AeSysApp::initPlotStyleSheetEnv() {
 	OdString StyleSheetFiles = FindConfigPath(L"PrinterStyleSheetDir");
 	_wputenv_s(L"DDPLOTSTYLEPATHS", StyleSheetFiles);
 }
+
 CString AeSysApp::ResourceFolderPath() {
 	return (getApplicationPath() + L"\\res\\");
 }
+
 void AeSysApp::SetArchitecturalUnitsFractionPrecision(const int precision) noexcept {
 	if (precision > 0) m_ArchitecturalUnitsFractionPrecision = precision;
 }
+
 void AeSysApp::SetDimensionAngle(double angle) noexcept {
 	m_DimensionAngle = angle;
 }
@@ -2277,7 +2290,7 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 }
 }
 
-void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI * pCmdUI) {
+void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
 	if (m_numGSMenuItems == 0) {
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
@@ -2289,14 +2302,14 @@ void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI * pCmdUI) {
 		DWORD pathSize;
 		for (;;) {
 			pathSize = _MAX_FNAME + _MAX_EXT;
-			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, path.GetBuffer(pathSize), &pathSize, NULL, NULL, NULL, NULL)};
+			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, path.GetBuffer(pathSize), &pathSize, nullptr, nullptr, nullptr, nullptr)};
 			path.ReleaseBuffer();
+			
 			if (Status == ERROR_SUCCESS) {
-				if (!::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, path)) {
-					break;
-				}
-			} else
-				break;
+
+				if (!::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, path)) { break; }
+
+			} else { break; }
 		}
 	}
 }

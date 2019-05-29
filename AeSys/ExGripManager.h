@@ -35,12 +35,12 @@ public:
 	OdDbGripDataPtr GripData() const { return m_GripData; }
 	OdDbStub* entityId() const { return m_entPath.objectIds().last(); }
 	
-	bool entPath(OdDbBaseFullSubentPath* pPath = NULL) const {
-		if (pPath)
-			* pPath = m_entPath;
+	bool entPath(OdDbBaseFullSubentPath* path = nullptr) const {
+		
+		if (path) { *path = m_entPath; }
+		
 		return m_entPath.subentId() != OdDbSubentId();
 	}
-
 	void setStatus(OdDbGripOperations::DrawType status) noexcept { m_Status = status; }
 	void setInvisible(bool invisible) noexcept { m_Invisible = invisible; }
 	void setShared(bool shared) noexcept { m_Shared = shared; }
@@ -80,7 +80,7 @@ public:
 	void notifyDragAborted();
 
 	OdDbStub* entityId() const;
-	bool entPath(OdDbBaseFullSubentPath* pPath = NULL) const;
+	bool entPath(OdDbBaseFullSubentPath* path = nullptr) const;
 
 protected:
 	bool locateActiveGrips(OdIntArray& aIndices);
@@ -150,8 +150,8 @@ protected:
 	OdGeVector3d ActiveViewDirection() const;
 	virtual OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const = 0;
 
-	virtual OdGsModel* GetGsModel() noexcept { return NULL; }
-	virtual OdGsLayoutHelper* GetGsLayoutHelper() noexcept { return NULL; }
+	virtual OdGsModel* GetGsModel() noexcept { return nullptr; }
+	virtual OdGsLayoutHelper* GetGsLayoutHelper() noexcept { return nullptr; }
 
 	bool m_Disabled;
 	virtual void Disable(bool disable) noexcept;

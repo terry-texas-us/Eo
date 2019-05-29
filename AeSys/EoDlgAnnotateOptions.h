@@ -6,8 +6,8 @@ class EoDlgAnnotateOptions : public CDialog {
     DECLARE_DYNAMIC(EoDlgAnnotateOptions)
 
 public:
-    EoDlgAnnotateOptions(CWnd* parent = NULL);
-    EoDlgAnnotateOptions(AeSysView* view, CWnd* parent = NULL);
+    EoDlgAnnotateOptions(CWnd* parent = nullptr);
+    EoDlgAnnotateOptions(AeSysView* view, CWnd* parent = nullptr);
     
     ~EoDlgAnnotateOptions();
 

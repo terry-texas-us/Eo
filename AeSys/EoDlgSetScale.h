@@ -6,7 +6,7 @@ class EoDlgSetScale : public CDialog {
     DECLARE_DYNAMIC(EoDlgSetScale)
 
 public:
-    EoDlgSetScale(CWnd* parent = NULL);
+    EoDlgSetScale(CWnd* parent = nullptr);
     virtual ~EoDlgSetScale();
 
     // Dialog Data

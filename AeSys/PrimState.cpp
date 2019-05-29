@@ -19,30 +19,37 @@ const CPrimState& CPrimState::operator=(const CPrimState& other) noexcept {
 EoDbCharacterCellDefinition CPrimState::CharacterCellDefinition() const noexcept {
 	return (m_CharacterCellDefinition);
 }
+
 OdInt16 CPrimState::ColorIndex() const noexcept {
 	return (m_ColorIndex);
 }
+
 EoDbFontDefinition CPrimState::FontDefinition() const noexcept {
 	return (m_FontDefinition);
 }
+
 OdInt16 CPrimState::LinetypeIndex() const noexcept {
 	return (m_LinetypeIndex);
 }
+
 OdInt16 CPrimState::PointDisplayMode() const noexcept {
 	return m_PointDisplayMode;
 }
+
 OdInt16 CPrimState::HatchInteriorStyle() const noexcept {
 	return (m_HatchInteriorStyle);
 }
+
 unsigned CPrimState::HatchInteriorStyleIndex() const noexcept {
 	return (m_HatchInteriorStyleIndex);
 }
+
 void CPrimState::Restore(CDC* deviceContext, int iSaveId) {
 	
 	if (iSaveId >= sizeof(psSav) / sizeof(psSav[0])) { return; }
 
 	if (psSav[iSaveId] != 0) {
-		SetPen(NULL, deviceContext, psSav[iSaveId]->ColorIndex(), psSav[iSaveId]->LinetypeIndex());
+		SetPen(nullptr, deviceContext, psSav[iSaveId]->ColorIndex(), psSav[iSaveId]->LinetypeIndex());
 
 		m_FontDefinition = psSav[iSaveId]->m_FontDefinition;
 
@@ -55,6 +62,7 @@ void CPrimState::Restore(CDC* deviceContext, int iSaveId) {
 		psSav[iSaveId] = 0;
 	}
 }
+
 int CPrimState::Save() {
 	int iSaveId = sizeof(psSav) / sizeof(psSav[0]) - 1;
 
@@ -71,6 +79,7 @@ int CPrimState::Save() {
 	// return id to use for restore reference
 	return (iSaveId);
 }
+
 void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, OdInt16 colorIndex, OdInt16 linetypeIndex) noexcept {
 	if (EoDbPrimitive::HighlightColorIndex() != 0) {
 		colorIndex = EoDbPrimitive::HighlightColorIndex();
@@ -99,6 +108,7 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, OdInt16 colorIndex,
 		ManagePenResources(deviceContext, colorIndex, int(LogicalWidth), linetypeIndex);
 	}
 }
+
 void CPrimState::ManagePenResources(CDC* deviceContext, OdInt16 colorIndex, int penWidth, OdInt16 linetypeIndex) {
 	static const int NumberOfPens = 8;
 	static HPEN hPen[NumberOfPens] = {0, 0, 0, 0, 0, 0, 0, 0};
@@ -164,48 +174,55 @@ void CPrimState::ManagePenResources(CDC* deviceContext, OdInt16 colorIndex, int 
 		crColRef[iPen] = pColTbl[colorIndex];
 	}
 }
+
 void CPrimState::SetColorIndex(CDC* deviceContext, OdInt16 colorIndex) {
 	m_ColorIndex = colorIndex;
-	if (deviceContext) {
-		ManagePenResources(deviceContext, colorIndex, 0, m_LinetypeIndex);
-	}
+
+	if (deviceContext) { ManagePenResources(deviceContext, colorIndex, 0, m_LinetypeIndex); }
 }
+
 void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, OdInt16 linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
-	if (deviceContext) {
-		ManagePenResources(deviceContext, m_ColorIndex, 0, linetypeIndex);
-	}
+
+	if (deviceContext) { ManagePenResources(deviceContext, m_ColorIndex, 0, linetypeIndex); }
 }
+
 int CPrimState::SetROP2(CDC* deviceContext, int iDrawMode) {
 	// Sets the current foreground mix mode. GDI uses the foreground mix mode to combine pens and
 	// interiors of filled objects with the colors already on the screen. The foreground mix mode
 	// defines how colors from the brush or pen and the colors in the existing image are to be combined.
 
 	if (ColorPalette[0] == RGB(0xFF, 0xFF, 0xFF)) {
-		if (iDrawMode == R2_XORPEN)
-			iDrawMode = R2_NOTXORPEN;
+
+		if (iDrawMode == R2_XORPEN) { iDrawMode = R2_NOTXORPEN; }
 	}
 	return (deviceContext->SetROP2(iDrawMode));
 }
+
 void CPrimState::SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment) {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 
 	deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
 }
+
 void CPrimState::SetCharacterCellDefinition(const EoDbCharacterCellDefinition& characterCellDefinition) noexcept {
 	m_CharacterCellDefinition = characterCellDefinition;
 }
+
 void CPrimState::SetFontDefinition(CDC* deviceContext, const EoDbFontDefinition& fontDefinition) {
 	m_FontDefinition = fontDefinition;
 	SetTxtAlign(deviceContext, m_FontDefinition.HorizontalAlignment(), m_FontDefinition.VerticalAlignment());
 }
+
 void CPrimState::SetPointDisplayMode(OdInt16 pointDisplayMode) noexcept {
 	m_PointDisplayMode = pointDisplayMode;
 }
+
 void CPrimState::SetHatchInteriorStyle(OdInt16 interiorStyle) noexcept {
 	m_HatchInteriorStyle = interiorStyle;
 }
+
 void CPrimState::SetHatchInteriorStyleIndex(unsigned styleIndex) noexcept {
 	m_HatchInteriorStyleIndex = styleIndex;
 }

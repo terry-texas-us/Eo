@@ -7,7 +7,7 @@ private:
 
 public:
 	EoDbMaskedPrimitive() noexcept {
-		m_Primitive = (EoDbPrimitive*) 0;
+		m_Primitive = (EoDbPrimitive*) nullptr;
 		m_Mask = 0;
 	}
 	EoDbMaskedPrimitive(EoDbPrimitive* primitive, DWORD mask) {

@@ -50,7 +50,7 @@ private:
 		EHFix  m_hFix;
 		EVFix  m_vFix;
 		CtrlSize() noexcept
-			: m_hCtrl(0)
+			: m_hCtrl(nullptr)
 			, m_hFix(kNoHFix)
 			, m_vFix(kNoVFix) {
 		}

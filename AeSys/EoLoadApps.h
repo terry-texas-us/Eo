@@ -8,7 +8,7 @@ public:
 	public:
 		ODRX_HEAP_OPERATORS();
 		LoadedApps() noexcept
-			: m_pListBox(0) {
+			: m_pListBox(nullptr) {
 		}
 		CListBox* m_pListBox;
 		void rxAppLoaded(OdRxModule* appModule) override;
@@ -19,7 +19,7 @@ private:
 	static LoadedApps* m_LoadedApps;
 
 public:
-	EoLoadApps(CWnd* parent = NULL);
+	EoLoadApps(CWnd* parent = nullptr);
 
 	static void rxInit();
 	static void rxUninit();

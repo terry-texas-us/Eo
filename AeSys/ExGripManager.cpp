@@ -83,10 +83,10 @@ OdDbStub* OdExGripDrag::entityId() const {
 	return m_entPath.objectIds().last();
 }
 
-bool OdExGripDrag::entPath(OdDbBaseFullSubentPath* pPath) const // = NULL
-{
-	if (pPath)
-		* pPath = m_entPath;
+bool OdExGripDrag::entPath(OdDbBaseFullSubentPath* pPath) const {
+	
+	if (pPath) { *pPath = m_entPath; }
+
 	return m_entPath.subentId() != OdDbSubentId();
 }
 
@@ -385,7 +385,7 @@ OdUInt32 OdExGripData::subSetAttributes(OdGiDrawableTraits* drawableTraits) cons
 			pEntityTraits->setTrueColor(m_pOwner->m_GRIPHOVER);
 			break;
 	}
-	pEntityTraits->setMaterial(NULL);
+	pEntityTraits->setMaterial(nullptr);
 	pEntityTraits->setLineWeight(OdDb::kLnWt000);
 	return kDrawableRegenDraw;
 }

@@ -6,7 +6,7 @@ class EoDlgLowPressureDuctOptions : public CDialog {
     DECLARE_DYNAMIC(EoDlgLowPressureDuctOptions)
 
 public:
-    EoDlgLowPressureDuctOptions(CWnd* parent = NULL);
+    EoDlgLowPressureDuctOptions(CWnd* parent = nullptr);
     virtual ~EoDlgLowPressureDuctOptions();
 
     // Dialog Data

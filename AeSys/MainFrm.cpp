@@ -530,7 +530,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			VERIFY(menu.LoadMenuW(IDR_POPUP_TOOLBAR));
 
 			auto PopupSubMenu {menu.GetSubMenu(0)};
-			ASSERT(PopupSubMenu != NULL);
+			ASSERT(PopupSubMenu != nullptr);
 
 			if (PopupSubMenu) {
 				popupMenu->GetMenuBar()->ImportFromMenu(*PopupSubMenu, TRUE);
@@ -594,7 +594,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 	}
 	CList<UINT, UINT> lstCommands;
 	
-	if (AreMDITabs(NULL)) {
+	if (AreMDITabs()) {
 		lstCommands.AddTail(ID_WINDOW_ARRANGE);
 		lstCommands.AddTail(ID_WINDOW_CASCADE);
 		lstCommands.AddTail(ID_WINDOW_TILE_HORZ);
@@ -606,10 +606,10 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		const auto Maximize {theApp.m_Options.m_nTabsStyle != EoApOptions::None};
 
 		auto hwndT {::GetWindow(m_hWndMDIClient, GW_CHILD)};
-		while (hwndT != NULL) {
-			CMDIChildWndEx* pFrame = DYNAMIC_DOWNCAST(CMDIChildWndEx, CWnd::FromHandle(hwndT));
+		while (hwndT != nullptr) {
+			CMDIChildWndEx* pFrame {DYNAMIC_DOWNCAST(CMDIChildWndEx, CWnd::FromHandle(hwndT))};
 			
-			if (pFrame != NULL) {
+			if (pFrame != nullptr) {
 				ASSERT_VALID(pFrame);
 				
 				if (Maximize) {
@@ -627,17 +627,13 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 			}
 			hwndT = ::GetWindow(hwndT, GW_HWNDNEXT);
 		}
-		if (Maximize) {
-			m_MenuBar.SetMaximizeMode(FALSE);
-		}
+		if (Maximize) { m_MenuBar.SetMaximizeMode(FALSE); }
 	}
 	if (m_PropertiesPane.IsAutoHideMode()) {
 		m_PropertiesPane.BringWindowToTop();
 		auto Divider {m_PropertiesPane.GetDefaultPaneDivider()};
 		
-		if (Divider != nullptr) {
-			Divider->BringWindowToTop();
-		}
+		if (Divider != nullptr) { Divider->BringWindowToTop(); }
 	}
 	CMDIFrameWndEx::m_bDisableSetRedraw = theApp.m_Options.m_bDisableSetRedraw;
 
@@ -726,7 +722,7 @@ void CMainFrame::OnStartProgress() {
 	m_CurrentProgress = 0;
 	m_InProgress = true;
 
-	TimerId = SetTimer(2, 1, NULL);
+	TimerId = SetTimer(2, 1, nullptr);
 }
 
 void CMainFrame::OnTimer(UINT_PTR nIDEvent) {

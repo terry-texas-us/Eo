@@ -6,7 +6,7 @@ class EoDlgViewZoom : public CDialog {
 	DECLARE_DYNAMIC(EoDlgViewZoom)
 
 public:
-	EoDlgViewZoom(CWnd* parent = NULL);
+	EoDlgViewZoom(CWnd* parent = nullptr);
 	virtual ~EoDlgViewZoom();
 
 // Dialog Data

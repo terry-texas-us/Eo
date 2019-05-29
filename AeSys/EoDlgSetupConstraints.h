@@ -6,8 +6,8 @@ class EoDlgSetupConstraints : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupConstraints)
 
 public:
-	EoDlgSetupConstraints(CWnd* parent = NULL);
-	EoDlgSetupConstraints(AeSysView* view, CWnd* parent = NULL);
+	EoDlgSetupConstraints(CWnd* parent = nullptr);
+	EoDlgSetupConstraints(AeSysView* view, CWnd* parent = nullptr);
 	virtual ~EoDlgSetupConstraints();
 
 // Dialog Data

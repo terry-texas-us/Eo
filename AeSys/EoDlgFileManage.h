@@ -6,8 +6,8 @@ class EoDlgFileManage : public CDialog {
     DECLARE_DYNAMIC(EoDlgFileManage)
 
 public:
-    EoDlgFileManage(CWnd* parent = NULL);
-    EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = NULL);
+    EoDlgFileManage(CWnd* parent = nullptr);
+    EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
 
     virtual ~EoDlgFileManage();
 

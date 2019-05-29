@@ -50,9 +50,9 @@ void DrawTransparentBitmap(HDC hdc, HBITMAP hBitmap, short xStart, short yStart,
 	hdcMem = CreateCompatibleDC(hdc);
 	hdcSave = CreateCompatibleDC(hdc);
 
-	bmAndBack = CreateBitmap(ptSize.x, ptSize.y, 1, 1, NULL);
+	bmAndBack = CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr);
 
-	bmAndObject = CreateBitmap(ptSize.x, ptSize.y, 1, 1, NULL);
+	bmAndObject = CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr);
 
 	bmAndMem = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
 	bmSave = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);

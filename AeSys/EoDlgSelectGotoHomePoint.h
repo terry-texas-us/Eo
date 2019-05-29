@@ -6,8 +6,8 @@ class EoDlgSelectGotoHomePoint : public CDialog {
     DECLARE_DYNAMIC(EoDlgSelectGotoHomePoint)
 
 public:
-    EoDlgSelectGotoHomePoint(CWnd* parent = NULL);
-    EoDlgSelectGotoHomePoint(AeSysView* currentView, CWnd* parent = NULL);
+    EoDlgSelectGotoHomePoint(CWnd* parent = nullptr);
+    EoDlgSelectGotoHomePoint(AeSysView* currentView, CWnd* parent = nullptr);
     virtual ~EoDlgSelectGotoHomePoint();
 
     // Dialog Data

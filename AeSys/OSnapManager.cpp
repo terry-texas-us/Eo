@@ -616,7 +616,7 @@ bool OdBaseSnapManager::SetEntityCenters(OdRxObject* rxObject) {
 }
 
 void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord, const OdGeMatrix3d& matrix) {
-	OdGiDrawableDesc* dd0 = NULL;
+	OdGiDrawableDesc* dd0 = nullptr;
 	OdGiLocalDrawableDesc dd(dd0); // need for build OdGiPathNode
 
 	for (OdDbObjectIteratorPtr pIter = blockTableRecord->newIterator(); !pIter->done() && m_Centers.size() < nMaxHist; pIter->step()) {

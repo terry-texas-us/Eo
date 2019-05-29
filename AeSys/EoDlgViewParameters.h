@@ -6,7 +6,7 @@ class EoDlgViewParameters : public CDialog {
     DECLARE_DYNAMIC(EoDlgViewParameters)
 
 public:
-    EoDlgViewParameters(CWnd* parent = NULL);
+    EoDlgViewParameters(CWnd* parent = nullptr);
     virtual ~EoDlgViewParameters();
 
     // Dialog Data

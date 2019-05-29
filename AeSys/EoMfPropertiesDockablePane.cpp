@@ -148,23 +148,28 @@ void EoMfPropertiesDockablePane::OnExpandAllProperties() {
 void EoMfPropertiesDockablePane::OnProperties1() {
 	ATLTRACE2(atlTraceGeneral, 0, L"EoMfPropertiesDockablePane::OnProperties1\n");
 }
+
 void EoMfPropertiesDockablePane::OnSortProperties() {
 	m_PropertyGrid.SetAlphabeticMode(!m_PropertyGrid.IsAlphabeticMode());
 }
+
 void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */) {
 	ATLTRACE2(atlTraceGeneral, 2, L"EoMfPropertiesDockablePane::OnUpdatExpandAllProperties\n");
 }
+
 void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* /* pCmdUI */) {
 	ATLTRACE2(atlTraceGeneral, 2, L"EoMfPropertiesDockablePane::OnUpdatProperties1\n");
 }
+
 void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_PropertyGrid.IsAlphabeticMode());
 }
-void EoMfPropertiesDockablePane::AdjustLayout() {
-	
-	if (GetSafeHwnd() == NULL) { return; }
 
-	CRect rectClient,rectCombo;
+void EoMfPropertiesDockablePane::AdjustLayout() {
+
+	if (GetSafeHwnd() == nullptr) { return; }
+
+	CRect rectClient, rectCombo;
 	GetClientRect(rectClient);
 
 	m_wndObjectCombo.GetWindowRect(&rectCombo);
@@ -172,10 +177,11 @@ void EoMfPropertiesDockablePane::AdjustLayout() {
 	const int cyCmb = rectCombo.Size().cy;
 	const int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
 
-	m_wndObjectCombo.SetWindowPos(NULL, rectClient.left, rectClient.top, rectClient.Width(), 200, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertiesToolBar.SetWindowPos(NULL, rectClient.left, rectClient.top + cyCmb, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertyGrid.SetWindowPos(NULL, rectClient.left, rectClient.top + cyCmb + cyTlb, rectClient.Width(), rectClient.Height() -(cyCmb+cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndObjectCombo.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), 200, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertiesToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top + cyCmb, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertyGrid.SetWindowPos(nullptr, rectClient.left, rectClient.top + cyCmb + cyTlb, rectClient.Width(), rectClient.Height() - (cyCmb + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
 }
+
 void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	SetPropertyGridFont();
 
@@ -189,7 +195,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	CMFCPropertyGridProperty* WorkspaceTabsGroup = new CMFCPropertyGridProperty(L"Workspace Tabs");
 
-	CMFCPropertyGridProperty* TabsStyle = new CMFCPropertyGridProperty(L"Tabs Style", L"", L"Set the Tabs Style to None, Standard, or Grouped", kTabsStyle, NULL, NULL, NULL);
+	CMFCPropertyGridProperty* TabsStyle = new CMFCPropertyGridProperty(L"Tabs Style", L"", L"Set the Tabs Style to None, Standard, or Grouped", kTabsStyle);
 	TabsStyle->AddOption(::TabsStyles[0], TRUE);
 	TabsStyle->AddOption(::TabsStyles[1], TRUE);
 	TabsStyle->AddOption(::TabsStyles[2], TRUE);
@@ -197,7 +203,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	TabsStyle->AllowEdit(FALSE);
 	WorkspaceTabsGroup->AddSubItem(TabsStyle);
 
-	CMFCPropertyGridProperty* TabLocation = new CMFCPropertyGridProperty(L"Tab Location", L"", L"Set the Tab Location to Top or Bottom", kTabLocation, NULL, NULL, NULL);
+	CMFCPropertyGridProperty* TabLocation = new CMFCPropertyGridProperty(L"Tab Location", L"", L"Set the Tab Location to Top or Bottom", kTabLocation);
 	TabLocation->AddOption(::TabLocations[0], TRUE);
 	TabLocation->AddOption(::TabLocations[1], TRUE);
 	TabLocation->SetValue(::TabLocations[theApp.m_Options.m_MdiTabInfo.m_tabLocation]);
@@ -227,7 +233,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	ActiveViewGroup->AddSubItem(WorldScaleProperty);
 	ActiveViewGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use True Type fonts", (_variant_t) true, L"Specifies that the Active View uses True Type fonts"));
 	m_PropertyGrid.AddProperty(ActiveViewGroup);
-	WorldScaleProperty->Enable(ActiveView != NULL);
+	WorldScaleProperty->Enable(ActiveView != nullptr);
 
 
 	CMFCPropertyGridProperty* AppearanceGroup = new CMFCPropertyGridProperty(L"Appearance");
@@ -308,7 +314,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	pProp->Enable(FALSE);
 	MiscGroup->AddSubItem(pProp);
 
-	CMFCPropertyGridColorProperty* ColorProperty = new CMFCPropertyGridColorProperty(L"Window Color", RGB(210, 192, 254), NULL, L"Specifies the default window color");
+	CMFCPropertyGridColorProperty* ColorProperty = new CMFCPropertyGridColorProperty(L"Window Color", RGB(210, 192, 254), nullptr, L"Specifies the default window color");
 	ColorProperty->EnableOtherButton(L"Other...");
 	ColorProperty->EnableAutomaticButton(L"Default", ::GetSysColor(COLOR_3DFACE));
 	MiscGroup->AddSubItem(ColorProperty);
@@ -316,7 +322,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	static wchar_t BASED_CODE szFilter[] = L"Icon Files(*.ico)|*.ico|All Files(*.*)|*.*||";
 	MiscGroup->AddSubItem(new CMFCPropertyGridFileProperty(L"Icon", TRUE, L"", L"ico", 0, szFilter, L"Specifies the window icon"));
 
-	MiscGroup->AddSubItem(new CMFCPropertyGridFileProperty(L"Shadow Folder Path", theApp.ShadowFolderPath(), 0, NULL));
+	MiscGroup->AddSubItem(new CMFCPropertyGridFileProperty(L"Shadow Folder Path", theApp.ShadowFolderPath(), 0));
 
 	m_PropertyGrid.AddProperty(MiscGroup);
 }
@@ -339,21 +345,20 @@ void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 
 	m_PropertyGrid.SetFont(&m_PropertyGridFont);
 }
+
 void EoMfPropertiesDockablePane::SetWorkspaceTabsSubItemsState() {
 	for (int i = 0; i < m_PropertyGrid.GetPropertyCount(); i++) {
-		CMFCPropertyGridProperty* Property = m_PropertyGrid.GetProperty(i);
-		ASSERT_VALID(Property);
+		auto PropertyGridProperty {m_PropertyGrid.GetProperty(i)};
+		ASSERT_VALID(PropertyGridProperty);
 
-		if (wcscmp(Property->GetName(), L"Workspace Tabs") == 0) {
-			for (int SubItemIndex = 1; SubItemIndex < Property->GetSubItemsCount(); SubItemIndex++) {
-				CMFCPropertyGridProperty* SubProperty = Property->GetSubItem(SubItemIndex);
+		if (wcscmp(PropertyGridProperty->GetName(), L"Workspace Tabs") == 0) {
+			for (int SubItemIndex = 1; SubItemIndex < PropertyGridProperty->GetSubItemsCount(); SubItemIndex++) {
+				auto SubProperty {PropertyGridProperty->GetSubItem(SubItemIndex)};
 
 				ASSERT_VALID(SubProperty);
 				SubProperty->Enable(theApp.m_Options.m_nTabsStyle != EoApOptions::None);
 			}
 		}
 	}
-	if (m_PropertyGrid.GetSafeHwnd() != NULL) {
-		m_PropertyGrid.RedrawWindow();
-	}
+	if (m_PropertyGrid.GetSafeHwnd() != nullptr) { m_PropertyGrid.RedrawWindow(); }
 }

@@ -164,9 +164,10 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 			}
 		}
 	} catch (const LPWSTR szMessage) {
+
 		if (Position >= 96) {
-			if (::MessageBoxW(0, szMessage, 0, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL)
-				return false;
+
+			if (::MessageBoxW(nullptr, szMessage, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
 		}
 		file.Seek(Position + 32, CFile::begin);
 	}

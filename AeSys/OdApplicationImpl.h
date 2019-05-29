@@ -32,7 +32,7 @@ public:
 		return m_pUnderlayObj;
 	}
 	void SetNull() noexcept {
-		m_pUnderlayObj = 0;
+		m_pUnderlayObj = nullptr;
 	}
 
 private:

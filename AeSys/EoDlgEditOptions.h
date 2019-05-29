@@ -6,8 +6,8 @@ class EoDlgEditOptions : public CDialog {
     DECLARE_DYNAMIC(EoDlgEditOptions)
 
 public:
-    EoDlgEditOptions(CWnd* parent = NULL);
-    EoDlgEditOptions(AeSysView* view, CWnd* parent = NULL);
+    EoDlgEditOptions(CWnd* parent = nullptr);
+    EoDlgEditOptions(AeSysView* view, CWnd* parent = nullptr);
     virtual ~EoDlgEditOptions();
 
     // Dialog Data

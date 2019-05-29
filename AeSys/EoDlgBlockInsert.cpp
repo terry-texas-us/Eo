@@ -58,7 +58,7 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 	EoDbBlock* Block;
 
 	POSITION BlockPosition = m_Document->GetFirstBlockPosition();
-	while (BlockPosition != NULL) {
+	while (BlockPosition != nullptr) {
 		m_Document->GetNextBlock(BlockPosition, BlockName, Block);
 		if (!Block->IsAnonymous()) {
 			m_BlocksListBoxControl.AddString(BlockName);

@@ -99,7 +99,7 @@ void CBitmapColorInfo::GetBitmapSizes(CBitmap &Bmp, int &W, int &H) {
 }
 DIBCOLOR *CBitmapColorInfo::GetBitmapPixels(CBitmap &Bmp, int &W, int &H) {
 	CDC dcMem; 
-	dcMem.CreateCompatibleDC(NULL);
+	dcMem.CreateCompatibleDC(nullptr);
 	GetBitmapSizes(Bmp, W, H);
 	BITMAPINFO bi;
 	bi.bmiHeader.biSize = sizeof(bi.bmiHeader);
@@ -117,7 +117,7 @@ DIBCOLOR *CBitmapColorInfo::GetBitmapPixels(CBitmap &Bmp, int &W, int &H) {
 }
 void CBitmapColorInfo::SetBitmapPixels(CBitmap &Bmp, DIBCOLOR *pPixels) {
 	CDC dcMem; 
-	dcMem.CreateCompatibleDC(NULL);
+	dcMem.CreateCompatibleDC(nullptr);
 	int W, H;
 	GetBitmapSizes(Bmp, W, H);
 	BITMAPINFO bi;
@@ -139,14 +139,14 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpC
 	ASSERT(pBmpSource);
 	ASSERT(pBmpSource != pBmpClone);
 
-	if (!pBmpClone && !pBmpSource && (pBmpSource == pBmpClone)) { return NULL; }
+	if (!pBmpClone && !pBmpSource && (pBmpSource == pBmpClone)) { return nullptr; }
 
 	BITMAP bmp; 
 	DWORD dw;
     OdUInt8 *pb;
 	((CBitmap*)pBmpSource)->GetBitmap(&bmp); 
 
-	CClientDC ClientDeviceContext(NULL);
+	CClientDC ClientDeviceContext(nullptr);
 	CDC cdc;
 	cdc.CreateCompatibleDC(&ClientDeviceContext);
 	pBmpClone->CreateCompatibleBitmap(&ClientDeviceContext, bmp.bmWidth, bmp.bmHeight);
@@ -235,7 +235,7 @@ const int CPsListStyleData::getPublicArrayIndexByColor(COLORREF color) {
 CPsListStyleData::CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item) 
     : m_pPlotStyles(pPs)
     , m_pPublicBitmapList(pPublicBitmapList)
-    , m_pBitmapColorInfo(NULL)
+    , m_pBitmapColorInfo(nullptr)
     , m_iActiveListIndex(0) {
 	if (!m_pPlotStyles && !m_pPublicBitmapList) return;
 	OdPsPlotStyleData OdPsData;
@@ -433,7 +433,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 	for (unsigned i = 0; i < m_bitmapList.size(); i++)
 	{
 		if (!i )
-			item = m_Color.AddBitmap(NULL, m_bitmapList[i]->m_name);
+			item = m_Color.AddBitmap(nullptr, m_bitmapList[i]->m_name);
 		else
 			item = m_Color.AddBitmap(&m_bitmapList[i]->m_bitmap, m_bitmapList[i]->m_name);
 		m_bitmapList[i]->m_iItem = (OdUInt8)item;
@@ -626,35 +626,35 @@ const bool EoDlgPlotStyleEditor_FormViewPropertyPage::SetPlotStyleTable(OdPsPlot
 	m_pPlotStyleTable = pPlotStyleTable;
 	return true;
 }
-HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width,int height, COLORREF color) noexcept {
+HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int height, COLORREF color) noexcept {
 	ICONINFO ii;
-	ii.fIcon=TRUE;
-	HDC hScreenDC=::GetDC(NULL);
-	HDC hIconDC=CreateCompatibleDC(hScreenDC);
-	HDC hMaskDC=CreateCompatibleDC(hScreenDC);
+	ii.fIcon = TRUE;
+	HDC hScreenDC = ::GetDC(nullptr);
+	HDC hIconDC = CreateCompatibleDC(hScreenDC);
+	HDC hMaskDC = CreateCompatibleDC(hScreenDC);
 
-	ii.xHotspot=0;
-	ii.yHotspot=0;	
-	ii.hbmColor=CreateCompatibleBitmap(hScreenDC,width,height);	
-	ii.hbmMask=CreateCompatibleBitmap(hMaskDC,width,height);
+	ii.xHotspot = 0;
+	ii.yHotspot = 0;
+	ii.hbmColor = CreateCompatibleBitmap(hScreenDC, width, height);
+	ii.hbmMask = CreateCompatibleBitmap(hMaskDC, width, height);
 
-	::ReleaseDC(NULL,hScreenDC);
+	::ReleaseDC(nullptr, hScreenDC);
 
-	HGDIOBJ hOldIconDC=::SelectObject(hIconDC,ii.hbmColor);
-	HGDIOBJ hOldMaskDC=::SelectObject(hMaskDC,ii.hbmMask);	
+	HGDIOBJ hOldIconDC = ::SelectObject(hIconDC, ii.hbmColor);
+	HGDIOBJ hOldMaskDC = ::SelectObject(hMaskDC, ii.hbmMask);
 
-	BitBlt(hIconDC,0,0,width,height,NULL,0,0,WHITENESS);
-	BitBlt(hMaskDC,0,0,width,height,NULL,0,0,BLACKNESS);	
+	BitBlt(hIconDC, 0, 0, width, height, NULL, 0, 0, WHITENESS);
+	BitBlt(hMaskDC, 0, 0, width, height, NULL, 0, 0, BLACKNESS);
 
-	RECT r={0,0,width,height};	
-	HBRUSH hBR=CreateSolidBrush(color);
-	FillRect(hIconDC,&r,hBR);
+	RECT r = {0, 0, width, height};
+	HBRUSH hBR = CreateSolidBrush(color);
+	FillRect(hIconDC, &r, hBR);
 	DeleteObject(hBR);
 
-	SelectObject(hIconDC,hOldIconDC);
-	SelectObject(hMaskDC,hOldMaskDC);
+	SelectObject(hIconDC, hOldIconDC);
+	SelectObject(hMaskDC, hOldMaskDC);
 
-	HICON hIcon=CreateIconIndirect(&ii);
+	HICON hIcon = CreateIconIndirect(&ii);
 
 	//Cleanup
 	DeleteObject(ii.hbmColor);

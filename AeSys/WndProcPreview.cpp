@@ -6,7 +6,7 @@
 
 #include "Preview.h"
 
-CBitmap* WndProcPreview_Bitmap = NULL;
+CBitmap* WndProcPreview_Bitmap = nullptr;
 
 LRESULT CALLBACK WndProcPreview(HWND, UINT, WPARAM, LPARAM);
 
@@ -30,7 +30,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lPa
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};
-			CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : NULL;
+			CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : nullptr;
 
 			CRect rc;
 			::GetClientRect(hwnd, &rc);
@@ -40,9 +40,9 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lPa
 		return (FALSE);
 
 		case WM_DESTROY:
-			if (WndProcPreview_Bitmap != NULL) {
+			if (WndProcPreview_Bitmap != nullptr) {
 				delete WndProcPreview_Bitmap;
-				WndProcPreview_Bitmap = NULL;
+				WndProcPreview_Bitmap = nullptr;
 			}
 			return (FALSE);
 

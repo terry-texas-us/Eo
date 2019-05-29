@@ -6,8 +6,8 @@ class EoDlgSetupLinetype : public CDialog {
     DECLARE_DYNAMIC(EoDlgSetupLinetype)
 
 public:
-    EoDlgSetupLinetype(CWnd* parent = NULL);
-    EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent = NULL);
+    EoDlgSetupLinetype(CWnd* parent = nullptr);
+    EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent = nullptr);
     virtual ~EoDlgSetupLinetype();
 
     // Dialog Data

@@ -17,7 +17,7 @@ public:
 class EoDlgNamedViews : public CDialog {
     AeSysDoc* m_pDoc;
 public:
-    EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = NULL);
+    EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = nullptr);
 
     enum { kUnchangedItem = 0, kNewItem = 1, kReplace = 2 };
 

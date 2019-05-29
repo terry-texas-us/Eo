@@ -21,12 +21,12 @@ void AeSysDoc::CompressTrappedGroups() {
 	
 	if (m_TrappedGroupList.GetCount() <= 1) { return; }
 	
-	EoDbGroup* NewGroup = new EoDbGroup;
+	auto NewGroup {new EoDbGroup};
 
-	POSITION GroupPosition = m_TrappedGroupList.GetHeadPosition();
+	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
 	
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = m_TrappedGroupList.GetNext(GroupPosition);
+	while (GroupPosition != nullptr) {
+		auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
 
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
@@ -46,10 +46,10 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 	EoGeMatrix3d TranslationMatrix;
 	TranslationMatrix.setToTranslation(translate);
 
-	POSITION GroupPosition = m_TrappedGroupList.GetHeadPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = m_TrappedGroupList.GetNext(GroupPosition);
-		EoDbGroup* NewGroup = new EoDbGroup(*Group);
+	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
+		auto NewGroup {new EoDbGroup(*Group)};
 
 		AddWorkLayerGroup(NewGroup);
 		UpdateGroupInAllViews(EoDb::kGroup, Group);
@@ -61,19 +61,20 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 }
 
 void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
-	::OpenClipboard(NULL);
+	::OpenClipboard(nullptr);
 	::EmptyClipboard();
 
 	if (theApp.IsClipboardDataText()) {
 		CString strBuf;
 
-		POSITION GroupPosition = GetFirstTrappedGroupPosition();
-		while (GroupPosition != 0) {
-			const EoDbGroup* Group = GetNextTrappedGroup(GroupPosition);
+		auto GroupPosition {GetFirstTrappedGroupPosition()};
+		while (GroupPosition != nullptr) {
+			const auto Group {GetNextTrappedGroup(GroupPosition)};
 
-			POSITION PrimitivePosition = Group->GetHeadPosition();
-			while (PrimitivePosition != 0) {
-				EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+			auto PrimitivePosition {Group->GetHeadPosition()};
+			while (PrimitivePosition != nullptr) {
+				auto Primitive {Group->GetNext(PrimitivePosition)};
+
 				if (Primitive->Is(EoDb::kTextPrimitive)) {
 					strBuf += dynamic_cast<EoDbText*>(Primitive)->Text();
 					strBuf += L"\r\n";
@@ -81,25 +82,27 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			}
 		}
 		const unsigned AllocationSize = (strBuf.GetLength() + 1) * sizeof(wchar_t);
-		GLOBALHANDLE ClipboardDataHandle = (GLOBALHANDLE) GlobalAlloc(GHND, AllocationSize);
-        if (ClipboardDataHandle != NULL) {
-            LPWSTR ClipboardData = (LPWSTR) GlobalLock(ClipboardDataHandle);
-            if (ClipboardData != NULL) {
-                wcscpy_s(ClipboardData, AllocationSize, strBuf);
-                GlobalUnlock(ClipboardDataHandle);
-                ::SetClipboardData(CF_UNICODETEXT, ClipboardDataHandle);
-            }
-        }
+		GLOBALHANDLE ClipboardDataHandle = (GLOBALHANDLE)GlobalAlloc(GHND, AllocationSize);
+
+		if (ClipboardDataHandle != nullptr) {
+			LPWSTR ClipboardData = (LPWSTR)GlobalLock(ClipboardDataHandle);
+
+			if (ClipboardData != nullptr) {
+				wcscpy_s(ClipboardData, AllocationSize, strBuf);
+				GlobalUnlock(ClipboardDataHandle);
+				::SetClipboardData(CF_UNICODETEXT, ClipboardDataHandle);
+			}
+		}
 	}
 	if (theApp.IsClipboardDataImage()) {
 		const int PrimitiveState = pstate.Save();
 
-		HDC hdcEMF = ::CreateEnhMetaFile(0, 0, 0, 0);
-		m_TrappedGroupList.Display(view, CDC::FromHandle(hdcEMF));
-		HENHMETAFILE hemf = ::CloseEnhMetaFile(hdcEMF);
+		HDC MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
+		m_TrappedGroupList.Display(view, CDC::FromHandle(MetaFile));
+		HENHMETAFILE hemf = ::CloseEnhMetaFile(MetaFile);
 		::SetClipboardData(CF_ENHMETAFILE, hemf);
 
-		pstate.Restore(CDC::FromHandle(hdcEMF), PrimitiveState);
+		pstate.Restore(CDC::FromHandle(MetaFile), PrimitiveState);
 	}
 	if (theApp.IsClipboardDataGroups()) {
 		CMemFile MemoryFile;
@@ -107,10 +110,10 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.SetLength(96);
 		MemoryFile.SeekToEnd();
 
-        OdUInt8* Buffer = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
+		OdUInt8* Buffer = new OdUInt8[EoDbPrimitive::BUFFER_SIZE];
 		m_TrappedGroupList.Write(MemoryFile, Buffer);
-		delete [] Buffer;
-		
+		delete[] Buffer;
+
 		OdGeExtents3d Extents;
 		m_TrappedGroupList.GetExtents__(view, Extents);
 		const OdGePoint3d MinimumPoint = Extents.minPoint();
@@ -123,8 +126,8 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.Write(&MinimumPoint.z, sizeof(double));
 
 		GLOBALHANDLE ClipboardDataHandle = GlobalAlloc(GHND, SIZE_T(dwSizeOfBuffer));
-		if (ClipboardDataHandle != NULL) {
-			LPWSTR ClipboardData = (LPWSTR) GlobalLock(ClipboardDataHandle);
+		if (ClipboardDataHandle != nullptr) {
+			LPWSTR ClipboardData = (LPWSTR)GlobalLock(ClipboardDataHandle);
 
 			MemoryFile.SeekToBegin();
 			MemoryFile.Read(ClipboardData, UINT(dwSizeOfBuffer));
@@ -137,9 +140,9 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 }
 
 void AeSysDoc::DeleteAllTrappedGroups() {
-	POSITION GroupPosition = m_TrappedGroupList.GetHeadPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = m_TrappedGroupList.GetNext(GroupPosition);
+	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
 		Group->DeletePrimitivesAndRemoveAll();
@@ -160,12 +163,12 @@ void AeSysDoc::ExpandTrappedGroups() {
 	Groups->AddTail(&m_TrappedGroupList);
 	m_TrappedGroupList.RemoveAll();
 
-	POSITION GroupPosition = Groups->GetHeadPosition();
-	while (GroupPosition != 0) {
+	auto GroupPosition {Groups->GetHeadPosition()};
+	while (GroupPosition != nullptr) {
 		Group = Groups->GetNext(GroupPosition);
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
 			Primitive = Group->GetNext(PrimitivePosition);
 			NewGroup = new EoDbGroup;
 			NewGroup->AddTail(Primitive);
@@ -239,9 +242,9 @@ void AeSysDoc::SetTrapPivotPoint(const OdGePoint3d& pivotPoint) noexcept {
 void AeSysDoc::SquareTrappedGroups(AeSysView* view) {
 	UpdateGroupsInAllViews(EoDb::kGroupsEraseSafeTrap, &m_TrappedGroupList);
 
-	POSITION GroupPosition = m_TrappedGroupList.GetHeadPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = m_TrappedGroupList.GetNext(GroupPosition);
+	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
 		Group->Square(view);
 	}
 	UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, &m_TrappedGroupList);

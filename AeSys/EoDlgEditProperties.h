@@ -4,7 +4,7 @@ class EoDlgEditProperties : public CDialog {
     DECLARE_DYNAMIC(EoDlgEditProperties)
 
 public:
-    EoDlgEditProperties(OdDbObjectId& id, CWnd* parent = NULL);
+    EoDlgEditProperties(OdDbObjectId& id, CWnd* parent = nullptr);
     virtual ~EoDlgEditProperties();
 
     enum { IDD = IDD_PROPERTIES };

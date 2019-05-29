@@ -559,7 +559,7 @@ void AeSysView::OnPaint() {
 		EndPaint(&PaintStruct);
 
 		MSG Message;
-		while(::PeekMessageW(&Message, NULL, g_nRedrawMSG, g_nRedrawMSG, PM_REMOVE)) {
+		while(::PeekMessageW(&Message, nullptr, g_nRedrawMSG, g_nRedrawMSG, PM_REMOVE)) {
 		;
 		}
 		PostMessage(g_nRedrawMSG);
@@ -869,7 +869,7 @@ OdUInt32 AeSysView::glyphSize(GlyphType glyphType) const {
 			Processed = GetAcadProfileRegistryDWORD(L"Dialogs\\AcCamera", L"GlyphSize", val);
 			break;
 	}
-	if (Processed) { return static_cast<OdUInt32>(val); }
+	if (Processed) { return narrow_cast<OdUInt32>(val); }
 
 	return OdGiContextForDbDatabase::glyphSize(glyphType);
 }
@@ -2513,7 +2513,7 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 
 	if (activate) {
 
-		if (::CopyAcceleratorTableW(MainFrame->m_hAccelTable, NULL, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
+		if (::CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 			theApp.BuildModeSpecificAcceleratorTable();
 		}
 	}
@@ -2615,7 +2615,7 @@ void AeSysView::PopModelTransform() {
 	m_ModelTransform.PopModelTransform();
 }
 void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
-	if (m_ViewBackgroundImage && ((HBITMAP) m_BackgroundImageBitmap != 0)) {
+	if (m_ViewBackgroundImage && ((HBITMAP) m_BackgroundImageBitmap != nullptr)) {
 		const int iWidDst {static_cast<int>(m_Viewport.WidthInPixels())};
 		const int iHgtDst {static_cast<int>(m_Viewport.HeightInPixels())};
 
@@ -2728,8 +2728,8 @@ UINT AeSysView::NumPages(CDC* deviceContext, double scaleFactor, UINT& horizonta
 	const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / EoMmPerInch};
 	const double VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / EoMmPerInch};
 
-	horizontalPages = static_cast<unsigned>(EoRound(((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches) + 0.5));
-	verticalPages = static_cast<unsigned>(EoRound(((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches) + 0.5));
+	horizontalPages = narrow_cast<unsigned>(EoRound(((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches) + 0.5));
+	verticalPages = narrow_cast<unsigned>(EoRound(((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches) + 0.5));
 
 	return horizontalPages * verticalPages;
 }
@@ -3361,7 +3361,7 @@ void AeSysView::OnBackgroundImageLoad() {
 }
 
 void AeSysView::OnBackgroundImageRemove() {
-	if ((HBITMAP) m_BackgroundImageBitmap != 0) {
+	if ((HBITMAP) m_BackgroundImageBitmap != nullptr) {
 		m_BackgroundImageBitmap.DeleteObject();
 		m_BackgroundImagePalette.DeleteObject();
 		m_ViewBackgroundImage = false;
@@ -3374,14 +3374,14 @@ void AeSysView::OnViewBackgroundImage() {
 	InvalidateRect(nullptr);
 }
 void AeSysView::OnUpdateViewBackgroundImage(CCmdUI* pCmdUI) {
-	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != 0);
+	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != nullptr);
 	pCmdUI->SetCheck(m_ViewBackgroundImage);
 }
 void AeSysView::OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI) {
-	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap == 0);
+	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap == nullptr);
 }
 void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI) {
-	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != 0);
+	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != nullptr);
 }
 void AeSysView::OnUpdateViewPenwidths(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ViewPenWidths);
@@ -3725,12 +3725,12 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 	auto ComboBox {findComboBox->GetComboBox()};
 
 	if (!findText.isEmpty()) {
-		const auto Count {static_cast<unsigned>(ComboBox->GetCount())};
+		const auto Count {narrow_cast<unsigned>(ComboBox->GetCount())};
 		unsigned Position {0};
 
 		while (Position < Count) {
 			CString LBText;
-			ComboBox->GetLBText(static_cast<int>(Position), LBText);
+			ComboBox->GetLBText(Position, LBText);
 
 			if (LBText.GetLength() == findText.getLength()) {
 

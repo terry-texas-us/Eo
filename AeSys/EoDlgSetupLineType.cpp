@@ -62,7 +62,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 				CRect SubItemRectangle;
 				m_LinetypesListControl.GetSubItemRect(Item, Name, LVIR_LABEL, SubItemRectangle);
 				OdString Name = Linetype->getName();
-				DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Name, Name.getLength(), NULL);
+				DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Name, Name.getLength(), nullptr);
 
 				m_LinetypesListControl.GetSubItemRect(Item, Appearance, LVIR_LABEL, SubItemRectangle);
 
@@ -94,7 +94,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 
 				m_LinetypesListControl.GetSubItemRect(Item, Description, LVIR_LABEL, SubItemRectangle);
 				CString Description = Linetype->comments();
-				DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Description, Description.GetLength(), NULL);
+				DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Description, Description.GetLength(), nullptr);
 				pstate.SetColorIndex(&DeviceContext, ColorIndex);
 			}
 			DeviceContext.Detach();
@@ -127,7 +127,7 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
 		if (Linetype->objectId() != Database->getLinetypeByLayerId() && Linetype->objectId() != Database->getLinetypeByBlockId()) {
-			m_LinetypesListControl.InsertItem(ItemIndex, NULL);
+			m_LinetypesListControl.InsertItem(ItemIndex, nullptr);
 			m_LinetypesListControl.SetItemData(ItemIndex++, (DWORD)(OdDbStub*)Linetype->objectId());
 		}
 	}
@@ -139,10 +139,11 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 void EoDlgSetupLinetype::OnOK() {
 	m_Linetype = m_Linetype = m_LinetypeTable->getAt(L"Continuous").safeOpenObject(OdDb::kForRead);
 
-	POSITION Position = m_LinetypesListControl.GetFirstSelectedItemPosition();
-	if (Position != NULL) {
-		const int Item = m_LinetypesListControl.GetNextSelectedItem(Position);
-		const OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
+	auto Position {m_LinetypesListControl.GetFirstSelectedItemPosition()};
+
+	if (Position != nullptr) {
+		const int Item {m_LinetypesListControl.GetNextSelectedItem(Position)};
+		const OdDbObjectId ItemData {(OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item)};
 		m_Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 	}
 	CDialog::OnOK();

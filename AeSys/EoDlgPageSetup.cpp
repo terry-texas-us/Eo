@@ -113,7 +113,9 @@ static EoPlotUnitsInfo PlotUnitsInfo[] = {
 // EoDlgPageSetup
 
 EoDlgPageSetup::EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> pIO)
-	: CDialog(EoDlgPageSetup::IDD, NULL), m_PlotSettings(plotSettings), m_pIO(pIO) {
+	: CDialog(EoDlgPageSetup::IDD, nullptr)
+	, m_PlotSettings(plotSettings)
+	, m_pIO(pIO) {
 	m_CustomDPI = 0;
 	m_CenterThePlot = 0;
 	m_OffsetX = 0.0;

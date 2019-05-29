@@ -18,7 +18,7 @@ class EoDlgPlotStyleEditLineweight : public CDialog {
     EoLineweightData* m_LineweightData;
 
 public:
-    EoDlgPlotStyleEditLineweight(CWnd* parent = NULL);
+    EoDlgPlotStyleEditLineweight(CWnd* parent = nullptr);
     virtual ~EoDlgPlotStyleEditLineweight() {}
 
     enum { IDD = IDD_PLOTSTYLE_LINEWEIGHT };

@@ -152,7 +152,7 @@ public:
 	bool OnZoomWindowBeginDrag(int x, int y);
 	bool OnZoomWindowEndDrag(int x, int y);
 
-	bool Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint = 0);
+	bool Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint = nullptr);
 	unsigned GetSnapModes() const;
 	void SetSnapModes(bool snapOn, unsigned snapModes);
 	void ResetSnapManager();

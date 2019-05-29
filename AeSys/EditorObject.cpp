@@ -148,7 +148,7 @@ void OdExEditorObject::InitializeSnapping(OdGsView* view, OdEdInputTracker* inpu
 
 void OdExEditorObject::UninitializeSnapping(OdGsView* view) {
 	view->erase(&m_ObjectSnapManager);
-	m_ObjectSnapManager.Track(NULL);
+	m_ObjectSnapManager.Track(nullptr);
 }
 
 OdDbSelectionSetPtr OdExEditorObject::workingSSet() const {
@@ -1408,10 +1408,11 @@ bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, bool bT
 	return bAdd;
 }
 
-OdExCollideGsPath* fromGiPath(const OdGiPathNode* pPath, bool bTruncateToRef = false) {
-	if (!pPath) return NULL;
+OdExCollideGsPath* fromGiPath(const OdGiPathNode* path, bool bTruncateToRef = false) {
+	if (!path) { return nullptr; }
+
 	OdExCollideGsPath* res = new OdExCollideGsPath;
-	addNodeToPath(res, pPath, bTruncateToRef);
+	addNodeToPath(res, path, bTruncateToRef);
 	return res;
 }
 
@@ -1495,7 +1496,7 @@ void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	const bool bDynHLT = (bool) (dynHlt);
 
 	//Get active view
-	OdGsView* View = NULL;
+	OdGsView* View {nullptr};
 
 	if (!Database.isNull()) {
 		OdDbObjectPtr ActiveViewport {Database->activeViewportId().safeOpenObject()};
@@ -1553,7 +1554,8 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdDbDatabasePtr Database {CommandContext->database()};
 
 	//Get active view
-	OdGsView* View = NULL;
+	OdGsView* View {nullptr};
+
 	if (!Database.isNull()) {
 		OdDbObjectPtr ActiveViewport {Database->activeViewportId().safeOpenObject()};
 		OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
@@ -1578,7 +1580,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 
 	OdExCollisionDetectionReactor reactor(dynHlt);
 
-	View->collide(NULL, 0, &reactor, NULL, 0, &CollisionDetectionContext);
+	View->collide(nullptr, 0, &reactor, nullptr, 0, &CollisionDetectionContext);
 
 	OdArray< OdExCollideGsPath* > & pathes = reactor.pathes();
 	for (unsigned i = 0; i < pathes.size(); ++i) {

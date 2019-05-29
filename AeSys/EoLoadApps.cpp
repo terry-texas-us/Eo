@@ -64,7 +64,7 @@ BOOL EoLoadApps::OnInitDialog() {
 }
 
 void EoLoadApps::OnLoadApp() {
-	CFileDialog dlg(TRUE, NULL, NULL, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Teigha Run-time Extention (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
+	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Teigha Run-time Extention (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
 
 	dlg.m_ofn.lpstrTitle = L"Load application";
 	CString s_path = AeSysApp::getApplicationPath();

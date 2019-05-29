@@ -6,8 +6,8 @@ class EoDlgLineWeight : public CDialog {
     DECLARE_DYNAMIC(EoDlgLineWeight)
 
 public:
-    EoDlgLineWeight(CWnd* parent = NULL);
-    EoDlgLineWeight(int originalLineWeight, CWnd* parent = NULL);
+    EoDlgLineWeight(CWnd* parent = nullptr);
+    EoDlgLineWeight(int originalLineWeight, CWnd* parent = nullptr);
     ~EoDlgLineWeight();
 
     // Dialog Data

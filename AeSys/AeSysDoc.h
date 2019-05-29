@@ -144,25 +144,26 @@ public:
 		static unsigned short m_FormatR18;
 		static unsigned short m_FormatR19;
 		static bool isAcadDataAvailable(COleDataObject* pDataObject, bool bAttach = false) {
-			if (bAttach && !pDataObject->AttachClipboard()) {
-				return false;
-			}
+			
+			if (bAttach && !pDataObject->AttachClipboard()) { return false; }
+			
 			return pDataObject->IsDataAvailable(m_FormatR15) || pDataObject->IsDataAvailable(m_FormatR16) || pDataObject->IsDataAvailable(m_FormatR17) || pDataObject->IsDataAvailable(m_FormatR18) || pDataObject->IsDataAvailable(m_FormatR19);
 		}
 		static OdSharedPtr<ClipboardData> get(COleDataObject* pDataObject, bool bAttach = false) {
-			if (bAttach && !pDataObject->AttachClipboard())
-				return 0;
+			
+			if (bAttach && !pDataObject->AttachClipboard()) { return nullptr; }
 
 			OdSharedPtr<ClipboardData> pData = new ClipboardData();
-			if (pData->read(pDataObject))
-				return pData;
-			return 0;
+			
+			if (pData->read(pDataObject)) { return pData; }
+			return nullptr;
 		}
 		ClipboardData() noexcept :
 			_isR15format(false) {
 		}
 		bool read(COleDataObject* pDataObject) {
-			OdSharedPtr<CFile> pFile = 0;
+			OdSharedPtr<CFile> pFile = nullptr;
+
 			if ((pFile = pDataObject->GetFileData(m_FormatR15)).get() || (pFile = pDataObject->GetFileData(m_FormatR16)).get()) {
 				_isR15format = true;
 				_data._r15.read(pFile);

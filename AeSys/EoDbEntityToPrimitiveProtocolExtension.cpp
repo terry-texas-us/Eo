@@ -859,7 +859,7 @@ public:
 		OdDbViewport::desc()->delX(EoDbConvertEntityToPrimitive::desc());
     }
 };
-AeSysDoc* ConvertEntityToPrimitiveProtocolExtension::m_Document = NULL;
+AeSysDoc* ConvertEntityToPrimitiveProtocolExtension::m_Document = nullptr;
 
 ConvertEntityToPrimitiveProtocolExtension::ConvertEntityToPrimitiveProtocolExtension(AeSysDoc* document) noexcept
     : m_Converters(0) {

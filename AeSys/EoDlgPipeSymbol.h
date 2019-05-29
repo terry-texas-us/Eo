@@ -6,7 +6,7 @@ class EoDlgPipeSymbol : public CDialog {
 	DECLARE_DYNAMIC(EoDlgPipeSymbol)
 
 public:
-	EoDlgPipeSymbol(CWnd* parent = NULL);
+	EoDlgPipeSymbol(CWnd* parent = nullptr);
 	virtual ~EoDlgPipeSymbol();
 
 // Dialog Data

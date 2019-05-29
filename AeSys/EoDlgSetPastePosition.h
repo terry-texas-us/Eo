@@ -6,7 +6,7 @@ class EoDlgSetPastePosition : public CDialog {
     DECLARE_DYNAMIC(EoDlgSetPastePosition)
 
 public:
-    EoDlgSetPastePosition(CWnd* parent = NULL);
+    EoDlgSetPastePosition(CWnd* parent = nullptr);
     virtual ~EoDlgSetPastePosition();
 
     // Dialog Data

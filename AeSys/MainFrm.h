@@ -19,9 +19,10 @@ public:
 	inline void StartTimer() noexcept {
 		QueryPerformanceCounter(&m_pc0);
 	}
-	inline void StopTimer(LPCWSTR operationName = NULL) {
+	inline void StopTimer(LPCWSTR operationName = nullptr) {
 		QueryPerformanceCounter(&m_pc1);
 		m_pc1.QuadPart -= m_pc0.QuadPart;
+
 		if (QueryPerformanceFrequency(&m_pc0)) {
 			const auto loadTime {static_cast<double>(m_pc1.QuadPart) / static_cast<double>(m_pc0.QuadPart)};
 			OdString NewText;
@@ -44,7 +45,7 @@ public:
 
 public:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
-	BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* pParentWnd = NULL, CCreateContext* pContext = NULL) override;
+	BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWnd = nullptr, CCreateContext* context = nullptr) override;
 	~CMainFrame();
 #ifdef _DEBUG
 	void AssertValid() const override;
