@@ -68,11 +68,12 @@ void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const 
 
 void EoDbBlockReference::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
 	EoDbBlock* Block;
+
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
 
-	HTREEITEM hti = CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this);
+	auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
 
-	((EoDbGroup*) Block)->AddPrimsToTreeViewControl(tree, hti);
+	static_cast<EoDbGroup*>(Block)->AddPrimsToTreeViewControl(tree, TreeItemHandle);
 }
 
 EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoint) const {
@@ -102,7 +103,7 @@ EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecor
 	return (EoDbBlockReference::Create(*this, blockTableRecord->database()));
 }
 
-void EoDbBlockReference::Display(AeSysView * view, CDC * deviceContext) {
+void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
 	EoDbBlock* Block;
 
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
@@ -117,7 +118,7 @@ void EoDbBlockReference::GetAllPoints(OdGePoint3dArray & points) const {
 	points.append(m_Position);
 }
 
-void EoDbBlockReference::FormatExtra(CString & extra) const {
+void EoDbBlockReference::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
@@ -127,7 +128,7 @@ void EoDbBlockReference::FormatExtra(CString & extra) const {
 	extra += Angle;
 }
 
-void EoDbBlockReference::FormatGeometry(CString & geometry) const {
+void EoDbBlockReference::FormatGeometry(CString& geometry) const {
 	CString PositionString;
 	PositionString.Format(L"Insertion Point;%f;%f;%f\t", m_Position.x, m_Position.y, m_Position.z);
 	geometry += PositionString;
@@ -143,7 +144,7 @@ OdGePoint3d EoDbBlockReference::GetCtrlPt() const noexcept {
 	return (m_Position);
 }
 
-void EoDbBlockReference::GetExtents(AeSysView * view, OdGeExtents3d & extents) const {
+void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 
 	EoDbBlock* Block;
 
@@ -158,11 +159,11 @@ OdGePoint3d	EoDbBlockReference::GoToNxtCtrlPt() const noexcept {
 	return m_Position;
 }
 
-bool EoDbBlockReference::IsEqualTo(EoDbPrimitive * primitive) const noexcept {
+bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
 	return false;
 }
 
-bool EoDbBlockReference::IsInView(AeSysView * view) const {
+bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	// Test whether an instance of a block is wholly or partially within the current view volume.
 	EoDbBlock* Block;
 
@@ -175,25 +176,25 @@ bool EoDbBlockReference::IsInView(AeSysView * view) const {
 	return (bInView);
 }
 
-bool EoDbBlockReference::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const noexcept {
+bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
 	return false;
 }
 
-OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
+OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ptCtrl;
 
 	EoDbBlock* Block;
 
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {
-		return ptCtrl;
-	}
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return ptCtrl; }
+
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 
-	POSITION Position = Block->GetHeadPosition();
-	while (Position != 0) {
-		const EoDbPrimitive* Primitive = Block->GetNext(Position);
+	auto Position {Block->GetHeadPosition()};
+	while (Position != nullptr) {
+		const auto Primitive {Block->GetNext(Position)};
 		ptCtrl = Primitive->SelectAtControlPoint(view, point);
+		
 		if (sm_ControlPointIndex != SIZE_T_MAX) {
 			view->ModelTransformPoint(ptCtrl);
 			break;
@@ -203,12 +204,11 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView * view, const EoG
 	return ptCtrl;
 }
 
-bool EoDbBlockReference::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
+bool EoDbBlockReference::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoDbBlock* Block;
 
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) {
-		return false;
-	}
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
+
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	const bool bResult = Block->SelectBy(lowerLeftCorner, upperRightCorner, view);
 	view->PopModelTransform();
@@ -216,7 +216,7 @@ bool EoDbBlockReference::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdG
 	return (bResult);
 }
 
-bool EoDbBlockReference::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
+bool EoDbBlockReference::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	bool bResult = false;
 
 	EoDbBlock* Block;
@@ -225,8 +225,8 @@ bool EoDbBlockReference::SelectBy(const EoGePoint4d & point, AeSysView * view, O
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 
-	POSITION Position = Block->GetHeadPosition();
-	while (Position != 0) {
+	auto Position {Block->GetHeadPosition()};
+	while (Position != nullptr) {
 		if ((Block->GetNext(Position))->SelectBy(point, view, ptProj)) {
 			bResult = true;
 			break;
@@ -373,13 +373,13 @@ void EoDbBlockReference::SetColumnSpacing(double columnSpacing) noexcept {
 }
 
 EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr & database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
-	OdDbBlockReferencePtr BlockReferenceEntity = OdDbBlockReference::createObject();
+	auto BlockReferenceEntity = OdDbBlockReference::createObject();
 	BlockReferenceEntity->setDatabaseDefaults(database);
 	BlockTableRecord->appendOdDbEntity(BlockReferenceEntity);
 
-	EoDbBlockReference* BlockReference = new EoDbBlockReference();
+	EoDbBlockReference* BlockReference {new EoDbBlockReference()};
 	BlockReference->SetEntityObjectId(BlockReferenceEntity->objectId());
 
 	BlockReference->SetColorIndex2(pstate.ColorIndex());
@@ -389,19 +389,19 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr & database) {
 }
 
 // <tas="Broken. Not doing a deep clone of block"</tas>
-EoDbBlockReference* EoDbBlockReference::Create(const EoDbBlockReference & other, OdDbDatabasePtr database) {
-	OdDbBlockTableRecordPtr BlockTableRecord = database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	OdDbBlockReferencePtr BlockReferenceEntity = other.EntityObjectId().safeOpenObject()->clone();
+EoDbBlockReference* EoDbBlockReference::Create(const EoDbBlockReference& other, OdDbDatabasePtr database) {
+	OdDbBlockTableRecordPtr BlockTableRecord {database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	OdDbBlockReferencePtr BlockReferenceEntity {other.EntityObjectId().safeOpenObject()->clone()};
 	BlockTableRecord->appendOdDbEntity(BlockReferenceEntity);
 
-	EoDbBlockReference* BlockReference = new EoDbBlockReference(other);
+	auto BlockReference {new EoDbBlockReference(other)};
 	BlockReference->SetEntityObjectId(BlockReferenceEntity->objectId());
 
 	return BlockReference;
 }
 
 OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTableRecord) {
-	OdDbBlockReferencePtr BlockReference = OdDbBlockReference::createObject();
+	auto BlockReference {OdDbBlockReference::createObject()};
 	BlockReference->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(BlockReference);

@@ -60,7 +60,7 @@ void EoDbGroup::BreakPolylines() {
 			OdGePoint3dArray Points;
 			Polyline->GetAllPoints(Points);
 
-			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
+			for (unsigned w = 0; w < Points.size() - 1; w++) {
 				auto Line = EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1]);
 				Line->setColorIndex(Primitive->ColorIndex());
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
@@ -288,12 +288,12 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition & fontDefinition, EoDbCharacterCe
 	}
 }
 
-void EoDbGroup::PenTranslation(OdUInt16 wCols, OdInt16 * pColNew, OdInt16 * pCol) {
+void EoDbGroup::PenTranslation(OdUInt16 numberOfColors, OdInt16 * pColNew, OdInt16 * pCol) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
-		for (OdUInt16 w = 0; w < wCols; w++) {
+		for (unsigned w = 0; w < numberOfColors; w++) {
 			if (Primitive->ColorIndex() == pCol[w]) {
 				Primitive->SetColorIndex2(pColNew[w]);
 				break;

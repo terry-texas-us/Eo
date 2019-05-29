@@ -38,7 +38,7 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 				continue;
 
 			if (ln.IsSelectedBy_xy(point, DimensionModePickTolerance, ptProj, Relationship))
-				return (Relationship <= .5) ? ln.startPoint() : ln.endPoint();
+				return (Relationship <= 0.5) ? ln.startPoint() : ln.endPoint();
 		}
 	}
 	return (point);
@@ -86,7 +86,7 @@ void AeSysView::OnDimensionModeArrow() {
 
 				EoDbGroup* NewGroup = new EoDbGroup;
 
-				if (dRel <= .5) {
+				if (dRel <= 0.5) {
 					GenerateLineEndItem(1, .1, TestLine.endPoint(), TestLine.startPoint(), NewGroup);
 					pt = TestLine.startPoint();
 				} else {

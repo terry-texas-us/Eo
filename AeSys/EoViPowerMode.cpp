@@ -103,7 +103,7 @@ void AeSysView::OnPowerModeHome() {
 		if (Group != nullptr) {
 			auto Circuit {get<1>(Selection)};
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
-			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= .5) {
+			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= 0.5) {
 				m_CircuitEndPoint = Circuit->EndPoint();
 				if (CurrentPnt.distanceTo(Circuit->StartPoint()) <= .1)
 					CurrentPnt = Circuit->StartPoint();

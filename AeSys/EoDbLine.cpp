@@ -40,7 +40,7 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	double Relationship;
 	m_LineSeg.ParametricRelationshipOf(point, Relationship);
 
-	if (Relationship > .5) {
+	if (Relationship > 0.5) {
 		AngleInXYPlane += PI;
 	}
 	AngleInXYPlane = fmod(AngleInXYPlane, TWOPI);
@@ -68,7 +68,7 @@ EoDbPrimitive* EoDbLine::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	return EoDbLine::Create(Line);
 }
 
-void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
+void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	EoGeLineSeg3d LineSeg;
 
 	if (m_LineSeg.CutAt(point, LineSeg) != 0) {
@@ -89,7 +89,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
 }
 
 void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) {
-	EoDbLine* LineIn;
+	EoDbLine* LineIn {nullptr};
 	double FirstPointParameter;
 	double SecondPointParameter;
 	m_LineSeg.ParametricRelationshipOf(points[0], FirstPointParameter);
@@ -208,40 +208,37 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	return (sm_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint());
 }
 
-bool EoDbLine::IsEqualTo(EoDbPrimitive * primitive)  const {
-	bool IsEqualTo = primitive->Is(EoDb::kLinePrimitive);
-	if (IsEqualTo) {
+bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
+	bool IsEqualTo {primitive->Is(EoDb::kLinePrimitive)};
+
+	if (IsEqualTo) { 
 		IsEqualTo = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());
 	}
 	return IsEqualTo;
 }
 
-bool EoDbLine::IsInView(AeSysView * view) const {
+bool EoDbLine::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[] = {EoGePoint4d(m_LineSeg.startPoint(), 1.0), EoGePoint4d(m_LineSeg.endPoint(), 1.0)};
 	view->ModelViewTransformPoints(2, &pt[0]);
 
 	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
 }
 
-bool EoDbLine::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const {
-	EoGePoint4d pt;
-
-	pt = EoGePoint4d(m_LineSeg.startPoint(), 1.0);
+bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
+	EoGePoint4d pt {EoGePoint4d(m_LineSeg.startPoint(), 1.0)};
 	view->ModelViewTransformPoint(pt);
 
-	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize)
-		return true;
+	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize) { return true; }
 
 	pt = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
 	view->ModelViewTransformPoint(pt);
 
-	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize)
-		return true;
+	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize) { return true; }
 
 	return false;
 }
 
-int EoDbLine::IsWithinArea(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, OdGePoint3d * intersections) noexcept {
+int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
 	int i;
 	int iLoc[2];
 
@@ -284,13 +281,13 @@ double EoDbLine::ParametricRelationshipOf(const OdGePoint3d & point) const {
 	return dRel;
 }
 
-OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
+OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
 
 	double Aperture = sm_SelectApertureSize;
 
-	for (OdUInt16 ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
+	for (unsigned ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint(), 1.0);
 
 		view->ModelViewTransformPoint(pt);
@@ -367,7 +364,7 @@ void EoDbLine::TranslateUsingMask(const OdGeVector3d & translate, const DWORD ma
 	}
 }
 
-bool EoDbLine::Write(EoDbFile & file) const {
+bool EoDbLine::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kLinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
@@ -376,11 +373,11 @@ bool EoDbLine::Write(EoDbFile & file) const {
 	return true;
 }
 
-void EoDbLine::Write(CFile & file, OdUInt8 * buffer) const {
+void EoDbLine::Write(CFile& file, OdUInt8* buffer) const {
 	buffer[3] = 1;
-	*((OdUInt16*) & buffer[4]) = OdUInt16(EoDb::kLinePrimitive);
-	buffer[6] = OdInt8(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = OdInt8(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	*((OdUInt16*) & buffer[4]) = static_cast<OdUInt16>(EoDb::kLinePrimitive);
+	buffer[6] = static_cast<OdInt8>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<OdInt8>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_LineSeg.startPoint());
@@ -391,7 +388,7 @@ void EoDbLine::Write(CFile & file, OdUInt8 * buffer) const {
 
 // Static
 
-EoDbLine * EoDbLine::Create(const OdDbLinePtr & line) {
+EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {
 	auto Line {new EoDbLine};
 	Line->SetEntityObjectId(line->objectId());
 
@@ -418,7 +415,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	return Line;
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
 	auto Database {blockTableRecord->database()};
 
 	auto Line {OdDbLine::createObject()};
@@ -438,19 +435,20 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile 
 	return (Line);
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8 * primitiveBuffer, int versionNumber) {
-	OdInt16 ColorIndex;
-	OdInt16 LinetypeIndex;
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8* primitiveBuffer, int versionNumber) {
+	OdInt16 ColorIndex {0};
+	OdInt16 LinetypeIndex {0};
 	OdGePoint3d StartPoint;
 	OdGePoint3d EndPoint;
+
 	if (versionNumber == 1) {
-		ColorIndex = OdInt16(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = OdInt16((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<OdInt16>(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = static_cast<OdInt16>((primitiveBuffer[4] & 0x00ff) >> 4);
 		StartPoint = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3;
 		EndPoint = ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert() * 1.e-3;
 	} else {
-		ColorIndex = OdInt16(primitiveBuffer[6]);
-		LinetypeIndex = OdInt16(primitiveBuffer[7]);
+		ColorIndex = static_cast<OdInt16>(primitiveBuffer[6]);
+		LinetypeIndex = static_cast<OdInt16>(primitiveBuffer[7]);
 		StartPoint = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
 		EndPoint = ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert();
 	}
@@ -470,7 +468,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8 *
 	return (Line);
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d & startPoint, const OdGePoint3d & endPoint) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	auto Line {OdDbLine::createObject()};
 	Line->setDatabaseDefaults(blockTableRecord->database());
 

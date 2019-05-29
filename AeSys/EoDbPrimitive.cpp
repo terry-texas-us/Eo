@@ -14,13 +14,13 @@ double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
 EoDbPrimitive::EoDbPrimitive() noexcept
-	: m_LayerId(NULL)
+	: m_LayerId(nullptr)
 	, m_ColorIndex(1)
 	, m_LinetypeIndex(1) {
 }
 
 EoDbPrimitive::EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex)
-	: m_LayerId(NULL)
+	: m_LayerId(nullptr)
 	, m_ColorIndex(colorIndex)
 	, m_LinetypeIndex(linetypeIndex) {
 }
@@ -28,13 +28,13 @@ EoDbPrimitive::EoDbPrimitive(OdInt16 colorIndex, OdInt16 linetypeIndex)
 EoDbPrimitive::~EoDbPrimitive() {
 }
 
-void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept {
+void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 }
 
 void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr database) {
 }
 
-int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept {
+int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
 	return 0;
 }
 

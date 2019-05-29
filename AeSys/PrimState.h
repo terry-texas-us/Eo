@@ -16,13 +16,13 @@ class CPrimState {
 
 public: // Constructors and destructor
 
-	const CPrimState& operator=(const CPrimState& other);
+	const CPrimState& operator=(const CPrimState& other) noexcept;
 
 public: // Methods
 
 	EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
 	OdInt16 ColorIndex() const noexcept;
-	EoDbFontDefinition FontDefinition() const;
+	EoDbFontDefinition FontDefinition() const noexcept;
 	OdInt16 HatchInteriorStyle() const noexcept;
 	size_t HatchInteriorStyleIndex() const noexcept;
 	OdInt16 LinetypeIndex() const noexcept;

@@ -210,13 +210,13 @@ bool SelectUsingRectangle(AeSysView* view, const OdGePoint3d& lowerLeftCorner, c
 	EoGePoint4d ptBeg(points[0], 1.0);
 	view->ModelViewTransformPoint(ptBeg);
 
-	for (OdUInt16 w = 1; w < points.size(); w++) {
+	for (unsigned w = 1; w < points.size(); w++) {
 		EoGePoint4d ptEnd(points[w], 1.0);
 		view->ModelViewTransformPoint(ptEnd);
 
 		EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
-		if (LineSegment.IsContainedBy_xy(lowerLeftCorner, upperRightCorner))
-			return true;
+
+		if (LineSegment.IsContainedBy_xy(lowerLeftCorner, upperRightCorner)) { return true; }
 
 		ptBeg = ptEnd;
 	}

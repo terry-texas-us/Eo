@@ -11,7 +11,7 @@ public: // Constructors and destructor
 	
 	EoDbLine() noexcept;
 	EoDbLine(const EoDbLine& other);
-	const EoDbLine& operator=(const EoDbLine& other);
+	const EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
 
 	~EoDbLine();
 
@@ -42,9 +42,9 @@ public: // Methods - absolute virtuals
 public: // Methods - virtuals
 
 	/// <summary>Cuts a line a point.</summary>
-	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept override;
+	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) override;
-	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept override;
+	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) override;
 
 public: // Methods

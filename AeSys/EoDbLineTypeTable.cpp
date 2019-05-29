@@ -65,7 +65,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 			}
 			double PatternLength = 0.0;
 			
-			for (OdUInt16 DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
+			for (unsigned DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 				DashLengths[DashIndex] = _wtof(Line.Tokenize(L",\n", NextToken));
 				PatternLength += DashLengths[DashIndex];
 			}

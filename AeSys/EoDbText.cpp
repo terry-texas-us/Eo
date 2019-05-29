@@ -124,7 +124,7 @@ void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
 
-	for (OdUInt16 w = 0; w < BoundingBox.size(); w++) {
+	for (unsigned w = 0; w < BoundingBox.size(); w++) {
 		extents.addPoint(BoundingBox[w]);
 	}
 }
@@ -710,14 +710,14 @@ OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition & fontDefinition, i
 		if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
 			if (fontDefinition.Path() == EoDb::kPathRight) {
 				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
-					InsertionPoint.x = -dTxtExt * .5;
+					InsertionPoint.x = -dTxtExt * 0.5;
 				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight)
 					InsertionPoint.x = -dTxtExt;
 			} else {
 				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft)
 					InsertionPoint.x = dTxtExt;
 				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter)
-					InsertionPoint.x = dTxtExt * .5;
+					InsertionPoint.x = dTxtExt * 0.5;
 				InsertionPoint.x = InsertionPoint.x - 1.0;
 			}
 			if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
@@ -731,14 +731,14 @@ OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition & fontDefinition, i
 				InsertionPoint.x = -1.0;
 			if (fontDefinition.Path() == EoDb::kPathUp) {
 				if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
-					InsertionPoint.y = -dTxtExt * .5;
+					InsertionPoint.y = -dTxtExt * 0.5;
 				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop)
 					InsertionPoint.y = -dTxtExt;
 			} else {
 				if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom)
 					InsertionPoint.y = dTxtExt;
 				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle)
-					InsertionPoint.y = dTxtExt * .5;
+					InsertionPoint.y = dTxtExt * 0.5;
 				InsertionPoint.y = InsertionPoint.y - 1.0;
 			}
 		}
@@ -1067,7 +1067,7 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 							NumberOfCharactersToDisplay = 0;
 
 							if (Parameter == '1') {
-								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .5, 0.0));
+								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, 0.5, 0.0));
 							} else if (Parameter == '2') {
 								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -.5, 0.0));
 							}
@@ -1147,7 +1147,7 @@ void text_GetBoundingBox(const EoDbFontDefinition & fontDefinition, const EoGeRe
 		if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) {
 			boundingBox[2].x = TextWidth;
 		} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
-			boundingBox[0].x = -TextWidth * .5;
+			boundingBox[0].x = -TextWidth * 0.5;
 			boundingBox[2].x = boundingBox[0].x + TextWidth;
 		} else {
 			boundingBox[0].x = -TextWidth;
@@ -1155,7 +1155,7 @@ void text_GetBoundingBox(const EoDbFontDefinition & fontDefinition, const EoGeRe
 		if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) {
 			boundingBox[0].y = -TextHeight;
 		} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
-			boundingBox[0].y = -TextHeight * .5;
+			boundingBox[0].y = -TextHeight * 0.5;
 			boundingBox[2].y = boundingBox[0].y + TextHeight;
 		} else {
 			boundingBox[2].y = TextHeight;

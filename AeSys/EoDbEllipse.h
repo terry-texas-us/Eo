@@ -53,8 +53,8 @@ public: // Methods - absolute virtuals
 
 public: // Methods
 	OdGePoint3d Center() const noexcept;
-	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept override;
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database);
+	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) override;
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>
@@ -64,7 +64,7 @@ public: // Methods
 	OdGeVector3d MinorAxis() const noexcept;
 	double SweepAngle() const noexcept;
 	void GetXYExtents(OdGePoint3d, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
-	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) noexcept override;
+	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 	void SetCenter(const OdGePoint3d& center) noexcept;
 	void SetMajorAxis(const OdGeVector3d& majorAxis) noexcept;
 	void SetMinorAxis(const OdGeVector3d& minorAxis) noexcept;

@@ -39,8 +39,8 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive
 }
 
 void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive) {
-	const OdInt16 ColorIndex = ReadInt16();
-	const OdInt16 LinetypeIndex = ReadInt16();
+	const OdInt16 ColorIndex {ReadInt16()};
+	const OdInt16 LinetypeIndex {ReadInt16()};
 
 	Seek(sizeof(OdUInt16), CFile::current);
 	const OdUInt16 NumberOfPoints = ReadUInt16();
@@ -49,7 +49,7 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 	Seek(3 * sizeof(double), CFile::current);
 	OdGePoint3dArray Points;
 	Points.setLogicalLength(NumberOfPoints);
-	for (OdUInt16 n = 0; n < NumberOfPoints; n++) {
+	for (unsigned n = 0; n < NumberOfPoints; n++) {
 		Points[n] = ReadPoint3d();
 	}
 	auto Polyline {new EoDbPolyline()};

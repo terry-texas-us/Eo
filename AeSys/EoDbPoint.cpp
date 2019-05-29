@@ -34,7 +34,7 @@ EoDbPoint::EoDbPoint(const EoDbPoint& other) {
 	m_NumberOfDatums = other.m_NumberOfDatums;
 	m_Data = (m_NumberOfDatums == 0) ? nullptr : new double[m_NumberOfDatums];
 
-	for (OdUInt16 n = 0; n < m_NumberOfDatums; n++) {
+	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
 	}
 }
@@ -51,15 +51,16 @@ const EoDbPoint& EoDbPoint::operator=(const EoDbPoint & other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_PointDisplayMode = other.m_PointDisplayMode;
 	m_Position = other.m_Position;
+	
 	if (m_NumberOfDatums != other.m_NumberOfDatums) {
-		if (m_NumberOfDatums != 0)
-			delete[] m_Data;
+		
+		if (m_NumberOfDatums != 0) { delete[] m_Data; }
 
 		m_NumberOfDatums = other.m_NumberOfDatums;
 
 		m_Data = (m_NumberOfDatums == 0) ? nullptr : new double[m_NumberOfDatums];
 	}
-	for (OdUInt16 n = 0; n < m_NumberOfDatums; n++) {
+	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
 	}
 	return (*this);
@@ -233,13 +234,13 @@ void EoDbPoint::ModifyState() noexcept {
 
 void EoDbPoint::SetData(OdUInt16 numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
-		if (m_NumberOfDatums != 0) {
-			delete[] m_Data;
-		}
+
+		if (m_NumberOfDatums != 0) { delete[] m_Data; }
+
 		m_NumberOfDatums = numberOfDatums;
 		m_Data = (m_NumberOfDatums == 0) ? nullptr : new double[m_NumberOfDatums];
 	}
-	for (OdUInt16 w = 0; w < m_NumberOfDatums; w++) {
+	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		m_Data[w] = data[w];
 	}
 }
@@ -265,9 +266,9 @@ bool EoDbPoint::Write(EoDbFile & file) const {
 	file.WritePoint3d(m_Position);
 
 	file.WriteUInt16(m_NumberOfDatums);
-	for (OdUInt16 w = 0; w < m_NumberOfDatums; w++)
+	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		file.WriteDouble(m_Data[w]);
-
+	}
 	return true;
 }
 
@@ -283,11 +284,10 @@ void EoDbPoint::Write(CFile & file, OdUInt8 * buffer) const {
 
 	int i = 20;
 
-	for (OdUInt16 w = 0; w < m_NumberOfDatums; w++) {
+	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		((EoVaxFloat*) & buffer[i])->Convert(m_Data[w]);
 		i += sizeof(EoVaxFloat);
 	}
-
 	file.Write(buffer, 32);
 }
 
@@ -388,7 +388,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUInt8
 
 	auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 
-	for (OdUInt16 n = 0; n < 3; n++) {
+	for (unsigned n = 0; n < 3; n++) {
 		ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data[n]));
 	}
 	Point->setXData(ResourceBuffer);

@@ -347,7 +347,7 @@ AeSysView::AeSysView() noexcept
 	m_OpHighlighted = 0;
 	m_SelectApertureSize = .005;
 	m_PlotScaleFactor = 1.0f;
-	m_GapSpaceFactor = .5;			// Edge space factor 50 percent of character height
+	m_GapSpaceFactor = 0.5;			// Edge space factor 50 percent of character height
 	m_CircleRadius = .03125;		// Circle radius
 	m_EndItemType = 1;				// Arrow type
 	m_EndItemSize = .1;				// Arrow size
@@ -356,7 +356,7 @@ AeSysView::AeSysView() noexcept
 	m_EngagedPrimitive = nullptr;
 	m_EngagedGroup = nullptr;
 
-	m_CenterLineEccentricity = .5;	// Center line eccentricity for parallel lines
+	m_CenterLineEccentricity = 0.5;	// Center line eccentricity for parallel lines
 	m_ContinueCorner = false;
 	m_AssemblyGroup = nullptr;
 	m_BeginSectionGroup = nullptr;

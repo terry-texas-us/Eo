@@ -307,7 +307,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUIn
 
 		int BufferIndex = 12;
 
-		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
+		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
 			ControlPoints[w] = ((EoVaxPoint3d*) & primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
@@ -320,7 +320,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, OdUIn
 
 		int BufferIndex = 10;
 
-		for (OdUInt16 w = 0; w < NumberOfControlPoints; w++) {
+		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
 			ControlPoints[w] = ((EoVaxPoint3d*) & primitiveBuffer[BufferIndex])->Convert();
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}

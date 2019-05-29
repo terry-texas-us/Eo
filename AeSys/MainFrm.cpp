@@ -201,7 +201,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
 	const double PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / EoMmPerInch};
-	const int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + .5);
+	const int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + 0.5);
 
 	LOGBRUSH Brush;
 	Brush.lbStyle = BS_SOLID;

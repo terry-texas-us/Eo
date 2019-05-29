@@ -19,7 +19,7 @@ EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
 	m_VerticalAlignment = other.m_VerticalAlignment;
 	m_CharacterSpacing = other.m_CharacterSpacing;
 }
-EoDbFontDefinition& EoDbFontDefinition::operator=(const EoDbFontDefinition& other) {
+EoDbFontDefinition& EoDbFontDefinition::operator=(const EoDbFontDefinition& other) noexcept {
 	m_Precision = other.m_Precision;
 	m_FontName = other.m_FontName;
 	m_Path = other.m_Path;

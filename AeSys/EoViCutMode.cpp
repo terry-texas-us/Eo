@@ -81,7 +81,7 @@ void AeSysView::OnCutModeSlice() {
 				EoGeLineSeg3d ln;
 				ln = EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d());
 				Primitive->SelectBy(ln, this, Intersections);
-				for (OdUInt16 w = 0; w < Intersections.size(); w++) {
+				for (unsigned w = 0; w < Intersections.size(); w++) {
 					EoDbGroup* NewGroup = new EoDbGroup;
 
 					Intersections[w].transformBy(TransformMatrix);

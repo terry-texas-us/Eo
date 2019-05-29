@@ -5,7 +5,7 @@
 // State list maintenance
 CPrimState* psSav[] = {0, 0, 0, 0};
 
-const CPrimState& CPrimState::operator=(const CPrimState& other) {
+const CPrimState& CPrimState::operator=(const CPrimState& other) noexcept {
 	m_FontDefinition = other.m_FontDefinition;
 
 	m_ColorIndex = other.m_ColorIndex;
@@ -22,7 +22,7 @@ EoDbCharacterCellDefinition CPrimState::CharacterCellDefinition() const noexcept
 OdInt16 CPrimState::ColorIndex() const noexcept {
 	return (m_ColorIndex);
 }
-EoDbFontDefinition CPrimState::FontDefinition() const {
+EoDbFontDefinition CPrimState::FontDefinition() const noexcept {
 	return (m_FontDefinition);
 }
 OdInt16 CPrimState::LinetypeIndex() const noexcept {

@@ -1812,7 +1812,7 @@ void AeSysDoc::OnPrimBreak() {
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
 			OdDbLinePtr Line;
-			for (OdUInt16 w = 0; w < Points.size() - 1; w++) {
+			for (unsigned w = 0; w < Points.size() - 1; w++) {
 				Line = EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1]);
 				Line->setColorIndex(Primitive->ColorIndex());
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));

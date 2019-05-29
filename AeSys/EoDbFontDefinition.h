@@ -17,7 +17,7 @@ public:
 	EoDbFontDefinition();
 	EoDbFontDefinition(const EoDbFontDefinition& other);
 
-	EoDbFontDefinition& operator=(const EoDbFontDefinition& other);
+	EoDbFontDefinition& operator=(const EoDbFontDefinition& other) noexcept;
 
 	CString FormatHorizonatlAlignment() const;
 	CString FormatPath() const;

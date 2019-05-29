@@ -38,7 +38,7 @@ public: // Constructors and destructor
 
 	EoDbBlockReference() noexcept;
 	EoDbBlockReference(const EoDbBlockReference& other);
-	const EoDbBlockReference& operator=(const EoDbBlockReference& other);
+	const EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
 
 	~EoDbBlockReference();
 

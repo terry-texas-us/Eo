@@ -97,45 +97,44 @@ void EoCtrlColorsButton::SubItemRectangleByIndex(OdUInt16 index, CRect& rectangl
 	rectangle.bottom = rectangle.top + m_CellSize.cy;
 	rectangle.right = rectangle.left + m_CellSize.cx;
 }
+
 OdUInt16 EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
 	CRect Rectangle;
 	Rectangle.SetRectEmpty();
 
 	switch (m_Layout) {
-	case SimpleSingleRow:
-		for (OdUInt16 Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
-			SubItemRectangleByIndex(Index, Rectangle);
-			if (Rectangle.PtInRect(point) == TRUE) {
-				return Index;
-			}
-		}
-		break;
-	case GridDown5RowsOddOnly:
-		for (OdUInt16 Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
-			if ((Index % 2) != 0) {
+		case SimpleSingleRow:
+			for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				SubItemRectangleByIndex(Index, Rectangle);
-				if (Rectangle.PtInRect(point) == TRUE) {
-					return Index;
+
+				if (Rectangle.PtInRect(point) == TRUE) { return Index; }
+			}
+			break;
+		case GridDown5RowsOddOnly:
+			for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+				if ((Index % 2) != 0) {
+					SubItemRectangleByIndex(Index, Rectangle);
+
+					if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 				}
 			}
-		}
-		break;
-	case GridUp5RowsEvenOnly:
-		for (OdUInt16 Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
-			if ((Index % 2) == 0) {
-				SubItemRectangleByIndex(Index, Rectangle);
-				if (Rectangle.PtInRect(point) == TRUE) {
-					return Index;
+			break;
+		case GridUp5RowsEvenOnly:
+			for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+				if ((Index % 2) == 0) {
+					SubItemRectangleByIndex(Index, Rectangle);
+
+					if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 				}
 			}
-		}
 	}
 	return 0;
 }
+
 void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle */, UINT /* state */) {
 	m_SelectedIndex = 0;
 
-	for (OdUInt16 Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+	for (unsigned Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 		if (m_Layout == SimpleSingleRow) {
 			DrawCell(deviceContext, Index, m_Palette[Index]);
 		}
@@ -147,9 +146,11 @@ void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle */,
 		}
 	}
 }
+
 UINT EoCtrlColorsButton::OnGetDlgCode() noexcept {
 	return DLGC_WANTARROWS;
 }
+
 void EoCtrlColorsButton::OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags) {
 	if (keyCode >= VK_LEFT && keyCode <= VK_DOWN) {
 		CDC* DeviceContext = GetDC();

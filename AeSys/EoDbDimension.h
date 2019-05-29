@@ -52,7 +52,7 @@ public: // Methods - absolute virtuals
 
 public:	// Methods - virtuals
 
-	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) noexcept override;
+	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList*, EoDbGroupList*, OdDbDatabasePtr database) override;
 	void ModifyState() noexcept override;
 
@@ -66,7 +66,7 @@ public:	// Methods
 	double Length() const;
 	double ParametricRelationshipOf(const OdGePoint3d& point) const;
 	void SetDefaultNote();
-	void SetFontDefinition(const EoDbFontDefinition& fontDefinition);
+	void SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept;
 	void SetStartPoint(const OdGePoint3d& startPoint);
 	void SetEndPoint(const OdGePoint3d& endPoint);
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;

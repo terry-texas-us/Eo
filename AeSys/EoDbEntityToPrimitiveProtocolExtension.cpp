@@ -402,7 +402,7 @@ public:
 		EoDbHatch* HatchPrimitive = new EoDbHatch;
 
 		OdGePoint3d Vertex;
-		for (OdUInt16 VertexIndex = 0; VertexIndex < 4; VertexIndex++) {
+		for (unsigned VertexIndex = 0; VertexIndex < 4; VertexIndex++) {
 			FaceEntity->getVertexAt(VertexIndex, Vertex);
 			HatchPrimitive->Append(Vertex);
 		}
@@ -640,16 +640,16 @@ public:
 		ATLTRACE2(atlTraceGeneral, 2, L"Control Point Tolerance: %f\n", Tolerance);
 
 		ATLTRACE2(atlTraceGeneral, 0, L"Number of control points: %i\n", ControlPoints.size());
-		for (OdUInt16 n = 0; n < ControlPoints.size(); n++) {
+		for (unsigned n = 0; n < ControlPoints.size(); n++) {
 			ATLTRACE2(atlTraceGeneral, 2, L"Control Point: %f, %f, %f\n",  ControlPoints[n]);
 		}
 		ATLTRACE2(atlTraceGeneral, 0, L"Number of Knots: %i\n", Knots.length());
-		for (OdUInt16 n = 0; n < Knots.length(); n++) {
+		for (unsigned n = 0; n < Knots.length(); n++) {
 			ATLTRACE2(atlTraceGeneral, 0, L"Knot: %f\n", Knots[n]);
 		}
 		if (Rational) {
 			ATLTRACE2(atlTraceGeneral, 0, L"Number of Weights: %i\n", Weights.size());
-			for (OdUInt16 n = 0; n < Weights.size(); n++) {
+			for (unsigned n = 0; n < Weights.size(); n++) {
 				ATLTRACE2(atlTraceGeneral, 0, L"Weight: %f\n", Weights[n]);
 			}
 		}

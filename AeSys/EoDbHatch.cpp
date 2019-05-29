@@ -91,7 +91,7 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 		double AngleInXYPlane {0.};
 		const double Length = OdGeVector3d(EndPoint - StartPoint).length();
 
-		if (OdGeVector3d(StartPoint - point).length() > Length * .5) {
+		if (OdGeVector3d(StartPoint - point).length() > Length * 0.5) {
 			AngleInXYPlane = EoGeLineSeg3d(EndPoint, StartPoint).AngleFromXAxis_xy();
 		} else {
 			AngleInXYPlane = EoGeLineSeg3d(StartPoint, EndPoint).AngleFromXAxis_xy();

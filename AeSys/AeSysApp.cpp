@@ -1053,7 +1053,7 @@ void AeSysApp::FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units un
 		auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
 
 		const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
-		auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + .5)};	// Numerator of fractional component of inches
+		auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)};	// Numerator of fractional component of inches
 
 		if (Numerator == FractionPrecision) {
 

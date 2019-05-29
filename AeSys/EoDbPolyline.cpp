@@ -82,7 +82,7 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 		double AngleInXYPlane {0.};
 		const double EdgeLength = OdGeVector3d(ptEnd - ptBeg).length();
 
-		if (OdGeVector3d(ptBeg - point).length() > EdgeLength * .5) {
+		if (OdGeVector3d(ptBeg - point).length() > EdgeLength * 0.5) {
 			AngleInXYPlane = EoGeLineSeg3d(ptEnd, ptBeg).AngleFromXAxis_xy();
 		} else {
 			AngleInXYPlane = EoGeLineSeg3d(ptBeg, ptEnd).AngleFromXAxis_xy();

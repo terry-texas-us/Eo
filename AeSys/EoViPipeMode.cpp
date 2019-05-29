@@ -439,20 +439,20 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 4:
 		{
-			EndSection.ProjPtFrom_xy(SymbolSize[4], SymbolSize[4] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[4], -SymbolSize[4] * .5, m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(SymbolSize[4], SymbolSize[4] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[4], -SymbolSize[4] * 0.5, m_PipeModePoints[1]);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			BeginSection.ProjPtFrom_xy(SymbolSize[4], -SymbolSize[4] * .5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[4], -SymbolSize[4] * 0.5, SymbolBeginPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			BeginSection.ProjPtFrom_xy(SymbolSize[4], SymbolSize[4] * .5, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[4], SymbolSize[4] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, SymbolBeginPoint, SymbolEndPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -468,21 +468,21 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 5:
 		{
-			EndSection.ProjPtFrom_xy(SymbolSize[5], SymbolSize[5] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[5], -SymbolSize[5] * .5, m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(SymbolSize[5], SymbolSize[5] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[5], -SymbolSize[5] * 0.5, m_PipeModePoints[1]);
 
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			BeginSection.ProjPtFrom_xy(SymbolSize[5], -SymbolSize[5] * .5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[5], -SymbolSize[5] * 0.5, SymbolBeginPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			BeginSection.ProjPtFrom_xy(SymbolSize[5], SymbolSize[5] * .5, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[5], SymbolSize[5] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, SymbolBeginPoint, SymbolEndPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -503,10 +503,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 6:
 		{ // Generate gate valve
-			EndSection.ProjPtFrom_xy(SymbolSize[6], SymbolSize[6] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[6], -SymbolSize[6] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[6], -SymbolSize[6] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[6], SymbolSize[6] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[6], SymbolSize[6] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[6], -SymbolSize[6] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[6], -SymbolSize[6] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[6], SymbolSize[6] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -530,10 +530,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 7:
 		{ // Generate globe valve
-			EndSection.ProjPtFrom_xy(SymbolSize[7], SymbolSize[7] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[7], -SymbolSize[7] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[7], -SymbolSize[7] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[7], SymbolSize[7] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[7], SymbolSize[7] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[7], -SymbolSize[7] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[7], -SymbolSize[7] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[7], SymbolSize[7] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -564,10 +564,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 8:
 		{ // Generate stop check valve
-			EndSection.ProjPtFrom_xy(SymbolSize[8], SymbolSize[8] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[8], -SymbolSize[8] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[8], -SymbolSize[8] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[8], SymbolSize[8] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[8], SymbolSize[8] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[8], -SymbolSize[8] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[8], -SymbolSize[8] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[8], SymbolSize[8] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -607,10 +607,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 9:
 		{ // Generate pressure reducing valve
-			EndSection.ProjPtFrom_xy(SymbolSize[9], SymbolSize[9] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[9], -SymbolSize[9] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[9], -SymbolSize[9] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[9], SymbolSize[9] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[9], SymbolSize[9] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[9], -SymbolSize[9] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[9], -SymbolSize[9] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[9], SymbolSize[9] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -644,13 +644,13 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(SymbolSize[9] * .5, SymbolSize[9] * .75, m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(SymbolSize[9] * 0.5, SymbolSize[9] * .75, m_PipeModePoints[1]);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(0.0, SymbolSize[9] * .5, SymbolBeginPoint);
+			EndSection.ProjPtFrom_xy(0.0, SymbolSize[9] * 0.5, SymbolBeginPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -659,10 +659,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 10:
 		{
-			EndSection.ProjPtFrom_xy(SymbolSize[10], SymbolSize[10] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[10], -SymbolSize[10] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[10], -SymbolSize[10] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[10], SymbolSize[10] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[10], SymbolSize[10] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[10], -SymbolSize[10] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[10], -SymbolSize[10] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[10], SymbolSize[10] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -683,16 +683,16 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(0.0, SymbolSize[10] * .5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(0.0, SymbolSize[10] * 0.5, m_PipeModePoints[0]);
 			Line = EoDbLine::Create(BlockTableRecord, PointOnSection, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * .5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * 0.5, m_PipeModePoints[0]);
 			EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * .75, m_PipeModePoints[1]);
 			BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, -SymbolSize[10] * .75, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, -SymbolSize[10] * .5, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, -SymbolSize[10] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -716,10 +716,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 11:
 		{ // Generate automatic 3-way valve
-			EndSection.ProjPtFrom_xy(SymbolSize[11], SymbolSize[11] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[11], -SymbolSize[11] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[11], -SymbolSize[11] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[11], SymbolSize[11] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[11], SymbolSize[11] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[11], -SymbolSize[11] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[11], -SymbolSize[11] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[11], SymbolSize[11] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -740,16 +740,16 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(0.0, SymbolSize[11] * .5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(0.0, SymbolSize[11] * 0.5, m_PipeModePoints[0]);
 			Line = EoDbLine::Create(BlockTableRecord, PointOnSection, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * .5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * 0.5, m_PipeModePoints[0]);
 			EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * .75, m_PipeModePoints[1]);
 			BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, -SymbolSize[11] * .75, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, -SymbolSize[11] * .5, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, -SymbolSize[11] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -770,8 +770,8 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(SymbolSize[11] * .5, -SymbolSize[11], m_PipeModePoints[0]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[11] * .5, SymbolSize[11], m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(SymbolSize[11] * 0.5, -SymbolSize[11], m_PipeModePoints[0]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[11] * 0.5, SymbolSize[11], m_PipeModePoints[1]);
 			Line = EoDbLine::Create(BlockTableRecord, PointOnSection, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -790,10 +790,10 @@ void AeSysView::OnPipeModeSymbol() {
 		}
 		case 12:
 		{ // Generate self operated valve
-			EndSection.ProjPtFrom_xy(SymbolSize[12], SymbolSize[12] * .5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[12], -SymbolSize[12] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12], -SymbolSize[12] * .5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12], SymbolSize[12] * .5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[12], SymbolSize[12] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[12], -SymbolSize[12] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12], -SymbolSize[12] * 0.5, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12], SymbolSize[12] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -814,20 +814,20 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(0.0, SymbolSize[12] * .5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(0.0, SymbolSize[12] * 0.5, m_PipeModePoints[0]);
 			Line = EoDbLine::Create(BlockTableRecord, PointOnSection, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 
-			EndSection.ProjPtFrom_xy(SymbolSize[12] * .25, SymbolSize[12] * .5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * .25, -SymbolSize[12] * .5, SymbolBeginPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[12] * .25, SymbolSize[12] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * .25, -SymbolSize[12] * 0.5, SymbolBeginPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 			// add a half circle here i think
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, -SymbolSize[12] * .5, m_PipeModePoints[0]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, -SymbolSize[12] * 0.5, m_PipeModePoints[0]);
 			Line = EoDbLine::Create(BlockTableRecord, SymbolBeginPoint, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
@@ -835,7 +835,7 @@ void AeSysView::OnPipeModeSymbol() {
 
 			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, -SymbolSize[12] * .75, m_PipeModePoints[1]);
 			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., -SymbolSize[12] * .75, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., -SymbolSize[12] * .5, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., -SymbolSize[12] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
