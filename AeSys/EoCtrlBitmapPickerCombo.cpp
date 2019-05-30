@@ -36,7 +36,7 @@ int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, LPC
 		return n;
 	}
 	if (n != CB_ERR && n != CB_ERRSPACE) {
-		SetItemData(n, (DWORD) bitmap);
+		SetItemData(n, (unsigned long) bitmap);
 		BITMAP Bitmap; 
 		((CBitmap*) bitmap)->GetBitmap(&Bitmap);
 		SetSize(Bitmap.bmWidth, Bitmap.bmHeight);

@@ -45,7 +45,7 @@ public:
 
 public:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
-	BOOL LoadFrame(unsigned resourceId, DWORD defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = nullptr, CCreateContext* createContext = nullptr) override;
+	BOOL LoadFrame(unsigned resourceId, unsigned long defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = nullptr, CCreateContext* createContext = nullptr) override;
 	~CMainFrame();
 #ifdef _DEBUG
 	void AssertValid() const override;
@@ -90,7 +90,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 
 	BOOL OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) override;
-	BOOL OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bDrop) override;
+	BOOL OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedItems, BOOL bDrop) override;
 
 	BOOL CreateDockingWindows();
 	void SetDockablePanesIcons(bool highColorMode);

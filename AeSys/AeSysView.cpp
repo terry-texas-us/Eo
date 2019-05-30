@@ -830,59 +830,61 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 }
 
 OdString GetRegistryAcadProfilesKey(); // external defined in AeSysApp
-static bool GetRegistryDWORD(HKEY key, LPCWSTR subkey, LPCWSTR name, DWORD & rval) noexcept {
-	bool rv = false;
-	HKEY hKey;
 
-	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
-		DWORD dwSize = sizeof(DWORD);
+static bool GetRegistryUnsignedLong(HKEY key, LPCWSTR subkey, LPCWSTR name, unsigned long& value) noexcept {
+	bool ReturnValue {false};
+	HKEY KeyHandle {nullptr};
 
-		if (RegQueryValueExW(hKey, name, nullptr, nullptr, (LPBYTE) & rval, &dwSize) == ERROR_SUCCESS) {
-			rv = true;
-		}
-		RegCloseKey(hKey);
+	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
+		unsigned long ValueSize {sizeof(unsigned long)};
+
+		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, (LPBYTE)& value, &ValueSize) == ERROR_SUCCESS) { ReturnValue = true; }
+
+		RegCloseKey(KeyHandle);
 	}
-	return rv;
+	return ReturnValue;
 }
 
-static bool GetAcadProfileRegistryDWORD(LPCWSTR pSubkey, LPCWSTR pName, DWORD & value) {
-	OdString subkey = GetRegistryAcadProfilesKey();
-	if (!subkey.isEmpty()) {
-		if (pSubkey) {
-			subkey += L"\\";
-			subkey += pSubkey;
+static bool GetAcadProfileRegistryUnsignedLong(LPCWSTR subkey, LPCWSTR name, unsigned long& value) {
+	OdString Subkey {GetRegistryAcadProfilesKey()};
+
+	if (!Subkey.isEmpty()) {
+
+		if (subkey) {
+			Subkey += L"\\";
+			Subkey += subkey;
 		}
-		return GetRegistryDWORD(HKEY_CURRENT_USER, (LPCWSTR) subkey, pName, value);
+		return GetRegistryUnsignedLong(HKEY_CURRENT_USER, (LPCWSTR)Subkey, name, value);
 	}
 	return false;
 }
 
 unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
 	bool Processed {false};
-	DWORD val {0};
+	unsigned long Value {0};
 
 	switch (glyphType) {
 		case kLightGlyph:
-			Processed = GetAcadProfileRegistryDWORD(L"Light", L"Glyph size", val);
+			Processed = GetAcadProfileRegistryUnsignedLong(L"Light", L"Glyph size", Value);
 			break;
 		case kCameraGlyph:
-			Processed = GetAcadProfileRegistryDWORD(L"Dialogs\\AcCamera", L"GlyphSize", val);
+			Processed = GetAcadProfileRegistryUnsignedLong(L"Dialogs\\AcCamera", L"GlyphSize", Value);
 			break;
 	}
-	if (Processed) { return narrow_cast<unsigned long>(val); }
+	if (Processed) { return narrow_cast<unsigned long>(Value); }
 
 	return OdGiContextForDbDatabase::glyphSize(glyphType);
 }
 
 void AeSysView::fillContextualColors(OdGiContextualColorsImpl * pCtxColors) {
 	OdGiContextForDbDatabase::fillContextualColors(pCtxColors); // Fill by defaults first
-	DWORD val {0};
+	unsigned long Value {0};
 #define SET_CTXCLR_ISOK(entry, subkey, name) \
-	if (GetAcadProfileRegistryDWORD(LPCWSTR(subkey), LPCWSTR(name), val)) \
-	pCtxColors->setContextualColor(OdGiContextualColorsImpl::entry, (ODCOLORREF)val);
+	if (GetAcadProfileRegistryUnsignedLong(LPCWSTR(subkey), LPCWSTR(name), Value)) \
+	pCtxColors->setContextualColor(OdGiContextualColorsImpl::entry, (ODCOLORREF)Value);
 #define SET_CTXCLRTINT_ISOK(entry, subkey, name) \
-	if (GetAcadProfileRegistryDWORD(LPCWSTR(subkey), LPCWSTR(name), val)) \
-	pCtxColors->setContextualColorTint(OdGiContextualColorsImpl::entry, val != 0);
+	if (GetAcadProfileRegistryUnsignedLong(LPCWSTR(subkey), LPCWSTR(name), Value)) \
+	pCtxColors->setContextualColorTint(OdGiContextualColorsImpl::entry, Value != 0);
 
 	switch (pCtxColors->visualType()) {
 		case OdGiContextualColorsImpl::k2dModel:
@@ -1795,7 +1797,7 @@ public:
 #define BLINK_CURSOR_TIMER 888
 #define BLINK_CURSOR_RATE  GetCaretBlinkTime()
 
-void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, DWORD dwTime);
+void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, unsigned long time);
 
 class SaveViewParams2 : public SaveViewParams {
 	bool m_bTimerSet;
@@ -1829,7 +1831,7 @@ bool AeSysView::UpdateStringTrackerCursor() {
 	return false;
 }
 
-void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, DWORD dwTime) {
+void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, unsigned long time) {
 	try {
 		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(hWnd))};
 
@@ -2012,7 +2014,7 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 }
 // </command_console>
 
-DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, DWORD keyState, CPoint point) {
+DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) {
 	if (m_mode == kQuiescent || m_mode == kDragDrop) {
 
 		if (AeSysDoc::ClipboardData::isAcadDataAvailable(dataObject)) {
@@ -2949,7 +2951,7 @@ void AeSysView::OnViewParameters() {
 
 	EoGsViewTransform ModelView(m_ViewTransform);
 
-	Dialog.m_ModelView = DWORD(&ModelView);
+	Dialog.m_ModelView = unsigned long(&ModelView);
 	Dialog.m_PerspectiveProjection = m_ViewTransform.IsPerspectiveOn();
 
 	if (Dialog.DoModal() == IDOK) {
@@ -3362,13 +3364,13 @@ void AeSysView::OnUpdateViewTrueTypeFonts(CCmdUI* pCmdUI) {
 }
 
 void AeSysView::OnBackgroundImageLoad() {
-	CFileDialog dlg(TRUE, L"bmp", L"*.bmp");
-	dlg.m_ofn.lpstrTitle = L"Load Background Image";
+	CFileDialog FileDialog(TRUE, L"bmp", L"*.bmp");
+	FileDialog.m_ofn.lpstrTitle = L"Load Background Image";
 
-	if (dlg.DoModal() == IDOK) {
-		EoDbBitmapFile BitmapFile(dlg.GetPathName());
+	if (FileDialog.DoModal() == IDOK) {
+		EoDbBitmapFile BitmapFile(FileDialog.GetPathName());
 
-		BitmapFile.Load(dlg.GetPathName(), m_BackgroundImageBitmap, m_BackgroundImagePalette);
+		BitmapFile.Load(FileDialog.GetPathName(), m_BackgroundImageBitmap, m_BackgroundImagePalette);
 		m_ViewBackgroundImage = true;
 		InvalidateRect(nullptr);
 	}

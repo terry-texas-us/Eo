@@ -315,7 +315,7 @@ void EoDbHatch::TransformBy(const EoGeMatrix3d & transformMatrix) {
 		m_Vertices[VertexIndex].transformBy(transformMatrix);
 }
 
-void EoDbHatch::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
+void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 	// nothing done to hatch coordinate origin
 
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {

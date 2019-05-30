@@ -91,7 +91,7 @@ private:
 	BYTE m_nGDIGradientsAsPolysThreshold;
 	BOOL m_bDisableAutoRegen;
 	ODCOLORREF m_background;
-	DWORD m_thisThreadID;
+	unsigned long m_thisThreadID;
 	unsigned m_numCustomCommands;
 	unsigned long m_numGSMenuItems;
 	OdString m_sVectorizerPath;

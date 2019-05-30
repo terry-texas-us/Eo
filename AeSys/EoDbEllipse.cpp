@@ -856,12 +856,12 @@ void EoDbEllipse::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_MinorAxis.transformBy(transformMatrix);
 }
 
-void EoDbEllipse::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
-	if (mask != 0)
-		m_Center += translate;
+void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+
+	if (mask != 0) { m_Center += translate; }
 }
 
-bool EoDbEllipse::Write(EoDbFile & file) const {
+bool EoDbEllipse::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kEllipsePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);

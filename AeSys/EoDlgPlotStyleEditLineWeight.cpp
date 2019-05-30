@@ -212,7 +212,7 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		if (useLineWeightIndex.find(i, nIndex)) { isUse = true; }
 
 		const auto item {InsertLineweightAt(i, lineweight, isUse)};
-		m_LineweightsListCtrl.SetItemData(item, (DWORD) &m_LineweightData[i]);
+		m_LineweightsListCtrl.SetItemData(item, (unsigned long) &m_LineweightData[i]);
 	}
 	m_LineweightsListCtrl.SetItemState(m_InitialSelection, LVIS_SELECTED, LVIS_SELECTED);
 }

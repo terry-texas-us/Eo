@@ -120,7 +120,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
 	if (root) {
 		HTREEITEM TreeItem = tree.InsertItem(root->name(), parent);
-		tree.SetItemData(TreeItem, (DWORD) (void*) root);
+		tree.SetItemData(TreeItem, (unsigned long) (void*) root);
 		const int Image = root->isIdFilter() ? 2 : 1;
 		tree.SetItemImage(TreeItem, Image, Image);
 		

@@ -218,10 +218,10 @@ bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& p
 
 	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
 	
-	const int LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
+	const unsigned LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
 	
 	if (LengthInChunks > 1) {
-		const auto BytesRemaining {(LengthInChunks - 1) * 32};
+		const unsigned BytesRemaining {(LengthInChunks - 1) * 32};
 
 		if (BytesRemaining >= EoDbPrimitive::BUFFER_SIZE - 32) { throw L"Exception.FileJob: Primitive buffer overflow."; }
 

@@ -89,7 +89,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 
 	// Prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
-	const DWORD Style(WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC);
+	const unsigned long Style {WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC};
 	
 	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create toolbar\n");
@@ -162,7 +162,7 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
 BOOL CMainFrame::CreateDockingWindows() {
 	const CSize DefaultSize(200, 200);
 
-	const DWORD SharedStyles(WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI);
+	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI};
 
 	auto Caption {theApp.LoadStringResource(IDS_OUTPUT)};
 	
@@ -345,12 +345,13 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
 	pCmdUI->SetRadio(theApp.m_ApplicationLook == pCmdUI->m_nID);
 }
 
-BOOL CMainFrame::LoadFrame(unsigned resourceId, DWORD defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
+BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
 	
 	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) { return FALSE; }
 
 	// Add some tools for example....
-	CUserToolsManager* UserToolsManager = theApp.GetUserToolsManager();
+	auto UserToolsManager {theApp.GetUserToolsManager()};
+
 	if (UserToolsManager != nullptr && UserToolsManager->GetUserTools().IsEmpty()) {
 		auto Tool1 {UserToolsManager->CreateNewTool()};
 		Tool1->m_strLabel = L"&Notepad";
@@ -493,13 +494,13 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			CRegKey RegistryKey;
 			RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
 
-			DWORD VectorizerIndex(0);
+			unsigned long VectorizerIndex {0};
 
 			CString VectorizerPath;
-			DWORD PathSize;
+			unsigned long PathSize;
 			for (;;) {
 				PathSize = _MAX_FNAME + _MAX_EXT;
-				const DWORD ReturnValue = ::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, nullptr, nullptr, nullptr, nullptr);
+				const auto ReturnValue {::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 				VectorizerPath.ReleaseBuffer();
 
 				if (ReturnValue != ERROR_SUCCESS) {
@@ -643,7 +644,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 
 // CMainFrame message handlers
 
-BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, DWORD dwAllowedItems, BOOL bDrop) {
+BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedItems, BOOL bDrop) {
 
 	if (bDrop || !theApp.m_Options.m_bTabsContextMenu) { return FALSE; }
 

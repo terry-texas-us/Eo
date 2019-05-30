@@ -64,15 +64,15 @@ BOOL EoLoadApps::OnInitDialog() {
 }
 
 void EoLoadApps::OnLoadApp() {
-	CFileDialog dlg(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Teigha Run-time Extention (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
+	CFileDialog FileDialog(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Run-time Extentions (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
 
-	dlg.m_ofn.lpstrTitle = L"Load application";
-	CString s_path = AeSysApp::getApplicationPath();
-	dlg.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
+	FileDialog.m_ofn.lpstrTitle = L"Load application";
+	auto Path {AeSysApp::getApplicationPath()};
+	FileDialog.m_ofn.lpstrInitialDir = Path.GetBuffer(Path.GetLength());
 
-	if (dlg.DoModal() == IDOK) {
+	if (FileDialog.DoModal() == IDOK) {
 		try {
-			::odrxDynamicLinker()->loadModule(OdString((LPCWSTR) dlg.GetPathName()), false);
+			::odrxDynamicLinker()->loadModule(OdString((LPCWSTR)FileDialog.GetPathName()), false);
 		} catch (const OdError & Error) {
 			theApp.reportError(L"Error", Error);
 		}

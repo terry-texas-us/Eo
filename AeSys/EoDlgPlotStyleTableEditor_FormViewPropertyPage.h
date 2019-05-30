@@ -94,8 +94,8 @@ struct DIBCOLOR {
         , g(GetGValue(color))
         , b(GetBValue(color))
         , reserved(0) {}
-    operator DWORD() noexcept {
-        return *reinterpret_cast<DWORD*>(this);
+    operator unsigned long() noexcept {
+        return *reinterpret_cast<unsigned long*>(this);
     }
 };
 
@@ -212,9 +212,9 @@ protected:
 
 public:
     const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
-    BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags);
-    void SetFileBufPath(const OdString sFilePath);
-    void AddNewPlotStyle(LPCWSTR lpStyleName);
+    BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags);
+    void SetFileBufPath(const OdString filePath);
+    void AddNewPlotStyle(LPCWSTR styleName);
     const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };
 
 protected:

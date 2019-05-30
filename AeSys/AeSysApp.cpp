@@ -369,7 +369,7 @@ AeSysApp::AeSysApp() noexcept
 	, m_nMtRegenThreads(4)
 	, m_bEnablePrintPreviewViaBitmap(1)
 	, m_background(ViewBackgroundColor)
-	, m_thisThreadID(0)
+	, m_thisThreadID {0}
 	, m_numCustomCommands(0)
 	, m_displayFields(0)
 	, m_bSaveRoundTrip(1)
@@ -518,12 +518,12 @@ OdString AeSysApp::fileDialog(int flags, const OdString& prompt, const OdString&
 	if (!supportFileSelectionViaDialog()) {
 		return OdString(L"*unsupported*");
 	}
-	CFileDialog dlg(flags == OdEd::kGfpForOpen, defExt, fileName, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, filter, ::AfxGetMainWnd());
+	CFileDialog FileDialog(flags == OdEd::kGfpForOpen, defExt, fileName, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, filter, ::AfxGetMainWnd());
 
-	dlg.m_ofn.lpstrTitle = prompt;
+	FileDialog.m_ofn.lpstrTitle = prompt;
 
-	if (dlg.DoModal() == IDOK) {
-		return OdString((LPCWSTR) dlg.GetPathName());
+	if (FileDialog.DoModal() == IDOK) {
+		return OdString((LPCWSTR)FileDialog.GetPathName());
 	}
 	throw OdEdCancel();
 }
@@ -987,22 +987,23 @@ CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool mult
 		CString Filter(filter);
 		Filter.Replace('|', '\0');
 
-		OPENFILENAME of;
-		::ZeroMemory(&of, sizeof(OPENFILENAME));
-		of.lStructSize = sizeof(OPENFILENAME);
-		of.hwndOwner = parentWindow;
-		of.lpstrFilter = Filter;
-		of.nFilterIndex = 1;
-		of.lpstrFile = FileName.GetBuffer(MAX_PATH);
-		of.nMaxFile = MAX_PATH;
-		of.lpstrInitialDir = nullptr;
-		of.Flags = Flags;
+		OPENFILENAME OpenFileName;
+		::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
+		OpenFileName.lStructSize = sizeof(OPENFILENAME);
+		OpenFileName.hwndOwner = parentWindow;
+		OpenFileName.lpstrFilter = Filter;
+		OpenFileName.nFilterIndex = 1;
+		OpenFileName.lpstrFile = FileName.GetBuffer(MAX_PATH);
+		OpenFileName.nMaxFile = MAX_PATH;
+		OpenFileName.lpstrInitialDir = nullptr;
+		OpenFileName.Flags = Flags;
 
-		GetOpenFileNameW(&of);
+		GetOpenFileNameW(&OpenFileName);
 		FileName.ReleaseBuffer();
 	}
 	return FileName;
 }
+
 int AeSysApp::ExitInstance() {
 	SetRegistryBase(L"ODA View");
 	theApp.WriteInt(L"Discard Back Faces", m_bDiscardBackFaces);
@@ -1614,30 +1615,30 @@ void AeSysApp::OnFileOpen() {
 }
 
 void AeSysApp::OnFilePlotstylemanager() {
-	OPENFILENAME of;
-	::ZeroMemory(&of, sizeof(OPENFILENAME));
-	of.lStructSize = sizeof(OPENFILENAME);
-	of.hwndOwner = nullptr;
-	of.hInstance = theApp.GetInstance();
-	of.lpstrFilter = L"Plot Style Files\0*.ctb;*.stb\0All Files\0*.*\0\0";
-	of.lpstrFile = new wchar_t[MAX_PATH];
-	*of.lpstrFile = 0;
-	of.nMaxFile = MAX_PATH;
-	of.lpstrTitle = L"Select Plot Style File";
-	of.Flags = OFN_FILEMUSTEXIST;
-	of.lpstrDefExt = L"stb";
+	OPENFILENAME OpenFileName;
+	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
+	OpenFileName.lStructSize = sizeof(OPENFILENAME);
+	OpenFileName.hwndOwner = nullptr;
+	OpenFileName.hInstance = theApp.GetInstance();
+	OpenFileName.lpstrFilter = L"Plot Style Files\0*.ctb;*.stb\0All Files\0*.*\0\0";
+	OpenFileName.lpstrFile = new wchar_t[MAX_PATH];
+	*OpenFileName.lpstrFile = 0;
+	OpenFileName.nMaxFile = MAX_PATH;
+	OpenFileName.lpstrTitle = L"Select Plot Style File";
+	OpenFileName.Flags = OFN_FILEMUSTEXIST;
+	OpenFileName.lpstrDefExt = L"stb";
 
-	if (GetOpenFileNameW(&of)) {
-		OdString FileName(of.lpstrFile);
-		delete of.lpstrFile;
+	if (GetOpenFileNameW(&OpenFileName)) {
+		OdString FileName(OpenFileName.lpstrFile);
+		delete OpenFileName.lpstrFile;
 
-		OdDbSystemServices* SystemServices = odSystemServices();
+		auto SystemServices {odSystemServices()};
 		try {
 			if (SystemServices->accessFile(FileName, Oda::kFileRead)) {
 				OdStreamBufPtr StreamBuffer(SystemServices->createFile(FileName));
 				OdPsPlotStyleTablePtr pPlotStyleTable;
 				if (StreamBuffer.get()) {
-					OdPsPlotStyleServicesPtr PlotStyleServices = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);
+					OdPsPlotStyleServicesPtr PlotStyleServices {odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME)};
 					if (PlotStyleServices.get()) {
 						pPlotStyleTable = PlotStyleServices->loadPlotStyleTable(StreamBuffer);
 					}
@@ -1653,9 +1654,11 @@ void AeSysApp::OnFilePlotstylemanager() {
 		}
 	}
 }
+
 void AeSysApp::OnHelpContents() {
 	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm", HH_DISPLAY_TOPIC, NULL);
 }
+
 void AeSysApp::OnModeAnnotate() {
 	m_ModeResourceIdentifier = IDR_ANNOTATE_MODE;
 	m_PrimaryMode = ID_MODE_ANNOTATE;
@@ -2288,17 +2291,17 @@ bool addGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers
 }
 
 void AeSysApp::OnVectorizeAddVectorizerDLL() {
-	const DWORD Flags {OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST};
+	const unsigned long Flags {OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST};
 	CString Filter {L"Graphic System DLL (*."  VECTORIZATION_MODULE_EXTENSION_W  L")|*." VECTORIZATION_MODULE_EXTENSION_W  L"|Windows DLL (*.dll)|*.dll||"};
 
-	CFileDialog dlg(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, ::AfxGetMainWnd());
-	dlg.m_ofn.lpstrTitle = L"Select Graphic System DLL";
+	CFileDialog FileDialog(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, ::AfxGetMainWnd());
+	FileDialog.m_ofn.lpstrTitle = L"Select Graphic System DLL";
 
 	auto s_path {getApplicationPath()};
-	dlg.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
+	FileDialog.m_ofn.lpstrInitialDir = s_path.GetBuffer(s_path.GetLength());
 
-	if (dlg.DoModal() == IDOK) {
-		m_sVectorizerPath = (LPCWSTR) dlg.GetFileName();
+	if (FileDialog.DoModal() == IDOK) {
+		m_sVectorizerPath = (LPCWSTR)FileDialog.GetFileName();
 		m_sVectorizerPath.replace(TD_DLL_VERSION_SUFFIX_STR, L"");
 
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
@@ -2307,7 +2310,7 @@ void AeSysApp::OnVectorizeAddVectorizerDLL() {
 		::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, m_sVectorizerPath);
 		WriteProfileStringW(L"options\\vectorizers", m_sVectorizerPath, L"");
 		GetMainWnd()->SendMessage(WM_COMMAND, ID_VECTORIZE);
-}
+	}
 }
 
 void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
@@ -2318,16 +2321,17 @@ void AeSysApp::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
 		CRegKey RegistryKey;
 		RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
 
-		CString path;
-		DWORD pathSize;
+		CString Path;
+		unsigned long PathSize;
+		
 		for (;;) {
-			pathSize = _MAX_FNAME + _MAX_EXT;
-			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, path.GetBuffer(pathSize), &pathSize, nullptr, nullptr, nullptr, nullptr)};
-			path.ReleaseBuffer();
+			PathSize = _MAX_FNAME + _MAX_EXT;
+			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, Path.GetBuffer(PathSize), &PathSize, nullptr, nullptr, nullptr, nullptr)};
+			Path.ReleaseBuffer();
 			
 			if (Status == ERROR_SUCCESS) {
 
-				if (!::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, path)) { break; }
+				if (!::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, Path)) { break; }
 
 			} else { break; }
 		}

@@ -264,10 +264,9 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	}
 }
 
-void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d & translate, DWORD mask) {
-	if (mask != 0) {
-		m_Position += translate;
-	}
+void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+	
+	if (mask != 0) { m_Position += translate; }
 }
 
 bool EoDbBlockReference::Write(EoDbFile & file) const {

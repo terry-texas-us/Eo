@@ -25,14 +25,14 @@ void AeSysView::OnModePrimitiveMend() {
 			m_PrimitiveToMend = Primitive;
 		}
 	}
-	if (m_PrimitiveToMend == 0) { // No engaged group, or engaged primitive to far from cursor
+	if (m_PrimitiveToMend == nullptr) { // No engaged group, or engaged primitive to far from cursor
 		if (SelectGroupAndPrimitive(m_MendPrimitiveBegin) != nullptr) { // Group successfully engaged
 			m_PrimitiveToMend = EngagedPrimitive();
 		}
 	}
 	m_MendPrimitiveBegin = CurrentPnt;
 
-	if (m_PrimitiveToMend != 0) {
+	if (m_PrimitiveToMend != nullptr) {
 		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 		m_PrimitiveToMendCopy = m_PrimitiveToMend->Clone(BlockTableRecord);
 		m_MendPrimitiveBegin = m_PrimitiveToMend->SelectAtControlPoint(this, ptView);

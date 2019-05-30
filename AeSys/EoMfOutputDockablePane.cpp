@@ -22,9 +22,9 @@ BEGIN_MESSAGE_MAP(EoMfOutputDockablePane, CDockablePane)
 END_MESSAGE_MAP()
 
 int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
-	if (CDockablePane::OnCreate(createStructure) == - 1) {
-		return - 1;
-	}
+	
+	if (CDockablePane::OnCreate(createStructure) == - 1) { return - 1; }
+
 	m_Font.CreateStockObject(DEFAULT_GUI_FONT);
 
 	CRect EmptyRect;
@@ -34,7 +34,7 @@ int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create output tab window\n");
 		return - 1;
 	}
-	const DWORD SharedStyles = WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LBS_NOINTEGRALHEIGHT;
+	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LBS_NOINTEGRALHEIGHT};
 
 	if (!m_OutputMessagesList.Create(SharedStyles, EmptyRect, &m_wndTabs, 2) || !m_OutputReportsList.Create(SharedStyles, EmptyRect, &m_wndTabs, 4)) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create output windows\n");

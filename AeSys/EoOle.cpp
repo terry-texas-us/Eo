@@ -223,7 +223,7 @@ public:
 		if (!m_lpViewObject) {
 			return kContent;
 		}
-		DWORD dwAspect;
+		unsigned long dwAspect;
 		IAdviseSinkPtr pAdviseSink;
 		VERIFY(m_lpViewObject->GetAdvise(&dwAspect, NULL, &pAdviseSink) == S_OK);
 		return DvAspect(dwAspect);
@@ -256,7 +256,7 @@ public:
 		}
 		load(stream);
 	}
-	void OnChange(OLE_NOTIFICATION nCode, DWORD dwParam) {
+	void OnChange(OLE_NOTIFICATION nCode, unsigned long dwParam) {
 		COleClientItem::OnChange(nCode, dwParam);
 
 		// suppress boring save dialog on exit...

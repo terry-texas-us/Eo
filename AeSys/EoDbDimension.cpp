@@ -464,14 +464,12 @@ void EoDbDimension::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	}
 }
 
-void EoDbDimension::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
-	if ((mask & 1) == 1) {
-		m_Line.SetStartPoint(m_Line.startPoint() + translate);
-	}
+void EoDbDimension::TranslateUsingMask(const OdGeVector3d & translate, const unsigned long mask) {
 
-	if ((mask & 2) == 2) {
-		m_Line.SetEndPoint(m_Line.endPoint() + translate);
-	}
+	if ((mask & 1) == 1) { m_Line.SetStartPoint(m_Line.startPoint() + translate); }
+
+	if ((mask & 2) == 2) { m_Line.SetEndPoint(m_Line.endPoint() + translate); }
+
 	SetDefaultNote();
 }
 

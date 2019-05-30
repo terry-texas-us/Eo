@@ -42,7 +42,7 @@ void EoVarDialog::makeGripper() {
 	InitialRect.left = InitialRect.right - GetSystemMetrics(SM_CXHSCROLL);
 	InitialRect.top = InitialRect.bottom - GetSystemMetrics(SM_CYVSCROLL);
 
-	const DWORD Style(WS_CHILD | SBS_SIZEBOX | SBS_SIZEBOXBOTTOMRIGHTALIGN | SBS_SIZEGRIP | WS_VISIBLE);
+	const unsigned long Style {WS_CHILD | SBS_SIZEBOX | SBS_SIZEBOXBOTTOMRIGHTALIGN | SBS_SIZEGRIP | WS_VISIBLE};
 
 	m_Grip.Create(Style, InitialRect, this, AFX_IDW_SIZE_BOX);
 }

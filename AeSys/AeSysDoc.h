@@ -194,7 +194,7 @@ protected:
 	AeSysDoc() noexcept;
 	DECLARE_DYNCREATE(AeSysDoc)
 
-	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* documentTemplate);
+	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate);
 
 	OdDbCommandContextPtr m_CommandContext;
 
@@ -407,7 +407,7 @@ public:
 public: // Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
 	/// <summary>Maintains a list of the primatives with at least one identified node.</summary>
-	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, DWORD mask, int bit, OdGePoint3d point);
+	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point);
 	POSITION AddNodalGroup(EoDbGroup* group);
 	POSITION FindNodalGroup(EoDbGroup* group);
 	POSITION GetFirstNodalGroupPosition() const;
@@ -417,7 +417,7 @@ public: // Nodal list interface (includes list of groups, primitives and unique 
 	POSITION GetFirstMaskedPrimitivePosition() const;
 	EoDbMaskedPrimitive* GetNextMaskedPrimitive(POSITION& position);
 	void RemoveAllMaskedPrimitives();
-	DWORD GetPrimitiveMask(EoDbPrimitive* primitive);
+	unsigned long GetPrimitiveMask(EoDbPrimitive* primitive);
 	void AddPrimitiveBit(EoDbPrimitive* primitive, int bit);
 	void RemovePrimitiveBit(EoDbPrimitive* primitive, int bit);
 	int AddUniquePoint(const OdGePoint3d& point);

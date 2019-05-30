@@ -134,35 +134,34 @@ void CBitmapColorInfo::SetBitmapPixels(CBitmap &Bmp, DIBCOLOR *pPixels) {
 	delete pPixels;
 }
 
-CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* pBmpSource, CBitmap* pBmpClone) {
-	ASSERT(pBmpClone);
-	ASSERT(pBmpSource);
-	ASSERT(pBmpSource != pBmpClone);
+CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clonedBitmap) {
+	ASSERT(clonedBitmap);
+	ASSERT(sourceBitmap);
+	ASSERT(sourceBitmap != clonedBitmap);
 
-	if (!pBmpClone && !pBmpSource && (pBmpSource == pBmpClone)) { return nullptr; }
+	if (!clonedBitmap && !sourceBitmap && (sourceBitmap == clonedBitmap)) { return nullptr; }
 
-	BITMAP bmp; 
-	DWORD dw;
-	unsigned char*pb;
-	((CBitmap*)pBmpSource)->GetBitmap(&bmp); 
+	BITMAP Bitmap;
+	((CBitmap*)sourceBitmap)->GetBitmap(&Bitmap);
 
 	CClientDC ClientDeviceContext(nullptr);
 	CDC cdc;
 	cdc.CreateCompatibleDC(&ClientDeviceContext);
-	pBmpClone->CreateCompatibleBitmap(&ClientDeviceContext, bmp.bmWidth, bmp.bmHeight);
+	clonedBitmap->CreateCompatibleBitmap(&ClientDeviceContext, Bitmap.bmWidth, Bitmap.bmHeight);
 
-	dw = bmp.bmWidthBytes*bmp.bmHeight;
-	pb = new unsigned char[dw];
-	dw = pBmpSource->GetBitmapBits(dw, pb); 
-	pBmpClone->SetBitmapBits(dw, pb);
-	delete[]pb;
+	unsigned long NumberOfBytes {narrow_cast<unsigned long>(Bitmap.bmWidthBytes * Bitmap.bmHeight)};
+	auto BitmapBuffer {new unsigned char[NumberOfBytes]};
 
-	int W;
-	int H;
-	DIBCOLOR *buf = GetBitmapPixels(*(CBitmap*)pBmpSource, W, H);
-	SetBitmapPixels(*pBmpClone, buf);
+	NumberOfBytes = sourceBitmap->GetBitmapBits(NumberOfBytes, BitmapBuffer);
+	clonedBitmap->SetBitmapBits(NumberOfBytes, BitmapBuffer);
+	delete[]BitmapBuffer;
 
-	return pBmpClone;
+	int Width;
+	int Height;
+	DIBCOLOR* buf = GetBitmapPixels(*(CBitmap*)sourceBitmap, Width, Height);
+	SetBitmapPixels(*clonedBitmap, buf);
+
+	return clonedBitmap;
 }
 
 void CBitmapColorInfo::PaintBitmap(CBitmap &Bmp, COLORREF color) {
@@ -877,51 +876,52 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::AddNewPlotStyle(LPCWSTR styleNam
 	m_listStyles.SetItemState(ItemIndex, LVIS_SELECTED, LVIS_SELECTED);
 	m_listStyles.SetSelectionMark(ItemIndex);
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
 	DialogBox(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDD_PS_DLG_ADDPS), m_hWnd, Dlg_Proc); 
 	m_listStyles.SetFocus();
 }
-BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags/*, BOOL bOpenFileDialog*/) {
+
+BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags) {
 	CString ext = fileName.Right(3);
 	const bool isCtb = m_pPlotStyleTable->isAciTableAvailable();
 
-	CFileDialog dlgFile(FALSE);
+	CFileDialog FileDialog(FALSE);
 
-	CString title = L"Save As";
+	CString title {L"Save As"};
 
-	dlgFile.m_ofn.Flags |= lFlags;
+	FileDialog.m_ofn.Flags |= flags;
 
 	CString strFilter;
 	CString strDefault;
 
-	strFilter = isCtb 
-		? L"Color-Dependent Style Table Files (*.ctb)"
-		: L"Style Table Files (*.stb)";
+	strFilter = isCtb ? L"Color-Dependent Style Table Files (*.ctb)" : L"Style Table Files (*.stb)";
 	strFilter += (wchar_t)'\0'; // next string please
 	strFilter += isCtb ? L"*.ctb" : L"*.stb";
 	strFilter += (wchar_t)'\0'; // last string
-	dlgFile.m_ofn.nMaxCustFilter++;
-	dlgFile.m_ofn.nFilterIndex = 1;
+	FileDialog.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nFilterIndex = 1;
 
-	if (fileName.ReverseFind('.') != - 1) {
-		fileName = fileName.Left(fileName.ReverseFind('.'));
-	}
-	dlgFile.m_ofn.lpstrFilter = strFilter;
-	dlgFile.m_ofn.lpstrTitle = title;
-	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
+	if (fileName.ReverseFind('.') != - 1) { fileName = fileName.Left(fileName.ReverseFind('.')); }
 
-	const LPARAM nResult = dlgFile.DoModal();
+	FileDialog.m_ofn.lpstrFilter = strFilter;
+	FileDialog.m_ofn.lpstrTitle = title;
+	FileDialog.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
+
+	const LPARAM nResult = FileDialog.DoModal();
+
 	if (nResult == IDOK ) {
-		fileName = dlgFile.GetPathName();
-		if (fileName.ReverseFind('.') == -1) {
-			fileName += isCtb ? L".ctb" : L".stb";
-		}
+		fileName = FileDialog.GetPathName();
+		
+		if (fileName.ReverseFind('.') == -1) { fileName += isCtb ? L".ctb" : L".stb"; }
 	}
 	return nResult == IDOK;
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::SetFileBufPath(const OdString sFilePath) {
 	m_sFileBufPath = sFilePath;
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSaveBtn() {
 	CString sPath = (LPCWSTR)m_sFileBufPath;
 

@@ -252,9 +252,9 @@ void EoDbPoint::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_Position.transformBy(transformMatrix);
 }
 
-void EoDbPoint::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
-	if (mask != 0)
-		m_Position += translate;
+void EoDbPoint::TranslateUsingMask(const OdGeVector3d & translate, const unsigned long mask) {
+
+	if (mask != 0) { m_Position += translate; }
 }
 
 bool EoDbPoint::Write(EoDbFile & file) const {

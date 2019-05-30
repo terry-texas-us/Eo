@@ -789,7 +789,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 			if (TopMenu->GetMenuItemInfoW(commandId, &MenuItemInfo, FALSE)) {
 
 				// <tas="Will not use. Need to decide if/how to select a vectorizer. Possible OpenGL is a desired option to Directx">
-				if (MenuItemInfo.dwItemData == theApp.getGSMenuItemMarker()) {
+				if (MenuItemInfo.dwItemData == narrow_cast<unsigned>(theApp.getGSMenuItemMarker())) {
 					CString Vectorizer;
 					TopMenu->GetSubMenu(3)->GetMenuStringW(commandId, Vectorizer, MF_BYCOMMAND);
 
@@ -1423,21 +1423,21 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 
 	bool bRetVal = false;
 
-	OPENFILENAME of;
-	::ZeroMemory(&of, sizeof(OPENFILENAME));
-	of.lStructSize = sizeof(OPENFILENAME);
-	of.hwndOwner = nullptr;
-	of.hInstance = theApp.GetInstance();
-	of.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
-	of.lpstrFile = new wchar_t[MAX_PATH];
-	wcscpy_s(of.lpstrFile, MAX_PATH, name);
-	of.nMaxFile = MAX_PATH;
-	of.lpstrTitle = L"Melt As";
-	of.Flags = OFN_OVERWRITEPROMPT;
-	of.lpstrDefExt = L"tra";
+	OPENFILENAME OpenFileName;
+	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
+	OpenFileName.lStructSize = sizeof(OPENFILENAME);
+	OpenFileName.hwndOwner = nullptr;
+	OpenFileName.hInstance = theApp.GetInstance();
+	OpenFileName.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
+	OpenFileName.lpstrFile = new wchar_t[MAX_PATH];
+	wcscpy_s(OpenFileName.lpstrFile, MAX_PATH, name);
+	OpenFileName.nMaxFile = MAX_PATH;
+	OpenFileName.lpstrTitle = L"Melt As";
+	OpenFileName.Flags = OFN_OVERWRITEPROMPT;
+	OpenFileName.lpstrDefExt = L"tra";
 
-	if (GetSaveFileNameW(&of)) {
-		name = of.lpstrFile;
+	if (GetSaveFileNameW(&OpenFileName)) {
+		name = OpenFileName.lpstrFile;
 
 		const EoDb::FileTypes FileType = AeSysApp::GetFileType(name);
 		if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
@@ -1459,7 +1459,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 				TracingFile.WriteHeader();
 				TracingFile.WriteLayer(Layer);
 			}
-			name = name.mid(of.nFileOffset);
+			name = name.mid(OpenFileName.nFileOffset);
 
 			Layer->MakeResident(true);
 			Layer->MakeInternal(false);
@@ -1468,7 +1468,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 			bRetVal = true;
 		}
 	}
-	delete[] of.lpstrFile;
+	delete[] OpenFileName.lpstrFile;
 	return (bRetVal);
 }
 
@@ -2077,17 +2077,17 @@ void AeSysDoc::OnEditTrace() {
 		unsigned Format {0};
 
 		while ((ClipboardFormat = EnumClipboardFormats(Format)) != 0) {
-			GetClipboardFormatName(ClipboardFormat, sBuf, 16);
+			GetClipboardFormatNameW(ClipboardFormat, sBuf, 16);
 
 			if (wcscmp(sBuf, L"EoGroups") == 0) {
 				HGLOBAL ClipboardDataHandle = GetClipboardData(ClipboardFormat);
 
 				if (ClipboardDataHandle != nullptr) {
 
-					LPCSTR ClipboardData = (LPCSTR) GlobalLock(ClipboardDataHandle);
+					auto ClipboardData {static_cast<LPCSTR>(GlobalLock(ClipboardDataHandle))};
 
 					if (ClipboardData != nullptr) {
-						const DWORD ClipboardDataLength = *((DWORD*) ClipboardData);
+						const auto ClipboardDataLength {*((unsigned long*)ClipboardData)};
 						CMemFile MemFile;
 						MemFile.Write(ClipboardData, narrow_cast<unsigned>(ClipboardDataLength));
 						GlobalUnlock(ClipboardDataHandle);
@@ -2135,19 +2135,19 @@ void AeSysDoc::OnEditTrapPaste() {
 		if (IsClipboardFormatAvailable(ClipboardFormat)) {
 			EoDlgSetPastePosition Dialog;
 			if (Dialog.DoModal() == IDOK) {
-				HGLOBAL ClipboardDataHandle = GetClipboardData(ClipboardFormat);
+				HGLOBAL ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
 
 				if (ClipboardDataHandle != nullptr) {
 					OdGePoint3d LowerLeftExtent;
-					const OdGePoint3d InsertionPoint(theApp.GetCursorPosition());
+					const auto InsertionPoint {theApp.GetCursorPosition()};
 					SetTrapPivotPoint(InsertionPoint);
 
-					LPCSTR ClipboardData = (LPCSTR) GlobalLock(ClipboardDataHandle);
-					const DWORD ClipboardDataLength = *((DWORD*) ClipboardData);
+					auto ClipboardData {static_cast<LPCSTR>(GlobalLock(ClipboardDataHandle))};
+					const auto ClipboardDataLength {*((unsigned long*)ClipboardData)};
 					CMemFile MemoryFile;
 					MemoryFile.Write(ClipboardData, narrow_cast<unsigned>(ClipboardDataLength));
 
-					MemoryFile.Seek(sizeof(DWORD), CFile::begin);
+					MemoryFile.Seek(sizeof(unsigned long), CFile::begin);
 					MemoryFile.Read(&LowerLeftExtent.x, sizeof(double));
 					MemoryFile.Read(&LowerLeftExtent.y, sizeof(double));
 					MemoryFile.Read(&LowerLeftExtent.z, sizeof(double));
@@ -2163,14 +2163,14 @@ void AeSysDoc::OnEditTrapPaste() {
 				}
 			}
 		} else if (IsClipboardFormatAvailable(CF_TEXT)) {
-			HGLOBAL ClipboardDataHandle = GetClipboardData(CF_TEXT);
+			HGLOBAL ClipboardDataHandle {GetClipboardData(CF_TEXT)};
 			
 			if (ClipboardDataHandle != nullptr) {
-				const char* ClipboardData = (char*) GlobalLock(ClipboardDataHandle);
+				const auto ClipboardData {static_cast<char*>(GlobalLock(ClipboardDataHandle))};
 
 				if (ClipboardData != nullptr) {
-					const unsigned ClipboardDataSize = GlobalSize(ClipboardDataHandle);
-					wchar_t* Text = new wchar_t[ClipboardDataSize];
+					const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
+					auto Text {new wchar_t[ClipboardDataSize]};
 
 					for (unsigned i = 0; i < ClipboardDataSize; i++) {
 						Text[i] = (wchar_t) ClipboardData[i];
@@ -2183,9 +2183,10 @@ void AeSysDoc::OnEditTrapPaste() {
 		} else if (IsClipboardFormatAvailable(CF_UNICODETEXT)) {
 			HGLOBAL ClipboardDataHandle = GetClipboardData(CF_UNICODETEXT);
 
-			const wchar_t* ClipboardData = (wchar_t*) GlobalLock(ClipboardDataHandle);
-			const unsigned ClipboardDataSize = GlobalSize(ClipboardDataHandle);
-			wchar_t* Text = new wchar_t[ClipboardDataSize];
+			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
+			const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
+			auto Text {new wchar_t[ClipboardDataSize]};
+			
 			for (unsigned i = 0; i < ClipboardDataSize; i++) {
 				Text[i] = ClipboardData[i];
 			}
@@ -2194,8 +2195,9 @@ void AeSysDoc::OnEditTrapPaste() {
 			delete[] Text;
 		}
 		CloseClipboard();
-	} else
+	} else {
 		theApp.WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
+	}
 }
 
 void AeSysDoc::OnEditTrapWork() {
@@ -2494,12 +2496,14 @@ void AeSysDoc::OnSetupSavePoint() {
 	if (Dialog.DoModal() == IDOK) {
 	}
 }
+
 void AeSysDoc::OnSetupGotoPoint() {
 	EoDlgSelectGotoHomePoint Dialog(AeSysView::GetActiveView());
 
 	if (Dialog.DoModal() == IDOK) {
 	}
 }
+
 void AeSysDoc::OnSetupOptionsDraw() {
 	EoDlgDrawOptions Dialog;
 
@@ -2507,42 +2511,46 @@ void AeSysDoc::OnSetupOptionsDraw() {
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::All);
 	}
 }
+
 void AeSysDoc::OnFileManage() {
 	EoDlgFileManage dlg(this, m_DatabasePtr);
 
 	if (dlg.DoModal() == IDOK) {
 	}
 }
+
 void AeSysDoc::OnFileTracing() {
-	static DWORD FilterIndex = 1;
+	static unsigned long FilterIndex {1};
 
-	OPENFILENAME of;
-	::ZeroMemory(&of, sizeof(OPENFILENAME));
-	of.lStructSize = sizeof(OPENFILENAME);
-	of.hwndOwner = nullptr;
-	of.hInstance = theApp.GetInstance();
-	of.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
-	of.nFilterIndex = FilterIndex;
-	of.lpstrFile = new wchar_t[MAX_PATH];
-	of.lpstrFile[0] = 0;
-	of.nMaxFile = MAX_PATH;
-	of.lpstrTitle = L"Load Tracing";
-	of.Flags = OFN_EXPLORER | OFN_ENABLETEMPLATE | OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
-	of.lpstrDefExt = L"tra";
-	of.lpfnHook = OFNHookProcFileTracing;
-	of.lpTemplateName = MAKEINTRESOURCEW(IDD_TRACING_EX);
+	OPENFILENAME OpenFileName;
+	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
+	OpenFileName.lStructSize = sizeof(OPENFILENAME);
+	OpenFileName.hwndOwner = nullptr;
+	OpenFileName.hInstance = theApp.GetInstance();
+	OpenFileName.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
+	OpenFileName.nFilterIndex = FilterIndex;
+	OpenFileName.lpstrFile = new wchar_t[MAX_PATH];
+	OpenFileName.lpstrFile[0] = 0;
+	OpenFileName.nMaxFile = MAX_PATH;
+	OpenFileName.lpstrTitle = L"Load Tracing";
+	OpenFileName.Flags = OFN_EXPLORER | OFN_ENABLETEMPLATE | OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
+	OpenFileName.lpstrDefExt = L"tra";
+	OpenFileName.lpfnHook = OFNHookProcFileTracing;
+	OpenFileName.lpTemplateName = MAKEINTRESOURCEW(IDD_TRACING_EX);
 
-	if (GetOpenFileNameW(&of)) {
-		FilterIndex = of.nFilterIndex;
+	if (GetOpenFileNameW(&OpenFileName)) {
+		FilterIndex = OpenFileName.nFilterIndex;
 
-		TracingOpen(of.lpstrFile);
+		TracingOpen(OpenFileName.lpstrFile);
 	}
 
-	delete[] of.lpstrFile;
+	delete[] OpenFileName.lpstrFile;
 }
+
 void AeSysDoc::OnPurgeDuplicateObjects() {
 	PurgeDuplicateObjects();
 }
+
 void AeSysDoc::OnPurgeEmptyNotes() {
 	const int NumberOfEmptyNotes = RemoveEmptyNotesAndDelete();
 	const int NumberOfEmptyGroups = RemoveEmptyGroups();
@@ -2562,29 +2570,29 @@ void AeSysDoc::OnPensEditColors() {
 void AeSysDoc::OnPensLoadColors() {
 	CString InitialDirectory = theApp.ResourceFolderPath() + L"Pens\\Colors\\";
 
-	OPENFILENAME of;
-	::ZeroMemory(&of, sizeof(OPENFILENAME));
-	of.lStructSize = sizeof(OPENFILENAME);
-	of.hwndOwner = nullptr;
-	of.hInstance = theApp.GetInstance();
-	of.lpstrFilter = L"Pen Color Files\0*.txt\0\0";
-	of.lpstrFile = new wchar_t[MAX_PATH];
-	of.lpstrFile[0] = 0;
-	of.nMaxFile = MAX_PATH;
-	of.lpstrTitle = L"Load Pen Colors";
-	of.lpstrInitialDir = InitialDirectory;
-	of.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
-	of.lpstrDefExt = L"txt";
+	OPENFILENAME OpenFileName;
+	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
+	OpenFileName.lStructSize = sizeof(OPENFILENAME);
+	OpenFileName.hwndOwner = nullptr;
+	OpenFileName.hInstance = theApp.GetInstance();
+	OpenFileName.lpstrFilter = L"Pen Color Files\0*.txt\0\0";
+	OpenFileName.lpstrFile = new wchar_t[MAX_PATH];
+	OpenFileName.lpstrFile[0] = 0;
+	OpenFileName.nMaxFile = MAX_PATH;
+	OpenFileName.lpstrTitle = L"Load Pen Colors";
+	OpenFileName.lpstrInitialDir = InitialDirectory;
+	OpenFileName.Flags = OFN_HIDEREADONLY | OFN_NOCHANGEDIR;
+	OpenFileName.lpstrDefExt = L"txt";
 
-	if (GetOpenFileNameW(&of)) {
-		if ((of.Flags & OFN_EXTENSIONDIFFERENT) == 0) {
-			theApp.LoadColorPalletFromFile(of.lpstrFile);
+	if (GetOpenFileNameW(&OpenFileName)) {
+		if ((OpenFileName.Flags & OFN_EXTENSIONDIFFERENT) == 0) {
+			theApp.LoadColorPalletFromFile(OpenFileName.lpstrFile);
 
 			UpdateAllViews(nullptr);
 		} else
 			theApp.WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
 	}
-	delete[] of.lpstrFile;
+	delete[] OpenFileName.lpstrFile;
 }
 void AeSysDoc::OnPensTranslate() {
 	CStdioFile fl;
@@ -2775,7 +2783,7 @@ void AeSysDoc::DeleteNodalResources() {
 	RemoveAllNodalGroups();
 }
 
-void AeSysDoc::UpdateNodalList(EoDbGroup * group, EoDbPrimitive * primitive, DWORD mask, int bit, OdGePoint3d point) {
+void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point) {
 	if (theApp.m_NodalModeAddGroups) {
 		if (!btest(mask, bit)) {
 			if (!FindNodalGroup(group)) {
@@ -2802,21 +2810,27 @@ void AeSysDoc::UpdateNodalList(EoDbGroup * group, EoDbPrimitive * primitive, DWO
 		}
 	}
 }
+
 POSITION AeSysDoc::AddNodalGroup(EoDbGroup * group) {
 	return m_NodalGroupList.AddTail(group);
 }
+
 POSITION AeSysDoc::FindNodalGroup(EoDbGroup * group) {
 	return m_NodalGroupList.Find(group);
 }
+
 POSITION AeSysDoc::GetFirstNodalGroupPosition() const {
 	return m_NodalGroupList.GetHeadPosition();
 }
+
 EoDbGroup* AeSysDoc::GetNextNodalGroup(POSITION & position) {
 	return m_NodalGroupList.GetNext(position);
 }
+
 void AeSysDoc::RemoveAllNodalGroups() {
 	m_NodalGroupList.RemoveAll();
 }
+
 POSITION AeSysDoc::AddMaskedPrimitive(EoDbMaskedPrimitive * maskedPrimitive) {
 	return m_MaskedPrimitives.AddTail((CObject*) maskedPrimitive);
 }
@@ -2915,6 +2929,7 @@ void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, int bit) {
 	}
 	MaskedPrimitive->SetMaskBit(bit);
 }
+
 void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive * primitive, int bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive = nullptr;
 
@@ -2931,13 +2946,16 @@ void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive * primitive, int bit) {
 		MaskedPrimitive->ClearMaskBit(bit);
 	}
 }
-DWORD AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
+
+unsigned long AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
 	EoDbMaskedPrimitive* MaskedPrimitive {nullptr};
 
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
+
 	while (MaskedPrimitivePosition != nullptr) {
 		auto posCur {MaskedPrimitivePosition};
 		MaskedPrimitive = GetNextMaskedPrimitive(MaskedPrimitivePosition);
+
 		if (MaskedPrimitive->GetPrimitive() == primitive) {
 			MaskedPrimitivePosition = posCur;
 			break;
@@ -2953,30 +2971,31 @@ void AeSysDoc::OnSetupLayerproperties() {
 		UpdateAllViews(nullptr);
 	}
 }
+
 void AeSysDoc::OnInsertTracing() {
-	static DWORD FilterIndex = 1;
+	static unsigned long FilterIndex {1};
 
-	OPENFILENAME of;
-	::ZeroMemory(&of, sizeof(OPENFILENAME));
-	of.lStructSize = sizeof(OPENFILENAME);
-	of.hwndOwner = nullptr;
-	of.hInstance = theApp.GetInstance();
-	of.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
-	of.nFilterIndex = FilterIndex;
-	of.lpstrFile = new wchar_t[MAX_PATH];
-	of.lpstrFile[0] = 0;
-	of.nMaxFile = MAX_PATH;
-	of.lpstrTitle = L"Insert Tracing";
-	of.Flags = OFN_EXPLORER | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
-	of.lpstrDefExt = L"tra";
+	OPENFILENAME OpenFileName;
+	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
+	OpenFileName.lStructSize = sizeof(OPENFILENAME);
+	OpenFileName.hwndOwner = nullptr;
+	OpenFileName.hInstance = theApp.GetInstance();
+	OpenFileName.lpstrFilter = L"Tracing Files\0*.tra;*.jb1\0\0";
+	OpenFileName.nFilterIndex = FilterIndex;
+	OpenFileName.lpstrFile = new wchar_t[MAX_PATH];
+	OpenFileName.lpstrFile[0] = 0;
+	OpenFileName.nMaxFile = MAX_PATH;
+	OpenFileName.lpstrTitle = L"Insert Tracing";
+	OpenFileName.Flags = OFN_EXPLORER | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
+	OpenFileName.lpstrDefExt = L"tra";
 
-	if (GetOpenFileNameW(&of)) {
-		FilterIndex = of.nFilterIndex;
+	if (GetOpenFileNameW(&OpenFileName)) {
+		FilterIndex = OpenFileName.nFilterIndex;
 
-		OdString Name = of.lpstrFile;
-		CString strPath = Name.left(of.nFileOffset);
+		OdString Name = OpenFileName.lpstrFile;
+		CString strPath = Name.left(OpenFileName.nFileOffset);
 
-		Name = Name.mid(of.nFileOffset);
+		Name = Name.mid(OpenFileName.nFileOffset);
 
 		const EoDb::FileTypes FileType = AeSysApp::GetFileType(Name);
 		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
@@ -2999,7 +3018,7 @@ void AeSysDoc::OnInsertTracing() {
 			}
 		}
 	}
-	delete[] of.lpstrFile;
+	delete[] OpenFileName.lpstrFile;
 }
 void AeSysDoc::OnFilePagesetup() {
 	OdSmartPtr<OdDbUserIO> pIO; // = pDbCmdCtx->userIO();
@@ -3095,7 +3114,7 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 	theApp.m_pAuditDlg = nullptr;
 }
 
-BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags, BOOL isOpenFileDialog, CDocTemplate* docTemplate) {
+BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL isOpenFileDialog, CDocTemplate* docTemplate) {
 	const auto dwgver {m_DatabasePtr->originalFileVersion()};
 	auto Extension {fileName.Right(3)};
 
@@ -3104,110 +3123,110 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFl
 	CString title;
 	VERIFY(title.LoadString(nIDSTitle));
 
-	CFileDialog dlgFile(isOpenFileDialog);
-	dlgFile.m_ofn.Flags |= lFlags;
+	CFileDialog FileDialog(isOpenFileDialog);
+	FileDialog.m_ofn.Flags |= flags;
 
 	CString Filter;
 
 	Filter = L"AutoCAD 2018 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC32)
-		dlgFile.m_ofn.nFilterIndex = 1;
+		FileDialog.m_ofn.nFilterIndex = 1;
 
 	Filter += L"AutoCAD 2013 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC27)
-		dlgFile.m_ofn.nFilterIndex = 2;
+		FileDialog.m_ofn.nFilterIndex = 2;
 
 	Filter += "AutoCAD 2010 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC24)
-		dlgFile.m_ofn.nFilterIndex = 3;
+		FileDialog.m_ofn.nFilterIndex = 3;
 
 	Filter += "AutoCAD 2007 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC21)
-		dlgFile.m_ofn.nFilterIndex = 4;
+		FileDialog.m_ofn.nFilterIndex = 4;
 
 	Filter += L"AutoCAD 2004 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
-		dlgFile.m_ofn.nFilterIndex = 5;
+		FileDialog.m_ofn.nFilterIndex = 5;
 
 	Filter += L"AutoCAD 2000 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC15)
-		dlgFile.m_ofn.nFilterIndex = 6;
+		FileDialog.m_ofn.nFilterIndex = 6;
 
 	Filter += L"AutoCAD R14 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC14)
-		dlgFile.m_ofn.nFilterIndex = 7;
+		FileDialog.m_ofn.nFilterIndex = 7;
 
 	Filter += L"AutoCAD R13 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver == OdDb::vAC13)
-		dlgFile.m_ofn.nFilterIndex = 8;
+		FileDialog.m_ofn.nFilterIndex = 8;
 
 	Filter += L"AutoCAD R12 Compatible Drawing |*.dwg|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (isDwg && dwgver <= OdDb::vAC12)
-		dlgFile.m_ofn.nFilterIndex = 9;
+		FileDialog.m_ofn.nFilterIndex = 9;
 
 	Filter += L"AutoCAD 2018 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && (dwgver == OdDb::vAC32))
-		dlgFile.m_ofn.nFilterIndex = 10;
+		FileDialog.m_ofn.nFilterIndex = 10;
 
 	Filter += L"AutoCAD 2013 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && (dwgver == OdDb::kDHL_1027))
-		dlgFile.m_ofn.nFilterIndex = 11;
+		FileDialog.m_ofn.nFilterIndex = 11;
 
 	Filter += L"AutoCAD 2010 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && (dwgver == OdDb::kDHL_1024))
-		dlgFile.m_ofn.nFilterIndex = 12;
+		FileDialog.m_ofn.nFilterIndex = 12;
 
 	Filter += L"AutoCAD 2007 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && (dwgver == OdDb::kDHL_1021))
-		dlgFile.m_ofn.nFilterIndex = 13;
+		FileDialog.m_ofn.nFilterIndex = 13;
 
 	Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800))
-		dlgFile.m_ofn.nFilterIndex = 14;
+		FileDialog.m_ofn.nFilterIndex = 14;
 
 	Filter += L"AutoCAD 2000 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && dwgver == OdDb::vAC15)
-		dlgFile.m_ofn.nFilterIndex = 15;
+		FileDialog.m_ofn.nFilterIndex = 15;
 
 	Filter += L"AutoCAD R14 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && dwgver == OdDb::vAC14)
-		dlgFile.m_ofn.nFilterIndex = 16;
+		FileDialog.m_ofn.nFilterIndex = 16;
 
 	Filter += L"AutoCAD R13 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && dwgver == OdDb::vAC13)
-		dlgFile.m_ofn.nFilterIndex = 17;
+		FileDialog.m_ofn.nFilterIndex = 17;
 
 	Filter += L"AutoCAD R12 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && dwgver == OdDb::vAC12)
-		dlgFile.m_ofn.nFilterIndex = 18;
+		FileDialog.m_ofn.nFilterIndex = 18;
 
 	Filter += L"AutoCAD R10 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && dwgver == OdDb::vAC10)
-		dlgFile.m_ofn.nFilterIndex = 19;
+		FileDialog.m_ofn.nFilterIndex = 19;
 
 	Filter += L"AutoCAD R9 Compatible DXF |*.dxf|";
-	dlgFile.m_ofn.nMaxCustFilter++;
+	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!isDwg && dwgver == OdDb::vAC09)
-		dlgFile.m_ofn.nFilterIndex = 20;
+		FileDialog.m_ofn.nFilterIndex = 20;
 
 	Filter += L"|";
 	Filter.Replace('|', '\0');
@@ -3215,26 +3234,26 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFl
 	if (fileName.Find('.') != -1) {
 		fileName = fileName.Left(fileName.Find('.'));
 	}
-	dlgFile.m_ofn.lpstrFilter = Filter;
-	dlgFile.m_ofn.lpstrTitle = title;
-	dlgFile.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
+	FileDialog.m_ofn.lpstrFilter = Filter;
+	FileDialog.m_ofn.lpstrTitle = title;
+	FileDialog.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
 
-	const LPARAM nResult = dlgFile.DoModal();
+	const LPARAM nResult = FileDialog.DoModal();
 	fileName.ReleaseBuffer();
 
 	if (fileName.Find('.') == -1) {
-		if (dlgFile.m_ofn.nFilterIndex < 10) {
+		if (FileDialog.m_ofn.nFilterIndex < 10) {
 			fileName += L".dwg";
 		} else {
 			fileName += L".dxf";
 		}
 	}
-	if (dlgFile.m_ofn.nFilterIndex < 10) {
+	if (FileDialog.m_ofn.nFilterIndex < 10) {
 		m_SaveAsType = OdDb::kDwg;
 	} else {
 		m_SaveAsType = OdDb::kDxf;
 	}
-	switch (dlgFile.m_ofn.nFilterIndex) {
+	switch (FileDialog.m_ofn.nFilterIndex) {
 		case 1:
 		case 10:
 			m_SaveAsVer = OdDb::vAC32; // R32 (2018) release

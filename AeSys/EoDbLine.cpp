@@ -355,13 +355,11 @@ void EoDbLine::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_LineSeg.transformBy(transformMatrix);
 }
 
-void EoDbLine::TranslateUsingMask(const OdGeVector3d & translate, const DWORD mask) {
-	if ((mask & 1) == 1) {
-		SetStartPoint(m_LineSeg.startPoint() + translate);
-	}
-	if ((mask & 2) == 2) {
-		SetEndPoint(m_LineSeg.endPoint() + translate);
-	}
+void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+
+	if ((mask & 1) == 1) { SetStartPoint(m_LineSeg.startPoint() + translate); }
+
+	if ((mask & 2) == 2) { SetEndPoint(m_LineSeg.endPoint() + translate); }
 }
 
 bool EoDbLine::Write(EoDbFile& file) const {

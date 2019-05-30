@@ -469,7 +469,7 @@ public: // Group and Primitive operations
 	void PreviewGroupEdit();
 
 	OdGePoint3d m_MendPrimitiveBegin;
-	DWORD m_MendPrimitiveVertexIndex;
+	unsigned long m_MendPrimitiveVertexIndex;
 	EoDbPrimitive* m_PrimitiveToMend;
 	EoDbPrimitive* m_PrimitiveToMendCopy;
 
@@ -997,7 +997,7 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
-	DROPEFFECT OnDragOver(COleDataObject* pDataObject, DWORD dwKeyState, CPoint point) override;
+	DROPEFFECT OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) override;
 	BOOL OnIdle(long count);
 };
 #ifndef _DEBUG  // debug version in PegView.cpp

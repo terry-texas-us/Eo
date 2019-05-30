@@ -56,7 +56,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 				DeviceContext.SetBkColor(BackgroundColor);
 				DeviceContext.SetTextColor(rgbText);
 
-				const OdDbObjectId ItemData = (OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item);
+				const OdDbObjectId ItemData = (OdDbStub*)(unsigned long)m_LinetypesListControl.GetItemData(Item);
 				OdDbLinetypeTableRecordPtr Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 
 				CRect SubItemRectangle;
@@ -113,6 +113,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 	}
 	CDialog::OnDrawItem(controlIdentifier, drawItemStruct);
 }
+
 BOOL EoDlgSetupLinetype::OnInitDialog() {
 	CDialog::OnInitDialog();
 
@@ -121,14 +122,15 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 	m_LinetypesListControl.InsertColumn(Appearance, L"Apearance", LVCFMT_LEFT, 144);
 	m_LinetypesListControl.InsertColumn(Description, L"Description", LVCFMT_LEFT, 128);
 
-	OdDbDatabasePtr Database = m_LinetypeTable->database();
-	OdDbSymbolTableIteratorPtr Iterator = m_LinetypeTable->newIterator();
+	OdDbDatabasePtr Database {m_LinetypeTable->database()};
+	auto Iterator {m_LinetypeTable->newIterator()};
 	int ItemIndex = 0;
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
-		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
+		OdDbLinetypeTableRecordPtr Linetype {Iterator->getRecordId().safeOpenObject(OdDb::kForRead)};
+
 		if (Linetype->objectId() != Database->getLinetypeByLayerId() && Linetype->objectId() != Database->getLinetypeByBlockId()) {
 			m_LinetypesListControl.InsertItem(ItemIndex, nullptr);
-			m_LinetypesListControl.SetItemData(ItemIndex++, (DWORD)(OdDbStub*)Linetype->objectId());
+			m_LinetypesListControl.SetItemData(ItemIndex++, (unsigned long)(OdDbStub*)Linetype->objectId());
 		}
 	}
 
@@ -136,6 +138,7 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 
 	return TRUE;
 }
+
 void EoDlgSetupLinetype::OnOK() {
 	m_Linetype = m_Linetype = m_LinetypeTable->getAt(L"Continuous").safeOpenObject(OdDb::kForRead);
 
@@ -143,7 +146,7 @@ void EoDlgSetupLinetype::OnOK() {
 
 	if (Position != nullptr) {
 		const int Item {m_LinetypesListControl.GetNextSelectedItem(Position)};
-		const OdDbObjectId ItemData {(OdDbStub*)(DWORD)m_LinetypesListControl.GetItemData(Item)};
+		const OdDbObjectId ItemData {(OdDbStub*)(unsigned long)m_LinetypesListControl.GetItemData(Item)};
 		m_Linetype = ItemData.safeOpenObject(OdDb::kForRead);
 	}
 	CDialog::OnOK();

@@ -85,7 +85,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		GLOBALHANDLE ClipboardDataHandle = (GLOBALHANDLE)GlobalAlloc(GHND, AllocationSize);
 
 		if (ClipboardDataHandle != nullptr) {
-			LPWSTR ClipboardData = (LPWSTR)GlobalLock(ClipboardDataHandle);
+			auto ClipboardData {static_cast<LPWSTR>(GlobalLock(ClipboardDataHandle))};
 
 			if (ClipboardData != nullptr) {
 				wcscpy_s(ClipboardData, AllocationSize, strBuf);
@@ -118,22 +118,22 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 
 		OdGeExtents3d Extents;
 		m_TrappedGroupList.GetExtents__(view, Extents);
-		const OdGePoint3d MinimumPoint = Extents.minPoint();
-		const ULONGLONG dwSizeOfBuffer = MemoryFile.GetLength();
+		const auto MinimumPoint {Extents.minPoint()};
+		const auto SizeOfBuffer {MemoryFile.GetLength()};
 
 		MemoryFile.SeekToBegin();
-		MemoryFile.Write(&dwSizeOfBuffer, sizeof(DWORD));
+		MemoryFile.Write(&SizeOfBuffer, sizeof(unsigned long));
 		MemoryFile.Write(&MinimumPoint.x, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.y, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.z, sizeof(double));
 
-		GLOBALHANDLE ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(dwSizeOfBuffer))};
+		GLOBALHANDLE ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(SizeOfBuffer))};
 
 		if (ClipboardDataHandle != nullptr) {
-			LPWSTR ClipboardData = (LPWSTR)GlobalLock(ClipboardDataHandle);
+			auto ClipboardData {static_cast<LPWSTR>(GlobalLock(ClipboardDataHandle))};
 
 			MemoryFile.SeekToBegin();
-			MemoryFile.Read(ClipboardData, narrow_cast<unsigned>(dwSizeOfBuffer));
+			MemoryFile.Read(ClipboardData, narrow_cast<unsigned>(SizeOfBuffer));
 
 			GlobalUnlock(ClipboardDataHandle);
 			::SetClipboardData(theApp.ClipboardFormatIdentifierForEoGroups(), ClipboardDataHandle);

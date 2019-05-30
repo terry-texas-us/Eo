@@ -64,7 +64,7 @@ public: // Methods - absolute virtuals
 	/// <summary>Evaluates whether a point lies within tolerance specified of block.</summary>
 	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
-	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) override;
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 

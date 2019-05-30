@@ -35,7 +35,7 @@ public: // Methods - absolute virtuals
 	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
-	void TranslateUsingMask(const OdGeVector3d& translate, const DWORD) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long) override;
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
