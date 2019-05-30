@@ -211,24 +211,21 @@ void EoDbJobFile::ReadMemFile(OdDbBlockTableRecordPtr blockTableRecord, CFile & 
 }
 
 bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType) {
-	if (file.Read(buffer, 32) < 32) {
-		return false;
-	}
+
+	if (file.Read(buffer, 32) < 32) { return false; }
+
 	primitiveType = *((short*) & buffer[4]);
 
-	if (!IsValidPrimitive(primitiveType)) {
-		throw L"Exception.FileJob: Invalid primitive type.";
-	}
+	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
+	
 	const int LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
+	
 	if (LengthInChunks > 1) {
-		const UINT BytesRemaining = (LengthInChunks - 1) * 32;
+		const auto BytesRemaining {(LengthInChunks - 1) * 32};
 
-		if (BytesRemaining >= EoDbPrimitive::BUFFER_SIZE - 32) {
-			throw L"Exception.FileJob: Primitive buffer overflow.";
-		}
-		if (file.Read(&buffer[32], BytesRemaining) < BytesRemaining) {
-			throw L"Exception.FileJob: Unexpected end of file.";
-		}
+		if (BytesRemaining >= EoDbPrimitive::BUFFER_SIZE - 32) { throw L"Exception.FileJob: Primitive buffer overflow."; }
+
+		if (file.Read(&buffer[32], BytesRemaining) < BytesRemaining) { throw L"Exception.FileJob: Unexpected end of file."; }
 	}
 	return true;
 }

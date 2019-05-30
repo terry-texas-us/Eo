@@ -11,7 +11,7 @@ EoVarDialog::EoVarDialog(LPCWSTR templateName, CWnd* parent)
 	: CDialog(templateName, parent) {
 	m_bInitialized = FALSE;
 }
-EoVarDialog::EoVarDialog(UINT templateId, CWnd* parent)
+EoVarDialog::EoVarDialog(unsigned templateId, CWnd* parent)
 	: CDialog(templateId, parent) {
 	m_bInitialized = FALSE;
 }
@@ -25,6 +25,7 @@ BOOL EoVarDialog::OnInitDialog() {
 
 	return TRUE;
 }
+
 void EoVarDialog::initResizeHelper() {
 	CRect WindowRect;
 	GetWindowRect(WindowRect);
@@ -34,6 +35,7 @@ void EoVarDialog::initResizeHelper() {
 
 	makeGripper();
 }
+
 void EoVarDialog::makeGripper() {
 	CRect InitialRect;
 	GetClientRect(InitialRect);
@@ -44,13 +46,14 @@ void EoVarDialog::makeGripper() {
 
 	m_Grip.Create(Style, InitialRect, this, AFX_IDW_SIZE_BOX);
 }
-void EoVarDialog::OnSize(UINT type, int cx, int cy) {
+
+void EoVarDialog::OnSize(unsigned type, int cx, int cy) {
 	CDialog::OnSize(type, cx, cy);
 	m_resizeHelper.OnSize();
-	if (m_bInitialized) {
-		SetupGripper();
-	}
+
+	if (m_bInitialized) { SetupGripper(); }
 }
+
 void EoVarDialog::SetupGripper() {
 	WINDOWPLACEMENT WindowPlacement;
 	GetWindowPlacement(&WindowPlacement);

@@ -130,13 +130,13 @@ public:
 	public:
 		virtual bool beginDragCallback(const OdGePoint3d& pt) = 0;
 	};
-	bool OnSize(unsigned int nFlags, int w, int h);
-	bool OnPaintFrame(unsigned int nFlags = 0, OdGsDCRect* pUpdatedRect = 0);
-	bool OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback* pDragCallback = 0);
-	bool OnMouseMove(unsigned int flags, int x, int y);
-	bool OnMouseWheel(unsigned int nFlags, int x, int y, short zDelta);
-	bool OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, int y);
-	bool OnMouseRightButtonDoubleClick(unsigned int nFlags, int x, int y);
+	bool OnSize(unsigned flags, int w, int h);
+	bool OnPaintFrame(unsigned flags = 0, OdGsDCRect* updatedRectangle = 0);
+	bool OnMouseLeftButtonClick(unsigned flags, int x, int y, OleDragCallback* dragCallback = 0);
+	bool OnMouseMove(unsigned flags, int x, int y);
+	bool OnMouseWheel(unsigned flags, int x, int y, short zDelta);
+	bool OnMouseLeftButtonDoubleClick(unsigned flags, int x, int y);
+	bool OnMouseRightButtonDoubleClick(unsigned flags, int x, int y);
 	bool OnCtrlClick();
 	void OnDestroy();
 

@@ -273,7 +273,7 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
 	return scrPt;
 }
 
-bool OdExEditorObject::OnSize(unsigned int flags, int w, int h) {
+bool OdExEditorObject::OnSize(unsigned flags, int w, int h) {
 	if (m_LayoutHelper.get()) {
 		m_LayoutHelper->onSize(OdGsDCRect(0, w, h, 0));
 		return true;
@@ -281,7 +281,7 @@ bool OdExEditorObject::OnSize(unsigned int flags, int w, int h) {
 	return false;
 }
 
-bool OdExEditorObject::OnPaintFrame(unsigned int flags, OdGsDCRect* updatedRect) {
+bool OdExEditorObject::OnPaintFrame(unsigned flags, OdGsDCRect* updatedRect) {
 	if (m_LayoutHelper.get() && !m_LayoutHelper->isValid()) {
 		m_LayoutHelper->update(updatedRect);
 		return true;
@@ -418,15 +418,15 @@ void OdExEditorObject::OnDestroy() {
 	m_CommandContext = 0;
 }
 
-bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y, OleDragCallback * pDragCallback) {
-	const bool ShiftIsDown {(OdEdBaseIO::kShiftIsDown & nFlags) != 0};
-	const bool ControlIsDown {(OdEdBaseIO::kControlIsDown & nFlags) != 0};
+bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleDragCallback* dragCallback) {
+	const bool ShiftIsDown {(OdEdBaseIO::kShiftIsDown & flags) != 0};
+	const bool ControlIsDown {(OdEdBaseIO::kControlIsDown & flags) != 0};
 	const auto pt {ToEyeToWorld(x, y)};
 
 	if (m_GripManager.OnMouseDown(x, y, ShiftIsDown)) { return true; }
 
 	try {
-		if (pDragCallback && !ShiftIsDown) {
+		if (dragCallback && !ShiftIsDown) {
 			auto WorkingSelectionSet {workingSSet()};
 			OdDbSelectionSetPtr pAtPointSet = OdDbSelectionSet::select(ActiveViewportId(), 1, &pt, OdDbVisualSelection::kPoint, ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
 			OdDbSelectionSetIteratorPtr pIter = pAtPointSet->newIterator();
@@ -440,7 +440,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 			}
 			if (pIter.isNull()) {
 				
-				if (pDragCallback->beginDragCallback(pt)) {
+				if (dragCallback->beginDragCallback(pt)) {
 					// Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
 					//workingSSet()->clear();
 					//SelectionSetChanged();
@@ -491,7 +491,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned int nFlags, int x, int y,
 	return true;
 }
 
-bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, int y) {
+bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned flags, int x, int y) {
 	auto View {ActiveView()};
 	m_LayoutHelper->setActiveViewport(OdGePoint2d(x, y));
 	const bool Changed {View != ActiveView()};
@@ -510,7 +510,7 @@ bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned int nFlags, int x, 
 	return Changed;
 }
 
-bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned int nFlags, int x, int y) {
+bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned flags, int x, int y) {
 	Unselect();
 
 	auto View {ActiveView()};
@@ -523,7 +523,7 @@ bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned int nFlags, int x,
 	return true;
 }
 
-bool OdExEditorObject::OnMouseMove(unsigned int flags, int x, int y) {
+bool OdExEditorObject::OnMouseMove(unsigned flags, int x, int y) {
 	return m_GripManager.OnMouseMove(x, y);
 }
 
@@ -538,7 +538,7 @@ void OdExEditorObject::Dolly(OdGsView* view, int x, int y) {
 	view->dolly(vec);
 }
 
-bool OdExEditorObject::OnMouseWheel(unsigned int flags, int x, int y, short zDelta) {
+bool OdExEditorObject::OnMouseWheel(unsigned flags, int x, int y, short zDelta) {
 	auto View {ActiveView()};
 	ZoomAt(View, x, y, zDelta);
 
@@ -1291,11 +1291,11 @@ public:
 					OdDbFullSubentPath pathSubent;
 					OdDbFullSubentPathArray arrPaths;
 
-					for (unsigned int i = 0; i < pIter->subentCount(); i++) {
+					for (unsigned i = 0; i < pIter->subentCount(); i++) {
 						pIter->getSubentity(i, pathSubent);
 						pSubEnt = pEnt->subentPtr(pathSubent);
-						if (!pSubEnt.isNull())
-							m_ents.push_back(pSubEnt);
+
+						if (!pSubEnt.isNull()) { m_ents.push_back(pSubEnt); }
 					}
 				}
 			}

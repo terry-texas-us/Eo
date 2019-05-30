@@ -8,7 +8,7 @@
 
 CBitmap* WndProcPreview_Bitmap = nullptr;
 
-LRESULT CALLBACK WndProcPreview(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK WndProcPreview(HWND, unsigned, WPARAM, LPARAM);
 
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	WNDCLASS Class;
@@ -26,7 +26,7 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 
 	return ::RegisterClass(&Class);
 }
-LRESULT CALLBACK WndProcPreview(HWND hwnd, UINT message, UINT nParam, LPARAM lParam) {
+LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LPARAM lParam) {
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};

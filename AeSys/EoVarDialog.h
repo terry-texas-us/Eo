@@ -6,14 +6,14 @@
 class EoVarDialog : public CDialog {
 public:
 	EoVarDialog(LPCWSTR lpszTemplateName, CWnd* pParentWnd = nullptr);
-	EoVarDialog(UINT nIDTemplate, CWnd* parent = nullptr);
+	EoVarDialog(unsigned templateId, CWnd* parent = nullptr);
 
 protected:
 	EoDialogResizeHelper m_resizeHelper;
 	void initResizeHelper();
 
 	BOOL OnInitDialog() override;
-	void OnSize(UINT nType, int cx, int cy);
+	void OnSize(unsigned type, int cx, int cy);
 
 	DECLARE_MESSAGE_MAP()
 

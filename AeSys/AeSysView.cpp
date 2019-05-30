@@ -42,7 +42,7 @@ typedef OdArray<ODCOLORREF, OdMemoryAllocator<ODCOLORREF> > ODGSPALETTE;
 const double AeSysView::sm_MaximumWindowRatio = 999.;
 const double AeSysView::sm_MinimumWindowRatio = 0.001;
 
-UINT AeSysView::g_nRedrawMSG = 0;
+unsigned AeSysView::g_nRedrawMSG = 0;
 
 IMPLEMENT_DYNCREATE(AeSysView, CView)
 
@@ -572,7 +572,7 @@ BOOL AeSysView::OnEraseBkgnd(CDC * deviceContext) {
 	return __super::OnEraseBkgnd(deviceContext);
 }
 
-void AeSysView::OnSize(UINT type, int cx, int cy) {
+void AeSysView::OnSize(unsigned type, int cx, int cy) {
 	if (cx && cy) {
 		if (m_LayoutHelper.isNull()) {
 			__super::OnSize(type, cx, cy);
@@ -1172,20 +1172,20 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 	ViewportPushActive();
 	PushViewTransform();
 
-	const int HorizontalPixelWidth = deviceContext->GetDeviceCaps(HORZRES);
-	const int VerticalPixelWidth = deviceContext->GetDeviceCaps(VERTRES);
+	const int HorizontalPixelWidth {deviceContext->GetDeviceCaps(HORZRES)};
+	const int VerticalPixelWidth {deviceContext->GetDeviceCaps(VERTRES)};
 
 	SetViewportSize(HorizontalPixelWidth, VerticalPixelWidth);
 
-	const double HorizontalSize = static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE));
-	const double VerticalSize = static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE));
+	const double HorizontalSize {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE))};
+	const double VerticalSize {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE))};
 
 	SetDeviceWidthInInches(HorizontalSize / EoMmPerInch);
 	SetDeviceHeightInInches(VerticalSize / EoMmPerInch);
 
 	if (m_Plot) {
-		UINT HorizontalPages;
-		UINT VerticalPages;
+		unsigned HorizontalPages;
+		unsigned VerticalPages;
 		printInformation->SetMaxPage(NumPages(deviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages));
 	} else {
 		m_ViewTransform.AdjustWindow(static_cast<double>(VerticalPixelWidth) / static_cast<double>(HorizontalPixelWidth));
@@ -1712,15 +1712,16 @@ BOOL AeSysView::OnPreparePrinting(CPrintInfo* printInformation) {
 		
 		if (theApp.GetPrinterDeviceDefaults(&PrintInfo.m_pPD->m_pd)) {
 			auto hDC {PrintInfo.m_pPD->m_pd.hDC};
+
 			if (hDC == nullptr) {
 				hDC = PrintInfo.m_pPD->CreatePrinterDC();
 			}
 			if (hDC != nullptr) {
-				UINT nHorzPages;
-				UINT nVertPages;
+				unsigned HorizontalPages;
+				unsigned VerticalPages;
 				CDC DeviceContext;
 				DeviceContext.Attach(hDC);
-				printInformation->SetMaxPage(NumPages(&DeviceContext, m_PlotScaleFactor, nHorzPages, nVertPages));
+				printInformation->SetMaxPage(NumPages(&DeviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages));
 				::DeleteDC(DeviceContext.Detach());
 			}
 		}
@@ -1794,7 +1795,7 @@ public:
 #define BLINK_CURSOR_TIMER 888
 #define BLINK_CURSOR_RATE  GetCaretBlinkTime()
 
-void CALLBACK StringTrackerTimer(HWND hWnd, UINT  nMsg, UINT  nIDTimer, DWORD dwTime);
+void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, DWORD dwTime);
 
 class SaveViewParams2 : public SaveViewParams {
 	bool m_bTimerSet;
@@ -1828,13 +1829,12 @@ bool AeSysView::UpdateStringTrackerCursor() {
 	return false;
 }
 
-void CALLBACK StringTrackerTimer(HWND hWnd, UINT nMsg, UINT nIDTimer, DWORD dwTime) {
+void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, DWORD dwTime) {
 	try {
 		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(hWnd))};
 
-		if (!View->UpdateStringTrackerCursor()) {
-			KillTimer(hWnd, nIDTimer);
-		}
+		if (!View->UpdateStringTrackerCursor()) { KillTimer(hWnd, nIDTimer); }
+
 	} catch (...) {
 		KillTimer(hWnd, nIDTimer);
 	}
@@ -1964,7 +1964,8 @@ struct ReactorSort : public std::binary_function<OdDbObjectId, OdDbObjectId, boo
 
 void transform_object_set(OdDbObjectIdArray& objs, const OdGeMatrix3d& xform) {
 	std::sort(objs.begin(), objs.end(), ReactorSort());
-	for (unsigned int i = 0; i < objs.size(); ++i) {
+	
+	for (unsigned i = 0; i < objs.size(); ++i) {
 		OdDbEntityPtr pEnt = objs[i].safeOpenObject(OdDb::kForWrite);
 		pEnt->transformBy(xform);
 	}
@@ -1989,7 +1990,7 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 				OdDbDatabase* pHostDb = Database;
 				pHostDb->deepCloneObjects(objs, pHostDb->getActiveLayoutBTRId(), *pIdMapping);
 
-				for (unsigned int i = 0; i < objs.size(); ++i) {
+				for (unsigned i = 0; i < objs.size(); ++i) {
 					OdDbIdPair idPair(objs[i]);
 					pIdMapping->compute(idPair);
 					objs[i] = idPair.value();
@@ -2107,7 +2108,7 @@ CRect AeSysView::viewRect(OdGsView* view)
 	return CRect(OdRoundToLong(LowerLeftPoint.x), OdRoundToLong(UpperRightPoint.y), OdRoundToLong(UpperRightPoint.x), OdRoundToLong(LowerLeftPoint.y));
 }
 
-void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
+void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsigned flags) {
 	__super::OnChar(characterCodeValue, repeatCount, flags);
 
 	m_response.m_string = m_inpars.result();
@@ -2172,7 +2173,7 @@ void AeSysView::OnChar(UINT characterCodeValue, UINT repeatCount, UINT flags) {
 	}
 }
 
-void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
+void AeSysView::OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags) {
 	switch (nChar) {
 		case VK_ESCAPE:
 			break;
@@ -2186,10 +2187,10 @@ void AeSysView::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			PostMessage(WM_PAINT);
 			break;
 	}
-	__super::OnKeyDown(nChar, nRepCnt, nFlags);
+	__super::OnKeyDown(nChar, repeatCount, flags);
 }
 
-void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
+void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 	if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
 		__super::OnLButtonDown(flags, point);
 
@@ -2227,7 +2228,7 @@ void AeSysView::OnLButtonDown(UINT flags, CPoint point) {
 	}
 }
 
-void AeSysView::OnLButtonUp(UINT flags, CPoint point) {
+void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
 	
 	if (AeSysApp::CustomLButtonUpCharacters.IsEmpty()) {
 
@@ -2260,18 +2261,18 @@ void AeSysView::OnLButtonUp(UINT flags, CPoint point) {
 	}
 }
 
-void AeSysView::OnMButtonDown(UINT flags, CPoint point) {
+void AeSysView::OnMButtonDown(unsigned flags, CPoint point) {
 	m_MiddleButton = true;
 	m_MousePosition = point;
 	__super::OnMButtonDown(flags, point);
 }
 
-void AeSysView::OnMButtonUp(UINT flags, CPoint point) {
+void AeSysView::OnMButtonUp(unsigned flags, CPoint point) {
 	m_MiddleButton = false;
 	__super::OnMButtonUp(flags, point);
 }
 
-void AeSysView::OnMouseMove(UINT flags, CPoint point) {
+void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 	DisplayOdometer();
 
 	if (m_MousePosition != point) {
@@ -2405,20 +2406,20 @@ void AeSysView::OnMouseMove(UINT flags, CPoint point) {
 	}
 }
 
-BOOL AeSysView::OnMouseWheel(UINT nFlags, short zDelta, CPoint point) {
+BOOL AeSysView::OnMouseWheel(unsigned flags, short zDelta, CPoint point) {
 	//ScreenToClient(&point);
 
-	//if (m_editor.OnMouseWheel(nFlags, point.x, point.y, zDelta)) {
+	//if (m_editor.OnMouseWheel(flags, point.x, point.y, zDelta)) {
 	//    PostMessage(WM_PAINT);
 	//    propagateActiveViewChanges();
 	//}
 	DollyAndZoom((zDelta > 0) ? 1. / 0.9 : 0.9);
 	InvalidateRect(nullptr);
 
-	return __super::OnMouseWheel(nFlags, zDelta, point);
+	return __super::OnMouseWheel(flags, zDelta, point);
 }
 
-void AeSysView::OnRButtonDown(UINT flags, CPoint point) {
+void AeSysView::OnRButtonDown(unsigned flags, CPoint point) {
 	if (AeSysApp::CustomRButtonDownCharacters.IsEmpty()) {
 		m_RightButton = true;
 		m_MousePosition = point;
@@ -2428,7 +2429,7 @@ void AeSysView::OnRButtonDown(UINT flags, CPoint point) {
 	}
 }
 
-void AeSysView::OnRButtonUp(UINT flags, CPoint point) {
+void AeSysView::OnRButtonUp(unsigned flags, CPoint point) {
 	if (AeSysApp::CustomRButtonUpCharacters.IsEmpty()) {
 		m_RightButton = false;
 	
@@ -2508,9 +2509,10 @@ OdDbDatabasePtr AeSysView::Database() const {
 	return GetDocument()->m_DatabasePtr;
 }
 
-void AeSysView::OnActivateFrame(UINT state, CFrameWnd * deactivateFrame) {
+void AeSysView::OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) {
 	CView::OnActivateFrame(state, deactivateFrame);
 }
+
 void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deactiveView) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
@@ -2526,6 +2528,7 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 	SetCursorPosition(OdGePoint3d::kOrigin);
 	CView::OnActivateView(activate, activateView, deactiveView);
 }
+
 void AeSysView::OnSetFocus(CWnd * oldWindow) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
@@ -2548,16 +2551,16 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 
 	if (deviceContext->IsPrinting()) {
 		if (m_Plot) {
-			const double HorizontalSizeInInches = static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / EoMmPerInch) / m_PlotScaleFactor;
-			const double VerticalSizeInInches = static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / EoMmPerInch) / m_PlotScaleFactor;
+			const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / EoMmPerInch) / m_PlotScaleFactor};
+			const double VerticalSizeInInches = {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / EoMmPerInch) / m_PlotScaleFactor};
 
-			UINT nHorzPages;
-			UINT nVertPages;
+			unsigned HorizontalPages;
+			unsigned VerticalPages;
 
-			NumPages(deviceContext, m_PlotScaleFactor, nHorzPages, nVertPages);
+			NumPages(deviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages);
 
-			const double dX = ((printInformation->m_nCurPage - 1) % nHorzPages) * HorizontalSizeInInches;
-			const double dY = ((printInformation->m_nCurPage - 1) / nHorzPages) * VerticalSizeInInches;
+			const double dX = ((printInformation->m_nCurPage - 1) % HorizontalPages) * HorizontalSizeInInches;
+			const double dY = ((printInformation->m_nCurPage - 1) / HorizontalPages) * VerticalSizeInInches;
 
 			m_ViewTransform.SetProjectionPlaneField(0.0, 0.0, HorizontalSizeInInches, VerticalSizeInInches);
 			const OdGePoint3d Target(OdGePoint3d(dX, dY, 0.0));
@@ -2722,7 +2725,7 @@ void AeSysView::OnFilePrint() {
 	CView::OnFilePrint();
 }
 
-UINT AeSysView::NumPages(CDC* deviceContext, double scaleFactor, UINT& horizontalPages, UINT& verticalPages) {
+unsigned AeSysView::NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages) {
 	OdGeExtents3d Extents;
 	GetDocument()->GetExtents___(this, Extents);
 	const auto MinimumPoint {Extents.minPoint()};
@@ -2936,9 +2939,11 @@ void AeSysView::OnCameraRotateRight() {
 void AeSysView::OnCameraRotateUp() {
 	Orbit(EoToRadian(-10.), 0.0);
 }
+
 void AeSysView::OnCameraRotateDown() {
 	Orbit(EoToRadian(10.), 0.0);
 }
+
 void AeSysView::OnViewParameters() {
 	EoDlgViewParameters Dialog;
 
@@ -2951,18 +2956,22 @@ void AeSysView::OnViewParameters() {
 		m_ViewTransform.EnablePerspective(Dialog.m_PerspectiveProjection == TRUE);
 	}
 }
+
 void AeSysView::OnViewTrueTypeFonts() {
 	m_ViewTrueTypeFonts = !m_ViewTrueTypeFonts;
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnViewPenWidths() {
 	m_ViewPenWidths = !m_ViewPenWidths;
 	InvalidateRect(nullptr);
 }
-void AeSysView::OnViewRendermode(UINT commandId) {
+
+void AeSysView::OnViewRendermode(unsigned commandId) {
 	const OdGsView::RenderMode RenderMode = OdGsView::RenderMode(commandId - ID_VIEW_RENDERMODE_2DOPTIMIZED);
 	SetRenderMode(RenderMode);
 }
+
 void AeSysView::OnViewWindow() {
 	CPoint CurrentPosition;
 	::GetCursorPos(&CurrentPosition);
@@ -2971,10 +2980,12 @@ void AeSysView::OnViewWindow() {
 	SubMenu->TrackPopupMenuEx(TPM_LEFTALIGN, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 	::DestroyMenu(WindowMenu);
 }
+
 void AeSysView::OnWindowZoomWindow() {
 	m_Points.clear();
 	m_ZoomWindow = !m_ZoomWindow;
 }
+
 void AeSysView::OnUpdateWindowZoomWindow(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ZoomWindow);
 }
@@ -3936,65 +3947,65 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 		auto Document {AeSysDoc::GetDoc()};
 		auto DeviceContext {GetDC()};
 
-		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(ANSI_VAR_FONT))};
+		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const auto TextAlignAlignment {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC tm;
-		DeviceContext->GetTextMetrics(&tm);
+		TEXTMETRIC TextMetric;
+		DeviceContext->GetTextMetricsW(&TextMetric);
 
-		CRect ClientRect;
-		GetClientRect(&ClientRect);
+		CRect ClientRectangle;
+		GetClientRect(&ClientRectangle);
 
 		CRect rc;
 
 		wchar_t szBuf[32];
 
 		if ((item & WorkCount) == WorkCount) {
-			rc.SetRect(0, ClientRect.top, 8 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
+			rc.SetRect(0, ClientRectangle.top, 8 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->NumberOfGroupsInWorkLayer() + Document->NumberOfGroupsInActiveLayers());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, (UINT) wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & TrapCount) == TrapCount) {
-			rc.SetRect(8 * tm.tmAveCharWidth, ClientRect.top, 16 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
+			rc.SetRect(8 * TextMetric.tmAveCharWidth, ClientRectangle.top, 16 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->TrapGroupCount());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, (UINT) wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & Pen) == Pen) {
-			rc.SetRect(16 * tm.tmAveCharWidth, ClientRect.top, 22 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
+			rc.SetRect(16 * TextMetric.tmAveCharWidth, ClientRectangle.top, 22 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
 			swprintf_s(szBuf, 32, L"P%-4i", pstate.ColorIndex());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, (UINT) wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & Line) == Line) {
-			rc.SetRect(22 * tm.tmAveCharWidth, ClientRect.top, 28 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
+			rc.SetRect(22 * TextMetric.tmAveCharWidth, ClientRectangle.top, 28 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
 			swprintf_s(szBuf, 32, L"L%-4i", pstate.LinetypeIndex());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, (UINT) wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & TextHeight) == TextHeight) {
 			const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-			rc.SetRect(28 * tm.tmAveCharWidth, ClientRect.top, 38 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
+			rc.SetRect(28 * TextMetric.tmAveCharWidth, ClientRectangle.top, 38 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
 			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, (UINT) wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & Scale) == Scale) {
-			rc.SetRect(38 * tm.tmAveCharWidth, ClientRect.top, 48 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
+			rc.SetRect(38 * TextMetric.tmAveCharWidth, ClientRectangle.top, 48 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
 			swprintf_s(szBuf, 32, L"1:%-6.2f", WorldScale());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, (UINT) wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & WndRatio) == WndRatio) {
-			rc.SetRect(48 * tm.tmAveCharWidth, ClientRect.top, 58 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
-			CString ZoomFactorAsString;
-			ZoomFactorAsString.Format(L"=%-8.3f", ZoomFactor());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, (UINT) ZoomFactorAsString.GetLength(), 0);
+			rc.SetRect(48 * TextMetric.tmAveCharWidth, ClientRectangle.top, 58 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			OdString ZoomFactorAsString;
+			ZoomFactorAsString.format(L"=%-8.3f", ZoomFactor());
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, ZoomFactorAsString.getLength(), 0);
 		}
 		if ((item & DimLen) == DimLen || (item & DimAng) == DimAng) {
-			rc.SetRect(58 * tm.tmAveCharWidth, ClientRect.top, 90 * tm.tmAveCharWidth, ClientRect.top + tm.tmHeight);
-			CString LengthAndAngle;
+			rc.SetRect(58 * TextMetric.tmAveCharWidth, ClientRectangle.top, 90 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			OdString LengthAndAngle;
 			LengthAndAngle += theApp.FormatLength(theApp.DimensionLength(), theApp.GetUnits());
 			LengthAndAngle += L" @ ";
 			LengthAndAngle += theApp.FormatAngle(EoToRadian(theApp.DimensionAngle()));
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, (UINT) LengthAndAngle.GetLength(), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, LengthAndAngle.getLength(), 0);
 		}
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);

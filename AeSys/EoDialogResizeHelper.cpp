@@ -85,9 +85,11 @@ BOOL EoDialogResizeHelper::Fix(HWND a_hCtrl, EHFix a_hFix, EVFix a_vFix) {
 	}
 	return FALSE;
 }
+
 BOOL EoDialogResizeHelper::Fix(int a_itemId, EHFix a_hFix, EVFix a_vFix) {
 	return Fix(::GetDlgItem(m_hParent, a_itemId), a_hFix, a_vFix);
 }
+
 BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
 	CtrlCont_t::iterator it;
 	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
@@ -96,12 +98,15 @@ BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
 	}
 	return TRUE;
 }
-UINT EoDialogResizeHelper::Fix(LPCWSTR a_pszClassName, EHFix a_hFix, EVFix a_vFix) {
+
+unsigned EoDialogResizeHelper::Fix(LPCWSTR a_pszClassName, EHFix a_hFix, EVFix a_vFix) {
 	wchar_t pszCN[200];  // ToDo: size?
-	UINT cnt = 0;
+	unsigned cnt {0};
 	CtrlCont_t::iterator it;
+
 	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		::GetClassName(it->m_hCtrl, pszCN, sizeof(pszCN));
+
 		if (wcscmp(pszCN, a_pszClassName) == 0) {
 			cnt++;
 			it->m_hFix = a_hFix;

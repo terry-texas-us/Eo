@@ -39,7 +39,7 @@ class AeSysView
 	OdString m_sPrompt;
 	ExEdInputParser m_inpars;
 
-	static UINT g_nRedrawMSG;
+	static unsigned g_nRedrawMSG;
 	OdExEditorObject m_editor;
 	mutable bool m_bRegenAbort;
 	mutable bool m_bInRegen; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
@@ -143,7 +143,7 @@ protected:
 
 	void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
 
-	void OnActivateFrame(UINT nState, CFrameWnd* pDeactivateFrame) override;
+	void OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) override;
 	void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
@@ -312,16 +312,16 @@ protected: // Windows messages
 
 public: // Input message handler member functions
 
-	void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
-	void OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags);
-	void OnLButtonDown(UINT nFlags, CPoint point);
-	void OnLButtonUp(UINT nFlags, CPoint point);
-	void OnMButtonDown(UINT nFlags, CPoint point);
-	void OnMButtonUp(UINT nFlags, CPoint point);
-	void OnMouseMove(UINT nFlags, CPoint point);
-	BOOL OnMouseWheel(UINT nFlags, short zDelta, CPoint point);
-	void OnRButtonDown(UINT nFlags, CPoint point);
-	void OnRButtonUp(UINT nFlags, CPoint point);
+	void OnChar(unsigned characterCodeValue, unsigned RepeatCount, unsigned flags);
+	void OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
+	void OnLButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
+	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
+	void OnMButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
+	void OnMButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
+	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent
+	BOOL OnMouseWheel(unsigned flags, short zDelta, CPoint point); // hides non-virtual function of parent
+	void OnRButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
+	void OnRButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 
 	int OnCreate(LPCREATESTRUCT createStructure);
 	void OnDestroy();
@@ -331,7 +331,7 @@ public: // Input message handler member functions
 	void OnKillFocus(CWnd* newWindow);
 	void OnPaint();
 	void OnSetFocus(CWnd* oldWindow);
-	void OnSize(UINT type, int cx, int cy);
+	void OnSize(unsigned type, int cx, int cy);
 
 	void OnViewStateInformation();
 	void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
@@ -433,7 +433,7 @@ public:
 	void SetViewWindow(const double uMin, const double vMin, const double uMax, const double vMax);
 
 	/// <summary>Determines the number of pages for 1 to 1 print</summary>
-	UINT NumPages(CDC* deviceContext, double dScaleFactor, UINT& nHorzPages, UINT& nVertPages);
+	unsigned NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages);
 
 	double OverviewUExt() noexcept;
 	double OverviewUMin() noexcept;
@@ -946,7 +946,7 @@ public:
 	void OnUpdateViewRendermodeHiddenline(CCmdUI* pCmdUI);
 	void OnUpdateViewRendermodeFlatshaded(CCmdUI* pCmdUI);
 	void OnUpdateViewRendermodeSmoothshaded(CCmdUI* pCmdUI);
-	void OnViewRendermode(UINT commandId);
+	void OnViewRendermode(unsigned commandId);
 	void OnWindowZoomSpecial();
 	void OnWindowNormal();
 	void OnWindowBest();

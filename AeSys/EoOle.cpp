@@ -26,7 +26,7 @@ class OleDwgItem : public COleClientItem, public OdOleItemHandler {
 				m_bCloseOnDelete = false;
 				m_hFile = 0;
 		}
-		UINT Read(void* lpBuf, UINT nCount) {
+		unsigned Read(void* lpBuf, unsigned nCount) {
 			unsigned long nBytesLeft = unsigned long(m_stream.length()-m_stream.tell());
 			if (nBytesLeft < nCount) {
 				nCount = nBytesLeft;
@@ -34,7 +34,7 @@ class OleDwgItem : public COleClientItem, public OdOleItemHandler {
 			m_stream.getBytes(lpBuf, nCount);
 			return nCount;
 		}
-		void Write(const void* lpBuf, UINT nCount) {
+		void Write(const void* lpBuf, unsigned nCount) {
 			m_stream.putBytes(lpBuf, nCount);
 		}
 	};

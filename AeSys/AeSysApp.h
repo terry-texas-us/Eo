@@ -77,7 +77,7 @@ private:
 	BOOL m_bEnableDoubleBuffer;
 	BOOL m_bBlocksCache;
 	BOOL m_bGsDevMultithread;
-	UINT m_nMtRegenThreads;
+	unsigned m_nMtRegenThreads;
 	BOOL m_bEnablePrintPreviewViaBitmap;
 	BOOL m_bUseGsModel;
 	BOOL m_bEnableHLR;
@@ -92,8 +92,8 @@ private:
 	BOOL m_bDisableAutoRegen;
 	ODCOLORREF m_background;
 	DWORD m_thisThreadID;
-	UINT m_numCustomCommands;
-	DWORD m_numGSMenuItems;
+	unsigned m_numCustomCommands;
+	unsigned long m_numGSMenuItems;
 	OdString m_sVectorizerPath;
 	OdString m_RecentCommand;
 	bool m_bPartial;
@@ -110,7 +110,7 @@ private:
 
 //	void UpdateFieldDisplay();
 public:
-	UINT m_ApplicationLook;
+	unsigned m_ApplicationLook;
 
 	void AddReactor(OdApplicationReactor* reactor);
 	void RemoveReactor(OdApplicationReactor* reactor);
@@ -125,14 +125,14 @@ public:
 	OdGsMarker getGSMenuItemMarker() const noexcept { return (OdGsMarker) this; }
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
 	void RefreshCommandMenu();
-	UINT numCustomCommands() const noexcept { return m_numCustomCommands; }
+	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
 	static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool multiple = false);
 
 	bool printingViaBitmap() const noexcept { return m_bEnablePrintPreviewViaBitmap != 0; }
 	bool doubleBufferEnabled() const noexcept { return m_bEnableDoubleBuffer != 0; }
 	bool blocksCacheEnabled() const noexcept { return m_bBlocksCache != 0; }
 	bool gsDeviceMultithreadEnabled() const noexcept { return m_bGsDevMultithread != 0; }
-	UINT mtRegenThreadsCount() const noexcept { return m_nMtRegenThreads; }
+	unsigned mtRegenThreadsCount() const noexcept { return m_nMtRegenThreads; }
 	bool useGsModel() const noexcept { return m_bUseGsModel != 0; }
 	bool useSoftwareHLR() const noexcept { return m_bEnableHLR != 0; }
 	bool enableContextualColors() const noexcept { return m_bContextColors != 0; }
@@ -180,10 +180,10 @@ public:
 	void setLimit(int max) noexcept override /* ExHostAppServices */;
 	void warning(const char* warnVisGroup, const OdString& message) override /* ExHostAppServices */;
 	
-	static int messageBox(HWND parent, LPCTSTR caption, LPCTSTR text, UINT type) noexcept {
+	static int messageBox(HWND parent, LPCTSTR caption, LPCTSTR text, unsigned type) noexcept {
 		return ::MessageBox(parent, text, caption, type);
 	}
-	int messageBox(LPCTSTR caption, LPCTSTR text, UINT type) {
+	int messageBox(LPCTSTR caption, LPCTSTR text, unsigned type) {
 		auto MainWindow {GetMainWnd()};
 		
 		if (MainWindow == nullptr) { return 0; }
@@ -196,7 +196,7 @@ public:
 	void reportError(LPCWSTR contextMessage, const OdError& error) {
 		messageBox(contextMessage, (LPCWSTR)error.description(), MB_OK | MB_ICONERROR);
 	}
-	void reportError(LPCWSTR contextMessage, unsigned int error) {
+	void reportError(LPCWSTR contextMessage, unsigned error) {
 		messageBox(contextMessage, (LPCWSTR)getErrorDescription(error), MB_OK | MB_ICONERROR);
 	}
 
@@ -281,7 +281,7 @@ private:
 	bool m_ClipboardDataEoGroups;
 	bool m_ClipboardDataImage;
 	bool m_ClipboardDataText;
-	UINT m_ClipboardFormatIdentifierForEoGroups;
+	unsigned m_ClipboardFormatIdentifierForEoGroups;
 	int	m_CurrentMode;
 	double m_DeviceHeightInMillimeters;
 	double m_DeviceHeightInPixels;
@@ -317,17 +317,17 @@ public:
 	void AddModeInformationToMessageList();
 	void AddStringToMessageList(LPCWSTR message);
 	void AddStringToMessageList(LPCWSTR message, LPCWSTR string);
-	void AddStringToMessageList(unsigned int stringResourceIdentifier);
-	void AddStringToMessageList(UINT stringResourceIdentifier, LPCWSTR string);
+	void AddStringToMessageList(unsigned stringResourceIdentifier);
+	void AddStringToMessageList(unsigned stringResourceIdentifier, LPCWSTR string);
 	void AddStringToReportList(LPCWSTR message);
 
-	int ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
-	void WarningMessageBox(UINT stringResourceIdentifier);
-	void WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string);
+	int ConfirmMessageBox(unsigned stringResourceIdentifier, LPCWSTR string);
+	void WarningMessageBox(unsigned stringResourceIdentifier);
+	void WarningMessageBox(unsigned stringResourceIdentifier, LPCWSTR string);
 
 	int	ArchitecturalUnitsFractionPrecision() const noexcept;
 	void BuildModeSpecificAcceleratorTable();
-	UINT ClipboardFormatIdentifierForEoGroups() noexcept;
+	unsigned ClipboardFormatIdentifierForEoGroups() noexcept;
 	static OdString ConfigurationFileFor(HKEY key, const OdString& applicationName, const OdString& configType, OdString file);
 	int CurrentMode() const noexcept;
 	double DeviceHeightInMillimeters() const noexcept;
@@ -366,7 +366,7 @@ public:
 	void LoadModeResources(int mode);
 	void LoadPenWidthsFromFile(const CString& pathName);
 	void LoadSimplexStrokeFont(const CString& pathName);
-	CString LoadStringResource(UINT resourceIdentifier) const;
+	CString LoadStringResource(unsigned resourceIdentifier) const;
 	bool ModeInformationOverView() const noexcept;
 	double ParseLength(LPWSTR lengthAsString);
 	double ParseLength(Units units, LPWSTR);
@@ -395,7 +395,7 @@ public:
 	void OnUpdateEditCfImage(CCmdUI* pCmdUI);
 	void OnEditCfText() noexcept;
 	void OnUpdateEditCfText(CCmdUI* pCmdUI);
-	void OnFileOpen();
+	void OnFileOpen(); // hides non-virtual function of parent
 	void OnFilePlotstylemanager();
 	void OnHelpContents();
 	void OnModeAnnotate();

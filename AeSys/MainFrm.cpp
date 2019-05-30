@@ -18,8 +18,8 @@ static char THIS_FILE[] = __FILE__;
 IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 
 const int MaximumUserToolbars = 10;
-const UINT FirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
-const UINT LastUserToolBarId = FirstUserToolBarId + MaximumUserToolbars - 1;
+const unsigned FirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
+const unsigned LastUserToolBarId = FirstUserToolBarId + MaximumUserToolbars - 1;
 
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_WM_CREATE()
@@ -44,7 +44,7 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 END_MESSAGE_MAP()
 
-static UINT Indicators[] = {
+static unsigned Indicators[] = {
 	ID_INDICATOR_ICON, // status icon
 	ID_SEPARATOR, // status line indicator
 	ID_INDICATOR_PROGRESS, // progress bar
@@ -82,7 +82,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	}
 	m_MenuBar.SetPaneStyle(m_MenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
 
-	CList<UINT, UINT> ProtectedCommands;
+	CList<unsigned, unsigned> ProtectedCommands;
 	ProtectedCommands.AddTail(ID_VIEW_ANNOTATIONSCALES);
 	ProtectedCommands.AddTail(ID_TOOLS_REGISTEREDCOMMANDS);
 	CMFCToolBarButton::SetProtectedCommands(ProtectedCommands);
@@ -104,7 +104,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create status bar\n");
 		return -1;
 	}
-	m_StatusBar.SetIndicators(Indicators, sizeof(Indicators) / sizeof(UINT));
+	m_StatusBar.SetIndicators(Indicators, sizeof(Indicators) / sizeof(unsigned));
 
 	m_StatusBar.SetPaneStyle(nStatusIcon, SBPS_NOBORDERS);
 	m_StatusBar.SetPaneStyle(nStatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
@@ -302,7 +302,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
 	}
 	return 0;
 }
-void CMainFrame::OnApplicationLook(UINT look) {
+void CMainFrame::OnApplicationLook(unsigned look) {
 	theApp.m_ApplicationLook = look;
 
 	switch (theApp.m_ApplicationLook) {
@@ -345,7 +345,7 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
 	pCmdUI->SetRadio(theApp.m_ApplicationLook == pCmdUI->m_nID);
 }
 
-BOOL CMainFrame::LoadFrame(UINT resourceId, DWORD defaultStyle, CWnd * parentWindow, CCreateContext * createContext) {
+BOOL CMainFrame::LoadFrame(unsigned resourceId, DWORD defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
 	
 	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) { return FALSE; }
 
@@ -468,7 +468,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 					GroupCommandIterator->next();
 					CommandId++;
 				}
-				CMFCToolBarMenuButton MenuButton(UINT(-1), GroupMenu.Detach(), -1, GroupName);
+				CMFCToolBarMenuButton MenuButton(unsigned(-1), GroupMenu.Detach(), -1, GroupName);
 				popupMenu->InsertItem(MenuButton);
 
 				CommandStackGroupIterator->next();
@@ -592,7 +592,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 			break;
 		}
 	}
-	CList<UINT, UINT> lstCommands;
+	CList<unsigned, unsigned> lstCommands;
 	
 	if (AreMDITabs()) {
 		lstCommands.AddTail(ID_WINDOW_ARRANGE);

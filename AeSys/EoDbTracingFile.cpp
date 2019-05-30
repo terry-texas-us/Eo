@@ -7,7 +7,7 @@
 EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr database) {
 }
 
-EoDbTracingFile::EoDbTracingFile(const OdString& file, UINT openFlags)
+EoDbTracingFile::EoDbTracingFile(const OdString& file, unsigned openFlags)
 	: EoDbFile(file, openFlags) {
 }
 

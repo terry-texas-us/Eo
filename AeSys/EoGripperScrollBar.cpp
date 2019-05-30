@@ -12,9 +12,9 @@ BEGIN_MESSAGE_MAP(EoGripperScrollBar, CScrollBar)
 END_MESSAGE_MAP()
 
 LRESULT EoGripperScrollBar::OnNcHitTest(CPoint point) {
-	UINT HitTest = CScrollBar::OnNcHitTest(point);
-	if (HitTest == HTCLIENT) {
-		HitTest = HTBOTTOMRIGHT;
-	}
+	auto HitTest {CScrollBar::OnNcHitTest(point)};
+
+	if (HitTest == HTCLIENT) { HitTest = HTBOTTOMRIGHT; }
+
 	return HitTest;
 }

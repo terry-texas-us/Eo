@@ -11,7 +11,7 @@
 void Dlg_OnClose(HWND hwnd) noexcept {
 	DestroyWindow(hwnd);
 }
-void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
+void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 	switch(id)
 	{
 	case IDOK:
@@ -80,7 +80,7 @@ BOOL Dlg_OnInit(HWND hwnd, HWND hwndCtl, LPARAM lParam) {
 	::SetWindowText(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
 	return TRUE;
 }
-int WINAPI Dlg_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+int WINAPI Dlg_Proc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
 	case WM_CLOSE: 
 		return SetDlgMsgResult(hwnd, uMsg, HANDLE_WM_CLOSE(hwnd, wParam, lParam, Dlg_OnClose));
@@ -257,9 +257,13 @@ CPsListStyleData::~CPsListStyleData() {
 	m_pBitmapColorInfo = 0;
 }
 const bool CPsListStyleData::SetActiveListIndex(const int index, const bool bBmpInfo) {
-	if (!m_pPlotStyles && !m_pPublicBitmapList) return false;
-	if ((UINT)index >= m_pPublicBitmapList->size()-1) return false;
-	if (index < 0) return false;
+
+	if (!m_pPlotStyles && !m_pPublicBitmapList) { return false; }
+
+	if (static_cast<unsigned>(index) >= m_pPublicBitmapList->size() - 1) { return false; }
+
+	if (index < 0) { return false; }
+
 	m_iActiveListIndex = index;
 	if (bBmpInfo) return true;
 	delete m_pBitmapColorInfo;
@@ -877,7 +881,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
 	DialogBox(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDD_PS_DLG_ADDPS), m_hWnd, Dlg_Proc); 
 	m_listStyles.SetFocus();
 }
-BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags/*, BOOL bOpenFileDialog*/) {
+BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags/*, BOOL bOpenFileDialog*/) {
 	CString ext = fileName.Right(3);
 	const bool isCtb = m_pPlotStyleTable->isAciTableAvailable();
 

@@ -45,7 +45,7 @@ public:
 
 public:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
-	BOOL LoadFrame(UINT nIDResource, DWORD dwDefaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWnd = nullptr, CCreateContext* context = nullptr) override;
+	BOOL LoadFrame(unsigned resourceId, DWORD defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = nullptr, CCreateContext* createContext = nullptr) override;
 	~CMainFrame();
 #ifdef _DEBUG
 	void AssertValid() const override;
@@ -81,7 +81,7 @@ protected:
 	void OnUpdateMdiTabbed(CCmdUI* pCmdUI);
 	void OnViewCustomize();
 	void OnViewFullScreen();
-	void OnApplicationLook(UINT id);
+	void OnApplicationLook(unsigned look);
 	void OnUpdateApplicationLook(CCmdUI* pCmdUI);
 
 	LRESULT OnGetTabToolTip(WPARAM wp, LPARAM lp);

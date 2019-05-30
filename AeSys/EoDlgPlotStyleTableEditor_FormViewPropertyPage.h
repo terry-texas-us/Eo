@@ -212,7 +212,7 @@ protected:
 
 public:
     const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
-    BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags);
+    BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags);
     void SetFileBufPath(const OdString sFilePath);
     void AddNewPlotStyle(LPCWSTR lpStyleName);
     const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };

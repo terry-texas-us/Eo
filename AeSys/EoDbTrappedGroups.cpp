@@ -112,7 +112,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.SetLength(96);
 		MemoryFile.SeekToEnd();
 
-		unsigned char* Buffer = new unsigned char[EoDbPrimitive::BUFFER_SIZE];
+		auto Buffer {new unsigned char[EoDbPrimitive::BUFFER_SIZE]};
 		m_TrappedGroupList.Write(MemoryFile, Buffer);
 		delete[] Buffer;
 
@@ -127,12 +127,13 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.Write(&MinimumPoint.y, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.z, sizeof(double));
 
-		GLOBALHANDLE ClipboardDataHandle = GlobalAlloc(GHND, SIZE_T(dwSizeOfBuffer));
+		GLOBALHANDLE ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(dwSizeOfBuffer))};
+
 		if (ClipboardDataHandle != nullptr) {
 			LPWSTR ClipboardData = (LPWSTR)GlobalLock(ClipboardDataHandle);
 
 			MemoryFile.SeekToBegin();
-			MemoryFile.Read(ClipboardData, UINT(dwSizeOfBuffer));
+			MemoryFile.Read(ClipboardData, narrow_cast<unsigned>(dwSizeOfBuffer));
 
 			GlobalUnlock(ClipboardDataHandle);
 			::SetClipboardData(theApp.ClipboardFormatIdentifierForEoGroups(), ClipboardDataHandle);

@@ -20,10 +20,10 @@
 // Menu animation flags
 #if !defined(ODA_UNIXOS) //EMCC
 #ifndef TPM_VERPOSANIMATION
-static const UINT TPM_VERPOSANIMATION = 0x1000L;
+static const unsigned TPM_VERPOSANIMATION = 0x1000L;
 #endif
 #ifndef TPM_NOANIMATION
-static const UINT TPM_NOANIMATION = 0x4000L;
+static const unsigned TPM_NOANIMATION = 0x4000L;
 #endif
 #endif //#ifndef EMCC
 //

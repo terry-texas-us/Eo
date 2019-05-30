@@ -37,7 +37,7 @@ void EoDlgSelectGotoHomePoint::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgSelectGotoHomePoint::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	CString Names = theApp.LoadStringResource(IDS_HOME_POINT_GO_NAMES);
+	auto Names {theApp.LoadStringResource(IDS_HOME_POINT_GO_NAMES)};
 	m_HomePointNames.ResetContent();
 	int Position = 0;
 	while (Position < Names.GetLength()) {

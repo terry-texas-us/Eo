@@ -130,7 +130,7 @@ void EoDlgUserIOConsole::OnPaint() {
 	m_PromptWindow.SetFont(&m_Font);
 }
 
-void EoDlgUserIOConsole::OnSize(UINT type, int cx, int cy) {
+void EoDlgUserIOConsole::OnSize(unsigned type, int cx, int cy) {
 	CRect PromptRect;
 	CRect InputRect;
 	GetDlgItem(IDC_PROMPT)->GetWindowRect(&PromptRect);
@@ -160,7 +160,7 @@ void EoDlgUserIOConsole::OnDestroy() {
 	CDialog::OnDestroy();
 }
 
-void EoDlgUserIOConsole::OnShowWindow(BOOL show, UINT status) {
+void EoDlgUserIOConsole::OnShowWindow(BOOL show, unsigned status) {
 	CDialog::OnShowWindow(show, status);
 	CRect WindowRectangle;
 	GetWindowRect(&WindowRectangle);

@@ -44,7 +44,7 @@ int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	m_OutputReportsList.SetFont(&m_Font);
 
 	// Attach list windows to tab:
-	CString TabLabel = theApp.LoadStringResource(IDS_OUTPUT_MESSAGES);
+	auto TabLabel {theApp.LoadStringResource(IDS_OUTPUT_MESSAGES)};
 	m_wndTabs.AddTab(&m_OutputMessagesList, TabLabel);
 	TabLabel = theApp.LoadStringResource(IDS_OUTPUT_REPORTS);
 	m_wndTabs.AddTab(&m_OutputReportsList, TabLabel);
@@ -55,16 +55,20 @@ int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 
 	return 0;
 }
-void EoMfOutputDockablePane::OnSize(UINT type, int cx, int cy) {
+
+void EoMfOutputDockablePane::OnSize(unsigned type, int cx, int cy) {
 	CDockablePane::OnSize(type, cx, cy);
 
 	// Tab control should cover the whole client area:
 	m_wndTabs.SetWindowPos(nullptr, - 1, - 1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 }
+
 EoMfOutputListBox::EoMfOutputListBox() {
 }
+
 EoMfOutputListBox::~EoMfOutputListBox() {
 }
+
 BEGIN_MESSAGE_MAP(EoMfOutputListBox, CListBox)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)

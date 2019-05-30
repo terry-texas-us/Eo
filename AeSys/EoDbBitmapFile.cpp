@@ -43,7 +43,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 		::GetDIBColorTable((HDC) dcMem, 0, NumberOfColors, RGBQuad);
 		dcMem.SelectObject(pBitmap);
 
-		const UINT nSize = sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * (NumberOfColors - 1));
+		const unsigned nSize {sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * (NumberOfColors - 1))};
 
 		LOGPALETTE* pLogPal = (LOGPALETTE*) new unsigned char[nSize];
 

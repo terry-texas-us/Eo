@@ -131,7 +131,7 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 	return 0;
 }
 
-void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle */, UINT /* state */) {
+void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) {
 	m_SelectedIndex = 0;
 
 	for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
@@ -147,11 +147,11 @@ void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle */,
 	}
 }
 
-UINT EoCtrlColorsButton::OnGetDlgCode() noexcept {
+unsigned EoCtrlColorsButton::OnGetDlgCode() noexcept {
 	return DLGC_WANTARROWS;
 }
 
-void EoCtrlColorsButton::OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags) {
+void EoCtrlColorsButton::OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags) {
 	if (keyCode >= VK_LEFT && keyCode <= VK_DOWN) {
 		CDC* DeviceContext = GetDC();
 		m_SelectedIndex = 0;
@@ -217,14 +217,16 @@ void EoCtrlColorsButton::OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags) {
 	}
 	CMFCButton::OnKeyDown(keyCode, repeatCount, flags);
 }
-void EoCtrlColorsButton::OnLButtonUp(UINT flags, CPoint point) {
+
+void EoCtrlColorsButton::OnLButtonUp(unsigned flags, CPoint point) {
 	const unsigned short CurrentSubItem = SubItemByPoint(point);
-	if (CurrentSubItem != 0) {
-		m_SubItem = CurrentSubItem;
-	}
+
+	if (CurrentSubItem != 0) { m_SubItem = CurrentSubItem; }
+
 	CMFCButton::OnLButtonUp(flags, point);
 }
-void EoCtrlColorsButton::OnMouseMove(UINT flags, CPoint point) {
+
+void EoCtrlColorsButton::OnMouseMove(unsigned flags, CPoint point) {
 	CDC* DeviceContext = GetDC();
 	m_SelectedIndex = 0;
 	DrawCell(DeviceContext, m_SubItem, m_Palette[m_SubItem]);

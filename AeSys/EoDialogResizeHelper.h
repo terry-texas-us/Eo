@@ -37,7 +37,7 @@ public:
 	// ...item ID (if it's a dialog item)...
 	BOOL Fix(int a_itemId, EHFix a_hFix, EVFix a_vFix);
 	// ...all child windows with a common class name (e.g. "Edit")
-	UINT Fix(LPCWSTR a_pszClassName, EHFix a_hFix, EVFix a_vFix);
+	unsigned Fix(LPCWSTR a_pszClassName, EHFix a_hFix, EVFix a_vFix);
 	// ...or all registered windows
 	BOOL Fix(EHFix a_hFix, EVFix a_vFix);
 

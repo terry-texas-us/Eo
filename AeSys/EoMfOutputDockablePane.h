@@ -41,7 +41,7 @@ public:
 
 protected:
 	int OnCreate(LPCREATESTRUCT createStructure);
-	void OnSize(UINT type, int cx, int cy);
+	void OnSize(unsigned type, int cx, int cy);
 
 	DECLARE_MESSAGE_MAP()
 };

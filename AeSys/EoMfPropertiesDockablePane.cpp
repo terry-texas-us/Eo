@@ -73,11 +73,11 @@ void EoMfPropertiesDockablePane::OnSetFocus(CWnd* oldWindow) {
 	CDockablePane::OnSetFocus(oldWindow);
 	m_PropertyGrid.SetFocus();
 }
-void EoMfPropertiesDockablePane::OnSettingChange(UINT flags, LPCWSTR section) {
+void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, LPCWSTR section) {
 	CDockablePane::OnSettingChange(flags, section);
 	SetPropertyGridFont();
 }
-void EoMfPropertiesDockablePane::OnSize(UINT type, int cx, int cy) {
+void EoMfPropertiesDockablePane::OnSize(unsigned type, int cx, int cy) {
 	CDockablePane::OnSize(type, cx, cy);
 	AdjustLayout();
 }

@@ -21,7 +21,7 @@ public:
 public:
 	EoDbFile() noexcept;
 	EoDbFile(OdDbDatabasePtr database);
-	EoDbFile(const OdString& fileName, UINT openFlags);
+	EoDbFile(const OdString& fileName, unsigned openFlags);
 
 	void ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept;
 	void ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive);

@@ -337,13 +337,13 @@ BOOL AeSysApp::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 }
 
 AeSysApp::AeSysApp() noexcept
-	: m_nProgressPos(0)
-	, m_nProgressLimit(100)
+	: m_nProgressLimit(100)
+	, m_nProgressPos(0)
 	, m_nPercent(0)
-	, m_pAuditDlg(nullptr)
 	, m_bUseGsModel(TRUE)
-	, m_numGSMenuItems(0)
+	, m_pAuditDlg(nullptr)
 	, m_bDiscardBackFaces(1)
+	, m_numGSMenuItems(0)
 	, m_bEnableHLR(0)
 	, m_bContextColors(1)
 	, m_bTTFPolyDraw(0)
@@ -356,14 +356,14 @@ AeSysApp::AeSysApp() noexcept
 	, m_bDisableAutoRegen(0)
 	, m_bLoading(false)
 	, m_bRemoteGeomViewer(false)
-	, m_bSupportFileSelectionViaDialog(true)
 	// ODA_MT_DBIO_BEGIN
 	, m_bUseMTLoading(false)
 	// ODA_MT_DBIO_END
-	, m_bUseTempFiles(false)
-	, m_pagingType(0)
+	, m_bSupportFileSelectionViaDialog(true)
 
 	, m_bEnableDoubleBuffer(1)
+	, m_pagingType(0)
+	, m_bUseTempFiles(false)
 	, m_bBlocksCache(0)
 	, m_bGsDevMultithread(0)
 	, m_nMtRegenThreads(4)
@@ -374,8 +374,8 @@ AeSysApp::AeSysApp() noexcept
 	, m_displayFields(0)
 	, m_bSaveRoundTrip(1)
 	, m_bSavePreview(0)
-	, m_bSaveWithPassword(0)
 	, m_bPartial(false)
+	, m_bSaveWithPassword(0)
 	, m_bRecover(false) {
 
 	EnableHtmlHelp();
@@ -558,10 +558,15 @@ OdString AeSysApp::findFile(const OdString& fileToFind, OdDbBaseDatabase* databa
 			case kTextureMapFile:
 				break;
 			case kEmbeddedImageFile:
-				if (FileToFind.left(5).iCompare(L"http:") == 0 || FileToFind.left(6).iCompare(L"https:") == 0) {
+				if (FileToFind.left(5).iCompare(L"http:") == 0 || FileToFind.left(6).iCompare(L"https:") == 0) { 
 					// <tas="code section removed"</tas>
 				}
 				// fall through
+			case kXRefDrawing:
+			case kTXApplication:
+			case kUnderlayFile:
+			case kDefault:
+			case kPhotometricWebFile:
 			default:
 				return FilePathAndName;
 		}
@@ -822,8 +827,8 @@ OdDbDatabasePtr AeSysApp::openFile(LPCWSTR pathName) {
 }
 
 void AeSysApp::AddModeInformationToMessageList() {
-	CString ResourceString = LoadStringResource(m_CurrentMode);
-	int NextToken = 0;
+	auto ResourceString {LoadStringResource(m_CurrentMode)};
+	int NextToken {0};
 	ResourceString = ResourceString.Tokenize(L"\n", NextToken);
 	AddStringToMessageList(ResourceString);
 }
@@ -844,12 +849,13 @@ void AeSysApp::AddStringToMessageList(LPCWSTR message, LPCWSTR string) {
 	AddStringToMessageList(FormatString);
 }
 
-void AeSysApp::AddStringToMessageList(unsigned int stringResourceIdentifier) {
-	CString ResourceString = LoadStringResource(stringResourceIdentifier);
+void AeSysApp::AddStringToMessageList(unsigned stringResourceIdentifier) {
+	auto ResourceString {LoadStringResource(stringResourceIdentifier)};
 	AddStringToMessageList(ResourceString);
 }
-void AeSysApp::AddStringToMessageList(UINT stringResourceIdentifier, LPCWSTR string) {
-	CString FormatSpecification = LoadStringResource(stringResourceIdentifier);
+
+void AeSysApp::AddStringToMessageList(unsigned stringResourceIdentifier, LPCWSTR string) {
+	auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
 	AddStringToMessageList(FormatSpecification, string);
 }
 void AeSysApp::AddStringToReportList(LPCWSTR message) {
@@ -861,6 +867,7 @@ void AeSysApp::AddStringToReportList(LPCWSTR message) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
 }
+
 int	AeSysApp::ArchitecturalUnitsFractionPrecision() const  noexcept {
 	return (m_ArchitecturalUnitsFractionPrecision);
 }
@@ -887,9 +894,10 @@ void AeSysApp::BuildModeSpecificAcceleratorTable() {
 	delete[] ModifiedAcceleratorTable;
 }
 
-UINT AeSysApp::ClipboardFormatIdentifierForEoGroups()  noexcept {
+unsigned AeSysApp::ClipboardFormatIdentifierForEoGroups()  noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
+
 OdString AeSysApp::ConfigurationFileFor(HKEY key, const OdString & applicationName, const OdString & configType, OdString file) {
 	OdString ConfigPath = FindConfigPath(configType);
 	if (!ConfigPath.isEmpty()) {
@@ -904,24 +912,31 @@ OdString AeSysApp::ConfigurationFileFor(HKEY key, const OdString & applicationNa
 int AeSysApp::CurrentMode() const  noexcept {
 	return m_CurrentMode;
 }
+
 double AeSysApp::DeviceHeightInMillimeters() const  noexcept {
 	return m_DeviceHeightInMillimeters;
 }
+
 double AeSysApp::DeviceHeightInPixels() const  noexcept {
 	return m_DeviceHeightInPixels;
 }
+
 double AeSysApp::DeviceWidthInMillimeters() const  noexcept {
 	return m_DeviceWidthInMillimeters;
 }
+
 double AeSysApp::DeviceWidthInPixels() const  noexcept {
 	return m_DeviceWidthInPixels;
 }
+
 double AeSysApp::DimensionAngle() const  noexcept {
 	return (m_DimensionAngle);
 }
+
 double AeSysApp::DimensionLength() const  noexcept {
 	return (m_DimensionLength);
 }
+
 void AeSysApp::EditColorPalette() {
 	CHOOSECOLOR cc;
 	::ZeroMemory(&cc, sizeof(CHOOSECOLOR));
@@ -949,7 +964,7 @@ double AeSysApp::EngagedLength() const noexcept {
 
 CString AeSysApp::BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool multiple) {
 	CString FileName;
-	const DWORD Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
+	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
 	HINSTANCE hinstLib = LoadLibraryW(LibraryFileName);
 	
@@ -1445,18 +1460,23 @@ BOOL AeSysApp::InitInstance() {
 
 	return TRUE;
 }
+
 bool AeSysApp::IsClipboardDataGroups() noexcept {
 	return m_ClipboardDataEoGroups;
 }
+
 bool AeSysApp::IsClipboardDataImage() noexcept {
 	return m_ClipboardDataImage;
 }
+
 bool AeSysApp::IsClipboardDataText() noexcept {
 	return m_ClipboardDataText;
 }
+
 bool AeSysApp::IsTrapHighlighted() noexcept {
 	return m_TrapHighlighted;
 }
+
 void AeSysApp::LoadColorPalletFromFile(const CString & fileName) {
 	CStdioFile fl;
 
@@ -1528,17 +1548,17 @@ void AeSysApp::LoadSimplexStrokeFont(const CString & pathName) {
 	
 	if (OpenHandle != INVALID_HANDLE_VALUE) {
 
-		if (SetFilePointer(OpenHandle, 0, nullptr, FILE_BEGIN) != (DWORD) -1) {
-
+		if (SetFilePointer(OpenHandle, 0, nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER) {
+			
 			if (!m_SimplexStrokeFont) { m_SimplexStrokeFont = new char[16384]; }
 
-			DWORD NumberOfBytesRead;
+			unsigned long NumberOfBytesRead;
 			
 			if (!ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, nullptr)) { ReleaseSimplexStrokeFont(); }
 		}
 		CloseHandle(OpenHandle);
 	} else {
-		HRSRC ResourceHandle = FindResourceW(nullptr, MAKEINTRESOURCEW(IDR_PEGSTROKEFONT), L"STROKEFONT");
+		auto ResourceHandle {FindResourceW(nullptr, MAKEINTRESOURCEW(IDR_PEGSTROKEFONT), L"STROKEFONT")};
 
 		if (ResourceHandle != nullptr) {
 			const auto ResourceSize {SizeofResource(nullptr, ResourceHandle)};
@@ -1549,7 +1569,7 @@ void AeSysApp::LoadSimplexStrokeFont(const CString & pathName) {
 	}
 }
 
-CString AeSysApp::LoadStringResource(UINT resourceIdentifier) const {
+CString AeSysApp::LoadStringResource(unsigned resourceIdentifier) const {
 	CString String;
 	VERIFY(String.LoadStringW(resourceIdentifier) == TRUE);
 	return String;
@@ -1567,30 +1587,30 @@ void AeSysApp::OnAppAbout() {
 void AeSysApp::OnEditCfGroups() noexcept {
 	m_ClipboardDataEoGroups = !m_ClipboardDataEoGroups;
 }
+
 void AeSysApp::OnEditCfImage() noexcept {
 	m_ClipboardDataImage = !m_ClipboardDataImage;
 }
+
 void AeSysApp::OnEditCfText() noexcept {
 	m_ClipboardDataText = !m_ClipboardDataText;
 }
 
 void AeSysApp::OnFileOpen() {
-	const DWORD Flags(OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST);
-	CString Filter = LoadStringResource(IDS_OPENFILE_FILTER);
+	const unsigned long Flags {OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST};
+	auto Filter {LoadStringResource(IDS_OPENFILE_FILTER)};
 	CFileDialog FileDialog(TRUE, nullptr, nullptr, Flags, Filter);
 
 	CString FileName;
 	FileDialog.m_ofn.lpstrFile = FileName.GetBuffer(MAX_PATH);
 
-	CString Title = LoadStringResource(AFX_IDS_OPENFILE);
+	auto Title {LoadStringResource(AFX_IDS_OPENFILE)};
 	FileDialog.m_ofn.lpstrTitle = Title;
 
 	const int Result = FileDialog.DoModal();
 	FileName.ReleaseBuffer();
 
-	if (Result == IDOK) {
-		OpenDocumentFile(FileName);
-	}
+	if (Result == IDOK) { OpenDocumentFile(FileName); }
 }
 
 void AeSysApp::OnFilePlotstylemanager() {
@@ -1883,18 +1903,18 @@ bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wch
 	HKEY OpenedKey;
 	
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
-		DWORD dwSize {EO_REGISTRY_BUFFER_SIZE};
+		unsigned long RegistryBufferSize {EO_REGISTRY_BUFFER_SIZE};
 		unsigned char data[EO_REGISTRY_BUFFER_SIZE];
 		memset(data, 0, EO_REGISTRY_BUFFER_SIZE);
 
 		wchar_t data_t[EO_REGISTRY_BUFFER_SIZE];
 		wmemset(data_t, 0, EO_REGISTRY_BUFFER_SIZE);
 
-		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, data, &dwSize) == ERROR_SUCCESS) {
-			memcpy_s(&data_t, EO_REGISTRY_BUFFER_SIZE, &data, dwSize);
+		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, data, &RegistryBufferSize) == ERROR_SUCCESS) {
+			memcpy_s(&data_t, EO_REGISTRY_BUFFER_SIZE, &data, RegistryBufferSize);
 			ReturnValue = true;
 		} else {
-			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, data_t, &dwSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
+			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, data_t, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
 		}
 		if (size < EO_REGISTRY_BUFFER_SIZE) {
 			swprintf(value, L"%s\0", data_t);
@@ -2103,8 +2123,8 @@ void AeSysApp::setLimit(int max) noexcept {
 	m_nProgressLimit = max ? max : 1;
 }
 
-int AeSysApp::ConfirmMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
-	CString FormatSpecification = LoadStringResource(stringResourceIdentifier);
+int AeSysApp::ConfirmMessageBox(unsigned stringResourceIdentifier, LPCWSTR string) {
+	auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
 
 	CString FormattedResourceString;
 	FormattedResourceString.Format(FormatSpecification, string);
@@ -2124,8 +2144,8 @@ void AeSysApp::warning(const char* warnVisGroup, const OdString& text) {
 	}
 }
 
-void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier) {
-	CString ResourceString = LoadStringResource(stringResourceIdentifier);
+void AeSysApp::WarningMessageBox(unsigned stringResourceIdentifier) {
+	auto ResourceString {LoadStringResource(stringResourceIdentifier)};
 
 	int NextToken = 0;
 	CString Text = ResourceString.Tokenize(L"\t", NextToken);
@@ -2134,8 +2154,8 @@ void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier) {
 	::MessageBoxW(nullptr, Text, Caption, MB_ICONWARNING | MB_OK);
 }
 
-void AeSysApp::WarningMessageBox(UINT stringResourceIdentifier, LPCWSTR string) {
-	CString FormatSpecification = LoadStringResource(stringResourceIdentifier);
+void AeSysApp::WarningMessageBox(unsigned stringResourceIdentifier, LPCWSTR string) {
+	auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
 
 	CString FormattedResourceString;
 	FormattedResourceString.Format(FormatSpecification, string);
@@ -2248,7 +2268,7 @@ BOOL AeSysApp::PreTranslateMessage(MSG* message) {
 
 /// <section="vectorizer menu - add new and clear all">
 
-bool addGsMenuItem(CMenu * vectorizePopupMenu, DWORD & numberOfVectorizers, LPCWSTR vectorizerPath) {
+bool addGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers, LPCWSTR vectorizerPath) {
 	if (ID_VECTORIZER_FIRST + numberOfVectorizers <= ID_VECTORIZER_LAST) {
 		vectorizePopupMenu->InsertMenuW(numberOfVectorizers, MF_BYPOSITION, ID_VECTORIZER_FIRST + numberOfVectorizers, vectorizerPath);
 

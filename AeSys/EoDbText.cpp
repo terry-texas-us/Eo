@@ -976,9 +976,9 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	const OdGeVector3d vY(double(pnt[1].x) - double(ProjectedStartPoint.x), double(pnt[1].y) - double(ProjectedStartPoint.y), 0.0);
 
 	const double dHeight = vY.length();
-	if (dHeight == 0.0) {
-		return true;
-	}
+
+	if (dHeight == 0.0) { return true; }
+
 	LOGFONT logfont;
 	memset(&logfont, 0, sizeof(logfont));
 	logfont.lfHeight = -EoRound(1.33 * dHeight);
@@ -989,16 +989,16 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 
 	CFont font;
 	font.CreateFontIndirect(&logfont);
-	CFont* pfntold = (CFont*) deviceContext->SelectObject(&font);
-	const UINT uTextAlign = deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
-	const int iBkMode = deviceContext->SetBkMode(TRANSPARENT);
+	CFont* pfntold {(CFont*)deviceContext->SelectObject(&font)};
+	const unsigned TextAlign {deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE)};
+	const int BackgroundMode = deviceContext->SetBkMode(TRANSPARENT);
 
 	deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
 
 	//	DisplayTextUsingWindowsFontOutline(deviceContext, ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
 
-	deviceContext->SetBkMode(iBkMode);
-	deviceContext->SetTextAlign(uTextAlign);
+	deviceContext->SetBkMode(BackgroundMode);
+	deviceContext->SetTextAlign(TextAlign);
 	deviceContext->SelectObject(pfntold);
 
 	return true;

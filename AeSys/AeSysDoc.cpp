@@ -64,11 +64,11 @@
 
 #include "OdValue.h"
 
-UINT CALLBACK OFNHookProcFileTracing(HWND, UINT, WPARAM, LPARAM);
+unsigned CALLBACK OFNHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
-UINT AFXAPI HashKey(CString& str) noexcept {
-	LPCWSTR pStr = (LPCWSTR) str;
-	UINT nHash = 0;
+unsigned AFXAPI HashKey(CString& string) noexcept {
+	LPCWSTR pStr {(LPCWSTR)string};
+	unsigned nHash {0};
 	while (*pStr) {
 		nHash = (nHash << 5) + nHash + *pStr++;
 	}
@@ -777,7 +777,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	}
 }
 
-BOOL AeSysDoc::OnCmdMsg(UINT commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
+BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
 	if (handlerInfo == nullptr) {
 		auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 
@@ -2073,8 +2073,8 @@ void AeSysDoc::OnEditTrace() {
 	if (::OpenClipboard(nullptr)) {
 		wchar_t sBuf[16];
 
-		UINT ClipboardFormat;
-		UINT Format = 0;
+		unsigned ClipboardFormat;
+		unsigned Format {0};
 
 		while ((ClipboardFormat = EnumClipboardFormats(Format)) != 0) {
 			GetClipboardFormatName(ClipboardFormat, sBuf, 16);
@@ -2089,7 +2089,7 @@ void AeSysDoc::OnEditTrace() {
 					if (ClipboardData != nullptr) {
 						const DWORD ClipboardDataLength = *((DWORD*) ClipboardData);
 						CMemFile MemFile;
-						MemFile.Write(ClipboardData, UINT(ClipboardDataLength));
+						MemFile.Write(ClipboardData, narrow_cast<unsigned>(ClipboardDataLength));
 						GlobalUnlock(ClipboardDataHandle);
 
 						MemFile.Seek(96, CFile::begin);
@@ -2130,12 +2130,12 @@ void AeSysDoc::OnEditTrapCut() {
 
 void AeSysDoc::OnEditTrapPaste() {
 	if (::OpenClipboard(nullptr)) {
-		const UINT nClipboardFormat = theApp.ClipboardFormatIdentifierForEoGroups();
+		const auto ClipboardFormat {theApp.ClipboardFormatIdentifierForEoGroups()};
 
-		if (IsClipboardFormatAvailable(nClipboardFormat)) {
+		if (IsClipboardFormatAvailable(ClipboardFormat)) {
 			EoDlgSetPastePosition Dialog;
 			if (Dialog.DoModal() == IDOK) {
-				HGLOBAL ClipboardDataHandle = GetClipboardData(nClipboardFormat);
+				HGLOBAL ClipboardDataHandle = GetClipboardData(ClipboardFormat);
 
 				if (ClipboardDataHandle != nullptr) {
 					OdGePoint3d LowerLeftExtent;
@@ -2145,7 +2145,7 @@ void AeSysDoc::OnEditTrapPaste() {
 					LPCSTR ClipboardData = (LPCSTR) GlobalLock(ClipboardDataHandle);
 					const DWORD ClipboardDataLength = *((DWORD*) ClipboardData);
 					CMemFile MemoryFile;
-					MemoryFile.Write(ClipboardData, UINT(ClipboardDataLength));
+					MemoryFile.Write(ClipboardData, narrow_cast<unsigned>(ClipboardDataLength));
 
 					MemoryFile.Seek(sizeof(DWORD), CFile::begin);
 					MemoryFile.Read(&LowerLeftExtent.x, sizeof(double));
@@ -3095,7 +3095,7 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 	theApp.m_pAuditDlg = nullptr;
 }
 
-BOOL AeSysDoc::DoPromptFileName(CString & fileName, UINT nIDSTitle, DWORD lFlags, BOOL isOpenFileDialog, CDocTemplate * docTemplate) {
+BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags, BOOL isOpenFileDialog, CDocTemplate* docTemplate) {
 	const auto dwgver {m_DatabasePtr->originalFileVersion()};
 	auto Extension {fileName.Right(3)};
 

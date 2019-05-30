@@ -194,7 +194,7 @@ protected:
 	AeSysDoc() noexcept;
 	DECLARE_DYNCREATE(AeSysDoc)
 
-	BOOL DoPromptFileName(CString& fileName, UINT nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* documentTemplate);
+	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, DWORD lFlags, BOOL bOpenFileDialog, CDocTemplate* documentTemplate);
 
 	OdDbCommandContextPtr m_CommandContext;
 
@@ -240,7 +240,7 @@ public:
 
 public:
 	BOOL OnSaveDocument(LPCWSTR pathName) override;
-	BOOL OnCmdMsg(UINT nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
+	BOOL OnCmdMsg(unsigned nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
 	BOOL OnOpenDocument(LPCWSTR pathName) override;
 	void DeleteContents() override;

@@ -44,13 +44,13 @@ public:
 		m_EndIndex = endIndex;
 	}
 
-	void OnDraw(CDC* deviceContext, const CRect& rectangle, UINT state) override;
+	void OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) override;
 	CSize SizeToContent(BOOL calculateOnly = FALSE) override;
 
-	UINT OnGetDlgCode() noexcept;
-	void OnKeyDown(UINT keyCode, UINT repeatCount, UINT flags);
-	void OnLButtonUp(UINT flags, CPoint point);
-	void OnMouseMove(UINT flags, CPoint point);
+	unsigned OnGetDlgCode() noexcept;
+	void OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
+	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
+	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnPaint();
 	void OnSetFocus(CWnd* oldWindow);
 

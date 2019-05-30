@@ -7,51 +7,52 @@ void AeSysView::ModeLineDisplay() {
 
 	m_OpHighlighted = 0;
 
-	CString ModeInformation = theApp.LoadStringResource(UINT(theApp.CurrentMode()));
+	auto ModeInformation {theApp.LoadStringResource(theApp.CurrentMode())};
 
 	CString ModeOp;
 
-	CDC* DeviceContext = GetDC();
+	const not_null<CDC*>(DeviceContext) {GetDC()};
 
 	for (int i = 0; i < 10; i++) {
 		AfxExtractSubString(ModeOp, ModeInformation, i + 1, '\n');
 
-		// Note: Using active view device context for sizing status bar panes
-		const CSize size = DeviceContext->GetTextExtent(ModeOp);
+		// <tas="Using active view device context for sizing status bar panes."/>
+		const auto Size {DeviceContext->GetTextExtent(ModeOp)};
 
-		GetStatusBar().SetPaneInfo(::nStatusOp0 + i, ID_OP0 + i, SBPS_NORMAL, size.cx);
+		GetStatusBar().SetPaneInfo(::nStatusOp0 + i, ID_OP0 + i, SBPS_NORMAL, Size.cx);
 		GetStatusBar().SetPaneText(::nStatusOp0 + i, ModeOp);
 		GetStatusBar().SetTipText(::nStatusOp0 + i, L"Mode Command Tip Text");
 	}
 	if (theApp.ModeInformationOverView()) {
-		CFont* Font = (CFont*) DeviceContext->SelectStockObject(ANSI_VAR_FONT);
-		const UINT nTextAlign = DeviceContext->SetTextAlign(TA_LEFT | TA_TOP);
-		const COLORREF crText = DeviceContext->SetTextColor(AppGetTextCol());
-		const COLORREF crBk = DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff);
+		CFont* Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const unsigned TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
+		const COLORREF TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
+		const COLORREF BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC tm;
-		DeviceContext->GetTextMetrics(&tm);
+		TEXTMETRIC TextMetric;
+		DeviceContext->GetTextMetricsW(&TextMetric);
 
-		CRect rcClient;
-		GetClientRect(&rcClient);
+		CRect ClientRectangle;
+		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs = (rcClient.Width() / 10) / tm.tmAveCharWidth;
-		const int Width = iMaxChrs * tm.tmAveCharWidth;
+		const int iMaxChrs = (ClientRectangle.Width() / 10) / TextMetric.tmAveCharWidth;
+		const int Width = iMaxChrs * TextMetric.tmAveCharWidth;
 
 		for (int i = 0; i < 10; i++) {
 			ModeOp = GetStatusBar().GetPaneText(::nStatusOp0 + i);
 
-			const CRect rc(i * Width, rcClient.bottom - tm.tmHeight, (i + 1) * Width, rcClient.bottom);
+			const CRect Rectangle(i * Width, ClientRectangle.bottom - TextMetric.tmHeight, (i + 1) * Width, ClientRectangle.bottom);
 
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ModeOp, ModeOp.GetLength(), 0);
+			DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
 		}
-		DeviceContext->SetBkColor(crBk);
-		DeviceContext->SetTextColor(crText);
-		DeviceContext->SetTextAlign(nTextAlign);
+		DeviceContext->SetBkColor(BackgroundColor);
+		DeviceContext->SetTextColor(TextColor);
+		DeviceContext->SetTextAlign(TextAlign);
 		DeviceContext->SelectObject(Font);
 	}
 	ReleaseDC(DeviceContext);
 }
+
 unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 	ModeLineUnhighlightOp(m_OpHighlighted);
 
@@ -59,36 +60,36 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 
 	if (command == 0) { return 0; }
 
-	const int PaneIndex = ::nStatusOp0 + m_OpHighlighted - ID_OP0;
+	const int PaneIndex {::nStatusOp0 + m_OpHighlighted - ID_OP0};
 
 	GetStatusBar().SetPaneTextColor(PaneIndex, RGB(255, 0, 0));
 
 	if (theApp.ModeInformationOverView()) {
-		CString ModeOp = GetStatusBar().GetPaneText(PaneIndex);
+		auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
 
-		CDC* DeviceContext = GetDC();
+		const not_null<CDC*>(DeviceContext) {GetDC()};
 
-		CFont* Font = (CFont*) DeviceContext->SelectStockObject(ANSI_VAR_FONT);
-		const UINT TextAlign = DeviceContext->SetTextAlign(TA_LEFT | TA_TOP);
-		const COLORREF crText = DeviceContext->SetTextColor(RGB(255, 0, 0));
-		const COLORREF crBk = DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff);
+		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
+		const auto TextColor {DeviceContext->SetTextColor(RGB(255, 0, 0))};
+		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC tm;
-		DeviceContext->GetTextMetrics(&tm);
+		TEXTMETRIC TextMetrics;
+		DeviceContext->GetTextMetricsW(&TextMetrics);
 
-		CRect rcClient;
-		GetClientRect(&rcClient);
+		CRect ClientRectangle;
+		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs = (rcClient.Width() / 10) / tm.tmAveCharWidth;
-		const int Width = iMaxChrs * tm.tmAveCharWidth;
+		const int iMaxChrs = (ClientRectangle.Width() / 10) / TextMetrics.tmAveCharWidth;
+		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 		const int i = m_OpHighlighted - ID_OP0;
 
-		const CRect rc(i * Width, rcClient.bottom - tm.tmHeight, (i + 1) * Width, rcClient.bottom);
+		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 
-		DeviceContext->ExtTextOutW(rc.left , rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ModeOp, (UINT) ModeOp.GetLength(), 0);
+		DeviceContext->ExtTextOutW(Rectangle.left , Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
 
-		DeviceContext->SetBkColor(crBk);
-		DeviceContext->SetTextColor(crText);
+		DeviceContext->SetBkColor(BackgroundColor);
+		DeviceContext->SetTextColor(TextColor);
 		DeviceContext->SetTextAlign(TextAlign);
 		DeviceContext->SelectObject(Font);
 		ReleaseDC(DeviceContext);
@@ -99,36 +100,36 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 	if (command == 0 || m_OpHighlighted == 0) { return; }
 
-	const int PaneIndex = ::nStatusOp0 + m_OpHighlighted - ID_OP0;
+	const int PaneIndex {::nStatusOp0 + m_OpHighlighted - ID_OP0};
 
 	GetStatusBar().SetPaneTextColor(PaneIndex);
 
 	if (theApp.ModeInformationOverView()) {
-		CString ModeOp = GetStatusBar().GetPaneText(PaneIndex);
+		auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
 
-		CDC* DeviceContext = GetDC();
+		const not_null<CDC*>(DeviceContext) {GetDC()};
 
-		CFont* Font = (CFont*) DeviceContext->SelectStockObject(ANSI_VAR_FONT);
-		const UINT TextAlign = DeviceContext->SetTextAlign(TA_LEFT | TA_TOP);
-		const COLORREF crText = DeviceContext->SetTextColor(AppGetTextCol());
-		const COLORREF crBk = DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff);
+		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const unsigned TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
+		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
+		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC tm;
-		DeviceContext->GetTextMetrics(&tm);
+		TEXTMETRIC TextMetric;
+		DeviceContext->GetTextMetricsW(&TextMetric);
 
-		CRect rcClient;
-		GetClientRect(&rcClient);
+		CRect ClientRectangle;
+		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs = (rcClient.Width() / 10) / tm.tmAveCharWidth;
-		const int Width = iMaxChrs * tm.tmAveCharWidth;
+		const int iMaxChrs {(ClientRectangle.Width() / 10) / TextMetric.tmAveCharWidth};
+		const int Width = iMaxChrs * TextMetric.tmAveCharWidth;
 		const int i = m_OpHighlighted - ID_OP0;
 
-		const CRect rc(i * Width, rcClient.bottom - tm.tmHeight, (i + 1) * Width, rcClient.bottom);
+		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetric.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 
-		DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ModeOp, (UINT) ModeOp.GetLength(), 0);
+		DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
 
-		DeviceContext->SetBkColor(crBk);
-		DeviceContext->SetTextColor(crText);
+		DeviceContext->SetBkColor(BackgroundColor);
+		DeviceContext->SetTextColor(TextColor);
 		DeviceContext->SetTextAlign(TextAlign);
 		DeviceContext->SelectObject(Font);
 		ReleaseDC(DeviceContext);

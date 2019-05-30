@@ -36,7 +36,7 @@ BOOL EoDlgSetActiveLayout::OnInitDialog() {
 }
 void EoDlgSetActiveLayout::FillListBox() {
 	try {
-		UINT n;
+		unsigned n;
 		OdArray<OdString> items;
 		const OdDbDatabase* Database = m_pDb;
 		OdDbDictionaryPtr LayoutDictionary = Database->getLayoutDictionaryId().safeOpenObject();

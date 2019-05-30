@@ -61,7 +61,7 @@ using namespace gsl;
 #include "DbViewportTableRecord.h"
 #include "LyLayerFilter.h"
 
-UINT AFXAPI HashKey(CString& str) noexcept;
+unsigned AFXAPI HashKey(CString& string) noexcept;
 
 const double PI = 3.14159265358979323846;
 const double HALF_PI = PI / 2.;

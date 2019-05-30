@@ -22,7 +22,7 @@ public:
     CEdit m_TextEditControl;
     /// <summary> Effectively resizes the edit control to use the entire client area of the dialog.</summary>
     /// <remarks> OnSize can be called before OnInitialUpdate so check is made for valid control window.</remarks>
-    void OnSize(UINT nType, int cx, int cy);
+    void OnSize(unsigned type, int cx, int cy);
 
 protected:
     DECLARE_MESSAGE_MAP()

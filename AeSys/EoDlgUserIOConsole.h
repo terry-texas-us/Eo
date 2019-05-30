@@ -47,9 +47,9 @@ public:
 	void Echo(const OdString& string);
 	OdString GetLastString();
 	static OdSmartPtr<EoDlgUserIOConsole> create(CWnd* parent);
-	void OnSize(UINT nType, int cx, int cy);
+	void OnSize(unsigned type, int cx, int cy);
 	void OnDestroy();
-	void OnShowWindow(BOOL bShow, UINT nStatus);
+	void OnShowWindow(BOOL show, unsigned status);
 
 public: // Methods - virtuals
 

@@ -79,7 +79,7 @@ void EoDlgModeLetter::OnOK() {
 
 	CDialog::OnOK();
 }
-void EoDlgModeLetter::OnSize(UINT type, int cx, int cy) {
+void EoDlgModeLetter::OnSize(unsigned type, int cx, int cy) {
 	CDialog::OnSize(type, cx, cy);
 
 	if (::IsWindow(m_TextEditControl.GetSafeHwnd())) {

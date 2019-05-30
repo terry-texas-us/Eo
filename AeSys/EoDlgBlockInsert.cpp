@@ -57,12 +57,11 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 	CString BlockName;
 	EoDbBlock* Block;
 
-	POSITION BlockPosition = m_Document->GetFirstBlockPosition();
+	auto BlockPosition {m_Document->GetFirstBlockPosition()};
 	while (BlockPosition != nullptr) {
 		m_Document->GetNextBlock(BlockPosition, BlockName, Block);
-		if (!Block->IsAnonymous()) {
-			m_BlocksListBoxControl.AddString(BlockName);
-		}
+
+		if (!Block->IsAnonymous()) { m_BlocksListBoxControl.AddString(BlockName); }
 	}
 	m_BlocksListBoxControl.SetCurSel(0);
 
@@ -71,7 +70,7 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 	} else {
 		BlockPosition = m_Document->GetFirstBlockPosition();
 		m_Document->GetNextBlock(BlockPosition, BlockName, Block);
-		SetDlgItemInt(IDC_GROUPS, (UINT) Block->GetCount(), FALSE);
+		SetDlgItemInt(IDC_GROUPS, narrow_cast<unsigned>(Block->GetCount()), FALSE);
 		SetDlgItemInt(IDC_REFERENCES, m_Document->GetBlockReferenceCount(BlockName), FALSE);
 		WndProcPreviewUpdate(GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd(), Block);
 	}
@@ -79,16 +78,16 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 }
 
 void EoDlgBlockInsert::OnOK() {
-	const int CurrentSelection = m_BlocksListBoxControl.GetCurSel();
+	const int CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
 
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;
 		m_BlocksListBoxControl.GetText(CurrentSelection, BlockName);
 
-		EoDbBlockReference* BlockReference = new EoDbBlockReference();
+		auto BlockReference {new EoDbBlockReference()};
 		BlockReference->SetName(BlockName);
 		BlockReference->SetPosition2(InsertionPoint);
-		EoDbGroup* Group = new EoDbGroup;
+		auto Group {new EoDbGroup};
 		Group->AddTail(BlockReference);
 		m_Document->AddWorkLayerGroup(Group);
 		m_Document->UpdateGroupInAllViews(EoDb::kGroup, Group);
@@ -97,7 +96,7 @@ void EoDlgBlockInsert::OnOK() {
 }
 
 void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
-	const int CurrentSelection = m_BlocksListBoxControl.GetCurSel();
+	const int CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
 
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;
@@ -105,7 +104,7 @@ void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
 
 		EoDbBlock* Block;
 		m_Document->LookupBlock(BlockName, Block);
-		SetDlgItemInt(IDC_GROUPS, (UINT) Block->GetCount(), FALSE);
+		SetDlgItemInt(IDC_GROUPS, narrow_cast<unsigned>(Block->GetCount()), FALSE);
 		SetDlgItemInt(IDC_REFERENCES, m_Document->GetBlockReferenceCount(BlockName), FALSE);
 		WndProcPreviewUpdate(GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd(), Block);
 	}

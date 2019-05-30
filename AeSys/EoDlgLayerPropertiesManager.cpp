@@ -141,7 +141,7 @@ void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	UpdateFilterTree(m_TreeFilters, TVI_ROOT, m_RootFilter, pCurrent);
 	m_TreeFilters.SetItemImage(m_TreeFilters.GetRootItem(), 0, 0);
 }
-void EoDlgLayerPropertiesManager::OnSize(UINT type, int newWidth, int newHeight) {
+void EoDlgLayerPropertiesManager::OnSize(unsigned type, int newWidth, int newHeight) {
 	CDialog::OnSize(type, newWidth, newHeight);
 
 	CRect itemRect;
@@ -181,7 +181,7 @@ void EoDlgLayerPropertiesManager::OnSize(UINT type, int newWidth, int newHeight)
 		GetDlgItem(IDOK)->ShowWindow(SW_SHOW);
 	}
 }
-void EoDlgLayerPropertiesManager::OnSizing(UINT side, LPRECT rectangle) {
+void EoDlgLayerPropertiesManager::OnSizing(unsigned side, LPRECT rectangle) {
 	CDialog::OnSizing(side, rectangle);
 
 	const CRect rct(*rectangle);
