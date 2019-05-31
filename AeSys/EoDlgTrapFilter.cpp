@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "EoDlgTrapFilter.h"
@@ -56,16 +56,17 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 }
 void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN)) {
-		const short ColorIndex = short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 0, FALSE));
+		const auto ColorIndex {short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 0, FALSE))};
 		FilterByColor(ColorIndex);
 	}
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE)) {
 		wchar_t Name[32];
 
-		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, (LPWSTR) Name, sizeof(Name) / sizeof(wchar_t))) {
-			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
+		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof(Name) / sizeof(wchar_t))) {
+			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+
 			if (!Linetypes->getAt(Name).isNull()) {
-				short LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
+				auto LinetypeIndex {narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 				FilterByLinetype(LinetypeIndex);
 			}
 		}
@@ -96,6 +97,7 @@ void EoDlgTrapFilter::OnOK() {
 	}
 	CDialog::OnOK();
 }
+
 void EoDlgTrapFilter::FilterByColor(short colorIndex) {
 	POSITION GroupPosition = m_Document->GetFirstTrappedGroupPosition();
 	while (GroupPosition != 0) {

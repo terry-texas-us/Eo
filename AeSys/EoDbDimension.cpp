@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysView.h"
 
 #include "DbDimStyleTable.h"
@@ -429,9 +429,9 @@ void EoDbDimension::SetDefaultNote() {
 	m_ReferenceSystem.SetXDirection(XDirection);
 	m_ReferenceSystem.SetYDirection(YDirection);
 
-	AeSysApp::Units Units {theApp.GetUnits()};
+	AeSys::Units Units {theApp.GetUnits()};
 
-	if (Units == AeSysApp::kArchitectural) { Units = AeSysApp::kArchitecturalS; }
+	if (Units == AeSys::kArchitectural) { Units = AeSys::kArchitecturalS; }
 
 	m_strText = theApp.FormatLength(m_Line.length(), Units);
 
@@ -577,7 +577,7 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 	ReferenceSystem.Set(TextPosition, XDirection, YDirection);
 	Dimension->SetReferenceSystem(ReferenceSystem);
 
-	Dimension->SetText((LPCWSTR) FormattedMeasurement);
+	Dimension->SetText((const wchar_t*) FormattedMeasurement);
 
 	return (Dimension);
 }

@@ -1,11 +1,11 @@
 #include "Stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 #include "..\win\ExtDialog\FileDlgExt.h"
 #include "EoPreviewDib.h"
 
-void EoPreviewDib::SetPreviewFile(LPCWSTR fileName) {
+void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
 	CString FileName(fileName);
 
 	m_odImage.header.clear();
@@ -18,7 +18,7 @@ void EoPreviewDib::SetPreviewFile(LPCWSTR fileName) {
 	CString Extension {FileName.Right(4)};
 
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
-		OdStreamBufPtr FileStreamBuffer(theApp.createFile(OdString((LPCWSTR)FileName)));
+		OdStreamBufPtr FileStreamBuffer(theApp.createFile((const wchar_t*)FileName));
 		try {
 			odDbGetPreviewBitmap(FileStreamBuffer, &m_odImage);
 			m_odImage.convPngToBmp();
@@ -63,11 +63,11 @@ typedef struct tagOLDRECT {
 // Placeable metafile header
 typedef struct {
 	unsigned long key;
-	WORD hmf;
+	unsigned short hmf;
 	OLDRECT bbox;
-	WORD inch;
+	unsigned short inch;
 	unsigned long reserved;
-	WORD checksum;
+	unsigned short checksum;
 } ALDUSMFHEADER;
 
 #define METAFILE_VERSION 1

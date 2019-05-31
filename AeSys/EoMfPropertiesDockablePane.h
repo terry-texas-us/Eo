@@ -25,7 +25,7 @@ public:
 protected:
 	int OnCreate(LPCREATESTRUCT createStructure);
 	void OnSetFocus(CWnd* oldWindow);
-	void OnSettingChange(unsigned flags, LPCWSTR section);
+	void OnSettingChange(unsigned flags, const wchar_t* section);
 	void OnSize(unsigned type, int cx, int cy);
 
 	LRESULT OnPropertyChanged(WPARAM, LPARAM);

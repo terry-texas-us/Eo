@@ -19,7 +19,7 @@ public:
 	inline void StartTimer() noexcept {
 		QueryPerformanceCounter(&m_pc0);
 	}
-	inline void StopTimer(LPCWSTR operationName = nullptr) {
+	inline void StopTimer(const wchar_t* operationName = nullptr) {
 		QueryPerformanceCounter(&m_pc1);
 		m_pc1.QuadPart -= m_pc0.QuadPart;
 
@@ -32,7 +32,7 @@ public:
 		}
 	}
 
-	void SetStatusPaneTextAt(int index, LPCWSTR newText);
+	void SetStatusPaneTextAt(int index, const wchar_t* newText);
 
 	void SetStatusPaneTextColorAt(int index, COLORREF textColor = COLORREF(-1));
 
@@ -55,9 +55,9 @@ public:
 public:
 	static void DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, const OdCmColor& color);
 	static void DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight);
-	static void DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const CString& textOut, const OdDbDatabasePtr& database);
+	static void DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const OdString& textOut, const OdDbDatabasePtr& database);
 	static CMFCToolBarComboBoxButton* GetFindCombo();
-	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept;
+	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, wchar_t* text, LPCVOID object) noexcept;
 	static OdDb::LineWeight LineWeightByIndex(char lineWeight) noexcept;
 	static OdString StringByLineWeight(int lineWeight, bool lineWeightByIndex);
 

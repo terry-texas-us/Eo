@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 
 EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
@@ -50,8 +50,6 @@ void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 	pColTbl = pCurColTbl;
 }
 void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap) {
-	ATLTRACE2(atlTraceGeneral, 1, L"EoDbLayer<%08.8lx>::Display(%08.8lx, %08.8lx, %i) + Name: %s\n", this, view, deviceContext, identifyTrap, (LPCWSTR) this->Name());
-
 	auto Document {AeSysDoc::GetDoc()};
 
 	try {

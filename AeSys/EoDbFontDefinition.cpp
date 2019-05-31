@@ -102,7 +102,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
     m_Precision = EoDb::kStrokeType;
 
     if (textStyleTableRecord->isShapeFile()) {
-        ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (LPCWSTR) textStyleTableRecord->desc()->name());
+        ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (const wchar_t*) textStyleTableRecord->desc()->name());
     } else { // shx font file or windows (ttf) font file
         OdString TypeFace;
         bool Bold;
@@ -113,7 +113,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
         textStyleTableRecord->font(TypeFace, Bold, Italic, Charset, PitchAndFamily);
 
         if (TypeFace != L"") { // windows (ttf) file
-            m_FontName = (LPCWSTR) TypeFace;
+            m_FontName = (const wchar_t*) TypeFace;
             m_Precision = EoDb::kTrueType;
         }
     }

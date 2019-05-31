@@ -5,7 +5,7 @@
 
 class EoVarDialog : public CDialog {
 public:
-	EoVarDialog(LPCWSTR lpszTemplateName, CWnd* pParentWnd = nullptr);
+	EoVarDialog(const wchar_t* templateName, CWnd* parentWindow = nullptr);
 	EoVarDialog(unsigned templateId, CWnd* parent = nullptr);
 
 protected:

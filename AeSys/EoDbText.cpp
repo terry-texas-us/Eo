@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -249,7 +249,7 @@ void EoDbText::SetReferenceSystem(const EoGeReferenceSystem & referenceSystem) n
 	m_ReferenceSystem = referenceSystem;
 }
 
-void EoDbText::SetText(const CString & text) {
+void EoDbText::SetText(const CString& text) {
 	m_strText = text;
 }
 
@@ -566,14 +566,14 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 	Text->setRotation(ReferenceSystem.Rotation());
 	Text->setAlignmentPoint(Text->position());
 
-	Text->setTextString((LPCWSTR) TextString);
+	Text->setTextString(TextString);
 
 	return (Text);
 }
 
-OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const OdGePoint3d & position, const OdString & textString) {
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const OdGePoint3d& position, const OdString& textString) {
 
-	OdDbTextPtr Text = OdDbText::createObject();
+	auto Text {OdDbText::createObject()};
 	Text->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Text);
@@ -624,7 +624,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr & text) {
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
 	
-	Text->SetText((LPCWSTR) text->textString());
+	Text->SetText((const wchar_t*) text->textString());
 
 	return Text;
 }
@@ -658,7 +658,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr & text) {
 
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
-	Text->SetText((LPCWSTR) text->contents());
+	Text->SetText((const wchar_t*) text->contents());
 
 	return Text;
 }

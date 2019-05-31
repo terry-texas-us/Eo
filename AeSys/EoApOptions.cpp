@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 EoApOptions::EoApOptions() {
 	m_nTabsStyle = EoApOptions::Grouped;

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -53,9 +53,9 @@ void AeSysView::OnLpdModeJoin() {
 		m_EndCapLocation = (m_PreviousOp == 0) ? 1 : -1; // 1 (start) and -1 (end)
 
 		OdString Message(L"Cross sectional dimension (Width by Depth) is ");
-		Message += theApp.FormatLength(m_PreviousSection.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 12, 2);
+		Message += theApp.FormatLength(m_PreviousSection.Width(), max(theApp.GetUnits(), AeSys::kInches), 12, 2);
 		Message += L" by ";
-		Message += theApp.FormatLength(m_PreviousSection.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 12, 2);
+		Message += theApp.FormatLength(m_PreviousSection.Depth(), max(theApp.GetUnits(), AeSys::kInches), 12, 2);
 		theApp.AddStringToMessageList(Message);
 		SetCursorPosition(m_PreviousPnt);
 	}
@@ -650,9 +650,9 @@ void AeSysView::GenSizeNote(const OdGePoint3d & position, double angle, Section 
 	ReferenceSystem.GetUnitNormal(PlaneNormal);
 
 	OdString Note;
-	Note += theApp.FormatLength(section.Width(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
+	Note += theApp.FormatLength(section.Width(), max(theApp.GetUnits(), AeSys::kInches), 8, 3);
 	Note += L"/";
-	Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSysApp::kInches), 8, 3);
+	Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSys::kInches), 8, 3);
 
 	auto DeviceContext {GetDC()};
 	const int PrimitiveState = pstate.Save();
@@ -814,8 +814,8 @@ void AeSysView::GenerateTransition(EoGeLineSeg3d & referenceLine, double eccentr
 	group->AddTail(EoDbLine::Create(Line));
 }
 void AeSysView::SetDuctOptions(Section & section) {
-	const AeSysApp::Units Units = theApp.GetUnits();
-	theApp.SetUnits(max(Units, AeSysApp::kInches));
+	const AeSys::Units Units = theApp.GetUnits();
+	theApp.SetUnits(max(Units, AeSys::kInches));
 
 	EoDlgLowPressureDuctOptions dlg(this);
 

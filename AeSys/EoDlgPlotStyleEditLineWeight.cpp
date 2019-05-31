@@ -95,8 +95,8 @@ void EoDlgPlotStyleEditLineweight::OnButtonSortlineweight() {
 		LineweightDataItem->m_NewIdx = LineWeightIndex; 
 	}
 }
-void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* pNMHDR, LRESULT* result) {
-	LV_DISPINFO* DisplayInfo = (LV_DISPINFO*) pNMHDR;
+void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* notifyStructure, LRESULT* result) {
+	LV_DISPINFO* DisplayInfo = (LV_DISPINFO*)notifyStructure;
 	const LV_ITEM* pItem = &((LV_DISPINFO*) DisplayInfo)->item;
 	if (pItem->mask & LVIF_TEXT) {
 		CString str;
@@ -111,6 +111,7 @@ void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* pNMHDR, L
 	}
 	*result = 0;
 }
+
 void EoDlgPlotStyleEditLineweight::OnButtonEditlineweight() {
 	CRect rect;
 	m_LineweightsListCtrl.GetWindowRect(&rect);
@@ -122,24 +123,29 @@ void EoDlgPlotStyleEditLineweight::OnButtonEditlineweight() {
 	m_LineweightsListCtrl.SetFocus();
 	m_LineweightsListCtrl.EditLabel(m_LineweightsListCtrl.GetSelectionMark());
 } 
+
 void EoDlgPlotStyleEditLineweight::SetInitialSelection(int selection) noexcept {
 	m_InitialSelection = !selection ? selection : selection - 1;
 }
+
 void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
-	CString Lineweight;
-	const int NumberOfLineweights = m_LineweightsListCtrl.GetItemCount();
-	for (int i = 0; i < NumberOfLineweights; i++) {
-		const EoLineweightData* LineweightDataItem = (EoLineweightData*) m_LineweightsListCtrl.GetItemData(i);
-		const double Value = LineweightDataItem->m_Value;
-		Lineweight.Format(L"%.4f", isInchUnits ? MMTOINCH(Value) : Value);
+	OdString Lineweight;
+	const int NumberOfLineweights {m_LineweightsListCtrl.GetItemCount()};
+
+	for (int LineweightIndex = 0; LineweightIndex < NumberOfLineweights; LineweightIndex++) {
+		const auto LineweightDataItem {(EoLineweightData*)m_LineweightsListCtrl.GetItemData(LineweightIndex)};
+		const double Value {LineweightDataItem->m_Value};
+
+		Lineweight.format(L"%.4f", isInchUnits ? MMTOINCH(Value) : Value);
 
 		LV_ITEM lvi;
 		lvi.mask = LVIF_TEXT;
-		lvi.iItem = i;
+		lvi.iItem = LineweightIndex;
 		lvi.iSubItem = 0;
-		lvi.pszText = (LPWSTR)(LPCWSTR) Lineweight;
-		lvi.cchTextMax = Lineweight.GetLength();
+		lvi.pszText = Lineweight.getBuffer(Lineweight.getLength());
+		lvi.cchTextMax = Lineweight.getLength();
 		m_LineweightsListCtrl.SetItem(&lvi);
+		Lineweight.releaseBuffer();
 	}
 }
 
@@ -204,8 +210,8 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		m_LineweightData[i].m_NewIdx = i;
 		m_LineweightData[i].m_Value = m_PlotStyleTable->getLineweightAt(i);
 
-		CString lineweight;
-		lineweight.Format(L"%.4f", bInch ? MMTOINCH(m_LineweightData[i].m_Value) : m_LineweightData[i].m_Value);
+		OdString lineweight;
+		lineweight.format(L"%.4f", bInch ? MMTOINCH(m_LineweightData[i].m_Value) : m_LineweightData[i].m_Value);
 		bool isUse = false;
 		unsigned nIndex;
 
@@ -216,7 +222,8 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	}
 	m_LineweightsListCtrl.SetItemState(m_InitialSelection, LVIS_SELECTED, LVIS_SELECTED);
 }
-const int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const CString& lineweight, const bool isUse) {
+
+const int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const OdString& lineweight, const bool isUse) {
 	m_LineweightsListCtrl.LockWindowUpdate();	
 
 	LV_ITEM lvItem;
@@ -225,8 +232,8 @@ const int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const CStr
 	lvItem.stateMask = 0;
 	lvItem.iItem = index;
 	lvItem.iSubItem = 0;
+	lvItem.pszText = (wchar_t*)lineweight.c_str();
 
-	lvItem.pszText = (LPWSTR)(LPCWSTR) lineweight;
 	const int nItem = m_LineweightsListCtrl.InsertItem(&lvItem);
 
 	LV_ITEM lvItem1;

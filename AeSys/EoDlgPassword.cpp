@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "EoDlgPassword.h"
 
 #ifdef _DEBUG

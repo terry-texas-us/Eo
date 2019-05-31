@@ -10,15 +10,15 @@ class EoCtrlBitmapPickerCombo : public CComboBox {
 public:
 	EoCtrlBitmapPickerCombo();
 
-	virtual ~EoCtrlBitmapPickerCombo() {}
+	~EoCtrlBitmapPickerCombo() {}
 
-	int AddBitmap(const CBitmap* bitmap, LPCWSTR string = NULL);
-	int InsertBitmap(int nIndex, const CBitmap* bitmap, LPCWSTR string = NULL);
+	int AddBitmap(const CBitmap* bitmap, const wchar_t* string = NULL);
+	int InsertBitmap(int nIndex, const CBitmap* bitmap, const wchar_t* string = NULL);
 
 protected:
 	void DrawItem(LPDRAWITEMSTRUCT drawItemStruct) override;
 
 	void MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept override;
-	virtual int AddString(LPCWSTR) noexcept { return -1; }
-	virtual int InsertString(int, LPCWSTR) noexcept { return -1; }
+	int AddString(const wchar_t*) noexcept { return -1; } // hides non-virtual function of parent
+	int InsertString(int, const wchar_t*) noexcept { return -1; } // hides non-virtual function of parent
 };

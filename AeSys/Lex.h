@@ -287,8 +287,8 @@ static int iCheck[] = {
 	void EvalTokenStream(int*, long*, int*, void*);
 	void Init() noexcept;
 	/// <summary>Parses line into tokens.</summary>
-	void Parse(LPCWSTR pszLine);
-	void ParseStringOperand(LPCWSTR pszTok);
+	void Parse(const wchar_t* pszLine);
+	void ParseStringOperand(const wchar_t* pszTok);
 	/// <summary>Scan a buffer for a given character.</summary>
 	// Notes:	If the character is found the scan pointer is updated
 	//			to point to the character following the one found.
@@ -299,7 +299,7 @@ static int iCheck[] = {
 	//			arg buffer pointer is updated to point to the next free character.
 	// Returns: Pointer tot he string or 0 if an error occurs.
 	LPTSTR ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) noexcept;
-	int Scan(LPTSTR aszTok, LPCWSTR pszLine, int& iLP);
+	int Scan(LPTSTR aszTok, const wchar_t* pszLine, int& iLP);
 	/// <summary>Skip over any white space characters.</summary>
 	/// <param name="pszString">Pointer to the current buffer position.</param>
 	/// <returns>Pointer to the first non-white character.</returns>

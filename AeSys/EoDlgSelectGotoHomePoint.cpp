@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -48,9 +48,9 @@ BOOL EoDlgSelectGotoHomePoint::OnInitDialog() {
 
 	const OdGePoint3d Origin = m_ActiveView->GridOrigin();
 
-	SetDlgItemTextW(IDC_X, theApp.FormatLength(Origin.x, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
-	SetDlgItemTextW(IDC_Y, theApp.FormatLength(Origin.y, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
-	SetDlgItemTextW(IDC_Z, theApp.FormatLength(Origin.z, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
+	SetDlgItemTextW(IDC_X, theApp.FormatLength(Origin.x, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
+	SetDlgItemTextW(IDC_Y, theApp.FormatLength(Origin.y, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
+	SetDlgItemTextW(IDC_Z, theApp.FormatLength(Origin.z, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 
 	return TRUE;
 }
@@ -107,8 +107,8 @@ void EoDlgSelectGotoHomePoint::OnCbnSelchangeList() {
 			default:
 				Point = theApp.HomePointGet(NamesItemIndex);
 		}
-		SetDlgItemTextW(IDC_X, theApp.FormatLength(Point.x, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
-		SetDlgItemTextW(IDC_Y, theApp.FormatLength(Point.y, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
-		SetDlgItemTextW(IDC_Z, theApp.FormatLength(Point.z, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
+		SetDlgItemTextW(IDC_X, theApp.FormatLength(Point.x, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
+		SetDlgItemTextW(IDC_Y, theApp.FormatLength(Point.y, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
+		SetDlgItemTextW(IDC_Z, theApp.FormatLength(Point.z, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 	}
 }

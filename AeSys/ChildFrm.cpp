@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ChildFrm.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 
 #include "DbObjectContextCollection.h"
@@ -96,16 +96,17 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		}
 		popupMenu->DeleteMenu(ScaleMenuPosition, MF_BYPOSITION);
 	}
-	OdDbObjectContextManagerPtr ContextManager(database->objectContextManager());
-	const OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
-	OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
+	auto ContextManager {database->objectContextManager()};
+	const auto ScalesCollection {ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)};
+	auto ScalesCollectionIterator {ScalesCollection->newIterator()};
 
 	ScaleMenuPosition = 1;
 	auto CurrentScaleIdentifier {database->getCANNOSCALE()->uniqueIdentifier()};
+
 	for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
 		auto ScaleName {ScalesCollectionIterator->getContext()->getName()};
 		auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
-
+		
 		MENUITEMINFO MenuItemInfo;
 		::ZeroMemory(&MenuItemInfo, sizeof(MENUITEMINFO));
 		MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
@@ -114,7 +115,8 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		MenuItemInfo.fState = MFS_ENABLED;
 		MenuItemInfo.wID = ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE;
 		MenuItemInfo.dwItemData = {narrow_cast<unsigned long>(ScaleMenuPosition)};
-		MenuItemInfo.dwTypeData = (LPWSTR) (LPCWSTR) ScaleName;
+		MenuItemInfo.dwTypeData = ScaleName.getBuffer(ScaleName.getLength());
+		ScaleName.releaseBuffer();
 
 		if (ScaleIdentifier == CurrentScaleIdentifier) {
 			MenuItemInfo.fMask |= MIIM_STATE;

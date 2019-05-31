@@ -99,7 +99,7 @@ BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
 	return TRUE;
 }
 
-unsigned EoDialogResizeHelper::Fix(LPCWSTR a_pszClassName, EHFix a_hFix, EVFix a_vFix) {
+unsigned EoDialogResizeHelper::Fix(const wchar_t* a_pszClassName, EHFix a_hFix, EVFix a_vFix) {
 	wchar_t pszCN[200];  // ToDo: size?
 	unsigned cnt {0};
 	CtrlCont_t::iterator it;

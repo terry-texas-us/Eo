@@ -18,7 +18,7 @@ protected:
     void OnOK() final;
 public:
     CListBox m_MetricUnitsListBoxControl;
-    AeSysApp::Units m_Units;
+    AeSys::Units m_Units;
     int m_Precision;
 
     void OnBnClickedMetric();

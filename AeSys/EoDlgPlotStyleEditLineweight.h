@@ -35,7 +35,7 @@ protected:
 
 protected:
     void InitializeListCtrl();
-    const int InsertLineweightAt(int index, const CString& lineweight, const bool isUse);
+    const int InsertLineweightAt(int index, const OdString& lineweight, const bool isUse);
     void InitializeLineweightsListCtrlImages();
 
 public:
@@ -48,7 +48,7 @@ protected:
     void OnRadioInches();
     void OnButtonEditlineweight();
     void OnButtonSortlineweight();
-    void OnEndlabeleditListLineweight(NMHDR* pNMHDR, LRESULT* result);
+    void OnEndlabeleditListLineweight(NMHDR* notifyStructure, LRESULT* result);
 
     DECLARE_MESSAGE_MAP()
 };

@@ -121,8 +121,6 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 }
 
 void ConvertTextData(OdDbText* text, EoDbGroup* group) {
-	ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbText ...\n", (PCTSTR) text->desc()->name());
-
 	const OdDbObjectId TextStyleObjectId = text->textStyle();
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = TextStyleObjectId.safeOpenObject(OdDb::kForRead);
 
@@ -153,7 +151,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetPrecision(EoDb::kTrueType);
-	FontDefinition.SetFontName((PCTSTR) FileName);
+	FontDefinition.SetFontName((const wchar_t*) FileName);
 	FontDefinition.SetHorizontalAlignment(HorizontalAlignment);
 	FontDefinition.SetVerticalAlignment(VerticalAlignment);
 
@@ -168,7 +166,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
     EoDbText* TextPrimitive = new EoDbText();
 	TextPrimitive->SetFontDefinition(FontDefinition);
 	TextPrimitive->SetReferenceSystem(ReferenceSystem);
-	TextPrimitive->SetText((PCTSTR) text->textString());
+	TextPrimitive->SetText((const wchar_t*) text->textString());
 
 	ConvertEntityData(text, TextPrimitive);
 
@@ -204,15 +202,13 @@ void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 
 //<summary>This is the default implementation to be attached to OdDbEntity as a catch-all. This guarantees that this protocol extension will be found for any entity, so the search up the OdRxClass tree will not fail and abort.</summary>
 void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup*) {
-    ATLTRACE2(atlTraceGeneral, 0, L"Entity %s was not converted ...\n", (LPCWSTR) entity->isA()->name());
+    ATLTRACE2(atlTraceGeneral, 0, L"Entity %s was not converted ...\n", (const wchar_t*) entity->isA()->name());
 }
 
 class EoDb2dPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDb2dPolylinePtr PolylineEntity = entity;
-
-		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
 
 		EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
 
@@ -232,10 +228,10 @@ public:
 		ConvertCurveData(PolylineEntity, PolylinePrimitive);
 
 		if (PolylineEntity->polyType() == OdDb::k2dCubicSplinePoly) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Cubic spline polyline converted to simple polyline\n");
+
 		}
 		else if (PolylineEntity->polyType() == OdDb::k2dQuadSplinePoly) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Quad spline polyline converted to simple polyline\n");
+
 		}
 		group->AddTail(PolylinePrimitive);
 	}
@@ -245,7 +241,7 @@ class EoDb3dPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDb3dPolylinePtr PolylineEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbPolyline ...\n", (PCTSTR) PolylineEntity->desc()->name());
+
 		// <tas="No vertices appended to polyline"</tas>
 		OdDbObjectIteratorPtr Iterator = PolylineEntity->vertexIterator();
 		for (int i = 0; !Iterator->done(); i++, Iterator->step()) {
@@ -253,10 +249,10 @@ public:
 		}
 		EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
 		if (PolylineEntity->polyType() == OdDb::k3dCubicSplinePoly) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Cubic spline polyline converted to simple polyline\n");
+
 		}
 		else if (PolylineEntity->polyType() == OdDb::k3dQuadSplinePoly) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Quad spline polyline converted to simple polyline\n");
+
 		}
 		PolylinePrimitive->SetClosed(PolylineEntity->isClosed());
 		ConvertCurveData(PolylineEntity, PolylinePrimitive);
@@ -271,8 +267,6 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbAlignedDimensionPtr AlignedDimension = entity;
 
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbDimension ...\n", (LPCWSTR) AlignedDimension->desc()->name());
-
 		group->AddTail(EoDbDimension::Create(AlignedDimension));
 	}
 };
@@ -281,7 +275,6 @@ class EoDbArc_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbArcPtr ArcEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) ArcEntity->desc()->name());
 
 		const OdGeVector3d Normal(ArcEntity->normal());
 		const OdGePoint3d Center(ArcEntity->center());
@@ -318,17 +311,10 @@ class EoDbAttributeDefinition_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbAttributeDefinitionPtr AttributeDefinitionEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (PCTSTR) AttributeDefinitionEntity->desc()->name());
-		ATLTRACE2(atlTraceGeneral, 2, L"%s with constant text converted to EoDbText ...\n", (PCTSTR) AttributeDefinitionEntity->desc()->name());
-		ATLTRACE2(atlTraceGeneral, 2, L"Tag: %s\n", (PCTSTR) AttributeDefinitionEntity->tag());
 
 		if (AttributeDefinitionEntity->isConstant() && !AttributeDefinitionEntity->isInvisible()) {
 			ConvertTextData(static_cast<OdDbText*>(entity), group);
 		}
-		//ATLTRACE2(atlTraceGeneral, 2, L"Field Length: %s\n", (PCTSTR) attribute->fieldLength());
-		//ATLTRACE2(atlTraceGeneral, 2, L"Preset: %i\n", (PCTSTR) attribute->isPreset());
-		//ATLTRACE2(atlTraceGeneral, 2, L"Verifiable: %i\n", (PCTSTR) attribute->isVerifiable());
-		//ATLTRACE2(atlTraceGeneral, 2, L"Locked in Position: %i\n", (PCTSTR) attribute->lockPositionInBlock());
 	}
 };
 
@@ -336,13 +322,12 @@ class EoDbBlockReference_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbBlockReferencePtr BlockReferenceEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbBlockReference ...\n", (PCTSTR) BlockReferenceEntity->desc()->name());
 
 		OdDbBlockTableRecordPtr BlockTableRecordPtr = BlockReferenceEntity->blockTableRecord().safeOpenObject(OdDb::kForRead);
 
 		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
 
-		BlockReferencePrimitive->SetName((LPCWSTR) BlockTableRecordPtr->getName());
+		BlockReferencePrimitive->SetName(BlockTableRecordPtr->getName());
 		BlockReferencePrimitive->SetPosition(BlockReferenceEntity->position());
 		BlockReferencePrimitive->SetNormal(BlockReferenceEntity->normal());
 		BlockReferencePrimitive->SetScaleFactors(BlockReferenceEntity->scaleFactors());
@@ -368,7 +353,6 @@ class EoDbCircle_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbCirclePtr CircleEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) CircleEntity->desc()->name());
 
 		EoDbEllipse* CirclePrimitive = new EoDbEllipse(CircleEntity->center(), CircleEntity->normal(), CircleEntity->radius());
 
@@ -384,10 +368,8 @@ public:
 	/// </remarks>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbEllipsePtr Ellipse = entity;
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbEllipse ...\n", (PCTSTR) Ellipse->desc()->name());
 
 		group->AddTail(EoDbEllipse::Create(Ellipse));
-
 	}
 };
 
@@ -397,7 +379,6 @@ public:
 	/// <tas="Convert Face entity to 2 triangular polygons to ensure planar surface"</tas>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbFacePtr FaceEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbHatch ...\n", (PCTSTR) FaceEntity->desc()->name());
 
 		auto HatchPrimitive {new EoDbHatch};
 
@@ -419,8 +400,6 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbHatchPtr Hatch = entity;
 		
-        ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbHatch ...\n", (LPCWSTR) Hatch->desc()->name());
-
         group->AddTail(EoDbHatch::Create(Hatch));
 	}
 };
@@ -429,7 +408,6 @@ class EoDbLeader_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbLeaderPtr LeaderEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to primitive set ...\n", (PCTSTR) LeaderEntity->desc()->name());
 
 		OdRxObjectPtrArray EntitySet;
 		LeaderEntity->explode(EntitySet);
@@ -447,8 +425,6 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbLinePtr Line = entity;
         
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbLine ...\n", (LPCWSTR) Line->desc()->name());
-
 		group->AddTail(EoDbLine::Create(Line));
 	}
 };
@@ -457,12 +433,11 @@ class EoDbMInsertBlock_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbMInsertBlockPtr MInsertBlockEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbBlockReference ...\n", (PCTSTR) MInsertBlockEntity->desc()->name());
 
 		OdDbBlockTableRecordPtr BlockTableRecordPtr = MInsertBlockEntity->blockTableRecord().safeOpenObject(OdDb::kForRead);
 
 		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
-		BlockReferencePrimitive->SetName((LPCWSTR) BlockTableRecordPtr->getName());
+		BlockReferencePrimitive->SetName(BlockTableRecordPtr->getName());
 		BlockReferencePrimitive->SetPosition(MInsertBlockEntity->position());
 		BlockReferencePrimitive->SetNormal(MInsertBlockEntity->normal());
 		BlockReferencePrimitive->SetScaleFactors(MInsertBlockEntity->scaleFactors());
@@ -482,7 +457,6 @@ class EoDbMText_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbMTextPtr MTextEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbText ...\n", (PCTSTR) MTextEntity->desc()->name());
 
 		group->AddTail(EoDbText::Create(MTextEntity));
 	}
@@ -492,7 +466,6 @@ class EoDbPoint_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbPointPtr PointEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbPoint ...\n", (PCTSTR) PointEntity->desc()->name());
 
 		EoDbPoint* PointPrimitive = new EoDbPoint(PointEntity->position());
 		PointPrimitive->SetPointDisplayMode(PointEntity->database()->getPDMODE());
@@ -507,8 +480,6 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbPolylinePtr Polyline = entity;
 
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbPolyline ...\n", (LPCWSTR) Polyline->desc()->name());
-		
         group->AddTail(EoDbPolyline::Create(Polyline));
 	}
 };
@@ -517,17 +488,15 @@ class EoDbProxyEntity_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbProxyEntityPtr ProxyEntityEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to ", (PCTSTR) ProxyEntityEntity->desc()->name());
 
-		ATLTRACE2(atlTraceGeneral, 2, L"Graphics Metafile type: ");
 		if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kNoMetafile) {
-			ATLTRACE2(atlTraceGeneral, 2, L"No Metafile\n");
+
 		} else {
 			if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kBoundingBox) {
-				ATLTRACE2(atlTraceGeneral, 2, L"Bounding Box\n");
+
 			}
 			else if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kFullGraphics) {
-				ATLTRACE2(atlTraceGeneral, 2, L"Full Graphics\n");
+
 			}
 			OdRxObjectPtrArray EntitySet;
 			ProxyEntityEntity->explodeGeometry(EntitySet);
@@ -538,23 +507,7 @@ public:
 				EntityConverter->Convert(Entity, group);
 			}
 		}
-		ATLTRACE2(atlTraceGeneral, 2, L"Application Description: %s\n", (PCTSTR) ProxyEntityEntity->applicationDescription());
-		ATLTRACE2(atlTraceGeneral, 2, L"Original class name: %s\n", (PCTSTR) ProxyEntityEntity->originalClassName());
-
 		OdAnsiString satString;
-		ATLTRACE2(atlTraceGeneral, 2, L"Proxy Sat: %s\n", (PCTSTR) odGetSatFromProxy(ProxyEntityEntity, satString));
-
-		ATLTRACE2(atlTraceGeneral, 2, L"Proxy Flags: %i\n", ProxyEntityEntity->proxyFlags());
-		ATLTRACE2(atlTraceGeneral, 2, L"Erase Allowed: %i\n", ProxyEntityEntity->eraseAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Transform Allowed: %i\n", ProxyEntityEntity->transformAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Color Change Allowed: %i\n", ProxyEntityEntity->colorChangeAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Layer Change Allowed: %i\n", ProxyEntityEntity->layerChangeAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Linetype Change Allowed: %i\n", ProxyEntityEntity->linetypeChangeAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Linetype Scale Change Allowed: %i\n", ProxyEntityEntity->linetypeScaleChangeAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Visibility Change Allowed: %i\n", ProxyEntityEntity->visibilityChangeAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Cloning Allowed: %i\n", ProxyEntityEntity->cloningAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Line Weight Change Allowed: %i\n", ProxyEntityEntity->lineWeightChangeAllowed());
-		ATLTRACE2(atlTraceGeneral, 2, L"Plot Style Name Change Allowed: %i\n", ProxyEntityEntity->plotStyleNameChangeAllowed());
 	}
 };
 
@@ -564,19 +517,11 @@ public:
 		OdDbRotatedDimensionPtr RotatedDimensionEntity = entity;
 		OdDbBlockTableRecordPtr Block = RotatedDimensionEntity->dimBlockId().safeOpenObject(OdDb::kForRead);
 
-		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbBlockReference of block %s  ...\n", (PCTSTR) RotatedDimensionEntity->desc()->name(), (PCTSTR) Block->getName());
-
-		ATLTRACE2(atlTraceGeneral, 2, L"Dimension Line Point: %f, %f, %f\n", RotatedDimensionEntity->dimLinePoint());
-		ATLTRACE2(atlTraceGeneral, 2, L"Oblique: %f\n", RotatedDimensionEntity->oblique());
-		ATLTRACE2(atlTraceGeneral, 2, L"Rotation: %f\n", RotatedDimensionEntity->rotation());
-		ATLTRACE2(atlTraceGeneral, 2, L"Extension Line 1 Point: %f, %f, %f\n", RotatedDimensionEntity->xLine1Point());
-		ATLTRACE2(atlTraceGeneral, 2, L"Extension Line 2 Point: %f, %f, %f\n", RotatedDimensionEntity->xLine2Point());
 		ConvertDimensionData(RotatedDimensionEntity);
-		ATLTRACE2(atlTraceGeneral, 2, L"Dimension Block Name: %s\n", (PCTSTR) Block->getName());
 
 		// <tas="Improper conversion - entity is used alot"/>
 		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
-		BlockReferencePrimitive->SetName((LPCWSTR) Block->getName());
+		BlockReferencePrimitive->SetName(Block->getName());
 		BlockReferencePrimitive->SetPosition(OdGePoint3d::kOrigin);
 		BlockReferencePrimitive->SetNormal(OdGeVector3d::kZAxis);
 		BlockReferencePrimitive->SetScaleFactors(OdGeScale3d(1.0, 1.0, 1.0));
@@ -596,7 +541,6 @@ public:
 	/// </remarks>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbSolidPtr SolidEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"Converting %s to EoDbHatch ...\n", (PCTSTR) SolidEntity->desc()->name());
 
 		EoDbHatch* HatchPrimitive = new EoDbHatch;
 		OdGePoint3d Point;
@@ -621,7 +565,6 @@ class EoDbSpline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbSplinePtr SplineEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbSpline ...\n", (PCTSTR) SplineEntity->desc()->name());
 
 		int Degree;
 		bool Rational;
@@ -634,28 +577,21 @@ public:
 
 		SplineEntity->getNurbsData(Degree, Rational, Closed, Periodic, ControlPoints, Knots, Weights, Tolerance);
 
-		ATLTRACE2(atlTraceGeneral, 0, L"Degree: %i\n", Degree);
-		ATLTRACE2(atlTraceGeneral, 2, L"Rational: %i\n", Rational);
-		ATLTRACE2(atlTraceGeneral, 2, L"Periodic: %i\n", Periodic);
-		ATLTRACE2(atlTraceGeneral, 2, L"Control Point Tolerance: %f\n", Tolerance);
-
-		ATLTRACE2(atlTraceGeneral, 0, L"Number of control points: %i\n", ControlPoints.size());
 		for (unsigned n = 0; n < ControlPoints.size(); n++) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Control Point: %f, %f, %f\n",  ControlPoints[n]);
+
 		}
-		ATLTRACE2(atlTraceGeneral, 0, L"Number of Knots: %i\n", Knots.length());
+
 		for (auto n = 0; n < Knots.length(); n++) {
-			ATLTRACE2(atlTraceGeneral, 0, L"Knot: %f\n", Knots[n]);
+
 		}
 		if (Rational) {
-			ATLTRACE2(atlTraceGeneral, 0, L"Number of Weights: %i\n", Weights.size());
+
 			for (unsigned n = 0; n < Weights.size(); n++) {
-				ATLTRACE2(atlTraceGeneral, 0, L"Weight: %f\n", Weights[n]);
+
 			}
 		}
-		// <tas="Only creating non-periodic splines."</tas>
 		if (Periodic) {
-			ATLTRACE2(atlTraceGeneral, 0, L"Periodic %s was not converted ...\n", (PCTSTR) SplineEntity->desc()->name());
+		// <tas="Only creating non-periodic splines."</tas>
 		} else {
 			EoDbSpline* SplinePrimitive = new EoDbSpline();
 			SplinePrimitive->Set(Degree, Knots, ControlPoints, Weights, Periodic);
@@ -669,7 +605,6 @@ class EoDbText_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbTextPtr Text = entity;
-		ATLTRACE2(atlTraceGeneral, 1, L"Converting %s to EoDbText ...\n", (LPCWSTR) Text->desc()->name());
 
 		group->AddTail(EoDbText::Create(Text));
 	}
@@ -682,7 +617,6 @@ public:
 	/// </remarks>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbTracePtr TraceEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 2, L"Converting %s to EoDbHatch ...\n", (PCTSTR) TraceEntity->desc()->name());
 
 		EoDbHatch* HatchPrimitive = new EoDbHatch;
 		OdGePoint3d Point;
@@ -707,71 +641,35 @@ class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbViewportPtr ViewportEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (LPCWSTR) ViewportEntity->desc()->name());
-
-		ATLTRACE2(atlTraceGeneral, 2, L"Back Clip Distance: %f\n", ViewportEntity->backClipDistance());
-		ATLTRACE2(atlTraceGeneral, 2, L"Back Clip On: %i\n", ViewportEntity->isBackClipOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"Center Point: %f, %f, %f\n", ViewportEntity->centerPoint());
-		ATLTRACE2(atlTraceGeneral, 2, L"Circle sides: %i\n", ViewportEntity->circleSides());
-		ATLTRACE2(atlTraceGeneral, 2, L"Custom Scale: %f\n", ViewportEntity->customScale());
-		ATLTRACE2(atlTraceGeneral, 2, L"Elevation: %f\n", ViewportEntity->elevation());
-		ATLTRACE2(atlTraceGeneral, 2, L"Front Clip at Eye: %i\n", ViewportEntity->isFrontClipAtEyeOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"Front Clip Distance: %f\n", ViewportEntity->frontClipDistance());
-		ATLTRACE2(atlTraceGeneral, 2, L"Front Clip On: %i\n", ViewportEntity->isFrontClipOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"Plot style sheet: %s\n", (LPCWSTR) ViewportEntity->effectivePlotStyleSheet());
+		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (const wchar_t*) ViewportEntity->desc()->name());
 
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
 		if (layerIds.length()) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Frozen Layers:");
+
 			for (int i = 0; i < (int) layerIds.length(); i++) {
-				ATLTRACE2(atlTraceGeneral, 2, L"%i  ", layerIds[i]);
+
 			}
 		} else {
-			ATLTRACE2(atlTraceGeneral, 2, L"Frozen Layers: None\n");
+
 		}
 
 		OdGePoint3d origin;
 		OdGeVector3d xAxis;
 		OdGeVector3d yAxis;
 		ViewportEntity->getUcs(origin, xAxis, yAxis);
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS origin: %f, %f, %f\n", origin);
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS x-Axis: %f, %f, %f\n", xAxis);
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS y-Axis: %f, %f, %f\n", yAxis);
-		ATLTRACE2(atlTraceGeneral, 2, L"Grid Increment: %f\n", ViewportEntity->gridIncrement());
-		ATLTRACE2(atlTraceGeneral, 2, L"Grid On: %i\n", ViewportEntity->isGridOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"Height: %f\n", ViewportEntity->height());
-		ATLTRACE2(atlTraceGeneral, 2, L"Lens Length: %f\n", ViewportEntity->lensLength());
-		ATLTRACE2(atlTraceGeneral, 2, L"Locked: %i\n", ViewportEntity->isLocked());
-		ATLTRACE2(atlTraceGeneral, 2, L"Non-Rectangular Clip: %i\n", ViewportEntity->isNonRectClipOn());
 
 		if (!ViewportEntity->nonRectClipEntityId().isNull()) {
-			ATLTRACE2(atlTraceGeneral, 2, L"Non-rectangular Clipper: \n", ViewportEntity->nonRectClipEntityId().getHandle());
-		}
-		ATLTRACE2(atlTraceGeneral, 2, L"Render Mode: %i\n", ViewportEntity->renderMode());
-		ATLTRACE2(atlTraceGeneral, 2, L"Remove Hidden Lines: %i\n", ViewportEntity->hiddenLinesRemoved());
-		ATLTRACE2(atlTraceGeneral, 2, L"Shade Plot: \n", ViewportEntity->shadePlot());
-		ATLTRACE2(atlTraceGeneral, 2, L"Snap Isometric: %i\n", ViewportEntity->isSnapIsometric());
-		ATLTRACE2(atlTraceGeneral, 2, L"Snap On: %i\n", ViewportEntity->isSnapOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"Transparent: %i\n", ViewportEntity->isTransparent());
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS Follow: %i\n", ViewportEntity->isUcsFollowModeOn());
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS Icon at Origin: %i\n", ViewportEntity->isUcsIconAtOrigin());
 
+		}
 		OdDb::OrthographicView orthoUCS;
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS Orthographic: %i\n", ViewportEntity->isUcsOrthographic(orthoUCS));
-		ATLTRACE2(atlTraceGeneral, 2, L"Orthographic UCS: %i\n", orthoUCS);
-		ATLTRACE2(atlTraceGeneral, 2, L"UCS Saved with VP: %i\n", ViewportEntity->isUcsSavedWithViewport());
 
 		if (!ViewportEntity->ucsName().isNull()) {
 			OdDbUCSTableRecordPtr UCS = ViewportEntity->ucsName().safeOpenObject(OdDb::kForRead);
-			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: %s\n", (LPCWSTR) UCS->getName());
+
 		} else {
-			ATLTRACE2(atlTraceGeneral, 2, L"UCS Name: Null");
+
 		}
-		ATLTRACE2(atlTraceGeneral, 2, L"View Center: %f, %f\n", ViewportEntity->viewCenter());
-		ATLTRACE2(atlTraceGeneral, 2, L"View Height: %f\n", ViewportEntity->viewHeight());
-		ATLTRACE2(atlTraceGeneral, 2, L"View Target: %f, %f, %f\n", ViewportEntity->viewTarget());
-		ATLTRACE2(atlTraceGeneral, 2, L"Width: %f\n", ViewportEntity->width());
 		//ConvertEntityData(ViewportEntity, );
 	}
 };

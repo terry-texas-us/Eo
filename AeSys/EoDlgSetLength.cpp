@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 #include "EoDlgSetLength.h"
 
@@ -26,14 +26,14 @@ BOOL EoDlgSetLength::OnInitDialog() {
 	if (!m_Title.IsEmpty()) {
 		SetWindowTextW(m_Title);
 	}
-	SetDlgItemTextW(IDC_DISTANCE, theApp.FormatLength(m_Length, max(theApp.GetUnits(), AeSysApp::kEngineering)));
+	SetDlgItemTextW(IDC_DISTANCE, theApp.FormatLength(m_Length, max(theApp.GetUnits(), AeSys::kEngineering)));
 	return TRUE;
 }
 void EoDlgSetLength::OnOK() {
-	wchar_t szBuf[32];
+	wchar_t String[32];
 
-	GetDlgItemTextW(IDC_DISTANCE, (LPWSTR) szBuf, 32);
-	m_Length = theApp.ParseLength(theApp.GetUnits(), szBuf);
+	GetDlgItemTextW(IDC_DISTANCE, String, 32);
+	m_Length = theApp.ParseLength(theApp.GetUnits(), String);
 
 	CDialog::OnOK();
 }

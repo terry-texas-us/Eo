@@ -13,6 +13,7 @@ static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CP
 	((CDC*) deviceContext)->BitBlt(point.x, point.y, Width, Height, &MemoryDeviceContext, 0, 0, SRCCOPY);
 	MemoryDeviceContext.SelectObject(pBmp);
 }
+
 static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CRect& rect) {
 	BITMAP Bitmap;
 	((CBitmap*) bitmap)->GetBitmap(&Bitmap);
@@ -23,18 +24,20 @@ static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CR
 	Point.y = rect.top + ((rect.bottom - rect.top) / 2) - (Height / 2);
 	DrawBitmap(bitmap, deviceContext, Point);
 }
+
 EoCtrlBitmapPickerCombo::EoCtrlBitmapPickerCombo() :
 	CComboBox(), m_ItemWidth(0), m_ItemHeight(0) {
 }
 
-int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, LPCWSTR string) {
+int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* string) {
 	return InsertBitmap(GetCount(), bitmap, string);
 }
-int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, LPCWSTR string) {
+
+int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, const wchar_t* string) {
 	const int n = CComboBox::InsertString(nIndex, string ? string : L"");
-	if (!bitmap) {
-		return n;
-	}
+	
+	if (!bitmap) { return n; }
+	
 	if (n != CB_ERR && n != CB_ERRSPACE) {
 		SetItemData(n, (unsigned long) bitmap);
 		BITMAP Bitmap; 
@@ -121,6 +124,7 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 		DeviceContext->DrawText(string, rcText, DT_SINGLELINE |DT_VCENTER ); 
 	}
 }               
+
 void EoCtrlBitmapPickerCombo::SetSize(int width, int height) {
 	if (width > m_ItemWidth)
 		m_ItemWidth = width;

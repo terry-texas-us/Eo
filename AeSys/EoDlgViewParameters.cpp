@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysView.h"
 #include "EoDlgViewParameters.h"
 
@@ -43,37 +43,37 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	EoGsViewport Viewport;
 	ActiveView->ModelViewGetViewport(Viewport);
 
-	EoGsViewTransform* ModelView = (EoGsViewTransform*) m_ModelView;
+	auto ModelView {(EoGsViewTransform*)m_ModelView};
 
-	wchar_t szBuf[32];
+	wchar_t String[32];
 	OdGePoint3d Position;
-	GetDlgItemTextW(IDC_POSITION_X, (LPWSTR) szBuf, 32);
-	Position.x = theApp.ParseLength(theApp.GetUnits(), szBuf);
-	GetDlgItemTextW(IDC_POSITION_Y, (LPWSTR) szBuf, 32);
-	Position.y = theApp.ParseLength(theApp.GetUnits(), szBuf);
-	GetDlgItemTextW(IDC_POSITION_Z, (LPWSTR) szBuf, 32);
-	Position.z = theApp.ParseLength(theApp.GetUnits(), szBuf);
+	GetDlgItemTextW(IDC_POSITION_X, String, 32);
+	Position.x = theApp.ParseLength(theApp.GetUnits(), String);
+	GetDlgItemTextW(IDC_POSITION_Y, String, 32);
+	Position.y = theApp.ParseLength(theApp.GetUnits(), String);
+	GetDlgItemTextW(IDC_POSITION_Z, String, 32);
+	Position.z = theApp.ParseLength(theApp.GetUnits(), String);
 
 	OdGePoint3d Target;
-	GetDlgItemTextW(IDC_TARGET_X, (LPWSTR) szBuf, 32);
-	Target.x = theApp.ParseLength(theApp.GetUnits(), szBuf);
-	GetDlgItemTextW(IDC_TARGET_Y, (LPWSTR) szBuf, 32);
-	Target.y = theApp.ParseLength(theApp.GetUnits(), szBuf);
-	GetDlgItemTextW(IDC_TARGET_Z, (LPWSTR) szBuf, 32);
-	Target.z = theApp.ParseLength(theApp.GetUnits(), szBuf);
+	GetDlgItemTextW(IDC_TARGET_X, String, 32);
+	Target.x = theApp.ParseLength(theApp.GetUnits(), String);
+	GetDlgItemTextW(IDC_TARGET_Y, String, 32);
+	Target.y = theApp.ParseLength(theApp.GetUnits(), String);
+	GetDlgItemTextW(IDC_TARGET_Z, String, 32);
+	Target.z = theApp.ParseLength(theApp.GetUnits(), String);
 
-	GetDlgItemTextW(IDC_FRONT_CLIP_DISTANCE, (LPWSTR) szBuf, 32);
-	const double NearClipDistance = theApp.ParseLength(theApp.GetUnits(), szBuf);
-	GetDlgItemTextW(IDC_BACK_CLIP_DISTANCE, (LPWSTR) szBuf, 32);
-	const double FarClipDistance = theApp.ParseLength(theApp.GetUnits(), szBuf);
+	GetDlgItemTextW(IDC_FRONT_CLIP_DISTANCE, String, 32);
+	const double NearClipDistance {theApp.ParseLength(theApp.GetUnits(), String)};
+	GetDlgItemTextW(IDC_BACK_CLIP_DISTANCE, String, 32);
+	const double FarClipDistance {theApp.ParseLength(theApp.GetUnits(), String)};
 
-	GetDlgItemTextW(IDC_LENS_LENGTH, (LPWSTR) szBuf, 32);
-	const double LensLength = theApp.ParseLength(theApp.GetUnits(), szBuf);
+	GetDlgItemTextW(IDC_LENS_LENGTH, String, 32);
+	const double LensLength {theApp.ParseLength(theApp.GetUnits(), String)};
 
-	const OdGeVector3d Direction = Position - Target;
+	const auto Direction {Position - Target};
 	// <tas="Is the direction reversed?"</tas>
 
-	OdGeVector3d UpVector = Direction.crossProduct(OdGeVector3d::kZAxis);
+	auto UpVector {Direction.crossProduct(OdGeVector3d::kZAxis)};
 	UpVector = UpVector.crossProduct(Direction);
 
 	if (UpVector.isZeroLength()) {
@@ -86,9 +86,10 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	ModelView->SetFarClipDistance(FarClipDistance);
 	ModelView->EnablePerspective(m_PerspectiveProjection == TRUE);
 
-	const double AspectRatio = Viewport.HeightInInches() / Viewport.WidthInInches();
+	const double AspectRatio {Viewport.HeightInInches() / Viewport.WidthInInches()};
 	double FieldWidth(ModelView->FieldWidth());
 	double FieldHeight(ModelView->FieldHeight());
+
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
 	} else {
@@ -102,12 +103,13 @@ void EoDlgViewParameters::OnBnClickedApply() {
 
 	GetDlgItem(IDC_APPLY)->EnableWindow(FALSE);
 }
+
 BOOL EoDlgViewParameters::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	const EoGsViewTransform* ModelView = (EoGsViewTransform*) m_ModelView;
 
-	const AeSysApp::Units Units = max(theApp.GetUnits(), AeSysApp::kEngineering);
+	const AeSys::Units Units = max(theApp.GetUnits(), AeSys::kEngineering);
 	SetDlgItemTextW(IDC_POSITION_X, theApp.FormatLength(ModelView->Position().x, Units));
 	SetDlgItemTextW(IDC_POSITION_Y, theApp.FormatLength(ModelView->Position().y, Units));
 	SetDlgItemTextW(IDC_POSITION_Z, theApp.FormatLength(ModelView->Position().z, Units));

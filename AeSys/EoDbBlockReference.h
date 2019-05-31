@@ -81,7 +81,7 @@ public: // Methods
 	double RowSpacing() const noexcept;
 	OdGeScale3d ScaleFactors() const noexcept;
 
-	void SetName(const CString& name);
+	void SetName(const wchar_t* name);
 	void SetNormal(const OdGeVector3d& normal) noexcept { m_Normal = normal; }
 	void SetPosition(const OdGePoint3d& position) noexcept { m_Position = position; }
 	void SetPosition2(const OdGePoint3d& position);

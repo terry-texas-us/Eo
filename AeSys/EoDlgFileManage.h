@@ -46,10 +46,10 @@ public:
     void OnBnClickedNewlayer();
     void OnBnClickedSetcurrent();
     void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct);
-    void OnItemchangedLayersListControl(NMHDR* pNMHDR, LRESULT* result);
+    void OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result);
     void OnLbnSelchangeBlocksList();
-    void OnNMClickLayersListControl(NMHDR* pNMHDR, LRESULT* result);
-    void OnNMDblclkLayersListControl(NMHDR* pNMHDR, LRESULT* result);
+    void OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+    void OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESULT* result);
     void OnLvnEndlabeleditLayersListControl(LPNMHDR NMHDR, LRESULT* result);
     void OnLvnBeginlabeleditLayersListControl(LPNMHDR NMHDR, LRESULT* result);
     void OnLvnKeydownLayersListControl(LPNMHDR NMHDR, LRESULT* result);

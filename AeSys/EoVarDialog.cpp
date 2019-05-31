@@ -7,7 +7,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-EoVarDialog::EoVarDialog(LPCWSTR templateName, CWnd* parent)
+EoVarDialog::EoVarDialog(const wchar_t* templateName, CWnd* parent)
 	: CDialog(templateName, parent) {
 	m_bInitialized = FALSE;
 }

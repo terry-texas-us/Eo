@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -61,7 +61,7 @@ void EoDlgModeRevise::OnOK() {
 		OdGeVector3d PlaneNormal;
 		sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
 		OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), (LPCWSTR)TextString);
+		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), (const wchar_t*)TextString);
 
 		Text->setNormal(PlaneNormal);
 		Text->setRotation(sm_ReferenceSystem.Rotation());

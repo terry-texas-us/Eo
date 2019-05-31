@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -127,7 +127,7 @@ void AeSysView::OnAnnotateModeBubble() {
 
 		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis * .06, MinorAxis * .1);
 
-		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
+		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (const wchar_t*) CurrentText);
 
 		Text->setNormal(ActiveViewPlaneNormal);
 		Text->setRotation(ReferenceSystem.Rotation());
@@ -367,7 +367,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			CharacterCellDefinition.SetRotationAngle(0.0);
 			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (LPCWSTR) CurrentText);
+			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (const wchar_t*) CurrentText);
 
 			Text->setHeight(ReferenceSystem.YDirection().length());
 			Text->setRotation(ReferenceSystem.Rotation());

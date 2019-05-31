@@ -108,7 +108,7 @@ public:
 
     CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, const wchar_t* name);
     CBitmapColorInfo(const CBitmap* pBitmap, COLORREF color, unsigned char cColorItem, int colorIndex = -1);
-    CBitmapColorInfo(LPCWSTR lpszResourceName, const wchar_t* name);
+    CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name);
 
 protected:
     void SetBitmapPixels(CBitmap& Bmp, DIBCOLOR* pPixels);
@@ -214,7 +214,7 @@ public:
     const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
     BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags);
     void SetFileBufPath(const OdString filePath);
-    void AddNewPlotStyle(LPCWSTR styleName);
+    void AddNewPlotStyle(const wchar_t* styleName);
     const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };
 
 protected:
@@ -227,9 +227,9 @@ protected:
     void OnChangeEditPen();
     void OnChangeEditVirtPen();
     void OnChangeEditScreening();
-    void OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result);
-    void OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result);
-    void OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept;
+    void OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result);
+    void OnItemchangingListStyles(NMHDR* notifyStructure, LRESULT* result);
+    void OnDeltaposSpinPen(NMHDR* notifyStructure, LRESULT* result) noexcept;
     void OnSelchangeComboColor();
     void OnSelendokComboColor() noexcept;
     void OnSelendokComboDither();

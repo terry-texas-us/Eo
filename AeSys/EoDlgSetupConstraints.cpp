@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysView.h"
 
 #include "EoDlgSetupConstraints.h"
@@ -46,7 +46,7 @@ void EoDlgSetupConstraints::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgSetupConstraints::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	const AeSysApp::Units CurrentUnits = theApp.GetUnits();
+	const AeSys::Units CurrentUnits = theApp.GetUnits();
 
 	double x, y, z;
 
@@ -84,7 +84,7 @@ BOOL EoDlgSetupConstraints::OnInitDialog() {
 }
 
 void EoDlgSetupConstraints::OnOK() {
-	const AeSysApp::Units CurrentUnits = theApp.GetUnits();
+	const AeSys::Units CurrentUnits = theApp.GetUnits();
 
 	wchar_t szBuf[32];
 

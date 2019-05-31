@@ -49,7 +49,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 				}
 				for (unsigned PlotStyleIndex = 0; PlotStyleIndex < pPsTab->plotStyleSize(); PlotStyleIndex++) {
 					pPs = pPsTab->plotStyleAt(PlotStyleIndex);
-					CString name = (LPCWSTR)pPs->localizedName();
+					CString name = (const wchar_t*)pPs->localizedName();
 					name.MakeLower();
 
 					if (name == newName) {
@@ -199,7 +199,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap *pBitmap, COLORREF color, unsig
 		{
 			OdString clrName;
 			clrName.format(L"Color %d", colorIndex);
-			wcscpy(m_name, (LPCWSTR) clrName);
+			wcscpy(m_name, (const wchar_t*) clrName);
 		}
 }
 
@@ -211,7 +211,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const 
 	_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
 
-CBitmapColorInfo::CBitmapColorInfo(LPCWSTR resourceName, const wchar_t* name)
+CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name)
 	: m_iItem(0xff)
 	, m_color(0) {
 	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
@@ -403,7 +403,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	
 	for (unsigned i = 0; i < m_pPlotStyleTable->lineweightSize(); i++) {
 		CString lineweight;
-		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), (LPCWSTR) sUnits);
+		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), (const wchar_t*) sUnits);
 		m_Lineweight.AddString(lineweight);
 	}
 	m_Lineweight.SetCurSel(0);
@@ -443,8 +443,8 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 	}
 	m_Color.SetCurSel(0);
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* pNMHDR, LRESULT* result) {
-	const NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result) {
+	const NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)notifyStructure;
 	if (!pNMListView->uNewState) {
 		*result = 0;
 		return;
@@ -601,11 +601,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 }
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnUpdateEditDescription() noexcept {
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* pNMHDR, LRESULT* result) noexcept {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* notifyStructure, LRESULT* result) noexcept {
 	*result = 0;
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* pNMHDR, LRESULT* result) {
-	const NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* notifyStructure, LRESULT* result) {
+	const NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)notifyStructure;
 	// TODO: Add your control notification handler code here
 	if (!pNMListView->uNewState) {
 		*result = 0;
@@ -710,7 +710,7 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	lvItem.iSubItem = 0;
 
 	OdString str = pPs->localizedName();
-	lvItem.pszText = (LPWSTR)(LPCWSTR)str;
+	lvItem.pszText = (wchar_t*)(const wchar_t*)str;
 
 	const int nItem = m_listStyles.InsertItem(&lvItem);
 
@@ -869,7 +869,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDelBtnStyle() {
 	m_listStyles.SetSelectionMark(iItem-1);
 	m_listStyles.SetFocus();
 }
-void EoDlgPlotStyleEditor_FormViewPropertyPage::AddNewPlotStyle(LPCWSTR styleName) {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::AddNewPlotStyle(const wchar_t* styleName) {
 	m_pPlotStyleActive = m_pPlotStyleTable->addNewPlotStyle(styleName);
 	const int ItemIndex = m_pPlotStyleTable->plotStyleSize() - 1;
 	insertItem(ItemIndex);
@@ -907,8 +907,8 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileNa
 	FileDialog.m_ofn.lpstrFilter = strFilter;
 	FileDialog.m_ofn.lpstrTitle = title;
 	FileDialog.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
-
-	const LPARAM nResult = FileDialog.DoModal();
+	const auto nResult {FileDialog.DoModal()};
+	fileName.ReleaseBuffer();
 
 	if (nResult == IDOK ) {
 		fileName = FileDialog.GetPathName();
@@ -923,14 +923,15 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::SetFileBufPath(const OdString sF
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSaveBtn() {
-	CString sPath = (LPCWSTR)m_sFileBufPath;
+	CString sPath = (const wchar_t*)m_sFileBufPath;
 
 	if (!DoPromptFileName(sPath, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST)) { return; } // don't even attempt to save
 
 	OdStreamBufPtr pFileBuf;
 	OdDbSystemServices* pSs = odSystemServices();
 	try {
-		pFileBuf = pSs->createFile(OdString((LPCWSTR)sPath), Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kOpenAlways/*Oda::kCreateAlways*/);
+		pFileBuf = pSs->createFile((const wchar_t*)sPath, Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kOpenAlways/*Oda::kCreateAlways*/);
+		
 		if (pFileBuf.get()) {
 			OdPsPlotStyleServicesPtr pPSS = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);
 			if (pPSS.get()) {

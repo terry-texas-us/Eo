@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 #include "EoDlgSetupCustomMouseCharacters.h"
 

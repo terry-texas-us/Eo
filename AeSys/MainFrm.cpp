@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 
 #include "DbObjectContextCollection.h"
@@ -227,14 +227,14 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 	}
 }
 
-void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const CString& textOut, const OdDbDatabasePtr& database) {
+void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const OdString& textOut, const OdDbDatabasePtr& database) {
 
 	if (database->getPSTYLEMODE() == 1) {
-		const COLORREF OldTextColor = deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT));
-		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), nullptr);
+		const auto OldTextColor {deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT))};
+		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.getLength(), nullptr);
 		deviceContext.SetTextColor(OldTextColor);
 	} else {
-		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.GetLength(), nullptr);
+		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.getLength(), nullptr);
 	}
 }
 
@@ -508,7 +508,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 				} else {
 					CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, NULL, -1, VectorizerPath);
 
-					if (theApp.recentGsDevicePath().iCompare((LPCWSTR) VectorizerPath) == 0) {
+					if (theApp.recentGsDevicePath().iCompare((const wchar_t*) VectorizerPath) == 0) {
 						MenuButton.SetStyle(TBBS_CHECKED);
 					}
 					popupMenu->InsertItem(MenuButton, VectorizerIndex++);
@@ -699,7 +699,7 @@ void CMainFrame::OnDestroy() {
 	PostQuitMessage(0); 		// Force WM_QUIT message to terminate message loop
 }
 
-void CMainFrame::SetStatusPaneTextAt(int index, LPCWSTR newText) {
+void CMainFrame::SetStatusPaneTextAt(int index, const wchar_t* newText) {
 	m_StatusBar.SetPaneText(index, newText);
 }
 
@@ -758,7 +758,7 @@ CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo() {
 	return FoundCombo;
 }
 
-HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, LPWSTR text, LPCVOID object) noexcept {
+HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, wchar_t* text, LPCVOID object) noexcept {
 	TV_INSERTSTRUCT tvIS;
 	tvIS.hParent = parent;
 	tvIS.hInsertAfter = TVI_LAST;

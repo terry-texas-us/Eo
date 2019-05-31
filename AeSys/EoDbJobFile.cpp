@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 
 #include "EoVaxFloat.h"
@@ -139,18 +139,19 @@ bool EoDbJobFile::GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFi
 	return true;
 }
 
-bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, CFile & file, EoDbGroup * &group) {
-	ULONGLONG Position = file.GetPosition();
+bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbGroup* &group) {
+	auto Position {file.GetPosition()};
 
-	group = 0;
+	group = nullptr;
 	try {
 		EoDbPrimitive* Primitive;
-		if (!GetNextPrimitive(blockTableRecord, file, Primitive)) {
-			return false;
-		}
+		
+		if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { return false; }
+
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
 		const unsigned short wPrims = *((unsigned short*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
+		
 		for (unsigned w = 1; w < wPrims; w++) {
 			try {
 				Position = file.GetPosition();
@@ -158,16 +159,16 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 				if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { throw L"Exception.FileJob: Unexpected end of file."; }
 
 				group->AddTail(Primitive);
-			} catch (const LPWSTR szMessage) {
-				theApp.AddStringToMessageList(szMessage);
+			} catch (const wchar_t* Message) {
+				theApp.AddStringToMessageList(Message);
 				file.Seek(Position + 32, CFile::begin);
 			}
 		}
-	} catch (const LPWSTR szMessage) {
+	} catch (const wchar_t* Message) {
 
 		if (Position >= 96) {
 
-			if (::MessageBoxW(nullptr, szMessage, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
+			if (::MessageBoxW(nullptr, Message, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
 		}
 		file.Seek(Position + 32, CFile::begin);
 	}

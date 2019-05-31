@@ -70,7 +70,7 @@ public:	// Methods
 	void SetStartPoint(const OdGePoint3d& startPoint);
 	void SetEndPoint(const OdGePoint3d& endPoint);
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
-	void SetText(const CString& str);
+	void SetText(const CString& text);
 	void SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept;
 	void SetTextColorIndex(short colorIndex) noexcept;
 	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept;

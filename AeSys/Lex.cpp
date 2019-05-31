@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 #pragma warning(push)
 #pragma warning(disable: 4996)
@@ -421,7 +421,7 @@ void lex::Init() noexcept {
 	iToks = 0;
 	iValsCount = 0;
 }
-void lex::Parse(LPCWSTR szLine) {
+void lex::Parse(const wchar_t* szLine) {
 	iToks = 0;
 	iValsCount = 0;
 
@@ -475,7 +475,7 @@ void lex::Parse(LPCWSTR szLine) {
 		iToks++;
 	}
 }
-void lex::ParseStringOperand(LPCWSTR pszTok) {
+void lex::ParseStringOperand(const wchar_t* pszTok) {
 	if (wcslen(pszTok) < 3) {
 		theApp.AddStringToMessageList(IDS_MSG_ZERO_LENGTH_STRING);
 		return;
@@ -496,7 +496,7 @@ void lex::ParseStringOperand(LPCWSTR pszTok) {
 	iValsCount += iLen;
 }
 
-int lex::Scan(LPTSTR aszTok, LPCWSTR szLine, int& iLP) {
+int lex::Scan(LPTSTR aszTok, const wchar_t* szLine, int& iLP) {
 	int iLen;
 
 	while (szLine[iLP] == ' ') {iLP++;}

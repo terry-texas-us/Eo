@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -85,7 +85,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		GLOBALHANDLE ClipboardDataHandle = (GLOBALHANDLE)GlobalAlloc(GHND, AllocationSize);
 
 		if (ClipboardDataHandle != nullptr) {
-			auto ClipboardData {static_cast<LPWSTR>(GlobalLock(ClipboardDataHandle))};
+			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 
 			if (ClipboardData != nullptr) {
 				wcscpy_s(ClipboardData, AllocationSize, strBuf);
@@ -130,7 +130,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		GLOBALHANDLE ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(SizeOfBuffer))};
 
 		if (ClipboardDataHandle != nullptr) {
-			auto ClipboardData {static_cast<LPWSTR>(GlobalLock(ClipboardDataHandle))};
+			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 
 			MemoryFile.SeekToBegin();
 			MemoryFile.Read(ClipboardData, narrow_cast<unsigned>(SizeOfBuffer));

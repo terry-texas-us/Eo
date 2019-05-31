@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 #include "EoDlgSetUnitsAndPrecision.h"
 
@@ -13,7 +13,7 @@ END_MESSAGE_MAP()
 
 EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent)
 	: CDialog(EoDlgSetUnitsAndPrecision::IDD, parent)
-	, m_Units(AeSysApp::kInches)
+	, m_Units(AeSys::kInches)
 	, m_Precision(8) {
 }
 
@@ -39,44 +39,44 @@ BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 		m_MetricUnitsListBoxControl.AddString(UnitsItem);
 	}
 	if (CheckButtonId == IDC_METRIC) {
-		m_MetricUnitsListBoxControl.SetCurSel(m_Units - AeSysApp::kMeters);
+		m_MetricUnitsListBoxControl.SetCurSel(m_Units - AeSys::kMeters);
 	}
 	return TRUE;
 }
 void EoDlgSetUnitsAndPrecision::OnOK() {
 	switch (GetCheckedRadioButton(IDC_ARCHITECTURAL, IDC_METRIC)) {
 		case IDC_ARCHITECTURAL:
-			m_Units = AeSysApp::kArchitectural;
+			m_Units = AeSys::kArchitectural;
 			break;
 		case IDC_ENGINEERING:
-			m_Units = AeSysApp::kEngineering;
+			m_Units = AeSys::kEngineering;
 			break;
 		case IDC_FEET:
-			m_Units = AeSysApp::kFeet;
+			m_Units = AeSys::kFeet;
 			break;
 		case IDC_INCHES:
-			m_Units = AeSysApp::kInches;
+			m_Units = AeSys::kInches;
 			break;
 		default:
 			switch (m_MetricUnitsListBoxControl.GetCurSel()) {
 				case 0:
-					m_Units = AeSysApp::kMeters;
+					m_Units = AeSys::kMeters;
 					break;
 				case 1:
-					m_Units = AeSysApp::kMillimeters;
+					m_Units = AeSys::kMillimeters;
 					break;
 				case 2:
-					m_Units = AeSysApp::kCentimeters;
+					m_Units = AeSys::kCentimeters;
 					break;
 				case 3:
-					m_Units = AeSysApp::kDecimeters;
+					m_Units = AeSys::kDecimeters;
 					break;
 				default:
-					m_Units = AeSysApp::kKilometers;
+					m_Units = AeSys::kKilometers;
 			}
 	}
 	CDialog::OnOK();
 }
 void EoDlgSetUnitsAndPrecision::OnBnClickedMetric() {
-	m_MetricUnitsListBoxControl.SetCurSel(AeSysApp::kCentimeters - AeSysApp::kMeters);
+	m_MetricUnitsListBoxControl.SetCurSel(AeSys::kCentimeters - AeSys::kMeters);
 }

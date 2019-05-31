@@ -14,7 +14,7 @@ protected:
     BOOL OnInitDialog() final;
 
     OdDbObjectId& m_pObjectId;
-    OdResBufPtr m_pResBuf;
+    OdResBufPtr m_ResourceBuffer;
     int m_nCurItem;
     CButton m_doset;
     CListCtrl m_propList;
@@ -22,8 +22,8 @@ protected:
 
     void OnSetfocusValue();
     void OnButton();
-    void OnClickProplist(NMHDR* pNMHDR, LRESULT* result);
-    void OnKeydownProplist(NMHDR* pNMHDR, LRESULT* result);
+    void OnClickProplist(NMHDR* notifyStructure, LRESULT* result);
+    void OnKeydownProplist(NMHDR* notifyStructure, LRESULT* result);
 
     DECLARE_MESSAGE_MAP()
 };

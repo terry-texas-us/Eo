@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "EoDlgNewView.h"
 #include "EoDlgNamedViews.h"
 #include "DbSymbolTable.h"
@@ -62,7 +62,7 @@ BOOL EoDlgNewView::OnInitDialog() {
 	pTable = Database->getUCSTableId().safeOpenObject();
 	m_UCSs.AddString(L"World");
 
-	m_sUcsName = (LPCWSTR) ucsString(Database->activeViewportId().safeOpenObject());
+	m_sUcsName = (const wchar_t*) ucsString(Database->activeViewportId().safeOpenObject());
 	
 	if (m_sUcsName == L"Unnamed") {
 		m_UCSs.AddString(m_sUcsName);

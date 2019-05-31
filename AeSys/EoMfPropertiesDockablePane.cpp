@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysView.h"
 
 #include "EoMfPropertiesDockablePane.h"
@@ -69,18 +69,22 @@ int EoMfPropertiesDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	AdjustLayout();
 	return 0;
 }
+
 void EoMfPropertiesDockablePane::OnSetFocus(CWnd* oldWindow) {
 	CDockablePane::OnSetFocus(oldWindow);
 	m_PropertyGrid.SetFocus();
 }
-void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, LPCWSTR section) {
+
+void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, const wchar_t* section) {
 	CDockablePane::OnSettingChange(flags, section);
 	SetPropertyGridFont();
 }
+
 void EoMfPropertiesDockablePane::OnSize(unsigned type, int cx, int cy) {
 	CDockablePane::OnSize(type, cx, cy);
 	AdjustLayout();
 }
+
 LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 	CMFCPropertyGridProperty* Property = (CMFCPropertyGridProperty*) lparam;
 
@@ -88,7 +92,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 
 	switch (int(Property->GetData())) {
     case kTabsStyle: {
-        CString TabStyle = (LPCWSTR) (_bstr_t) Property->GetValue();
+        CString TabStyle = (const wchar_t*) (_bstr_t) Property->GetValue();
         ResetMDIChild = TRUE;
 
         for (int i = 0; ::TabsStyles[i] != NULL; i++) {
@@ -113,7 +117,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
         break;
     }
     case kTabLocation: {
-        CString TabLocation = (LPCWSTR) (_bstr_t) Property->GetValue();
+        CString TabLocation = (const wchar_t*) (_bstr_t) Property->GetValue();
         theApp.m_Options.m_MdiTabInfo.m_tabLocation = (TabLocation == TabLocations[0] ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP);
         break;
     }

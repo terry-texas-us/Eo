@@ -90,8 +90,8 @@ protected:
 	public:
 		DataSource();
 		void Create(AeSysDoc* document, const OdGePoint3d& point = OdGePoint3d::kOrigin);
-		bool DoDragDrop();
-		void Empty();
+		bool DoDragDrop(); // hides non-virtual function of parent
+		void Empty(); // hides non-virtual function of parent
 		~DataSource();
 	};
 	template<class TChar>
@@ -239,16 +239,16 @@ public:
 	void startDrag(const OdGePoint3d& point);
 
 public:
-	BOOL OnSaveDocument(LPCWSTR pathName) override;
+	BOOL OnSaveDocument(const wchar_t* pathName) override;
 	BOOL OnCmdMsg(unsigned nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
-	BOOL OnOpenDocument(LPCWSTR pathName) override;
+	BOOL OnOpenDocument(const wchar_t* pathName) override;
 	void DeleteContents() override;
 	BOOL CanCloseFrame(CFrameWnd* frame) override;
 
 public:
 	~AeSysDoc();
-	BOOL DoSave(LPCWSTR pathName, BOOL replace = TRUE) override;
+	BOOL DoSave(const wchar_t* pathName, BOOL replace = TRUE) override;
 
 #ifdef _DEBUG
 	void AssertValid() const override;
@@ -285,8 +285,8 @@ public:
 
 	void InitializeGroupAndPrimitiveEdit();
 
-	/// <summary>Constructs 0 to many seperate text primitives for each "\r\n" delimited substr.</summary>
-	void AddTextBlock(LPWSTR pszText);
+	/// <summary>Constructs 0 to many seperate text primitives for each "\r\n" delimited text block</summary>
+	void AddTextBlock(wchar_t* text);
 
 	// Text Style Table interface
 	/// <summary>Add a new text style to the text style table.</summary>
@@ -302,11 +302,11 @@ public:
 	int GetBlockReferenceCount(const CString& name);
 	POSITION GetFirstBlockPosition();
 	void GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block);
-	bool LookupBlock(CString name, EoDbBlock*& block);
+	bool LookupBlock(const wchar_t* name, EoDbBlock*& block);
 	/// <summary>Removes all blocks and defining primitives.</summary>
 	void RemoveAllBlocks();
 	void PurgeUnreferencedBlocks();
-	void InsertBlock(const OdString& name, EoDbBlock* block);
+	void InsertBlock(const wchar_t* name, EoDbBlock* block);
 	/// <summary>A layer is converted to a tracing or a job file</summary>
 	bool LayerMelt(OdString& name);
 	int LinetypeIndexReferenceCount(short linetypeIndex);

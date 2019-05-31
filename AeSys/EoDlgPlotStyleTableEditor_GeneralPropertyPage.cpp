@@ -136,6 +136,7 @@ void WinPathToDos(wchar_t* str) {
 	}
 
 	wcscpy(str, sNewStr.GetBuffer(sNewStr.GetLength()));
+	sNewStr.ReleaseBuffer();
 }
 
 BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
@@ -179,8 +180,6 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	return TRUE;
 
 }
-
-
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::SetFileBufPath(const OdString sFilePath) {
 	m_sFileBufPath = sFilePath;

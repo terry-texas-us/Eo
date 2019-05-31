@@ -24,7 +24,7 @@ public:
     void FillExtraList(EoDbPrimitive* primitive);
     void FillGeometryList(EoDbPrimitive* primitive);
 
-    void OnTvnSelchangedGroupTree(NMHDR* pNMHDR, LRESULT* result);
+    void OnTvnSelchangedGroupTree(NMHDR* notifyStructure, LRESULT* result);
 
 protected:
     DECLARE_MESSAGE_MAP()

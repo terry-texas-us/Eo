@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -49,16 +49,16 @@ BOOL EoDlgSetHomePoint::OnInitDialog() {
 
 	m_CursorPosition = theApp.GetCursorPosition();
 
-	SetDlgItemTextW(IDC_X, theApp.FormatLength(m_CursorPosition.x, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
-	SetDlgItemTextW(IDC_Y, theApp.FormatLength(m_CursorPosition.y, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
-	SetDlgItemTextW(IDC_Z, theApp.FormatLength(m_CursorPosition.z, max(theApp.GetUnits(), AeSysApp::kEngineering), 12, 4));
+	SetDlgItemTextW(IDC_X, theApp.FormatLength(m_CursorPosition.x, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
+	SetDlgItemTextW(IDC_Y, theApp.FormatLength(m_CursorPosition.y, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
+	SetDlgItemTextW(IDC_Z, theApp.FormatLength(m_CursorPosition.z, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 
 	return TRUE;
 }
 void EoDlgSetHomePoint::OnOK() {
 	wchar_t szBuf[32];
 
-	const AeSysApp::Units CurrentUnits = theApp.GetUnits();
+	const AeSys::Units CurrentUnits = theApp.GetUnits();
 
 	m_X.GetWindowTextW(szBuf, 32);
 	m_CursorPosition.x = theApp.ParseLength(CurrentUnits, szBuf);

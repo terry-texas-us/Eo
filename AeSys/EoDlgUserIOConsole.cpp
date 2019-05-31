@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "DbCommandContext.h"
 #include "DbSSet.h"
 #include "ExDbCommandContext.h"
@@ -18,9 +18,9 @@ EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
 
 OdString EoDlgUserIOConsole::GetLastString() {
 	const auto EolDelimiter {m_Output.ReverseFind('\r')};
-	if (EolDelimiter == -1) { return (LPCWSTR) m_Output; }
+	if (EolDelimiter == -1) { return (const wchar_t*) m_Output; }
 
-	return (LPCWSTR) m_Output.Mid(EolDelimiter + 2);
+	return (const wchar_t*) m_Output.Mid(EolDelimiter + 2);
 }
 
 void EoDlgUserIOConsole::addRef() noexcept {
@@ -56,7 +56,7 @@ OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd* parent) {
 
 void EoDlgUserIOConsole::Echo(const OdString& string) {
 	m_Output += L" ";
-	m_Output += (LPCWSTR) string;
+	m_Output += (const wchar_t*) string;
 }
 
 OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
@@ -70,7 +70,7 @@ OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEd
 	}
 	Echo(OdString(m_Input));
 	m_NumberOfStrings = 0;
-	return (LPCWSTR) m_Input;
+	return (const wchar_t*) m_Input;
 }
 
 const int kMaxStringLength = 128;
@@ -113,7 +113,7 @@ void EoDlgUserIOConsole::AddOut(const CString& string) {
 }
 
 void EoDlgUserIOConsole::putString(const OdString& string) {
-	AddOut((LPCWSTR) string);
+	AddOut((const wchar_t*) string);
 }
 
 BOOL EoDlgUserIOConsole::OnInitDialog() {

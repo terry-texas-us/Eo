@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "afxodlgs.h"
 #include "DbOle2Frame.h"
@@ -132,7 +132,7 @@ public:
 				CString msg;
 				pException->GetErrorMessage(msg.GetBuffer(256), 256);
 				OdString msg2;
-				msg2.format(L"%ls : \"%ls\"", (LPCWSTR) CString(pException->GetRuntimeClass()->m_lpszClassName), (LPCWSTR) msg);
+				msg2.format(L"%ls : \"%ls\"", (const wchar_t*) CString(pException->GetRuntimeClass()->m_lpszClassName), (const wchar_t*) msg);
 				// remove invalid object from OLE document
 				m_pDocument->RemoveItem(this);
 				release();
@@ -294,7 +294,7 @@ ODRX_NO_CONS_DEFINE_MEMBERS(OleDwgItem, OdOleItemHandler);
 class OleCommand : public OdEdCommand {
 public:
 	const OdString groupName() const {
-		return (L"AeSysApp");
+		return (L"AeSys");
 	}
 };
 
@@ -432,7 +432,7 @@ void rxInit_COleClientItem_handler() {
 
 /// <remarks> Call just before odUninitialize() </remarks>
 void rxUninit_COleClientItem_handler() {
-	odedRegCmds()->removeGroup(L"AeSysApp");
+	odedRegCmds()->removeGroup(L"AeSys");
 	if (OdOleItemHandler::desc()->constructor() == OleDwgItem::createNew) {
 		OdOleItemHandler::desc()->setConstructor(OdOleItemHandler::pseudoConstructor);
 	}

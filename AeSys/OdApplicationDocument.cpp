@@ -2,7 +2,7 @@
 
 #include "stdafx.h"
 #include "AeSysDoc.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysView.h"
 #include "OdApplicationImpl.h"
 

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "EoLoadApps.h"
 #include "RxModule.h"
 
@@ -67,12 +67,12 @@ void EoLoadApps::OnLoadApp() {
 	CFileDialog FileDialog(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Run-time Extentions (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
 
 	FileDialog.m_ofn.lpstrTitle = L"Load application";
-	auto Path {AeSysApp::getApplicationPath()};
+	auto Path {AeSys::getApplicationPath()};
 	FileDialog.m_ofn.lpstrInitialDir = Path.GetBuffer(Path.GetLength());
 
 	if (FileDialog.DoModal() == IDOK) {
 		try {
-			::odrxDynamicLinker()->loadModule(OdString((LPCWSTR)FileDialog.GetPathName()), false);
+			::odrxDynamicLinker()->loadModule((const wchar_t*)FileDialog.GetPathName(), false);
 		} catch (const OdError & Error) {
 			theApp.reportError(L"Error", Error);
 		}
@@ -85,7 +85,7 @@ void EoLoadApps::OnUnloadApp() {
 	if (nIndex != LB_ERR) {
 		CString s;
 		m_AppsList.GetText(nIndex, s);
-		if (::odrxDynamicLinker()->unloadModule(OdString((LPCWSTR) s))) {
+		if (::odrxDynamicLinker()->unloadModule((const wchar_t*) s)) {
 			//m_AppsList.DeleteString(nIndex);
 			if (m_AppsList.GetCount() <= nIndex) {
 				nIndex = m_AppsList.GetCount() - 1;
@@ -101,7 +101,8 @@ void EoLoadApps::OnUnloadApp() {
 void EoLoadApps::OnAppsListEvent() {
 	m_UnloadButton.EnableWindow(m_AppsList.GetCurSel() != LB_ERR);
 }
+
 void EoLoadApps::OnDestroy() {
-	m_LoadedApps->m_pListBox = 0;
+	m_LoadedApps->m_pListBox = nullptr;
 	CDialog::OnDestroy();
 }

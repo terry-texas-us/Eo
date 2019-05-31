@@ -92,7 +92,7 @@
     <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="AeSysApp.cpp">
+    <ClCompile Include="AeSys.cpp">
       <WarningLevel Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Level4</WarningLevel>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Use</PrecompiledHeader>
     </ClCompile>
@@ -277,7 +277,7 @@
     <ResourceCompile Include="AeSys.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="AeSysApp.h" />
+    <ClInclude Include="AeSys.h" />
     <ClInclude Include="AeSysDoc.h" />
     <ClInclude Include="EditorObject.h" />
     <ClInclude Include="EoAppAuditInfo.h" />

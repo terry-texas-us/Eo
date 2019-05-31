@@ -5,7 +5,7 @@
 #include "OdaCommon.h"
 #include "Gs/Gs.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysView.h"
 
 #include "EoDlgPageSetup.h"
@@ -17,7 +17,7 @@
 #include "DbViewTable.h"
 #include "DbViewTableRecord.h"
 
-static LPWSTR StandardPlotScaleValues[] = {
+static wchar_t* StandardPlotScaleValues[] = {
 	L"Custom",
 	L"1/128\" = 1'",
 	L"1/64\" = 1'",
@@ -414,7 +414,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	const int i = m_PaperSize.GetCurSel();
 	m_PaperSize.GetLBText(i, NewLocaleMediaName);
 
-	OdString NewCanonicalMediaName = GetCanonicalByLocaleMediaName(OdString((LPCWSTR) NewLocaleMediaName));
+	auto NewCanonicalMediaName {GetCanonicalByLocaleMediaName((const wchar_t*)NewLocaleMediaName)};
 
 	m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, NewCanonicalMediaName);
 	const OdDbPlotSettings::PlotPaperUnits MediaNativeUnits = GetMediaNativePPU();
@@ -480,10 +480,10 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 		// ALEXR TODO : SelectString select by part of string. 'q' -> select 'qwe'.
 		CString csLocaleMediaName;
 		m_PaperSize.GetLBText(0, csLocaleMediaName);
-		if (csLocaleMediaName == L"") {
-			return /*FALSE*/;
-		}
-		CanonicalMediaName = GetCanonicalByLocaleMediaName(OdString((LPCWSTR) csLocaleMediaName));
+
+		if (csLocaleMediaName == L"") { return; }
+
+		CanonicalMediaName = GetCanonicalByLocaleMediaName((const wchar_t*) csLocaleMediaName);
 		m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, CanonicalMediaName);
 
 		m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, csLocaleMediaName));
@@ -495,6 +495,7 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 	FillPaperOrientation();
 	FillPlotStyles();
 }
+
 BOOL EoDlgPageSetup::OnInitDialog() {
 	if (!CDialog::OnInitDialog()) {
 		return FALSE;
@@ -548,7 +549,7 @@ bool EoDlgPageSetup::FillDeviceCombo() {
 	OdArray<const OdChar*>::const_iterator DeviceIteratorEnd = Devices.end();
 
 	while (DeviceIterator != DeviceIteratorEnd) {
-		m_PlotDeviceName.AddString((LPCWSTR) OdString(*DeviceIterator));
+		m_PlotDeviceName.AddString(*DeviceIterator);
 		++DeviceIterator;
 	}
 	UpdateData(FALSE);
@@ -572,7 +573,8 @@ void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
 	if (fillCombo) {
 		m_ScaleValues.ResetContent();
 
-		const int NumberOfScaleVaules = sizeof(StandardPlotScaleValues) / sizeof(LPWSTR);
+		const int NumberOfScaleVaules = sizeof(StandardPlotScaleValues) / sizeof(wchar_t*);
+
 		for (int ScaleValueIndex = 0; ScaleValueIndex < NumberOfScaleVaules; ScaleValueIndex++) {
 			m_ScaleValues.AddString(StandardPlotScaleValues[ScaleValueIndex]);
 		}
@@ -730,7 +732,7 @@ void EoDlgPageSetup::FillPlotOffset() {
 	m_TopMargin.Format(L"%.6f", m_PlotSettings.getTopMargin());
 	m_BottomMargin.Format(L"%.6f", m_PlotSettings.getBottomMargin());
 
-	m_CanonicalMediaName = LPCWSTR(m_PlotSettings.getCanonicalMediaName());
+	m_CanonicalMediaName = (const wchar_t*)(m_PlotSettings.getCanonicalMediaName());
 
 	m_OffsetXText = EoPlotUnitsInfo::GetTextByValue(m_OffsetX, PlotUnitsInfo[PaperUnits]);
 	m_OffsetYText = EoPlotUnitsInfo::GetTextByValue(m_OffsetY, PlotUnitsInfo[PaperUnits]);
@@ -881,7 +883,7 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 	try {
 		bool bSucc(false);
 		OdDbSystemServices* SystemServices = odSystemServices();
-		OdString sPath = LPCWSTR(tmp);
+		OdString sPath = (const wchar_t*)(tmp);
 		sPath = m_PlotSettings.database()->appServices()->findFile(sPath);
 		
 		if (sPath.isEmpty()) { return; }
@@ -919,7 +921,7 @@ void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
 	if (CurrentSelection) {
 		CString StyleFileName;
 		m_PlotStyleFiles.GetLBText(CurrentSelection, StyleFileName);
-		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, LPCWSTR(StyleFileName));
+		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, (const wchar_t*)(StyleFileName));
 	} else {
 		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, OdString::kEmpty);
 	}
@@ -943,7 +945,7 @@ void EoDlgPageSetup::OnSelChangeViewsList() {
 	const int CurrentSelection = m_Views.GetCurSel();
 	m_Views.GetLBText(CurrentSelection, ViewName);
 
-	m_PlotSettingsValidator->setPlotViewName(&m_PlotSettings, LPCWSTR(ViewName));
+	m_PlotSettingsValidator->setPlotViewName(&m_PlotSettings, (const wchar_t*)(ViewName));
 	FillViewCombo(false);
 }
 void EoDlgPageSetup::UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits) {

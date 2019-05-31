@@ -152,7 +152,7 @@ protected:
 	void addRef() noexcept override {}
 	void release() noexcept override {}
 
-	AeSysDoc* GetDocument() const;
+	AeSysDoc* GetDocument() const; // hides non-virtual function of parent
 
 protected:
 	~AeSysView();
@@ -308,11 +308,11 @@ public:
 	OdDbDatabasePtr Database() const;
 
 protected: // Windows messages
-	void OnContextMenu(CWnd*, CPoint point);
+	void OnContextMenu(CWnd*, CPoint point); // hides non-virtual function of parent
 
 public: // Input message handler member functions
 
-	void OnChar(unsigned characterCodeValue, unsigned RepeatCount, unsigned flags);
+	void OnChar(unsigned characterCodeValue, unsigned RepeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
@@ -323,15 +323,15 @@ public: // Input message handler member functions
 	void OnRButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnRButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 
-	int OnCreate(LPCREATESTRUCT createStructure);
-	void OnDestroy();
+	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
+	void OnDestroy(); // hides non-virtual function of parent
 	void OnDrag();
 	void OnUpdateDrag(CCmdUI* pCmdUI);
-	BOOL OnEraseBkgnd(CDC* deviceContext);
-	void OnKillFocus(CWnd* newWindow);
-	void OnPaint();
-	void OnSetFocus(CWnd* oldWindow);
-	void OnSize(unsigned type, int cx, int cy);
+	BOOL OnEraseBkgnd(CDC* deviceContext); // hides non-virtual function of parent
+	void OnKillFocus(CWnd* newWindow); // hides non-virtual function of parent
+	void OnPaint(); // hides non-virtual function of parent
+	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
+	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 
 	void OnViewStateInformation();
 	void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
@@ -897,7 +897,7 @@ public:
 	void OnFilePlotHalf();
 	void OnFilePlotFull();
 	void OnFilePlotQuarter();
-	void OnFilePrint();
+	void OnFilePrint(); // hides non-virtual function of parent
 	void OnFind();
 	void On3dViewsBack();
 	void On3dViewsBottom();

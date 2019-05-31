@@ -43,8 +43,8 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	TreeView_Expand(hWndGroupTree, htiGroupList, TVE_EXPAND);
 	return TRUE;
 }
-void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* pNMHDR, LRESULT* result) {
-	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(pNMHDR);
+void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure, LRESULT* result) {
+	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(notifyStructure);
 
 	wchar_t szText[256];
 	szText[0] = '\0';

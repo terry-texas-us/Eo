@@ -39,14 +39,14 @@ void AeSysDoc::GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block
 	m_BlockTable.GetNextAssoc(position, name, block);
 }
 
-void AeSysDoc::InsertBlock(const OdString& name, EoDbBlock* block) {
-	m_BlockTable.SetAt(LPCWSTR(name), block);
+void AeSysDoc::InsertBlock(const wchar_t* name, EoDbBlock* block) {
+	m_BlockTable.SetAt(name, block);
 }
 
-bool AeSysDoc::LookupBlock(CString name, EoDbBlock*& block) {
-	if (m_BlockTable.Lookup(name, block)) {
-		return true;
-	}
+bool AeSysDoc::LookupBlock(const wchar_t* name, EoDbBlock*& block) {
+
+	if (m_BlockTable.Lookup(name, block)) { return true; }
+	
 	block = nullptr;
 	return false;
 }

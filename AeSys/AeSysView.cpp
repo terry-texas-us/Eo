@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -493,7 +493,7 @@ void AeSysView::OnInitialUpdate() {
 	m_hWindowDC = ::GetDC(m_hWnd);
 
 	if (!g_nRedrawMSG) {
-		g_nRedrawMSG = ::RegisterWindowMessageW(L"AeSysApp::AeSysView::WM_REDRAW");
+		g_nRedrawMSG = ::RegisterWindowMessageW(L"AeSys::AeSysView::WM_REDRAW");
 	}
 	createDevice();
 	if (m_LayoutHelper.isNull()) {
@@ -566,6 +566,7 @@ void AeSysView::OnPaint() {
 		</tas> */
 	CView::OnPaint();
 }
+
 BOOL AeSysView::OnEraseBkgnd(CDC * deviceContext) {
 	// TODO: Add your message handler code here and/or call default
 
@@ -605,6 +606,7 @@ void AeSysView::OnDestroy() {
 	m_hWindowDC = nullptr;
 	CView::OnDestroy();
 }
+
 int AeSysView::OnCreate(LPCREATESTRUCT createStructure) {
 	if (CView::OnCreate(createStructure) == -1) {
 		return -1;
@@ -661,6 +663,7 @@ inline bool requireAutoRegen(OdGsView* view) {
 	}
 	return false;
 }
+
 void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 	// @@@ probably move this functionality into GsLayoutHelper's?
 	OdGsViewPtr View {getActiveView()};
@@ -829,9 +832,9 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 	}
 }
 
-OdString GetRegistryAcadProfilesKey(); // external defined in AeSysApp
+OdString GetRegistryAcadProfilesKey(); // external defined in AeSys
 
-static bool GetRegistryUnsignedLong(HKEY key, LPCWSTR subkey, LPCWSTR name, unsigned long& value) noexcept {
+static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subkey, const wchar_t* name, unsigned long& value) noexcept {
 	bool ReturnValue {false};
 	HKEY KeyHandle {nullptr};
 
@@ -845,7 +848,7 @@ static bool GetRegistryUnsignedLong(HKEY key, LPCWSTR subkey, LPCWSTR name, unsi
 	return ReturnValue;
 }
 
-static bool GetAcadProfileRegistryUnsignedLong(LPCWSTR subkey, LPCWSTR name, unsigned long& value) {
+static bool GetAcadProfileRegistryUnsignedLong(const wchar_t* subkey, const wchar_t* name, unsigned long& value) {
 	OdString Subkey {GetRegistryAcadProfilesKey()};
 
 	if (!Subkey.isEmpty()) {
@@ -854,7 +857,7 @@ static bool GetAcadProfileRegistryUnsignedLong(LPCWSTR subkey, LPCWSTR name, uns
 			Subkey += L"\\";
 			Subkey += subkey;
 		}
-		return GetRegistryUnsignedLong(HKEY_CURRENT_USER, (LPCWSTR)Subkey, name, value);
+		return GetRegistryUnsignedLong(HKEY_CURRENT_USER, Subkey, name, value);
 	}
 	return false;
 }
@@ -876,15 +879,13 @@ unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
 	return OdGiContextForDbDatabase::glyphSize(glyphType);
 }
 
-void AeSysView::fillContextualColors(OdGiContextualColorsImpl * pCtxColors) {
+void AeSysView::fillContextualColors(OdGiContextualColorsImpl* pCtxColors) {
 	OdGiContextForDbDatabase::fillContextualColors(pCtxColors); // Fill by defaults first
 	unsigned long Value {0};
 #define SET_CTXCLR_ISOK(entry, subkey, name) \
-	if (GetAcadProfileRegistryUnsignedLong(LPCWSTR(subkey), LPCWSTR(name), Value)) \
-	pCtxColors->setContextualColor(OdGiContextualColorsImpl::entry, (ODCOLORREF)Value);
+	if (GetAcadProfileRegistryUnsignedLong(subkey, name, Value)) { pCtxColors->setContextualColor(OdGiContextualColorsImpl::entry, (ODCOLORREF)Value); }
 #define SET_CTXCLRTINT_ISOK(entry, subkey, name) \
-	if (GetAcadProfileRegistryUnsignedLong(LPCWSTR(subkey), LPCWSTR(name), Value)) \
-	pCtxColors->setContextualColorTint(OdGiContextualColorsImpl::entry, Value != 0);
+	if (GetAcadProfileRegistryUnsignedLong(subkey, name, Value)) { pCtxColors->setContextualColorTint(OdGiContextualColorsImpl::entry, Value != 0); }
 
 	switch (pCtxColors->visualType()) {
 		case OdGiContextualColorsImpl::k2dModel:
@@ -1708,6 +1709,7 @@ void AeSysView::OnEndPrinting(CDC * deviceContext, CPrintInfo * printInformation
 	PopViewTransform();
 	ViewportPopActive();
 }
+
 BOOL AeSysView::OnPreparePrinting(CPrintInfo* printInformation) {
 	if (m_Plot) {
 		CPrintInfo PrintInfo;
@@ -1921,7 +1923,7 @@ void AeSysView::putString(const OdString& string) {
 	m_sPrompt = string;
 	const auto n {m_sPrompt.reverseFind('\n')};
 
-	LPCWSTR Text {string};
+	const wchar_t* Text {string};
 
 	if (n >= 0) { Text = Text + n + 1; }
 
@@ -1936,6 +1938,7 @@ void AeSysView::track(OdEdInputTracker* inputTracker) {
 HCURSOR AeSysView::cursor() const noexcept {
 	return (m_hCursor);
 }
+
 void AeSysView::setCursor(HCURSOR cursor) noexcept {
 	m_hCursor = cursor;
 	::SetCursor(cursor);
@@ -1944,6 +1947,7 @@ void AeSysView::setCursor(HCURSOR cursor) noexcept {
 void AeSysView::OnRefresh() {
 	PostMessage(WM_PAINT);
 }
+
 bool AeSysView::beginDragCallback(const OdGePoint3d & point) {
 	OdSaveState<Mode> saved_m_mode(m_mode, kDragDrop);
 	GetDocument()->startDrag(point);
@@ -2193,7 +2197,7 @@ void AeSysView::OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags) 
 }
 
 void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
-	if (AeSysApp::CustomLButtonDownCharacters.IsEmpty()) {
+	if (AeSys::CustomLButtonDownCharacters.IsEmpty()) {
 		__super::OnLButtonDown(flags, point);
 
 		switch (m_mode) {
@@ -2226,13 +2230,13 @@ void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 				break;
 		}
 	} else {
-		DoCustomMouseClick(AeSysApp::CustomLButtonDownCharacters);
+		DoCustomMouseClick(AeSys::CustomLButtonDownCharacters);
 	}
 }
 
 void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
 	
-	if (AeSysApp::CustomLButtonUpCharacters.IsEmpty()) {
+	if (AeSys::CustomLButtonUpCharacters.IsEmpty()) {
 
 		__super::OnLButtonUp(flags, point);
 
@@ -2259,7 +2263,7 @@ void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
 //			}
 //		}
 	} else {
-		DoCustomMouseClick(AeSysApp::CustomLButtonUpCharacters);
+		DoCustomMouseClick(AeSys::CustomLButtonUpCharacters);
 	}
 }
 
@@ -2422,24 +2426,24 @@ BOOL AeSysView::OnMouseWheel(unsigned flags, short zDelta, CPoint point) {
 }
 
 void AeSysView::OnRButtonDown(unsigned flags, CPoint point) {
-	if (AeSysApp::CustomRButtonDownCharacters.IsEmpty()) {
+	if (AeSys::CustomRButtonDownCharacters.IsEmpty()) {
 		m_RightButton = true;
 		m_MousePosition = point;
 		__super::OnRButtonDown(flags, point);
 	} else {
-		DoCustomMouseClick(AeSysApp::CustomRButtonDownCharacters);
+		DoCustomMouseClick(AeSys::CustomRButtonDownCharacters);
 	}
 }
 
 void AeSysView::OnRButtonUp(unsigned flags, CPoint point) {
-	if (AeSysApp::CustomRButtonUpCharacters.IsEmpty()) {
+	if (AeSys::CustomRButtonUpCharacters.IsEmpty()) {
 		m_RightButton = false;
 	
 		// <tas="Context menus using right mouse button goes here."/>
 		
 		__super::OnRButtonUp(flags, point);
 	} else {
-		DoCustomMouseClick(AeSysApp::CustomRButtonUpCharacters);
+		DoCustomMouseClick(AeSys::CustomRButtonUpCharacters);
 	}
 }
 
@@ -2613,15 +2617,19 @@ void AeSysView::PopViewTransform() {
 void AeSysView::PushViewTransform() {
 	m_ViewTransforms.AddTail(m_ViewTransform);
 }
+
 EoGeMatrix3d AeSysView::ModelToWorldTransform() const noexcept {
 	return m_ModelTransform.ModelMatrix();
 }
+
 void AeSysView::PushModelTransform(const EoGeMatrix3d & transformation) {
 	m_ModelTransform.PushModelTransform(transformation);
 }
+
 void AeSysView::PopModelTransform() {
 	m_ModelTransform.PopModelTransform();
 }
+
 void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 	if (m_ViewBackgroundImage && ((HBITMAP) m_BackgroundImageBitmap != nullptr)) {
 		const int iWidDst {static_cast<int>(m_Viewport.WidthInPixels())};
@@ -2656,52 +2664,67 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		deviceContext->SelectPalette(pPalette, FALSE);
 	}
 }
+
 double AeSysView::OverviewUExt() noexcept {
 	return m_OverviewViewTransform.FieldWidth();
 }
+
 double AeSysView::OverviewUMin() noexcept {
 	return m_OverviewViewTransform.FieldWidthMinimum();
 }
+
 double AeSysView::OverviewVExt() noexcept {
 	return m_OverviewViewTransform.FieldHeight();
 }
+
 double AeSysView::OverviewVMin() noexcept {
 	return m_OverviewViewTransform.FieldHeightMinimum();
 }
+
 CPoint AeSysView::DoViewportProjection(const EoGePoint4d & point) const noexcept {
 	return m_Viewport.DoProjection(point);
 }
+
 void AeSysView::DoViewportProjection(CPoint * pnt, int iPts, EoGePoint4d * pt) const noexcept {
 	m_Viewport.DoProjection(pnt, iPts, pt);
 }
+
 void AeSysView::DoViewportProjection(CPoint * pnt, EoGePoint4dArray & points) const {
 	m_Viewport.DoProjection(pnt, points);
 }
+
 OdGePoint3d AeSysView::DoViewportProjectionInverse(const OdGePoint3d & point) const noexcept {
 	OdGePoint3d Point = point;
 	m_Viewport.DoProjectionInverse(Point);
 	return (Point);
 }
+
 double AeSysView::ViewportHeightInInches() const noexcept {
 	return m_Viewport.HeightInInches();
 }
+
 double AeSysView::ViewportWidthInInches() const noexcept {
 	return m_Viewport.WidthInInches();
 }
+
 void AeSysView::ViewportPopActive() {
 	if (!m_Viewports.IsEmpty()) {
 		m_Viewport = m_Viewports.RemoveTail();
 	}
 }
+
 void AeSysView::ViewportPushActive() {
 	m_Viewports.AddTail(m_Viewport);
 }
+
 void AeSysView::SetViewportSize(const int width, const int height) noexcept {
 	m_Viewport.SetSize(width, height);
 }
+
 void AeSysView::SetDeviceHeightInInches(double height) noexcept {
 	m_Viewport.SetDeviceHeightInInches(height);
 }
+
 void AeSysView::SetDeviceWidthInInches(double width) noexcept {
 	m_Viewport.SetDeviceWidthInInches(width);
 }
@@ -2711,16 +2734,19 @@ void AeSysView::OnFilePlotFull() {
 	m_PlotScaleFactor = 1.0f;
 	CView::OnFilePrint();
 }
+
 void AeSysView::OnFilePlotHalf() {
 	m_Plot = true;
 	m_PlotScaleFactor = 0.5f;
 	CView::OnFilePrint();
 }
+
 void AeSysView::OnFilePlotQuarter() {
 	m_Plot = true;
 	m_PlotScaleFactor = 0.25f;
 	CView::OnFilePrint();
 }
+
 void AeSysView::OnFilePrint() {
 	m_Plot = false;
 	m_PlotScaleFactor = 1.0f;
@@ -2751,6 +2777,7 @@ void AeSysView::DisplayPixel(CDC* deviceContext, COLORREF cr, const OdGePoint3d&
 		deviceContext->SetPixel(DoViewportProjection(ptView), cr);
 	}
 }
+
 void AeSysView::Orbit(double x, double y) {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 
@@ -2759,6 +2786,7 @@ void AeSysView::Orbit(double x, double y) {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::Dolly() {
 	CPoint Point;
 	::GetCursorPos(&Point);
@@ -2784,6 +2812,7 @@ void AeSysView::Dolly() {
 
 	SetCursorPosition(FirstView->target());
 }
+
 void AeSysView::DollyAndZoom(double zoomFactor) {
 	Dolly();
 	auto FirstView {m_LayoutHelper->viewAt(0)};
@@ -2795,6 +2824,7 @@ void AeSysView::DollyAndZoom(double zoomFactor) {
 
 	SetCursorPosition(FirstView->target());
 }
+
 void AeSysView::OnSetupScale() {
 	EoDlgSetScale dlg;
 	dlg.m_Scale = WorldScale();
@@ -2802,6 +2832,7 @@ void AeSysView::OnSetupScale() {
 		SetWorldScale(dlg.m_Scale);
 	}
 }
+
 void AeSysView::On3dViewsTop() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 
@@ -2833,6 +2864,7 @@ void AeSysView::On3dViewsBottom() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::On3dViewsLeft() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 
@@ -2848,6 +2880,7 @@ void AeSysView::On3dViewsLeft() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::On3dViewsRight() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 
@@ -2895,6 +2928,7 @@ void AeSysView::On3dViewsBack() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::On3dViewsIsometric() {
 	static int LeftRight = 0;
 	static int FrontBack = 0;
@@ -2932,12 +2966,15 @@ void AeSysView::On3dViewsIsometric() {
 		InvalidateRect(nullptr);
 	}
 }
+
 void AeSysView::OnCameraRotateLeft() {
 	Orbit(0.0, EoToRadian(-10.));
 }
+
 void AeSysView::OnCameraRotateRight() {
 	Orbit(0.0, EoToRadian(10.));
 }
+
 void AeSysView::OnCameraRotateUp() {
 	Orbit(EoToRadian(-10.), 0.0);
 }
@@ -2991,25 +3028,32 @@ void AeSysView::OnWindowZoomWindow() {
 void AeSysView::OnUpdateWindowZoomWindow(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ZoomWindow);
 }
+
 void AeSysView::OnViewOdometer() {
 	m_ViewOdometer = !m_ViewOdometer;
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnViewRefresh() {
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnUpdateViewRendermode2doptimized(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(RenderMode() == OdGsView::k2DOptimized ? MF_CHECKED : MF_UNCHECKED);
 }
+
 void AeSysView::OnUpdateViewRendermodeSmoothshaded(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(RenderMode() == OdGsView::kGouraudShaded ? MF_CHECKED : MF_UNCHECKED);
 }
+
 void AeSysView::OnUpdateViewRendermodeFlatshaded(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(RenderMode() == OdGsView::kFlatShaded ? MF_CHECKED : MF_UNCHECKED);
 }
+
 void AeSysView::OnUpdateViewRendermodeHiddenline(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(RenderMode() == OdGsView::kHiddenLine ? MF_CHECKED : MF_UNCHECKED);
 }
+
 void AeSysView::OnUpdateViewRendermodeWireframe(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(RenderMode() == OdGsView::kWireframe ? MF_CHECKED : MF_UNCHECKED);
 }
@@ -3018,6 +3062,7 @@ void AeSysView::OnWindowNormal() {
 	CopyActiveModelViewToPreviousModelView();
 	DollyAndZoom(m_ViewTransform.FieldWidth() / m_Viewport.WidthInInches());
 }
+
 void AeSysView::OnWindowBest() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	auto AbstractView {OdAbstractViewPEPtr(FirstView)};
@@ -3032,24 +3077,30 @@ void AeSysView::OnWindowBest() {
 	SetCursorPosition(FirstView->target());
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowLast() {
 	ExchangeActiveAndPreviousModelViews();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowSheet() {
 	ModelViewInitialize();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowZoomIn() {
 	DollyAndZoom(1. / 0.9);
 }
+
 void AeSysView::OnWindowZoomOut() {
 	DollyAndZoom(0.9);
 }
+
 void AeSysView::OnWindowPan() {
 	Dolly();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowPanLeft() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = -1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
@@ -3060,6 +3111,7 @@ void AeSysView::OnWindowPanLeft() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowPanRight() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = 1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
@@ -3070,6 +3122,7 @@ void AeSysView::OnWindowPanRight() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowPanUp() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = 1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
@@ -3080,6 +3133,7 @@ void AeSysView::OnWindowPanUp() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowPanDown() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	const double Delta = -1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
@@ -3090,6 +3144,7 @@ void AeSysView::OnWindowPanDown() {
 	m_ViewTransform.BuildTransformMatrix();
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnWindowZoomSpecial() {
 	EoDlgViewZoom ViewZoomDialog(this);
 
@@ -3102,6 +3157,7 @@ void AeSysView::OnWindowZoomSpecial() {
 		InvalidateRect(nullptr);
 	}
 }
+
 void AeSysView::OnSetupDimLength() {
 	EoDlgSetLength SetLengthDialog;
 
@@ -3112,6 +3168,7 @@ void AeSysView::OnSetupDimLength() {
 		UpdateStateInformation(DimLen);
 	}
 }
+
 void AeSysView::OnSetupDimAngle() {
 	EoDlgSetAngle dlg;
 
@@ -3122,6 +3179,7 @@ void AeSysView::OnSetupDimAngle() {
 		UpdateStateInformation(DimAng);
 	}
 }
+
 void AeSysView::OnSetupUnits() {
 	EoDlgSetUnitsAndPrecision Dialog;
 	Dialog.m_Units = theApp.GetUnits();
@@ -3132,6 +3190,7 @@ void AeSysView::OnSetupUnits() {
 		theApp.SetArchitecturalUnitsFractionPrecision(Dialog.m_Precision);
 	}
 }
+
 void AeSysView::OnSetupConstraints() {
 	EoDlgSetupConstraints Dialog(this);
 
@@ -3139,11 +3198,13 @@ void AeSysView::OnSetupConstraints() {
 		UpdateStateInformation(All);
 	}
 }
+
 void AeSysView::OnSetupMouseButtons() {
 	EoDlgSetupCustomMouseCharacters Dialog;
 	if (Dialog.DoModal() == IDOK) {
 	}
 }
+
 void AeSysView::OnRelativeMovesEngDown() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3151,6 +3212,7 @@ void AeSysView::OnRelativeMovesEngDown() {
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngDownRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3158,11 +3220,13 @@ void AeSysView::OnRelativeMovesEngDownRotate() {
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngIn() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.z -= theApp.EngagedLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesEngLeft() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3170,6 +3234,7 @@ void AeSysView::OnRelativeMovesEngLeft() {
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngLeftRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3177,11 +3242,13 @@ void AeSysView::OnRelativeMovesEngLeftRotate() {
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngOut() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.z += theApp.EngagedLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesEngRight() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3189,6 +3256,7 @@ void AeSysView::OnRelativeMovesEngRight() {
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngRightRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3196,6 +3264,7 @@ void AeSysView::OnRelativeMovesEngRightRotate() {
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngUp() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3203,6 +3272,7 @@ void AeSysView::OnRelativeMovesEngUp() {
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesEngUpRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3210,11 +3280,13 @@ void AeSysView::OnRelativeMovesEngUpRotate() {
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesDown() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.y -= theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesDownRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3222,11 +3294,13 @@ void AeSysView::OnRelativeMovesDownRotate() {
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesLeft() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.x -= theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesLeftRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3234,21 +3308,25 @@ void AeSysView::OnRelativeMovesLeftRotate() {
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesIn() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.z -= theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesOut() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.z += theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesRight() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.x += theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesRightRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3256,11 +3334,13 @@ void AeSysView::OnRelativeMovesRightRotate() {
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnRelativeMovesUp() {
 	OdGePoint3d pt = GetCursorPosition();
 	pt.y += theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
+
 void AeSysView::OnRelativeMovesUpRotate() {
 	const OdGePoint3d Origin = GetCursorPosition();
 	OdGePoint3d ptSec = Origin;
@@ -3268,6 +3348,7 @@ void AeSysView::OnRelativeMovesUpRotate() {
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
+
 void AeSysView::OnToolsPrimitiveSnapto() {
 	const OdGePoint3d pt = GetCursorPosition();
 
@@ -3297,6 +3378,7 @@ void AeSysView::OnToolsPrimitiveSnapto() {
 		SetCursorPosition(ptDet);
 	}
 }
+
 void AeSysView::OnPrimPerpJump() {
 	OdGePoint3d CursorPosition = GetCursorPosition();
 
@@ -3308,6 +3390,7 @@ void AeSysView::OnPrimPerpJump() {
 		}
 	}
 }
+
 void AeSysView::OnHelpKey() {
 	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/menu_mode.htm", HH_DISPLAY_TOPIC, NULL);
 }
@@ -3385,20 +3468,25 @@ void AeSysView::OnBackgroundImageRemove() {
 		InvalidateRect(nullptr);
 	}
 }
+
 void AeSysView::OnViewBackgroundImage() {
 	m_ViewBackgroundImage = !m_ViewBackgroundImage;
 	InvalidateRect(nullptr);
 }
+
 void AeSysView::OnUpdateViewBackgroundImage(CCmdUI* pCmdUI) {
 	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != nullptr);
 	pCmdUI->SetCheck(m_ViewBackgroundImage);
 }
+
 void AeSysView::OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI) {
 	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap == nullptr);
 }
+
 void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI) {
 	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != nullptr);
 }
+
 void AeSysView::OnUpdateViewPenwidths(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ViewPenWidths);
 }
@@ -3601,6 +3689,7 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d & pt) {
 	}
 	return nullptr;
 }
+
 void AeSysView::OnOp0() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3609,6 +3698,7 @@ void AeSysView::OnOp0() {
 			break;
 	}
 }
+
 void AeSysView::OnOp2() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3620,6 +3710,7 @@ void AeSysView::OnOp2() {
 			break;
 	}
 }
+
 void AeSysView::OnOp3() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3631,6 +3722,7 @@ void AeSysView::OnOp3() {
 			break;
 	}
 }
+
 void AeSysView::OnOp4() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3644,6 +3736,7 @@ void AeSysView::OnOp4() {
 			break;
 	}
 }
+
 void AeSysView::OnOp5() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3655,6 +3748,7 @@ void AeSysView::OnOp5() {
 			break;
 	}
 }
+
 void AeSysView::OnOp6() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3666,6 +3760,7 @@ void AeSysView::OnOp6() {
 			break;
 	}
 }
+
 void AeSysView::OnOp7() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3677,6 +3772,7 @@ void AeSysView::OnOp7() {
 			break;
 	}
 }
+
 void AeSysView::OnOp8() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3688,6 +3784,7 @@ void AeSysView::OnOp8() {
 			break;
 	}
 }
+
 void AeSysView::OnReturn() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3705,6 +3802,7 @@ void AeSysView::OnReturn() {
 			break;
 	}
 }
+
 void AeSysView::OnEscape() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
@@ -3726,7 +3824,7 @@ void AeSysView::OnFind() {
 	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
 
 	if (!FindComboText.isEmpty()) {
-		ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnFind() ComboText = %s\n", (LPCWSTR) FindComboText);
+		ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnFind() ComboText = %s\n", (const wchar_t*) FindComboText);
 	}
 }
 
@@ -3750,7 +3848,7 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 
 			if (LBText.GetLength() == findText.getLength()) {
 
-				if ((LPCWSTR) LBText == findText) { break; }
+				if ((const wchar_t*) LBText == findText) { break; }
 			}
 			Position++;
 		}
@@ -3767,6 +3865,7 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 void AeSysView::OnEditFind() noexcept {
 }
 // Disables rubberbanding.
+
 void AeSysView::RubberBandingDisable() {
 	if (m_RubberbandType != None) {
 		auto DeviceContext {GetDC()};
@@ -3791,6 +3890,7 @@ void AeSysView::RubberBandingDisable() {
 		m_RubberbandType = None;
 	}
 }
+
 void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d & point, ERubs type) {
 	EoGePoint4d ptView(point, 1.0);
 
@@ -3804,6 +3904,7 @@ void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d & point, ERubs type
 	}
 	m_RubberbandType = type;
 }
+
 OdGePoint3d AeSysView::GetCursorPosition() {
 	CPoint CursorPosition;
 
@@ -3821,6 +3922,7 @@ OdGePoint3d AeSysView::GetCursorPosition() {
 	}
 	return (m_ptCursorPosWorld);
 }
+
 OdGePoint3d AeSysView::GetWorldCoordinates(CPoint point) {
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 	OdGePoint3d WCSPoint(point.x, point.y, 0.0);
@@ -3830,6 +3932,7 @@ OdGePoint3d AeSysView::GetWorldCoordinates(CPoint point) {
 	WCSPoint.transformBy(OdAbstractViewPEPtr(FirstView)->eyeToWorld(FirstView));
 	return WCSPoint;
 }
+
 void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 	EoGePoint4d ptView(cursorPosition, 1.0);
 	ModelViewTransformPoint(ptView);
@@ -3856,6 +3959,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 	ClientToScreen(&CursorPosition);
 	::SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
+
 void AeSysView::SetModeCursor(int mode) {
 	unsigned short ResourceIdentifier {0};
 
@@ -3925,6 +4029,7 @@ void AeSysView::SetModeCursor(int mode) {
 	::SetCursor(CursorHandle);
 	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, (long) CursorHandle);
 }
+
 void AeSysView::SetWorldScale(const double scale) {
 	if (scale > FLT_EPSILON) {
 		m_WorldScale = scale;
@@ -4021,6 +4126,7 @@ const ODCOLORREF* AeSysView::CurrentPalette() const {
 	const ODCOLORREF* Color = odcmAcadPalette(m_Background);
 	return Color;
 }
+
 void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
 	OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
 
@@ -4054,6 +4160,7 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 		InvalidateRect(nullptr);
 	}
 }
+
 void AeSysView::OnInsertBlockreference() {
 	// <tas="Just a placeholder for BlockReference. It works but position, scale & rotation need to be specified."</tas>
 	auto Document {GetDocument()};

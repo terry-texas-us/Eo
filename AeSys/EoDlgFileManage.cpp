@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -98,7 +98,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case PlotStyle:
 			ItemName = LayerTableRecord->plotStyleName();
-			CMainFrame::DrawPlotStyle(deviceContext, itemRectangle, (LPCWSTR) ItemName, m_Database);
+			CMainFrame::DrawPlotStyle(deviceContext, itemRectangle, ItemName, m_Database);
 			break;
 		case Plot:
 			m_StateImages.Draw(&deviceContext, LayerTableRecord->isPlottable() ? 6 : 7, ((CRect&) itemRectangle).TopLeft(), ILD_TRANSPARENT);
@@ -125,8 +125,8 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight(m_ActiveViewport));
 			break;
 		case VpPlotStyle:
-			ItemName = (LPCWSTR) LayerTableRecord->plotStyleName(m_ActiveViewport);
-			CMainFrame::DrawPlotStyle(deviceContext, itemRectangle, (LPCWSTR) ItemName, m_Database);
+			ItemName = LayerTableRecord->plotStyleName(m_ActiveViewport);
+			CMainFrame::DrawPlotStyle(deviceContext, itemRectangle, ItemName, m_Database);
 			break;
 	}
 }
@@ -159,8 +159,9 @@ void EoDlgFileManage::OnBnClickedMelt() {
 		}
 	}
 }
+
 void EoDlgFileManage::OnBnClickedNewlayer() {
-	OdDbLayerTablePtr Layers = m_Document->LayerTable(OdDb::kForWrite);
+	auto Layers {m_Document->LayerTable(OdDb::kForWrite)};
 
 	OdString Name;
 	int Suffix = 1;
@@ -168,24 +169,28 @@ void EoDlgFileManage::OnBnClickedNewlayer() {
 		Name.format(L"Layer%d", Suffix++);
 	} while (Layers->has(Name));
 
-	OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
-	EoDbLayer* Layer = new EoDbLayer(LayerTableRecord);
+	auto LayerTableRecord {OdDbLayerTableRecord::createObject()};
+	auto Layer {new EoDbLayer(LayerTableRecord)};
 	LayerTableRecord->setName(Name);
 	m_Document->AddLayerTo(Layers, Layer);
 
-	const int ItemCount = m_LayersList.GetItemCount();
+	const auto ItemCount {m_LayersList.GetItemCount()};
 	m_LayersList.InsertItem(ItemCount, Name);
 	m_LayersList.SetItemData(ItemCount, DWORD_PTR(m_Document->GetLayerAt(Name)));
 }
+
 void EoDlgFileManage::OnBnClickedSetcurrent() {
-	const int SelectionMark = m_LayersList.GetSelectionMark();
+	const auto SelectionMark {m_LayersList.GetSelectionMark()};
+
 	if (SelectionMark > -1) {
-		const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
-		OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
+		const auto Layer {(EoDbLayer*)m_LayersList.GetItemData(SelectionMark)};
+		auto LayerTableRecord {Layer->TableRecord()};
 		LayerTableRecord->upgradeOpen();
+
 		if (!LayerTableRecord.isNull()) {
-			OdDbLayerTableRecordPtr PreviousLayer = m_Database->getCLAYER().safeOpenObject();
-			OdString PreviousLayerName = PreviousLayer->getName();
+			OdDbLayerTableRecordPtr PreviousLayer {m_Database->getCLAYER().safeOpenObject()};
+			auto PreviousLayerName {PreviousLayer->getName()};
+			
 			m_Document->GetLayerAt(PreviousLayerName)->MakeActive();
 			theApp.AddStringToMessageList(L"Status of layer <%s> has changed to active\n", PreviousLayerName);
 			m_Database->setCLAYER(LayerTableRecord->objectId());
@@ -304,8 +309,8 @@ BOOL EoDlgFileManage::OnInitDialog() {
 
 	return TRUE;
 }
-void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* pNMHDR, LRESULT* result) {
-	const LPNMLISTVIEW ListViewNotificationMessage = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
+	const LPNMLISTVIEW ListViewNotificationMessage = reinterpret_cast<LPNMLISTVIEW>(notifyStructure);
 
 	if ((ListViewNotificationMessage->uNewState & LVIS_FOCUSED) == LVFIS_FOCUSED) {
 		const int Item = ListViewNotificationMessage->iItem;
@@ -336,8 +341,8 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 		}
 	}
 }
-void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* pNMHDR, LRESULT* result) {
-	const LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
+	const LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(notifyStructure);
 
 	const int Item = pNMItemActivate->iItem;
 	const int SubItem = pNMItemActivate->iSubItem;
@@ -442,7 +447,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* pNMHDR, LRESULT* result)
 
 	*result = 0;
 }
-void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* pNMHDR, LRESULT* result) {
+void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
 	if (m_ClickToColumnStatus) {
 		OnBnClickedSetcurrent();
 	}
@@ -452,16 +457,16 @@ void EoDlgFileManage::UpdateCurrentLayerInfoField() {
 	OdString LayerName = OdDbSymUtil::getSymbolName(m_Database->getCLAYER());
 	GetDlgItem(IDC_STATIC_CURRENT_LAYER)->SetWindowTextW(L"Current Layer: " + LayerName);
 }
-void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR pNMHDR, LRESULT * result) {
-	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
+	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const LVITEM Item = ListViewNotificationDisplayInfo->item;
 	const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 	// <tas="Layer0 should be culled here instead of the EndlabeleditLayers."</tas>
 	result = 0;
 }
-void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR pNMHDR, LRESULT * result) {
-	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(pNMHDR);
+void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
+	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const LVITEM Item = ListViewNotificationDisplayInfo->item;
 	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
@@ -485,8 +490,8 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR pNMHDR, LRESULT
 	}
 	result = 0;
 }
-void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR pNMHDR, LRESULT * result) {
-	const LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(pNMHDR);
+void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR notifyStructure, LRESULT * result) {
+	const LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(notifyStructure);
 	if (pLVKeyDow->wVKey == VK_DELETE) {
 		const int SelectionMark = m_LayersList.GetSelectionMark();
 		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);

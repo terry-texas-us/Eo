@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -335,7 +335,7 @@ double EoDbBlockReference::RowSpacing() const noexcept {
 	return m_RowSpacing;
 }
 
-void EoDbBlockReference::SetName(const CString & name) {
+void EoDbBlockReference::SetName(const wchar_t* name) {
 	m_Name = name;
 }
 
@@ -413,8 +413,8 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	return BlockReference;
 }
 
-OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
-	OdDbBlockReferencePtr BlockReference = OdDbBlockReference::createObject();
+OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
+	auto BlockReference {OdDbBlockReference::createObject()};
 	BlockReference->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(BlockReference);
@@ -426,14 +426,14 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	BlockReference->setLinetype(Linetype);
 
 	// <tas="BlockReference Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
-	OdDbDatabasePtr Database = BlockReference->database();
+	OdDbDatabasePtr Database {BlockReference->database()};
 
-	OdDbBlockTablePtr BlockTable = Database->getBlockTableId().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTablePtr BlockTable {Database->getBlockTableId().safeOpenObject(OdDb::kForRead)};
 
 	CString Name;
 	file.ReadString(Name);
 
-	const auto Block {BlockTable->getAt((LPCWSTR) Name)};
+	const auto Block {BlockTable->getAt((const wchar_t*) Name)};
 
 	BlockReference->setBlockTableRecord(Block);
 
@@ -464,19 +464,22 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockRefere
 	BlockReference->m_ColorIndex = blockReference->colorIndex();
 	BlockReference->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype());
 
-	OdDbBlockTableRecordPtr BlockTableRecordPtr = blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTableRecordPtr BlockTableRecordPtr {blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead)};
 
-	BlockReference->SetName((LPCWSTR) BlockTableRecordPtr->getName());
+	BlockReference->SetName(BlockTableRecordPtr->getName());
 	BlockReference->SetPosition(blockReference->position());
 	BlockReference->SetNormal(blockReference->normal());
 	BlockReference->SetScaleFactors(blockReference->scaleFactors());
 	BlockReference->SetRotation(blockReference->rotation());
 
 	// <tas="Block reference - attributes">
-	OdDbObjectIteratorPtr ObjectIterator = blockReference->attributeIterator();
+	auto ObjectIterator {blockReference->attributeIterator()};
+
 	for (int i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
-		OdDbAttributePtr AttributePtr = ObjectIterator->entity();
+		OdDbAttributePtr AttributePtr {ObjectIterator->entity()};
+
 		if (!AttributePtr.isNull()) {
+
 			if (!AttributePtr->isConstant() && !AttributePtr->isInvisible()) {
 				/* <tas="Attribute pointer is to OdDbText entity. The atribute data is retained by the BlockReference entity, so it can be retrieved when needed.">
 				auto AttributeText {static_cast<OdDbText*>(AttributePtr)};

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 
 #include "EoDbPegFile.h"
@@ -18,8 +18,8 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 		ReadBlocksSection(document);
 		ReadGroupsSection(document);
 	}
-	catch(const LPWSTR szMessage) {
-		::MessageBoxW(0, szMessage, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
+	catch(const wchar_t* Message) {
+		::MessageBoxW(0, Message, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
 	}
 }
 
@@ -162,10 +162,10 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 	}
 }
 void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
-	if (ReadUInt16() != kBlocksSection) {
-		throw L"Exception ReadBlocksSection: Expecting sentinel kBlocksSection.";
-	}
-	OdDbBlockTablePtr BlockTable = m_Database->getBlockTableId().safeOpenObject(OdDb::kForWrite);
+	
+	if (ReadUInt16() != kBlocksSection) { throw L"Exception ReadBlocksSection: Expecting sentinel kBlocksSection."; }
+	
+	OdDbBlockTablePtr BlockTable {m_Database->getBlockTableId().safeOpenObject(OdDb::kForWrite)};
 
 	OdString Name;
 	OdString PathName;
@@ -173,16 +173,17 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 	const unsigned short NumberOfBlocks = ReadUInt16();
 
 	for (unsigned BlockIndex = 0; BlockIndex < NumberOfBlocks; BlockIndex++) {
-		const unsigned short NumberOfPrimitives = ReadUInt16();
+		const auto NumberOfPrimitives {ReadUInt16()};
 
 		ReadString(Name);
-		const unsigned short BlockTypeFlags = ReadUInt16();
-		const OdGePoint3d BasePoint = ReadPoint3d();
-		EoDbBlock* Block = new EoDbBlock(BlockTypeFlags, BasePoint, PathName);
+		const auto BlockTypeFlags {ReadUInt16()};
+		const auto BasePoint {ReadPoint3d()};
+		auto Block {new EoDbBlock(BlockTypeFlags, BasePoint, PathName)};
 
 		document->InsertBlock(Name, Block);
 				
-		OdDbBlockTableRecordPtr BlockTableRecord = m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		OdDbBlockTableRecordPtr BlockTableRecord {m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+
 		if (BlockTable->getAt(Name).isNull()) {
 			BlockTableRecord = OdDbBlockTableRecord::createObject();
 			BlockTableRecord->setName(Name);
@@ -197,9 +198,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 			Block->AddTail(Primitive);
 		}
 	}
-	if (ReadUInt16() != kEndOfSection) {
-		throw L"Exception ReadBlocksSection: Expecting sentinel kEndOfSection.";
-	}
+	if (ReadUInt16() != kEndOfSection) { throw L"Exception ReadBlocksSection: Expecting sentinel kEndOfSection."; }
 }
 void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	if (ReadUInt16() != kGroupsSection) {
@@ -313,7 +312,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 
 	WriteUInt16(kLayerTable);
 
-	const ULONGLONG SavedFilePosition = CFile::GetPosition();
+	const auto SavedFilePosition {CFile::GetPosition()};
 	WriteUInt16(unsigned short(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
@@ -332,7 +331,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	WriteUInt16(kEndOfTable);
 
 	if (NumberOfLayers != document->GetLayerTableSize()) {
-		const ULONGLONG CurrentFilePosition = CFile::GetPosition();
+		const auto CurrentFilePosition {CFile::GetPosition()};
 		CFile::Seek(SavedFilePosition, CFile::begin);
 		WriteUInt16(unsigned short(NumberOfLayers));
 		CFile::Seek(CurrentFilePosition, CFile::begin);
@@ -351,7 +350,7 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 	while (Position != 0) {
 		document->GetNextBlock(Position, Name, Block);
 
-		const ULONGLONG SavedFilePosition = CFile::GetPosition();
+		const auto SavedFilePosition {CFile::GetPosition()};
 		WriteUInt16(0);
 		unsigned short NumberOfPrimitives = 0;
 
@@ -365,7 +364,7 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 			if (Primitive->Write(*this))
 				NumberOfPrimitives++;
 		}
-		const ULONGLONG CurrentFilePosition = CFile::GetPosition();
+		const auto CurrentFilePosition {CFile::GetPosition()};
 		CFile::Seek(SavedFilePosition, CFile::begin);
 		WriteUInt16(NumberOfPrimitives);
 		CFile::Seek(CurrentFilePosition, CFile::begin);

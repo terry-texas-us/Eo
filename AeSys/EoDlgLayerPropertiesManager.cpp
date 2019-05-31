@@ -47,7 +47,7 @@ int EoDlgLayerPropertiesManager::OnCreate(LPCREATESTRUCT createStructure) {
 
 	return 0;
 }
-void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* /* pNMHDR */, LRESULT* result) {
+void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
 	if (HTREEITEM h = m_TreeFilters.GetSelectedItem()) {
 		const OdLyLayerFilter* lf = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(h);
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {
@@ -57,8 +57,8 @@ void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* /* pNMHDR */,
 	*result = 0;
 }
 
-void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* pNMHDR, LRESULT* result) {
-	const LPNMTVKEYDOWN pTVKeyDown = reinterpret_cast<LPNMTVKEYDOWN> (pNMHDR);
+void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
+	const LPNMTVKEYDOWN pTVKeyDown = reinterpret_cast<LPNMTVKEYDOWN> (notifyStructure);
 
 	if (pTVKeyDown->wVKey == VK_DELETE) {
 		if (HTREEITEM SelectedItem = m_TreeFilters.GetSelectedItem()) {

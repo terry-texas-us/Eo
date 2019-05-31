@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -24,11 +24,11 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 			else if (lpofn->hdr.code == CDN_SELCHANGE) {
 				wchar_t FilePath[MAX_PATH];
 				::ZeroMemory(FilePath, MAX_PATH);
-				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM)(LPWSTR)FilePath);
+				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM)(wchar_t*)FilePath);
 
 				CFileStatus	FileStatus;
 				if (CFile::GetStatus(FilePath, FileStatus)) {
-					EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
+					EoDb::FileTypes FileType = AeSys::GetFileType(FilePath);
 					if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 						auto Layer {Document->GetLayerAt(FilePath)};
 						HWND PreviewWindow = ::GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
@@ -53,30 +53,30 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 		case WM_COMMAND: {
 			wchar_t FilePath[MAX_PATH];
 			::ZeroMemory(FilePath, MAX_PATH);
-			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM)(LPWSTR)FilePath);
+			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM)(wchar_t*)FilePath);
 			CFileStatus	FileStatus;
 			if (!CFile::GetStatus(FilePath, FileStatus)) {
 				theApp.WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
 				return (TRUE);
 			}
-			LPWSTR Name = PathFindFileName(FilePath);
+			wchar_t* Name {PathFindFileNameW(FilePath)};
 
-			EoDb::FileTypes FileType = AeSysApp::GetFileType(FilePath);
+			auto FileType {AeSys::GetFileType(FilePath)};
+
 			if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
 				theApp.WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
 				return (TRUE);
 			}
 			switch (LOWORD(wParam)) {
 				case IDC_APPEND: {
-					EoDbLayer* Layer = Document->GetWorkLayer();
+					auto Layer {Document->GetWorkLayer()};
 
 					Document->TracingLoadLayer(FilePath, Layer);
 					Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 					return (TRUE);
 				}
 				case IDC_MAP: {
-					bool FileOpenSuccess = false;
-
+					bool FileOpenSuccess {false};
 					auto Layer {Document->GetLayerAt(Name)};
 
 					if (Layer != nullptr) {
@@ -89,12 +89,13 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 						}
 					}
 					else {
-						OdDbLayerTablePtr Layers = Document->LayerTable(OdDb::kForWrite);
-						OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
+						auto Layers {Document->LayerTable(OdDb::kForWrite)};
+						auto LayerTableRecord {OdDbLayerTableRecord::createObject()};
 						LayerTableRecord->setName(Name);
 						Layer = new EoDbLayer(LayerTableRecord);
 
 						FileOpenSuccess = Document->TracingLoadLayer(FilePath, Layer);
+						
 						if (FileOpenSuccess) {
 							Document->AddLayerTo(Layers, Layer);
 						}
@@ -110,7 +111,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					return (TRUE);
 				}
 				case IDC_TRAP: {
-					EoDbLayer* pLayer = new EoDbLayer(L"", EoDbLayer::kIsResident | EoDbLayer::kIsInternal | EoDbLayer::kIsActive);
+					auto pLayer {new EoDbLayer(L"", EoDbLayer::kIsResident | EoDbLayer::kIsInternal | EoDbLayer::kIsActive)};
 
 					Document->TracingLoadLayer(FilePath, pLayer);
 
@@ -125,8 +126,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					return (TRUE);
 				}
 				case IDC_VIEW:
-					bool FileOpenSuccess = false;
-
+					bool FileOpenSuccess {false};
 					auto Layer {Document->GetLayerAt(Name)};
 
 					if (Layer != nullptr) {
@@ -139,12 +139,13 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 						}
 					}
 					else {
-						OdDbLayerTablePtr Layers = Document->LayerTable(OdDb::kForWrite);
-						OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
+						auto Layers {Document->LayerTable(OdDb::kForWrite)};
+						auto LayerTableRecord = OdDbLayerTableRecord::createObject();
 						LayerTableRecord->setName(Name);
 						Layer = new EoDbLayer(LayerTableRecord);
 
 						FileOpenSuccess = Document->TracingLoadLayer(FilePath, Layer);
+
 						if (FileOpenSuccess) {
 							Document->AddLayerTo(Layers, Layer);
 						}

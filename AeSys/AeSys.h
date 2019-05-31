@@ -112,11 +112,11 @@ private:
 public:
 	unsigned m_ApplicationLook;
 
-	void AddReactor(OdApplicationReactor* reactor);
-	void RemoveReactor(OdApplicationReactor* reactor);
+	void AddReactor(const OdApplicationReactor* reactor);
+	void RemoveReactor(const OdApplicationReactor* reactor);
 	std::vector<OdSmartPtr<OdApplicationReactor>> m_aAppReactors;
 
-	OdDbDatabasePtr openFile(LPCWSTR pathName);
+	OdDbDatabasePtr openFile(const wchar_t* pathName);
 	void setPartialOption(bool partial) noexcept { m_bPartial = partial; }
 	void setRecoverOption(bool recover) noexcept { m_bRecover = recover; }
 
@@ -126,7 +126,7 @@ public:
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
 	void RefreshCommandMenu();
 	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
-	static CString BrowseWithPreview(HWND parentWindow, LPCWSTR filter, bool multiple = false);
+	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
 
 	bool printingViaBitmap() const noexcept { return m_bEnablePrintPreviewViaBitmap != 0; }
 	bool doubleBufferEnabled() const noexcept { return m_bEnableDoubleBuffer != 0; }
@@ -165,39 +165,48 @@ public:
 	OdString recentGsDevicePath() const;
 	void setRecentGsDevicePath(const OdString& vectorizerPath);
 
-//	void setStatusText(LPCTSTR msg);
-//	void setStatusText(int nCol, LPCTSTR msg);
+//	void setStatusText(const wchar_t* msg);
+//	void setStatusText(int nCol, const wchar_t* msg);
 
-	void SetStatusPaneTextAt(int index, LPCWSTR newText);
+	void SetStatusPaneTextAt(int index, const wchar_t* newText);
 
 	void addRef() noexcept override /* ExHostAppServices */ {}
 	void release() noexcept override /* ExHostAppServices */ {}
 
 	OdDbHostAppProgressMeter* newProgressMeter() override /* ExHostAppServices */;
+	
 	void start(const OdString& displayString = OdString::kEmpty) override /* ExHostAppServices */;
+	
 	void stop() override /* ExHostAppServices */;
+	
 	void meterProgress() override /* ExHostAppServices */;
+	
 	void setLimit(int max) noexcept override /* ExHostAppServices */;
+	
 	void warning(const char* warnVisGroup, const OdString& message) override /* ExHostAppServices */;
 	
-	static int messageBox(HWND parent, LPCTSTR caption, LPCTSTR text, unsigned type) noexcept {
+	static int messageBox(HWND parent, const wchar_t* caption, const wchar_t* text, unsigned type) noexcept {
 		return ::MessageBox(parent, text, caption, type);
 	}
-	int messageBox(LPCTSTR caption, LPCTSTR text, unsigned type) {
+	
+	int messageBox(const wchar_t* caption, const wchar_t* text, unsigned type) {
 		auto MainWindow {GetMainWnd()};
 		
 		if (MainWindow == nullptr) { return 0; }
 
 		return messageBox(MainWindow->m_hWnd, caption, text, type);
 	}
-	void reportError(HWND parent, LPCTSTR contextMessage, const OdError& error) {
-		messageBox(parent, contextMessage, (LPCTSTR)error.description(), MB_OK | MB_ICONERROR);
+	
+	void reportError(HWND parent, const wchar_t* contextMessage, const OdError& error) {
+		messageBox(parent, contextMessage, error.description(), MB_OK | MB_ICONERROR);
 	}
-	void reportError(LPCWSTR contextMessage, const OdError& error) {
-		messageBox(contextMessage, (LPCWSTR)error.description(), MB_OK | MB_ICONERROR);
+	
+	void reportError(const wchar_t* contextMessage, const OdError& error) {
+		messageBox(contextMessage, error.description(), MB_OK | MB_ICONERROR);
 	}
-	void reportError(LPCWSTR contextMessage, unsigned error) {
-		messageBox(contextMessage, (LPCWSTR)getErrorDescription(error), MB_OK | MB_ICONERROR);
+	
+	void reportError(const wchar_t* contextMessage, unsigned error) {
+		messageBox(contextMessage, getErrorDescription(error), MB_OK | MB_ICONERROR);
 	}
 
 	OdRxClass* databaseClass() const override /* ExHostAppServices */;
@@ -206,9 +215,9 @@ public:
 	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType) override /* ExHostAppServices */;
 	const OdString product() override /* ExHostAppServices */;
 
-	virtual OdString getTempPath() const override /* ExSystemServices*/;
+	OdString getTempPath() const override /* ExSystemServices*/;
 
-	BOOL ProcessShellCommand(CCommandLineInfo& rCmdInfo);
+	BOOL ProcessShellCommand(CCommandLineInfo& rCmdInfo); // hides non-virtual function of parent
 	
 	void initPlotStyleSheetEnv();
 
@@ -216,7 +225,7 @@ public:
 	int ExitInstance() override /* CWinAppEx (CWinThread) */;
 	BOOL OnIdle(long count) override /* CWinAppEx (CWinThread) */;
 
-	bool getSAVEROUNDTRIP() const noexcept { return (m_bSaveRoundTrip != 0); }
+	bool getSAVEROUNDTRIP() const noexcept override { return (m_bSaveRoundTrip != 0); }
 	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override /* ExHostAppServices */;
 	OdDbUndoControllerPtr newUndoController() override /* ExHostAppServices */;
 	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
@@ -244,7 +253,7 @@ public:
 	void setActiveBackground(const ODCOLORREF& color) noexcept { m_background = color & 0xffffff; }
 	const ODCOLORREF* curPalette() const;
 
-	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = nullptr, OdDbBaseDatabase* database = nullptr, unsigned long flags = 0);
+	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = nullptr, OdDbBaseDatabase* database = nullptr, unsigned long flags = 0) override;
 
 //	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 //	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
@@ -315,15 +324,15 @@ public:
 
 public:
 	void AddModeInformationToMessageList();
-	void AddStringToMessageList(LPCWSTR message);
-	void AddStringToMessageList(LPCWSTR message, LPCWSTR string);
+	void AddStringToMessageList(const wchar_t* message);
+	void AddStringToMessageList(const wchar_t* message, const wchar_t* string);
 	void AddStringToMessageList(unsigned stringResourceIdentifier);
-	void AddStringToMessageList(unsigned stringResourceIdentifier, LPCWSTR string);
-	void AddStringToReportList(LPCWSTR message);
+	void AddStringToMessageList(unsigned stringResourceIdentifier, const wchar_t* string);
+	void AddStringToReportList(const wchar_t* message);
 
-	int ConfirmMessageBox(unsigned stringResourceIdentifier, LPCWSTR string);
+	int ConfirmMessageBox(unsigned stringResourceIdentifier, const wchar_t* string);
 	void WarningMessageBox(unsigned stringResourceIdentifier);
-	void WarningMessageBox(unsigned stringResourceIdentifier, LPCWSTR string);
+	void WarningMessageBox(unsigned stringResourceIdentifier, const wchar_t* string);
 
 	int	ArchitecturalUnitsFractionPrecision() const noexcept;
 	void BuildModeSpecificAcceleratorTable();
@@ -342,7 +351,7 @@ public:
 	CString FormatAngle(double angle, int width = 8, int precision = 3) const;
 	CString FormatLength(double length, Units units, int width = 16, int precision = 8) const;
 	
-	void FormatLength_s(LPWSTR lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
+	void FormatLength_s(wchar_t* lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
 	OdGePoint3d GetCursorPosition();
 	static EoDb::FileTypes GetFileType(const OdString& file);
 	COLORREF GetHotColor(short colorIndex) noexcept;
@@ -368,8 +377,8 @@ public:
 	void LoadSimplexStrokeFont(const CString& pathName);
 	CString LoadStringResource(unsigned resourceIdentifier) const;
 	bool ModeInformationOverView() const noexcept;
-	double ParseLength(LPWSTR lengthAsString);
-	double ParseLength(Units units, LPWSTR);
+	double ParseLength(const wchar_t* lengthAsString);
+	double ParseLength(Units units, const wchar_t* lengthAsString);
 	double PenWidthsGet(short colorIndex) noexcept;
 	int PrimaryMode() const noexcept;
 	void ReleaseSimplexStrokeFont() noexcept;

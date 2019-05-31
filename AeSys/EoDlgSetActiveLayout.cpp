@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "EoDlgSetActiveLayout.h"
 #include "OdArray.h"
 #include "DbDictionary.h"
@@ -159,24 +159,24 @@ void EoDlgSetActiveLayout::OnNew() {
 	FillListBox();
 }
 void EoDlgSetActiveLayout::OnFromTemplate() {
-	CString Filter(L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||");
-	CString FileName = theApp.BrowseWithPreview(/*GetMainWnd()->*/GetSafeHwnd(), Filter);
+	OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
+	CString FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
 	
 	if (FileName.GetLength() == 0) { return; }
 
-	OdDbDatabasePtr Database = theApp.readFile(OdString(FileName));
+	auto Database {theApp.readFile(OdString(FileName))};
 	
 	if (Database.isNull()) { return; }
 
-	OdDbLayoutManagerPtr pLManager = m_pDb->appServices()->layoutManager();
-	OdDbLayoutPtr pLayout = OdDbLayout::cast(pLManager->findLayoutNamed(Database, L"Layout1").openObject());
+	auto LayoutManager {m_pDb->appServices()->layoutManager()};
+	OdDbLayoutPtr Layout {OdDbLayout::cast(LayoutManager->findLayoutNamed(Database, L"Layout1").openObject())};
 	
-	if (pLayout.isNull()) { return; }
+	if (Layout.isNull()) { return; }
 
 	CString strNewName;
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
 	try {
-		pLManager->cloneLayout(m_pDb, pLayout, OdString(strNewName));
+		LayoutManager->cloneLayout(m_pDb, Layout, OdString(strNewName));
 	} catch (const OdError & Error) {
 		theApp.reportError(L"Error Cloning Layout", Error);
 		return;

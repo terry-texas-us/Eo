@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "EoDlgNamedViews.h"
 #include "DbLayout.h"
@@ -164,7 +164,7 @@ void EoDlgNamedViews::OnSetcurrentButton() {
 		}
 	}
 }
-void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* /*pNMHDR*/, LRESULT* /*pResult*/) {
+void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* /*pResult*/) {
 	OnSetcurrentButton();
 }
 

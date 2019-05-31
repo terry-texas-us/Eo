@@ -30,126 +30,129 @@ BEGIN_MESSAGE_MAP(EoDlgEditProperties, CDialog)
 	ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
 END_MESSAGE_MAP()
 
-static OdString FormatValue(const OdResBuf* rb) {
-	OdString s;
+static OdString FormatValue(const OdResBuf* resourceBuffer) {
 
-	if (rb->restype() == OdResBuf::kRtEntName || rb->restype() == OdResBuf::kDxfEnd) {
-		const OdDbObjectId id = rb->getObjectId(0);
-		s = id.getHandle().ascii();
-		return s;
+	if (resourceBuffer->restype() == OdResBuf::kRtEntName || resourceBuffer->restype() == OdResBuf::kDxfEnd) {
+		const auto ObjectId {resourceBuffer->getObjectId(0)};
+		return ObjectId.getHandle().ascii();
 	}
-	switch (OdDxfCode::_getType(rb->restype())) {
+	OdString FormattedValue;
+	switch (OdDxfCode::_getType(resourceBuffer->restype())) {
 		case OdDxfCode::Unknown: // to use RT codes
-			if (rb->restype() == OdResBuf::kRtColor)
-				s = OdDbUnitsFormatter::formatColor(rb->getColor());
+			if (resourceBuffer->restype() == OdResBuf::kRtColor) {
+				FormattedValue = OdDbUnitsFormatter::formatColor(resourceBuffer->getColor()); 
+			}
 			break;
 		case OdDxfCode::Name:
 		case OdDxfCode::String:
 		case OdDxfCode::Handle:
 		case OdDxfCode::LayerName:
-			s = rb->getString();
+			FormattedValue = resourceBuffer->getString();
 			break;
 		case OdDxfCode::Bool:
-			s.format(L"%d", rb->getBool());
+			FormattedValue.format(L"%d", resourceBuffer->getBool());
 			break;
 		case OdDxfCode::Integer8:
-			s.format(L"%d", rb->getInt8());
+			FormattedValue.format(L"%d", resourceBuffer->getInt8());
 			break;
 		case OdDxfCode::Integer16:
-			s.format(L"%d", rb->getInt16());
+			FormattedValue.format(L"%d", resourceBuffer->getInt16());
 			break;
 		case OdDxfCode::Integer32:
-			s.format(L"%d", rb->getInt32());
+			FormattedValue.format(L"%d", resourceBuffer->getInt32());
 			break;
 		case OdDxfCode::Integer64:
-			s.format(OD_T(PRId64), rb->getInt64());
+			FormattedValue.format(L"%I64d", resourceBuffer->getInt64());
 			break;
 		case OdDxfCode::Double:
 		case OdDxfCode::Angle:
-			s.format(L"%g", rb->getDouble());
+			FormattedValue.format(L"%g", resourceBuffer->getDouble());
 			break;
 		case OdDxfCode::Point:
-			s.format(L"%g %g %g", rb->getPoint3d().x, rb->getPoint3d().y, rb->getPoint3d().z);
+			FormattedValue.format(L"%g %g %g", resourceBuffer->getPoint3d().x, resourceBuffer->getPoint3d().y, resourceBuffer->getPoint3d().z);
 			break;
 		case OdDxfCode::ObjectId:
 		case OdDxfCode::SoftPointerId:
 		case OdDxfCode::HardPointerId:
 		case OdDxfCode::SoftOwnershipId:
 		case OdDxfCode::HardOwnershipId:
-			s = rb->getHandle().ascii();
+			FormattedValue = resourceBuffer->getHandle().ascii();
 			break;
 		default:
 			break;
 	}
-	return s;
+	return FormattedValue;
 }
-static OdString FormatCode(const OdResBuf * rb) {
-	OdString s;
-	s.format(L"%d", rb->restype());
-	return s;
+
+static OdString FormatCode(const OdResBuf* resourceBuffer) {
+	OdString FormattedCode;
+	FormattedCode.format(L"%d", resourceBuffer->restype());
+	return FormattedCode;
 }
+
 BOOL EoDlgEditProperties::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_propList.InsertColumn(0, L"DXF code", LVCFMT_LEFT, 180);
 	m_propList.InsertColumn(1, L"Value", LVCFMT_LEFT, 120);
 
-	m_pResBuf = oddbEntGet(m_pObjectId, L"*");
+	m_ResourceBuffer = oddbEntGet(m_pObjectId, L"*");
 	int i = 0;
-	for (OdResBufPtr rb = m_pResBuf; !rb.isNull(); ++i, rb = rb->next()) {
-		m_propList.InsertItem(i, FormatCode(rb));
-		m_propList.SetItemText(i, 1, FormatValue(rb));
+	for (OdResBufPtr ResourceBuffer = m_ResourceBuffer; !ResourceBuffer.isNull(); ++i, ResourceBuffer = ResourceBuffer->next()) {
+		m_propList.InsertItem(i, FormatCode(ResourceBuffer));
+		m_propList.SetItemText(i, 1, FormatValue(ResourceBuffer));
 	}
 	return TRUE;
 }
+
 void EoDlgEditProperties::OnButton() {
 	UpdateData();
-	
-	if (m_nCurItem == -1) { return; }
-	
-	OdResBufPtr rb = m_pResBuf;
-	int i = 0;
-	while (!rb.isNull() && i < m_nCurItem) {
-		++i;
-		rb = rb->next();
-	}
-	if (rb.isNull()) { return; }
 
-	switch (rb->restype()) {
+	if (m_nCurItem == -1) { return; }
+
+	auto ResourceBuffer {m_ResourceBuffer};
+	int i = 0;
+	while (!ResourceBuffer.isNull() && i < m_nCurItem) {
+		++i;
+		ResourceBuffer = ResourceBuffer->next();
+	}
+	if (ResourceBuffer.isNull()) { return; }
+
+	switch (ResourceBuffer->restype()) {
 		case OdResBuf::kRtColor:
-			rb->setColor(OdDbUnitsFormatter::unformatColor((LPCWSTR) m_sValue));
+			ResourceBuffer->setColor(OdDbUnitsFormatter::unformatColor((const wchar_t*)m_sValue));
 			break;
 		default:
-			switch (OdDxfCode::_getType(rb->restype())) {
+			switch (OdDxfCode::_getType(ResourceBuffer->restype())) {
 				case OdDxfCode::Name:
 				case OdDxfCode::String:
 				case OdDxfCode::Handle:
 				case OdDxfCode::LayerName:
-					rb->setString((LPCWSTR) m_sValue);
+					ResourceBuffer->setString((const wchar_t*)m_sValue);
 					break;
 				case OdDxfCode::Bool:
-					rb->setBool(_wtoi(m_sValue) != 0);
+					ResourceBuffer->setBool(_wtoi(m_sValue) != 0);
 					break;
 				case OdDxfCode::Integer8:
-					rb->setInt8(signed char(_wtoi(m_sValue)));
+					ResourceBuffer->setInt8(signed char(_wtoi(m_sValue)));
 					break;
 				case OdDxfCode::Integer16:
-					rb->setInt16(short(_wtoi(m_sValue)));
+					ResourceBuffer->setInt16(short(_wtoi(m_sValue)));
 					break;
 				case OdDxfCode::Integer32:
-					rb->setInt32(_wtoi(m_sValue));
+					ResourceBuffer->setInt32(_wtoi(m_sValue));
 					break;
 				case OdDxfCode::Double:
 				case OdDxfCode::Angle:
-					rb->setDouble(wcstod(m_sValue, 0));
+					ResourceBuffer->setDouble(wcstod(m_sValue, 0));
 					break;
 				case OdDxfCode::Point:
 				{
-					const int sp1 = m_sValue.Find(' ');
-					const int sp2 = m_sValue.Find(' ', sp1 + 1);
-					double x = wcstod(m_sValue.Left(sp1), 0);
-					double y = wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0);
-					double z = wcstod(m_sValue.Mid(sp2 + 1), 0);
-					rb->setPoint3d(OdGePoint3d(x, y, z));
+					const int sp1 {m_sValue.Find(' ')};
+					const int sp2 {m_sValue.Find(' ', sp1 + 1)};
+					double x {wcstod(m_sValue.Left(sp1), 0)};
+					double y {wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0)};
+					double z {wcstod(m_sValue.Mid(sp2 + 1), 0)};
+					ResourceBuffer->setPoint3d(OdGePoint3d(x, y, z));
 					break;
 				}
 				case OdDxfCode::ObjectId:
@@ -157,7 +160,7 @@ void EoDlgEditProperties::OnButton() {
 				case OdDxfCode::HardPointerId:
 				case OdDxfCode::SoftOwnershipId:
 				case OdDxfCode::HardOwnershipId:
-					rb->setHandle(OdDbHandle((LPCWSTR) m_sValue));
+					ResourceBuffer->setHandle(OdDbHandle(m_sValue));
 					break;
 				default:
 					break;
@@ -165,24 +168,29 @@ void EoDlgEditProperties::OnButton() {
 	}
 	m_propList.SetItemText(m_nCurItem, 1, m_sValue);
 	try {
-		oddbEntMod(m_pObjectId, m_pResBuf);
-	} catch (const OdError & Error) {
+		oddbEntMod(m_pObjectId, m_ResourceBuffer);
+	}
+	catch (const OdError& Error) {
 		AfxMessageBox(Error.description());
 	}
 }
-void EoDlgEditProperties::OnClickProplist(NMHDR* /*pNMHDR*/, LRESULT * result) {
+
+void EoDlgEditProperties::OnClickProplist(NMHDR* notifyStructure, LRESULT* result) {
 	OnSetfocusValue();
 	*result = 0;
 }
+
 void EoDlgEditProperties::OnSetfocusValue() {
 	m_nCurItem = m_propList.GetSelectionMark();
 	m_doset.EnableWindow(m_nCurItem != -1);
+
 	if (m_nCurItem != -1) {
 		m_sValue = m_propList.GetItemText(m_nCurItem, 1);
 		UpdateData(FALSE);
 	}
 }
-void EoDlgEditProperties::OnKeydownProplist(NMHDR* /*pNMHDR*/, LRESULT * result) {
+
+void EoDlgEditProperties::OnKeydownProplist(NMHDR* notifyStructure, LRESULT* result) {
 	OnSetfocusValue();
 	*result = 0;
 }

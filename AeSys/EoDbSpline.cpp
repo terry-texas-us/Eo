@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -365,9 +365,8 @@ EoDbSpline* EoDbSpline::Create(OdDbSplinePtr & spline) {
 
 	spline->getNurbsData(Degree, Rational, Closed, Periodic, ControlPoints, Knots, Weights, Tolerance);
 
-	// <tas="Only creating non-periodic splines."></tas>
 	if (Periodic) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Periodic %s was not converted ...\n", (LPCWSTR) spline->desc()->name());
+	// <tas="Only creating non-periodic splines."></tas>
 	} else {
 		Spline->Set(Degree, Knots, ControlPoints, Weights, Periodic);
 		// ConvertCurveData(entity, Spline);

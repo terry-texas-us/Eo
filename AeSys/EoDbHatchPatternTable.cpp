@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "AeSysApp.h"
+#include "AeSys.h"
 
 #include "HatchPatternManager.h"
 #include "EoDbHatchPatternTable.h"
@@ -30,9 +30,9 @@ OdString EoDbHatchPatternTable::LegacyHatchPatternName(const int index) {
 /// <remarks> No longer including the total length of all dash components in the table.</remarks>
 void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	CFileException e;
-	CStdioFile fl;
+	CStdioFile StreamFile;
 
-	if (!fl.Open(fileName, CFile::modeRead | CFile::typeText, &e)) { return; }
+	if (!StreamFile.Open(fileName, CFile::modeRead | CFile::typeText, &e)) { return; }
 	// <tas="failure to open and then continue Pattern file, but still continues."</tas>
 
 	auto HatchPatternManager {theApp.patternManager()};
@@ -41,19 +41,19 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	OdHatchPattern HatchPattern;
 
 	wchar_t	LineText[128];
-	while (fl.ReadString(LineText, sizeof(LineText) / sizeof(wchar_t) - 1)) {
+	while (StreamFile.ReadString(LineText, sizeof(LineText) / sizeof(wchar_t) - 1)) {
 		if (LineText[0] == '*') { // New Hatch pattern
 
 			if (!PatternName.isEmpty()) {
 				HatchPatternManager->appendPattern(OdDbHatch::kCustomDefined, PatternName, HatchPattern);
 				HatchPattern.clear();
 			}
-			LPWSTR NextToken = nullptr;
+			wchar_t* NextToken {nullptr};
 			PatternName = wcstok_s(&LineText[1], L",\n", &NextToken);
 			PatternName.trimRight();
 		} else if (LineText[0] != ';' || LineText[1] != ';') {
 			const wchar_t Delimiters[] = L",\0";
-			LPWSTR NextToken = nullptr;
+			wchar_t* NextToken {nullptr};
 
 			OdHatchPatternLine HatchPatternLine;
 
@@ -64,8 +64,9 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 			HatchPatternLine.m_patternOffset.y = _wtof(wcstok_s(nullptr, Delimiters, &NextToken));
 			HatchPatternLine.m_dashes.clear();
 
-			LPWSTR Token = wcstok_s(nullptr, Delimiters, &NextToken);
-			while (Token != 0) {
+			wchar_t* Token {wcstok_s(nullptr, Delimiters, &NextToken)};
+
+			while (Token != nullptr) {
 				HatchPatternLine.m_dashes.append(_wtof(Token));
 				Token = wcstok_s(nullptr, Delimiters, &NextToken);
 			}
@@ -82,7 +83,7 @@ OdResult EoDbHatchPatternTable::RetrieveHatchPattern(const OdString& hatchPatter
 	if (PatternLoaded != eOk) {
 		// <tas="Trying to load from standard dwg hatch pattern set."/>
 		PatternLoaded = Manager->retrievePattern(OdDbHatch::kPreDefined, hatchPatternName, OdDb::kEnglish, hatchPattern);
-		ATLTRACE2(atlTraceGeneral, 1, L"Hatch pattern <%s> using Predefined dwg patterns.\n", (LPCWSTR) hatchPatternName);
+		ATLTRACE2(atlTraceGeneral, 1, L"Hatch pattern <%s> using Predefined dwg patterns.\n", (const wchar_t*) hatchPatternName);
 	}
 	return PatternLoaded;
 }

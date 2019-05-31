@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "AeSysApp.h"
+#include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -133,7 +133,7 @@ void EoDbHatch::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Interior Style;" + FormatInteriorStyle() + L"\t";
-	extra += L"Interior Style Name;" + CString((LPCWSTR) EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex)) + L"\t";
+	extra += L"Interior Style Name;" + CString((const wchar_t*) EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex)) + L"\t";
 	CString NumberOfVertices;
 	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
 	extra += NumberOfVertices;
@@ -709,7 +709,7 @@ void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 
 		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
 			OdString ReportItem;
-			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", (LPCWSTR) HatchName, (LPCWSTR) Hatch->patternName());
+			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", (const wchar_t*) HatchName, (const wchar_t*) Hatch->patternName());
 			theApp.AddStringToReportList(ReportItem);
 		} else {
 			Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);

@@ -35,7 +35,7 @@ protected:
 
 protected:
     void OnSetcurrentButton();
-    void OnDblclkNamedviews(NMHDR* pNMHDR, LRESULT* pResult);
+    void OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* pResult);
     void OnNewButton();
     void OnUpdateLayersButton();
     void OnDeleteButton();
