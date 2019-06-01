@@ -203,16 +203,16 @@ unsigned short AeSysDoc::ClipboardData::m_FormatR19 = (CLIPFORMAT)::RegisterClip
 AeSysDoc* g_pDoc = nullptr;
 
 AeSysDoc::AeSysDoc() noexcept
-	: m_bPartial(false)
-	, m_pViewer(nullptr)
-	, m_SaveAsType(OdDb::kDwg)
-	, m_SaveAsType_(EoDb::kUnknown)
-	, m_SaveAsVer(OdDb::kDHL_CURRENT)
+	: m_pViewer(nullptr)
 	, m_bConsole(false)
 	, m_bConsoleResponded(false)
 	, m_nCmdActive(0)
 	, m_bLayoutSwitchable(false)
-	, m_DisableClearSelection(false) {
+	, m_DisableClearSelection(false)
+	, m_bPartial(false)
+	, m_SaveAsVer(OdDb::kDHL_CURRENT)
+	, m_SaveAsType(OdDb::kDwg)
+	, m_SaveAsType_(EoDb::kUnknown) {
 	m_WorkLayer = nullptr;
 	g_pDoc = this;
 
@@ -465,9 +465,9 @@ void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 }
 
 void AeSysDoc::OnCloseVectorizer(AeSysView* view) {
-	if (view != m_pViewer) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Vectorizer does not match expected viewer\n");
-	}
+	
+	if (view != m_pViewer) { TRACE0("Vectorizer does not match expected viewer\n"); }
+
 	m_pViewer = nullptr;
 }
 
@@ -500,7 +500,7 @@ OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
 		SelectionSet = OdDbSelectionSet::createObject(m_DatabasePtr);
 		CommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", SelectionSet);
 	}
-	ATLTRACE2(atlTraceGeneral, 0, L"Working Selection set contains %d items\n", SelectionSet->numEntities());
+	TRACE1("Working Selection set contains %d items\n", SelectionSet->numEntities());
 	return SelectionSet;
 }
 
@@ -824,10 +824,10 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 				} else if (commandId >= _APS_NEXT_COMMAND_VALUE && commandId < _APS_NEXT_COMMAND_VALUE + 100) { // annotation scales
 
 					if (messageCategory == CN_COMMAND) {
-						const int SelectedScale = commandId - _APS_NEXT_COMMAND_VALUE - 1;
-						OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = m_DatabasePtr->objectContextManager()->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)->newIterator();
+						const unsigned SelectedScale {commandId - _APS_NEXT_COMMAND_VALUE - 1};
+						OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator {m_DatabasePtr->objectContextManager()->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)->newIterator()};
 
-						for (int ScaleIndex = 0; !ScalesCollectionIterator->done(); ScalesCollectionIterator->next()) {
+						for (unsigned ScaleIndex = 0; !ScalesCollectionIterator->done(); ScalesCollectionIterator->next()) {
 
 							if (ScaleIndex++ == SelectedScale) {
 								m_DatabasePtr->setCANNOSCALE(OdDbAnnotationScalePtr(ScalesCollectionIterator->getContext()));
@@ -2513,9 +2513,9 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 void AeSysDoc::OnPrimModifyAttributes() {
 	auto ActiveView {AeSysView::GetActiveView()};
 
-	const OdGePoint3d pt = ActiveView->GetCursorPosition();
+	const auto CurrentPnt {ActiveView->GetCursorPosition()};
 
-	const auto Group {ActiveView->SelectGroupAndPrimitive(pt)};
+	const auto Group {ActiveView->SelectGroupAndPrimitive(CurrentPnt)};
 
 	if (Group != nullptr) {
 		ActiveView->EngagedPrimitive()->ModifyState();

@@ -73,23 +73,23 @@ private:
 	int m_nPercent;
 	CString m_Msg;
 
-	BOOL m_bDiscardBackFaces;
-	BOOL m_bEnableDoubleBuffer;
-	BOOL m_bBlocksCache;
-	BOOL m_bGsDevMultithread;
+	bool m_DiscardBackFaces;
+	bool m_EnableDoubleBuffer;
+	bool m_BlocksCache;
+	bool m_GsDevMultithread;
 	unsigned m_nMtRegenThreads;
-	BOOL m_bEnablePrintPreviewViaBitmap;
-	BOOL m_bUseGsModel;
-	BOOL m_bEnableHLR;
-	BOOL m_bContextColors;
-	BOOL m_bTTFPolyDraw;
-	BOOL m_bTTFTextOut;
-	BOOL m_bTTFCache;
-	BOOL m_bDynamicSubEntHlt;
-	BOOL m_bGDIGradientsAsBitmap;
-	BOOL m_bGDIGradientsAsPolys;
+	bool m_EnablePrintPreviewViaBitmap;
+	bool m_UseGsModel;
+	bool m_EnableHLR;
+	bool m_ContextColors;
+	bool m_TTFPolyDraw;
+	bool m_TTFTextOut;
+	bool m_TTFCache;
+	bool m_DynamicSubEntHlt;
+	bool m_GDIGradientsAsBitmap;
+	bool m_GDIGradientsAsPolys;
 	unsigned char m_nGDIGradientsAsPolysThreshold;
-	BOOL m_bDisableAutoRegen;
+	bool m_DisableAutoRegen;
 	ODCOLORREF m_background;
 	unsigned long m_thisThreadID;
 	unsigned m_numCustomCommands;
@@ -128,32 +128,32 @@ public:
 	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
 	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
 
-	bool printingViaBitmap() const noexcept { return m_bEnablePrintPreviewViaBitmap != 0; }
-	bool doubleBufferEnabled() const noexcept { return m_bEnableDoubleBuffer != 0; }
-	bool blocksCacheEnabled() const noexcept { return m_bBlocksCache != 0; }
-	bool gsDeviceMultithreadEnabled() const noexcept { return m_bGsDevMultithread != 0; }
+	bool printingViaBitmap() const noexcept { return m_EnablePrintPreviewViaBitmap; }
+	bool doubleBufferEnabled() const noexcept { return m_EnableDoubleBuffer; }
+	bool blocksCacheEnabled() const noexcept { return m_BlocksCache; }
+	bool gsDeviceMultithreadEnabled() const noexcept { return m_GsDevMultithread; }
 	unsigned mtRegenThreadsCount() const noexcept { return m_nMtRegenThreads; }
-	bool useGsModel() const noexcept { return m_bUseGsModel != 0; }
-	bool useSoftwareHLR() const noexcept { return m_bEnableHLR != 0; }
-	bool enableContextualColors() const noexcept { return m_bContextColors != 0; }
-	bool enableTTFPolyDraw() const noexcept { return m_bTTFPolyDraw != 0; }
-	bool enableTTFTextOut() const noexcept { return m_bTTFTextOut != 0; }
-	bool enableTTFCache() const noexcept { return m_bTTFCache != 0; }
-	bool enableDynamicSubEntHlt() const noexcept { return m_bDynamicSubEntHlt != 0; }
-	bool enableGDIGradientsAsBitmap() const noexcept { return m_bGDIGradientsAsBitmap != 0; }
-	bool enableGDIGradientsAsPolys() const noexcept { return m_bGDIGradientsAsPolys != 0; }
+	bool useGsModel() const noexcept { return m_UseGsModel; }
+	bool useSoftwareHLR() const noexcept { return m_EnableHLR; }
+	bool enableContextualColors() const noexcept { return m_ContextColors; }
+	bool enableTTFPolyDraw() const noexcept { return m_TTFPolyDraw; }
+	bool enableTTFTextOut() const noexcept { return m_TTFTextOut; }
+	bool enableTTFCache() const noexcept { return m_TTFCache; }
+	bool enableDynamicSubEntHlt() const noexcept { return m_DynamicSubEntHlt; }
+	bool enableGDIGradientsAsBitmap() const noexcept { return m_GDIGradientsAsBitmap; }
+	bool enableGDIGradientsAsPolys() const noexcept { return m_GDIGradientsAsPolys; }
 	unsigned char gdiGradientsAsPolysThreshold() const noexcept { return m_nGDIGradientsAsPolysThreshold; }
-	bool disableAutoRegen() const noexcept { return m_bDisableAutoRegen != 0; }
-	bool discardBackFaces() const noexcept { return m_bDiscardBackFaces != 0; }
+	bool disableAutoRegen() const noexcept { return m_DisableAutoRegen; }
+	bool discardBackFaces() const noexcept { return m_DiscardBackFaces; }
 	enum DisplayFields {
 		kSchemaFields,
 		kDxfFields,
 		kDwgFields
 	};
-	int  m_displayFields;
-	BOOL m_bSaveRoundTrip;
-	BOOL m_bSavePreview;
-	BOOL m_bSaveWithPassword;
+	int m_displayFields;
+	bool m_SaveRoundTrip;
+	bool m_SavePreview;
+	bool m_SaveWithPassword;
 
 	EoDlgAudit* m_pAuditDlg;
 //	CTaskBarWin7Ext m_tbExt;
@@ -225,15 +225,15 @@ public:
 	int ExitInstance() override /* CWinAppEx (CWinThread) */;
 	BOOL OnIdle(long count) override /* CWinAppEx (CWinThread) */;
 
-	bool getSAVEROUNDTRIP() const noexcept override { return (m_bSaveRoundTrip != 0); }
+	bool getSAVEROUNDTRIP() const noexcept override { return m_SaveRoundTrip; }
 	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override /* ExHostAppServices */;
 	OdDbUndoControllerPtr newUndoController() override /* ExHostAppServices */;
 	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
 
 //	void OnOptionsRenderingdeviceVectorize();
 
-	bool getSavePreview() noexcept { return (m_bSavePreview != 0); }
-	bool getSaveWithPassword() noexcept { return (m_bSaveWithPassword != 0); }
+	bool getSavePreview() noexcept { return m_SavePreview; }
+	bool getSaveWithPassword() noexcept { return m_SaveWithPassword; }
 
 	void SetRecentCommand(const OdString& command);
 	const OdString& GetRecentCmd() noexcept { return m_RecentCommand; }
@@ -366,7 +366,7 @@ public:
 	OdGePoint3d HomePointGet(int i) noexcept;
 	void HomePointSave(int i, const OdGePoint3d& point) noexcept;
 	void InitGbls(CDC* deviceContext);
-	BOOL InitializeTeigha();
+	bool InitializeOda();
 	bool IsClipboardDataGroups() noexcept;
 	bool IsClipboardDataImage() noexcept;
 	bool IsClipboardDataText() noexcept;

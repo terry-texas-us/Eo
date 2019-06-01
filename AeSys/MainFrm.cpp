@@ -78,7 +78,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	UpdateMDITabs(FALSE);
 
 	if (!m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create menubar\n");
+		TRACE0("Failed to create menubar\n");
 		return -1;
 	}
 	m_MenuBar.SetPaneStyle(m_MenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
@@ -93,7 +93,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	const unsigned long Style {WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC};
 	
 	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create toolbar\n");
+		TRACE0("Failed to create toolbar\n");
 		return -1;
 	}
 	m_StandardToolBar.SetWindowTextW(L"Standard");
@@ -102,7 +102,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	InitUserToolbars(nullptr, FirstUserToolBarId, LastUserToolBarId);
 
 	if (!m_StatusBar.Create(this)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create status bar\n");
+		TRACE0("Failed to create status bar\n");
 		return -1;
 	}
 	m_StatusBar.SetIndicators(Indicators, sizeof(Indicators) / sizeof(unsigned));
@@ -121,7 +121,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
 
 	if (!CreateDockingWindows()) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create docking windows\n");
+		TRACE0("Failed to create docking windows\n");
 		return -1;
 	}
 	m_OutputPane.EnableDocking(CBRS_ALIGN_ANY);
@@ -168,13 +168,13 @@ BOOL CMainFrame::CreateDockingWindows() {
 	auto Caption {theApp.LoadStringResource(IDS_OUTPUT)};
 	
 	if (!m_OutputPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_OUTPUTWND, SharedStyles | CBRS_BOTTOM)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create Output pane\n");
+		TRACE0("Failed to create Output pane\n");
 		return FALSE;
 	}
 	Caption = theApp.LoadStringResource(IDS_PROPERTIES);
 	
 	if (!m_PropertiesPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_PROPERTIESWND, SharedStyles | CBRS_RIGHT)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create Properties pane\n");
+		TRACE0("Failed to create Properties pane\n");
 		return FALSE;
 	}
 	SetDockablePanesIcons(theApp.HighColorMode());
@@ -195,7 +195,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	ItemRectangle.SetRect(ItemRectangle.right + 4, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 
 	if (ItemRectangle.left <= itemRectangle.right) {
-		OdString ColorName = color.colorNameForDisplay();
+		auto ColorName {color.colorNameForDisplay()};
 		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.getLength(), nullptr);
 	}
 }
@@ -637,7 +637,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		
 		if (Divider != nullptr) { Divider->BringWindowToTop(); }
 	}
-	CMDIFrameWndEx::m_bDisableSetRedraw = theApp.m_Options.m_bDisableSetRedraw;
+	CMDIFrameWndEx::m_bDisableSetRedraw = theApp.m_Options.m_DisableSetRedraw;
 
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
@@ -647,7 +647,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 
 BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedItems, BOOL bDrop) {
 
-	if (bDrop || !theApp.m_Options.m_bTabsContextMenu) { return FALSE; }
+	if (bDrop || !theApp.m_Options.m_TabsContextMenu) { return FALSE; }
 
 	CMenu menu;
 	VERIFY(menu.LoadMenuW(IDR_POPUP_MDITABS));

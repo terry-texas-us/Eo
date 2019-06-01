@@ -34,8 +34,6 @@
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 
-#include <atltypes.h>
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -325,7 +323,7 @@ AeSysView::AeSysView() noexcept
 	, m_hCursor(nullptr)
 	, m_mode(kQuiescent)
 	, m_inpOptions(0)
-	, m_bPsOverall(false)
+	, m_PsOverall(false)
 	, m_bPlotPlotstyle(false)
 	, m_bShowPlotstyle(false)
 	, m_bPlotGrayscale(false)
@@ -377,15 +375,15 @@ AeSysView::AeSysView() noexcept
 	m_YGridLineSpacing = 1.0;
 	m_ZGridLineSpacing = 1.0;
 
-	m_XGridSnapSpacing = 12.;
-	m_YGridSnapSpacing = 12.;
-	m_ZGridSnapSpacing = 12.;
+	m_XGridSnapSpacing = 12.0;
+	m_YGridSnapSpacing = 12.0;
+	m_ZGridSnapSpacing = 12.0;
 
-	m_XGridPointSpacing = 3.;
-	m_YGridPointSpacing = 3.;
+	m_XGridPointSpacing = 3.0;
+	m_YGridPointSpacing = 3.0;
 	m_ZGridPointSpacing = 0.0;
 
-	m_AxisConstraintInfluenceAngle = 5.;
+	m_AxisConstraintInfluenceAngle = 5.0;
 	m_AxisConstraintOffsetAngle = 0.0;
 
 	m_DisplayGridWithLines = false;
@@ -400,21 +398,21 @@ AeSysView::AeSysView() noexcept
 	m_PrimitiveToMendCopy = nullptr;
 
 	SetEditModeMirrorScaleFactors(-1.0, 1.0, 1.0);
-	SetEditModeScaleFactors(2., 2., 2.);
+	SetEditModeScaleFactors(2.0, 2.0, 2.0);
 
-	SetEditModeRotationAngles(0.0, 0.0, 45.);
+	SetEditModeRotationAngles(0.0, 0.0, 45.0);
 
-	m_AxisTolerance = 2.;
-	m_CornerSize = .25;
+	m_AxisTolerance = 2.0;
+	m_CornerSize = 0.25;
 
 	m_GenerateTurningVanes = true;	// turning vanes generation flag
 	m_InsideRadiusFactor = 1.5;		// inside radius elbow factor
-	m_DuctSeamSize = .03125;
-	m_DuctTapSize = .09375;			// tap size
+	m_DuctSeamSize = 0.03125;
+	m_DuctTapSize = 0.09375;			// tap size
 	m_ContinueSection = false;
 	m_BeginWithTransition = false;
 	m_DuctJustification = Center;	// justification (Left, Center or Right)
-	m_TransitionSlope = 4.;
+	m_TransitionSlope = 4.0;
 	m_ElbowType = Mittered;			// elbow type (Mittered or Radial)
 	m_EndCapGroup = nullptr;
 	m_EndCapPoint = nullptr;
@@ -422,16 +420,16 @@ AeSysView::AeSysView() noexcept
 	m_OriginalPreviousGroupDisplayed = true;
 	m_OriginalPreviousGroup = nullptr;
 
-	m_PreviousSection(.125, .0625, Section::Rectangular);
-	m_CurrentSection(.125, .0625, Section::Rectangular);
-	m_PipeTicSize = .03125;
-	m_PipeRiseDropRadius = .03125;
+	m_PreviousSection(0.125, 0.0625, Section::Rectangular);
+	m_CurrentSection(0.125, 0.0625, Section::Rectangular);
+	m_PipeTicSize = 0.03125;
+	m_PipeRiseDropRadius = 0.03125;
 	m_CurrentPipeSymbolIndex = 0;
 
 	// Power mode
 	m_PowerArrow = false;
 	m_PowerConductor = false;
-	m_PowerConductorSpacing = .04;
+	m_PowerConductorSpacing = 0.04;
 	m_PreviousRadius = 0.0;
 
 	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
@@ -1126,10 +1124,10 @@ void AeSysView::createDevice(bool recreate) {
 		auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 
 		if (PaperLayoutHelper.isNull()) {
-			m_bPsOverall = false;
+			m_PsOverall = false;
 			m_LayoutHelper->setBackgroundColor(PaletteCopy[0]); // for model space
 		} else {
-			m_bPsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
+			m_PsOverall = (PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get());
 			m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
 		}
 		setPaletteBackground(theApp.activeBackground());
@@ -1203,68 +1201,68 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 
 #include "BmpTilesGen.h"
 
-void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, unsigned long nTileWidth, unsigned long nTileHeight) {
+void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, long tileWidth, long tileHeight) {
 	CRect destRectangle {drawRectangle};
 	destRectangle.NormalizeRect();
 	OdGsDCRect step(0, 0, 0, 0);
 	OdGsDCRect rc(drawRectangle.left, drawRectangle.right, drawRectangle.bottom, drawRectangle.top);
-	const unsigned long nWidth = abs(rc.m_max.x - rc.m_min.x);
+	const long Width {abs(rc.m_max.x - rc.m_min.x)};
 	rc.m_max.x -= rc.m_min.x;
 
 	if (rc.m_max.x < 0) {
 		rc.m_min.x = -rc.m_max.x;
 		rc.m_max.x = 0;
-		step.m_min.x = nTileWidth;
+		step.m_min.x = tileWidth;
 	} else {
 		rc.m_min.x = 0;
-		step.m_max.x = nTileWidth;
+		step.m_max.x = tileWidth;
 	}
-	const unsigned long nHeight = abs(rc.m_max.y - rc.m_min.y);
+	const long Height {abs(rc.m_max.y - rc.m_min.y)};
 	rc.m_max.y -= rc.m_min.y;
 
 	if (rc.m_max.y < 0) {
 		rc.m_min.y = -rc.m_max.y;
 		rc.m_max.y = 0;
-		step.m_min.y = nTileHeight;
+		step.m_min.y = tileHeight;
 	} else {
 		rc.m_min.y = 0;
-		step.m_max.y = nTileHeight;
+		step.m_max.y = tileHeight;
 	}
-	const long m = nWidth / nTileWidth + (nWidth % nTileWidth ? 1 : 0);
-	const long n = nHeight / nTileHeight + (nHeight % nTileHeight ? 1 : 0);
+	const long m {Width / tileWidth + (Width % tileWidth ? 1 : 0)};
+	const long n {Height / tileHeight + (Height % tileHeight ? 1 : 0)};
 
 	BmpTilesGen tilesGen(pBmpDevice, rc);
 	pBmpDevice->onSize(rc);
 
 	OdGiRasterImagePtr pImg;
 
-	const int dx = (step.m_max.x - step.m_min.x);
-	const int dy = (step.m_max.y - step.m_min.y);
+	const int dx {(step.m_max.x - step.m_min.x)};
+	const int dy {(step.m_max.y - step.m_min.y)};
 
-	const int dx2 = m > 1 ? dx / abs(dx) * 8 : 0;
-	const int dy2 = n > 1 ? dy / abs(dy) * 8 : 0;
+	const int dx2 {m > 1 ? dx / abs(dx) * 8 : 0};
+	const int dy2 {n > 1 ? dy / abs(dy) * 8 : 0};
 
-	BITMAPINFO bmi;
-	bmi.bmiHeader.biBitCount = 24u;
-	bmi.bmiHeader.biWidth = nTileWidth + abs(dx2) * 2;
-	bmi.bmiHeader.biHeight = nTileHeight;
-	bmi.bmiHeader.biClrImportant = 0;
-	bmi.bmiHeader.biClrUsed = 0;
-	bmi.bmiHeader.biCompression = BI_RGB;
-	bmi.bmiHeader.biPlanes = 1;
-	bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-	bmi.bmiHeader.biSizeImage = 0;
-	bmi.bmiHeader.biXPelsPerMeter = 0;
-	bmi.bmiHeader.biYPelsPerMeter = 0;
+	BITMAPINFO BitmapInfo;
+	BitmapInfo.bmiHeader.biBitCount = 24u;
+	BitmapInfo.bmiHeader.biWidth = tileWidth + abs(dx2) * 2;
+	BitmapInfo.bmiHeader.biHeight = tileHeight;
+	BitmapInfo.bmiHeader.biClrImportant = 0;
+	BitmapInfo.bmiHeader.biClrUsed = 0;
+	BitmapInfo.bmiHeader.biCompression = BI_RGB;
+	BitmapInfo.bmiHeader.biPlanes = 1;
+	BitmapInfo.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+	BitmapInfo.bmiHeader.biSizeImage = 0;
+	BitmapInfo.bmiHeader.biXPelsPerMeter = 0;
+	BitmapInfo.bmiHeader.biYPelsPerMeter = 0;
 
 	HDC bmpDC = CreateCompatibleDC(hdc);
 
 	if (bmpDC) {
 		void* pBuf;
-		HBITMAP hBmp = CreateDIBSection(nullptr, &bmi, DIB_RGB_COLORS, &pBuf, nullptr, 0);
+		HBITMAP hBmp {CreateDIBSection(nullptr, &BitmapInfo, DIB_RGB_COLORS, &pBuf, nullptr, 0)};
 
 		if (hBmp) {
-			HBITMAP hOld = (HBITMAP) SelectObject(bmpDC, hBmp);
+			auto hOld {static_cast<HBITMAP>(SelectObject(bmpDC, hBmp))};
 			for (long i = 0; i < m; ++i) {
 				for (long j = 0; j < n; ++j) {
 					const int minx = rc.m_min.x + i * dx;
@@ -1275,8 +1273,8 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, u
 					// render wider then a tile area to reduce gaps in lines.
 					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
 
-					pImg->scanLines((unsigned char*) pBuf, 0, nTileHeight);
-					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), nTileWidth, nTileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
+					pImg->scanLines((unsigned char*) pBuf, 0, tileHeight);
+					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), tileWidth, tileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
 				}
 			}
 			SelectObject(bmpDC, hOld);
@@ -2488,7 +2486,7 @@ const OdExEditorObject& AeSysView::editorObject() const noexcept {
 
 bool AeSysView::isModelSpaceView() const {
 	return (getDatabase()->getTILEMODE());
-	//return m_bPsOverall;
+	//return m_PsOverall;
 }
 
 OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {

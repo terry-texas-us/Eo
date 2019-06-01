@@ -13,8 +13,8 @@ public: // Constructors and destructor
 
 	CMDITabInfo m_MdiTabInfo;
 
-	BOOL m_bTabsContextMenu;
-	BOOL m_bDisableSetRedraw;
+	bool m_TabsContextMenu;
+	bool m_DisableSetRedraw;
 
 public: // Methods
 	void Load();

@@ -34,3 +34,11 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 constexpr auto RADIAN = OdaPI / 180.0;
 
 #include "SafeMath.h"
+
+#pragma warning (default: 4242) // (level 4) 'identifier': conversion from 'type1' to 'type2', possible loss of data
+#pragma warning (default: 4255) // (level 4) 'function': no function prototype given: converting '()' to '(void)'
+#pragma warning (default: 4266) // (level 4) 'function': no override available for virtual member function from base 'type'; function is hidden
+#pragma warning (default: 4365) // (level 4) 'action' : conversion from 'type_1' to 'type_2', signed/unsigned mismatch
+#pragma warning (default: 4774) // (level 4) 'string' : format string expected in argument number is not a string literal
+#pragma warning (default: 4906) // (level 1) string literal cast to 'LPWSTR'
+#pragma warning (default: 5038) // (level 4) data member 'member1' will be initialized after data member 'member2' 15.3

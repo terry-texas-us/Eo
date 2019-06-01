@@ -73,7 +73,7 @@ protected:
 	using CView::operator new;
 	using CView::operator delete;
 private:
-	BOOL m_bPsOverall;
+	bool m_PsOverall;
 	OdDbObjectId m_layoutId;
 
 	bool m_bPlotPlotstyle;

@@ -15,9 +15,9 @@ class EoCtrlColorsButton : public CMFCButton {
 	CSize m_CellSize;
 	CSize m_CellSpacing;
 	CSize m_Margins;
-	unsigned short m_BeginIndex;
-	unsigned short m_EndIndex;
-	unsigned short m_SubItem;
+	int m_BeginIndex;
+	int m_EndIndex;
+	int m_SubItem;
 
 	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
@@ -29,7 +29,7 @@ public:
 
 	virtual ~EoCtrlColorsButton();
 
-	static void SetCurrentIndex(const unsigned short index) noexcept {
+	static void SetCurrentIndex(const int index) noexcept {
 		m_CurrentIndex = index;
 	}
 	static void SetPalette(COLORREF* palette) noexcept {
@@ -39,7 +39,7 @@ public:
 		m_Layout = layout;
 		m_CellSize = cellSize;
 	}
-	void SetSequenceRange(const unsigned short beginIndex, const unsigned short endIndex) noexcept {
+	void SetSequenceRange(const int beginIndex, const int endIndex) noexcept {
 		m_BeginIndex = beginIndex;
 		m_EndIndex = endIndex;
 	}

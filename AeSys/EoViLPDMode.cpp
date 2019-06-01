@@ -581,11 +581,9 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d & previousReferenceLine, 
 	PreviousLeftLine.IntersectWith_xy(CurrentLeftLine, InsideCorner);
 	PreviousRightLine.IntersectWith_xy(CurrentRightLine, OutsideCorner);
 
-	if (generateEndCaps) {
-		GenerateEndCap(PreviousLeftLine.endPoint(), PreviousRightLine.endPoint(), previousSection, group);
-	}
-	auto const ColorIndex {pstate.ColorIndex()};
-	auto const LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	if (generateEndCaps) { GenerateEndCap(PreviousLeftLine.endPoint(), PreviousRightLine.endPoint(), previousSection, group); }
+	const auto ColorIndex {pstate.ColorIndex()};
+	const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	auto Line = EoDbLine::Create(BlockTableRecord, PreviousLeftLine.endPoint(), InsideCorner);
 	Line->setColorIndex(ColorIndex);
@@ -620,7 +618,7 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d & previousReferenceLine, 
 
 void AeSysView::GenerateRectangularSection(EoGeLineSeg3d & referenceLine, double eccentricity, Section section, EoDbGroup * group) {
 
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;
@@ -628,8 +626,8 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d & referenceLine, double
 	if (referenceLine.GetParallels(section.Width(), eccentricity, LeftLine, RightLine)) {
 		GenerateEndCap(LeftLine.startPoint(), RightLine.startPoint(), section, group);
 
-		auto const ColorIndex {pstate.ColorIndex()};
-		auto const LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+		const auto ColorIndex {pstate.ColorIndex()};
+		const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 		auto Line {EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), LeftLine.endPoint())};
 		Line->setColorIndex(ColorIndex);

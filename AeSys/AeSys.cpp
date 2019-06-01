@@ -338,23 +338,23 @@ AeSys::AeSys() noexcept
 	: m_nProgressLimit(100)
 	, m_nProgressPos(0)
 	, m_nPercent(0)
-	, m_bDiscardBackFaces(1)
-	, m_bEnableDoubleBuffer(1)
-	, m_bBlocksCache(0)
-	, m_bGsDevMultithread(0)
+	, m_DiscardBackFaces(true)
+	, m_EnableDoubleBuffer(true)
+	, m_BlocksCache(false)
+	, m_GsDevMultithread(false)
 	, m_nMtRegenThreads(4)
-	, m_bEnablePrintPreviewViaBitmap(1)
-	, m_bUseGsModel(TRUE)
-	, m_bEnableHLR(0)
-	, m_bContextColors(1)
-	, m_bTTFPolyDraw(0)
-	, m_bTTFTextOut(0)
-	, m_bTTFCache(0)
-	, m_bDynamicSubEntHlt(0)
-	, m_bGDIGradientsAsBitmap(0)
-	, m_bGDIGradientsAsPolys(0)
+	, m_EnablePrintPreviewViaBitmap(true)
+	, m_UseGsModel(true)
+	, m_EnableHLR(false)
+	, m_ContextColors(true)
+	, m_TTFPolyDraw(false)
+	, m_TTFTextOut(false)
+	, m_TTFCache(false)
+	, m_DynamicSubEntHlt(false)
+	, m_GDIGradientsAsBitmap(false)
+	, m_GDIGradientsAsPolys(false)
 	, m_nGDIGradientsAsPolysThreshold(10)
-	, m_bDisableAutoRegen(0)
+	, m_DisableAutoRegen(false)
 	, m_background(ViewBackgroundColor)
 	, m_thisThreadID {0}
 	, m_numCustomCommands(0)
@@ -370,9 +370,9 @@ AeSys::AeSys() noexcept
 	, m_bUseTempFiles(false)
 	, m_bSupportFileSelectionViaDialog(true)
 	, m_displayFields(0)
-	, m_bSaveRoundTrip(1)
-	, m_bSavePreview(0)
-	, m_bSaveWithPassword(0)
+	, m_SaveRoundTrip(true)
+	, m_SavePreview(false)
+	, m_SaveWithPassword(false)
 	, m_pAuditDlg(nullptr) {
 
 	EnableHtmlHelp();
@@ -1010,21 +1010,30 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 
 int AeSys::ExitInstance() {
 	SetRegistryBase(L"ODA View");
-	theApp.WriteInt(L"Discard Back Faces", m_bDiscardBackFaces);
-	theApp.WriteInt(L"Enable Double Buffer", m_bEnableDoubleBuffer);
-	theApp.WriteInt(L"Enable Blocks Cache", m_bBlocksCache);
-	theApp.WriteInt(L"Gs Device Multithread", m_bGsDevMultithread);
+	theApp.WriteInt(L"Discard Back Faces", m_DiscardBackFaces);
+	theApp.WriteInt(L"Enable Double Buffer", m_EnableDoubleBuffer);
+	theApp.WriteInt(L"Enable Blocks Cache", m_BlocksCache);
+	theApp.WriteInt(L"Gs Device Multithread", m_GsDevMultithread);
 	theApp.WriteInt(L"Mt Regen Threads Count", m_nMtRegenThreads);
-	theApp.WriteInt(L"Print/Preview via bitmap device", m_bEnablePrintPreviewViaBitmap);
-	theApp.WriteInt(L"UseGsModel", m_bUseGsModel);
-	theApp.WriteInt(L"Enable Software HLR", m_bEnableHLR);
-	theApp.WriteInt(L"Contextual Colors", m_bContextColors);
-	theApp.WriteInt(L"TTF PolyDraw", m_bTTFPolyDraw);
-	theApp.WriteInt(L"TTF TextOut", m_bTTFTextOut);
-	theApp.WriteInt(L"Save round trip information", m_bSaveRoundTrip);
-	theApp.WriteInt(L"Save Preview", m_bSavePreview);
+	theApp.WriteInt(L"Print/Preview via bitmap device", m_EnablePrintPreviewViaBitmap);
+	theApp.WriteInt(L"UseGsModel", m_UseGsModel);
+	theApp.WriteInt(L"Enable Software HLR", m_EnableHLR);
+	theApp.WriteInt(L"Contextual Colors", m_ContextColors);
+	theApp.WriteInt(L"TTF PolyDraw", m_TTFPolyDraw);
+	theApp.WriteInt(L"TTF TextOut", m_TTFTextOut);
+	
+	theApp.WriteInt(L"TTF Cache", m_TTFCache);
+	theApp.WriteInt(L"Dynamic Subentities Highlight", m_DynamicSubEntHlt);
+	theApp.WriteInt(L"GDI Gradients as Bitmaps", m_GDIGradientsAsBitmap);
+	theApp.WriteInt(L"GDI Gradients as Polys", m_GDIGradientsAsPolys);
+	theApp.WriteInt(L"GDI Gradients as Polys Threshold", m_nGDIGradientsAsPolysThreshold);
+
+	theApp.WriteInt(L"Disable Auto-Regen", m_DisableAutoRegen);
+
+	theApp.WriteInt(L"Save round trip information", m_SaveRoundTrip);
+	theApp.WriteInt(L"Save Preview", m_SavePreview);
 	theApp.WriteInt(L"Background colour", m_background);
-	theApp.WriteInt(L"Save DWG with password", m_bSaveWithPassword);
+	theApp.WriteInt(L"Save DWG with password", m_SaveWithPassword);
 	theApp.WriteString(L"recent GS", m_sVectorizerPath);
 	theApp.WriteString(L"Recent Command", m_RecentCommand);
 	theApp.WriteInt(L"Fill TTF text", (int) getTEXTFILL());
@@ -1287,7 +1296,7 @@ void AeSys::InitGbls(CDC * deviceContext) {
 	pstate.SetPointDisplayMode(1);
 }
 
-BOOL AeSys::InitializeTeigha() {
+bool AeSys::InitializeOda() {
 	try {
 		::odInitialize(this);
 
@@ -1319,13 +1328,12 @@ BOOL AeSys::InitializeTeigha() {
 		   </tas> */
 	} catch (const OdError & Error) {
 		theApp.reportError(L"odInitialize error", Error);
-		return FALSE;
+		return false;
 	} catch (...) {
 		::MessageBoxW(nullptr, L"odInitialize error", L"Teigha", MB_ICONERROR | MB_OK);
-		return FALSE;
+		return false;
 	}
-
-	return TRUE;
+	return true;
 }
 
 BOOL AeSys::InitInstance() {
@@ -1356,32 +1364,32 @@ BOOL AeSys::InitInstance() {
 
 	SetRegistryBase(L"ODA View");
 
-	m_bDiscardBackFaces = theApp.GetInt(L"Discard Back Faces", 1);
-	m_bEnableDoubleBuffer = theApp.GetInt(L"Enable Double Buffer", 1); // <tas="TRUE unless debugging"</tas>
-	m_bBlocksCache = theApp.GetInt(L"Enable Blocks Cache", 0); // 1
-	m_bGsDevMultithread = theApp.GetInt(L"Gs Device Multithread", 0);
+	m_DiscardBackFaces = theApp.GetInt(L"Discard Back Faces", true);
+	m_EnableDoubleBuffer = theApp.GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
+	m_BlocksCache = theApp.GetInt(L"Enable Blocks Cache", false);
+	m_GsDevMultithread = theApp.GetInt(L"Gs Device Multithread", false);
 	m_nMtRegenThreads = theApp.GetInt(L"Mt Regen Threads Count", 4);
-	m_bEnablePrintPreviewViaBitmap = theApp.GetInt(L"Print/Preview via bitmap device", 1);
-	m_bUseGsModel = theApp.GetInt(L"UseGsModel", TRUE);
-	m_bEnableHLR = theApp.GetInt(L"Enable Software HLR", 0);
-	m_bContextColors = theApp.GetInt(L"Contextual Colors", 1);
-	m_bTTFPolyDraw = theApp.GetInt(L"TTF PolyDraw", 0);
-	m_bTTFTextOut = theApp.GetInt(L"TTF TextOut", 0);
+	m_EnablePrintPreviewViaBitmap = theApp.GetInt(L"Print/Preview via bitmap device", true);
+	m_UseGsModel = theApp.GetInt(L"UseGsModel", true);
+	m_EnableHLR = theApp.GetInt(L"Enable Software HLR", false);
+	m_ContextColors = theApp.GetInt(L"Contextual Colors", true);
+	m_TTFPolyDraw = theApp.GetInt(L"TTF PolyDraw", false);
+	m_TTFTextOut = theApp.GetInt(L"TTF TextOut", false);
 
-	m_bTTFCache = theApp.GetInt(L"TTF Cache", 0);
-	m_bDynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", 0);
-	m_bGDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", 1);
-	m_bGDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", 0);
+	m_TTFCache = theApp.GetInt(L"TTF Cache", false);
+	m_DynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", false);
+	m_GDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", false);
+	m_GDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", false);
 	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<unsigned char>(GetInt(L"GDI Gradients as Polys Threshold", 10));
 
-	m_bDisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", 0);
+	m_DisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", false);
 
 //	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
 
-	m_bSaveRoundTrip = theApp.GetInt(L"Save round trip information", 1);
-	m_bSavePreview = theApp.GetInt(L"Save Preview", 0);
+	m_SaveRoundTrip = theApp.GetInt(L"Save round trip information", true);
+	m_SavePreview = theApp.GetInt(L"Save Preview", false);
 	m_background = theApp.GetInt(L"Background colour", ViewBackgroundColor);
-	m_bSaveWithPassword = theApp.GetInt(L"Save DWG with password", 0);
+	m_SaveWithPassword = theApp.GetInt(L"Save DWG with password", false);
 	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
 	m_RecentCommand = theApp.GetString(L"Recent Command", L"");
 	int nFillTtf = theApp.GetInt(L"Fill TTF text", 1);
@@ -1406,7 +1414,8 @@ BOOL AeSys::InitInstance() {
 
 	CWinAppEx::InitInstance();
 
-	if (InitializeTeigha() == FALSE) { return FALSE; }
+	if (!InitializeOda()) { return FALSE; }
+
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views.
 	auto AeSysDocTemplate {new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
 
