@@ -106,8 +106,8 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 
 	ActiveView->ViewportPushActive();
 	ActiveView->SetViewportSize(rc.right, rc.bottom);
-	ActiveView->SetDeviceWidthInInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE)) / EoMmPerInch);
-	ActiveView->SetDeviceHeightInInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE)) / EoMmPerInch);
+	ActiveView->SetDeviceWidthInInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE)) / kMmPerInch);
+	ActiveView->SetDeviceHeightInInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE)) / kMmPerInch);
 
 	OdGeExtents3d Extents;
 	block->GetExtents_(ActiveView, Extents);
@@ -155,8 +155,8 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 
 	ActiveView->ViewportPushActive();
 	ActiveView->SetViewportSize(rc.right, rc.bottom);
-	ActiveView->SetDeviceWidthInInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE)) / EoMmPerInch);
-	ActiveView->SetDeviceHeightInInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE)) / EoMmPerInch);
+	ActiveView->SetDeviceWidthInInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE)) / kMmPerInch);
+	ActiveView->SetDeviceHeightInInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE)) / kMmPerInch);
 
 	OdGeExtents3d Extents;
 	groups->GetExtents__(ActiveView, Extents);

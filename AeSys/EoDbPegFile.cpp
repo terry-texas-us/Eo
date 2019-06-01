@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 
@@ -295,7 +296,7 @@ void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 		WriteUInt16(0);
 		WriteString(Linetype->comments());
 
-		const auto DefinitionLength {narrow_cast<unsigned short>(Linetype->numDashes())};
+		const auto DefinitionLength {gsl::narrow_cast<unsigned short>(Linetype->numDashes())};
 		WriteUInt16(DefinitionLength);
 
 		const double PatternLength {Linetype->patternLength()};

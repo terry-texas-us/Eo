@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -41,9 +42,9 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	m_LineSeg.ParametricRelationshipOf(point, Relationship);
 
 	if (Relationship > 0.5) {
-		AngleInXYPlane += PI;
+		AngleInXYPlane += OdaPI;
 	}
-	AngleInXYPlane = fmod(AngleInXYPlane, TWOPI);
+	AngleInXYPlane = fmod(AngleInXYPlane, Oda2PI);
 
 	const double Length = m_LineSeg.length();
 

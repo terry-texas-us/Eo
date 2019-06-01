@@ -133,7 +133,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 
 			MemoryFile.SeekToBegin();
-			MemoryFile.Read(ClipboardData, narrow_cast<unsigned>(SizeOfBuffer));
+			MemoryFile.Read(ClipboardData, gsl::narrow_cast<unsigned>(SizeOfBuffer));
 
 			GlobalUnlock(ClipboardDataHandle);
 			::SetClipboardData(theApp.ClipboardFormatIdentifierForEoGroups(), ClipboardDataHandle);

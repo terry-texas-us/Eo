@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "DbDatabase.h"
+
 #include "EoDlgPlotStyleEditLineweight.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
 #include "Ps/PlotStyles.h"
@@ -149,7 +151,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clo
 	cdc.CreateCompatibleDC(&ClientDeviceContext);
 	clonedBitmap->CreateCompatibleBitmap(&ClientDeviceContext, Bitmap.bmWidth, Bitmap.bmHeight);
 
-	unsigned long NumberOfBytes {narrow_cast<unsigned long>(Bitmap.bmWidthBytes * Bitmap.bmHeight)};
+	unsigned long NumberOfBytes {gsl::narrow_cast<unsigned long>(Bitmap.bmWidthBytes * Bitmap.bmHeight)};
 	auto BitmapBuffer {new unsigned char[NumberOfBytes]};
 
 	NumberOfBytes = sourceBitmap->GetBitmapBits(NumberOfBytes, BitmapBuffer);

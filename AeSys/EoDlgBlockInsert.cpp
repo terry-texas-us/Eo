@@ -70,7 +70,7 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 	} else {
 		BlockPosition = m_Document->GetFirstBlockPosition();
 		m_Document->GetNextBlock(BlockPosition, BlockName, Block);
-		SetDlgItemInt(IDC_GROUPS, narrow_cast<unsigned>(Block->GetCount()), FALSE);
+		SetDlgItemInt(IDC_GROUPS, gsl::narrow_cast<unsigned>(Block->GetCount()), FALSE);
 		SetDlgItemInt(IDC_REFERENCES, m_Document->GetBlockReferenceCount(BlockName), FALSE);
 		WndProcPreviewUpdate(GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd(), Block);
 	}
@@ -104,7 +104,7 @@ void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
 
 		EoDbBlock* Block;
 		m_Document->LookupBlock(BlockName, Block);
-		SetDlgItemInt(IDC_GROUPS, narrow_cast<unsigned>(Block->GetCount()), FALSE);
+		SetDlgItemInt(IDC_GROUPS, gsl::narrow_cast<unsigned>(Block->GetCount()), FALSE);
 		SetDlgItemInt(IDC_REFERENCES, m_Document->GetBlockReferenceCount(BlockName), FALSE);
 		WndProcPreviewUpdate(GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd(), Block);
 	}

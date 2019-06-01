@@ -50,6 +50,7 @@
       <Optimization>Disabled</Optimization>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -93,7 +94,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSys.cpp">
-      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Level4</WarningLevel>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSysDoc.cpp" />
@@ -110,9 +110,7 @@
     <ClCompile Include="EoDlgPassword.cpp" />
     <ClCompile Include="EoGripperScrollBar.cpp" />
     <ClCompile Include="OdApplicationDocument.cpp" />
-    <ClCompile Include="AeSysView.cpp">
-      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Level4</WarningLevel>
-    </ClCompile>
+    <ClCompile Include="AeSysView.cpp" />
     <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
     <ClCompile Include="EoDbCharacterCellDefinition.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
@@ -227,9 +225,8 @@
     <ClCompile Include="EoGeReferenceSystem.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="EoDlgSelectIsometricView.cpp" />
-    <ClCompile Include="Stdafx.cpp">
+    <ClCompile Include="StdAfx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Create</PrecompiledHeader>
-      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Level4</WarningLevel>
     </ClCompile>
     <ClCompile Include="EoDlgTrapFilter.cpp" />
     <ClCompile Include="EoDlgViewParameters.cpp" />
@@ -389,7 +386,7 @@
     <ClInclude Include="SafeMath.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="EoDlgSelectIsometricView.h" />
-    <ClInclude Include="Stdafx.h" />
+    <ClInclude Include="StdAfx.h" />
     <ClInclude Include="TargetVer.h" />
     <ClInclude Include="EoDlgViewParameters.h" />
     <ClInclude Include="EoGsViewport.h" />

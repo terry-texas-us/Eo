@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbPoint.h"
+
 #include "EoDbPrimitive.h"
 
 class EoDbPoint : public EoDbPrimitive {

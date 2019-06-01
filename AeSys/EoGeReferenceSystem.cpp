@@ -13,7 +13,7 @@ EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* v
 	m_YDirection.rotateBy(characterCellDefinition.RotationAngle(), normal);
 
 	m_XDirection = m_YDirection;
-	m_XDirection.rotateBy(-HALF_PI, normal);
+	m_XDirection.rotateBy(-OdaPI2, normal);
 	m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), normal);
 	m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
 	m_YDirection *= characterCellDefinition.Height();
@@ -78,7 +78,7 @@ void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCe
 	GetUnitNormal(vNorm);
 	m_XDirection.normalize();
 	m_YDirection = m_XDirection;
-	m_YDirection.rotateBy(HALF_PI + characterCellDefinition.ObliqueAngle(), vNorm);
+	m_YDirection.rotateBy(OdaPI2 + characterCellDefinition.ObliqueAngle(), vNorm);
 	m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
 	m_YDirection *= characterCellDefinition.Height();
 }
@@ -90,7 +90,7 @@ double EoGeReferenceSystem::Rotation() const noexcept {
 
 	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
 	if (Angle < 0.0) {
-		Angle += TWOPI;
+		Angle += Oda2PI;
 	}
 	return (Angle);
 }

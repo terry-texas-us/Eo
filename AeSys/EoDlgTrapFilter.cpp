@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -66,7 +67,7 @@ void EoDlgTrapFilter::OnOK() {
 			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 
 			if (!Linetypes->getAt(Name).isNull()) {
-				auto LinetypeIndex {narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
+				auto LinetypeIndex {gsl::narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 				FilterByLinetype(LinetypeIndex);
 			}
 		}

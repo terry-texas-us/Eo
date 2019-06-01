@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 
@@ -200,7 +201,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 }
 
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
-	const double PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / EoMmPerInch};
+	const double PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
 	const int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + 0.5);
 
 	LOGBRUSH Brush;
@@ -831,7 +832,7 @@ OdDb::LineWeight CMainFrame::LineWeightByIndex(char lineWeight) noexcept {
 
 OdString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) {
 	if (lineWeightByIndex) {
-		lineWeight = LineWeightByIndex(narrow_cast<char>(lineWeight));
+		lineWeight = LineWeightByIndex(gsl::narrow_cast<char>(lineWeight));
 	}
 	OdString LineWeightText {L""};
 	switch (lineWeight) {

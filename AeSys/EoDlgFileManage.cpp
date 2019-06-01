@@ -1,4 +1,7 @@
 #include "stdafx.h"
+
+#include "DbViewport.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -217,7 +220,7 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 
 				if (drawItemStruct->itemState & ODS_FOCUS) { DeviceContext.DrawFocusRect(rcItem); }
 
-				const int ItemID {narrow_cast<int>(drawItemStruct->itemID)};
+				const int ItemID {gsl::narrow_cast<int>(drawItemStruct->itemID)};
 
 				if (ItemID != -1) { // The text color is stored as the item data.
 					const COLORREF TextColor {(drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT)};

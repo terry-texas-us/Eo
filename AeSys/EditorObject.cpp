@@ -22,6 +22,10 @@
 #include "ExTrackers.h"
 #include "RxVariantValue.h"
 
+#include "Gs/GsModel.h"
+#include "Gi/GiPathNode.h"
+#include "DbBlockReference.h"
+
 static const int SNAP_SIZE = 10;
 
 class ViewInteractivityMode {
@@ -1155,10 +1159,6 @@ void OdExInteractivityModeCmd::execute(OdEdCommandContext * edCommandContext) {
 //Collision detection commands
 const OdString OdExCollideCmd::groupName() const { return globalName(); }
 const OdString OdExCollideCmd::globalName() const { return L"COLLIDE"; }
-
-#include "Gs/GsModel.h"
-#include "Gi/GiPathNode.h"
-#include "DbBlockReference.h"
 
 class OdExCollideGsPath {
 	struct Node : OdGiPathNode {

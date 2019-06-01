@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -689,7 +690,7 @@ void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double 
 	m_HatchXAxis.normalize();
 	m_HatchXAxis.rotateBy(patternAngle, PlaneNormal);
 	m_HatchYAxis = m_HatchXAxis;
-	m_HatchYAxis.rotateBy(HALF_PI, PlaneNormal);
+	m_HatchYAxis.rotateBy(OdaPI2, PlaneNormal);
 	m_HatchXAxis *= patternScaleX;
 	m_HatchYAxis *= patternScaleY;
 }
@@ -991,7 +992,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 					HatchYAxis *= ScaleFactorY * 1.e-3;
 				} else if (fabs(ScaleFactorX) > FLT_EPSILON) { // Vertical hatch lines
 					InteriorStyleIndex = 1;
-					PatternAngle += HALF_PI;
+					PatternAngle += OdaPI2;
 
 					HatchXAxis = OdGeVector3d(cos(PatternAngle), sin(PatternAngle), 0.0);
 					HatchYAxis = OdGeVector3d(-sin(PatternAngle), cos(PatternAngle), 0.0);

@@ -1,5 +1,7 @@
 #include "stdafx.h"
-#include "resource.h"
+
+#include "DbDatabase.h"
+
 #include "DbFiler.h"
 #include "DbObject.h"
 #include "DbUnitsFormatter.h"

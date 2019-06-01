@@ -40,7 +40,7 @@ double EoGeLineSeg3d::AngleFromXAxis_xy() const {
 		Angle = atan2(Vector.y, Vector.x);
 
 		if (Angle < 0.0)
-			Angle += TWOPI;
+			Angle += Oda2PI;
 	}
 	return (Angle);
 }

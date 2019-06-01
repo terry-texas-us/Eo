@@ -1,7 +1,7 @@
 #pragma once
 
 inline double EoArcLength(const double angleInDegrees) noexcept {
-	return angleInDegrees * (PI / 180.);
+	return angleInDegrees * (OdaPI / 180.);
 }
 
 template<class T> T EoMin(T a, T b) noexcept {
@@ -17,7 +17,7 @@ inline double EoSignTransfer(const double a, const double b) noexcept {
 }
 
 inline double EoToDegree(const double angleInRadians) noexcept {
-	return (angleInRadians / PI * 180.);
+	return (angleInRadians / OdaPI * 180.);
 }
 
 inline double EoToRadian(const double angleInDegrees) noexcept {

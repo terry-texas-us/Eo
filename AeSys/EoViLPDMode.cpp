@@ -286,21 +286,24 @@ void AeSysView::OnLpdModeSize() {
 
 	double Angle = 0.0;
 	if (m_EndCapPoint != nullptr) {
+
 		if (m_EndCapPoint->ColorIndex() == 15) {
 			POSITION Position = m_EndCapGroup->Find(m_EndCapPoint);
 			m_EndCapGroup->GetNext(Position);
 			auto pLine {dynamic_cast<EoDbLine*>(m_EndCapGroup->GetAt(Position))};
 			auto Line = pLine->LineSeg();
-			Angle = fmod(Line.AngleFromXAxis_xy(), PI);
-			if (Angle <= RADIAN)
-				Angle += PI;
-			Angle -= HALF_PI;
+			Angle = fmod(Line.AngleFromXAxis_xy(), OdaPI);
+
+			if (Angle <= RADIAN) { Angle += OdaPI; }
+
+			Angle -= OdaPI2;
 		}
 		m_EndCapPoint = nullptr;
 	}
 	GenSizeNote(CurrentPnt, Angle, m_PreviousSection);
-	if (m_PreviousOp != 0)
-		RubberBandingDisable();
+
+	if (m_PreviousOp != 0) { RubberBandingDisable(); }
+
 	m_PreviousOp = 0;
 	m_ContinueSection = false;
 }
@@ -854,7 +857,7 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, doubl
 
 	auto TestLine {testLinePrimitive->LineSeg()};
 
-	const double TestLineAngle = fmod(TestLine.AngleFromXAxis_xy(), PI);
+	const double TestLineAngle = fmod(TestLine.AngleFromXAxis_xy(), OdaPI);
 
 	POSITION GroupPosition = GetLastGroupPosition();
 	while (GroupPosition != 0) {
@@ -875,8 +878,8 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, doubl
 			} else if (Line.endPoint() != TestLine.startPoint() && Line.endPoint() != TestLine.endPoint()) { //	No endpoint coincides with one of the test line endpoints
 				continue;
 			}
-			const double LineAngle = fmod(Line.AngleFromXAxis_xy(), PI);
-			if (fabs(fabs(TestLineAngle - LineAngle) - HALF_PI) <= angularTolerance) {
+			const double LineAngle = fmod(Line.AngleFromXAxis_xy(), OdaPI);
+			if (fabs(fabs(TestLineAngle - LineAngle) - OdaPI2) <= angularTolerance) {
 				if (LeftLinePrimitive == 0) { // No qualifiers yet
 					DirectedRelationship = TestLine.DirectedRelationshipOf(Line.startPoint());
 					LeftLinePrimitive = LinePrimitive;

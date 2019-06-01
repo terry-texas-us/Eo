@@ -1,4 +1,5 @@
 #pragma once
+#include "LyLayerFilter.h"
 
 // EoDlgLayerPropertiesManager dialog
 

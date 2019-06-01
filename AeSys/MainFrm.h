@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbBlockTableRecord.h"
+
 #include "EoMfOutputDockablePane.h"
 #include "EoMfPropertiesDockablePane.h"
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbMText.h"
+
 #include "EoDb.h"
 
 class EoDbFile;
@@ -41,7 +43,7 @@ public:
 	void Read(EoDbFile& file);
 	void Write(EoDbFile& file) const;
 
-    void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept;
-    void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept;
-    void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept;
+	void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept;
+	void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept;
+	void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept;
 };

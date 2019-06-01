@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "afxwinappex.h"
+//#include "afxwinappex.h"
 
 #include "ChildFrm.h"
 #include "AeSys.h"
@@ -338,10 +338,13 @@ AeSys::AeSys() noexcept
 	: m_nProgressLimit(100)
 	, m_nProgressPos(0)
 	, m_nPercent(0)
-	, m_bUseGsModel(TRUE)
-	, m_pAuditDlg(nullptr)
 	, m_bDiscardBackFaces(1)
-	, m_numGSMenuItems(0)
+	, m_bEnableDoubleBuffer(1)
+	, m_bBlocksCache(0)
+	, m_bGsDevMultithread(0)
+	, m_nMtRegenThreads(4)
+	, m_bEnablePrintPreviewViaBitmap(1)
+	, m_bUseGsModel(TRUE)
 	, m_bEnableHLR(0)
 	, m_bContextColors(1)
 	, m_bTTFPolyDraw(0)
@@ -352,29 +355,25 @@ AeSys::AeSys() noexcept
 	, m_bGDIGradientsAsPolys(0)
 	, m_nGDIGradientsAsPolysThreshold(10)
 	, m_bDisableAutoRegen(0)
-	, m_bLoading(false)
-	, m_bRemoteGeomViewer(false)
-	// ODA_MT_DBIO_BEGIN
-	, m_bUseMTLoading(false)
-	// ODA_MT_DBIO_END
-	, m_bSupportFileSelectionViaDialog(true)
-
-	, m_bEnableDoubleBuffer(1)
-	, m_pagingType(0)
-	, m_bUseTempFiles(false)
-	, m_bBlocksCache(0)
-	, m_bGsDevMultithread(0)
-	, m_nMtRegenThreads(4)
-	, m_bEnablePrintPreviewViaBitmap(1)
 	, m_background(ViewBackgroundColor)
 	, m_thisThreadID {0}
 	, m_numCustomCommands(0)
+	, m_numGSMenuItems(0)
+	, m_bPartial(false)
+	, m_bRecover(false)
+	, m_bLoading(false)
+	// ODA_MT_DBIO_BEGIN
+	, m_bUseMTLoading(false)
+	// ODA_MT_DBIO_END
+	, m_bRemoteGeomViewer(false)
+	, m_pagingType(0)
+	, m_bUseTempFiles(false)
+	, m_bSupportFileSelectionViaDialog(true)
 	, m_displayFields(0)
 	, m_bSaveRoundTrip(1)
 	, m_bSavePreview(0)
-	, m_bPartial(false)
 	, m_bSaveWithPassword(0)
-	, m_bRecover(false) {
+	, m_pAuditDlg(nullptr) {
 
 	EnableHtmlHelp();
 
@@ -1373,7 +1372,7 @@ BOOL AeSys::InitInstance() {
 	m_bDynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", 0);
 	m_bGDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", 1);
 	m_bGDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", 0);
-	m_nGDIGradientsAsPolysThreshold = narrow_cast<BYTE>(GetInt(L"GDI Gradients as Polys Threshold", 10));
+	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<BYTE>(GetInt(L"GDI Gradients as Polys Threshold", 10));
 
 	m_bDisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", 0);
 

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbPolyline.h"
+
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 

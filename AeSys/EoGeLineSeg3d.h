@@ -28,7 +28,7 @@ public: // Methods
 	double AngleBetween_xy(const EoGeLineSeg3d& line) const;
 	/// <summary> Determines the angle of a line defined by 2 points. </summary>
 	/// <remarks> /// If null length or parallel to z-axis, angle is 0. </remarks>
-	/// <returns> The angle (in radians) from the X axis (0 to TWOPI) to a point (x,y). </returns>
+	/// <returns> The angle (in radians) from the X axis (0 to Oda2PI) to a point (x,y). </returns>
 	double AngleFromXAxis_xy() const;
 	/// <summary> Constrains a line to nearest axis pivoting on first endpoint.</summary>
 	/// <remarks> Offset angle only support about z-axis </remarks>

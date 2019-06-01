@@ -1,5 +1,13 @@
 #pragma once
 
+#include "DbBlockTable.h"
+#include "DbBlockTableRecord.h"
+#include "DbLayerTable.h"
+#include "DbLayerTableRecord.h"
+#include "DbLinetypeTable.h"
+#include "DbLinetypeTableRecord.h"
+#include "DbSymUtl.h"
+
 #include "DbDatabase.h"
 #include "DbCommandContext.h"
 #include "Ed/EdCommandStack.h"

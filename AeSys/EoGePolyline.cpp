@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
@@ -129,7 +130,7 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
 	// Determine the parameter (angular increment)
-	const double AngleIncrement = TWOPI / double(numberOfPoints);
+	const double AngleIncrement = Oda2PI / double(numberOfPoints);
 	const double CosIncrement = cos(AngleIncrement);
 	const double SinIncrement = sin(AngleIncrement);
 	points.setLogicalLength(numberOfPoints);

@@ -1,4 +1,9 @@
 #include "stdafx.h"
+
+#include "DbViewport.h"
+#include "DbViewportTable.h"
+#include "DbViewportTableRecord.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -431,8 +436,8 @@ AeSysView::AeSysView() noexcept
 
 	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
 	m_Viewport.SetDeviceHeightInPixels(theApp.DeviceHeightInPixels());
-	m_Viewport.SetDeviceWidthInInches(theApp.DeviceWidthInMillimeters() / EoMmPerInch);
-	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / EoMmPerInch);
+	m_Viewport.SetDeviceWidthInInches(theApp.DeviceWidthInMillimeters() / kMmPerInch);
+	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / kMmPerInch);
 }
 
 AeSysView::~AeSysView() {}
@@ -874,7 +879,7 @@ unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
 			Processed = GetAcadProfileRegistryUnsignedLong(L"Dialogs\\AcCamera", L"GlyphSize", Value);
 			break;
 	}
-	if (Processed) { return narrow_cast<unsigned long>(Value); }
+	if (Processed) { return gsl::narrow_cast<unsigned long>(Value); }
 
 	return OdGiContextForDbDatabase::glyphSize(glyphType);
 }
@@ -1183,8 +1188,8 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 	const double HorizontalSize {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE))};
 	const double VerticalSize {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE))};
 
-	SetDeviceWidthInInches(HorizontalSize / EoMmPerInch);
-	SetDeviceHeightInInches(VerticalSize / EoMmPerInch);
+	SetDeviceWidthInInches(HorizontalSize / kMmPerInch);
+	SetDeviceHeightInInches(VerticalSize / kMmPerInch);
 
 	if (m_Plot) {
 		unsigned HorizontalPages;
@@ -2557,8 +2562,8 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 
 	if (deviceContext->IsPrinting()) {
 		if (m_Plot) {
-			const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / EoMmPerInch) / m_PlotScaleFactor};
-			const double VerticalSizeInInches = {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / EoMmPerInch) / m_PlotScaleFactor};
+			const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / kMmPerInch) / m_PlotScaleFactor};
+			const double VerticalSizeInInches = {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / kMmPerInch) / m_PlotScaleFactor};
 
 			unsigned HorizontalPages;
 			unsigned VerticalPages;
@@ -2658,7 +2663,7 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		const int iWidSrc = rcWnd.Width();
 		const int iHgtSrc = rcWnd.Height();
 
-		deviceContext->StretchBlt(0, 0, iWidDst, iHgtDst, &dcMem, narrow_cast<int>(rcWnd.left), narrow_cast<int>(rcWnd.top), iWidSrc, iHgtSrc, SRCCOPY);
+		deviceContext->StretchBlt(0, 0, iWidDst, iHgtDst, &dcMem, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), iWidSrc, iHgtSrc, SRCCOPY);
 
 		dcMem.SelectObject(pBitmap);
 		deviceContext->SelectPalette(pPalette, FALSE);
@@ -2759,11 +2764,11 @@ unsigned AeSysView::NumPages(CDC* deviceContext, double scaleFactor, unsigned& h
 	const auto MinimumPoint {Extents.minPoint()};
 	const auto MaximumPoint {Extents.maxPoint()};
 
-	const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / EoMmPerInch};
-	const double VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / EoMmPerInch};
+	const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / kMmPerInch};
+	const double VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / kMmPerInch};
 
-	horizontalPages = narrow_cast<unsigned>(EoRound(((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches) + 0.5));
-	verticalPages = narrow_cast<unsigned>(EoRound(((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches) + 0.5));
+	horizontalPages = gsl::narrow_cast<unsigned>(EoRound(((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches) + 0.5));
+	verticalPages = gsl::narrow_cast<unsigned>(EoRound(((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches) + 0.5));
 
 	return horizontalPages * verticalPages;
 }
@@ -3637,7 +3642,7 @@ pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint
 			if (Primitive->Is(EoDb::kEllipsePrimitive)) {
 				auto Arc {dynamic_cast<EoDbEllipse*>(Primitive)};
 
-				if (fabs(Arc->SweepAngle() - TWOPI) <= DBL_EPSILON && (Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd()) <= DBL_EPSILON) {
+				if (fabs(Arc->SweepAngle() - Oda2PI) <= DBL_EPSILON && (Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd()) <= DBL_EPSILON) {
 					if (point.distanceTo(Arc->Center()) <= tolerance) {
 						return {Group, Arc};
 					}
@@ -3839,7 +3844,7 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 	auto ComboBox {findComboBox->GetComboBox()};
 
 	if (!findText.isEmpty()) {
-		const auto Count {narrow_cast<unsigned>(ComboBox->GetCount())};
+		const auto Count {gsl::narrow_cast<unsigned>(ComboBox->GetCount())};
 		unsigned Position {0};
 
 		while (Position < Count) {

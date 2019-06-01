@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -16,7 +17,7 @@ EoDbEllipse::EoDbEllipse() noexcept
 	: m_Center(OdGePoint3d::kOrigin)
 	, m_MajorAxis(OdGeVector3d::kXAxis)
 	, m_MinorAxis(OdGeVector3d::kYAxis)
-	, m_SweepAngle(TWOPI) {
+	, m_SweepAngle(Oda2PI) {
 }
 
 EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept
@@ -39,7 +40,7 @@ EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNor
 	m_MajorAxis.normalize();
 	m_MajorAxis *= radius;
 	m_MinorAxis = PlaneNormal.crossProduct(m_MajorAxis);
-	m_SweepAngle = TWOPI;
+	m_SweepAngle = Oda2PI;
 }
 
 EoDbEllipse::EoDbEllipse(const EoDbEllipse& other) {
@@ -76,7 +77,7 @@ void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
 	Report += L" Linetype:" + FormatLinetypeIndex();
 	CString LengthAsString = theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
 	if (fabs(m_MajorAxis.lengthSqrd() - m_MinorAxis.lengthSqrd()) <= FLT_EPSILON) {
-		if (fabs(m_SweepAngle - TWOPI) <= FLT_EPSILON) {
+		if (fabs(m_SweepAngle - Oda2PI) <= FLT_EPSILON) {
 			Report = L"<Circle>" + Report;
 			Report += L" Radius:" + LengthAsString;
 		} else {
@@ -103,7 +104,7 @@ EoDbPrimitive* EoDbEllipse::Clone(OdDbBlockTableRecordPtr blockTableRecord) cons
 }
 
 void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
-	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) {
+	if (fabs(m_SweepAngle - Oda2PI) <= DBL_EPSILON) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}
 	const double Relationship = SwpAngToPt(point) / m_SweepAngle;
@@ -144,18 +145,18 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 		auto PlaneNormal {m_MajorAxis.crossProduct(m_MinorAxis)};
 		PlaneNormal.normalize();
 
-		if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) { // Closed arc
-			m_SweepAngle = (dRel[1] - dRel[0]) * TWOPI;
+		if (fabs(m_SweepAngle - Oda2PI) <= DBL_EPSILON) { // Closed arc
+			m_SweepAngle = (dRel[1] - dRel[0]) * Oda2PI;
 
-			m_MajorAxis.rotateBy(dRel[0] * TWOPI, PlaneNormal);
-			m_MinorAxis.rotateBy(dRel[0] * TWOPI, PlaneNormal);
+			m_MajorAxis.rotateBy(dRel[0] * Oda2PI, PlaneNormal);
+			m_MinorAxis.rotateBy(dRel[0] * Oda2PI, PlaneNormal);
 
 			pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 
 			m_MajorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 			m_MinorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 
-			m_SweepAngle = TWOPI - m_SweepAngle;
+			m_SweepAngle = Oda2PI - m_SweepAngle;
 		} else { // Arc section with a cut
 			pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
 			const double dSwpAng = m_SweepAngle;
@@ -251,7 +252,7 @@ void EoDbEllipse::GenPts(const OdGePlane & plane, double sweepAngle) const {
 
 	// Number of points based on angle and a smothness coefficient
 	const double dLen = EoMax(m_MajorAxis.length(), m_MinorAxis.length());
-	int NumberOfPoints {EoMax(2, abs(EoRound(sweepAngle / TWOPI * 32.)))};
+	int NumberOfPoints {EoMax(2, abs(EoRound(sweepAngle / Oda2PI * 32.)))};
 	NumberOfPoints = EoMin(128, EoMax(NumberOfPoints, abs(EoRound(sweepAngle * dLen / 0.25))));
 
 	const double Angle {m_SweepAngle / (static_cast<double>(NumberOfPoints) - 1.0)};
@@ -292,7 +293,7 @@ void EoDbEllipse::GetBoundingBox(OdGePoint3dArray & ptsBox) const {
 	ptsBox[2] = OdGePoint3d(1.0, 1.0, 0.0);
 	ptsBox[3] = OdGePoint3d(-1.0, 1.0, 0.0);
 
-	if (m_SweepAngle < 3. * TWOPI / 4.) {
+	if (m_SweepAngle < 3. * Oda2PI / 4.) {
 		const double dEndX = cos(m_SweepAngle);
 		const double dEndY = sin(m_SweepAngle);
 
@@ -595,7 +596,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 		dWrkAng = atan2(ptWrk[i2].y - m_Center.y, ptWrk[i2].x - m_Center.x); // Current intersection angle (- pi to
 		dIntAng[iInts] = dWrkAng - dBegAng; // Sweep from begin to intersection
 
-		if (dIntAng[iInts] < 0.0) { dIntAng[iInts] += TWOPI; }
+		if (dIntAng[iInts] < 0.0) { dIntAng[iInts] += Oda2PI; }
 
 		if (fabs(dIntAng[iInts]) - m_SweepAngle < 0.0) { // Intersection lies on arc
 			int i;
@@ -619,7 +620,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 			}
 		}
 	}
-	if (fabs(m_SweepAngle - TWOPI) <= DBL_EPSILON) { // Arc is a circle in disuise
+	if (fabs(m_SweepAngle - Oda2PI) <= DBL_EPSILON) { // Arc is a circle in disuise
 
 	} else {
 		if (ptBeg.x >= lowerLeftCorner.x && ptBeg.x <= upperRightCorner.x && ptBeg.y >= lowerLeftCorner.y && ptBeg.y <= upperRightCorner.y) { // Add beg point to int set
@@ -788,7 +789,7 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const O
 			pt[i].transformBy(WorldToPlaneAtCenterPointTransform);
 			dAng[i] = atan2(pt[i].y, pt[i].x);
 
-			if (dAng[i] < 0.0) { dAng[i] += TWOPI; }
+			if (dAng[i] < 0.0) { dAng[i] += Oda2PI; }
 		}
 		const double dMin = EoMin(dAng[0], dAng[2]);
 		const double dMax = EoMax(dAng[0], dAng[2]);
@@ -801,12 +802,12 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d & startPoint, const O
 				if (dAng[0] == dMax)
 					m_SweepAngle = -m_SweepAngle;
 			} else {
-				m_SweepAngle = TWOPI - m_SweepAngle;
+				m_SweepAngle = Oda2PI - m_SweepAngle;
 				if (dAng[2] == dMax)
 					m_SweepAngle = -m_SweepAngle;
 			}
 			OdGePoint3d ptRot = startPoint;
-			ptRot.rotateBy(HALF_PI, PlaneNormal, m_Center);
+			ptRot.rotateBy(OdaPI2, PlaneNormal, m_Center);
 
 			m_MajorAxis = OdGeVector3d(startPoint - m_Center);
 			m_MinorAxis = OdGeVector3d(ptRot - m_Center);
@@ -826,7 +827,7 @@ EoDbEllipse & EoDbEllipse::SetToCircle(const OdGePoint3d & center, const OdGeVec
 		m_MajorAxis.normalize();
 		m_MajorAxis *= radius;
 		m_MinorAxis = PlaneNormal.crossProduct(m_MajorAxis);
-		m_SweepAngle = TWOPI;
+		m_SweepAngle = Oda2PI;
 
 		SetTo2(m_Center, m_MajorAxis, m_MinorAxis, m_SweepAngle);
 	}
@@ -922,13 +923,13 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
 	double StartAngle = ellipse->startAngle();
 	double EndAngle = ellipse->endAngle();
 
-	if (StartAngle >= TWOPI) { // need to rationalize angs to first period angles in range on (0 to twopi)
-		StartAngle -= TWOPI;
-		EndAngle -= TWOPI;
+	if (StartAngle >= Oda2PI) { // need to rationalize angs to first period angles in range on (0 to twopi)
+		StartAngle -= Oda2PI;
+		EndAngle -= Oda2PI;
 	}
 	double SweepAngle = EndAngle - StartAngle;
 	if (SweepAngle <= FLT_EPSILON)
-		SweepAngle += TWOPI;
+		SweepAngle += Oda2PI;
 
 	if (StartAngle != 0.0) {
 		MajorAxis.rotateBy(StartAngle, ellipse->normal());
@@ -1037,7 +1038,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 
 		SweepAngle = ((EoVaxFloat*) & primitiveBufer[44])->Convert();
 
-		if (SweepAngle > TWOPI || SweepAngle < -TWOPI) { SweepAngle = TWOPI; }
+		if (SweepAngle > Oda2PI || SweepAngle < -Oda2PI) { SweepAngle = Oda2PI; }
 	}
 
 	auto Database {blockTableRecord->database()};
@@ -1091,7 +1092,7 @@ int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& 
 		rR[i].transformBy(WorldToPlaneTransform);
 		dT[i] = atan2(rR[i].y, rR[i].x);
 
-		if (dT[i] < 0.0) { dT[i] += TWOPI; }
+		if (dT[i] < 0.0) { dT[i] += Oda2PI; }
 	}
 	const double dTMin = EoMin(dT[0], dT[2]);
 	const double dTMax = EoMax(dT[0], dT[2]);
@@ -1104,7 +1105,7 @@ int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& 
 			if (dT[0] == dTMax) { dTheta = -dTheta; }
 
 		} else {
-			dTheta = TWOPI - dTheta;
+			dTheta = Oda2PI - dTheta;
 
 			if (dT[2] == dTMax) { dTheta = -dTheta; }
 		}

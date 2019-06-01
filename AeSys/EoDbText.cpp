@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -204,7 +205,7 @@ double EoDbText::Rotation() const {
 
 	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
 	if (Angle < 0.0) {
-		Angle += TWOPI;
+		Angle += Oda2PI;
 	}
 	return (Angle);
 }
@@ -481,7 +482,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 		ReferenceSystem.SetYDirection(OdGeVector3d(0.0, dChrHgt, 0.0) * 1.e-3);
 
 		double Angle = ((EoVaxFloat*) & primitiveBuffer[28])->Convert();
-		Angle = min(max(Angle, -TWOPI), TWOPI);
+		Angle = min(max(Angle, -Oda2PI), Oda2PI);
 
 		if (fabs(Angle) > FLT_EPSILON) {
 			OdGeVector3d XDirection(ReferenceSystem.XDirection());
@@ -696,7 +697,7 @@ int FontEscapementAngle(const OdGeVector3d & xAxis) noexcept {
 
 	Angle = atan2(xAxis.y, xAxis.x); // -pi to pi radians
 	if (Angle < 0.0) {
-		Angle += TWOPI;
+		Angle += Oda2PI;
 	}
 	return EoRound(EoToDegree(Angle) * 10.);
 }
@@ -1188,7 +1189,7 @@ OdGePoint3d text_GetNewLinePos(EoDbFontDefinition & fontDefinition, EoGeReferenc
 
 		vPath.normalize();
 		vPath *= -(YDirection.length() * dLineSpaceFac);
-		vPath.rotateBy(HALF_PI, vRefNorm);
+		vPath.rotateBy(OdaPI2, vRefNorm);
 	}
 	return (pt + (vPath * 1.5));
 }

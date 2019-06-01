@@ -6,13 +6,11 @@
 
 #include "framework.h"
 
-#include <cfloat>
-#include <math.h>
-#include <memory>
-
 // <tas=uncomment to use Guidelines Support Library https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md">
+#pragma warning (push)
+#pragma warning (disable: 4003)
 #include <gsl/gsl>
-using namespace gsl;
+#pragma warning (pop)
 // </tas>
 
 #include "Resource.h"
@@ -26,49 +24,13 @@ using namespace gsl;
 // #define OD_OLE_SUPPORT 1
 
 #include "OdaCommon.h"
-#include "DbExport.h"
-#include "DbObject.h"
 
-#include "Ge/GeTol.h"
-#include "Ge/GePoint3d.h"
-#include "Ge/GeScale3d.h"
-#include "Ge/GeLineSeg3d.h"
-#include "Ge/GeKnotVector.h"
-#include "Ge/GeNurbCurve3d.h"
-#include "Ge/GePlane.h"	
-#include "Ge/GeRay3d.h"
-#include "DbBlockIterator.h"
-#include "DbBlockReference.h"
-#include "DbBlockTable.h"
-#include "DbBlockTableRecord.h"
-#include "DbDatabase.h"
-#include "DbLayerTable.h"
-#include "DbLayerTableRecord.h"
-#include "DbLinetypeTable.h"
-#include "DbLinetypeTableRecord.h"
-#include "DbPoint.h"
-#include "DbLine.h"
-#include "DbMText.h"
-#include "DbPolyline.h"
-#include "DbText.h"
-#include "DbSpline.h"
-#include "DbSortentsTable.h"
-#include "DbSpatialFilter.h"
-#include "StringArray.h"
-#include "DbSymUtl.h"
-#include "DbViewport.h"
-#include "DbViewportTable.h"
-#include "DbViewportTableRecord.h"
-#include "LyLayerFilter.h"
+#include <Ge/GePoint3d.h>
+#include <Ge/GeVector3d.h>
+#include <Ge/GeMatrix3d.h>
 
 unsigned AFXAPI HashKey(CString& string) noexcept;
 
-const double PI = 3.14159265358979323846;
-const double HALF_PI = PI / 2.;
-const double QUARTER_PI = PI / 4.;
-const double RADIAN = PI / 180.;
-const double TWOPI = PI + PI;
-
-const double EoMmPerInch = 25.4;
+constexpr auto RADIAN = OdaPI / 180.0;
 
 #include "SafeMath.h"

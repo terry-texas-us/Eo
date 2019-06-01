@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "Ge/GeKnotVector.h"
 #include "EoGePolyline.h"
 
 #include "EoGeNurbCurve3d.h"

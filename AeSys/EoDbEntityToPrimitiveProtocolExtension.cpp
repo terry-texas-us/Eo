@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#include "DbSpline.h"
+#include "DbViewport.h"
+
 #include "AeSysDoc.h"
 
 #include "RxObjectImpl.h"
@@ -282,14 +286,14 @@ public:
 		double StartAngle = ArcEntity->startAngle();
 		double EndAngle = ArcEntity->endAngle();
 
-		if (StartAngle >= TWOPI) { // need to rationalize angs to first period angles in range on (0 to twopi)
-			StartAngle -= TWOPI;
-			EndAngle -= TWOPI;
+		if (StartAngle >= Oda2PI) { // need to rationalize angs to first period angles in range on (0 to twopi)
+			StartAngle -= Oda2PI;
+			EndAngle -= Oda2PI;
 		}
 		double SweepAngle = EndAngle - StartAngle;
 
 		if (SweepAngle <= FLT_EPSILON) {
-			SweepAngle += TWOPI;
+			SweepAngle += Oda2PI;
 		}
 		OdGePoint3d StartPoint;
 		ArcEntity->getStartPoint(StartPoint);

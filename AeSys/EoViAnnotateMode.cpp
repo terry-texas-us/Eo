@@ -1,4 +1,5 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -123,7 +124,7 @@ void AeSysView::OnAnnotateModeBubble() {
 
 	if (!CurrentText.IsEmpty()) {
 		OdGeVector3d MinorAxis {MajorAxis};
-		MinorAxis.rotateBy(HALF_PI, ActiveViewPlaneNormal);
+		MinorAxis.rotateBy(OdaPI2, ActiveViewPlaneNormal);
 
 		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis * .06, MinorAxis * .1);
 
@@ -344,14 +345,14 @@ void AeSysView::OnAnnotateModeCutIn() {
 		if (!CurrentText.IsEmpty()) {
 			auto LineSeg {EngagedLine->LineSeg()};
 			double dAng = LineSeg.AngleFromXAxis_xy();
-			if (dAng > .25 * TWOPI && dAng < .75 * TWOPI)
-				dAng += PI;
+			if (dAng > .25 * Oda2PI && dAng < .75 * Oda2PI)
+				dAng += OdaPI;
 
 			const auto PlaneNormal {CameraDirection()};
 			auto MinorAxis {ViewUp()};
 			MinorAxis.rotateBy(dAng, PlaneNormal);
 			OdGeVector3d MajorAxis = MinorAxis;
-			MajorAxis.rotateBy(-HALF_PI, PlaneNormal);
+			MajorAxis.rotateBy(-OdaPI2, PlaneNormal);
 			MajorAxis *= .06;
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
@@ -626,7 +627,7 @@ void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d & s
 
 		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
-		ItemPoints.append(BasePoint.rotateBy(PI, PlaneNormal, endPoint));
+		ItemPoints.append(BasePoint.rotateBy(OdaPI, PlaneNormal, endPoint));
 	}
 	OdGeMatrix3d WorldToPlaneTransform;
 	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, PlaneNormal));

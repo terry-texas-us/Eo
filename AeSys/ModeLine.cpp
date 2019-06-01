@@ -11,7 +11,7 @@ void AeSysView::ModeLineDisplay() {
 
 	CString ModeOp;
 
-	const not_null<CDC*>(DeviceContext) {GetDC()};
+	const gsl::not_null<CDC*>(DeviceContext) {GetDC()};
 
 	for (int i = 0; i < 10; i++) {
 		AfxExtractSubString(ModeOp, ModeInformation, i + 1, '\n');
@@ -67,7 +67,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 	if (theApp.ModeInformationOverView()) {
 		auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
 
-		const not_null<CDC*>(DeviceContext) {GetDC()};
+		const gsl::not_null<CDC*>(DeviceContext) {GetDC()};
 
 		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
@@ -107,7 +107,7 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 	if (theApp.ModeInformationOverView()) {
 		auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
 
-		const not_null<CDC*>(DeviceContext) {GetDC()};
+		const gsl::not_null<CDC*>(DeviceContext) {GetDC()};
 
 		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const unsigned TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};

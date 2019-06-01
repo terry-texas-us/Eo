@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Ge/GeScale3d.h"
+#include "DbBlockReference.h"
+
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 

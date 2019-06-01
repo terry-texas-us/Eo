@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "Ge/GeScale3d.h"
+
 #include "EoGeReferenceSystem.h"
 #include "EoGeMatrix3d.h"
 

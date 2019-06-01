@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "DbSymUtl.h"
+
 #include "EoDlgLayerPropertiesManager.h"
 
 // EoDlgLayerPropertiesManager dialog

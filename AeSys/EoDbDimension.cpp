@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "DbBlockTableRecord.h"
+
 #include "AeSys.h"
 #include "AeSysView.h"
 
@@ -54,9 +56,9 @@ void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
 	m_Line.ParametricRelationshipOf(point, Relationship);
 
 	if (Relationship > 0.5) {
-		AngleInXYPlane += PI;
+		AngleInXYPlane += OdaPI;
 	}
-	AngleInXYPlane = fmod(AngleInXYPlane, TWOPI);
+	AngleInXYPlane = fmod(AngleInXYPlane, Oda2PI);
 
 	const double Length = m_Line.length();
 
@@ -408,8 +410,8 @@ void EoDbDimension::SetDefaultNote() {
 		dAng = m_Line.AngleFromXAxis_xy();
 		double dDis = .075;
 
-		if (dAng > HALF_PI + RADIAN && dAng < TWOPI - HALF_PI + RADIAN) {
-			dAng -= PI;
+		if (dAng > OdaPI2 + RADIAN && dAng < Oda2PI - OdaPI2 + OdaPI2) {
+			dAng -= OdaPI;
 			dDis = -dDis;
 		}
 		OdGePoint3d Origin;
@@ -423,7 +425,7 @@ void EoDbDimension::SetDefaultNote() {
 	YDirection *= .1;
 
 	auto XDirection {YDirection};
-	XDirection.rotateBy(-HALF_PI, ActiveViewPlaneNormal);
+	XDirection.rotateBy(-OdaPI2, ActiveViewPlaneNormal);
 	XDirection *= .6;
 
 	m_ReferenceSystem.SetXDirection(XDirection);

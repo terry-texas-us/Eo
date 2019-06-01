@@ -1,5 +1,7 @@
 #pragma once
 
+#include "DbDatabase.h"
+
 #include "EoGePoint4d.h"
 
 class AeSysView;

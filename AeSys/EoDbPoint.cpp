@@ -1,12 +1,12 @@
 #include "stdafx.h"
+
+#include "DbBlockTableRecord.h"
+
 #include "AeSys.h"
 #include "AeSysView.h"
 
 #include "EoVaxFloat.h"
-
 #include "EoDbFile.h"
-
-#include "DbObject.h"
 
 EoDbPoint::EoDbPoint() noexcept
 	: m_Position {OdGePoint3d::kOrigin}

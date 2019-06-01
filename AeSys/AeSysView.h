@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ge/GeScale3d.h"
+
 #include "StaticRxObject.h"
 
 #include "DbGsManager.h"

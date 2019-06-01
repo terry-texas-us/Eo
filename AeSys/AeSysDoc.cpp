@@ -791,7 +791,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 			if (TopMenu->GetMenuItemInfoW(commandId, &MenuItemInfo, FALSE)) {
 
 				// <tas="Will not use. Need to decide if/how to select a vectorizer. Possible OpenGL is a desired option to Directx">
-				if (MenuItemInfo.dwItemData == narrow_cast<unsigned>(theApp.getGSMenuItemMarker())) {
+				if (MenuItemInfo.dwItemData == gsl::narrow_cast<unsigned>(theApp.getGSMenuItemMarker())) {
 					CString Vectorizer;
 					TopMenu->GetSubMenu(3)->GetMenuStringW(commandId, Vectorizer, MF_BYCOMMAND);
 
@@ -2116,7 +2116,7 @@ void AeSysDoc::OnEditTrace() {
 					if (ClipboardData != nullptr) {
 						const auto ClipboardDataLength {*((unsigned long*)ClipboardData)};
 						CMemFile MemFile;
-						MemFile.Write(ClipboardData, narrow_cast<unsigned>(ClipboardDataLength));
+						MemFile.Write(ClipboardData, gsl::narrow_cast<unsigned>(ClipboardDataLength));
 						GlobalUnlock(ClipboardDataHandle);
 
 						MemFile.Seek(96, CFile::begin);
@@ -2172,7 +2172,7 @@ void AeSysDoc::OnEditTrapPaste() {
 					auto ClipboardData {static_cast<LPCSTR>(GlobalLock(ClipboardDataHandle))};
 					const auto ClipboardDataLength {*((unsigned long*)ClipboardData)};
 					CMemFile MemoryFile;
-					MemoryFile.Write(ClipboardData, narrow_cast<unsigned>(ClipboardDataLength));
+					MemoryFile.Write(ClipboardData, gsl::narrow_cast<unsigned>(ClipboardDataLength));
 
 					MemoryFile.Seek(sizeof(unsigned long), CFile::begin);
 					MemoryFile.Read(&LowerLeftExtent.x, sizeof(double));

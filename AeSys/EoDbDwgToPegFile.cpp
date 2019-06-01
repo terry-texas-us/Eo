@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#include "DbViewportTable.h"
+#include "DbViewportTableRecord.h"
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
 
@@ -29,7 +33,7 @@ void EoDbDwgToPegFile::ConvertToPeg(AeSysDoc* document) {
 	}
 }
 
-void EoDbDwgToPegFile::ConvertBlockTable(not_null<AeSysDoc*> document) {
+void EoDbDwgToPegFile::ConvertBlockTable(gsl::not_null<AeSysDoc*> document) {
 	OdDbBlockTablePtr BlockTable {m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead)};
 
     OdString ReportItem;

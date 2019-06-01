@@ -373,9 +373,9 @@ void AeSysView::OnPipeModeSymbol() {
 			Group->AddTail(EoDbEllipse::Create(Circle));
 
 			m_PipeModePoints[0] = SymbolBeginPoint;
-			m_PipeModePoints[0].rotateBy(QUARTER_PI, OdGeVector3d::kZAxis, PointOnSection);
+			m_PipeModePoints[0].rotateBy(OdaPI4, OdGeVector3d::kZAxis, PointOnSection);
 			m_PipeModePoints[1] = m_PipeModePoints[0];
-			m_PipeModePoints[1].rotateBy(PI, OdGeVector3d::kZAxis, PointOnSection);
+			m_PipeModePoints[1].rotateBy(OdaPI, OdGeVector3d::kZAxis, PointOnSection);
 
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
@@ -383,9 +383,9 @@ void AeSysView::OnPipeModeSymbol() {
 			Group->AddTail(EoDbLine::Create(Line));
 
 			m_PipeModePoints[0] = SymbolBeginPoint;
-			m_PipeModePoints[0].rotateBy(3. * QUARTER_PI, OdGeVector3d::kZAxis, PointOnSection);
+			m_PipeModePoints[0].rotateBy(3. * OdaPI4, OdGeVector3d::kZAxis, PointOnSection);
 			m_PipeModePoints[1] = m_PipeModePoints[0];
-			m_PipeModePoints[1].rotateBy(PI, OdGeVector3d::kZAxis, PointOnSection);
+			m_PipeModePoints[1].rotateBy(OdaPI, OdGeVector3d::kZAxis, PointOnSection);
 
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);

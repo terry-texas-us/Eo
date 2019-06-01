@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-#include "resource.h"
-
 #include "OdaCommon.h"
 #include "Gs/Gs.h"
 
