@@ -88,7 +88,7 @@ private:
 	BOOL m_bDynamicSubEntHlt;
 	BOOL m_bGDIGradientsAsBitmap;
 	BOOL m_bGDIGradientsAsPolys;
-	BYTE m_nGDIGradientsAsPolysThreshold;
+	unsigned char m_nGDIGradientsAsPolysThreshold;
 	BOOL m_bDisableAutoRegen;
 	ODCOLORREF m_background;
 	unsigned long m_thisThreadID;
@@ -142,7 +142,7 @@ public:
 	bool enableDynamicSubEntHlt() const noexcept { return m_bDynamicSubEntHlt != 0; }
 	bool enableGDIGradientsAsBitmap() const noexcept { return m_bGDIGradientsAsBitmap != 0; }
 	bool enableGDIGradientsAsPolys() const noexcept { return m_bGDIGradientsAsPolys != 0; }
-	BYTE gdiGradientsAsPolysThreshold() const noexcept { return m_nGDIGradientsAsPolysThreshold; }
+	unsigned char gdiGradientsAsPolysThreshold() const noexcept { return m_nGDIGradientsAsPolysThreshold; }
 	bool disableAutoRegen() const noexcept { return m_bDisableAutoRegen != 0; }
 	bool discardBackFaces() const noexcept { return m_bDiscardBackFaces != 0; }
 	enum DisplayFields {

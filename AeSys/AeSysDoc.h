@@ -28,10 +28,7 @@
 
 # include "OdApplicationImpl.h"
 
-class AeSysDoc;
-class AeSysView;
 class ExStringIO;
-
 class EoDlgUserIOConsole;
 
 class Cmd_VIEW : public OdEdCommand {

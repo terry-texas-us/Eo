@@ -919,10 +919,10 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const 
 
 	// Allocate memory to hold points and stroke types from the path.
 	LPPOINT lpPoints {nullptr};
-	LPBYTE lpTypes {nullptr};
+	unsigned char* lpTypes {nullptr};
 	try {
 		lpPoints = new POINT[nNumPts];
-		lpTypes = new BYTE[nNumPts];
+		lpTypes = new unsigned char[nNumPts];
 	} catch (CException * Exception) {
 		delete[] lpPoints;
 		lpPoints = nullptr;

@@ -23,6 +23,7 @@ void AeSysView::OnNodalModeAddRemove() {
 		SetModeCursor(ID_MODE_NODALR);
 	}
 }
+
 void AeSysView::OnNodalModePoint() {
 
 	const auto CurrentPnt {GetCursorPosition()};
@@ -101,7 +102,7 @@ void AeSysView::OnNodalModeArea() {
 }
 
 void AeSysView::OnNodalModeMove() {
-    const auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP4) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP4);
 		m_NodalModePoints.clear();
@@ -112,8 +113,9 @@ void AeSysView::OnNodalModeMove() {
 		OnNodalModeReturn();
 	}
 }
+
 void AeSysView::OnNodalModeCopy() {
-    const auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP5) {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP5);
 		m_NodalModePoints.clear();
@@ -126,43 +128,43 @@ void AeSysView::OnNodalModeCopy() {
 }
 
 void AeSysView::OnNodalModeToLine() {
-    auto CurrentPnt {GetCursorPosition()};
-    if (PreviousNodalCommand != ID_OP6) {
-        PreviousNodalCursorPosition = CurrentPnt;
-        RubberBandingStartAtEnable(CurrentPnt, Lines);
-        PreviousNodalCommand = ModeLineHighlightOp(ID_OP6);
-    } else {
-        if (PreviousNodalCursorPosition != CurrentPnt) {
-            OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	auto CurrentPnt {GetCursorPosition()};
+	if (PreviousNodalCommand != ID_OP6) {
+		PreviousNodalCursorPosition = CurrentPnt;
+		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		PreviousNodalCommand = ModeLineHighlightOp(ID_OP6);
+	} else {
+		if (PreviousNodalCursorPosition != CurrentPnt) {
+			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-            CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
-            const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
+			CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
+			const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
 
-            auto Group {new EoDbGroup};
+			auto Group {new EoDbGroup};
 
-            auto PointPosition {GetDocument()->GetFirstUniquePointPosition()};
-            while (PointPosition != 0) {
-                auto UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
-                auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
-                Line->setColorIndex(pstate.ColorIndex());
-                Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
-                Group->AddTail(EoDbLine::Create(Line));
-            }
-            GetDocument()->AddWorkLayerGroup(Group);
-            GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+			auto PointPosition {GetDocument()->GetFirstUniquePointPosition()};
+			while (PointPosition != 0) {
+				auto UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
+				auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
+				Line->setColorIndex(pstate.ColorIndex());
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+				Group->AddTail(EoDbLine::Create(Line));
+			}
+			GetDocument()->AddWorkLayerGroup(Group);
+			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 
-            SetCursorPosition(CurrentPnt);
-        }
-        RubberBandingDisable();
-        ModeLineUnhighlightOp(PreviousNodalCommand);
-    }
+			SetCursorPosition(CurrentPnt);
+		}
+		RubberBandingDisable();
+		ModeLineUnhighlightOp(PreviousNodalCommand);
+	}
 }
 
 /// <remarks>
 /// The pen color used for any polygons added to drawing is the current pen color and not the pen color of the reference primitives.
 /// </remarks>
 void AeSysView::OnNodalModeToPolygon() {
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
 	if (PreviousNodalCommand != ID_OP7) {
 		PreviousNodalCursorPosition = CurrentPnt;
@@ -283,56 +285,57 @@ void AeSysView::OnNodalModeEngage() {
 }
 
 void AeSysView::OnNodalModeReturn() {
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 
 	switch (PreviousNodalCommand) {
-	case ID_OP4:
-		if (m_NodalModePoints[0] != CurrentPnt) {
-			CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
-			const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
+		case ID_OP4:
+			if (m_NodalModePoints[0] != CurrentPnt) {
+				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
+				const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
 
-			auto MaskedPrimitivePosition {GetDocument()->GetFirstMaskedPrimitivePosition()};
-			while (MaskedPrimitivePosition != nullptr) {
-				auto MaskedPrimitive = GetDocument()->GetNextMaskedPrimitive(MaskedPrimitivePosition);
-				auto Primitive = MaskedPrimitive->GetPrimitive();
-				const auto Mask {MaskedPrimitive->GetMask()};
-				Primitive->TranslateUsingMask(Translate, Mask);
+				auto MaskedPrimitivePosition {GetDocument()->GetFirstMaskedPrimitivePosition()};
+				while (MaskedPrimitivePosition != nullptr) {
+					auto MaskedPrimitive = GetDocument()->GetNextMaskedPrimitive(MaskedPrimitivePosition);
+					auto Primitive = MaskedPrimitive->GetPrimitive();
+					const auto Mask {MaskedPrimitive->GetMask()};
+					Primitive->TranslateUsingMask(Translate, Mask);
+				}
+				EoGeUniquePoint* Point;
+
+				auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
+				while (UniquePointPosition != nullptr) {
+					Point = GetDocument()->GetNextUniquePoint(UniquePointPosition);
+					Point->m_Point += Translate;
+				}
+				SetCursorPosition(CurrentPnt);
 			}
-			EoGeUniquePoint* Point;
+			break;
 
-			auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
-			while (UniquePointPosition != nullptr) {
-				Point = GetDocument()->GetNextUniquePoint(UniquePointPosition);
-				Point->m_Point += Translate;
+		case ID_OP5:
+			if (m_NodalModePoints[0] != CurrentPnt) {
+				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
+				EoGeMatrix3d TranslationMatrix;
+				TranslationMatrix.setToTranslation(CurrentPnt - m_NodalModePoints[0]);
+
+				POSITION GroupPosition = GetDocument()->GetFirstNodalGroupPosition();
+				while (GroupPosition != 0) {
+					EoDbGroup* Group = GetDocument()->GetNextNodalGroup(GroupPosition);
+					GetDocument()->AddWorkLayerGroup(new EoDbGroup(*Group));
+					GetDocument()->GetLastWorkLayerGroup()->TransformBy(TranslationMatrix);
+				}
+				SetCursorPosition(CurrentPnt);
 			}
-			SetCursorPosition(CurrentPnt);
-		}
-		break;
+			break;
 
-	case ID_OP5:
-		if (m_NodalModePoints[0] != CurrentPnt) {
-			CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
-			EoGeMatrix3d TranslationMatrix;
-			TranslationMatrix.setToTranslation(CurrentPnt - m_NodalModePoints[0]);
-
-			POSITION GroupPosition = GetDocument()->GetFirstNodalGroupPosition();
-			while (GroupPosition != 0) {
-				EoDbGroup* Group = GetDocument()->GetNextNodalGroup(GroupPosition);
-				GetDocument()->AddWorkLayerGroup(new EoDbGroup(*Group));
-				GetDocument()->GetLastWorkLayerGroup()->TransformBy(TranslationMatrix);
-			}
-			SetCursorPosition(CurrentPnt);
-		}
-		break;
-
-	default:
-		return;
+		default:
+			return;
 	}
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	m_NodalModePoints.clear();
 	RubberBandingDisable();
 	ModeLineUnhighlightOp(PreviousNodalCommand);
 }
+
 void AeSysView::OnNodalModeEscape() {
 	if (PreviousNodalCommand == 0) {
 		GetDocument()->DisplayUniquePoints();
@@ -350,64 +353,65 @@ void AeSysView::OnNodalModeEscape() {
 		ModeLineUnhighlightOp(PreviousNodalCommand);
 	}
 }
+
 void AeSysView::DoNodalModeMouseMove() {
-    auto CurrentPnt {GetCursorPosition()};
+	auto CurrentPnt {GetCursorPosition()};
 	const int NumberOfPoints = m_NodalModePoints.size();
 
 	switch (PreviousNodalCommand) {
-	case ID_OP4:
-		VERIFY(m_NodalModePoints.size() > 0);
+		case ID_OP4:
+			VERIFY(m_NodalModePoints.size() > 0);
 
-		if (m_NodalModePoints[0] != CurrentPnt) {
-			CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
-			m_NodalModePoints.append(CurrentPnt);
+			if (m_NodalModePoints[0] != CurrentPnt) {
+				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
+				m_NodalModePoints.append(CurrentPnt);
 
-			const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
+				const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
 
-			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+				OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
-			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-			auto MaskedPrimitivePosition {GetDocument()->GetFirstMaskedPrimitivePosition()};
+				auto MaskedPrimitivePosition {GetDocument()->GetFirstMaskedPrimitivePosition()};
 
-			while (MaskedPrimitivePosition != nullptr) {
-				auto MaskedPrimitive {GetDocument()->GetNextMaskedPrimitive(MaskedPrimitivePosition)};
-				auto Primitive {MaskedPrimitive->GetPrimitive()};
-				const auto Mask {MaskedPrimitive->GetMask()};
-				m_PreviewGroup.AddTail(Primitive->Clone(BlockTableRecord));
-				((EoDbPrimitive*) m_PreviewGroup.GetTail())->TranslateUsingMask(Translate, Mask);
+				while (MaskedPrimitivePosition != nullptr) {
+					auto MaskedPrimitive {GetDocument()->GetNextMaskedPrimitive(MaskedPrimitivePosition)};
+					auto Primitive {MaskedPrimitive->GetPrimitive()};
+					const auto Mask {MaskedPrimitive->GetMask()};
+					m_PreviewGroup.AddTail(Primitive->Clone(BlockTableRecord));
+					((EoDbPrimitive*)m_PreviewGroup.GetTail())->TranslateUsingMask(Translate, Mask);
+				}
+				auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
+
+				while (UniquePointPosition != nullptr) {
+					auto UniquePoint {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
+					const auto Point {(UniquePoint->m_Point) + Translate};
+					auto PointPrimitive {new EoDbPoint(Point)};
+
+					PointPrimitive->SetColorIndex2(252);
+					PointPrimitive->SetPointDisplayMode(8);
+					m_PreviewGroup.AddTail(PointPrimitive);
+				}
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
-			auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
+			break;
 
-			while (UniquePointPosition != nullptr) {
-				auto UniquePoint {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
-				const auto Point {(UniquePoint->m_Point) + Translate};
-				auto PointPrimitive {new EoDbPoint(Point)};
+		case ID_OP5:
 
-				PointPrimitive->SetColorIndex2(252);
-				PointPrimitive->SetPointDisplayMode(8);
-				m_PreviewGroup.AddTail(PointPrimitive);
+			if (m_NodalModePoints[0] != CurrentPnt) {
+				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
+				m_NodalModePoints.append(CurrentPnt);
+				EoGeMatrix3d TranslationMatrix;
+				TranslationMatrix.setToTranslation(CurrentPnt - m_NodalModePoints[0]);
+
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
+				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
+				ConstructPreviewGroupForNodalGroups();
+				m_PreviewGroup.TransformBy(TranslationMatrix);
+				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
-			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-		}
-		break;
-
-	case ID_OP5:
-
-		if (m_NodalModePoints[0] != CurrentPnt) {
-			CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
-			m_NodalModePoints.append(CurrentPnt);
-			EoGeMatrix3d TranslationMatrix;
-			TranslationMatrix.setToTranslation(CurrentPnt - m_NodalModePoints[0]);
-
-			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-			ConstructPreviewGroupForNodalGroups();
-			m_PreviewGroup.TransformBy(TranslationMatrix);
-			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
-		}
-		break;
+			break;
 	}
 	m_NodalModePoints.setLogicalLength(NumberOfPoints);
 }
@@ -432,6 +436,7 @@ void AeSysView::ConstructPreviewGroup() {
 		m_PreviewGroup.AddTail(PointPrimitive);
 	}
 }
+
 void AeSysView::ConstructPreviewGroupForNodalGroups() {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 

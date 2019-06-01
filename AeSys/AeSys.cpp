@@ -1372,7 +1372,7 @@ BOOL AeSys::InitInstance() {
 	m_bDynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", 0);
 	m_bGDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", 1);
 	m_bGDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", 0);
-	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<BYTE>(GetInt(L"GDI Gradients as Polys Threshold", 10));
+	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<unsigned char>(GetInt(L"GDI Gradients as Polys Threshold", 10));
 
 	m_bDisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", 0);
 
