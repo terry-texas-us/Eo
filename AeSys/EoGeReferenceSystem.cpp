@@ -3,19 +3,23 @@
 
 #include "EoDbFile.h"
 
-EoGeReferenceSystem::EoGeReferenceSystem() : m_Origin(OdGePoint3d::kOrigin), m_XDirection(OdGeVector3d::kXAxis), m_YDirection(OdGeVector3d::kYAxis) {
+EoGeReferenceSystem::EoGeReferenceSystem() noexcept
+	: m_Origin(OdGePoint3d::kOrigin)
+	, m_XDirection(OdGeVector3d::kXAxis)
+	, m_YDirection(OdGeVector3d::kYAxis) {
 }
 
-EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition) : m_Origin(origin) {
-	const OdGeVector3d normal = view->CameraDirection();
+EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition)
+	: m_Origin(origin) {
+	const auto PlaneNormal {view->CameraDirection()};
 
 	m_YDirection = view->ViewUp();
-	m_YDirection.rotateBy(characterCellDefinition.RotationAngle(), normal);
+	m_YDirection.rotateBy(characterCellDefinition.RotationAngle(), PlaneNormal);
 
 	m_XDirection = m_YDirection;
-	m_XDirection.rotateBy(-OdaPI2, normal);
-	m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), normal);
-	m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
+	m_XDirection.rotateBy(-OdaPI2, PlaneNormal);
+	m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), PlaneNormal);
+	m_XDirection *= 0.6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
 	m_YDirection *= characterCellDefinition.Height();
 }
 
@@ -31,7 +35,7 @@ EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVe
 
 	m_YDirection = normal.crossProduct(m_XDirection);
 
-	m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
+	m_XDirection *= 0.6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
 
 	m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), normal);
 	m_YDirection *= characterCellDefinition.Height();
@@ -50,7 +54,7 @@ EoGeReferenceSystem& EoGeReferenceSystem::operator=(const EoGeReferenceSystem& o
 
 	return (*this);
 }
-// <tas="Likely misuse of .normal"</tas>
+// <tas="Likely misuse of .normal"/>
 
 void EoGeReferenceSystem::GetUnitNormal(OdGeVector3d& normal) {
 	normal = m_XDirection.crossProduct(m_YDirection).normal();
@@ -74,12 +78,12 @@ void EoGeReferenceSystem::Read(EoDbFile& file) {
 }
 
 void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCellDefinition) {
-	OdGeVector3d vNorm;
-	GetUnitNormal(vNorm);
+	OdGeVector3d PlaneNormal;
+	GetUnitNormal(PlaneNormal);
 	m_XDirection.normalize();
 	m_YDirection = m_XDirection;
-	m_YDirection.rotateBy(OdaPI2 + characterCellDefinition.ObliqueAngle(), vNorm);
-	m_XDirection *= .6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
+	m_YDirection.rotateBy(OdaPI2 + characterCellDefinition.ObliqueAngle(), PlaneNormal);
+	m_XDirection *= 0.6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
 	m_YDirection *= characterCellDefinition.Height();
 }
 

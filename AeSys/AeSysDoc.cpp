@@ -194,13 +194,13 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
 END_MESSAGE_MAP()
 
-unsigned short AeSysDoc::ClipboardData::m_FormatR15 = (CLIPFORMAT)::RegisterClipboardFormat(L"AutoCAD.r15");
-unsigned short AeSysDoc::ClipboardData::m_FormatR16 = (CLIPFORMAT)::RegisterClipboardFormat(L"AutoCAD.r16");
-unsigned short AeSysDoc::ClipboardData::m_FormatR17 = (CLIPFORMAT)::RegisterClipboardFormat(L"AutoCAD.r17");
-unsigned short AeSysDoc::ClipboardData::m_FormatR18 = (CLIPFORMAT)::RegisterClipboardFormat(L"AutoCAD.r18");
-unsigned short AeSysDoc::ClipboardData::m_FormatR19 = (CLIPFORMAT)::RegisterClipboardFormat(L"AutoCAD.r19");
+unsigned AeSysDoc::ClipboardData::m_FormatR15 = ::RegisterClipboardFormatW(L"AutoCAD.r15");
+unsigned AeSysDoc::ClipboardData::m_FormatR16 = ::RegisterClipboardFormatW(L"AutoCAD.r16");
+unsigned AeSysDoc::ClipboardData::m_FormatR17 = ::RegisterClipboardFormatW(L"AutoCAD.r17");
+unsigned AeSysDoc::ClipboardData::m_FormatR18 = ::RegisterClipboardFormatW(L"AutoCAD.r18");
+unsigned AeSysDoc::ClipboardData::m_FormatR19 = ::RegisterClipboardFormatW(L"AutoCAD.r19");
 
-AeSysDoc* g_pDoc = nullptr;
+AeSysDoc* g_pDoc {nullptr};
 
 AeSysDoc::AeSysDoc() noexcept
 	: m_pViewer(nullptr)
@@ -494,11 +494,11 @@ OdDbCommandContextPtr AeSysDoc::CommandContext() {
 
 OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
 	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->CommandContext();
-	OdDbSelectionSetPtr SelectionSet {CommandContext->arbitraryData(L"OdaMfcApp Working Selection Set")};
+	OdDbSelectionSetPtr SelectionSet {CommandContext->arbitraryData(L"AeSys Working Selection Set")};
 
 	if (SelectionSet.isNull()) {
 		SelectionSet = OdDbSelectionSet::createObject(m_DatabasePtr);
-		CommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", SelectionSet);
+		CommandContext->setArbitraryData(L"AeSys Working Selection Set", SelectionSet);
 	}
 	TRACE1("Working Selection set contains %d items\n", SelectionSet->numEntities());
 	return SelectionSet;
@@ -1479,10 +1479,10 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	return (bRetVal);
 }
 
-void AeSysDoc::PenTranslation(unsigned short wCols, short* pColNew, short* pCol) {
+void AeSysDoc::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
-		Layer->PenTranslation(wCols, pColNew, pCol);
+		Layer->PenTranslation(numberOfColors, newColors, pCol);
 	}
 }
 
@@ -2631,39 +2631,26 @@ void AeSysDoc::OnPensLoadColors() {
 	delete[] OpenFileName.lpstrFile;
 }
 
+// <tas="OnPensTranslate would be more useful if the file name could be selected. Currently fixed as xlate.txt"</tas>
 void AeSysDoc::OnPensTranslate() {
-	CStdioFile fl;
+	CStdioFile StreamFile;
 
-	// <tas="OnPensTranslate would be more useful if the file name could be selected. Currently fixed as xlate.txt"</tas>
-	if (fl.Open(AeSys::ResourceFolderPath() + L"\\Pens\\xlate.txt", CFile::modeRead | CFile::typeText)) {
+	if (StreamFile.Open(AeSys::ResourceFolderPath() + L"\\Pens\\xlate.txt", CFile::modeRead | CFile::typeText)) {
 		wchar_t pBuf[128];
-		unsigned short wCols = 0;
 
-		while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr)
-			wCols++;
+		vector<int> ColorIndex;
+		vector<int> NewColorIndex;
 
-		if (wCols > 0) {
-			short* pColNew = new short[wCols];
-			short* pCol = new short[wCols];
+		wchar_t* NextToken;
 
-			unsigned short w = 0;
-
-			fl.SeekToBegin();
-
-			wchar_t* NextToken;
-
-			while (fl.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr) {
-				NextToken = nullptr;
-				pCol[w] = short(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
-				pColNew[w++] = short(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
-			}
-			PenTranslation(wCols, pColNew, pCol);
-
-			delete[] pColNew;
-			delete[] pCol;
+		while (StreamFile.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr) {
+			NextToken = nullptr;
+			ColorIndex.push_back(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
+			NewColorIndex.push_back(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
 		}
+		PenTranslation(NewColorIndex.size(), NewColorIndex, ColorIndex);
+		UpdateAllViews(nullptr);
 	}
-	UpdateAllViews(nullptr);
 }
 
 void AeSysDoc::OnFile() {

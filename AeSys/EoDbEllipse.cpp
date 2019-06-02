@@ -935,7 +935,7 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
 		MajorAxis.rotateBy(StartAngle, ellipse->normal());
 		MinorAxis.rotateBy(StartAngle, ellipse->normal());
 		if (ellipse->radiusRatio() != 1.0) {
-			ATLTRACE2(atlTraceGeneral, 0, L"Ellipse: Non radial with start parameter not 0.\n");
+			TRACE0("Ellipse: Non radial with start parameter not 0.\n");
 		}
 	}
 	Ellipse->SetCenter(ellipse->center());

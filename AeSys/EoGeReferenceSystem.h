@@ -13,7 +13,7 @@ class EoGeReferenceSystem {
 
 public: // Constructors and destructor
 
-	EoGeReferenceSystem();
+	EoGeReferenceSystem() noexcept;
 	EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition);
 	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition);

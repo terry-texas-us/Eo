@@ -204,13 +204,13 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsign
 	m_color = (m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
-	if (colorIndex <= 0)
-	{
-		wcscpy(m_name, L"Custom Color");
+	
+	if (colorIndex <= 0) {
+		wcscpy_s(m_name, PS_COLOR_MAX_NAME, L"Custom Color");
 	} else {
-		OdString clrName;
-		clrName.format(L"Color %d", colorIndex);
-		wcscpy(m_name, (const wchar_t*)clrName);
+		OdString ColorName;
+		ColorName.format(L"Color %d", colorIndex);
+		wcscpy_s(m_name, PS_COLOR_MAX_NAME, ColorName);
 	}
 }
 

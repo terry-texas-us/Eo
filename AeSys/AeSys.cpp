@@ -128,11 +128,11 @@ static void addMaterialTextureLoadingMonitor() {
 			// Material texture to be loaded. Correct loading path here.
 		}
 		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* database) override {
-			ATLTRACE2(atlTraceGeneral, 0, L"Material texture loaded: %s\n", fileName.c_str());
+			TRACE1("Material texture loaded: %s\n", fileName.c_str());
 		}
 		/// <remarks> Called by texture loader after file loading, only if texture loading failed. </remarks>
 		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* database) override {
-			ATLTRACE2(atlTraceGeneral, 0, L"Failed to load material texture: %s\n", fileName.c_str());
+			TRACE1("Failed to load material texture: %s\n", fileName.c_str());
 		}
 	}
 	s_MatLoadExt;

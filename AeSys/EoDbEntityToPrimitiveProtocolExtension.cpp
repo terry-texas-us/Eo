@@ -206,7 +206,7 @@ void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 
 //<summary>This is the default implementation to be attached to OdDbEntity as a catch-all. This guarantees that this protocol extension will be found for any entity, so the search up the OdRxClass tree will not fail and abort.</summary>
 void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup*) {
-    ATLTRACE2(atlTraceGeneral, 0, L"Entity %s was not converted ...\n", (const wchar_t*) entity->isA()->name());
+    TRACE1("Entity %s was not converted ...\n", (const wchar_t*) entity->isA()->name());
 }
 
 class EoDb2dPolyline_Converter : public EoDbConvertEntityToPrimitive {
@@ -645,7 +645,7 @@ class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbViewportPtr ViewportEntity = entity;
-		ATLTRACE2(atlTraceGeneral, 0, L"%s was not converted ...\n", (const wchar_t*) ViewportEntity->desc()->name());
+		TRACE1("%s was not converted ...\n", (const wchar_t*) ViewportEntity->desc()->name());
 
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);

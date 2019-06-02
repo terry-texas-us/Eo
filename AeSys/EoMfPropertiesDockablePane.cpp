@@ -10,8 +10,15 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-static wchar_t* TabsStyles[] = { L"None", L"Standard", L"Grouped", NULL };
-static wchar_t* TabLocations[] = { L"On Bottom", L"On Top", NULL };
+const vector<wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
+const vector<wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
+
+EoMfPropertiesDockablePane::EoMfPropertiesDockablePane() noexcept {
+	m_nComboHeight = 0;
+}
+
+EoMfPropertiesDockablePane::~EoMfPropertiesDockablePane() {
+}
 
 BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 	ON_WM_CREATE()
@@ -27,37 +34,54 @@ BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 	ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnUpdateSortProperties)
 END_MESSAGE_MAP()
 
-EoMfPropertiesDockablePane::EoMfPropertiesDockablePane() {
+void EoMfPropertiesDockablePane::AdjustLayout() {
+
+	if (GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic())) { return; }
+
+	CRect rectClient, rectCombo;
+	GetClientRect(rectClient);
+
+	m_wndObjectCombo.GetWindowRect(&rectCombo);
+
+	const int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
+
+	m_wndObjectCombo.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), m_nComboHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertiesToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top + m_nComboHeight, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertyGrid.SetWindowPos(nullptr, rectClient.left, rectClient.top + m_nComboHeight + cyTlb, rectClient.Width(), rectClient.Height() - (m_nComboHeight + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
 }
-EoMfPropertiesDockablePane::~EoMfPropertiesDockablePane() {
-}
+
 int EoMfPropertiesDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
-	if (CDockablePane::OnCreate(createStructure) == - 1) {
-		return - 1;
-	}
+
+	if (CDockablePane::OnCreate(createStructure) == -1) { return -1; }
+
 	CRect EmptyRect;
 	EmptyRect.SetRectEmpty();
 
 	if (!m_wndObjectCombo.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRect, this, 1)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create Properties Combo\n");
-		return - 1;
+		TRACE0("Failed to create Properties Combo\n");
+		return -1;
 	}
 	m_wndObjectCombo.AddString(L"Application");
 	m_wndObjectCombo.AddString(L"Persistant");
-	m_wndObjectCombo.SetFont(CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT)), TRUE);
+	m_wndObjectCombo.SetFont(CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT))), TRUE);
 	m_wndObjectCombo.SetCurSel(0);
 
+	CRect rectCombo;
+	m_wndObjectCombo.GetClientRect(&rectCombo);
+
+	m_nComboHeight = rectCombo.Height();
+
 	if (!m_PropertyGrid.Create(WS_VISIBLE | WS_CHILD, EmptyRect, this, 2)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create Properties Grid \n");
-		return - 1;
+		TRACE0("Failed to create Properties Grid \n");
+		return -1;
 	}
 	InitializePropertyGrid();
 	SetWorkspaceTabsSubItemsState();
 
 	m_PropertiesToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
-	m_PropertiesToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE, 0, 0, 0);
+	m_PropertiesToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE);
 	m_PropertiesToolBar.CleanUpLockedImages();
-	m_PropertiesToolBar.LoadBitmap(theApp.HighColorMode() ? IDB_PROPERTIES_HC : IDR_PROPERTIES, 0, 0, TRUE, 0, 0);
+	m_PropertiesToolBar.LoadBitmapW(theApp.HighColorMode() ? IDB_PROPERTIES_HC : IDR_PROPERTIES, 0, 0, TRUE);
 
 	m_PropertiesToolBar.SetPaneStyle(m_PropertiesToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	m_PropertiesToolBar.SetPaneStyle(m_PropertiesToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));
@@ -70,158 +94,70 @@ int EoMfPropertiesDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	return 0;
 }
 
-void EoMfPropertiesDockablePane::OnSetFocus(CWnd* oldWindow) {
-	CDockablePane::OnSetFocus(oldWindow);
-	m_PropertyGrid.SetFocus();
-}
-
-void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, const wchar_t* section) {
-	CDockablePane::OnSettingChange(flags, section);
-	SetPropertyGridFont();
-}
-
 void EoMfPropertiesDockablePane::OnSize(unsigned type, int cx, int cy) {
 	CDockablePane::OnSize(type, cx, cy);
 	AdjustLayout();
 }
 
-LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
-	CMFCPropertyGridProperty* Property = (CMFCPropertyGridProperty*) lparam;
-
-	BOOL ResetMDIChild = FALSE;
-
-	switch (int(Property->GetData())) {
-    case kTabsStyle: {
-        CString TabStyle = (const wchar_t*) (_bstr_t) Property->GetValue();
-        ResetMDIChild = TRUE;
-
-        for (int i = 0; ::TabsStyles[i] != NULL; i++) {
-            if (TabStyle == ::TabsStyles[i]) {
-                switch (i) {
-                case 0:
-                    theApp.m_Options.m_nTabsStyle = EoApOptions::None;
-                    break;
-
-                case 1:
-                    theApp.m_Options.m_nTabsStyle = EoApOptions::Standard;
-                    break;
-
-                case 2:
-                    theApp.m_Options.m_nTabsStyle = EoApOptions::Grouped;
-                    break;
-                }
-                break;
-            }
-        }
-        SetWorkspaceTabsSubItemsState();
-        break;
-    }
-    case kTabLocation: {
-        CString TabLocation = (const wchar_t*) (_bstr_t) Property->GetValue();
-        theApp.m_Options.m_MdiTabInfo.m_tabLocation = (TabLocation == TabLocations[0] ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP);
-        break;
-    }
-	case kTabsAutoColor:
-		theApp.m_Options.m_MdiTabInfo.m_bAutoColor = Property->GetValue().boolVal == VARIANT_TRUE;
-		break;
-
-	case kTabIcons:
-		theApp.m_Options.m_MdiTabInfo.m_bTabIcons = Property->GetValue().boolVal == VARIANT_TRUE;
-		break;
-
-    case kTabBorderSize: {
-        const int nBorder = Property->GetValue().iVal;
-        theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize = min(8, max(0, nBorder));
-        break;
-    }
-    case kActiveViewScale: {
-		auto ActiveView {AeSysView::GetActiveView()};
-        ActiveView->SetWorldScale(Property->GetValue().dblVal);
-        ActiveView->UpdateStateInformation(AeSysView::Scale);
-        return LRESULT(0);
-    }
-	}
-	theApp.UpdateMDITabs(ResetMDIChild);
-
-	return LRESULT(0);
-}
-
 void EoMfPropertiesDockablePane::OnExpandAllProperties() {
 	m_PropertyGrid.ExpandAll();
 }
-void EoMfPropertiesDockablePane::OnProperties1() {
-	ATLTRACE2(atlTraceGeneral, 0, L"EoMfPropertiesDockablePane::OnProperties1\n");
+
+void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* pCmdUI) noexcept {
 }
 
 void EoMfPropertiesDockablePane::OnSortProperties() {
 	m_PropertyGrid.SetAlphabeticMode(!m_PropertyGrid.IsAlphabeticMode());
 }
 
-void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /* pCmdUI */) {
-	ATLTRACE2(atlTraceGeneral, 2, L"EoMfPropertiesDockablePane::OnUpdatExpandAllProperties\n");
-}
-
-void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* /* pCmdUI */) {
-	ATLTRACE2(atlTraceGeneral, 2, L"EoMfPropertiesDockablePane::OnUpdatProperties1\n");
-}
-
 void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_PropertyGrid.IsAlphabeticMode());
 }
 
-void EoMfPropertiesDockablePane::AdjustLayout() {
+void EoMfPropertiesDockablePane::OnProperties1() noexcept {
+	// TODO: Add your command handler code here
+}
 
-	if (GetSafeHwnd() == nullptr) { return; }
-
-	CRect rectClient, rectCombo;
-	GetClientRect(rectClient);
-
-	m_wndObjectCombo.GetWindowRect(&rectCombo);
-
-	const int cyCmb = rectCombo.Size().cy;
-	const int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
-
-	m_wndObjectCombo.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), 200, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertiesToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top + cyCmb, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertyGrid.SetWindowPos(nullptr, rectClient.left, rectClient.top + cyCmb + cyTlb, rectClient.Width(), rectClient.Height() - (cyCmb + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
+void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* pCmdUI) noexcept {
+	// TODO: Add your command update UI handler code here
 }
 
 void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	SetPropertyGridFont();
 
 	m_PropertyGrid.EnableHeaderCtrl(FALSE, L"Property", L"Value");
-	m_PropertyGrid.EnableDescriptionArea(TRUE);
+	m_PropertyGrid.EnableDescriptionArea();
 
-	m_PropertyGrid.SetVSDotNetLook(TRUE);
-	m_PropertyGrid.SetGroupNameFullWidth(TRUE, TRUE);
+	m_PropertyGrid.SetVSDotNetLook();
+	m_PropertyGrid.SetGroupNameFullWidth();
 
-	m_PropertyGrid.MarkModifiedProperties(TRUE, TRUE);
+	m_PropertyGrid.MarkModifiedProperties();
 
-	CMFCPropertyGridProperty* WorkspaceTabsGroup = new CMFCPropertyGridProperty(L"Workspace Tabs");
+	auto WorkspaceTabsGroup {new CMFCPropertyGridProperty(L"Workspace Tabs")};
 
-	CMFCPropertyGridProperty* TabsStyle = new CMFCPropertyGridProperty(L"Tabs Style", L"", L"Set the Tabs Style to None, Standard, or Grouped", kTabsStyle);
-	TabsStyle->AddOption(::TabsStyles[0], TRUE);
-	TabsStyle->AddOption(::TabsStyles[1], TRUE);
-	TabsStyle->AddOption(::TabsStyles[2], TRUE);
-	TabsStyle->SetValue(::TabsStyles[theApp.m_Options.m_nTabsStyle]);
+	auto TabsStyle {new CMFCPropertyGridProperty(L"Tabs Style", L"", L"Set the Tabs Style to None, Standard, or Grouped", kTabsStyle)};
+	TabsStyle->AddOption(TabsStyles[0]);
+	TabsStyle->AddOption(TabsStyles[1]);
+	TabsStyle->AddOption(TabsStyles[2]);
+	TabsStyle->SetValue(TabsStyles.at(theApp.m_Options.m_nTabsStyle));
 	TabsStyle->AllowEdit(FALSE);
 	WorkspaceTabsGroup->AddSubItem(TabsStyle);
 
-	CMFCPropertyGridProperty* TabLocation = new CMFCPropertyGridProperty(L"Tab Location", L"", L"Set the Tab Location to Top or Bottom", kTabLocation);
-	TabLocation->AddOption(::TabLocations[0], TRUE);
-	TabLocation->AddOption(::TabLocations[1], TRUE);
-	TabLocation->SetValue(::TabLocations[theApp.m_Options.m_MdiTabInfo.m_tabLocation]);
+	auto TabLocation {new CMFCPropertyGridProperty(L"Tab Location", L"", L"Set the Tab Location to Top or Bottom", kTabLocation)};
+	TabLocation->AddOption(TabsLocations[0]);
+	TabLocation->AddOption(TabsLocations[1]);
+	TabLocation->SetValue(TabsLocations.at(theApp.m_Options.m_MdiTabInfo.m_tabLocation));
 	TabLocation->AllowEdit(FALSE);
 	WorkspaceTabsGroup->AddSubItem(TabLocation);
 
-	COleVariant TabsAutoColor((short)(theApp.m_Options.m_MdiTabInfo.m_bAutoColor == TRUE), VT_BOOL);
+	COleVariant TabsAutoColor(static_cast<short>(theApp.m_Options.m_MdiTabInfo.m_bAutoColor == TRUE), VT_BOOL);
 	WorkspaceTabsGroup->AddSubItem(new CMFCPropertyGridProperty(L"Tabs auto-color", TabsAutoColor, L"Set Workspace Tabs to use automatic color", kTabsAutoColor));
 
-	COleVariant TabIcons((short)(theApp.m_Options.m_MdiTabInfo.m_bTabIcons == TRUE), VT_BOOL);
+	COleVariant TabIcons(static_cast<short>(theApp.m_Options.m_MdiTabInfo.m_bTabIcons == TRUE), VT_BOOL);
 	WorkspaceTabsGroup->AddSubItem(new CMFCPropertyGridProperty(L"Tab icons", TabIcons, L"Show document icons on Workspace Tabs", kTabIcons));
 
-	COleVariant TabBorderSize((short)(theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize), VT_I2);
-	CMFCPropertyGridProperty* BorderSize = new CMFCPropertyGridProperty(L"Border Size", TabBorderSize, L"Set Workspace border size from 0 to 8 pixels", kTabBorderSize);
+	COleVariant TabBorderSize(static_cast<short>(theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize), VT_I2);
+	auto BorderSize {new CMFCPropertyGridProperty(L"Border Size", TabBorderSize, L"Set Workspace border size from 0 to 8 pixels", kTabBorderSize)};
 	BorderSize->EnableSpinControl(TRUE, 0, 8);
 	BorderSize->AllowEdit(FALSE);
 	WorkspaceTabsGroup->AddSubItem(BorderSize);
@@ -229,96 +165,96 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	m_PropertyGrid.AddProperty(WorkspaceTabsGroup);
 
 	auto ActiveView {AeSysView::GetActiveView()};
+	
+	const auto Scale {(ActiveView) ? ActiveView->WorldScale() : 1.0};
 
-	const double Scale = (ActiveView) ? ActiveView->WorldScale() : 1.0;
-
-	CMFCPropertyGridProperty* ActiveViewGroup = new CMFCPropertyGridProperty(L"Active View");
-	CMFCPropertyGridProperty* WorldScaleProperty = new CMFCPropertyGridProperty(L"World Scale", (_variant_t) Scale, L"Specifies the world scale used in the Active View", kActiveViewScale);
+	auto ActiveViewGroup {new CMFCPropertyGridProperty(L"Active View")};
+	auto WorldScaleProperty {new CMFCPropertyGridProperty(L"World Scale", (_variant_t)Scale, L"Specifies the world scale used in the Active View", kActiveViewScale)};
 	ActiveViewGroup->AddSubItem(WorldScaleProperty);
-	ActiveViewGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use True Type fonts", (_variant_t) true, L"Specifies that the Active View uses True Type fonts"));
+	ActiveViewGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use True Type fonts", (_variant_t)true, L"Specifies that the Active View uses True Type fonts"));
 	m_PropertyGrid.AddProperty(ActiveViewGroup);
 	WorldScaleProperty->Enable(ActiveView != nullptr);
 
 
-	CMFCPropertyGridProperty* AppearanceGroup = new CMFCPropertyGridProperty(L"Appearance");
+	auto AppearanceGroup {new CMFCPropertyGridProperty(L"Appearance")};
 
-	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"3D Look", (_variant_t) false, L"Specifies the window's font will be non-bold and controls will have a 3D border"));
+	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"3D Look", (_variant_t)false, L"Specifies the window's font will be non-bold and controls will have a 3D border"));
 
-	CMFCPropertyGridProperty* LengthUnits = new CMFCPropertyGridProperty(L"Length Units", L"Engineering", L"Specifies the units used to display lengths");
-	LengthUnits->AddOption(L"Architectural", TRUE);
-	LengthUnits->AddOption(L"Engineering", TRUE);
-	LengthUnits->AddOption(L"Feet", TRUE);
-	LengthUnits->AddOption(L"Inches", TRUE);
-	LengthUnits->AddOption(L"Meters", TRUE);
-	LengthUnits->AddOption(L"Millimeters", TRUE);
-	LengthUnits->AddOption(L"Centimeters", TRUE);
-	LengthUnits->AddOption(L"Decimeters", TRUE);
-	LengthUnits->AddOption(L"Kilometers", TRUE);
+	auto LengthUnits {new CMFCPropertyGridProperty(L"Length Units", L"Engineering", L"Specifies the units used to display lengths")};
+	LengthUnits->AddOption(L"Architectural");
+	LengthUnits->AddOption(L"Engineering");
+	LengthUnits->AddOption(L"Feet");
+	LengthUnits->AddOption(L"Inches");
+	LengthUnits->AddOption(L"Meters");
+	LengthUnits->AddOption(L"Millimeters");
+	LengthUnits->AddOption(L"Centimeters");
+	LengthUnits->AddOption(L"Decimeters");
+	LengthUnits->AddOption(L"Kilometers");
 	LengthUnits->AllowEdit(FALSE);
 	AppearanceGroup->AddSubItem(LengthUnits);
 
-	CMFCPropertyGridProperty* LengthPrecision = new CMFCPropertyGridProperty(L"Length Precision", (_variant_t) 8l, L"Specifies the precision used to display lengths");
+	auto LengthPrecision {new CMFCPropertyGridProperty(L"Length Precision", (_variant_t)8l, L"Specifies the precision used to display lengths")};
 	LengthPrecision->EnableSpinControl(TRUE, 0, 256);
 	AppearanceGroup->AddSubItem(LengthPrecision);
 
-	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"Caption", (_variant_t) L"About", L"Specifies the text that will be displayed in the window's title bar"));
+	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"Caption", (_variant_t)L"About", L"Specifies the text that will be displayed in the window's title bar"));
 
 	m_PropertyGrid.AddProperty(AppearanceGroup);
 
-	CMFCPropertyGridProperty* PointGrid = new CMFCPropertyGridProperty(L"Point Grid", 0, TRUE);
+	auto PointGrid {new CMFCPropertyGridProperty(L"Point Grid", 0, TRUE)};
 
-	CMFCPropertyGridProperty* pProp = new CMFCPropertyGridProperty(L"X", (_variant_t) 3., L"Specifies the point grid x spacing");
+	auto pProp {new CMFCPropertyGridProperty(L"X", (_variant_t)3.0, L"Specifies the point grid x spacing")};
 	PointGrid->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( L"Y", (_variant_t) 3., L"Specifies the point grid y spacing");
+	pProp = new CMFCPropertyGridProperty(L"Y", (_variant_t)3.0, L"Specifies the point grid y spacing");
 	PointGrid->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty( L"Z", (_variant_t) 0.0, L"Specifies the point grid z spacing");
+	pProp = new CMFCPropertyGridProperty(L"Z", (_variant_t)0.0, L"Specifies the point grid z spacing");
 	PointGrid->AddSubItem(pProp);
 
 	m_PropertyGrid.AddProperty(PointGrid);
 
-	CMFCPropertyGridProperty* NoteGroup = new CMFCPropertyGridProperty(L"Note");
+	auto NoteGroup {new CMFCPropertyGridProperty(L"Note")};
 
-	LOGFONT lf;
-	CFont* font = CFont::FromHandle((HFONT) GetStockObject(DEFAULT_GUI_FONT));
-	font->GetLogFont(&lf);
+	CFont* Font {CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT)))};
+	LOGFONT FontAttributes;
+	Font->GetLogFont(&FontAttributes);
 
-	lstrcpy(lf.lfFaceName, L"Arial");
+	wcscpy_s(FontAttributes.lfFaceName, LF_FACESIZE, L"Arial");
 
-	NoteGroup->AddSubItem(new CMFCPropertyGridFontProperty(L"Font", lf, CF_EFFECTS | CF_SCREENFONTS, L"Specifies the default font for the window"));
-	NoteGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use System Font", (_variant_t) true, L"Specifies that the window uses MS Shell Dlg font"));
+	NoteGroup->AddSubItem(new CMFCPropertyGridFontProperty(L"Font", FontAttributes, CF_EFFECTS | CF_SCREENFONTS, L"Specifies the default font for the window"));
+	NoteGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use System Font", (_variant_t)true, L"Specifies that the window uses MS Shell Dlg font"));
 
-	CMFCPropertyGridProperty* HorizontalAlignment = new CMFCPropertyGridProperty(L"Horizontal Alignment", L"Left", L"Specifies the horizontal alignment used for new notes");
-	HorizontalAlignment->AddOption(L"Left", TRUE);
-	HorizontalAlignment->AddOption(L"Center", TRUE);
-	HorizontalAlignment->AddOption(L"Right", TRUE);
+	auto HorizontalAlignment {new CMFCPropertyGridProperty(L"Horizontal Alignment", L"Left", L"Specifies the horizontal alignment used for new notes")};
+	HorizontalAlignment->AddOption(L"Left");
+	HorizontalAlignment->AddOption(L"Center");
+	HorizontalAlignment->AddOption(L"Right");
 	HorizontalAlignment->AllowEdit(FALSE);
 	NoteGroup->AddSubItem(HorizontalAlignment);
 
-	CMFCPropertyGridProperty* VerticalAlignment = new CMFCPropertyGridProperty(L"Vertical Alignment", L"Bottom", L"Specifies the vertical alignment used for new notes");
-	VerticalAlignment->AddOption(L"Bottom", TRUE);
-	VerticalAlignment->AddOption(L"Middle", TRUE);
-	VerticalAlignment->AddOption(L"Top", TRUE);
+	auto VerticalAlignment {new CMFCPropertyGridProperty(L"Vertical Alignment", L"Bottom", L"Specifies the vertical alignment used for new notes")};
+	VerticalAlignment->AddOption(L"Bottom");
+	VerticalAlignment->AddOption(L"Middle");
+	VerticalAlignment->AddOption(L"Top");
 	HorizontalAlignment->AllowEdit(FALSE);
 	NoteGroup->AddSubItem(VerticalAlignment);
 
-	CMFCPropertyGridProperty* Path = new CMFCPropertyGridProperty(L"Path", L"Right", L"Specifies the text path used for new notes");
-	Path->AddOption(L"Right", TRUE);
-	Path->AddOption(L"Left", TRUE);
-	Path->AddOption(L"Up", TRUE);
-	Path->AddOption(L"Down", TRUE);
+	auto Path {new CMFCPropertyGridProperty(L"Path", L"Right", L"Specifies the text path used for new notes")};
+	Path->AddOption(L"Right");
+	Path->AddOption(L"Left");
+	Path->AddOption(L"Up");
+	Path->AddOption(L"Down");
 	Path->AllowEdit(FALSE);
 	NoteGroup->AddSubItem(Path);
 
 	m_PropertyGrid.AddProperty(NoteGroup);
 
-	CMFCPropertyGridProperty* MiscGroup = new CMFCPropertyGridProperty(L"Misc");
+	auto MiscGroup {new CMFCPropertyGridProperty(L"Misc")};
 	pProp = new CMFCPropertyGridProperty(L"(Name)", L"Application");
 	pProp->Enable(FALSE);
 	MiscGroup->AddSubItem(pProp);
 
-	CMFCPropertyGridColorProperty* ColorProperty = new CMFCPropertyGridColorProperty(L"Window Color", RGB(210, 192, 254), nullptr, L"Specifies the default window color");
+	auto ColorProperty {new CMFCPropertyGridColorProperty(L"Window Color", RGB(210, 192, 254), nullptr, L"Specifies the default window color")};
 	ColorProperty->EnableOtherButton(L"Other...");
 	ColorProperty->EnableAutomaticButton(L"Default", ::GetSysColor(COLOR_3DFACE));
 	MiscGroup->AddSubItem(ColorProperty);
@@ -330,24 +266,90 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	m_PropertyGrid.AddProperty(MiscGroup);
 }
+
+void EoMfPropertiesDockablePane::OnSetFocus(CWnd* oldWindow) {
+	CDockablePane::OnSetFocus(oldWindow);
+	m_PropertyGrid.SetFocus();
+}
+
+void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, const wchar_t* section) {
+	CDockablePane::OnSettingChange(flags, section);
+	SetPropertyGridFont();
+}
+
 void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 	::DeleteObject(m_PropertyGridFont.Detach());
 
-	LOGFONT LogFont;
-	afxGlobalData.fontRegular.GetLogFont(&LogFont);
+	LOGFONT FontAttributes;
+	afxGlobalData.fontRegular.GetLogFont(&FontAttributes);
 
 	NONCLIENTMETRICS Info;
 	Info.cbSize = sizeof(Info);
 
 	afxGlobalData.GetNonClientMetrics(Info);
 
-	LogFont.lfHeight = Info.lfMenuFont.lfHeight;
-	LogFont.lfWeight = Info.lfMenuFont.lfWeight;
-	LogFont.lfItalic = Info.lfMenuFont.lfItalic;
+	FontAttributes.lfHeight = Info.lfMenuFont.lfHeight;
+	FontAttributes.lfWeight = Info.lfMenuFont.lfWeight;
+	FontAttributes.lfItalic = Info.lfMenuFont.lfItalic;
 
-	m_PropertyGridFont.CreateFontIndirect(&LogFont);
+	m_PropertyGridFont.CreateFontIndirectW(&FontAttributes);
 
 	m_PropertyGrid.SetFont(&m_PropertyGridFont);
+}
+
+LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
+	auto Property {(CMFCPropertyGridProperty*)lparam};
+
+	BOOL ResetMDIChild = FALSE;
+
+	switch (Property->GetData()) {
+		case kTabsStyle: {
+			CString TabStyle = Property->GetValue().bstrVal;
+			ResetMDIChild = TRUE;
+
+			for (auto TabStylesIterator = TabsStyles.begin(); TabStylesIterator != TabsStyles.end(); TabStylesIterator++) {
+
+				if (TabStyle == *TabStylesIterator) {
+					if (*TabStylesIterator == TabsStyles.at(0)) {
+						theApp.m_Options.m_nTabsStyle = EoApOptions::None;
+					} else if (*TabStylesIterator == TabsStyles.at(1)) {
+						theApp.m_Options.m_nTabsStyle = EoApOptions::Standard;
+					} else {
+						theApp.m_Options.m_nTabsStyle = EoApOptions::Grouped;
+					}
+				}
+			}
+			SetWorkspaceTabsSubItemsState();
+			break;
+		}
+		case kTabLocation: {
+			CString TabLocation = Property->GetValue().bstrVal;
+			theApp.m_Options.m_MdiTabInfo.m_tabLocation = (TabLocation == TabsLocations.at(0) ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP);
+			break;
+		}
+		case kTabsAutoColor:
+			theApp.m_Options.m_MdiTabInfo.m_bAutoColor = Property->GetValue().boolVal == VARIANT_TRUE;
+			break;
+
+		case kTabIcons:
+			theApp.m_Options.m_MdiTabInfo.m_bTabIcons = Property->GetValue().boolVal == VARIANT_TRUE;
+			break;
+
+		case kTabBorderSize: {
+			const int nBorder = Property->GetValue().iVal;
+			theApp.m_Options.m_MdiTabInfo.m_nTabBorderSize = min(8, max(0, nBorder));
+			break;
+		}
+		case kActiveViewScale: {
+			auto ActiveView {AeSysView::GetActiveView()};
+			ActiveView->SetWorldScale(Property->GetValue().dblVal);
+			ActiveView->UpdateStateInformation(AeSysView::Scale);
+			return 0;
+		}
+	}
+	theApp.UpdateMDITabs(ResetMDIChild);
+
+	return 0;
 }
 
 void EoMfPropertiesDockablePane::SetWorkspaceTabsSubItemsState() {

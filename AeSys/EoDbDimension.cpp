@@ -426,7 +426,7 @@ void EoDbDimension::SetDefaultNote() {
 
 	auto XDirection {YDirection};
 	XDirection.rotateBy(-OdaPI2, ActiveViewPlaneNormal);
-	XDirection *= .6;
+	XDirection *= 0.6;
 
 	m_ReferenceSystem.SetXDirection(XDirection);
 	m_ReferenceSystem.SetYDirection(YDirection);
@@ -574,7 +574,7 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 	XDirection.normalize();
 	auto YDirection {XDirection * TextHeight};
 	YDirection.rotateBy(OdaPI2, Normal);
-	XDirection *= TextHeight * .6;
+	XDirection *= TextHeight * 0.6;
 	EoGeReferenceSystem ReferenceSystem;
 	ReferenceSystem.Set(TextPosition, XDirection, YDirection);
 	Dimension->SetReferenceSystem(ReferenceSystem);

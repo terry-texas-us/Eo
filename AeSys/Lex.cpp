@@ -527,7 +527,7 @@ int lex::Scan(LPTSTR aszTok, const wchar_t* szLine, int& iLP) {
 	iLen = iTokLoc - iBegLoc + 1;
 	_tcsncpy(aszTok, &szLine[iBegLoc], iLen);
 	aszTok[iLen] = '\0';
-	ATLTRACE2(atlTraceGeneral, 1, L"LinePointer = %d, TokenID = %d\n", iLP, iRetVal);
+	TRACE2("LinePointer = %d, TokenID = %d\n", iLP, iRetVal);
 	if (iRetVal == - 1) {iLP = iBegLoc + 1;}
 	return (iRetVal);
 }

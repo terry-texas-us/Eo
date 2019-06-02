@@ -5,6 +5,7 @@
 #endif
 
 #include "framework.h"
+#include "strsafe.h"
 
 // <tas=uncomment to use Guidelines Support Library https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md">
 #pragma warning (push)

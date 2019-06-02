@@ -104,7 +104,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
     m_Precision = EoDb::kStrokeType;
 
     if (textStyleTableRecord->isShapeFile()) {
-        ATLTRACE2(atlTraceGeneral, 2, L"TextStyle references shape library %s.\n", (const wchar_t*) textStyleTableRecord->desc()->name());
+        TRACE1("TextStyle references shape library %s.\n", (const wchar_t*) textStyleTableRecord->desc()->name());
     } else { // shx font file or windows (ttf) font file
         OdString TypeFace;
         bool Bold;

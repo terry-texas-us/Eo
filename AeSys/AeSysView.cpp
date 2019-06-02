@@ -1273,7 +1273,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 					// render wider then a tile area to reduce gaps in lines.
 					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
 
-					pImg->scanLines((unsigned char*) pBuf, 0, tileHeight);
+					pImg->scanLines((unsigned char*) pBuf, 0, static_cast<unsigned long>(tileHeight));
 					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), tileWidth, tileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
 				}
 			}
@@ -3827,7 +3827,7 @@ void AeSysView::OnFind() {
 	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
 
 	if (!FindComboText.isEmpty()) {
-		ATLTRACE2(atlTraceGeneral, 1, L"AeSysView::OnFind() ComboText = %s\n", (const wchar_t*) FindComboText);
+		TRACE1("AeSysView::OnFind() ComboText = %s\n", (const wchar_t*) FindComboText);
 	}
 }
 
@@ -3847,7 +3847,7 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 
 		while (Position < Count) {
 			CString LBText;
-			ComboBox->GetLBText(Position, LBText);
+			ComboBox->GetLBText(static_cast<int>(Position), LBText);
 
 			if (LBText.GetLength() == findText.getLength()) {
 
@@ -4062,8 +4062,8 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC TextMetric;
-		DeviceContext->GetTextMetricsW(&TextMetric);
+		TEXTMETRIC TextMetrics;
+		DeviceContext->GetTextMetricsW(&TextMetrics);
 
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
@@ -4073,49 +4073,49 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 		wchar_t szBuf[32];
 
 		if ((item & WorkCount) == WorkCount) {
-			rc.SetRect(0, ClientRectangle.top, 8 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			rc.SetRect(0, ClientRectangle.top, 8 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->NumberOfGroupsInWorkLayer() + Document->NumberOfGroupsInActiveLayers());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & TrapCount) == TrapCount) {
-			rc.SetRect(8 * TextMetric.tmAveCharWidth, ClientRectangle.top, 16 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			rc.SetRect(8 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 16 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->TrapGroupCount());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & Pen) == Pen) {
-			rc.SetRect(16 * TextMetric.tmAveCharWidth, ClientRectangle.top, 22 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			rc.SetRect(16 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 22 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"P%-4i", pstate.ColorIndex());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & Line) == Line) {
-			rc.SetRect(22 * TextMetric.tmAveCharWidth, ClientRectangle.top, 28 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			rc.SetRect(22 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 28 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"L%-4i", pstate.LinetypeIndex());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & TextHeight) == TextHeight) {
 			const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-			rc.SetRect(28 * TextMetric.tmAveCharWidth, ClientRectangle.top, 38 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			rc.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & Scale) == Scale) {
-			rc.SetRect(38 * TextMetric.tmAveCharWidth, ClientRectangle.top, 48 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
+			rc.SetRect(38 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 48 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"1:%-6.2f", WorldScale());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
 		}
 		if ((item & WndRatio) == WndRatio) {
-			rc.SetRect(48 * TextMetric.tmAveCharWidth, ClientRectangle.top, 58 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
-			OdString ZoomFactorAsString;
-			ZoomFactorAsString.format(L"=%-8.3f", ZoomFactor());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, ZoomFactorAsString.getLength(), 0);
+			rc.SetRect(48 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 58 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			CString ZoomFactorAsString;
+			ZoomFactorAsString.Format(L"=%-8.3f", ZoomFactor());
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, 0);
 		}
 		if ((item & DimLen) == DimLen || (item & DimAng) == DimAng) {
-			rc.SetRect(58 * TextMetric.tmAveCharWidth, ClientRectangle.top, 90 * TextMetric.tmAveCharWidth, ClientRectangle.top + TextMetric.tmHeight);
-			OdString LengthAndAngle;
+			rc.SetRect(58 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 90 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			CString LengthAndAngle;
 			LengthAndAngle += theApp.FormatLength(theApp.DimensionLength(), theApp.GetUnits());
 			LengthAndAngle += L" @ ";
 			LengthAndAngle += theApp.FormatAngle(EoToRadian(theApp.DimensionAngle()));
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, LengthAndAngle.getLength(), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, 0);
 		}
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);

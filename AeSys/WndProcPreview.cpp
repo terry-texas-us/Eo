@@ -37,7 +37,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 			WndProcPreview_Bitmap = new CBitmap;
 			WndProcPreview_Bitmap->CreateCompatibleBitmap(DeviceContext, int(rc.right), int(rc.bottom));
 		}
-		return (FALSE);
+						return (FALSE);
 
 		case WM_DESTROY:
 			if (WndProcPreview_Bitmap != nullptr) {
@@ -66,12 +66,10 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 
 			::EndPaint(hwnd, &ps);
 		}
-
-					   return (FALSE);
+		return (FALSE);
 
 		case WM_LBUTTONDOWN:
 			::SetFocus(hwnd);
-			ATLTRACE2(atlTraceGeneral, 0, L"Preview WM_LBUTTONDOWN message\n");
 			return (FALSE);
 
 	}

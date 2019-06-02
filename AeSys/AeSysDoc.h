@@ -104,18 +104,21 @@ protected:
 		void init() noexcept {
 			memset(this, 0, sizeof(AcadClipData<TChar>));
 		}
-		void read(CFile* pFile) {
-			pFile->Read(this, sizeof(AcadClipData<TChar>));
+
+		void read(CFile* file) {
+			file->Read(this, sizeof(AcadClipData<TChar>));
 		}
-		TChar _tempFileName[0x104];   // name of the temp dwg file, where dragged entities are
-		TChar _origFileName[0x104];   // original file name
-		TChar _version[4];            // version of the original file, e.g. 'R15'
-		int _one1;                    // seem to be always 1
-		double _x, _y, _z;            // pick point
-		int _zero1;                   // seem to be always zero
-		int _one2;                    // seem to be always 1
-		int _unk[4];                  //
-		int _zero2[4];                // seem to be always zero
+		TChar _tempFileName[0x104]; // name of the temp dwg file, where dragged entities are
+		TChar _origFileName[0x104]; // original file name
+		TChar _version[4]; // version of the original file, e.g. 'R15'
+		int _one1; // seem to be always 1
+		double _x; // pick point
+		double _y;
+		double _z;
+		int _zero1; // seem to be always zero
+		int _one2; // seem to be always 1
+		int _unk[4];
+		int _zero2[4]; // seem to be always zero
 	};
 	template<class TChar>
 	struct AcadClipDataConstr : public AcadClipData<TChar> {
@@ -143,50 +146,60 @@ protected:
 public:
 	class ClipboardData {
 	public:
-		static unsigned short m_FormatR15;
-		static unsigned short m_FormatR16;
-		static unsigned short m_FormatR17;
-		static unsigned short m_FormatR18;
-		static unsigned short m_FormatR19;
-		static bool isAcadDataAvailable(COleDataObject* pDataObject, bool bAttach = false) {
+		static unsigned m_FormatR15;
+		static unsigned m_FormatR16;
+		static unsigned m_FormatR17;
+		static unsigned m_FormatR18;
+		static unsigned m_FormatR19;
+		
+		static bool isAcadDataAvailable(COleDataObject* dataObject, bool attach = false) {
 			
-			if (bAttach && !pDataObject->AttachClipboard()) { return false; }
+			if (attach && !dataObject->AttachClipboard()) { return false; }
 			
-			return pDataObject->IsDataAvailable(m_FormatR15) || pDataObject->IsDataAvailable(m_FormatR16) || pDataObject->IsDataAvailable(m_FormatR17) || pDataObject->IsDataAvailable(m_FormatR18) || pDataObject->IsDataAvailable(m_FormatR19);
+			return dataObject->IsDataAvailable(m_FormatR15) || dataObject->IsDataAvailable(m_FormatR16) || dataObject->IsDataAvailable(m_FormatR17) || dataObject->IsDataAvailable(m_FormatR18) || dataObject->IsDataAvailable(m_FormatR19);
 		}
-		static OdSharedPtr<ClipboardData> get(COleDataObject* pDataObject, bool bAttach = false) {
+		
+		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, bool attach = false) {
 			
-			if (bAttach && !pDataObject->AttachClipboard()) { return nullptr; }
+			if (attach && !dataObject->AttachClipboard()) { return nullptr; }
 
-			OdSharedPtr<ClipboardData> pData = new ClipboardData();
+			OdSharedPtr<ClipboardData> Data {new ClipboardData()};
 			
-			if (pData->read(pDataObject)) { return pData; }
+			if (Data->read(dataObject)) { return Data; }
 			return nullptr;
 		}
-		ClipboardData() noexcept :
-			_isR15format(false) {
+		
+		ClipboardData() noexcept 
+			: _isR15format(false) {
 		}
-		bool read(COleDataObject* pDataObject) {
-			OdSharedPtr<CFile> pFile = nullptr;
+		
+		bool read(COleDataObject* dataObject) {
+			OdSharedPtr<CFile> File {nullptr};
 
-			if ((pFile = pDataObject->GetFileData(m_FormatR15)).get() || (pFile = pDataObject->GetFileData(m_FormatR16)).get()) {
+			if ((File = dataObject->GetFileData(m_FormatR15)).get() || (File = dataObject->GetFileData(m_FormatR16)).get()) {
 				_isR15format = true;
-				_data._r15.read(pFile);
+				_data._r15.read(File);
 				return true;
-			} else if ((pFile = pDataObject->GetFileData(m_FormatR17)).get() || (pFile = pDataObject->GetFileData(m_FormatR18)).get() || (pFile = pDataObject->GetFileData(m_FormatR19)).get()) {
+			} else if ((File = dataObject->GetFileData(m_FormatR17)).get() || (File = dataObject->GetFileData(m_FormatR18)).get() || (File = dataObject->GetFileData(m_FormatR19)).get()) {
 				_isR15format = false;
-				_data._r21.read(pFile);
+				_data._r21.read(File);
 				return true;
 			} else {
 				return false;
 			}
 		}
-		OdString tempFileName() { return _isR15format ? OdString(_data._r15._tempFileName) : OdString(_data._r21._tempFileName); }
-		OdGePoint3d pickPoint() { return _isR15format ? OdGePoint3d(_data._r15._x, _data._r15._y, _data._r15._z) : OdGePoint3d(_data._r21._x, _data._r21._y, _data._r21._z); }
+		
+		OdString tempFileName() {
+			return _isR15format ? OdString(_data._r15._tempFileName) : OdString(_data._r21._tempFileName);
+		}
+		
+		OdGePoint3d pickPoint() {
+			return _isR15format ? OdGePoint3d(_data._r15._x, _data._r15._y, _data._r15._z) : OdGePoint3d(_data._r21._x, _data._r21._y, _data._r21._z);
+		}
 
 	private:
 		union Data {
-			AcadClipData<char>   _r15;
+			AcadClipData<char> _r15;
 			AcadClipData<OdChar> _r21;
 			Data() noexcept {
 				_r21.init();
@@ -337,7 +350,7 @@ public:
 	void RemoveLayerAt(int layerIndex);
 	void RemoveEmptyLayers();
 	EoDbLayer* SelectLayerBy(const OdGePoint3d& point);
-	void PenTranslation(unsigned short, short*, short*);
+	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
 	void PurgeDuplicateObjects();
 	int RemoveEmptyNotesAndDelete();
 	int RemoveEmptyGroups();

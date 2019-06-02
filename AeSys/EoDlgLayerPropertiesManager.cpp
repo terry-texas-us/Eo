@@ -80,7 +80,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	CBitmap Bitmap;
-	Bitmap.LoadBitmap(IDB_LAYER_FILTERS);
+	Bitmap.LoadBitmapW(IDB_LAYER_FILTERS);
 	m_TreeImages.Create(16, 16, ILC_COLOR32, 0, 1);
 	m_TreeImages.Add(&Bitmap, RGB(0, 0, 0));
 	m_TreeFilters.SetImageList(&m_TreeImages, TVSIL_NORMAL);
@@ -90,18 +90,18 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 
 // <tas="testing main dictionary interface">
 	OdDbDictionaryPtr MainDictionary = m_Database->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForRead);
-	ATLTRACE2(atlTraceGeneral, 0, L"Main dictionary contains %i entries\n", MainDictionary->numEntries());
+	TRACE1("Main dictionary contains %i entries\n", MainDictionary->numEntries());
 // </tas>
 	OdDbDictionaryIteratorPtr MainDictionaryIterator = MainDictionary->newIterator();
 	while (!MainDictionaryIterator->done()) {
 		const OdDbObjectId MainDictionaryEntryObjectId = MainDictionaryIterator->objectId();
-		ATLTRACE2(atlTraceGeneral, 0, L"<%4s> \"%s\"\n", MainDictionaryEntryObjectId.getHandle().ascii().c_str(), MainDictionaryIterator->name().c_str());
+		TRACE2("<%4s> \"%s\"\n", MainDictionaryEntryObjectId.getHandle().ascii().c_str(), MainDictionaryIterator->name().c_str());
 		if (MainDictionaryIterator->objectId() == m_Database->getLayoutDictionaryId()) {
 			OdDbDictionaryPtr LayoutDictionary = m_Database->getLayoutDictionaryId().safeOpenObject(OdDb::kForRead);
 			OdDbDictionaryIteratorPtr LayoutDictionaryIterator = LayoutDictionary->newIterator();
 			while (!LayoutDictionaryIterator->done()) {
 				const OdDbObjectId LayoutDictionaryEntryObjectId = LayoutDictionaryIterator->objectId();
-				ATLTRACE2(atlTraceGeneral, 0, L"    <%4s> \"%s\"\n", LayoutDictionaryEntryObjectId.getHandle().ascii().c_str(), LayoutDictionaryIterator->name().c_str());
+				TRACE2("    <%4s> \"%s\"\n", LayoutDictionaryEntryObjectId.getHandle().ascii().c_str(), LayoutDictionaryIterator->name().c_str());
 				LayoutDictionaryIterator->next();
 			}
 		} else if (MainDictionaryIterator->objectId() == m_Database->getScaleListDictionaryId()) {
@@ -109,7 +109,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 			OdDbDictionaryIteratorPtr ScaleListDictionaryIterator = ScaleListDictionary->newIterator();
 			while (!ScaleListDictionaryIterator->done()) {
 				const OdDbObjectId ScaleListDictionaryEntryObjectId = ScaleListDictionaryIterator->objectId();
-				ATLTRACE2(atlTraceGeneral, 2, L"    <%4s> \"%s\"\n", ScaleListDictionaryEntryObjectId.getHandle().ascii().c_str(), ScaleListDictionaryIterator->name().c_str());
+				TRACE2("    <%4s> \"%s\"\n", ScaleListDictionaryEntryObjectId.getHandle().ascii().c_str(), ScaleListDictionaryIterator->name().c_str());
 
 				ScaleListDictionaryIterator->next();
 			}

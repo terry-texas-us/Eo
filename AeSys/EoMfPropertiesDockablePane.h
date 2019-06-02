@@ -2,14 +2,18 @@
 
 class EoMfPropertiesMFCToolBar : public CMFCToolBar {
 public:
-	virtual void OnUpdateCmdUI(CFrameWnd* /* target */, BOOL disableIfNoHndler) {
+	void OnUpdateCmdUI(CFrameWnd* /* target */, BOOL disableIfNoHndler) override {
 		CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), disableIfNoHndler);
 	}
+
+	BOOL AllowShowOnList() const override { return FALSE; }
 };
 
 class EoMfPropertiesDockablePane : public CDockablePane {
 public:
-	EoMfPropertiesDockablePane();
+	EoMfPropertiesDockablePane() noexcept;
+
+	void AdjustLayout() override;
 
 protected:
 	CMFCPropertyGridCtrl m_PropertyGrid;
@@ -20,30 +24,34 @@ protected:
 	enum WorkspaceTabsSubItems { kTabsStyle, kTabLocation, kTabsAutoColor, kTabIcons, kTabBorderSize, kActiveViewScale };
 
 public:
-	virtual ~EoMfPropertiesDockablePane();
+	~EoMfPropertiesDockablePane();
 
 protected:
-	int OnCreate(LPCREATESTRUCT createStructure);
-	void OnSetFocus(CWnd* oldWindow);
-	void OnSettingChange(unsigned flags, const wchar_t* section);
-	void OnSize(unsigned type, int cx, int cy);
+	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
+	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
+	void OnSettingChange(unsigned flags, const wchar_t* section); // hides non-virtual function of parent
+	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 
 	LRESULT OnPropertyChanged(WPARAM, LPARAM);
 
 	void OnExpandAllProperties();
-	void OnProperties1();
+	void OnProperties1() noexcept;
 	void OnSortProperties();
-	void OnUpdateExpandAllProperties(CCmdUI* pCmdUI);
-	void OnUpdateProperties1(CCmdUI* pCmdUI);
+	void OnUpdateExpandAllProperties(CCmdUI* pCmdUI) noexcept;
+	void OnUpdateProperties1(CCmdUI* pCmdUI) noexcept;
 	void OnUpdateSortProperties(CCmdUI* pCmdUI);
 
 	DECLARE_MESSAGE_MAP()
 
 protected:
-	void AdjustLayout() override;
 	void InitializePropertyGrid();
 	void SetPropertyGridFont();
 	void SetWorkspaceTabsSubItemsState();
+
+	int m_nComboHeight;
+
+	static const std::vector<wchar_t*> TabsStyles;
+	static const std::vector<wchar_t*> TabsLocations;
 
 public:
 	CMFCPropertyGridCtrl& GetPropertyGridCtrl() noexcept {

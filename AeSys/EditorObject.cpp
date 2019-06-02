@@ -62,14 +62,14 @@ public:
 
 
 void setWorkingSelectionSet(OdDbCommandContext* dbCommandContext, OdDbSelectionSet* selectionSet) {
-	dbCommandContext->setArbitraryData(L"OdaMfcApp Working Selection Set", selectionSet);
+	dbCommandContext->setArbitraryData(L"AeSys Working Selection Set", selectionSet);
 }
 
 OdDbSelectionSetPtr WorkingSelectionSet(OdDbCommandContext* dbCommandContext) {
 	OdDbSelectionSetPtr pRes;
 	
 	if (dbCommandContext) {
-		pRes = dbCommandContext->arbitraryData(L"OdaMfcApp Working Selection Set");
+		pRes = dbCommandContext->arbitraryData(L"AeSys Working Selection Set");
 	
 		if (pRes.isNull()) {
 			pRes = OdDbSelectionSet::createObject(dbCommandContext->database());
@@ -1010,8 +1010,8 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext * edCommandContext) {
 	}
 	//
 
-	OdRxVariantValue InteractiveMode = (OdRxVariantValue) edCommandContext->arbitraryData(L"OdaMfcApp InteractiveMode");
-	OdRxVariantValue InteractiveFrameRate = (OdRxVariantValue) edCommandContext->arbitraryData(L"OdaMfcApp InteractiveFrameRate");
+	auto InteractiveMode {(OdRxVariantValue)edCommandContext->arbitraryData(L"Bitmap InteractiveMode")};
+	auto InteractiveFrameRate {(OdRxVariantValue)edCommandContext->arbitraryData(L"Bitmap InteractiveFrameRate")};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
 
 	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
@@ -1121,8 +1121,8 @@ void OdExDollyCmd::execute(OdEdCommandContext * edCommandContext) {
 	}
 	//
 
-	OdRxVariantValue InteractiveMode {(OdRxVariantValue)edCommandContext->arbitraryData(L"OdaMfcApp InteractiveMode")};
-	OdRxVariantValue InteractiveFrameRate {(OdRxVariantValue)edCommandContext->arbitraryData(L"OdaMfcApp InteractiveFrameRate")};
+	OdRxVariantValue InteractiveMode {(OdRxVariantValue)edCommandContext->arbitraryData(L"AeSys InteractiveMode")};
+	OdRxVariantValue InteractiveFrameRate {(OdRxVariantValue)edCommandContext->arbitraryData(L"AeSys InteractiveFrameRate")};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
 
 	OdStaticRxObject<RTDollyTracker> DollyTracker;
@@ -1149,10 +1149,10 @@ void OdExInteractivityModeCmd::execute(OdEdCommandContext * edCommandContext) {
 	
 	if (enable) {
 		double frameRate = pIO->getReal(L"\nSpecify frame rate (Hz): ");
-		edCommandContext->setArbitraryData(L"OdaMfcApp InteractiveMode", OdRxVariantValue(true));
-		edCommandContext->setArbitraryData(L"OdaMfcApp InteractiveFrameRate", OdRxVariantValue(frameRate));
+		edCommandContext->setArbitraryData(L"AeSys InteractiveMode", OdRxVariantValue(true));
+		edCommandContext->setArbitraryData(L"AeSys InteractiveFrameRate", OdRxVariantValue(frameRate));
 	} else {
-		edCommandContext->setArbitraryData(L"OdaMfcApp InteractiveMode", OdRxVariantValue(false));
+		edCommandContext->setArbitraryData(L"AeSys InteractiveMode", OdRxVariantValue(false));
 	}
 }
 

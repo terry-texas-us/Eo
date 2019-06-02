@@ -44,7 +44,7 @@ public:
 	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(short colorIndex);
 	void ModifyLinetypeIndex(short linetypeIndex);
-	void PenTranslation(unsigned short, short*, short*);
+	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	/// <summary>Picks a prim if close enough to point.  Working in view space.</summary>

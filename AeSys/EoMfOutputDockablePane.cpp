@@ -31,13 +31,13 @@ int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	EmptyRect.SetRectEmpty();
 
 	if (!m_wndTabs.Create(CMFCTabCtrl::STYLE_FLAT, EmptyRect, this, 1, CMFCTabCtrl::LOCATION_BOTTOM)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create output tab window\n");
+		TRACE0("Failed to create output tab window\n");
 		return - 1;
 	}
 	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LBS_NOINTEGRALHEIGHT};
 
 	if (!m_OutputMessagesList.Create(SharedStyles, EmptyRect, &m_wndTabs, 2) || !m_OutputReportsList.Create(SharedStyles, EmptyRect, &m_wndTabs, 4)) {
-		ATLTRACE2(atlTraceGeneral, 0, L"Failed to create output windows\n");
+		TRACE0("Failed to create output windows\n");
 		return - 1;
 	}
 	m_OutputMessagesList.SetFont(&m_Font);

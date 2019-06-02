@@ -41,7 +41,7 @@ public:
 	void MakeInternal(bool isInternal) noexcept;
 	void MakeResident(bool isResident) noexcept;
 	OdString Name() const;
-	void PenTranslation(unsigned short, short*, short*);
+	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
 	void SetColorIndex(short colorIndex);
 	void SetIsFrozen(bool isFrozen);
 	void SetIsLocked(bool isLocked);

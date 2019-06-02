@@ -291,14 +291,14 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition & fontDefinition, EoDbCharacterCe
 	}
 }
 
-void EoDbGroup::PenTranslation(unsigned short numberOfColors, short * pColNew, short * pCol) {
+void EoDbGroup::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
-		for (unsigned w = 0; w < numberOfColors; w++) {
-			if (Primitive->ColorIndex() == pCol[w]) {
-				Primitive->SetColorIndex2(pColNew[w]);
+		for (unsigned ColorIndex = 0; ColorIndex < numberOfColors; ColorIndex++) {
+			if (Primitive->ColorIndex() == pCol.at(ColorIndex)) {
+				Primitive->SetColorIndex2(newColors.at(ColorIndex));
 				break;
 			}
 		}

@@ -6,14 +6,15 @@ public: // Constructors and destructor
 	}
 	~EoDbGroupList() {
 	}
-public:	// Base class wrappers
-	POSITION AddHead(EoDbGroup* group);
-	POSITION AddTail(EoDbGroup* group);
-	void AddTail(EoDbGroupList* groupList);
-	EoDbGroup* GetNext(POSITION& position);
-	EoDbGroup* GetPrev(POSITION& position);
-	EoDbGroup* RemoveHead();
-	EoDbGroup* RemoveTail();
+public:	// Base class wrappers hides non-virtual function of parent
+
+	POSITION EoDbGroupList::AddHead(EoDbGroup* group) { return (CObList::AddHead((CObject*)group)); }
+	POSITION EoDbGroupList::AddTail(EoDbGroup* group) { return (CObList::AddTail((CObject*)group)); }
+	void EoDbGroupList::AddTail(EoDbGroupList* groupList) { CObList::AddTail((CObList*)groupList); }
+	EoDbGroup* EoDbGroupList::GetNext(POSITION& position) { return (EoDbGroup*)CObList::GetNext(position); }
+	EoDbGroup* EoDbGroupList::GetPrev(POSITION& position) { return (EoDbGroup*)CObList::GetPrev(position); }
+	EoDbGroup* EoDbGroupList::RemoveHead() { return (EoDbGroup*)CObList::RemoveHead(); }
+	EoDbGroup* EoDbGroupList::RemoveTail() { return (EoDbGroup*)CObList::RemoveTail(); }
 
 public: // Methods
 	void AddToTreeViewControl(HWND tree, HTREEITEM htiParent);
@@ -28,7 +29,7 @@ public: // Methods
 	void ModifyNotes(EoDbFontDefinition& cd, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(short colorIndex);
 	void ModifyLinetypeIndex(short linetypeIndex);
-	void PenTranslation(unsigned short, short*, short*);
+	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	int RemoveEmptyGroups();

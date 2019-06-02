@@ -15,7 +15,7 @@ IMPLEMENT_SERIAL(EoCtrlFindComboBox, CMFCToolBarComboBoxButton, 1)
 BOOL EoCtrlFindComboBox::m_HasFocus = FALSE;
 
 BOOL EoCtrlFindComboBox::NotifyCommand(int notifyCode) {
-	ATLTRACE2(atlTraceGeneral, 0, L"EoCtrlFindComboBox::NotifyCommand(%i)\n", notifyCode);
+	TRACE1("EoCtrlFindComboBox::NotifyCommand(%i)\n", notifyCode);
 
 	BOOL CommandProcessed = CMFCToolBarComboBoxButton::NotifyCommand(notifyCode);
 

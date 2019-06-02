@@ -304,7 +304,7 @@ BOOL EoDlgFileManage::OnInitDialog() {
 		}
 	}
 	CBitmap Bitmap;
-	Bitmap.LoadBitmap(IDB_LAYER_STATES_HC);
+	Bitmap.LoadBitmapW(IDB_LAYER_STATES_HC);
 	m_StateImages.Create(16, 16, ILC_COLOR32 | ILC_MASK, 0, 1);
 	m_StateImages.Add(&Bitmap, RGB(0, 0, 128));
 

@@ -256,7 +256,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 			Layer->AddTail(Group);
 		}
 	}
-	ATLTRACE2(atlTraceGeneral, 0, L" %d Paperspace entitities not loaded\n", EntitiesNotLoaded);
+	TRACE1(" %d Paperspace entitities not loaded\n", EntitiesNotLoaded);
 */
 // </tas>
 }

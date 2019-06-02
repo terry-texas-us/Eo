@@ -204,7 +204,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(short linetypeIndex) {
 	if (Document != nullptr) {
 		return EoDbPrimitive::LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
 	}
-	ATLTRACE2("Document not associated with ChildFrame yet\n");
+	TRACE0("Document not associated with ChildFrame yet\n");
 	return nullptr;
 }
 

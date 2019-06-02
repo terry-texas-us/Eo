@@ -30,7 +30,7 @@ void EoAppAuditInfo::printInfo(const OdString& info) {
 	setLastInfo(MessageInfo);
 
 	m_pHostAppServices->auditPrintReport(this, info, getPrintDest());
-	ATLTRACE2(atlTraceGeneral, 0, L"%ls\n", info.c_str());
+	TRACE1("%ls\n", info.c_str());
 }
 void EoAppAuditInfo::printError(const OdString& name, const OdString& value, const OdString& validation, const OdString& defaultValue) {
 	OdDbAuditInfo::MsgInfo MessageInfo;
@@ -58,5 +58,5 @@ void EoAppAuditInfo::printError(const OdString& name, const OdString& value, con
 		Line += ((fixErrors()) ? L"Replaced by " : L"Default value is ") + defaultValue + L".";
 	}
 	m_pHostAppServices->auditPrintReport(this, Line, getPrintDest());
-	ATLTRACE2(atlTraceGeneral, 0, "%ls\n", Line.c_str());
+	TRACE1("%ls\n", Line.c_str());
 }

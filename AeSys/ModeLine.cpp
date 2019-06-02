@@ -24,24 +24,24 @@ void AeSysView::ModeLineDisplay() {
 		GetStatusBar().SetTipText(::nStatusOp0 + i, L"Mode Command Tip Text");
 	}
 	if (theApp.ModeInformationOverView()) {
-		CFont* Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const unsigned TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
-		const COLORREF TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
-		const COLORREF BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
+		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
+		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC TextMetric;
-		DeviceContext->GetTextMetricsW(&TextMetric);
+		TEXTMETRIC TextMetrics;
+		DeviceContext->GetTextMetricsW(&TextMetrics);
 
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs = (ClientRectangle.Width() / 10) / TextMetric.tmAveCharWidth;
-		const int Width = iMaxChrs * TextMetric.tmAveCharWidth;
+		const int iMaxChrs = (ClientRectangle.Width() / 10) / TextMetrics.tmAveCharWidth;
+		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 
 		for (int i = 0; i < 10; i++) {
 			ModeOp = GetStatusBar().GetPaneText(::nStatusOp0 + i);
 
-			const CRect Rectangle(i * Width, ClientRectangle.bottom - TextMetric.tmHeight, (i + 1) * Width, ClientRectangle.bottom);
+			const CRect Rectangle(i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom);
 
 			DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
 		}
@@ -114,17 +114,17 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
-		TEXTMETRIC TextMetric;
-		DeviceContext->GetTextMetricsW(&TextMetric);
+		TEXTMETRIC TextMetrics;
+		DeviceContext->GetTextMetricsW(&TextMetrics);
 
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs {(ClientRectangle.Width() / 10) / TextMetric.tmAveCharWidth};
-		const int Width = iMaxChrs * TextMetric.tmAveCharWidth;
+		const int iMaxChrs {(ClientRectangle.Width() / 10) / TextMetrics.tmAveCharWidth};
+		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 		const int i = m_OpHighlighted - ID_OP0;
 
-		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetric.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
+		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 
 		DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
 

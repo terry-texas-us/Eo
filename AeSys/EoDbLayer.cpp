@@ -181,22 +181,26 @@ void EoDbLayer::SetIsLocked(bool isLocked) {
 	m_Layer->setIsLocked(IsLocked());
 	m_Layer->downgradeOpen();
 }
+
 void EoDbLayer::MakeCurrent() noexcept {
 	m_StateFlags &= ~(kIsActive | kIsLocked | kIsOff);
 	m_StateFlags |= kIsCurrent;
 }
+
 OdString EoDbLayer::Name() const {
 	return m_Layer->getName();
 }
-void EoDbLayer::PenTranslation(unsigned short wCols, short* pColNew, short* pCol) {
-	for (int i = 0; i < wCols; i++) {
-		if (m_Layer->colorIndex() == pCol[i]) {
-			m_Layer->setColorIndex(pColNew[i]);
+
+void EoDbLayer::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
+	for (auto ColorIndex = 0; ColorIndex < numberOfColors; ColorIndex++) {
+		if (m_Layer->colorIndex() == pCol[ColorIndex]) {
+			m_Layer->setColorIndex(newColors[ColorIndex]);
 			break;
 		}
 	}
-	EoDbGroupList::PenTranslation(wCols, pColNew, pCol);
+	EoDbGroupList::PenTranslation(numberOfColors, newColors, pCol);
 }
+
 void EoDbLayer::SetColorIndex(short colorIndex) {
 	m_Layer->upgradeOpen();
 	m_Layer->setColorIndex(colorIndex);
