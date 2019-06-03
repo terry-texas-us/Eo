@@ -70,8 +70,8 @@ BOOL EoDlgSetupColor::OnInitDialog() {
 }
 
 void EoDlgSetupColor::OnOK() {
-	m_ColorIndex = gsl::narrow_cast<int>(GetDlgItemInt(IDC_COLOR_EDIT));
-	m_ColorIndex = (m_ColorIndex < 255) ? m_ColorIndex : 255;
+	m_ColorIndex = gsl::narrow_cast<unsigned short>(GetDlgItemInt(IDC_COLOR_EDIT));
+	m_ColorIndex = (m_ColorIndex < 255u) ? m_ColorIndex : 255u;
 	CDialog::OnOK();
 }
 
@@ -106,20 +106,22 @@ void EoDlgSetupColor::OnBnClickedBylayerButton() {
 }
 
 void EoDlgSetupColor::OnChangeColorEdit() {
-	const auto Index {gsl::narrow_cast<int>(GetDlgItemInt(IDC_COLOR_EDIT))};
+	const auto Index {gsl::narrow_cast<unsigned short>(GetDlgItemInt(IDC_COLOR_EDIT))};
 	DrawSelectionInformation(Index);
 }
 
 BOOL EoDlgSetupColor::OnNotify(WPARAM controlId, LPARAM notificationMessage, LRESULT* result) {
 	auto NotifyMessage {(NMHDR*)notificationMessage};
 	
-	const auto ColorsButton {CWnd::FromHandle(NotifyMessage->hwndFrom)};
-	
-	DrawSelectionInformation((dynamic_cast<EoCtrlColorsButton*>(ColorsButton))->m_SubItem);
+	if (NotifyMessage->hwndFrom != nullptr) {
+		const auto ColorsButton {dynamic_cast<EoCtrlColorsButton*>(CWnd::FromHandle(NotifyMessage->hwndFrom))};
+
+		if (ColorsButton != nullptr && ColorsButton->IsKindOf(RUNTIME_CLASS(EoCtrlColorsButton))) { DrawSelectionInformation(ColorsButton->m_SubItem); }
+	}
 	return CDialog::OnNotify(controlId, notificationMessage, result);
 }
 
-void EoDlgSetupColor::DrawSelectionInformation(const int index) {
+void EoDlgSetupColor::DrawSelectionInformation(const unsigned short index) {
 	SetDlgItemInt(IDC_INDEX_COLOR, gsl::narrow_cast<unsigned>(index), FALSE);
 
 	m_SelectionButton.SetSequenceRange(index, index);

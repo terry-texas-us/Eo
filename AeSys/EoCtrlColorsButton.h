@@ -5,7 +5,7 @@
 class EoCtrlColorsButton : public CMFCButton {
 	DECLARE_DYNAMIC(EoCtrlColorsButton)
 
-	static COLORREF* m_Palette;
+	static gsl::span<COLORREF> m_Palette;
 	static unsigned short m_CurrentIndex;
 	static unsigned short m_SelectedIndex;
 
@@ -15,9 +15,9 @@ class EoCtrlColorsButton : public CMFCButton {
 	CSize m_CellSize;
 	CSize m_CellSpacing;
 	CSize m_Margins;
-	int m_BeginIndex;
-	int m_EndIndex;
-	int m_SubItem;
+	unsigned short m_BeginIndex;
+	unsigned short m_EndIndex;
+	unsigned short m_SubItem;
 
 	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
@@ -27,19 +27,22 @@ public:
 
 	EoCtrlColorsButton();
 
-	virtual ~EoCtrlColorsButton();
+	~EoCtrlColorsButton();
 
-	static void SetCurrentIndex(const int index) noexcept {
+	static void SetCurrentIndex(const unsigned short index) noexcept {
 		m_CurrentIndex = index;
 	}
-	static void SetPalette(COLORREF* palette) noexcept {
+
+	static void SetPalette(gsl::span<COLORREF> palette) noexcept {
 		m_Palette = palette;
 	}
+
 	void SetLayout(Layouts layout, const CSize& cellSize) noexcept {
 		m_Layout = layout;
 		m_CellSize = cellSize;
 	}
-	void SetSequenceRange(const int beginIndex, const int endIndex) noexcept {
+
+	void SetSequenceRange(const unsigned short beginIndex, const unsigned short endIndex) noexcept {
 		m_BeginIndex = beginIndex;
 		m_EndIndex = endIndex;
 	}
@@ -47,7 +50,6 @@ public:
 	void OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) override;
 	CSize SizeToContent(BOOL calculateOnly = FALSE) override;
 
-	unsigned OnGetDlgCode() noexcept;
 	void OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent

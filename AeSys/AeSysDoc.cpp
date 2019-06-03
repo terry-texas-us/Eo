@@ -362,7 +362,7 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 					wRect.right = point2.x;
 					wRect.bottom = point2.y;
 					//
-					view->GetParent()->SendMessage(WM_CLOSE);
+					view->GetParent()->SendMessageW(WM_CLOSE);
 					OnVectorize();
 					// Search again for new view
 					auto ViewPosition {GetFirstViewPosition()};

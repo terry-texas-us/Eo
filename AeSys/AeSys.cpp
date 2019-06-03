@@ -2377,7 +2377,7 @@ void AeSys::OnVectorizeAddVectorizerDLL() {
 
 		::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, m_sVectorizerPath);
 		WriteProfileStringW(L"options\\vectorizers", m_sVectorizerPath, L"");
-		GetMainWnd()->SendMessage(WM_COMMAND, ID_VECTORIZE);
+		GetMainWnd()->SendMessageW(WM_COMMAND, ID_VECTORIZE);
 	}
 	ApplicationPath.ReleaseBuffer();
 }
