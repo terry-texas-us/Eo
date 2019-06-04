@@ -431,7 +431,9 @@ void EoDbGroup::Square(AeSysView* view) {
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 		
-		if (Primitive->Is(EoDb::kLinePrimitive)) { dynamic_cast<EoDbLine*>(Primitive)->Square(view); }
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+			dynamic_cast<EoDbLine*>(Primitive)->Square(view);
+		}
 	}
 }
 

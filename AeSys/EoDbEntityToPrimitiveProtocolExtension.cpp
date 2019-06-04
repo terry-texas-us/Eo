@@ -767,16 +767,19 @@ ConvertEntityToPrimitiveProtocolExtension::ConvertEntityToPrimitiveProtocolExten
     : m_Converters(0) {
 	m_Document = document;
 }
+
 ConvertEntityToPrimitiveProtocolExtension::~ConvertEntityToPrimitiveProtocolExtension() {
 	if (m_Converters) {
 		Uninitialize();
 	}
 }
+
 void ConvertEntityToPrimitiveProtocolExtension::Initialize() {
 	EoDbConvertEntityToPrimitive::rxInit();
 	m_Converters = new Converters;
 	m_Converters->AddExtensions();
 }
+
 void ConvertEntityToPrimitiveProtocolExtension::Uninitialize() {
 	m_Converters->DeleteExtensions();
 	EoDbConvertEntityToPrimitive::rxUninit();

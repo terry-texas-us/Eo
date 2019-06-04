@@ -8,7 +8,7 @@ class EoDlgTrapFilter : public CDialog {
 public:
 	EoDlgTrapFilter(CWnd* parent = nullptr);
 	EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
-	virtual ~EoDlgTrapFilter();
+	~EoDlgTrapFilter();
 
 // Dialog Data
 	enum { IDD = IDD_TRAP_FILTER };

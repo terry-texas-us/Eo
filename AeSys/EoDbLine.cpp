@@ -10,6 +10,8 @@
 
 #include "EoDbFile.h"
 
+IMPLEMENT_DYNAMIC(EoDbLine, EoDbPrimitive)
+
 EoDbLine::EoDbLine() noexcept {
 }
 
@@ -210,7 +212,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 }
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
-	bool IsEqualTo {primitive->Is(EoDb::kLinePrimitive)};
+	bool IsEqualTo {primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))};
 
 	if (IsEqualTo) { 
 		IsEqualTo = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());

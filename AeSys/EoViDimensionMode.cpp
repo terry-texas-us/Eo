@@ -17,28 +17,29 @@ unsigned short PreviousDimensionCommand = 0;
 OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 	const auto Document {AeSysDoc::GetDoc()};
 
-	EoGeLineSeg3d ln;
+	EoGeLineSeg3d LineSeg;
 	OdGePoint3d ptProj;
 
-	double Relationship;
+	double Relationship {0.0};
 
-	POSITION GroupPosition = Document->GetFirstWorkLayerGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = Document->GetNextWorkLayerGroup(GroupPosition);
+	auto GroupPosition {Document->GetFirstWorkLayerGroupPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {Document->GetNextWorkLayerGroup(GroupPosition)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			auto Primitive {Group->GetNext(PrimitivePosition)};
 
-			if (Primitive->Is(EoDb::kLinePrimitive))
-				ln = dynamic_cast<EoDbLine*>(Primitive)->LineSeg();
-			else if (Primitive->Is(EoDb::kDimensionPrimitive))
-				ln = dynamic_cast<EoDbDimension*>(Primitive)->Line();
-			else
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+				LineSeg = dynamic_cast<EoDbLine*>(Primitive)->LineSeg();
+			} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+				LineSeg = dynamic_cast<EoDbDimension*>(Primitive)->Line();
+			} else {
 				continue;
-
-			if (ln.IsSelectedBy_xy(point, DimensionModePickTolerance, ptProj, Relationship))
-				return (Relationship <= 0.5) ? ln.startPoint() : ln.endPoint();
+			}
+			if (LineSeg.IsSelectedBy_xy(point, DimensionModePickTolerance, ptProj, Relationship)) {
+				return (Relationship <= 0.5) ? LineSeg.startPoint() : LineSeg.endPoint();
+			}
 		}
 	}
 	return (point);
@@ -69,7 +70,7 @@ void AeSysView::OnDimensionModeArrow() {
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
 
-			if (Primitive->Is(EoDb::kLinePrimitive)) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 				TestLine = LinePrimitive->LineSeg();
 			} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
@@ -118,7 +119,7 @@ void AeSysView::OnDimensionModeLine() {
 		CurrentPnt = SnapPointToAxis(PreviousDimensionPosition, CurrentPnt);
 		if (PreviousDimensionPosition != CurrentPnt) {
 			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-			
+
 			auto Line {EoDbLine::Create(BlockTableRecord, PreviousDimensionPosition, CurrentPnt)};
 			Line->setColorIndex(1);
 			Line->setLinetype(L"Continuous");
@@ -385,7 +386,7 @@ void AeSysView::OnDimensionModeAngle() {
 				ln.set(ProjectToward(CenterPoint, rProjPt[0], Radius), ln.startPoint());
 				ln.endPoint().rotateBy(Angle, PlaneNormal, CenterPoint);
 				const auto MajorAxis {ln.startPoint() - CenterPoint};
-		
+
 				auto ptArrow {ln.startPoint()};
 				ptArrow.rotateBy(RADIAN, PlaneNormal, CenterPoint);
 				auto Group {new EoDbGroup};
@@ -421,7 +422,7 @@ void AeSysView::OnDimensionModeAngle() {
 
 				EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 
-				OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (const wchar_t*) theApp.FormatAngle(Angle));
+				OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), ( const wchar_t*) theApp.FormatAngle(Angle));
 
 				Text->setNormal(PlaneNormal);
 				Text->setRotation(ReferenceSystem.Rotation());
@@ -466,7 +467,7 @@ void AeSysView::OnDimensionModeConvert() {
 			posPrimCur = PrimitivePosition;
 			Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->SelectBy(ptView, this, ptProj)) {
-				if (Primitive->Is(EoDb::kLinePrimitive)) {
+				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 					auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 					auto DimensionPrimitive {new EoDbDimension()};
 					DimensionPrimitive->SetColorIndex2(LinePrimitive->ColorIndex());
@@ -498,7 +499,7 @@ void AeSysView::OnDimensionModeConvert() {
 					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(DimensionPrimitive->LinetypeIndex()));
 					auto LinePrimitive {EoDbLine::Create(Line)};
 
-					auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (const wchar_t*) DimensionPrimitive->Text())};
+					auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), ( const wchar_t*) DimensionPrimitive->Text())};
 
 					Text->setNormal(PlaneNormal);
 					Text->setRotation(ReferenceSystem.Rotation());

@@ -7,6 +7,8 @@
 #include "EoDbPrimitive.h"
 
 class EoDbLine : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbLine);
+
 	EoGeLineSeg3d m_LineSeg;
 
 public: // Constructors and destructor

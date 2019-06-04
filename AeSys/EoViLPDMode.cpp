@@ -864,7 +864,7 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, doubl
 		POSITION PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != 0) {
 			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive == testLinePrimitive || !Primitive->Is(EoDb::kLinePrimitive))
+			if (Primitive == testLinePrimitive || !Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)))
 				continue;
 
 			auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};

@@ -3383,10 +3383,10 @@ void AeSysView::OnToolsPrimitiveSnapto() {
 }
 
 void AeSysView::OnPrimPerpJump() {
-	OdGePoint3d CursorPosition = GetCursorPosition();
+	auto CursorPosition {GetCursorPosition()};
 
 	if (SelectGroupAndPrimitive(CursorPosition) != nullptr) {
-		if (m_EngagedPrimitive->Is(EoDb::kLinePrimitive)) {
+		if (m_EngagedPrimitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 			const auto Line {dynamic_cast<EoDbLine*>(m_EngagedPrimitive)};
 			CursorPosition = Line->ProjPt_(m_ptCursorPosWorld);
 			SetCursorPosition(CursorPosition);
@@ -3661,8 +3661,10 @@ pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d& p
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
 			auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->Is(EoDb::kLinePrimitive)) {
+			
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				OdGePoint3d PointOnLine;
+				
 				if (Primitive->SelectBy(ptView, this, PointOnLine)) {
 					return {Group, dynamic_cast<EoDbLine*>(Primitive)};
 				}

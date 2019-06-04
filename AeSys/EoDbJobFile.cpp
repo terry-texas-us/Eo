@@ -55,9 +55,9 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 		case EoDb::kSplinePrimitive:
 		{
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
-				const unsigned short NumberOfControlPoints = *((unsigned short*) & m_PrimBuf[10]);
+				const unsigned short NumberOfControlPoints = *(( unsigned short*) & m_PrimBuf[10]);
 				m_PrimBuf[3] = signed char((2 + NumberOfControlPoints * 3) / 8 + 1);
-				*((unsigned short*) & m_PrimBuf[4]) = unsigned short(EoDb::kSplinePrimitive);
+				*(( unsigned short*) & m_PrimBuf[4]) = unsigned short(EoDb::kSplinePrimitive);
 				m_PrimBuf[8] = m_PrimBuf[10];
 				m_PrimBuf[9] = m_PrimBuf[11];
 				::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
@@ -83,7 +83,7 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 	}
 }
 
-void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive * &primitive) {
+void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive) {
 	switch (m_PrimBuf[5]) {
 		case 17:
 		{
@@ -128,7 +128,7 @@ void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTa
 	}
 }
 
-bool EoDbJobFile::GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFile & file, EoDbPrimitive * &primitive) {
+bool EoDbJobFile::GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbPrimitive*& primitive) {
 	short PrimitiveType = 0;
 	do {
 		if (!ReadNextPrimitive(file, m_PrimBuf, PrimitiveType)) {
@@ -139,19 +139,19 @@ bool EoDbJobFile::GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFi
 	return true;
 }
 
-bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbGroup* &group) {
+bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbGroup*& group) {
 	auto Position {file.GetPosition()};
 
 	group = nullptr;
 	try {
 		EoDbPrimitive* Primitive;
-		
+
 		if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { return false; }
 
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const unsigned short wPrims = *((unsigned short*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
-		
+		const unsigned short wPrims = *(( unsigned short*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
+
 		for (unsigned w = 1; w < wPrims; w++) {
 			try {
 				Position = file.GetPosition();
@@ -175,7 +175,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 	return true;
 }
 
-void EoDbJobFile::ReadHeader(CFile & file) {
+void EoDbJobFile::ReadHeader(CFile& file) {
 	if (file.Read(m_PrimBuf, 32) == 32) {
 		m_Version = Version();
 
@@ -189,7 +189,7 @@ void EoDbJobFile::ReadHeader(CFile & file) {
 	}
 }
 
-void EoDbJobFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, CFile & file, EoDbLayer * layer) {
+void EoDbJobFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbLayer* layer) {
 	EoDbGroup* Group;
 
 	while (GetNextVisibleGroup(blockTableRecord, file, Group)) {
@@ -199,7 +199,7 @@ void EoDbJobFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, CFile & fi
 	}
 }
 
-void EoDbJobFile::ReadMemFile(OdDbBlockTableRecordPtr blockTableRecord, CFile & file) {
+void EoDbJobFile::ReadMemFile(OdDbBlockTableRecordPtr blockTableRecord, CFile& file) {
 	auto Document {AeSysDoc::GetDoc()};
 
 	Document->RemoveAllTrappedGroups();
@@ -215,12 +215,12 @@ bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& p
 
 	if (file.Read(buffer, 32) < 32) { return false; }
 
-	primitiveType = *((short*) & buffer[4]);
+	primitiveType = *(( short*) & buffer[4]);
 
 	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
-	
+
 	const unsigned LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
-	
+
 	if (LengthInChunks > 1) {
 		const unsigned BytesRemaining {(LengthInChunks - 1) * 32};
 
@@ -268,7 +268,7 @@ bool EoDbJobFile::IsValidPrimitive(short primitiveType) noexcept {
 }
 
 bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
-	const unsigned char* PrimitiveType = (unsigned char*)& primitiveType;
+	const unsigned char* PrimitiveType = ( unsigned char*) & primitiveType;
 	switch (PrimitiveType[1]) {
 		case 17: // 0x11 text
 		case 24: // 0x18 bspline
@@ -284,9 +284,9 @@ bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
 	}
 }
 
-void EoDbJobFile::WriteGroup(CFile & file, EoDbGroup * group) {
+void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 	m_PrimBuf[0] = 0;
-	*((unsigned short*) & m_PrimBuf[1]) = unsigned short(group->GetCount());
+	*(( unsigned short*) & m_PrimBuf[1]) = unsigned short(group->GetCount());
 
 	POSITION Position = group->GetHeadPosition();
 	while (Position != 0) {
@@ -295,14 +295,14 @@ void EoDbJobFile::WriteGroup(CFile & file, EoDbGroup * group) {
 	}
 }
 
-void EoDbJobFile::WriteHeader(CFile & file) {
+void EoDbJobFile::WriteHeader(CFile& file) {
 	::ZeroMemory(m_PrimBuf, 96);
 	m_PrimBuf[4] = 'T';
 	m_PrimBuf[5] = 'c';
 	file.Write(m_PrimBuf, 96);
 }
 
-void EoDbJobFile::WriteLayer(CFile & file, EoDbLayer * layer) {
+void EoDbJobFile::WriteLayer(CFile& file, EoDbLayer* layer) {
 	layer->BreakSegRefs();
 	layer->BreakPolylines();
 
@@ -313,7 +313,7 @@ void EoDbJobFile::WriteLayer(CFile & file, EoDbLayer * layer) {
 	}
 }
 
-void EoDbJobFile::ConvertFormattingCharacters(OdString & textString) noexcept {
+void EoDbJobFile::ConvertFormattingCharacters(OdString& textString) noexcept {
 	for (int i = 0; i < textString.getLength() - 1; i++) {
 		if (textString[i] == '^') {
 			if (textString[i + 1] == '/') { // Fractions

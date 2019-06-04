@@ -14,7 +14,7 @@ END_MESSAGE_MAP()
 
 EoDlgTrapFilter::EoDlgTrapFilter(CWnd* parent)
 	: CDialog(EoDlgTrapFilter::IDD, parent)
-	, m_Document(0) {
+	, m_Document(nullptr) {
 }
 
 EoDlgTrapFilter::EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
@@ -31,13 +31,14 @@ void EoDlgTrapFilter::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_TRAP_FILTER_LINE_LIST, m_FilterLineComboBoxControl);
 	DDX_Control(pDX, IDC_TRAP_FILTER_ELEMENT_LIST, m_FilterPrimitiveTypeListBoxControl);
 }
+
 BOOL EoDlgTrapFilter::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	SetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 1, FALSE);
 
-	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
-	OdDbSymbolTableIteratorPtr Iterator = Linetypes->newIterator();
+	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+	auto Iterator {Linetypes->newIterator()};
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
@@ -55,6 +56,7 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 
 	return TRUE;
 }
+
 void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN)) {
 		const auto ColorIndex {short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 0, FALSE))};
@@ -100,13 +102,14 @@ void EoDlgTrapFilter::OnOK() {
 }
 
 void EoDlgTrapFilter::FilterByColor(short colorIndex) {
-	POSITION GroupPosition = m_Document->GetFirstTrappedGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = m_Document->GetNextTrappedGroup(GroupPosition);
+	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			const EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
+
 			if (Primitive->ColorIndex() == colorIndex) {
 				m_Document->RemoveTrappedGroup(Group);
 				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -116,14 +119,16 @@ void EoDlgTrapFilter::FilterByColor(short colorIndex) {
 	}
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
-void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
-	POSITION GroupPosition = m_Document->GetFirstTrappedGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = m_Document->GetNextTrappedGroup(GroupPosition);
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			const EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
+	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
+
 			if (Primitive->LinetypeIndex() == linetypeIndex) {
 				m_Document->RemoveTrappedGroup(Group);
 				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -133,20 +138,21 @@ void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
 	}
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
+
 void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
-	POSITION GroupPosition = m_Document->GetFirstTrappedGroupPosition();
-	while (GroupPosition != 0) {
+	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
+	while (GroupPosition != nullptr) {
 		bool bFilter = FALSE;
 
-		EoDbGroup* Group = m_Document->GetNextTrappedGroup(GroupPosition);
+		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			const EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 
 			switch (primitiveType) {
 				case EoDb::kLinePrimitive:
-					bFilter = Primitive->Is(EoDb::kLinePrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine));
 					break;
 				case EoDb::kEllipsePrimitive:
 					bFilter = Primitive->Is(EoDb::kEllipsePrimitive);

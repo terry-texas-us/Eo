@@ -196,7 +196,7 @@ void AeSysView::OnNodalModeToPolygon() {
 					const auto Mask {GetDocument()->GetPrimitiveMask(Primitive)};
 
 					if (Mask != 0) {
-						if (Primitive->Is(EoDb::kLinePrimitive)) {
+						if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 							if ((Mask & 3) == 3) {
 								auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 
