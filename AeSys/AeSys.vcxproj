@@ -33,6 +33,7 @@
     <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
     <Midl>
@@ -41,7 +42,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
@@ -51,6 +52,8 @@
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <SDLCheck>true</SDLCheck>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -60,7 +63,7 @@
     <Link>
       <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;RecomputeDimBlock.lib;htmlhelp.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>E:\ODA\15\Kernel_vc15dlldbg\lib\vc15dlldbg;E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\VS 2017\Eo\vc15dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
       <SubSystem>Windows</SubSystem>

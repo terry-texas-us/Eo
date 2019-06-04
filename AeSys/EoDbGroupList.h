@@ -8,13 +8,33 @@ public: // Constructors and destructor
 	}
 public:	// Base class wrappers hides non-virtual function of parent
 
-	POSITION EoDbGroupList::AddHead(EoDbGroup* group) { return (CObList::AddHead((CObject*)group)); }
-	POSITION EoDbGroupList::AddTail(EoDbGroup* group) { return (CObList::AddTail((CObject*)group)); }
-	void EoDbGroupList::AddTail(EoDbGroupList* groupList) { CObList::AddTail((CObList*)groupList); }
-	EoDbGroup* EoDbGroupList::GetNext(POSITION& position) { return (EoDbGroup*)CObList::GetNext(position); }
-	EoDbGroup* EoDbGroupList::GetPrev(POSITION& position) { return (EoDbGroup*)CObList::GetPrev(position); }
-	EoDbGroup* EoDbGroupList::RemoveHead() { return (EoDbGroup*)CObList::RemoveHead(); }
-	EoDbGroup* EoDbGroupList::RemoveTail() { return (EoDbGroup*)CObList::RemoveTail(); }
+	POSITION EoDbGroupList::AddHead(EoDbGroup* group) {
+		return (CObList::AddHead(dynamic_cast<CObject*>(group)));
+	}
+
+	POSITION EoDbGroupList::AddTail(EoDbGroup* group) { 
+		return (CObList::AddTail(dynamic_cast<CObject*>(group)));
+	}
+
+	void EoDbGroupList::AddTail(EoDbGroupList* groupList) {
+		CObList::AddTail(dynamic_cast<CObject*>(groupList));
+	}
+	
+	EoDbGroup* EoDbGroupList::GetNext(POSITION& position) {
+		return dynamic_cast<EoDbGroup*>(CObList::GetNext(position));
+	}
+	
+	EoDbGroup* EoDbGroupList::GetPrev(POSITION& position) {
+		return dynamic_cast<EoDbGroup*>(CObList::GetPrev(position));
+	}
+	
+	EoDbGroup* EoDbGroupList::RemoveHead() {
+		return dynamic_cast<EoDbGroup*>(CObList::RemoveHead());
+	}
+	
+	EoDbGroup* EoDbGroupList::RemoveTail() {
+		return dynamic_cast<EoDbGroup*>(CObList::RemoveTail());
+	}
 
 public: // Methods
 	void AddToTreeViewControl(HWND tree, HTREEITEM htiParent);

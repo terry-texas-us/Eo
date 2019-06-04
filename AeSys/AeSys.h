@@ -68,10 +68,10 @@ protected:
 	using CWinAppEx::operator delete;
 
 private:
-	int m_nProgressLimit;
-	int m_nProgressPos;
-	int m_nPercent;
-	CString m_Msg;
+	int m_ProgressLimit;
+	int m_ProgressPosition;
+	int m_ProgressPercent;
+	CString m_ProgressMessage;
 
 	bool m_DiscardBackFaces;
 	bool m_EnableDoubleBuffer;
@@ -356,7 +356,6 @@ public:
 	static EoDb::FileTypes GetFileType(const OdString& file);
 	COLORREF GetHotColor(short colorIndex) noexcept;
 	HINSTANCE GetInstance() noexcept;
-	HWND GetSafeHwnd();
 	HMENU GetAeSysMenu() noexcept;
 	HMENU GetAeSysSubMenu(int position) noexcept;
 	Units GetUnits() noexcept;

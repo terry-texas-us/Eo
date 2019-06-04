@@ -335,9 +335,9 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 }
 
 AeSys::AeSys() noexcept
-	: m_nProgressLimit(100)
-	, m_nProgressPos(0)
-	, m_nPercent(0)
+	: m_ProgressLimit(100)
+	, m_ProgressPosition(0)
+	, m_ProgressPercent(0)
 	, m_DiscardBackFaces(true)
 	, m_EnableDoubleBuffer(true)
 	, m_BlocksCache(false)
@@ -623,9 +623,9 @@ CString AeSys::getApplicationPath() {
 	return L"";
 }
 
-void AeSys::auditPrintReport(OdAuditInfo * auditInfo, const OdString & line, int printDest) const {
+void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
 	if (m_pAuditDlg) {
-		m_pAuditDlg->printReport((OdDbAuditInfo*) auditInfo);
+		m_pAuditDlg->printReport(( OdDbAuditInfo*) auditInfo);
 	}
 }
 
@@ -1193,9 +1193,9 @@ OdGePoint3d AeSys::GetCursorPosition() {
 	return (ActiveView) ? ActiveView->GetCursorPosition() : OdGePoint3d::kOrigin;
 }
 
-EoDb::FileTypes AeSys::GetFileType(const OdString & file) {
+EoDb::FileTypes AeSys::GetFileType(const OdString& file) {
 	EoDb::FileTypes Type(EoDb::kUnknown);
-	OdString Extension = file.right(3);
+	auto Extension {file.right(3)};
 
 	if (!Extension.isEmpty()) {
 		if (Extension.iCompare(L"peg") == 0) {
@@ -1221,10 +1221,6 @@ COLORREF AeSys::GetHotColor(short colorIndex) noexcept {
 
 HINSTANCE AeSys::GetInstance() noexcept {
 	return (m_hInstance);
-}
-
-HWND AeSys::GetSafeHwnd() {
-	return (AfxGetMainWnd()->GetSafeHwnd());
 }
 
 HMENU AeSys::GetAeSysMenu() noexcept {
@@ -1258,18 +1254,18 @@ bool AeSys::HighColorMode() const noexcept {
 }
 
 OdGePoint3d AeSys::HomePointGet(int i) noexcept {
-	if (i >= 0 && i < 9)
-		return (m_HomePoints[i]);
+
+	if (i >= 0 && i < 9) { return (m_HomePoints[i]); }
 
 	return (OdGePoint3d::kOrigin);
 }
 
-void AeSys::HomePointSave(int i, const OdGePoint3d & point) noexcept {
-	if (i >= 0 && i < 9)
-		m_HomePoints[i] = point;
+void AeSys::HomePointSave(int i, const OdGePoint3d& point) noexcept {
+	
+	if (i >= 0 && i < 9) { m_HomePoints[i] = point; }
 }
 
-void AeSys::InitGbls(CDC * deviceContext) {
+void AeSys::InitGbls(CDC* deviceContext) {
 	pstate.SetHatchInteriorStyle(EoDbHatch::kHatch);
 	pstate.SetHatchInteriorStyleIndex(1);
 
@@ -1984,7 +1980,7 @@ bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wch
 			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, data_t, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
 		}
 		if (size < EO_REGISTRY_BUFFER_SIZE) {
-			swprintf(value, L"%s\0", data_t);
+			swprintf_s(value, size, L"%s\0", data_t);
 		} else {
 			wcsncpy(value, data_t, size - 1);
 			value[size - 1] = '\0';
@@ -2121,51 +2117,53 @@ OdDbHostAppProgressMeter* AeSys::newProgressMeter() {
 }
 
 void AeSys::start(const OdString& displayString) {
-	m_Msg = (const wchar_t*) displayString;
-	m_nProgressPos = 0;
-	m_nPercent = -1;
+	m_ProgressMessage = (const wchar_t*) displayString;
+	m_ProgressPosition = 0;
+	m_ProgressPercent = -1;
 	// <tas="m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_Normal);"</tas>
 	// <tas="m_tbExt.SetProgressValue(::AfxGetMainWnd()->GetSafeHwnd(), 0, 100);"</tas>
 }
 
 void AeSys::stop() {
-	m_nProgressPos = m_nProgressLimit;
+	m_ProgressPosition = m_ProgressLimit;
 	meterProgress();
 	// <tas="m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_NoProgress);"</tas>
 	// <tas="m_tbExt.FlashWindow(::AfxGetMainWnd()->GetSafeHwnd());"</tas>
 }
 
 void AeSys::meterProgress() {
-	bool UpdateProgress;
-	int Percent;
+	bool UpdateProgress {false};
+	int Percent {0};
 	{
 		TD_AUTOLOCK_P_DEF(m_pMeterMutex);
-		const int OldPercent = m_nPercent;
-		Percent = m_nPercent = int((double(m_nProgressPos++) / double(m_nProgressLimit)) * 100);
-		UpdateProgress = (OldPercent != m_nPercent);
+		const int OldPercent {m_ProgressPercent};
+		m_ProgressPercent = static_cast<int>((static_cast<double>(m_ProgressPosition++) / static_cast<double>(m_ProgressLimit)) * 100);
+		Percent = m_ProgressPercent;
+		UpdateProgress = (OldPercent != m_ProgressPercent);
 	}
 	if (UpdateProgress) {
-		struct StatUpdater {
+		struct StatusUpdater {
 			int m_Percent;
 			CMainFrame* m_MainFrame;
 			AeSys* m_Application;
-			StatUpdater(int percent, CMainFrame* mainFrame, AeSys* application)  noexcept
+			StatusUpdater(int percent, CMainFrame* mainFrame, AeSys* application)  noexcept
 				: m_Percent(percent)
 				, m_MainFrame(mainFrame)
 				, m_Application(application) {
 			}
 			static void Exec(void* statusUpdater) {
-				StatUpdater* pExec = reinterpret_cast<StatUpdater*>(statusUpdater);
+				auto pExec {static_cast<StatusUpdater*>(statusUpdater)};
 				CString str;
-				str.Format(L"%s %d", pExec->m_Application->m_Msg, pExec->m_Percent);
+				str.Format(L"%s %d", pExec->m_Application->m_ProgressMessage, pExec->m_Percent);
 				// <tas="pExec->m_MainFrame->m_wndStatusBar.SetPaneText(0, str);:</tas>
-				// <tas="pExec->m_Application->m_tbExt.SetProgressValue(::AfxGetMainWnd()->GetSafeHwnd(), (ULONG) pExec->m_nPercent, 100);"</tas>
+				// <tas="pExec->m_Application->m_tbExt.SetProgressValue(::AfxGetMainWnd()->GetSafeHwnd(), (ULONG) pExec->m_ProgressPercent, 100);"</tas>
 				MSG Message;
 				while (::PeekMessageW(&Message, pExec->m_MainFrame->m_hWnd, WM_KEYUP, WM_KEYUP, 1)) {
-					bool bDup = false;
+					bool bDup {false};
+
 					if (Message.wParam == VK_ESCAPE && !bDup) {
 						bDup = true;
-						str.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_Msg);
+						str.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_ProgressMessage);
 						// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_Paused);"</tas>
 						if (AfxMessageBox(str, MB_YESNO | MB_ICONQUESTION) == IDYES) {
 							// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_NoProgress);"</tas>
@@ -2177,12 +2175,12 @@ void AeSys::meterProgress() {
 				}
 			}
 		} execArg(Percent, dynamic_cast<CMainFrame*>(GetMainWnd()), this);
-		odExecuteMainThreadAction(StatUpdater::Exec, &execArg);
+		odExecuteMainThreadAction(StatusUpdater::Exec, &execArg);
 	}
 }
 
 void AeSys::setLimit(int max) noexcept {
-	m_nProgressLimit = max ? max : 1;
+	m_ProgressLimit = max ? max : 1;
 }
 
 int AeSys::ConfirmMessageBox(unsigned stringResourceIdentifier, const wchar_t* string) {

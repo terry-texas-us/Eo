@@ -29,13 +29,13 @@ public:
 	void Display(AeSysView* view, CDC* deviceContext);
 	void Erase();
 	POSITION FindAndRemovePrimitive(EoDbPrimitive* primitive);
-	EoDbPrimitive* GetAt(POSITION position);
+	EoDbPrimitive* GetAt(POSITION position); // hides non-virtual function of parent
 	int GetBlockReferenceCount(const CString& name) const;
 	void GetExtents_(AeSysView* view, OdGeExtents3d& extents);
-	EoDbPrimitive* GetNext(POSITION& position) const;
+	EoDbPrimitive* GetNext(POSITION& position) const; // hides non-virtual function of parent
 	EoDbPoint* GetFirstDifferentPoint(EoDbPoint* pointPrimitive);
 	int GetLinetypeIndexRefCount(short linetypeIndex);
-	void InsertBefore(POSITION position, EoDbGroup* group);
+	void InsertBefore(POSITION position, EoDbGroup* group); // hides non-virtual function of parent
 	bool IsInView(AeSysView* view) const;
 	/// <summary>Determines if input point lies on any primitive in the group</summary>
 	bool IsOn(const EoGePoint4d& point, AeSysView* view) const;

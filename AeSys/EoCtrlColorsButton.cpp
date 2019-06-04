@@ -152,6 +152,10 @@ void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& rectangle, unsi
 	}
 }
 
+unsigned EoCtrlColorsButton::OnGetDlgCode() noexcept {
+	return DLGC_WANTARROWS;
+}
+
 void EoCtrlColorsButton::OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags) {
 	if (keyCode >= VK_LEFT && keyCode <= VK_DOWN) {
 		auto DeviceContext {GetDC()};

@@ -50,6 +50,7 @@ public:
 	void OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) override;
 	CSize SizeToContent(BOOL calculateOnly = FALSE) override;
 
+	unsigned OnGetDlgCode() noexcept;
 	void OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent
