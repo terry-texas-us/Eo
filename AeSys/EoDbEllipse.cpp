@@ -13,6 +13,8 @@
 #include "DbEllipse.h"
 #include "Ge/GeCircArc3d.h"
 
+IMPLEMENT_DYNAMIC(EoDbEllipse, EoDbPrimitive)
+
 EoDbEllipse::EoDbEllipse() noexcept
 	: m_Center(OdGePoint3d::kOrigin)
 	, m_MajorAxis(OdGeVector3d::kXAxis)

@@ -1829,10 +1829,10 @@ void AeSysDoc::OnPrimBreak() {
 
 	auto Group {ActiveView->SelectGroupAndPrimitive(ActiveView->GetCursorPosition())};
 	if (Group != nullptr && ActiveView->EngagedPrimitive() != nullptr) {
-		EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
+		auto Primitive {ActiveView->EngagedPrimitive()};
 
-		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
-			const EoDbPolyline* PolylinePrimitive = dynamic_cast<EoDbPolyline*>(Primitive);
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline))) {
+			const auto PolylinePrimitive {dynamic_cast<EoDbPolyline*>(Primitive)};
 			Group->FindAndRemovePrimitive(Primitive);
 
 			OdGePoint3dArray Points;
@@ -1852,18 +1852,18 @@ void AeSysDoc::OnPrimBreak() {
 			}
 			delete Primitive;
 			ResetAllViews();
-		} else if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
-			const EoDbBlockReference* BlockReference = dynamic_cast<EoDbBlockReference*>(Primitive);
+		} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
+			const auto BlockReference {dynamic_cast<EoDbBlockReference*>(Primitive)};
 
 			EoDbBlock* Block;
 
 			if (LookupBlock(BlockReference->Name(), Block) != 0) {
 				Group->FindAndRemovePrimitive(Primitive);
 
-				EoGeMatrix3d tm = BlockReference->BlockTransformMatrix(Block->BasePoint());
+				auto BlockTransform {BlockReference->BlockTransformMatrix(Block->BasePoint())};
 
-				EoDbGroup* pSegT = new EoDbGroup(*Block);
-				pSegT->TransformBy(tm);
+				auto pSegT {new EoDbGroup(*Block)};
+				pSegT->TransformBy(BlockTransform);
 				Group->AddTail(pSegT);
 
 				delete Primitive;
@@ -2664,23 +2664,23 @@ void AeSysDoc::OnFile() {
 void AeSysDoc::OnPrimExtractNum() {
 	auto ActiveView {AeSysView::GetActiveView()};
 
-	const OdGePoint3d pt = ActiveView->GetCursorPosition();
+	const auto CurrentPnt {ActiveView->GetCursorPosition()};
 
-	if (ActiveView->SelectGroupAndPrimitive(pt)) {
-		EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
+	if (ActiveView->SelectGroupAndPrimitive(CurrentPnt)) {
+		EoDbPrimitive* Primitive {ActiveView->EngagedPrimitive()};
 
 		CString Number;
 
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 			Number = dynamic_cast<EoDbText*>(Primitive)->Text();
-		} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+		} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 			Number = dynamic_cast<EoDbDimension*>(Primitive)->Text();
 		} else {
 			return;
 		}
 		double dVal[32];
-		int iTyp;
-		long lDef;
+		int iTyp {0};
+		long lDef {0};
 		int iTokId = 0;
 
 		lex::Parse(Number);
@@ -2699,16 +2699,16 @@ void AeSysDoc::OnPrimExtractNum() {
 void AeSysDoc::OnPrimExtractStr() {
 	auto ActiveView {AeSysView::GetActiveView()};
 
-	const OdGePoint3d pt = ActiveView->GetCursorPosition();
+	const auto CurrentPnt {ActiveView->GetCursorPosition()};
 
-	if (ActiveView->SelectGroupAndPrimitive(pt)) {
-		EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
+	if (ActiveView->SelectGroupAndPrimitive(CurrentPnt)) {
+		auto Primitive {ActiveView->EngagedPrimitive()};
 
 		CString String;
 
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 			String = dynamic_cast<EoDbText*>(Primitive)->Text();
-		} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+		} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 			String = dynamic_cast<EoDbDimension*>(Primitive)->Text();
 		} else {
 			return;
@@ -2718,6 +2718,7 @@ void AeSysDoc::OnPrimExtractStr() {
 	}
 	return;
 }
+
 // Returns a pointer to the currently active document.
 AeSysDoc* AeSysDoc::GetDoc() {
 	const CMDIFrameWndEx* Frame {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};

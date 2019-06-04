@@ -18,6 +18,8 @@ Hatch(Polygon) primitive
 </remarks> */
 
 class EoDbHatch : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbHatch)
+
 	static unsigned sm_EdgeToEvaluate;
 	static unsigned sm_Edge;
 	static unsigned sm_PivotVertex;
@@ -62,7 +64,6 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const override;
-	bool Is(unsigned short type) const noexcept override { return type == EoDb::kHatchPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

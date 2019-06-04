@@ -10,6 +10,8 @@
 
 #include "EoDbPolyline.h"
 
+IMPLEMENT_DYNAMIC(EoDbPolyline, EoDbPrimitive)
+
 unsigned EoDbPolyline::sm_EdgeToEvaluate = 0;
 unsigned EoDbPolyline::sm_Edge = 0;
 unsigned EoDbPolyline::sm_PivotVertex = 0;

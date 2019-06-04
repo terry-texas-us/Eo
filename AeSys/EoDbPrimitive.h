@@ -53,7 +53,6 @@ public: // Methods - absolute virtuals
 	virtual OdGePoint3d GetCtrlPt() const = 0;
 	virtual void GetExtents(AeSysView* view, OdGeExtents3d& extents) const = 0;
 	virtual OdGePoint3d GoToNxtCtrlPt() const = 0;
-	virtual bool Is(unsigned short type) const = 0;
 	virtual bool IsEqualTo(EoDbPrimitive* primitive) const = 0;
 	/// <summary>Tests whether a line is wholly or partially within the current view volume.</summary>
 	virtual bool IsInView(AeSysView* view) const = 0;

@@ -56,15 +56,15 @@ void EoDlgTrapModify::OnOK() {
 	CDialog::OnOK();
 }
 void EoDlgTrapModify::ModifyPolygons() {
-	POSITION Position = m_Document->GetFirstTrappedGroupPosition();
-	while (Position != 0) {
-		const EoDbGroup* Group = m_Document->GetNextTrappedGroup(Position);
+	auto Position {m_Document->GetFirstTrappedGroupPosition()};
+	while (Position != nullptr) {
+		const auto Group {m_Document->GetNextTrappedGroup(Position)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			auto Primitive {Group->GetNext(PrimitivePosition)};
 
-			if (Primitive->Is(EoDb::kHatchPrimitive)) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
 				auto pPolygon {dynamic_cast<EoDbHatch*>(Primitive)};
 				pPolygon->SetInteriorStyle(pstate.HatchInteriorStyle());
 				pPolygon->SetInteriorStyleIndex2(pstate.HatchInteriorStyleIndex());

@@ -14,6 +14,8 @@
 #include "HatchPatternManager.h"
 #include "EoDbHatchPatternTable.h"
 
+IMPLEMENT_DYNAMIC(EoDbHatch, EoDbPrimitive)
+
 unsigned EoDbHatch::sm_EdgeToEvaluate = 0;
 unsigned EoDbHatch::sm_Edge = 0;
 unsigned EoDbHatch::sm_PivotVertex = 0;

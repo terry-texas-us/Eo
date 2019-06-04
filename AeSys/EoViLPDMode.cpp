@@ -12,11 +12,11 @@ pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d&
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
 			auto Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->Is(EoDb::kPointPrimitive) && Primitive->ColorIndex() == pointColor) {
-				const auto Point = dynamic_cast<EoDbPoint*>(Primitive);
-				if (point.distanceTo(Point->Position()) <= tolerance) {
-					return {Group, Point};
-				}
+
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint)) && Primitive->ColorIndex() == pointColor) {
+				const auto Point {dynamic_cast<EoDbPoint*>(Primitive)};
+				
+				if (point.distanceTo(Point->Position()) <= tolerance) { return {Group, Point}; }
 			}
 		}
 	}

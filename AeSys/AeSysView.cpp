@@ -3637,7 +3637,8 @@ pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->Is(EoDb::kEllipsePrimitive)) {
+
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
 				auto Arc {dynamic_cast<EoDbEllipse*>(Primitive)};
 
 				if (fabs(Arc->SweepAngle() - Oda2PI) <= DBL_EPSILON && (Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd()) <= DBL_EPSILON) {
@@ -3675,7 +3676,7 @@ pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d& p
 
 }
 
-EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d & pt) {
+EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 	EoGePoint4d ptView(pt, 1.0);
 	ModelViewTransformPoint(ptView);
 
@@ -3685,7 +3686,8 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d & pt) {
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->Is(EoDb::kTextPrimitive)) {
+
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				OdGePoint3d ptProj;
 
 				if (dynamic_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj)) { return dynamic_cast<EoDbText*>(Primitive); }

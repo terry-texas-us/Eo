@@ -155,22 +155,22 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine));
 					break;
 				case EoDb::kEllipsePrimitive:
-					bFilter = Primitive->Is(EoDb::kEllipsePrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse));
 					break;
 				case EoDb::kGroupReferencePrimitive:
-					bFilter = Primitive->Is(EoDb::kGroupReferencePrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference));
 					break;
 				case EoDb::kTextPrimitive:
-					bFilter = Primitive->Is(EoDb::kTextPrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbText));
 					break;
 				case EoDb::kHatchPrimitive:
-					bFilter = Primitive->Is(EoDb::kHatchPrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch));
 					break;
 				case EoDb::kPolylinePrimitive:
-					bFilter = Primitive->Is(EoDb::kPolylinePrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline));
 					break;
 				case EoDb::kPointPrimitive:
-					bFilter = Primitive->Is(EoDb::kPointPrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint));
 					break;
 			}
 			if (bFilter) {

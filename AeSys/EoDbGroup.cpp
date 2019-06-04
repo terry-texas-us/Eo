@@ -57,7 +57,8 @@ void EoDbGroup::BreakPolylines() {
 	while (Position != nullptr) {
 		POSITION PrimitivePosition = Position;
 		auto Primitive {GetNext(Position)};
-		if (Primitive->Is(EoDb::kPolylinePrimitive)) {
+		
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline))) {
 			const auto Polyline {dynamic_cast<EoDbPolyline*>(Primitive)};
 			OdGePoint3dArray Points;
 			Polyline->GetAllPoints(Points);
@@ -77,8 +78,9 @@ void EoDbGroup::BreakPolylines() {
 			}
 			this->RemoveAt(PrimitivePosition);
 			delete Primitive;
-		} else if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
+		} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
 			EoDbBlock* Block;
+	
 			if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
 				Block->BreakPolylines();
 			}
@@ -95,7 +97,7 @@ void EoDbGroup::BreakSegRefs() {
 			auto PrimitivePosition {Position};
 			auto Primitive {GetNext(Position)};
 
-			if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
 				iSegRefs++;
 				EoDbBlock* Block;
 
@@ -182,7 +184,7 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
-		if (Primitive->Is(EoDb::kGroupReferencePrimitive)) {
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
 
 			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name) { Count++; }
 		}
@@ -207,7 +209,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
-		if (Primitive != pointPrimitive && Primitive->Is(EoDb::kPointPrimitive)) {
+		if (Primitive != pointPrimitive && Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint))) {
 			return (dynamic_cast<EoDbPoint*>(Primitive));
 		}
 	}
@@ -274,7 +276,8 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCel
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 			dynamic_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 		}
 	}
@@ -321,7 +324,8 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 		auto posPrev {PrimitivePosition};
 		auto Primitive {GetNext(PrimitivePosition)};
 		
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
+
 			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);
 				delete Primitive;
@@ -406,15 +410,16 @@ void EoDbGroup::SortTextOnY() {
 			auto pos2 {pos1};
 			auto pPrim2 {GetNext(pos2)};
 
-			if (pPrim1->Is(EoDb::kTextPrimitive) && pPrim2->Is(EoDb::kTextPrimitive)) {
+			if (pPrim1->IsKindOf(RUNTIME_CLASS(EoDbText)) && pPrim2->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				const auto dY1 {dynamic_cast<EoDbText*>(pPrim1)->Position().y};
 				const auto dY2 {dynamic_cast<EoDbText*>(pPrim2)->Position().y};
+				
 				if (dY1 < dY2) {
 					SetAt(Position, pPrim2);
 					SetAt(pos1, pPrim1);
 					iT = i;
 				}
-			} else if (pPrim1->Is(EoDb::kTextPrimitive) || pPrim2->Is(EoDb::kTextPrimitive)) {
+			} else if (pPrim1->IsKindOf(RUNTIME_CLASS(EoDbText)) || pPrim2->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				SetAt(Position, pPrim2);
 				SetAt(pos1, pPrim1);
 				iT = i;

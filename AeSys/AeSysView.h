@@ -16,9 +16,12 @@
 #include "EoGsModelTransform.h"
 #include "EoGsViewTransform.h"
 
+#include "EoDbBlockReference.h"
 #include "EoDbEllipse.h"
+#include "EoDbHatch.h"
 #include "EoDbLine.h"
 #include "EoDbPoint.h"
+#include "EoDbPolyline.h"
 #include "EoDbGroup.h"
 #include "EoDbGroupList.h"
 #include "PrimState.h"

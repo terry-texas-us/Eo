@@ -5,6 +5,8 @@
 #include "DbEllipse.h"
 
 class EoDbEllipse : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbEllipse)
+
 	OdGePoint3d	m_Center;
 	OdGeVector3d m_MajorAxis;
 	OdGeVector3d m_MinorAxis;
@@ -36,7 +38,6 @@ public: // Methods - absolute virtuals
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
-	bool Is(unsigned short type) const noexcept override { return type == EoDb::kEllipsePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

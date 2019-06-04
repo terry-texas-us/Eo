@@ -12,6 +12,8 @@
 #include "EoDbJobFile.h"
 #include "EoDlgTrapModify.h"
 
+IMPLEMENT_DYNAMIC(EoDbText, EoDbPrimitive)
+
 EoDbText::EoDbText() {
 }
 

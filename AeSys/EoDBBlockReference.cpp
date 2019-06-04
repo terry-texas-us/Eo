@@ -10,6 +10,8 @@
 
 #include "DbAttribute.h"
 
+IMPLEMENT_DYNAMIC(EoDbBlockReference, EoDbPrimitive)
+
 class EoDbPegFile;
 
 EoDbBlockReference::EoDbBlockReference() noexcept

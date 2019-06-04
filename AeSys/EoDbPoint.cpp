@@ -8,6 +8,8 @@
 #include "EoVaxFloat.h"
 #include "EoDbFile.h"
 
+IMPLEMENT_DYNAMIC(EoDbPoint, EoDbPrimitive)
+
 EoDbPoint::EoDbPoint() noexcept
 	: m_Position {OdGePoint3d::kOrigin}
 	, m_NumberOfDatums {0}

@@ -17,6 +17,8 @@
 #include "EoDbDimension.h"
 #include "EoDbText.h"
 
+IMPLEMENT_DYNAMIC(EoDbDimension, EoDbPrimitive)
+
 unsigned short EoDbDimension::sm_wFlags = 0;
 
 EoDbDimension::EoDbDimension()

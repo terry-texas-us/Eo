@@ -25,6 +25,7 @@ GroupReference(SegRef) primitive in Peg files and Tracing files
 </remarks> */
 
 class EoDbBlockReference : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbBlockReference)
 	CString m_Name;
 	OdGePoint3d m_Position;
 	OdGeVector3d m_Normal;
@@ -57,7 +58,6 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-	bool Is(unsigned short type) const noexcept override { return type == EoDb::kGroupReferencePrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;

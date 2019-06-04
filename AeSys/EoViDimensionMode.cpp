@@ -32,7 +32,7 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				LineSeg = dynamic_cast<EoDbLine*>(Primitive)->LineSeg();
-			} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 				LineSeg = dynamic_cast<EoDbDimension*>(Primitive)->Line();
 			} else {
 				continue;
@@ -62,19 +62,19 @@ void AeSysView::OnDimensionModeArrow() {
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 	}
 	EoGeLineSeg3d TestLine;
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
+	auto GroupPosition {GetFirstVisibleGroupPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {GetNextVisibleGroup(GroupPosition)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			auto Primitive {Group->GetNext(PrimitivePosition)};
 
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 				TestLine = LinePrimitive->LineSeg();
-			} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
-				EoDbDimension* DimensionPrimitive = dynamic_cast<EoDbDimension*>(Primitive);
+			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
+				auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
 				TestLine = DimensionPrimitive->Line();
 			} else {
 				continue;
@@ -224,6 +224,7 @@ void AeSysView::OnDimensionModeDLine2() {
 	SetCursorPosition(CurrentPnt);
 	RubberBandingStartAtEnable(CurrentPnt, Lines);
 }
+
 void AeSysView::OnDimensionModeExten() {
 	auto Document {GetDocument()};
 	auto CurrentPnt {GetCursorPosition()};
@@ -252,21 +253,22 @@ void AeSysView::OnDimensionModeExten() {
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 	}
 }
+
 void AeSysView::OnDimensionModeRadius() {
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
 
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
-		const OdGePoint3d ptEnd = DetPt();
+		const auto ptEnd {DetPt()};
 
-		if ((EngagedPrimitive())->Is(EoDb::kEllipsePrimitive)) {
-			EoDbEllipse* pArc = dynamic_cast<EoDbEllipse*>(EngagedPrimitive());
+		if ((EngagedPrimitive())->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
+			auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 
-			const OdGePoint3d ptBeg = pArc->Center();
+			const auto ptBeg {pArc->Center()};
 
-			EoDbGroup* Group = new EoDbGroup;
+			auto Group {new EoDbGroup};
 
-			EoDbDimension* DimensionPrimitive = new EoDbDimension();
+			auto DimensionPrimitive {new EoDbDimension()};
 			DimensionPrimitive->SetColorIndex2(1);
 			DimensionPrimitive->SetLinetypeIndex2(1);
 			DimensionPrimitive->SetStartPoint(ptBeg);
@@ -279,7 +281,7 @@ void AeSysView::OnDimensionModeRadius() {
 			DimensionPrimitive->SetDefaultNote();
 			Group->AddTail(DimensionPrimitive);
 
-			GenerateLineEndItem(1, .1, ptBeg, ptEnd, Group);
+			GenerateLineEndItem(1, 0.1, ptBeg, ptEnd, Group);
 			Document->AddWorkLayerGroup(Group);
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 
@@ -289,23 +291,24 @@ void AeSysView::OnDimensionModeRadius() {
 		PreviousDimensionPosition = CurrentPnt;
 	}
 }
+
 void AeSysView::OnDimensionModeDiameter() {
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
 
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
-		const OdGePoint3d ptEnd = DetPt();
+		const auto ptEnd {DetPt()};
 
-		if ((EngagedPrimitive())->Is(EoDb::kEllipsePrimitive)) {
-			EoDbEllipse* pArc = dynamic_cast<EoDbEllipse*>(EngagedPrimitive());
+		if ((EngagedPrimitive())->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
+			auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 
-			const OdGePoint3d ptBeg = ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length());
+			const auto ptBeg {ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length())};
 
-			EoDbGroup* Group = new EoDbGroup;
+			auto Group {new EoDbGroup};
 
-			GenerateLineEndItem(1, .1, ptEnd, ptBeg, Group);
+			GenerateLineEndItem(1, 0.1, ptEnd, ptBeg, Group);
 
-			EoDbDimension* DimensionPrimitive = new EoDbDimension();
+			auto DimensionPrimitive {new EoDbDimension()};
 			DimensionPrimitive->SetColorIndex2(1);
 			DimensionPrimitive->SetLinetypeIndex2(1);
 			DimensionPrimitive->SetStartPoint(ptBeg);
@@ -318,7 +321,7 @@ void AeSysView::OnDimensionModeDiameter() {
 			DimensionPrimitive->SetDefaultNote();
 			Group->AddTail(DimensionPrimitive);
 
-			GenerateLineEndItem(1, .1, ptBeg, ptEnd, Group);
+			GenerateLineEndItem(1, 0.1, ptBeg, ptEnd, Group);
 			Document->AddWorkLayerGroup(Group);
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 
@@ -328,6 +331,7 @@ void AeSysView::OnDimensionModeDiameter() {
 		PreviousDimensionPosition = CurrentPnt;
 	}
 }
+
 void AeSysView::OnDimensionModeAngle() {
 	auto DeviceContext {GetDC()};
 
@@ -485,7 +489,7 @@ void AeSysView::OnDimensionModeConvert() {
 					delete Primitive;
 					PreviousDimensionPosition = ptProj;
 					return;
-				} else if (Primitive->Is(EoDb::kDimensionPrimitive)) {
+				} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 					auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
 					EoGeReferenceSystem ReferenceSystem;
 					ReferenceSystem = DimensionPrimitive->ReferenceSystem();

@@ -224,7 +224,7 @@ void AeSysView::OnNodalModeToPolygon() {
 								GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
 							}
 						}
-						else if (Primitive->Is(EoDb::kHatchPrimitive)) {
+						else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
 							auto Hatch {dynamic_cast<EoDbHatch*>(Primitive)};
 							const int iPts = Hatch->NumberOfVertices();
 

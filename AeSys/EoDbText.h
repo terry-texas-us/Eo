@@ -27,6 +27,8 @@ Text primitive in Peg files and Tracing files
 </remarks> */
 
 class EoDbText : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbText)
+
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
@@ -51,7 +53,6 @@ public: // Methods - absolute virtuals
 	OdGePoint3d	GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
-	bool Is(unsigned short type) const noexcept override { return type == EoDb::kTextPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

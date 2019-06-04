@@ -5,6 +5,8 @@
 #include "EoDbPrimitive.h"
 
 class EoDbPoint : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbPoint)
+
 	short	m_PointDisplayMode;
 	OdGePoint3d	m_Position;
 	unsigned short m_NumberOfDatums;
@@ -32,7 +34,6 @@ public: // Methods - absolute virtuals
 	OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
-	bool Is(unsigned short type) const noexcept override { return type == EoDb::kPointPrimitive; }
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
