@@ -161,7 +161,7 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 					bFilter = Primitive->Is(EoDb::kGroupReferencePrimitive);
 					break;
 				case EoDb::kTextPrimitive:
-					bFilter = Primitive->Is(EoDb::kTextPrimitive);
+					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbText));
 					break;
 				case EoDb::kHatchPrimitive:
 					bFilter = Primitive->Is(EoDb::kHatchPrimitive);

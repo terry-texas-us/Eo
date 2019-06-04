@@ -274,7 +274,8 @@ void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCel
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 			dynamic_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 		}
 	}
@@ -321,7 +322,8 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 		auto posPrev {PrimitivePosition};
 		auto Primitive {GetNext(PrimitivePosition)};
 		
-		if (Primitive->Is(EoDb::kTextPrimitive)) {
+		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
+
 			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);
 				delete Primitive;
@@ -406,15 +408,16 @@ void EoDbGroup::SortTextOnY() {
 			auto pos2 {pos1};
 			auto pPrim2 {GetNext(pos2)};
 
-			if (pPrim1->Is(EoDb::kTextPrimitive) && pPrim2->Is(EoDb::kTextPrimitive)) {
+			if (pPrim1->IsKindOf(RUNTIME_CLASS(EoDbText)) && pPrim2->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				const auto dY1 {dynamic_cast<EoDbText*>(pPrim1)->Position().y};
 				const auto dY2 {dynamic_cast<EoDbText*>(pPrim2)->Position().y};
+				
 				if (dY1 < dY2) {
 					SetAt(Position, pPrim2);
 					SetAt(pos1, pPrim1);
 					iT = i;
 				}
-			} else if (pPrim1->Is(EoDb::kTextPrimitive) || pPrim2->Is(EoDb::kTextPrimitive)) {
+			} else if (pPrim1->IsKindOf(RUNTIME_CLASS(EoDbText)) || pPrim2->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				SetAt(Position, pPrim2);
 				SetAt(pos1, pPrim1);
 				iT = i;

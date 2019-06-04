@@ -212,12 +212,11 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 }
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
-	bool IsEqualTo {primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))};
-
-	if (IsEqualTo) { 
-		IsEqualTo = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());
+	bool Result {false};
+	if (primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+		Result = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());
 	}
-	return IsEqualTo;
+	return Result;
 }
 
 bool EoDbLine::IsInView(AeSysView* view) const {

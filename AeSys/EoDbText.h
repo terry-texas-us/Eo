@@ -27,6 +27,8 @@ Text primitive in Peg files and Tracing files
 </remarks> */
 
 class EoDbText : public EoDbPrimitive {
+	DECLARE_DYNAMIC(EoDbText)
+
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
