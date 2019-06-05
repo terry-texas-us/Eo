@@ -51,11 +51,11 @@ HTREEITEM EoDbGroup::AddToTreeViewControl(HWND tree, HTREEITEM parent) {
 
 void EoDbGroup::BreakPolylines() {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		POSITION PrimitivePosition = Position;
+		auto PrimitivePosition {Position};
 		auto Primitive {GetNext(Position)};
 		
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline))) {
@@ -253,7 +253,7 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		
-		if (GetNext(PrimitivePosition)->SelectBy(point, view, Point)) { return true; }
+		if (GetNext(PrimitivePosition)->SelectUsingPoint(point, view, Point)) { return true; }
 	}
 	return false;
 }
@@ -336,22 +336,22 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 	return (iCount);
 }
 
-bool EoDbGroup::SelectBy(const EoGeLineSeg3d& line, AeSysView* view) const {
+bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view) const {
 	OdGePoint3dArray Intersections;
 
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		
-		if (GetNext(PrimitivePosition)->SelectBy(line, view, Intersections)) { return true; }
+		if (GetNext(PrimitivePosition)->SelectUsingLineSeg(lineSeg, view, Intersections)) { return true; }
 	}
 	return false;
 }
 
-bool EoDbGroup::SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysView* view) const {
+bool EoDbGroup::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 
-		if (GetNext(PrimitivePosition)->SelectBy(pt1, pt2, view)) { return true; }
+		if (GetNext(PrimitivePosition)->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)) { return true; }
 	}
 	return false;
 }
@@ -383,7 +383,7 @@ EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d& point, AeSysView*
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
-		if (Primitive->SelectBy(point, view, pDetPt)) {
+		if (Primitive->SelectUsingPoint(point, view, pDetPt)) {
 			dPicApert = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.0));
 			return (Primitive);
 		}

@@ -207,19 +207,19 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGe
 	return ptCtrl;
 }
 
-bool EoDbBlockReference::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
+bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoDbBlock* Block;
 
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	const bool bResult = Block->SelectBy(lowerLeftCorner, upperRightCorner, view);
+	const bool bResult = Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view);
 	view->PopModelTransform();
 
 	return (bResult);
 }
 
-bool EoDbBlockReference::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	bool bResult = false;
 
 	EoDbBlock* Block;
@@ -230,7 +230,7 @@ bool EoDbBlockReference::SelectBy(const EoGePoint4d& point, AeSysView* view, OdG
 
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
-		if ((Block->GetNext(Position))->SelectBy(point, view, ptProj)) {
+		if ((Block->GetNext(Position))->SelectUsingPoint(point, view, ptProj)) {
 			bResult = true;
 			break;
 		}

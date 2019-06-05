@@ -50,8 +50,8 @@ public:
 	/// <summary>Picks a prim if close enough to point.  Working in view space.</summary>
 	EoDbPrimitive* SelPrimUsingPoint(const EoGePoint4d& point, AeSysView* view, double&, OdGePoint3d&);
 	/// <summary>Determines if the line crosses any primitive in the group</summary>
-	bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view) const;
-	bool SelectBy(const OdGePoint3d& pt1, const OdGePoint3d& pt2, AeSysView* view) const;
+	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view) const;
+	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const;
 	EoDbPrimitive* SelectControlPointBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d*);
 	void SortTextOnY();
 	void Square(AeSysView* view);

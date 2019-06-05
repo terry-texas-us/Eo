@@ -3366,7 +3366,7 @@ void AeSysView::OnToolsPrimitiveSnapto() {
 		EoDbHatch::SetEdgeToEvaluate(EoDbHatch::Edge());
 		EoDbPolyline::SetEdgeToEvaluate(EoDbPolyline::Edge());
 
-		if (Primitive->SelectBy(ptView, this, ptDet)) {
+		if (Primitive->SelectUsingPoint(ptView, this, ptDet)) {
 			ptDet = Primitive->GoToNxtCtrlPt();
 			m_ptDet = ptDet;
 
@@ -3666,7 +3666,7 @@ pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d& p
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				OdGePoint3d PointOnLine;
 				
-				if (Primitive->SelectBy(ptView, this, PointOnLine)) {
+				if (Primitive->SelectUsingPoint(ptView, this, PointOnLine)) {
 					return {Group, dynamic_cast<EoDbLine*>(Primitive)};
 				}
 			}
@@ -3690,7 +3690,7 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				OdGePoint3d ptProj;
 
-				if (dynamic_cast<EoDbText*>(Primitive)->SelectBy(ptView, this, ptProj)) { return dynamic_cast<EoDbText*>(Primitive); }
+				if (dynamic_cast<EoDbText*>(Primitive)->SelectUsingPoint(ptView, this, ptProj)) { return dynamic_cast<EoDbText*>(Primitive); }
 			}
 		}
 	}

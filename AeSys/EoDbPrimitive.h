@@ -60,9 +60,9 @@ public: // Methods - absolute virtuals
 	virtual bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const = 0;
 	virtual OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const = 0;
 	/// <summary>Determines whether a line is partially or wholly within the area defined by the two points passed.</summary>
-	virtual bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const = 0;
+	virtual bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const = 0;
 	/// <summary>Evaluates whether a point lies within tolerance specified of line.</summary>
-	virtual bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const = 0;
+	virtual bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const = 0;
 	virtual void TransformBy(const EoGeMatrix3d& transformMatrix) = 0;
 	virtual void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) = 0;
 	virtual bool Write(EoDbFile& file) const = 0;
@@ -79,7 +79,7 @@ public: // Methods - virtuals
 	virtual void ModifyState() noexcept;
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 	/// <summary>Evaluates whether a line intersects line.</summary>
-	virtual bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections);
+	virtual bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
 	short ColorIndex() const noexcept { return m_ColorIndex; }

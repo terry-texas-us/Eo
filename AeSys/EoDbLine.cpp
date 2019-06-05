@@ -305,28 +305,28 @@ OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& p
 	return ControlPoint;
 }
 
-bool EoDbLine::SelectBy(const EoGeLineSeg3d & line, AeSysView * view, OdGePoint3dArray & intersections) {
+bool EoDbLine::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
-	return polyline::SelectBy(line, view, intersections);
+	return polyline::SelectUsingLineSeg(lineSeg, view, intersections);
 }
 
-bool EoDbLine::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
+bool EoDbLine::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
-	return polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj);
+	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj);
 }
 
-bool EoDbLine::SelectBy(const OdGePoint3d & pt1, const OdGePoint3d & pt2, AeSysView * view) const {
+bool EoDbLine::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
-	return polyline::SelectBy(pt1, pt2, view);
+	return polyline::SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view);
 }
 
-void EoDbLine::SetEndPoint(const OdGePoint3d & endPoint) {
+void EoDbLine::SetEndPoint(const OdGePoint3d& endPoint) {
 	OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 	Line->setEndPoint(endPoint);
 	Line->downgradeOpen();

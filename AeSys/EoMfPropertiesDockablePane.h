@@ -6,7 +6,7 @@ public:
 		CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), disableIfNoHndler);
 	}
 
-	BOOL AllowShowOnList() const override { return FALSE; }
+	BOOL AllowShowOnList() const noexcept override { return FALSE; }
 };
 
 class EoMfPropertiesDockablePane : public CDockablePane {

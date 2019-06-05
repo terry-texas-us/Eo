@@ -58,21 +58,21 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 			EoDbPrimitive::SetLayerColorIndex(ColorIndex());
 			EoDbPrimitive::SetLayerLinetypeIndex(LinetypeIndex());
 
-			COLORREF* pCurColTbl = pColTbl;
+			auto pCurColTbl {pColTbl};
 
-			const bool LayerIsDetectable = IsCurrent() || IsActive();
+			const bool LayerIsDetectable {IsCurrent() || IsActive()};
 
 			pColTbl = LayerIsDetectable ? ColorPalette : GreyPalette;
 
-            auto Position = GetHeadPosition();
-			while (Position != 0) {
-				EoDbGroup* Group = GetNext(Position);
+			auto Position {GetHeadPosition()};
+			while (Position != nullptr) {
+				auto Group {GetNext(Position)};
 
 				if (Group->IsInView(view)) {
 					if (LayerIsDetectable) {
 						Document->AddGroupToAllViews(Group);
 					}
-					if (identifyTrap && Document->FindTrappedGroup(Group) != 0) {
+					if (identifyTrap && Document->FindTrappedGroup(Group) != nullptr) {
 						EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 						Group->Display(view, deviceContext);
 						EoDbPrimitive::SetHighlightColorIndex(0);

@@ -187,14 +187,14 @@ OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d & poi
 	return (point.Convert3d());
 }
 
-bool EoDbSpline::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
+bool EoDbSpline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	polyline::BeginLineStrip();
 	EoGeNurbCurve3d::GeneratePoints(m_Spline);
 
-	return (polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj));
+	return (polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj));
 }
 
-bool EoDbSpline::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
+bool EoDbSpline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray ControlPoints;
 	for (unsigned short w = 0; w < m_Spline.numControlPoints(); w++) {
 		ControlPoints.append(m_Spline.controlPointAt(w));
@@ -202,11 +202,11 @@ bool EoDbSpline::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, ControlPoints);
 }
 
-void EoDbSpline::Set(int degree, const OdGeKnotVector & knots, const OdGePoint3dArray & controlPoints, const OdGeDoubleArray & weights, bool isPeriodic) {
+void EoDbSpline::Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic) {
 	m_Spline.set(degree, knots, controlPoints, weights, isPeriodic);
 }
 
-void EoDbSpline::TransformBy(const EoGeMatrix3d & transformMatrix) {
+void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Spline.transformBy(transformMatrix);
 }
 

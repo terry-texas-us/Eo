@@ -690,33 +690,33 @@ OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d
 	return (sm_ControlPointIndex == SIZE_T_MAX) ? OdGePoint3d::kOrigin : ptCtrl[sm_ControlPointIndex];
 }
 
-bool EoDbEllipse::SelectBy(const EoGeLineSeg3d & line, AeSysView * view, OdGePoint3dArray & intersections) {
+bool EoDbEllipse::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
-	return polyline::SelectBy(line, view, intersections);
+	return polyline::SelectUsingLineSeg(lineSeg, view, intersections);
 }
 
-bool EoDbEllipse::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
+bool EoDbEllipse::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
-	return (polyline::SelectBy(point, view, sm_RelationshipOfPoint, ptProj));
+	return (polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj));
 }
 
-bool EoDbEllipse::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
+bool EoDbEllipse::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
-	return polyline::SelectBy(lowerLeftCorner, upperRightCorner, view);
+	return polyline::SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view);
 }
 
-void EoDbEllipse::SetCenter(const OdGePoint3d & center) noexcept {
+void EoDbEllipse::SetCenter(const OdGePoint3d& center) noexcept {
 	m_Center = center;
 }
 
-void EoDbEllipse::SetMajorAxis(const OdGeVector3d & majorAxis) noexcept {
+void EoDbEllipse::SetMajorAxis(const OdGeVector3d& majorAxis) noexcept {
 	m_MajorAxis = majorAxis;
 }
 
-void EoDbEllipse::SetMinorAxis(const OdGeVector3d & minorAxis) noexcept {
+void EoDbEllipse::SetMinorAxis(const OdGeVector3d& minorAxis) noexcept {
 	m_MinorAxis = minorAxis;
 }
 

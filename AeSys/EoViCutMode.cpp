@@ -20,17 +20,17 @@ void AeSysView::OnCutModeTorch() {
 	ModelViewTransformPoint(ptView);
 
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
+	while (GroupPosition != nullptr) {
+		auto Group {GetNextVisibleGroup(GroupPosition)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			auto Primitive {Group->GetNext(PrimitivePosition)};
 
-			if (Primitive->SelectBy(ptView, this, ptCut)) { // Pick point is within tolerance of primative
-				EoDbGroup* NewGroup = new EoDbGroup;
+			if (Primitive->SelectUsingPoint(ptView, this, ptCut)) { // Pick point is within tolerance of primative
+				auto NewGroup {new EoDbGroup};
 
-				EoGeMatrix3d TransformMatrix = ModelViewMatrix();
+				auto TransformMatrix {ModelViewMatrix()};
 				ptCut.transformBy(TransformMatrix.invert());
 				Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, Primitive);
 				Primitive->CutAt(ptCut, NewGroup);
@@ -67,22 +67,21 @@ void AeSysView::OnCutModeSlice() {
 		auto TransformMatrix {ModelViewMatrix()};
 		TransformMatrix.invert();
 
-		POSITION GroupPosition = GetFirstVisibleGroupPosition();
-		while (GroupPosition != 0) {
-			EoDbGroup* Group = GetNextVisibleGroup(GroupPosition);
+		auto GroupPosition {GetFirstVisibleGroupPosition()};
+		while (GroupPosition != nullptr) {
+			auto Group {GetNextVisibleGroup(GroupPosition)};
 
-			if (Document->FindTrappedGroup(Group) != 0)
-				continue;
+			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
 
-			POSITION PrimitivePosition = Group->GetHeadPosition();
-			while (PrimitivePosition != 0) {
-				EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
+			auto PrimitivePosition {Group->GetHeadPosition()};
+			while (PrimitivePosition != nullptr) {
+				auto Primitive {Group->GetNext(PrimitivePosition)};
 
-				EoGeLineSeg3d ln;
-				ln = EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d());
-				Primitive->SelectBy(ln, this, Intersections);
+				EoGeLineSeg3d LineSeg;
+				LineSeg = EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d());
+				Primitive->SelectUsingLineSeg(LineSeg, this, Intersections);
 				for (unsigned w = 0; w < Intersections.size(); w++) {
-					EoDbGroup* NewGroup = new EoDbGroup;
+					auto NewGroup {new EoDbGroup};
 
 					Intersections[w].transformBy(TransformMatrix);
 
@@ -101,6 +100,7 @@ void AeSysView::OnCutModeSlice() {
 		ModeLineUnhighlightOp(wPrvKeyDwn);
 	}
 }
+
 void AeSysView::OnCutModeField() {
 	CDC* DeviceContext = GetDC();
 	const OdGePoint3d ptCur = GetCursorPosition();
@@ -119,10 +119,10 @@ void AeSysView::OnCutModeField() {
 		const OdGePoint3d ptLL = rLL;
 		const OdGePoint3d ptUR = rUR;
 
-		EoDbGroup* Group;
-		EoDbPrimitive* Primitive;
+		EoDbGroup* Group {nullptr};
+		EoDbPrimitive* Primitive {nullptr};
 
-		int iInts;
+		int iInts {0};
 		OdGePoint3d	Intersections[10];
 
 		auto Document {GetDocument()};
@@ -130,22 +130,22 @@ void AeSysView::OnCutModeField() {
 		const short ColorIndex = pstate.ColorIndex();
 		const short LinetypeIndex = pstate.LinetypeIndex();
 
-		EoDbGroupList* GroupsOut = new EoDbGroupList;
-		EoDbGroupList* GroupsIn = new EoDbGroupList;
+		auto GroupsOut {new EoDbGroupList};
+		auto GroupsIn {new EoDbGroupList};
 
-		POSITION posSeg, posSegPrv;
-		for (posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != 0;) {
+		POSITION posSeg;
+		POSITION posSegPrv;
+		for (posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
 			Group = GetNextVisibleGroup(posSeg);
 
-			if (Document->FindTrappedGroup(Group) != 0)
-				continue;
+			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
 
-			POSITION PrimitivePosition, posPrimPrv;
-			for (PrimitivePosition = Group->GetHeadPosition(); (posPrimPrv = PrimitivePosition) != 0;) {
+			POSITION PrimitivePosition;
+			POSITION posPrimPrv;
+			for (PrimitivePosition = Group->GetHeadPosition(); (posPrimPrv = PrimitivePosition) != nullptr;) {
 				Primitive = Group->GetNext(PrimitivePosition);
 
-				if ((iInts = Primitive->IsWithinArea(ptLL, ptUR, Intersections)) == 0)
-					continue;
+				if ((iInts = Primitive->IsWithinArea(ptLL, ptUR, Intersections)) == 0) { continue; }
 
 				Group->RemoveAt(posPrimPrv);
 
@@ -202,40 +202,41 @@ void AeSysView::OnCutModeClip() {
 
 		auto Document {GetDocument()};
 
-		EoGeMatrix3d TransformMatrix = ModelViewMatrix();
+		auto TransformMatrix {ModelViewMatrix()};
 		TransformMatrix.invert();
 
 		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.0), EoGePoint4d(pt2, 1.0)};
 
 		ModelViewTransformPoints(2, ptView);
 
-		EoDbGroupList* GroupsOut = new EoDbGroupList;
-		EoDbGroupList* GroupsIn = new EoDbGroupList;
+		auto GroupsOut {new EoDbGroupList};
+		auto GroupsIn {new EoDbGroupList};
 
-		POSITION posSeg;
-		POSITION posSegPrv;
+		POSITION posSeg {nullptr};
+		POSITION posSegPrv {nullptr};
 
-		for (posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != 0;) {
-			EoDbGroup* Group = GetNextVisibleGroup(posSeg);
+		for (posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
+			auto Group {GetNextVisibleGroup(posSeg)};
 
-			if (Document->FindTrappedGroup(Group) != 0)
-				continue;
+			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
 
-			POSITION posPrim1;
-			POSITION posPrim2;
+			POSITION posPrim1 {nullptr};
+			POSITION posPrim2 {nullptr};
 
-			for (posPrim1 = Group->GetHeadPosition(); (posPrim2 = posPrim1) != 0;) {
-				EoDbPrimitive* Primitive = Group->GetNext(posPrim1);
+			for (posPrim1 = Group->GetHeadPosition(); (posPrim2 = posPrim1) != nullptr;) {
+				auto Primitive {Group->GetNext(posPrim1)};
 
-				if (!Primitive->SelectBy(ptView[0], this, ptCut[0]))
-					continue;
+				if (!Primitive->SelectUsingPoint(ptView[0], this, ptCut[0])) { continue; }
+
 				dRel[0] = EoDbPrimitive::RelationshipOfPoint();
-				if (!Primitive->SelectBy(ptView[1], this, ptCut[1]))
-					continue;
+
+				if (!Primitive->SelectUsingPoint(ptView[1], this, ptCut[1])) { continue; }
+
 				dRel[1] = EoDbPrimitive::RelationshipOfPoint();
 				// Both pick points are within tolerance of primative
 				ptCut[0].transformBy(TransformMatrix);
 				ptCut[1].transformBy(TransformMatrix);
+
 				if (dRel[0] > dRel[1]) {
 					const OdGePoint3d ptTmp = ptCut[0];
 					ptCut[0] = ptCut[1]; ptCut[1] = ptTmp;
@@ -269,6 +270,7 @@ void AeSysView::OnCutModeClip() {
 		ModeLineUnhighlightOp(wPrvKeyDwn);
 	}
 }
+
 void AeSysView::OnCutModeDivide() noexcept {
 }
 void AeSysView::OnCutModeReturn() {

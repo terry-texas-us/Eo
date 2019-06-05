@@ -10,8 +10,8 @@ EoDlgSetActiveLayout::EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent)
 	: CDialog(EoDlgSetActiveLayout::IDD, parent)
 	, m_pDb(database)
 	, m_nOldActiveLayout(0)
-	, m_bCreateNewLayout(false)
-	, m_nNewActiveLayout(0) {
+	, m_nNewActiveLayout(0)
+	, m_bCreateNewLayout(false) {
 }
 
 void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* pDX) {

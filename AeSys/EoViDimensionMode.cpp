@@ -452,25 +452,24 @@ void AeSysView::OnDimensionModeConvert() {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 	}
-
-	EoDbGroup* Group;
-	EoDbPrimitive* Primitive;
+	EoDbGroup* Group {nullptr};
+	EoDbPrimitive* Primitive {nullptr};
 	OdGePoint3d ptProj;
 
-	POSITION posPrimCur;
+	POSITION posPrimCur {nullptr};
 
 	EoGePoint4d ptView(CurrentPnt, 1.0);
 	ModelViewTransformPoint(ptView);
 
-	POSITION GroupPosition = GetFirstVisibleGroupPosition();
-	while (GroupPosition != 0) {
+	auto GroupPosition {GetFirstVisibleGroupPosition()};
+	while (GroupPosition != nullptr) {
 		Group = GetNextVisibleGroup(GroupPosition);
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
 			posPrimCur = PrimitivePosition;
 			Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive->SelectBy(ptView, this, ptProj)) {
+			if (Primitive->SelectUsingPoint(ptView, this, ptProj)) {
 				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 					auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 					auto DimensionPrimitive {new EoDbDimension()};

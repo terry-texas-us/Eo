@@ -80,9 +80,9 @@ static OdString StringLineJoinStyle[] = {
 
 
 struct DIBCOLOR {
-	unsigned char b;
-	unsigned char g;
 	unsigned char r;
+	unsigned char g;
+	unsigned char b;
 	unsigned char reserved;
 	DIBCOLOR(unsigned char ar, unsigned char ag, unsigned char ab)  noexcept
 		: r(ar)

@@ -284,11 +284,12 @@ void AeSysView::OnLpdModeUpDown() {
 void AeSysView::OnLpdModeSize() {
 	const auto CurrentPnt {GetCursorPosition()};
 
-	double Angle = 0.0;
+	double Angle {0.0};
+
 	if (m_EndCapPoint != nullptr) {
 
 		if (m_EndCapPoint->ColorIndex() == 15) {
-			POSITION Position = m_EndCapGroup->Find(m_EndCapPoint);
+			auto Position {m_EndCapGroup->Find(m_EndCapPoint)};
 			m_EndCapGroup->GetNext(Position);
 			auto pLine {dynamic_cast<EoDbLine*>(m_EndCapGroup->GetAt(Position))};
 			auto Line = pLine->LineSeg();
@@ -849,23 +850,22 @@ double AeSysView::LengthOfTransition(EJust justification, double slope, Section 
 bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, double angularTolerance, EoGeLineSeg3d & leftLine, EoGeLineSeg3d & rightLine) {
 	EoGeLineSeg3d Line;
 
-	EoDbLine* LeftLinePrimitive = 0;
-	EoDbLine* RightLinePrimitive = 0;
+	EoDbLine* LeftLinePrimitive = nullptr;
+	EoDbLine* RightLinePrimitive = nullptr;
 	int DirectedRelationship = 0;
 
 	auto TestLine {testLinePrimitive->LineSeg()};
 
 	const double TestLineAngle = fmod(TestLine.AngleFromXAxis_xy(), OdaPI);
 
-	POSITION GroupPosition = GetLastGroupPosition();
-	while (GroupPosition != 0) {
-		EoDbGroup* Group = GetPreviousGroup(GroupPosition);
+	auto GroupPosition {GetLastGroupPosition()};
+	while (GroupPosition != nullptr) {
+		auto Group {GetPreviousGroup(GroupPosition)};
 
-		POSITION PrimitivePosition = Group->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			EoDbPrimitive* Primitive = Group->GetNext(PrimitivePosition);
-			if (Primitive == testLinePrimitive || !Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)))
-				continue;
+		auto PrimitivePosition {Group->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			auto Primitive {Group->GetNext(PrimitivePosition)};
+			if (Primitive == testLinePrimitive || !Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) { continue; }
 
 			auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 			Line = LinePrimitive->LineSeg();
@@ -877,8 +877,9 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, doubl
 				continue;
 			}
 			const double LineAngle = fmod(Line.AngleFromXAxis_xy(), OdaPI);
+			
 			if (fabs(fabs(TestLineAngle - LineAngle) - OdaPI2) <= angularTolerance) {
-				if (LeftLinePrimitive == 0) { // No qualifiers yet
+				if (LeftLinePrimitive == nullptr) { // No qualifiers yet
 					DirectedRelationship = TestLine.DirectedRelationshipOf(Line.startPoint());
 					LeftLinePrimitive = LinePrimitive;
 					leftLine = Line;

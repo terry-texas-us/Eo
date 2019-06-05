@@ -227,11 +227,12 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 		}
 	}
 }
+
 bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert, OdGePoint3d& ptProj, double& relationship) const {
-	if (point.x < EoMin(startPoint().x, endPoint().x) - apert) return false;
-	if (point.x > EoMax(startPoint().x, endPoint().x) + apert) return false;
-	if (point.y < EoMin(startPoint().y, endPoint().y) - apert) return false;
-	if (point.y > EoMax(startPoint().y, endPoint().y) + apert) return false;
+	if (point.x < EoMin(startPoint().x, endPoint().x) - apert) { return false; }
+	if (point.x > EoMax(startPoint().x, endPoint().x) + apert) { return false; }
+	if (point.y < EoMin(startPoint().y, endPoint().y) - apert) { return false; }
+	if (point.y > EoMax(startPoint().y, endPoint().y) + apert) { return false; }
 
 	double dPBegX = startPoint().x - point.x;
 	double dPBegY = startPoint().y - point.y;
@@ -252,14 +253,14 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert
 		const double dy = dPBegY + relationship * dBegEndY;
 		DistanceSquared = dx * dx + dy * dy;
 	}
-	if (DistanceSquared > apert * apert)
-		return false;
+	if (DistanceSquared > apert * apert) { return false; }
 
 	ptProj.x = startPoint().x + (relationship * dBegEndX);
 	ptProj.y = startPoint().y + (relationship * dBegEndY);
 
 	return true;
 }
+
 bool EoGeLineSeg3d::ParametricRelationshipOf(const OdGePoint3d& point, double& relationship) const {
 	OdGeVector3d Vector(endPoint() - startPoint());
 

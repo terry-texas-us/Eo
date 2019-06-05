@@ -60,8 +60,8 @@ public: // Methods - absolute virtuals
 	void ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	/// <summary>Evaluates whether a point lies within the bounding region of text.</summary>
-	bool SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
-	bool SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
+	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
+	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 	void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) override;
 	bool Write(EoDbFile& file) const override;
@@ -75,7 +75,7 @@ public: // Methods
 	double Rotation() const;
 	const CString& Text() noexcept;
 	OdGePoint3d Position() const noexcept;
-	void SetFontDefinition(const EoDbFontDefinition& fontDefinition);
+	void SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept;
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);
 

@@ -322,7 +322,7 @@ OdGePoint3d EoDbDimension::SelectAtControlPoint(AeSysView* view, const EoGePoint
 	return ControlPoint;
 }
 
-bool EoDbDimension::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d &ptProj) const {
+bool EoDbDimension::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d &ptProj) const {
 	sm_wFlags &= ~0x0003;
 
 	EoGePoint4d pt[4];
@@ -356,20 +356,20 @@ bool EoDbDimension::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoin
 	return true;
 }
 
-bool EoDbDimension::SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbDimension::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_Line.startPoint());
 	polyline::SetVertex(m_Line.endPoint());
 
-	return polyline::SelectBy(line, view, intersections);
+	return polyline::SelectUsingLineSeg(lineSeg, view, intersections);
 }
 
-bool EoDbDimension::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
+bool EoDbDimension::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_Line.startPoint());
 	polyline::SetVertex(m_Line.endPoint());
 
-	if (!polyline::SelectBy(lowerLeftCorner, upperRightCorner, view)) {
+	if (!polyline::SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)) {
 		OdGePoint3dArray Points;
 		GetBoundingBox(Points, 0.0);
 		return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);

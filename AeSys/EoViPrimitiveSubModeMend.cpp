@@ -21,7 +21,7 @@ void AeSysView::OnModePrimitiveMend() {
 		EoDbHatch::SetEdgeToEvaluate(EoDbHatch::Edge());
 		EoDbPolyline::SetEdgeToEvaluate(EoDbPolyline::Edge());
 
-		if (Primitive->SelectBy(ptView, this, ptDet)) { // Cursor is close enough to engaged primitive to use it first
+		if (Primitive->SelectUsingPoint(ptView, this, ptDet)) { // Cursor is close enough to engaged primitive to use it first
 			m_PrimitiveToMend = Primitive;
 		}
 	}

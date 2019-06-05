@@ -199,7 +199,7 @@ OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 	return (sm_ControlPointIndex == 0) ? m_Position : OdGePoint3d::kOrigin;
 }
 
-bool EoDbPoint::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	EoGePoint4d pt(m_Position, 1.0);
 
 	view->ModelViewTransformPoint(pt);
@@ -209,7 +209,7 @@ bool EoDbPoint::SelectBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&
 	return (point.DistanceToPointXY(pt) <= view->SelectApertureSize()) ? true : false;
 }
 
-bool EoDbPoint::SelectBy(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
+bool EoDbPoint::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 

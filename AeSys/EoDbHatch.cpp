@@ -37,11 +37,11 @@ struct EoEdge {
 EoDbHatch::EoDbHatch() noexcept
 	: m_InteriorStyle(EoDbHatch::kHatch)
 	, m_InteriorStyleIndex(1)
-	, m_Vertices(0)
-	, m_NumberOfLoops(0)
 	, m_HatchOrigin(OdGePoint3d::kOrigin)
 	, m_HatchXAxis(OdGeVector3d::kXAxis)
-	, m_HatchYAxis(OdGeVector3d::kYAxis) {
+	, m_HatchYAxis(OdGeVector3d::kYAxis)
+	, m_NumberOfLoops(0)
+	, m_Vertices(0) {
 }
 
 EoDbHatch::EoDbHatch(const EoDbHatch& other)
@@ -266,7 +266,8 @@ OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 	}
 	return (sm_ControlPointIndex == SIZE_T_MAX) ? OdGePoint3d::kOrigin : m_Vertices[sm_ControlPointIndex];
 }
-bool EoDbHatch::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
+
+bool EoDbHatch::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray Points;
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		Points.append(m_Vertices[VertexIndex]);
@@ -274,7 +275,7 @@ bool EoDbHatch::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d 
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
-bool EoDbHatch::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
+bool EoDbHatch::SelectUsingPoint(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
 	const auto NumberOfVertices {m_Vertices.size()};
 	if (sm_EdgeToEvaluate > 0 && sm_EdgeToEvaluate <= NumberOfVertices) { // Evaluate specified edge of polygon
 		EoGePoint4d ptBeg(m_Vertices[sm_EdgeToEvaluate - 1], 1.0);

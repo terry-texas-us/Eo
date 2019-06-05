@@ -1217,7 +1217,7 @@ void AeSysDoc::AddTextBlock(wchar_t* text) {
 	}
 }
 
-POSITION AeSysDoc::DeletedGroupsAddHead(EoDbGroup * group) {
+POSITION AeSysDoc::DeletedGroupsAddHead(EoDbGroup* group) {
 	m_DatabasePtr->disableUndoRecording(false);
 	group->Erase();
 	m_DatabasePtr->disableUndoRecording(true);
@@ -1225,7 +1225,7 @@ POSITION AeSysDoc::DeletedGroupsAddHead(EoDbGroup * group) {
 	return (m_DeletedGroupList.AddHead(group));
 }
 
-POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup * group) {
+POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup* group) {
 	m_DatabasePtr->disableUndoRecording(false);
 	group->Erase();
 	m_DatabasePtr->disableUndoRecording(true);
@@ -1276,7 +1276,7 @@ int AeSysDoc::LinetypeIndexReferenceCount(short linetypeIndex) {
 	CString Key;
 	EoDbBlock* Block;
 
-	POSITION Position {m_BlockTable.GetStartPosition()};
+	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 		Count += Block->GetLinetypeIndexRefCount(linetypeIndex);
@@ -1524,7 +1524,7 @@ int AeSysDoc::RemoveEmptyNotesAndDelete() {
 	CString Key;
 	EoDbBlock* Block;
 
-	POSITION Position = m_BlockTable.GetStartPosition();
+	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 	}
@@ -1544,7 +1544,7 @@ int AeSysDoc::RemoveEmptyGroups() {
 	CString Key;
 	EoDbBlock* Block;
 
-	POSITION Position = m_BlockTable.GetStartPosition();
+	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 	}
@@ -1565,7 +1565,7 @@ void AeSysDoc::AddWorkLayerGroups(EoDbGroupList * groups) {
 	SetModifiedFlag(TRUE);
 }
 
-POSITION AeSysDoc::FindWorkLayerGroup(EoDbGroup * group) const {
+POSITION AeSysDoc::FindWorkLayerGroup(EoDbGroup* group) const {
 	return (m_WorkLayer->Find(group));
 }
 
@@ -1574,7 +1574,8 @@ POSITION AeSysDoc::GetFirstWorkLayerGroupPosition() const {
 }
 
 EoDbGroup* AeSysDoc::GetLastWorkLayerGroup() const {
-	POSITION Position = m_WorkLayer->GetTailPosition();
+	auto Position {m_WorkLayer->GetTailPosition()};
+
 	return ((EoDbGroup*) (Position != nullptr ? m_WorkLayer->GetPrev(Position) : nullptr));
 }
 
@@ -2906,7 +2907,7 @@ void AeSysDoc::DisplayUniquePoints() {
 	if (m_UniquePoints.IsEmpty()) { return; }
 
 	EoDbGroup Group;
-	POSITION UniquePointPosition {m_UniquePoints.GetHeadPosition()};
+	auto UniquePointPosition {m_UniquePoints.GetHeadPosition()};
 	
 	while (UniquePointPosition != nullptr) {
 		const auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
@@ -2919,13 +2920,14 @@ void AeSysDoc::DisplayUniquePoints() {
 	Group.DeletePrimitivesAndRemoveAll();
 }
 
-int AeSysDoc::RemoveUniquePoint(const OdGePoint3d & point) {
-	int References = 0;
+int AeSysDoc::RemoveUniquePoint(const OdGePoint3d& point) {
+	int References {0};
 
-	POSITION UniquePointPosition = m_UniquePoints.GetHeadPosition();
+	auto UniquePointPosition {m_UniquePoints.GetHeadPosition()};
 	while (UniquePointPosition != nullptr) {
-		POSITION Position = UniquePointPosition;
-		EoGeUniquePoint* UniquePoint = GetNextUniquePoint(UniquePointPosition);
+		auto Position {UniquePointPosition};
+		auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
+		
 		if (point == UniquePoint->m_Point) {
 			References = --(UniquePoint->m_References);
 

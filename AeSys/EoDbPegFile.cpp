@@ -338,41 +338,42 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 		CFile::Seek(CurrentFilePosition, CFile::begin);
 	}
 }
+
 void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 	WriteUInt16(kBlocksSection);
 
-	const unsigned short NumberOfBlocks = document->BlockTableSize();
+	const auto NumberOfBlocks {document->BlockTableSize()};
 	WriteUInt16(NumberOfBlocks);
 
 	CString Name;
 	EoDbBlock* Block;
 
-	POSITION Position = document->GetFirstBlockPosition();
-	while (Position != 0) {
+	auto Position {document->GetFirstBlockPosition()};
+	while (Position != nullptr) {
 		document->GetNextBlock(Position, Name, Block);
 
 		const auto SavedFilePosition {CFile::GetPosition()};
 		WriteUInt16(0);
-		unsigned short NumberOfPrimitives = 0;
+		unsigned short NumberOfPrimitives {0};
 
 		WriteString(Name);
 		WriteUInt16(Block->GetBlkTypFlgs());
 		WritePoint3d(Block->BasePoint());
 
-		POSITION PrimitivePosition = Block->GetHeadPosition();
-		while (PrimitivePosition != 0) {
-			const EoDbPrimitive* Primitive = Block->GetNext(PrimitivePosition);
-			if (Primitive->Write(*this))
-				NumberOfPrimitives++;
+		auto PrimitivePosition {Block->GetHeadPosition()};
+		while (PrimitivePosition != nullptr) {
+			const auto Primitive {Block->GetNext(PrimitivePosition)};
+			
+			if (Primitive->Write(*this)) { NumberOfPrimitives++; }
 		}
 		const auto CurrentFilePosition {CFile::GetPosition()};
 		CFile::Seek(SavedFilePosition, CFile::begin);
 		WriteUInt16(NumberOfPrimitives);
 		CFile::Seek(CurrentFilePosition, CFile::begin);
 	}
-
 	WriteUInt16(kEndOfSection);
 }
+
 void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 	WriteUInt16(kGroupsSection);
 
@@ -385,9 +386,9 @@ void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 		if (Layer->IsInternal()) {
 			WriteUInt16(unsigned short(Layer->GetCount()));
 
-			POSITION Position = Layer->GetHeadPosition();
-			while (Position != 0) {
-				EoDbGroup* Group = Layer->GetNext(Position);
+			auto Position {Layer->GetHeadPosition()};
+			while (Position != nullptr) {
+				auto Group {Layer->GetNext(Position)};
 				Group->Write(*this);
 			}
 		} else {

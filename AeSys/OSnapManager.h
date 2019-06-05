@@ -68,8 +68,8 @@ public:
 		m_SnapContext.mValid = false;
 	}
 
-	int addDrawables(OdGsView* view) override { return 0; }
-	void removeDrawables(OdGsView* view) override {}
+	int addDrawables(OdGsView* view) noexcept override { return 0; }
+	void removeDrawables(OdGsView* view) noexcept override {}
 
 private:
 	OdDbObjectIdArray m_ObjectIds;

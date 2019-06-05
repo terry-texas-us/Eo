@@ -176,7 +176,8 @@ void AeSysView::OnDraw2ModeEscape() {
 
 bool AeSysView::CleanPreviousLines() {
 	const bool ParallelLines = m_PreviousReferenceLine.isParallelTo(m_CurrentReferenceLine);
-	if (ParallelLines) return false;
+
+	if (ParallelLines) { return false; }
 
 	OdGePoint3d ptInt;
 	EoGeLineSeg3d PreviousLeftLine;
@@ -194,16 +195,17 @@ bool AeSysView::CleanPreviousLines() {
 
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_AssemblyGroup);
 
-	EoDbPrimitive* Primitive = dynamic_cast<EoDbPrimitive*>(m_AssemblyGroup->RemoveTail());
+	auto Primitive {dynamic_cast<EoDbPrimitive*>(m_AssemblyGroup->RemoveTail())};
 	Primitive->EntityObjectId().safeOpenObject(OdDb::kForWrite)->erase();
 	delete Primitive;
 
-	POSITION Position = m_AssemblyGroup->GetTailPosition();
+	auto Position {m_AssemblyGroup->GetTailPosition()};
 	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousRightLine.endPoint());
 	dynamic_cast<EoDbLine*>(m_AssemblyGroup->GetPrev(Position))->SetEndPoint(PreviousLeftLine.endPoint());
 
 	return true;
 }
+
 bool AeSysView::StartAssemblyFromLine() {
 	EoGeLineSeg3d Line = m_BeginSectionLine->LineSeg();
 

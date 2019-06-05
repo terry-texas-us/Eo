@@ -288,9 +288,9 @@ void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 	m_PrimBuf[0] = 0;
 	*(( unsigned short*) & m_PrimBuf[1]) = unsigned short(group->GetCount());
 
-	POSITION Position = group->GetHeadPosition();
-	while (Position != 0) {
-		const EoDbPrimitive* Primitive = group->GetNext(Position);
+	auto Position {group->GetHeadPosition()};
+	while (Position != nullptr) {
+		const auto Primitive {group->GetNext(Position)};
 		Primitive->Write(file, m_PrimBuf);
 	}
 }
@@ -306,9 +306,9 @@ void EoDbJobFile::WriteLayer(CFile& file, EoDbLayer* layer) {
 	layer->BreakSegRefs();
 	layer->BreakPolylines();
 
-	POSITION Position = layer->GetHeadPosition();
-	while (Position != 0) {
-		EoDbGroup* Group = layer->GetNext(Position);
+	auto Position {layer->GetHeadPosition()};
+	while (Position != nullptr) {
+		auto Group {layer->GetNext(Position)};
 		WriteGroup(file, Group);
 	}
 }

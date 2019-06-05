@@ -145,7 +145,7 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 		points[PointIndex].transformBy(PlaneToWorldTransform);
 	}
 }
-bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& intersections) {
+bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
 	EoGePoint4d StartPoint(pts_[0]);
 	EoGePoint4d EndPoint;
 
@@ -156,11 +156,13 @@ bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& inte
 		view->ModelViewTransformPoint(EndPoint);
 
 		OdGePoint3d Intersection;
-		if (line.IntersectWith_xy(EoGeLineSeg3d(StartPoint.Convert3d(), EndPoint.Convert3d()), Intersection)) {
+		if (lineSeg.IntersectWith_xy(EoGeLineSeg3d(StartPoint.Convert3d(), EndPoint.Convert3d()), Intersection)) {
 			double Relationship;
-			line.ParametricRelationshipOf(Intersection, Relationship);
+			lineSeg.ParametricRelationshipOf(Intersection, Relationship);
+
 			if (Relationship >= - DBL_EPSILON && Relationship <= 1. + DBL_EPSILON) {
 				EoGeLineSeg3d(StartPoint.Convert3d(), EndPoint.Convert3d()).ParametricRelationshipOf(Intersection, Relationship);
+
 				if (Relationship >= - DBL_EPSILON && Relationship <= 1. + DBL_EPSILON) {
 					Intersection.z = StartPoint.z + Relationship * (EndPoint.z - StartPoint.z);
 					intersections.append(Intersection);
@@ -171,26 +173,29 @@ bool SelectBy(const EoGeLineSeg3d& line, AeSysView* view, OdGePoint3dArray& inte
 	}
 	return (!intersections.empty());
 }
-bool SelectBy(const EoGePoint4d& point, AeSysView* view, double& dRel, OdGePoint3d& ptProj) {
-	bool Result = false;
 
-	EoGePoint4d ptBeg(pts_[0]);
-	view->ModelViewTransformPoint(ptBeg);
+bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dRel, OdGePoint3d& ptProj) {
+	bool Result {false};
 
-	for (int i = 1; i < (int) pts_.GetSize(); i++) {
-		EoGePoint4d ptEnd = EoGePoint4d(pts_[i]);
-		view->ModelViewTransformPoint(ptEnd);
-		EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
+	EoGePoint4d StartPoint(pts_[0]);
+	view->ModelViewTransformPoint(StartPoint);
+
+	for (int i = 1; i < pts_.GetSize(); i++) {
+		auto EndPoint {EoGePoint4d(pts_[i])};
+		view->ModelViewTransformPoint(EndPoint);
+		EoGeLineSeg3d LineSegment(StartPoint.Convert3d(), EndPoint.Convert3d());
+		
 		if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), ptProj, dRel)) {
-			ptProj.z = ptBeg.z + dRel * (ptEnd.z - ptBeg.z);
+			ptProj.z = StartPoint.z + dRel * (EndPoint.z - StartPoint.z);
 			Result = true;
 			break;
 		}
-		ptBeg = ptEnd;
+		StartPoint = EndPoint;
 	}
 	return Result;
 }
-bool SelectBy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint, AeSysView* view) {
+
+bool SelectUsingRectangle(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint, AeSysView* view) {
 	EoGePoint4d StartPoint(pts_[0]);
 	view->ModelViewTransformPoint(StartPoint);
 

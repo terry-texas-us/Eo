@@ -217,16 +217,16 @@ OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView*, const EoGePoint4d & point
 	return (point.Convert3d());
 }
 
-bool EoDbText::SelectBy(const OdGePoint3d & lowerLeftCorner, const OdGePoint3d & upperRightCorner, AeSysView * view) const {
+bool EoDbText::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray Points;
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, Points);
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
-bool EoDbText::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
-	if (m_strText.GetLength() == 0) {
-		return false;
-	}
+bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+	
+	if (m_strText.GetLength() == 0) { return false; }
+	
 	OdGePoint3dArray BoundingBox;
 
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
@@ -236,7 +236,7 @@ bool EoDbText::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d
 	view->ModelViewTransformPoints(4, pt0);
 
 	for (unsigned n = 0; n < 4; n++) {
-		
+
 		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
 	}
 	ptProj = point.Convert3d();
@@ -244,7 +244,7 @@ bool EoDbText::SelectBy(const EoGePoint4d & point, AeSysView * view, OdGePoint3d
 	return true;
 }
 
-void EoDbText::SetFontDefinition(const EoDbFontDefinition & fontDefinition) {
+void EoDbText::SetFontDefinition(const EoDbFontDefinition & fontDefinition) noexcept {
 	m_FontDefinition = fontDefinition;
 }
 
@@ -494,10 +494,10 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			YDirection = YDirection.rotateBy(Angle, OdGeVector3d::kZAxis);
 			ReferenceSystem.SetYDirection(YDirection);
 		}
-		char* NextToken = NULL;
+		char* NextToken = nullptr;
 		char* pChr = strtok_s((char*) & primitiveBuffer[44], "\\", &NextToken);
 
-		if (pChr == 0) {
+		if (pChr == nullptr) {
 			TextString = L"EoDbJobFile.PrimText error: Missing string terminator.";
 		} else if (strlen(pChr) > 132) {
 			TextString = L"EoDbJobFile.PrimText error: Text too long.";
@@ -833,8 +833,8 @@ void DisplayText(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fon
 	DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 }
 
-void DisplayTextSegment(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, int startPosition, int numberOfCharacters, const CString & text) {
-	if (deviceContext != 0 && fontDefinition.Precision() == EoDb::kTrueType && view->ViewTrueTypeFonts()) {
+void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
+	if (deviceContext != nullptr && fontDefinition.Precision() == EoDb::kTrueType && view->ViewTrueTypeFonts()) {
 		OdGeVector3d XDirection(referenceSystem.XDirection());
 		OdGeVector3d YDirection(referenceSystem.YDirection());
 
@@ -842,20 +842,23 @@ void DisplayTextSegment(AeSysView * view, CDC * deviceContext, EoDbFontDefinitio
 		view->ModelViewTransformVector(YDirection);
 
 		OdGeVector3d PlaneNormal = XDirection.crossProduct(YDirection);
-		if (PlaneNormal.isZeroLength()) return;
+
+		if (PlaneNormal.isZeroLength()) { return; }
+
 		PlaneNormal.normalize();
+
 		if (PlaneNormal.isEqualTo(OdGeVector3d::kZAxis)) {
-			if (DisplayTextSegmentUsingTrueTypeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text)) return;
+			if (DisplayTextSegmentUsingTrueTypeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text)) { return; }
 		}
 	}
 	DisplayTextSegmentUsingStrokeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text);
 }
 
 void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, int startPosition, int numberOfCharacters, const CString & text) {
-	if (numberOfCharacters == 0) return;
+	if (numberOfCharacters == 0) { return; }
 
 	const long* plStrokeFontDef = (long*) theApp.SimplexStrokeFont();
-	if (plStrokeFontDef == 0) return;
+	if (plStrokeFontDef == 0) { return; }
 
 	const OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 
