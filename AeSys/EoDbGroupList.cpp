@@ -92,7 +92,7 @@ void EoDbGroupList::ModifyLinetypeIndex(short linetypeIndex) {
 	}
 }
 
-void EoDbGroupList::ModifyNotes(EoDbFontDefinition & fontDefinition, EoDbCharacterCellDefinition & characterCellDefinition, int iAtt) {
+void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};

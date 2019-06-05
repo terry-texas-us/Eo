@@ -46,7 +46,7 @@ public: // Methods
 	/// <summary>Determines the extent of all groups in list.</summary>
 	void GetExtents__(AeSysView* view, OdGeExtents3d& extents);
 	int GetLinetypeIndexRefCount(short linetypeIndex);
-	void ModifyNotes(EoDbFontDefinition& cd, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
+	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(short colorIndex);
 	void ModifyLinetypeIndex(short linetypeIndex);
 	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);

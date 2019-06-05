@@ -338,6 +338,12 @@ double EoDbBlockReference::RowSpacing() const noexcept {
 	return m_RowSpacing;
 }
 
+bool EoDbBlockReference::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
+	return false;
+}
+
 void EoDbBlockReference::SetName(const wchar_t* name) {
 	m_Name = name;
 }

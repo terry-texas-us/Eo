@@ -15,6 +15,7 @@ class EoDbGroupList;
 class EoDbGroup;
 
 class EoDbPrimitive : public CObject {
+	DECLARE_DYNAMIC(EoDbPrimitive)
 public:
 	static const unsigned short BUFFER_SIZE = 2048;
 
@@ -59,6 +60,8 @@ public: // Methods - absolute virtuals
 	/// <summary>Determines if a line is identified by a point.</summary>
 	virtual bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const = 0;
 	virtual OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const = 0;
+	/// <summary>Evaluates whether a line intersects line.</summary>
+	virtual bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) = 0;
 	/// <summary>Determines whether a line is partially or wholly within the area defined by the two points passed.</summary>
 	virtual bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const = 0;
 	/// <summary>Evaluates whether a point lies within tolerance specified of line.</summary>
@@ -78,8 +81,6 @@ public: // Methods - virtuals
 	virtual int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections);
 	virtual void ModifyState() noexcept;
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
-	/// <summary>Evaluates whether a line intersects line.</summary>
-	virtual bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections);
 
 public: // Methods
 	short ColorIndex() const noexcept { return m_ColorIndex; }

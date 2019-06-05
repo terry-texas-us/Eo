@@ -272,12 +272,12 @@ void EoDbGroup::ModifyLinetypeIndex(short linetypeIndex) {
 	}
 }
 
-void EoDbGroup::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
+void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
-		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
+		if (Primitive != nullptr && Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 			dynamic_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 		}
 	}

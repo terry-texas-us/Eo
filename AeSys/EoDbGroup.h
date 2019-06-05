@@ -41,7 +41,7 @@ public:
 	bool IsOn(const EoGePoint4d& point, AeSysView* view) const;
 	/// <summary>Checks if this group is persistent</summary>
 	/// <returns>true if the group will be appended to the database and saved to file, false if group is temporary ie used in dynamic previews</returns>
-	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
+	void ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(short colorIndex);
 	void ModifyLinetypeIndex(short linetypeIndex);
 	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);

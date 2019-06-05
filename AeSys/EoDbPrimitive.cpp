@@ -5,6 +5,8 @@
 
 #include "PrimState.h"
 
+IMPLEMENT_DYNAMIC(EoDbPrimitive, CObject)
+
 short	EoDbPrimitive::sm_LayerColorIndex = 1;
 short	EoDbPrimitive::sm_LayerLinetypeIndex = 1;
 short	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
@@ -40,12 +42,6 @@ int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePo
 }
 
 bool EoDbPrimitive::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
-	return false;
-}
-
-bool EoDbPrimitive::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
-	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
-	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
 }
 

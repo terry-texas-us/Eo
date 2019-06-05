@@ -388,6 +388,12 @@ void EoDbPolyline::AppendVertex(const OdGePoint2d& vertex, double bulge, double 
 	m_EndWidths.append(endWidth);
 }
 
+bool EoDbPolyline::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
+	return false;
+}
+
 void EoDbPolyline::SetConstantWidth(double constantWidth) noexcept {
 	m_ConstantWidth = constantWidth;
 }

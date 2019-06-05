@@ -668,6 +668,12 @@ OdGeVector3d EoDbHatch::RecomputeReferenceSystem() {
 	return (PlaneNormal);
 }
 
+bool EoDbHatch::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
+	return false;
+}
+
 void EoDbHatch::SetHatchOrigin(const OdGePoint3d & origin) noexcept {
 	m_HatchOrigin = origin;
 }

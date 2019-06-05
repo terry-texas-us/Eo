@@ -68,6 +68,7 @@ public: // Methods - absolute virtuals
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
@@ -87,6 +88,7 @@ public: // Methods
 	int NumberOfVertices() const;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	OdGeVector3d RecomputeReferenceSystem();
+
 	void SetHatchOrigin(const OdGePoint3d& origin) noexcept;
 	void SetHatchXAxis(const OdGeVector3d& xAxis) noexcept;
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;

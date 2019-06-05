@@ -62,6 +62,7 @@ public: // Methods - absolute virtuals
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	/// <summary>Evaluates whether a point lies within tolerance specified of block.</summary>
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;

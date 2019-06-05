@@ -57,8 +57,8 @@ public: // Methods - absolute virtuals
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	void ModifyState() noexcept override;
-	void ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
 	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	/// <summary>Evaluates whether a point lies within the bounding region of text.</summary>
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
@@ -71,10 +71,12 @@ public: // Methods
 	/// <summary>Get the bounding box of text.</summary>
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	EoDbFontDefinition FontDefinition() const;
+	void ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
 	EoGeReferenceSystem ReferenceSystem() const;
 	double Rotation() const;
 	const CString& Text() noexcept;
 	OdGePoint3d Position() const noexcept;
+
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept;
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);

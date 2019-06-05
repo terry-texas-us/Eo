@@ -202,6 +202,12 @@ bool EoDbSpline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const 
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, ControlPoints);
 }
 
+bool EoDbSpline::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
+	return false;
+}
+
 void EoDbSpline::Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic) {
 	m_Spline.set(degree, knots, controlPoints, weights, isPeriodic);
 }

@@ -166,7 +166,7 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
 }
 
-void EoDbText::ModifyNotes(const EoDbFontDefinition & fontDefinition, EoDbCharacterCellDefinition & characterCellDefinition, int iAtt) {
+void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	if (iAtt == TM_TEXT_ALL) {
 		m_ColorIndex = pstate.ColorIndex();
 		m_FontDefinition = fontDefinition;
@@ -242,6 +242,12 @@ bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGeP
 	ptProj = point.Convert3d();
 
 	return true;
+}
+
+bool EoDbText::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
+	return false;
 }
 
 void EoDbText::SetFontDefinition(const EoDbFontDefinition & fontDefinition) noexcept {

@@ -233,6 +233,12 @@ void EoDbPoint::ModifyState() noexcept {
 	m_PointDisplayMode = pstate.PointDisplayMode();
 }
 
+bool EoDbPoint::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
+	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
+	return false;
+}
+
 void EoDbPoint::SetData(unsigned short numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
 
