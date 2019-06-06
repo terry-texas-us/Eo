@@ -66,19 +66,18 @@ void setWorkingSelectionSet(OdDbCommandContext* dbCommandContext, OdDbSelectionS
 }
 
 OdDbSelectionSetPtr WorkingSelectionSet(OdDbCommandContext* dbCommandContext) {
-	OdDbSelectionSetPtr pRes;
+	OdDbSelectionSetPtr SelectionSet;
 	
 	if (dbCommandContext) {
-		pRes = dbCommandContext->arbitraryData(L"AeSys Working Selection Set");
+		SelectionSet = dbCommandContext->arbitraryData(L"AeSys Working Selection Set");
 	
-		if (pRes.isNull()) {
-			pRes = OdDbSelectionSet::createObject(dbCommandContext->database());
-			setWorkingSelectionSet(dbCommandContext, pRes);
+		if (SelectionSet.isNull()) {
+			SelectionSet = OdDbSelectionSet::createObject(dbCommandContext->database());
+			setWorkingSelectionSet(dbCommandContext, SelectionSet);
 		}
 	}
-	return pRes;
+	return SelectionSet;
 }
-
 
 class XFormDrawable : public OdGiDrawableImpl<OdGiDrawable> {
 	OdGiDrawablePtr m_Drawable;
