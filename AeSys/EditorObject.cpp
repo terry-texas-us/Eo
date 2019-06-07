@@ -125,7 +125,6 @@ void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* dbComm
 		m_p2dModel->setRenderModeOverride(OdGsView::k2DOptimized); // Setup 2dWireframe mode for all underlying geometry.
 		m_p2dModel->setVisualStyle(OdDbDictionary::cast(m_CommandContext->database()->getVisualStyleDictionaryId().openObject())->getAt(OdDb::kszVS2DWireframe));
 	}
-  // <tas="WorkingSelectionSet is only defined as function, init expecting 'typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);', I guess this is ok."/>
 	m_GripManager.Initialize(device, m_p2dModel, dbCommandContext, WorkingSelectionSet);
 
 	SetEntityCenters();
@@ -391,8 +390,8 @@ bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 
 bool OdExEditorObject::Unselect() {
 	auto Result {false};
-	auto WorkingSelectionSet {workingSSet()};
-	OdDbSelectionSetIteratorPtr SelectionSetIterator {WorkingSelectionSet->newIterator()};
+	auto SelectionSet {workingSSet()};
+	OdDbSelectionSetIteratorPtr SelectionSetIterator {SelectionSet->newIterator()};
 	
 	while (!SelectionSetIterator->done()) {
 		auto Entity {OdDbEntity::cast(SelectionSetIterator->objectId().openObject())};
@@ -403,10 +402,10 @@ bool OdExEditorObject::Unselect() {
 		}
 		SelectionSetIterator->next();
 	}
-	// Don't clear working selection set 'WorkingSelectionSet->clear()' to prevent previous selection modification
-	WorkingSelectionSet = OdDbSelectionSet::createObject(WorkingSelectionSet->database());
-	setWorkingSelectionSet(m_CommandContext, WorkingSelectionSet);
-	m_GripManager.SelectionSetChanged(WorkingSelectionSet);
+	// Don't clear working selection set 'SelectionSet->clear()' to prevent previous selection modification
+	SelectionSet = OdDbSelectionSet::createObject(SelectionSet->database());
+	setWorkingSelectionSet(m_CommandContext, SelectionSet);
+	m_GripManager.SelectionSetChanged(SelectionSet);
 	return Result;
 }
 
@@ -429,12 +428,12 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 
 	try {
 		if (dragCallback && !ShiftIsDown) {
-			auto WorkingSelectionSet {workingSSet()};
+			auto SelectionSet {workingSSet()};
 			auto SelectionSetAtPoint = OdDbSelectionSet::select(ActiveViewportId(), 1, &pt, OdDbVisualSelection::kPoint, ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
 			OdDbSelectionSetIteratorPtr SelectionSetAtPointIterator{ SelectionSetAtPoint->newIterator() };
 			while (!SelectionSetAtPointIterator->done()) {
 				
-				if (WorkingSelectionSet->isMember(SelectionSetAtPointIterator->objectId()) && !ControlIsDown) {
+				if (SelectionSet->isMember(SelectionSetAtPointIterator->objectId()) && !ControlIsDown) {
 					SelectionSetAtPointIterator.release();
 					break;
 				}

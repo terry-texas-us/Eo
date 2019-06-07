@@ -927,30 +927,30 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 	RemoveEntityGrips(id, false);
 
-	OdSelectionSetPtr SelectionSet = WorkingSelectionSet();
+	auto SelectionSet {WorkingSelectionSet()};
 
 	if (SelectionSet.isNull() || !SelectionSet->isMember(id)) { return; }
 
-	OdGiDrawablePtr Entity = OpenObject(id);
+	auto Entity {OpenObject(id)};
 
 	if (Entity.isNull()) { return; }
 
 	OdExGripDataPtrArray aExt;
 	OdDbGripDataPtrArray aPts;
 
-	OdSelectionSetIteratorPtr pObjIt = searchObjectSSetIterator(SelectionSet, id);
+	auto SelectionSetIterator = searchObjectSSetIterator(SelectionSet, id);
 
-	if (pObjIt->subentCount() > 0) {
-		for (unsigned long se = 0; se < pObjIt->subentCount(); se++) {
+	if (SelectionSetIterator->subentCount() > 0) {
+		for (unsigned long se = 0; se < SelectionSetIterator->subentCount(); se++) {
 			OdDbBaseFullSubentPath subEntPath;
-			pObjIt->getSubentity(se, subEntPath);
+			SelectionSetIterator->getSubentity(se, subEntPath);
 			aPts.clear();
+
 			if (GetGripPointsAtSubentPath(Entity, subEntPath, aPts, ActiveViewUnitSize(), m_GRIPSIZE, ActiveViewDirection(), 0) == eOk) {
 				const unsigned long prevSize = aExt.size();
 				aExt.resize(prevSize + aPts.size());
 				for (unsigned i = 0; i < aPts.size(); i++) {
-					aExt[i + prevSize] = OdExGripData::createObject(
-						subEntPath, aPts[i], aPts[i]->gripPoint(), this);
+					aExt[i + prevSize] = OdExGripData::createObject(subEntPath, aPts[i], aPts[i]->gripPoint(), this);
 				}
 			}
 		}
@@ -959,8 +959,7 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 			aExt.resize(aPts.size());
 			const unsigned long iSize = aExt.size();
 			for (unsigned i = 0; i < iSize; i++) {
-				aExt[i] = OdExGripData::createObject(
-					id, aPts[i], aPts[i]->gripPoint(), this);
+				aExt[i] = OdExGripData::createObject(id, aPts[i], aPts[i]->gripPoint(), this);
 			}
 		} else {
 			OdGePoint3dArray aOldPts;
@@ -974,7 +973,6 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 			}
 		}
 	}
-
 	const bool bModel = IsModel(Entity);
 	
 	if (!aExt.empty()) {
@@ -982,6 +980,7 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 		OdExGripDataExt dExt;
 		for (unsigned i = 0; i < iSize; i++) {
 			OdDbBaseFullSubentPath entPath;
+
 			if (aExt[i]->entPath(&entPath)) {
 				bool bFound = false;
 				for (unsigned long j = 0; j < dExt.m_GripDataSubEntity.size(); j++) {
@@ -1028,21 +1027,19 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, bool fireDone) {
 			if (!GripDataIterator->second.m_pDataArray[i]->GripData().isNull() && GripDataIterator->second.m_pDataArray[i]->GripData()->gripOpStatFunc()) {
 				(*GripDataIterator->second.m_pDataArray[i]->GripData()->gripOpStatFunc())(GripDataIterator->second.m_pDataArray[i]->GripData(), id, OdDbGripOperations::kGripEnd);
 			}
-			GripDataIterator->second.m_pDataArray[i] = 0;
+			GripDataIterator->second.m_pDataArray[i] = nullptr;
 		}
 		for (unsigned i = 0; i < GripDataIterator->second.m_GripDataSubEntity.size(); i++) {
 			
 			for (unsigned j = 0; j < GripDataIterator->second.m_GripDataSubEntity.at(i).m_pSubData.size(); j++) {
 				auto GripData {GripDataIterator->second.m_GripDataSubEntity.at(i).m_pSubData[j]};
 				HideGrip(GripData, Model);
-				GripDataIterator->second.m_GripDataSubEntity.at(i).m_pSubData[j] = 0;
+				GripDataIterator->second.m_GripDataSubEntity.at(i).m_pSubData[j] = nullptr;
 			}
 		}
 		if (fireDone) {
 			
-			if (Entity.get()) {
-				GripStatus(Entity, OdDb::kGripsDone);
-			}
+			if (Entity.get()) { GripStatus(Entity, OdDb::kGripsDone); }
 		}
 		m_GripData.erase(GripDataIterator);
 	}
