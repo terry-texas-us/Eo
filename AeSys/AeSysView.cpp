@@ -673,9 +673,9 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
 	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject(OdDb::kForWrite);
-	OdAbstractViewPEPtr pVp(pObj);
+	OdAbstractViewPEPtr AbstractView(pObj);
 
-	if (!pVp.isNull()) {
+	if (!AbstractView.isNull()) {
 		const OdGePoint3d ptTarget(View->target());
 		OdGeVector3d vecDir(View->position() - ptTarget);
 		const OdGeVector3d vecUp(View->upVector());
@@ -691,21 +691,20 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 			else
 				vecDir.normalize();
 		}
-		if (!pVp->target(pObj).isEqualTo(ptTarget) || !pVp->direction(pObj).isEqualTo(vecDir) || !pVp->upVector(pObj).isEqualTo(vecUp) || !OdEqual(pVp->fieldWidth(pObj), dFieldWidth) || !OdEqual(pVp->fieldHeight(pObj), dFieldHeight) || pVp->isPerspective(pObj) != bPersp || !OdEqual(pVp->lensLength(pObj), dLensLength)) {
+		if (!AbstractView->target(pObj).isEqualTo(ptTarget) || !AbstractView->direction(pObj).isEqualTo(vecDir) || !AbstractView->upVector(pObj).isEqualTo(vecUp) || !OdEqual(AbstractView->fieldWidth(pObj), dFieldWidth) || !OdEqual(AbstractView->fieldHeight(pObj), dFieldHeight) || AbstractView->isPerspective(pObj) != bPersp || !OdEqual(AbstractView->lensLength(pObj), dLensLength)) {
 			OdGeVector2d viewOffset;
-			if (pVp->direction(pObj).isEqualTo(vecDir) && pVp->upVector(pObj).isEqualTo(vecUp) && !bPersp && !pVp->isPerspective(pObj)) {
+
+			if (AbstractView->direction(pObj).isEqualTo(vecDir) && AbstractView->upVector(pObj).isEqualTo(vecUp) && !bPersp && !AbstractView->isPerspective(pObj)) {
 				const OdGeVector3d vecX = vecUp.crossProduct(vecDir).normal();
-				viewOffset = pVp->viewOffset(pObj);
-				const OdGePoint3d prevTarg = pVp->target(pObj) - vecX * viewOffset.x - vecUp * viewOffset.y;
+				viewOffset = AbstractView->viewOffset(pObj);
+				const OdGePoint3d prevTarg = AbstractView->target(pObj) - vecX * viewOffset.x - vecUp * viewOffset.y;
 				viewOffset.x = vecX.dotProduct(ptTarget - prevTarg);
 				viewOffset.y = vecUp.dotProduct(ptTarget - prevTarg);
 			}
-			pVp->setView(pObj, ptTarget, vecDir, vecUp, dFieldWidth, dFieldHeight, bPersp, viewOffset);
-			pVp->setLensLength(pObj, dLensLength);
+			AbstractView->setView(pObj, ptTarget, vecDir, vecUp, dFieldWidth, dFieldHeight, bPersp, viewOffset);
+			AbstractView->setLensLength(pObj, dLensLength);
 			// Auto regen
-			if (!theApp.disableAutoRegen() && requireAutoRegen(View)) {
-				const_cast<AeSysView*>(this)->OnViewerRegen();
-			}
+			if (!theApp.disableAutoRegen() && requireAutoRegen(View)) { const_cast<AeSysView*>(this)->OnViewerRegen(); }
 		}
 		OdDb::RenderMode RenderMode;
 		switch (View->mode()) {
@@ -733,14 +732,11 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 			default:
 				RenderMode = OdDb::k2DOptimized;
 		}
-		if (pVp->renderMode(pObj) != RenderMode) {
-			pVp->setRenderMode(pObj, RenderMode);
-		}
+		if (AbstractView->renderMode(pObj) != RenderMode) { AbstractView->setRenderMode(pObj, RenderMode); }
+
 		const OdDbObjectId ObjectVisualStyle(View->visualStyle());
 
-		if ((pVp->visualStyle(pObj) != ObjectVisualStyle) && !ObjectVisualStyle.isNull()) {
-			pVp->setVisualStyle(pObj, View->visualStyle());
-		}
+		if ((AbstractView->visualStyle(pObj) != ObjectVisualStyle) && !ObjectVisualStyle.isNull()) { AbstractView->setVisualStyle(pObj, View->visualStyle()); }
 	}
 }
 
@@ -1522,7 +1518,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 
 		OdGePoint3d ViewTarget;
 
-		OdAbstractViewPEPtr pAbstractViewPE;
+		OdAbstractViewPEPtr AbstractView;
 		OdRxObjectPtr pVObject;
 
 		OdGsViewPtr pOverallView = IsModelLayout ? OdGsModelLayoutHelperPtr(m_pPrinterDevice)->activeView() : OdGsPaperLayoutHelperPtr(m_pPrinterDevice)->overallView();
@@ -1532,33 +1528,33 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			OdDbViewTableRecordPtr ViewTableRecord {((OdDbViewTablePtr)(Database->getViewTableId().safeOpenObject()))->getAt(PlotViewName).safeOpenObject()};
 
 			ViewTarget = ViewTableRecord->target(); // in plotPaperUnits
-			pAbstractViewPE = OdAbstractViewPEPtr(pVObject = ViewTableRecord);
+			AbstractView = OdAbstractViewPEPtr(pVObject = ViewTableRecord);
 		} else if (IsModelLayout) {
 			OdDbViewportTablePtr ViewportTable {Database->getViewportTableId().safeOpenObject()};
 			OdDbViewportTableRecordPtr ActiveViewport {ViewportTable->getActiveViewportId().safeOpenObject()};
 
 			ViewTarget = ActiveViewport->target(); // in plotPaperUnits
-			pAbstractViewPE = OdAbstractViewPEPtr(pVObject = ActiveViewport);
+			AbstractView = OdAbstractViewPEPtr(pVObject = ActiveViewport);
 		} else {
 			const OdDbObjectId overallVpId = Layout->overallVportId();
 			OdDbViewportPtr pActiveVP = overallVpId.safeOpenObject();
 
 			ViewTarget = pActiveVP->viewTarget(); // in plotPaperUnits
-			pAbstractViewPE = OdAbstractViewPEPtr(pVObject = pActiveVP);
+			AbstractView = OdAbstractViewPEPtr(pVObject = pActiveVP);
 		}
-		const OdGePoint3d ViewportCenter = pAbstractViewPE->target(pVObject); // in plotPaperUnits
-		const bool IsPerspective = pAbstractViewPE->isPerspective(pVObject);
-		const double ViewportHeight = pAbstractViewPE->fieldHeight(pVObject); // in plotPaperUnits
-		const double ViewportWidth = pAbstractViewPE->fieldWidth(pVObject); // in plotPaperUnits
-		const OdGeVector3d ViewDirection = pAbstractViewPE->direction(pVObject);
-		const OdGeVector3d ViewUpVector = pAbstractViewPE->upVector(pVObject);
-		const OdGeMatrix3d EyeToWorld = pAbstractViewPE->eyeToWorld(pVObject);
-		const OdGeMatrix3d WorldToeye = pAbstractViewPE->worldToEye(pVObject);
+		const auto ViewportCenter {AbstractView->target(pVObject)}; // in plotPaperUnits
+		const auto IsPerspective {AbstractView->isPerspective(pVObject)};
+		const auto ViewportHeight {AbstractView->fieldHeight(pVObject)}; // in plotPaperUnits
+		const auto ViewportWidth {AbstractView->fieldWidth(pVObject)}; // in plotPaperUnits
+		const auto ViewDirection {AbstractView->direction(pVObject)};
+		const auto ViewUpVector {AbstractView->upVector(pVObject)};
+		const auto EyeToWorldTransform {AbstractView->eyeToWorld(pVObject)};
+		const auto WorldToEyeTransform {AbstractView->worldToEye(pVObject)};
 		bool SkipClipping = false;
 
 		const bool IsPlanView = /*ViewTarget.isEqualTo(OdGePoint3d(0, 0, 0)) &&*/ ViewDirection.normal().isEqualTo(OdGeVector3d::kZAxis);
 
-		const OdGePoint3d OldTarget = ViewTarget;
+		const auto OldTarget = ViewTarget;
 
 		double FieldWidth(ViewportWidth);
 		double FieldHeight(ViewportHeight);
@@ -1580,23 +1576,24 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			FieldWidth = xmax - xmin;
 			FieldHeight = ymax - ymin;
 
-			const OdGeVector3d tmp = ViewportCenter - ViewTarget;
+			const auto tmp {ViewportCenter - ViewTarget};
 			ViewTarget.set((xmin + xmax) / 2., (ymin + ymax) / 2., 0);
-			ViewTarget.transformBy(EyeToWorld);
+			ViewTarget.transformBy(EyeToWorldTransform);
 			ViewTarget -= tmp;
 		} else if (plotType == OdDbPlotSettings::kDisplay) {
 			ViewTarget = ViewportCenter;
 			FieldWidth = ViewportWidth;
 			FieldHeight = ViewportHeight;
 		} else if (plotType == OdDbPlotSettings::kExtents || (plotType == OdDbPlotSettings::kLimits && !IsPlanView)) {
-			OdGeBoundBlock3d extents;
-			if (pAbstractViewPE->plotExtents(pVObject, extents)) { // pIter also skip 'off layers'
-				extents.transformBy(EyeToWorld);
-				ViewTarget = (extents.minPoint() + extents.maxPoint().asVector()) / 2.;
-				extents.transformBy(WorldToeye);
+			OdGeBoundBlock3d BoundBox;
 
-				FieldWidth = fabs(extents.maxPoint().x - extents.minPoint().x);
-				FieldHeight = fabs(extents.maxPoint().y - extents.minPoint().y);
+			if (AbstractView->plotExtents(pVObject, BoundBox)) { // pIter also skip 'off layers'
+				BoundBox.transformBy(EyeToWorldTransform);
+				ViewTarget = (BoundBox.minPoint() + BoundBox.maxPoint().asVector()) / 2.;
+				BoundBox.transformBy(WorldToEyeTransform);
+
+				FieldWidth = fabs(BoundBox.maxPoint().x - BoundBox.minPoint().x);
+				FieldHeight = fabs(BoundBox.maxPoint().y - BoundBox.minPoint().y);
 			}
 		} else if (plotType == OdDbPlotSettings::kView) {
 			ViewTarget = ViewportCenter;
@@ -4152,12 +4149,14 @@ void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
 void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 
-	const OdGeMatrix3d WorldToEye = OdAbstractViewPEPtr(FirstView)->worldToEye(FirstView);
+	const auto WorldToEye {OdAbstractViewPEPtr(FirstView)->worldToEye(FirstView)};
 	point1.transformBy(WorldToEye);
 	point2.transformBy(WorldToEye);
-	OdGeVector3d Vector = point2 - point1;
+	auto Vector = point2 - point1;
+
 	if (OdNonZero(Vector.x) && OdNonZero(Vector.y)) {
-		OdGePoint3d NewPosition = point1 + Vector / 2.;
+
+		auto NewPosition = point1 + Vector / 2.;
 		Vector.x = fabs(Vector.x);
 		Vector.y = fabs(Vector.y);
 		FirstView->dolly(NewPosition.asVector());

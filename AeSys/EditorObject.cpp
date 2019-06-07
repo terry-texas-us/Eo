@@ -262,12 +262,12 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
 	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject();
-	OdAbstractViewPEPtr pVp(pObj);
-	const auto vecY {pVp->upVector(pObj)};
-	const auto vecZ {pVp->direction(pObj)};
+	OdAbstractViewPEPtr AbstractView(pObj);
+	const auto vecY {AbstractView->upVector(pObj)};
+	const auto vecZ {AbstractView->direction(pObj)};
 	const auto vecX {vecY.crossProduct(vecZ).normal()};
-	const auto offset {pVp->viewOffset(pObj)};
-	const auto prTarg {pVp->target(pObj) - vecX * offset.x - vecY * offset.y};
+	const auto offset {AbstractView->viewOffset(pObj)};
+	const auto prTarg {AbstractView->target(pObj) - vecX * offset.x - vecY * offset.y};
 	
 	scrPt.x = vecX.dotProduct(wcsPt - prTarg);
 	scrPt.y = vecY.dotProduct(wcsPt - prTarg);
@@ -600,45 +600,46 @@ void zoom_window2(const OdGePoint3d & pt1, const OdGePoint3d & pt2, OdGsView * p
 void zoom_scale(double factor) noexcept {
 }
 
-static bool getLayoutExtents(const OdDbObjectId & spaceId, const OdGsView * pView, OdGeBoundBlock3d & bbox) {
-	OdDbBlockTableRecordPtr pSpace = spaceId.safeOpenObject();
-	OdDbLayoutPtr pLayout = pSpace->getLayoutId().safeOpenObject();
-	OdGeExtents3d ext;
-	if (pLayout->getGeomExtents(ext) == eOk) {
-		ext.transformBy(pView->viewingMatrix());
-		bbox.set(ext.minPoint(), ext.maxPoint());
-		return (ext.minPoint() != ext.maxPoint());
+static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, OdGeBoundBlock3d& boundBox) {
+	OdDbBlockTableRecordPtr pSpace {spaceId.safeOpenObject()};
+	OdDbLayoutPtr pLayout {pSpace->getLayoutId().safeOpenObject()};
+	OdGeExtents3d Extents;
+
+	if (pLayout->getGeomExtents(Extents) == eOk) {
+		Extents.transformBy(view->viewingMatrix());
+		boundBox.set(Extents.minPoint(), Extents.maxPoint());
+		return (Extents.minPoint() != Extents.maxPoint());
 	}
 	return false;
 }
 
-void zoom_extents(OdGsView * pView, OdDbObject * pVpObj) {
-	OdDbDatabase* pDb = pVpObj->database();
-	OdAbstractViewPEPtr pVpPE(pView);
-	OdGeBoundBlock3d bbox;
-	bool bBboxValid = pVpPE->viewExtents(pView, bbox);
+void zoom_extents(OdGsView* view, OdDbObject* viewportObject) {
+	OdDbDatabase* Database {viewportObject->database()};
+	OdAbstractViewPEPtr AbstractView(view);
+	OdGeBoundBlock3d BoundBox;
+	bool ValidBoundBox {AbstractView->viewExtents(view, BoundBox)};
 
 	// paper space overall view
-	OdDbViewportPtr pVp = OdDbViewport::cast(pVpObj);
-	if (pVp.get() && pVp->number() == 1) {
-		if (!bBboxValid || !(bbox.minPoint().x < bbox.maxPoint().x && bbox.minPoint().y < bbox.maxPoint().y)) {
-			bBboxValid = ::getLayoutExtents(pDb->getPaperSpaceId(), pView, bbox);
-		}
-	} else if (!bBboxValid) // model space viewport
-	{
-		bBboxValid = ::getLayoutExtents(pDb->getPaperSpaceId(), pView, bbox);
-	}
+	OdDbViewportPtr Viewport {OdDbViewport::cast(viewportObject)};
 
-	if (!bBboxValid) { // set to somewhat reasonable (e.g. paper size)
-		if (pDb->getMEASUREMENT() == OdDb::kMetric) {
-			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(297., 210., 0.0)); // set to papersize ISO A4 (portrait)
+	if (Viewport.get() && Viewport->number() == 1) {
+
+		if (!ValidBoundBox || !(BoundBox.minPoint().x < BoundBox.maxPoint().x && BoundBox.minPoint().y < BoundBox.maxPoint().y)) {
+			ValidBoundBox = ::getLayoutExtents(Database->getPaperSpaceId(), view, BoundBox);
+		}
+	} else if (!ValidBoundBox) { // model space viewport
+		ValidBoundBox = ::getLayoutExtents(Database->getPaperSpaceId(), view, BoundBox);
+	}
+	if (!ValidBoundBox) { // set to somewhat reasonable (e.g. paper size)
+
+		if (Database->getMEASUREMENT() == OdDb::kMetric) {
+			BoundBox.set(OdGePoint3d::kOrigin, OdGePoint3d(297.0, 210.0, 0.0)); // set to papersize ISO A4 (portrait)
 		} else {
-			bbox.set(OdGePoint3d::kOrigin, OdGePoint3d(11., 8.5, 0.0)); // ANSI A (8.50 x 11.00) (landscape)
+			BoundBox.set(OdGePoint3d::kOrigin, OdGePoint3d(11.0, 8.5, 0.0)); // ANSI A (8.50 x 11.00) (landscape)
 		}
-		bbox.transformBy(pView->viewingMatrix());
+		BoundBox.transformBy(view->viewingMatrix());
 	}
-
-	pVpPE->zoomExtents(pView, &bbox);
+	AbstractView->zoomExtents(view, &BoundBox);
 }
 
 void zoom_scaleXP(double factor) noexcept {
@@ -877,13 +878,14 @@ public:
 
 		bool bComputeExtents = true;
 		{ // Try to extract cached extents
-			OdGsClientViewInfo viewInfo;
-			view->clientViewInfo(viewInfo);
+			OdGsClientViewInfo ClientViewInfo;
+			view->clientViewInfo(ClientViewInfo);
 			OdDbObjectId spaceId;
-			if (!GETBIT(viewInfo.viewportFlags, OdGsClientViewInfo::kDependentGeometry))
+			if (!GETBIT(ClientViewInfo.viewportFlags, OdGsClientViewInfo::kDependentGeometry)) {
 				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getModelSpaceId();
-			else
+			} else {
 				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getPaperSpaceId();
+			}
 			OdDbObjectPtr pBTR = spaceId.openObject();
 			OdGeExtents3d wcsExt;
 			if (pBTR->gsNode() && pBTR->gsNode()->extents(wcsExt)) {
@@ -891,10 +893,10 @@ public:
 			}
 		}
 		if (bComputeExtents) { // Compute extents if no extents cached
-			OdAbstractViewPEPtr pAView = view;
-			OdGeBoundBlock3d extents;
-			pAView->viewExtents(view, extents);
-			m_ViewCenter = extents.center();
+			OdAbstractViewPEPtr AbstractView {view};
+			OdGeBoundBlock3d BoundBox;
+			AbstractView->viewExtents(view, BoundBox);
+			m_ViewCenter = BoundBox.center();
 			m_ViewCenter.transformBy(m_InitialViewingMatrixInverted);
 		}
 	}
