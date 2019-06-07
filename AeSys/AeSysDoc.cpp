@@ -205,7 +205,7 @@ AeSysDoc* g_pDoc {nullptr};
 AeSysDoc::AeSysDoc() noexcept
 	: m_pViewer(nullptr)
 	, m_bConsole(false)
-	, m_bConsoleResponded(false)
+	, m_ConsoleResponded(false)
 	, m_nCmdActive(0)
 	, m_bLayoutSwitchable(false)
 	, m_DisableClearSelection(false)
@@ -486,14 +486,14 @@ void AeSysDoc::OnUpdateVectorize(CCmdUI* pCmdUI) {
 }
 
 OdDbCommandContextPtr AeSysDoc::CommandContext() {
-	if (m_CommandContext.isNull()) {
-		m_CommandContext = ExDbCommandContext::createObject(BaseIO(), m_DatabasePtr);
-	}
+	
+	if (m_CommandContext.isNull()) { m_CommandContext = ExDbCommandContext::createObject(BaseIO(), m_DatabasePtr); }
+
 	return m_CommandContext;
 }
 
-OdDbSelectionSetPtr AeSysDoc::selectionSet() const {
-	OdDbCommandContext* CommandContext = const_cast<AeSysDoc*>(this)->CommandContext();
+OdDbSelectionSetPtr AeSysDoc::SelectionSet() const {
+	OdDbCommandContext* CommandContext {const_cast<AeSysDoc*>(this)->CommandContext()};
 	OdDbSelectionSetPtr SelectionSet {CommandContext->arbitraryData(L"AeSys Working Selection Set")};
 
 	if (SelectionSet.isNull()) {
@@ -510,14 +510,14 @@ OdEdBaseIO* AeSysDoc::BaseIO() noexcept {
 
 EoDlgUserIOConsole* AeSysDoc::UserIOConsole() {
 	
-	if (m_UserIOConsole.isNull()) {
-		m_UserIOConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd());
-	}
+	if (m_UserIOConsole.isNull()) { m_UserIOConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd()); }
+
 	return m_UserIOConsole;
 }
 
 unsigned long AeSysDoc::getKeyState() noexcept {
 	unsigned long KeyState(0);
+
 	if (::GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
 
 	if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
@@ -525,9 +525,10 @@ unsigned long AeSysDoc::getKeyState() noexcept {
 	return (KeyState);
 }
 
-OdGePoint3d AeSysDoc::getPoint(const OdString & prompt, int options, OdEdPointTracker * tracker) {
+OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
+
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		OdString strRes = getString(prompt, options, nullptr);
+		auto strRes {getString(prompt, options, nullptr)};
 		throw OdEdOtherInput(strRes);
 	}
 	if (m_bConsole) { return m_UserIOConsole->getPoint(prompt, options, tracker); }
@@ -539,22 +540,23 @@ OdGePoint3d AeSysDoc::getPoint(const OdString & prompt, int options, OdEdPointTr
 	return UserIOConsole()->getPoint(prompt, options, tracker);
 }
 
-OdString AeSysDoc::getString(const OdString & prompt, int options, OdEdStringTracker * tracker) {
-	OdString sRes;
+OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+	OdString Result;
+
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		sRes = m_pMacro->getString(prompt, options, tracker);
-		putString(prompt + L" " + sRes);
-		return sRes;
+		Result = m_pMacro->getString(prompt, options, tracker);
+		putString(prompt + L" " + Result);
+		return Result;
 	}
 	if (m_bConsole) { return UserIOConsole()->getString(prompt, options, tracker); }
 
 	if (m_pViewer) {
-		m_bConsoleResponded = prompt.isEmpty();
-		sRes = m_pViewer->getString(prompt, options, tracker);
+		m_ConsoleResponded = prompt.isEmpty();
+		Result = m_pViewer->getString(prompt, options, tracker);
 
-		if (!m_bConsoleResponded) { putString(OdString(prompt) + L" " + sRes); }
+		if (!m_ConsoleResponded) { putString(OdString(prompt) + L" " + Result); }
 
-		return sRes;
+		return Result;
 	}
 	return UserIOConsole()->getString(prompt, options, tracker);
 }
@@ -587,7 +589,7 @@ void AeSysDoc::OnEditConsole() {
 		if (m_pViewer && m_pViewer->isGettingString()) {
 
 			m_pViewer->respond(UserIOConsole()->getString(m_pViewer->prompt(), m_pViewer->inpOptions(), nullptr));
-			m_bConsoleResponded = true;
+			m_ConsoleResponded = true;
 
 		} else {
 			for (;;) {
@@ -608,7 +610,7 @@ void AeSysDoc::OnEditConsole() {
 	}
 }
 
-OdString commandMessageCaption(const OdString & command) {
+OdString commandMessageCaption(const OdString& command) {
 	OdString Caption;
 	Caption.format(L"Command: %ls", command.c_str());
 	return Caption;
@@ -619,11 +621,11 @@ class CmdReactor
 	, public OdStaticRxObject<OdDbDatabaseReactor> {
 	ODRX_NO_HEAP_OPERATORS();
 	OdDbCommandContext* m_CommandContext;
-	bool m_bModified;
+	bool m_Modified;
 	OdString m_LastInput;
 
 	void setModified() {
-		m_bModified = true;
+		m_Modified = true;
 		m_CommandContext->database()->removeReactor(this);
 	}
 
@@ -631,7 +633,7 @@ public:
 
 	CmdReactor(OdDbCommandContext* dbCommandContext)
 		: m_CommandContext(dbCommandContext)
-		, m_bModified(false) {
+		, m_Modified(false) {
 		ODA_ASSERT(m_CommandContext);
 		::odedRegCmds()->addReactor(this);
 		m_CommandContext->database()->addReactor(this);
@@ -640,9 +642,7 @@ public:
 	~CmdReactor() {
 		::odedRegCmds()->removeReactor(this);
 
-		if (!m_bModified) {
-			m_CommandContext->database()->removeReactor(this);
-		}
+		if (!m_Modified) { m_CommandContext->database()->removeReactor(this); }
 	}
 
 	void SetLastInput(const OdString& lastInput) {
@@ -654,7 +654,7 @@ public:
 	}
 	
 	bool isDatabaseModified() const noexcept {
-		return m_bModified;
+		return m_Modified;
 	}
 
 	void objectOpenedForModify(const OdDbDatabase*, const OdDbObject*) override {
@@ -666,12 +666,12 @@ public:
 	}
 
 	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) override {
-		AeSysView* pViewer = OdDbDatabaseDocPtr(m_CommandContext->database())->document()->getViewer();
+		auto pViewer {OdDbDatabaseDocPtr(m_CommandContext->database())->document()->getViewer()};
+
 		if (pViewer) {
-			OdEdCommandPtr pRes = pViewer->command(commandName);
-			if (pRes.get()) {
-				return pRes;
-			}
+			OdEdCommandPtr Command {pViewer->command(commandName)};
+
+			if (Command.get()) { return Command; }
 		}
 		OdString String;
 		String.format(L"Unknown command \"%ls\".", commandName.c_str());
@@ -682,12 +682,9 @@ public:
 	void commandWillStart(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
 		m_LastInput.makeUpper();
 
-		if (!GETBIT(command->flags(), OdEdCommand::kNoHistory)) {
-			theApp.SetRecentCommand(m_LastInput);
-		}
-		if (!GETBIT(command->flags(), OdEdCommand::kNoUndoMarker)) {
-			m_CommandContext->database()->startUndoRecord();
-		}
+		if (!GETBIT(command->flags(), OdEdCommand::kNoHistory)) { theApp.SetRecentCommand(m_LastInput); }
+
+		if (!GETBIT(command->flags(), OdEdCommand::kNoUndoMarker)) { m_CommandContext->database()->startUndoRecord(); }
 	}
 
 	void commandCancelled(OdEdCommand*, OdEdCommandContext*) override {
@@ -699,11 +696,11 @@ public:
 	}
 private:
 	void undoCmd() {
-		auto pDb {m_CommandContext->database()};
+		auto Database {m_CommandContext->database()};
 		try {
-			pDb->disableUndoRecording(true);
-			pDb->undo();
-			pDb->disableUndoRecording(false);
+			Database->disableUndoRecording(true);
+			Database->undo();
+			Database->disableUndoRecording(false);
 		} catch (const OdError & Error) {
 			theApp.reportError(L"Can't repair database", Error);
 		}
@@ -720,27 +717,27 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	++m_nCmdActive;
 
 	OdDbCommandContextPtr CommandContext(CommandContext());
-
 	CmdReactor CommandReactor(CommandContext);
 
 	try {
 		auto CommandStack {::odedRegCmds()};
-
-		ExDbCommandContext* pExCmdCtx = dynamic_cast<ExDbCommandContext*>(CommandContext.get());
+		auto pExCmdCtx {dynamic_cast<ExDbCommandContext*>(CommandContext.get())};
 		
 		if (m_DatabasePtr->appServices()->getPICKFIRST()) {
-			pExCmdCtx->setPickfirst(selectionSet());
+			pExCmdCtx->setPickfirst(SelectionSet());
 		}
 		if (command[0] == '(') {
 			OdEdLispModulePtr lspMod = odrxDynamicLinker()->loadApp(OdLspModuleName);
-			if (!lspMod.isNull())
-				lspMod->createLispEngine()->execute(pExCmdCtx, command);
+			
+			if (!lspMod.isNull()) { lspMod->createLispEngine()->execute(pExCmdCtx, command); }
+
 		} else {
 			OdString s = command.spanExcluding(L" \t\r\n");
+
 			if (s.getLength() == command.getLength()) {
-				if (echo) {
-					CommandContext->userIO()->putString(CommandPrompt() + L" " + s);
-				}
+
+				if (echo) { CommandContext->userIO()->putString(CommandPrompt() + L" " + s); }
+
 				s.makeUpper();
 				CommandReactor.SetLastInput(s);
 				CommandStack->executeCommand(s, CommandContext);
@@ -758,23 +755,20 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 				}
 			}
 		}
-		if (getViewer()) {
-			getViewer()->propagateActiveViewChanges();
-		}
+		if (getViewer()) { getViewer()->propagateActiveViewChanges(); }
+
 	} catch (const OdEdEmptyInput) {
 	} catch (const OdEdCancel) {
 	} catch (const OdError & err) {
 
-		if (!m_bConsole) {
-			theApp.reportError(commandMessageCaption(command), err);
-		}
+		if (!m_bConsole) { theApp.reportError(commandMessageCaption(command), err); }
+
 		BaseIO()->putString(err.description());
 	}
-	if ((CommandReactor.isDatabaseModified() || selectionSet()->numEntities())) {
+	if ((CommandReactor.isDatabaseModified() || SelectionSet()->numEntities())) {
 
-		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
-			OnEditClearselection();
-		}
+		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearselection(); }
+
 		UpdateAllViews(nullptr);
 	}
 }
@@ -855,7 +849,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 
 void AeSysDoc::DeleteSelection(bool force) {
 
-	if (m_DatabasePtr->appServices()->getPICKFIRST() && selectionSet()->numEntities()) {
+	if (m_DatabasePtr->appServices()->getPICKFIRST() && SelectionSet()->numEntities()) {
 
 		if (force) {
 			ExecuteCommand(L"ForceErase");
@@ -3070,7 +3064,7 @@ AeSysDoc::DataSource::DataSource() {}
 void AeSysDoc::DataSource::Create(AeSysDoc * document, const OdGePoint3d & point) {
 	Empty();
 
-	OdDbObjectIdArray objs = document->selectionSet()->objectIdArray();
+	OdDbObjectIdArray objs = document->SelectionSet()->objectIdArray();
 	OdDbDatabasePtr pDb = document->m_DatabasePtr->wblock(objs, OdGePoint3d::kOrigin);
 
 	wchar_t tempdir[MAX_PATH];
@@ -3353,7 +3347,7 @@ void AeSysDoc::OnEditClearselection() {
 		}
 	}
 	if (!Cleared) { // No view found
-		selectionSet()->clear();
+		SelectionSet()->clear();
 	}
 }
 
@@ -3362,7 +3356,7 @@ void AeSysDoc::OnEditExplode() {
 }
 
 void AeSysDoc::OnEditEntget() {
-	OdDbSelectionSetIteratorPtr SelectionSetIterator {selectionSet()->newIterator()};
+	OdDbSelectionSetIteratorPtr SelectionSetIterator {SelectionSet()->newIterator()};
 
 	if (!SelectionSetIterator->done()) {
 		OdDbObjectId selId = SelectionSetIterator->objectId();

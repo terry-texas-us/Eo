@@ -55,8 +55,8 @@ OdString OdApplicationDocumentImpl::RecentCommand() {
 	return (*m_pImp)->RecentCommand();
 }
 
-OdDbSelectionSetPtr OdApplicationDocumentImpl::selectionSet() const {
-	return (*m_pImp)->selectionSet();
+OdDbSelectionSetPtr OdApplicationDocumentImpl::SelectionSet() const {
+	return (*m_pImp)->SelectionSet();
 }
 
 OdApDocumentPtr odGetApplicationDocument(CDocument* document) {

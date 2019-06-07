@@ -1991,7 +1991,7 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - pData->pickPoint());
 
 		if (m_mode == kDragDrop) {
-			auto SelectionSet {Document->selectionSet()};
+			auto SelectionSet {Document->SelectionSet()};
 			OdDbEntityPtr pEnt;
 			OdDbObjectIdArray objs = SelectionSet->objectIdArray();
 			if (::GetKeyState(VK_CONTROL) & 0xff00) {

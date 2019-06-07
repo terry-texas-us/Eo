@@ -57,7 +57,7 @@ public:
 	OdDbCommandContextPtr CommandContext() override;
 	OdString RecentCommand() override;
 
-	OdDbSelectionSetPtr selectionSet() const override;
+	OdDbSelectionSetPtr SelectionSet() const override;
 
 	MfcObjectWrapper<AeSysDoc>* m_pImp;
 };

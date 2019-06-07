@@ -57,9 +57,8 @@ public:
 		: m_CommandContext(edCommandContext) {
 		m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", OdRxVariantValue(true));
 	}
-	~EnableEnhRectFrame() { m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", NULL); }
+	~EnableEnhRectFrame() { m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", nullptr); }
 };
-
 
 void setWorkingSelectionSet(OdDbCommandContext* dbCommandContext, OdDbSelectionSet* selectionSet) {
 	dbCommandContext->setArbitraryData(L"AeSys Working Selection Set", selectionSet);
@@ -83,10 +82,11 @@ class XFormDrawable : public OdGiDrawableImpl<OdGiDrawable> {
 	OdGiDrawablePtr m_Drawable;
 	const OdGeMatrix3d* m_pXForm;
 protected:
-	XFormDrawable() : m_pXForm(0) {}
+	XFormDrawable() 
+		: m_pXForm(nullptr) {}
 public:
 	static OdGiDrawablePtr createObject(OdGiDrawable* drawable, const OdGeMatrix3d& xForm) {
-		OdSmartPtr<XFormDrawable> pRes = OdRxObjectImpl<XFormDrawable>::createObject();
+		OdSmartPtr<XFormDrawable> pRes {OdRxObjectImpl<XFormDrawable>::createObject()};
 		pRes->m_Drawable = drawable;
 		pRes->m_pXForm = &xForm;
 		return pRes;
@@ -108,8 +108,8 @@ public:
 
 OdExEditorObject::OdExEditorObject()
 	: m_flags(0)
-	, m_CommandContext(0)
-	, m_pBasePt(0) {
+	, m_CommandContext(nullptr)
+	, m_BasePt(nullptr) {
 	SETBIT(m_flags, kSnapOn, true);
 }
 
@@ -141,7 +141,7 @@ void OdExEditorObject::Uninitialize() {
 	m_GripManager.Uninitialize();
 
 	m_LayoutHelper.release();
-	m_CommandContext = 0;
+	m_CommandContext = nullptr;
 }
 
 void OdExEditorObject::InitializeSnapping(OdGsView* view, OdEdInputTracker* inputTracker) {
@@ -221,9 +221,8 @@ OdGePoint3d OdExEditorObject::ToEyeToWorld(int x, int y) const {
 	OdGePoint3d wcsPt(x, y, 0.0);
 	const auto View {ActiveView()};
 	
-	if (View->isPerspective()) {
-		wcsPt.z = View->projectionMatrix()(2, 3);
-	}
+	if (View->isPerspective()) { wcsPt.z = View->projectionMatrix()(2, 3); }
+
 	wcsPt.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
 	wcsPt.z = 0.0;
 	// eye CS at this point.
@@ -242,7 +241,7 @@ bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPt) const {
 		return plane.intersectWith(line, wcsPt);
 	} else { // For perspective projection we emit ray from viewer position through WCS point.
 		const double focalLength = -1.0 / View->projectionMatrix()(3, 2);
-		const OdGePoint3d pos = View->target() + (OdAbstractViewPEPtr(View)->direction(View).normal() * focalLength);
+		const auto pos {View->target() + (OdAbstractViewPEPtr(View)->direction(View).normal() * focalLength)};
 		OdGeRay3d ray(pos, wcsPt);
 		return plane.intersectWith(ray, wcsPt);
 	}
@@ -379,7 +378,7 @@ void OdExEditorObject::Set3DView(_3DViewType type) {
 bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 	if (IsSnapOn()) {
 
-		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_pBasePt)) {
+		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_BasePt)) {
 			
 			if (!m_p2dModel.isNull()) {
 				m_p2dModel->onModified(&m_ObjectSnapManager, (OdGiDrawable*)0);
@@ -391,7 +390,7 @@ bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 }
 
 bool OdExEditorObject::Unselect() {
-	auto bRes {false};
+	auto Result {false};
 	auto WorkingSelectionSet {workingSSet()};
 	OdDbSelectionSetIteratorPtr SelectionSetIterator {WorkingSelectionSet->newIterator()};
 	
@@ -400,7 +399,7 @@ bool OdExEditorObject::Unselect() {
 
 		if (Entity.get()) {
 			Entity->highlight(false);
-			bRes = true;
+			Result = true;
 		}
 		SelectionSetIterator->next();
 	}
@@ -408,7 +407,7 @@ bool OdExEditorObject::Unselect() {
 	WorkingSelectionSet = OdDbSelectionSet::createObject(WorkingSelectionSet->database());
 	setWorkingSelectionSet(m_CommandContext, WorkingSelectionSet);
 	m_GripManager.SelectionSetChanged(WorkingSelectionSet);
-	return bRes;
+	return Result;
 }
 
 bool OdExEditorObject::OnCtrlClick() {
@@ -418,7 +417,7 @@ bool OdExEditorObject::OnCtrlClick() {
 void OdExEditorObject::OnDestroy() {
 	m_LayoutHelper.release();
 	m_p2dModel.release();
-	m_CommandContext = 0;
+	m_CommandContext = nullptr;
 }
 
 bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleDragCallback* dragCallback) {
@@ -431,17 +430,17 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 	try {
 		if (dragCallback && !ShiftIsDown) {
 			auto WorkingSelectionSet {workingSSet()};
-			OdDbSelectionSetPtr pAtPointSet = OdDbSelectionSet::select(ActiveViewportId(), 1, &pt, OdDbVisualSelection::kPoint, ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
-			OdDbSelectionSetIteratorPtr pIter = pAtPointSet->newIterator();
-			while (!pIter->done()) {
+			auto SelectionSetAtPoint = OdDbSelectionSet::select(ActiveViewportId(), 1, &pt, OdDbVisualSelection::kPoint, ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
+			OdDbSelectionSetIteratorPtr SelectionSetAtPointIterator{ SelectionSetAtPoint->newIterator() };
+			while (!SelectionSetAtPointIterator->done()) {
 				
-				if (WorkingSelectionSet->isMember(pIter->objectId()) && !ControlIsDown) {
-					pIter.release();
+				if (WorkingSelectionSet->isMember(SelectionSetAtPointIterator->objectId()) && !ControlIsDown) {
+					SelectionSetAtPointIterator.release();
 					break;
 				}
-				pIter->next();
+				SelectionSetAtPointIterator->next();
 			}
-			if (pIter.isNull()) {
+			if (SelectionSetAtPointIterator.isNull()) {
 				
 				if (dragCallback->beginDragCallback(pt)) {
 					// Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
@@ -457,36 +456,36 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 	}
 	auto UserIO {m_CommandContext->dbUserIO()};
 	UserIO->setLASTPOINT(pt);
-	UserIO->setPickfirst(0);
+	UserIO->setPickfirst(nullptr);
 
-	int iOpt = OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces;
+	int SelectOptions = OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces;
 	
 	if (HasDatabase()) {
+
 		if (ShiftIsDown) {
-			if (m_CommandContext->database()->appServices()->getPICKADD() > 0)
-				iOpt |= OdEd::kSelRemove;
+
+			if (m_CommandContext->database()->appServices()->getPICKADD() > 0) { SelectOptions |= OdEd::kSelRemove; }
+
 		} else {
-			if (m_CommandContext->database()->appServices()->getPICKADD() == 0)
-				Unselect();
+
+			if (m_CommandContext->database()->appServices()->getPICKADD() == 0) { Unselect(); }
 		}
 	}
-	if (ControlIsDown) {
-		iOpt |= OdEd::kSelAllowSubents;
-	}
+	if (ControlIsDown) { SelectOptions |= OdEd::kSelAllowSubents; }
 
 	OdDbSelectionSetPtr SelectionSet;
-	const bool savedSnapMode = IsSnapOn();
+	const bool SavedSnapMode {IsSnapOn()};
 	try {
 		EnableEnhRectFrame _enhRect(m_CommandContext);
 		SetSnapOn(false);
-		SelectionSet = UserIO->select(OdString::kEmpty, iOpt, workingSSet());
+		SelectionSet = UserIO->select(OdString::kEmpty, SelectOptions, workingSSet());
 		SetWorkingSelectionSet(SelectionSet);
-		SetSnapOn(savedSnapMode);
+		SetSnapOn(SavedSnapMode);
 	} catch (const OdError&) {
-		SetSnapOn(savedSnapMode);
+		SetSnapOn(SavedSnapMode);
 		return(false);
 	} catch (...) {
-		SetSnapOn(savedSnapMode);
+		SetSnapOn(SavedSnapMode);
 		throw;
 	}
 	SelectionSetChanged();
@@ -1208,7 +1207,7 @@ public:
 			m_pLeaf = pNode->m_pParent;
 			delete pNode;
 		}
-		m_pLeaf = NULL;
+		m_pLeaf = nullptr;
 	}
 
 	void set(const OdDbFullSubentPath& path) {
@@ -1247,10 +1246,10 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 	OdArray<OdDbEntityPtr> m_ents; // Selection set entities
 	OdGeMatrix3d m_xForm; // Last transformation
 
-	OdArray< OdExCollideGsPath* > m_pathes;
-	OdArray< OdExCollideGsPath* > m_prevHLPathes;
+	OdArray<OdExCollideGsPath*> m_pathes;
+	OdArray<OdExCollideGsPath*> m_prevHLPathes;
 
-	OdArray< const OdGiPathNode* > inputArray;
+	OdArray<const OdGiPathNode*> inputArray;
 
 protected:
 	OdGePoint3d m_ptBase;
@@ -1265,17 +1264,17 @@ protected:
 		return mRet;
 	}
 public:
-	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet* selectionSet, OdDbDatabasePtr pDb, OdGsView* view, bool bDynHLT)
+	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet* selectionSet, OdDbDatabasePtr database, OdGsView* view, bool bDynHLT)
 		: m_ptBase(ptBase), m_bDynHLT(bDynHLT) {
-		m_pDb = pDb;
+		m_pDb = database;
 		m_View = view;
-		OdDbSelectionSetIteratorPtr pIter = selectionSet->newIterator();
-		m_pModel = NULL;
+		OdDbSelectionSetIteratorPtr SelectionSetIterator{selectionSet->newIterator()};
+		m_pModel = nullptr;
 
 		//obtain GsModel
 
-		while (!pIter->done()) {
-			const OdDbObjectId objId = pIter->objectId();
+		while (!SelectionSetIterator->done()) {
+			const OdDbObjectId objId = SelectionSetIterator->objectId();
 			OdDbEntityPtr pEnt = objId.openObject(OdDb::kForWrite);
 
 			if (!m_pModel && pEnt->gsNode()) {
@@ -1284,14 +1283,14 @@ public:
 
 			if (!pEnt.isNull()) {
 				OdDbEntityPtr pSubEnt;
-				if (pIter->subentCount() == 0) {
+				if (SelectionSetIterator->subentCount() == 0) {
 					m_ents.push_back(pEnt);
 				} else {
 					OdDbFullSubentPath pathSubent;
 					OdDbFullSubentPathArray arrPaths;
 
-					for (unsigned i = 0; i < pIter->subentCount(); i++) {
-						pIter->getSubentity(i, pathSubent);
+					for (unsigned i = 0; i < SelectionSetIterator->subentCount(); i++) {
+						SelectionSetIterator->getSubentity(i, pathSubent);
 						pSubEnt = pEnt->subentPtr(pathSubent);
 
 						if (!pSubEnt.isNull()) { m_ents.push_back(pSubEnt); }
@@ -1299,17 +1298,17 @@ public:
 				}
 			}
 			if (pEnt.isNull()) continue;
-			if (pIter->subentCount() == 0) {
+			if (SelectionSetIterator->subentCount() == 0) {
 				OdExCollideGsPath* gsPath = new OdExCollideGsPath;
-				gsPath->addNode(pIter->objectId().safeOpenObject()->ownerId());
-				gsPath->addNode(pIter->objectId());
+				gsPath->addNode(SelectionSetIterator->objectId().safeOpenObject()->ownerId());
+				gsPath->addNode(SelectionSetIterator->objectId());
 				m_pathes.push_back(gsPath);
 				pEnt->dragStatus(OdDb::kDragStart);
 			} else {
-				for (unsigned i = 0; i < pIter->subentCount(); ++i) {
+				for (unsigned i = 0; i < SelectionSetIterator->subentCount(); ++i) {
 					OdDbFullSubentPath p;
 
-					if (pIter->getSubentity(i, p)) {
+					if (SelectionSetIterator->getSubentity(i, p)) {
 						OdGsMarkerArray gsMarkers;
 						pEnt->getGsMarkersAtSubentPath(p, gsMarkers);
 
@@ -1328,10 +1327,8 @@ public:
 					}
 				}
 			}
-
-			pIter->next();
+			SelectionSetIterator->next();
 		}
-
 		for (unsigned i = 0; i < m_pathes.size(); ++i) {
 			m_pModel->highlight((m_pathes[i]->operator const OdGiPathNode & ()), false);
 			inputArray.push_back(&(m_pathes[i]->operator const OdGiPathNode & ()));
@@ -1438,7 +1435,7 @@ void CollideMoveTracker::doCollideWithAll() {
 
 	OdExCollisionDetectionReactor reactor(m_bDynHLT);
 
-	m_View->collide(inputArray.asArrayPtr(), inputArray.size(), &reactor, NULL, 0);
+	m_View->collide(inputArray.asArrayPtr(), inputArray.size(), &reactor, nullptr, 0);
 
 
 	highlight(reactor.pathes());
@@ -1517,9 +1514,9 @@ void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdExTransactionSaver saver(Database);
 	saver.startTransaction();
 
-	const OdGePoint3d ptBase = UserIO->getPoint(L"Collide: Specify base point:");
+	const auto BasePoint {UserIO->getPoint(L"Collide: Specify base point:")};
 
-	CollideMoveTracker tracker(ptBase, SelectionSet, Database, View, bDynHLT);
+	CollideMoveTracker tracker(BasePoint, SelectionSet, Database, View, bDynHLT);
 	const OdGePoint3d ptOffset = UserIO->getPoint(L"Collide: Specify second point:", OdEd::kGdsFromLastPoint | OdEd::kGptRubberBand, 0, OdString::kEmpty, &tracker);
 }
 
@@ -1602,7 +1599,7 @@ void OdExEditorObject::SetTracker(OdEdInputTracker* inputTracker) {
 	}
 	m_InputTracker = inputTracker;
 
-	m_pBasePt = 0;
+	m_BasePt = nullptr;
 	
 	if (inputTracker) {
 		SETBIT(m_flags, kTrackerHasDrawables, inputTracker->addDrawables(ActiveTopView()) != 0);
@@ -1610,7 +1607,7 @@ void OdExEditorObject::SetTracker(OdEdInputTracker* inputTracker) {
 
 		if (pPointDefTracker.get()) {
 			m_basePt = pPointDefTracker->basePoint();
-			m_pBasePt = &m_basePt;
+			m_BasePt = &m_basePt;
 		}
 	} else {
 		SETBIT(m_flags, kTrackerHasDrawables, false);
@@ -1636,5 +1633,5 @@ bool OdExEditorObject::TrackPoint(const OdGePoint3d& point) {
 }
 
 bool OdExEditorObject::HasDatabase() const {
-	return m_CommandContext->baseDatabase() != 0;
+	return m_CommandContext->baseDatabase() != nullptr;
 }

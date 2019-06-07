@@ -12,8 +12,8 @@ public:
 
 	~EoCtrlBitmapPickerCombo() {}
 
-	int AddBitmap(const CBitmap* bitmap, const wchar_t* string = NULL);
-	int InsertBitmap(int nIndex, const CBitmap* bitmap, const wchar_t* string = NULL);
+	int AddBitmap(const CBitmap* bitmap, const wchar_t* string = nullptr);
+	int InsertBitmap(int index, const CBitmap* bitmap, const wchar_t* string = nullptr);
 
 protected:
 	void DrawItem(LPDRAWITEMSTRUCT drawItemStruct) override;

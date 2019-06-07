@@ -86,7 +86,7 @@ protected:
 
 	EoDlgUserIOConsole* UserIOConsole();
 	bool m_bConsole;
-	bool m_bConsoleResponded;
+	bool m_ConsoleResponded;
 	int m_nCmdActive;
 
 	class DataSource : COleDataSource {
@@ -243,7 +243,7 @@ public:
 	EoDb::FileTypes m_SaveAsType_;
 
 public:
-	OdDbSelectionSetPtr selectionSet() const;
+	OdDbSelectionSetPtr SelectionSet() const;
 	AeSysView* AeSysDoc::getViewer() noexcept;
 
 	void OnCloseVectorizer(AeSysView* view);

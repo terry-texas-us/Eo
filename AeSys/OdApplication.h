@@ -52,7 +52,7 @@ public:
 	virtual OdDbCommandContextPtr CommandContext() = 0;
 	virtual OdString RecentCommand() = 0;
 
-	virtual OdDbSelectionSetPtr selectionSet() const = 0;
+	virtual OdDbSelectionSetPtr SelectionSet() const = 0;
 };
 typedef OdSmartPtr<OdApplicationDocument> OdApDocumentPtr;
 

@@ -71,7 +71,7 @@ class OdExEditorObject {
 
 	OdEdInputTrackerPtr m_InputTracker;
 	OdGePoint3d m_basePt;
-	const OdGePoint3d* m_pBasePt;
+	const OdGePoint3d* m_BasePt;
 
 	enum Flags {
 		kSnapOn = 4,
@@ -166,9 +166,8 @@ public:
 	}
 
 	void SetEntityCenters() {
-		if (HasDatabase()) {
-			m_ObjectSnapManager.SetEntityCenters(m_CommandContext->database());
-		}
+		
+		if (HasDatabase()) { m_ObjectSnapManager.SetEntityCenters(m_CommandContext->database()); }
 	}
 
 	void SetTracker(OdEdInputTracker* inputTracker);
