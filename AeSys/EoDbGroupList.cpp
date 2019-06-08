@@ -18,24 +18,21 @@ void EoDbGroupList::AddToTreeViewControl(HWND tree, HTREEITEM htiParent) {
 void EoDbGroupList::BreakPolylines() {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->BreakPolylines();
+		GetNext(Position)->BreakPolylines();
 	}
 }
 
 void EoDbGroupList::BreakSegRefs() {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->BreakSegRefs();
+		GetNext(Position)->BreakSegRefs();
 	}
 }
 
 void EoDbGroupList::Display(AeSysView* view, CDC* deviceContext) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->Display(view, deviceContext);
+		GetNext(Position)->Display(view, deviceContext);
 	}
 }
 
@@ -47,22 +44,20 @@ POSITION EoDbGroupList::Remove(EoDbGroup* group) {
 	return (Position);
 }
 
-int EoDbGroupList::GetBlockReferenceCount(const CString & name) {
-	int Count {0};
+int EoDbGroupList::GetBlockReferenceCount(const CString& name) {
+	auto Count {0};
 
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		const EoDbGroup* Group {GetNext(Position)};
-		Count += Group->GetBlockReferenceCount(name);
+		Count += GetNext(Position)->GetBlockReferenceCount(name);
 	}
 	return Count;
 }
 
-void EoDbGroupList::GetExtents__(AeSysView * view, OdGeExtents3d & extents) {
+void EoDbGroupList::GetExtents__(AeSysView* view, OdGeExtents3d& extents) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->GetExtents_(view, extents);
+		GetNext(Position)->GetExtents_(view, extents);
 	}
 }
 
@@ -71,8 +66,7 @@ int EoDbGroupList::GetLinetypeIndexRefCount(short linetypeIndex) {
 
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Count += Group->GetLinetypeIndexRefCount(linetypeIndex);
+		Count += GetNext(Position)->GetLinetypeIndexRefCount(linetypeIndex);
 	}
 	return (Count);
 }
@@ -80,8 +74,7 @@ int EoDbGroupList::GetLinetypeIndexRefCount(short linetypeIndex) {
 void EoDbGroupList::ModifyColorIndex(short colorIndex) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->ModifyColorIndex(colorIndex);
+		GetNext(Position)->ModifyColorIndex(colorIndex);
 	}
 }
 
@@ -95,8 +88,7 @@ void EoDbGroupList::ModifyLinetypeIndex(short linetypeIndex) {
 void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
+		GetNext(Position)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 	}
 }
 
@@ -119,8 +111,7 @@ int EoDbGroupList::RemoveEmptyNotesAndDelete() {
 
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Count += Group->RemoveEmptyNotesAndDelete();
+		Count += GetNext(Position)->RemoveEmptyNotesAndDelete();
 	}
 	return (Count);
 }
@@ -179,8 +170,7 @@ EoDbGroup* EoDbGroupList::SelectGroupBy(const OdGePoint3d& point) {
 void EoDbGroupList::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNext(Position)};
-		Group->TransformBy(transformMatrix);
+		GetNext(Position)->TransformBy(transformMatrix);
 	}
 }
 

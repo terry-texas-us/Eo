@@ -4,9 +4,9 @@
 #include "AeSysView.h"
 
 void AeSysDoc::AddGroupsToTrap(EoDbGroupList* groups) {
-	if (theApp.IsTrapHighlighted()) {
-		UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, groups);
-	}
+
+	if (theApp.IsTrapHighlighted()) { UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, groups); }
+
 	m_TrappedGroupList.AddTail(groups);
 }
 

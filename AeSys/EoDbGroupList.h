@@ -12,12 +12,12 @@ public:	// Base class wrappers hides non-virtual function of parent
 		return (CObList::AddHead(dynamic_cast<CObject*>(group)));
 	}
 
-	POSITION EoDbGroupList::AddTail(EoDbGroup* group) { 
+	POSITION EoDbGroupList::AddTail(EoDbGroup* group) {
 		return (CObList::AddTail(dynamic_cast<CObject*>(group)));
 	}
 
 	void EoDbGroupList::AddTail(EoDbGroupList* groupList) {
-		CObList::AddTail(dynamic_cast<CObject*>(groupList));
+		CObList::AddTail(dynamic_cast<CObList*>(groupList));
 	}
 	
 	EoDbGroup* EoDbGroupList::GetNext(POSITION& position) {
