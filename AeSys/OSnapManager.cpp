@@ -497,7 +497,8 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	
 			if (nSnapModes & ToSnapModes(ObjectSnapMode)) // so not all types are tested
 			{
-				OdResult Result;
+				auto Result {eOk};
+				
 				if (InsertionMatrix) {
 					Result = Entity->getOsnapPoints(ObjectSnapMode, Marker, ModelPickPoint, ModelLastPoint, worldToEyeTransform, m_SnapPoints, ModelToWorldTransform);
 				} else {

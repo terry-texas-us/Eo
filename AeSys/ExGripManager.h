@@ -33,13 +33,13 @@ public:
 	bool isShared() const noexcept { return m_Shared; }
 	OdGePoint3d point() const noexcept { return m_Point; }
 	OdDbGripDataPtr GripData() const { return m_GripData; }
-	OdDbStub* entityId() const { return m_entPath.objectIds().last(); }
+	OdDbStub* entityId() const { return m_SubentPath.objectIds().last(); }
 	
 	bool entPath(OdDbBaseFullSubentPath* path = nullptr) const {
 		
-		if (path) { *path = m_entPath; }
+		if (path) { *path = m_SubentPath; }
 		
-		return m_entPath.subentId() != OdDbSubentId();
+		return m_SubentPath.subentId() != OdDbSubentId();
 	}
 	void setStatus(OdDbGripOperations::DrawType status) noexcept { m_Status = status; }
 	void setInvisible(bool invisible) noexcept { m_Invisible = invisible; }
@@ -53,8 +53,8 @@ private:
 	bool m_Shared;
 	OdGePoint3d m_Point;
 	OdDbGripDataPtr m_GripData;
-	OdDbBaseFullSubentPath m_entPath;
-	OdBaseGripManager* m_pOwner;
+	OdDbBaseFullSubentPath m_SubentPath;
+	OdBaseGripManager* m_GripManager;
 };
 
 typedef OdArray<OdExGripDataPtr> OdExGripDataPtrArray;
@@ -85,9 +85,9 @@ public:
 protected:
 	bool locateActiveGrips(OdIntArray& aIndices);
 
-	OdDbBaseFullSubentPath m_entPath;
-	OdGiDrawablePtr m_pClone;
-	OdBaseGripManager* m_pOwner;
+	OdDbBaseFullSubentPath m_SubentPath;
+	OdGiDrawablePtr m_Clone;
+	OdBaseGripManager* m_GripManager;
 };
 
 typedef OdArray<OdExGripDragPtr> OdExGripDragPtrArray;
@@ -160,7 +160,7 @@ public:
 	bool IsDisabled() noexcept { return m_Disabled; }
 
 	struct OdExGripDataSubent {
-		OdDbBaseFullSubentPath m_entPath;
+		OdDbBaseFullSubentPath m_SubentPath;
 		OdExGripDataPtrArray m_pSubData;
 	};
 	struct OdExGripDataExt {
@@ -194,12 +194,12 @@ protected:
 class OdExGripDbReactor : public OdDbDatabaseReactor {
 public:
 	OdExGripDbReactor() noexcept;
-	void objectAppended(const OdDbDatabase* pDb, const OdDbObject* pDbObj) noexcept override;
-	void objectModified(const OdDbDatabase* pDb, const OdDbObject* pDbObj) override;
-	void objectErased(const OdDbDatabase* pDb, const OdDbObject* pDbObj, bool pErased = true) override;
+	void objectAppended(const OdDbDatabase* database, const OdDbObject* dbObject) noexcept override;
+	void objectModified(const OdDbDatabase* database, const OdDbObject* dbObject) override;
+	void objectErased(const OdDbDatabase* database, const OdDbObject* dbObject, bool erased = true) override;
 
 public:
-	class OdExGripManager* m_pOwner;
+	class OdExGripManager* m_GripManager;
 };
 
 typedef OdSmartPtr<OdExGripDbReactor> OdExGripDbReactorPtr;

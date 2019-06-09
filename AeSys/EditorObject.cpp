@@ -364,7 +364,6 @@ void OdExEditorObject::Set3DView(_3DViewType type) {
 	Unselect();
 
 	auto View {ActiveView()};
-
 	{
 		OdGsClientViewInfo ClientViewInfo;
 		View->clientViewInfo(ClientViewInfo);
@@ -379,9 +378,8 @@ bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 
 		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_BasePt)) {
 			
-			if (!m_p2dModel.isNull()) {
-				m_p2dModel->onModified(&m_ObjectSnapManager, (OdGiDrawable*)0);
-			}
+			if (!m_p2dModel.isNull()) { m_p2dModel->onModified(&m_ObjectSnapManager, (OdGiDrawable*) nullptr); }
+
 			return true;
 		}
 	}

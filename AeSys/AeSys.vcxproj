@@ -151,9 +151,7 @@
     <ClCompile Include="EoVarDialog.cpp" />
     <ClCompile Include="EoVaxFloat.cpp" />
     <ClCompile Include="EoViModelView.cpp" />
-    <ClCompile Include="ExGripManager.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="ExGripManager.cpp" />
     <ClCompile Include="OFNHookProcFileTracing.cpp" />
     <ClCompile Include="EoDlgFixupOptions.cpp" />
     <ClCompile Include="EoDlgSetHomePoint.cpp" />
