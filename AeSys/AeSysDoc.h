@@ -232,7 +232,7 @@ protected:
 	// </command_console>
 
 	// OdDbLayoutManagerReactor
-	bool m_bLayoutSwitchable;
+	bool m_LayoutSwitchable;
 	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
 	bool m_DisableClearSelection;
 

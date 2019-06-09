@@ -114,7 +114,7 @@ public:
 
 	void AddReactor(const OdApplicationReactor* reactor);
 	void RemoveReactor(const OdApplicationReactor* reactor);
-	std::vector<OdSmartPtr<OdApplicationReactor>> m_aAppReactors;
+	std::vector<OdSmartPtr<OdApplicationReactor>> m_ApplicationReactors;
 
 	OdDbDatabasePtr openFile(const wchar_t* pathName);
 	void setPartialOption(bool partial) noexcept { m_bPartial = partial; }
@@ -351,7 +351,7 @@ public:
 	CString FormatAngle(double angle, int width = 8, int precision = 3) const;
 	CString FormatLength(double length, Units units, int width = 16, int precision = 8) const;
 	
-	void FormatLength_s(wchar_t* lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const;
+	void FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Units units, const double length, const int width, const int precision) const;
 	OdGePoint3d GetCursorPosition();
 	static EoDb::FileTypes GetFileType(const OdString& file);
 	COLORREF GetHotColor(short colorIndex) noexcept;

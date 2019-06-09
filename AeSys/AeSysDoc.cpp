@@ -207,7 +207,7 @@ AeSysDoc::AeSysDoc() noexcept
 	, m_bConsole(false)
 	, m_ConsoleResponded(false)
 	, m_nCmdActive(0)
-	, m_bLayoutSwitchable(false)
+	, m_LayoutSwitchable(false)
 	, m_DisableClearSelection(false)
 	, m_bPartial(false)
 	, m_SaveAsVer(OdDb::kDHL_CURRENT)
@@ -227,6 +227,7 @@ BOOL AeSysDoc::DoSave(const wchar_t* pathName, BOOL replace) {
 	m_SaveAsVer = m_DatabasePtr->originalFileVersion();
 
 	CString PathName(pathName);
+
 	if (PathName.IsEmpty()) { // Save As
 		auto DocTemplate {GetDocTemplate()};
 
@@ -234,7 +235,7 @@ BOOL AeSysDoc::DoSave(const wchar_t* pathName, BOOL replace) {
 
 		if (replace && PathName.IsEmpty()) {
 			PathName = m_strTitle;
-			const int BadCharacterPosition {PathName.FindOneOf(L" #%;/\\")};
+			const auto BadCharacterPosition {PathName.FindOneOf(L" #%;/\\")};
 
 			if (BadCharacterPosition != -1) { PathName.ReleaseBuffer(BadCharacterPosition); }
 
@@ -282,10 +283,10 @@ void AeSysDoc::DeleteContents() {
 
 	ResetAllViews();
 
-	const unsigned NumberOfReactors {theApp.m_aAppReactors.size()};
+	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
 	
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->DocumentToBeDestroyed(this);
+		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentToBeDestroyed(this);
 	}
 	if (!m_DatabasePtr.isNull()) {
 		m_DatabasePtr->appServices()->layoutManager()->removeReactor(this);
@@ -296,7 +297,7 @@ void AeSysDoc::DeleteContents() {
 	COleDocument::DeleteContents();
 
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->DocumentDestroyed((const wchar_t*) GetPathName());
+		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentDestroyed((const wchar_t*) GetPathName());
 	}
 }
 
@@ -317,7 +318,8 @@ AeSysView* AeSysDoc::getViewer() noexcept {
 
 void AeSysDoc::OnViewSetactivelayout() {
 	EoDlgSetActiveLayout ActiveLayoutDialog(m_DatabasePtr, theApp.GetMainWnd());
-	m_bLayoutSwitchable = true;
+	m_LayoutSwitchable = true;
+	
 	if (ActiveLayoutDialog.DoModal() == IDOK) {
 		try {
 			m_DatabasePtr->startUndoRecord();
@@ -329,66 +331,60 @@ void AeSysDoc::OnViewSetactivelayout() {
 			m_DatabasePtr->disableUndoRecording(false);
 		}
 	}
-	m_bLayoutSwitchable = false;
+	m_LayoutSwitchable = false;
 }
 
 void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) {
-	if (m_bLayoutSwitchable) {
-		// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
-		auto ViewPosition {GetFirstViewPosition()};
-		
-		while (ViewPosition != nullptr) {
-			const auto view {GetNextView(ViewPosition)};
+	
+	if (!m_LayoutSwitchable) { return; }
 
-			if (OdString(view->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0) {
+	// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
+	auto ViewPosition {GetFirstViewPosition()};
 
-				if (view->GetDocument() == this) {
-					const auto pParent {view->GetParent()};
-					// Get prev params
-					const bool bIconic = pParent->IsIconic() != FALSE;
-					const bool bZoomed = pParent->IsZoomed() != FALSE;
-					CRect wRect;
-					pParent->GetWindowRect(&wRect);
-					POINT point1;
-					point1.x = wRect.left;
-					point1.y = wRect.top;
-					POINT point2;
-					point2.x = wRect.right;
-					point2.y = wRect.bottom;
-					pParent->GetParent()->ScreenToClient(&point1);
-					pParent->GetParent()->ScreenToClient(&point2);
-					wRect.left = point1.x;
-					wRect.top = point1.y;
-					wRect.right = point2.x;
-					wRect.bottom = point2.y;
-					//
-					view->GetParent()->SendMessageW(WM_CLOSE);
-					OnVectorize();
-					// Search again for new view
-					auto ViewPosition {GetFirstViewPosition()};
+	while (ViewPosition != nullptr) {
+		const auto View {GetNextView(ViewPosition)};
 
-					while (ViewPosition != nullptr) {
-						const auto view {GetNextView(ViewPosition)};
+		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0) {
 
-						if (CString(view->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
+			if (View->GetDocument() == this) {
+				const auto Parent {View->GetParent()};
+				// Get prev params
+				const auto Iconic {Parent->IsIconic() != FALSE};
+				const bool Zoomed {Parent->IsZoomed() != FALSE};
+				CRect ParentRectangle;
+				Parent->GetWindowRect(&ParentRectangle);
+				CPoint TopLeftPoint(ParentRectangle.left, ParentRectangle.top);
+				CPoint BottomRightPoint(ParentRectangle.right, ParentRectangle.bottom);
+				Parent->GetParent()->ScreenToClient(&TopLeftPoint);
+				Parent->GetParent()->ScreenToClient(&BottomRightPoint);
+				ParentRectangle.left = TopLeftPoint.x;
+				ParentRectangle.top = TopLeftPoint.y;
+				ParentRectangle.right = BottomRightPoint.x;
+				ParentRectangle.bottom = BottomRightPoint.y;
 
-							if (view->GetDocument() == this) {
-								auto pParent {view->GetParent()};
-								
-								if (bZoomed) {
-									
-									if (!pParent->IsZoomed()) {
-										reinterpret_cast<CMDIChildWnd*>(pParent)->MDIMaximize();
-									}
-								} else {
-									reinterpret_cast<CMDIChildWnd*>(pParent)->MDIRestore();
-									
-									if (!bIconic) {
-										pParent->SetWindowPos(nullptr, wRect.left, wRect.top, wRect.right - wRect.left, wRect.bottom - wRect.top, SWP_NOZORDER);
-									}
-								}
-								break;
+				View->GetParent()->SendMessageW(WM_CLOSE);
+				OnVectorize();
+				// Search again for new view
+				auto ViewPosition {GetFirstViewPosition()};
+
+				while (ViewPosition != nullptr) {
+					const auto view {GetNextView(ViewPosition)};
+
+					if (OdString(view->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0) {
+
+						if (view->GetDocument() == this) {
+							auto Parent {view->GetParent()};
+
+							if (Zoomed) {
+
+								if (!Parent->IsZoomed()) { reinterpret_cast<CMDIChildWnd*>(Parent)->MDIMaximize(); }
 							}
+							else {
+								reinterpret_cast<CMDIChildWnd*>(Parent)->MDIRestore();
+
+								if (!Iconic) { Parent->SetWindowPos(nullptr, ParentRectangle.left, ParentRectangle.top, ParentRectangle.Width(), ParentRectangle.Height(), SWP_NOZORDER); }
+							}
+							break;
 						}
 					}
 				}
@@ -661,7 +657,7 @@ public:
 		setModified();
 	}
 
-	void headerSysVarWillChange(const OdDbDatabase*, const char*) {
+	void headerSysVarWillChange(const OdDbDatabase*, const OdString&) override {
 		setModified();
 	}
 
@@ -952,10 +948,10 @@ void AeSysDoc::AddRegisteredApp(const OdString & name) {
 }
 
 BOOL AeSysDoc::OnNewDocument() {
-	const auto NumberOfReactors {theApp.m_aAppReactors.size()};
+	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
 
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->DocumentCreateStarted(this);
+		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentCreateStarted(this);
 	}
 	if (COleDocument::OnNewDocument()) {
 		OdDbDatabaseDoc::setDocToAssign(this);
@@ -991,17 +987,16 @@ BOOL AeSysDoc::OnNewDocument() {
 
 		InitializeGroupAndPrimitiveEdit();
 
-
 		if (!m_DatabasePtr.isNull()) {
 			m_DatabasePtr->appServices()->layoutManager()->addReactor(this);
 		}
 		for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-			theApp.m_aAppReactors[ReactorIndex]->DocumentCreated(this);
+			theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentCreated(this);
 		}
 		return TRUE;
 	}
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_aAppReactors[ReactorIndex]->DocumentCreateCanceled(this);
+		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentCreateCanceled(this);
 	}
 	return FALSE;
 }
@@ -3371,9 +3366,9 @@ void AeSysDoc::OnViewNamedViews() {
 }
 
 void AeSysDoc::OnEditUndo() {
-	m_bLayoutSwitchable = true;
+	m_LayoutSwitchable = true;
 	m_DatabasePtr->undo();
-	m_bLayoutSwitchable = false;
+	m_LayoutSwitchable = false;
 	UpdateAllViews(nullptr);
 }
 
@@ -3383,9 +3378,9 @@ void AeSysDoc::OnUpdateEditUndo(CCmdUI* pCmdUI) {
 }
 
 void AeSysDoc::OnEditRedo() {
-	m_bLayoutSwitchable = true;
+	m_LayoutSwitchable = true;
 	m_DatabasePtr->redo();
-	m_bLayoutSwitchable = false;
+	m_LayoutSwitchable = false;
 	UpdateAllViews(nullptr);
 }
 

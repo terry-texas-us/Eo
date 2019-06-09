@@ -757,13 +757,13 @@ void AeSys::RefreshCommandMenu() {
 }
 
 void AeSys::AddReactor(const OdApplicationReactor* reactor) {
-	if (m_aAppReactors.end() == std::find(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor))) {
-		m_aAppReactors.push_back(reactor);
+	if (m_ApplicationReactors.end() == std::find(m_ApplicationReactors.begin(), m_ApplicationReactors.end(), OdApplicationReactorPtr(reactor))) {
+		m_ApplicationReactors.push_back(reactor);
 	}
 }
 
 void AeSys::RemoveReactor(const OdApplicationReactor* reactor) {
-	m_aAppReactors.erase(std::remove(m_aAppReactors.begin(), m_aAppReactors.end(), OdApplicationReactorPtr(reactor)), m_aAppReactors.end());
+	m_ApplicationReactors.erase(std::remove(m_ApplicationReactors.begin(), m_ApplicationReactors.end(), OdApplicationReactorPtr(reactor)), m_ApplicationReactors.end());
 }
 
 OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
@@ -970,10 +970,11 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 	CString FileName;
 	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
-	HINSTANCE hinstLib = LoadLibraryW(LibraryFileName);
+	HINSTANCE hinstLib {LoadLibraryW(LibraryFileName)};
 	
 	if (hinstLib != nullptr) {
-		ODA_OPEN_DLGPROC fpDlgProc = (ODA_OPEN_DLGPROC) GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg");
+		auto fpDlgProc {(ODA_OPEN_DLGPROC) GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg")};
+
 		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
 			OpenWithPreviewDlg* OpenWithPreviewDialog;
@@ -1075,7 +1076,7 @@ CString AeSys::FormatLength(double length, Units units, int width, int precision
 ///All other units formatted using floating decimal.
 /// </summary>
 
-void AeSys::FormatLength_s(wchar_t* lengthAsString, const int bufSize, Units units, const double length, const int width, const int precision) const {
+void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Units units, const double length, const int width, const int precision) const {
 	wchar_t szBuf[16];
 
 	double ScaledLength {length * AeSysView::GetActiveView()->WorldScale()};
@@ -1155,7 +1156,7 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const int bufSize, Units uni
 		switch (units) {
 			case kFeet:
 				FormatSpecification.Append(L"'");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength / 12.);
+				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength / 12.0);
 				break;
 			case kInches:
 				FormatSpecification.Append(L"\"");
@@ -1163,7 +1164,7 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const int bufSize, Units uni
 				break;
 			case kMeters:
 				FormatSpecification.Append(L"m");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * .0254);
+				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.0254);
 				break;
 			case kMillimeters:
 				FormatSpecification.Append(L"mm");
@@ -1175,11 +1176,11 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const int bufSize, Units uni
 				break;
 			case kDecimeters:
 				FormatSpecification.Append(L"dm");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * .254);
+				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.254);
 				break;
 			case kKilometers:
 				FormatSpecification.Append(L"km");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * .0000254);
+				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.0000254);
 				break;
 			default:
 				lengthAsString[0] = '\0';
@@ -1360,35 +1361,35 @@ BOOL AeSys::InitInstance() {
 
 	SetRegistryBase(L"ODA View");
 
-	m_DiscardBackFaces = theApp.GetInt(L"Discard Back Faces", true);
-	m_EnableDoubleBuffer = theApp.GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
-	m_BlocksCache = theApp.GetInt(L"Enable Blocks Cache", false);
-	m_GsDevMultithread = theApp.GetInt(L"Gs Device Multithread", false);
-	m_nMtRegenThreads = theApp.GetInt(L"Mt Regen Threads Count", 4);
-	m_EnablePrintPreviewViaBitmap = theApp.GetInt(L"Print/Preview via bitmap device", true);
-	m_UseGsModel = theApp.GetInt(L"UseGsModel", true);
-	m_EnableHLR = theApp.GetInt(L"Enable Software HLR", false);
-	m_ContextColors = theApp.GetInt(L"Contextual Colors", true);
-	m_TTFPolyDraw = theApp.GetInt(L"TTF PolyDraw", false);
-	m_TTFTextOut = theApp.GetInt(L"TTF TextOut", false);
+	m_DiscardBackFaces = GetInt(L"Discard Back Faces", true);
+	m_EnableDoubleBuffer = GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
+	m_BlocksCache = GetInt(L"Enable Blocks Cache", false);
+	m_GsDevMultithread = GetInt(L"Gs Device Multithread", false);
+	m_nMtRegenThreads = GetInt(L"Mt Regen Threads Count", 4);
+	m_EnablePrintPreviewViaBitmap = GetInt(L"Print/Preview via bitmap device", true);
+	m_UseGsModel = GetInt(L"UseGsModel", true);
+	m_EnableHLR = GetInt(L"Enable Software HLR", false);
+	m_ContextColors = GetInt(L"Contextual Colors", true);
+	m_TTFPolyDraw = GetInt(L"TTF PolyDraw", false);
+	m_TTFTextOut = GetInt(L"TTF TextOut", false);
 
-	m_TTFCache = theApp.GetInt(L"TTF Cache", false);
+	m_TTFCache = GetInt(L"TTF Cache", false);
 	m_DynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", false);
 	m_GDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", false);
 	m_GDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", false);
 	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<unsigned char>(GetInt(L"GDI Gradients as Polys Threshold", 10));
 
-	m_DisableAutoRegen = theApp.GetInt(L"Disable Auto-Regen", false);
+	m_DisableAutoRegen = GetInt(L"Disable Auto-Regen", false);
 
 //	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
 
-	m_SaveRoundTrip = theApp.GetInt(L"Save round trip information", true);
-	m_SavePreview = theApp.GetInt(L"Save Preview", false);
-	m_background = theApp.GetInt(L"Background colour", ViewBackgroundColor);
-	m_SaveWithPassword = theApp.GetInt(L"Save DWG with password", false);
-	m_sVectorizerPath = theApp.GetString(L"recent GS", OdWinDirectXModuleName);
-	m_RecentCommand = theApp.GetString(L"Recent Command", L"");
-	int nFillTtf = theApp.GetInt(L"Fill TTF text", 1);
+	m_SaveRoundTrip = GetInt(L"Save round trip information", true);
+	m_SavePreview = GetInt(L"Save Preview", false);
+	m_background = GetInt(L"Background colour", ViewBackgroundColor);
+	m_SaveWithPassword = GetInt(L"Save DWG with password", false);
+	m_sVectorizerPath = GetString(L"recent GS", OdWinDirectXModuleName);
+	m_RecentCommand = GetString(L"Recent Command", L"");
+	int nFillTtf = GetInt(L"Fill TTF text", 1);
 	setTEXTFILL(nFillTtf != 0);
 	
 	SetRegistryBase(L"MFC Auto");
@@ -2321,16 +2322,16 @@ void AeSys::UpdateMDITabs(BOOL resetMDIChild) {
 
 BOOL AeSys::OnIdle(long count) {
 
-	for (unsigned ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
-		m_aAppReactors[ReactorIndex]->OnIdle(count);
+	for (unsigned ReactorIndex = 0; ReactorIndex < m_ApplicationReactors.size(); ++ReactorIndex) {
+		m_ApplicationReactors.at(ReactorIndex)->OnIdle(count);
 	}
 	return __super::OnIdle(count);
 }
 
 BOOL AeSys::PreTranslateMessage(MSG* message) {
 
-	for (unsigned ReactorIndex = 0; ReactorIndex < m_aAppReactors.size(); ++ReactorIndex) {
-		m_aAppReactors[ReactorIndex]->OnPreTranslateMessage(message);
+	for (unsigned ReactorIndex = 0; ReactorIndex < m_ApplicationReactors.size(); ++ReactorIndex) {
+		m_ApplicationReactors.at(ReactorIndex)->OnPreTranslateMessage(message);
 	}
 	return __super::PreTranslateMessage(message);
 }
