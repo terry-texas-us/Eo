@@ -934,7 +934,7 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const 
 	try {
 		lpPoints = new POINT[nNumPts];
 		lpTypes = new unsigned char[nNumPts];
-	} catch (CException * Exception) {
+	} catch (CException* Exception) {
 		delete[] lpPoints;
 		lpPoints = nullptr;
 		delete[] lpTypes;

@@ -807,7 +807,7 @@ OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
 			MainFrame->StopTimer(L"Loading");
 			m_bLoading = false;
 		}
-	} catch (const OdError & Error) {
+	} catch (const OdError& Error) {
 		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
 		reportError(L"Loading Error...", Error);
@@ -1323,7 +1323,7 @@ bool AeSys::InitializeOda() {
 		/* <tas>
 		rxInitMaterialsEditorObjects();
 		   </tas> */
-	} catch (const OdError & Error) {
+	} catch (const OdError& Error) {
 		theApp.reportError(L"odInitialize error", Error);
 		return false;
 	} catch (...) {
@@ -2311,7 +2311,7 @@ void AeSys::UninitializeTeigha() {
 		removeMaterialTextureLoadingMonitor();
 
 		::odUninitialize();
-	} catch (const OdError & Error) {
+	} catch (const OdError& Error) {
 		theApp.reportError(L"", Error);
 	}
 }

@@ -2007,8 +2007,8 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 			try {
 				OdDbDatabasePtr pTmpDb = theApp.readFile(pData->tempFileName(), true, false, Oda::kShareDenyNo);
 				Database->insert(xform, pTmpDb);
-			} catch (const OdError & ex) {
-				AfxMessageBox(ex.description());
+			} catch (const OdError& Error) {
+				AfxMessageBox(Error.description());
 				return FALSE;
 			}
 		}

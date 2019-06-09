@@ -142,7 +142,7 @@ BOOL EoDlgNamedViews::OnInitDialog() {
             OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
             m_views.InsertItem(Index++, ViewTableRecord);
         }
-    } catch (const OdError & Error) {
+    } catch (const OdError& Error) {
         theApp.reportError(L"Error creating Named Views dialog", Error);
         EndDialog(IDCANCEL);
         return FALSE;

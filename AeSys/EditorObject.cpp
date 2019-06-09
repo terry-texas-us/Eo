@@ -700,7 +700,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 				break;
 			}
 		}
-	} catch (const OdEdOtherInput & otherInput) // nX or nXP
+	} catch (const OdEdOtherInput& otherInput) // nX or nXP
 	{
 		OdChar* pEnd;
 		const double scale = odStrToD(otherInput.string(), &pEnd);
@@ -715,7 +715,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 			}
 		}
 		pIO->putString(L"Requires a distance, numberX, or option keyword.");
-	} catch (const OdEdKeyword & kw) {
+	} catch (const OdEdKeyword& kw) {
 		switch (kw.keywordIndex()) {
 			case 0: // All
 				break;

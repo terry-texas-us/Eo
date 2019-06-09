@@ -145,14 +145,14 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	if (!m_pPlotStyleTable) return FALSE;
 
 	OdString description = m_pPlotStyleTable->description();
-	m_editDescription.SetWindowText(description);
+	m_editDescription.SetWindowTextW(description);
 
 	const bool check = m_pPlotStyleTable->isApplyScaleFactor();
 	m_checkScalefactor.SetCheck(check);
 	m_editScalefactor.EnableWindow(check);
 	OdString sScaleFactor;
 	sScaleFactor.format(L"%.1f", m_pPlotStyleTable->scaleFactor());
-	m_editScalefactor.SetWindowText(sScaleFactor);
+	m_editScalefactor.SetWindowTextW(sScaleFactor);
 
 
 	HDC editDC = ::GetDC(m_staticFilepath.m_hWnd);
@@ -162,14 +162,14 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	wcscpy(buffer, m_sFileBufPath);
 	WinPathToDos(buffer);
 	wchar_t* lpStr = buffer;
-	PathCompactPath(editDC, lpStr, 630/*rect.right*/);
-	m_staticFilepath.SetWindowText(lpStr);
+	PathCompactPathW(editDC, lpStr, 630/*rect.right*/);
+	m_staticFilepath.SetWindowTextW(lpStr);
 
 	OdString sFileName = m_sFileBufPath.right(m_sFileBufPath.getLength() - m_sFileBufPath.reverseFind('\\') - 1);
-	m_staticFilename.SetWindowText(sFileName);
+	m_staticFilename.SetWindowTextW(sFileName);
 
 	if (m_pPlotStyleTable->isAciTableAvailable())
-		m_staticRegular.SetWindowText(L"Legacy (can be used to import old DWGs)");
+		m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)");
 
 	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))};
 
@@ -204,12 +204,12 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::OnEditScalefactor() {
 	_stscanf(pVal, L"%lf", &scaleFactor);
 	if (scaleFactor <= 0 || scaleFactor > PS_EDIT_MAX_SCALEFACTOR) {
 		scaleFactor = 0.01;
-		m_editScalefactor.SetWindowText(L"0.01");
+		m_editScalefactor.SetWindowTextW(L"0.01");
 	}
 
   /*  char buffer[15];
 	_gcvt(scaleFactor, 10, buffer);
-	m_editScalefactor.SetWindowText(buffer);*/
+	m_editScalefactor.SetWindowTextW(buffer);*/
 	m_pPlotStyleTable->setScaleFactor(scaleFactor);
 }
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnOK() {

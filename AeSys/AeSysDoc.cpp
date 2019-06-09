@@ -323,7 +323,7 @@ void AeSysDoc::OnViewSetactivelayout() {
 	if (ActiveLayoutDialog.DoModal() == IDOK) {
 		try {
 			m_DatabasePtr->startUndoRecord();
-			m_DatabasePtr->setCurrentLayout(OdString(ActiveLayoutDialog.m_sNewLayoutName));
+			m_DatabasePtr->setCurrentLayout(OdString(ActiveLayoutDialog.m_NewLayoutName));
 		} catch (const OdError& Error) {
 			theApp.reportError(L"Error Setting Layout...", Error);
 			m_DatabasePtr->disableUndoRecording(true);
@@ -697,7 +697,7 @@ private:
 			Database->disableUndoRecording(true);
 			Database->undo();
 			Database->disableUndoRecording(false);
-		} catch (const OdError & Error) {
+		} catch (const OdError& Error) {
 			theApp.reportError(L"Can't repair database", Error);
 		}
 #ifndef _DEBUG
@@ -755,11 +755,11 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 
 	} catch (const OdEdEmptyInput) {
 	} catch (const OdEdCancel) {
-	} catch (const OdError & err) {
+	} catch (const OdError& Error) {
 
-		if (!m_bConsole) { theApp.reportError(commandMessageCaption(command), err); }
+		if (!m_bConsole) { theApp.reportError(commandMessageCaption(command), Error); }
 
-		BaseIO()->putString(err.description());
+		BaseIO()->putString(Error.description());
 	}
 	if ((CommandReactor.isDatabaseModified() || SelectionSet()->numEntities())) {
 
@@ -872,7 +872,7 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextSty
 	try {
 		TextStyle->setName(name);
 		textStyles->add(TextStyle);
-	} catch (const OdError & Error) {
+	} catch (const OdError& Error) {
 		theApp.reportError(L"Error adding new text style...", Error);
 		TextStyle->erase();
 	}
@@ -940,7 +940,7 @@ void AeSysDoc::AddRegisteredApp(const OdString & name) {
 		try {
 			RegisteredApp->setName(name);
 			RegisteredApps->add(RegisteredApp);
-		} catch (const OdError & Error) {
+		} catch (const OdError& Error) {
 			RegisteredApp->erase();
 			theApp.reportError(L"ODA Error - AeSysDoc::AddRegisteredApp", Error);
 		}
@@ -957,7 +957,7 @@ BOOL AeSysDoc::OnNewDocument() {
 		OdDbDatabaseDoc::setDocToAssign(this);
 		try { // create *database* populated with the default set of objects(all tables, ModelSpace and PaperSpace blocks etc.)
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
-		} catch (const OdError & Error) {
+		} catch (const OdError& Error) {
 			m_DatabasePtr = nullptr;
 			theApp.reportError(L"Database Creating Error...", Error);
 			return FALSE;
@@ -3119,7 +3119,7 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 		aiAppAudit.setHostAppServices(&theApp);
 
 		m_DatabasePtr->auditDatabase(&aiAppAudit);
-	} catch (const OdError & Error) {
+	} catch (const OdError& Error) {
 		delete theApp.m_pAuditDlg;
 		theApp.m_pAuditDlg = nullptr;
 		theApp.reportError(L"Error Auditing Database...", Error);
@@ -3132,7 +3132,7 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 		return;
 	}
 	CString Title(L"Audit info - " + GetTitle());
-	theApp.m_pAuditDlg->SetWindowText(Title);
+	theApp.m_pAuditDlg->SetWindowTextW(Title);
 	theApp.m_pAuditDlg->ShowWindow(SW_SHOW);
 
 	theApp.m_pAuditDlg = nullptr;

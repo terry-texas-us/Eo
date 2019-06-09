@@ -57,7 +57,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 					if (name == newName) {
 						CString sInfo;
 						sInfo.Format(L"A style named <%s> already exists.", sString);
-						::SetWindowText(hDInfo, sInfo);
+						::SetWindowTextW(hDInfo, sInfo);
 						ShowWindow(hDInfo, SW_SHOW);
 						ShowWindow(hSInfo, SW_SHOW);
 						EnableWindow(hOkBtn, FALSE);
@@ -79,7 +79,7 @@ BOOL Dlg_OnInit(HWND hwnd, HWND hwndCtl, LPARAM lParam) {
 	const OdPsPlotStyleTable* PlotStyleTable = pPg->GetPlotStyleTable();
 	OdString sName;
 	sName.format(L"Style %d", PlotStyleTable->plotStyleSize());
-	::SetWindowText(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
+	::SetWindowTextW(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
 	return TRUE;
 }
 int WINAPI Dlg_Proc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) {
@@ -480,7 +480,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* n
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
 
-	m_editDescription.SetWindowText(m_pPlotStyleActive->description());
+	m_editDescription.SetWindowTextW(m_pPlotStyleActive->description());
 	m_Dither.SelectString(-1, OdPsData.isDitherOn() ? L"On" : L"Off");
 	m_Grayscale.SelectString(-1, OdPsData.isGrayScaleOn() ? L"On" : L"Off");
 	m_spinPen.SetPos(OdPsData.physicalPenNumber());
@@ -544,11 +544,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 	m_pPlotStyleActive->setData(OdPsData);
 
 	if (!m_spinScreening.GetPos()) {
-		m_editScreening.SetWindowText(L"Automatic");
+		m_editScreening.SetWindowTextW(L"Automatic");
 	} else {
 		CString buffer;
 		buffer.Format(L"%d", num);
-		m_editScreening.SetWindowText(buffer);
+		m_editScreening.SetWindowTextW(buffer);
 	}
 	m_bEditChanging = false;
 }
@@ -576,11 +576,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 	m_pPlotStyleActive->setData(OdPsData);
 
 	if (!m_spinPen.GetPos()) {
-		m_editPen.SetWindowText(L"Automatic");
+		m_editPen.SetWindowTextW(L"Automatic");
 	} else {
 		wchar_t buffer[256];
 		_itot(num, buffer, 10);
-		m_editPen.SetWindowText(buffer);
+		m_editPen.SetWindowTextW(buffer);
 	}
 	m_bEditChanging = false;
 }
@@ -607,11 +607,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 	m_pPlotStyleActive->setData(OdPsData);
 
 	if (!m_spinVirtpen.GetPos()) {
-		m_editVirtpen.SetWindowText(L"Automatic");
+		m_editVirtpen.SetWindowTextW(L"Automatic");
 	} else {
 		wchar_t buffer[256];
 		_itot(num, buffer, 10);
-		m_editVirtpen.SetWindowText(buffer);
+		m_editVirtpen.SetWindowTextW(buffer);
 	}
 	m_bEditChanging = false;
 }
