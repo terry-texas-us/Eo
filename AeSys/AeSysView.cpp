@@ -984,7 +984,10 @@ void AeSysView::fillContextualColors(OdGiContextualColorsImpl* pCtxColors) {
 			SET_CTXCLR_ISOK(kWebMeshColor, L"Light", L"BEdit Web color");
 			SET_CTXCLR_ISOK(kWebMeshMissingColor, L"Light", L"BEdit Web(missing file) color");
 			break;
-		default: break;
+		case OdGiContextualColorsImpl::kVisualTypeNotSet:
+		case OdGiContextualColorsImpl::kNumVisualTypes:
+		default:
+			break;
 	}
 #undef SET_CTXCLRTINT_ISOK
 #undef SET_CTXCLR_ISOK

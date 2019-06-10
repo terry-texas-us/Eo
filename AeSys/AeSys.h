@@ -108,7 +108,7 @@ private:
 	CStringArray m_tempFilesList;
 	bool m_bSupportFileSelectionViaDialog;
 
-//	void UpdateFieldDisplay();
+	//	void UpdateFieldDisplay();
 public:
 	unsigned m_ApplicationLook;
 
@@ -122,7 +122,7 @@ public:
 
 	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
 
-	OdGsMarker getGSMenuItemMarker() const noexcept { return (OdGsMarker) this; }
+	OdGsMarker getGSMenuItemMarker() const noexcept { return ( OdGsMarker) this; }
 	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
 	void RefreshCommandMenu();
 	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
@@ -156,7 +156,7 @@ public:
 	bool m_SaveWithPassword;
 
 	EoDlgAudit* m_pAuditDlg;
-//	CTaskBarWin7Ext m_tbExt;
+	//	CTaskBarWin7Ext m_tbExt;
 	OdMutexPtr m_pMeterMutex;
 
 public:
@@ -165,8 +165,8 @@ public:
 	OdString recentGsDevicePath() const;
 	void setRecentGsDevicePath(const OdString& vectorizerPath);
 
-//	void setStatusText(const wchar_t* msg);
-//	void setStatusText(int nCol, const wchar_t* msg);
+	//	void setStatusText(const wchar_t* msg);
+	//	void setStatusText(int nCol, const wchar_t* msg);
 
 	void SetStatusPaneTextAt(int index, const wchar_t* newText);
 
@@ -174,16 +174,16 @@ public:
 	void release() noexcept override /* ExHostAppServices */ {}
 
 	OdDbHostAppProgressMeter* newProgressMeter() override /* ExHostAppServices */;
-	
+
 	void start(const OdString& displayString = OdString::kEmpty) override /* ExHostAppServices */;
-	
+
 	void stop() override /* ExHostAppServices */;
-	
+
 	void meterProgress() override /* ExHostAppServices */;
-	
+
 	void setLimit(int max) noexcept override /* ExHostAppServices */;
-	
-	void warning(const char* warnVisGroup, const OdString& message) override /* ExHostAppServices */;
+
+	void warning(const char* warnVisGroup, const OdString& message);
 	
 	static int messageBox(HWND parent, const wchar_t* caption, const wchar_t* text, unsigned type) noexcept {
 		return ::MessageBox(parent, text, caption, type);

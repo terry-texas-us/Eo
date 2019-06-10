@@ -19,7 +19,7 @@
 #include "ExUndoController.h"
 #include "MemFileStreamImpl.h"
 
-#include "..\win\ExtDialog\FileDlgExt.h"
+#include "FileDlgExt.h"
 
 #include "EoAppAuditInfo.h"
 #include "EoDbHatchPatternTable.h"
@@ -41,7 +41,7 @@
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
 
 double dPWids[] = {
-	0.0, .0075, .015, .02, .03, .0075, .015, .0225, .03, .0075, .015, .0225, .03, .0075, .015, .0225
+	0.0, 0.0075, 0.015, 0.02, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, .015, .0225
 };
 
 #include "PegColors.h"
@@ -662,11 +662,11 @@ CMenu* AeSys::CommandMenu(CMenu* *toolsSubMenu) {
 
 	for (int Item = TopMenu->GetMenuItemCount() - 1; Item >= 0; Item--) {
 		MenuItemInfo.dwTypeData = nullptr;
-		TopMenu->GetMenuItemInfoW(Item, &MenuItemInfo, TRUE);
+		TopMenu->GetMenuItemInfoW(static_cast<unsigned>(Item), &MenuItemInfo, TRUE);
 
-		const int SizeOfMenuName = ++MenuItemInfo.cch;
-		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
-		TopMenu->GetMenuItemInfoW(Item, &MenuItemInfo, TRUE);
+		auto SizeOfMenuName {++MenuItemInfo.cch};
+		MenuItemInfo.dwTypeData = MenuName.GetBuffer(static_cast<int>(SizeOfMenuName));
+		TopMenu->GetMenuItemInfoW(static_cast<unsigned>(Item), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
 
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.Compare(L"&Tools") == 0) {
@@ -682,11 +682,11 @@ CMenu* AeSys::CommandMenu(CMenu* *toolsSubMenu) {
 
 	for (int ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
 		MenuItemInfo.dwTypeData = nullptr;
-		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
+		ToolsSubMenu->GetMenuItemInfoW(static_cast<unsigned>(ToolsMenuItem), &MenuItemInfo, TRUE);
 
-		const int SizeOfMenuName = ++MenuItemInfo.cch;
-		MenuItemInfo.dwTypeData = MenuName.GetBuffer(SizeOfMenuName);
-		ToolsSubMenu->GetMenuItemInfoW(ToolsMenuItem, &MenuItemInfo, TRUE);
+		auto SizeOfMenuName {++MenuItemInfo.cch};
+		MenuItemInfo.dwTypeData = MenuName.GetBuffer(static_cast<int>(SizeOfMenuName));
+		ToolsSubMenu->GetMenuItemInfoW(static_cast<unsigned>(ToolsMenuItem), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
 
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.CompareNoCase(L"Registered &Commands") == 0) {
@@ -707,7 +707,7 @@ void AeSys::RefreshCommandMenu() {
 
 		if (SubMenu) { SubMenu->DestroyMenu(); }
 
-		RegisteredCommandsSubMenu->DeleteMenu(Item, MF_BYPOSITION);
+		RegisteredCommandsSubMenu->DeleteMenu(static_cast<unsigned>(Item), MF_BYPOSITION);
 	}
 	ENSURE(RegisteredCommandsSubMenu->GetMenuItemCount() == 0);
 
@@ -719,9 +719,9 @@ void AeSys::RefreshCommandMenu() {
 	bool HasNoCommand {CommandStack->newIterator()->done()};
 
 	const unsigned ToolsMenuItem {8}; // <tas="Until calculated ToolsMenu position finished. Menu resource which change the location of Registered Commands location break."</tas>
-	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, MF_BYPOSITION | (HasNoCommand ? MF_GRAYED : MF_ENABLED));
+	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, static_cast<unsigned>(MF_BYPOSITION | (HasNoCommand ? MF_GRAYED : MF_ENABLED)));
 
-	int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
+	unsigned CommandId {_APS_NEXT_COMMAND_VALUE + 100};
 
 	if (!HasNoCommand) {
 		auto CommandStackGroupIterator = CommandStack->newGroupIterator();
@@ -828,7 +828,7 @@ OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
 }
 
 void AeSys::AddModeInformationToMessageList() {
-	auto ResourceString {LoadStringResource(m_CurrentMode)};
+	auto ResourceString {LoadStringResource(static_cast<unsigned>(m_CurrentMode))};
 	int NextToken {0};
 	ResourceString = ResourceString.Tokenize(L"\n", NextToken);
 	AddStringToMessageList(ResourceString);
@@ -1015,7 +1015,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Enable Double Buffer", m_EnableDoubleBuffer);
 	theApp.WriteInt(L"Enable Blocks Cache", m_BlocksCache);
 	theApp.WriteInt(L"Gs Device Multithread", m_GsDevMultithread);
-	theApp.WriteInt(L"Mt Regen Threads Count", m_nMtRegenThreads);
+	theApp.WriteInt(L"Mt Regen Threads Count", static_cast<int>(m_nMtRegenThreads));
 	theApp.WriteInt(L"Print/Preview via bitmap device", m_EnablePrintPreviewViaBitmap);
 	theApp.WriteInt(L"UseGsModel", m_UseGsModel);
 	theApp.WriteInt(L"Enable Software HLR", m_EnableHLR);
@@ -1033,7 +1033,7 @@ int AeSys::ExitInstance() {
 
 	theApp.WriteInt(L"Save round trip information", m_SaveRoundTrip);
 	theApp.WriteInt(L"Save Preview", m_SavePreview);
-	theApp.WriteInt(L"Background colour", m_background);
+	theApp.WriteInt(L"Background colour", static_cast<int>(m_background));
 	theApp.WriteInt(L"Save DWG with password", m_SaveWithPassword);
 	theApp.WriteString(L"recent GS", m_sVectorizerPath);
 	theApp.WriteString(L"Recent Command", m_RecentCommand);
@@ -1365,7 +1365,7 @@ BOOL AeSys::InitInstance() {
 	m_EnableDoubleBuffer = GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
 	m_BlocksCache = GetInt(L"Enable Blocks Cache", false);
 	m_GsDevMultithread = GetInt(L"Gs Device Multithread", false);
-	m_nMtRegenThreads = GetInt(L"Mt Regen Threads Count", 4);
+	m_nMtRegenThreads = static_cast<unsigned>(GetInt(L"Mt Regen Threads Count", 4));
 	m_EnablePrintPreviewViaBitmap = GetInt(L"Print/Preview via bitmap device", true);
 	m_UseGsModel = GetInt(L"UseGsModel", true);
 	m_EnableHLR = GetInt(L"Enable Software HLR", false);
@@ -1385,7 +1385,7 @@ BOOL AeSys::InitInstance() {
 
 	m_SaveRoundTrip = GetInt(L"Save round trip information", true);
 	m_SavePreview = GetInt(L"Save Preview", false);
-	m_background = GetInt(L"Background colour", ViewBackgroundColor);
+	m_background = static_cast<unsigned>(GetInt(L"Background colour", static_cast<int>(ViewBackgroundColor)));
 	m_SaveWithPassword = GetInt(L"Save DWG with password", false);
 	m_sVectorizerPath = GetString(L"recent GS", OdWinDirectXModuleName);
 	m_RecentCommand = GetString(L"Recent Command", L"");
@@ -1981,9 +1981,9 @@ bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wch
 			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, data_t, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
 		}
 		if (size < EO_REGISTRY_BUFFER_SIZE) {
-			swprintf_s(value, size, L"%s\0", data_t);
+			swprintf_s(value, static_cast<size_t>(size), L"%s\0", data_t);
 		} else {
-			wcsncpy(value, data_t, size - 1);
+			wcsncpy(value, data_t, static_cast<size_t>(size - 1));
 			value[size - 1] = '\0';
 		}
 		RegCloseKey(OpenedKey);
@@ -2345,7 +2345,7 @@ bool addGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers
 		MENUITEMINFO menuItemInfo;
 		menuItemInfo.cbSize = sizeof(menuItemInfo);
 		menuItemInfo.fMask = MIIM_DATA;
-		menuItemInfo.dwItemData = theApp.getGSMenuItemMarker();
+		menuItemInfo.dwItemData = static_cast<unsigned long>(theApp.getGSMenuItemMarker());
 		VERIFY(::SetMenuItemInfoW(vectorizePopupMenu->m_hMenu, numberOfVectorizers, TRUE, &menuItemInfo));
 
 		if (theApp.recentGsDevicePath().iCompare(OdString(vectorizerPath)) == 0) {
@@ -2394,7 +2394,7 @@ void AeSys::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
 		
 		for (;;) {
 			PathSize = _MAX_FNAME + _MAX_EXT;
-			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, Path.GetBuffer(PathSize), &PathSize, nullptr, nullptr, nullptr, nullptr)};
+			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, Path.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 			Path.ReleaseBuffer();
 			
 			if (Status == ERROR_SUCCESS) {

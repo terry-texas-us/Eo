@@ -8,31 +8,31 @@ public: // Constructors and destructor
 	}
 public:	// Base class wrappers hides non-virtual function of parent
 
-	POSITION EoDbGroupList::AddHead(EoDbGroup* group) {
+	POSITION AddHead(EoDbGroup* group) {
 		return (CObList::AddHead(dynamic_cast<CObject*>(group)));
 	}
 
-	POSITION EoDbGroupList::AddTail(EoDbGroup* group) {
+	POSITION AddTail(EoDbGroup* group) {
 		return (CObList::AddTail(dynamic_cast<CObject*>(group)));
 	}
 
-	void EoDbGroupList::AddTail(EoDbGroupList* groupList) {
+	void AddTail(EoDbGroupList* groupList) {
 		CObList::AddTail(dynamic_cast<CObList*>(groupList));
 	}
 	
-	EoDbGroup* EoDbGroupList::GetNext(POSITION& position) {
+	EoDbGroup* GetNext(POSITION& position) {
 		return dynamic_cast<EoDbGroup*>(CObList::GetNext(position));
 	}
 	
-	EoDbGroup* EoDbGroupList::GetPrev(POSITION& position) {
+	EoDbGroup* GetPrev(POSITION& position) {
 		return dynamic_cast<EoDbGroup*>(CObList::GetPrev(position));
 	}
 	
-	EoDbGroup* EoDbGroupList::RemoveHead() {
+	EoDbGroup* RemoveHead() {
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveHead());
 	}
 	
-	EoDbGroup* EoDbGroupList::RemoveTail() {
+	EoDbGroup* RemoveTail() {
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveTail());
 	}
 

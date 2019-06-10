@@ -146,11 +146,11 @@ protected:
 public:
 	class ClipboardData {
 	public:
-		static unsigned m_FormatR15;
-		static unsigned m_FormatR16;
-		static unsigned m_FormatR17;
-		static unsigned m_FormatR18;
-		static unsigned m_FormatR19;
+		static unsigned short m_FormatR15;
+		static unsigned short m_FormatR16;
+		static unsigned short m_FormatR17;
+		static unsigned short m_FormatR18;
+		static unsigned short m_FormatR19;
 		
 		static bool isAcadDataAvailable(COleDataObject* dataObject, bool attach = false) {
 			

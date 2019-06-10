@@ -194,11 +194,11 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
 END_MESSAGE_MAP()
 
-unsigned AeSysDoc::ClipboardData::m_FormatR15 = ::RegisterClipboardFormatW(L"AutoCAD.r15");
-unsigned AeSysDoc::ClipboardData::m_FormatR16 = ::RegisterClipboardFormatW(L"AutoCAD.r16");
-unsigned AeSysDoc::ClipboardData::m_FormatR17 = ::RegisterClipboardFormatW(L"AutoCAD.r17");
-unsigned AeSysDoc::ClipboardData::m_FormatR18 = ::RegisterClipboardFormatW(L"AutoCAD.r18");
-unsigned AeSysDoc::ClipboardData::m_FormatR19 = ::RegisterClipboardFormatW(L"AutoCAD.r19");
+unsigned short AeSysDoc::ClipboardData::m_FormatR15 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r15"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR16 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r16"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR17 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r17"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR18 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r18"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR19 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r19"));
 
 AeSysDoc* g_pDoc {nullptr};
 
@@ -246,7 +246,7 @@ BOOL AeSysDoc::DoSave(const wchar_t* pathName, BOOL replace) {
 				PathName += Extension;
 			}
 		}
-		if (!DoPromptFileName(PathName, replace ? AFX_IDS_SAVEFILE : AFX_IDS_SAVEFILECOPY, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, FALSE, DocTemplate)) { return FALSE; } // don't even attempt to save 
+		if (!DoPromptFileName(PathName, static_cast<unsigned>(replace ? AFX_IDS_SAVEFILE : AFX_IDS_SAVEFILECOPY), OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, FALSE, DocTemplate)) { return FALSE; } // don't even attempt to save 
 	}
 	CWaitCursor wait;
 
@@ -1014,7 +1014,7 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			//<tas="disable lineweight display until lineweight by default is properly defined"</tas>
 			if (m_DatabasePtr->getLWDISPLAY()) { m_DatabasePtr->setLWDISPLAY(false); }
 
-			OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+			auto TextStyle {AddStandardTextStyle()};
 
 			AddStandardDimensionStyle();
 
@@ -1036,7 +1036,7 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 		{
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 
-			OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+			auto TextStyle {AddStandardTextStyle()};
 
 			AddStandardDimensionStyle();
 
@@ -1053,6 +1053,7 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			
 			EoDbPegFile PegFile(m_DatabasePtr);
 			CFileException e;
+
 			if (PegFile.Open(file, CFile::modeRead | CFile::shareDenyNone, &e)) {
 				PegFile.Load(this);
 				m_SaveAsType_ = EoDb::kPeg;
@@ -1063,6 +1064,8 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 		case EoDb::kJob:
 			TracingOpen(file);
 			break;
+		case EoDb::kDxb:
+		case EoDb::kUnknown:
 		default:
 			return CDocument::OnOpenDocument(file);
 	}
@@ -1078,6 +1081,7 @@ BOOL AeSysDoc::OnSaveDocument(const wchar_t* pathName) {
 			// <tas="shadow files disabled"/> WriteShadowFile();
 			EoDbPegFile DwgToPegFile(m_DatabasePtr);
 			CFileException e;
+			
 			if (DwgToPegFile.Open(pathName, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e)) {
 				DwgToPegFile.Unload(this);
 				ReturnStatus = TRUE;
@@ -1123,22 +1127,21 @@ BOOL AeSysDoc::OnSaveDocument(const wchar_t* pathName) {
 			break;
 		}
 		case EoDb::kDxf:
-		{
 			m_DatabasePtr->writeFile(pathName, OdDb::kDxf, OdDb::kDHL_PRECURR);
 			ReturnStatus = TRUE;
 			break;
-		}
 		case EoDb::kDwg:
-		{
 			m_DatabasePtr->writeFile(pathName, OdDb::kDwg, OdDb::kDHL_PRECURR);
 			ReturnStatus = TRUE;
 			break;
-		}
+		case EoDb::kDxb:
+		case EoDb::kUnknown:
 		default:
 			theApp.WarningMessageBox(IDS_MSG_NOTHING_TO_SAVE);
 	}
 	return ReturnStatus;
 }
+
 // AeSysDoc diagnostics
 
 #ifdef _DEBUG
@@ -1818,6 +1821,7 @@ void AeSysDoc::OnPrimBreak() {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 	auto Group {ActiveView->SelectGroupAndPrimitive(ActiveView->GetCursorPosition())};
+	
 	if (Group != nullptr && ActiveView->EngagedPrimitive() != nullptr) {
 		auto Primitive {ActiveView->EngagedPrimitive()};
 
@@ -1830,13 +1834,13 @@ void AeSysDoc::OnPrimBreak() {
 			OdDbLinePtr Line;
 			for (unsigned w = 0; w < Points.size() - 1; w++) {
 				Line = EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1]);
-				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(Primitive->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
 			}
 			if (PolylinePrimitive->IsClosed()) {
 				Line = EoDbLine::Create(BlockTableRecord, Points[Points.size() - 1], Points[0]);
-				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(Primitive->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
 			}
@@ -1901,15 +1905,15 @@ void AeSysDoc::OnFileQuery() {
 		SubMenu->ModifyMenu(0, MF_BYPOSITION | MF_STRING, 0, m_IdentifiedLayerName);
 
 		if (MenuResource == IDR_LAYER) {
-			SubMenu->CheckMenuItem(ID_LAYER_CURRENT, (MF_BYCOMMAND | Layer->IsCurrent()) ? MF_CHECKED : MF_UNCHECKED);
-			SubMenu->CheckMenuItem(ID_LAYER_ACTIVE, (MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED);
-			SubMenu->CheckMenuItem(ID_LAYER_LOCK, (MF_BYCOMMAND | Layer->IsLocked()) ? MF_CHECKED : MF_UNCHECKED);
-			SubMenu->CheckMenuItem(ID_LAYER_OFF, (MF_BYCOMMAND | Layer->IsOff()) ? MF_CHECKED : MF_UNCHECKED);
+			SubMenu->CheckMenuItem(ID_LAYER_CURRENT, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsCurrent()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_ACTIVE, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_LOCK, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsLocked()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_OFF, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsOff()) ? MF_CHECKED : MF_UNCHECKED));
 		} else {
-			SubMenu->CheckMenuItem(ID_TRACING_CURRENT, (MF_BYCOMMAND | Layer->IsCurrent()) ? MF_CHECKED : MF_UNCHECKED);
-			SubMenu->CheckMenuItem(ID_TRACING_ACTIVE, (MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED);
-			SubMenu->CheckMenuItem(ID_TRACING_LOCK, (MF_BYCOMMAND | Layer->IsLocked()) ? MF_CHECKED : MF_UNCHECKED);
-			SubMenu->CheckMenuItem(ID_TRACING_OFF, (MF_BYCOMMAND | Layer->IsOff()) ? MF_CHECKED : MF_UNCHECKED);
+			SubMenu->CheckMenuItem(ID_TRACING_CURRENT, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsCurrent()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_ACTIVE, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_LOCK, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsLocked()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_OFF, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsOff()) ? MF_CHECKED : MF_UNCHECKED));
 		}
 		SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 		::DestroyMenu(LayerTracingMenu);
@@ -2057,11 +2061,11 @@ void AeSysDoc::OnPensRemoveUnusedLinetypes() {
 
 		OdString Name {Linetype->getName()};
 
-		if (LinetypeIndexReferenceCount(EoDbLinetypeTable::LegacyLinetypeIndex(Name)) == 0) {
+		if (LinetypeIndexReferenceCount(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))) == 0) {
 			const OdResult Result {Linetype->erase(true)};
 
 			if (Result) {
-				CString ErrorDescription = m_DatabasePtr->appServices()->getErrorDescription(Result);
+				auto ErrorDescription {m_DatabasePtr->appServices()->getErrorDescription(Result)};
 				ErrorDescription += L" <%s> linetype can not be deleted";
 				theApp.AddStringToMessageList(ErrorDescription, Name);
 			} else {
@@ -2318,10 +2322,10 @@ void AeSysDoc::OnTrapCommandsUnblock() {
 
 void AeSysDoc::OnSetupPenColor() {
 	EoDlgSetupColor Dialog;
-	Dialog.m_ColorIndex = pstate.ColorIndex();
+	Dialog.m_ColorIndex = static_cast<unsigned>(pstate.ColorIndex());
 
 	if (Dialog.DoModal() == IDOK) {
-		pstate.SetColorIndex(nullptr, Dialog.m_ColorIndex);
+		pstate.SetColorIndex(nullptr, static_cast<short>(Dialog.m_ColorIndex));
 
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Pen);
 	}
@@ -2332,8 +2336,8 @@ void AeSysDoc::OnSetupLinetype() {
 	EoDlgSetupLinetype Dialog(Linetypes);
 
 	if (Dialog.DoModal() == IDOK) {
-		OdString Name = Dialog.m_Linetype->getName();
-		const short LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(Name);
+		auto Name {Dialog.m_Linetype->getName()};
+		const short LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
 		pstate.SetLinetypeIndexPs(nullptr, LinetypeIndex);
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
 	}
@@ -3012,20 +3016,21 @@ void AeSysDoc::OnInsertTracing() {
 	if (GetOpenFileNameW(&OpenFileName)) {
 		FilterIndex = OpenFileName.nFilterIndex;
 
-		OdString Name = OpenFileName.lpstrFile;
-		CString strPath = Name.left(OpenFileName.nFileOffset);
+		OdString Name {OpenFileName.lpstrFile};
+		auto strPath {Name.left(OpenFileName.nFileOffset)};
 
 		Name = Name.mid(OpenFileName.nFileOffset);
 
 		const EoDb::FileTypes FileType = AeSys::GetFileType(Name);
-		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
-			return;
-		}
-		OdDbLayerTablePtr Layers = LayerTable(OdDb::kForWrite);
+		
+		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) { return; }
+
+		auto Layers {LayerTable(OdDb::kForWrite)};
+		
 		if (Layers->getAt(Name).isNull()) {
-			OdDbLayerTableRecordPtr LayerTableRecord = OdDbLayerTableRecord::createObject();
+			auto LayerTableRecord {OdDbLayerTableRecord::createObject()};
 			LayerTableRecord->setName(Name);
-			EoDbLayer* Layer = new EoDbLayer(LayerTableRecord);
+			auto Layer {new EoDbLayer(LayerTableRecord)};
 
 			if (TracingLoadLayer(Name, Layer)) {
 				m_LayerTable.Add(Layer);

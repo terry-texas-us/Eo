@@ -4,8 +4,8 @@
 
 class EoGeUniquePoint : public CObject {
 public:
-	OdGePoint3d	m_Point;
 	int m_References;
+	OdGePoint3d	m_Point;
 
 public:
 	EoGeUniquePoint() noexcept {
