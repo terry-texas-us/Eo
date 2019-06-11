@@ -22,7 +22,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 	if ((ClientDeviceContext.GetDeviceCaps(RASTERCAPS) & RC_PALETTE) == 0) { return true; }
 
 	DIBSECTION ds;
-	bmReference.GetObject(sizeof(DIBSECTION), &ds);
+	bmReference.GetObjectW(sizeof(DIBSECTION), &ds);
 
 	int NumberOfColors {0};
 

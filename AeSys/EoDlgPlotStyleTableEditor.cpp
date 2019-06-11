@@ -8,7 +8,7 @@ IMPLEMENT_DYNAMIC(EoDlgPlotStyleManager, CPropertySheet)
 
 EoDlgPlotStyleManager::EoDlgPlotStyleManager(CWnd* parent)
 	: CPropertySheet(L"Plot Style Table Editor", parent)
-	, m_pPlotStyleTable(0) {
+	, m_pPlotStyleTable(nullptr) {
 	m_psh.dwFlags |= PSH_NOAPPLYNOW;
 
 	AddPage(&m_page1);

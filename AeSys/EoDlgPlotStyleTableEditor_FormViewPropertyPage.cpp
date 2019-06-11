@@ -265,7 +265,7 @@ CPsListStyleData::CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* p
 
 CPsListStyleData::~CPsListStyleData() {
 	delete m_pBitmapColorInfo;
-	m_pBitmapColorInfo = 0;
+	m_pBitmapColorInfo = nullptr;
 }
 
 const bool CPsListStyleData::SetActiveListIndex(const int index, const bool bBmpInfo) {
@@ -279,38 +279,35 @@ const bool CPsListStyleData::SetActiveListIndex(const int index, const bool bBmp
 	m_iActiveListIndex = index;
 	if (bBmpInfo) return true;
 	delete m_pBitmapColorInfo;
-	m_pBitmapColorInfo = 0;
+	m_pBitmapColorInfo = nullptr;
 	return true;
 }
 
 const bool CPsListStyleData::ReplaceBitmapColorInfo(COLORREF color, const int item) {
-	if (!m_pPlotStyles && !m_pPublicBitmapList) return false;
+	if (!m_pPlotStyles && !m_pPublicBitmapList) { return false; }
 
 	delete m_pBitmapColorInfo;
-	m_pBitmapColorInfo = 0;
+	m_pBitmapColorInfo = nullptr;
 
 	m_iActiveListIndex = getPublicArrayIndexByColor(color);
 
-	if (m_iActiveListIndex < 0)
-		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, (unsigned char)item);
-
+	if (m_iActiveListIndex < 0) {
+		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, ( unsigned char) item);
+	}
 	return true;
-
 }
 
 const OdCmEntityColor CPsListStyleData::GetColor() {
-	if (m_iActiveListIndex < 0)
-		return m_pBitmapColorInfo->GetColor();
+	if (m_iActiveListIndex < 0) { return m_pBitmapColorInfo->GetColor(); }
 
 	return (*m_pPublicBitmapList)[m_iActiveListIndex]->GetColor();
-
 }
 
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 
 EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewPropertyPage() : CPropertyPage(EoDlgPlotStyleEditor_FormViewPropertyPage::IDD) {
-	m_pPlotStyleTable = 0;
-	m_pPlotStyleActive = 0;
+	m_pPlotStyleTable = nullptr;
+	m_pPlotStyleActive = nullptr;
 	m_bEditChanging = false;
 }
 EoDlgPlotStyleEditor_FormViewPropertyPage::~EoDlgPlotStyleEditor_FormViewPropertyPage() {
@@ -687,8 +684,8 @@ HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int he
 	HGDIOBJ hOldIconDC = ::SelectObject(hIconDC, ii.hbmColor);
 	HGDIOBJ hOldMaskDC = ::SelectObject(hMaskDC, ii.hbmMask);
 
-	BitBlt(hIconDC, 0, 0, width, height, NULL, 0, 0, WHITENESS);
-	BitBlt(hMaskDC, 0, 0, width, height, NULL, 0, 0, BLACKNESS);
+	BitBlt(hIconDC, 0, 0, width, height, nullptr, 0, 0, WHITENESS);
+	BitBlt(hMaskDC, 0, 0, width, height, nullptr, 0, 0, BLACKNESS);
 
 	RECT r = {0, 0, width, height};
 	HBRUSH hBR = CreateSolidBrush(color);

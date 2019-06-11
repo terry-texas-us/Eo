@@ -1273,54 +1273,53 @@ public:
 		//obtain GsModel
 
 		while (!SelectionSetIterator->done()) {
-			const OdDbObjectId objId = SelectionSetIterator->objectId();
-			OdDbEntityPtr pEnt = objId.openObject(OdDb::kForWrite);
+			const OdDbObjectId SelectionSetObject {SelectionSetIterator->objectId()};
+			OdDbEntityPtr Entity {SelectionSetObject.openObject(OdDb::kForWrite)};
 
-			if (!m_pModel && pEnt->gsNode()) {
-				m_pModel = pEnt->gsNode()->model();
-			}
+			if (!m_pModel && Entity->gsNode()) { m_pModel = Entity->gsNode()->model(); }
 
-			if (!pEnt.isNull()) {
+			if (!Entity.isNull()) {
 				OdDbEntityPtr pSubEnt;
 				if (SelectionSetIterator->subentCount() == 0) {
-					m_ents.push_back(pEnt);
+					m_ents.push_back(Entity);
 				} else {
 					OdDbFullSubentPath pathSubent;
 					OdDbFullSubentPathArray arrPaths;
 
 					for (unsigned i = 0; i < SelectionSetIterator->subentCount(); i++) {
 						SelectionSetIterator->getSubentity(i, pathSubent);
-						pSubEnt = pEnt->subentPtr(pathSubent);
+						pSubEnt = Entity->subentPtr(pathSubent);
 
 						if (!pSubEnt.isNull()) { m_ents.push_back(pSubEnt); }
 					}
 				}
 			}
-			if (pEnt.isNull()) continue;
+			if (Entity.isNull()) { continue; }
+
 			if (SelectionSetIterator->subentCount() == 0) {
-				OdExCollideGsPath* gsPath = new OdExCollideGsPath;
+				auto gsPath {new OdExCollideGsPath};
 				gsPath->addNode(SelectionSetIterator->objectId().safeOpenObject()->ownerId());
 				gsPath->addNode(SelectionSetIterator->objectId());
 				m_pathes.push_back(gsPath);
-				pEnt->dragStatus(OdDb::kDragStart);
+				Entity->dragStatus(OdDb::kDragStart);
 			} else {
 				for (unsigned i = 0; i < SelectionSetIterator->subentCount(); ++i) {
 					OdDbFullSubentPath p;
 
 					if (SelectionSetIterator->getSubentity(i, p)) {
 						OdGsMarkerArray gsMarkers;
-						pEnt->getGsMarkersAtSubentPath(p, gsMarkers);
+						Entity->getGsMarkersAtSubentPath(p, gsMarkers);
 
 						if (!gsMarkers.isEmpty()) {
 							for (OdGsMarkerArray::iterator sm = gsMarkers.begin(); sm != gsMarkers.end(); ++sm) {
-								OdExCollideGsPath* gsPath = new OdExCollideGsPath;
+								auto gsPath {new OdExCollideGsPath};
 								gsPath->set(p, *sm);
 								m_pathes.push_back(gsPath);
-								OdDbEntityPtr pSubEnt = pEnt->subentPtr(p);
-								pSubEnt->dragStatus(OdDb::kDragStart);
+								auto SubEnt {Entity->subentPtr(p)};
+								SubEnt->dragStatus(OdDb::kDragStart);
 							}
 						} else {
-							OdExCollideGsPath* gsPath = new OdExCollideGsPath(p);
+							auto gsPath {new OdExCollideGsPath(p)};
 							m_pathes.push_back(gsPath);
 						}
 					}

@@ -48,7 +48,7 @@ const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 }
 
 void EoDbSpline::AddReportToMessageList(const OdGePoint3d& point) const {
-	CString Report(L"<BSpline>");
+	CString Report {L"<BSpline>"};
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
 	theApp.AddStringToMessageList(Report);
@@ -224,7 +224,7 @@ void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const unsigne
 }
 
 // <tas="Currently allowing 1st degree (only 2 control points) splines to be saved. This likely will not load in legacy apps"</tas>
-bool EoDbSpline::Write(EoDbFile & file) const {
+bool EoDbSpline::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kSplinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
@@ -255,8 +255,8 @@ void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
 
 // Static
 
-OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
-	OdDbSplinePtr Spline = OdDbSpline::createObject();
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
+	auto Spline {OdDbSpline::createObject()};
 	Spline->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Spline);
@@ -269,9 +269,9 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
 	return Spline;
 }
 
-OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
 	auto Database {blockTableRecord->database()};
-	OdDbSplinePtr Spline = OdDbSpline::createObject();
+	auto Spline {OdDbSpline::createObject()};
 	Spline->setDatabaseDefaults(Database);
 
 	blockTableRecord->appendOdDbEntity(Spline);

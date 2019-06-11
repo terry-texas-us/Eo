@@ -126,8 +126,7 @@ void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 
 		if (entPath()) {
 			m_GripManager->GetGripPointsAtSubentPath(m_Clone, m_SubentPath, aCloneData, m_GripManager->ActiveViewUnitSize(), m_GripManager->m_GRIPSIZE, m_GripManager->ActiveViewDirection(), 0);
-		}
-		else {
+		} else {
 			m_GripManager->GetGripPoints(m_Clone, aCloneData, m_GripManager->ActiveViewUnitSize(), m_GripManager->m_GRIPSIZE, m_GripManager->ActiveViewDirection(), 0);
 		}
 		OdDbVoidPtrArray aIds;
@@ -136,8 +135,7 @@ void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 
 			if (gsl::narrow_cast<unsigned>(aIndices[i]) < aCloneData.size()) {
 				aIds.push_back(aCloneData[aIndices[i]]->appData());
-			}
-			else {
+			} else {
 				ODA_ASSERT(0);
 			}
 		}
@@ -152,8 +150,7 @@ void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 			aPaths.append(m_SubentPath);
 			m_GripManager->MoveGripPointsAtSubentPaths(m_Clone, aPaths, aIds, vOffset, 0);
 			m_GripManager->SubentGripStatus(m_Clone, OdDb::kGripsToBeDeleted, m_SubentPath);
-		}
-		else {
+		} else {
 			m_GripManager->MoveGripPointsAt(m_Clone, aIds, vOffset, 0);
 			m_GripManager->GripStatus(m_Clone, OdDb::kGripsToBeDeleted);
 		}
@@ -460,29 +457,22 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 
 				if (Grip->GripData()->triggerGrip()) {
 					eCurStatus = OdDbGripOperations::kWarmGrip;
-				}
-				else {
+				} else {
 
 					if (Grip->GripData()->hotGripFunc()) {
-						int Flags = OdDbGripOperations::kMultiHotGrip;
+						int Flags {OdDbGripOperations::kMultiHotGrip};
 
 						if (Grip->isShared()) { Flags |= OdDbGripOperations::kSharedGrip; }
 
 						auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
-						switch (Result) {
-						case eGripOpGripHotToWarm:
-							eCurStatus = OdDbGripOperations::kWarmGrip;
-							break;
-						default: // no op
-							break;
-						}
+						
+						if (Result == eGripOpGripHotToWarm) { eCurStatus = OdDbGripOperations::kWarmGrip; }
 					}
 				}
 			}
 			aKeys[i]->setStatus(eCurStatus);
 		}
-	}
-	else { // Launch Grip Edit.
+	} else { // Launch Grip Edit.
 		bool MakeHot {true};
 		{
 			GripDataMap::const_iterator GripDataIterator {m_GripData.begin()};
@@ -528,17 +518,11 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 						if (!Grip->isShared()) {
 							auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
 
-							switch (Result) {
-							case eOk:
-							case eGripOpGripHotToWarm:
+							if (Result == eOk || Result == eGripOpGripHotToWarm) {
 								eNew = OdDbGripOperations::kWarmGrip;
-								break;
-							case eGripOpGetNewGripPoints:
+							} else if (Result == eGripOpGetNewGripPoints) {
 								GetNew = true;
 								idEntityToUpdate = Grip->entityId();
-								break;
-							default: // no op
-								break;
 							}
 						}
 					}
@@ -546,16 +530,11 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 						auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
 
 						if (!Grip->isShared()) {
-							switch (Result) {
-							case eGripOpGripHotToWarm:
+							if (Result == eGripOpGripHotToWarm) {
 								eNew = OdDbGripOperations::kWarmGrip;
-								break;
-							case eGripOpGetNewGripPoints:
+							} else if (Result == eGripOpGetNewGripPoints) {
 								GetNew = true;
 								idEntityToUpdate = Grip->entityId();
-								break;
-							default: // no op
-								break;
 							}
 						}
 					}
@@ -563,10 +542,7 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 				Grip->setStatus(eNew);
 			}
 		}
-		if (GetNew) {
-			UpdateEntityGrips(idEntityToUpdate);
-			//return true;
-		}
+		if (GetNew) { UpdateEntityGrips(idEntityToUpdate); }
 	}
 	return true;
 }
@@ -1326,10 +1302,10 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 #if !defined(ODA_UNIXOS) && !(defined(ODA_WINDOWS) && !defined(OD_WINDOWS_DESKTOP))
 	const auto Size {activeKeys.size()};
 	auto RightClickIndex {-1};
-	for (unsigned i = 0; i < Size; i++) {
+	for (unsigned Index = 0; Index < Size; Index++) {
 
-		if (!activeKeys[i]->GripData().isNull() && activeKeys[i]->GripData()->rtClk() != nullptr && activeKeys[i]->GripData()->mapGripHotToRtClk() && !activeKeys[i]->isShared()) {
-			RightClickIndex = i;
+		if (!activeKeys[Index]->GripData().isNull() && activeKeys[Index]->GripData()->rtClk() != nullptr && activeKeys[Index]->GripData()->mapGripHotToRtClk() && !activeKeys[Index]->isShared()) {
+			RightClickIndex = static_cast<int>(Index);
 			break;
 		}
 	}
@@ -1344,7 +1320,7 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 		OdString MenuName;
 		ODHMENU Menu {nullptr};
 		ContextMenuItemIndexPtr cb {nullptr};
-		auto Result = (*activeKeys[RightClickIndex]->GripData()->rtClk())(HotGrips, Entities, MenuName, Menu, cb);
+		auto Result {(*activeKeys[static_cast<unsigned>(RightClickIndex)]->GripData()->rtClk())(HotGrips, Entities, MenuName, Menu, cb)};
 
 		if (Result == eOk && Menu != nullptr && cb != nullptr) {
 			auto ActiveWindow {::GetActiveWindow()};
@@ -1391,19 +1367,19 @@ OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const 
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const {
-	OdDbEntity* pEnt = OdDbEntity::cast(entity);
+	OdDbEntity* Entity {OdDbEntity::cast(entity)};
 
-	if (!pEnt) { return eNotApplicable; }
+	if (!Entity) { return eNotApplicable; }
 
-	return pEnt->getGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
+	return Entity->getGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbEntity* pEnt = OdDbEntity::cast(entity);
+	OdDbEntity* Entity {OdDbEntity::cast(entity)};
 
-	if (!pEnt) { return eNotApplicable; }
+	if (!Entity) { return eNotApplicable; }
 
-	return pEnt->getGripPoints(gripPoints);
+	return Entity->getGripPoints(gripPoints);
 }
 
 OdResult OdExGripManager::MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) {

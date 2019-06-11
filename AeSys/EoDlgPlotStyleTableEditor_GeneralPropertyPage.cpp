@@ -6,10 +6,12 @@
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 
 EoDlgPlotStyleEditor_GeneralPropertyPage::EoDlgPlotStyleEditor_GeneralPropertyPage() :
-	CPropertyPage(EoDlgPlotStyleEditor_GeneralPropertyPage::IDD), m_pPlotStyleTable(0) {
+	CPropertyPage(EoDlgPlotStyleEditor_GeneralPropertyPage::IDD), m_pPlotStyleTable(nullptr) {
 }
+
 EoDlgPlotStyleEditor_GeneralPropertyPage::~EoDlgPlotStyleEditor_GeneralPropertyPage() {
 }
+
 void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* pDX) {
 	CPropertyPage::DoDataExchange(pDX);
 
@@ -29,65 +31,46 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 
 END_MESSAGE_MAP()
 
-void DrawTransparentBitmap(HDC hdc, HBITMAP hBitmap, short xStart, short yStart, COLORREF cTransparentColor) noexcept {
+void DrawTransparentBitmap(HDC hdc, HBITMAP bitmap, short xStart, short yStart, COLORREF transparentColor) noexcept {
+	auto hdcTemp {CreateCompatibleDC(hdc)};
+
+	SelectObject(hdcTemp, bitmap);
+
 	BITMAP bm;
-	COLORREF cColor;
-	HBITMAP bmAndBack, bmAndObject, bmAndMem, bmSave;
-	HBITMAP bmBackOld, bmObjectOld, bmMemOld, bmSaveOld;
-	HDC hdcMem, hdcBack, hdcObject, hdcTemp, hdcSave;
-	POINT ptSize;
 
-	hdcTemp = CreateCompatibleDC(hdc);
-	SelectObject(hdcTemp, hBitmap);
-
-	GetObject(hBitmap, sizeof(BITMAP), (LPSTR) & bm);
-	ptSize.x = bm.bmWidth;
-	ptSize.y = bm.bmHeight;
+	GetObjectW(bitmap, sizeof(BITMAP), (LPSTR) & bm);
+	POINT ptSize {bm.bmWidth, bm.bmHeight};
 	DPtoLP(hdcTemp, &ptSize, 1);
 
-	hdcBack = CreateCompatibleDC(hdc);
-	hdcObject = CreateCompatibleDC(hdc);
-	hdcMem = CreateCompatibleDC(hdc);
-	hdcSave = CreateCompatibleDC(hdc);
+	auto hdcBack {CreateCompatibleDC(hdc)};
+	auto hdcObject {CreateCompatibleDC(hdc)};
+	auto hdcMem {CreateCompatibleDC(hdc)};
+	auto hdcSave {CreateCompatibleDC(hdc)};
 
-	bmAndBack = CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr);
+	auto bmAndBack {CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr)};
+	auto bmAndObject {CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr)};
+	auto bmAndMem {CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y)};
+	auto bmSave {CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y)};
 
-	bmAndObject = CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr);
-
-	bmAndMem = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
-	bmSave = CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y);
-
-	bmBackOld = (HBITMAP) SelectObject(hdcBack, bmAndBack);
-	bmObjectOld = (HBITMAP) SelectObject(hdcObject, bmAndObject);
-	bmMemOld = (HBITMAP) SelectObject(hdcMem, bmAndMem);
-	bmSaveOld = (HBITMAP) SelectObject(hdcSave, bmSave);
+	auto bmBackOld {static_cast<HBITMAP>(SelectObject(hdcBack, bmAndBack))};
+	auto bmObjectOld {static_cast<HBITMAP>(SelectObject(hdcObject, bmAndObject))};
+	auto bmMemOld {static_cast<HBITMAP>(SelectObject(hdcMem, bmAndMem))};
+	auto bmSaveOld {static_cast<HBITMAP>(SelectObject(hdcSave, bmSave))};
 
 	SetMapMode(hdcTemp, GetMapMode(hdc));
 
 	BitBlt(hdcSave, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCCOPY);
 
-	cColor = SetBkColor(hdcTemp, cTransparentColor);
+	const auto BackgroundColor {SetBkColor(hdcTemp, transparentColor)};
 
-	BitBlt(hdcObject, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0,
-		SRCCOPY);
-
-	SetBkColor(hdcTemp, cColor);
-
-	BitBlt(hdcBack, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0,
-		NOTSRCCOPY);
-
-	BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdc, xStart, yStart,
-		SRCCOPY);
-
+	BitBlt(hdcObject, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCCOPY);
+	SetBkColor(hdcTemp, BackgroundColor);
+	BitBlt(hdcBack, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0, NOTSRCCOPY);
+	BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdc, xStart, yStart, SRCCOPY);
 	BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdcObject, 0, 0, SRCAND);
-
 	BitBlt(hdcTemp, 0, 0, ptSize.x, ptSize.y, hdcBack, 0, 0, SRCAND);
-
 	BitBlt(hdcMem, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCPAINT);
-
-	BitBlt(hdc, xStart, yStart, ptSize.x, ptSize.y, hdcMem, 0, 0,
-		SRCCOPY);
-
+	BitBlt(hdc, xStart, yStart, ptSize.x, ptSize.y, hdcMem, 0, 0, SRCCOPY);
 	BitBlt(hdcTemp, 0, 0, ptSize.x, ptSize.y, hdcSave, 0, 0, SRCCOPY);
 
 	DeleteObject(SelectObject(hdcBack, bmBackOld));
@@ -142,20 +125,19 @@ void WinPathToDos(wchar_t* str) {
 BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 
-	if (!m_pPlotStyleTable) return FALSE;
+	if (!m_pPlotStyleTable) { return FALSE; }
 
-	OdString description = m_pPlotStyleTable->description();
+	auto description {m_pPlotStyleTable->description()};
 	m_editDescription.SetWindowTextW(description);
 
-	const bool check = m_pPlotStyleTable->isApplyScaleFactor();
+	const bool check {m_pPlotStyleTable->isApplyScaleFactor()};
 	m_checkScalefactor.SetCheck(check);
 	m_editScalefactor.EnableWindow(check);
 	OdString sScaleFactor;
 	sScaleFactor.format(L"%.1f", m_pPlotStyleTable->scaleFactor());
 	m_editScalefactor.SetWindowTextW(sScaleFactor);
 
-
-	HDC editDC = ::GetDC(m_staticFilepath.m_hWnd);
+	auto editDC {::GetDC(m_staticFilepath.m_hWnd)};
   //  CRect rect;
   //  m_staticFilepath.GetClientRect(&rect);
 	wchar_t buffer[MAX_PATH];
@@ -165,11 +147,10 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	PathCompactPathW(editDC, lpStr, 630/*rect.right*/);
 	m_staticFilepath.SetWindowTextW(lpStr);
 
-	OdString sFileName = m_sFileBufPath.right(m_sFileBufPath.getLength() - m_sFileBufPath.reverseFind('\\') - 1);
+	auto sFileName {m_sFileBufPath.right(m_sFileBufPath.getLength() - m_sFileBufPath.reverseFind('\\') - 1)};
 	m_staticFilename.SetWindowTextW(sFileName);
 
-	if (m_pPlotStyleTable->isAciTableAvailable())
-		m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)");
+	if (m_pPlotStyleTable->isAciTableAvailable()) { m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)"); }
 
 	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))};
 
@@ -201,17 +182,15 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::OnEditScalefactor() {
 	CString pVal;
 	m_editScalefactor.GetWindowText(pVal);
 	double scaleFactor;
-	_stscanf(pVal, L"%lf", &scaleFactor);
+	swscanf(pVal, L"%lf", &scaleFactor);
+	
 	if (scaleFactor <= 0 || scaleFactor > PS_EDIT_MAX_SCALEFACTOR) {
 		scaleFactor = 0.01;
 		m_editScalefactor.SetWindowTextW(L"0.01");
 	}
-
-  /*  char buffer[15];
-	_gcvt(scaleFactor, 10, buffer);
-	m_editScalefactor.SetWindowTextW(buffer);*/
 	m_pPlotStyleTable->setScaleFactor(scaleFactor);
 }
+
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnOK() {
 	CPropertyPage::OnOK();
 }

@@ -1971,45 +1971,46 @@ struct ReactorSort : public std::binary_function<OdDbObjectId, OdDbObjectId, boo
 	}
 };
 
-void transform_object_set(OdDbObjectIdArray& objs, const OdGeMatrix3d& xform) {
-	std::sort(objs.begin(), objs.end(), ReactorSort());
+void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transformMatrix) {
+	std::sort(objects.begin(), objects.end(), ReactorSort());
 	
-	for (unsigned i = 0; i < objs.size(); ++i) {
-		OdDbEntityPtr pEnt = objs[i].safeOpenObject(OdDb::kForWrite);
-		pEnt->transformBy(xform);
+	for (unsigned i = 0; i < objects.size(); ++i) {
+		OdDbEntityPtr Entity {objects[i].safeOpenObject(OdDb::kForWrite)};
+		Entity->transformBy(transformMatrix);
 	}
 }
 
 // <command_console>
-BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoint point) {
-	OdSharedPtr<AeSysDoc::ClipboardData> pData = AeSysDoc::ClipboardData::get(pDataObject);
-	if (pData) {
+BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint point) {
+	OdSharedPtr<AeSysDoc::ClipboardData> ClipboardData {AeSysDoc::ClipboardData::get(dataObject)};
+
+	if (ClipboardData) {
 		auto Document {GetDocument()};
-		OdDbDatabase* Database = Document->m_DatabasePtr;
+		OdDbDatabase* Database {Document->m_DatabasePtr};
 		Database->startUndoRecord();
 
-		OdGeMatrix3d xform = OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - pData->pickPoint());
+		auto TransformMatrix {OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - ClipboardData->pickPoint())};
 
 		if (m_mode == kDragDrop) {
 			auto SelectionSet {Document->SelectionSet()};
-			OdDbEntityPtr pEnt;
-			OdDbObjectIdArray objs = SelectionSet->objectIdArray();
-			if (::GetKeyState(VK_CONTROL) & 0xff00) {
-				OdDbIdMappingPtr pIdMapping = OdDbIdMapping::createObject();
-				OdDbDatabase* pHostDb = Database;
-				pHostDb->deepCloneObjects(objs, pHostDb->getActiveLayoutBTRId(), *pIdMapping);
+			auto SelectionSetObjects {SelectionSet->objectIdArray()};
 
-				for (unsigned i = 0; i < objs.size(); ++i) {
-					OdDbIdPair idPair(objs[i]);
+			if (::GetKeyState(VK_CONTROL) & 0xff00) {
+				auto pIdMapping {OdDbIdMapping::createObject()};
+				auto HostDatabase {Database};
+				HostDatabase->deepCloneObjects(SelectionSetObjects, HostDatabase->getActiveLayoutBTRId(), *pIdMapping);
+
+				for (unsigned i = 0; i < SelectionSetObjects.size(); ++i) {
+					OdDbIdPair idPair(SelectionSetObjects[i]);
 					pIdMapping->compute(idPair);
-					objs[i] = idPair.value();
+					SelectionSetObjects[i] = idPair.value();
 				}
 			}
-			transform_object_set(objs, xform);
+			transform_object_set(SelectionSetObjects, TransformMatrix);
 		} else {
 			try {
-				OdDbDatabasePtr pTmpDb = theApp.readFile(pData->tempFileName(), true, false, Oda::kShareDenyNo);
-				Database->insert(xform, pTmpDb);
+				auto pTmpDb {theApp.readFile(ClipboardData->tempFileName(), true, false, Oda::kShareDenyNo)};
+				Database->insert(TransformMatrix, pTmpDb);
 			} catch (const OdError& Error) {
 				AfxMessageBox(Error.description());
 				return FALSE;
@@ -2017,7 +2018,7 @@ BOOL AeSysView::OnDrop(COleDataObject * pDataObject, DROPEFFECT dropEffect, CPoi
 		}
 		return TRUE;
 	}
-	return __super::OnDrop(pDataObject, dropEffect, point);
+	return __super::OnDrop(dataObject, dropEffect, point);
 }
 // </command_console>
 

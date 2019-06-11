@@ -867,7 +867,7 @@ void AeSysDoc::startDrag(const OdGePoint3d & point) {
 }
 
 OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextStyleTablePtr & textStyles) {
-	OdDbTextStyleTableRecordPtr TextStyle = OdDbTextStyleTableRecord::createObject();
+	auto TextStyle {OdDbTextStyleTableRecord::createObject()};
 
 	try {
 		TextStyle->setName(name);
@@ -899,7 +899,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 		OdDbDimStyleTableRecordPtr DimStyle = DimStyleTable->getAt(L"EoStandard").safeOpenObject(OdDb::kForRead);
 		return DimStyle;
 	}
-	OdDbDimStyleTableRecordPtr DimStyle = OdDbDimStyleTableRecord::createObject();
+	auto DimStyle {OdDbDimStyleTableRecord::createObject()};
 	DimStyle->setName(L"EoStandard");
 	OdDbObjectId dimStyleId = DimStyleTable->add(DimStyle);
 
@@ -935,8 +935,9 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 
 void AeSysDoc::AddRegisteredApp(const OdString & name) {
 	OdDbRegAppTablePtr RegisteredApps = m_DatabasePtr->getRegAppTableId().safeOpenObject(OdDb::kForWrite);
+
 	if (!RegisteredApps->has(name)) {
-		OdDbRegAppTableRecordPtr RegisteredApp = OdDbRegAppTableRecord::createObject();
+		auto RegisteredApp {OdDbRegAppTableRecord::createObject()};
 		try {
 			RegisteredApp->setName(name);
 			RegisteredApps->add(RegisteredApp);
