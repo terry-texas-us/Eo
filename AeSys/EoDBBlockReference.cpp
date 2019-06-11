@@ -413,7 +413,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	BlockReference->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(BlockReference);
-	BlockReference->setColorIndex(pstate.ColorIndex());
+	BlockReference->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
@@ -428,7 +428,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 
 	blockTableRecord->appendOdDbEntity(BlockReference);
 
-	BlockReference->setColorIndex(file.ReadInt16());
+	BlockReference->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
 
@@ -470,8 +470,8 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockRefere
 	auto BlockReference {new EoDbBlockReference()};
 	BlockReference->SetEntityObjectId(blockReference->objectId());
 
-	BlockReference->m_ColorIndex = blockReference->colorIndex();
-	BlockReference->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype());
+	BlockReference->m_ColorIndex = static_cast<short>(blockReference->colorIndex());
+	BlockReference->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(blockReference->linetype()));
 
 	OdDbBlockTableRecordPtr BlockTableRecordPtr {blockReference->blockTableRecord().safeOpenObject(OdDb::kForRead)};
 

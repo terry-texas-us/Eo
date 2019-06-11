@@ -97,7 +97,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		if (CMenu* SubMenu = popupMenu->GetSubMenu(ScaleMenuPosition)) {
 			SubMenu->DestroyMenu();
 		}
-		popupMenu->DeleteMenu(ScaleMenuPosition, MF_BYPOSITION);
+		popupMenu->DeleteMenu(static_cast<unsigned>(ScaleMenuPosition), MF_BYPOSITION);
 	}
 	auto ContextManager {database->objectContextManager()};
 	const auto ScalesCollection {ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)};
@@ -116,8 +116,8 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		MenuItemInfo.fMask = MIIM_DATA | MIIM_ID | MIIM_STRING;
 		MenuItemInfo.fType = MFT_STRING;
 		MenuItemInfo.fState = MFS_ENABLED;
-		MenuItemInfo.wID = ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE;
-		MenuItemInfo.dwItemData = {gsl::narrow_cast<unsigned long>(ScaleMenuPosition)};
+		MenuItemInfo.wID = static_cast<unsigned>(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE);
+		MenuItemInfo.dwItemData = gsl::narrow_cast<unsigned long>(ScaleMenuPosition);
 		MenuItemInfo.dwTypeData = ScaleName.getBuffer(ScaleName.getLength());
 		ScaleName.releaseBuffer();
 
@@ -125,7 +125,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 			MenuItemInfo.fMask |= MIIM_STATE;
 			MenuItemInfo.fState |= MFS_CHECKED;
 		}
-		popupMenu->InsertMenuItemW(ScaleMenuPosition++, &MenuItemInfo, TRUE);
+		popupMenu->InsertMenuItemW(static_cast<unsigned>(ScaleMenuPosition++), &MenuItemInfo, TRUE);
 	}
 }
 const int kViewMenuPosition(2);

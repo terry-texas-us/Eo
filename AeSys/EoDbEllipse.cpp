@@ -889,8 +889,8 @@ bool EoDbEllipse::Write(EoDbFile& file) const {
 void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 2;
 	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_Center);
@@ -916,8 +916,8 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
 	auto Ellipse {new EoDbEllipse()};
 	Ellipse->SetEntityObjectId(ellipse->objectId());
 
-	Ellipse->m_ColorIndex = ellipse->colorIndex();
-	Ellipse->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype());
+	Ellipse->m_ColorIndex = static_cast<short>(ellipse->colorIndex());
+	Ellipse->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(ellipse->linetype()));
 
 	OdGeVector3d MajorAxis(ellipse->majorAxis());
 	OdGeVector3d MinorAxis(ellipse->minorAxis());
@@ -953,7 +953,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
 	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Ellipse);
-	Ellipse->setColorIndex(pstate.ColorIndex());
+	Ellipse->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
@@ -973,7 +973,7 @@ OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr & blockTableRec
 	return Ellipse;
 }
 
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
 	auto Database {blockTableRecord->database()};
 
 	auto Ellipse {OdDbEllipse::createObject()};
@@ -981,23 +981,24 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord, E
 
 	blockTableRecord->appendOdDbEntity(Ellipse);
 
-	Ellipse->setColorIndex(file.ReadInt16());
+	Ellipse->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
 	Ellipse->setLinetype(Linetype);
 
-	const auto CenterPoint(file.ReadPoint3d());
-	const auto MajorAxis(file.ReadVector3d());
-	const auto MinorAxis(file.ReadVector3d());
+	const auto CenterPoint {file.ReadPoint3d()};
+	const auto MajorAxis {file.ReadVector3d()};
+	const auto MinorAxis {file.ReadVector3d()};
 
-	const auto SweepAngle = file.ReadDouble();
+	const auto SweepAngle {file.ReadDouble()};
 
 	auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};
+	
 	if (!PlaneNormal.isZeroLength()) {
 		PlaneNormal.normalize();
 		// <tas="Apparently some ellipse primitives have a RadiusRatio > 1."></tas>
-		const double RadiusRatio = MinorAxis.length() / MajorAxis.length();
+		const auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
 		Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, EoMin(1.0, RadiusRatio), 0.0, SweepAngle);
 	}
 	return Ellipse;
@@ -1050,7 +1051,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 
 	blockTableRecord->appendOdDbEntity(Ellipse);
 
-	Ellipse->setColorIndex(ColorIndex);
+	Ellipse->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
 
 	auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};

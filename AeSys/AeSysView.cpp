@@ -2561,15 +2561,15 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 	if (deviceContext->IsPrinting()) {
 		if (m_Plot) {
 			const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / kMmPerInch) / m_PlotScaleFactor};
-			const double VerticalSizeInInches = {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / kMmPerInch) / m_PlotScaleFactor};
+			const double VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / kMmPerInch) / m_PlotScaleFactor};
 
 			unsigned HorizontalPages;
 			unsigned VerticalPages;
 
 			NumPages(deviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages);
 
-			const double dX = ((printInformation->m_nCurPage - 1) % HorizontalPages) * HorizontalSizeInInches;
-			const double dY = ((printInformation->m_nCurPage - 1) / HorizontalPages) * VerticalSizeInInches;
+			const double dX {((printInformation->m_nCurPage - 1) % HorizontalPages) * HorizontalSizeInInches};
+			const double dY {((printInformation->m_nCurPage - 1) / HorizontalPages) * VerticalSizeInInches};
 
 			m_ViewTransform.SetProjectionPlaneField(0.0, 0.0, HorizontalSizeInInches, VerticalSizeInInches);
 			const OdGePoint3d Target(OdGePoint3d(dX, dY, 0.0));

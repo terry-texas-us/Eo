@@ -95,7 +95,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	else if (Color.isByLayer()) {
 		primitive->SetColorIndex(EoDbPrimitive::COLORINDEX_BYLAYER);
 	} else {
-		primitive->SetColorIndex(Color.colorIndex());
+		primitive->SetColorIndex(static_cast<short>(Color.colorIndex()));
 	}
 	const OdDbObjectId Linetype = entity->linetypeId();
 
@@ -106,7 +106,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
 	} else {
 		OdString Name = entity->linetype();
-		primitive->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(Name));
+		primitive->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 	}
 
 	OdGeExtents3d extents;
@@ -415,9 +415,9 @@ public:
 
 		OdRxObjectPtrArray EntitySet;
 		LeaderEntity->explode(EntitySet);
-		const int NumberOfEntities = EntitySet.size();
-		for (int i = 0; i < NumberOfEntities; i++) {
-			OdDbEntityPtr Entity = static_cast<OdDbEntityPtr>(EntitySet[i]);
+		const auto NumberOfEntities {EntitySet.size()};
+		for (unsigned i = 0; i < NumberOfEntities; i++) {
+			auto Entity {static_cast<OdDbEntityPtr>(EntitySet[i])};
 			OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
 			EntityConverter->Convert(Entity, group);
 		}
@@ -504,9 +504,9 @@ public:
 			}
 			OdRxObjectPtrArray EntitySet;
 			ProxyEntityEntity->explodeGeometry(EntitySet);
-			const int NumberOfEntities = EntitySet.size();
-			for (int n = 0; n < NumberOfEntities; n++) {
-				OdDbEntityPtr Entity = static_cast<OdDbEntityPtr>(EntitySet[n]);
+			const auto NumberOfEntities {EntitySet.size()};
+			for (unsigned n = 0; n < NumberOfEntities; n++) {
+				auto Entity {static_cast<OdDbEntityPtr>(EntitySet[n])};
 				OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
 				EntityConverter->Convert(Entity, group);
 			}
@@ -649,30 +649,22 @@ public:
 
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
+
 		if (layerIds.length()) {
-
 			for (int i = 0; i < (int) layerIds.length(); i++) {
-
 			}
 		} else {
-
 		}
-
 		OdGePoint3d origin;
 		OdGeVector3d xAxis;
 		OdGeVector3d yAxis;
 		ViewportEntity->getUcs(origin, xAxis, yAxis);
 
 		if (!ViewportEntity->nonRectClipEntityId().isNull()) {
-
 		}
-		OdDb::OrthographicView orthoUCS;
-
 		if (!ViewportEntity->ucsName().isNull()) {
 			OdDbUCSTableRecordPtr UCS = ViewportEntity->ucsName().safeOpenObject(OdDb::kForRead);
-
 		} else {
-
 		}
 		//ConvertEntityData(ViewportEntity, );
 	}

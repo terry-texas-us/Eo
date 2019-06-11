@@ -142,7 +142,7 @@ void EoDbFile::ReadString(CString& string) {
 	}
 }
 
-void EoDbFile::ReadString(OdString & string) {
+void EoDbFile::ReadString(OdString& string) {
 	string.empty();
 	char c;
 	while (Read(&c, 1) == 1) {
@@ -211,19 +211,19 @@ void EoDbFile::WritePoint3d(const OdGePoint3d & point) {
 	Write(&point.z, sizeof(double));
 }
 
-void EoDbFile::WriteString(const CString & string) {
-	const int NumberOfCharacters = string.GetLength();
+void EoDbFile::WriteString(const CString& string) {
+	const auto NumberOfCharacters {string.GetLength()};
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c = unsigned char(string.GetAt(n));
+		const char c {char(string.GetAt(n))};
 		Write(&c, 1);
 	}
 	Write("\t", 1);
 }
 
-void EoDbFile::WriteString(const OdString & string) {
+void EoDbFile::WriteString(const OdString& string) {
 	const int NumberOfCharacters = string.getLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c = unsigned char(string.getAt(n));
+		const char c {char(string.getAt(n))};
 		Write(&c, 1);
 	}
 	Write("\t", 1);

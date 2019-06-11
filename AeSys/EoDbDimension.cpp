@@ -493,24 +493,24 @@ bool EoDbDimension::Write(EoDbFile & file) const {
 }
 
 void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
-	unsigned short NumberOfCharacters {static_cast<unsigned short>(m_strText.GetLength())};
+	auto NumberOfCharacters {static_cast<short>(m_strText.GetLength())};
 
 	buffer[3] = static_cast<unsigned char>((118 + NumberOfCharacters) / 32);
 	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kDimensionPrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_Line.startPoint());
 	((EoVaxPoint3d*) & buffer[20])->Convert(m_Line.endPoint());
 
-	buffer[32] = static_cast<signed char>(m_ColorIndex);
+	buffer[32] = static_cast<unsigned char>(m_ColorIndex);
 	buffer[33] = static_cast<signed char>(EoDb::kStrokeType);
 	*((short*) & buffer[34]) = 0;
 	((EoVaxFloat*) & buffer[36])->Convert(m_FontDefinition.CharacterSpacing());
-	buffer[40] = static_cast<signed char>(m_FontDefinition.Path());
-	buffer[41] = static_cast<signed char>(m_FontDefinition.HorizontalAlignment());
-	buffer[42] = static_cast<signed char>(m_FontDefinition.VerticalAlignment());
+	buffer[40] = static_cast<unsigned char>(m_FontDefinition.Path());
+	buffer[41] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
+	buffer[42] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
 
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
 
@@ -520,10 +520,10 @@ void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
 
 	*((short*) & buffer[79]) = NumberOfCharacters;
 	unsigned BufferOffset = 81;
-	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
+	for (short CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
 		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[CharacterIndex]);
 	}
-	file.Write(buffer, buffer[3] * 32);
+	file.Write(buffer, static_cast<unsigned>(buffer[3] * 32));
 }
 
 EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) {
@@ -562,11 +562,11 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 	const auto Oblique {alignedDimension->oblique()};
 
 	auto Dimension {new EoDbDimension()};
-	Dimension->SetColorIndex(DimensionStyle->dimclrd().colorIndex());
+	Dimension->SetColorIndex(static_cast<short>(DimensionStyle->dimclrd().colorIndex()));
 	//Dimension->SetLinetypeIndex(LinetypeIndex);
 	Dimension->SetStartPoint(ExtensionLine1Point);
 	Dimension->SetEndPoint(ExtensionLine2Point);
-	Dimension->SetTextColorIndex(DimensionStyle->dimclrt().colorIndex());
+	Dimension->SetTextColorIndex(static_cast<short>(DimensionStyle->dimclrt().colorIndex()));
 
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
@@ -591,7 +591,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	AlignedDimension->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
-	AlignedDimension->setColorIndex(pstate.ColorIndex());
+	AlignedDimension->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
@@ -601,7 +601,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 }
 
 OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
-	const auto ColorIndex {file.ReadInt16()};
+	auto ColorIndex {file.ReadInt16()};
 	const auto LinetypeIndex {file.ReadInt16()};
 	const auto StartPoint {file.ReadPoint3d()};
 	const auto EndPoint {file.ReadPoint3d()};
@@ -630,7 +630,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 
-	AlignedDimension->setColorIndex(ColorIndex);
+	AlignedDimension->setColorIndex(static_cast<unsigned short>(ColorIndex));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex)};
 
@@ -713,7 +713,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 
-	AlignedDimension->setColorIndex(ColorIndex);
+	AlignedDimension->setColorIndex(static_cast<unsigned short>(ColorIndex));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex)};
 
