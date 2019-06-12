@@ -446,7 +446,7 @@ static CString FindConfigFile(const CString& configType, CString file, OdDbSyste
 		
 		if (systemServices->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
 	}
-	return OdString::kEmpty;
+	return CString(L"\0");
 }
 
 AeSys theApp;
@@ -539,7 +539,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 	FilePathAndName.SetString(ExHostAppServices::findFile(fileToFind, database, hint));
 
 	if (FilePathAndName.IsEmpty()) {
-		const auto ApplicationName {L"SOFTWARE\\Autodesk\\AutoCAD"};
+		auto SystemServices {odSystemServices()};
 
 		CString FileToFind;
 		FileToFind.SetString(fileToFind);
@@ -547,14 +547,14 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 		auto Extension {FileToFind.Right(4)};
 		Extension.MakeLower();
 		
-		if (!Extension.CompareNoCase(L".pc3")) {
-			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterConfigDir", FileToFind);
+		if (Extension == L".pc3") {
+			return FindConfigFile(L"PrinterConfigDir", FileToFind, SystemServices);
 		}
-		if (!Extension.CompareNoCase(L".stb") || !Extension.CompareNoCase(L".ctb")) {
-			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterStyleSheetDir", FileToFind);
+		if (Extension == L".stb" || Extension == L".ctb") {
+			return FindConfigFile(L"PrinterStyleSheetDir", FileToFind, SystemServices);
 		}
-		if (!Extension.CompareNoCase(L".pmp")) {
-			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterDescDir", FileToFind);
+		if (Extension == L".pmp") {
+			return FindConfigFile(L"PrinterDescDir", FileToFind, SystemServices);
 		}
 		switch (hint) {
 			case kFontFile:
@@ -584,8 +584,6 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			FileToFind.Delete(0, FileToFind.ReverseFind(L'\\') + 1);
 		}
 		FilePathAndName = (hint != kTextureMapFile) ? FindConfigPath(L"ACAD") : FindConfigPath(L"AVEMAPS");
-
-		auto SystemServices {odSystemServices()};
 
 		CString Path;
 		while (!FilePathAndName.IsEmpty()) {
@@ -907,17 +905,6 @@ void AeSys::BuildModeSpecificAcceleratorTable() {
 
 unsigned AeSys::ClipboardFormatIdentifierForEoGroups()  noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
-}
-
-CString AeSys::ConfigurationFileFor(HKEY key, const CString& applicationName, const CString& configType, CString file) {
-	auto ConfigPath {FindConfigPath(configType)};
-
-	if (!ConfigPath.IsEmpty()) {
-		file = ConfigPath + L"\\" + file;
-
-		if (odSystemServices()->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
-	}
-	return OdString::kEmpty;
 }
 
 int AeSys::CurrentMode() const  noexcept {
@@ -1905,7 +1892,7 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 
 double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 	try {
-		int iTokId = 0;
+		int iTokId {0};
 		long lDef;
 		int iTyp;
 		double ReturnValue[32];
@@ -1943,6 +1930,11 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 
 				case kKilometers:
 					ReturnValue[0] *= 39370.07874015748;
+					break;
+
+				case kInches:
+				default:
+					break;
 			}
 			ReturnValue[0] /= AeSysView::GetActiveView()->WorldScale();
 		}

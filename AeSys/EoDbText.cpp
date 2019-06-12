@@ -322,14 +322,13 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextH
 		case OdDb::kTextCenter:
 			HorizontalAlignment = EoDb::kAlignCenter;
 			break;
-
 		case OdDb::kTextRight:
 		case OdDb::kTextAlign:
 		case OdDb::kTextFit:
 			HorizontalAlignment = EoDb::kAlignRight;
 			break;
-
-		default: // OdDb::kTextLeft
+		case OdDb::kTextLeft:
+		default:
 			HorizontalAlignment = EoDb::kAlignLeft;
 	}
 	return HorizontalAlignment;
@@ -342,12 +341,12 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertM
 		case OdDb::kTextVertMid:
 			VerticalAlignment = EoDb::kAlignMiddle;
 			break;
-
 		case OdDb::kTextTop:
 			VerticalAlignment = EoDb::kAlignTop;
 			break;
-
-		default: // OdDb::kTextBottom & OdDb::kTextBase
+		case OdDb::kTextBase:
+		case OdDb::kTextBottom:
+		default:
 			VerticalAlignment = EoDb::kAlignBottom;
 	}
 	return VerticalAlignment;
@@ -860,7 +859,7 @@ void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition&
 	DisplayTextSegmentUsingStrokeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text);
 }
 
-void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, int startPosition, int numberOfCharacters, const CString & text) {
+void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
 	
 	if (numberOfCharacters == 0) { return; }
 
@@ -868,16 +867,16 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, Eo
 
 	if (plStrokeFontDef == nullptr) { return; }
 
-	const OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
+	const OdGeMatrix3d tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
 
-	const long* plStrokeChrDef = plStrokeFontDef + 96;
-	const double dChrSpac = 1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6;
+	const long* plStrokeChrDef {plStrokeFontDef + 96};
+	const double dChrSpac {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 
-	OdGePoint3d ptStroke = OdGePoint3d::kOrigin;
-	OdGePoint3d ptChrPos = ptStroke;
-	const OdGePoint3d ptLinePos = ptChrPos;
+	auto ptStroke {OdGePoint3d::kOrigin};
+	auto ptChrPos {ptStroke};
+	const auto ptLinePos {ptChrPos};
 
-	int n = startPosition;
+	int n {startPosition};
 
 	while (n < startPosition + numberOfCharacters) {
 		polyline::BeginLineStrip();
@@ -887,11 +886,12 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, Eo
 
 		for (int i = (int) plStrokeFontDef[Character - 32]; i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
 			int iY = (int) (plStrokeChrDef[i - 1] % 4096L);
-			if ((iY & 2048) != 0)
-				iY = -(iY - 2048);
+			
+			if ((iY & 2048) != 0) { iY = -(iY - 2048); }
+			
 			int iX = (int) ((plStrokeChrDef[i - 1] / 4096L) % 4096L);
-			if ((iX & 2048) != 0)
-				iX = -(iX - 2048);
+			
+			if ((iX & 2048) != 0) { iX = -(iX - 2048); }
 
 			ptStroke += OdGeVector3d(.01 / 0.6 * iX, .01 * iY, 0.0);
 
@@ -913,6 +913,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, Eo
 			case EoDb::kPathDown:
 				ptChrPos.y -= dChrSpac;
 				break;
+			case EoDb::kPathRight:
 			default:
 				ptChrPos.x += dChrSpac;
 		}

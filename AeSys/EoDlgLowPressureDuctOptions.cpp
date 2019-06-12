@@ -38,8 +38,8 @@ BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 	SetDlgItemTextW(IDC_WIDTH, theApp.FormatLength(m_Width, Units, 12, 3));
 	SetDlgItemTextW(IDC_DEPTH, theApp.FormatLength(m_Depth, Units, 12, 3));
 	CheckRadioButton(IDC_LEFT, IDC_RIGHT, IDC_CENTER + m_Justification);
-	CheckDlgButton(IDC_GEN_VANES, m_GenerateVanes ? 1 : 0);
-	CheckDlgButton(IDC_BEGINWITHTRANSITION, m_BeginWithTransition ? 1 : 0);
+	CheckDlgButton(IDC_GEN_VANES, m_GenerateVanes ? 1u : 0u);
+	CheckDlgButton(IDC_BEGINWITHTRANSITION, m_BeginWithTransition ? 1u : 0u);
 	return TRUE;
 }
 

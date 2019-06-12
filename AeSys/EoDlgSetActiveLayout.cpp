@@ -49,7 +49,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 			OdDbLayoutPtr Layout {LayoutIterator->objectId().safeOpenObject()};
 			ItemIndex = Layout->getTabOrder();
 			
-			if (ItemIndex >= Items.size()) { Items.resize(ItemIndex + 1); }
+			if (static_cast<unsigned>(ItemIndex) >= Items.size()) { Items.resize(ItemIndex + 1); }
 
 			Items[ItemIndex] = LayoutIterator->name();
 			
@@ -60,7 +60,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		auto Layouts {(CListBox*) GetDlgItem(IDC_LAYOUTLIST)};
 		Layouts->ResetContent();
 
-		for (auto ItemIndex = 0; ItemIndex < Items.size(); ++ItemIndex) {
+		for (unsigned ItemIndex = 0; ItemIndex < Items.size(); ++ItemIndex) {
 			Layouts->InsertString(ItemIndex, Items[ItemIndex]);
 		}
 		Layouts->SetSel(m_OldActiveLayout);

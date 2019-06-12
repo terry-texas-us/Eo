@@ -142,7 +142,7 @@ void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
 void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		bool bFilter = FALSE;
+		bool Filter {false};
 
 		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 
@@ -152,28 +152,35 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 
 			switch (primitiveType) {
 				case EoDb::kLinePrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine));
 					break;
 				case EoDb::kEllipsePrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse));
 					break;
 				case EoDb::kGroupReferencePrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference));
 					break;
 				case EoDb::kTextPrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbText));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbText));
 					break;
 				case EoDb::kHatchPrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch));
 					break;
 				case EoDb::kPolylinePrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline));
 					break;
 				case EoDb::kPointPrimitive:
-					bFilter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint));
+					break;
+				case EoDb::kInsertPrimitive:
+				case EoDb::kSplinePrimitive:
+				case EoDb::kCSplinePrimitive:
+				case EoDb::kTagPrimitive:
+				case EoDb::kDimensionPrimitive:
+				default:
 					break;
 			}
-			if (bFilter) {
+			if (Filter) {
 				m_Document->RemoveTrappedGroup(Group);
 				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;

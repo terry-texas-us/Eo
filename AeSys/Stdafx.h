@@ -10,7 +10,16 @@
 // <tas=uncomment to use Guidelines Support Library https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md">
 #pragma warning (push)
 #pragma warning (disable: 4003)
-#include <gsl/gsl>
+//#include <gsl/gsl>
+//#include <gsl/gsl_algorithm> // copy
+//#include <gsl/gsl_assert> // Ensures/Expects
+//#include <gsl/gsl_byte> // byte
+#include <gsl/gsl_util> // finally()/narrow()/narrow_cast()...
+//#include <gsl/multi_span> // multi_span, strided_span...
+#include <gsl/pointers> // owner, not_null
+//#include <gsl/span> // span
+#include <gsl/string_span> // zstring, string_span, zstring_builder...
+
 #pragma warning (pop)
 // </tas>
 
@@ -108,7 +117,9 @@ constexpr auto RADIAN = OdaPI / 180.0;
 #pragma warning (default: 4437) // (level 4) dynamic_cast from virtual base 'class1' to 'class2' could fail in some contexts
 #pragma warning (default: 4464) // (level 4) relative include path contains '..'
 #pragma warning (default: 4471) // (level 4) a forward declaration of an unscoped enumeration must have an underlying type(int assumed) Perm
+
 //#pragma warning (default: 4514) // (level 4) 'function' : unreferenced inline function has been removed
+
 #pragma warning (default: 4536) // (level 4) 'type name' : type - name exceeds meta - data limit of 'limit' characters
 #pragma warning (default: 4571) // (level 4) informational : catch (...) semantics changed since Visual C++ 7.1; structured exceptions(SEH) are no longer caught
 #pragma warning (default: 4574) // (level 4) 'identifier' is defined to be '0': did you mean to use '#if identifier' ?
@@ -116,8 +127,10 @@ constexpr auto RADIAN = OdaPI / 180.0;
 #pragma warning (default: 4583) // (level 4) 'type' : destructor is not implicitly called
 #pragma warning (default: 4596) // (level 4) 'identifier' : illegal qualified name in member declaration 14.3 Perm
 #pragma warning (default: 4623) // (level 4) 'derived class' : default constructor could not be generated because a base class default constructor is inaccessible
+
 //#pragma warning (default: 4625) // (level 4) 'derived class' : copy constructor could not be generated because a base class copy constructor is inaccessible
 //#pragma warning (default: 4626) // (level 4) 'derived class' : assignment operator could not be generated because a base class assignment operator is inaccessible
+
 #pragma warning (default: 4643) // (level 4) Forward declaring 'identifier' in namespace std is not permitted by the C++ Standard.
 #pragma warning (default: 4654) // (level 4) Code placed before include of precompiled header line will be ignored.Add code to precompiled header.
 #pragma warning (default: 4668) // (level 4) 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
@@ -128,7 +141,9 @@ constexpr auto RADIAN = OdaPI / 180.0;
 #pragma warning (default: 4774) // (level 4) 'string' : format string expected in argument number is not a string literal
 #pragma warning (default: 4777) // (level 4) 'function' : format string 'string' requires an argument of type 'type1', but variadic argument number has type 'type2'
 // <tas="requires vs 2019"/>#pragma warning (default: 4800) // (level 4) Implicit conversion from 'type' to bool.Possible information loss
-//#pragma warning (default: 4820) // (level 4) 'bytes' bytes padding added after construct 'member_name'
+
+#pragma warning (default: 4820) // (level 4) 'bytes' bytes padding added after construct 'member_name'
+
 #pragma warning (default: 4837) // (level 4) trigraph detected : '??character' replaced by 'character'
 #pragma warning (default: 4841) // (level 4) non - standard extension used : compound member designator used in offsetof
 #pragma warning (default: 4842) // (level 4) the result of 'offsetof' applied to a type using multiple inheritance is not guaranteed to be consistent between compiler releases
@@ -157,4 +172,4 @@ constexpr auto RADIAN = OdaPI / 180.0;
 // <tas="Following default warnings count many thousands. For later evaluation separately"/>
 #pragma warning (disable: 5026) // (level 1 and level 4) 'type': move constructor was implicitly defined as deleted
 #pragma warning (disable: 5027) // (level 1 and level 4) 'type' : move assignment operator was implicitly defined as deleted
-#pragma warning (disable: 5031) // #pragma warning(pop) : likely mismatch, popping warning state pushed in different file
+//#pragma warning (disable: 5031) // #pragma warning(pop) : likely mismatch, popping warning state pushed in different file

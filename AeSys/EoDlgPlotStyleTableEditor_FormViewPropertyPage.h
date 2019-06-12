@@ -134,7 +134,7 @@ protected:
 	const int getPublicArrayIndexByColor(COLORREF color);
 
 public:
-	CPsListStyleData(OdPsPlotStyle* pPs, OdBitmapColorInfoArray* pPublicBitmapList, const char item);
+	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, const char item);
 
 	~CPsListStyleData();
 

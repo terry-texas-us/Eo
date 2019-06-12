@@ -80,6 +80,7 @@ static OdString FormatValue(const OdResBuf* resourceBuffer) {
 		case OdDxfCode::HardOwnershipId:
 			FormattedValue = resourceBuffer->getHandle().ascii();
 			break;
+		case OdDxfCode::BinaryChunk:
 		default:
 			break;
 	}
@@ -112,7 +113,7 @@ void EoDlgEditProperties::OnButton() {
 	if (m_nCurItem == -1) { return; }
 
 	auto ResourceBuffer {m_ResourceBuffer};
-	int i = 0;
+	auto i {0};
 	while (!ResourceBuffer.isNull() && i < m_nCurItem) {
 		++i;
 		ResourceBuffer = ResourceBuffer->next();
@@ -164,6 +165,9 @@ void EoDlgEditProperties::OnButton() {
 				case OdDxfCode::HardOwnershipId:
 					ResourceBuffer->setHandle(OdDbHandle(m_sValue));
 					break;
+				case OdDxfCode::Unknown:
+				case OdDxfCode::BinaryChunk:
+				case OdDxfCode::Integer64:
 				default:
 					break;
 			}

@@ -56,6 +56,7 @@ OdString ucsString(const OdDbObject* viewport) {
 		case OdDb::kRightView:
 			Result = L"Right";
 			break;
+		case OdDb::kNonOrthoView:
 		default: {
 			OdDbUCSTableRecordPtr pUCS {OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject()};
 

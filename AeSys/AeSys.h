@@ -345,7 +345,6 @@ public:
 	int	ArchitecturalUnitsFractionPrecision() const noexcept;
 	void BuildModeSpecificAcceleratorTable();
 	unsigned ClipboardFormatIdentifierForEoGroups() noexcept;
-	static CString ConfigurationFileFor(HKEY key, const CString& applicationName, const CString& configType, CString file);
 	int CurrentMode() const noexcept;
 	double DeviceHeightInMillimeters() const noexcept;
 	double DeviceHeightInPixels() const noexcept;
