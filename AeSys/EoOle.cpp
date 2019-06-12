@@ -78,7 +78,8 @@ public:
 			if (HRESULT_FACILITY(hr) == FACILITY_WINDOWS) {
 				hr = HRESULT_CODE(hr);
 			}
-			OdChar *szError;
+			wchar_t* szError;
+			
 			if (::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &szError, 0, NULL) != 0) {
 				ODA_TRACE1("[OleDwgItem::draw] Decoded HRESULT: %s", szError);
 				::LocalFree(szError);
@@ -212,7 +213,7 @@ public:
 		if (m_lpObject) {
 			CString res;
 			const_cast<OleDwgItem*>(this)->COleClientItem::GetUserType(USERCLASSTYPE_FULL, res);
-			return (const OdChar*) OdString(res);
+			return (const wchar_t*) OdString(res);
 		}
 		return OdString::kEmpty;
 	}

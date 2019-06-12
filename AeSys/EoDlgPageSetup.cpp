@@ -440,11 +440,11 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	}
 }
 OdString EoDlgPageSetup::GetCanonicalByLocaleMediaName(OdString localeMediaName) {
-	OdArray<const OdChar*> MediaNames;
+	OdArray<const wchar_t*> MediaNames;
 	m_PlotSettingsValidator->canonicalMediaNameList(&m_PlotSettings, MediaNames);
 
-	OdArray<const OdChar*>::const_iterator NamesIterator = MediaNames.begin();
-	OdArray<const OdChar*>::const_iterator NamesIteratorEnd = MediaNames.end();
+	OdArray<const wchar_t*>::const_iterator NamesIterator = MediaNames.begin();
+	OdArray<const wchar_t*>::const_iterator NamesIteratorEnd = MediaNames.end();
 
 	while (NamesIterator != NamesIteratorEnd) {
 		if (m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, NamesIterator - MediaNames.begin()) == localeMediaName) {
@@ -538,13 +538,13 @@ BOOL EoDlgPageSetup::OnInitDialog() {
 	return TRUE;
 }
 bool EoDlgPageSetup::FillDeviceCombo() {
-	OdArray<const OdChar*> Devices;
+	OdArray<const wchar_t*> Devices;
 	m_PlotSettingsValidator->plotDeviceList(Devices);
 
 	m_PlotDeviceName.ResetContent();
 
-	OdArray<const OdChar*>::const_iterator DeviceIterator = Devices.begin();
-	OdArray<const OdChar*>::const_iterator DeviceIteratorEnd = Devices.end();
+	OdArray<const wchar_t*>::const_iterator DeviceIterator = Devices.begin();
+	OdArray<const wchar_t*>::const_iterator DeviceIteratorEnd = Devices.end();
 
 	while (DeviceIterator != DeviceIteratorEnd) {
 		m_PlotDeviceName.AddString(*DeviceIterator);
@@ -555,7 +555,7 @@ bool EoDlgPageSetup::FillDeviceCombo() {
 	return true;
 }
 bool EoDlgPageSetup::FillPaperSizes() {
-	OdArray<const OdChar*> CanonicalMediaNames;
+	OdArray<const wchar_t*> CanonicalMediaNames;
 	m_PlotSettingsValidator->canonicalMediaNameList(&m_PlotSettings, CanonicalMediaNames);
 
 	m_PaperSize.ResetContent();
@@ -848,7 +848,7 @@ void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 	USES_CONVERSION;
 
 	if (fillCombo) {
-		OdArray<const OdChar*> StyleList;
+		OdArray<const wchar_t*> StyleList;
 		m_PlotSettingsValidator->plotStyleSheetList(StyleList);
 
 		m_PlotStyleFiles.AddString(L"None");

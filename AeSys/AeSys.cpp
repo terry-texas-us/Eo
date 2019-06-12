@@ -416,15 +416,15 @@ AeSys::AeSys() noexcept
 #define EO_REGISTRY_MAX_PROFILE_NAME 128
 #define EO_REGISTRY_MAX_PATH 1024
 
-OdString GetRegistryAcadLocation();
-OdString GetRegistryAcadProfilesKey();
+CString GetRegistryAcadLocation();
+CString GetRegistryAcadProfilesKey();
 bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept;
 
 // get the value for the ACAD entry in the registry
-static OdString FindConfigPath(const OdString& configType) {
+static CString FindConfigPath(const CString& configType) {
 	auto SubKey {GetRegistryAcadProfilesKey()};
 
-	if (!SubKey.isEmpty()) {
+	if (!SubKey.IsEmpty()) {
 		SubKey += L"\\General";
 
 		wchar_t SearchValue[EO_REGISTRY_MAX_PATH] {L"\0"};
@@ -432,19 +432,19 @@ static OdString FindConfigPath(const OdString& configType) {
 		if (::GetRegistryString(HKEY_CURRENT_USER, SubKey, configType, SearchValue, EO_REGISTRY_MAX_PATH)) {
 			wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
 			ExpandEnvironmentStringsW(SearchValue, ExpandedPath, EO_REGISTRY_MAX_PATH);
-			return OdString(ExpandedPath);
+			return CString(ExpandedPath);
 		}
 	}
-	return OdString::kEmpty;
+	return CString(L"\0");
 }
 
-static OdString FindConfigFile(const OdString& configType, OdString file, OdDbSystemServices* systemServices) {
+static CString FindConfigFile(const CString& configType, CString file, OdDbSystemServices* systemServices) {
 	auto ConfigurationPath {FindConfigPath(configType)};
 
-	if (!ConfigurationPath.isEmpty()) {
+	if (!ConfigurationPath.IsEmpty()) {
 		file = ConfigurationPath + L"\\" + file;
 		
-		if (systemServices->accessFile(file, Oda::kFileRead)) { return file; }
+		if (systemServices->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
 	}
 	return OdString::kEmpty;
 }
@@ -535,22 +535,26 @@ OdRxClass* AeSys::databaseClass() const {
 }
 
 OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database, OdDbBaseHostAppServices::FindFileHint hint) {
-	OdString FilePathAndName = ExHostAppServices::findFile(fileToFind, database, hint);
+	CString FilePathAndName;
+	FilePathAndName.SetString(ExHostAppServices::findFile(fileToFind, database, hint));
 
-	if (FilePathAndName.isEmpty()) {
-		const OdString ApplicationName(L"SOFTWARE\\Autodesk\\AutoCAD");
+	if (FilePathAndName.IsEmpty()) {
+		const auto ApplicationName {L"SOFTWARE\\Autodesk\\AutoCAD"};
 
-		OdString FileToFind(fileToFind);
-		OdString Extension(fileToFind.right(4));
-		Extension.makeLower();
-		if (!Extension.iCompare(L".pc3")) {
-			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterConfigDir", fileToFind);
+		CString FileToFind;
+		FileToFind.SetString(fileToFind);
+
+		auto Extension {FileToFind.Right(4)};
+		Extension.MakeLower();
+		
+		if (!Extension.CompareNoCase(L".pc3")) {
+			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterConfigDir", FileToFind);
 		}
-		if (!Extension.iCompare(L".stb") || !Extension.iCompare(L".ctb")) {
-			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterStyleSheetDir", fileToFind);
+		if (!Extension.CompareNoCase(L".stb") || !Extension.CompareNoCase(L".ctb")) {
+			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterStyleSheetDir", FileToFind);
 		}
-		if (!Extension.iCompare(L".pmp")) {
-			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterDescDir", fileToFind);
+		if (!Extension.CompareNoCase(L".pmp")) {
+			return ConfigurationFileFor(HKEY_CURRENT_USER, ApplicationName, L"PrinterDescDir", FileToFind);
 		}
 		switch (hint) {
 			case kFontFile:
@@ -561,7 +565,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			case kTextureMapFile:
 				break;
 			case kEmbeddedImageFile:
-				if (FileToFind.left(5).iCompare(L"http:") == 0 || FileToFind.left(6).iCompare(L"https:") == 0) { 
+				if (FileToFind.Left(5).CompareNoCase(L"http:") == 0 || FileToFind.Left(6).CompareNoCase(L"https:") == 0) { 
 					// <tas="code section removed"</tas>
 				}
 				// fall through
@@ -576,61 +580,62 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 		if (hint != kTextureMapFile && Extension != L".shx" && Extension != L".pat" && Extension != L".ttf" && Extension != L".ttc" && Extension != L".otf") {
 			FileToFind += L".shx";
 		} else if (hint == kTextureMapFile) {
-			FileToFind.replace(L"/", L"\\");
-			FileToFind.deleteChars(0, FileToFind.reverseFind(L'\\') + 1);
+			FileToFind.Replace(L"/", L"\\");
+			FileToFind.Delete(0, FileToFind.ReverseFind(L'\\') + 1);
 		}
 		FilePathAndName = (hint != kTextureMapFile) ? FindConfigPath(L"ACAD") : FindConfigPath(L"AVEMAPS");
 
-		OdDbSystemServices * SystemServices = odSystemServices();
+		auto SystemServices {odSystemServices()};
 
-		OdString Path;
-		while (!FilePathAndName.isEmpty()) {
-			const int PathDelimiter = FilePathAndName.find(L";");
+		CString Path;
+		while (!FilePathAndName.IsEmpty()) {
+			const int PathDelimiter {FilePathAndName.Find(L";")};
+
 			if (PathDelimiter == -1) {
 				Path = FilePathAndName;
-				FilePathAndName.empty();
+				FilePathAndName.Empty();
 			} else {
-				Path = FilePathAndName.left(PathDelimiter);
+				Path = FilePathAndName.Left(PathDelimiter);
 				Path += L"\\" + FileToFind;
-				if (SystemServices->accessFile(Path, Oda::kFileRead)) {
-					return Path;
-				}
-				FilePathAndName = FilePathAndName.right(FilePathAndName.getLength() - PathDelimiter - 1);
+
+				if (SystemServices->accessFile(Path.GetString(), Oda::kFileRead)) { return Path; }
+
+				FilePathAndName = FilePathAndName.Right(FilePathAndName.GetLength() - PathDelimiter - 1);
 			}
 		}
-		if (hint == kTextureMapFile) {
-			return FilePathAndName;
-		}
-		if (FilePathAndName.isEmpty()) {
-			OdString AcadLocation(GetRegistryAcadLocation());
-			if (!AcadLocation.isEmpty()) {
+		if (hint == kTextureMapFile) { return FilePathAndName; }
+
+		if (FilePathAndName.IsEmpty()) {
+			auto AcadLocation {GetRegistryAcadLocation()};
+			
+			if (!AcadLocation.IsEmpty()) {
 				FilePathAndName = AcadLocation + L"\\Fonts\\" + FileToFind;
-				if (!SystemServices->accessFile(FilePathAndName, Oda::kFileRead)) {
+				
+				if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) {
 					FilePathAndName = AcadLocation + L"\\Support\\" + FileToFind;
-					if (!SystemServices->accessFile(FilePathAndName, Oda::kFileRead)) {
-						FilePathAndName.empty();
-					}
+
+					if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) { FilePathAndName.Empty(); }
 				}
 			}
 		}
 	}
-	return FilePathAndName;
+	return FilePathAndName.GetString();
 }
 
 CString AeSys::getApplicationPath() {
 	wchar_t FileName[MAX_PATH];
+
 	if (::GetModuleFileNameW(::GetModuleHandleW(nullptr), FileName, MAX_PATH)) {
 		CString FilePath(FileName);
-		const int Delimiter = FilePath.ReverseFind('\\');
+		const int Delimiter {FilePath.ReverseFind('\\')};
 		return (FilePath.Left(Delimiter));
 	}
 	return L"";
 }
 
 void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
-	if (m_pAuditDlg) {
-		m_pAuditDlg->printReport(( OdDbAuditInfo*) auditInfo);
-	}
+	
+	if (m_pAuditDlg) { m_pAuditDlg->printReport(( OdDbAuditInfo*) auditInfo); }
 }
 
 OdDbUndoControllerPtr AeSys::newUndoController() {
@@ -904,13 +909,13 @@ unsigned AeSys::ClipboardFormatIdentifierForEoGroups()  noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
 
-OdString AeSys::ConfigurationFileFor(HKEY key, const OdString & applicationName, const OdString & configType, OdString file) {
-	OdString ConfigPath = FindConfigPath(configType);
-	if (!ConfigPath.isEmpty()) {
+CString AeSys::ConfigurationFileFor(HKEY key, const CString& applicationName, const CString& configType, CString file) {
+	auto ConfigPath {FindConfigPath(configType)};
+
+	if (!ConfigPath.IsEmpty()) {
 		file = ConfigPath + L"\\" + file;
-		if (odSystemServices()->accessFile(file, Oda::kFileRead)) {
-			return file;
-		}
+
+		if (odSystemServices()->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
 	}
 	return OdString::kEmpty;
 }
@@ -1995,30 +2000,31 @@ bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wch
 	return ReturnValue;
 }
 
-OdString GetRegistryAcadLocation() {
-	OdString subkey {L"SOFTWARE\\Autodesk\\AutoCAD"};
-	wchar_t version[32] {L"\0"};
-	wchar_t subVersion[32] {L"\0"};
+CString GetRegistryAcadLocation() {
+	CString SubKey {L"SOFTWARE\\Autodesk\\AutoCAD"};
+
+	wchar_t Version[32] {L"\0"};
+
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", Version, 32) == 0) { return L""; }
+
+	SubKey += L"\\";
+	SubKey += Version;
+
+	wchar_t SubVersion[32] {L"\0"};
+
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", SubVersion, 32) == 0) { return L""; }
+
+	SubKey += L"\\";
+	SubKey += SubVersion;
+
 	wchar_t searchPaths[EO_REGISTRY_MAX_PATH] {L"\0"};
 
-	// get the version and concatenate onto subkey
-	if (GetRegistryString(HKEY_LOCAL_MACHINE, subkey, L"CurVer", version, 32) == 0) { return L""; }
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"AcadLocation", searchPaths, EO_REGISTRY_MAX_PATH) == 0) { return L""; }
 
-	subkey += L"\\";
-	subkey += version;
-
-	// get the sub-version and concatenate onto subkey
-	if (GetRegistryString(HKEY_LOCAL_MACHINE, subkey, L"CurVer", subVersion, 32) == 0) { return L""; }
-	subkey += L"\\";
-	subkey += subVersion;
-
-	// get the value for the AcadLocation entry in the registry
-	if (GetRegistryString(HKEY_LOCAL_MACHINE, subkey, L"AcadLocation", searchPaths, EO_REGISTRY_MAX_PATH) == 0) { return L""; }
-
-	return OdString(searchPaths);
+	return CString(searchPaths);
 }
 
-OdString GetRegistryAcadProfilesKey() {
+CString GetRegistryAcadProfilesKey() {
 	CString Subkey {L"SOFTWARE\\Autodesk\\AutoCAD"};
 
 	wchar_t Version[32] {L"\0"};
@@ -2231,7 +2237,7 @@ void AeSys::WarningMessageBox(unsigned stringResourceIdentifier, const wchar_t* 
 }
 
 void AeSys::initPlotStyleSheetEnv() {
-	OdString StyleSheetFiles = FindConfigPath(L"PrinterStyleSheetDir");
+	auto StyleSheetFiles {FindConfigPath(L"PrinterStyleSheetDir")};
 	_wputenv_s(L"DDPLOTSTYLEPATHS", StyleSheetFiles);
 }
 

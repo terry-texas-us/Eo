@@ -700,10 +700,12 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 		}
 	} catch (const OdEdOtherInput& otherInput) // nX or nXP
 	{
-		OdChar* pEnd;
+		wchar_t* pEnd;
 		const double scale = odStrToD(otherInput.string(), &pEnd);
+
 		if (pEnd > otherInput.string().c_str()) {
 			OdString sEnd(pEnd);
+
 			if (sEnd.iCompare(L"X") == 0) {
 				ActiveView->zoom(scale);
 			} else if (sEnd.iCompare(L"XP") == 0) {

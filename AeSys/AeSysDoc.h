@@ -141,7 +141,7 @@ protected:
 		}
 	};
 	typedef AcadClipDataConstr<char> AcadClipDataR15;
-	typedef AcadClipDataConstr<OdChar> AcadClipDataR21;
+	typedef AcadClipDataConstr<wchar_t> AcadClipDataR21;
 
 public:
 	class ClipboardData {
@@ -200,7 +200,7 @@ public:
 	private:
 		union Data {
 			AcadClipData<char> _r15;
-			AcadClipData<OdChar> _r21;
+			AcadClipData<wchar_t> _r21;
 			Data() noexcept {
 				_r21.init();
 			}

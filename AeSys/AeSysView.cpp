@@ -831,7 +831,7 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 	}
 }
 
-OdString GetRegistryAcadProfilesKey(); // external defined in AeSys
+CString GetRegistryAcadProfilesKey(); // external defined in AeSys
 
 static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subkey, const wchar_t* name, unsigned long& value) noexcept {
 	bool ReturnValue {false};
@@ -2147,7 +2147,7 @@ void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsign
 
 		default:
 			while (repeatCount--) {
-				if (!m_inpars.addChar((OdChar) characterCodeValue)) {
+				if (!m_inpars.addChar(( wchar_t) characterCodeValue)) {
 					m_inpars.reset(false);
 					switch (m_mode) {
 						case kQuiescent:
