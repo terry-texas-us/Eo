@@ -152,9 +152,9 @@ void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int pe
 
 			return;
 		}
-		if (hPen[i] == 0) { iPen = i; }
+		if (hPen[i] == nullptr) { iPen = i; }
 	}
-	HPEN NewPenHandle {::CreatePen(linetypeIndex, penWidth, pColTbl[colorIndex])};
+	auto NewPenHandle {::CreatePen(linetypeIndex, penWidth, pColTbl[colorIndex])};
 
 	if (NewPenHandle) {
 		hPenCur = NewPenHandle;

@@ -922,7 +922,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 	OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForRead);
 
 	if (TextStyles->has(L"EoStandard")) {
-		auto TextStyle {TextStyles->getAt(L"EoStandard")};
+		const auto TextStyle {TextStyles->getAt(L"EoStandard")};
 		DimStyle->setDimtxsty(TextStyle);
 	}
 
@@ -1260,14 +1260,14 @@ void AeSysDoc::DeletedGroupsRestore() {
 }
 
 int AeSysDoc::LinetypeIndexReferenceCount(short linetypeIndex) {
-	int Count = 0;
+	int Count {0};
 
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		Count += Layer->GetLinetypeIndexRefCount(linetypeIndex);
 	}
 	CString Key;
-	EoDbBlock* Block;
+	EoDbBlock* Block {nullptr};
 
 	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
@@ -1515,7 +1515,7 @@ int AeSysDoc::RemoveEmptyNotesAndDelete() {
 	//Note: remove empty notes from blocks
 
 	CString Key;
-	EoDbBlock* Block;
+	EoDbBlock* Block {nullptr};
 
 	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
@@ -1535,7 +1535,7 @@ int AeSysDoc::RemoveEmptyGroups() {
 	//Note: remove empty groups from blocks
 
 	CString Key;
-	EoDbBlock* Block;
+	EoDbBlock* Block {nullptr};
 
 	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
@@ -2093,9 +2093,9 @@ void AeSysDoc::OnEditImageToClipboard() {
 
 void AeSysDoc::OnEditTrace() {
 	if (::OpenClipboard(nullptr)) {
-		wchar_t sBuf[16];
+		wchar_t sBuf[16] {L"\0"};
 
-		unsigned ClipboardFormat;
+		unsigned ClipboardFormat {0};
 		unsigned Format {0};
 
 		while ((ClipboardFormat = EnumClipboardFormats(Format)) != 0) {
@@ -2291,7 +2291,7 @@ void AeSysDoc::OnTrapCommandsBlock() {
 	
 	if (m_TrappedGroupList.GetCount() == 0) { return; }
 
-	EoDbBlock* Block;
+	EoDbBlock* Block {nullptr};
 	auto w {BlockTableSize()};
 	wchar_t BlockName[16];
 
@@ -2636,7 +2636,7 @@ void AeSysDoc::OnPensTranslate() {
 		vector<int> ColorIndex;
 		vector<int> NewColorIndex;
 
-		wchar_t* NextToken;
+		wchar_t* NextToken {nullptr};
 
 		while (StreamFile.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr) {
 			NextToken = nullptr;

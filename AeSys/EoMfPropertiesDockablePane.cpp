@@ -236,7 +236,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	VerticalAlignment->AddOption(L"Bottom");
 	VerticalAlignment->AddOption(L"Middle");
 	VerticalAlignment->AddOption(L"Top");
-	HorizontalAlignment->AllowEdit(FALSE);
+	VerticalAlignment->AllowEdit(FALSE);
 	NoteGroup->AddSubItem(VerticalAlignment);
 
 	auto Path {new CMFCPropertyGridProperty(L"Path", L"Right", L"Specifies the text path used for new notes")};

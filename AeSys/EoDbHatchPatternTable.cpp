@@ -17,7 +17,7 @@ unsigned short EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& na
 	while (Index < ms_NumberOfLegacyHatchPatterns && name.iCompare(LegacyHatchPatterns[Index]) != 0) {
 		Index++;
 	}
-	Index = (Index < ms_NumberOfLegacyHatchPatterns) ? Index : 0;
+	Index = (Index < ms_NumberOfLegacyHatchPatterns) ? Index : 0u;
 	return Index;
 }
 

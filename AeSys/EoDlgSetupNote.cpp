@@ -15,7 +15,7 @@ END_MESSAGE_MAP()
 
 EoDlgSetupNote::EoDlgSetupNote(CWnd* parent)
 	: CDialog(EoDlgSetupNote::IDD, parent)
-	, m_FontDefinition(0)
+	, m_FontDefinition(nullptr)
 	, m_Height(0.0)
 	, m_WidthFactor(0.0)
 	, m_ObliqueAngle(0.0)
@@ -63,23 +63,23 @@ void EoDlgSetupNote::OnOK() {
 	GetDlgItemTextW(IDC_TEXT_SPACING, Spacing);
 	m_FontDefinition->SetCharacterSpacing(_wtof(Spacing));
 
-	const EoDb::HorizontalAlignment HorizontalAlignment = EoDb::HorizontalAlignment(1 - IDC_TEXT_ALIGN_HOR_LEFT + GetCheckedRadioButton(IDC_TEXT_ALIGN_HOR_LEFT, IDC_TEXT_ALIGN_HOR_RIGHT));
+	const auto HorizontalAlignment {EoDb::HorizontalAlignment(1 - IDC_TEXT_ALIGN_HOR_LEFT + GetCheckedRadioButton(IDC_TEXT_ALIGN_HOR_LEFT, IDC_TEXT_ALIGN_HOR_RIGHT))};
 	m_FontDefinition->SetHorizontalAlignment(HorizontalAlignment);
 
-	const EoDb::VerticalAlignment VerticalAlignment = EoDb::VerticalAlignment(4 + IDC_TEXT_ALIGN_VER_BOT - GetCheckedRadioButton(IDC_TEXT_ALIGN_VER_BOT, IDC_TEXT_ALIGN_VER_TOP));
+	const auto VerticalAlignment {EoDb::VerticalAlignment(4 + IDC_TEXT_ALIGN_VER_BOT - GetCheckedRadioButton(IDC_TEXT_ALIGN_VER_BOT, IDC_TEXT_ALIGN_VER_TOP))};
 	m_FontDefinition->SetVerticalAlignment(VerticalAlignment);
 
-	const EoDb::Path Path = EoDb::Path(GetCheckedRadioButton(IDC_PATH_RIGHT, IDC_PATH_DOWN) - IDC_PATH_RIGHT);
+	const auto Path {EoDb::Path(GetCheckedRadioButton(IDC_PATH_RIGHT, IDC_PATH_DOWN) - IDC_PATH_RIGHT)};
 	m_FontDefinition->SetPath(Path);
 
-	const int FontsIndex = m_MfcFontComboControl.GetCurSel();
+	const int FontsIndex {m_MfcFontComboControl.GetCurSel()};
+
 	if (FontsIndex != CB_ERR) {
 		CString FontsItemName;
 		m_MfcFontComboControl.GetLBText(FontsIndex, FontsItemName);
 		m_FontDefinition->SetFontName(FontsItemName);
-		const EoDb::Precision Precision = EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? EoDb::kTrueType : EoDb::kStrokeType);
+		const auto Precision {EoDb::Precision(FontsItemName.CompareNoCase(L"Simplex.psf") != 0 ? EoDb::kTrueType : EoDb::kStrokeType)};
 		m_FontDefinition->SetPrecision(Precision);
 	}
-
 	CDialog::OnOK();
 }

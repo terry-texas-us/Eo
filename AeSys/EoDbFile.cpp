@@ -137,7 +137,9 @@ void EoDbFile::ReadString(CString& string) {
 	string.Empty();
 	char c;
 	while (Read(&c, 1) == 1) {
-		if (c == '\t') return;
+
+		if (c == '\t') { return; }
+
 		string += c;
 	}
 }
@@ -146,8 +148,10 @@ void EoDbFile::ReadString(OdString& string) {
 	string.empty();
 	char c;
 	while (Read(&c, 1) == 1) {
-		if (c == '\t') return;
-		string += c;
+
+		if (c == '\t') { return; }
+
+		string += static_cast<wchar_t>(c);
 	}
 }
 
@@ -214,7 +218,7 @@ void EoDbFile::WritePoint3d(const OdGePoint3d & point) {
 void EoDbFile::WriteString(const CString& string) {
 	const auto NumberOfCharacters {string.GetLength()};
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c {char(string.GetAt(n))};
+		const char c {gsl::narrow_cast<char>(string.GetAt(n))};
 		Write(&c, 1);
 	}
 	Write("\t", 1);
@@ -223,7 +227,7 @@ void EoDbFile::WriteString(const CString& string) {
 void EoDbFile::WriteString(const OdString& string) {
 	const int NumberOfCharacters = string.getLength();
 	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c {char(string.getAt(n))};
+		const char c {gsl::narrow_cast<char>(string.getAt(n))};
 		Write(&c, 1);
 	}
 	Write("\t", 1);

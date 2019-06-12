@@ -28,15 +28,14 @@ class OdEdPointTrackerWithSnapInfo : public OdStaticRxObject<OdEdPointTracker> {
 public:
 
 	struct SnapContext {
-		bool mValid;
+		bool mValid {false};
 		OdDbObjectId mEntityObjectId;
 
 		OdGePoint3d mPoint;
-		OdGePoint3d* mLastPoint;
+		OdGePoint3d* mLastPoint {nullptr};
 
 		OdDb::OsnapMode mMode;
-		OdGsMarker mMarker;
-
+		OdGsMarker mMarker {0};
 	}
 	m_SnapContext;
 
@@ -98,7 +97,7 @@ class OdBaseSnapManager
 	struct SubentId {
 		SubentId() {}
 		OdDbObjectIdArray m_Path;
-		OdGsMarker m_Marker;
+		OdGsMarker m_Marker {0};
 		SubentId(const OdGiPathNode& pathNode);
 		bool operator==(const SubentId& other) const;
 	};

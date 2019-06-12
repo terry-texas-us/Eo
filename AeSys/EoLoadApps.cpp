@@ -3,7 +3,7 @@
 #include "EoLoadApps.h"
 #include "RxModule.h"
 
-EoLoadApps::LoadedApps* EoLoadApps::m_LoadedApps = 0;
+EoLoadApps::LoadedApps* EoLoadApps::m_LoadedApps = nullptr;
 
 void EoLoadApps::rxInit() {
 	m_LoadedApps = new LoadedApps;

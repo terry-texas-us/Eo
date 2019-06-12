@@ -404,8 +404,8 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 		for (int DashIndex = 0; DashIndex < NumberOfDashesInPattern; DashIndex++) {
 			TotalPatternLength += fabs(HatchPatternLine.m_dashes[DashIndex]);
 		}
-		OdGePoint2d RotatedBasePoint(HatchPatternLine.m_basePoint);
-		auto LineAngleInRadians {HatchPatternLine.m_dLineAngle};
+		auto RotatedBasePoint {HatchPatternLine.m_basePoint};
+		const auto LineAngleInRadians {HatchPatternLine.m_dLineAngle};
 		RotatedBasePoint.rotateBy(-LineAngleInRadians);
 
 		// Add rotation to matrix which gets current scan lines parallel to x-axis
@@ -754,7 +754,7 @@ void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d & origin, const OdGe
 
 unsigned EoDbHatch::SwingVertex() const {
 	const auto NumberOfVertices {m_Vertices.size()};
-	unsigned SwingVertex;
+	unsigned SwingVertex {0};
 
 	if (sm_PivotVertex == 0) {
 		SwingVertex = (sm_Edge == 1) ? 1 : NumberOfVertices - 1;
@@ -784,25 +784,25 @@ void EoDbHatch::ConvertPolylineType(int loopIndex, const OdDbHatchPtr & hatchEnt
 	hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
 }
 
-void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d * edge) noexcept {
+void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept {
 	/* OdGeCircArc2d* CircularArcEdge = */ (OdGeCircArc2d*) edge;
 
 	// <tas="Properties: center, radius, startAng, endAng, isClockWise"></tas>
 }
 
-void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d * edge) noexcept {
+void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept {
 	/* OdGeEllipArc2d* EllipticalArcEdge = */ (OdGeEllipArc2d*) edge;
 
 	// <tas="Properties: center, majorRadius, minorRadius, majorAxis, minorAxis, startAng, endAng, isClockWise"></tas>
 }
 
-void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d * edge) noexcept {
+void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept {
 	/* OdGeNurbCurve2d* NurbCurveEdge = */ (OdGeNurbCurve2d*) edge;
 
 	// <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>
 }
 
-void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr & hatchEntity, EoDbHatch * hatchPrimitive) {
+void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
 	EdgeArray Edges;
 	hatchEntity->getLoopAt(loopIndex, Edges);
 
@@ -811,30 +811,25 @@ void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr & hatchEntity
 	const auto NumberOfEdges {Edges.size()};
 
 	for (unsigned EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
-		OdGeCurve2d* Edge = Edges[EdgeIndex];
-		switch (Edge->type()) {
-			case OdGe::kLineSeg2d:
-				break;
-			case OdGe::kCircArc2d:
-				ConvertCircularArcEdge(Edge);
-				break;
-			case OdGe::kEllipArc2d:
-				ConvertEllipticalArcEdge(Edge);
-				break;
-			case OdGe::kNurbCurve2d:
-				ConvertNurbCurveEdge(Edge);
-				break;
+		auto Edge {Edges[EdgeIndex]};
+		
+		if (Edge->type() == OdGe::kCircArc2d) {
+			ConvertCircularArcEdge(Edge);
+		} else if (Edge->type() == OdGe::kEllipArc2d) {
+			ConvertEllipticalArcEdge(Edge);
+		} else if (Edge->type() == OdGe::kNurbCurve2d) {
+			ConvertNurbCurveEdge(Edge);
 		}
 		// Common Edge Properties
 		OdGeInterval Interval;
 		Edge->getInterval(Interval);
 		Interval.getBounds(Lower, Upper);
 
-		const OdGePoint2d LowerPoint(Edge->evalPoint(Lower));
+		const auto LowerPoint {Edge->evalPoint(Lower)};
 
 		hatchPrimitive->Append(OdGePoint3d(LowerPoint.x, LowerPoint.y, hatchEntity->elevation()));
 	}
-	const OdGePoint2d UpperPoint(Edges[NumberOfEdges - 1]->evalPoint(Upper));
+	const auto UpperPoint {Edges[NumberOfEdges - 1]->evalPoint(Upper)};
 	hatchPrimitive->Append(OdGePoint3d(UpperPoint.x, UpperPoint.y, hatchEntity->elevation()));
 
 	// <tas="Hatch edge conversion - not considering the effect of "Closed" edge property"></tas>
@@ -947,8 +942,8 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	const auto InteriorStyleIndex {file.ReadInt16()};
 	const auto NumberOfVertices {file.ReadUInt16()};
 	const auto HatchOrigin {file.ReadPoint3d()};
-	auto HatchXAxis {file.ReadVector3d()};
-	auto HatchYAxis {file.ReadVector3d()};
+	const auto HatchXAxis {file.ReadVector3d()};
+	const auto HatchYAxis {file.ReadVector3d()};
 
 	OdGePoint3dArray Vertices;
 	Vertices.setLogicalLength(NumberOfVertices);
@@ -972,8 +967,8 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 }
 
 OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
-	short ColorIndex;
-	short InteriorStyle;
+	short ColorIndex {0};
+	short InteriorStyle {0};
 	unsigned InteriorStyleIndex {0};
 	OdGePoint3d HatchOrigin;
 	OdGeVector3d HatchXAxis;

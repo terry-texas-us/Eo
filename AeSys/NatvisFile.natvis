@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<AutoVisualizer xmlns="http://schemas.microsoft.com/vstudio/debugger/natvis/2010">
+  <Type Name="CRect">
+    <DisplayString>{{top={top} bottom={bottom} left={left} right={right}}}</DisplayString>
+    <Expand>
+      <Item Name="Width">right - left</Item>
+      <Item Name="Height">bottom - top</Item>
+    </Expand>
+  </Type>
+  <Type Name = "OdString">
+    <DisplayString>Data: {m_pData}</DisplayString>
+  </Type>  
+</AutoVisualizer>

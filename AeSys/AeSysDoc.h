@@ -223,10 +223,10 @@ protected:
 	OdEdBaseIO* BaseIO() noexcept;
 	OdString CommandPrompt();
 	OdString RecentCommand();
-	OdString AeSysDoc::RecentCommandName();
+	OdString RecentCommandName();
 
 	unsigned long getKeyState() noexcept override;
-	OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
+	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
 	// </command_console>
@@ -244,7 +244,7 @@ public:
 
 public:
 	OdDbSelectionSetPtr SelectionSet() const;
-	AeSysView* AeSysDoc::getViewer() noexcept;
+	AeSysView* getViewer() noexcept;
 
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);

@@ -49,13 +49,13 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <DiagnosticsFormat>Column</DiagnosticsFormat>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp14</LanguageStandard>
       <SupportJustMyCode>true</SupportJustMyCode>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -411,6 +411,9 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\vc15dlldbg\res\Hatches\DefaultSet.pat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

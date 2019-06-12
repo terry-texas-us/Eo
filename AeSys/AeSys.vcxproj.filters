@@ -950,4 +950,7 @@
       <Filter>Resource Files</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <Natvis Include="NatvisFile.natvis" />
+  </ItemGroup>
 </Project>

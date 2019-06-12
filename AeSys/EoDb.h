@@ -47,11 +47,11 @@ namespace EoDb {
 		kGroupEraseSafeTrap = kGroup | kErase | kSafe | kTrap,
 		kGroupsEraseSafeTrap = kGroups | kErase | kSafe | kTrap
 	};
-	enum Path { kPathRight, kPathLeft, kPathUp, kPathDown };
+	enum Path : unsigned { kPathRight, kPathLeft, kPathUp, kPathDown };
 
-	enum HorizontalAlignment { kAlignLeft = 1, kAlignCenter, kAlignRight };
+	enum HorizontalAlignment : unsigned { kAlignLeft = 1, kAlignCenter, kAlignRight };
 
-	enum VerticalAlignment { kAlignTop = 2, kAlignMiddle, kAlignBottom };
+	enum VerticalAlignment : unsigned { kAlignTop = 2, kAlignMiddle, kAlignBottom };
 
-	enum Precision { kTrueType = 1, kStrokeType };
+	enum Precision : unsigned { kTrueType = 1, kStrokeType };
 }

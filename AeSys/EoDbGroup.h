@@ -63,5 +63,5 @@ public:
 public: // Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
 
-    static pair<EoDbGroup*, OdDbGroupPtr> EoDbGroup::Create(OdDbDatabasePtr database);
+    static pair<EoDbGroup*, OdDbGroupPtr> Create(OdDbDatabasePtr database);
 };

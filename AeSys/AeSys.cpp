@@ -290,6 +290,7 @@ public:
 			CCommandLineInfo::ParseParam(parameter, flag, last);
 		}
 	}
+	void ParseParam(const char* parameter, BOOL flag, BOOL last) override {} // CCommandLineInfo (to suppress C4266 warning)
 };
 
 BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
@@ -373,7 +374,9 @@ AeSys::AeSys() noexcept
 	, m_SaveRoundTrip(true)
 	, m_SavePreview(false)
 	, m_SaveWithPassword(false)
-	, m_pAuditDlg(nullptr) {
+	, m_pAuditDlg(nullptr)
+	, m_ApplicationLook(ID_VIEW_APPLOOK_OFF_2007_BLACK)
+{
 
 	EnableHtmlHelp();
 
@@ -417,30 +420,31 @@ OdString GetRegistryAcadLocation();
 OdString GetRegistryAcadProfilesKey();
 bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept;
 
+// get the value for the ACAD entry in the registry
 static OdString FindConfigPath(const OdString& configType) {
-	wchar_t searchPath[EO_REGISTRY_MAX_PATH];
-	wchar_t expandedPath[EO_REGISTRY_MAX_PATH];
+	auto SubKey {GetRegistryAcadProfilesKey()};
 
-	OdString subkey {GetRegistryAcadProfilesKey()};
+	if (!SubKey.isEmpty()) {
+		SubKey += L"\\General";
 
-	if (!subkey.isEmpty()) {
-		subkey += L"\\General";
-		// get the value for the ACAD entry in the registry
-		if (::GetRegistryString(HKEY_CURRENT_USER, subkey, configType, searchPath, EO_REGISTRY_MAX_PATH)) {
-			ExpandEnvironmentStrings(searchPath, expandedPath, EO_REGISTRY_MAX_PATH);
-			return OdString(expandedPath);
+		wchar_t SearchValue[EO_REGISTRY_MAX_PATH] {L"\0"};
+
+		if (::GetRegistryString(HKEY_CURRENT_USER, SubKey, configType, SearchValue, EO_REGISTRY_MAX_PATH)) {
+			wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
+			ExpandEnvironmentStringsW(SearchValue, ExpandedPath, EO_REGISTRY_MAX_PATH);
+			return OdString(ExpandedPath);
 		}
 	}
 	return OdString::kEmpty;
 }
 
-static OdString FindConfigFile(const OdString& configType, OdString file, OdDbSystemServices* pSs) {
-	OdString searchPath = FindConfigPath(configType);
-	if (!searchPath.isEmpty()) {
-		file = searchPath + L"\\" + file;
-		if (pSs->accessFile(file, Oda::kFileRead)) {
-			return file;
-		}
+static OdString FindConfigFile(const OdString& configType, OdString file, OdDbSystemServices* systemServices) {
+	auto ConfigurationPath {FindConfigPath(configType)};
+
+	if (!ConfigurationPath.isEmpty()) {
+		file = ConfigurationPath + L"\\" + file;
+		
+		if (systemServices->accessFile(file, Oda::kFileRead)) { return file; }
 	}
 	return OdString::kEmpty;
 }
@@ -664,7 +668,7 @@ CMenu* AeSys::CommandMenu(CMenu* *toolsSubMenu) {
 		MenuItemInfo.dwTypeData = nullptr;
 		TopMenu->GetMenuItemInfoW(static_cast<unsigned>(Item), &MenuItemInfo, TRUE);
 
-		auto SizeOfMenuName {++MenuItemInfo.cch};
+		const auto SizeOfMenuName {++MenuItemInfo.cch};
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(static_cast<int>(SizeOfMenuName));
 		TopMenu->GetMenuItemInfoW(static_cast<unsigned>(Item), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
@@ -684,7 +688,7 @@ CMenu* AeSys::CommandMenu(CMenu* *toolsSubMenu) {
 		MenuItemInfo.dwTypeData = nullptr;
 		ToolsSubMenu->GetMenuItemInfoW(static_cast<unsigned>(ToolsMenuItem), &MenuItemInfo, TRUE);
 
-		auto SizeOfMenuName {++MenuItemInfo.cch};
+		const auto SizeOfMenuName {++MenuItemInfo.cch};
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(static_cast<int>(SizeOfMenuName));
 		ToolsSubMenu->GetMenuItemInfoW(static_cast<unsigned>(ToolsMenuItem), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
@@ -1077,7 +1081,7 @@ CString AeSys::FormatLength(double length, Units units, int width, int precision
 /// </summary>
 
 void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Units units, const double length, const int width, const int precision) const {
-	wchar_t szBuf[16];
+	wchar_t szBuf[16] {L"\0"};
 
 	double ScaledLength {length * AeSysView::GetActiveView()->WorldScale()};
 
@@ -1993,9 +1997,9 @@ bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wch
 
 OdString GetRegistryAcadLocation() {
 	OdString subkey {L"SOFTWARE\\Autodesk\\AutoCAD"};
-	wchar_t version[32];
-	wchar_t subVersion[32];
-	wchar_t searchPaths[EO_REGISTRY_MAX_PATH];
+	wchar_t version[32] {L"\0"};
+	wchar_t subVersion[32] {L"\0"};
+	wchar_t searchPaths[EO_REGISTRY_MAX_PATH] {L"\0"};
 
 	// get the version and concatenate onto subkey
 	if (GetRegistryString(HKEY_LOCAL_MACHINE, subkey, L"CurVer", version, 32) == 0) { return L""; }
@@ -2015,30 +2019,31 @@ OdString GetRegistryAcadLocation() {
 }
 
 OdString GetRegistryAcadProfilesKey() {
-	OdString subkey {L"SOFTWARE\\Autodesk\\AutoCAD"};
-	wchar_t version[32];
-	wchar_t subVersion[32];
-	wchar_t profile[EO_REGISTRY_MAX_PROFILE_NAME];
+	CString Subkey {L"SOFTWARE\\Autodesk\\AutoCAD"};
 
-	if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"CurVer", version, 32) == 0) { return L""; }
+	wchar_t Version[32] {L"\0"};
 
-	subkey += L"\\";
-	subkey += version;
+	if (GetRegistryString(HKEY_CURRENT_USER, Subkey, L"CurVer", Version, 32) == 0) { return L""; }
 
-	// get the sub-version and concatenate onto subkey
-	if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"CurVer", subVersion, 32) == 0) { return L""; }
+	Subkey += L"\\";
+	Subkey += Version;
 
-	subkey += L"\\";
-	subkey += subVersion;
-	subkey += L"\\Profiles";
+	wchar_t SubVersion[32] {L"\0"};
 
-	// get the value for the (Default) entry in the registry
-	if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"", profile, EO_REGISTRY_MAX_PROFILE_NAME) == 0) { return L""; }
+	if (GetRegistryString(HKEY_CURRENT_USER, Subkey, L"CurVer", SubVersion, 32) == 0) { return L""; }
 
-	subkey += L"\\";
-	subkey += profile;
+	Subkey += L"\\";
+	Subkey += SubVersion;
+	Subkey += L"\\Profiles";
 
-	return subkey;
+	wchar_t Profile[EO_REGISTRY_MAX_PROFILE_NAME] {L"\0"};
+
+	if (GetRegistryString(HKEY_CURRENT_USER, Subkey, L"", Profile, EO_REGISTRY_MAX_PROFILE_NAME) == 0) { return L""; }
+
+	Subkey += L"\\";
+	Subkey += Profile;
+
+	return Subkey;
 }
 
 OdString AeSys::getSubstituteFont(const OdString& fontName, OdFontType fontType) {
@@ -2047,8 +2052,8 @@ OdString AeSys::getSubstituteFont(const OdString& fontName, OdFontType fontType)
 
 OdString AeSys::getFontMapFileName() const {
 	OdString subkey;
-	wchar_t fontMapFile[EO_REGISTRY_MAX_PATH];
-	wchar_t expandedPath[EO_REGISTRY_MAX_PATH];
+	wchar_t fontMapFile[EO_REGISTRY_MAX_PATH] {L"\0"};
+	wchar_t expandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
 
 	subkey = GetRegistryAcadProfilesKey();
 	if (!subkey.isEmpty()) {
@@ -2066,25 +2071,22 @@ OdString AeSys::getFontMapFileName() const {
 
 OdString AeSys::getTempPath() const {
 	OdString subkey;
-	TCHAR tempPath[MAX_PATH];
+	wchar_t TempPath[MAX_PATH] {L"\0"};
 
 	subkey = GetRegistryAcadProfilesKey();
 
 	if (!subkey.isEmpty()) {
 		subkey += L"\\General Configuration";
-		
-		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"TempDirectory", tempPath, MAX_PATH) == 0) {
+
+		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"TempDirectory", TempPath, MAX_PATH) == 0) {
 			return OdDbHostAppServices::getTempPath();
 		}
-		if (_waccess(tempPath, 0)) {
+		if (_waccess(TempPath, 0)) {
 			return OdDbHostAppServices::getTempPath();
 		} else {
-			OdString ret(tempPath, (int)odStrLen(tempPath));
-
-			if (ret.getAt(ret.getLength() - 1) != OdChar('\\')) {
-				ret += OdChar('\\');
-			}
-			return ret;
+			CString Result(TempPath, (int) wcslen(TempPath));
+			if (Result.GetAt(Result.GetLength() - 1) != '\\') { Result += '\\'; }
+			return Result;
 		}
 	} else {
 		return OdDbHostAppServices::getTempPath();

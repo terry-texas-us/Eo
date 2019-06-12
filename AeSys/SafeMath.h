@@ -16,7 +16,7 @@ inline double EoSignTransfer(const double a, const double b) noexcept {
 	return (b >= 0. ? fabs(a) : - fabs(a));
 }
 
-inline double EoToDegree(const double angleInRadians) noexcept {
+ inline double EoToDegree(const double angleInRadians) noexcept {
 	return (angleInRadians / OdaPI * 180.);
 }
 

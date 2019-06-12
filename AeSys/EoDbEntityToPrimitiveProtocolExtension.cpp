@@ -146,12 +146,12 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 			}
 		}
 	}
-	const EoDb::VerticalAlignment VerticalAlignment = EoDbText::ConvertVerticalAlignment(text->verticalMode());
-	const EoDb::HorizontalAlignment HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(text->horizontalMode());
+	const auto VerticalAlignment {EoDbText::ConvertVerticalAlignment(text->verticalMode())};
+	const auto HorizontalAlignment {EoDbText::ConvertHorizontalAlignment(text->horizontalMode())};
 
-	OdGePoint3d AlignmentPoint = text->position();
-	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom)
-		AlignmentPoint = text->alignmentPoint();
+	auto AlignmentPoint {text->position()};
+
+	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom) { AlignmentPoint = text->alignmentPoint(); }
 
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetPrecision(EoDb::kTrueType);
@@ -756,7 +756,7 @@ public:
 AeSysDoc* ConvertEntityToPrimitiveProtocolExtension::m_Document = nullptr;
 
 ConvertEntityToPrimitiveProtocolExtension::ConvertEntityToPrimitiveProtocolExtension(AeSysDoc* document) noexcept
-    : m_Converters(0) {
+    : m_Converters(nullptr) {
 	m_Document = document;
 }
 
@@ -776,5 +776,5 @@ void ConvertEntityToPrimitiveProtocolExtension::Uninitialize() {
 	m_Converters->DeleteExtensions();
 	EoDbConvertEntityToPrimitive::rxUninit();
 	delete m_Converters;
-	m_Converters = 0;
+	m_Converters = nullptr;
 }

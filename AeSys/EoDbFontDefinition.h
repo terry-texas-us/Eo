@@ -43,7 +43,7 @@ public:
 	void Read(EoDbFile& file);
 	void Write(EoDbFile& file) const;
 
-	void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept;
-	void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept;
-	void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept;
+	void SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept;
+	void SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept;
+	void SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept;
 };

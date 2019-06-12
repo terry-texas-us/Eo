@@ -37,7 +37,7 @@ BOOL EoDlgModeRevise::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(theApp.GetCursorPosition());
-	if (sm_TextPrimitive != 0) {
+	if (sm_TextPrimitive != nullptr) {
 		sm_FontDefinition = sm_TextPrimitive->FontDefinition();
 		sm_ReferenceSystem = sm_TextPrimitive->ReferenceSystem();
 		m_TextEditControl.SetWindowTextW(sm_TextPrimitive->Text());
@@ -53,15 +53,15 @@ void EoDlgModeRevise::OnOK() {
 	CString TextString;
 	m_TextEditControl.GetWindowTextW(TextString);
 
-	if (sm_TextPrimitive != 0) {
+	if (sm_TextPrimitive != nullptr) {
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, sm_TextPrimitive);
 		sm_TextPrimitive->SetText(TextString);
 		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, sm_TextPrimitive);
 	} else {
 		OdGeVector3d PlaneNormal;
 		sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
-		OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), (const wchar_t*)TextString);
+		OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+		auto Text {EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), ( const wchar_t*) TextString)};
 
 		Text->setNormal(PlaneNormal);
 		Text->setRotation(sm_ReferenceSystem.Rotation());
@@ -70,7 +70,7 @@ void EoDlgModeRevise::OnOK() {
 		Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(sm_FontDefinition.HorizontalAlignment()));
 		Text->setVerticalMode(EoDbText::ConvertVerticalMode(sm_FontDefinition.VerticalAlignment()));
 
-		EoDbGroup* Group = new EoDbGroup;
+		auto Group {new EoDbGroup};
 		Group->AddTail(EoDbText::Create(Text));
 
 		Document->AddWorkLayerGroup(Group);
@@ -79,18 +79,20 @@ void EoDlgModeRevise::OnOK() {
 	sm_ReferenceSystem.SetOrigin(text_GetNewLinePos(sm_FontDefinition, sm_ReferenceSystem, 1.0, 0));
 
 	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(sm_ReferenceSystem.Origin());
-	if (sm_TextPrimitive != 0) {
+
+	if (sm_TextPrimitive != nullptr) {
 		sm_FontDefinition = sm_TextPrimitive->FontDefinition();
 		sm_ReferenceSystem = sm_TextPrimitive->ReferenceSystem();
 		m_TextEditControl.SetWindowTextW(sm_TextPrimitive->Text());
 	}
-	else
+	else {
 		m_TextEditControl.SetWindowTextW(L"");
-
+	}
 	m_TextEditControl.SetFocus();
 
 	CDialog::OnOK();
 }
+
 void EoDlgModeRevise::OnSize(unsigned type, int cx, int cy) {
 	CDialog::OnSize(type, cx, cy);
 

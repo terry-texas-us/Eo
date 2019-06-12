@@ -676,7 +676,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
 
-	const OdChar* Keywords {L"All Center Dynamic Extents Previous Scale Window Object"};
+	const wchar_t* Keywords {L"All Center Dynamic Extents Previous Scale Window Object"};
 
 	OdDbObjectPtr ActiveViewport {pDb->activeViewportId().safeOpenObject(OdDb::kForWrite)};
 	OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);

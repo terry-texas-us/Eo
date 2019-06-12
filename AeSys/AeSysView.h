@@ -85,6 +85,9 @@ private:
 
 	OdGiContext::PStyleType plotStyleType() const override;
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
+
+	void plotStyle(int penNumber, OdPsPlotStyleData& plotStyleData) const noexcept override {} // OdGiContextForDbDatabase (to suppress C4266 warning)
+
 protected:
 
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
@@ -360,7 +363,7 @@ public:
 
 	pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
-	pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
+	pair<EoDbGroup*, EoDbPoint*> SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);

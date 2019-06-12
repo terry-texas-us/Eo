@@ -315,7 +315,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 }
 
 EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
-	EoDb::HorizontalAlignment HorizontalAlignment = EoDb::kAlignLeft;
+	auto HorizontalAlignment {EoDb::kAlignLeft};
 
 	switch (horizontalMode) {
 		case OdDb::kTextMid:
@@ -336,7 +336,7 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextH
 }
 
 EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
-	EoDb::VerticalAlignment VerticalAlignment = EoDb::kAlignBottom;
+	auto VerticalAlignment {EoDb::kAlignBottom};
 
 	switch (verticalMode) {
 		case OdDb::kTextVertMid:
@@ -399,11 +399,11 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFil
 	/* short LinetypeIndex = */ file.ReadInt16();
 
 // <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
-	unsigned short Precision = EoDb::kStrokeType;
+	unsigned short Precision {EoDb::kStrokeType};
 	file.Read(&Precision, sizeof(unsigned short));
 	OdString FontName;
 	file.ReadString(FontName);
-	unsigned short Path = EoDb::kPathRight;
+	unsigned short Path {EoDb::kPathRight};
 	file.Read(&Path, sizeof(unsigned short));
 // </tas>
 
@@ -594,7 +594,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const O
 	return Text;
 }
 
-OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr & blockTableRecord, OdString text) {
+OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text) {
 	OdDbMTextPtr MText = OdDbMText::createObject();
 	MText->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(MText);
@@ -604,20 +604,20 @@ OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr & blockTableRecord, OdStr
 	return MText;
 }
 
-EoDbText* EoDbText::Create(OdDbTextPtr & text) {
+EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 
-	EoDbText* Text = new EoDbText();
+	auto Text {new EoDbText()};
 	Text->SetEntityObjectId(text->objectId());
 	Text->SetColorIndex(text->colorIndex());
 	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
 
-	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
+	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr {text->textStyle().safeOpenObject(OdDb::kForRead)};
 
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetTo(TextStyleTableRecordPtr);
 	FontDefinition.SetJustification(text->horizontalMode(), text->verticalMode());
 
-	OdGePoint3d AlignmentPoint = text->position();
+	auto AlignmentPoint {text->position()};
 	if (FontDefinition.HorizontalAlignment() != EoDb::kAlignLeft || FontDefinition.VerticalAlignment() != EoDb::kAlignBottom) {
 		AlignmentPoint = text->alignmentPoint();
 	}
@@ -638,9 +638,9 @@ EoDbText* EoDbText::Create(OdDbTextPtr & text) {
 	return Text;
 }
 
-EoDbText* EoDbText::Create(OdDbMTextPtr & text) {
+EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 
-	EoDbText* Text = new EoDbText();
+	auto Text {new EoDbText()};
 	Text->SetEntityObjectId(text->objectId());
 	Text->SetColorIndex(text->colorIndex());
 	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
@@ -841,13 +841,13 @@ void DisplayText(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fon
 
 void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters, const CString& text) {
 	if (deviceContext != nullptr && fontDefinition.Precision() == EoDb::kTrueType && view->ViewTrueTypeFonts()) {
-		OdGeVector3d XDirection(referenceSystem.XDirection());
-		OdGeVector3d YDirection(referenceSystem.YDirection());
+		auto XDirection {referenceSystem.XDirection()};
+		auto YDirection {referenceSystem.YDirection()};
 
 		view->ModelViewTransformVector(XDirection);
 		view->ModelViewTransformVector(YDirection);
 
-		OdGeVector3d PlaneNormal = XDirection.crossProduct(YDirection);
+		auto PlaneNormal {XDirection.crossProduct(YDirection)};
 
 		if (PlaneNormal.isZeroLength()) { return; }
 
@@ -861,10 +861,12 @@ void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition&
 }
 
 void DisplayTextSegmentUsingStrokeFont(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, int startPosition, int numberOfCharacters, const CString & text) {
+	
 	if (numberOfCharacters == 0) { return; }
 
 	const long* plStrokeFontDef = (long*) theApp.SimplexStrokeFont();
-	if (plStrokeFontDef == 0) { return; }
+
+	if (plStrokeFontDef == nullptr) { return; }
 
 	const OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
 

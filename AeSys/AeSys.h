@@ -183,8 +183,16 @@ public:
 
 	void setLimit(int max) noexcept override /* ExHostAppServices */;
 
-	void warning(const char* warnVisGroup, const OdString& message);
-	
+	void warning(const char* warnVisGroup, const OdString& message) override;
+
+	void warning(const char*warnVisGroup, const OdError& error) noexcept override {} // OdDbHostAppServices (to suppress C4266 warning)
+	void warning(const OdError& error) noexcept override {} // OdDbHostAppServices (to suppress C4266 warning)
+	void warning(const char* warnVisGroup, OdWarning warningOb, OdDbObjectId objectId) noexcept override {} // OdDbHostAppServices (to suppress C4266 warning)
+	void warning(OdWarning warningOb, OdDbObjectId objectId) noexcept override {} // OdDbHostAppServices (to suppress C4266 warning)
+	void warning(const OdString& message) noexcept override {} // OdDbBaseHostAppServices (to suppress C4266 warning)
+	void warning(const char* warnVisGroup, OdWarning warningOb) noexcept override {} // OdDbBaseHostAppServices (to suppress C4266 warning)
+	void warning(OdWarning warningOb) noexcept override {} // OdDbBaseHostAppServices (to suppress C4266 warning)
+
 	static int messageBox(HWND parent, const wchar_t* caption, const wchar_t* text, unsigned type) noexcept {
 		return ::MessageBox(parent, text, caption, type);
 	}

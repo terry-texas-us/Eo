@@ -2,7 +2,7 @@
 
 #include "AeSys.h"
 
-#include "..\win\ExtDialog\FileDlgExt.h"
+#include "FileDlgExt.h"
 #include "EoPreviewDib.h"
 
 void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
@@ -100,12 +100,12 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 	}
 	else if (m_odImage.hasWmf()) {
 		CDC newDC;
-		unsigned long dwIsAldus;
-		METAHEADER* mfHeader = NULL;
-		ALDUSMFHEADER* aldusMFHeader = NULL;
+		unsigned long dwIsAldus {0};
+		METAHEADER* mfHeader {nullptr};
+		ALDUSMFHEADER* aldusMFHeader {nullptr};
 
-		unsigned long dwSize;
-		unsigned long seekpos;
+		unsigned long dwSize {0};
+		unsigned long seekpos {0};
 
 		newDC.Attach(dc);
 		dwIsAldus = *((unsigned long*)m_odImage.wmf.begin());
@@ -123,9 +123,9 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
-		auto MetaFileHandle {::SetWinMetaFileBits(dwSize, (const unsigned char*)mfHeader, NULL, NULL)};
+		auto MetaFileHandle {::SetWinMetaFileBits(dwSize, (const unsigned char*) mfHeader, nullptr, nullptr)};
 
-		CSize size(0, 0);
+		CSize size {0, 0};
 
 		if (aldusMFHeader) {
 			size.cx = 254 * (aldusMFHeader->bbox.right - aldusMFHeader->bbox.left) / aldusMFHeader->inch;
