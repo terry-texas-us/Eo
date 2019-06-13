@@ -142,7 +142,7 @@ constexpr auto RADIAN = OdaPI / 180.0;
 #pragma warning (default: 4777) // (level 4) 'function' : format string 'string' requires an argument of type 'type1', but variadic argument number has type 'type2'
 // <tas="requires vs 2019"/>#pragma warning (default: 4800) // (level 4) Implicit conversion from 'type' to bool.Possible information loss
 
-#pragma warning (default: 4820) // (level 4) 'bytes' bytes padding added after construct 'member_name'
+//#pragma warning (default: 4820) // (level 4) 'bytes' bytes padding added after construct 'member_name'
 
 #pragma warning (default: 4837) // (level 4) trigraph detected : '??character' replaced by 'character'
 #pragma warning (default: 4841) // (level 4) non - standard extension used : compound member designator used in offsetof
@@ -172,4 +172,4 @@ constexpr auto RADIAN = OdaPI / 180.0;
 // <tas="Following default warnings count many thousands. For later evaluation separately"/>
 #pragma warning (disable: 5026) // (level 1 and level 4) 'type': move constructor was implicitly defined as deleted
 #pragma warning (disable: 5027) // (level 1 and level 4) 'type' : move assignment operator was implicitly defined as deleted
-//#pragma warning (disable: 5031) // #pragma warning(pop) : likely mismatch, popping warning state pushed in different file
+#pragma warning (disable: 5031) // #pragma warning(pop) : likely mismatch, popping warning state pushed in different file

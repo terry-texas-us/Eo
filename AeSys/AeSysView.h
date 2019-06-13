@@ -62,9 +62,9 @@ class AeSysView
 
 	struct Response {
 		enum Type { kNone, kPoint, kString, kCancel };
-		Type m_type;
 		OdGePoint3d m_Point;
 		OdString m_string;
+		Type m_type;
 	};
 	Response m_response;
 	int m_inpOptions;
@@ -76,8 +76,8 @@ protected:
 	using CView::operator new;
 	using CView::operator delete;
 private:
-	bool m_PsOverall;
 	OdDbObjectId m_layoutId;
+	bool m_PsOverall;
 
 	bool m_bPlotPlotstyle;
 	bool m_bShowPlotstyle;
@@ -210,8 +210,8 @@ private:
 	CPalette m_BackgroundImagePalette;
 	EoDbPrimitive* m_EngagedPrimitive;
 	EoDbGroup* m_EngagedGroup;
-	unsigned short m_OpHighlighted;
 	EoGsViewTransform m_OverviewViewTransform;
+	unsigned short m_OpHighlighted;
 	bool m_Plot;
 	float m_PlotScaleFactor;
 	EoDbGroup m_PreviewGroup;

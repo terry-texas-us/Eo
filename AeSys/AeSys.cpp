@@ -370,12 +370,12 @@ AeSys::AeSys() noexcept
 	, m_pagingType(0)
 	, m_bUseTempFiles(false)
 	, m_bSupportFileSelectionViaDialog(true)
+	, m_ApplicationLook(ID_VIEW_APPLOOK_OFF_2007_BLACK)
 	, m_displayFields(0)
 	, m_SaveRoundTrip(true)
 	, m_SavePreview(false)
 	, m_SaveWithPassword(false)
 	, m_pAuditDlg(nullptr)
-	, m_ApplicationLook(ID_VIEW_APPLOOK_OFF_2007_BLACK)
 {
 
 	EnableHtmlHelp();
@@ -575,7 +575,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			case kDefault:
 			case kPhotometricWebFile:
 			default:
-				return FilePathAndName;
+				return FilePathAndName.GetString();
 		}
 		if (hint != kTextureMapFile && Extension != L".shx" && Extension != L".pat" && Extension != L".ttf" && Extension != L".ttc" && Extension != L".otf") {
 			FileToFind += L".shx";
@@ -596,12 +596,12 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 				Path = FilePathAndName.Left(PathDelimiter);
 				Path += L"\\" + FileToFind;
 
-				if (SystemServices->accessFile(Path.GetString(), Oda::kFileRead)) { return Path; }
+				if (SystemServices->accessFile(Path.GetString(), Oda::kFileRead)) { return Path.GetString(); }
 
 				FilePathAndName = FilePathAndName.Right(FilePathAndName.GetLength() - PathDelimiter - 1);
 			}
 		}
-		if (hint == kTextureMapFile) { return FilePathAndName; }
+		if (hint == kTextureMapFile) { return FilePathAndName.GetString(); }
 
 		if (FilePathAndName.IsEmpty()) {
 			auto AcadLocation {GetRegistryAcadLocation()};
@@ -893,7 +893,7 @@ void AeSys::BuildModeSpecificAcceleratorTable() {
 	AcceleratorTableHandle = ::LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME));
 	const int AcceleratorTableEntries {::CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
 
-	LPACCEL ModifiedAcceleratorTable {new ACCEL[AcceleratorTableEntries + ModeAcceleratorTableEntries]};
+	LPACCEL ModifiedAcceleratorTable {new ACCEL[static_cast<unsigned>(AcceleratorTableEntries + ModeAcceleratorTableEntries)]};
 
 	::CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
 	::CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
@@ -1077,111 +1077,116 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Unit
 
 	double ScaledLength {length * AeSysView::GetActiveView()->WorldScale()};
 
-	if (units == kArchitectural || units == kArchitecturalS) {
-		wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
-		ScaledLength = fabs(ScaledLength);
+	CString FormatSpecification;
+	FormatSpecification.Format(L"%%%i.%if", width, precision);
 
-		auto Feet {static_cast<int>(ScaledLength / 12.)};
-		auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
+	switch (units) {
+		case kArchitectural:
+		case kArchitecturalS:
+		{
+			wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
+			ScaledLength = fabs(ScaledLength);
 
-		const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
-		auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)};	// Numerator of fractional component of inches
+			auto Feet {static_cast<int>(ScaledLength / 12.)};
+			auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
 
-		if (Numerator == FractionPrecision) {
+			const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
+			auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)};	// Numerator of fractional component of inches
 
-			if (Inches == 11) {
-				Feet++;
-				Inches = 0;
-			} else {
-				Inches++;
+			if (Numerator == FractionPrecision) {
+
+				if (Inches == 11) {
+					Feet++;
+					Inches = 0;
+				} else {
+					Inches++;
+				}
+				Numerator = 0;
 			}
-			Numerator = 0;
-		}
-		_itow_s(Feet, szBuf, 16, 10);
-		wcscat_s(lengthAsString, bufSize, szBuf);
-		wcscat_s(lengthAsString, bufSize, L"'");
-
-		_itow_s(Inches, szBuf, 16, 10);
-		wcscat_s(lengthAsString, bufSize, szBuf);
-		
-		if (Numerator > 0) {
-			wcscat_s(lengthAsString, bufSize, (units == kArchitecturalS) ? L"\\S" : L"·" /* middle dot [U+00B7] */);
-			const int	iGrtComDivisor = GreatestCommonDivisor(Numerator, FractionPrecision);
-			Numerator /= iGrtComDivisor;
-			const int Denominator = FractionPrecision / iGrtComDivisor; // Add fractional component of inches
-			_itow_s(Numerator, szBuf, 16, 10);
+			_itow_s(Feet, szBuf, 16, 10);
 			wcscat_s(lengthAsString, bufSize, szBuf);
-			wcscat_s(lengthAsString, bufSize, L"/");
-			_itow_s(Denominator, szBuf, 16, 10);
-			wcscat_s(lengthAsString, bufSize, szBuf);
-
-			if (units == kArchitecturalS) { wcscat_s(lengthAsString, bufSize, L";"); }
-		}
-		wcscat_s(lengthAsString, bufSize, L"\"");
-	} else if (units == kEngineering) {
-		wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
-		ScaledLength = fabs(ScaledLength);
-
-		const int Precision = (ScaledLength >= 1.0) ? precision - int(log10(ScaledLength)) - 1 : precision;
-
-		if (Precision >= 0) {
-			_itow_s(int(ScaledLength / 12.), szBuf, 16, 10);
-			wcscat_s(lengthAsString, bufSize, szBuf);
-			ScaledLength = fmod(ScaledLength, 12.);
 			wcscat_s(lengthAsString, bufSize, L"'");
 
-			_itow_s(int(ScaledLength), szBuf, 16, 10);
+			_itow_s(Inches, szBuf, 16, 10);
 			wcscat_s(lengthAsString, bufSize, szBuf);
 
-			if (Precision > 0) {
-				CString FormatSpecification;
-				FormatSpecification.Format(L"%%%i.%if", width, Precision);
+			if (Numerator > 0) {
+				wcscat_s(lengthAsString, bufSize, (units == kArchitecturalS) ? L"\\S" : L"·" /* middle dot [U+00B7] */);
+				const int iGrtComDivisor {GreatestCommonDivisor(Numerator, FractionPrecision)};
+				Numerator /= iGrtComDivisor;
+				const int Denominator {FractionPrecision / iGrtComDivisor}; // Add fractional component of inches
+				_itow_s(Numerator, szBuf, 16, 10);
+				wcscat_s(lengthAsString, bufSize, szBuf);
+				wcscat_s(lengthAsString, bufSize, L"/");
+				_itow_s(Denominator, szBuf, 16, 10);
+				wcscat_s(lengthAsString, bufSize, szBuf);
 
-				CString FractionalInches;
-				FractionalInches.Format(FormatSpecification, ScaledLength);
-				const int DecimalPointPosition = FractionalInches.Find('.');
-				FractionalInches = FractionalInches.Mid(DecimalPointPosition) + L"\"";
-
-				wcscat_s(lengthAsString, bufSize, FractionalInches);
+				if (units == kArchitecturalS) { wcscat_s(lengthAsString, bufSize, L";"); }
 			}
+			wcscat_s(lengthAsString, bufSize, L"\"");
+			break;
 		}
-	} else {
-		CString FormatSpecification;
-		FormatSpecification.Format(L"%%%i.%if", width, precision);
+		case kEngineering:
+		{
+			wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
+			ScaledLength = fabs(ScaledLength);
 
-		switch (units) {
-			case kFeet:
-				FormatSpecification.Append(L"'");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength / 12.0);
-				break;
-			case kInches:
-				FormatSpecification.Append(L"\"");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength);
-				break;
-			case kMeters:
-				FormatSpecification.Append(L"m");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.0254);
-				break;
-			case kMillimeters:
-				FormatSpecification.Append(L"mm");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 25.4);
-				break;
-			case kCentimeters:
-				FormatSpecification.Append(L"cm");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 2.54);
-				break;
-			case kDecimeters:
-				FormatSpecification.Append(L"dm");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.254);
-				break;
-			case kKilometers:
-				FormatSpecification.Append(L"km");
-				swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.0000254);
-				break;
-			default:
-				lengthAsString[0] = '\0';
-				break;
+			const int Precision {(ScaledLength >= 1.0) ? precision - int(log10(ScaledLength)) - 1 : precision};
+
+			if (Precision >= 0) {
+				_itow_s(int(ScaledLength / 12.), szBuf, 16, 10);
+				wcscat_s(lengthAsString, bufSize, szBuf);
+				ScaledLength = fmod(ScaledLength, 12.);
+				wcscat_s(lengthAsString, bufSize, L"'");
+
+				_itow_s(int(ScaledLength), szBuf, 16, 10);
+				wcscat_s(lengthAsString, bufSize, szBuf);
+
+				if (Precision > 0) {
+					CString FormatSpecification;
+					FormatSpecification.Format(L"%%%i.%if", width, Precision);
+
+					CString FractionalInches;
+					FractionalInches.Format(FormatSpecification, ScaledLength);
+					const int DecimalPointPosition = FractionalInches.Find('.');
+					FractionalInches = FractionalInches.Mid(DecimalPointPosition) + L"\"";
+
+					wcscat_s(lengthAsString, bufSize, FractionalInches);
+				}
+			}
+			break;
 		}
+		case kFeet:
+			FormatSpecification.Append(L"'");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength / 12.0);
+			break;
+		case kInches:
+			FormatSpecification.Append(L"\"");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength);
+			break;
+		case kMeters:
+			FormatSpecification.Append(L"m");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.0254);
+			break;
+		case kMillimeters:
+			FormatSpecification.Append(L"mm");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 25.4);
+			break;
+		case kCentimeters:
+			FormatSpecification.Append(L"cm");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 2.54);
+			break;
+		case kDecimeters:
+			FormatSpecification.Append(L"dm");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.254);
+			break;
+		case kKilometers:
+			FormatSpecification.Append(L"km");
+			swprintf_s(lengthAsString, bufSize, FormatSpecification, ScaledLength * 0.0000254);
+			break;
+		default:
+			lengthAsString[0] = '\0';
+			break;
 	}
 }
 
@@ -1907,6 +1912,7 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 
 			switch (units) {
 				case kArchitectural:
+				case kArchitecturalS:
 				case kEngineering:
 				case kFeet:
 					ReturnValue[0] *= 12.;

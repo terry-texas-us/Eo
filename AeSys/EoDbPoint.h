@@ -7,8 +7,8 @@
 class EoDbPoint : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbPoint)
 
-	short	m_PointDisplayMode;
 	OdGePoint3d	m_Position;
+	short m_PointDisplayMode;
 	unsigned short m_NumberOfDatums;
 	double* m_Data;
 
