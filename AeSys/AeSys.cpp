@@ -78,14 +78,14 @@ static void addPaperDrawingCustomization() {
 			return true;
 		}
 		bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
-			if (points[0] == points[1] || points[1] == points[2]) {
-				return true;
-			}
-			int NumberOfDashes = 15;
-			OdGiGeometry& Geometry = worldDraw->geometry();
+
+			if (points[0] == points[1] || points[1] == points[2]) { return true; }
+
+			int NumberOfDashes {15};
+			OdGiGeometry& Geometry {worldDraw->geometry()};
 			OdGePoint3d Dash1[2];
 			OdGePoint3d Dash2[2];
-			OdGeVector3d Step = (points[1] - points[0]) / (double(NumberOfDashes) * 2. + 1.0);
+			auto Step {(points[1] - points[0]) / (static_cast<double>(NumberOfDashes) * 2. + 1.0)};
 			Dash1[0] = points[0];
 			Dash2[0] = points[2];
 			for (int i = 0; i <= NumberOfDashes; ++i) {
@@ -96,8 +96,8 @@ static void addPaperDrawingCustomization() {
 				Geometry.polyline(2, Dash2);
 				Dash2[0] = Dash2[1] - Step;
 			}
-			NumberOfDashes = int((points[2] - points[1]).length() / Step.length() - 1) / 2;
-			Step = (points[2] - points[1]) / (double(NumberOfDashes) * 2. + 1.0);
+			NumberOfDashes = static_cast<int>((points[2] - points[1]).length() / Step.length() - 1.0) / 2;
+			Step = (points[2] - points[1]) / (static_cast<double>(NumberOfDashes) * 2. + 1.0);
 			Dash1[0] = points[1];
 			Dash2[0] = points[3];
 			for (int i = 0; i <= NumberOfDashes; ++i) {
@@ -377,40 +377,36 @@ AeSys::AeSys() noexcept
 	, m_SaveWithPassword(false)
 	, m_pAuditDlg(nullptr)
 {
-
 	EnableHtmlHelp();
 
-	// Detect color depth. 256 color toolbars can be used in the high or true color modes only (bits per pixel is > 8):
 	CClientDC ClientDeviceContext(AfxGetMainWnd());
-	m_HighColorMode = ClientDeviceContext.GetDeviceCaps(BITSPIXEL) > 8;
-
-	m_ClipboardDataImage = false;
+	m_ArchitecturalUnitsFractionPrecision = 16;
+	m_HighColorMode = ClientDeviceContext.GetDeviceCaps(BITSPIXEL) > 8; // Detect color depth. 256 color toolbars can be used in the high or true color modes only
 	m_ClipboardDataEoGroups = true;
+	m_ClipboardDataImage = false;
 	m_ClipboardDataText = true;
+	m_ClipboardFormatIdentifierForEoGroups = 0;
 	m_ModeInformationOverView = false;
 	m_TrapModeAddGroups = true;
 	m_NodalModeAddGroups = true;
-	m_ClipboardFormatIdentifierForEoGroups = 0;
 	m_CurrentMode = 0;
-	m_EngagedLength = 0.0;
-	m_EngagedAngle = 0.0;
-	m_DimensionLength = 0.125;
-	m_DimensionAngle = 45.;
-	m_Units = kInches;
-	m_ArchitecturalUnitsFractionPrecision = 16;
-	m_SimplexStrokeFont = nullptr;
 	m_DeviceHeightInMillimeters = 0.0;
 	m_DeviceHeightInPixels = 0.0;
 	m_DeviceWidthInMillimeters = 0.0;
 	m_DeviceWidthInPixels = 0.0;
-
+	m_DimensionAngle = 45.;
+	m_DimensionLength = 0.125;
+	m_EngagedAngle = 0.0;
+	m_EngagedLength = 0.0;
+	
 	m_AeSysMenuHandle = nullptr;
 	m_ModeResourceIdentifier = 0;
 	m_PrimaryMode = 0;
 
+	m_SimplexStrokeFont = nullptr;
 	m_TrapHighlightColor = 15;
 	m_TrapHighlighted = true;
-
+	m_Units = kInches;
 }
 #define EO_REGISTRY_BUFFER_SIZE 1040
 #define EO_REGISTRY_MAX_PROFILE_NAME 128
@@ -633,7 +629,7 @@ CString AeSys::getApplicationPath() {
 
 void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
 	
-	if (m_pAuditDlg) { m_pAuditDlg->printReport(( OdDbAuditInfo*) auditInfo); }
+	if (m_pAuditDlg) { m_pAuditDlg->printReport(dynamic_cast<OdDbAuditInfo*>(auditInfo)); }
 }
 
 OdDbUndoControllerPtr AeSys::newUndoController() {
@@ -835,7 +831,7 @@ OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
 }
 
 void AeSys::AddModeInformationToMessageList() {
-	auto ResourceString {LoadStringResource(static_cast<unsigned>(m_CurrentMode))};
+	auto ResourceString {LoadStringResource(m_CurrentMode)};
 	int NextToken {0};
 	ResourceString = ResourceString.Tokenize(L"\n", NextToken);
 	AddStringToMessageList(ResourceString);
@@ -907,7 +903,7 @@ unsigned AeSys::ClipboardFormatIdentifierForEoGroups()  noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
 
-int AeSys::CurrentMode() const  noexcept {
+unsigned AeSys::CurrentMode() const  noexcept {
 	return m_CurrentMode;
 }
 
@@ -943,11 +939,11 @@ void AeSys::EditColorPalette() {
 	cc.rgbResult = ColorPalette[pstate.ColorIndex()];
 	cc.lpCustColors = ColorPalette;
 	cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
-	::ChooseColor(&cc);
+	::ChooseColorW(&cc);
 
 	cc.rgbResult = GreyPalette[pstate.ColorIndex()];
 	cc.lpCustColors = GreyPalette;
-	::ChooseColor(&cc);
+	::ChooseColorW(&cc);
 
 	::MessageBoxW(nullptr, L"The background color is no longer associated with the pen Color Palette.", L"Deprecation Notice", MB_OK | MB_ICONINFORMATION);
 
@@ -977,8 +973,8 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 			(fpDlgProc) (&statDib, parentWindow, NULL, filter, Flags, &OpenWithPreviewDialog);
 
 			if (IDOK == OpenWithPreviewDialog->ShowModal()) {
-				long nSize = MAX_PATH;
-				OpenWithPreviewDialog->GetFullFileName(FileName.GetBuffer(nSize), nSize);
+				long BufferLength {MAX_PATH};
+				OpenWithPreviewDialog->GetFullFileName(FileName.GetBuffer(BufferLength), BufferLength);
 				FileName.ReleaseBuffer();
 			}
 			OpenWithPreviewDialog->ReleaseDlg();
@@ -1504,8 +1500,8 @@ void AeSys::LoadColorPalletFromFile(const CString & fileName) {
 	CStdioFile StreamFile;
 
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
-		wchar_t Line[128];
-		wmemset(Line, 0, 128);
+		wchar_t Line[128] {L"\0"};
+
 		wchar_t* Index {nullptr};
 		wchar_t* Red {nullptr};
 		wchar_t* Green {nullptr};
@@ -1529,7 +1525,7 @@ void AeSys::LoadColorPalletFromFile(const CString & fileName) {
 	}
 }
 
-void AeSys::LoadModeResources(int mode) {
+void AeSys::LoadModeResources(unsigned mode) {
 	BuildModeSpecificAcceleratorTable();
 
 	m_CurrentMode = mode;
@@ -1975,11 +1971,9 @@ bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wch
 	
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
 		unsigned long RegistryBufferSize {EO_REGISTRY_BUFFER_SIZE};
-		unsigned char data[EO_REGISTRY_BUFFER_SIZE];
-		memset(data, 0, EO_REGISTRY_BUFFER_SIZE);
+		unsigned char data[EO_REGISTRY_BUFFER_SIZE] {0};
 
-		wchar_t data_t[EO_REGISTRY_BUFFER_SIZE];
-		wmemset(data_t, 0, EO_REGISTRY_BUFFER_SIZE);
+		wchar_t data_t[EO_REGISTRY_BUFFER_SIZE] {L"\0"};
 
 		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, data, &RegistryBufferSize) == ERROR_SUCCESS) {
 			memcpy_s(&data_t, EO_REGISTRY_BUFFER_SIZE, &data, RegistryBufferSize);

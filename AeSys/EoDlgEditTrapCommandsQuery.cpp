@@ -24,13 +24,15 @@ void EoDlgEditTrapCommandsQuery::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_GEOMETRY_LIST, m_GeometryListViewControl);
 	DDX_Control(pDX, IDC_EXTRA_LIST_CTRL, m_ExtraListViewControl);
 }
+
 BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	HWND hWndGroupTree = ::GetDlgItem(this->GetSafeHwnd(), IDC_GROUP_TREE);
-	EoDbGroupList* GroupsInTrap = AeSysDoc::GetDoc()->GroupsInTrap();
-	HTREEITEM htiGroupList = CMainFrame::InsertTreeViewControlItem(hWndGroupTree, TVI_ROOT, L"<Groups>", GroupsInTrap);
-	GroupsInTrap->AddToTreeViewControl(hWndGroupTree, htiGroupList);
+	auto GroupTreeWindowHandle {::GetDlgItem(this->GetSafeHwnd(), IDC_GROUP_TREE)};
+	auto GroupsInTrap {AeSysDoc::GetDoc()->GroupsInTrap()};
+	auto GroupListTreeItemHandle {CMainFrame::InsertTreeViewControlItem(GroupTreeWindowHandle, TVI_ROOT, L"<Groups>", GroupsInTrap)};
+
+	GroupsInTrap->AddToTreeViewControl(GroupTreeWindowHandle, GroupListTreeItemHandle);
 
 	m_ExtraListViewControl.InsertColumn(0, L"Property", LVCFMT_LEFT, 128);
 	m_ExtraListViewControl.InsertColumn(1, L"Value", LVCFMT_LEFT, 192);
@@ -40,16 +42,16 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	m_GeometryListViewControl.InsertColumn(2, L"Y-Axis", LVCFMT_LEFT, 96);
 	m_GeometryListViewControl.InsertColumn(3, L"Z-Axis", LVCFMT_LEFT, 96);
 
-	TreeView_Expand(hWndGroupTree, htiGroupList, TVE_EXPAND);
+	TreeView_Expand(GroupTreeWindowHandle, GroupListTreeItemHandle, TVE_EXPAND);
 	return TRUE;
 }
+
 void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure, LRESULT* result) {
-	LPNMTREEVIEW pNMTreeView = reinterpret_cast<LPNMTREEVIEW>(notifyStructure);
+	LPNMTREEVIEWW pNMTreeView {reinterpret_cast<LPNMTREEVIEWW>(notifyStructure)};
 
-	wchar_t szText[256];
-	szText[0] = '\0';
+	wchar_t szText[256] {L"\0"};
 
-	TV_ITEM item;
+	TV_ITEMW item;
 	::ZeroMemory(&item, sizeof(item));
 	item.hItem = pNMTreeView->itemNew.hItem;
 	item.mask = TVIF_TEXT | TVIF_PARAM;
@@ -63,17 +65,17 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 	if (wcscmp(item.pszText, L"<Groups>") == 0) {
 	} else if (wcscmp(item.pszText, L"<Group>") == 0) {
 	} else {
-		EoDbPrimitive* Primitive = (EoDbPrimitive*) item.lParam;
+		auto Primitive {( EoDbPrimitive*) item.lParam};
 		FillExtraList(Primitive);
 		FillGeometryList(Primitive);
 	}
 	*result = 0;
 }
-void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
-	wchar_t szBuf[64];
-	wmemset(szBuf, 0, 64);
 
-	int iItem = 0;
+void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
+	wchar_t szBuf[64] {L"\0"};
+
+	int iItem {0};
 
 	CString Extra;
 	primitive->FormatExtra(Extra);
@@ -95,9 +97,10 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 		nDel = Extra.Mid(nOff).Find(';');
 	}
 }
+
 void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive * primitive) {
-	wchar_t szBuf[64];
-	int iItem = 0;
+	wchar_t szBuf[64] {L"\0"};
+	int iItem {0};
 
 	CString strBuf;
 	primitive->FormatGeometry(strBuf);

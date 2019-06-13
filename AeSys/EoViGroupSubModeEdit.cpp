@@ -18,7 +18,7 @@ void AeSysView::OnModeGroupEdit() {
 
 void AeSysView::DoEditGroupCopy() {
 
-	if (m_SubModeEditGroup != 0) {
+	if (m_SubModeEditGroup != nullptr) {
 		auto Group {new EoDbGroup(*m_SubModeEditGroup)};
 
 		GetDocument()->AddWorkLayerGroup(Group);
@@ -30,7 +30,7 @@ void AeSysView::DoEditGroupCopy() {
 }
 
 void AeSysView::DoEditGroupEscape() {
-	if (m_SubModeEditGroup != 0) {
+	if (m_SubModeEditGroup != nullptr) {
 		m_tmEditSeg.invert();
 
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);
@@ -45,7 +45,7 @@ void AeSysView::DoEditGroupEscape() {
 
 void AeSysView::DoEditGroupTransform(unsigned short operation) {
 
-	if (m_SubModeEditGroup != 0) {
+	if (m_SubModeEditGroup != nullptr) {
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(-m_SubModeEditBeginPoint.asVector());
 
@@ -81,7 +81,7 @@ void AeSysView::DoEditGroupTransform(unsigned short operation) {
 void AeSysView::PreviewGroupEdit() {
 	auto Document {GetDocument()};
 
-	if (m_SubModeEditGroup != 0) {
+	if (m_SubModeEditGroup != nullptr) {
 		m_SubModeEditEndPoint = GetCursorPosition();
 		EoGeMatrix3d tm;
 		tm.setToTranslation(m_SubModeEditEndPoint - m_SubModeEditBeginPoint);
@@ -114,8 +114,8 @@ void AeSysView::InitializeGroupAndPrimitiveEdit() {
 	m_SubModeEditBeginPoint = OdGePoint3d::kOrigin;
 	m_SubModeEditEndPoint = m_SubModeEditBeginPoint;
 
-	m_SubModeEditGroup = 0;
-	m_SubModeEditPrimitive = 0;
+	m_SubModeEditGroup = nullptr;
+	m_SubModeEditPrimitive = nullptr;
 
 	m_tmEditSeg.setToIdentity();
 }

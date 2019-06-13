@@ -295,11 +295,15 @@ public:
 
 private:
 	int	m_ArchitecturalUnitsFractionPrecision;
+	bool m_HighColorMode;
 	bool m_ClipboardDataEoGroups;
 	bool m_ClipboardDataImage;
 	bool m_ClipboardDataText;
 	unsigned m_ClipboardFormatIdentifierForEoGroups;
-	int	m_CurrentMode;
+	bool m_ModeInformationOverView;
+	bool m_TrapModeAddGroups;
+
+	unsigned m_CurrentMode;
 	double m_DeviceHeightInMillimeters;
 	double m_DeviceHeightInPixels;
 	double m_DeviceWidthInMillimeters;
@@ -308,17 +312,14 @@ private:
 	double m_DimensionLength;
 	double m_EngagedAngle;
 	double m_EngagedLength;
-	bool m_HighColorMode;
 	OdGePoint3d	m_HomePoints[9];
 	HMENU m_AeSysMenuHandle;
-	bool m_ModeInformationOverView;
 	int m_ModeResourceIdentifier;
 	int	m_PrimaryMode;
 	CString m_ShadowFolderPath;
 	char* m_SimplexStrokeFont;
 	short m_TrapHighlightColor;
 	bool m_TrapHighlighted;
-	bool m_TrapModeAddGroups;
 	Units m_Units;
 
 public:
@@ -345,7 +346,7 @@ public:
 	int	ArchitecturalUnitsFractionPrecision() const noexcept;
 	void BuildModeSpecificAcceleratorTable();
 	unsigned ClipboardFormatIdentifierForEoGroups() noexcept;
-	int CurrentMode() const noexcept;
+	unsigned CurrentMode() const noexcept;
 	double DeviceHeightInMillimeters() const noexcept;
 	double DeviceHeightInPixels() const noexcept;
 	double DeviceWidthInMillimeters() const noexcept;
@@ -378,7 +379,7 @@ public:
 	bool IsClipboardDataText() noexcept;
 	bool IsTrapHighlighted() noexcept;
 	void LoadColorPalletFromFile(const CString& pathName);
-	void LoadModeResources(int mode);
+	void LoadModeResources(unsigned mode);
 	void LoadPenWidthsFromFile(const CString& pathName);
 	void LoadSimplexStrokeFont(const CString& pathName);
 	CString LoadStringResource(unsigned resourceIdentifier) const;

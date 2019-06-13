@@ -3967,7 +3967,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 	::SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
 
-void AeSysView::SetModeCursor(int mode) {
+void AeSysView::SetModeCursor(unsigned mode) {
 	unsigned short ResourceIdentifier {0};
 
 	switch (mode) {

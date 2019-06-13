@@ -377,10 +377,10 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 
 							if (Zoomed) {
 
-								if (!Parent->IsZoomed()) { reinterpret_cast<CMDIChildWnd*>(Parent)->MDIMaximize(); }
+								if (!Parent->IsZoomed()) { dynamic_cast<CMDIChildWnd*>(Parent)->MDIMaximize(); }
 							}
 							else {
-								reinterpret_cast<CMDIChildWnd*>(Parent)->MDIRestore();
+								dynamic_cast<CMDIChildWnd*>(Parent)->MDIRestore();
 
 								if (!Iconic) { Parent->SetWindowPos(nullptr, ParentRectangle.left, ParentRectangle.top, ParentRectangle.Width(), ParentRectangle.Height(), SWP_NOZORDER); }
 							}

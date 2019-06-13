@@ -359,7 +359,7 @@ public:
 	OdGePoint3d GetWorldCoordinates(CPoint point);
 	/// <summary> Positions cursor at targeted position.</summary>
 	void SetCursorPosition(const OdGePoint3d& point);
-	void SetModeCursor(int mode);
+	void SetModeCursor(unsigned mode);
 
 	pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
