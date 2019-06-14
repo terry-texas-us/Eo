@@ -44,18 +44,18 @@ EoDbHatch::EoDbHatch() noexcept
 	, m_Vertices(0) {
 }
 
-EoDbHatch::EoDbHatch(const EoDbHatch& other)
-	: m_NumberOfLoops(0) {
+EoDbHatch::EoDbHatch(const EoDbHatch& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-
 	m_ColorIndex = other.m_ColorIndex;
+
 	m_InteriorStyle = other.m_InteriorStyle;
 	m_InteriorStyleIndex = other.m_InteriorStyleIndex;
 	m_HatchOrigin = other.m_HatchOrigin;
 	m_HatchXAxis = other.m_HatchXAxis;
 	m_HatchYAxis = other.m_HatchYAxis;
 
+	m_NumberOfLoops = 0;
 	m_Vertices.clear();
 	m_Vertices.append(other.m_Vertices);
 }

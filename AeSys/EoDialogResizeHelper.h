@@ -1,6 +1,5 @@
 #pragma once
 
-#pragma warning (disable: 4786)
 #include <list>
 
 class EoDialogResizeHelper {

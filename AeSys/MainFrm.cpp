@@ -66,7 +66,7 @@ static unsigned Indicators[] = {
 CMainFrame::CMainFrame()
 	: m_CurrentProgress(0)
 	, m_InProgress(false) {
-	theApp.m_ApplicationLook = theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK);
+	theApp.m_ApplicationLook = static_cast<unsigned>(theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK));
 }
 
 CMainFrame::~CMainFrame() {}
@@ -196,7 +196,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 
 	if (ItemRectangle.left <= itemRectangle.right) {
 		auto ColorName {color.colorNameForDisplay()};
-		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, ColorName.getLength(), nullptr);
+		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, static_cast<unsigned>(ColorName.getLength()), nullptr);
 	}
 }
 
@@ -224,7 +224,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 
 	if (ItemRectangle.left <= itemRectangle.right) {
 		OdString String {CMainFrame::StringByLineWeight(lineWeight, false)};
-		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, String.getLength(), nullptr);
+		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, static_cast<unsigned>(String.getLength()), nullptr);
 	}
 }
 
@@ -232,10 +232,10 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 
 	if (database->getPSTYLEMODE() == 1) {
 		const auto OldTextColor {deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT))};
-		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.getLength(), nullptr);
+		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, static_cast<unsigned>(textOut.getLength()), nullptr);
 		deviceContext.SetTextColor(OldTextColor);
 	} else {
-		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, textOut.getLength(), nullptr);
+		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, static_cast<unsigned>(textOut.getLength()), nullptr);
 	}
 }
 
@@ -339,7 +339,7 @@ void CMainFrame::OnApplicationLook(unsigned look) {
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 
-	theApp.WriteInt(L"ApplicationLook", theApp.m_ApplicationLook);
+	theApp.WriteInt(L"ApplicationLook", static_cast<int>(theApp.m_ApplicationLook));
 }
 
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
@@ -465,7 +465,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 					GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 
 					MenuItemInfo.dwItemData = (LPARAM) pCmd.get();
-					::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
+					::SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
 
 					GroupCommandIterator->next();
 					CommandId++;
@@ -501,7 +501,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			unsigned long PathSize;
 			for (;;) {
 				PathSize = _MAX_FNAME + _MAX_EXT;
-				const auto ReturnValue {::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(PathSize), &PathSize, nullptr, nullptr, nullptr, nullptr)};
+				const auto ReturnValue {::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 				VectorizerPath.ReleaseBuffer();
 
 				if (ReturnValue != ERROR_SUCCESS) {
@@ -512,7 +512,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 					if (theApp.recentGsDevicePath().iCompare((const wchar_t*) VectorizerPath) == 0) {
 						MenuButton.SetStyle(TBBS_CHECKED);
 					}
-					popupMenu->InsertItem(MenuButton, VectorizerIndex++);
+					popupMenu->InsertItem(MenuButton, static_cast<int>(VectorizerIndex++));
 				}
 			}
 		}
@@ -564,7 +564,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 				}
 			} else {
 				HWND ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
-				m_wndClientArea.PostMessage(WM_MDICASCADE);
+				m_wndClientArea.PostMessageW(WM_MDICASCADE);
 				::BringWindowToTop(ActiveWnd);
 			}
 			break;
@@ -572,7 +572,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		case EoApOptions::Standard:
 		{
 			HWND ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
-			m_wndClientArea.PostMessage(WM_MDIMAXIMIZE, LPARAM(ActiveWnd), 0L);
+			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
 			EnableMDITabs(TRUE, theApp.m_Options.m_MdiTabInfo.m_bTabIcons, theApp.m_Options.m_MdiTabInfo.m_tabLocation, theApp.m_Options.m_MdiTabInfo.m_bTabCloseButton, theApp.m_Options.m_MdiTabInfo.m_style, theApp.m_Options.m_MdiTabInfo.m_bTabCustomTooltips, theApp.m_Options.m_MdiTabInfo.m_bActiveTabCloseButton);
@@ -587,7 +587,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		case EoApOptions::Grouped:
 		{
 			auto ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
-			m_wndClientArea.PostMessage(WM_MDIMAXIMIZE, LPARAM(ActiveWnd), 0L);
+			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
 			EnableMDITabbedGroups(TRUE, theApp.m_Options.m_MdiTabInfo);

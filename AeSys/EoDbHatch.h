@@ -38,9 +38,9 @@ private:
 	OdGePoint3d	m_HatchOrigin;
 	OdGeVector3d m_HatchXAxis;
 	OdGeVector3d m_HatchYAxis;
+	int m_NumberOfLoops;
 	OdGePoint3dArray m_Vertices;
 
-	int m_NumberOfLoops;
 	OdGePoint2dArray m_Vertices2d;
 	OdGeDoubleArray m_Bulges;
 

@@ -1894,17 +1894,17 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 	try {
 		int iTokId {0};
-		long lDef;
+		long DataDefinition;
 		int iTyp;
 		double ReturnValue[32];
 
 		lex::Parse(lengthAsString);
-		lex::EvalTokenStream(&iTokId, &lDef, &iTyp, (void*)ReturnValue);
+		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, (void*)ReturnValue);
 
 		if (iTyp == lex::TOK_LENGTH_OPERAND) {
 			return (ReturnValue[0]);
 		} else {
-			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &lDef, ReturnValue);
+			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &DataDefinition, ReturnValue);
 
 			switch (units) {
 				case kArchitectural:

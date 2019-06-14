@@ -499,7 +499,7 @@ void AeSysView::OnInitialUpdate() {
 	}
 	createDevice();
 	if (m_LayoutHelper.isNull()) {
-		GetParent()->PostMessage(WM_CLOSE);
+		GetParent()->PostMessageW(WM_CLOSE);
 		return;
 	}
 	Document->setVectorizer(this);
@@ -534,15 +534,15 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 			}
 		} catch (const OdError& Error) {
 			theApp.reportError(L"Rendering aborted", Error);
-			GetParent()->PostMessage(WM_CLOSE);
+			GetParent()->PostMessageW(WM_CLOSE);
 		} catch (const UserBreak&) {
 			theApp.reportError(L"Rendering aborted", OdError(eUserBreak));
-			GetParent()->PostMessage(WM_CLOSE);
+			GetParent()->PostMessageW(WM_CLOSE);
 		}
 #ifndef _DEBUG
 		catch (...) {
 			theApp.reportError(L"Rendering aborted", OdError("Unknown exception is caught..."));
-			GetParent()->PostMessage(WM_CLOSE);
+			GetParent()->PostMessageW(WM_CLOSE);
 		}
 #endif //#ifndef _DEBUG
 	}
@@ -564,7 +564,7 @@ void AeSysView::OnPaint() {
 		while(::PeekMessageW(&Message, nullptr, g_nRedrawMSG, g_nRedrawMSG, PM_REMOVE)) {
 		;
 		}
-		PostMessage(g_nRedrawMSG);
+		PostMessageW(g_nRedrawMSG);
 		</tas> */
 	CView::OnPaint();
 }
@@ -1749,7 +1749,7 @@ void AeSysView::OnViewerRegen() {
 		m_LayoutHelper->gsModel()->invalidate(OdGsModel::kInvalidateAll);
 	}
 	m_paintMode = PaintMode_Regen;
-	PostMessage(WM_PAINT);
+	PostMessageW(WM_PAINT);
 }
 
 void AeSysView::OnViewerVpregen() {
@@ -1758,7 +1758,7 @@ void AeSysView::OnViewerVpregen() {
 		m_LayoutHelper->gsModel()->invalidate(getActiveView());
 	}
 	m_paintMode = PaintMode_Regen;
-	PostMessage(WM_PAINT);
+	PostMessageW(WM_PAINT);
 }
 
 void AeSysView::OnUpdateViewerRegen(CCmdUI* pCmdUI) {
@@ -1828,7 +1828,7 @@ bool AeSysView::UpdateStringTrackerCursor() {
 	if (m_mode == kGetString && m_response.m_type != Response::kString) {
 		if (m_editor.TrackString(m_inpars.result())) {
 			getActiveTopView()->invalidate();
-			PostMessage(WM_PAINT);
+			PostMessageW(WM_PAINT);
 			return true;
 		}
 	}
@@ -1947,7 +1947,7 @@ void AeSysView::setCursor(HCURSOR cursor) noexcept {
 }
 
 void AeSysView::OnRefresh() {
-	PostMessage(WM_PAINT);
+	PostMessageW(WM_PAINT);
 }
 
 bool AeSysView::beginDragCallback(const OdGePoint3d & point) {
@@ -2134,7 +2134,7 @@ void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsign
 
 			switch (m_mode) {
 				case kQuiescent:
-					if (m_editor.Unselect()) { PostMessage(WM_PAINT); }
+					if (m_editor.Unselect()) { PostMessageW(WM_PAINT); }
 					break;
 				case kGetPoint:
 				case kGetString:
@@ -2170,7 +2170,7 @@ void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsign
 	if (m_mode == kGetString && m_response.m_type != Response::kString && m_inpars.result() != m_response.m_string) {
 		if (m_editor.TrackString(m_inpars.result())) {
 			getActiveTopView()->invalidate();
-			PostMessage(WM_PAINT);
+			PostMessageW(WM_PAINT);
 		}
 	}
 	if (m_sPrompt.isEmpty()) {
@@ -2188,12 +2188,12 @@ void AeSysView::OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags) 
 			break;
 
 		case VK_F5:
-			PostMessage(WM_PAINT);
+			PostMessageW(WM_PAINT);
 			break;
 
 		case VK_DELETE:
 			GetDocument()->DeleteSelection(false);
-			PostMessage(WM_PAINT);
+			PostMessageW(WM_PAINT);
 			break;
 	}
 	__super::OnKeyDown(nChar, repeatCount, flags);
@@ -2206,7 +2206,7 @@ void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 		switch (m_mode) {
 			case kQuiescent:
 				if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
-					PostMessage(WM_PAINT);
+					PostMessageW(WM_PAINT);
 				}
 				break;
 			case kGetPoint:
@@ -2419,7 +2419,7 @@ BOOL AeSysView::OnMouseWheel(unsigned flags, short zDelta, CPoint point) {
 	//ScreenToClient(&point);
 
 	//if (m_editor.OnMouseWheel(flags, point.x, point.y, zDelta)) {
-	//    PostMessage(WM_PAINT);
+	//    PostMessageW(WM_PAINT);
 	//    propagateActiveViewChanges();
 	//}
 	DollyAndZoom((zDelta > 0) ? 1. / 0.9 : 0.9);
@@ -2507,7 +2507,7 @@ unsigned long AeSysView::drawableFilterFunction(OdIntPtr functionId, const OdGiD
 
 BOOL AeSysView::OnIdle(long count) {
 	if (!m_LayoutHelper->isValid()) {
-		PostMessage(WM_PAINT);
+		PostMessageW(WM_PAINT);
 	}
 	return TRUE;
 }

@@ -80,7 +80,7 @@ public:
 			}
 			wchar_t* szError;
 			
-			if (::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), (LPTSTR) &szError, 0, NULL) != 0) {
+			if (::FormatMessageW(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, NULL, hr, MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), ( wchar_t*) &szError, 0, NULL) != 0) {
 				ODA_TRACE1("[OleDwgItem::draw] Decoded HRESULT: %s", szError);
 				::LocalFree(szError);
 			}

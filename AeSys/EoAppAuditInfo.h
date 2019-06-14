@@ -6,7 +6,6 @@ class EoAppAuditInfo
 	: public OdDbAuditInfo {
 public:
 	EoAppAuditInfo() noexcept;
-	~EoAppAuditInfo() {}
 
 public:
 	void setHostAppServices(OdDbHostAppServices* hostAppServices) noexcept {

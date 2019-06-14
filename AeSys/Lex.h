@@ -2,20 +2,18 @@
 
 enum ETokClass { Other, Constant, Identifier, BinaryArithOp, BinaryRelatOp, BinaryLogicOp, UnaryLogicOp, AssignOp, OpenParen, CloseParen };
 
-struct CD { // column definition
-	long lDef;				// data definition
-	long lTyp;				// data type
+struct LexColumnDefinition {
+	long DataDefinition;
+	long DataType;
 };
 struct tokent {
-	int iInComPrio;
-	int iInStkPrio;
-	ETokClass eClass;
+	int InComingPriority;
+	int InStackPriority;
+	ETokClass Class;
 };
 
 namespace lex {
-// <LexTable> The following static table data (from LexTable.h) is a legacy from the removed command parser features.
-// The only pieces still used are for simple expression evaluation.
-// Lexgen can still produce this table but likely will be replaced by third party tools.
+/// <LexTable> The following static table data (from LexTable.h) is a legacy from the removed command parser features. The only pieces still used are for simple expression evaluation. Lexgen can still produce this table but likely will be replaced by third party tools.
 static int iBase[] = {
 	0, 0, 195, 1, 1, 1, 215, 2, 2, 2, 
 	224, 198, 199, 286, 5, 5, 5, 5, 5, 5, 
@@ -156,9 +154,9 @@ static int iCheck[] = {
 	37, 37, 37, 37, 37, 37, 37, 37, 37, 37, 
 	37
 };
-// </LexTable> 
+/// </LexTable> 
 
-	const int TOKS_MAX = 128;		// maximum number of tokens
+	const int MaximumNumberOfTokens = 128;
 	const int VALS_MAX = 256;
 
 	const int TOK_UNARY_OPERATOR = 1;
@@ -261,28 +259,29 @@ static int iCheck[] = {
 	/// <param name="typeOfTokens">type of tokens on stack</param>
 	/// <param name="locationOfTokens">location of tokens on stack</param>
 	void BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typeOfTokens, int* locationOfTokens);
+	
 	/// <summary>Converts a literal user units string to a double precision value.</summary>
-	// Notes:	Assumes that a valid liter user units string is passed with no suffix characters evaluated.
+	// Notes:	Assumes that a valid literal user units string is passed with no suffix characters evaluated.
 	// Effect:
-	// Parameters:	aiTyp		type of value(s) required
-	//				alDef		dimension (lo word) and length (hi word) of string
+	// Parameters:	valueType	type of value(s) required
+	//				definition	dimension (lo word) and length (hi word) of string
 	//				aszVal		string to convert
 	//				alDefReq	dimension (lo word) and length (hi word) of result
 	//				aVal		result
-	void ConvertStringToVal(int iTyp, long lDef, LPTSTR szVal, long* lDefReq, void* p);
-	void ConvertValToString(LPTSTR, CD*, LPTSTR, int*) noexcept;
+	void ConvertStringToVal(int iTyp, long lDef, wchar_t* szVal, long* lDefReq, void* p);
+	void ConvertValToString(wchar_t*, LexColumnDefinition*, wchar_t*, int*) noexcept;
 	/// <summary>Does value type conversion</summary>
-	// Parameters:	aiTyp		type of value(s)
+	// Parameters:	valueType	type of value(s)
 	//				aiTypReq	type of value(s) required
-	//				alDef		dimension (lo word) and length (hi word) of result
+	//				definition	dimension (lo word) and length (hi word) of result
 	//				apVal		value(s)
 	void ConvertValTyp(int, int, long*, void*) noexcept;
 	/// <summary> Evaluates an expression.</summary>
 	// Returns: 1 infix expression successfully evaluated
 	//			0 unspecified syntax error
 	// Parameters:	aiTokId
-	//				alDef		dimension (lo word) and length (hi word) of result
-	//				aiTyp		type of result
+	//				definition	dimension (lo word) and length (hi word) of result
+	//				valueType		type of result
 	//				apOp		result
 	void EvalTokenStream(int*, long*, int*, void*);
 	void Init() noexcept;
@@ -293,21 +292,21 @@ static int iCheck[] = {
 	// Notes:	If the character is found the scan pointer is updated
 	//			to point to the character following the one found.
 	// Returns: Pointer to the character if found,	0 if not.
-	LPTSTR ScanForChar(wchar_t c, LPTSTR *ppStr) noexcept;
+	LPTSTR ScanForChar(wchar_t c, wchar_t* *ppStr) noexcept;
 	/// <summary>Scan for a string.</summary>
 	// Notes:	The scan pointer is updated to point past the string.  The
 	//			arg buffer pointer is updated to point to the next free character.
 	// Returns: Pointer tot he string or 0 if an error occurs.
-	LPTSTR ScanForString(LPTSTR *ppStr, LPTSTR pszTerm, LPTSTR *ppArgBuf) noexcept;
-	int Scan(LPTSTR aszTok, const wchar_t* pszLine, int& iLP);
+	wchar_t* ScanForString(wchar_t* *ppStr, wchar_t* pszTerm, wchar_t* *ppArgBuf) noexcept;
+	int Scan(wchar_t* aszTok, const wchar_t* pszLine, int& iLP);
 	/// <summary>Skip over any white space characters.</summary>
 	/// <param name="pszString">Pointer to the current buffer position.</param>
 	/// <returns>Pointer to the first non-white character.</returns>
-	LPTSTR SkipWhiteSpace(LPTSTR pszString) noexcept;
+	wchar_t* SkipWhiteSpace(wchar_t* pszString) noexcept;
 	/// <summary> Fetches specified tokens type from current token stream.</summary>
 	// Returns:  token type
 	//		 - 1 if token identifier out of range
-	int TokType(int) noexcept;
+	int TokenType(int) noexcept;
 	void UnaryOp(int, int*, long*,	double*);
 	void UnaryOp(int, int*, long*, long*);
 }

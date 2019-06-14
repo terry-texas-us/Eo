@@ -43,7 +43,7 @@ void AeSysView::ModeLineDisplay() {
 
 			const CRect Rectangle(i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom);
 
-			DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
+			DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, static_cast<unsigned>(ModeOp.GetLength()), 0);
 		}
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);
@@ -86,7 +86,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 
 		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 
-		DeviceContext->ExtTextOutW(Rectangle.left , Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
+		DeviceContext->ExtTextOutW(Rectangle.left , Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, static_cast<unsigned>(ModeOp.GetLength()), 0);
 
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);
@@ -126,7 +126,7 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 
 		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 
-		DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, ModeOp.GetLength(), 0);
+		DeviceContext->ExtTextOutW(Rectangle.left, Rectangle.top, ETO_CLIPPED | ETO_OPAQUE, &Rectangle, ModeOp, static_cast<unsigned>(ModeOp.GetLength()), 0);
 
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);

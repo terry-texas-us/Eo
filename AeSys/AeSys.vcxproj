@@ -245,6 +245,7 @@
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acad.pat" />
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.lin" />
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.pat" />
+    <None Include="ClassDiagram.cd" />
     <None Include="Resource.hm" />
     <None Include="res\AeSys.ico" />
     <None Include="res\AeSys.rc2" />

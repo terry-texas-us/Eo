@@ -2675,14 +2675,14 @@ void AeSysDoc::OnPrimExtractNum() {
 		}
 		double dVal[32];
 		int iTyp {0};
-		long lDef {0};
+		long DataDefinition {0};
 		int iTokId = 0;
 
 		lex::Parse(Number);
-		lex::EvalTokenStream(&iTokId, &lDef, &iTyp, (void*) dVal);
+		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, (void*) dVal);
 
 		if (iTyp != lex::TOK_LENGTH_OPERAND) {
-			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &lDef, dVal);
+			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &DataDefinition, dVal);
 		}
 		wchar_t Message[64];
 		swprintf_s(Message, 64, L"%10.4f ", dVal[0]);

@@ -222,7 +222,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const 
 	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color)));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
-	_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
+	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
 
 CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name)
@@ -231,7 +231,7 @@ CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* n
 	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
 	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
 	CloneBitmap(Bitmap, &m_bitmap);
-	_tcsncpy(m_name, name, PS_COLOR_MAX_NAME);
+	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
 }
 
 const int CPsListStyleData::getPublicArrayIndexByColor(COLORREF color) {
