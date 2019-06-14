@@ -12,7 +12,7 @@
 #pragma warning (disable: 4003)
 //#include <gsl/gsl>
 //#include <gsl/gsl_algorithm> // copy
-//#include <gsl/gsl_assert> // Ensures/Expects
+#include <gsl/gsl_assert> // Ensures/Expects
 //#include <gsl/gsl_byte> // byte
 #include <gsl/gsl_util> // finally()/narrow()/narrow_cast()...
 //#include <gsl/multi_span> // multi_span, strided_span...

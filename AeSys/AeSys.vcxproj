@@ -52,6 +52,7 @@
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -245,6 +246,7 @@
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acad.pat" />
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.lin" />
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.pat" />
+    <None Include=".clang-format" />
     <None Include="ClassDiagram.cd" />
     <None Include="Resource.hm" />
     <None Include="res\AeSys.ico" />

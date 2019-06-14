@@ -726,8 +726,8 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initImageList() {
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
-	LV_COLUMN lvColumn;
-	::ZeroMemory(&lvColumn, sizeof(LV_COLUMN));
+	LVCOLUMNW lvColumn;
+	::ZeroMemory(&lvColumn, sizeof(LVCOLUMNW));
 	lvColumn.mask = LVCF_FMT | LVCF_TEXT;
 	lvColumn.fmt = LVCFMT_CENTER;
 	m_listStyles.InsertColumn(1, &lvColumn);
@@ -1006,20 +1006,24 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSaveBtn() {
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnLineweightBtn() {
+	Expects(m_pPlotStyleActive);
+	
 	EoDlgPlotStyleEditLineweight PsEditLineweightDlg;
 	PsEditLineweightDlg.SetPlotStyleTable(m_pPlotStyleTable);
 	OdPsPlotStyleData OdPsData;
-	int idx = m_Lineweight.GetCurSel();
+	int idx {m_Lineweight.GetCurSel()};
+
 	if (idx == CB_ERR) {
 		m_pPlotStyleActive->getData(OdPsData);
-		idx = (int)OdPsData.lineweight();
+		idx = static_cast<int>(OdPsData.lineweight());
 	}
 	PsEditLineweightDlg.SetInitialSelection(m_Lineweight.GetCurSel());
+
 	if (PsEditLineweightDlg.DoModal() == IDOK) {
 		m_Lineweight.ResetContent();
 		initLineweightComboBox();
 		m_pPlotStyleActive->getData(OdPsData);
-		m_Lineweight.SetCurSel((unsigned long)OdPsData.lineweight());
+		m_Lineweight.SetCurSel(static_cast<int>(OdPsData.lineweight()));
 	}
 }
 

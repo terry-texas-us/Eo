@@ -35,11 +35,11 @@ EoDlgPlotStyleEditLineweight::EoDlgPlotStyleEditLineweight(CWnd* parent)
 	: CDialog(EoDlgPlotStyleEditLineweight::IDD, parent) {
 	m_PlotStyleTable = nullptr;
 	m_InitialSelection = 0;
-	m_LineweightData = 0;
+	m_LineweightData = nullptr;
 }
 BOOL EoDlgPlotStyleEditLineweight::DestroyWindow() {
 	delete m_LineweightData;
-	m_LineweightData = 0;
+	m_LineweightData = nullptr;
 	return CDialog::DestroyWindow();
 }
 void EoDlgPlotStyleEditLineweight::DoDataExchange(CDataExchange* pDX) {
@@ -177,18 +177,8 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	delete m_LineweightData;
 	m_LineweightData = nullptr;
 
-	LV_COLUMN lvColumn;
-	lvColumn.mask = LVCF_FMT | LVCF_TEXT | LVCF_WIDTH | LVCF_SUBITEM | LVCF_IMAGE;
-	lvColumn.fmt = LVCFMT_LEFT;
-	lvColumn.cx = 80;
-
-	lvColumn.iSubItem = 0;
-	lvColumn.pszText = L"Value";
-	m_LineweightsListCtrl.InsertColumn(0, &lvColumn);
-	
-	lvColumn.iSubItem = 1;
-	lvColumn.pszText = L"In Use";
-	m_LineweightsListCtrl.InsertColumn(1, &lvColumn);
+	m_LineweightsListCtrl.InsertColumn(0, L"Value", LVCFMT_LEFT, 80, 0);
+	m_LineweightsListCtrl.InsertColumn(1, L"In Use", LVCFMT_LEFT, 80, 0);
 	
 	OdGeIntArray useLineWeightIndex;
 	OdPsPlotStylePtr PlotStyle;

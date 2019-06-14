@@ -570,6 +570,7 @@
       <Filter>Resource Files</Filter>
     </None>
     <None Include="ClassDiagram.cd" />
+    <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="AeSys.rc">

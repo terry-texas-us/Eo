@@ -41,8 +41,7 @@
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
 
 double dPWids[] = {
-	0.0, 0.0075, 0.015, 0.02, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, .015, .0225
-};
+	0.0, 0.0075, 0.015, 0.02, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, 0.015, 0.0225};
 
 #include "PegColors.h"
 
@@ -68,7 +67,7 @@ OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
 
 static void addPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
-	public:
+	   public:
 		bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
@@ -78,7 +77,6 @@ static void addPaperDrawingCustomization() {
 			return true;
 		}
 		bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
-
 			if (points[0] == points[1] || points[1] == points[2]) { return true; }
 
 			int NumberOfDashes {15};
@@ -110,8 +108,7 @@ static void addPaperDrawingCustomization() {
 			}
 			return true;
 		}
-	}
-	s_PaperDrawExt;
+	} s_PaperDrawExt;
 
 	OdDbLayout::desc()->addX(OdDbLayoutPaperPE::desc(), &s_PaperDrawExt);
 }
@@ -123,7 +120,7 @@ static void removePaperDrawingCustomization() {
 
 static void addMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
-	public:
+	   public:
 		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept override {
 			// Material texture to be loaded. Correct loading path here.
 		}
@@ -134,8 +131,7 @@ static void addMaterialTextureLoadingMonitor() {
 		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* database) override {
 			TRACE1("Failed to load material texture: %s\n", fileName.c_str());
 		}
-	}
-	s_MatLoadExt;
+	} s_MatLoadExt;
 
 	OdGiMaterialTextureEntry::desc()->addX(OdGiMaterialTextureLoadPE::desc(), &s_MatLoadExt);
 }
@@ -149,17 +145,17 @@ void removeMaterialTextureLoadingMonitor() {
 #include "summinfo.h"
 
 class EoDlgAbout : public CDialog {
-public:
+   public:
 	EoDlgAbout() noexcept;
 
 	enum { IDD = IDD_ABOUTBOX };
 
-protected:
+   protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 
-protected:
+   protected:
 	DECLARE_MESSAGE_MAP()
-public:
+   public:
 	BOOL OnInitDialog() final;
 };
 
@@ -177,8 +173,8 @@ BOOL EoDlgAbout::OnInitDialog() {
 
 	SetDlgItemTextW(IDC_INFO_BUILD, BuildComments);
 
-	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	return TRUE; // return TRUE unless you set the focus to a control
+		// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
@@ -189,58 +185,58 @@ BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)
 END_MESSAGE_MAP()
 
 BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
-	ON_COMMAND(ID_APP_ABOUT, &AeSys::OnAppAbout)
-	// Standard file based document commands
-	ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
-	ON_COMMAND(ID_FILE_OPEN, &AeSys::OnFileOpen)
-	// Standard print setup command
-	ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+ON_COMMAND(ID_APP_ABOUT, &AeSys::OnAppAbout)
+// Standard file based document commands
+ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+ON_COMMAND(ID_FILE_OPEN, &AeSys::OnFileOpen)
+// Standard print setup command
+ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
 
-	ON_COMMAND(ID_EDIT_CF_GROUPS, &AeSys::OnEditCfGroups)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_CF_GROUPS, &AeSys::OnUpdateEditCfGroups)
-	ON_COMMAND(ID_EDIT_CF_IMAGE, &AeSys::OnEditCfImage)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_CF_IMAGE, &AeSys::OnUpdateEditCfImage)
-	ON_COMMAND(ID_EDIT_CF_TEXT, &AeSys::OnEditCfText)
-	ON_UPDATE_COMMAND_UI(ID_EDIT_CF_TEXT, &AeSys::OnUpdateEditCfText)
-	ON_COMMAND(ID_HELP_CONTENTS, &AeSys::OnHelpContents)
-	ON_COMMAND(ID_MODE_ANNOTATE, &AeSys::OnModeAnnotate)
-	ON_UPDATE_COMMAND_UI(ID_MODE_ANNOTATE, &AeSys::OnUpdateModeAnnotate)
-	ON_COMMAND(ID_MODE_CUT, &AeSys::OnModeCut)
-	ON_UPDATE_COMMAND_UI(ID_MODE_CUT, &AeSys::OnUpdateModeCut)
-	ON_COMMAND(ID_MODE_DIMENSION, &AeSys::OnModeDimension)
-	ON_UPDATE_COMMAND_UI(ID_MODE_DIMENSION, &AeSys::OnUpdateModeDimension)
-	ON_COMMAND(ID_MODE_DRAW, OnModeDraw)
-	ON_UPDATE_COMMAND_UI(ID_MODE_DRAW, &AeSys::OnUpdateModeDraw)
-	ON_COMMAND(ID_MODE_DRAW2, &AeSys::OnModeDraw2)
-	ON_UPDATE_COMMAND_UI(ID_MODE_DRAW2, &AeSys::OnUpdateModeDraw2)
-	ON_COMMAND(ID_MODE_EDIT, &AeSys::OnModeEdit)
-	ON_UPDATE_COMMAND_UI(ID_MODE_EDIT, &AeSys::OnUpdateModeEdit)
-	ON_COMMAND(ID_MODE_FIXUP, &AeSys::OnModeFixup)
-	ON_UPDATE_COMMAND_UI(ID_MODE_FIXUP, &AeSys::OnUpdateModeFixup)
-	ON_COMMAND(ID_MODE_LETTER, &AeSys::OnModeLetter)
-	ON_COMMAND(ID_MODE_LPD, &AeSys::OnModeLPD)
-	ON_UPDATE_COMMAND_UI(ID_MODE_LPD, &AeSys::OnUpdateModeLpd)
-	ON_COMMAND(ID_MODE_NODAL, &AeSys::OnModeNodal)
-	ON_UPDATE_COMMAND_UI(ID_MODE_NODAL, &AeSys::OnUpdateModeNodal)
-	ON_COMMAND(ID_MODE_PIPE, &AeSys::OnModePipe)
-	ON_UPDATE_COMMAND_UI(ID_MODE_PIPE, &AeSys::OnUpdateModePipe)
-	ON_COMMAND(ID_MODE_POWER, &AeSys::OnModePower)
-	ON_UPDATE_COMMAND_UI(ID_MODE_POWER, &AeSys::OnUpdateModePower)
-	ON_COMMAND(ID_MODE_REVISE, &AeSys::OnModeRevise)
-	ON_COMMAND(ID_MODE_TRAP, &AeSys::OnModeTrap)
-	ON_UPDATE_COMMAND_UI(ID_MODE_TRAP, &AeSys::OnUpdateModeTrap)
-	ON_COMMAND(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnTrapCommandsAddGroups)
-	ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnUpdateTrapcommandsAddgroups)
-	ON_COMMAND(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnTrapCommandsHighlight)
-	ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnUpdateTrapcommandsHighlight)
-	ON_COMMAND(ID_VIEW_MODEINFORMATION, &AeSys::OnViewModeInformation)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_MODEINFORMATION, &AeSys::OnUpdateViewModeinformation)
-	ON_COMMAND(ID_FILE_PLOTSTYLEMANAGER, &AeSys::OnFilePlotstylemanager)
-	ON_COMMAND(ID_TOOLS_LOADAPPLICATIONS, &AeSys::OnToolsLoadapplications)
-	ON_COMMAND(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnVectorizeAddVectorizerDLL)
-	ON_UPDATE_COMMAND_UI(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizeAddvectorizerdll)
-	ON_COMMAND(ID_VECTORIZE_CLEARMENU, OnVectorizeClearmenu)
-	ON_UPDATE_COMMAND_UI(ID_VECTORIZE_CLEARMENU, OnUpdateVectorizeClearmenu)
+ON_COMMAND(ID_EDIT_CF_GROUPS, &AeSys::OnEditCfGroups)
+ON_UPDATE_COMMAND_UI(ID_EDIT_CF_GROUPS, &AeSys::OnUpdateEditCfGroups)
+ON_COMMAND(ID_EDIT_CF_IMAGE, &AeSys::OnEditCfImage)
+ON_UPDATE_COMMAND_UI(ID_EDIT_CF_IMAGE, &AeSys::OnUpdateEditCfImage)
+ON_COMMAND(ID_EDIT_CF_TEXT, &AeSys::OnEditCfText)
+ON_UPDATE_COMMAND_UI(ID_EDIT_CF_TEXT, &AeSys::OnUpdateEditCfText)
+ON_COMMAND(ID_HELP_CONTENTS, &AeSys::OnHelpContents)
+ON_COMMAND(ID_MODE_ANNOTATE, &AeSys::OnModeAnnotate)
+ON_UPDATE_COMMAND_UI(ID_MODE_ANNOTATE, &AeSys::OnUpdateModeAnnotate)
+ON_COMMAND(ID_MODE_CUT, &AeSys::OnModeCut)
+ON_UPDATE_COMMAND_UI(ID_MODE_CUT, &AeSys::OnUpdateModeCut)
+ON_COMMAND(ID_MODE_DIMENSION, &AeSys::OnModeDimension)
+ON_UPDATE_COMMAND_UI(ID_MODE_DIMENSION, &AeSys::OnUpdateModeDimension)
+ON_COMMAND(ID_MODE_DRAW, OnModeDraw)
+ON_UPDATE_COMMAND_UI(ID_MODE_DRAW, &AeSys::OnUpdateModeDraw)
+ON_COMMAND(ID_MODE_DRAW2, &AeSys::OnModeDraw2)
+ON_UPDATE_COMMAND_UI(ID_MODE_DRAW2, &AeSys::OnUpdateModeDraw2)
+ON_COMMAND(ID_MODE_EDIT, &AeSys::OnModeEdit)
+ON_UPDATE_COMMAND_UI(ID_MODE_EDIT, &AeSys::OnUpdateModeEdit)
+ON_COMMAND(ID_MODE_FIXUP, &AeSys::OnModeFixup)
+ON_UPDATE_COMMAND_UI(ID_MODE_FIXUP, &AeSys::OnUpdateModeFixup)
+ON_COMMAND(ID_MODE_LETTER, &AeSys::OnModeLetter)
+ON_COMMAND(ID_MODE_LPD, &AeSys::OnModeLPD)
+ON_UPDATE_COMMAND_UI(ID_MODE_LPD, &AeSys::OnUpdateModeLpd)
+ON_COMMAND(ID_MODE_NODAL, &AeSys::OnModeNodal)
+ON_UPDATE_COMMAND_UI(ID_MODE_NODAL, &AeSys::OnUpdateModeNodal)
+ON_COMMAND(ID_MODE_PIPE, &AeSys::OnModePipe)
+ON_UPDATE_COMMAND_UI(ID_MODE_PIPE, &AeSys::OnUpdateModePipe)
+ON_COMMAND(ID_MODE_POWER, &AeSys::OnModePower)
+ON_UPDATE_COMMAND_UI(ID_MODE_POWER, &AeSys::OnUpdateModePower)
+ON_COMMAND(ID_MODE_REVISE, &AeSys::OnModeRevise)
+ON_COMMAND(ID_MODE_TRAP, &AeSys::OnModeTrap)
+ON_UPDATE_COMMAND_UI(ID_MODE_TRAP, &AeSys::OnUpdateModeTrap)
+ON_COMMAND(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnTrapCommandsAddGroups)
+ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnUpdateTrapcommandsAddgroups)
+ON_COMMAND(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnTrapCommandsHighlight)
+ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnUpdateTrapcommandsHighlight)
+ON_COMMAND(ID_VIEW_MODEINFORMATION, &AeSys::OnViewModeInformation)
+ON_UPDATE_COMMAND_UI(ID_VIEW_MODEINFORMATION, &AeSys::OnUpdateViewModeinformation)
+ON_COMMAND(ID_FILE_PLOTSTYLEMANAGER, &AeSys::OnFilePlotstylemanager)
+ON_COMMAND(ID_TOOLS_LOADAPPLICATIONS, &AeSys::OnToolsLoadapplications)
+ON_COMMAND(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnVectorizeAddVectorizerDLL)
+ON_UPDATE_COMMAND_UI(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizeAddvectorizerdll)
+ON_COMMAND(ID_VECTORIZE_CLEARMENU, OnVectorizeClearmenu)
+ON_UPDATE_COMMAND_UI(ID_VECTORIZE_CLEARMENU, OnUpdateVectorizeClearmenu)
 
 END_MESSAGE_MAP()
 
@@ -248,7 +244,7 @@ END_MESSAGE_MAP()
 /// <remarks> Specialization of CCommandLineInfo to add the following switches: bat:, ld:, scr:, exe:, s:, and exit</remarks>
 
 class CFullCommandLineInfo : public CCommandLineInfo {
-public:
+   public:
 	CString m_SaveName;
 	bool m_Exit;
 	CStringArray m_AppsToLoad;
@@ -265,7 +261,6 @@ public:
 		bool is {false};
 
 		if (flag) {
-
 			if (!_wcsnicmp(parameter, L"bat:", 4)) {
 				m_BatToExecute = &parameter[4];
 				is = true;
@@ -294,10 +289,10 @@ public:
 };
 
 BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
-	CFullCommandLineInfo& FullCommandLineInfo {(CFullCommandLineInfo&)commandLineInfo};
+	CFullCommandLineInfo& FullCommandLineInfo {(CFullCommandLineInfo&) commandLineInfo};
 
-	if (!FullCommandLineInfo.m_BatToExecute.IsEmpty()) { 
-		_wsystem(FullCommandLineInfo.m_BatToExecute); 
+	if (!FullCommandLineInfo.m_BatToExecute.IsEmpty()) {
+		_wsystem(FullCommandLineInfo.m_BatToExecute);
 	}
 
 	for (auto Index = 0; Index < FullCommandLineInfo.m_AppsToLoad.GetCount(); ++Index) {
@@ -313,22 +308,20 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 		if (!FullCommandLineInfo.m_ScriptToExecute.IsEmpty()) {
 			CStdioFile scrFile(FullCommandLineInfo.m_ScriptToExecute, CFile::modeRead);
 			CString strCmd;
-			
+
 			while (scrFile.ReadString(strCmd)) {
-				
 				if (!strCmd.IsEmpty() && strCmd[0] != _T('#')) {
-					TemporaryDocument->ExecuteCommand((const wchar_t*)strCmd);
+					TemporaryDocument->ExecuteCommand((const wchar_t*) strCmd);
 				}
 			}
 		}
 		for (int idx = 0; idx < FullCommandLineInfo.m_CommandsToExecute.GetCount(); ++idx) {
-			TemporaryDocument->ExecuteCommand((const wchar_t*)FullCommandLineInfo.m_CommandsToExecute.GetAt(idx));
+			TemporaryDocument->ExecuteCommand((const wchar_t*) FullCommandLineInfo.m_CommandsToExecute.GetAt(idx));
 		}
 	} else {
 		CWinAppEx::ProcessShellCommand(commandLineInfo);
 	}
 	if (!FullCommandLineInfo.m_SaveName.IsEmpty()) {
-
 		if (!TemporaryDocument->OnSaveDocument(FullCommandLineInfo.m_SaveName)) { return FALSE; }
 	}
 	if (FullCommandLineInfo.m_Exit) { PostQuitMessage(0); }
@@ -375,8 +368,7 @@ AeSys::AeSys() noexcept
 	, m_SaveRoundTrip(true)
 	, m_SavePreview(false)
 	, m_SaveWithPassword(false)
-	, m_pAuditDlg(nullptr)
-{
+	, m_pAuditDlg(nullptr) {
 	EnableHtmlHelp();
 
 	CClientDC ClientDeviceContext(AfxGetMainWnd());
@@ -398,7 +390,7 @@ AeSys::AeSys() noexcept
 	m_DimensionLength = 0.125;
 	m_EngagedAngle = 0.0;
 	m_EngagedLength = 0.0;
-	
+
 	m_AeSysMenuHandle = nullptr;
 	m_ModeResourceIdentifier = 0;
 	m_PrimaryMode = 0;
@@ -439,7 +431,7 @@ static CString FindConfigFile(const CString& configType, CString file, OdDbSyste
 
 	if (!ConfigurationPath.IsEmpty()) {
 		file = ConfigurationPath + L"\\" + file;
-		
+
 		if (systemServices->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
 	}
 	return CString(L"\0");
@@ -469,8 +461,7 @@ OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database
 		if (Module.isNull()) { return OdGsDevicePtr(); }
 
 		return Module->createBitmapDevice();
-	}
-	catch (const OdError&) {
+	} catch (const OdError&) {
 	}
 	return OdGsDevicePtr();
 }
@@ -481,9 +472,9 @@ bool AeSys::getPassword(const OdString& drawingName, bool /*isXref*/, OdPassword
 
 	if (PasswordDialog.DoModal() == IDOK) {
 		password = PasswordDialog.m_password;
-		
+
 		if (drawingName.right(4) == L".dwg") { password.makeUpper(); }
-		
+
 		return true;
 	}
 	return false;
@@ -514,7 +505,6 @@ bool AeSys::setUndoType(bool useTempFiles) noexcept {
 }
 
 OdString AeSys::fileDialog(int flags, const OdString& prompt, const OdString& defExt, const OdString& fileName, const OdString& filter) {
-
 	if (!supportFileSelectionViaDialog()) { return OdString(L"*unsupported*"); }
 
 	CFileDialog FileDialog(flags == OdEd::kGfpForOpen, defExt, fileName, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, filter, ::AfxGetMainWnd());
@@ -542,15 +532,15 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 
 		auto Extension {FileToFind.Right(4)};
 		Extension.MakeLower();
-		
+
 		if (Extension == L".pc3") {
-			return FindConfigFile(L"PrinterConfigDir", FileToFind, SystemServices);
+			return FindConfigFile(L"PrinterConfigDir", FileToFind, SystemServices).GetString();
 		}
 		if (Extension == L".stb" || Extension == L".ctb") {
-			return FindConfigFile(L"PrinterStyleSheetDir", FileToFind, SystemServices);
+			return FindConfigFile(L"PrinterStyleSheetDir", FileToFind, SystemServices).GetString();
 		}
 		if (Extension == L".pmp") {
-			return FindConfigFile(L"PrinterDescDir", FileToFind, SystemServices);
+			return FindConfigFile(L"PrinterDescDir", FileToFind, SystemServices).GetString();
 		}
 		switch (hint) {
 			case kFontFile:
@@ -561,7 +551,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			case kTextureMapFile:
 				break;
 			case kEmbeddedImageFile:
-				if (FileToFind.Left(5).CompareNoCase(L"http:") == 0 || FileToFind.Left(6).CompareNoCase(L"https:") == 0) { 
+				if (FileToFind.Left(5).CompareNoCase(L"http:") == 0 || FileToFind.Left(6).CompareNoCase(L"https:") == 0) {
 					// <tas="code section removed"</tas>
 				}
 				// fall through
@@ -601,10 +591,10 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 
 		if (FilePathAndName.IsEmpty()) {
 			auto AcadLocation {GetRegistryAcadLocation()};
-			
+
 			if (!AcadLocation.IsEmpty()) {
 				FilePathAndName = AcadLocation + L"\\Fonts\\" + FileToFind;
-				
+
 				if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) {
 					FilePathAndName = AcadLocation + L"\\Support\\" + FileToFind;
 
@@ -628,7 +618,6 @@ CString AeSys::getApplicationPath() {
 }
 
 void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
-	
 	if (m_pAuditDlg) { m_pAuditDlg->printReport(dynamic_cast<OdDbAuditInfo*>(auditInfo)); }
 }
 
@@ -647,14 +636,13 @@ OdStreamBufPtr AeSys::newUndoStream() {
 }
 
 void AeSys::SetRecentCommand(const OdString& command) {
-
 	if (!command.isEmpty() && command != m_RecentCommand) {
 		m_RecentCommand = command;
 		WriteProfileStringW(L"options", L"Recent Command", m_RecentCommand);
 	}
 }
 
-CMenu* AeSys::CommandMenu(CMenu* *toolsSubMenu) {
+CMenu* AeSys::CommandMenu(CMenu** toolsSubMenu) {
 	MENUITEMINFO MenuItemInfo;
 	MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 	MenuItemInfo.fMask = MIIM_STRING | MIIM_FTYPE | MIIM_SUBMENU | MIIM_ID;
@@ -738,13 +726,13 @@ void AeSys::RefreshCommandMenu() {
 
 			while (!GroupCommandIterator->done()) {
 				OdEdCommandPtr Command {GroupCommandIterator->object().get()};
-				
+
 				if (GroupName.isEmpty()) { GroupName = Command->groupName(); }
 
 				OdString CommandName(Command->globalName());
 				GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 
-				MenuItemInfo.dwItemData = (LPARAM)Command.get();
+				MenuItemInfo.dwItemData = (LPARAM) Command.get();
 				::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
 
 				GroupCommandIterator->next();
@@ -841,7 +829,7 @@ void AeSys::AddStringToMessageList(const wchar_t* message) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
 	MainFrame->GetOutputPane().AddStringToMessageList(message);
-	
+
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
@@ -867,13 +855,13 @@ void AeSys::AddStringToReportList(const wchar_t* message) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
 	MainFrame->GetOutputPane().AddStringToReportsList(message);
-	
+
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
 }
 
-int	AeSys::ArchitecturalUnitsFractionPrecision() const  noexcept {
+int AeSys::ArchitecturalUnitsFractionPrecision() const noexcept {
 	return (m_ArchitecturalUnitsFractionPrecision);
 }
 // Modifies the base accelerator table by defining the mode specific keys.
@@ -899,35 +887,35 @@ void AeSys::BuildModeSpecificAcceleratorTable() {
 	delete[] ModifiedAcceleratorTable;
 }
 
-unsigned AeSys::ClipboardFormatIdentifierForEoGroups()  noexcept {
+unsigned AeSys::ClipboardFormatIdentifierForEoGroups() noexcept {
 	return (m_ClipboardFormatIdentifierForEoGroups);
 }
 
-unsigned AeSys::CurrentMode() const  noexcept {
+unsigned AeSys::CurrentMode() const noexcept {
 	return m_CurrentMode;
 }
 
-double AeSys::DeviceHeightInMillimeters() const  noexcept {
+double AeSys::DeviceHeightInMillimeters() const noexcept {
 	return m_DeviceHeightInMillimeters;
 }
 
-double AeSys::DeviceHeightInPixels() const  noexcept {
+double AeSys::DeviceHeightInPixels() const noexcept {
 	return m_DeviceHeightInPixels;
 }
 
-double AeSys::DeviceWidthInMillimeters() const  noexcept {
+double AeSys::DeviceWidthInMillimeters() const noexcept {
 	return m_DeviceWidthInMillimeters;
 }
 
-double AeSys::DeviceWidthInPixels() const  noexcept {
+double AeSys::DeviceWidthInPixels() const noexcept {
 	return m_DeviceWidthInPixels;
 }
 
-double AeSys::DimensionAngle() const  noexcept {
+double AeSys::DimensionAngle() const noexcept {
 	return (m_DimensionAngle);
 }
 
-double AeSys::DimensionLength() const  noexcept {
+double AeSys::DimensionLength() const noexcept {
 	return (m_DimensionLength);
 }
 
@@ -963,14 +951,14 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
 	HINSTANCE hinstLib {LoadLibraryW(LibraryFileName)};
-	
+
 	if (hinstLib != nullptr) {
 		auto fpDlgProc {(ODA_OPEN_DLGPROC) GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg")};
 
 		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
 			OpenWithPreviewDlg* OpenWithPreviewDialog;
-			(fpDlgProc) (&statDib, parentWindow, NULL, filter, Flags, &OpenWithPreviewDialog);
+			(fpDlgProc)(&statDib, parentWindow, NULL, filter, Flags, &OpenWithPreviewDialog);
 
 			if (IDOK == OpenWithPreviewDialog->ShowModal()) {
 				long BufferLength {MAX_PATH};
@@ -1014,7 +1002,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Contextual Colors", m_ContextColors);
 	theApp.WriteInt(L"TTF PolyDraw", m_TTFPolyDraw);
 	theApp.WriteInt(L"TTF TextOut", m_TTFTextOut);
-	
+
 	theApp.WriteInt(L"TTF Cache", m_TTFCache);
 	theApp.WriteInt(L"Dynamic Subentities Highlight", m_DynamicSubEntHlt);
 	theApp.WriteInt(L"GDI Gradients as Bitmaps", m_GDIGradientsAsBitmap);
@@ -1078,8 +1066,7 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Unit
 
 	switch (units) {
 		case kArchitectural:
-		case kArchitecturalS:
-		{
+		case kArchitecturalS: {
 			wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
 			ScaledLength = fabs(ScaledLength);
 
@@ -1087,10 +1074,9 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Unit
 			auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
 
 			const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
-			auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)};	// Numerator of fractional component of inches
+			auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)}; // Numerator of fractional component of inches
 
 			if (Numerator == FractionPrecision) {
-
 				if (Inches == 11) {
 					Feet++;
 					Inches = 0;
@@ -1122,8 +1108,7 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Unit
 			wcscat_s(lengthAsString, bufSize, L"\"");
 			break;
 		}
-		case kEngineering:
-		{
+		case kEngineering: {
 			wcscpy_s(lengthAsString, bufSize, (length >= 0.0) ? L" " : L"-");
 			ScaledLength = fabs(ScaledLength);
 
@@ -1252,14 +1237,12 @@ bool AeSys::HighColorMode() const noexcept {
 }
 
 OdGePoint3d AeSys::HomePointGet(int i) noexcept {
-
 	if (i >= 0 && i < 9) { return (m_HomePoints[i]); }
 
 	return (OdGePoint3d::kOrigin);
 }
 
 void AeSys::HomePointSave(int i, const OdGePoint3d& point) noexcept {
-	
 	if (i >= 0 && i < 9) { m_HomePoints[i] = point; }
 }
 
@@ -1331,7 +1314,6 @@ bool AeSys::InitializeOda() {
 }
 
 BOOL AeSys::InitInstance() {
-
 	// InitCommonControlsEx() is required on Windows XP if an application manifest specifies use of ComCtl32.dll version 6 or later to enable visual styles. Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
 	InitCtrls.dwSize = sizeof(InitCtrls);
@@ -1352,7 +1334,7 @@ BOOL AeSys::InitInstance() {
 
 	// Application settings to be stored in the registry instead of INI files.
 	SetRegistryKey(L"Engineers Office");
-	LoadStdProfileSettings(8U);  // Load the list of most recently used (MRU) files and last preview state.
+	LoadStdProfileSettings(8U); // Load the list of most recently used (MRU) files and last preview state.
 	SetRegistryBase(L"Options");
 	m_Options.Load();
 
@@ -1378,7 +1360,7 @@ BOOL AeSys::InitInstance() {
 
 	m_DisableAutoRegen = GetInt(L"Disable Auto-Regen", false);
 
-//	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
+	//	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
 
 	m_SaveRoundTrip = GetInt(L"Save round trip information", true);
 	m_SavePreview = GetInt(L"Save Preview", false);
@@ -1388,7 +1370,7 @@ BOOL AeSys::InitInstance() {
 	m_RecentCommand = GetString(L"Recent Command", L"");
 	int nFillTtf = GetInt(L"Fill TTF text", 1);
 	setTEXTFILL(nFillTtf != 0);
-	
+
 	SetRegistryBase(L"MFC Auto");
 
 	lex::Init();
@@ -1450,7 +1432,7 @@ BOOL AeSys::InitInstance() {
 	CFullCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
 
-	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew){ CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
+	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) { CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
 
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
@@ -1496,7 +1478,7 @@ bool AeSys::IsTrapHighlighted() noexcept {
 	return m_TrapHighlighted;
 }
 
-void AeSys::LoadColorPalletFromFile(const CString & fileName) {
+void AeSys::LoadColorPalletFromFile(const CString& fileName) {
 	CStdioFile StreamFile;
 
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
@@ -1507,7 +1489,8 @@ void AeSys::LoadColorPalletFromFile(const CString & fileName) {
 		wchar_t* Green {nullptr};
 		wchar_t* Blue {nullptr};
 
-		while (StreamFile.ReadString(Line, sizeof(Line) / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0);
+		while (StreamFile.ReadString(Line, sizeof(Line) / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0)
+			;
 
 		while (StreamFile.ReadString(Line, sizeof(Line) / sizeof(wchar_t) - 1) && *Line != '<') {
 			wchar_t* NextToken {nullptr};
@@ -1562,17 +1545,15 @@ void AeSys::LoadPenWidthsFromFile(const CString& fileName) {
 /// b24 - b31 operation code (5 for line, else move)
 /// The font is exactly 16384 bytes and defines a 96 character font set with a maximum of 4096 stokes
 /// </remarks>
-void AeSys::LoadSimplexStrokeFont(const CString & pathName) {
+void AeSys::LoadSimplexStrokeFont(const CString& pathName) {
 	auto OpenHandle {CreateFileW(pathName, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
-	
-	if (OpenHandle != INVALID_HANDLE_VALUE) {
 
+	if (OpenHandle != INVALID_HANDLE_VALUE) {
 		if (SetFilePointer(OpenHandle, 0, nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER) {
-			
 			if (!m_SimplexStrokeFont) { m_SimplexStrokeFont = new char[16384]; }
 
 			unsigned long NumberOfBytesRead;
-			
+
 			if (!ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, nullptr)) { ReleaseSimplexStrokeFont(); }
 		}
 		CloseHandle(OpenHandle);
@@ -1775,75 +1756,75 @@ void AeSys::OnTrapCommandsHighlight() noexcept {
 	//UpdateGroupsInAllViews(Hint, &m_TrappedGroupList);
 }
 
-void AeSys::OnUpdateEditCfGroups(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateEditCfGroups(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ClipboardDataEoGroups);
 }
 
-void AeSys::OnUpdateEditCfImage(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateEditCfImage(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ClipboardDataImage);
 }
 
-void AeSys::OnUpdateEditCfText(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateEditCfText(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ClipboardDataText);
 }
 
-void AeSys::OnUpdateModeAnnotate(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeAnnotate(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_ANNOTATE);
 }
 
-void AeSys::OnUpdateModeCut(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeCut(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_CUT);
 }
 
-void AeSys::OnUpdateModeDimension(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeDimension(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_DIMENSION);
 }
 
-void AeSys::OnUpdateModeDraw(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeDraw(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_DRAW);
 }
 
-void AeSys::OnUpdateModeDraw2(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeDraw2(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_DRAW2);
 }
 
-void AeSys::OnUpdateModeEdit(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeEdit(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_EDIT);
 }
 
-void AeSys::OnUpdateModeFixup(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeFixup(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_FIXUP);
 }
 
-void AeSys::OnUpdateModeLpd(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeLpd(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_LPD);
 }
 
-void AeSys::OnUpdateModeNodal(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeNodal(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_NODAL);
 }
 
-void AeSys::OnUpdateModePipe(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModePipe(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_PIPE);
 }
 
-void AeSys::OnUpdateModePower(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModePower(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_POWER);
 }
 
-void AeSys::OnUpdateModeTrap(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateModeTrap(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_CurrentMode == ID_MODE_TRAP);
 }
 
-void AeSys::OnUpdateTrapcommandsAddgroups(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateTrapcommandsAddgroups(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_TrapModeAddGroups);
 }
 
-void AeSys::OnUpdateTrapcommandsHighlight(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateTrapcommandsHighlight(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_TrapHighlighted);
 }
 
-void AeSys::OnUpdateViewModeinformation(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateViewModeinformation(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ModeInformationOverView);
 }
 
@@ -1862,14 +1843,14 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 
 	auto ReturnValue {wcstod(lengthAsString, &StopString)};
 
-	switch (toupper((int)StopString[0])) {
+	switch (toupper((int) StopString[0])) {
 		case '\'': // Feet and maybe inches
 			ReturnValue *= 12.0; // Reduce to inches
 			ReturnValue += wcstod(&StopString[1], &StopString); // Begin scan for inches at character following foot delimeter
 			break;
 
 		case 'M': // meters or millimeters
-			if (toupper((int)StopString[1]) == 'M') {
+			if (toupper((int) StopString[1]) == 'M') {
 				ReturnValue *= 0.03937007874015748;
 			} else {
 				ReturnValue *= 39.37007874015748;
@@ -1886,7 +1867,6 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 
 		case 'K': // kilometers
 			ReturnValue *= 39370.07874015748;
-
 	}
 	return (ReturnValue / AeSysView::GetActiveView()->WorldScale());
 }
@@ -1899,7 +1879,7 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 		double ReturnValue[32];
 
 		lex::Parse(lengthAsString);
-		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, (void*)ReturnValue);
+		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, (void*) ReturnValue);
 
 		if (iTyp == lex::TOK_LENGTH_OPERAND) {
 			return (ReturnValue[0]);
@@ -1968,7 +1948,7 @@ const OdString AeSys::product() {
 bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept {
 	bool ReturnValue {false};
 	HKEY OpenedKey;
-	
+
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
 		unsigned long RegistryBufferSize {EO_REGISTRY_BUFFER_SIZE};
 		unsigned char data[EO_REGISTRY_BUFFER_SIZE] {0};
@@ -2084,7 +2064,7 @@ OdString AeSys::getTempPath() const {
 		} else {
 			CString Result(TempPath, (int) wcslen(TempPath));
 			if (Result.GetAt(Result.GetLength() - 1) != '\\') { Result += '\\'; }
-			return Result;
+			return Result.GetString();
 		}
 	} else {
 		return OdDbHostAppServices::getTempPath();
@@ -2111,7 +2091,6 @@ void AeSys::SetStatusPaneTextAt(int index, const wchar_t* newText) {
 }
 
 OdDbHostAppProgressMeter* AeSys::newProgressMeter() {
-
 	if (m_thisThreadID != ::GetCurrentThreadId()) { return nullptr; }
 
 	return ExHostAppServices::newProgressMeter();
@@ -2147,7 +2126,7 @@ void AeSys::meterProgress() {
 			int m_Percent;
 			CMainFrame* m_MainFrame;
 			AeSys* m_Application;
-			StatusUpdater(int percent, CMainFrame* mainFrame, AeSys* application)  noexcept
+			StatusUpdater(int percent, CMainFrame* mainFrame, AeSys* application) noexcept
 				: m_Percent(percent)
 				, m_MainFrame(mainFrame)
 				, m_Application(application) {
@@ -2198,9 +2177,7 @@ int AeSys::ConfirmMessageBox(unsigned stringResourceIdentifier, const wchar_t* s
 }
 
 void AeSys::warning(const char* warnVisGroup, const OdString& text) {
-
 	if (m_bLoading && (!warnVisGroup || !*warnVisGroup) && !m_bUseMTLoading) {
-
 		if (::MessageBoxW(nullptr, text + L"\n\nDo you want to proceed ?", L"Warning!", MB_ICONWARNING | MB_YESNO) == IDNO) { throw UserBreak(); }
 	}
 }
@@ -2257,7 +2234,7 @@ void AeSys::SetEngagedLength(double length) noexcept {
 	m_EngagedLength = length;
 }
 
-int AeSys::SetShadowFolderPath(const CString & folder) {
+int AeSys::SetShadowFolderPath(const CString& folder) {
 	wchar_t Path[MAX_PATH];
 
 	if (SHGetSpecialFolderPathW(m_pMainWnd->GetSafeHwnd(), Path, CSIDL_PERSONAL, TRUE)) {
@@ -2321,7 +2298,6 @@ void AeSys::UpdateMDITabs(BOOL resetMDIChild) {
 }
 
 BOOL AeSys::OnIdle(long count) {
-
 	for (unsigned ReactorIndex = 0; ReactorIndex < m_ApplicationReactors.size(); ++ReactorIndex) {
 		m_ApplicationReactors.at(ReactorIndex)->OnIdle(count);
 	}
@@ -2329,7 +2305,6 @@ BOOL AeSys::OnIdle(long count) {
 }
 
 BOOL AeSys::PreTranslateMessage(MSG* message) {
-
 	for (unsigned ReactorIndex = 0; ReactorIndex < m_ApplicationReactors.size(); ++ReactorIndex) {
 		m_ApplicationReactors.at(ReactorIndex)->OnPreTranslateMessage(message);
 	}
@@ -2359,7 +2334,7 @@ bool addGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers
 
 void AeSys::OnVectorizeAddVectorizerDLL() {
 	const unsigned long Flags {OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST};
-	CString Filter {L"Graphic System DLL (*."  VECTORIZATION_MODULE_EXTENSION_W  L")|*." VECTORIZATION_MODULE_EXTENSION_W  L"|Windows DLL (*.dll)|*.dll||"};
+	CString Filter {L"Graphic System DLL (*." VECTORIZATION_MODULE_EXTENSION_W L")|*." VECTORIZATION_MODULE_EXTENSION_W L"|Windows DLL (*.dll)|*.dll||"};
 
 	CFileDialog FileDialog(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, ::AfxGetMainWnd());
 	FileDialog.m_ofn.lpstrTitle = L"Select Graphic System DLL";
@@ -2391,17 +2366,18 @@ void AeSys::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
 
 		CString Path;
 		unsigned long PathSize;
-		
+
 		for (;;) {
 			PathSize = _MAX_FNAME + _MAX_EXT;
 			const auto Status {::RegEnumValueW(RegistryKey, m_numGSMenuItems, Path.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 			Path.ReleaseBuffer();
-			
-			if (Status == ERROR_SUCCESS) {
 
+			if (Status == ERROR_SUCCESS) {
 				if (!::addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, Path)) { break; }
 
-			} else { break; }
+			} else {
+				break;
+			}
 		}
 	}
 }
@@ -2420,7 +2396,7 @@ void AeSys::OnVectorizeClearmenu() {
 	m_numGSMenuItems = 0;
 }
 
-void AeSys::OnUpdateVectorizeClearmenu(CCmdUI * pCmdUI) {
+void AeSys::OnUpdateVectorizeClearmenu(CCmdUI* pCmdUI) {
 	pCmdUI->Enable(m_numGSMenuItems > 0);
 }
 /// </section>
