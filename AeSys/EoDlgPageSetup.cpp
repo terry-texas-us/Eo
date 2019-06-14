@@ -15,7 +15,7 @@
 #include "DbViewTable.h"
 #include "DbViewTableRecord.h"
 
-static wchar_t* StandardPlotScaleValues[] = {
+ vector<const wchar_t*> StandardPlotScaleValues = {
 	L"Custom",
 	L"1/128\" = 1'",
 	L"1/64\" = 1'",
@@ -439,12 +439,13 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 		OnSelChangeMMInchesList();
 	}
 }
+
 OdString EoDlgPageSetup::GetCanonicalByLocaleMediaName(OdString localeMediaName) {
-	OdArray<const wchar_t*> MediaNames;
+	OdArray<const OdChar*> MediaNames;
 	m_PlotSettingsValidator->canonicalMediaNameList(&m_PlotSettings, MediaNames);
 
-	OdArray<const wchar_t*>::const_iterator NamesIterator = MediaNames.begin();
-	OdArray<const wchar_t*>::const_iterator NamesIteratorEnd = MediaNames.end();
+	OdArray<const OdChar*>::const_iterator NamesIterator = MediaNames.begin();
+	OdArray<const OdChar*>::const_iterator NamesIteratorEnd = MediaNames.end();
 
 	while (NamesIterator != NamesIteratorEnd) {
 		if (m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, NamesIterator - MediaNames.begin()) == localeMediaName) {
@@ -455,6 +456,7 @@ OdString EoDlgPageSetup::GetCanonicalByLocaleMediaName(OdString localeMediaName)
 	ODA_ASSERT(0);
 	return MediaNames.first();
 }
+
 void EoDlgPageSetup::OnSelchangeDeviceList() {
 	UpdateData();
 
@@ -537,25 +539,27 @@ BOOL EoDlgPageSetup::OnInitDialog() {
 
 	return TRUE;
 }
+
 bool EoDlgPageSetup::FillDeviceCombo() {
-	OdArray<const wchar_t*> Devices;
+	OdArray<const OdChar*> Devices;
 	m_PlotSettingsValidator->plotDeviceList(Devices);
 
 	m_PlotDeviceName.ResetContent();
 
-	OdArray<const wchar_t*>::const_iterator DeviceIterator = Devices.begin();
-	OdArray<const wchar_t*>::const_iterator DeviceIteratorEnd = Devices.end();
+	OdArray<const OdChar*>::const_iterator DeviceIterator = Devices.begin();
+	OdArray<const OdChar*>::const_iterator DeviceIteratorEnd = Devices.end();
 
 	while (DeviceIterator != DeviceIteratorEnd) {
-		m_PlotDeviceName.AddString(*DeviceIterator);
+		m_PlotDeviceName.AddString((LPCTSTR) OdString(*DeviceIterator));
 		++DeviceIterator;
 	}
 	UpdateData(FALSE);
 
 	return true;
 }
+
 bool EoDlgPageSetup::FillPaperSizes() {
-	OdArray<const wchar_t*> CanonicalMediaNames;
+	OdArray<const OdChar*> CanonicalMediaNames;
 	m_PlotSettingsValidator->canonicalMediaNameList(&m_PlotSettings, CanonicalMediaNames);
 
 	m_PaperSize.ResetContent();
@@ -567,19 +571,20 @@ bool EoDlgPageSetup::FillPaperSizes() {
 
 	return true;
 }
+
 void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
 	if (fillCombo) {
 		m_ScaleValues.ResetContent();
 
-		const int NumberOfScaleVaules = sizeof(StandardPlotScaleValues) / sizeof(wchar_t*);
+		const auto NumberOfScaleVaules {StandardPlotScaleValues.size()};
 
-		for (int ScaleValueIndex = 0; ScaleValueIndex < NumberOfScaleVaules; ScaleValueIndex++) {
-			m_ScaleValues.AddString(StandardPlotScaleValues[ScaleValueIndex]);
+		for (unsigned ScaleValueIndex = 0; ScaleValueIndex < NumberOfScaleVaules; ScaleValueIndex++) {
+			m_ScaleValues.AddString(StandardPlotScaleValues.at(ScaleValueIndex));
 		}
 	}
 	const OdDbPlotSettings::StdScaleType ScaleType = m_PlotSettings.stdScaleType();
 	if (m_PlotSettings.useStandardScale() && ScaleType != OdDbPlotSettings::kScaleToFit && ScaleType >= 0 && ScaleType <= OdDbPlotSettings::k1000_1) {
-		m_ScaleValues.SetCurSel(m_ScaleValues.FindStringExact(0, StandardPlotScaleValues[ScaleType]));
+		m_ScaleValues.SetCurSel(m_ScaleValues.FindStringExact(0, StandardPlotScaleValues.at(ScaleType)));
 	} else {
 		m_ScaleValues.SetCurSel(m_ScaleValues.FindStringExact(0, L"Custom"));
 	}
@@ -844,11 +849,12 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString> & arrFiles, const C
 	FindClose(FileHandle);
 	return IsFind;
 }
+
 void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 	USES_CONVERSION;
 
 	if (fillCombo) {
-		OdArray<const wchar_t*> StyleList;
+		OdArray<const OdChar*> StyleList;
 		m_PlotSettingsValidator->plotStyleSheetList(StyleList);
 
 		m_PlotStyleFiles.AddString(L"None");
@@ -872,6 +878,7 @@ void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 
 	UpdateData(FALSE);
 }
+
 void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 	const int CurrentSelection = m_PlotStyleFiles.GetCurSel();
 

@@ -42,36 +42,36 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 	
 	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
 
-		unsigned short MaxNumberOfDashes = 12;
-		double* DashLengths = new double[MaxNumberOfDashes];
+		unsigned short MaxNumberOfDashes {12};
+		double* DashLengths {new double[MaxNumberOfDashes]};
 		
 		CString Line;
 
 		while (fl.ReadString(Line) != 0) {
-			int NextToken = 0;
+			int NextToken {0};
 			/* unsigned short Label = */ unsigned short(_wtoi(Line.Tokenize(L"=", NextToken)));
 
-			OdString Name = Line.Tokenize(L",", NextToken);
-			OdString Comments = Line.Tokenize(L"\n", NextToken);
+			OdString Name {Line.Tokenize(L",", NextToken).GetString()};
+			OdString Comments {Line.Tokenize(L"\n", NextToken).GetString()};
 
 			fl.ReadString(Line);
 
 			NextToken = 0;
-			unsigned short NumberOfDashes = unsigned short(_wtoi(Line.Tokenize(L",\n", NextToken)));
+			auto NumberOfDashes {unsigned short(_wtoi(Line.Tokenize(L",\n", NextToken)))};
 
 			if (NumberOfDashes > MaxNumberOfDashes) {
 				delete [] DashLengths;
 				DashLengths = new double[NumberOfDashes];
 				MaxNumberOfDashes = NumberOfDashes;
 			}
-			double PatternLength = 0.0;
+			double PatternLength {0.0};
 			
 			for (unsigned DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 				DashLengths[DashIndex] = _wtof(Line.Tokenize(L",\n", NextToken));
 				PatternLength += DashLengths[DashIndex];
 			}
 			if (Linetypes->getAt(Name).isNull()) {
-				OdDbLinetypeTableRecordPtr Linetype = OdDbLinetypeTableRecord::createObject();
+				auto Linetype {OdDbLinetypeTableRecord::createObject()};
 				Linetype->setName(Name);
 				Linetype->setComments(Comments);
 				Linetype->setNumDashes(NumberOfDashes);

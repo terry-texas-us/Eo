@@ -99,18 +99,18 @@ protected:
 		void Empty(); // hides non-virtual function of parent
 		~DataSource();
 	};
-	template<class TChar>
+	template<class T>
 	struct AcadClipData {
 		void init() noexcept {
-			memset(this, 0, sizeof(AcadClipData<TChar>));
+			memset(this, 0, sizeof(AcadClipData<T>));
 		}
 
 		void read(CFile* file) {
-			file->Read(this, sizeof(AcadClipData<TChar>));
+			file->Read(this, sizeof(AcadClipData<T>));
 		}
-		TChar _tempFileName[0x104]; // name of the temp dwg file, where dragged entities are
-		TChar _origFileName[0x104]; // original file name
-		TChar _version[4]; // version of the original file, e.g. 'R15'
+		T _tempFileName[0x104]; // name of the temp dwg file, where dragged entities are
+		T _origFileName[0x104]; // original file name
+		T _version[4]; // version of the original file, e.g. 'R15'
 		int _one1; // seem to be always 1
 		double _x; // pick point
 		double _y;
@@ -120,24 +120,24 @@ protected:
 		int _unk[4];
 		int _zero2[4]; // seem to be always zero
 	};
-	template<class TChar>
-	struct AcadClipDataConstr : public AcadClipData<TChar> {
+	template<class T>
+	struct AcadClipDataConstr : public AcadClipData<T> {
 		AcadClipDataConstr(const OdString& tempFileName, const OdString& origFileName, const OdGePoint3d& pickPoint) {
-			init();
-			_one1 = 1;
-			_one2 = 1;
-			_version[0] = 'R';
-			_version[1] = '1';
-			_version[2] = '5';
-			_version[3] = 0;
-			_x = pickPoint.x;
-			_y = pickPoint.y;
-			_z = pickPoint.z;
-			memcpy(_tempFileName, (const TChar*) tempFileName, odmin((0x100 * sizeof(TChar)), ((tempFileName.getLength() + 1) * sizeof(TChar))));
-			memcpy(_origFileName, (const TChar*) origFileName, odmin((0x100 * sizeof(TChar)), ((origFileName.getLength() + 1) * sizeof(TChar))));
+			AcadClipData<wchar_t>::init();
+			AcadClipData<wchar_t>::_one1 = 1;
+			AcadClipData<wchar_t>::_one2 = 1;
+			AcadClipData<wchar_t>::_version[0] = 'R';
+			AcadClipData<wchar_t>::_version[1] = '1';
+			AcadClipData<wchar_t>::_version[2] = '5';
+			AcadClipData<wchar_t>::_version[3] = 0;
+			AcadClipData<wchar_t>::_x = pickPoint.x;
+			AcadClipData<wchar_t>::_y = pickPoint.y;
+			AcadClipData<wchar_t>::_z = pickPoint.z;
+			memcpy(AcadClipData<wchar_t>::_tempFileName, (const T*) tempFileName, odmin((0x100 * sizeof(T)), ((tempFileName.getLength() + 1) * sizeof(T))));
+			memcpy(AcadClipData<wchar_t>::_origFileName, (const T*) origFileName, odmin((0x100 * sizeof(T)), ((origFileName.getLength() + 1) * sizeof(T))));
 		}
 		AcadClipDataConstr() {
-			init();
+			AcadClipData<wchar_t>::init();
 		}
 	};
 	typedef AcadClipDataConstr<char> AcadClipDataR15;

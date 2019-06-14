@@ -10,8 +10,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-const vector<wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
-const vector<wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
+vector<const wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
+vector<const wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
 
 EoMfPropertiesDockablePane::EoMfPropertiesDockablePane() noexcept {
 	m_nComboHeight = 0;

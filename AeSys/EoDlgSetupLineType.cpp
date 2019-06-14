@@ -94,8 +94,8 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 				ActiveView->ViewportPopActive();
 
 				m_LinetypesListControl.GetSubItemRect(Item, Description, LVIR_LABEL, SubItemRectangle);
-				CString Description = Linetype->comments();
-				DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Description, Description.GetLength(), nullptr);
+				auto Description {Linetype->comments()};
+				DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Description, Description.getLength(), nullptr);
 				pstate.SetColorIndex(&DeviceContext, ColorIndex);
 			}
 			DeviceContext.Detach();

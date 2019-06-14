@@ -59,7 +59,7 @@ public:
 	static void DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight);
 	static void DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const OdString& textOut, const OdDbDatabasePtr& database);
 	static CMFCToolBarComboBoxButton* GetFindCombo();
-	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, wchar_t* text, LPCVOID object) noexcept;
+	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, const wchar_t* text, LPCVOID object) noexcept;
 	static OdDb::LineWeight LineWeightByIndex(char lineWeight) noexcept;
 	static OdString StringByLineWeight(int lineWeight, bool lineWeightByIndex);
 

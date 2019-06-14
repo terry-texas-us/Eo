@@ -163,7 +163,7 @@ void EoDlgEditProperties::OnButton() {
 				case OdDxfCode::HardPointerId:
 				case OdDxfCode::SoftOwnershipId:
 				case OdDxfCode::HardOwnershipId:
-					ResourceBuffer->setHandle(OdDbHandle(m_sValue));
+					ResourceBuffer->setHandle(OdDbHandle(m_sValue.GetString()));
 					break;
 				case OdDxfCode::Unknown:
 				case OdDxfCode::BinaryChunk:

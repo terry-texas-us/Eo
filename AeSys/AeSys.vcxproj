@@ -51,7 +51,7 @@
       <Optimization>Disabled</Optimization>
       <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>

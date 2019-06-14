@@ -118,8 +118,8 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		MenuItemInfo.fState = MFS_ENABLED;
 		MenuItemInfo.wID = static_cast<unsigned>(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE);
 		MenuItemInfo.dwItemData = gsl::narrow_cast<unsigned long>(ScaleMenuPosition);
-		MenuItemInfo.dwTypeData = ScaleName.getBuffer(ScaleName.getLength());
-		ScaleName.releaseBuffer();
+		
+		wcscpy(MenuItemInfo.dwTypeData, ScaleName);
 
 		if (ScaleIdentifier == CurrentScaleIdentifier) {
 			MenuItemInfo.fMask |= MIIM_STATE;

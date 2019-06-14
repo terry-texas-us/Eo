@@ -759,15 +759,18 @@ CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo() {
 	return FoundCombo;
 }
 
-HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, wchar_t* text, LPCVOID object) noexcept {
-	TV_INSERTSTRUCT tvIS;
+HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, const wchar_t* text, LPCVOID object) noexcept {
+	TVINSERTSTRUCTW tvIS;
 	tvIS.hParent = parent;
 	tvIS.hInsertAfter = TVI_LAST;
 	tvIS.item.mask = TVIF_TEXT | TVIF_PARAM;
 	tvIS.item.hItem = nullptr;
 	tvIS.item.iImage = 0;
-
-	tvIS.item.pszText = text;
+	
+	wchar_t Text[32];
+	wcscpy(Text, text);
+	tvIS.item.pszText = Text;
+	
 	tvIS.item.lParam = (LPARAM) object;
 	return TreeView_InsertItem(tree, &tvIS);
 }

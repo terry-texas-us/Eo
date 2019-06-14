@@ -50,8 +50,8 @@ protected:
 
 	int m_nComboHeight;
 
-	static const std::vector<wchar_t*> TabsStyles;
-	static const std::vector<wchar_t*> TabsLocations;
+	static std::vector<const wchar_t*> TabsStyles;
+	static std::vector<const wchar_t*> TabsLocations;
 
 public:
 	CMFCPropertyGridCtrl& GetPropertyGridCtrl() noexcept {

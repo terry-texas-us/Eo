@@ -743,8 +743,8 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 
 	OdPsPlotStyle* PlotStyle {(m_pPlotStyleTable->plotStyleAt(index)).get()};
 
-	LV_ITEM lvItem;
-	::ZeroMemory(&lvItem, sizeof(LV_ITEM));
+	LVITEMW lvItem;
+	::ZeroMemory(&lvItem, sizeof(LVITEMW));
 	lvItem.mask = m_pPlotStyleTable->isAciTableAvailable() ? LVIF_TEXT | LVIF_IMAGE | LVIF_STATE : LVIF_TEXT | LVIF_STATE;
 	lvItem.state = 0;
 	lvItem.stateMask = 0;

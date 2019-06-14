@@ -202,31 +202,31 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 	if (ReadUInt16() != kEndOfSection) { throw L"Exception ReadBlocksSection: Expecting sentinel kEndOfSection."; }
 }
 void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
-	if (ReadUInt16() != kGroupsSection) {
-		throw L"Exception ReadGroupsSection: Expecting sentinel kGroupsSection.";
-	}
-	OdDbBlockTableRecordPtr ModelSpaceBlock = m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	const OdDbObjectId CurrentLayerObjectId = m_Database->getCLAYER();
-	OdDbLayerTablePtr Layers = document->LayerTable(OdDb::kForRead);
+	
+	if (ReadUInt16() != kGroupsSection) { throw L"Exception ReadGroupsSection: Expecting sentinel kGroupsSection."; }
 
-	const unsigned short NumberOfLayers = ReadUInt16();
+	OdDbBlockTableRecordPtr ModelSpaceBlock {m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	const auto CurrentLayerObjectId {m_Database->getCLAYER()};
+	auto Layers {document->LayerTable(OdDb::kForRead)};
+
+	const auto NumberOfLayers {ReadUInt16()};
 	
 	for (unsigned LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
 		
 		if (!Layer) { return; }
 
-		OdString LayerName = Layer->Name();
-		const OdDbObjectId LayerObjectId = Layers->getAt(LayerName);
+		auto LayerName {Layer->Name()};
+		const auto LayerObjectId {Layers->getAt(LayerName)};
 		m_Database->setCLAYER(LayerObjectId);
 
-		const unsigned short NumberOfGroups = ReadUInt16();
+		const auto NumberOfGroups {ReadUInt16()};
 
 		if (Layer->IsInternal()) {
 			for (unsigned GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
 				const auto NumberOfPrimitives {ReadUInt16()};
 				
-				EoDbGroup* Group = new EoDbGroup;
+				auto Group {new EoDbGroup};
 				
 				for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
                     EoDbPrimitive* Primitive = ReadPrimitive(ModelSpaceBlock);
@@ -235,16 +235,14 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 				Layer->AddTail(Group);
 			}
 		} else {
-			OdString PathName = GetFilePath();
+			OdString PathName {GetFilePath().GetString()};
 			PathName.replace(GetFileName(), Layer->Name());
 			document->TracingLoadLayer(PathName, Layer);
 		}
 	}
 	m_Database->setCLAYER(CurrentLayerObjectId);
 
-	if (ReadUInt16() != kEndOfSection) {
-		throw L"Exception ReadGroupsSection: Expecting sentinel kEndOfSection.";
-	}
+	if (ReadUInt16() != kEndOfSection) { throw L"Exception ReadGroupsSection: Expecting sentinel kEndOfSection."; }
 }
 void EoDbPegFile::Unload(AeSysDoc* document) {
 	CFile::SetLength(0);
