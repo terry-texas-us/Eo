@@ -5,7 +5,7 @@
 #include "DbGroup.h"
 
 using namespace std;
-typedef pair<EoDbGroup*, EoDbPrimitive*> SelectionPair;
+using SelectionPair = pair<EoDbGroup*, EoDbPrimitive*>;
 enum GroupPrimitvePair { tGroup, tPrimitive };
 
 class AeSysDoc;

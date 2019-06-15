@@ -30,4 +30,4 @@ public:
 	void SetBasePoint(const OdGePoint3d& basePoint) noexcept;
 };
 
-typedef CTypedPtrMap<CMapStringToOb, CString, EoDbBlock*> EoDbBlockTable;
+using EoDbBlockTable = CTypedPtrMap<CMapStringToOb, CString, EoDbBlock*>;

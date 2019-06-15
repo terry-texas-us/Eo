@@ -122,7 +122,7 @@ public:
 	const OdCmEntityColor GetColor();
 };
 
-typedef OdArray<CBitmapColorInfo*> OdBitmapColorInfoArray;
+using OdBitmapColorInfoArray = OdArray<CBitmapColorInfo*>;
 
 class CPsListStyleData {
 	OdPsPlotStyle* m_pPlotStyles;

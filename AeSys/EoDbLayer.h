@@ -21,8 +21,8 @@ public:
 	};
 	EoDbLayer(OdDbLayerTableRecordPtr layer);
 	EoDbLayer(const OdString& name, unsigned short flags);
+	~EoDbLayer() = default;
 
-	~EoDbLayer() {}
 	COLORREF Color() const;
 	short ColorIndex() const;
 	void BuildVisibleGroupList(AeSysView* view);
@@ -54,4 +54,4 @@ public:
 	OdDbLayerTableRecordPtr TableRecord() const;
 };
 
-typedef CTypedPtrArray<CObArray, EoDbLayer*> EoDbLayerTable;
+using EoDbLayerTable = CTypedPtrArray<CObArray, EoDbLayer*>;

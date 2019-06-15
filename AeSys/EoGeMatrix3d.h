@@ -20,4 +20,4 @@ public: // Methods - static
 	static OdGeMatrix3d ReferenceSystemToWorld(const EoGeReferenceSystem& referenceSystem);
 };
 
-typedef CList<EoGeMatrix3d> EoGeMatrix3dList;
+using EoGeMatrix3dList = CList<EoGeMatrix3d>;

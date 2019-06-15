@@ -2,7 +2,7 @@
 
 #include "EoGePoint3d.h"
 
-typedef CArray<EoGePoint4d, EoGePoint4d&> EoGePoint4dArray;
+using EoGePoint4dArray = CArray<EoGePoint4d, EoGePoint4d&>;
 
 class EoGePoint4d {
 public:

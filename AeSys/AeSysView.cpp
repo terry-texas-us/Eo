@@ -40,9 +40,9 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-typedef OdArray<ODCOLORREF, OdMemoryAllocator<ODCOLORREF> > ODGSPALETTE;
+using ODGSPALETTE = OdArray<ODCOLORREF, OdMemoryAllocator<ODCOLORREF>>;
 
-const double AeSysView::sm_MaximumWindowRatio = 999.;
+const double AeSysView::sm_MaximumWindowRatio = 999.0;
 const double AeSysView::sm_MinimumWindowRatio = 0.001;
 
 unsigned AeSysView::g_nRedrawMSG = 0;
@@ -316,120 +316,13 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 END_MESSAGE_MAP()
 
 AeSysView::AeSysView() noexcept 
-	: m_bRegenAbort(false)
-	, m_bInRegen(false)
-	, m_paintMode(PaintMode_Regen)
-	, m_hCursor(nullptr)
-	, m_mode(kQuiescent)
-	, m_inpOptions(0)
-	, m_PsOverall(false)
-	, m_bPlotPlotstyle(false)
-	, m_bShowPlotstyle(false)
-	, m_bPlotGrayscale(false)
-	, m_hWindowDC(nullptr)
-	, m_pagingCounter(0)
-	, m_LeftButton(false)
-	, m_MiddleButton(false)
-	, m_RightButton(false)
-	, m_RubberbandType(None)
-	, m_MousePosition(0)
-	, m_ZoomWindow(false)
-	, m_Points(0)
 {
 	m_Background = ViewBackgroundColor;
-
-	m_PreviousOp = 0;
-	m_Plot = false;
-	m_ViewStateInformation = true;		// View state info within the view
-	m_ViewBackgroundImage = false;
-	m_ViewOdometer = true;
-	m_ViewPenWidths = false;
-	m_WorldScale = 1.0;
-	m_ViewTrueTypeFonts = true;
-	m_OpHighlighted = 0;
-	m_SelectApertureSize = .005;
-	m_PlotScaleFactor = 1.0f;
-	m_GapSpaceFactor = 0.5;			// Edge space factor 50 percent of character height
-	m_CircleRadius = .03125;		// Circle radius
-	m_EndItemType = 1;				// Arrow type
-	m_EndItemSize = .1;				// Arrow size
-	m_BubbleRadius = .125;			// Bubble radius
-	m_NumberOfSides = 0;			// Number of sides on bubble (0 indicating circle)
-	m_EngagedPrimitive = nullptr;
-	m_EngagedGroup = nullptr;
-
-	m_CenterLineEccentricity = 0.5;	// Center line eccentricity for parallel lines
-	m_ContinueCorner = false;
-	m_AssemblyGroup = nullptr;
-	m_BeginSectionGroup = nullptr;
-	m_EndSectionGroup = nullptr;
-	m_BeginSectionLine = nullptr;
-	m_EndSectionLine = nullptr;
-	m_DistanceBetweenLines = .0625;
-
-	// Constraints - grid and axis
-	m_MaximumDotsPerLine = 64;
-
-	m_XGridLineSpacing = 1.0;
-	m_YGridLineSpacing = 1.0;
-	m_ZGridLineSpacing = 1.0;
-
-	m_XGridSnapSpacing = 12.0;
-	m_YGridSnapSpacing = 12.0;
-	m_ZGridSnapSpacing = 12.0;
-
-	m_XGridPointSpacing = 3.0;
-	m_YGridPointSpacing = 3.0;
-	m_ZGridPointSpacing = 0.0;
-
-	m_AxisConstraintInfluenceAngle = 5.0;
-	m_AxisConstraintOffsetAngle = 0.0;
-
-	m_DisplayGridWithLines = false;
-	m_DisplayGridWithPoints = false;
-	m_GridSnap = false;
-
-	m_SubModeEditGroup = nullptr;
-	m_SubModeEditPrimitive = nullptr;
-
-	m_MendPrimitiveVertexIndex = 0;
-	m_PrimitiveToMend = nullptr;
-	m_PrimitiveToMendCopy = nullptr;
 
 	SetEditModeMirrorScaleFactors(-1.0, 1.0, 1.0);
 	SetEditModeScaleFactors(2.0, 2.0, 2.0);
 
 	SetEditModeRotationAngles(0.0, 0.0, 45.0);
-
-	m_AxisTolerance = 2.0;
-	m_CornerSize = 0.25;
-
-	m_GenerateTurningVanes = true;	// turning vanes generation flag
-	m_InsideRadiusFactor = 1.5;		// inside radius elbow factor
-	m_DuctSeamSize = 0.03125;
-	m_DuctTapSize = 0.09375;			// tap size
-	m_ContinueSection = false;
-	m_BeginWithTransition = false;
-	m_DuctJustification = Center;	// justification (Left, Center or Right)
-	m_TransitionSlope = 4.0;
-	m_ElbowType = Mittered;			// elbow type (Mittered or Radial)
-	m_EndCapGroup = nullptr;
-	m_EndCapPoint = nullptr;
-	m_EndCapLocation = 0;
-	m_OriginalPreviousGroupDisplayed = true;
-	m_OriginalPreviousGroup = nullptr;
-
-	m_PreviousSection(0.125, 0.0625, Section::Rectangular);
-	m_CurrentSection(0.125, 0.0625, Section::Rectangular);
-	m_PipeTicSize = 0.03125;
-	m_PipeRiseDropRadius = 0.03125;
-	m_CurrentPipeSymbolIndex = 0;
-
-	// Power mode
-	m_PowerArrow = false;
-	m_PowerConductor = false;
-	m_PowerConductorSpacing = 0.04;
-	m_PreviousRadius = 0.0;
 
 	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
 	m_Viewport.SetDeviceHeightInPixels(theApp.DeviceHeightInPixels());
@@ -437,7 +330,7 @@ AeSysView::AeSysView() noexcept
 	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / kMmPerInch);
 }
 
-AeSysView::~AeSysView() {}
+AeSysView::~AeSysView() = default;
 
 
 #ifdef _DEBUG
@@ -2114,7 +2007,8 @@ CRect AeSysView::viewRect(OdGsView* view)
 	const auto ScreenMatrix {view->screenMatrix()};
 	LowerLeftPoint.transformBy(ScreenMatrix);
 	UpperRightPoint.transformBy(ScreenMatrix);
-	return CRect(OdRoundToLong(LowerLeftPoint.x), OdRoundToLong(UpperRightPoint.y), OdRoundToLong(UpperRightPoint.x), OdRoundToLong(LowerLeftPoint.y));
+	
+	return {OdRoundToLong(LowerLeftPoint.x), OdRoundToLong(UpperRightPoint.y), OdRoundToLong(UpperRightPoint.x), OdRoundToLong(LowerLeftPoint.y)};
 }
 
 void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsigned flags) {
@@ -3010,7 +2904,7 @@ void AeSysView::OnViewPenWidths() {
 }
 
 void AeSysView::OnViewRendermode(unsigned commandId) {
-	const OdGsView::RenderMode RenderMode = OdGsView::RenderMode(commandId - ID_VIEW_RENDERMODE_2DOPTIMIZED);
+	const auto RenderMode {OdGsView::RenderMode(commandId - ID_VIEW_RENDERMODE_2DOPTIMIZED)};
 	SetRenderMode(RenderMode);
 }
 
@@ -4028,7 +3922,7 @@ void AeSysView::SetModeCursor(unsigned mode) {
 			break;
 
 		default:
-			::SetCursor(static_cast<HCURSOR>(::LoadImageW(HINSTANCE(NULL), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE)));
+			::SetCursor(static_cast<HCURSOR>(::LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE)));
 			return;
 	}
 	auto CursorHandle {static_cast<HCURSOR>(::LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
@@ -4079,39 +3973,39 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 		if ((item & WorkCount) == WorkCount) {
 			rc.SetRect(0, ClientRectangle.top, 8 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->NumberOfGroupsInWorkLayer() + Document->NumberOfGroupsInActiveLayers());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & TrapCount) == TrapCount) {
 			rc.SetRect(8 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 16 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->TrapGroupCount());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & Pen) == Pen) {
 			rc.SetRect(16 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 22 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"P%-4i", pstate.ColorIndex());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & Line) == Line) {
 			rc.SetRect(22 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 28 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"L%-4i", pstate.LinetypeIndex());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & TextHeight) == TextHeight) {
 			const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
 			rc.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & Scale) == Scale) {
 			rc.SetRect(38 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 48 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"1:%-6.2f", WorldScale());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & WndRatio) == WndRatio) {
 			rc.SetRect(48 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 58 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			CString ZoomFactorAsString;
 			ZoomFactorAsString.Format(L"=%-8.3f", ZoomFactor());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, nullptr);
 		}
 		if ((item & DimLen) == DimLen || (item & DimAng) == DimAng) {
 			rc.SetRect(58 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 90 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
@@ -4119,7 +4013,7 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 			LengthAndAngle += theApp.FormatLength(theApp.DimensionLength(), theApp.GetUnits());
 			LengthAndAngle += L" @ ";
 			LengthAndAngle += theApp.FormatAngle(EoToRadian(theApp.DimensionAngle()));
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, 0);
+			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, nullptr);
 		}
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);

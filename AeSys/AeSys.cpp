@@ -329,76 +329,12 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 }
 
 AeSys::AeSys() noexcept
-	: m_ProgressLimit(100)
-	, m_ProgressPosition(0)
-	, m_ProgressPercent(0)
-	, m_DiscardBackFaces(true)
-	, m_EnableDoubleBuffer(true)
-	, m_BlocksCache(false)
-	, m_GsDevMultithread(false)
-	, m_nMtRegenThreads(4)
-	, m_EnablePrintPreviewViaBitmap(true)
-	, m_UseGsModel(true)
-	, m_EnableHLR(false)
-	, m_ContextColors(true)
-	, m_TTFPolyDraw(false)
-	, m_TTFTextOut(false)
-	, m_TTFCache(false)
-	, m_DynamicSubEntHlt(false)
-	, m_GDIGradientsAsBitmap(false)
-	, m_GDIGradientsAsPolys(false)
-	, m_nGDIGradientsAsPolysThreshold(10)
-	, m_DisableAutoRegen(false)
-	, m_background(ViewBackgroundColor)
-	, m_thisThreadID {0}
-	, m_numCustomCommands(0)
-	, m_numGSMenuItems(0)
-	, m_bPartial(false)
-	, m_bRecover(false)
-	, m_bLoading(false)
-	// ODA_MT_DBIO_BEGIN
-	, m_bUseMTLoading(false)
-	// ODA_MT_DBIO_END
-	, m_bRemoteGeomViewer(false)
-	, m_pagingType(0)
-	, m_bUseTempFiles(false)
-	, m_bSupportFileSelectionViaDialog(true)
-	, m_ApplicationLook(ID_VIEW_APPLOOK_OFF_2007_BLACK)
-	, m_displayFields(0)
-	, m_SaveRoundTrip(true)
-	, m_SavePreview(false)
-	, m_SaveWithPassword(false)
-	, m_pAuditDlg(nullptr) {
+{
 	EnableHtmlHelp();
 
 	CClientDC ClientDeviceContext(AfxGetMainWnd());
-	m_ArchitecturalUnitsFractionPrecision = 16;
 	m_HighColorMode = ClientDeviceContext.GetDeviceCaps(BITSPIXEL) > 8; // Detect color depth. 256 color toolbars can be used in the high or true color modes only
-	m_ClipboardDataEoGroups = true;
-	m_ClipboardDataImage = false;
-	m_ClipboardDataText = true;
-	m_ClipboardFormatIdentifierForEoGroups = 0;
-	m_ModeInformationOverView = false;
-	m_TrapModeAddGroups = true;
-	m_NodalModeAddGroups = true;
-	m_CurrentMode = 0;
-	m_DeviceHeightInMillimeters = 0.0;
-	m_DeviceHeightInPixels = 0.0;
-	m_DeviceWidthInMillimeters = 0.0;
-	m_DeviceWidthInPixels = 0.0;
-	m_DimensionAngle = 45.;
-	m_DimensionLength = 0.125;
-	m_EngagedAngle = 0.0;
-	m_EngagedLength = 0.0;
 
-	m_AeSysMenuHandle = nullptr;
-	m_ModeResourceIdentifier = 0;
-	m_PrimaryMode = 0;
-
-	m_SimplexStrokeFont = nullptr;
-	m_TrapHighlightColor = 15;
-	m_TrapHighlighted = true;
-	m_Units = kInches;
 }
 #define EO_REGISTRY_BUFFER_SIZE 1040
 #define EO_REGISTRY_MAX_PROFILE_NAME 128
@@ -958,7 +894,7 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
 			OpenWithPreviewDlg* OpenWithPreviewDialog;
-			(fpDlgProc)(&statDib, parentWindow, NULL, filter, Flags, &OpenWithPreviewDialog);
+			(fpDlgProc)(&statDib, parentWindow, nullptr, filter, Flags, &OpenWithPreviewDialog);
 
 			if (IDOK == OpenWithPreviewDialog->ShowModal()) {
 				long BufferLength {MAX_PATH};

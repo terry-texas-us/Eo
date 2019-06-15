@@ -54,7 +54,7 @@ private:
 			, m_vFix(kNoVFix) {
 		}
 	};
-	typedef std::list<CtrlSize> CtrlCont_t;
+	using CtrlCont_t = std::list<CtrlSize>;
 	CtrlCont_t m_ctrls;
 	HWND       m_hParent;
 	CRect      m_origParentSize;

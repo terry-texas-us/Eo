@@ -46,19 +46,19 @@ class AeSysView
 
 	static unsigned g_nRedrawMSG;
 	OdExEditorObject m_editor;
-	mutable bool m_bRegenAbort;
-	mutable bool m_bInRegen; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
+	mutable bool m_bRegenAbort {false};
+	mutable bool m_bInRegen {false}; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
 
 	enum PaintMode { PaintMode_Redraw, PaintMode_Regen };
 
-	PaintMode m_paintMode;
+	PaintMode m_paintMode {PaintMode_Regen};
 
 	CPoint m_oldPoint;
-	HCURSOR m_hCursor;
+	HCURSOR m_hCursor {nullptr};
 
 	enum Mode { kQuiescent, kGetPoint, kGetString, kDragDrop };
 
-	Mode m_mode;
+	Mode m_mode {kQuiescent};
 
 	struct Response {
 		enum Type { kNone, kPoint, kString, kCancel };
@@ -67,7 +67,7 @@ class AeSysView
 		Type m_type;
 	};
 	Response m_response;
-	int m_inpOptions;
+	int m_inpOptions {0};
 
 	void exeCmd(const OdString& szCmdStr);
 	bool beginDragCallback(const OdGePoint3d& point) override;
@@ -77,11 +77,11 @@ protected:
 	using CView::operator delete;
 private:
 	OdDbObjectId m_layoutId;
-	bool m_PsOverall;
+	bool m_PsOverall {false};
 
-	bool m_bPlotPlotstyle;
-	bool m_bShowPlotstyle;
-	bool m_bPlotGrayscale;
+	bool m_bPlotPlotstyle {false};
+	bool m_bShowPlotstyle {false};
+	bool m_bPlotGrayscale {false};
 
 	OdGiContext::PStyleType plotStyleType() const override;
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
@@ -94,8 +94,8 @@ protected:
 
 	OdGsLayoutHelperPtr m_LayoutHelper;
 	OdGsLayoutHelperPtr m_pPrinterDevice;
-	HDC m_hWindowDC;
-	int m_pagingCounter;
+	HDC m_hWindowDC {nullptr};
+	int m_pagingCounter {0};
 
 	CRect viewportRect() const;
 	static CRect viewRect(OdGsView*);
@@ -208,30 +208,30 @@ private:
 
 	CBitmap m_BackgroundImageBitmap;
 	CPalette m_BackgroundImagePalette;
-	EoDbPrimitive* m_EngagedPrimitive;
-	EoDbGroup* m_EngagedGroup;
+	EoDbPrimitive* m_EngagedPrimitive {nullptr};
+	EoDbGroup* m_EngagedGroup {nullptr};
 	EoGsViewTransform m_OverviewViewTransform;
-	unsigned short m_OpHighlighted;
-	bool m_Plot;
-	float m_PlotScaleFactor;
+	unsigned short m_OpHighlighted {0};
+	bool m_Plot {false};
+	float m_PlotScaleFactor {1.0f};
 	EoDbGroup m_PreviewGroup;
 	EoGsViewTransform m_PreviousViewTransform;
-	unsigned short m_PreviousOp;
+	unsigned short m_PreviousOp {0};
 	OdGePoint3d m_PreviousPnt;
-	double m_SelectApertureSize;
-	bool m_ViewBackgroundImage;
-	bool m_ViewOdometer;
-	bool m_ViewPenWidths;
+	double m_SelectApertureSize {0.005};
+	bool m_ViewBackgroundImage {false};
+	bool m_ViewOdometer {true};
+	bool m_ViewPenWidths {false};
 	CViewports m_Viewports;
 	EoGsViewTransforms m_ViewTransforms;
-	bool m_ViewTrueTypeFonts;
+	bool m_ViewTrueTypeFonts {true};
 	EoDbGroupList m_VisibleGroupList;
-	double m_WorldScale;
-	bool m_LeftButton;
-	bool m_MiddleButton;
-	bool m_RightButton;
+	double m_WorldScale {1.0};
+	bool m_LeftButton {false};
+	bool m_MiddleButton {false};
+	bool m_RightButton {false};
 
-	ERubs m_RubberbandType;
+	ERubs m_RubberbandType {None};
 	OdGePoint3d m_RubberbandBeginPoint;
 	CPoint m_RubberbandLogicalBeginPoint;
 	CPoint m_RubberbandLogicalEndPoint;
@@ -240,8 +240,8 @@ private:
 	OdGePoint3d	m_ptCursorPosWorld;
 
 	CPoint m_MouseClick;
-	CPoint m_MousePosition;
-	bool m_ZoomWindow;
+	CPoint m_MousePosition {0};
+	bool m_ZoomWindow {false};
 	OdGePoint3dArray m_Points;
 
 	ODCOLORREF m_Background;
@@ -255,25 +255,25 @@ private:
 
 private: // grid and axis constraints
 	OdGePoint3d m_GridOrigin;
-	int m_MaximumDotsPerLine;
+	int m_MaximumDotsPerLine {64};
 
-	double m_XGridLineSpacing;
-	double m_YGridLineSpacing;
-	double m_ZGridLineSpacing;
+	double m_XGridLineSpacing {1.0};
+	double m_YGridLineSpacing {1.0};
+	double m_ZGridLineSpacing {1.0};
 
-	double m_XGridSnapSpacing;
-	double m_YGridSnapSpacing;
-	double m_ZGridSnapSpacing;
+	double m_XGridSnapSpacing {12.0};
+	double m_YGridSnapSpacing {12.0};
+	double m_ZGridSnapSpacing {12.0};
 
-	double m_XGridPointSpacing;
-	double m_YGridPointSpacing;
-	double m_ZGridPointSpacing;
+	double m_XGridPointSpacing {3.0};
+	double m_YGridPointSpacing {3.0};
+	double m_ZGridPointSpacing {0.0};
 
-	double m_AxisConstraintInfluenceAngle;
-	double m_AxisConstraintOffsetAngle;
-	bool m_DisplayGridWithLines;
-	bool m_DisplayGridWithPoints;
-	bool m_GridSnap;
+	double m_AxisConstraintInfluenceAngle {5.0};
+	double m_AxisConstraintOffsetAngle {0.0};
+	bool m_DisplayGridWithLines {false};
+	bool m_DisplayGridWithPoints {false};
+	bool m_GridSnap {false};
 
 public:
 	double AxisConstraintInfluenceAngle() const noexcept;
@@ -349,7 +349,7 @@ public:
 
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
 
-	bool m_ViewStateInformation;
+	bool m_ViewStateInformation {true}; // Legacy state info within the view
 	void UpdateStateInformation(EStateInformationItem item);
 
 	void RubberBandingDisable();
@@ -460,8 +460,8 @@ public:
 	void SetDeviceWidthInInches(double width) noexcept;
 public: // Group and Primitive operations
 
-	EoDbGroup* m_SubModeEditGroup;
-	EoDbPrimitive* m_SubModeEditPrimitive;
+	EoDbGroup* m_SubModeEditGroup {nullptr};
+	EoDbPrimitive* m_SubModeEditPrimitive {nullptr};
 	OdGePoint3d m_SubModeEditBeginPoint;
 	OdGePoint3d m_SubModeEditEndPoint;
 	EoGeMatrix3d m_tmEditSeg;
@@ -477,21 +477,21 @@ public: // Group and Primitive operations
 	void PreviewGroupEdit();
 
 	OdGePoint3d m_MendPrimitiveBegin;
-	unsigned long m_MendPrimitiveVertexIndex;
-	EoDbPrimitive* m_PrimitiveToMend;
-	EoDbPrimitive* m_PrimitiveToMendCopy;
+	unsigned long m_MendPrimitiveVertexIndex {0};
+	EoDbPrimitive* m_PrimitiveToMend {nullptr};
+	EoDbPrimitive* m_PrimitiveToMendCopy {nullptr};
 
 	void PreviewMendPrimitive();
 	void MendPrimitiveEscape();
 	void MendPrimitiveReturn();
 
 private: // Annotate and Dimension interface
-	double m_GapSpaceFactor; // Edge space factor 25 percent of character height
-	double m_CircleRadius;
-	int m_EndItemType;
-	double m_EndItemSize;
-	double m_BubbleRadius;
-	int m_NumberOfSides; // Number of sides on bubble (0 indicating circle)
+	double m_GapSpaceFactor {0.5}; // Edge space factor 50 percent of character height
+	double m_CircleRadius {0.03125};
+	int m_EndItemType {1}; // Arrow type
+	double m_EndItemSize {0.1}; // Arrow size
+	double m_BubbleRadius {0.125};
+	int m_NumberOfSides {0}; // Number of sides on bubble (0 indicating circle)
 	CString m_DefaultText;
 
 public:
@@ -551,18 +551,18 @@ public: // Draw mode interface
 	void OnDrawModeEscape();
 
 private: // Draw2 mode interface
-	double m_CenterLineEccentricity;	// Center line eccentricity for parallel lines
-	bool m_ContinueCorner;
+	double m_CenterLineEccentricity {0.5}; // Center line eccentricity for parallel lines
+	bool m_ContinueCorner {false};
 	EoGeLineSeg3d m_CurrentLeftLine;
 	EoGeLineSeg3d m_CurrentRightLine;
 	EoGeLineSeg3d m_PreviousReferenceLine;
 	EoGeLineSeg3d m_CurrentReferenceLine;
-	double m_DistanceBetweenLines;
-	EoDbGroup* m_AssemblyGroup;
-	EoDbGroup* m_EndSectionGroup;
-	EoDbGroup* m_BeginSectionGroup;
-	EoDbLine* m_BeginSectionLine;
-	EoDbLine* m_EndSectionLine;
+	double m_DistanceBetweenLines {0.0625};
+	EoDbGroup* m_AssemblyGroup {nullptr};
+	EoDbGroup* m_EndSectionGroup {nullptr};
+	EoDbGroup* m_BeginSectionGroup {nullptr};
+	EoDbLine* m_BeginSectionLine {nullptr};
+	EoDbLine* m_EndSectionLine {nullptr};
 
 public:
 	void DoDraw2ModeMouseMove();
@@ -611,8 +611,8 @@ public: // Fixup mode interface
 		kTrimCurrent = kTrimCurrentToIntersection | kTrimCurrentToSize,
 	};
 
-	double m_AxisTolerance;
-	double m_CornerSize;
+	double m_AxisTolerance {2.0};
+	double m_CornerSize {0.25};
 
 	void OnFixupModeOptions();
 	void OnFixupModeReference();
@@ -730,23 +730,23 @@ public: // Edit mode interface
 	void OnTraprModeEscape();
 
 private: // Low Pressure Duct (retangular) interface
-	double m_InsideRadiusFactor;
-	double m_DuctSeamSize;
-	double m_DuctTapSize;
-	bool m_GenerateTurningVanes;
-	EElbow m_ElbowType;
-	EJust m_DuctJustification;
-	double m_TransitionSlope;
-	bool m_BeginWithTransition;
-	bool m_ContinueSection;
-	int m_EndCapLocation;
-	EoDbPoint* m_EndCapPoint;
-	EoDbGroup* m_EndCapGroup;
-	bool m_OriginalPreviousGroupDisplayed;
-	EoDbGroup* m_OriginalPreviousGroup;
+	double m_InsideRadiusFactor {1.5};
+	double m_DuctSeamSize {0.03125};
+	double m_DuctTapSize {0.03125};
+	bool m_GenerateTurningVanes {true};
+	EElbow m_ElbowType {Mittered};
+	EJust m_DuctJustification {Center};
+	double m_TransitionSlope {4.0};
+	bool m_BeginWithTransition {false};
+	bool m_ContinueSection {false};
+	int m_EndCapLocation {0};
+	EoDbPoint* m_EndCapPoint {nullptr};
+	EoDbGroup* m_EndCapGroup {nullptr};
+	bool m_OriginalPreviousGroupDisplayed {true};
+	EoDbGroup* m_OriginalPreviousGroup {nullptr};
 
-	Section m_PreviousSection;
-	Section m_CurrentSection;
+	Section m_PreviousSection {0.125, 0.0625, Section::Rectangular};
+	Section m_CurrentSection {0.125, 0.0625, Section::Rectangular};
 
 public:
 	void DoDuctModeMouseMove();
@@ -844,9 +844,9 @@ public:
 	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept;
 
 private: // Pipe mode interface
-	int m_CurrentPipeSymbolIndex;
-	double m_PipeTicSize;
-	double m_PipeRiseDropRadius;
+	int m_CurrentPipeSymbolIndex {0};
+	double m_PipeTicSize {0.03125};
+	double m_PipeRiseDropRadius {0.03125};
 
 	/// <summary>Adds a fitting indication to horizontal pipe section as required by previous fitting type.</summary>
 	void GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint, int endType, OdGePoint3d& endPoint, EoDbGroup* group);
@@ -869,11 +869,11 @@ public:
 	void OnPipeModeEscape();
 
 private: // Power mode interface
-	bool m_PowerArrow;
-	bool m_PowerConductor;
-	double m_PowerConductorSpacing;
+	bool m_PowerArrow {false};
+	bool m_PowerConductor {false};
+	double m_PowerConductorSpacing {0.04};
 	OdGePoint3d m_CircuitEndPoint;
-	double m_PreviousRadius;
+	double m_PreviousRadius {0.0};
 
 public:
 	void DoPowerModeMouseMove();

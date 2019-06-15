@@ -39,7 +39,7 @@ extern double dPWids[];
 
 /// <Open Design Alliance>
 
-#include "OdToolkit.h"
+#include "OdToolKit.h"
 #include "DbObjectId.h"
 #include "RxObjectImpl.h"
 #include "ExHostAppServices.h"
@@ -63,54 +63,54 @@ class AeSys
 	: public CWinAppEx
 	, public ExSystemServices
 	, public ExHostAppServices {
-protected:
+   protected:
 	using CWinAppEx::operator new;
 	using CWinAppEx::operator delete;
 
-private:
-	int m_ProgressLimit;
-	int m_ProgressPosition;
-	int m_ProgressPercent;
+   private:
+	int m_ProgressLimit {100};
+	int m_ProgressPosition {0};
+	int m_ProgressPercent {0};
 	CString m_ProgressMessage;
 
-	bool m_DiscardBackFaces;
-	bool m_EnableDoubleBuffer;
-	bool m_BlocksCache;
-	bool m_GsDevMultithread;
-	unsigned m_nMtRegenThreads;
-	bool m_EnablePrintPreviewViaBitmap;
-	bool m_UseGsModel;
-	bool m_EnableHLR;
-	bool m_ContextColors;
-	bool m_TTFPolyDraw;
-	bool m_TTFTextOut;
-	bool m_TTFCache;
-	bool m_DynamicSubEntHlt;
-	bool m_GDIGradientsAsBitmap;
-	bool m_GDIGradientsAsPolys;
-	unsigned char m_nGDIGradientsAsPolysThreshold;
-	bool m_DisableAutoRegen;
-	ODCOLORREF m_background;
-	unsigned long m_thisThreadID;
-	unsigned m_numCustomCommands;
-	unsigned long m_numGSMenuItems;
+	bool m_DiscardBackFaces {true};
+	bool m_EnableDoubleBuffer {true};
+	bool m_BlocksCache {false};
+	bool m_GsDevMultithread {false};
+	unsigned m_nMtRegenThreads {4};
+	bool m_EnablePrintPreviewViaBitmap {true};
+	bool m_UseGsModel {true};
+	bool m_EnableHLR {false};
+	bool m_ContextColors {true};
+	bool m_TTFPolyDraw {false};
+	bool m_TTFTextOut {false};
+	bool m_TTFCache {false};
+	bool m_DynamicSubEntHlt {false};
+	bool m_GDIGradientsAsBitmap {false};
+	bool m_GDIGradientsAsPolys {false};
+	unsigned char m_nGDIGradientsAsPolysThreshold {10};
+	bool m_DisableAutoRegen {false};
+	ODCOLORREF m_background {ViewBackgroundColor};
+	unsigned long m_thisThreadID {0};
+	unsigned m_numCustomCommands {0};
+	unsigned long m_numGSMenuItems {0};
 	OdString m_sVectorizerPath;
 	OdString m_RecentCommand;
-	bool m_bPartial;
-	bool m_bRecover;
-	bool m_bLoading;
-
-	bool m_bUseMTLoading;
-
-	bool m_bRemoteGeomViewer;
-	int m_pagingType;
-	bool m_bUseTempFiles;
+	bool m_bPartial {false};
+	bool m_bRecover {false};
+	bool m_bLoading {false};
+	// ODA_MT_DBIO_BEGIN
+	bool m_bUseMTLoading {false};
+	// ODA_MT_DBIO_END
+	bool m_bRemoteGeomViewer {false};
+	int m_pagingType {0};
+	bool m_bUseTempFiles {false};
 	CStringArray m_tempFilesList;
-	bool m_bSupportFileSelectionViaDialog;
+	bool m_bSupportFileSelectionViaDialog {true};
 
 	//	void UpdateFieldDisplay();
 public:
-	unsigned m_ApplicationLook;
+	unsigned m_ApplicationLook {ID_VIEW_APPLOOK_OFF_2007_BLACK};
 
 	void AddReactor(const OdApplicationReactor* reactor);
 	void RemoveReactor(const OdApplicationReactor* reactor);
@@ -123,7 +123,7 @@ public:
 	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
 
 	OdGsMarker getGSMenuItemMarker() const noexcept { return ( OdGsMarker) this; }
-	CMenu* CommandMenu(CMenu** ppEditMenu = 0);
+	CMenu* CommandMenu(CMenu** ppEditMenu = nullptr);
 	void RefreshCommandMenu();
 	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
 	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
@@ -150,12 +150,12 @@ public:
 		kDxfFields,
 		kDwgFields
 	};
-	int m_displayFields;
-	bool m_SaveRoundTrip;
-	bool m_SavePreview;
-	bool m_SaveWithPassword;
+	int m_displayFields {0};
+	bool m_SaveRoundTrip {true};
+	bool m_SavePreview {false};
+	bool m_SaveWithPassword {false};
 
-	EoDlgAudit* m_pAuditDlg;
+	EoDlgAudit* m_pAuditDlg {nullptr};
 	//	CTaskBarWin7Ext m_tbExt;
 	OdMutexPtr m_pMeterMutex;
 
@@ -294,33 +294,33 @@ public:
 	enum Units { kArchitecturalS = -1, kArchitectural, kEngineering, kFeet, kInches, kMeters, kMillimeters, kCentimeters, kDecimeters, kKilometers };
 
 private:
-	int	m_ArchitecturalUnitsFractionPrecision;
+	int m_ArchitecturalUnitsFractionPrecision {16};
 	bool m_HighColorMode;
-	bool m_ClipboardDataEoGroups;
-	bool m_ClipboardDataImage;
-	bool m_ClipboardDataText;
-	unsigned m_ClipboardFormatIdentifierForEoGroups;
-	bool m_ModeInformationOverView;
-	bool m_TrapModeAddGroups;
+	bool m_ClipboardDataEoGroups {true};
+	bool m_ClipboardDataImage {false};
+	bool m_ClipboardDataText {true};
+	unsigned m_ClipboardFormatIdentifierForEoGroups {0};
+	bool m_ModeInformationOverView {false};
+	bool m_TrapModeAddGroups {true};
 
-	unsigned m_CurrentMode;
-	double m_DeviceHeightInMillimeters;
-	double m_DeviceHeightInPixels;
-	double m_DeviceWidthInMillimeters;
-	double m_DeviceWidthInPixels;
-	double m_DimensionAngle;
-	double m_DimensionLength;
-	double m_EngagedAngle;
-	double m_EngagedLength;
+	unsigned m_CurrentMode {0};
+	double m_DeviceHeightInMillimeters {0.0};
+	double m_DeviceHeightInPixels {0.0};
+	double m_DeviceWidthInMillimeters {0.0};
+	double m_DeviceWidthInPixels {0.0};
+	double m_DimensionAngle {45.0};
+	double m_DimensionLength {0.125};
+	double m_EngagedAngle {0.0};
+	double m_EngagedLength {0.0};
 	OdGePoint3d	m_HomePoints[9];
-	HMENU m_AeSysMenuHandle;
-	int m_ModeResourceIdentifier;
-	int	m_PrimaryMode;
+	HMENU m_AeSysMenuHandle {nullptr};
+	int m_ModeResourceIdentifier {0};
+	int m_PrimaryMode {0};
 	CString m_ShadowFolderPath;
-	char* m_SimplexStrokeFont;
-	short m_TrapHighlightColor;
-	bool m_TrapHighlighted;
-	Units m_Units;
+	char* m_SimplexStrokeFont {nullptr};
+	short m_TrapHighlightColor {15};
+	bool m_TrapHighlighted {true};
+	Units m_Units {kInches};
 
 public:
 	static CString CustomLButtonDownCharacters;
@@ -328,7 +328,7 @@ public:
 	static CString CustomRButtonDownCharacters;
 	static CString CustomRButtonUpCharacters;
 
-	bool m_NodalModeAddGroups;
+	bool m_NodalModeAddGroups {true};
 	EoApOptions m_Options;
 
 public:

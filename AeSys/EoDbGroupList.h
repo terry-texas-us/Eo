@@ -2,11 +2,10 @@
 
 class EoDbGroupList : public CObList {
 public: // Constructors and destructor
-	EoDbGroupList() noexcept {
-	}
-	~EoDbGroupList() {
-	}
-public:	// Base class wrappers hides non-virtual function of parent
+	EoDbGroupList() = default;
+	~EoDbGroupList() = default;
+
+   public:	// Base class wrappers hides non-virtual function of parent
 
 	POSITION AddHead(EoDbGroup* group) {
 		return (CObList::AddHead(dynamic_cast<CObject*>(group)));

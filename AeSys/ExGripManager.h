@@ -15,7 +15,7 @@
 
 class OdBaseGripManager;
 class OdExGripData;
-typedef OdSmartPtr<OdExGripData> OdExGripDataPtr;
+using  OdExGripDataPtr = OdSmartPtr<OdExGripData>;
 
 class OdExGripData : public OdGiDrawableImpl<> {
 public:
@@ -57,9 +57,8 @@ private:
 	OdBaseGripManager* m_GripManager;
 };
 
-typedef OdArray<OdExGripDataPtr> OdExGripDataPtrArray;
-
-typedef OdSmartPtr<class OdExGripDrag> OdExGripDragPtr;
+using OdExGripDataPtrArray = OdArray<OdExGripDataPtr>;
+using OdExGripDragPtr = OdSmartPtr<class OdExGripDrag>;
 
 class OdExGripDrag : public OdGiDrawableImpl<> {
 public:
@@ -90,7 +89,7 @@ protected:
 	OdBaseGripManager* m_GripManager;
 };
 
-typedef OdArray<OdExGripDragPtr> OdExGripDragPtrArray;
+using OdExGripDragPtrArray = OdArray<OdExGripDragPtr>;
 
 class OdBaseGripManager : public OdEdPointTracker {
 
@@ -167,7 +166,7 @@ public:
 		OdExGripDataPtrArray m_pDataArray;
 		OdArray<OdExGripDataSubent> m_GripDataSubEntity;
 	};
-	typedef std::map<OdDbStub*, OdExGripDataExt> GripDataMap;
+	using GripDataMap = std::map<OdDbStub*, OdExGripDataExt>;
 	GripDataMap m_GripData;
 protected:
 
@@ -202,7 +201,7 @@ public:
 	class OdExGripManager* m_GripManager;
 };
 
-typedef OdSmartPtr<OdExGripDbReactor> OdExGripDbReactorPtr;
+using OdExGripDbReactorPtr = OdSmartPtr<OdExGripDbReactor>;
 
 class OdDbCommandContext;
 typedef OdDbSelectionSetPtr(*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);

@@ -21,8 +21,7 @@ public: // Constructors and destructor
 	EoGeReferenceSystem(const EoGeReferenceSystem& other);
 	EoGeReferenceSystem& operator=(const EoGeReferenceSystem& other) noexcept;
 
-	~EoGeReferenceSystem() {
-	}
+	~EoGeReferenceSystem() = default;
 
 public: // Methods
 

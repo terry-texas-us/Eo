@@ -31,7 +31,7 @@ public:
 	virtual void DocumentActivated(CDocument* document) noexcept {}
 };
 
-typedef OdSmartPtr<OdApplicationReactor> OdApplicationReactorPtr;
+using OdApplicationReactorPtr = OdSmartPtr<OdApplicationReactor>;
 
 __declspec(dllexport) void OdAddAppReactor(OdApplicationReactor* reactor);
 
@@ -54,7 +54,7 @@ public:
 
 	virtual OdDbSelectionSetPtr SelectionSet() const = 0;
 };
-typedef OdSmartPtr<OdApplicationDocument> OdApDocumentPtr;
+using OdApDocumentPtr = OdSmartPtr<OdApplicationDocument>;
 
 __declspec(dllexport) OdApDocumentPtr odGetApplicationDocument(CDocument* document);
 __declspec(dllexport) OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);

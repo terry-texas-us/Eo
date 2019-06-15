@@ -24,4 +24,4 @@ public: // Methods
 	EoGeMatrix3d Matrix() const noexcept;
 };
 
-typedef CList<EoGsViewTransform> EoGsViewTransforms;
+using EoGsViewTransforms = CList<EoGsViewTransform>;

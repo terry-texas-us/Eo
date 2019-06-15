@@ -22,7 +22,7 @@
 class OdEdInputTracker;
 
 class OdEdOSnapMan;
-typedef OdSmartPtr<OdEdOSnapMan> OdEdOSnapManPtr;
+using OdEdOSnapManPtr = OdSmartPtr<OdEdOSnapMan>;
 
 class OdEdPointTrackerWithSnapInfo : public OdStaticRxObject<OdEdPointTracker> {
 public:
@@ -95,7 +95,7 @@ class OdBaseSnapManager
 	long GetAperture(OdDbDatabase* database) const;
 
 	struct SubentId {
-		SubentId() {}
+		SubentId() = default;
 		OdDbObjectIdArray m_Path;
 		OdGsMarker m_Marker {0};
 		SubentId(const OdGiPathNode& pathNode);
@@ -103,7 +103,7 @@ class OdBaseSnapManager
 	};
 
 	struct HistEntry {
-		HistEntry() {}
+		HistEntry() = default;
 		HistEntry(const SubentId& subentId, const OdGePoint3d& point)
 			: m_SubentId(subentId)
 			, m_Point(point) {
@@ -128,7 +128,7 @@ class OdBaseSnapManager
 			}
 		}
 	};
-	typedef OdArray<SelectedEntityData> SelectedEntityDataArray;
+	using SelectedEntityDataArray = OdArray<SelectedEntityData>;
 
 	SelectedEntityDataArray m_SelectedEntityData;
 
@@ -136,7 +136,7 @@ class OdBaseSnapManager
 
 	bool Checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point);
 
-	typedef OdArray<HistEntry> HistEntryArray;
+	using HistEntryArray = OdArray<HistEntry>;
 	static bool AppendToQueue(HistEntryArray& array, const HistEntry& entry);
 
 	HistEntryArray m_Centers;

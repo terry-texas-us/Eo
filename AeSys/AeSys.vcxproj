@@ -160,7 +160,7 @@
     <ClCompile Include="EoDlgSetPastePosition.cpp" />
     <ClCompile Include="EoDlgSetupHatch.cpp" />
     <ClCompile Include="EoDlgSetupConstraints.cpp" />
-    <ClCompile Include="EoDlgSetupLineType.cpp" />
+    <ClCompile Include="EoDlgSetupLinetype.cpp" />
     <ClCompile Include="EoDlgSetupColor.cpp" />
     <ClCompile Include="EoDlgSetUnitsAndPrecision.cpp" />
     <ClCompile Include="EoDlgTrapModify.cpp" />
@@ -180,7 +180,7 @@
     <ClCompile Include="EoDbGroup.cpp" />
     <ClCompile Include="EoDbGroupList.cpp" />
     <ClCompile Include="EoDbLine.cpp" />
-    <ClCompile Include="EoDbLineTypeTable.cpp" />
+    <ClCompile Include="EoDbLinetypeTable.cpp" />
     <ClCompile Include="EoDoBlockTable.cpp" />
     <ClCompile Include="EoDbPoint.cpp" />
     <ClCompile Include="EoDbHatch.cpp" />
@@ -346,7 +346,7 @@
     <ClInclude Include="EoDbGroup.h" />
     <ClInclude Include="EoDbGroupList.h" />
     <ClInclude Include="EoDbLine.h" />
-    <ClInclude Include="EoDbLineTypeTable.h" />
+    <ClInclude Include="EoDbLinetypeTable.h" />
     <ClInclude Include="EoDbMaskedPrimitive.h" />
     <ClInclude Include="EoDbPoint.h" />
     <ClInclude Include="EoDbHatch.h" />
@@ -354,7 +354,7 @@
     <ClInclude Include="EoDbPrimitive.h" />
     <ClInclude Include="EoDbSpline.h" />
     <ClInclude Include="EoDbText.h" />
-    <ClInclude Include="EoDlgSetupLineType.h" />
+    <ClInclude Include="EoDlgSetupLinetype.h" />
     <ClInclude Include="EoGeNurbCurve3d.h" />
     <ClInclude Include="EoGePoint3d.h" />
     <ClInclude Include="EoGePoint4d.h" />

@@ -37,4 +37,4 @@ public: // Methods
 	void SetDeviceHeightInPixels(const double height) noexcept;
 	void SetDeviceWidthInPixels(const double width) noexcept;
 };
-typedef CList<EoGsViewport> CViewports;
+using CViewports = CList<EoGsViewport>;

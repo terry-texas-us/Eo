@@ -162,7 +162,7 @@
     <ClCompile Include="AeSysDoc.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="EoDbLineTypeTable.cpp">
+    <ClCompile Include="EoDbLinetypeTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="EoDbLayer.cpp">
@@ -207,7 +207,7 @@
     <ClCompile Include="EoDlgSetupCustomMouseCharacters.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
-    <ClCompile Include="EoDlgSetupLineType.cpp">
+    <ClCompile Include="EoDlgSetupLinetype.cpp">
       <Filter>Source Files\Dialogs</Filter>
     </ClCompile>
     <ClCompile Include="EoDlgViewZoom.cpp">
@@ -668,7 +668,7 @@
     <ClInclude Include="AeSysDoc.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EoDbLineTypeTable.h">
+    <ClInclude Include="EoDbLinetypeTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="EoDbLayer.h">
@@ -713,7 +713,7 @@
     <ClInclude Include="EoDlgSetupCustomMouseCharacters.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
-    <ClInclude Include="EoDlgSetupLineType.h">
+    <ClInclude Include="EoDlgSetupLinetype.h">
       <Filter>Header Files\Dialogs</Filter>
     </ClInclude>
     <ClInclude Include="EoDlgViewZoom.h">

@@ -66,7 +66,7 @@ public:
 	static void setDocToAssign(AeSysDoc* document) noexcept;
 };
 
-typedef OdSmartPtr<OdDbDatabaseDoc> OdDbDatabaseDocPtr;
+using OdDbDatabaseDocPtr = OdSmartPtr<OdDbDatabaseDoc>;
 
 class AeSysAppDocStaticRxObjects
 	: public OdDbLayoutManagerReactor
@@ -140,8 +140,8 @@ protected:
 			AcadClipData<wchar_t>::init();
 		}
 	};
-	typedef AcadClipDataConstr<char> AcadClipDataR15;
-	typedef AcadClipDataConstr<wchar_t> AcadClipDataR21;
+	using AcadClipDataR15 = AcadClipDataConstr<char>;
+	using AcadClipDataR21 = AcadClipDataConstr<wchar_t>;
 
 public:
 	class ClipboardData {
@@ -169,8 +169,7 @@ public:
 			return nullptr;
 		}
 		
-		ClipboardData() noexcept 
-			: _isR15format(false) {
+		ClipboardData() noexcept {
 		}
 		
 		bool read(COleDataObject* dataObject) {
@@ -205,7 +204,7 @@ public:
 				_r21.init();
 			}
 		} _data;
-		bool _isR15format;
+		bool _isR15format {false};
 	};
 
 protected:

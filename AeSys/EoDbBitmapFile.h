@@ -6,7 +6,7 @@ public:
 	}
 	EoDbBitmapFile(const CString& strPathName);
 
-	~EoDbBitmapFile() {
-	}
+	~EoDbBitmapFile() = default;
+	
 	bool Load(const CString& strPathName, CBitmap& bm, CPalette& pal);
 };

@@ -36,8 +36,8 @@ void EoDbDwgToPegFile::ConvertToPeg(AeSysDoc* document) {
 void EoDbDwgToPegFile::ConvertBlockTable(gsl::not_null<AeSysDoc*> document) {
 	OdDbBlockTablePtr BlockTable {m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead)};
 
-    OdString ReportItem;
-    theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading block table\n", (const wchar_t*) BlockTable->desc()->name()));
+	OdString ReportItem;
+	theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading block table\n", (const wchar_t*) BlockTable->desc()->name()));
 
 	auto Iterator {BlockTable->newIterator()};
 
@@ -208,7 +208,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 
 		auto Layer {document->GetLayerAt(Entity->layer())};
 
-		EoDbGroup* Group = new EoDbGroup();
+		auto Group {new EoDbGroup()};
 		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
 		EntityConverter->Convert(Entity, Group);
 

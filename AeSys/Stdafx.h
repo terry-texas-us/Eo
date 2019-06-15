@@ -23,7 +23,7 @@
 #pragma warning (pop)
 // </tas>
 
-#include "Resource.h"
+#include "resource.h"
 
 // OD_OLE_SUPPORT
 // Vectorization support for OLE objects on Windows can be obtained by including this module: OdOleItemHandler

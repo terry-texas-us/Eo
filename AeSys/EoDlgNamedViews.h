@@ -2,7 +2,7 @@
 
 class AeSysDoc;
 class OdDbViewTableRecord;
-typedef OdSmartPtr<OdDbViewTableRecord> OdDbViewTableRecordPtr;
+using OdDbViewTableRecordPtr = OdSmartPtr<OdDbViewTableRecord>;
 
 class CNamedViewListCtrl : public CListCtrl {
     void setViewId(int nItem, const OdDbObjectId& id);
