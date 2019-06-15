@@ -412,7 +412,7 @@ void EoDbDimension::SetDefaultNote() {
 		dAng = m_Line.AngleFromXAxis_xy();
 		double dDis = .075;
 
-		if (dAng > OdaPI2 + RADIAN && dAng < Oda2PI - OdaPI2 + OdaPI2) {
+		if (dAng > OdaPI2 + (OdaPI / 180.0) && dAng < Oda2PI - OdaPI2 + OdaPI2) {
 			dAng -= OdaPI;
 			dDis = -dDis;
 		}

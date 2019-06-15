@@ -21,7 +21,7 @@ inline double EoSignTransfer(const double a, const double b) noexcept {
 }
 
 inline double EoToRadian(const double angleInDegrees) noexcept {
-	return (angleInDegrees * RADIAN);
+	return (angleInDegrees * OdaPI / 180.0);
 }
 
 inline int EoRound(const double number) noexcept { // closest integer

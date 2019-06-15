@@ -41,8 +41,6 @@
 
 unsigned AFXAPI HashKey(CString& string) noexcept;
 
-constexpr auto RADIAN = OdaPI / 180.0;
-
 #include "SafeMath.h"
 
 

@@ -392,7 +392,7 @@ void AeSysView::OnDimensionModeAngle() {
 				const auto MajorAxis {ln.startPoint() - CenterPoint};
 
 				auto ptArrow {ln.startPoint()};
-				ptArrow.rotateBy(RADIAN, PlaneNormal, CenterPoint);
+				ptArrow.rotateBy(OdaPI / 180.0, PlaneNormal, CenterPoint);
 				auto Group {new EoDbGroup};
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.startPoint(), Group);
 
@@ -406,7 +406,7 @@ void AeSysView::OnDimensionModeAngle() {
 				Group->AddTail(EoDbEllipse::Create(Ellipse));
 
 				ptArrow = ln.startPoint();
-				ptArrow.rotateBy(Angle - RADIAN, PlaneNormal, CenterPoint);
+				ptArrow.rotateBy(Angle - (OdaPI / 180.0), PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
 

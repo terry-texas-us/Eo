@@ -295,7 +295,7 @@ void AeSysView::OnLpdModeSize() {
 			auto Line = pLine->LineSeg();
 			Angle = fmod(Line.AngleFromXAxis_xy(), OdaPI);
 
-			if (Angle <= RADIAN) { Angle += OdaPI; }
+			if (Angle <= OdaPI / 180.0) { Angle += OdaPI; }
 
 			Angle -= OdaPI2;
 		}

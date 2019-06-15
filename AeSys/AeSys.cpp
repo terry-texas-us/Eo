@@ -2134,7 +2134,7 @@ void AeSys::meterProgress() {
 			static void Exec(void* statusUpdater) {
 				auto pExec {static_cast<StatusUpdater*>(statusUpdater)};
 				CString str;
-				str.Format(L"%s %d", pExec->m_Application->m_ProgressMessage, pExec->m_Percent);
+				str.Format(L"%s %d", pExec->m_Application->m_ProgressMessage.GetString(), pExec->m_Percent);
 				// <tas="pExec->m_MainFrame->m_wndStatusBar.SetPaneText(0, str);:</tas>
 				// <tas="pExec->m_Application->m_tbExt.SetProgressValue(::AfxGetMainWnd()->GetSafeHwnd(), (ULONG) pExec->m_ProgressPercent, 100);"</tas>
 				MSG Message;
@@ -2143,7 +2143,7 @@ void AeSys::meterProgress() {
 
 					if (Message.wParam == VK_ESCAPE && !bDup) {
 						bDup = true;
-						str.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_ProgressMessage);
+						str.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_ProgressMessage.GetString());
 						// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_Paused);"</tas>
 						if (AfxMessageBox(str, MB_YESNO | MB_ICONQUESTION) == IDYES) {
 							// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_NoProgress);"</tas>
