@@ -105,7 +105,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 
 	ScaleMenuPosition = 1;
 	auto CurrentScaleIdentifier {database->getCANNOSCALE()->uniqueIdentifier()};
-
+	wchar_t TypeData[32];
 	for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
 		auto ScaleName {ScalesCollectionIterator->getContext()->getName()};
 		auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
@@ -118,9 +118,10 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		MenuItemInfo.fState = MFS_ENABLED;
 		MenuItemInfo.wID = static_cast<unsigned>(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE);
 		MenuItemInfo.dwItemData = gsl::narrow_cast<unsigned long>(ScaleMenuPosition);
-		
-		wcscpy(MenuItemInfo.dwTypeData, ScaleName);
 
+		wcscpy_s(TypeData, 32, ScaleName);
+		MenuItemInfo.dwTypeData = TypeData;
+		
 		if (ScaleIdentifier == CurrentScaleIdentifier) {
 			MenuItemInfo.fMask |= MIIM_STATE;
 			MenuItemInfo.fState |= MFS_CHECKED;
