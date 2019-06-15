@@ -121,7 +121,7 @@ public: // Construction. Initialization.
 	virtual void SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) = 0;
 	virtual void GripStatus(OdGiDrawable* entity, OdDb::GripStat st) = 0;
 	virtual void DragStatus(OdGiDrawable* entity, OdDb::DragStat st) = 0;
-	virtual bool IsModel(OdGiDrawable*) noexcept { return true; }
+	virtual bool IsModel(OdGiDrawable* entity) noexcept { return true; }
 
 	// Hover control.
 	bool StartHover(int x, int y);

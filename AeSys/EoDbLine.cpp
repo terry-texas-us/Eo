@@ -312,11 +312,11 @@ bool EoDbLine::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view,
 	return polyline::SelectUsingLineSeg(lineSeg, view, intersections);
 }
 
-bool EoDbLine::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbLine::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
-	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj);
+	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, projectedPoint);
 }
 
 bool EoDbLine::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {

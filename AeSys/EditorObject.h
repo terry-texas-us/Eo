@@ -131,8 +131,8 @@ public:
 		virtual bool beginDragCallback(const OdGePoint3d& pt) = 0;
 	};
 	bool OnSize(unsigned flags, int w, int h);
-	bool OnPaintFrame(unsigned flags = 0, OdGsDCRect* updatedRectangle = 0);
-	bool OnMouseLeftButtonClick(unsigned flags, int x, int y, OleDragCallback* dragCallback = 0);
+	bool OnPaintFrame(unsigned flags = 0, OdGsDCRect* updatedRectangle = nullptr);
+	bool OnMouseLeftButtonClick(unsigned flags, int x, int y, OleDragCallback* dragCallback = nullptr);
 	bool OnMouseMove(unsigned flags, int x, int y);
 	bool OnMouseWheel(unsigned flags, int x, int y, short zDelta);
 	bool OnMouseLeftButtonDoubleClick(unsigned flags, int x, int y);

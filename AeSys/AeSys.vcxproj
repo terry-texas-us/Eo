@@ -49,7 +49,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <Optimization>Disabled</Optimization>
-      <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <ConformanceMode>true</ConformanceMode>
@@ -232,7 +232,7 @@
     <ClCompile Include="EoGeReferenceSystem.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="EoDlgSelectIsometricView.cpp" />
-    <ClCompile Include="StdAfx.cpp">
+    <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EoDlgTrapFilter.cpp" />
@@ -395,7 +395,7 @@
     <ClInclude Include="SafeMath.h" />
     <ClInclude Include="Section.h" />
     <ClInclude Include="EoDlgSelectIsometricView.h" />
-    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="stdafx.h" />
     <ClInclude Include="TargetVer.h" />
     <ClInclude Include="EoDlgViewParameters.h" />
     <ClInclude Include="EoGsViewport.h" />

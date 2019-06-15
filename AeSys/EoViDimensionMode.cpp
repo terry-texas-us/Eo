@@ -527,7 +527,8 @@ void AeSysView::OnDimensionModeConvert() {
 	PreviousDimensionPosition = CurrentPnt;
 }
 void AeSysView::OnDimensionModeReturn() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	const auto CurrentPnt {GetCursorPosition()};
+
 	if (PreviousDimensionCommand != 0) {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
@@ -535,8 +536,6 @@ void AeSysView::OnDimensionModeReturn() {
 	PreviousDimensionPosition = CurrentPnt;
 }
 void AeSysView::OnDimensionModeEscape() {
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
-
 	RubberBandingDisable();
 	ModeLineUnhighlightOp(PreviousDimensionCommand);
 }

@@ -223,7 +223,7 @@ bool EoDbText::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const Od
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
-bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	
 	if (m_strText.GetLength() == 0) { return false; }
 	
@@ -239,7 +239,7 @@ bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGeP
 
 		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
 	}
-	ptProj = point.Convert3d();
+	projectedPoint = point.Convert3d();
 
 	return true;
 }

@@ -275,7 +275,7 @@ bool EoDbHatch::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const O
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
-bool EoDbHatch::SelectUsingPoint(const EoGePoint4d & point, AeSysView * view, OdGePoint3d & ptProj) const {
+bool EoDbHatch::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	const auto NumberOfVertices {m_Vertices.size()};
 	if (sm_EdgeToEvaluate > 0 && sm_EdgeToEvaluate <= NumberOfVertices) { // Evaluate specified edge of polygon
 		EoGePoint4d ptBeg(m_Vertices[sm_EdgeToEvaluate - 1], 1.0);
@@ -285,8 +285,8 @@ bool EoDbHatch::SelectUsingPoint(const EoGePoint4d & point, AeSysView * view, Od
 		view->ModelViewTransformPoint(ptEnd);
 
 		EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
-		if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), ptProj, sm_RelationshipOfPoint)) {
-			ptProj.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
+		if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
+			projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 			return true;
 		}
 	} else { // Evaluate entire polygon
@@ -298,8 +298,8 @@ bool EoDbHatch::SelectUsingPoint(const EoGePoint4d & point, AeSysView * view, Od
 			view->ModelViewTransformPoint(ptEnd);
 
 			EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
-			if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), ptProj, sm_RelationshipOfPoint)) {
-				ptProj.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
+			if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
+				projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 				sm_Edge = VertexIndex;
 				sm_PivotVertex = NumberOfVertices;
 				return true;

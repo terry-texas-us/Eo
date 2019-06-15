@@ -218,7 +218,7 @@ public:
 	}
 
 	OdRxClass* databaseClass() const override /* ExHostAppServices */;
-	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = NULL, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override /* ExHostAppServices */;
+	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = nullptr, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override /* ExHostAppServices */;
 	OdString getFontMapFileName() const override /* ExHostAppServices */;
 	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType) override /* ExHostAppServices */;
 	const OdString product() override /* ExHostAppServices */;

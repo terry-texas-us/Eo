@@ -653,11 +653,11 @@ public:
 		return m_Modified;
 	}
 
-	void objectOpenedForModify(const OdDbDatabase*, const OdDbObject*) override {
+	void objectOpenedForModify(const OdDbDatabase* database, const OdDbObject* object) override {
 		setModified();
 	}
 
-	void headerSysVarWillChange(const OdDbDatabase*, const OdString&) override {
+	void headerSysVarWillChange(const OdDbDatabase* database, const OdString& variableName) override {
 		setModified();
 	}
 
@@ -683,11 +683,11 @@ public:
 		if (!GETBIT(command->flags(), OdEdCommand::kNoUndoMarker)) { m_CommandContext->database()->startUndoRecord(); }
 	}
 
-	void commandCancelled(OdEdCommand*, OdEdCommandContext*) override {
+	void commandCancelled(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
 		undoCmd();
 	}
 
-	void commandFailed(OdEdCommand*, OdEdCommandContext*) override {
+	void commandFailed(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
 		undoCmd();
 	}
 private:

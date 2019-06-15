@@ -199,12 +199,12 @@ OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 	return (sm_ControlPointIndex == 0) ? m_Position : OdGePoint3d::kOrigin;
 }
 
-bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	EoGePoint4d pt(m_Position, 1.0);
 
 	view->ModelViewTransformPoint(pt);
 
-	ptProj = pt.Convert3d();
+	projectedPoint = pt.Convert3d();
 
 	return (point.DistanceToPointXY(pt) <= view->SelectApertureSize()) ? true : false;
 }

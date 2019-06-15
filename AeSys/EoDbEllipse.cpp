@@ -696,10 +696,10 @@ bool EoDbEllipse::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* vi
 	return polyline::SelectUsingLineSeg(lineSeg, view, intersections);
 }
 
-bool EoDbEllipse::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
+bool EoDbEllipse::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
-	return (polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj));
+	return (polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, projectedPoint));
 }
 
 bool EoDbEllipse::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {

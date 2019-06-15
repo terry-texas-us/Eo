@@ -322,7 +322,7 @@ OdGePoint3d EoDbDimension::SelectAtControlPoint(AeSysView* view, const EoGePoint
 	return ControlPoint;
 }
 
-bool EoDbDimension::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d &ptProj) const {
+bool EoDbDimension::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	sm_wFlags &= ~0x0003;
 
 	EoGePoint4d pt[4];
@@ -333,8 +333,8 @@ bool EoDbDimension::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, 
 	EoGeLineSeg3d ln;
 	ln.set(pt[0].Convert3d(), pt[1].Convert3d());
 
-	if (ln.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), ptProj, sm_RelationshipOfPoint)) {
-		ptProj.z = ln.startPoint().z + sm_RelationshipOfPoint * (ln.endPoint().z - ln.startPoint().z);
+	if (ln.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
+		projectedPoint.z = ln.startPoint().z + sm_RelationshipOfPoint * (ln.endPoint().z - ln.startPoint().z);
 		sm_wFlags |= 0x0001;
 		return true;
 	}
@@ -351,7 +351,7 @@ bool EoDbDimension::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, 
 		
 		if (EoGeLineSeg3d(pt[n].Convert3d(), pt[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
 	}
-	ptProj = point.Convert3d();
+	projectedPoint = point.Convert3d();
 	sm_wFlags |= 0x0002;
 	return true;
 }
