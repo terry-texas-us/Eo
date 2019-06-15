@@ -11,7 +11,6 @@
 #include "ExGripManager.h"
 #include "ExEdInputParser.h"
 
-
 class OdExZoomCmd : public OdEdCommand {
 public:
 	const OdString groupName() const override;
@@ -73,12 +72,7 @@ class OdExEditorObject {
 	OdGePoint3d m_basePt;
 	const OdGePoint3d* m_BasePt;
 
-	enum Flags {
-		kSnapOn = 4,
-		kOrbitOn = 8,
-		kDragging = 16,
-		kTrackerHasDrawables = 32,
-	};
+	enum Flags { kSnapOn = 4, kOrbitOn = 8, kDragging = 16, kTrackerHasDrawables = 32 };
 	unsigned long m_flags;
 public:
 	const OdGsView* ActiveView() const;
@@ -93,18 +87,7 @@ public:
 	static void Dolly(OdGsView* view, int x, int y);
 
 public:
-	enum _3DViewType {
-		k3DViewTop,
-		k3DViewBottom,
-		k3DViewLeft,
-		k3DViewRight,
-		k3DViewFront,
-		k3DViewBack,
-		k3DViewSW,
-		k3DViewSE,
-		k3DViewNE,
-		k3DViewNW
-	};
+	enum _3DViewType { k3DViewTop, k3DViewBottom, k3DViewLeft, k3DViewRight, k3DViewFront, k3DViewBack, k3DViewSW, k3DViewSE, k3DViewNE, k3DViewNW };
 	void Set3DView(_3DViewType type);
 public:
 	OdExEditorObject();

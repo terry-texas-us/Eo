@@ -81,13 +81,12 @@ OdDbSelectionSetPtr WorkingSelectionSet(OdDbCommandContext* dbCommandContext) {
 
 class XFormDrawable : public OdGiDrawableImpl<OdGiDrawable> {
 	OdGiDrawablePtr m_Drawable;
-	const OdGeMatrix3d* m_pXForm;
+	const OdGeMatrix3d* m_pXForm {nullptr};
 
    protected:
-	XFormDrawable()
-		: m_pXForm(nullptr) {}
+	XFormDrawable() = default;
 
-   public:
+public:
 	static OdGiDrawablePtr createObject(OdGiDrawable* drawable, const OdGeMatrix3d& xForm) {
 		OdSmartPtr<XFormDrawable> pRes {OdRxObjectImpl<XFormDrawable>::createObject()};
 		pRes->m_Drawable = drawable;
@@ -109,10 +108,7 @@ class XFormDrawable : public OdGiDrawableImpl<OdGiDrawable> {
 };
 
 
-OdExEditorObject::OdExEditorObject()
-	: m_flags(0)
-	, m_CommandContext(nullptr)
-	, m_BasePt(nullptr) {
+OdExEditorObject::OdExEditorObject() {
 	SETBIT(m_flags, kSnapOn, true);
 }
 
@@ -683,7 +679,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 	auto ActiveView {AbstractViewportData->gsView(ActiveViewport)};
 
 	try {
-		auto FirstCorner {pIO->getPoint(L"Specify corner of window, enter a scale factor (nX or nXP), or\n[All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>:", OdEd::kInpThrowEmpty | OdEd::kInpThrowOther | OdEd::kGptNoOSnap, 0, Keywords)};
+		auto FirstCorner {pIO->getPoint(L"Specify corner of window, enter a scale factor (nX or nXP), or\n[All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>:", OdEd::kInpThrowEmpty | OdEd::kInpThrowOther | OdEd::kGptNoOSnap, nullptr, Keywords)};
 		auto OppositeCorner {pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame | OdEd::kGptNoOSnap)};
 		zoom_window(FirstCorner, OppositeCorner, ActiveView);
 	} catch (const OdEdEmptyInput) // real time
@@ -784,7 +780,7 @@ class OrbitCtrl : public OdGiDrawableImpl<> {
 };
 
 class RTOrbitTracker : public OdEdPointTracker {
-	OdGsView* m_View;
+	OdGsView* m_View {nullptr};
 	OdGePoint3d m_pt;
 	OdGiDrawablePtr m_Drawable;
 	OdGePoint3d m_Position;
@@ -793,7 +789,7 @@ class RTOrbitTracker : public OdEdPointTracker {
 	OdGeVector3d m_X;
 	OdGePoint3d m_ViewCenter;
 	OdGeMatrix3d m_InitialViewingMatrixInverted;
-	double m_D; // diameter of orbit control in projected coordinates
+	double m_D {0.0}; // diameter of orbit control in projected coordinates
 	OdGsModelPtr m_pModel;
 
 	enum Axis {
@@ -814,10 +810,8 @@ class RTOrbitTracker : public OdEdPointTracker {
 	}
 
    public:
-	RTOrbitTracker()
-		: m_View(nullptr)
-		, m_D(0) {
-	}
+	RTOrbitTracker() = default;
+
 	void reset() noexcept { m_View = nullptr; }
 	void init(OdGsView* view, const OdGePoint3d& pt) {
 		m_View = view;
@@ -1009,8 +1003,8 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
 	for (;;) {
 		try {
-			OrbitTracker.init(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, 0, OdString::kEmpty, &OrbitTracker));
-			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, 0, OdString::kEmpty, &OrbitTracker);
+			OrbitTracker.init(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, OdString::kEmpty, &OrbitTracker));
+			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, OdString::kEmpty, &OrbitTracker);
 			OrbitTracker.reset();
 		} catch (const OdEdCancel) {
 			break;
@@ -1020,7 +1014,7 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 
 void OdExEditorObject::TurnOrbitOn(bool orbitOn) {
 	SETBIT(m_flags, kOrbitOn, orbitOn);
-	SetTracker(orbitOn ? OdRxObjectImpl<RTOrbitTracker>::createObject().get() : 0);
+	SetTracker(orbitOn ? OdRxObjectImpl<RTOrbitTracker>::createObject().get() : nullptr);
 }
 
 bool OdExEditorObject::OnOrbitBeginDrag(int x, int y) {
@@ -1048,7 +1042,7 @@ bool OdExEditorObject::OnZoomWindowBeginDrag(int x, int y) {
 
 bool OdExEditorObject::OnZoomWindowEndDrag(int x, int y) {
 	::zoom_window2(OdEdPointDefTrackerPtr(m_InputTracker)->basePoint(), ToEyeToWorld(x, y), ActiveView());
-	SetTracker(0);
+	SetTracker(nullptr);
 	return true;
 }
 
@@ -1063,14 +1057,12 @@ const OdString OdExDollyCmd::globalName() const {
 }
 
 class RTDollyTracker : public OdEdPointTracker {
-	OdGsView* m_View;
+	OdGsView* m_View {nullptr};
 	OdGePoint3d m_Point;
 	OdGePoint3d m_Position;
 
    public:
-	RTDollyTracker() noexcept
-		: m_View(nullptr) {
-	}
+	RTDollyTracker() = default;
 	void Reset() noexcept { m_View = nullptr; }
 
 	void Initialize(OdGsView* view, const OdGePoint3d& point) {
@@ -1124,8 +1116,8 @@ void OdExDollyCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdStaticRxObject<RTDollyTracker> DollyTracker;
 	for (;;) {
 		try {
-			DollyTracker.Initialize(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, 0, OdString::kEmpty, &DollyTracker));
-			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, 0, OdString::kEmpty, &DollyTracker);
+			DollyTracker.Initialize(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, OdString::kEmpty, &DollyTracker));
+			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, OdString::kEmpty, &DollyTracker);
 			DollyTracker.Reset();
 		} catch (const OdEdCancel) {
 			break;
@@ -1176,7 +1168,7 @@ class OdExCollideGsPath {
 		const OdGiDrawable* transientDrawable() const override { return m_Drawable; }
 		OdGsMarker selectionMarker() const noexcept override { return m_Marker; }
 	};
-	const Node* m_pLeaf;
+	const Node* m_pLeaf {nullptr};
 
 	void add(const OdGiDrawable* drawable, const OdDbObjectId& drawableId, OdGsMarker gsMarker = -1) {
 		Node* pNode = new Node();
@@ -1198,14 +1190,11 @@ class OdExCollideGsPath {
 	}
 
    public:
-	OdExCollideGsPath()
-		: m_pLeaf(0) {
-	}
+	OdExCollideGsPath() = default;
 	~OdExCollideGsPath() {
 		clear();
 	}
-	OdExCollideGsPath(const OdDbFullSubentPath& path)
-		: m_pLeaf(0) {
+	OdExCollideGsPath(const OdDbFullSubentPath& path)  {
 		set(path);
 	}
 
@@ -1238,10 +1227,10 @@ class OdExCollideGsPath {
 	}
 
 	void addNode(const OdDbObjectId& drawableId, OdGsMarker gsMarker = kNullSubentIndex) {
-		add(0, drawableId, gsMarker);
+		add(nullptr, drawableId, gsMarker);
 	}
 	void addNode(const OdGiDrawable* pDrawable, OdGsMarker gsMarker = kNullSubentIndex) {
-		add(pDrawable->isPersistent() ? 0 : pDrawable, pDrawable->id(), gsMarker);
+		add(pDrawable->isPersistent() ? nullptr : pDrawable, pDrawable->id(), gsMarker);
 	}
 
 	operator const OdGiPathNode&() const noexcept { return *m_pLeaf; }
@@ -1380,7 +1369,7 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 
 	int addDrawables(OdGsView* pView) override {
 		for (int i = m_ents.size() - 1; i >= 0; --i) {
-			pView->add(m_ents[i], 0);
+			pView->add(m_ents[i], nullptr);
 		}
 		return 1;
 	}
@@ -1416,7 +1405,7 @@ bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, bool bT
 OdExCollideGsPath* fromGiPath(const OdGiPathNode* path, bool bTruncateToRef = false) {
 	if (!path) { return nullptr; }
 
-	OdExCollideGsPath* res = new OdExCollideGsPath;
+	auto res {new OdExCollideGsPath};
 	addNodeToPath(res, path, bTruncateToRef);
 	return res;
 }
@@ -1429,15 +1418,14 @@ void CollideMoveTracker::doCollideWithAll() {
 	   public:
 		OdExCollisionDetectionReactor(bool bDynHLT)
 			: m_bDynHLT(bDynHLT) {};
-		~OdExCollisionDetectionReactor() {
-		}
+		~OdExCollisionDetectionReactor() = default;
+
 		unsigned long collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
 			OdExCollideGsPath* p = fromGiPath(pPathNode2, !m_bDynHLT);
 
-			if (p || pPathNode2->persistentDrawableId()) {
-				m_pathes.push_back(p);
-			}
-			return unsigned long(OdGsCollisionDetectionReactor::kContinue);
+			if (p || pPathNode2->persistentDrawableId()) { 	m_pathes.push_back(p); }
+
+			return static_cast<unsigned long>(OdGsCollisionDetectionReactor::kContinue);
 		}
 
 		OdArray<OdExCollideGsPath*>& pathes() { return m_pathes; }
@@ -1528,7 +1516,7 @@ void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	const auto BasePoint {UserIO->getPoint(L"Collide: Specify base point:")};
 
 	CollideMoveTracker tracker(BasePoint, SelectionSet, Database, View, bDynHLT);
-	const OdGePoint3d ptOffset = UserIO->getPoint(L"Collide: Specify second point:", OdEd::kGdsFromLastPoint | OdEd::kGptRubberBand, 0, OdString::kEmpty, &tracker);
+	const OdGePoint3d ptOffset = UserIO->getPoint(L"Collide: Specify second point:", OdEd::kGdsFromLastPoint | OdEd::kGptRubberBand, nullptr, OdString::kEmpty, &tracker);
 }
 
 
@@ -1548,14 +1536,14 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 	   public:
 		OdExCollisionDetectionReactor(bool bDynHLT)
 			: m_bDynHLT(bDynHLT) {};
-		~OdExCollisionDetectionReactor() {
-		}
+		~OdExCollisionDetectionReactor() = default;
+
 		unsigned long collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
 			OdExCollideGsPath* p1 = fromGiPath(pPathNode1, !m_bDynHLT);
 			OdExCollideGsPath* p2 = fromGiPath(pPathNode2, !m_bDynHLT);
 			m_pathes.push_back(p1);
 			m_pathes.push_back(p2);
-			return unsigned long(OdGsCollisionDetectionReactor::kContinue);
+			return static_cast<unsigned long>(OdGsCollisionDetectionReactor::kContinue);
 		}
 
 		OdArray<OdExCollideGsPath*>& pathes() { return m_pathes; }
