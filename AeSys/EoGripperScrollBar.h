@@ -5,7 +5,7 @@ public:
 	EoGripperScrollBar() noexcept {};
 
 public:
-	~EoGripperScrollBar() {};
+	~EoGripperScrollBar() = default;
 
 protected:
 	LRESULT OnNcHitTest(CPoint point);

@@ -19,12 +19,6 @@ BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 	ON_WM_MDIACTIVATE()
 END_MESSAGE_MAP()
 
-CChildFrame::CChildFrame() noexcept {
-}
-
-CChildFrame::~CChildFrame() {
-}
-
 void CChildFrame::ActivateFrame(int nCmdShow) {
 	nCmdShow = SW_SHOWMAXIMIZED;
 	CMDIChildWndEx::ActivateFrame(nCmdShow);

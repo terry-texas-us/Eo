@@ -45,14 +45,10 @@ public:
 private:
 	struct CtrlSize {
 		CRect m_origSize;
-		HWND  m_hCtrl;
-		EHFix  m_hFix;
-		EVFix  m_vFix;
-		CtrlSize() noexcept
-			: m_hCtrl(nullptr)
-			, m_hFix(kNoHFix)
-			, m_vFix(kNoVFix) {
-		}
+		HWND m_hCtrl {nullptr};
+		EHFix m_hFix {kNoHFix};
+		EVFix m_vFix {kNoVFix};
+		CtrlSize() noexcept {}
 	};
 	using CtrlCont_t = std::list<CtrlSize>;
 	CtrlCont_t m_ctrls;

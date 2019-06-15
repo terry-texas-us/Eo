@@ -85,7 +85,7 @@ void AeSysView::OnDimensionModeArrow() {
 			if (TestLine.IsSelectedBy_xy(CurrentPnt, DimensionModePickTolerance, ptProj, dRel)) {
 				OdGePoint3d pt;
 
-				EoDbGroup* NewGroup = new EoDbGroup;
+				auto NewGroup {new EoDbGroup};
 
 				if (dRel <= 0.5) {
 					GenerateLineEndItem(1, .1, TestLine.endPoint(), TestLine.startPoint(), NewGroup);
@@ -189,7 +189,7 @@ void AeSysView::OnDimensionModeDLine2() {
 	} else if (PreviousDimensionCommand == ID_OP3 || PreviousDimensionCommand == ID_OP4) {
 		RubberBandingDisable();
 		if (PreviousDimensionPosition != CurrentPnt) {
-			EoDbGroup* Group = new EoDbGroup;
+			auto Group {new EoDbGroup};
 			if (PreviousDimensionCommand == ID_OP4) {
 				GenerateLineEndItem(1, .1, CurrentPnt, PreviousDimensionPosition, Group);
 			} else {

@@ -202,18 +202,7 @@ unsigned short AeSysDoc::ClipboardData::m_FormatR19 = static_cast<unsigned short
 
 AeSysDoc* g_pDoc {nullptr};
 
-AeSysDoc::AeSysDoc() noexcept
-	: m_pViewer(nullptr)
-	, m_bConsole(false)
-	, m_ConsoleResponded(false)
-	, m_nCmdActive(0)
-	, m_LayoutSwitchable(false)
-	, m_DisableClearSelection(false)
-	, m_bPartial(false)
-	, m_SaveAsVer(OdDb::kDHL_CURRENT)
-	, m_SaveAsType(OdDb::kDwg)
-	, m_SaveAsType_(EoDb::kUnknown) {
-	m_WorkLayer = nullptr;
+AeSysDoc::AeSysDoc() noexcept {
 	g_pDoc = this;
 
 	m_pRefDocument = OdApplicationDocumentImpl::createObject(this);

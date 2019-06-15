@@ -82,12 +82,12 @@ protected:
 	using COleDocument::operator new;
 	using COleDocument::operator delete;
 
-	AeSysView* m_pViewer;
+	AeSysView* m_pViewer {nullptr};
 
 	EoDlgUserIOConsole* UserIOConsole();
-	bool m_bConsole;
-	bool m_ConsoleResponded;
-	int m_nCmdActive;
+	bool m_bConsole {false};
+	bool m_ConsoleResponded {false};
+	int m_nCmdActive {0};
 
 	class DataSource : COleDataSource {
 		friend class AeSysDoc;
@@ -169,8 +169,7 @@ public:
 			return nullptr;
 		}
 		
-		ClipboardData() noexcept {
-		}
+		ClipboardData() noexcept = default;
 		
 		bool read(COleDataObject* dataObject) {
 			OdSharedPtr<CFile> File {nullptr};
@@ -231,15 +230,15 @@ protected:
 	// </command_console>
 
 	// OdDbLayoutManagerReactor
-	bool m_LayoutSwitchable;
+	bool m_LayoutSwitchable {false};
 	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
-	bool m_DisableClearSelection;
+	bool m_DisableClearSelection {false};
 
 public:
-	bool m_bPartial;
-	OdDb::DwgVersion m_SaveAsVer;
-	OdDb::SaveType m_SaveAsType;
-	EoDb::FileTypes m_SaveAsType_;
+	bool m_bPartial {false};
+	OdDb::DwgVersion m_SaveAsVer {OdDb::kDHL_CURRENT};
+	OdDb::SaveType m_SaveAsType {OdDb::kDwg};
+	EoDb::FileTypes m_SaveAsType_ {EoDb::kUnknown};
 
 public:
 	OdDbSelectionSetPtr SelectionSet() const;
@@ -285,7 +284,7 @@ private:
 	EoDbLinetypeTable m_LinetypeTable;
 	EoDbBlockTable m_BlockTable;
 	EoDbLayerTable m_LayerTable;
-	EoDbLayer* m_WorkLayer;
+	EoDbLayer* m_WorkLayer {nullptr};
 	EoDbGroupList m_DeletedGroupList;
 	EoDbGroupList m_TrappedGroupList;
 	OdGePoint3d m_TrapPivotPoint;
