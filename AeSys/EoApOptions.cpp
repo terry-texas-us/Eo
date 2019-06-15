@@ -19,8 +19,7 @@ EoApOptions::EoApOptions() {
 	m_TabsContextMenu = true;
 	m_DisableSetRedraw = true;
 }
-EoApOptions::~EoApOptions() {
-}
+
 void EoApOptions::Load() {
 	m_nTabsStyle = (TabsStyle) theApp.GetInt(L"TabsStyle", EoApOptions::Grouped);
 
@@ -39,6 +38,7 @@ void EoApOptions::Load() {
 	m_TabsContextMenu = theApp.GetInt(L"TabsContextMenu", true);
 	m_DisableSetRedraw = theApp.GetInt(L"DisableSetRedraw", true);
 }
+
 void EoApOptions::Save() {
 	theApp.WriteInt(L"TabsStyle", m_nTabsStyle);
 

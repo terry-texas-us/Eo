@@ -19,23 +19,6 @@ BEGIN_MESSAGE_MAP(EoCtrlColorsButton, CMFCButton)
 	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 
-EoCtrlColorsButton::EoCtrlColorsButton() {
-	m_Layout = SimpleSingleRow;
-	m_CellSize.cx = 8;
-	m_CellSize.cy = 8;
-	m_CellSpacing.cx = 1;
-	m_CellSpacing.cy = 1;
-	m_Margins.cx = 3;
-	m_Margins.cy = 3;
-	m_BeginIndex = 1;
-	m_EndIndex = 1;
-
-	m_SubItem = 0;
-}
-
-EoCtrlColorsButton::~EoCtrlColorsButton() {
-}
-
 void EoCtrlColorsButton::DrawCell(CDC* deviceContext, unsigned short index, COLORREF color) {
 	if (deviceContext != nullptr && index != 0) {
 		CRect CellRectangle;

@@ -5,7 +5,7 @@ private:
 
 public: // Constructors and destructor
 	EoApOptions();
-	~EoApOptions();
+	~EoApOptions() = default;
 
 	enum TabsStyle { None, Standard, Grouped };
 

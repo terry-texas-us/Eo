@@ -11,13 +11,13 @@ class EoCtrlColorsButton : public CMFCButton {
 
 	enum Layouts { SimpleSingleRow, GridDown5RowsOddOnly, GridUp5RowsEvenOnly };
 
-	Layouts m_Layout;
-	CSize m_CellSize;
-	CSize m_CellSpacing;
-	CSize m_Margins;
-	unsigned short m_BeginIndex;
-	unsigned short m_EndIndex;
-	unsigned short m_SubItem;
+	Layouts m_Layout {SimpleSingleRow};
+	CSize m_CellSize {8, 8};
+	CSize m_CellSpacing {1, 1};
+	CSize m_Margins {3, 3};
+	unsigned short m_BeginIndex {1};
+	unsigned short m_EndIndex {1};
+	unsigned short m_SubItem {0};
 
 	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
@@ -25,9 +25,9 @@ class EoCtrlColorsButton : public CMFCButton {
 
 public:
 
-	EoCtrlColorsButton();
+	EoCtrlColorsButton() = default;
 
-	~EoCtrlColorsButton();
+	~EoCtrlColorsButton() = default;
 
 	static void SetCurrentIndex(const unsigned short index) noexcept {
 		m_CurrentIndex = index;

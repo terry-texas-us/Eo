@@ -25,8 +25,8 @@ static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CR
 	DrawBitmap(bitmap, deviceContext, Point);
 }
 
-EoCtrlBitmapPickerCombo::EoCtrlBitmapPickerCombo() :
-	CComboBox(), m_ItemWidth(0), m_ItemHeight(0) {
+EoCtrlBitmapPickerCombo::EoCtrlBitmapPickerCombo()
+	: CComboBox() {
 }
 
 int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* string) {
