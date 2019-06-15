@@ -8,7 +8,7 @@ class EoDbPegFile : public EoDbFile {
 
 public:
 	EoDbPegFile(OdDbDatabasePtr database);
-	virtual ~EoDbPegFile();
+	virtual ~EoDbPegFile() = default;
 
 	void Load(AeSysDoc* document);
 	

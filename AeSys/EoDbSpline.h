@@ -19,11 +19,11 @@ class EoDbSpline : public EoDbPrimitive {
 
 public:	// Constructors and destructor
 
-	EoDbSpline() noexcept;
+	EoDbSpline() = default;
 	EoDbSpline(const EoDbSpline& other);
 	const EoDbSpline& operator=(const EoDbSpline& other);
 
-	~EoDbSpline();
+	~EoDbSpline() = default;
 
 public: // Methods - absolute virtuals
 

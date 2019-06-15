@@ -49,7 +49,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 
 		while (fl.ReadString(Line) != 0) {
 			int NextToken {0};
-			/* unsigned short Label = */ unsigned short(_wtoi(Line.Tokenize(L"=", NextToken)));
+			/* unsigned short Label = */ static_cast<unsigned short>(_wtoi(Line.Tokenize(L"=", NextToken)));
 
 			OdString Name {Line.Tokenize(L",", NextToken).GetString()};
 			OdString Comments {Line.Tokenize(L"\n", NextToken).GetString()};
@@ -57,7 +57,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 			fl.ReadString(Line);
 
 			NextToken = 0;
-			auto NumberOfDashes {unsigned short(_wtoi(Line.Tokenize(L",\n", NextToken)))};
+			auto NumberOfDashes {static_cast<unsigned short>(_wtoi(Line.Tokenize(L",\n", NextToken)))};
 
 			if (NumberOfDashes > MaxNumberOfDashes) {
 				delete [] DashLengths;

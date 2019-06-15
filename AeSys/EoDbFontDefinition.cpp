@@ -5,13 +5,7 @@
 #include "EoDbFile.h"
 #include "EoDbText.h"
 
-EoDbFontDefinition::EoDbFontDefinition()
-	: m_CharacterSpacing(0.0)
-	, m_Precision(EoDb::kTrueType)
-	, m_FontName(L"Simplex")
-	, m_Path(EoDb::kPathRight)
-	, m_HorizontalAlignment(EoDb::kAlignLeft)
-	, m_VerticalAlignment(EoDb::kAlignBottom) {
+EoDbFontDefinition::EoDbFontDefinition() {
 }
 
 EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
@@ -21,16 +15,6 @@ EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
 	m_HorizontalAlignment = other.m_HorizontalAlignment;
 	m_VerticalAlignment = other.m_VerticalAlignment;
 	m_CharacterSpacing = other.m_CharacterSpacing;
-}
-
-EoDbFontDefinition& EoDbFontDefinition::operator=(const EoDbFontDefinition& other) noexcept {
-	m_Precision = other.m_Precision;
-	m_FontName = other.m_FontName;
-	m_Path = other.m_Path;
-	m_HorizontalAlignment = other.m_HorizontalAlignment;
-	m_VerticalAlignment = other.m_VerticalAlignment;
-	m_CharacterSpacing = other.m_CharacterSpacing;
-	return (*this);
 }
 
 double EoDbFontDefinition::CharacterSpacing() const noexcept {

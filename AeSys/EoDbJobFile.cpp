@@ -52,12 +52,11 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 			break;
 		}
 		case EoDb::kCSplinePrimitive:
-		case EoDb::kSplinePrimitive:
-		{
+		case EoDb::kSplinePrimitive: {
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
-				const unsigned short NumberOfControlPoints = *(( unsigned short*) & m_PrimBuf[10]);
-				m_PrimBuf[3] = signed char((2 + NumberOfControlPoints * 3) / 8 + 1);
-				*(( unsigned short*) & m_PrimBuf[4]) = unsigned short(EoDb::kSplinePrimitive);
+				const unsigned short NumberOfControlPoints = *((unsigned short*) &m_PrimBuf[10]);
+				m_PrimBuf[3] = static_cast<signed char>((2 + NumberOfControlPoints * 3) / 8 + 1);
+				*((unsigned short*) &m_PrimBuf[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
 				m_PrimBuf[8] = m_PrimBuf[10];
 				m_PrimBuf[9] = m_PrimBuf[11];
 				::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
@@ -193,9 +192,7 @@ void EoDbJobFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, CFile& fil
 	EoDbGroup* Group;
 
 	while (GetNextVisibleGroup(blockTableRecord, file, Group)) {
-		if (Group != 0) {
-			layer->AddTail(Group);
-		}
+		if (Group != nullptr) { layer->AddTail(Group); }
 	}
 }
 
@@ -286,7 +283,7 @@ bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
 
 void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 	m_PrimBuf[0] = 0;
-	*(( unsigned short*) & m_PrimBuf[1]) = unsigned short(group->GetCount());
+	*(( unsigned short*) & m_PrimBuf[1]) = static_cast<unsigned short>(group->GetCount());
 
 	auto Position {group->GetHeadPosition()};
 	while (Position != nullptr) {

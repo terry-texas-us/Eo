@@ -19,9 +19,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-EoDbSpline::EoDbSpline() noexcept {
-}
-
 EoDbSpline::EoDbSpline(const EoDbSpline& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -30,9 +27,6 @@ EoDbSpline::EoDbSpline(const EoDbSpline& other) {
 	m_LinetypeIndex = other.m_LinetypeIndex;
 
 	m_Spline = other.m_Spline;
-}
-
-EoDbSpline::~EoDbSpline() {
 }
 
 const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
@@ -228,7 +222,7 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kSplinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
-	file.WriteUInt16(unsigned short(m_Spline.numControlPoints()));
+	file.WriteUInt16(static_cast<unsigned short>(m_Spline.numControlPoints()));
 
 	for (unsigned short ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
 		file.WritePoint3d(m_Spline.controlPointAt(ControlPointIndex));
@@ -237,10 +231,10 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 }
 
 void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
-	buffer[3] = signed char((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
-	*((unsigned short*) & buffer[4]) = unsigned short(EoDb::kSplinePrimitive);
-	buffer[6] = signed char(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = signed char(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[3] = static_cast<signed char>((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
+	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
+	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 
 	*((short*) & buffer[8]) = (short) m_Spline.numControlPoints();
 
@@ -311,26 +305,26 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 		ColorIndex = short(primitiveBuffer[4] & 0x000f);
 		LinetypeIndex = short((primitiveBuffer[4] & 0x00ff) >> 4);
 
-		NumberOfControlPoints = unsigned short(((EoVaxFloat*) & primitiveBuffer[8])->Convert());
+		NumberOfControlPoints = static_cast<unsigned short>(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
-		int BufferIndex = 12;
+		int BufferIndex {12};
 
 		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
-			ControlPoints[w] = ((EoVaxPoint3d*) & primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
+			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	} else {
 		ColorIndex = short(primitiveBuffer[6]);
 		LinetypeIndex = short(primitiveBuffer[7]);
 
-		NumberOfControlPoints = *((short*) & primitiveBuffer[8]);
+		NumberOfControlPoints = *((short*) &primitiveBuffer[8]);
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 10;
 
 		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
-			ControlPoints[w] = ((EoVaxPoint3d*) & primitiveBuffer[BufferIndex])->Convert();
+			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert();
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	}

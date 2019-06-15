@@ -8,18 +8,18 @@ class EoDbFile;
 
 class EoDbFontDefinition {
 private:
-	double m_CharacterSpacing;
-	EoDb::Precision m_Precision;
-	CString m_FontName;
-	EoDb::Path m_Path;
-	EoDb::HorizontalAlignment m_HorizontalAlignment;
-	EoDb::VerticalAlignment m_VerticalAlignment;
+	double m_CharacterSpacing {0.0};
+	EoDb::Precision m_Precision {EoDb::kTrueType};
+	CString m_FontName {L"Simplex"};
+	EoDb::Path m_Path {EoDb::kPathRight};
+	EoDb::HorizontalAlignment m_HorizontalAlignment {EoDb::kAlignLeft};
+	EoDb::VerticalAlignment m_VerticalAlignment {EoDb::kAlignBottom};
 
 public:
 	EoDbFontDefinition();
 	EoDbFontDefinition(const EoDbFontDefinition& other);
 
-	EoDbFontDefinition& operator=(const EoDbFontDefinition& other) noexcept;
+	EoDbFontDefinition& operator=(const EoDbFontDefinition& other) = default;
 
 	CString FormatHorizonatlAlignment() const;
 	CString FormatPath() const;

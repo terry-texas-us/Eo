@@ -35,11 +35,11 @@ class EoDbText : public EoDbPrimitive {
 
 public:	// Constructors and destructor
 
-	EoDbText();
+	EoDbText() = default;
 	EoDbText(const EoDbText& other);
 	const EoDbText& operator=(const EoDbText&);
 
-	~EoDbText();
+	~EoDbText() = default;
 
 public: // Methods - absolute virtuals
 

@@ -16,8 +16,8 @@ class EoDbGroup: public CObList {
 	static EoDbPrimitive* sm_PrimitiveToIgnore;
 
 public:
-	EoDbGroup() noexcept;
-	~EoDbGroup();
+	EoDbGroup() = default;
+	~EoDbGroup() = default;
 	EoDbGroup(const EoDbGroup& group);
 	EoDbGroup(const EoDbBlock& block);
 

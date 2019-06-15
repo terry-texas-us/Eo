@@ -31,11 +31,12 @@ public:
 	static const unsigned short sm_Closed = 0x0001;
 
 private:
-	unsigned short m_Flags;
-	double m_ConstantWidth;
-	double m_Elevation;
-	double m_Thickness;
-	OdGeVector3d m_Normal;
+	unsigned short m_Flags {0};
+	double m_ConstantWidth {0.0};
+	double m_Elevation {0.0};
+	double m_Thickness {0.0};
+
+	OdGeVector3d m_Normal {OdGeVector3d::kZAxis};
 	OdGePoint2dArray m_Vertices;
 	OdGeDoubleArray m_StartWidths;
 	OdGeDoubleArray m_EndWidths;
@@ -47,7 +48,7 @@ public:	// Constructors and destructor
 	EoDbPolyline(const EoDbPolyline& other);
 	const EoDbPolyline& operator=(const EoDbPolyline& other);
 
-	~EoDbPolyline();
+	~EoDbPolyline() = default;
 
 public: // Methods - absolute virtuals
 

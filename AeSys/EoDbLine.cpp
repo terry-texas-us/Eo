@@ -12,9 +12,6 @@
 
 IMPLEMENT_DYNAMIC(EoDbLine, EoDbPrimitive)
 
-EoDbLine::EoDbLine() noexcept {
-}
-
 EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -22,9 +19,6 @@ EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
 	m_LineSeg = other.m_LineSeg;
-}
-
-EoDbLine::~EoDbLine() {
 }
 
 const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {

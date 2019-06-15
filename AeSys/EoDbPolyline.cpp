@@ -16,12 +16,7 @@ unsigned EoDbPolyline::sm_EdgeToEvaluate = 0;
 unsigned EoDbPolyline::sm_Edge = 0;
 unsigned EoDbPolyline::sm_PivotVertex = 0;
 
-EoDbPolyline::EoDbPolyline()
-	: m_Flags(0)
-	, m_ConstantWidth(0.0)
-	, m_Elevation(0.0)
-	, m_Thickness(0.0)
-	, m_Normal(OdGeVector3d::kZAxis) {
+EoDbPolyline::EoDbPolyline() {
 	m_Vertices.clear();
 	m_StartWidths.clear();
 	m_EndWidths.clear();
@@ -44,9 +39,6 @@ EoDbPolyline::EoDbPolyline(const EoDbPolyline& other) {
 	m_EndWidths.append(other.m_EndWidths);
 	m_Bulges.append(other.m_Bulges);
 	m_Normal = other.m_Normal;
-}
-
-EoDbPolyline::~EoDbPolyline() {
 }
 
 const EoDbPolyline& EoDbPolyline::operator=(const EoDbPolyline& other) {

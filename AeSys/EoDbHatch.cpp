@@ -35,13 +35,7 @@ struct EoEdge {
 };
 
 EoDbHatch::EoDbHatch() noexcept
-	: m_InteriorStyle(EoDbHatch::kHatch)
-	, m_InteriorStyleIndex(1)
-	, m_HatchOrigin(OdGePoint3d::kOrigin)
-	, m_HatchXAxis(OdGeVector3d::kXAxis)
-	, m_HatchYAxis(OdGeVector3d::kYAxis)
-	, m_NumberOfLoops(0)
-	, m_Vertices(0) {
+	: m_Vertices(0) {
 }
 
 EoDbHatch::EoDbHatch(const EoDbHatch& other) {
@@ -58,9 +52,6 @@ EoDbHatch::EoDbHatch(const EoDbHatch& other) {
 	m_NumberOfLoops = 0;
 	m_Vertices.clear();
 	m_Vertices.append(other.m_Vertices);
-}
-
-EoDbHatch::~EoDbHatch() {
 }
 
 const EoDbHatch& EoDbHatch::operator=(const EoDbHatch& other) {
@@ -1030,7 +1021,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 		HatchOrigin = Vertices[0];
 	} else {
 		ColorIndex = short(primitiveBuffer[6]);
-		InteriorStyle = signed char(primitiveBuffer[7]);
+		InteriorStyle = static_cast<signed char>(primitiveBuffer[7]);
 		InteriorStyleIndex = *((short*) & primitiveBuffer[8]);
 		const auto NumberOfVertices = *((short*) & primitiveBuffer[10]);
 		HatchOrigin = ((EoVaxPoint3d*) & primitiveBuffer[12])->Convert();

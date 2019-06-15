@@ -13,9 +13,6 @@
 #include "EoDbSpline.h"
 #include "EoDbText.h"
 
-EoDbFile::EoDbFile() noexcept {
-}
-
 EoDbFile::EoDbFile(OdDbDatabasePtr database)
 	: m_Database {database} {
 }

@@ -13,11 +13,11 @@ class EoDbLine : public EoDbPrimitive {
 
 public: // Constructors and destructor
 	
-	EoDbLine() noexcept;
+	EoDbLine() = default;
 	EoDbLine(const EoDbLine& other);
 	const EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
 
-	~EoDbLine();
+	~EoDbLine() = default;
 
 public: // Methods - absolute virtuals
 	

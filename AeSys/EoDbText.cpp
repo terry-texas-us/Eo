@@ -14,9 +14,6 @@
 
 IMPLEMENT_DYNAMIC(EoDbText, EoDbPrimitive)
 
-EoDbText::EoDbText() {
-}
-
 EoDbText::EoDbText(const EoDbText& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -25,9 +22,6 @@ EoDbText::EoDbText(const EoDbText& other) {
 	m_FontDefinition = other.m_FontDefinition;
 	m_ReferenceSystem = other.m_ReferenceSystem;
 	m_strText = other.m_strText;
-}
-
-EoDbText::~EoDbText() {
 }
 
 const EoDbText& EoDbText::operator=(const EoDbText& other) {
@@ -287,10 +281,10 @@ bool EoDbText::Write(EoDbFile & file) const {
 }
 
 void EoDbText::Write(CFile& file, unsigned char* buffer) const {
-	unsigned short NumberOfCharacters = unsigned short(m_strText.GetLength());
+	unsigned short NumberOfCharacters = static_cast<unsigned short>(m_strText.GetLength());
 
 	buffer[3] = static_cast<signed char>((86 + NumberOfCharacters) / 32);
-	*((unsigned short*)& buffer[4]) = unsigned short(EoDb::kTextPrimitive);
+	*((unsigned short*)& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
 	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<signed char>(m_FontDefinition.Precision());
 	*((short*)& buffer[8]) = 0;

@@ -11,9 +11,6 @@ EoDbTracingFile::EoDbTracingFile(const OdString& file, unsigned openFlags)
 	: EoDbFile(file, openFlags) {
 }
 
-EoDbTracingFile::~EoDbTracingFile() {
-}
-
 void EoDbTracingFile::ReadHeader() {
 
 	if (ReadUInt16() != kHeaderSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kHeaderSection."; }
@@ -59,7 +56,7 @@ void EoDbTracingFile::WriteHeader() {
 void EoDbTracingFile::WriteLayer(EoDbLayer * layer) {
 	WriteUInt16(kGroupsSection);
 
-	WriteUInt16(unsigned short(layer->GetCount()));
+	WriteUInt16(static_cast<unsigned short>(layer->GetCount()));
 
 	auto Position {layer->GetHeadPosition()};
 	while (Position != nullptr) {

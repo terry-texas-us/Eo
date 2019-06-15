@@ -3,26 +3,24 @@
 #include <list>
 
 class EoDialogResizeHelper {
-public:
+   public:
+	// fix horizontal dimension/position
+	enum EHFix { kNoHFix = 0,
+				 kWidth = 1,
+				 kLeft = 2,
+				 kRight = 4,
+				 kWidthLeft = 3,
+				 kWidthRight = 5,
+				 kLeftRight = 6 };
+	// fix vertical dimension/position
+	enum EVFix { kNoVFix = 0,
+				 kHeight = 1,
+				 kTop = 2,
+				 kBottom = 4,
+				 kHeightTop = 3,
+				 kHeightBottom = 5,
+				 kTopBottom = 6 };
 
-	enum EHFix { // fix horizontal dimension/position
-		kNoHFix = 0,
-		kWidth = 1,
-		kLeft = 2,
-		kRight = 4,
-		kWidthLeft = 3,
-		kWidthRight = 5,
-		kLeftRight = 6
-	};
-	enum EVFix { // fix vertical dimension/position
-		kNoVFix = 0,
-		kHeight = 1,
-		kTop = 2,
-		kBottom = 4,
-		kHeightTop = 3,
-		kHeightBottom = 5,
-		kTopBottom = 6
-	};
 	// initialize with parent window, all child windows must already have their original position/size
 	void Init(HWND a_hParent);
 
@@ -42,16 +40,17 @@ public:
 
 	// resize child windows according to changes of parent window and fix attributes
 	void OnSize();
-private:
+
+   private:
 	struct CtrlSize {
 		CRect m_origSize;
 		HWND m_hCtrl {nullptr};
 		EHFix m_hFix {kNoHFix};
 		EVFix m_vFix {kNoVFix};
-		CtrlSize() noexcept {}
+		CtrlSize() = default;
 	};
 	using CtrlCont_t = std::list<CtrlSize>;
 	CtrlCont_t m_ctrls;
-	HWND       m_hParent;
-	CRect      m_origParentSize;
+	HWND m_hParent;
+	CRect m_origParentSize;
 };

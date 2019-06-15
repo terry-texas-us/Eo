@@ -12,8 +12,6 @@
 
 EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(nullptr);
 
-EoDbGroup::EoDbGroup() noexcept {}
-
 EoDbGroup::EoDbGroup(const EoDbBlock& block) {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
@@ -33,8 +31,6 @@ EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 		AddTail((group.GetNext(PrimitivePosition))->Clone(BlockTableRecord));
 	}
 }
-
-EoDbGroup::~EoDbGroup() {}
 
 void EoDbGroup::AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent) {
 	auto PrimitivePosition {GetHeadPosition()};
@@ -457,7 +453,7 @@ void EoDbGroup::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbGroup::Write(EoDbFile& file) {
-	file.WriteUInt16(unsigned short(GetCount()));
+	file.WriteUInt16(static_cast<unsigned short>(GetCount()));
 
 	for (auto PrimitivePosition = GetHeadPosition(); PrimitivePosition != nullptr;) {
 		GetNext(PrimitivePosition)->Write(file);

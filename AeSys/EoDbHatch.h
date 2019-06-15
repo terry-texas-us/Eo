@@ -33,12 +33,12 @@ public:
 	enum InteriorStyle { kHollow, kSolid, kPattern, kHatch };
 
 private:
-	short	m_InteriorStyle;
-	unsigned m_InteriorStyleIndex;
-	OdGePoint3d	m_HatchOrigin;
-	OdGeVector3d m_HatchXAxis;
-	OdGeVector3d m_HatchYAxis;
-	int m_NumberOfLoops;
+	short m_InteriorStyle {EoDbHatch::kHatch};
+	unsigned m_InteriorStyleIndex {1};
+	OdGePoint3d m_HatchOrigin {OdGePoint3d::kOrigin};
+	OdGeVector3d m_HatchXAxis {OdGeVector3d::kXAxis};
+	OdGeVector3d m_HatchYAxis {OdGeVector3d::kYAxis};
+	int m_NumberOfLoops {0};
 	OdGePoint3dArray m_Vertices;
 
 	OdGePoint2dArray m_Vertices2d;
@@ -50,7 +50,7 @@ public:	// Constructors and destructor
 	EoDbHatch(const EoDbHatch& other);
 	const EoDbHatch& operator=(const EoDbHatch& other);
 
-	~EoDbHatch();
+	~EoDbHatch() = default;
 
 public: // Methods - absolute virtuals
 

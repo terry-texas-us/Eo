@@ -8,7 +8,7 @@ class EoDbTracingFile : public EoDbFile {
 public:
 	EoDbTracingFile(OdDbDatabasePtr database);
 	EoDbTracingFile(const OdString& fileName, unsigned openFlags);
-	virtual ~EoDbTracingFile();
+	virtual ~EoDbTracingFile() = default;
 
 	void ReadHeader();
 	bool ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, EoDbLayer* layer);

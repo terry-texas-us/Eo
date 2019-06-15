@@ -9,9 +9,6 @@ EoDbPegFile::EoDbPegFile(OdDbDatabasePtr database)
     : EoDbFile(database) {
 }
 
-EoDbPegFile::~EoDbPegFile() {
-}
-
 void EoDbPegFile::Load(AeSysDoc* document) {
 	try {
 		ReadHeaderSection(document);
@@ -20,7 +17,7 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 		ReadGroupsSection(document);
 	}
 	catch(const wchar_t* Message) {
-		::MessageBoxW(0, Message, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
+		::MessageBoxW(nullptr, Message, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
 	}
 }
 
@@ -61,7 +58,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
 
 	const unsigned short NumberOfLinetypes {ReadUInt16()};
-	double* DashLength = new double[32];
+	auto DashLength {new double[32]};
 
 	for (unsigned LinetypeIndex = 0; LinetypeIndex < NumberOfLinetypes; LinetypeIndex++) {
 		OdString Name;
@@ -72,7 +69,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 		OdString Comments;
 		ReadString(Comments);
 				
-		const unsigned short NumberOfDashes = ReadUInt16();
+		const auto NumberOfDashes {ReadUInt16()};
 		double PatternLength;
 		PatternLength = ReadDouble();
 
@@ -312,7 +309,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	WriteUInt16(kLayerTable);
 
 	const auto SavedFilePosition {CFile::GetPosition()};
-	WriteUInt16(unsigned short(NumberOfLayers));
+	WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
@@ -332,7 +329,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	if (NumberOfLayers != document->GetLayerTableSize()) {
 		const auto CurrentFilePosition {CFile::GetPosition()};
 		CFile::Seek(SavedFilePosition, CFile::begin);
-		WriteUInt16(unsigned short(NumberOfLayers));
+		WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 		CFile::Seek(CurrentFilePosition, CFile::begin);
 	}
 }
@@ -376,13 +373,13 @@ void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 	WriteUInt16(kGroupsSection);
 
 	const int NumberOfLayers = document->GetLayerTableSize();
-	WriteUInt16(unsigned short(NumberOfLayers));
+	WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
 		
 		if (Layer->IsInternal()) {
-			WriteUInt16(unsigned short(Layer->GetCount()));
+			WriteUInt16(static_cast<unsigned short>(Layer->GetCount()));
 
 			auto Position {Layer->GetHeadPosition()};
 			while (Position != nullptr) {

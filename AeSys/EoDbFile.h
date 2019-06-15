@@ -19,7 +19,7 @@ public:
 	};
 	OdDbDatabasePtr m_Database;
 public:
-	EoDbFile() noexcept;
+	EoDbFile() = default;
 	EoDbFile(OdDbDatabasePtr database);
 	EoDbFile(const OdString& fileName, unsigned openFlags);
 

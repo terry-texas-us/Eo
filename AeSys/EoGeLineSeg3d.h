@@ -7,9 +7,9 @@ class EoGeLineSeg3d : public OdGeLineSeg3d {
 
 public:	// Constructors and destructor
 	EoGeLineSeg3d();
-	EoGeLineSeg3d(const EoGeLineSeg3d& line);
+	EoGeLineSeg3d(const EoGeLineSeg3d& line) = default;
 	EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
-	virtual ~EoGeLineSeg3d();
+	virtual ~EoGeLineSeg3d() = default;
 
 public: // Methods
 	/// <summary>Determines the angle between two lines.</summary>
