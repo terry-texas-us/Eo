@@ -2,9 +2,6 @@
 
 #include "EoDbBlock.h"
 
-EoDbBlock::EoDbBlock() {
-	m_wBlkTypFlgs = 0;
-}
 EoDbBlock::EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint) {
 	m_wBlkTypFlgs = flags;
 	m_BasePoint = basePoint;

@@ -18,8 +18,8 @@ class EoVaxPoint3d {
 	EoVaxFloat z;
 
 public:
-	EoVaxPoint3d() noexcept {
-	}
+	EoVaxPoint3d() = default;
+	
 	void Convert(const OdGePoint3d& point) noexcept {
 		x.Convert(point.x);
 		y.Convert(point.y);
@@ -29,19 +29,21 @@ public:
 		return OdGePoint3d(x.Convert(), y.Convert(), z.Convert());
 	}
 };
+
 class EoVaxVector3d {
 	EoVaxFloat x;
 	EoVaxFloat y;
 	EoVaxFloat z;
 public:
-	EoVaxVector3d() noexcept {
-	}
+	EoVaxVector3d() = default;
+
 	void Convert(const OdGeVector3d& vector) noexcept {
 		x.Convert(vector.x);
 		y.Convert(vector.y);
 		z.Convert(vector.z);
 	}
+	
 	OdGeVector3d Convert() {
-		return OdGeVector3d(x.Convert(), y.Convert(), z.Convert());
+		return {x.Convert(), y.Convert(), z.Convert()};
 	}
 };

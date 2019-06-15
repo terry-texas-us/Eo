@@ -136,7 +136,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 		FileName = TextStyleTableRecordPtr->fileName();
 		const int nExt = FileName.reverseFind('.');
 
-		if (nExt != - 1) {
+		if (nExt != -1) {
 			if (FileName.mid(nExt).compare(L".shx") == 0) {
 				FileName = FileName.left(nExt);
 				for (int n = nExt; n < 8; n++) {
@@ -165,9 +165,9 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	CharacterCellDefinition.SetWidthFactor(text->widthFactor());
 	CharacterCellDefinition.SetObliqueAngle(text->oblique());
 
-    EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
-    
-    EoDbText* TextPrimitive = new EoDbText();
+	EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
+
+	auto TextPrimitive {new EoDbText()};
 	TextPrimitive->SetFontDefinition(FontDefinition);
 	TextPrimitive->SetReferenceSystem(ReferenceSystem);
 	TextPrimitive->SetText((const wchar_t*) text->textString());
@@ -214,7 +214,7 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDb2dPolylinePtr PolylineEntity = entity;
 
-		EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
+		auto PolylinePrimitive {new EoDbPolyline()};
 
 		OdDbObjectIteratorPtr Iterator = PolylineEntity->vertexIterator();
 		for (int i = 0; !Iterator->done(); i++, Iterator->step()) {
@@ -251,7 +251,7 @@ public:
 		for (int i = 0; !Iterator->done(); i++, Iterator->step()) {
 			OdDb3dPolylineVertexPtr Vertex = Iterator->entity();
 		}
-		EoDbPolyline* PolylinePrimitive = new EoDbPolyline();
+		auto PolylinePrimitive {new EoDbPolyline()};
 		if (PolylineEntity->polyType() == OdDb::k3dCubicSplinePoly) {
 
 		}
@@ -301,7 +301,7 @@ public:
 		const OdGeVector3d MajorAxis(StartPoint - Center);
 		const OdGeVector3d MinorAxis = Normal.crossProduct(MajorAxis);
 		
-		EoDbEllipse* ArcPrimitive = new EoDbEllipse();
+		auto ArcPrimitive {new EoDbEllipse()};
 		// <tas="Encountered Circular Arc entity with zero radius. Is this valid for dwg files?"</tas>
 		if (!MajorAxis.isZeroLength() && !MinorAxis.isZeroLength()) {
 			ArcPrimitive->SetTo2(Center, MajorAxis, MinorAxis, SweepAngle);
@@ -329,7 +329,7 @@ public:
 
 		OdDbBlockTableRecordPtr BlockTableRecordPtr = BlockReferenceEntity->blockTableRecord().safeOpenObject(OdDb::kForRead);
 
-		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
+		auto BlockReferencePrimitive {new EoDbBlockReference()};
 
 		BlockReferencePrimitive->SetName(BlockTableRecordPtr->getName());
 		BlockReferencePrimitive->SetPosition(BlockReferenceEntity->position());
@@ -440,7 +440,7 @@ public:
 
 		OdDbBlockTableRecordPtr BlockTableRecordPtr = MInsertBlockEntity->blockTableRecord().safeOpenObject(OdDb::kForRead);
 
-		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
+		auto BlockReferencePrimitive {new EoDbBlockReference()};
 		BlockReferencePrimitive->SetName(BlockTableRecordPtr->getName());
 		BlockReferencePrimitive->SetPosition(MInsertBlockEntity->position());
 		BlockReferencePrimitive->SetNormal(MInsertBlockEntity->normal());
@@ -524,7 +524,7 @@ public:
 		ConvertDimensionData(RotatedDimensionEntity);
 
 		// <tas="Improper conversion - entity is used alot"/>
-		EoDbBlockReference* BlockReferencePrimitive = new EoDbBlockReference();
+		auto BlockReferencePrimitive {new EoDbBlockReference()};
 		BlockReferencePrimitive->SetName(Block->getName());
 		BlockReferencePrimitive->SetPosition(OdGePoint3d::kOrigin);
 		BlockReferencePrimitive->SetNormal(OdGeVector3d::kZAxis);
@@ -546,7 +546,7 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbSolidPtr SolidEntity = entity;
 
-		EoDbHatch* HatchPrimitive = new EoDbHatch;
+		auto HatchPrimitive {new EoDbHatch};
 		OdGePoint3d Point;
 		SolidEntity->getPointAt(0, Point);
 		HatchPrimitive->Append(Point);
@@ -597,7 +597,7 @@ public:
 		if (Periodic) {
 		// <tas="Only creating non-periodic splines."</tas>
 		} else {
-			EoDbSpline* SplinePrimitive = new EoDbSpline();
+			auto SplinePrimitive {new EoDbSpline()};
 			SplinePrimitive->Set(Degree, Knots, ControlPoints, Weights, Periodic);
 			ConvertCurveData(entity, SplinePrimitive);
 			group->AddTail(SplinePrimitive);
@@ -622,7 +622,7 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbTracePtr TraceEntity = entity;
 
-		EoDbHatch* HatchPrimitive = new EoDbHatch;
+		auto HatchPrimitive {new EoDbHatch};
 		OdGePoint3d Point;
 		TraceEntity->getPointAt(0, Point);
 		HatchPrimitive->Append(Point);

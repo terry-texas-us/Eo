@@ -25,10 +25,10 @@ public:
 	static const short LINETYPE_BYLAYER = 32767;
 
 protected:
-	OdDbObjectId m_LayerId;
-	short	m_ColorIndex;
-	short	m_LinetypeIndex;
-	OdDbObjectId m_EntityObjectId;
+	OdDbObjectId m_LayerId {nullptr};
+	short m_ColorIndex {1};
+	short m_LinetypeIndex {1};
+	OdDbObjectId m_EntityObjectId {nullptr};
 
 	static	short	sm_LayerColorIndex;
 	static	short	sm_LayerLinetypeIndex;
@@ -39,9 +39,9 @@ protected:
 	static	double sm_SelectApertureSize;
 
 public: // Constructors and destructor
-	EoDbPrimitive() noexcept;
+	EoDbPrimitive() = default;
 	EoDbPrimitive(short colorIndex, short linetypeIndex);
-	virtual ~EoDbPrimitive();
+	virtual ~EoDbPrimitive() = default;
 
 public: // Methods - absolute virtuals
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;

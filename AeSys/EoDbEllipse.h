@@ -1,5 +1,7 @@
 #pragma once
 
+#include "OdaCommon.h"
+
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 #include "DbEllipse.h"
@@ -7,14 +9,14 @@
 class EoDbEllipse : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbEllipse)
 
-	OdGePoint3d	m_Center;
-	OdGeVector3d m_MajorAxis;
-	OdGeVector3d m_MinorAxis;
-	double m_SweepAngle;
+	OdGePoint3d m_Center {OdGePoint3d::kOrigin};
+	OdGeVector3d m_MajorAxis {OdGeVector3d::kXAxis};
+	OdGeVector3d m_MinorAxis {OdGeVector3d::kYAxis};
+	double m_SweepAngle {Oda2PI};
 
 public: // Constructors and destructor
 
-	EoDbEllipse() noexcept;
+	EoDbEllipse() = default;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept;
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
@@ -23,7 +25,7 @@ public: // Constructors and destructor
 	EoDbEllipse(const EoDbEllipse& other);
 	const EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
 
-	~EoDbEllipse();
+	~EoDbEllipse() = default;
 
 public: // Methods - absolute virtuals
 

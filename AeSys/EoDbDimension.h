@@ -13,18 +13,18 @@ class EoDbDimension : public EoDbPrimitive {
 
 	EoGeLineSeg3d m_Line;
 
-	short	m_TextColorIndex;
+	short m_TextColorIndex {1};
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
 
 public:	// Constructors and destructor
 
-	EoDbDimension();
+	EoDbDimension() = default;
 	EoDbDimension(const EoDbDimension& other);
 	const EoDbDimension& operator=(const EoDbDimension& other);
 
-	~EoDbDimension();
+	~EoDbDimension() = default;
 
 public: // Methods - absolute virtuals
 

@@ -16,19 +16,9 @@ unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
-EoDbPrimitive::EoDbPrimitive() noexcept
-	: m_LayerId(nullptr)
-	, m_ColorIndex(1)
-	, m_LinetypeIndex(1) {
-}
-
 EoDbPrimitive::EoDbPrimitive(short colorIndex, short linetypeIndex)
-	: m_LayerId(nullptr)
-	, m_ColorIndex(colorIndex)
+	: m_ColorIndex(colorIndex)
 	, m_LinetypeIndex(linetypeIndex) {
-}
-
-EoDbPrimitive::~EoDbPrimitive() {
 }
 
 void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {

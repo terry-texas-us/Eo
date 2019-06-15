@@ -14,18 +14,6 @@ IMPLEMENT_DYNAMIC(EoDbBlockReference, EoDbPrimitive)
 
 class EoDbPegFile;
 
-EoDbBlockReference::EoDbBlockReference() noexcept
-	: m_Position(OdGePoint3d::kOrigin)
-	, m_Normal(OdGeVector3d::kZAxis)
-	, m_ScaleFactors(OdGeScale3d(1.0, 1.0, 1.0))
-	, m_Rotation(0.0) {
-
-	m_Columns = 1;
-	m_Rows = 1;
-	m_ColumnSpacing = 0.0;
-	m_RowSpacing = 0.0;
-}
-
 EoDbBlockReference::EoDbBlockReference(const EoDbBlockReference& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
@@ -39,9 +27,6 @@ EoDbBlockReference::EoDbBlockReference(const EoDbBlockReference& other) {
 	m_Rows = other.m_Rows;
 	m_ColumnSpacing = other.m_ColumnSpacing;
 	m_RowSpacing = other.m_RowSpacing;
-}
-
-EoDbBlockReference::~EoDbBlockReference() {
 }
 
 const EoDbBlockReference& EoDbBlockReference::operator=(const EoDbBlockReference& other) {

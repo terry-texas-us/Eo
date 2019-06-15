@@ -27,24 +27,24 @@ GroupReference(SegRef) primitive in Peg files and Tracing files
 class EoDbBlockReference : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbBlockReference)
 	CString m_Name;
-	OdGePoint3d m_Position;
-	OdGeVector3d m_Normal;
-	OdGeScale3d m_ScaleFactors;
-	double m_Rotation;
+	OdGePoint3d m_Position {OdGePoint3d::kOrigin};
+	OdGeVector3d m_Normal {OdGeVector3d::kZAxis};
+	OdGeScale3d m_ScaleFactors {OdGeScale3d::kIdentity};
+	double m_Rotation {0.0};
 
 // Multiple inserts - not implemented
-	unsigned short m_Columns;
-	double m_ColumnSpacing;
-	unsigned short m_Rows;
-	double m_RowSpacing;
+	unsigned short m_Columns {1};
+	double m_ColumnSpacing {0.0};
+	unsigned short m_Rows {1};
+	double m_RowSpacing {0.0};
 
 public: // Constructors and destructor
 
-	EoDbBlockReference() noexcept;
+	EoDbBlockReference() = default;
 	EoDbBlockReference(const EoDbBlockReference& other);
 	const EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
 
-	~EoDbBlockReference();
+	~EoDbBlockReference() = default;
 
 public: // Methods - absolute virtuals
 

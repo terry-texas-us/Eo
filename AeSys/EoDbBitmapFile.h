@@ -2,11 +2,11 @@
 
 class EoDbBitmapFile : public CFile {
 public:
-	EoDbBitmapFile() noexcept {
-	}
-	EoDbBitmapFile(const CString& strPathName);
+	EoDbBitmapFile() = default;
+
+	EoDbBitmapFile(const CString& fileName);
 
 	~EoDbBitmapFile() = default;
 	
-	bool Load(const CString& strPathName, CBitmap& bm, CPalette& pal);
+	bool Load(const CString& fileName, CBitmap& bitmap, CPalette& palette);
 };

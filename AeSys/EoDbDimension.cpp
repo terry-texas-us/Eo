@@ -21,10 +21,6 @@ IMPLEMENT_DYNAMIC(EoDbDimension, EoDbPrimitive)
 
 unsigned short EoDbDimension::sm_wFlags = 0;
 
-EoDbDimension::EoDbDimension()
-	: m_TextColorIndex(1) {
-}
-
 EoDbDimension::EoDbDimension(const EoDbDimension& other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
@@ -34,9 +30,6 @@ EoDbDimension::EoDbDimension(const EoDbDimension& other) {
 	m_FontDefinition = other.m_FontDefinition;
 	m_ReferenceSystem = other.m_ReferenceSystem;
 	m_strText = other.m_strText;
-}
-
-EoDbDimension::~EoDbDimension() {
 }
 
 const EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
@@ -89,7 +82,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	EoGeLineSeg3d ln;
 
 	if (m_Line.CutAt(point, ln) != 0) {
-		EoDbDimension* DimensionPrimitive = new EoDbDimension(*this);
+		auto DimensionPrimitive {new EoDbDimension(*this)};
 
 		DimensionPrimitive->m_Line = ln;
 		DimensionPrimitive->SetDefaultNote();

@@ -8,12 +8,12 @@ EoDbBitmapFile::EoDbBitmapFile(const CString& fileName) {
 	}
 }
 
-bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalette& palReference) {
+bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& palette) {
 	auto Bitmap {static_cast<HBITMAP>(::LoadImageW(nullptr, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE))};
 	
 	if (Bitmap == nullptr) { return false; }
 	
-	bmReference.Attach(Bitmap);
+	bitmap.Attach(Bitmap);
 
 
 	CClientDC ClientDeviceContext(nullptr);
@@ -22,7 +22,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 	if ((ClientDeviceContext.GetDeviceCaps(RASTERCAPS) & RC_PALETTE) == 0) { return true; }
 
 	DIBSECTION ds;
-	bmReference.GetObjectW(sizeof(DIBSECTION), &ds);
+	bitmap.GetObjectW(sizeof(DIBSECTION), &ds);
 
 	int NumberOfColors {0};
 
@@ -32,14 +32,14 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 		NumberOfColors = 1 << ds.dsBmih.biBitCount;
 	}
 	if (NumberOfColors > 256) { // Create a halftone palette
-		palReference.CreateHalftonePalette(&ClientDeviceContext);
+		palette.CreateHalftonePalette(&ClientDeviceContext);
 	} else { // Create a custom palette from the DIB section's color table
 		auto RGBQuad {new RGBQUAD[static_cast<unsigned>(NumberOfColors)]};
 
 		CDC dcMem;
 		dcMem.CreateCompatibleDC(&ClientDeviceContext);
 
-		auto Bitmap {dcMem.SelectObject(&bmReference)};
+		auto Bitmap {dcMem.SelectObject(&bitmap)};
 		::GetDIBColorTable((HDC) dcMem, 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
 		dcMem.SelectObject(Bitmap);
 
@@ -48,7 +48,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 		LOGPALETTE* pLogPal {(LOGPALETTE*) new unsigned char[nSize]};
 
 		pLogPal->palVersion = 0x300;
-		pLogPal->palNumEntries = unsigned short(NumberOfColors);
+		pLogPal->palNumEntries = static_cast<unsigned short>(NumberOfColors);
 
 		for (int i = 0; i < NumberOfColors; i++) {
 			pLogPal->palPalEntry[i].peRed = RGBQuad[i].rgbRed;
@@ -56,7 +56,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bmReference, CPalett
 			pLogPal->palPalEntry[i].peBlue = RGBQuad[i].rgbBlue;
 			pLogPal->palPalEntry[i].peFlags = 0;
 		}
-		palReference.CreatePalette(pLogPal);
+		palette.CreatePalette(pLogPal);
 
 		delete [] pLogPal;
 		delete [] RGBQuad;

@@ -15,13 +15,6 @@
 
 IMPLEMENT_DYNAMIC(EoDbEllipse, EoDbPrimitive)
 
-EoDbEllipse::EoDbEllipse() noexcept
-	: m_Center(OdGePoint3d::kOrigin)
-	, m_MajorAxis(OdGeVector3d::kXAxis)
-	, m_MinorAxis(OdGeVector3d::kYAxis)
-	, m_SweepAngle(Oda2PI) {
-}
-
 EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept
 	: m_Center(center)
 	, m_MajorAxis(majorAxis)
@@ -55,9 +48,6 @@ EoDbEllipse::EoDbEllipse(const EoDbEllipse& other) {
 	m_MajorAxis = other.m_MajorAxis;
 	m_MinorAxis = other.m_MinorAxis;
 	m_SweepAngle = other.m_SweepAngle;
-}
-
-EoDbEllipse::~EoDbEllipse() {
 }
 
 const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
