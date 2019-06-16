@@ -928,7 +928,7 @@ void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
 		m_PlotStyleFiles.GetLBText(CurrentSelection, StyleFileName);
 		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, (const wchar_t*)(StyleFileName));
 	} else {
-		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, OdString::kEmpty);
+		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, L"");
 	}
 }
 void EoDlgPageSetup::OnSelChangeQualityList() {

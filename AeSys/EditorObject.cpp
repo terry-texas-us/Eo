@@ -466,7 +466,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 	try {
 		EnableEnhRectFrame _enhRect(m_CommandContext);
 		SetSnapOn(false);
-		SelectionSet = UserIO->select(OdString::kEmpty, SelectOptions, workingSSet());
+		SelectionSet = UserIO->select(L"", SelectOptions, workingSSet());
 		SetWorkingSelectionSet(SelectionSet);
 		SetSnapOn(SavedSnapMode);
 	} catch (const OdError&) {
@@ -688,7 +688,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 		for (;;) {
 			try {
 				tracker.init(ActiveView, pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptBeginDrag | OdEd::kGptNoOSnap));
-				pIO->getPoint(L"Press ESC or ENTER to exit."), OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptEndDrag | OdEd::kGptNoOSnap, 0, OdString::kEmpty, &tracker;
+				pIO->getPoint(L"Press ESC or ENTER to exit."), OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptEndDrag | OdEd::kGptNoOSnap, 0, L"", &tracker;
 			} catch (const OdEdCancel) {
 				break;
 			}
@@ -1003,8 +1003,8 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
 	for (;;) {
 		try {
-			OrbitTracker.init(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, OdString::kEmpty, &OrbitTracker));
-			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, OdString::kEmpty, &OrbitTracker);
+			OrbitTracker.init(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, L"", &OrbitTracker));
+			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, L"", &OrbitTracker);
 			OrbitTracker.reset();
 		} catch (const OdEdCancel) {
 			break;
@@ -1116,8 +1116,8 @@ void OdExDollyCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdStaticRxObject<RTDollyTracker> DollyTracker;
 	for (;;) {
 		try {
-			DollyTracker.Initialize(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, OdString::kEmpty, &DollyTracker));
-			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, OdString::kEmpty, &DollyTracker);
+			DollyTracker.Initialize(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, L"", &DollyTracker));
+			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, L"", &DollyTracker);
 			DollyTracker.Reset();
 		} catch (const OdEdCancel) {
 			break;
@@ -1516,7 +1516,7 @@ void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	const auto BasePoint {UserIO->getPoint(L"Collide: Specify base point:")};
 
 	CollideMoveTracker tracker(BasePoint, SelectionSet, Database, View, bDynHLT);
-	const OdGePoint3d ptOffset = UserIO->getPoint(L"Collide: Specify second point:", OdEd::kGdsFromLastPoint | OdEd::kGptRubberBand, nullptr, OdString::kEmpty, &tracker);
+	const OdGePoint3d ptOffset = UserIO->getPoint(L"Collide: Specify second point:", OdEd::kGdsFromLastPoint | OdEd::kGptRubberBand, nullptr, L"", &tracker);
 }
 
 

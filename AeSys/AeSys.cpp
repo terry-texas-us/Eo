@@ -2328,7 +2328,7 @@ void AeSys::OnVectorizeClearmenu() {
 	CRegKey RegistryKey;
 	RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options");
 	RegistryKey.RecurseDeleteKey(L"vectorizers");
-	setRecentGsDevicePath(OdString::kEmpty);
+	setRecentGsDevicePath(L"");
 	m_numGSMenuItems = 0;
 }
 

@@ -418,7 +418,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 
 	OdDbSelectionSetPtr SelectionSet;
 	try {
-		SelectionSet = UserIO->select(OdString::kEmpty, SelectOptions, View->editorObject().workingSSet());
+		SelectionSet = UserIO->select(L"", SelectOptions, View->editorObject().workingSSet());
 		View->editorObject().SetWorkingSelectionSet(SelectionSet);
 	}
 	catch (const OdError&) {

@@ -204,7 +204,7 @@ public:
 				return (const wchar_t*)res;
 			}
 		}
-		return OdString::kEmpty;
+		return L"";
 	}
 	OdString userType() const {
 		if (m_pRawData.get()) {
@@ -215,7 +215,7 @@ public:
 			const_cast<OleDwgItem*>(this)->COleClientItem::GetUserType(USERCLASSTYPE_FULL, res);
 			return (const wchar_t*) OdString(res);
 		}
-		return OdString::kEmpty;
+		return L"";
 	}
 	OdOleItemHandler::DvAspect adviseType() const {
 		if (m_pRawData.get()) {
@@ -399,7 +399,7 @@ public:
 
 			OdString sPmt;
 			sPmt.format(L"Specify size <%g>:", tracker._size.length());
-			tracker.setValue(UserIO->getDist(sPmt, 0, 0.0, OdString::kEmpty, &tracker));
+			tracker.setValue(UserIO->getDist(sPmt, 0, 0.0, L"", &tracker));
 
 			OdDbBlockTableRecordPtr pSpace = Database->getActiveLayoutBTRId().safeOpenObject(OdDb::kForWrite);
 			pItem->m_frameId = pSpace->appendOdDbEntity(pOleFrame);

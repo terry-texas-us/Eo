@@ -175,7 +175,7 @@ public:
 
 	OdDbHostAppProgressMeter* newProgressMeter() override /* ExHostAppServices */;
 
-	void start(const OdString& displayString = OdString::kEmpty) override /* ExHostAppServices */;
+	void start(const OdString& displayString = L"") override /* ExHostAppServices */;
 
 	void stop() override /* ExHostAppServices */;
 
@@ -274,7 +274,7 @@ public:
 	bool setUndoType(bool useTempFiles) noexcept;
 	bool undoType() const noexcept { return m_bUseTempFiles; }
 
-	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
+	OdString fileDialog(int flags, const OdString& prompt = L"", const OdString& defExt = L"", const OdString& fileName = L"", const OdString& filter = L"") override;
 
 	BOOL PreTranslateMessage(MSG* message) override;
 
