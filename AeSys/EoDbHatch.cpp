@@ -599,7 +599,7 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 }
 
 CString EoDbHatch::FormatInteriorStyle() const {
-	const CString strStyle[] = {L"Hollow", L"Solid", L"Pattern", L"Hatch"};
+	const wchar_t* strStyle[] = {L"Hollow", L"Solid", L"Pattern", L"Hatch"};
 
 	CString str = (m_InteriorStyle >= 0 && m_InteriorStyle <= 3) ? strStyle[m_InteriorStyle] : L"Invalid!";
 
@@ -705,7 +705,7 @@ void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 
 		auto HatchPatternManager {theApp.patternManager()};
 
-		OdString HatchName {m_InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
+		auto HatchName {m_InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
 		OdHatchPattern HatchPattern;
 
 		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
@@ -944,7 +944,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	Hatch->setAssociative(false);
 
 	Hatch->setColorIndex(ColorIndex);
-	OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
+	auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
 	const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
@@ -1045,7 +1045,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	Hatch->setAssociative(false);
 
 	Hatch->setColorIndex(ColorIndex);
-	OdString HatchName(InteriorStyle == kSolid ? L"SOLID" : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
+	auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 
 	const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};

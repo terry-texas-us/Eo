@@ -1849,16 +1849,20 @@ bool AeSysView::beginDragCallback(const OdGePoint3d & point) {
 	return true;
 }
 
-struct ReactorSort : public std::binary_function<OdDbObjectId, OdDbObjectId, bool> {
-	bool operator()(OdDbObjectId id1, OdDbObjectId id2) {
-		OdDbObjectPtr o2 = id2.openObject();
-		if (o2.isNull()) {
-			return false;
-		}
-		OdDbObjectIdArray r2 = o2->getPersistentReactors();
-		if (r2.contains(id1)) {
-			return true;
-		}
+struct ReactorSort {
+	using first_argument_type = OdDbObjectId;
+	using second_argument_type = OdDbObjectId;
+	using result_type = bool;
+
+	bool operator()(OdDbObjectId firstObjectId, OdDbObjectId secondObjectId) {
+		OdDbObjectPtr SecondObject = secondObjectId.openObject();
+
+		if (SecondObject.isNull()) { return false; }
+
+		OdDbObjectIdArray SecondObjectReactors = SecondObject->getPersistentReactors();
+
+		if (SecondObjectReactors.contains(firstObjectId)) { return true; }
+
 		return false;
 	}
 };

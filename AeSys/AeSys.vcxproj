@@ -52,6 +52,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <SupportJustMyCode>true</SupportJustMyCode>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>

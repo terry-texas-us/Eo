@@ -21,7 +21,7 @@ public:
 
 	EoDbFontDefinition& operator=(const EoDbFontDefinition& other) = default;
 
-	CString FormatHorizonatlAlignment() const;
+	[[nodiscard]] CString FormatHorizonatlAlignment() const;
 	CString FormatPath() const;
 	CString FormatPrecision() const;
 	CString FormatVerticalAlignment() const;
