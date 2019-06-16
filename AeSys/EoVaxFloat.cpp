@@ -2,16 +2,13 @@
 
 #include "EoVaxFloat.h"
 
-EoVaxFloat::EoVaxFloat() {
-	m_f = 0.f;
-}
 void EoVaxFloat::Convert(const double& dMS) noexcept {
-	float fMS = float(dMS);
+	auto fMS {float(dMS)};
 	float fVax {0.f};
 
 	if (fMS != 0.f) {
-		unsigned char* pMS = (unsigned char*) & fMS;
-		unsigned char* pVax = (unsigned char*) & fVax;
+		auto pMS = (unsigned char*) & fMS;
+		auto pVax = (unsigned char*) & fVax;
 
 		const auto bSign {static_cast<unsigned char>(pMS[3] & 0x80)};
 		auto bExp {static_cast<unsigned char>((pMS[3] << 1) & 0xff)};
@@ -37,8 +34,8 @@ void EoVaxFloat::Convert(const double& dMS) noexcept {
 double EoVaxFloat::Convert() {
 	float fMS = 0.f;
 
-	unsigned char* pvax = (unsigned char*) &m_f;
-	unsigned char* pms = (unsigned char*) &fMS;
+	auto pvax = (unsigned char*) &m_f;
+	auto pms = (unsigned char*) &fMS;
 
 	const auto bSign {static_cast<unsigned char>(pvax[1] & 0x80)};
 	auto bExp = static_cast<unsigned char>((pvax[1] << 1) & 0xff);

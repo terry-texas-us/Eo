@@ -143,8 +143,8 @@ void AeSysView::OnNodalModeToLine() {
 			auto Group {new EoDbGroup};
 
 			auto PointPosition {GetDocument()->GetFirstUniquePointPosition()};
-			while (PointPosition != 0) {
-				auto UniquePoint = GetDocument()->GetNextUniquePoint(PointPosition);
+			while (PointPosition != nullptr) {
+				auto UniquePoint {GetDocument()->GetNextUniquePoint(PointPosition)};
 				auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
 				Line->setColorIndex(pstate.ColorIndex());
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
@@ -247,7 +247,7 @@ void AeSysView::OnNodalModeToPolygon() {
 
 									EoDbHatch::AppendLoop(Points, NewHatch);
 
-									EoDbGroup* NewGroup = new EoDbGroup;
+									auto NewGroup {new EoDbGroup};
 									NewGroup->AddTail(EoDbHatch::Create(NewHatch));
 
 									GetDocument()->AddWorkLayerGroup(NewGroup);

@@ -28,7 +28,7 @@ void AeSysView::OnPipeModeLine() {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-		EoDbGroup* Group = new EoDbGroup;
+		auto Group {new EoDbGroup};
 		GetDocument()->AddWorkLayerGroup(Group);
 		GenerateLineWithFittings(m_PreviousOp, m_PipeModePoints[0], ID_OP2, CurrentPnt, Group);
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);

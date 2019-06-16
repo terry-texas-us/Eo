@@ -12,14 +12,7 @@ BEGIN_MESSAGE_MAP(EoDlgAnnotateOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent)
-	: CDialog(EoDlgAnnotateOptions::IDD, parent)
-	, m_ActiveView(0)
-	, m_GapSpaceFactor(0)
-	, m_CircleRadius(0)
-	, m_EndItemSize(0)
-	, m_BubbleRadius(0)
-	, m_NumberOfSides(0)
-	, m_DefaultText(L"") {
+	: CDialog(EoDlgAnnotateOptions::IDD, parent) {
 }
 
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
@@ -31,9 +24,6 @@ EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
 	m_BubbleRadius = view->BubbleRadius();
 	m_NumberOfSides = view->NumberOfSides();
 	m_DefaultText = view->DefaultText();
-}
-
-EoDlgAnnotateOptions::~EoDlgAnnotateOptions() {
 }
 
 void EoDlgAnnotateOptions::DoDataExchange(CDataExchange* pDX) {

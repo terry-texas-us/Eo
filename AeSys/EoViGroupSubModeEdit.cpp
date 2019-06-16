@@ -86,7 +86,7 @@ void AeSysView::PreviewGroupEdit() {
 		EoGeMatrix3d tm;
 		tm.setToTranslation(m_SubModeEditEndPoint - m_SubModeEditBeginPoint);
 
-		if (theApp.IsTrapHighlighted() && Document->FindTrappedGroup(m_SubModeEditGroup) != 0) {
+		if (theApp.IsTrapHighlighted() && Document->FindTrappedGroup(m_SubModeEditGroup) != nullptr) {
 			EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 		}
 		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);

@@ -11,7 +11,7 @@ void AeSysView::OnModePrimitiveMend() {
 	EoGePoint4d ptView(CurrentPnt, 1.0);
 	ModelViewTransformPoint(ptView);
 
-	m_PrimitiveToMend = 0;
+	m_PrimitiveToMend = nullptr;
 
 	if (GroupIsEngaged()) { // Group is currently engaged, see if cursor is on a control point
 		OdGePoint3d ptDet;

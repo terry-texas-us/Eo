@@ -37,7 +37,7 @@ void OdApplicationDocumentImpl::myLockMode() const noexcept {}
 
 bool OdApplicationDocumentImpl::isQuiescent() const noexcept { return false; }
 
-void* OdApplicationDocumentImpl::contextPtr() const noexcept { return 0; }
+void* OdApplicationDocumentImpl::contextPtr() const noexcept { return nullptr; }
 
 OdEdBaseIO* OdApplicationDocumentImpl::BaseIO() {
 	return (*m_pImp)->BaseIO();
@@ -88,7 +88,7 @@ bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) {
 		auto View {document->GetNextView(ViewPosition)};
 		
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
-			return dynamic_cast<AeSysView*>(View)->editorObject().Snap(point, 0);
+			return dynamic_cast<AeSysView*>(View)->editorObject().Snap(point, nullptr);
 		}
 	}
 	return false;

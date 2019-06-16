@@ -63,13 +63,9 @@ static unsigned Indicators[] = {
 
 // CMainFrame construction/destruction
 
-CMainFrame::CMainFrame()
-	: m_CurrentProgress(0)
-	, m_InProgress(false) {
+CMainFrame::CMainFrame() {
 	theApp.m_ApplicationLook = static_cast<unsigned>(theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK));
 }
-
-CMainFrame::~CMainFrame() {}
 
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	
@@ -507,7 +503,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 				if (ReturnValue != ERROR_SUCCESS) {
 					break;
 				} else {
-					CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, NULL, -1, VectorizerPath);
+					CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, nullptr, -1, VectorizerPath);
 
 					if (theApp.recentGsDevicePath().iCompare((const wchar_t*) VectorizerPath) == 0) {
 						MenuButton.SetStyle(TBBS_CHECKED);

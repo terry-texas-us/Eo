@@ -74,23 +74,25 @@ private:
 	OdDbObjectIdArray m_ObjectIds;
 };
 
+#define hitradius 15
+
 class OdBaseSnapManager 
 	: public OdGiDrawableImpl<OdGiDrawable>
 	, public OdGsSelectionReactor {
 // TODO move using of OdDbdatabase, OdDbObject & OdDbObjectId into OSnapManager
 
-	OdGsView* m_View;
-	OdGePoint3d* m_PickPoint;
-	const OdGePoint3d* m_LastPoint;
+	OdGsView* m_View {nullptr};
+	OdGePoint3d* m_PickPoint {nullptr};
+	const OdGePoint3d* m_LastPoint {nullptr};
 	OdGePoint3dArray m_SnapPoints;
-	OdEdInputTracker* m_InputTracker;
+	OdEdInputTracker* m_InputTracker {nullptr};
 
-	double m_WorldToDevice;
+	double m_WorldToDevice {0.0};
 	double m_NearDist;
 	OdGePoint3d m_SnapPoint;
 	OdDb::OsnapMode m_SnapMode;
 	bool m_Redraw;
-	double m_HitRadius;
+	double m_HitRadius {hitradius};
 
 	long GetAperture(OdDbDatabase* database) const;
 
@@ -183,9 +185,10 @@ public:
 };
 
 class OSnapManager : public OdBaseSnapManager {
-	unsigned m_SnapModes;
-protected:
-	OSnapManager() noexcept;
+	unsigned m_SnapModes {0xFFFFFFFF};
+
+   protected:
+	OSnapManager() = default;
 public:
 	unsigned SnapModes() const noexcept override;
 	void SetSnapModes(unsigned snapModes) noexcept;

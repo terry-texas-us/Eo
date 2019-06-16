@@ -23,72 +23,91 @@ void AeSysView::InitializeConstraints() noexcept {
 	m_DisplayGridWithPoints = false;
 	m_GridSnap = false;
 }
+
 double AeSysView::AxisConstraintInfluenceAngle() const noexcept {
 	return m_AxisConstraintInfluenceAngle;
 }
+
 void AeSysView::SetAxisConstraintInfluenceAngle(const double angle) noexcept {
 	m_AxisConstraintInfluenceAngle = angle;
 }
+
 double AeSysView::AxisConstraintOffsetAngle() const noexcept {
 	return m_AxisConstraintOffsetAngle;
 }
+
 void AeSysView::SetAxisConstraintOffsetAngle(const double angle) noexcept {
 	m_AxisConstraintOffsetAngle = angle;
 }
+
 OdGePoint3d AeSysView::GridOrigin() const noexcept {
 	return m_GridOrigin;
 }
+
 void AeSysView::SetGridOrigin(const OdGePoint3d& origin) noexcept {
 	m_GridOrigin = origin;
 }
+
 bool AeSysView::DisplayGridWithLines() const noexcept {
 	return m_DisplayGridWithLines;
 }
+
 void AeSysView::EnableDisplayGridWithLines(bool display) noexcept {
 	m_DisplayGridWithLines = display;
 }
+
 void AeSysView::EnableDisplayGridWithPoints(bool display) noexcept {
 	m_DisplayGridWithPoints = display;
 }
+
 bool AeSysView::DisplayGridWithPoints() const noexcept {
 	return m_DisplayGridWithPoints;
 }
+
 bool AeSysView::GridSnap() const noexcept {
 	return m_GridSnap;
 }
+
 void AeSysView::EnableGridSnap(bool snap) noexcept {
 	m_GridSnap = snap;
 }
+
 void AeSysView::GetGridLineSpacing(double& x, double& y, double& z) noexcept {
 	x = m_XGridLineSpacing;
 	y = m_YGridLineSpacing;
 	z = m_ZGridLineSpacing;
 }
+
 void AeSysView::SetGridLineSpacing(double x, double y, double z) noexcept {
 	m_XGridLineSpacing = x;
 	m_YGridLineSpacing = y;
 	m_ZGridLineSpacing = z;
 }
+
 void AeSysView::GetGridPointSpacing(double& x, double& y, double& z) noexcept {
 	x = m_XGridPointSpacing;
 	y = m_YGridPointSpacing;
 	z = m_ZGridPointSpacing;
 }
+
 void AeSysView::SetGridPointSpacing(double x, double y, double z) noexcept {
 	m_XGridPointSpacing = x;
 	m_YGridPointSpacing = y;
 	m_ZGridPointSpacing = z;
 }
+
 void AeSysView::GetGridSnapSpacing(double& x, double& y, double& z) noexcept {
 	x = m_XGridSnapSpacing;
 	y = m_YGridSnapSpacing;
 	z = m_ZGridSnapSpacing;
 }
+
 void AeSysView::SetGridSnapSpacing(double x, double y, double z) noexcept {
 	m_XGridSnapSpacing = x;
 	m_YGridSnapSpacing = y;
 	m_ZGridSnapSpacing = z;
 }
+
 void AeSysView::DisplayGrid(CDC* deviceContext) {
 	const double dHalfPts = m_MaximumDotsPerLine * 0.5;
 
@@ -169,11 +188,13 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 		}
 	}
 }
+
 OdGePoint3d AeSysView::SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	EoGeLineSeg3d Line(startPoint, endPoint);
 
 	return (Line.ConstrainToAxis(m_AxisConstraintInfluenceAngle, m_AxisConstraintOffsetAngle));
 }
+
 OdGePoint3d AeSysView::SnapPointToGrid(const OdGePoint3d& point) noexcept {
 	OdGePoint3d	pt = point;
 

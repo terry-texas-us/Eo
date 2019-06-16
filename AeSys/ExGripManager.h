@@ -63,7 +63,7 @@ using OdExGripDragPtr = OdSmartPtr<class OdExGripDrag>;
 class OdExGripDrag : public OdGiDrawableImpl<> {
 public:
 	OdExGripDrag() noexcept;
-	~OdExGripDrag();
+	~OdExGripDrag() = default;
 	static OdExGripDragPtr createObject(OdDbStub* id, OdBaseGripManager* owner);
 	static OdExGripDragPtr createObject(OdDbBaseFullSubentPath entPath, OdBaseGripManager* owner);
 
@@ -192,13 +192,13 @@ protected:
 
 class OdExGripDbReactor : public OdDbDatabaseReactor {
 public:
-	OdExGripDbReactor() noexcept;
+	OdExGripDbReactor() = default;
 	void objectAppended(const OdDbDatabase* database, const OdDbObject* dbObject) noexcept override;
 	void objectModified(const OdDbDatabase* database, const OdDbObject* dbObject) override;
 	void objectErased(const OdDbDatabase* database, const OdDbObject* dbObject, bool erased = true) override;
 
 public:
-	class OdExGripManager* m_GripManager;
+	class OdExGripManager* m_GripManager {nullptr};
 };
 
 using OdExGripDbReactorPtr = OdSmartPtr<OdExGripDbReactor>;
@@ -212,7 +212,7 @@ class OdExGripManager : public OdBaseGripManager {
 
 public: // Construction. Initialization.
 	OdExGripManager() noexcept;
-	~OdExGripManager();
+	~OdExGripManager() = default;
 	void Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr getSSet);
 	void Uninitialize();
 
@@ -253,8 +253,9 @@ private:
 	OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
 
 	OdGsLayoutHelperPtr m_LayoutHelper;
-	OdDbCommandContext* m_CommandContext;
-	OdGsModel* m_pGsModel;
+	OdDbCommandContext* m_CommandContext {nullptr};
+	OdGsModel* m_pGsModel {nullptr};
+
 	OdGsModel* GetGsModel() noexcept override { return m_pGsModel; }
 	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_LayoutHelper.get(); }
 	void Disable(bool disable) noexcept override;

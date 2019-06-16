@@ -39,8 +39,8 @@ public:
 	void SetStatusPaneTextColorAt(int index, COLORREF textColor = COLORREF(-1));
 
 private:
-	int m_CurrentProgress;
-	bool m_InProgress;
+	int m_CurrentProgress {0};
+	bool m_InProgress {false};
 
 public:
 	void UpdateMDITabs(BOOL resetMDIChild);
@@ -48,7 +48,7 @@ public:
 public:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	BOOL LoadFrame(unsigned resourceId, unsigned long defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = nullptr, CCreateContext* createContext = nullptr) override;
-	~CMainFrame();
+	~CMainFrame() = default;
 #ifdef _DEBUG
 	void AssertValid() const override;
 	void Dump(CDumpContext& dc) const override;

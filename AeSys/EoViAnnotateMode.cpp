@@ -27,7 +27,7 @@ void AeSysView::OnAnnotateModeLine() {
 		EoViAnn_points.append(CurrentPnt);
 	} else {
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP2, EoViAnn_points[0], CurrentPnt)) {
-			EoDbGroup* Group = new EoDbGroup;
+			auto Group {new EoDbGroup};
 			GetDocument()->AddWorkLayerGroup(Group);
 
 			if (m_PreviousOp == ID_OP3) {
@@ -56,7 +56,7 @@ void AeSysView::OnAnnotateModeArrow() {
 		EoViAnn_points.append(CurrentPnt);
 	} else {
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP3, EoViAnn_points[0], CurrentPnt)) {
-			EoDbGroup* Group = new EoDbGroup;
+			auto Group {new EoDbGroup};
 
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
@@ -92,7 +92,7 @@ void AeSysView::OnAnnotateModeBubble() {
 	if (dlg.DoModal() == IDOK) {
 		CurrentText = dlg.m_sText;
 	}
-	EoDbGroup* Group = new EoDbGroup;
+	auto Group {new EoDbGroup};
 	GetDocument()->AddWorkLayerGroup(Group);
 	if (m_PreviousOp == 0) { // No operation pending
 		EoViAnn_points.clear();
@@ -230,11 +230,11 @@ void AeSysView::OnAnnotateModeUnderline() {
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
 	EoDbText* pText = SelectTextUsingPoint(CurrentPnt);
-	if (pText != 0) {
+	if (pText != nullptr) {
 		OdGePoint3dArray Underline;
 		pText->GetBoundingBox(Underline, GapSpaceFactor());
 
-		EoDbGroup* Group = new EoDbGroup;
+		auto Group {new EoDbGroup};
 
 		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
@@ -267,12 +267,12 @@ void AeSysView::OnAnnotateModeBox() {
 		bool bG1Flg = false;
 		bool bG2Flg = false;
 		EoDbText* pText = SelectTextUsingPoint(EoViAnn_points[0]);
-		if (pText != 0) {
+		if (pText != nullptr) {
 			pText->GetBoundingBox(ptsBox1, GapSpaceFactor());
 			bG1Flg = true;
 		}
 		pText = SelectTextUsingPoint(CurrentPnt);
-		if (pText != 0) {
+		if (pText != nullptr) {
 			pText->GetBoundingBox(ptsBox2, GapSpaceFactor());
 			bG2Flg = true;
 		}
@@ -297,7 +297,7 @@ void AeSysView::OnAnnotateModeBox() {
 			JoinedBoxes[3].x = JoinedBoxes[0].x;
 			JoinedBoxes[3].y = JoinedBoxes[2].y;
 
-			EoDbGroup* Group = new EoDbGroup;
+			auto Group {new EoDbGroup};
 
 			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 

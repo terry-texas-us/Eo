@@ -77,9 +77,6 @@ OdExGripDrag::OdExGripDrag() noexcept {
 	m_GripManager = nullptr;
 }
 
-OdExGripDrag::~OdExGripDrag() {
-}
-
 OdDbStub* OdExGripDrag::entityId() const {
 	return m_SubentPath.objectIds().last();
 }
@@ -307,7 +304,7 @@ OdExGripData::OdExGripData() noexcept {
 OdExGripData::~OdExGripData() {
 	if (m_GripData.get() && m_GripData->alternateBasePoint()) {
 		delete m_GripData->alternateBasePoint();
-		m_GripData->setAlternateBasePoint(0);
+		m_GripData->setAlternateBasePoint(nullptr);
 	}
 }
 
@@ -736,7 +733,7 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 				aExt.resize(aOldPts.size());
 				const auto Size = aExt.size();
 				for (unsigned i = 0; i < Size; i++) {
-					aExt[i] = OdExGripData::createObject(id, 0, aOldPts[i], this);
+					aExt[i] = OdExGripData::createObject(id, nullptr, aOldPts[i], this);
 				}
 			}
 		}
@@ -1032,15 +1029,10 @@ void OdExGripManager::OnModified(OdGiDrawable* grip) {
 
 OdExGripManager::OdExGripManager() noexcept {
 	m_LayoutHelper = nullptr;
-	m_CommandContext = nullptr;
-	m_pGsModel = nullptr;
 
 	m_cDbReactor.m_GripManager = this;
 
 	m_pGetSelectionSetPtr = nullptr;
-}
-
-OdExGripManager::~OdExGripManager() {
 }
 
 void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel * gsModel, OdDbCommandContext * dbCommandContext, GetSelectionSetPtr pGetSSet) {
@@ -1235,7 +1227,7 @@ int OdExGripManager::addDrawables(OdGsView* view) {
 	const auto Size = m_GripDrags.size();
 
 	for (unsigned i = 0; i < Size; i++) {
-		view->add(m_GripDrags[i].get(), /*m_pGsModel*/ 0);
+		view->add(m_GripDrags[i].get(), /*m_pGsModel*/ nullptr);
 	}
 	return gsl::narrow_cast<int>(Size);
 }
@@ -1410,10 +1402,6 @@ void OdExGripManager::DragStatus(OdGiDrawable* entity, OdDb::DragStat st) {
 bool OdExGripManager::IsModel(OdGiDrawable* entity) noexcept {
 	OdDbEntity* Entity {OdDbEntity::cast(entity)};
 	return !Entity || Entity->database()->getTILEMODE();
-}
-
-OdExGripDbReactor::OdExGripDbReactor() noexcept
-	: m_GripManager(nullptr) {
 }
 
 void OdExGripDbReactor::objectAppended(const OdDbDatabase* database, const OdDbObject* dbObject) noexcept {

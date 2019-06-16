@@ -6,9 +6,10 @@
 /// </remarks>
 
 class EoVaxFloat {
-	float m_f;
-public:
-	EoVaxFloat();
+	float m_f {0.0f};
+
+   public:
+	EoVaxFloat() = default;
 	void Convert(const double& dMS) noexcept;
 	double Convert();
 };
@@ -26,7 +27,7 @@ public:
 		z.Convert(point.z);
 	}
 	OdGePoint3d Convert() {
-		return OdGePoint3d(x.Convert(), y.Convert(), z.Convert());
+		return {x.Convert(), y.Convert(), z.Convert()};
 	}
 };
 

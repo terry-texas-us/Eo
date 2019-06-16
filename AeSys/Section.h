@@ -8,14 +8,14 @@ public:
 	static const long Fixed = 0x0010;
 
 private:
-	double m_Width;
-	double m_Depth;
-	int m_Properties;
+	double m_Width {0.0};
+	double m_Depth {0.0};
+	int m_Properties {0};
 
 public:
-	Section();
+	Section() = default;
 	Section(double width, double depth, long properties) noexcept;
-	~Section();
+	~Section() = default;
 
 	bool operator==(const Section& other) noexcept;
 	bool operator!=(const Section& other) noexcept;

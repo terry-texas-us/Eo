@@ -111,7 +111,7 @@ void AeSysView::OnLpdModeDuct() {
 				m_ContinueSection = true;
 			}
 			if (TransitionLength != 0.0) {
-				EoDbGroup* Group = new EoDbGroup;
+				auto Group {new EoDbGroup};
 				GetDocument()->AddWorkLayerGroup(Group);
 				GenerateTransition(ReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection, Group);
 				m_ContinueSection = false;
@@ -205,7 +205,7 @@ void AeSysView::OnLpdModeEll() {
 		Section ExistingSection(EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular);
 
 		auto BeginPointPrimitive {ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive)};
-		if (BeginPointPrimitive != 0) {
+		if (BeginPointPrimitive != nullptr) {
 			EoGeLineSeg3d ExistingSectionReferenceLine(BeginPointPrimitive->Position(), CurrentPnt);
 
 			const auto IntersectionPoint(ExistingSectionReferenceLine.ProjPt(m_PreviousPnt));
@@ -366,7 +366,7 @@ void AeSysView::DoDuctModeMouseMove() {
 			Section ExistingSection(EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular);
 
 			auto BeginPointPrimitive {ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive)};
-			if (BeginPointPrimitive != 0) {
+			if (BeginPointPrimitive != nullptr) {
 				EoGeLineSeg3d ExistingSectionReferenceLine(BeginPointPrimitive->Position(), CurrentPnt);
 
 				const OdGePoint3d IntersectionPoint(ExistingSectionReferenceLine.ProjPt(m_PreviousPnt));

@@ -16,7 +16,7 @@ public:
 		m_pUnderlayObj(object) {
 	}
 	T* operator->() {
-		if (m_pUnderlayObj == 0)
+		if (m_pUnderlayObj == nullptr)
 			throw OdError(eNullObjectPointer);
 		return m_pUnderlayObj;
 	}

@@ -225,7 +225,7 @@ public:
 
 	OdString getTempPath() const override /* ExSystemServices*/;
 
-	BOOL ProcessShellCommand(CCommandLineInfo& rCmdInfo); // hides non-virtual function of parent
+	BOOL ProcessShellCommand(CCommandLineInfo& commandLineInfo); // hides non-virtual function of parent
 	
 	void initPlotStyleSheetEnv();
 
@@ -265,7 +265,7 @@ public:
 
 //	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 //	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
-	bool getPassword(const OdString& dwgName, bool isXref, OdPassword& password) override;
+	bool getPassword(const OdString& drawingName, bool isXref, OdPassword& password) override;
 
 	OdDbPageControllerPtr newPageController() override;
 	int setPagingType(int pagingType) noexcept;

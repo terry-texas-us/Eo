@@ -38,24 +38,10 @@ bool OdBaseSnapManager::SubentId::operator==(const SubentId& other) const {
 	return true;
 }
 
-#define hitradius 15
-
-//#define maxhistory 7
-
 OdBaseSnapManager::OdBaseSnapManager() noexcept
-	: m_InputTracker(nullptr)
-	, m_SnapMode(OdDb::OsnapMode(0))
-	, m_View(nullptr)
-	, m_HitRadius(hitradius)
-	, m_PickPoint(nullptr)
-	, m_LastPoint(nullptr)
-	, m_WorldToDevice(0.0)
+	: m_SnapMode(OdDb::OsnapMode(0))
 	, m_NearDist(std::numeric_limits<double>::max())
 	, m_Redraw(m_Redraw) {
-}
-
-OSnapManager::OSnapManager() noexcept
-	: m_SnapModes(0xFFFFFFFF) {
 }
 
 unsigned OSnapManager::SnapModes() const noexcept{
@@ -369,7 +355,7 @@ bool OdBaseSnapManager::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 }
 
 bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint) {
-	OdEdPointTrackerWithSnapInfo* TrackerSnapInfo = dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker);
+	auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
 
 	if (TrackerSnapInfo) { TrackerSnapInfo->m_SnapContext.mValid = false; }
 
@@ -487,7 +473,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 		SETBIT(nSnapModes, ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan) | ToSnapModes(OdDb::kOsModePerp), 0);
 		ModelLastPoint = ModelToWorldTransform * *m_LastPoint;
 	}
-	OdEdPointTrackerWithSnapInfo* PointTrackerWithSnapInfo = dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker);
+	auto PointTrackerWithSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
 
 	OdDbEntityPtr Entity {selectedEntityData.SubentId.m_Path.first().safeOpenObject()};
 	const auto Marker {selectedEntityData.SubentId.m_Marker};
@@ -561,16 +547,16 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode & pathNode, const O
 				Checkpoint(OdDb::kOsModeCen, m_Centers[Marker].m_Point);
 			}
 		}
-		return unsigned long(kContinue);
+		return static_cast<unsigned long>(kContinue);
 	}
 
 	auto Entity {OdDbEntity::cast(OdDbObjectId(pathNode.persistentDrawableId()).openObject())};
 
-	if (Entity.isNull()) { return unsigned long(kSkipDrawable); }
+	if (Entity.isNull()) { return static_cast<unsigned long>(kSkipDrawable); }
 
 	m_SelectedEntityData.append()->set(pathNode);
 
-	return unsigned long(kSkipDrawable);
+	return static_cast<unsigned long>(kSkipDrawable);
 }
 
 void OdBaseSnapManager::RecalculateEntityCenters() {
