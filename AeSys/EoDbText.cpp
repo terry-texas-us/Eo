@@ -283,15 +283,15 @@ bool EoDbText::Write(EoDbFile & file) const {
 void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	unsigned short NumberOfCharacters = static_cast<unsigned short>(m_strText.GetLength());
 
-	buffer[3] = static_cast<signed char>((86 + NumberOfCharacters) / 32);
+	buffer[3] = static_cast<unsigned char>((86 + NumberOfCharacters) / 32);
 	*((unsigned short*)& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_FontDefinition.Precision());
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_FontDefinition.Precision());
 	*((short*)& buffer[8]) = 0;
 	((EoVaxFloat*)& buffer[10])->Convert(m_FontDefinition.CharacterSpacing());
-	buffer[14] = static_cast<signed char>(m_FontDefinition.Path());
-	buffer[15] = static_cast<signed char>(m_FontDefinition.HorizontalAlignment());
-	buffer[16] = static_cast<signed char>(m_FontDefinition.VerticalAlignment());
+	buffer[14] = static_cast<unsigned char>(m_FontDefinition.Path());
+	buffer[15] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
+	buffer[16] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
 
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
 	((EoVaxPoint3d*)& buffer[17])->Convert(ReferenceSystem.Origin());
@@ -305,7 +305,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
 		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[CharacterIndex]);
 	}
-	file.Write(buffer, buffer[3] * 32);
+	file.Write(buffer, buffer[3] * 32u);
 }
 
 EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
@@ -868,7 +868,6 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 
 	auto ptStroke {OdGePoint3d::kOrigin};
 	auto ptChrPos {ptStroke};
-	const auto ptLinePos {ptChrPos};
 
 	int n {startPosition};
 

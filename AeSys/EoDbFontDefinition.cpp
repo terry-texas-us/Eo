@@ -5,9 +5,6 @@
 #include "EoDbFile.h"
 #include "EoDbText.h"
 
-EoDbFontDefinition::EoDbFontDefinition() {
-}
-
 EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
 	m_Precision = other.m_Precision;
 	m_FontName = other.m_FontName;
