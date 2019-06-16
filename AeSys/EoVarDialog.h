@@ -21,6 +21,6 @@ private:
 	void SetupGripper();
 	void makeGripper();
 	CPoint m_origSize;
-	BOOL m_bInitialized;
+	BOOL m_bInitialized {FALSE};
 	EoGripperScrollBar m_Grip;
 };

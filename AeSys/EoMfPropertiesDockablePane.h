@@ -11,7 +11,7 @@ public:
 
 class EoMfPropertiesDockablePane : public CDockablePane {
 public:
-	EoMfPropertiesDockablePane() noexcept;
+	EoMfPropertiesDockablePane() = default;
 
 	void AdjustLayout() override;
 
@@ -24,7 +24,7 @@ protected:
 	enum WorkspaceTabsSubItems { kTabsStyle, kTabLocation, kTabsAutoColor, kTabIcons, kTabBorderSize, kActiveViewScale };
 
 public:
-	~EoMfPropertiesDockablePane();
+	~EoMfPropertiesDockablePane() = default;
 
 protected:
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
@@ -48,7 +48,7 @@ protected:
 	void SetPropertyGridFont();
 	void SetWorkspaceTabsSubItemsState();
 
-	int m_nComboHeight;
+	int m_nComboHeight {0};
 
 	static std::vector<const wchar_t*> TabsStyles;
 	static std::vector<const wchar_t*> TabsLocations;

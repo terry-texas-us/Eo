@@ -2,10 +2,10 @@
 
 class EoMfOutputListBox : public CListBox {
 public:
-	EoMfOutputListBox();
+	EoMfOutputListBox() = default;
 
 public:
-	virtual ~EoMfOutputListBox();
+	virtual ~EoMfOutputListBox() = default;
 
 protected:
 	void OnContextMenu(CWnd* pWnd, CPoint point);
@@ -18,7 +18,7 @@ protected:
 
 class EoMfOutputDockablePane : public CDockablePane {
 public:
-	EoMfOutputDockablePane();
+	EoMfOutputDockablePane() = default;
 
 protected:
 	CFont m_Font;
@@ -28,7 +28,7 @@ protected:
 	EoMfOutputListBox m_OutputReportsList;
 
 public:
-	virtual ~EoMfOutputDockablePane();
+	virtual ~EoMfOutputDockablePane() = default;
 	void ModifyCaption(const CString& string) {
 		SetWindowTextW(string);
 	}

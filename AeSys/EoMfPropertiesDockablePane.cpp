@@ -13,13 +13,6 @@ static char THIS_FILE[] = __FILE__;
 vector<const wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
 vector<const wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
 
-EoMfPropertiesDockablePane::EoMfPropertiesDockablePane() noexcept {
-	m_nComboHeight = 0;
-}
-
-EoMfPropertiesDockablePane::~EoMfPropertiesDockablePane() {
-}
-
 BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SETFOCUS()

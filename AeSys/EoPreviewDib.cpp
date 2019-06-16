@@ -83,7 +83,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 
 		cr = Calc(pHeader->biWidth, pHeader->biHeight, width, height);
 
-		unsigned char* p = (unsigned char*)pHeader;
+		auto p = (unsigned char*)pHeader;
 		p += pHeader->biSize;
 		switch (pHeader->biBitCount) {
 			case 1:
@@ -116,7 +116,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 			aldusMFHeader = (ALDUSMFHEADER*)m_odImage.wmf.begin();
 			seekpos = ALDUSMFHEADERSIZE;
 		}
-		unsigned char* p = (unsigned char*)m_odImage.wmf.begin();
+		auto p = (unsigned char*)m_odImage.wmf.begin();
 		mfHeader = (METAHEADER*)(p + seekpos);
 
 		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) { return; }

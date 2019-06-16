@@ -12,10 +12,6 @@ static char THIS_FILE[] = __FILE__;
 
 // COutputBar
 
-EoMfOutputDockablePane::EoMfOutputDockablePane() {
-}
-EoMfOutputDockablePane::~EoMfOutputDockablePane() {
-}
 BEGIN_MESSAGE_MAP(EoMfOutputDockablePane, CDockablePane)
 	ON_WM_CREATE()
 	ON_WM_SIZE()
@@ -63,12 +59,6 @@ void EoMfOutputDockablePane::OnSize(unsigned type, int cx, int cy) {
 	m_wndTabs.SetWindowPos(nullptr, - 1, - 1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-EoMfOutputListBox::EoMfOutputListBox() {
-}
-
-EoMfOutputListBox::~EoMfOutputListBox() {
-}
-
 BEGIN_MESSAGE_MAP(EoMfOutputListBox, CListBox)
 	ON_WM_CONTEXTMENU()
 	ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
@@ -84,8 +74,8 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 		CMenu Menu;
 		Menu.LoadMenuW(IDR_OUTPUT_POPUP);
 
-		CMenu* SubMenu = Menu.GetSubMenu(0);
-		CMFCPopupMenu* PopupMenu = new CMFCPopupMenu;
+		auto SubMenu {Menu.GetSubMenu(0)};
+		auto PopupMenu {new CMFCPopupMenu};
 
 		if (!PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE)) { return; }
 
@@ -95,16 +85,16 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 	SetFocus();
 }
 void EoMfOutputListBox::OnEditCopy() noexcept {
-	::MessageBoxW(0, L"Copy output", L"Testing", 0);
+	::MessageBoxW(nullptr, L"Copy output", L"Testing", 0);
 }
 
 void EoMfOutputListBox::OnEditClear() noexcept {
-	::MessageBoxW(0, L"Clear output", L"Testing", 0);
+	::MessageBoxW(nullptr, L"Clear output", L"Testing", 0);
 }
 
 void EoMfOutputListBox::OnViewOutput() {
-	CDockablePane* ParentBar {DYNAMIC_DOWNCAST(CDockablePane, GetOwner())};
-	CMDIFrameWndEx* MainFrame = DYNAMIC_DOWNCAST(CMDIFrameWndEx, GetTopLevelFrame());
+	auto ParentBar {DYNAMIC_DOWNCAST(CDockablePane, GetOwner())};
+	auto MainFrame {DYNAMIC_DOWNCAST(CMDIFrameWndEx, GetTopLevelFrame())};
 
 	if (MainFrame != nullptr && ParentBar != nullptr) {
 		MainFrame->SetFocus();

@@ -9,11 +9,10 @@ static char THIS_FILE[] = __FILE__;
 
 EoVarDialog::EoVarDialog(const wchar_t* templateName, CWnd* parent)
 	: CDialog(templateName, parent) {
-	m_bInitialized = FALSE;
 }
+
 EoVarDialog::EoVarDialog(unsigned templateId, CWnd* parent)
 	: CDialog(templateId, parent) {
-	m_bInitialized = FALSE;
 }
 BEGIN_MESSAGE_MAP(EoVarDialog, CDialog)
 	ON_WM_SIZE()
