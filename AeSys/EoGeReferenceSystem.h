@@ -7,19 +7,19 @@ class EoDbCharacterCellDefinition;
 class EoDbFile;
 
 class EoGeReferenceSystem {
-	OdGePoint3d	m_Origin;
-	OdGeVector3d m_XDirection;
-	OdGeVector3d m_YDirection;
+	OdGePoint3d m_Origin {OdGePoint3d::kOrigin};
+	OdGeVector3d m_XDirection {OdGeVector3d::kXAxis};
+	OdGeVector3d m_YDirection {OdGeVector3d::kYAxis};
 
 public: // Constructors and destructor
 
-	EoGeReferenceSystem() noexcept;
+	EoGeReferenceSystem() = default;
 	EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition);
 	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition);
 
 	EoGeReferenceSystem(const EoGeReferenceSystem& other);
-	EoGeReferenceSystem& operator=(const EoGeReferenceSystem& other) noexcept;
+	EoGeReferenceSystem& operator=(const EoGeReferenceSystem& other) = default;
 
 	~EoGeReferenceSystem() = default;
 

@@ -31,36 +31,33 @@ public:
 	static const short AV_NEARCLIPPINGATEYE = 0x10; // bit 16 Front clipping plane is located at the camera
 
 protected:
-	short m_ViewMode;
-	OdGsView::RenderMode m_RenderMode;
+	short m_ViewMode {0}; // Parallel projection, No front clipping, No back clipping
+	OdGsView::RenderMode m_RenderMode {OdGsView::k2DOptimized};
 
-	double m_Elevation; // elevation of the UCS plane for this view
+	double m_Elevation {0.0}; // elevation of the UCS plane for this view
+	double m_LensLength {50.0}; // lens length used for perspective mode in this view
 
-	OdGePoint3d m_Position;
-	OdGePoint3d m_Target;
-	OdGeVector3d m_ViewUp;
+	OdGePoint3d m_Position {OdGePoint3d::kOrigin + OdGeVector3d::kZAxis * m_LensLength};
+	OdGePoint3d m_Target {OdGePoint3d::kOrigin};
+	OdGeVector3d m_ViewUp {OdGeVector3d::kYAxis};
 
+	double m_TwistAngle {0.0}; // in radians
 	// View-Specific coordinate systems
-	double m_FieldWidthMinimum;
-	double m_FieldHeightMinimum;
-	double m_FieldWidthMaximum;
-	double m_FieldHeightMaximum;
-
-	double m_TwistAngle; // in radians
-
-	double m_LensLength; // lens length used for perspective mode in this view
-	double m_NearClipDistance; // distance from the target to the near (front) clipping plane along the target-camera line.
-	double m_FarClipDistance; // distance from the target to the far (back) clipping plane along the target-camera line
+	double m_FieldWidthMinimum {-0.5};
+	double m_FieldHeightMinimum {-0.5};
+	double m_FieldWidthMaximum {0.5};
+	double m_FieldHeightMaximum {0.5};
+	double m_NearClipDistance {20.0}; // distance from the target to the near (front) clipping plane along the target-camera line.
+	double m_FarClipDistance {100.0}; // distance from the target to the far (back) clipping plane along the target-camera line
 
 public: // Constructors and destructor
-
 	EoGsAbstractView();
 	EoGsAbstractView(const EoGsAbstractView& other);
-    EoGsAbstractView& operator=(const EoGsAbstractView& other) noexcept;
+	EoGsAbstractView& operator=(const EoGsAbstractView& other) = default;
 
-    virtual ~EoGsAbstractView();
+	virtual ~EoGsAbstractView() = default;
 
-public: // Methods
+   public: // Methods
 	void AdjustWindow(const double aspectRatio) noexcept;
 	void EnablePerspective(bool enabled) noexcept;
 	double FarClipDistance() const noexcept;

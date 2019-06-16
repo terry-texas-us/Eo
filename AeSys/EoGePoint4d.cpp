@@ -10,21 +10,25 @@ EoGePoint4d::EoGePoint4d() {
 	z = 0.0;
 	w = 1.0;
 }
+
 EoGePoint4d::EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept {
 	x = initialPoint.x;
 	y = initialPoint.y;
 	z = initialPoint.z;
 	w = initialW;
 }
+
 void EoGePoint4d::operator/=(const double d) noexcept {
 	x /= d;
 	y /= d;
 	z /= d;
 	w /= d;
 }
+
 OdGeVector3d EoGePoint4d::operator-(const EoGePoint4d& point) {
-	return OdGeVector3d(x - point.x, y - point.y, z - point.z);
+	return {x - point.x, y - point.y, z - point.z};
 }
+
 EoGePoint4d EoGePoint4d::operator-(const OdGeVector3d& vector) {
 	EoGePoint4d Point;
 	Point.x = x - vector.x;
@@ -33,6 +37,7 @@ EoGePoint4d EoGePoint4d::operator-(const OdGeVector3d& vector) {
 	Point.w = w;
 	return Point;
 }
+
 EoGePoint4d EoGePoint4d::operator+(const OdGeVector3d& vector) {
 	EoGePoint4d Point;
 	Point.x = x + vector.x;
@@ -41,6 +46,7 @@ EoGePoint4d EoGePoint4d::operator+(const OdGeVector3d& vector) {
 	Point.w = w;
 	return Point;
 }
+
 bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	const double BoundaryCodeA[] = {
 		ptA.w + ptA.x, ptA.w - ptA.x, ptA.w + ptA.y, ptA.w - ptA.y, ptA.w + ptA.z, ptA.w - ptA.z
@@ -91,6 +97,7 @@ bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	}
 	return true;
 }
+
 void EoGePoint4d::ClipPolygon(EoGePoint4dArray& pointsArray) {
 	static OdGePoint3d pointsOnClipPlanes[] = {
 		OdGePoint3d(- 1.0, 0.0, 0.0), OdGePoint3d(1.0, 0.0, 0.0), OdGePoint3d(0.0, - 1.0, 0.0), OdGePoint3d(0.0, 1.0, 0.0), OdGePoint3d(0.0, 0.0, - 1.0), OdGePoint3d(0.0, 0.0, 1.0)
@@ -115,6 +122,7 @@ void EoGePoint4d::ClipPolygon(EoGePoint4dArray& pointsArray) {
 		PointsArrayOut.RemoveAll();
 	}
 }
+
 void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdGePoint3d& pointOnPlane, const OdGeVector3d& planeNormal, EoGePoint4dArray& pointsArrayOut) {
 	if (pointsArrayIn.IsEmpty()) return;
 
@@ -150,6 +158,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 		pointsArrayOut.Add(pt);
 	}
 }
+
 EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint4d& endPoint, const EoGePoint4d& pointOnPlane, const OdGeVector3d& planeNormal) noexcept {
 	OdGeVector3d LineVector(endPoint.Convert3d() - startPoint.Convert3d());
 	const double DotProduct = planeNormal.dotProduct(LineVector);
@@ -162,15 +171,18 @@ EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint
 	}
 	return (startPoint - LineVector);
 }
+
 OdGePoint3d EoGePoint4d::Convert3d() const {
 	return OdGePoint3d(x / w, y / w, z / w);
 }
+
 double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept {
 	const double X = ptQ.x / ptQ.w - x / w;
 	const double Y = ptQ.y / ptQ.w - y / w;
 
 	return sqrt(X * X + Y * Y);
 }
+
 bool EoGePoint4d::IsInView() noexcept {
 	if (w + x <= 0. || w - x <= 0.0) return false;
 	if (w + y <= 0. || w - y <= 0.0) return false;
@@ -178,6 +190,7 @@ bool EoGePoint4d::IsInView() noexcept {
 
 	return true;
 }
+
 EoGePoint4d& EoGePoint4d::TransformBy(const EoGeMatrix3d& matrix) noexcept {
 	EoGePoint4d Point(*this);
 	Point.x = x * matrix.entry[0][0] + y * matrix.entry[0][1] + z * matrix.entry[0][2] + w * matrix.entry[0][3];
@@ -187,6 +200,7 @@ EoGePoint4d& EoGePoint4d::TransformBy(const EoGeMatrix3d& matrix) noexcept {
 	*this = Point;
 	return *this;
 }
+
 EoGePoint4d EoGePoint4d::Max(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	EoGePoint4d Point;
 	Point.x = EoMax(ptA.x, ptB.x);
@@ -195,6 +209,7 @@ EoGePoint4d EoGePoint4d::Max(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	Point.w = EoMax(ptA.w, ptB.w);
 	return Point;
 }
+
 EoGePoint4d EoGePoint4d::Min(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 	EoGePoint4d Point;
 	Point.x = EoMin(ptA.x, ptB.x);

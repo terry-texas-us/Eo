@@ -5,7 +5,7 @@ class EoGeReferenceSystem;
 class EoGeMatrix3d : public OdGeMatrix3d {
 public: // Constructors and destructor
 	EoGeMatrix3d();
-	virtual ~EoGeMatrix3d();
+	virtual ~EoGeMatrix3d() = default;
 
 public: // Methods
 	/// <summary>Builds rotation transformation matrices.</summary>

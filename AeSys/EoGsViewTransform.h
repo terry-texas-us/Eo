@@ -9,11 +9,11 @@ class EoGsViewTransform : public EoGsAbstractView {
 	EoGeMatrix3d m_ProjectionMatrix;
 
 public: // Constructors and destructor
-	EoGsViewTransform();
+	EoGsViewTransform() = default;
 	EoGsViewTransform(const EoGsViewTransform& other);
-	EoGsViewTransform& operator=(const EoGsViewTransform& other) noexcept;
+	EoGsViewTransform& operator=(const EoGsViewTransform& other) = default;
 
-	~EoGsViewTransform();
+	~EoGsViewTransform() = default;
 
 public: // Methods
 

@@ -2,18 +2,6 @@
 
 #include "EoGsViewport.h"
 
-EoGsViewport::EoGsViewport() noexcept
-	: m_DeviceHeightInPixels(0.0)
-	, m_DeviceWidthInPixels(0.0)
-	, m_DeviceHeightInInches(0.0)
-	, m_DeviceWidthInInches(0.0)
-	, m_HeightInPixels(0.0)
-	, m_WidthInPixels(0.0) {
-}
-
-EoGsViewport::~EoGsViewport() {
-};
-
 EoGsViewport::EoGsViewport(const EoGsViewport& viewport) noexcept {
 	m_DeviceHeightInPixels = viewport.m_DeviceHeightInPixels;
 	m_DeviceWidthInPixels = viewport.m_DeviceWidthInPixels;
@@ -23,16 +11,6 @@ EoGsViewport::EoGsViewport(const EoGsViewport& viewport) noexcept {
 	m_WidthInPixels = viewport.m_WidthInPixels;
 }
 
-EoGsViewport& EoGsViewport::operator=(const EoGsViewport& viewport) noexcept {
-	m_DeviceHeightInPixels = viewport.m_DeviceHeightInPixels;
-	m_DeviceWidthInPixels = viewport.m_DeviceWidthInPixels;
-	m_WidthInPixels = viewport.m_WidthInPixels;
-	m_HeightInPixels = viewport.m_HeightInPixels;
-	m_DeviceHeightInInches = viewport.m_DeviceHeightInInches;
-	m_DeviceWidthInInches = viewport.m_DeviceWidthInInches;
-
-	return *this;
-}
 CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
 	CPoint pnt;
 
@@ -41,6 +19,7 @@ CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
 
 	return pnt;
 }
+
 void EoGsViewport::DoProjection(CPoint* pnt, int numberOfPoints, EoGePoint4d* points) const noexcept {
 	for (int PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		pnt[PointIndex] = DoProjection(points[PointIndex]);

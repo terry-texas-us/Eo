@@ -3,7 +3,7 @@
 #include "EoGeMatrix3d.h"
 
 class EoGsModelTransform {
-	unsigned m_Depth;
+	unsigned m_Depth {0};
 
 	EoGeMatrix3d m_CurrentModelTransform;
 	EoGeMatrix3dList m_TransformMatrixList;
@@ -11,7 +11,7 @@ class EoGsModelTransform {
 public:
 
 	EoGsModelTransform();
-	~EoGsModelTransform();
+	~EoGsModelTransform() = default;
 	EoGeMatrix3d ModelMatrix() const noexcept;
 	unsigned Depth() const noexcept;
 	/// <summary> Removes the top transformation off the current transformation stack.</summary>

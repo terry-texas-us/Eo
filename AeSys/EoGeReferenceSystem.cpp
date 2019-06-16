@@ -3,12 +3,6 @@
 
 #include "EoDbFile.h"
 
-EoGeReferenceSystem::EoGeReferenceSystem() noexcept
-	: m_Origin(OdGePoint3d::kOrigin)
-	, m_XDirection(OdGeVector3d::kXAxis)
-	, m_YDirection(OdGeVector3d::kYAxis) {
-}
-
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition)
 	: m_Origin(origin) {
 	const auto PlaneNormal {view->CameraDirection()};
@@ -47,13 +41,6 @@ EoGeReferenceSystem::EoGeReferenceSystem(const EoGeReferenceSystem& other) {
 	m_YDirection = other.m_YDirection;
 }
 
-EoGeReferenceSystem& EoGeReferenceSystem::operator=(const EoGeReferenceSystem& other) noexcept {
-	m_Origin = other.m_Origin;
-	m_XDirection = other.m_XDirection;
-	m_YDirection = other.m_YDirection;
-
-	return (*this);
-}
 // <tas="Likely misuse of .normal"/>
 
 void EoGeReferenceSystem::GetUnitNormal(OdGeVector3d& normal) {

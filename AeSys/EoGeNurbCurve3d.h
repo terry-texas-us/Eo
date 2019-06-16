@@ -6,9 +6,9 @@ class EoGeNurbCurve3d : public OdGeNurbCurve3d {
 
 public:	// Constructors and destructor
 	EoGeNurbCurve3d();
-	EoGeNurbCurve3d(const EoGeNurbCurve3d& spline);
+	EoGeNurbCurve3d(const EoGeNurbCurve3d& spline) = default;
 	
-	virtual ~EoGeNurbCurve3d();
+	virtual ~EoGeNurbCurve3d() = default;
 
 public: // Methods
 

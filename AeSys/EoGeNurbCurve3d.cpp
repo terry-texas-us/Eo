@@ -8,11 +8,7 @@
 EoGeNurbCurve3d::EoGeNurbCurve3d()
 	: OdGeNurbCurve3d() {
 }
-EoGeNurbCurve3d::EoGeNurbCurve3d(const EoGeNurbCurve3d& spline) 
-	: OdGeNurbCurve3d(spline) {
-}
-EoGeNurbCurve3d::~EoGeNurbCurve3d() {
-}
+
 int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	const int NumberOfControlPoints = spline.numControlPoints();
 	const int Degree = EoMin(spline.degree(), NumberOfControlPoints - 1);
@@ -26,7 +22,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	const int Order = Degree + 1;
 
 	// <tas="Large allocation for weight array is really not used. Allocation failure not tested for"</tas>
-	double* Weight = new double[128 * 128];
+	auto Weight {new double[128 * 128]};
 	for (int i = 0; i < 128 * 128; i++) {
 		Weight[i] = 0.0;
 	}

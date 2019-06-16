@@ -7,10 +7,8 @@ public:
 	class LoadedApps : public OdArray<OdString>, public OdStaticRxObject<OdRxDLinkerReactor> {
 	public:
 		ODRX_HEAP_OPERATORS();
-		LoadedApps() noexcept
-			: m_pListBox(nullptr) {
-		}
-		CListBox* m_pListBox;
+		LoadedApps() = default;
+		CListBox* m_pListBox {nullptr};
 		void rxAppLoaded(OdRxModule* appModule) override;
 		void rxAppUnloaded(const OdString& appName) override;
 	};

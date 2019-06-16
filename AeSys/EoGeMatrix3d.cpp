@@ -8,13 +8,12 @@
 EoGeMatrix3d::EoGeMatrix3d()
 	: OdGeMatrix3d() {
 }
-EoGeMatrix3d::~EoGeMatrix3d() {
-}
 
 // Methods
 EoGeMatrix3d& EoGeMatrix3d::SetTo3AxisRotation(const OdGeVector3d& rotationAngles) {
 	setToIdentity();
 	EoGeMatrix3d RotationMatrix;
+
 	if (fabs(rotationAngles.x) != 0.0) {
 		RotationMatrix.setToRotation(EoArcLength(rotationAngles.x), OdGeVector3d::kXAxis);
 		preMultBy(RotationMatrix);
@@ -29,6 +28,7 @@ EoGeMatrix3d& EoGeMatrix3d::SetTo3AxisRotation(const OdGeVector3d& rotationAngle
 	}
 	return *this;
 }
+
 EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance) {
 	setToIdentity();
 
@@ -43,12 +43,13 @@ EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(double uMin, double uMax, do
 
 	return *this;
 }
+
 EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance) {
 	setToIdentity();
 
-	double FieldWidth = uMax - uMin;
-	double FieldHeight = vMax - vMin;
-	double NExtent = farClipDistance - nearClipDistance;
+	double FieldWidth {uMax - uMin};
+	double FieldHeight {vMax - vMin};
+	double NExtent {farClipDistance - nearClipDistance};
 
 	entry[0][0] = 2. * nearClipDistance / FieldWidth;
 	entry[0][2] = (uMax + uMin) / FieldWidth;
@@ -64,20 +65,21 @@ EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax,
 
 	return *this;
 }
+
 EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const OdGePoint3d target, const OdGeVector3d& viewUp) {
 	setToIdentity();
 
-	OdGeVector3d Normal = position - target;
+	OdGeVector3d Normal {position - target};
 	Normal.normalize();
 
-	OdGeVector3d vU = viewUp.crossProduct(Normal);
+	OdGeVector3d vU {viewUp.crossProduct(Normal)};
 
 	vU.normalize();
 
-	OdGeVector3d vV = Normal.crossProduct(vU);
+	OdGeVector3d vV {Normal.crossProduct(vU)};
 	vV.normalize();
 
-	const OdGeVector3d PositionAsVector = - position.asVector();
+	const OdGeVector3d PositionAsVector {-position.asVector()};
 
 	entry[0][0] = vU.x;
 	entry[0][1] = vU.y;
@@ -99,8 +101,9 @@ EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const
 
 OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& referenceSystem) {
 	OdGeMatrix3d ScaleMatrix;
-	const double XDirectionLength = referenceSystem.XDirection().length();
-	const double YDirectionLength = referenceSystem.YDirection().length();
+	const double XDirectionLength {referenceSystem.XDirection().length()};
+	const double YDirectionLength {referenceSystem.YDirection().length()};
+
 	if (XDirectionLength > DBL_EPSILON && YDirectionLength > DBL_EPSILON) {
 		ScaleMatrix.setToScaling(OdGeScale3d(1. / XDirectionLength, 1. / YDirectionLength, 1.0));
 
@@ -112,4 +115,3 @@ OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& ref
 	}
 	return OdGeMatrix3d::kIdentity;
 }
-
