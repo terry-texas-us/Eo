@@ -52,9 +52,9 @@ BOOL EoDlgSetupNote::OnInitDialog() {
 	Spacing.Format(L"%8.4f", m_FontDefinition->CharacterSpacing());
 	SetDlgItemTextW(IDC_TEXT_SPACING, Spacing);
 
-	CheckRadioButton(IDC_TEXT_ALIGN_HOR_LEFT, IDC_TEXT_ALIGN_HOR_RIGHT, IDC_TEXT_ALIGN_HOR_LEFT + m_FontDefinition->HorizontalAlignment() - 1);
-	CheckRadioButton(IDC_TEXT_ALIGN_VER_BOT, IDC_TEXT_ALIGN_VER_TOP, IDC_TEXT_ALIGN_VER_BOT - m_FontDefinition->VerticalAlignment() + 4);
-	CheckRadioButton(IDC_PATH_RIGHT, IDC_PATH_DOWN, IDC_PATH_RIGHT + m_FontDefinition->Path());
+	CheckRadioButton(IDC_TEXT_ALIGN_HOR_LEFT, IDC_TEXT_ALIGN_HOR_RIGHT, static_cast<int>(IDC_TEXT_ALIGN_HOR_LEFT + m_FontDefinition->HorizontalAlignment() - 1));
+	CheckRadioButton(IDC_TEXT_ALIGN_VER_BOT, IDC_TEXT_ALIGN_VER_TOP, static_cast<int>(IDC_TEXT_ALIGN_VER_BOT - m_FontDefinition->VerticalAlignment() + 4));
+	CheckRadioButton(IDC_PATH_RIGHT, IDC_PATH_DOWN, static_cast<int>(IDC_PATH_RIGHT + m_FontDefinition->Path()));
 
 	return TRUE;
 }

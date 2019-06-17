@@ -292,7 +292,7 @@ void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousS
 
 			if (GETBIT(cornerType, kChamfer)) {
 				auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};
-				Line->setColorIndex(PreviousLine->ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(PreviousLine->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
 			} else if (GETBIT(cornerType, kFillet)) {
@@ -304,7 +304,7 @@ void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousS
 
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1.0, 0.0, SweepAngle);
-				Ellipse->setColorIndex(PreviousLine->ColorIndex());
+				Ellipse->setColorIndex(static_cast<unsigned short>(PreviousLine->ColorIndex()));
 				Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 				Group->AddTail(EoDbEllipse::Create(Ellipse));
 			}

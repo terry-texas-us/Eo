@@ -120,7 +120,7 @@ void EoDbPrimitive::SetColorIndex2(short colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
-		Entity->setColorIndex(colorIndex);
+		Entity->setColorIndex(static_cast<unsigned short>(colorIndex));
 	}
 }
 

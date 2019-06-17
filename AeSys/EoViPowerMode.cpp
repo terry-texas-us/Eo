@@ -152,7 +152,7 @@ void AeSysView::DoPowerModeMouseMove() {
 
 				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 				auto Line {EoDbLine::Create(BlockTableRecord, pt1, CurrentPnt)};
-				Line->setColorIndex(pstate.ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 

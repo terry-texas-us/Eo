@@ -496,7 +496,6 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			case kUnderlayFile:
 			case kDefault:
 			case kPhotometricWebFile:
-			default:
 				return FilePathAndName.GetString();
 		}
 		if (hint != kTextureMapFile && Extension != L".shx" && Extension != L".pat" && Extension != L".ttf" && Extension != L".ttc" && Extension != L".otf") {
@@ -953,7 +952,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Save DWG with password", m_SaveWithPassword);
 	theApp.WriteString(L"recent GS", m_sVectorizerPath);
 	theApp.WriteString(L"Recent Command", m_RecentCommand);
-	theApp.WriteInt(L"Fill TTF text", (int) getTEXTFILL());
+	theApp.WriteInt(L"Fill TTF text", static_cast<int>(getTEXTFILL()));
 
 	SetRegistryBase(L"Options");
 	m_Options.Save();

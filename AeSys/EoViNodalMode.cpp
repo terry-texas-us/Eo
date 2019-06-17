@@ -42,7 +42,7 @@ void AeSysView::OnNodalModePoint() {
 
 			for (unsigned i = 0; i < Points.size(); i++) {
 				if (OdGeVector3d(CurrentPnt - Points[i]).length() <= NodalModePickTolerance) {
-					GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
+					GetDocument()->UpdateNodalList(Group, Primitive, Mask, static_cast<int>(i), Points[i]);
 				}
 			}
 		}
@@ -60,7 +60,7 @@ void AeSysView::OnNodalModeLine() {
 		Primitive->GetAllPoints(Points);
 
 		for (unsigned i = 0; i < Points.size(); i++) {
-			GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
+			GetDocument()->UpdateNodalList(Group, Primitive, Mask, static_cast<int>(i), Points[i]);
 		}
 	}
 }
@@ -90,7 +90,7 @@ void AeSysView::OnNodalModeArea() {
 
 					for (unsigned i = 0; i < Points.size(); i++) {
 						if (ContainmentOf(Points[i], MinExtent, MaxExtent)) {
-							GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
+							GetDocument()->UpdateNodalList(Group, Primitive, Mask, static_cast<int>(i), Points[i]);
 						}
 					}
 				}
@@ -146,7 +146,7 @@ void AeSysView::OnNodalModeToLine() {
 			while (PointPosition != nullptr) {
 				auto UniquePoint {GetDocument()->GetNextUniquePoint(PointPosition)};
 				auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
-				Line->setColorIndex(pstate.ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
 			}
@@ -226,9 +226,9 @@ void AeSysView::OnNodalModeToPolygon() {
 						}
 						else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
 							auto Hatch {dynamic_cast<EoDbHatch*>(Primitive)};
-							const int iPts = Hatch->NumberOfVertices();
+							const auto iPts {static_cast<unsigned>(Hatch->NumberOfVertices())};
 
-							for (int i = 0; i < iPts; i++) {
+							for (unsigned i = 0; i < iPts; i++) {
 								if (btest(Mask, i) && btest(Mask, ((i + 1) % iPts))) {
 									Points[0] = Hatch->GetPointAt(i);
 									Points[1] = Hatch->GetPointAt((i + 1) % iPts);
@@ -279,7 +279,7 @@ void AeSysView::OnNodalModeEngage() {
 		EngagedPrimitive()->GetAllPoints(Points);
 
 		for (unsigned i = 0; i < Points.size(); i++) {
-			GetDocument()->UpdateNodalList(EngagedGroup(), EngagedPrimitive(), Mask, i, Points[i]);
+			GetDocument()->UpdateNodalList(EngagedGroup(), EngagedPrimitive(), Mask, static_cast<int>(i), Points[i]);
 		}
 	}
 }
@@ -356,7 +356,7 @@ void AeSysView::OnNodalModeEscape() {
 
 void AeSysView::DoNodalModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
-	const int NumberOfPoints = m_NodalModePoints.size();
+	const auto NumberOfPoints {m_NodalModePoints.size()};
 
 	switch (PreviousNodalCommand) {
 		case ID_OP4:

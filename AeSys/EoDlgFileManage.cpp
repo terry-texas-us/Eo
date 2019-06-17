@@ -330,6 +330,7 @@ void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRE
 	}
 	*result = 0;
 }
+
 void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 	const int CurrentSelection = m_BlocksList.GetCurSel();
 	if (CurrentSelection != LB_ERR) {
@@ -339,11 +340,12 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 
 			EoDbBlock* Block = (EoDbBlock*) m_BlocksList.GetItemData(CurrentSelection);
 
-			m_Groups.SetDlgItemInt(IDC_GROUPS, Block->GetCount(), FALSE);
+			m_Groups.SetDlgItemInt(IDC_GROUPS, static_cast<unsigned>(Block->GetCount()), FALSE);
 			WndProcPreviewUpdate(m_PreviewWindowHandle, Block);
 		}
 	}
 }
+
 void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
 	const LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(notifyStructure);
 
@@ -382,7 +384,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 			EoDlgSetupColor Dialog;
 			Dialog.m_ColorIndex = static_cast<unsigned short>(LayerTableRecord->colorIndex());
 			if (Dialog.DoModal() == IDOK) {
-				Layer->SetColorIndex(Dialog.m_ColorIndex);
+				Layer->SetColorIndex(static_cast<short>(Dialog.m_ColorIndex));
 			}
 			break;
 		}

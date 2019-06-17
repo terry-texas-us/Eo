@@ -174,10 +174,11 @@ void EoDbPolyline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 }
 
 /// <summary> This function sets point to the 3D location of the vertex index in World Coordinates.</summary>
-void EoDbPolyline::GetPointAt(int vertexIndex, OdGePoint3d& point) const {
-	const OdGePoint3d Origin = OdGePoint3d::kOrigin + m_Normal * m_Elevation;
-	const OdGeVector3d XAxis = ComputeArbitraryAxis(m_Normal);
-	const OdGeVector3d YAxis = m_Normal.crossProduct(XAxis);
+void EoDbPolyline::GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const {
+	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
+	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
+	const auto YAxis {m_Normal.crossProduct(XAxis)};
+
 	OdGePlane Plane(Origin, XAxis, YAxis);
 	point.set(Plane, m_Vertices[vertexIndex]);
 }
@@ -189,9 +190,9 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 		const auto EndVertexIndex {sm_Edge % NumberOfVertices};
 
 		OdGePoint3d StartPoint;
-		GetPointAt(static_cast<int>(StartVertexIndex), StartPoint);
+		GetPointAt(StartVertexIndex, StartPoint);
 		OdGePoint3d EndPoint;
-		GetPointAt(static_cast<int>(EndVertexIndex), EndPoint);
+		GetPointAt(EndVertexIndex, EndPoint);
 
 		if (EndPoint.x > StartPoint.x) {
 			sm_PivotVertex = StartVertexIndex;
@@ -461,7 +462,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	Polyline->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Polyline);
-	Polyline->setColorIndex(pstate.ColorIndex());
+	Polyline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
@@ -476,7 +477,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 
 	blockTableRecord->appendOdDbEntity(Polyline);
 
-	Polyline->setColorIndex(file.ReadInt16());
+	Polyline->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
 

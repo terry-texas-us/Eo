@@ -206,9 +206,9 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	const auto CurrentLayerObjectId {m_Database->getCLAYER()};
 	auto Layers {document->LayerTable(OdDb::kForRead)};
 
-	const auto NumberOfLayers {ReadUInt16()};
+	const auto NumberOfLayers {static_cast<int>(ReadUInt16())};
 	
-	for (unsigned LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
+	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
 		
 		if (!Layer) { return; }
@@ -316,7 +316,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 
 		if (Layer->IsResident()) {
 			WriteString(Layer->Name());
-			WriteUInt16(Layer->StateFlags() & 0x003c); // used to be separate set of state flags for tracings (only used bits 3-6)
+			WriteUInt16(static_cast<unsigned short>(Layer->StateFlags() & 0x003c)); // used to be separate set of state flags for tracings (only used bits 3-6)
 			WriteUInt16(Layer->StateFlags());
 			WriteInt16(Layer->ColorIndex());
 			WriteString(Layer->LinetypeName());

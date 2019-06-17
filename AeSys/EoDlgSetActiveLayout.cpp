@@ -47,14 +47,15 @@ void EoDlgSetActiveLayout::FillListBox() {
 		m_OldActiveLayout = -1;
 		while (!LayoutIterator->done()) {
 			OdDbLayoutPtr Layout {LayoutIterator->objectId().safeOpenObject()};
-			ItemIndex = Layout->getTabOrder();
+			ItemIndex = static_cast<unsigned>(Layout->getTabOrder());
 			
-			if (ItemIndex >= Items.size()) { Items.resize(ItemIndex + 1);
+			if (ItemIndex >= Items.size()) { 
+				Items.resize(ItemIndex + 1); 
 			}
 
 			Items[ItemIndex] = LayoutIterator->name();
 			
-			if (Layout->getBlockTableRecordId() == ActiveLayoutBlockTableRecord) { m_OldActiveLayout = ItemIndex; }
+			if (Layout->getBlockTableRecordId() == ActiveLayoutBlockTableRecord) { m_OldActiveLayout = static_cast<int>(ItemIndex); }
 
 			LayoutIterator->next();
 		}
@@ -62,7 +63,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		Layouts->ResetContent();
 
 		for (unsigned ItemIndex = 0; ItemIndex < Items.size(); ++ItemIndex) {
-			Layouts->InsertString(ItemIndex, Items[ItemIndex]);
+			Layouts->InsertString(static_cast<int>(ItemIndex), Items[ItemIndex]);
 		}
 		Layouts->SetSel(m_OldActiveLayout);
 		m_NewActiveLayout = m_OldActiveLayout;

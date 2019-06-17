@@ -72,7 +72,7 @@ class AeSysAppDocStaticRxObjects
 	: public OdDbLayoutManagerReactor
 	, public OdEdBaseIO
 {
-	ODRX_NO_HEAP_OPERATORS();
+	ODRX_NO_HEAP_OPERATORS()
 };
 
 class AeSysDoc

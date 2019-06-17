@@ -160,7 +160,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 				group->AddTail(Primitive);
 			} catch (const wchar_t* Message) {
 				theApp.AddStringToMessageList(Message);
-				file.Seek(Position + 32, CFile::begin);
+				file.Seek(static_cast<long long>(Position + 32), CFile::begin);
 			}
 		}
 	} catch (const wchar_t* Message) {
@@ -169,7 +169,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 
 			if (::MessageBoxW(nullptr, Message, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
 		}
-		file.Seek(Position + 32, CFile::begin);
+		file.Seek(static_cast<long long>(Position + 32), CFile::begin);
 	}
 	return true;
 }

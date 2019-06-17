@@ -90,9 +90,9 @@ void EoDbSpline::FormatGeometry(CString& geometry) const {
 }
 
 void EoDbSpline::GetAllPoints(OdGePoint3dArray& points) const {
-	points.setLogicalLength(m_Spline.numControlPoints());
-	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
-		points[ControlPointIndex] = m_Spline.controlPointAt(ControlPointIndex);
+	points.setLogicalLength(static_cast<unsigned>(m_Spline.numControlPoints()));
+	for (unsigned ControlPointIndex = 0; ControlPointIndex < static_cast<unsigned>(m_Spline.numControlPoints()); ControlPointIndex++) {
+		points[ControlPointIndex] = m_Spline.controlPointAt(static_cast<int>(ControlPointIndex));
 	}
 }
 
@@ -254,7 +254,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	Spline->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Spline);
-	Spline->setColorIndex(pstate.ColorIndex());
+	Spline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
@@ -270,7 +270,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 
 	blockTableRecord->appendOdDbEntity(Spline);
 
-	Spline->setColorIndex(file.ReadInt16());
+	Spline->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
@@ -318,7 +318,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 		ColorIndex = short(primitiveBuffer[6]);
 		LinetypeIndex = short(primitiveBuffer[7]);
 
-		NumberOfControlPoints = *((short*) &primitiveBuffer[8]);
+		NumberOfControlPoints = static_cast<unsigned short>(*((short*) &primitiveBuffer[8]));
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 10;
@@ -335,7 +335,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 
 	blockTableRecord->appendOdDbEntity(Spline);
 
-	Spline->setColorIndex(ColorIndex);
+	Spline->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Spline->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
 
 	const int Degree {EoMin(3, NumberOfControlPoints - 1)};

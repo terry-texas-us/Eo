@@ -303,7 +303,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	unsigned BufferOffset = 55;
 
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
-		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[CharacterIndex]);
+		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[static_cast<int>(CharacterIndex)]);
 	}
 	file.Write(buffer, buffer[3] * 32u);
 }
@@ -388,7 +388,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFil
 
 	blockTableRecord->appendOdDbEntity(Text);
 
-	Text->setColorIndex(file.ReadInt16());
+	Text->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 	/* short LinetypeIndex = */ file.ReadInt16();
 
 // <tas="Precision, FontName, and Path defined in the Text Style which is currently using the default EoStandard. This closely matches the Simplex.psf stroke font.">
@@ -558,7 +558,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 
 	blockTableRecord->appendOdDbEntity(Text);
 
-	Text->setColorIndex(ColorIndex);
+	Text->setColorIndex(static_cast<unsigned short>(ColorIndex));
 
 	Text->setHorizontalMode(ConvertHorizontalMode(FontDefinition.HorizontalAlignment()));
 	Text->setVerticalMode(ConvertVerticalMode(FontDefinition.VerticalAlignment()));
@@ -579,7 +579,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const O
 	Text->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Text);
-	Text->setColorIndex(pstate.ColorIndex());
+	Text->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	Text->setPosition(position);
 	Text->setTextString(textString);
@@ -591,18 +591,17 @@ OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdStri
 	OdDbMTextPtr MText = OdDbMText::createObject();
 	MText->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(MText);
-	MText->setColorIndex(pstate.ColorIndex());
+	MText->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 	MText->setContents(text);
 
 	return MText;
 }
 
 EoDbText* EoDbText::Create(OdDbTextPtr& text) {
-
 	auto Text {new EoDbText()};
 	Text->SetEntityObjectId(text->objectId());
-	Text->SetColorIndex(text->colorIndex());
-	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+	Text->SetColorIndex(static_cast<short>(text->colorIndex()));
+	Text->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype())));
 
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr {text->textStyle().safeOpenObject(OdDb::kForRead)};
 
@@ -611,6 +610,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 	FontDefinition.SetJustification(text->horizontalMode(), text->verticalMode());
 
 	auto AlignmentPoint {text->position()};
+	
 	if (FontDefinition.HorizontalAlignment() != EoDb::kAlignLeft || FontDefinition.VerticalAlignment() != EoDb::kAlignBottom) {
 		AlignmentPoint = text->alignmentPoint();
 	}
@@ -635,8 +635,8 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 
 	auto Text {new EoDbText()};
 	Text->SetEntityObjectId(text->objectId());
-	Text->SetColorIndex(text->colorIndex());
-	Text->SetLinetypeIndex(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype()));
+	Text->SetColorIndex(static_cast<short>(text->colorIndex()));
+	Text->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype())));
 
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
 
@@ -920,35 +920,32 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const 
 	deviceContext->TextOutW(x, y, text);
 	deviceContext->EndPath();
 
-	int nNumPts = deviceContext->GetPath(nullptr, nullptr, 0);
+	int NumberOfPointsInPath = deviceContext->GetPath(nullptr, nullptr, 0);
 
-	if (nNumPts == 0) { return true; }
+	if (NumberOfPointsInPath == 0) { return true; }
 
 	// Allocate memory to hold points and stroke types from the path.
-	LPPOINT lpPoints {nullptr};
-	unsigned char* lpTypes {nullptr};
+	LPPOINT Points {nullptr};
+	unsigned char* Types {nullptr};
 	try {
-		lpPoints = new POINT[nNumPts];
-		lpTypes = new unsigned char[nNumPts];
+		Points = new POINT[NumberOfPointsInPath];
+		Types = new unsigned char[NumberOfPointsInPath];
 	} catch (CException* Exception) {
-		delete[] lpPoints;
-		lpPoints = nullptr;
-		delete[] lpTypes;
-		lpTypes = nullptr;
+		delete[] Points;
+		Points = nullptr;
+		delete[] Types;
+		Types = nullptr;
 		Exception->Delete();
 	}
-	
-	if (lpPoints == nullptr || lpTypes == nullptr) { return true; }
+	if (Points == nullptr || Types == nullptr) { return true; }
+
 	// Now that we have the memory, really get the path data.
-	nNumPts = deviceContext->GetPath(lpPoints, lpTypes, nNumPts);
+	NumberOfPointsInPath = deviceContext->GetPath(Points, Types, NumberOfPointsInPath);
 
-	// If it worked, draw the lines.
+	if (NumberOfPointsInPath != -1) { deviceContext->PolyDraw(Points, Types, NumberOfPointsInPath); }
 
-	if (nNumPts != -1) { deviceContext->PolyDraw(lpPoints, lpTypes, nNumPts); }
-
-	// Release the memory we used
-	delete[] lpPoints;
-	delete[] lpTypes;
+	delete[] Points;
+	delete[] Types;
 	return true;
 }
 
@@ -1175,7 +1172,7 @@ void text_GetBoundingBox(const EoDbFontDefinition & fontDefinition, const EoGeRe
 		boundingBox[3].x = boundingBox[0].x;
 		boundingBox[3].y = boundingBox[2].y;
 
-		for (int n = 0; n < 4; n++) {
+		for (unsigned n = 0; n < 4; n++) {
 			boundingBox[n].transformBy(tm);
 		}
 	} else {

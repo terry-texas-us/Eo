@@ -303,7 +303,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
 	Point->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Point);
-	Point->setColorIndex(pstate.ColorIndex());
+	Point->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	// The point object does not store the appearance and size of a point.
 	// The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
@@ -342,7 +342,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 
 	blockTableRecord->appendOdDbEntity(Point);
 
-	Point->setColorIndex(file.ReadInt16());
+	Point->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
 	const short PointDisplayMode = file.ReadInt16();
 
@@ -389,7 +389,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 
 	blockTableRecord->appendOdDbEntity(Point);
 
-	Point->setColorIndex(ColorIndex);
+	Point->setColorIndex(static_cast<unsigned short>(ColorIndex));
 
 	Point->setPosition(Position);
 

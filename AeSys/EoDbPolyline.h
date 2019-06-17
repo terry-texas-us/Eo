@@ -77,7 +77,7 @@ public: // Methods - absolute virtuals
 public: // Methods
 
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0.0, double startWidth = 0.0, double endWidth = 0.0);
-	void GetPointAt(int vertexIndex, OdGePoint3d& point) const;
+	void GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const;
 	bool IsClosed() const noexcept;
 	void SetClosed(bool closed) noexcept;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;

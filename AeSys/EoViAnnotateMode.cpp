@@ -301,7 +301,7 @@ void AeSysView::OnAnnotateModeBox() {
 
 			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-			for (int i = 0; i < 4; i++) {
+			for (unsigned i = 0; i < 4; i++) {
 				auto Line {EoDbLine::Create(BlockTableRecord)};
 				Line->setStartPoint(JoinedBoxes[i]);
 				Line->setEndPoint(JoinedBoxes[(i + 1) % 4]);

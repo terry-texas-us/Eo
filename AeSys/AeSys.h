@@ -122,8 +122,8 @@ public:
 
 	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
 
-	OdGsMarker getGSMenuItemMarker() const noexcept { return ( OdGsMarker) this; }
-	CMenu* CommandMenu(CMenu** ppEditMenu = nullptr);
+	OdGsMarker getGSMenuItemMarker() const noexcept { return (OdGsMarker) this; }
+	CMenu* CommandMenu(CMenu** toolsSubMenu = nullptr);
 	void RefreshCommandMenu();
 	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
 	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
@@ -257,7 +257,7 @@ public:
 		return OdString(L"00 : < >");
 	}
 
-	const ODCOLORREF activeBackground() const noexcept { return m_background; }
+	ODCOLORREF activeBackground() const noexcept { return m_background; }
 	void setActiveBackground(const ODCOLORREF& color) noexcept { m_background = color & 0xffffff; }
 	const ODCOLORREF* curPalette() const;
 

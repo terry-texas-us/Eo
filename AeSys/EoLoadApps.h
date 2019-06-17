@@ -6,7 +6,7 @@ class EoLoadApps : public CDialog {
 public:
 	class LoadedApps : public OdArray<OdString>, public OdStaticRxObject<OdRxDLinkerReactor> {
 	public:
-		ODRX_HEAP_OPERATORS();
+		ODRX_HEAP_OPERATORS()
 		LoadedApps() = default;
 		CListBox* m_pListBox {nullptr};
 		void rxAppLoaded(OdRxModule* appModule) override;

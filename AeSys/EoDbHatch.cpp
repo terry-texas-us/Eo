@@ -127,7 +127,7 @@ void EoDbHatch::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Interior Style;" + FormatInteriorStyle() + L"\t";
-	extra += L"Interior Style Name;" + CString((const wchar_t*) EoDbHatchPatternTable::LegacyHatchPatternName(static_cast<int>(m_InteriorStyleIndex))) + L"\t";
+	extra += L"Interior Style Name;" + CString((const wchar_t*) EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex)) + L"\t";
 	CString NumberOfVertices;
 	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
 	extra += NumberOfVertices;
@@ -371,16 +371,16 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 	EoGeMatrix3d tm;
 	tm.setToWorldToPlane(OdGePlane(m_HatchOrigin, m_HatchXAxis, m_HatchYAxis));
 
-	const int NumberOfLoops = 1;
+	const int NumberOfLoops {1};
 	int LoopPointsOffsets[2];
 	LoopPointsOffsets[0] = static_cast<int>(m_Vertices.size());
 
 	EoEdge Edges[128];
 
-	const short ColorIndex = pstate.ColorIndex();
-	const short LinetypeIndex = pstate.LinetypeIndex();
+	const short ColorIndex {pstate.ColorIndex()};
+	const short LinetypeIndex {pstate.LinetypeIndex()};
 	pstate.SetLinetypeIndexPs(deviceContext, 1);
-	const int InteriorStyleIndex = pstate.HatchInteriorStyleIndex();
+	const unsigned InteriorStyleIndex {pstate.HatchInteriorStyleIndex()};
 
 	OdHatchPattern HatchPattern;
 	EoDbHatchPatternTable::RetrieveHatchPattern(EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex), HatchPattern);
@@ -390,8 +390,8 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 
 	for (unsigned PatternIndex = 0; PatternIndex < NumberOfPatterns; PatternIndex++) {
 		HatchPatternLine = HatchPattern.getAt(PatternIndex);
-		const int NumberOfDashesInPattern = HatchPatternLine.m_dashes.size();
-		double TotalPatternLength = 0;
+		const auto NumberOfDashesInPattern {HatchPatternLine.m_dashes.size()};
+		double TotalPatternLength {0};
 		for (unsigned DashIndex = 0; DashIndex < NumberOfDashesInPattern; DashIndex++) {
 			TotalPatternLength += fabs(HatchPatternLine.m_dashes[DashIndex]);
 		}
@@ -410,7 +410,7 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 		auto FirstLoopPointIndex = 0u;
 		for (int LoopIndex = 0; LoopIndex < NumberOfLoops; LoopIndex++) {
 			
-			if (LoopIndex != 0) { FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1]; }
+			if (LoopIndex != 0) { FirstLoopPointIndex = static_cast<unsigned>(LoopPointsOffsets[LoopIndex - 1]); }
 			
 			OdGePoint3d StartPoint(m_Vertices[FirstLoopPointIndex]);
 			StartPoint.transformBy(tm);		// Apply transform to get areas first point in z0 plane
@@ -564,35 +564,35 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 }
 
 void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
-	auto NumberOfVertices {m_Vertices.size()};
+	auto NumberOfVertices {static_cast<int>(m_Vertices.size())};
 	
 	if (NumberOfVertices >= 2) {
 		EoGePoint4dArray Vertices;
 
 		Vertices.SetSize(NumberOfVertices);
 
-		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
+		for (int VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 			Vertices[VertexIndex] = EoGePoint4d(m_Vertices[VertexIndex], 1.0);
 		}
 		view->ModelViewTransformPoints(Vertices);
 		EoGePoint4d::ClipPolygon(Vertices);
 
-		NumberOfVertices = static_cast<unsigned>(Vertices.GetSize());
-		auto Points {new CPoint[NumberOfVertices]};
+		auto NumberOfPoints = Vertices.GetSize();
+		auto Points {new CPoint[NumberOfPoints]};
 
 		view->DoViewportProjection(Points, Vertices);
 
 		if (m_InteriorStyle == EoDbHatch::kSolid) {
 			CBrush Brush(pColTbl[pstate.ColorIndex()]);
 			auto OldBrush {deviceContext->SelectObject(&Brush)};
-			deviceContext->Polygon(Points, NumberOfVertices);
+			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
 		} else if (m_InteriorStyle == EoDbHatch::kHollow) {
 			auto OldBrush {dynamic_cast<CBrush*>(deviceContext->SelectStockObject(NULL_BRUSH))};
-			deviceContext->Polygon(Points, NumberOfVertices);
+			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
 		} else {
-			deviceContext->Polygon(Points, NumberOfVertices);
+			deviceContext->Polygon(Points, NumberOfPoints);
 		}
 		delete[] Points;
 	}
@@ -606,7 +606,7 @@ CString EoDbHatch::FormatInteriorStyle() const {
 	return (str);
 }
 
-OdGePoint3d EoDbHatch::GetPointAt(int pointIndex) {
+OdGePoint3d EoDbHatch::GetPointAt(unsigned pointIndex) {
 	return (m_Vertices[pointIndex]);
 }
 
@@ -910,7 +910,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	blockTableRecord->appendOdDbEntity(Hatch);
 
 	Hatch->setAssociative(false);
-	Hatch->setColorIndex(pstate.ColorIndex());
+	Hatch->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
@@ -930,7 +930,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 
 	const auto ColorIndex {file.ReadInt16()};
 	const auto InteriorStyle {file.ReadInt16()};
-	const auto InteriorStyleIndex {file.ReadInt16()};
+	const auto InteriorStyleIndex {static_cast<unsigned>(file.ReadInt16())};
 	const auto NumberOfVertices {file.ReadUInt16()};
 	const auto HatchOrigin {file.ReadPoint3d()};
 	const auto HatchXAxis {file.ReadVector3d()};
@@ -1022,7 +1022,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	} else {
 		ColorIndex = short(primitiveBuffer[6]);
 		InteriorStyle = static_cast<signed char>(primitiveBuffer[7]);
-		InteriorStyleIndex = *((short*) & primitiveBuffer[8]);
+		InteriorStyleIndex = static_cast<unsigned>(*((short*) & primitiveBuffer[8]));
 		const auto NumberOfVertices = *((short*) & primitiveBuffer[10]);
 		HatchOrigin = ((EoVaxPoint3d*) & primitiveBuffer[12])->Convert();
 		HatchXAxis = ((EoVaxVector3d*) & primitiveBuffer[24])->Convert();
@@ -1044,7 +1044,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 
 	Hatch->setAssociative(false);
 
-	Hatch->setColorIndex(ColorIndex);
+	Hatch->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 

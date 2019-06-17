@@ -83,7 +83,7 @@ public: // Methods
 	void DisplayHatch(AeSysView* view, CDC* deviceContext) const;
 	void DisplaySolid(AeSysView* view, CDC* deviceContext) const;
 	CString FormatInteriorStyle() const;
-	OdGePoint3d GetPointAt(int pointIndex);
+	OdGePoint3d GetPointAt(unsigned pointIndex);
 	void ModifyState() noexcept override;
 	int NumberOfVertices() const;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;

@@ -604,7 +604,7 @@ OdString commandMessageCaption(const OdString& command) {
 class CmdReactor
 	: public OdStaticRxObject<OdEdCommandStackReactor>
 	, public OdStaticRxObject<OdDbDatabaseReactor> {
-	ODRX_NO_HEAP_OPERATORS();
+	ODRX_NO_HEAP_OPERATORS()
 	OdDbCommandContext* m_CommandContext;
 	bool m_Modified;
 	OdString m_LastInput;

@@ -51,7 +51,8 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 			if (drawItemStruct->itemState & ODS_FOCUS) {
 				DeviceContext.DrawFocusRect(ItemRectangle);
 			}
-			const int Item = drawItemStruct->itemID;
+			const int Item {static_cast<int>(drawItemStruct->itemID)};
+
 			if (Item != -1) {
 				const COLORREF rgbText = (drawItemStruct->itemState & ODS_SELECTED) ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
 				DeviceContext.SetBkColor(BackgroundColor);
@@ -68,7 +69,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 				m_LinetypesListControl.GetSubItemRect(Item, Appearance, LVIR_LABEL, SubItemRectangle);
 
 				const short ColorIndex = pstate.ColorIndex();
-				pstate.SetPen(nullptr, &DeviceContext, 0, EoDbLinetypeTable::LegacyLinetypeIndex(Name));
+				pstate.SetPen(nullptr, &DeviceContext, 0, static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 
 				auto ActiveView {AeSysView::GetActiveView()};
 

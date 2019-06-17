@@ -73,7 +73,7 @@ void AeSysView::OnDrawModePolygon() {
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
-		const int NumberOfPoints = m_DrawModePoints.size();
+		const auto NumberOfPoints {m_DrawModePoints.size()};
 
 		if (m_DrawModePoints[NumberOfPoints - 1] != CurrentPnt) {
 			CurrentPnt = SnapPointToAxis(m_DrawModePoints[NumberOfPoints - 1], CurrentPnt);
@@ -158,10 +158,10 @@ void AeSysView::OnDrawModeInsert() {
 void AeSysView::OnDrawModeReturn() {
 	auto CurrentPnt {GetCursorPosition()};
 
-	const int NumberOfPoints = m_DrawModePoints.size();
+	const auto NumberOfPoints {m_DrawModePoints.size()};
 	EoDbGroup* Group {nullptr};
 
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
 	switch (PreviousDrawCommand) {
 		case ID_OP2:
@@ -216,7 +216,7 @@ void AeSysView::OnDrawModeReturn() {
 			auto GroupPair {EoDbGroup::Create(Database())};
 			Group = std::get<tGroup>(GroupPair);
 
-			for (int i = 0; i < 4; i++) {
+			for (unsigned i = 0; i < 4; i++) {
 				auto Line {EoDbLine::Create(BlockTableRecord)};
 				Line->setStartPoint(m_DrawModePoints[i]);
 				Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
@@ -250,11 +250,11 @@ void AeSysView::OnDrawModeReturn() {
 			if (!m_DrawModePoints[m_DrawModePoints.size() - 1].isEqualTo(CurrentPnt)) {
 				m_DrawModePoints.append(CurrentPnt);
 			}
-			const int NumberOfControlPoints = m_DrawModePoints.size();
+			const auto NumberOfControlPoints {m_DrawModePoints.size()};
 
 			auto Spline {EoDbSpline::Create(BlockTableRecord)};
 
-			const int Degree = EoMin(3, NumberOfControlPoints - 1);
+			const auto Degree {EoMin(3, static_cast<int>(NumberOfControlPoints - 1))};
 
 			OdGeKnotVector Knots;
 			EoGeNurbCurve3d::SetDefaultKnotVector(Degree, m_DrawModePoints, Knots);
@@ -343,7 +343,7 @@ void AeSysView::DoDrawModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
-	const int NumberOfPoints = m_DrawModePoints.size();
+	const auto NumberOfPoints {m_DrawModePoints.size()};
 
 	switch (PreviousDrawCommand) {
 		case ID_OP2:
@@ -355,7 +355,7 @@ void AeSysView::DoDrawModeMouseMove() {
 				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
 				auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
-				Line->setColorIndex(pstate.ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 
@@ -417,7 +417,7 @@ void AeSysView::DoDrawModeMouseMove() {
 					const auto StartPoint {m_DrawModePoints[PointsIndex]};
 					const auto EndPoint {m_DrawModePoints[(PointsIndex + 1) % 4]};
 					auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};
-					Line->setColorIndex(pstate.ColorIndex());
+					Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 					m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 				}
@@ -433,7 +433,7 @@ void AeSysView::DoDrawModeMouseMove() {
 
 			if (NumberOfPoints == 1) {
 				auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
-				Line->setColorIndex(pstate.ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 			}
@@ -453,16 +453,16 @@ void AeSysView::DoDrawModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 
 				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-				const int NumberOfControlPoints = m_DrawModePoints.size();
-				const int Degree = EoMin(3, NumberOfControlPoints - 1);
+				const auto NumberOfControlPoints {m_DrawModePoints.size()};
+				const auto Degree {EoMin(3, static_cast<int>(NumberOfControlPoints - 1))};
 				OdGePoint3dArray Points;
-				for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
+				for (unsigned ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
 					Points.append(m_DrawModePoints[ControlPointIndex]);
 				}
 				OdGeKnotVector Knots;
 				EoGeNurbCurve3d::SetDefaultKnotVector(Degree, Points, Knots);
 				OdGeDoubleArray Weights;
-				Weights.setLogicalLength(static_cast<unsigned>(NumberOfControlPoints));
+				Weights.setLogicalLength(NumberOfControlPoints);
 				auto Spline {new EoDbSpline()};
 				Spline->Set(Degree, Knots, Points, Weights);
 				m_PreviewGroup.AddTail(Spline);

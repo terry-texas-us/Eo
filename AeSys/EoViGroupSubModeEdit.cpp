@@ -39,7 +39,7 @@ void AeSysView::DoEditGroupEscape() {
 
 		InitializeGroupAndPrimitiveEdit();
 
-		theApp.LoadModeResources(theApp.PrimaryMode());
+		theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 	}
 }
 

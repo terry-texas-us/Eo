@@ -458,7 +458,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 						GroupName = pCmd->groupName();
 					}
 					OdString CommandName(pCmd->globalName());
-					GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
+					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
 
 					MenuItemInfo.dwItemData = (LPARAM) pCmd.get();
 					::SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);

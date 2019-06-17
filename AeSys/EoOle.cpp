@@ -13,7 +13,7 @@
 
 #ifdef OD_OLE_SUPPORT
 class OleDwgItem : public COleClientItem, public OdOleItemHandler {
-	ODRX_HEAP_OPERATORS();
+	ODRX_HEAP_OPERATORS()
 
 	OdSmartPtr<OdOleItemSimplestHandler> m_pRawData;
 

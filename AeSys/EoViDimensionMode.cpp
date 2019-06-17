@@ -498,7 +498,7 @@ void AeSysView::OnDimensionModeConvert() {
 					OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 					auto Line {EoDbLine::Create(BlockTableRecord, DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint())};
-					Line->setColorIndex(DimensionPrimitive->ColorIndex());
+					Line->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->ColorIndex()));
 					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(DimensionPrimitive->LinetypeIndex()));
 					auto LinePrimitive {EoDbLine::Create(Line)};
 

@@ -436,7 +436,7 @@ void AeSysView::GenerateEndCap(const OdGePoint3d & startPoint, const OdGePoint3d
 	</tas> */
 
 	auto Line {EoDbLine::Create(BlockTableRecord, startPoint, endPoint)};
-	Line->setColorIndex(pstate.ColorIndex());
+	Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 	group->AddTail(EoDbLine::Create(Line));
 }
@@ -549,12 +549,12 @@ void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section secti
 	// need to allow continuation perpendicular to vertical section ?
 	Line = EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), RightLine.endPoint());
 	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(riseDropIndicator));
+	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(static_cast<short>(riseDropIndicator)));
 	group->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), LeftLine.endPoint());
 	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(riseDropIndicator));
+	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(static_cast<short>(riseDropIndicator)));
 	group->AddTail(EoDbLine::Create(Line));
 }
 

@@ -39,7 +39,7 @@ BOOL EoDlgPlotStyleManager::OnInitDialog() {
 }
 
 
-const bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) {
+bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) {
 	if (!pPlotStyleTable) {
 		return false;
 	}

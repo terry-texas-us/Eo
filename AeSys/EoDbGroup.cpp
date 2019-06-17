@@ -61,14 +61,14 @@ void EoDbGroup::BreakPolylines() {
 
 			for (unsigned w = 0; w < Points.size() - 1; w++) {
 				auto Line {EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1])};
-				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(Primitive->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
 				CObList::InsertBefore(PrimitivePosition, EoDbLine::Create(Line));
 			}
 
 			if (Polyline->IsClosed()) {
 				auto Line {EoDbLine::Create(BlockTableRecord, Points[Points.size() - 1], Points[0])};
-				Line->setColorIndex(Primitive->ColorIndex());
+				Line->setColorIndex(static_cast<unsigned short>(Primitive->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
 				CObList::InsertBefore(PrimitivePosition, EoDbLine::Create(Line));
 			}

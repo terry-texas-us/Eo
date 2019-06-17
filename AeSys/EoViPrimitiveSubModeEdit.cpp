@@ -39,7 +39,7 @@ void AeSysView::DoEditPrimitiveEscape() {
 
 		InitializeGroupAndPrimitiveEdit();
 
-		theApp.LoadModeResources(theApp.PrimaryMode());
+		theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 	}
 }
 void AeSysView::DoEditPrimitiveTransform(unsigned short operation) {

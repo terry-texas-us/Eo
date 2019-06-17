@@ -117,7 +117,7 @@ protected:
 public:
 	CBitmap* CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clonedBitmap);
 	void PaintBitmap(CBitmap& bitmap, COLORREF color);
-	const bool IsColor(COLORREF color, unsigned char item) noexcept;
+	bool IsColor(COLORREF color, unsigned char item) noexcept;
 	const OdCmEntityColor GetColor();
 };
 
@@ -130,20 +130,20 @@ class CPsListStyleData {
 	int m_iActiveListIndex;
 
 protected:
-	const int getPublicArrayIndexByColor(COLORREF color);
+	int getPublicArrayIndexByColor(COLORREF color);
 
 public:
 	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, const char item);
 
 	~CPsListStyleData();
 
-	OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; };
-	CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; };
-	const int GetActiveListIndex() const noexcept { return m_iActiveListIndex; };
-	const bool ReplaceBitmapColorInfo(COLORREF color, const int item);
-	const bool SetActiveListIndex(const int index, const bool bBmpInfo = false);
+	OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; }
+	CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; }
+	int GetActiveListIndex() const noexcept { return m_iActiveListIndex; }
+	bool ReplaceBitmapColorInfo(COLORREF color, const int item);
+	bool SetActiveListIndex(const int index, const bool bBmpInfo = false);
 	const OdCmEntityColor GetColor();
-	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; };
+	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; }
 };
 
 class EoDlgPlotStyleEditor_FormViewPropertyPage : public CPropertyPage {
@@ -205,16 +205,16 @@ protected:
 	HICON initColorIcon(int width, int height, COLORREF color) noexcept;
 	void initImageList();
 
-	const int deleteCustomColor();
-	const int appendCustomColor(const int item);
-	const int replaceCustomColor(COLORREF color, const int item);
+	int deleteCustomColor();
+	int appendCustomColor(const int item);
+	int replaceCustomColor(COLORREF color, const int item);
 
 public:
-	const bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
+	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
 	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags);
 	void SetFileBufPath(const OdString filePath);
 	void AddNewPlotStyle(const wchar_t* styleName);
-	const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; };
+	const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; }
 
 protected:
 	void OnLineweightBtn();

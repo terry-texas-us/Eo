@@ -85,7 +85,7 @@ void DrawTransparentBitmap(HDC hdc, HBITMAP bitmap, short xStart, short yStart, 
 	DeleteDC(hdcTemp);
 }
 
-const bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
+bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
 	if (!pPlotStyleTable) {
 		return false;
 	}
