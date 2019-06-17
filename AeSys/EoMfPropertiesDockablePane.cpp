@@ -10,8 +10,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-vector<const wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
-vector<const wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
+std::vector<const wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
+std::vector<const wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
 
 BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 	ON_WM_CREATE()

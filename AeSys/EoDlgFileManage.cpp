@@ -380,7 +380,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 		case Color:
 		{
 			EoDlgSetupColor Dialog;
-			Dialog.m_ColorIndex = LayerTableRecord->colorIndex();
+			Dialog.m_ColorIndex = static_cast<unsigned short>(LayerTableRecord->colorIndex());
 			if (Dialog.DoModal() == IDOK) {
 				Layer->SetColorIndex(Dialog.m_ColorIndex);
 			}

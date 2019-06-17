@@ -15,7 +15,7 @@
 #include "DbViewTable.h"
 #include "DbViewTableRecord.h"
 
- vector<const wchar_t*> StandardPlotScaleValues = {
+std::vector<const wchar_t*> StandardPlotScaleValues = {
 	L"Custom",
 	L"1/128\" = 1'",
 	L"1/64\" = 1'",

@@ -55,7 +55,7 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 		case EoDb::kSplinePrimitive: {
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
 				const unsigned short NumberOfControlPoints = *((unsigned short*) &m_PrimBuf[10]);
-				m_PrimBuf[3] = static_cast<signed char>((2 + NumberOfControlPoints * 3) / 8 + 1);
+				m_PrimBuf[3] = static_cast<unsigned char>((2 + NumberOfControlPoints * 3) / 8 + 1);
 				*((unsigned short*) &m_PrimBuf[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
 				m_PrimBuf[8] = m_PrimBuf[10];
 				m_PrimBuf[9] = m_PrimBuf[11];

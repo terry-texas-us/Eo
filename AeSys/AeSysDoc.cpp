@@ -1461,7 +1461,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	return (bRetVal);
 }
 
-void AeSysDoc::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
+void AeSysDoc::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		Layer->PenTranslation(numberOfColors, newColors, pCol);
@@ -2622,8 +2622,8 @@ void AeSysDoc::OnPensTranslate() {
 	if (StreamFile.Open(AeSys::ResourceFolderPath() + L"\\Pens\\xlate.txt", CFile::modeRead | CFile::typeText)) {
 		wchar_t pBuf[128];
 
-		vector<int> ColorIndex;
-		vector<int> NewColorIndex;
+		std::vector<int> ColorIndex;
+		std::vector<int> NewColorIndex;
 
 		wchar_t* NextToken {nullptr};
 

@@ -505,8 +505,8 @@ EoDbPolyline* EoDbPolyline::Create(OdDbPolylinePtr polyline) {
 	auto Polyline {new EoDbPolyline()};
 
 	Polyline->m_EntityObjectId = polyline->objectId();
-	Polyline->m_ColorIndex = polyline->colorIndex();
-	Polyline->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(polyline->linetype());
+	Polyline->m_ColorIndex = static_cast <short>(polyline->colorIndex());
+	Polyline->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(polyline->linetype()));
 
 	const auto NumberOfVertices {polyline->numVerts()};
 

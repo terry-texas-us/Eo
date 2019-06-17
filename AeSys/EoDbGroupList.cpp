@@ -92,7 +92,7 @@ void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacte
 	}
 }
 
-void EoDbGroupList::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
+void EoDbGroupList::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		(GetNext(Position))->PenTranslation(numberOfColors, newColors, pCol);

@@ -214,7 +214,7 @@ OdString EoDbLayer::Name() const {
 	return m_Layer->getName();
 }
 
-void EoDbLayer::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
+void EoDbLayer::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	for (unsigned ColorIndex = 0; ColorIndex < numberOfColors; ColorIndex++) {
 		if (m_Layer->colorIndex() == pCol.at(ColorIndex)) {
 			m_Layer->setColorIndex(newColors.at(ColorIndex));

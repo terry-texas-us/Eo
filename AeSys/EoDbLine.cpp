@@ -370,8 +370,8 @@ bool EoDbLine::Write(EoDbFile& file) const {
 void EoDbLine::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
 	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kLinePrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_LineSeg.startPoint());
@@ -386,9 +386,9 @@ EoDbLine* EoDbLine::Create(const OdDbLinePtr& line) {
 	auto Line {new EoDbLine};
 	Line->SetEntityObjectId(line->objectId());
 
-	Line->m_ColorIndex = line->colorIndex();
-	Line->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype());
-
+	Line->m_ColorIndex = static_cast<short>(line->colorIndex());
+	Line->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(line->linetype()));
+	
 	Line->m_LineSeg.SetStartPoint(line->startPoint());
 	Line->m_LineSeg.SetEndPoint(line->endPoint());
 

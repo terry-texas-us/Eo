@@ -413,7 +413,7 @@ void AeSysView::DoNodalModeMouseMove() {
 			}
 			break;
 	}
-	m_NodalModePoints.setLogicalLength(NumberOfPoints);
+	m_NodalModePoints.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
 }
 
 void AeSysView::ConstructPreviewGroup() {

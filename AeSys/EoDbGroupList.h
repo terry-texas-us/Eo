@@ -48,7 +48,7 @@ public: // Methods
 	void ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(short colorIndex);
 	void ModifyLinetypeIndex(short linetypeIndex);
-	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
+	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol);
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	int RemoveEmptyGroups();

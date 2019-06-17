@@ -1318,7 +1318,8 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 			auto ActiveWindow {::GetActiveWindow()};
 			POINT pt = {x, y};
 			::ClientToScreen(ActiveWindow, &pt);
-			(*cb)(::TrackPopupMenu((HMENU) Menu, TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION, pt.x, pt.y, 0, ActiveWindow, nullptr));
+			unsigned Flags {TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION};
+			(*cb)(::TrackPopupMenu((HMENU) Menu, Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
 			::DestroyMenu((HMENU) Menu);
 			
 			for (unsigned i = 0; i < Size; i++) {

@@ -279,7 +279,7 @@ void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharac
 	}
 }
 
-void EoDbGroup::PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol) {
+void EoDbGroup::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};

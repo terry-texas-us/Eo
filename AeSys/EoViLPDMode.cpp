@@ -5,7 +5,7 @@
 
 #include "EoDlgLowPressureDuctOptions.h"
 
-pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor) {
+std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor) {
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group = GetNextVisibleGroup(GroupPosition);
@@ -40,10 +40,10 @@ void AeSysView::OnLpdModeJoin() {
 	const auto CurrentPnt {GetCursorPosition()};
 
 	auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-	m_EndCapGroup = get<tGroup>(Selection);
+	m_EndCapGroup = std::get<tGroup>(Selection);
 
 	if (m_EndCapGroup != nullptr) {
-		m_EndCapPoint = get<1>(Selection);
+		m_EndCapPoint = std::get<1>(Selection);
 
 		m_PreviousPnt = m_EndCapPoint->Position();
 		m_PreviousSection.SetWidth(m_EndCapPoint->DataAt(0));
@@ -140,9 +140,9 @@ void AeSysView::OnLpdModeTap() {
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<tGroup>(Selection)};
+	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) {
-		auto LinePrimitive {get<1>(Selection)};
+		auto LinePrimitive {std::get<1>(Selection)};
 		const OdGePoint3d TestPoint(CurrentPnt);
 
 		CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
@@ -194,7 +194,7 @@ void AeSysView::OnLpdModeEll() {
 	}
 	if (m_PreviousOp == ID_OP2) {
 		auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-		auto ExistingGroup {get<tGroup>(Selection)};
+		auto ExistingGroup {std::get<tGroup>(Selection)};
 
 		if (ExistingGroup == nullptr) {
 			theApp.AddStringToMessageList(IDS_MSG_LPD_NO_END_CAP_LOC);
@@ -358,10 +358,10 @@ void AeSysView::DoDuctModeMouseMove() {
 			GenerateRectangularSection(PreviousReferenceLine, m_CenterLineEccentricity, m_PreviousSection, &m_PreviewGroup);
 		}
 		auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
-		auto ExistingGroup {get<tGroup>(Selection)};
+		auto ExistingGroup {std::get<tGroup>(Selection)};
 
 		if (ExistingGroup != nullptr) {
-			auto EndPointPrimitive {get<1>(Selection)};
+			auto EndPointPrimitive {std::get<1>(Selection)};
 			CurrentPnt = EndPointPrimitive->Position();
 			Section ExistingSection(EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular);
 
@@ -533,12 +533,12 @@ void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section secti
 		ReferenceLine.GetParallels(section.Width(), m_CenterLineEccentricity, LeftLine, RightLine);
 
 		Line = EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), LeftLine.endPoint());
-		Line->setColorIndex(ColorIndex);
+		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(Linetype);
 		group->AddTail(EoDbLine::Create(Line));
 
 		Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), RightLine.endPoint());
-		Line->setColorIndex(ColorIndex);
+		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(Linetype);
 		group->AddTail(EoDbLine::Create(Line));
 
@@ -548,12 +548,12 @@ void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section secti
 	GenerateRectangularSection(referenceLine, m_CenterLineEccentricity, section, group);
 	// need to allow continuation perpendicular to vertical section ?
 	Line = EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), RightLine.endPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(riseDropIndicator));
 	group->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), LeftLine.endPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(riseDropIndicator));
 	group->AddTail(EoDbLine::Create(Line));
 }
@@ -587,22 +587,22 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d & previousReferenceLine, 
 	const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	auto Line = EoDbLine::Create(BlockTableRecord, PreviousLeftLine.endPoint(), InsideCorner);
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(LinetypeObjectId);
 	group->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, InsideCorner, CurrentLeftLine.startPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(LinetypeObjectId);
 	group->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, PreviousRightLine.endPoint(), OutsideCorner);
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(LinetypeObjectId);
 	group->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, OutsideCorner, CurrentRightLine.startPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(LinetypeObjectId);
 	group->AddTail(EoDbLine::Create(Line));
 
@@ -631,14 +631,14 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d & referenceLine, double
 		const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 		auto Line {EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), LeftLine.endPoint())};
-		Line->setColorIndex(ColorIndex);
+		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(LinetypeObjectId);
 		group->AddTail(EoDbLine::Create(Line));
 
 		GenerateEndCap(LeftLine.endPoint(), RightLine.endPoint(), section, group);
 
 		Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), RightLine.endPoint());
-		Line->setColorIndex(ColorIndex);
+		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(LinetypeObjectId);
 		group->AddTail(EoDbLine::Create(Line));
 	}
@@ -715,17 +715,17 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	OdDbLinePtr Line;
 
 	Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), RightLine.endPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, RightLine.endPoint(), LeftLine.endPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), LeftLine.endPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 
@@ -742,12 +742,12 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 
 	}
 	Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), RightLine.endPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 
 	Line = EoDbLine::Create(BlockTableRecord, LeftLine.endPoint(), LeftLine.startPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 
@@ -804,14 +804,14 @@ void AeSysView::GenerateTransition(EoGeLineSeg3d & referenceLine, double eccentr
 	GenerateEndCap(LeftLine.startPoint(), RightLine.startPoint(), previousSection, group);
 
 	auto Line {EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), RightLine.endPoint())};
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	group->AddTail(EoDbLine::Create(Line));
 
 	GenerateEndCap(RightLine.endPoint(), LeftLine.endPoint(), currentSection, group);
 
 	Line = EoDbLine::Create(BlockTableRecord, LeftLine.endPoint(), LeftLine.startPoint());
-	Line->setColorIndex(ColorIndex);
+	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(Linetype);
 	group->AddTail(EoDbLine::Create(Line));
 }

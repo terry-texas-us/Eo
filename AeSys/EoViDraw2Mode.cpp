@@ -21,9 +21,9 @@ void AeSysView::OnDraw2ModeJoin() {
 	CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<tGroup>(Selection)};
+	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) {
-		auto Line {get<1>(Selection)};
+		auto Line {std::get<1>(Selection)};
 		CurrentPnt = Line->ProjPt_(CurrentPnt);
 
 		if (m_PreviousOp == 0) { // Starting at existing wall
@@ -73,22 +73,22 @@ void AeSysView::OnDraw2ModeWall() {
 				GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
 
 				auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint())};
-				Line->setColorIndex(ColorIndex);
+				Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 				Line->setLinetype(Linetype);
 				m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 			}
 			auto Line = EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint());
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(Linetype);
 			m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 
 			Line = EoDbLine::Create(BlockTableRecord, m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(Linetype);
 			m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 
 			Line = EoDbLine::Create(BlockTableRecord, m_CurrentRightLine.endPoint(), m_CurrentLeftLine.endPoint());
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(Linetype);
 			m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 
@@ -111,7 +111,7 @@ void AeSysView::OnDraw2ModeWall() {
 			m_AssemblyGroup = new EoDbGroup;
 			GetDocument()->AddWorkLayerGroup(m_AssemblyGroup);
 			auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentRightLine.startPoint())};
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(Linetype);
 			m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 		}
@@ -120,12 +120,12 @@ void AeSysView::OnDraw2ModeWall() {
 		ptEnd = m_EndSectionLine->EndPoint();
 
 		auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint())};
-		Line->setColorIndex(ColorIndex);
+		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(Linetype);
 		m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 
 		Line = EoDbLine::Create(BlockTableRecord, m_CurrentRightLine.startPoint(), m_CurrentRightLine.endPoint());
-		Line->setColorIndex(ColorIndex);
+		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(Linetype);
 		m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 
@@ -260,22 +260,22 @@ void AeSysView::DoDraw2ModeMouseMove() {
 			const auto ColorIndex {pstate.ColorIndex()};
 			const auto LinetypeId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 			auto Line {EoDbLine::Create(BlockTableRecord, PreviewLines[0].startPoint(), PreviewLines[1].startPoint())};
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(LinetypeId);
 			m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 
 			Line = EoDbLine::Create(BlockTableRecord, PreviewLines[0].startPoint(), PreviewLines[0].endPoint());
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(LinetypeId);
 			m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 
 			Line = EoDbLine::Create(BlockTableRecord, PreviewLines[1].startPoint(), PreviewLines[1].endPoint());
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(LinetypeId);
 			m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 
 			Line = EoDbLine::Create(BlockTableRecord, PreviewLines[1].endPoint(), PreviewLines[0].endPoint());
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(LinetypeId);
 			m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 

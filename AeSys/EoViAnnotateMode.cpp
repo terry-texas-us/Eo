@@ -325,9 +325,9 @@ void AeSysView::OnAnnotateModeCutIn() {
 	auto CurrentPnt {GetCursorPosition()};
 
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {get<tGroup>(Selection)};
+	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) {
-		auto EngagedLine {get<1>(Selection)};
+		auto EngagedLine {std::get<1>(Selection)};
 		CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
 
 		CString CurrentText;
@@ -586,8 +586,9 @@ void AeSysView::DoAnnotateModeMouseMove() {
 			break;
 
 	}
-	EoViAnn_points.setLogicalLength(NumberOfPoints);
+	EoViAnn_points.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
 }
+
 void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d & startPoint, const OdGePoint3d & endPoint, EoDbGroup * group) {
 	const auto PlaneNormal {CameraDirection()};
 

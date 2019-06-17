@@ -1681,7 +1681,7 @@ void AeSys::OnToolsLoadapplications() {
 
 void AeSys::OnTrapCommandsAddGroups() {
 	m_TrapModeAddGroups = !m_TrapModeAddGroups;
-	m_CurrentMode = m_TrapModeAddGroups ? ID_MODE_TRAP : ID_MODE_TRAPR;
+	m_CurrentMode = static_cast<unsigned>(m_TrapModeAddGroups ? ID_MODE_TRAP : ID_MODE_TRAPR);
 
 	OnModeTrap();
 }

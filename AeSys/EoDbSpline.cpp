@@ -231,10 +231,10 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 }
 
 void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
-	buffer[3] = static_cast<signed char>((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
+	buffer[3] = static_cast<unsigned char>((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
 	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 
 	*((short*) & buffer[8]) = (short) m_Spline.numControlPoints();
 
@@ -354,8 +354,8 @@ EoDbSpline* EoDbSpline::Create(OdDbSplinePtr & spline) {
 	auto Spline {new EoDbSpline()};
 	Spline->SetEntityObjectId(spline->objectId());
 
-	Spline->m_ColorIndex = spline->colorIndex();
-	Spline->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(spline->linetype());
+	Spline->m_ColorIndex = static_cast <short>(spline->colorIndex());
+	Spline->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(spline->linetype()));
 
 	int Degree;
 	bool Rational;

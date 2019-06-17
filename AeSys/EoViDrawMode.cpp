@@ -214,14 +214,14 @@ void AeSysView::OnDrawModeReturn() {
 			m_DrawModePoints.append(m_DrawModePoints[0] + OdGeVector3d(m_DrawModePoints[2] - m_DrawModePoints[1]));
 
 			auto GroupPair {EoDbGroup::Create(Database())};
-			Group = get<tGroup>(GroupPair);
+			Group = std::get<tGroup>(GroupPair);
 
 			for (int i = 0; i < 4; i++) {
 				auto Line {EoDbLine::Create(BlockTableRecord)};
 				Line->setStartPoint(m_DrawModePoints[i]);
 				Line->setEndPoint(m_DrawModePoints[(i + 1) % 4]);
 
-				get<1>(GroupPair)->append(Line->objectId());
+				std::get<1>(GroupPair)->append(Line->objectId());
 
 				Group->AddTail(EoDbLine::Create(Line));
 			}
@@ -259,7 +259,7 @@ void AeSysView::OnDrawModeReturn() {
 			OdGeKnotVector Knots;
 			EoGeNurbCurve3d::SetDefaultKnotVector(Degree, m_DrawModePoints, Knots);
 			OdGeDoubleArray Weights;
-			Weights.setLogicalLength(NumberOfControlPoints);
+			Weights.setLogicalLength(static_cast<unsigned>(NumberOfControlPoints));
 
 			Spline->setNurbsData(Degree, false, false, false, m_DrawModePoints, Knots, Weights, OdGeContext::gTol.equalPoint());
 
@@ -462,7 +462,7 @@ void AeSysView::DoDrawModeMouseMove() {
 				OdGeKnotVector Knots;
 				EoGeNurbCurve3d::SetDefaultKnotVector(Degree, Points, Knots);
 				OdGeDoubleArray Weights;
-				Weights.setLogicalLength(NumberOfControlPoints);
+				Weights.setLogicalLength(static_cast<unsigned>(NumberOfControlPoints));
 				auto Spline {new EoDbSpline()};
 				Spline->Set(Degree, Knots, Points, Weights);
 				m_PreviewGroup.AddTail(Spline);
@@ -521,5 +521,5 @@ void AeSysView::DoDrawModeMouseMove() {
 			break;
 
 	}
-	m_DrawModePoints.setLogicalLength(NumberOfPoints);
+	m_DrawModePoints.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
 }

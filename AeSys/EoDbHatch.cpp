@@ -344,10 +344,10 @@ bool EoDbHatch::Write(EoDbFile & file) const {
 }
 
 void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
-	buffer[3] = static_cast<signed char>((79 + m_Vertices.size() * 12) / 32);
+	buffer[3] = static_cast<unsigned char>((79 + m_Vertices.size() * 12) / 32);
 	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kHatchPrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_InteriorStyle);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_InteriorStyle);
 	*((short*) & buffer[8]) = static_cast<short>(m_InteriorStyleIndex);
 	*((short*) & buffer[10]) = static_cast<short>(m_Vertices.size());
 
@@ -373,7 +373,7 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 
 	const int NumberOfLoops = 1;
 	int LoopPointsOffsets[2];
-	LoopPointsOffsets[0] = m_Vertices.size();
+	LoopPointsOffsets[0] = static_cast<int>(m_Vertices.size());
 
 	EoEdge Edges[128];
 
@@ -577,7 +577,7 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 		view->ModelViewTransformPoints(Vertices);
 		EoGePoint4d::ClipPolygon(Vertices);
 
-		NumberOfVertices = Vertices.GetSize();
+		NumberOfVertices = static_cast<unsigned>(Vertices.GetSize());
 		auto Points {new CPoint[NumberOfVertices]};
 
 		view->DoViewportProjection(Points, Vertices);
@@ -848,8 +848,8 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr & hatch) {
 	auto Hatch {new EoDbHatch};
 	Hatch->SetEntityObjectId(hatch->objectId());
 
-	Hatch->m_ColorIndex = hatch->colorIndex();
-	Hatch->m_LinetypeIndex = EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype());
+	Hatch->m_ColorIndex = static_cast<short>(hatch->colorIndex());
+	Hatch->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(hatch->linetype()));
 
 	if (hatch->isHatch()) {
 		switch (hatch->patternType()) {
@@ -943,7 +943,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	}
 	Hatch->setAssociative(false);
 
-	Hatch->setColorIndex(ColorIndex);
+	Hatch->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 

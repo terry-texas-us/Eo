@@ -4,8 +4,7 @@
 #include "EoDbPoint.h"
 #include "DbGroup.h"
 
-using namespace std;
-using SelectionPair = pair<EoDbGroup*, EoDbPrimitive*>;
+using SelectionPair = std::pair<EoDbGroup*, EoDbPrimitive*>;
 enum GroupPrimitvePair { tGroup, tPrimitive };
 
 class AeSysDoc;
@@ -44,7 +43,7 @@ public:
 	void ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt = 0);
 	void ModifyColorIndex(short colorIndex);
 	void ModifyLinetypeIndex(short linetypeIndex);
-	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
+	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol);
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	/// <summary>Picks a prim if close enough to point.  Working in view space.</summary>
@@ -63,5 +62,5 @@ public:
 public: // Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
 
-    static pair<EoDbGroup*, OdDbGroupPtr> Create(OdDbDatabasePtr database);
+    static std::pair<EoDbGroup*, OdDbGroupPtr> Create(OdDbDatabasePtr database);
 };

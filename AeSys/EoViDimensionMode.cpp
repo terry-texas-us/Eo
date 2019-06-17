@@ -349,9 +349,9 @@ void AeSysView::OnDimensionModeAngle() {
 
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-		if (get<tGroup>(Selection) == nullptr) { return; }
+		if (std::get<tGroup>(Selection) == nullptr) { return; }
 
-		auto Primitive {get<1>(Selection)};
+		auto Primitive {std::get<1>(Selection)};
 
 		auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 		ln = Line->LineSeg();
@@ -364,9 +364,9 @@ void AeSysView::OnDimensionModeAngle() {
 		if (iLns == 1) {
 			auto Selection {SelectLineUsingPoint(CurrentPnt)};
 
-			if (get<tGroup>(Selection) == nullptr) { return; }
+			if (std::get<tGroup>(Selection) == nullptr) { return; }
 
-			auto Primitive {get<1>(Selection)};
+			auto Primitive {std::get<1>(Selection)};
 
 			auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 
@@ -510,7 +510,7 @@ void AeSysView::OnDimensionModeConvert() {
 					Text->setAlignmentPoint(ReferenceSystem.Origin());
 					Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(DimensionPrimitive->FontDef().HorizontalAlignment()));
 					Text->setVerticalMode(EoDbText::ConvertVerticalMode(DimensionPrimitive->FontDef().VerticalAlignment()));
-					Text->setColorIndex(DimensionPrimitive->TextColorIndex());
+					Text->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->TextColorIndex()));
 
 					auto TextPrimitive = EoDbText::Create(Text);
 

@@ -361,9 +361,9 @@ public:
 	void SetCursorPosition(const OdGePoint3d& point);
 	void SetModeCursor(unsigned mode);
 
-	pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
-	pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
-	pair<EoDbGroup*, EoDbPoint*> SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
+	std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
+	std::pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
+	std::pair<EoDbGroup*, EoDbPoint*> SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);

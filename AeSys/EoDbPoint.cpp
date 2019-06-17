@@ -282,8 +282,8 @@ bool EoDbPoint::Write(EoDbFile & file) const {
 void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
 	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kPointPrimitive);
-	buffer[6] = static_cast<signed char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<signed char>(m_PointDisplayMode);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_PointDisplayMode);
 
 	((EoVaxPoint3d*) & buffer[8])->Convert(m_Position);
 
@@ -314,7 +314,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
 EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
 	auto Point {new EoDbPoint()};
 	Point->m_EntityObjectId = point->objectId();
-	Point->m_ColorIndex = point->colorIndex();
+	Point->m_ColorIndex = static_cast<short>(point->colorIndex());
 	Point->m_Position = point->position();
 
 	Point->SetPointDisplayMode(pstate.PointDisplayMode());

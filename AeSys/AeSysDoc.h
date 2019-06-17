@@ -348,7 +348,7 @@ public:
 	void RemoveLayerAt(int layerIndex);
 	void RemoveEmptyLayers();
 	EoDbLayer* SelectLayerBy(const OdGePoint3d& point);
-	void PenTranslation(unsigned numberOfColors, vector<int>& newColors, vector<int>& pCol);
+	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol);
 	void PurgeDuplicateObjects();
 	int RemoveEmptyNotesAndDelete();
 	int RemoveEmptyGroups();

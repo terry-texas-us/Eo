@@ -745,7 +745,7 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 
 	LVITEMW lvItem;
 	::ZeroMemory(&lvItem, sizeof(LVITEMW));
-	lvItem.mask = m_pPlotStyleTable->isAciTableAvailable() ? LVIF_TEXT | LVIF_IMAGE | LVIF_STATE : LVIF_TEXT | LVIF_STATE;
+	lvItem.mask = static_cast<unsigned>(m_pPlotStyleTable->isAciTableAvailable() ? LVIF_TEXT | LVIF_IMAGE | LVIF_STATE : LVIF_TEXT | LVIF_STATE);
 	lvItem.state = 0;
 	lvItem.stateMask = 0;
 
