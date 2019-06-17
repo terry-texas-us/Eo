@@ -127,7 +127,7 @@ void EoDbHatch::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Interior Style;" + FormatInteriorStyle() + L"\t";
-	extra += L"Interior Style Name;" + CString((const wchar_t*) EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex)) + L"\t";
+	extra += L"Interior Style Name;" + CString((const wchar_t*) EoDbHatchPatternTable::LegacyHatchPatternName(static_cast<int>(m_InteriorStyleIndex))) + L"\t";
 	CString NumberOfVertices;
 	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
 	extra += NumberOfVertices;
@@ -216,12 +216,12 @@ bool EoDbHatch::IsInView(AeSysView* view) const {
 	pt[0] = EoGePoint4d(m_Vertices[0], 1.0);
 	view->ModelViewTransformPoint(pt[0]);
 
-	for (int i = m_Vertices.size() - 1; i >= 0; i--) {
+	for (auto i = m_Vertices.size() - 1; i >= 0; i--) {
 		pt[1] = EoGePoint4d(m_Vertices[i], 1.0);
 		view->ModelViewTransformPoint(pt[1]);
 
-		if (EoGePoint4d::ClipLine(pt[0], pt[1]))
-			return true;
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
+
 		pt[0] = pt[1];
 	}
 	return false;
@@ -361,7 +361,7 @@ void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
 		((EoVaxPoint3d*) & buffer[i])->Convert(m_Vertices[VertexIndex]);
 		i += sizeof(EoVaxPoint3d);
 	}
-	file.Write(buffer, buffer[3] * 32);
+	file.Write(buffer, static_cast<unsigned>(buffer[3] * 32));
 }
 
 int EoDbHatch::Append(const OdGePoint3d & vertex) {
@@ -392,7 +392,7 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 		HatchPatternLine = HatchPattern.getAt(PatternIndex);
 		const int NumberOfDashesInPattern = HatchPatternLine.m_dashes.size();
 		double TotalPatternLength = 0;
-		for (int DashIndex = 0; DashIndex < NumberOfDashesInPattern; DashIndex++) {
+		for (unsigned DashIndex = 0; DashIndex < NumberOfDashesInPattern; DashIndex++) {
 			TotalPatternLength += fabs(HatchPatternLine.m_dashes[DashIndex]);
 		}
 		auto RotatedBasePoint {HatchPatternLine.m_basePoint};
@@ -407,11 +407,11 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 		tmInv.invert();
 
 		int ActiveEdges = 0;
-		int FirstLoopPointIndex = 0;
+		auto FirstLoopPointIndex = 0u;
 		for (int LoopIndex = 0; LoopIndex < NumberOfLoops; LoopIndex++) {
-			if (LoopIndex != 0) {
-				FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1];
-			}
+			
+			if (LoopIndex != 0) { FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1]; }
+			
 			OdGePoint3d StartPoint(m_Vertices[FirstLoopPointIndex]);
 			StartPoint.transformBy(tm);		// Apply transform to get areas first point in z0 plane
 
@@ -510,7 +510,7 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 						StartPoint.x -= TotalPatternLength;
 					}
 					// Determine the index of the pattern item which intersects the left edge and how much of it is between the edges
-					int DashIndex = 0;
+					auto DashIndex = 0u;
 					double DistanceToLeftEdge = Edges[CurrentEdgeIndex].dX - StartPoint.x;
 					double CurrentDashLength = fabs(HatchPatternLine.m_dashes[DashIndex]);
 					while (CurrentDashLength <= DistanceToLeftEdge + DBL_EPSILON) {

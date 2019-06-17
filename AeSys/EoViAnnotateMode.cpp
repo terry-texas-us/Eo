@@ -155,7 +155,7 @@ void AeSysView::OnAnnotateModeBubble() {
 		Polyline->setClosed(true);
 
 		OdGePoint3dArray Points;
-		polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), NumberOfSides(), Points);
+		polyline::GeneratePointsForNPoly(CurrentPnt, ActiveViewPlaneNormal, BubbleRadius(), static_cast<unsigned>(NumberOfSides()), Points);
 
 		OdGeMatrix3d WorldToPlaneTransform;
 		WorldToPlaneTransform.setToWorldToPlane(OdGePlane(OdGePoint3d::kOrigin, ActiveViewPlaneNormal));
@@ -280,13 +280,13 @@ void AeSysView::OnAnnotateModeBox() {
 			OdGePoint3dArray JoinedBoxes;
 			JoinedBoxes.setLogicalLength(4);
 			JoinedBoxes.setAll(ptsBox1[0]);
-			for (int i = 1; i < 4; i++) {
+			for (unsigned i = 1; i < 4; i++) {
 				JoinedBoxes[0].x = EoMin(JoinedBoxes[0].x, ptsBox1[i].x);
 				JoinedBoxes[2].x = EoMax(JoinedBoxes[2].x, ptsBox1[i].x);
 				JoinedBoxes[0].y = EoMin(JoinedBoxes[0].y, ptsBox1[i].y);
 				JoinedBoxes[2].y = EoMax(JoinedBoxes[2].y, ptsBox1[i].y);
 			}
-			for (int i = 0; i < 4; i++) {
+			for (unsigned i = 0; i < 4; i++) {
 				JoinedBoxes[0].x = EoMin(JoinedBoxes[0].x, ptsBox2[i].x);
 				JoinedBoxes[2].x = EoMax(JoinedBoxes[2].x, ptsBox2[i].x);
 				JoinedBoxes[0].y = EoMin(JoinedBoxes[0].y, ptsBox2[i].y);

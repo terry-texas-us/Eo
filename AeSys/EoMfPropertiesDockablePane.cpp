@@ -74,7 +74,7 @@ int EoMfPropertiesDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	m_PropertiesToolBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE, IDR_PROPERTIES);
 	m_PropertiesToolBar.LoadToolBar(IDR_PROPERTIES, 0, 0, TRUE);
 	m_PropertiesToolBar.CleanUpLockedImages();
-	m_PropertiesToolBar.LoadBitmapW(theApp.HighColorMode() ? IDB_PROPERTIES_HC : IDR_PROPERTIES, 0, 0, TRUE);
+	m_PropertiesToolBar.LoadBitmapW(static_cast<unsigned>(theApp.HighColorMode() ? IDB_PROPERTIES_HC : IDR_PROPERTIES), 0, 0, TRUE);
 
 	m_PropertiesToolBar.SetPaneStyle(m_PropertiesToolBar.GetPaneStyle() | CBRS_TOOLTIPS | CBRS_FLYBY);
 	m_PropertiesToolBar.SetPaneStyle(m_PropertiesToolBar.GetPaneStyle() & ~(CBRS_GRIPPER | CBRS_SIZE_DYNAMIC | CBRS_BORDER_TOP | CBRS_BORDER_BOTTOM | CBRS_BORDER_LEFT | CBRS_BORDER_RIGHT));

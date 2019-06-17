@@ -27,7 +27,7 @@ void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 	if (m_pListBox) {
 		int n = m_pListBox->FindString(0, OdString(appName));
 		if (n != LB_ERR) {
-			m_pListBox->DeleteString(n);
+			m_pListBox->DeleteString(static_cast<unsigned>(n));
 		}
 	}
 }

@@ -78,7 +78,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case Name:
 			ItemName = Layer->Name();
-			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
+			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			break;
 		case On:
 			m_StateImages.Draw(&deviceContext, Layer->IsOff() ? 3 : 2, ((CRect&) itemRectangle).TopLeft(), ILD_TRANSPARENT);
@@ -94,7 +94,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case Linetype:
 			ItemName = OdDbSymUtil::getSymbolName(LayerTableRecord->linetypeObjectId());
-			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
+			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			break;
 		case Lineweight:
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight());
@@ -114,7 +114,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 				}
 			} else {
 				ItemName = LayerTableRecord->description();
-				deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
+				deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			}
 			break;
 		case VpColor:
@@ -122,7 +122,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case VpLinetype:
 			ItemName = OdDbSymUtil::getSymbolName(LayerTableRecord->linetypeObjectId(m_ActiveViewport));
-			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, ItemName.getLength(), nullptr);
+			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			break;
 		case VpLineweight:
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight(m_ActiveViewport));

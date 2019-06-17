@@ -37,7 +37,7 @@ BOOL EoDlgSetActiveLayout::OnInitDialog() {
 
 void EoDlgSetActiveLayout::FillListBox() {
 	try {
-		auto ItemIndex {0};
+		auto ItemIndex {0u};
 		OdArray<OdString> Items;
 		const auto Database {m_Database};
 		OdDbDictionaryPtr LayoutDictionary {Database->getLayoutDictionaryId().safeOpenObject()};
@@ -49,7 +49,8 @@ void EoDlgSetActiveLayout::FillListBox() {
 			OdDbLayoutPtr Layout {LayoutIterator->objectId().safeOpenObject()};
 			ItemIndex = Layout->getTabOrder();
 			
-			if (static_cast<unsigned>(ItemIndex) >= Items.size()) { Items.resize(ItemIndex + 1); }
+			if (ItemIndex >= Items.size()) { Items.resize(ItemIndex + 1);
+			}
 
 			Items[ItemIndex] = LayoutIterator->name();
 			
@@ -66,7 +67,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		Layouts->SetSel(m_OldActiveLayout);
 		m_NewActiveLayout = m_OldActiveLayout;
 
-		GetDlgItem(IDC_NEWNAME)->SetWindowTextW(Items[m_OldActiveLayout]);
+		GetDlgItem(IDC_NEWNAME)->SetWindowTextW(Items[static_cast<unsigned>(m_OldActiveLayout)]);
 	} catch (const OdError& Error) {
 		theApp.reportError(L"Error Selecting Layout", Error);
 	}
@@ -115,7 +116,7 @@ void EoDlgSetActiveLayout::OnRename() {
 			theApp.reportError(L"Error Renaming Layout", Error);
 			return;
 		}
-		Layouts->DeleteString(m_NewActiveLayout);
+		Layouts->DeleteString(static_cast<unsigned>(m_NewActiveLayout));
 		Layouts->InsertString(m_NewActiveLayout, NewName);
 		Layouts->SetSel(m_NewActiveLayout);
 	}

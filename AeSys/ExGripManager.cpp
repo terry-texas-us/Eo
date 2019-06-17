@@ -1325,7 +1325,7 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 			for (unsigned i = 0; i < Size; i++) {
 				activeKeys[i]->setStatus(OdDbGripOperations::kWarmGrip);
 			}
-			UpdateEntityGrips(activeKeys[RightClickIndex]->entityId());
+			UpdateEntityGrips(activeKeys[static_cast<unsigned>(RightClickIndex)]->entityId());
 			return true;
 		}
 	}

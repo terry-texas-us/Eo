@@ -73,7 +73,7 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 }
 
 void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
-	wchar_t szBuf[64] {L"\0"};
+	wchar_t szBuf[64] {L""};
 
 	int iItem {0};
 
@@ -88,7 +88,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 
 		nOff += nDel + 1;
 		nDel = Extra.Mid(nOff).Find('\t');
-		const unsigned nLen = min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1);
+		auto nLen {static_cast<int>(min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1))};
 		wcscpy_s(szBuf, 64, Extra.Mid(nOff, nLen));
 
 		m_ExtraListViewControl.SetItemText(iItem++, 1, szBuf);
@@ -99,7 +99,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 }
 
 void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive * primitive) {
-	wchar_t szBuf[64] {L"\0"};
+	wchar_t szBuf[64] {L""};
 	int iItem {0};
 
 	CString strBuf;

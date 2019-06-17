@@ -40,7 +40,7 @@ void AeSysView::OnPowerModeCircuit() {
 			const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
 			const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius)};
 			auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 			m_PowerModePoints[0] = CurrentPnt;
@@ -58,7 +58,7 @@ void AeSysView::OnPowerModeCircuit() {
 			const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
 			const auto pt2 {ProjectToward(CurrentPnt, m_PowerModePoints[0], 0.0)};
 			auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
-			Line->setColorIndex(ColorIndex);
+			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 

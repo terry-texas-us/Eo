@@ -102,7 +102,7 @@ void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& c
 		else if (KnotIndex >= NumberOfControlPoints + 1) { // End of curve
 			knots.append(knots[KnotIndex - 1]);
 		} else {
-			const int i2 = KnotIndex - Order;
+			const auto i2 = static_cast<unsigned>(KnotIndex - Order);
 			if (controlPoints[i2] == controlPoints[i2 + 1]) { // Repeating vertices
 				knots.append(knots[KnotIndex - 1]);
 			} else { // Successive internal vectors

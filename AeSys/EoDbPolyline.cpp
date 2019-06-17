@@ -189,9 +189,9 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 		const auto EndVertexIndex {sm_Edge % NumberOfVertices};
 
 		OdGePoint3d StartPoint;
-		GetPointAt(StartVertexIndex, StartPoint);
+		GetPointAt(static_cast<int>(StartVertexIndex), StartPoint);
 		OdGePoint3d EndPoint;
-		GetPointAt(EndVertexIndex, EndPoint);
+		GetPointAt(static_cast<int>(EndVertexIndex), EndPoint);
 
 		if (EndPoint.x > StartPoint.x) {
 			sm_PivotVertex = StartVertexIndex;

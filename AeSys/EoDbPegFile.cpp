@@ -308,7 +308,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 
 	WriteUInt16(kLayerTable);
 
-	const auto SavedFilePosition {CFile::GetPosition()};
+	const auto SavedFilePosition {static_cast<long long>(CFile::GetPosition())};
 	WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 
 	for (int LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
@@ -327,7 +327,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 	WriteUInt16(kEndOfTable);
 
 	if (NumberOfLayers != document->GetLayerTableSize()) {
-		const auto CurrentFilePosition {CFile::GetPosition()};
+		const auto CurrentFilePosition {static_cast<long long>(CFile::GetPosition())};
 		CFile::Seek(SavedFilePosition, CFile::begin);
 		WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 		CFile::Seek(CurrentFilePosition, CFile::begin);
@@ -347,7 +347,7 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 	while (Position != nullptr) {
 		document->GetNextBlock(Position, Name, Block);
 
-		const auto SavedFilePosition {CFile::GetPosition()};
+		const auto SavedFilePosition {static_cast<long long>(CFile::GetPosition())};
 		WriteUInt16(0);
 		unsigned short NumberOfPrimitives {0};
 
@@ -361,7 +361,7 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 			
 			if (Primitive->Write(*this)) { NumberOfPrimitives++; }
 		}
-		const auto CurrentFilePosition {CFile::GetPosition()};
+		const auto CurrentFilePosition {static_cast<long long>(CFile::GetPosition())};
 		CFile::Seek(SavedFilePosition, CFile::begin);
 		WriteUInt16(NumberOfPrimitives);
 		CFile::Seek(CurrentFilePosition, CFile::begin);

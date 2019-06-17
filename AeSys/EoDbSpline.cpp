@@ -244,7 +244,7 @@ void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
 		((EoVaxPoint3d*) & buffer[i])->Convert(m_Spline.controlPointAt(w));
 		i += sizeof(EoVaxPoint3d);
 	}
-	file.Write(buffer, buffer[3] * 32);
+	file.Write(buffer, static_cast<unsigned>(buffer[3] * 32));
 }
 
 // Static

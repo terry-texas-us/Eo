@@ -88,7 +88,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 	const unsigned long Style {WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC};
 	
-	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME)) {
+	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(static_cast<unsigned>(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME))) {
 		TRACE0("Failed to create toolbar\n");
 		return -1;
 	}

@@ -19,7 +19,7 @@ void AeSysView::ModeLineDisplay() {
 		// <tas="Using active view device context for sizing status bar panes."/>
 		const auto Size {DeviceContext->GetTextExtent(ModeOp)};
 
-		GetStatusBar().SetPaneInfo(::nStatusOp0 + i, ID_OP0 + i, SBPS_NORMAL, Size.cx);
+		GetStatusBar().SetPaneInfo(::nStatusOp0 + i, static_cast<unsigned>(ID_OP0 + i), SBPS_NORMAL, Size.cx);
 		GetStatusBar().SetPaneText(::nStatusOp0 + i, ModeOp);
 		GetStatusBar().SetTipText(::nStatusOp0 + i, L"Mode Command Tip Text");
 	}

@@ -3631,12 +3631,12 @@ void AeSysView::OnOp3() {
 void AeSysView::OnOp4() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
-			theApp.LoadModeResources(theApp.PrimaryMode());
+			theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 			GetDocument()->InitializeGroupAndPrimitiveEdit();
 			break;
 
 		case ID_MODE_GROUP_EDIT:
-			theApp.LoadModeResources(theApp.PrimaryMode());
+			theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 			GetDocument()->InitializeGroupAndPrimitiveEdit();
 			break;
 	}
@@ -3693,12 +3693,12 @@ void AeSysView::OnOp8() {
 void AeSysView::OnReturn() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_PRIMITIVE_EDIT:
-			theApp.LoadModeResources(theApp.PrimaryMode());
+			theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 			InitializeGroupAndPrimitiveEdit();
 			break;
 
 		case ID_MODE_GROUP_EDIT:
-			theApp.LoadModeResources(theApp.PrimaryMode());
+			theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 			InitializeGroupAndPrimitiveEdit();
 			break;
 
