@@ -376,7 +376,7 @@ void AeSysView::OnDraw(CDC* deviceContext) {
 }
 
 void AeSysView::OnInitialUpdate() {
-	::SetClassLongPtr(GetSafeHwnd(), GCLP_HBRBACKGROUND, (LONG_PTR) ::CreateSolidBrush(ViewBackgroundColor));
+	::SetClassLongPtr(GetSafeHwnd(), GCLP_HBRBACKGROUND, reinterpret_cast<LONG_PTR>(::CreateSolidBrush(ViewBackgroundColor)));
 
 	CView::OnInitialUpdate();
 
@@ -732,7 +732,7 @@ static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subkey, const wchar
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
 		unsigned long ValueSize {sizeof(unsigned long)};
 
-		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, (LPBYTE)& value, &ValueSize) == ERROR_SUCCESS) { ReturnValue = true; }
+		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, reinterpret_cast<LPBYTE>(& value), &ValueSize) == ERROR_SUCCESS) { ReturnValue = true; }
 
 		RegCloseKey(KeyHandle);
 	}
@@ -911,10 +911,10 @@ void AeSysView::createDevice(bool recreate) {
 
 			if (DeviceProperties.get()) {
 				if (DeviceProperties->has(L"WindowHWND")) {
-					DeviceProperties->putAt("WindowHWND", OdRxVariantValue((OdIntPtr)m_hWnd));
+					DeviceProperties->putAt("WindowHWND", OdRxVariantValue(reinterpret_cast<OdIntPtr>(m_hWnd)));
 				}
 				if (DeviceProperties->has(L"WindowHDC")) {
-					DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr)m_hWindowDC));
+					DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue(reinterpret_cast<OdIntPtr>(m_hWindowDC)));
 				}
 				if (DeviceProperties->has(L"DoubleBufferEnabled")) {
 					DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled()));
@@ -932,7 +932,7 @@ void AeSysView::createDevice(bool recreate) {
 					DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled()));
 				}
 				if (DeviceProperties->has(L"MaxRegenThreads")) {
-					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue((unsigned short)theApp.mtRegenThreadsCount()));
+					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue(static_cast<unsigned short>(theApp.mtRegenThreadsCount())));
 				}
 				if (DeviceProperties->has(L"UseTextOut")) {
 					DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
@@ -1164,7 +1164,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 					// render wider then a tile area to reduce gaps in lines.
 					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
 
-					pImg->scanLines((unsigned char*) pBuf, 0, static_cast<unsigned long>(tileHeight));
+					pImg->scanLines(static_cast<unsigned char*>(pBuf), 0, static_cast<unsigned long>(tileHeight));
 					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), tileWidth, tileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
 				}
 			}
@@ -1231,7 +1231,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			}
 			if (/*IsPlotViaBitmap &&*/ GsPrinterDevice->properties()->has(L"DPI")) { // #9633 (1)
 				const int MinimumLogicalPixels = odmin(deviceContext->GetDeviceCaps(LOGPIXELSX), deviceContext->GetDeviceCaps(LOGPIXELSY));
-				GsPrinterDevice->properties()->putAt(L"DPI", OdRxVariantValue((unsigned long) MinimumLogicalPixels));
+				GsPrinterDevice->properties()->putAt(L"DPI", OdRxVariantValue(static_cast<unsigned long>(MinimumLogicalPixels)));
 			}
 			m_pPrinterDevice = OdDbGsManager::setupActiveLayoutViews(GsPrinterDevice, this);
 			preparePlotstyles();
@@ -1420,7 +1420,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 
 		if (plotType == OdDbPlotSettings::kView) {
 			auto PlotViewName {Layout->getPlotViewName()};
-			OdDbViewTableRecordPtr ViewTableRecord {((OdDbViewTablePtr)(Database->getViewTableId().safeOpenObject()))->getAt(PlotViewName).safeOpenObject()};
+			OdDbViewTableRecordPtr ViewTableRecord {static_cast<OdDbViewTablePtr>(Database->getViewTableId().safeOpenObject())->getAt(PlotViewName).safeOpenObject()};
 
 			ViewTarget = ViewTableRecord->target(); // in plotPaperUnits
 			AbstractView = OdAbstractViewPEPtr(pVObject = ViewTableRecord);
@@ -1587,7 +1587,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		}
 		if (!IsPlotViaBitmap) {
 			m_pPrinterDevice->onSize(ViewportRectangle);
-			m_pPrinterDevice->properties()->putAt(L"WindowHDC", OdRxVariantValue((OdIntPtr) deviceContext->m_hDC));
+			m_pPrinterDevice->properties()->putAt(L"WindowHDC", OdRxVariantValue(reinterpret_cast<OdIntPtr>(deviceContext->m_hDC)));
 			m_pPrinterDevice->update(nullptr);
 		} else {
 			const CRect DrawRectangle(ViewportRectangle.m_min.x, ViewportRectangle.m_max.y, ViewportRectangle.m_max.x, ViewportRectangle.m_min.y);
@@ -1704,7 +1704,7 @@ public:
 		: SaveViewParams(view, tracker, cursor, false) {
 		if (tracker) {
 			tracker->setCursor(true);
-			::SetTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER, BLINK_CURSOR_RATE, (TIMERPROC) StringTrackerTimer);
+			::SetTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER, BLINK_CURSOR_RATE, static_cast<TIMERPROC>(StringTrackerTimer));
 			m_bTimerSet = true;
 		} else {
 			m_bTimerSet = false;
@@ -2007,7 +2007,7 @@ CRect AeSysView::viewRect(OdGsView* view)
 {
 	OdGePoint3d LowerLeftPoint;
 	OdGePoint3d UpperRightPoint;
-	view->getViewport((OdGePoint2d&)LowerLeftPoint, (OdGePoint2d&)UpperRightPoint);
+	view->getViewport(reinterpret_cast<OdGePoint2d&>(LowerLeftPoint), reinterpret_cast<OdGePoint2d&>(UpperRightPoint));
 	const auto ScreenMatrix {view->screenMatrix()};
 	LowerLeftPoint.transformBy(ScreenMatrix);
 	UpperRightPoint.transformBy(ScreenMatrix);
@@ -2044,7 +2044,7 @@ void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsign
 
 		default:
 			while (repeatCount--) {
-				if (!m_inpars.addChar(( wchar_t) characterCodeValue)) {
+				if (!m_inpars.addChar(static_cast<wchar_t>(characterCodeValue))) {
 					m_inpars.reset(false);
 					switch (m_mode) {
 						case kQuiescent:
@@ -2532,7 +2532,7 @@ void AeSysView::PopModelTransform() {
 }
 
 void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
-	if (m_ViewBackgroundImage && ((HBITMAP) m_BackgroundImageBitmap != nullptr)) {
+	if (m_ViewBackgroundImage && (static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr)) {
 		const int iWidDst {static_cast<int>(m_Viewport.WidthInPixels())};
 		const int iHgtDst {static_cast<int>(m_Viewport.HeightInPixels())};
 
@@ -3361,7 +3361,7 @@ void AeSysView::OnBackgroundImageLoad() {
 }
 
 void AeSysView::OnBackgroundImageRemove() {
-	if ((HBITMAP) m_BackgroundImageBitmap != nullptr) {
+	if (static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr) {
 		m_BackgroundImageBitmap.DeleteObject();
 		m_BackgroundImagePalette.DeleteObject();
 		m_ViewBackgroundImage = false;
@@ -3376,16 +3376,16 @@ void AeSysView::OnViewBackgroundImage() {
 }
 
 void AeSysView::OnUpdateViewBackgroundImage(CCmdUI* pCmdUI) {
-	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != nullptr);
+	pCmdUI->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
 	pCmdUI->SetCheck(m_ViewBackgroundImage);
 }
 
 void AeSysView::OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI) {
-	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap == nullptr);
+	pCmdUI->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) == nullptr);
 }
 
 void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI) {
-	pCmdUI->Enable((HBITMAP) m_BackgroundImageBitmap != nullptr);
+	pCmdUI->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
 }
 
 void AeSysView::OnUpdateViewPenwidths(CCmdUI* pCmdUI) {
@@ -3729,7 +3729,7 @@ void AeSysView::OnFind() {
 	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
 
 	if (!FindComboText.isEmpty()) {
-		TRACE1("AeSysView::OnFind() ComboText = %s\n", (const wchar_t*) FindComboText);
+		TRACE1("AeSysView::OnFind() ComboText = %s\n", static_cast<const wchar_t*>(FindComboText));
 	}
 }
 
@@ -3753,7 +3753,7 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 
 			if (LBText.GetLength() == findText.getLength()) {
 
-				if ((const wchar_t*) LBText == findText) { break; }
+				if (static_cast<const wchar_t*>(LBText) == findText) { break; }
 			}
 			Position++;
 		}
@@ -3932,7 +3932,7 @@ void AeSysView::SetModeCursor(unsigned mode) {
 	auto CursorHandle {static_cast<HCURSOR>(::LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
 	VERIFY(CursorHandle);
 	::SetCursor(CursorHandle);
-	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, (long) CursorHandle);
+	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, reinterpret_cast<long>(CursorHandle));
 }
 
 void AeSysView::SetWorldScale(double scale) {

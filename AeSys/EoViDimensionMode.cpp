@@ -426,7 +426,7 @@ void AeSysView::OnDimensionModeAngle() {
 
 				EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 
-				OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), ( const wchar_t*) theApp.FormatAngle(Angle));
+				OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(theApp.FormatAngle(Angle)));
 
 				Text->setNormal(PlaneNormal);
 				Text->setRotation(ReferenceSystem.Rotation());
@@ -502,7 +502,7 @@ void AeSysView::OnDimensionModeConvert() {
 					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(DimensionPrimitive->LinetypeIndex()));
 					auto LinePrimitive {EoDbLine::Create(Line)};
 
-					auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), ( const wchar_t*) DimensionPrimitive->Text())};
+					auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(DimensionPrimitive->Text()))};
 
 					Text->setNormal(PlaneNormal);
 					Text->setRotation(ReferenceSystem.Rotation());

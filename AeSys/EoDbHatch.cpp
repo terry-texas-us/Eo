@@ -127,7 +127,7 @@ void EoDbHatch::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Interior Style;" + FormatInteriorStyle() + L"\t";
-	extra += L"Interior Style Name;" + CString((const wchar_t*) EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex)) + L"\t";
+	extra += L"Interior Style Name;" + CString(static_cast<const wchar_t*>(EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex))) + L"\t";
 	CString NumberOfVertices;
 	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
 	extra += NumberOfVertices;
@@ -216,7 +216,7 @@ bool EoDbHatch::IsInView(AeSysView* view) const {
 	pt[0] = EoGePoint4d(m_Vertices[0], 1.0);
 	view->ModelViewTransformPoint(pt[0]);
 
-	for (auto i = m_Vertices.size() - 1; i >= 0; i--) {
+	for (auto i = m_Vertices.size() - 1; i > 0; i--) {
 		pt[1] = EoGePoint4d(m_Vertices[i], 1.0);
 		view->ModelViewTransformPoint(pt[1]);
 
@@ -226,6 +226,7 @@ bool EoDbHatch::IsInView(AeSysView* view) const {
 	}
 	return false;
 }
+
 bool EoDbHatch::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		EoGePoint4d pt(m_Vertices[VertexIndex], 1.0);
@@ -235,6 +236,7 @@ bool EoDbHatch::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point)
 	}
 	return false;
 }
+
 OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	double dApert = sm_SelectApertureSize;
@@ -345,20 +347,20 @@ bool EoDbHatch::Write(EoDbFile & file) const {
 
 void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = static_cast<unsigned char>((79 + m_Vertices.size() * 12) / 32);
-	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kHatchPrimitive);
+	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kHatchPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_InteriorStyle);
-	*((short*) & buffer[8]) = static_cast<short>(m_InteriorStyleIndex);
-	*((short*) & buffer[10]) = static_cast<short>(m_Vertices.size());
+	*reinterpret_cast<short*>(& buffer[8]) = static_cast<short>(m_InteriorStyleIndex);
+	*reinterpret_cast<short*>(& buffer[10]) = static_cast<short>(m_Vertices.size());
 
-	((EoVaxPoint3d*) & buffer[12])->Convert(m_HatchOrigin);
-	((EoVaxVector3d*) & buffer[24])->Convert(m_HatchXAxis);
-	((EoVaxVector3d*) & buffer[36])->Convert(m_HatchYAxis);
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[12])->Convert(m_HatchOrigin);
+	reinterpret_cast<EoVaxVector3d*>(& buffer[24])->Convert(m_HatchXAxis);
+	reinterpret_cast<EoVaxVector3d*>(& buffer[36])->Convert(m_HatchYAxis);
 
 	int i = 48;
 
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		((EoVaxPoint3d*) & buffer[i])->Convert(m_Vertices[VertexIndex]);
+		reinterpret_cast<EoVaxPoint3d*>(& buffer[i])->Convert(m_Vertices[VertexIndex]);
 		i += sizeof(EoVaxPoint3d);
 	}
 	file.Write(buffer, static_cast<unsigned>(buffer[3] * 32));
@@ -711,7 +713,7 @@ void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 
 		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
 			OdString ReportItem;
-			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", (const wchar_t*) HatchName, (const wchar_t*) Hatch->patternName());
+			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", static_cast<const wchar_t*>(HatchName), static_cast<const wchar_t*>(Hatch->patternName()));
 			theApp.AddStringToReportList(ReportItem);
 		} else {
 			Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
@@ -726,7 +728,9 @@ void EoDbHatch::SetLoopAt(int loopIndex, const OdDbHatchPtr & hatchEntity) {
 	OdGePlane Plane;
 	OdDb::Planarity ResultPlanarity;
 	const auto Result {hatchEntity->getPlane(Plane, ResultPlanarity)};
-	OdGeMatrix3d PlaneToWorld {(Result == eOk && ResultPlanarity == OdDb::kPlanar) ? PlaneToWorld.setToPlaneToWorld(Plane) : OdGeMatrix3d::kIdentity};
+	OdGeMatrix3d PlaneToWorld {OdGeMatrix3d::kIdentity};
+	
+	if (Result == eOk && ResultPlanarity == OdDb::kPlanar) { PlaneToWorld = PlaneToWorld.setToPlaneToWorld(Plane); }
 
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices2d.size(); VertexIndex++) {
 		auto Vertex {OdGePoint3d(m_Vertices2d[VertexIndex].x, m_Vertices2d[VertexIndex].y, hatchEntity->elevation())};
@@ -970,15 +974,15 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	if (versionNumber == 1) {
 		ColorIndex = short(primitiveBuffer[4] & 0x000f);
 
-		const double StyleDefinition = ((EoVaxFloat*) & primitiveBuffer[12])->Convert();
+		const double StyleDefinition = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[12])->Convert();
 		InteriorStyle = short(int(StyleDefinition) % 16);
 
 		switch (InteriorStyle) {
 			case EoDbHatch::kHatch:
 			{
-				const double ScaleFactorX = ((EoVaxFloat*) & primitiveBuffer[16])->Convert();
-				const double ScaleFactorY = ((EoVaxFloat*) & primitiveBuffer[20])->Convert();
-				double PatternAngle = ((EoVaxFloat*) & primitiveBuffer[24])->Convert();
+				const double ScaleFactorX = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[16])->Convert();
+				const double ScaleFactorY = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert();
+				double PatternAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert();
 
 				if (fabs(ScaleFactorX) > FLT_EPSILON && fabs(ScaleFactorY) > FLT_EPSILON) { // Have 2 hatch lines
 					InteriorStyleIndex = 2;
@@ -1011,28 +1015,28 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 			default:
 				throw L"Exception.FileJob: Unknown hatch primitive interior style.";
 		}
-		const auto NumberOfVertices {static_cast<unsigned short>(((EoVaxFloat*)& primitiveBuffer[8])->Convert())};
+		const auto NumberOfVertices {static_cast<unsigned short>(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[8])->Convert())};
 
 		int BufferOffset = 36;
 		Vertices.clear();
 		for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
+			Vertices.append(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[BufferOffset])->Convert() * 1.e-3);
 			BufferOffset += sizeof(EoVaxPoint3d);
 		}
 		HatchOrigin = Vertices[0];
 	} else {
 		ColorIndex = short(primitiveBuffer[6]);
 		InteriorStyle = static_cast<signed char>(primitiveBuffer[7]);
-		InteriorStyleIndex = static_cast<unsigned>(*((short*) & primitiveBuffer[8]));
-		const auto NumberOfVertices = *((short*) & primitiveBuffer[10]);
-		HatchOrigin = ((EoVaxPoint3d*) & primitiveBuffer[12])->Convert();
-		HatchXAxis = ((EoVaxVector3d*) & primitiveBuffer[24])->Convert();
-		HatchYAxis = ((EoVaxVector3d*) & primitiveBuffer[36])->Convert();
+		InteriorStyleIndex = static_cast<unsigned>(*reinterpret_cast<short*>(& primitiveBuffer[8]));
+		const auto NumberOfVertices = *reinterpret_cast<short*>(& primitiveBuffer[10]);
+		HatchOrigin = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[12])->Convert();
+		HatchXAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[24])->Convert();
+		HatchYAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[36])->Convert();
 
 		int BufferOffset = 48;
 		Vertices.clear();
 		for (auto VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			Vertices.append(((EoVaxPoint3d*) & primitiveBuffer[BufferOffset])->Convert());
+			Vertices.append(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[BufferOffset])->Convert());
 			BufferOffset += sizeof(EoVaxPoint3d);
 		}
 	}

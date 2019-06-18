@@ -38,7 +38,7 @@ void DrawTransparentBitmap(HDC hdc, HBITMAP bitmap, short xStart, short yStart, 
 
 	BITMAP bm;
 
-	GetObjectW(bitmap, sizeof(BITMAP), (LPSTR) & bm);
+	GetObjectW(bitmap, sizeof(BITMAP), reinterpret_cast<LPSTR>(& bm));
 	POINT ptSize {bm.bmWidth, bm.bmHeight};
 	DPtoLP(hdcTemp, &ptSize, 1);
 

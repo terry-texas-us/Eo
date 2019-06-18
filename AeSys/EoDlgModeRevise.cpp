@@ -61,7 +61,7 @@ void EoDlgModeRevise::OnOK() {
 		OdGeVector3d PlaneNormal;
 		sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
 		OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-		auto Text {EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), ( const wchar_t*) TextString)};
+		auto Text {EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), static_cast<const wchar_t*>(TextString))};
 
 		Text->setNormal(PlaneNormal);
 		Text->setRotation(sm_ReferenceSystem.Rotation());

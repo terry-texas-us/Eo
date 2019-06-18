@@ -51,7 +51,7 @@ int EoDlgLayerPropertiesManager::OnCreate(LPCREATESTRUCT createStructure) {
 }
 void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
 	if (HTREEITEM h = m_TreeFilters.GetSelectedItem()) {
-		const OdLyLayerFilter* lf = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(h);
+		const OdLyLayerFilter* lf = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(h)));
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {
 			//OdaLayerFilterPropDlg(lf, this).DoModal();
 		}
@@ -64,13 +64,13 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStruc
 
 	if (pTVKeyDown->wVKey == VK_DELETE) {
 		if (HTREEITEM SelectedItem = m_TreeFilters.GetSelectedItem()) {
-			OdLyLayerFilter* Filter = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(SelectedItem);
+			OdLyLayerFilter* Filter = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(SelectedItem)));
 			if (Filter->dynamicallyGenerated()) return;
 			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) return;
 			Filter->parent()->removeNested(Filter);
 			m_TreeFilters.DeleteItem(SelectedItem);
 
-			const OdLyLayerFilter * Root = (OdLyLayerFilter*) (void*) m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem());
+			const OdLyLayerFilter * Root = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem())));
 			::odlyGetLayerFilterManager(m_Database)->setFilters(Root, Root);
 		}
 	}
@@ -122,7 +122,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
 	if (root) {
 		HTREEITEM TreeItem = tree.InsertItem(root->name(), parent);
-		tree.SetItemData(TreeItem, (unsigned long) (void*) root);
+		tree.SetItemData(TreeItem, reinterpret_cast<unsigned long>((void*)root));
 		const int Image = root->isIdFilter() ? 2 : 1;
 		tree.SetItemImage(TreeItem, Image, Image);
 		

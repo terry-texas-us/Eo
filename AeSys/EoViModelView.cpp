@@ -76,7 +76,7 @@ void AeSysView::ModelViewTransformPoint(EoGePoint4d& point) {
 	point.TransformBy(Matrix);
 }
 void AeSysView::ModelViewTransformPoints(EoGePoint4dArray& points) {
-	const int NumberOfPoints = (int) points.GetSize();
+	const int NumberOfPoints = static_cast<int>(points.GetSize());
 	EoGeMatrix3d Matrix(m_ViewTransform.Matrix());
 	if (m_ModelTransform.Depth() != 0) {
 		Matrix.postMultBy(m_ModelTransform.ModelMatrix());

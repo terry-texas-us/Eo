@@ -38,7 +38,7 @@ class ViewInteractivityMode {
 		m_View = view;
 
 		if (!enable.isNull()) {
-			m_enabled = (bool) (enable);
+			m_enabled = static_cast<bool>(enable);
 			if (m_enabled && !frameRate.isNull()) {
 				const auto rate {frameRate.get()->getDouble()};
 				view->beginInteractivity(rate);
@@ -194,7 +194,7 @@ OdGsView* OdExEditorObject::ActiveTopView() {
 
 OdDbObjectId OdExEditorObject::ActiveViewportId() const {
 	OdGsClientViewInfo ClientViewInfo;
-	((OdGsView*) ActiveView())->clientViewInfo(ClientViewInfo);
+	const_cast<OdGsView*>(ActiveView())->clientViewInfo(ClientViewInfo);
 	return OdDbObjectId(ClientViewInfo.viewportObjectId);
 }
 
@@ -374,7 +374,7 @@ void OdExEditorObject::Set3DView(_3DViewType type) {
 bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 	if (IsSnapOn()) {
 		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_BasePt)) {
-			if (!m_p2dModel.isNull()) { m_p2dModel->onModified(&m_ObjectSnapManager, (OdGiDrawable*) nullptr); }
+			if (!m_p2dModel.isNull()) { m_p2dModel->onModified(&m_ObjectSnapManager, static_cast<OdGiDrawable*>(nullptr)); }
 
 			return true;
 		}
@@ -546,8 +546,8 @@ void OdExEditorObject::ZoomAt(OdGsView* view, int x, int y, short zDelta) {
 	if (view->isPerspective() && view->mode() == OdGsView::k2DOptimized) {
 		pos = OdGePoint3d(0.5, 0.5, 0.0).transformBy(view->screenMatrix());
 	}
-	int vx = (int) OdRound(pos.x);
-	int vy = (int) OdRound(pos.y);
+	int vx = static_cast<int>(OdRound(pos.x));
+	int vy = static_cast<int>(OdRound(pos.y));
 	vx = x - vx;
 	vy = y - vy;
 	Dolly(view, -vx, -vy);
@@ -765,11 +765,11 @@ class OrbitCtrl : public OdGiDrawableImpl<> {
 
 		OdGePoint3d pt1;
 		OdGePoint2d pt2;
-		vp.getViewportDcCorners((OdGePoint2d&) pt1, pt2);
+		vp.getViewportDcCorners(reinterpret_cast<OdGePoint2d&>(pt1), pt2);
 		pt2.x -= pt1.x;
 		pt2.y -= pt1.y;
 		const double r = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
-		((OdGePoint2d&) pt1) += (pt2.asVector() / 2.);
+		reinterpret_cast<OdGePoint2d&>(pt1) += (pt2.asVector() / 2.);
 		geom.circle(pt1, r, OdGeVector3d::kZAxis);
 
 		geom.circle(pt1 + OdGeVector3d(0.0, r, 0.0), r / 20., OdGeVector3d::kZAxis);
@@ -827,12 +827,12 @@ class RTOrbitTracker : public OdEdPointTracker {
 
 		OdGePoint3d pt1;
 		OdGePoint2d pt2;
-		viewportDcCorners((OdGePoint2d&) pt1, pt2);
+		viewportDcCorners(reinterpret_cast<OdGePoint2d&>(pt1), pt2);
 		pt2.x -= pt1.x;
 		pt2.y -= pt1.y;
 		const double r = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
 		m_D = 2.0 * r;
-		((OdGePoint2d&) pt1) += (pt2.asVector() / 2.);
+		reinterpret_cast<OdGePoint2d&>(pt1) += (pt2.asVector() / 2.);
 		const double r2sqrd = r * r / 400.;
 
 		pt1.y += r;
@@ -996,8 +996,8 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	}
 	//
 
-	auto InteractiveMode {(OdRxVariantValue) edCommandContext->arbitraryData(L"Bitmap InteractiveMode")};
-	auto InteractiveFrameRate {(OdRxVariantValue) edCommandContext->arbitraryData(L"Bitmap InteractiveFrameRate")};
+	auto InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveMode"))};
+	auto InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveFrameRate"))};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
 
 	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
@@ -1019,7 +1019,7 @@ void OdExEditorObject::TurnOrbitOn(bool orbitOn) {
 
 bool OdExEditorObject::OnOrbitBeginDrag(int x, int y) {
 	if (IsOrbitOn()) {
-		((RTOrbitTracker*) m_InputTracker.get())->init(ActiveView(), ToEyeToWorld(x, y));
+		static_cast<RTOrbitTracker*>(m_InputTracker.get())->init(ActiveView(), ToEyeToWorld(x, y));
 		return true;
 	}
 	return false;
@@ -1027,7 +1027,7 @@ bool OdExEditorObject::OnOrbitBeginDrag(int x, int y) {
 
 bool OdExEditorObject::OnOrbitEndDrag(int x, int y) {
 	if (IsOrbitOn()) {
-		((RTOrbitTracker*) m_InputTracker.get())->reset();
+		static_cast<RTOrbitTracker*>(m_InputTracker.get())->reset();
 		return true;
 	}
 	return false;
@@ -1109,8 +1109,8 @@ void OdExDollyCmd::execute(OdEdCommandContext* edCommandContext) {
 	}
 	//
 
-	OdRxVariantValue InteractiveMode {(OdRxVariantValue) edCommandContext->arbitraryData(L"AeSys InteractiveMode")};
-	OdRxVariantValue InteractiveFrameRate {(OdRxVariantValue) edCommandContext->arbitraryData(L"AeSys InteractiveFrameRate")};
+	OdRxVariantValue InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"AeSys InteractiveMode"))};
+	OdRxVariantValue InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"AeSys InteractiveFrameRate"))};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
 
 	OdStaticRxObject<RTDollyTracker> DollyTracker;
@@ -1487,8 +1487,8 @@ void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdSmartPtr<OdDbUserIO> UserIO {CommandContext->userIO()};
 	OdDbDatabasePtr Database {CommandContext->database()};
 
-	auto dynHlt {(OdRxVariantValue) edCommandContext->arbitraryData(L"DynamicSubEntHlt")};
-	const bool bDynHLT = (bool) (dynHlt);
+	auto dynHlt {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"DynamicSubEntHlt"))};
+	const bool bDynHLT = static_cast<bool>(dynHlt);
 
 	//Get active view
 	OdGsView* View {nullptr};
@@ -1575,8 +1575,8 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdGsCollisionDetectionContext CollisionDetectionContext;
 	CollisionDetectionContext.setIntersectionOnly(Choice == 1);
 
-	auto dynHlt {(OdRxVariantValue) edCommandContext->arbitraryData(L"DynamicSubEntHlt")};
-	const bool bDynHLT = (bool) (dynHlt);
+	auto dynHlt {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"DynamicSubEntHlt"))};
+	const bool bDynHLT = static_cast<bool>(dynHlt);
 
 	OdExCollisionDetectionReactor reactor(dynHlt);
 
@@ -1621,7 +1621,7 @@ void OdExEditorObject::SetTracker(OdEdInputTracker* inputTracker) {
 bool OdExEditorObject::TrackString(const OdString& value) {
 	if (m_InputTracker.get()) {
 		ODA_ASSERT(m_InputTracker->isKindOf(OdEdStringTracker::desc()));
-		((OdEdStringTracker*) m_InputTracker.get())->setValue(value);
+		static_cast<OdEdStringTracker*>(m_InputTracker.get())->setValue(value);
 		return GETBIT(m_flags, kTrackerHasDrawables);
 	}
 	return false;
@@ -1630,7 +1630,7 @@ bool OdExEditorObject::TrackString(const OdString& value) {
 bool OdExEditorObject::TrackPoint(const OdGePoint3d& point) {
 	if (m_InputTracker.get()) {
 		ODA_ASSERT(m_InputTracker->isKindOf(OdEdPointTracker::desc()));
-		((OdEdPointTracker*) m_InputTracker.get())->setValue(point);
+		static_cast<OdEdPointTracker*>(m_InputTracker.get())->setValue(point);
 		return GETBIT(m_flags, kTrackerHasDrawables);
 	}
 	return false;

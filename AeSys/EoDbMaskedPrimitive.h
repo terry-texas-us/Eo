@@ -7,7 +7,7 @@ private:
 
 public:
 	EoDbMaskedPrimitive() noexcept {
-		m_Primitive = (EoDbPrimitive*) nullptr;
+		m_Primitive = static_cast<EoDbPrimitive*>(nullptr);
 		m_Mask = 0;
 	}
 

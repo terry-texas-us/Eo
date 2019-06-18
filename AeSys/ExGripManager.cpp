@@ -366,7 +366,7 @@ bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 
 		OdGiDrawFlagsHelper DrawFlagsHelper(worldDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
 		
-		return((*GripData()->worldDraw())((OdDbGripData*)GripData().get(), worldDraw, entityId(), status(), DrawAtDrag, GripSize));
+		return((*GripData()->worldDraw())(static_cast<OdDbGripData*>(GripData().get()), worldDraw, entityId(), status(), DrawAtDrag, GripSize));
 	}
 	return false;
 }
@@ -382,7 +382,7 @@ void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	auto Default {true};
 	
 	if (GripData().get() && GripData()->viewportDraw()) {
-		(*GripData()->viewportDraw())((OdDbGripData*)GripData().get(), viewportDraw, entityId(), status(), DrawAtDrag, m_GripManager->m_GRIPSIZE);
+		(*GripData()->viewportDraw())(static_cast<OdDbGripData*>(GripData().get()), viewportDraw, entityId(), status(), DrawAtDrag, m_GripManager->m_GRIPSIZE);
 		Default = false;
 	}
 
@@ -596,7 +596,7 @@ bool OdBaseGripManager::EndHover() {
 void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 	bool RestoreOld {false};
 
-	if (selectionSet->numEntities() > ( unsigned) m_GRIPOBJLIMIT) {
+	if (selectionSet->numEntities() > static_cast<unsigned>(m_GRIPOBJLIMIT)) {
 		Disable(true);
 	}
 	else {
@@ -1319,8 +1319,8 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 			POINT pt = {x, y};
 			::ClientToScreen(ActiveWindow, &pt);
 			unsigned Flags {TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION};
-			(*cb)(::TrackPopupMenu((HMENU) Menu, Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
-			::DestroyMenu((HMENU) Menu);
+			(*cb)(::TrackPopupMenu(static_cast<HMENU>(Menu), Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
+			::DestroyMenu(static_cast<HMENU>(Menu));
 			
 			for (unsigned i = 0; i < Size; i++) {
 				activeKeys[i]->setStatus(OdDbGripOperations::kWarmGrip);
@@ -1356,7 +1356,7 @@ OdGiDrawablePtr OdExGripManager::OpenObject(OdDbStub* id, bool isForWriteMode) {
 }
 
 OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const unsigned long bitflags) const {
-	return OdDbEntity::cast(entity)->getGripPointsAtSubentPath(*((const OdDbFullSubentPath*)& path), grips, curViewUnitSize, gripSize, curViewDir, bitflags);
+	return OdDbEntity::cast(entity)->getGripPointsAtSubentPath(*static_cast<const OdDbFullSubentPath*>(& path), grips, curViewUnitSize, gripSize, curViewDir, bitflags);
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const {
@@ -1377,7 +1377,7 @@ OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& 
 
 OdResult OdExGripManager::MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) {
 	ODA_ASSERT_ONCE(sizeof(OdDbFullSubentPath) == sizeof(OdDbBaseFullSubentPath));
-	return OdDbEntity::cast(entity)->moveGripPointsAtSubentPaths(*((const OdDbFullSubentPathArray*)& paths), gripAppData, offset, bitflags);
+	return OdDbEntity::cast(entity)->moveGripPointsAtSubentPaths(*reinterpret_cast<const OdDbFullSubentPathArray*>(& paths), gripAppData, offset, bitflags);
 }
 
 OdResult OdExGripManager::MoveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) {
@@ -1389,7 +1389,7 @@ OdResult OdExGripManager::MoveGripPointsAt(OdGiDrawable* entity, const OdIntArra
 }
 
 void OdExGripManager::SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) {
-	OdDbEntity::cast(entity)->subentGripStatus(status, *((const OdDbFullSubentPath*)& subentity));
+	OdDbEntity::cast(entity)->subentGripStatus(status, *static_cast<const OdDbFullSubentPath*>(& subentity));
 }
 
 void OdExGripManager::GripStatus(OdGiDrawable* entity, OdDb::GripStat st) {

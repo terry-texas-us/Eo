@@ -380,7 +380,7 @@ void AeSysView::DoNodalModeMouseMove() {
 					auto Primitive {MaskedPrimitive->GetPrimitive()};
 					const auto Mask {MaskedPrimitive->GetMask()};
 					m_PreviewGroup.AddTail(Primitive->Clone(BlockTableRecord));
-					((EoDbPrimitive*)m_PreviewGroup.GetTail())->TranslateUsingMask(Translate, Mask);
+					static_cast<EoDbPrimitive*>(m_PreviewGroup.GetTail())->TranslateUsingMask(Translate, Mask);
 				}
 				auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
 

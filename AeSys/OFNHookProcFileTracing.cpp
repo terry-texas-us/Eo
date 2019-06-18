@@ -17,13 +17,13 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 
 		case WM_NOTIFY: {
 			LPOFNOTIFY lpofn;
-			lpofn = (LPOFNOTIFY)lParam;
+			lpofn = reinterpret_cast<LPOFNOTIFY>(lParam);
 			if (lpofn->hdr.code == CDN_FOLDERCHANGE) {
 				WndProcPreviewClear(::GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			}
 			else if (lpofn->hdr.code == CDN_SELCHANGE) {
 				wchar_t FilePath[MAX_PATH] {L"\0"};
-				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM)(wchar_t*)FilePath);
+				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>(static_cast<wchar_t*>(FilePath)));
 
 				CFileStatus	FileStatus;
 				if (CFile::GetStatus(FilePath, FileStatus)) {
@@ -52,7 +52,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 		case WM_COMMAND: {
 			wchar_t FilePath[MAX_PATH] {L"\0"};
 
-			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, (LPARAM)(wchar_t*)FilePath);
+			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>((wchar_t*)FilePath));
 			CFileStatus	FileStatus;
 			if (!CFile::GetStatus(FilePath, FileStatus)) {
 				theApp.WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);

@@ -4,19 +4,19 @@
 
 static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CPoint& point) {
 	BITMAP Bitmap;
-	((CBitmap*) bitmap)->GetBitmap(&Bitmap);
+	const_cast<CBitmap*>(bitmap)->GetBitmap(&Bitmap);
 	const int Width = Bitmap.bmWidth;
 	const int Height = Bitmap.bmHeight;
 	CDC MemoryDeviceContext;
-	MemoryDeviceContext.CreateCompatibleDC(( CDC*) deviceContext);
-	CBitmap* pBmp = MemoryDeviceContext.SelectObject(( CBitmap*) bitmap);
-	((CDC*) deviceContext)->BitBlt(point.x, point.y, Width, Height, &MemoryDeviceContext, 0, 0, SRCCOPY);
+	MemoryDeviceContext.CreateCompatibleDC(const_cast<CDC*>(deviceContext));
+	CBitmap* pBmp = MemoryDeviceContext.SelectObject(const_cast<CBitmap*>(bitmap));
+	const_cast<CDC*>(deviceContext)->BitBlt(point.x, point.y, Width, Height, &MemoryDeviceContext, 0, 0, SRCCOPY);
 	MemoryDeviceContext.SelectObject(pBmp);
 }
 
 static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CRect& rect) {
 	BITMAP Bitmap;
-	((CBitmap*) bitmap)->GetBitmap(&Bitmap);
+	const_cast<CBitmap*>(bitmap)->GetBitmap(&Bitmap);
 	const int Width = Bitmap.bmWidth;
 	const int Height = Bitmap.bmHeight;
 	CPoint Point;
@@ -39,9 +39,9 @@ int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, con
 	if (!bitmap) { return n; }
 
 	if (n != CB_ERR && n != CB_ERRSPACE) {
-		SetItemData(n, (unsigned long) bitmap);
+		SetItemData(n, reinterpret_cast<unsigned long>(bitmap));
 		BITMAP Bitmap;
-		((CBitmap*) bitmap)->GetBitmap(&Bitmap);
+		const_cast<CBitmap*>(bitmap)->GetBitmap(&Bitmap);
 		SetSize(Bitmap.bmWidth, Bitmap.bmHeight);
 	}
 	return n;
@@ -93,9 +93,9 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 }
 
 void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool selected) {
-	const auto bitmap {(const CBitmap*) (drawItemStruct->itemData)};
+	const auto bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
 
-	if (bitmap && bitmap != (const CBitmap*) (0xffffffff)) {
+	if (bitmap && bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString string;
 

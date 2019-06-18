@@ -20,7 +20,7 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	Class.hInstance = instance;
 	Class.hIcon = 0;
 	Class.hCursor = static_cast<HCURSOR>(::LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
-	Class.hbrBackground	= (HBRUSH) ::GetStockObject(BLACK_BRUSH);
+	Class.hbrBackground	= static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
 	Class.lpszMenuName = 0;
 	Class.lpszClassName	= L"PreviewWindow";
 
@@ -83,7 +83,7 @@ void WndProcPreviewClear(HWND previewWindow) {
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(0);
 
-	CBitmap* Bitmap = (CBitmap*) dcMem.SelectObject(WndProcPreview_Bitmap);
+	CBitmap* Bitmap = static_cast<CBitmap*>(dcMem.SelectObject(WndProcPreview_Bitmap));
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 
 	dcMem.SelectObject(Bitmap);

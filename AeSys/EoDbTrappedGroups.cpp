@@ -82,7 +82,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			}
 		}
 		const unsigned AllocationSize = (strBuf.GetLength() + 1) * sizeof(wchar_t);
-		GLOBALHANDLE ClipboardDataHandle = (GLOBALHANDLE)GlobalAlloc(GHND, AllocationSize);
+		GLOBALHANDLE ClipboardDataHandle = static_cast<GLOBALHANDLE>(GlobalAlloc(GHND, AllocationSize));
 
 		if (ClipboardDataHandle != nullptr) {
 			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};

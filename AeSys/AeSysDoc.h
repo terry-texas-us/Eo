@@ -133,8 +133,8 @@ protected:
 			AcadClipData<wchar_t>::_x = pickPoint.x;
 			AcadClipData<wchar_t>::_y = pickPoint.y;
 			AcadClipData<wchar_t>::_z = pickPoint.z;
-			memcpy(AcadClipData<wchar_t>::_tempFileName, (const T*) tempFileName, odmin((0x100 * sizeof(T)), ((tempFileName.getLength() + 1) * sizeof(T))));
-			memcpy(AcadClipData<wchar_t>::_origFileName, (const T*) origFileName, odmin((0x100 * sizeof(T)), ((origFileName.getLength() + 1) * sizeof(T))));
+			memcpy(AcadClipData<wchar_t>::_tempFileName, static_cast<const T*>(tempFileName), odmin((0x100 * sizeof(T)), ((tempFileName.getLength() + 1) * sizeof(T))));
+			memcpy(AcadClipData<wchar_t>::_origFileName, static_cast<const T*>(origFileName), odmin((0x100 * sizeof(T)), ((origFileName.getLength() + 1) * sizeof(T))));
 		}
 		AcadClipDataConstr() {
 			AcadClipData<wchar_t>::init();

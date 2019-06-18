@@ -289,7 +289,7 @@ class CFullCommandLineInfo : public CCommandLineInfo {
 };
 
 BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
-	CFullCommandLineInfo& FullCommandLineInfo {(CFullCommandLineInfo&) commandLineInfo};
+	CFullCommandLineInfo& FullCommandLineInfo {static_cast<CFullCommandLineInfo&>(commandLineInfo)};
 
 	if (!FullCommandLineInfo.m_BatToExecute.IsEmpty()) {
 		_wsystem(FullCommandLineInfo.m_BatToExecute);
@@ -311,12 +311,12 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 
 			while (scrFile.ReadString(strCmd)) {
 				if (!strCmd.IsEmpty() && strCmd[0] != _T('#')) {
-					TemporaryDocument->ExecuteCommand((const wchar_t*) strCmd);
+					TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(strCmd));
 				}
 			}
 		}
 		for (int idx = 0; idx < FullCommandLineInfo.m_CommandsToExecute.GetCount(); ++idx) {
-			TemporaryDocument->ExecuteCommand((const wchar_t*) FullCommandLineInfo.m_CommandsToExecute.GetAt(idx));
+			TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(FullCommandLineInfo.m_CommandsToExecute.GetAt(idx)));
 		}
 	} else {
 		CWinAppEx::ProcessShellCommand(commandLineInfo);
@@ -425,7 +425,7 @@ OdDbPageControllerPtr AeSys::newPageController() {
 			return OdRxObjectImpl<ExPageController>::createObject();
 	}
 	// Paging is not used.
-	return (OdDbPageController*) nullptr;
+	return static_cast<OdDbPageController*>(nullptr);
 }
 
 int AeSys::setPagingType(int pagingType) noexcept {
@@ -667,13 +667,13 @@ void AeSys::RefreshCommandMenu() {
 				OdString CommandName(Command->globalName());
 				GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 
-				MenuItemInfo.dwItemData = (LPARAM) Command.get();
+				MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(Command.get());
 				::SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
 
 				GroupCommandIterator->next();
 				CommandId++;
 			}
-			ENSURE(RegisteredCommandsSubMenu->AppendMenuW(MF_STRING | MF_POPUP, (LPARAM) GroupMenu.Detach(), GroupName) != 0);
+			ENSURE(RegisteredCommandsSubMenu->AppendMenuW(MF_STRING | MF_POPUP, reinterpret_cast<LPARAM>(GroupMenu.Detach()), GroupName) != 0);
 
 			CommandStackGroupIterator->next();
 			GroupName.empty();
@@ -888,7 +888,7 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 	HINSTANCE hinstLib {LoadLibraryW(LibraryFileName)};
 
 	if (hinstLib != nullptr) {
-		auto fpDlgProc {(ODA_OPEN_DLGPROC) GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg")};
+		auto fpDlgProc {reinterpret_cast<ODA_OPEN_DLGPROC>(GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg"))};
 
 		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
@@ -1777,14 +1777,14 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 
 	auto ReturnValue {wcstod(lengthAsString, &StopString)};
 
-	switch (toupper((int) StopString[0])) {
+	switch (toupper(static_cast<int>(StopString[0]))) {
 		case '\'': // Feet and maybe inches
 			ReturnValue *= 12.0; // Reduce to inches
 			ReturnValue += wcstod(&StopString[1], &StopString); // Begin scan for inches at character following foot delimeter
 			break;
 
 		case 'M': // meters or millimeters
-			if (toupper((int) StopString[1]) == 'M') {
+			if (toupper(static_cast<int>(StopString[1])) == 'M') {
 				ReturnValue *= 0.03937007874015748;
 			} else {
 				ReturnValue *= 39.37007874015748;
@@ -1813,7 +1813,7 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 		double ReturnValue[32];
 
 		lex::Parse(lengthAsString);
-		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, (void*) ReturnValue);
+		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, static_cast<void*>(ReturnValue));
 
 		if (iTyp == lex::TOK_LENGTH_OPERAND) {
 			return (ReturnValue[0]);
@@ -1996,7 +1996,7 @@ OdString AeSys::getTempPath() const {
 		if (_waccess(TempPath, 0)) {
 			return OdDbHostAppServices::getTempPath();
 		} else {
-			CString Result(TempPath, (int) wcslen(TempPath));
+			CString Result(TempPath, static_cast<int>(wcslen(TempPath)));
 			if (Result.GetAt(Result.GetLength() - 1) != '\\') { Result += '\\'; }
 			return Result.GetString();
 		}
@@ -2031,7 +2031,7 @@ OdDbHostAppProgressMeter* AeSys::newProgressMeter() {
 }
 
 void AeSys::start(const OdString& displayString) {
-	m_ProgressMessage = (const wchar_t*) displayString;
+	m_ProgressMessage = static_cast<const wchar_t*>(displayString);
 	m_ProgressPosition = 0;
 	m_ProgressPercent = -1;
 	// <tas="m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_Normal);"</tas>
@@ -2277,7 +2277,7 @@ void AeSys::OnVectorizeAddVectorizerDLL() {
 	FileDialog.m_ofn.lpstrInitialDir = ApplicationPath.GetBuffer(ApplicationPath.GetLength());
 
 	if (FileDialog.DoModal() == IDOK) {
-		m_sVectorizerPath = (const wchar_t*) FileDialog.GetFileName();
+		m_sVectorizerPath = static_cast<const wchar_t*>(FileDialog.GetFileName());
 		m_sVectorizerPath.replace(TD_DLL_VERSION_SUFFIX_STR, L"");
 
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};

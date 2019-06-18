@@ -94,8 +94,8 @@ void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 		acPic[++*aiLen] = '\0';
 	} else {
 		wchar_t cVal[32] {L"\0"};
-		long* lVal {(long*) cVal};
-		double* dVal {( double*) cVal};
+		long* lVal {reinterpret_cast<long*>(cVal)};
+		double* dVal {reinterpret_cast<double*>(cVal)};
 
 		wchar_t* szpVal {nullptr};
 		int iLoc {0};
@@ -249,8 +249,8 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 	long* lOp1 {static_cast<long*>(apOp)};
 
 	wchar_t cOp2[256] {L"\0"};
-	const double* dOp2 {(double*) cOp2};
-	long* lOp2 {(long*) cOp2};
+	const double* dOp2 {reinterpret_cast<double*>(cOp2)};
+	long* lOp2 {reinterpret_cast<long*>(cOp2)};
 
 	int OperandStackTop {0};
 	int TokenStackIndex {0}; // Start with first token
@@ -489,7 +489,7 @@ void lex::ParseStringOperand(const wchar_t* pszTok) {
 		return;
 	}
 
-	wchar_t* pszValues {(wchar_t*) & Values[NumberOfValues + 2]};
+	wchar_t* pszValues {reinterpret_cast<wchar_t*>(& Values[NumberOfValues + 2])};
 
 	int iDim {0};
 	int iNxt {1};
@@ -600,7 +600,7 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, double* adOp) 
 		break;
 
 	case TOK_TOINTEGER: // Conversion to integer
-		ConvertValTyp(TOK_REAL, TOK_INTEGER, definition, (void*) adOp);
+		ConvertValTyp(TOK_REAL, TOK_INTEGER, definition, static_cast<void*>(adOp));
 		*valueType = TOK_INTEGER;
 		break;
 
@@ -640,9 +640,9 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, double* adOp) 
 		*valueType = TOK_STRING;
 		cd.DataType = TOK_REAL;
 		cd.DataDefinition = *definition;
-		ConvertValToString((wchar_t*) adOp, &cd, szTok, &iDim);
+		ConvertValToString(reinterpret_cast<wchar_t*>(adOp), &cd, szTok, &iDim);
 		iLen = 1 + (iDim - 1) / 4;
-		wcscpy((wchar_t*) adOp, szTok);
+		wcscpy(reinterpret_cast<wchar_t*>(adOp), szTok);
 		*definition = MAKELONG(iDim, iLen);
 		break;
 
@@ -674,7 +674,7 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, long* alOp) {
 		break;
 
 	case TOK_TOREAL:
-		ConvertValTyp(TOK_INTEGER, TOK_REAL, definition, (void*) alOp);
+		ConvertValTyp(TOK_INTEGER, TOK_REAL, definition, static_cast<void*>(alOp));
 		*valueType = TOK_REAL;
 		break;
 
@@ -682,9 +682,9 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, long* alOp) {
 		*valueType = TOK_STRING;
 		cd.DataType = TOK_INTEGER;
 		cd.DataDefinition = *definition;
-		ConvertValToString((wchar_t*) alOp, &cd, szTok, &iDim);
+		ConvertValToString(reinterpret_cast<wchar_t*>(alOp), &cd, szTok, &iDim);
 		iLen = 1 + (iDim - 1) / 4;
-		wcscpy((wchar_t*) alOp, szTok);
+		wcscpy(reinterpret_cast<wchar_t*>(alOp), szTok);
 		*definition = MAKELONG(iDim, iLen);
 		break;
 

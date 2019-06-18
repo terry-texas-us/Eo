@@ -62,7 +62,7 @@ void EoDlgFileManage::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_GROUPS, m_Groups);
 }
 void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& itemRectangle) {
-	const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(itemID);
+	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(itemID));
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 
 	OdString ItemName;
@@ -136,7 +136,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 void EoDlgFileManage::OnBnClickedFuse() {
 	const int SelectionMark = m_LayersList.GetSelectionMark();
 	if (SelectionMark > -1) {
-		const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
+		const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
 		OdString Name(Layer->Name());
 		if (Layer->IsInternal()) {
 			theApp.AddStringToMessageList(L"Selection <%s> already an internal layer.\n", Name);
@@ -150,7 +150,7 @@ void EoDlgFileManage::OnBnClickedFuse() {
 void EoDlgFileManage::OnBnClickedMelt() {
 	const int SelectionMark = m_LayersList.GetSelectionMark();
 	if (SelectionMark > -1) {
-		const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
+		const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
 		OdString Name(Layer->Name());
 		if (!Layer->IsInternal()) {
 			theApp.AddStringToMessageList(L"Selection <%s> already a tracing.\n", Name);
@@ -186,7 +186,7 @@ void EoDlgFileManage::OnBnClickedSetcurrent() {
 	const auto SelectionMark {m_LayersList.GetSelectionMark()};
 
 	if (SelectionMark > -1) {
-		const auto Layer {(EoDbLayer*)m_LayersList.GetItemData(SelectionMark)};
+		const auto Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark))};
 		auto LayerTableRecord {Layer->TableRecord()};
 		LayerTableRecord->upgradeOpen();
 
@@ -317,7 +317,7 @@ void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRE
 
 	if ((ListViewNotificationMessage->uNewState & LVIS_FOCUSED) == LVFIS_FOCUSED) {
 		const int Item = ListViewNotificationMessage->iItem;
-		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item);
+		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item));
 
 		CString NumberOfGroups;
 		NumberOfGroups.Format(L"%-4i", Layer->GetCount());
@@ -338,7 +338,7 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 			CString BlockName;
 			m_BlocksList.GetText(CurrentSelection, BlockName);
 
-			EoDbBlock* Block = (EoDbBlock*) m_BlocksList.GetItemData(CurrentSelection);
+			EoDbBlock* Block = reinterpret_cast<EoDbBlock*>(m_BlocksList.GetItemData(CurrentSelection));
 
 			m_Groups.SetDlgItemInt(IDC_GROUPS, static_cast<unsigned>(Block->GetCount()), FALSE);
 			WndProcPreviewUpdate(m_PreviewWindowHandle, Block);
@@ -352,7 +352,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 	const int Item = pNMItemActivate->iItem;
 	const int SubItem = pNMItemActivate->iSubItem;
 
-	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item);
+	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item));
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 
 	m_ClickToColumnStatus = false;
@@ -465,7 +465,7 @@ void EoDlgFileManage::UpdateCurrentLayerInfoField() {
 void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const LVITEM Item = ListViewNotificationDisplayInfo->item;
-	const EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
+	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 	// <tas="Layer0 should be culled here instead of the EndlabeleditLayers."</tas>
 	result = 0;
@@ -473,7 +473,7 @@ void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructu
 void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const LVITEM Item = ListViewNotificationDisplayInfo->item;
-	EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(Item.iItem);
+	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
 	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 
 	OdString NewName(Item.pszText);
@@ -499,7 +499,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR notifyStructure, LRE
 	const LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(notifyStructure);
 	if (pLVKeyDow->wVKey == VK_DELETE) {
 		const int SelectionMark = m_LayersList.GetSelectionMark();
-		EoDbLayer* Layer = (EoDbLayer*) m_LayersList.GetItemData(SelectionMark);
+		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
 
 		OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
 		OdString Name(Layer->Name());

@@ -20,7 +20,7 @@ OdApplicationDocumentImpl::~OdApplicationDocumentImpl() {
 }
 
 OdString OdApplicationDocumentImpl::fileName() const {
-	return (const wchar_t*) (*m_pImp)->GetPathName();
+	return static_cast<const wchar_t*>((*m_pImp)->GetPathName());
 }
 
 CDocument* OdApplicationDocumentImpl::cDoc() const noexcept {

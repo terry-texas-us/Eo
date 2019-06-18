@@ -878,15 +878,15 @@ bool EoDbEllipse::Write(EoDbFile& file) const {
 
 void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 2;
-	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
+	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
-	((EoVaxPoint3d*) & buffer[8])->Convert(m_Center);
-	((EoVaxVector3d*) & buffer[20])->Convert(m_MajorAxis);
-	((EoVaxVector3d*) & buffer[32])->Convert(m_MinorAxis);
-	((EoVaxFloat*) & buffer[44])->Convert(m_SweepAngle);
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Center);
+	reinterpret_cast<EoVaxVector3d*>(& buffer[20])->Convert(m_MajorAxis);
+	reinterpret_cast<EoVaxVector3d*>(& buffer[32])->Convert(m_MinorAxis);
+	reinterpret_cast<EoVaxFloat*>(& buffer[44])->Convert(m_SweepAngle);
 
 	file.Write(buffer, 64);
 }
@@ -1007,9 +1007,9 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 		LinetypeIndex = static_cast<short>((primitiveBufer[4] & 0x00ff) >> 4);
 
 		OdGePoint3d BeginPoint;
-		BeginPoint = OdGePoint3d(((EoVaxFloat*) & primitiveBufer[8])->Convert(), ((EoVaxFloat*) & primitiveBufer[12])->Convert(), 0.0) * 1.e-3;
-		CenterPoint = OdGePoint3d(((EoVaxFloat*) & primitiveBufer[20])->Convert(), ((EoVaxFloat*) & primitiveBufer[24])->Convert(), 0.0) * 1.e-3;
-		SweepAngle = ((EoVaxFloat*) & primitiveBufer[28])->Convert();
+		BeginPoint = OdGePoint3d(reinterpret_cast<EoVaxFloat*>(& primitiveBufer[8])->Convert(), reinterpret_cast<EoVaxFloat*>(& primitiveBufer[12])->Convert(), 0.0) * 1.e-3;
+		CenterPoint = OdGePoint3d(reinterpret_cast<EoVaxFloat*>(& primitiveBufer[20])->Convert(), reinterpret_cast<EoVaxFloat*>(& primitiveBufer[24])->Convert(), 0.0) * 1.e-3;
+		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBufer[28])->Convert();
 
 		if (SweepAngle < 0.0) {
 			OdGePoint3d pt;
@@ -1025,11 +1025,11 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 		ColorIndex = static_cast<short>(primitiveBufer[6]);
 		LinetypeIndex = static_cast<short>(primitiveBufer[7]);
 
-		CenterPoint = ((EoVaxPoint3d*) & primitiveBufer[8])->Convert();
-		MajorAxis = ((EoVaxVector3d*) & primitiveBufer[20])->Convert();
-		MinorAxis = ((EoVaxVector3d*) & primitiveBufer[32])->Convert();
+		CenterPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBufer[8])->Convert();
+		MajorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBufer[20])->Convert();
+		MinorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBufer[32])->Convert();
 
-		SweepAngle = ((EoVaxFloat*) & primitiveBufer[44])->Convert();
+		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBufer[44])->Convert();
 
 		if (SweepAngle > Oda2PI || SweepAngle < -Oda2PI) { SweepAngle = Oda2PI; }
 	}

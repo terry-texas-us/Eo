@@ -427,7 +427,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	CString Name;
 	file.ReadString(Name);
 
-	const auto Block {BlockTable->getAt((const wchar_t*) Name)};
+	const auto Block {BlockTable->getAt(static_cast<const wchar_t*>(Name))};
 
 	BlockReference->setBlockTableRecord(Block);
 

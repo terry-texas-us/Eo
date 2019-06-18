@@ -232,16 +232,16 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 
 void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = static_cast<unsigned char>((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
-	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
+	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 
-	*((short*) & buffer[8]) = (short) m_Spline.numControlPoints();
+	*reinterpret_cast<short*>(& buffer[8]) = static_cast<short>(m_Spline.numControlPoints());
 
 	int i = 10;
 
 	for (unsigned short w = 0; w < m_Spline.numControlPoints(); w++) {
-		((EoVaxPoint3d*) & buffer[i])->Convert(m_Spline.controlPointAt(w));
+		reinterpret_cast<EoVaxPoint3d*>(& buffer[i])->Convert(m_Spline.controlPointAt(w));
 		i += sizeof(EoVaxPoint3d);
 	}
 	file.Write(buffer, static_cast<unsigned>(buffer[3] * 32));
@@ -305,26 +305,26 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 		ColorIndex = short(primitiveBuffer[4] & 0x000f);
 		LinetypeIndex = short((primitiveBuffer[4] & 0x00ff) >> 4);
 
-		NumberOfControlPoints = static_cast<unsigned short>(((EoVaxFloat*) &primitiveBuffer[8])->Convert());
+		NumberOfControlPoints = static_cast<unsigned short>(reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[8])->Convert());
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex {12};
 
 		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
-			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
+			ControlPoints[w] = reinterpret_cast<EoVaxPoint3d*>(&primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	} else {
 		ColorIndex = short(primitiveBuffer[6]);
 		LinetypeIndex = short(primitiveBuffer[7]);
 
-		NumberOfControlPoints = static_cast<unsigned short>(*((short*) &primitiveBuffer[8]));
+		NumberOfControlPoints = static_cast<unsigned short>(*reinterpret_cast<short*>(&primitiveBuffer[8]));
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
 
 		int BufferIndex = 10;
 
 		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
-			ControlPoints[w] = ((EoVaxPoint3d*) &primitiveBuffer[BufferIndex])->Convert();
+			ControlPoints[w] = reinterpret_cast<EoVaxPoint3d*>(&primitiveBuffer[BufferIndex])->Convert();
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	}

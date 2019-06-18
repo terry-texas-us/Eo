@@ -277,7 +277,7 @@ LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM name) {
 	
 	if (Result == 0) { return 0; }
 
-	auto UserToolbar {(CMFCToolBar*)Result};
+	auto UserToolbar {reinterpret_cast<CMFCToolBar*>(Result)};
 	ASSERT_VALID(UserToolbar);
 
 	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
@@ -460,7 +460,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 					OdString CommandName(pCmd->globalName());
 					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
 
-					MenuItemInfo.dwItemData = (LPARAM) pCmd.get();
+					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(pCmd.get());
 					::SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
 
 					GroupCommandIterator->next();
@@ -505,7 +505,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 				} else {
 					CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, nullptr, -1, VectorizerPath);
 
-					if (theApp.recentGsDevicePath().iCompare((const wchar_t*) VectorizerPath) == 0) {
+					if (theApp.recentGsDevicePath().iCompare(static_cast<const wchar_t*>(VectorizerPath)) == 0) {
 						MenuButton.SetStyle(TBBS_CHECKED);
 					}
 					popupMenu->InsertItem(MenuButton, static_cast<int>(VectorizerIndex++));
@@ -559,7 +559,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
 			} else {
-				HWND ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
+				HWND ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 				m_wndClientArea.PostMessageW(WM_MDICASCADE);
 				::BringWindowToTop(ActiveWnd);
 			}
@@ -567,7 +567,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		}
 		case EoApOptions::Standard:
 		{
-			HWND ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
+			HWND ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
@@ -582,7 +582,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		}
 		case EoApOptions::Grouped:
 		{
-			auto ActiveWnd {(HWND)m_wndClientArea.SendMessage(WM_MDIGETACTIVE)};
+			auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
@@ -667,7 +667,7 @@ BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedIt
 }
 
 LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
-	auto TabToolTipInfo {(CMFCTabToolTipInfo*)lp};
+	auto TabToolTipInfo {reinterpret_cast<CMFCTabToolTipInfo*>(lp)};
 	ASSERT(TabToolTipInfo != nullptr);
 
 	if (TabToolTipInfo) {
@@ -767,7 +767,7 @@ HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, con
 	wcscpy(Text, text);
 	tvIS.item.pszText = Text;
 	
-	tvIS.item.lParam = (LPARAM) object;
+	tvIS.item.lParam = reinterpret_cast<LPARAM>(object);
 	return TreeView_InsertItem(tree, &tvIS);
 }
 
@@ -845,7 +845,7 @@ OdString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) 
 			LineWeightText = L"Default";
 			break;
 		default:
-			LineWeightText.format(L"%1.2f mm", (float) lineWeight / 100);
+			LineWeightText.format(L"%1.2f mm", static_cast<float>(lineWeight) / 100);
 	}
 	return LineWeightText;
 }

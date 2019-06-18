@@ -122,7 +122,7 @@ public:
 
 	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
 
-	OdGsMarker getGSMenuItemMarker() const noexcept { return (OdGsMarker) this; }
+	OdGsMarker getGSMenuItemMarker() const noexcept { return reinterpret_cast<OdGsMarker>(this); }
 	CMenu* CommandMenu(CMenu** toolsSubMenu = nullptr);
 	void RefreshCommandMenu();
 	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }

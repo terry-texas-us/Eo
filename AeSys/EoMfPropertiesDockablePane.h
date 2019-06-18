@@ -3,7 +3,7 @@
 class EoMfPropertiesMFCToolBar : public CMFCToolBar {
 public:
 	void OnUpdateCmdUI(CFrameWnd* /* target */, BOOL disableIfNoHndler) override {
-		CMFCToolBar::OnUpdateCmdUI((CFrameWnd*) GetOwner(), disableIfNoHndler);
+		CMFCToolBar::OnUpdateCmdUI(static_cast<CFrameWnd*>(GetOwner()), disableIfNoHndler);
 	}
 
 	BOOL AllowShowOnList() const noexcept override { return FALSE; }

@@ -67,7 +67,7 @@
 unsigned CALLBACK OFNHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {
-	const wchar_t* String {(const wchar_t*) string};
+	const wchar_t* String {static_cast<const wchar_t*>(string)};
 	unsigned nHash {0};
 
 	while (*String) {
@@ -286,7 +286,7 @@ void AeSysDoc::DeleteContents() {
 	COleDocument::DeleteContents();
 
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentDestroyed((const wchar_t*) GetPathName());
+		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentDestroyed(static_cast<const wchar_t*>(GetPathName()));
 	}
 }
 
@@ -775,10 +775,10 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 					TopMenu->GetSubMenu(3)->GetMenuStringW(commandId, Vectorizer, MF_BYCOMMAND);
 
 					if (messageCategory == CN_COMMAND) {
-						OnVectorize((const wchar_t*) Vectorizer);
+						OnVectorize(static_cast<const wchar_t*>(Vectorizer));
 					} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-						((CCmdUI*) commandObject)->Enable(m_pViewer == nullptr);
-						((CCmdUI*) commandObject)->SetCheck(Vectorizer == (const wchar_t*) theApp.recentGsDevicePath());
+						static_cast<CCmdUI*>(commandObject)->Enable(m_pViewer == nullptr);
+						static_cast<CCmdUI*>(commandObject)->SetCheck(Vectorizer == static_cast<const wchar_t*>(theApp.recentGsDevicePath()));
 					}
 					return TRUE;
 				}
@@ -796,7 +796,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 								return TRUE;
 							}
 						} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-							((CCmdUI*) commandObject)->Enable(TRUE);
+							static_cast<CCmdUI*>(commandObject)->Enable(TRUE);
 						}
 						return TRUE;
 					}
@@ -822,7 +822,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 							}
 						}
 					} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-						((CCmdUI*) commandObject)->Enable(TRUE);
+						static_cast<CCmdUI*>(commandObject)->Enable(TRUE);
 					}
 					return TRUE;
 				}
@@ -1011,7 +1011,7 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			m_DatabasePtr->startUndoRecord();
 
 			OdString FileAndVersion;
-			FileAndVersion.format(L"Opened <%s> (Version: %d)\n", (const wchar_t*) m_DatabasePtr->getFilename(), m_DatabasePtr->originalFileVersion());
+			FileAndVersion.format(L"Opened <%s> (Version: %d)\n", static_cast<const wchar_t*>(m_DatabasePtr->getFilename()), m_DatabasePtr->originalFileVersion());
 			theApp.AddStringToMessageList(FileAndVersion);
 
 			EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
@@ -1353,11 +1353,11 @@ int AeSysDoc::GetLayerTableSize() const {
 
 EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) {
 	const int i = FindLayerAt(name);
-	return (i < 0 ? (EoDbLayer*) nullptr : m_LayerTable.GetAt(i));
+	return (i < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(i));
 }
 
 EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
-	return (layerIndex >= (int) m_LayerTable.GetSize() ? nullptr : m_LayerTable.GetAt(layerIndex));
+	return (layerIndex >= static_cast<int>(m_LayerTable.GetSize()) ? nullptr : m_LayerTable.GetAt(layerIndex));
 }
 
 int AeSysDoc::FindLayerAt(const OdString& name) const {
@@ -1558,7 +1558,7 @@ POSITION AeSysDoc::GetFirstWorkLayerGroupPosition() const {
 EoDbGroup* AeSysDoc::GetLastWorkLayerGroup() const {
 	auto Position {m_WorkLayer->GetTailPosition()};
 
-	return ((EoDbGroup*) (Position != nullptr ? m_WorkLayer->GetPrev(Position) : nullptr));
+	return static_cast<EoDbGroup*>(Position != nullptr ? m_WorkLayer->GetPrev(Position) : nullptr);
 }
 
 POSITION AeSysDoc::GetLastWorkLayerGroupPosition() const {
@@ -2098,7 +2098,7 @@ void AeSysDoc::OnEditTrace() {
 					auto ClipboardData {static_cast<LPCSTR>(GlobalLock(ClipboardDataHandle))};
 
 					if (ClipboardData != nullptr) {
-						const auto ClipboardDataLength {*((unsigned long*)ClipboardData)};
+						const auto ClipboardDataLength {*(unsigned long*)ClipboardData};
 						CMemFile MemFile;
 						MemFile.Write(ClipboardData, gsl::narrow_cast<unsigned>(ClipboardDataLength));
 						GlobalUnlock(ClipboardDataHandle);
@@ -2154,7 +2154,7 @@ void AeSysDoc::OnEditTrapPaste() {
 					SetTrapPivotPoint(InsertionPoint);
 
 					auto ClipboardData {static_cast<LPCSTR>(GlobalLock(ClipboardDataHandle))};
-					const auto ClipboardDataLength {*((unsigned long*)ClipboardData)};
+					const auto ClipboardDataLength {*(unsigned long*)ClipboardData};
 					CMemFile MemoryFile;
 					MemoryFile.Write(ClipboardData, gsl::narrow_cast<unsigned>(ClipboardDataLength));
 
@@ -2184,7 +2184,7 @@ void AeSysDoc::OnEditTrapPaste() {
 					auto Text {new wchar_t[ClipboardDataSize]};
 
 					for (unsigned i = 0; i < ClipboardDataSize; i++) {
-						Text[i] = (wchar_t) ClipboardData[i];
+						Text[i] = static_cast<wchar_t>(ClipboardData[i]);
 					}
 					GlobalUnlock(ClipboardDataHandle);
 					AddTextBlock(Text);
@@ -2668,7 +2668,7 @@ void AeSysDoc::OnPrimExtractNum() {
 		int iTokId = 0;
 
 		lex::Parse(Number);
-		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, (void*) dVal);
+		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, static_cast<void*>(dVal));
 
 		if (iTyp != lex::TOK_LENGTH_OPERAND) {
 			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &DataDefinition, dVal);
@@ -2842,7 +2842,7 @@ void AeSysDoc::RemoveAllNodalGroups() {
 }
 
 POSITION AeSysDoc::AddMaskedPrimitive(EoDbMaskedPrimitive * maskedPrimitive) {
-	return m_MaskedPrimitives.AddTail((CObject*) maskedPrimitive);
+	return m_MaskedPrimitives.AddTail(static_cast<CObject*>(maskedPrimitive));
 }
 
 POSITION AeSysDoc::GetFirstMaskedPrimitivePosition() const {
@@ -2850,7 +2850,7 @@ POSITION AeSysDoc::GetFirstMaskedPrimitivePosition() const {
 }
 
 EoDbMaskedPrimitive* AeSysDoc::GetNextMaskedPrimitive(POSITION & position) {
-	return (EoDbMaskedPrimitive*) m_MaskedPrimitives.GetNext(position);
+	return static_cast<EoDbMaskedPrimitive*>(m_MaskedPrimitives.GetNext(position));
 }
 
 void AeSysDoc::RemoveAllMaskedPrimitives() {
@@ -2875,7 +2875,7 @@ int AeSysDoc::AddUniquePoint(const OdGePoint3d & point) {
 }
 
 EoGeUniquePoint* AeSysDoc::GetNextUniquePoint(POSITION & position) {
-	return (EoGeUniquePoint*) m_UniquePoints.GetNext(position);
+	return static_cast<EoGeUniquePoint*>(m_UniquePoints.GetNext(position));
 }
 
 void AeSysDoc::RemoveUniquePointAt(POSITION position) {

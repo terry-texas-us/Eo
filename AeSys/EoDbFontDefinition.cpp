@@ -116,7 +116,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
 		textStyleTableRecord->font(TypeFace, Bold, Italic, Charset, PitchAndFamily);
 
 		if (TypeFace != L"") { // windows (ttf) file
-			m_FontName = ( const wchar_t*) TypeFace;
+			m_FontName = static_cast<const wchar_t*>(TypeFace);
 			m_Precision = EoDb::kTrueType;
 		}
 	}

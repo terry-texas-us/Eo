@@ -43,7 +43,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	EoGsViewport Viewport;
 	ActiveView->ModelViewGetViewport(Viewport);
 
-	auto ModelView {(EoGsViewTransform*)m_ModelView};
+	auto ModelView {reinterpret_cast<EoGsViewTransform*>(m_ModelView)};
 
 	wchar_t String[32];
 	OdGePoint3d Position;
@@ -107,7 +107,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 BOOL EoDlgViewParameters::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	const EoGsViewTransform* ModelView = (EoGsViewTransform*) m_ModelView;
+	const EoGsViewTransform* ModelView = reinterpret_cast<EoGsViewTransform*>(m_ModelView);
 
 	const AeSys::Units Units = max(theApp.GetUnits(), AeSys::kEngineering);
 	SetDlgItemTextW(IDC_POSITION_X, theApp.FormatLength(ModelView->Position().x, Units));

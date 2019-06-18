@@ -281,18 +281,18 @@ bool EoDbPoint::Write(EoDbFile & file) const {
 
 void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
-	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kPointPrimitive);
+	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kPointPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_PointDisplayMode);
 
-	((EoVaxPoint3d*) & buffer[8])->Convert(m_Position);
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Position);
 
 	::ZeroMemory(&buffer[20], 12);
 
 	int i = 20;
 
 	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
-		((EoVaxFloat*) & buffer[i])->Convert(m_Data[w]);
+		reinterpret_cast<EoVaxFloat*>(& buffer[i])->Convert(m_Data[w]);
 		i += sizeof(EoVaxFloat);
 	}
 	file.Write(buffer, 32);
@@ -371,16 +371,16 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	if (versionNumber == 1) {
 		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
 		PointDisplayMode = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
-		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3;
+		Position = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert() * 1.e-3;
 	} else {
 		ColorIndex = static_cast<short>(primitiveBuffer[6]);
 		PointDisplayMode = static_cast<short>(primitiveBuffer[7]);
-		Position = ((EoVaxPoint3d*) & primitiveBuffer[8])->Convert();
+		Position = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert();
 	}
 	double Data[3] {0.0, 0.0, 0.};
-	Data[0] = ((EoVaxFloat*) & primitiveBuffer[20])->Convert();
-	Data[1] = ((EoVaxFloat*) & primitiveBuffer[24])->Convert();
-	Data[2] = ((EoVaxFloat*) & primitiveBuffer[28])->Convert();
+	Data[0] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert();
+	Data[1] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert();
+	Data[2] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
 
 	auto Database {blockTableRecord->database()};
 

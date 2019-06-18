@@ -155,7 +155,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetPrecision(EoDb::kTrueType);
-	FontDefinition.SetFontName((const wchar_t*) FileName);
+	FontDefinition.SetFontName(static_cast<const wchar_t*>(FileName));
 	FontDefinition.SetHorizontalAlignment(HorizontalAlignment);
 	FontDefinition.SetVerticalAlignment(VerticalAlignment);
 
@@ -170,7 +170,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	auto TextPrimitive {new EoDbText()};
 	TextPrimitive->SetFontDefinition(FontDefinition);
 	TextPrimitive->SetReferenceSystem(ReferenceSystem);
-	TextPrimitive->SetText((const wchar_t*) text->textString());
+	TextPrimitive->SetText(static_cast<const wchar_t*>(text->textString()));
 
 	ConvertEntityData(text, TextPrimitive);
 
@@ -206,7 +206,7 @@ void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 
 //<summary>This is the default implementation to be attached to OdDbEntity as a catch-all. This guarantees that this protocol extension will be found for any entity, so the search up the OdRxClass tree will not fail and abort.</summary>
 void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup*) {
-    TRACE1("Entity %s was not converted ...\n", (const wchar_t*) entity->isA()->name());
+    TRACE1("Entity %s was not converted ...\n", static_cast<const wchar_t*>(entity->isA()->name()));
 }
 
 class EoDb2dPolyline_Converter : public EoDbConvertEntityToPrimitive {
@@ -645,13 +645,13 @@ class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbViewportPtr ViewportEntity = entity;
-		TRACE1("%s was not converted ...\n", (const wchar_t*) ViewportEntity->desc()->name());
+		TRACE1("%s was not converted ...\n", static_cast<const wchar_t*>(ViewportEntity->desc()->name()));
 
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
 
 		if (layerIds.length()) {
-			for (int i = 0; i < (int) layerIds.length(); i++) {
+			for (int i = 0; i < static_cast<int>(layerIds.length()); i++) {
 			}
 		} else {
 		}

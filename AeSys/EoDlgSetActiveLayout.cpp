@@ -59,7 +59,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 
 			LayoutIterator->next();
 		}
-		auto Layouts {(CListBox*) GetDlgItem(IDC_LAYOUTLIST)};
+		auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 		Layouts->ResetContent();
 
 		for (unsigned ItemIndex = 0; ItemIndex < Items.size(); ++ItemIndex) {
@@ -79,7 +79,7 @@ void EoDlgSetActiveLayout::OnLayoutDlgClose() {
 }
 
 void EoDlgSetActiveLayout::OnSelchangeLayoutlist() {
-	const auto Layouts {(CListBox*) GetDlgItem(IDC_LAYOUTLIST)};
+	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 	m_NewActiveLayout = Layouts->GetCurSel();
 	Layouts->GetText(m_NewActiveLayout, m_NewLayoutName);
 	/*
@@ -104,7 +104,7 @@ void EoDlgSetActiveLayout::OnDblclkLayoutlist() {
 }
 
 void EoDlgSetActiveLayout::OnRename() {
-	auto Layouts {(CListBox*) GetDlgItem(IDC_LAYOUTLIST)};
+	auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 	CString OldName;
 	CString NewName;
 	Layouts->GetText(m_NewActiveLayout, OldName);
@@ -124,7 +124,7 @@ void EoDlgSetActiveLayout::OnRename() {
 }
 
 void EoDlgSetActiveLayout::OnDelete() {
-	const auto Layouts {(CListBox*) GetDlgItem(IDC_LAYOUTLIST)};
+	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 	CString currName;
 	Layouts->GetText(m_NewActiveLayout, currName);
 	try {
@@ -141,7 +141,7 @@ void EoDlgSetActiveLayout::OnDelete() {
 }
 
 void EoDlgSetActiveLayout::OnCopy() {
-	const auto Layouts {(CListBox*) GetDlgItem(IDC_LAYOUTLIST)};
+	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 	CString strSourceName;
 	CString strNewName;
 	

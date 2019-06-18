@@ -489,29 +489,29 @@ void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
 	auto NumberOfCharacters {static_cast<short>(m_strText.GetLength())};
 
 	buffer[3] = static_cast<unsigned char>((118 + NumberOfCharacters) / 32);
-	*((unsigned short*) & buffer[4]) = static_cast<unsigned short>(EoDb::kDimensionPrimitive);
+	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kDimensionPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 
-	((EoVaxPoint3d*) & buffer[8])->Convert(m_Line.startPoint());
-	((EoVaxPoint3d*) & buffer[20])->Convert(m_Line.endPoint());
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Line.startPoint());
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[20])->Convert(m_Line.endPoint());
 
 	buffer[32] = static_cast<unsigned char>(m_ColorIndex);
 	buffer[33] = static_cast<signed char>(EoDb::kStrokeType);
-	*((short*) & buffer[34]) = 0;
-	((EoVaxFloat*) & buffer[36])->Convert(m_FontDefinition.CharacterSpacing());
+	*reinterpret_cast<short*>(& buffer[34]) = 0;
+	reinterpret_cast<EoVaxFloat*>(& buffer[36])->Convert(m_FontDefinition.CharacterSpacing());
 	buffer[40] = static_cast<unsigned char>(m_FontDefinition.Path());
 	buffer[41] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
 	buffer[42] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
 
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
 
-	((EoVaxPoint3d*) & buffer[43])->Convert(ReferenceSystem.Origin());
-	((EoVaxVector3d*) & buffer[55])->Convert(ReferenceSystem.XDirection());
-	((EoVaxVector3d*) & buffer[67])->Convert(ReferenceSystem.YDirection());
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[43])->Convert(ReferenceSystem.Origin());
+	reinterpret_cast<EoVaxVector3d*>(& buffer[55])->Convert(ReferenceSystem.XDirection());
+	reinterpret_cast<EoVaxVector3d*>(& buffer[67])->Convert(ReferenceSystem.YDirection());
 
-	*((short*) & buffer[79]) = NumberOfCharacters;
+	*reinterpret_cast<short*>(& buffer[79]) = NumberOfCharacters;
 	unsigned BufferOffset = 81;
 	for (short CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
 		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[CharacterIndex]);
@@ -574,7 +574,7 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 	ReferenceSystem.Set(TextPosition, XDirection, YDirection);
 	Dimension->SetReferenceSystem(ReferenceSystem);
 
-	Dimension->SetText((const wchar_t*) FormattedMeasurement);
+	Dimension->SetText(static_cast<const wchar_t*>(FormattedMeasurement));
 
 	return (Dimension);
 }
@@ -643,13 +643,13 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	const auto ColorIndex {static_cast<short>(primitiveBuffer[6])};
 	const auto LinetypeIndex {static_cast<short>(primitiveBuffer[7])};
 	EoGeLineSeg3d Line;
-	Line.set(((EoVaxPoint3d*) & primitiveBuffer[8])->Convert(), ((EoVaxPoint3d*) & primitiveBuffer[20])->Convert());
+	Line.set(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert(), reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[20])->Convert());
 
 	const auto TextColorIndex {static_cast<short>(primitiveBuffer[32])};
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetFontName(L"Simplex.psf");
 	FontDefinition.SetPrecision(EoDb::kStrokeType);
-	FontDefinition.SetCharacterSpacing(((EoVaxFloat*) & primitiveBuffer[36])->Convert());
+	FontDefinition.SetCharacterSpacing(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[36])->Convert());
 
 	switch (primitiveBuffer[40]) {
 		case 3:
@@ -685,14 +685,14 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 			FontDefinition.SetVerticalAlignment(EoDb::kAlignBottom);
 	}
 	EoGeReferenceSystem ReferenceSystem;
-	ReferenceSystem.SetOrigin(((EoVaxPoint3d*) & primitiveBuffer[43])->Convert());
-	ReferenceSystem.SetXDirection(((EoVaxVector3d*) & primitiveBuffer[55])->Convert());
-	ReferenceSystem.SetYDirection(((EoVaxVector3d*) & primitiveBuffer[67])->Convert());
+	ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[43])->Convert());
+	ReferenceSystem.SetXDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[55])->Convert());
+	ReferenceSystem.SetYDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[67])->Convert());
 
-	short TextLength = *((short*) & primitiveBuffer[79]);
+	short TextLength = *reinterpret_cast<short*>(& primitiveBuffer[79]);
 
 	primitiveBuffer[81 + TextLength] = '\0';
-	CString Text = CString((LPCSTR) & primitiveBuffer[81]);
+	CString Text = CString(reinterpret_cast<LPCSTR>(& primitiveBuffer[81]));
 
 
 	auto Database {blockTableRecord->database()};

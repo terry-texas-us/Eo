@@ -56,7 +56,7 @@ BOOL EoLoadApps::OnInitDialog() {
 	for (unsigned i = 0; i < m_LoadedApps->size(); ++i) {
 		const int n = m_AppsList.AddString(m_LoadedApps->at(i));
 		OdRxModulePtr pModule = ::odrxDynamicLinker()->loadModule(m_LoadedApps->at(i));
-		m_AppsList.SetItemData(n, (LPARAM) pModule.get());
+		m_AppsList.SetItemData(n, reinterpret_cast<LPARAM>(pModule.get()));
 	}
 	OnAppsListEvent();
 
@@ -72,7 +72,7 @@ void EoLoadApps::OnLoadApp() {
 
 	if (FileDialog.DoModal() == IDOK) {
 		try {
-			::odrxDynamicLinker()->loadModule((const wchar_t*)FileDialog.GetPathName(), false);
+			::odrxDynamicLinker()->loadModule(static_cast<const wchar_t*>(FileDialog.GetPathName()), false);
 		} catch (const OdError & Error) {
 			theApp.reportError(L"Error", Error);
 		}
@@ -85,7 +85,7 @@ void EoLoadApps::OnUnloadApp() {
 	if (nIndex != LB_ERR) {
 		CString s;
 		m_AppsList.GetText(nIndex, s);
-		if (::odrxDynamicLinker()->unloadModule((const wchar_t*) s)) {
+		if (::odrxDynamicLinker()->unloadModule(static_cast<const wchar_t*>(s))) {
 			//m_AppsList.DeleteString(nIndex);
 			if (m_AppsList.GetCount() <= nIndex) {
 				nIndex = m_AppsList.GetCount() - 1;

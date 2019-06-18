@@ -83,7 +83,7 @@ OdResult EoDbHatchPatternTable::RetrieveHatchPattern(const OdString& hatchPatter
 	if (PatternLoaded != eOk) {
 		// <tas="Trying to load from standard dwg hatch pattern set."/>
 		PatternLoaded = Manager->retrievePattern(OdDbHatch::kPreDefined, hatchPatternName, OdDb::kEnglish, hatchPattern);
-		TRACE1("Hatch pattern <%s> using Predefined dwg patterns.\n", (const wchar_t*) hatchPatternName);
+		TRACE1("Hatch pattern <%s> using Predefined dwg patterns.\n", static_cast<const wchar_t*>(hatchPatternName));
 	}
 	return PatternLoaded;
 }

@@ -53,7 +53,7 @@ void EoDlgModeLetter::OnOK() {
 		const int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
 		if (HardLineBreakPosition == -1) { // single line text
 			OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), (const wchar_t*)TextEditControl);
+			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(TextEditControl));
 			Text->setHeight(ReferenceSystem.YDirection().length());
 			Text->setRotation(ReferenceSystem.Rotation());
 			Text->setAlignmentPoint(Text->position());
@@ -62,7 +62,7 @@ void EoDlgModeLetter::OnOK() {
 		} else {
 			TextEditControl.Replace(L"\r\n", L"\\P");
 			OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-			OdDbMTextPtr MText = EoDbText::CreateM(BlockTableRecord, (const wchar_t*) TextEditControl);
+			OdDbMTextPtr MText = EoDbText::CreateM(BlockTableRecord, static_cast<const wchar_t*>(TextEditControl));
 			MText->setLocation(ReferenceSystem.Origin());
 			MText->setTextHeight(ReferenceSystem.YDirection().length());
 			MText->setRotation(ReferenceSystem.Rotation());

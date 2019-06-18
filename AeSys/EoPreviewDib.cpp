@@ -18,7 +18,7 @@ void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
 	CString Extension {FileName.Right(4)};
 
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
-		OdStreamBufPtr FileStreamBuffer(theApp.createFile((const wchar_t*)FileName));
+		OdStreamBufPtr FileStreamBuffer(theApp.createFile(static_cast<const wchar_t*>(FileName)));
 		try {
 			odDbGetPreviewBitmap(FileStreamBuffer, &m_odImage);
 			m_odImage.convPngToBmp();
@@ -79,11 +79,11 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 
 	if (m_odImage.hasBmp()) {
 		BITMAPINFOHEADER* pHeader;
-		pHeader = (BITMAPINFOHEADER*)(m_odImage.bmp.begin());
+		pHeader = reinterpret_cast<BITMAPINFOHEADER*>(m_odImage.bmp.begin());
 
 		cr = Calc(pHeader->biWidth, pHeader->biHeight, width, height);
 
-		auto p = (unsigned char*)pHeader;
+		auto p = reinterpret_cast<unsigned char*>(pHeader);
 		p += pHeader->biSize;
 		switch (pHeader->biBitCount) {
 			case 1:
@@ -96,7 +96,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 				p += sizeof(RGBQUAD) * 256;
 				break;
 		}
-		StretchDIBits(dc, cr.left + X, cr.top + Y, cr.Width(), cr.Height(), 0, 0, pHeader->biWidth, pHeader->biHeight, (const void*)p, (CONST BITMAPINFO*) pHeader, DIB_RGB_COLORS, SRCCOPY);
+		StretchDIBits(dc, cr.left + X, cr.top + Y, cr.Width(), cr.Height(), 0, 0, pHeader->biWidth, pHeader->biHeight, static_cast<const void*>(p), reinterpret_cast<CONST BITMAPINFO*>(pHeader), DIB_RGB_COLORS, SRCCOPY);
 	}
 	else if (m_odImage.hasWmf()) {
 		CDC newDC;
@@ -108,22 +108,22 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 		unsigned long seekpos {0};
 
 		newDC.Attach(dc);
-		dwIsAldus = *((unsigned long*)m_odImage.wmf.begin());
+		dwIsAldus = *reinterpret_cast<unsigned long*>(m_odImage.wmf.begin());
 
 		if (dwIsAldus != ALDUSKEY) {
 			seekpos = 0;
 		} else {
-			aldusMFHeader = (ALDUSMFHEADER*)m_odImage.wmf.begin();
+			aldusMFHeader = reinterpret_cast<ALDUSMFHEADER*>(m_odImage.wmf.begin());
 			seekpos = ALDUSMFHEADERSIZE;
 		}
-		auto p = (unsigned char*)m_odImage.wmf.begin();
-		mfHeader = (METAHEADER*)(p + seekpos);
+		auto p = static_cast<unsigned char*>(m_odImage.wmf.begin());
+		mfHeader = reinterpret_cast<METAHEADER*>(p + seekpos);
 
 		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) { return; }
 
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
-		auto MetaFileHandle {::SetWinMetaFileBits(dwSize, (const unsigned char*) mfHeader, nullptr, nullptr)};
+		auto MetaFileHandle {::SetWinMetaFileBits(dwSize, reinterpret_cast<const unsigned char*>(mfHeader), nullptr, nullptr)};
 
 		CSize size {0, 0};
 

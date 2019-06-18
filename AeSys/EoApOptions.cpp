@@ -21,10 +21,10 @@ EoApOptions::EoApOptions() {
 }
 
 void EoApOptions::Load() {
-	m_nTabsStyle = (TabsStyle) theApp.GetInt(L"TabsStyle", EoApOptions::Grouped);
+	m_nTabsStyle = static_cast<TabsStyle>(theApp.GetInt(L"TabsStyle", EoApOptions::Grouped));
 
-	m_MdiTabInfo.m_tabLocation = (CMFCTabCtrl::Location) theApp.GetInt(L"TabLocation", CMFCTabCtrl::LOCATION_BOTTOM);
-	m_MdiTabInfo.m_style = (CMFCTabCtrl::Style) theApp.GetInt(L"TabsAppearance", CMFCTabCtrl::STYLE_3D_VS2005);
+	m_MdiTabInfo.m_tabLocation = static_cast<CMFCTabCtrl::Location>(theApp.GetInt(L"TabLocation", CMFCTabCtrl::LOCATION_BOTTOM));
+	m_MdiTabInfo.m_style = static_cast<CMFCTabCtrl::Style>(theApp.GetInt(L"TabsAppearance", CMFCTabCtrl::STYLE_3D_VS2005));
 	m_MdiTabInfo.m_bTabIcons = theApp.GetInt(L"TabIcons", TRUE);
 	m_MdiTabInfo.m_bTabCloseButton = theApp.GetInt(L"TabCloseButton", FALSE);
 	m_MdiTabInfo.m_bTabCustomTooltips = theApp.GetInt(L"CustomTooltips", TRUE);

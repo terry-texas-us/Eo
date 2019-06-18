@@ -282,10 +282,10 @@ void EoDlgPageSetup::FillShadePlotQualityDPI(bool fillCombo) {
 		m_ShadePlot.AddString(L"Rendered");
 	}
 	const OdDbPlotSettings::ShadePlotType PlotType = m_PlotSettings.shadePlot();
-	m_ShadePlot.SetCurSel((int) PlotType);
+	m_ShadePlot.SetCurSel(static_cast<int>(PlotType));
 
 	const OdDbPlotSettings::ShadePlotResLevel ResLevel = m_PlotSettings.shadePlotResLevel();
-	m_Quality.SetCurSel((int) ResLevel);
+	m_Quality.SetCurSel(static_cast<int>(ResLevel));
 
 	if (ResLevel == OdDbPlotSettings::kCustom) {
 		m_CustomDPI = m_PlotSettings.shadePlotCustomDPI();
@@ -343,9 +343,9 @@ void EoDlgPageSetup::OnClickPortraitLandscape() {
 	OdDbPlotSettings::PlotRotation Rotation;
 
 	if (IsPaperWidthLessHeight()) {
-		Rotation = (OdDbPlotSettings::PlotRotation) (m_DrawingOrientation + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = (OdDbPlotSettings::PlotRotation) ((!m_DrawingOrientation) + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>((!m_DrawingOrientation) + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 
@@ -412,7 +412,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	const int i = m_PaperSize.GetCurSel();
 	m_PaperSize.GetLBText(i, NewLocaleMediaName);
 
-	auto NewCanonicalMediaName {GetCanonicalByLocaleMediaName((const wchar_t*)NewLocaleMediaName)};
+	auto NewCanonicalMediaName {GetCanonicalByLocaleMediaName(static_cast<const wchar_t*>(NewLocaleMediaName))};
 
 	m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, NewCanonicalMediaName);
 	const OdDbPlotSettings::PlotPaperUnits MediaNativeUnits = GetMediaNativePPU();
@@ -423,9 +423,9 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	// change paper orientation to dialog values
 	OdDbPlotSettings::PlotRotation Rotation;
 	if (IsPaperWidthLessHeight()) {
-		Rotation = (OdDbPlotSettings::PlotRotation) (m_DrawingOrientation + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = (OdDbPlotSettings::PlotRotation) ((!m_DrawingOrientation) + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>((!m_DrawingOrientation) + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 
@@ -483,7 +483,7 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 
 		if (csLocaleMediaName == L"") { return; }
 
-		CanonicalMediaName = GetCanonicalByLocaleMediaName((const wchar_t*) csLocaleMediaName);
+		CanonicalMediaName = GetCanonicalByLocaleMediaName(static_cast<const wchar_t*>(csLocaleMediaName));
 		m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, CanonicalMediaName);
 
 		m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, csLocaleMediaName));
@@ -550,7 +550,7 @@ bool EoDlgPageSetup::FillDeviceCombo() {
 	OdArray<const OdChar*>::const_iterator DeviceIteratorEnd = Devices.end();
 
 	while (DeviceIterator != DeviceIteratorEnd) {
-		m_PlotDeviceName.AddString((LPCTSTR) OdString(*DeviceIterator));
+		m_PlotDeviceName.AddString(static_cast<LPCTSTR>(OdString(*DeviceIterator)));
 		++DeviceIterator;
 	}
 	UpdateData(FALSE);
@@ -735,7 +735,7 @@ void EoDlgPageSetup::FillPlotOffset() {
 	m_TopMargin.Format(L"%.6f", m_PlotSettings.getTopMargin());
 	m_BottomMargin.Format(L"%.6f", m_PlotSettings.getBottomMargin());
 
-	m_CanonicalMediaName = (const wchar_t*)(m_PlotSettings.getCanonicalMediaName());
+	m_CanonicalMediaName = static_cast<const wchar_t*>(m_PlotSettings.getCanonicalMediaName());
 
 	m_OffsetXText = EoPlotUnitsInfo::GetTextByValue(m_OffsetX, PlotUnitsInfo[PaperUnits]);
 	m_OffsetYText = EoPlotUnitsInfo::GetTextByValue(m_OffsetY, PlotUnitsInfo[PaperUnits]);
@@ -888,7 +888,7 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 	try {
 		bool bSucc(false);
 		OdDbSystemServices* SystemServices = odSystemServices();
-		OdString sPath = (const wchar_t*)(tmp);
+		OdString sPath = static_cast<const wchar_t*>(tmp);
 		sPath = m_PlotSettings.database()->appServices()->findFile(sPath);
 		
 		if (sPath.isEmpty()) { return; }
@@ -926,7 +926,7 @@ void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
 	if (CurrentSelection) {
 		CString StyleFileName;
 		m_PlotStyleFiles.GetLBText(CurrentSelection, StyleFileName);
-		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, (const wchar_t*)(StyleFileName));
+		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, static_cast<const wchar_t*>(StyleFileName));
 	} else {
 		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, L"");
 	}
@@ -934,13 +934,13 @@ void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
 void EoDlgPageSetup::OnSelChangeQualityList() {
 	UpdateData();
 	const int CurrentSelection = m_Quality.GetCurSel();
-	m_PlotSettings.setShadePlotResLevel((OdDbPlotSettings::ShadePlotResLevel) CurrentSelection);
+	m_PlotSettings.setShadePlotResLevel(static_cast<OdDbPlotSettings::ShadePlotResLevel>(CurrentSelection));
 	FillShadePlotQualityDPI(false);
 }
 void EoDlgPageSetup::OnSelChangeShadePlotList() {
 	UpdateData();
 	const int CurrentSelection = m_ShadePlot.GetCurSel();
-	m_PlotSettings.setShadePlot((OdDbPlotSettings::ShadePlotType) CurrentSelection);
+	m_PlotSettings.setShadePlot(static_cast<OdDbPlotSettings::ShadePlotType>(CurrentSelection));
 	FillShadePlotQualityDPI(false);
 }
 void EoDlgPageSetup::OnSelChangeViewsList() {
@@ -950,7 +950,7 @@ void EoDlgPageSetup::OnSelChangeViewsList() {
 	const int CurrentSelection = m_Views.GetCurSel();
 	m_Views.GetLBText(CurrentSelection, ViewName);
 
-	m_PlotSettingsValidator->setPlotViewName(&m_PlotSettings, (const wchar_t*)(ViewName));
+	m_PlotSettingsValidator->setPlotViewName(&m_PlotSettings, static_cast<const wchar_t*>(ViewName));
 	FillViewCombo(false);
 }
 void EoDlgPageSetup::UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits) {
@@ -1028,7 +1028,7 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	// <command_view>
 	// Points are returned in eye plane, transform it back to screen plane if it is possible
 	// Workaround, unfortunately can't get screen plane point from IO stream.
-	CMDIChildWnd* ChildWindow = (((CMDIFrameWnd*) theApp.GetMainWnd())->MDIGetActive());
+	CMDIChildWnd* ChildWindow = (static_cast<CMDIFrameWnd*>(theApp.GetMainWnd())->MDIGetActive());
 
 	auto ActiveView {ChildWindow->GetActiveView()};
 

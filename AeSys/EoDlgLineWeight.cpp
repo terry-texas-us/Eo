@@ -21,7 +21,7 @@ EoDlgLineWeight::EoDlgLineWeight(CWnd* parent)
 EoDlgLineWeight::EoDlgLineWeight(int originalLineWeight, CWnd* parent)
 	: CDialog(EoDlgLineWeight::IDD, parent)
 	, m_OriginalLineWeight(originalLineWeight)
-	, m_LineWeight((OdDb::LineWeight) originalLineWeight) {
+	, m_LineWeight(static_cast<OdDb::LineWeight>(originalLineWeight)) {
 }
 
 EoDlgLineWeight::~EoDlgLineWeight() {
@@ -37,11 +37,11 @@ BOOL EoDlgLineWeight::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	m_LineWeightList.InsertString(0, CMainFrame::StringByLineWeight(OdDb::kLnWtByLwDefault, false));
-	m_LineWeightList.SetItemData(0, (DWORD_PTR) OdDb::kLnWtByLwDefault);
+	m_LineWeightList.SetItemData(0, static_cast<DWORD_PTR>(OdDb::kLnWtByLwDefault));
 	
 	for (auto Index = 1; Index < 25; ++Index) {
 		m_LineWeightList.InsertString(Index, CMainFrame::StringByLineWeight(Index - 1, true));
-		m_LineWeightList.SetItemData(Index, (DWORD_PTR) CMainFrame::LineWeightByIndex(char(Index - 1)));
+		m_LineWeightList.SetItemData(Index, static_cast<DWORD_PTR>(CMainFrame::LineWeightByIndex(char(Index - 1))));
 	}
 	OdString OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
 	m_LineWeightList.SelectString(-1, OriginalLineWeight);
@@ -54,7 +54,7 @@ BOOL EoDlgLineWeight::OnInitDialog() {
 
 void EoDlgLineWeight::OnBnClickedOk() {
 	const int Index = m_LineWeightList.GetCurSel();
-	m_LineWeight = (OdDb::LineWeight) m_LineWeightList.GetItemData(Index);
+	m_LineWeight = static_cast<OdDb::LineWeight>(m_LineWeightList.GetItemData(Index));
 
 	CDialog::OnOK();
 }

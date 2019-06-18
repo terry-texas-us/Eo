@@ -284,22 +284,22 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	unsigned short NumberOfCharacters = static_cast<unsigned short>(m_strText.GetLength());
 
 	buffer[3] = static_cast<unsigned char>((86 + NumberOfCharacters) / 32);
-	*((unsigned short*)& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
+	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_FontDefinition.Precision());
-	*((short*)& buffer[8]) = 0;
-	((EoVaxFloat*)& buffer[10])->Convert(m_FontDefinition.CharacterSpacing());
+	*reinterpret_cast<short*>(& buffer[8]) = 0;
+	reinterpret_cast<EoVaxFloat*>(& buffer[10])->Convert(m_FontDefinition.CharacterSpacing());
 	buffer[14] = static_cast<unsigned char>(m_FontDefinition.Path());
 	buffer[15] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
 	buffer[16] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
 
 	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
-	((EoVaxPoint3d*)& buffer[17])->Convert(ReferenceSystem.Origin());
-	((EoVaxVector3d*)& buffer[29])->Convert(ReferenceSystem.XDirection());
-	((EoVaxVector3d*)& buffer[41])->Convert(ReferenceSystem.YDirection());
+	reinterpret_cast<EoVaxPoint3d*>(& buffer[17])->Convert(ReferenceSystem.Origin());
+	reinterpret_cast<EoVaxVector3d*>(& buffer[29])->Convert(ReferenceSystem.XDirection());
+	reinterpret_cast<EoVaxVector3d*>(& buffer[41])->Convert(ReferenceSystem.YDirection());
 
 	// <tas="Stacked fractions (\Snum/den;) are not being converted to legacy format (^/num/den^)"/>
-	*((unsigned short*)& buffer[53]) = NumberOfCharacters;
+	*reinterpret_cast<unsigned short*>(& buffer[53]) = NumberOfCharacters;
 	unsigned BufferOffset = 55;
 
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
@@ -433,10 +433,10 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 
 	if (versionNumber == 1) {
 		ColorIndex = short(primitiveBuffer[4] & 0x000f);
-		FontDefinition.SetCharacterSpacing(((EoVaxFloat*) & primitiveBuffer[36])->Convert());
+		FontDefinition.SetCharacterSpacing(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[36])->Convert());
 		FontDefinition.SetCharacterSpacing(min(max(FontDefinition.CharacterSpacing(), 0.0), 4.));
 
-		const double d = ((EoVaxFloat*) & primitiveBuffer[40])->Convert();
+		const double d = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[40])->Convert();
 
 		switch (int(fmod(d, 10.))) {
 			case 3:
@@ -471,18 +471,18 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			default:
 				FontDefinition.SetVerticalAlignment(EoDb::kAlignBottom);
 		}
-		ReferenceSystem.SetOrigin(((EoVaxPoint3d*) & primitiveBuffer[8])->Convert() * 1.e-3);
+		ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert() * 1.e-3);
 
-		double dChrHgt = ((EoVaxFloat*) & primitiveBuffer[20])->Convert();
+		double dChrHgt = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert();
 		dChrHgt = min(max(dChrHgt, .01e3), 100.e3);
 
-		double dChrExpFac = ((EoVaxFloat*) & primitiveBuffer[24])->Convert();
+		double dChrExpFac = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert();
 		dChrExpFac = min(max(dChrExpFac, 0.0), 10.);
 
 		ReferenceSystem.SetXDirection(OdGeVector3d(0.6 * dChrHgt * dChrExpFac, 0.0, 0.0) * 1.e-3);
 		ReferenceSystem.SetYDirection(OdGeVector3d(0.0, dChrHgt, 0.0) * 1.e-3);
 
-		double Angle = ((EoVaxFloat*) & primitiveBuffer[28])->Convert();
+		double Angle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
 		Angle = min(max(Angle, -Oda2PI), Oda2PI);
 
 		if (fabs(Angle) > FLT_EPSILON) {
@@ -494,7 +494,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			ReferenceSystem.SetYDirection(YDirection);
 		}
 		char* NextToken = nullptr;
-		char* pChr = strtok_s((char*) & primitiveBuffer[44], "\\", &NextToken);
+		char* pChr = strtok_s(reinterpret_cast<char*>(& primitiveBuffer[44]), "\\", &NextToken);
 
 		if (pChr == nullptr) {
 			TextString = L"EoDbJobFile.PrimText error: Missing string terminator.";
@@ -505,11 +505,11 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 				if (!isprint(*pChr))* pChr = '.';
 				pChr++;
 			}
-			TextString = (LPCSTR) &primitiveBuffer[44];
+			TextString = reinterpret_cast<LPCSTR>(&primitiveBuffer[44]);
 		}
 	} else {
 		ColorIndex = short(primitiveBuffer[6]);
-		FontDefinition.SetCharacterSpacing(((EoVaxFloat*) & primitiveBuffer[10])->Convert());
+		FontDefinition.SetCharacterSpacing(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[10])->Convert());
 		switch (primitiveBuffer[14]) {
 			case 3:
 				FontDefinition.SetPath(EoDb::kPathDown);
@@ -543,13 +543,13 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			default:
 				FontDefinition.SetVerticalAlignment(EoDb::kAlignBottom);
 		}
-		ReferenceSystem.SetOrigin(((EoVaxPoint3d*) & primitiveBuffer[17])->Convert());
-		ReferenceSystem.SetXDirection(((EoVaxVector3d*) & primitiveBuffer[29])->Convert());
-		ReferenceSystem.SetYDirection(((EoVaxVector3d*) & primitiveBuffer[41])->Convert());
+		ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[17])->Convert());
+		ReferenceSystem.SetXDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[29])->Convert());
+		ReferenceSystem.SetYDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[41])->Convert());
 
-		short TextLength = *((short*) & primitiveBuffer[53]);
+		short TextLength = *reinterpret_cast<short*>(& primitiveBuffer[53]);
 		primitiveBuffer[55 + TextLength] = '\0';
-		TextString = (LPCSTR) & primitiveBuffer[55];
+		TextString = reinterpret_cast<LPCSTR>(& primitiveBuffer[55]);
 	}
 	EoDbJobFile::ConvertFormattingCharacters(TextString);
 
@@ -626,7 +626,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
 	
-	Text->SetText((const wchar_t*) text->textString());
+	Text->SetText(static_cast<const wchar_t*>(text->textString()));
 
 	return Text;
 }
@@ -660,7 +660,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
-	Text->SetText((const wchar_t*) text->contents());
+	Text->SetText(static_cast<const wchar_t*>(text->contents()));
 
 	return Text;
 }
@@ -857,7 +857,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	
 	if (numberOfCharacters == 0) { return; }
 
-	const long* plStrokeFontDef = (long*) theApp.SimplexStrokeFont();
+	const long* plStrokeFontDef = reinterpret_cast<long*>(theApp.SimplexStrokeFont());
 
 	if (plStrokeFontDef == nullptr) { return; }
 
@@ -877,12 +877,12 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 		int Character = text.GetAt(n);
 		if (Character < 32 || Character > 126) Character = '.';
 
-		for (int i = (int) plStrokeFontDef[Character - 32]; i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
-			int iY = (int) (plStrokeChrDef[i - 1] % 4096L);
+		for (int i = static_cast<int>(plStrokeFontDef[Character - 32]); i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
+			int iY = static_cast<int>(plStrokeChrDef[i - 1] % 4096L);
 			
 			if ((iY & 2048) != 0) { iY = -(iY - 2048); }
 			
-			int iX = (int) ((plStrokeChrDef[i - 1] / 4096L) % 4096L);
+			int iX = static_cast<int>((plStrokeChrDef[i - 1] / 4096L) % 4096L);
 			
 			if ((iX & 2048) != 0) { iX = -(iX - 2048); }
 

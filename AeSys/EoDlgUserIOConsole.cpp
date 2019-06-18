@@ -18,9 +18,9 @@ EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
 
 OdString EoDlgUserIOConsole::GetLastString() {
 	const auto EolDelimiter {m_Output.ReverseFind('\r')};
-	if (EolDelimiter == -1) { return (const wchar_t*) m_Output; }
+	if (EolDelimiter == -1) { return static_cast<const wchar_t*>(m_Output); }
 
-	return (const wchar_t*) m_Output.Mid(EolDelimiter + 2);
+	return static_cast<const wchar_t*>(m_Output.Mid(EolDelimiter + 2));
 }
 
 void EoDlgUserIOConsole::addRef() noexcept {
@@ -56,7 +56,7 @@ OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd* parent) {
 
 void EoDlgUserIOConsole::Echo(const OdString& string) {
 	m_Output += L" ";
-	m_Output += (const wchar_t*) string;
+	m_Output += static_cast<const wchar_t*>(string);
 }
 
 OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
@@ -70,7 +70,7 @@ OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEd
 	}
 	Echo(OdString(m_Input));
 	m_NumberOfStrings = 0;
-	return (const wchar_t*) m_Input;
+	return static_cast<const wchar_t*>(m_Input);
 }
 
 const int kMaxStringLength = 128;
@@ -113,7 +113,7 @@ void EoDlgUserIOConsole::AddOut(const CString& string) {
 }
 
 void EoDlgUserIOConsole::putString(const OdString& string) {
-	AddOut((const wchar_t*) string);
+	AddOut(static_cast<const wchar_t*>(string));
 }
 
 BOOL EoDlgUserIOConsole::OnInitDialog() {
@@ -165,6 +165,6 @@ void EoDlgUserIOConsole::OnShowWindow(BOOL show, unsigned status) {
 	CRect WindowRectangle;
 	GetWindowRect(&WindowRectangle);
 	SetWindowPos(0, WindowRectangle.left, WindowRectangle.top, sm_WindowWidth, sm_WindowHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
-	auto EditControl {(CEdit*) GetDlgItem(IDC_PROMPT)};
+	auto EditControl {static_cast<CEdit*>(GetDlgItem(IDC_PROMPT))};
 	EditControl->LineScroll(EditControl->GetLineCount());
 }

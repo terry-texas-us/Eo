@@ -223,7 +223,7 @@ int EoDbGroup::GetLinetypeIndexRefCount(short linetypeIndex) {
 }
 
 EoDbPrimitive* EoDbGroup::GetNext(POSITION& position) const {
-	return (( EoDbPrimitive*) CObList::GetNext(position));
+	return ( EoDbPrimitive*) CObList::GetNext(position);
 }
 
 void EoDbGroup::InsertBefore(POSITION insertPosition, EoDbGroup* group) {
@@ -393,7 +393,7 @@ void EoDbGroup::SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept {
 
 void EoDbGroup::SortTextOnY() {
 	int iT;
-	int iCount = ( int) GetCount();
+	int iCount = static_cast<int>(GetCount());
 
 	do {
 		iT = 0;
@@ -464,7 +464,7 @@ void EoDbGroup::Write(CFile& file, unsigned char* buffer) {
 	// group flags
 	buffer[0] = 0;
 	// number of primitives in group
-	*(( short*) & buffer[1]) = short(GetCount());
+	*reinterpret_cast<short*>(& buffer[1]) = short(GetCount());
 
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {

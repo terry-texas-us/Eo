@@ -122,7 +122,7 @@ void EoDlgEditProperties::OnButton() {
 
 	switch (ResourceBuffer->restype()) {
 		case OdResBuf::kRtColor:
-			ResourceBuffer->setColor(OdDbUnitsFormatter::unformatColor((const wchar_t*)m_sValue));
+			ResourceBuffer->setColor(OdDbUnitsFormatter::unformatColor(static_cast<const wchar_t*>(m_sValue)));
 			break;
 		default:
 			switch (OdDxfCode::_getType(ResourceBuffer->restype())) {
@@ -130,7 +130,7 @@ void EoDlgEditProperties::OnButton() {
 				case OdDxfCode::String:
 				case OdDxfCode::Handle:
 				case OdDxfCode::LayerName:
-					ResourceBuffer->setString((const wchar_t*)m_sValue);
+					ResourceBuffer->setString(static_cast<const wchar_t*>(m_sValue));
 					break;
 				case OdDxfCode::Bool:
 					ResourceBuffer->setBool(_wtoi(m_sValue) != 0);

@@ -40,12 +40,12 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 		dcMem.CreateCompatibleDC(&ClientDeviceContext);
 
 		auto Bitmap {dcMem.SelectObject(&bitmap)};
-		::GetDIBColorTable((HDC) dcMem, 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
+		::GetDIBColorTable(static_cast<HDC>(dcMem), 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
 		dcMem.SelectObject(Bitmap);
 
 		const unsigned nSize {sizeof(LOGPALETTE) + (sizeof(PALETTEENTRY) * (NumberOfColors - 1))};
 
-		LOGPALETTE* pLogPal {(LOGPALETTE*) new unsigned char[nSize]};
+		LOGPALETTE* pLogPal {reinterpret_cast<LOGPALETTE*>(new unsigned char[nSize])};
 
 		pLogPal->palVersion = 0x300;
 		pLogPal->palNumEntries = static_cast<unsigned short>(NumberOfColors);

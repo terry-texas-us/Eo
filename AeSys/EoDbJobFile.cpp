@@ -26,7 +26,7 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 		case EoDb::kPointPrimitive:
 		{
 			if (PrimitiveType == EoDb::kTagPrimitive) {
-				*((unsigned short*) & m_PrimBuf[4]) = EoDb::kPointPrimitive;
+				*reinterpret_cast<unsigned short*>(& m_PrimBuf[4]) = EoDb::kPointPrimitive;
 				::ZeroMemory(&m_PrimBuf[20], 12);
 			}
 			auto Point {EoDbPoint::Create(blockTableRecord, m_PrimBuf, 3)};
@@ -54,9 +54,9 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 		case EoDb::kCSplinePrimitive:
 		case EoDb::kSplinePrimitive: {
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
-				const unsigned short NumberOfControlPoints = *((unsigned short*) &m_PrimBuf[10]);
+				const unsigned short NumberOfControlPoints = *reinterpret_cast<unsigned short*>(&m_PrimBuf[10]);
 				m_PrimBuf[3] = static_cast<unsigned char>((2 + NumberOfControlPoints * 3) / 8 + 1);
-				*((unsigned short*) &m_PrimBuf[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
+				*reinterpret_cast<unsigned short*>(&m_PrimBuf[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
 				m_PrimBuf[8] = m_PrimBuf[10];
 				m_PrimBuf[9] = m_PrimBuf[11];
 				::MoveMemory(&m_PrimBuf[10], &m_PrimBuf[38], NumberOfControlPoints * 3 * sizeof(EoVaxFloat));
@@ -149,7 +149,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const unsigned short wPrims = *(( unsigned short*) ((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]));
+		const unsigned short wPrims = *reinterpret_cast<unsigned short*>((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]);
 
 		for (unsigned w = 1; w < wPrims; w++) {
 			try {
@@ -212,7 +212,7 @@ bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& p
 
 	if (file.Read(buffer, 32) < 32) { return false; }
 
-	primitiveType = *(( short*) & buffer[4]);
+	primitiveType = *reinterpret_cast<short*>(& buffer[4]);
 
 	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
 
@@ -265,7 +265,7 @@ bool EoDbJobFile::IsValidPrimitive(short primitiveType) noexcept {
 }
 
 bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
-	const unsigned char* PrimitiveType = ( unsigned char*) & primitiveType;
+	const unsigned char* PrimitiveType = reinterpret_cast<unsigned char*>(& primitiveType);
 	switch (PrimitiveType[1]) {
 		case 17: // 0x11 text
 		case 24: // 0x18 bspline
@@ -283,7 +283,7 @@ bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
 
 void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 	m_PrimBuf[0] = 0;
-	*(( unsigned short*) & m_PrimBuf[1]) = static_cast<unsigned short>(group->GetCount());
+	*reinterpret_cast<unsigned short*>(& m_PrimBuf[1]) = static_cast<unsigned short>(group->GetCount());
 
 	auto Position {group->GetHeadPosition()};
 	while (Position != nullptr) {

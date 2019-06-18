@@ -35,11 +35,11 @@ protected:
 
 protected:
     void InitializeListCtrl();
-    const int InsertLineweightAt(int index, const OdString& lineweight, const bool isUse);
+    int InsertLineweightAt(int index, const OdString& lineweight, const bool isUse);
     void InitializeLineweightsListCtrlImages();
 
 public:
-    const bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept;
+    bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept;
     void SetUnitIntoList(const bool isInchUnits);
     void SetInitialSelection(int selection) noexcept;
 

@@ -242,7 +242,7 @@ void AeSysView::OnDrawModeReturn() {
 			Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1.0, 0.0, CircularArc.endAng());
 
 			Group = new EoDbGroup;
-			Group->AddTail({EoDbEllipse::Create(Ellipse)});
+			Group->AddTail(EoDbEllipse::Create(Ellipse));
 			break;
 		}
 		case ID_OP6:

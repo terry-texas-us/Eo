@@ -65,7 +65,7 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 	if (wcscmp(item.pszText, L"<Groups>") == 0) {
 	} else if (wcscmp(item.pszText, L"<Group>") == 0) {
 	} else {
-		auto Primitive {( EoDbPrimitive*) item.lParam};
+		auto Primitive {reinterpret_cast<EoDbPrimitive*>(item.lParam)};
 		FillExtraList(Primitive);
 		FillGeometryList(Primitive);
 	}

@@ -79,7 +79,7 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 
 		if (!PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE)) { return; }
 
-		((CMDIFrameWndEx*) AfxGetMainWnd())->OnShowPopupMenu(PopupMenu);
+		static_cast<CMDIFrameWndEx*>(AfxGetMainWnd())->OnShowPopupMenu(PopupMenu);
 		UpdateDialogControls(this, FALSE);
 	}
 	SetFocus();

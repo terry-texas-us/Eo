@@ -39,8 +39,8 @@ bool OdBaseSnapManager::SubentId::operator==(const SubentId& other) const {
 }
 
 OdBaseSnapManager::OdBaseSnapManager() noexcept
-	: m_SnapMode(OdDb::OsnapMode(0))
-	, m_NearDist(std::numeric_limits<double>::max())
+	: m_NearDist(std::numeric_limits<double>::max())
+	, m_SnapMode(OdDb::OsnapMode(0))
 	, m_Redraw(m_Redraw) {
 }
 
@@ -65,13 +65,13 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	OdGiViewportGeometry& ViewportGeometry = viewportDraw->geometry();
 	const OdGiViewport& Viewport = viewportDraw->viewport();
 	const auto WorldToEyeTransform {Viewport.getWorldToEyeTransform()};
-	Viewport.getNumPixelsInUnitSquare(Viewport.getCameraTarget(), (OdGePoint2d&) Points[0]);
+	Viewport.getNumPixelsInUnitSquare(Viewport.getCameraTarget(), reinterpret_cast<OdGePoint2d&>(Points[0]));
 	const double pix = 1. / Points[0].x;
 	const double s = snapPtSize * pix;
 
 	OdGiSubEntityTraits& SubEntityTraits = viewportDraw->subEntityTraits();
 	OdGiDrawFlagsHelper DrawFlagsHelper(SubEntityTraits, OdGiSubEntityTraits::kDrawNoPlotstyle);
-	if ((m_SnapMode > 0) && ((unsigned long)m_SnapMode < 100)) {
+	if ((m_SnapMode > 0) && (static_cast<unsigned long>(m_SnapMode) < 100)) {
 		SubEntityTraits.setTrueColor(SnapTrueColor());
 
 		SubEntityTraits.setFillType(kOdGiFillNever);
@@ -400,10 +400,10 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 
 	if (pViewImpl) { pViewImpl->setSnapping(false); }
 
-	if (m_SnapMode > 0 && (unsigned long)m_SnapMode < 100) {
+	if (m_SnapMode > 0 && static_cast<unsigned long>(m_SnapMode) < 100) {
 		point = m_SnapPoint;
 	} else {
-		if (PreviousMode > 0 && (unsigned long)PreviousMode < 100) { InvalidateViewport(PreviousPoint); }
+		if (PreviousMode > 0 && static_cast<unsigned long>(PreviousMode) < 100) { InvalidateViewport(PreviousPoint); }
 
 		m_SnapMode = OdDb::OsnapMode(0);
 	}
@@ -543,7 +543,7 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode & pathNode, const O
 		const auto Marker {pathNode.selectionMarker()};
 
 		if (Marker > -1) {
-			if ((SnapModes() & ToSnapModes(OdDb::kOsModeCen)) && (OdGsMarker) m_Centers.size() > Marker) {
+			if ((SnapModes() & ToSnapModes(OdDb::kOsModeCen)) && static_cast<OdGsMarker>(m_Centers.size()) > Marker) {
 				Checkpoint(OdDb::kOsModeCen, m_Centers[Marker].m_Point);
 			}
 		}

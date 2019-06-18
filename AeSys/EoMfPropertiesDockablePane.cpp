@@ -162,16 +162,16 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	const auto Scale {(ActiveView) ? ActiveView->WorldScale() : 1.0};
 
 	auto ActiveViewGroup {new CMFCPropertyGridProperty(L"Active View")};
-	auto WorldScaleProperty {new CMFCPropertyGridProperty(L"World Scale", (_variant_t)Scale, L"Specifies the world scale used in the Active View", kActiveViewScale)};
+	auto WorldScaleProperty {new CMFCPropertyGridProperty(L"World Scale", static_cast<_variant_t>(Scale), L"Specifies the world scale used in the Active View", kActiveViewScale)};
 	ActiveViewGroup->AddSubItem(WorldScaleProperty);
-	ActiveViewGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use True Type fonts", (_variant_t)true, L"Specifies that the Active View uses True Type fonts"));
+	ActiveViewGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use True Type fonts", static_cast<_variant_t>(true), L"Specifies that the Active View uses True Type fonts"));
 	m_PropertyGrid.AddProperty(ActiveViewGroup);
 	WorldScaleProperty->Enable(ActiveView != nullptr);
 
 
 	auto AppearanceGroup {new CMFCPropertyGridProperty(L"Appearance")};
 
-	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"3D Look", (_variant_t)false, L"Specifies the window's font will be non-bold and controls will have a 3D border"));
+	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"3D Look", static_cast<_variant_t>(false), L"Specifies the window's font will be non-bold and controls will have a 3D border"));
 
 	auto LengthUnits {new CMFCPropertyGridProperty(L"Length Units", L"Engineering", L"Specifies the units used to display lengths")};
 	LengthUnits->AddOption(L"Architectural");
@@ -186,23 +186,23 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	LengthUnits->AllowEdit(FALSE);
 	AppearanceGroup->AddSubItem(LengthUnits);
 
-	auto LengthPrecision {new CMFCPropertyGridProperty(L"Length Precision", (_variant_t)8l, L"Specifies the precision used to display lengths")};
+	auto LengthPrecision {new CMFCPropertyGridProperty(L"Length Precision", static_cast<_variant_t>(8l), L"Specifies the precision used to display lengths")};
 	LengthPrecision->EnableSpinControl(TRUE, 0, 256);
 	AppearanceGroup->AddSubItem(LengthPrecision);
 
-	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"Caption", (_variant_t)L"About", L"Specifies the text that will be displayed in the window's title bar"));
+	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"Caption", static_cast<_variant_t>(L"About"), L"Specifies the text that will be displayed in the window's title bar"));
 
 	m_PropertyGrid.AddProperty(AppearanceGroup);
 
 	auto PointGrid {new CMFCPropertyGridProperty(L"Point Grid", 0, TRUE)};
 
-	auto pProp {new CMFCPropertyGridProperty(L"X", (_variant_t)3.0, L"Specifies the point grid x spacing")};
+	auto pProp {new CMFCPropertyGridProperty(L"X", static_cast<_variant_t>(3.0), L"Specifies the point grid x spacing")};
 	PointGrid->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty(L"Y", (_variant_t)3.0, L"Specifies the point grid y spacing");
+	pProp = new CMFCPropertyGridProperty(L"Y", static_cast<_variant_t>(3.0), L"Specifies the point grid y spacing");
 	PointGrid->AddSubItem(pProp);
 
-	pProp = new CMFCPropertyGridProperty(L"Z", (_variant_t)0.0, L"Specifies the point grid z spacing");
+	pProp = new CMFCPropertyGridProperty(L"Z", static_cast<_variant_t>(0.0), L"Specifies the point grid z spacing");
 	PointGrid->AddSubItem(pProp);
 
 	m_PropertyGrid.AddProperty(PointGrid);
@@ -216,7 +216,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	wcscpy_s(FontAttributes.lfFaceName, LF_FACESIZE, L"Arial");
 
 	NoteGroup->AddSubItem(new CMFCPropertyGridFontProperty(L"Font", FontAttributes, CF_EFFECTS | CF_SCREENFONTS, L"Specifies the default font for the window"));
-	NoteGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use System Font", (_variant_t)true, L"Specifies that the window uses MS Shell Dlg font"));
+	NoteGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use System Font", static_cast<_variant_t>(true), L"Specifies that the window uses MS Shell Dlg font"));
 
 	auto HorizontalAlignment {new CMFCPropertyGridProperty(L"Horizontal Alignment", L"Left", L"Specifies the horizontal alignment used for new notes")};
 	HorizontalAlignment->AddOption(L"Left");
@@ -291,7 +291,7 @@ void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 }
 
 LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
-	auto Property {(CMFCPropertyGridProperty*)lparam};
+	auto Property {reinterpret_cast<CMFCPropertyGridProperty*>(lparam)};
 
 	BOOL ResetMDIChild = FALSE;
 

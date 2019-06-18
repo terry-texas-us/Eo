@@ -112,7 +112,7 @@ void EoGePoint4d::ClipPolygon(EoGePoint4dArray& pointsArray) {
 	for (int planeIndex = 0; planeIndex < 6; planeIndex++) {
 		IntersectionWithPln(pointsArray, pointsOnClipPlanes[planeIndex], vPln[planeIndex], PointsArrayOut);
 
-		const int iPtsOut = (int) PointsArrayOut.GetSize();
+		const int iPtsOut = static_cast<int>(PointsArrayOut.GetSize());
 		pointsArray.SetSize(iPtsOut);
 
 		if (iPtsOut == 0)
@@ -138,7 +138,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 	if (bVisVer0) {
 		pointsArrayOut.Add(pointsArrayIn[0]);
 	}
-	const int iPtsIn = (int) pointsArrayIn.GetSize();
+	const int iPtsIn = static_cast<int>(pointsArrayIn.GetSize());
 	for (int i = 1; i < iPtsIn; i++) {
 		ptEdge[1] = pointsArrayIn[i];
 		bEdgeVis[1] = OdGeVector3d(ptEdge[1].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
