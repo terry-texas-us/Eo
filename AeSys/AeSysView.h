@@ -213,7 +213,7 @@ private:
 	EoGsViewTransform m_OverviewViewTransform;
 	unsigned short m_OpHighlighted {0};
 	bool m_Plot {false};
-	float m_PlotScaleFactor {1.0f};
+	float m_PlotScaleFactor {1.0F};
 	EoDbGroup m_PreviewGroup;
 	EoGsViewTransform m_PreviousViewTransform;
 	unsigned short m_PreviousOp {0};
@@ -277,9 +277,9 @@ private: // grid and axis constraints
 
 public:
 	double AxisConstraintInfluenceAngle() const noexcept;
-	void SetAxisConstraintInfluenceAngle(const double angle) noexcept;
+	void SetAxisConstraintInfluenceAngle(double angle) noexcept;
 	double AxisConstraintOffsetAngle() const noexcept;
-	void SetAxisConstraintOffsetAngle(const double angle) noexcept;
+	void SetAxisConstraintOffsetAngle(double angle) noexcept;
 	void InitializeConstraints() noexcept;
 	/// <summary>Generates a point display centered about the user origin in one or more of the three orthogonal planes for the current user grid.</summary>
 	void DisplayGrid(CDC* deviceContext);
@@ -380,7 +380,7 @@ public:
 
 	bool PenWidthsOn() noexcept;
 	double WorldScale() const noexcept;
-	void SetWorldScale(const double scale);
+	void SetWorldScale(double scale);
 
 	void ResetView() noexcept;
 
@@ -438,7 +438,7 @@ public:
 	void SetCameraPosition(const OdGeVector3d& direction);
 	void SetCameraTarget(const OdGePoint3d& target);
 	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight);
-	void SetViewWindow(const double uMin, const double vMin, const double uMax, const double vMax);
+	void SetViewWindow(double uMin, double vMin, double uMax, double vMax);
 
 	/// <summary>Determines the number of pages for 1 to 1 print</summary>
 	unsigned NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages);
@@ -455,7 +455,7 @@ public:
 	double ViewportWidthInInches() const noexcept;
 	void ViewportPopActive();
 	void ViewportPushActive();
-	void SetViewportSize(const int width, const int height) noexcept;
+	void SetViewportSize(int width, int height) noexcept;
 	void SetDeviceHeightInInches(double height) noexcept;
 	void SetDeviceWidthInInches(double width) noexcept;
 public: // Group and Primitive operations
@@ -682,7 +682,7 @@ public: // Edit mode interface
 	OdGeScale3d EditModeMirrorScaleFactors() const noexcept;
 	EoGeMatrix3d EditModeRotationMatrix() const;
 	OdGeScale3d EditModeScaleFactors() const noexcept;
-	void SetEditModeScaleFactors(const double sx, const double sy, const double sz) noexcept;
+	void SetEditModeScaleFactors(double sx, double sy, double sz) noexcept;
 	void SetEditModeRotationAngles(double x, double y, double z) noexcept;
 	void SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept;
 

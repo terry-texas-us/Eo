@@ -28,7 +28,7 @@ double AeSysView::AxisConstraintInfluenceAngle() const noexcept {
 	return m_AxisConstraintInfluenceAngle;
 }
 
-void AeSysView::SetAxisConstraintInfluenceAngle(const double angle) noexcept {
+void AeSysView::SetAxisConstraintInfluenceAngle(double angle) noexcept {
 	m_AxisConstraintInfluenceAngle = angle;
 }
 
@@ -36,7 +36,7 @@ double AeSysView::AxisConstraintOffsetAngle() const noexcept {
 	return m_AxisConstraintOffsetAngle;
 }
 
-void AeSysView::SetAxisConstraintOffsetAngle(const double angle) noexcept {
+void AeSysView::SetAxisConstraintOffsetAngle(double angle) noexcept {
 	m_AxisConstraintOffsetAngle = angle;
 }
 

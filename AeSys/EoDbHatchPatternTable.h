@@ -9,7 +9,7 @@ private:
 
 public:
 	static unsigned short LegacyHatchPatternIndex(const OdString& name);
-	static OdString LegacyHatchPatternName(const unsigned index);
+	static OdString LegacyHatchPatternName(unsigned index);
 
 	static unsigned short NumberOfLegacyHatchPatterns() noexcept { return ms_NumberOfLegacyHatchPatterns; }
 

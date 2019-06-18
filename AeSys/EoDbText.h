@@ -63,7 +63,7 @@ public: // Methods - absolute virtuals
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
-	void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
@@ -82,10 +82,10 @@ public: // Methods
 	void SetText(const CString& text);
 
 public: // Methods - static
-	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept;
-	static EoDb::VerticalAlignment ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept;
-	static OdDb::TextHorzMode ConvertHorizontalMode(const unsigned horizontalAlignment) noexcept;
-	static OdDb::TextVertMode ConvertVerticalMode(const unsigned verticalAlignment) noexcept;
+	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(OdDb::TextHorzMode horizontalMode) noexcept;
+	static EoDb::VerticalAlignment ConvertVerticalAlignment(OdDb::TextVertMode verticalMode) noexcept;
+	static OdDb::TextHorzMode ConvertHorizontalMode(unsigned horizontalAlignment) noexcept;
+	static OdDb::TextVertMode ConvertVerticalMode(unsigned verticalAlignment) noexcept;
 
 	static EoDbText* Create(OdDbTextPtr& text);
 	static EoDbText* Create(OdDbMTextPtr& text);

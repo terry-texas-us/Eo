@@ -849,7 +849,7 @@ void EoDbEllipse::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_MinorAxis.transformBy(transformMatrix);
 }
 
-void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 
 	if (mask != 0) { m_Center += translate; }
 }
@@ -1054,7 +1054,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 	return (Ellipse);
 }
 
-OdGePoint3d pFndPtOnArc(const OdGePoint3d & center, const OdGeVector3d & majorAxis, const OdGeVector3d & minorAxis, const double dAng) {
+OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double angle) {
 	OdGeMatrix3d ScaleMatrix;
 	ScaleMatrix.setToScaling(OdGeScale3d(majorAxis.length(), minorAxis.length(), 1.0));
 
@@ -1062,7 +1062,7 @@ OdGePoint3d pFndPtOnArc(const OdGePoint3d & center, const OdGeVector3d & majorAx
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(center, majorAxis, minorAxis));
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
-	OdGePoint3d pt(cos(dAng), sin(dAng), 0.0);
+	OdGePoint3d pt(cos(angle), sin(angle), 0.0);
 
 	pt.transformBy(PlaneToWorldTransform);
 	return (pt);

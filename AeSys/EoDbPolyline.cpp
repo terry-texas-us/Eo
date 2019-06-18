@@ -402,7 +402,7 @@ void EoDbPolyline::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	}
 }
 
-void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 	// <tas="TranslateUsingMask broken. Need to go to world and back? This type of operation could get polyline vertex off plane"</tas>
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 	//	if (((mask >> VertexIndex) & 1UL) == 1)

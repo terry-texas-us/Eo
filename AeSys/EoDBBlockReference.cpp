@@ -204,25 +204,25 @@ bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner
 	return (bResult);
 }
 
-bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
-	bool bResult = false;
+bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
+	bool Result {false};
 
 	EoDbBlock* Block;
 
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return bResult; }
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return Result; }
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
-		if ((Block->GetNext(Position))->SelectUsingPoint(point, view, ptProj)) {
-			bResult = true;
+		if ((Block->GetNext(Position))->SelectUsingPoint(point, view, projectedPoint)) {
+			Result = true;
 			break;
 		}
 	}
 	view->PopModelTransform();
 
-	return (bResult);
+	return (Result);
 }
 
 void EoDbBlockReference::TransformBy(const EoGeMatrix3d & transformMatrix) {

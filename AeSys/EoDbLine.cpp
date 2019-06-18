@@ -95,9 +95,9 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 	if (FirstPointParameter <= DBL_EPSILON && SecondPointParameter >= 1. - DBL_EPSILON) { // Put entire line in trap
 		LineIn = this;
 	} else { // Something gets cut
-		OdDbBlockTableRecordPtr BlockTableRecord = m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		OdDbBlockTableRecordPtr BlockTableRecord {m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
-		OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+		OdDbLinePtr Line {m_EntityObjectId.safeOpenObject()->clone()};
 		BlockTableRecord->appendOdDbEntity(Line);
 
 		if (FirstPointParameter > DBL_EPSILON && SecondPointParameter < 1. - DBL_EPSILON) { // Cut section out of middle
@@ -107,7 +107,7 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 			Group->AddTail(EoDbLine::Create(Line));
 			groupsOut->AddTail(Group);
 
-			OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+			OdDbLinePtr Line {m_EntityObjectId.safeOpenObject()->clone()};
 			Line->setStartPoint(points[0]);
 			Line->setEndPoint(points[1]);
 			BlockTableRecord->appendOdDbEntity(Line);
@@ -351,7 +351,7 @@ void EoDbLine::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_LineSeg.transformBy(transformMatrix);
 }
 
-void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 
 	if ((mask & 1) == 1) { SetStartPoint(m_LineSeg.startPoint() + translate); }
 

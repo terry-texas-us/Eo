@@ -533,10 +533,10 @@ void AeSysView::SetNumberOfSides(int number) noexcept {
 
 void AeSysView::DoAnnotateModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
-	const int NumberOfPoints = EoViAnn_points.size();
+	const auto NumberOfPoints {EoViAnn_points.size()};
 	EoViAnn_points.append(CurrentPnt);
 
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -557,8 +557,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 			break;
 
 		case ID_OP4:
-		case ID_OP5:
-		{
+		case ID_OP5: {
 			m_PreviousPnt = EoViAnn_points[0];
 			if (CorrectLeaderEndpoints(m_PreviousOp, 0, EoViAnn_points[0], EoViAnn_points[1])) {
 				auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[0], EoViAnn_points[1])};
@@ -584,9 +583,8 @@ void AeSysView::DoAnnotateModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
 			break;
-
 	}
-	EoViAnn_points.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
+	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
 
 void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d & startPoint, const OdGePoint3d & endPoint, EoDbGroup * group) {

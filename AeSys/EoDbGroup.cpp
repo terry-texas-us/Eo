@@ -286,7 +286,7 @@ void EoDbGroup::PenTranslation(unsigned numberOfColors, std::vector<int>& newCol
 
 		for (unsigned ColorIndex = 0; ColorIndex < numberOfColors; ColorIndex++) {
 			if (Primitive->ColorIndex() == pCol.at(ColorIndex)) {
-				Primitive->SetColorIndex2(newColors.at(ColorIndex));
+				Primitive->SetColorIndex2(static_cast<short>(newColors.at(ColorIndex)));
 				break;
 			}
 		}

@@ -461,7 +461,7 @@ void EoDbDimension::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	}
 }
 
-void EoDbDimension::TranslateUsingMask(const OdGeVector3d & translate, const unsigned long mask) {
+void EoDbDimension::TranslateUsingMask(const OdGeVector3d & translate, unsigned long mask) {
 
 	if ((mask & 1) == 1) { m_Line.SetStartPoint(m_Line.startPoint() + translate); }
 

@@ -210,7 +210,7 @@ void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Spline.transformBy(transformMatrix);
 }
 
-void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
 		if (((mask >> ControlPointIndex) & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);

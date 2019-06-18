@@ -42,7 +42,7 @@ void AeSysView::SetView(const OdGePoint3d& position, const OdGePoint3d& target, 
 	m_ViewTransform.SetView(position, target, upVector, fieldWidth, fieldHeight);
 	m_ViewTransform.BuildTransformMatrix();
 }
-void AeSysView::SetViewWindow(const double uMin, const double vMin, const double uMax, const double vMax) {
+void AeSysView::SetViewWindow(double uMin, double vMin, double uMax, double vMax) {
 	m_ViewTransform.SetProjectionPlaneField(uMin, vMin, uMax, vMax);
 	m_ViewTransform.BuildTransformMatrix();
 }

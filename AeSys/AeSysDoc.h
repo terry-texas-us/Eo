@@ -178,13 +178,14 @@ public:
 				_isR15format = true;
 				_data._r15.read(File);
 				return true;
-			} else if ((File = dataObject->GetFileData(m_FormatR17)).get() || (File = dataObject->GetFileData(m_FormatR18)).get() || (File = dataObject->GetFileData(m_FormatR19)).get()) {
+			}
+			if ((File = dataObject->GetFileData(m_FormatR17)).get() || (File = dataObject->GetFileData(m_FormatR18)).get() || (File = dataObject->GetFileData(m_FormatR19)).get()) {
 				_isR15format = false;
 				_data._r21.read(File);
 				return true;
-			} else {
-				return false;
 			}
+			return false;
+
 		}
 		
 		OdString tempFileName() {

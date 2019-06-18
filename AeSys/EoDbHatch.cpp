@@ -310,7 +310,7 @@ void EoDbHatch::TransformBy(const EoGeMatrix3d & transformMatrix) {
 		m_Vertices[VertexIndex].transformBy(transformMatrix);
 }
 
-void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 	// nothing done to hatch coordinate origin
 
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
@@ -364,10 +364,11 @@ void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
 	file.Write(buffer, static_cast<unsigned>(buffer[3] * 32));
 }
 
-int EoDbHatch::Append(const OdGePoint3d & vertex) {
-	return (m_Vertices.append(vertex));
+int EoDbHatch::Append(const OdGePoint3d& vertex) {
+	return (static_cast<int>(m_Vertices.append(vertex)));
 }
-void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
+
+void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 	EoGeMatrix3d tm;
 	tm.setToWorldToPlane(OdGePlane(m_HatchOrigin, m_HatchXAxis, m_HatchYAxis));
 
@@ -375,7 +376,7 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 	int LoopPointsOffsets[2];
 	LoopPointsOffsets[0] = static_cast<int>(m_Vertices.size());
 
-	EoEdge Edges[128];
+	EoEdge Edges[128] {0};
 
 	const short ColorIndex {pstate.ColorIndex()};
 	const short LinetypeIndex {pstate.LinetypeIndex()};
@@ -406,18 +407,18 @@ void EoDbHatch::DisplayHatch(AeSysView * view, CDC * deviceContext) const {
 		EoGeMatrix3d tmInv = tm;
 		tmInv.invert();
 
-		int ActiveEdges = 0;
-		auto FirstLoopPointIndex = 0u;
+		int ActiveEdges {0};
+		auto FirstLoopPointIndex {0};
 		for (int LoopIndex = 0; LoopIndex < NumberOfLoops; LoopIndex++) {
 			
-			if (LoopIndex != 0) { FirstLoopPointIndex = static_cast<unsigned>(LoopPointsOffsets[LoopIndex - 1]); }
+			if (LoopIndex != 0) { FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1]; }
 			
-			OdGePoint3d StartPoint(m_Vertices[FirstLoopPointIndex]);
+			OdGePoint3d StartPoint(m_Vertices[static_cast<unsigned>(FirstLoopPointIndex)]);
 			StartPoint.transformBy(tm);		// Apply transform to get areas first point in z0 plane
 
 			const int SizeOfCurrentLoop = LoopPointsOffsets[LoopIndex] - FirstLoopPointIndex;
 			for (int LoopPointIndex = FirstLoopPointIndex; LoopPointIndex < LoopPointsOffsets[LoopIndex]; LoopPointIndex++) {
-				OdGePoint3d EndPoint(m_Vertices[((LoopPointIndex - FirstLoopPointIndex + 1) % SizeOfCurrentLoop) + FirstLoopPointIndex]);
+				OdGePoint3d EndPoint(m_Vertices[static_cast<unsigned>(((LoopPointIndex - FirstLoopPointIndex + 1) % SizeOfCurrentLoop) + FirstLoopPointIndex)]);
 				EndPoint.transformBy(tm);
 				const OdGeVector2d Edge(EndPoint.x - StartPoint.x, EndPoint.y - StartPoint.y);
 				if (!Edge.isZeroLength() && !Edge.isParallelTo(OdGeVector2d::kXAxis)) {
@@ -572,13 +573,13 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 		Vertices.SetSize(NumberOfVertices);
 
 		for (int VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
-			Vertices[VertexIndex] = EoGePoint4d(m_Vertices[VertexIndex], 1.0);
+			Vertices[VertexIndex] = EoGePoint4d(m_Vertices[static_cast<unsigned>(VertexIndex)], 1.0);
 		}
 		view->ModelViewTransformPoints(Vertices);
 		EoGePoint4d::ClipPolygon(Vertices);
 
-		auto NumberOfPoints = Vertices.GetSize();
-		auto Points {new CPoint[NumberOfPoints]};
+		auto NumberOfPoints {Vertices.GetSize()};
+		auto Points {new CPoint[static_cast<unsigned>(NumberOfPoints)]};
 
 		view->DoViewportProjection(Points, Vertices);
 
@@ -618,7 +619,7 @@ void EoDbHatch::ModifyState() noexcept {
 }
 
 int EoDbHatch::NumberOfVertices() const {
-	return (m_Vertices.size());
+	return (static_cast<int>(m_Vertices.size()));
 }
 
 bool EoDbHatch::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point) noexcept {

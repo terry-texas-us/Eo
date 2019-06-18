@@ -207,9 +207,9 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		OdString lineweight;
 		lineweight.format(L"%.4f", Inch ? MMTOINCH(m_LineweightData[i].m_Value) : m_LineweightData[i].m_Value);
 		bool IsUse {false};
-		unsigned nIndex;
+		unsigned nIndex {0};
 
-		if (useLineWeightIndex.find(i, nIndex)) { IsUse = true; }
+		if (useLineWeightIndex.find(static_cast<int>(i), nIndex)) { IsUse = true; }
 
 		const auto item {InsertLineweightAt(static_cast<int>(i), lineweight, IsUse)};
 		m_LineweightsListCtrl.SetItemData(item, (unsigned long) &m_LineweightData[i]);

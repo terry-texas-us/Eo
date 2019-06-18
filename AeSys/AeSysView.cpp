@@ -2618,7 +2618,7 @@ void AeSysView::ViewportPushActive() {
 	m_Viewports.AddTail(m_Viewport);
 }
 
-void AeSysView::SetViewportSize(const int width, const int height) noexcept {
+void AeSysView::SetViewportSize(int width, int height) noexcept {
 	m_Viewport.SetSize(width, height);
 }
 
@@ -3935,7 +3935,7 @@ void AeSysView::SetModeCursor(unsigned mode) {
 	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, (long) CursorHandle);
 }
 
-void AeSysView::SetWorldScale(const double scale) {
+void AeSysView::SetWorldScale(double scale) {
 	if (scale > FLT_EPSILON) {
 		m_WorldScale = scale;
 		UpdateStateInformation(Scale);

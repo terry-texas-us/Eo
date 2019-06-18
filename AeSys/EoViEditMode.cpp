@@ -37,12 +37,13 @@ EoGeMatrix3d AeSysView::EditModeRotationMatrix() const {
 OdGeScale3d AeSysView::EditModeScaleFactors() const noexcept {
 	return m_ScaleFactors;
 }
-void AeSysView::SetEditModeScaleFactors(const double x, const double y, const double z) noexcept {
+void AeSysView::SetEditModeScaleFactors(double sx, double sy, double sz) noexcept {
 	// <tas="Verify scale factors are always not zero"</tas>
-	m_ScaleFactors.sx = x;
-	m_ScaleFactors.sy = y;
-	m_ScaleFactors.sz = z;
+	m_ScaleFactors.sx = sx;
+	m_ScaleFactors.sy = sy;
+	m_ScaleFactors.sz = sz;
 }
+
 void AeSysView::SetEditModeRotationAngles(double x, double y, double z) noexcept {
 	m_EditModeRotationAngles.x = x;
 	m_EditModeRotationAngles.y = y;

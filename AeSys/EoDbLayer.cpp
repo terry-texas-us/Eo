@@ -123,7 +123,7 @@ bool EoDbLayer::IsCurrent() const {
 
 short EoDbLayer::LinetypeIndex() {
 	OdDbLinetypeTableRecordPtr Linetype = m_Layer->linetypeObjectId().safeOpenObject();
-	return EoDbLinetypeTable::LegacyLinetypeIndex(Linetype->getName());
+	return static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Linetype->getName()));
 }
 
 OdString EoDbLayer::LinetypeName() {
@@ -217,7 +217,7 @@ OdString EoDbLayer::Name() const {
 void EoDbLayer::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	for (unsigned ColorIndex = 0; ColorIndex < numberOfColors; ColorIndex++) {
 		if (m_Layer->colorIndex() == pCol.at(ColorIndex)) {
-			m_Layer->setColorIndex(newColors.at(ColorIndex));
+			m_Layer->setColorIndex(static_cast<short>(newColors.at(ColorIndex)));
 			break;
 		}
 	}

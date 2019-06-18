@@ -7,7 +7,7 @@ private:
 
 public:
 	static unsigned short LegacyLinetypeIndex(const OdString& name);
-	static OdString LegacyLinetypeName(const int index);
+	static OdString LegacyLinetypeName(int index);
 public:
 	void LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const CString& fileName);
 };

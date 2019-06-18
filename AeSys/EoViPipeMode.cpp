@@ -1082,7 +1082,7 @@ void AeSysView::OnPipeModeEscape() {
 
 void AeSysView::DoPipeModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
-	const int NumberOfPoints = m_PipeModePoints.size();
+	const auto NumberOfPoints {m_PipeModePoints.size()};
 
 	switch (m_PreviousOp) {
 		case ID_OP2:
@@ -1126,7 +1126,7 @@ void AeSysView::DoPipeModeMouseMove() {
 			break;
 		}
 	}
-	m_PipeModePoints.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
+	m_PipeModePoints.setLogicalLength(NumberOfPoints);
 }
 
 void AeSysView::GenerateLineWithFittings(int beginType, OdGePoint3d & startPoint, int endType, OdGePoint3d & endPoint, EoDbGroup * group) {

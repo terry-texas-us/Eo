@@ -260,7 +260,7 @@ void EoDbPoint::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_Position.transformBy(transformMatrix);
 }
 
-void EoDbPoint::TranslateUsingMask(const OdGeVector3d & translate, const unsigned long mask) {
+void EoDbPoint::TranslateUsingMask(const OdGeVector3d & translate, unsigned long mask) {
 
 	if (mask != 0) { m_Position += translate; }
 }

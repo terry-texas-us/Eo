@@ -88,25 +88,25 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	return (iPts);
 }
 void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& controlPoints, OdGeKnotVector& knots) {
-	const int Order = degree + 1;
-	const int NumberOfControlPoints = controlPoints.size();
+	const auto Order {gsl::narrow_cast<unsigned>(degree + 1)};
+	const auto NumberOfControlPoints {controlPoints.size()};
 
 	knots.setLogicalLength(0);
 
-	const int KnotsLength = NumberOfControlPoints + Order;
+	const auto KnotsLength {NumberOfControlPoints + Order};
 
-	for (int KnotIndex = 0; KnotIndex < KnotsLength; KnotIndex++) {
+	for (unsigned KnotIndex = 0; KnotIndex < KnotsLength; KnotIndex++) {
 		if (KnotIndex <= Order - 1) { // Beginning of curve
 			knots.append(0.0);
 		}
 		else if (KnotIndex >= NumberOfControlPoints + 1) { // End of curve
-			knots.append(knots[KnotIndex - 1]);
+			knots.append(knots[static_cast<int>(KnotIndex) - 1]);
 		} else {
-			const auto i2 = static_cast<unsigned>(KnotIndex - Order);
+			const auto i2 = KnotIndex - Order;
 			if (controlPoints[i2] == controlPoints[i2 + 1]) { // Repeating vertices
-				knots.append(knots[KnotIndex - 1]);
+				knots.append(knots[static_cast<int>(KnotIndex) - 1]);
 			} else { // Successive internal vectors
-				knots.append(knots[KnotIndex - 1] + 1.0);
+				knots.append(knots[static_cast<int>(KnotIndex) - 1] + 1.0);
 			}
 		}
 	}

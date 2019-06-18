@@ -67,7 +67,7 @@ public: // Methods - absolute virtuals
 	/// <summary>Evaluates whether a point lies within tolerance specified of line.</summary>
 	virtual bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const = 0;
 	virtual void TransformBy(const EoGeMatrix3d& transformMatrix) = 0;
-	virtual void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) = 0;
+	virtual void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) = 0;
 	virtual bool Write(EoDbFile& file) const = 0;
 	virtual void Write(CFile& file, unsigned char* buffer) const = 0;
 

@@ -119,9 +119,9 @@ DIBCOLOR* CBitmapColorInfo::GetBitmapPixels(CBitmap& bitmap, int& width, int& he
 	BitmapInfo.bmiHeader.biSizeImage = static_cast<unsigned long>(height * width * 4);
 	BitmapInfo.bmiHeader.biClrUsed = 0;
 	BitmapInfo.bmiHeader.biClrImportant = 0;
-	void* buf = new char[height * width * 4];
-	GetDIBits(DeviceContext.m_hDC, static_cast<HBITMAP>(bitmap.m_hObject), 0, static_cast<unsigned>(height), buf, &BitmapInfo, DIB_RGB_COLORS);
-	return (DIBCOLOR*)buf;
+	void* Bits {new char[static_cast<unsigned>(height * width * 4)]};
+	GetDIBits(DeviceContext.m_hDC, static_cast<HBITMAP>(bitmap.m_hObject), 0, static_cast<unsigned>(height), Bits, &BitmapInfo, DIB_RGB_COLORS);
+	return (DIBCOLOR*) Bits;
 }
 
 void CBitmapColorInfo::SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels) {
@@ -491,7 +491,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* n
 	m_spinScreening.SetPos(OdPsData.screening());
 	m_Adaptive.SelectString(-1, OdPsData.isAdaptiveLinetype() ? L"On" : L"Off");
 	m_Linetype.SetCurSel(OdPsData.linetype());
-	m_Lineweight.SetCurSel((unsigned long)OdPsData.lineweight());
+	m_Lineweight.SetCurSel(static_cast<int>(static_cast<unsigned long>(OdPsData.lineweight())));
 	m_Lineendstyle.SetCurSel(OdPsData.endStyle());
 	m_Linejoinstyle.SetCurSel(OdPsData.joinStyle() < 5 ? OdPsData.joinStyle() : 4);
 	m_Fillstyle.SetCurSel(OdPsData.fillStyle() - 64);
@@ -931,7 +931,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDelBtnStyle() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::AddNewPlotStyle(const wchar_t* styleName) {
 	m_pPlotStyleActive = m_pPlotStyleTable->addNewPlotStyle(styleName);
-	const int ItemIndex = m_pPlotStyleTable->plotStyleSize() - 1;
+	const int ItemIndex {static_cast<int>(m_pPlotStyleTable->plotStyleSize()) - 1};
 	insertItem(ItemIndex);
 	m_listStyles.SetItemState(ItemIndex, LVIS_SELECTED, LVIS_SELECTED);
 	m_listStyles.SetSelectionMark(ItemIndex);

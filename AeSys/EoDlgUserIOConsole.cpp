@@ -28,7 +28,7 @@ void EoDlgUserIOConsole::addRef() noexcept {
 }
 
 long EoDlgUserIOConsole::numRefs() const noexcept {
-	return (m_RefCounter);
+	return static_cast<long>(m_RefCounter);
 }
 
 void EoDlgUserIOConsole::release() {

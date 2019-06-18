@@ -753,7 +753,7 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 
 	if (m_GenerateTurningVanes) {
 		const auto BeginPoint {((justification == Left) ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
-		const auto EndPoint {m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.)};
+		EndPoint = m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.);
 
 		const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 

@@ -264,7 +264,7 @@ void EoDbText::TransformBy(const EoGeMatrix3d & transformMatrix) {
 	m_ReferenceSystem.TransformBy(transformMatrix);
 }
 
-void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 	
 	if (mask != 0) { m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate); }
 }
@@ -308,7 +308,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	file.Write(buffer, buffer[3] * 32u);
 }
 
-EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
+EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(OdDb::TextHorzMode horizontalMode) noexcept {
 	auto HorizontalAlignment {EoDb::kAlignLeft};
 
 	switch (horizontalMode) {
@@ -328,7 +328,7 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextH
 	return HorizontalAlignment;
 }
 
-EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
+EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(OdDb::TextVertMode verticalMode) noexcept {
 	auto VerticalAlignment {EoDb::kAlignBottom};
 
 	switch (verticalMode) {
@@ -346,7 +346,7 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertM
 	return VerticalAlignment;
 }
 
-OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const unsigned horizontalAlignment) noexcept {
+OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(unsigned horizontalAlignment) noexcept {
 	OdDb::TextHorzMode HorizontalMode = OdDb::kTextLeft;
 
 	switch (horizontalAlignment) {
@@ -364,7 +364,7 @@ OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const unsigned horizontalAlig
 	return HorizontalMode;
 }
 
-OdDb::TextVertMode EoDbText::ConvertVerticalMode(const unsigned verticalAlignment) noexcept {
+OdDb::TextVertMode EoDbText::ConvertVerticalMode(unsigned verticalAlignment) noexcept {
 	OdDb::TextVertMode VerticalMode = OdDb::kTextBottom;
 
 	switch (verticalAlignment) {
@@ -928,8 +928,8 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const 
 	LPPOINT Points {nullptr};
 	unsigned char* Types {nullptr};
 	try {
-		Points = new POINT[NumberOfPointsInPath];
-		Types = new unsigned char[NumberOfPointsInPath];
+		Points = new POINT[static_cast<unsigned>(NumberOfPointsInPath)];
+		Types = new unsigned char[static_cast<unsigned>(NumberOfPointsInPath)];
 	} catch (CException* Exception) {
 		delete[] Points;
 		Points = nullptr;

@@ -31,10 +31,11 @@ unsigned short EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	}
 	return Index;
 }
-OdString EoDbLinetypeTable::LegacyLinetypeName(const int index) {
+OdString EoDbLinetypeTable::LegacyLinetypeName(int index) {
 	const int Index = (index < NumberOfLegacyLinetypes) ? index : 1;
 	return LegacyLinetypes[Index];
 }
+
 void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const CString& fileName) {
 	OdDbLinetypeTablePtr Linetypes = database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite);
 

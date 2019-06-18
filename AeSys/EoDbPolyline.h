@@ -70,7 +70,7 @@ public: // Methods - absolute virtuals
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
-	void TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 

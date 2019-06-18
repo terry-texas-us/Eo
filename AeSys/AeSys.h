@@ -183,7 +183,7 @@ public:
 
 	void setLimit(int max) noexcept override /* ExHostAppServices */;
 
-	void warning(const char* warnVisGroup, const OdString& message) override;
+	void warning(const char* warnVisGroup, const OdString& text) override;
 
 	void warning(const char*warnVisGroup, const OdError& error) noexcept override {} // OdDbHostAppServices (to suppress C4266 warning)
 	void warning(const OdError& error) noexcept override {} // OdDbHostAppServices (to suppress C4266 warning)
@@ -251,7 +251,7 @@ public:
 	}
 
 	static inline OdString objectIdAndClassName(const OdDbObject* object) {
-		if (object) {
+		if (object != nullptr) {
 			return OdString().format(L"%02I64X : <%ls>", OdUInt64(object->objectId().getHandle()), object->isA()->name().c_str());
 		}
 		return OdString(L"00 : < >");
@@ -359,7 +359,7 @@ public:
 	CString FormatAngle(double angle, int width = 8, int precision = 3) const;
 	CString FormatLength(double length, Units units, int width = 16, int precision = 8) const;
 	
-	void FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Units units, const double length, const int width, const int precision) const;
+	void FormatLength_s(wchar_t* lengthAsString, unsigned bufSize, Units units, double length, int width, int precision) const;
 	OdGePoint3d GetCursorPosition();
 	static EoDb::FileTypes GetFileType(const OdString& file);
 	COLORREF GetHotColor(short colorIndex) noexcept;
@@ -368,7 +368,7 @@ public:
 	HMENU GetAeSysSubMenu(int position) noexcept;
 	Units GetUnits() noexcept;
 	
-	int GreatestCommonDivisor(const int number1, const int number2) const noexcept;
+	int GreatestCommonDivisor(int number1, int number2) const noexcept;
 	bool HighColorMode() const noexcept;
 	OdGePoint3d HomePointGet(int i) noexcept;
 	void HomePointSave(int i, const OdGePoint3d& point) noexcept;
@@ -378,9 +378,9 @@ public:
 	bool IsClipboardDataImage() noexcept;
 	bool IsClipboardDataText() noexcept;
 	bool IsTrapHighlighted() noexcept;
-	void LoadColorPalletFromFile(const CString& pathName);
+	void LoadColorPalletFromFile(const CString& fileName);
 	void LoadModeResources(unsigned mode);
-	void LoadPenWidthsFromFile(const CString& pathName);
+	void LoadPenWidthsFromFile(const CString& fileName);
 	void LoadSimplexStrokeFont(const CString& pathName);
 	CString LoadStringResource(unsigned resourceIdentifier) const;
 	bool ModeInformationOverView() const noexcept;
@@ -390,7 +390,7 @@ public:
 	int PrimaryMode() const noexcept;
 	void ReleaseSimplexStrokeFont() noexcept;
 	static CString ResourceFolderPath();
-	void SetArchitecturalUnitsFractionPrecision(const int precision) noexcept;
+	void SetArchitecturalUnitsFractionPrecision(int precision) noexcept;
 	void SetDimensionAngle(double angle) noexcept;
 	void SetDimensionLength(double length) noexcept;
 	void SetEngagedAngle(double angle) noexcept;

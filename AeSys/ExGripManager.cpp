@@ -98,7 +98,7 @@ bool OdExGripDrag::locateActiveGrips(OdIntArray& indices) {
 
 		if (GripData[i]->GripData().isNull()) { bExMethod = false; }
 
-		if (OdDbGripOperations::kDragImageGrip == GripData[i]->status()) { indices.push_back(i); }
+		if (OdDbGripOperations::kDragImageGrip == GripData[i]->status()) { indices.push_back(static_cast<int>(i)); }
 	}
 	ODA_ASSERT(GripData.size() == 0 || !indices.empty());
 	return bExMethod;
@@ -131,7 +131,7 @@ void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 		for (unsigned i = 0; i < aIndices.size(); i++) {
 
 			if (gsl::narrow_cast<unsigned>(aIndices[i]) < aCloneData.size()) {
-				aIds.push_back(aCloneData[aIndices[i]]->appData());
+				aIds.push_back(aCloneData[static_cast<unsigned>(aIndices[i])]->appData());
 			} else {
 				ODA_ASSERT(0);
 			}
@@ -181,7 +181,7 @@ void OdExGripDrag::moveEntity(const OdGePoint3d & ptMoveAt) {
 		for (unsigned i = 0; i < iSize; i++) {
 		
 			if (aIndices[i] < gsl::narrow_cast<int>(rData.size())) {
-				aIds.push_back(rData[aIndices[i]]->GripData()->appData());
+				aIds.push_back(rData[static_cast<unsigned>(aIndices[i])]->GripData()->appData());
 			} else {
 				ODA_ASSERT(0);
 			}

@@ -991,7 +991,7 @@ CString AeSys::FormatLength(double length, Units units, int width, int precision
 ///All other units formatted using floating decimal.
 /// </summary>
 
-void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Units units, const double length, const int width, const int precision) const {
+void AeSys::FormatLength_s(wchar_t* lengthAsString, unsigned bufSize, Units units, double length, int width, int precision) const {
 	wchar_t szBuf[16] {L"\0"};
 
 	double ScaledLength {length * AeSysView::GetActiveView()->WorldScale()};
@@ -1059,7 +1059,6 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, const unsigned bufSize, Unit
 				wcscat_s(lengthAsString, bufSize, szBuf);
 
 				if (Precision > 0) {
-					CString FormatSpecification;
 					FormatSpecification.Format(L"%%%i.%if", width, Precision);
 
 					CString FractionalInches;
@@ -1156,7 +1155,7 @@ AeSys::Units AeSys::GetUnits() noexcept {
 /// <summary>Finds the greatest common divisor of arbitrary integers.</summary>
 /// <returns>First number if second number is zero, greatest common divisor otherwise.</returns>
 
-int AeSys::GreatestCommonDivisor(const int number1, const int number2) const noexcept {
+int AeSys::GreatestCommonDivisor(int number1, int number2) const noexcept {
 	int ReturnValue = abs(number1);
 	int Divisor = abs(number2);
 	while (Divisor != 0) {
@@ -2149,7 +2148,7 @@ CString AeSys::ResourceFolderPath() {
 	return (getApplicationPath() + L"\\res\\");
 }
 
-void AeSys::SetArchitecturalUnitsFractionPrecision(const int precision) noexcept {
+void AeSys::SetArchitecturalUnitsFractionPrecision(int precision) noexcept {
 	if (precision > 0) m_ArchitecturalUnitsFractionPrecision = precision;
 }
 
