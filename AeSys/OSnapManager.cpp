@@ -204,14 +204,13 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	}
 }
 
-void OdBaseSnapManager::InvalidateViewport(const OdBaseSnapManager::HistEntryArray & centers) const {
-	OdGePoint3d Point;
+void OdBaseSnapManager::InvalidateViewport(const OdBaseSnapManager::HistEntryArray& centers) const {
 	const auto WorldToDeviceTransform {m_View->worldToDeviceMatrix()};
 
 	OdGsDCRect DcRectangle;
 
-	for (unsigned i = 0; i < centers.size(); ++i) {
-		Point = WorldToDeviceTransform * centers[i].m_Point;
+	for (const auto& Center : centers) {
+		const auto Point {WorldToDeviceTransform * Center.m_Point};
 
 		DcRectangle.m_min.x = OdRoundToLong(Point.x);
 		DcRectangle.m_min.y = OdRoundToLong(Point.y);
@@ -492,13 +491,12 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 				}
 				if (Result == eOk) {
 
-					for (unsigned i = 0; i < m_SnapPoints.size(); ++i) {
-						OdGePoint3d& point = m_SnapPoints[i];
-						point.transformBy(ModelToWorldTransform);
-						Checkpoint(ObjectSnapMode, point);
+					for (auto& SnapPoint : m_SnapPoints) {
+						SnapPoint.transformBy(ModelToWorldTransform);
+						Checkpoint(ObjectSnapMode, SnapPoint);
 						switch (ObjectSnapMode) {
 							case OdDb::kOsModeCen:
-								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, point));
+								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, SnapPoint));
 								m_Redraw = true;
 								break;
 							default:
@@ -527,12 +525,10 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 				PointTrackerWithSnapInfo->m_SnapContext.mEntityObjectId = Entity->objectId();
 				PointTrackerWithSnapInfo->m_SnapContext.mMarker = Marker;
 
-				for (unsigned i = 0; i < m_SnapPoints.size(); ++i) {
-					OdGePoint3d& point = m_SnapPoints[i];
-					point.transformBy(ModelToWorldTransform);
-					Checkpoint(*it, point);
+				for (auto& SnapPoint : m_SnapPoints) {
+					SnapPoint.transformBy(ModelToWorldTransform);
+					Checkpoint(*it, SnapPoint);
 				}
-
 			}
 		}
 	}
