@@ -88,7 +88,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 }
 
 EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	return EoDbBlockReference::Create(*this, blockTableRecord->database());
+	return Create(*this, blockTableRecord->database());
 }
 
 void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
@@ -400,7 +400,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	blockTableRecord->appendOdDbEntity(BlockReference);
 	BlockReference->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	BlockReference->setLinetype(Linetype);
 
@@ -415,7 +415,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 
 	BlockReference->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+	const auto Linetype {LinetypeObjectFromIndex(file.ReadInt16())};
 
 	BlockReference->setLinetype(Linetype);
 

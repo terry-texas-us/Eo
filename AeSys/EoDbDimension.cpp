@@ -75,7 +75,7 @@ EoDbPrimitive* EoDbDimension::Clone(OdDbBlockTableRecordPtr blockTableRecord) co
 	OdDbAlignedDimensionPtr AlignedDimension = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 
-	return EoDbDimension::Create(AlignedDimension);
+	return Create(AlignedDimension);
 }
 
 void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
@@ -586,7 +586,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 	AlignedDimension->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	AlignedDimension->setLinetype(Linetype);
 
@@ -625,7 +625,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 
 	AlignedDimension->setColorIndex(static_cast<unsigned short>(ColorIndex));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex)};
+	const auto Linetype {LinetypeObjectFromIndex0(Database, LinetypeIndex)};
 
 	AlignedDimension->setLinetype(Linetype);
 
@@ -708,7 +708,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 
 	AlignedDimension->setColorIndex(static_cast<unsigned short>(ColorIndex));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex)};
+	const auto Linetype {LinetypeObjectFromIndex0(Database, LinetypeIndex)};
 
 	AlignedDimension->setLinetype(Linetype);
 

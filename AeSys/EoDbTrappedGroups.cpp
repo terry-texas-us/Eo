@@ -61,8 +61,8 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 }
 
 void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
-	::OpenClipboard(nullptr);
-	::EmptyClipboard();
+	OpenClipboard(nullptr);
+	EmptyClipboard();
 
 	if (theApp.IsClipboardDataText()) {
 		CString strBuf;
@@ -90,17 +90,17 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			if (ClipboardData != nullptr) {
 				wcscpy_s(ClipboardData, AllocationSize, strBuf);
 				GlobalUnlock(ClipboardDataHandle);
-				::SetClipboardData(CF_UNICODETEXT, ClipboardDataHandle);
+				SetClipboardData(CF_UNICODETEXT, ClipboardDataHandle);
 			}
 		}
 	}
 	if (theApp.IsClipboardDataImage()) {
 		const int PrimitiveState {pstate.Save()};
 
-		auto MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
+		auto MetaFile {CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
 		m_TrappedGroupList.Display(view, CDC::FromHandle(MetaFile));
-		auto MetaFileHandle {::CloseEnhMetaFile(MetaFile)};
-		::SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
+		auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
+		SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
 
 		auto DeviceContext {CDC::FromHandle(MetaFile)};
 		
@@ -136,10 +136,10 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			MemoryFile.Read(ClipboardData, gsl::narrow_cast<unsigned>(SizeOfBuffer));
 
 			GlobalUnlock(ClipboardDataHandle);
-			::SetClipboardData(theApp.ClipboardFormatIdentifierForEoGroups(), ClipboardDataHandle);
+			SetClipboardData(theApp.ClipboardFormatIdentifierForEoGroups(), ClipboardDataHandle);
 		}
 	}
-	::CloseClipboard();
+	CloseClipboard();
 }
 
 void AeSysDoc::DeleteAllTrappedGroups() {

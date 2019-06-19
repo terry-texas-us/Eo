@@ -11,7 +11,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 EoDlgAudit::EoDlgAudit(CWnd* parent)
-	: EoVarDialog(EoDlgAudit::IDD, parent) {
+	: EoVarDialog(IDD, parent) {
 }
 
 void EoDlgAudit::DoDataExchange(CDataExchange* pDX) {

@@ -20,12 +20,12 @@ END_MESSAGE_MAP()
 OdGePoint3d EoDlgBlockInsert::InsertionPoint;
 
 EoDlgBlockInsert::EoDlgBlockInsert(CWnd* parent)
-	: CDialog(EoDlgBlockInsert::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(nullptr) {
 }
 
 EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* parent)
-	: CDialog(EoDlgBlockInsert::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(document) {
 }
 

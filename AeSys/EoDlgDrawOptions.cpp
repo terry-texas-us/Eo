@@ -18,7 +18,7 @@ BEGIN_MESSAGE_MAP(EoDlgDrawOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgDrawOptions::EoDlgDrawOptions(CWnd* parent)
-	: CDialog(EoDlgDrawOptions::IDD, parent) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgDrawOptions::~EoDlgDrawOptions() {

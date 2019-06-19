@@ -39,11 +39,11 @@ void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& pr
 	const short ColorIndex {ReadInt16()};
 	const short LinetypeIndex {ReadInt16()};
 
-	Seek(sizeof(unsigned short), CFile::current);
+	Seek(sizeof(unsigned short), current);
 	const unsigned short NumberOfPoints = ReadUInt16();
-	Seek(sizeof(unsigned short), CFile::current);
-	Seek(3 * sizeof(double), CFile::current);
-	Seek(3 * sizeof(double), CFile::current);
+	Seek(sizeof(unsigned short), current);
+	Seek(3 * sizeof(double), current);
+	Seek(3 * sizeof(double), current);
 	OdGePoint3dArray Points;
 	Points.setLogicalLength(NumberOfPoints);
 	for (unsigned n = 0; n < NumberOfPoints; n++) {

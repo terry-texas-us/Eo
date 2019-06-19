@@ -101,7 +101,7 @@ EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) con
 	OdDbPolylinePtr Polyline = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Polyline);
 
-	return EoDbPolyline::Create(Polyline);
+	return Create(Polyline);
 }
 
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
@@ -463,7 +463,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	blockTableRecord->appendOdDbEntity(Polyline);
 	Polyline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	Polyline->setLinetype(Linetype);
 
@@ -478,7 +478,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 
 	Polyline->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(file.ReadInt16())};
+	const auto Linetype {LinetypeObjectFromIndex(file.ReadInt16())};
 
 	Polyline->setLinetype(Linetype);
 

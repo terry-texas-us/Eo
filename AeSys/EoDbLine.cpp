@@ -62,7 +62,7 @@ EoDbPrimitive* EoDbLine::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Line);
 
-	return EoDbLine::Create(Line);
+	return Create(Line);
 }
 
 void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
@@ -81,7 +81,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 		NewLine->setStartPoint(LineSeg.startPoint());
 		NewLine->setEndPoint(LineSeg.endPoint());
 
-		newGroup->AddTail(EoDbLine::Create(NewLine));
+		newGroup->AddTail(Create(NewLine));
 	}
 }
 
@@ -104,27 +104,27 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 			Line->setStartPoint(points[1]);
 
 			auto Group {new EoDbGroup};
-			Group->AddTail(EoDbLine::Create(Line));
+			Group->AddTail(Create(Line));
 			groupsOut->AddTail(Group);
 
 			OdDbLinePtr Line {m_EntityObjectId.safeOpenObject()->clone()};
 			Line->setStartPoint(points[0]);
 			Line->setEndPoint(points[1]);
 			BlockTableRecord->appendOdDbEntity(Line);
-			LineIn = EoDbLine::Create(Line);
+			LineIn = Create(Line);
 
 			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Line->setEndPoint(points[0]);
 			m_LineSeg.SetEndPoint(points[0]);
 		} else if (SecondPointParameter < 1. - DBL_EPSILON) { // Cut in two and place begin section in trap
 			Line->setEndPoint(points[1]);
-			LineIn = EoDbLine::Create(Line);
+			LineIn = Create(Line);
 			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Line->setStartPoint(points[1]);
 			m_LineSeg.SetStartPoint(points[1]);
 		} else { // Cut in two and place end section in trap
 			Line->setStartPoint(points[0]);
-			LineIn = EoDbLine::Create(Line);
+			LineIn = Create(Line);
 			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Line->setEndPoint(points[0]);
 			m_LineSeg.SetEndPoint(points[0]);
@@ -402,7 +402,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	blockTableRecord->appendOdDbEntity(Line);
 	Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	Line->setLinetype(Linetype);
 
@@ -419,7 +419,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
 
 	Line->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+	const auto Linetype {LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
 	Line->setLinetype(Linetype);
 
@@ -455,7 +455,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 	blockTableRecord->appendOdDbEntity(Line);
 
 	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
+	Line->setLinetype(LinetypeObjectFromIndex0(Database, LinetypeIndex));
 	Line->setStartPoint(StartPoint);
 	Line->setEndPoint(EndPoint);
 

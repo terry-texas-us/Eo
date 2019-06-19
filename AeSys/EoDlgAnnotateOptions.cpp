@@ -12,11 +12,11 @@ BEGIN_MESSAGE_MAP(EoDlgAnnotateOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent)
-	: CDialog(EoDlgAnnotateOptions::IDD, parent) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
-	: CDialog(EoDlgAnnotateOptions::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(view) {
 	m_GapSpaceFactor = view->GapSpaceFactor();
 	m_CircleRadius = view->CircleRadius();

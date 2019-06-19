@@ -17,7 +17,7 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 		ReadGroupsSection(document);
 	}
 	catch(const wchar_t* Message) {
-		::MessageBoxW(nullptr, Message, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
+		MessageBoxW(nullptr, Message, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
 	}
 }
 
@@ -243,7 +243,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 }
 void EoDbPegFile::Unload(AeSysDoc* document) {
 	CFile::SetLength(0);
-	CFile::SeekToBegin();
+	SeekToBegin();
 
 	WriteHeaderSection(document);
 	WriteTablesSection(document);
@@ -328,9 +328,9 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 
 	if (NumberOfLayers != document->GetLayerTableSize()) {
 		const auto CurrentFilePosition {static_cast<long long>(CFile::GetPosition())};
-		CFile::Seek(SavedFilePosition, CFile::begin);
+		CFile::Seek(SavedFilePosition, begin);
 		WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
-		CFile::Seek(CurrentFilePosition, CFile::begin);
+		CFile::Seek(CurrentFilePosition, begin);
 	}
 }
 
@@ -362,9 +362,9 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 			if (Primitive->Write(*this)) { NumberOfPrimitives++; }
 		}
 		const auto CurrentFilePosition {static_cast<long long>(CFile::GetPosition())};
-		CFile::Seek(SavedFilePosition, CFile::begin);
+		CFile::Seek(SavedFilePosition, begin);
 		WriteUInt16(NumberOfPrimitives);
-		CFile::Seek(CurrentFilePosition, CFile::begin);
+		CFile::Seek(CurrentFilePosition, begin);
 	}
 	WriteUInt16(kEndOfSection);
 }

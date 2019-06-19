@@ -33,7 +33,7 @@ public:
 	enum InteriorStyle { kHollow, kSolid, kPattern, kHatch };
 
 private:
-	short m_InteriorStyle {EoDbHatch::kHatch};
+	short m_InteriorStyle {kHatch};
 	unsigned m_InteriorStyleIndex {1};
 	OdGePoint3d m_HatchOrigin {OdGePoint3d::kOrigin};
 	OdGeVector3d m_HatchXAxis {OdGeVector3d::kXAxis};

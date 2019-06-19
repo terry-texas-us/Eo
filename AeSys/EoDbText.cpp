@@ -55,7 +55,7 @@ EoDbPrimitive* EoDbText::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbTextPtr Text = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Text);
 
-	return EoDbText::Create(Text);
+	return Create(Text);
 }
 
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {

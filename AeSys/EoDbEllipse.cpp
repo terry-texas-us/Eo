@@ -92,7 +92,7 @@ EoDbPrimitive* EoDbEllipse::Clone(OdDbBlockTableRecordPtr blockTableRecord) cons
 	OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Ellipse);
 
-	return EoDbEllipse::Create(Ellipse);
+	return Create(Ellipse);
 }
 
 void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
@@ -108,7 +108,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	OdDbDatabasePtr Database {this->m_EntityObjectId.database()};
 	OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 
-	auto Arc {EoDbEllipse::Create3(*this, BlockTableRecord)};
+	auto Arc {Create3(*this, BlockTableRecord)};
 	Arc->SetTo2(m_Center, m_MajorAxis, m_MinorAxis, SweepAngle);
 	newGroup->AddTail(Arc);
 
@@ -143,14 +143,14 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 			m_MajorAxis.rotateBy(dRel[0] * Oda2PI, PlaneNormal);
 			m_MinorAxis.rotateBy(dRel[0] * Oda2PI, PlaneNormal);
 
-			pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
+			pArc = Create3(*this, BlockTableRecord);
 
 			m_MajorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 			m_MinorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 
 			m_SweepAngle = Oda2PI - m_SweepAngle;
 		} else { // Arc section with a cut
-			pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
+			pArc = Create3(*this, BlockTableRecord);
 			const double dSwpAng = m_SweepAngle;
 
 			const double dAng1 = dRel[0] * m_SweepAngle;
@@ -166,7 +166,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 				m_MinorAxis.rotateBy(dAng1, PlaneNormal);
 				m_SweepAngle = dAng2 - dAng1;
 
-				pArc = EoDbEllipse::Create3(*this, BlockTableRecord);
+				pArc = Create3(*this, BlockTableRecord);
 
 				m_MajorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 				m_MinorAxis.rotateBy(m_SweepAngle, PlaneNormal);
@@ -945,7 +945,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
 	blockTableRecord->appendOdDbEntity(Ellipse);
 	Ellipse->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	Ellipse->setLinetype(Linetype);
 
@@ -973,7 +973,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, Eo
 
 	Ellipse->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+	const auto Linetype {LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
 	Ellipse->setLinetype(Linetype);
 
@@ -1042,7 +1042,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 	blockTableRecord->appendOdDbEntity(Ellipse);
 
 	Ellipse->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	Ellipse->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
+	Ellipse->setLinetype(LinetypeObjectFromIndex0(Database, LinetypeIndex));
 
 	auto PlaneNormal {MajorAxis.crossProduct(MinorAxis)};
 	if (!PlaneNormal.isZeroLength()) {

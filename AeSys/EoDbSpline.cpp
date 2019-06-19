@@ -56,7 +56,7 @@ EoDbPrimitive* EoDbSpline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const
 	OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Spline);
 
-	return EoDbSpline::Create(Spline);
+	return Create(Spline);
 }
 
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
@@ -256,7 +256,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	blockTableRecord->appendOdDbEntity(Spline);
 	Spline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	Spline->setLinetype(Linetype);
 
@@ -272,7 +272,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 
 	Spline->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex0(Database, file.ReadInt16())};
+	const auto Linetype {LinetypeObjectFromIndex0(Database, file.ReadInt16())};
 
 	Spline->setLinetype(Linetype);
 
@@ -336,7 +336,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 	blockTableRecord->appendOdDbEntity(Spline);
 
 	Spline->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	Spline->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex0(Database, LinetypeIndex));
+	Spline->setLinetype(LinetypeObjectFromIndex0(Database, LinetypeIndex));
 
 	const int Degree {EoMin(3, NumberOfControlPoints - 1)};
 

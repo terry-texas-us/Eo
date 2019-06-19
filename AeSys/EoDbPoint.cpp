@@ -84,7 +84,7 @@ EoDbPrimitive* EoDbPoint::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 	OdDbPointPtr Point = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Point);
 
-	return EoDbPoint::Create(Point);
+	return Create(Point);
 }
 
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {

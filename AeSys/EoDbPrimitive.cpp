@@ -188,7 +188,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(short linetypeIndex) {
 	const auto Document {AeSysDoc::GetDoc()};
 	
 	if (Document != nullptr) {
-		return EoDbPrimitive::LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
+		return LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
 	}
 	TRACE0("Document not associated with ChildFrame yet\n");
 	return nullptr;
@@ -199,9 +199,9 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, s
 
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 
-	if (linetypeIndex == EoDbPrimitive::LINETYPE_BYLAYER) {
+	if (linetypeIndex == LINETYPE_BYLAYER) {
 		Linetype = Linetypes->getLinetypeByLayerId();
-	} else if (linetypeIndex == EoDbPrimitive::LINETYPE_BYBLOCK) {
+	} else if (linetypeIndex == LINETYPE_BYBLOCK) {
 		Linetype = Linetypes->getLinetypeByBlockId();
 	} else {
 		OdString Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};

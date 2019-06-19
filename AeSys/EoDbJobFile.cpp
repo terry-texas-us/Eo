@@ -167,7 +167,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 
 		if (Position >= 96) {
 
-			if (::MessageBoxW(nullptr, Message, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
+			if (MessageBoxW(nullptr, Message, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
 		}
 		file.Seek(static_cast<long long>(Position + 32), CFile::begin);
 	}

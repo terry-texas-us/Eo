@@ -107,7 +107,7 @@ EoDbPrimitive* EoDbHatch::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 	OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Hatch);
 
-	return EoDbHatch::Create(Hatch);
+	return Create(Hatch);
 }
 
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
@@ -117,7 +117,7 @@ void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
 	pstate.SetHatchInteriorStyle(m_InteriorStyle);
 	pstate.SetHatchInteriorStyleIndex(m_InteriorStyleIndex);
 
-	if (m_InteriorStyle == EoDbHatch::kHatch) {
+	if (m_InteriorStyle == kHatch) {
 		DisplayHatch(view, deviceContext);
 	} else { // Fill area interior style is hollow, solid or pattern
 		DisplaySolid(view, deviceContext);
@@ -585,12 +585,12 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 
 		view->DoViewportProjection(Points, Vertices);
 
-		if (m_InteriorStyle == EoDbHatch::kSolid) {
+		if (m_InteriorStyle == kSolid) {
 			CBrush Brush(pColTbl[pstate.ColorIndex()]);
 			auto OldBrush {deviceContext->SelectObject(&Brush)};
 			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
-		} else if (m_InteriorStyle == EoDbHatch::kHollow) {
+		} else if (m_InteriorStyle == kHollow) {
 			auto OldBrush {dynamic_cast<CBrush*>(deviceContext->SelectStockObject(NULL_BRUSH))};
 			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
@@ -711,7 +711,7 @@ void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 		auto HatchName {m_InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
 		OdHatchPattern HatchPattern;
 
-		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != OdResult::eOk) {
+		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != eOk) {
 			OdString ReportItem;
 			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", static_cast<const wchar_t*>(HatchName), static_cast<const wchar_t*>(Hatch->patternName()));
 			theApp.AddStringToReportList(ReportItem);
@@ -860,9 +860,9 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr & hatch) {
 			case OdDbHatch::kPreDefined:
 			case OdDbHatch::kCustomDefined:
 				if (hatch->isSolidFill()) {
-					Hatch->SetInteriorStyle(EoDbHatch::kSolid);
+					Hatch->SetInteriorStyle(kSolid);
 				} else {
-					Hatch->SetInteriorStyle(EoDbHatch::kHatch);
+					Hatch->SetInteriorStyle(kHatch);
 					Hatch->m_InteriorStyleIndex = EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName());
 
 					const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
@@ -871,7 +871,7 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr & hatch) {
 				}
 				break;
 			case OdDbHatch::kUserDefined:
-				Hatch->SetInteriorStyle(EoDbHatch::kHatch);
+				Hatch->SetInteriorStyle(kHatch);
 				Hatch->m_InteriorStyleIndex = EoDbHatchPatternTable::LegacyHatchPatternIndex(hatch->patternName());
 				const OdGePoint3d Origin = OdGePoint3d::kOrigin + hatch->elevation() * hatch->normal();
 				// <tas="Pattern scaling model to world issues. Resulting hatch is very large without the world scale division"</tas>
@@ -916,7 +916,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	Hatch->setAssociative(false);
 	Hatch->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
 
 	Hatch->setLinetype(Linetype);
 
@@ -956,7 +956,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	Hatch->setNormal(PlaneNormal);
 	Hatch->setElevation(ComputeElevation(Vertices[0], PlaneNormal));
 
-	EoDbHatch::AppendLoop(Vertices, Hatch);
+	AppendLoop(Vertices, Hatch);
 
 	return Hatch;
 }
@@ -977,7 +977,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 		InteriorStyle = short(int(StyleDefinition) % 16);
 
 		switch (InteriorStyle) {
-			case EoDbHatch::kHatch:
+			case kHatch:
 			{
 				const double ScaleFactorX = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[16])->Convert();
 				const double ScaleFactorY = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert();
@@ -1004,9 +1004,9 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 				}
 				break;
 			}
-			case EoDbHatch::kHollow:
-			case EoDbHatch::kSolid:
-			case EoDbHatch::kPattern:
+			case kHollow:
+			case kSolid:
+			case kPattern:
 				HatchXAxis = OdGeVector3d::kXAxis * 1.e-3;
 				HatchYAxis = OdGeVector3d::kYAxis * 1.e-3;
 				break;
@@ -1057,7 +1057,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	Hatch->setNormal(PlaneNormal);
 	Hatch->setElevation(ComputeElevation(Vertices[0], PlaneNormal));
 
-	EoDbHatch::AppendLoop(Vertices, Hatch);
+	AppendLoop(Vertices, Hatch);
 
 	return Hatch;
 }
