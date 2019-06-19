@@ -18,7 +18,7 @@ EoDbGroup::EoDbGroup(const EoDbBlock& block) {
 
 	auto Position {block.GetHeadPosition()};
 	while (Position != nullptr) {
-		AddTail((block.GetNext(Position))->Clone(BlockTableRecord));
+		AddTail(block.GetNext(Position)->Clone(BlockTableRecord));
 	}
 }
 
@@ -28,7 +28,7 @@ EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 
 	auto PrimitivePosition {group.GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		AddTail((group.GetNext(PrimitivePosition))->Clone(BlockTableRecord));
+		AddTail(group.GetNext(PrimitivePosition)->Clone(BlockTableRecord));
 	}
 }
 
@@ -206,7 +206,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 		auto Primitive {GetNext(PrimitivePosition)};
 
 		if (Primitive != pointPrimitive && Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint))) {
-			return (dynamic_cast<EoDbPoint*>(Primitive));
+			return dynamic_cast<EoDbPoint*>(Primitive);
 		}
 	}
 	return nullptr;
@@ -219,7 +219,7 @@ int EoDbGroup::GetLinetypeIndexRefCount(short linetypeIndex) {
 	while (PrimitivePosition != nullptr) {
 		if (GetNext(PrimitivePosition)->LinetypeIndex() == linetypeIndex) { Count++; }
 	}
-	return (Count);
+	return Count;
 }
 
 EoDbPrimitive* EoDbGroup::GetNext(POSITION& position) const {
@@ -329,7 +329,7 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 			}
 		}
 	}
-	return (iCount);
+	return iCount;
 }
 
 bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view) const {
@@ -371,7 +371,7 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 			*ptCtrl = ptView4.Convert3d();
 		}
 	}
-	return (EngagedPrimitive);
+	return EngagedPrimitive;
 }
 
 EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dPicApert, OdGePoint3d& pDetPt) {
@@ -381,7 +381,7 @@ EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d& point, AeSysView*
 
 		if (Primitive->SelectUsingPoint(point, view, pDetPt)) {
 			dPicApert = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.0));
-			return (Primitive);
+			return Primitive;
 		}
 	}
 	return nullptr;

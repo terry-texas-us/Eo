@@ -8,11 +8,11 @@ public: // Constructors and destructor
    public:	// Base class wrappers hides non-virtual function of parent
 
 	POSITION AddHead(EoDbGroup* group) {
-		return (CObList::AddHead(dynamic_cast<CObject*>(group)));
+		return CObList::AddHead(dynamic_cast<CObject*>(group));
 	}
 
 	POSITION AddTail(EoDbGroup* group) {
-		return (CObList::AddTail(dynamic_cast<CObject*>(group)));
+		return CObList::AddTail(dynamic_cast<CObject*>(group));
 	}
 
 	void AddTail(EoDbGroupList* groupList) {

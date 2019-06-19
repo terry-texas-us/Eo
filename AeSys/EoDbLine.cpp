@@ -28,7 +28,7 @@ const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
 	m_LineSeg = other.m_LineSeg;
-	return (*this);
+	return *this;
 }
 
 void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -202,7 +202,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 		else
 			sm_ControlPointIndex = 1;
 	}
-	return (sm_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint());
+	return sm_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint();
 }
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
@@ -217,7 +217,7 @@ bool EoDbLine::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[] = {EoGePoint4d(m_LineSeg.startPoint(), 1.0), EoGePoint4d(m_LineSeg.endPoint(), 1.0)};
 	view->ModelViewTransformPoints(2, &pt[0]);
 
-	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
+	return EoGePoint4d::ClipLine(pt[0], pt[1]);
 }
 
 bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
@@ -248,7 +248,7 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 		if ((iLoc[0] & iLoc[1]) != 0)
 			return 0;
 
-		i = (iLoc[0] != 0) ? 0 : 1;
+		i = iLoc[0] != 0 ? 0 : 1;
 		if ((iLoc[i] & 1) != 0) { // Clip against top
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (upperRightCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
 			intersections[i].y = upperRightCorner.y;
@@ -264,11 +264,11 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 		}
 		iLoc[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
 	}
-	return (2);
+	return 2;
 }
 
 OdGePoint3d EoDbLine::ProjPt_(const OdGePoint3d & point) const {
-	return (m_LineSeg.ProjPt(point));
+	return m_LineSeg.ProjPt(point);
 }
 
 double EoDbLine::ParametricRelationshipOf(const OdGePoint3d & point) const {
@@ -426,7 +426,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
 	Line->setStartPoint(file.ReadPoint3d());
 	Line->setEndPoint(file.ReadPoint3d());
 
-	return (Line);
+	return Line;
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
@@ -459,7 +459,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 	Line->setStartPoint(StartPoint);
 	Line->setEndPoint(EndPoint);
 
-	return (Line);
+	return Line;
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {

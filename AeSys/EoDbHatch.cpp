@@ -68,7 +68,7 @@ const EoDbHatch& EoDbHatch::operator=(const EoDbHatch& other) {
 	m_Vertices.clear();
 	m_Vertices.append(other.m_Vertices);
 
-	return (*this);
+	return *this;
 }
 
 void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -161,7 +161,7 @@ void EoDbHatch::GetAllPoints(OdGePoint3dArray& points) const {
 OdGePoint3d EoDbHatch::GetCtrlPt() const {
 	const auto StartPointIndex = sm_Edge - 1;
 	const auto EndPointIndex = sm_Edge % m_Vertices.size();
-	return (EoGeLineSeg3d(m_Vertices[StartPointIndex], m_Vertices[EndPointIndex]).midPoint());
+	return EoGeLineSeg3d(m_Vertices[StartPointIndex], m_Vertices[EndPointIndex]).midPoint();
 };
 
 void EoDbHatch::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
@@ -207,7 +207,7 @@ OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
 			sm_PivotVertex++;
 		}
 	}
-	return (m_Vertices[sm_PivotVertex]);
+	return m_Vertices[sm_PivotVertex];
 }
 
 bool EoDbHatch::IsInView(AeSysView* view) const {
@@ -257,7 +257,7 @@ OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& 
 			sm_PivotVertex = VertexIndex;
 		}
 	}
-	return (sm_ControlPointIndex == SIZE_T_MAX) ? OdGePoint3d::kOrigin : m_Vertices[sm_ControlPointIndex];
+	return sm_ControlPointIndex == SIZE_T_MAX ? OdGePoint3d::kOrigin : m_Vertices[sm_ControlPointIndex];
 }
 
 bool EoDbHatch::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -317,7 +317,7 @@ void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, unsigned long 
 	// nothing done to hatch coordinate origin
 
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		if (((mask >> VertexIndex) & 1UL) == 1) {
+		if ((mask >> VertexIndex & 1UL) == 1) {
 			m_Vertices[VertexIndex] += translate;
 		}
 	}
@@ -367,7 +367,7 @@ void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
 }
 
 int EoDbHatch::Append(const OdGePoint3d& vertex) {
-	return (static_cast<int>(m_Vertices.append(vertex)));
+	return static_cast<int>(m_Vertices.append(vertex));
 }
 
 void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
@@ -420,7 +420,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 
 			const int SizeOfCurrentLoop = LoopPointsOffsets[LoopIndex] - FirstLoopPointIndex;
 			for (int LoopPointIndex = FirstLoopPointIndex; LoopPointIndex < LoopPointsOffsets[LoopIndex]; LoopPointIndex++) {
-				OdGePoint3d EndPoint(m_Vertices[static_cast<unsigned>(((LoopPointIndex - FirstLoopPointIndex + 1) % SizeOfCurrentLoop) + FirstLoopPointIndex)]);
+				OdGePoint3d EndPoint(m_Vertices[static_cast<unsigned>((LoopPointIndex - FirstLoopPointIndex + 1) % SizeOfCurrentLoop + FirstLoopPointIndex)]);
 				EndPoint.transformBy(tm);
 				const OdGeVector2d Edge(EndPoint.x - StartPoint.x, EndPoint.y - StartPoint.y);
 				if (!Edge.isZeroLength() && !Edge.isParallelTo(OdGeVector2d::kXAxis)) {
@@ -451,7 +451,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 			PatternOffset.negate();
 		}
 		// Determine where first scan position is
-		double dScan = Edges[1].dMaxY - fmod((Edges[1].dMaxY - RotatedBasePoint.y), PatternOffset.y);
+		double dScan = Edges[1].dMaxY - fmod(Edges[1].dMaxY - RotatedBasePoint.y, PatternOffset.y);
 		if (Edges[1].dMaxY < dScan) {
 			dScan = dScan - PatternOffset.y;
 		}
@@ -508,7 +508,7 @@ l1:		const double dEps1 = DBL_EPSILON + DBL_EPSILON * fabs(dScan);
 				EndPoint.y = dScan;
 
 				for (int EdgePairIndex = 1; EdgePairIndex <= (iEndEdg - iBegEdg) / 2; EdgePairIndex++) {
-					StartPoint.x = Edges[CurrentEdgeIndex].dX - fmod((Edges[CurrentEdgeIndex].dX - dSecBeg), TotalPatternLength);
+					StartPoint.x = Edges[CurrentEdgeIndex].dX - fmod(Edges[CurrentEdgeIndex].dX - dSecBeg, TotalPatternLength);
 					if (StartPoint.x > Edges[CurrentEdgeIndex].dX) {
 						StartPoint.x -= TotalPatternLength;
 					}
@@ -604,13 +604,13 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 CString EoDbHatch::FormatInteriorStyle() const {
 	const wchar_t* strStyle[] = {L"Hollow", L"Solid", L"Pattern", L"Hatch"};
 
-	CString str = (m_InteriorStyle >= 0 && m_InteriorStyle <= 3) ? strStyle[m_InteriorStyle] : L"Invalid!";
+	CString str = m_InteriorStyle >= 0 && m_InteriorStyle <= 3 ? strStyle[m_InteriorStyle] : L"Invalid!";
 
-	return (str);
+	return str;
 }
 
 OdGePoint3d EoDbHatch::GetPointAt(unsigned pointIndex) {
-	return (m_Vertices[pointIndex]);
+	return m_Vertices[pointIndex];
 }
 
 void EoDbHatch::ModifyState() noexcept {
@@ -621,7 +621,7 @@ void EoDbHatch::ModifyState() noexcept {
 }
 
 int EoDbHatch::NumberOfVertices() const {
-	return (static_cast<int>(m_Vertices.size()));
+	return static_cast<int>(m_Vertices.size());
 }
 
 bool EoDbHatch::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point) noexcept {
@@ -638,7 +638,7 @@ bool EoDbHatch::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point) no
 	if (sm_PivotVertex == 0) {
 		sm_Edge = sm_Edge == 1 ? NumberOfVertices : 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		sm_Edge = (sm_Edge == NumberOfVertices) ? sm_Edge - 1 : NumberOfVertices;
+		sm_Edge = sm_Edge == NumberOfVertices ? sm_Edge - 1 : NumberOfVertices;
 	} else if (sm_PivotVertex == sm_Edge) {
 		sm_Edge++;
 	} else {
@@ -659,7 +659,7 @@ OdGeVector3d EoDbHatch::RecomputeReferenceSystem() {
 			m_HatchYAxis = PlaneNormal.crossProduct(m_HatchXAxis);
 		}
 	}
-	return (PlaneNormal);
+	return PlaneNormal;
 }
 
 bool EoDbHatch::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
@@ -753,13 +753,13 @@ unsigned EoDbHatch::SwingVertex() const {
 	unsigned SwingVertex {0};
 
 	if (sm_PivotVertex == 0) {
-		SwingVertex = (sm_Edge == 1) ? 1 : NumberOfVertices - 1;
+		SwingVertex = sm_Edge == 1 ? 1 : NumberOfVertices - 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		SwingVertex = (sm_Edge == NumberOfVertices) ? 0 : sm_PivotVertex - 1;
+		SwingVertex = sm_Edge == NumberOfVertices ? 0 : sm_PivotVertex - 1;
 	} else {
-		SwingVertex = (sm_Edge == sm_PivotVertex) ? sm_PivotVertex - 1 : sm_PivotVertex + 1;
+		SwingVertex = sm_Edge == sm_PivotVertex ? sm_PivotVertex - 1 : sm_PivotVertex + 1;
 	}
-	return (SwingVertex);
+	return SwingVertex;
 }
 
 // Methods - static
@@ -1059,5 +1059,5 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 
 	EoDbHatch::AppendLoop(Vertices, Hatch);
 
-	return (Hatch);
+	return Hatch;
 }

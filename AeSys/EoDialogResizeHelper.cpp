@@ -50,7 +50,7 @@ void EoDialogResizeHelper::OnSize() {
 			if (hFix & kLeft) {
 				currCtrlSize.left = it->m_origSize.left;
 			} else {
-				currCtrlSize.left = ((hFix & kWidth) && (hFix & kRight)) ? (it->m_origSize.left + currParentSize.Width() - m_origParentSize.Width()) : static_cast<long>(it->m_origSize.left * xRatio);
+				currCtrlSize.left = (hFix & kWidth) && (hFix & kRight) ? (it->m_origSize.left + currParentSize.Width() - m_origParentSize.Width()) : static_cast<long>(it->m_origSize.left * xRatio);
 			}
 			if (hFix & kRight) {
 				currCtrlSize.right = it->m_origSize.right + currParentSize.Width() - m_origParentSize.Width();

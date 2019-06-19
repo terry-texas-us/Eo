@@ -64,22 +64,22 @@ void EoDbFontDefinition::SetVerticalAlignment(EoDb::VerticalAlignment verticalAl
 
 CString EoDbFontDefinition::FormatHorizonatlAlignment() const {
 	std::vector<const wchar_t*> HorizontalAlignments {L"Left", L"Center", L"Right"};
-	return (m_HorizontalAlignment >= EoDb::kAlignLeft && m_HorizontalAlignment <= EoDb::kAlignRight) ? HorizontalAlignments.at(m_HorizontalAlignment - 1) : L"Invalid!";
+	return m_HorizontalAlignment >= EoDb::kAlignLeft && m_HorizontalAlignment <= EoDb::kAlignRight ? HorizontalAlignments.at(m_HorizontalAlignment - 1) : L"Invalid!";
 }
 
 CString EoDbFontDefinition::FormatPath() const {
 	std::vector<const wchar_t*> Path {L"Right", L"Left", L"Up", L"Down"};
-	return (m_Path >= EoDb::kPathRight && m_Path <= EoDb::kPathDown) ? Path.at(m_Path) : L"Invalid!";
+	return m_Path >= EoDb::kPathRight && m_Path <= EoDb::kPathDown ? Path.at(m_Path) : L"Invalid!";
 }
 
 CString EoDbFontDefinition::FormatPrecision() const {
 	std::vector<const wchar_t*> Precision {L"True Type", L"Stroke"};
-	return (m_Precision >= EoDb::kTrueType && m_Precision <= EoDb::kStrokeType) ? Precision.at(m_Precision - 1) : L"Invalid!";
+	return m_Precision >= EoDb::kTrueType && m_Precision <= EoDb::kStrokeType ? Precision.at(m_Precision - 1) : L"Invalid!";
 }
 
 CString EoDbFontDefinition::FormatVerticalAlignment() const {
 	std::vector<const wchar_t*> VerticalAlignment {L"Top", L"Middle", L"Bottom"};
-	return (m_VerticalAlignment >= EoDb::kAlignTop && m_VerticalAlignment <= EoDb::kAlignBottom) ? VerticalAlignment.at(m_VerticalAlignment - 2) : L"Invalid!";
+	return m_VerticalAlignment >= EoDb::kAlignTop && m_VerticalAlignment <= EoDb::kAlignBottom ? VerticalAlignment.at(m_VerticalAlignment - 2) : L"Invalid!";
 }
 
 void EoDbFontDefinition::Read(EoDbFile& file) {

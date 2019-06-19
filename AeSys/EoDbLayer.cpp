@@ -47,7 +47,7 @@ void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 
 	COLORREF* pCurColTbl = pColTbl;
 
-	pColTbl = (IsCurrent() || IsActive()) ? ColorPalette : GreyPalette;
+	pColTbl = IsCurrent() || IsActive() ? ColorPalette : GreyPalette;
 
 	EoDbGroupList::Display(view, deviceContext);
 	pColTbl = pCurColTbl;
@@ -95,30 +95,30 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 }
 
 bool EoDbLayer::IsActive() const noexcept {
-	return ((m_StateFlags & kIsActive) == kIsActive);
+	return (m_StateFlags & kIsActive) == kIsActive;
 }
 
 bool EoDbLayer::IsInternal() const noexcept {
-	return ((m_StateFlags & kIsInternal) == kIsInternal);
+	return (m_StateFlags & kIsInternal) == kIsInternal;
 }
 
 bool EoDbLayer::IsOff() const noexcept {
-	return ((m_StateFlags & kIsOff) == kIsOff);
+	return (m_StateFlags & kIsOff) == kIsOff;
 }
 
 bool EoDbLayer::IsResident() const noexcept {
-	return ((m_StateFlags & kIsResident) == kIsResident);
+	return (m_StateFlags & kIsResident) == kIsResident;
 }
 
 bool EoDbLayer::IsLocked() const noexcept {
-	return ((m_StateFlags & kIsLocked) == kIsLocked);
+	return (m_StateFlags & kIsLocked) == kIsLocked;
 }
 
 bool EoDbLayer::IsCurrent() const {
 	const bool IsCurrent = m_Layer->objectId() == m_Layer->database()->getCLAYER();
-	VERIFY(((m_StateFlags & kIsCurrent) == kIsCurrent) == IsCurrent);
+	VERIFY((m_StateFlags & kIsCurrent) == kIsCurrent == IsCurrent);
 
-	return ((m_StateFlags & kIsCurrent) == kIsCurrent);
+	return (m_StateFlags & kIsCurrent) == kIsCurrent;
 }
 
 short EoDbLayer::LinetypeIndex() {
@@ -162,7 +162,7 @@ void EoDbLayer::MakeActive() {
 }
 
 OdDbLayerTableRecordPtr EoDbLayer::TableRecord() const {
-	return (m_Layer);
+	return m_Layer;
 }
 
 void EoDbLayer::SetIsOff(bool isOff) {

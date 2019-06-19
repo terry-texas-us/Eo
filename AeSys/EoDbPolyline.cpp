@@ -58,7 +58,7 @@ const EoDbPolyline& EoDbPolyline::operator=(const EoDbPolyline& other) {
 	m_Bulges.append(other.m_Bulges);
 	m_Normal = other.m_Normal;
 
-	return (*this);
+	return *this;
 }
 
 void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -161,7 +161,7 @@ OdGePoint3d EoDbPolyline::GetCtrlPt() const {
 	GetPointAt(sm_Edge - 1, StartPoint);
 	GetPointAt(sm_Edge % NumberOfVertices, EndPoint);
 
-	return (EoGeLineSeg3d(StartPoint, EndPoint).midPoint());
+	return EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
 }
 
 void EoDbPolyline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
@@ -223,11 +223,11 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 	}
 	OdGePoint3d PivotPoint;
 	GetPointAt(sm_PivotVertex, PivotPoint);
-	return (PivotPoint);
+	return PivotPoint;
 }
 
 bool EoDbPolyline::IsClosed() const noexcept {
-	return (m_Flags != 0);
+	return m_Flags != 0;
 }
 
 bool EoDbPolyline::IsInView(AeSysView* view) const {
@@ -269,7 +269,7 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point)
 	if (sm_PivotVertex == 0) {
 		sm_Edge = sm_Edge == 1 ? NumberOfVertices : 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		sm_Edge = (sm_Edge == NumberOfVertices) ? sm_Edge - 1 : NumberOfVertices;
+		sm_Edge = sm_Edge == NumberOfVertices ? sm_Edge - 1 : NumberOfVertices;
 	} else if (sm_PivotVertex == sm_Edge) {
 		sm_Edge++;
 	} else {
@@ -304,7 +304,7 @@ OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView * view, const EoGePoint
 	if (sm_ControlPointIndex != SIZE_T_MAX) {
 		GetPointAt(sm_ControlPointIndex, ControlPoint);
 	}
-	return (ControlPoint);
+	return ControlPoint;
 }
 
 bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
@@ -439,13 +439,13 @@ unsigned EoDbPolyline::SwingVertex() const {
 	unsigned SwingVertex;
 
 	if (sm_PivotVertex == 0) {
-		SwingVertex = (sm_Edge == 1) ? 1 : NumberOfVertices - 1;
+		SwingVertex = sm_Edge == 1 ? 1 : NumberOfVertices - 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		SwingVertex = (sm_Edge == NumberOfVertices) ? 0 : sm_PivotVertex - 1;
+		SwingVertex = sm_Edge == NumberOfVertices ? 0 : sm_PivotVertex - 1;
 	} else {
-		SwingVertex = (sm_Edge == sm_PivotVertex) ? sm_PivotVertex - 1 : sm_PivotVertex + 1;
+		SwingVertex = sm_Edge == sm_PivotVertex ? sm_PivotVertex - 1 : sm_PivotVertex + 1;
 	}
-	return (SwingVertex);
+	return SwingVertex;
 }
 
 unsigned EoDbPolyline::Edge() noexcept {
@@ -498,7 +498,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 		Polyline->setWidthsAt(VertexIndex, file.ReadDouble(), file.ReadDouble());
 		Polyline->setBulgeAt(VertexIndex, file.ReadDouble());
 	}
-	return (Polyline);
+	return Polyline;
 }
 
 EoDbPolyline* EoDbPolyline::Create(OdDbPolylinePtr polyline) {

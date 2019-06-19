@@ -17,12 +17,12 @@ unsigned short EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& na
 	while (Index < ms_NumberOfLegacyHatchPatterns && name.iCompare(LegacyHatchPatterns[Index]) != 0) {
 		Index++;
 	}
-	Index = (Index < ms_NumberOfLegacyHatchPatterns) ? Index : 0u;
+	Index = Index < ms_NumberOfLegacyHatchPatterns ? Index : 0u;
 	return Index;
 }
 
 OdString EoDbHatchPatternTable::LegacyHatchPatternName(unsigned index) {
-	const auto Index {(index < ms_NumberOfLegacyHatchPatterns) ? index : 1};
+	const auto Index {index < ms_NumberOfLegacyHatchPatterns ? index : 1};
 	return LegacyHatchPatterns[Index];
 }
 
@@ -41,7 +41,7 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	OdHatchPattern HatchPattern;
 
 	wchar_t	LineText[128];
-	while (StreamFile.ReadString(LineText, sizeof(LineText) / sizeof(wchar_t) - 1)) {
+	while (StreamFile.ReadString(LineText, sizeof LineText / sizeof(wchar_t) - 1)) {
 		if (LineText[0] == '*') { // New Hatch pattern
 
 			if (!PatternName.isEmpty()) {

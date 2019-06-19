@@ -55,7 +55,7 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 		UpdateGroupInAllViews(EoDb::kGroup, Group);
 		Group->TransformBy(TranslationMatrix);
 
-		const LPARAM Hint = (theApp.IsTrapHighlighted()) ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
+		const LPARAM Hint = theApp.IsTrapHighlighted() ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
 		UpdateGroupInAllViews(Hint, Group);
 	}
 }

@@ -33,7 +33,7 @@ const EoDbText& EoDbText::operator=(const EoDbText& other) {
 	m_ReferenceSystem = other.m_ReferenceSystem;
 	m_strText = other.m_strText;
 
-	return (*this);
+	return *this;
 }
 
 void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -70,7 +70,7 @@ void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
 }
 
 EoDbFontDefinition EoDbText::FontDefinition() const {
-	return (m_FontDefinition);
+	return m_FontDefinition;
 }
 
 void EoDbText::FormatExtra(CString& extra) const {
@@ -127,7 +127,7 @@ void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 }
 
 OdGePoint3d	EoDbText::GoToNxtCtrlPt() const noexcept {
-	return (m_ReferenceSystem.Origin());
+	return m_ReferenceSystem.Origin();
 }
 
 bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
@@ -157,7 +157,7 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 	EoGePoint4d pt(m_ReferenceSystem.Origin(), 1.0);
 	view->ModelViewTransformPoint(pt);
 
-	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
+	return (point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false;
 }
 
 void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
@@ -191,7 +191,7 @@ OdGePoint3d EoDbText::Position() const noexcept {
 }
 
 EoGeReferenceSystem EoDbText::ReferenceSystem() const {
-	return (m_ReferenceSystem);
+	return m_ReferenceSystem;
 }
 
 double EoDbText::Rotation() const {
@@ -203,12 +203,12 @@ double EoDbText::Rotation() const {
 	if (Angle < 0.0) {
 		Angle += Oda2PI;
 	}
-	return (Angle);
+	return Angle;
 }
 
 OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView*, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = USHRT_MAX;
-	return (point.Convert3d());
+	return point.Convert3d();
 }
 
 bool EoDbText::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -570,7 +570,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 
 	Text->setTextString(TextString);
 
-	return (Text);
+	return Text;
 }
 
 OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const OdGePoint3d& position, const OdString& textString) {
@@ -985,7 +985,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	if (Height == 0.0) { return true; }
 
 	LOGFONT FontAttributes;
-	memset(&FontAttributes, 0, sizeof(FontAttributes));
+	memset(&FontAttributes, 0, sizeof FontAttributes);
 	FontAttributes.lfHeight = -EoRound(1.33 * Height);
 	FontAttributes.lfEscapement = -FontEscapementAngle(vX);
 	FontAttributes.lfOrientation = FontAttributes.lfEscapement;
@@ -1195,5 +1195,5 @@ OdGePoint3d text_GetNewLinePos(EoDbFontDefinition & fontDefinition, EoGeReferenc
 		vPath *= -(YDirection.length() * dLineSpaceFac);
 		vPath.rotateBy(OdaPI2, vRefNorm);
 	}
-	return (pt + (vPath * 1.5));
+	return pt + (vPath * 1.5);
 }

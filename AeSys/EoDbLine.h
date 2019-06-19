@@ -54,7 +54,7 @@ public: // Methods
 
 	OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
 	EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
-	double Length()  const { return (m_LineSeg.length()); }
+	double Length()  const { return m_LineSeg.length(); }
 	OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 	double ParametricRelationshipOf(const OdGePoint3d& point) const;
 	void SetEndPoint(const OdGePoint3d& endPoint);

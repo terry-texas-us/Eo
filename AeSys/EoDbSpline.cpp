@@ -38,7 +38,7 @@ const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 
 	m_Spline = other.m_Spline;
 
-	return (*this);
+	return *this;
 }
 
 void EoDbSpline::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -56,7 +56,7 @@ EoDbPrimitive* EoDbSpline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const
 	OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Spline);
 
-	return (EoDbSpline::Create(Spline));
+	return EoDbSpline::Create(Spline);
 }
 
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
@@ -106,7 +106,7 @@ OdGePoint3d EoDbSpline::GetCtrlPt() const {
 	} else {
 		Point = m_Spline.controlPointAt(m_Spline.numControlPoints() / 2);
 	}
-	return (Point);
+	return Point;
 }
 
 void EoDbSpline::GetExtents(AeSysView * view, OdGeExtents3d & extents) const {
@@ -139,7 +139,7 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 		pt = m_Spline.startPoint();
 	else
 		pt = m_Spline.endPoint();
-	return (pt);
+	return pt;
 }
 
 bool EoDbSpline::IsEqualTo(EoDbPrimitive * other) const {
@@ -178,14 +178,14 @@ bool EoDbSpline::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & poi
 
 OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
-	return (point.Convert3d());
+	return point.Convert3d();
 }
 
 bool EoDbSpline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	polyline::BeginLineStrip();
 	EoGeNurbCurve3d::GeneratePoints(m_Spline);
 
-	return (polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj));
+	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj);
 }
 
 bool EoDbSpline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -212,7 +212,7 @@ void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 
 void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
-		if (((mask >> ControlPointIndex) & 1UL) == 1) {
+		if ((mask >> ControlPointIndex & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);
 		}
 }
@@ -347,7 +347,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 
 	Spline->setNurbsData(Degree, false, false, false, ControlPoints, Knots, Weights, OdGeContext::gTol.equalPoint());
 
-	return (Spline);
+	return Spline;
 }
 
 EoDbSpline* EoDbSpline::Create(OdDbSplinePtr & spline) {

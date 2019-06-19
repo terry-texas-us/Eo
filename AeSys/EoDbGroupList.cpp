@@ -41,7 +41,7 @@ POSITION EoDbGroupList::Remove(EoDbGroup* group) {
 	
 	if (Position != nullptr) { RemoveAt(Position); }
 
-	return (Position);
+	return Position;
 }
 
 int EoDbGroupList::GetBlockReferenceCount(const CString& name) {
@@ -68,7 +68,7 @@ int EoDbGroupList::GetLinetypeIndexRefCount(short linetypeIndex) {
 	while (Position != nullptr) {
 		Count += GetNext(Position)->GetLinetypeIndexRefCount(linetypeIndex);
 	}
-	return (Count);
+	return Count;
 }
 
 void EoDbGroupList::ModifyColorIndex(short colorIndex) {
@@ -81,7 +81,7 @@ void EoDbGroupList::ModifyColorIndex(short colorIndex) {
 void EoDbGroupList::ModifyLinetypeIndex(short linetypeIndex) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		(GetNext(Position))->ModifyLinetypeIndex(linetypeIndex);
+		GetNext(Position)->ModifyLinetypeIndex(linetypeIndex);
 	}
 }
 
@@ -95,14 +95,14 @@ void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacte
 void EoDbGroupList::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		(GetNext(Position))->PenTranslation(numberOfColors, newColors, pCol);
+		GetNext(Position)->PenTranslation(numberOfColors, newColors, pCol);
 	}
 }
 
 void EoDbGroupList::RemoveDuplicatePrimitives() {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		(GetNext(Position))->RemoveDuplicatePrimitives();
+		GetNext(Position)->RemoveDuplicatePrimitives();
 	}
 }
 
@@ -113,7 +113,7 @@ int EoDbGroupList::RemoveEmptyNotesAndDelete() {
 	while (Position != nullptr) {
 		Count += GetNext(Position)->RemoveEmptyNotesAndDelete();
 	}
-	return (Count);
+	return Count;
 }
 
 int EoDbGroupList::RemoveEmptyGroups() {
@@ -130,7 +130,7 @@ int EoDbGroupList::RemoveEmptyGroups() {
 			Count++;
 		}
 	}
-	return (Count);
+	return Count;
 }
 
 void EoDbGroupList::DeleteGroupsAndRemoveAll() {
@@ -164,7 +164,7 @@ EoDbGroup* EoDbGroupList::SelectGroupBy(const OdGePoint3d& point) {
 
 		if (Group->SelPrimUsingPoint(ptView, ActiveView, ApertureSize, PointAtSelection) != nullptr) { SelectedGroup = Group; }
 	}
-	return (SelectedGroup);
+	return SelectedGroup;
 }
 
 void EoDbGroupList::TransformBy(const EoGeMatrix3d & transformMatrix) {

@@ -34,7 +34,7 @@ EoDbPoint::EoDbPoint(const EoDbPoint& other) {
 	m_PointDisplayMode = other.m_PointDisplayMode;
 	m_Position = other.m_Position;
 	m_NumberOfDatums = other.m_NumberOfDatums;
-	m_Data = (m_NumberOfDatums == 0) ? nullptr : new double[m_NumberOfDatums];
+	m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 
 	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
@@ -59,12 +59,12 @@ const EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 
 		m_NumberOfDatums = other.m_NumberOfDatums;
 
-		m_Data = (m_NumberOfDatums == 0) ? nullptr : new double[m_NumberOfDatums];
+		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 	}
 	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
 	}
-	return (*this);
+	return *this;
 }
 
 void EoDbPoint::AddReportToMessageList(const OdGePoint3d & point) const {
@@ -161,7 +161,7 @@ void EoDbPoint::GetAllPoints(OdGePoint3dArray& points) const {
 }
 
 OdGePoint3d EoDbPoint::GetCtrlPt() const noexcept {
-	return (m_Position);
+	return m_Position;
 }
 
 void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d & extents) const {
@@ -169,7 +169,7 @@ void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d & extents) const {
 }
 
 OdGePoint3d EoDbPoint::GoToNxtCtrlPt() const noexcept {
-	return (m_Position);
+	return m_Position;
 }
 
 bool EoDbPoint::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -181,22 +181,22 @@ bool EoDbPoint::IsInView(AeSysView* view) const {
 
 	view->ModelViewTransformPoint(pt);
 
-	return (pt.IsInView());
+	return pt.IsInView();
 }
 
 bool EoDbPoint::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
-	return ((point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false);
+	return (point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false;
 }
 
 OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
-	sm_ControlPointIndex = (point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? 0 : SIZE_T_MAX;
-	return (sm_ControlPointIndex == 0) ? m_Position : OdGePoint3d::kOrigin;
+	sm_ControlPointIndex = point.DistanceToPointXY(pt) < sm_SelectApertureSize ? 0 : SIZE_T_MAX;
+	return sm_ControlPointIndex == 0 ? m_Position : OdGePoint3d::kOrigin;
 }
 
 bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
@@ -206,26 +206,26 @@ bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGe
 
 	projectedPoint = pt.Convert3d();
 
-	return (point.DistanceToPointXY(pt) <= view->SelectApertureSize()) ? true : false;
+	return point.DistanceToPointXY(pt) <= view->SelectApertureSize() ? true : false;
 }
 
 bool EoDbPoint::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
-	return ((pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y) ? true : false);
+	return (pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y) ? true : false;
 }
 
 double EoDbPoint::DataAt(unsigned short dataIndex) const noexcept {
-	return (m_Data[dataIndex]);
+	return m_Data[dataIndex];
 }
 
 OdGePoint3d EoDbPoint::Position() const noexcept {
-	return (m_Position);
+	return m_Position;
 }
 
 short EoDbPoint::PointDisplayMode() const noexcept {
-	return (m_PointDisplayMode);
+	return m_PointDisplayMode;
 }
 
 void EoDbPoint::ModifyState() noexcept {
@@ -245,7 +245,7 @@ void EoDbPoint::SetData(unsigned short numberOfDatums, double* data) {
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
 
 		m_NumberOfDatums = numberOfDatums;
-		m_Data = (m_NumberOfDatums == 0) ? nullptr : new double[m_NumberOfDatums];
+		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 	}
 	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		m_Data[w] = data[w];
@@ -398,5 +398,5 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 		ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Datum));
 	}
 	Point->setXData(ResourceBuffer);
-	return (Point);
+	return Point;
 }

@@ -70,7 +70,7 @@ short EoDbPrimitive::LogicalColorIndex() const noexcept {
 	} else if (ColorIndex == COLORINDEX_BYBLOCK) {
 		ColorIndex = 7;
 	}
-	return (ColorIndex);
+	return ColorIndex;
 }
 
 short EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
@@ -80,7 +80,7 @@ short EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
 	} else if (LinetypeIndex == LINETYPE_BYBLOCK) {
 		LinetypeIndex = 1;
 	}
-	return (LinetypeIndex);
+	return LinetypeIndex;
 }
 
 void EoDbPrimitive::ModifyState() noexcept {
@@ -93,7 +93,7 @@ unsigned EoDbPrimitive::ControlPointIndex() noexcept {
 }
 
 bool EoDbPrimitive::IsSupportedLinetype(int linetype) noexcept {
-	return (linetype <= 7 && linetype != 4 && linetype != 5);
+	return linetype <= 7 && linetype != 4 && linetype != 5;
 }
 
 short EoDbPrimitive::LayerColorIndex() noexcept {
@@ -155,7 +155,7 @@ OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d & normal) {
 	const double Epsilon = 1. / 64.;
 
 	OdGeVector3d ArbitraryAxis;
-	if ((fabs(normal.x) < Epsilon) && (fabs(normal.y) < Epsilon)) {
+	if (fabs(normal.x) < Epsilon && fabs(normal.y) < Epsilon) {
 		ArbitraryAxis = OdGeVector3d::kYAxis.crossProduct(normal);
 	} else {
 		ArbitraryAxis = OdGeVector3d::kZAxis.crossProduct(normal);

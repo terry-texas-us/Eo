@@ -29,6 +29,6 @@ public:
 	}
 
 	void SetMaskBit(int bit) noexcept {
-		m_Mask |= (1UL << bit);
+		m_Mask |= 1UL << bit;
 	}
 };

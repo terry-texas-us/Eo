@@ -149,7 +149,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const unsigned short wPrims = *reinterpret_cast<unsigned short*>((m_Version == 1) ? &m_PrimBuf[2] : &m_PrimBuf[1]);
+		const unsigned short wPrims = *reinterpret_cast<unsigned short*>(m_Version == 1 ? &m_PrimBuf[2] : &m_PrimBuf[1]);
 
 		for (unsigned w = 1; w < wPrims; w++) {
 			try {
@@ -216,7 +216,7 @@ bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& p
 
 	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
 
-	const unsigned LengthInChunks = (m_Version == 1) ? buffer[6] : buffer[3];
+	const unsigned LengthInChunks = m_Version == 1 ? buffer[6] : buffer[3];
 
 	if (LengthInChunks > 1) {
 		const unsigned BytesRemaining {(LengthInChunks - 1) * 32};
@@ -243,7 +243,7 @@ int EoDbJobFile::Version() noexcept {
 		default:
 			m_Version = 3;
 	}
-	return (m_Version);
+	return m_Version;
 }
 
 bool EoDbJobFile::IsValidPrimitive(short primitiveType) noexcept {
