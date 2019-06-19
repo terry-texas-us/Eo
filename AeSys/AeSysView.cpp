@@ -1319,9 +1319,9 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 					std::swap(offsetX, offsetY);
 					break;
 				}
-			};
+			}
 		} else { // printing
-			OdDbPlotSettings::PlotRotation plotRotation = Layout->plotRotation();
+			auto plotRotation {Layout->plotRotation()};
 
 			if (plotRotation == OdDbPlotSettings::k90degrees || plotRotation == OdDbPlotSettings::k270degrees) {
 				
@@ -1359,7 +1359,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 					break;
 			}
 		}
-		double ScaleFactor {1.0};
+		auto ScaleFactor {1.0};
 
 		if (Layout->useStandardScale()) {
 			Layout->getStdScale(ScaleFactor);
@@ -1370,10 +1370,10 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			ScaleFactor = numerator / denominator;
 		}
 		// Calculate paper drawable area using margins from layout (in mm).
-		double drx1 = -PrinterLeftMargin / koeffX + LeftMargin; // in mm
-		double drx2 = drx1 + PrinterWidth / koeffX - LeftMargin - RightMargin; // in mm
-		double dry1 = -PrinterTopMargin / koeffY + TopMargin; // in mm
-		double dry2 = dry1 + PrinterHeight / koeffY - TopMargin - BottomMargin; // in mm
+		auto drx1 {-PrinterLeftMargin / koeffX + LeftMargin}; // in mm
+		auto drx2 {drx1 + PrinterWidth / koeffX - LeftMargin - RightMargin}; // in mm
+		auto dry1 {-PrinterTopMargin / koeffY + TopMargin}; // in mm
+		auto dry2 {dry1 + PrinterHeight / koeffY - TopMargin - BottomMargin}; // in mm
 
 		// Margin clip box calculation
 		TopMargin *= koeffY; /// in printer units
@@ -1385,14 +1385,15 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		newClipRgn.CreateRectRgn(0, 0, 1, 1);
 		CRect MarginsClipBox;
 
-		const int ret = GetClipRgn(deviceContext->m_hDC, newClipRgn);
-		const bool bNullMarginsClipBox = !ret || ret && GetLastError() != ERROR_SUCCESS;
-
-		double dScreenFactorH {1.0};
-		double dScreenFactorW {1.0};
+		const auto ret {GetClipRgn(deviceContext->m_hDC, newClipRgn)};
+		const auto bNullMarginsClipBox {!ret || ret && GetLastError() != ERROR_SUCCESS};
+		
+		auto dScreenFactorH {1.0};
+		auto dScreenFactorW {1.0};
+		
 		if (bNullMarginsClipBox) { // printing way
-			const double x {LeftMargin - PrinterLeftMargin};
-			const double y {TopMargin - PrinterTopMargin};
+			const auto x {LeftMargin - PrinterLeftMargin};
+			const auto y {TopMargin - PrinterTopMargin};
 			MarginsClipBox.SetRect(static_cast<int>(x), static_cast<int>(y), static_cast<int>(x + PrinterWidth - LeftMargin - RightMargin), static_cast<int>(y + PrinterHeight - TopMargin - BottomMargin));
 
 			dScreenFactorH = dScreenFactorW = 1.0;
@@ -1408,14 +1409,13 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			MarginsClipBox.right = MarginsClipBox.left + static_cast<long>((PrinterWidth - LeftMargin - RightMargin) * dScreenFactorW);
 		}
 		// MarginsClipBox is calculated
-		CRect ClipBox(MarginsClipBox);
+		auto ClipBox(MarginsClipBox);
 
 		OdGePoint3d ViewTarget;
 
 		OdAbstractViewPEPtr AbstractView;
 		OdRxObjectPtr pVObject;
-
-		OdGsViewPtr pOverallView = IsModelLayout ? OdGsModelLayoutHelperPtr(m_pPrinterDevice)->activeView() : OdGsPaperLayoutHelperPtr(m_pPrinterDevice)->overallView();
+		auto pOverallView {IsModelLayout ? OdGsModelLayoutHelperPtr(m_pPrinterDevice)->activeView() : OdGsPaperLayoutHelperPtr(m_pPrinterDevice)->overallView()};
 
 		if (plotType == OdDbPlotSettings::kView) {
 			auto PlotViewName {Layout->getPlotViewName()};
@@ -1430,7 +1430,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			ViewTarget = ActiveViewport->target(); // in plotPaperUnits
 			AbstractView = OdAbstractViewPEPtr(pVObject = ActiveViewport);
 		} else {
-			const OdDbObjectId overallVpId = Layout->overallVportId();
+			const auto overallVpId {Layout->overallVportId()};
 			OdDbViewportPtr pActiveVP = overallVpId.safeOpenObject();
 
 			ViewTarget = pActiveVP->viewTarget(); // in plotPaperUnits
@@ -1444,20 +1444,20 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		const auto ViewUpVector {AbstractView->upVector(pVObject)};
 		const auto EyeToWorldTransform {AbstractView->eyeToWorld(pVObject)};
 		const auto WorldToEyeTransform {AbstractView->worldToEye(pVObject)};
-		bool SkipClipping = false;
+		auto SkipClipping {false};
 
-		const bool IsPlanView = /*ViewTarget.isEqualTo(OdGePoint3d(0, 0, 0)) &&*/ ViewDirection.normal().isEqualTo(OdGeVector3d::kZAxis);
+		const auto IsPlanView {/*ViewTarget.isEqualTo(OdGePoint3d(0, 0, 0)) &&*/ ViewDirection.normal().isEqualTo(OdGeVector3d::kZAxis)};
 
 		const auto OldTarget = ViewTarget;
-
-		double FieldWidth(ViewportWidth);
-		double FieldHeight(ViewportHeight);
+		
+		auto FieldWidth(ViewportWidth);
+		auto FieldHeight(ViewportHeight);
 
 		if (plotType == OdDbPlotSettings::kWindow || plotType == OdDbPlotSettings::kLimits && IsPlanView) {
-			double xmin {0.0};
-			double ymin {0.0};
-			double xmax {0.0};
-			double ymax {0.0};
+			auto xmin {0.0};
+			auto ymin {0.0};
+			auto xmax {0.0};
+			auto ymax {0.0};
 
 			if (plotType == OdDbPlotSettings::kWindow) {
 				Layout->getPlotWindowArea(xmin, ymin, xmax, ymax); // in plotPaperUnits
@@ -1570,10 +1570,10 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		deviceContext->SelectClipRgn(&newClip);
 
 		// Calculate viewport rect in printer units
-		const long x1 = static_cast<long>((offsetX + drx1) * koeffX);
-		const long x2 = static_cast<long>((offsetX + drx2) * koeffX);
-		const long y1 = static_cast<long>((-offsetY + dry1) * koeffY);
-		const long y2 = static_cast<long>((-offsetY + dry2) * koeffY);
+		const auto x1 {static_cast<long>((offsetX + drx1) * koeffX)};
+		const auto x2 {static_cast<long>((offsetX + drx2) * koeffX)};
+		const auto y1 {static_cast<long>((-offsetY + dry1) * koeffY)};
+		const auto y2 {static_cast<long>((-offsetY + dry2) * koeffY)};
 
 		OdGsDCRect ViewportRectangle;
 		
@@ -1801,7 +1801,6 @@ OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTr
 				return m_response.m_string;
 			case Response::kCancel:
 				throw OdEdCancel();
-				break;
 			case Response::kPoint:
 			case Response::kNone:
 			default:
@@ -1854,11 +1853,10 @@ struct ReactorSort {
 	using result_type = bool;
 
 	bool operator()(OdDbObjectId firstObjectId, OdDbObjectId secondObjectId) {
-		OdDbObjectPtr SecondObject = secondObjectId.openObject();
+		auto SecondObject {secondObjectId.openObject()};
 
 		if (SecondObject.isNull()) { return false; }
-
-		OdDbObjectIdArray SecondObjectReactors = SecondObject->getPersistentReactors();
+		auto SecondObjectReactors {SecondObject->getPersistentReactors()};
 
 		if (SecondObjectReactors.contains(firstObjectId)) { return true; }
 
@@ -1877,7 +1875,7 @@ void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transf
 
 // <command_console>
 BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint point) {
-	OdSharedPtr<AeSysDoc::ClipboardData> ClipboardData {AeSysDoc::ClipboardData::get(dataObject)};
+	auto ClipboardData {AeSysDoc::ClipboardData::get(dataObject)};
 
 	if (ClipboardData) {
 		auto Document {GetDocument()};
@@ -1940,9 +1938,9 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 
 	const auto BackgroundColor {DeviceContext->GetBkColor()};
 	DeviceContext->SetBkColor(ViewBackgroundColor);
-
-	int PrimitiveState {0};
-	int DrawMode {0};
+	
+	auto PrimitiveState {0};
+	auto DrawMode {0};
 
 	if ((hint & EoDb::kSafe) == EoDb::kSafe) { PrimitiveState = pstate.Save(); }
 
@@ -2285,9 +2283,9 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 	}
 	if (m_RubberbandType != None) {
 		auto DeviceContext {GetDC()};
-		const int DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
+		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen RubberbandPen(PS_SOLID, 0, RubberbandColor);
-		CPen* Pen = DeviceContext->SelectObject(&RubberbandPen);
+		auto Pen {DeviceContext->SelectObject(&RubberbandPen)};
 
 		if (m_RubberbandType == Lines) {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
@@ -2364,13 +2362,12 @@ struct OdExRegenCmd : OdEdCommand {
 
 OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 	if (commandName.iCompare(L"REGEN") == 0) {
-		OdSmartPtr<OdExRegenCmd> c = OdRxObjectImpl<OdExRegenCmd>::createObject();
+		auto c {OdRxObjectImpl<OdExRegenCmd>::createObject()};
 		c->m_View = this;
 		c->m_LayoutHelper = m_LayoutHelper;
 		return c;
-	} else {
-		return m_editor.Command(commandName);
 	}
+	return m_editor.Command(commandName);
 }
 
 OdExEditorObject& AeSysView::editorObject() noexcept {
@@ -2428,7 +2425,7 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 			theApp.BuildModeSpecificAcceleratorTable();
 		}
 	}
-	CMFCPropertyGridProperty& ActiveViewScaleProperty = MainFrame->GetPropertiesPane().GetActiveViewScaleProperty();
+	auto& ActiveViewScaleProperty {MainFrame->GetPropertiesPane().GetActiveViewScaleProperty()};
 	ActiveViewScaleProperty.SetValue(m_WorldScale);
 	ActiveViewScaleProperty.Enable(activate);
 	SetCursorPosition(OdGePoint3d::kOrigin);
@@ -2457,21 +2454,21 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 
 	if (deviceContext->IsPrinting()) {
 		if (m_Plot) {
-			const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / kMmPerInch) / m_PlotScaleFactor};
-			const double VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / kMmPerInch) / m_PlotScaleFactor};
+			const auto HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / kMmPerInch) / m_PlotScaleFactor};
+			const auto VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / kMmPerInch) / m_PlotScaleFactor};
 
 			unsigned HorizontalPages;
 			unsigned VerticalPages;
 
 			NumPages(deviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages);
 
-			const double dX {(printInformation->m_nCurPage - 1) % HorizontalPages * HorizontalSizeInInches};
-			const double dY {(printInformation->m_nCurPage - 1) / HorizontalPages * VerticalSizeInInches};
+			const auto dX {(printInformation->m_nCurPage - 1) % HorizontalPages * HorizontalSizeInInches};
+			const auto dY {(printInformation->m_nCurPage - 1) / HorizontalPages * VerticalSizeInInches};
 
 			m_ViewTransform.SetProjectionPlaneField(0.0, 0.0, HorizontalSizeInInches, VerticalSizeInInches);
-			const OdGePoint3d Target(OdGePoint3d(dX, dY, 0.0));
+			const auto Target(OdGePoint3d(dX, dY, 0.0));
 			m_ViewTransform.SetTarget(Target);
-			const OdGePoint3d Position(Target + OdGeVector3d::kZAxis);
+			const auto Position(Target + OdGeVector3d::kZAxis);
 			m_ViewTransform.SetPosition_(Position);
 			m_ViewTransform.SetViewUp(OdGeVector3d::kYAxis);
 			// <tas="Near Far clipping on Plot DC prepare?
@@ -2490,7 +2487,7 @@ void AeSysView::OnContextMenu(CWnd*, CPoint point) {
 }
 
 void AeSysView::DoCustomMouseClick(const CString& characters) {
-	int Position = 0;
+	auto Position {0};
 
 	while (Position < characters.GetLength()) {
 		if (characters.Find(L"{", Position) == Position) {
@@ -2532,21 +2529,21 @@ void AeSysView::PopModelTransform() {
 
 void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 	if (m_ViewBackgroundImage && static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr) {
-		const int iWidDst {static_cast<int>(m_Viewport.WidthInPixels())};
-		const int iHgtDst {static_cast<int>(m_Viewport.HeightInPixels())};
+		const auto iWidDst {static_cast<int>(m_Viewport.WidthInPixels())};
+		const auto iHgtDst {static_cast<int>(m_Viewport.HeightInPixels())};
 
 		BITMAP bm;
 		m_BackgroundImageBitmap.GetBitmap(&bm);
 		CDC dcMem;
 		dcMem.CreateCompatibleDC(nullptr);
-		CBitmap* pBitmap = dcMem.SelectObject(&m_BackgroundImageBitmap);
-		CPalette* pPalette = deviceContext->SelectPalette(&m_BackgroundImagePalette, FALSE);
+		auto Bitmap {dcMem.SelectObject(&m_BackgroundImageBitmap)};
+		auto Palette {deviceContext->SelectPalette(&m_BackgroundImagePalette, FALSE)};
 		deviceContext->RealizePalette();
 
-		const OdGePoint3d Target = m_ViewTransform.Target();
-		const OdGePoint3d ptTargetOver = m_OverviewViewTransform.Target();
-		const double dU = Target.x - ptTargetOver.x;
-		const double dV = Target.y - ptTargetOver.y;
+		const auto Target {m_ViewTransform.Target()};
+		const auto ptTargetOver {m_OverviewViewTransform.Target()};
+		const auto dU {Target.x - ptTargetOver.x};
+		const auto dV {Target.y - ptTargetOver.y};
 
 		// Determine the region of the bitmap to tranfer to display
 		CRect rcWnd;
@@ -2555,13 +2552,13 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		rcWnd.right = EoRound((m_ViewTransform.FieldWidthMaximum() - OverviewUMin() + dU) / OverviewUExt() * static_cast<double>(bm.bmWidth));
 		rcWnd.bottom = EoRound((1. - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + dV) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
 
-		const int iWidSrc = rcWnd.Width();
-		const int iHgtSrc = rcWnd.Height();
+		const auto SourceWidth {rcWnd.Width()};
+		const auto SourceHeight {rcWnd.Height()};
 
-		deviceContext->StretchBlt(0, 0, iWidDst, iHgtDst, &dcMem, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), iWidSrc, iHgtSrc, SRCCOPY);
+		deviceContext->StretchBlt(0, 0, iWidDst, iHgtDst, &dcMem, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), SourceWidth, SourceHeight, SRCCOPY);
 
-		dcMem.SelectObject(pBitmap);
-		deviceContext->SelectPalette(pPalette, FALSE);
+		dcMem.SelectObject(Bitmap);
+		deviceContext->SelectPalette(Palette, FALSE);
 	}
 }
 
@@ -2594,7 +2591,7 @@ void AeSysView::DoViewportProjection(CPoint * pnt, EoGePoint4dArray & points) co
 }
 
 OdGePoint3d AeSysView::DoViewportProjectionInverse(const OdGePoint3d & point) const noexcept {
-	OdGePoint3d Point = point;
+	auto Point {point};
 	m_Viewport.DoProjectionInverse(Point);
 	return Point;
 }
@@ -2659,8 +2656,8 @@ unsigned AeSysView::NumPages(CDC* deviceContext, double scaleFactor, unsigned& h
 	const auto MinimumPoint {Extents.minPoint()};
 	const auto MaximumPoint {Extents.maxPoint()};
 
-	const double HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / kMmPerInch};
-	const double VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / kMmPerInch};
+	const auto HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / kMmPerInch};
+	const auto VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / kMmPerInch};
 
 	horizontalPages = gsl::narrow_cast<unsigned>(EoRound((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches + 0.5));
 	verticalPages = gsl::narrow_cast<unsigned>(EoRound((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches + 0.5));
@@ -2693,11 +2690,11 @@ void AeSysView::Dolly() {
 	ScreenToClient(&Point);
 
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
-	OdGePoint3d Position(FirstView->position());
+	auto Position(FirstView->position());
 	Position.transformBy(FirstView->worldToDeviceMatrix());
-
-	int x = static_cast<int>(OdRound(Position.x));
-	int y = static_cast<int>(OdRound(Position.y));
+	
+	auto x {static_cast<int>(OdRound(Position.x))};
+	auto y {static_cast<int>(OdRound(Position.y))};
 
 	x = Point.x - x;
 	y = Point.y - y;
@@ -2830,9 +2827,9 @@ void AeSysView::On3dViewsBack() {
 }
 
 void AeSysView::On3dViewsIsometric() {
-	static int LeftRight = 0;
-	static int FrontBack = 0;
-	static int AboveUnder = 0;
+	static auto LeftRight {0};
+	static auto FrontBack {0};
+	static auto AboveUnder {0};
 
 	EoDlgSelectIsometricView Dialog;
 	Dialog.m_LeftRight = LeftRight;
@@ -2885,8 +2882,7 @@ void AeSysView::OnCameraRotateDown() {
 
 void AeSysView::OnViewParameters() {
 	EoDlgViewParameters Dialog;
-
-	EoGsViewTransform ModelView(m_ViewTransform);
+	auto ModelView(m_ViewTransform);
 
 	Dialog.m_ModelView = unsigned long(&ModelView);
 	Dialog.m_PerspectiveProjection = m_ViewTransform.IsPerspectiveOn();
@@ -3003,7 +2999,7 @@ void AeSysView::OnWindowPan() {
 
 void AeSysView::OnWindowPanLeft() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const double Delta = -1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
+	const auto Delta {-1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth())};
 
 	FirstView->dolly(OdGeVector3d(Delta, 0.0, 0.0));
 
@@ -3014,7 +3010,7 @@ void AeSysView::OnWindowPanLeft() {
 
 void AeSysView::OnWindowPanRight() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const double Delta = 1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
+	const auto Delta {1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth())};
 
 	FirstView->dolly(OdGeVector3d(Delta, 0.0, 0.0));
 
@@ -3025,7 +3021,7 @@ void AeSysView::OnWindowPanRight() {
 
 void AeSysView::OnWindowPanUp() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const double Delta = 1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
+	const auto Delta {1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight())};
 
 	FirstView->dolly(OdGeVector3d(0.0, Delta, 0.0));
 
@@ -3036,7 +3032,7 @@ void AeSysView::OnWindowPanUp() {
 
 void AeSysView::OnWindowPanDown() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const double Delta = -1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight());
+	const auto Delta {-1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight())};
 
 	FirstView->dolly(OdGeVector3d(0.0, Delta, 0.0));
 
@@ -3048,7 +3044,7 @@ void AeSysView::OnWindowPanDown() {
 void AeSysView::OnWindowZoomSpecial() {
 	EoDlgViewZoom ViewZoomDialog(this);
 
-	const double ZoomFactor(m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
+	const auto ZoomFactor(m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth());
 	ViewZoomDialog.m_ZoomFactor = ZoomFactor;
 
 	if (ViewZoomDialog.DoModal() == IDOK) {
@@ -3106,151 +3102,151 @@ void AeSysView::OnSetupMouseButtons() {
 }
 
 void AeSysView::OnRelativeMovesEngDown() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.y -= theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngDownRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.y -= theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngIn() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.z -= theApp.EngagedLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesEngLeft() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.x -= theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngLeftRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.x -= theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngOut() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.z += theApp.EngagedLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesEngRight() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.x += theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngRightRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.x += theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngUp() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.y += theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesEngUpRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.y += theApp.EngagedLength();
 	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesDown() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.y -= theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesDownRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.y -= theApp.DimensionLength();
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesLeft() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.x -= theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesLeftRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.x -= theApp.DimensionLength();
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesIn() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.z -= theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesOut() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.z += theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesRight() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.x += theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesRightRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.x += theApp.DimensionLength();
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnRelativeMovesUp() {
-	OdGePoint3d pt = GetCursorPosition();
+	auto pt {GetCursorPosition()};
 	pt.y += theApp.DimensionLength();
 	SetCursorPosition(pt);
 }
 
 void AeSysView::OnRelativeMovesUpRotate() {
-	const OdGePoint3d Origin = GetCursorPosition();
-	OdGePoint3d ptSec = Origin;
+	const auto Origin {GetCursorPosition()};
+	auto ptSec {Origin};
 	ptSec.y += theApp.DimensionLength();
 	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
 	SetCursorPosition(ptSec);
 }
 
 void AeSysView::OnToolsPrimitiveSnapto() {
-	const OdGePoint3d pt = GetCursorPosition();
+	const auto pt {GetCursorPosition()};
 
 	OdGePoint3d ptDet;
 
@@ -3396,9 +3392,8 @@ EoDbGroup* AeSysView::RemoveLastVisibleGroup() {
 	if (m_VisibleGroupList.IsEmpty()) {
 		theApp.AddStringToMessageList(IDS_MSG_NO_DET_GROUPS_IN_VIEW);
 		return nullptr;
-	} else {
-		return m_VisibleGroupList.RemoveTail();
 	}
+	return m_VisibleGroupList.RemoveTail();
 }
 
 void AeSysView::DeleteLastGroup() {
@@ -3506,8 +3501,8 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d & point) {
 
 	auto TransformMatrix {ModelViewMatrix()};
 	TransformMatrix.invert();
-
-	double dPicApert = m_SelectApertureSize;
+	
+	auto SelectionApertureSize {m_SelectApertureSize};
 
 	EoDbHatch::SetEdgeToEvaluate(0);
 	EoDbPolyline::SetEdgeToEvaluate(0);
@@ -3515,7 +3510,8 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d & point) {
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNextVisibleGroup(Position)};
-		auto Primitive {Group->SelPrimUsingPoint(ptView, this, dPicApert, ptEng)};
+		auto Primitive {Group->SelPrimUsingPoint(ptView, this, SelectionApertureSize, ptEng)};
+
 		if (Primitive != nullptr) {
 			m_ptDet = ptEng;
 			m_ptDet.transformBy(TransformMatrix);
@@ -3776,9 +3772,9 @@ void AeSysView::RubberBandingDisable() {
 
 		if (DeviceContext == nullptr) { return; }
 
-		const int DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
+		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen GreyPen(PS_SOLID, 0, RubberbandColor);
-		CPen* Pen {DeviceContext->SelectObject(&GreyPen)};
+		auto Pen {DeviceContext->SelectObject(&GreyPen)};
 
 		if (m_RubberbandType == Lines) {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
@@ -3820,8 +3816,8 @@ OdGePoint3d AeSysView::GetCursorPosition() {
 		m_ptCursorPosDev = Position;
 
 		m_ptCursorPosWorld = DoViewportProjectionInverse(m_ptCursorPosDev);
-		EoGeMatrix3d TransformMatrix = ModelViewMatrix();
-		m_ptCursorPosWorld.transformBy(TransformMatrix.invert());
+		auto Transform = ModelViewMatrix();
+		m_ptCursorPosWorld.transformBy(Transform.invert());
 		m_ptCursorPosWorld = SnapPointToGrid(m_ptCursorPosWorld);
 	}
 	return m_ptCursorPosWorld;
@@ -3843,7 +3839,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 
 	if (!ptView.IsInView()) { // Redefine the view so position becomes camera target
 		OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
-		const OdGeVector3d DollyVector(cursorPosition - FirstView->target());
+		const auto DollyVector(cursorPosition - FirstView->target());
 		FirstView->dolly(DollyVector);
 
 		m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
@@ -3854,7 +3850,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 		ptView = EoGePoint4d(cursorPosition, 1.0);
 		ModelViewTransformPoint(ptView);
 	}
-	CPoint CursorPosition = DoViewportProjection(ptView);
+	auto CursorPosition {DoViewportProjection(ptView)};
 	m_ptCursorPosDev.x = CursorPosition.x;
 	m_ptCursorPosDev.y = CursorPosition.y;
 	m_ptCursorPosDev.z = ptView.z / ptView.W();
@@ -3994,7 +3990,7 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & TextHeight) == TextHeight) {
-			const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
+			const auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
 			rc.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
@@ -4060,9 +4056,9 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 		Vector.x = fabs(Vector.x);
 		Vector.y = fabs(Vector.y);
 		FirstView->dolly(NewPosition.asVector());
-		const double wf = FirstView->fieldWidth() / Vector.x;
-		const double hf = FirstView->fieldHeight() / Vector.y;
-		FirstView->zoom(odmin(wf, hf));
+		const auto FieldWidth {FirstView->fieldWidth() / Vector.x};
+		const auto FieldHeight {FirstView->fieldHeight() / Vector.y};
+		FirstView->zoom(odmin(FieldWidth, FieldHeight));
 		InvalidateRect(nullptr);
 	}
 }

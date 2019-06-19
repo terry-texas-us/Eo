@@ -109,7 +109,6 @@ protected:
 
 	DECLARE_DYNCREATE(AeSysView)
 
-public:
 	OdGsView* getActiveView();
 	const OdGsView* getActiveView() const;
 	OdGsView* getActiveTopView();
@@ -139,7 +138,6 @@ public:
 
 	// </command_view>
 
-public:
 	void OnInitialUpdate() override;
 
 protected:
@@ -156,13 +154,11 @@ protected:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
-protected:
 	void addRef() noexcept override {}
 	void release() noexcept override {}
 
 	AeSysDoc* GetDocument() const; // hides non-virtual function of parent
 
-protected:
 	~AeSysView();
 #ifdef _DEBUG
 	void AssertValid() const override;
@@ -182,7 +178,6 @@ public: // Methods - virtuals
 
 	bool UpdateStringTrackerCursor();
 
-public:
 	enum EStateInformationItem {
 		WorkCount = 0x0001,
 		TrapCount = 0x0002,
@@ -252,8 +247,8 @@ private:
 	OdGePoint3dArray m_NodalModePoints;
 	OdGePoint3dArray m_PipeModePoints;
 	OdGePoint3dArray m_PowerModePoints;
-
-private: // grid and axis constraints
+	
+	// grid and axis constraints
 	OdGePoint3d m_GridOrigin;
 	int m_MaximumDotsPerLine {64};
 
@@ -306,13 +301,12 @@ public:
 	void EnableGridSnap(bool snap) noexcept;
 	void ZoomWindow(OdGePoint3d point1, OdGePoint3d point2);
 
-public:
 	void SetRenderMode(OdGsView::RenderMode renderMode);
 	OdGsView::RenderMode RenderMode() const noexcept {
 		return m_ViewTransform.RenderMode();
 	}
 	const ODCOLORREF* CurrentPalette() const;
-public:
+
 	OdDbDatabasePtr Database() const;
 
 protected: // Windows messages
@@ -344,7 +338,6 @@ public: // Input message handler member functions
 	void OnViewStateInformation();
 	void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
 
-public:
 	static AeSysView* GetActiveView();
 
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
@@ -458,7 +451,8 @@ public:
 	void SetViewportSize(int width, int height) noexcept;
 	void SetDeviceHeightInInches(double height) noexcept;
 	void SetDeviceWidthInInches(double width) noexcept;
-public: // Group and Primitive operations
+	
+	// Group and Primitive operations
 
 	EoDbGroup* m_SubModeEditGroup {nullptr};
 	EoDbPrimitive* m_SubModeEditPrimitive {nullptr};
@@ -509,8 +503,8 @@ public:
 	void SetGapSpaceFactor(double factor) noexcept;
 	int NumberOfSides() const noexcept;
 	void SetNumberOfSides(int number) noexcept;
-
-public: // Annotate mode interface
+	
+	// Annotate mode interface
 	void DoAnnotateModeMouseMove();
 
 	void OnAnnotateModeOptions();
@@ -533,8 +527,8 @@ public: // Annotate mode interface
 	/// <param name="group">group where primitives are placed</param>
 	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group);
 	bool CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const;
-
-public: // Draw mode interface
+	
+	// Draw mode interface
 	void DoDrawModeMouseMove();
 
 	void OnDrawModeOptions();
@@ -566,7 +560,6 @@ private: // Draw2 mode interface
 
 public:
 	void DoDraw2ModeMouseMove();
-
 	void OnDraw2ModeOptions();
 	/// <summary>Searches for an existing wall side or endcap</summary>
 	void OnDraw2ModeJoin();
@@ -578,10 +571,8 @@ public:
 	bool StartAssemblyFromLine();
 
 	enum EJust { Left = -1, Center, Right };
-
 	enum EElbow { Mittered, Radial };
 
-public:
 	void OnDimensionModeOptions();
 	void OnDimensionModeArrow();
 	void OnDimensionModeLine();
@@ -594,8 +585,8 @@ public:
 	void OnDimensionModeConvert();
 	void OnDimensionModeReturn();
 	void OnDimensionModeEscape();
-
-public: // Fixup mode interface
+	
+	// Fixup mode interface
 
 	enum CornerFlags {
 		kTrimPreviousToIntersection = 0x001,
@@ -633,8 +624,8 @@ public: // Fixup mode interface
 /// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
 /// </Returns>
 	bool FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& intersection);
-
-public: // Nodal mode interface
+	
+	// Nodal mode interface
 
 	void DoNodalModeMouseMove();
 
@@ -654,8 +645,8 @@ public: // Nodal mode interface
 
 	void ConstructPreviewGroup();
 	void ConstructPreviewGroupForNodalGroups();
-
-public: // Cut mode interface
+	
+	// Cut mode interface
 	void OnCutModeOptions() noexcept;
 	/// <summary>Cuts a primative at cursor position.</summary>
 	void OnCutModeTorch();
@@ -671,8 +662,8 @@ public: // Cut mode interface
 	void OnCutModeDivide() noexcept;
 	void OnCutModeReturn();
 	void OnCutModeEscape();
-
-public: // Edit mode interface
+	
+	// Edit mode interface
 	OdGeScale3d m_MirrorScaleFactors;
 	OdGeVector3d m_EditModeRotationAngles;
 	OdGeScale3d m_ScaleFactors;
@@ -891,15 +882,14 @@ public:
 	void GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
 	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
 	void DoPowerModeConductor(unsigned short conductorType);
-
-public: // Status & Mode Line
+	
+	// Status & Mode Line
 	void ModeLineDisplay();
 	unsigned short ModeLineHighlightOp(unsigned short op);
 	void ModeLineUnhighlightOp(unsigned short& op);
 
 	CMFCStatusBar& GetStatusBar() const;
 
-public:
 	void OnBackgroundImageLoad();
 	void OnBackgroundImageRemove();
 	void OnFilePlotHalf();
