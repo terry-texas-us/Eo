@@ -546,11 +546,11 @@ const OdGsView* AeSysView::getActiveTopView() const {
 }
 
 inline bool requireAutoRegen(OdGsView* view) {
-	OdGsDevice* Device = view->device();
-	if (!Device) {
-		return false;
-	}
-	OdRxDictionaryPtr DeviceProperties = Device->properties();
+	auto Device {view->device()};
+
+	if (!Device) { return false; }
+
+	auto DeviceProperties = Device->properties();
 	if (!DeviceProperties.isNull()) {
 		if (DeviceProperties->has(L"RegenCoef")) {
 			return OdRxVariantValue(DeviceProperties->getAt(L"RegenCoef"))->getDouble() > 1.0;
@@ -568,9 +568,9 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 	OdAbstractViewPEPtr AbstractView(pObj);
 
 	if (!AbstractView.isNull()) {
-		const OdGePoint3d ptTarget(View->target());
-		OdGeVector3d vecDir(View->position() - ptTarget);
-		const OdGeVector3d vecUp(View->upVector());
+		const auto ptTarget(View->target());
+		auto vecDir(View->position() - ptTarget);
+		const auto vecUp(View->upVector());
 		const auto dFieldWidth {View->fieldWidth()};
 		const auto dFieldHeight {View->fieldHeight()};
 		const auto bPersp {View->isPerspective()};
@@ -587,9 +587,9 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 			OdGeVector2d viewOffset;
 
 			if (AbstractView->direction(pObj).isEqualTo(vecDir) && AbstractView->upVector(pObj).isEqualTo(vecUp) && !bPersp && !AbstractView->isPerspective(pObj)) {
-				const OdGeVector3d vecX = vecUp.crossProduct(vecDir).normal();
+				const auto vecX {vecUp.crossProduct(vecDir).normal()};
 				viewOffset = AbstractView->viewOffset(pObj);
-				const OdGePoint3d prevTarg = AbstractView->target(pObj) - vecX * viewOffset.x - vecUp * viewOffset.y;
+				const auto prevTarg {AbstractView->target(pObj) - vecX * viewOffset.x - vecUp * viewOffset.y};
 				viewOffset.x = vecX.dotProduct(ptTarget - prevTarg);
 				viewOffset.y = vecUp.dotProduct(ptTarget - prevTarg);
 			}
@@ -644,10 +644,9 @@ inline OdGsViewPtr overallView(OdGsDevice* device) {
 
 inline OdGsViewPtr activeView(OdGsDevice* device) {
 	OdGsViewPtr ActiveView;
-	OdGsLayoutHelperPtr LayoutHelper = OdGsLayoutHelper::cast(device);
-	if (LayoutHelper.get()) {
-		ActiveView = LayoutHelper->activeView();
-	}
+	OdGsLayoutHelperPtr LayoutHelper {OdGsLayoutHelper::cast(device)};
+
+	if (LayoutHelper.get()) { ActiveView = LayoutHelper->activeView(); }
 	return ActiveView;
 }
 
@@ -658,7 +657,7 @@ void AeSysView::setViewportBorderProperties() {
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	
 	if (NumberOfViews > 1) {
-		for (int ViewIndex = 0; ViewIndex < NumberOfViews; ++ViewIndex) {
+		for (auto ViewIndex = 0; ViewIndex < NumberOfViews; ++ViewIndex) {
 			OdGsViewPtr View {m_LayoutHelper->viewAt(ViewIndex)};
 			
 			// If the model layout is active, and it has more then one viewport then make their borders visible.

@@ -121,7 +121,7 @@ protected:
 		int _zero2[4]; // seem to be always zero
 	};
 	template<class T>
-	struct AcadClipDataConstr : public AcadClipData<T> {
+	struct AcadClipDataConstr : AcadClipData<T> {
 		AcadClipDataConstr(const OdString& tempFileName, const OdString& origFileName, const OdGePoint3d& pickPoint) {
 			AcadClipData<wchar_t>::init();
 			AcadClipData<wchar_t>::_one1 = 1;
@@ -235,13 +235,11 @@ protected:
 	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
 	bool m_DisableClearSelection {false};
 
-public:
 	bool m_bPartial {false};
 	OdDb::DwgVersion m_SaveAsVer {OdDb::kDHL_CURRENT};
 	OdDb::SaveType m_SaveAsType {OdDb::kDwg};
 	EoDb::FileTypes m_SaveAsType_ {EoDb::kUnknown};
 
-public:
 	OdDbSelectionSetPtr SelectionSet() const;
 	AeSysView* getViewer() noexcept;
 
@@ -255,7 +253,6 @@ public:
 
 	void startDrag(const OdGePoint3d& point);
 
-public:
 	BOOL OnSaveDocument(const wchar_t* pathName) override;
 	BOOL OnCmdMsg(unsigned nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
@@ -263,7 +260,6 @@ public:
 	void DeleteContents() override;
 	BOOL CanCloseFrame(CFrameWnd* frame) override;
 
-public:
 	~AeSysDoc();
 	BOOL DoSave(const wchar_t* pathName, BOOL replace = TRUE) override;
 
@@ -382,8 +378,8 @@ public:
 	EoDbGroup* DeletedGroupsRemoveTail();
 	/// <summary>Restores the last group added to the deleted group list.</summary>
 	void DeletedGroupsRestore();
-
-public: // trap interface
+	
+	// trap interface
 	void AddGroupsToTrap(EoDbGroupList* groups);
 	POSITION AddGroupToTrap(EoDbGroup* group);
 	/// <summary>Builds a single group from two or more groups in trap.</summary>
@@ -411,17 +407,15 @@ public: // trap interface
 	void SetTrapPivotPoint(const OdGePoint3d& pivotPoint) noexcept;
 	void SquareTrappedGroups(AeSysView* view);
 
-public:
 	void TracingFuse(OdString& nameAndLocation);
 	bool TracingLoadLayer(const OdString& file, EoDbLayer* layer);
 	bool TracingOpen(const OdString& pathName);
 
-public:
 	void TransformTrappedGroups(const EoGeMatrix3d& transformMatrix);
 	int TrapGroupCount() const;
 	OdGePoint3d TrapPivotPoint() const noexcept;
-
-public: // Nodal list interface (includes list of groups, primitives and unique points)
+	
+	// Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
 	/// <summary>Maintains a list of the primatives with at least one identified node.</summary>
 	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point);
@@ -444,8 +438,8 @@ public: // Nodal list interface (includes list of groups, primitives and unique 
 	void RemoveUniquePointAt(POSITION position);
 	void RemoveAllUniquePoints();
 	int RemoveUniquePoint(const OdGePoint3d& point);
-
-public: // Generated message map functions
+	
+	// Generated message map functions
 	void OnBlocksLoad();
 	void OnPurgeUnreferencedBlocks();
 	void OnClearActiveLayers();
