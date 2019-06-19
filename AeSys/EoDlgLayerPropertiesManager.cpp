@@ -121,13 +121,13 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 ///<summary>Recursive filter tree filling helper</summary>
 static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
 	if (root) {
-		HTREEITEM TreeItem = tree.InsertItem(root->name(), parent);
+		const auto TreeItem {tree.InsertItem(root->name(), parent)};
 		tree.SetItemData(TreeItem, reinterpret_cast<unsigned long>((void*)root));
-		const int Image = root->isIdFilter() ? 2 : 1;
+		const auto Image {root->isIdFilter() ? 2 : 1};
 		tree.SetItemImage(TreeItem, Image, Image);
 		
-		for (unsigned FilterIndex = 0; FilterIndex < root->getNestedFilters().length(); FilterIndex++) {
-			UpdateFilterTree(tree, TreeItem, root->getNestedFilters()[FilterIndex], current);
+		for (const auto& Filter : root->getNestedFilters()) {
+			UpdateFilterTree(tree, TreeItem, Filter, current);
 		}
 		if (current == root) { tree.SelectItem(TreeItem); }
 	}

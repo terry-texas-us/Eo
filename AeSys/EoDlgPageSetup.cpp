@@ -858,12 +858,12 @@ void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 		m_PlotSettingsValidator->plotStyleSheetList(StyleList);
 
 		m_PlotStyleFiles.AddString(L"None");
-		for (unsigned StyleIndex = 0; StyleIndex < StyleList.length(); StyleIndex++) {
-			m_PlotStyleFiles.AddString(W2T((wchar_t*) (StyleList[StyleIndex])));
+		for (auto& Style : StyleList) {
+			m_PlotStyleFiles.AddString(W2T((wchar_t*)Style));
 		}
 	}
-	int StyleIndex = 0;
-	OdString StyleSheet = m_PlotSettings.getCurrentStyleSheet();
+	auto StyleIndex {0};
+	auto StyleSheet {m_PlotSettings.getCurrentStyleSheet()};
 
 	if (!StyleSheet.isEmpty()) {
 		StyleIndex = m_PlotStyleFiles.FindStringExact(0, StyleSheet);

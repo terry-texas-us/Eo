@@ -105,8 +105,8 @@ EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) con
 }
 
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
-	const short ColorIndex = LogicalColorIndex();
-	const short LinetypeIndex = LogicalLinetypeIndex();
+	const auto ColorIndex {LogicalColorIndex()};
+	const auto LinetypeIndex {LogicalLinetypeIndex()};
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -115,16 +115,15 @@ void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
 	else
 		polyline::BeginLineStrip();
 
-	const OdGePoint3d Origin = OdGePoint3d::kOrigin + m_Normal * m_Elevation;
-	const OdGeVector3d XAxis = ComputeArbitraryAxis(m_Normal);
-	const OdGeVector3d YAxis = m_Normal.crossProduct(XAxis);
+	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
+	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
+	const auto YAxis {m_Normal.crossProduct(XAxis)};
+	const OdGePlane Plane(Origin, XAxis, YAxis);
+	OdGePoint3d Point;
 
-	OdGePlane Plane(Origin, XAxis, YAxis);
-	OdGePoint3d Vertex;
-
-	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-		Vertex.set(Plane, m_Vertices[VertexIndex]);
-		polyline::SetVertex(Vertex);
+	for (auto Vertex : m_Vertices) {
+		Point.set(Plane, Vertex);
+		polyline::SetVertex(Point);
 	}
 	polyline::__End(view, deviceContext, LinetypeIndex);
 }

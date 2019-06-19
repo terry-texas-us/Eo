@@ -377,12 +377,11 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 		PointDisplayMode = static_cast<short>(primitiveBuffer[7]);
 		Position = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert();
 	}
-	double Data[3] {0.0, 0.0, 0.};
+	double Data[3] {0.0, 0.0, 0.0};
 	Data[0] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert();
 	Data[1] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert();
 	Data[2] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
-
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 
 	auto Point {OdDbPoint::createObject()};
 	Point->setDatabaseDefaults(Database);
@@ -395,8 +394,8 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 
 	auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 
-	for (unsigned n = 0; n < 3; n++) {
-		ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data[n]));
+	for (auto Datum : Data) {
+		ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Datum));
 	}
 	Point->setXData(ResourceBuffer);
 	return (Point);

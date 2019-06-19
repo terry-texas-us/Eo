@@ -80,13 +80,12 @@ void AeSysView::OnCutModeSlice() {
 				EoGeLineSeg3d LineSeg;
 				LineSeg = EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d());
 				Primitive->SelectUsingLineSeg(LineSeg, this, Intersections);
-				for (unsigned w = 0; w < Intersections.size(); w++) {
-					auto NewGroup {new EoDbGroup};
-
-					Intersections[w].transformBy(TransformMatrix);
+				for (auto& Intersection : Intersections) {
+					const auto NewGroup {new EoDbGroup};
+					Intersection.transformBy(TransformMatrix);
 
 					Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, Primitive);
-					Primitive->CutAt(Intersections[w], NewGroup);
+					Primitive->CutAt(Intersection, NewGroup);
 					Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, Primitive);
 					Groups->AddTail(NewGroup);
 				}

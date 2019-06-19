@@ -472,12 +472,12 @@ void EoDbEllipse::GetExtents(AeSysView * view, OdGeExtents3d & extents) const {
 
 bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 
-	EoGePoint4d pt[] = {EoGePoint4d(StartPoint(), 1.0), EoGePoint4d(EndPoint(), 1.0)};
+	EoGePoint4d Points[] {EoGePoint4d(StartPoint(), 1.0), EoGePoint4d(EndPoint(), 1.0)};
 
-	for (unsigned Index = 0; Index < 2; Index++) {
-		view->ModelViewTransformPoint(pt[Index]);
+	for (auto& Point : Points) {
+		view->ModelViewTransformPoint(Point);
 
-		if (point.DistanceToPointXY(pt[Index]) < sm_SelectApertureSize) { return true; }
+		if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
 	}
 	return false;
 }

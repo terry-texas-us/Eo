@@ -1870,8 +1870,8 @@ struct ReactorSort {
 void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transformMatrix) {
 	std::sort(objects.begin(), objects.end(), ReactorSort());
 	
-	for (unsigned i = 0; i < objects.size(); ++i) {
-		OdDbEntityPtr Entity {objects[i].safeOpenObject(OdDb::kForWrite)};
+	for (auto& object : objects) {
+		OdDbEntityPtr Entity {object.safeOpenObject(OdDb::kForWrite)};
 		Entity->transformBy(transformMatrix);
 	}
 }
@@ -1896,10 +1896,10 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint
 				auto HostDatabase {Database};
 				HostDatabase->deepCloneObjects(SelectionSetObjects, HostDatabase->getActiveLayoutBTRId(), *pIdMapping);
 
-				for (unsigned i = 0; i < SelectionSetObjects.size(); ++i) {
-					OdDbIdPair idPair(SelectionSetObjects[i]);
-					pIdMapping->compute(idPair);
-					SelectionSetObjects[i] = idPair.value();
+				for (auto& SelectionSetObject : SelectionSetObjects) {
+					OdDbIdPair Pair(SelectionSetObject);
+					pIdMapping->compute(Pair);
+					SelectionSetObject = Pair.value();
 				}
 			}
 			transform_object_set(SelectionSetObjects, TransformMatrix);

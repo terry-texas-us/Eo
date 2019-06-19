@@ -15,8 +15,7 @@
 #define MMTOINCH(mm) (double(mm)  / kMmPerInch)
 #define INCHTOMM(inch) (double(inch) * kMmPerInch)
 
-// plotstyle's linetype
-static OdString StringLineType[] = {
+static OdString g_PlotStylesLineTypes[] = {
 	L"Solid",
 	L"Dashed",
 	L"Dotted",
@@ -50,7 +49,7 @@ static OdString StringLineType[] = {
 	L"ISO Double Dash Triple Dot",
 	L"Use object linetype"
 };
-static OdString StringFillStyle[] = {
+static OdString g_PlotStylesFillStyles[] = {
 	L"Solid",
 	L"Checkerboard",
 	L"Crosshatch",
@@ -62,14 +61,14 @@ static OdString StringFillStyle[] = {
 	L"VerticalBars",
 	L"Use object fill style"
 };
-static OdString StringLineEndStyle[] = {
+static OdString g_PlotStylesLineEndStyles[] = {
 	L"Butt",
 	L"Square",
 	L"Round",
 	L"Diamond",
 	L"Use object end style"
 };
-static OdString StringLineJoinStyle[] = {
+static OdString g_PlotStylesLineJoinStyles[] = {
 	L"Miter",
 	L"Bevel",
 	L"Round",

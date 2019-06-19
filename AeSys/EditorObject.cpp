@@ -1311,9 +1311,9 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 						Entity->getGsMarkersAtSubentPath(p, gsMarkers);
 
 						if (!gsMarkers.isEmpty()) {
-							for (OdGsMarkerArray::iterator sm = gsMarkers.begin(); sm != gsMarkers.end(); ++sm) {
+							for (int& Marker : gsMarkers) {
 								auto gsPath {new OdExCollideGsPath};
-								gsPath->set(p, *sm);
+								gsPath->set(p, Marker);
 								m_pathes.push_back(gsPath);
 								auto SubEnt {Entity->subentPtr(p)};
 								SubEnt->dragStatus(OdDb::kDragStart);
@@ -1327,23 +1327,23 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 			}
 			SelectionSetIterator->next();
 		}
-		for (unsigned i = 0; i < m_pathes.size(); ++i) {
-			m_pModel->highlight((m_pathes[i]->operator const OdGiPathNode&()), false);
-			inputArray.push_back(&(m_pathes[i]->operator const OdGiPathNode&()));
+		for (auto& Path : m_pathes) {
+			m_pModel->highlight((Path->operator const OdGiPathNode&()), false);
+			inputArray.push_back(&(Path->operator const OdGiPathNode&()));
 		}
 	}
 
 	virtual ~CollideMoveTracker() {
 		if (!m_prevHLPathes.empty()) {
-			for (unsigned i = 0; i < m_prevHLPathes.size(); ++i) {
-				m_pModel->highlight(m_prevHLPathes[i]->operator const OdGiPathNode&(), false);
-				delete m_prevHLPathes[i];
+			for (auto& PreviousPath : m_prevHLPathes) {
+				m_pModel->highlight(PreviousPath->operator const OdGiPathNode&(), false);
+				delete PreviousPath;
 			}
 			m_prevHLPathes.clear();
 		}
 		inputArray.clear();
-		for (unsigned i = 0; i < m_pathes.size(); ++i) {
-			delete m_pathes[i];
+		for (auto& Path : m_pathes) {
+			delete Path;
 		}
 		m_pathes.clear();
 		m_View->invalidate();
@@ -1439,19 +1439,17 @@ void CollideMoveTracker::doCollideWithAll() {
 	highlight(reactor.pathes());
 }
 
-void CollideMoveTracker::highlight(OdArray<OdExCollideGsPath*>& newPathes) {
-	// 1) Unhighlight old pathes
-	if (!m_prevHLPathes.empty()) {
-		for (unsigned i = 0; i < m_prevHLPathes.size(); ++i) {
-			m_pModel->highlight(m_prevHLPathes[i]->operator const OdGiPathNode&(), false);
-			delete m_prevHLPathes[i];
+void CollideMoveTracker::highlight(OdArray<OdExCollideGsPath*>& newPaths) {
+	if (!m_prevHLPathes.empty()) { // Unhighlight old paths
+		for (auto& PreviousPath : m_prevHLPathes) {
+			m_pModel->highlight(PreviousPath->operator const OdGiPathNode&(), false);
+			delete PreviousPath;
 		}
 		m_prevHLPathes.clear();
 	}
-	// 2) Highlight new pathes
-	for (unsigned i = 0; i < newPathes.size(); ++i) {
-		m_pModel->highlight(newPathes[i]->operator const OdGiPathNode&(), true);
-		m_prevHLPathes.push_back(newPathes[i]);
+	for (auto& NewPath : newPaths) {
+		m_pModel->highlight(NewPath->operator const OdGiPathNode&(), true);
+		m_prevHLPathes.push_back(NewPath);
 	}
 }
 
@@ -1582,19 +1580,19 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 
 	View->collide(nullptr, 0, &reactor, nullptr, 0, &CollisionDetectionContext);
 
-	OdArray<OdExCollideGsPath*>& pathes = reactor.pathes();
-	for (unsigned i = 0; i < pathes.size(); ++i) {
-		const OdGiPathNode* p = &(pathes[i]->operator const OdGiPathNode&());
-		Model->highlight(*p);
-		//delete pathes[i];
+	OdArray<OdExCollideGsPath*>& ReactorPaths {reactor.pathes()};
+	for (auto& ReactorPath : ReactorPaths) {
+		const auto PathNode {&(ReactorPath->operator const OdGiPathNode&())};
+		Model->highlight(*PathNode);
+		//delete ReactorPath;
 	}
 	UserIO->getInt(L"Specify any number to exit", 0, 0);
-	for (unsigned i = 0; i < pathes.size(); ++i) {
-		const OdGiPathNode* p = &(pathes[i]->operator const OdGiPathNode&());
-		Model->highlight(*p, false);
-		delete pathes[i];
+	for (auto& ReactorPath : ReactorPaths) {
+		const auto PathNode {&(ReactorPath->operator const OdGiPathNode&())};
+		Model->highlight(*PathNode, false);
+		delete ReactorPath;
 	}
-	pathes.clear();
+	ReactorPaths.clear();
 }
 
 void OdExEditorObject::SetTracker(OdEdInputTracker* inputTracker) {

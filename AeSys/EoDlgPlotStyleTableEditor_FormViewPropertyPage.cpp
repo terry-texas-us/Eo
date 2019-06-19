@@ -355,11 +355,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* pD
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDestroy() {
 	for (int ListStyleIndex = 0; ListStyleIndex < m_listStyles.GetItemCount(); ++ListStyleIndex) {
-		CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStyleIndex));
+		auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStyleIndex))};
 		delete pPsListStyleData;
 	}
-	for (unsigned BitmapListIndex = 0; BitmapListIndex < m_bitmapList.size(); ++BitmapListIndex) {
-		delete m_bitmapList[BitmapListIndex];
+	for (auto& Bitmap : m_bitmapList) {
+		delete Bitmap;
 	}
 	CPropertyPage::OnDestroy();
 }
@@ -411,8 +411,8 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initDitherComboBox() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLinetypeComboBox() {
 
-	for (int i = 0; i < 32; i++) {
-		m_Linetype.AddString(StringLineType[i]);
+	for (auto& LineType : g_PlotStylesLineTypes) {
+		m_Linetype.AddString(LineType);
 	}
 	m_Linetype.SetCurSel(31);
 }
@@ -431,23 +431,22 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineendstyleComboBox() {
-	for (int i = 0; i < 5; i++) {
-		m_Lineendstyle.AddString(StringLineEndStyle[i]);
+	for (auto& LineEndStyle : g_PlotStylesLineEndStyles) {
+		m_Lineendstyle.AddString(LineEndStyle);
 	}
 	m_Lineendstyle.SetCurSel(0);
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLinejoinstyleComboBox() {
-	for (int i = 0; i < 5; i++)
-	{
-		m_Linejoinstyle.AddString(StringLineJoinStyle[i]);
+	for (auto& LineJoinStyles : g_PlotStylesLineJoinStyles) {
+		m_Linejoinstyle.AddString(LineJoinStyles);
 	}
 	m_Linejoinstyle.SetCurSel(0);
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initFillstyleComboBox() {
-	for (int i = 0; i < 10; i++) {
-		m_Fillstyle.AddString(StringFillStyle[i]);
+	for (auto& FillStyle : g_PlotStylesFillStyles) {
+		m_Fillstyle.AddString(FillStyle);
 	}
 	m_Fillstyle.SetCurSel(0);
 }

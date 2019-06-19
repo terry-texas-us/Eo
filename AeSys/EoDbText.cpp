@@ -121,8 +121,8 @@ void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
 
-	for (unsigned w = 0; w < BoundingBox.size(); w++) {
-		extents.addPoint(BoundingBox[w]);
+	for (const auto& Point : BoundingBox) {
+		extents.addPoint(Point);
 	}
 }
 
