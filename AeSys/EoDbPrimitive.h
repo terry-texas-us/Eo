@@ -16,7 +16,7 @@ class EoDbGroup;
 
 class EoDbPrimitive : public CObject {
 	DECLARE_DYNAMIC(EoDbPrimitive)
-public:
+
 	static const unsigned short BUFFER_SIZE = 2048;
 
 	static const short COLORINDEX_BYBLOCK = 0x0000;
@@ -43,7 +43,7 @@ public: // Constructors and destructor
 	EoDbPrimitive(short colorIndex, short linetypeIndex);
 	virtual ~EoDbPrimitive() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;
 	virtual EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const = 0;
 	virtual void Display(AeSysView* view, CDC* deviceContext) = 0;
@@ -71,7 +71,7 @@ public: // Methods - absolute virtuals
 	virtual bool Write(EoDbFile& file) const = 0;
 	virtual void Write(CFile& file, unsigned char* buffer) const = 0;
 
-public: // Methods - virtuals
+	// Methods - virtuals
 	virtual void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup);
 	/// <summary>Cuts a primitive at two points.</summary>
 	/// <param name="points"></param>
@@ -82,7 +82,7 @@ public: // Methods - virtuals
 	virtual void ModifyState() noexcept;
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 
-public: // Methods
+	// Methods
 	short ColorIndex() const noexcept { return m_ColorIndex; }
 	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
 	CString FormatColorIndex() const;
@@ -96,7 +96,8 @@ public: // Methods
 	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
 	void SetLinetypeIndex(short linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
 	void SetLinetypeIndex2(short linetypeIndex);
-public: // Methods - static
+	
+	// Methods - static
 	static unsigned ControlPointIndex() noexcept;
 	static short HighlightColorIndex() noexcept;
 	static short HighlightLinetypeIndex() noexcept;

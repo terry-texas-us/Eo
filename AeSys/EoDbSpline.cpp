@@ -60,8 +60,8 @@ EoDbPrimitive* EoDbSpline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const
 }
 
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
-	const short ColorIndex = LogicalColorIndex();
-	const short LinetypeIndex = LogicalLinetypeIndex();
+	const auto ColorIndex {LogicalColorIndex()};
+	const auto LinetypeIndex {LogicalLinetypeIndex()};
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -82,8 +82,8 @@ void EoDbSpline::FormatExtra(CString& extra) const {
 
 void EoDbSpline::FormatGeometry(CString& geometry) const {
 	CString ControlPointString;
-	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
-		const OdGePoint3d ControlPoint = m_Spline.controlPointAt(ControlPointIndex);
+	for (auto ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
+		const auto ControlPoint {m_Spline.controlPointAt(ControlPointIndex)};
 		ControlPointString.Format(L"Control Point;%f;%f;%f\t", ControlPoint.x, ControlPoint.y, ControlPoint.z);
 		geometry += ControlPointString;
 	}
@@ -143,8 +143,8 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 }
 
 bool EoDbSpline::IsEqualTo(EoDbPrimitive * other) const {
-	bool IsEqual = false;
-	const OdDbObjectId OtherObjectId = other->EntityObjectId();
+	auto IsEqual {false};
+	const auto OtherObjectId {other->EntityObjectId()};
 	if (!m_EntityObjectId.isNull() && !OtherObjectId.isNull()) {
 		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
 		OdDbSplinePtr OtherSpline = OtherObjectId.safeOpenObject();
@@ -211,7 +211,7 @@ void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
-	for (int ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
+	for (auto ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
 		if ((mask >> ControlPointIndex & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);
 		}
@@ -237,8 +237,7 @@ void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
 
 	*reinterpret_cast<short*>(& buffer[8]) = static_cast<short>(m_Spline.numControlPoints());
-
-	int i = 10;
+	auto i {10};
 
 	for (unsigned short w = 0; w < m_Spline.numControlPoints(); w++) {
 		reinterpret_cast<EoVaxPoint3d*>(& buffer[i])->Convert(m_Spline.controlPointAt(w));
@@ -278,10 +277,10 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 
 	const auto NumberOfControlPoints = file.ReadUInt16();
 
-	const int Degree = EoMin(3, NumberOfControlPoints - 1);
+	const auto Degree {EoMin(3, NumberOfControlPoints - 1)};
 
 	OdGePoint3dArray ControlPoints;
-	for (int ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
+	for (auto ControlPointIndex = 0; ControlPointIndex < NumberOfControlPoints; ControlPointIndex++) {
 		ControlPoints.append(file.ReadPoint3d());
 	}
 	OdGeKnotVector Knots;
@@ -307,8 +306,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 
 		NumberOfControlPoints = static_cast<unsigned short>(reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[8])->Convert());
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
-
-		int BufferIndex {12};
+		auto BufferIndex {12};
 
 		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
 			ControlPoints[w] = reinterpret_cast<EoVaxPoint3d*>(&primitiveBuffer[BufferIndex])->Convert() * 1.e-3;
@@ -320,8 +318,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 
 		NumberOfControlPoints = static_cast<unsigned short>(*reinterpret_cast<short*>(&primitiveBuffer[8]));
 		ControlPoints.setLogicalLength(NumberOfControlPoints);
-
-		int BufferIndex = 10;
+		auto BufferIndex {10};
 
 		for (unsigned w = 0; w < NumberOfControlPoints; w++) {
 			ControlPoints[w] = reinterpret_cast<EoVaxPoint3d*>(&primitiveBuffer[BufferIndex])->Convert();
@@ -338,7 +335,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 	Spline->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Spline->setLinetype(LinetypeObjectFromIndex0(Database, LinetypeIndex));
 
-	const int Degree {EoMin(3, NumberOfControlPoints - 1)};
+	const auto Degree {EoMin(3, NumberOfControlPoints - 1)};
 
 	OdGeKnotVector Knots;
 	EoGeNurbCurve3d::SetDefaultKnotVector(Degree, ControlPoints, Knots);

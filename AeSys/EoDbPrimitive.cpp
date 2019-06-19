@@ -64,7 +64,7 @@ CString EoDbPrimitive::FormatLinetypeIndex() const {
 }
 
 short EoDbPrimitive::LogicalColorIndex() const noexcept {
-	short ColorIndex = sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex;
+	auto ColorIndex {sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex};
 	if (ColorIndex == COLORINDEX_BYLAYER) {
 		ColorIndex = sm_LayerColorIndex;
 	} else if (ColorIndex == COLORINDEX_BYBLOCK) {
@@ -74,7 +74,7 @@ short EoDbPrimitive::LogicalColorIndex() const noexcept {
 }
 
 short EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
-	short LinetypeIndex = sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex;
+	auto LinetypeIndex {sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex};
 	if (LinetypeIndex == LINETYPE_BYLAYER) {
 		LinetypeIndex = sm_LayerLinetypeIndex;
 	} else if (LinetypeIndex == LINETYPE_BYBLOCK) {
@@ -128,7 +128,7 @@ void EoDbPrimitive::SetLinetypeIndex2(short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 
 	if (!m_EntityObjectId.isNull()) {
-		const OdDbObjectId Linetype = LinetypeObjectFromIndex(LinetypeIndex());
+		const auto Linetype {LinetypeObjectFromIndex(LinetypeIndex())};
 
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		Entity->setLinetype(Linetype);
@@ -152,7 +152,7 @@ void EoDbPrimitive::SetHighlightLinetypeIndex(short linetypeIndex) noexcept {
 }
 
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d & normal) {
-	const double Epsilon = 1. / 64.;
+	const auto Epsilon {1.0 / 64.0};
 
 	OdGeVector3d ArbitraryAxis;
 	if (fabs(normal.x) < Epsilon && fabs(normal.y) < Epsilon) {
@@ -204,7 +204,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, s
 	} else if (linetypeIndex == LINETYPE_BYBLOCK) {
 		Linetype = Linetypes->getLinetypeByBlockId();
 	} else {
-		OdString Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
+		auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
 		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"/>
 	}
 	return Linetype;

@@ -88,17 +88,16 @@ EoDbPrimitive* EoDbPoint::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 }
 
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
-	const short ColorIndex = LogicalColorIndex();
+	const auto ColorIndex {LogicalColorIndex()};
 
-	const COLORREF HotColor = theApp.GetHotColor(ColorIndex);
+	const auto HotColor {theApp.GetHotColor(ColorIndex)};
 
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 
 	if (pt.IsInView()) {
-		const CPoint pnt = view->DoViewportProjection(pt);
-
-		int i {0};
+		const auto pnt {view->DoViewportProjection(pt)};
+		auto i {0};
 		switch (m_PointDisplayMode) {
 			case 0:	// 3 pixel plus
 				for (i = -1; i <= 1; i++) {
@@ -129,8 +128,8 @@ void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
 				break;
 
 			default: // 5 pixel square
-				for (int Row = -2; Row <= 2; Row++) {
-					for (int Col = -2; Col <= 2; Col++) {
+				for (auto Row = -2; Row <= 2; Row++) {
+					for (auto Col = -2; Col <= 2; Col++) {
 						if (abs(Row) == 2 || abs(Col) == 2) {
 							deviceContext->SetPixel(pnt.x + Col, pnt.y + Row, HotColor);
 						}
@@ -288,8 +287,7 @@ void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Position);
 
 	::ZeroMemory(&buffer[20], 12);
-
-	int i = 20;
+	auto i {20};
 
 	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		reinterpret_cast<EoVaxFloat*>(& buffer[i])->Convert(m_Data[w]);
@@ -299,7 +297,7 @@ void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 }
 
 OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
-	OdDbPointPtr Point = OdDbPoint::createObject();
+	auto Point = OdDbPoint::createObject();
 	Point->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Point);
@@ -344,7 +342,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 
 	Point->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
 
-	const short PointDisplayMode = file.ReadInt16();
+	const auto PointDisplayMode {file.ReadInt16()};
 
 	Point->setPosition(file.ReadPoint3d());
 
@@ -352,11 +350,9 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 	
 	if (NumberOfDatums > 0) {
 		auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
-
-		double Data;
 		for (unsigned n = 0; n < NumberOfDatums; n++) {
-			Data = file.ReadDouble();
-			ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Data));
+			auto Datum {file.ReadDouble()};
+			ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Datum));
 		}
 		Point->setXData(ResourceBuffer);
 	}

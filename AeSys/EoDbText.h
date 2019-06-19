@@ -29,6 +29,7 @@ Text primitive in Peg files and Tracing files
 class EoDbText : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbText)
 
+private:
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
@@ -41,7 +42,7 @@ public:	// Constructors and destructor
 
 	~EoDbText() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -67,7 +68,7 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public: // Methods
+	// Methods
 	/// <summary>Get the bounding box of text.</summary>
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	EoDbFontDefinition FontDefinition() const;
@@ -81,7 +82,7 @@ public: // Methods
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);
 
-public: // Methods - static
+	// Methods - static
 	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(OdDb::TextHorzMode horizontalMode) noexcept;
 	static EoDb::VerticalAlignment ConvertVerticalAlignment(OdDb::TextVertMode verticalMode) noexcept;
 	static OdDb::TextHorzMode ConvertHorizontalMode(unsigned horizontalAlignment) noexcept;

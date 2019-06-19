@@ -25,7 +25,7 @@ public:	// Constructors and destructor
 
 	~EoDbSpline() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -49,11 +49,11 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public: // Methods
+	// Methods
 
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
 
-public: // Methods - static
+	// Methods - static
 
 	static EoDbSpline* Create(OdDbSplinePtr& spline);
 

@@ -59,10 +59,10 @@ EoDbPrimitive* EoDbText::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 }
 
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
-	const short ColorIndex = LogicalColorIndex();
+	const auto ColorIndex {LogicalColorIndex()};
 	pstate.SetColorIndex(deviceContext, ColorIndex);
 
-	const short LinetypeIndex = pstate.LinetypeIndex();
+	const auto LinetypeIndex {pstate.LinetypeIndex()};
 	pstate.SetLinetypeIndexPs(deviceContext, 1);
 
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
@@ -90,8 +90,8 @@ void EoDbText::FormatExtra(CString& extra) const {
 }
 
 void EoDbText::FormatGeometry(CString& geometry) const {
-	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
-	const OdGePoint3d Origin = ReferenceSystem.Origin();
+	auto ReferenceSystem {m_ReferenceSystem};
+	const auto Origin {ReferenceSystem.Origin()};
 	CString OriginString;
 	OriginString.Format(L"Origin;%f;%f;%f\t", Origin.x, Origin.y, Origin.z);
 	geometry += OriginString;
@@ -108,7 +108,7 @@ void EoDbText::GetAllPoints(OdGePoint3dArray& points) const {
 }
 
 void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const {
-	const int Length = TextLengthSansFormattingCharacters(m_strText);
+	const auto Length {TextLengthSansFormattingCharacters(m_strText)};
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, Length, spaceFactor, boundingBox);
 }
 
@@ -195,9 +195,8 @@ EoGeReferenceSystem EoDbText::ReferenceSystem() const {
 }
 
 double EoDbText::Rotation() const {
-	const OdGeVector3d HorizontalAxis = ReferenceSystem().XDirection();
-
-	double Angle = 0.0;
+	const auto HorizontalAxis {ReferenceSystem().XDirection()};
+	auto Angle {0.0};
 
 	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
 	if (Angle < 0.0) {
@@ -292,8 +291,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	buffer[14] = static_cast<unsigned char>(m_FontDefinition.Path());
 	buffer[15] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
 	buffer[16] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
-
-	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
+	auto ReferenceSystem {m_ReferenceSystem};
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[17])->Convert(ReferenceSystem.Origin());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[29])->Convert(ReferenceSystem.XDirection());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[41])->Convert(ReferenceSystem.YDirection());
@@ -347,7 +345,7 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(OdDb::TextVertMode ve
 }
 
 OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(unsigned horizontalAlignment) noexcept {
-	OdDb::TextHorzMode HorizontalMode = OdDb::kTextLeft;
+	auto HorizontalMode {OdDb::kTextLeft};
 
 	switch (horizontalAlignment) {
 		case EoDb::kAlignCenter:
@@ -365,7 +363,7 @@ OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(unsigned horizontalAlignment)
 }
 
 OdDb::TextVertMode EoDbText::ConvertVerticalMode(unsigned verticalAlignment) noexcept {
-	OdDb::TextVertMode VerticalMode = OdDb::kTextBottom;
+	auto VerticalMode {OdDb::kTextBottom};
 
 	switch (verticalAlignment) {
 		case EoDb::kAlignMiddle:
@@ -383,7 +381,7 @@ OdDb::TextVertMode EoDbText::ConvertVerticalMode(unsigned verticalAlignment) noe
 }
 
 OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFile & file) {
-	OdDbTextPtr Text = OdDbText::createObject();
+	auto Text {OdDbText::createObject()};
 	Text->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Text);
@@ -402,8 +400,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, EoDbFil
 
 	Text->setHorizontalMode(ConvertHorizontalMode(file.ReadUInt16()));
 	Text->setVerticalMode(ConvertVerticalMode(file.ReadUInt16()));
-
-	double CharacterSpacing = 0.0;
+	auto CharacterSpacing {0.0};
 	file.Read(&CharacterSpacing, sizeof(double));
 
 	EoGeReferenceSystem ReferenceSystem;
@@ -436,7 +433,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 		FontDefinition.SetCharacterSpacing(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[36])->Convert());
 		FontDefinition.SetCharacterSpacing(min(max(FontDefinition.CharacterSpacing(), 0.0), 4.));
 
-		const double d = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[40])->Convert();
+		const auto d {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[40])->Convert()};
 
 		switch (int(fmod(d, 10.))) {
 			case 3:
@@ -472,29 +469,26 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 				FontDefinition.SetVerticalAlignment(EoDb::kAlignBottom);
 		}
 		ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert() * 1.e-3);
-
-		double dChrHgt = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert();
+		auto dChrHgt {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[20])->Convert()};
 		dChrHgt = min(max(dChrHgt, .01e3), 100.e3);
-
-		double dChrExpFac = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert();
+		auto dChrExpFac {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[24])->Convert()};
 		dChrExpFac = min(max(dChrExpFac, 0.0), 10.);
 
 		ReferenceSystem.SetXDirection(OdGeVector3d(0.6 * dChrHgt * dChrExpFac, 0.0, 0.0) * 1.e-3);
 		ReferenceSystem.SetYDirection(OdGeVector3d(0.0, dChrHgt, 0.0) * 1.e-3);
-
-		double Angle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
+		auto Angle {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[28])->Convert()};
 		Angle = min(max(Angle, -Oda2PI), Oda2PI);
 
 		if (fabs(Angle) > FLT_EPSILON) {
-			OdGeVector3d XDirection(ReferenceSystem.XDirection());
+			auto XDirection {ReferenceSystem.XDirection()};
 			XDirection = XDirection.rotateBy(Angle, OdGeVector3d::kZAxis);
 			ReferenceSystem.SetXDirection(XDirection);
-			OdGeVector3d YDirection(ReferenceSystem.YDirection());
+			auto YDirection {ReferenceSystem.YDirection()};
 			YDirection = YDirection.rotateBy(Angle, OdGeVector3d::kZAxis);
 			ReferenceSystem.SetYDirection(YDirection);
 		}
 		char* NextToken = nullptr;
-		char* pChr = strtok_s(reinterpret_cast<char*>(& primitiveBuffer[44]), "\\", &NextToken);
+		auto pChr {strtok_s(reinterpret_cast<char*>(&primitiveBuffer[44]), "\\", &NextToken)};
 
 		if (pChr == nullptr) {
 			TextString = L"EoDbJobFile.PrimText error: Missing string terminator.";
@@ -546,14 +540,12 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 		ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[17])->Convert());
 		ReferenceSystem.SetXDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[29])->Convert());
 		ReferenceSystem.SetYDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[41])->Convert());
-
-		short TextLength = *reinterpret_cast<short*>(& primitiveBuffer[53]);
+		auto TextLength {*reinterpret_cast<short*>(&primitiveBuffer[53])};
 		primitiveBuffer[55 + TextLength] = '\0';
 		TextString = reinterpret_cast<LPCSTR>(& primitiveBuffer[55]);
 	}
 	EoDbJobFile::ConvertFormattingCharacters(TextString);
-
-	OdDbTextPtr Text {OdDbText::createObject()};
+	auto Text {OdDbText::createObject()};
 	Text->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Text);
@@ -588,7 +580,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr & blockTableRecord, const O
 }
 
 OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdString text) {
-	OdDbMTextPtr MText = OdDbMText::createObject();
+	auto MText {OdDbMText::createObject()};
 	MText->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(MText);
 	MText->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
@@ -648,7 +640,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 //    double Width = text->width();
 //    double Height = text->height();
 
-	const OdGePoint3d AlignmentPoint = text->location();
+	const auto AlignmentPoint {text->location()};
 
 	EoDbCharacterCellDefinition CharacterCellDefinition;
 	CharacterCellDefinition.SetHeight(text->textHeight());
@@ -666,7 +658,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 }
 
 bool HasFormattingCharacters(const CString & text) {
-	for (int i = 0; i < text.GetLength() - 1; i++) {
+	for (auto i = 0; i < text.GetLength() - 1; i++) {
 		if (text[i] == '\\') {
 			switch (text[i + 1]) { // Parameter Meaning
 				case 'P': // Hard line break
@@ -694,7 +686,7 @@ bool HasFormattingCharacters(const CString & text) {
 }
 
 int FontEscapementAngle(const OdGeVector3d & xAxis) noexcept {
-	double Angle = 0.0;
+	auto Angle {0.0};
 
 	Angle = atan2(xAxis.y, xAxis.x); // -pi to pi radians
 	if (Angle < 0.0) {
@@ -704,10 +696,10 @@ int FontEscapementAngle(const OdGeVector3d & xAxis) noexcept {
 }
 
 OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition & fontDefinition, int numberOfCharacters) noexcept {
-	OdGePoint3d InsertionPoint(OdGePoint3d::kOrigin);
+	auto InsertionPoint {OdGePoint3d::kOrigin};
 
 	if (numberOfCharacters > 0) {
-		const double dTxtExt = double(numberOfCharacters) + (double(numberOfCharacters) - 1.0) * (0.32 + fontDefinition.CharacterSpacing()) / 0.6;
+		const auto dTxtExt {double(numberOfCharacters) + (double(numberOfCharacters) - 1.0) * (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 
 		if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
 			if (fontDefinition.Path() == EoDb::kPathRight) {
@@ -754,23 +746,23 @@ OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition & fontDefinition, i
 	Block delimiters '{' and '}' and other formatting codes not being handled.
 </issues> */
 int TextLengthSansFormattingCharacters(const CString & text) {
-	int Length = text.GetLength();
-	int CurrentPosition = 0;
+	auto Length {text.GetLength()};
+	auto CurrentPosition {0};
 
 	while (CurrentPosition < text.GetLength()) {
-		wchar_t c = text[CurrentPosition++];
+		auto c {text[CurrentPosition++]};
 		if (c == '\\') {
 			c = text[CurrentPosition];
 			if (c == 'A') {
-				const int EndSemicolon = text.Find(';', CurrentPosition);
+				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1 && EndSemicolon == CurrentPosition + 2) {
 					Length -= 4;
 					CurrentPosition = EndSemicolon + 1;
 				}
 			} else if (c == 'F' || c == 'f') {
-				const int EndSemicolon = text.Find(';', CurrentPosition);
+				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
-					const int FormatLength = EndSemicolon - CurrentPosition;
+					const auto FormatLength {EndSemicolon - CurrentPosition};
 					Length -= FormatLength + 2;
 					CurrentPosition = EndSemicolon + 1;
 				}
@@ -778,9 +770,9 @@ int TextLengthSansFormattingCharacters(const CString & text) {
 				Length -= 2;
 				CurrentPosition++;
 			} else if (c == 'S') {
-				const int EndSemicolon = text.Find(';', CurrentPosition);
+				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
-					int TextSegmentDelimiter = text.Find('/', CurrentPosition);
+					auto TextSegmentDelimiter {text.Find('/', CurrentPosition)};
 					if (TextSegmentDelimiter == -1)
 						TextSegmentDelimiter = text.Find('^', CurrentPosition);
 
@@ -803,17 +795,15 @@ void DisplayText(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fon
 		DisplayTextWithFormattingCharacters(view, deviceContext, fontDefinition, referenceSystem, text);
 		return;
 	}
-	EoGeReferenceSystem ReferenceSystem = referenceSystem;
-
-	OdGePoint3d InsertionPoint = CalculateInsertionPoint(fontDefinition, text.GetLength());
+	auto ReferenceSystem {referenceSystem};
+	auto InsertionPoint {CalculateInsertionPoint(fontDefinition, text.GetLength())};
 	InsertionPoint.transformBy(EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem));
 	ReferenceSystem.SetOrigin(InsertionPoint);
-
-	int NumberOfCharactersToDisplay = 0;
-	int StartPosition = 0;
-	int CurrentPosition = StartPosition;
+	auto NumberOfCharactersToDisplay {0};
+	auto StartPosition {0};
+	auto CurrentPosition {StartPosition};
 	while (CurrentPosition < text.GetLength()) {
-		const wchar_t c = text[CurrentPosition++];
+		const auto c {text[CurrentPosition++]};
 
 		if (c == '\r' && text[CurrentPosition] == '\n') {
 			DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
@@ -861,15 +851,13 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 
 	if (plStrokeFontDef == nullptr) { return; }
 
-	const OdGeMatrix3d tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
-
-	const long* plStrokeChrDef {plStrokeFontDef + 96};
-	const double dChrSpac {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
+	const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
+	auto plStrokeChrDef {plStrokeFontDef + 96};
+	const auto dChrSpac {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 
 	auto ptStroke {OdGePoint3d::kOrigin};
 	auto ptChrPos {ptStroke};
-
-	int n {startPosition};
+	auto n {startPosition};
 
 	while (n < startPosition + numberOfCharacters) {
 		polyline::BeginLineStrip();
@@ -877,12 +865,11 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 		int Character = text.GetAt(n);
 		if (Character < 32 || Character > 126) Character = '.';
 
-		for (int i = static_cast<int>(plStrokeFontDef[Character - 32]); i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
-			int iY = static_cast<int>(plStrokeChrDef[i - 1] % 4096L);
+		for (auto i = static_cast<int>(plStrokeFontDef[Character - 32]); i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
+			auto iY {static_cast<int>(plStrokeChrDef[i - 1] % 4096L)};
 			
 			if ((iY & 2048) != 0) { iY = -(iY - 2048); }
-			
-			int iX = static_cast<int>(plStrokeChrDef[i - 1] / 4096L % 4096L);
+			auto iX {static_cast<int>(plStrokeChrDef[i - 1] / 4096L % 4096L)};
 			
 			if ((iX & 2048) != 0) { iX = -(iX - 2048); }
 
@@ -919,8 +906,7 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const 
 	deviceContext->BeginPath();
 	deviceContext->TextOutW(x, y, text);
 	deviceContext->EndPath();
-
-	int NumberOfPointsInPath = deviceContext->GetPath(nullptr, nullptr, 0);
+	auto NumberOfPointsInPath {deviceContext->GetPath(nullptr, nullptr, 0)};
 
 	if (NumberOfPointsInPath == 0) { return true; }
 
@@ -995,8 +981,8 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	CFont Font;
 	Font.CreateFontIndirectW(&FontAttributes);
 	auto pfntold {deviceContext->SelectObject(&Font)};
-	const unsigned TextAlign {deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE)};
-	const int BackgroundMode = deviceContext->SetBkMode(TRANSPARENT);
+	const auto TextAlign {deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE)};
+	const auto BackgroundMode {deviceContext->SetBkMode(TRANSPARENT)};
 
 	deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
 
@@ -1010,26 +996,24 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 }
 
 void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, const CString & text) {
-	EoGeReferenceSystem ReferenceSystem = referenceSystem;
+	auto ReferenceSystem {referenceSystem};
 
-	const int Length = TextLengthSansFormattingCharacters(text);
-
-	OdGePoint3d InsertionPoint = CalculateInsertionPoint(fontDefinition, Length);
+	const auto Length {TextLengthSansFormattingCharacters(text)};
+	auto InsertionPoint {CalculateInsertionPoint(fontDefinition, Length)};
 	InsertionPoint.transformBy(EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem));
 	ReferenceSystem.SetOrigin(InsertionPoint);
-
-	int NumberOfCharactersToDisplay = 0;
-	int StartPosition = 0;
-	int CurrentPosition = StartPosition;
+	auto NumberOfCharactersToDisplay {0};
+	auto StartPosition {0};
+	auto CurrentPosition {StartPosition};
 
 	while (CurrentPosition < text.GetLength()) {
-		wchar_t c = text[CurrentPosition++];
+		wchar_t c {text[CurrentPosition++]};
 		if (c != '\\') {
 			NumberOfCharactersToDisplay++;
 		} else {
 			c = text[CurrentPosition];
 			if (c == 'F' || c == 'f') { // Change to a different font. For shx fonts: \FTxt.shx. For windows fonts: \FSimplex|b1|i0|c0|p34;
-				const int EndSemicolon = text.Find(';', CurrentPosition);
+				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					if (CurrentPosition + 1 < EndSemicolon) {
 						DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
@@ -1051,10 +1035,10 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 					NumberOfCharactersToDisplay = 0;
 				}
 			} else if (c == 'A') { // Change alignment to bottom, center middle
-				const int EndSemicolon = text.Find(';', CurrentPosition);
+				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					if (CurrentPosition + 1 < EndSemicolon) {
-						const wchar_t Parameter = text[CurrentPosition + 1];
+						const wchar_t Parameter {text[CurrentPosition + 1]};
 						if (Parameter >= '0' && Parameter <= '2') {
 							if (NumberOfCharactersToDisplay > 0) { // display text segment preceding the formatting
 								DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
@@ -1076,9 +1060,9 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 					}
 				}
 			} else if (c == 'S') { // Stacked text or fractions
-				const int EndSemicolon = text.Find(';', CurrentPosition);
+				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
-					int TextSegmentDelimiter = text.Find('/', CurrentPosition);
+					auto TextSegmentDelimiter {text.Find('/', CurrentPosition)};
 					if (TextSegmentDelimiter == -1)
 						TextSegmentDelimiter = text.Find('^', CurrentPosition);
 
@@ -1130,13 +1114,12 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 void text_GetBoundingBox(const EoDbFontDefinition & fontDefinition, const EoGeReferenceSystem & referenceSystem, int numberOfCharacters, double spaceFactor, OdGePoint3dArray & boundingBox) {
 	boundingBox.setLogicalLength(4);
 	if (numberOfCharacters > 0) {
-		const OdGeMatrix3d tm = EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem);
+		const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
+		auto TextHeight {1.0};
+		auto TextWidth {1.0};
 
-		double TextHeight = 1.0;
-		double TextWidth = 1.0;
-
-		const double CharacterSpacing = (0.32 + fontDefinition.CharacterSpacing()) / 0.6;
-		const double d = double(numberOfCharacters) + CharacterSpacing * (double(numberOfCharacters) - 1.0);
+		const auto CharacterSpacing {(0.32 + fontDefinition.CharacterSpacing()) / 0.6};
+		const auto d {double(numberOfCharacters) + CharacterSpacing * (double(numberOfCharacters) - 1.0)};
 
 		if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
 			TextWidth = d;
@@ -1181,10 +1164,9 @@ void text_GetBoundingBox(const EoDbFontDefinition & fontDefinition, const EoGeRe
 }
 
 OdGePoint3d text_GetNewLinePos(EoDbFontDefinition & fontDefinition, EoGeReferenceSystem & referenceSystem, double dLineSpaceFac, double dChrSpaceFac) {
-
-	OdGePoint3d pt = referenceSystem.Origin();
-	OdGeVector3d vPath = referenceSystem.XDirection();
-	const OdGeVector3d YDirection = referenceSystem.YDirection();
+	auto pt {referenceSystem.Origin()};
+	auto vPath {referenceSystem.XDirection()};
+	const auto YDirection {referenceSystem.YDirection()};
 
 	if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
 		pt += vPath * dChrSpaceFac;

@@ -74,8 +74,8 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 			GetPointAt(sm_PivotVertex, ptBeg);
 			GetPointAt(SwingVertex(), ptEnd);
 		}
-		double AngleInXYPlane {0.};
-		const double EdgeLength = OdGeVector3d(ptEnd - ptBeg).length();
+		auto AngleInXYPlane {0.0};
+		const auto EdgeLength {OdGeVector3d(ptEnd - ptBeg).length()};
 
 		if (OdGeVector3d(ptBeg - point).length() > EdgeLength * 0.5) {
 			AngleInXYPlane = EoGeLineSeg3d(ptEnd, ptBeg).AngleFromXAxis_xy();
@@ -280,7 +280,7 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point)
 
 OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
-	double dApert = sm_SelectApertureSize;
+	auto dApert {sm_SelectApertureSize};
 
 	sm_PivotVertex = m_Vertices.size();
 
@@ -290,7 +290,7 @@ OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView * view, const EoGePoint
 		EoGePoint4d pt(Point, 1.0);
 		view->ModelViewTransformPoint(pt);
 
-		const double dDis = point.DistanceToPointXY(pt);
+		const auto dDis {point.DistanceToPointXY(pt)};
 
 		if (dDis < dApert) {
 			sm_ControlPointIndex = VertexIndex;
@@ -300,7 +300,7 @@ OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView * view, const EoGePoint
 			sm_PivotVertex = VertexIndex;
 		}
 	}
-	OdGePoint3d ControlPoint(OdGePoint3d::kOrigin);
+	auto ControlPoint {OdGePoint3d::kOrigin};
 	if (sm_ControlPointIndex != SIZE_T_MAX) {
 		GetPointAt(sm_ControlPointIndex, ControlPoint);
 	}
@@ -432,7 +432,7 @@ bool EoDbPolyline::Write(EoDbFile & file) const {
 
 /// <remarks> Job (.jb1) files did not have a polyline primitive</remarks>
 void EoDbPolyline::Write(CFile& file, unsigned char* buffer) const noexcept {
-};
+}
 
 unsigned EoDbPolyline::SwingVertex() const {
 	const auto NumberOfVertices = m_Vertices.size();
@@ -457,7 +457,7 @@ void EoDbPolyline::SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept {
 }
 
 OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
-	OdDbPolylinePtr Polyline = OdDbPolyline::createObject();
+	auto Polyline {OdDbPolyline::createObject()};
 	Polyline->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Polyline);
@@ -471,7 +471,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 }
 
 OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
-	OdDbPolylinePtr Polyline = OdDbPolyline::createObject();
+	auto Polyline {OdDbPolyline::createObject()};
 	Polyline->setDatabaseDefaults(blockTableRecord->database());
 
 	blockTableRecord->appendOdDbEntity(Polyline);
@@ -481,8 +481,7 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 	const auto Linetype {LinetypeObjectFromIndex(file.ReadInt16())};
 
 	Polyline->setLinetype(Linetype);
-
-	unsigned short Flags = file.ReadUInt16();
+	auto Flags {file.ReadUInt16()};
 	auto Closed {(Flags && sm_Closed) == sm_Closed};
 	Polyline->setClosed(Closed);
 

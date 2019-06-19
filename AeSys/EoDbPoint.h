@@ -7,6 +7,7 @@
 class EoDbPoint : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbPoint)
 
+private:
 	OdGePoint3d	m_Position;
 	short m_PointDisplayMode;
 	unsigned short m_NumberOfDatums;
@@ -22,7 +23,7 @@ public: // Constructors and destructor
 
 	~EoDbPoint();
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -46,7 +47,7 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public: // Methods
+	// Methods
 
 	double DataAt(unsigned short dataIndex) const noexcept;
 	void ModifyState() noexcept override;
@@ -56,7 +57,7 @@ public: // Methods
 	void SetData(unsigned short numberOfDatums, double* data);
 	void SetPointDisplayMode(short displayMode) noexcept;
 
-public: // Methods - static
+	// Methods - static
 
 	static EoDbPoint* Create(OdDbPointPtr& point);
 

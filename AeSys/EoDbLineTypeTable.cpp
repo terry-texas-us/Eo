@@ -32,7 +32,7 @@ unsigned short EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	return Index;
 }
 OdString EoDbLinetypeTable::LegacyLinetypeName(int index) {
-	const int Index = index < NumberOfLegacyLinetypes ? index : 1;
+	const auto Index {index < NumberOfLegacyLinetypes ? index : 1};
 	return LegacyLinetypes[Index];
 }
 
@@ -44,12 +44,12 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
 
 		unsigned short MaxNumberOfDashes {12};
-		double* DashLengths {new double[MaxNumberOfDashes]};
+		auto DashLengths {new double[MaxNumberOfDashes]};
 		
 		CString Line;
 
 		while (fl.ReadString(Line) != 0) {
-			int NextToken {0};
+			auto NextToken {0};
 			/* unsigned short Label = */ static_cast<unsigned short>(_wtoi(Line.Tokenize(L"=", NextToken)));
 
 			OdString Name {Line.Tokenize(L",", NextToken).GetString()};
@@ -65,7 +65,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 				DashLengths = new double[NumberOfDashes];
 				MaxNumberOfDashes = NumberOfDashes;
 			}
-			double PatternLength {0.0};
+			auto PatternLength {0.0};
 			
 			for (unsigned DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 				DashLengths[DashIndex] = _wtof(Line.Tokenize(L",\n", NextToken));
@@ -78,7 +78,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 				Linetype->setNumDashes(NumberOfDashes);
 				Linetype->setPatternLength(PatternLength);
 		
-				for (int DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
+				for (auto DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 					Linetype->setDashLengthAt(DashIndex, DashLengths[DashIndex]);
 					Linetype->setShapeStyleAt(DashIndex, OdDbObjectId::kNull);
 					Linetype->setShapeNumberAt(DashIndex, 0);

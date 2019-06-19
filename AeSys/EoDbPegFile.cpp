@@ -57,7 +57,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 
 	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
 
-	const unsigned short NumberOfLinetypes {ReadUInt16()};
+	const auto NumberOfLinetypes {ReadUInt16()};
 	auto DashLength {new double[32]};
 
 	for (unsigned LinetypeIndex = 0; LinetypeIndex < NumberOfLinetypes; LinetypeIndex++) {
@@ -70,14 +70,13 @@ void EoDbPegFile::ReadLinetypesTable() {
 		ReadString(Comments);
 				
 		const auto NumberOfDashes {ReadUInt16()};
-		double PatternLength;
-		PatternLength = ReadDouble();
+		auto PatternLength {ReadDouble()};
 
 		for (auto DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 			DashLength[DashIndex] = ReadDouble();
 		}
 		if (Linetypes->getAt(Name).isNull()) {
-			OdDbLinetypeTableRecordPtr Linetype = OdDbLinetypeTableRecord::createObject();
+			auto Linetype = OdDbLinetypeTableRecord::createObject();
 			
 			Linetype->setName(Name);
 			Linetype->setComments(Comments);
@@ -85,7 +84,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 			Linetype->setPatternLength(PatternLength);
 		
 			if (NumberOfDashes > 0) {
-				for (int DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
+				for (auto DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 					Linetype->setDashLengthAt(DashIndex, DashLength[DashIndex]);
 					Linetype->setShapeStyleAt(DashIndex, OdDbObjectId::kNull);
 					Linetype->setShapeNumberAt(DashIndex, 0);
@@ -108,21 +107,20 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 	if (ReadUInt16() != kLayerTable) {
 		throw L"Exception ReadLayerTable: Expecting sentinel kLayerTable.";
 	}
-	OdDbLayerTablePtr Layers = document->LayerTable(OdDb::kForWrite);
-	const unsigned short NumberOfLayers = ReadUInt16();
+	auto Layers {document->LayerTable(OdDb::kForWrite)};
+	const auto NumberOfLayers {ReadUInt16()};
 	for (unsigned LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		OdString Name;
 		ReadString(Name);
 		/* unsigned short TracingFlags = */ ReadUInt16();
-		
-		unsigned short StateFlags = ReadUInt16();
+		auto StateFlags {ReadUInt16()};
 		StateFlags |= EoDbLayer::kIsResident;
 		if ((StateFlags & EoDbLayer::kIsInternal) != EoDbLayer::kIsInternal) {
 			if (Name.find('.') == - 1) {
 				Name += L".jb1";
 			}
 		}
-		const short ColorIndex = ReadInt16();
+		const auto ColorIndex {ReadInt16()};
 		OdString LinetypeName;
 		ReadString(LinetypeName);
 
@@ -168,7 +166,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 	OdString Name;
 	OdString PathName;
 
-	const unsigned short NumberOfBlocks = ReadUInt16();
+	const auto NumberOfBlocks {ReadUInt16()};
 
 	for (unsigned BlockIndex = 0; BlockIndex < NumberOfBlocks; BlockIndex++) {
 		const auto NumberOfPrimitives {ReadUInt16()};
@@ -189,10 +187,10 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 			BlockTableRecord->setPathName(PathName);
 			BlockTable->add(BlockTableRecord);
 		}
-		const bool LayoutBlock = BlockTableRecord->isLayout();
+		const auto LayoutBlock {BlockTableRecord->isLayout()};
 
 		for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-			EoDbPrimitive* Primitive = ReadPrimitive(BlockTableRecord);
+			auto Primitive {ReadPrimitive(BlockTableRecord)};
 			Block->AddTail(Primitive);
 		}
 	}
@@ -208,7 +206,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 
 	const auto NumberOfLayers {static_cast<int>(ReadUInt16())};
 	
-	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
+	for (auto LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
 		
 		if (!Layer) { return; }
@@ -226,7 +224,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 				auto Group {new EoDbGroup};
 				
 				for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-                    EoDbPrimitive* Primitive = ReadPrimitive(ModelSpaceBlock);
+					auto Primitive {ReadPrimitive(ModelSpaceBlock)};
 					Group->AddTail(Primitive);
 				}
 				Layer->AddTail(Group);
@@ -276,8 +274,7 @@ void EoDbPegFile::WriteVPortTable(AeSysDoc* document) {
 void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 	WriteUInt16(kLinetypeTable);
 	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
-
-	OdDbSymbolTableIteratorPtr Iterator = Linetypes->newIterator();
+	auto Iterator {Linetypes->newIterator()};
 	unsigned short NumberOfLinetypes = 0;
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		NumberOfLinetypes++;
@@ -294,7 +291,7 @@ void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 		const auto DefinitionLength {gsl::narrow_cast<unsigned short>(Linetype->numDashes())};
 		WriteUInt16(DefinitionLength);
 
-		const double PatternLength {Linetype->patternLength()};
+		const auto PatternLength {Linetype->patternLength()};
 		WriteDouble(PatternLength);
 
 		for (auto DashIndex = 0; DashIndex < DefinitionLength; DashIndex++) {
@@ -304,14 +301,14 @@ void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
 	WriteUInt16(kEndOfTable);
 }
 void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
-	int NumberOfLayers = document->GetLayerTableSize();
+	auto NumberOfLayers {document->GetLayerTableSize()};
 
 	WriteUInt16(kLayerTable);
 
 	const auto SavedFilePosition {static_cast<long long>(CFile::GetPosition())};
 	WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 
-	for (int LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
+	for (auto LayerIndex = 0; LayerIndex < document->GetLayerTableSize(); LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
 
 		if (Layer->IsResident()) {
@@ -372,10 +369,10 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 void EoDbPegFile::WriteEntitiesSection(AeSysDoc* document) {
 	WriteUInt16(kGroupsSection);
 
-	const int NumberOfLayers = document->GetLayerTableSize();
+	const auto NumberOfLayers {document->GetLayerTableSize()};
 	WriteUInt16(static_cast<unsigned short>(NumberOfLayers));
 
-	for (int LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
+	for (auto LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
 		
 		if (Layer->IsInternal()) {

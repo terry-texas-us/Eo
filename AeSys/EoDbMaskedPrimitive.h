@@ -1,7 +1,6 @@
 #pragma once
 
 class EoDbMaskedPrimitive : public CObject {
-private:
 	EoDbPrimitive* m_Primitive;
 	unsigned long m_Mask;
 

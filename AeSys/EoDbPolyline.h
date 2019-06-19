@@ -23,6 +23,7 @@ Polyline primitive(never made it release : if already written flags not streamed
 class EoDbPolyline : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbPolyline)
 
+private:
 	static unsigned sm_EdgeToEvaluate;
 	static unsigned sm_Edge;
 	static unsigned sm_PivotVertex;
@@ -50,7 +51,7 @@ public:	// Constructors and destructor
 
 	~EoDbPolyline() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -74,7 +75,7 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
-public: // Methods
+	// Methods
 
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0.0, double startWidth = 0.0, double endWidth = 0.0);
 	void GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const;
@@ -87,7 +88,7 @@ public: // Methods
 	void SetNormal(const OdGeVector3d& normal);
 	unsigned SwingVertex() const;
 
-public: // Methods - static
+	// Methods - static
 
 	static unsigned Edge() noexcept;
 	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
