@@ -32,7 +32,7 @@ const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 }
 
 void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
-	double AngleInXYPlane = m_LineSeg.AngleFromXAxis_xy();
+	auto AngleInXYPlane {m_LineSeg.AngleFromXAxis_xy()};
 
 	double Relationship;
 	m_LineSeg.ParametricRelationshipOf(point, Relationship);
@@ -42,7 +42,7 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	}
 	AngleInXYPlane = fmod(AngleInXYPlane, Oda2PI);
 
-	const double Length = m_LineSeg.length();
+	const auto Length {m_LineSeg.length()};
 
 	CString Report(L"<Line>");
 	Report += L" Color:" + FormatColorIndex();
@@ -139,8 +139,8 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 }
 
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
-	const short ColorIndex = LogicalColorIndex();
-	const short LinetypeIndex = LogicalLinetypeIndex();
+	const auto ColorIndex {LogicalColorIndex()};
+	const auto LinetypeIndex {LogicalLinetypeIndex()};
 
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 
@@ -159,8 +159,7 @@ void EoDbLine::FormatExtra(CString& extra) const {
 }
 
 void EoDbLine::FormatGeometry(CString& geometry) const {
-	OdGePoint3d Point;
-	Point = m_LineSeg.startPoint();
+	auto Point {m_LineSeg.startPoint()};
 	CString PointString;
 	PointString.Format(L"Start Point;%f;%f;%f\t", Point.x, Point.y, Point.z);
 	geometry += PointString;
@@ -190,14 +189,14 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 	else if (sm_ControlPointIndex == 1) {
 		sm_ControlPointIndex = 0;
 	} else { // Initial rock .. jump to point at lower left or down if vertical
-		const OdGePoint3d ptBeg = m_LineSeg.startPoint();
-		const OdGePoint3d ptEnd = m_LineSeg.endPoint();
+		const auto StartPoint {m_LineSeg.startPoint()};
+		const auto EndPoint {m_LineSeg.endPoint()};
 
-		if (ptEnd.x > ptBeg.x)
+		if (EndPoint.x > StartPoint.x)
 			sm_ControlPointIndex = 0;
-		else if (ptEnd.x < ptBeg.x)
+		else if (EndPoint.x < StartPoint.x)
 			sm_ControlPointIndex = 1;
-		else if (ptEnd.y > ptBeg.y)
+		else if (EndPoint.y > StartPoint.y)
 			sm_ControlPointIndex = 0;
 		else
 			sm_ControlPointIndex = 1;
@@ -206,7 +205,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 }
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive)  const {
-	bool Result {false};
+	auto Result {false};
 	if (primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 		Result = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());
 	}
@@ -221,15 +220,15 @@ bool EoDbLine::IsInView(AeSysView* view) const {
 }
 
 bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	EoGePoint4d pt {EoGePoint4d(m_LineSeg.startPoint(), 1.0)};
-	view->ModelViewTransformPoint(pt);
+	auto Point {EoGePoint4d(m_LineSeg.startPoint(), 1.0)};
+	view->ModelViewTransformPoint(Point);
 
-	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize) { return true; }
+	if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
 
-	pt = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
-	view->ModelViewTransformPoint(pt);
+	Point = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
+	view->ModelViewTransformPoint(Point);
 
-	if (point.DistanceToPointXY(pt) < sm_SelectApertureSize) { return true; }
+	if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
 
 	return false;
 }
@@ -280,15 +279,14 @@ double EoDbLine::ParametricRelationshipOf(const OdGePoint3d & point) const {
 OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
-
-	double Aperture = sm_SelectApertureSize;
+	auto Aperture {sm_SelectApertureSize};
 
 	for (unsigned ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint(), 1.0);
 
 		view->ModelViewTransformPoint(pt);
 
-		const double Distance = point.DistanceToPointXY(pt);
+		const auto Distance {point.DistanceToPointXY(pt)};
 
 		if (Distance < Aperture) {
 			sm_ControlPointIndex = ControlPointIndex;

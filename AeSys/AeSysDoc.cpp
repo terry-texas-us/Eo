@@ -789,7 +789,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 					if (ItemData.get()) {
 
 						if (messageCategory == CN_COMMAND) {
-							OdEdCommandPtr EdCommand {OdEdCommand::cast(ItemData)};
+							auto EdCommand {OdEdCommand::cast(ItemData)};
 
 							if (EdCommand.get()) {
 								ExecuteCommand(EdCommand->globalName());

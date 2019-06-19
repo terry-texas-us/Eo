@@ -5,7 +5,7 @@ public: // Constructors and destructor
 	EoDbGroupList() = default;
 	~EoDbGroupList() = default;
 
-   public:	// Base class wrappers hides non-virtual function of parent
+	// Base class wrappers hides non-virtual function of parent
 
 	POSITION AddHead(EoDbGroup* group) {
 		return CObList::AddHead(dynamic_cast<CObject*>(group));
@@ -35,7 +35,7 @@ public: // Constructors and destructor
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveTail());
 	}
 
-public: // Methods
+	// Methods
 	void AddToTreeViewControl(HWND tree, HTREEITEM htiParent);
 	void BreakPolylines();
 	void BreakSegRefs();

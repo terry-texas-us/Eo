@@ -9,9 +9,12 @@
 class EoDbLine : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbLine)
 
+private:
 	EoGeLineSeg3d m_LineSeg;
 
-public: // Constructors and destructor
+public:
+	
+	// Constructors and destructor
 	
 	EoDbLine() = default;
 	EoDbLine(const EoDbLine& other);
@@ -19,7 +22,7 @@ public: // Constructors and destructor
 
 	~EoDbLine() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 	
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -43,14 +46,14 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public: // Methods - virtuals
+	// Methods - virtuals
 
 	/// <summary>Cuts a line a point.</summary>
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) override;
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 
-public: // Methods
+	// Methods
 
 	OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
 	EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
@@ -63,7 +66,7 @@ public: // Methods
 	OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
 
 
-public: // Methods - static
+	// Methods - static
 
 	static EoDbLine* Create(const OdDbLinePtr& line);
 

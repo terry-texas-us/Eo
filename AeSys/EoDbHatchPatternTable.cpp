@@ -63,8 +63,7 @@ void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 			HatchPatternLine.m_patternOffset.x = _wtof(wcstok_s(nullptr, Delimiters, &NextToken));
 			HatchPatternLine.m_patternOffset.y = _wtof(wcstok_s(nullptr, Delimiters, &NextToken));
 			HatchPatternLine.m_dashes.clear();
-
-			wchar_t* Token {wcstok_s(nullptr, Delimiters, &NextToken)};
+			auto Token {wcstok_s(nullptr, Delimiters, &NextToken)};
 
 			while (Token != nullptr) {
 				HatchPatternLine.m_dashes.append(_wtof(Token));

@@ -36,11 +36,11 @@ void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive
 }
 
 void EoDbFile::ConstructPolylinePrimitiveFromCSplinePrimitive(EoDbPrimitive*& primitive) {
-	const short ColorIndex {ReadInt16()};
-	const short LinetypeIndex {ReadInt16()};
+	const auto ColorIndex {ReadInt16()};
+	const auto LinetypeIndex {ReadInt16()};
 
 	Seek(sizeof(unsigned short), current);
-	const unsigned short NumberOfPoints = ReadUInt16();
+	const auto NumberOfPoints {ReadUInt16()};
 	Seek(sizeof(unsigned short), current);
 	Seek(3 * sizeof(double), current);
 	Seek(3 * sizeof(double), current);
@@ -214,17 +214,17 @@ void EoDbFile::WritePoint3d(const OdGePoint3d & point) {
 
 void EoDbFile::WriteString(const CString& string) {
 	const auto NumberOfCharacters {string.GetLength()};
-	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c {gsl::narrow_cast<char>(string.GetAt(n))};
+	for (auto n = 0; n < NumberOfCharacters; n++) {
+		const auto c {gsl::narrow_cast<char>(string.GetAt(n))};
 		Write(&c, 1);
 	}
 	Write("\t", 1);
 }
 
 void EoDbFile::WriteString(const OdString& string) {
-	const int NumberOfCharacters = string.getLength();
-	for (int n = 0; n < NumberOfCharacters; n++) {
-		const char c {gsl::narrow_cast<char>(string.getAt(n))};
+	const auto NumberOfCharacters {string.getLength()};
+	for (auto n = 0; n < NumberOfCharacters; n++) {
+		const auto c {gsl::narrow_cast<char>(string.getAt(n))};
 		Write(&c, 1);
 	}
 	Write("\t", 1);

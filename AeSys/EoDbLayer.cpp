@@ -7,8 +7,9 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
 	m_Layer(layer) {
 	m_TracingFlags = 0; 
 	m_StateFlags = kIsResident | kIsInternal | kIsActive;
-	const OdDbObjectId LinetypeObjectId = layer->linetypeObjectId();
+	const auto LinetypeObjectId {layer->linetypeObjectId()};
 }
+
 EoDbLayer::EoDbLayer(const OdString& name, unsigned short stateFlags) {
 	// <tas="need to check this .. no defaults"></tas>
 	m_TracingFlags = 0;
@@ -44,8 +45,7 @@ short EoDbLayer::ColorIndex() const {
 void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 	EoDbPrimitive::SetLayerColorIndex(ColorIndex());
 	EoDbPrimitive::SetLayerLinetypeIndex(LinetypeIndex());
-
-	COLORREF* pCurColTbl = pColTbl;
+	auto pCurColTbl {pColTbl};
 
 	pColTbl = IsCurrent() || IsActive() ? ColorPalette : GreyPalette;
 
@@ -65,7 +65,7 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 
 			auto pCurColTbl {pColTbl};
 
-			const bool LayerIsDetectable {IsCurrent() || IsActive()};
+			const auto LayerIsDetectable {IsCurrent() || IsActive()};
 
 			pColTbl = LayerIsDetectable ? ColorPalette : GreyPalette;
 
@@ -115,7 +115,7 @@ bool EoDbLayer::IsLocked() const noexcept {
 }
 
 bool EoDbLayer::IsCurrent() const {
-	const bool IsCurrent = m_Layer->objectId() == m_Layer->database()->getCLAYER();
+	const auto IsCurrent {m_Layer->objectId() == m_Layer->database()->getCLAYER()};
 	VERIFY((m_StateFlags & kIsCurrent) == kIsCurrent == IsCurrent);
 
 	return (m_StateFlags & kIsCurrent) == kIsCurrent;

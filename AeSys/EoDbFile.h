@@ -18,7 +18,7 @@ public:
 		kEndOfTable = 0x02ff
 	};
 	OdDbDatabasePtr m_Database;
-public:
+
 	EoDbFile() = default;
 	EoDbFile(OdDbDatabasePtr database);
 	EoDbFile(const OdString& fileName, unsigned openFlags);

@@ -24,12 +24,10 @@ class EoDbHatch : public EoDbPrimitive {
 	static unsigned sm_Edge;
 	static unsigned sm_PivotVertex;
 
-public:
 	static double sm_PatternAngle;
 	static double sm_PatternScaleX;
 	static double sm_PatternScaleY;
 
-public:
 	enum InteriorStyle { kHollow, kSolid, kPattern, kHatch };
 
 private:
@@ -52,7 +50,7 @@ public:	// Constructors and destructor
 
 	~EoDbHatch() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -76,7 +74,7 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public: // Methods
+	// Methods
 
 	int Append(const OdGePoint3d& vertex);
 	/// <summary>A Hatch is generated using line patterns.</summary>
@@ -100,7 +98,7 @@ public: // Methods
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
 	unsigned SwingVertex() const;
 
-public: // Methods - static
+	// Methods - static
 
 	static unsigned Edge() noexcept;
 	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;

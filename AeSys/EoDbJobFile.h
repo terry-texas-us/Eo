@@ -1,7 +1,6 @@
 #pragma once
 
 class EoDbJobFile {
-private:
 	int m_Version;
 	unsigned char* m_PrimBuf;
 

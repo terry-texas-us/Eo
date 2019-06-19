@@ -54,7 +54,7 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 		case EoDb::kCSplinePrimitive:
 		case EoDb::kSplinePrimitive: {
 			if (PrimitiveType == EoDb::kCSplinePrimitive) {
-				const unsigned short NumberOfControlPoints = *reinterpret_cast<unsigned short*>(&m_PrimBuf[10]);
+				const auto NumberOfControlPoints {*reinterpret_cast<unsigned short*>(&m_PrimBuf[10])};
 				m_PrimBuf[3] = static_cast<unsigned char>((2 + NumberOfControlPoints * 3) / 8 + 1);
 				*reinterpret_cast<unsigned short*>(&m_PrimBuf[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
 				m_PrimBuf[8] = m_PrimBuf[10];
@@ -149,7 +149,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const unsigned short wPrims = *reinterpret_cast<unsigned short*>(m_Version == 1 ? &m_PrimBuf[2] : &m_PrimBuf[1]);
+		const auto wPrims {*reinterpret_cast<unsigned short*>(m_Version == 1 ? &m_PrimBuf[2] : &m_PrimBuf[1])};
 
 		for (unsigned w = 1; w < wPrims; w++) {
 			try {
@@ -219,7 +219,7 @@ bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& p
 	const unsigned LengthInChunks = m_Version == 1 ? buffer[6] : buffer[3];
 
 	if (LengthInChunks > 1) {
-		const unsigned BytesRemaining {(LengthInChunks - 1) * 32};
+		const auto BytesRemaining {(LengthInChunks - 1) * 32};
 
 		if (BytesRemaining >= EoDbPrimitive::BUFFER_SIZE - 32) { throw L"Exception.FileJob: Primitive buffer overflow."; }
 
@@ -311,13 +311,13 @@ void EoDbJobFile::WriteLayer(CFile& file, EoDbLayer* layer) {
 }
 
 void EoDbJobFile::ConvertFormattingCharacters(OdString& textString) noexcept {
-	for (int i = 0; i < textString.getLength() - 1; i++) {
+	for (auto i = 0; i < textString.getLength() - 1; i++) {
 		if (textString[i] == '^') {
 			if (textString[i + 1] == '/') { // Fractions
-				const int EndCaret = textString.find('^', i + 1);
+				const auto EndCaret {textString.find('^', i + 1)};
 
 				if (EndCaret != -1) {
-					const int FractionBar = textString.find('/', i + 2);
+					const auto FractionBar {textString.find('/', i + 2)};
 					if (FractionBar != -1 && FractionBar < EndCaret) {
 						textString.setAt(i++, '\\');
 						textString.setAt(i, 'S');

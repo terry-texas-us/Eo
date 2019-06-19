@@ -5,55 +5,32 @@
 
 #include "AeSysDoc.h"
 
-#include "RxObjectImpl.h"
-#include "Db2LineAngularDimension.h"
 #include "Db2dPolyline.h"
 #include "Db3dPolyline.h"
 #include "Db3dPolylineVertex.h"
 #include "Db3dSolid.h"
-#include "Db3PointAngularDimension.h"
 #include "DbAlignedDimension.h"
 #include "DbArc.h"
-#include "DbArcAlignedText.h"
-#include "DbArcDimension.h"
 #include "DbAttribute.h"
 #include "DbAttributeDefinition.h"
-#include "DbBody.h"
 #include "DbCircle.h"
-#include "DbDiametricDimension.h"
 #include "DbEllipse.h"
 #include "DbFace.h"
-#include "DbFaceRecord.h"
-#include "DbFcf.h"
 #include "DbLeader.h"
 #include "DbMInsertBlock.h"
-#include "DbMline.h"
 #include "DbOle2Frame.h"
-#include "DbOrdinateDimension.h"
-#include "DbPolyFaceMesh.h"
-#include "DbPolyFaceMeshVertex.h"
-#include "DbPolygonMesh.h"
-#include "DbPolygonMeshVertex.h"
 #include "DbProxyEntity.h"
-#include "DbRadialDimension.h"
 #include "DbRasterImage.h"
-#include "DbRay.h"
-#include "DbRegion.h"
 #include "DbRotatedDimension.h"
-#include "DbShape.h"
 #include "DbSolid.h"
 #include "DbTable.h"
 #include "DbTrace.h"
 #include "DbUCSTableRecord.h"
-#include "DbWipeout.h"
-#include "DbXline.h"
-#include "Ge/GeCircArc2d.h"
 #include "Ge/GeCircArc3d.h"
 #include "Ge/GeCurve2d.h"
 #include "Ge/GeEllipArc2d.h"
 #include "Ge/GeNurbCurve2d.h"
 #include "GeometryFromProxy.h"
-#include "Gs/Gs.h"
 
 #include "StaticRxObject.h"
 
@@ -86,8 +63,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdDbDatabasePtr DatabasePtr = entity->database();
 	
 	primitive->SetEntityObjectId(entity->objectId());
-
-	OdCmColor Color = entity->color();
+	auto Color {entity->color()};
 
 	if (Color.isByBlock()) {
 		primitive->SetColorIndex(7); // 7 is used when entity is not in a block. Primitives are never in blocks so use 7.
@@ -97,7 +73,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	} else {
 		primitive->SetColorIndex(static_cast<short>(Color.colorIndex()));
 	}
-	const OdDbObjectId Linetype = entity->linetypeId();
+	const auto Linetype {entity->linetypeId()};
 
 	if (Linetype == DatabasePtr->getLinetypeByBlockId()) {
 		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYBLOCK);
@@ -105,7 +81,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	else if (Linetype == DatabasePtr->getLinetypeByLayerId()) {
 		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
 	} else {
-		OdString Name = entity->linetype();
+		auto Name {entity->linetype()};
 		primitive->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 	}
 
@@ -114,7 +90,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	}
 
 	OdGePlane plane;
-	OdDb::Planarity planarity = OdDb::kNonPlanar;
+	auto planarity {OdDb::kNonPlanar};
 	entity->getPlane(plane, planarity);
 	if (entity->isPlanar()) {
 		OdGePoint3d origin;
@@ -125,7 +101,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 }
 
 void ConvertTextData(OdDbText* text, EoDbGroup* group) {
-	const OdDbObjectId TextStyleObjectId = text->textStyle();
+	const auto TextStyleObjectId {text->textStyle()};
 	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = TextStyleObjectId.safeOpenObject(OdDb::kForRead);
 
 	OdString FileName;
@@ -134,12 +110,12 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 		FileName = L"Standard";
 	} else {
 		FileName = TextStyleTableRecordPtr->fileName();
-		const int nExt = FileName.reverseFind('.');
+		const auto nExt {FileName.reverseFind('.')};
 
 		if (nExt != -1) {
 			if (FileName.mid(nExt).compare(L".shx") == 0) {
 				FileName = FileName.left(nExt);
-				for (int n = nExt; n < 8; n++) {
+				for (auto n = nExt; n < 8; n++) {
 					FileName += '_';
 				}
 				FileName += L".ttf";
@@ -175,7 +151,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	ConvertEntityData(text, TextPrimitive);
 
 	group->AddTail(TextPrimitive);
-};
+}
 
 void ConvertDimensionData(OdDbDimension* dimension) {
 	OdDbBlockTableRecordPtr Block = dimension->dimBlockId().safeOpenObject(OdDb::kForRead);
@@ -186,7 +162,7 @@ void ConvertDimensionData(OdDbDimension* dimension) {
 	}
 	//OdCmColor bgrndTxtColor;
 	//unsigned short bgrndTxtFlags = dimension->getBgrndTxtColor(bgrndTxtColor));
-};
+}
 
 void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdDbCurvePtr Curve = entity;
@@ -215,12 +191,11 @@ public:
 		OdDb2dPolylinePtr PolylineEntity = entity;
 
 		auto PolylinePrimitive {new EoDbPolyline()};
-
-		OdDbObjectIteratorPtr Iterator = PolylineEntity->vertexIterator();
-		for (int i = 0; !Iterator->done(); i++, Iterator->step()) {
+		auto Iterator {PolylineEntity->vertexIterator()};
+		for (auto i = 0; !Iterator->done(); i++, Iterator->step()) {
 			OdDb2dVertexPtr Vertex = Iterator->entity();
 			if (Vertex.get()) {
-				OdGePoint3d Point(Vertex->position());
+				auto Point(Vertex->position());
 				Point.z = PolylineEntity->elevation();
 				PolylinePrimitive->AppendVertex(Vertex->position().convert2d(), Vertex->bulge(), Vertex->startWidth(), Vertex->endWidth());
 			}
@@ -247,8 +222,8 @@ public:
 		OdDb3dPolylinePtr PolylineEntity = entity;
 
 		// <tas="No vertices appended to polyline"</tas>
-		OdDbObjectIteratorPtr Iterator = PolylineEntity->vertexIterator();
-		for (int i = 0; !Iterator->done(); i++, Iterator->step()) {
+		auto Iterator {PolylineEntity->vertexIterator()};
+		for (auto i = 0; !Iterator->done(); i++, Iterator->step()) {
 			OdDb3dPolylineVertexPtr Vertex = Iterator->entity();
 		}
 		auto PolylinePrimitive {new EoDbPolyline()};
@@ -280,17 +255,16 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbArcPtr ArcEntity = entity;
 
-		const OdGeVector3d Normal(ArcEntity->normal());
-		const OdGePoint3d Center(ArcEntity->center());
-
-		double StartAngle = ArcEntity->startAngle();
-		double EndAngle = ArcEntity->endAngle();
+		const auto Normal(ArcEntity->normal());
+		const auto Center(ArcEntity->center());
+		auto StartAngle {ArcEntity->startAngle()};
+		auto EndAngle {ArcEntity->endAngle()};
 
 		if (StartAngle >= Oda2PI) { // need to rationalize angs to first period angles in range on (0 to twopi)
 			StartAngle -= Oda2PI;
 			EndAngle -= Oda2PI;
 		}
-		double SweepAngle = EndAngle - StartAngle;
+		auto SweepAngle {EndAngle - StartAngle};
 
 		if (SweepAngle <= FLT_EPSILON) {
 			SweepAngle += Oda2PI;
@@ -298,8 +272,8 @@ public:
 		OdGePoint3d StartPoint;
 		ArcEntity->getStartPoint(StartPoint);
 
-		const OdGeVector3d MajorAxis(StartPoint - Center);
-		const OdGeVector3d MinorAxis = Normal.crossProduct(MajorAxis);
+		const auto MajorAxis(StartPoint - Center);
+		const auto MinorAxis {Normal.crossProduct(MajorAxis)};
 		
 		auto ArcPrimitive {new EoDbEllipse()};
 		// <tas="Encountered Circular Arc entity with zero radius. Is this valid for dwg files?"</tas>
@@ -341,8 +315,8 @@ public:
 		group->AddTail(BlockReferencePrimitive);
 
 		// <tas="Block reference - attributes"</tas>
-		OdDbObjectIteratorPtr ObjectIterator = BlockReferenceEntity->attributeIterator();
-		for (int i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
+		auto ObjectIterator {BlockReferenceEntity->attributeIterator()};
+		for (auto i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
 			OdDbAttributePtr AttributePtr = ObjectIterator->entity();
 			if (!AttributePtr.isNull()) {
 				if (!AttributePtr->isConstant() && !AttributePtr->isInvisible()) {
@@ -357,8 +331,7 @@ class EoDbCircle_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbCirclePtr CircleEntity = entity;
-
-		EoDbEllipse* CirclePrimitive = new EoDbEllipse(CircleEntity->center(), CircleEntity->normal(), CircleEntity->radius());
+		auto CirclePrimitive {new EoDbEllipse(CircleEntity->center(), CircleEntity->normal(), CircleEntity->radius())};
 
 		ConvertEntityData(CircleEntity, CirclePrimitive);
 		group->AddTail(CirclePrimitive);
@@ -470,8 +443,7 @@ class EoDbPoint_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbPointPtr PointEntity = entity;
-
-		EoDbPoint* PointPrimitive = new EoDbPoint(PointEntity->position());
+		auto PointPrimitive {new EoDbPoint(PointEntity->position())};
 		PointPrimitive->SetPointDisplayMode(PointEntity->database()->getPDMODE());
 
 		ConvertEntityData(PointEntity, PointPrimitive);
@@ -651,7 +623,7 @@ public:
 		ViewportEntity->getFrozenLayerList(layerIds);
 
 		if (layerIds.length()) {
-			for (int i = 0; i < static_cast<int>(layerIds.length()); i++) {
+			for (auto i = 0; i < static_cast<int>(layerIds.length()); i++) {
 			}
 		} else {
 		}

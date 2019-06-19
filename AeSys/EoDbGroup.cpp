@@ -117,7 +117,7 @@ void EoDbGroup::DeletePrimitivesAndRemoveAll() {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
-		const OdDbObjectId EntityObjectId = Primitive->EntityObjectId();
+		const auto EntityObjectId {Primitive->EntityObjectId()};
 
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity {EntityObjectId.safeOpenObject(OdDb::kForWrite)};
@@ -174,7 +174,7 @@ EoDbPrimitive* EoDbGroup::GetAt(POSITION position) {
 }
 
 int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
-	int Count {0};
+	auto Count {0};
 
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -213,7 +213,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 }
 
 int EoDbGroup::GetLinetypeIndexRefCount(short linetypeIndex) {
-	int Count {0};
+	auto Count {0};
 
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -313,7 +313,7 @@ void EoDbGroup::RemoveDuplicatePrimitives() {
 }
 
 int EoDbGroup::RemoveEmptyNotesAndDelete() {
-	int iCount = 0;
+	auto Count {0};
 
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -325,11 +325,11 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);
 				delete Primitive;
-				iCount++;
+				Count++;
 			}
 		}
 	}
-	return iCount;
+	return Count;
 }
 
 bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view) const {
@@ -393,13 +393,13 @@ void EoDbGroup::SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept {
 
 void EoDbGroup::SortTextOnY() {
 	int iT;
-	int iCount = static_cast<int>(GetCount());
+	auto Count {static_cast<int>(GetCount())};
 
 	do {
 		iT = 0;
 
 		auto Position {GetHeadPosition()};
-		for (int i = 1; i < iCount; i++) {
+		for (auto i = 1; i < Count; i++) {
 			auto pos1 {Position};
 			auto pPrim1 {GetNext(pos1)};
 
@@ -423,7 +423,7 @@ void EoDbGroup::SortTextOnY() {
 
 			Position = pos1;
 		}
-		iCount = iT;
+		Count = iT;
 	} while (iT != 0);
 }
 

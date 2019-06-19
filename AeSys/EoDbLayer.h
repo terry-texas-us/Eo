@@ -5,7 +5,6 @@
 #include "EoDbGroupList.h"
 
 class EoDbLayer : public EoDbGroupList {
-private:
 	OdDbLayerTableRecordPtr m_Layer;
 	unsigned short m_StateFlags;	
 	unsigned short m_TracingFlags;

@@ -123,7 +123,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
 }
 
 void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept {
-	m_HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(horizontalMode);;
+	m_HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(horizontalMode);
 	m_VerticalAlignment = EoDbText::ConvertVerticalAlignment(verticalMode);
 }
 

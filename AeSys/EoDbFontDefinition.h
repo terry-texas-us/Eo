@@ -7,7 +7,6 @@
 class EoDbFile;
 
 class EoDbFontDefinition {
-private:
 	double m_CharacterSpacing {0.0};
 	EoDb::Precision m_Precision {EoDb::kTrueType};
 	CString m_FontName {L"Simplex"};
@@ -26,7 +25,6 @@ public:
 	CString FormatPrecision() const;
 	CString FormatVerticalAlignment() const;
 
-public:
 	double CharacterSpacing() const noexcept;
 	EoDb::HorizontalAlignment HorizontalAlignment() const noexcept;
 	CString FontName() const;

@@ -1,7 +1,5 @@
 #include "stdafx.h"
 
-//#include "afxwinappex.h"
-
 #include "ChildFrm.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
@@ -555,7 +553,7 @@ void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int p
 
 OdDbUndoControllerPtr AeSys::newUndoController() {
 	if (undoType()) {
-		ExFileUndoControllerPtr FileUndoController {OdRxObjectImpl<ExFileUndoController>::createObject()};
+		auto FileUndoController {OdRxObjectImpl<ExFileUndoController>::createObject()};
 		FileUndoController->setStorage(newUndoStream());
 		return FileUndoController;
 	}
@@ -806,8 +804,7 @@ void AeSys::BuildModeSpecificAcceleratorTable() {
 
 	AcceleratorTableHandle = LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME));
 	const auto AcceleratorTableEntries {CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
-
-	LPACCEL ModifiedAcceleratorTable {new ACCEL[static_cast<unsigned>(AcceleratorTableEntries + ModeAcceleratorTableEntries)]};
+	auto ModifiedAcceleratorTable {new tagACCEL[static_cast<unsigned>(AcceleratorTableEntries + ModeAcceleratorTableEntries)]};
 
 	CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
 	CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);

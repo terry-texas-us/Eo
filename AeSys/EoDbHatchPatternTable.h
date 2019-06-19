@@ -2,8 +2,7 @@
 
 class EoDbHatchPatternTable {
 
-private:
-	//    static OdStringArray sm_HatchNames;
+	// static OdStringArray sm_HatchNames;
 	static const wchar_t* LegacyHatchPatterns[];
 	static const unsigned short ms_NumberOfLegacyHatchPatterns {40};
 
