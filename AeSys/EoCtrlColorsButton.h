@@ -23,8 +23,6 @@ class EoCtrlColorsButton : public CMFCButton {
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
 	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept;
 
-public:
-
 	EoCtrlColorsButton() = default;
 
 	~EoCtrlColorsButton() = default;

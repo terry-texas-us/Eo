@@ -18,7 +18,7 @@ class EoDbDimension : public EoDbPrimitive {
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
 
-public:	// Constructors and destructor
+	// Constructors and destructor
 
 	EoDbDimension() = default;
 	EoDbDimension(const EoDbDimension& other);
@@ -26,7 +26,7 @@ public:	// Constructors and destructor
 
 	~EoDbDimension() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -51,13 +51,13 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public:	// Methods - virtuals
+	// Methods - virtuals
 
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGrous, OdDbDatabasePtr database) override;
 	void ModifyState() noexcept override;
 
-public:	// Methods
+	// Methods
 
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	const EoDbFontDefinition& FontDef() noexcept;

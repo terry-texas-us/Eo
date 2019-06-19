@@ -16,8 +16,7 @@ BOOL EoCtrlFindComboBox::m_HasFocus = FALSE;
 
 BOOL EoCtrlFindComboBox::NotifyCommand(int notifyCode) {
 	TRACE1("EoCtrlFindComboBox::NotifyCommand(%i)\n", notifyCode);
-
-	BOOL CommandProcessed = CMFCToolBarComboBoxButton::NotifyCommand(notifyCode);
+	auto CommandProcessed {CMFCToolBarComboBoxButton::NotifyCommand(notifyCode)};
 
 	switch (notifyCode) {
 	case CBN_SELCHANGE: // notifyCode 1

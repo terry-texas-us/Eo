@@ -23,8 +23,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 
 	DIBSECTION ds;
 	bitmap.GetObjectW(sizeof(DIBSECTION), &ds);
-
-	int NumberOfColors {0};
+	auto NumberOfColors {0};
 
 	if (ds.dsBmih.biClrUsed != 0) {
 		NumberOfColors = static_cast<int>(ds.dsBmih.biClrUsed);
@@ -43,22 +42,21 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 		GetDIBColorTable(static_cast<HDC>(dcMem), 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
 		dcMem.SelectObject(Bitmap);
 
-		const unsigned nSize {sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * (NumberOfColors - 1)};
+		const auto Size {sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * (NumberOfColors - 1)};
+		auto LogicalPalette {reinterpret_cast<LOGPALETTE*>(new unsigned char[Size])};
 
-		LOGPALETTE* pLogPal {reinterpret_cast<LOGPALETTE*>(new unsigned char[nSize])};
+		LogicalPalette->palVersion = 0x300;
+		LogicalPalette->palNumEntries = static_cast<unsigned short>(NumberOfColors);
 
-		pLogPal->palVersion = 0x300;
-		pLogPal->palNumEntries = static_cast<unsigned short>(NumberOfColors);
-
-		for (int i = 0; i < NumberOfColors; i++) {
-			pLogPal->palPalEntry[i].peRed = RGBQuad[i].rgbRed;
-			pLogPal->palPalEntry[i].peGreen = RGBQuad[i].rgbGreen;
-			pLogPal->palPalEntry[i].peBlue = RGBQuad[i].rgbBlue;
-			pLogPal->palPalEntry[i].peFlags = 0;
+		for (auto i = 0; i < NumberOfColors; i++) {
+			LogicalPalette->palPalEntry[i].peRed = RGBQuad[i].rgbRed;
+			LogicalPalette->palPalEntry[i].peGreen = RGBQuad[i].rgbGreen;
+			LogicalPalette->palPalEntry[i].peBlue = RGBQuad[i].rgbBlue;
+			LogicalPalette->palPalEntry[i].peFlags = 0;
 		}
-		palette.CreatePalette(pLogPal);
+		palette.CreatePalette(LogicalPalette);
 
-		delete [] pLogPal;
+		delete[] LogicalPalette;
 		delete [] RGBQuad;
 	}
 	Close();

@@ -46,7 +46,7 @@ const EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
 }
 
 void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
-	double AngleInXYPlane = m_Line.AngleFromXAxis_xy();
+	auto AngleInXYPlane {m_Line.AngleFromXAxis_xy()};
 	double Relationship;
 	m_Line.ParametricRelationshipOf(point, Relationship);
 
@@ -55,7 +55,7 @@ void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
 	}
 	AngleInXYPlane = fmod(AngleInXYPlane, Oda2PI);
 
-	const double Length = m_Line.length();
+	const auto Length {m_Line.length()};
 
 	CString Report(L"<Dimension>");
 	Report += L" Color:" + FormatColorIndex();
@@ -134,7 +134,7 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 }
 
 void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
-	short ColorIndex = LogicalColorIndex();
+	auto ColorIndex {LogicalColorIndex()};
 	pstate.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
 	m_Line.Display(view, deviceContext);
 
@@ -146,7 +146,7 @@ void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
 	}
 	pstate.SetColorIndex(deviceContext, ColorIndex);
 
-	const short LinetypeIndex = pstate.LinetypeIndex();
+	const auto LinetypeIndex {pstate.LinetypeIndex()};
 	pstate.SetLinetypeIndexPs(deviceContext, 1);
 
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
@@ -173,17 +173,15 @@ void EoDbDimension::FormatExtra(CString& extra) const {
 }
 
 void EoDbDimension::FormatGeometry(CString& geometry) const {
-	OdGePoint3d Point;
-	Point = m_Line.startPoint();
+	auto Point {m_Line.startPoint()};
 	CString PointString;
 	PointString.Format(L"Start Point;%f;%f;%f\t", Point.x, Point.y, Point.z);
 	geometry += PointString;
 	Point = m_Line.endPoint();
 	PointString.Format(L"End Point;%f;%f;%f\t", Point.x, Point.y, Point.z);
 	geometry += PointString;
-
-	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
-	const OdGePoint3d Origin = ReferenceSystem.Origin();
+	auto ReferenceSystem {m_ReferenceSystem};
+	const auto Origin {ReferenceSystem.Origin()};
 	CString OriginString;
 	OriginString.Format(L"Text Position;%f;%f;%f\t", Origin.x, Origin.y, Origin.z);
 	geometry += OriginString;
@@ -221,14 +219,14 @@ OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 	else if (sm_ControlPointIndex == 1) {
 		sm_ControlPointIndex = 0;
 	} else { // Initial rock .. jump to point at lower left or down if vertical
-		const OdGePoint3d ptBeg = m_Line.startPoint();
-		const OdGePoint3d ptEnd = m_Line.endPoint();
+		const auto StartPoint {m_Line.startPoint()};
+		const auto EndPoint {m_Line.endPoint()};
 
-		if (ptEnd.x > ptBeg.x)
+		if (EndPoint.x > StartPoint.x)
 			sm_ControlPointIndex = 0;
-		else if (ptEnd.x < ptBeg.x)
+		else if (EndPoint.x < StartPoint.x)
 			sm_ControlPointIndex = 1;
-		else if (ptEnd.y > ptBeg.y)
+		else if (EndPoint.y > StartPoint.y)
 			sm_ControlPointIndex = 0;
 		else
 			sm_ControlPointIndex = 1;
@@ -296,15 +294,14 @@ double EoDbDimension::ParametricRelationshipOf(const OdGePoint3d & point) const 
 OdGePoint3d EoDbDimension::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
-
-	double Aperture {sm_SelectApertureSize};
+	auto Aperture {sm_SelectApertureSize};
 
 	for (unsigned ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint(), 1.0);
 
 		view->ModelViewTransformPoint(pt);
 
-		const double Distance = point.DistanceToPointXY(pt);
+		const auto Distance {point.DistanceToPointXY(pt)};
 
 		if (Distance < Aperture) {
 			sm_ControlPointIndex = ControlPointIndex;
@@ -398,12 +395,12 @@ void EoDbDimension::SetDefaultNote() {
 	const auto ActiveView {AeSysView::GetActiveView()};
 
 	m_ReferenceSystem.SetOrigin(m_Line.midPoint());
-	double dAng = 0.0;
-	const wchar_t cText0 = m_strText[0];
+	auto dAng {0.0};
+	const wchar_t cText0 {m_strText[0]};
 
 	if (cText0 != 'R' && cText0 != 'D') {
 		dAng = m_Line.AngleFromXAxis_xy();
-		double dDis = .075;
+		auto dDis {.075};
 
 		if (dAng > OdaPI2 + OdaPI / 180.0 && dAng < Oda2PI - OdaPI2 + OdaPI2) {
 			dAng -= OdaPI;
@@ -425,8 +422,7 @@ void EoDbDimension::SetDefaultNote() {
 
 	m_ReferenceSystem.SetXDirection(XDirection);
 	m_ReferenceSystem.SetYDirection(YDirection);
-
-	AeSys::Units Units {theApp.GetUnits()};
+	auto Units {theApp.GetUnits()};
 
 	if (Units == AeSys::kArchitectural) { Units = AeSys::kArchitecturalS; }
 
@@ -504,8 +500,7 @@ void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
 	buffer[40] = static_cast<unsigned char>(m_FontDefinition.Path());
 	buffer[41] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
 	buffer[42] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
-
-	EoGeReferenceSystem ReferenceSystem = m_ReferenceSystem;
+	auto ReferenceSystem {m_ReferenceSystem};
 
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[43])->Convert(ReferenceSystem.Origin());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[55])->Convert(ReferenceSystem.XDirection());
@@ -688,12 +683,10 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[43])->Convert());
 	ReferenceSystem.SetXDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[55])->Convert());
 	ReferenceSystem.SetYDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[67])->Convert());
-
-	short TextLength = *reinterpret_cast<short*>(& primitiveBuffer[79]);
+	auto TextLength {*reinterpret_cast<short*>(&primitiveBuffer[79])};
 
 	primitiveBuffer[81 + TextLength] = '\0';
-	CString Text = CString(reinterpret_cast<LPCSTR>(& primitiveBuffer[81]));
-
+	auto Text {CString(reinterpret_cast<LPCSTR>(&primitiveBuffer[81]))};
 
 	auto Database {blockTableRecord->database()};
 

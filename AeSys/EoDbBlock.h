@@ -3,8 +3,6 @@
 #include "EoDbGroup.h"
 
 class EoDbBlock : public EoDbGroup {
-private:
-
 	unsigned short m_wBlkTypFlgs {0};	// block type flag values
 										//		b0 set - anonymous block
 										//		b1 set - block has attribute definitions

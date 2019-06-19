@@ -94,14 +94,14 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 
 	switch (m_Layout) {
 		case SimpleSingleRow:
-			for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				SubItemRectangleByIndex(Index, Rectangle);
 
 				if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 			}
 			break;
 		case GridDown5RowsOddOnly:
-			for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 != 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
 
@@ -110,7 +110,7 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 			}
 			break;
 		case GridUp5RowsEvenOnly:
-			for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 == 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
 
@@ -124,7 +124,7 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) {
 	m_SelectedIndex = 0;
 
-	for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
+	for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 		if (m_Layout == SimpleSingleRow) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
 		} else if (m_Layout == GridDown5RowsOddOnly && Index % 2 != 0) {

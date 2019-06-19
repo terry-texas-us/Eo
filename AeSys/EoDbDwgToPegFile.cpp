@@ -56,7 +56,7 @@ void EoDbDwgToPegFile::ConvertBlockTable(gsl::not_null<AeSysDoc*> document) {
 }
 
 void EoDbDwgToPegFile::ConvertHeaderSection(AeSysDoc* document) noexcept {
-};
+}
 
 void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {
 	OdDbLayerTablePtr Layers {m_DatabasePtr_->getLayerTableId().safeOpenObject(OdDb::kForWrite)};
@@ -99,8 +99,7 @@ void EoDbDwgToPegFile::ConvertViewportTable(AeSysDoc* document) {
 
 	OdString ReportItem;
 	theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading viewport definitions ...\n", static_cast<const wchar_t*>(ViewportTable->desc()->name())));
-
-	OdDbSymbolTableIteratorPtr Iterator {ViewportTable->newIterator()};
+	auto Iterator {ViewportTable->newIterator()};
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbViewportTableRecordPtr Viewport {Iterator->getRecordId().safeOpenObject(OdDb::kForRead)};
@@ -115,8 +114,7 @@ void EoDbDwgToPegFile::ConvertBlocks(AeSysDoc* document) {
 
 	OdString ReportItem;
 	theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading block definitions ...\n", static_cast<const wchar_t*>(BlockTable->desc()->name())));
-
-	OdDbSymbolTableIteratorPtr Iterator = BlockTable->newIterator();
+	auto Iterator {BlockTable->newIterator()};
 
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbBlockTableRecordPtr Block = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
@@ -156,14 +154,14 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 		// External reference blocks have no entities. It points to a block in an external drawing.
 		// Either the external drawing's *Model_space or any non-layout block.
 	}
-	int EntitiesNotLoaded = 0;
-	OdDbObjectIteratorPtr EntityIterator = block->newIterator();
+	auto EntitiesNotLoaded {0};
+	auto EntityIterator {block->newIterator()};
 
 	for (; !EntityIterator->done(); EntityIterator->step()) {
-		const OdDbObjectId EntityObjectId = EntityIterator->objectId();
+		const auto EntityObjectId {EntityIterator->objectId()};
 		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
 
-		const int NumberOfPrimitivesInBlock = Block->GetSize();
+		const auto NumberOfPrimitivesInBlock {Block->GetSize()};
 		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
 		EntityConverter->Convert(Entity, Block);
 		if (NumberOfPrimitivesInBlock == Block->GetSize()) {
@@ -176,12 +174,11 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 	if (EntitiesNotLoaded != 0) {
         theApp.AddStringToReportList(ReportItem.format(L" %d entitities not loaded\n", EntitiesNotLoaded));
     }
-	const OdDbObjectId ObjectId = block->extensionDictionary();
+	const auto ObjectId {block->extensionDictionary()};
 	if (!ObjectId.isNull()) {
-		OdDbObjectPtr ObjectPtr = ObjectId.safeOpenObject(OdDb::kForRead);
+		auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
 		OdDbDictionaryPtr Dictionary = ObjectPtr;
-
-		OdDbDictionaryIteratorPtr Iterator = Dictionary->newIterator();
+		auto Iterator {Dictionary->newIterator()};
 		for (; !Iterator->done(); Iterator->next()) {
             theApp.AddStringToReportList(ReportItem.format(L"Dictionary name: %s\n", static_cast<const wchar_t*>(Iterator->name())));
         }
@@ -197,13 +194,11 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
     OdString ReportItem;
     theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading Layout Object definitions ...\n", static_cast<const wchar_t*>(Modelspace->desc()->name())));
     theApp.AddStringToReportList(ReportItem.format(L"Loading %s entity definitions ...\n", static_cast<const wchar_t*>(Modelspace->getName())));
-
-	int EntitiesNotLoaded = 0;
-
-	OdDbObjectIteratorPtr EntityIterator = Modelspace->newIterator();
+	auto EntitiesNotLoaded {0};
+	auto EntityIterator {Modelspace->newIterator()};
 
 	for (; !EntityIterator->done(); EntityIterator->step()) {
-		const OdDbObjectId EntityObjectId = EntityIterator->objectId();
+		const auto EntityObjectId {EntityIterator->objectId()};
 		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
 
 		auto Layer {document->GetLayerAt(Entity->layer())};
@@ -221,13 +216,12 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 	}
     theApp.AddStringToReportList(ReportItem.format(L" %d Modelspace entitities not loaded\n", EntitiesNotLoaded));
 
-	const OdDbObjectId ObjectId = Modelspace->extensionDictionary();
+	const auto ObjectId {Modelspace->extensionDictionary()};
 
 	if (!ObjectId.isNull()) {
-		OdDbObjectPtr ObjectPtr = ObjectId.safeOpenObject(OdDb::kForRead);
-		OdDbDictionaryPtr Dictionary = ObjectPtr;
-
-		OdDbDictionaryIteratorPtr Iterator = Dictionary->newIterator();
+		auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
+		OdDbDictionaryPtr Dictionary {ObjectPtr};
+		auto Iterator {Dictionary->newIterator()};
 		for (; !Iterator->done(); Iterator->next()) {
             theApp.AddStringToReportList(ReportItem.format(L"Dictionary name: %s\n", static_cast<const wchar_t*>(Iterator->name())));
         }

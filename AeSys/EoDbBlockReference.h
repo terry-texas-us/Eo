@@ -38,7 +38,7 @@ class EoDbBlockReference : public EoDbPrimitive {
 	unsigned short m_Rows {1};
 	double m_RowSpacing {0.0};
 
-public: // Constructors and destructor
+	// Constructors and destructor
 
 	EoDbBlockReference() = default;
 	EoDbBlockReference(const EoDbBlockReference& other);
@@ -46,7 +46,7 @@ public: // Constructors and destructor
 
 	~EoDbBlockReference() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
@@ -71,7 +71,7 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
-public: // Methods
+	// Methods
 
 	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
 	unsigned short Columns() const noexcept;
@@ -95,7 +95,7 @@ public: // Methods
 	void SetColumns(unsigned short columns) noexcept;
 	void SetColumnSpacing(double columnSpacing) noexcept;
 
-public: // Methods - static
+	// Methods - static
 
 	static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
 	static EoDbBlockReference* Create(OdDbDatabasePtr& database);

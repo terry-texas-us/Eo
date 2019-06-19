@@ -158,7 +158,7 @@ bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	const bool bInView = Block->IsInView(view);
+	const auto bInView {Block->IsInView(view)};
 	view->PopModelTransform();
 
 	return bInView;
@@ -198,14 +198,14 @@ bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
 
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	const bool bResult = Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view);
+	const auto bResult {Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)};
 	view->PopModelTransform();
 
 	return bResult;
 }
 
 bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
-	bool Result {false};
+	auto Result {false};
 
 	EoDbBlock* Block;
 
@@ -245,8 +245,8 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d & transformMatrix) {
 			ScaleMatrix.preMultBy(transformMatrix);
 			m_ScaleFactors.extractScale(ScaleMatrix);
 
-			const OdGeVector3d XAxis = transformMatrix.getCsXAxis();
-			const double Rotation = XAxis.convert2d().angle();
+			const auto XAxis {transformMatrix.getCsXAxis()};
+			const auto Rotation {XAxis.convert2d().angle()};
 			m_Rotation += Rotation;
 		}
 	}
@@ -371,8 +371,7 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr & database) {
 	auto BlockReferenceEntity = OdDbBlockReference::createObject();
 	BlockReferenceEntity->setDatabaseDefaults(database);
 	BlockTableRecord->appendOdDbEntity(BlockReferenceEntity);
-
-	EoDbBlockReference* BlockReference {new EoDbBlockReference()};
+	auto BlockReference {new EoDbBlockReference()};
 	BlockReference->SetEntityObjectId(BlockReferenceEntity->objectId());
 
 	BlockReference->SetColorIndex2(pstate.ColorIndex());
@@ -469,7 +468,7 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockRefere
 	// <tas="Block reference - attributes">
 	auto ObjectIterator {blockReference->attributeIterator()};
 
-	for (int i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
+	for (auto i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
 		OdDbAttributePtr AttributePtr {ObjectIterator->entity()};
 
 		if (!AttributePtr.isNull()) {

@@ -5,11 +5,11 @@
 static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CPoint& point) {
 	BITMAP Bitmap;
 	const_cast<CBitmap*>(bitmap)->GetBitmap(&Bitmap);
-	const int Width = Bitmap.bmWidth;
-	const int Height = Bitmap.bmHeight;
+	const int Width {Bitmap.bmWidth};
+	const int Height {Bitmap.bmHeight};
 	CDC MemoryDeviceContext;
 	MemoryDeviceContext.CreateCompatibleDC(const_cast<CDC*>(deviceContext));
-	CBitmap* pBmp = MemoryDeviceContext.SelectObject(const_cast<CBitmap*>(bitmap));
+	auto pBmp {MemoryDeviceContext.SelectObject(const_cast<CBitmap*>(bitmap))};
 	const_cast<CDC*>(deviceContext)->BitBlt(point.x, point.y, Width, Height, &MemoryDeviceContext, 0, 0, SRCCOPY);
 	MemoryDeviceContext.SelectObject(pBmp);
 }
@@ -34,7 +34,7 @@ int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* str
 }
 
 int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, const wchar_t* string) {
-	const int n = CComboBox::InsertString(nIndex, string ? string : L"");
+	const auto n {CComboBox::InsertString(nIndex, string ? string : L"")};
 
 	if (!bitmap) { return n; }
 
@@ -132,7 +132,7 @@ void EoCtrlBitmapPickerCombo::SetSize(int width, int height) {
 
 	if (height > m_ItemHeight) { m_ItemHeight = height; }
 
-	for (int i = -1; i < GetCount(); i++) {
+	for (auto i = -1; i < GetCount(); i++) {
 		SetItemHeight(i, static_cast<unsigned>(m_ItemHeight + 6));
 	}
 }

@@ -7,7 +7,6 @@ class EoAppAuditInfo
 public:
 	EoAppAuditInfo() noexcept;
 
-public:
 	void setHostAppServices(OdDbHostAppServices* hostAppServices) noexcept {
 		m_pHostAppServices = hostAppServices;
 	}
