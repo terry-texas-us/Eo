@@ -159,7 +159,6 @@ public:
 	//	CTaskBarWin7Ext m_tbExt;
 	OdMutexPtr m_pMeterMutex;
 
-public:
 	AeSys() noexcept;
 
 	OdString recentGsDevicePath() const;
@@ -218,7 +217,7 @@ public:
 	}
 
 	OdRxClass* databaseClass() const override /* ExHostAppServices */;
-	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = nullptr, OdDbBaseHostAppServices::FindFileHint hint = kDefault) override /* ExHostAppServices */;
+	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = nullptr, FindFileHint hint = kDefault) override /* ExHostAppServices */;
 	OdString getFontMapFileName() const override /* ExHostAppServices */;
 	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType) override /* ExHostAppServices */;
 	const OdString product() override /* ExHostAppServices */;
@@ -246,11 +245,11 @@ public:
 	void SetRecentCommand(const OdString& command);
 	const OdString& GetRecentCmd() noexcept { return m_RecentCommand; }
 
-	static inline OdString objectIdAndClassName(OdDbObjectId id) {
+	static OdString objectIdAndClassName(OdDbObjectId id) {
 		return objectIdAndClassName(id.openObject());
 	}
 
-	static inline OdString objectIdAndClassName(const OdDbObject* object) {
+	static OdString objectIdAndClassName(const OdDbObject* object) {
 		if (object != nullptr) {
 			return OdString().format(L"%02I64X : <%ls>", OdUInt64(object->objectId().getHandle()), object->isA()->name().c_str());
 		}
@@ -288,7 +287,6 @@ public:
 
 /// </Open Design Alliance>
 
-public:
 	void PreLoadState() override;
 
 	enum Units { kArchitecturalS = -1, kArchitectural, kEngineering, kFeet, kInches, kMeters, kMillimeters, kCentimeters, kDecimeters, kKilometers };
@@ -331,7 +329,6 @@ public:
 	bool m_NodalModeAddGroups {true};
 	EoApOptions m_Options;
 
-public:
 	void AddModeInformationToMessageList();
 	void AddStringToMessageList(const wchar_t* message);
 	void AddStringToMessageList(const wchar_t* message, const wchar_t* string);
@@ -403,7 +400,6 @@ public:
 	void UninitializeTeigha();
 	void UpdateMDITabs(BOOL resetMDIChild);
 
-public:
 	void OnAppAbout();
 	void OnEditCfGroups() noexcept;
 	void OnUpdateEditCfGroups(CCmdUI* pCmdUI);

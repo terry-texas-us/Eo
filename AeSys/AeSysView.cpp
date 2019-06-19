@@ -695,18 +695,18 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 	if (m_pPlotStyleTable.get() && !bForceReload) { return; }
 
 	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
-	OdDbLayoutPtr pCurrLayout;
+	OdDbLayoutPtr CurrentLayout;
 	
 	if (!layout) {
 		OdDbBlockTableRecordPtr pLayoutBlock = Database->getActiveLayoutBTRId().safeOpenObject();
-		pCurrLayout = pLayoutBlock->getLayoutId().safeOpenObject();
-		layout = pCurrLayout;
+		CurrentLayout = pLayoutBlock->getLayoutId().safeOpenObject();
+		layout = CurrentLayout;
 	}
 	m_bPlotPlotstyle = layout->plotPlotStyles();
 	m_bShowPlotstyle = layout->showPlotStyles();
 
 	if (isPlotGeneration() ? m_bPlotPlotstyle : m_bShowPlotstyle) {
-		OdString pssFile(layout->getCurrentStyleSheet());
+		auto pssFile(layout->getCurrentStyleSheet());
 
 		if (!pssFile.isEmpty()) {
 			auto testpath {Database->appServices()->findFile(pssFile)};
@@ -725,7 +725,7 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 CString GetRegistryAcadProfilesKey(); // external defined in AeSys
 
 static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subkey, const wchar_t* name, unsigned long& value) noexcept {
-	bool ReturnValue {false};
+	auto ReturnValue {false};
 	HKEY KeyHandle {nullptr};
 
 	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
@@ -753,7 +753,7 @@ static bool GetAcadProfileRegistryUnsignedLong(const wchar_t* subkey, const wcha
 }
 
 unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
-	bool Processed {false};
+	auto Processed {false};
 	unsigned long Value {0};
 
 	switch (glyphType) {
@@ -1068,13 +1068,13 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 	ViewportPushActive();
 	PushViewTransform();
 
-	const int HorizontalPixelWidth {deviceContext->GetDeviceCaps(HORZRES)};
-	const int VerticalPixelWidth {deviceContext->GetDeviceCaps(VERTRES)};
+	const auto HorizontalPixelWidth {deviceContext->GetDeviceCaps(HORZRES)};
+	const auto VerticalPixelWidth {deviceContext->GetDeviceCaps(VERTRES)};
 
 	SetViewportSize(HorizontalPixelWidth, VerticalPixelWidth);
 
-	const double HorizontalSize {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE))};
-	const double VerticalSize {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE))};
+	const auto HorizontalSize {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE))};
+	const auto VerticalSize {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE))};
 
 	SetDeviceWidthInInches(HorizontalSize / kMmPerInch);
 	SetDeviceHeightInInches(VerticalSize / kMmPerInch);
@@ -1096,7 +1096,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 	destRectangle.NormalizeRect();
 	OdGsDCRect step(0, 0, 0, 0);
 	OdGsDCRect rc(drawRectangle.left, drawRectangle.right, drawRectangle.bottom, drawRectangle.top);
-	const long Width {abs(rc.m_max.x - rc.m_min.x)};
+	const auto Width {abs(rc.m_max.x - rc.m_min.x)};
 	rc.m_max.x -= rc.m_min.x;
 
 	if (rc.m_max.x < 0) {
@@ -1107,7 +1107,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 		rc.m_min.x = 0;
 		step.m_max.x = tileWidth;
 	}
-	const long Height {abs(rc.m_max.y - rc.m_min.y)};
+	const auto Height {abs(rc.m_max.y - rc.m_min.y)};
 	rc.m_max.y -= rc.m_min.y;
 
 	if (rc.m_max.y < 0) {
@@ -1118,8 +1118,8 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 		rc.m_min.y = 0;
 		step.m_max.y = tileHeight;
 	}
-	const long m {Width / tileWidth + (Width % tileWidth ? 1 : 0)};
-	const long n {Height / tileHeight + (Height % tileHeight ? 1 : 0)};
+	const auto m {Width / tileWidth + (Width % tileWidth ? 1 : 0)};
+	const auto n {Height / tileHeight + (Height % tileHeight ? 1 : 0)};
 
 	BmpTilesGen tilesGen(pBmpDevice, rc);
 	pBmpDevice->onSize(rc);
@@ -1129,8 +1129,8 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 	const int dx {(step.m_max.x - step.m_min.x)};
 	const int dy {(step.m_max.y - step.m_min.y)};
 
-	const int dx2 {m > 1 ? dx / abs(dx) * 8 : 0};
-	const int dy2 {n > 1 ? dy / abs(dy) * 8 : 0};
+	const auto dx2 {m > 1 ? dx / abs(dx) * 8 : 0};
+	const auto dy2 {n > 1 ? dy / abs(dy) * 8 : 0};
 
 	BITMAPINFO BitmapInfo;
 	BitmapInfo.bmiHeader.biBitCount = 24u;
@@ -1144,21 +1144,21 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 	BitmapInfo.bmiHeader.biSizeImage = 0;
 	BitmapInfo.bmiHeader.biXPelsPerMeter = 0;
 	BitmapInfo.bmiHeader.biYPelsPerMeter = 0;
-
-	HDC bmpDC = CreateCompatibleDC(hdc);
+	
+	auto bmpDC = CreateCompatibleDC(hdc);
 
 	if (bmpDC) {
 		void* pBuf;
-		HBITMAP hBmp {CreateDIBSection(nullptr, &BitmapInfo, DIB_RGB_COLORS, &pBuf, nullptr, 0)};
+		auto hBmp {CreateDIBSection(nullptr, &BitmapInfo, DIB_RGB_COLORS, &pBuf, nullptr, 0)};
 
 		if (hBmp) {
 			auto hOld {static_cast<HBITMAP>(SelectObject(bmpDC, hBmp))};
 			for (long i = 0; i < m; ++i) {
 				for (long j = 0; j < n; ++j) {
-					const int minx = rc.m_min.x + i * dx;
-					const int maxx = minx + dx;
-					const int miny = rc.m_min.y + j * dy;
-					const int maxy = miny + dy;
+					const int minx {rc.m_min.x + i * dx};
+					const auto maxx {minx + dx};
+					const int miny {rc.m_min.y + j * dy};
+					const auto maxy {miny + dy};
 
 					// render wider then a tile area to reduce gaps in lines.
 					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
@@ -1205,8 +1205,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	//  Note: if we want to get the same Plot View for Paper Layout as AutoCAD then pIter needs to create pseudo DC having the requisite settings & properties.
 	//        Look at OnPreparePrinting() where we try to set required printer device.
 	//        Otherwise CPreviewView uses settings and properties of current Printer/plotter (see CPreviewView::OnDraw()) to draw empty page on screen.
-
-	bool IsPlotViaBitmap = AfxGetApp()->GetProfileIntW(L"options", L"Print/Preview via bitmap device", 1) != 0;
+	auto IsPlotViaBitmap {AfxGetApp()->GetProfileIntW(L"options", L"Print/Preview via bitmap device", 1) != 0};
 
 	if (m_pPrinterDevice.isNull()) {
 		OdGsModulePtr GsModule = odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath());
@@ -1229,7 +1228,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 				GsPrinterDevice->properties()->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR()));
 			}
 			if (/*IsPlotViaBitmap &&*/ GsPrinterDevice->properties()->has(L"DPI")) { // #9633 (1)
-				const int MinimumLogicalPixels = odmin(deviceContext->GetDeviceCaps(LOGPIXELSX), deviceContext->GetDeviceCaps(LOGPIXELSY));
+				const auto MinimumLogicalPixels {odmin(deviceContext->GetDeviceCaps(LOGPIXELSX), deviceContext->GetDeviceCaps(LOGPIXELSY))};
 				GsPrinterDevice->properties()->putAt(L"DPI", OdRxVariantValue(static_cast<unsigned long>(MinimumLogicalPixels)));
 			}
 			m_pPrinterDevice = OdDbGsManager::setupActiveLayoutViews(GsPrinterDevice, this);
@@ -1244,50 +1243,50 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		setPaletteBackground(m_pPrinterDevice->getBackgroundColor());
 	}
 	if (m_pPrinterDevice.get()) {
-		bool IsPrint90Degrees(false);
-		bool IsPrint0Degrees(false);
-		bool IsPrint180Degrees(false);
-		bool IsPrint270Degrees(false);
+		auto IsPrint90Degrees(false);
+		auto IsPrint0Degrees(false);
+		auto IsPrint180Degrees(false);
+		auto IsPrint270Degrees(false);
 
 		double PrinterWidth = deviceContext->GetDeviceCaps(PHYSICALWIDTH);
 
 		if (printInformation->m_bPreview) { PrinterWidth -= 2; }
 
-		const double PrinterHeight {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALHEIGHT))};
-		const double PrinterLeftMargin {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALOFFSETX))};
-		const double PrinterTopMargin {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALOFFSETY))};
-		const double PrinterMarginWidth {static_cast<double>(deviceContext->GetDeviceCaps(HORZRES))};
-		const double PrinterMarginHeight {static_cast<double>(deviceContext->GetDeviceCaps(VERTRES))};
-		const double LogicalPixelsX {static_cast<double>(deviceContext->GetDeviceCaps(LOGPIXELSX))};
-		const double LogicalPixelsY {static_cast<double>(deviceContext->GetDeviceCaps(LOGPIXELSY))};
-		// const double PrinterRightMargin {PrinterWidth - PrinterMarginWidth - PrinterLeftMargin};
-		const double PrinterBottomMargin {PrinterHeight - PrinterMarginHeight - PrinterTopMargin};
-		const double koeffX {LogicalPixelsX / kMmPerInch};
-		const double koeffY {LogicalPixelsY / kMmPerInch};
+		const auto PrinterHeight {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALHEIGHT))};
+		const auto PrinterLeftMargin {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALOFFSETX))};
+		const auto PrinterTopMargin {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALOFFSETY))};
+		const auto PrinterMarginWidth {static_cast<double>(deviceContext->GetDeviceCaps(HORZRES))};
+		const auto PrinterMarginHeight {static_cast<double>(deviceContext->GetDeviceCaps(VERTRES))};
+		const auto LogicalPixelsX {static_cast<double>(deviceContext->GetDeviceCaps(LOGPIXELSX))};
+		const auto LogicalPixelsY {static_cast<double>(deviceContext->GetDeviceCaps(LOGPIXELSY))};
+		// const auto PrinterRightMargin {PrinterWidth - PrinterMarginWidth - PrinterLeftMargin};
+		const auto PrinterBottomMargin {PrinterHeight - PrinterMarginHeight - PrinterTopMargin};
+		const auto koeffX {LogicalPixelsX / kMmPerInch};
+		const auto koeffY {LogicalPixelsY / kMmPerInch};
 
-		const bool IsModelLayout {m_pPrinterDevice->isKindOf(OdGsModelLayoutHelper::desc())};
+		const auto IsModelLayout {m_pPrinterDevice->isKindOf(OdGsModelLayoutHelper::desc())};
 
 		OdDbLayoutPtr Layout {m_pPrinterDevice->layoutId().safeOpenObject()};
 
-		bool IsScaledToFit = Layout->useStandardScale() && OdDbPlotSettings::kScaleToFit == Layout->stdScaleType();
-		bool IsCentered = Layout->plotCentered();
-		const bool IsMetric = Layout->plotPaperUnits() != OdDbPlotSettings::kInches ? true : false;
-		const bool IsPrintLineweights = Layout->printLineweights() || Layout->showPlotStyles();
+		auto IsScaledToFit {Layout->useStandardScale() && OdDbPlotSettings::kScaleToFit == Layout->stdScaleType()};
+		auto IsCentered {Layout->plotCentered()};
+		const auto IsMetric {Layout->plotPaperUnits() != OdDbPlotSettings::kInches ? true : false};
+		const auto IsPrintLineweights {Layout->printLineweights() || Layout->showPlotStyles()};
 
 		double offsetX;
 		double offsetY;
 		Layout->getPlotOrigin(offsetX, offsetY); // in mm
-		OdGePoint2d PaperImageOrigin = Layout->getPaperImageOrigin(); // in mm
+		auto PaperImageOrigin {Layout->getPaperImageOrigin()}; // in mm
 
-		double LeftMargin = Layout->getLeftMargin(); // in mm
-		double RightMargin = Layout->getRightMargin(); // in mm
-		double TopMargin = Layout->getTopMargin(); // in mm
-		double BottomMargin = Layout->getBottomMargin(); // in mm
+		auto LeftMargin {Layout->getLeftMargin()}; // in mm
+		auto RightMargin {Layout->getRightMargin()}; // in mm
+		auto TopMargin {Layout->getTopMargin()}; // in mm
+		auto BottomMargin {Layout->getBottomMargin()}; // in mm
 
-		const OdDbPlotSettings::PlotType plotType = Layout->plotType();
+		const auto plotType {Layout->plotType()};
 
 		if (IsPrintLineweights && IsModelLayout) { // set LineWeight scale factor for model space
-			OdGsView* pTo = m_pPrinterDevice->viewAt(0);
+			auto pTo {m_pPrinterDevice->viewAt(0)};
 			pTo->setLineweightToDcScale(odmax(LogicalPixelsX, LogicalPixelsY) / kMmPerInch * 0.01);
 		}
 		
@@ -4022,8 +4021,8 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 	}
 }
 
-const ODCOLORREF* AeSysView::CurrentPalette() const {
-	const ODCOLORREF* Color = odcmAcadPalette(m_Background);
+	const ODCOLORREF* AeSysView::CurrentPalette() const {
+	const ODCOLORREF* Color {odcmAcadPalette(m_Background)};
 	return Color;
 }
 

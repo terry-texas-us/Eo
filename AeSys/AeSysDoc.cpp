@@ -67,7 +67,7 @@
 unsigned CALLBACK OFNHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {
-	const wchar_t* String {static_cast<const wchar_t*>(string)};
+	auto String {static_cast<const wchar_t*>(string)};
 	unsigned nHash {0};
 
 	while (*String) {
@@ -339,7 +339,7 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 				const auto Parent {View->GetParent()};
 				// Get prev params
 				const auto Iconic {Parent->IsIconic() != FALSE};
-				const bool Zoomed {Parent->IsZoomed() != FALSE};
+				const auto Zoomed {Parent->IsZoomed() != FALSE};
 				CRect ParentRectangle;
 				Parent->GetWindowRect(&ParentRectangle);
 				CPoint TopLeftPoint(ParentRectangle.left, ParentRectangle.top);
@@ -414,7 +414,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	Document->UpdateAllViews(nullptr);
 	auto UserIO {CommandContext->dbUserIO()};
 	UserIO->setPickfirst(nullptr);
-	int SelectOptions = OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty;
+	auto SelectOptions {OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty};
 
 	OdDbSelectionSetPtr SelectionSet;
 	try {
@@ -578,7 +578,7 @@ void AeSysDoc::OnEditConsole() {
 
 		} else {
 			for (;;) {
-				OdString CommandName = CommandContext->userIO()->getString(CommandPrompt(), 0, L"");
+				auto CommandName {CommandContext->userIO()->getString(CommandPrompt(), 0, L"")};
 				if (CommandName.isEmpty()) {
 					CommandName = RecentCommandName();
 
@@ -654,7 +654,7 @@ public:
 		auto pViewer {OdDbDatabaseDocPtr(m_CommandContext->database())->document()->getViewer()};
 
 		if (pViewer) {
-			OdEdCommandPtr Command {pViewer->command(commandName)};
+			auto Command {pViewer->command(commandName)};
 
 			if (Command.get()) { return Command; }
 		}
@@ -717,7 +717,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 			if (!lspMod.isNull()) { lspMod->createLispEngine()->execute(pExCmdCtx, command); }
 
 		} else {
-			OdString s = command.spanExcluding(L" \t\r\n");
+			auto s {command.spanExcluding(L" \t\r\n")};
 
 			if (s.getLength() == command.getLength()) {
 
@@ -789,7 +789,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 					if (ItemData.get()) {
 
 						if (messageCategory == CN_COMMAND) {
-							OdEdCommandPtr EdCommand = OdEdCommand::cast(ItemData);
+							OdEdCommandPtr EdCommand {OdEdCommand::cast(ItemData)};
 
 							if (EdCommand.get()) {
 								ExecuteCommand(EdCommand->globalName());
@@ -803,8 +803,8 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 				} else if (commandId >= _APS_NEXT_COMMAND_VALUE && commandId < _APS_NEXT_COMMAND_VALUE + 100) { // annotation scales
 
 					if (messageCategory == CN_COMMAND) {
-						const unsigned SelectedScale {commandId - _APS_NEXT_COMMAND_VALUE - 1};
-						OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator {m_DatabasePtr->objectContextManager()->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)->newIterator()};
+						const auto SelectedScale {commandId - _APS_NEXT_COMMAND_VALUE - 1};
+						auto ScalesCollectionIterator {m_DatabasePtr->objectContextManager()->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)->newIterator()};
 
 						for (unsigned ScaleIndex = 0; !ScalesCollectionIterator->done(); ScalesCollectionIterator->next()) {
 
@@ -890,7 +890,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 	}
 	auto DimStyle {OdDbDimStyleTableRecord::createObject()};
 	DimStyle->setName(L"EoStandard");
-	OdDbObjectId dimStyleId = DimStyleTable->add(DimStyle);
+	auto dimStyleId {DimStyleTable->add(DimStyle)};
 
 	DimStyle->setDimtxsty(m_DatabasePtr->getTextStyleStandardId());
 
@@ -952,7 +952,7 @@ BOOL AeSysDoc::OnNewDocument() {
 			theApp.reportError(L"Database Creating Error...", Error);
 			return FALSE;
 		}
-		OdDbTextStyleTableRecordPtr TextStyle = AddStandardTextStyle();
+		auto TextStyle {AddStandardTextStyle()};
 		m_DatabasePtr->setTEXTSTYLE(TextStyle->objectId());
 
 		AddStandardDimensionStyle();
@@ -993,7 +993,7 @@ BOOL AeSysDoc::OnNewDocument() {
 
 BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 	OdDbDatabaseDoc::setDocToAssign(this);
-	EoDb::FileTypes FileType = AeSys::GetFileType(file);
+	auto FileType {AeSys::GetFileType(file)};
 
 	switch (FileType) {
 		case EoDb::kDwg:

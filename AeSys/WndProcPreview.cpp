@@ -6,7 +6,7 @@
 
 #include "Preview.h"
 
-CBitmap* WndProcPreview_Bitmap = nullptr;
+CBitmap* g_WndProcPreview_Bitmap = nullptr;
 
 LRESULT CALLBACK WndProcPreview(HWND, unsigned, WPARAM, LPARAM);
 
@@ -18,11 +18,11 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	Class.cbClsExtra = 0;
 	Class.cbWndExtra = 0;
 	Class.hInstance = instance;
-	Class.hIcon = 0;
+	Class.hIcon = nullptr;
 	Class.hCursor = static_cast<HCURSOR>(LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
-	Class.hbrBackground	= static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
-	Class.lpszMenuName = 0;
-	Class.lpszClassName	= L"PreviewWindow";
+	Class.hbrBackground = static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
+	Class.lpszMenuName = nullptr;
+	Class.lpszClassName = L"PreviewWindow";
 
 	return ::RegisterClass(&Class);
 }
@@ -30,19 +30,19 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};
-			CDC* DeviceContext = ActiveView ? ActiveView->GetDC() : nullptr;
+			auto DeviceContext {ActiveView ? ActiveView->GetDC() : nullptr};
 
 			CRect rc;
 			GetClientRect(hwnd, &rc);
-			WndProcPreview_Bitmap = new CBitmap;
-			WndProcPreview_Bitmap->CreateCompatibleBitmap(DeviceContext, int(rc.right), int(rc.bottom));
+			g_WndProcPreview_Bitmap = new CBitmap;
+			g_WndProcPreview_Bitmap->CreateCompatibleBitmap(DeviceContext, int(rc.right), int(rc.bottom));
 		}
-						return FALSE;
+			return FALSE;
 
 		case WM_DESTROY:
-			if (WndProcPreview_Bitmap != nullptr) {
-				delete WndProcPreview_Bitmap;
-				WndProcPreview_Bitmap = nullptr;
+			if (g_WndProcPreview_Bitmap != nullptr) {
+				delete g_WndProcPreview_Bitmap;
+				g_WndProcPreview_Bitmap = nullptr;
 			}
 			return FALSE;
 
@@ -58,7 +58,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 			CDC dcMem;
 			dcMem.CreateCompatibleDC(NULL);
 
-			CBitmap* Bitmap = dcMem.SelectObject(WndProcPreview_Bitmap);
+			auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 			dc.BitBlt(0, 0, rc.right, rc.bottom, &dcMem, 0, 0, SRCCOPY);
 			dcMem.SelectObject(Bitmap);
 
@@ -66,12 +66,11 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 
 			EndPaint(hwnd, &ps);
 		}
-		return FALSE;
+			return FALSE;
 
 		case WM_LBUTTONDOWN:
 			SetFocus(hwnd);
 			return FALSE;
-
 	}
 	return DefWindowProc(hwnd, message, nParam, lParam);
 }
@@ -83,7 +82,7 @@ void WndProcPreviewClear(HWND previewWindow) {
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(0);
 
-	CBitmap* Bitmap = static_cast<CBitmap*>(dcMem.SelectObject(WndProcPreview_Bitmap));
+	CBitmap* Bitmap = static_cast<CBitmap*>(dcMem.SelectObject(g_WndProcPreview_Bitmap));
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 
 	dcMem.SelectObject(Bitmap);
@@ -99,7 +98,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(NULL);
 
-	CBitmap* Bitmap = dcMem.SelectObject(WndProcPreview_Bitmap);
+	auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 
 	ActiveView->ViewportPushActive();
@@ -109,26 +108,26 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 
 	OdGeExtents3d Extents;
 	block->GetExtents_(ActiveView, Extents);
-	const OdGePoint3d MinimumPoint = Extents.minPoint();
-	const OdGePoint3d MaximumPoint = Extents.maxPoint();
-	
+	const auto MinimumPoint {Extents.minPoint()};
+	const auto MaximumPoint {Extents.maxPoint()};
+
 	ActiveView->PushViewTransform();
 
-	double FieldWidth = MaximumPoint.x - MinimumPoint.x;
-	double FieldHeight = MaximumPoint.y - MinimumPoint.y;
+	auto FieldWidth {MaximumPoint.x - MinimumPoint.x};
+	auto FieldHeight {MaximumPoint.y - MinimumPoint.y};
 
-	const double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
+	const auto AspectRatio {ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches()};
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
 	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
 	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
-	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
+	const auto Position(Target + OdGeVector3d::kZAxis * 50.);
 
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
 
-	const int PrimitiveState = pstate.Save();
+	const auto PrimitiveState {pstate.Save()};
 	block->Display(ActiveView, &dcMem);
 	pstate.Restore(dcMem, PrimitiveState);
 
@@ -148,7 +147,7 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(NULL);
 
-	CBitmap* Bitmap = dcMem.SelectObject(WndProcPreview_Bitmap);
+	auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 
 	ActiveView->ViewportPushActive();
@@ -158,26 +157,26 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 
 	OdGeExtents3d Extents;
 	groups->GetExtents__(ActiveView, Extents);
-	const OdGePoint3d MinimumPoint = Extents.minPoint();
-	const OdGePoint3d MaximumPoint = Extents.maxPoint();
+	const auto MinimumPoint {Extents.minPoint()};
+	const auto MaximumPoint {Extents.maxPoint()};
 
 	ActiveView->PushViewTransform();
-	
-	double FieldWidth = MaximumPoint.x - MinimumPoint.x;
-	double FieldHeight = MaximumPoint.y - MinimumPoint.y;
 
-	const double AspectRatio = ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches();
+	auto FieldWidth {MaximumPoint.x - MinimumPoint.x};
+	auto FieldHeight {MaximumPoint.y - MinimumPoint.y};
+
+	const auto AspectRatio {ActiveView->ViewportHeightInInches() / ActiveView->ViewportWidthInInches()};
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
 	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
 	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
-	const OdGePoint3d Position(Target + OdGeVector3d::kZAxis * 50.);
+	const auto Position(Target + OdGeVector3d::kZAxis * 50.);
 
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
-	
-	const int PrimitiveState = pstate.Save();
+
+	const auto PrimitiveState {pstate.Save()};
 	groups->Display(ActiveView, &dcMem);
 	pstate.Restore(dcMem, PrimitiveState);
 

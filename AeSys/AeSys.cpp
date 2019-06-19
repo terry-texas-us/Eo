@@ -555,7 +555,7 @@ void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int p
 
 OdDbUndoControllerPtr AeSys::newUndoController() {
 	if (undoType()) {
-		ExFileUndoControllerPtr FileUndoController = OdRxObjectImpl<ExFileUndoController>::createObject();
+		ExFileUndoControllerPtr FileUndoController {OdRxObjectImpl<ExFileUndoController>::createObject()};
 		FileUndoController->setStorage(newUndoStream());
 		return FileUndoController;
 	}
