@@ -194,11 +194,11 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 	ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
 END_MESSAGE_MAP()
 
-unsigned short AeSysDoc::ClipboardData::m_FormatR15 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r15"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR16 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r16"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR17 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r17"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR18 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r18"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR19 = static_cast<unsigned short>(::RegisterClipboardFormatW(L"AutoCAD.r19"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR15 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR16 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r16"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR17 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r17"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR18 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r18"));
+unsigned short AeSysDoc::ClipboardData::m_FormatR19 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r19"));
 
 AeSysDoc* g_pDoc {nullptr};
 
@@ -503,9 +503,9 @@ EoDlgUserIOConsole* AeSysDoc::UserIOConsole() {
 unsigned long AeSysDoc::getKeyState() noexcept {
 	unsigned long KeyState(0);
 
-	if (::GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
+	if (GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
 
-	if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
+	if (GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
 
 	return KeyState;
 }
@@ -566,7 +566,7 @@ OdString AeSysDoc::CommandPrompt() {
 }
 
 void AeSysDoc::OnEditConsole() {
-	auto CommandStack {::odedRegCmds()};
+	auto CommandStack {odedRegCmds()};
 	OdDbCommandContextPtr CommandContext(CommandContext());
 	OdSaveState<bool> saveConsoleMode(m_bConsole, true);
 
@@ -620,12 +620,12 @@ public:
 		: m_CommandContext(dbCommandContext)
 		, m_Modified(false) {
 		ODA_ASSERT(m_CommandContext);
-		::odedRegCmds()->addReactor(this);
+		odedRegCmds()->addReactor(this);
 		m_CommandContext->database()->addReactor(this);
 	}
 
 	~CmdReactor() {
-		::odedRegCmds()->removeReactor(this);
+		odedRegCmds()->removeReactor(this);
 
 		if (!m_Modified) { m_CommandContext->database()->removeReactor(this); }
 	}
@@ -705,7 +705,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	CmdReactor CommandReactor(CommandContext);
 
 	try {
-		auto CommandStack {::odedRegCmds()};
+		auto CommandStack {odedRegCmds()};
 		auto pExCmdCtx {dynamic_cast<ExDbCommandContext*>(CommandContext.get())};
 		
 		if (m_DatabasePtr->appServices()->getPICKFIRST()) {
@@ -1145,19 +1145,19 @@ void AeSysDoc::Dump(CDumpContext & dc) const {
 #endif //_DEBUG
 
 void AeSysDoc::UpdateGroupInAllViews(LPARAM hint, EoDbGroup* group) {
-	CDocument::UpdateAllViews(nullptr, hint, group);
+	UpdateAllViews(nullptr, hint, group);
 }
 
 void AeSysDoc::UpdateGroupsInAllViews(LPARAM hint, EoDbGroupList* groups) {
-	CDocument::UpdateAllViews(nullptr, hint, groups);
+	UpdateAllViews(nullptr, hint, groups);
 }
 
 void AeSysDoc::UpdateLayerInAllViews(LPARAM hint, EoDbLayer* layer) {
-	CDocument::UpdateAllViews(nullptr, hint, layer);
+	UpdateAllViews(nullptr, hint, layer);
 }
 
 void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive) {
-	CDocument::UpdateAllViews(nullptr, hint, primitive);
+	UpdateAllViews(nullptr, hint, primitive);
 }
 
 void AeSysDoc::AddTextBlock(wchar_t* text) {
@@ -1883,14 +1883,14 @@ void AeSysDoc::OnFileQuery() {
 
 	if (Layer != nullptr) {
 		CPoint CurrentPosition;
-		::GetCursorPos(&CurrentPosition);
+		GetCursorPos(&CurrentPosition);
 
 		m_IdentifiedLayerName = Layer->Name();
 
 		const int MenuResource = Layer->IsInternal() ? IDR_LAYER : IDR_TRACING;
 
-		auto LayerTracingMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(MenuResource))};
-		auto SubMenu {CMenu::FromHandle(::GetSubMenu(LayerTracingMenu, 0))};
+		auto LayerTracingMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(MenuResource))};
+		auto SubMenu {CMenu::FromHandle(GetSubMenu(LayerTracingMenu, 0))};
 
 		SubMenu->ModifyMenu(0, MF_BYPOSITION | MF_STRING, 0, m_IdentifiedLayerName);
 
@@ -1901,12 +1901,12 @@ void AeSysDoc::OnFileQuery() {
 			SubMenu->CheckMenuItem(ID_LAYER_OFF, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsOff() ? MF_CHECKED : MF_UNCHECKED));
 		} else {
 			SubMenu->CheckMenuItem(ID_TRACING_CURRENT, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsCurrent() ? MF_CHECKED : MF_UNCHECKED));
-			SubMenu->CheckMenuItem(ID_TRACING_ACTIVE, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_ACTIVE, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsActive() ? MF_CHECKED : MF_UNCHECKED));
 			SubMenu->CheckMenuItem(ID_TRACING_LOCK, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsLocked() ? MF_CHECKED : MF_UNCHECKED));
 			SubMenu->CheckMenuItem(ID_TRACING_OFF, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsOff() ? MF_CHECKED : MF_UNCHECKED));
 		}
 		SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
-		::DestroyMenu(LayerTracingMenu);
+		DestroyMenu(LayerTracingMenu);
 	}
 }
 
@@ -2070,18 +2070,18 @@ void AeSysDoc::OnPurgeUnreferencedBlocks() {
 }
 
 void AeSysDoc::OnEditImageToClipboard() {
-	auto MetaFile {::CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
+	auto MetaFile {CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
 	DisplayAllLayers(AeSysView::GetActiveView(), CDC::FromHandle(MetaFile));
-	auto MetaFileHandle {::CloseEnhMetaFile(MetaFile)};
+	auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
 
-	::OpenClipboard(nullptr);
-	::EmptyClipboard();
-	::SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
-	::CloseClipboard();
+	OpenClipboard(nullptr);
+	EmptyClipboard();
+	SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
+	CloseClipboard();
 }
 
 void AeSysDoc::OnEditTrace() {
-	if (::OpenClipboard(nullptr)) {
+	if (OpenClipboard(nullptr)) {
 		wchar_t sBuf[16] {L"\0"};
 
 		unsigned ClipboardFormat {0};
@@ -2140,7 +2140,7 @@ void AeSysDoc::OnEditTrapCut() {
 }
 
 void AeSysDoc::OnEditTrapPaste() {
-	if (::OpenClipboard(nullptr)) {
+	if (OpenClipboard(nullptr)) {
 		const auto ClipboardFormat {theApp.ClipboardFormatIdentifierForEoGroups()};
 
 		if (IsClipboardFormatAvailable(ClipboardFormat)) {

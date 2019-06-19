@@ -15,8 +15,8 @@ public:
 	void printError(const OdRxObject* object, const OdString& value, const OdString& validation = L"", const OdString& defaultValue = L"") override {} // OdDbAuditInfo (to suppress C4266 warning)
 	
 	void printInfo(const OdString& info) override;
-	const OdDbAuditInfo::MsgInfo& getLastInfo() override;
-	void setLastInfo(OdDbAuditInfo::MsgInfo& messageInfo) override;
+	const MsgInfo& getLastInfo() override;
+	void setLastInfo(MsgInfo& messageInfo) override;
 private:
 	OdDbHostAppServices* m_pHostAppServices;
 };

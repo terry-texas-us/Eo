@@ -96,7 +96,7 @@ void AeSysView::OnPowerModeHome() {
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 
-	if (!m_PowerArrow || (PointOnCircuit != CurrentPnt)) {
+	if (!m_PowerArrow || PointOnCircuit != CurrentPnt) {
 		m_PowerArrow = false;
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
 		auto Group {std::get<tGroup>(Selection)};

@@ -56,7 +56,7 @@ void EoVarDialog::OnSize(unsigned type, int cx, int cy) {
 void EoVarDialog::SetupGripper() {
 	WINDOWPLACEMENT WindowPlacement;
 	GetWindowPlacement(&WindowPlacement);
-	const BOOL bMaximized = (WindowPlacement.showCmd == SW_MAXIMIZE);
+	const BOOL bMaximized = WindowPlacement.showCmd == SW_MAXIMIZE;
 	if (bMaximized) {
 		m_Grip.ShowWindow(SW_HIDE);
 	} else {

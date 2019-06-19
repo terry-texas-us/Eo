@@ -50,23 +50,23 @@ void EoDialogResizeHelper::OnSize() {
 			if (hFix & kLeft) {
 				currCtrlSize.left = it->m_origSize.left;
 			} else {
-				currCtrlSize.left = (hFix & kWidth) && (hFix & kRight) ? (it->m_origSize.left + currParentSize.Width() - m_origParentSize.Width()) : static_cast<long>(it->m_origSize.left * xRatio);
+				currCtrlSize.left = hFix & kWidth && hFix & kRight ? it->m_origSize.left + currParentSize.Width() - m_origParentSize.Width() : static_cast<long>(it->m_origSize.left * xRatio);
 			}
 			if (hFix & kRight) {
 				currCtrlSize.right = it->m_origSize.right + currParentSize.Width() - m_origParentSize.Width();
 			} else {
-				currCtrlSize.right = (hFix & kWidth) ? (currCtrlSize.left + it->m_origSize.Width()) : static_cast<long>(it->m_origSize.right * xRatio);
+				currCtrlSize.right = hFix & kWidth ? currCtrlSize.left + it->m_origSize.Width() : static_cast<long>(it->m_origSize.right * xRatio);
 			}
 
 			if (vFix & kTop) {
 				currCtrlSize.top = it->m_origSize.top;
 			} else {
-				currCtrlSize.top = ((vFix & kHeight) && (vFix & kBottom)) ? (it->m_origSize.top + currParentSize.Height() - m_origParentSize.Height()) : static_cast<long>(it->m_origSize.top * yRatio);
+				currCtrlSize.top = vFix & kHeight && (vFix & kBottom) ? it->m_origSize.top + currParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
 			}
 			if (vFix & kBottom) {
 				currCtrlSize.bottom = it->m_origSize.bottom + currParentSize.Height() - m_origParentSize.Height();
 			} else {
-				currCtrlSize.bottom = (vFix & kHeight) ? (currCtrlSize.top + it->m_origSize.Height()) : static_cast<long>(it->m_origSize.bottom * yRatio);
+				currCtrlSize.bottom = vFix & kHeight ? currCtrlSize.top + it->m_origSize.Height() : static_cast<long>(it->m_origSize.bottom * yRatio);
 			}
 			// resize child window
 			::MoveWindow(it->m_hCtrl, currCtrlSize.left, currCtrlSize.top, currCtrlSize.Width(), currCtrlSize.Height(), TRUE);
@@ -105,7 +105,7 @@ unsigned EoDialogResizeHelper::Fix(const wchar_t* a_pszClassName, EHFix a_hFix, 
 	CtrlCont_t::iterator it;
 
 	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
-		::GetClassName(it->m_hCtrl, pszCN, sizeof(pszCN));
+		::GetClassName(it->m_hCtrl, pszCN, sizeof pszCN);
 
 		if (wcscmp(pszCN, a_pszClassName) == 0) {
 			cnt++;

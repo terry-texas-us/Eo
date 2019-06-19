@@ -66,25 +66,25 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 		return;
 	}
 	if (drawItemStruct->itemState & ODS_SELECTED && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
-		CBrush HighlightBrush(::GetSysColor(COLOR_HIGHLIGHT));
-		CPen HighlightPen(PS_SOLID, 1, ::GetSysColor(COLOR_HIGHLIGHT));
+		CBrush HighlightBrush(GetSysColor(COLOR_HIGHLIGHT));
+		CPen HighlightPen(PS_SOLID, 1, GetSysColor(COLOR_HIGHLIGHT));
 		auto OldBrush {DeviceContext->SelectObject(&HighlightBrush)};
 		auto OldPen {DeviceContext->SelectObject(&HighlightPen)};
 		DeviceContext->Rectangle(&drawItemStruct->rcItem);
-		DeviceContext->SetBkColor(::GetSysColor(COLOR_HIGHLIGHT));
-		DeviceContext->SetTextColor(::GetSysColor(COLOR_HIGHLIGHTTEXT));
+		DeviceContext->SetBkColor(GetSysColor(COLOR_HIGHLIGHT));
+		DeviceContext->SetTextColor(GetSysColor(COLOR_HIGHLIGHTTEXT));
 		OutputBitmap(drawItemStruct, true);
 		DeviceContext->SelectObject(OldBrush);
 		DeviceContext->SelectObject(OldPen);
 	}
 	if (!(drawItemStruct->itemState & ODS_SELECTED) && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
-		CBrush WindowBrush(::GetSysColor(COLOR_WINDOW));
-		CPen WindowPen(PS_SOLID, 1, ::GetSysColor(COLOR_WINDOW));
+		CBrush WindowBrush(GetSysColor(COLOR_WINDOW));
+		CPen WindowPen(PS_SOLID, 1, GetSysColor(COLOR_WINDOW));
 		auto OldBrush {DeviceContext->SelectObject(&WindowBrush)};
 		auto OldPen {DeviceContext->SelectObject(&WindowPen)};
 		DeviceContext->Rectangle(&drawItemStruct->rcItem);
-		DeviceContext->SetBkColor(::GetSysColor(COLOR_WINDOW));
-		DeviceContext->SetTextColor(::GetSysColor(COLOR_WINDOWTEXT));
+		DeviceContext->SetBkColor(GetSysColor(COLOR_WINDOW));
+		DeviceContext->SetTextColor(GetSysColor(COLOR_WINDOWTEXT));
 		OutputBitmap(drawItemStruct, false);
 		DeviceContext->SelectObject(OldBrush);
 		DeviceContext->SelectObject(OldPen);

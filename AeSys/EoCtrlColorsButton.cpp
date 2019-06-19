@@ -127,9 +127,9 @@ void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& rectangle, unsi
 	for (unsigned short Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 		if (m_Layout == SimpleSingleRow) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
-		} else if (m_Layout == GridDown5RowsOddOnly && (Index % 2) != 0) {
+		} else if (m_Layout == GridDown5RowsOddOnly && Index % 2 != 0) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
-		} else if (m_Layout == GridUp5RowsEvenOnly && (Index % 2) == 0) {
+		} else if (m_Layout == GridUp5RowsEvenOnly && Index % 2 == 0) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
 		}
 	}

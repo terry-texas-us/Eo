@@ -50,7 +50,7 @@ void AeSysView::OnLpdModeJoin() {
 		m_PreviousSection.SetDepth(m_EndCapPoint->DataAt(1));
 		m_ContinueSection = false;
 
-		m_EndCapLocation = (m_PreviousOp == 0) ? 1 : -1; // 1 (start) and -1 (end)
+		m_EndCapLocation = m_PreviousOp == 0 ? 1 : -1; // 1 (start) and -1 (end)
 
 		OdString Message(L"Cross sectional dimension (Width by Depth) is ");
 		Message += theApp.FormatLength(m_PreviousSection.Width(), max(theApp.GetUnits(), AeSys::kInches), 12, 2);
@@ -80,7 +80,7 @@ void AeSysView::OnLpdModeDuct() {
 			m_OriginalPreviousGroupDisplayed = true;
 			m_PreviousSection = m_CurrentSection;
 		}
-		const double TransitionLength = (m_PreviousSection == m_CurrentSection) ? 0. : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection);
+		const double TransitionLength = m_PreviousSection == m_CurrentSection ? 0. : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection);
 		EoGeLineSeg3d ReferenceLine(m_CurrentReferenceLine);
 
 		if (m_BeginWithTransition) {
@@ -127,7 +127,7 @@ void AeSysView::OnLpdModeTransition() {
 	m_CurrentSection = m_PreviousSection;
 	SetDuctOptions(m_CurrentSection);
 
-	m_BeginWithTransition = (m_PreviousOp == 0) ? true : false;
+	m_BeginWithTransition = m_PreviousOp == 0 ? true : false;
 
 	DoDuctModeMouseMove();
 	OnLpdModeDuct();
@@ -383,7 +383,7 @@ void AeSysView::DoDuctModeMouseMove() {
 				}
 			}
 		} else {
-			const double TransitionLength = (m_PreviousSection == m_CurrentSection) ? 0. : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection);
+			const double TransitionLength = m_PreviousSection == m_CurrentSection ? 0. : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection);
 			EoGeLineSeg3d ReferenceLine(m_CurrentReferenceLine);
 
 			if (m_BeginWithTransition) {
@@ -752,7 +752,7 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	Section->AddTail(EoDbLine::Create(Line));
 
 	if (m_GenerateTurningVanes) {
-		const auto BeginPoint {((justification == Left) ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
+		const auto BeginPoint {(justification == Left ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
 		EndPoint = m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.);
 
 		const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
@@ -845,7 +845,7 @@ double AeSysView::LengthOfTransition(EJust justification, double slope, Section 
 	if (justification == Center) {
 		Length *= 0.5;
 	}
-	return (Length);
+	return Length;
 }
 bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, double angularTolerance, EoGeLineSeg3d & leftLine, EoGeLineSeg3d & rightLine) {
 	EoGeLineSeg3d Line;

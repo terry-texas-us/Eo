@@ -386,7 +386,7 @@ void AeSysView::DoNodalModeMouseMove() {
 
 				while (UniquePointPosition != nullptr) {
 					auto UniquePoint {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
-					const auto Point {(UniquePoint->m_Point) + Translate};
+					const auto Point {UniquePoint->m_Point + Translate};
 					auto PointPrimitive {new EoDbPoint(Point)};
 
 					PointPrimitive->SetColorIndex2(252);

@@ -192,7 +192,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 OdGePoint3d AeSysView::SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
 	EoGeLineSeg3d Line(startPoint, endPoint);
 
-	return (Line.ConstrainToAxis(m_AxisConstraintInfluenceAngle, m_AxisConstraintOffsetAngle));
+	return Line.ConstrainToAxis(m_AxisConstraintInfluenceAngle, m_AxisConstraintOffsetAngle);
 }
 
 OdGePoint3d AeSysView::SnapPointToGrid(const OdGePoint3d& point) noexcept {
@@ -200,20 +200,20 @@ OdGePoint3d AeSysView::SnapPointToGrid(const OdGePoint3d& point) noexcept {
 
 	if (GridSnap()) {
 		if (fabs(m_XGridSnapSpacing) > DBL_EPSILON) {
-			pt.x -= fmod((point.x - m_GridOrigin.x), m_XGridSnapSpacing);
+			pt.x -= fmod(point.x - m_GridOrigin.x, m_XGridSnapSpacing);
 			if (fabs(pt.x - point.x) > m_XGridSnapSpacing * 0.5)
 				pt.x += EoSignTransfer(m_XGridSnapSpacing, point.x - m_GridOrigin.x);
 		}
 		if (fabs(m_YGridSnapSpacing) > DBL_EPSILON) {
-			pt.y -= fmod((point.y - m_GridOrigin.y), m_YGridSnapSpacing);
+			pt.y -= fmod(point.y - m_GridOrigin.y, m_YGridSnapSpacing);
 			if (fabs(pt.y - point.y) > m_YGridSnapSpacing * 0.5)
 				pt.y += EoSignTransfer(m_YGridSnapSpacing, point.y - m_GridOrigin.y);
 		}
 		if (fabs(m_ZGridSnapSpacing) > DBL_EPSILON) {
-			pt.z -= fmod((point.z - m_GridOrigin.z), m_ZGridSnapSpacing);
+			pt.z -= fmod(point.z - m_GridOrigin.z, m_ZGridSnapSpacing);
 			if (fabs(pt.z - point.z) > m_ZGridSnapSpacing * 0.5)
 				pt.z += EoSignTransfer(m_ZGridSnapSpacing, point.z - m_GridOrigin.z);
 		}
 	}
-	return (pt);
+	return pt;
 }

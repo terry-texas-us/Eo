@@ -616,10 +616,10 @@ void zoom_extents(OdGsView* view, OdDbObject* viewportObject) {
 
 	if (Viewport.get() && Viewport->number() == 1) {
 		if (!ValidBoundBox || !(BoundBox.minPoint().x < BoundBox.maxPoint().x && BoundBox.minPoint().y < BoundBox.maxPoint().y)) {
-			ValidBoundBox = ::getLayoutExtents(Database->getPaperSpaceId(), view, BoundBox);
+			ValidBoundBox = getLayoutExtents(Database->getPaperSpaceId(), view, BoundBox);
 		}
 	} else if (!ValidBoundBox) { // model space viewport
-		ValidBoundBox = ::getLayoutExtents(Database->getPaperSpaceId(), view, BoundBox);
+		ValidBoundBox = getLayoutExtents(Database->getPaperSpaceId(), view, BoundBox);
 	}
 	if (!ValidBoundBox) { // set to somewhat reasonable (e.g. paper size)
 
@@ -716,7 +716,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 			case 2: // Dynamic
 				break;
 			case 3: // Extents
-				::zoom_extents(ActiveView, ActiveViewport);
+				zoom_extents(ActiveView, ActiveViewport);
 				break;
 			case 4: // Previous
 				break;
@@ -725,7 +725,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 			case 6: { // Window
 				auto FirstCorner {pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS | OdEd::kGptNoOSnap)};
 				auto OppositeCorner {pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptRectFrame)};
-				::zoom_window(FirstCorner, OppositeCorner, ActiveView);
+				zoom_window(FirstCorner, OppositeCorner, ActiveView);
 				break;
 			}
 			case 7: // Object
@@ -1041,7 +1041,7 @@ bool OdExEditorObject::OnZoomWindowBeginDrag(int x, int y) {
 }
 
 bool OdExEditorObject::OnZoomWindowEndDrag(int x, int y) {
-	::zoom_window2(OdEdPointDefTrackerPtr(m_InputTracker)->basePoint(), ToEyeToWorld(x, y), ActiveView());
+	zoom_window2(OdEdPointDefTrackerPtr(m_InputTracker)->basePoint(), ToEyeToWorld(x, y), ActiveView());
 	SetTracker(nullptr);
 	return true;
 }
@@ -1425,7 +1425,7 @@ void CollideMoveTracker::doCollideWithAll() {
 
 			if (p || pPathNode2->persistentDrawableId()) { 	m_pathes.push_back(p); }
 
-			return static_cast<unsigned long>(OdGsCollisionDetectionReactor::kContinue);
+			return static_cast<unsigned long>(kContinue);
 		}
 
 		OdArray<OdExCollideGsPath*>& pathes() { return m_pathes; }
@@ -1541,7 +1541,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 			OdExCollideGsPath* p2 = fromGiPath(pPathNode2, !m_bDynHLT);
 			m_pathes.push_back(p1);
 			m_pathes.push_back(p2);
-			return static_cast<unsigned long>(OdGsCollisionDetectionReactor::kContinue);
+			return static_cast<unsigned long>(kContinue);
 		}
 
 		OdArray<OdExCollideGsPath*>& pathes() { return m_pathes; }

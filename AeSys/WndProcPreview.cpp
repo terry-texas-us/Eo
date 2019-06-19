@@ -30,21 +30,21 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};
-			CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : nullptr;
+			CDC* DeviceContext = ActiveView ? ActiveView->GetDC() : nullptr;
 
 			CRect rc;
 			::GetClientRect(hwnd, &rc);
 			WndProcPreview_Bitmap = new CBitmap;
 			WndProcPreview_Bitmap->CreateCompatibleBitmap(DeviceContext, int(rc.right), int(rc.bottom));
 		}
-						return (FALSE);
+						return FALSE;
 
 		case WM_DESTROY:
 			if (WndProcPreview_Bitmap != nullptr) {
 				delete WndProcPreview_Bitmap;
 				WndProcPreview_Bitmap = nullptr;
 			}
-			return (FALSE);
+			return FALSE;
 
 		case WM_PAINT: {
 			PAINTSTRUCT ps;
@@ -66,11 +66,11 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 
 			::EndPaint(hwnd, &ps);
 		}
-		return (FALSE);
+		return FALSE;
 
 		case WM_LBUTTONDOWN:
 			::SetFocus(hwnd);
-			return (FALSE);
+			return FALSE;
 
 	}
 	return DefWindowProc(hwnd, message, nParam, lParam);

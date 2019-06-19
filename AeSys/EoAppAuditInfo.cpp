@@ -14,11 +14,11 @@ EoAppAuditInfo::EoAppAuditInfo() noexcept {
 const OdDbAuditInfo::MsgInfo& EoAppAuditInfo::getLastInfo() {
 	return OdDbAuditInfo::getLastInfo();
 }
-void EoAppAuditInfo::setLastInfo(OdDbAuditInfo::MsgInfo& messageInfo) {
+void EoAppAuditInfo::setLastInfo(MsgInfo& messageInfo) {
 	OdDbAuditInfo::setLastInfo(messageInfo);
 }
 void EoAppAuditInfo::printInfo(const OdString& info) {
-	OdDbAuditInfo::MsgInfo MessageInfo;
+	MsgInfo MessageInfo;
 
 	ODA_ASSERT(m_pHostAppServices);
 
@@ -33,7 +33,7 @@ void EoAppAuditInfo::printInfo(const OdString& info) {
 	TRACE1("%ls\n", info.c_str());
 }
 void EoAppAuditInfo::printError(const OdString& name, const OdString& value, const OdString& validation, const OdString& defaultValue) {
-	OdDbAuditInfo::MsgInfo MessageInfo;
+	MsgInfo MessageInfo;
 
 	ODA_ASSERT(m_pHostAppServices);
 

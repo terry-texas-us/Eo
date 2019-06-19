@@ -29,7 +29,7 @@ END_MESSAGE_MAP()
 
 void EoMfPropertiesDockablePane::AdjustLayout() {
 
-	if (GetSafeHwnd() == nullptr || (AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic())) { return; }
+	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()) { return; }
 
 	CRect rectClient, rectCombo;
 	GetClientRect(rectClient);
@@ -159,7 +159,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	auto ActiveView {AeSysView::GetActiveView()};
 	
-	const auto Scale {(ActiveView) ? ActiveView->WorldScale() : 1.0};
+	const auto Scale {ActiveView ? ActiveView->WorldScale() : 1.0};
 
 	auto ActiveViewGroup {new CMFCPropertyGridProperty(L"Active View")};
 	auto WorldScaleProperty {new CMFCPropertyGridProperty(L"World Scale", static_cast<_variant_t>(Scale), L"Specifies the world scale used in the Active View", kActiveViewScale)};
@@ -277,7 +277,7 @@ void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 	afxGlobalData.fontRegular.GetLogFont(&FontAttributes);
 
 	NONCLIENTMETRICS Info;
-	Info.cbSize = sizeof(Info);
+	Info.cbSize = sizeof Info;
 
 	afxGlobalData.GetNonClientMetrics(Info);
 
@@ -317,7 +317,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 		}
 		case kTabLocation: {
 			CString TabLocation = Property->GetValue().bstrVal;
-			theApp.m_Options.m_MdiTabInfo.m_tabLocation = (TabLocation == TabsLocations.at(0) ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP);
+			theApp.m_Options.m_MdiTabInfo.m_tabLocation = TabLocation == TabsLocations.at(0) ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP;
 			break;
 		}
 		case kTabsAutoColor:

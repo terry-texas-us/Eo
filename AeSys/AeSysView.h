@@ -83,7 +83,7 @@ private:
 	bool m_bShowPlotstyle {false};
 	bool m_bPlotGrayscale {false};
 
-	OdGiContext::PStyleType plotStyleType() const override;
+	PStyleType plotStyleType() const override;
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
 
 	void plotStyle(int penNumber, OdPsPlotStyleData& plotStyleData) const noexcept override {} // OdGiContextForDbDatabase (to suppress C4266 warning)

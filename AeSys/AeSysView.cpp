@@ -376,19 +376,19 @@ void AeSysView::OnDraw(CDC* deviceContext) {
 }
 
 void AeSysView::OnInitialUpdate() {
-	::SetClassLongPtr(GetSafeHwnd(), GCLP_HBRBACKGROUND, reinterpret_cast<LONG_PTR>(::CreateSolidBrush(ViewBackgroundColor)));
+	::SetClassLongPtr(GetSafeHwnd(), GCLP_HBRBACKGROUND, reinterpret_cast<LONG_PTR>(CreateSolidBrush(ViewBackgroundColor)));
 
 	CView::OnInitialUpdate();
 
 	auto Document {GetDocument()};
 
 	OdDbDatabase* Database {Document->m_DatabasePtr};
-	OdGiContextForDbDatabase::setDatabase(Database);
+	setDatabase(Database);
 
 	m_hWindowDC = ::GetDC(m_hWnd);
 
 	if (!g_nRedrawMSG) {
-		g_nRedrawMSG = ::RegisterWindowMessageW(L"AeSys::AeSysView::WM_REDRAW");
+		g_nRedrawMSG = RegisterWindowMessageW(L"AeSys::AeSysView::WM_REDRAW");
 	}
 	createDevice();
 	if (m_LayoutHelper.isNull()) {
@@ -664,7 +664,7 @@ void AeSysView::setViewportBorderProperties() {
 			// If the model layout is active, and it has more then one viewport then make their borders visible.
 			// If a paper layout is active, then make visible the borders of all but the overall viewport.
 
-			if (View == OverallView || OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && (View != ActiveView)) {
+			if (View == OverallView || OdGsPaperLayoutHelper::cast(m_LayoutHelper).get() && View != ActiveView) {
 				View->setViewportBorderVisibility(false);
 			} else if (View != ActiveView) {
 				View->setViewportBorderVisibility(true);
@@ -904,7 +904,7 @@ void AeSysView::createDevice(bool recreate) {
 		OdGsModelPtr m_pModel;
 
 		if (!recreate) {
-			OdGsModulePtr GsModule {::odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false)};
+			OdGsModulePtr GsModule {odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false)};
 			auto GsDevice {GsModule->createDevice()};
 
 			auto DeviceProperties {GsDevice->properties()};
@@ -1210,16 +1210,16 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	bool IsPlotViaBitmap = AfxGetApp()->GetProfileIntW(L"options", L"Print/Preview via bitmap device", 1) != 0;
 
 	if (m_pPrinterDevice.isNull()) {
-		OdGsModulePtr GsModule = ::odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath());
+		OdGsModulePtr GsModule = odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath());
 		if (!IsPlotViaBitmap && GsModule.isNull()) {
-			GsModule = ::odrxDynamicLinker()->loadModule(OdWinOpenGLModuleName);
+			GsModule = odrxDynamicLinker()->loadModule(OdWinOpenGLModuleName);
 		}
 		OdGsDevicePtr GsPrinterDevice;
 		if (IsPlotViaBitmap && GsModule.get()) {
 			GsPrinterDevice = GsModule->createBitmapDevice();
 		} else {
 			IsPlotViaBitmap = false;
-			GsModule = ::odrxDynamicLinker()->loadModule(OdWinGDIModuleName);
+			GsModule = odrxDynamicLinker()->loadModule(OdWinGDIModuleName);
 			if (GsModule.get()) {
 				GsPrinterDevice = GsModule->createDevice();
 			}
@@ -1621,7 +1621,7 @@ BOOL AeSysView::OnPreparePrinting(CPrintInfo* printInformation) {
 				CDC DeviceContext;
 				DeviceContext.Attach(hDC);
 				printInformation->SetMaxPage(NumPages(&DeviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages));
-				::DeleteDC(DeviceContext.Detach());
+				DeleteDC(DeviceContext.Detach());
 			}
 		}
 	}
@@ -1704,14 +1704,14 @@ public:
 		: SaveViewParams(view, tracker, cursor, false) {
 		if (tracker) {
 			tracker->setCursor(true);
-			::SetTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER, BLINK_CURSOR_RATE, static_cast<TIMERPROC>(StringTrackerTimer));
+			SetTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER, BLINK_CURSOR_RATE, static_cast<TIMERPROC>(StringTrackerTimer));
 			m_bTimerSet = true;
 		} else {
 			m_bTimerSet = false;
 		}
 	}
 	~SaveViewParams2() {
-		if (m_bTimerSet) { ::KillTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER); }
+		if (m_bTimerSet) { KillTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER); }
 	}
 };
 
@@ -1743,9 +1743,9 @@ void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, un
 
 unsigned long AeSysView::getKeyState() noexcept {
 	unsigned long KeyState(0);
-	if (::GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
+	if (GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
 
-	if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
+	if (GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
 
 	return KeyState;
 }
@@ -1760,7 +1760,7 @@ OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointT
 	m_response.m_type = Response::kNone;
 	m_inpOptions = options;
 
-	SaveViewParams svp(this, tracker, ::LoadCursorW(nullptr, IDC_CROSS), !GETBIT(options, OdEd::kGptNoOSnap));
+	SaveViewParams svp(this, tracker, LoadCursorW(nullptr, IDC_CROSS), !GETBIT(options, OdEd::kGptNoOSnap));
 
 	while (theApp.PumpMessage()) {
 		switch (m_response.m_type) {
@@ -1794,7 +1794,7 @@ OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTr
 
 	m_inpOptions = options;
 
-	SaveViewParams2 svp(this, tracker, ::LoadCursorW(nullptr, IDC_IBEAM));
+	SaveViewParams2 svp(this, tracker, LoadCursorW(nullptr, IDC_IBEAM));
 
 	while (theApp.PumpMessage()) {
 		switch (m_response.m_type) {
@@ -1836,7 +1836,7 @@ HCURSOR AeSysView::cursor() const noexcept {
 
 void AeSysView::setCursor(HCURSOR cursor) noexcept {
 	m_hCursor = cursor;
-	::SetCursor(cursor);
+	SetCursor(cursor);
 }
 
 void AeSysView::OnRefresh() {
@@ -1891,7 +1891,7 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint
 			auto SelectionSet {Document->SelectionSet()};
 			auto SelectionSetObjects {SelectionSet->objectIdArray()};
 
-			if (::GetKeyState(VK_CONTROL) & 0xff00) {
+			if (GetKeyState(VK_CONTROL) & 0xff00) {
 				auto pIdMapping {OdDbIdMapping::createObject()};
 				auto HostDatabase {Database};
 				HostDatabase->deepCloneObjects(SelectionSetObjects, HostDatabase->getActiveLayoutBTRId(), *pIdMapping);
@@ -1922,7 +1922,7 @@ DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, unsigned long keySt
 	if (m_mode == kQuiescent || m_mode == kDragDrop) {
 
 		if (AeSysDoc::ClipboardData::isAcadDataAvailable(dataObject)) {
-			return static_cast<DROPEFFECT>(::GetKeyState(VK_CONTROL) & 0xff00 ? DROPEFFECT_COPY : DROPEFFECT_MOVE);
+			return static_cast<DROPEFFECT>(GetKeyState(VK_CONTROL) & 0xff00 ? DROPEFFECT_COPY : DROPEFFECT_MOVE);
 		}
 	}
 	return __super::OnDragOver(dataObject, keyState, point);
@@ -2355,7 +2355,7 @@ struct OdExRegenCmd : OdEdCommand {
 	const OdString globalName() const override { return L"REGEN"; }
 
 	long flags() const override {
-		return OdEdCommand::flags() | OdEdCommand::kNoUndoMarker;
+		return OdEdCommand::flags() | kNoUndoMarker;
 	}
 
 	void execute(OdEdCommandContext* edCommandContext) noexcept override {
@@ -2425,7 +2425,7 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 
 	if (activate) {
 
-		if (::CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
+		if (CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 			theApp.BuildModeSpecificAcceleratorTable();
 		}
 	}
@@ -2439,7 +2439,7 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 void AeSysView::OnSetFocus(CWnd * oldWindow) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
-	if (::CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
+	if (CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 		theApp.BuildModeSpecificAcceleratorTable();
 	}
 	CView::OnSetFocus(oldWindow);
@@ -2448,7 +2448,7 @@ void AeSysView::OnSetFocus(CWnd * oldWindow) {
 void AeSysView::OnKillFocus(CWnd* newWindow) {
 	auto AcceleratorTableHandle = dynamic_cast<CMainFrame*>(AfxGetMainWnd())->m_hAccelTable;
 
-	::DestroyAcceleratorTable(AcceleratorTableHandle);
+	DestroyAcceleratorTable(AcceleratorTableHandle);
 
 	CView::OnKillFocus(newWindow);
 }
@@ -2690,7 +2690,7 @@ void AeSysView::Orbit(double x, double y) {
 
 void AeSysView::Dolly() {
 	CPoint Point;
-	::GetCursorPos(&Point);
+	GetCursorPos(&Point);
 	ScreenToClient(&Point);
 
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
@@ -2914,11 +2914,11 @@ void AeSysView::OnViewRendermode(unsigned commandId) {
 
 void AeSysView::OnViewWindow() {
 	CPoint CurrentPosition;
-	::GetCursorPos(&CurrentPosition);
-	auto WindowMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_WINDOW))};
-	auto SubMenu {CMenu::FromHandle(::GetSubMenu(WindowMenu, 0))};
+	GetCursorPos(&CurrentPosition);
+	auto WindowMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_WINDOW))};
+	auto SubMenu {CMenu::FromHandle(GetSubMenu(WindowMenu, 0))};
 	SubMenu->TrackPopupMenuEx(TPM_LEFTALIGN, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
-	::DestroyMenu(WindowMenu);
+	DestroyMenu(WindowMenu);
 }
 
 void AeSysView::OnWindowZoomWindow() {
@@ -3813,7 +3813,7 @@ void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d & point, ERubs type
 OdGePoint3d AeSysView::GetCursorPosition() {
 	CPoint CursorPosition;
 
-	::GetCursorPos(&CursorPosition);
+	GetCursorPos(&CursorPosition);
 	ScreenToClient(&CursorPosition);
 
 	const OdGePoint3d Position(static_cast<double>(CursorPosition.x), static_cast<double>(CursorPosition.y), m_ptCursorPosDev.z);
@@ -3862,7 +3862,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
 	m_ptCursorPosWorld = cursorPosition;
 
 	ClientToScreen(&CursorPosition);
-	::SetCursorPos(CursorPosition.x, CursorPosition.y);
+	SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
 
 void AeSysView::SetModeCursor(unsigned mode) {
@@ -3926,12 +3926,12 @@ void AeSysView::SetModeCursor(unsigned mode) {
 			break;
 
 		default:
-			::SetCursor(static_cast<HCURSOR>(::LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE)));
+			SetCursor(static_cast<HCURSOR>(LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE)));
 			return;
 	}
-	auto CursorHandle {static_cast<HCURSOR>(::LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
+	auto CursorHandle {static_cast<HCURSOR>(LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
 	VERIFY(CursorHandle);
-	::SetCursor(CursorHandle);
+	SetCursor(CursorHandle);
 	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, reinterpret_cast<long>(CursorHandle));
 }
 

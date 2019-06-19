@@ -33,17 +33,17 @@ CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) noexcep
 	int w;
 	if (bmpDep > bmpWid) {
 		d = __min(bmpDep, wndDep);
-		w = (bmpWid * d) / bmpDep;
+		w = bmpWid * d / bmpDep;
 		if (w > wndWid) {
-			d = (d * wndWid) / w;
+			d = d * wndWid / w;
 			w = wndWid;
 		}
 	}
 	else {
 		w = __min(bmpWid, wndWid);
-		d = (bmpDep * w) / bmpWid;
+		d = bmpDep * w / bmpWid;
 		if (d > wndDep) {
-			w = (w * wndDep) / d;
+			w = w * wndDep / d;
 			d = wndDep;
 		}
 	}
@@ -119,7 +119,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 		auto p = static_cast<unsigned char*>(m_odImage.wmf.begin());
 		mfHeader = reinterpret_cast<METAHEADER*>(p + seekpos);
 
-		if ((mfHeader->mtType != 1) && (mfHeader->mtType != 2)) { return; }
+		if (mfHeader->mtType != 1 && mfHeader->mtType != 2) { return; }
 
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile

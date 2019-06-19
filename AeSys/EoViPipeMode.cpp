@@ -1030,7 +1030,7 @@ void AeSysView::OnPipeModeWye() {
 				OdGePoint3d PointAtBend;
 
 				if (DistanceBetweenSectionPoints - .25 <= DistanceToSection) {
-					const double d3 = (DistanceBetweenSectionPoints > .25) ? DistanceBetweenSectionPoints : .125;
+					const double d3 = DistanceBetweenSectionPoints > .25 ? DistanceBetweenSectionPoints : .125;
 					PointAtBend = ProjectToward(BeginPointProjectedToSection, m_PipeModePoints[0], d3);
 					PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, d3);
 				} else {

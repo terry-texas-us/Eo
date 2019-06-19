@@ -38,11 +38,11 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 				continue;
 			}
 			if (LineSeg.IsSelectedBy_xy(point, DimensionModePickTolerance, ptProj, Relationship)) {
-				return (Relationship <= 0.5) ? LineSeg.startPoint() : LineSeg.endPoint();
+				return Relationship <= 0.5 ? LineSeg.startPoint() : LineSeg.endPoint();
 			}
 		}
 	}
-	return (point);
+	return point;
 }
 
 void AeSysView::OnDimensionModeOptions() {
@@ -261,7 +261,7 @@ void AeSysView::OnDimensionModeRadius() {
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const auto ptEnd {DetPt()};
 
-		if ((EngagedPrimitive())->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
+		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
 			auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 
 			const auto ptBeg {pArc->Center()};
@@ -299,7 +299,7 @@ void AeSysView::OnDimensionModeDiameter() {
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const auto ptEnd {DetPt()};
 
-		if ((EngagedPrimitive())->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
+		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
 			auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 
 			const auto ptBeg {ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length())};
@@ -406,7 +406,7 @@ void AeSysView::OnDimensionModeAngle() {
 				Group->AddTail(EoDbEllipse::Create(Ellipse));
 
 				ptArrow = ln.startPoint();
-				ptArrow.rotateBy(Angle - (OdaPI / 180.0), PlaneNormal, CenterPoint);
+				ptArrow.rotateBy(Angle - OdaPI / 180.0, PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
 

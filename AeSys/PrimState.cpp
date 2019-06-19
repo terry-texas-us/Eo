@@ -14,23 +14,23 @@ const CPrimState& CPrimState::operator=(const CPrimState& other) noexcept {
 	m_HatchInteriorStyle = other.m_HatchInteriorStyle;
 	m_HatchInteriorStyleIndex = other.m_HatchInteriorStyleIndex;
 
-	return (*this);
+	return *this;
 }
 
 EoDbCharacterCellDefinition CPrimState::CharacterCellDefinition() const noexcept {
-	return (m_CharacterCellDefinition);
+	return m_CharacterCellDefinition;
 }
 
 short CPrimState::ColorIndex() const noexcept {
-	return (m_ColorIndex);
+	return m_ColorIndex;
 }
 
 EoDbFontDefinition CPrimState::FontDefinition() const noexcept {
-	return (m_FontDefinition);
+	return m_FontDefinition;
 }
 
 short CPrimState::LinetypeIndex() const noexcept {
-	return (m_LinetypeIndex);
+	return m_LinetypeIndex;
 }
 
 short CPrimState::PointDisplayMode() const noexcept {
@@ -38,16 +38,16 @@ short CPrimState::PointDisplayMode() const noexcept {
 }
 
 short CPrimState::HatchInteriorStyle() const noexcept {
-	return (m_HatchInteriorStyle);
+	return m_HatchInteriorStyle;
 }
 
 unsigned CPrimState::HatchInteriorStyleIndex() const noexcept {
-	return (m_HatchInteriorStyleIndex);
+	return m_HatchInteriorStyleIndex;
 }
 
 void CPrimState::Restore(CDC& deviceContext, int saveIndex) {
 	
-	if (saveIndex >= sizeof(SavedStates) / sizeof(SavedStates[0])) { return; }
+	if (saveIndex >= sizeof SavedStates / sizeof SavedStates[0]) { return; }
 
 	if (SavedStates[saveIndex] != nullptr) {
 		SetPen(nullptr, &deviceContext, SavedStates[saveIndex]->ColorIndex(), SavedStates[saveIndex]->LinetypeIndex());
@@ -65,7 +65,7 @@ void CPrimState::Restore(CDC& deviceContext, int saveIndex) {
 }
 
 int CPrimState::Save() {
-	int iSaveId = sizeof(SavedStates) / sizeof(SavedStates[0]) - 1;
+	int iSaveId = sizeof SavedStates / sizeof SavedStates[0] - 1;
 
 	while (iSaveId >= 0 && SavedStates[iSaveId] != nullptr) {
 		iSaveId--;
@@ -78,7 +78,7 @@ int CPrimState::Save() {
 		*SavedStates[iSaveId] = pstate;
 	}
 	// return id to use for restore reference
-	return (iSaveId);
+	return iSaveId;
 }
 
 void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, short linetypeIndex) noexcept {
@@ -189,7 +189,7 @@ int CPrimState::SetROP2(CDC& deviceContext, int iDrawMode) {
 
 		if (iDrawMode == R2_XORPEN) { iDrawMode = R2_NOTXORPEN; }
 	}
-	return (deviceContext.SetROP2(iDrawMode));
+	return deviceContext.SetROP2(iDrawMode);
 }
 
 void CPrimState::SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment) {

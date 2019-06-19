@@ -13,15 +13,15 @@ template<class T> T EoMax(T a, T b) noexcept {
 }
 
 inline double EoSignTransfer(const double a, const double b) noexcept {
-	return (b >= 0. ? fabs(a) : - fabs(a));
+	return b >= 0. ? fabs(a) : - fabs(a);
 }
 
  inline double EoToDegree(const double angleInRadians) noexcept {
-	return (angleInRadians / OdaPI * 180.);
+	return angleInRadians / OdaPI * 180.;
 }
 
 inline double EoToRadian(const double angleInDegrees) noexcept {
-	return (angleInDegrees * OdaPI / 180.0);
+	return angleInDegrees * OdaPI / 180.0;
 }
 
 inline int EoRound(const double number) noexcept { // closest integer
@@ -29,7 +29,7 @@ inline int EoRound(const double number) noexcept { // closest integer
 }
 
 inline double EoRound(const double number, int precision) {
-	precision = (number >= 1.0) ? precision - int(log10(number)) - 1 : precision;
+	precision = number >= 1.0 ? precision - int(log10(number)) - 1 : precision;
 	CString FormatSpecification;
 	FormatSpecification.Format(L"%%16.%if", precision);
 	CString NumberAsString;
@@ -38,5 +38,5 @@ inline double EoRound(const double number, int precision) {
 }
 
 inline int EoSignum(const double number) noexcept {
-	return (number < 0. ? - 1 : (number > 0. ? 1 : 0));
+	return number < 0. ? - 1 : number > 0. ? 1 : 0;
 }

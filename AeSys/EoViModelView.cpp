@@ -5,7 +5,7 @@
 OdGeVector3d AeSysView::CameraDirection() const {
 	OdGeVector3d Direction(m_ViewTransform.Position() - m_ViewTransform.Target());
 	Direction.normalize();
-	return (Direction);
+	return Direction;
 }
 OdGePoint3d	AeSysView::CameraTarget() const noexcept {
 	return m_ViewTransform.Target();
@@ -22,7 +22,7 @@ EoGsViewTransform AeSysView::PreviousModelView() {
 	return m_PreviousViewTransform;
 }
 void AeSysView::SetCameraPosition(const OdGeVector3d& direction) {
-	const OdGePoint3d Position = m_ViewTransform.Target() + (direction.normal() * m_ViewTransform.LensLength());
+	const OdGePoint3d Position = m_ViewTransform.Target() + direction.normal() * m_ViewTransform.LensLength();
 	m_ViewTransform.SetPosition_(Position);
 	m_ViewTransform.BuildTransformMatrix();
 }
@@ -53,7 +53,7 @@ EoGeMatrix3d AeSysView::ModelViewMatrix() const noexcept {
 	return m_ViewTransform.Matrix();
 }
 double AeSysView::ZoomFactor() const noexcept {
-	return (ViewportWidthInInches() / m_ViewTransform.FieldWidth());
+	return ViewportWidthInInches() / m_ViewTransform.FieldWidth();
 }
 OdGeVector3d AeSysView::ViewUp() const noexcept {
 	return m_ViewTransform.ViewUp();

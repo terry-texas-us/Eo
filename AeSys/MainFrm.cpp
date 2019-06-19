@@ -101,7 +101,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 		TRACE0("Failed to create status bar\n");
 		return -1;
 	}
-	m_StatusBar.SetIndicators(Indicators, sizeof(Indicators) / sizeof(unsigned));
+	m_StatusBar.SetIndicators(Indicators, sizeof Indicators / sizeof(unsigned));
 
 	m_StatusBar.SetPaneStyle(nStatusIcon, SBPS_NOBORDERS);
 	m_StatusBar.SetPaneStyle(nStatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
@@ -198,7 +198,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
 	const double PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
-	const int PixelWidth = (lineWeight <= 0) ? 0 : int((double(lineWeight) / 100. * PixelsPerLogicalMillimeter) + 0.5);
+	const int PixelWidth = lineWeight <= 0 ? 0 : int(double(lineWeight) / 100. * PixelsPerLogicalMillimeter + 0.5);
 
 	LOGBRUSH Brush;
 	Brush.lbStyle = BS_SOLID;

@@ -338,7 +338,7 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGe
 	if (Normal.isZeroLength()) { return false; }
 	Normal.normalize();
 
-	if (fabs((Normal.dotProduct((SecondLineStartPoint - FirstLineStartPoint)))) > DBL_EPSILON) { // Four points are not coplanar
+	if (fabs(Normal.dotProduct(SecondLineStartPoint - FirstLineStartPoint)) > DBL_EPSILON) { // Four points are not coplanar
 		return false;
 	}
 	EoGeMatrix3d WorldToPlaneTransform;
@@ -356,7 +356,7 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGe
 	const double SecondLineB {SecondLineVector.x / SecondLineVectorLength};
 	const double Determinant {SecondLineA * FirstLineB - FirstLineA * SecondLineB};
 
-	const double SignedRadius {(FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y) >= 0. ? -fabs(radius) : fabs(radius)};
+	const double SignedRadius {FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y >= 0. ? -fabs(radius) : fabs(radius)};
 
 	const double dC1RAB1 {SignedRadius};
 	const double dC2RAB2 {(SecondLineStartPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * SecondLineStartPoint.y) / SecondLineVectorLength + SignedRadius};

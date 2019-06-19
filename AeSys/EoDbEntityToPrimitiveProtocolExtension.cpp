@@ -555,7 +555,7 @@ public:
 		SolidEntity->getPointAt(2, Point);
 		OdGePoint3d EndPoint;
 		SolidEntity->getPointAt(3, EndPoint);
-		HatchPrimitive->Append((Point == EndPoint) ? Point : EndPoint);
+		HatchPrimitive->Append(Point == EndPoint ? Point : EndPoint);
 		HatchPrimitive->Append(Point);
 		HatchPrimitive->SetInteriorStyle(EoDbHatch::kSolid);
 		HatchPrimitive->SetInteriorStyleIndex(0);
@@ -631,7 +631,7 @@ public:
 		TraceEntity->getPointAt(2, Point);
 		OdGePoint3d EndPoint;
 		TraceEntity->getPointAt(3, EndPoint);
-		HatchPrimitive->Append((Point == EndPoint) ? Point : EndPoint);
+		HatchPrimitive->Append(Point == EndPoint ? Point : EndPoint);
 		HatchPrimitive->Append(Point);
 		HatchPrimitive->SetInteriorStyle(EoDbHatch::kSolid);
 		HatchPrimitive->SetInteriorStyleIndex(0);

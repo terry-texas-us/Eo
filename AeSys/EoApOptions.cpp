@@ -2,7 +2,7 @@
 #include "AeSys.h"
 
 EoApOptions::EoApOptions() {
-	m_nTabsStyle = EoApOptions::Grouped;
+	m_nTabsStyle = Grouped;
 
 	m_MdiTabInfo.m_tabLocation = CMFCTabCtrl::LOCATION_BOTTOM;
 	m_MdiTabInfo.m_style = CMFCTabCtrl::STYLE_3D_VS2005;
@@ -21,7 +21,7 @@ EoApOptions::EoApOptions() {
 }
 
 void EoApOptions::Load() {
-	m_nTabsStyle = static_cast<TabsStyle>(theApp.GetInt(L"TabsStyle", EoApOptions::Grouped));
+	m_nTabsStyle = static_cast<TabsStyle>(theApp.GetInt(L"TabsStyle", Grouped));
 
 	m_MdiTabInfo.m_tabLocation = static_cast<CMFCTabCtrl::Location>(theApp.GetInt(L"TabLocation", CMFCTabCtrl::LOCATION_BOTTOM));
 	m_MdiTabInfo.m_style = static_cast<CMFCTabCtrl::Style>(theApp.GetInt(L"TabsAppearance", CMFCTabCtrl::STYLE_3D_VS2005));

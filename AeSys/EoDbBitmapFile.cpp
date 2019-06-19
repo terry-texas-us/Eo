@@ -9,7 +9,7 @@ EoDbBitmapFile::EoDbBitmapFile(const CString& fileName) {
 }
 
 bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& palette) {
-	auto Bitmap {static_cast<HBITMAP>(::LoadImageW(nullptr, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE))};
+	auto Bitmap {static_cast<HBITMAP>(LoadImageW(nullptr, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE))};
 	
 	if (Bitmap == nullptr) { return false; }
 	
@@ -40,7 +40,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 		dcMem.CreateCompatibleDC(&ClientDeviceContext);
 
 		auto Bitmap {dcMem.SelectObject(&bitmap)};
-		::GetDIBColorTable(static_cast<HDC>(dcMem), 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
+		GetDIBColorTable(static_cast<HDC>(dcMem), 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
 		dcMem.SelectObject(Bitmap);
 
 		const unsigned nSize {sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * (NumberOfColors - 1)};

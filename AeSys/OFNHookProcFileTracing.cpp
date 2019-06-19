@@ -13,7 +13,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 	switch (windowMessage) {
 		case WM_INITDIALOG:
 			WndProcPreviewClear(::GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
-			return (TRUE);
+			return TRUE;
 
 		case WM_NOTIFY: {
 			LPOFNOTIFY lpofn;
@@ -47,7 +47,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					}
 				}
 			}
-			return (TRUE);
+			return TRUE;
 		}
 		case WM_COMMAND: {
 			wchar_t FilePath[MAX_PATH] {L"\0"};
@@ -56,7 +56,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 			CFileStatus	FileStatus;
 			if (!CFile::GetStatus(FilePath, FileStatus)) {
 				theApp.WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
-				return (TRUE);
+				return TRUE;
 			}
 			wchar_t* Name {PathFindFileNameW(FilePath)};
 
@@ -64,7 +64,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 
 			if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
 				theApp.WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
-				return (TRUE);
+				return TRUE;
 			}
 			switch (LOWORD(wParam)) {
 				case IDC_APPEND: {
@@ -72,7 +72,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 
 					Document->TracingLoadLayer(FilePath, Layer);
 					Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
-					return (TRUE);
+					return TRUE;
 				}
 				case IDC_MAP: {
 					bool FileOpenSuccess {false};
@@ -107,7 +107,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 						Layer->MakeActive();
 						Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 					}
-					return (TRUE);
+					return TRUE;
 				}
 				case IDC_TRAP: {
 					auto pLayer {new EoDbLayer(L"", EoDbLayer::kIsResident | EoDbLayer::kIsInternal | EoDbLayer::kIsActive)};
@@ -122,7 +122,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					pLayer->DeleteGroupsAndRemoveAll();
 					delete pLayer;
 
-					return (TRUE);
+					return TRUE;
 				}
 				case IDC_VIEW:
 					bool FileOpenSuccess {false};
@@ -157,10 +157,10 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 						Layer->SetIsLocked(true);
 						Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 					}
-					return (TRUE);
+					return TRUE;
 			}
 		}
 	}
-	return (FALSE); 		// Message for default dialog handlers
+	return FALSE; 		// Message for default dialog handlers
 }
 

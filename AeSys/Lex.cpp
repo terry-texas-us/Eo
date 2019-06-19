@@ -51,7 +51,7 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 			if (CurrentTokenType == TOK_BINARY_PLUS || CurrentTokenType == TOK_BINARY_MINUS) {
 				const ETokClass eClassPrv = TokenTable[PreviousTokenType].Class;
 				if (eClassPrv != Constant && eClassPrv != Identifier && eClassPrv != CloseParen) {
-					CurrentTokenType = (CurrentTokenType == TOK_BINARY_PLUS) ? TOK_UNARY_PLUS : TOK_UNARY_MINUS;
+					CurrentTokenType = CurrentTokenType == TOK_BINARY_PLUS ? TOK_UNARY_PLUS : TOK_UNARY_MINUS;
 				}
 			}
 			// Pop higher priority operators from stack
@@ -114,7 +114,7 @@ void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 		for (int i1 = 0; i1 < DataLength; i1++) {
 			iLnLoc++;
 			
-			if (DataLength != 1 && (i1 % DataDimension) == 0) { acPic[iLnLoc++] = '['; }
+			if (DataLength != 1 && i1 % DataDimension == 0) { acPic[iLnLoc++] = '['; }
 
 			if (DataType == TOK_INTEGER) {
 				memcpy(lVal, &acVal[ValueIndex], 4);
@@ -141,7 +141,7 @@ void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 					iLnLoc += ValueLength;
 				}
 			}
-			if (DataLength != 1 && (i1 % DataDimension) == DataDimension - 1) { acPic[iLnLoc++] = ']'; }
+			if (DataLength != 1 && i1 % DataDimension == DataDimension - 1) { acPic[iLnLoc++] = ']'; }
 		}
 		if (DataDimension == DataLength) {
 			*aiLen = iLnLoc - 1;
@@ -387,14 +387,14 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 					}
 				} else if (iTokTyp == TOK_EXPONENTIATE) {
 					if (iTyp1 == TOK_INTEGER) {
-						if ((lOp1[0] >= 0 && lOp1[0] > DBL_MAX_10_EXP) || (lOp1[0] < 0 && lOp1[0] < DBL_MIN_10_EXP)) { throw L"Exponentiation error"; }
+						if (lOp1[0] >= 0 && lOp1[0] > DBL_MAX_10_EXP || lOp1[0] < 0 && lOp1[0] < DBL_MIN_10_EXP) { throw L"Exponentiation error"; }
 
 						lOp1[0] = static_cast<int>(pow(static_cast<double>(lOp2[0]), lOp1[0]));
 					}
 					else if (iTyp1 == TOK_REAL) {
 						const int iExp {static_cast<int>(dOp1[0])};
 
-						if ((iExp >= 0 && iExp > DBL_MAX_10_EXP) || (iExp < 0 && iExp < DBL_MIN_10_EXP)) { throw L"Exponentiation error"; }
+						if (iExp >= 0 && iExp > DBL_MAX_10_EXP || iExp < 0 && iExp < DBL_MIN_10_EXP) { throw L"Exponentiation error"; }
 						dOp1[0] = pow(dOp2[0], dOp1[0]);
 					}
 				}
@@ -471,7 +471,7 @@ void lex::Parse(const wchar_t* szLine) {
 
 		case TOK_REAL:
 		case TOK_LENGTH_OPERAND:
-			dVal = (iTyp == TOK_REAL) ? _wtof(szTok) : theApp.ParseLength(szTok);
+			dVal = iTyp == TOK_REAL ? _wtof(szTok) : theApp.ParseLength(szTok);
 
 			LocationOfValue[iToks] = NumberOfValues;
 			Values[NumberOfValues++] = MAKELONG(1, 2);
@@ -539,11 +539,11 @@ int lex::Scan(wchar_t* token, const wchar_t* line, int& linePosition) {
 
 	if (Result == - 1) { linePosition = iBegLoc + 1;}
 
-	return (Result);
+	return Result;
 }
 
 int lex::TokenType(int aiTokId) noexcept {
-	return (aiTokId >= 0 && aiTokId < lex::iToks) ? TokenTypes[aiTokId] : - 1;
+	return aiTokId >= 0 && aiTokId < lex::iToks ? TokenTypes[aiTokId] : - 1;
 }
 
 void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, double* adOp) {
@@ -721,7 +721,7 @@ wchar_t* lex::ScanForString(wchar_t* *ppStr, wchar_t* pszTerm, wchar_t* *ppArgBu
 
 	do {
 		if (bInQuotes) {
-			if ((*pIn == '"') && (*(pIn + 1) != '"')) { // Skip over the quote
+			if (*pIn == '"' && *(pIn + 1) != '"') { // Skip over the quote
 				pIn++;
 				break;
 			}
@@ -731,7 +731,7 @@ wchar_t* lex::ScanForString(wchar_t* *ppStr, wchar_t* pszTerm, wchar_t* *ppArgBu
 		} else { // allow some peg specials
 			if (!(*pIn == '_' || *pIn == '$' || *pIn == '.' || *pIn == '-' || *pIn == ':' || *pIn == '\\')) { break; }
 		}
-		if ((*pIn == '"') && (*(pIn + 1) == '"')) { // Skip the escaping first quote
+		if (*pIn == '"' && *(pIn + 1) == '"') { // Skip the escaping first quote
 			pIn++;
 		}
 		if (*pIn == '\\' && *(pIn + 1) == '\\') { // Skip the escaping backslash

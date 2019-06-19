@@ -157,7 +157,7 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 	EoGePoint4d pt(m_ReferenceSystem.Origin(), 1.0);
 	view->ModelViewTransformPoint(pt);
 
-	return (point.DistanceToPointXY(pt) < sm_SelectApertureSize) ? true : false;
+	return point.DistanceToPointXY(pt) < sm_SelectApertureSize ? true : false;
 }
 
 void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
@@ -882,7 +882,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 			
 			if ((iY & 2048) != 0) { iY = -(iY - 2048); }
 			
-			int iX = static_cast<int>((plStrokeChrDef[i - 1] / 4096L) % 4096L);
+			int iX = static_cast<int>(plStrokeChrDef[i - 1] / 4096L % 4096L);
 			
 			if ((iX & 2048) != 0) { iX = -(iX - 2048); }
 
@@ -1195,5 +1195,5 @@ OdGePoint3d text_GetNewLinePos(EoDbFontDefinition & fontDefinition, EoGeReferenc
 		vPath *= -(YDirection.length() * dLineSpaceFac);
 		vPath.rotateBy(OdaPI2, vRefNorm);
 	}
-	return pt + (vPath * 1.5);
+	return pt + vPath * 1.5;
 }

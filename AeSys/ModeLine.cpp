@@ -35,7 +35,7 @@ void AeSysView::ModeLineDisplay() {
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs = (ClientRectangle.Width() / 10) / TextMetrics.tmAveCharWidth;
+		const int iMaxChrs = ClientRectangle.Width() / 10 / TextMetrics.tmAveCharWidth;
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 
 		for (int i = 0; i < 10; i++) {
@@ -80,7 +80,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs = (ClientRectangle.Width() / 10) / TextMetrics.tmAveCharWidth;
+		const int iMaxChrs = ClientRectangle.Width() / 10 / TextMetrics.tmAveCharWidth;
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 		const int i = m_OpHighlighted - ID_OP0;
 
@@ -94,7 +94,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 		DeviceContext->SelectObject(Font);
 		ReleaseDC(DeviceContext);
 	}
-	return (command);
+	return command;
 }
 
 void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
@@ -120,7 +120,7 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
 
-		const int iMaxChrs {(ClientRectangle.Width() / 10) / TextMetrics.tmAveCharWidth};
+		const int iMaxChrs {ClientRectangle.Width() / 10 / TextMetrics.tmAveCharWidth};
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 		const int i = m_OpHighlighted - ID_OP0;
 

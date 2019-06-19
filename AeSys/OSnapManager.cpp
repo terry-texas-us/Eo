@@ -71,7 +71,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 
 	OdGiSubEntityTraits& SubEntityTraits = viewportDraw->subEntityTraits();
 	OdGiDrawFlagsHelper DrawFlagsHelper(SubEntityTraits, OdGiSubEntityTraits::kDrawNoPlotstyle);
-	if ((m_SnapMode > 0) && (static_cast<unsigned long>(m_SnapMode) < 100)) {
+	if (m_SnapMode > 0 && static_cast<unsigned long>(m_SnapMode) < 100) {
 		SubEntityTraits.setTrueColor(SnapTrueColor());
 
 		SubEntityTraits.setFillType(kOdGiFillNever);
@@ -235,10 +235,10 @@ void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 		DcRectangle.m_min.y = OdRoundToLong(Point.y);
 		DcRectangle.m_max = DcRectangle.m_min;
 
-		DcRectangle.m_min.x -= (snapPtSize * 2);
-		DcRectangle.m_min.y -= (snapPtSize * 2);
-		DcRectangle.m_max.x += (snapPtSize * 2);
-		DcRectangle.m_max.y += (snapPtSize * 2);
+		DcRectangle.m_min.x -= snapPtSize * 2;
+		DcRectangle.m_min.y -= snapPtSize * 2;
+		DcRectangle.m_max.x += snapPtSize * 2;
+		DcRectangle.m_max.y += snapPtSize * 2;
 
 		  /*
 		switch(m_SnapMode)
@@ -463,7 +463,7 @@ bool OdBaseSnapManager::AppendToQueue(OdBaseSnapManager::HistEntryArray& histEnt
 
 void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntityData, const OdGeMatrix3d& worldToEyeTransform) {
 	const auto ModelToWorldTransform {selectedEntityData.ModelToWorldTransform};
-	const bool InsertionMatrix = (ModelToWorldTransform != OdGeMatrix3d::kIdentity);
+	const bool InsertionMatrix = ModelToWorldTransform != OdGeMatrix3d::kIdentity;
 	const auto ModelPickPoint {ModelToWorldTransform * *m_PickPoint};
 	OdGePoint3d ModelLastPoint;
 	unsigned nSnapModes = SnapModes();
@@ -539,7 +539,7 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode & pathNode, const O
 		const auto Marker {pathNode.selectionMarker()};
 
 		if (Marker > -1) {
-			if ((SnapModes() & ToSnapModes(OdDb::kOsModeCen)) && static_cast<OdGsMarker>(m_Centers.size()) > Marker) {
+			if (SnapModes() & ToSnapModes(OdDb::kOsModeCen) && static_cast<OdGsMarker>(m_Centers.size()) > Marker) {
 				Checkpoint(OdDb::kOsModeCen, m_Centers[Marker].m_Point);
 			}
 		}
