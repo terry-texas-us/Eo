@@ -13,7 +13,7 @@ BEGIN_MESSAGE_MAP(EoDlgSelectIsometricView, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSelectIsometricView::EoDlgSelectIsometricView(CWnd* parent)
-	: CDialog(EoDlgSelectIsometricView::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_LeftRight(0)
 	, m_FrontBack(0)
 	, m_AboveUnder(0) {

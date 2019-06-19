@@ -12,7 +12,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupHatch, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupHatch::EoDlgSetupHatch(CWnd* parent) noexcept
-	: CDialog(EoDlgSetupHatch::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_HatchXScaleFactor(0)
 	, m_HatchYScaleFactor(0)
 	, m_HatchRotationAngle(0) {

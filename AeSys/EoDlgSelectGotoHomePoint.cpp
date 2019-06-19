@@ -15,12 +15,12 @@ BEGIN_MESSAGE_MAP(EoDlgSelectGotoHomePoint, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(CWnd* parent)
-	: CDialog(EoDlgSelectGotoHomePoint::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(0) {
 }
 
 EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(AeSysView* activeView, CWnd* parent)
-	: CDialog(EoDlgSelectGotoHomePoint::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(activeView) {
 }
 

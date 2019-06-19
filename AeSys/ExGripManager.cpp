@@ -1157,7 +1157,7 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 		}
 	}
 	m_CommandContext->database()->startUndoRecord();
-	::odedRegCmds()->executeCommand(&m_gripStretchCommand, m_CommandContext);
+	odedRegCmds()->executeCommand(&m_gripStretchCommand, m_CommandContext);
 
 	for (auto& ActiveKey : ActiveKeys) {
 		ActiveKey->setStatus(OdDbGripOperations::kWarmGrip);
@@ -1249,11 +1249,11 @@ inline void resetDragging(OdGsDevice* device, bool option) {
 }
 
 void OdExGripManager::DraggingStarted() {
-	::resetDragging(m_LayoutHelper, true);
+	resetDragging(m_LayoutHelper, true);
 }
 
 void OdExGripManager::DraggingStopped() {
-	::resetDragging(m_LayoutHelper, false);
+	resetDragging(m_LayoutHelper, false);
 }
 
 OdSelectionSetPtr OdExGripManager::WorkingSelectionSet() const {
@@ -1311,12 +1311,12 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 		auto Result {(*activeKeys[static_cast<unsigned>(RightClickIndex)]->GripData()->rtClk())(HotGrips, Entities, MenuName, Menu, cb)};
 
 		if (Result == eOk && Menu != nullptr && cb != nullptr) {
-			auto ActiveWindow {::GetActiveWindow()};
+			auto ActiveWindow {GetActiveWindow()};
 			POINT pt = {x, y};
-			::ClientToScreen(ActiveWindow, &pt);
+			ClientToScreen(ActiveWindow, &pt);
 			unsigned Flags {TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION};
-			(*cb)(::TrackPopupMenu(static_cast<HMENU>(Menu), Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
-			::DestroyMenu(static_cast<HMENU>(Menu));
+			(*cb)(TrackPopupMenu(static_cast<HMENU>(Menu), Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
+			DestroyMenu(static_cast<HMENU>(Menu));
 			
 			for (unsigned i = 0; i < Size; i++) {
 				activeKeys[i]->setStatus(OdDbGripOperations::kWarmGrip);

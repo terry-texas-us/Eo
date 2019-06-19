@@ -12,7 +12,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetUnitsAndPrecision, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent)
-	: CDialog(EoDlgSetUnitsAndPrecision::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Units(AeSys::kInches)
 	, m_Precision(8) {
 }

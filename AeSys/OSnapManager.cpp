@@ -204,7 +204,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	}
 }
 
-void OdBaseSnapManager::InvalidateViewport(const OdBaseSnapManager::HistEntryArray& centers) const {
+void OdBaseSnapManager::InvalidateViewport(const HistEntryArray& centers) const {
 	const auto WorldToDeviceTransform {m_View->worldToDeviceMatrix()};
 
 	OdGsDCRect DcRectangle;
@@ -450,7 +450,7 @@ inline bool OdBaseSnapManager::Checkpoint(OdDb::OsnapMode objectSnapMode, const 
 
 const int nMaxHist = 7;
 
-bool OdBaseSnapManager::AppendToQueue(OdBaseSnapManager::HistEntryArray& histEntries, const HistEntry& histEntry) {
+bool OdBaseSnapManager::AppendToQueue(HistEntryArray& histEntries, const HistEntry& histEntry) {
 	if (!histEntries.contains(histEntry)) {
 		if (histEntries.size() > nMaxHist) {
 			histEntries.erase(histEntries.begin());

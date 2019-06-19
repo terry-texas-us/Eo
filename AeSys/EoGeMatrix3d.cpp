@@ -113,5 +113,5 @@ OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& ref
 
 		return ToWorld;
 	}
-	return OdGeMatrix3d::kIdentity;
+	return kIdentity;
 }

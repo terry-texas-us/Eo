@@ -14,7 +14,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupNote, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupNote::EoDlgSetupNote(CWnd* parent)
-	: CDialog(EoDlgSetupNote::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_FontDefinition(nullptr)
 	, m_Height(0.0)
 	, m_WidthFactor(0.0)
@@ -23,7 +23,7 @@ EoDlgSetupNote::EoDlgSetupNote(CWnd* parent)
 }
 
 EoDlgSetupNote::EoDlgSetupNote(EoDbFontDefinition* fontDefinition, CWnd* parent)
-	: CDialog(EoDlgSetupNote::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_FontDefinition(fontDefinition)
 	, m_Height(0)
 	, m_WidthFactor(0)

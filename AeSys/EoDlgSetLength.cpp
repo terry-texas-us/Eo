@@ -11,7 +11,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetLength, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetLength::EoDlgSetLength(CWnd* parent)
-	: CDialog(EoDlgSetLength::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Length(0.0) {
 }
 

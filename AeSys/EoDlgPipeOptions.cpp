@@ -10,7 +10,7 @@ BEGIN_MESSAGE_MAP(EoDlgPipeOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgPipeOptions::EoDlgPipeOptions(CWnd* parent)
-	: CDialog(EoDlgPipeOptions::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_PipeTicSize(0)
 	, m_PipeRiseDropRadius(0) {
 }

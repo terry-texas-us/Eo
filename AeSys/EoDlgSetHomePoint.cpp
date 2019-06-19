@@ -16,12 +16,12 @@ END_MESSAGE_MAP()
 OdGePoint3d EoDlgSetHomePoint::m_CursorPosition = OdGePoint3d::kOrigin;
 
 EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* parent)
-	: CDialog(EoDlgSetHomePoint::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(0) {
 }
 
 EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent)
-	: CDialog(EoDlgSetHomePoint::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(activeView) {
 }
 

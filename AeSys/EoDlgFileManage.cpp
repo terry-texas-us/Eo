@@ -34,7 +34,7 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgFileManage::EoDlgFileManage(CWnd* parent)
-	: CDialog(EoDlgFileManage::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(nullptr)
 	, m_ClickToColumnStatus(false)
 	, m_Description(0)
@@ -43,7 +43,7 @@ EoDlgFileManage::EoDlgFileManage(CWnd* parent)
 }
 
 EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
-	: CDialog(EoDlgFileManage::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(document)
 	, m_Database(database)
 	, m_ClickToColumnStatus(false)
@@ -213,7 +213,7 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 			{
 				CRect rcItem(drawItemStruct->rcItem);
 				CDC DeviceContext;
-				const COLORREF BackgroundColor {::GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
+				const COLORREF BackgroundColor {GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
 				DeviceContext.Attach(drawItemStruct->hDC);
 				CBrush BackgroundBrush(BackgroundColor);
 				DeviceContext.FillRect(rcItem, &BackgroundBrush);
@@ -223,7 +223,7 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 				const int ItemID {gsl::narrow_cast<int>(drawItemStruct->itemID)};
 
 				if (ItemID != -1) { // The text color is stored as the item data.
-					const COLORREF TextColor {drawItemStruct->itemState & ODS_SELECTED ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT)};
+					const COLORREF TextColor {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
 					DeviceContext.SetBkColor(BackgroundColor);
 					DeviceContext.SetTextColor(TextColor);
 					for (int labelIndex = 0; labelIndex < m_NumberOfColumns; ++labelIndex) {
@@ -236,7 +236,7 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 			break;
 
 			case ODA_SELECT:
-				::InvertRect(drawItemStruct->hDC, &drawItemStruct->rcItem);
+				InvertRect(drawItemStruct->hDC, &drawItemStruct->rcItem);
 				break;
 
 			case ODA_FOCUS:

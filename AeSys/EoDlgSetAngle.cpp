@@ -10,7 +10,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetAngle::EoDlgSetAngle(CWnd* parent)
-	: CDialog(EoDlgSetAngle::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_dAngle(0) {
 }
 

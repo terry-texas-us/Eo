@@ -543,7 +543,7 @@ int lex::Scan(wchar_t* token, const wchar_t* line, int& linePosition) {
 }
 
 int lex::TokenType(int aiTokId) noexcept {
-	return aiTokId >= 0 && aiTokId < lex::iToks ? TokenTypes[aiTokId] : - 1;
+	return aiTokId >= 0 && aiTokId < iToks ? TokenTypes[aiTokId] : - 1;
 }
 
 void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, double* adOp) {
@@ -694,7 +694,7 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, long* alOp) {
 }
 
 wchar_t* lex::ScanForChar(wchar_t c, wchar_t* *ppStr) noexcept {
-	wchar_t* p {lex::SkipWhiteSpace(*ppStr)};
+	wchar_t* p {SkipWhiteSpace(*ppStr)};
 
 	if (*p == c) {
 		*ppStr = p + 1;
@@ -711,7 +711,7 @@ wchar_t* lex::SkipWhiteSpace(wchar_t* pszString) noexcept {
 }
 
 wchar_t* lex::ScanForString(wchar_t* *ppStr, wchar_t* pszTerm, wchar_t* *ppArgBuf) noexcept {
-	wchar_t* pIn {lex::SkipWhiteSpace(*ppStr)};
+	wchar_t* pIn {SkipWhiteSpace(*ppStr)};
 	wchar_t* pStart {*ppArgBuf};
 	wchar_t* pOut {pStart};
 

@@ -22,7 +22,7 @@ BEGIN_MESSAGE_MAP(EoDlgViewParameters, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgViewParameters::EoDlgViewParameters(CWnd* parent)
-	: CDialog(EoDlgViewParameters::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_PerspectiveProjection(FALSE)
 	, m_ModelView(0) {
 }

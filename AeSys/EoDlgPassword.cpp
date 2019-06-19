@@ -9,7 +9,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 EoDlgPassword::EoDlgPassword(CWnd* parent)
-	: CDialog(EoDlgPassword::IDD, parent) {
+	: CDialog(IDD, parent) {
 	m_sFileName = L"";
 }
 

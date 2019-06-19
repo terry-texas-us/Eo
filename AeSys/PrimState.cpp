@@ -154,13 +154,13 @@ void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int pe
 		}
 		if (hPen[i] == nullptr) { iPen = i; }
 	}
-	auto NewPenHandle {::CreatePen(linetypeIndex, penWidth, pColTbl[colorIndex])};
+	auto NewPenHandle {CreatePen(linetypeIndex, penWidth, pColTbl[colorIndex])};
 
 	if (NewPenHandle) {
 		hPenCur = NewPenHandle;
 		deviceContext.SelectObject(CPen::FromHandle(NewPenHandle));
 
-		if (hPen[iPen]) { ::DeleteObject(hPen[iPen]); }
+		if (hPen[iPen]) { DeleteObject(hPen[iPen]); }
 
 		hPen[iPen] = NewPenHandle;
 		LinetypeIndexes[iPen] = linetypeIndex;

@@ -123,7 +123,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
-		auto MetaFileHandle {::SetWinMetaFileBits(dwSize, reinterpret_cast<const unsigned char*>(mfHeader), nullptr, nullptr)};
+		auto MetaFileHandle {SetWinMetaFileBits(dwSize, reinterpret_cast<const unsigned char*>(mfHeader), nullptr, nullptr)};
 
 		CSize size {0, 0};
 

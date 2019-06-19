@@ -20,8 +20,8 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 		{
 			const int nMaxCount {100};
 			wchar_t sString[nMaxCount] {L"\0"};
-			auto hOwner {::GetWindow(hwnd, GW_OWNER)};
-			::GetWindowText(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
+			auto hOwner {GetWindow(hwnd, GW_OWNER)};
+			::GetWindowText(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
 			const auto pPsDlg {static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner))};
 			auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage())};
 			ActivePage->AddNewPlotStyle(sString);
@@ -34,15 +34,15 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 			if (codeNotify == EN_CHANGE) {
 				const int nMaxCount {100};
 				wchar_t sString[nMaxCount];
-				auto hOwner {::GetWindow(hwnd, GW_OWNER)};
-				::GetWindowText(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
+				auto hOwner {GetWindow(hwnd, GW_OWNER)};
+				::GetWindowText(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
 				auto pPsDlg {static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner))};
 				const auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage())};
 				const auto PlotStyleTable {ActivePage->GetPlotStyleTable()};
 				OdPsPlotStylePtr PlotStyle;
-				auto hDInfo {::GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_DINFO)};
-				auto hSInfo {::GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_SINFO)};
-				auto hOkBtn {::GetDlgItem(hwnd, IDOK)};
+				auto hDInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_DINFO)};
+				auto hSInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_SINFO)};
+				auto hOkBtn {GetDlgItem(hwnd, IDOK)};
 
 				CString newName = sString;
 				newName.MakeLower();
@@ -59,7 +59,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 					if (name == newName) {
 						CString sInfo;
 						sInfo.Format(L"A style named <%s> already exists.", sString);
-						::SetWindowTextW(hDInfo, sInfo);
+						SetWindowTextW(hDInfo, sInfo);
 						ShowWindow(hDInfo, SW_SHOW);
 						ShowWindow(hSInfo, SW_SHOW);
 						EnableWindow(hOkBtn, FALSE);
@@ -76,13 +76,13 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 }
 
 BOOL Dlg_OnInit(HWND hwnd, HWND hwndCtl, LPARAM lParam) {
-	HWND hOwner = ::GetWindow(hwnd, GW_OWNER);
+	HWND hOwner = GetWindow(hwnd, GW_OWNER);
 	CPropertySheet* pPsDlg = static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner));
 	const EoDlgPlotStyleEditor_FormViewPropertyPage* pPg = static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage());
 	const OdPsPlotStyleTable* PlotStyleTable = pPg->GetPlotStyleTable();
 	OdString sName;
 	sName.format(L"Style %d", PlotStyleTable->plotStyleSize());
-	::SetWindowTextW(::GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
+	SetWindowTextW(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
 	return TRUE;
 }
 int WINAPI Dlg_Proc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) {
@@ -228,7 +228,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const 
 CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name)
 	: m_iItem(0xff)
 	, m_color(0) {
-	auto BitmapHandle {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
+	auto BitmapHandle {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
 	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
 	CloneBitmap(Bitmap, &m_bitmap);
 	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
@@ -312,7 +312,7 @@ const OdCmEntityColor CPsListStyleData::GetColor() {
 
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 
-EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewPropertyPage() : CPropertyPage(EoDlgPlotStyleEditor_FormViewPropertyPage::IDD) {
+EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewPropertyPage() : CPropertyPage(IDD) {
 	m_pPlotStyleTable = nullptr;
 	m_pPlotStyleActive = nullptr;
 	m_bEditChanging = false;
@@ -686,8 +686,8 @@ HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int he
 
 	::ReleaseDC(nullptr, hScreenDC);
 
-	HGDIOBJ hOldIconDC = ::SelectObject(hIconDC, ii.hbmColor);
-	HGDIOBJ hOldMaskDC = ::SelectObject(hMaskDC, ii.hbmMask);
+	HGDIOBJ hOldIconDC = SelectObject(hIconDC, ii.hbmColor);
+	HGDIOBJ hOldMaskDC = SelectObject(hMaskDC, ii.hbmMask);
 
 	BitBlt(hIconDC, 0, 0, width, height, nullptr, 0, 0, WHITENESS);
 	BitBlt(hMaskDC, 0, 0, width, height, nullptr, 0, 0, BLACKNESS);

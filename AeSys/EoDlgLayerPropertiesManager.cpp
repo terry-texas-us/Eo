@@ -17,7 +17,7 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
-	: CDialog(EoDlgLayerPropertiesManager::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_DeltaHeight(0)
 	, m_DeltaWidth(0)
 	, m_InititialHeight(0)
@@ -25,7 +25,7 @@ EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
 }
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent)
-	: CDialog(EoDlgLayerPropertiesManager::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Database(database)
 	, m_DeltaHeight(0)
 	, m_DeltaWidth(0)
@@ -71,7 +71,7 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStruc
 			m_TreeFilters.DeleteItem(SelectedItem);
 
 			const OdLyLayerFilter * Root = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem())));
-			::odlyGetLayerFilterManager(m_Database)->setFilters(Root, Root);
+			odlyGetLayerFilterManager(m_Database)->setFilters(Root, Root);
 		}
 	}
 	*result = 0;
@@ -135,7 +135,7 @@ static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerF
 
 void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	m_TreeFilters.DeleteAllItems();
-	OdLyLayerFilterManagerPtr FilterManager = ::odlyGetLayerFilterManager(m_Database);
+	OdLyLayerFilterManagerPtr FilterManager = odlyGetLayerFilterManager(m_Database);
 	OdLyLayerFilterPtr pCurrent;
 	
 	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk) { return; }

@@ -32,7 +32,7 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditLineweight, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgPlotStyleEditLineweight::EoDlgPlotStyleEditLineweight(CWnd* parent) 
-	: CDialog(EoDlgPlotStyleEditLineweight::IDD, parent) {
+	: CDialog(IDD, parent) {
 	m_PlotStyleTable = nullptr;
 	m_InitialSelection = 0;
 	m_LineweightData = nullptr;
@@ -171,7 +171,7 @@ bool EoDlgPlotStyleEditLineweight::SetPlotStyleTable(OdPsPlotStyleTable* plotSty
 
 void EoDlgPlotStyleEditLineweight::InitializeLineweightsListCtrlImages() {
 	VERIFY(m_ListCtrlImages.Create(IDB_PS_BITMAP_WHITE, 16, 3, RGB(255, 255, 255)));
-	auto Bitmap {static_cast<HBITMAP>(::LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDB_PS_BITMAP_CHECK), IMAGE_BITMAP, 16, 16, LR_CREATEDIBSECTION))};
+	auto Bitmap {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDB_PS_BITMAP_CHECK), IMAGE_BITMAP, 16, 16, LR_CREATEDIBSECTION))};
 	m_ListCtrlImages.Add(CBitmap::FromHandle(Bitmap), RGB(255, 255, 255));
 	m_LineweightsListCtrl.SetImageList(&m_ListCtrlImages, LVSIL_SMALL);
 }

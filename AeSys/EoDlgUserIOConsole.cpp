@@ -9,7 +9,7 @@
 #include "EoDlgUserIOConsole.h"
 
 EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
-	: CDialog(EoDlgUserIOConsole::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_RefCounter(1)
 	, m_NumberOfStrings(0) {
 	m_Input = L"";

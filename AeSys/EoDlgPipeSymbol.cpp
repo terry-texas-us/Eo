@@ -11,7 +11,7 @@ BEGIN_MESSAGE_MAP(EoDlgPipeSymbol, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgPipeSymbol::EoDlgPipeSymbol(CWnd* parent)
-	: CDialog(EoDlgPipeSymbol::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_CurrentPipeSymbolIndex(0) {
 }
 

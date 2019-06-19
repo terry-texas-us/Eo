@@ -13,12 +13,12 @@ BEGIN_MESSAGE_MAP(EoDlgTrapFilter, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgTrapFilter::EoDlgTrapFilter(CWnd* parent)
-	: CDialog(EoDlgTrapFilter::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(nullptr) {
 }
 
 EoDlgTrapFilter::EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
-	: CDialog(EoDlgTrapFilter::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(document)
 	, m_Database(database) {
 }

@@ -219,7 +219,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 	ItemRectangle.SetRect(ItemRectangle.right + 8, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 
 	if (ItemRectangle.left <= itemRectangle.right) {
-		OdString String {CMainFrame::StringByLineWeight(lineWeight, false)};
+		OdString String {StringByLineWeight(lineWeight, false)};
 		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, static_cast<unsigned>(String.getLength()), nullptr);
 	}
 }
@@ -236,10 +236,10 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 }
 
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
-	auto PropertiesPaneIcon {static_cast<HICON>(::LoadImageW(::AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0))};
+	auto PropertiesPaneIcon {static_cast<HICON>(LoadImageW(AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0))};
 	m_PropertiesPane.SetIcon(PropertiesPaneIcon, FALSE);
 
-	auto OutputPaneIcon {static_cast<HICON>(::LoadImageW(::AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, ::GetSystemMetrics(SM_CXSMICON), ::GetSystemMetrics(SM_CYSMICON), 0))};
+	auto OutputPaneIcon {static_cast<HICON>(LoadImageW(AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0))};
 	m_OutputPane.SetIcon(OutputPaneIcon, FALSE);
 
 	UpdateMDITabbedBarsIcons();
@@ -436,7 +436,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 		MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 		MenuItemInfo.fMask = MIIM_DATA;
 
-		auto CommandStack {::odedRegCmds()};
+		auto CommandStack {odedRegCmds()};
 		bool bHasNoCommand = CommandStack->newIterator()->done();
 
 		int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
@@ -461,7 +461,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
 
 					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(pCmd.get());
-					::SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
+					SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
 
 					GroupCommandIterator->next();
 					CommandId++;
@@ -497,7 +497,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			unsigned long PathSize;
 			for (;;) {
 				PathSize = _MAX_FNAME + _MAX_EXT;
-				const auto ReturnValue {::RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
+				const auto ReturnValue {RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 				VectorizerPath.ReleaseBuffer();
 
 				if (ReturnValue != ERROR_SUCCESS) {
@@ -633,7 +633,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		
 		if (Divider != nullptr) { Divider->BringWindowToTop(); }
 	}
-	CMDIFrameWndEx::m_bDisableSetRedraw = theApp.m_Options.m_DisableSetRedraw;
+	m_bDisableSetRedraw = theApp.m_Options.m_DisableSetRedraw;
 
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);

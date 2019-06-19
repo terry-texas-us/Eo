@@ -12,7 +12,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetPastePosition, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetPastePosition::EoDlgSetPastePosition(CWnd* parent)
-	: CDialog(EoDlgSetPastePosition::IDD, parent) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgSetPastePosition::~EoDlgSetPastePosition() {

@@ -17,7 +17,7 @@ END_MESSAGE_MAP()
 OdGePoint3d EoDlgModeLetter::m_Point = OdGePoint3d::kOrigin;
 
 EoDlgModeLetter::EoDlgModeLetter(CWnd* parent)
-	: CDialog(EoDlgModeLetter::IDD, parent) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgModeLetter::~EoDlgModeLetter() {
@@ -82,7 +82,7 @@ void EoDlgModeLetter::OnOK() {
 void EoDlgModeLetter::OnSize(unsigned type, int cx, int cy) {
 	CDialog::OnSize(type, cx, cy);
 
-	if (::IsWindow(m_TextEditControl.GetSafeHwnd())) {
+	if (IsWindow(m_TextEditControl.GetSafeHwnd())) {
 		m_TextEditControl.MoveWindow(0, 0, cx, cy, TRUE);
 	}
 }

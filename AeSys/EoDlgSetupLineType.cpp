@@ -20,11 +20,11 @@ void EoDlgSetupLinetype::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_LINETYPES_LIST_CONTROL, m_LinetypesListControl);
 }
 EoDlgSetupLinetype::EoDlgSetupLinetype(CWnd* parent) 
-    : CDialog(EoDlgSetupLinetype::IDD, parent) {
+    : CDialog(IDD, parent) {
 }
 
 EoDlgSetupLinetype::EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent)
-	: CDialog(EoDlgSetupLinetype::IDD, parent)
+	: CDialog(IDD, parent)
     , m_LinetypeTable(linetypeTable) {
 }
 
@@ -41,7 +41,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 		switch (drawItemStruct->itemAction) {
 		case ODA_DRAWENTIRE: {
 			CRect ItemRectangle(drawItemStruct->rcItem);
-			const COLORREF BackgroundColor = ::GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW);
+			const COLORREF BackgroundColor = GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW);
 
 			CDC DeviceContext;
 			DeviceContext.Attach(drawItemStruct->hDC);
@@ -54,7 +54,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 			const int Item {static_cast<int>(drawItemStruct->itemID)};
 
 			if (Item != -1) {
-				const COLORREF rgbText = drawItemStruct->itemState & ODS_SELECTED ? ::GetSysColor(COLOR_HIGHLIGHTTEXT) : ::GetSysColor(COLOR_WINDOWTEXT);
+				const COLORREF rgbText = drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT);
 				DeviceContext.SetBkColor(BackgroundColor);
 				DeviceContext.SetTextColor(rgbText);
 
@@ -104,7 +104,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 		break;
 
 		case ODA_SELECT:
-			::InvertRect(drawItemStruct->hDC, &drawItemStruct->rcItem);
+			InvertRect(drawItemStruct->hDC, &drawItemStruct->rcItem);
 			break;
 
 		case ODA_FOCUS:

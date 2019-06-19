@@ -13,7 +13,7 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 EoDlgNewView::EoDlgNewView(CWnd* parent)
-	: CDialog(EoDlgNewView::IDD, parent) {
+	: CDialog(IDD, parent) {
 	m_sViewName = L"";
 	m_sViewCategory = L"";
 	m_bStoreLS = TRUE;

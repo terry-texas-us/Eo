@@ -123,11 +123,11 @@ void AeSysView::OnTrapModeEngage() {
 
 void AeSysView::OnTrapModeMenu() {
 	CPoint CurrentPosition;
-	::GetCursorPos(&CurrentPosition);
-	auto TrapMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
-	auto SubMenu {CMenu::FromHandle(::GetSubMenu(TrapMenu, 0))};
+	GetCursorPos(&CurrentPosition);
+	auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
+	auto SubMenu {CMenu::FromHandle(GetSubMenu(TrapMenu, 0))};
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
-	::DestroyMenu(TrapMenu);
+	DestroyMenu(TrapMenu);
 }
 void AeSysView::OnTrapModeModify() {
 
@@ -255,11 +255,11 @@ void AeSysView::OnTraprModeEngage() noexcept {
 
 void AeSysView::OnTraprModeMenu() {
 	CPoint CurrentPosition;
-	::GetCursorPos(&CurrentPosition);
-	auto TrapMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
-	auto SubMenu {CMenu::FromHandle(::GetSubMenu(TrapMenu, 0))};
+	GetCursorPos(&CurrentPosition);
+	auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
+	auto SubMenu {CMenu::FromHandle(GetSubMenu(TrapMenu, 0))};
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
-	::DestroyMenu(TrapMenu);
+	DestroyMenu(TrapMenu);
 }
 
 void AeSysView::OnTraprModeModify() {

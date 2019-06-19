@@ -23,7 +23,7 @@ EoGeReferenceSystem EoDlgModeRevise::sm_ReferenceSystem;
 EoDbText* EoDlgModeRevise::sm_TextPrimitive;
 
 EoDlgModeRevise::EoDlgModeRevise(CWnd* parent) 
-    : CDialog(EoDlgModeRevise::IDD, parent) {
+    : CDialog(IDD, parent) {
 }
 
 EoDlgModeRevise::~EoDlgModeRevise() {
@@ -96,7 +96,7 @@ void EoDlgModeRevise::OnOK() {
 void EoDlgModeRevise::OnSize(unsigned type, int cx, int cy) {
 	CDialog::OnSize(type, cx, cy);
 
-	if (::IsWindow(m_TextEditControl.GetSafeHwnd())) {
+	if (IsWindow(m_TextEditControl.GetSafeHwnd())) {
 		m_TextEditControl.MoveWindow(0, 0, cx, cy, TRUE);
 	}
 }

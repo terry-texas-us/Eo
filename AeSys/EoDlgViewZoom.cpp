@@ -9,7 +9,7 @@ BEGIN_MESSAGE_MAP(EoDlgViewZoom, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgViewZoom::EoDlgViewZoom(CWnd* parent)
-	: CDialog(EoDlgViewZoom::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ZoomFactor(1.0) {
 }
 

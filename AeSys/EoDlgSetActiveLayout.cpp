@@ -7,7 +7,7 @@
 #include "DbLayout.h"
 
 EoDlgSetActiveLayout::EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent)
-	: CDialog(EoDlgSetActiveLayout::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Database(database)
 	, m_OldActiveLayout(0)
 	, m_NewActiveLayout(0)

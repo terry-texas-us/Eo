@@ -249,7 +249,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 
 	auto ColorProperty {new CMFCPropertyGridColorProperty(L"Window Color", RGB(210, 192, 254), nullptr, L"Specifies the default window color")};
 	ColorProperty->EnableOtherButton(L"Other...");
-	ColorProperty->EnableAutomaticButton(L"Default", ::GetSysColor(COLOR_3DFACE));
+	ColorProperty->EnableAutomaticButton(L"Default", GetSysColor(COLOR_3DFACE));
 	MiscGroup->AddSubItem(ColorProperty);
 
 	static wchar_t BASED_CODE szFilter[] = L"Icon Files(*.ico)|*.ico|All Files(*.*)|*.*||";
@@ -271,7 +271,7 @@ void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, const wchar_t* 
 }
 
 void EoMfPropertiesDockablePane::SetPropertyGridFont() {
-	::DeleteObject(m_PropertyGridFont.Detach());
+	DeleteObject(m_PropertyGridFont.Detach());
 
 	LOGFONT FontAttributes;
 	afxGlobalData.fontRegular.GetLogFont(&FontAttributes);

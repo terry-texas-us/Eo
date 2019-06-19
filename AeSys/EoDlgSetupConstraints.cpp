@@ -13,12 +13,12 @@ BEGIN_MESSAGE_MAP(EoDlgSetupConstraints, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(CWnd* parent)
-	: CDialog(EoDlgSetupConstraints::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(0) {
 }
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent)
-	: CDialog(EoDlgSetupConstraints::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ActiveView(view) {
 }
 

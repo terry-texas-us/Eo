@@ -14,7 +14,7 @@ BEGIN_MESSAGE_MAP(EoDlgLowPressureDuctOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLowPressureDuctOptions::EoDlgLowPressureDuctOptions(CWnd* parent)
-	: CDialog(EoDlgLowPressureDuctOptions::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Width(0.0)
 	, m_Depth(0.0)
 	, m_RadiusFactor(0.0)

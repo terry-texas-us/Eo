@@ -12,7 +12,7 @@ BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent)
-	: CDialog(EoDlgEditTrapCommandsQuery::IDD, parent) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgEditTrapCommandsQuery::~EoDlgEditTrapCommandsQuery() {

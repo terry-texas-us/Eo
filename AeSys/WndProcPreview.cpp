@@ -19,8 +19,8 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	Class.cbWndExtra = 0;
 	Class.hInstance = instance;
 	Class.hIcon = 0;
-	Class.hCursor = static_cast<HCURSOR>(::LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
-	Class.hbrBackground	= static_cast<HBRUSH>(::GetStockObject(BLACK_BRUSH));
+	Class.hCursor = static_cast<HCURSOR>(LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE));
+	Class.hbrBackground	= static_cast<HBRUSH>(GetStockObject(BLACK_BRUSH));
 	Class.lpszMenuName = 0;
 	Class.lpszClassName	= L"PreviewWindow";
 
@@ -33,7 +33,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 			CDC* DeviceContext = ActiveView ? ActiveView->GetDC() : nullptr;
 
 			CRect rc;
-			::GetClientRect(hwnd, &rc);
+			GetClientRect(hwnd, &rc);
 			WndProcPreview_Bitmap = new CBitmap;
 			WndProcPreview_Bitmap->CreateCompatibleBitmap(DeviceContext, int(rc.right), int(rc.bottom));
 		}
@@ -50,10 +50,10 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 			PAINTSTRUCT ps;
 
 			CRect rc;
-			::GetClientRect(hwnd, &rc);
+			GetClientRect(hwnd, &rc);
 
 			CDC dc;
-			dc.Attach(::BeginPaint(hwnd, &ps));
+			dc.Attach(BeginPaint(hwnd, &ps));
 
 			CDC dcMem;
 			dcMem.CreateCompatibleDC(NULL);
@@ -64,12 +64,12 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 
 			dc.Detach();
 
-			::EndPaint(hwnd, &ps);
+			EndPaint(hwnd, &ps);
 		}
 		return FALSE;
 
 		case WM_LBUTTONDOWN:
-			::SetFocus(hwnd);
+			SetFocus(hwnd);
 			return FALSE;
 
 	}
@@ -78,7 +78,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 
 void WndProcPreviewClear(HWND previewWindow) {
 	CRect rc;
-	::GetClientRect(previewWindow, &rc);
+	GetClientRect(previewWindow, &rc);
 
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(0);
@@ -87,14 +87,14 @@ void WndProcPreviewClear(HWND previewWindow) {
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 
 	dcMem.SelectObject(Bitmap);
-	::InvalidateRect(previewWindow, 0, TRUE);
+	InvalidateRect(previewWindow, 0, TRUE);
 }
 
 void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	auto ActiveView {AeSysView::GetActiveView()};
 
 	CRect rc;
-	::GetClientRect(previewWindow, &rc);
+	GetClientRect(previewWindow, &rc);
 
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(NULL);
@@ -136,14 +136,14 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	ActiveView->ViewportPopActive();
 
 	dcMem.SelectObject(Bitmap);
-	::InvalidateRect(previewWindow, 0, TRUE);
+	InvalidateRect(previewWindow, 0, TRUE);
 }
 
 void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	auto ActiveView {AeSysView::GetActiveView()};
 
 	CRect rc;
-	::GetClientRect(previewWindow, &rc);
+	GetClientRect(previewWindow, &rc);
 
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(NULL);
@@ -185,5 +185,5 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	ActiveView->ViewportPopActive();
 
 	dcMem.SelectObject(Bitmap);
-	::InvalidateRect(previewWindow, 0, TRUE);
+	InvalidateRect(previewWindow, 0, TRUE);
 }

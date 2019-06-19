@@ -12,14 +12,14 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 
 	switch (windowMessage) {
 		case WM_INITDIALOG:
-			WndProcPreviewClear(::GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
+			WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			return TRUE;
 
 		case WM_NOTIFY: {
 			LPOFNOTIFY lpofn;
 			lpofn = reinterpret_cast<LPOFNOTIFY>(lParam);
 			if (lpofn->hdr.code == CDN_FOLDERCHANGE) {
-				WndProcPreviewClear(::GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
+				WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			}
 			else if (lpofn->hdr.code == CDN_SELCHANGE) {
 				wchar_t FilePath[MAX_PATH] {L"\0"};
@@ -30,7 +30,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					EoDb::FileTypes FileType = AeSys::GetFileType(FilePath);
 					if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 						auto Layer {Document->GetLayerAt(FilePath)};
-						HWND PreviewWindow = ::GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
+						HWND PreviewWindow = GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
 
 						if (Layer != nullptr) {
 							_WndProcPreviewUpdate(PreviewWindow, Layer);

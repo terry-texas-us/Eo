@@ -10,7 +10,7 @@
 
 IMPLEMENT_DYNAMIC(EoDlgEditProperties, CDialog)
 EoDlgEditProperties::EoDlgEditProperties(OdDbObjectId& id, CWnd* parent)
-	: CDialog(EoDlgEditProperties::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_pObjectId(id)
 	, m_nCurItem(-1) {
 }

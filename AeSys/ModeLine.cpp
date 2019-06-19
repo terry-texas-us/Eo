@@ -19,9 +19,9 @@ void AeSysView::ModeLineDisplay() {
 		// <tas="Using active view device context for sizing status bar panes."/>
 		const auto Size {DeviceContext->GetTextExtent(ModeOp)};
 
-		GetStatusBar().SetPaneInfo(::nStatusOp0 + i, static_cast<unsigned>(ID_OP0 + i), SBPS_NORMAL, Size.cx);
-		GetStatusBar().SetPaneText(::nStatusOp0 + i, ModeOp);
-		GetStatusBar().SetTipText(::nStatusOp0 + i, L"Mode Command Tip Text");
+		GetStatusBar().SetPaneInfo(nStatusOp0 + i, static_cast<unsigned>(ID_OP0 + i), SBPS_NORMAL, Size.cx);
+		GetStatusBar().SetPaneText(nStatusOp0 + i, ModeOp);
+		GetStatusBar().SetTipText(nStatusOp0 + i, L"Mode Command Tip Text");
 	}
 	if (theApp.ModeInformationOverView()) {
 		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
@@ -39,7 +39,7 @@ void AeSysView::ModeLineDisplay() {
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 
 		for (int i = 0; i < 10; i++) {
-			ModeOp = GetStatusBar().GetPaneText(::nStatusOp0 + i);
+			ModeOp = GetStatusBar().GetPaneText(nStatusOp0 + i);
 
 			const CRect Rectangle(i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom);
 
@@ -60,7 +60,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 
 	if (command == 0) { return 0; }
 
-	const int PaneIndex {::nStatusOp0 + m_OpHighlighted - ID_OP0};
+	const int PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
 
 	GetStatusBar().SetPaneTextColor(PaneIndex, RGB(255, 0, 0));
 
@@ -100,7 +100,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 	if (command == 0 || m_OpHighlighted == 0) { return; }
 
-	const int PaneIndex {::nStatusOp0 + m_OpHighlighted - ID_OP0};
+	const int PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
 
 	GetStatusBar().SetPaneTextColor(PaneIndex);
 

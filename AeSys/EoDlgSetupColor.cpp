@@ -20,7 +20,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupColor, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupColor::EoDlgSetupColor(CWnd* parent)
-	: CDialog(EoDlgSetupColor::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_ColorIndex(0) {
 }
 
@@ -114,7 +114,7 @@ BOOL EoDlgSetupColor::OnNotify(WPARAM controlId, LPARAM notificationMessage, LRE
 	auto NotifyMessage {reinterpret_cast<NMHDR*>(notificationMessage)};
 	
 	if (NotifyMessage->hwndFrom != nullptr) {
-		const auto ColorsButton {dynamic_cast<EoCtrlColorsButton*>(CWnd::FromHandle(NotifyMessage->hwndFrom))};
+		const auto ColorsButton {dynamic_cast<EoCtrlColorsButton*>(FromHandle(NotifyMessage->hwndFrom))};
 
 		if (ColorsButton != nullptr && ColorsButton->IsKindOf(RUNTIME_CLASS(EoCtrlColorsButton))) { DrawSelectionInformation(ColorsButton->m_SubItem); }
 	}

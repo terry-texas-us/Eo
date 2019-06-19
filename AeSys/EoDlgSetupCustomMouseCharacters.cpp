@@ -12,7 +12,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupCustomMouseCharacters, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupCustomMouseCharacters::EoDlgSetupCustomMouseCharacters(CWnd* parent)
-	: CDialog(EoDlgSetupCustomMouseCharacters::IDD, parent) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgSetupCustomMouseCharacters::~EoDlgSetupCustomMouseCharacters() {

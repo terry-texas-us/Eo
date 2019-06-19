@@ -15,12 +15,12 @@ BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) noexcept
-	: CDialog(EoDlgTrapModify::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(nullptr) {
 }
 
 EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
-	: CDialog(EoDlgTrapModify::IDD, parent)
+	: CDialog(IDD, parent)
 	, m_Document(document) {
 }
 
