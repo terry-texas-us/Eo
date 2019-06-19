@@ -9,6 +9,8 @@
 class EoDbEllipse : public EoDbPrimitive {
 	DECLARE_DYNAMIC(EoDbEllipse)
 
+private:
+	
 	OdGePoint3d m_Center {OdGePoint3d::kOrigin};
 	OdGeVector3d m_MajorAxis {OdGeVector3d::kXAxis};
 	OdGeVector3d m_MinorAxis {OdGeVector3d::kYAxis};
@@ -27,7 +29,7 @@ public: // Constructors and destructor
 
 	~EoDbEllipse() = default;
 
-public: // Methods - absolute virtuals
+	// Methods - absolute virtuals
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
@@ -54,7 +56,8 @@ public: // Methods - absolute virtuals
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-public: // Methods
+	// Methods
+
 	OdGePoint3d Center() const noexcept;
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
@@ -80,7 +83,7 @@ public: // Methods
 	OdGePoint3d StartPoint() const;
 	double SwpAngToPt(const OdGePoint3d& point);
 
-public: // Methods - static
+	// Methods - static
 
 	static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 
