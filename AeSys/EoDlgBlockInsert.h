@@ -3,44 +3,44 @@
 // EoDlgBlockInsert dialog
 
 class EoDlgBlockInsert : public CDialog {
-    DECLARE_DYNAMIC(EoDlgBlockInsert)
+	DECLARE_DYNAMIC(EoDlgBlockInsert)
 
-public:
-    EoDlgBlockInsert(CWnd* parent = nullptr);
-    EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = nullptr);
-    ~EoDlgBlockInsert();
+	EoDlgBlockInsert(CWnd* parent = nullptr);
+	EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = nullptr);
+	~EoDlgBlockInsert();
 
-    // Dialog Data
-    enum { IDD = IDD_INSERT_BLOCK };
+	// Dialog Data
+	enum { IDD = IDD_INSERT_BLOCK };
 
-protected:
-    void DoDataExchange(CDataExchange* pDX) override;
-    BOOL OnInitDialog() override;
-    void OnOK() override;
+   protected:
+	void DoDataExchange(CDataExchange* pDX) override;
+	BOOL OnInitDialog() override;
+	void OnOK() override;
 
-    static OdGePoint3d InsertionPoint;
-    AeSysDoc* m_Document;
-public:
-    CListBox m_BlocksListBoxControl;
-    CEdit m_InsertionPointX;
-    CEdit m_InsertionPointY;
-    CEdit m_InsertionPointZ;
-    CEdit m_ScaleX;
-    CEdit m_ScaleY;
-    CEdit m_ScaleZ;
-    CEdit m_RotationAngle;
+	static OdGePoint3d InsertionPoint;
+	AeSysDoc* m_Document;
 
-    CButton m_InsertionPointOnscreen;
-    CButton m_ScaleOnscreen;
-    CButton m_RotationOnscreen;
+   public:
+	CListBox m_BlocksListBoxControl;
+	CEdit m_InsertionPointX;
+	CEdit m_InsertionPointY;
+	CEdit m_InsertionPointZ;
+	CEdit m_ScaleX;
+	CEdit m_ScaleY;
+	CEdit m_ScaleZ;
+	CEdit m_RotationAngle;
 
-    CButton m_Explode;
+	CButton m_InsertionPointOnscreen;
+	CButton m_ScaleOnscreen;
+	CButton m_RotationOnscreen;
 
-    void OnLbnSelchangeBlocksList();
-    void OnBnClickedPurge();
+	CButton m_Explode;
 
-protected:
-    DECLARE_MESSAGE_MAP()
-public:
-    void OnBnClickedCancel();
+	void OnLbnSelchangeBlocksList();
+	void OnBnClickedPurge();
+
+   protected:
+	DECLARE_MESSAGE_MAP()
+   public:
+	void OnBnClickedCancel();
 };

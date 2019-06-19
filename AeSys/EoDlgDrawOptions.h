@@ -3,28 +3,27 @@
 // EoDlgDrawOptions dialog
 
 class EoDlgDrawOptions : public CDialog {
-    DECLARE_DYNAMIC(EoDlgDrawOptions)
+	DECLARE_DYNAMIC(EoDlgDrawOptions)
 
-public:
-    EoDlgDrawOptions(CWnd* parent = nullptr);
-    
-    ~EoDlgDrawOptions();
+	EoDlgDrawOptions(CWnd* parent = nullptr);
 
-    // Dialog Data
-    enum { IDD = IDD_DRAW_OPTIONS };
+	~EoDlgDrawOptions();
 
-protected:
-    void DoDataExchange(CDataExchange* pDX) final;
-    BOOL OnInitDialog() final;
-    void OnOK() final;
-
-public:
-    void OnBnClickedPen();
-    void OnBnClickedLine();
-    void OnBnClickedText();
-    void OnBnClickedFill();
-    void OnBnClickedConstraints();
+	// Dialog Data
+	enum { IDD = IDD_DRAW_OPTIONS };
 
 protected:
-    DECLARE_MESSAGE_MAP()
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
+	void OnOK() final;
+
+public:
+	void OnBnClickedPen();
+	void OnBnClickedLine();
+	void OnBnClickedText();
+	void OnBnClickedFill();
+	void OnBnClickedConstraints();
+
+   protected:
+	DECLARE_MESSAGE_MAP()
 };

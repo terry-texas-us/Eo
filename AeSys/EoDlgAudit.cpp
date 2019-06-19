@@ -46,7 +46,7 @@ BOOL EoDlgAudit::OnInitDialog() {
 }
 void EoDlgAudit::printReport(OdDbAuditInfo* auditInfo) {
 	if (auditInfo->getLastInfo().bIsError) {
-		const int NumberOfAuditErrors = m_AuditErrList.GetItemCount();
+		const auto NumberOfAuditErrors {m_AuditErrList.GetItemCount()};
 		m_AuditErrList.InsertItem(NumberOfAuditErrors, auditInfo->getLastInfo().strName);
 		m_AuditErrList.SetItemText(NumberOfAuditErrors, 1, auditInfo->getLastInfo().strValue);
 		m_AuditErrList.SetItemText(NumberOfAuditErrors, 2, auditInfo->getLastInfo().strValidation);

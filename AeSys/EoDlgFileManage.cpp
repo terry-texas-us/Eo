@@ -62,8 +62,8 @@ void EoDlgFileManage::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_GROUPS, m_Groups);
 }
 void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& itemRectangle) {
-	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(itemID));
-	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
+	const EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(itemID))};
+	auto LayerTableRecord {Layer->TableRecord()};
 
 	OdString ItemName;
 	switch (labelIndex) {
@@ -108,7 +108,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 			break;
 		case VpFreeze:
 			if (labelIndex != m_Description) {
-				OdDbViewportPtr Viewport = OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject());
+				auto Viewport {OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject())};
 				if (Viewport.get()) {
 	//				m_StateImages.Draw(&deviceContext, Viewport->isLayerFrozenInViewport(ItemData) ? 4 : 5, ((CRect&) itemRectangle).TopLeft(), ILD_TRANSPARENT);
 				}
@@ -134,10 +134,10 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, c
 	}
 }
 void EoDlgFileManage::OnBnClickedFuse() {
-	const int SelectionMark = m_LayersList.GetSelectionMark();
+	const auto SelectionMark {m_LayersList.GetSelectionMark()};
 	if (SelectionMark > -1) {
-		const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
-		OdString Name(Layer->Name());
+		const EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark))};
+		auto Name {Layer->Name()};
 		if (Layer->IsInternal()) {
 			theApp.AddStringToMessageList(L"Selection <%s> already an internal layer.\n", Name);
 		} else {
@@ -148,10 +148,10 @@ void EoDlgFileManage::OnBnClickedFuse() {
 	}
 }
 void EoDlgFileManage::OnBnClickedMelt() {
-	const int SelectionMark = m_LayersList.GetSelectionMark();
+	const auto SelectionMark {m_LayersList.GetSelectionMark()};
 	if (SelectionMark > -1) {
 		const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
-		OdString Name(Layer->Name());
+		auto Name {Layer->Name()};
 		if (!Layer->IsInternal()) {
 			theApp.AddStringToMessageList(L"Selection <%s> already a tracing.\n", Name);
 		} else {
@@ -167,7 +167,7 @@ void EoDlgFileManage::OnBnClickedNewlayer() {
 	auto Layers {m_Document->LayerTable(OdDb::kForWrite)};
 
 	OdString Name;
-	int Suffix = 1;
+	auto Suffix {1};
 	do {
 		Name.format(L"Layer%d", Suffix++);
 	} while (Layers->has(Name));
@@ -220,13 +220,13 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 
 				if (drawItemStruct->itemState & ODS_FOCUS) { DeviceContext.DrawFocusRect(rcItem); }
 
-				const int ItemID {gsl::narrow_cast<int>(drawItemStruct->itemID)};
+				const auto ItemID {gsl::narrow_cast<int>(drawItemStruct->itemID)};
 
 				if (ItemID != -1) { // The text color is stored as the item data.
 					const COLORREF TextColor {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
 					DeviceContext.SetBkColor(BackgroundColor);
 					DeviceContext.SetTextColor(TextColor);
-					for (int labelIndex = 0; labelIndex < m_NumberOfColumns; ++labelIndex) {
+					for (auto labelIndex = 0; labelIndex < m_NumberOfColumns; ++labelIndex) {
 						m_LayersList.GetSubItemRect(ItemID, labelIndex, LVIR_LABEL, rcItem);
 						DrawItem(DeviceContext, ItemID, labelIndex, rcItem);
 					}
@@ -279,9 +279,8 @@ BOOL EoDlgFileManage::OnInitDialog() {
 	}
 	m_Description = m_LayersList.InsertColumn(++m_NumberOfColumns, L"Description", LVCFMT_LEFT, 96);
 	m_NumberOfColumns++;
-
-	OdDbLayerTablePtr Layers = m_Document->LayerTable(OdDb::kForRead);
-	for (int LayerIndex = 0; LayerIndex < m_Document->GetLayerTableSize(); LayerIndex++) {
+	auto Layers = m_Document->LayerTable(OdDb::kForRead);
+	for (auto LayerIndex = 0; LayerIndex < m_Document->GetLayerTableSize(); LayerIndex++) {
 		const auto Layer {m_Document->GetLayerAt(LayerIndex)};
 
 		m_LayersList.InsertItem(LayerIndex, Layer->Name());
@@ -299,7 +298,7 @@ BOOL EoDlgFileManage::OnInitDialog() {
 		m_Document->GetNextBlock(Position, BlockName, Block);
 
 		if (!Block->IsAnonymous()) {
-			const int ItemIndex = m_BlocksList.AddString(BlockName);
+			const auto ItemIndex {m_BlocksList.AddString(BlockName)};
 			m_BlocksList.SetItemData(ItemIndex, DWORD_PTR(Block));
 		}
 	}
@@ -313,10 +312,10 @@ BOOL EoDlgFileManage::OnInitDialog() {
 	return TRUE;
 }
 void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
-	const LPNMLISTVIEW ListViewNotificationMessage = reinterpret_cast<LPNMLISTVIEW>(notifyStructure);
+	const auto ListViewNotificationMessage = reinterpret_cast<tagNMLISTVIEW*>(notifyStructure);
 
 	if ((ListViewNotificationMessage->uNewState & LVIS_FOCUSED) == LVFIS_FOCUSED) {
-		const int Item = ListViewNotificationMessage->iItem;
+		const auto Item {ListViewNotificationMessage->iItem};
 		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item));
 
 		CString NumberOfGroups;
@@ -332,7 +331,7 @@ void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRE
 }
 
 void EoDlgFileManage::OnLbnSelchangeBlocksList() {
-	const int CurrentSelection = m_BlocksList.GetCurSel();
+	const auto CurrentSelection {m_BlocksList.GetCurSel()};
 	if (CurrentSelection != LB_ERR) {
 		if (m_BlocksList.GetTextLen(CurrentSelection) != LB_ERR) {
 			CString BlockName;
@@ -347,13 +346,13 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 }
 
 void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
-	const LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(notifyStructure);
+	const auto pNMItemActivate {reinterpret_cast<tagNMITEMACTIVATE*>(notifyStructure)};
 
-	const int Item = pNMItemActivate->iItem;
-	const int SubItem = pNMItemActivate->iSubItem;
+	const auto Item {pNMItemActivate->iItem};
+	const auto SubItem {pNMItemActivate->iSubItem};
 
 	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item));
-	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
+	auto LayerTableRecord {Layer->TableRecord()};
 
 	m_ClickToColumnStatus = false;
 	switch (SubItem) {
@@ -417,7 +416,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 		case VpFreeze:
 		case Descr:
 			if (SubItem != m_Description) {
-				OdDbViewportPtr pVp = OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject(OdDb::kForWrite));
+				auto pVp {OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject(OdDb::kForWrite))};
 	//			if (pVp.get()) {
 	//				OdDbObjectIdArray ids(1);
 	//				ids.append(ItemData);
@@ -459,26 +458,26 @@ void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESUL
 	*result = 0;
 }
 void EoDlgFileManage::UpdateCurrentLayerInfoField() {
-	OdString LayerName = OdDbSymUtil::getSymbolName(m_Database->getCLAYER());
+	auto LayerName {OdDbSymUtil::getSymbolName(m_Database->getCLAYER())};
 	GetDlgItem(IDC_STATIC_CURRENT_LAYER)->SetWindowTextW(L"Current Layer: " + LayerName);
 }
 void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
-	const LVITEM Item = ListViewNotificationDisplayInfo->item;
+	const auto Item {ListViewNotificationDisplayInfo->item};
 	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
-	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
+	auto LayerTableRecord {Layer->TableRecord()};
 	// <tas="Layer0 should be culled here instead of the EndlabeleditLayers."</tas>
 	result = 0;
 }
 void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
-	const LVITEM Item = ListViewNotificationDisplayInfo->item;
+	const auto Item {ListViewNotificationDisplayInfo->item};
 	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
-	OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
+	auto LayerTableRecord {Layer->TableRecord()};
 
 	OdString NewName(Item.pszText);
 	if (!NewName.isEmpty()) {
-		OdDbLayerTablePtr Layers = m_Document->LayerTable(OdDb::kForWrite);
+		auto Layers {m_Document->LayerTable(OdDb::kForWrite)};
 		if (LayerTableRecord->objectId() == m_Database->getLayerZeroId()) {
 			theApp.WarningMessageBox(IDS_MSG_LAYER_NO_RENAME_0);
 		} else {
@@ -496,21 +495,20 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure
 	result = 0;
 }
 void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR notifyStructure, LRESULT * result) {
-	const LPNMLVKEYDOWN pLVKeyDow = reinterpret_cast<LPNMLVKEYDOWN>(notifyStructure);
+	const auto pLVKeyDow {reinterpret_cast<tagLVKEYDOWN*>(notifyStructure)};
 	if (pLVKeyDow->wVKey == VK_DELETE) {
-		const int SelectionMark = m_LayersList.GetSelectionMark();
+		const auto SelectionMark {m_LayersList.GetSelectionMark()};
 		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
-
-		OdDbLayerTableRecordPtr LayerTableRecord(Layer->TableRecord());
-		OdString Name(Layer->Name());
-		const OdResult Result = LayerTableRecord->erase(true);
+		auto LayerTableRecord {Layer->TableRecord()};
+		auto Name {Layer->Name()};
+		const auto Result {LayerTableRecord->erase(true)};
 		if (Result) {
-			OdString ErrorDescription = m_Database->appServices()->getErrorDescription(Result);
+			auto ErrorDescription {m_Database->appServices()->getErrorDescription(Result)};
 			ErrorDescription += L": <%s> layer can not be deleted";
 			theApp.AddStringToMessageList(ErrorDescription, Name);
 		} else {
 			m_Document->UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
-			const int LayerIndex = m_Document->FindLayerAt(Name);
+			const auto LayerIndex {m_Document->FindLayerAt(Name)};
 			m_Document->RemoveLayerAt(LayerIndex);
 			m_LayersList.DeleteItem(SelectionMark);
 			theApp.AddStringToMessageList(IDS_MSG_LAYER_ERASED, Name);

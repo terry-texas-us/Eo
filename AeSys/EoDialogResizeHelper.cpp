@@ -8,7 +8,7 @@ void EoDialogResizeHelper::Init(HWND a_hParent) {
 		GetWindowRect(m_hParent, m_origParentSize);
 
 		// get all child windows and store their original sizes and positions
-		HWND hCtrl = GetTopWindow(m_hParent);
+		auto hCtrl {GetTopWindow(m_hParent)};
 		while (hCtrl) {
 			CtrlSize cs;
 			cs.m_hCtrl = hCtrl;
@@ -38,13 +38,10 @@ void EoDialogResizeHelper::OnSize() {
 
 		const auto xRatio {static_cast<double>(currParentSize.Width()) / m_origParentSize.Width()};
 		const auto yRatio {static_cast<double>(currParentSize.Height()) / m_origParentSize.Height()};
-
-		// resize child windows according to their fix attributes
-		CtrlCont_t::const_iterator it;
-		for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
+		for (CtrlCont_t::const_iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 			CRect currCtrlSize;
-			const EHFix hFix = it->m_hFix;
-			const EVFix vFix = it->m_vFix;
+			const auto hFix {it->m_hFix};
+			const auto vFix {it->m_vFix};
 
 			// might go easier ;-)
 			if (hFix & kLeft) {
@@ -61,7 +58,7 @@ void EoDialogResizeHelper::OnSize() {
 			if (vFix & kTop) {
 				currCtrlSize.top = it->m_origSize.top;
 			} else {
-				currCtrlSize.top = vFix & kHeight && (vFix & kBottom) ? it->m_origSize.top + currParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
+				currCtrlSize.top = vFix & kHeight && vFix & kBottom ? it->m_origSize.top + currParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
 			}
 			if (vFix & kBottom) {
 				currCtrlSize.bottom = it->m_origSize.bottom + currParentSize.Height() - m_origParentSize.Height();
@@ -75,8 +72,7 @@ void EoDialogResizeHelper::OnSize() {
 }
 
 BOOL EoDialogResizeHelper::Fix(HWND a_hCtrl, EHFix a_hFix, EVFix a_vFix) {
-	CtrlCont_t::iterator it;
-	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
+	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		if (it->m_hCtrl == a_hCtrl) {
 			it->m_hFix = a_hFix;
 			it->m_vFix = a_vFix;
@@ -91,8 +87,7 @@ BOOL EoDialogResizeHelper::Fix(int a_itemId, EHFix a_hFix, EVFix a_vFix) {
 }
 
 BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
-	CtrlCont_t::iterator it;
-	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
+	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		it->m_hFix = a_hFix;
 		it->m_vFix = a_vFix;
 	}
@@ -102,9 +97,7 @@ BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
 unsigned EoDialogResizeHelper::Fix(const wchar_t* a_pszClassName, EHFix a_hFix, EVFix a_vFix) {
 	wchar_t pszCN[200];  // ToDo: size?
 	unsigned cnt {0};
-	CtrlCont_t::iterator it;
-
-	for (it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
+	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		::GetClassName(it->m_hCtrl, pszCN, sizeof pszCN);
 
 		if (wcscmp(pszCN, a_pszClassName) == 0) {

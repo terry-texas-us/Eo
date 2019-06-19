@@ -47,7 +47,7 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 }
 
 void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure, LRESULT* result) {
-	LPNMTREEVIEWW pNMTreeView {reinterpret_cast<LPNMTREEVIEWW>(notifyStructure)};
+	auto pNMTreeView {reinterpret_cast<tagNMTREEVIEWW*>(notifyStructure)};
 
 	wchar_t szText[256] {L"\0"};
 
@@ -74,13 +74,11 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 
 void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 	wchar_t szBuf[64] {L""};
-
-	int iItem {0};
+	auto iItem {0};
 
 	CString Extra;
 	primitive->FormatExtra(Extra);
-
-	int nOff {0};
+	auto nOff {0};
 	for (auto nDel = Extra.Mid(nOff).Find(';'); nDel != -1;) {
 		wcscpy_s(szBuf, Extra.Mid(nOff, nDel));
 
@@ -100,7 +98,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 
 void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive * primitive) {
 	wchar_t szBuf[64] {L""};
-	int iItem {0};
+	auto iItem {0};
 
 	CString strBuf;
 	primitive->FormatGeometry(strBuf);

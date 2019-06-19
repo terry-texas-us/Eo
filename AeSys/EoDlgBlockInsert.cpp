@@ -78,7 +78,7 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 }
 
 void EoDlgBlockInsert::OnOK() {
-	const int CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
+	const auto CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
 
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;
@@ -96,7 +96,7 @@ void EoDlgBlockInsert::OnOK() {
 }
 
 void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
-	const int CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
+	const auto CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
 
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;

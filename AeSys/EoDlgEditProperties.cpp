@@ -99,8 +99,8 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 	m_propList.InsertColumn(1, L"Value", LVCFMT_LEFT, 120);
 
 	m_ResourceBuffer = oddbEntGet(m_pObjectId, L"*");
-	int i = 0;
-	for (OdResBufPtr ResourceBuffer = m_ResourceBuffer; !ResourceBuffer.isNull(); ++i, ResourceBuffer = ResourceBuffer->next()) {
+	auto i {0};
+	for (auto ResourceBuffer = m_ResourceBuffer; !ResourceBuffer.isNull(); ++i, ResourceBuffer = ResourceBuffer->next()) {
 		m_propList.InsertItem(i, FormatCode(ResourceBuffer));
 		m_propList.SetItemText(i, 1, FormatValue(ResourceBuffer));
 	}
@@ -150,11 +150,11 @@ void EoDlgEditProperties::OnButton() {
 					break;
 				case OdDxfCode::Point:
 				{
-					const int sp1 {m_sValue.Find(' ')};
-					const int sp2 {m_sValue.Find(' ', sp1 + 1)};
-					double x {wcstod(m_sValue.Left(sp1), 0)};
-					double y {wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0)};
-					double z {wcstod(m_sValue.Mid(sp2 + 1), 0)};
+					const auto sp1 {m_sValue.Find(' ')};
+					const auto sp2 {m_sValue.Find(' ', sp1 + 1)};
+					auto x {wcstod(m_sValue.Left(sp1), 0)};
+					auto y {wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0)};
+					auto z {wcstod(m_sValue.Mid(sp2 + 1), 0)};
 					ResourceBuffer->setPoint3d(OdGePoint3d(x, y, z));
 					break;
 				}
