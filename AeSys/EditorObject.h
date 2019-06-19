@@ -86,10 +86,9 @@ public:
 	static void ZoomAt(OdGsView* view, int x, int y, short zDelta);
 	static void Dolly(OdGsView* view, int x, int y);
 
-public:
 	enum _3DViewType { k3DViewTop, k3DViewBottom, k3DViewLeft, k3DViewRight, k3DViewFront, k3DViewBack, k3DViewSW, k3DViewSE, k3DViewNE, k3DViewNW };
 	void Set3DView(_3DViewType type);
-public:
+
 	OdExEditorObject();
 
 	void Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext);
@@ -142,7 +141,7 @@ public:
 	void InitializeSnapping(OdGsView* view, OdEdInputTracker* inputTracker);
 	void UninitializeSnapping(OdGsView* view);
 
-	inline OdGsModel* GsModel() { return m_p2dModel.get(); }
+	OdGsModel* GsModel() { return m_p2dModel.get(); }
 
 	void RecalculateEntityCenters() {
 		m_ObjectSnapManager.RecalculateEntityCenters();

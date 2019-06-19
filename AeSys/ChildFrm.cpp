@@ -57,9 +57,8 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 
 	auto ActivatedFrame {dynamic_cast<CFrameWnd*>(activateWnd)};
 	auto DeactivatedFrame {dynamic_cast<CFrameWnd*>(deactivateWnd)};
-
-	CDocument* ActivatedDocument {ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr};
-	CDocument* DeactivatedDocument {DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr};
+	auto ActivatedDocument {ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr};
+	auto DeactivatedDocument {DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr};
 
 	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
 
@@ -88,7 +87,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 	auto ScaleMenuPosition {popupMenu->GetMenuItemCount() - 1};
 	
 	for (; ScaleMenuPosition > 0; ScaleMenuPosition--) {
-		if (CMenu* SubMenu = popupMenu->GetSubMenu(ScaleMenuPosition)) {
+		if (auto SubMenu = popupMenu->GetSubMenu(ScaleMenuPosition)) {
 			SubMenu->DestroyMenu();
 		}
 		popupMenu->DeleteMenu(static_cast<unsigned>(ScaleMenuPosition), MF_BYPOSITION);
