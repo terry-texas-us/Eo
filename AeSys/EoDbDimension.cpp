@@ -42,7 +42,7 @@ const EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
 	m_ReferenceSystem = other.m_ReferenceSystem;
 	m_strText = other.m_strText;
 
-	return (*this);
+	return *this;
 }
 
 void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -233,7 +233,7 @@ OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 		else
 			sm_ControlPointIndex = 1;
 	}
-	return (sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint());
+	return sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint();
 }
 
 bool EoDbDimension::IsEqualTo(EoDbPrimitive * primitive) const noexcept {
@@ -245,7 +245,7 @@ bool EoDbDimension::IsInView(AeSysView* view) const {
 
 	view->ModelViewTransformPoints(2, &pt[0]);
 
-	return (EoGePoint4d::ClipLine(pt[0], pt[1]));
+	return EoGePoint4d::ClipLine(pt[0], pt[1]);
 }
 
 bool EoDbDimension::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
@@ -280,7 +280,7 @@ void EoDbDimension::GetPts(OdGePoint3d & ptBeg, OdGePoint3d & ptEnd) {
 }
 
 EoGeReferenceSystem EoDbDimension::ReferenceSystem() const {
-	return (m_ReferenceSystem);
+	return m_ReferenceSystem;
 }
 
 double EoDbDimension::Length() const {
@@ -405,7 +405,7 @@ void EoDbDimension::SetDefaultNote() {
 		dAng = m_Line.AngleFromXAxis_xy();
 		double dDis = .075;
 
-		if (dAng > OdaPI2 + (OdaPI / 180.0) && dAng < Oda2PI - OdaPI2 + OdaPI2) {
+		if (dAng > OdaPI2 + OdaPI / 180.0 && dAng < Oda2PI - OdaPI2 + OdaPI2) {
 			dAng -= OdaPI;
 			dDis = -dDis;
 		}
@@ -576,7 +576,7 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 
 	Dimension->SetText(static_cast<const wchar_t*>(FormattedMeasurement));
 
-	return (Dimension);
+	return Dimension;
 }
 
 OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord) {
@@ -636,7 +636,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 
 	AlignedDimension->downgradeOpen();
 
-	return (AlignedDimension);
+	return AlignedDimension;
 }
 
 OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
@@ -719,5 +719,5 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 
 	AlignedDimension->downgradeOpen();
 
-	return (AlignedDimension);
+	return AlignedDimension;
 }

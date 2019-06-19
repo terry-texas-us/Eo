@@ -20,8 +20,8 @@ static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CR
 	const int Width = Bitmap.bmWidth;
 	const int Height = Bitmap.bmHeight;
 	CPoint Point;
-	Point.x = rect.left + ((rect.right - rect.left) / 2) - (Width / 2);
-	Point.y = rect.top + ((rect.bottom - rect.top) / 2) - (Height / 2);
+	Point.x = rect.left + (rect.right - rect.left) / 2 - Width / 2;
+	Point.y = rect.top + (rect.bottom - rect.top) / 2 - Height / 2;
 	DrawBitmap(bitmap, deviceContext, Point);
 }
 
@@ -65,7 +65,7 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 		DeviceContext->SelectObject(OldPen);
 		return;
 	}
-	if ((drawItemStruct->itemState & ODS_SELECTED) && (drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE))) {
+	if (drawItemStruct->itemState & ODS_SELECTED && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
 		CBrush HighlightBrush(::GetSysColor(COLOR_HIGHLIGHT));
 		CPen HighlightPen(PS_SOLID, 1, ::GetSysColor(COLOR_HIGHLIGHT));
 		auto OldBrush {DeviceContext->SelectObject(&HighlightBrush)};
@@ -77,7 +77,7 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 		DeviceContext->SelectObject(OldBrush);
 		DeviceContext->SelectObject(OldPen);
 	}
-	if (!(drawItemStruct->itemState & ODS_SELECTED) && (drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE))) {
+	if (!(drawItemStruct->itemState & ODS_SELECTED) && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
 		CBrush WindowBrush(::GetSysColor(COLOR_WINDOW));
 		CPen WindowPen(PS_SOLID, 1, ::GetSysColor(COLOR_WINDOW));
 		auto OldBrush {DeviceContext->SelectObject(&WindowBrush)};
@@ -106,7 +106,7 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 		} else {
 			CPoint point;
 			point.x = drawItemStruct->rcItem.left + 2;
-			point.y = drawItemStruct->rcItem.top + ((drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2) - (m_ItemHeight / 2);
+			point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
 			DrawBitmap(bitmap, DeviceContext, point);
 			CRect rcText(drawItemStruct->rcItem);
 			rcText.DeflateRect(m_ItemWidth + 4, 0, 0, 0);
@@ -121,7 +121,7 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 
 		CPoint point;
 		point.x = drawItemStruct->rcItem.left + 2;
-		point.y = drawItemStruct->rcItem.top + ((drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2) - (m_ItemHeight / 2);
+		point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
 		CRect rcText(drawItemStruct->rcItem);
 		DeviceContext->DrawText(string, rcText, DT_SINGLELINE | DT_VCENTER);
 	}

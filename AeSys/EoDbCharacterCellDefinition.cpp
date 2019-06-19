@@ -10,19 +10,19 @@ EoDbCharacterCellDefinition::EoDbCharacterCellDefinition(const EoDbCharacterCell
 }
 
 double EoDbCharacterCellDefinition::WidthFactor() const noexcept {
-	return (m_WidthFactor);
+	return m_WidthFactor;
 }
 
 double EoDbCharacterCellDefinition::Height() const noexcept {
-	return (m_Height);
+	return m_Height;
 }
 
 double EoDbCharacterCellDefinition::ObliqueAngle() const noexcept {
-	return (m_ObliqueAngle);
+	return m_ObliqueAngle;
 }
 
 double EoDbCharacterCellDefinition::RotationAngle() const noexcept {
-	return (m_RotationAngle);
+	return m_RotationAngle;
 }
 
 void EoDbCharacterCellDefinition::SetWidthFactor(double widthFactor) noexcept {

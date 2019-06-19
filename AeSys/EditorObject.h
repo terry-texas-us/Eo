@@ -123,7 +123,7 @@ public:
 	bool OnCtrlClick();
 	void OnDestroy();
 
-	bool HasSelection() const { return (workingSSet()->numEntities() > 0); }
+	bool HasSelection() const { return workingSSet()->numEntities() > 0; }
 	bool IsSnapOn() const noexcept { return GETBIT(m_flags, kSnapOn); }
 	void SetSnapOn(bool snapOn) noexcept { SETBIT(m_flags, kSnapOn, snapOn); }
 	bool IsOrbitOn() const noexcept { return GETBIT(m_flags, kOrbitOn); }

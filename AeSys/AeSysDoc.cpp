@@ -490,7 +490,7 @@ OdDbSelectionSetPtr AeSysDoc::SelectionSet() const {
 }
 
 OdEdBaseIO* AeSysDoc::BaseIO() noexcept {
-	return (this);
+	return this;
 }
 
 EoDlgUserIOConsole* AeSysDoc::UserIOConsole() {
@@ -507,7 +507,7 @@ unsigned long AeSysDoc::getKeyState() noexcept {
 
 	if (::GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
 
-	return (KeyState);
+	return KeyState;
 }
 
 OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
@@ -750,7 +750,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 
 		BaseIO()->putString(Error.description());
 	}
-	if ((CommandReactor.isDatabaseModified() || SelectionSet()->numEntities())) {
+	if (CommandReactor.isDatabaseModified() || SelectionSet()->numEntities()) {
 
 		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearselection(); }
 
@@ -764,7 +764,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 
 		if (TopMenu) { // Check if it is a theApp's dynamic menu item
 			MENUITEMINFO MenuItemInfo;
-			MenuItemInfo.cbSize = sizeof(MenuItemInfo);
+			MenuItemInfo.cbSize = sizeof MenuItemInfo;
 			MenuItemInfo.fMask = MIIM_DATA;
 
 			if (TopMenu->GetMenuItemInfoW(commandId, &MenuItemInfo, FALSE)) {
@@ -1204,7 +1204,7 @@ POSITION AeSysDoc::DeletedGroupsAddHead(EoDbGroup* group) {
 	group->Erase();
 	m_DatabasePtr->disableUndoRecording(true);
 
-	return (m_DeletedGroupList.AddHead(group));
+	return m_DeletedGroupList.AddHead(group);
 }
 
 POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup* group) {
@@ -1212,7 +1212,7 @@ POSITION AeSysDoc::DeletedGroupsAddTail(EoDbGroup* group) {
 	group->Erase();
 	m_DatabasePtr->disableUndoRecording(true);
 
-	return (m_DeletedGroupList.AddTail(group));
+	return m_DeletedGroupList.AddTail(group);
 }
 
 EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
@@ -1222,7 +1222,7 @@ EoDbGroup* AeSysDoc::DeletedGroupsRemoveHead() {
 		Group = m_DeletedGroupList.RemoveHead();
 		Group->UndoErase();
 	}
-	return (Group);
+	return Group;
 }
 
 void AeSysDoc::DeletedGroupsRemoveGroups() {
@@ -1236,7 +1236,7 @@ EoDbGroup* AeSysDoc::DeletedGroupsRemoveTail() {
 		Group = m_DeletedGroupList.RemoveTail();
 		Group->UndoErase();
 	}
-	return (Group);
+	return Group;
 }
 
 void AeSysDoc::DeletedGroupsRestore() {
@@ -1263,7 +1263,7 @@ int AeSysDoc::LinetypeIndexReferenceCount(short linetypeIndex) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 		Count += Block->GetLinetypeIndexRefCount(linetypeIndex);
 	}
-	return (Count);
+	return Count;
 }
 
 void AeSysDoc::GetExtents___(AeSysView* view, OdGeExtents3d& extents) {
@@ -1340,7 +1340,7 @@ void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) {
 OdDbObjectId AeSysDoc::AddLayerTo(OdDbLayerTablePtr layers, EoDbLayer* layer) {
 	m_LayerTable.Add(layer);
 
-	return (layers->add(layer->TableRecord()));
+	return layers->add(layer->TableRecord());
 }
 
 void AeSysDoc::AddLayer(EoDbLayer * layer) {
@@ -1353,24 +1353,24 @@ int AeSysDoc::GetLayerTableSize() const {
 
 EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) {
 	const int i = FindLayerAt(name);
-	return (i < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(i));
+	return i < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(i);
 }
 
 EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
-	return (layerIndex >= static_cast<int>(m_LayerTable.GetSize()) ? nullptr : m_LayerTable.GetAt(layerIndex));
+	return layerIndex >= static_cast<int>(m_LayerTable.GetSize()) ? nullptr : m_LayerTable.GetAt(layerIndex);
 }
 
 int AeSysDoc::FindLayerAt(const OdString& name) const {
 	for (unsigned short LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
 		const auto Layer {m_LayerTable.GetAt(LayerIndex)};
 		
-		if (name.iCompare(Layer->Name()) == 0) { return (LayerIndex); }
+		if (name.iCompare(Layer->Name()) == 0) { return LayerIndex; }
 	}
-	return (-1);
+	return -1;
 }
 
 OdDbLayerTablePtr AeSysDoc::LayerTable(OdDb::OpenMode openMode) {
-	return (m_DatabasePtr->getLayerTableId().safeOpenObject(openMode));
+	return m_DatabasePtr->getLayerTableId().safeOpenObject(openMode);
 }
 
 void AeSysDoc::RemoveAllLayers() {
@@ -1434,7 +1434,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 				CFile File(name, CFile::modeWrite | CFile::modeCreate);
 				if (File == CFile::hFileNull) {
 					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
-					return (false);
+					return false;
 				}
 				EoDbJobFile JobFile;
 				JobFile.WriteHeader(File);
@@ -1443,7 +1443,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 				EoDbTracingFile TracingFile(name, CFile::modeWrite | CFile::modeCreate);
 				if (TracingFile == CFile::hFileNull) {
 					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
-					return (false);
+					return false;
 				}
 				TracingFile.WriteHeader();
 				TracingFile.WriteLayer(Layer);
@@ -1458,7 +1458,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 		}
 	}
 	delete[] OpenFileName.lpstrFile;
-	return (bRetVal);
+	return bRetVal;
 }
 
 void AeSysDoc::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
@@ -1475,13 +1475,13 @@ EoDbLayer* AeSysDoc::SelectLayerBy(const OdGePoint3d & point) {
 		for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 			auto Layer {GetLayerAt(LayerIndex)};
 
-			if (Layer->Find(Group)) { return (Layer); }
+			if (Layer->Find(Group)) { return Layer; }
 		}
 	}
 	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 
-		if (Layer->SelectGroupBy(point) != nullptr) { return (Layer); }
+		if (Layer->SelectGroupBy(point) != nullptr) { return Layer; }
 	}
 	return nullptr;
 }
@@ -1510,7 +1510,7 @@ int AeSysDoc::RemoveEmptyNotesAndDelete() {
 	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 	}
-	return (iCount);
+	return iCount;
 }
 
 int AeSysDoc::RemoveEmptyGroups() {
@@ -1530,7 +1530,7 @@ int AeSysDoc::RemoveEmptyGroups() {
 	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
 	}
-	return (iCount);
+	return iCount;
 }
 // Work Layer interface
 void AeSysDoc::AddWorkLayerGroup(EoDbGroup * group) {
@@ -1548,7 +1548,7 @@ void AeSysDoc::AddWorkLayerGroups(EoDbGroupList * groups) {
 }
 
 POSITION AeSysDoc::FindWorkLayerGroup(EoDbGroup* group) const {
-	return (m_WorkLayer->Find(group));
+	return m_WorkLayer->Find(group);
 }
 
 POSITION AeSysDoc::GetFirstWorkLayerGroupPosition() const {
@@ -1666,7 +1666,7 @@ bool AeSysDoc::TracingLoadLayer(const OdString & file, EoDbLayer * layer) {
 		}
 		theApp.WarningMessageBox(IDS_MSG_TRACING_OPEN_FAILURE, file);
 	}
-	return (bFileOpen);
+	return bFileOpen;
 }
 
 bool AeSysDoc::TracingOpen(const OdString & fileName) {
@@ -1887,7 +1887,7 @@ void AeSysDoc::OnFileQuery() {
 
 		m_IdentifiedLayerName = Layer->Name();
 
-		const int MenuResource = (Layer->IsInternal()) ? IDR_LAYER : IDR_TRACING;
+		const int MenuResource = Layer->IsInternal() ? IDR_LAYER : IDR_TRACING;
 
 		auto LayerTracingMenu {::LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(MenuResource))};
 		auto SubMenu {CMenu::FromHandle(::GetSubMenu(LayerTracingMenu, 0))};
@@ -1895,15 +1895,15 @@ void AeSysDoc::OnFileQuery() {
 		SubMenu->ModifyMenu(0, MF_BYPOSITION | MF_STRING, 0, m_IdentifiedLayerName);
 
 		if (MenuResource == IDR_LAYER) {
-			SubMenu->CheckMenuItem(ID_LAYER_CURRENT, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsCurrent()) ? MF_CHECKED : MF_UNCHECKED));
-			SubMenu->CheckMenuItem(ID_LAYER_ACTIVE, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED));
-			SubMenu->CheckMenuItem(ID_LAYER_LOCK, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsLocked()) ? MF_CHECKED : MF_UNCHECKED));
-			SubMenu->CheckMenuItem(ID_LAYER_OFF, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsOff()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_CURRENT, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsCurrent() ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_ACTIVE, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsActive() ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_LOCK, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsLocked() ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_LAYER_OFF, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsOff() ? MF_CHECKED : MF_UNCHECKED));
 		} else {
-			SubMenu->CheckMenuItem(ID_TRACING_CURRENT, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsCurrent()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_CURRENT, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsCurrent() ? MF_CHECKED : MF_UNCHECKED));
 			SubMenu->CheckMenuItem(ID_TRACING_ACTIVE, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsActive()) ? MF_CHECKED : MF_UNCHECKED));
-			SubMenu->CheckMenuItem(ID_TRACING_LOCK, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsLocked()) ? MF_CHECKED : MF_UNCHECKED));
-			SubMenu->CheckMenuItem(ID_TRACING_OFF, static_cast<unsigned>((MF_BYCOMMAND | Layer->IsOff()) ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_LOCK, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsLocked() ? MF_CHECKED : MF_UNCHECKED));
+			SubMenu->CheckMenuItem(ID_TRACING_OFF, static_cast<unsigned>(MF_BYCOMMAND | Layer->IsOff() ? MF_CHECKED : MF_UNCHECKED));
 		}
 		SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 		::DestroyMenu(LayerTracingMenu);
@@ -2377,7 +2377,7 @@ void AeSysDoc::OnSetupNote() {
 		pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
 		auto ActiveView {AeSysView::GetActiveView()};
-		CDC* DeviceContext = (ActiveView) ? ActiveView->GetDC() : nullptr;
+		CDC* DeviceContext = ActiveView ? ActiveView->GetDC() : nullptr;
 
 		pstate.SetFontDefinition(DeviceContext, FontDefinition);
 	}
@@ -2468,14 +2468,14 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 	if (Group != nullptr) {
 		const auto Position {FindTrappedGroup(Group)};
 
-		LPARAM lHint = (Position != nullptr) ? EoDb::kGroupEraseSafeTrap : EoDb::kGroupEraseSafe;
+		LPARAM lHint = Position != nullptr ? EoDb::kGroupEraseSafeTrap : EoDb::kGroupEraseSafe;
 		// erase entire group even if group has more than one primitive
 		UpdateGroupInAllViews(lHint, Group);
 
 		if (Group->GetCount() > 1) { // remove primitive from group
 			EoDbPrimitive* Primitive = ActiveView->EngagedPrimitive();
 			Group->FindAndRemovePrimitive(Primitive);
-			lHint = (Position != nullptr) ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
+			lHint = Position != nullptr ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
 			// display the group with the primitive removed
 			UpdateGroupInAllViews(lHint, Group);
 			// new group required to allow primitive to be placed into deleted group list
@@ -2627,7 +2627,7 @@ void AeSysDoc::OnPensTranslate() {
 
 		wchar_t* NextToken {nullptr};
 
-		while (StreamFile.ReadString(pBuf, sizeof(pBuf) / sizeof(wchar_t) - 1) != nullptr) {
+		while (StreamFile.ReadString(pBuf, sizeof pBuf / sizeof(wchar_t) - 1) != nullptr) {
 			NextToken = nullptr;
 			ColorIndex.push_back(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
 			NewColorIndex.push_back(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
@@ -2711,7 +2711,7 @@ AeSysDoc* AeSysDoc::GetDoc() {
 	
 	CMDIChildWndEx* Child {dynamic_cast<CMDIChildWndEx*>(Frame->MDIGetActive())};
 
-	return (Child == nullptr) ? nullptr : dynamic_cast<AeSysDoc*>(Child->GetActiveDocument());
+	return Child == nullptr ? nullptr : dynamic_cast<AeSysDoc*>(Child->GetActiveDocument());
 }
 
 void AeSysDoc::AddGroupToAllViews(EoDbGroup* group) {
@@ -2866,12 +2866,12 @@ int AeSysDoc::AddUniquePoint(const OdGePoint3d & point) {
 		if ((point - UniquePoint->m_Point).length() <= OdGeContext::gTol.equalPoint()) {
 
 //		if (point == UniquePoint->m_Point) {
-			(UniquePoint->m_References)++;
-			return (UniquePoint->m_References);
+			UniquePoint->m_References++;
+			return UniquePoint->m_References;
 		}
 	}
 	m_UniquePoints.AddTail(new EoGeUniquePoint(1, point));
-	return (1);
+	return 1;
 }
 
 EoGeUniquePoint* AeSysDoc::GetNextUniquePoint(POSITION & position) {
@@ -2912,7 +2912,7 @@ int AeSysDoc::RemoveUniquePoint(const OdGePoint3d& point) {
 		auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
 		
 		if (point == UniquePoint->m_Point) {
-			References = --(UniquePoint->m_References);
+			References = --UniquePoint->m_References;
 
 			if (References == 0) {
 				RemoveUniquePointAt(Position);
@@ -2975,7 +2975,7 @@ unsigned long AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
 			break;
 		}
 	}
-	return ((MaskedPrimitivePosition != nullptr) ? MaskedPrimitive->GetMask() : 0UL);
+	return MaskedPrimitivePosition != nullptr ? MaskedPrimitive->GetMask() : 0UL;
 }
 
 void AeSysDoc::OnSetupLayerproperties() {
@@ -3079,7 +3079,7 @@ void AeSysDoc::DataSource::Create(AeSysDoc * document, const OdGePoint3d & point
 // </command_console>
 
 bool AeSysDoc::DataSource::DoDragDrop() {
-	return (COleDataSource::DoDragDrop(DROPEFFECT_COPY | DROPEFFECT_MOVE) != DROPEFFECT_NONE);
+	return COleDataSource::DoDragDrop(DROPEFFECT_COPY | DROPEFFECT_MOVE) != DROPEFFECT_NONE;
 }
 
 void AeSysDoc::DataSource::Empty() {
@@ -3194,22 +3194,22 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned 
 
 	Filter += L"AutoCAD 2018 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::vAC32))
+	if (!isDwg && dwgver == OdDb::vAC32)
 		FileDialog.m_ofn.nFilterIndex = 10;
 
 	Filter += L"AutoCAD 2013 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1027))
+	if (!isDwg && dwgver == OdDb::kDHL_1027)
 		FileDialog.m_ofn.nFilterIndex = 11;
 
 	Filter += L"AutoCAD 2010 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1024))
+	if (!isDwg && dwgver == OdDb::kDHL_1024)
 		FileDialog.m_ofn.nFilterIndex = 12;
 
 	Filter += L"AutoCAD 2007 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1021))
+	if (!isDwg && dwgver == OdDb::kDHL_1021)
 		FileDialog.m_ofn.nFilterIndex = 13;
 
 	Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";

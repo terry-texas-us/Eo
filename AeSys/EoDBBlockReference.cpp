@@ -43,7 +43,7 @@ const EoDbBlockReference& EoDbBlockReference::operator=(const EoDbBlockReference
 	m_ColumnSpacing = other.m_ColumnSpacing;
 	m_RowSpacing = other.m_RowSpacing;
 
-	return (*this);
+	return *this;
 }
 
 void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const {
@@ -88,7 +88,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 }
 
 EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	return (EoDbBlockReference::Create(*this, blockTableRecord->database()));
+	return EoDbBlockReference::Create(*this, blockTableRecord->database());
 }
 
 void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
@@ -129,7 +129,7 @@ void EoDbBlockReference::FormatGeometry(CString& geometry) const {
 }
 
 OdGePoint3d EoDbBlockReference::GetCtrlPt() const noexcept {
-	return (m_Position);
+	return m_Position;
 }
 
 void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
@@ -161,7 +161,7 @@ bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	const bool bInView = Block->IsInView(view);
 	view->PopModelTransform();
 
-	return (bInView);
+	return bInView;
 }
 
 bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
@@ -201,7 +201,7 @@ bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner
 	const bool bResult = Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view);
 	view->PopModelTransform();
 
-	return (bResult);
+	return bResult;
 }
 
 bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
@@ -215,14 +215,14 @@ bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* v
 
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
-		if ((Block->GetNext(Position))->SelectUsingPoint(point, view, projectedPoint)) {
+		if (Block->GetNext(Position)->SelectUsingPoint(point, view, projectedPoint)) {
 			Result = true;
 			break;
 		}
 	}
 	view->PopModelTransform();
 
-	return (Result);
+	return Result;
 }
 
 void EoDbBlockReference::TransformBy(const EoGeMatrix3d & transformMatrix) {
@@ -448,7 +448,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	/* auto ColumnSpacing = */ file.ReadDouble();
 	/* auto RowSpacing = */ file.ReadDouble();
 // </tas>
-	return (BlockReference);
+	return BlockReference;
 }
 
 EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockReference) {

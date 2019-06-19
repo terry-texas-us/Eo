@@ -238,7 +238,7 @@ bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPt) const {
 		return plane.intersectWith(line, wcsPt);
 	} else { // For perspective projection we emit ray from viewer position through WCS point.
 		const double focalLength = -1.0 / View->projectionMatrix()(3, 2);
-		const auto pos {View->target() + (OdAbstractViewPEPtr(View)->direction(View).normal() * focalLength)};
+		const auto pos {View->target() + OdAbstractViewPEPtr(View)->direction(View).normal() * focalLength};
 		OdGeRay3d ray(pos, wcsPt);
 		return plane.intersectWith(ray, wcsPt);
 	}
@@ -368,7 +368,7 @@ void OdExEditorObject::Set3DView(_3DViewType type) {
 		OdDbObjectPtr pObject = OdDbObjectId(ClientViewInfo.viewportObjectId).safeOpenObject(OdDb::kForWrite);
 		OdAbstractViewPEPtr(pObject)->setUcs(pObject, Target, Axis.crossProduct(Position.asVector()), Axis);
 	}
-	View->setView(Position, Target, Axis, View->fieldWidth(), View->fieldHeight(), (View->isPerspective()) ? OdGsView::kPerspective : OdGsView::kParallel);
+	View->setView(Position, Target, Axis, View->fieldWidth(), View->fieldHeight(), View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 }
 
 bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
@@ -438,12 +438,12 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 					//workingSSet()->clear();
 					//SelectionSetChanged();
 					Unselect();
-					return (true);
+					return true;
 				}
 			}
 		}
 	} catch (const OdError&) {
-		return (false);
+		return false;
 	}
 	auto UserIO {m_CommandContext->dbUserIO()};
 	UserIO->setLASTPOINT(pt);
@@ -471,7 +471,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 		SetSnapOn(SavedSnapMode);
 	} catch (const OdError&) {
 		SetSnapOn(SavedSnapMode);
-		return (false);
+		return false;
 	} catch (...) {
 		SetSnapOn(SavedSnapMode);
 		throw;
@@ -600,7 +600,7 @@ static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, 
 	if (pLayout->getGeomExtents(Extents) == eOk) {
 		Extents.transformBy(view->viewingMatrix());
 		boundBox.set(Extents.minPoint(), Extents.maxPoint());
-		return (Extents.minPoint() != Extents.maxPoint());
+		return Extents.minPoint() != Extents.maxPoint();
 	}
 	return false;
 }
@@ -769,7 +769,7 @@ class OrbitCtrl : public OdGiDrawableImpl<> {
 		pt2.x -= pt1.x;
 		pt2.y -= pt1.y;
 		const double r = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
-		reinterpret_cast<OdGePoint2d&>(pt1) += (pt2.asVector() / 2.);
+		reinterpret_cast<OdGePoint2d&>(pt1) += pt2.asVector() / 2.;
 		geom.circle(pt1, r, OdGeVector3d::kZAxis);
 
 		geom.circle(pt1 + OdGeVector3d(0.0, r, 0.0), r / 20., OdGeVector3d::kZAxis);
@@ -832,7 +832,7 @@ class RTOrbitTracker : public OdEdPointTracker {
 		pt2.y -= pt1.y;
 		const double r = odmin(pt2.x, pt2.y) / 9. * 7. / 2.;
 		m_D = 2.0 * r;
-		reinterpret_cast<OdGePoint2d&>(pt1) += (pt2.asVector() / 2.);
+		reinterpret_cast<OdGePoint2d&>(pt1) += pt2.asVector() / 2.;
 		const double r2sqrd = r * r / 400.;
 
 		pt1.y += r;
@@ -906,7 +906,7 @@ class RTOrbitTracker : public OdEdPointTracker {
 		OdGePoint3d pt2 = m_View->viewingMatrix() * value;
 		OdGePoint3d targ = m_View->viewingMatrix() * m_ViewCenter;
 		pt2.z = targ.z = m_pt.z;
-		return (pt2 - targ).angleTo((m_pt - targ), OdGeVector3d::kZAxis);
+		return (pt2 - targ).angleTo(m_pt - targ, OdGeVector3d::kZAxis);
 	}
 
 	double anglePerp(const OdGePoint3d& value) const {
@@ -1328,8 +1328,8 @@ class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
 			SelectionSetIterator->next();
 		}
 		for (auto& Path : m_pathes) {
-			m_pModel->highlight((Path->operator const OdGiPathNode&()), false);
-			inputArray.push_back(&(Path->operator const OdGiPathNode&()));
+			m_pModel->highlight(Path->operator const OdGiPathNode&(), false);
+			inputArray.push_back(&Path->operator const OdGiPathNode&());
 		}
 	}
 
@@ -1388,7 +1388,7 @@ bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, bool bT
 		bAdd = addNodeToPath(result, pPath->parent(), bTruncateToRef);
 	}
 	if (bAdd) {
-		result->addNode(pPath->persistentDrawableId() ? pPath->persistentDrawableId() : pPath->transientDrawable()->id(), (bTruncateToRef) ? 0 : pPath->selectionMarker());
+		result->addNode(pPath->persistentDrawableId() ? pPath->persistentDrawableId() : pPath->transientDrawable()->id(), bTruncateToRef ? 0 : pPath->selectionMarker());
 		if (bTruncateToRef && pPath->persistentDrawableId()) {
 			const OdDbObjectId id(pPath->persistentDrawableId());
 			OdDbObjectPtr pObj = id.safeOpenObject();
@@ -1582,13 +1582,13 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 
 	OdArray<OdExCollideGsPath*>& ReactorPaths {reactor.pathes()};
 	for (auto& ReactorPath : ReactorPaths) {
-		const auto PathNode {&(ReactorPath->operator const OdGiPathNode&())};
+		const auto PathNode {&ReactorPath->operator const OdGiPathNode&()};
 		Model->highlight(*PathNode);
 		//delete ReactorPath;
 	}
 	UserIO->getInt(L"Specify any number to exit", 0, 0);
 	for (auto& ReactorPath : ReactorPaths) {
-		const auto PathNode {&(ReactorPath->operator const OdGiPathNode&())};
+		const auto PathNode {&ReactorPath->operator const OdGiPathNode&()};
 		Model->highlight(*PathNode, false);
 		delete ReactorPath;
 	}

@@ -1244,7 +1244,7 @@ bool AeSys::InitializeOda() {
 BOOL AeSys::InitInstance() {
 	// InitCommonControlsEx() is required on Windows XP if an application manifest specifies use of ComCtl32.dll version 6 or later to enable visual styles. Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof(InitCtrls);
+	InitCtrls.dwSize = sizeof InitCtrls;
 
 	// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;

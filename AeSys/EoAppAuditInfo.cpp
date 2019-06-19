@@ -52,7 +52,7 @@ void EoAppAuditInfo::printError(const OdString& name, const OdString& value, con
 
 	if (!validation.isEmpty()) { Line += L"Validation: " + validation + L". "; }
 
-	if (!defaultValue.isEmpty()) { Line += ((fixErrors()) ? L"Replaced by " : L"Default value is ") + defaultValue + L"."; }
+	if (!defaultValue.isEmpty()) { Line += (fixErrors() ? L"Replaced by " : L"Default value is ") + defaultValue + L"."; }
 
 	m_pHostAppServices->auditPrintReport(this, Line, getPrintDest());
 	TRACE1("%ls\n", Line.c_str());
