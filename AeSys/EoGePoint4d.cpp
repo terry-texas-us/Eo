@@ -60,9 +60,9 @@ bool EoGePoint4d::ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB) {
 
 	for (int iBC = 0; iBC < 6; iBC++) {
 		if (BoundaryCodeA[iBC] <= 0.0)
-			OutCodeA |= (1 << iBC);
+			OutCodeA |= 1 << iBC;
 		if (BoundaryCodeB[iBC] <= 0.0)
-			OutCodeB |= (1 << iBC);
+			OutCodeB |= 1 << iBC;
 	}
 
 	if ((OutCodeA & OutCodeB) != 0)
@@ -165,11 +165,11 @@ EoGePoint4d EoGePoint4d::IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint
 
 	if (fabs(DotProduct) > DBL_EPSILON) {
 		const OdGeVector3d vPtPt0(startPoint.Convert3d() - pointOnPlane.Convert3d());
-		LineVector *= (planeNormal.dotProduct(vPtPt0)) / DotProduct;
+		LineVector *= planeNormal.dotProduct(vPtPt0) / DotProduct;
 	} else { // Line and the plane are parallel .. force return to start point
 		LineVector *= 0.0;
 	}
-	return (startPoint - LineVector);
+	return startPoint - LineVector;
 }
 
 OdGePoint3d EoGePoint4d::Convert3d() const {

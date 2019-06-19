@@ -24,7 +24,7 @@ void EoDlgViewZoom::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgViewZoom::OnInitDialog() {
 	m_ZoomFactor = EoRound(m_ZoomFactor, 3);
-	const int Precision = (m_ZoomFactor >= 1.0) ? 3 - int(log10(m_ZoomFactor)) - 1 : 3;
+	const int Precision = m_ZoomFactor >= 1.0 ? 3 - int(log10(m_ZoomFactor)) - 1 : 3;
 	CString FormatSpecification;
 	FormatSpecification.Format(L"%%8.%if", Precision);
 	CString ZoomFactor;

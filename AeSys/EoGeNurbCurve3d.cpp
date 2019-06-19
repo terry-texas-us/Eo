@@ -52,12 +52,12 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 						if (Weight[128 * i + i2 - 1] == 0.0)
 							W1 = 0.0;
 						else
-							W1 = ((T - spline.knotAt(i)) * Weight[128 * i + i2 - 1]) / (spline.knotAt(i + i2 - 1) - spline.knotAt(i));
+							W1 = (T - spline.knotAt(i)) * Weight[128 * i + i2 - 1] / (spline.knotAt(i + i2 - 1) - spline.knotAt(i));
 
 						if (Weight[128 * (i + 1) + i2 - 1] == 0.0) 	// Determine second term of weighting function equation
 							W2 = 0.0;
 						else
-							W2 = ((spline.knotAt(i + i2) - T) * Weight[128 * (i + 1) + i2 - 1]) / (spline.knotAt(i + i2) - spline.knotAt(i + 1));
+							W2 = (spline.knotAt(i + i2) - T) * Weight[128 * (i + 1) + i2 - 1] / (spline.knotAt(i + i2) - spline.knotAt(i + 1));
 
 						Weight[128 * i + i2] = W1 + W2;
 						G = spline.controlPointAt(i).x * Weight[128 * i + i2] + G;
@@ -85,7 +85,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 
 	delete [] Weight;
 
-	return (iPts);
+	return iPts;
 }
 void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& controlPoints, OdGeKnotVector& knots) {
 	const auto Order {gsl::narrow_cast<unsigned>(degree + 1)};

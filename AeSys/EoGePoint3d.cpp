@@ -17,7 +17,7 @@ OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoi
 	if (!Direction.isZeroLength()) {
 		Direction *= distance / Direction.length();
 	}
-	return (fromPoint + Direction);
+	return fromPoint + Direction;
 }
 int RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept {
 	int returnValue = 0;
@@ -35,5 +35,5 @@ int RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lower
 	else if (point.x < lowerLeftPoint.x - DBL_EPSILON) {
 		returnValue |= 8;
 	}
-	return (returnValue);
+	return returnValue;
 }

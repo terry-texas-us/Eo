@@ -18,7 +18,7 @@ static int CALLBACK EoLineweightCompareFunction(LPARAM item1, LPARAM item2, LPAR
 	double Value1 = _wtof(ListCtrl->GetItemText(NewIndex1, 0));
 	double Value2 = _wtof(ListCtrl->GetItemText(NewIndex2, 0));
 
-	return (Value1 > Value2);
+	return Value1 > Value2;
 }
 
 IMPLEMENT_DYNAMIC(EoDlgPlotStyleEditLineweight, CDialog)

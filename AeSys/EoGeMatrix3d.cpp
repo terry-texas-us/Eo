@@ -54,7 +54,7 @@ EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax,
 	entry[0][0] = 2. * nearClipDistance / FieldWidth;
 	entry[0][2] = (uMax + uMin) / FieldWidth;
 
-	entry[1][1] = (2. * nearClipDistance) / FieldHeight;
+	entry[1][1] = 2. * nearClipDistance / FieldHeight;
 	entry[1][2] = (vMax + vMin) / FieldHeight;
 
 	entry[2][2] = - (farClipDistance + nearClipDistance) / NExtent;

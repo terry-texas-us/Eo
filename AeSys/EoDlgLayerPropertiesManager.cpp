@@ -152,7 +152,7 @@ void EoDlgLayerPropertiesManager::OnSize(unsigned type, int newWidth, int newHei
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
-		itemRect.right += (dlgRect.Width() - m_DeltaWidth);
+		itemRect.right += dlgRect.Width() - m_DeltaWidth;
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->MoveWindow(itemRect);
 	}
 	if (GetDlgItem(IDC_STATIC_LAYER_STATISTIC)) {

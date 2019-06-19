@@ -94,7 +94,7 @@ int WINAPI Dlg_Proc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_INITDIALOG:
 			return SetDlgMsgResult(hwnd, uMsg, HANDLE_WM_INITDIALOG(hwnd, wParam, lParam, Dlg_OnInit));
 	}
-	return (FALSE);
+	return FALSE;
 }
 
 void CBitmapColorInfo::GetBitmapSizes(CBitmap& bitmap, int& width, int& height) {
@@ -110,7 +110,7 @@ DIBCOLOR* CBitmapColorInfo::GetBitmapPixels(CBitmap& bitmap, int& width, int& he
 	GetBitmapSizes(bitmap, width, height);
 
 	BITMAPINFO BitmapInfo;
-	BitmapInfo.bmiHeader.biSize = sizeof(BitmapInfo.bmiHeader);
+	BitmapInfo.bmiHeader.biSize = sizeof BitmapInfo.bmiHeader;
 	BitmapInfo.bmiHeader.biWidth = width;
 	BitmapInfo.bmiHeader.biHeight = -height;
 	BitmapInfo.bmiHeader.biPlanes = 1;
@@ -132,7 +132,7 @@ void CBitmapColorInfo::SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels) {
 	GetBitmapSizes(bitmap, Width, Height);
 
 	BITMAPINFO BitmapInfo;
-	BitmapInfo.bmiHeader.biSize = sizeof(BitmapInfo.bmiHeader);
+	BitmapInfo.bmiHeader.biSize = sizeof BitmapInfo.bmiHeader;
 	BitmapInfo.bmiHeader.biWidth = Width;
 	BitmapInfo.bmiHeader.biHeight = -Height;
 	BitmapInfo.bmiHeader.biPlanes = 1;
@@ -150,7 +150,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clo
 	ASSERT(sourceBitmap);
 	ASSERT(sourceBitmap != clonedBitmap);
 
-	if (!clonedBitmap && !sourceBitmap && (sourceBitmap == clonedBitmap)) { return nullptr; }
+	if (!clonedBitmap && !sourceBitmap && sourceBitmap == clonedBitmap) { return nullptr; }
 
 	BITMAP Bitmap;
 	const_cast<CBitmap*>(sourceBitmap)->GetBitmap(&Bitmap);
@@ -191,20 +191,20 @@ void CBitmapColorInfo::PaintBitmap(CBitmap& bitmap, COLORREF color) {
 
 const OdCmEntityColor CBitmapColorInfo::GetColor() {
 
-	const OdCmEntityColor color = OdCmEntityColor(static_cast<unsigned char>((m_color >> 16) & 0xFF),
-		static_cast<unsigned char>((m_color >> 8) & 0xFF), static_cast<unsigned char>(m_color & 0xFF));
+	const OdCmEntityColor color = OdCmEntityColor(static_cast<unsigned char>(m_color >> 16 & 0xFF),
+		static_cast<unsigned char>(m_color >> 8 & 0xFF), static_cast<unsigned char>(m_color & 0xFF));
 	return color;
 }
 
 bool CBitmapColorInfo::IsColor(COLORREF color, unsigned char item) noexcept {
-	color = static_cast<unsigned long>((item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color)));
+	color = static_cast<unsigned long>((item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	return m_color == color;
 }
 
 CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsigned char colorItem, int colorIndex) :
 	m_iItem(colorItem) {
 
-	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color)));
+	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
 	
@@ -219,7 +219,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsign
 
 CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name) :
 	m_iItem(0xff) {
-	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + (GetBValue(color)));
+	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
 	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
@@ -740,7 +740,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	m_listStyles.LockWindowUpdate(); // ***** lock window updates while filling list *****
 
-	OdPsPlotStyle* PlotStyle {(m_pPlotStyleTable->plotStyleAt(index)).get()};
+	OdPsPlotStyle* PlotStyle {m_pPlotStyleTable->plotStyleAt(index).get()};
 
 	LVITEMW lvItem;
 	::ZeroMemory(&lvItem, sizeof(LVITEMW));
@@ -769,7 +769,7 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initBitmapList() {
 	CBitmapColorInfo* pBitmapColorInfo = new CBitmapColorInfo(MAKEINTRESOURCEW(IDB_SELECT_TRUE_COLOR), L"Select true color...");
-	const CBitmap* bitmapSrc = &(pBitmapColorInfo->m_bitmap);
+	const CBitmap* bitmapSrc = &pBitmapColorInfo->m_bitmap;
 
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 255, 255), L"Use object color"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 0, 0), L"Red"));

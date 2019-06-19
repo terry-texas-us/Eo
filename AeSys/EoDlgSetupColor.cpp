@@ -71,7 +71,7 @@ BOOL EoDlgSetupColor::OnInitDialog() {
 
 void EoDlgSetupColor::OnOK() {
 	m_ColorIndex = gsl::narrow_cast<unsigned short>(GetDlgItemInt(IDC_COLOR_EDIT));
-	m_ColorIndex = (m_ColorIndex < 255u) ? m_ColorIndex : 255u;
+	m_ColorIndex = m_ColorIndex < 255u ? m_ColorIndex : 255u;
 	CDialog::OnOK();
 }
 

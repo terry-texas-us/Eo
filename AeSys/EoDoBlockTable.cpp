@@ -20,7 +20,7 @@ int AeSysDoc::GetBlockReferenceCount(const CString& name) {
 }
 
 EoDbBlockTable* AeSysDoc::BlockTable() noexcept {
-	return (&m_BlockTable);
+	return &m_BlockTable;
 }
 
 bool AeSysDoc::BlockTableIsEmpty() {

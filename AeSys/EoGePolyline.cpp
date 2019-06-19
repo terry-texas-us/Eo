@@ -171,7 +171,7 @@ bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint
 		}
 		StartPoint = EndPoint;
 	}
-	return (!intersections.empty());
+	return !intersections.empty();
 }
 
 bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dRel, OdGePoint3d& ptProj) {

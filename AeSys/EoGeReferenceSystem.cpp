@@ -55,7 +55,7 @@ EoGeMatrix3d EoGeReferenceSystem::TransformMatrix() const {
 	EoGeMatrix3d Matrix;
 	Matrix.setToWorldToPlane(OdGePlane(m_Origin, m_XDirection, m_YDirection));
 
-	return (Matrix);
+	return Matrix;
 }
 
 void EoGeReferenceSystem::Read(EoDbFile& file) {
@@ -83,7 +83,7 @@ double EoGeReferenceSystem::Rotation() const noexcept {
 	if (Angle < 0.0) {
 		Angle += Oda2PI;
 	}
-	return (Angle);
+	return Angle;
 }
 
 void EoGeReferenceSystem::Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept {

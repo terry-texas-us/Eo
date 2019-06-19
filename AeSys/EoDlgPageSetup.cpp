@@ -97,7 +97,7 @@ struct EoPlotUnitsInfo {
 	const wchar_t* m_Name2;
 
 	static const wchar_t* GetTextByValue(double value, const EoPlotUnitsInfo& info) noexcept {
-		return (fabs(value) <= 1.0) ? info.m_Name1 : info.m_Name2;
+		return fabs(value) <= 1.0 ? info.m_Name1 : info.m_Name2;
 	}
 };
 
@@ -345,7 +345,7 @@ void EoDlgPageSetup::OnClickPortraitLandscape() {
 	if (IsPaperWidthLessHeight()) {
 		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = static_cast<OdDbPlotSettings::PlotRotation>((!m_DrawingOrientation) + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(!m_DrawingOrientation + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 
@@ -425,7 +425,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	if (IsPaperWidthLessHeight()) {
 		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = static_cast<OdDbPlotSettings::PlotRotation>((!m_DrawingOrientation) + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(!m_DrawingOrientation + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 
@@ -591,7 +591,7 @@ void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
 	const bool IsModel = IsModelSpacePageSetup();
 	const bool IsLayout = m_PlotSettings.plotType() == OdDbPlotSettings::kLayout;
 
-	m_FitToPaper = m_PlotSettings.useStandardScale() && !IsLayout && (ScaleType == OdDbPlotSettings::kScaleToFit);
+	m_FitToPaper = m_PlotSettings.useStandardScale() && !IsLayout && ScaleType == OdDbPlotSettings::kScaleToFit;
 	m_ScaleLW = m_PlotSettings.scaleLineweights();
 
 	if (IsLayout) {
@@ -780,8 +780,8 @@ void EoDlgPageSetup::FillPlotAreaCombo(bool fillCombo) {
 	}
 	const OdDbPlotSettings::PlotType Type = m_PlotSettings.plotType();
 
-	GetDlgItem(IDC_PAGESETUP_VIEWS)->ShowWindow((Type == OdDbPlotSettings::kView) ? SW_SHOW : SW_HIDE);
-	GetDlgItem(IDC_BUTTON_WINDOW)->ShowWindow((Type == OdDbPlotSettings::kWindow) ? SW_SHOW : SW_HIDE);
+	GetDlgItem(IDC_PAGESETUP_VIEWS)->ShowWindow(Type == OdDbPlotSettings::kView ? SW_SHOW : SW_HIDE);
+	GetDlgItem(IDC_BUTTON_WINDOW)->ShowWindow(Type == OdDbPlotSettings::kWindow ? SW_SHOW : SW_HIDE);
 
 	switch (Type) {
 		case OdDbPlotSettings::kDisplay:
@@ -1028,7 +1028,7 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	// <command_view>
 	// Points are returned in eye plane, transform it back to screen plane if it is possible
 	// Workaround, unfortunately can't get screen plane point from IO stream.
-	CMDIChildWnd* ChildWindow = (static_cast<CMDIFrameWnd*>(theApp.GetMainWnd())->MDIGetActive());
+	CMDIChildWnd* ChildWindow = static_cast<CMDIFrameWnd*>(theApp.GetMainWnd())->MDIGetActive();
 
 	auto ActiveView {ChildWindow->GetActiveView()};
 

@@ -52,11 +52,11 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 	wchar_t szText[256] {L"\0"};
 
 	TV_ITEMW item;
-	::ZeroMemory(&item, sizeof(item));
+	::ZeroMemory(&item, sizeof item);
 	item.hItem = pNMTreeView->itemNew.hItem;
 	item.mask = TVIF_TEXT | TVIF_PARAM;
 	item.pszText = szText;
-	item.cchTextMax = sizeof(szText) / sizeof(wchar_t);
+	item.cchTextMax = sizeof szText / sizeof(wchar_t);
 
 	m_GroupTreeViewControl.GetItem(&item);
 	m_ExtraListViewControl.DeleteAllItems();

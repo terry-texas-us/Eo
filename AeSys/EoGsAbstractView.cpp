@@ -44,7 +44,7 @@ double EoGsAbstractView::FarClipDistance() const noexcept {
 }
 
 double EoGsAbstractView::FieldHeight() const noexcept {
-	return (m_FieldHeightMaximum - m_FieldHeightMinimum);
+	return m_FieldHeightMaximum - m_FieldHeightMinimum;
 }
 
 double EoGsAbstractView::FieldHeightMaximum() const noexcept {
@@ -56,7 +56,7 @@ double EoGsAbstractView::FieldHeightMinimum() const noexcept {
 }
 
 double EoGsAbstractView::FieldWidth() const noexcept {
-	return (m_FieldWidthMaximum - m_FieldWidthMinimum);
+	return m_FieldWidthMaximum - m_FieldWidthMinimum;
 }
 
 double EoGsAbstractView::FieldWidthMaximum() const noexcept {
@@ -68,19 +68,19 @@ double EoGsAbstractView::FieldWidthMinimum() const noexcept {
 }
 
 bool EoGsAbstractView::IsNearClipAtEyeOn() const noexcept {
-	return ((m_ViewMode & AV_NEARCLIPPINGATEYE) == AV_NEARCLIPPINGATEYE);
+	return (m_ViewMode & AV_NEARCLIPPINGATEYE) == AV_NEARCLIPPINGATEYE;
 }
 
 bool EoGsAbstractView::IsNearClipOn() const noexcept {
-	return ((m_ViewMode & AV_NEARCLIPPING) == AV_NEARCLIPPING);
+	return (m_ViewMode & AV_NEARCLIPPING) == AV_NEARCLIPPING;
 }
 
 bool EoGsAbstractView::IsFarClipOn() const noexcept {
-	return ((m_ViewMode & AV_FARCLIPPING) == AV_FARCLIPPING);
+	return (m_ViewMode & AV_FARCLIPPING) == AV_FARCLIPPING;
 }
 
 bool EoGsAbstractView::IsPerspectiveOn() const noexcept {
-	return ((m_ViewMode & AV_PERSPECTIVE) == AV_PERSPECTIVE);
+	return (m_ViewMode & AV_PERSPECTIVE) == AV_PERSPECTIVE;
 }
 
 double EoGsAbstractView::LensLength() const noexcept {

@@ -65,7 +65,7 @@ void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE)) {
 		wchar_t Name[32];
 
-		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof(Name) / sizeof(wchar_t))) {
+		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t))) {
 			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 
 			if (!Linetypes->getAt(Name).isNull()) {
