@@ -64,7 +64,7 @@ void AeSysView::OnTrapModeField() {
 		RubberBandingStartAtEnable(m_PreviousPnt, Rectangles);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	} else {
-		const OdGePoint3d CurrentPnt = GetCursorPosition();
+		const auto CurrentPnt {GetCursorPosition()};
 		if (m_PreviousPnt == CurrentPnt) { return; }
 
 		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(CurrentPnt, 1.0)};
@@ -243,7 +243,7 @@ void AeSysView::OnTraprModeField() {
 void AeSysView::OnTraprModeLast() {
 
 	if (!GetDocument()->IsTrapEmpty()) {
-		EoDbGroup* Group = GetDocument()->RemoveLastTrappedGroup();
+		auto Group {GetDocument()->RemoveLastTrappedGroup()};
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 		UpdateStateInformation(TrapCount);
 	}

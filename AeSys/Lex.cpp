@@ -386,7 +386,7 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 						lOp1[0] = static_cast<int>(pow(static_cast<double>(lOp2[0]), lOp1[0]));
 					}
 					else if (iTyp1 == TOK_REAL) {
-						const int iExp {static_cast<int>(dOp1[0])};
+						const auto iExp {static_cast<int>(dOp1[0])};
 
 						if (iExp >= 0 && iExp > DBL_MAX_10_EXP || iExp < 0 && iExp < DBL_MIN_10_EXP) { throw L"Exponentiation error"; }
 						dOp1[0] = pow(dOp2[0], dOp1[0]);

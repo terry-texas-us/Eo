@@ -602,7 +602,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 
 	{ // Old Entities.
 		OdDbStubPtrArray aOld;
-		GripDataMap::iterator GripDataIterator {m_GripData.begin()};
+		auto GripDataIterator {m_GripData.begin()};
 
 		while (GripDataIterator != m_GripData.end()) {
 
@@ -766,7 +766,7 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 }
 
 void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, bool fireDone) {
-	GripDataMap::iterator GripDataIterator {m_GripData.find(id)};
+	auto GripDataIterator {m_GripData.find(id)};
 
 	if (GripDataIterator != m_GripData.end()) {
 		auto Entity {OpenObject(id)};

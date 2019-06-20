@@ -15,8 +15,7 @@ void AeSysView::OnModePrimitiveMend() {
 
 	if (GroupIsEngaged()) { // Group is currently engaged, see if cursor is on a control point
 		OdGePoint3d ptDet;
-
-		EoDbPrimitive* Primitive = EngagedPrimitive();
+		auto Primitive {EngagedPrimitive()};
 
 		EoDbHatch::SetEdgeToEvaluate(EoDbHatch::Edge());
 		EoDbPolyline::SetEdgeToEvaluate(EoDbPolyline::Edge());
@@ -43,7 +42,7 @@ void AeSysView::OnModePrimitiveMend() {
 }
 void AeSysView::PreviewMendPrimitive() {
 	const auto CurrentPnt {GetCursorPosition()};
-	const OdGeVector3d Translate(CurrentPnt - m_MendPrimitiveBegin);
+	const auto Translate {CurrentPnt - m_MendPrimitiveBegin};
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
 	m_PrimitiveToMendCopy->TranslateUsingMask(Translate, m_MendPrimitiveVertexIndex);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_PrimitiveToMendCopy);

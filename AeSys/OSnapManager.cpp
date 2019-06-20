@@ -185,7 +185,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 				break;
 		}
 	}
-	OdGsMarker Marker {0};
+	auto Marker {0};
 	if (m_Centers.size()) {
 		viewportDraw->subEntityTraits().setTrueColor(CenterTrueColor());
 
@@ -514,7 +514,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 		OdArray<OdDb::OsnapMode> snapModes;
 
 		PointTrackerWithSnapInfo->GetSnapModes(Entity, snapModes);
-		for (OdArray<OdDb::OsnapMode>::iterator it = snapModes.begin(); it != snapModes.end(); it++) {
+		for (auto it = snapModes.begin(); it != snapModes.end(); it++) {
 
 			if (Entity->getOsnapPoints(*it, Marker, ModelPickPoint, ModelLastPoint, worldToEyeTransform, m_SnapPoints) == eOk) {
 				PointTrackerWithSnapInfo->m_SnapContext.mEntityObjectId = Entity->objectId();

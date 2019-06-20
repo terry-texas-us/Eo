@@ -57,7 +57,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 				theApp.WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
 				return TRUE;
 			}
-			wchar_t* Name {PathFindFileNameW(FilePath)};
+			auto Name {PathFindFileNameW(FilePath)};
 
 			auto FileType {AeSys::GetFileType(FilePath)};
 
