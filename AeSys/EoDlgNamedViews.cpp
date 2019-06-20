@@ -138,7 +138,7 @@ BOOL EoDlgNamedViews::OnInitDialog() {
         const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
         OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
 		auto Index {0};
-        for (OdDbSymbolTableIteratorPtr ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
+        for (auto ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
             OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
             m_views.InsertItem(Index++, ViewTableRecord);
         }

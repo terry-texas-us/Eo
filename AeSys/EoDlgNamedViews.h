@@ -5,40 +5,43 @@ class OdDbViewTableRecord;
 using OdDbViewTableRecordPtr = OdSmartPtr<OdDbViewTableRecord>;
 
 class CNamedViewListCtrl : public CListCtrl {
-    void setViewId(int nItem, const OdDbObjectId& id);
-    void setView(int nItem, const OdDbViewTableRecord* pView);
-public:
-    OdDbObjectId viewId(int n) const;
-    OdDbViewTableRecordPtr view(int n);
-    OdDbViewTableRecordPtr selectedView();
-    void InsertItem(int i, const OdDbViewTableRecord* pView);
+	void setViewId(int nItem, const OdDbObjectId& id);
+	void setView(int nItem, const OdDbViewTableRecord* pView);
+
+  public:
+	OdDbObjectId viewId(int n) const;
+	OdDbViewTableRecordPtr view(int n);
+	OdDbViewTableRecordPtr selectedView();
+	void InsertItem(int i, const OdDbViewTableRecord* pView);
 };
 
 class EoDlgNamedViews : public CDialog {
-    AeSysDoc* m_pDoc;
-public:
-    EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = nullptr);
+	AeSysDoc* m_pDoc;
 
-    enum { kUnchangedItem = 0, kNewItem = 1, kReplace = 2 };
+  public:
+	EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = nullptr);
 
-    AeSysDoc* document() noexcept {
-        return m_pDoc;
-    }
-    OdDbDatabase* database();
+	enum { kUnchangedItem = 0,
+		   kNewItem = 1,
+		   kReplace = 2 };
 
-    enum { IDD = IDD_DIALOG_NAMED_VIEWS };
-    CNamedViewListCtrl m_views;
+	AeSysDoc* document() noexcept {
+		return m_pDoc;
+	}
+	OdDbDatabase* database();
 
-protected:
-    void DoDataExchange(CDataExchange* pDX) final;
-    BOOL OnInitDialog() final;
+	enum { IDD = IDD_DIALOG_NAMED_VIEWS };
+	CNamedViewListCtrl m_views;
 
-protected:
-    void OnSetcurrentButton();
-    void OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* pResult);
-    void OnNewButton();
-    void OnUpdateLayersButton();
-    void OnDeleteButton();
+  protected:
+	void DoDataExchange(CDataExchange* pDX) final;
+	BOOL OnInitDialog() final;
 
-    DECLARE_MESSAGE_MAP()
+	void OnSetcurrentButton();
+	void OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* pResult);
+	void OnNewButton();
+	void OnUpdateLayersButton();
+	void OnDeleteButton();
+
+	DECLARE_MESSAGE_MAP()
 };

@@ -644,7 +644,7 @@ inline OdGsViewPtr overallView(OdGsDevice* device) {
 
 inline OdGsViewPtr activeView(OdGsDevice* device) {
 	OdGsViewPtr ActiveView;
-	OdGsLayoutHelperPtr LayoutHelper {OdGsLayoutHelper::cast(device)};
+	auto LayoutHelper {OdGsLayoutHelper::cast(device)};
 
 	if (LayoutHelper.get()) { ActiveView = LayoutHelper->activeView(); }
 	return ActiveView;

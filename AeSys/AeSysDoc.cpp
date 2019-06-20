@@ -415,10 +415,8 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	auto UserIO {CommandContext->dbUserIO()};
 	UserIO->setPickfirst(nullptr);
 	auto SelectOptions {OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty};
-
-	OdDbSelectionSetPtr SelectionSet;
 	try {
-		SelectionSet = UserIO->select(L"", SelectOptions, View->editorObject().workingSSet());
+		OdDbSelectionSetPtr SelectionSet {UserIO->select(L"", SelectOptions, View->editorObject().workingSSet())};
 		View->editorObject().SetWorkingSelectionSet(SelectionSet);
 	}
 	catch (const OdError&) {
@@ -2087,7 +2085,7 @@ void AeSysDoc::OnEditTrace() {
 			GetClipboardFormatNameW(ClipboardFormat, sBuf, 16);
 
 			if (wcscmp(sBuf, L"EoGroups") == 0) {
-				HGLOBAL ClipboardDataHandle = GetClipboardData(ClipboardFormat);
+				auto ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
 
 				if (ClipboardDataHandle != nullptr) {
 
@@ -2142,7 +2140,7 @@ void AeSysDoc::OnEditTrapPaste() {
 		if (IsClipboardFormatAvailable(ClipboardFormat)) {
 			EoDlgSetPastePosition Dialog;
 			if (Dialog.DoModal() == IDOK) {
-				HGLOBAL ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
+				auto ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
 
 				if (ClipboardDataHandle != nullptr) {
 					OdGePoint3d LowerLeftExtent;
@@ -2170,7 +2168,7 @@ void AeSysDoc::OnEditTrapPaste() {
 				}
 			}
 		} else if (IsClipboardFormatAvailable(CF_TEXT)) {
-			HGLOBAL ClipboardDataHandle {GetClipboardData(CF_TEXT)};
+			auto ClipboardDataHandle {GetClipboardData(CF_TEXT)};
 			
 			if (ClipboardDataHandle != nullptr) {
 				const auto ClipboardData {static_cast<char*>(GlobalLock(ClipboardDataHandle))};
@@ -2188,7 +2186,7 @@ void AeSysDoc::OnEditTrapPaste() {
 				}
 			}
 		} else if (IsClipboardFormatAvailable(CF_UNICODETEXT)) {
-			HGLOBAL ClipboardDataHandle = GetClipboardData(CF_UNICODETEXT);
+			auto ClipboardDataHandle {GetClipboardData(CF_UNICODETEXT)};
 
 			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 			const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};

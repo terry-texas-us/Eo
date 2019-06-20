@@ -877,10 +877,10 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 	CString FileName;
 	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
-	HINSTANCE hinstLib {LoadLibraryW(LibraryFileName)};
+	auto LibraryModule {LoadLibraryW(LibraryFileName)};
 
-	if (hinstLib != nullptr) {
-		auto fpDlgProc {reinterpret_cast<ODA_OPEN_DLGPROC>(GetProcAddress(hinstLib, "CreateOpenWithPreviewDlg"))};
+	if (LibraryModule != nullptr) {
+		auto fpDlgProc {reinterpret_cast<ODA_OPEN_DLGPROC>(GetProcAddress(LibraryModule, "CreateOpenWithPreviewDlg"))};
 
 		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
@@ -894,7 +894,7 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 			}
 			OpenWithPreviewDialog->ReleaseDlg();
 		}
-		FreeLibrary(hinstLib);
+		FreeLibrary(LibraryModule);
 	} else {
 		CString Filter(filter);
 		Filter.Replace('|', '\0');

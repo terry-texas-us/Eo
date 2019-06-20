@@ -43,23 +43,21 @@ BOOL EoDlgNewView::OnInitDialog() {
 
 	auto Parent {dynamic_cast<EoDlgNamedViews*>(GetParent())};
 	const auto Database {Parent->database()};
-	OdDbSymbolTablePtr pTable;
-	OdDbSymbolTableIteratorPtr pIter;
-
-	pTable = Database->getViewTableId().safeOpenObject();
+	OdDbSymbolTablePtr ViewTable {Database->getViewTableId().safeOpenObject()};
 	
-	for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
-		OdDbViewTableRecordPtr pView = pIter->getRecordId().openObject();
-		OdString sCategory = pView->getCategoryName();
+	OdDbSymbolTableIteratorPtr ViewTableIterator;
+	for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
+		OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
+		auto CategoryName {ViewTableRecord->getCategoryName()};
 		
-		if (!sCategory.isEmpty()) {
+		if (!CategoryName.isEmpty()) {
 			
-			if (m_categories.FindString(-1, sCategory) == -1) {
-				m_categories.AddString(sCategory);
+			if (m_categories.FindString(-1, CategoryName) == -1) {
+				m_categories.AddString(CategoryName);
 			}
 		}
 	}
-	pTable = Database->getUCSTableId().safeOpenObject();
+	ViewTable = Database->getUCSTableId().safeOpenObject();
 	m_UCSs.AddString(L"World");
 
 	m_sUcsName = static_cast<const wchar_t*>(ucsString(Database->activeViewportId().safeOpenObject()));
@@ -67,8 +65,8 @@ BOOL EoDlgNewView::OnInitDialog() {
 	if (m_sUcsName == L"Unnamed") {
 		m_UCSs.AddString(m_sUcsName);
 	}
-	for (pIter = pTable->newIterator(); !pIter->done(); pIter->step()) {
-		OdDbUCSTableRecordPtr pUCS = pIter->getRecordId().openObject();
+	for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
+		OdDbUCSTableRecordPtr pUCS = ViewTableIterator->getRecordId().openObject();
 		m_UCSs.AddString(pUCS->getName());
 	}
 	UpdateData(FALSE);
