@@ -38,10 +38,9 @@ void EoDlgModeLetter::OnOK() {
 	auto Document {AeSysDoc::GetDoc()};
 	auto Database {Document->m_DatabasePtr};
 
-	const EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
+	const auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
 	EoGeReferenceSystem ReferenceSystem(m_Point, AeSysView::GetActiveView(), CharacterCellDefinition);
-
-	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
+	auto FontDefinition {pstate.FontDefinition()};
 
 	if (m_TextEditControl.GetWindowTextLengthW() != 0) {
 		CString TextEditControl;
@@ -50,10 +49,10 @@ void EoDlgModeLetter::OnOK() {
 
 		EoDbText* TextPrimitive;
 
-		const int HardLineBreakPosition = TextEditControl.Find(L"\r\n");
+		const auto HardLineBreakPosition {TextEditControl.Find(L"\r\n")};
 		if (HardLineBreakPosition == -1) { // single line text
 			OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(TextEditControl));
+			auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(TextEditControl))};
 			Text->setHeight(ReferenceSystem.YDirection().length());
 			Text->setRotation(ReferenceSystem.Rotation());
 			Text->setAlignmentPoint(Text->position());
@@ -62,7 +61,7 @@ void EoDlgModeLetter::OnOK() {
 		} else {
 			TextEditControl.Replace(L"\r\n", L"\\P");
 			OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-			OdDbMTextPtr MText = EoDbText::CreateM(BlockTableRecord, static_cast<const wchar_t*>(TextEditControl));
+			auto MText {EoDbText::CreateM(BlockTableRecord, static_cast<const wchar_t*>(TextEditControl))};
 			MText->setLocation(ReferenceSystem.Origin());
 			MText->setTextHeight(ReferenceSystem.YDirection().length());
 			MText->setRotation(ReferenceSystem.Rotation());

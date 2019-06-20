@@ -43,17 +43,16 @@ BOOL EoDlgLineWeight::OnInitDialog() {
 		m_LineWeightList.InsertString(Index, CMainFrame::StringByLineWeight(Index - 1, true));
 		m_LineWeightList.SetItemData(Index, static_cast<DWORD_PTR>(CMainFrame::LineWeightByIndex(char(Index - 1))));
 	}
-	OdString OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
+	auto OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
 	m_LineWeightList.SelectString(-1, OriginalLineWeight);
-
-	OdString Text(L"Original : " + OriginalLineWeight);
+	auto Text(L"Original : " + OriginalLineWeight);
 
 	GetDlgItem(IDC_STATIC_LINEWEIGHT_ORIGINAL)->SetWindowTextW(Text);
 	return TRUE;
 }
 
 void EoDlgLineWeight::OnBnClickedOk() {
-	const int Index = m_LineWeightList.GetCurSel();
+	const auto Index {m_LineWeightList.GetCurSel()};
 	m_LineWeight = static_cast<OdDb::LineWeight>(m_LineWeightList.GetItemData(Index));
 
 	CDialog::OnOK();

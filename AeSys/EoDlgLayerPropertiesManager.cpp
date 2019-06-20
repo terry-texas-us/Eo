@@ -60,7 +60,7 @@ void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructu
 }
 
 void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
-	const LPNMTVKEYDOWN pTVKeyDown = reinterpret_cast<LPNMTVKEYDOWN> (notifyStructure);
+	const auto pTVKeyDown {reinterpret_cast<tagTVKEYDOWN*>(notifyStructure)};
 
 	if (pTVKeyDown->wVKey == VK_DELETE) {
 		if (HTREEITEM SelectedItem = m_TreeFilters.GetSelectedItem()) {
@@ -92,23 +92,23 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	OdDbDictionaryPtr MainDictionary = m_Database->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForRead);
 	TRACE1("Main dictionary contains %i entries\n", MainDictionary->numEntries());
 // </tas>
-	OdDbDictionaryIteratorPtr MainDictionaryIterator = MainDictionary->newIterator();
+	auto MainDictionaryIterator {MainDictionary->newIterator()};
 	while (!MainDictionaryIterator->done()) {
-		const OdDbObjectId MainDictionaryEntryObjectId = MainDictionaryIterator->objectId();
+		const auto MainDictionaryEntryObjectId {MainDictionaryIterator->objectId()};
 		TRACE2("<%4s> \"%s\"\n", MainDictionaryEntryObjectId.getHandle().ascii().c_str(), MainDictionaryIterator->name().c_str());
 		if (MainDictionaryIterator->objectId() == m_Database->getLayoutDictionaryId()) {
 			OdDbDictionaryPtr LayoutDictionary = m_Database->getLayoutDictionaryId().safeOpenObject(OdDb::kForRead);
-			OdDbDictionaryIteratorPtr LayoutDictionaryIterator = LayoutDictionary->newIterator();
+			auto LayoutDictionaryIterator {LayoutDictionary->newIterator()};
 			while (!LayoutDictionaryIterator->done()) {
-				const OdDbObjectId LayoutDictionaryEntryObjectId = LayoutDictionaryIterator->objectId();
+				const auto LayoutDictionaryEntryObjectId {LayoutDictionaryIterator->objectId()};
 				TRACE2("    <%4s> \"%s\"\n", LayoutDictionaryEntryObjectId.getHandle().ascii().c_str(), LayoutDictionaryIterator->name().c_str());
 				LayoutDictionaryIterator->next();
 			}
 		} else if (MainDictionaryIterator->objectId() == m_Database->getScaleListDictionaryId()) {
 			OdDbDictionaryPtr ScaleListDictionary = m_Database->getScaleListDictionaryId().safeOpenObject(OdDb::kForRead);
-			OdDbDictionaryIteratorPtr ScaleListDictionaryIterator = ScaleListDictionary->newIterator();
+			auto ScaleListDictionaryIterator {ScaleListDictionary->newIterator()};
 			while (!ScaleListDictionaryIterator->done()) {
-				const OdDbObjectId ScaleListDictionaryEntryObjectId = ScaleListDictionaryIterator->objectId();
+				const auto ScaleListDictionaryEntryObjectId {ScaleListDictionaryIterator->objectId()};
 				TRACE2("    <%4s> \"%s\"\n", ScaleListDictionaryEntryObjectId.getHandle().ascii().c_str(), ScaleListDictionaryIterator->name().c_str());
 
 				ScaleListDictionaryIterator->next();
@@ -135,7 +135,7 @@ static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerF
 
 void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	m_TreeFilters.DeleteAllItems();
-	OdLyLayerFilterManagerPtr FilterManager = odlyGetLayerFilterManager(m_Database);
+	auto FilterManager {odlyGetLayerFilterManager(m_Database)};
 	OdLyLayerFilterPtr pCurrent;
 	
 	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk) { return; }

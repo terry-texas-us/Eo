@@ -6,7 +6,6 @@
 class EoDlgLayerPropertiesManager : public CDialog {
 	DECLARE_DYNAMIC(EoDlgLayerPropertiesManager)
 
-public:
 	EoDlgLayerPropertiesManager(CWnd* parent = nullptr);
 	EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent = nullptr);
 
@@ -35,7 +34,6 @@ public:
 
 	void UpdateFiltersTree();
 
-public:
 	int OnCreate(LPCREATESTRUCT createStructure);
 	void OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
 	void OnSize(unsigned type, int cx, int cy);

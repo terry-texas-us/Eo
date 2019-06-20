@@ -33,7 +33,7 @@ void EoDlgLowPressureDuctOptions::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	const AeSys::Units Units = max(theApp.GetUnits(), AeSys::kInches);
+	const auto Units {max(theApp.GetUnits(), AeSys::kInches)};
 
 	SetDlgItemTextW(IDC_WIDTH, theApp.FormatLength(m_Width, Units, 12, 3));
 	SetDlgItemTextW(IDC_DEPTH, theApp.FormatLength(m_Depth, Units, 12, 3));
