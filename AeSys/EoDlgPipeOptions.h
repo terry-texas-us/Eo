@@ -5,7 +5,6 @@
 class EoDlgPipeOptions : public CDialog {
 	DECLARE_DYNAMIC(EoDlgPipeOptions)
 
-public:
 	EoDlgPipeOptions(CWnd* parent = nullptr);
 	virtual ~EoDlgPipeOptions();
 

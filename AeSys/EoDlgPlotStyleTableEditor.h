@@ -5,30 +5,28 @@
 class OdPsPlotStyleTable;
 
 class EoDlgPlotStyleManager : public CPropertySheet {
-    DECLARE_DYNCREATE(EoDlgPlotStyleManager)
+	DECLARE_DYNCREATE(EoDlgPlotStyleManager)
 
-    OdPsPlotStyleTable* m_pPlotStyleTable;
-    OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
+	OdPsPlotStyleTable* m_pPlotStyleTable;
+	OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
 
-public:
-    EoDlgPlotStyleManager(CWnd* pParentWnd = nullptr);
-    bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
-    void SetFileBufPath(const OdString sFilePath);
-    OdPsPlotStyleTablePtr GetPlotStyleTable() const;
+	EoDlgPlotStyleManager(CWnd* pParentWnd = nullptr);
+	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
+	void SetFileBufPath(const OdString sFilePath);
+	OdPsPlotStyleTablePtr GetPlotStyleTable() const;
 
-public: // Attributes
-    EoDlgPlotStyleEditor_GeneralPropertyPage m_page1;
-    EoDlgPlotStyleEditor_FormViewPropertyPage m_page2;
+	// Attributes
+	EoDlgPlotStyleEditor_GeneralPropertyPage m_page1;
+	EoDlgPlotStyleEditor_FormViewPropertyPage m_page2;
 
-public: // Operations
+	// Operations
+	enum { IDD = IDD_PLOTSTYLE_MANAGER };
 
-    enum { IDD = IDD_PLOTSTYLE_MANAGER };
+	virtual ~EoDlgPlotStyleManager();
 
-public:
-    virtual ~EoDlgPlotStyleManager();
 protected:
-    int OnCreate(LPCREATESTRUCT createStructure);
-    BOOL OnInitDialog() final;
+	int OnCreate(LPCREATESTRUCT createStructure);
+	BOOL OnInitDialog() final;
 
-    DECLARE_MESSAGE_MAP()
+	DECLARE_MESSAGE_MAP()
 };

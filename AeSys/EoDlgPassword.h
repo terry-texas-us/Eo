@@ -12,6 +12,5 @@ public:
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 
-protected:
 	DECLARE_MESSAGE_MAP()
 };

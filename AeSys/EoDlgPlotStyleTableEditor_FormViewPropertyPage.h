@@ -132,15 +132,15 @@ protected:
 	int getPublicArrayIndexByColor(COLORREF color);
 
 public:
-	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, const char item);
+	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, char item);
 
 	~CPsListStyleData();
 
 	OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; }
 	CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; }
 	int GetActiveListIndex() const noexcept { return m_iActiveListIndex; }
-	bool ReplaceBitmapColorInfo(COLORREF color, const int item);
-	bool SetActiveListIndex(const int index, const bool bBmpInfo = false);
+	bool ReplaceBitmapColorInfo(COLORREF color, int item);
+	bool SetActiveListIndex(int index, bool bitmapInfo = false);
 	const OdCmEntityColor GetColor();
 	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; }
 };
@@ -157,7 +157,6 @@ class EoDlgPlotStyleEditor_FormViewPropertyPage : public CPropertyPage {
 	OdString m_sFileBufPath;
 	bool m_bEditChanging;
 
-public:
 	EoDlgPlotStyleEditor_FormViewPropertyPage();
 	~EoDlgPlotStyleEditor_FormViewPropertyPage();
 
@@ -188,7 +187,6 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 
-protected:
 	void initBitmapList();
 	void initAdaptiveComboBox();
 	void initGrayscaleComboBox();
@@ -205,13 +203,13 @@ protected:
 	void initImageList();
 
 	int deleteCustomColor();
-	int appendCustomColor(const int item);
-	int replaceCustomColor(COLORREF color, const int item);
+	int appendCustomColor(int item);
+	int replaceCustomColor(COLORREF color, int item);
 
 public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
 	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags);
-	void SetFileBufPath(const OdString filePath);
+	void SetFileBufPath(OdString filePath);
 	void AddNewPlotStyle(const wchar_t* styleName);
 	const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; }
 

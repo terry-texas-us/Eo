@@ -26,9 +26,9 @@ BOOL EoDlgPipeSymbol::OnInitDialog() {
 	CDialog::OnInitDialog();
 
 	auto Names {theApp.LoadStringResource(IDS_PIPE_SYMBOL_NAMES)};
-	int Position = 0;
+	auto Position {0};
 	while (Position < Names.GetLength()) {
-		CString NamesItem = Names.Tokenize(L"\n", Position);
+		auto NamesItem {Names.Tokenize(L"\n", Position)};
 		m_PipeSymbolsListBoxControl.AddString(NamesItem);
 	}
 	m_PipeSymbolsListBoxControl.SetCurSel(m_CurrentPipeSymbolIndex);
