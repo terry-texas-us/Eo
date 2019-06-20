@@ -111,7 +111,7 @@ public: // Construction. Initialization.
 	// alternative to OdDbGripPointsPE methods
 	// possible TODO instead next methods
 	// (redesign OdDbGripPointsPE to use OdGiDrawable & use some base class of it instead OdDgGripPointsPE) 
-	virtual OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const unsigned long bitflags) const = 0;
+	virtual OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, unsigned long bitFlags) const = 0;
 	virtual OdResult GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const = 0;
 	virtual OdResult GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const = 0;
 	virtual OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) = 0;
@@ -197,7 +197,6 @@ public:
 	void objectModified(const OdDbDatabase* database, const OdDbObject* dbObject) override;
 	void objectErased(const OdDbDatabase* database, const OdDbObject* dbObject, bool erased = true) override;
 
-public:
 	class OdExGripManager* m_GripManager {nullptr};
 };
 
@@ -223,7 +222,7 @@ public: // Construction. Initialization.
 	void OnModified(OdGiDrawable* pGrip) override;
 	OdGiDrawablePtr CloneEntity(OdDbStub* id) override;
 	OdGiDrawablePtr OpenObject(OdDbStub* id, bool isForWriteMode = false) override;
-	OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, const unsigned long bitflags) const override;
+	OdResult GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, unsigned long bitFlags) const override;
 	OdResult GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const override;
 	OdResult GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const override;
 	OdResult MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) override;
@@ -259,7 +258,7 @@ private:
 	OdGsModel* GetGsModel() noexcept override { return m_pGsModel; }
 	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_LayoutHelper.get(); }
 	void Disable(bool disable) noexcept override;
-private:
+
 	OdStaticRxObject<OdExGripDbReactor> m_cDbReactor;
 
 	// Selection set.

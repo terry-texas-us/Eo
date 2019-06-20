@@ -196,9 +196,9 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	}
 }
 
-void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
-	const double PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
-	const int PixelWidth = lineWeight <= 0 ? 0 : int(double(lineWeight) / 100. * PixelsPerLogicalMillimeter + 0.5);
+void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, OdDb::LineWeight lineWeight) {
+	const auto PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
+	const auto PixelWidth {lineWeight <= 0 ? 0 : int(double(lineWeight) / 100. * PixelsPerLogicalMillimeter + 0.5)};
 
 	LOGBRUSH Brush;
 	Brush.lbStyle = BS_SOLID;
@@ -206,7 +206,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 	Brush.lbHatch = 0;
 
 	CPen Pen(PS_SOLID | PS_GEOMETRIC | PS_ENDCAP_SQUARE, PixelWidth, &Brush);
-	CPen * OldPen = deviceContext.SelectObject(&Pen);
+	auto OldPen {deviceContext.SelectObject(&Pen)};
 
 	CRect ItemRectangle(itemRectangle);
 	ItemRectangle.DeflateRect(2, 2);
@@ -219,7 +219,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 	ItemRectangle.SetRect(ItemRectangle.right + 8, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 
 	if (ItemRectangle.left <= itemRectangle.right) {
-		OdString String {StringByLineWeight(lineWeight, false)};
+		auto String {StringByLineWeight(lineWeight, false)};
 		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, static_cast<unsigned>(String.getLength()), nullptr);
 	}
 }
@@ -393,18 +393,17 @@ LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, LPARAM point) {
 }
 
 void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
-	CFrameWnd* ActiveChildWindow(GetActiveFrame());
+	auto ActiveChildWindow {GetActiveFrame()};
 	try {
 		ENSURE(ActiveChildWindow);
 		auto ActiveDocument {ActiveChildWindow->GetActiveDocument()};
 		ENSURE(ActiveDocument);
-		OdDbDatabasePtr Database {dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr};
+		auto Database {dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr};
 
 		popupMenu->RemoveAllItems();
-
-		OdDbObjectContextManagerPtr ContextManager(Database->objectContextManager());
-		OdDbObjectContextCollection* ScalesCollection(ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION));
-		OdDbObjectContextCollectionIteratorPtr ScalesCollectionIterator = ScalesCollection->newIterator();
+		auto ContextManager {Database->objectContextManager()};
+		auto ScalesCollection {ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)};
+		auto ScalesCollectionIterator {ScalesCollection->newIterator()};
 
 		unsigned ScaleMenuPosition {1};
 		auto CurrentScaleIdentifier {Database->getCANNOSCALE()->uniqueIdentifier()};
@@ -437,12 +436,11 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 		MenuItemInfo.fMask = MIIM_DATA;
 
 		auto CommandStack {odedRegCmds()};
-		bool bHasNoCommand = CommandStack->newIterator()->done();
-
-		int CommandId = _APS_NEXT_COMMAND_VALUE + 100;
+		auto bHasNoCommand {CommandStack->newIterator()->done()};
+		auto CommandId {_APS_NEXT_COMMAND_VALUE + 100};
 
 		if (!bHasNoCommand) {
-			OdRxIteratorPtr CommandStackGroupIterator = CommandStack->newGroupIterator();
+			auto CommandStackGroupIterator {CommandStack->newGroupIterator()};
 
 			while (!CommandStackGroupIterator->done()) {
 				OdRxDictionaryPtr Group = CommandStackGroupIterator->object();
@@ -457,7 +455,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 					if (GroupName.isEmpty()) {
 						GroupName = pCmd->groupName();
 					}
-					OdString CommandName(pCmd->globalName());
+					auto CommandName {pCmd->globalName()};
 					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
 
 					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(pCmd.get());
@@ -500,16 +498,13 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 				const auto ReturnValue {RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 				VectorizerPath.ReleaseBuffer();
 
-				if (ReturnValue != ERROR_SUCCESS) {
-					break;
-				} else {
-					CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, nullptr, -1, VectorizerPath);
+				if (ReturnValue != ERROR_SUCCESS) { break; }
+				CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, nullptr, -1, VectorizerPath);
 
-					if (theApp.recentGsDevicePath().iCompare(static_cast<const wchar_t*>(VectorizerPath)) == 0) {
-						MenuButton.SetStyle(TBBS_CHECKED);
-					}
-					popupMenu->InsertItem(MenuButton, static_cast<int>(VectorizerIndex++));
+				if (theApp.recentGsDevicePath().iCompare(static_cast<const wchar_t*>(VectorizerPath)) == 0) {
+					MenuButton.SetStyle(TBBS_CHECKED);
 				}
+				popupMenu->InsertItem(MenuButton, static_cast<int>(VectorizerIndex++));
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_TOOLS_REGISTEREDCOMMANDS) >= 0) {
@@ -559,7 +554,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
 			} else {
-				HWND ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
+				auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 				m_wndClientArea.PostMessageW(WM_MDICASCADE);
 				::BringWindowToTop(ActiveWnd);
 			}
@@ -567,7 +562,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		}
 		case EoApOptions::Standard:
 		{
-			HWND ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
+			auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
 
@@ -605,7 +600,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 
 		auto hwndT {::GetWindow(m_hWndMDIClient, GW_CHILD)};
 		while (hwndT != nullptr) {
-			CMDIChildWndEx* pFrame {DYNAMIC_DOWNCAST(CMDIChildWndEx, CWnd::FromHandle(hwndT))};
+			auto pFrame {DYNAMIC_DOWNCAST(CMDIChildWndEx, CWnd::FromHandle(hwndT))};
 			
 			if (pFrame != nullptr) {
 				ASSERT_VALID(pFrame);
@@ -744,7 +739,7 @@ CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo() {
 
 	CObList ButtonsList;
 	if (CMFCToolBar::GetCommandButtons(ID_EDIT_FIND_COMBO, ButtonsList) > 0) {
-		for (POSITION Position = ButtonsList.GetHeadPosition(); FoundCombo == nullptr && Position != nullptr; ) {
+		for (auto Position = ButtonsList.GetHeadPosition(); FoundCombo == nullptr && Position != nullptr; ) {
 			auto Combo {DYNAMIC_DOWNCAST(CMFCToolBarComboBoxButton, ButtonsList.GetNext(Position))};
 
 			if (Combo != nullptr && Combo->GetEditCtrl()->GetSafeHwnd() == ::GetFocus()) {

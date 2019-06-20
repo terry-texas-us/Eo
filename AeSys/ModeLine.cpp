@@ -13,7 +13,7 @@ void AeSysView::ModeLineDisplay() {
 
 	const gsl::not_null<CDC*>(DeviceContext) {GetDC()};
 
-	for (int i = 0; i < 10; i++) {
+	for (auto i = 0; i < 10; i++) {
 		AfxExtractSubString(ModeOp, ModeInformation, i + 1, '\n');
 
 		// <tas="Using active view device context for sizing status bar panes."/>
@@ -25,7 +25,7 @@ void AeSysView::ModeLineDisplay() {
 	}
 	if (theApp.ModeInformationOverView()) {
 		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
-		const unsigned TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
+		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
@@ -38,7 +38,7 @@ void AeSysView::ModeLineDisplay() {
 		const int iMaxChrs = ClientRectangle.Width() / 10 / TextMetrics.tmAveCharWidth;
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
 
-		for (int i = 0; i < 10; i++) {
+		for (auto i = 0; i < 10; i++) {
 			ModeOp = GetStatusBar().GetPaneText(nStatusOp0 + i);
 
 			const CRect Rectangle(i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom);
@@ -60,7 +60,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 
 	if (command == 0) { return 0; }
 
-	const int PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
+	const auto PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
 
 	GetStatusBar().SetPaneTextColor(PaneIndex, RGB(255, 0, 0));
 
@@ -82,7 +82,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 
 		const int iMaxChrs = ClientRectangle.Width() / 10 / TextMetrics.tmAveCharWidth;
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
-		const int i = m_OpHighlighted - ID_OP0;
+		const auto i {m_OpHighlighted - ID_OP0};
 
 		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 
@@ -100,7 +100,7 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 	if (command == 0 || m_OpHighlighted == 0) { return; }
 
-	const int PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
+	const auto PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
 
 	GetStatusBar().SetPaneTextColor(PaneIndex);
 
@@ -110,7 +110,7 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 		const gsl::not_null<CDC*>(DeviceContext) {GetDC()};
 
 		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
-		const unsigned TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
+		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
 
@@ -122,7 +122,7 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 
 		const int iMaxChrs {ClientRectangle.Width() / 10 / TextMetrics.tmAveCharWidth};
 		const int Width = iMaxChrs * TextMetrics.tmAveCharWidth;
-		const int i = m_OpHighlighted - ID_OP0;
+		const auto i {m_OpHighlighted - ID_OP0};
 
 		const CRect Rectangle {i * Width, ClientRectangle.bottom - TextMetrics.tmHeight, (i + 1) * Width, ClientRectangle.bottom};
 

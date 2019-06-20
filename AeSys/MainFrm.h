@@ -15,13 +15,14 @@ class CMainFrame : public CMDIFrameWndEx {
 	LARGE_INTEGER m_pc1;
 
 	DECLARE_DYNAMIC(CMainFrame)
-public:
+
 	CMainFrame();
 
-	inline void StartTimer() noexcept {
+	void StartTimer() noexcept {
 		QueryPerformanceCounter(&m_pc0);
 	}
-	inline void StopTimer(const wchar_t* operationName = nullptr) {
+
+	void StopTimer(const wchar_t* operationName = nullptr) {
 		QueryPerformanceCounter(&m_pc1);
 		m_pc1.QuadPart -= m_pc0.QuadPart;
 
@@ -45,7 +46,6 @@ private:
 public:
 	void UpdateMDITabs(BOOL resetMDIChild);
 
-public:
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	BOOL LoadFrame(unsigned resourceId, unsigned long defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = nullptr, CCreateContext* createContext = nullptr) override;
 	~CMainFrame() = default;
@@ -54,9 +54,8 @@ public:
 	void Dump(CDumpContext& dc) const override;
 #endif
 
-public:
 	static void DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, const OdCmColor& color);
-	static void DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight);
+	static void DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, OdDb::LineWeight lineWeight);
 	static void DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const OdString& textOut, const OdDbDatabasePtr& database);
 	static CMFCToolBarComboBoxButton* GetFindCombo();
 	static HTREEITEM InsertTreeViewControlItem(HWND tree, HTREEITEM parent, const wchar_t* text, LPCVOID object) noexcept;
@@ -71,7 +70,6 @@ protected:  // control bar embedded members
 	EoMfPropertiesDockablePane m_PropertiesPane;
 	CMFCToolBarImages m_UserImages;
 
-protected:
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	void OnDestroy(); // hides non-virtual function of parent
 	LRESULT OnToolbarContextMenu(WPARAM, LPARAM); // hides non-virtual function of parent

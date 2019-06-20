@@ -18,7 +18,7 @@ public: // Constructors and destructor
 
 	const CPrimState& operator=(const CPrimState& other) noexcept;
 
-public: // Methods
+	// Methods
 
 	EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
 	short ColorIndex() const noexcept;

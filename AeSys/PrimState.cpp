@@ -96,11 +96,10 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, s
 	//}
 	m_ColorIndex = colorIndex;
 	m_LinetypeIndex = linetypeIndex;
-
-	double LogicalWidth = 0.0;
+	auto LogicalWidth {0.0};
 
 	if (view && view->PenWidthsOn()) {
-		const int LogicalPixelsX = deviceContext->GetDeviceCaps(LOGPIXELSX);
+		const auto LogicalPixelsX {deviceContext->GetDeviceCaps(LOGPIXELSX)};
 		LogicalWidth = theApp.PenWidthsGet(colorIndex) * double(LogicalPixelsX);
 		LogicalWidth *= EoMin(1.0, view->ZoomFactor());
 		LogicalWidth = EoRound(LogicalWidth);
@@ -111,7 +110,7 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, s
 }
 
 void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int penWidth, short linetypeIndex) {
-	static const int NumberOfPens {8};
+	static const auto NumberOfPens {8};
 	static HPEN hPen[NumberOfPens] {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 	static COLORREF	crColRef[NumberOfPens];
 	static short LinetypeIndexes[NumberOfPens];
@@ -143,9 +142,8 @@ void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int pe
 			linetypeIndex = PS_SOLID;
 	}
 	deviceContext.SetTextColor(pColTbl[colorIndex]);
-
-	int iPen = 0;
-	for (int i = 0; i < NumberOfPens; i++) {
+	auto iPen {0};
+	for (auto i = 0; i < NumberOfPens; i++) {
 		if (hPen[i] && LinetypeIndexes[i] == linetypeIndex && PenWidths[i] == penWidth && crColRef[i] == pColTbl[colorIndex]) {
 			hPenCur = hPen[i];
 			deviceContext.SelectObject(CPen::FromHandle(hPenCur));

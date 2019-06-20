@@ -16,8 +16,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 			return TRUE;
 
 		case WM_NOTIFY: {
-			LPOFNOTIFY lpofn;
-			lpofn = reinterpret_cast<LPOFNOTIFY>(lParam);
+			auto lpofn {reinterpret_cast<_OFNOTIFYW*>(lParam)};
 			if (lpofn->hdr.code == CDN_FOLDERCHANGE) {
 				WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			}
@@ -27,10 +26,10 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 
 				CFileStatus	FileStatus;
 				if (CFile::GetStatus(FilePath, FileStatus)) {
-					EoDb::FileTypes FileType = AeSys::GetFileType(FilePath);
+					auto FileType {AeSys::GetFileType(FilePath)};
 					if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 						auto Layer {Document->GetLayerAt(FilePath)};
-						HWND PreviewWindow = GetDlgItem(hDlg, IDC_LAYER_PREVIEW);
+						auto PreviewWindow {GetDlgItem(hDlg, IDC_LAYER_PREVIEW)};
 
 						if (Layer != nullptr) {
 							_WndProcPreviewUpdate(PreviewWindow, Layer);
@@ -75,7 +74,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					return TRUE;
 				}
 				case IDC_MAP: {
-					bool FileOpenSuccess {false};
+					auto FileOpenSuccess {false};
 					auto Layer {Document->GetLayerAt(Name)};
 
 					if (Layer != nullptr) {
@@ -125,7 +124,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 					return TRUE;
 				}
 				case IDC_VIEW:
-					bool FileOpenSuccess {false};
+					auto FileOpenSuccess {false};
 					auto Layer {Document->GetLayerAt(Name)};
 
 					if (Layer != nullptr) {
