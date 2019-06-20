@@ -8,7 +8,6 @@
 class EoDlgTrapModify : public CDialog {
 	DECLARE_DYNAMIC(EoDlgTrapModify)
 
-public:
 	EoDlgTrapModify(CWnd* parent = nullptr) noexcept;
 	EoDlgTrapModify(AeSysDoc* document, CWnd* parent = nullptr);
 	~EoDlgTrapModify();

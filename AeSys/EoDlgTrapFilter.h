@@ -5,7 +5,6 @@
 class EoDlgTrapFilter : public CDialog {
 	DECLARE_DYNAMIC(EoDlgTrapFilter)
 
-public:
 	EoDlgTrapFilter(CWnd* parent = nullptr);
 	EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
 	~EoDlgTrapFilter();
@@ -27,7 +26,7 @@ public:
 
 	void FilterByColor(short colorIndex);
 	void FilterByLinetype(short linetypeIndex);
-	void FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType);
+	void FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType);
 
 protected:
 	DECLARE_MESSAGE_MAP()

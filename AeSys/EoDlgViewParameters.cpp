@@ -63,12 +63,12 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	Target.z = theApp.ParseLength(theApp.GetUnits(), String);
 
 	GetDlgItemTextW(IDC_FRONT_CLIP_DISTANCE, String, 32);
-	const double NearClipDistance {theApp.ParseLength(theApp.GetUnits(), String)};
+	const auto NearClipDistance {theApp.ParseLength(theApp.GetUnits(), String)};
 	GetDlgItemTextW(IDC_BACK_CLIP_DISTANCE, String, 32);
-	const double FarClipDistance {theApp.ParseLength(theApp.GetUnits(), String)};
+	const auto FarClipDistance {theApp.ParseLength(theApp.GetUnits(), String)};
 
 	GetDlgItemTextW(IDC_LENS_LENGTH, String, 32);
-	const double LensLength {theApp.ParseLength(theApp.GetUnits(), String)};
+	const auto LensLength {theApp.ParseLength(theApp.GetUnits(), String)};
 
 	const auto Direction {Position - Target};
 	// <tas="Is the direction reversed?"</tas>
@@ -86,9 +86,9 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	ModelView->SetFarClipDistance(FarClipDistance);
 	ModelView->EnablePerspective(m_PerspectiveProjection == TRUE);
 
-	const double AspectRatio {Viewport.HeightInInches() / Viewport.WidthInInches()};
-	double FieldWidth(ModelView->FieldWidth());
-	double FieldHeight(ModelView->FieldHeight());
+	const auto AspectRatio {Viewport.HeightInInches() / Viewport.WidthInInches()};
+	auto FieldWidth {ModelView->FieldWidth()};
+	auto FieldHeight {ModelView->FieldHeight()};
 
 	if (AspectRatio < FieldHeight / FieldWidth) {
 		FieldWidth = FieldHeight / AspectRatio;
@@ -109,7 +109,7 @@ BOOL EoDlgViewParameters::OnInitDialog() {
 
 	const EoGsViewTransform* ModelView = reinterpret_cast<EoGsViewTransform*>(m_ModelView);
 
-	const AeSys::Units Units = max(theApp.GetUnits(), AeSys::kEngineering);
+	const auto Units {max(theApp.GetUnits(), AeSys::kEngineering)};
 	SetDlgItemTextW(IDC_POSITION_X, theApp.FormatLength(ModelView->Position().x, Units));
 	SetDlgItemTextW(IDC_POSITION_Y, theApp.FormatLength(ModelView->Position().y, Units));
 	SetDlgItemTextW(IDC_POSITION_Z, theApp.FormatLength(ModelView->Position().z, Units));

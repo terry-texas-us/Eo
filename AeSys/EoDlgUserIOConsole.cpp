@@ -76,14 +76,14 @@ OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEd
 const int kMaxStringLength = 128;
 
 void EoDlgUserIOConsole::AddString(const CString& string) {
-	CString& OutputString = m_Output;
+	auto& OutputString {m_Output};
 
 	if (string.GetLength() <= kMaxStringLength) {
 		++m_NumberOfStrings;
 		OutputString += "\r\n";
 		OutputString += string;
 	} else { // break long string
-		CString LongString(string);
+		auto LongString {string};
 		CString sMax;
 		while (LongString.GetLength() > kMaxStringLength) {
 			sMax = LongString.Left(kMaxStringLength);
@@ -102,8 +102,8 @@ void EoDlgUserIOConsole::AddString(const CString& string) {
 }
 
 void EoDlgUserIOConsole::AddOut(const CString& string) {
-	int n = 0;
-	int n0 = 0;
+	auto n {0};
+	auto n0 {0};
 	while ((n = string.Find('\n', n0)) > -1) {
 		AddString(string.Mid(n0, n - n0));
 		n0 = ++n;

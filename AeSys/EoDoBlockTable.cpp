@@ -2,9 +2,9 @@
 #include "AeSysDoc.h"
 
 int AeSysDoc::GetBlockReferenceCount(const CString& name) {
-	int Count = 0;
+	auto Count {0};
 
-	for (int LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
+	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		Count += Layer->GetBlockReferenceCount(name);
 	}

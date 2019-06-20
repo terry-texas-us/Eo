@@ -52,7 +52,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <WarningLevel>Level3</WarningLevel>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;PDFIUM_MODULE_ENABLED;EXCOMMANDS_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR="Debug";ExCommands_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <AssemblerListingLocation>Debug</AssemblerListingLocation>

@@ -41,9 +41,8 @@ void EoDlgTrapModify::OnOK() {
 	if (IsDlgButtonChecked(IDC_MOD_FILL)) {
 		ModifyPolygons();
 	}
-	EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
-
-	EoDbFontDefinition FontDefinition = pstate.FontDefinition();
+	auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+	auto FontDefinition {pstate.FontDefinition()};
 
 	if (IsDlgButtonChecked(IDC_MOD_NOTE)) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_ALL);

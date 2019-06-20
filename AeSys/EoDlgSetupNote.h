@@ -7,7 +7,6 @@
 class EoDlgSetupNote : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupNote)
 
-public:
 	EoDlgSetupNote(CWnd* parent = nullptr);
 	EoDlgSetupNote(EoDbFontDefinition* fontDefinition, CWnd* parent = nullptr);
 	virtual ~EoDlgSetupNote();

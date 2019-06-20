@@ -47,8 +47,7 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 	m_FilterLineComboBoxControl.SetCurSel(0);
 
 	auto PrimitiveTypes {theApp.LoadStringResource(IDS_PRIMITIVE_FILTER_LIST)};
-
-	int TypesPosition = 0;
+	auto TypesPosition {0};
 	while (TypesPosition < PrimitiveTypes.GetLength()) {
 		m_FilterPrimitiveTypeListBoxControl.AddString(PrimitiveTypes.Tokenize(L"\n", TypesPosition));
 	}
@@ -139,10 +138,10 @@ void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
 
-void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
+void EoDlgTrapFilter::FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		bool Filter {false};
+		auto Filter {false};
 
 		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 
