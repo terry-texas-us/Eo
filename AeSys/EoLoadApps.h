@@ -31,7 +31,6 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 
-protected:
 	void OnLoadApp();
 	void OnUnloadApp();
 	void OnAppsListEvent();

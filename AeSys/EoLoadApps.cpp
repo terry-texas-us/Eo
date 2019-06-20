@@ -25,7 +25,7 @@ void EoLoadApps::LoadedApps::rxAppLoaded(OdRxModule* appModule) {
 void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 	remove(appName);
 	if (m_pListBox) {
-		int n = m_pListBox->FindString(0, OdString(appName));
+		auto n {m_pListBox->FindString(0, OdString(appName))};
 		if (n != LB_ERR) {
 			m_pListBox->DeleteString(static_cast<unsigned>(n));
 		}
@@ -54,8 +54,8 @@ BOOL EoLoadApps::OnInitDialog() {
 	m_LoadedApps->m_pListBox = &m_AppsList;
 
 	for (unsigned i = 0; i < m_LoadedApps->size(); ++i) {
-		const int n = m_AppsList.AddString(m_LoadedApps->at(i));
-		OdRxModulePtr pModule = odrxDynamicLinker()->loadModule(m_LoadedApps->at(i));
+		const auto n {m_AppsList.AddString(m_LoadedApps->at(i))};
+		auto pModule {odrxDynamicLinker()->loadModule(m_LoadedApps->at(i))};
 		m_AppsList.SetItemData(n, reinterpret_cast<LPARAM>(pModule.get()));
 	}
 	OnAppsListEvent();
@@ -81,7 +81,7 @@ void EoLoadApps::OnLoadApp() {
 }
 
 void EoLoadApps::OnUnloadApp() {
-	int nIndex = m_AppsList.GetCurSel();
+	auto nIndex {m_AppsList.GetCurSel()};
 	if (nIndex != LB_ERR) {
 		CString s;
 		m_AppsList.GetText(nIndex, s);

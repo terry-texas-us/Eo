@@ -7,7 +7,6 @@ public:
 	int m_References;
 	OdGePoint3d	m_Point;
 
-public:
 	EoGeUniquePoint() noexcept {
 		m_References = 0;
 		m_Point = OdGePoint3d::kOrigin;

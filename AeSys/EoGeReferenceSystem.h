@@ -23,7 +23,7 @@ public: // Constructors and destructor
 
 	~EoGeReferenceSystem() = default;
 
-public: // Methods
+	// Methods
 
 	void GetUnitNormal(OdGeVector3d& normal);
 	OdGePoint3d Origin() const noexcept;

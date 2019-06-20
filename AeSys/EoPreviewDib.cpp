@@ -14,17 +14,15 @@ void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
 	m_odImage.png.clear();
 
 	if (!FileName.GetLength()) { return; }
-
-	CString Extension {FileName.Right(4)};
+	auto Extension {FileName.Right(4)};
 
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
-		OdStreamBufPtr FileStreamBuffer(theApp.createFile(static_cast<const wchar_t*>(FileName)));
+		auto FileStreamBuffer(theApp.createFile(static_cast<const wchar_t*>(FileName)));
 		try {
 			odDbGetPreviewBitmap(FileStreamBuffer, &m_odImage);
 			m_odImage.convPngToBmp();
 		}
 		catch (...) {
-			return;
 		}
 	}
 }
@@ -47,8 +45,8 @@ CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) noexcep
 			d = wndDep;
 		}
 	}
-	const int x = (wndWid - w) / 2;
-	const int y = (wndDep - d) / 2;
+	const auto x {(wndWid - w) / 2};
+	const auto y {(wndDep - d) / 2};
 	return CRect(x, y, x + w, y + d);
 }
 
@@ -78,8 +76,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 	CRect cr;
 
 	if (m_odImage.hasBmp()) {
-		BITMAPINFOHEADER* pHeader;
-		pHeader = reinterpret_cast<BITMAPINFOHEADER*>(m_odImage.bmp.begin());
+		auto pHeader {reinterpret_cast<tagBITMAPINFOHEADER*>(m_odImage.bmp.begin())};
 
 		cr = Calc(pHeader->biWidth, pHeader->biHeight, width, height);
 

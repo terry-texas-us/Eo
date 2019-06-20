@@ -11,7 +11,7 @@ public:	// Constructors and destructor
 	EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 	virtual ~EoGeLineSeg3d() = default;
 
-public: // Methods
+	// Methods
 	/// <summary>Determines the angle between two lines.</summary>
 	/// <notes>
 	///	Angle is found using the inner product.
@@ -86,7 +86,7 @@ public: // Methods
 	/// true if point is within acceptance aperture of line segment
 	///	false otherwise
 	/// </returns>
-	bool IsSelectedBy_xy(const OdGePoint3d& point, const double apert, OdGePoint3d& ptProj, double& relationship) const;
+	bool IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGePoint3d& ptProj, double& relationship) const;
 	/// <summary>Projects a point onto line.</summary>
 	OdGePoint3d	ProjPt(const OdGePoint3d& point) const;
 	/// <summary>Determines the coordinates of point projected along a line.</summary>

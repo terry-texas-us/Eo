@@ -10,36 +10,37 @@ EoGeNurbCurve3d::EoGeNurbCurve3d()
 }
 
 int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
-	const int NumberOfControlPoints = spline.numControlPoints();
-	const int Degree = EoMin(spline.degree(), NumberOfControlPoints - 1);
+	const auto NumberOfControlPoints {spline.numControlPoints()};
+	const auto Degree {EoMin(spline.degree(), NumberOfControlPoints - 1)};
 
 	if (Degree == 1) {
-		for (int ArrayIndex = 0; ArrayIndex < NumberOfControlPoints; ArrayIndex++) {
+		for (auto ArrayIndex = 0; ArrayIndex < NumberOfControlPoints; ArrayIndex++) {
 			polyline::SetVertex(spline.controlPointAt(ArrayIndex));
 		}
 		return NumberOfControlPoints;
 	}
-	const int Order = Degree + 1;
+	const auto Order {Degree + 1};
 
 	// <tas="Large allocation for weight array is really not used. Allocation failure not tested for"</tas>
 	auto Weight {new double[128 * 128]};
-	for (int i = 0; i < 128 * 128; i++) {
+	for (auto i = 0; i < 128 * 128; i++) {
 		Weight[i] = 0.0;
 	}
-	const int KnotsLength = NumberOfControlPoints + Degree;
-
-	int iPts = 8 * NumberOfControlPoints;
+	const auto KnotsLength {NumberOfControlPoints + Degree};
+	auto iPts {8 * NumberOfControlPoints};
 	
 	// <tas="Test is no longer valid, since knots are in an sizing array. Weights may exceed limits..and crash"</tas>
 	if (spline.knotAt(KnotsLength) != 0.0) {
-		double G = 0.0;
-		double H = 0.0;
-		double Z = 0.0;
-		double T, W1, W2;
-		const double Step = spline.knotAt(KnotsLength) / (double(iPts) - 1.0);
-		int iPts2 = 0;
-		for (int i4 = Order - 1; i4 <= NumberOfControlPoints + 1; i4++) {
-			for (int i = 0; i <= KnotsLength - 1; i++) { // Calculate values for weighting value
+		auto G {0.0};
+		auto H {0.0};
+		auto Z {0.0};
+		double T;
+		double W1;
+		double W2;
+		const auto Step {spline.knotAt(KnotsLength) / (double(iPts) - 1.0)};
+		auto iPts2 {0};
+		for (auto i4 = Order - 1; i4 <= NumberOfControlPoints + 1; i4++) {
+			for (auto i = 0; i <= KnotsLength - 1; i++) { // Calculate values for weighting value
 				if (i != i4 || spline.knotAt(i) == spline.knotAt(i + 1))
 					Weight[128 * i + 1] = 0.0;
 				else
@@ -47,8 +48,8 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 			}
 			for (T = spline.knotAt(i4); T <= spline.knotAt(i4 + 1) - Step; T += Step) {
 				iPts2++;
-				for (int i2 = 2; i2 <= Order; i2++) {
-					for (int i = 0; i <= NumberOfControlPoints - 1; i++) { // Determine first term of weighting function equation
+				for (auto i2 = 2; i2 <= Order; i2++) {
+					for (auto i = 0; i <= NumberOfControlPoints - 1; i++) { // Determine first term of weighting function equation
 						if (Weight[128 * i + i2 - 1] == 0.0)
 							W1 = 0.0;
 						else

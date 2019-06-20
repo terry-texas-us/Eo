@@ -14,21 +14,21 @@ private:
 public:
 	double W() const noexcept { return w; }
 
-public: // Constructors and destructor
+	// Constructors and destructor
 
 	EoGePoint4d();
 	EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept;
 
-public: // Operators
+	// Operators
 
-	void operator/=(const double t) noexcept;
+	void operator/=(double t) noexcept;
 
 	EoGePoint4d operator+(const OdGeVector3d& vector);
 	EoGePoint4d operator-(const OdGeVector3d& vector);
 
 	OdGeVector3d operator-(const EoGePoint4d& ptQ);
 
-public: // Methods
+	// Methods
 	OdGePoint3d Convert3d() const;
 	/// <summary>Determines the xy distance between two points.</summary>
 	double DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept;
@@ -36,7 +36,7 @@ public: // Methods
 	bool IsInView() noexcept;
 	EoGePoint4d& TransformBy(const EoGeMatrix3d& matrix) noexcept;
 
-public: // Static
+	// Static
 	static bool ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB);
 	/// <summary>Sutherland-hodgman-like polygon clip by view volume.</summary>
 	static void	ClipPolygon(EoGePoint4dArray& pointsArray);

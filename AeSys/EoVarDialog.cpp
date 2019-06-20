@@ -63,7 +63,7 @@ void EoVarDialog::SetupGripper() {
 		m_Grip.ShowWindow(SW_SHOW);
 	}
 	if (!bMaximized) {
-		CWnd* SizeBoxWindow = GetDlgItem(AFX_IDW_SIZE_BOX);
+		auto SizeBoxWindow {GetDlgItem(AFX_IDW_SIZE_BOX)};
 		if (SizeBoxWindow) {
 			CRect WindowRect;
 			SizeBoxWindow->GetWindowRect(&WindowRect);

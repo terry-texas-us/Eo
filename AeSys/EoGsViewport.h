@@ -18,7 +18,7 @@ public: // Constructors and destructors
 	~EoGsViewport() = default;
 	EoGsViewport& operator=(const EoGsViewport& other) = default;
 
-public: // Methods
+	// Methods
 	/// <remarks> Window coordinates are rounded to nearest whole number.</remarks>
 	CPoint DoProjection(const EoGePoint4d& pt) const noexcept;
 	/// <remarks>Window coordinates are rounded to nearest whole number. Perspective division to yield normalized device coordinates.</remarks>
@@ -31,10 +31,10 @@ public: // Methods
 	double HeightInInches() const noexcept;
 	double WidthInPixels() const noexcept;
 	double WidthInInches() const noexcept;
-	void SetDeviceHeightInInches(const double height) noexcept;
-	void SetDeviceWidthInInches(const double width) noexcept;
+	void SetDeviceHeightInInches(double height) noexcept;
+	void SetDeviceWidthInInches(double width) noexcept;
 	void SetSize(int width, int height) noexcept;
-	void SetDeviceHeightInPixels(const double height) noexcept;
-	void SetDeviceWidthInPixels(const double width) noexcept;
+	void SetDeviceHeightInPixels(double height) noexcept;
+	void SetDeviceWidthInPixels(double width) noexcept;
 };
 using CViewports = CList<EoGsViewport>;

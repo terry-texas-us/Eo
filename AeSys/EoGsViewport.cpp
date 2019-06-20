@@ -21,7 +21,7 @@ CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
 }
 
 void EoGsViewport::DoProjection(CPoint* pnt, int numberOfPoints, EoGePoint4d* points) const noexcept {
-	for (int PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
+	for (auto PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		pnt[PointIndex] = DoProjection(points[PointIndex]);
 	}
 }
@@ -55,11 +55,11 @@ double EoGsViewport::WidthInInches() const noexcept {
 	return m_WidthInPixels / (m_DeviceWidthInPixels / m_DeviceWidthInInches);
 }
 
-void EoGsViewport::SetDeviceHeightInInches(const double height) noexcept {
+void EoGsViewport::SetDeviceHeightInInches(double height) noexcept {
 	m_DeviceHeightInInches = height;
 }
 
-void EoGsViewport::SetDeviceWidthInInches(const double width) noexcept {
+void EoGsViewport::SetDeviceWidthInInches(double width) noexcept {
 	m_DeviceWidthInInches = width;
 }
 
@@ -68,10 +68,10 @@ void EoGsViewport::SetSize(int width, int height) noexcept {
 	m_HeightInPixels = static_cast<double>(height);
 }
 
-void EoGsViewport::SetDeviceHeightInPixels(const double height) noexcept {
+void EoGsViewport::SetDeviceHeightInPixels(double height) noexcept {
 	m_DeviceHeightInPixels = height;
 }
 
-void EoGsViewport::SetDeviceWidthInPixels(const double width) noexcept {
+void EoGsViewport::SetDeviceWidthInPixels(double width) noexcept {
 	m_DeviceWidthInPixels = width;
 }

@@ -16,32 +16,30 @@ void BeginLineStrip() {
 	LoopLine = false;
 }
 bool AnyPointsInView(EoGePoint4dArray& pointsArray) {
-	for (int i = 0; i < pointsArray.GetSize(); i++) {
+	for (auto i = 0; i < pointsArray.GetSize(); i++) {
 		if (pointsArray[i].IsInView()) return true;
 	}
 	return false;
 }
 void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArray, OdDbLinetypeTableRecordPtr linetype) {
-	const int NumberOfDashes = linetype->numDashes();
+	const auto NumberOfDashes {linetype->numDashes()};
 	if (NumberOfDashes == 0) return;
 
 	EoGePoint4d ln[2];
 	CPoint pnt[2];
 	OdGePoint3d pt[2];
+	auto DashIndex {0};
+	auto SectionLength {EoMax(.025 * 96., fabs(linetype->dashLengthAt(DashIndex)))};
 
-	int DashIndex = 0;
-
-	double SectionLength = EoMax(.025 * 96., fabs(linetype->dashLengthAt(DashIndex)));
-
-	for (int i = 0; i < pointsArray.GetSize() - 1; i++) {
-		const OdGeVector3d vLn(pointsArray[i + 1].Convert3d() - pointsArray[i].Convert3d());
+	for (auto i = 0; i < pointsArray.GetSize() - 1; i++) {
+		const auto vLn {pointsArray[i + 1].Convert3d() - pointsArray[i].Convert3d()};
 		pt[0] = pointsArray[i].Convert3d();
 
-		const double dVecLen = vLn.length();
-		double dRemDisToEnd = dVecLen;
+		const auto dVecLen {vLn.length()};
+		auto dRemDisToEnd {dVecLen};
 
 		while (SectionLength <= dRemDisToEnd + DBL_EPSILON) {
-			OdGeVector3d vDash(vLn);
+			auto vDash {vLn};
 			vDash *= SectionLength / dVecLen;
 			pt[1] = pt[0] + vDash;
 			dRemDisToEnd -= SectionLength;
@@ -81,16 +79,15 @@ void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArra
 }
 void __End(AeSysView* view, CDC* deviceContext, short linetypeIndex) {
 	if (EoDbPrimitive::IsSupportedLinetype(linetypeIndex)) {
-		const int Size = pts_.GetSize();
+		const auto Size {pts_.GetSize()};
 		if (Size > 1) {
 			view->ModelViewTransformPoints(pts_);
 
 			if (AnyPointsInView(pts_)) {
-				CPoint pnt;
-				pnt = view->DoViewportProjection(pts_[0]);
+				auto pnt {view->DoViewportProjection(pts_[0])};
 				deviceContext->MoveTo(pnt);
 
-				for (int i = 1; i < Size; i++) {
+				for (auto i = 1; i < Size; i++) {
 					pnt = view->DoViewportProjection(pts_[i]);
 					deviceContext->LineTo(pnt);
 				}
@@ -98,11 +95,10 @@ void __End(AeSysView* view, CDC* deviceContext, short linetypeIndex) {
 					pnt = view->DoViewportProjection(pts_[0]);
 					deviceContext->LineTo(pnt);
 				}
-				return;
 			}
 		}
 	} else {
-		OdString Name = EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex);
+		auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
 		auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
 
 		OdDbLinetypeTablePtr Linetypes {Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
@@ -115,9 +111,9 @@ void __End(AeSysView* view, CDC* deviceContext, short linetypeIndex) {
 }
 
 void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, unsigned numberOfPoints, OdGePoint3dArray& points) {
-	OdGeVector3d MajorAxis = ComputeArbitraryAxis(planeNormal);
+	auto MajorAxis {ComputeArbitraryAxis(planeNormal)};
 	MajorAxis.normalize();
-	OdGeVector3d MinorAxis = planeNormal.crossProduct(MajorAxis);
+	auto MinorAxis {planeNormal.crossProduct(MajorAxis)};
 	
 	MajorAxis *= radius;
 	MinorAxis *= radius;
@@ -130,9 +126,9 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 
 	// Determine the parameter (angular increment)
-	const double AngleIncrement = Oda2PI / double(numberOfPoints);
-	const double CosIncrement = cos(AngleIncrement);
-	const double SinIncrement = sin(AngleIncrement);
+	const auto AngleIncrement {Oda2PI / double(numberOfPoints)};
+	const auto CosIncrement {cos(AngleIncrement)};
+	const auto SinIncrement {sin(AngleIncrement)};
 	points.setLogicalLength(numberOfPoints);
 	points[0].set(1.0, 0.0, 0.0);
 
@@ -146,7 +142,7 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 	}
 }
 bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
-	EoGePoint4d StartPoint(pts_[0]);
+	auto StartPoint {pts_[0]};
 	EoGePoint4d EndPoint;
 
 	view->ModelViewTransformPoint(StartPoint);
@@ -175,12 +171,11 @@ bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint
 }
 
 bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dRel, OdGePoint3d& ptProj) {
-	bool Result {false};
-
-	EoGePoint4d StartPoint(pts_[0]);
+	auto Result {false};
+	auto StartPoint {pts_[0]};
 	view->ModelViewTransformPoint(StartPoint);
 
-	for (int i = 1; i < pts_.GetSize(); i++) {
+	for (auto i = 1; i < pts_.GetSize(); i++) {
 		auto EndPoint {EoGePoint4d(pts_[i])};
 		view->ModelViewTransformPoint(EndPoint);
 		EoGeLineSeg3d LineSegment(StartPoint.Convert3d(), EndPoint.Convert3d());
@@ -196,11 +191,11 @@ bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dRel, O
 }
 
 bool SelectUsingRectangle(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint, AeSysView* view) {
-	EoGePoint4d StartPoint(pts_[0]);
+	auto StartPoint {pts_[0]};
 	view->ModelViewTransformPoint(StartPoint);
 
 	for (unsigned short w = 1; w < pts_.GetSize(); w++) {
-		EoGePoint4d EndPoint(pts_[w]);
+		auto EndPoint(pts_[w]);
 		view->ModelViewTransformPoint(EndPoint);
 
 		EoGeLineSeg3d LineSegment(StartPoint.Convert3d(), EndPoint.Convert3d());

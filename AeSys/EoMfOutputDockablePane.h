@@ -4,7 +4,6 @@ class EoMfOutputListBox : public CListBox {
 public:
 	EoMfOutputListBox() = default;
 
-public:
 	virtual ~EoMfOutputListBox() = default;
 
 protected:

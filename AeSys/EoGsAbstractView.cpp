@@ -24,16 +24,16 @@ EoGsAbstractView::EoGsAbstractView(const EoGsAbstractView& other) {
 	m_FarClipDistance = other.m_FarClipDistance;
 }
 
-void EoGsAbstractView::AdjustWindow(const double aspectRatio) noexcept {
-	const double FieldWidth = m_FieldWidthMaximum - m_FieldWidthMinimum;
-	const double FieldHeight = m_FieldHeightMaximum - m_FieldHeightMinimum;
+void EoGsAbstractView::AdjustWindow(double aspectRatio) noexcept {
+	const auto FieldWidth {m_FieldWidthMaximum - m_FieldWidthMinimum};
+	const auto FieldHeight {m_FieldHeightMaximum - m_FieldHeightMinimum};
 
 	if (FieldWidth <= FLT_EPSILON || FieldHeight / FieldWidth > aspectRatio) {
-		const double Adjustment = (FieldHeight / aspectRatio - FieldWidth) * 0.5;
+		const auto Adjustment {(FieldHeight / aspectRatio - FieldWidth) * 0.5};
 		m_FieldWidthMinimum -= Adjustment;
 		m_FieldWidthMaximum += Adjustment;
 	} else {
-		const double Adjustment = (FieldWidth * aspectRatio - FieldHeight) * 0.5;
+		const auto Adjustment {(FieldWidth * aspectRatio - FieldHeight) * 0.5};
 		m_FieldHeightMinimum -= Adjustment;
 		m_FieldHeightMaximum += Adjustment;
 	}
@@ -99,7 +99,7 @@ OdGsView::RenderMode EoGsAbstractView::RenderMode() const noexcept {
 	return m_RenderMode;
 }
 
-void EoGsAbstractView::SetFarClipDistance(const double distance) noexcept {
+void EoGsAbstractView::SetFarClipDistance(double distance) noexcept {
 	m_FarClipDistance = distance;
 }
 
@@ -107,11 +107,11 @@ void EoGsAbstractView::SetRenderMode(const OdGsView::RenderMode& renderMode) noe
 	m_RenderMode = renderMode;
 }
 
-void EoGsAbstractView::SetNearClipDistance(const double distance) noexcept {
+void EoGsAbstractView::SetNearClipDistance(double distance) noexcept {
 	m_NearClipDistance = distance;
 }
 
-void EoGsAbstractView::SetLensLength(const double length) noexcept {
+void EoGsAbstractView::SetLensLength(double length) noexcept {
 	m_LensLength = length;
 }
 
@@ -154,7 +154,7 @@ void EoGsAbstractView::SetViewUp(const OdGeVector3d& viewUp) {
 	}
 }
 
-void EoGsAbstractView::SetProjectionPlaneField(const double uMin, const double vMin, const double uMax, const double vMax) noexcept {
+void EoGsAbstractView::SetProjectionPlaneField(double uMin, double vMin, double uMax, double vMax) noexcept {
 	m_FieldWidthMinimum = uMin;
 	m_FieldHeightMinimum = vMin;
 	m_FieldWidthMaximum = uMax;

@@ -46,10 +46,9 @@ EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(double uMin, double uMax, do
 
 EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance) {
 	setToIdentity();
-
-	double FieldWidth {uMax - uMin};
-	double FieldHeight {vMax - vMin};
-	double NExtent {farClipDistance - nearClipDistance};
+	auto FieldWidth {uMax - uMin};
+	auto FieldHeight {vMax - vMin};
+	auto NExtent {farClipDistance - nearClipDistance};
 
 	entry[0][0] = 2. * nearClipDistance / FieldWidth;
 	entry[0][2] = (uMax + uMin) / FieldWidth;
@@ -66,20 +65,17 @@ EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax,
 	return *this;
 }
 
-EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const OdGePoint3d target, const OdGeVector3d& viewUp) {
+EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(OdGePoint3d position, OdGePoint3d target, const OdGeVector3d& viewUp) {
 	setToIdentity();
-
-	OdGeVector3d Normal {position - target};
+	auto Normal {position - target};
 	Normal.normalize();
-
-	OdGeVector3d vU {viewUp.crossProduct(Normal)};
+	auto vU {viewUp.crossProduct(Normal)};
 
 	vU.normalize();
-
-	OdGeVector3d vV {Normal.crossProduct(vU)};
+	auto vV {Normal.crossProduct(vU)};
 	vV.normalize();
 
-	const OdGeVector3d PositionAsVector {-position.asVector()};
+	const auto PositionAsVector {-position.asVector()};
 
 	entry[0][0] = vU.x;
 	entry[0][1] = vU.y;
@@ -101,8 +97,8 @@ EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(const OdGePoint3d position, const
 
 OdGeMatrix3d EoGeMatrix3d::ReferenceSystemToWorld(const EoGeReferenceSystem& referenceSystem) {
 	OdGeMatrix3d ScaleMatrix;
-	const double XDirectionLength {referenceSystem.XDirection().length()};
-	const double YDirectionLength {referenceSystem.YDirection().length()};
+	const auto XDirectionLength {referenceSystem.XDirection().length()};
+	const auto YDirectionLength {referenceSystem.YDirection().length()};
 
 	if (XDirectionLength > DBL_EPSILON && YDirectionLength > DBL_EPSILON) {
 		ScaleMatrix.setToScaling(OdGeScale3d(1. / XDirectionLength, 1. / YDirectionLength, 1.0));

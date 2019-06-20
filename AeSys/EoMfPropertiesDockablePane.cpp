@@ -208,8 +208,7 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	m_PropertyGrid.AddProperty(PointGrid);
 
 	auto NoteGroup {new CMFCPropertyGridProperty(L"Note")};
-
-	CFont* Font {CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT)))};
+	auto Font {CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT)))};
 	LOGFONT FontAttributes;
 	Font->GetLogFont(&FontAttributes);
 
@@ -292,8 +291,7 @@ void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 
 LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 	auto Property {reinterpret_cast<CMFCPropertyGridProperty*>(lparam)};
-
-	BOOL ResetMDIChild = FALSE;
+	auto ResetMDIChild {FALSE};
 
 	switch (Property->GetData()) {
 		case kTabsStyle: {
@@ -346,12 +344,12 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 }
 
 void EoMfPropertiesDockablePane::SetWorkspaceTabsSubItemsState() {
-	for (int i = 0; i < m_PropertyGrid.GetPropertyCount(); i++) {
+	for (auto i = 0; i < m_PropertyGrid.GetPropertyCount(); i++) {
 		auto PropertyGridProperty {m_PropertyGrid.GetProperty(i)};
 		ASSERT_VALID(PropertyGridProperty);
 
 		if (wcscmp(PropertyGridProperty->GetName(), L"Workspace Tabs") == 0) {
-			for (int SubItemIndex = 1; SubItemIndex < PropertyGridProperty->GetSubItemsCount(); SubItemIndex++) {
+			for (auto SubItemIndex = 1; SubItemIndex < PropertyGridProperty->GetSubItemsCount(); SubItemIndex++) {
 				auto SubProperty {PropertyGridProperty->GetSubItem(SubItemIndex)};
 
 				ASSERT_VALID(SubProperty);

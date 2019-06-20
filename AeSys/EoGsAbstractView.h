@@ -57,8 +57,8 @@ public: // Constructors and destructor
 
 	virtual ~EoGsAbstractView() = default;
 
-   public: // Methods
-	void AdjustWindow(const double aspectRatio) noexcept;
+	// Methods
+	void AdjustWindow(double aspectRatio) noexcept;
 	void EnablePerspective(bool enabled) noexcept;
 	double FarClipDistance() const noexcept;
 	double FieldHeight() const noexcept;
@@ -75,12 +75,12 @@ public: // Constructors and destructor
 	double NearClipDistance() const noexcept;
 	OdGePoint3d Position() const noexcept;
 	OdGsView::RenderMode RenderMode() const noexcept;
-	void SetFarClipDistance(const double distance) noexcept;
-	void SetLensLength(const double length) noexcept;
-	void SetNearClipDistance(const double distance) noexcept;
+	void SetFarClipDistance(double distance) noexcept;
+	void SetLensLength(double length) noexcept;
+	void SetNearClipDistance(double distance) noexcept;
 	void SetPosition_(const OdGePoint3d& position) noexcept;
 	void SetProjectionPlaneField(double fieldWidth, double fieldHeight) noexcept;
-	void SetProjectionPlaneField(const double uMin, const double vMin, const double uMax, const double vMax) noexcept;
+	void SetProjectionPlaneField(double uMin, double vMin, double uMax, double vMax) noexcept;
 	void SetRenderMode(const OdGsView::RenderMode& renderMode) noexcept;
 	void SetTarget(const OdGePoint3d& target) noexcept;
 	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight);

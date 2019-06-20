@@ -43,7 +43,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 
-protected:
 	void InitializePropertyGrid();
 	void SetPropertyGridFont();
 	void SetWorkspaceTabsSubItemsState();

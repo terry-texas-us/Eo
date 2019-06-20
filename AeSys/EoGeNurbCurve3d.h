@@ -10,9 +10,8 @@ public:	// Constructors and destructor
 	
 	virtual ~EoGeNurbCurve3d() = default;
 
-public: // Methods
-
-public: // Methods - static
+	// Methods
+	// Methods - static
 	/// <summary>
 	/// Generates the required B-spline curves of various order (capped to 4th) using the Cox and de Boor algorithm.
 	/// </summary>

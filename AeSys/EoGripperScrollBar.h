@@ -3,8 +3,6 @@
 class EoGripperScrollBar : public CScrollBar {
 public:
 	EoGripperScrollBar() = default;
-
-public:
 	~EoGripperScrollBar() = default;
 
 protected:

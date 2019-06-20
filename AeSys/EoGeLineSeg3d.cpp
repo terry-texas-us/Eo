@@ -228,7 +228,7 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 	}
 }
 
-bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert, OdGePoint3d& ptProj, double& relationship) const {
+bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGePoint3d& ptProj, double& relationship) const {
 	if (point.x < EoMin(startPoint().x, endPoint().x) - apert) { return false; }
 	if (point.x > EoMax(startPoint().x, endPoint().x) + apert) { return false; }
 	if (point.y < EoMin(startPoint().y, endPoint().y) - apert) { return false; }
