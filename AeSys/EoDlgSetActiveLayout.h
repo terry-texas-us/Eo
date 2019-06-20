@@ -20,7 +20,6 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 
-protected:
 	void OnLayoutDlgClose();
 	void OnSelchangeLayoutlist();
 	void OnDblclkLayoutlist();

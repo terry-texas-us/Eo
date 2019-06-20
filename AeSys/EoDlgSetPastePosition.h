@@ -3,21 +3,17 @@
 // EoDlgSetPastePosition dialog
 
 class EoDlgSetPastePosition : public CDialog {
-    DECLARE_DYNAMIC(EoDlgSetPastePosition)
+	DECLARE_DYNAMIC(EoDlgSetPastePosition)
 
-public:
-    EoDlgSetPastePosition(CWnd* parent = nullptr);
-    virtual ~EoDlgSetPastePosition();
+	EoDlgSetPastePosition(CWnd* parent = nullptr);
+	virtual ~EoDlgSetPastePosition();
 
-    // Dialog Data
-    enum { IDD = IDD_PASTE_POSITION };
-
-protected:
-    void DoDataExchange(CDataExchange* pDX) final;
-    void OnOK() final;
-
-public:
+	// Dialog Data
+	enum { IDD = IDD_PASTE_POSITION };
 
 protected:
-    DECLARE_MESSAGE_MAP()
+	void DoDataExchange(CDataExchange* pDX) final;
+	void OnOK() final;
+
+	DECLARE_MESSAGE_MAP()
 };

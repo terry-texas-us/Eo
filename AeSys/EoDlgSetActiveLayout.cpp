@@ -46,7 +46,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 
 		m_OldActiveLayout = -1;
 		while (!LayoutIterator->done()) {
-			OdDbLayoutPtr Layout {LayoutIterator->objectId().safeOpenObject()};
+			OdSmartPtr<OdDbLayout> Layout {LayoutIterator->objectId().safeOpenObject()};
 			ItemIndex = static_cast<unsigned>(Layout->getTabOrder());
 			
 			if (ItemIndex >= Items.size()) { 
@@ -148,10 +148,10 @@ void EoDlgSetActiveLayout::OnCopy() {
 	Layouts->GetText(m_NewActiveLayout, strSourceName);
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
 	OdString strName(strSourceName);
-	OdDbLayoutManagerPtr pLManager = m_Database->appServices()->layoutManager();
+	auto LayoutManager {m_Database->appServices()->layoutManager()};
 	try {
-		OdDbLayoutPtr pLayout = pLManager->findLayoutNamed(m_Database, strName).safeOpenObject();
-		pLManager->cloneLayout(m_Database, pLayout, OdString(strNewName));
+		OdSmartPtr<OdDbLayout> Layout = LayoutManager->findLayoutNamed(m_Database, strName).safeOpenObject();
+		LayoutManager->cloneLayout(m_Database, Layout, OdString(strNewName));
 	} catch (const OdError& Error) {
 		theApp.reportError(L"Error Cloning Layout", Error);
 		return;
@@ -174,7 +174,7 @@ void EoDlgSetActiveLayout::OnNew() {
 
 void EoDlgSetActiveLayout::OnFromTemplate() {
 	OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
-	CString FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
+	auto FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
 	
 	if (FileName.GetLength() == 0) { return; }
 
@@ -183,7 +183,7 @@ void EoDlgSetActiveLayout::OnFromTemplate() {
 	if (Database.isNull()) { return; }
 
 	auto LayoutManager {m_Database->appServices()->layoutManager()};
-	OdDbLayoutPtr Layout {OdDbLayout::cast(LayoutManager->findLayoutNamed(Database, L"Layout1").openObject())};
+	auto Layout {OdDbLayout::cast(LayoutManager->findLayoutNamed(Database, L"Layout1").openObject())};
 	
 	if (Layout.isNull()) { return; }
 

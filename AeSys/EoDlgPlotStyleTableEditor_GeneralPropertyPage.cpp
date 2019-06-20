@@ -96,7 +96,7 @@ bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTa
 void WinPathToDos(wchar_t* str) {
 	CString pStr = str;
 	CString sNewStr;
-	int pos = 0;
+	auto pos {0};
 	while (pos >= 0) {
 
 		pos = pStr.Find('\\');
@@ -130,7 +130,7 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	auto description {m_pPlotStyleTable->description()};
 	m_editDescription.SetWindowTextW(description);
 
-	const bool check {m_pPlotStyleTable->isApplyScaleFactor()};
+	const auto check {m_pPlotStyleTable->isApplyScaleFactor()};
 	m_checkScalefactor.SetCheck(check);
 	m_editScalefactor.EnableWindow(check);
 	OdString sScaleFactor;
@@ -143,7 +143,7 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	wchar_t buffer[MAX_PATH];
 	wcscpy(buffer, m_sFileBufPath);
 	WinPathToDos(buffer);
-	wchar_t* lpStr = buffer;
+	auto lpStr {buffer};
 	PathCompactPathW(editDC, lpStr, 630/*rect.right*/);
 	m_staticFilepath.SetWindowTextW(lpStr);
 
@@ -162,8 +162,8 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 
 }
 
-void EoDlgPlotStyleEditor_GeneralPropertyPage::SetFileBufPath(const OdString sFilePath) {
-	m_sFileBufPath = sFilePath;
+void EoDlgPlotStyleEditor_GeneralPropertyPage::SetFileBufPath(OdString filePath) {
+	m_sFileBufPath = filePath;
 }
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnChangeEditDescription() {
@@ -173,9 +173,9 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::OnChangeEditDescription() {
 }
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnCheckScalefactor() {
-	const int check = m_checkScalefactor.GetCheck();
-	m_pPlotStyleTable->setApplyScaleFactor(check ? true : false);
-	m_editScalefactor.EnableWindow(check);
+	const auto Check {m_checkScalefactor.GetCheck()};
+	m_pPlotStyleTable->setApplyScaleFactor(Check ? true : false);
+	m_editScalefactor.EnableWindow(Check);
 }
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnEditScalefactor() {

@@ -40,9 +40,9 @@ BOOL EoDlgSetHomePoint::OnInitDialog() {
 
 	auto Names {theApp.LoadStringResource(IDS_HOME_POINT_SET_NAMES)};
 	m_HomePointNames.ResetContent();
-	int Position = 0;
+	auto Position {0};
 	while (Position < Names.GetLength()) {
-		CString NamesItem = Names.Tokenize(L"\n", Position);
+		auto NamesItem {Names.Tokenize(L"\n", Position)};
 		m_HomePointNames.AddString(NamesItem);
 	}
 	m_HomePointNames.SetCurSel(9);
@@ -58,7 +58,7 @@ BOOL EoDlgSetHomePoint::OnInitDialog() {
 void EoDlgSetHomePoint::OnOK() {
 	wchar_t szBuf[32];
 
-	const AeSys::Units CurrentUnits = theApp.GetUnits();
+	const auto CurrentUnits {theApp.GetUnits()};
 
 	m_X.GetWindowTextW(szBuf, 32);
 	m_CursorPosition.x = theApp.ParseLength(CurrentUnits, szBuf);
@@ -67,7 +67,7 @@ void EoDlgSetHomePoint::OnOK() {
 	m_Z.GetWindowTextW(szBuf, 32);
 	m_CursorPosition.z = theApp.ParseLength(CurrentUnits, szBuf);
 
-	const int NamesItemIndex = m_HomePointNames.GetCurSel();
+	const auto NamesItemIndex {m_HomePointNames.GetCurSel()};
 
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {
@@ -89,7 +89,7 @@ void EoDlgSetHomePoint::OnOK() {
 void EoDlgSetHomePoint::OnCbnEditupdateList() {
 	CString NamesItem;
 	m_HomePointNames.GetWindowTextW(NamesItem);
-	const int NamesItemIndex = m_HomePointNames.FindString(-1, NamesItem);
+	const auto NamesItemIndex {m_HomePointNames.FindString(-1, NamesItem)};
 
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {

@@ -29,13 +29,13 @@ void EoDlgSetUnitsAndPrecision::DoDataExchange(CDataExchange* pDX) {
 BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 	CDialog::OnInitDialog();
 
-	const int CheckButtonId = EoMin(IDC_ARCHITECTURAL + m_Units, IDC_METRIC);
+	const auto CheckButtonId {EoMin(IDC_ARCHITECTURAL + m_Units, IDC_METRIC)};
 	CheckRadioButton(IDC_ARCHITECTURAL, IDC_METRIC, CheckButtonId);
 
 	auto MetricUnits {theApp.LoadStringResource(IDS_METRIC_UNITS)};
-	int Position = 0;
+	auto Position {0};
 	while (Position < MetricUnits.GetLength()) {
-		CString UnitsItem = MetricUnits.Tokenize(L"\n", Position);
+		auto UnitsItem {MetricUnits.Tokenize(L"\n", Position)};
 		m_MetricUnitsListBoxControl.AddString(UnitsItem);
 	}
 	if (CheckButtonId == IDC_METRIC) {

@@ -121,7 +121,7 @@ BOOL EoDlgSetupColor::OnNotify(WPARAM controlId, LPARAM notificationMessage, LRE
 	return CDialog::OnNotify(controlId, notificationMessage, result);
 }
 
-void EoDlgSetupColor::DrawSelectionInformation(const unsigned short index) {
+void EoDlgSetupColor::DrawSelectionInformation(unsigned short index) {
 	SetDlgItemInt(IDC_INDEX_COLOR, gsl::narrow_cast<unsigned>(index), FALSE);
 
 	m_SelectionButton.SetSequenceRange(index, index);

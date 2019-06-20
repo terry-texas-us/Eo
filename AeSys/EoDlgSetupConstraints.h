@@ -5,7 +5,6 @@
 class EoDlgSetupConstraints : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupConstraints)
 
-public:
 	EoDlgSetupConstraints(CWnd* parent = nullptr);
 	EoDlgSetupConstraints(AeSysView* view, CWnd* parent = nullptr);
 	virtual ~EoDlgSetupConstraints();
@@ -37,7 +36,6 @@ protected:
 	CEdit m_AxisInfluenceAngle;
 	CEdit m_AxisZOffsetAngle;
 
-protected:
 	DECLARE_MESSAGE_MAP()
 };
 

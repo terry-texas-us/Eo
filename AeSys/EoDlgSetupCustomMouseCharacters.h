@@ -5,7 +5,6 @@
 class EoDlgSetupCustomMouseCharacters : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupCustomMouseCharacters)
 
-public:
 	EoDlgSetupCustomMouseCharacters(CWnd* parent = nullptr);
 	virtual ~EoDlgSetupCustomMouseCharacters();
 
@@ -16,7 +15,6 @@ protected:
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 
-protected:
 	DECLARE_MESSAGE_MAP()
 };
 

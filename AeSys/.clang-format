@@ -3,7 +3,6 @@
 BasedOnStyle: LLVM
 Language:        Cpp
 # BasedOnStyle:  Chromium
-AccessModifierOffset: -1
 AlignAfterOpenBracket: Align
 AlignConsecutiveAssignments: false
 AlignConsecutiveDeclarations: false

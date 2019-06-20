@@ -5,7 +5,6 @@
 class EoDlgSetLength : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetLength)
 
-public:
 	EoDlgSetLength(CWnd* parent = nullptr);
 	virtual ~EoDlgSetLength();
 

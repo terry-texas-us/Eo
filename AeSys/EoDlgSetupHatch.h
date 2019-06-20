@@ -5,7 +5,6 @@
 class EoDlgSetupHatch : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupHatch)
 
-public:
 	EoDlgSetupHatch(CWnd* parent = nullptr) noexcept;
 	~EoDlgSetupHatch();
 
@@ -16,9 +15,8 @@ protected:
     void DoDataExchange(CDataExchange* pDX) final;
     BOOL OnInitDialog() final;
     void OnOK() final;
-
-protected:
-    DECLARE_MESSAGE_MAP()
+	
+	DECLARE_MESSAGE_MAP()
 
 public:
 	double m_HatchXScaleFactor;

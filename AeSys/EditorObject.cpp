@@ -593,10 +593,10 @@ void zoom_scale(double factor) noexcept {
 
 static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, OdGeBoundBlock3d& boundBox) {
 	OdDbBlockTableRecordPtr pSpace {spaceId.safeOpenObject()};
-	OdDbLayoutPtr pLayout {pSpace->getLayoutId().safeOpenObject()};
+	OdSmartPtr<OdDbLayout> Layout {pSpace->getLayoutId().safeOpenObject()};
 	OdGeExtents3d Extents;
 
-	if (pLayout->getGeomExtents(Extents) == eOk) {
+	if (Layout->getGeomExtents(Extents) == eOk) {
 		Extents.transformBy(view->viewingMatrix());
 		boundBox.set(Extents.minPoint(), Extents.maxPoint());
 		return Extents.minPoint() != Extents.maxPoint();
@@ -983,7 +983,7 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	// There is one special case: layout with enabled 'draw viewports first' mode
 	{
 		if (!Database->getTILEMODE()) {
-			OdDbLayoutPtr Layout {Database->currentLayoutId().openObject()};
+			OdSmartPtr<OdDbLayout> Layout {Database->currentLayoutId().openObject()};
 
 			if (Layout->drawViewportsFirst()) {
 				if (View->device()->viewAt(View->device()->numViews() - 1) == View)
@@ -1094,9 +1094,9 @@ void OdExDollyCmd::execute(OdEdCommandContext* edCommandContext) {
 	// @@@ There is one special case: layout with enabled 'draw viewports first' mode
 	{
 		if (!Database->getTILEMODE()) {
-			OdDbLayoutPtr pLayout = Database->currentLayoutId().openObject();
+			OdSmartPtr<OdDbLayout> Layout {Database->currentLayoutId().openObject()};
 
-			if (pLayout->drawViewportsFirst()) {
+			if (Layout->drawViewportsFirst()) {
 				if (View->device()->viewAt(View->device()->numViews() - 1) == View) {
 					View = View->device()->viewAt(0);
 				}

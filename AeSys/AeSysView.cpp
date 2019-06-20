@@ -695,7 +695,7 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 	if (m_pPlotStyleTable.get() && !bForceReload) { return; }
 
 	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
-	OdDbLayoutPtr CurrentLayout;
+	OdSmartPtr<OdDbLayout> CurrentLayout;
 	
 	if (!layout) {
 		OdDbBlockTableRecordPtr pLayoutBlock = Database->getActiveLayoutBTRId().safeOpenObject();
@@ -1265,8 +1265,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		const auto koeffY {LogicalPixelsY / kMmPerInch};
 
 		const auto IsModelLayout {m_pPrinterDevice->isKindOf(OdGsModelLayoutHelper::desc())};
-
-		OdDbLayoutPtr Layout {m_pPrinterDevice->layoutId().safeOpenObject()};
+		OdSmartPtr<OdDbLayout> Layout {m_pPrinterDevice->layoutId().safeOpenObject()};
 
 		auto IsScaledToFit {Layout->useStandardScale() && OdDbPlotSettings::kScaleToFit == Layout->stdScaleType()};
 		auto IsCentered {Layout->plotCentered()};

@@ -10,7 +10,6 @@ class EoDlgPlotStyleEditor_GeneralPropertyPage : public CPropertyPage {
 	OdPsPlotStyleTable* m_pPlotStyleTable;
 	OdString m_sFileBufPath;
 
-   public:
 	EoDlgPlotStyleEditor_GeneralPropertyPage();
 	~EoDlgPlotStyleEditor_GeneralPropertyPage();
 
@@ -24,16 +23,16 @@ class EoDlgPlotStyleEditor_GeneralPropertyPage : public CPropertyPage {
 	CStatic m_staticBitmap;
 	CStatic m_staticRegular;
 
-   protected:
+protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 
-   public:
+public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
-	void SetFileBufPath(const OdString sFilePath);
+	void SetFileBufPath(OdString filePath);
 
-   protected:
+protected:
 	void OnChangeEditDescription();
 	void OnCheckScalefactor();
 	void OnEditScalefactor();

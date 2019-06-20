@@ -5,7 +5,6 @@
 class EoDlgSetText : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetText)
 
-public:
 	EoDlgSetText(CWnd* parent = nullptr);
 	virtual ~EoDlgSetText();
 

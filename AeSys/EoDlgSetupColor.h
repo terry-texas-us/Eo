@@ -5,8 +5,6 @@
 class EoDlgSetupColor : public CDialog {
 	DECLARE_DYNAMIC(EoDlgSetupColor)
 
-public:
-
 	EoDlgSetupColor(CWnd* parent = nullptr);
 	~EoDlgSetupColor();
 
@@ -27,7 +25,7 @@ protected:
 
 	CEdit m_ColorEditControl;
 
-	void DrawSelectionInformation(const unsigned short index);
+	void DrawSelectionInformation(unsigned short index);
 
 public:
 	unsigned short m_ColorIndex;

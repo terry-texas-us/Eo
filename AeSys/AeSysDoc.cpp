@@ -3033,7 +3033,7 @@ void AeSysDoc::OnFilePagesetup() {
 	OdSmartPtr<OdDbUserIO> pIO; // = pDbCmdCtx->userIO();
 
 	const auto idLayout {OdDbBlockTableRecordPtr(m_DatabasePtr->getActiveLayoutBTRId().safeOpenObject())->getLayoutId()};
-	OdDbLayoutPtr Layout = idLayout.safeOpenObject(OdDb::kForWrite);
+	OdSmartPtr<OdDbLayout> Layout {idLayout.safeOpenObject(OdDb::kForWrite)};
 
 	OdDbPlotSettings* PlotSettings = Layout.get();
 	EoDlgPageSetup PageSetupDialog(*PlotSettings, pIO);

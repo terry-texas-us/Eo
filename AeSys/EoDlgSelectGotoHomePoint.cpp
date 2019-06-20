@@ -39,14 +39,14 @@ BOOL EoDlgSelectGotoHomePoint::OnInitDialog() {
 
 	auto Names {theApp.LoadStringResource(IDS_HOME_POINT_GO_NAMES)};
 	m_HomePointNames.ResetContent();
-	int Position = 0;
+	auto Position {0};
 	while (Position < Names.GetLength()) {
-		CString NamesItem = Names.Tokenize(L"\n", Position);
+		auto NamesItem {Names.Tokenize(L"\n", Position)};
 		m_HomePointNames.AddString(NamesItem);
 	}
 	m_HomePointNames.SetCurSel(9);
 
-	const OdGePoint3d Origin = m_ActiveView->GridOrigin();
+	const auto Origin {m_ActiveView->GridOrigin()};
 
 	SetDlgItemTextW(IDC_X, theApp.FormatLength(Origin.x, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 	SetDlgItemTextW(IDC_Y, theApp.FormatLength(Origin.y, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
@@ -61,7 +61,7 @@ void EoDlgSelectGotoHomePoint::OnCbnEditupdateList() {
 	CString NamesItem;
 	m_HomePointNames.GetWindowTextW(NamesItem);
 
-	const int NamesItemIndex = m_HomePointNames.FindString(-1, NamesItem);
+	const auto NamesItemIndex {m_HomePointNames.FindString(-1, NamesItem)};
 
 	if (NamesItemIndex != CB_ERR) {
 		OdGePoint3d Point;
@@ -87,7 +87,7 @@ void EoDlgSelectGotoHomePoint::OnCbnEditupdateList() {
 	}
 }
 void EoDlgSelectGotoHomePoint::OnCbnSelchangeList() {
-	const int NamesItemIndex = m_HomePointNames.GetCurSel();
+	const auto NamesItemIndex {m_HomePointNames.GetCurSel()};
 
 	if (NamesItemIndex != CB_ERR) {
 		OdGePoint3d Point;
