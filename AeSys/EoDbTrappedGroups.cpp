@@ -126,8 +126,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.Write(&MinimumPoint.x, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.y, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.z, sizeof(double));
-
-		GLOBALHANDLE ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(SizeOfBuffer))};
+		auto ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(SizeOfBuffer))};
 
 		if (ClipboardDataHandle != nullptr) {
 			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};

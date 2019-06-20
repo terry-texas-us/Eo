@@ -89,7 +89,7 @@ public: // Constructors and destructor
 
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
-	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBufer, int versionNumber);
+	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 
 	static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
 

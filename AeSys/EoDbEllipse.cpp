@@ -576,33 +576,32 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 	}
 	if (iSecs == 0) { return 0; }
 
-	const auto dBegAng {atan2(ptBeg.y - m_Center.y, ptBeg.x - m_Center.x)}; // Arc begin angle (- pi to pi)
+	const auto BeginAngle {atan2(ptBeg.y - m_Center.y, ptBeg.x - m_Center.x)}; // Arc begin angle (- pi to pi)
 
-	double dIntAng[8];
-	double dWrkAng;
-	auto iInts {0};
+	double AngleIntersections[8] {0.0};
+	auto IntersectionIndex {0};
 	for (auto i2 = 0; i2 < iSecs; i2++) { // Loop thru possible intersections
-		dWrkAng = atan2(ptWrk[i2].y - m_Center.y, ptWrk[i2].x - m_Center.x); // Current intersection angle (- pi to
-		dIntAng[iInts] = dWrkAng - dBegAng; // Sweep from begin to intersection
+		const auto CurrentIntersectionAngle {atan2(ptWrk[i2].y - m_Center.y, ptWrk[i2].x - m_Center.x)};
+		AngleIntersections[IntersectionIndex] = CurrentIntersectionAngle - BeginAngle; 
 
-		if (dIntAng[iInts] < 0.0) { dIntAng[iInts] += Oda2PI; }
+		if (AngleIntersections[IntersectionIndex] < 0.0) { AngleIntersections[IntersectionIndex] += Oda2PI; }
 
-		if (fabs(dIntAng[iInts]) - m_SweepAngle < 0.0) { // Intersection lies on arc
+		if (fabs(AngleIntersections[IntersectionIndex]) - m_SweepAngle < 0.0) { // Intersection lies on arc
 			int i;
-			for (i = 0; i < iInts && ptWrk[i2] != intersections[i]; i++);
-			if (i == iInts) { // Unique intersection
-				intersections[iInts++] = ptWrk[i2];
+			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++);
+			if (i == IntersectionIndex) { // Unique intersection
+				intersections[IntersectionIndex++] = ptWrk[i2];
 			}
 		}
 	}
-	if (iInts == 0) { return 0; } // None of the intersections are on sweep of arc
+	if (IntersectionIndex == 0) { return 0; } // None of the intersections are on sweep of arc
 
-	for (auto i1 = 0; i1 < iInts; i1++) { // Sort intersections from begin to end of sweep
-		for (auto i2 = 1; i2 < iInts - i1; i2++) {
-			if (fabs(dIntAng[i2]) < fabs(dIntAng[i2 - 1])) {
-				const auto dAng {dIntAng[i2 - 1]};
-				dIntAng[i2 - 1] = dIntAng[i2];
-				dIntAng[i2] = dAng;
+	for (auto i1 = 0; i1 < IntersectionIndex; i1++) { // Sort intersections from begin to end of sweep
+		for (auto i2 = 1; i2 < IntersectionIndex - i1; i2++) {
+			if (fabs(AngleIntersections[i2]) < fabs(AngleIntersections[i2 - 1])) {
+				const auto AngleIntersection {AngleIntersections[i2 - 1]};
+				AngleIntersections[i2 - 1] = AngleIntersections[i2];
+				AngleIntersections[i2] = AngleIntersection;
 				const auto pt {intersections[i2 - 1]};
 				intersections[i2 - 1] = intersections[i2];
 				intersections[i2] = pt;
@@ -613,18 +612,18 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 
 	} else {
 		if (ptBeg.x >= lowerLeftCorner.x && ptBeg.x <= upperRightCorner.x && ptBeg.y >= lowerLeftCorner.y && ptBeg.y <= upperRightCorner.y) { // Add beg point to int set
-			for (auto i = iInts; i > 0; i--) {
+			for (auto i = IntersectionIndex; i > 0; i--) {
 				intersections[i] = intersections[i - 1];
 			}
 			intersections[0] = ptBeg;
-			iInts++;
+			IntersectionIndex++;
 		}
 		if (ptEnd.x >= lowerLeftCorner.x && ptEnd.x <= upperRightCorner.x && ptEnd.y >= lowerLeftCorner.y && ptEnd.y <= upperRightCorner.y) { // Add end point to int set
-			intersections[iInts] = ptEnd;
-			iInts++;
+			intersections[IntersectionIndex] = ptEnd;
+			IntersectionIndex++;
 		}
 	}
-	return iInts;
+	return IntersectionIndex;
 }
 
 OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
@@ -987,7 +986,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, Eo
 	return Ellipse;
 }
 
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBufer, int versionNumber) {
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
 	short ColorIndex;
 	short LinetypeIndex;
 	OdGePoint3d CenterPoint;
@@ -996,11 +995,11 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 	double SweepAngle;
 
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<short>(primitiveBufer[4] & 0x000f);
-		LinetypeIndex = static_cast<short>((primitiveBufer[4] & 0x00ff) >> 4);
-		OdGePoint3d BeginPoint {OdGePoint3d(reinterpret_cast<EoVaxFloat*>(&primitiveBufer[8])->Convert(), reinterpret_cast<EoVaxFloat*>(&primitiveBufer[12])->Convert(), 0.0) * 1.e-3};
-		CenterPoint = OdGePoint3d(reinterpret_cast<EoVaxFloat*>(& primitiveBufer[20])->Convert(), reinterpret_cast<EoVaxFloat*>(& primitiveBufer[24])->Convert(), 0.0) * 1.e-3;
-		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBufer[28])->Convert();
+		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
+		LinetypeIndex = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
+		const auto BeginPoint {OdGePoint3d(reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[8])->Convert(), reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[12])->Convert(), 0.0) * 1.e-3};
+		CenterPoint = OdGePoint3d(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert(), reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert(), 0.0) * 1.e-3;
+		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
 
 		if (SweepAngle < 0.0) {
 			OdGePoint3d pt;
@@ -1013,14 +1012,14 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 		MinorAxis = OdGeVector3d::kZAxis.crossProduct(MajorAxis);
 		SweepAngle = fabs(SweepAngle);
 	} else {
-		ColorIndex = static_cast<short>(primitiveBufer[6]);
-		LinetypeIndex = static_cast<short>(primitiveBufer[7]);
+		ColorIndex = static_cast<short>(primitiveBuffer[6]);
+		LinetypeIndex = static_cast<short>(primitiveBuffer[7]);
 
-		CenterPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBufer[8])->Convert();
-		MajorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBufer[20])->Convert();
-		MinorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBufer[32])->Convert();
-
-		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBufer[44])->Convert();
+		CenterPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert();
+		MajorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[20])->Convert();
+		MinorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[32])->Convert();
+		
+		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[44])->Convert();
 
 		if (SweepAngle > Oda2PI || SweepAngle < -Oda2PI) { SweepAngle = Oda2PI; }
 	}

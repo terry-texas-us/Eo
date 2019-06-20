@@ -481,8 +481,8 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 	const auto Linetype {LinetypeObjectFromIndex(file.ReadInt16())};
 
 	Polyline->setLinetype(Linetype);
-	auto Flags {file.ReadUInt16()};
-	auto Closed {(Flags && sm_Closed) == sm_Closed};
+	const auto Flags {file.ReadUInt16()};
+	const auto Closed {(Flags & sm_Closed) == sm_Closed};
 	Polyline->setClosed(Closed);
 
 	Polyline->setConstantWidth(file.ReadDouble());

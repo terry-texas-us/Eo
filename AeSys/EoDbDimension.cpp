@@ -395,26 +395,26 @@ void EoDbDimension::SetDefaultNote() {
 	const auto ActiveView {AeSysView::GetActiveView()};
 
 	m_ReferenceSystem.SetOrigin(m_Line.midPoint());
-	auto dAng {0.0};
-	const wchar_t cText0 {m_strText[0]};
+	auto Angle {0.0};
+	const auto FirstCharacter {m_strText[0]};
 
-	if (cText0 != 'R' && cText0 != 'D') {
-		dAng = m_Line.AngleFromXAxis_xy();
-		auto dDis {.075};
+	if (FirstCharacter != 'R' && FirstCharacter != 'D') {
+		Angle = m_Line.AngleFromXAxis_xy();
+		auto Distance {.075};
 
-		if (dAng > OdaPI2 + OdaPI / 180.0 && dAng < Oda2PI - OdaPI2 + OdaPI2) {
-			dAng -= OdaPI;
-			dDis = -dDis;
+		if (Angle > OdaPI2 + OdaPI / 180.0 && Angle < Oda2PI - OdaPI2 + OdaPI2) {
+			Angle -= OdaPI;
+			Distance = -Distance;
 		}
 		OdGePoint3d Origin;
-		EoGeLineSeg3d(m_ReferenceSystem.Origin(), m_Line.endPoint()).ProjPtFrom_xy(0.0, dDis, Origin);
+		EoGeLineSeg3d(m_ReferenceSystem.Origin(), m_Line.endPoint()).ProjPtFrom_xy(0.0, Distance, Origin);
 		m_ReferenceSystem.SetOrigin(Origin);
 	}
 	const auto ActiveViewPlaneNormal {ActiveView->CameraDirection()};
 
 	auto YDirection {ActiveView->ViewUp()};
-	YDirection.rotateBy(dAng, ActiveViewPlaneNormal);
-	YDirection *= .1;
+	YDirection.rotateBy(Angle, ActiveViewPlaneNormal);
+	YDirection *= 0.1;
 
 	auto XDirection {YDirection};
 	XDirection.rotateBy(-OdaPI2, ActiveViewPlaneNormal);
@@ -428,7 +428,7 @@ void EoDbDimension::SetDefaultNote() {
 
 	m_strText = theApp.FormatLength(m_Line.length(), Units);
 
-	if (cText0 == 'R' || cText0 == 'D') { m_strText = cText0 + m_strText; }
+	if (FirstCharacter == 'R' || FirstCharacter == 'D') { m_strText = FirstCharacter + m_strText; }
 }
 
 void EoDbDimension::SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept {

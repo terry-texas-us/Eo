@@ -1007,7 +1007,7 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 	auto CurrentPosition {StartPosition};
 
 	while (CurrentPosition < text.GetLength()) {
-		wchar_t c {text[CurrentPosition++]};
+		auto c {text[CurrentPosition++]};
 		if (c != '\\') {
 			NumberOfCharactersToDisplay++;
 		} else {
@@ -1023,7 +1023,7 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 						NumberOfCharactersToDisplay = 0;
 					}
 				}
-			} else if (c == 'P') { // Hard line bresk
+			} else if (c == 'P') { // Hard line break
 				if (CurrentPosition < text.GetLength()) {
 					DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 
@@ -1038,7 +1038,7 @@ void DisplayTextWithFormattingCharacters(AeSysView * view, CDC * deviceContext, 
 				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					if (CurrentPosition + 1 < EndSemicolon) {
-						const wchar_t Parameter {text[CurrentPosition + 1]};
+						const auto Parameter {text[CurrentPosition + 1]};
 						if (Parameter >= '0' && Parameter <= '2') {
 							if (NumberOfCharactersToDisplay > 0) { // display text segment preceding the formatting
 								DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);

@@ -230,18 +230,18 @@ OdGePoint3d OdExEditorObject::ToEyeToWorld(int x, int y) const {
 
 bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPt) const {
 	const auto View {ActiveView()};
-	OdGePlane plane;
-	UcsPlane(plane);
+	OdGePlane Plane;
+	UcsPlane(Plane);
 
-	if (!View->isPerspective()) { // For orhogonal projection we simply check intersection between viewing direction and UCS plane.
-		OdGeLine3d line(wcsPt, OdAbstractViewPEPtr(View)->direction(View));
-		return plane.intersectWith(line, wcsPt);
+	if (!View->isPerspective()) { // For orthogonal projection we simply check intersection between viewing direction and UCS plane.
+		const OdGeLine3d Line(wcsPt, OdAbstractViewPEPtr(View)->direction(View));
+		return Plane.intersectWith(Line, wcsPt);
 	}
 	// For perspective projection we emit ray from viewer position through WCS point.
-	const double focalLength = -1.0 / View->projectionMatrix()(3, 2);
-	const auto pos {View->target() + OdAbstractViewPEPtr(View)->direction(View).normal() * focalLength};
-	OdGeRay3d ray(pos, wcsPt);
-	return plane.intersectWith(ray, wcsPt);
+	const auto FocalLength {-1.0 / View->projectionMatrix()(3, 2)};
+	const auto pos {View->target() + OdAbstractViewPEPtr(View)->direction(View).normal() * FocalLength};
+	const OdGeRay3d Ray(pos, wcsPt);
+	return Plane.intersectWith(Ray, wcsPt);
 }
 
 OdGePoint3d OdExEditorObject::ToScreenCoord(int x, int y) const {
@@ -459,13 +459,11 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 		}
 	}
 	if (ControlIsDown) { SelectOptions |= OdEd::kSelAllowSubents; }
-
-	OdDbSelectionSetPtr SelectionSet;
 	const auto SavedSnapMode {IsSnapOn()};
 	try {
 		EnableEnhRectFrame _enhRect(m_CommandContext);
 		SetSnapOn(false);
-		SelectionSet = UserIO->select(L"", SelectOptions, workingSSet());
+		OdDbSelectionSetPtr SelectionSet {UserIO->select(L"", SelectOptions, workingSSet())};
 		SetWorkingSelectionSet(SelectionSet);
 		SetSnapOn(SavedSnapMode);
 	} catch (const OdError&) {
@@ -1206,17 +1204,16 @@ class OdExCollideGsPath {
 	}
 	void set(const OdDbFullSubentPath& path, OdGsMarker gsMarker) {
 		clear();
-		const auto& ids {path.objectIds()};
+		const auto& PathObjectIds {path.objectIds()};
 
-		OdDbObjectIdArray::const_iterator iter {ids.begin()};
-		if (iter == ids.end())
-			throw OdError(eInvalidInput);
-		auto pObj {iter->safeOpenObject()};
-		addNode(pObj->ownerId());
-		for (; iter != ids.end() - 1; ++iter)
-			addNode(*iter);
-
-		addNode(*iter, gsMarker);
+		OdDbObjectIdArray::const_iterator PathObjectIdsIterator {PathObjectIds.begin()};
+		if (PathObjectIdsIterator == PathObjectIds.end()) { throw OdError(eInvalidInput); }
+		auto PathObjectId {PathObjectIdsIterator->safeOpenObject()};
+		addNode(PathObjectId->ownerId());
+		for (; PathObjectIdsIterator != PathObjectIds.end() - 1; ++PathObjectIdsIterator) {
+			addNode(*PathObjectIdsIterator);
+		}
+		addNode(*PathObjectIdsIterator, gsMarker);
 	}
 
 	void addNode(const OdDbObjectId& drawableId, OdGsMarker gsMarker = kNullSubentIndex) {
@@ -1559,7 +1556,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 		throw OdEdCancel();
 	}
 	auto Model {View->getModelList()[0]};
-	auto Choice {UserIO->getInt(L"Input 1 to detect only intersections, any other to detect all", 0, 0)};
+	const auto Choice {UserIO->getInt(L"Input 1 to detect only intersections, any other to detect all", 0, 0)};
 
 	OdGsCollisionDetectionContext CollisionDetectionContext;
 	CollisionDetectionContext.setIntersectionOnly(Choice == 1);
@@ -1570,8 +1567,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdExCollisionDetectionReactor reactor(dynHlt);
 
 	View->collide(nullptr, 0, &reactor, nullptr, 0, &CollisionDetectionContext);
-
-	OdArray<OdExCollideGsPath*>& ReactorPaths {reactor.pathes()};
+	auto& ReactorPaths {reactor.pathes()};
 	for (auto& ReactorPath : ReactorPaths) {
 		const auto PathNode {&ReactorPath->operator const OdGiPathNode&()};
 		Model->highlight(*PathNode);

@@ -50,7 +50,7 @@ int EoDlgLayerPropertiesManager::OnCreate(LPCREATESTRUCT createStructure) {
 	return 0;
 }
 void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
-	if (HTREEITEM h = m_TreeFilters.GetSelectedItem()) {
+	if (auto h = m_TreeFilters.GetSelectedItem()) {
 		const OdLyLayerFilter* lf = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(h)));
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {
 			//OdaLayerFilterPropDlg(lf, this).DoModal();
@@ -63,7 +63,7 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStruc
 	const auto pTVKeyDown {reinterpret_cast<tagTVKEYDOWN*>(notifyStructure)};
 
 	if (pTVKeyDown->wVKey == VK_DELETE) {
-		if (HTREEITEM SelectedItem = m_TreeFilters.GetSelectedItem()) {
+		if (auto SelectedItem = m_TreeFilters.GetSelectedItem()) {
 			OdLyLayerFilter* Filter = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(SelectedItem)));
 			if (Filter->dynamicallyGenerated()) return;
 			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) return;

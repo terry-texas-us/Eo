@@ -97,11 +97,11 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 	auto ScalesCollectionIterator {ScalesCollection->newIterator()};
 
 	ScaleMenuPosition = 1;
-	auto CurrentScaleIdentifier {database->getCANNOSCALE()->uniqueIdentifier()};
+	const auto CurrentScaleIdentifier {database->getCANNOSCALE()->uniqueIdentifier()};
 	wchar_t TypeData[32];
 	for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
 		auto ScaleName {ScalesCollectionIterator->getContext()->getName()};
-		auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
+		const auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
 		
 		MENUITEMINFO MenuItemInfo;
 		::ZeroMemory(&MenuItemInfo, sizeof(MENUITEMINFO));
@@ -122,8 +122,8 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 		popupMenu->InsertMenuItemW(static_cast<unsigned>(ScaleMenuPosition++), &MenuItemInfo, TRUE);
 	}
 }
-const int kViewMenuPosition(2);
-const int kAnnotationScalesMenuPosition(19);
+const int gc_ViewMenuPosition(2);
+const int gc_AnnotationScalesMenuPosition(19);
 
 void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuAlt) {
 	CMDIChildWndEx::OnUpdateFrameMenu(active, activeWindow, menuAlt);
@@ -134,7 +134,7 @@ void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuA
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		ENSURE(TopMenu);
 
-		auto ScalesSubMenu {TopMenu->GetSubMenu(kViewMenuPosition)->GetSubMenu(kAnnotationScalesMenuPosition)};
+		auto ScalesSubMenu {TopMenu->GetSubMenu(gc_ViewMenuPosition)->GetSubMenu(gc_AnnotationScalesMenuPosition)};
 
 		if (ScalesSubMenu) {
 			UpdateAnnotationScalesPopupMenu(ScalesSubMenu, dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr);
