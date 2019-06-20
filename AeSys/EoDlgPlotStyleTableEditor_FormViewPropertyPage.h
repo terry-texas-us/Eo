@@ -1,10 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <Ps/PlotStyles.h>
 
 #include "EoCtrlBitmapPickerCombo.h"
-
-#include "Ps/PlotStyles.h"
 
 #define  PS_COLOR_MAX_NAME 25
 #define  PS_COMBO_COLOR_POSITION 8

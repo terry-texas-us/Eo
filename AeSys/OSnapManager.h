@@ -2,22 +2,20 @@
 
 // From Examples\Editor\OSnapManager.h  (last compare 19.12)
 
-#include "Gi/GiDrawableImpl.h"
-#include "Gs/Gs.h"
-#include "Si/SiSpatialIndex.h"
-#include "DbEntity.h"
-#include "Gs/GsSelectionReactor.h"
-#include "Gi/GiViewportDraw.h"
-#include "Gi/GiWorldDraw.h"
-#include "Gi/GiPathNode.h"
-#include "Gi/GiViewport.h"
+#include <Gi/GiDrawableImpl.h>
+#include <Gs/Gs.h>
+#include <Si/SiSpatialIndex.h>
+#include <DbEntity.h>
+#include <Gs/GsSelectionReactor.h>
+#include <Gi/GiWorldDraw.h>
+#include <Gi/GiPathNode.h>
 
-#include "DbUserIO.h"
-#include "StaticRxObject.h"
-#include "DbCurve.h"
-#include "DbCircle.h"
-#include "DbLine.h"
-#include "DbArc.h"
+#include <DbUserIO.h>
+#include <StaticRxObject.h>
+#include <DbCurve.h>
+#include <DbCircle.h>
+#include <DbLine.h>
+#include <DbArc.h>
 
 class OdEdInputTracker;
 

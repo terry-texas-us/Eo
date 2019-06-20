@@ -41,7 +41,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 		switch (drawItemStruct->itemAction) {
 		case ODA_DRAWENTIRE: {
 			CRect ItemRectangle(drawItemStruct->rcItem);
-			const COLORREF BackgroundColor {GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
+			const auto BackgroundColor {GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
 
 			CDC DeviceContext;
 			DeviceContext.Attach(drawItemStruct->hDC);
@@ -54,7 +54,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 			const auto Item {static_cast<int>(drawItemStruct->itemID)};
 
 			if (Item != -1) {
-				const COLORREF rgbText {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
+				const auto rgbText {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
 				DeviceContext.SetBkColor(BackgroundColor);
 				DeviceContext.SetTextColor(rgbText);
 

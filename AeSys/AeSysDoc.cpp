@@ -958,8 +958,7 @@ BOOL AeSysDoc::OnNewDocument() {
 		AddRegisteredApp(L"AeSys");
 
 		m_DatabasePtr->startUndoRecord();
-
-		const ODCOLORREF* DarkPalette = odcmAcadDarkPalette();
+		auto DarkPalette {odcmAcadDarkPalette()};
 		ODCOLORREF LocalDarkPalette[256];
 		memcpy(LocalDarkPalette, DarkPalette, 256 * sizeof(ODCOLORREF));
 

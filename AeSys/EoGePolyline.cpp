@@ -143,12 +143,10 @@ void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& 
 }
 bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
 	auto StartPoint {pts_[0]};
-	EoGePoint4d EndPoint;
-
 	view->ModelViewTransformPoint(StartPoint);
 
 	for (unsigned short w = 1; w < pts_.GetSize(); w++) {
-		EndPoint = EoGePoint4d(pts_[w]);
+		auto EndPoint {EoGePoint4d(pts_[w])};
 		view->ModelViewTransformPoint(EndPoint);
 
 		OdGePoint3d Intersection;

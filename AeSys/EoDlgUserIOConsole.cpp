@@ -1,10 +1,11 @@
 #include "stdafx.h"
 
+#include <DbCommandContext.h>
+#include <DbSSet.h>
+#include <ExDbCommandContext.h>
+#include <Ge/GeExtents2d.h>
+
 #include "AeSys.h"
-#include "DbCommandContext.h"
-#include "DbSSet.h"
-#include "ExDbCommandContext.h"
-#include "Ge/GeExtents2d.h"
 
 #include "EoDlgUserIOConsole.h"
 

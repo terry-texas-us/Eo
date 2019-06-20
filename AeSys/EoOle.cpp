@@ -1,15 +1,17 @@
 #include "stdafx.h"
+
+#include <afxodlgs.h>
+#include <DbOle2Frame.h>
+#include <OleItemHandlerBase.h>
+#include <MemoryStream.h>
+
+#include <Ed/EdCommandStack.h>
+#include <DbSSet.h>
+
+#include <DbUserIO.h>
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
-#include "afxodlgs.h"
-#include "DbOle2Frame.h"
-#include "OleItemHandlerBase.h"
-#include "MemoryStream.h"
-
-#include "Ed/EdCommandStack.h"
-#include "DbSSet.h"
-
-#include "DbUserIO.h"
 
 #ifdef OD_OLE_SUPPORT
 class OleDwgItem : public COleClientItem, public OdOleItemHandler {

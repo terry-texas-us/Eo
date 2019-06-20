@@ -337,7 +337,7 @@ AeSys::AeSys() noexcept
 
 CString GetRegistryAcadLocation();
 CString GetRegistryAcadProfilesKey();
-bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept;
+bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept;
 
 // get the value for the ACAD entry in the registry
 static CString FindConfigPath(const CString& configType) {
@@ -1867,11 +1867,11 @@ const OdString AeSys::product() {
 	return L"AeSys Application";
 }
 
-bool GetRegistryString(HKEY key, const wchar_t* subkey, const wchar_t* name, wchar_t* value, int size) noexcept {
+bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept {
 	auto ReturnValue {false};
 	HKEY OpenedKey;
 
-	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
+	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
 		unsigned long RegistryBufferSize {EO_REGISTRY_BUFFER_SIZE};
 		unsigned char data[EO_REGISTRY_BUFFER_SIZE] {0};
 
@@ -1951,31 +1951,30 @@ OdString AeSys::getSubstituteFont(const OdString& fontName, OdFontType fontType)
 }
 
 OdString AeSys::getFontMapFileName() const {
-	wchar_t fontMapFile[EO_REGISTRY_MAX_PATH] {L"\0"};
-	wchar_t expandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
+	wchar_t FontMapFile[EO_REGISTRY_MAX_PATH] {L"\0"};
+	wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
+	auto subKey {GetRegistryAcadProfilesKey()};
+	
+	if (!subKey.IsEmpty()) {
+		subKey += L"\\Editor Configuration";
 
-	OdString subkey {GetRegistryAcadProfilesKey()};
-	if (!subkey.isEmpty()) {
-		subkey += L"\\Editor Configuration";
-
-		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"FontMappingFile", fontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
+		if (GetRegistryString(HKEY_CURRENT_USER, subKey, L"FontMappingFile", FontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
 			return L"";
 		}
-		ExpandEnvironmentStringsW(fontMapFile, expandedPath, EO_REGISTRY_MAX_PATH);
-		return OdString(expandedPath);
+		ExpandEnvironmentStringsW(FontMapFile, ExpandedPath, EO_REGISTRY_MAX_PATH);
+		return OdString(ExpandedPath);
 	}
 	return L"C:\\acad.fmp";
 }
 
 OdString AeSys::getTempPath() const {
 	wchar_t TempPath[MAX_PATH] {L"\0"};
+	auto SubKey {GetRegistryAcadProfilesKey()};
 
-	OdString subkey {GetRegistryAcadProfilesKey()};
+	if (!SubKey.IsEmpty()) {
+		SubKey += L"\\General Configuration";
 
-	if (!subkey.isEmpty()) {
-		subkey += L"\\General Configuration";
-
-		if (GetRegistryString(HKEY_CURRENT_USER, subkey, L"TempDirectory", TempPath, MAX_PATH) == 0) {
+		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, L"TempDirectory", TempPath, MAX_PATH) == 0) {
 			return OdDbHostAppServices::getTempPath();
 		}
 		if (_waccess(TempPath, 0)) {

@@ -1205,8 +1205,8 @@ class OdExCollideGsPath {
 	void set(const OdDbFullSubentPath& path, OdGsMarker gsMarker) {
 		clear();
 		const auto& PathObjectIds {path.objectIds()};
+		auto PathObjectIdsIterator {PathObjectIds.begin()};
 
-		OdDbObjectIdArray::const_iterator PathObjectIdsIterator {PathObjectIds.begin()};
 		if (PathObjectIdsIterator == PathObjectIds.end()) { throw OdError(eInvalidInput); }
 		auto PathObjectId {PathObjectIdsIterator->safeOpenObject()};
 		addNode(PathObjectId->ownerId());

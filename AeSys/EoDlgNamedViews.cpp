@@ -1,15 +1,16 @@
 #include "stdafx.h"
 
+#include <DbLayout.h>
+#include <DbViewTable.h>
+#include <DbViewTableRecord.h>
+#include <DbLayerState.h>
+#include <DbUCSTableRecord.h>
+
 #include "AeSys.h"
 #include "AeSysDoc.h"
-#include "EoDlgNamedViews.h"
-#include "DbLayout.h"
 
-#include "DbViewTable.h"
-#include "DbViewTableRecord.h"
+#include "EoDlgNamedViews.h"
 #include "EoDlgNewView.h"
-#include "DbLayerState.h"
-#include "DbUCSTableRecord.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

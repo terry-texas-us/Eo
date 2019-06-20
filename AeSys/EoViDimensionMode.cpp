@@ -3,10 +3,9 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 
-#include "DbDimStyleTable.h"
-#include "DbDimStyleTableRecord.h"
-
-#include "DbAlignedDimension.h"
+#include <DbDimStyleTable.h>
+#include <DbAlignedDimension.h>
+#include <DbRotatedDimension.h>
 
 #include "EoDbDimension.h"
 
@@ -104,9 +103,6 @@ void AeSysView::OnDimensionModeArrow() {
 	}
 	PreviousDimensionPosition = CurrentPnt;
 }
-
-#include "DbAlignedDimension.h"
-#include "DbRotatedDimension.h"
 
 void AeSysView::OnDimensionModeLine() {
 	auto CurrentPnt {GetCursorPosition()};

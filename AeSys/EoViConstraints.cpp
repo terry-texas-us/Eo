@@ -1,8 +1,7 @@
 #include "stdafx.h"
+
 #include "AeSys.h"
 #include "AeSysView.h"
-
-#include "EoDlgSetupConstraints.h"
 
 void AeSysView::InitializeConstraints() noexcept {
 	m_AxisConstraintInfluenceAngle = 5.;

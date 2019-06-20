@@ -1,19 +1,19 @@
 #include "stdafx.h"
 
-#include "OdaCommon.h"
-#include "Gs/Gs.h"
+#include <OdaCommon.h>
+#include <Gs/Gs.h>
+#include <winspool.h>
+#include <DbPlotSettingsValidator.h>
+#include <DbHostAppServices.h>
+#include <DbSymbolTable.h>
+#include <DbViewTable.h>
+#include <DbViewTableRecord.h>
 
 #include "AeSys.h"
 #include "AeSysView.h"
 
 #include "EoDlgPageSetup.h"
-#include "winspool.h"
-#include "DbPlotSettingsValidator.h"
-#include "DbHostAppServices.h"
 #include "EoDlgPlotStyleTableEditor.h"
-#include "DbSymbolTable.h"
-#include "DbViewTable.h"
-#include "DbViewTableRecord.h"
 
 std::vector<const wchar_t*> StandardPlotScaleValues = {
 	L"Custom",

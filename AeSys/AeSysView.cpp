@@ -50,273 +50,272 @@ unsigned AeSysView::g_nRedrawMSG = 0;
 IMPLEMENT_DYNCREATE(AeSysView, CView)
 
 BEGIN_MESSAGE_MAP(AeSysView, CView)
-	ON_WM_CHAR()
-	ON_WM_CONTEXTMENU()
-	ON_WM_CREATE()
-	ON_WM_DESTROY()
-	ON_WM_ERASEBKGND()
-	ON_WM_KEYDOWN()
-	ON_WM_KILLFOCUS()
-	ON_WM_LBUTTONDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_MBUTTONDOWN()
-	ON_WM_MBUTTONUP()
-	ON_WM_MOUSEMOVE()
-	ON_WM_MOUSEWHEEL()
-	ON_WM_PAINT()
-	ON_WM_RBUTTONDOWN()
-	ON_WM_RBUTTONUP()
-	ON_WM_SETFOCUS()
-	ON_WM_SIZE()
+ON_WM_CHAR()
+ON_WM_CONTEXTMENU()
+ON_WM_CREATE()
+ON_WM_DESTROY()
+ON_WM_ERASEBKGND()
+ON_WM_KEYDOWN()
+ON_WM_KILLFOCUS()
+ON_WM_LBUTTONDOWN()
+ON_WM_LBUTTONUP()
+ON_WM_MBUTTONDOWN()
+ON_WM_MBUTTONUP()
+ON_WM_MOUSEMOVE()
+ON_WM_MOUSEWHEEL()
+ON_WM_PAINT()
+ON_WM_RBUTTONDOWN()
+ON_WM_RBUTTONUP()
+ON_WM_SETFOCUS()
+ON_WM_SIZE()
 
-	ON_COMMAND(ID_OP0, OnOp0)
-	ON_COMMAND(ID_OP2, OnOp2)
-	ON_COMMAND(ID_OP3, OnOp3)
-	ON_COMMAND(ID_OP4, OnOp4)
-	ON_COMMAND(ID_OP5, OnOp5)
-	ON_COMMAND(ID_OP6, OnOp6)
-	ON_COMMAND(ID_OP7, OnOp7)
-	ON_COMMAND(ID_OP8, OnOp8)
-	ON_COMMAND(IDM_RETURN, OnReturn)
-	ON_COMMAND(IDM_ESCAPE, OnEscape)
+ON_COMMAND(ID_OP0, OnOp0)
+ON_COMMAND(ID_OP2, OnOp2)
+ON_COMMAND(ID_OP3, OnOp3)
+ON_COMMAND(ID_OP4, OnOp4)
+ON_COMMAND(ID_OP5, OnOp5)
+ON_COMMAND(ID_OP6, OnOp6)
+ON_COMMAND(ID_OP7, OnOp7)
+ON_COMMAND(ID_OP8, OnOp8)
+ON_COMMAND(IDM_RETURN, OnReturn)
+ON_COMMAND(IDM_ESCAPE, OnEscape)
 
-	ON_COMMAND(ID_EDIT_FIND_COMBO, OnFind)
-	ON_COMMAND(ID_3DVIEWS_BACK, On3dViewsBack)
-	ON_COMMAND(ID_3DVIEWS_BOTTOM, On3dViewsBottom)
-	ON_COMMAND(ID_3DVIEWS_FRONT, On3dViewsFront)
-	ON_COMMAND(ID_3DVIEWS_ISOMETRIC, On3dViewsIsometric)
-	ON_COMMAND(ID_3DVIEWS_LEFT, On3dViewsLeft)
-	ON_COMMAND(ID_3DVIEWS_RIGHT, On3dViewsRight)
-	ON_COMMAND(ID_3DVIEWS_TOP, On3dViewsTop)
+ON_COMMAND(ID_EDIT_FIND_COMBO, OnFind)
+ON_COMMAND(ID_3DVIEWS_BACK, On3dViewsBack)
+ON_COMMAND(ID_3DVIEWS_BOTTOM, On3dViewsBottom)
+ON_COMMAND(ID_3DVIEWS_FRONT, On3dViewsFront)
+ON_COMMAND(ID_3DVIEWS_ISOMETRIC, On3dViewsIsometric)
+ON_COMMAND(ID_3DVIEWS_LEFT, On3dViewsLeft)
+ON_COMMAND(ID_3DVIEWS_RIGHT, On3dViewsRight)
+ON_COMMAND(ID_3DVIEWS_TOP, On3dViewsTop)
 
-	ON_COMMAND(ID_BACKGROUNDIMAGE_LOAD, OnBackgroundImageLoad)
-	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_LOAD, OnUpdateBackgroundimageLoad)
-	ON_COMMAND(ID_BACKGROUNDIMAGE_REMOVE, OnBackgroundImageRemove)
-	ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_REMOVE, OnUpdateBackgroundimageRemove)
-	ON_COMMAND(ID_CAMERA_ROTATELEFT, OnCameraRotateLeft)
-	ON_COMMAND(ID_CAMERA_ROTATERIGHT, OnCameraRotateRight)
-	ON_COMMAND(ID_CAMERA_ROTATEUP, OnCameraRotateUp)
-	ON_COMMAND(ID_CAMERA_ROTATEDOWN, OnCameraRotateDown)
-	ON_COMMAND(ID_EDIT_FIND, &AeSysView::OnEditFind)
-	ON_COMMAND(ID_FILE_PLOT_QUARTER, OnFilePlotQuarter)
-	ON_COMMAND(ID_FILE_PLOT_HALF, OnFilePlotHalf)
-	ON_COMMAND(ID_FILE_PLOT_FULL, OnFilePlotFull)
-	// Standard printing commands
-	ON_COMMAND(ID_FILE_PRINT, OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_DIRECT, OnFilePrint)
-	ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-	ON_REGISTERED_MESSAGE(g_nRedrawMSG, OnRedraw)
+ON_COMMAND(ID_BACKGROUNDIMAGE_LOAD, OnBackgroundImageLoad)
+ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_LOAD, OnUpdateBackgroundimageLoad)
+ON_COMMAND(ID_BACKGROUNDIMAGE_REMOVE, OnBackgroundImageRemove)
+ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_REMOVE, OnUpdateBackgroundimageRemove)
+ON_COMMAND(ID_CAMERA_ROTATELEFT, OnCameraRotateLeft)
+ON_COMMAND(ID_CAMERA_ROTATERIGHT, OnCameraRotateRight)
+ON_COMMAND(ID_CAMERA_ROTATEUP, OnCameraRotateUp)
+ON_COMMAND(ID_CAMERA_ROTATEDOWN, OnCameraRotateDown)
+ON_COMMAND(ID_EDIT_FIND, &AeSysView::OnEditFind)
+ON_COMMAND(ID_FILE_PLOT_QUARTER, OnFilePlotQuarter)
+ON_COMMAND(ID_FILE_PLOT_HALF, OnFilePlotHalf)
+ON_COMMAND(ID_FILE_PLOT_FULL, OnFilePlotFull)
+// Standard printing commands
+ON_COMMAND(ID_FILE_PRINT, OnFilePrint)
+ON_COMMAND(ID_FILE_PRINT_DIRECT, OnFilePrint)
+ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
+ON_REGISTERED_MESSAGE(g_nRedrawMSG, OnRedraw)
 
-	ON_COMMAND(ID_HELP_KEY, OnHelpKey)
-	ON_COMMAND(ID_MODE_GROUP_EDIT, OnModeGroupEdit)
-	ON_COMMAND(ID_MODE_PRIMITIVE_EDIT, OnModePrimitiveEdit)
-	ON_COMMAND(ID_MODE_PRIMITIVE_MEND, OnModePrimitiveMend)
-	ON_COMMAND(ID_PRIM_PERPJUMP, OnPrimPerpJump)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_DOWN, OnRelativeMovesEngDown)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_DOWNROTATE, OnRelativeMovesEngDownRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_IN, OnRelativeMovesEngIn)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_LEFT, OnRelativeMovesEngLeft)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_LEFTROTATE, OnRelativeMovesEngLeftRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_OUT, OnRelativeMovesEngOut)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_RIGHT, OnRelativeMovesEngRight)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_RIGHTROTATE, OnRelativeMovesEngRightRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_UP, OnRelativeMovesEngUp)
-	ON_COMMAND(ID_RELATIVEMOVES_ENG_UPROTATE, OnRelativeMovesEngUpRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_DOWN, OnRelativeMovesDown)
-	ON_COMMAND(ID_RELATIVEMOVES_DOWNROTATE, OnRelativeMovesDownRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_IN, OnRelativeMovesIn)
-	ON_COMMAND(ID_RELATIVEMOVES_LEFT, OnRelativeMovesLeft)
-	ON_COMMAND(ID_RELATIVEMOVES_LEFTROTATE, OnRelativeMovesLeftRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_OUT, OnRelativeMovesOut)
-	ON_COMMAND(ID_RELATIVEMOVES_RIGHT, OnRelativeMovesRight)
-	ON_COMMAND(ID_RELATIVEMOVES_RIGHTROTATE, OnRelativeMovesRightRotate)
-	ON_COMMAND(ID_RELATIVEMOVES_UP, OnRelativeMovesUp)
-	ON_COMMAND(ID_RELATIVEMOVES_UPROTATE, OnRelativeMovesUpRotate)
-	ON_COMMAND(ID_SETUP_CONSTRAINTS, OnSetupConstraints)
-	ON_COMMAND(ID_SETUP_DIMANGLE, OnSetupDimAngle)
-	ON_COMMAND(ID_SETUP_DIMLENGTH, OnSetupDimLength)
-	ON_COMMAND(ID_SETUP_MOUSEBUTTONS, OnSetupMouseButtons)
-	ON_COMMAND(ID_SETUP_SCALE, OnSetupScale)
-	ON_COMMAND(ID_SETUP_UNITS, OnSetupUnits)
-	ON_COMMAND(ID_TOOLS_PRIMITIVE_SNAPTO, OnToolsPrimitiveSnapto)
-	ON_COMMAND(ID_VIEW_BACKGROUNDIMAGE, OnViewBackgroundImage)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_BACKGROUNDIMAGE, OnUpdateViewBackgroundImage)
-	ON_COMMAND(ID_VIEW_ODOMETER, OnViewOdometer)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_ODOMETER, OnUpdateViewOdometer)
-	ON_COMMAND(ID_VIEW_PARAMETERS, OnViewParameters)
-	ON_COMMAND(ID_VIEW_PENWIDTHS, OnViewPenWidths)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_PENWIDTHS, OnUpdateViewPenwidths)
-	ON_COMMAND(ID_VIEW_REFRESH, OnViewRefresh)
-	ON_COMMAND(ID_VIEW_STATEINFORMATION, OnViewStateInformation)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_STATEINFORMATION, OnUpdateViewStateinformation)
-	ON_COMMAND(ID_VIEW_TRUETYPEFONTS, OnViewTrueTypeFonts)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_TRUETYPEFONTS, OnUpdateViewTrueTypeFonts)
-	ON_COMMAND(ID_VIEW_WINDOW, OnViewWindow)
-	ON_COMMAND_RANGE(ID_VIEW_RENDERMODE_2DOPTIMIZED, ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnViewRendermode)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_2DOPTIMIZED, &AeSysView::OnUpdateViewRendermode2doptimized)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_WIREFRAME, &AeSysView::OnUpdateViewRendermodeWireframe)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_HIDDENLINE, &AeSysView::OnUpdateViewRendermodeHiddenline)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_FLATSHADED, &AeSysView::OnUpdateViewRendermodeFlatshaded)
-	ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnUpdateViewRendermodeSmoothshaded)
-	ON_COMMAND(ID_WINDOW_BEST, OnWindowBest)
-	ON_COMMAND(ID_WINDOW_NORMAL, OnWindowNormal)
-	ON_COMMAND(ID_WINDOW_LAST, OnWindowLast)
-	ON_COMMAND(ID_WINDOW_PAN, OnWindowPan)
-	ON_COMMAND(ID_WINDOW_PAN_LEFT, OnWindowPanLeft)
-	ON_COMMAND(ID_WINDOW_PAN_RIGHT, OnWindowPanRight)
-	ON_COMMAND(ID_WINDOW_PAN_UP, OnWindowPanUp)
-	ON_COMMAND(ID_WINDOW_PAN_DOWN, OnWindowPanDown)
-	ON_COMMAND(ID_WINDOW_SHEET, OnWindowSheet)
-	ON_COMMAND(ID_WINDOW_ZOOMIN, OnWindowZoomIn)
-	ON_COMMAND(ID_WINDOW_ZOOMOUT, OnWindowZoomOut)
-	ON_COMMAND(ID_WINDOW_ZOOMWINDOW, &AeSysView::OnWindowZoomWindow)
-	ON_UPDATE_COMMAND_UI(ID_WINDOW_ZOOMWINDOW, OnUpdateWindowZoomWindow)
-	ON_COMMAND(ID_WINDOW_ZOOMSPECIAL, &AeSysView::OnWindowZoomSpecial)
+ON_COMMAND(ID_HELP_KEY, OnHelpKey)
+ON_COMMAND(ID_MODE_GROUP_EDIT, OnModeGroupEdit)
+ON_COMMAND(ID_MODE_PRIMITIVE_EDIT, OnModePrimitiveEdit)
+ON_COMMAND(ID_MODE_PRIMITIVE_MEND, OnModePrimitiveMend)
+ON_COMMAND(ID_PRIM_PERPJUMP, OnPrimPerpJump)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_DOWN, OnRelativeMovesEngDown)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_DOWNROTATE, OnRelativeMovesEngDownRotate)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_IN, OnRelativeMovesEngIn)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_LEFT, OnRelativeMovesEngLeft)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_LEFTROTATE, OnRelativeMovesEngLeftRotate)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_OUT, OnRelativeMovesEngOut)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_RIGHT, OnRelativeMovesEngRight)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_RIGHTROTATE, OnRelativeMovesEngRightRotate)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_UP, OnRelativeMovesEngUp)
+ON_COMMAND(ID_RELATIVEMOVES_ENG_UPROTATE, OnRelativeMovesEngUpRotate)
+ON_COMMAND(ID_RELATIVEMOVES_DOWN, OnRelativeMovesDown)
+ON_COMMAND(ID_RELATIVEMOVES_DOWNROTATE, OnRelativeMovesDownRotate)
+ON_COMMAND(ID_RELATIVEMOVES_IN, OnRelativeMovesIn)
+ON_COMMAND(ID_RELATIVEMOVES_LEFT, OnRelativeMovesLeft)
+ON_COMMAND(ID_RELATIVEMOVES_LEFTROTATE, OnRelativeMovesLeftRotate)
+ON_COMMAND(ID_RELATIVEMOVES_OUT, OnRelativeMovesOut)
+ON_COMMAND(ID_RELATIVEMOVES_RIGHT, OnRelativeMovesRight)
+ON_COMMAND(ID_RELATIVEMOVES_RIGHTROTATE, OnRelativeMovesRightRotate)
+ON_COMMAND(ID_RELATIVEMOVES_UP, OnRelativeMovesUp)
+ON_COMMAND(ID_RELATIVEMOVES_UPROTATE, OnRelativeMovesUpRotate)
+ON_COMMAND(ID_SETUP_CONSTRAINTS, OnSetupConstraints)
+ON_COMMAND(ID_SETUP_DIMANGLE, OnSetupDimAngle)
+ON_COMMAND(ID_SETUP_DIMLENGTH, OnSetupDimLength)
+ON_COMMAND(ID_SETUP_MOUSEBUTTONS, OnSetupMouseButtons)
+ON_COMMAND(ID_SETUP_SCALE, OnSetupScale)
+ON_COMMAND(ID_SETUP_UNITS, OnSetupUnits)
+ON_COMMAND(ID_TOOLS_PRIMITIVE_SNAPTO, OnToolsPrimitiveSnapto)
+ON_COMMAND(ID_VIEW_BACKGROUNDIMAGE, OnViewBackgroundImage)
+ON_UPDATE_COMMAND_UI(ID_VIEW_BACKGROUNDIMAGE, OnUpdateViewBackgroundImage)
+ON_COMMAND(ID_VIEW_ODOMETER, OnViewOdometer)
+ON_UPDATE_COMMAND_UI(ID_VIEW_ODOMETER, OnUpdateViewOdometer)
+ON_COMMAND(ID_VIEW_PARAMETERS, OnViewParameters)
+ON_COMMAND(ID_VIEW_PENWIDTHS, OnViewPenWidths)
+ON_UPDATE_COMMAND_UI(ID_VIEW_PENWIDTHS, OnUpdateViewPenwidths)
+ON_COMMAND(ID_VIEW_REFRESH, OnViewRefresh)
+ON_COMMAND(ID_VIEW_STATEINFORMATION, OnViewStateInformation)
+ON_UPDATE_COMMAND_UI(ID_VIEW_STATEINFORMATION, OnUpdateViewStateinformation)
+ON_COMMAND(ID_VIEW_TRUETYPEFONTS, OnViewTrueTypeFonts)
+ON_UPDATE_COMMAND_UI(ID_VIEW_TRUETYPEFONTS, OnUpdateViewTrueTypeFonts)
+ON_COMMAND(ID_VIEW_WINDOW, OnViewWindow)
+ON_COMMAND_RANGE(ID_VIEW_RENDERMODE_2DOPTIMIZED, ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnViewRendermode)
+ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_2DOPTIMIZED, &AeSysView::OnUpdateViewRendermode2doptimized)
+ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_WIREFRAME, &AeSysView::OnUpdateViewRendermodeWireframe)
+ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_HIDDENLINE, &AeSysView::OnUpdateViewRendermodeHiddenline)
+ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_FLATSHADED, &AeSysView::OnUpdateViewRendermodeFlatshaded)
+ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnUpdateViewRendermodeSmoothshaded)
+ON_COMMAND(ID_WINDOW_BEST, OnWindowBest)
+ON_COMMAND(ID_WINDOW_NORMAL, OnWindowNormal)
+ON_COMMAND(ID_WINDOW_LAST, OnWindowLast)
+ON_COMMAND(ID_WINDOW_PAN, OnWindowPan)
+ON_COMMAND(ID_WINDOW_PAN_LEFT, OnWindowPanLeft)
+ON_COMMAND(ID_WINDOW_PAN_RIGHT, OnWindowPanRight)
+ON_COMMAND(ID_WINDOW_PAN_UP, OnWindowPanUp)
+ON_COMMAND(ID_WINDOW_PAN_DOWN, OnWindowPanDown)
+ON_COMMAND(ID_WINDOW_SHEET, OnWindowSheet)
+ON_COMMAND(ID_WINDOW_ZOOMIN, OnWindowZoomIn)
+ON_COMMAND(ID_WINDOW_ZOOMOUT, OnWindowZoomOut)
+ON_COMMAND(ID_WINDOW_ZOOMWINDOW, &AeSysView::OnWindowZoomWindow)
+ON_UPDATE_COMMAND_UI(ID_WINDOW_ZOOMWINDOW, OnUpdateWindowZoomWindow)
+ON_COMMAND(ID_WINDOW_ZOOMSPECIAL, &AeSysView::OnWindowZoomSpecial)
 
-	ON_COMMAND(ID_DRAW_MODE_OPTIONS, &AeSysView::OnDrawModeOptions)
-	ON_COMMAND(ID_DRAW_MODE_POINT, &AeSysView::OnDrawModePoint)
-	ON_COMMAND(ID_DRAW_MODE_LINE, &AeSysView::OnDrawModeLine)
-	ON_COMMAND(ID_DRAW_MODE_POLYGON, &AeSysView::OnDrawModePolygon)
-	ON_COMMAND(ID_DRAW_MODE_QUAD, &AeSysView::OnDrawModeQuad)
-	ON_COMMAND(ID_DRAW_MODE_ARC, &AeSysView::OnDrawModeArc)
-	ON_COMMAND(ID_DRAW_MODE_BSPLINE, &AeSysView::OnDrawModeBspline)
-	ON_COMMAND(ID_DRAW_MODE_CIRCLE, &AeSysView::OnDrawModeCircle)
-	ON_COMMAND(ID_DRAW_MODE_ELLIPSE, &AeSysView::OnDrawModeEllipse)
-	ON_COMMAND(ID_DRAW_MODE_INSERT, &AeSysView::OnDrawModeInsert)
-	ON_COMMAND(ID_DRAW_MODE_RETURN, &AeSysView::OnDrawModeReturn)
-	ON_COMMAND(ID_DRAW_MODE_ESCAPE, &AeSysView::OnDrawModeEscape)
+ON_COMMAND(ID_DRAW_MODE_OPTIONS, &AeSysView::OnDrawModeOptions)
+ON_COMMAND(ID_DRAW_MODE_POINT, &AeSysView::OnDrawModePoint)
+ON_COMMAND(ID_DRAW_MODE_LINE, &AeSysView::OnDrawModeLine)
+ON_COMMAND(ID_DRAW_MODE_POLYGON, &AeSysView::OnDrawModePolygon)
+ON_COMMAND(ID_DRAW_MODE_QUAD, &AeSysView::OnDrawModeQuad)
+ON_COMMAND(ID_DRAW_MODE_ARC, &AeSysView::OnDrawModeArc)
+ON_COMMAND(ID_DRAW_MODE_BSPLINE, &AeSysView::OnDrawModeBspline)
+ON_COMMAND(ID_DRAW_MODE_CIRCLE, &AeSysView::OnDrawModeCircle)
+ON_COMMAND(ID_DRAW_MODE_ELLIPSE, &AeSysView::OnDrawModeEllipse)
+ON_COMMAND(ID_DRAW_MODE_INSERT, &AeSysView::OnDrawModeInsert)
+ON_COMMAND(ID_DRAW_MODE_RETURN, &AeSysView::OnDrawModeReturn)
+ON_COMMAND(ID_DRAW_MODE_ESCAPE, &AeSysView::OnDrawModeEscape)
 
-	ON_COMMAND(ID_ANNOTATE_MODE_OPTIONS, &AeSysView::OnAnnotateModeOptions)
-	ON_COMMAND(ID_ANNOTATE_MODE_LINE, &AeSysView::OnAnnotateModeLine)
-	ON_COMMAND(ID_ANNOTATE_MODE_ARROW, &AeSysView::OnAnnotateModeArrow)
-	ON_COMMAND(ID_ANNOTATE_MODE_BUBBLE, &AeSysView::OnAnnotateModeBubble)
-	ON_COMMAND(ID_ANNOTATE_MODE_HOOK, &AeSysView::OnAnnotateModeHook)
-	ON_COMMAND(ID_ANNOTATE_MODE_UNDERLINE, &AeSysView::OnAnnotateModeUnderline)
-	ON_COMMAND(ID_ANNOTATE_MODE_BOX, &AeSysView::OnAnnotateModeBox)
-	ON_COMMAND(ID_ANNOTATE_MODE_CUT_IN, &AeSysView::OnAnnotateModeCutIn)
-	ON_COMMAND(ID_ANNOTATE_MODE_CONSTRUCTION_LINE, &AeSysView::OnAnnotateModeConstructionLine)
-	ON_COMMAND(ID_ANNOTATE_MODE_RETURN, &AeSysView::OnAnnotateModeReturn)
-	ON_COMMAND(ID_ANNOTATE_MODE_ESCAPE, &AeSysView::OnAnnotateModeEscape)
+ON_COMMAND(ID_ANNOTATE_MODE_OPTIONS, &AeSysView::OnAnnotateModeOptions)
+ON_COMMAND(ID_ANNOTATE_MODE_LINE, &AeSysView::OnAnnotateModeLine)
+ON_COMMAND(ID_ANNOTATE_MODE_ARROW, &AeSysView::OnAnnotateModeArrow)
+ON_COMMAND(ID_ANNOTATE_MODE_BUBBLE, &AeSysView::OnAnnotateModeBubble)
+ON_COMMAND(ID_ANNOTATE_MODE_HOOK, &AeSysView::OnAnnotateModeHook)
+ON_COMMAND(ID_ANNOTATE_MODE_UNDERLINE, &AeSysView::OnAnnotateModeUnderline)
+ON_COMMAND(ID_ANNOTATE_MODE_BOX, &AeSysView::OnAnnotateModeBox)
+ON_COMMAND(ID_ANNOTATE_MODE_CUT_IN, &AeSysView::OnAnnotateModeCutIn)
+ON_COMMAND(ID_ANNOTATE_MODE_CONSTRUCTION_LINE, &AeSysView::OnAnnotateModeConstructionLine)
+ON_COMMAND(ID_ANNOTATE_MODE_RETURN, &AeSysView::OnAnnotateModeReturn)
+ON_COMMAND(ID_ANNOTATE_MODE_ESCAPE, &AeSysView::OnAnnotateModeEscape)
 
-	ON_COMMAND(ID_PIPE_MODE_OPTIONS, &AeSysView::OnPipeModeOptions)
-	ON_COMMAND(ID_PIPE_MODE_LINE, &AeSysView::OnPipeModeLine)
-	ON_COMMAND(ID_PIPE_MODE_FITTING, &AeSysView::OnPipeModeFitting)
-	ON_COMMAND(ID_PIPE_MODE_RISE, &AeSysView::OnPipeModeRise)
-	ON_COMMAND(ID_PIPE_MODE_DROP, &AeSysView::OnPipeModeDrop)
-	ON_COMMAND(ID_PIPE_MODE_SYMBOL, &AeSysView::OnPipeModeSymbol)
-	ON_COMMAND(ID_PIPE_MODE_WYE, &AeSysView::OnPipeModeWye)
-	ON_COMMAND(ID_PIPE_MODE_RETURN, &AeSysView::OnPipeModeReturn)
-	ON_COMMAND(ID_PIPE_MODE_ESCAPE, &AeSysView::OnPipeModeEscape)
+ON_COMMAND(ID_PIPE_MODE_OPTIONS, &AeSysView::OnPipeModeOptions)
+ON_COMMAND(ID_PIPE_MODE_LINE, &AeSysView::OnPipeModeLine)
+ON_COMMAND(ID_PIPE_MODE_FITTING, &AeSysView::OnPipeModeFitting)
+ON_COMMAND(ID_PIPE_MODE_RISE, &AeSysView::OnPipeModeRise)
+ON_COMMAND(ID_PIPE_MODE_DROP, &AeSysView::OnPipeModeDrop)
+ON_COMMAND(ID_PIPE_MODE_SYMBOL, &AeSysView::OnPipeModeSymbol)
+ON_COMMAND(ID_PIPE_MODE_WYE, &AeSysView::OnPipeModeWye)
+ON_COMMAND(ID_PIPE_MODE_RETURN, &AeSysView::OnPipeModeReturn)
+ON_COMMAND(ID_PIPE_MODE_ESCAPE, &AeSysView::OnPipeModeEscape)
 
-	ON_COMMAND(ID_POWER_MODE_OPTIONS, &AeSysView::OnPowerModeOptions)
-	ON_COMMAND(ID_POWER_MODE_CIRCUIT, &AeSysView::OnPowerModeCircuit)
-	ON_COMMAND(ID_POWER_MODE_GROUND, &AeSysView::OnPowerModeGround)
-	ON_COMMAND(ID_POWER_MODE_HOT, &AeSysView::OnPowerModeHot)
-	ON_COMMAND(ID_POWER_MODE_SWITCH, &AeSysView::OnPowerModeSwitch)
-	ON_COMMAND(ID_POWER_MODE_NEUTRAL, &AeSysView::OnPowerModeNeutral)
-	ON_COMMAND(ID_POWER_MODE_HOME, &AeSysView::OnPowerModeHome)
-	ON_COMMAND(ID_POWER_MODE_RETURN, &AeSysView::OnPowerModeReturn)
-	ON_COMMAND(ID_POWER_MODE_ESCAPE, &AeSysView::OnPowerModeEscape)
+ON_COMMAND(ID_POWER_MODE_OPTIONS, &AeSysView::OnPowerModeOptions)
+ON_COMMAND(ID_POWER_MODE_CIRCUIT, &AeSysView::OnPowerModeCircuit)
+ON_COMMAND(ID_POWER_MODE_GROUND, &AeSysView::OnPowerModeGround)
+ON_COMMAND(ID_POWER_MODE_HOT, &AeSysView::OnPowerModeHot)
+ON_COMMAND(ID_POWER_MODE_SWITCH, &AeSysView::OnPowerModeSwitch)
+ON_COMMAND(ID_POWER_MODE_NEUTRAL, &AeSysView::OnPowerModeNeutral)
+ON_COMMAND(ID_POWER_MODE_HOME, &AeSysView::OnPowerModeHome)
+ON_COMMAND(ID_POWER_MODE_RETURN, &AeSysView::OnPowerModeReturn)
+ON_COMMAND(ID_POWER_MODE_ESCAPE, &AeSysView::OnPowerModeEscape)
 
-	ON_COMMAND(ID_DRAW2_MODE_OPTIONS, &AeSysView::OnDraw2ModeOptions)
-	ON_COMMAND(ID_DRAW2_MODE_JOIN, &AeSysView::OnDraw2ModeJoin)
-	ON_COMMAND(ID_DRAW2_MODE_WALL, &AeSysView::OnDraw2ModeWall)
-	ON_COMMAND(ID_DRAW2_MODE_RETURN, &AeSysView::OnDraw2ModeReturn)
-	ON_COMMAND(ID_DRAW2_MODE_ESCAPE, &AeSysView::OnDraw2ModeEscape)
+ON_COMMAND(ID_DRAW2_MODE_OPTIONS, &AeSysView::OnDraw2ModeOptions)
+ON_COMMAND(ID_DRAW2_MODE_JOIN, &AeSysView::OnDraw2ModeJoin)
+ON_COMMAND(ID_DRAW2_MODE_WALL, &AeSysView::OnDraw2ModeWall)
+ON_COMMAND(ID_DRAW2_MODE_RETURN, &AeSysView::OnDraw2ModeReturn)
+ON_COMMAND(ID_DRAW2_MODE_ESCAPE, &AeSysView::OnDraw2ModeEscape)
 
-	ON_COMMAND(ID_LPD_MODE_OPTIONS, &AeSysView::OnLpdModeOptions)
-	ON_COMMAND(ID_LPD_MODE_JOIN, &AeSysView::OnLpdModeJoin)
-	ON_COMMAND(ID_LPD_MODE_DUCT, &AeSysView::OnLpdModeDuct)
-	ON_COMMAND(ID_LPD_MODE_TRANSITION, &AeSysView::OnLpdModeTransition)
-	ON_COMMAND(ID_LPD_MODE_TAP, &AeSysView::OnLpdModeTap)
-	ON_COMMAND(ID_LPD_MODE_ELL, &AeSysView::OnLpdModeEll)
-	ON_COMMAND(ID_LPD_MODE_TEE, &AeSysView::OnLpdModeTee)
-	ON_COMMAND(ID_LPD_MODE_UP_DOWN, &AeSysView::OnLpdModeUpDown)
-	ON_COMMAND(ID_LPD_MODE_SIZE, &AeSysView::OnLpdModeSize)
-	ON_COMMAND(ID_LPD_MODE_RETURN, &AeSysView::OnLpdModeReturn)
-	ON_COMMAND(ID_LPD_MODE_ESCAPE, &AeSysView::OnLpdModeEscape)
+ON_COMMAND(ID_LPD_MODE_OPTIONS, &AeSysView::OnLpdModeOptions)
+ON_COMMAND(ID_LPD_MODE_JOIN, &AeSysView::OnLpdModeJoin)
+ON_COMMAND(ID_LPD_MODE_DUCT, &AeSysView::OnLpdModeDuct)
+ON_COMMAND(ID_LPD_MODE_TRANSITION, &AeSysView::OnLpdModeTransition)
+ON_COMMAND(ID_LPD_MODE_TAP, &AeSysView::OnLpdModeTap)
+ON_COMMAND(ID_LPD_MODE_ELL, &AeSysView::OnLpdModeEll)
+ON_COMMAND(ID_LPD_MODE_TEE, &AeSysView::OnLpdModeTee)
+ON_COMMAND(ID_LPD_MODE_UP_DOWN, &AeSysView::OnLpdModeUpDown)
+ON_COMMAND(ID_LPD_MODE_SIZE, &AeSysView::OnLpdModeSize)
+ON_COMMAND(ID_LPD_MODE_RETURN, &AeSysView::OnLpdModeReturn)
+ON_COMMAND(ID_LPD_MODE_ESCAPE, &AeSysView::OnLpdModeEscape)
 
-	ON_COMMAND(ID_EDIT_MODE_OPTIONS, &AeSysView::OnEditModeOptions)
-	ON_COMMAND(ID_EDIT_MODE_PIVOT, &AeSysView::OnEditModePivot)
-	ON_COMMAND(ID_EDIT_MODE_ROTCCW, &AeSysView::OnEditModeRotccw)
-	ON_COMMAND(ID_EDIT_MODE_ROTCW, &AeSysView::OnEditModeRotcw)
-	ON_COMMAND(ID_EDIT_MODE_MOVE, &AeSysView::OnEditModeMove)
-	ON_COMMAND(ID_EDIT_MODE_COPY, &AeSysView::OnEditModeCopy)
-	ON_COMMAND(ID_EDIT_MODE_FLIP, &AeSysView::OnEditModeFlip)
-	ON_COMMAND(ID_EDIT_MODE_REDUCE, &AeSysView::OnEditModeReduce)
-	ON_COMMAND(ID_EDIT_MODE_ENLARGE, &AeSysView::OnEditModeEnlarge)
-	ON_COMMAND(ID_EDIT_MODE_RETURN, &AeSysView::OnEditModeReturn)
-	ON_COMMAND(ID_EDIT_MODE_ESCAPE, &AeSysView::OnEditModeEscape)
+ON_COMMAND(ID_EDIT_MODE_OPTIONS, &AeSysView::OnEditModeOptions)
+ON_COMMAND(ID_EDIT_MODE_PIVOT, &AeSysView::OnEditModePivot)
+ON_COMMAND(ID_EDIT_MODE_ROTCCW, &AeSysView::OnEditModeRotccw)
+ON_COMMAND(ID_EDIT_MODE_ROTCW, &AeSysView::OnEditModeRotcw)
+ON_COMMAND(ID_EDIT_MODE_MOVE, &AeSysView::OnEditModeMove)
+ON_COMMAND(ID_EDIT_MODE_COPY, &AeSysView::OnEditModeCopy)
+ON_COMMAND(ID_EDIT_MODE_FLIP, &AeSysView::OnEditModeFlip)
+ON_COMMAND(ID_EDIT_MODE_REDUCE, &AeSysView::OnEditModeReduce)
+ON_COMMAND(ID_EDIT_MODE_ENLARGE, &AeSysView::OnEditModeEnlarge)
+ON_COMMAND(ID_EDIT_MODE_RETURN, &AeSysView::OnEditModeReturn)
+ON_COMMAND(ID_EDIT_MODE_ESCAPE, &AeSysView::OnEditModeEscape)
 
-	ON_COMMAND(ID_TRAP_MODE_REMOVE_ADD, &AeSysView::OnTrapModeRemoveAdd)
-	ON_COMMAND(ID_TRAP_MODE_POINT, &AeSysView::OnTrapModePoint)
-	ON_COMMAND(ID_TRAP_MODE_STITCH, &AeSysView::OnTrapModeStitch)
-	ON_COMMAND(ID_TRAP_MODE_FIELD, &AeSysView::OnTrapModeField)
-	ON_COMMAND(ID_TRAP_MODE_LAST, &AeSysView::OnTrapModeLast)
-	ON_COMMAND(ID_TRAP_MODE_ENGAGE, &AeSysView::OnTrapModeEngage)
-	ON_COMMAND(ID_TRAP_MODE_MODIFY, &AeSysView::OnTrapModeModify)
-	ON_COMMAND(ID_TRAP_MODE_ESCAPE, &AeSysView::OnTrapModeEscape)
-	ON_COMMAND(ID_TRAP_MODE_MENU, &AeSysView::OnTrapModeMenu)
+ON_COMMAND(ID_TRAP_MODE_REMOVE_ADD, &AeSysView::OnTrapModeRemoveAdd)
+ON_COMMAND(ID_TRAP_MODE_POINT, &AeSysView::OnTrapModePoint)
+ON_COMMAND(ID_TRAP_MODE_STITCH, &AeSysView::OnTrapModeStitch)
+ON_COMMAND(ID_TRAP_MODE_FIELD, &AeSysView::OnTrapModeField)
+ON_COMMAND(ID_TRAP_MODE_LAST, &AeSysView::OnTrapModeLast)
+ON_COMMAND(ID_TRAP_MODE_ENGAGE, &AeSysView::OnTrapModeEngage)
+ON_COMMAND(ID_TRAP_MODE_MODIFY, &AeSysView::OnTrapModeModify)
+ON_COMMAND(ID_TRAP_MODE_ESCAPE, &AeSysView::OnTrapModeEscape)
+ON_COMMAND(ID_TRAP_MODE_MENU, &AeSysView::OnTrapModeMenu)
 
-	ON_COMMAND(ID_TRAPR_MODE_REMOVE_ADD, &AeSysView::OnTraprModeRemoveAdd)
-	ON_COMMAND(ID_TRAPR_MODE_POINT, &AeSysView::OnTraprModePoint)
-	ON_COMMAND(ID_TRAPR_MODE_STITCH, &AeSysView::OnTraprModeStitch)
-	ON_COMMAND(ID_TRAPR_MODE_FIELD, &AeSysView::OnTraprModeField)
-	ON_COMMAND(ID_TRAPR_MODE_LAST, &AeSysView::OnTraprModeLast)
-	ON_COMMAND(ID_TRAPR_MODE_ENGAGE, &AeSysView::OnTraprModeEngage)
-	ON_COMMAND(ID_TRAPR_MODE_MENU, &AeSysView::OnTraprModeMenu)
-	ON_COMMAND(ID_TRAPR_MODE_MODIFY, &AeSysView::OnTraprModeModify)
-	ON_COMMAND(ID_TRAPR_MODE_ESCAPE, &AeSysView::OnTraprModeEscape)
+ON_COMMAND(ID_TRAPR_MODE_REMOVE_ADD, &AeSysView::OnTraprModeRemoveAdd)
+ON_COMMAND(ID_TRAPR_MODE_POINT, &AeSysView::OnTraprModePoint)
+ON_COMMAND(ID_TRAPR_MODE_STITCH, &AeSysView::OnTraprModeStitch)
+ON_COMMAND(ID_TRAPR_MODE_FIELD, &AeSysView::OnTraprModeField)
+ON_COMMAND(ID_TRAPR_MODE_LAST, &AeSysView::OnTraprModeLast)
+ON_COMMAND(ID_TRAPR_MODE_ENGAGE, &AeSysView::OnTraprModeEngage)
+ON_COMMAND(ID_TRAPR_MODE_MENU, &AeSysView::OnTraprModeMenu)
+ON_COMMAND(ID_TRAPR_MODE_MODIFY, &AeSysView::OnTraprModeModify)
+ON_COMMAND(ID_TRAPR_MODE_ESCAPE, &AeSysView::OnTraprModeEscape)
 
-	ON_COMMAND(ID_DIMENSION_MODE_OPTIONS, &AeSysView::OnDimensionModeOptions)
-	ON_COMMAND(ID_DIMENSION_MODE_ARROW, &AeSysView::OnDimensionModeArrow)
-	ON_COMMAND(ID_DIMENSION_MODE_LINE, &AeSysView::OnDimensionModeLine)
-	ON_COMMAND(ID_DIMENSION_MODE_DLINE, &AeSysView::OnDimensionModeDLine)
-	ON_COMMAND(ID_DIMENSION_MODE_DLINE2, &AeSysView::OnDimensionModeDLine2)
-	ON_COMMAND(ID_DIMENSION_MODE_EXTEN, &AeSysView::OnDimensionModeExten)
-	ON_COMMAND(ID_DIMENSION_MODE_RADIUS, &AeSysView::OnDimensionModeRadius)
-	ON_COMMAND(ID_DIMENSION_MODE_DIAMETER, &AeSysView::OnDimensionModeDiameter)
-	ON_COMMAND(ID_DIMENSION_MODE_ANGLE, &AeSysView::OnDimensionModeAngle)
-	ON_COMMAND(ID_DIMENSION_MODE_CONVERT, &AeSysView::OnDimensionModeConvert)
-	ON_COMMAND(ID_DIMENSION_MODE_RETURN, &AeSysView::OnDimensionModeReturn)
-	ON_COMMAND(ID_DIMENSION_MODE_ESCAPE, &AeSysView::OnDimensionModeEscape)
+ON_COMMAND(ID_DIMENSION_MODE_OPTIONS, &AeSysView::OnDimensionModeOptions)
+ON_COMMAND(ID_DIMENSION_MODE_ARROW, &AeSysView::OnDimensionModeArrow)
+ON_COMMAND(ID_DIMENSION_MODE_LINE, &AeSysView::OnDimensionModeLine)
+ON_COMMAND(ID_DIMENSION_MODE_DLINE, &AeSysView::OnDimensionModeDLine)
+ON_COMMAND(ID_DIMENSION_MODE_DLINE2, &AeSysView::OnDimensionModeDLine2)
+ON_COMMAND(ID_DIMENSION_MODE_EXTEN, &AeSysView::OnDimensionModeExten)
+ON_COMMAND(ID_DIMENSION_MODE_RADIUS, &AeSysView::OnDimensionModeRadius)
+ON_COMMAND(ID_DIMENSION_MODE_DIAMETER, &AeSysView::OnDimensionModeDiameter)
+ON_COMMAND(ID_DIMENSION_MODE_ANGLE, &AeSysView::OnDimensionModeAngle)
+ON_COMMAND(ID_DIMENSION_MODE_CONVERT, &AeSysView::OnDimensionModeConvert)
+ON_COMMAND(ID_DIMENSION_MODE_RETURN, &AeSysView::OnDimensionModeReturn)
+ON_COMMAND(ID_DIMENSION_MODE_ESCAPE, &AeSysView::OnDimensionModeEscape)
 
-	ON_COMMAND(ID_CUT_MODE_OPTIONS, &AeSysView::OnCutModeOptions)
-	ON_COMMAND(ID_CUT_MODE_TORCH, &AeSysView::OnCutModeTorch)
-	ON_COMMAND(ID_CUT_MODE_SLICE, &AeSysView::OnCutModeSlice)
-	ON_COMMAND(ID_CUT_MODE_FIELD, &AeSysView::OnCutModeField)
-	ON_COMMAND(ID_CUT_MODE_CLIP, &AeSysView::OnCutModeClip)
-	ON_COMMAND(ID_CUT_MODE_DIVIDE, &AeSysView::OnCutModeDivide)
-	ON_COMMAND(ID_CUT_MODE_RETURN, &AeSysView::OnCutModeReturn)
-	ON_COMMAND(ID_CUT_MODE_ESCAPE, &AeSysView::OnCutModeEscape)
+ON_COMMAND(ID_CUT_MODE_OPTIONS, &AeSysView::OnCutModeOptions)
+ON_COMMAND(ID_CUT_MODE_TORCH, &AeSysView::OnCutModeTorch)
+ON_COMMAND(ID_CUT_MODE_SLICE, &AeSysView::OnCutModeSlice)
+ON_COMMAND(ID_CUT_MODE_FIELD, &AeSysView::OnCutModeField)
+ON_COMMAND(ID_CUT_MODE_CLIP, &AeSysView::OnCutModeClip)
+ON_COMMAND(ID_CUT_MODE_DIVIDE, &AeSysView::OnCutModeDivide)
+ON_COMMAND(ID_CUT_MODE_RETURN, &AeSysView::OnCutModeReturn)
+ON_COMMAND(ID_CUT_MODE_ESCAPE, &AeSysView::OnCutModeEscape)
 
-	ON_COMMAND(ID_FIXUP_MODE_OPTIONS, &AeSysView::OnFixupModeOptions)
-	ON_COMMAND(ID_FIXUP_MODE_REFERENCE, &AeSysView::OnFixupModeReference)
-	ON_COMMAND(ID_FIXUP_MODE_MEND, &AeSysView::OnFixupModeMend)
-	ON_COMMAND(ID_FIXUP_MODE_CHAMFER, &AeSysView::OnFixupModeChamfer)
-	ON_COMMAND(ID_FIXUP_MODE_FILLET, &AeSysView::OnFixupModeFillet)
-	ON_COMMAND(ID_FIXUP_MODE_SQUARE, &AeSysView::OnFixupModeSquare)
-	ON_COMMAND(ID_FIXUP_MODE_PARALLEL, &AeSysView::OnFixupModeParallel)
-	ON_COMMAND(ID_FIXUP_MODE_RETURN, &AeSysView::OnFixupModeReturn)
-	ON_COMMAND(ID_FIXUP_MODE_ESCAPE, &AeSysView::OnFixupModeEscape)
+ON_COMMAND(ID_FIXUP_MODE_OPTIONS, &AeSysView::OnFixupModeOptions)
+ON_COMMAND(ID_FIXUP_MODE_REFERENCE, &AeSysView::OnFixupModeReference)
+ON_COMMAND(ID_FIXUP_MODE_MEND, &AeSysView::OnFixupModeMend)
+ON_COMMAND(ID_FIXUP_MODE_CHAMFER, &AeSysView::OnFixupModeChamfer)
+ON_COMMAND(ID_FIXUP_MODE_FILLET, &AeSysView::OnFixupModeFillet)
+ON_COMMAND(ID_FIXUP_MODE_SQUARE, &AeSysView::OnFixupModeSquare)
+ON_COMMAND(ID_FIXUP_MODE_PARALLEL, &AeSysView::OnFixupModeParallel)
+ON_COMMAND(ID_FIXUP_MODE_RETURN, &AeSysView::OnFixupModeReturn)
+ON_COMMAND(ID_FIXUP_MODE_ESCAPE, &AeSysView::OnFixupModeEscape)
 
-	ON_COMMAND(ID_NODAL_MODE_ADDREMOVE, &AeSysView::OnNodalModeAddRemove)
-	ON_COMMAND(ID_NODAL_MODE_POINT, &AeSysView::OnNodalModePoint)
-	ON_COMMAND(ID_NODAL_MODE_LINE, &AeSysView::OnNodalModeLine)
-	ON_COMMAND(ID_NODAL_MODE_AREA, &AeSysView::OnNodalModeArea)
-	ON_COMMAND(ID_NODAL_MODE_MOVE, &AeSysView::OnNodalModeMove)
-	ON_COMMAND(ID_NODAL_MODE_COPY, &AeSysView::OnNodalModeCopy)
-	ON_COMMAND(ID_NODAL_MODE_TOLINE, &AeSysView::OnNodalModeToLine)
-	ON_COMMAND(ID_NODAL_MODE_TOPOLYGON, &AeSysView::OnNodalModeToPolygon)
-	ON_COMMAND(ID_NODAL_MODE_EMPTY, &AeSysView::OnNodalModeEmpty)
-	ON_COMMAND(ID_NODAL_MODE_ENGAGE, &AeSysView::OnNodalModeEngage)
-	ON_COMMAND(ID_NODAL_MODE_RETURN, &AeSysView::OnNodalModeReturn)
-	ON_COMMAND(ID_NODAL_MODE_ESCAPE, &AeSysView::OnNodalModeEscape)
-	ON_COMMAND(ID_INSERT_BLOCKREFERENCE, &AeSysView::OnInsertBlockreference)
+ON_COMMAND(ID_NODAL_MODE_ADDREMOVE, &AeSysView::OnNodalModeAddRemove)
+ON_COMMAND(ID_NODAL_MODE_POINT, &AeSysView::OnNodalModePoint)
+ON_COMMAND(ID_NODAL_MODE_LINE, &AeSysView::OnNodalModeLine)
+ON_COMMAND(ID_NODAL_MODE_AREA, &AeSysView::OnNodalModeArea)
+ON_COMMAND(ID_NODAL_MODE_MOVE, &AeSysView::OnNodalModeMove)
+ON_COMMAND(ID_NODAL_MODE_COPY, &AeSysView::OnNodalModeCopy)
+ON_COMMAND(ID_NODAL_MODE_TOLINE, &AeSysView::OnNodalModeToLine)
+ON_COMMAND(ID_NODAL_MODE_TOPOLYGON, &AeSysView::OnNodalModeToPolygon)
+ON_COMMAND(ID_NODAL_MODE_EMPTY, &AeSysView::OnNodalModeEmpty)
+ON_COMMAND(ID_NODAL_MODE_ENGAGE, &AeSysView::OnNodalModeEngage)
+ON_COMMAND(ID_NODAL_MODE_RETURN, &AeSysView::OnNodalModeReturn)
+ON_COMMAND(ID_NODAL_MODE_ESCAPE, &AeSysView::OnNodalModeEscape)
+ON_COMMAND(ID_INSERT_BLOCKREFERENCE, &AeSysView::OnInsertBlockreference)
 END_MESSAGE_MAP()
 
-AeSysView::AeSysView() noexcept 
-{
+AeSysView::AeSysView() noexcept {
 	m_Background = ViewBackgroundColor;
 
 	SetEditModeMirrorScaleFactors(-1.0, 1.0, 1.0);
@@ -337,7 +336,7 @@ AeSysView::~AeSysView() = default;
 void AeSysView::AssertValid() const {
 	CView::AssertValid();
 }
-void AeSysView::Dump(CDumpContext & dc) const {
+void AeSysView::Dump(CDumpContext& dc) const {
 	CView::Dump(dc);
 }
 AeSysDoc* AeSysView::GetDocument() const {
@@ -355,7 +354,7 @@ void AeSysView::OnDraw(CDC* deviceContext) {
 	try {
 		auto Document {GetDocument()};
 		ASSERT_VALID(Document);
-		
+
 		BackgroundImageDisplay(deviceContext);
 		DisplayGrid(deviceContext);
 
@@ -407,7 +406,6 @@ bool AeSysView::regenAbort() const noexcept {
 }
 
 LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
-
 	if (m_bInRegen) { return 1; }
 
 	m_bInRegen = true;
@@ -462,7 +460,7 @@ void AeSysView::OnPaint() {
 	CView::OnPaint();
 }
 
-BOOL AeSysView::OnEraseBkgnd(CDC * deviceContext) {
+BOOL AeSysView::OnEraseBkgnd(CDC* deviceContext) {
 	// TODO: Add your message handler code here and/or call default
 
 	return __super::OnEraseBkgnd(deviceContext);
@@ -575,7 +573,7 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 		const auto dFieldHeight {View->fieldHeight()};
 		const auto bPersp {View->isPerspective()};
 		const auto dLensLength {View->lensLength()};
-		
+
 		if (vecDir.isZeroLength()) {
 			vecDir = View->viewingMatrix().inverse().getCsZAxis();
 			if (vecDir.isZeroLength())
@@ -635,7 +633,7 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 inline OdGsViewPtr overallView(OdGsDevice* device) {
 	OdGsViewPtr OverallView;
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(device)};
-	
+
 	if (PaperLayoutHelper.get()) {
 		OverallView = PaperLayoutHelper->overallView();
 	}
@@ -655,11 +653,11 @@ void AeSysView::setViewportBorderProperties() {
 	auto ActiveView {activeView(m_LayoutHelper)};
 
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
-	
+
 	if (NumberOfViews > 1) {
 		for (auto ViewIndex = 0; ViewIndex < NumberOfViews; ++ViewIndex) {
 			OdGsViewPtr View {m_LayoutHelper->viewAt(ViewIndex)};
-			
+
 			// If the model layout is active, and it has more then one viewport then make their borders visible.
 			// If a paper layout is active, then make visible the borders of all but the overall viewport.
 
@@ -683,7 +681,7 @@ OdGiContext::PStyleType AeSysView::plotStyleType() const {
 	return getDatabase()->getPSTYLEMODE() ? kPsByColor : kPsByName;
 }
 
-void AeSysView::plotStyle(OdDbStub * psNameId, OdPsPlotStyleData & plotStyleData) const {
+void AeSysView::plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const {
 	OdGiContextForDbDatabase::plotStyle(psNameId, plotStyleData);
 	if (m_bPlotGrayscale) { // #4203 : make grayscale preview if printer doesn't support color mode
 		plotStyleData.setColorPolicy(plotStyleData.colorPolicy() | 2);
@@ -691,12 +689,11 @@ void AeSysView::plotStyle(OdDbStub * psNameId, OdPsPlotStyleData & plotStyleData
 }
 
 void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
-	
 	if (m_pPlotStyleTable.get() && !bForceReload) { return; }
 
 	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
 	OdSmartPtr<OdDbLayout> CurrentLayout;
-	
+
 	if (!layout) {
 		OdDbBlockTableRecordPtr pLayoutBlock = Database->getActiveLayoutBTRId().safeOpenObject();
 		CurrentLayout = pLayoutBlock->getLayoutId().safeOpenObject();
@@ -724,30 +721,29 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 
 CString GetRegistryAcadProfilesKey(); // external defined in AeSys
 
-static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subkey, const wchar_t* name, unsigned long& value) noexcept {
+static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subKey, const wchar_t* name, unsigned long& value) noexcept {
 	auto ReturnValue {false};
 	HKEY KeyHandle {nullptr};
 
-	if (RegOpenKeyExW(key, subkey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
+	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
 		unsigned long ValueSize {sizeof(unsigned long)};
 
-		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, reinterpret_cast<LPBYTE>(& value), &ValueSize) == ERROR_SUCCESS) { ReturnValue = true; }
+		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, reinterpret_cast<LPBYTE>(&value), &ValueSize) == ERROR_SUCCESS) { ReturnValue = true; }
 
 		RegCloseKey(KeyHandle);
 	}
 	return ReturnValue;
 }
 
-static bool GetAcadProfileRegistryUnsignedLong(const wchar_t* subkey, const wchar_t* name, unsigned long& value) {
-	OdString Subkey {GetRegistryAcadProfilesKey()};
+static bool GetAcadProfileRegistryUnsignedLong(const wchar_t* subKey, const wchar_t* name, unsigned long& value) {
+	auto SubKey {GetRegistryAcadProfilesKey()};
 
-	if (!Subkey.isEmpty()) {
-
-		if (subkey) {
-			Subkey += L"\\";
-			Subkey += subkey;
+	if (!SubKey.IsEmpty()) {
+		if (subKey) {
+			SubKey += L"\\";
+			SubKey += subKey;
 		}
-		return GetRegistryUnsignedLong(HKEY_CURRENT_USER, Subkey, name, value);
+		return GetRegistryUnsignedLong(HKEY_CURRENT_USER, SubKey, name, value);
 	}
 	return false;
 }
@@ -772,10 +768,10 @@ unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
 void AeSysView::fillContextualColors(OdGiContextualColorsImpl* pCtxColors) {
 	OdGiContextForDbDatabase::fillContextualColors(pCtxColors); // Fill by defaults first
 	unsigned long Value {0};
-#define SET_CTXCLR_ISOK(entry, subkey, name) \
-	if (GetAcadProfileRegistryUnsignedLong(subkey, name, Value)) { pCtxColors->setContextualColor(OdGiContextualColorsImpl::entry, (ODCOLORREF)Value); }
-#define SET_CTXCLRTINT_ISOK(entry, subkey, name) \
-	if (GetAcadProfileRegistryUnsignedLong(subkey, name, Value)) { pCtxColors->setContextualColorTint(OdGiContextualColorsImpl::entry, Value != 0); }
+#define SET_CTXCLR_ISOK(entry, subKey, name) \
+	if (GetAcadProfileRegistryUnsignedLong(subKey, name, Value)) { pCtxColors->setContextualColor(OdGiContextualColorsImpl::entry, (ODCOLORREF) Value); }
+#define SET_CTXCLRTINT_ISOK(entry, subKey, name) \
+	if (GetAcadProfileRegistryUnsignedLong(subKey, name, Value)) { pCtxColors->setContextualColorTint(OdGiContextualColorsImpl::entry, Value != 0); }
 
 	switch (pCtxColors->visualType()) {
 		case OdGiContextualColorsImpl::k2dModel:
@@ -942,7 +938,7 @@ void AeSysView::createDevice(bool recreate) {
 				if (DeviceProperties->has(L"DynamicSubEntHlt")) {
 					DeviceProperties->putAt(L"DynamicSubEntHlt", OdRxVariantValue(theApp.enableDynamicSubEntHlt()));
 				}
-			/* <tas="MaterialsEditor required for additional GLES device settings">
+				/* <tas="MaterialsEditor required for additional GLES device settings">
 				if (DeviceProperties->has(L"UseCompositeMetafiles")) {
 					DeviceProperties->putAt(L"UseCompositeMetafiles", OdRxVariantValue(odExGLES2CompositeMfSetting()));
 				}
@@ -979,7 +975,7 @@ void AeSysView::createDevice(bool recreate) {
 
 			m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
 
-		/* <tas="MaterialsEditor required for additional GLES device settings">
+			/* <tas="MaterialsEditor required for additional GLES device settings">
 			if (!odExLoadGsStateSetting().isEmpty()) {
 				if (m_LayoutHelper->supportLayoutGsStateSaving()) {
 					auto File {::odrxSystemServices()->createFile(odExLoadGsStateSetting(), Oda::kFileRead, Oda::kShareDenyWrite, Oda::kOpenExisting)};
@@ -1005,8 +1001,7 @@ void AeSysView::createDevice(bool recreate) {
 			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext());
 		}
 		m_layoutId = m_LayoutHelper->layoutId();
-
-		const ODCOLORREF* Palette = theApp.curPalette();
+		auto Palette {theApp.curPalette()};
 		ODGSPALETTE PaletteCopy;
 		PaletteCopy.insert(PaletteCopy.begin(), Palette, Palette + 256);
 		PaletteCopy[0] = theApp.activeBackground();
@@ -1053,8 +1048,7 @@ void AeSysView::createDevice(bool recreate) {
 			// Release exist views to detach from Gs and keep released slots free.
 			m_prevViews.clear();
 		}
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError& Error) {
 		destroyDevice();
 		theApp.reportError(L"Graphic System Initialization Error", Error);
 	}
@@ -1123,9 +1117,6 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 
 	BmpTilesGen tilesGen(pBmpDevice, rc);
 	pBmpDevice->onSize(rc);
-
-	OdGiRasterImagePtr pImg;
-
 	const int dx {(step.m_max.x - step.m_min.x)};
 	const int dy {(step.m_max.y - step.m_min.y)};
 
@@ -1144,7 +1135,7 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 	BitmapInfo.bmiHeader.biSizeImage = 0;
 	BitmapInfo.bmiHeader.biXPelsPerMeter = 0;
 	BitmapInfo.bmiHeader.biYPelsPerMeter = 0;
-	
+
 	auto bmpDC = CreateCompatibleDC(hdc);
 
 	if (bmpDC) {
@@ -1161,9 +1152,9 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 					const auto maxy {miny + dy};
 
 					// render wider then a tile area to reduce gaps in lines.
-					pImg = tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2));
+					auto RasterImage {tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2))};
 
-					pImg->scanLines(static_cast<unsigned char*>(pBuf), 0, static_cast<unsigned long>(tileHeight));
+					RasterImage->scanLines(static_cast<unsigned char*>(pBuf), 0, static_cast<unsigned long>(tileHeight));
 					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), tileWidth, tileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
 				}
 			}
@@ -1190,8 +1181,8 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		bool m_bPrevGsModelState;
 		ODCOLORREF m_crPrevBkgndColor;
 
-		KeepPrevGiContextParams(OdGiContextForDbDatabase* pGiCtx) :
-			m_pGiCtx(pGiCtx) {
+		KeepPrevGiContextParams(OdGiContextForDbDatabase* pGiCtx)
+			: m_pGiCtx(pGiCtx) {
 			m_bPrevGsModelState = pGiCtx->useGsModel();
 			m_crPrevBkgndColor = pGiCtx->paletteBackground();
 		}
@@ -1288,7 +1279,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			auto pTo {m_pPrinterDevice->viewAt(0)};
 			pTo->setLineweightToDcScale(odmax(LogicalPixelsX, LogicalPixelsY) / kMmPerInch * 0.01);
 		}
-		
+
 		if (printInformation->m_bPreview) { // Apply paper rotation to paper parameters
 			switch (Layout->plotRotation()) {
 				case OdDbPlotSettings::k0degrees:
@@ -1322,7 +1313,6 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			auto plotRotation {Layout->plotRotation()};
 
 			if (plotRotation == OdDbPlotSettings::k90degrees || plotRotation == OdDbPlotSettings::k270degrees) {
-				
 				auto LandOrientation {DeviceCapabilitiesW(printInformation->m_pPD->GetDeviceName(), printInformation->m_pPD->GetPortName(), DC_ORIENTATION, nullptr, nullptr)};
 
 				if (LandOrientation == 270) {
@@ -1385,10 +1375,10 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 
 		const auto ret {GetClipRgn(deviceContext->m_hDC, newClipRgn)};
 		const auto bNullMarginsClipBox {!ret || ret && GetLastError() != ERROR_SUCCESS};
-		
+
 		auto dScreenFactorH {1.0};
 		auto dScreenFactorW {1.0};
-		
+
 		if (bNullMarginsClipBox) { // printing way
 			const auto x {LeftMargin - PrinterLeftMargin};
 			const auto y {TopMargin - PrinterTopMargin};
@@ -1447,7 +1437,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		const auto IsPlanView {/*ViewTarget.isEqualTo(OdGePoint3d(0, 0, 0)) &&*/ ViewDirection.normal().isEqualTo(OdGeVector3d::kZAxis)};
 
 		const auto OldTarget = ViewTarget;
-		
+
 		auto FieldWidth(ViewportWidth);
 		auto FieldHeight(ViewportHeight);
 
@@ -1510,7 +1500,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			IsCentered = false;
 			IsScaledToFit = false; // kLayout doesn't support pIter.
 		}
-		if (plotType != OdDbPlotSettings::kView) {// AlexR : 3952
+		if (plotType != OdDbPlotSettings::kView) { // AlexR : 3952
 			ViewTarget = ViewTarget.orthoProject(OdGePlane(OldTarget, ViewDirection));
 		}
 		// in plotpaper units
@@ -1544,7 +1534,6 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			dry1 = dry2 - FieldHeight * ScaleFactor;
 		}
 		if (!SkipClipping) {
-
 			if (IsPrint180Degrees || IsPrint90Degrees) {
 				ClipBox.left = static_cast<long>(ClipBox.right - (drx2 - drx1) * koeffX * dScreenFactorW);
 				ClipBox.bottom = static_cast<long>(ClipBox.top + (dry2 - dry1) * koeffY * dScreenFactorH);
@@ -1574,7 +1563,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		const auto y2 {static_cast<long>((-offsetY + dry2) * koeffY)};
 
 		OdGsDCRect ViewportRectangle;
-		
+
 		if (IsPrint180Degrees || IsPrint90Degrees) {
 			ViewportRectangle = OdGsDCRect(x2, x1, y1, y2);
 		} else if (IsPrint0Degrees || IsPrint270Degrees) {
@@ -1597,7 +1586,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	CView::OnPrint(deviceContext, printInformation);
 }
 
-void AeSysView::OnEndPrinting(CDC * deviceContext, CPrintInfo * printInformation) {
+void AeSysView::OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) {
 	PopViewTransform();
 	ViewportPopActive();
 }
@@ -1605,7 +1594,7 @@ void AeSysView::OnEndPrinting(CDC * deviceContext, CPrintInfo * printInformation
 BOOL AeSysView::OnPreparePrinting(CPrintInfo* printInformation) {
 	if (m_Plot) {
 		CPrintInfo PrintInfo;
-		
+
 		if (theApp.GetPrinterDeviceDefaults(&PrintInfo.m_pPD->m_pd)) {
 			auto hDC {PrintInfo.m_pPD->m_pd.hDC};
 
@@ -1665,18 +1654,17 @@ bool AeSysView::canClose() const {
 }
 
 class SaveViewParams {
-protected:
+  protected:
 	AeSysView* m_View;
 	HCURSOR m_Cursor;
 
-public:
-
+  public:
 	SaveViewParams(AeSysView* view, OdEdInputTracker* inputTracker, HCURSOR cursor, bool snap)
 		: m_View(view)
 		, m_Cursor(view->cursor()) {
 		view->track(inputTracker);
 		view->setCursor(cursor);
-		
+
 		if (snap) {
 			view->m_editor.InitializeSnapping(view->getActiveTopView(), inputTracker);
 		}
@@ -1689,14 +1677,14 @@ public:
 };
 
 #define BLINK_CURSOR_TIMER 888
-#define BLINK_CURSOR_RATE  GetCaretBlinkTime()
+#define BLINK_CURSOR_RATE GetCaretBlinkTime()
 
 void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, unsigned long time);
 
 class SaveViewParams2 : public SaveViewParams {
 	bool m_bTimerSet;
 
-public:
+  public:
 	SaveViewParams2(AeSysView* view, OdEdStringTracker* tracker, HCURSOR cursor)
 		: SaveViewParams(view, tracker, cursor, false) {
 		if (tracker) {
@@ -1747,7 +1735,7 @@ unsigned long AeSysView::getKeyState() noexcept {
 	return KeyState;
 }
 
-OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointTracker * tracker) {
+OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
 	m_sPrompt.empty();
 	OdSaveState<OdString> savePrompt(m_sPrompt);
 	putString(prompt);
@@ -1773,12 +1761,13 @@ OdGePoint3d AeSysView::getPoint(const OdString & prompt, int options, OdEdPointT
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++));
+		while (theApp.OnIdle(Idle++))
+			;
 	}
 	throw OdEdCancel();
 }
 
-OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTracker * tracker) {
+OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
 	m_sPrompt.empty();
 	OdSaveState<OdString> savePrompt(m_sPrompt);
 	putString(prompt);
@@ -1805,7 +1794,8 @@ OdString AeSysView::getString(const OdString & prompt, int options, OdEdStringTr
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++));
+		while (theApp.OnIdle(Idle++))
+			;
 	}
 	throw OdEdCancel();
 }
@@ -1839,7 +1829,7 @@ void AeSysView::OnRefresh() {
 	PostMessageW(WM_PAINT);
 }
 
-bool AeSysView::beginDragCallback(const OdGePoint3d & point) {
+bool AeSysView::beginDragCallback(const OdGePoint3d& point) {
 	OdSaveState<Mode> saved_m_mode(m_mode, kDragDrop);
 	GetDocument()->startDrag(point);
 	return true;
@@ -1864,7 +1854,7 @@ struct ReactorSort {
 
 void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transformMatrix) {
 	std::sort(objects.begin(), objects.end(), ReactorSort());
-	
+
 	for (auto& object : objects) {
 		OdDbEntityPtr Entity {object.safeOpenObject(OdDb::kForWrite)};
 		Entity->transformBy(transformMatrix);
@@ -1915,7 +1905,6 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint
 
 DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) {
 	if (m_mode == kQuiescent || m_mode == kDragDrop) {
-
 		if (AeSysDoc::ClipboardData::isAcadDataAvailable(dataObject)) {
 			return static_cast<DROPEFFECT>(GetKeyState(VK_CONTROL) & 0xff00 ? DROPEFFECT_COPY : DROPEFFECT_MOVE);
 		}
@@ -1936,7 +1925,7 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 
 	const auto BackgroundColor {DeviceContext->GetBkColor()};
 	DeviceContext->SetBkColor(ViewBackgroundColor);
-	
+
 	auto PrimitiveState {0};
 	auto DrawMode {0};
 
@@ -1986,27 +1975,25 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 	ReleaseDC(DeviceContext);
 }
 
-void AeSysView::respond(const OdString & s) {
+void AeSysView::respond(const OdString& s) {
 	m_response.m_type = Response::kString;
 	m_response.m_string = s;
 }
 
-CRect AeSysView::viewportRect() const
-{
+CRect AeSysView::viewportRect() const {
 	CRect ClientRectangle;
 	GetClientRect(&ClientRectangle);
 	return ClientRectangle;
 }
 
-CRect AeSysView::viewRect(OdGsView* view)
-{
+CRect AeSysView::viewRect(OdGsView* view) {
 	OdGePoint3d LowerLeftPoint;
 	OdGePoint3d UpperRightPoint;
 	view->getViewport(reinterpret_cast<OdGePoint2d&>(LowerLeftPoint), reinterpret_cast<OdGePoint2d&>(UpperRightPoint));
 	const auto ScreenMatrix {view->screenMatrix()};
 	LowerLeftPoint.transformBy(ScreenMatrix);
 	UpperRightPoint.transformBy(ScreenMatrix);
-	
+
 	return {OdRoundToLong(LowerLeftPoint.x), OdRoundToLong(UpperRightPoint.y), OdRoundToLong(UpperRightPoint.x), OdRoundToLong(LowerLeftPoint.y)};
 }
 
@@ -2104,7 +2091,7 @@ void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 				break;
 			case kGetPoint:
 				m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
-				
+
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
 					if (!m_editor.ToUcsToWorld(m_response.m_Point))
 						break;
@@ -2114,15 +2101,15 @@ void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 				break;
 			case kGetString:
 			case kDragDrop:
-//			default:
-//				m_LeftButton = true;
-//				m_MousePosition = point;
-//				m_MouseClick = point;
-//				
-//				if (m_ZoomWindow == true) {
-//					m_Points.clear();
-//					m_Points.append(GetWorldCoordinates(point));
-//				}
+				//			default:
+				//				m_LeftButton = true;
+				//				m_MousePosition = point;
+				//				m_MouseClick = point;
+				//
+				//				if (m_ZoomWindow == true) {
+				//					m_Points.clear();
+				//					m_Points.append(GetWorldCoordinates(point));
+				//				}
 				break;
 		}
 	} else {
@@ -2131,16 +2118,13 @@ void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 }
 
 void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
-	
 	if (AeSys::CustomLButtonUpCharacters.IsEmpty()) {
-
 		__super::OnLButtonUp(flags, point);
 
 		if (m_mode == kGetPoint && GetCapture() == this) {
 			m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
-			
-			if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
 
+			if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
 				if (!m_editor.ToUcsToWorld(m_response.m_Point)) { return; }
 			}
 			m_response.m_type = Response::kPoint;
@@ -2148,16 +2132,16 @@ void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
 		}
 		m_editor.SetEntityCenters();
 
-//		m_LeftButton = false;
-//		if (m_ZoomWindow == true) {
-//			m_Points.append(GetWorldCoordinates(point));
-//			if (m_Points.length() == 2) // Zoom rectangle has been completely defined
-//			{
-//				ZoomWindow(m_Points[0], m_Points[1]);
-//				m_ZoomWindow = false;
-//				m_Points.clear();
-//			}
-//		}
+		//		m_LeftButton = false;
+		//		if (m_ZoomWindow == true) {
+		//			m_Points.append(GetWorldCoordinates(point));
+		//			if (m_Points.length() == 2) // Zoom rectangle has been completely defined
+		//			{
+		//				ZoomWindow(m_Points[0], m_Points[1]);
+		//				m_ZoomWindow = false;
+		//				m_Points.clear();
+		//			}
+		//		}
 	} else {
 		DoCustomMouseClick(AeSys::CustomLButtonUpCharacters);
 	}
@@ -2178,17 +2162,14 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 	DisplayOdometer();
 
 	if (m_MousePosition != point) {
-
 		switch (m_mode) {
 			case kQuiescent:
 				m_editor.OnMouseMove(flags, point.x, point.y);
 				break;
-			case kGetPoint:
-			{
+			case kGetPoint: {
 				auto Point {m_editor.ToEyeToWorld(point.x, point.y)};
 
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-
 					if (!m_editor.ToUcsToWorld(Point)) { return; }
 				}
 				if (!GETBIT(m_inpOptions, OdEd::kGptNoOSnap)) {
@@ -2216,8 +2197,7 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 			rcZoom.NormalizeRect();
 
 			ClientDeviceContext.DrawFocusRect(&rcZoom);
-		}
-		else if (m_MiddleButton == true) {
+		} else if (m_MiddleButton == true) {
 			OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
 
 			OdGeVector3d DollyVector(static_cast<double>(m_MousePosition.x) - static_cast<double>(point.x), static_cast<double>(m_MousePosition.y) - static_cast<double>(point.y), 0.0);
@@ -2229,8 +2209,7 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 			m_ViewTransform.BuildTransformMatrix();
 
 			PostMessageW(WM_PAINT);
-		}
-		else if (m_RightButton == true) {
+		} else if (m_RightButton == true) {
 			Orbit((static_cast<double>(m_MousePosition.y) - static_cast<double>(point.y)) / 100., (static_cast<double>(m_MousePosition.x) - static_cast<double>(point.x)) / 100.);
 			PostMessageW(WM_PAINT);
 		}
@@ -2292,8 +2271,7 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 			m_RubberbandLogicalEndPoint = point;
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-		}
-		else if (m_RubberbandType == Rectangles) {
+		} else if (m_RubberbandType == Rectangles) {
 			auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
@@ -2334,9 +2312,9 @@ void AeSysView::OnRButtonDown(unsigned flags, CPoint point) {
 void AeSysView::OnRButtonUp(unsigned flags, CPoint point) {
 	if (AeSys::CustomRButtonUpCharacters.IsEmpty()) {
 		m_RightButton = false;
-	
+
 		// <tas="Context menus using right mouse button goes here."/>
-		
+
 		__super::OnRButtonUp(flags, point);
 	} else {
 		DoCustomMouseClick(AeSys::CustomRButtonUpCharacters);
@@ -2382,7 +2360,6 @@ bool AeSysView::isModelSpaceView() const {
 }
 
 OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
-
 	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
 		return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId) | kDrawableFilterAppRangeStart;
 	}
@@ -2390,7 +2367,6 @@ OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
 }
 
 unsigned long AeSysView::drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) {
-	
 	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
 		getDatabase()->pageObjects();
 	}
@@ -2414,11 +2390,10 @@ void AeSysView::OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) {
 	CView::OnActivateFrame(state, deactivateFrame);
 }
 
-void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deactiveView) {
+void AeSysView::OnActivateView(BOOL activate, CView* activateView, CView* deactiveView) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
 	if (activate) {
-
 		if (CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 			theApp.BuildModeSpecificAcceleratorTable();
 		}
@@ -2430,7 +2405,7 @@ void AeSysView::OnActivateView(BOOL activate, CView * activateView, CView * deac
 	CView::OnActivateView(activate, activateView, deactiveView);
 }
 
-void AeSysView::OnSetFocus(CWnd * oldWindow) {
+void AeSysView::OnSetFocus(CWnd* oldWindow) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 
 	if (CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
@@ -2517,7 +2492,7 @@ EoGeMatrix3d AeSysView::ModelToWorldTransform() const noexcept {
 	return m_ModelTransform.ModelMatrix();
 }
 
-void AeSysView::PushModelTransform(const EoGeMatrix3d & transformation) {
+void AeSysView::PushModelTransform(const EoGeMatrix3d& transformation) {
 	m_ModelTransform.PushModelTransform(transformation);
 }
 
@@ -2576,19 +2551,19 @@ double AeSysView::OverviewVMin() noexcept {
 	return m_OverviewViewTransform.FieldHeightMinimum();
 }
 
-CPoint AeSysView::DoViewportProjection(const EoGePoint4d & point) const noexcept {
+CPoint AeSysView::DoViewportProjection(const EoGePoint4d& point) const noexcept {
 	return m_Viewport.DoProjection(point);
 }
 
-void AeSysView::DoViewportProjection(CPoint * pnt, int iPts, EoGePoint4d * pt) const noexcept {
+void AeSysView::DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept {
 	m_Viewport.DoProjection(pnt, iPts, pt);
 }
 
-void AeSysView::DoViewportProjection(CPoint * pnt, EoGePoint4dArray & points) const {
+void AeSysView::DoViewportProjection(CPoint* pnt, EoGePoint4dArray& points) const {
 	m_Viewport.DoProjection(pnt, points);
 }
 
-OdGePoint3d AeSysView::DoViewportProjectionInverse(const OdGePoint3d & point) const noexcept {
+OdGePoint3d AeSysView::DoViewportProjectionInverse(const OdGePoint3d& point) const noexcept {
 	auto Point {point};
 	m_Viewport.DoProjectionInverse(Point);
 	return Point;
@@ -2690,7 +2665,7 @@ void AeSysView::Dolly() {
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 	auto Position(FirstView->position());
 	Position.transformBy(FirstView->worldToDeviceMatrix());
-	
+
 	auto x {static_cast<int>(OdRound(Position.x))};
 	auto y {static_cast<int>(OdRound(Position.y))};
 
@@ -3386,7 +3361,6 @@ void AeSysView::OnUpdateViewPenwidths(CCmdUI* pCmdUI) {
 }
 
 EoDbGroup* AeSysView::RemoveLastVisibleGroup() {
-
 	if (m_VisibleGroupList.IsEmpty()) {
 		theApp.AddStringToMessageList(IDS_MSG_NO_DET_GROUPS_IN_VIEW);
 		return nullptr;
@@ -3488,7 +3462,7 @@ double AeSysView::SelectApertureSize() const noexcept {
 	return m_SelectApertureSize;
 }
 
-EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d & point) {
+EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 	OdGePoint3d ptEng;
 
 	m_EngagedGroup = nullptr;
@@ -3499,7 +3473,7 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d & point) {
 
 	auto TransformMatrix {ModelViewMatrix()};
 	TransformMatrix.invert();
-	
+
 	auto SelectionApertureSize {m_SelectApertureSize};
 
 	EoDbHatch::SetEdgeToEvaluate(0);
@@ -3553,10 +3527,10 @@ std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
 			auto Primitive {Group->GetNext(PrimitivePosition)};
-			
+
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				OdGePoint3d PointOnLine;
-				
+
 				if (Primitive->SelectUsingPoint(ptView, this, PointOnLine)) {
 					return {Group, dynamic_cast<EoDbLine*>(Primitive)};
 				}
@@ -3564,7 +3538,6 @@ std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint
 		}
 	}
 	return {nullptr, nullptr};
-
 }
 
 EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
@@ -3727,7 +3700,6 @@ void AeSysView::OnFind() {
 }
 
 void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText) {
-
 	if (findComboBox == nullptr) { return; }
 
 	const auto IsLastCommandFromButton {CMFCToolBar::IsLastCommandFromButton(findComboBox)};
@@ -3745,7 +3717,6 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 			ComboBox->GetLBText(static_cast<int>(Position), LBText);
 
 			if (LBText.GetLength() == findText.getLength()) {
-
 				if (static_cast<const wchar_t*>(LBText) == findText) { break; }
 			}
 			Position++;
@@ -3789,7 +3760,7 @@ void AeSysView::RubberBandingDisable() {
 	}
 }
 
-void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d & point, ERubs type) {
+void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, ERubs type) {
 	EoGePoint4d ptView(point, 1.0);
 
 	ModelViewTransformPoint(ptView);
@@ -3831,7 +3802,7 @@ OdGePoint3d AeSysView::GetWorldCoordinates(CPoint point) {
 	return WCSPoint;
 }
 
-void AeSysView::SetCursorPosition(const OdGePoint3d & cursorPosition) {
+void AeSysView::SetCursorPosition(const OdGePoint3d& cursorPosition) {
 	EoGePoint4d ptView(cursorPosition, 1.0);
 	ModelViewTransformPoint(ptView);
 
@@ -4020,7 +3991,7 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 	}
 }
 
-	const ODCOLORREF* AeSysView::CurrentPalette() const {
+const ODCOLORREF* AeSysView::CurrentPalette() const {
 	const ODCOLORREF* Color {odcmAcadPalette(m_Background)};
 	return Color;
 }
@@ -4049,7 +4020,6 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 	auto Vector = point2 - point1;
 
 	if (OdNonZero(Vector.x) && OdNonZero(Vector.y)) {
-
 		auto NewPosition = point1 + Vector / 2.;
 		Vector.x = fabs(Vector.x);
 		Vector.y = fabs(Vector.y);

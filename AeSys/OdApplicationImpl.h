@@ -3,7 +3,6 @@
 // From OdaMfcApp\OdaMfcExportImpl.h  (last compare 19.12)
 
 #include "stdafx.h"
-#include "AeSysDoc.h"
 
 #include "OdApplication.h"
 

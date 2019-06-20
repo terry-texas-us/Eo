@@ -5,8 +5,6 @@
 #include "EoDlgPipeOptions.h"
 #include "EoDlgPipeSymbol.h"
 
-#include "Ge/GeCircArc3d.h"
-
 void AeSysView::OnPipeModeOptions() {
 	EoDlgPipeOptions Dialog;
 	Dialog.m_PipeTicSize = m_PipeTicSize;

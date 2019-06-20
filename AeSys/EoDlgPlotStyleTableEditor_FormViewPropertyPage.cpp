@@ -51,7 +51,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 					return;
 				}
 				for (unsigned PlotStyleIndex = 0; PlotStyleIndex < PlotStyleTable->plotStyleSize(); PlotStyleIndex++) {
-					OdPsPlotStylePtr PlotStyle {PlotStyleTable->plotStyleAt(static_cast<int>(PlotStyleIndex))};
+					auto PlotStyle {PlotStyleTable->plotStyleAt(static_cast<int>(PlotStyleIndex))};
 					CString PlotStyleName = static_cast<const wchar_t*>(PlotStyle->localizedName());
 					PlotStyleName.MakeLower();
 

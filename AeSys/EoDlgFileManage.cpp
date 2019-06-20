@@ -213,7 +213,7 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 			{
 				CRect rcItem(drawItemStruct->rcItem);
 				CDC DeviceContext;
-				const COLORREF BackgroundColor {GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
+				const auto BackgroundColor {GetSysColor(drawItemStruct->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW)};
 				DeviceContext.Attach(drawItemStruct->hDC);
 				CBrush BackgroundBrush(BackgroundColor);
 				DeviceContext.FillRect(rcItem, &BackgroundBrush);
@@ -223,7 +223,7 @@ void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawIte
 				const auto ItemID {gsl::narrow_cast<int>(drawItemStruct->itemID)};
 
 				if (ItemID != -1) { // The text color is stored as the item data.
-					const COLORREF TextColor {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
+					const auto TextColor {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
 					DeviceContext.SetBkColor(BackgroundColor);
 					DeviceContext.SetTextColor(TextColor);
 					for (auto labelIndex = 0; labelIndex < m_NumberOfColumns; ++labelIndex) {
