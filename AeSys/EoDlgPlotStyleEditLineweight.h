@@ -9,7 +9,7 @@ struct EoLineweightData {
 	EoLineweightData()
 		: m_OldIdx(-1)
 		, m_NewIdx(-1)
-		, m_Value(0.0) {};
+		, m_Value(0.0) {}
 };
 
 class EoDlgPlotStyleEditLineweight : public CDialog {
@@ -20,7 +20,6 @@ class EoDlgPlotStyleEditLineweight : public CDialog {
 	unsigned m_InitialSelection;
 	EoLineweightData* m_LineweightData;
 
-   public:
 	EoDlgPlotStyleEditLineweight(CWnd* parent = nullptr);
 	virtual ~EoDlgPlotStyleEditLineweight() {}
 
@@ -30,23 +29,22 @@ class EoDlgPlotStyleEditLineweight : public CDialog {
 	CButton m_MillimetrsButton;
 	CButton m_InchesButton;
 
-   protected:
+protected:
 	BOOL DestroyWindow() final;
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 
-   protected:
 	void InitializeListCtrl();
-	int InsertLineweightAt(int index, const OdString& lineweight, const bool isUse);
+	int InsertLineweightAt(int index, const OdString& lineweight, bool isUse);
 	void InitializeLineweightsListCtrlImages();
 
-   public:
+public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept;
-	void SetUnitIntoList(const bool isInchUnits);
+	void SetUnitIntoList(bool isInchUnits);
 	void SetInitialSelection(int selection) noexcept;
 
-   protected:
+protected:
 	void OnRadioMillimetrs();
 	void OnRadioInches();
 	void OnButtonEditlineweight();

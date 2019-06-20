@@ -841,10 +841,8 @@ double AeSysView::LengthOfTransition(EJust justification, double slope, Section 
 	return Length;
 }
 bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, double angularTolerance, EoGeLineSeg3d & leftLine, EoGeLineSeg3d & rightLine) {
-	EoGeLineSeg3d Line;
-
-	EoDbLine* LeftLinePrimitive = nullptr;
-	EoDbLine* RightLinePrimitive = nullptr;
+	EoDbLine* LeftLinePrimitive {nullptr};
+	EoDbLine* RightLinePrimitive {nullptr};
 	auto DirectedRelationship {0};
 
 	auto TestLine {testLinePrimitive->LineSeg()};
@@ -861,30 +859,30 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine * testLinePrimitive, doubl
 			if (Primitive == testLinePrimitive || !Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) { continue; }
 
 			auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
-			Line = LinePrimitive->LineSeg();
-			if (Line.startPoint() == TestLine.startPoint() || Line.startPoint() == TestLine.endPoint()) { // Exchange points
-				const auto Point {Line.startPoint()};
-				Line.SetStartPoint(Line.endPoint());
-				Line.SetEndPoint(Point);
-			} else if (Line.endPoint() != TestLine.startPoint() && Line.endPoint() != TestLine.endPoint()) { //	No endpoint coincides with one of the test line endpoints
+			auto LineSeg {LinePrimitive->LineSeg()};
+			if (LineSeg.startPoint() == TestLine.startPoint() || LineSeg.startPoint() == TestLine.endPoint()) { // Exchange points
+				const auto Point {LineSeg.startPoint()};
+				LineSeg.SetStartPoint(LineSeg.endPoint());
+				LineSeg.SetEndPoint(Point);
+			} else if (LineSeg.endPoint() != TestLine.startPoint() && LineSeg.endPoint() != TestLine.endPoint()) { //	No endpoint coincides with one of the test line endpoints
 				continue;
 			}
-			const auto LineAngle {fmod(Line.AngleFromXAxis_xy(), OdaPI)};
+			const auto LineAngle {fmod(LineSeg.AngleFromXAxis_xy(), OdaPI)};
 			
 			if (fabs(fabs(TestLineAngle - LineAngle) - OdaPI2) <= angularTolerance) {
 				if (LeftLinePrimitive == nullptr) { // No qualifiers yet
-					DirectedRelationship = TestLine.DirectedRelationshipOf(Line.startPoint());
+					DirectedRelationship = TestLine.DirectedRelationshipOf(LineSeg.startPoint());
 					LeftLinePrimitive = LinePrimitive;
-					leftLine = Line;
+					leftLine = LineSeg;
 				} else {
-					if (DirectedRelationship == TestLine.DirectedRelationshipOf(Line.startPoint())) { // Both lines are on the same side of test line
+					if (DirectedRelationship == TestLine.DirectedRelationshipOf(LineSeg.startPoint())) { // Both lines are on the same side of test line
 						RightLinePrimitive = LinePrimitive;
-						rightLine = Line;
+						rightLine = LineSeg;
 						if (rightLine.DirectedRelationshipOf(leftLine.startPoint()) != 1) {
 							RightLinePrimitive = LeftLinePrimitive;
 							rightLine = leftLine;
 							LeftLinePrimitive = LinePrimitive;
-							leftLine = Line;
+							leftLine = LineSeg;
 						}
 						return true;
 					}

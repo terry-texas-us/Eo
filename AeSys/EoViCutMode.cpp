@@ -131,7 +131,7 @@ void AeSysView::OnCutModeField() {
 		auto GroupsOut {new EoDbGroupList};
 		auto GroupsIn {new EoDbGroupList};
 		POSITION posSegPrv;
-		for (POSITION posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
+		for (auto posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
 			Group = GetNextVisibleGroup(posSeg);
 
 			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }

@@ -105,7 +105,7 @@ protected:
 	void FillPlotStyleCombo(bool fillCombo);
 	void FillViewCombo(bool fillCombo);
 	void FillMMInches();
-	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, const CString pattern);
+	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, CString pattern);
 	void FillWindowArea();
 
 	bool ViewsExist() const;

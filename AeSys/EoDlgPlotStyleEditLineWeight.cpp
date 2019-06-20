@@ -131,7 +131,7 @@ void EoDlgPlotStyleEditLineweight::SetInitialSelection(int selection) noexcept {
 	m_InitialSelection = static_cast<unsigned>(!selection ? selection : selection - 1);
 }
 
-void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
+void EoDlgPlotStyleEditLineweight::SetUnitIntoList(bool isInchUnits) {
 	CString Lineweight;
 	const auto NumberOfLineweights {m_LineweightsListCtrl.GetItemCount()};
 
@@ -183,12 +183,11 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	m_LineweightsListCtrl.InsertColumn(1, L"In Use", LVCFMT_LEFT, 80, 0);
 	
 	OdGeIntArray useLineWeightIndex;
-	OdPsPlotStylePtr PlotStyle;
 	OdPsPlotStyleData OdPsData;
 	const auto NumberOfPlotStyles {m_PlotStyleTable->plotStyleSize()};
 
 	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
-		PlotStyle = m_PlotStyleTable->plotStyleAt(static_cast<int>(PlotStyleIndex));
+		auto PlotStyle {m_PlotStyleTable->plotStyleAt(gsl::narrow_cast<int>(PlotStyleIndex))};
 		PlotStyle->getData(OdPsData);
 		const auto value {static_cast<int>(OdPsData.lineweight()) - 1};
 		unsigned nIndex;
@@ -216,7 +215,7 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	m_LineweightsListCtrl.SetItemState(static_cast<int>(m_InitialSelection), LVIS_SELECTED, LVIS_SELECTED);
 }
 
-int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const OdString& lineweight, const bool isUse) {
+int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const OdString& lineweight, bool isUse) {
 	m_LineweightsListCtrl.LockWindowUpdate();	
 
 	LVITEMW lvItem;

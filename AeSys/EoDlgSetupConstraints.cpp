@@ -90,16 +90,12 @@ void EoDlgSetupConstraints::OnOK() {
 
 	wchar_t szBuf[32];
 
-	double X;
-	double Y;
-	double Z;
-
 	m_GridXSnapSpacing.GetWindowTextW(szBuf, 32);
-	X = theApp.ParseLength(CurrentUnits, szBuf);
+	auto X {theApp.ParseLength(CurrentUnits, szBuf)};
 	m_GridYSnapSpacing.GetWindowTextW(szBuf, 32);
-	Y = theApp.ParseLength(CurrentUnits, szBuf);
+	auto Y {theApp.ParseLength(CurrentUnits, szBuf)};
 	m_GridZSnapSpacing.GetWindowTextW(szBuf, 32);
-	Z = theApp.ParseLength(CurrentUnits, szBuf);
+	auto Z {theApp.ParseLength(CurrentUnits, szBuf)};
 	m_ActiveView->SetGridSnapSpacing(X, Y, Z);
 
 	m_GridXPointSpacing.GetWindowTextW(szBuf, 32);

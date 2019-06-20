@@ -51,7 +51,7 @@ bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTabl
 	return m_page1.SetPlotStyleTable(pPsTab) && m_page2.SetPlotStyleTable(pPsTab);
 }
 
-void EoDlgPlotStyleManager::SetFileBufPath(const OdString sFilePath) {
+void EoDlgPlotStyleManager::SetFileBufPath(OdString sFilePath) {
 	m_page1.SetFileBufPath(sFilePath);
 	m_page2.SetFileBufPath(sFilePath);
 }

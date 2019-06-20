@@ -42,10 +42,6 @@ void AeSysView::OnDraw2ModeJoin() {
 }
 
 void AeSysView::OnDraw2ModeWall() {
-	OdGePoint3d ptEnd;
-	OdGePoint3d ptBeg;
-	const OdGePoint3d ptInt;
-
 	auto CurrentPnt {GetCursorPosition()};
 
 	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
@@ -116,8 +112,7 @@ void AeSysView::OnDraw2ModeWall() {
 			m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_EndSectionGroup);
-		ptBeg = m_EndSectionLine->StartPoint();
-		ptEnd = m_EndSectionLine->EndPoint();
+		const auto StartPoint {m_EndSectionLine->StartPoint()};
 
 		auto Line {EoDbLine::Create(BlockTableRecord, m_CurrentLeftLine.startPoint(), m_CurrentLeftLine.endPoint())};
 		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
@@ -135,7 +130,7 @@ void AeSysView::OnDraw2ModeWall() {
 		BlockTableRecord->appendOdDbEntity(LineEntity);
 		auto LinePrimitive {EoDbLine::Create(LineEntity)};
 
-		if (EoGeLineSeg3d(m_PreviousPnt, CurrentPnt).DirectedRelationshipOf(ptBeg) < 0) {
+		if (EoGeLineSeg3d(m_PreviousPnt, CurrentPnt).DirectedRelationshipOf(StartPoint) < 0) {
 			m_EndSectionLine->SetEndPoint(m_CurrentRightLine.endPoint());
 			LinePrimitive->SetStartPoint(m_CurrentLeftLine.endPoint());
 		} else {

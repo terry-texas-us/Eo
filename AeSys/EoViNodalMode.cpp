@@ -299,11 +299,9 @@ void AeSysView::OnNodalModeReturn() {
 					const auto Mask {MaskedPrimitive->GetMask()};
 					Primitive->TranslateUsingMask(Translate, Mask);
 				}
-				EoGeUniquePoint* Point;
-
 				auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
 				while (UniquePointPosition != nullptr) {
-					Point = GetDocument()->GetNextUniquePoint(UniquePointPosition);
+					auto Point {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
 					Point->m_Point += Translate;
 				}
 				SetCursorPosition(CurrentPnt);

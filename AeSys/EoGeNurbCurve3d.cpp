@@ -34,7 +34,6 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 		auto G {0.0};
 		auto H {0.0};
 		auto Z {0.0};
-		double T;
 		double W1;
 		double W2;
 		const auto Step {spline.knotAt(KnotsLength) / (double(iPts) - 1.0)};
@@ -46,7 +45,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 				else
 					Weight[128 * i + 1] = 1.0;
 			}
-			for (T = spline.knotAt(i4); T <= spline.knotAt(i4 + 1) - Step; T += Step) {
+			for (auto T = spline.knotAt(i4); T <= spline.knotAt(i4 + 1) - Step; T += Step) {
 				iPts2++;
 				for (auto i2 = 2; i2 <= Order; i2++) {
 					for (auto i = 0; i <= NumberOfControlPoints - 1; i++) { // Determine first term of weighting function equation

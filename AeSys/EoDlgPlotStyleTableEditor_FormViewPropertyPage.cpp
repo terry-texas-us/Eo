@@ -39,24 +39,23 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 				auto pPsDlg {static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner))};
 				const auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage())};
 				const auto PlotStyleTable {ActivePage->GetPlotStyleTable()};
-				OdPsPlotStylePtr PlotStyle;
 				auto hDInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_DINFO)};
 				auto hSInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_SINFO)};
 				auto hOkBtn {GetDlgItem(hwnd, IDOK)};
 
-				CString newName = sString;
-				newName.MakeLower();
+				CString NewName {sString};
+				NewName.MakeLower();
 
-				if (newName.IsEmpty()) {
+				if (NewName.IsEmpty()) {
 					EnableWindow(hOkBtn, FALSE);
 					return;
 				}
 				for (unsigned PlotStyleIndex = 0; PlotStyleIndex < PlotStyleTable->plotStyleSize(); PlotStyleIndex++) {
-					PlotStyle = PlotStyleTable->plotStyleAt(static_cast<int>(PlotStyleIndex));
-					CString name = static_cast<const wchar_t*>(PlotStyle->localizedName());
-					name.MakeLower();
+					OdPsPlotStylePtr PlotStyle {PlotStyleTable->plotStyleAt(static_cast<int>(PlotStyleIndex))};
+					CString PlotStyleName = static_cast<const wchar_t*>(PlotStyle->localizedName());
+					PlotStyleName.MakeLower();
 
-					if (name == newName) {
+					if (PlotStyleName == NewName) {
 						CString sInfo;
 						sInfo.Format(L"A style named <%s> already exists.", sString);
 						SetWindowTextW(hDInfo, sInfo);

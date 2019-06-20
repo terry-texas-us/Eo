@@ -487,8 +487,7 @@ void AeSysView::OnDimensionModeConvert() {
 				}
 				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 					auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
-					EoGeReferenceSystem ReferenceSystem;
-					ReferenceSystem = DimensionPrimitive->ReferenceSystem();
+					auto ReferenceSystem {DimensionPrimitive->ReferenceSystem()};
 					OdGeVector3d PlaneNormal;
 					ReferenceSystem.GetUnitNormal(PlaneNormal);
 

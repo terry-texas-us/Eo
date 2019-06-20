@@ -825,24 +825,22 @@ void EoDlgPageSetup::OnCancel() {
 bool EoDlgPageSetup::IsModelSpacePageSetup() const {
 	return m_PlotSettings.modelType();
 }
-bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString> & arrFiles, const CString pattern) {
+bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString> & arrFiles, CString pattern) {
 	WIN32_FIND_DATA FindFileData;
 	::ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
-	auto Folder {pattern.Left(pattern.ReverseFind(L'\\') + 1)};
+	const auto Folder {pattern.Left(pattern.ReverseFind(L'\\') + 1)};
 	auto FileHandle {FindFirstFileW(pattern, &FindFileData)};
-	CString File;
-
-	BOOL bFind = true;
+	auto Find {TRUE};
 	auto IsFind {false};
 	do {
 		if (FindFileData.dwFileAttributes & ~FILE_ATTRIBUTE_DIRECTORY) {
-			File = Folder + FindFileData.cFileName;
+			auto File {Folder + FindFileData.cFileName};
 			arrFiles.append(File);
 			IsFind = true;
 		}
-		bFind = FindNextFile(FileHandle, &FindFileData);
+		Find = FindNextFile(FileHandle, &FindFileData);
 
-	} while (bFind && bFind != ERROR_NO_MORE_FILES);
+	} while (Find && Find != ERROR_NO_MORE_FILES);
 	FindClose(FileHandle);
 	return IsFind;
 }
