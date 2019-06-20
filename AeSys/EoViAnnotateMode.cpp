@@ -100,8 +100,7 @@ void AeSysView::OnAnnotateModeBubble() {
 	} else {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-
-		OdGePoint3d pt(CurrentPnt);
+		auto pt {CurrentPnt};
 
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP4, EoViAnn_points[0], pt)) {
 			if (m_PreviousOp == ID_OP3) {
@@ -123,12 +122,11 @@ void AeSysView::OnAnnotateModeBubble() {
 	MajorAxis.normalize();
 
 	if (!CurrentText.IsEmpty()) {
-		OdGeVector3d MinorAxis {MajorAxis};
+		auto MinorAxis {MajorAxis};
 		MinorAxis.rotateBy(OdaPI2, ActiveViewPlaneNormal);
 
 		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis * .06, MinorAxis * .1);
-
-		OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(CurrentText));
+		auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(CurrentText))};
 
 		Text->setNormal(ActiveViewPlaneNormal);
 		Text->setRotation(ReferenceSystem.Rotation());
@@ -186,8 +184,7 @@ void AeSysView::OnAnnotateModeHook() {
 	} else {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-
-		OdGePoint3d pt(CurrentPnt);
+		auto pt {CurrentPnt};
 
 		if (CorrectLeaderEndpoints(m_PreviousOp, ID_OP5, EoViAnn_points[0], pt)) {
 			if (m_PreviousOp == ID_OP3) {
@@ -229,7 +226,7 @@ void AeSysView::OnAnnotateModeUnderline() {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
-	EoDbText* pText = SelectTextUsingPoint(CurrentPnt);
+	auto pText {SelectTextUsingPoint(CurrentPnt)};
 	if (pText != nullptr) {
 		OdGePoint3dArray Underline;
 		pText->GetBoundingBox(Underline, GapSpaceFactor());
@@ -264,9 +261,9 @@ void AeSysView::OnAnnotateModeBox() {
 	} else {
 		OdGePoint3dArray ptsBox1;
 		OdGePoint3dArray ptsBox2;
-		bool bG1Flg = false;
-		bool bG2Flg = false;
-		EoDbText* pText = SelectTextUsingPoint(EoViAnn_points[0]);
+		auto bG1Flg {false};
+		auto bG2Flg {false};
+		auto pText {SelectTextUsingPoint(EoViAnn_points[0])};
 		if (pText != nullptr) {
 			pText->GetBoundingBox(ptsBox1, GapSpaceFactor());
 			bG1Flg = true;
@@ -340,35 +337,33 @@ void AeSysView::OnAnnotateModeCutIn() {
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 
-		const int PrimitiveState = pstate.Save();
+		const auto PrimitiveState {pstate.Save()};
 
 		if (!CurrentText.IsEmpty()) {
 			auto LineSeg {EngagedLine->LineSeg()};
-			double dAng = LineSeg.AngleFromXAxis_xy();
+			auto dAng {LineSeg.AngleFromXAxis_xy()};
 			if (dAng > .25 * Oda2PI && dAng < .75 * Oda2PI)
 				dAng += OdaPI;
 
 			const auto PlaneNormal {CameraDirection()};
 			auto MinorAxis {ViewUp()};
 			MinorAxis.rotateBy(dAng, PlaneNormal);
-			OdGeVector3d MajorAxis = MinorAxis;
+			auto MajorAxis {MinorAxis};
 			MajorAxis.rotateBy(-OdaPI2, PlaneNormal);
 			MajorAxis *= .06;
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
 
-			const short ColorIndex = pstate.ColorIndex();
+			const auto ColorIndex {pstate.ColorIndex()};
 			pstate.SetColorIndex(DeviceContext, 2);
-
-			EoDbFontDefinition FontDefinition = pstate.FontDefinition();
+			auto FontDefinition {pstate.FontDefinition()};
 			FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
 			FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
-
-			EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
+			auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
 			CharacterCellDefinition.SetRotationAngle(0.0);
 			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-			OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(CurrentText));
+			auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(CurrentText))};
 
 			Text->setHeight(ReferenceSystem.YDirection().length());
 			Text->setRotation(ReferenceSystem.Rotation());
@@ -387,7 +382,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			OdGePoint3dArray BoundingBox;
 			TextPrimitive->GetBoundingBox(BoundingBox, GapSpaceFactor());
 
-			const double dGap = OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length();
+			const auto dGap {OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length()};
 
 			BoundingBox[0] = ProjectToward(CurrentPnt, EngagedLine->StartPoint(), dGap / 2.);
 			BoundingBox[1] = ProjectToward(CurrentPnt, EngagedLine->EndPoint(), dGap / 2.);
@@ -461,16 +456,15 @@ void AeSysView::OnAnnotateModeEscape() {
 }
 
 bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d & startPoint, OdGePoint3d & endPoint) const {
-	const double LineSegmentLength = OdGeVector3d(endPoint - startPoint).length();
-
-	double BeginDistance = 0.0;
+	const auto LineSegmentLength {OdGeVector3d(endPoint - startPoint).length()};
+	auto BeginDistance {0.0};
 
 	if (beginType == ID_OP4) {
 		BeginDistance = BubbleRadius();
 	} else if (beginType == ID_OP5) {
 		BeginDistance = CircleRadius();
 	}
-	double EndDistance = 0.0;
+	auto EndDistance {0.0};
 
 	if (endType == ID_OP4) {
 		EndDistance = BubbleRadius();
@@ -483,10 +477,9 @@ bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d &
 		if (EndDistance != 0.0)
 			endPoint = ProjectToward(endPoint, startPoint, EndDistance);
 		return true;
-	} else {
-		theApp.AddModeInformationToMessageList();
-		return false;
 	}
+	theApp.AddModeInformationToMessageList();
+	return false;
 }
 double AeSysView::BubbleRadius() const noexcept {
 	return m_BubbleRadius;

@@ -62,7 +62,7 @@ void AeSysView::OnEditModePivot() {
 }
 
 void AeSysView::OnEditModeRotccw() {
-	OdGePoint3d PivotPoint(GetDocument()->TrapPivotPoint());
+	auto PivotPoint {GetDocument()->TrapPivotPoint()};
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -76,7 +76,7 @@ void AeSysView::OnEditModeRotccw() {
 }
 
 void AeSysView::OnEditModeRotcw() {
-	OdGePoint3d PivotPoint(GetDocument()->TrapPivotPoint());
+	auto PivotPoint {GetDocument()->TrapPivotPoint()};
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
@@ -124,7 +124,7 @@ void AeSysView::OnEditModeCopy() {
 }
 
 void AeSysView::OnEditModeFlip() {
-	OdGePoint3d PivotPoint(GetDocument()->TrapPivotPoint());
+	auto PivotPoint {GetDocument()->TrapPivotPoint()};
 
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());

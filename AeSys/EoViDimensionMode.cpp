@@ -19,8 +19,7 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 
 	EoGeLineSeg3d LineSeg;
 	OdGePoint3d ptProj;
-
-	double Relationship {0.0};
+	auto Relationship {0.0};
 
 	auto GroupPosition {Document->GetFirstWorkLayerGroupPosition()};
 	while (GroupPosition != nullptr) {
@@ -182,7 +181,7 @@ void AeSysView::OnDimensionModeDLine() {
 
 void AeSysView::OnDimensionModeDLine2() {
 	auto Document {GetDocument()};
-	const OdGePoint3d CurrentPnt = GetCursorPosition();
+	const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousDimensionCommand == 0) {
 		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
 		PreviousDimensionPosition = CurrentPnt;
@@ -410,23 +409,20 @@ void AeSysView::OnDimensionModeAngle() {
 				// <tas="This LineEndItem is wrong"</tas>
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
 
-				const int PrimitiveState = pstate.Save();
-
-				EoDbFontDefinition FontDefinition = pstate.FontDefinition();
+				const auto PrimitiveState {pstate.Save()};
+				auto FontDefinition {pstate.FontDefinition()};
 				FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
 				FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
 				pstate.SetFontDefinition(DeviceContext, FontDefinition);
-
-				EoDbCharacterCellDefinition CharacterCellDefinition = pstate.CharacterCellDefinition();
+				auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
 				CharacterCellDefinition.SetRotationAngle(0.0);
 				CharacterCellDefinition.SetHeight(.1);
 				pstate.SetCharacterCellDefinition(CharacterCellDefinition);
 
-				const OdGePoint3d ptPvt = ProjectToward(CurrentPnt, CenterPoint, -.25);
+				const auto ptPvt {ProjectToward(CurrentPnt, CenterPoint, -.25)};
 
 				EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
-
-				OdDbTextPtr Text = EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(theApp.FormatAngle(Angle)));
+				auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(theApp.FormatAngle(Angle)))};
 
 				Text->setNormal(PlaneNormal);
 				Text->setRotation(ReferenceSystem.Rotation());
@@ -488,7 +484,8 @@ void AeSysView::OnDimensionModeConvert() {
 					delete Primitive;
 					PreviousDimensionPosition = ptProj;
 					return;
-				} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
+				}
+				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 					auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
 					EoGeReferenceSystem ReferenceSystem;
 					ReferenceSystem = DimensionPrimitive->ReferenceSystem();

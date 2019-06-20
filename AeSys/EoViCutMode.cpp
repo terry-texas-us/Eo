@@ -101,8 +101,8 @@ void AeSysView::OnCutModeSlice() {
 }
 
 void AeSysView::OnCutModeField() {
-	CDC* DeviceContext = GetDC();
-	const OdGePoint3d ptCur = GetCursorPosition();
+	auto DeviceContext {GetDC()};
+	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP4) {
 		rPrvPos = ptCur;
 		RubberBandingStartAtEnable(ptCur, Rectangles);
@@ -115,26 +115,23 @@ void AeSysView::OnCutModeField() {
 		rUR.x = EoMax(rPrvPos.x, ptCur.x);
 		rUR.y = EoMax(rPrvPos.y, ptCur.y);
 
-		const OdGePoint3d ptLL = rLL;
-		const OdGePoint3d ptUR = rUR;
+		const auto ptLL {rLL};
+		const auto ptUR {rUR};
 
 		EoDbGroup* Group {nullptr};
 		EoDbPrimitive* Primitive {nullptr};
-
-		int iInts {0};
+		auto iInts {0};
 		OdGePoint3d	Intersections[10];
 
 		auto Document {GetDocument()};
 
-		const short ColorIndex = pstate.ColorIndex();
-		const short LinetypeIndex = pstate.LinetypeIndex();
+		const auto ColorIndex {pstate.ColorIndex()};
+		const auto LinetypeIndex {pstate.LinetypeIndex()};
 
 		auto GroupsOut {new EoDbGroupList};
 		auto GroupsIn {new EoDbGroupList};
-
-		POSITION posSeg;
 		POSITION posSegPrv;
-		for (posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
+		for (POSITION posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
 			Group = GetNextVisibleGroup(posSeg);
 
 			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
@@ -148,7 +145,7 @@ void AeSysView::OnCutModeField() {
 
 				Group->RemoveAt(posPrimPrv);
 
-				for (int i = 0; i < iInts; i += 2) {
+				for (auto i = 0; i < iInts; i += 2) {
 					
 					if (i != 0) { GroupsOut->RemoveTail(); }
 					
@@ -182,22 +179,22 @@ void AeSysView::OnCutModeField() {
 	}
 }
 void AeSysView::OnCutModeClip() {
-	CDC* DeviceContext = GetDC();
-	const OdGePoint3d ptCur = GetCursorPosition();
+	auto DeviceContext {GetDC()};
+	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP7) {
 		rPrvPos = ptCur;
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP7);
 	} else {
-		const OdGePoint3d pt1 = rPrvPos;
-		const OdGePoint3d pt2 = ptCur;
+		const auto pt1 {rPrvPos};
+		const auto pt2 {ptCur};
 
 		if (pt1 == pt2) { return; }
 
 		double dRel[2];
 		OdGePoint3d	ptCut[2];
 
-		const short ColorIndex = pstate.ColorIndex();
-		const short LinetypeIndex = pstate.LinetypeIndex();
+		const auto ColorIndex {pstate.ColorIndex()};
+		const auto LinetypeIndex {pstate.LinetypeIndex()};
 
 		auto Document {GetDocument()};
 
@@ -237,7 +234,7 @@ void AeSysView::OnCutModeClip() {
 				ptCut[1].transformBy(TransformMatrix);
 
 				if (dRel[0] > dRel[1]) {
-					const OdGePoint3d ptTmp = ptCut[0];
+					const auto ptTmp {ptCut[0]};
 					ptCut[0] = ptCut[1]; ptCut[1] = ptTmp;
 				}
 				Group->RemoveAt(posPrim2);

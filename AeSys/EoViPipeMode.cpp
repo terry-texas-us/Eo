@@ -303,7 +303,7 @@ void AeSysView::OnPipeModeSymbol() {
 
 	auto SymbolBeginPoint {ProjectToward(PointOnSection, BeginPoint, SymbolSize[m_CurrentPipeSymbolIndex])};
 	auto SymbolEndPoint {ProjectToward(PointOnSection, EndPoint, SymbolSize[m_CurrentPipeSymbolIndex])};
-	const double TicSize = m_PipeTicSize;
+	const auto TicSize {m_PipeTicSize};
 
 	HorizontalSection->SetEndPoint(SymbolBeginPoint);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, HorizontalSection);
@@ -1030,7 +1030,7 @@ void AeSysView::OnPipeModeWye() {
 				OdGePoint3d PointAtBend;
 
 				if (DistanceBetweenSectionPoints - .25 <= DistanceToSection) {
-					const double d3 = DistanceBetweenSectionPoints > .25 ? DistanceBetweenSectionPoints : .125;
+					const auto d3 {DistanceBetweenSectionPoints > 0.25 ? DistanceBetweenSectionPoints : 0.125};
 					PointAtBend = ProjectToward(BeginPointProjectedToSection, m_PipeModePoints[0], d3);
 					PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, d3);
 				} else {
@@ -1220,21 +1220,18 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d & point, E
 
 bool AeSysView::GenerateTicMark(const OdGePoint3d & startPoint, const OdGePoint3d & endPoint, double distance, EoDbGroup * group) {
 	const auto PointOnLine {ProjectToward(startPoint, endPoint, distance)};
+	auto Projection {endPoint - PointOnLine};
 
-	OdGeVector3d Projection(endPoint - PointOnLine);
+	const auto DistanceToEndPoint {Projection.length()};
 
-	const double DistanceToEndPoint = Projection.length();
-
-	const bool MarkGenerated = DistanceToEndPoint > DBL_EPSILON;
+	const auto MarkGenerated {DistanceToEndPoint > DBL_EPSILON};
 	if (MarkGenerated) {
 		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 		Projection *= m_PipeTicSize / DistanceToEndPoint;
-
-		OdGePoint3d TicStartPoint(PointOnLine);
+		auto TicStartPoint {PointOnLine};
 		TicStartPoint += OdGeVector3d(Projection.y, -Projection.x, 0.0);
-
-		OdGePoint3d TicEndPoint(PointOnLine);
+		auto TicEndPoint {PointOnLine};
 		TicEndPoint += OdGeVector3d(-Projection.y, Projection.x, 0.0);
 
 		auto Line {EoDbLine::Create(BlockTableRecord, TicStartPoint, TicEndPoint)};

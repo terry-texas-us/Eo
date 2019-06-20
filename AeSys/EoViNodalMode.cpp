@@ -138,7 +138,7 @@ void AeSysView::OnNodalModeToLine() {
 			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
 			CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
-			const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
+			const auto Translate {CurrentPnt - PreviousNodalCursorPosition};
 
 			auto Group {new EoDbGroup};
 
@@ -175,14 +175,13 @@ void AeSysView::OnNodalModeToPolygon() {
 
 		if (PreviousNodalCursorPosition != CurrentPnt) {
 			CurrentPnt = SnapPointToAxis(PreviousNodalCursorPosition, CurrentPnt);
-			const OdGeVector3d Translate(CurrentPnt - PreviousNodalCursorPosition);
+			const auto Translate {CurrentPnt - PreviousNodalCursorPosition};
 
 			OdGePoint3dArray Points;
 			Points.setLogicalLength(4);
+			auto DeviceContext {GetDC()};
 
-			CDC* DeviceContext {GetDC()};
-
-			const int PrimitiveState {pstate.Save()};
+			const auto PrimitiveState {pstate.Save()};
 
 			auto GroupPosition {GetDocument()->GetFirstNodalGroupPosition()};
 
@@ -291,7 +290,7 @@ void AeSysView::OnNodalModeReturn() {
 		case ID_OP4:
 			if (m_NodalModePoints[0] != CurrentPnt) {
 				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
-				const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
+				const auto Translate {CurrentPnt - m_NodalModePoints[0]};
 
 				auto MaskedPrimitivePosition {GetDocument()->GetFirstMaskedPrimitivePosition()};
 				while (MaskedPrimitivePosition != nullptr) {
@@ -366,7 +365,7 @@ void AeSysView::DoNodalModeMouseMove() {
 				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
 				m_NodalModePoints.append(CurrentPnt);
 
-				const OdGeVector3d Translate(CurrentPnt - m_NodalModePoints[0]);
+				const auto Translate {CurrentPnt - m_NodalModePoints[0]};
 
 				OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 

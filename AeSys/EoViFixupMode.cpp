@@ -32,7 +32,6 @@ void AeSysView::OnFixupModeReference() {
 	if (PreviousFixupCommand == 0) {
 		PreviousFixupCommand = ModeLineHighlightOp(ID_OP1);
 	} else if (PreviousFixupCommand == ID_OP1) {
-		;
 	} else {
 		OdGePoint3d IntersectionPoint;
 		auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(ReferenceSelection))->LineSeg()};
@@ -186,7 +185,7 @@ void AeSysView::OnFixupModeSquare() {
 
 	CurrentPnt = CurrentLineSeg.ProjPt(CurrentPnt);
 
-	const double CurrentLineSegLength = CurrentLineSeg.length();
+	const auto CurrentLineSegLength {CurrentLineSeg.length()};
 	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
 	
 	const auto StartPoint {SnapPointToAxis(CurrentPnt, CurrentLineSeg.startPoint())};
@@ -348,18 +347,18 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGe
 	SecondLineStartPoint.transformBy(WorldToPlaneTransform);
 	SecondLineEndPoint.transformBy(WorldToPlaneTransform);
 	
-	const double FirstLineA {-FirstLineEndPoint.y / FirstLineVectorLength};
-	const double FirstLineB {FirstLineEndPoint.x / FirstLineVectorLength};
+	const auto FirstLineA {-FirstLineEndPoint.y / FirstLineVectorLength};
+	const auto FirstLineB {FirstLineEndPoint.x / FirstLineVectorLength};
 	SecondLineVector.x = SecondLineEndPoint.x - SecondLineStartPoint.x;
 	SecondLineVector.y = SecondLineEndPoint.y - SecondLineStartPoint.y;
-	const double SecondLineA {-SecondLineVector.y / SecondLineVectorLength};
-	const double SecondLineB {SecondLineVector.x / SecondLineVectorLength};
-	const double Determinant {SecondLineA * FirstLineB - FirstLineA * SecondLineB};
+	const auto SecondLineA {-SecondLineVector.y / SecondLineVectorLength};
+	const auto SecondLineB {SecondLineVector.x / SecondLineVectorLength};
+	const auto Determinant {SecondLineA * FirstLineB - FirstLineA * SecondLineB};
 
-	const double SignedRadius {FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y >= 0. ? -fabs(radius) : fabs(radius)};
+	const auto SignedRadius {FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y >= 0. ? -fabs(radius) : fabs(radius)};
 
-	const double dC1RAB1 {SignedRadius};
-	const double dC2RAB2 {(SecondLineStartPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * SecondLineStartPoint.y) / SecondLineVectorLength + SignedRadius};
+	const auto dC1RAB1 {SignedRadius};
+	const auto dC2RAB2 {(SecondLineStartPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * SecondLineStartPoint.y) / SecondLineVectorLength + SignedRadius};
 	center.x = (SecondLineB * dC1RAB1 - FirstLineB * dC2RAB2) / Determinant;
 	center.y = (FirstLineA * dC2RAB2 - SecondLineA * dC1RAB1) / Determinant;
 	center.z = 0.0;

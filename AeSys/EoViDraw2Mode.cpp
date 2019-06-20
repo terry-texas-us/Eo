@@ -175,7 +175,7 @@ void AeSysView::OnDraw2ModeEscape() {
 }
 
 bool AeSysView::CleanPreviousLines() {
-	const bool ParallelLines = m_PreviousReferenceLine.isParallelTo(m_CurrentReferenceLine);
+	const auto ParallelLines {m_PreviousReferenceLine.isParallelTo(m_CurrentReferenceLine)};
 
 	if (ParallelLines) { return false; }
 
@@ -207,9 +207,9 @@ bool AeSysView::CleanPreviousLines() {
 }
 
 bool AeSysView::StartAssemblyFromLine() {
-	EoGeLineSeg3d Line = m_BeginSectionLine->LineSeg();
+	auto Line {m_BeginSectionLine->LineSeg()};
 
-	const bool ParallelLines = Line.isParallelTo(m_CurrentReferenceLine);
+	const auto ParallelLines {Line.isParallelTo(m_CurrentReferenceLine)};
 	if (ParallelLines) return false;
 
 	OdGePoint3d ptInt;
@@ -241,7 +241,7 @@ bool AeSysView::StartAssemblyFromLine() {
 	return true;
 }
 void AeSysView::DoDraw2ModeMouseMove() {
-	static OdGePoint3d CurrentPnt = OdGePoint3d();
+	static auto CurrentPnt {OdGePoint3d()};
 
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 
