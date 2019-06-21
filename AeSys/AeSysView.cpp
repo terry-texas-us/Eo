@@ -584,8 +584,8 @@ inline OdGsViewPtr activeView(OdGsDevice* device) {
 }
 
 void AeSysView::setViewportBorderProperties() {
-	auto OverallView {overallView(m_LayoutHelper)};
-	auto ActiveView {activeView(m_LayoutHelper)};
+	const auto OverallView {overallView(m_LayoutHelper)};
+	const auto ActiveView {activeView(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	if (NumberOfViews > 1) {
 		for (auto ViewIndex = 0; ViewIndex < NumberOfViews; ++ViewIndex) {
@@ -632,9 +632,9 @@ void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
 	m_bPlotPlotstyle = layout->plotPlotStyles();
 	m_bShowPlotstyle = layout->showPlotStyles();
 	if (isPlotGeneration() ? m_bPlotPlotstyle : m_bShowPlotstyle) {
-		auto pssFile(layout->getCurrentStyleSheet());
+		const auto pssFile(layout->getCurrentStyleSheet());
 		if (!pssFile.isEmpty()) {
-			auto testpath {Database->appServices()->findFile(pssFile)};
+			const auto testpath {Database->appServices()->findFile(pssFile)};
 			if (!testpath.isEmpty()) {
 				auto pFileBuf {odSystemServices()->createFile(testpath)};
 				if (pFileBuf.get()) {
@@ -808,7 +808,7 @@ void AeSysView::createDevice(bool recreate) {
 		OdArray<OdGsViewPtr> m_prevViews;
 		OdGsModelPtr m_pModel;
 		if (!recreate) {
-			OdGsModulePtr GsModule {odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath(), false)};
+			OdGsModulePtr GsModule {odrxDynamicLinker()->loadModule(theApp.RecentGsDevicePath(), false)};
 			auto GsDevice {GsModule->createDevice()};
 			auto DeviceProperties {GsDevice->properties()};
 			if (DeviceProperties.get()) {
@@ -899,13 +899,13 @@ void AeSysView::createDevice(bool recreate) {
 			}
 			m_pModel = LayoutHelperIn->gsModel();
 			LayoutHelperIn->eraseAllViews();
-			auto LayoutHelperOut {OdDbGsManager::setupActiveLayoutViews(LayoutHelperIn->underlyingDevice(), this)};
+			const auto LayoutHelperOut {OdDbGsManager::setupActiveLayoutViews(LayoutHelperIn->underlyingDevice(), this)};
 			m_LayoutHelper = LayoutHelperOut;
 			LayoutHelperIn.release();
 			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext());
 		}
 		m_layoutId = m_LayoutHelper->layoutId();
-		auto Palette {theApp.curPalette()};
+		const auto Palette {theApp.curPalette()};
 		ODGSPALETTE PaletteCopy;
 		PaletteCopy.insert(PaletteCopy.begin(), Palette, Palette + 256);
 		PaletteCopy[0] = theApp.activeBackground();
@@ -934,7 +934,7 @@ void AeSysView::createDevice(bool recreate) {
 			m_LayoutHelper->update();
 			// Invalidate views for exist Gs model (i. e. remove unused drawables and mark view props as invalid)
 			if (!m_pModel.isNull()) {
-				auto Views {m_prevViews.asArrayPtr()};
+				const auto Views {m_prevViews.asArrayPtr()};
 				const auto NumberOfViews {m_prevViews.size()};
 				for (unsigned ViewIndex = 0; ViewIndex < NumberOfViews; ViewIndex++) {
 					m_pModel->invalidate(Views[ViewIndex]);
@@ -1020,12 +1020,12 @@ void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, l
 	BitmapInfo.bmiHeader.biSizeImage = 0;
 	BitmapInfo.bmiHeader.biXPelsPerMeter = 0;
 	BitmapInfo.bmiHeader.biYPelsPerMeter = 0;
-	auto bmpDC = CreateCompatibleDC(hdc);
+	const auto bmpDC = CreateCompatibleDC(hdc);
 	if (bmpDC) {
 		void* pBuf;
-		auto hBmp {CreateDIBSection(nullptr, &BitmapInfo, DIB_RGB_COLORS, &pBuf, nullptr, 0)};
+		const auto hBmp {CreateDIBSection(nullptr, &BitmapInfo, DIB_RGB_COLORS, &pBuf, nullptr, 0)};
 		if (hBmp) {
-			auto hOld {static_cast<HBITMAP>(SelectObject(bmpDC, hBmp))};
+			const auto hOld {static_cast<HBITMAP>(SelectObject(bmpDC, hBmp))};
 			for (long i = 0; i < m; ++i) {
 				for (long j = 0; j < n; ++j) {
 					const int minx {rc.m_min.x + i * dx};
@@ -1078,7 +1078,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	//        Otherwise CPreviewView uses settings and properties of current Printer/plotter (see CPreviewView::OnDraw()) to draw empty page on screen.
 	auto IsPlotViaBitmap {AfxGetApp()->GetProfileIntW(L"options", L"Print/Preview via bitmap device", 1) != 0};
 	if (m_pPrinterDevice.isNull()) {
-		OdGsModulePtr GsModule = odrxDynamicLinker()->loadModule(theApp.recentGsDevicePath());
+		OdGsModulePtr GsModule = odrxDynamicLinker()->loadModule(theApp.RecentGsDevicePath());
 		if (!IsPlotViaBitmap && GsModule.isNull()) {
 			GsModule = odrxDynamicLinker()->loadModule(OdWinOpenGLModuleName);
 		}
@@ -1452,8 +1452,8 @@ void AeSysView::OnDrag() {
 	exeCmd(L"dolly ");
 }
 
-void AeSysView::OnUpdateDrag(CCmdUI* pCmdUI) {
-	pCmdUI->Enable(m_mode == kQuiescent);
+void AeSysView::OnUpdateDrag(CCmdUI* commandUserInterface) {
+	commandUserInterface->Enable(m_mode == kQuiescent);
 }
 
 void AeSysView::OnViewerRegen() {
@@ -1474,8 +1474,8 @@ void AeSysView::OnViewerVpregen() {
 	PostMessageW(WM_PAINT);
 }
 
-void AeSysView::OnUpdateViewerRegen(CCmdUI* pCmdUI) {
-	pCmdUI->Enable(m_LayoutHelper->gsModel() != nullptr);
+void AeSysView::OnUpdateViewerRegen(CCmdUI* commandUserInterface) {
+	commandUserInterface->Enable(m_LayoutHelper->gsModel() != nullptr);
 }
 
 // <command_view>
@@ -1652,7 +1652,7 @@ struct ReactorSort {
 	bool operator()(OdDbObjectId firstObjectId, OdDbObjectId secondObjectId) {
 		auto SecondObject {secondObjectId.openObject()};
 		if (SecondObject.isNull()) { return false; }
-		auto SecondObjectReactors {SecondObject->getPersistentReactors()};
+		const auto SecondObjectReactors {SecondObject->getPersistentReactors()};
 		if (SecondObjectReactors.contains(firstObjectId)) { return true; }
 		return false;
 	}
@@ -1673,7 +1673,7 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint
 		auto Document {GetDocument()};
 		OdDbDatabase* Database {Document->m_DatabasePtr};
 		Database->startUndoRecord();
-		auto TransformMatrix {OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - ClipboardData->pickPoint())};
+		const auto TransformMatrix {OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - ClipboardData->pickPoint())};
 		if (m_mode == kDragDrop) {
 			auto SelectionSet {Document->SelectionSet()};
 			auto SelectionSetObjects {SelectionSet->objectIdArray()};
@@ -1998,7 +1998,7 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 		auto DeviceContext {GetDC()};
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen RubberbandPen(PS_SOLID, 0, g_RubberBandColor);
-		auto Pen {DeviceContext->SelectObject(&RubberbandPen)};
+		const auto Pen {DeviceContext->SelectObject(&RubberbandPen)};
 		if (m_RubberbandType == Lines) {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
@@ -2006,7 +2006,7 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
 		} else if (m_RubberbandType == Rectangles) {
-			auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
+			const auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
 			m_RubberbandLogicalEndPoint = point;
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
@@ -2135,7 +2135,7 @@ void AeSysView::OnActivateView(BOOL activate, CView* activateView, CView* deacti
 }
 
 void AeSysView::OnSetFocus(CWnd* oldWindow) {
-	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
+	const auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 	if (CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
 		theApp.BuildModeSpecificAcceleratorTable();
 	}
@@ -2143,7 +2143,7 @@ void AeSysView::OnSetFocus(CWnd* oldWindow) {
 }
 
 void AeSysView::OnKillFocus(CWnd* newWindow) {
-	auto AcceleratorTableHandle = dynamic_cast<CMainFrame*>(AfxGetMainWnd())->m_hAccelTable;
+	const auto AcceleratorTableHandle = dynamic_cast<CMainFrame*>(AfxGetMainWnd())->m_hAccelTable;
 	DestroyAcceleratorTable(AcceleratorTableHandle);
 	CView::OnKillFocus(newWindow);
 }
@@ -2228,8 +2228,8 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		m_BackgroundImageBitmap.GetBitmap(&bm);
 		CDC dcMem;
 		dcMem.CreateCompatibleDC(nullptr);
-		auto Bitmap {dcMem.SelectObject(&m_BackgroundImageBitmap)};
-		auto Palette {deviceContext->SelectPalette(&m_BackgroundImagePalette, FALSE)};
+		const auto Bitmap {dcMem.SelectObject(&m_BackgroundImageBitmap)};
+		const auto Palette {deviceContext->SelectPalette(&m_BackgroundImagePalette, FALSE)};
 		deviceContext->RealizePalette();
 		const auto Target {m_ViewTransform.Target()};
 		const auto ptTargetOver {m_OverviewViewTransform.Target()};
@@ -2409,7 +2409,7 @@ void AeSysView::On3dViewsTop() {
 	m_ViewTransform.EnablePerspective(false);
 	const auto Target(FirstView->target());
 	const auto Position(Target + OdGeVector3d::kZAxis * FirstView->lensLength());
-	auto UpVector(OdGeVector3d::kYAxis);
+	const auto UpVector(OdGeVector3d::kYAxis);
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2421,7 +2421,7 @@ void AeSysView::On3dViewsBottom() {
 	m_ViewTransform.EnablePerspective(false);
 	const auto Target(FirstView->target());
 	const auto Position(Target - OdGeVector3d::kZAxis);
-	auto UpVector(OdGeVector3d::kYAxis);
+	const auto UpVector(OdGeVector3d::kYAxis);
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2433,7 +2433,7 @@ void AeSysView::On3dViewsLeft() {
 	m_ViewTransform.EnablePerspective(false);
 	const auto Target(FirstView->target());
 	const auto Position(Target - OdGeVector3d::kXAxis * FirstView->lensLength());
-	auto UpVector(OdGeVector3d::kZAxis);
+	const auto UpVector(OdGeVector3d::kZAxis);
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2445,7 +2445,7 @@ void AeSysView::On3dViewsRight() {
 	m_ViewTransform.EnablePerspective(false);
 	const auto Target(FirstView->target());
 	const auto Position(Target + OdGeVector3d::kXAxis * FirstView->lensLength());
-	auto UpVector(OdGeVector3d::kZAxis);
+	const auto UpVector(OdGeVector3d::kZAxis);
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2457,7 +2457,7 @@ void AeSysView::On3dViewsFront() {
 	m_ViewTransform.EnablePerspective(false);
 	const auto Target(FirstView->target());
 	const auto Position(Target - OdGeVector3d::kYAxis * FirstView->lensLength());
-	auto UpVector(OdGeVector3d::kZAxis);
+	const auto UpVector(OdGeVector3d::kZAxis);
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2469,7 +2469,7 @@ void AeSysView::On3dViewsBack() {
 	m_ViewTransform.EnablePerspective(false);
 	const auto Target(FirstView->target());
 	const auto Position(Target + OdGeVector3d::kYAxis * FirstView->lensLength());
-	auto UpVector(OdGeVector3d::kZAxis);
+	const auto UpVector(OdGeVector3d::kZAxis);
 	FirstView->setView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.SetView(Position, Target, UpVector, FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2550,7 +2550,7 @@ void AeSysView::OnViewRendermode(unsigned commandId) {
 void AeSysView::OnViewWindow() {
 	CPoint CurrentPosition;
 	GetCursorPos(&CurrentPosition);
-	auto WindowMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_WINDOW))};
+	const auto WindowMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_WINDOW))};
 	auto SubMenu {CMenu::FromHandle(GetSubMenu(WindowMenu, 0))};
 	SubMenu->TrackPopupMenuEx(TPM_LEFTALIGN, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 	DestroyMenu(WindowMenu);
@@ -2561,8 +2561,8 @@ void AeSysView::OnWindowZoomWindow() {
 	m_ZoomWindow = !m_ZoomWindow;
 }
 
-void AeSysView::OnUpdateWindowZoomWindow(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(m_ZoomWindow);
+void AeSysView::OnUpdateWindowZoomWindow(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(m_ZoomWindow);
 }
 
 void AeSysView::OnViewOdometer() {
@@ -2574,24 +2574,24 @@ void AeSysView::OnViewRefresh() {
 	InvalidateRect(nullptr);
 }
 
-void AeSysView::OnUpdateViewRendermode2doptimized(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(RenderMode() == OdGsView::k2DOptimized ? MF_CHECKED : MF_UNCHECKED);
+void AeSysView::OnUpdateViewRendermode2doptimized(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(RenderMode() == OdGsView::k2DOptimized ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeSmoothshaded(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(RenderMode() == OdGsView::kGouraudShaded ? MF_CHECKED : MF_UNCHECKED);
+void AeSysView::OnUpdateViewRendermodeSmoothshaded(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(RenderMode() == OdGsView::kGouraudShaded ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeFlatshaded(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(RenderMode() == OdGsView::kFlatShaded ? MF_CHECKED : MF_UNCHECKED);
+void AeSysView::OnUpdateViewRendermodeFlatshaded(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(RenderMode() == OdGsView::kFlatShaded ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeHiddenline(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(RenderMode() == OdGsView::kHiddenLine ? MF_CHECKED : MF_UNCHECKED);
+void AeSysView::OnUpdateViewRendermodeHiddenline(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(RenderMode() == OdGsView::kHiddenLine ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeWireframe(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(RenderMode() == OdGsView::kWireframe ? MF_CHECKED : MF_UNCHECKED);
+void AeSysView::OnUpdateViewRendermodeWireframe(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(RenderMode() == OdGsView::kWireframe ? MF_CHECKED : MF_UNCHECKED);
 }
 
 void AeSysView::OnWindowNormal() {
@@ -2600,7 +2600,7 @@ void AeSysView::OnWindowNormal() {
 }
 
 void AeSysView::OnWindowBest() {
-	auto FirstView {m_LayoutHelper->viewAt(0)};
+	const auto FirstView {m_LayoutHelper->viewAt(0)};
 	auto AbstractView {OdAbstractViewPEPtr(FirstView)};
 	AbstractView->zoomExtents(FirstView);
 	m_PreviousViewTransform = m_ViewTransform;
@@ -2911,15 +2911,15 @@ AeSysView* AeSysView::GetActiveView() {
 	if (MDIFrameWnd == nullptr) { return nullptr; }
 	const CMDIChildWndEx* MDIChildWnd = DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIFrameWnd->MDIGetActive());
 	if (MDIChildWnd == nullptr) { return nullptr; }
-	auto View {MDIChildWnd->GetActiveView()};
+	const auto View {MDIChildWnd->GetActiveView()};
 
 	// View can be wrong kind with splitter windows, or additional views in a single document.
 	if (!View->IsKindOf(RUNTIME_CLASS(AeSysView))) { return nullptr; }
 	return dynamic_cast<AeSysView*>(View);
 }
 
-void AeSysView::OnUpdateViewOdometer(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(m_ViewOdometer);
+void AeSysView::OnUpdateViewOdometer(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(m_ViewOdometer);
 }
 
 void AeSysView::DisplayOdometer() {
@@ -2932,7 +2932,7 @@ void AeSysView::DisplayOdometer() {
 		Position += theApp.FormatLength(m_vRelPos.y, Units) + L", ";
 		Position += theApp.FormatLength(m_vRelPos.z, Units);
 		if (m_RubberbandType == Lines) {
-			EoGeLineSeg3d Line(m_RubberbandBeginPoint, Point);
+			const EoGeLineSeg3d Line(m_RubberbandBeginPoint, Point);
 			const auto LineLength {Line.length()};
 			const auto AngleInXYPlane {Line.AngleFromXAxis_xy()};
 			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
@@ -2942,8 +2942,8 @@ void AeSysView::DisplayOdometer() {
 	}
 }
 
-void AeSysView::OnUpdateViewTrueTypeFonts(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(m_ViewTrueTypeFonts);
+void AeSysView::OnUpdateViewTrueTypeFonts(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(m_ViewTrueTypeFonts);
 }
 
 void AeSysView::OnBackgroundImageLoad() {
@@ -2971,21 +2971,21 @@ void AeSysView::OnViewBackgroundImage() {
 	InvalidateRect(nullptr);
 }
 
-void AeSysView::OnUpdateViewBackgroundImage(CCmdUI* pCmdUI) {
-	pCmdUI->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
-	pCmdUI->SetCheck(m_ViewBackgroundImage);
+void AeSysView::OnUpdateViewBackgroundImage(CCmdUI* commandUserInterface) {
+	commandUserInterface->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
+	commandUserInterface->SetCheck(m_ViewBackgroundImage);
 }
 
-void AeSysView::OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI) {
-	pCmdUI->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) == nullptr);
+void AeSysView::OnUpdateBackgroundimageLoad(CCmdUI* commandUserInterface) {
+	commandUserInterface->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) == nullptr);
 }
 
-void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI) {
-	pCmdUI->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
+void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI* commandUserInterface) {
+	commandUserInterface->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
 }
 
-void AeSysView::OnUpdateViewPenwidths(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(m_ViewPenWidths);
+void AeSysView::OnUpdateViewPenwidths(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(m_ViewPenWidths);
 }
 
 EoDbGroup* AeSysView::RemoveLastVisibleGroup() {
@@ -2997,7 +2997,7 @@ EoDbGroup* AeSysView::RemoveLastVisibleGroup() {
 }
 
 void AeSysView::DeleteLastGroup() {
-	auto Group {RemoveLastVisibleGroup()};
+	const auto Group {RemoveLastVisibleGroup()};
 	if (Group != nullptr) {
 		auto Document {GetDocument()};
 		Document->AnyLayerRemove(Group);
@@ -3053,7 +3053,7 @@ EoDbGroup* AeSysView::SelSegAndPrimAtCtrlPt(const EoGePoint4d& point) {
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNextVisibleGroup(Position)};
-		auto Primitive {Group->SelectControlPointBy(point, this, &ControlPoint)};
+		const auto Primitive {Group->SelectControlPointBy(point, this, &ControlPoint)};
 		if (Primitive != nullptr) {
 			m_ptDet = ControlPoint;
 			m_ptDet.transformBy(TransformMatrix);
@@ -3098,7 +3098,7 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNextVisibleGroup(Position)};
-		auto Primitive {Group->SelPrimUsingPoint(ptView, this, SelectionApertureSize, ptEng)};
+		const auto Primitive {Group->SelPrimUsingPoint(ptView, this, SelectionApertureSize, ptEng)};
 		if (Primitive != nullptr) {
 			m_ptDet = ptEng;
 			m_ptDet.transformBy(TransformMatrix);
@@ -3116,7 +3116,7 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 		auto Group {GetNextVisibleGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
 				auto Arc {dynamic_cast<EoDbEllipse*>(Primitive)};
 				if (fabs(Arc->SweepAngle() - Oda2PI) <= DBL_EPSILON && Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd() <= DBL_EPSILON) {
@@ -3138,7 +3138,7 @@ std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint
 		auto Group {GetNextVisibleGroup(GroupPosition)};
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				OdGePoint3d PointOnLine;
 				if (Primitive->SelectUsingPoint(ptView, this, PointOnLine)) {
@@ -3158,7 +3158,7 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& pt) {
 		const auto Group {GetNextVisibleGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				OdGePoint3d ptProj;
 				if (dynamic_cast<EoDbText*>(Primitive)->SelectUsingPoint(ptView, this, ptProj)) { return dynamic_cast<EoDbText*>(Primitive); }
@@ -3327,12 +3327,12 @@ void AeSysView::RubberBandingDisable() {
 		if (DeviceContext == nullptr) { return; }
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen GreyPen(PS_SOLID, 0, g_RubberBandColor);
-		auto Pen {DeviceContext->SelectObject(&GreyPen)};
+		const auto Pen {DeviceContext->SelectObject(&GreyPen)};
 		if (m_RubberbandType == Lines) {
 			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
 		} else if (m_RubberbandType == Rectangles) {
-			auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
+			const auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
 			DeviceContext->SelectObject(Brush);
 		}
@@ -3469,15 +3469,15 @@ void AeSysView::OnViewStateInformation() {
 	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
 
-void AeSysView::OnUpdateViewStateinformation(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(m_ViewStateInformation);
+void AeSysView::OnUpdateViewStateinformation(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(m_ViewStateInformation);
 }
 
 void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 	if (m_ViewStateInformation) {
 		auto Document {AeSysDoc::GetDoc()};
 		auto DeviceContext {GetDC()};
-		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const auto TextAlignAlignment {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};

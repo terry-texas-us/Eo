@@ -48,8 +48,8 @@ void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactiva
 	CMDIChildWndEx::OnMDIActivate(activate, activateWnd, deactivateWnd);
 	auto ActivatedFrame {dynamic_cast<CFrameWnd*>(activateWnd)};
 	auto DeactivatedFrame {dynamic_cast<CFrameWnd*>(deactivateWnd)};
-	auto ActivatedDocument {ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr};
-	auto DeactivatedDocument {DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr};
+	const auto ActivatedDocument {ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr};
+	const auto DeactivatedDocument {DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr};
 	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
 	if (activate) {
 		if (DeactivatedDocument) {
@@ -112,11 +112,11 @@ const int gc_AnnotationScalesMenuPosition(19);
 
 void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuAlt) {
 	CMDIChildWndEx::OnUpdateFrameMenu(active, activeWindow, menuAlt);
-	auto ActiveDocument {GetActiveDocument()};
+	const auto ActiveDocument {GetActiveDocument()};
 	if (active && ActiveDocument) {
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		ENSURE(TopMenu);
-		auto ScalesSubMenu {TopMenu->GetSubMenu(gc_ViewMenuPosition)->GetSubMenu(gc_AnnotationScalesMenuPosition)};
+		const auto ScalesSubMenu {TopMenu->GetSubMenu(gc_ViewMenuPosition)->GetSubMenu(gc_AnnotationScalesMenuPosition)};
 		if (ScalesSubMenu) {
 			UpdateAnnotationScalesPopupMenu(ScalesSubMenu, dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr);
 		}

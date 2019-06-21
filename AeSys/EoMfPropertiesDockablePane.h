@@ -31,9 +31,9 @@ protected:
 	void OnExpandAllProperties();
 	void OnProperties1() noexcept;
 	void OnSortProperties();
-	void OnUpdateExpandAllProperties(CCmdUI* pCmdUI) noexcept;
-	void OnUpdateProperties1(CCmdUI* pCmdUI) noexcept;
-	void OnUpdateSortProperties(CCmdUI* pCmdUI);
+	void OnUpdateExpandAllProperties(CCmdUI* commandUserInterface) noexcept;
+	void OnUpdateProperties1(CCmdUI* commandUserInterface) noexcept;
+	void OnUpdateSortProperties(CCmdUI* commandUserInterface);
 DECLARE_MESSAGE_MAP()
 	void InitializePropertyGrid();
 	void SetPropertyGridFont();

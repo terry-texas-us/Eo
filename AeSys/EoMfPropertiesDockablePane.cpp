@@ -78,22 +78,22 @@ void EoMfPropertiesDockablePane::OnExpandAllProperties() {
 	m_PropertyGrid.ExpandAll();
 }
 
-void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* pCmdUI) noexcept {
+void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* commandUserInterface) noexcept {
 }
 
 void EoMfPropertiesDockablePane::OnSortProperties() {
 	m_PropertyGrid.SetAlphabeticMode(!m_PropertyGrid.IsAlphabeticMode());
 }
 
-void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck(m_PropertyGrid.IsAlphabeticMode());
+void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck(m_PropertyGrid.IsAlphabeticMode());
 }
 
 void EoMfPropertiesDockablePane::OnProperties1() noexcept {
 	// TODO: Add your command handler code here
 }
 
-void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* pCmdUI) noexcept {
+void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* commandUserInterface) noexcept {
 	// TODO: Add your command update UI handler code here
 }
 

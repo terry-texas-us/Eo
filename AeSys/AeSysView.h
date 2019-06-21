@@ -285,14 +285,14 @@ public: // Input message handler member functions
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	void OnDestroy(); // hides non-virtual function of parent
 	void OnDrag();
-	void OnUpdateDrag(CCmdUI* pCmdUI);
+	void OnUpdateDrag(CCmdUI* commandUserInterface);
 	BOOL OnEraseBkgnd(CDC* deviceContext); // hides non-virtual function of parent
 	void OnKillFocus(CWnd* newWindow); // hides non-virtual function of parent
 	void OnPaint(); // hides non-virtual function of parent
 	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 	void OnViewStateInformation();
-	void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
+	void OnUpdateViewStateinformation(CCmdUI* commandUserInterface);
 	static AeSysView* GetActiveView();
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
@@ -842,24 +842,24 @@ public:
 	void OnRelativeMovesDownRotate();
 	void OnSetupScale();
 	void OnToolsPrimitiveSnapto();
-	void OnUpdateViewOdometer(CCmdUI* pCmdUI);
-	void OnUpdateViewTrueTypeFonts(CCmdUI* pCmdUI);
-	void OnUpdateViewBackgroundImage(CCmdUI* pCmdUI);
-	void OnUpdateBackgroundimageLoad(CCmdUI* pCmdUI);
-	void OnUpdateBackgroundimageRemove(CCmdUI* pCmdUI);
-	void OnUpdateViewPenwidths(CCmdUI* pCmdUI);
-	void OnUpdateWindowZoomWindow(CCmdUI* pCmdUI);
+	void OnUpdateViewOdometer(CCmdUI* commandUserInterface);
+	void OnUpdateViewTrueTypeFonts(CCmdUI* commandUserInterface);
+	void OnUpdateViewBackgroundImage(CCmdUI* commandUserInterface);
+	void OnUpdateBackgroundimageLoad(CCmdUI* commandUserInterface);
+	void OnUpdateBackgroundimageRemove(CCmdUI* commandUserInterface);
+	void OnUpdateViewPenwidths(CCmdUI* commandUserInterface);
+	void OnUpdateWindowZoomWindow(CCmdUI* commandUserInterface);
 	void OnViewBackgroundImage();
 	void OnViewTrueTypeFonts();
 	void OnViewPenWidths();
 	void OnViewOdometer();
 	void OnViewRefresh();
 	void OnViewParameters();
-	void OnUpdateViewRendermode2doptimized(CCmdUI* pCmdUI);
-	void OnUpdateViewRendermodeWireframe(CCmdUI* pCmdUI);
-	void OnUpdateViewRendermodeHiddenline(CCmdUI* pCmdUI);
-	void OnUpdateViewRendermodeFlatshaded(CCmdUI* pCmdUI);
-	void OnUpdateViewRendermodeSmoothshaded(CCmdUI* pCmdUI);
+	void OnUpdateViewRendermode2doptimized(CCmdUI* commandUserInterface);
+	void OnUpdateViewRendermodeWireframe(CCmdUI* commandUserInterface);
+	void OnUpdateViewRendermodeHiddenline(CCmdUI* commandUserInterface);
+	void OnUpdateViewRendermodeFlatshaded(CCmdUI* commandUserInterface);
+	void OnUpdateViewRendermodeSmoothshaded(CCmdUI* commandUserInterface);
 	void OnViewRendermode(unsigned commandId);
 	void OnWindowZoomSpecial();
 	void OnWindowNormal();
@@ -905,7 +905,7 @@ public:
 	void OnViewerRegen();
 protected:
 	void OnViewerVpregen();
-	void OnUpdateViewerRegen(CCmdUI* pCmdUI);
+	void OnUpdateViewerRegen(CCmdUI* commandUserInterface);
 DECLARE_MESSAGE_MAP()
 public:
 	BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;

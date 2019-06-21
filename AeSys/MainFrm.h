@@ -64,11 +64,11 @@ protected:  // control bar embedded members
 	LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp); // hides non-virtual function of parent
 	void OnWindowManager();
 	void OnMdiTabbed();
-	void OnUpdateMdiTabbed(CCmdUI* pCmdUI);
+	void OnUpdateMdiTabbed(CCmdUI* commandUserInterface);
 	void OnViewCustomize();
 	void OnViewFullScreen();
 	void OnApplicationLook(unsigned look);
-	void OnUpdateApplicationLook(CCmdUI* pCmdUI);
+	void OnUpdateApplicationLook(CCmdUI* commandUserInterface);
 	LRESULT OnGetTabToolTip(WPARAM wp, LPARAM lp);
 	LRESULT OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam);
 DECLARE_MESSAGE_MAP()

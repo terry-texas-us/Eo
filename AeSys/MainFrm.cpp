@@ -297,8 +297,8 @@ void CMainFrame::OnApplicationLook(unsigned look) {
 	theApp.WriteInt(L"ApplicationLook", static_cast<int>(theApp.m_ApplicationLook));
 }
 
-void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
-	pCmdUI->SetRadio(theApp.m_ApplicationLook == pCmdUI->m_nID);
+void CMainFrame::OnUpdateApplicationLook(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetRadio(theApp.m_ApplicationLook == commandUserInterface->m_nID);
 }
 
 BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
@@ -429,7 +429,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 				VectorizerPath.ReleaseBuffer();
 				if (ReturnValue != ERROR_SUCCESS) { break; }
 				CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, nullptr, -1, VectorizerPath);
-				if (theApp.recentGsDevicePath().iCompare(static_cast<const wchar_t*>(VectorizerPath)) == 0) {
+				if (theApp.RecentGsDevicePath().iCompare(static_cast<const wchar_t*>(VectorizerPath)) == 0) {
 					MenuButton.SetStyle(TBBS_CHECKED);
 				}
 				popupMenu->InsertItem(MenuButton, static_cast<int>(VectorizerIndex++));
@@ -588,8 +588,8 @@ void CMainFrame::OnMdiTabbed() {
 	TabbedDocumentToControlBar(pMDIChild);
 }
 
-void CMainFrame::OnUpdateMdiTabbed(CCmdUI* pCmdUI) {
-	pCmdUI->SetCheck();
+void CMainFrame::OnUpdateMdiTabbed(CCmdUI* commandUserInterface) {
+	commandUserInterface->SetCheck();
 }
 
 void CMainFrame::OnDestroy() {

@@ -511,11 +511,11 @@ public:
 	void OnEditEntget();
 	void OnViewNamedViews();
 	void OnEditUndo();
-	void OnUpdateEditUndo(CCmdUI* pCmdUI);
-	void OnUpdateEditRedo(CCmdUI* pCmdUI);
+	void OnUpdateEditUndo(CCmdUI* commandUserInterface);
+	void OnUpdateEditRedo(CCmdUI* commandUserInterface);
 	void OnEditRedo();
 	// </command_console>
 	void OnVectorize(); // <tas="This is the vectorize menu and toolbar button handler in Oda"</tas>
 	// <tas="Will not use"> void OnRemoteGeomViewer();"</tas>
-	void OnUpdateVectorize(CCmdUI* pCmdUI);
+	void OnUpdateVectorize(CCmdUI* commandUserInterface);
 };
