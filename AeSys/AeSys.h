@@ -45,7 +45,7 @@ class EoDlgAudit;
 class UserBreak {
 };
 
-class AeSys : public CWinAppEx, public ExSystemServices, public ExHostAppServices {
+class AeSys final : public CWinAppEx, public ExSystemServices, public ExHostAppServices {
 protected:
 	using CWinAppEx::operator new;
 	using CWinAppEx::operator delete;
@@ -57,7 +57,7 @@ private:
 	bool m_DiscardBackFaces {true};
 	bool m_EnableDoubleBuffer {true};
 	bool m_BlocksCache {false};
-	bool m_GsDevMultithread {false};
+	bool m_GsDevMultithreading {false};
 	unsigned m_nMtRegenThreads {4};
 	bool m_EnablePrintPreviewViaBitmap {true};
 	bool m_UseGsModel {true};
@@ -118,7 +118,7 @@ public:
 
 	bool blocksCacheEnabled() const noexcept { return m_BlocksCache; }
 
-	bool gsDeviceMultithreadEnabled() const noexcept { return m_GsDevMultithread; }
+	bool GsDeviceMultithreadingEnabled() const noexcept { return m_GsDevMultithreading; }
 
 	unsigned mtRegenThreadsCount() const noexcept { return m_nMtRegenThreads; }
 
@@ -265,11 +265,11 @@ public:
 	//	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 	bool getPassword(const OdString& drawingName, bool isXref, OdPassword& password) override;
 	OdDbPageControllerPtr newPageController() override;
-	int setPagingType(int pagingType) noexcept;
+	int SetPagingType(int pagingType) noexcept;
 
 	int pagingType() const noexcept { return m_pagingType & 0x0f; }
 
-	bool setUndoType(bool useTempFiles) noexcept;
+	bool SetUndoType(bool useTempFiles) noexcept;
 
 	bool undoType() const noexcept { return m_bUseTempFiles; }
 

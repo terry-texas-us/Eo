@@ -34,9 +34,9 @@ BOOL EoDlgModeLetter::OnInitDialog() {
 void EoDlgModeLetter::OnOK() {
 	auto Document {AeSysDoc::GetDoc()};
 	auto Database {Document->m_DatabasePtr};
-	const auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+	const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	EoGeReferenceSystem ReferenceSystem(m_Point, AeSysView::GetActiveView(), CharacterCellDefinition);
-	auto FontDefinition {pstate.FontDefinition()};
+	auto FontDefinition {g_PrimitiveState.FontDefinition()};
 	if (m_TextEditControl.GetWindowTextLengthW() != 0) {
 		CString TextEditControl;
 		m_TextEditControl.GetWindowTextW(TextEditControl);

@@ -49,7 +49,7 @@ EoDbPrimitive* EoDbSpline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const
 void EoDbSpline::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
-	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
+	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 	polyline::BeginLineStrip();
 	EoGeNurbCurve3d::GeneratePoints(m_Spline);
 	polyline::__End(view, deviceContext, LinetypeIndex);
@@ -218,8 +218,8 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	auto Spline {OdDbSpline::createObject()};
 	Spline->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Spline);
-	Spline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	Spline->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	Spline->setLinetype(Linetype);
 	return Spline;
 }

@@ -92,7 +92,7 @@ EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) con
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
-	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
+	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 	if (IsClosed()) polyline::BeginLineLoop();
 	else polyline::BeginLineStrip();
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
@@ -413,8 +413,8 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	auto Polyline {OdDbPolyline::createObject()};
 	Polyline->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Polyline);
-	Polyline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	Polyline->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	Polyline->setLinetype(Linetype);
 	return Polyline;
 }

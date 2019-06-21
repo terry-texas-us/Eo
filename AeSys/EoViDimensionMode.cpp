@@ -337,15 +337,15 @@ void AeSysView::OnDimensionModeAngle() {
 				ptArrow.rotateBy(Angle - OdaPI / 180.0, PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
 				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
-				const auto PrimitiveState {pstate.Save()};
-				auto FontDefinition {pstate.FontDefinition()};
+				const auto PrimitiveState {g_PrimitiveState.Save()};
+				auto FontDefinition {g_PrimitiveState.FontDefinition()};
 				FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
 				FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
-				pstate.SetFontDefinition(DeviceContext, FontDefinition);
-				auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+				g_PrimitiveState.SetFontDefinition(DeviceContext, FontDefinition);
+				auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 				CharacterCellDefinition.SetRotationAngle(0.0);
 				CharacterCellDefinition.SetHeight(.1);
-				pstate.SetCharacterCellDefinition(CharacterCellDefinition);
+				g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 				const auto ptPvt {ProjectToward(CurrentPnt, CenterPoint, -.25)};
 				EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
 				auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(theApp.FormatAngle(Angle)))};
@@ -358,7 +358,7 @@ void AeSysView::OnDimensionModeAngle() {
 				Group->AddTail(EoDbText::Create(Text));
 				Document->AddWorkLayerGroup(Group);
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
-				pstate.Restore(*DeviceContext, PrimitiveState);
+				g_PrimitiveState.Restore(*DeviceContext, PrimitiveState);
 			}
 			ModeLineUnhighlightOp(PreviousDimensionCommand);
 			theApp.AddModeInformationToMessageList();
@@ -393,7 +393,7 @@ void AeSysView::OnDimensionModeConvert() {
 					DimensionPrimitive->SetLinetypeIndex2(LinePrimitive->LinetypeIndex());
 					DimensionPrimitive->SetStartPoint(LinePrimitive->StartPoint());
 					DimensionPrimitive->SetEndPoint(LinePrimitive->EndPoint());
-					DimensionPrimitive->SetFontDefinition(pstate.FontDefinition());
+					DimensionPrimitive->SetFontDefinition(g_PrimitiveState.FontDefinition());
 					DimensionPrimitive->SetTextColorIndex(5);
 					DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
 					DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);

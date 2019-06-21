@@ -130,8 +130,8 @@ void AeSysView::OnNodalModeToLine() {
 			while (PointPosition != nullptr) {
 				auto UniquePoint {GetDocument()->GetNextUniquePoint(PointPosition)};
 				auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
-				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+				Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
 			}
 			GetDocument()->AddWorkLayerGroup(Group);
@@ -160,7 +160,7 @@ void AeSysView::OnNodalModeToPolygon() {
 			OdGePoint3dArray Points;
 			Points.setLogicalLength(4);
 			auto DeviceContext {GetDC()};
-			const auto PrimitiveState {pstate.Save()};
+			const auto PrimitiveState {g_PrimitiveState.Save()};
 			auto GroupPosition {GetDocument()->GetFirstNodalGroupPosition()};
 			while (GroupPosition != nullptr) {
 				auto Group {GetDocument()->GetNextNodalGroup(GroupPosition)};
@@ -216,7 +216,7 @@ void AeSysView::OnNodalModeToPolygon() {
 					}
 				}
 			}
-			pstate.Restore(*DeviceContext, PrimitiveState);
+			g_PrimitiveState.Restore(*DeviceContext, PrimitiveState);
 			SetCursorPosition(CurrentPnt);
 			RubberBandingDisable();
 			ModeLineUnhighlightOp(PreviousNodalCommand);

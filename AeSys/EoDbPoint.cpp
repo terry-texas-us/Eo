@@ -203,7 +203,7 @@ short EoDbPoint::PointDisplayMode() const noexcept {
 
 void EoDbPoint::ModifyState() noexcept {
 	EoDbPrimitive::ModifyState();
-	m_PointDisplayMode = pstate.PointDisplayMode();
+	m_PointDisplayMode = g_PrimitiveState.PointDisplayMode();
 }
 
 bool EoDbPoint::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
@@ -268,7 +268,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	auto Point = OdDbPoint::createObject();
 	Point->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Point);
-	Point->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
+	Point->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 
 	// The point object does not store the appearance and size of a point.
 	// The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
@@ -280,7 +280,7 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr& point) {
 	Point->m_EntityObjectId = point->objectId();
 	Point->m_ColorIndex = static_cast<short>(point->colorIndex());
 	Point->m_Position = point->position();
-	Point->SetPointDisplayMode(pstate.PointDisplayMode());
+	Point->SetPointDisplayMode(g_PrimitiveState.PointDisplayMode());
 	unsigned short NumberOfDatums {0};
 	double Data[] {0.0, 0.0, 0.};
 	auto ResourceBuffer = point->xData(L"AeSys");

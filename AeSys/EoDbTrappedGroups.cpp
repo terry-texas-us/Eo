@@ -78,13 +78,13 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		}
 	}
 	if (theApp.IsClipboardDataImage()) {
-		const auto PrimitiveState {pstate.Save()};
+		const auto PrimitiveState {g_PrimitiveState.Save()};
 		auto MetaFile {CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
 		m_TrappedGroupList.Display(view, CDC::FromHandle(MetaFile));
 		auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
 		SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
 		auto DeviceContext {CDC::FromHandle(MetaFile)};
-		if (DeviceContext) { pstate.Restore(*DeviceContext, PrimitiveState); }
+		if (DeviceContext) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
 	}
 	if (theApp.IsClipboardDataGroups()) {
 		CMemFile MemoryFile;

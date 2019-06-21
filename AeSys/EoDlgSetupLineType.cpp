@@ -62,8 +62,8 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 					auto Name {Linetype->getName()};
 					DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Name, static_cast<unsigned>(Name.getLength()), nullptr);
 					m_LinetypesListControl.GetSubItemRect(Item, Appearance, LVIR_LABEL, SubItemRectangle);
-					const auto ColorIndex {pstate.ColorIndex()};
-					pstate.SetPen(nullptr, &DeviceContext, 0, static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
+					const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+					g_PrimitiveState.SetPen(nullptr, &DeviceContext, 0, static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 					auto ActiveView {AeSysView::GetActiveView()};
 					ActiveView->ViewportPushActive();
 					ActiveView->PushViewTransform();
@@ -89,7 +89,7 @@ void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT draw
 					                          Description,
 					                          static_cast<unsigned>(Description.getLength()),
 					                          nullptr);
-					pstate.SetColorIndex(&DeviceContext, ColorIndex);
+					g_PrimitiveState.SetColorIndex(&DeviceContext, ColorIndex);
 				}
 				DeviceContext.Detach();
 			}

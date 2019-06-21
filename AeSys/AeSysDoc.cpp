@@ -211,7 +211,6 @@ BOOL AeSysDoc::DoSave(const wchar_t* pathName, BOOL replace) {
 			return FALSE;
 		} // don't even attempt to save 
 	}
-	CWaitCursor wait;
 	if (!OnSaveDocument(PathName)) {
 		if (pathName == nullptr) {
 			TRY
@@ -1011,8 +1010,8 @@ void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive) 
 
 void AeSysDoc::AddTextBlock(wchar_t* text) {
 	const auto CurrentPnt {theApp.GetCursorPosition()};
-	auto FontDefinition {pstate.FontDefinition()};
-	const auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+	auto FontDefinition {g_PrimitiveState.FontDefinition()};
+	const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	EoGeReferenceSystem ReferenceSystem(CurrentPnt, AeSysView::GetActiveView(), CharacterCellDefinition);
 	OdGeVector3d PlaneNormal;
 	ReferenceSystem.GetUnitNormal(PlaneNormal);
@@ -1147,12 +1146,12 @@ void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) {
 		RemoveAllGroupsFromAllViews();
 		const auto BackgroundColor {deviceContext->GetBkColor()};
 		deviceContext->SetBkColor(g_ViewBackgroundColor);
-		const auto PrimitiveState {pstate.Save()};
+		const auto PrimitiveState {g_PrimitiveState.Save()};
 		for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 			auto Layer {GetLayerAt(LayerIndex)};
 			Layer->Display_(view, deviceContext, IdentifyTrap);
 		}
-		pstate.Restore(*deviceContext, PrimitiveState);
+		g_PrimitiveState.Restore(*deviceContext, PrimitiveState);
 		deviceContext->SetBkColor(BackgroundColor);
 	} catch (CException* Exception) {
 		Exception->Delete();
@@ -2017,9 +2016,9 @@ void AeSysDoc::OnTrapCommandsUnblock() {
 
 void AeSysDoc::OnSetupPenColor() {
 	EoDlgSetupColor Dialog;
-	Dialog.m_ColorIndex = static_cast<unsigned>(pstate.ColorIndex());
+	Dialog.m_ColorIndex = static_cast<unsigned>(g_PrimitiveState.ColorIndex());
 	if (Dialog.DoModal() == IDOK) {
-		pstate.SetColorIndex(nullptr, static_cast<short>(Dialog.m_ColorIndex));
+		g_PrimitiveState.SetColorIndex(nullptr, static_cast<short>(Dialog.m_ColorIndex));
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Pen);
 	}
 }
@@ -2030,17 +2029,17 @@ void AeSysDoc::OnSetupLinetype() {
 	if (Dialog.DoModal() == IDOK) {
 		auto Name {Dialog.m_Linetype->getName()};
 		const auto LinetypeIndex {static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
-		pstate.SetLinetypeIndexPs(nullptr, LinetypeIndex);
+		g_PrimitiveState.SetLinetypeIndexPs(nullptr, LinetypeIndex);
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
 	}
 }
 
 void AeSysDoc::OnSetupFillHollow() noexcept {
-	pstate.SetHatchInteriorStyle(EoDbHatch::kHollow);
+	g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kHollow);
 }
 
 void AeSysDoc::OnSetupFillSolid() noexcept {
-	pstate.SetHatchInteriorStyle(EoDbHatch::kSolid);
+	g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kSolid);
 }
 
 void AeSysDoc::OnSetupFillPattern() noexcept {
@@ -2052,7 +2051,7 @@ void AeSysDoc::OnSetupFillHatch() {
 	Dialog.m_HatchYScaleFactor = EoDbHatch::sm_PatternScaleY;
 	Dialog.m_HatchRotationAngle = EoToDegree(EoDbHatch::sm_PatternAngle);
 	if (Dialog.DoModal() == IDOK) {
-		pstate.SetHatchInteriorStyle(EoDbHatch::kHatch);
+		g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kHatch);
 		EoDbHatch::sm_PatternScaleX = EoMax(.01, Dialog.m_HatchXScaleFactor);
 		EoDbHatch::sm_PatternScaleY = EoMax(.01, Dialog.m_HatchYScaleFactor);
 		EoDbHatch::sm_PatternAngle = EoArcLength(Dialog.m_HatchRotationAngle);
@@ -2060,9 +2059,9 @@ void AeSysDoc::OnSetupFillHatch() {
 }
 
 void AeSysDoc::OnSetupNote() {
-	auto FontDefinition {pstate.FontDefinition()};
+	auto FontDefinition {g_PrimitiveState.FontDefinition()};
 	EoDlgSetupNote Dialog(&FontDefinition);
-	auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+	auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	Dialog.m_Height = CharacterCellDefinition.Height();
 	Dialog.m_RotationAngle = EoToDegree(CharacterCellDefinition.RotationAngle());
 	Dialog.m_WidthFactor = CharacterCellDefinition.WidthFactor();
@@ -2072,10 +2071,10 @@ void AeSysDoc::OnSetupNote() {
 		CharacterCellDefinition.SetRotationAngle(EoToRadian(Dialog.m_RotationAngle));
 		CharacterCellDefinition.SetWidthFactor(Dialog.m_WidthFactor);
 		CharacterCellDefinition.SetObliqueAngle(EoToRadian(Dialog.m_ObliqueAngle));
-		pstate.SetCharacterCellDefinition(CharacterCellDefinition);
+		g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 		auto ActiveView {AeSysView::GetActiveView()};
 		auto DeviceContext {ActiveView ? ActiveView->GetDC() : nullptr};
-		pstate.SetFontDefinition(DeviceContext, FontDefinition);
+		g_PrimitiveState.SetFontDefinition(DeviceContext, FontDefinition);
 	}
 }
 

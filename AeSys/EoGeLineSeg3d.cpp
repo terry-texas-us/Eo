@@ -95,7 +95,7 @@ int EoGeLineSeg3d::DirectedRelationshipOf(const OdGePoint3d& point) const {
 }
 
 void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
-	const auto LinetypeIndex {pstate.LinetypeIndex()};
+	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 	if (EoDbPrimitive::IsSupportedLinetype(LinetypeIndex)) {
 		EoGePoint4d pt[] = {EoGePoint4d(startPoint(), 1.0), EoGePoint4d(endPoint(), 1.0)};
 		view->ModelViewTransformPoints(2, pt);

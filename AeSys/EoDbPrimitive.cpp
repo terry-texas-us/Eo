@@ -80,8 +80,8 @@ short EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
 }
 
 void EoDbPrimitive::ModifyState() noexcept {
-	m_ColorIndex = pstate.ColorIndex();
-	m_LinetypeIndex = pstate.LinetypeIndex();
+	m_ColorIndex = g_PrimitiveState.ColorIndex();
+	m_LinetypeIndex = g_PrimitiveState.LinetypeIndex();
 }
 
 unsigned EoDbPrimitive::ControlPointIndex() noexcept {

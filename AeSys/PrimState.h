@@ -39,4 +39,4 @@ public: // Constructors and destructor
 	void SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment);
 };
 
-extern CPrimState pstate;
+extern CPrimState g_PrimitiveState;

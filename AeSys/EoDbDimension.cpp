@@ -115,7 +115,7 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 
 void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
 	auto ColorIndex {LogicalColorIndex()};
-	pstate.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
+	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LogicalLinetypeIndex());
 	m_Line.Display(view, deviceContext);
 	ColorIndex = sm_HighlightColorIndex == 0 ? m_TextColorIndex : sm_HighlightColorIndex;
 	if (ColorIndex == COLORINDEX_BYLAYER) {
@@ -123,11 +123,11 @@ void EoDbDimension::Display(AeSysView* view, CDC* deviceContext) {
 	} else if (ColorIndex == COLORINDEX_BYBLOCK) {
 		ColorIndex = 7;
 	}
-	pstate.SetColorIndex(deviceContext, ColorIndex);
-	const auto LinetypeIndex {pstate.LinetypeIndex()};
-	pstate.SetLinetypeIndexPs(deviceContext, 1);
+	g_PrimitiveState.SetColorIndex(deviceContext, ColorIndex);
+	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
+	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
-	pstate.SetLinetypeIndexPs(deviceContext, LinetypeIndex);
+	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, LinetypeIndex);
 }
 
 void EoDbDimension::FormatExtra(CString& extra) const {
@@ -224,7 +224,7 @@ bool EoDbDimension::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& po
 
 void EoDbDimension::ModifyState() noexcept {
 	if ((sm_wFlags & 0x0001) != 0) { EoDbPrimitive::ModifyState(); }
-	if ((sm_wFlags & 0x0002) != 0) { m_FontDefinition = pstate.FontDefinition(); }
+	if ((sm_wFlags & 0x0002) != 0) { m_FontDefinition = g_PrimitiveState.FontDefinition(); }
 }
 
 const EoDbFontDefinition& EoDbDimension::FontDef() noexcept {
@@ -500,8 +500,8 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	auto AlignedDimension {OdDbAlignedDimension::createObject()};
 	AlignedDimension->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
-	AlignedDimension->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	AlignedDimension->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	AlignedDimension->setLinetype(Linetype);
 	return AlignedDimension;
 }

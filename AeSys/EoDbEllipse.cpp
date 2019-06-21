@@ -14,14 +14,14 @@ EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxi
 	, m_MajorAxis(majorAxis)
 	, m_MinorAxis(minorAxis)
 	, m_SweepAngle(sweepAngle) {
-	m_ColorIndex = pstate.ColorIndex();
-	m_LinetypeIndex = pstate.LinetypeIndex();
+	m_ColorIndex = g_PrimitiveState.ColorIndex();
+	m_LinetypeIndex = g_PrimitiveState.LinetypeIndex();
 }
 
 EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius)
 	: m_Center(center) {
-	m_ColorIndex = pstate.ColorIndex();
-	m_LinetypeIndex = pstate.LinetypeIndex();
+	m_ColorIndex = g_PrimitiveState.ColorIndex();
+	m_LinetypeIndex = g_PrimitiveState.LinetypeIndex();
 	auto PlaneNormal(planeNormal);
 	PlaneNormal.normalize();
 	m_MajorAxis = ComputeArbitraryAxis(PlaneNormal);
@@ -172,7 +172,7 @@ void EoDbEllipse::Display(AeSysView* view, CDC* deviceContext) {
 	if (fabs(m_SweepAngle) <= DBL_EPSILON) return;
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
-	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
+	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
 	polyline::__End(view, deviceContext, LinetypeIndex);
@@ -815,8 +815,8 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	auto Ellipse {OdDbEllipse::createObject()};
 	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Ellipse);
-	Ellipse->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	Ellipse->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	Ellipse->setLinetype(Linetype);
 	return Ellipse;
 }

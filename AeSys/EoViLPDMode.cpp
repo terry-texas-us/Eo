@@ -394,8 +394,8 @@ void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d&
 	PointPrimitive->SetPointDisplayMode(8);
 	</tas> */
 	auto Line {EoDbLine::Create(BlockTableRecord, startPoint, endPoint)};
-	Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+	Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 	group->AddTail(EoDbLine::Create(Line));
 }
 
@@ -470,8 +470,8 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSect
 void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group) {
 	const auto SectionLength {referenceLine.length()};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	OdDbLinePtr Line;
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;
@@ -523,8 +523,8 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, S
 	PreviousLeftLine.IntersectWith_xy(CurrentLeftLine, InsideCorner);
 	PreviousRightLine.IntersectWith_xy(CurrentRightLine, OutsideCorner);
 	if (generateEndCaps) { GenerateEndCap(PreviousLeftLine.endPoint(), PreviousRightLine.endPoint(), previousSection, group); }
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	auto Line = EoDbLine::Create(BlockTableRecord, PreviousLeftLine.endPoint(), InsideCorner);
 	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 	Line->setLinetype(LinetypeObjectId);
@@ -558,8 +558,8 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double 
 	EoGeLineSeg3d RightLine;
 	if (referenceLine.GetParallels(section.Width(), eccentricity, LeftLine, RightLine)) {
 		GenerateEndCap(LeftLine.startPoint(), RightLine.startPoint(), section, group);
-		const auto ColorIndex {pstate.ColorIndex()};
-		const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+		const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+		const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 		auto Line {EoDbLine::Create(BlockTableRecord, LeftLine.startPoint(), LeftLine.endPoint())};
 		Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 		Line->setLinetype(LinetypeObjectId);
@@ -583,14 +583,14 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 	Note += L"/";
 	Note += theApp.FormatLength(section.Depth(), max(theApp.GetUnits(), AeSys::kInches), 8, 3);
 	auto DeviceContext {GetDC()};
-	const auto PrimitiveState {pstate.Save()};
-	pstate.SetColorIndex(DeviceContext, 2);
-	auto FontDefinition {pstate.FontDefinition()};
+	const auto PrimitiveState {g_PrimitiveState.Save()};
+	g_PrimitiveState.SetColorIndex(DeviceContext, 2);
+	auto FontDefinition {g_PrimitiveState.FontDefinition()};
 	FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
 	FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
-	auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+	auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	CharacterCellDefinition.SetRotationAngle(0.0);
-	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
+	g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 	auto Group {new EoDbGroup};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), Note)};
@@ -603,7 +603,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 	Group->AddTail(EoDbText::Create(Text));
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
-	pstate.Restore(*DeviceContext, PrimitiveState);
+	g_PrimitiveState.Restore(*DeviceContext, PrimitiveState);
 	ReleaseDC(DeviceContext);
 }
 
@@ -611,8 +611,8 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	auto SectionLength {m_CurrentReferenceLine.length()};
 	if (SectionLength < m_DuctTapSize + m_DuctSeamSize) {
 		m_CurrentReferenceLine.SetStartPoint(m_CurrentReferenceLine.ProjToBegPt(m_DuctTapSize + m_DuctSeamSize));
@@ -676,8 +676,8 @@ void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, double eccentri
 	const auto ReferenceLength {referenceLine.length()};
 	if (ReferenceLength <= FLT_EPSILON) return;
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	const auto WidthChange {currentSection.Width() - previousSection.Width()};
 	auto TransitionLength {LengthOfTransition(justification, slope, previousSection, currentSection)};
 	TransitionLength = EoMin(TransitionLength, ReferenceLength);

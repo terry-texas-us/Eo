@@ -27,11 +27,11 @@ void EoDlgSetupHatch::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgSetupHatch::OnInitDialog() {
 	CDialog::OnInitDialog();
-	SetDlgItemInt(IDC_FIL_AREA_HAT_ID, pstate.HatchInteriorStyleIndex(), FALSE);
+	SetDlgItemInt(IDC_FIL_AREA_HAT_ID, g_PrimitiveState.HatchInteriorStyleIndex(), FALSE);
 	return TRUE;
 }
 
 void EoDlgSetupHatch::OnOK() {
-	pstate.SetHatchInteriorStyleIndex(GetDlgItemInt(IDC_FIL_AREA_HAT_ID, 0, FALSE));
+	g_PrimitiveState.SetHatchInteriorStyleIndex(GetDlgItemInt(IDC_FIL_AREA_HAT_ID, 0, FALSE));
 	CDialog::OnOK();
 }

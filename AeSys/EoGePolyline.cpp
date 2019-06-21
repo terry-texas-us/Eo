@@ -95,9 +95,9 @@ namespace polyline
 			auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
 			OdDbLinetypeTablePtr Linetypes {Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 			OdDbLinetypeTableRecordPtr Linetype {Linetypes->getAt(Name).safeOpenObject(OdDb::kForRead)};
-			pstate.SetLinetypeIndexPs(deviceContext, 1);
+			g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
 			__Display(view, deviceContext, pts_, Linetype);
-			pstate.SetLinetypeIndexPs(deviceContext, linetypeIndex);
+			g_PrimitiveState.SetLinetypeIndexPs(deviceContext, linetypeIndex);
 		}
 	}
 

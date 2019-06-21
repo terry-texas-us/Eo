@@ -830,8 +830,8 @@ void AeSysView::createDevice(bool recreate) {
 				if (DeviceProperties->has(L"BlocksCache")) {
 					DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled()));
 				}
-				if (DeviceProperties->has(L"EnableMultithread")) {
-					DeviceProperties->putAt(L"EnableMultithread", OdRxVariantValue(theApp.gsDeviceMultithreadEnabled()));
+				if (DeviceProperties->has(L"EnableMultithreading")) {
+					DeviceProperties->putAt(L"EnableMultithreading", OdRxVariantValue(theApp.GsDeviceMultithreadingEnabled()));
 				}
 				if (DeviceProperties->has(L"MaxRegenThreads")) {
 					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue(static_cast<unsigned short>(theApp.mtRegenThreadsCount())));
@@ -1723,8 +1723,8 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 	DeviceContext->SetBkColor(g_ViewBackgroundColor);
 	auto PrimitiveState {0};
 	auto DrawMode {0};
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) { PrimitiveState = pstate.Save(); }
-	if ((hint & EoDb::kErase) == EoDb::kErase) { DrawMode = pstate.SetROP2(*DeviceContext, R2_XORPEN); }
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) { PrimitiveState = g_PrimitiveState.Save(); }
+	if ((hint & EoDb::kErase) == EoDb::kErase) { DrawMode = g_PrimitiveState.SetROP2(*DeviceContext, R2_XORPEN); }
 	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor()); }
 	switch (hint) {
 		case EoDb::kPrimitive: case EoDb::kPrimitiveSafe: case EoDb::kPrimitiveEraseSafe:
@@ -1743,8 +1743,8 @@ void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
 			CView::OnUpdate(sender, hint, hintObject);
 	}
 	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(0); }
-	if ((hint & EoDb::kErase) == EoDb::kErase) { pstate.SetROP2(*DeviceContext, DrawMode); }
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) { pstate.Restore(*DeviceContext, PrimitiveState); }
+	if ((hint & EoDb::kErase) == EoDb::kErase) { g_PrimitiveState.SetROP2(*DeviceContext, DrawMode); }
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
 	DeviceContext->SetBkColor(BackgroundColor);
 	ReleaseDC(DeviceContext);
 }
@@ -3499,16 +3499,16 @@ void AeSysView::UpdateStateInformation(EStateInformationItem item) {
 		}
 		if ((item & Pen) == Pen) {
 			rc.SetRect(16 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 22 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"P%-4i", pstate.ColorIndex());
+			swprintf_s(szBuf, 32, L"P%-4i", g_PrimitiveState.ColorIndex());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & Line) == Line) {
 			rc.SetRect(22 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 28 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"L%-4i", pstate.LinetypeIndex());
+			swprintf_s(szBuf, 32, L"L%-4i", g_PrimitiveState.LinetypeIndex());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
 		if ((item & TextHeight) == TextHeight) {
-			const auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+			const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 			rc.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);

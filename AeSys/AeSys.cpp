@@ -48,7 +48,7 @@ double g_PenWidths[] {
 };
 #include "PegColors.h"
 COLORREF* g_CurrentPalette {g_ColorPalette};
-CPrimState pstate;
+CPrimState g_PrimitiveState;
 
 // This is a legacy feature. All values are empty strings now for normal MouseButton command processing.
 // User may still change through user interface, so must not assume empty.
@@ -63,7 +63,7 @@ void rxUninit_COleClientItem_handler();
 OdStaticRxObject<Cmd_VIEW> g_Cmd_VIEW;
 OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
 
-static void addPaperDrawingCustomization() {
+static void AddPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
 	public:
 		bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
@@ -116,7 +116,7 @@ static void removePaperDrawingCustomization() {
 }
 
 /// <section="Material textures loading monitor protocol extension">
-static void addMaterialTextureLoadingMonitor() {
+static void AddMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
 	public:
 		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept override {
@@ -134,14 +134,14 @@ static void addMaterialTextureLoadingMonitor() {
 	OdGiMaterialTextureEntry::desc()->addX(OdGiMaterialTextureLoadPE::desc(), &s_MatLoadExt);
 }
 
-void removeMaterialTextureLoadingMonitor() {
+void RemoveMaterialTextureLoadingMonitor() {
 	OdGiMaterialTextureEntry::desc()->delX(OdGiMaterialTextureLoadPE::desc());
 }
 /// </section>
 #include "DbLibraryInfo.h"
 #include "summinfo.h"
 
-class EoDlgAbout : public CDialog {
+class EoDlgAbout final : public CDialog {
 public:
 	EoDlgAbout() noexcept;
 
@@ -277,7 +277,7 @@ public:
 };
 
 BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
-	auto& FullCommandLineInfo {static_cast<CFullCommandLineInfo&>(commandLineInfo)};
+	auto& FullCommandLineInfo {dynamic_cast<CFullCommandLineInfo&>(commandLineInfo)};
 	if (!FullCommandLineInfo.m_BatToExecute.IsEmpty()) {
 		_wsystem(FullCommandLineInfo.m_BatToExecute);
 	}
@@ -396,13 +396,13 @@ OdDbPageControllerPtr AeSys::newPageController() {
 	return static_cast<OdDbPageController*>(nullptr);
 }
 
-int AeSys::setPagingType(int pagingType) noexcept {
+int AeSys::SetPagingType(int pagingType) noexcept {
 	const auto oldType {m_pagingType};
 	m_pagingType = pagingType;
 	return oldType;
 }
 
-bool AeSys::setUndoType(bool useTempFiles) noexcept {
+bool AeSys::SetUndoType(bool useTempFiles) noexcept {
 	const auto oldType {m_bUseTempFiles};
 	m_bUseTempFiles = useTempFiles;
 	return oldType;
@@ -471,7 +471,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 		}
 		if (hint == kTextureMapFile) { return FilePathAndName.GetString(); }
 		if (FilePathAndName.IsEmpty()) {
-			auto AcadLocation {GetRegistryAcadLocation()};
+			const auto AcadLocation {GetRegistryAcadLocation()};
 			if (!AcadLocation.IsEmpty()) {
 				FilePathAndName = AcadLocation + L"\\Fonts\\" + FileToFind;
 				if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) {
@@ -487,7 +487,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 CString AeSys::getApplicationPath() {
 	wchar_t FileName[MAX_PATH];
 	if (GetModuleFileNameW(GetModuleHandleW(nullptr), FileName, MAX_PATH)) {
-		CString FilePath(FileName);
+		const CString FilePath(FileName);
 		const auto Delimiter {FilePath.ReverseFind('\\')};
 		return FilePath.Left(Delimiter);
 	}
@@ -570,7 +570,7 @@ void AeSys::RefreshCommandMenu() {
 	MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 	MenuItemInfo.fMask = MIIM_DATA;
 	auto CommandStack {odedRegCmds()};
-	auto HasNoCommand {CommandStack->newIterator()->done()};
+	const auto HasNoCommand {CommandStack->newIterator()->done()};
 	const unsigned ToolsMenuItem {8}; // <tas="Until calculated ToolsMenu position finished. Menu resource which change the location of Registered Commands location break."</tas>
 	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, static_cast<unsigned>(MF_BYPOSITION | (HasNoCommand ? MF_GRAYED : MF_ENABLED)));
 	unsigned CommandId {_APS_NEXT_COMMAND_VALUE + 100};
@@ -620,8 +620,7 @@ OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
 	// open an existing document
 	MainFrame->StartTimer();
 	try {
-		CWaitCursor wait;
-		OdString PathName(pathName);
+		const OdString PathName(pathName);
 		if (PathName.right(4).iCompare(L".dgn") == 0) {
 			// <tas="Likely will never support dgn"</tas>
 			MainFrame->StopTimer(L"Loading");
@@ -760,11 +759,11 @@ void AeSys::EditColorPalette() {
 	CHOOSECOLOR cc;
 	::ZeroMemory(&cc, sizeof(CHOOSECOLOR));
 	cc.lStructSize = sizeof(CHOOSECOLOR);
-	cc.rgbResult = g_ColorPalette[pstate.ColorIndex()];
+	cc.rgbResult = g_ColorPalette[g_PrimitiveState.ColorIndex()];
 	cc.lpCustColors = g_ColorPalette;
 	cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
 	ChooseColorW(&cc);
-	cc.rgbResult = g_GreyPalette[pstate.ColorIndex()];
+	cc.rgbResult = g_GreyPalette[g_PrimitiveState.ColorIndex()];
 	cc.lpCustColors = g_GreyPalette;
 	ChooseColorW(&cc);
 	MessageBoxW(nullptr, L"The background color is no longer associated with the pen Color Palette.", L"Deprecation Notice", MB_OK | MB_ICONINFORMATION);
@@ -822,7 +821,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Discard Back Faces", m_DiscardBackFaces);
 	theApp.WriteInt(L"Enable Double Buffer", m_EnableDoubleBuffer);
 	theApp.WriteInt(L"Enable Blocks Cache", m_BlocksCache);
-	theApp.WriteInt(L"Gs Device Multithread", m_GsDevMultithread);
+	theApp.WriteInt(L"Gs Device Multithreading", m_GsDevMultithreading);
 	theApp.WriteInt(L"Mt Regen Threads Count", static_cast<int>(m_nMtRegenThreads));
 	theApp.WriteInt(L"Print/Preview via bitmap device", m_EnablePrintPreviewViaBitmap);
 	theApp.WriteInt(L"UseGsModel", m_UseGsModel);
@@ -1047,15 +1046,15 @@ void AeSys::HomePointSave(int i, const OdGePoint3d& point) noexcept {
 }
 
 void AeSys::InitGbls(CDC* deviceContext) {
-	pstate.SetHatchInteriorStyle(EoDbHatch::kHatch);
-	pstate.SetHatchInteriorStyleIndex(1);
+	g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kHatch);
+	g_PrimitiveState.SetHatchInteriorStyleIndex(1);
 	EoDbHatch::sm_PatternScaleX = .1;
 	EoDbHatch::sm_PatternScaleY = .1;
 	EoDbHatch::sm_PatternAngle = 0.0;
 	const EoDbCharacterCellDefinition CharacterCellDefinition;
-	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
+	g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 	EoDbFontDefinition FontDefinition;
-	pstate.SetFontDefinition(deviceContext, FontDefinition);
+	g_PrimitiveState.SetFontDefinition(deviceContext, FontDefinition);
 	SetUnits(kInches);
 	SetArchitecturalUnitsFractionPrecision(8);
 	SetDimensionLength(.125);
@@ -1064,8 +1063,8 @@ void AeSys::InitGbls(CDC* deviceContext) {
 	m_TrapHighlightColor = 15;
 
 	//Document->InitializeGroupAndPrimitiveEdit();
-	pstate.SetPen(nullptr, deviceContext, 1, 1);
-	pstate.SetPointDisplayMode(1);
+	g_PrimitiveState.SetPen(nullptr, deviceContext, 1, 1);
+	g_PrimitiveState.SetPointDisplayMode(1);
 }
 
 bool AeSys::InitializeOda() {
@@ -1078,8 +1077,8 @@ bool AeSys::InitializeOda() {
 		odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
 		odrxDynamicLinker()->loadModule(OdExCommandsModuleName);
 		odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName); // PlotSettingsValidator module (To include support for plot settings)
-		addPaperDrawingCustomization();
-		addMaterialTextureLoadingMonitor();
+		AddPaperDrawingCustomization();
+		AddMaterialTextureLoadingMonitor();
 		OdDbDatabaseDoc::rxInit();
 #ifdef OD_OLE_SUPPORT
 		::rxInit_COleClientItem_handler();
@@ -1126,7 +1125,7 @@ BOOL AeSys::InitInstance() {
 	m_DiscardBackFaces = GetInt(L"Discard Back Faces", true);
 	m_EnableDoubleBuffer = GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
 	m_BlocksCache = GetInt(L"Enable Blocks Cache", false);
-	m_GsDevMultithread = GetInt(L"Gs Device Multithread", false);
+	m_GsDevMultithreading = GetInt(L"Gs Device Multithreading", false);
 	m_nMtRegenThreads = static_cast<unsigned>(GetInt(L"Mt Regen Threads Count", 4));
 	m_EnablePrintPreviewViaBitmap = GetInt(L"Print/Preview via bitmap device", true);
 	m_UseGsModel = GetInt(L"UseGsModel", true);
@@ -1942,7 +1941,7 @@ void AeSys::UninitializeTeigha() {
 		::rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
 		removePaperDrawingCustomization();
-		removeMaterialTextureLoadingMonitor();
+		RemoveMaterialTextureLoadingMonitor();
 		odUninitialize();
 	} catch (const OdError& Error) {
 		theApp.reportError(L"", Error);

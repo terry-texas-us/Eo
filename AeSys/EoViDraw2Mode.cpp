@@ -39,8 +39,8 @@ void AeSysView::OnDraw2ModeJoin() {
 void AeSysView::OnDraw2ModeWall() {
 	auto CurrentPnt {GetCursorPosition()};
 	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -209,8 +209,8 @@ void AeSysView::DoDraw2ModeMouseMove() {
 			EoGeLineSeg3d PreviewLines[2];
 			EoGeLineSeg3d ln(m_PreviousPnt, CurrentPnt);
 			ln.GetParallels(m_DistanceBetweenLines, m_CenterLineEccentricity, PreviewLines[0], PreviewLines[1]);
-			const auto ColorIndex {pstate.ColorIndex()};
-			const auto LinetypeId {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+			const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+			const auto LinetypeId {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 			auto Line {EoDbLine::Create(BlockTableRecord, PreviewLines[0].startPoint(), PreviewLines[1].startPoint())};
 			Line->setColorIndex(static_cast<unsigned short>(ColorIndex));
 			Line->setLinetype(LinetypeId);

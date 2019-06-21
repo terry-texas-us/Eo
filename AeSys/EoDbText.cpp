@@ -50,11 +50,11 @@ EoDbPrimitive* EoDbText::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 
 void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
-	pstate.SetColorIndex(deviceContext, ColorIndex);
-	const auto LinetypeIndex {pstate.LinetypeIndex()};
-	pstate.SetLinetypeIndexPs(deviceContext, 1);
+	g_PrimitiveState.SetColorIndex(deviceContext, ColorIndex);
+	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
+	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
 	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
-	pstate.SetLinetypeIndexPs(deviceContext, LinetypeIndex);
+	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, LinetypeIndex);
 }
 
 EoDbFontDefinition EoDbText::FontDefinition() const {
@@ -141,7 +141,7 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 
 void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	if (iAtt == TM_TEXT_ALL) {
-		m_ColorIndex = pstate.ColorIndex();
+		m_ColorIndex = g_PrimitiveState.ColorIndex();
 		m_FontDefinition = fontDefinition;
 		m_ReferenceSystem.Rescale(characterCellDefinition);
 	} else if (iAtt == TM_TEXT_FONT) {
@@ -156,8 +156,8 @@ void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbC
 
 void EoDbText::ModifyState() noexcept {
 	EoDbPrimitive::ModifyState();
-	m_FontDefinition = pstate.FontDefinition();
-	const auto CharacterCellDefinition = pstate.CharacterCellDefinition();
+	m_FontDefinition = g_PrimitiveState.FontDefinition();
+	const auto CharacterCellDefinition = g_PrimitiveState.CharacterCellDefinition();
 	m_ReferenceSystem.Rescale(CharacterCellDefinition);
 }
 
@@ -498,7 +498,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, const Od
 	auto Text {OdDbText::createObject()};
 	Text->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Text);
-	Text->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
+	Text->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 	Text->setPosition(position);
 	Text->setTextString(textString);
 	return Text;
@@ -508,7 +508,7 @@ OdDbMTextPtr EoDbText::CreateM(OdDbBlockTableRecordPtr& blockTableRecord, OdStri
 	auto MText {OdDbMText::createObject()};
 	MText->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(MText);
-	MText->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
+	MText->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 	MText->setContents(text);
 	return MText;
 }

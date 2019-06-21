@@ -117,7 +117,7 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 void EoDbLine::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
-	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
+	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
@@ -341,8 +341,8 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	auto Line {OdDbLine::createObject()};
 	Line->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Line);
-	Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	Line->setLinetype(Linetype);
 	return Line;
 }

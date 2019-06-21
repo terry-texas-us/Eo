@@ -64,9 +64,9 @@ int CPrimState::Save() {
 	if (iSaveId < 0) {
 		theApp.WarningMessageBox(IDS_MSG_SAVE_STATE_LIST_ERROR);
 	} else {
-		SetHatchInteriorStyle(pstate.HatchInteriorStyle());
+		SetHatchInteriorStyle(g_PrimitiveState.HatchInteriorStyle());
 		SavedStates[iSaveId] = new CPrimState;
-		*SavedStates[iSaveId] = pstate;
+		*SavedStates[iSaveId] = g_PrimitiveState;
 	}
 	// return id to use for restore reference
 	return iSaveId;

@@ -290,8 +290,8 @@ void AeSysView::DoDrawModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 				auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
-				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+				Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
@@ -339,8 +339,8 @@ void AeSysView::DoDrawModeMouseMove() {
 					const auto StartPoint {m_DrawModePoints[PointsIndex]};
 					const auto EndPoint {m_DrawModePoints[(PointsIndex + 1) % 4]};
 					auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};
-					Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+					Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 					m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 				}
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
@@ -353,8 +353,8 @@ void AeSysView::DoDrawModeMouseMove() {
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 			if (NumberOfPoints == 1) {
 				auto Line {EoDbLine::Create(BlockTableRecord, m_DrawModePoints[0], CurrentPnt)};
-				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+				Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 			}
 			if (NumberOfPoints == 2) {

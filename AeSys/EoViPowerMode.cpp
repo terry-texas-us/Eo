@@ -11,8 +11,8 @@ void AeSysView::OnPowerModeOptions() noexcept {
 void AeSysView::OnPowerModeCircuit() {
 	auto CurrentPnt {GetCursorPosition()};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	m_PowerArrow = false;
 	m_PowerConductor = false;
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -129,8 +129,8 @@ void AeSysView::DoPowerModeMouseMove() {
 				const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
 				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 				auto Line {EoDbLine::Create(BlockTableRecord, pt1, CurrentPnt)};
-				Line->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
+				Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 				m_PreviewGroup.AddTail(EoDbLine::Create(Line));
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}

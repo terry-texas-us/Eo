@@ -98,9 +98,9 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
 	const auto Position(Target + OdGeVector3d::kZAxis * 50.);
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
-	const auto PrimitiveState {pstate.Save()};
+	const auto PrimitiveState {g_PrimitiveState.Save()};
 	block->Display(ActiveView, &dcMem);
-	pstate.Restore(dcMem, PrimitiveState);
+	g_PrimitiveState.Restore(dcMem, PrimitiveState);
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();
 	dcMem.SelectObject(Bitmap);
@@ -135,9 +135,9 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
 	const auto Position(Target + OdGeVector3d::kZAxis * 50.);
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
-	const auto PrimitiveState {pstate.Save()};
+	const auto PrimitiveState {g_PrimitiveState.Save()};
 	groups->Display(ActiveView, &dcMem);
-	pstate.Restore(dcMem, PrimitiveState);
+	g_PrimitiveState.Restore(dcMem, PrimitiveState);
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();
 	dcMem.SelectObject(Bitmap);

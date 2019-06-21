@@ -285,7 +285,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			CurrentText = dlg.m_sText;
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
-		const auto PrimitiveState {pstate.Save()};
+		const auto PrimitiveState {g_PrimitiveState.Save()};
 		if (!CurrentText.IsEmpty()) {
 			auto LineSeg {EngagedLine->LineSeg()};
 			auto dAng {LineSeg.AngleFromXAxis_xy()};
@@ -298,14 +298,14 @@ void AeSysView::OnAnnotateModeCutIn() {
 			MajorAxis *= .06;
 			MinorAxis *= .1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
-			const auto ColorIndex {pstate.ColorIndex()};
-			pstate.SetColorIndex(DeviceContext, 2);
-			auto FontDefinition {pstate.FontDefinition()};
+			const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+			g_PrimitiveState.SetColorIndex(DeviceContext, 2);
+			auto FontDefinition {g_PrimitiveState.FontDefinition()};
 			FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
 			FontDefinition.SetVerticalAlignment(EoDb::kAlignMiddle);
-			auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
+			auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 			CharacterCellDefinition.SetRotationAngle(0.0);
-			pstate.SetCharacterCellDefinition(CharacterCellDefinition);
+			g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(CurrentText))};
 			Text->setHeight(ReferenceSystem.YDirection().length());
@@ -318,7 +318,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			//            Text->getBoundingPoints(BoundingBox);
 			auto TextPrimitive {EoDbText::Create(Text)};
 			Group->AddTail(TextPrimitive);
-			pstate.SetColorIndex(DeviceContext, ColorIndex);
+			g_PrimitiveState.SetColorIndex(DeviceContext, ColorIndex);
 			OdGePoint3dArray BoundingBox;
 			TextPrimitive->GetBoundingBox(BoundingBox, GapSpaceFactor());
 			const auto dGap {OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length()};
@@ -344,7 +344,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			}
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroup, Group);
-		pstate.Restore(*DeviceContext, PrimitiveState);
+		g_PrimitiveState.Restore(*DeviceContext, PrimitiveState);
 	}
 	ReleaseDC(DeviceContext);
 }

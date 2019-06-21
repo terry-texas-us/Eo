@@ -336,8 +336,8 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbDatabasePtr& database) {
 	BlockTableRecord->appendOdDbEntity(BlockReferenceEntity);
 	auto BlockReference {new EoDbBlockReference()};
 	BlockReference->SetEntityObjectId(BlockReferenceEntity->objectId());
-	BlockReference->SetColorIndex2(pstate.ColorIndex());
-	BlockReference->SetLinetypeIndex2(pstate.LinetypeIndex());
+	BlockReference->SetColorIndex2(g_PrimitiveState.ColorIndex());
+	BlockReference->SetLinetypeIndex2(g_PrimitiveState.LinetypeIndex());
 	return BlockReference;
 }
 
@@ -355,8 +355,8 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	auto BlockReference {OdDbBlockReference::createObject()};
 	BlockReference->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(BlockReference);
-	BlockReference->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	BlockReference->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	BlockReference->setLinetype(Linetype);
 	return BlockReference;
 }

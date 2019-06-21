@@ -96,9 +96,9 @@ EoDbPrimitive* EoDbHatch::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 
 void EoDbHatch::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
-	pstate.SetColorIndex(deviceContext, ColorIndex);
-	pstate.SetHatchInteriorStyle(m_InteriorStyle);
-	pstate.SetHatchInteriorStyleIndex(m_InteriorStyleIndex);
+	g_PrimitiveState.SetColorIndex(deviceContext, ColorIndex);
+	g_PrimitiveState.SetHatchInteriorStyle(m_InteriorStyle);
+	g_PrimitiveState.SetHatchInteriorStyleIndex(m_InteriorStyleIndex);
 	if (m_InteriorStyle == kHatch) {
 		DisplayHatch(view, deviceContext);
 	} else { // Fill area interior style is hollow, solid or pattern
@@ -335,10 +335,10 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 	int LoopPointsOffsets[2];
 	LoopPointsOffsets[0] = static_cast<int>(m_Vertices.size());
 	EoEdge Edges[128] {0};
-	const auto ColorIndex {pstate.ColorIndex()};
-	const auto LinetypeIndex {pstate.LinetypeIndex()};
-	pstate.SetLinetypeIndexPs(deviceContext, 1);
-	const auto InteriorStyleIndex {pstate.HatchInteriorStyleIndex()};
+	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
+	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
+	const auto InteriorStyleIndex {g_PrimitiveState.HatchInteriorStyleIndex()};
 	OdHatchPattern HatchPattern;
 	EoDbHatchPatternTable::RetrieveHatchPattern(EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex), HatchPattern);
 	const auto NumberOfPatterns = HatchPattern.size();
@@ -508,7 +508,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 		tmRotZ.setToRotation(LineAngleInRadians, OdGeVector3d::kZAxis);
 		tm.preMultBy(tmRotZ);
 	}
-	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
+	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 }
 
 void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
@@ -525,7 +525,7 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 		auto Points {new CPoint[static_cast<unsigned>(NumberOfPoints)]};
 		view->DoViewportProjection(Points, Vertices);
 		if (m_InteriorStyle == kSolid) {
-			CBrush Brush(g_CurrentPalette[pstate.ColorIndex()]);
+			CBrush Brush(g_CurrentPalette[g_PrimitiveState.ColorIndex()]);
 			auto OldBrush {deviceContext->SelectObject(&Brush)};
 			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
@@ -552,8 +552,8 @@ OdGePoint3d EoDbHatch::GetPointAt(unsigned pointIndex) {
 
 void EoDbHatch::ModifyState() noexcept {
 	EoDbPrimitive::ModifyState();
-	m_InteriorStyle = pstate.HatchInteriorStyle();
-	m_InteriorStyleIndex = pstate.HatchInteriorStyleIndex();
+	m_InteriorStyle = g_PrimitiveState.HatchInteriorStyle();
+	m_InteriorStyleIndex = g_PrimitiveState.HatchInteriorStyleIndex();
 }
 
 int EoDbHatch::NumberOfVertices() const {
@@ -827,10 +827,10 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	Hatch->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Hatch);
 	Hatch->setAssociative(false);
-	Hatch->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
+	Hatch->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
+	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	Hatch->setLinetype(Linetype);
-	auto HatchName {EoDbHatchPatternTable::LegacyHatchPatternName(pstate.HatchInteriorStyleIndex())};
+	auto HatchName {EoDbHatchPatternTable::LegacyHatchPatternName(g_PrimitiveState.HatchInteriorStyleIndex())};
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 	return Hatch;
 }

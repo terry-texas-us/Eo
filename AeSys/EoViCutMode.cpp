@@ -101,8 +101,8 @@ void AeSysView::OnCutModeField() {
 		auto iInts {0};
 		OdGePoint3d Intersections[10];
 		auto Document {GetDocument()};
-		const auto ColorIndex {pstate.ColorIndex()};
-		const auto LinetypeIndex {pstate.LinetypeIndex()};
+		const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+		const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 		auto GroupsOut {new EoDbGroupList};
 		auto GroupsIn {new EoDbGroupList};
 		POSITION posSegPrv;
@@ -138,7 +138,7 @@ void AeSysView::OnCutModeField() {
 		}
 		delete GroupsIn;
 		delete GroupsOut;
-		pstate.SetPen(this, DeviceContext, ColorIndex, LinetypeIndex);
+		g_PrimitiveState.SetPen(this, DeviceContext, ColorIndex, LinetypeIndex);
 		UpdateStateInformation(BothCounts);
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(wPrvKeyDwn);
@@ -157,8 +157,8 @@ void AeSysView::OnCutModeClip() {
 		if (pt1 == pt2) { return; }
 		double dRel[2];
 		OdGePoint3d ptCut[2];
-		const auto ColorIndex {pstate.ColorIndex()};
-		const auto LinetypeIndex {pstate.LinetypeIndex()};
+		const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+		const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 		auto Document {GetDocument()};
 		auto TransformMatrix {ModelViewMatrix()};
 		TransformMatrix.invert();
@@ -208,7 +208,7 @@ void AeSysView::OnCutModeClip() {
 		}
 		delete GroupsIn;
 		delete GroupsOut;
-		pstate.SetPen(this, DeviceContext, ColorIndex, LinetypeIndex);
+		g_PrimitiveState.SetPen(this, DeviceContext, ColorIndex, LinetypeIndex);
 		UpdateStateInformation(BothCounts);
 		ModeLineUnhighlightOp(wPrvKeyDwn);
 	}

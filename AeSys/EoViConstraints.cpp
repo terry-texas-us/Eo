@@ -151,9 +151,9 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 	if (DisplayGridWithLines()) {
 		if (fabs(m_XGridLineSpacing) > DBL_EPSILON && fabs(m_YGridLineSpacing) > DBL_EPSILON) {
 			int i;
-			const auto ColorIndex {pstate.ColorIndex()};
-			const auto LinetypeIndex {pstate.LinetypeIndex()};
-			pstate.SetPen(this, deviceContext, 250, 1);
+			const auto ColorIndex {g_PrimitiveState.ColorIndex()};
+			const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
+			g_PrimitiveState.SetPen(this, deviceContext, 250, 1);
 			OdGePoint3d StartPoint;
 			OdGePoint3d EndPoint;
 			StartPoint.x = m_GridOrigin.x - dHalfPts * m_XGridLineSpacing;
@@ -173,7 +173,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 				EoGeLineSeg3d(StartPoint, EndPoint).Display(this, deviceContext);
 				StartPoint.x += m_XGridLineSpacing;
 			}
-			pstate.SetPen(this, deviceContext, ColorIndex, LinetypeIndex);
+			g_PrimitiveState.SetPen(this, deviceContext, ColorIndex, LinetypeIndex);
 		}
 	}
 }
