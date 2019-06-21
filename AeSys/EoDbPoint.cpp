@@ -1,13 +1,9 @@
 #include "stdafx.h"
-
 #include "DbBlockTableRecord.h"
-
 #include "AeSys.h"
 #include "AeSysView.h"
-
 #include "EoVaxFloat.h"
 #include "EoDbFile.h"
-
 IMPLEMENT_DYNAMIC(EoDbPoint, EoDbPrimitive)
 
 EoDbPoint::EoDbPoint() noexcept
@@ -29,13 +25,11 @@ EoDbPoint::EoDbPoint(const OdGePoint3d& point) noexcept
 EoDbPoint::EoDbPoint(const EoDbPoint& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-
 	m_ColorIndex = other.m_ColorIndex;
 	m_PointDisplayMode = other.m_PointDisplayMode;
 	m_Position = other.m_Position;
 	m_NumberOfDatums = other.m_NumberOfDatums;
 	m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
-
 	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
 		m_Data[n] = other.m_Data[n];
 	}
@@ -48,17 +42,13 @@ EoDbPoint::~EoDbPoint() {
 const EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-
 	m_ColorIndex = other.m_ColorIndex;
 	m_PointDisplayMode = other.m_PointDisplayMode;
 	m_Position = other.m_Position;
-	
 	if (m_NumberOfDatums != other.m_NumberOfDatums) {
-		
+
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
-
 		m_NumberOfDatums = other.m_NumberOfDatums;
-
 		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 	}
 	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
@@ -67,7 +57,7 @@ const EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 	return *this;
 }
 
-void EoDbPoint::AddReportToMessageList(const OdGePoint3d & point) const {
+void EoDbPoint::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Report(L"<Point>");
 	Report += L" Color:" + FormatColorIndex();
 	CString Mode;
@@ -83,18 +73,14 @@ void EoDbPoint::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept
 EoDbPrimitive* EoDbPoint::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbPointPtr Point = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Point);
-
 	return Create(Point);
 }
 
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
-
 	const auto HotColor {theApp.GetHotColor(ColorIndex)};
-
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-
 	if (pt.IsInView()) {
 		const auto pnt {view->DoViewportProjection(pt)};
 		auto i {0};
@@ -105,28 +91,24 @@ void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
 					deviceContext->SetPixel(pnt.x, pnt.y + i, HotColor);
 				}
 				break;
-
 			case 1:  // 5 pixel plus
 				for (i = -2; i <= 2; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y, HotColor);
 					deviceContext->SetPixel(pnt.x, pnt.y + i, HotColor);
 				}
 				break;
-
 			case 2: // 9 pixel plus
 				for (i = -4; i <= 4; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y, HotColor);
 					deviceContext->SetPixel(pnt.x, pnt.y + i, HotColor);
 				}
 				break;
-
 			case 3: // 9 pixel cross
 				for (i = -4; i <= 4; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y - i, HotColor);
 					deviceContext->SetPixel(pnt.x + i, pnt.y + i, HotColor);
 				}
 				break;
-
 			default: // 5 pixel square
 				for (auto Row = -2; Row <= 2; Row++) {
 					for (auto Col = -2; Col <= 2; Col++) {
@@ -140,7 +122,7 @@ void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
 	}
 }
 
-void EoDbPoint::FormatExtra(CString & extra) const {
+void EoDbPoint::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	CString Mode;
@@ -163,7 +145,7 @@ OdGePoint3d EoDbPoint::GetCtrlPt() const noexcept {
 	return m_Position;
 }
 
-void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d & extents) const {
+void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	extents.addPoint(m_Position);
 }
 
@@ -177,41 +159,33 @@ bool EoDbPoint::IsEqualTo(EoDbPrimitive* primitive) const {
 
 bool EoDbPoint::IsInView(AeSysView* view) const {
 	EoGePoint4d pt(m_Position, 1.0);
-
 	view->ModelViewTransformPoint(pt);
-
 	return pt.IsInView();
 }
 
 bool EoDbPoint::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-
 	return point.DistanceToPointXY(pt) < sm_SelectApertureSize ? true : false;
 }
 
 OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-
 	sm_ControlPointIndex = point.DistanceToPointXY(pt) < sm_SelectApertureSize ? 0 : SIZE_T_MAX;
 	return sm_ControlPointIndex == 0 ? m_Position : OdGePoint3d::kOrigin;
 }
 
 bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	EoGePoint4d pt(m_Position, 1.0);
-
 	view->ModelViewTransformPoint(pt);
-
 	projectedPoint = pt.Convert3d();
-
 	return point.DistanceToPointXY(pt) <= view->SelectApertureSize() ? true : false;
 }
 
 bool EoDbPoint::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-
 	return pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y ? true : false;
 }
 
@@ -242,7 +216,6 @@ void EoDbPoint::SetData(unsigned short numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
 
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
-
 		m_NumberOfDatums = numberOfDatums;
 		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 	}
@@ -255,22 +228,20 @@ void EoDbPoint::SetPointDisplayMode(short displayMode) noexcept {
 	m_PointDisplayMode = displayMode;
 }
 
-void EoDbPoint::TransformBy(const EoGeMatrix3d & transformMatrix) {
+void EoDbPoint::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Position.transformBy(transformMatrix);
 }
 
-void EoDbPoint::TranslateUsingMask(const OdGeVector3d & translate, unsigned long mask) {
+void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 
 	if (mask != 0) { m_Position += translate; }
 }
 
-bool EoDbPoint::Write(EoDbFile & file) const {
+bool EoDbPoint::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kPointPrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_PointDisplayMode);
-
 	file.WritePoint3d(m_Position);
-
 	file.WriteUInt16(m_NumberOfDatums);
 	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		file.WriteDouble(m_Data[w]);
@@ -283,12 +254,9 @@ void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kPointPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_PointDisplayMode);
-
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Position);
-
 	::ZeroMemory(&buffer[20], 12);
 	auto i {20};
-
 	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
 		reinterpret_cast<EoVaxFloat*>(& buffer[i])->Convert(m_Data[w]);
 		i += sizeof(EoVaxFloat);
@@ -296,31 +264,26 @@ void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	file.Write(buffer, 32);
 }
 
-OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr & blockTableRecord) {
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	auto Point = OdDbPoint::createObject();
 	Point->setDatabaseDefaults(blockTableRecord->database());
-
 	blockTableRecord->appendOdDbEntity(Point);
 	Point->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
 
 	// The point object does not store the appearance and size of a point.
 	// The database stores the appearance and size of all points in the PDMODE and PDSIZE system variables.
-
 	return Point;
 }
 
-EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
+EoDbPoint* EoDbPoint::Create(OdDbPointPtr& point) {
 	auto Point {new EoDbPoint()};
 	Point->m_EntityObjectId = point->objectId();
 	Point->m_ColorIndex = static_cast<short>(point->colorIndex());
 	Point->m_Position = point->position();
-
 	Point->SetPointDisplayMode(pstate.PointDisplayMode());
-
 	unsigned short NumberOfDatums {0};
 	double Data[] {0.0, 0.0, 0.};
 	auto ResourceBuffer = point->xData(L"AeSys");
-
 	if (!ResourceBuffer.isNull()) {
 		auto Name {ResourceBuffer->getString()};
 		ResourceBuffer = ResourceBuffer->next();
@@ -330,24 +293,17 @@ EoDbPoint* EoDbPoint::Create(OdDbPointPtr & point) {
 		}
 	}
 	Point->SetData(NumberOfDatums, Data);
-
 	return Point;
 }
 
 OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
 	auto Point {OdDbPoint::createObject()};
 	Point->setDatabaseDefaults(blockTableRecord->database());
-
 	blockTableRecord->appendOdDbEntity(Point);
-
 	Point->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
-
 	const auto PointDisplayMode {file.ReadInt16()};
-
 	Point->setPosition(file.ReadPoint3d());
-
 	const auto NumberOfDatums {file.ReadUInt16()};
-	
 	if (NumberOfDatums > 0) {
 		auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 		for (unsigned n = 0; n < NumberOfDatums; n++) {
@@ -363,7 +319,6 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	short ColorIndex {0};
 	short PointDisplayMode {0};
 	OdGePoint3d Position;
-
 	if (versionNumber == 1) {
 		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
 		PointDisplayMode = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
@@ -378,18 +333,12 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	Data[1] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert();
 	Data[2] = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
 	const auto Database {blockTableRecord->database()};
-
 	auto Point {OdDbPoint::createObject()};
 	Point->setDatabaseDefaults(Database);
-
 	blockTableRecord->appendOdDbEntity(Point);
-
 	Point->setColorIndex(static_cast<unsigned short>(ColorIndex));
-
 	Point->setPosition(Position);
-
 	auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
-
 	for (auto Datum : Data) {
 		ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Datum));
 	}

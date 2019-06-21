@@ -2,26 +2,29 @@
 #include "AeSys.h"
 #include "EoLoadApps.h"
 #include "RxModule.h"
-
 EoLoadApps::LoadedApps* EoLoadApps::m_LoadedApps = nullptr;
 
 void EoLoadApps::rxInit() {
 	m_LoadedApps = new LoadedApps;
 	odrxDynamicLinker()->addReactor(m_LoadedApps);
 }
+
 void EoLoadApps::rxUninit() {
 	odrxDynamicLinker()->removeReactor(m_LoadedApps);
 	delete m_LoadedApps;
 }
+
 EoLoadApps::EoLoadApps(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
+
 void EoLoadApps::LoadedApps::rxAppLoaded(OdRxModule* appModule) {
 	append(appModule->moduleName());
 	if (m_pListBox) {
 		m_pListBox->SetCurSel(m_pListBox->AddString(appModule->moduleName()));
 	}
 }
+
 void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 	remove(appName);
 	if (m_pListBox) {
@@ -31,6 +34,7 @@ void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 		}
 	}
 }
+
 void EoLoadApps::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_UNLOAD_APP, m_UnloadButton);
@@ -38,42 +42,36 @@ void EoLoadApps::DoDataExchange(CDataExchange* pDX) {
 }
 
 BEGIN_MESSAGE_MAP(EoLoadApps, CDialog)
-	ON_BN_CLICKED(IDC_LOAD_APP, OnLoadApp)
-	ON_BN_CLICKED(IDC_UNLOAD_APP, OnUnloadApp)
-	ON_LBN_SETFOCUS(IDC_APPS_LIST, OnAppsListEvent)
-	ON_LBN_SELCHANGE(IDC_APPS_LIST, OnAppsListEvent)
-	ON_LBN_KILLFOCUS(IDC_APPS_LIST, OnAppsListEvent)
-	ON_WM_DESTROY()
+		ON_BN_CLICKED(IDC_LOAD_APP, OnLoadApp)
+		ON_BN_CLICKED(IDC_UNLOAD_APP, OnUnloadApp)
+		ON_LBN_SETFOCUS(IDC_APPS_LIST, OnAppsListEvent)
+		ON_LBN_SELCHANGE(IDC_APPS_LIST, OnAppsListEvent)
+		ON_LBN_KILLFOCUS(IDC_APPS_LIST, OnAppsListEvent)
+		ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 BOOL EoLoadApps::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	m_AppsList.ResetContent();
-
 	m_LoadedApps->m_pListBox = &m_AppsList;
-
 	for (unsigned i = 0; i < m_LoadedApps->size(); ++i) {
 		const auto n {m_AppsList.AddString(m_LoadedApps->at(i))};
 		auto pModule {odrxDynamicLinker()->loadModule(m_LoadedApps->at(i))};
 		m_AppsList.SetItemData(n, reinterpret_cast<LPARAM>(pModule.get()));
 	}
 	OnAppsListEvent();
-
 	return TRUE;
 }
 
 void EoLoadApps::OnLoadApp() {
 	CFileDialog FileDialog(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Run-time Extentions (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
-
 	FileDialog.m_ofn.lpstrTitle = L"Load application";
 	auto Path {AeSys::getApplicationPath()};
 	FileDialog.m_ofn.lpstrInitialDir = Path.GetBuffer(Path.GetLength());
-
 	if (FileDialog.DoModal() == IDOK) {
 		try {
 			odrxDynamicLinker()->loadModule(static_cast<const wchar_t*>(FileDialog.GetPathName()), false);
-		} catch (const OdError & Error) {
+		} catch (const OdError& Error) {
 			theApp.reportError(L"Error", Error);
 		}
 	}

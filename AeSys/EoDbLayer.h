@@ -1,14 +1,11 @@
 #pragma once
-
 #include "DbLayerTableRecord.h"
-
 #include "EoDbGroupList.h"
 
 class EoDbLayer : public EoDbGroupList {
 	OdDbLayerTableRecordPtr m_Layer;
-	unsigned short m_StateFlags;	
+	unsigned short m_StateFlags;
 	unsigned short m_TracingFlags;
-
 public:
 	enum StateFlags {
 		kIsResident = 0x0001,	// entry in table list is saved
@@ -18,10 +15,10 @@ public:
 		kIsLocked = 0x0010,		// tracing which is viewed or layer which is static (no additions or modifications), displayed using warm color set
 		kIsOff = 0x0020
 	};
+
 	EoDbLayer(OdDbLayerTableRecordPtr layer);
 	EoDbLayer(const OdString& name, unsigned short flags);
 	~EoDbLayer() = default;
-
 	COLORREF Color() const;
 	short ColorIndex() const;
 	void BuildVisibleGroupList(AeSysView* view);

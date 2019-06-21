@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "EoGsViewport.h"
 
 EoGsViewport::EoGsViewport(const EoGsViewport& viewport) noexcept {
@@ -13,10 +12,8 @@ EoGsViewport::EoGsViewport(const EoGsViewport& viewport) noexcept {
 
 CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
 	CPoint pnt;
-
 	pnt.x = EoRound((point.x / point.W() + 1.0) * ((m_WidthInPixels - 1.0) / 2.));
 	pnt.y = EoRound((-point.y / point.W() + 1.0) * ((m_HeightInPixels - 1.0) / 2.));
-
 	return pnt;
 }
 
@@ -28,13 +25,12 @@ void EoGsViewport::DoProjection(CPoint* pnt, int numberOfPoints, EoGePoint4d* po
 
 void EoGsViewport::DoProjection(CPoint* pnt, EoGePoint4dArray& points) const {
 	const auto numberOfPoints {points.GetSize()};
-
 	for (auto PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		pnt[PointIndex] = DoProjection(points[PointIndex]);
 	}
 }
 
-void EoGsViewport::DoProjectionInverse(OdGePoint3d & point) const noexcept {
+void EoGsViewport::DoProjectionInverse(OdGePoint3d& point) const noexcept {
 	point.x = point.x * 2. / (m_WidthInPixels - 1.0) - 1.0;
 	point.y = -(point.y * 2. / (m_HeightInPixels - 1.0) - 1.0);
 }

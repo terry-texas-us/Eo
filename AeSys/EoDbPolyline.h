@@ -1,7 +1,5 @@
 #pragma once
-
 #include "DbPolyline.h"
-
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 
@@ -19,40 +17,31 @@ Polyline primitive(never made it release : if already written flags not streamed
   {0 or more Vertices} {Vertex, StartWidth, EndWidth, Bulge}
 									{OdGePoint2d, double, double, double} [34- ]
 </remarks> */
-
 class EoDbPolyline : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbPolyline)
-
+DECLARE_DYNAMIC(EoDbPolyline)
 private:
 	static unsigned sm_EdgeToEvaluate;
 	static unsigned sm_Edge;
 	static unsigned sm_PivotVertex;
-
 public:
 	static const unsigned short sm_Closed = 0x0001;
-
 private:
 	unsigned short m_Flags {0};
 	double m_ConstantWidth {0.0};
 	double m_Elevation {0.0};
 	double m_Thickness {0.0};
-
 	OdGeVector3d m_Normal {OdGeVector3d::kZAxis};
 	OdGePoint2dArray m_Vertices;
 	OdGeDoubleArray m_StartWidths;
 	OdGeDoubleArray m_EndWidths;
 	OdGeDoubleArray m_Bulges;
-
 public:	// Constructors and destructor
-
 	EoDbPolyline();
 	EoDbPolyline(const EoDbPolyline& other);
 	const EoDbPolyline& operator=(const EoDbPolyline& other);
-
 	~EoDbPolyline() = default;
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -60,13 +49,15 @@ public:	// Constructors and destructor
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d	GetCtrlPt() const override;
+	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d	GoToNxtCtrlPt() const override;
+	OdGePoint3d GoToNxtCtrlPt() const override;
+
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
+
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
-	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const override;
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
@@ -76,25 +67,22 @@ public:	// Constructors and destructor
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
 	// Methods
-
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0.0, double startWidth = 0.0, double endWidth = 0.0);
 	void GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const;
 	bool IsClosed() const noexcept;
 	void SetClosed(bool closed) noexcept;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
-
 	void SetConstantWidth(double constantWidth) noexcept;
+
 	void SetElevation(double elevation) noexcept { m_Elevation = elevation; }
+
 	void SetNormal(const OdGeVector3d& normal);
 	unsigned SwingVertex() const;
 
 	// Methods - static
-
 	static unsigned Edge() noexcept;
 	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
-
 	static EoDbPolyline* Create(OdDbPolylinePtr polyline);
-
 	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 	// <tas="No contruction from job files."/>

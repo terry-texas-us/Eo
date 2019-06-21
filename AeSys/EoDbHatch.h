@@ -1,5 +1,4 @@
 #pragma once
-
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 #include "DbHatch.h"
@@ -16,14 +15,11 @@ Hatch(Polygon) primitive
   Hatch / pattern reference y-axis  EoGeVector3d[34-37][38-41][42-45]
   {0 or more points}                EoGePoint3d[46- ]
 </remarks> */
-
 class EoDbHatch : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbHatch)
-
+DECLARE_DYNAMIC(EoDbHatch)
 	static unsigned sm_EdgeToEvaluate;
 	static unsigned sm_Edge;
 	static unsigned sm_PivotVertex;
-
 	static double sm_PatternAngle;
 	static double sm_PatternScaleX;
 	static double sm_PatternScaleY;
@@ -38,20 +34,15 @@ private:
 	OdGeVector3d m_HatchYAxis {OdGeVector3d::kYAxis};
 	int m_NumberOfLoops {0};
 	OdGePoint3dArray m_Vertices;
-
 	OdGePoint2dArray m_Vertices2d;
 	OdGeDoubleArray m_Bulges;
-
 public:	// Constructors and destructor
-
 	EoDbHatch() noexcept;
 	EoDbHatch(const EoDbHatch& other);
 	const EoDbHatch& operator=(const EoDbHatch& other);
-
 	~EoDbHatch() = default;
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -59,13 +50,15 @@ public:	// Constructors and destructor
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d	GetCtrlPt() const override;
+	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d	GoToNxtCtrlPt() const override;
+	OdGePoint3d GoToNxtCtrlPt() const override;
+
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
+
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
-	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const override;
@@ -75,7 +68,6 @@ public:	// Constructors and destructor
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	// Methods
-
 	int Append(const OdGePoint3d& vertex);
 	/// <summary>A Hatch is generated using line patterns.</summary>
 	void DisplayHatch(AeSysView* view, CDC* deviceContext) const;
@@ -86,33 +78,29 @@ public:	// Constructors and destructor
 	int NumberOfVertices() const;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	OdGeVector3d RecomputeReferenceSystem();
-
 	void SetHatchOrigin(const OdGePoint3d& origin) noexcept;
 	void SetHatchXAxis(const OdGeVector3d& xAxis) noexcept;
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
 	void SetInteriorStyle(short interiorStyle) noexcept;
+
 	void SetInteriorStyleIndex(unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
+
 	void SetInteriorStyleIndex2(unsigned styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
 	unsigned SwingVertex() const;
 
 	// Methods - static
-
 	static unsigned Edge() noexcept;
 	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
-
 	static void ConvertPolylineType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive);
 	static void ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept;
 	static void ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept;
 	static void ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept;
 	static void ConvertEdgesType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive);
-
 	static void AppendLoop(const OdGePoint3dArray& vertices, OdDbHatchPtr& hatch);
-
 	static EoDbHatch* Create(const OdDbHatchPtr& hatch);
-
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 	static OdDbHatchPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);

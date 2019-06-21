@@ -5,13 +5,11 @@
 #include "DbSymbolTable.h"
 #include "DbViewTableRecord.h"
 #include "DbUCSTableRecord.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
 EoDlgNewView::EoDlgNewView(CWnd* parent)
 	: CDialog(IDD, parent) {
 	m_sViewName = L"";
@@ -23,7 +21,6 @@ EoDlgNewView::EoDlgNewView(CWnd* parent)
 
 void EoDlgNewView::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
-
 	DDX_Control(pDX, IDC_COMBO_UCSNAME, m_UCSs);
 	DDX_Control(pDX, IDC_COMBO_VIEWCATEGORY, m_categories);
 	DDX_Text(pDX, IDC_EDIT_VIEWNAME, m_sViewName);
@@ -32,26 +29,23 @@ void EoDlgNewView::DoDataExchange(CDataExchange* pDX) {
 	DDX_Check(pDX, IDC_CHECK_SAVEUCS, m_bSaveUCS);
 	DDX_CBString(pDX, IDC_COMBO_UCSNAME, m_sUcsName);
 }
+
 BEGIN_MESSAGE_MAP(EoDlgNewView, CDialog)
 END_MESSAGE_MAP()
-
 OdString orthoTypeString(OdDb::OrthographicView type);
 OdString ucsString(const OdDbObject* pViewObj);
 
 BOOL EoDlgNewView::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	auto Parent {dynamic_cast<EoDlgNamedViews*>(GetParent())};
 	const auto Database {Parent->database()};
 	OdDbSymbolTablePtr ViewTable {Database->getViewTableId().safeOpenObject()};
-	
 	OdDbSymbolTableIteratorPtr ViewTableIterator;
 	for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
 		OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
 		auto CategoryName {ViewTableRecord->getCategoryName()};
-		
 		if (!CategoryName.isEmpty()) {
-			
+
 			if (m_categories.FindString(-1, CategoryName) == -1) {
 				m_categories.AddString(CategoryName);
 			}
@@ -59,9 +53,7 @@ BOOL EoDlgNewView::OnInitDialog() {
 	}
 	ViewTable = Database->getUCSTableId().safeOpenObject();
 	m_UCSs.AddString(L"World");
-
 	m_sUcsName = static_cast<const wchar_t*>(ucsString(Database->activeViewportId().safeOpenObject()));
-	
 	if (m_sUcsName == L"Unnamed") {
 		m_UCSs.AddString(m_sUcsName);
 	}

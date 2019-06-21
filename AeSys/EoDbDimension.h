@@ -1,33 +1,25 @@
 #pragma once
-
 #include "DbAlignedDimension.h"
 #include "DbRotatedDimension.h"
-
 #include "EoGeLineSeg3d.h"
-
 #include "EoDbFontDefinition.h"
 #include "EoDbPrimitive.h"
 
 class EoDbDimension : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbDimension)
-
+DECLARE_DYNAMIC(EoDbDimension)
 	EoGeLineSeg3d m_Line;
-
 	short m_TextColorIndex {1};
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
 
 	// Constructors and destructor
-
 	EoDbDimension() = default;
 	EoDbDimension(const EoDbDimension& other);
 	const EoDbDimension& operator=(const EoDbDimension& other);
-
 	~EoDbDimension() = default;
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -52,13 +44,11 @@ class EoDbDimension : public EoDbPrimitive {
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	// Methods - virtuals
-
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGrous, OdDbDatabasePtr database) override;
 	void ModifyState() noexcept override;
 
 	// Methods
-
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	const EoDbFontDefinition& FontDef() noexcept;
 	const EoGeLineSeg3d& Line() noexcept;
@@ -77,15 +67,11 @@ class EoDbDimension : public EoDbPrimitive {
 	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept;
 	const CString& Text() noexcept;
 	const short& TextColorIndex() noexcept;
-
 private:
 	static unsigned short sm_wFlags;	// bit 1 clear if dimension selected at note, set if dimension selected at line
-
 public: // Methods - static
 	static EoDbDimension* Create(OdDbAlignedDimensionPtr& alignedDimension);
-
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
-
 };

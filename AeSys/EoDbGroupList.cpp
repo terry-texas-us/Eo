@@ -1,16 +1,13 @@
 #include "stdafx.h"
 #include "AeSysView.h"
-
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 
 void EoDbGroupList::AddToTreeViewControl(HWND tree, HTREEITEM htiParent) {
 	auto Position {GetHeadPosition()};
-
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};
 		const auto TreeItem {Group->AddToTreeViewControl(tree, htiParent)};
-
 		if (Group->GetCount() == 1) { TreeView_Expand(tree, TreeItem, TVE_EXPAND); }
 	}
 }
@@ -38,15 +35,12 @@ void EoDbGroupList::Display(AeSysView* view, CDC* deviceContext) {
 
 POSITION EoDbGroupList::Remove(EoDbGroup* group) {
 	auto Position {Find(group)};
-	
 	if (Position != nullptr) { RemoveAt(Position); }
-
 	return Position;
 }
 
 int EoDbGroupList::GetBlockReferenceCount(const CString& name) {
 	auto Count {0};
-
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		Count += GetNext(Position)->GetBlockReferenceCount(name);
@@ -63,7 +57,6 @@ void EoDbGroupList::GetExtents__(AeSysView* view, OdGeExtents3d& extents) {
 
 int EoDbGroupList::GetLinetypeIndexRefCount(short linetypeIndex) {
 	auto Count {0};
-
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		Count += GetNext(Position)->GetLinetypeIndexRefCount(linetypeIndex);
@@ -108,7 +101,6 @@ void EoDbGroupList::RemoveDuplicatePrimitives() {
 
 int EoDbGroupList::RemoveEmptyNotesAndDelete() {
 	auto Count {0};
-
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		Count += GetNext(Position)->RemoveEmptyNotesAndDelete();
@@ -118,12 +110,10 @@ int EoDbGroupList::RemoveEmptyNotesAndDelete() {
 
 int EoDbGroupList::RemoveEmptyGroups() {
 	auto Count {0};
-
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		auto posPrev {Position};
 		auto Group {GetNext(Position)};
-		
 		if (Group->GetCount() == 0) {
 			RemoveAt(posPrev);
 			delete Group;
@@ -145,29 +135,22 @@ void EoDbGroupList::DeleteGroupsAndRemoveAll() {
 
 EoDbGroup* EoDbGroupList::SelectGroupBy(const OdGePoint3d& point) {
 	auto ActiveView {AeSysView::GetActiveView()};
-
 	OdGePoint3d PointAtSelection;
-
 	EoDbGroup* SelectedGroup {nullptr};
-
 	EoGePoint4d ptView(point, 1.0);
 	ActiveView->ModelViewTransformPoint(ptView);
-
 	auto ApertureSize {ActiveView->SelectApertureSize()};
-
 	EoDbHatch::SetEdgeToEvaluate(0);
 	EoDbPolyline::SetEdgeToEvaluate(0);
-
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};
-
 		if (Group->SelPrimUsingPoint(ptView, ActiveView, ApertureSize, PointAtSelection) != nullptr) { SelectedGroup = Group; }
 	}
 	return SelectedGroup;
 }
 
-void EoDbGroupList::TransformBy(const EoGeMatrix3d & transformMatrix) {
+void EoDbGroupList::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		GetNext(Position)->TransformBy(transformMatrix);

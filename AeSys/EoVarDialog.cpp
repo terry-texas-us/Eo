@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "EoVarDialog.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
 EoVarDialog::EoVarDialog(const wchar_t* templateName, CWnd* parent)
 	: CDialog(templateName, parent) {
 }
@@ -14,14 +12,14 @@ EoVarDialog::EoVarDialog(const wchar_t* templateName, CWnd* parent)
 EoVarDialog::EoVarDialog(unsigned templateId, CWnd* parent)
 	: CDialog(templateId, parent) {
 }
+
 BEGIN_MESSAGE_MAP(EoVarDialog, CDialog)
-	ON_WM_SIZE()
+		ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 BOOL EoVarDialog::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_bInitialized = TRUE;
-
 	return TRUE;
 }
 
@@ -29,9 +27,7 @@ void EoVarDialog::initResizeHelper() {
 	CRect WindowRect;
 	GetWindowRect(WindowRect);
 	m_origSize = CPoint(WindowRect.Width(), WindowRect.Height());
-
 	m_resizeHelper.Init(m_hWnd);
-
 	makeGripper();
 }
 
@@ -40,16 +36,13 @@ void EoVarDialog::makeGripper() {
 	GetClientRect(InitialRect);
 	InitialRect.left = InitialRect.right - GetSystemMetrics(SM_CXHSCROLL);
 	InitialRect.top = InitialRect.bottom - GetSystemMetrics(SM_CYVSCROLL);
-
 	const unsigned long Style {WS_CHILD | SBS_SIZEBOX | SBS_SIZEBOXBOTTOMRIGHTALIGN | SBS_SIZEGRIP | WS_VISIBLE};
-
 	m_Grip.Create(Style, InitialRect, this, AFX_IDW_SIZE_BOX);
 }
 
 void EoVarDialog::OnSize(unsigned type, int cx, int cy) {
 	CDialog::OnSize(type, cx, cy);
 	m_resizeHelper.OnSize();
-
 	if (m_bInitialized) { SetupGripper(); }
 }
 

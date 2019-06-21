@@ -1,12 +1,9 @@
 #include "stdafx.h"
-
 #include <DbCommandContext.h>
 #include <DbSSet.h>
 #include <ExDbCommandContext.h>
 #include <Ge/GeExtents2d.h>
-
 #include "AeSys.h"
-
 #include "EoDlgUserIOConsole.h"
 
 EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
@@ -20,7 +17,6 @@ EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
 OdString EoDlgUserIOConsole::GetLastString() {
 	const auto EolDelimiter {m_Output.ReverseFind('\r')};
 	if (EolDelimiter == -1) { return static_cast<const wchar_t*>(m_Output); }
-
 	return static_cast<const wchar_t*>(m_Output.Mid(EolDelimiter + 2));
 }
 
@@ -45,10 +41,10 @@ void EoDlgUserIOConsole::DoDataExchange(CDataExchange* pDX) {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgUserIOConsole, CDialog)
-	ON_WM_PAINT()
-	ON_WM_SIZE()
-	ON_WM_DESTROY()
-	ON_WM_SHOWWINDOW()
+		ON_WM_PAINT()
+		ON_WM_SIZE()
+		ON_WM_DESTROY()
+		ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
 OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd* parent) {
@@ -64,7 +60,6 @@ OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEd
 	putString(prompt);
 	m_Input.Empty();
 	m_Prompt = m_Output;
-
 	if (DoModal() == IDCANCEL) {
 		m_Output += L" *Cancel*";
 		throw OdEdCancel();
@@ -76,9 +71,7 @@ OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEd
 
 void EoDlgUserIOConsole::AddString(const CString& string) {
 	const auto MaxStringLength {128};
-
 	auto& OutputString {m_Output};
-
 	if (string.GetLength() <= MaxStringLength) {
 		++m_NumberOfStrings;
 		OutputString += "\r\n";
@@ -118,7 +111,6 @@ void EoDlgUserIOConsole::putString(const OdString& string) {
 
 BOOL EoDlgUserIOConsole::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	if (!m_Font.m_hObject) {
 		m_Font.CreateFont(10, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, L"Courier");
 	}

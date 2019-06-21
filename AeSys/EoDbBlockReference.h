@@ -1,11 +1,8 @@
 #pragma once
-
 #include "Ge/GeScale3d.h"
 #include "DbBlockReference.h"
-
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
-
 class EoDbPegFile;
 
 /* <remarks>
@@ -23,31 +20,27 @@ GroupReference(SegRef) primitive in Peg files and Tracing files
   Column spacing		            double
   Row spacing			            double
 </remarks> */
-
 class EoDbBlockReference : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbBlockReference)
+DECLARE_DYNAMIC(EoDbBlockReference)
 	CString m_Name;
 	OdGePoint3d m_Position {OdGePoint3d::kOrigin};
 	OdGeVector3d m_Normal {OdGeVector3d::kZAxis};
 	OdGeScale3d m_ScaleFactors {OdGeScale3d::kIdentity};
 	double m_Rotation {0.0};
 
-// Multiple inserts - not implemented
+	// Multiple inserts - not implemented
 	unsigned short m_Columns {1};
 	double m_ColumnSpacing {0.0};
 	unsigned short m_Rows {1};
 	double m_RowSpacing {0.0};
 
 	// Constructors and destructor
-
 	EoDbBlockReference() = default;
 	EoDbBlockReference(const EoDbBlockReference& other);
 	const EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
-
 	~EoDbBlockReference() = default;
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -55,13 +48,13 @@ class EoDbBlockReference : public EoDbPrimitive {
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d	GetCtrlPt() const noexcept override;
+	OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d	GoToNxtCtrlPt() const noexcept override;
+	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
-	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	/// <summary>Evaluates whether a point lies within tolerance specified of block.</summary>
@@ -72,7 +65,6 @@ class EoDbBlockReference : public EoDbPrimitive {
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
 	// Methods
-
 	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
 	unsigned short Columns() const noexcept;
 	double ColumnSpacing() const noexcept;
@@ -83,10 +75,12 @@ class EoDbBlockReference : public EoDbPrimitive {
 	unsigned short Rows() const noexcept;
 	double RowSpacing() const noexcept;
 	OdGeScale3d ScaleFactors() const noexcept;
-
 	void SetName(const wchar_t* name);
+
 	void SetNormal(const OdGeVector3d& normal) noexcept { m_Normal = normal; }
+
 	void SetPosition(const OdGePoint3d& position) noexcept { m_Position = position; }
+
 	void SetPosition2(const OdGePoint3d& position);
 	void SetScaleFactors(const OdGeScale3d& scaleFactors) noexcept;
 	void SetRotation(double rotation) noexcept;
@@ -96,11 +90,9 @@ class EoDbBlockReference : public EoDbPrimitive {
 	void SetColumnSpacing(double columnSpacing) noexcept;
 
 	// Methods - static
-
 	static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
 	static EoDbBlockReference* Create(OdDbDatabasePtr& database);
 	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-
 	static EoDbBlockReference* Create(OdDbBlockReferencePtr line);
 };

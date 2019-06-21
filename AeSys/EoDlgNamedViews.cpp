@@ -1,23 +1,18 @@
 #include "stdafx.h"
-
 #include <DbLayout.h>
 #include <DbViewTable.h>
 #include <DbViewTableRecord.h>
 #include <DbLayerState.h>
 #include <DbUCSTableRecord.h>
-
 #include "AeSys.h"
 #include "AeSysDoc.h"
-
 #include "EoDlgNamedViews.h"
 #include "EoDlgNewView.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
 OdDbObjectId CNamedViewListCtrl::viewId(int item) const {
 	return OdDbObjectId(reinterpret_cast<OdDbStub*>(GetItemData(item)));
 }
@@ -37,7 +32,6 @@ void CNamedViewListCtrl::setView(int item, const OdDbViewTableRecord* view) {
 OdString ucsString(const OdDbObject* viewport) {
 	OdString Result;
 	OdDbAbstractViewportDataPtr AbstractViewportData(viewport);
-	
 	switch (AbstractViewportData->orthoUcs(viewport)) {
 		case OdDb::kTopView:
 			Result = L"Top";
@@ -57,10 +51,8 @@ OdString ucsString(const OdDbObject* viewport) {
 		case OdDb::kRightView:
 			Result = L"Right";
 			break;
-		case OdDb::kNonOrthoView:
-		default: {
+		case OdDb::kNonOrthoView: default: {
 			OdDbUCSTableRecordPtr pUCS {OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject()};
-
 			if (pUCS.get()) {
 				Result = pUCS->getName();
 			} else {
@@ -68,7 +60,6 @@ OdString ucsString(const OdDbObject* viewport) {
 				OdGeVector3d XAxis;
 				OdGeVector3d YAxis;
 				AbstractViewportData->getUcs(viewport, Origin, XAxis, YAxis);
-
 				if (Origin == OdGePoint3d::kOrigin && XAxis == OdGeVector3d::kXAxis && YAxis == OdGeVector3d::kYAxis) {
 					Result = L"World";
 				} else {
@@ -101,54 +92,51 @@ OdDbViewTableRecordPtr CNamedViewListCtrl::selectedView() {
 	return OdDbViewTableRecordPtr();
 }
 
-EoDlgNamedViews::EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent) 
-    :  CDialog(IDD, parent) {
+EoDlgNamedViews::EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent)
+	: CDialog(IDD, parent) {
 	m_pDoc = pDoc;
 }
 
 OdDbDatabase* EoDlgNamedViews::database() {
-	return document()->m_DatabasePtr; 
+	return document()->m_DatabasePtr;
 }
+
 void EoDlgNamedViews::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
-
 	DDX_Control(pDX, IDC_NAMEDVIEWS, m_views);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgNamedViews, CDialog)
-	ON_BN_CLICKED(IDC_SETCURRENT_BUTTON, OnSetcurrentButton)
-	ON_NOTIFY(NM_DBLCLK, IDC_NAMEDVIEWS, OnDblclkNamedviews)
-	ON_BN_CLICKED(IDC_NEW_BUTTON, OnNewButton)
-	ON_BN_CLICKED(IDC_UPDATE_LAYERS_BUTTON, OnUpdateLayersButton)
-	ON_BN_CLICKED(IDC_DELETE_BUTTON, OnDeleteButton)
-
+		ON_BN_CLICKED(IDC_SETCURRENT_BUTTON, OnSetcurrentButton)
+		ON_NOTIFY(NM_DBLCLK, IDC_NAMEDVIEWS, OnDblclkNamedviews)
+		ON_BN_CLICKED(IDC_NEW_BUTTON, OnNewButton)
+		ON_BN_CLICKED(IDC_UPDATE_LAYERS_BUTTON, OnUpdateLayersButton)
+		ON_BN_CLICKED(IDC_DELETE_BUTTON, OnDeleteButton)
 END_MESSAGE_MAP()
 
 BOOL EoDlgNamedViews::OnInitDialog() {
-    CDialog::OnInitDialog();
-
-    m_views.InsertColumn(0, L"Name", LVCFMT_LEFT, 100);
-    m_views.InsertColumn(1, L"Category", LVCFMT_LEFT, 60);
-    m_views.InsertColumn(2, L"Location", LVCFMT_LEFT, 50);
-    m_views.InsertColumn(3, L"VP", LVCFMT_LEFT, 40);
-    m_views.InsertColumn(4, L"Layers", LVCFMT_LEFT, 50);
-    m_views.InsertColumn(5, L"UCS", LVCFMT_LEFT, 60);
-    m_views.InsertColumn(6, L"Perspective", LVCFMT_LEFT, 30);
-
-    try {
-        const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
-        OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
+	CDialog::OnInitDialog();
+	m_views.InsertColumn(0, L"Name", LVCFMT_LEFT, 100);
+	m_views.InsertColumn(1, L"Category", LVCFMT_LEFT, 60);
+	m_views.InsertColumn(2, L"Location", LVCFMT_LEFT, 50);
+	m_views.InsertColumn(3, L"VP", LVCFMT_LEFT, 40);
+	m_views.InsertColumn(4, L"Layers", LVCFMT_LEFT, 50);
+	m_views.InsertColumn(5, L"UCS", LVCFMT_LEFT, 60);
+	m_views.InsertColumn(6, L"Perspective", LVCFMT_LEFT, 30);
+	try {
+		const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
+		OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
 		auto Index {0};
-        for (auto ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
-            OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
-            m_views.InsertItem(Index++, ViewTableRecord);
-        }
-    } catch (const OdError& Error) {
-        theApp.reportError(L"Error creating Named Views dialog", Error);
-        EndDialog(IDCANCEL);
-        return FALSE;
-    }
-    return TRUE;
+		for (auto ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
+			OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
+			m_views.InsertItem(Index++, ViewTableRecord);
+		}
+	} catch (const OdError& Error) {
+		theApp.reportError(L"Error creating Named Views dialog", Error);
+		EndDialog(IDCANCEL);
+		return FALSE;
+	}
+	return TRUE;
 }
 
 void EoDlgNamedViews::OnSetcurrentButton() {
@@ -162,17 +150,18 @@ void EoDlgNamedViews::OnSetcurrentButton() {
 		pVpPE->setProps(ActiveViewportObject, NamedView);
 		auto sLSName {NamedView->getLayerState()};
 		if (!sLSName.isEmpty()) {
-			OdDbLayerState::restore(pDb, sLSName, OdDbLayerState::kUndefDoNothing, OdDbLayerState::kOn|OdDbLayerState::kFrozen);
+			OdDbLayerState::restore(pDb, sLSName, OdDbLayerState::kUndefDoNothing, OdDbLayerState::kOn | OdDbLayerState::kFrozen);
 		}
 	}
 }
+
 void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* /*pResult*/) {
 	OnSetcurrentButton();
 }
 
 void deleteLayerState(OdDbViewTableRecord* pNamedView) {
 	auto sLSName {pNamedView->getLayerState()};
-	if(!sLSName.isEmpty()) {
+	if (!sLSName.isEmpty()) {
 		OdDbLayerState::remove(pNamedView->database(), sLSName);
 		pNamedView->setLayerState(L"");
 	}
@@ -181,7 +170,7 @@ void deleteLayerState(OdDbViewTableRecord* pNamedView) {
 void updateLayerState(OdDbViewTableRecord* pNamedView) {
 	auto sLSName {pNamedView->getLayerState()};
 	auto pDb {pNamedView->database()};
-	if(sLSName.isEmpty()) {
+	if (sLSName.isEmpty()) {
 		OdString name;
 		name.format(L"ACAD_VIEWS_%s", pNamedView->getName().c_str());
 		sLSName = name;
@@ -191,19 +180,18 @@ void updateLayerState(OdDbViewTableRecord* pNamedView) {
 		}
 		pNamedView->setLayerState(sLSName);
 	}
-	OdDbLayerState::save(pDb, sLSName, OdDbLayerState::kHidden|OdDbLayerState::kCurrentViewport);
+	OdDbLayerState::save(pDb, sLSName, OdDbLayerState::kHidden | OdDbLayerState::kCurrentViewport);
 }
 
 void EoDlgNamedViews::OnNewButton() {
 	EoDlgNewView newDlg(this);
 	OdDbViewTableRecordPtr pNamedView;
 	const OdDbDatabase* pDb = m_pDoc->m_DatabasePtr;
-	while(newDlg.DoModal() == IDOK) {
-		LVFINDINFO lvfi = {LVFI_STRING, newDlg.m_sViewName, 0, {0,0}, 0};
+	while (newDlg.DoModal() == IDOK) {
+		LVFINDINFO lvfi = {LVFI_STRING, newDlg.m_sViewName, 0, {0, 0}, 0};
 		auto i {m_views.FindItem(&lvfi)};
 		if (i >= 0) {
-			if (AfxMessageBox(newDlg.m_sViewName + L" already exists.\nDo you want to replace it?", MB_YESNOCANCEL) != IDYES)
-				continue;
+			if (AfxMessageBox(newDlg.m_sViewName + L" already exists.\nDo you want to replace it?", MB_YESNOCANCEL) != IDYES) continue;
 			pNamedView = m_views.view(i);
 			m_views.DeleteItem(i);
 		} else {
@@ -211,33 +199,20 @@ void EoDlgNamedViews::OnNewButton() {
 			pNamedView = OdDbViewTableRecord::createObject();
 			pNamedView->setName(OdString(newDlg.m_sViewName));
 			pViewTable->add(pNamedView);
-
 			i = m_views.GetItemCount();
 		}
 		auto ActiveViewportObject {pDb->activeViewportId().safeOpenObject()};
 		OdDbAbstractViewportDataPtr pViewPE(pNamedView);
 		pViewPE->setView(pNamedView, ActiveViewportObject);
-
 		if (newDlg.m_bSaveUCS) {
-			if (newDlg.m_sUcsName == L"Unnamed")
-				pViewPE->setUcs(pNamedView, ActiveViewportObject);
-			else if (newDlg.m_sUcsName == L"World")
-				pNamedView->setUcsToWorld();
-			else
-				pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb));
-		}
-		else
-			pNamedView->disassociateUcsFromView();
-
+			if (newDlg.m_sUcsName == L"Unnamed") pViewPE->setUcs(pNamedView, ActiveViewportObject);
+			else if (newDlg.m_sUcsName == L"World") pNamedView->setUcsToWorld();
+			else pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb));
+		} else pNamedView->disassociateUcsFromView();
 		pViewPE->setProps(pNamedView, ActiveViewportObject);
-
 		pNamedView->setCategoryName(OdString(newDlg.m_sViewCategory));
-
-		if (newDlg.m_bStoreLS)
-			updateLayerState(pNamedView);
-		else
-			deleteLayerState(pNamedView);
-
+		if (newDlg.m_bStoreLS) updateLayerState(pNamedView);
+		else deleteLayerState(pNamedView);
 		m_views.InsertItem(i, pNamedView);
 		break;
 	}

@@ -1,9 +1,7 @@
 #include "stdafx.h"
-
 #include "EoDlgPipeOptions.h"
 
 // EoDlgPipeOptions dialog
-
 IMPLEMENT_DYNAMIC(EoDlgPipeOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgPipeOptions, CDialog)
@@ -21,11 +19,12 @@ EoDlgPipeOptions::~EoDlgPipeOptions() {
 void EoDlgPipeOptions::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 }
+
 BOOL EoDlgPipeOptions::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	return TRUE;
 }
+
 void EoDlgPipeOptions::OnOK() {
 	CDialog::OnOK();
 }

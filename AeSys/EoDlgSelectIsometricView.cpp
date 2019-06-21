@@ -1,12 +1,10 @@
 // EoDlgSelectIsometricView.cpp : implementation file
 //
-
 #include "stdafx.h"
 #include "EoDlgSelectIsometricView.h"
 
 
 // EoDlgSelectIsometricView dialog
-
 IMPLEMENT_DYNAMIC(EoDlgSelectIsometricView, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSelectIsometricView, CDialog)
@@ -17,7 +15,6 @@ EoDlgSelectIsometricView::EoDlgSelectIsometricView(CWnd* parent)
 	, m_LeftRight(0)
 	, m_FrontBack(0)
 	, m_AboveUnder(0) {
-
 }
 
 EoDlgSelectIsometricView::~EoDlgSelectIsometricView() {
@@ -31,10 +28,8 @@ void EoDlgSelectIsometricView::DoDataExchange(CDataExchange* pDX) {
 }
 
 // EoDlgSelectIsometricView message handlers
-
 BOOL EoDlgSelectIsometricView::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

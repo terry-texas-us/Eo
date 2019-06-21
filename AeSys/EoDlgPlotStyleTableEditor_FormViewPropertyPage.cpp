@@ -1,23 +1,19 @@
 #include "stdafx.h"
-
 #include "DbDatabase.h"
-
 #include "EoDlgPlotStyleEditLineweight.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
 #include "Ps/PlotStyles.h"
 #include "ColorMapping.h"
 #include "DynamicLinker.h"
-
 #include "WindowsX.h"
 
 void Dlg_OnClose(HWND hwnd) noexcept {
 	DestroyWindow(hwnd);
 }
+
 void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
-	switch (id)
-	{
-		case IDOK:
-		{
+	switch (id) {
+		case IDOK: {
 			const auto nMaxCount {100};
 			wchar_t sString[nMaxCount] {L"\0"};
 			auto hOwner {GetWindow(hwnd, GW_OWNER)};
@@ -29,8 +25,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 		case IDCANCEL:
 			EndDialog(hwnd, id);
 			break;
-		case IDC_PS_ADDPS_EDIT_PSNAME:
-		{
+		case IDC_PS_ADDPS_EDIT_PSNAME: {
 			if (codeNotify == EN_CHANGE) {
 				const auto nMaxCount {100};
 				wchar_t sString[nMaxCount];
@@ -42,10 +37,8 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 				auto hDInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_DINFO)};
 				auto hSInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_SINFO)};
 				auto hOkBtn {GetDlgItem(hwnd, IDOK)};
-
 				CString NewName {sString};
 				NewName.MakeLower();
-
 				if (NewName.IsEmpty()) {
 					EnableWindow(hOkBtn, FALSE);
 					return;
@@ -54,7 +47,6 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 					auto PlotStyle {PlotStyleTable->plotStyleAt(static_cast<int>(PlotStyleIndex))};
 					CString PlotStyleName = static_cast<const wchar_t*>(PlotStyle->localizedName());
 					PlotStyleName.MakeLower();
-
 					if (PlotStyleName == NewName) {
 						CString sInfo;
 						sInfo.Format(L"A style named <%s> already exists.", sString);
@@ -84,6 +76,7 @@ BOOL Dlg_OnInit(HWND hwnd, HWND hwndCtl, LPARAM lParam) {
 	SetWindowTextW(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
 	return TRUE;
 }
+
 int WINAPI Dlg_Proc(HWND hwnd, unsigned uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
 		case WM_CLOSE:
@@ -107,7 +100,6 @@ DIBCOLOR* CBitmapColorInfo::GetBitmapPixels(CBitmap& bitmap, int& width, int& he
 	CDC DeviceContext;
 	DeviceContext.CreateCompatibleDC(nullptr);
 	GetBitmapSizes(bitmap, width, height);
-
 	BITMAPINFO BitmapInfo;
 	BitmapInfo.bmiHeader.biSize = sizeof BitmapInfo.bmiHeader;
 	BitmapInfo.bmiHeader.biWidth = width;
@@ -129,7 +121,6 @@ void CBitmapColorInfo::SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels) {
 	int Width;
 	int Height;
 	GetBitmapSizes(bitmap, Width, Height);
-
 	BITMAPINFO BitmapInfo;
 	BitmapInfo.bmiHeader.biSize = sizeof BitmapInfo.bmiHeader;
 	BitmapInfo.bmiHeader.biWidth = Width;
@@ -148,28 +139,22 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clo
 	ASSERT(clonedBitmap);
 	ASSERT(sourceBitmap);
 	ASSERT(sourceBitmap != clonedBitmap);
-
 	if (!clonedBitmap && !sourceBitmap && sourceBitmap == clonedBitmap) { return nullptr; }
-
 	BITMAP Bitmap;
 	const_cast<CBitmap*>(sourceBitmap)->GetBitmap(&Bitmap);
-
 	CClientDC ClientDeviceContext(nullptr);
 	CDC cdc;
 	cdc.CreateCompatibleDC(&ClientDeviceContext);
 	clonedBitmap->CreateCompatibleBitmap(&ClientDeviceContext, Bitmap.bmWidth, Bitmap.bmHeight);
 	auto NumberOfBytes {gsl::narrow_cast<unsigned long>(Bitmap.bmWidthBytes * Bitmap.bmHeight)};
 	auto BitmapBuffer {new unsigned char[NumberOfBytes]};
-
 	NumberOfBytes = sourceBitmap->GetBitmapBits(NumberOfBytes, BitmapBuffer);
 	clonedBitmap->SetBitmapBits(NumberOfBytes, BitmapBuffer);
 	delete[]BitmapBuffer;
-
 	int Width;
 	int Height;
 	auto buf {GetBitmapPixels(*const_cast<CBitmap*>(sourceBitmap), Width, Height)};
 	SetBitmapPixels(*clonedBitmap, buf);
-
 	return clonedBitmap;
 }
 
@@ -187,7 +172,6 @@ void CBitmapColorInfo::PaintBitmap(CBitmap& bitmap, COLORREF color) {
 }
 
 const OdCmEntityColor CBitmapColorInfo::GetColor() {
-
 	const auto EntityColor {OdCmEntityColor(static_cast<unsigned char>(m_color >> 16 & 0xFF), static_cast<unsigned char>(m_color >> 8 & 0xFF), static_cast<unsigned char>(m_color & 0xFF))};
 	return EntityColor;
 }
@@ -197,13 +181,11 @@ bool CBitmapColorInfo::IsColor(COLORREF color, unsigned char item) noexcept {
 	return m_color == color;
 }
 
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsigned char colorItem, int colorIndex) :
-	m_iItem(colorItem) {
-
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsigned char colorItem, int colorIndex)
+	: m_iItem(colorItem) {
 	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
-	
 	if (colorIndex <= 0) {
 		wcscpy_s(m_name, PS_COLOR_MAX_NAME, L"Custom Color");
 	} else {
@@ -213,8 +195,8 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsign
 	}
 }
 
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name) :
-	m_iItem(0xff) {
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name)
+	: m_iItem(0xff) {
 	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
@@ -231,10 +213,8 @@ CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* n
 }
 
 int CPsListStyleData::getPublicArrayIndexByColor(COLORREF color) {
-
 	for (unsigned PublicBitmapIndex = 0; PublicBitmapIndex < m_pPublicBitmapList->size(); PublicBitmapIndex++) {
 		const auto EntityColor {OdCmEntityColor(GetRValue(color), GetGValue(color), GetBValue(color))};
-
 		if ((*m_pPublicBitmapList)[PublicBitmapIndex]->GetColor() == EntityColor) { return static_cast<int>(PublicBitmapIndex); }
 	}
 	return -1;
@@ -245,24 +225,22 @@ CPsListStyleData::CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoAr
 	, m_pPublicBitmapList(publicBitmapList)
 	, m_pBitmapColorInfo(nullptr)
 	, m_iActiveListIndex(0) {
-
 	if (!m_pPlotStyles && !m_pPublicBitmapList) { return; }
-
 	OdPsPlotStyleData OdPsData;
 	plotStyle->getData(OdPsData);
 	const auto PlotStyleDataColor {OdPsData.color()};
-
 	unsigned long PlotStyleDataRgb {0};
-
 	if (PlotStyleDataColor.isByACI()) {
 		PlotStyleDataRgb = odcmLookupRGB(PlotStyleDataColor.colorIndex(), odcmAcadLightPalette());
 	} else {
 		PlotStyleDataRgb = RGB(PlotStyleDataColor.red(), PlotStyleDataColor.green(), PlotStyleDataColor.blue());
 	}
 	m_iActiveListIndex = getPublicArrayIndexByColor(PlotStyleDataRgb);
-
 	if (m_iActiveListIndex < 0) {
-		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, PlotStyleDataRgb, static_cast<unsigned char>(item), PlotStyleDataColor.isByACI() ? PlotStyleDataColor.colorIndex() : -1);
+		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap,
+		                                          PlotStyleDataRgb,
+		                                          static_cast<unsigned char>(item),
+		                                          PlotStyleDataColor.isByACI() ? PlotStyleDataColor.colorIndex() : -1);
 	}
 }
 
@@ -272,13 +250,9 @@ CPsListStyleData::~CPsListStyleData() {
 }
 
 bool CPsListStyleData::SetActiveListIndex(int index, bool bitmapInfo) {
-
 	if (!m_pPlotStyles && !m_pPublicBitmapList) { return false; }
-
 	if (static_cast<unsigned>(index) >= m_pPublicBitmapList->size() - 1) { return false; }
-
 	if (index < 0) { return false; }
-
 	m_iActiveListIndex = index;
 	if (bitmapInfo) return true;
 	delete m_pBitmapColorInfo;
@@ -288,12 +262,9 @@ bool CPsListStyleData::SetActiveListIndex(int index, bool bitmapInfo) {
 
 bool CPsListStyleData::ReplaceBitmapColorInfo(COLORREF color, int item) {
 	if (!m_pPlotStyles && !m_pPublicBitmapList) { return false; }
-
 	delete m_pBitmapColorInfo;
 	m_pBitmapColorInfo = nullptr;
-
 	m_iActiveListIndex = getPublicArrayIndexByColor(color);
-
 	if (m_iActiveListIndex < 0) {
 		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, static_cast<unsigned char>(item));
 	}
@@ -302,19 +273,21 @@ bool CPsListStyleData::ReplaceBitmapColorInfo(COLORREF color, int item) {
 
 const OdCmEntityColor CPsListStyleData::GetColor() {
 	if (m_iActiveListIndex < 0) { return m_pBitmapColorInfo->GetColor(); }
-
 	return (*m_pPublicBitmapList)[static_cast<unsigned>(m_iActiveListIndex)]->GetColor();
 }
 
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 
-EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewPropertyPage() : CPropertyPage(IDD) {
+EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewPropertyPage()
+	: CPropertyPage(IDD) {
 	m_pPlotStyleTable = nullptr;
 	m_pPlotStyleActive = nullptr;
 	m_bEditChanging = false;
 }
+
 EoDlgPlotStyleEditor_FormViewPropertyPage::~EoDlgPlotStyleEditor_FormViewPropertyPage() {
 }
+
 void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* pDX) {
 	CPropertyPage::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_DITHER, m_Dither);
@@ -338,13 +311,10 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* pD
 	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_DELSTYLE, m_DelstyleButton);
 	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_LINEWEIGHT, m_LineweightButton);
 	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_SAVE, m_SaveButton);
-
 	m_spinPen.SetBuddy(&m_editPen);
 	m_spinPen.SetRange(0, PS_SPIN_MAX_PEN);
-
 	m_spinVirtpen.SetBuddy(&m_editVirtpen);
 	m_spinVirtpen.SetRange(0, PS_SPIN_MAX_VIRTPEN);
-
 	m_spinScreening.SetBuddy(&m_editScreening);
 	m_spinScreening.SetRange(0, PS_SPIN_MAX_SCREENING);
 }
@@ -361,30 +331,29 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDestroy() {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
-	ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_LINEWEIGHT, OnLineweightBtn)
-	ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_SAVE, OnSaveBtn)
-	ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_DELSTYLE, OnDelBtnStyle)
-	ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_ADDSTYLE, OnAddBtnStyle)
-	ON_EN_UPDATE(IDC_PS_FORMVIEW_EDIT_DESCRIPTION, OnUpdateEditDescription)
-	ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_DESCRIPTION, OnChangeEditDescription)
-	ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_VIRTPEN, OnChangeEditVirtPen)
-	ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_PEN, OnChangeEditPen)
-	ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_SCREENING, OnChangeEditScreening)
-	ON_NOTIFY(LVN_ITEMCHANGED, IDC_PS_FORMVIEW_LIST_STYLES, OnItemchangedListStyles)
-	ON_NOTIFY(LVN_ITEMCHANGING, IDC_PS_FORMVIEW_LIST_STYLES, OnItemchangingListStyles)
-	ON_NOTIFY(UDN_DELTAPOS, IDC_PS_FORMVIEW_SPIN_PEN, OnDeltaposSpinPen)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelchangeComboColor)
-	ON_CBN_SELENDOK(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelendokComboColor)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_DITHER, OnSelendokComboDither)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_GRAYSCALE, OnSelendokComboGrayScale)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINETYPE, OnSelendokComboLineType)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_ADAPTIVE, OnSelendokComboAdaptive)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEWEIGHT, OnSelendokComboLineWeight)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEENDSTYLE, OnSelendokComboLineEndStyle)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEJOINSTYLE, OnSelendokComboLineJoinStyle)
-	ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_FILLSTYLE, OnSelendokComboFillStyle)
-	ON_WM_DESTROY()
-
+		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_LINEWEIGHT, OnLineweightBtn)
+		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_SAVE, OnSaveBtn)
+		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_DELSTYLE, OnDelBtnStyle)
+		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_ADDSTYLE, OnAddBtnStyle)
+		ON_EN_UPDATE(IDC_PS_FORMVIEW_EDIT_DESCRIPTION, OnUpdateEditDescription)
+		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_DESCRIPTION, OnChangeEditDescription)
+		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_VIRTPEN, OnChangeEditVirtPen)
+		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_PEN, OnChangeEditPen)
+		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_SCREENING, OnChangeEditScreening)
+		ON_NOTIFY(LVN_ITEMCHANGED, IDC_PS_FORMVIEW_LIST_STYLES, OnItemchangedListStyles)
+		ON_NOTIFY(LVN_ITEMCHANGING, IDC_PS_FORMVIEW_LIST_STYLES, OnItemchangingListStyles)
+		ON_NOTIFY(UDN_DELTAPOS, IDC_PS_FORMVIEW_SPIN_PEN, OnDeltaposSpinPen)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelchangeComboColor)
+		ON_CBN_SELENDOK(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelendokComboColor)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_DITHER, OnSelendokComboDither)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_GRAYSCALE, OnSelendokComboGrayScale)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINETYPE, OnSelendokComboLineType)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_ADAPTIVE, OnSelendokComboAdaptive)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEWEIGHT, OnSelendokComboLineWeight)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEENDSTYLE, OnSelendokComboLineEndStyle)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEJOINSTYLE, OnSelendokComboLineJoinStyle)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_FILLSTYLE, OnSelendokComboFillStyle)
+		ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initAdaptiveComboBox() {
@@ -406,7 +375,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initDitherComboBox() {
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLinetypeComboBox() {
-
 	for (auto& LineType : g_PlotStylesLineTypes) {
 		m_Linetype.AddString(LineType);
 	}
@@ -417,7 +385,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	m_Lineweight.AddString(L"Use object lineweight");
 	const auto bInch {m_pPlotStyleTable->isDisplayCustomLineweightUnits()};
 	OdString sUnits = bInch ? L"''" : L" mm";
-
 	for (unsigned i = 0; i < m_pPlotStyleTable->lineweightSize(); i++) {
 		CString lineweight;
 		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), static_cast<const wchar_t*>(sUnits));
@@ -449,12 +416,10 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initFillstyleComboBox() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 	auto item {-1};
-
 	for (unsigned i = 0; i < m_bitmapList.size(); i++) {
 		if (!i) {
 			item = m_Color.AddBitmap(nullptr, m_bitmapList[i]->m_name);
-		}
-		else {
+		} else {
 			item = m_Color.AddBitmap(&m_bitmapList[i]->m_bitmap, m_bitmapList[i]->m_name);
 		}
 		m_bitmapList[i]->m_iItem = static_cast<unsigned char>(item);
@@ -464,20 +429,15 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result) {
 	const NM_LISTVIEW* pNMListView = reinterpret_cast<NM_LISTVIEW*>(notifyStructure);
-
 	if (!pNMListView->uNewState) {
 		*result = 0;
 		return;
 	}
 	m_bEditChanging = true;
-
 	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(pNMListView->iItem));
-
 	m_pPlotStyleActive = pPsListStyleData->GetOdPsPlotStyle();
-
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
-
 	m_editDescription.SetWindowTextW(m_pPlotStyleActive->description());
 	m_Dither.SelectString(-1, OdPsData.isDitherOn() ? L"On" : L"Off");
 	m_Grayscale.SelectString(-1, OdPsData.isGrayScaleOn() ? L"On" : L"Off");
@@ -490,12 +450,9 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* n
 	m_Lineendstyle.SetCurSel(OdPsData.endStyle());
 	m_Linejoinstyle.SetCurSel(OdPsData.joinStyle() < 5 ? OdPsData.joinStyle() : 4);
 	m_Fillstyle.SetCurSel(OdPsData.fillStyle() - 64);
-
 	deleteCustomColor();
 	m_Color.SetCurSel(appendCustomColor(pNMListView->iItem));
-
 	m_bEditChanging = false;
-
 	if (!m_pPlotStyleTable->isAciTableAvailable()) {
 		m_AddstyleButton.EnableWindow(TRUE);
 		auto pChildWnd {GetWindow(GW_CHILD)};
@@ -523,24 +480,19 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* n
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 	if (m_bEditChanging) return;
 	m_bEditChanging = true;
-
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
 	CString pVal;
 	m_editScreening.GetWindowText(pVal);
 	int num;
-
 	if (pVal == L"Automatic") { pVal = L"0"; }
-
 	_stscanf(pVal, L"%d", &num);
-	
 	if (num < 0 || num > PS_SPIN_MAX_PEN) {
 		num = 0;
 		m_spinScreening.SetPos(num);
 	}
 	OdPsData.setPhysicalPenNumber(static_cast<short>(num));
 	m_pPlotStyleActive->setData(OdPsData);
-
 	if (!m_spinScreening.GetPos()) {
 		m_editScreening.SetWindowTextW(L"Automatic");
 	} else {
@@ -553,26 +505,20 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 	if (m_bEditChanging) { return; }
-
 	m_bEditChanging = true;
-
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
 	CString pVal;
 	m_editPen.GetWindowText(pVal);
 	int num;
-
 	if (pVal == L"Automatic") { pVal = L"0"; }
-
 	_stscanf(pVal, L"%d", &num);
-
 	if (num < 0 || num > PS_SPIN_MAX_PEN) {
 		num = 0;
 		m_spinPen.SetPos(num);
 	}
 	OdPsData.setPhysicalPenNumber(static_cast<short>(num));
 	m_pPlotStyleActive->setData(OdPsData);
-
 	if (!m_spinPen.GetPos()) {
 		m_editPen.SetWindowTextW(L"Automatic");
 	} else {
@@ -586,24 +532,19 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 	if (m_bEditChanging) return;
 	m_bEditChanging = true;
-
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
 	CString pVal;
 	m_editVirtpen.GetWindowText(pVal);
 	int num;
-
 	if (pVal == L"Automatic") { pVal = L"0"; }
-
 	_stscanf(pVal, L"%d", &num);
-	
 	if (num < 0 || num > PS_SPIN_MAX_VIRTPEN) {
 		num = 0;
 		m_spinVirtpen.SetPos(num);
 	}
 	OdPsData.setVirtualPenNumber(static_cast<short>(num));
 	m_pPlotStyleActive->setData(OdPsData);
-
 	if (!m_spinVirtpen.GetPos()) {
 		m_editVirtpen.SetWindowTextW(L"Automatic");
 	} else {
@@ -616,19 +557,14 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 	if (m_bEditChanging) { return; }
-
 	m_bEditChanging = true;
-
 	const auto iItem {m_listStyles.GetSelectionMark()};
-
 	if (iItem < 0) { return; }
-
 	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(iItem));
 	auto PlotStyle {pPsListStyleData->GetOdPsPlotStyle()};
 	CString pVal;
 	m_editDescription.GetWindowText(pVal);
 	PlotStyle->setDescription(OdString(pVal));
-
 	m_bEditChanging = false;
 }
 
@@ -647,8 +583,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* 
 		return;
 	}
 	const auto iLastItem {m_listStyles.GetSelectionMark()};
-	if (iLastItem < 0)* result = 0;
-
+	if (iLastItem < 0) * result = 0;
 	const auto iItem {m_listStyles.GetSelectionMark()};
 	if (iItem < 0) {
 		*result = 0;
@@ -656,14 +591,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* 
 	}
 	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(iItem));
 	pPsListStyleData->SetActiveListIndex(m_Color.GetCurSel());
-
 	*result = 0;
 }
 
 bool EoDlgPlotStyleEditor_FormViewPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
-
 	if (!pPlotStyleTable) { return false; }
-
 	m_pPlotStyleTable = pPlotStyleTable;
 	return true;
 }
@@ -674,24 +606,19 @@ HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int he
 	auto hScreenDC {::GetDC(nullptr)};
 	auto hIconDC {CreateCompatibleDC(hScreenDC)};
 	auto hMaskDC {CreateCompatibleDC(hScreenDC)};
-
 	ii.xHotspot = 0;
 	ii.yHotspot = 0;
 	ii.hbmColor = CreateCompatibleBitmap(hScreenDC, width, height);
 	ii.hbmMask = CreateCompatibleBitmap(hMaskDC, width, height);
-
 	::ReleaseDC(nullptr, hScreenDC);
 	auto hOldIconDC {SelectObject(hIconDC, ii.hbmColor)};
 	auto hOldMaskDC {SelectObject(hMaskDC, ii.hbmMask)};
-
 	BitBlt(hIconDC, 0, 0, width, height, nullptr, 0, 0, WHITENESS);
 	BitBlt(hMaskDC, 0, 0, width, height, nullptr, 0, 0, BLACKNESS);
-
 	RECT r = {0, 0, width, height};
 	auto SolidBrush {CreateSolidBrush(color)};
 	FillRect(hIconDC, &r, SolidBrush);
 	DeleteObject(SolidBrush);
-
 	SelectObject(hIconDC, hOldIconDC);
 	SelectObject(hMaskDC, hOldMaskDC);
 	auto Icon {CreateIconIndirect(&ii)};
@@ -701,13 +628,11 @@ HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int he
 	DeleteObject(ii.hbmMask);
 	DeleteDC(hMaskDC);
 	DeleteDC(hIconDC);
-
 	return Icon;
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initImageList() {
 	m_imageList.Create(16, 16, ILC_COLORDDB/*ILC_COLOR32*/, 0, 0);
-
 	const auto NumberOfPlotStyles = m_pPlotStyleTable->plotStyleSize();
 	auto LightPalette {odcmAcadLightPalette()};
 	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
@@ -724,7 +649,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
 	lvColumn.mask = LVCF_FMT | LVCF_TEXT;
 	lvColumn.fmt = LVCFMT_CENTER;
 	m_listStyles.InsertColumn(1, &lvColumn);
-
 	const auto NumberOfPlotStyles = static_cast<int>(m_pPlotStyleTable->plotStyleSize());
 	for (auto PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
 		insertItem(PlotStyleIndex);
@@ -734,36 +658,26 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	m_listStyles.LockWindowUpdate(); // ***** lock window updates while filling list *****
 	auto PlotStyle {m_pPlotStyleTable->plotStyleAt(index).get()};
-
 	LVITEMW lvItem;
 	::ZeroMemory(&lvItem, sizeof(LVITEMW));
 	lvItem.mask = static_cast<unsigned>(m_pPlotStyleTable->isAciTableAvailable() ? LVIF_TEXT | LVIF_IMAGE | LVIF_STATE : LVIF_TEXT | LVIF_STATE);
 	lvItem.state = 0;
 	lvItem.stateMask = 0;
-
 	if (m_pPlotStyleTable->isAciTableAvailable()) { lvItem.iImage = index; }
-
 	lvItem.iItem = index;
 	lvItem.iSubItem = 0;
-
 	auto str = PlotStyle->localizedName();
 	lvItem.pszText = const_cast<wchar_t*>(static_cast<const wchar_t*>(str));
-
 	const auto nItem {m_listStyles.InsertItem(&lvItem)};
-
 	const auto pPsListStyleData {new CPsListStyleData(PlotStyle, &m_bitmapList, static_cast<char>(nItem))};
-
 	m_listStyles.SetItemData(nItem, reinterpret_cast<LPARAM>(pPsListStyleData));
-
 	m_listStyles.UnlockWindowUpdate();
-
 	return nItem;
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initBitmapList() {
 	CBitmapColorInfo* pBitmapColorInfo = new CBitmapColorInfo(MAKEINTRESOURCEW(IDB_SELECT_TRUE_COLOR), L"Select true color...");
 	const CBitmap* bitmapSrc = &pBitmapColorInfo->m_bitmap;
-
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 255, 255), L"Use object color"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 0, 0), L"Red"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 255, 0), L"Yellow"));
@@ -772,15 +686,12 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initBitmapList() {
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(0, 0, 255), L"Blue"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 0, 255), L"Magenta"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(0, 0, 0), L"Black"));
-
 	m_bitmapList.push_back(pBitmapColorInfo);
 }
 
 BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
-
 	if (!m_pPlotStyleTable) { return FALSE; }
-
 	initBitmapList();
 	initImageList();
 	initListCtrl();
@@ -793,12 +704,8 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 	initLinejoinstyleComboBox();
 	initFillstyleComboBox();
 	initColorComboBox();
-
 	SetWindowLong(m_listStyles.m_hWnd, GWL_STYLE, WS_VISIBLE | WS_CHILD | WS_BORDER | LVS_SMALLICON | LVS_SHOWSELALWAYS | LVS_SINGLESEL | LVS_AUTOARRANGE);
-
 	ListView_SetItemState(m_listStyles.m_hWnd, 0, LVIS_FOCUSED | LVIS_SELECTED, LVIS_SELECTED | LVIS_FOCUSED);
-
-
 	if (m_pPlotStyleTable->isAciTableAvailable()) {
 		m_AddstyleButton.EnableWindow(FALSE);
 		m_DelstyleButton.EnableWindow(FALSE);
@@ -807,7 +714,7 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 		m_DelstyleButton.EnableWindow(FALSE);
 	}
 	return TRUE;	// return TRUE unless you set the focus to a control
-					// EXCEPTION: OCX Property Pages should return FALSE
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
@@ -816,27 +723,22 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 	const auto CurrentSelection {m_Color.GetCurSel()};
 	const auto ListStylesItem {m_listStyles.GetSelectionMark()};
 	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStylesItem));
-
 	if (CurrentSelection == m_Color.GetCount() - 1) {
 		CColorDialog dlgColor;
 		if (dlgColor.DoModal() == IDOK) {
 			deleteCustomColor();
-
 			const auto color {dlgColor.GetColor()};
 			m_Color.SetCurSel(replaceCustomColor(color, ListStylesItem));
 			intColorPolicy = 3;
 		}
-	}
-	else {
+	} else {
 		pPsListStyleData->SetActiveListIndex(CurrentSelection);
 		if (CurrentSelection) intColorPolicy = 5;
 	}
 	const auto color {pPsListStyleData->GetColor()};
 	// m_pPlotStyleActive->setColorPolicy(intColorPolicy);
-
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
-
 	OdPsData.setColor(color);
 	m_pPlotStyleActive->setData(OdPsData);
 }
@@ -911,7 +813,6 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineType() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDelBtnStyle() {
 	// TODO: Add your control notification handler code here
 	const auto Item {m_listStyles.GetSelectionMark()};
-
 	m_pPlotStyleActive = m_pPlotStyleTable->delPlotStyle(m_pPlotStyleActive);
 	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(Item));
 	m_listStyles.DeleteItem(Item);
@@ -937,34 +838,25 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
 BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags) {
 	auto ext {fileName.Right(3)};
 	const auto isCtb {m_pPlotStyleTable->isAciTableAvailable()};
-
 	CFileDialog FileDialog(FALSE);
-
 	CString title {L"Save As"};
-
 	FileDialog.m_ofn.Flags |= flags;
-
 	CString strFilter;
 	CString strDefault;
-
 	strFilter = isCtb ? L"Color-Dependent Style Table Files (*.ctb)" : L"Style Table Files (*.stb)";
 	strFilter += static_cast<wchar_t>('\0'); // next string please
 	strFilter += isCtb ? L"*.ctb" : L"*.stb";
 	strFilter += static_cast<wchar_t>('\0'); // last string
 	FileDialog.m_ofn.nMaxCustFilter++;
 	FileDialog.m_ofn.nFilterIndex = 1;
-
 	if (fileName.ReverseFind('.') != -1) { fileName = fileName.Left(fileName.ReverseFind('.')); }
-
 	FileDialog.m_ofn.lpstrFilter = strFilter;
 	FileDialog.m_ofn.lpstrTitle = title;
 	FileDialog.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
 	const auto nResult {FileDialog.DoModal()};
 	fileName.ReleaseBuffer();
-
 	if (nResult == IDOK) {
 		fileName = FileDialog.GetPathName();
-
 		if (fileName.ReverseFind('.') == -1) { fileName += isCtb ? L".ctb" : L".stb"; }
 	}
 	return nResult == IDOK;
@@ -976,39 +868,32 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::SetFileBufPath(OdString filePath
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSaveBtn() {
 	CString sPath = static_cast<const wchar_t*>(m_sFileBufPath);
-
 	if (!DoPromptFileName(sPath, AFX_IDS_SAVEFILE, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST)) { return; } // don't even attempt to save
-
 	OdStreamBufPtr pFileBuf;
 	auto SystemServices {odSystemServices()};
 	try {
 		pFileBuf = SystemServices->createFile(static_cast<const wchar_t*>(sPath), Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kOpenAlways /*Oda::kCreateAlways*/);
-
 		if (pFileBuf.get()) {
 			OdPsPlotStyleServicesPtr pPSS = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);
 			if (pPSS.get()) {
 				pPSS->savePlotStyleTable(pFileBuf, m_pPlotStyleTable);
 			}
 		}
-	}
-	catch (...) {
+	} catch (...) {
 	}
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnLineweightBtn() {
 	Expects(m_pPlotStyleActive);
-	
 	EoDlgPlotStyleEditLineweight PsEditLineweightDlg;
 	PsEditLineweightDlg.SetPlotStyleTable(m_pPlotStyleTable);
 	OdPsPlotStyleData OdPsData;
 	auto idx {m_Lineweight.GetCurSel()};
-
 	if (idx == CB_ERR) {
 		m_pPlotStyleActive->getData(OdPsData);
 		idx = static_cast<int>(OdPsData.lineweight());
 	}
 	PsEditLineweightDlg.SetInitialSelection(m_Lineweight.GetCurSel());
-
 	if (PsEditLineweightDlg.DoModal() == IDOK) {
 		m_Lineweight.ResetContent();
 		initLineweightComboBox();
@@ -1018,28 +903,21 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnLineweightBtn() {
 }
 
 int EoDlgPlotStyleEditor_FormViewPropertyPage::deleteCustomColor() {
-
 	if (m_Color.GetCount() > PS_COMBO_COLOR_POSITION + 1) { m_Color.DeleteString(PS_COMBO_COLOR_POSITION); }
-
 	return 0;
 }
 
 int EoDlgPlotStyleEditor_FormViewPropertyPage::appendCustomColor(int item) {
 	const auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(item))};
 	const auto pBitmapColorInfo {pPsListStyleData->GetBitmapColorInfo()};
-
 	if (!pBitmapColorInfo) { return pPsListStyleData->GetActiveListIndex(); }
-
 	return m_Color.InsertBitmap(PS_COMBO_COLOR_POSITION, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
 }
 
 int EoDlgPlotStyleEditor_FormViewPropertyPage::replaceCustomColor(COLORREF color, int item) {
 	auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(item))};
 	pPsListStyleData->ReplaceBitmapColorInfo(color, item);
-
 	const auto pBitmapColorInfo {pPsListStyleData->GetBitmapColorInfo()};
-
 	if (!pBitmapColorInfo) { return pPsListStyleData->GetActiveListIndex(); }
-
 	return m_Color.InsertBitmap(PS_COMBO_COLOR_POSITION, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
 }

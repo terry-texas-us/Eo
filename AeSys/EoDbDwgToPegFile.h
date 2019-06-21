@@ -1,13 +1,9 @@
 #pragma once
-
 class EoDbDwgToPegFile {
 	OdDbDatabasePtr m_DatabasePtr_;
-
 public:
 	EoDbDwgToPegFile(OdDbDatabasePtr database);
-
 	void ConvertToPeg(AeSysDoc* document);
-
 	void ConvertHeaderSection(AeSysDoc* document) noexcept;
 	void ConvertViewportTable(AeSysDoc* document);
 	void ConvertLayerTable(AeSysDoc* document);

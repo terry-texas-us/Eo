@@ -1,24 +1,18 @@
 #include "stdafx.h"
-
 #include "ChildFrm.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
-
 #include "DbLayoutPaperPE.h"
 #include "RxDynamicModule.h"
 #include "OdStreamBuf.h"
-
 #include "Gi/GiWorldDraw.h"
 #include "Gi/GiMaterialItem.h"
-
 #include "ExFileUndoController.h"
 #include "ExPageController.h"
 #include "ExUndoController.h"
 #include "MemFileStreamImpl.h"
-
 #include "FileDlgExt.h"
-
 #include "EoAppAuditInfo.h"
 #include "EoDbHatchPatternTable.h"
 #include "EoDlgAudit.h"
@@ -29,51 +23,59 @@
 #include "EoLoadApps.h"
 #include "EoPreviewDib.h"
 #include "Lex.h"
-
 #include "EoDbHatch.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
-
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
-
-double dPWids[] = {
-	0.0, 0.0075, 0.015, 0.02, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, 0.015, 0.0225, 0.03, 0.0075, 0.015, 0.0225};
-
+double g_PenWidths[] {
+0.0,
+0.0075,
+0.015,
+0.02,
+0.03,
+0.0075,
+0.015,
+0.0225,
+0.03,
+0.0075,
+0.015,
+0.0225,
+0.03,
+0.0075,
+0.015,
+0.0225
+};
 #include "PegColors.h"
-
-COLORREF* pColTbl = ColorPalette;
-
+COLORREF* g_CurrentPalette {g_ColorPalette};
 CPrimState pstate;
 
 // This is a legacy feature. All values are empty strings now for normal MouseButton command processing.
 // User may still change through user interface, so must not assume empty.
-
 CString AeSys::CustomLButtonDownCharacters(L"");
 CString AeSys::CustomLButtonUpCharacters(L"" /* L"{13}" for VK_RETURN */);
 CString AeSys::CustomRButtonDownCharacters(L"");
 CString AeSys::CustomRButtonUpCharacters(L"" /* L"{27}" for VK_ESCAPE */);
-
 #ifdef OD_OLE_SUPPORT
 void rxInit_COleClientItem_handler();
 void rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
-
 OdStaticRxObject<Cmd_VIEW> g_Cmd_VIEW;
 OdStaticRxObject<Cmd_SELECT> g_Cmd_SELECT;
 
 static void addPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
-	   public:
+	public:
 		bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
 		}
+
 		bool drawBorder(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
 		}
+
 		bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			if (points[0] == points[1] || points[1] == points[2]) { return true; }
 			auto NumberOfDashes {15};
@@ -106,21 +108,21 @@ static void addPaperDrawingCustomization() {
 			return true;
 		}
 	} s_PaperDrawExt;
-
 	OdDbLayout::desc()->addX(OdDbLayoutPaperPE::desc(), &s_PaperDrawExt);
 }
+
 static void removePaperDrawingCustomization() {
 	OdDbLayout::desc()->delX(OdDbLayoutPaperPE::desc());
 }
 
 /// <section="Material textures loading monitor protocol extension">
-
 static void addMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
-	   public:
+	public:
 		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept override {
 			// Material texture to be loaded. Correct loading path here.
 		}
+
 		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* database) override {
 			TRACE1("Material texture loaded: %s\n", fileName.c_str());
 		}
@@ -129,7 +131,6 @@ static void addMaterialTextureLoadingMonitor() {
 			TRACE1("Failed to load material texture: %s\n", fileName.c_str());
 		}
 	} s_MatLoadExt;
-
 	OdGiMaterialTextureEntry::desc()->addX(OdGiMaterialTextureLoadPE::desc(), &s_MatLoadExt);
 }
 
@@ -137,7 +138,6 @@ void removeMaterialTextureLoadingMonitor() {
 	OdGiMaterialTextureEntry::desc()->delX(OdGiMaterialTextureLoadPE::desc());
 }
 /// </section>
-
 #include "DbLibraryInfo.h"
 #include "summinfo.h"
 
@@ -149,7 +149,7 @@ public:
 
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 public:
 	BOOL OnInitDialog() final;
 };
@@ -160,16 +160,12 @@ EoDlgAbout::EoDlgAbout() noexcept
 
 BOOL EoDlgAbout::OnInitDialog() {
 	auto LibraryInfo {oddbGetLibraryInfo()};
-
 	auto BuildComments {LibraryInfo->getBuildComments()};
 	auto CopyRight {LibraryInfo->getCopyright()};
-
 	CDialog::OnInitDialog();
-
 	SetDlgItemTextW(IDC_INFO_BUILD, BuildComments);
-
 	return TRUE; // return TRUE unless you set the focus to a control
-		// EXCEPTION: OCX Property Pages should return FALSE
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
 void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
@@ -178,68 +174,64 @@ void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
 
 BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)
 END_MESSAGE_MAP()
-
 BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
-ON_COMMAND(ID_APP_ABOUT, &AeSys::OnAppAbout)
-// Standard file based document commands
-ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
-ON_COMMAND(ID_FILE_OPEN, &AeSys::OnFileOpen)
-// Standard print setup command
-ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
-
-ON_COMMAND(ID_EDIT_CF_GROUPS, &AeSys::OnEditCfGroups)
-ON_UPDATE_COMMAND_UI(ID_EDIT_CF_GROUPS, &AeSys::OnUpdateEditCfGroups)
-ON_COMMAND(ID_EDIT_CF_IMAGE, &AeSys::OnEditCfImage)
-ON_UPDATE_COMMAND_UI(ID_EDIT_CF_IMAGE, &AeSys::OnUpdateEditCfImage)
-ON_COMMAND(ID_EDIT_CF_TEXT, &AeSys::OnEditCfText)
-ON_UPDATE_COMMAND_UI(ID_EDIT_CF_TEXT, &AeSys::OnUpdateEditCfText)
-ON_COMMAND(ID_HELP_CONTENTS, &AeSys::OnHelpContents)
-ON_COMMAND(ID_MODE_ANNOTATE, &AeSys::OnModeAnnotate)
-ON_UPDATE_COMMAND_UI(ID_MODE_ANNOTATE, &AeSys::OnUpdateModeAnnotate)
-ON_COMMAND(ID_MODE_CUT, &AeSys::OnModeCut)
-ON_UPDATE_COMMAND_UI(ID_MODE_CUT, &AeSys::OnUpdateModeCut)
-ON_COMMAND(ID_MODE_DIMENSION, &AeSys::OnModeDimension)
-ON_UPDATE_COMMAND_UI(ID_MODE_DIMENSION, &AeSys::OnUpdateModeDimension)
-ON_COMMAND(ID_MODE_DRAW, OnModeDraw)
-ON_UPDATE_COMMAND_UI(ID_MODE_DRAW, &AeSys::OnUpdateModeDraw)
-ON_COMMAND(ID_MODE_DRAW2, &AeSys::OnModeDraw2)
-ON_UPDATE_COMMAND_UI(ID_MODE_DRAW2, &AeSys::OnUpdateModeDraw2)
-ON_COMMAND(ID_MODE_EDIT, &AeSys::OnModeEdit)
-ON_UPDATE_COMMAND_UI(ID_MODE_EDIT, &AeSys::OnUpdateModeEdit)
-ON_COMMAND(ID_MODE_FIXUP, &AeSys::OnModeFixup)
-ON_UPDATE_COMMAND_UI(ID_MODE_FIXUP, &AeSys::OnUpdateModeFixup)
-ON_COMMAND(ID_MODE_LETTER, &AeSys::OnModeLetter)
-ON_COMMAND(ID_MODE_LPD, &AeSys::OnModeLPD)
-ON_UPDATE_COMMAND_UI(ID_MODE_LPD, &AeSys::OnUpdateModeLpd)
-ON_COMMAND(ID_MODE_NODAL, &AeSys::OnModeNodal)
-ON_UPDATE_COMMAND_UI(ID_MODE_NODAL, &AeSys::OnUpdateModeNodal)
-ON_COMMAND(ID_MODE_PIPE, &AeSys::OnModePipe)
-ON_UPDATE_COMMAND_UI(ID_MODE_PIPE, &AeSys::OnUpdateModePipe)
-ON_COMMAND(ID_MODE_POWER, &AeSys::OnModePower)
-ON_UPDATE_COMMAND_UI(ID_MODE_POWER, &AeSys::OnUpdateModePower)
-ON_COMMAND(ID_MODE_REVISE, &AeSys::OnModeRevise)
-ON_COMMAND(ID_MODE_TRAP, &AeSys::OnModeTrap)
-ON_UPDATE_COMMAND_UI(ID_MODE_TRAP, &AeSys::OnUpdateModeTrap)
-ON_COMMAND(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnTrapCommandsAddGroups)
-ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnUpdateTrapcommandsAddgroups)
-ON_COMMAND(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnTrapCommandsHighlight)
-ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnUpdateTrapcommandsHighlight)
-ON_COMMAND(ID_VIEW_MODEINFORMATION, &AeSys::OnViewModeInformation)
-ON_UPDATE_COMMAND_UI(ID_VIEW_MODEINFORMATION, &AeSys::OnUpdateViewModeinformation)
-ON_COMMAND(ID_FILE_PLOTSTYLEMANAGER, &AeSys::OnFilePlotstylemanager)
-ON_COMMAND(ID_TOOLS_LOADAPPLICATIONS, &AeSys::OnToolsLoadapplications)
-ON_COMMAND(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnVectorizeAddVectorizerDLL)
-ON_UPDATE_COMMAND_UI(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizeAddvectorizerdll)
-ON_COMMAND(ID_VECTORIZE_CLEARMENU, OnVectorizeClearmenu)
-ON_UPDATE_COMMAND_UI(ID_VECTORIZE_CLEARMENU, OnUpdateVectorizeClearmenu)
-
+		ON_COMMAND(ID_APP_ABOUT, &AeSys::OnAppAbout)
+	// Standard file based document commands
+		ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
+		ON_COMMAND(ID_FILE_OPEN, &AeSys::OnFileOpen)
+	// Standard print setup command
+		ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
+		ON_COMMAND(ID_EDIT_CF_GROUPS, &AeSys::OnEditCfGroups)
+		ON_UPDATE_COMMAND_UI(ID_EDIT_CF_GROUPS, &AeSys::OnUpdateEditCfGroups)
+		ON_COMMAND(ID_EDIT_CF_IMAGE, &AeSys::OnEditCfImage)
+		ON_UPDATE_COMMAND_UI(ID_EDIT_CF_IMAGE, &AeSys::OnUpdateEditCfImage)
+		ON_COMMAND(ID_EDIT_CF_TEXT, &AeSys::OnEditCfText)
+		ON_UPDATE_COMMAND_UI(ID_EDIT_CF_TEXT, &AeSys::OnUpdateEditCfText)
+		ON_COMMAND(ID_HELP_CONTENTS, &AeSys::OnHelpContents)
+		ON_COMMAND(ID_MODE_ANNOTATE, &AeSys::OnModeAnnotate)
+		ON_UPDATE_COMMAND_UI(ID_MODE_ANNOTATE, &AeSys::OnUpdateModeAnnotate)
+		ON_COMMAND(ID_MODE_CUT, &AeSys::OnModeCut)
+		ON_UPDATE_COMMAND_UI(ID_MODE_CUT, &AeSys::OnUpdateModeCut)
+		ON_COMMAND(ID_MODE_DIMENSION, &AeSys::OnModeDimension)
+		ON_UPDATE_COMMAND_UI(ID_MODE_DIMENSION, &AeSys::OnUpdateModeDimension)
+		ON_COMMAND(ID_MODE_DRAW, OnModeDraw)
+		ON_UPDATE_COMMAND_UI(ID_MODE_DRAW, &AeSys::OnUpdateModeDraw)
+		ON_COMMAND(ID_MODE_DRAW2, &AeSys::OnModeDraw2)
+		ON_UPDATE_COMMAND_UI(ID_MODE_DRAW2, &AeSys::OnUpdateModeDraw2)
+		ON_COMMAND(ID_MODE_EDIT, &AeSys::OnModeEdit)
+		ON_UPDATE_COMMAND_UI(ID_MODE_EDIT, &AeSys::OnUpdateModeEdit)
+		ON_COMMAND(ID_MODE_FIXUP, &AeSys::OnModeFixup)
+		ON_UPDATE_COMMAND_UI(ID_MODE_FIXUP, &AeSys::OnUpdateModeFixup)
+		ON_COMMAND(ID_MODE_LETTER, &AeSys::OnModeLetter)
+		ON_COMMAND(ID_MODE_LPD, &AeSys::OnModeLPD)
+		ON_UPDATE_COMMAND_UI(ID_MODE_LPD, &AeSys::OnUpdateModeLpd)
+		ON_COMMAND(ID_MODE_NODAL, &AeSys::OnModeNodal)
+		ON_UPDATE_COMMAND_UI(ID_MODE_NODAL, &AeSys::OnUpdateModeNodal)
+		ON_COMMAND(ID_MODE_PIPE, &AeSys::OnModePipe)
+		ON_UPDATE_COMMAND_UI(ID_MODE_PIPE, &AeSys::OnUpdateModePipe)
+		ON_COMMAND(ID_MODE_POWER, &AeSys::OnModePower)
+		ON_UPDATE_COMMAND_UI(ID_MODE_POWER, &AeSys::OnUpdateModePower)
+		ON_COMMAND(ID_MODE_REVISE, &AeSys::OnModeRevise)
+		ON_COMMAND(ID_MODE_TRAP, &AeSys::OnModeTrap)
+		ON_UPDATE_COMMAND_UI(ID_MODE_TRAP, &AeSys::OnUpdateModeTrap)
+		ON_COMMAND(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnTrapCommandsAddGroups)
+		ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnUpdateTrapcommandsAddgroups)
+		ON_COMMAND(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnTrapCommandsHighlight)
+		ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnUpdateTrapcommandsHighlight)
+		ON_COMMAND(ID_VIEW_MODEINFORMATION, &AeSys::OnViewModeInformation)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_MODEINFORMATION, &AeSys::OnUpdateViewModeinformation)
+		ON_COMMAND(ID_FILE_PLOTSTYLEMANAGER, &AeSys::OnFilePlotstylemanager)
+		ON_COMMAND(ID_TOOLS_LOADAPPLICATIONS, &AeSys::OnToolsLoadapplications)
+		ON_COMMAND(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnVectorizeAddVectorizerDLL)
+		ON_UPDATE_COMMAND_UI(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizeAddvectorizerdll)
+		ON_COMMAND(ID_VECTORIZE_CLEARMENU, OnVectorizeClearmenu)
+		ON_UPDATE_COMMAND_UI(ID_VECTORIZE_CLEARMENU, OnUpdateVectorizeClearmenu)
 END_MESSAGE_MAP()
 
 
 /// <remarks> Specialization of CCommandLineInfo to add the following switches: bat:, ld:, scr:, exe:, s:, and exit</remarks>
-
 class CFullCommandLineInfo : public CCommandLineInfo {
-   public:
+public:
 	CString m_SaveName;
 	bool m_Exit;
 	CStringArray m_AppsToLoad;
@@ -254,7 +246,6 @@ class CFullCommandLineInfo : public CCommandLineInfo {
 
 	void ParseParam(const wchar_t* parameter, BOOL flag, BOOL last) override /* CCommandLineInfo */ {
 		auto is {false};
-
 		if (flag) {
 			if (!_wcsnicmp(parameter, L"bat:", 4)) {
 				m_BatToExecute = &parameter[4];
@@ -280,30 +271,26 @@ class CFullCommandLineInfo : public CCommandLineInfo {
 			CCommandLineInfo::ParseParam(parameter, flag, last);
 		}
 	}
-	void ParseParam(const char* parameter, BOOL flag, BOOL last) override {} // CCommandLineInfo (to suppress C4266 warning)
+
+	void ParseParam(const char* parameter, BOOL flag, BOOL last) override {
+	} // CCommandLineInfo (to suppress C4266 warning)
 };
 
 BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 	auto& FullCommandLineInfo {static_cast<CFullCommandLineInfo&>(commandLineInfo)};
-
 	if (!FullCommandLineInfo.m_BatToExecute.IsEmpty()) {
 		_wsystem(FullCommandLineInfo.m_BatToExecute);
 	}
-
 	for (auto Index = 0; Index < FullCommandLineInfo.m_AppsToLoad.GetCount(); ++Index) {
 		odrxDynamicLinker()->loadModule(OdString(FullCommandLineInfo.m_AppsToLoad.GetAt(Index)), false);
 	}
 	AeSysDoc* TemporaryDocument {nullptr};
-
 	if (commandLineInfo.m_nShellCommand == CCommandLineInfo::FileOpen) {
 		TemporaryDocument = dynamic_cast<AeSysDoc*>(OpenDocumentFile(commandLineInfo.m_strFileName));
-
 		if (!TemporaryDocument) { return FALSE; }
-
 		if (!FullCommandLineInfo.m_ScriptToExecute.IsEmpty()) {
 			CStdioFile scrFile(FullCommandLineInfo.m_ScriptToExecute, CFile::modeRead);
 			CString strCmd;
-
 			while (scrFile.ReadString(strCmd)) {
 				if (!strCmd.IsEmpty() && strCmd[0] != _T('#')) {
 					TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(strCmd));
@@ -323,18 +310,15 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 	return TRUE;
 }
 
-AeSys::AeSys() noexcept
-{
+AeSys::AeSys() noexcept {
 	EnableHtmlHelp();
-
 	CClientDC ClientDeviceContext(AfxGetMainWnd());
 	m_HighColorMode = ClientDeviceContext.GetDeviceCaps(BITSPIXEL) > 8; // Detect color depth. 256 color toolbars can be used in the high or true color modes only
-
 }
+
 #define EO_REGISTRY_BUFFER_SIZE 1040
 #define EO_REGISTRY_MAX_PROFILE_NAME 128
 #define EO_REGISTRY_MAX_PATH 1024
-
 CString GetRegistryAcadLocation();
 CString GetRegistryAcadProfilesKey();
 bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept;
@@ -342,12 +326,9 @@ bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wch
 // get the value for the ACAD entry in the registry
 static CString FindConfigPath(const CString& configType) {
 	auto SubKey {GetRegistryAcadProfilesKey()};
-
 	if (!SubKey.IsEmpty()) {
 		SubKey += L"\\General";
-
 		wchar_t SearchValue[EO_REGISTRY_MAX_PATH] {L"\0"};
-
 		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, configType, SearchValue, EO_REGISTRY_MAX_PATH)) {
 			wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
 			ExpandEnvironmentStringsW(SearchValue, ExpandedPath, EO_REGISTRY_MAX_PATH);
@@ -359,10 +340,8 @@ static CString FindConfigPath(const CString& configType) {
 
 static CString FindConfigFile(const CString& configType, CString file, OdDbSystemServices* systemServices) {
 	auto ConfigurationPath {FindConfigPath(configType)};
-
 	if (!ConfigurationPath.IsEmpty()) {
 		file = ConfigurationPath + L"\\" + file;
-
 		if (systemServices->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
 	}
 	return CString(L"\0");
@@ -377,9 +356,7 @@ const ODCOLORREF* AeSys::curPalette() const {
 OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, unsigned long flags) {
 	try {
 		OdGsModulePtr Module;
-
 		if (GETBIT(flags, kFor2dExportRender)) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
-
 			if (GETBIT(flags, kFor2dExportRenderHLR)) { return OdGsDevicePtr(); }
 
 			// Try to export shaded viewports using OpenGL device.
@@ -390,7 +367,6 @@ OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database
 			Module = odrxDynamicLinker()->loadModule(m_sVectorizerPath);
 		}
 		if (Module.isNull()) { return OdGsDevicePtr(); }
-
 		return Module->createBitmapDevice();
 	} catch (const OdError&) {
 	}
@@ -400,12 +376,9 @@ OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database
 bool AeSys::getPassword(const OdString& drawingName, bool /*isXref*/, OdPassword& password) {
 	EoDlgPassword PasswordDialog;
 	PasswordDialog.m_sFileName = static_cast<const wchar_t*>(drawingName);
-
 	if (PasswordDialog.DoModal() == IDOK) {
 		password = PasswordDialog.m_password;
-
 		if (drawingName.right(4) == L".dwg") { password.makeUpper(); }
-
 		return true;
 	}
 	return false;
@@ -437,13 +410,9 @@ bool AeSys::setUndoType(bool useTempFiles) noexcept {
 
 OdString AeSys::fileDialog(int flags, const OdString& prompt, const OdString& defExt, const OdString& fileName, const OdString& filter) {
 	if (!supportFileSelectionViaDialog()) { return OdString(L"*unsupported*"); }
-
 	CFileDialog FileDialog(flags == OdEd::kGfpForOpen, defExt, fileName, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, filter, AfxGetMainWnd());
-
 	FileDialog.m_ofn.lpstrTitle = prompt;
-
 	if (FileDialog.DoModal() == IDOK) { return OdString(FileDialog.GetPathName()); }
-
 	throw OdEdCancel();
 }
 
@@ -454,16 +423,12 @@ OdRxClass* AeSys::databaseClass() const {
 OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database, FindFileHint hint) {
 	CString FilePathAndName;
 	FilePathAndName.SetString(ExHostAppServices::findFile(fileToFind, database, hint));
-
 	if (FilePathAndName.IsEmpty()) {
 		auto SystemServices {odSystemServices()};
-
 		CString FileToFind;
 		FileToFind.SetString(fileToFind);
-
 		auto Extension {FileToFind.Right(4)};
 		Extension.MakeLower();
-
 		if (Extension == L".pc3") {
 			return FindConfigFile(L"PrinterConfigDir", FileToFind, SystemServices).GetString();
 		}
@@ -474,23 +439,14 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			return FindConfigFile(L"PrinterDescDir", FileToFind, SystemServices).GetString();
 		}
 		switch (hint) {
-			case kFontFile:
-			case kCompiledShapeFile:
-			case kTrueTypeFontFile:
-			case kPatternFile:
-			case kFontMapFile:
-			case kTextureMapFile:
+			case kFontFile: case kCompiledShapeFile: case kTrueTypeFontFile: case kPatternFile: case kFontMapFile: case kTextureMapFile:
 				break;
 			case kEmbeddedImageFile:
 				if (FileToFind.Left(5).CompareNoCase(L"http:") == 0 || FileToFind.Left(6).CompareNoCase(L"https:") == 0) {
 					// <tas="code section removed"</tas>
 				}
 				// fall through
-			case kXRefDrawing:
-			case kTXApplication:
-			case kUnderlayFile:
-			case kDefault:
-			case kPhotometricWebFile:
+			case kXRefDrawing: case kTXApplication: case kUnderlayFile: case kDefault: case kPhotometricWebFile:
 				return FilePathAndName.GetString();
 		}
 		if (hint != kTextureMapFile && Extension != L".shx" && Extension != L".pat" && Extension != L".ttf" && Extension != L".ttc" && Extension != L".otf") {
@@ -500,34 +456,26 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			FileToFind.Delete(0, FileToFind.ReverseFind(L'\\') + 1);
 		}
 		FilePathAndName = hint != kTextureMapFile ? FindConfigPath(L"ACAD") : FindConfigPath(L"AVEMAPS");
-
 		CString Path;
 		while (!FilePathAndName.IsEmpty()) {
 			const auto PathDelimiter {FilePathAndName.Find(L";")};
-
 			if (PathDelimiter == -1) {
 				Path = FilePathAndName;
 				FilePathAndName.Empty();
 			} else {
 				Path = FilePathAndName.Left(PathDelimiter);
 				Path += L"\\" + FileToFind;
-
 				if (SystemServices->accessFile(Path.GetString(), Oda::kFileRead)) { return Path.GetString(); }
-
 				FilePathAndName = FilePathAndName.Right(FilePathAndName.GetLength() - PathDelimiter - 1);
 			}
 		}
 		if (hint == kTextureMapFile) { return FilePathAndName.GetString(); }
-
 		if (FilePathAndName.IsEmpty()) {
 			auto AcadLocation {GetRegistryAcadLocation()};
-
 			if (!AcadLocation.IsEmpty()) {
 				FilePathAndName = AcadLocation + L"\\Fonts\\" + FileToFind;
-
 				if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) {
 					FilePathAndName = AcadLocation + L"\\Support\\" + FileToFind;
-
 					if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) { FilePathAndName.Empty(); }
 				}
 			}
@@ -538,7 +486,6 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 
 CString AeSys::getApplicationPath() {
 	wchar_t FileName[MAX_PATH];
-
 	if (GetModuleFileNameW(GetModuleHandleW(nullptr), FileName, MAX_PATH)) {
 		CString FilePath(FileName);
 		const auto Delimiter {FilePath.ReverseFind('\\')};
@@ -576,40 +523,31 @@ CMenu* AeSys::CommandMenu(CMenu** toolsSubMenu) {
 	MENUITEMINFO MenuItemInfo;
 	MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 	MenuItemInfo.fMask = MIIM_STRING | MIIM_FTYPE | MIIM_SUBMENU | MIIM_ID;
-
 	CString MenuName;
 	CMenu* ToolsSubMenu {nullptr};
 	auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
-
 	for (auto Item = TopMenu->GetMenuItemCount() - 1; Item >= 0; Item--) {
 		MenuItemInfo.dwTypeData = nullptr;
 		TopMenu->GetMenuItemInfoW(static_cast<unsigned>(Item), &MenuItemInfo, TRUE);
-
 		const auto SizeOfMenuName {++MenuItemInfo.cch};
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(static_cast<int>(SizeOfMenuName));
 		TopMenu->GetMenuItemInfoW(static_cast<unsigned>(Item), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
-
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.Compare(L"&Tools") == 0) {
 			ToolsSubMenu = CMenu::FromHandle(MenuItemInfo.hSubMenu);
 			break;
 		}
 	}
 	ASSERT(ToolsSubMenu != nullptr);
-
 	if (toolsSubMenu) { *toolsSubMenu = ToolsSubMenu; }
-
 	CMenu* RegisteredCommandsSubMenu {nullptr};
-
 	for (auto ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
 		MenuItemInfo.dwTypeData = nullptr;
 		ToolsSubMenu->GetMenuItemInfoW(static_cast<unsigned>(ToolsMenuItem), &MenuItemInfo, TRUE);
-
 		const auto SizeOfMenuName {++MenuItemInfo.cch};
 		MenuItemInfo.dwTypeData = MenuName.GetBuffer(static_cast<int>(SizeOfMenuName));
 		ToolsSubMenu->GetMenuItemInfoW(static_cast<unsigned>(ToolsMenuItem), &MenuItemInfo, TRUE);
 		MenuName.ReleaseBuffer();
-
 		if (MenuItemInfo.fType == MFT_STRING && MenuName.CompareNoCase(L"Registered &Commands") == 0) {
 			RegisteredCommandsSubMenu = CMenu::FromHandle(MenuItemInfo.hSubMenu);
 			break;
@@ -622,53 +560,39 @@ CMenu* AeSys::CommandMenu(CMenu** toolsSubMenu) {
 void AeSys::RefreshCommandMenu() {
 	CMenu* ToolsSubMenu {nullptr};
 	auto RegisteredCommandsSubMenu {CommandMenu(&ToolsSubMenu)};
-
 	for (auto Item = RegisteredCommandsSubMenu->GetMenuItemCount() - 1; Item >= 0; Item--) {
 		auto SubMenu {RegisteredCommandsSubMenu->GetSubMenu(Item)};
-
 		if (SubMenu) { SubMenu->DestroyMenu(); }
-
 		RegisteredCommandsSubMenu->DeleteMenu(static_cast<unsigned>(Item), MF_BYPOSITION);
 	}
 	ENSURE(RegisteredCommandsSubMenu->GetMenuItemCount() == 0);
-
 	MENUITEMINFO MenuItemInfo;
 	MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 	MenuItemInfo.fMask = MIIM_DATA;
-
 	auto CommandStack {odedRegCmds()};
 	auto HasNoCommand {CommandStack->newIterator()->done()};
-
 	const unsigned ToolsMenuItem {8}; // <tas="Until calculated ToolsMenu position finished. Menu resource which change the location of Registered Commands location break."</tas>
 	ToolsSubMenu->EnableMenuItem(ToolsMenuItem, static_cast<unsigned>(MF_BYPOSITION | (HasNoCommand ? MF_GRAYED : MF_ENABLED)));
-
 	unsigned CommandId {_APS_NEXT_COMMAND_VALUE + 100};
-
 	if (!HasNoCommand) {
 		auto CommandStackGroupIterator = CommandStack->newGroupIterator();
-
 		while (!CommandStackGroupIterator->done()) {
 			OdRxDictionaryPtr Group {CommandStackGroupIterator->object()};
 			CMenu GroupMenu;
 			GroupMenu.CreateMenu();
 			OdRxIteratorPtr GroupCommandIterator {Group->newIterator(OdRx::kDictSorted)};
 			OdString GroupName;
-
 			while (!GroupCommandIterator->done()) {
 				OdEdCommandPtr Command {GroupCommandIterator->object().get()};
-
 				if (GroupName.isEmpty()) { GroupName = Command->groupName(); }
 				auto CommandName(Command->globalName());
 				GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
-
 				MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(Command.get());
 				SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
-
 				GroupCommandIterator->next();
 				CommandId++;
 			}
 			ENSURE(RegisteredCommandsSubMenu->AppendMenuW(MF_STRING | MF_POPUP, reinterpret_cast<LPARAM>(GroupMenu.Detach()), GroupName) != 0);
-
 			CommandStackGroupIterator->next();
 			GroupName.empty();
 		}
@@ -707,18 +631,14 @@ OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
 		} else if (m_bRecover) {
 			ODA_ASSERT(!m_pAuditDlg);
 			m_pAuditDlg = new EoDlgAudit();
-
 			ODA_ASSERT(m_pAuditDlg);
 			ODA_VERIFY(m_pAuditDlg->Create(IDD_AUDITINFO));
-
 			EoAppAuditInfo ApplicationAuditInformation;
 			ApplicationAuditInformation.setHostAppServices(&theApp);
-
 			Database = recoverFile(createFile(PathName), &ApplicationAuditInformation);
 			MainFrame->StopTimer(L"Recovering");
 			m_pAuditDlg->SetWindowTextW(L"Recover info " + PathName);
 			m_pAuditDlg->ShowWindow(SW_SHOW);
-
 			m_pAuditDlg = nullptr;
 		} else {
 			m_bLoading = true;
@@ -755,9 +675,7 @@ void AeSys::AddModeInformationToMessageList() {
 
 void AeSys::AddStringToMessageList(const wchar_t* message) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
-
 	MainFrame->GetOutputPane().AddStringToMessageList(message);
-
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
@@ -781,9 +699,7 @@ void AeSys::AddStringToMessageList(unsigned stringResourceIdentifier, const wcha
 
 void AeSys::AddStringToReportList(const wchar_t* message) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
-
 	MainFrame->GetOutputPane().AddStringToReportsList(message);
-
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
 	}
@@ -795,22 +711,16 @@ int AeSys::ArchitecturalUnitsFractionPrecision() const noexcept {
 // Modifies the base accelerator table by defining the mode specific keys.
 void AeSys::BuildModeSpecificAcceleratorTable() {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
-
 	auto AcceleratorTableHandle {MainFrame->m_hAccelTable};
 	DestroyAcceleratorTable(AcceleratorTableHandle);
-
 	auto ModeAcceleratorTableHandle {LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(m_ModeResourceIdentifier))};
 	auto ModeAcceleratorTableEntries {CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0)};
-
 	AcceleratorTableHandle = LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME));
 	const auto AcceleratorTableEntries {CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
 	auto ModifiedAcceleratorTable {new tagACCEL[static_cast<unsigned>(AcceleratorTableEntries + ModeAcceleratorTableEntries)]};
-
 	CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
 	CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
-
 	MainFrame->m_hAccelTable = ::CreateAcceleratorTable(ModifiedAcceleratorTable, AcceleratorTableEntries + ModeAcceleratorTableEntries);
-
 	delete[] ModifiedAcceleratorTable;
 }
 
@@ -850,18 +760,14 @@ void AeSys::EditColorPalette() {
 	CHOOSECOLOR cc;
 	::ZeroMemory(&cc, sizeof(CHOOSECOLOR));
 	cc.lStructSize = sizeof(CHOOSECOLOR);
-
-	cc.rgbResult = ColorPalette[pstate.ColorIndex()];
-	cc.lpCustColors = ColorPalette;
+	cc.rgbResult = g_ColorPalette[pstate.ColorIndex()];
+	cc.lpCustColors = g_ColorPalette;
 	cc.Flags = CC_FULLOPEN | CC_RGBINIT | CC_SOLIDCOLOR;
 	ChooseColorW(&cc);
-
-	cc.rgbResult = GreyPalette[pstate.ColorIndex()];
-	cc.lpCustColors = GreyPalette;
+	cc.rgbResult = g_GreyPalette[pstate.ColorIndex()];
+	cc.lpCustColors = g_GreyPalette;
 	ChooseColorW(&cc);
-
 	MessageBoxW(nullptr, L"The background color is no longer associated with the pen Color Palette.", L"Deprecation Notice", MB_OK | MB_ICONINFORMATION);
-
 	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
 
@@ -878,15 +784,12 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
 	auto LibraryModule {LoadLibraryW(LibraryFileName)};
-
 	if (LibraryModule != nullptr) {
 		auto fpDlgProc {reinterpret_cast<ODA_OPEN_DLGPROC>(GetProcAddress(LibraryModule, "CreateOpenWithPreviewDlg"))};
-
 		if (fpDlgProc != nullptr) {
 			EoPreviewDib statDib;
 			OpenWithPreviewDlg* OpenWithPreviewDialog;
 			(fpDlgProc)(&statDib, parentWindow, nullptr, filter, Flags, &OpenWithPreviewDialog);
-
 			if (IDOK == OpenWithPreviewDialog->ShowModal()) {
 				long BufferLength {MAX_PATH};
 				OpenWithPreviewDialog->GetFullFileName(FileName.GetBuffer(BufferLength), BufferLength);
@@ -898,7 +801,6 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 	} else {
 		CString Filter(filter);
 		Filter.Replace('|', '\0');
-
 		OPENFILENAME OpenFileName;
 		::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
 		OpenFileName.lStructSize = sizeof(OPENFILENAME);
@@ -909,7 +811,6 @@ CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool 
 		OpenFileName.nMaxFile = MAX_PATH;
 		OpenFileName.lpstrInitialDir = nullptr;
 		OpenFileName.Flags = Flags;
-
 		GetOpenFileNameW(&OpenFileName);
 		FileName.ReleaseBuffer();
 	}
@@ -929,15 +830,12 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Contextual Colors", m_ContextColors);
 	theApp.WriteInt(L"TTF PolyDraw", m_TTFPolyDraw);
 	theApp.WriteInt(L"TTF TextOut", m_TTFTextOut);
-
 	theApp.WriteInt(L"TTF Cache", m_TTFCache);
 	theApp.WriteInt(L"Dynamic Subentities Highlight", m_DynamicSubEntHlt);
 	theApp.WriteInt(L"GDI Gradients as Bitmaps", m_GDIGradientsAsBitmap);
 	theApp.WriteInt(L"GDI Gradients as Polys", m_GDIGradientsAsPolys);
 	theApp.WriteInt(L"GDI Gradients as Polys Threshold", m_nGDIGradientsAsPolysThreshold);
-
 	theApp.WriteInt(L"Disable Auto-Regen", m_DisableAutoRegen);
-
 	theApp.WriteInt(L"Save round trip information", m_SaveRoundTrip);
 	theApp.WriteInt(L"Save Preview", m_SavePreview);
 	theApp.WriteInt(L"Background colour", static_cast<int>(m_background));
@@ -945,16 +843,12 @@ int AeSys::ExitInstance() {
 	theApp.WriteString(L"recent GS", m_sVectorizerPath);
 	theApp.WriteString(L"Recent Command", m_RecentCommand);
 	theApp.WriteInt(L"Fill TTF text", static_cast<int>(getTEXTFILL()));
-
 	SetRegistryBase(L"Options");
 	m_Options.Save();
 	SetRegistryBase(L"MFC Auto");
-
 	ReleaseSimplexStrokeFont();
 	UninitializeTeigha();
-
 	AfxOleTerm(FALSE);
-
 	return CWinAppEx::ExitInstance();
 }
 
@@ -982,26 +876,19 @@ CString AeSys::FormatLength(double length, Units units, int width, int precision
 ///	[feet]'[inches].[decimal inches]"
 ///All other units formatted using floating decimal.
 /// </summary>
-
 void AeSys::FormatLength_s(wchar_t* lengthAsString, unsigned bufSize, Units units, double length, int width, int precision) const {
 	wchar_t szBuf[16] {L"\0"};
 	auto ScaledLength {length * AeSysView::GetActiveView()->WorldScale()};
-
 	CString FormatSpecification;
 	FormatSpecification.Format(L"%%%i.%if", width, precision);
-
 	switch (units) {
-		case kArchitectural:
-		case kArchitecturalS: {
+		case kArchitectural: case kArchitecturalS: {
 			wcscpy_s(lengthAsString, bufSize, length >= 0.0 ? L" " : L"-");
 			ScaledLength = fabs(ScaledLength);
-
 			auto Feet {static_cast<int>(ScaledLength / 12.)};
 			auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
-
 			const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
 			auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)}; // Numerator of fractional component of inches
-
 			if (Numerator == FractionPrecision) {
 				if (Inches == 11) {
 					Feet++;
@@ -1014,10 +901,8 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, unsigned bufSize, Units unit
 			_itow_s(Feet, szBuf, 16, 10);
 			wcscat_s(lengthAsString, bufSize, szBuf);
 			wcscat_s(lengthAsString, bufSize, L"'");
-
 			_itow_s(Inches, szBuf, 16, 10);
 			wcscat_s(lengthAsString, bufSize, szBuf);
-
 			if (Numerator > 0) {
 				wcscat_s(lengthAsString, bufSize, units == kArchitecturalS ? L"\\S" : L"·" /* middle dot [U+00B7] */);
 				const auto iGrtComDivisor {GreatestCommonDivisor(Numerator, FractionPrecision)};
@@ -1028,7 +913,6 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, unsigned bufSize, Units unit
 				wcscat_s(lengthAsString, bufSize, L"/");
 				_itow_s(Denominator, szBuf, 16, 10);
 				wcscat_s(lengthAsString, bufSize, szBuf);
-
 				if (units == kArchitecturalS) { wcscat_s(lengthAsString, bufSize, L";"); }
 			}
 			wcscat_s(lengthAsString, bufSize, L"\"");
@@ -1037,26 +921,20 @@ void AeSys::FormatLength_s(wchar_t* lengthAsString, unsigned bufSize, Units unit
 		case kEngineering: {
 			wcscpy_s(lengthAsString, bufSize, length >= 0.0 ? L" " : L"-");
 			ScaledLength = fabs(ScaledLength);
-
 			const auto Precision {ScaledLength >= 1.0 ? precision - int(log10(ScaledLength)) - 1 : precision};
-
 			if (Precision >= 0) {
 				_itow_s(int(ScaledLength / 12.), szBuf, 16, 10);
 				wcscat_s(lengthAsString, bufSize, szBuf);
 				ScaledLength = fmod(ScaledLength, 12.);
 				wcscat_s(lengthAsString, bufSize, L"'");
-
 				_itow_s(int(ScaledLength), szBuf, 16, 10);
 				wcscat_s(lengthAsString, bufSize, szBuf);
-
 				if (Precision > 0) {
 					FormatSpecification.Format(L"%%%i.%if", width, Precision);
-
 					CString FractionalInches;
 					FractionalInches.Format(FormatSpecification, ScaledLength);
 					const auto DecimalPointPosition = FractionalInches.Find('.');
 					FractionalInches = FractionalInches.Mid(DecimalPointPosition) + L"\"";
-
 					wcscat_s(lengthAsString, bufSize, FractionalInches);
 				}
 			}
@@ -1104,7 +982,6 @@ OdGePoint3d AeSys::GetCursorPosition() {
 EoDb::FileTypes AeSys::GetFileType(const OdString& file) {
 	auto Type(EoDb::kUnknown);
 	auto Extension {file.right(3)};
-
 	if (!Extension.isEmpty()) {
 		if (Extension.iCompare(L"peg") == 0) {
 			Type = EoDb::kPeg;
@@ -1124,7 +1001,7 @@ EoDb::FileTypes AeSys::GetFileType(const OdString& file) {
 }
 
 COLORREF AeSys::GetHotColor(short colorIndex) noexcept {
-	return ColorPalette[colorIndex];
+	return g_ColorPalette[colorIndex];
 }
 
 HINSTANCE AeSys::GetInstance() noexcept {
@@ -1145,7 +1022,6 @@ AeSys::Units AeSys::GetUnits() noexcept {
 
 /// <summary>Finds the greatest common divisor of arbitrary integers.</summary>
 /// <returns>First number if second number is zero, greatest common divisor otherwise.</returns>
-
 int AeSys::GreatestCommonDivisor(int number1, int number2) const noexcept {
 	auto ReturnValue {abs(number1)};
 	auto Divisor {abs(number2)};
@@ -1163,7 +1039,6 @@ bool AeSys::HighColorMode() const noexcept {
 
 OdGePoint3d AeSys::HomePointGet(int i) noexcept {
 	if (i >= 0 && i < 9) { return m_HomePoints[i]; }
-
 	return OdGePoint3d::kOrigin;
 }
 
@@ -1174,22 +1049,17 @@ void AeSys::HomePointSave(int i, const OdGePoint3d& point) noexcept {
 void AeSys::InitGbls(CDC* deviceContext) {
 	pstate.SetHatchInteriorStyle(EoDbHatch::kHatch);
 	pstate.SetHatchInteriorStyleIndex(1);
-
 	EoDbHatch::sm_PatternScaleX = .1;
 	EoDbHatch::sm_PatternScaleY = .1;
 	EoDbHatch::sm_PatternAngle = 0.0;
-
 	const EoDbCharacterCellDefinition CharacterCellDefinition;
 	pstate.SetCharacterCellDefinition(CharacterCellDefinition);
-
 	EoDbFontDefinition FontDefinition;
 	pstate.SetFontDefinition(deviceContext, FontDefinition);
-
 	SetUnits(kInches);
 	SetArchitecturalUnitsFractionPrecision(8);
 	SetDimensionLength(.125);
 	SetDimensionAngle(45.);
-
 	m_TrapHighlighted = true;
 	m_TrapHighlightColor = 15;
 
@@ -1201,26 +1071,19 @@ void AeSys::InitGbls(CDC* deviceContext) {
 bool AeSys::InitializeOda() {
 	try {
 		odInitialize(this);
-
 		EoLoadApps::rxInit();
-
 		OdApplicationReactor::rxInit();
 		OdApplicationDocument::rxInit();
-
 		odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
 		odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
 		odrxDynamicLinker()->loadModule(OdExCommandsModuleName);
 		odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName); // PlotSettingsValidator module (To include support for plot settings)
-
 		addPaperDrawingCustomization();
 		addMaterialTextureLoadingMonitor();
-
 		OdDbDatabaseDoc::rxInit();
-
 #ifdef OD_OLE_SUPPORT
 		::rxInit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
-
 		auto CommandStack {odedRegCmds()};
 		CommandStack->addCommand(&g_Cmd_VIEW);
 		CommandStack->addCommand(&g_Cmd_SELECT);
@@ -1246,25 +1109,20 @@ BOOL AeSys::InitInstance() {
 	// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
-
 	if (!AfxOleInit()) { // Failed to initialize OLE support for the application.
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
 	}
 	AfxEnableControlContainer();
-
 	EnableTaskbarInteraction();
 
 	// Standard initialization
-
 	// Application settings to be stored in the registry instead of INI files.
 	SetRegistryKey(L"Engineers Office");
 	LoadStdProfileSettings(8U); // Load the list of most recently used (MRU) files and last preview state.
 	SetRegistryBase(L"Options");
 	m_Options.Load();
-
 	SetRegistryBase(L"ODA View");
-
 	m_DiscardBackFaces = GetInt(L"Discard Back Faces", true);
 	m_EnableDoubleBuffer = GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
 	m_BlocksCache = GetInt(L"Enable Blocks Cache", false);
@@ -1276,114 +1134,84 @@ BOOL AeSys::InitInstance() {
 	m_ContextColors = GetInt(L"Contextual Colors", true);
 	m_TTFPolyDraw = GetInt(L"TTF PolyDraw", false);
 	m_TTFTextOut = GetInt(L"TTF TextOut", false);
-
 	m_TTFCache = GetInt(L"TTF Cache", false);
 	m_DynamicSubEntHlt = GetInt(L"Dynamic Subentities Highlight", false);
 	m_GDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", false);
 	m_GDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", false);
 	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<unsigned char>(GetInt(L"GDI Gradients as Polys Threshold", 10));
-
 	m_DisableAutoRegen = GetInt(L"Disable Auto-Regen", false);
 
 	//	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
-
 	m_SaveRoundTrip = GetInt(L"Save round trip information", true);
 	m_SavePreview = GetInt(L"Save Preview", false);
-	m_background = static_cast<unsigned>(GetInt(L"Background colour", static_cast<int>(ViewBackgroundColor)));
+	m_background = static_cast<unsigned>(GetInt(L"Background colour", static_cast<int>(g_ViewBackgroundColor)));
 	m_SaveWithPassword = GetInt(L"Save DWG with password", false);
 	m_sVectorizerPath = GetString(L"recent GS", OdWinDirectXModuleName);
 	m_RecentCommand = GetString(L"Recent Command", L"");
 	auto nFillTtf = GetInt(L"Fill TTF text", 1);
 	setTEXTFILL(nFillTtf != 0);
-
 	SetRegistryBase(L"MFC Auto");
-
 	lex::Init();
 
 	// Initialize application managers for usage. They are automatically constructed if not yet present
 	InitContextMenuManager(); // Manages shortcut menus, also known as context menus.
 	InitKeyboardManager(); // Manages shortcut key tables for the main frame window and child frame windows.
 	InitTooltipManager(); // Maintains runtime information about tooltips.
-
 	CMFCToolTipInfo params;
 	params.m_bVislManagerTheme = TRUE;
 	GetTooltipManager()->SetTooltipParams(AFX_TOOLTIP_TYPE_ALL, RUNTIME_CLASS(CMFCToolTipCtrl), &params);
-
 	EnableUserTools(ID_TOOLS_ENTRY, ID_USER_TOOL1, ID_USER_TOOL10, RUNTIME_CLASS(CUserTool), IDR_MENU_ARGS, IDR_MENU_DIRS);
-
 	CMFCButton::EnableWindowsTheming();
-
 	CWinAppEx::InitInstance();
-
 	if (!InitializeOda()) { return FALSE; }
 
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views.
 	auto AeSysDocTemplate {new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
-
 	if (!AeSysDocTemplate) { return FALSE; }
 	AddDocTemplate(AeSysDocTemplate);
-
 	auto TracingDocTemplate {new CMultiDocTemplate(IDR_TRACINGTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
-
 	if (!TracingDocTemplate) { return FALSE; }
 	AddDocTemplate(TracingDocTemplate);
 
 	// Create main MDI Frame window
 	auto MainFrame {new CMainFrame};
-
 	if (!MainFrame || !MainFrame->LoadFrame(IDR_MAINFRAME)) {
 		delete MainFrame;
 		return FALSE;
 	}
 	m_pMainWnd = MainFrame;
-
 	m_pMainWnd->DragAcceptFiles();
-
 	auto DeviceContext {MainFrame->GetDC()};
-
 	m_DeviceWidthInPixels = static_cast<double>(DeviceContext->GetDeviceCaps(HORZRES));
 	m_DeviceHeightInPixels = static_cast<double>(DeviceContext->GetDeviceCaps(VERTRES));
 	m_DeviceWidthInMillimeters = static_cast<double>(DeviceContext->GetDeviceCaps(HORZSIZE));
 	m_DeviceHeightInMillimeters = static_cast<double>(DeviceContext->GetDeviceCaps(VERTSIZE));
-
 	InitGbls(DeviceContext);
 	MainFrame->ReleaseDC(DeviceContext);
-
 	m_AeSysMenuHandle = LoadMenuW(m_hInstance, MAKEINTRESOURCEW(IDR_AESYSTYPE));
-
 	RefreshCommandMenu();
 
 	// Parse command line for standard shell commands, DDE, file open
 	CFullCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
-
 	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) { CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
-
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
 
 	// Dispatch commands specified on the command line
 	if (!ProcessShellCommand(CommandLineInfo)) { return FALSE; }
-
 	if (!RegisterPreviewWindowClass(m_hInstance)) { return FALSE; }
-
 	SetShadowFolderPath(L"AeSys Shadow Folder");
-
 	LoadSimplexStrokeFont(ResourceFolderPath() + L"Simplex.psf");
 	EoDbHatchPatternTable::LoadHatchesFromFile(ResourceFolderPath() + L"Hatches\\DefaultSet.pat");
 	LoadPenWidthsFromFile(ResourceFolderPath() + L"Pens\\Widths.txt");
 	//LoadColorPalletFromFile(ResourceFolder + L"Pens\\Colors\\Default.txt"));
-
 	// This is the private data format used to pass EoGroups from one instance to another
 	m_ClipboardFormatIdentifierForEoGroups = RegisterClipboardFormatW(L"EoGroups");
-
 	m_thisThreadID = GetCurrentThreadId();
-
 	m_pMainWnd->ShowWindow(m_nCmdShow);
 	m_pMainWnd->UpdateWindow();
-
 	initPlotStyleSheetEnv();
-
 	return TRUE;
 }
 
@@ -1405,42 +1233,33 @@ bool AeSys::IsTrapHighlighted() noexcept {
 
 void AeSys::LoadColorPalletFromFile(const CString& fileName) {
 	CStdioFile StreamFile;
-
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
 		wchar_t Line[128] {L"\0"};
-
 		wchar_t* Index {nullptr};
 		wchar_t* Red {nullptr};
 		wchar_t* Green {nullptr};
 		wchar_t* Blue {nullptr};
-
-		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0)
-			;
-
+		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0);
 		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && *Line != '<') {
 			wchar_t* NextToken {nullptr};
-
 			Index = wcstok_s(Line, L"=", &NextToken);
 			Red = wcstok_s(nullptr, L",", &NextToken);
 			Green = wcstok_s(nullptr, L",", &NextToken);
 			Blue = wcstok_s(nullptr, L",", &NextToken);
-			ColorPalette[_wtoi(Index)] = RGB(_wtoi(Red), _wtoi(Green), _wtoi(Blue));
+			g_ColorPalette[_wtoi(Index)] = RGB(_wtoi(Red), _wtoi(Green), _wtoi(Blue));
 			Red = wcstok_s(nullptr, L",", &NextToken);
 			Green = wcstok_s(nullptr, L",", &NextToken);
 			Blue = wcstok_s(nullptr, L"\n", &NextToken);
-			GreyPalette[_wtoi(Index)] = RGB(_wtoi(Red), _wtoi(Green), _wtoi(Blue));
+			g_GreyPalette[_wtoi(Index)] = RGB(_wtoi(Red), _wtoi(Green), _wtoi(Blue));
 		}
 	}
 }
 
 void AeSys::LoadModeResources(unsigned mode) {
 	BuildModeSpecificAcceleratorTable();
-
 	m_CurrentMode = mode;
 	AddModeInformationToMessageList();
-
 	auto ActiveView {AeSysView::GetActiveView()};
-
 	if (ActiveView != nullptr) {
 		ActiveView->SetModeCursor(m_CurrentMode);
 		ActiveView->ModeLineDisplay();
@@ -1450,16 +1269,13 @@ void AeSys::LoadModeResources(unsigned mode) {
 
 void AeSys::LoadPenWidthsFromFile(const CString& fileName) {
 	CStdioFile StreamFile;
-
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
 		wchar_t PenWidths[64];
-
 		while (StreamFile.ReadString(PenWidths, sizeof PenWidths / sizeof(wchar_t) - 1)) {
 			wchar_t* NextToken {nullptr};
 			auto PenIndex {_wtoi(wcstok_s(PenWidths, L"=", &NextToken))};
 			const auto Width {_wtof(wcstok_s(nullptr, L",\n", &NextToken))};
-
-			if (PenIndex >= 0 && PenIndex < sizeof dPWids / sizeof dPWids[0]) { dPWids[PenIndex] = Width; }
+			if (PenIndex >= 0 && PenIndex < sizeof g_PenWidths / sizeof g_PenWidths[0]) { g_PenWidths[PenIndex] = Width; }
 		}
 	}
 }
@@ -1471,19 +1287,15 @@ void AeSys::LoadPenWidthsFromFile(const CString& fileName) {
 /// </remarks>
 void AeSys::LoadSimplexStrokeFont(const CString& pathName) {
 	auto OpenHandle {CreateFileW(pathName, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
-
 	if (OpenHandle != INVALID_HANDLE_VALUE) {
 		if (SetFilePointer(OpenHandle, 0, nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER) {
 			if (!m_SimplexStrokeFont) { m_SimplexStrokeFont = new char[16384]; }
-
 			unsigned long NumberOfBytesRead;
-
 			if (!ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, nullptr)) { ReleaseSimplexStrokeFont(); }
 		}
 		CloseHandle(OpenHandle);
 	} else {
 		auto ResourceHandle {FindResourceW(nullptr, MAKEINTRESOURCEW(IDR_PEGSTROKEFONT), L"STROKEFONT")};
-
 		if (ResourceHandle != nullptr) {
 			const auto ResourceSize {SizeofResource(nullptr, ResourceHandle)};
 			m_SimplexStrokeFont = new char[ResourceSize];
@@ -1524,16 +1336,12 @@ void AeSys::OnFileOpen() {
 	const unsigned long Flags {OFN_HIDEREADONLY | OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST};
 	auto Filter {LoadStringResource(IDS_OPENFILE_FILTER)};
 	CFileDialog FileDialog(TRUE, nullptr, nullptr, Flags, Filter);
-
 	CString FileName;
 	FileDialog.m_ofn.lpstrFile = FileName.GetBuffer(MAX_PATH);
-
 	auto Title {LoadStringResource(AFX_IDS_OPENFILE)};
 	FileDialog.m_ofn.lpstrTitle = Title;
-
 	const auto Result {FileDialog.DoModal()};
 	FileName.ReleaseBuffer();
-
 	if (Result == IDOK) { OpenDocumentFile(FileName); }
 }
 
@@ -1550,11 +1358,9 @@ void AeSys::OnFilePlotstylemanager() {
 	OpenFileName.lpstrTitle = L"Select Plot Style File";
 	OpenFileName.Flags = OFN_FILEMUSTEXIST;
 	OpenFileName.lpstrDefExt = L"stb";
-
 	if (GetOpenFileNameW(&OpenFileName)) {
 		OdString FileName(OpenFileName.lpstrFile);
 		delete OpenFileName.lpstrFile;
-
 		auto SystemServices {odSystemServices()};
 		try {
 			if (SystemServices->accessFile(FileName, Oda::kFileRead)) {
@@ -1670,7 +1476,6 @@ void AeSys::OnToolsLoadapplications() {
 void AeSys::OnTrapCommandsAddGroups() {
 	m_TrapModeAddGroups = !m_TrapModeAddGroups;
 	m_CurrentMode = static_cast<unsigned>(m_TrapModeAddGroups ? ID_MODE_TRAP : ID_MODE_TRAPR);
-
 	OnModeTrap();
 }
 
@@ -1752,9 +1557,8 @@ void AeSys::OnUpdateViewModeinformation(CCmdUI* pCmdUI) {
 	pCmdUI->SetCheck(m_ModeInformationOverView);
 }
 
-
 COLORREF AppGetTextCol() noexcept {
-	return ~(ViewBackgroundColor | 0xff000000);
+	return ~(g_ViewBackgroundColor | 0xff000000);
 }
 
 void AeSys::OnViewModeInformation() {
@@ -1764,15 +1568,12 @@ void AeSys::OnViewModeInformation() {
 
 double AeSys::ParseLength(const wchar_t* lengthAsString) {
 	wchar_t* StopString;
-
 	auto ReturnValue {wcstod(lengthAsString, &StopString)};
-
 	switch (toupper(static_cast<int>(StopString[0]))) {
 		case '\'': // Feet and maybe inches
 			ReturnValue *= 12.0; // Reduce to inches
 			ReturnValue += wcstod(&StopString[1], &StopString); // Begin scan for inches at character following foot delimeter
 			break;
-
 		case 'M': // meters or millimeters
 			if (toupper(static_cast<int>(StopString[1])) == 'M') {
 				ReturnValue *= 0.03937007874015748;
@@ -1780,15 +1581,12 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 				ReturnValue *= 39.37007874015748;
 			}
 			break;
-
 		case 'C': // centimenters
 			ReturnValue *= 0.3937007874015748;
 			break;
-
 		case 'D': // decimeters
 			ReturnValue *= 3.937007874015748;
 			break;
-
 		case 'K': // kilometers
 			ReturnValue *= 39370.07874015748;
 	}
@@ -1801,44 +1599,30 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 		long DataDefinition;
 		int iTyp;
 		double ReturnValue[32];
-
 		lex::Parse(lengthAsString);
 		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, static_cast<void*>(ReturnValue));
-
 		if (iTyp == lex::TOK_LENGTH_OPERAND) { return ReturnValue[0]; }
-
 		lex::ConvertValTyp(iTyp, lex::TOK_REAL, &DataDefinition, ReturnValue);
-
 		switch (units) {
-			case kArchitectural:
-			case kArchitecturalS:
-			case kEngineering:
-			case kFeet:
+			case kArchitectural: case kArchitecturalS: case kEngineering: case kFeet:
 				ReturnValue[0] *= 12.;
 				break;
-
 			case kMeters:
 				ReturnValue[0] *= 39.37007874015748;
 				break;
-
 			case kMillimeters:
 				ReturnValue[0] *= .03937007874015748;
 				break;
-
 			case kCentimeters:
 				ReturnValue[0] *= .3937007874015748;
 				break;
-
 			case kDecimeters:
 				ReturnValue[0] *= 3.937007874015748;
 				break;
-
 			case kKilometers:
 				ReturnValue[0] *= 39370.07874015748;
 				break;
-
-			case kInches:
-			default:
+			case kInches: default:
 				break;
 		}
 		ReturnValue[0] /= AeSysView::GetActiveView()->WorldScale();
@@ -1850,7 +1634,7 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 }
 
 double AeSys::PenWidthsGet(short colorIndex) noexcept {
-	return dPWids[colorIndex];
+	return g_PenWidths[colorIndex];
 }
 /// <remarks> Processing occurs immediately before the framework loads the application state from the registry. </remarks>
 void AeSys::PreLoadState() {
@@ -1870,13 +1654,10 @@ const OdString AeSys::product() {
 bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept {
 	auto ReturnValue {false};
 	HKEY OpenedKey;
-
 	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
 		unsigned long RegistryBufferSize {EO_REGISTRY_BUFFER_SIZE};
 		unsigned char data[EO_REGISTRY_BUFFER_SIZE] {0};
-
 		wchar_t data_t[EO_REGISTRY_BUFFER_SIZE] {L"\0"};
-
 		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, data, &RegistryBufferSize) == ERROR_SUCCESS) {
 			memcpy_s(&data_t, EO_REGISTRY_BUFFER_SIZE, &data, RegistryBufferSize);
 			ReturnValue = true;
@@ -1896,53 +1677,34 @@ bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wch
 
 CString GetRegistryAcadLocation() {
 	CString SubKey {L"SOFTWARE\\Autodesk\\AutoCAD"};
-
 	wchar_t Version[32] {L"\0"};
-
 	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", Version, 32) == 0) { return L""; }
-
 	SubKey += L"\\";
 	SubKey += Version;
-
 	wchar_t SubVersion[32] {L"\0"};
-
 	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", SubVersion, 32) == 0) { return L""; }
-
 	SubKey += L"\\";
 	SubKey += SubVersion;
-
 	wchar_t searchPaths[EO_REGISTRY_MAX_PATH] {L"\0"};
-
 	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"AcadLocation", searchPaths, EO_REGISTRY_MAX_PATH) == 0) { return L""; }
-
 	return CString(searchPaths);
 }
 
 CString GetRegistryAcadProfilesKey() {
 	CString Subkey {L"SOFTWARE\\Autodesk\\AutoCAD"};
-
 	wchar_t Version[32] {L"\0"};
-
 	if (GetRegistryString(HKEY_CURRENT_USER, Subkey, L"CurVer", Version, 32) == 0) { return L""; }
-
 	Subkey += L"\\";
 	Subkey += Version;
-
 	wchar_t SubVersion[32] {L"\0"};
-
 	if (GetRegistryString(HKEY_CURRENT_USER, Subkey, L"CurVer", SubVersion, 32) == 0) { return L""; }
-
 	Subkey += L"\\";
 	Subkey += SubVersion;
 	Subkey += L"\\Profiles";
-
 	wchar_t Profile[EO_REGISTRY_MAX_PROFILE_NAME] {L"\0"};
-
 	if (GetRegistryString(HKEY_CURRENT_USER, Subkey, L"", Profile, EO_REGISTRY_MAX_PROFILE_NAME) == 0) { return L""; }
-
 	Subkey += L"\\";
 	Subkey += Profile;
-
 	return Subkey;
 }
 
@@ -1954,10 +1716,8 @@ OdString AeSys::getFontMapFileName() const {
 	wchar_t FontMapFile[EO_REGISTRY_MAX_PATH] {L"\0"};
 	wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
 	auto subKey {GetRegistryAcadProfilesKey()};
-	
 	if (!subKey.IsEmpty()) {
 		subKey += L"\\Editor Configuration";
-
 		if (GetRegistryString(HKEY_CURRENT_USER, subKey, L"FontMappingFile", FontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
 			return L"";
 		}
@@ -1970,10 +1730,8 @@ OdString AeSys::getFontMapFileName() const {
 OdString AeSys::getTempPath() const {
 	wchar_t TempPath[MAX_PATH] {L"\0"};
 	auto SubKey {GetRegistryAcadProfilesKey()};
-
 	if (!SubKey.IsEmpty()) {
 		SubKey += L"\\General Configuration";
-
 		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, L"TempDirectory", TempPath, MAX_PATH) == 0) {
 			return OdDbHostAppServices::getTempPath();
 		}
@@ -1981,7 +1739,6 @@ OdString AeSys::getTempPath() const {
 			return OdDbHostAppServices::getTempPath();
 		}
 		CString Result(TempPath, static_cast<int>(wcslen(TempPath)));
-		
 		if (Result.GetAt(Result.GetLength() - 1) != '\\') { Result += '\\'; }
 		return Result.GetString();
 	}
@@ -2009,7 +1766,6 @@ void AeSys::SetStatusPaneTextAt(int index, const wchar_t* newText) {
 
 OdDbHostAppProgressMeter* AeSys::newProgressMeter() {
 	if (m_thisThreadID != GetCurrentThreadId()) { return nullptr; }
-
 	return ExHostAppServices::newProgressMeter();
 }
 
@@ -2043,11 +1799,13 @@ void AeSys::meterProgress() {
 			int m_Percent;
 			CMainFrame* m_MainFrame;
 			AeSys* m_Application;
+
 			StatusUpdater(int percent, CMainFrame* mainFrame, AeSys* application) noexcept
 				: m_Percent(percent)
 				, m_MainFrame(mainFrame)
 				, m_Application(application) {
 			}
+
 			static void Exec(void* statusUpdater) {
 				auto pExec {static_cast<StatusUpdater*>(statusUpdater)};
 				CString str;
@@ -2057,7 +1815,6 @@ void AeSys::meterProgress() {
 				MSG Message;
 				while (PeekMessageW(&Message, pExec->m_MainFrame->m_hWnd, WM_KEYUP, WM_KEYUP, 1)) {
 					auto bDup {false};
-
 					if (Message.wParam == VK_ESCAPE && !bDup) {
 						bDup = true;
 						str.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_ProgressMessage.GetString());
@@ -2081,13 +1838,11 @@ void AeSys::setLimit(int max) noexcept {
 
 int AeSys::ConfirmMessageBox(unsigned stringResourceIdentifier, const wchar_t* string) {
 	auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
-
 	CString FormattedResourceString;
 	FormattedResourceString.Format(FormatSpecification, string);
 	auto NextToken {0};
 	auto Text {FormattedResourceString.Tokenize(L"\t", NextToken)};
 	auto Caption {FormattedResourceString.Tokenize(L"\n", NextToken)};
-
 	return MessageBoxW(nullptr, Text, Caption, MB_ICONINFORMATION | MB_YESNOCANCEL | MB_DEFBUTTON2);
 }
 
@@ -2102,19 +1857,16 @@ void AeSys::WarningMessageBox(unsigned stringResourceIdentifier) {
 	auto NextToken {0};
 	auto Text {ResourceString.Tokenize(L"\t", NextToken)};
 	auto Caption {ResourceString.Tokenize(L"\n", NextToken)};
-
 	MessageBoxW(nullptr, Text, Caption, MB_ICONWARNING | MB_OK);
 }
 
 void AeSys::WarningMessageBox(unsigned stringResourceIdentifier, const wchar_t* string) {
 	auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
-
 	CString FormattedResourceString;
 	FormattedResourceString.Format(FormatSpecification, string);
 	auto NextToken {0};
 	auto Text {FormattedResourceString.Tokenize(L"\t", NextToken)};
 	auto Caption {FormattedResourceString.Tokenize(L"\n", NextToken)};
-
 	MessageBoxW(nullptr, Text, Caption, MB_ICONWARNING | MB_OK);
 }
 
@@ -2149,14 +1901,12 @@ void AeSys::SetEngagedLength(double length) noexcept {
 
 int AeSys::SetShadowFolderPath(const CString& folder) {
 	wchar_t Path[MAX_PATH];
-
 	if (SHGetSpecialFolderPathW(m_pMainWnd->GetSafeHwnd(), Path, CSIDL_PERSONAL, TRUE)) {
 		m_ShadowFolderPath = Path;
 	} else {
 		m_ShadowFolderPath.Empty();
 	}
 	m_ShadowFolderPath += L"\\" + folder + L"\\";
-
 	return _wmkdir(m_ShadowFolderPath);
 }
 
@@ -2179,27 +1929,20 @@ short AeSys::TrapHighlightColor() const noexcept {
 void AeSys::UninitializeTeigha() {
 	OdApplicationReactor::rxUninit();
 	OdApplicationDocument::rxUninit();
-
 	EoLoadApps::rxUninit();
-
 	try {
 		/* <tas>
 		rxUninitMaterialsEditorObjects();
 		   </tas> */
-
 		auto CommandStack {odedRegCmds()};
 		CommandStack->removeCmd(&g_Cmd_SELECT);
 		CommandStack->removeCmd(&g_Cmd_VIEW);
-
 		OdDbDatabaseDoc::rxUninit();
-
 #ifdef OD_OLE_SUPPORT
 		::rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
-
 		removePaperDrawingCustomization();
 		removeMaterialTextureLoadingMonitor();
-
 		odUninitialize();
 	} catch (const OdError& Error) {
 		theApp.reportError(L"", Error);
@@ -2225,17 +1968,14 @@ BOOL AeSys::PreTranslateMessage(MSG* message) {
 }
 
 /// <section="vectorizer menu - add new and clear all">
-
 bool addGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers, const wchar_t* vectorizerPath) {
 	if (ID_VECTORIZER_FIRST + numberOfVectorizers <= ID_VECTORIZER_LAST) {
 		vectorizePopupMenu->InsertMenuW(numberOfVectorizers, MF_BYPOSITION, ID_VECTORIZER_FIRST + numberOfVectorizers, vectorizerPath);
-
 		MENUITEMINFO menuItemInfo;
 		menuItemInfo.cbSize = sizeof menuItemInfo;
 		menuItemInfo.fMask = MIIM_DATA;
 		menuItemInfo.dwItemData = static_cast<unsigned long>(theApp.getGSMenuItemMarker());
 		VERIFY(::SetMenuItemInfoW(vectorizePopupMenu->m_hMenu, numberOfVectorizers, TRUE, &menuItemInfo));
-
 		if (theApp.recentGsDevicePath().iCompare(OdString(vectorizerPath)) == 0) {
 			vectorizePopupMenu->CheckMenuItem(numberOfVectorizers, MF_BYPOSITION | MF_CHECKED);
 		}
@@ -2248,20 +1988,15 @@ bool addGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers
 void AeSys::OnVectorizeAddVectorizerDLL() {
 	const unsigned long Flags {OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST};
 	CString Filter {L"Graphic System DLL (*." VECTORIZATION_MODULE_EXTENSION_W L")|*." VECTORIZATION_MODULE_EXTENSION_W L"|Windows DLL (*.dll)|*.dll||"};
-
 	CFileDialog FileDialog(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, AfxGetMainWnd());
 	FileDialog.m_ofn.lpstrTitle = L"Select Graphic System DLL";
-
 	auto ApplicationPath {getApplicationPath()};
 	FileDialog.m_ofn.lpstrInitialDir = ApplicationPath.GetBuffer(ApplicationPath.GetLength());
-
 	if (FileDialog.DoModal() == IDOK) {
 		m_sVectorizerPath = static_cast<const wchar_t*>(FileDialog.GetFileName());
 		m_sVectorizerPath.replace(TD_DLL_VERSION_SUFFIX_STR, L"");
-
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
-
 		addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, m_sVectorizerPath);
 		WriteProfileStringW(L"options\\vectorizers", m_sVectorizerPath, L"");
 		GetMainWnd()->SendMessageW(WM_COMMAND, ID_VECTORIZE);
@@ -2273,18 +2008,14 @@ void AeSys::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
 	if (m_numGSMenuItems == 0) {
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
-
 		CRegKey RegistryKey;
 		RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
-
 		CString Path;
 		unsigned long PathSize;
-
 		for (;;) {
 			PathSize = _MAX_FNAME + _MAX_EXT;
 			const auto Status {RegEnumValueW(RegistryKey, m_numGSMenuItems, Path.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 			Path.ReleaseBuffer();
-
 			if (Status == ERROR_SUCCESS) {
 				if (!addGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, Path)) { break; }
 
@@ -2298,7 +2029,6 @@ void AeSys::OnUpdateVectorizeAddvectorizerdll(CCmdUI* pCmdUI) {
 void AeSys::OnVectorizeClearmenu() {
 	const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 	auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
-
 	while (VectorizePopupMenu->GetMenuItemCount() > 3) {
 		VectorizePopupMenu->RemoveMenu(0, MF_BYPOSITION);
 	}

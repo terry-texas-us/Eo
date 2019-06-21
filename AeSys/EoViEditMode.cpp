@@ -12,7 +12,6 @@ void AeSysView::OnEditModeOptions() {
 	Dialog.m_EditModeRotationAngleX = m_EditModeRotationAngles.x;
 	Dialog.m_EditModeRotationAngleY = m_EditModeRotationAngles.y;
 	Dialog.m_EditModeRotationAngleZ = m_EditModeRotationAngles.z;
-
 	if (Dialog.DoModal() == IDOK) {
 		m_EditModeRotationAngles.x = Dialog.m_EditModeRotationAngleX;
 		m_EditModeRotationAngles.y = Dialog.m_EditModeRotationAngleY;
@@ -20,23 +19,28 @@ void AeSysView::OnEditModeOptions() {
 		m_ScaleFactors.set(Dialog.m_ScaleFactorX, Dialog.m_ScaleFactorY, Dialog.m_ScaleFactorZ);
 	}
 }
+
 OdGeVector3d AeSysView::EditModeRotationAngles() const noexcept {
 	return m_EditModeRotationAngles;
 }
+
 EoGeMatrix3d AeSysView::EditModeInvertedRotationMatrix() const {
 	EoGeMatrix3d Matrix;
 	Matrix.SetTo3AxisRotation(EditModeRotationAngles());
 	Matrix.invert();
 	return Matrix;
 }
+
 EoGeMatrix3d AeSysView::EditModeRotationMatrix() const {
 	EoGeMatrix3d Matrix;
 	Matrix.SetTo3AxisRotation(EditModeRotationAngles());
 	return Matrix;
 }
+
 OdGeScale3d AeSysView::EditModeScaleFactors() const noexcept {
 	return m_ScaleFactors;
 }
+
 void AeSysView::SetEditModeScaleFactors(double sx, double sy, double sz) noexcept {
 	// <tas="Verify scale factors are always not zero"</tas>
 	m_ScaleFactors.sx = sx;
@@ -49,9 +53,11 @@ void AeSysView::SetEditModeRotationAngles(double x, double y, double z) noexcept
 	m_EditModeRotationAngles.y = y;
 	m_EditModeRotationAngles.z = z;
 }
+
 OdGeScale3d AeSysView::EditModeMirrorScaleFactors() const noexcept {
 	return m_MirrorScaleFactors;
 }
+
 void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept {
 	m_MirrorScaleFactors.set(sx, sy, sz);
 }
@@ -63,7 +69,6 @@ void AeSysView::OnEditModePivot() {
 
 void AeSysView::OnEditModeRotccw() {
 	auto PivotPoint {GetDocument()->TrapPivotPoint()};
-
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
 	EoGeMatrix3d RotationMatrix;
@@ -77,7 +82,6 @@ void AeSysView::OnEditModeRotccw() {
 
 void AeSysView::OnEditModeRotcw() {
 	auto PivotPoint {GetDocument()->TrapPivotPoint()};
-
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
 	EoGeMatrix3d RotationMatrix;
@@ -93,14 +97,12 @@ void AeSysView::OnEditModeRotcw() {
 void AeSysView::OnEditModeMove() {
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
-
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
 	} else {
 		EoGeMatrix3d tm;
 		tm.setToTranslation(CurrentPnt - Document->TrapPivotPoint());
-
 		ModeLineUnhighlightOp(m_PreviousOp);
 		RubberBandingDisable();
 		Document->TransformTrappedGroups(tm);
@@ -111,7 +113,6 @@ void AeSysView::OnEditModeMove() {
 void AeSysView::OnEditModeCopy() {
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
-
 	if (m_PreviousOp != ID_OP5) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP5);
 		RubberBandingStartAtEnable(CurrentPnt, Lines);
@@ -125,7 +126,6 @@ void AeSysView::OnEditModeCopy() {
 
 void AeSysView::OnEditModeFlip() {
 	auto PivotPoint {GetDocument()->TrapPivotPoint()};
-
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
 	EoGeMatrix3d ScaleMatrix;
@@ -139,7 +139,6 @@ void AeSysView::OnEditModeFlip() {
 
 void AeSysView::OnEditModeReduce() {
 	auto PivotPoint {GetDocument()->TrapPivotPoint()};
-
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
 	EoGeMatrix3d ScaleMatrix;
@@ -153,7 +152,6 @@ void AeSysView::OnEditModeReduce() {
 
 void AeSysView::OnEditModeEnlarge() {
 	auto PivotPoint {GetDocument()->TrapPivotPoint()};
-
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- PivotPoint.asVector());
 	EoGeMatrix3d ScaleMatrix;

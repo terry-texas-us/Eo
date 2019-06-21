@@ -1,14 +1,15 @@
 #pragma once
-
 inline double EoArcLength(const double angleInDegrees) noexcept {
 	return angleInDegrees * (OdaPI / 180.);
 }
 
-template<class T> T EoMin(T a, T b) noexcept {
+template <class T>
+T EoMin(T a, T b) noexcept {
 	return (a < b) ? a : b;
 }
 
-template<class T> T EoMax(T a, T b) noexcept {
+template <class T>
+T EoMax(T a, T b) noexcept {
 	return (a > b) ? a : b;
 }
 
@@ -16,7 +17,7 @@ inline double EoSignTransfer(const double a, const double b) noexcept {
 	return b >= 0. ? fabs(a) : - fabs(a);
 }
 
- inline double EoToDegree(const double angleInRadians) noexcept {
+inline double EoToDegree(const double angleInRadians) noexcept {
 	return angleInRadians / OdaPI * 180.;
 }
 
@@ -25,7 +26,7 @@ inline double EoToRadian(const double angleInDegrees) noexcept {
 }
 
 inline int EoRound(const double number) noexcept { // closest integer
-	return  static_cast<int>(number + 0.5);
+	return static_cast<int>(number + 0.5);
 }
 
 inline double EoRound(const double number, int precision) {

@@ -1,15 +1,12 @@
 #include "stdafx.h"
 #include "AeSysView.h"
-
 #include "EoDbFile.h"
 
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition)
 	: m_Origin(origin) {
 	const auto PlaneNormal {view->CameraDirection()};
-
 	m_YDirection = view->ViewUp();
 	m_YDirection.rotateBy(characterCellDefinition.RotationAngle(), PlaneNormal);
-
 	m_XDirection = m_YDirection;
 	m_XDirection.rotateBy(-OdaPI2, PlaneNormal);
 	m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), PlaneNormal);
@@ -23,14 +20,12 @@ EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVe
 	, m_YDirection(yDirection) {
 }
 
-EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition) : m_Origin(origin) {
+EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition)
+	: m_Origin(origin) {
 	m_XDirection = ComputeArbitraryAxis(normal);
 	m_XDirection.rotateBy(characterCellDefinition.RotationAngle(), normal);
-
 	m_YDirection = normal.crossProduct(m_XDirection);
-
 	m_XDirection *= 0.6 * characterCellDefinition.Height() * characterCellDefinition.WidthFactor();
-
 	m_YDirection.rotateBy(characterCellDefinition.ObliqueAngle(), normal);
 	m_YDirection *= characterCellDefinition.Height();
 }
@@ -42,7 +37,6 @@ EoGeReferenceSystem::EoGeReferenceSystem(const EoGeReferenceSystem& other) {
 }
 
 // <tas="Likely misuse of .normal"/>
-
 void EoGeReferenceSystem::GetUnitNormal(OdGeVector3d& normal) {
 	normal = m_XDirection.crossProduct(m_YDirection).normal();
 }
@@ -54,7 +48,6 @@ OdGePoint3d EoGeReferenceSystem::Origin() const noexcept {
 EoGeMatrix3d EoGeReferenceSystem::TransformMatrix() const {
 	EoGeMatrix3d Matrix;
 	Matrix.setToWorldToPlane(OdGePlane(m_Origin, m_XDirection, m_YDirection));
-
 	return Matrix;
 }
 
@@ -77,7 +70,6 @@ void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCe
 double EoGeReferenceSystem::Rotation() const noexcept {
 	const auto HorizontalAxis {m_XDirection};
 	auto Angle {0.0};
-
 	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
 	if (Angle < 0.0) {
 		Angle += Oda2PI;

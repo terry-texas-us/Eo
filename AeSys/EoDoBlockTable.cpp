@@ -3,14 +3,12 @@
 
 int AeSysDoc::GetBlockReferenceCount(const CString& name) {
 	auto Count {0};
-
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		Count += Layer->GetBlockReferenceCount(name);
 	}
 	CString Key;
 	EoDbBlock* Block;
-
 	auto Position {m_BlockTable.GetStartPosition()};
 	while (Position != nullptr) {
 		m_BlockTable.GetNextAssoc(Position, Key, Block);
@@ -44,9 +42,7 @@ void AeSysDoc::InsertBlock(const wchar_t* name, EoDbBlock* block) {
 }
 
 bool AeSysDoc::LookupBlock(const wchar_t* name, EoDbBlock*& block) {
-
 	if (m_BlockTable.Lookup(name, block)) { return true; }
-	
 	block = nullptr;
 	return false;
 }
@@ -54,9 +50,7 @@ bool AeSysDoc::LookupBlock(const wchar_t* name, EoDbBlock*& block) {
 void AeSysDoc::RemoveAllBlocks() {
 	CString Name;
 	EoDbBlock* Block;
-
 	auto BlockPosition {m_BlockTable.GetStartPosition()};
-	
 	while (BlockPosition != nullptr) {
 		m_BlockTable.GetNextAssoc(BlockPosition, Name, Block);
 		Block->DeletePrimitivesAndRemoveAll();
@@ -69,12 +63,9 @@ void AeSysDoc::PurgeUnreferencedBlocks() {
 	CString Name;
 	EoDbBlock* Block;
 	// <tas="Deletion by key may cause loop problems"</tas>
-
 	auto BlockPosition {m_BlockTable.GetStartPosition()};
-	
 	while (BlockPosition != nullptr) {
 		m_BlockTable.GetNextAssoc(BlockPosition, Name, Block);
-
 		if (GetBlockReferenceCount(Name) == 0) {
 			m_BlockTable.RemoveKey(Name);
 			Block->DeletePrimitivesAndRemoveAll();

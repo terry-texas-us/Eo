@@ -1,7 +1,5 @@
 #pragma once
-
 #include "EoGePoint3d.h"
-
 class AeSysView;
 class EoDbCharacterCellDefinition;
 class EoDbFile;
@@ -10,21 +8,16 @@ class EoGeReferenceSystem {
 	OdGePoint3d m_Origin {OdGePoint3d::kOrigin};
 	OdGeVector3d m_XDirection {OdGeVector3d::kXAxis};
 	OdGeVector3d m_YDirection {OdGeVector3d::kYAxis};
-
 public: // Constructors and destructor
-
 	EoGeReferenceSystem() = default;
 	EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition);
 	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition);
-
 	EoGeReferenceSystem(const EoGeReferenceSystem& other);
 	EoGeReferenceSystem& operator=(const EoGeReferenceSystem& other) = default;
-
 	~EoGeReferenceSystem() = default;
 
 	// Methods
-
 	void GetUnitNormal(OdGeVector3d& normal);
 	OdGePoint3d Origin() const noexcept;
 	void Read(EoDbFile& file);

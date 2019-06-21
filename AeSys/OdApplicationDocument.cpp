@@ -1,12 +1,11 @@
 // From OdaMfcApp\OdaMfcExport.cpp (last compare 19.12)
-
 #include "stdafx.h"
 #include "AeSysDoc.h"
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "OdApplicationImpl.h"
-
 ODRX_CONS_DEFINE_MEMBERS(OdApplicationReactor, OdRxObject, RXIMPL_CONSTR);
+
 ODRX_NO_CONS_DEFINE_MEMBERS(OdApplicationDocument, OdRxObject);
 
 OdSmartPtr<OdApplicationDocumentImpl> OdApplicationDocumentImpl::createObject(CDocument* document) {
@@ -31,9 +30,11 @@ OdDbDatabasePtr OdApplicationDocumentImpl::database() const {
 	return (*m_pImp)->m_DatabasePtr;
 }
 
-void OdApplicationDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
+void OdApplicationDocumentImpl::lockMode(bool includeMyLocks) const noexcept {
+}
 
-void OdApplicationDocumentImpl::myLockMode() const noexcept {}
+void OdApplicationDocumentImpl::myLockMode() const noexcept {
+}
 
 bool OdApplicationDocumentImpl::isQuiescent() const noexcept { return false; }
 
@@ -69,10 +70,8 @@ void OdAddAppReactor(OdApplicationReactor* reactor) {
 
 OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 	auto ViewPosition {document->GetFirstViewPosition()};
-
 	while (ViewPosition != nullptr) {
 		auto View {document->GetNextView(ViewPosition)};
-
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
 			return dynamic_cast<AeSysView*>(View)->m_LayoutHelper;
 		}
@@ -82,11 +81,9 @@ OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 
 bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) {
 	auto ViewPosition {document->GetFirstViewPosition()};
-
 	while (ViewPosition != nullptr) {
 
 		auto View {document->GetNextView(ViewPosition)};
-		
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
 			return dynamic_cast<AeSysView*>(View)->editorObject().Snap(point, nullptr);
 		}

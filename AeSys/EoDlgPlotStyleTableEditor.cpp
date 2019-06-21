@@ -1,16 +1,13 @@
 #include "stdafx.h"
-
 #include "EoDlgPlotStyleTableEditor.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
 #include "EoDlgPlotStyleTableEditor_GeneralPropertyPage.h"
-
 IMPLEMENT_DYNAMIC(EoDlgPlotStyleManager, CPropertySheet)
 
 EoDlgPlotStyleManager::EoDlgPlotStyleManager(CWnd* parent)
 	: CPropertySheet(L"Plot Style Table Editor", parent)
 	, m_pPlotStyleTable(nullptr) {
 	m_psh.dwFlags |= PSH_NOAPPLYNOW;
-
 	AddPage(&m_page1);
 	AddPage(&m_page2);
 }
@@ -19,7 +16,7 @@ EoDlgPlotStyleManager::~EoDlgPlotStyleManager() {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleManager, CPropertySheet)
-	ON_WM_CREATE()
+		ON_WM_CREATE()
 END_MESSAGE_MAP()
 
 int EoDlgPlotStyleManager::OnCreate(LPCREATESTRUCT createStructure) {
@@ -33,21 +30,17 @@ BOOL EoDlgPlotStyleManager::OnInitDialog() {
 	CPropertySheet::OnInitDialog();
 
 	// TODO: Add extra initialization here
-
 	return TRUE;  // return TRUE unless you set the focus to a control
-				  // EXCEPTION: OCX Property Pages should return FALSE
+	// EXCEPTION: OCX Property Pages should return FALSE
 }
-
 
 bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) {
 	if (!pPlotStyleTable) {
 		return false;
 	}
 	m_pPlotStyleTable = pPlotStyleTable;
-
 	m_pPsTabForPropertyPg = pPlotStyleTable->clone();
 	auto pPsTab {m_pPsTabForPropertyPg.get()};
-
 	return m_page1.SetPlotStyleTable(pPsTab) && m_page2.SetPlotStyleTable(pPsTab);
 }
 

@@ -2,21 +2,18 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "Preview.h"
-
 #include "EoDb.h"
 #include "EoDbBlockReference.h"
 #include "EoDlgBlockInsert.h"
 
 // EoDlgBlockInsert dialog
-
 IMPLEMENT_DYNAMIC(EoDlgBlockInsert, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)
-	ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelchangeBlocksList)
-	ON_BN_CLICKED(IDC_PURGE, &EoDlgBlockInsert::OnBnClickedPurge)
-	ON_BN_CLICKED(IDCANCEL, &EoDlgBlockInsert::OnBnClickedCancel)
+		ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelchangeBlocksList)
+		ON_BN_CLICKED(IDC_PURGE, &EoDlgBlockInsert::OnBnClickedPurge)
+		ON_BN_CLICKED(IDCANCEL, &EoDlgBlockInsert::OnBnClickedCancel)
 END_MESSAGE_MAP()
-
 OdGePoint3d EoDlgBlockInsert::InsertionPoint;
 
 EoDlgBlockInsert::EoDlgBlockInsert(CWnd* parent)
@@ -35,7 +32,6 @@ EoDlgBlockInsert::~EoDlgBlockInsert() {
 void EoDlgBlockInsert::DoDataExchange(CDataExchange* pDX) {
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_BLOCKS_LIST, m_BlocksListBoxControl);
-
 	DDX_Control(pDX, IDC_INSERTION_POINT_ONSCREEN, m_InsertionPointOnscreen);
 	DDX_Control(pDX, IDC_INSERTION_POINT_X, m_InsertionPointX);
 	DDX_Control(pDX, IDC_INSERTION_POINT_Y, m_InsertionPointY);
@@ -51,20 +47,15 @@ void EoDlgBlockInsert::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgBlockInsert::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	InsertionPoint = theApp.GetCursorPosition();
-
 	CString BlockName;
 	EoDbBlock* Block;
-
 	auto BlockPosition {m_Document->GetFirstBlockPosition()};
 	while (BlockPosition != nullptr) {
 		m_Document->GetNextBlock(BlockPosition, BlockName, Block);
-
 		if (!Block->IsAnonymous()) { m_BlocksListBoxControl.AddString(BlockName); }
 	}
 	m_BlocksListBoxControl.SetCurSel(0);
-
 	if (m_Document->BlockTableIsEmpty()) {
 		WndProcPreviewClear(GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd());
 	} else {
@@ -79,11 +70,9 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 
 void EoDlgBlockInsert::OnOK() {
 	const auto CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
-
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;
 		m_BlocksListBoxControl.GetText(CurrentSelection, BlockName);
-
 		auto BlockReference {new EoDbBlockReference()};
 		BlockReference->SetName(BlockName);
 		BlockReference->SetPosition2(InsertionPoint);
@@ -97,11 +86,9 @@ void EoDlgBlockInsert::OnOK() {
 
 void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
 	const auto CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
-
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;
 		m_BlocksListBoxControl.GetText(CurrentSelection, BlockName);
-
 		EoDbBlock* Block;
 		m_Document->LookupBlock(BlockName, Block);
 		SetDlgItemInt(IDC_GROUPS, gsl::narrow_cast<unsigned>(Block->GetCount()), FALSE);
@@ -112,7 +99,6 @@ void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
 
 void EoDlgBlockInsert::OnBnClickedPurge() {
 	m_Document->PurgeUnreferencedBlocks();
-
 	CDialog::OnOK();
 }
 

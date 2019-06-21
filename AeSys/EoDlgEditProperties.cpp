@@ -1,14 +1,11 @@
 #include "stdafx.h"
-
 #include "DbDatabase.h"
-
 #include "DbFiler.h"
 #include "DbObject.h"
 #include "DbUnitsFormatter.h"
-
 #include "EoDlgEditProperties.h"
-
 IMPLEMENT_DYNAMIC(EoDlgEditProperties, CDialog)
+
 EoDlgEditProperties::EoDlgEditProperties(OdDbObjectId& id, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_pObjectId(id)
@@ -26,14 +23,13 @@ void EoDlgEditProperties::DoDataExchange(CDataExchange* pDX) {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgEditProperties, CDialog)
-	ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
-	ON_BN_CLICKED(IDC_BUTTON1, OnButton)
-	ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
-	ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
+		ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
+		ON_BN_CLICKED(IDC_BUTTON1, OnButton)
+		ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
+		ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
 END_MESSAGE_MAP()
 
 static OdString FormatValue(const OdResBuf* resourceBuffer) {
-
 	if (resourceBuffer->restype() == OdResBuf::kRtEntName || resourceBuffer->restype() == OdResBuf::kDxfEnd) {
 		const auto ObjectId {resourceBuffer->getObjectId(0)};
 		return ObjectId.getHandle().ascii();
@@ -42,13 +38,10 @@ static OdString FormatValue(const OdResBuf* resourceBuffer) {
 	switch (OdDxfCode::_getType(resourceBuffer->restype())) {
 		case OdDxfCode::Unknown: // to use RT codes
 			if (resourceBuffer->restype() == OdResBuf::kRtColor) {
-				FormattedValue = OdDbUnitsFormatter::formatColor(resourceBuffer->getColor()); 
+				FormattedValue = OdDbUnitsFormatter::formatColor(resourceBuffer->getColor());
 			}
 			break;
-		case OdDxfCode::Name:
-		case OdDxfCode::String:
-		case OdDxfCode::Handle:
-		case OdDxfCode::LayerName:
+		case OdDxfCode::Name: case OdDxfCode::String: case OdDxfCode::Handle: case OdDxfCode::LayerName:
 			FormattedValue = resourceBuffer->getString();
 			break;
 		case OdDxfCode::Bool:
@@ -66,22 +59,16 @@ static OdString FormatValue(const OdResBuf* resourceBuffer) {
 		case OdDxfCode::Integer64:
 			FormattedValue.format(L"%I64d", resourceBuffer->getInt64());
 			break;
-		case OdDxfCode::Double:
-		case OdDxfCode::Angle:
+		case OdDxfCode::Double: case OdDxfCode::Angle:
 			FormattedValue.format(L"%g", resourceBuffer->getDouble());
 			break;
 		case OdDxfCode::Point:
 			FormattedValue.format(L"%g %g %g", resourceBuffer->getPoint3d().x, resourceBuffer->getPoint3d().y, resourceBuffer->getPoint3d().z);
 			break;
-		case OdDxfCode::ObjectId:
-		case OdDxfCode::SoftPointerId:
-		case OdDxfCode::HardPointerId:
-		case OdDxfCode::SoftOwnershipId:
-		case OdDxfCode::HardOwnershipId:
+		case OdDxfCode::ObjectId: case OdDxfCode::SoftPointerId: case OdDxfCode::HardPointerId: case OdDxfCode::SoftOwnershipId: case OdDxfCode::HardOwnershipId:
 			FormattedValue = resourceBuffer->getHandle().ascii();
 			break;
-		case OdDxfCode::BinaryChunk:
-		default:
+		case OdDxfCode::BinaryChunk: default:
 			break;
 	}
 	return FormattedValue;
@@ -97,7 +84,6 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_propList.InsertColumn(0, L"DXF code", LVCFMT_LEFT, 180);
 	m_propList.InsertColumn(1, L"Value", LVCFMT_LEFT, 120);
-
 	m_ResourceBuffer = oddbEntGet(m_pObjectId, L"*");
 	auto i {0};
 	for (auto ResourceBuffer = m_ResourceBuffer; !ResourceBuffer.isNull(); ++i, ResourceBuffer = ResourceBuffer->next()) {
@@ -109,9 +95,7 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 
 void EoDlgEditProperties::OnButton() {
 	UpdateData();
-
 	if (m_nCurItem == -1) { return; }
-
 	auto ResourceBuffer {m_ResourceBuffer};
 	auto i {0};
 	while (!ResourceBuffer.isNull() && i < m_nCurItem) {
@@ -119,17 +103,13 @@ void EoDlgEditProperties::OnButton() {
 		ResourceBuffer = ResourceBuffer->next();
 	}
 	if (ResourceBuffer.isNull()) { return; }
-
 	switch (ResourceBuffer->restype()) {
 		case OdResBuf::kRtColor:
 			ResourceBuffer->setColor(OdDbUnitsFormatter::unformatColor(static_cast<const wchar_t*>(m_sValue)));
 			break;
 		default:
 			switch (OdDxfCode::_getType(ResourceBuffer->restype())) {
-				case OdDxfCode::Name:
-				case OdDxfCode::String:
-				case OdDxfCode::Handle:
-				case OdDxfCode::LayerName:
+				case OdDxfCode::Name: case OdDxfCode::String: case OdDxfCode::Handle: case OdDxfCode::LayerName:
 					ResourceBuffer->setString(static_cast<const wchar_t*>(m_sValue));
 					break;
 				case OdDxfCode::Bool:
@@ -144,12 +124,10 @@ void EoDlgEditProperties::OnButton() {
 				case OdDxfCode::Integer32:
 					ResourceBuffer->setInt32(_wtoi(m_sValue));
 					break;
-				case OdDxfCode::Double:
-				case OdDxfCode::Angle:
+				case OdDxfCode::Double: case OdDxfCode::Angle:
 					ResourceBuffer->setDouble(wcstod(m_sValue, 0));
 					break;
-				case OdDxfCode::Point:
-				{
+				case OdDxfCode::Point: {
 					const auto sp1 {m_sValue.Find(' ')};
 					const auto sp2 {m_sValue.Find(' ', sp1 + 1)};
 					auto x {wcstod(m_sValue.Left(sp1), 0)};
@@ -158,25 +136,17 @@ void EoDlgEditProperties::OnButton() {
 					ResourceBuffer->setPoint3d(OdGePoint3d(x, y, z));
 					break;
 				}
-				case OdDxfCode::ObjectId:
-				case OdDxfCode::SoftPointerId:
-				case OdDxfCode::HardPointerId:
-				case OdDxfCode::SoftOwnershipId:
-				case OdDxfCode::HardOwnershipId:
+				case OdDxfCode::ObjectId: case OdDxfCode::SoftPointerId: case OdDxfCode::HardPointerId: case OdDxfCode::SoftOwnershipId: case OdDxfCode::HardOwnershipId:
 					ResourceBuffer->setHandle(OdDbHandle(m_sValue.GetString()));
 					break;
-				case OdDxfCode::Unknown:
-				case OdDxfCode::BinaryChunk:
-				case OdDxfCode::Integer64:
-				default:
+				case OdDxfCode::Unknown: case OdDxfCode::BinaryChunk: case OdDxfCode::Integer64: default:
 					break;
 			}
 	}
 	m_propList.SetItemText(m_nCurItem, 1, m_sValue);
 	try {
 		oddbEntMod(m_pObjectId, m_ResourceBuffer);
-	}
-	catch (const OdError& Error) {
+	} catch (const OdError& Error) {
 		AfxMessageBox(Error.description());
 	}
 }
@@ -189,7 +159,6 @@ void EoDlgEditProperties::OnClickProplist(NMHDR* notifyStructure, LRESULT* resul
 void EoDlgEditProperties::OnSetfocusValue() {
 	m_nCurItem = m_propList.GetSelectionMark();
 	m_doset.EnableWindow(m_nCurItem != -1);
-
 	if (m_nCurItem != -1) {
 		m_sValue = m_propList.GetItemText(m_nCurItem, 1);
 		UpdateData(FALSE);

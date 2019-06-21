@@ -1,8 +1,8 @@
 #pragma once
 
 //class EoDbPrimitive;
-
-namespace EoDb {
+namespace EoDb
+{
 	enum FileTypes {
 		kDwg = 0x00,
 		kDxf = 0x01,
@@ -12,6 +12,7 @@ namespace EoDb {
 		kTracing = 0x22,
 		kUnknown = -1
 	};
+
 	enum PrimitiveTypes {
 		kPointPrimitive = 0x0100,
 		kInsertPrimitive = 0x0101,
@@ -26,6 +27,7 @@ namespace EoDb {
 		kTagPrimitive = 0x4100,
 		kDimensionPrimitive = 0x4200
 	};
+
 	enum UpdateViewHints {
 		kPrimitive = 0x0001,
 		kGroup = 0x0002,
@@ -47,6 +49,7 @@ namespace EoDb {
 		kGroupEraseSafeTrap = kGroup | kErase | kSafe | kTrap,
 		kGroupsEraseSafeTrap = kGroups | kErase | kSafe | kTrap
 	};
+
 	enum Path : unsigned { kPathRight, kPathLeft, kPathUp, kPathDown };
 
 	enum HorizontalAlignment : unsigned { kAlignLeft = 1, kAlignCenter, kAlignRight };

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "DbBlockTable.h"
 #include "DbBlockTableRecord.h"
 #include "DbLayerTable.h"
@@ -7,7 +6,6 @@
 #include "DbLinetypeTable.h"
 #include "DbLinetypeTableRecord.h"
 #include "DbSymUtl.h"
-
 #include "DbDatabase.h"
 #include "DbCommandContext.h"
 #include "Ed/EdCommandStack.h"
@@ -15,19 +13,14 @@
 #include "StaticRxObject.h"
 #include "SharedPtr.h"
 #include "DbLayoutManager.h"
-
 #include "ExEdBaseIO.h"
-
 #include "EoGeUniquePoint.h"
-
 #include "EoDbText.h"
 #include "EoDbMaskedPrimitive.h"
 #include "EoDbBlock.h"
 #include "EoDbLayer.h"
 #include "EoDbLinetypeTable.h"
-
 # include "OdApplicationImpl.h"
-
 class ExStringIO;
 class EoDlgUserIOConsole;
 
@@ -54,36 +47,26 @@ public:
 };
 
 class OdDbDatabaseDoc : public OdDbDatabase {
-	static  AeSysDoc* g_pDoc;
+	static AeSysDoc* g_pDoc;
 	mutable AeSysDoc* m_pDoc;
 public:
-	ODRX_DECLARE_MEMBERS(OdDbDatabaseDoc);
-
+ODRX_DECLARE_MEMBERS(OdDbDatabaseDoc);
 	OdDbDatabaseDoc() noexcept;
-
 	AeSysDoc* document() const noexcept;
-
 	static void setDocToAssign(AeSysDoc* document) noexcept;
 };
 
 using OdDbDatabaseDocPtr = OdSmartPtr<OdDbDatabaseDoc>;
 
-class AeSysAppDocStaticRxObjects
-	: public OdDbLayoutManagerReactor
-	, public OdEdBaseIO
-{
+class AeSysAppDocStaticRxObjects : public OdDbLayoutManagerReactor, public OdEdBaseIO {
 	ODRX_NO_HEAP_OPERATORS()
 };
 
-class AeSysDoc
-	: public COleDocument
-	, protected OdStaticRxObject<AeSysAppDocStaticRxObjects> {
+class AeSysDoc : public COleDocument, protected OdStaticRxObject<AeSysAppDocStaticRxObjects> {
 protected:
 	using COleDocument::operator new;
 	using COleDocument::operator delete;
-
 	AeSysView* m_pViewer {nullptr};
-
 	EoDlgUserIOConsole* UserIOConsole();
 	bool m_bConsole {false};
 	bool m_ConsoleResponded {false};
@@ -99,7 +82,8 @@ protected:
 		void Empty(); // hides non-virtual function of parent
 		~DataSource();
 	};
-	template<class T>
+
+	template <class T>
 	struct AcadClipData {
 		void init() noexcept {
 			memset(this, 0, sizeof(AcadClipData<T>));
@@ -108,6 +92,7 @@ protected:
 		void read(CFile* file) {
 			file->Read(this, sizeof(AcadClipData<T>));
 		}
+
 		T _tempFileName[0x104]; // name of the temp dwg file, where dragged entities are
 		T _origFileName[0x104]; // original file name
 		T _version[4]; // version of the original file, e.g. 'R15'
@@ -120,7 +105,8 @@ protected:
 		int _unk[4];
 		int _zero2[4]; // seem to be always zero
 	};
-	template<class T>
+
+	template <class T>
 	struct AcadClipDataConstr : AcadClipData<T> {
 		AcadClipDataConstr(const OdString& tempFileName, const OdString& origFileName, const OdGePoint3d& pickPoint) {
 			AcadClipData<wchar_t>::init();
@@ -136,13 +122,14 @@ protected:
 			memcpy(AcadClipData<wchar_t>::_tempFileName, static_cast<const T*>(tempFileName), odmin((0x100 * sizeof(T)), ((tempFileName.getLength() + 1) * sizeof(T))));
 			memcpy(AcadClipData<wchar_t>::_origFileName, static_cast<const T*>(origFileName), odmin((0x100 * sizeof(T)), ((origFileName.getLength() + 1) * sizeof(T))));
 		}
+
 		AcadClipDataConstr() {
 			AcadClipData<wchar_t>::init();
 		}
 	};
+
 	using AcadClipDataR15 = AcadClipDataConstr<char>;
 	using AcadClipDataR21 = AcadClipDataConstr<wchar_t>;
-
 public:
 	class ClipboardData {
 	public:
@@ -151,29 +138,24 @@ public:
 		static unsigned short m_FormatR17;
 		static unsigned short m_FormatR18;
 		static unsigned short m_FormatR19;
-		
-		static bool isAcadDataAvailable(COleDataObject* dataObject, bool attach = false) {
-			
-			if (attach && !dataObject->AttachClipboard()) { return false; }
-			
-			return dataObject->IsDataAvailable(m_FormatR15) || dataObject->IsDataAvailable(m_FormatR16) || dataObject->IsDataAvailable(m_FormatR17) || dataObject->IsDataAvailable(m_FormatR18) || dataObject->IsDataAvailable(m_FormatR19);
-		}
-		
-		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, bool attach = false) {
-			
-			if (attach && !dataObject->AttachClipboard()) { return nullptr; }
 
+		static bool isAcadDataAvailable(COleDataObject* dataObject, bool attach = false) {
+			if (attach && !dataObject->AttachClipboard()) { return false; }
+			return dataObject->IsDataAvailable(m_FormatR15) || dataObject->IsDataAvailable(m_FormatR16) || dataObject->IsDataAvailable(m_FormatR17) || dataObject->IsDataAvailable(m_FormatR18) ||
+				dataObject->IsDataAvailable(m_FormatR19);
+		}
+
+		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, bool attach = false) {
+			if (attach && !dataObject->AttachClipboard()) { return nullptr; }
 			OdSharedPtr<ClipboardData> Data {new ClipboardData()};
-			
 			if (Data->read(dataObject)) { return Data; }
 			return nullptr;
 		}
-		
+
 		ClipboardData() noexcept = default;
-		
+
 		bool read(COleDataObject* dataObject) {
 			OdSharedPtr<CFile> File {nullptr};
-
 			if ((File = dataObject->GetFileData(m_FormatR15)).get() || (File = dataObject->GetFileData(m_FormatR16)).get()) {
 				_isR15format = true;
 				_data._r15.read(File);
@@ -185,13 +167,12 @@ public:
 				return true;
 			}
 			return false;
-
 		}
-		
+
 		OdString tempFileName() {
 			return _isR15format ? OdString(_data._r15._tempFileName) : OdString(_data._r21._tempFileName);
 		}
-		
+
 		OdGePoint3d pickPoint() {
 			return _isR15format ? OdGePoint3d(_data._r15._x, _data._r15._y, _data._r15._z) : OdGePoint3d(_data._r21._x, _data._r21._y, _data._r21._z);
 		}
@@ -200,19 +181,19 @@ public:
 		union Data {
 			AcadClipData<char> _r15;
 			AcadClipData<wchar_t> _r21;
+
 			Data() noexcept {
 				_r21.init();
 			}
 		} _data;
+
 		bool _isR15format {false};
 	};
 
 protected:
 	AeSysDoc() noexcept;
-	DECLARE_DYNCREATE(AeSysDoc)
-
+DECLARE_DYNCREATE(AeSysDoc)
 	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate);
-
 	OdDbCommandContextPtr m_CommandContext;
 
 	// <command_console>
@@ -223,61 +204,45 @@ protected:
 	OdString CommandPrompt();
 	OdString RecentCommand();
 	OdString RecentCommandName();
-
 	unsigned long getKeyState() noexcept override;
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
 	// </command_console>
-
 	// OdDbLayoutManagerReactor
 	bool m_LayoutSwitchable {false};
 	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
 	bool m_DisableClearSelection {false};
-
 	bool m_bPartial {false};
 	OdDb::DwgVersion m_SaveAsVer {OdDb::kDHL_CURRENT};
 	OdDb::SaveType m_SaveAsType {OdDb::kDwg};
 	EoDb::FileTypes m_SaveAsType_ {EoDb::kUnknown};
-
 	OdDbSelectionSetPtr SelectionSet() const;
 	AeSysView* getViewer() noexcept;
-
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);
 	void ExecuteCommand(const OdString& command, bool bEcho = true);
-
 	OdDbDatabasePtr m_DatabasePtr;
-
 	void DeleteSelection(bool force);
-
 	void startDrag(const OdGePoint3d& point);
-
 	BOOL OnSaveDocument(const wchar_t* pathName) override;
 	BOOL OnCmdMsg(unsigned nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
 	BOOL OnOpenDocument(const wchar_t* pathName) override;
 	void DeleteContents() override;
 	BOOL CanCloseFrame(CFrameWnd* frame) override;
-
 	~AeSysDoc();
 	BOOL DoSave(const wchar_t* pathName, BOOL replace = TRUE) override;
-
 #ifdef _DEBUG
 	void AssertValid() const override;
 	void Dump(CDumpContext& dc) const override;
 #endif
-
 	OdSmartPtr<OdApplicationDocumentImpl> m_pRefDocument;
-
 protected:
 	void OnVectorize(const OdString& vectorizerPath);
-
 	void AddRegisteredApp(const OdString& name);
-
 private:
 	OdString m_IdentifiedLayerName;
-
 	EoDbLinetypeTable m_LinetypeTable;
 	EoDbBlockTable m_BlockTable;
 	EoDbLayerTable m_LayerTable;
@@ -285,17 +250,14 @@ private:
 	EoDbGroupList m_DeletedGroupList;
 	EoDbGroupList m_TrappedGroupList;
 	OdGePoint3d m_TrapPivotPoint;
-
 	EoDbGroupList m_NodalGroupList;
 	CObList m_MaskedPrimitives;
 	CObList m_UniquePoints;
-
 public:
 	void UpdateGroupInAllViews(LPARAM hint, EoDbGroup* group);
 	void UpdateGroupsInAllViews(LPARAM hint, EoDbGroupList* groups);
 	void UpdateLayerInAllViews(LPARAM hint, EoDbLayer* layer);
 	void UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive);
-
 	void InitializeGroupAndPrimitiveEdit();
 
 	/// <summary>Constructs 0 to many seperate text primitives for each "\r\n" delimited text block</summary>
@@ -305,7 +267,6 @@ public:
 	/// <summary>Add a new text style to the text style table.</summary>
 	OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr& textStyles);
 	OdDbTextStyleTableRecordPtr AddStandardTextStyle();
-
 	OdDbDimStyleTableRecordPtr AddStandardDimensionStyle();
 
 	// Block Table interface
@@ -326,7 +287,6 @@ public:
 	void GetExtents___(AeSysView* view, OdGeExtents3d& extents);
 	int NumberOfGroupsInWorkLayer();
 	int NumberOfGroupsInActiveLayers();
-
 	void BuildVisibleGroupList(AeSysView* view);
 
 	/// <summary>Displays drawing and determines which groups are detectable.</summary>
@@ -406,11 +366,9 @@ public:
 	void RemoveTrappedGroupAt(POSITION position);
 	void SetTrapPivotPoint(const OdGePoint3d& pivotPoint) noexcept;
 	void SquareTrappedGroups(AeSysView* view);
-
 	void TracingFuse(OdString& nameAndLocation);
 	bool TracingLoadLayer(const OdString& file, EoDbLayer* layer);
 	bool TracingOpen(const OdString& pathName);
-
 	void TransformTrappedGroups(const EoGeMatrix3d& transformMatrix);
 	int TrapGroupCount() const;
 	OdGePoint3d TrapPivotPoint() const noexcept;
@@ -433,7 +391,9 @@ public:
 	void RemovePrimitiveBit(EoDbPrimitive* primitive, int bit);
 	int AddUniquePoint(const OdGePoint3d& point);
 	void DisplayUniquePoints();
+
 	POSITION GetFirstUniquePointPosition() const { return m_UniquePoints.GetHeadPosition(); }
+
 	EoGeUniquePoint* GetNextUniquePoint(POSITION& position);
 	void RemoveUniquePointAt(POSITION position);
 	void RemoveAllUniquePoints();
@@ -538,9 +498,8 @@ public:
 	void OnTrapCommandsUnblock();
 	// Returns a pointer to the currently active document.
 	static AeSysDoc* GetDoc();
-
 protected:
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 public:
 	void OnViewSetactivelayout();
 	void OnDrawingutilitiesAudit();

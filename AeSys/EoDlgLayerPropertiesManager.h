@@ -2,13 +2,10 @@
 #include "LyLayerFilter.h"
 
 // EoDlgLayerPropertiesManager dialog
-
 class EoDlgLayerPropertiesManager : public CDialog {
-	DECLARE_DYNAMIC(EoDlgLayerPropertiesManager)
-
+DECLARE_DYNAMIC(EoDlgLayerPropertiesManager)
 	EoDlgLayerPropertiesManager(CWnd* parent = nullptr);
 	EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent = nullptr);
-
 	virtual ~EoDlgLayerPropertiesManager();
 
 	// Dialog Data
@@ -17,13 +14,9 @@ class EoDlgLayerPropertiesManager : public CDialog {
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
-
-	DECLARE_MESSAGE_MAP()
-
+DECLARE_MESSAGE_MAP()
 public:
-
 	OdDbDatabasePtr m_Database;
-
 	int m_DeltaHeight;
 	int m_DeltaWidth;
 	int m_InititialHeight;
@@ -31,9 +24,7 @@ public:
 	OdLyLayerFilterPtr m_RootFilter;
 	CTreeCtrl m_TreeFilters;
 	CImageList m_TreeImages;
-
 	void UpdateFiltersTree();
-
 	int OnCreate(LPCREATESTRUCT createStructure);
 	void OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
 	void OnSize(unsigned type, int cx, int cy);

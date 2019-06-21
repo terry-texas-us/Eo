@@ -1,16 +1,13 @@
 #pragma once
-
 #include "DbDatabase.h"
 
 class EoDlgSetActiveLayout : public CDialog {
 	OdDbDatabase* m_Database;
 	int m_OldActiveLayout;
-
 public:
 	int m_NewActiveLayout;
 	bool m_CreateNewLayout;
 	CString m_NewLayoutName;
-
 	EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent = nullptr);
 	void FillListBox();
 
@@ -19,7 +16,6 @@ public:
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
-
 	void OnLayoutDlgClose();
 	void OnSelchangeLayoutlist();
 	void OnDblclkLayoutlist();
@@ -28,6 +24,5 @@ protected:
 	void OnCopy();
 	void OnNew();
 	void OnFromTemplate();
-
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

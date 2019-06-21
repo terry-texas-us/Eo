@@ -1,10 +1,8 @@
 #pragma once
-
 #include "Ge/GeLineSeg3d.h"
-
 class AeSysView;
-class EoGeLineSeg3d : public OdGeLineSeg3d {
 
+class EoGeLineSeg3d : public OdGeLineSeg3d {
 public:	// Constructors and destructor
 	EoGeLineSeg3d();
 	EoGeLineSeg3d(const EoGeLineSeg3d& line) = default;
@@ -69,9 +67,7 @@ public:	// Constructors and destructor
 	/// <summary> Determines if line segment in wholly or partially contained within window passed.</summary>
 	/// <remarks> Assumes window passed with min/max corners correct.</remarks>
 	/// <returns> true line is wholly or partially within window, false otherwise</returns>
-
 	bool IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection);
-
 	bool IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const;
 	/// <summary>
 	///Evaluates the proximity of a point to a line segment.
@@ -88,7 +84,7 @@ public:	// Constructors and destructor
 	/// </returns>
 	bool IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGePoint3d& ptProj, double& relationship) const;
 	/// <summary>Projects a point onto line.</summary>
-	OdGePoint3d	ProjPt(const OdGePoint3d& point) const;
+	OdGePoint3d ProjPt(const OdGePoint3d& point) const;
 	/// <summary>Determines the coordinates of point projected along a line.</summary>
 	/// <remarks>
 	///t = 0 point is the start point
@@ -111,9 +107,9 @@ public:	// Constructors and destructor
 	/// <returns>TRUE  successful completion and FALSE failure (p1 and p2 coincide)</returns>
 	int ProjPtFrom_xy(double parallelDistance, double perpendicularDistance, OdGePoint3d& projectedPoint);
 	/// <summary>Projects end point toward or beyond the start point of line.</summary>
-	OdGePoint3d	ProjToBegPt(double distance);
+	OdGePoint3d ProjToBegPt(double distance);
 	/// <summary>Projects start point toward or beyond the end point of line.</summary>
-	OdGePoint3d	ProjToEndPt(double distance);
+	OdGePoint3d ProjToEndPt(double distance);
 	/// <summary>Determines the relationship of a point on a line to the endpoints defining the line.</summary>
 	/// <param name="relationship">parametric relationship of point to line endpoints
 	///	 less than 0 - point to left of directed segment

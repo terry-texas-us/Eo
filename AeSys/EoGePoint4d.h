@@ -1,7 +1,5 @@
 #pragma once
-
 #include "EoGePoint3d.h"
-
 using EoGePoint4dArray = CArray<EoGePoint4d, EoGePoint4d&>;
 
 class EoGePoint4d {
@@ -15,17 +13,13 @@ public:
 	double W() const noexcept { return w; }
 
 	// Constructors and destructor
-
 	EoGePoint4d();
 	EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept;
 
 	// Operators
-
 	void operator/=(double t) noexcept;
-
 	EoGePoint4d operator+(const OdGeVector3d& vector);
 	EoGePoint4d operator-(const OdGeVector3d& vector);
-
 	OdGeVector3d operator-(const EoGePoint4d& ptQ);
 
 	// Methods
@@ -39,7 +33,7 @@ public:
 	// Static
 	static bool ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB);
 	/// <summary>Sutherland-hodgman-like polygon clip by view volume.</summary>
-	static void	ClipPolygon(EoGePoint4dArray& pointsArray);
+	static void ClipPolygon(EoGePoint4dArray& pointsArray);
 	/// <summary>Sutherland-hodgman-like polygon clip by clip plane.</summary>
 	/// <remarks>Visibility determined using dot product.</remarks>
 	static void IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdGePoint3d& pointOnPlane, const OdGeVector3d& planeNormal, EoGePoint4dArray& pointsArrayOut);

@@ -1,11 +1,10 @@
 #include "stdafx.h"
-
 #include "AeSys.h"
 #include "AeSysDoc.h"
 
-EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer) :
-	m_Layer(layer) {
-	m_TracingFlags = 0; 
+EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer)
+	: m_Layer(layer) {
+	m_TracingFlags = 0;
 	m_StateFlags = kIsResident | kIsInternal | kIsActive;
 	const auto LinetypeObjectId {layer->linetypeObjectId()};
 }
@@ -18,24 +17,18 @@ EoDbLayer::EoDbLayer(const OdString& name, unsigned short stateFlags) {
 
 void EoDbLayer::BuildVisibleGroupList(AeSysView* view) {
 	if (IsOff()) { return; }
-
 	if (!IsCurrent() && !IsActive()) { return; }
-
 	auto Document {AeSysDoc::GetDoc()};
-
 	if (Document == nullptr) { return; }
-
 	auto GroupPosition {GetHeadPosition()};
-
 	while (GroupPosition != nullptr) {
 		auto Group {GetNext(GroupPosition)};
-
 		if (Group->IsInView(view)) { Document->AddGroupToAllViews(Group); }
 	}
 }
 
 COLORREF EoDbLayer::Color() const {
-	return ColorPalette[m_Layer->colorIndex()];
+	return g_ColorPalette[m_Layer->colorIndex()];
 }
 
 short EoDbLayer::ColorIndex() const {
@@ -45,38 +38,28 @@ short EoDbLayer::ColorIndex() const {
 void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 	EoDbPrimitive::SetLayerColorIndex(ColorIndex());
 	EoDbPrimitive::SetLayerLinetypeIndex(LinetypeIndex());
-	auto pCurColTbl {pColTbl};
-
-	pColTbl = IsCurrent() || IsActive() ? ColorPalette : GreyPalette;
-
+	auto pCurColTbl {g_CurrentPalette};
+	g_CurrentPalette = IsCurrent() || IsActive() ? g_ColorPalette : g_GreyPalette;
 	EoDbGroupList::Display(view, deviceContext);
-	pColTbl = pCurColTbl;
+	g_CurrentPalette = pCurColTbl;
 }
 
 void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap) {
 	auto Document {AeSysDoc::GetDoc()};
-
 	if (Document == nullptr) { return; }
-
 	try {
 		if (!IsOff()) {
 			EoDbPrimitive::SetLayerColorIndex(ColorIndex());
 			EoDbPrimitive::SetLayerLinetypeIndex(LinetypeIndex());
-
-			auto pCurColTbl {pColTbl};
-
+			auto pCurColTbl {g_CurrentPalette};
 			const auto LayerIsDetectable {IsCurrent() || IsActive()};
-
-			pColTbl = LayerIsDetectable ? ColorPalette : GreyPalette;
-
+			g_CurrentPalette = LayerIsDetectable ? g_ColorPalette : g_GreyPalette;
 			auto Position {GetHeadPosition()};
 			while (Position != nullptr) {
 				auto Group {GetNext(Position)};
-
 				if (Group->IsInView(view)) {
 
 					if (LayerIsDetectable) { Document->AddGroupToAllViews(Group); }
-
 					if (identifyTrap && Document->FindTrappedGroup(Group) != nullptr) {
 						EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 						Group->Display(view, deviceContext);
@@ -86,10 +69,9 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 					}
 				}
 			}
-			pColTbl = pCurColTbl;
+			g_CurrentPalette = pCurColTbl;
 		}
-	}
-	catch (CException* Exception) {
+	} catch (CException* Exception) {
 		Exception->Delete();
 	}
 }
@@ -117,7 +99,6 @@ bool EoDbLayer::IsLocked() const noexcept {
 bool EoDbLayer::IsCurrent() const {
 	const auto IsCurrent {m_Layer->objectId() == m_Layer->database()->getCLAYER()};
 	VERIFY((m_StateFlags & kIsCurrent) == kIsCurrent == IsCurrent);
-
 	return (m_StateFlags & kIsCurrent) == kIsCurrent;
 }
 
@@ -152,7 +133,6 @@ void EoDbLayer::MakeResident(bool isResident) noexcept {
 void EoDbLayer::MakeActive() {
 	m_StateFlags &= ~(kIsCurrent | kIsLocked | kIsOff);
 	m_StateFlags |= kIsActive;
-
 	m_Layer->upgradeOpen();
 	m_Layer->setIsOff(false);
 	m_Layer->setIsFrozen(false);
@@ -190,7 +170,6 @@ void EoDbLayer::SetIsFrozen(bool isFrozen) {
 
 void EoDbLayer::SetIsLocked(bool isLocked) {
 	OdCmTransparency Transparency;
-
 	if (isLocked) {
 		m_StateFlags &= ~(kIsCurrent | kIsActive | kIsOff);
 		m_StateFlags |= kIsLocked;
@@ -255,4 +234,3 @@ void EoDbLayer::SetTransparency(const OdCmTransparency& transparency) {
 unsigned short EoDbLayer::StateFlags() const noexcept {
 	return m_StateFlags;
 }
-

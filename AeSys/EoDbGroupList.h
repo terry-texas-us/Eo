@@ -1,12 +1,10 @@
 #pragma once
-
 class EoDbGroupList : public CObList {
 public: // Constructors and destructor
 	EoDbGroupList() = default;
 	~EoDbGroupList() = default;
 
 	// Base class wrappers hides non-virtual function of parent
-
 	POSITION AddHead(EoDbGroup* group) {
 		return CObList::AddHead(dynamic_cast<CObject*>(group));
 	}
@@ -18,19 +16,19 @@ public: // Constructors and destructor
 	void AddTail(EoDbGroupList* groupList) {
 		CObList::AddTail(dynamic_cast<CObList*>(groupList));
 	}
-	
+
 	EoDbGroup* GetNext(POSITION& position) {
 		return dynamic_cast<EoDbGroup*>(CObList::GetNext(position));
 	}
-	
+
 	EoDbGroup* GetPrev(POSITION& position) {
 		return dynamic_cast<EoDbGroup*>(CObList::GetPrev(position));
 	}
-	
+
 	EoDbGroup* RemoveHead() {
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveHead());
 	}
-	
+
 	EoDbGroup* RemoveTail() {
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveTail());
 	}

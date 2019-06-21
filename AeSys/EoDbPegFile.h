@@ -1,17 +1,12 @@
 #pragma once
-
 #include "EoDbFile.h"
-
 class AeSysDoc;
 
 class EoDbPegFile : public EoDbFile {
-
 public:
 	EoDbPegFile(OdDbDatabasePtr database);
 	virtual ~EoDbPegFile() = default;
-
 	void Load(AeSysDoc* document);
-	
 	void ReadBlocksSection(AeSysDoc* document);
 	void ReadGroupsSection(AeSysDoc* document);
 	void ReadHeaderSection(AeSysDoc* document);

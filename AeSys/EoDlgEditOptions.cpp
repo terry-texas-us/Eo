@@ -1,20 +1,18 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysView.h"
-
 #include "EoDlgEditOptions.h"
 
 // EoDlgEditOptions dialog
-
 IMPLEMENT_DYNAMIC(EoDlgEditOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgEditOptions, CDialog)
-	ON_COMMAND(IDC_EDIT_OP_ROTATION, &EoDlgEditOptions::OnEditOpRotation)
-	ON_COMMAND(IDC_EDIT_OP_MIRRORING, &EoDlgEditOptions::OnEditOpMirroring)
-	ON_COMMAND(IDC_EDIT_OP_SIZING, &EoDlgEditOptions::OnEditOpSizing)
-	ON_BN_CLICKED(IDC_EDIT_OP_MIR_X, &EoDlgEditOptions::OnBnClickedEditOpMirX)
-	ON_BN_CLICKED(IDC_EDIT_OP_MIR_Y, &EoDlgEditOptions::OnBnClickedEditOpMirY)
-	ON_BN_CLICKED(IDC_EDIT_OP_MIR_Z, &EoDlgEditOptions::OnBnClickedEditOpMirZ)
+		ON_COMMAND(IDC_EDIT_OP_ROTATION, &EoDlgEditOptions::OnEditOpRotation)
+		ON_COMMAND(IDC_EDIT_OP_MIRRORING, &EoDlgEditOptions::OnEditOpMirroring)
+		ON_COMMAND(IDC_EDIT_OP_SIZING, &EoDlgEditOptions::OnEditOpSizing)
+		ON_BN_CLICKED(IDC_EDIT_OP_MIR_X, &EoDlgEditOptions::OnBnClickedEditOpMirX)
+		ON_BN_CLICKED(IDC_EDIT_OP_MIR_Y, &EoDlgEditOptions::OnBnClickedEditOpMirY)
+		ON_BN_CLICKED(IDC_EDIT_OP_MIR_Z, &EoDlgEditOptions::OnBnClickedEditOpMirZ)
 END_MESSAGE_MAP()
 
 EoDlgEditOptions::EoDlgEditOptions(CWnd* parent)
@@ -37,7 +35,6 @@ EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* parent)
 	, m_EditModeRotationAngleX(0.0)
 	, m_EditModeRotationAngleY(0.0)
 	, m_EditModeRotationAngleZ(0.0) {
-
 }
 
 EoDlgEditOptions::~EoDlgEditOptions() {
@@ -61,9 +58,9 @@ void EoDlgEditOptions::DoDataExchange(CDataExchange* pDX) {
 	DDX_Text(pDX, IDC_EDIT_OP_ROT_Y, m_EditModeRotationAngleY);
 	DDX_Text(pDX, IDC_EDIT_OP_ROT_Z, m_EditModeRotationAngleZ);
 }
+
 BOOL EoDlgEditOptions::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	if (m_ActiveView->m_MirrorScaleFactors.sx < 0.0) {
 		m_MirrorXButton.SetCheck(BST_CHECKED);
 	} else if (m_ActiveView->m_MirrorScaleFactors.sy < 0.0) {
@@ -73,6 +70,7 @@ BOOL EoDlgEditOptions::OnInitDialog() {
 	}
 	return TRUE;
 }
+
 void EoDlgEditOptions::OnOK() {
 	if (m_MirrorXButton.GetCheck() == BST_CHECKED) {
 		m_ActiveView->SetEditModeMirrorScaleFactors(-1.0, 1.0, 1.0);
@@ -83,6 +81,7 @@ void EoDlgEditOptions::OnOK() {
 	}
 	CDialog::OnOK();
 }
+
 void EoDlgEditOptions::OnEditOpRotation() {
 	m_SizingXEditControl.EnableWindow(FALSE);
 	m_SizingYEditControl.EnableWindow(FALSE);
@@ -94,6 +93,7 @@ void EoDlgEditOptions::OnEditOpRotation() {
 	m_MirrorYButton.EnableWindow(FALSE);
 	m_MirrorZButton.EnableWindow(FALSE);
 }
+
 void EoDlgEditOptions::OnEditOpMirroring() {
 	m_SizingXEditControl.EnableWindow(FALSE);
 	m_SizingYEditControl.EnableWindow(FALSE);
@@ -105,6 +105,7 @@ void EoDlgEditOptions::OnEditOpMirroring() {
 	m_MirrorYButton.EnableWindow(TRUE);
 	m_MirrorZButton.EnableWindow(TRUE);
 }
+
 void EoDlgEditOptions::OnEditOpSizing() {
 	m_SizingXEditControl.EnableWindow(TRUE);
 	m_SizingYEditControl.EnableWindow(TRUE);
@@ -116,16 +117,19 @@ void EoDlgEditOptions::OnEditOpSizing() {
 	m_MirrorYButton.EnableWindow(FALSE);
 	m_MirrorZButton.EnableWindow(FALSE);
 }
+
 void EoDlgEditOptions::OnBnClickedEditOpMirX() {
 	m_MirrorXButton.SetCheck(BST_CHECKED);
 	m_MirrorYButton.SetCheck(BST_UNCHECKED);
 	m_MirrorZButton.SetCheck(BST_UNCHECKED);
 }
+
 void EoDlgEditOptions::OnBnClickedEditOpMirY() {
 	m_MirrorXButton.SetCheck(BST_UNCHECKED);
 	m_MirrorYButton.SetCheck(BST_CHECKED);
 	m_MirrorZButton.SetCheck(BST_UNCHECKED);
 }
+
 void EoDlgEditOptions::OnBnClickedEditOpMirZ() {
 	m_MirrorXButton.SetCheck(BST_UNCHECKED);
 	m_MirrorYButton.SetCheck(BST_UNCHECKED);

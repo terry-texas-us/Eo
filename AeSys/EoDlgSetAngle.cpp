@@ -1,9 +1,7 @@
 #include "stdafx.h"
-
 #include "EoDlgSetAngle.h"
 
 // EoDlgSetAngle dialog
-
 IMPLEMENT_DYNAMIC(EoDlgSetAngle, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)
@@ -22,6 +20,7 @@ void EoDlgSetAngle::DoDataExchange(CDataExchange* pDX) {
 	DDX_Text(pDX, IDC_ANGLE, m_dAngle);
 	DDV_MinMaxDouble(pDX, m_dAngle, -360., 360.);
 }
+
 BOOL EoDlgSetAngle::OnInitDialog() {
 	CDialog::OnInitDialog();
 	if (!m_strTitle.IsEmpty()) {

@@ -1,10 +1,8 @@
 #pragma once
-
 #include "EoCtrlColorsButton.h"
 
 class EoDlgSetupColor : public CDialog {
-	DECLARE_DYNAMIC(EoDlgSetupColor)
-
+DECLARE_DYNAMIC(EoDlgSetupColor)
 	EoDlgSetupColor(CWnd* parent = nullptr);
 	~EoDlgSetupColor();
 
@@ -16,20 +14,15 @@ protected:
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	BOOL OnNotify(WPARAM controlId, LPARAM notificationMessage, LRESULT* result) final;
-
 	EoCtrlColorsButton m_EvenColorsButton;
 	EoCtrlColorsButton m_OddColorsButton;
 	EoCtrlColorsButton m_NamedColorsButton;
 	EoCtrlColorsButton m_GraysButton;
 	EoCtrlColorsButton m_SelectionButton;
-
 	CEdit m_ColorEditControl;
-
 	void DrawSelectionInformation(unsigned short index);
-
 public:
 	unsigned short m_ColorIndex;
-
 	void OnBnClickedByblockButton();
 	void OnBnClickedBylayerButton();
 	void OnClickedEvenColors();
@@ -37,7 +30,6 @@ public:
 	void OnClickedNamedColors();
 	void OnClickedOddColors();
 	void OnChangeColorEdit();
-
 protected:
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

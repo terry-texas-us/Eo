@@ -5,17 +5,15 @@
 
 void AeSysView::OnModePrimitiveEdit() {
 	InitializeGroupAndPrimitiveEdit();
-
 	m_SubModeEditBeginPoint = GetCursorPosition();
-
 	auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
-
 	if (Group != nullptr) {
 		m_SubModeEditGroup = Group;
 		m_SubModeEditPrimitive = EngagedPrimitive();
 		theApp.LoadModeResources(ID_MODE_PRIMITIVE_EDIT);
 	}
 }
+
 void AeSysView::DoEditPrimitiveCopy() {
 	if (m_SubModeEditPrimitive != nullptr) {
 		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
@@ -24,29 +22,26 @@ void AeSysView::DoEditPrimitiveCopy() {
 		m_SubModeEditGroup = new EoDbGroup;
 		m_SubModeEditGroup->AddTail(m_SubModeEditPrimitive);
 		GetDocument()->AddWorkLayerGroup(m_SubModeEditGroup);
-
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_tmEditSeg.setToIdentity();
 	}
 }
+
 void AeSysView::DoEditPrimitiveEscape() {
 	if (m_SubModeEditPrimitive != nullptr) {
 		m_tmEditSeg.invert();
-
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_SubModeEditPrimitive->TransformBy(m_tmEditSeg);
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
-
 		InitializeGroupAndPrimitiveEdit();
-
 		theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 	}
 }
+
 void AeSysView::DoEditPrimitiveTransform(unsigned short operation) {
 	if (m_SubModeEditPrimitive != nullptr) {
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(-m_SubModeEditBeginPoint.asVector());
-
 		if (operation == ID_OP2) {
 			TransformMatrix.preMultBy(EditModeRotationMatrix());
 		} else if (operation == ID_OP3) {
@@ -67,31 +62,24 @@ void AeSysView::DoEditPrimitiveTransform(unsigned short operation) {
 		EoGeMatrix3d OriginToBeginPointMatrix;
 		OriginToBeginPointMatrix.setToTranslation(m_SubModeEditBeginPoint.asVector());
 		TransformMatrix.preMultBy(OriginToBeginPointMatrix);
-
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_SubModeEditPrimitive->TransformBy(TransformMatrix);
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
-
 		m_tmEditSeg.preMultBy(TransformMatrix);
 	}
 }
+
 void AeSysView::PreviewPrimitiveEdit() {
 	if (m_SubModeEditPrimitive != nullptr) {
 		m_SubModeEditEndPoint = GetCursorPosition();
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(m_SubModeEditEndPoint - m_SubModeEditBeginPoint);
-
-		if (theApp.IsTrapHighlighted() && GetDocument()->FindTrappedGroup(m_SubModeEditGroup) != nullptr)
-			EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
-
+		if (theApp.IsTrapHighlighted() && GetDocument()->FindTrappedGroup(m_SubModeEditGroup) != nullptr) EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
 		m_SubModeEditPrimitive->TransformBy(TransformMatrix);
 		GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_SubModeEditPrimitive);
-
 		EoDbPrimitive::SetHighlightColorIndex(0);
-
 		m_tmEditSeg.preMultBy(TransformMatrix);
-
 		m_SubModeEditBeginPoint = m_SubModeEditEndPoint;
 	}
 }

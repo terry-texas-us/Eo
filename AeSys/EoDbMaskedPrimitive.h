@@ -1,9 +1,7 @@
 #pragma once
-
 class EoDbMaskedPrimitive : public CObject {
 	EoDbPrimitive* m_Primitive;
 	unsigned long m_Mask;
-
 public:
 	EoDbMaskedPrimitive() noexcept {
 		m_Primitive = static_cast<EoDbPrimitive*>(nullptr);

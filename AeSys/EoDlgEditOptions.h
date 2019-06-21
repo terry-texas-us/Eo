@@ -1,10 +1,8 @@
 #pragma once
 
 // EoDlgEditOptions dialog
-
 class EoDlgEditOptions : public CDialog {
-	DECLARE_DYNAMIC(EoDlgEditOptions)
-
+DECLARE_DYNAMIC(EoDlgEditOptions)
 	EoDlgEditOptions(CWnd* parent = nullptr);
 	EoDlgEditOptions(AeSysView* view, CWnd* parent = nullptr);
 	virtual ~EoDlgEditOptions();
@@ -16,9 +14,7 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
-
 	AeSysView* m_ActiveView;
-
 public:
 	CEdit m_RotationXEditControl;
 	CEdit m_RotationYEditControl;
@@ -29,16 +25,14 @@ public:
 	CButton m_MirrorXButton;
 	CButton m_MirrorYButton;
 	CButton m_MirrorZButton;
-
 	void OnEditOpRotation();
 	void OnEditOpMirroring();
 	void OnEditOpSizing();
 	void OnBnClickedEditOpMirX();
 	void OnBnClickedEditOpMirY();
 	void OnBnClickedEditOpMirZ();
-
 protected:
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 public:
 	double m_ScaleFactorX;
 	double m_ScaleFactorY;

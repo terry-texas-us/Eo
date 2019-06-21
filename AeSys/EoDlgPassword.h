@@ -1,5 +1,4 @@
 #pragma once
-
 class EoDlgPassword : public CDialog {
 public:
 	EoDlgPassword(CWnd* parent = nullptr);
@@ -11,6 +10,5 @@ public:
 	OdPassword m_password;
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
-
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

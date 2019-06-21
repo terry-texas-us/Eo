@@ -16,11 +16,11 @@ void EoDialogResizeHelper::Init(HWND a_hParent) {
 			ScreenToClient(m_hParent, &cs.m_origSize.TopLeft());
 			ScreenToClient(m_hParent, &cs.m_origSize.BottomRight());
 			m_ctrls.push_back(cs);
-
 			hCtrl = GetNextWindow(hCtrl, GW_HWNDNEXT);
 		}
 	}
 }
+
 void EoDialogResizeHelper::Add(HWND a_hWnd) {
 	if (m_hParent && a_hWnd) {
 		CtrlSize cs;
@@ -31,11 +31,11 @@ void EoDialogResizeHelper::Add(HWND a_hWnd) {
 		m_ctrls.push_back(cs);
 	}
 }
+
 void EoDialogResizeHelper::OnSize() {
 	if (IsWindow(m_hParent)) {
 		CRect currParentSize;
 		GetWindowRect(m_hParent, currParentSize);
-
 		const auto xRatio {static_cast<double>(currParentSize.Width()) / m_origParentSize.Width()};
 		const auto yRatio {static_cast<double>(currParentSize.Height()) / m_origParentSize.Height()};
 		for (CtrlCont_t::const_iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
@@ -54,7 +54,6 @@ void EoDialogResizeHelper::OnSize() {
 			} else {
 				currCtrlSize.right = hFix & kWidth ? currCtrlSize.left + it->m_origSize.Width() : static_cast<long>(it->m_origSize.right * xRatio);
 			}
-
 			if (vFix & kTop) {
 				currCtrlSize.top = it->m_origSize.top;
 			} else {
@@ -99,7 +98,6 @@ unsigned EoDialogResizeHelper::Fix(const wchar_t* a_pszClassName, EHFix a_hFix, 
 	unsigned cnt {0};
 	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		::GetClassName(it->m_hCtrl, pszCN, sizeof pszCN);
-
 		if (wcscmp(pszCN, a_pszClassName) == 0) {
 			cnt++;
 			it->m_hFix = a_hFix;

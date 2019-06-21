@@ -1,14 +1,10 @@
 #include "stdafx.h"
-
 #include "AeSysDoc.h"
-
 #include "PrimState.h"
 #include "EoDbHatch.h"
-
 #include "EoDlgTrapModify.h"
 
 // EoDlgTrapModify dialog
-
 IMPLEMENT_DYNAMIC(EoDlgTrapModify, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)
@@ -43,7 +39,6 @@ void EoDlgTrapModify::OnOK() {
 	}
 	auto CharacterCellDefinition {pstate.CharacterCellDefinition()};
 	auto FontDefinition {pstate.FontDefinition()};
-
 	if (IsDlgButtonChecked(IDC_MOD_NOTE)) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_ALL);
 	} else if (IsDlgButtonChecked(IDC_FONT)) {
@@ -51,18 +46,16 @@ void EoDlgTrapModify::OnOK() {
 	} else if (IsDlgButtonChecked(IDC_HEIGHT)) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_HEIGHT);
 	}
-
 	CDialog::OnOK();
 }
+
 void EoDlgTrapModify::ModifyPolygons() {
 	auto Position {m_Document->GetFirstTrappedGroupPosition()};
 	while (Position != nullptr) {
 		const auto Group {m_Document->GetNextTrappedGroup(Position)};
-
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			auto Primitive {Group->GetNext(PrimitivePosition)};
-
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
 				auto pPolygon {dynamic_cast<EoDbHatch*>(Primitive)};
 				pPolygon->SetInteriorStyle(pstate.HatchInteriorStyle());

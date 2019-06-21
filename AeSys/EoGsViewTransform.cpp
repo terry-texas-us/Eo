@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "EoGsViewTransform.h"
 
 EoGsViewTransform::EoGsViewTransform(const EoGsViewTransform& other)

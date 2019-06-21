@@ -1,9 +1,6 @@
 #pragma once
-
 #include "Ge/GeScale3d.h"
-
 #include "StaticRxObject.h"
-
 #include "DbGsManager.h"
 #include "GiContextForDbDatabase.h"
 #include "ExEdBaseIO.h"
@@ -11,11 +8,9 @@
 #include "atltypes.h"
 #include "EditorObject.h"
 #include "ExEdInputParser.h"
-
 #include "EoGsViewport.h"
 #include "EoGsModelTransform.h"
 #include "EoGsViewTransform.h"
-
 #include "EoDbBlockReference.h"
 #include "EoDbEllipse.h"
 #include "EoDbHatch.h"
@@ -26,33 +21,22 @@
 #include "EoDbGroupList.h"
 #include "PrimState.h"
 #include "Section.h"
-
 class AeSysDoc;
 class EoDbText;
 
-class AeSysView
-	: public CView
-	, public OdGiContextForDbDatabase
-	, OdEdBaseIO
-	, OdExEditorObject::OleDragCallback {
-
+class AeSysView : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, OdExEditorObject::OleDragCallback {
 	friend class SaveViewParams;
-
 	void destroyDevice();
 	COleDropTarget m_dropTarget;
-
 	OdString m_sPrompt;
 	ExEdInputParser m_inpars;
-
 	static unsigned g_nRedrawMSG;
 	OdExEditorObject m_editor;
 	mutable bool m_bRegenAbort {false};
 	mutable bool m_bInRegen {false}; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
-
 	enum PaintMode { PaintMode_Redraw, PaintMode_Regen };
 
 	PaintMode m_paintMode {PaintMode_Regen};
-
 	CPoint m_oldPoint;
 	HCURSOR m_hCursor {nullptr};
 
@@ -62,120 +46,109 @@ class AeSysView
 
 	struct Response {
 		enum Type { kNone, kPoint, kString, kCancel };
+
 		OdGePoint3d m_Point;
 		OdString m_string;
 		Type m_type;
 	};
+
 	Response m_response;
 	int m_inpOptions {0};
-
 	void exeCmd(const OdString& szCmdStr);
 	bool beginDragCallback(const OdGePoint3d& point) override;
-
 protected:
 	using CView::operator new;
 	using CView::operator delete;
 private:
 	OdDbObjectId m_layoutId;
 	bool m_PsOverall {false};
-
 	bool m_bPlotPlotstyle {false};
 	bool m_bShowPlotstyle {false};
 	bool m_bPlotGrayscale {false};
-
 	PStyleType plotStyleType() const override;
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
 
-	void plotStyle(int penNumber, OdPsPlotStyleData& plotStyleData) const noexcept override {} // OdGiContextForDbDatabase (to suppress C4266 warning)
-
+	void plotStyle(int penNumber, OdPsPlotStyleData& plotStyleData) const noexcept override {
+	} // OdGiContextForDbDatabase (to suppress C4266 warning)
 protected:
-
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
-
 	OdGsLayoutHelperPtr m_LayoutHelper;
 	OdGsLayoutHelperPtr m_pPrinterDevice;
 	HDC m_hWindowDC {nullptr};
 	int m_pagingCounter {0};
-
 	CRect viewportRect() const;
 	static CRect viewRect(OdGsView*);
-
 	AeSysView() noexcept; // protected constructor used by dynamic creation
-
 	void preparePlotstyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
-
 	unsigned long glyphSize(GlyphType glyphType) const override;
 	void fillContextualColors(OdGiContextualColorsImpl* pCtxColors) override;
-
-	DECLARE_DYNCREATE(AeSysView)
-
+DECLARE_DYNCREATE(AeSysView)
 	OdGsView* getActiveView();
 	const OdGsView* getActiveView() const;
 	OdGsView* getActiveTopView();
 	const OdGsView* getActiveTopView() const;
+
 	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
+
 	void propagateActiveViewChanges(bool forceAutoRegen = false) const;
+
 	void recreateDevice() { createDevice(true); }
 
 	void track(OdEdInputTracker* inputTracker);
 	void setCursor(HCURSOR cursor) noexcept;
 	HCURSOR cursor() const noexcept;
-
 	void setViewportBorderProperties();
 	// <command_view>
 	bool canClose() const;
+
 	bool isGettingString() const noexcept { return m_mode != kQuiescent; }
+
 	OdString prompt() const { return m_sPrompt; }
+
 	int inpOptions() const noexcept { return m_inpOptions; }
+
 	void respond(const OdString& s);
 	OdEdCommandPtr command(const OdString& commandName);
 	OdExEditorObject& editorObject() noexcept;
 	const OdExEditorObject& editorObject() const noexcept;
 	bool isModelSpaceView() const;
-
 	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const override; // OdGiContextForDbDatabase
 	unsigned long drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) override; // OdGiContextForDbDatabase
-
 	// </command_view>
-
 	void OnInitialUpdate() override;
-
 protected:
 	void OnDraw(CDC* deviceContext) override;
 	void OnPrint(CDC* deviceContext, CPrintInfo* printInformation) override;
 	void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
 	void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
 	BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
-
 	void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
-
 	void OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) override;
 	void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
-	void addRef() noexcept override {}
-	void release() noexcept override {}
+	void addRef() noexcept override {
+	}
+
+	void release() noexcept override {
+	}
 
 	AeSysDoc* GetDocument() const; // hides non-virtual function of parent
-
 	~AeSysView();
 #ifdef _DEBUG
 	void AssertValid() const override;
 	void Dump(CDumpContext& dc) const override;
 #endif
 
-//	void adjustDevice(OdGsDevice* device);
+	//	void adjustDevice(OdGsDevice* device);
 	void createDevice(bool recreate = false);
 	bool regenAbort() const noexcept override;
-
 public: // Methods - virtuals 
-
 	unsigned long getKeyState() noexcept override;
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
-
 	bool UpdateStringTrackerCursor();
 
 	enum EStateInformationItem {
@@ -191,16 +164,15 @@ public: // Methods - virtuals
 		DimAng = 0x0100,
 		All = BothCounts | Pen | Line | TextHeight | WndRatio | Scale | DimLen | DimAng
 	};
+
 	enum ERubs { None, Lines, Rectangles };
 
 private:
 	static const double sm_MaximumWindowRatio;
 	static const double sm_MinimumWindowRatio;
-
 	EoGsModelTransform m_ModelTransform;
 	EoGsViewport m_Viewport;
 	EoGsViewTransform m_ViewTransform;
-
 	CBitmap m_BackgroundImageBitmap;
 	CPalette m_BackgroundImagePalette;
 	EoDbPrimitive* m_EngagedPrimitive {nullptr};
@@ -225,22 +197,17 @@ private:
 	bool m_LeftButton {false};
 	bool m_MiddleButton {false};
 	bool m_RightButton {false};
-
 	ERubs m_RubberbandType {None};
 	OdGePoint3d m_RubberbandBeginPoint;
 	CPoint m_RubberbandLogicalBeginPoint;
 	CPoint m_RubberbandLogicalEndPoint;
-
 	OdGePoint3d m_ptCursorPosDev;
-	OdGePoint3d	m_ptCursorPosWorld;
-
+	OdGePoint3d m_ptCursorPosWorld;
 	CPoint m_MouseClick;
 	CPoint m_MousePosition {0};
 	bool m_ZoomWindow {false};
 	OdGePoint3dArray m_Points;
-
 	ODCOLORREF m_Background;
-
 	OdGePoint3d m_ptDet;
 	OdGeVector3d m_vRelPos;
 	OdGePoint3dArray m_DrawModePoints;
@@ -251,25 +218,20 @@ private:
 	// grid and axis constraints
 	OdGePoint3d m_GridOrigin;
 	int m_MaximumDotsPerLine {64};
-
 	double m_XGridLineSpacing {1.0};
 	double m_YGridLineSpacing {1.0};
 	double m_ZGridLineSpacing {1.0};
-
 	double m_XGridSnapSpacing {12.0};
 	double m_YGridSnapSpacing {12.0};
 	double m_ZGridSnapSpacing {12.0};
-
 	double m_XGridPointSpacing {3.0};
 	double m_YGridPointSpacing {3.0};
 	double m_ZGridPointSpacing {0.0};
-
 	double m_AxisConstraintInfluenceAngle {5.0};
 	double m_AxisConstraintOffsetAngle {0.0};
 	bool m_DisplayGridWithLines {false};
 	bool m_DisplayGridWithPoints {false};
 	bool m_GridSnap {false};
-
 public:
 	double AxisConstraintInfluenceAngle() const noexcept;
 	void SetAxisConstraintInfluenceAngle(double angle) noexcept;
@@ -287,12 +249,11 @@ public:
 	void GetGridSnapSpacing(double& x, double& y, double& z) noexcept;
 	void SetGridSnapSpacing(double x, double y, double z) noexcept;
 	/// <summary>Determines the nearest point on system constraining grid.</summary>
-	OdGePoint3d	SnapPointToGrid(const OdGePoint3d& point) noexcept;
+	OdGePoint3d SnapPointToGrid(const OdGePoint3d& point) noexcept;
 	/// <summary>Set Axis constraint tolerance angle and offset axis constraint offset angle. Constrains a line to nearest axis pivoting on first endpoint.</summary>
 	/// <remarks>Offset angle only support about z-axis</remarks>
 	/// <returns>Point after snap</returns>
 	OdGePoint3d SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
-
 	bool DisplayGridWithLines() const noexcept;
 	void EnableDisplayGridWithLines(bool display) noexcept;
 	void EnableDisplayGridWithPoints(bool display) noexcept;
@@ -300,20 +261,17 @@ public:
 	bool GridSnap() const noexcept;
 	void EnableGridSnap(bool snap) noexcept;
 	void ZoomWindow(OdGePoint3d point1, OdGePoint3d point2);
-
 	void SetRenderMode(OdGsView::RenderMode renderMode);
+
 	OdGsView::RenderMode RenderMode() const noexcept {
 		return m_ViewTransform.RenderMode();
 	}
+
 	const ODCOLORREF* CurrentPalette() const;
-
 	OdDbDatabasePtr Database() const;
-
 protected: // Windows messages
 	void OnContextMenu(CWnd*, CPoint point); // hides non-virtual function of parent
-
 public: // Input message handler member functions
-
 	void OnChar(unsigned characterCodeValue, unsigned RepeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
@@ -324,7 +282,6 @@ public: // Input message handler member functions
 	BOOL OnMouseWheel(unsigned flags, short zDelta, CPoint point); // hides non-virtual function of parent
 	void OnRButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnRButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
-
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	void OnDestroy(); // hides non-virtual function of parent
 	void OnDrag();
@@ -334,26 +291,19 @@ public: // Input message handler member functions
 	void OnPaint(); // hides non-virtual function of parent
 	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
-
 	void OnViewStateInformation();
 	void OnUpdateViewStateinformation(CCmdUI* pCmdUI);
-
 	static AeSysView* GetActiveView();
-
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
-
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
 	void UpdateStateInformation(EStateInformationItem item);
-
 	void RubberBandingDisable();
 	void RubberBandingStartAtEnable(const OdGePoint3d& point, ERubs type);
-
 	OdGePoint3d GetCursorPosition();
 	OdGePoint3d GetWorldCoordinates(CPoint point);
 	/// <summary> Positions cursor at targeted position.</summary>
 	void SetCursorPosition(const OdGePoint3d& point);
 	void SetModeCursor(unsigned mode);
-
 	std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	std::pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
 	std::pair<EoDbGroup*, EoDbPoint*> SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
@@ -365,34 +315,37 @@ public: // Input message handler member functions
 	EoDbGroup*& EngagedGroup() noexcept;
 	/// <summary>Set a pixel.</summary>
 	void DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point);
-
 	bool GroupIsEngaged() noexcept;
 	double SelectApertureSize() const noexcept;
 	void BreakAllPolylines();
 	void BreakAllSegRefs();
-
 	bool PenWidthsOn() noexcept;
 	double WorldScale() const noexcept;
 	void SetWorldScale(double scale);
-
 	void ResetView() noexcept;
 
 	/// <summary> Deletes last group detectable in the this view.</summary>
 	void DeleteLastGroup();
 
-/// <Section="Visible group interface">
+	/// <Section="Visible group interface">
 	POSITION AddVisibleGroup(EoDbGroup* group) { return m_VisibleGroupList.AddTail(group); }
+
 	void AddVisibleGroups(EoDbGroupList* groups) { return m_VisibleGroupList.AddTail(groups); }
+
 	POSITION RemoveVisibleGroup(EoDbGroup* group) { return m_VisibleGroupList.Remove(group); }
+
 	void RemoveAllVisibleGroups() { m_VisibleGroupList.RemoveAll(); }
+
 	EoDbGroup* RemoveLastVisibleGroup();
 
 	POSITION GetFirstVisibleGroupPosition() const { return m_VisibleGroupList.GetHeadPosition(); }
-	POSITION GetLastGroupPosition() const { return m_VisibleGroupList.GetTailPosition(); }
-	EoDbGroup* GetNextVisibleGroup(POSITION& position) { return m_VisibleGroupList.GetNext(position); }
-	EoDbGroup* GetPreviousGroup(POSITION& position) { return m_VisibleGroupList.GetPrev(position); }
-/// </Section>
 
+	POSITION GetLastGroupPosition() const { return m_VisibleGroupList.GetTailPosition(); }
+
+	EoDbGroup* GetNextVisibleGroup(POSITION& position) { return m_VisibleGroupList.GetNext(position); }
+
+	EoDbGroup* GetPreviousGroup(POSITION& position) { return m_VisibleGroupList.GetPrev(position); }
+	/// </Section>
 	void BackgroundImageDisplay(CDC* deviceContext);
 	bool ViewTrueTypeFonts() noexcept;
 	void DisplayOdometer();
@@ -402,24 +355,20 @@ public: // Input message handler member functions
 	void Orbit(double x, double y);
 	void Dolly();
 	void DollyAndZoom(double zoomFactor);
-
 	void CopyActiveModelViewToPreviousModelView() noexcept;
 	EoGsViewTransform PreviousModelView();
 	void ExchangeActiveAndPreviousModelViews();
-
 	EoGeMatrix3d ModelToWorldTransform() const noexcept;
 	void PushModelTransform(const EoGeMatrix3d& transformation);
 	void PopModelTransform();
 	void ModelTransformPoint(OdGePoint3d& point);
-
 	void ModelViewGetViewport(EoGsViewport& viewport) noexcept;
 	OdGeVector3d CameraDirection() const;
 	EoGeMatrix3d ModelViewMatrix() const noexcept;
-	OdGePoint3d	CameraTarget() const noexcept;
+	OdGePoint3d CameraTarget() const noexcept;
 	double ZoomFactor() const noexcept;
 	OdGeVector3d ViewUp() const noexcept;
 	void ModelViewInitialize();
-
 	void PopViewTransform();
 	void PushViewTransform();
 	void ModelViewTransformPoint(EoGePoint4d& point);
@@ -435,7 +384,6 @@ public: // Input message handler member functions
 
 	/// <summary>Determines the number of pages for 1 to 1 print</summary>
 	unsigned NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages);
-
 	double OverviewUExt() noexcept;
 	double OverviewUMin() noexcept;
 	double OverviewVExt() noexcept;
@@ -453,13 +401,11 @@ public: // Input message handler member functions
 	void SetDeviceWidthInInches(double width) noexcept;
 	
 	// Group and Primitive operations
-
 	EoDbGroup* m_SubModeEditGroup {nullptr};
 	EoDbPrimitive* m_SubModeEditPrimitive {nullptr};
 	OdGePoint3d m_SubModeEditBeginPoint;
 	OdGePoint3d m_SubModeEditEndPoint;
 	EoGeMatrix3d m_tmEditSeg;
-
 	void InitializeGroupAndPrimitiveEdit();
 	void DoEditGroupCopy();
 	void DoEditGroupEscape();
@@ -469,16 +415,13 @@ public: // Input message handler member functions
 	void DoEditPrimitiveEscape();
 	void PreviewPrimitiveEdit();
 	void PreviewGroupEdit();
-
 	OdGePoint3d m_MendPrimitiveBegin;
 	unsigned long m_MendPrimitiveVertexIndex {0};
 	EoDbPrimitive* m_PrimitiveToMend {nullptr};
 	EoDbPrimitive* m_PrimitiveToMendCopy {nullptr};
-
 	void PreviewMendPrimitive();
 	void MendPrimitiveEscape();
 	void MendPrimitiveReturn();
-
 private: // Annotate and Dimension interface
 	double m_GapSpaceFactor {0.5}; // Edge space factor 50 percent of character height
 	double m_CircleRadius {0.03125};
@@ -487,7 +430,6 @@ private: // Annotate and Dimension interface
 	double m_BubbleRadius {0.125};
 	int m_NumberOfSides {0}; // Number of sides on bubble (0 indicating circle)
 	CString m_DefaultText;
-
 public:
 	double BubbleRadius() const noexcept;
 	void SetBubbleRadius(double radius) noexcept;
@@ -506,7 +448,6 @@ public:
 	
 	// Annotate mode interface
 	void DoAnnotateModeMouseMove();
-
 	void OnAnnotateModeOptions();
 	void OnAnnotateModeLine();
 	void OnAnnotateModeArrow();
@@ -530,7 +471,6 @@ public:
 	
 	// Draw mode interface
 	void DoDrawModeMouseMove();
-
 	void OnDrawModeOptions();
 	void OnDrawModePoint();
 	void OnDrawModeLine();
@@ -543,7 +483,6 @@ public:
 	void OnDrawModeInsert();
 	void OnDrawModeReturn();
 	void OnDrawModeEscape();
-
 private: // Draw2 mode interface
 	double m_CenterLineEccentricity {0.5}; // Center line eccentricity for parallel lines
 	bool m_ContinueCorner {false};
@@ -557,7 +496,6 @@ private: // Draw2 mode interface
 	EoDbGroup* m_BeginSectionGroup {nullptr};
 	EoDbLine* m_BeginSectionLine {nullptr};
 	EoDbLine* m_EndSectionLine {nullptr};
-
 public:
 	void DoDraw2ModeMouseMove();
 	void OnDraw2ModeOptions();
@@ -566,11 +504,11 @@ public:
 	void OnDraw2ModeWall();
 	void OnDraw2ModeReturn();
 	void OnDraw2ModeEscape();
-
 	bool CleanPreviousLines();
 	bool StartAssemblyFromLine();
 
 	enum EJust { Left = -1, Center, Right };
+
 	enum EElbow { Mittered, Radial };
 
 	void OnDimensionModeOptions();
@@ -587,7 +525,6 @@ public:
 	void OnDimensionModeEscape();
 	
 	// Fixup mode interface
-
 	enum CornerFlags {
 		kTrimPreviousToIntersection = 0x001,
 		kTrimCurrentToIntersection = 0x002,
@@ -604,7 +541,6 @@ public:
 
 	double m_AxisTolerance {2.0};
 	double m_CornerSize {0.25};
-
 	void OnFixupModeOptions();
 	void OnFixupModeReference();
 	void OnFixupModeMend();
@@ -614,21 +550,18 @@ public:
 	void OnFixupModeParallel();
 	void OnFixupModeReturn();
 	void OnFixupModeEscape();
-
 	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, int cornerType = kCorner | kTrimBothToIntersection);
 
-/// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
-/// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
-/// <Returns>
-/// true    center point determined
-/// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
-/// </Returns>
+	/// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
+	/// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
+	/// <Returns>
+	/// true    center point determined
+	/// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
+	/// </Returns>
 	bool FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& intersection);
 	
 	// Nodal mode interface
-
 	void DoNodalModeMouseMove();
-
 	void OnNodalModeAddRemove();
 	void OnNodalModePoint();
 	void OnNodalModeLine();
@@ -642,7 +575,6 @@ public:
 	void OnNodalModeEngage();
 	void OnNodalModeReturn();
 	void OnNodalModeEscape();
-
 	void ConstructPreviewGroup();
 	void ConstructPreviewGroupForNodalGroups();
 	
@@ -667,7 +599,6 @@ public:
 	OdGeScale3d m_MirrorScaleFactors;
 	OdGeVector3d m_EditModeRotationAngles;
 	OdGeScale3d m_ScaleFactors;
-
 	OdGeVector3d EditModeRotationAngles() const noexcept;
 	EoGeMatrix3d EditModeInvertedRotationMatrix() const;
 	OdGeScale3d EditModeMirrorScaleFactors() const noexcept;
@@ -676,7 +607,6 @@ public:
 	void SetEditModeScaleFactors(double sx, double sy, double sz) noexcept;
 	void SetEditModeRotationAngles(double x, double y, double z) noexcept;
 	void SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept;
-
 	void OnEditModeOptions();
 	void OnEditModePivot();
 	void OnEditModeRotccw();
@@ -688,9 +618,7 @@ public:
 	void OnEditModeEnlarge();
 	void OnEditModeReturn() noexcept;
 	void OnEditModeEscape();
-
 	void OnInsertBlockreference();
-
 	void OnTrapModeRemoveAdd();
 	void OnTrapModePoint();
 	/// <summary>Identifies groups which intersect with a line and adds them to the trap.</summary>
@@ -704,7 +632,6 @@ public:
 	void OnTrapModeMenu();
 	void OnTrapModeModify();
 	void OnTrapModeEscape();
-
 	void OnTraprModeRemoveAdd();
 	void OnTraprModePoint();
 	/// <summary>Identifies groups which intersect with a line and removes them from the trap.</summary>
@@ -719,7 +646,6 @@ public:
 	void OnTraprModeMenu();
 	void OnTraprModeModify();
 	void OnTraprModeEscape();
-
 private: // Low Pressure Duct (retangular) interface
 	double m_InsideRadiusFactor {1.5};
 	double m_DuctSeamSize {0.03125};
@@ -735,13 +661,10 @@ private: // Low Pressure Duct (retangular) interface
 	EoDbGroup* m_EndCapGroup {nullptr};
 	bool m_OriginalPreviousGroupDisplayed {true};
 	EoDbGroup* m_OriginalPreviousGroup {nullptr};
-
 	Section m_PreviousSection {0.125, 0.0625, Section::Rectangular};
 	Section m_CurrentSection {0.125, 0.0625, Section::Rectangular};
-
 public:
 	void DoDuctModeMouseMove();
-
 	void OnLpdModeOptions();
 	void OnLpdModeJoin();
 	void OnLpdModeDuct();
@@ -795,7 +718,8 @@ public:
 	/// <param name="currentReferenceLine">on exit the start point is the same as the point on the endcap</param>
 	/// <param name="currentSection"></param>
 	/// <param name="group"></param>
-	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group, bool generateEndCaps = true);
+	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group,
+	                              bool generateEndCaps = true);
 	/// <summary>Generates rectangular tap fitting.</summary>
 	/// <param name="justification"></param>
 	/// <param name="section"></param>
@@ -833,7 +757,6 @@ public:
 	/// <param name="currentSection">width and depth of end section</param>
 	/// <returns>length of the transition</returns>
 	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept;
-
 private: // Pipe mode interface
 	int m_CurrentPipeSymbolIndex {0};
 	double m_PipeTicSize {0.03125};
@@ -847,7 +770,6 @@ private: // Pipe mode interface
 	void DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section);
 public:
 	void DoPipeModeMouseMove();
-
 	void OnPipeModeOptions();
 	void OnPipeModeLine();
 	void OnPipeModeFitting();
@@ -858,17 +780,14 @@ public:
 	void OnPipeModeWye();
 	void OnPipeModeReturn();
 	void OnPipeModeEscape();
-
 private: // Power mode interface
 	bool m_PowerArrow {false};
 	bool m_PowerConductor {false};
 	double m_PowerConductorSpacing {0.04};
 	OdGePoint3d m_CircuitEndPoint;
 	double m_PreviousRadius {0.0};
-
 public:
 	void DoPowerModeMouseMove();
-
 	void OnPowerModeOptions() noexcept;
 	void OnPowerModeCircuit();
 	void OnPowerModeGround();
@@ -878,7 +797,6 @@ public:
 	void OnPowerModeHome();
 	void OnPowerModeReturn();
 	void OnPowerModeEscape();
-
 	void GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
 	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
 	void DoPowerModeConductor(unsigned short conductorType);
@@ -887,9 +805,7 @@ public:
 	void ModeLineDisplay();
 	unsigned short ModeLineHighlightOp(unsigned short op);
 	void ModeLineUnhighlightOp(unsigned short& op);
-
 	CMFCStatusBar& GetStatusBar() const;
-
 	void OnBackgroundImageLoad();
 	void OnBackgroundImageRemove();
 	void OnFilePlotHalf();
@@ -987,12 +903,10 @@ public:
 	LRESULT OnRedraw(WPARAM wParam, LPARAM lParam);
 	void OnRefresh();
 	void OnViewerRegen();
-
 protected:
 	void OnViewerVpregen();
 	void OnUpdateViewerRegen(CCmdUI* pCmdUI);
-
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 public:
 	BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
 	DROPEFFECT OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) override;

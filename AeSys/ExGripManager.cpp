@@ -1,6 +1,5 @@
 // From Examples\Editor\ExGripManager.cpp (last compare 19.12)
 #include "stdafx.h"
-
 #include "OdaCommon.h"
 #define STL_USING_MAP
 #define STL_USING_ALGORITHM
@@ -28,17 +27,15 @@ static const unsigned TPM_NOANIMATION = 0x4000L;
 #endif
 #endif //#ifndef EMCC
 //
-
 #define GM_PAGE_EACH_OBJECT 200
 
-namespace {
+namespace
+{
 	OdSelectionSetIteratorPtr searchObjectSSetIterator(OdSelectionSetPtr selectionSet, OdDbStub* id) {
 		auto SelectionSetIterator {selectionSet->newIterator()};
-		
 		while (!SelectionSetIterator->done()) {
-			
-			if (SelectionSetIterator->id() == id) { return SelectionSetIterator; }
 
+			if (SelectionSetIterator->id() == id) { return SelectionSetIterator; }
 			SelectionSetIterator->next();
 		}
 		return OdSelectionSetIteratorPtr();
@@ -46,18 +43,16 @@ namespace {
 
 	OdBaseGripManager::OdExGripDataSubent& getSubentGripData(OdBaseGripManager::OdExGripDataExt& ext, OdDbBaseFullSubentPath entPath) {
 		for (auto& GripData : ext.m_GripDataSubEntity) {
-			
+
 			if (GripData.m_SubentPath == entPath) { return GripData; }
 		}
 		ODA_FAIL();
 		return ext.m_GripDataSubEntity.at(0);
 	}
-
 }
 
 OdExGripDragPtr OdExGripDrag::createObject(OdDbStub* id, OdBaseGripManager* gripManager) {
 	auto GripDrag {RXIMPL_CONSTR(OdExGripDrag)};
-
 	GripDrag->m_SubentPath.objectIds().append(id);
 	GripDrag->m_GripManager = gripManager;
 	return GripDrag;
@@ -81,22 +76,17 @@ OdDbStub* OdExGripDrag::entityId() const {
 }
 
 bool OdExGripDrag::entPath(OdDbBaseFullSubentPath* subentPath) const {
-	
 	if (subentPath) { *subentPath = m_SubentPath; }
-
 	return m_SubentPath.subentId() != OdDbSubentId();
 }
 
 bool OdExGripDrag::locateActiveGrips(OdIntArray& indices) {
 	const auto& GripData {entPath() ? getSubentGripData(m_GripManager->m_GripData[entityId()], m_SubentPath).m_pSubData : m_GripManager->m_GripData[entityId()].m_pDataArray};
-
 	auto bExMethod {true};
 	indices.clear();
-
 	for (unsigned i = 0; i < GripData.size(); i++) {
 
 		if (GripData[i]->GripData().isNull()) { bExMethod = false; }
-
 		if (OdDbGripOperations::kDragImageGrip == GripData[i]->status()) { indices.push_back(static_cast<int>(i)); }
 	}
 	ODA_ASSERT(GripData.size() == 0 || !indices.empty());
@@ -109,24 +99,18 @@ void OdExGripDrag::CloneEntity() {
 
 void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 	CloneEntity();
-
 	if (m_Clone.isNull()) { return; }
-
 	OdIntArray aIndices;
 	const auto bExMethod {locateActiveGrips(aIndices)};
-
 	const auto vOffset {ptMoveAt - m_GripManager->m_BasePoint};
-
 	if (bExMethod) {
 		OdDbGripDataPtrArray aCloneData;
-
 		if (entPath()) {
 			m_GripManager->GetGripPointsAtSubentPath(m_Clone, m_SubentPath, aCloneData, m_GripManager->ActiveViewUnitSize(), m_GripManager->m_GRIPSIZE, m_GripManager->ActiveViewDirection(), 0);
 		} else {
 			m_GripManager->GetGripPoints(m_Clone, aCloneData, m_GripManager->ActiveViewUnitSize(), m_GripManager->m_GRIPSIZE, m_GripManager->ActiveViewDirection(), 0);
 		}
 		OdDbVoidPtrArray aIds;
-
 		for (auto& GripDataIndex : aIndices) {
 
 			if (gsl::narrow_cast<unsigned>(GripDataIndex) < aCloneData.size()) {
@@ -154,31 +138,25 @@ void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 
 			if (GripData->gripOpStatFunc()) { GripData->gripOpStatFunc()(GripData, nullptr, OdDbGripOperations::kGripEnd); }
 		}
-	}
-	else {
+	} else {
 		m_GripManager->MoveGripPointsAt(m_Clone, aIndices, vOffset);
 		m_GripManager->GripStatus(m_Clone, OdDb::kGripsToBeDeleted);
 	}
 	m_GripManager->OnModified(this);
 }
 
-void OdExGripDrag::moveEntity(const OdGePoint3d & ptMoveAt) {
+void OdExGripDrag::moveEntity(const OdGePoint3d& ptMoveAt) {
 	OdIntArray aIndices;
 	const auto bExMethod {locateActiveGrips(aIndices)};
-
 	const auto vOffset {ptMoveAt - m_GripManager->m_BasePoint};
-
 	auto Entity {m_GripManager->OpenObject(entityId(), OdDb::kForWrite)};
 	ODA_ASSERT(Entity.get());
-
 	const auto& rData {entPath() ? getSubentGripData(m_GripManager->m_GripData[entityId()], m_SubentPath).m_pSubData : m_GripManager->m_GripData[entityId()].m_pDataArray};
-
 	if (bExMethod) {
 		OdDbVoidPtrArray aIds;
 		const unsigned long iSize = aIndices.size();
-		
 		for (unsigned i = 0; i < iSize; i++) {
-		
+
 			if (aIndices[i] < gsl::narrow_cast<int>(rData.size())) {
 				aIds.push_back(rData[static_cast<unsigned>(aIndices[i])]->GripData()->appData());
 			} else {
@@ -193,76 +171,58 @@ void OdExGripDrag::moveEntity(const OdGePoint3d & ptMoveAt) {
 			m_GripManager->MoveGripPointsAt(Entity, aIds, vOffset, 0);
 		}
 	} else {
-	  //OdGePoint3dArray aPts;
-	  //unsigned long iSize = rData.size();
-	  //aPts.resize( iSize );
-	  //for (unsigned i = 0; i < iSize; i++ )
-	  //  aPts[ i ] = rData[ i ]->point();
-
-	  //iSize = aIndices.size();
-	  //for(unsigned i = 0; i < iSize; i++ )
-	  //{
-	  //  if ( aIndices[ i ] < (long)rData.size() ) 
-	  //  {
-	  //    aPts[ aIndices[ i ] ] += vOffset;
-	  //  }
-	  //  else
-	  //  {
-	  //    ODA_ASSERT( 0 );
-	  //  }
-	  //}
-
+		//OdGePoint3dArray aPts;
+		//unsigned long iSize = rData.size();
+		//aPts.resize( iSize );
+		//for (unsigned i = 0; i < iSize; i++ )
+		//  aPts[ i ] = rData[ i ]->point();
+		//iSize = aIndices.size();
+		//for(unsigned i = 0; i < iSize; i++ )
+		//{
+		//  if ( aIndices[ i ] < (long)rData.size() ) 
+		//  {
+		//    aPts[ aIndices[ i ] ] += vOffset;
+		//  }
+		//  else
+		//  {
+		//    ODA_ASSERT( 0 );
+		//  }
+		//}
 		m_GripManager->MoveGripPointsAt(Entity, aIndices, vOffset);
 	}
 }
 
 void OdExGripDrag::notifyDragStarted() {
 	if (!m_GripManager) { return; }
-
 	auto Entity {m_GripManager->OpenObject(entityId())};
-	
 	if (Entity.get()) { m_GripManager->DragStatus(Entity, OdDb::kDragStart); }
-
 	m_GripManager->DraggingStarted();
 }
 
 void OdExGripDrag::notifyDragEnded() {
 	if (!m_GripManager) { return; }
-	
 	auto Entity {m_GripManager->OpenObject(entityId())};
-	
 	if (Entity.get()) { m_GripManager->DragStatus(Entity, OdDb::kDragEnd); }
-
 	m_GripManager->DraggingStopped();
 }
 
 void OdExGripDrag::notifyDragAborted() {
 	if (!m_GripManager) { return; }
-
 	auto Entity {m_GripManager->OpenObject(entityId())};
-
 	if (Entity.get()) { m_GripManager->DragStatus(Entity, OdDb::kDragAbort); }
-
 	m_GripManager->DraggingStopped();
 }
 
 unsigned long OdExGripDrag::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
-
 	if (m_Clone.isNull()) { return kDrawableIsInvisible; }
-
 	const auto Result {m_Clone->setAttributes(drawableTraits)};
-
 	auto EntityTraits {OdGiSubEntityTraits::cast(drawableTraits)};
-
 	if (EntityTraits.get()) { EntityTraits->setFillType(kOdGiFillNever); }
-
 	return Result;
 }
 
 bool OdExGripDrag::subWorldDraw(OdGiWorldDraw* worldDraw) const {
-	
 	if (m_Clone.isNull()) { return true; }
-
 	return m_Clone->worldDraw(worldDraw);
 }
 
@@ -273,7 +233,6 @@ void OdExGripDrag::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 
 OdExGripDataPtr OdExGripData::createObject(OdDbStub* id, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* gripManager) {
 	auto GripData {RXIMPL_CONSTR(OdExGripData)};
-
 	GripData->m_SubentPath.objectIds().append(id);
 	GripData->m_GripData = gripData;
 	GripData->m_GripManager = gripManager;
@@ -309,13 +268,11 @@ OdExGripData::~OdExGripData() {
 
 bool OdExGripData::computeDragPoint(OdGePoint3d& computedPoint) const {
 	auto BasePoint {point()};
-
 	if (GripData().get() && GripData()->alternateBasePoint()) {
 		BasePoint = *GripData()->alternateBasePoint();
 	}
 	auto Override {false};
 	computedPoint = BasePoint;
-
 	if (status() == OdDbGripOperations::kDragImageGrip && GripData().get() && GripData()->drawAtDragImageGripPoint()) {
 		computedPoint = BasePoint + (m_GripManager->m_LastPoint - m_GripManager->m_BasePoint);
 		Override = true;
@@ -324,22 +281,16 @@ bool OdExGripData::computeDragPoint(OdGePoint3d& computedPoint) const {
 }
 
 unsigned long OdExGripData::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
-
 	if (isInvisible()) { return kDrawableIsInvisible; }
 	auto pEntityTraits = OdGiSubEntityTraits::cast(drawableTraits);
-
 	if (!pEntityTraits.get()) { return kDrawableNone; }
-
 	switch (status()) {
 		case OdDbGripOperations::kWarmGrip:
 			pEntityTraits->setTrueColor(m_GripManager->m_GRIPCOLOR);
 			break;
-
-		case OdDbGripOperations::kHotGrip:
-		case OdDbGripOperations::kDragImageGrip:
+		case OdDbGripOperations::kHotGrip: case OdDbGripOperations::kDragImageGrip:
 			pEntityTraits->setTrueColor(m_GripManager->m_GRIPHOT);
 			break;
-
 		case OdDbGripOperations::kHoverGrip:
 			pEntityTraits->setTrueColor(m_GripManager->m_GRIPHOVER);
 			break;
@@ -351,20 +302,15 @@ unsigned long OdExGripData::subSetAttributes(OdGiDrawableTraits* drawableTraits)
 
 bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 	auto GripSize {static_cast<double>(m_GripManager->m_GRIPSIZE)};
-
 	if (!worldDraw->context() || !worldDraw->context()->database()) { GripSize = m_GripManager->m_GRIPSIZE; }
 
 	// Here is the design flaw: ARX help says that grip size passed in callback below should be calculated individually for each viewport.
-
 	if (GripData().get() && GripData()->worldDraw()) {
 		OdGePoint3d ComputedPoint;
 		OdGePoint3d* DrawAtDrag {nullptr};
-
 		if (computeDragPoint(ComputedPoint)) { DrawAtDrag = &ComputedPoint; }
-
 		OdGiDrawFlagsHelper DrawFlagsHelper(worldDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
-		
-		return(*GripData()->worldDraw())(static_cast<OdDbGripData*>(GripData().get()), worldDraw, entityId(), status(), DrawAtDrag, GripSize);
+		return (*GripData()->worldDraw())(static_cast<OdDbGripData*>(GripData().get()), worldDraw, entityId(), status(), DrawAtDrag, GripSize);
 	}
 	return false;
 }
@@ -372,18 +318,13 @@ bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	OdGePoint3d ComputedPoint;
 	OdGePoint3d* DrawAtDrag {nullptr};
-	
 	if (computeDragPoint(ComputedPoint)) { DrawAtDrag = &ComputedPoint; }
-
 	OdGiDrawFlagsHelper DrawFlagsHelper(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
-
 	auto Default {true};
-	
 	if (GripData().get() && GripData()->viewportDraw()) {
 		(*GripData()->viewportDraw())(static_cast<OdDbGripData*>(GripData().get()), viewportDraw, entityId(), status(), DrawAtDrag, m_GripManager->m_GRIPSIZE);
 		Default = false;
 	}
-
 	if (Default) {
 
 		OdGePoint2d ptDim;
@@ -391,13 +332,10 @@ void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 		OdGeVector3d v(m_GripManager->m_GRIPSIZE / ptDim.x, 0.0, 0.0);
 		v.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
 		auto GripSize {v.length()};
-
 		auto OnScreenPoint {ComputedPoint};
 		OnScreenPoint.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
-
 		viewportDraw->subEntityTraits().setFillType(kOdGiFillAlways);
 		viewportDraw->subEntityTraits().setDrawFlags(OdGiSubEntityTraits::kDrawSolidFill | OdGiSubEntityTraits::kDrawPolygonFill);
-
 		OdGePoint3d aPoly[4];
 		aPoly[0].set(OnScreenPoint.x - GripSize, OnScreenPoint.y - GripSize, OnScreenPoint.z);
 		aPoly[1].set(OnScreenPoint.x + GripSize, OnScreenPoint.y - GripSize, OnScreenPoint.z);
@@ -410,13 +348,10 @@ void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 OdBaseGripManager::OdBaseGripManager() noexcept {
 	m_GripData.clear();
 	m_HoverGripsData.clear();
-
 	m_BasePoint = OdGePoint3d::kOrigin;
 	m_LastPoint = OdGePoint3d::kOrigin;
 	m_GripDrags.clear();
-
 	m_Disabled = true;
-
 	m_GRIPSIZE = 5;
 	m_GRIPOBJLIMIT = 100;
 }
@@ -427,16 +362,12 @@ OdBaseGripManager::~OdBaseGripManager() {
 
 bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 	EndHover();
-
 	OdExGripDataPtrArray aKeys;
 	LocateGripsAt(x, y, aKeys);
-
 	if (aKeys.empty()) { return false; }
-
 	if (shiftIsDown) { // Modify Grip  status().
 		auto eNewStatus {OdDbGripOperations::kHotGrip};
 		const unsigned long iSize = aKeys.size();
-
 		for (unsigned i = 0; i < iSize; i++) {
 			if (OdDbGripOperations::kHotGrip == aKeys[i]->status()) {
 				eNewStatus = OdDbGripOperations::kWarmGrip;
@@ -446,7 +377,6 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 		for (unsigned i = 0; i < iSize; i++) {
 			auto eCurStatus {eNewStatus};
 			auto Grip {aKeys[i]};
-
 			if (!Grip->GripData().isNull()) {
 
 				if (Grip->GripData()->triggerGrip()) {
@@ -455,11 +385,8 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 
 					if (Grip->GripData()->hotGripFunc()) {
 						int Flags {OdDbGripOperations::kMultiHotGrip};
-
 						if (Grip->isShared()) { Flags |= OdDbGripOperations::kSharedGrip; }
-
 						auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
-						
 						if (Result == eGripOpGripHotToWarm) { eCurStatus = OdDbGripOperations::kWarmGrip; }
 					}
 				}
@@ -472,7 +399,6 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 			GripDataMap::const_iterator GripDataIterator {m_GripData.begin()};
 			while (GripDataIterator != m_GripData.end() && MakeHot) {
 				const auto& aData {GripDataIterator->second.m_pDataArray};
-
 				for (unsigned i = 0; i < aData.size(); i++) {
 					if (OdDbGripOperations::kHotGrip == aData[i]->status()) {
 						MakeHot = false;
@@ -481,7 +407,6 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 				}
 				for (unsigned i = 0; i < GripDataIterator->second.m_GripDataSubEntity.size() && MakeHot; i++) {
 					const auto& aData {GripDataIterator->second.m_GripDataSubEntity.at(i).m_pSubData};
-
 					for (unsigned j = 0; j < aData.size(); j++) {
 						if (OdDbGripOperations::kHotGrip == aData[j]->status()) {
 							MakeHot = false;
@@ -494,24 +419,18 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 		}
 		auto GetNew {false};
 		OdDbObjectId idEntityToUpdate;
-
 		if (MakeHot) {
 			const auto Size {aKeys.size()};
 			for (unsigned i = 0; i < Size; i++) {
 				auto Grip {aKeys[i]};
-
 				auto eNew {OdDbGripOperations::kHotGrip};
-
 				if (!Grip->GripData().isNull() && Grip->GripData()->hotGripFunc()) {
 					auto Flags {0};
-
 					if (Grip->isShared()) { Flags |= OdDbGripOperations::kSharedGrip; }
-
 					if (Grip->GripData()->triggerGrip()) {
 
 						if (!Grip->isShared()) {
 							auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
-
 							if (Result == eOk || Result == eGripOpGripHotToWarm) {
 								eNew = OdDbGripOperations::kWarmGrip;
 							} else if (Result == eGripOpGetNewGripPoints) {
@@ -519,10 +438,8 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 								idEntityToUpdate = Grip->entityId();
 							}
 						}
-					}
-					else {
+					} else {
 						auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
-
 						if (!Grip->isShared()) {
 							if (Result == eGripOpGripHotToWarm) {
 								eNew = OdDbGripOperations::kWarmGrip;
@@ -543,24 +460,18 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 
 bool OdBaseGripManager::StartHover(int x, int y) {
 	auto bRet {EndHover()};
-
 	OdExGripDataPtrArray aKeys;
 	LocateGripsAt(x, y, aKeys);
-
 	if (!aKeys.empty()) {
 		m_HoverGripsData = aKeys;
-
 		for (auto HoverGripData : m_HoverGripsData) {
 			if (HoverGripData->status() == OdDbGripOperations::kWarmGrip) {
 				HoverGripData->setStatus(OdDbGripOperations::kHoverGrip);
-
 				if (!HoverGripData->GripData().isNull()) {
 
 					if (HoverGripData->GripData()->hoverFunc() != nullptr) {
 						auto Flags {0};
-
 						if (HoverGripData->isShared()) { Flags = OdDbGripOperations::kSharedGrip; }
-
 						(*HoverGripData->GripData()->hoverFunc())(HoverGripData->GripData(), HoverGripData->entityId(), Flags);
 					}
 				}
@@ -573,9 +484,7 @@ bool OdBaseGripManager::StartHover(int x, int y) {
 }
 
 bool OdBaseGripManager::EndHover() {
-
 	if (m_HoverGripsData.empty()) { return false; }
-
 	for (auto HoverGripData : m_HoverGripsData) {
 		if (HoverGripData->status() == OdDbGripOperations::kHoverGrip) {
 			HoverGripData->setStatus(OdDbGripOperations::kWarmGrip);
@@ -588,32 +497,25 @@ bool OdBaseGripManager::EndHover() {
 
 void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 	auto RestoreOld {false};
-
 	if (selectionSet->numEntities() > static_cast<unsigned>(m_GRIPOBJLIMIT)) {
 		Disable(true);
-	}
-	else {
+	} else {
 
 		if (IsDisabled()) { RestoreOld = true; }
-
 		Disable(false);
 	}
 	auto Database {OdDbDatabase::cast(selectionSet->baseDatabase()).get()};
-
 	{ // Old Entities.
 		OdDbStubPtrArray aOld;
 		auto GripDataIterator {m_GripData.begin()};
-
 		while (GripDataIterator != m_GripData.end()) {
 
 			if (IsDisabled()) {
 				aOld.push_back(GripDataIterator->first);
-			}
-			else {
+			} else {
 				if (!selectionSet->isMember(GripDataIterator->first)) {
 					aOld.push_back(GripDataIterator->first);
-				}
-				else {
+				} else {
 					// Remove if subentities changed
 					auto Removed {false};
 					for (unsigned long se = 0; se < GripDataIterator->second.m_GripDataSubEntity.size(); se++) {
@@ -627,13 +529,11 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 					// Remove if new paths added also (workaround. tehnically new pathes must be added on second step)
 					if (!Removed) {
 						auto SelectionSetIterator {searchObjectSSetIterator(selectionSet, GripDataIterator->first)};
-
 						for (unsigned SubEntityIndex = 0; SubEntityIndex < SelectionSetIterator->subentCount(); SubEntityIndex++) {
 							OdDbBaseFullSubentPath FullSubEntityPath;
 							SelectionSetIterator->getSubentity(SubEntityIndex, FullSubEntityPath);
 							auto searchPath {0u};
 							auto Found {false};
-
 							for (; searchPath < GripDataIterator->second.m_GripDataSubEntity.size(); searchPath++) {
 
 								if (GripDataIterator->second.m_GripDataSubEntity.at(searchPath).m_SubentPath == FullSubEntityPath) {
@@ -652,10 +552,8 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 			GripDataIterator++;
 		}
 		const auto Size {aOld.size()};
-
 		for (unsigned i = 0; i < Size; i++) {
 			RemoveEntityGrips(aOld[i], true);
-
 			if (i % GM_PAGE_EACH_OBJECT && Database) { Database->pageObjects(); }
 		}
 	}
@@ -665,13 +563,11 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 		while (!SelectionSetIterator->done()) {
 
 			if (!IsDisabled() && m_GripData.end() == m_GripData.find(SelectionSetIterator->id())) { aNew.push_back(SelectionSetIterator->id()); }
-
 			SelectionSetIterator->next();
 		}
 		const auto Size {aNew.size()};
 		for (unsigned i = 0; i < Size; i++) {
 			UpdateEntityGrips(aNew[i]);
-
 			if (i % GM_PAGE_EACH_OBJECT && Database) { Database->pageObjects(); }
 		}
 	}
@@ -680,26 +576,18 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 
 void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 	RemoveEntityGrips(id, false);
-
 	auto SelectionSet {WorkingSelectionSet()};
-
 	if (SelectionSet.isNull() || !SelectionSet->isMember(id)) { return; }
-
 	auto Entity {OpenObject(id)};
-
 	if (Entity.isNull()) { return; }
-
 	OdExGripDataPtrArray aExt;
 	OdDbGripDataPtrArray aPts;
-
 	auto SelectionSetIterator {searchObjectSSetIterator(SelectionSet, id)};
-
 	if (SelectionSetIterator->subentCount() > 0) {
 		for (unsigned long se = 0; se < SelectionSetIterator->subentCount(); se++) {
 			OdDbBaseFullSubentPath subEntPath;
 			SelectionSetIterator->getSubentity(se, subEntPath);
 			aPts.clear();
-
 			if (GetGripPointsAtSubentPath(Entity, subEntPath, aPts, ActiveViewUnitSize(), m_GRIPSIZE, ActiveViewDirection(), 0) == eOk) {
 				const unsigned long prevSize = aExt.size();
 				aExt.resize(prevSize + aPts.size());
@@ -708,18 +596,15 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 				}
 			}
 		}
-	}
-	else {
+	} else {
 		if (eOk == GetGripPoints(Entity, aPts, ActiveViewUnitSize(), m_GRIPSIZE, ActiveViewDirection(), 0)) {
 			aExt.resize(aPts.size());
 			const auto Size {aExt.size()};
 			for (unsigned i = 0; i < Size; i++) {
 				aExt[i] = OdExGripData::createObject(id, aPts[i], aPts[i]->gripPoint(), this);
 			}
-		}
-		else {
+		} else {
 			OdGePoint3dArray aOldPts;
-
 			if (eOk == GetGripPoints(Entity, aOldPts)) {
 				aExt.resize(aOldPts.size());
 				const auto Size = aExt.size();
@@ -730,13 +615,11 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 		}
 	}
 	const auto bModel {IsModel(Entity)};
-
 	if (!aExt.empty()) {
 		const auto Size = aExt.size();
 		OdExGripDataExt dExt;
 		for (unsigned i = 0; i < Size; i++) {
 			OdDbBaseFullSubentPath entPath;
-
 			if (aExt[i]->entPath(&entPath)) {
 				auto Found {false};
 				for (auto& GripDatum : dExt.m_GripDataSubEntity) {
@@ -752,13 +635,11 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 					se.m_pSubData.append(aExt[i]);
 					dExt.m_GripDataSubEntity.append(se);
 				}
-			}
-			else {
+			} else {
 				dExt.m_pDataArray.append(aExt[i]);
 			}
 		}
 		m_GripData.insert(std::make_pair(id, dExt));
-
 		for (unsigned i = 0; i < Size; i++) {
 			ShowGrip(aExt[i], bModel);
 		}
@@ -767,19 +648,14 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 
 void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, bool fireDone) {
 	auto GripDataIterator {m_GripData.find(id)};
-
 	if (GripDataIterator != m_GripData.end()) {
 		auto Entity {OpenObject(id)};
-
 		if (Entity.get()) { GripStatus(Entity, OdDb::kGripsToBeDeleted); }
-
 		const auto Model {IsModel(Entity)};
 		const auto Size = GripDataIterator->second.m_pDataArray.size();
-
 		for (unsigned i = 0; i < Size; i++) {
 			auto GripData {GripDataIterator->second.m_pDataArray[i]};
 			HideGrip(GripData, Model);
-
 			if (!GripDataIterator->second.m_pDataArray[i]->GripData().isNull() && GripDataIterator->second.m_pDataArray[i]->GripData()->gripOpStatFunc()) {
 				(*GripDataIterator->second.m_pDataArray[i]->GripData()->gripOpStatFunc())(GripDataIterator->second.m_pDataArray[i]->GripData(), id, OdDbGripOperations::kGripEnd);
 			}
@@ -803,35 +679,27 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, bool fireDone) {
 
 void OdBaseGripManager::LocateGripsAt(int x, int y, OdExGripDataPtrArray& aResult) {
 	aResult.clear();
-
 	const auto X {static_cast<double>(x)};
 	const auto Y {static_cast<double>(y)};
-
 	OdGePoint3d FirstPoint;
 	GripDataMap::const_iterator GripDataIterator {m_GripData.begin()};
 	while (GripDataIterator != m_GripData.end()) {
 		for (unsigned se = 0; se < GripDataIterator->second.m_GripDataSubEntity.size() + 1; se++) {
 			const auto& aData = se == 0 ? GripDataIterator->second.m_pDataArray : GripDataIterator->second.m_GripDataSubEntity[se - 1].m_pSubData;
-
 			const auto DataSize {aData.size()};
 			for (unsigned i = 0; i < DataSize; i++) {
 				const auto& CurrentPoint {aData[i]->point()};
-
 				if (aResult.empty()) { // First grip is obtained by comparing grip point device position with cursor position.
 					auto ptDC {CurrentPoint};
 					ptDC.transformBy(ActiveGsView()->worldToDeviceMatrix());
-
 					const auto DeltaX {fabs(X - ptDC.x)};
 					const auto DeltaY {fabs(Y - ptDC.y)};
 					const auto Ok {DeltaX <= m_GRIPSIZE && DeltaY <= m_GRIPSIZE};
-
 					if (Ok) {
 						FirstPoint = CurrentPoint;
 						aResult.push_back(aData[i]);
 					}
-				}
-				else { // Other grips are obtained by comparing world coordinates. The approach here is quite raw.
-
+				} else { // Other grips are obtained by comparing world coordinates. The approach here is quite raw.
 					if (CurrentPoint.isEqualTo(FirstPoint, 1E-4)) { aResult.push_back(aData[i]); }
 				}
 			}
@@ -842,13 +710,11 @@ void OdBaseGripManager::LocateGripsAt(int x, int y, OdExGripDataPtrArray& aResul
 
 void OdBaseGripManager::LocateGripsByStatus(OdDbGripOperations::DrawType eStatus, OdExGripDataPtrArray& aResult) {
 	aResult.clear();
-
 	GripDataMap::const_iterator GripDataIterator {m_GripData.begin()};
 	while (GripDataIterator != m_GripData.end()) {
 		for (unsigned long se = 0; se < GripDataIterator->second.m_GripDataSubEntity.size() + 1; se++) {
 			const auto& aData {se == 0 ? GripDataIterator->second.m_pDataArray : GripDataIterator->second.m_GripDataSubEntity[se - 1].m_pSubData};
 			const auto Size {aData.size()};
-
 			for (unsigned i = 0; i < Size; i++) {
 
 				if (eStatus == aData[i]->status()) { aResult.push_back(aData[i]); }
@@ -858,20 +724,18 @@ void OdBaseGripManager::LocateGripsByStatus(OdDbGripOperations::DrawType eStatus
 	}
 }
 
-namespace {
-
+namespace
+{
 	struct SortGripsAlongXAxis {
 		bool operator()(const OdExGripDataPtr& grA, const OdExGripDataPtr& grB) {
 			return OdPositive(grA->point().x, grB->point().x);
 		}
 	};
-
 }
 
 void OdBaseGripManager::UpdateInvisibleGrips() {
 	OdExGripDataPtrArray Overall;
 	GripDataMap::const_iterator GripDataIterator {m_GripData.begin()};
-
 	while (GripDataIterator != m_GripData.end()) {
 		Overall.insert(Overall.end(), GripDataIterator->second.m_pDataArray.begin(), GripDataIterator->second.m_pDataArray.end());
 		for (const auto& GripDatum : GripDataIterator->second.m_GripDataSubEntity) {
@@ -879,7 +743,6 @@ void OdBaseGripManager::UpdateInvisibleGrips() {
 		}
 		GripDataIterator++;
 	}
-
 	auto Size {Overall.size()};
 	for (unsigned i = 0; i < Size; i++) {
 		Overall[i]->setInvisible(false);
@@ -889,28 +752,20 @@ void OdBaseGripManager::UpdateInvisibleGrips() {
 	// Not the best approach for sorting.
 	// Just for demonstration.
 	std::sort(Overall.begin(), Overall.end(), SortGripsAlongXAxis());
-
 	Size = Overall.size();
 	for (unsigned i = 0; i < Size; i++) {
-		if (Overall[i]->isShared())
-			continue;
-
+		if (Overall[i]->isShared()) continue;
 		OdUInt32Array aEq;
 		aEq.push_back(i);
-
 		const auto ptIni = Overall[i]->point();
-
 		auto iNext = i + 1;
 		while (iNext < Size) {
 			const auto ptCur {Overall[iNext]->point()};
-
 			if (OdEqual(ptIni.x, ptCur.x, 1E-6)) {
 
 				if (ptIni.isEqualTo(ptCur, 1E-6)) { aEq.push_back(iNext); }
-
 				iNext++;
-			}
-			else {
+			} else {
 				break;
 			}
 		}
@@ -934,7 +789,6 @@ void OdBaseGripManager::UpdateInvisibleGrips() {
 			}
 			for (unsigned j = 0; j < jSize; j++) {
 				auto pGrip {Overall[aEq[j]]};
-
 				pGrip->setShared(true);
 				pGrip->setInvisible(j != Visible);
 			}
@@ -945,7 +799,6 @@ void OdBaseGripManager::UpdateInvisibleGrips() {
 void OdBaseGripManager::setValue(const OdGePoint3d& value) {
 	const auto NewPoint {EyeToUcsPlane(value, m_BasePoint)};
 	const auto Size {m_GripDrags.size()};
-
 	for (unsigned i = 0; i < Size; i++) {
 		m_GripDrags[i]->CloneEntity(NewPoint);
 	}
@@ -962,27 +815,21 @@ double OdBaseGripManager::ActiveViewUnitSize() const {
 	const auto ActiveView {ActiveGsView()};
 
 	// <tas="Duplicates function of inaccessible 'OdGiViewport::getNumPixelsInUnitSquare' here."/>
-
 	OdGePoint2d LowerLeft;
 	OdGePoint2d UpperRight;
 	ActiveView->getViewport(LowerLeft, UpperRight);
-
 	OdGsDCRect ScreenRectangle;
 	ActiveView->getViewport(ScreenRectangle);
-
 	OdGePoint2d ptDim;
 	ptDim.x = fabs(double(ScreenRectangle.m_max.x - ScreenRectangle.m_min.x) / ActiveView->fieldWidth() * (UpperRight.x - LowerLeft.x));
 	ptDim.y = fabs(double(ScreenRectangle.m_max.y - ScreenRectangle.m_min.y) / ActiveView->fieldHeight() * (UpperRight.y - LowerLeft.y));
-
 	OdGeVector3d v(m_GRIPSIZE / ptDim.x, 0, 0);
 	v.transformBy(ActiveView->viewingMatrix());
-
 	return v.length() / m_GRIPSIZE;
 }
 
 OdGeVector3d OdBaseGripManager::ActiveViewDirection() const {
 	auto View {ActiveGsView()};
-
 	return (View->position() - View->target()).normal();
 }
 
@@ -992,13 +839,9 @@ void OdBaseGripManager::Disable(bool disable) noexcept {
 
 OdGiDrawablePtr OdExGripManager::CloneEntity(OdDbStub* id) {
 	auto Entity {OdDbEntity::cast(OdDbObjectId(id).openObject())};
-
 	if (Entity.isNull()) { return OdGiDrawablePtr(); }
-
 	OdDbEntityPtr Clone;
-
 	if (Entity->cloneMeForDragging()) { Clone = OdDbEntity::cast(Entity->clone()); }
-
 	if (Clone.get()) {
 		Clone->disableUndoRecording(true);
 		Clone->setPropertiesFrom(Entity.get(), false);
@@ -1009,29 +852,24 @@ OdGiDrawablePtr OdExGripManager::CloneEntity(OdDbStub* id) {
 void OdExGripManager::OnModified(OdGiDrawable* grip) {
 	if (GetGsModel()) {
 		GetGsModel()->onModified(grip, static_cast<OdGiDrawable*>(nullptr));
-	}
-	else if (GetGsLayoutHelper()) {
+	} else if (GetGsLayoutHelper()) {
 		GetGsLayoutHelper()->invalidate();
 	}
 }
 
 OdExGripManager::OdExGripManager() noexcept {
 	m_LayoutHelper = nullptr;
-
 	m_cDbReactor.m_GripManager = this;
-
 	m_pGetSelectionSetPtr = nullptr;
 }
 
-void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel * gsModel, OdDbCommandContext * dbCommandContext, GetSelectionSetPtr pGetSSet) {
+void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr pGetSSet) {
 	m_LayoutHelper = device;
 	m_pGsModel = gsModel;
 	m_CommandContext = dbCommandContext;
-
 	if (m_CommandContext->baseDatabase()) {
 		auto Database {m_CommandContext->database()};
 		Disable(false);
-
 		auto HostApplicationServices {Database->appServices()};
 		m_GRIPSIZE = HostApplicationServices->getGRIPSIZE();
 		m_GRIPOBJLIMIT = HostApplicationServices->getGRIPOBJLIMIT();
@@ -1054,8 +892,13 @@ void OdExGripManager::Uninitialize() {
 void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext* edCommandContext) {
 	auto Ok = true;
 	try {
-		const auto FinalPoint {m_parent->m_CommandContext->dbUserIO()->getPoint(L"Specify stretch point or [Base point/Copy/Undo/eXit]:", OdEd::kGptNoLimCheck | OdEd::kGptDefault | OdEd::kGptNoUCS, &m_parent->m_BasePoint, L"Base Copy Undo eXit", m_parent)};
-
+		const auto FinalPoint {
+		m_parent->m_CommandContext->dbUserIO()->getPoint(L"Specify stretch point or [Base point/Copy/Undo/eXit]:",
+		                                                 OdEd::kGptNoLimCheck | OdEd::kGptDefault | OdEd::kGptNoUCS,
+		                                                 &m_parent->m_BasePoint,
+		                                                 L"Base Copy Undo eXit",
+		                                                 m_parent)
+		};
 		for (auto& ParentGripDrag : m_parent->m_GripDrags) {
 			ParentGripDrag->moveEntity(m_parent->EyeToUcsPlane(FinalPoint, m_parent->m_BasePoint));
 		}
@@ -1074,27 +917,22 @@ void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext* edCommandCont
 		}
 	}
 	m_parent->m_GripDrags.clear();
-
 	if (Ok) { m_parent->UpdateInvisibleGrips(); }
 }
 
 bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 	if (!OdBaseGripManager::OnMouseDown(x, y, shiftIsDown)) { return false; }
-
 	if (shiftIsDown) { return true; }
-
 	OdExGripDataPtrArray aKeys;
 	LocateGripsAt(x, y, aKeys);
-
 	if (aKeys.empty()) { return true; }
-
 	OdExGripDataPtrArray ActiveKeys;
 	LocateGripsByStatus(OdDbGripOperations::kHotGrip, ActiveKeys);
-
-	if (ActiveKeys.empty()) { return false; } // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
-
+	if (ActiveKeys.empty()
+	) {
+		return false;
+	} // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
 	if (handleMappedRtClk(ActiveKeys, x, y)) { return true; }
-
 	for (auto& ActiveKey : ActiveKeys) {
 		ActiveKey->setStatus(OdDbGripOperations::kDragImageGrip);
 	}
@@ -1104,7 +942,6 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 		OdExGripDragPtr GripDrag;
 		{
 			const auto& aData {GripDataIterator->second.m_pDataArray};
-
 			for (const auto& GripDatum : aData) {
 
 				if (OdDbGripOperations::kDragImageGrip == GripDatum->status()) {
@@ -1115,7 +952,6 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 			}
 			for (unsigned i = 0; i < GripDataIterator->second.m_GripDataSubEntity.size() && !Active; i++) {
 				const auto& aData {GripDataIterator->second.m_GripDataSubEntity.at(i).m_pSubData};
-
 				for (const auto& GripDatum : aData) {
 
 					if (OdDbGripOperations::kDragImageGrip == GripDatum->status()) {
@@ -1127,30 +963,25 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 			}
 		}
 		if (Active) { m_GripDrags.push_back(GripDrag); }
-
 		GripDataIterator++;
 	}
-
 	auto GripDragsSize {m_GripDrags.size()};
 	for (unsigned i = 0; i < GripDragsSize; i++) {
 		m_GripDrags[i]->notifyDragStarted();
 		m_GripDrags[i]->CloneEntity();
 	}
-
 	m_BasePoint = aKeys.first()->point();
 	m_LastPoint = m_BasePoint;
 	{
 		// Use alternative point if needed.
 		auto FirstGripData = aKeys.first()->GripData();
-		
 		if (FirstGripData.get() != nullptr) {
-			
+
 			if (FirstGripData->alternateBasePoint() != nullptr) { m_BasePoint = *FirstGripData->alternateBasePoint(); }
 		}
 	}
 	m_CommandContext->database()->startUndoRecord();
 	odedRegCmds()->executeCommand(&m_gripStretchCommand, m_CommandContext);
-
 	for (auto& ActiveKey : ActiveKeys) {
 		ActiveKey->setStatus(OdDbGripOperations::kWarmGrip);
 	}
@@ -1162,31 +993,25 @@ bool OdExGripManager::OnMouseMove(int x, int y) {
 }
 
 bool OdExGripManager::onControlClick() {
-
 	if (m_GripDrags.empty()) { return false; }
 
 	// TODO: Notify active grips.
 	// AEC grips use CTRL key to change mode, but how to pass it threw standard interface is currently unknown.
-
 	return true;
 }
 
 void OdExGripManager::ShowGrip(OdExGripData* gripData, bool model) {
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
-
 	if (PaperLayoutHelper.get()) {
 		auto ActiveViewport {m_CommandContext->database()->activeViewportId().openObject()};
 		OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
-
 		if (!AbstractViewportData.isNull() && AbstractViewportData->gsView(ActiveViewport)) {
 			AbstractViewportData->gsView(ActiveViewport)->add(gripData, m_pGsModel);
-		}
-		else {
+		} else {
 			PaperLayoutHelper->overallView()->add(gripData, m_pGsModel);
 		}
-	}
-	else {
+	} else {
 		for (auto i = 0; i < NumberOfViews; i++) {
 			m_LayoutHelper->viewAt(i)->add(gripData, m_pGsModel);
 		}
@@ -1196,13 +1021,11 @@ void OdExGripManager::ShowGrip(OdExGripData* gripData, bool model) {
 void OdExGripManager::HideGrip(OdExGripData* gripData, bool model) {
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
-
 	if (PaperLayoutHelper.get()) {
 		for (auto i = 0; i < NumberOfViews; i++) {
 			m_LayoutHelper->viewAt(i)->erase(gripData);
 		}
-	}
-	else {
+	} else {
 		for (auto i = 0; i < NumberOfViews; i++) {
 			m_LayoutHelper->viewAt(i)->erase(gripData);
 		}
@@ -1211,9 +1034,7 @@ void OdExGripManager::HideGrip(OdExGripData* gripData, bool model) {
 
 int OdExGripManager::addDrawables(OdGsView* view) {
 	ODA_ASSERT(view->device() == m_LayoutHelper->underlyingDevice().get());
-
 	const auto Size = m_GripDrags.size();
-
 	for (unsigned i = 0; i < Size; i++) {
 		view->add(m_GripDrags[i].get(), /*m_pGsModel*/ nullptr);
 	}
@@ -1222,7 +1043,6 @@ int OdExGripManager::addDrawables(OdGsView* view) {
 
 void OdExGripManager::removeDrawables(OdGsView* view) {
 	const unsigned long iSize = m_GripDrags.size();
-	
 	for (unsigned i = 0; i < iSize; i++) {
 		view->erase(m_GripDrags[i].get());
 	}
@@ -1230,13 +1050,9 @@ void OdExGripManager::removeDrawables(OdGsView* view) {
 
 inline void resetDragging(OdGsDevice* device, bool option) {
 	if (!device) { return; }
-
 	auto Properties {device->properties()};
-
 	if (Properties.isNull()) { return; }
-
 	if (!Properties->has(L"DrawDragging")) { return; }
-
 	Properties->putAt(L"DrawDragging", OdRxVariantValue(option));
 }
 
@@ -1249,9 +1065,7 @@ void OdExGripManager::DraggingStopped() {
 }
 
 OdSelectionSetPtr OdExGripManager::WorkingSelectionSet() const {
-	
 	if (m_pGetSelectionSetPtr) { return OdSelectionSet::cast(m_pGetSelectionSetPtr(m_CommandContext)); }
-	
 	return OdSelectionSetPtr();
 }
 
@@ -1269,10 +1083,8 @@ OdGePoint3d OdExGripManager::EyeToUcsPlane(const OdGePoint3d& point, const OdGeP
 	OdGePlane Plane(basePoint, UcsXAxis, UcsYAxis);
 	OdGeLine3d Line(point, ActiveViewDirection());
 	OdGePoint3d NewPoint;
-
 	if (!Plane.intersectWith(Line, NewPoint)) {
 		Line.set(point, UcsXAxis.crossProduct(UcsYAxis));
-
 		if (!Plane.intersectWith(Line, NewPoint)) { NewPoint = basePoint; }
 	}
 	return NewPoint;
@@ -1294,14 +1106,12 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 		OdDbGripDataArray HotGrips;
 		for (unsigned i = 0; i < Size; i++) {
 			HotGrips.append(*activeKeys[i]->GripData());
-
 			if (!Entities.contains(activeKeys[i]->entityId())) { Entities.append(activeKeys[i]->entityId()); }
 		}
 		OdString MenuName;
 		ODHMENU Menu {nullptr};
 		ContextMenuItemIndexPtr cb {nullptr};
 		auto Result {(*activeKeys[static_cast<unsigned>(RightClickIndex)]->GripData()->rtClk())(HotGrips, Entities, MenuName, Menu, cb)};
-
 		if (Result == eOk && Menu != nullptr && cb != nullptr) {
 			auto ActiveWindow {GetActiveWindow()};
 			POINT pt = {x, y};
@@ -1309,7 +1119,6 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 			unsigned Flags {TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION};
 			(*cb)(TrackPopupMenu(static_cast<HMENU>(Menu), Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
 			DestroyMenu(static_cast<HMENU>(Menu));
-			
 			for (unsigned i = 0; i < Size; i++) {
 				activeKeys[i]->setStatus(OdDbGripOperations::kWarmGrip);
 			}
@@ -1325,7 +1134,6 @@ void OdExGripManager::Disable(bool disable) noexcept {
 	if (m_Disabled != disable) {
 		auto Database {m_CommandContext->database()};
 		m_Disabled = disable;
-		
 		if (disable) {
 			Database->removeReactor(&m_cDbReactor);
 		} else {
@@ -1336,34 +1144,30 @@ void OdExGripManager::Disable(bool disable) noexcept {
 
 OdGiDrawablePtr OdExGripManager::OpenObject(OdDbStub* id, bool isForWriteMode) {
 	OdGiDrawablePtr Drawable;
-
 	if (!id) { return Drawable; }
-
 	Drawable = OdGiDrawable::cast(OdDbObjectId(id).openObject(isForWriteMode ? OdDb::kForWrite : OdDb::kForRead));
 	return Drawable;
 }
 
-OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, unsigned long bitFlags) const {
+OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize,
+                                                    const OdGeVector3d& curViewDir, unsigned long bitFlags) const {
 	return OdDbEntity::cast(entity)->getGripPointsAtSubentPath(*static_cast<const OdDbFullSubentPath*>(& path), grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const {
 	OdDbEntity* Entity {OdDbEntity::cast(entity)};
-
 	if (!Entity) { return eNotApplicable; }
-
 	return Entity->getGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const {
 	OdDbEntity* Entity {OdDbEntity::cast(entity)};
-
 	if (!Entity) { return eNotApplicable; }
-
 	return Entity->getGripPoints(gripPoints);
 }
 
-OdResult OdExGripManager::MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, unsigned long bitflags) {
+OdResult OdExGripManager::MoveGripPointsAtSubentPaths(OdGiDrawable* entity, const OdDbBaseFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset,
+                                                      unsigned long bitflags) {
 	ODA_ASSERT_ONCE(sizeof(OdDbFullSubentPath) == sizeof(OdDbBaseFullSubentPath));
 	return OdDbEntity::cast(entity)->moveGripPointsAtSubentPaths(*reinterpret_cast<const OdDbFullSubentPathArray*>(& paths), gripAppData, offset, bitflags);
 }
@@ -1394,7 +1198,7 @@ bool OdExGripManager::IsModel(OdGiDrawable* entity) noexcept {
 }
 
 void OdExGripDbReactor::objectAppended(const OdDbDatabase* database, const OdDbObject* dbObject) noexcept {
-  // New object.
+	// New object.
 }
 
 void OdExGripDbReactor::objectModified(const OdDbDatabase*, const OdDbObject* dbObject) {
@@ -1408,5 +1212,4 @@ void OdExGripDbReactor::objectErased(const OdDbDatabase* database, const OdDbObj
 		m_GripManager->UpdateInvisibleGrips();
 	}
 }
-
 #undef GM_PAGE_EACH_OBJECT

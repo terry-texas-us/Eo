@@ -1,5 +1,4 @@
 #pragma once
-
 #include "EoGeReferenceSystem.h"
 #include "EoDbCharacterCellDefinition.h"
 #include "EoDbFontDefinition.h"
@@ -13,13 +12,10 @@ class CPrimState {
 	EoDbCharacterCellDefinition m_CharacterCellDefinition;
 	short m_HatchInteriorStyle {0};
 	unsigned m_HatchInteriorStyleIndex {0};
-
 public: // Constructors and destructor
-
 	const CPrimState& operator=(const CPrimState& other) noexcept;
 
 	// Methods
-
 	EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
 	short ColorIndex() const noexcept;
 	EoDbFontDefinition FontDefinition() const noexcept;
@@ -42,4 +38,5 @@ public: // Constructors and destructor
 	int SetROP2(CDC& deviceContext, int drawMode);
 	void SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment);
 };
+
 extern CPrimState pstate;

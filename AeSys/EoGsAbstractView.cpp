@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "EoGsAbstractView.h"
 
 EoGsAbstractView::EoGsAbstractView() {
@@ -8,10 +7,8 @@ EoGsAbstractView::EoGsAbstractView() {
 EoGsAbstractView::EoGsAbstractView(const EoGsAbstractView& other) {
 	m_ViewMode = other.m_ViewMode;
 	m_RenderMode = other.m_RenderMode;
-
 	m_Elevation = other.m_Elevation;
 	m_LensLength = other.m_LensLength;
-
 	m_Position = other.m_Position;
 	m_Target = other.m_Target;
 	m_ViewUp = other.m_ViewUp;
@@ -27,7 +24,6 @@ EoGsAbstractView::EoGsAbstractView(const EoGsAbstractView& other) {
 void EoGsAbstractView::AdjustWindow(double aspectRatio) noexcept {
 	const auto FieldWidth {m_FieldWidthMaximum - m_FieldWidthMinimum};
 	const auto FieldHeight {m_FieldHeightMaximum - m_FieldHeightMinimum};
-
 	if (FieldWidth <= FLT_EPSILON || FieldHeight / FieldWidth > aspectRatio) {
 		const auto Adjustment {(FieldHeight / aspectRatio - FieldWidth) * 0.5};
 		m_FieldWidthMinimum -= Adjustment;

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "AeSys.h"
 #include "EoDlgSetActiveLayout.h"
 #include "OdArray.h"
@@ -19,14 +18,14 @@ void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* pDX) {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgSetActiveLayout, CDialog)
-	ON_COMMAND(IDC_ALAYOUT_CLOSE, OnLayoutDlgClose)
-	ON_LBN_SELCHANGE(IDC_LAYOUTLIST, OnSelchangeLayoutlist)
-	ON_LBN_DBLCLK(IDC_LAYOUTLIST, OnDblclkLayoutlist)
-	ON_BN_CLICKED(IDC_RENAME, OnRename)
-	ON_BN_CLICKED(IDC_DELETE, OnDelete)
-	ON_BN_CLICKED(IDC_COPY, OnCopy)
-	ON_BN_CLICKED(IDC_NEW, OnNew)
-	ON_BN_CLICKED(IDC_FROM_TEMPLATE, OnFromTemplate)
+		ON_COMMAND(IDC_ALAYOUT_CLOSE, OnLayoutDlgClose)
+		ON_LBN_SELCHANGE(IDC_LAYOUTLIST, OnSelchangeLayoutlist)
+		ON_LBN_DBLCLK(IDC_LAYOUTLIST, OnDblclkLayoutlist)
+		ON_BN_CLICKED(IDC_RENAME, OnRename)
+		ON_BN_CLICKED(IDC_DELETE, OnDelete)
+		ON_BN_CLICKED(IDC_COPY, OnCopy)
+		ON_BN_CLICKED(IDC_NEW, OnNew)
+		ON_BN_CLICKED(IDC_FROM_TEMPLATE, OnFromTemplate)
 END_MESSAGE_MAP()
 
 BOOL EoDlgSetActiveLayout::OnInitDialog() {
@@ -43,31 +42,24 @@ void EoDlgSetActiveLayout::FillListBox() {
 		OdDbDictionaryPtr LayoutDictionary {Database->getLayoutDictionaryId().safeOpenObject()};
 		auto LayoutIterator {LayoutDictionary->newIterator()};
 		const auto ActiveLayoutBlockTableRecord {Database->getActiveLayoutBTRId()};
-
 		m_OldActiveLayout = -1;
 		while (!LayoutIterator->done()) {
 			OdSmartPtr<OdDbLayout> Layout {LayoutIterator->objectId().safeOpenObject()};
 			ItemIndex = static_cast<unsigned>(Layout->getTabOrder());
-			
-			if (ItemIndex >= Items.size()) { 
-				Items.resize(ItemIndex + 1); 
+			if (ItemIndex >= Items.size()) {
+				Items.resize(ItemIndex + 1);
 			}
-
 			Items[ItemIndex] = LayoutIterator->name();
-			
 			if (Layout->getBlockTableRecordId() == ActiveLayoutBlockTableRecord) { m_OldActiveLayout = static_cast<int>(ItemIndex); }
-
 			LayoutIterator->next();
 		}
 		auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 		Layouts->ResetContent();
-
 		for (unsigned ItemIndex = 0; ItemIndex < Items.size(); ++ItemIndex) {
 			Layouts->InsertString(static_cast<int>(ItemIndex), Items[ItemIndex]);
 		}
 		Layouts->SetSel(m_OldActiveLayout);
 		m_NewActiveLayout = m_OldActiveLayout;
-
 		GetDlgItem(IDC_NEWNAME)->SetWindowTextW(Items[static_cast<unsigned>(m_OldActiveLayout)]);
 	} catch (const OdError& Error) {
 		theApp.reportError(L"Error Selecting Layout", Error);
@@ -109,7 +101,6 @@ void EoDlgSetActiveLayout::OnRename() {
 	CString NewName;
 	Layouts->GetText(m_NewActiveLayout, OldName);
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(NewName);
-
 	if (NewName != OldName) {
 		try {
 			m_Database->renameLayout(OdString(OldName), OdString(NewName));
@@ -144,7 +135,6 @@ void EoDlgSetActiveLayout::OnCopy() {
 	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 	CString strSourceName;
 	CString strNewName;
-	
 	Layouts->GetText(m_NewActiveLayout, strSourceName);
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
 	OdString strName(strSourceName);
@@ -162,7 +152,6 @@ void EoDlgSetActiveLayout::OnCopy() {
 void EoDlgSetActiveLayout::OnNew() {
 	CString LayoutName;
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(LayoutName);
-
 	try {
 		m_Database->createLayout(OdString(LayoutName));
 	} catch (const OdError& Error) {
@@ -175,18 +164,12 @@ void EoDlgSetActiveLayout::OnNew() {
 void EoDlgSetActiveLayout::OnFromTemplate() {
 	OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
 	auto FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
-	
 	if (FileName.GetLength() == 0) { return; }
-
 	auto Database {theApp.readFile(OdString(FileName))};
-	
 	if (Database.isNull()) { return; }
-
 	auto LayoutManager {m_Database->appServices()->layoutManager()};
 	auto Layout {OdDbLayout::cast(LayoutManager->findLayoutNamed(Database, L"Layout1").openObject())};
-	
 	if (Layout.isNull()) { return; }
-
 	CString NewName;
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(NewName);
 	try {

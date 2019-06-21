@@ -1,13 +1,9 @@
 #include "stdafx.h"
-
 #include "AeSys.h"
 #include "AeSysDoc.h"
-
 #include "DbObjectContextCollection.h"
 #include "DbObjectContextManager.h"
-
 #include "EoCtrlFindComboBox.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -15,70 +11,61 @@ static char THIS_FILE[] = __FILE__;
 #endif
 
 // CMainFrame
-
 IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 
 const int MaximumUserToolbars = 10;
 const unsigned FirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const unsigned LastUserToolBarId = FirstUserToolBarId + MaximumUserToolbars - 1;
-
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
-	ON_WM_CREATE()
-	ON_WM_DESTROY()
-	ON_WM_TIMER()
-	ON_WM_MDIACTIVATE()
-
-	ON_COMMAND(ID_HELP_FINDER, &CMDIFrameWndEx::OnHelpFinder)
-	ON_COMMAND(ID_HELP, &CMDIFrameWndEx::OnHelp)
-	ON_COMMAND(ID_CONTEXT_HELP, &CMDIFrameWndEx::OnContextHelp)
-	ON_COMMAND(ID_DEFAULT_HELP, &CMDIFrameWndEx::OnHelpFinder)
-	ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
-	ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
-	ON_COMMAND(ID_VIEW_FULLSCREEN, OnViewFullScreen)
-	ON_COMMAND(ID_MDI_TABBED, OnMdiTabbed)
-	ON_UPDATE_COMMAND_UI(ID_MDI_TABBED, OnUpdateMdiTabbed)
-	ON_REGISTERED_MESSAGE(AFX_WM_TOOLBARMENU, OnToolbarContextMenu)
-	ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
-	ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, OnGetTabToolTip)
-	ON_REGISTERED_MESSAGE(AFX_WM_RESETTOOLBAR, OnToolbarReset)
-	ON_COMMAND_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
-	ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
+		ON_WM_CREATE()
+		ON_WM_DESTROY()
+		ON_WM_TIMER()
+		ON_WM_MDIACTIVATE()
+		ON_COMMAND(ID_HELP_FINDER, &CMDIFrameWndEx::OnHelpFinder)
+		ON_COMMAND(ID_HELP, &CMDIFrameWndEx::OnHelp)
+		ON_COMMAND(ID_CONTEXT_HELP, &CMDIFrameWndEx::OnContextHelp)
+		ON_COMMAND(ID_DEFAULT_HELP, &CMDIFrameWndEx::OnHelpFinder)
+		ON_COMMAND(ID_WINDOW_MANAGER, &CMainFrame::OnWindowManager)
+		ON_COMMAND(ID_VIEW_CUSTOMIZE, &CMainFrame::OnViewCustomize)
+		ON_COMMAND(ID_VIEW_FULLSCREEN, OnViewFullScreen)
+		ON_COMMAND(ID_MDI_TABBED, OnMdiTabbed)
+		ON_UPDATE_COMMAND_UI(ID_MDI_TABBED, OnUpdateMdiTabbed)
+		ON_REGISTERED_MESSAGE(AFX_WM_TOOLBARMENU, OnToolbarContextMenu)
+		ON_REGISTERED_MESSAGE(AFX_WM_CREATETOOLBAR, &CMainFrame::OnToolbarCreateNew)
+		ON_REGISTERED_MESSAGE(AFX_WM_ON_GET_TAB_TOOLTIP, OnGetTabToolTip)
+		ON_REGISTERED_MESSAGE(AFX_WM_RESETTOOLBAR, OnToolbarReset)
+		ON_COMMAND_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
+		ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 END_MESSAGE_MAP()
-
 static unsigned Indicators[] = {
-	ID_INDICATOR_ICON, // status icon
-	ID_SEPARATOR, // status line indicator
-	ID_INDICATOR_PROGRESS, // progress bar
-	ID_OP0,
-	ID_OP1,
-	ID_OP2,
-	ID_OP3,
-	ID_OP4,
-	ID_OP5,
-	ID_OP6,
-	ID_OP7,
-	ID_OP8,
-	ID_OP9,
+ID_INDICATOR_ICON, // status icon
+ID_SEPARATOR, // status line indicator
+ID_INDICATOR_PROGRESS, // progress bar
+ID_OP0,
+ID_OP1,
+ID_OP2,
+ID_OP3,
+ID_OP4,
+ID_OP5,
+ID_OP6,
+ID_OP7,
+ID_OP8,
+ID_OP9,
 };
 
 // CMainFrame construction/destruction
-
 CMainFrame::CMainFrame() {
 	theApp.m_ApplicationLook = static_cast<unsigned>(theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK));
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
-	
 	if (CMDIFrameWndEx::OnCreate(createStructure) == -1) { return -1; }
-
 	UpdateMDITabs(FALSE);
-
 	if (!m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE)) {
 		TRACE0("Failed to create menubar\n");
 		return -1;
 	}
 	m_MenuBar.SetPaneStyle(m_MenuBar.GetPaneStyle() | CBRS_SIZE_DYNAMIC | CBRS_TOOLTIPS | CBRS_FLYBY);
-
 	CList<unsigned, unsigned> ProtectedCommands;
 	ProtectedCommands.AddTail(ID_VIEW_ANNOTATIONSCALES);
 	ProtectedCommands.AddTail(ID_TOOLS_REGISTEREDCOMMANDS);
@@ -87,35 +74,28 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	// Prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 	const unsigned long Style {WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC};
-	
 	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(static_cast<unsigned>(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME))) {
 		TRACE0("Failed to create toolbar\n");
 		return -1;
 	}
 	m_StandardToolBar.SetWindowTextW(L"Standard");
 	m_StandardToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...");
-
 	InitUserToolbars(nullptr, FirstUserToolBarId, LastUserToolBarId);
-
 	if (!m_StatusBar.Create(this)) {
 		TRACE0("Failed to create status bar\n");
 		return -1;
 	}
 	m_StatusBar.SetIndicators(Indicators, sizeof Indicators / sizeof(unsigned));
-
 	m_StatusBar.SetPaneStyle(nStatusIcon, SBPS_NOBORDERS);
 	m_StatusBar.SetPaneStyle(nStatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
 	m_StatusBar.SetPaneWidth(nStatusProgress, 96);
-
 	m_MenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_StandardToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_MenuBar);
 	DockPane(&m_StandardToolBar);
-
 	CDockingManager::SetDockingMode(DT_SMART);
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
-
 	if (!CreateDockingWindows()) {
 		TRACE0("Failed to create docking windows\n");
 		return -1;
@@ -124,20 +104,15 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	DockPane(&m_OutputPane);
 	m_PropertiesPane.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_PropertiesPane);
-
 	OnApplicationLook(theApp.m_ApplicationLook);
-
 	EnableWindowsDialog(ID_WINDOW_MANAGER, IDS_WINDOWS_MANAGER, TRUE);
 
 	// Enable automatic creation and management of the pop-up pane menu, which displays a list of application panes.
 	EnablePaneMenu(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...", ID_VIEW_TOOLBARS);
 	EnableFullScreenMode(ID_VIEW_FULLSCREEN);
 	EnableFullScreenMainMenu(TRUE);
-
 	CMFCToolBar::EnableQuickCustomization();
-
 	if (CMFCToolBar::GetUserImages() == nullptr) { // load user-defined toolbar images
-
 		if (m_UserImages.Load(L"res\\UserImages.bmp")) {
 			m_UserImages.SetImageSize(CSize(16, 16), FALSE);
 			CMFCToolBar::SetUserImages(&m_UserImages);
@@ -145,7 +120,6 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	}
 	// Shows the document name after thumbnail before the application name in a frame window title.
 	ModifyStyle(0, FWS_PREFIXTITLE);
-
 	return 0;
 }
 
@@ -158,17 +132,13 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
 
 BOOL CMainFrame::CreateDockingWindows() {
 	const CSize DefaultSize(200, 200);
-
 	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI};
-
 	auto Caption {theApp.LoadStringResource(IDS_OUTPUT)};
-	
 	if (!m_OutputPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_OUTPUTWND, SharedStyles | CBRS_BOTTOM)) {
 		TRACE0("Failed to create Output pane\n");
 		return FALSE;
 	}
 	Caption = theApp.LoadStringResource(IDS_PROPERTIES);
-	
 	if (!m_PropertiesPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_PROPERTIESWND, SharedStyles | CBRS_RIGHT)) {
 		TRACE0("Failed to create Properties pane\n");
 		return FALSE;
@@ -189,7 +159,6 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	FrameBrush.CreateSysColorBrush(COLOR_WINDOWFRAME);
 	deviceContext.FrameRect(&ItemRectangle, &FrameBrush);
 	ItemRectangle.SetRect(ItemRectangle.right + 4, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
-
 	if (ItemRectangle.left <= itemRectangle.right) {
 		auto ColorName {color.colorNameForDisplay()};
 		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, static_cast<unsigned>(ColorName.getLength()), nullptr);
@@ -199,25 +168,19 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, OdDb::LineWeight lineWeight) {
 	const auto PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
 	const auto PixelWidth {lineWeight <= 0 ? 0 : int(double(lineWeight) / 100. * PixelsPerLogicalMillimeter + 0.5)};
-
 	LOGBRUSH Brush;
 	Brush.lbStyle = BS_SOLID;
 	Brush.lbColor = RGB(0x00, 0x00, 0x00);
 	Brush.lbHatch = 0;
-
 	CPen Pen(PS_SOLID | PS_GEOMETRIC | PS_ENDCAP_SQUARE, PixelWidth, &Brush);
 	auto OldPen {deviceContext.SelectObject(&Pen)};
-
 	CRect ItemRectangle(itemRectangle);
 	ItemRectangle.DeflateRect(2, 2);
 	ItemRectangle.right = ItemRectangle.left + 40;
-
 	deviceContext.MoveTo(ItemRectangle.left, ItemRectangle.CenterPoint().y);
 	deviceContext.LineTo(ItemRectangle.right, ItemRectangle.CenterPoint().y);
 	deviceContext.SelectObject(OldPen);
-
 	ItemRectangle.SetRect(ItemRectangle.right + 8, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
-
 	if (ItemRectangle.left <= itemRectangle.right) {
 		auto String {StringByLineWeight(lineWeight, false)};
 		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, static_cast<unsigned>(String.getLength()), nullptr);
@@ -236,28 +199,37 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 }
 
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
-	auto PropertiesPaneIcon {static_cast<HICON>(LoadImageW(AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0))};
+	auto PropertiesPaneIcon {
+	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(),
+	                              MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND),
+	                              IMAGE_ICON,
+	                              GetSystemMetrics(SM_CXSMICON),
+	                              GetSystemMetrics(SM_CYSMICON),
+	                              0))
+	};
 	m_PropertiesPane.SetIcon(PropertiesPaneIcon, FALSE);
-
-	auto OutputPaneIcon {static_cast<HICON>(LoadImageW(AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0))};
+	auto OutputPaneIcon {
+	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(),
+	                              MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND),
+	                              IMAGE_ICON,
+	                              GetSystemMetrics(SM_CXSMICON),
+	                              GetSystemMetrics(SM_CYSMICON),
+	                              0))
+	};
 	m_OutputPane.SetIcon(OutputPaneIcon, FALSE);
-
 	UpdateMDITabbedBarsIcons();
 }
 
 // CMainFrame diagnostics
-
 #ifdef _DEBUG
 void CMainFrame::AssertValid() const {
 	CMDIFrameWndEx::AssertValid();
 }
 
-void CMainFrame::Dump(CDumpContext & dc) const {
+void CMainFrame::Dump(CDumpContext& dc) const {
 	CMDIFrameWndEx::Dump(dc);
 }
-
 #endif //_DEBUG
-
 void CMainFrame::OnWindowManager() {
 	ShowWindowsDialog();
 }
@@ -268,29 +240,22 @@ void CMainFrame::OnViewCustomize() {
 
 	// Setup combobox:
 	Dialog->ReplaceButton(ID_EDIT_FIND, EoCtrlFindComboBox());
-
 	Dialog->Create();
 }
 
 LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM name) {
 	auto Result {CMDIFrameWndEx::OnToolbarCreateNew(wp, name)};
-	
 	if (Result == 0) { return 0; }
-
 	auto UserToolbar {reinterpret_cast<CMFCToolBar*>(Result)};
 	ASSERT_VALID(UserToolbar);
-
 	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
-
 	UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
 	return Result;
 }
 
 LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
 	switch (toolbarResourceId) {
-		case IDR_MAINFRAME:
-		case IDR_MAINFRAME_256:
-		{
+		case IDR_MAINFRAME: case IDR_MAINFRAME_256: {
 			m_StandardToolBar.ReplaceButton(ID_EDIT_FIND, EoCtrlFindComboBox(), FALSE);
 			break;
 		}
@@ -299,28 +264,24 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
 	}
 	return 0;
 }
+
 void CMainFrame::OnApplicationLook(unsigned look) {
 	theApp.m_ApplicationLook = look;
-
 	switch (theApp.m_ApplicationLook) {
 		case ID_VIEW_APPLOOK_WINDOWS_7:
 			CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
 			break;
-
 		default:
 			switch (theApp.m_ApplicationLook) {
 				case ID_VIEW_APPLOOK_OFF_2007_BLUE:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_LunaBlue);
 					break;
-
 				case ID_VIEW_APPLOOK_OFF_2007_BLACK:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_ObsidianBlack);
 					break;
-
 				case ID_VIEW_APPLOOK_OFF_2007_AQUA:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Aqua);
 					break;
-
 				case ID_VIEW_APPLOOK_OFF_2007_SILVER:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Silver);
 					break;
@@ -331,10 +292,8 @@ void CMainFrame::OnApplicationLook(unsigned look) {
 	ASSERT_VALID(DockingManager);
 	DockingManager->AdjustPaneFrames();
 	DockingManager->SetDockingMode(DT_SMART);
-
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
-
 	theApp.WriteInt(L"ApplicationLook", static_cast<int>(theApp.m_ApplicationLook));
 }
 
@@ -343,21 +302,17 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI) {
 }
 
 BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
-	
 	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) { return FALSE; }
 
 	// Add some tools for example....
 	auto UserToolsManager {theApp.GetUserToolsManager()};
-
 	if (UserToolsManager != nullptr && UserToolsManager->GetUserTools().IsEmpty()) {
 		auto Tool1 {UserToolsManager->CreateNewTool()};
 		Tool1->m_strLabel = L"&Notepad";
 		Tool1->SetCommand(L"notepad.exe");
-
 		auto Tool2 {UserToolsManager->CreateNewTool()};
 		Tool2->m_strLabel = L"Paint &Brush";
 		Tool2->SetCommand(L"mspaint.exe");
-
 		auto Tool3 {UserToolsManager->CreateNewTool()};
 		Tool3->m_strLabel = L"Fanning, Fanning & Associates On-&Line";
 		Tool3->SetCommand(L"http://www.fanningfanning.com");
@@ -365,10 +320,8 @@ BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd
 
 	// Enable customization button for all user toolbars
 	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
-
 	for (auto i = 0; i < MaximumUserToolbars; i++) {
 		auto UserToolbar {GetUserToolBarByIndex(i)};
-
 		if (UserToolbar != nullptr) {
 			UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
 		}
@@ -379,46 +332,37 @@ BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd
 LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, LPARAM point) {
 	CMenu PopupToolbarMenu;
 	VERIFY(PopupToolbarMenu.LoadMenuW(IDR_POPUP_TOOLBAR));
-
 	auto SubMenu {PopupToolbarMenu.GetSubMenu(0)};
 	ASSERT(SubMenu != nullptr);
-
 	if (SubMenu) {
 		const CPoint Point(AFX_GET_X_LPARAM(point), AFX_GET_Y_LPARAM(point));
-
 		auto PopupMenu {new CMFCPopupMenu};
 		PopupMenu->Create(this, Point.x, Point.y, SubMenu->Detach());
 	}
 	return 0;
 }
 
-void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
+void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu) {
 	auto ActiveChildWindow {GetActiveFrame()};
 	try {
 		ENSURE(ActiveChildWindow);
 		auto ActiveDocument {ActiveChildWindow->GetActiveDocument()};
 		ENSURE(ActiveDocument);
 		auto Database {dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr};
-
 		popupMenu->RemoveAllItems();
 		auto ContextManager {Database->objectContextManager()};
 		auto ScalesCollection {ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)};
 		auto ScalesCollectionIterator {ScalesCollection->newIterator()};
-
 		unsigned ScaleMenuPosition {1};
 		auto CurrentScaleIdentifier {Database->getCANNOSCALE()->uniqueIdentifier()};
-
 		for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
 			auto ScaleName {ScalesCollectionIterator->getContext()->getName()};
 			auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
-
 			CMFCToolBarMenuButton MenuButton(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE, nullptr, -1, ScaleName);
-
 			if (ScaleIdentifier == CurrentScaleIdentifier) {
 				MenuButton.SetStyle(TBBS_CHECKED);
 			}
 			popupMenu->InsertItem(MenuButton);
-
 			ScaleMenuPosition++;
 		}
 	} catch (...) {
@@ -427,46 +371,37 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu * popupMenu) {
 }
 
 // <command_console>
-void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
+void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
 	try {
 		popupMenu->RemoveAllItems();
-
 		MENUITEMINFO MenuItemInfo;
 		MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 		MenuItemInfo.fMask = MIIM_DATA;
-
 		auto CommandStack {odedRegCmds()};
 		auto bHasNoCommand {CommandStack->newIterator()->done()};
 		auto CommandId {_APS_NEXT_COMMAND_VALUE + 100};
-
 		if (!bHasNoCommand) {
 			auto CommandStackGroupIterator {CommandStack->newGroupIterator()};
-
 			while (!CommandStackGroupIterator->done()) {
 				OdRxDictionaryPtr Group = CommandStackGroupIterator->object();
 				CMenu GroupMenu;
 				GroupMenu.CreateMenu();
 				OdRxIteratorPtr GroupCommandIterator = Group->newIterator(OdRx::kDictSorted);
 				OdString GroupName;
-
 				while (!GroupCommandIterator->done()) {
 					OdEdCommandPtr pCmd = GroupCommandIterator->object().get();
-
 					if (GroupName.isEmpty()) {
 						GroupName = pCmd->groupName();
 					}
 					auto CommandName {pCmd->globalName()};
 					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
-
 					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(pCmd.get());
 					SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
-
 					GroupCommandIterator->next();
 					CommandId++;
 				}
 				CMFCToolBarMenuButton MenuButton(unsigned(-1), GroupMenu.Detach(), -1, GroupName);
 				popupMenu->InsertItem(MenuButton);
-
 				CommandStackGroupIterator->next();
 				GroupName.empty();
 			}
@@ -476,31 +411,24 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu * popupMenu) {
 	}
 }
 // </command_console>
-
 BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	CMDIFrameWndEx::OnShowPopupMenu(popupMenu);
-	
 	if (popupMenu != nullptr) {
 
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VECTORIZE_CLEARMENU) >= 0) {
 
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
-
 			CRegKey RegistryKey;
 			RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
-
 			unsigned long VectorizerIndex {0};
-
 			CString VectorizerPath;
 			unsigned long PathSize;
 			for (;;) {
 				PathSize = _MAX_FNAME + _MAX_EXT;
 				const auto ReturnValue {RegEnumValueW(RegistryKey, VectorizerIndex, VectorizerPath.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 				VectorizerPath.ReleaseBuffer();
-
 				if (ReturnValue != ERROR_SUCCESS) { break; }
 				CMFCToolBarMenuButton MenuButton(VectorizerIndex + ID_VECTORIZER_FIRST, nullptr, -1, VectorizerPath);
-
 				if (theApp.recentGsDevicePath().iCompare(static_cast<const wchar_t*>(VectorizerPath)) == 0) {
 					MenuButton.SetStyle(TBBS_CHECKED);
 				}
@@ -508,31 +436,25 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_TOOLS_REGISTEREDCOMMANDS) >= 0) {
-			
-			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 
+			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			ShowRegisteredCommandsPopupMenu(popupMenu);
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_TOOLBARS) >= 0) {
 
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
-
 			popupMenu->RemoveAllItems();
-
 			CMenu menu;
 			VERIFY(menu.LoadMenuW(IDR_POPUP_TOOLBAR));
-
 			auto PopupSubMenu {menu.GetSubMenu(0)};
 			ASSERT(PopupSubMenu != nullptr);
-
 			if (PopupSubMenu) {
 				popupMenu->GetMenuBar()->ImportFromMenu(*PopupSubMenu, TRUE);
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_ANNOTATIONSCALES) >= 0) {
-			
-			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 
+			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			ShowAnnotationScalesPopupMenu(popupMenu);
 		}
 	}
@@ -541,16 +463,13 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 
 void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 	switch (theApp.m_Options.m_nTabsStyle) {
-		case EoApOptions::None:
-		{
+		case EoApOptions::None: {
 			int MDITabsType;
-
 			if (AreMDITabs(&MDITabsType)) {
 				if (MDITabsType == 1) {
 					EnableMDITabs(FALSE);
 				} else if (MDITabsType == 2) {
 					const CMDITabInfo TabInfo; // ignored when tabbed groups are disabled
-
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
 			} else {
@@ -560,14 +479,17 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 			}
 			break;
 		}
-		case EoApOptions::Standard:
-		{
+		case EoApOptions::Standard: {
 			auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
-
-			EnableMDITabs(TRUE, theApp.m_Options.m_MdiTabInfo.m_bTabIcons, theApp.m_Options.m_MdiTabInfo.m_tabLocation, theApp.m_Options.m_MdiTabInfo.m_bTabCloseButton, theApp.m_Options.m_MdiTabInfo.m_style, theApp.m_Options.m_MdiTabInfo.m_bTabCustomTooltips, theApp.m_Options.m_MdiTabInfo.m_bActiveTabCloseButton);
-
+			EnableMDITabs(TRUE,
+			              theApp.m_Options.m_MdiTabInfo.m_bTabIcons,
+			              theApp.m_Options.m_MdiTabInfo.m_tabLocation,
+			              theApp.m_Options.m_MdiTabInfo.m_bTabCloseButton,
+			              theApp.m_Options.m_MdiTabInfo.m_style,
+			              theApp.m_Options.m_MdiTabInfo.m_bTabCustomTooltips,
+			              theApp.m_Options.m_MdiTabInfo.m_bActiveTabCloseButton);
 			GetMDITabs().EnableAutoColor(theApp.m_Options.m_MdiTabInfo.m_bAutoColor);
 			GetMDITabs().EnableTabDocumentsMenu(theApp.m_Options.m_MdiTabInfo.m_bDocumentMenu);
 			GetMDITabs().EnableTabSwap(theApp.m_Options.m_MdiTabInfo.m_bEnableTabSwap);
@@ -575,18 +497,15 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 			GetMDITabs().SetFlatFrame(theApp.m_Options.m_MdiTabInfo.m_bFlatFrame);
 			break;
 		}
-		case EoApOptions::Grouped:
-		{
+		case EoApOptions::Grouped: {
 			auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 			m_wndClientArea.PostMessageW(WM_MDIMAXIMIZE, WPARAM(ActiveWnd), 0L);
 			::BringWindowToTop(ActiveWnd);
-
 			EnableMDITabbedGroups(TRUE, theApp.m_Options.m_MdiTabInfo);
 			break;
 		}
 	}
 	CList<unsigned, unsigned> lstCommands;
-	
 	if (AreMDITabs()) {
 		lstCommands.AddTail(ID_WINDOW_ARRANGE);
 		lstCommands.AddTail(ID_WINDOW_CASCADE);
@@ -594,17 +513,13 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 		lstCommands.AddTail(ID_WINDOW_TILE_VERT);
 	}
 	CMFCToolBar::SetNonPermittedCommands(lstCommands);
-	
 	if (resetMDIChild) {
 		const auto Maximize {theApp.m_Options.m_nTabsStyle != EoApOptions::None};
-
 		auto hwndT {::GetWindow(m_hWndMDIClient, GW_CHILD)};
 		while (hwndT != nullptr) {
 			auto pFrame {DYNAMIC_DOWNCAST(CMDIChildWndEx, CWnd::FromHandle(hwndT))};
-			
 			if (pFrame != nullptr) {
 				ASSERT_VALID(pFrame);
-				
 				if (Maximize) {
 					pFrame->ModifyStyle(WS_SYSMENU, 0);
 				} else {
@@ -625,34 +540,26 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 	if (m_PropertiesPane.IsAutoHideMode()) {
 		m_PropertiesPane.BringWindowToTop();
 		auto Divider {m_PropertiesPane.GetDefaultPaneDivider()};
-		
 		if (Divider != nullptr) { Divider->BringWindowToTop(); }
 	}
 	m_bDisableSetRedraw = theApp.m_Options.m_DisableSetRedraw;
-
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
 }
 
 // CMainFrame message handlers
-
 BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedItems, BOOL bDrop) {
-
 	if (bDrop || !theApp.m_Options.m_TabsContextMenu) { return FALSE; }
-
 	CMenu menu;
 	VERIFY(menu.LoadMenuW(IDR_POPUP_MDITABS));
-
 	auto PopupSubMenu {menu.GetSubMenu(0)};
 	ASSERT(PopupSubMenu != nullptr);
-
 	if (PopupSubMenu) {
-		
+
 		if ((dwAllowedItems & AFX_MDI_CAN_BE_DOCKED) == 0) {
 			PopupSubMenu->DeleteMenu(ID_MDI_TABBED, MF_BYCOMMAND);
 		}
 		auto PopupMenu {new CMFCPopupMenu};
-		
 		if (PopupMenu) {
 			PopupMenu->SetAutoDestroy(FALSE);
 			PopupMenu->Create(this, point.x, point.y, PopupSubMenu->GetSafeHmenu());
@@ -664,7 +571,6 @@ BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedIt
 LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
 	auto TabToolTipInfo {reinterpret_cast<CMFCTabToolTipInfo*>(lp)};
 	ASSERT(TabToolTipInfo != nullptr);
-
 	if (TabToolTipInfo) {
 		ASSERT_VALID(TabToolTipInfo->m_pTabWnd);
 		if (!TabToolTipInfo->m_pTabWnd->IsMDITab()) { return 0; }
@@ -675,7 +581,6 @@ LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
 
 void CMainFrame::OnMdiTabbed() {
 	auto pMDIChild {DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIGetActive())};
-	
 	if (pMDIChild == nullptr) {
 		ASSERT(FALSE);
 		return;
@@ -705,16 +610,12 @@ void CMainFrame::OnStartProgress() {
 	if (m_InProgress) {
 		KillTimer(TimerId);
 		m_StatusBar.EnablePaneProgressBar(nStatusProgress, -1);
-
 		m_InProgress = false;
-
 		return;
 	}
 	m_StatusBar.EnablePaneProgressBar(nStatusProgress, 100);
-
 	m_CurrentProgress = 0;
 	m_InProgress = true;
-
 	TimerId = SetTimer(2, 1, nullptr);
 }
 
@@ -722,7 +623,6 @@ void CMainFrame::OnTimer(UINT_PTR nIDEvent) {
 
 	if (nIDEvent == TimerId) {
 		m_CurrentProgress += 10;
-
 		if (m_CurrentProgress > 100) {
 			m_CurrentProgress = 0;
 		}
@@ -736,12 +636,10 @@ void CMainFrame::OnViewFullScreen() {
 
 CMFCToolBarComboBoxButton* CMainFrame::GetFindCombo() {
 	CMFCToolBarComboBoxButton* FoundCombo = nullptr;
-
 	CObList ButtonsList;
 	if (CMFCToolBar::GetCommandButtons(ID_EDIT_FIND_COMBO, ButtonsList) > 0) {
-		for (auto Position = ButtonsList.GetHeadPosition(); FoundCombo == nullptr && Position != nullptr; ) {
+		for (auto Position = ButtonsList.GetHeadPosition(); FoundCombo == nullptr && Position != nullptr;) {
 			auto Combo {DYNAMIC_DOWNCAST(CMFCToolBarComboBoxButton, ButtonsList.GetNext(Position))};
-
 			if (Combo != nullptr && Combo->GetEditCtrl()->GetSafeHwnd() == ::GetFocus()) {
 				FoundCombo = Combo;
 			}
@@ -757,11 +655,9 @@ HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, con
 	tvIS.item.mask = TVIF_TEXT | TVIF_PARAM;
 	tvIS.item.hItem = nullptr;
 	tvIS.item.iImage = 0;
-	
 	wchar_t Text[32];
 	wcscpy(Text, text);
 	tvIS.item.pszText = Text;
-	
 	tvIS.item.lParam = reinterpret_cast<LPARAM>(object);
 	return TreeView_InsertItem(tree, &tvIS);
 }

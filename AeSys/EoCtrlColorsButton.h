@@ -1,10 +1,8 @@
 #pragma once
 
 // EoCtrlColorsButton
-
 class EoCtrlColorsButton : public CMFCButton {
-	DECLARE_DYNAMIC(EoCtrlColorsButton)
-
+DECLARE_DYNAMIC(EoCtrlColorsButton)
 	static gsl::span<COLORREF> m_Palette;
 	static unsigned short m_CurrentIndex;
 	static unsigned short m_SelectedIndex;
@@ -18,13 +16,10 @@ class EoCtrlColorsButton : public CMFCButton {
 	unsigned short m_BeginIndex {1};
 	unsigned short m_EndIndex {1};
 	unsigned short m_SubItem {0};
-
 	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
 	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept;
-
 	EoCtrlColorsButton() = default;
-
 	~EoCtrlColorsButton() = default;
 
 	static void SetCurrentIndex(const unsigned short index) noexcept {
@@ -47,15 +42,12 @@ class EoCtrlColorsButton : public CMFCButton {
 
 	void OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) override;
 	CSize SizeToContent(BOOL calculateOnly = FALSE) override;
-
 	unsigned OnGetDlgCode() noexcept;
 	void OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnPaint();
 	void OnSetFocus(CWnd* oldWindow);
-
 protected:
-
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

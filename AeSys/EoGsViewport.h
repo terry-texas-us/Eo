@@ -1,5 +1,4 @@
 #pragma once
-
 #include "EoGePoint4d.h"
 
 class EoGsViewport {
@@ -9,12 +8,9 @@ class EoGsViewport {
 	double m_DeviceWidthInInches {0.0};
 	double m_HeightInPixels {0.0};
 	double m_WidthInPixels {0.0};
-
 public: // Constructors and destructors
-
 	EoGsViewport() = default;
 	EoGsViewport(const EoGsViewport& other) noexcept;
-
 	~EoGsViewport() = default;
 	EoGsViewport& operator=(const EoGsViewport& other) = default;
 
@@ -26,7 +22,6 @@ public: // Constructors and destructors
 	/// <remarks>Window coordinates are rounded to nearest whole number. Perspective division to yield normalized device coordinates.</remarks>
 	void DoProjection(CPoint* pnt, EoGePoint4dArray& pointsArray) const;
 	void DoProjectionInverse(OdGePoint3d& point) const noexcept;
-
 	double HeightInPixels() const noexcept;
 	double HeightInInches() const noexcept;
 	double WidthInPixels() const noexcept;
@@ -37,4 +32,5 @@ public: // Constructors and destructors
 	void SetDeviceHeightInPixels(double height) noexcept;
 	void SetDeviceWidthInPixels(double width) noexcept;
 };
+
 using CViewports = CList<EoGsViewport>;

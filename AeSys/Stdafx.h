@@ -1,9 +1,7 @@
 #pragma once
-
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
 #endif
-
 #include "framework.h"
 #include "strsafe.h"
 
@@ -19,10 +17,8 @@
 #include <gsl/pointers> // owner, not_null
 //#include <gsl/span> // span
 #include <gsl/string_span> // zstring, string_span, zstring_builder...
-
 #pragma warning (pop)
 // </tas>
-
 #include "resource.h"
 
 // OD_OLE_SUPPORT
@@ -32,22 +28,17 @@
 // For the DLL version, place the OdOleItemHandler.tx module in the same directory as the DLLs (no explicit registration required).
 // Uncomment #define for support 
 // #define OD_OLE_SUPPORT 1
-
 #include "OdaCommon.h"
-
 #include <Ge/GePoint3d.h>
 #include <Ge/GeVector3d.h>
 #include <Ge/GeMatrix3d.h>
-
 unsigned AFXAPI HashKey(CString& string) noexcept;
-
 #include "SafeMath.h"
 
 
 
 // <tas="Static analysis"/>
 // Compiler warnings that are off by default (https://docs.microsoft.com/en-us/cpp/preprocessor/compiler-warnings-that-are-off-by-default?view=vs-2019)
-
 #pragma warning (default: 4165) // (level 1) 'HRESULT' is being converted to 'bool'; are you sure this is what you want ?
 #pragma warning (default: 4264) // (level 1) 'virtual_function': no override available for virtual member function from base 'class'; function is hidden
 #pragma warning (default: 4342) // (level 1) behavior change : 'function' called, but a member operator was called in previous versions
@@ -77,10 +68,8 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 #pragma warning (default: 5026) // (level 1 and level 4) 'type' : move constructor was implicitly defined as deleted
 #pragma warning (default: 5027) // (level 1 and level 4) 'type' : move assignment operator was implicitly defined as deleted
 #pragma warning (default: 5036) // (level 1) varargs function pointer conversion when compiling with / hybrid : x86arm64 'type1' to 'type2'
-
 #pragma warning (default: 4412) // (level 2) 'function': function signature contains type 'type'; C++ objects are unsafe to pass between pure codeand mixed or native
 #pragma warning (default: 4826) // (level 2) Conversion from 'type1' to 'type2' is sign - extended.This may cause unexpected runtime behavior.
-
 #pragma warning (default: 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 #pragma warning (default: 4265) // (level 3) 'class' : class has virtual functions, but destructor is not virtual
 #pragma warning (default: 4287) // (level 3) 'operator' : unsigned / negative constant mismatch
@@ -98,7 +87,6 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 #pragma warning (default: 4768) // (level 3) __declspec attributes before linkage specification are ignored
 #pragma warning (default: 4786) // (level 3) 'symbol' : object name was truncated to 'number' characters in the debug information
 #pragma warning (default: 5042) // (level 3) 'function' : function declarations at block scope cannot be specified 'inline' in standard C++; remove 'inline' specifier
-
 #pragma warning (default: 4061) // (level 4) enumerator 'identifier' in a switch of enum 'enumeration' is not explicitly handled by a case label
 #pragma warning (default: 4062) // (level 4) enumerator 'identifier' in a switch of enum 'enumeration' is not handled
 #pragma warning (default: 4242) // (level 4) 'identifier': conversion from 'type1' to 'type2', possible loss of data
@@ -117,7 +105,6 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 #pragma warning (default: 4471) // (level 4) a forward declaration of an unscoped enumeration must have an underlying type(int assumed) Perm
 
 //#pragma warning (default: 4514) // (level 4) 'function' : unreferenced inline function has been removed
-
 #pragma warning (default: 4536) // (level 4) 'type name' : type - name exceeds meta - data limit of 'limit' characters
 #pragma warning (default: 4571) // (level 4) informational : catch (...) semantics changed since Visual C++ 7.1; structured exceptions(SEH) are no longer caught
 #pragma warning (default: 4574) // (level 4) 'identifier' is defined to be '0': did you mean to use '#if identifier' ?
@@ -128,7 +115,6 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 
 //#pragma warning (default: 4625) // (level 4) 'derived class' : copy constructor could not be generated because a base class copy constructor is inaccessible
 //#pragma warning (default: 4626) // (level 4) 'derived class' : assignment operator could not be generated because a base class assignment operator is inaccessible
-
 #pragma warning (default: 4643) // (level 4) Forward declaring 'identifier' in namespace std is not permitted by the C++ Standard.
 #pragma warning (default: 4654) // (level 4) Code placed before include of precompiled header line will be ignored.Add code to precompiled header.
 #pragma warning (default: 4668) // (level 4) 'symbol' is not defined as a preprocessor macro, replacing with '0' for 'directives'
@@ -140,9 +126,7 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 #pragma warning (default: 4777) // (level 4) 'function' : format string 'string' requires an argument of type 'type1', but variadic argument number has type 'type2'
 
 //#pragma warning (default: 4800) // (level 4) Implicit conversion from 'type' to bool.Possible information loss
-
 //#pragma warning (default: 4820) // (level 4) 'bytes' bytes padding added after construct 'member_name'
-
 #pragma warning (default: 4837) // (level 4) trigraph detected : '??character' replaced by 'character'
 #pragma warning (default: 4841) // (level 4) non - standard extension used : compound member designator used in offsetof
 #pragma warning (default: 4842) // (level 4) the result of 'offsetof' applied to a type using multiple inheritance is not guaranteed to be consistent between compiler releases
@@ -158,7 +142,6 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 #pragma warning (default: 5032) // (level 4) detected #pragma warning(push) with no corresponding #pragma warning(pop)
 #pragma warning (default: 5039) // (level 4) 'function' : pointer or reference to potentially throwing function passed to extern C function under - EHc.Undefined behavior may occur if this function throws an exception.
 #pragma warning (default: 5038) // (level 4) data member 'member1' will be initialized after data member 'member2'
-
 #pragma warning (default: 4355) // 'this' : used in base member initializer list
 #pragma warning (default: 4746) // volatile access of 'expression' is subject to / volatile : <iso | ms> setting; consider using __iso_volatile_load / store intrinsic functions
 #pragma warning (default: 4962) // 'function': profile - guided optimizations disabled because optimizations caused profile data to become inconsistent

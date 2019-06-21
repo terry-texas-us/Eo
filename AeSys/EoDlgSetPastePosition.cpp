@@ -1,11 +1,9 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
-
 #include "EoDlgSetPastePosition.h"
 
 // EoDlgSetPastePosition dialog
-
 IMPLEMENT_DYNAMIC(EoDlgSetPastePosition, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetPastePosition, CDialog)
@@ -24,6 +22,5 @@ void EoDlgSetPastePosition::DoDataExchange(CDataExchange* pDX) {
 
 void EoDlgSetPastePosition::OnOK() {
 	AeSysDoc::GetDoc()->SetTrapPivotPoint(theApp.GetCursorPosition());
-
 	CDialog::OnOK();
 }

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "EoDbCharacterCellDefinition.h"
 
 EoDbCharacterCellDefinition::EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) noexcept {

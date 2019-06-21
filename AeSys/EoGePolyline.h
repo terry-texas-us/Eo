@@ -1,14 +1,11 @@
 #pragma once
-
 #include "DbDatabase.h"
-
 #include "EoGePoint4d.h"
-
 class AeSysView;
 class EoGeLineSeg3d;
 
-
-namespace polyline {
+namespace polyline
+{
 	void BeginLineStrip();
 	void BeginLineLoop();
 	void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArray, OdDbLinetypeTableRecordPtr linetype);

@@ -1,10 +1,8 @@
 #pragma once
 
 // EoDlgModeRevise dialog
-
 class EoDlgModeRevise : public CDialog {
-	DECLARE_DYNAMIC(EoDlgModeRevise)
-
+DECLARE_DYNAMIC(EoDlgModeRevise)
 	EoDlgModeRevise(CWnd* parent = nullptr);
 	virtual ~EoDlgModeRevise();
 
@@ -15,17 +13,14 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
-
 	static EoDbFontDefinition sm_FontDefinition;
 	static EoGeReferenceSystem sm_ReferenceSystem;
 	static EoDbText* sm_TextPrimitive;
-
 public:
 	CEdit m_TextEditControl;
 	/// <summary> Effectively resizes the edit control to use the entire client area of the dialog.</summary>
 	/// <remarks> OnSize can be called before OnInitialUpdate so check is made for valid control window.</remarks>
 	void OnSize(unsigned type, int cx, int cy);
-
 protected:
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

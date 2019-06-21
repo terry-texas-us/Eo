@@ -1,15 +1,10 @@
 #include "stdafx.h"
-
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
-
 #include "EoGePolyline.h"
-
 #include "EoDbFile.h"
-
 #include "EoDbPolyline.h"
-
 IMPLEMENT_DYNAMIC(EoDbPolyline, EoDbPrimitive)
 
 unsigned EoDbPolyline::sm_EdgeToEvaluate = 0;
@@ -27,10 +22,8 @@ EoDbPolyline::EoDbPolyline(const EoDbPolyline& other) {
 	m_Flags = other.m_Flags;
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
-
 	m_ConstantWidth = other.m_ConstantWidth;
 	m_Elevation = other.m_Elevation;
 	m_Thickness = other.m_Thickness;
@@ -45,10 +38,8 @@ const EoDbPolyline& EoDbPolyline::operator=(const EoDbPolyline& other) {
 	m_Flags = other.m_Flags;
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
-
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
-
 	m_ConstantWidth = other.m_ConstantWidth;
 	m_Elevation = other.m_Elevation;
 	m_Thickness = other.m_Thickness;
@@ -57,26 +48,22 @@ const EoDbPolyline& EoDbPolyline::operator=(const EoDbPolyline& other) {
 	m_EndWidths.append(other.m_EndWidths);
 	m_Bulges.append(other.m_Bulges);
 	m_Normal = other.m_Normal;
-
 	return *this;
 }
 
 void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 	const auto NumberOfVertices = m_Vertices.size();
-
 	if (sm_Edge > 0 && sm_Edge <= NumberOfVertices) {
 		OdGePoint3d ptBeg;
 		OdGePoint3d ptEnd;
 		GetPointAt(sm_Edge - 1, ptBeg);
 		GetPointAt(sm_Edge % NumberOfVertices, ptEnd);
-
 		if (sm_PivotVertex < NumberOfVertices) {
 			GetPointAt(sm_PivotVertex, ptBeg);
 			GetPointAt(SwingVertex(), ptEnd);
 		}
 		auto AngleInXYPlane {0.0};
 		const auto EdgeLength {OdGeVector3d(ptEnd - ptBeg).length()};
-
 		if (OdGeVector3d(ptBeg - point).length() > EdgeLength * 0.5) {
 			AngleInXYPlane = EoGeLineSeg3d(ptEnd, ptBeg).AngleFromXAxis_xy();
 		} else {
@@ -87,7 +74,6 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 		Report += L" Linetype:" + FormatLinetypeIndex();
 		Report += L" [" + theApp.FormatLength(EdgeLength, theApp.GetUnits()) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
 		theApp.AddStringToMessageList(Report);
-
 		theApp.SetEngagedLength(EdgeLength);
 		theApp.SetEngagedAngle(AngleInXYPlane);
 	}
@@ -100,27 +86,20 @@ void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexc
 EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
 	OdDbPolylinePtr Polyline = m_EntityObjectId.safeOpenObject()->clone();
 	blockTableRecord->appendOdDbEntity(Polyline);
-
 	return Create(Polyline);
 }
 
 void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
-
 	pstate.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
-
-	if (IsClosed())
-		polyline::BeginLineLoop();
-	else
-		polyline::BeginLineStrip();
-
+	if (IsClosed()) polyline::BeginLineLoop();
+	else polyline::BeginLineStrip();
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
 	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
 	const auto YAxis {m_Normal.crossProduct(XAxis)};
 	const OdGePlane Plane(Origin, XAxis, YAxis);
 	OdGePoint3d Point;
-
 	for (auto Vertex : m_Vertices) {
 		Point.set(Plane, Vertex);
 		polyline::SetVertex(Point);
@@ -160,7 +139,6 @@ OdGePoint3d EoDbPolyline::GetCtrlPt() const {
 	const auto NumberOfVertices = m_Vertices.size();
 	GetPointAt(sm_Edge - 1, StartPoint);
 	GetPointAt(sm_Edge % NumberOfVertices, EndPoint);
-
 	return EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
 }
 
@@ -177,7 +155,6 @@ void EoDbPolyline::GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const {
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
 	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
 	const auto YAxis {m_Normal.crossProduct(XAxis)};
-
 	OdGePlane Plane(Origin, XAxis, YAxis);
 	point.set(Plane, m_Vertices[vertexIndex]);
 }
@@ -187,12 +164,10 @@ OdGePoint3d EoDbPolyline::GoToNxtCtrlPt() const {
 	if (sm_PivotVertex >= NumberOfVertices) { // have not yet rocked to a vertex
 		const auto StartVertexIndex {sm_Edge - 1};
 		const auto EndVertexIndex {sm_Edge % NumberOfVertices};
-
 		OdGePoint3d StartPoint;
 		GetPointAt(StartVertexIndex, StartPoint);
 		OdGePoint3d EndPoint;
 		GetPointAt(EndVertexIndex, EndPoint);
-
 		if (EndPoint.x > StartPoint.x) {
 			sm_PivotVertex = StartVertexIndex;
 		} else if (EndPoint.x < StartPoint.x) {
@@ -232,40 +207,33 @@ bool EoDbPolyline::IsClosed() const noexcept {
 
 bool EoDbPolyline::IsInView(AeSysView* view) const {
 	OdGePoint3d Point;
-	EoGePoint4d	pt[2];
+	EoGePoint4d pt[2];
 	GetPointAt(0, Point);
 	pt[0] = EoGePoint4d(Point, 1.0);
 	view->ModelViewTransformPoint(pt[0]);
-
 	for (unsigned VertexIndex = 1; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		GetPointAt(VertexIndex, Point);
 		pt[1] = EoGePoint4d(Point, 1.0);
 		view->ModelViewTransformPoint(pt[1]);
-
 		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
-
 		pt[0] = pt[1];
 	}
 	return false;
 }
 
-bool EoDbPolyline::IsPointOnControlPoint(AeSysView * view, const EoGePoint4d & point) const noexcept {
+bool EoDbPolyline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
 	// <tas="Polyline: need to implement IsPointOnControlPoint"</tas>
 	return false;
 }
 
-bool EoDbPolyline::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point) noexcept {
+bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
 	const auto NumberOfVertices {m_Vertices.size()};
-
 	if (sm_PivotVertex >= NumberOfVertices) { return false; } // Not engaged at a vertex
-
 	OdGePoint3d Point;
 	GetPointAt(sm_PivotVertex, Point);
 	EoGePoint4d ptCtrl(Point, 1.0);
 	view->ModelViewTransformPoint(ptCtrl);
-
 	if (ptCtrl.DistanceToPointXY(point) >= sm_SelectApertureSize) { return false; } // Not on proper vertex
-
 	if (sm_PivotVertex == 0) {
 		sm_Edge = sm_Edge == 1 ? NumberOfVertices : 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
@@ -278,24 +246,19 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView * view, const EoGePoint4d & point)
 	return true;
 }
 
-OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView * view, const EoGePoint4d & point) const {
+OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
 	auto dApert {sm_SelectApertureSize};
-
 	sm_PivotVertex = m_Vertices.size();
-
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		OdGePoint3d Point;
 		GetPointAt(VertexIndex, Point);
 		EoGePoint4d pt(Point, 1.0);
 		view->ModelViewTransformPoint(pt);
-
 		const auto dDis {point.DistanceToPointXY(pt)};
-
 		if (dDis < dApert) {
 			sm_ControlPointIndex = VertexIndex;
 			dApert = dDis;
-
 			sm_Edge = VertexIndex + 1;
 			sm_PivotVertex = VertexIndex;
 		}
@@ -316,10 +279,8 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 		GetPointAt(sm_EdgeToEvaluate % NumberOfVertices, EndPoint);
 		EoGePoint4d ptBeg(StartPoint, 1.0);
 		EoGePoint4d ptEnd(EndPoint, 1.0);
-
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
-
 		EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
 		if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
 			projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
@@ -327,20 +288,16 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 		}
 	} else { // Evaluate entire polyline
 		auto NumberofEdges = NumberOfVertices;
-		
 		if (!IsClosed()) { NumberofEdges--; }
-
 		OdGePoint3d StartPoint;
 		GetPointAt(0, StartPoint);
 		EoGePoint4d ptBeg(StartPoint, 1.0);
 		view->ModelViewTransformPoint(ptBeg);
-
 		for (unsigned VertexIndex = 1; VertexIndex <= NumberofEdges; VertexIndex++) {
 			OdGePoint3d EndPoint;
 			GetPointAt(VertexIndex % NumberOfVertices, EndPoint);
 			EoGePoint4d ptEnd(EndPoint, 1.0);
 			view->ModelViewTransformPoint(ptEnd);
-
 			EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
 			if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
 				projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
@@ -356,7 +313,6 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 
 bool EoDbPolyline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray Points;
-
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		OdGePoint3d Point;
 		GetPointAt(VertexIndex, Point);
@@ -390,11 +346,11 @@ void EoDbPolyline::SetConstantWidth(double constantWidth) noexcept {
 	m_ConstantWidth = constantWidth;
 }
 
-void EoDbPolyline::SetNormal(const OdGeVector3d & normal) {
+void EoDbPolyline::SetNormal(const OdGeVector3d& normal) {
 	m_Normal = normal.isZeroLength() ? OdGeVector3d::kZAxis : normal;
 }
 
-void EoDbPolyline::TransformBy(const EoGeMatrix3d & transformMatrix) {
+void EoDbPolyline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	// <tas="TransformBy broken. Need to go to world and back?"</tas>
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		//m_Vertices[VertexIndex].transformBy(transformMatrix);
@@ -404,12 +360,12 @@ void EoDbPolyline::TransformBy(const EoGeMatrix3d & transformMatrix) {
 void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
 	// <tas="TranslateUsingMask broken. Need to go to world and back? This type of operation could get polyline vertex off plane"</tas>
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
-	//	if (((mask >> VertexIndex) & 1UL) == 1)
-	//		m_Vertices[VertexIndex] += translate;
+		//	if (((mask >> VertexIndex) & 1UL) == 1)
+		//		m_Vertices[VertexIndex] += translate;
 	}
 }
 
-bool EoDbPolyline::Write(EoDbFile & file) const {
+bool EoDbPolyline::Write(EoDbFile& file) const {
 	file.WriteUInt16(EoDb::kPolylinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
@@ -418,9 +374,7 @@ bool EoDbPolyline::Write(EoDbFile & file) const {
 	file.WriteDouble(m_Elevation);
 	file.WriteDouble(m_Thickness);
 	file.WriteVector3d(m_Normal);
-
 	file.WriteUInt16(static_cast<unsigned short>(m_Vertices.size()));
-
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		file.WritePoint2d(m_Vertices[VertexIndex]);
 		file.WriteDouble(m_StartWidths[VertexIndex]);
@@ -437,7 +391,6 @@ void EoDbPolyline::Write(CFile& file, unsigned char* buffer) const noexcept {
 unsigned EoDbPolyline::SwingVertex() const {
 	const auto NumberOfVertices = m_Vertices.size();
 	unsigned SwingVertex;
-
 	if (sm_PivotVertex == 0) {
 		SwingVertex = sm_Edge == 1 ? 1 : NumberOfVertices - 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
@@ -459,39 +412,28 @@ void EoDbPolyline::SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept {
 OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	auto Polyline {OdDbPolyline::createObject()};
 	Polyline->setDatabaseDefaults(blockTableRecord->database());
-
 	blockTableRecord->appendOdDbEntity(Polyline);
 	Polyline->setColorIndex(static_cast<unsigned short>(pstate.ColorIndex()));
-
 	const auto Linetype {LinetypeObjectFromIndex(pstate.LinetypeIndex())};
-
 	Polyline->setLinetype(Linetype);
-
 	return Polyline;
 }
 
-OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile & file) {
+OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
 	auto Polyline {OdDbPolyline::createObject()};
 	Polyline->setDatabaseDefaults(blockTableRecord->database());
-
 	blockTableRecord->appendOdDbEntity(Polyline);
-
 	Polyline->setColorIndex(static_cast<unsigned short>(file.ReadInt16()));
-
 	const auto Linetype {LinetypeObjectFromIndex(file.ReadInt16())};
-
 	Polyline->setLinetype(Linetype);
 	const auto Flags {file.ReadUInt16()};
 	const auto Closed {(Flags & sm_Closed) == sm_Closed};
 	Polyline->setClosed(Closed);
-
 	Polyline->setConstantWidth(file.ReadDouble());
 	Polyline->setElevation(file.ReadDouble());
 	Polyline->setThickness(file.ReadDouble());
 	Polyline->setNormal(file.ReadVector3d());
-
 	const auto NumberOfVertices = file.ReadUInt16();
-
 	for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 		Polyline->addVertexAt(VertexIndex, file.ReadPoint2d());
 		Polyline->setWidthsAt(VertexIndex, file.ReadDouble(), file.ReadDouble());
@@ -502,27 +444,21 @@ OdDbPolylinePtr EoDbPolyline::Create(OdDbBlockTableRecordPtr blockTableRecord, E
 
 EoDbPolyline* EoDbPolyline::Create(OdDbPolylinePtr polyline) {
 	auto Polyline {new EoDbPolyline()};
-
 	Polyline->m_EntityObjectId = polyline->objectId();
-	Polyline->m_ColorIndex = static_cast <short>(polyline->colorIndex());
+	Polyline->m_ColorIndex = static_cast<short>(polyline->colorIndex());
 	Polyline->m_LinetypeIndex = static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(polyline->linetype()));
-
 	const auto NumberOfVertices {polyline->numVerts()};
-
 	auto Vertex {OdGePoint2d::kOrigin};
 	auto StartWidth {0.};
 	auto EndWidth {0.};
-
 	for (unsigned VertexIndex = 0; VertexIndex < NumberOfVertices; VertexIndex++) {
 		polyline->getPointAt(VertexIndex, Vertex);
 		polyline->getWidthsAt(VertexIndex, StartWidth, EndWidth);
-
 		Polyline->AppendVertex(Vertex, polyline->getBulgeAt(VertexIndex), StartWidth, EndWidth);
 	}
 	Polyline->SetClosed(polyline->isClosed());
 	Polyline->m_ConstantWidth = polyline->getConstantWidth();
 	Polyline->m_Normal = polyline->normal();
 	Polyline->m_Elevation = polyline->elevation();
-
 	return Polyline;
 }

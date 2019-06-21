@@ -1,7 +1,5 @@
 #include "stdafx.h"
-
 #include "DbSymUtl.h"
-
 #include "EoDbFile.h"
 #include "EoDbText.h"
 
@@ -103,7 +101,6 @@ void EoDbFontDefinition::Write(EoDbFile& file) const {
 void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord) noexcept {
 	m_FontName = L"Simplex.psf";
 	m_Precision = EoDb::kStrokeType;
-
 	if (textStyleTableRecord->isShapeFile()) {
 		TRACE1("TextStyle references shape library %s.\n", ( const wchar_t*) textStyleTableRecord->desc()->name());
 	} else { // shx font file or windows (ttf) font file
@@ -112,9 +109,7 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
 		bool Italic;
 		int Charset;
 		int PitchAndFamily;
-
 		textStyleTableRecord->font(TypeFace, Bold, Italic, Charset, PitchAndFamily);
-
 		if (TypeFace != L"") { // windows (ttf) file
 			m_FontName = static_cast<const wchar_t*>(TypeFace);
 			m_Precision = EoDb::kTrueType;
@@ -133,10 +128,7 @@ void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentP
 			m_HorizontalAlignment = EoDb::kAlignLeft;
 			m_VerticalAlignment = EoDb::kAlignTop;
 			break;
-		case OdDbMText::kTopCenter:
-		case OdDbMText::kTopAlign:
-		case OdDbMText::kTopFit:
-		case OdDbMText::kTopMid:
+		case OdDbMText::kTopCenter: case OdDbMText::kTopAlign: case OdDbMText::kTopFit: case OdDbMText::kTopMid:
 			m_HorizontalAlignment = EoDb::kAlignCenter;
 			m_VerticalAlignment = EoDb::kAlignTop;
 			break;
@@ -148,10 +140,7 @@ void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentP
 			m_HorizontalAlignment = EoDb::kAlignLeft;
 			m_VerticalAlignment = EoDb::kAlignMiddle;
 			break;
-		case OdDbMText::kMiddleCenter:
-		case OdDbMText::kMiddleAlign:
-		case OdDbMText::kMiddleFit:
-		case OdDbMText::kMiddleMid:
+		case OdDbMText::kMiddleCenter: case OdDbMText::kMiddleAlign: case OdDbMText::kMiddleFit: case OdDbMText::kMiddleMid:
 			m_HorizontalAlignment = EoDb::kAlignCenter;
 			m_VerticalAlignment = EoDb::kAlignMiddle;
 			break;
@@ -159,29 +148,17 @@ void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentP
 			m_HorizontalAlignment = EoDb::kAlignRight;
 			m_VerticalAlignment = EoDb::kAlignMiddle;
 			break;
-		case OdDbMText::kBaseCenter:
-		case OdDbMText::kBaseAlign:
-		case OdDbMText::kBaseFit:
-		case OdDbMText::kBaseMid:
-		case OdDbMText::kBottomCenter:
-		case OdDbMText::kBottomAlign:
-		case OdDbMText::kBottomFit:
-		case OdDbMText::kBottomMid:
+		case OdDbMText::kBaseCenter: case OdDbMText::kBaseAlign: case OdDbMText::kBaseFit: case OdDbMText::kBaseMid: case OdDbMText::kBottomCenter: case OdDbMText::kBottomAlign: case OdDbMText::
+		kBottomFit: case OdDbMText::kBottomMid:
 			m_HorizontalAlignment = EoDb::kAlignCenter;
 			m_VerticalAlignment = EoDb::kAlignBottom;
 			break;
-		case OdDbMText::kBaseRight:
-		case OdDbMText::kBottomRight:
+		case OdDbMText::kBaseRight: case OdDbMText::kBottomRight:
 			m_HorizontalAlignment = EoDb::kAlignRight;
 			m_VerticalAlignment = EoDb::kAlignBottom;
 			break;
-		case OdDbMText::kBaseLeft:
-		case OdDbMText::kBottomLeft:
-		default:
+		case OdDbMText::kBaseLeft: case OdDbMText::kBottomLeft: default:
 			m_HorizontalAlignment = EoDb::kAlignLeft;
 			m_VerticalAlignment = EoDb::kAlignBottom;
 	}
 }
-
-
-

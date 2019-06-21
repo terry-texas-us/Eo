@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "EoCtrlBitmapPickerCombo.h"
 
 static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CPoint& point) {
@@ -35,9 +34,7 @@ int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* str
 
 int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, const wchar_t* string) {
 	const auto n {CComboBox::InsertString(nIndex, string ? string : L"")};
-
 	if (!bitmap) { return n; }
-
 	if (n != CB_ERR && n != CB_ERRSPACE) {
 		SetItemData(n, reinterpret_cast<unsigned long>(bitmap));
 		BITMAP Bitmap;
@@ -54,7 +51,6 @@ void EoCtrlBitmapPickerCombo::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept {
 
 void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
-
 	if (!IsWindowEnabled()) {
 		CBrush DisabledBrush(RGB(192, 192, 192)); // light gray
 		CPen DisabledPen(PS_SOLID, 1, RGB(192, 192, 192));
@@ -94,13 +90,10 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 
 void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool selected) {
 	const auto bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
-
 	if (bitmap && bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString string;
-
 		if (drawItemStruct->itemID != -1) { GetLBText(static_cast<int>(drawItemStruct->itemID), string); }
-
 		if (string.IsEmpty()) {
 			DrawBitmap(bitmap, DeviceContext, drawItemStruct->rcItem);
 		} else {
@@ -116,9 +109,7 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 	if (!bitmap) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString string;
-
 		if (drawItemStruct->itemID != -1) { GetLBText(static_cast<int>(drawItemStruct->itemID), string); }
-
 		CPoint point;
 		point.x = drawItemStruct->rcItem.left + 2;
 		point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
@@ -129,9 +120,7 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 
 void EoCtrlBitmapPickerCombo::SetSize(int width, int height) {
 	if (width > m_ItemWidth) { m_ItemWidth = width; }
-
 	if (height > m_ItemHeight) { m_ItemHeight = height; }
-
 	for (auto i = -1; i < GetCount(); i++) {
 		SetItemHeight(i, static_cast<unsigned>(m_ItemHeight + 6));
 	}

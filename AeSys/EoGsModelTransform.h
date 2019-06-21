@@ -1,15 +1,11 @@
 #pragma once
-
 #include "EoGeMatrix3d.h"
 
 class EoGsModelTransform {
 	unsigned m_Depth {0};
-
 	EoGeMatrix3d m_CurrentModelTransform;
 	EoGeMatrix3dList m_TransformMatrixList;
-
 public:
-
 	EoGsModelTransform();
 	~EoGsModelTransform() = default;
 	EoGeMatrix3d ModelMatrix() const noexcept;

@@ -1,32 +1,26 @@
 #include "stdafx.h"
 #include "AeSys.h"
-
 #include "EoCtrlColorsButton.h"
-
 gsl::span<COLORREF> EoCtrlColorsButton::m_Palette;
-
 unsigned short EoCtrlColorsButton::m_CurrentIndex;
 unsigned short EoCtrlColorsButton::m_SelectedIndex;
-
 IMPLEMENT_DYNAMIC(EoCtrlColorsButton, CMFCButton)
 
 BEGIN_MESSAGE_MAP(EoCtrlColorsButton, CMFCButton)
-	ON_WM_GETDLGCODE()
-	ON_WM_KEYDOWN()
-	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
-	ON_WM_PAINT()
-	ON_WM_SETFOCUS()
+		ON_WM_GETDLGCODE()
+		ON_WM_KEYDOWN()
+		ON_WM_LBUTTONUP()
+		ON_WM_MOUSEMOVE()
+		ON_WM_PAINT()
+		ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 
 void EoCtrlColorsButton::DrawCell(CDC* deviceContext, unsigned short index, COLORREF color) {
 	if (deviceContext != nullptr && index != 0) {
 		CRect CellRectangle;
 		SubItemRectangleByIndex(index, CellRectangle);
-
 		if (index == m_CurrentIndex || index == m_SelectedIndex) {
 			CBrush FrameBrush;
-
 			if (index == m_CurrentIndex) {
 				FrameBrush.CreateSysColorBrush(COLOR_HIGHLIGHT);
 			} else {
@@ -54,15 +48,12 @@ CSize EoCtrlColorsButton::SizeToContent(BOOL calculateOnly) {
 	auto Size = UnionRectangle.Size();
 	Size.cx += 2 * (m_CellSpacing.cx + m_Margins.cx);
 	Size.cy += 2 * (m_CellSpacing.cy + m_Margins.cy);
-
 	if (!calculateOnly) {
 		CRect ClientRectangle;
 		GetWindowRect(ClientRectangle);
 		GetParent()->ScreenToClient(ClientRectangle);
-
 		ClientRectangle.right = ClientRectangle.left + Size.cx;
 		ClientRectangle.bottom = ClientRectangle.top + Size.cy;
-
 		MoveWindow(ClientRectangle);
 	}
 	return Size;
@@ -71,7 +62,6 @@ CSize EoCtrlColorsButton::SizeToContent(BOOL calculateOnly) {
 void EoCtrlColorsButton::SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept {
 	rectangle.top = m_Margins.cx + m_CellSpacing.cy;
 	rectangle.left = m_Margins.cy + m_CellSpacing.cx;
-
 	switch (m_Layout) {
 		case SimpleSingleRow:
 			rectangle.left += (index - m_BeginIndex) * (m_CellSize.cx + m_CellSpacing.cx);
@@ -91,12 +81,10 @@ void EoCtrlColorsButton::SubItemRectangleByIndex(unsigned short index, CRect& re
 unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
 	CRect Rectangle;
 	Rectangle.SetRectEmpty();
-
 	switch (m_Layout) {
 		case SimpleSingleRow:
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				SubItemRectangleByIndex(Index, Rectangle);
-
 				if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 			}
 			break;
@@ -104,7 +92,6 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 != 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
-
 					if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 				}
 			}
@@ -113,7 +100,6 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 == 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
-
 					if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 				}
 			}
@@ -123,7 +109,6 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 
 void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) {
 	m_SelectedIndex = 0;
-
 	for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 		if (m_Layout == SimpleSingleRow) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
@@ -144,7 +129,6 @@ void EoCtrlColorsButton::OnKeyDown(unsigned keyCode, unsigned repeatCount, unsig
 		auto DeviceContext {GetDC()};
 		m_SelectedIndex = 0;
 		DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
-
 		if (m_Layout == SimpleSingleRow) {
 			switch (keyCode) {
 				case VK_RIGHT:
@@ -186,19 +170,15 @@ void EoCtrlColorsButton::OnKeyDown(unsigned keyCode, unsigned repeatCount, unsig
 			}
 		}
 		m_SubItem = EoMax(m_BeginIndex, EoMin(m_EndIndex, m_SubItem));
-
 		CRect CurrentSubItemRectangle;
 		SubItemRectangleByIndex(m_SubItem, CurrentSubItemRectangle);
-
 		m_SelectedIndex = m_SubItem;
 		DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
 		ReleaseDC(DeviceContext);
-
 		NMHDR NotifyStructure;
 		NotifyStructure.hwndFrom = GetSafeHwnd();
 		NotifyStructure.idFrom = 0;
 		NotifyStructure.code = 0;
-
 		::SendMessageW(GetParent()->GetSafeHwnd(), WM_NOTIFY, 0, LPARAM(&NotifyStructure));
 	}
 	CMFCButton::OnKeyDown(keyCode, repeatCount, flags);
@@ -206,9 +186,7 @@ void EoCtrlColorsButton::OnKeyDown(unsigned keyCode, unsigned repeatCount, unsig
 
 void EoCtrlColorsButton::OnLButtonUp(unsigned flags, CPoint point) {
 	const auto CurrentSubItem {SubItemByPoint(point)};
-
 	if (CurrentSubItem != 0) { m_SubItem = CurrentSubItem; }
-
 	CMFCButton::OnLButtonUp(flags, point);
 }
 
@@ -216,23 +194,17 @@ void EoCtrlColorsButton::OnMouseMove(unsigned flags, CPoint point) {
 	auto DeviceContext {GetDC()};
 	m_SelectedIndex = 0;
 	DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
-
 	m_SubItem = SubItemByPoint(point);
-
 	if (m_SubItem != 0) {
 		m_SelectedIndex = m_SubItem;
-
 		DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
-
 		NMHDR NotifyStructure;
 		NotifyStructure.hwndFrom = GetSafeHwnd();
 		NotifyStructure.idFrom = 0;
 		NotifyStructure.code = 0;
-
 		::SendMessageW(GetParent()->GetSafeHwnd(), WM_NOTIFY, 0, LPARAM(&NotifyStructure));
 	}
 	ReleaseDC(DeviceContext);
-
 	CMFCButton::OnMouseMove(flags, point);
 }
 
@@ -242,22 +214,17 @@ void EoCtrlColorsButton::OnPaint() {
 
 void EoCtrlColorsButton::OnSetFocus(CWnd* oldWindow) {
 	CMFCButton::OnSetFocus(oldWindow);
-
 	auto DeviceContext {GetDC()};
 	DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
-
 	m_SubItem = m_BeginIndex;
 	CRect CurrentSubItemRectangle;
 	SubItemRectangleByIndex(m_SubItem, CurrentSubItemRectangle);
-
 	m_SelectedIndex = m_SubItem;
 	DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
 	ReleaseDC(DeviceContext);
-
 	NMHDR NotifyStructure;
 	NotifyStructure.hwndFrom = GetSafeHwnd();
 	NotifyStructure.idFrom = 0;
 	NotifyStructure.code = 0;
-
 	::SendMessageW(GetParent()->GetSafeHwnd(), WM_NOTIFY, 0, LPARAM(&NotifyStructure));
 }

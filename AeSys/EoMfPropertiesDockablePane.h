@@ -1,5 +1,4 @@
 #pragma once
-
 class EoMfPropertiesMFCToolBar : public CMFCToolBar {
 public:
 	void OnUpdateCmdUI(CFrameWnd* /* target */, BOOL disableIfNoHndler) override {
@@ -12,9 +11,7 @@ public:
 class EoMfPropertiesDockablePane : public CDockablePane {
 public:
 	EoMfPropertiesDockablePane() = default;
-
 	void AdjustLayout() override;
-
 protected:
 	CMFCPropertyGridCtrl m_PropertyGrid;
 	CFont m_PropertyGridFont;
@@ -25,37 +22,30 @@ protected:
 
 public:
 	~EoMfPropertiesDockablePane() = default;
-
 protected:
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
 	void OnSettingChange(unsigned flags, const wchar_t* section); // hides non-virtual function of parent
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
-
 	LRESULT OnPropertyChanged(WPARAM, LPARAM);
-
 	void OnExpandAllProperties();
 	void OnProperties1() noexcept;
 	void OnSortProperties();
 	void OnUpdateExpandAllProperties(CCmdUI* pCmdUI) noexcept;
 	void OnUpdateProperties1(CCmdUI* pCmdUI) noexcept;
 	void OnUpdateSortProperties(CCmdUI* pCmdUI);
-
-	DECLARE_MESSAGE_MAP()
-
+DECLARE_MESSAGE_MAP()
 	void InitializePropertyGrid();
 	void SetPropertyGridFont();
 	void SetWorkspaceTabsSubItemsState();
-
 	int m_nComboHeight {0};
-
 	static std::vector<const wchar_t*> TabsStyles;
 	static std::vector<const wchar_t*> TabsLocations;
-
 public:
 	CMFCPropertyGridCtrl& GetPropertyGridCtrl() noexcept {
 		return m_PropertyGrid;
 	}
+
 	CMFCPropertyGridProperty& GetActiveViewScaleProperty() {
 		return *m_PropertyGrid.FindItemByData(kActiveViewScale);
 	}

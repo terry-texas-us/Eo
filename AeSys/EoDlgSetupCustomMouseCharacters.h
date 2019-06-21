@@ -1,10 +1,8 @@
 #pragma once
 
 // EoDlgSetupCustomMouseCharacters dialog
-
 class EoDlgSetupCustomMouseCharacters : public CDialog {
-	DECLARE_DYNAMIC(EoDlgSetupCustomMouseCharacters)
-
+DECLARE_DYNAMIC(EoDlgSetupCustomMouseCharacters)
 	EoDlgSetupCustomMouseCharacters(CWnd* parent = nullptr);
 	virtual ~EoDlgSetupCustomMouseCharacters();
 
@@ -14,8 +12,5 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
-
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };
-
-

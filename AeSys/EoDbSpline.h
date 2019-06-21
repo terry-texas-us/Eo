@@ -1,7 +1,5 @@
 #pragma once
-
 #include "EoGeNurbCurve3d.h"
-
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 
@@ -13,20 +11,15 @@ Spline primitive
   Number of control points          unsigned short[6-7]
   {0 or more control points}        OdGePoint3d[8- ]
 </remarks> */
-
 class EoDbSpline : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;
-
 public:	// Constructors and destructor
-
 	EoDbSpline() = default;
 	EoDbSpline(const EoDbSpline& other);
 	const EoDbSpline& operator=(const EoDbSpline& other);
-
 	~EoDbSpline() = default;
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -34,13 +27,13 @@ public:	// Constructors and destructor
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d	GetCtrlPt() const override;
+	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d	GoToNxtCtrlPt() const override;
+	OdGePoint3d GoToNxtCtrlPt() const override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
-	OdGePoint3d	SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
@@ -50,13 +43,10 @@ public:	// Constructors and destructor
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	// Methods
-
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
 
 	// Methods - static
-
 	static EoDbSpline* Create(OdDbSplinePtr& spline);
-
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);

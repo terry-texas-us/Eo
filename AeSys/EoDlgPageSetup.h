@@ -1,5 +1,4 @@
 #pragma once
-
 #include "DbPlotSettings.h"
 #include "DbPlotSettingsValidator.h"
 
@@ -7,20 +6,18 @@ class EoDlgPageSetup : public CDialog {
 	OdDbPlotSettings& m_PlotSettings;
 	OdDbPlotSettingsValidatorPtr m_PlotSettingsValidator;
 	OdSmartPtr<OdDbUserIO> m_pIO;
-
 	OdString GetCanonicalByLocaleMediaName(OdString localeMediaName);
 	void SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames);
 	bool IsWHSwap() const;
 	bool IsPaperWidthLessHeight() const;
 	void UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits);
 	OdDbPlotSettings::PlotPaperUnits GetMediaNativePPU();
-
 public:
 	EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> pIO);
 	~EoDlgPageSetup();
-
 private:
 	enum { IDD = IDD_PAGE_SETUP };
+
 	CComboBox m_PlotStyleFiles;
 	CComboBox m_PlotDeviceName;
 	CComboBox m_PaperSize;
@@ -49,28 +46,22 @@ private:
 	CString m_DrawingUnitText;
 	CString m_OffsetXText;
 	CString m_OffsetYText;
-
 	CString m_CanonicalMediaName;
-
 	CString m_PaperImageOriginX;
 	CString m_PaperImageOriginY;
-
 	CString m_LeftMargin;
 	CString m_RightMargin;
 	CString m_TopMargin;
 	CString m_BottomMargin;
-
 	CString m_xMin;
 	CString m_yMin;
 	CString m_xMax;
 	CString m_yMax;
-
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	void OnCancel() final;
-
 	void OnSelchangeScaleValues();
 	void OnSelchangeDeviceList();
 	void OnSelChangeMediaList();
@@ -91,9 +82,7 @@ protected:
 	void OnClickPlotStyleFilesBtn();
 	void OnSelChangePlotStyleFiles();
 	void OnClickWindowButton();
-
-	DECLARE_MESSAGE_MAP()
-
+DECLARE_MESSAGE_MAP()
 	bool FillDeviceCombo();
 	bool FillPaperSizes();
 	void FillShadePlotQualityDPI(bool fillCombo);
@@ -107,7 +96,6 @@ protected:
 	void FillMMInches();
 	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, CString pattern);
 	void FillWindowArea();
-
 	bool ViewsExist() const;
 	bool IsModelSpacePageSetup() const;
 };

@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Gs/Gs.h"
 
 /*
@@ -22,25 +21,20 @@ Perspective projections:
 	By dividing 42 times the view distance by the lens length, getting the diagonal length of the DCS rectangle.
 	Next, select a rectangle with the same proportions as the views width and height, and rotate this by view twist angle.
 */
-
 class EoGsAbstractView {
 public:
 	static const short AV_PERSPECTIVE = 0x01; // bit 1 Perspective mode flag for this view
 	static const short AV_NEARCLIPPING = 0x02; // bit 2 Near (Front) clipping plane status for this view
 	static const short AV_FARCLIPPING = 0x04; // bit 3 Far (Back) clipping plane status for this view
 	static const short AV_NEARCLIPPINGATEYE = 0x10; // bit 16 Front clipping plane is located at the camera
-
 protected:
 	short m_ViewMode {0}; // Parallel projection, No front clipping, No back clipping
 	OdGsView::RenderMode m_RenderMode {OdGsView::k2DOptimized};
-
 	double m_Elevation {0.0}; // elevation of the UCS plane for this view
 	double m_LensLength {50.0}; // lens length used for perspective mode in this view
-
 	OdGePoint3d m_Position {OdGePoint3d::kOrigin + OdGeVector3d::kZAxis * m_LensLength};
 	OdGePoint3d m_Target {OdGePoint3d::kOrigin};
 	OdGeVector3d m_ViewUp {OdGeVector3d::kYAxis};
-
 	double m_TwistAngle {0.0}; // in radians
 	// View-Specific coordinate systems
 	double m_FieldWidthMinimum {-0.5};
@@ -49,12 +43,10 @@ protected:
 	double m_FieldHeightMaximum {0.5};
 	double m_NearClipDistance {20.0}; // distance from the target to the near (front) clipping plane along the target-camera line.
 	double m_FarClipDistance {100.0}; // distance from the target to the far (back) clipping plane along the target-camera line
-
 public: // Constructors and destructor
 	EoGsAbstractView();
 	EoGsAbstractView(const EoGsAbstractView& other);
 	EoGsAbstractView& operator=(const EoGsAbstractView& other) = default;
-
 	virtual ~EoGsAbstractView() = default;
 
 	// Methods

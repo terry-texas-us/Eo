@@ -1,5 +1,4 @@
 #include "StdAfx.h"
-
 #include "Section.h"
 
 Section::Section(double width, double depth, long properties) noexcept {

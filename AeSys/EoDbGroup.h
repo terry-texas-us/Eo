@@ -1,25 +1,22 @@
 #pragma once
-
 #include "EoDbFontDefinition.h"
 #include "EoDbPoint.h"
 #include "DbGroup.h"
-
 using SelectionPair = std::pair<EoDbGroup*, EoDbPrimitive*>;
+
 enum GroupPrimitvePair { tGroup, tPrimitive };
 
 class AeSysDoc;
 class EoDbBlock;
 class EoGeLineSeg3d;
 
-class EoDbGroup: public CObList {
+class EoDbGroup : public CObList {
 	static EoDbPrimitive* sm_PrimitiveToIgnore;
-
 public:
 	EoDbGroup() = default;
 	~EoDbGroup() = default;
 	EoDbGroup(const EoDbGroup& group);
 	EoDbGroup(const EoDbBlock& block);
-
 	void AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent);
 	HTREEITEM AddToTreeViewControl(HWND tree, HTREEITEM parent);
 	void BreakPolylines();
@@ -61,6 +58,5 @@ public:
 
 	// Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
-
-    static std::pair<EoDbGroup*, OdDbGroupPtr> Create(OdDbDatabasePtr database);
+	static std::pair<EoDbGroup*, OdDbGroupPtr> Create(OdDbDatabasePtr database);
 };

@@ -2,7 +2,6 @@
 #include "EoDlgViewZoom.h"
 
 // EoDlgViewZoom dialog
-
 IMPLEMENT_DYNAMIC(EoDlgViewZoom, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgViewZoom, CDialog)
@@ -30,10 +29,7 @@ BOOL EoDlgViewZoom::OnInitDialog() {
 	CString ZoomFactor;
 	ZoomFactor.Format(FormatSpecification, m_ZoomFactor);
 	m_ZoomFactor = _wtof(ZoomFactor);
-
 	CDialog::OnInitDialog();
 	return TRUE;
 }
 // EoDlgViewZoom message handlers
-
-

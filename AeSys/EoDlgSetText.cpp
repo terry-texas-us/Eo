@@ -1,9 +1,7 @@
 #include "stdafx.h"
-
 #include "EoDlgSetText.h"
 
 // EoDlgSetText dialog
-
 IMPLEMENT_DYNAMIC(EoDlgSetText, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetText, CDialog)
@@ -28,4 +26,3 @@ BOOL EoDlgSetText::OnInitDialog() {
 	CDialog::OnInitDialog();
 	return TRUE;
 }
-

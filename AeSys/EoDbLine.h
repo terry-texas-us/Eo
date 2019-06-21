@@ -1,29 +1,21 @@
 #pragma once
-
 #include "DbLine.h"
-
 #include "EoGeLineSeg3d.h"
-
 #include "EoDbPrimitive.h"
 
 class EoDbLine : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbLine)
-
+DECLARE_DYNAMIC(EoDbLine)
 private:
 	EoGeLineSeg3d m_LineSeg;
-
 public:
 	
 	// Constructors and destructor
-	
 	EoDbLine() = default;
 	EoDbLine(const EoDbLine& other);
 	const EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
-
 	~EoDbLine() = default;
 
 	// Methods - absolute virtuals
-	
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -47,32 +39,31 @@ public:
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	// Methods - virtuals
-
 	/// <summary>Cuts a line a point.</summary>
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) override;
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 
 	// Methods
-
 	OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
+
 	EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
-	double Length()  const { return m_LineSeg.length(); }
+
+	double Length() const { return m_LineSeg.length(); }
+
 	OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 	double ParametricRelationshipOf(const OdGePoint3d& point) const;
 	void SetEndPoint(const OdGePoint3d& endPoint);
 	void SetStartPoint(const OdGePoint3d& startPoint);
 	void Square(AeSysView* view);
+
 	OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
 
 
 	// Methods - static
-
 	static EoDbLine* Create(const OdDbLinePtr& line);
-
 	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
 	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
-
 	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 };

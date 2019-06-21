@@ -1,43 +1,35 @@
 #pragma once
-
 #include "EoGePoint3d.h"
 #include "EoGeReferenceSystem.h"
-
 class EoGeLineSeg3d;
 
 /// <summary>Compute a not so arbitrary axis for AutoCAD entities</summary>
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal);
 double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal);
 OdGeVector3d ComputeNormal(const OdGePoint3d& pointU, const OdGePoint3d& origin, const OdGePoint3d& pointV);
-
 class AeSysView;
 class EoDbGroupList;
 class EoDbGroup;
 
 class EoDbPrimitive : public CObject {
-	DECLARE_DYNAMIC(EoDbPrimitive)
-
+DECLARE_DYNAMIC(EoDbPrimitive)
 	static const unsigned short BUFFER_SIZE = 2048;
-
 	static const short COLORINDEX_BYBLOCK = 0x0000;
 	static const short COLORINDEX_BYLAYER = 256;
 	static const short LINETYPE_BYBLOCK = 32766;
 	static const short LINETYPE_BYLAYER = 32767;
-
 protected:
 	OdDbObjectId m_LayerId {nullptr};
 	short m_ColorIndex {1};
 	short m_LinetypeIndex {1};
 	OdDbObjectId m_EntityObjectId {nullptr};
-
-	static	short	sm_LayerColorIndex;
-	static	short	sm_LayerLinetypeIndex;
-	static	short	sm_HighlightColorIndex;
-	static	short	sm_HighlightLinetypeIndex;
-	static	unsigned sm_ControlPointIndex;
-	static	double 	sm_RelationshipOfPoint;
-	static	double sm_SelectApertureSize;
-
+	static short sm_LayerColorIndex;
+	static short sm_LayerLinetypeIndex;
+	static short sm_HighlightColorIndex;
+	static short sm_HighlightLinetypeIndex;
+	static unsigned sm_ControlPointIndex;
+	static double sm_RelationshipOfPoint;
+	static double sm_SelectApertureSize;
 public: // Constructors and destructor
 	EoDbPrimitive() = default;
 	EoDbPrimitive(short colorIndex, short linetypeIndex);
@@ -84,17 +76,25 @@ public: // Constructors and destructor
 
 	// Methods
 	short ColorIndex() const noexcept { return m_ColorIndex; }
+
 	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
+
 	CString FormatColorIndex() const;
 	CString FormatLinetypeIndex() const;
+
 	short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
+
 	short LogicalColorIndex() const noexcept;
 	short LogicalLinetypeIndex() const noexcept;
 
 	void SetColorIndex(short colorIndex) noexcept { m_ColorIndex = colorIndex; }
+
 	void SetColorIndex2(short colorIndex);
+
 	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
+
 	void SetLinetypeIndex(short linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
+
 	void SetLinetypeIndex2(short linetypeIndex);
 	
 	// Methods - static

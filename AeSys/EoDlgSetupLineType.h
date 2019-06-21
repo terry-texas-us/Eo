@@ -1,10 +1,8 @@
 #pragma once
 
 // EoDlgSetupLinetype dialog
-
 class EoDlgSetupLinetype : public CDialog {
-	DECLARE_DYNAMIC(EoDlgSetupLinetype)
-
+DECLARE_DYNAMIC(EoDlgSetupLinetype)
 	EoDlgSetupLinetype(CWnd* parent = nullptr);
 	EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent = nullptr);
 	virtual ~EoDlgSetupLinetype();
@@ -22,16 +20,14 @@ protected:
 		Appearance,
 		Description
 	};
+
 	OdDbLinetypeTablePtr m_LinetypeTable;
 	CListCtrl m_LinetypesListControl;
-
 public:
 	OdDbLinetypeTableRecordPtr m_Linetype;
-
 	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct);
 	void OnBnClickedBylayerButton();
 	void OnBnClickedByblockButton();
-
 protected:
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

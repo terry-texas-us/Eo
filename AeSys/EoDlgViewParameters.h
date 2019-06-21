@@ -1,10 +1,8 @@
 #pragma once
 
 // EoDlgViewParameters dialog
-
 class EoDlgViewParameters : public CDialog {
-	DECLARE_DYNAMIC(EoDlgViewParameters)
-
+DECLARE_DYNAMIC(EoDlgViewParameters)
 	EoDlgViewParameters(CWnd* parent = nullptr);
 	virtual ~EoDlgViewParameters();
 
@@ -15,11 +13,9 @@ protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
-
 public:
 	BOOL m_PerspectiveProjection;
 	unsigned long m_ModelView;
-
 	void OnBnClickedApply();
 	void OnEnChangePositionX();
 	void OnEnChangePositionY();
@@ -31,7 +27,6 @@ public:
 	void OnEnChangeBackClipDistance();
 	void OnEnChangeLensLength();
 	void OnBnClickedPerspectiveProjection();
-
 protected:
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

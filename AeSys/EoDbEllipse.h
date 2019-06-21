@@ -1,36 +1,27 @@
 #pragma once
-
 #include "OdaCommon.h"
-
 #include "EoDb.h"
 #include "EoDbPrimitive.h"
 #include "DbEllipse.h"
 
 class EoDbEllipse : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbEllipse)
-
+DECLARE_DYNAMIC(EoDbEllipse)
 private:
-	
 	OdGePoint3d m_Center {OdGePoint3d::kOrigin};
 	OdGeVector3d m_MajorAxis {OdGeVector3d::kXAxis};
 	OdGeVector3d m_MinorAxis {OdGeVector3d::kYAxis};
 	double m_SweepAngle {Oda2PI};
-
 public: // Constructors and destructor
-
 	EoDbEllipse() = default;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept;
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
-
 	EoDbEllipse(const EoDbEllipse& other);
 	const EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
-
 	~EoDbEllipse() = default;
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -57,7 +48,6 @@ public: // Constructors and destructor
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	// Methods
-
 	OdGePoint3d Center() const noexcept;
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
@@ -84,17 +74,12 @@ public: // Constructors and destructor
 	double SwpAngToPt(const OdGePoint3d& point);
 
 	// Methods - static
-
 	static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
-
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
-
 	static EoDbEllipse* Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord);
-
 	static OdDbEllipsePtr CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius);
-
 };
 
 OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double angle);

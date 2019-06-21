@@ -1,11 +1,8 @@
 #include "stdafx.h"
-
 #include "PrimState.h"
-
 #include "EoDlgSetupHatch.h"
 
 // EoDlgSetupHatch dialog
-
 IMPLEMENT_DYNAMIC(EoDlgSetupHatch, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupHatch, CDialog)
@@ -30,13 +27,11 @@ void EoDlgSetupHatch::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgSetupHatch::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	SetDlgItemInt(IDC_FIL_AREA_HAT_ID, pstate.HatchInteriorStyleIndex(), FALSE);
-
 	return TRUE;
 }
+
 void EoDlgSetupHatch::OnOK() {
 	pstate.SetHatchInteriorStyleIndex(GetDlgItemInt(IDC_FIL_AREA_HAT_ID, 0, FALSE));
-
 	CDialog::OnOK();
 }

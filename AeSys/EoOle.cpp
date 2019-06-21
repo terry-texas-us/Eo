@@ -1,18 +1,13 @@
 #include "stdafx.h"
-
 #include <afxodlgs.h>
 #include <DbOle2Frame.h>
 #include <OleItemHandlerBase.h>
 #include <MemoryStream.h>
-
 #include <Ed/EdCommandStack.h>
 #include <DbSSet.h>
-
 #include <DbUserIO.h>
-
 #include "AeSys.h"
 #include "AeSysDoc.h"
-
 #ifdef OD_OLE_SUPPORT
 class OleDwgItem : public COleClientItem, public OdOleItemHandler {
 	ODRX_HEAP_OPERATORS()
@@ -122,7 +117,7 @@ public:
 			archive.m_pDocument = pOleDocument;
 
 			// Maintain reference balance:
-			// COleDocument calls COleClientItem::InternalRelease() in its DeleteContents(),
+// COleDocument calls COleClientItem::InternalRelease() in its DeleteContents(),
 			// but it does not add reference in COleDocument::AddItem();
 			if(!m_pDocument) {
 				pOleDocument->AddItem(this);
@@ -448,5 +443,3 @@ void AeSysDoc::OnInsertOleobject() {
 	EndWaitCursor();
 }
 #endif // OD_OLE_SUPPORT
-
-

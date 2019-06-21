@@ -1,17 +1,13 @@
 #include "stdafx.h"
-
 #include "AeSys.h"
 #include "AeSysDoc.h"
-
 #include "PrimState.h"
-
 IMPLEMENT_DYNAMIC(EoDbPrimitive, CObject)
 
-short	EoDbPrimitive::sm_LayerColorIndex = 1;
-short	EoDbPrimitive::sm_LayerLinetypeIndex = 1;
-short	EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
-short	EoDbPrimitive::sm_HighlightColorIndex = 0;
-
+short EoDbPrimitive::sm_LayerColorIndex = 1;
+short EoDbPrimitive::sm_LayerLinetypeIndex = 1;
+short EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
+short EoDbPrimitive::sm_HighlightColorIndex = 0;
 unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
@@ -126,10 +122,8 @@ void EoDbPrimitive::SetColorIndex2(short colorIndex) {
 
 void EoDbPrimitive::SetLinetypeIndex2(short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
-
 	if (!m_EntityObjectId.isNull()) {
 		const auto Linetype {LinetypeObjectFromIndex(LinetypeIndex())};
-
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		Entity->setLinetype(Linetype);
 	}
@@ -151,9 +145,8 @@ void EoDbPrimitive::SetHighlightLinetypeIndex(short linetypeIndex) noexcept {
 	sm_HighlightLinetypeIndex = linetypeIndex;
 }
 
-OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d & normal) {
+OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
 	const auto Epsilon {1.0 / 64.0};
-
 	OdGeVector3d ArbitraryAxis;
 	if (fabs(normal.x) < Epsilon && fabs(normal.y) < Epsilon) {
 		ArbitraryAxis = OdGeVector3d::kYAxis.crossProduct(normal);
@@ -163,20 +156,17 @@ OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d & normal) {
 	return ArbitraryAxis;
 }
 
-double ComputeElevation(const OdGePoint3d & point, const OdGeVector3d & normal) {
+double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal) {
 	OdGePlane Plane(point, normal);
-
 	OdGeMatrix3d WorldToPlaneTransform;
 	WorldToPlaneTransform.setToWorldToPlane(Plane);
-
 	auto OriginOnPlane {OdGePoint3d::kOrigin.orthoProject(Plane)};
 	auto OriginToPlaneVector {OriginOnPlane.asVector()};
 	OriginToPlaneVector.transformBy(WorldToPlaneTransform);
-
 	return OriginToPlaneVector.z;
 }
 // <summary>Computes the plane normal. Expects uAxis = pointU - origin and vAxis = pointV - origin to be non-collinear.</summary>
-OdGeVector3d ComputeNormal(const OdGePoint3d & pointU, const OdGePoint3d & origin, const OdGePoint3d & pointV) {
+OdGeVector3d ComputeNormal(const OdGePoint3d& pointU, const OdGePoint3d& origin, const OdGePoint3d& pointV) {
 	auto Normal = OdGeVector3d(pointU - origin).crossProduct(OdGeVector3d(pointV - origin));
 	if (Normal.isZeroLength()) {
 		return OdGeVector3d::kZAxis;
@@ -186,7 +176,6 @@ OdGeVector3d ComputeNormal(const OdGePoint3d & pointU, const OdGePoint3d & origi
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(short linetypeIndex) {
 	const auto Document {AeSysDoc::GetDoc()};
-	
 	if (Document != nullptr) {
 		return LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
 	}
@@ -196,9 +185,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(short linetypeIndex) {
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, short linetypeIndex) {
 	OdDbObjectId Linetype {nullptr};
-
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
-
 	if (linetypeIndex == LINETYPE_BYLAYER) {
 		Linetype = Linetypes->getLinetypeByLayerId();
 	} else if (linetypeIndex == LINETYPE_BYBLOCK) {

@@ -1,14 +1,12 @@
 #include "stdafx.h"
 #include "AeSys.h"
-
 #include "EoDlgSetUnitsAndPrecision.h"
 
 // EoDlgSetUnitsAndPrecision dialog
-
 IMPLEMENT_DYNAMIC(EoDlgSetUnitsAndPrecision, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetUnitsAndPrecision, CDialog)
-	ON_BN_CLICKED(IDC_METRIC, &EoDlgSetUnitsAndPrecision::OnBnClickedMetric)
+		ON_BN_CLICKED(IDC_METRIC, &EoDlgSetUnitsAndPrecision::OnBnClickedMetric)
 END_MESSAGE_MAP()
 
 EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent)
@@ -28,10 +26,8 @@ void EoDlgSetUnitsAndPrecision::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 	CDialog::OnInitDialog();
-
 	const auto CheckButtonId {EoMin(IDC_ARCHITECTURAL + m_Units, IDC_METRIC)};
 	CheckRadioButton(IDC_ARCHITECTURAL, IDC_METRIC, CheckButtonId);
-
 	auto MetricUnits {theApp.LoadStringResource(IDS_METRIC_UNITS)};
 	auto Position {0};
 	while (Position < MetricUnits.GetLength()) {
@@ -43,6 +39,7 @@ BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 	}
 	return TRUE;
 }
+
 void EoDlgSetUnitsAndPrecision::OnOK() {
 	switch (GetCheckedRadioButton(IDC_ARCHITECTURAL, IDC_METRIC)) {
 		case IDC_ARCHITECTURAL:
@@ -77,6 +74,7 @@ void EoDlgSetUnitsAndPrecision::OnOK() {
 	}
 	CDialog::OnOK();
 }
+
 void EoDlgSetUnitsAndPrecision::OnBnClickedMetric() {
 	m_MetricUnitsListBoxControl.SetCurSel(AeSys::kCentimeters - AeSys::kMeters);
 }

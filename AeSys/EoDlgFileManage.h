@@ -1,13 +1,10 @@
 #pragma once
 
 // EoDlgFileManage dialog
-
 class EoDlgFileManage : public CDialog {
-	DECLARE_DYNAMIC(EoDlgFileManage)
-
+DECLARE_DYNAMIC(EoDlgFileManage)
 	EoDlgFileManage(CWnd* parent = nullptr);
 	EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
-
 	virtual ~EoDlgFileManage();
 
 	// Dialog Data
@@ -16,16 +13,13 @@ class EoDlgFileManage : public CDialog {
 protected:
 	void DoDataExchange(CDataExchange* pDX) final;
 	BOOL OnInitDialog() final;
-
-	DECLARE_MESSAGE_MAP()
-
+DECLARE_MESSAGE_MAP()
 public:
 	enum ColumnLabels { Status, Name, On, Freeze, Lock, Color, Linetype, Lineweight, PlotStyle, Plot, VpFreeze, VpColor, VpLinetype, VpLineweight, VpPlotStyle, Descr };
 
 	AeSysDoc* m_Document;
 	OdDbDatabasePtr m_Database;
 	OdDbObjectId m_ActiveViewport;
-
 	CListBox m_BlocksList;
 	bool m_ClickToColumnStatus;
 	int m_Description;
@@ -34,10 +28,8 @@ public:
 	int m_NumberOfColumns;
 	HWND m_PreviewWindowHandle;
 	CImageList m_StateImages;
-
 	void DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& rcItem);
 	void UpdateCurrentLayerInfoField();
-
 	void OnBnClickedFuse();
 	void OnBnClickedMelt();
 	void OnBnClickedNewlayer();

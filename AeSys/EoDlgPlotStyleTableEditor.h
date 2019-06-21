@@ -1,15 +1,12 @@
 #pragma once
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
 #include "EoDlgPlotStyleTableEditor_GeneralPropertyPage.h"
-
 class OdPsPlotStyleTable;
 
 class EoDlgPlotStyleManager : public CPropertySheet {
-	DECLARE_DYNCREATE(EoDlgPlotStyleManager)
-
+DECLARE_DYNCREATE(EoDlgPlotStyleManager)
 	OdPsPlotStyleTable* m_pPlotStyleTable;
 	OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
-
 	EoDlgPlotStyleManager(CWnd* pParentWnd = nullptr);
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
 	void SetFileBufPath(OdString sFilePath);
@@ -23,10 +20,8 @@ class EoDlgPlotStyleManager : public CPropertySheet {
 	enum { IDD = IDD_PLOTSTYLE_MANAGER };
 
 	virtual ~EoDlgPlotStyleManager();
-
 protected:
 	int OnCreate(LPCREATESTRUCT createStructure);
 	BOOL OnInitDialog() final;
-
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

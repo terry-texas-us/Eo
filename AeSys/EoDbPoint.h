@@ -1,30 +1,22 @@
 #pragma once
-
 #include "DbPoint.h"
-
 #include "EoDbPrimitive.h"
 
 class EoDbPoint : public EoDbPrimitive {
-	DECLARE_DYNAMIC(EoDbPoint)
-
+DECLARE_DYNAMIC(EoDbPoint)
 private:
-	OdGePoint3d	m_Position;
+	OdGePoint3d m_Position;
 	short m_PointDisplayMode;
 	unsigned short m_NumberOfDatums;
 	double* m_Data;
-
 public: // Constructors and destructor
-
 	EoDbPoint() noexcept;
 	EoDbPoint(const OdGePoint3d& point) noexcept;
-
 	EoDbPoint(const EoDbPoint& other);
 	const EoDbPoint& operator=(const EoDbPoint& other);
-
 	~EoDbPoint();
 
 	// Methods - absolute virtuals
-
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -48,19 +40,15 @@ public: // Constructors and destructor
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	// Methods
-
 	double DataAt(unsigned short dataIndex) const noexcept;
 	void ModifyState() noexcept override;
 	short PointDisplayMode() const noexcept;
 	OdGePoint3d Position() const noexcept;
-
 	void SetData(unsigned short numberOfDatums, double* data);
 	void SetPointDisplayMode(short displayMode) noexcept;
 
 	// Methods - static
-
 	static EoDbPoint* Create(OdDbPointPtr& point);
-
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);

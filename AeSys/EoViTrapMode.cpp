@@ -3,7 +3,6 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "EoDlgTrapModify.h"
-
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 
@@ -14,16 +13,12 @@ void AeSysView::OnTrapModeRemoveAdd() {
 void AeSysView::OnTrapModePoint() {
 	EoGePoint4d ptView(GetCursorPosition(), 1.0);
 	ModelViewTransformPoint(ptView);
-
 	EoDbHatch::SetEdgeToEvaluate(0);
 	EoDbPolyline::SetEdgeToEvaluate(0);
-
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNextVisibleGroup(Position)};
-
 		if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
-
 		if (Group->IsOn(ptView, this)) { GetDocument()->AddGroupToTrap(Group); }
 	}
 	UpdateStateInformation(TrapCount);
@@ -36,20 +31,13 @@ void AeSysView::OnTrapModeStitch() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
-
 		if (m_PreviousPnt == CurrentPnt) { return; }
-
 		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(CurrentPnt, 1.0)};
-
 		ModelViewTransformPoints(2, ptView);
-
 		auto Position {GetFirstVisibleGroupPosition()};
-		
 		while (Position != nullptr) {
 			auto Group {GetNextVisibleGroup(Position)};
-
 			if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
-
 			if (Group->SelectUsingLineSeg(EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d()), this)) { GetDocument()->AddGroupToTrap(Group); }
 		}
 		RubberBandingDisable();
@@ -66,20 +54,14 @@ void AeSysView::OnTrapModeField() {
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
 		if (m_PreviousPnt == CurrentPnt) { return; }
-
 		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(CurrentPnt, 1.0)};
-
 		ModelViewTransformPoints(2, ptView);
-
 		const auto LowerLeftCorner {EoGePoint4d::Min(ptView[0], ptView[1]).Convert3d()};
 		const auto UpperRightCorner {EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d()};
-
 		auto Position {GetFirstVisibleGroupPosition()};
 		while (Position != nullptr) {
 			auto Group {GetNextVisibleGroup(Position)};
-
 			if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
-
 			if (Group->SelectUsingRectangle(LowerLeftCorner, UpperRightCorner, this)) { GetDocument()->AddGroupToTrap(Group); }
 		}
 		RubberBandingDisable();
@@ -90,12 +72,9 @@ void AeSysView::OnTrapModeField() {
 
 void AeSysView::OnTrapModeLast() {
 	auto Document {GetDocument()};
-
 	auto Position {Document->GetLastWorkLayerGroupPosition()};
-
 	while (Position != nullptr) {
 		auto Group {Document->GetPreviousWorkLayerGroup(Position)};
-
 		if (!Document->FindTrappedGroup(Group)) {
 			Document->AddGroupToTrap(Group);
 			UpdateStateInformation(TrapCount);
@@ -107,11 +86,8 @@ void AeSysView::OnTrapModeLast() {
 void AeSysView::OnTrapModeEngage() {
 	if (GroupIsEngaged()) {
 		auto Document {GetDocument()};
-
 		auto Position {Document->FindWorkLayerGroup(EngagedGroup())};
-
 		auto Group {Document->GetNextWorkLayerGroup(Position)};
-
 		if (Document->FindTrappedGroup(Group) == nullptr) {
 			Document->AddGroupToTrap(Group);
 			UpdateStateInformation(TrapCount);
@@ -129,11 +105,11 @@ void AeSysView::OnTrapModeMenu() {
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 	DestroyMenu(TrapMenu);
 }
+
 void AeSysView::OnTrapModeModify() {
 
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
-
 		if (Dialog.DoModal() == IDOK) {
 			GetDocument()->UpdateAllViews(nullptr);
 		}
@@ -153,17 +129,13 @@ void AeSysView::OnTraprModeRemoveAdd() {
 
 void AeSysView::OnTraprModePoint() {
 	auto Document {GetDocument()};
-
 	EoGePoint4d ptView(GetCursorPosition(), 1.0);
 	ModelViewTransformPoint(ptView);
-
 	EoDbHatch::SetEdgeToEvaluate(0);
 	EoDbPolyline::SetEdgeToEvaluate(0);
-
 	auto Position {Document->GetFirstTrappedGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {Document->GetNextTrappedGroup(Position)};
-
 		if (Group->IsOn(ptView, this)) {
 			Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -180,20 +152,13 @@ void AeSysView::OnTraprModeStitch() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
-
 		if (m_PreviousPnt == CurrentPnt) { return; }
-
 		auto Document {GetDocument()};
-
 		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(CurrentPnt, 1.0)};
-
 		ModelViewTransformPoints(2, ptView);
-
 		auto Position {Document->GetFirstTrappedGroupPosition()};
-
 		while (Position != nullptr) {
 			auto Group {Document->GetNextTrappedGroup(Position)};
-
 			if (Group->SelectUsingLineSeg(EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d()), this)) {
 				Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -212,23 +177,15 @@ void AeSysView::OnTraprModeField() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
-
 		if (m_PreviousPnt == CurrentPnt) { return; }
-
 		auto Document {GetDocument()};
-
 		EoGePoint4d ptView[] = {EoGePoint4d(m_PreviousPnt, 1.0), EoGePoint4d(CurrentPnt, 1.0)};
-
 		ModelViewTransformPoints(2, ptView);
-
 		const auto LowerLeftCorner {EoGePoint4d::Min(ptView[0], ptView[1]).Convert3d()};
 		const auto UpperRightCorner {EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d()};
-
 		auto Position {Document->GetFirstTrappedGroupPosition()};
-
 		while (Position != nullptr) {
 			auto Group {Document->GetNextTrappedGroup(Position)};
-
 			if (Group->SelectUsingRectangle(LowerLeftCorner, UpperRightCorner, this)) {
 				Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -266,7 +223,6 @@ void AeSysView::OnTraprModeModify() {
 
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
-
 		if (Dialog.DoModal() == IDOK) {
 			GetDocument()->UpdateAllViews(nullptr);
 		}

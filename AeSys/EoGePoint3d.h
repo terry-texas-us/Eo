@@ -1,5 +1,4 @@
 #pragma once
-
 class EoGePoint4d;
 class EoGeMatrix3d;
 
@@ -19,4 +18,4 @@ OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoi
 //		bit 2 set - point below window
 //		bit 4 set - point to the right of window
 //		bit 8 set - point to the left of window
-int	RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept;
+int RelationshipToRectangleOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) noexcept;

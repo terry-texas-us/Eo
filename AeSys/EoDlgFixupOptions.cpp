@@ -1,9 +1,7 @@
 #include "stdafx.h"
-
 #include "EoDlgFixupOptions.h"
 
 // EoDlgFixupOptions dialog
-
 IMPLEMENT_DYNAMIC(EoDlgFixupOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgFixupOptions, CDialog)

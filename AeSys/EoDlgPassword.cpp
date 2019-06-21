@@ -1,13 +1,11 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "EoDlgPassword.h"
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
 EoDlgPassword::EoDlgPassword(CWnd* parent)
 	: CDialog(IDD, parent) {
 	m_sFileName = L"";
