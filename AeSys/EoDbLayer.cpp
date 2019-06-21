@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
+#include <DbLinetypeTableRecord.h>
 
 EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer)
 	: m_Layer(layer) {

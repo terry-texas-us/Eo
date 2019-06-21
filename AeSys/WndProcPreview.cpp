@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "EoDbBlock.h"
 #include "Preview.h"
 CBitmap* g_WndProcPreview_Bitmap = nullptr;
@@ -44,7 +45,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 			CDC dc;
 			dc.Attach(BeginPaint(hwnd, &ps));
 			CDC dcMem;
-			dcMem.CreateCompatibleDC(NULL);
+			dcMem.CreateCompatibleDC(nullptr);
 			const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 			dc.BitBlt(0, 0, rc.right, rc.bottom, &dcMem, 0, 0, SRCCOPY);
 			dcMem.SelectObject(Bitmap);
@@ -63,11 +64,11 @@ void WndProcPreviewClear(HWND previewWindow) {
 	CRect rc;
 	GetClientRect(previewWindow, &rc);
 	CDC dcMem;
-	dcMem.CreateCompatibleDC(0);
+	dcMem.CreateCompatibleDC(nullptr);
 	CBitmap* Bitmap = static_cast<CBitmap*>(dcMem.SelectObject(g_WndProcPreview_Bitmap));
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 	dcMem.SelectObject(Bitmap);
-	InvalidateRect(previewWindow, 0, TRUE);
+	InvalidateRect(previewWindow, nullptr, TRUE);
 }
 
 void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
@@ -75,7 +76,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	CRect rc;
 	GetClientRect(previewWindow, &rc);
 	CDC dcMem;
-	dcMem.CreateCompatibleDC(NULL);
+	dcMem.CreateCompatibleDC(nullptr);
 	const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 	ActiveView->ViewportPushActive();
@@ -104,7 +105,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();
 	dcMem.SelectObject(Bitmap);
-	InvalidateRect(previewWindow, 0, TRUE);
+	InvalidateRect(previewWindow, nullptr, TRUE);
 }
 
 void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
@@ -112,7 +113,7 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	CRect rc;
 	GetClientRect(previewWindow, &rc);
 	CDC dcMem;
-	dcMem.CreateCompatibleDC(NULL);
+	dcMem.CreateCompatibleDC(nullptr);
 	const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 	ActiveView->ViewportPushActive();
@@ -132,8 +133,8 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
-	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
-	const auto Position(Target + OdGeVector3d::kZAxis * 50.);
+	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2.0, (MinimumPoint.y + MaximumPoint.y) / 2.0, 0.0);
+	const auto Position(Target + OdGeVector3d::kZAxis * 50.0);
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
 	const auto PrimitiveState {g_PrimitiveState.Save()};
 	groups->Display(ActiveView, &dcMem);
@@ -141,5 +142,5 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();
 	dcMem.SelectObject(Bitmap);
-	InvalidateRect(previewWindow, 0, TRUE);
+	InvalidateRect(previewWindow, nullptr, TRUE);
 }

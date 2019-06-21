@@ -2,6 +2,7 @@
 #include "DbBlockTableRecord.h"
 #include "AeSys.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "DbDimStyleTable.h"
 #include "DbDimStyleTableRecord.h"
 #include "DbAlignedDimension.h"

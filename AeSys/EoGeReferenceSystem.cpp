@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "EoDbFile.h"
 
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* view, const EoDbCharacterCellDefinition& characterCellDefinition)

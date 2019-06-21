@@ -2,6 +2,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 
 void AeSysDoc::AddGroupsToTrap(EoDbGroupList* groups) {
 	if (theApp.IsTrapHighlighted()) { UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, groups); }

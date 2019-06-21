@@ -2,6 +2,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include <DbLayerTable.h>
 #include "EoDb.h"
 #include "Preview.h"
 

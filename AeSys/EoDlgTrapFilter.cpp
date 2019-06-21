@@ -2,7 +2,11 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
 #include "EoDlgTrapFilter.h"
+#include "EoDbHatch.h"
+#include "EoDbPolyline.h"
 
 // EoDlgTrapFilter dialog
 IMPLEMENT_DYNAMIC(EoDlgTrapFilter, CDialog)

@@ -4,24 +4,28 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
+#include <DbLayerTable.h>
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
 #include "DbRegAppTable.h"
-#include "DbRegAppTableRecord.h"
-#include "DbDimStyleTable.h"
-#include "DbDimStyleTableRecord.h"
-#include "DbTextStyleTable.h"
-#include "DbTextStyleTableRecord.h"
-#include "Ed/EdLispEngine.h"
-#include "DbObjectContextCollection.h"
-#include "DbObjectContextManager.h"
+#include <DbRegAppTableRecord.h>
+#include <DbDimStyleTable.h>
+#include <DbDimStyleTableRecord.h>
+#include <DbTextStyleTable.h>
+#include <DbTextStyleTableRecord.h>
+#include <Ed/EdLispEngine.h>
+#include <DbObjectContextCollection.h>
+#include <DbObjectContextManager.h>
 #include "SaveState.h"
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 #include "EoDbPegFile.h"
 #include "EoDbTracingFile.h"
-#include "ColorMapping.h"
+#include <ColorMapping.h>
 #include "EoAppAuditInfo.h"
-#include "ExPageController.h"
-#include "ExStringIO.h"
+#include <ExPageController.h>
+#include <ExStringIO.h>
 #include "EoDlgUserIOConsole.h"
 #include "EoGePoint4d.h"
 #include "EoGeMatrix3d.h"
@@ -48,7 +52,7 @@
 #include "EoDlgSetupLinetype.h"
 #include "EoDlgTrapFilter.h"
 #include "lex.h"
-#include "OdValue.h"
+#include <OdValue.h>
 unsigned CALLBACK OFNHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {
@@ -1817,8 +1821,8 @@ void AeSysDoc::OnEditImageToClipboard() {
 
 void AeSysDoc::OnEditTrace() {
 	if (OpenClipboard(nullptr)) {
-		wchar_t sBuf[16] {L"\0"};
-		unsigned ClipboardFormat {0};
+		wchar_t sBuf[16] {0};
+		unsigned ClipboardFormat;
 		unsigned Format {0};
 		while ((ClipboardFormat = EnumClipboardFormats(Format)) != 0) {
 			GetClipboardFormatNameW(ClipboardFormat, sBuf, 16);
@@ -2415,6 +2419,7 @@ void AeSysDoc::OnHelpKey() {
 			HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_trap.htm", HH_DISPLAY_TOPIC, NULL);
 			break;
 		}
+		default: ;
 	}
 }
 
@@ -2739,13 +2744,13 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 	theApp.m_pAuditDlg = nullptr;
 }
 
-BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL isOpenFileDialog, CDocTemplate* docTemplate) {
+BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate) {
 	const auto dwgver {m_DatabasePtr->originalFileVersion()};
 	auto Extension {fileName.Right(3)};
 	const auto isDwg {Extension.CompareNoCase(L"dxf") != 0};
 	CString title;
 	VERIFY(title.LoadString(nIDSTitle));
-	CFileDialog FileDialog(isOpenFileDialog);
+	CFileDialog FileDialog(openFileDialog);
 	FileDialog.m_ofn.Flags |= flags;
 	CString Filter;
 	Filter = L"AutoCAD 2018 Compatible Drawing |*.dwg|";

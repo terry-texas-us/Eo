@@ -31,7 +31,7 @@ END_MESSAGE_MAP()
 
 static OdString FormatValue(const OdResBuf* resourceBuffer) {
 	if (resourceBuffer->restype() == OdResBuf::kRtEntName || resourceBuffer->restype() == OdResBuf::kDxfEnd) {
-		const auto ObjectId {resourceBuffer->getObjectId(0)};
+		const auto ObjectId {resourceBuffer->getObjectId(nullptr)};
 		return ObjectId.getHandle().ascii();
 	}
 	OdString FormattedValue;

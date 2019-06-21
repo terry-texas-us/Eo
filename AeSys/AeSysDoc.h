@@ -1,19 +1,12 @@
 #pragma once
-#include "DbBlockTable.h"
-#include "DbBlockTableRecord.h"
-#include "DbLayerTable.h"
-#include "DbLayerTableRecord.h"
-#include "DbLinetypeTable.h"
-#include "DbLinetypeTableRecord.h"
-#include "DbSymUtl.h"
-#include "DbDatabase.h"
-#include "DbCommandContext.h"
-#include "Ed/EdCommandStack.h"
-#include "ExDbCommandContext.h"
-#include "StaticRxObject.h"
-#include "SharedPtr.h"
-#include "DbLayoutManager.h"
-#include "ExEdBaseIO.h"
+#include <DbLayerTableRecord.h>
+#include <DbSymUtl.h>
+#include <DbDatabase.h>
+#include <DbCommandContext.h>
+#include <Ed/EdCommandStack.h>
+#include <ExDbCommandContext.h>
+#include <DbLayoutManager.h>
+#include <ExEdBaseIO.h>
 #include "EoGeUniquePoint.h"
 #include "EoDbText.h"
 #include "EoDbMaskedPrimitive.h"
@@ -221,14 +214,14 @@ DECLARE_DYNCREATE(AeSysDoc)
 	AeSysView* getViewer() noexcept;
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);
-	void ExecuteCommand(const OdString& command, bool bEcho = true);
+	void ExecuteCommand(const OdString& command, bool echo = true);
 	OdDbDatabasePtr m_DatabasePtr;
 	void DeleteSelection(bool force);
 	void startDrag(const OdGePoint3d& point);
 	BOOL OnSaveDocument(const wchar_t* pathName) override;
-	BOOL OnCmdMsg(unsigned nID, int code, void* extra, AFX_CMDHANDLERINFO* handlerInfo) override;
+	BOOL OnCmdMsg(unsigned commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
-	BOOL OnOpenDocument(const wchar_t* pathName) override;
+	BOOL OnOpenDocument(const wchar_t* file) override;
 	void DeleteContents() override;
 	BOOL CanCloseFrame(CFrameWnd* frame) override;
 	~AeSysDoc();
@@ -296,10 +289,10 @@ public:
 	void AddLayer(EoDbLayer* layer);
 	OdDbObjectId AddLayerTo(OdDbLayerTablePtr layers, EoDbLayer* layer);
 	EoDbLayer* AnyLayerRemove(EoDbGroup* group);
-	EoDbLayer* GetLayerAt(const OdString& layerName);
+	EoDbLayer* GetLayerAt(const OdString& name);
 	EoDbLayer* GetLayerAt(int layerIndex);
 	int GetLayerTableSize() const;
-	int FindLayerAt(const OdString& layerName) const;
+	int FindLayerAt(const OdString& name) const;
 	OdDbLayerTablePtr LayerTable(OdDb::OpenMode openMode = OdDb::kForRead);
 	void RemoveAllLayers();
 	void RemoveLayerAt(int layerIndex);
@@ -368,7 +361,7 @@ public:
 	void SquareTrappedGroups(AeSysView* view);
 	void TracingFuse(OdString& nameAndLocation);
 	bool TracingLoadLayer(const OdString& file, EoDbLayer* layer);
-	bool TracingOpen(const OdString& pathName);
+	bool TracingOpen(const OdString& fileName);
 	void TransformTrappedGroups(const EoGeMatrix3d& transformMatrix);
 	int TrapGroupCount() const;
 	OdGePoint3d TrapPivotPoint() const noexcept;

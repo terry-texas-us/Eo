@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 
 // State list maintenance
 CPrimState* SavedStates[] = {nullptr, nullptr, nullptr, nullptr};

@@ -2,6 +2,8 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "PrimState.h"
+#include <DbLinetypeTable.h>
+
 IMPLEMENT_DYNAMIC(EoDbPrimitive, CObject)
 
 short EoDbPrimitive::sm_LayerColorIndex = 1;

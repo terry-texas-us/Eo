@@ -2,6 +2,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "EoDlgLowPressureDuctOptions.h"
 
 std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor) {

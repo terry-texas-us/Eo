@@ -17,7 +17,7 @@ END_MESSAGE_MAP()
 
 EoDlgEditOptions::EoDlgEditOptions(CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_ActiveView(0)
+	, m_ActiveView(nullptr)
 	, m_ScaleFactorX(0.0)
 	, m_ScaleFactorY(0.0)
 	, m_ScaleFactorZ(0.0)

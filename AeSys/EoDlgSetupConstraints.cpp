@@ -11,7 +11,7 @@ END_MESSAGE_MAP()
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_ActiveView(0) {
+	, m_ActiveView(nullptr) {
 }
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent)

@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
 #include "EoDlgSetupLinetype.h"
 IMPLEMENT_DYNAMIC(EoDlgSetupLinetype, CDialog)
 

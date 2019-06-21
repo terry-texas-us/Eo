@@ -1,9 +1,12 @@
 #include "stdafx.h"
-#include "DbViewportTable.h"
-#include "DbViewportTableRecord.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
-#include "DbDictionary.h"
+#include <DbLayerTable.h>
+#include <DbViewportTable.h>
+#include <DbViewportTableRecord.h>
+#include <DbBlockTable.h>
+#include <DbBlockTableRecord.h>
+#include <DbDictionary.h>
 #include "EoDbDwgToPegFile.h"
 #include "EoDbEntityToPrimitiveProtocolExtension.h"
 #ifdef _DEBUG

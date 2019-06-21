@@ -1,9 +1,11 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
 #include "EoDbLinetypeTable.h"
 const wchar_t* EoDbLinetypeTable::LegacyLinetypes[] = {
-L"0",
+	L"0",
 L"Continuous",
 L"2",
 L"3",

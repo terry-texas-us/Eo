@@ -1,16 +1,15 @@
 #pragma once
 
 // From Examples\Editor\ExGripManager.h  (last compare 19.12)
-#include "DbGsManager.h"
-#include "DbDatabaseReactor.h"
-#include "StaticRxObject.h"
-#include "DbGrip.h"
-#include "DbEntity.h"
-#include "DbUserIO.h"
+#include <DbGsManager.h>
+#include <DbDatabaseReactor.h>
+#include <DbGrip.h>
+#include <DbEntity.h>
+#include <DbUserIO.h>
 #define STL_USING_MAP
-#include "OdaSTL.h"
-#include "Ed/EdCommandStack.h"
-#include "Gi/GiDrawableImpl.h"
+#include <OdaSTL.h>
+#include <Ed/EdCommandStack.h>
+#include <Gi/GiDrawableImpl.h>
 class OdBaseGripManager;
 class OdExGripData;
 using OdExGripDataPtr = OdSmartPtr<OdExGripData>;

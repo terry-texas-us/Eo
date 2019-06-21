@@ -2,6 +2,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "EoDbHatch.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW

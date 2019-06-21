@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 unsigned short wPrvKeyDwn = 0;
 OdGePoint3d rPrvPos;
 

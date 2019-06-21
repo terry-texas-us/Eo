@@ -9,7 +9,6 @@
 #include <Gi/GiWorldDraw.h>
 #include <Gi/GiPathNode.h>
 #include <DbUserIO.h>
-#include <StaticRxObject.h>
 #include <DbCurve.h>
 #include <DbCircle.h>
 #include <DbLine.h>

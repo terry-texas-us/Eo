@@ -1,30 +1,30 @@
 #pragma once
-#include "Ge/GeScale3d.h"
-#include "StaticRxObject.h"
-#include "DbGsManager.h"
-#include "GiContextForDbDatabase.h"
-#include "ExEdBaseIO.h"
-#include "Gs/Gs.h"
-#include "atltypes.h"
+#include <Ge/GeScale3d.h>
+#include <DbGsManager.h>
+#include <GiContextForDbDatabase.h>
+#include <ExEdBaseIO.h>
+#include <Gs/Gs.h>
+#include <atltypes.h>
 #include "EditorObject.h"
-#include "ExEdInputParser.h"
+#include <ExEdInputParser.h>
 #include "EoGsViewport.h"
 #include "EoGsModelTransform.h"
 #include "EoGsViewTransform.h"
 #include "EoDbBlockReference.h"
 #include "EoDbEllipse.h"
-#include "EoDbHatch.h"
 #include "EoDbLine.h"
 #include "EoDbPoint.h"
-#include "EoDbPolyline.h"
 #include "EoDbGroup.h"
 #include "EoDbGroupList.h"
-#include "PrimState.h"
 #include "Section.h"
 class AeSysDoc;
 class EoDbText;
 
-class AeSysView : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, OdExEditorObject::OleDragCallback {
+class AeSysView 
+	: public CView
+	, public OdGiContextForDbDatabase
+	, OdEdBaseIO
+	, OdExEditorObject::OleDragCallback {
 	friend class SaveViewParams;
 	void destroyDevice();
 	COleDropTarget m_dropTarget;

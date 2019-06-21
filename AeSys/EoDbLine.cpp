@@ -2,6 +2,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "EoVaxFloat.h"
 #include "EoGePolyline.h"
 #include "EoDbFile.h"

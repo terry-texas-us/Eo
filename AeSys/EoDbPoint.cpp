@@ -2,6 +2,7 @@
 #include "DbBlockTableRecord.h"
 #include "AeSys.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "EoVaxFloat.h"
 #include "EoDbFile.h"
 IMPLEMENT_DYNAMIC(EoDbPoint, EoDbPrimitive)

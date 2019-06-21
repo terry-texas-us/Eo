@@ -156,7 +156,7 @@ void EoDlgUserIOConsole::OnShowWindow(BOOL show, unsigned status) {
 	CDialog::OnShowWindow(show, status);
 	CRect WindowRectangle;
 	GetWindowRect(&WindowRectangle);
-	SetWindowPos(0, WindowRectangle.left, WindowRectangle.top, sm_WindowWidth, sm_WindowHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
+	SetWindowPos(nullptr, WindowRectangle.left, WindowRectangle.top, sm_WindowWidth, sm_WindowHeight, SWP_SHOWWINDOW | SWP_NOZORDER);
 	auto EditControl {static_cast<CEdit*>(GetDlgItem(IDC_PROMPT))};
 	EditControl->LineScroll(EditControl->GetLineCount());
 }

@@ -1,8 +1,11 @@
 #include "stdafx.h"
-#include "DbViewport.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include <DbLayerTable.h>
+#include <DbViewport.h>
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
 #include "EoDb.h"
 #include "EoDlgFileManage.h"
 #include "EoDlgLineWeight.h"
@@ -34,7 +37,7 @@ EoDlgFileManage::EoDlgFileManage(CWnd* parent)
 	, m_ClickToColumnStatus(false)
 	, m_Description(0)
 	, m_NumberOfColumns(0)
-	, m_PreviewWindowHandle(0) {
+	, m_PreviewWindowHandle(nullptr) {
 }
 
 EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
@@ -44,7 +47,7 @@ EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, C
 	, m_ClickToColumnStatus(false)
 	, m_Description(0)
 	, m_NumberOfColumns(0)
-	, m_PreviewWindowHandle(0) {
+	, m_PreviewWindowHandle(nullptr) {
 }
 
 EoDlgFileManage::~EoDlgFileManage() {
@@ -430,7 +433,7 @@ void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructu
 	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
 	auto LayerTableRecord {Layer->TableRecord()};
 	// <tas="Layer0 should be culled here instead of the EndlabeleditLayers."</tas>
-	result = 0;
+	result = nullptr;
 }
 
 void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
@@ -455,7 +458,7 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure
 			}
 		}
 	}
-	result = 0;
+	result = nullptr;
 }
 
 void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {

@@ -3,6 +3,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "DbLayoutPaperPE.h"
 #include "RxDynamicModule.h"
 #include "OdStreamBuf.h"
@@ -391,6 +392,7 @@ OdDbPageControllerPtr AeSys::newPageController() {
 		case 2: // OdDb::kPage
 		case 3: // OdDb::kUnload - Unloading of objects for partially loaded database and paging of objects thru ExPageController.
 			return OdRxObjectImpl<ExPageController>::createObject();
+		default: ;
 	}
 	// Paging is not used.
 	return static_cast<OdDbPageController*>(nullptr);
@@ -1234,17 +1236,13 @@ void AeSys::LoadColorPalletFromFile(const CString& fileName) {
 	CStdioFile StreamFile;
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
 		wchar_t Line[128] {L"\0"};
-		wchar_t* Index {nullptr};
-		wchar_t* Red {nullptr};
-		wchar_t* Green {nullptr};
-		wchar_t* Blue {nullptr};
-		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0);
+		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0) {}
 		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && *Line != '<') {
 			wchar_t* NextToken {nullptr};
-			Index = wcstok_s(Line, L"=", &NextToken);
-			Red = wcstok_s(nullptr, L",", &NextToken);
-			Green = wcstok_s(nullptr, L",", &NextToken);
-			Blue = wcstok_s(nullptr, L",", &NextToken);
+			const auto Index {wcstok_s(Line, L"=", &NextToken)};
+			auto Red {wcstok_s(nullptr, L",", &NextToken)};
+			auto Green {wcstok_s(nullptr, L",", &NextToken)};
+			auto Blue {wcstok_s(nullptr, L",", &NextToken)};
 			g_ColorPalette[_wtoi(Index)] = RGB(_wtoi(Red), _wtoi(Green), _wtoi(Blue));
 			Red = wcstok_s(nullptr, L",", &NextToken);
 			Green = wcstok_s(nullptr, L",", &NextToken);
@@ -1588,6 +1586,7 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 			break;
 		case 'K': // kilometers
 			ReturnValue *= 39370.07874015748;
+		default: ;
 	}
 	return ReturnValue / AeSysView::GetActiveView()->WorldScale();
 }

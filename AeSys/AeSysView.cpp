@@ -5,6 +5,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "AbstractViewPE.h"
 #include "ColorMapping.h"
 #include "DbAbstractViewportData.h"

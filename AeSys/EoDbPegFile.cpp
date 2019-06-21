@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
+#include <DbLayerTable.h>
+#include <DbBlockTable.h>
+#include <DbBlockTableRecord.h>
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
 #include "EoDbPegFile.h"
 
 EoDbPegFile::EoDbPegFile(OdDbDatabasePtr database)

@@ -3,6 +3,7 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
 #include "Ge/GeCircArc3d.h"
 #include "EoDlgBlockInsert.h"
 #include "EoDbHatch.h"

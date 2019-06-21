@@ -14,7 +14,7 @@ OdGePoint3d EoDlgSetHomePoint::m_CursorPosition = OdGePoint3d::kOrigin;
 
 EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_ActiveView(0) {
+	, m_ActiveView(nullptr) {
 }
 
 EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent)

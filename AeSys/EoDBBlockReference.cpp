@@ -2,10 +2,13 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
+#include "PrimState.h"
+#include <DbBlockTable.h>
+#include <DbBlockTableRecord.h>
+#include <DbAttribute.h>
 #include "EoDb.h"
 #include "EoDbFile.h"
 #include "EoDbBlockReference.h"
-#include "DbAttribute.h"
 IMPLEMENT_DYNAMIC(EoDbBlockReference, EoDbPrimitive)
 
 class EoDbPegFile;

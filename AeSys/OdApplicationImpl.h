@@ -18,7 +18,7 @@ public:
 	}
 
 	const T* operator->() const {
-		if (m_pUnderlayObj == 0) throw OdError(eNullObjectPointer);
+		if (m_pUnderlayObj == nullptr) throw OdError(eNullObjectPointer);
 		return m_pUnderlayObj;
 	}
 
