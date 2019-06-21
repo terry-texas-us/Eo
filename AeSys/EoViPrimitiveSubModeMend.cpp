@@ -12,7 +12,7 @@ void AeSysView::OnModePrimitiveMend() {
 	m_PrimitiveToMend = nullptr;
 	if (GroupIsEngaged()) { // Group is currently engaged, see if cursor is on a control point
 		OdGePoint3d ptDet;
-		auto Primitive {EngagedPrimitive()};
+		const auto Primitive {EngagedPrimitive()};
 		EoDbHatch::SetEdgeToEvaluate(EoDbHatch::Edge());
 		EoDbPolyline::SetEdgeToEvaluate(EoDbPolyline::Edge());
 		if (Primitive->SelectUsingPoint(ptView, this, ptDet)) { // Cursor is close enough to engaged primitive to use it first
@@ -26,7 +26,7 @@ void AeSysView::OnModePrimitiveMend() {
 	}
 	m_MendPrimitiveBegin = CurrentPnt;
 	if (m_PrimitiveToMend != nullptr) {
-		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		m_PrimitiveToMendCopy = m_PrimitiveToMend->Clone(BlockTableRecord);
 		m_MendPrimitiveBegin = m_PrimitiveToMend->SelectAtControlPoint(this, ptView);
 		m_MendPrimitiveVertexIndex = static_cast<unsigned long>(1 << EoDbPrimitive::ControlPointIndex());

@@ -126,7 +126,7 @@ unsigned EoCtrlColorsButton::OnGetDlgCode() noexcept {
 
 void EoCtrlColorsButton::OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags) {
 	if (keyCode >= VK_LEFT && keyCode <= VK_DOWN) {
-		auto DeviceContext {GetDC()};
+		const auto DeviceContext {GetDC()};
 		m_SelectedIndex = 0;
 		DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
 		if (m_Layout == SimpleSingleRow) {
@@ -191,7 +191,7 @@ void EoCtrlColorsButton::OnLButtonUp(unsigned flags, CPoint point) {
 }
 
 void EoCtrlColorsButton::OnMouseMove(unsigned flags, CPoint point) {
-	auto DeviceContext {GetDC()};
+	const auto DeviceContext {GetDC()};
 	m_SelectedIndex = 0;
 	DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
 	m_SubItem = SubItemByPoint(point);
@@ -214,7 +214,7 @@ void EoCtrlColorsButton::OnPaint() {
 
 void EoCtrlColorsButton::OnSetFocus(CWnd* oldWindow) {
 	CMFCButton::OnSetFocus(oldWindow);
-	auto DeviceContext {GetDC()};
+	const auto DeviceContext {GetDC()};
 	DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
 	m_SubItem = m_BeginIndex;
 	CRect CurrentSubItemRectangle;

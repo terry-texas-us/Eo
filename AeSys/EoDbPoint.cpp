@@ -307,7 +307,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 	if (NumberOfDatums > 0) {
 		auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 		for (unsigned n = 0; n < NumberOfDatums; n++) {
-			auto Datum {file.ReadDouble()};
+			const auto Datum {file.ReadDouble()};
 			ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, Datum));
 		}
 		Point->setXData(ResourceBuffer);

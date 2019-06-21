@@ -29,24 +29,24 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 END_MESSAGE_MAP()
 
 void DrawTransparentBitmap(HDC hdc, HBITMAP bitmap, short xStart, short yStart, COLORREF transparentColor) noexcept {
-	auto hdcTemp {CreateCompatibleDC(hdc)};
+	const auto hdcTemp {CreateCompatibleDC(hdc)};
 	SelectObject(hdcTemp, bitmap);
 	BITMAP bm;
 	GetObjectW(bitmap, sizeof(BITMAP), reinterpret_cast<LPSTR>(& bm));
 	POINT ptSize {bm.bmWidth, bm.bmHeight};
 	DPtoLP(hdcTemp, &ptSize, 1);
-	auto hdcBack {CreateCompatibleDC(hdc)};
-	auto hdcObject {CreateCompatibleDC(hdc)};
-	auto hdcMem {CreateCompatibleDC(hdc)};
-	auto hdcSave {CreateCompatibleDC(hdc)};
-	auto bmAndBack {CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr)};
-	auto bmAndObject {CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr)};
-	auto bmAndMem {CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y)};
-	auto bmSave {CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y)};
-	auto bmBackOld {static_cast<HBITMAP>(SelectObject(hdcBack, bmAndBack))};
-	auto bmObjectOld {static_cast<HBITMAP>(SelectObject(hdcObject, bmAndObject))};
-	auto bmMemOld {static_cast<HBITMAP>(SelectObject(hdcMem, bmAndMem))};
-	auto bmSaveOld {static_cast<HBITMAP>(SelectObject(hdcSave, bmSave))};
+	const auto hdcBack {CreateCompatibleDC(hdc)};
+	const auto hdcObject {CreateCompatibleDC(hdc)};
+	const auto hdcMem {CreateCompatibleDC(hdc)};
+	const auto hdcSave {CreateCompatibleDC(hdc)};
+	const auto bmAndBack {CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr)};
+	const auto bmAndObject {CreateBitmap(ptSize.x, ptSize.y, 1, 1, nullptr)};
+	const auto bmAndMem {CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y)};
+	const auto bmSave {CreateCompatibleBitmap(hdc, ptSize.x, ptSize.y)};
+	const auto bmBackOld {static_cast<HBITMAP>(SelectObject(hdcBack, bmAndBack))};
+	const auto bmObjectOld {static_cast<HBITMAP>(SelectObject(hdcObject, bmAndObject))};
+	const auto bmMemOld {static_cast<HBITMAP>(SelectObject(hdcMem, bmAndMem))};
+	const auto bmSaveOld {static_cast<HBITMAP>(SelectObject(hdcSave, bmSave))};
 	SetMapMode(hdcTemp, GetMapMode(hdc));
 	BitBlt(hdcSave, 0, 0, ptSize.x, ptSize.y, hdcTemp, 0, 0, SRCCOPY);
 	const auto BackgroundColor {SetBkColor(hdcTemp, transparentColor)};
@@ -108,7 +108,7 @@ void WinPathToDos(wchar_t* str) {
 BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
 	if (!m_pPlotStyleTable) { return FALSE; }
-	auto description {m_pPlotStyleTable->description()};
+	const auto description {m_pPlotStyleTable->description()};
 	m_editDescription.SetWindowTextW(description);
 	const auto check {m_pPlotStyleTable->isApplyScaleFactor()};
 	m_checkScalefactor.SetCheck(check);
@@ -116,19 +116,19 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	OdString sScaleFactor;
 	sScaleFactor.format(L"%.1f", m_pPlotStyleTable->scaleFactor());
 	m_editScalefactor.SetWindowTextW(sScaleFactor);
-	auto editDC {::GetDC(m_staticFilepath.m_hWnd)};
+	const auto editDC {::GetDC(m_staticFilepath.m_hWnd)};
 	//  CRect rect;
 	//  m_staticFilepath.GetClientRect(&rect);
 	wchar_t buffer[MAX_PATH];
 	wcscpy(buffer, m_sFileBufPath);
 	WinPathToDos(buffer);
-	auto lpStr {buffer};
+	const auto lpStr {buffer};
 	PathCompactPathW(editDC, lpStr, 630/*rect.right*/);
 	m_staticFilepath.SetWindowTextW(lpStr);
-	auto sFileName {m_sFileBufPath.right(m_sFileBufPath.getLength() - m_sFileBufPath.reverseFind('\\') - 1)};
+	const auto sFileName {m_sFileBufPath.right(m_sFileBufPath.getLength() - m_sFileBufPath.reverseFind('\\') - 1)};
 	m_staticFilename.SetWindowTextW(sFileName);
 	if (m_pPlotStyleTable->isAciTableAvailable()) { m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)"); }
-	auto BitmapHandle {
+	const auto BitmapHandle {
 	static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(),
 	                                MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB),
 	                                IMAGE_BITMAP,
@@ -136,7 +136,7 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	                                32,
 	                                LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))
 	};
-	CClientDC ClientDeviceContext(&m_staticBitmap);
+	const CClientDC ClientDeviceContext(&m_staticBitmap);
 	DrawTransparentBitmap(ClientDeviceContext.m_hDC, BitmapHandle, 0, 0, 0x00FFFFFF);
 	m_staticBitmap.SetBitmap(BitmapHandle);
 	return TRUE;

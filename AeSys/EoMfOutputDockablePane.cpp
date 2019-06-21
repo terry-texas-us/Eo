@@ -62,7 +62,7 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
 	if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
 		CMenu Menu;
 		Menu.LoadMenuW(IDR_OUTPUT_POPUP);
-		auto SubMenu {Menu.GetSubMenu(0)};
+		const auto SubMenu {Menu.GetSubMenu(0)};
 		auto PopupMenu {new CMFCPopupMenu};
 		if (!PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE)) { return; }
 		static_cast<CMDIFrameWndEx*>(AfxGetMainWnd())->OnShowPopupMenu(PopupMenu);
@@ -80,7 +80,7 @@ void EoMfOutputListBox::OnEditClear() noexcept {
 }
 
 void EoMfOutputListBox::OnViewOutput() {
-	auto ParentBar {DYNAMIC_DOWNCAST(CDockablePane, GetOwner())};
+	const auto ParentBar {DYNAMIC_DOWNCAST(CDockablePane, GetOwner())};
 	auto MainFrame {DYNAMIC_DOWNCAST(CMDIFrameWndEx, GetTopLevelFrame())};
 	if (MainFrame != nullptr && ParentBar != nullptr) {
 		MainFrame->SetFocus();

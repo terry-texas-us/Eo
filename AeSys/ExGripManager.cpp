@@ -331,7 +331,7 @@ void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 		viewportDraw->viewport().getNumPixelsInUnitSquare(point(), ptDim);
 		OdGeVector3d v(m_GripManager->m_GRIPSIZE / ptDim.x, 0.0, 0.0);
 		v.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
-		auto GripSize {v.length()};
+		const auto GripSize {v.length()};
 		auto OnScreenPoint {ComputedPoint};
 		OnScreenPoint.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
 		viewportDraw->subEntityTraits().setFillType(kOdGiFillAlways);
@@ -386,7 +386,7 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 					if (Grip->GripData()->hotGripFunc()) {
 						int Flags {OdDbGripOperations::kMultiHotGrip};
 						if (Grip->isShared()) { Flags |= OdDbGripOperations::kSharedGrip; }
-						auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
+						const auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
 						if (Result == eGripOpGripHotToWarm) { eCurStatus = OdDbGripOperations::kWarmGrip; }
 					}
 				}
@@ -430,7 +430,7 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 					if (Grip->GripData()->triggerGrip()) {
 
 						if (!Grip->isShared()) {
-							auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
+							const auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
 							if (Result == eOk || Result == eGripOpGripHotToWarm) {
 								eNew = OdDbGripOperations::kWarmGrip;
 							} else if (Result == eGripOpGetNewGripPoints) {
@@ -439,7 +439,7 @@ bool OdBaseGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 							}
 						}
 					} else {
-						auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
+						const auto Result {(*Grip->GripData()->hotGripFunc())(Grip->GripData(), Grip->entityId(), Flags)};
 						if (!Grip->isShared()) {
 							if (Result == eGripOpGripHotToWarm) {
 								eNew = OdDbGripOperations::kWarmGrip;
@@ -829,7 +829,7 @@ double OdBaseGripManager::ActiveViewUnitSize() const {
 }
 
 OdGeVector3d OdBaseGripManager::ActiveViewDirection() const {
-	auto View {ActiveGsView()};
+	const auto View {ActiveGsView()};
 	return (View->position() - View->target()).normal();
 }
 
@@ -868,9 +868,9 @@ void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCom
 	m_pGsModel = gsModel;
 	m_CommandContext = dbCommandContext;
 	if (m_CommandContext->baseDatabase()) {
-		auto Database {m_CommandContext->database()};
+		const auto Database {m_CommandContext->database()};
 		Disable(false);
-		auto HostApplicationServices {Database->appServices()};
+		const auto HostApplicationServices {Database->appServices()};
 		m_GRIPSIZE = HostApplicationServices->getGRIPSIZE();
 		m_GRIPOBJLIMIT = HostApplicationServices->getGRIPOBJLIMIT();
 		m_GRIPCOLOR.setColorIndex(HostApplicationServices->getGRIPCOLOR());
@@ -965,7 +965,7 @@ bool OdExGripManager::OnMouseDown(int x, int y, bool shiftIsDown) {
 		if (Active) { m_GripDrags.push_back(GripDrag); }
 		GripDataIterator++;
 	}
-	auto GripDragsSize {m_GripDrags.size()};
+	const auto GripDragsSize {m_GripDrags.size()};
 	for (unsigned i = 0; i < GripDragsSize; i++) {
 		m_GripDrags[i]->notifyDragStarted();
 		m_GripDrags[i]->CloneEntity();
@@ -1080,7 +1080,7 @@ OdGePoint3d OdExGripManager::EyeToUcsPlane(const OdGePoint3d& point, const OdGeP
 	OdGeVector3d UcsXAxis;
 	OdGeVector3d UcsYAxis;
 	AbstractViewportData->getUcs(ActiveViewport, UcsOrigin, UcsXAxis, UcsYAxis);
-	OdGePlane Plane(basePoint, UcsXAxis, UcsYAxis);
+	const OdGePlane Plane {basePoint, UcsXAxis, UcsYAxis};
 	OdGeLine3d Line(point, ActiveViewDirection());
 	OdGePoint3d NewPoint;
 	if (!Plane.intersectWith(Line, NewPoint)) {
@@ -1111,12 +1111,12 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 		OdString MenuName;
 		ODHMENU Menu {nullptr};
 		ContextMenuItemIndexPtr cb {nullptr};
-		auto Result {(*activeKeys[static_cast<unsigned>(RightClickIndex)]->GripData()->rtClk())(HotGrips, Entities, MenuName, Menu, cb)};
+		const auto Result {(*activeKeys[static_cast<unsigned>(RightClickIndex)]->GripData()->rtClk())(HotGrips, Entities, MenuName, Menu, cb)};
 		if (Result == eOk && Menu != nullptr && cb != nullptr) {
-			auto ActiveWindow {GetActiveWindow()};
+			const auto ActiveWindow {GetActiveWindow()};
 			POINT pt = {x, y};
 			ClientToScreen(ActiveWindow, &pt);
-			unsigned Flags {TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION};
+			const unsigned Flags {TPM_LEFTALIGN | TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD | TPM_LEFTBUTTON | TPM_NOANIMATION};
 			(*cb)(TrackPopupMenu(static_cast<HMENU>(Menu), Flags, pt.x, pt.y, 0, ActiveWindow, nullptr));
 			DestroyMenu(static_cast<HMENU>(Menu));
 			for (unsigned i = 0; i < Size; i++) {
@@ -1132,7 +1132,7 @@ bool OdExGripManager::handleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x,
 
 void OdExGripManager::Disable(bool disable) noexcept {
 	if (m_Disabled != disable) {
-		auto Database {m_CommandContext->database()};
+		const auto Database {m_CommandContext->database()};
 		m_Disabled = disable;
 		if (disable) {
 			Database->removeReactor(&m_cDbReactor);

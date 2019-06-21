@@ -245,7 +245,7 @@ bool EoDbHatch::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGe
 		EoGePoint4d ptEnd(m_Vertices[sm_EdgeToEvaluate % NumberOfVertices], 1.0);
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
-		EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
+		const EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
 		if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
 			projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 			return true;
@@ -512,7 +512,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 }
 
 void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
-	auto NumberOfVertices {static_cast<int>(m_Vertices.size())};
+	const auto NumberOfVertices {static_cast<int>(m_Vertices.size())};
 	if (NumberOfVertices >= 2) {
 		EoGePoint4dArray Vertices;
 		Vertices.SetSize(NumberOfVertices);
@@ -521,16 +521,16 @@ void EoDbHatch::DisplaySolid(AeSysView* view, CDC* deviceContext) const {
 		}
 		view->ModelViewTransformPoints(Vertices);
 		EoGePoint4d::ClipPolygon(Vertices);
-		auto NumberOfPoints {Vertices.GetSize()};
-		auto Points {new CPoint[static_cast<unsigned>(NumberOfPoints)]};
+		const auto NumberOfPoints {Vertices.GetSize()};
+		const auto Points {new CPoint[static_cast<unsigned>(NumberOfPoints)]};
 		view->DoViewportProjection(Points, Vertices);
 		if (m_InteriorStyle == kSolid) {
 			CBrush Brush(g_CurrentPalette[g_PrimitiveState.ColorIndex()]);
-			auto OldBrush {deviceContext->SelectObject(&Brush)};
+			const auto OldBrush {deviceContext->SelectObject(&Brush)};
 			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
 		} else if (m_InteriorStyle == kHollow) {
-			auto OldBrush {dynamic_cast<CBrush*>(deviceContext->SelectStockObject(NULL_BRUSH))};
+			const auto OldBrush {dynamic_cast<CBrush*>(deviceContext->SelectStockObject(NULL_BRUSH))};
 			deviceContext->Polygon(Points, NumberOfPoints);
 			deviceContext->SelectObject(OldBrush);
 		} else {
@@ -638,7 +638,7 @@ void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		auto HatchPatternManager {theApp.patternManager()};
-		auto HatchName {m_InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
+		const auto HatchName {m_InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
 		OdHatchPattern HatchPattern;
 		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != eOk) {
 			OdString ReportItem;
@@ -732,7 +732,7 @@ void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr& hatchEntity,
 	auto Upper {1.0};
 	const auto NumberOfEdges {Edges.size()};
 	for (unsigned EdgeIndex = 0; EdgeIndex < NumberOfEdges; EdgeIndex++) {
-		auto Edge {Edges[EdgeIndex]};
+		const auto Edge {Edges[EdgeIndex]};
 		if (Edge->type() == OdGe::kCircArc2d) {
 			ConvertCircularArcEdge(Edge);
 		} else if (Edge->type() == OdGe::kEllipArc2d) {
@@ -830,7 +830,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 	Hatch->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 	const auto Linetype {LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	Hatch->setLinetype(Linetype);
-	auto HatchName {EoDbHatchPatternTable::LegacyHatchPatternName(g_PrimitiveState.HatchInteriorStyleIndex())};
+	const auto HatchName {EoDbHatchPatternTable::LegacyHatchPatternName(g_PrimitiveState.HatchInteriorStyleIndex())};
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 	return Hatch;
 }
@@ -853,7 +853,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	}
 	Hatch->setAssociative(false);
 	Hatch->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
+	const auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 	const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
 	Hatch->setNormal(PlaneNormal);
@@ -929,13 +929,13 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 			BufferOffset += sizeof(EoVaxPoint3d);
 		}
 	}
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Hatch {OdDbHatch::createObject()};
 	Hatch->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Hatch);
 	Hatch->setAssociative(false);
 	Hatch->setColorIndex(static_cast<unsigned short>(ColorIndex));
-	auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
+	const auto HatchName(InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(InteriorStyleIndex));
 	Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 	const auto PlaneNormal {ComputeNormal(Vertices[1], Vertices[0], Vertices[2])};
 	Hatch->setNormal(PlaneNormal);

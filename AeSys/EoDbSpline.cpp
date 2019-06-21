@@ -225,7 +225,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 }
 
 OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Spline {OdDbSpline::createObject()};
 	Spline->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Spline);
@@ -272,7 +272,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsig
 			BufferIndex += sizeof(EoVaxPoint3d);
 		}
 	}
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Spline {OdDbSpline::createObject()};
 	Spline->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Spline);

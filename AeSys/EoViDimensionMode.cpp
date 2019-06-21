@@ -17,10 +17,10 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 	auto Relationship {0.0};
 	auto GroupPosition {Document->GetFirstWorkLayerGroupPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {Document->GetNextWorkLayerGroup(GroupPosition)};
+		const auto Group {Document->GetNextWorkLayerGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				LineSeg = dynamic_cast<EoDbLine*>(Primitive)->LineSeg();
 			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
@@ -54,12 +54,12 @@ void AeSysView::OnDimensionModeArrow() {
 	EoGeLineSeg3d TestLine;
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {GetNextVisibleGroup(GroupPosition)};
+		const auto Group {GetNextVisibleGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
-				auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
+				const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 				TestLine = LinePrimitive->LineSeg();
 			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
 				auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
@@ -71,7 +71,7 @@ void AeSysView::OnDimensionModeArrow() {
 			double dRel;
 			if (TestLine.IsSelectedBy_xy(CurrentPnt, DimensionModePickTolerance, ptProj, dRel)) {
 				OdGePoint3d pt;
-				auto NewGroup {new EoDbGroup};
+				const auto NewGroup {new EoDbGroup};
 				if (dRel <= 0.5) {
 					GenerateLineEndItem(1, .1, TestLine.endPoint(), TestLine.startPoint(), NewGroup);
 					pt = TestLine.startPoint();
@@ -99,7 +99,7 @@ void AeSysView::OnDimensionModeLine() {
 	} else {
 		CurrentPnt = SnapPointToAxis(PreviousDimensionPosition, CurrentPnt);
 		if (PreviousDimensionPosition != CurrentPnt) {
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Line {EoDbLine::Create(BlockTableRecord, PreviousDimensionPosition, CurrentPnt)};
 			Line->setColorIndex(1);
 			Line->setLinetype(L"Continuous");
@@ -125,14 +125,14 @@ void AeSysView::OnDimensionModeDLine() {
 				ModeLineUnhighlightOp(PreviousDimensionCommand);
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP3);
 			}
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto AlignedDimension {EoDbDimension::Create(BlockTableRecord)};
 			AlignedDimension->setXLine1Point(PreviousDimensionPosition);
 			AlignedDimension->setXLine2Point(CurrentPnt);
 			AlignedDimension->setDimLinePoint(CurrentPnt);
 			AlignedDimension->measurement(); // initial compute of the measurement
 			OdDbDimStyleTablePtr DimStyleTable = Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
-			auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
+			const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 			AlignedDimension->setDimensionStyle(DimStyleRecord);
 			AlignedDimension->downgradeOpen();
 			Group->AddTail(EoDbDimension::Create(AlignedDimension));
@@ -168,14 +168,14 @@ void AeSysView::OnDimensionModeDLine2() {
 				ModeLineUnhighlightOp(PreviousDimensionCommand);
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
 			}
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto AlignedDimension {EoDbDimension::Create(BlockTableRecord)};
 			AlignedDimension->setXLine1Point(PreviousDimensionPosition);
 			AlignedDimension->setXLine2Point(CurrentPnt);
 			AlignedDimension->setDimLinePoint(CurrentPnt);
 			AlignedDimension->measurement(); // initial compute of the measurement
 			OdDbDimStyleTablePtr DimStyleTable = Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
-			auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
+			const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 			AlignedDimension->setDimensionStyle(DimStyleRecord);
 			AlignedDimension->downgradeOpen();
 			Group->AddTail(EoDbDimension::Create(AlignedDimension));
@@ -204,7 +204,7 @@ void AeSysView::OnDimensionModeExten() {
 		if (PreviousDimensionPosition != CurrentPnt) {
 			CurrentPnt = ProjectToward(CurrentPnt, PreviousDimensionPosition, -.1875);
 			PreviousDimensionPosition = ProjectToward(PreviousDimensionPosition, CurrentPnt, .0625);
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Group {new EoDbGroup};
 			auto Line {EoDbLine::Create(BlockTableRecord, PreviousDimensionPosition, CurrentPnt)};
 			Line->setColorIndex(1);
@@ -224,7 +224,7 @@ void AeSysView::OnDimensionModeRadius() {
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const auto ptEnd {DetPt()};
 		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
-			auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
+			const auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 			const auto ptBeg {pArc->Center()};
 			auto Group {new EoDbGroup};
 			auto DimensionPrimitive {new EoDbDimension()};
@@ -255,7 +255,7 @@ void AeSysView::OnDimensionModeDiameter() {
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const auto ptEnd {DetPt()};
 		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
-			auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
+			const auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 			const auto ptBeg {ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length())};
 			auto Group {new EoDbGroup};
 			GenerateLineEndItem(1, 0.1, ptEnd, ptBeg, Group);
@@ -282,7 +282,7 @@ void AeSysView::OnDimensionModeDiameter() {
 }
 
 void AeSysView::OnDimensionModeAngle() {
-	auto DeviceContext {GetDC()};
+	const auto DeviceContext {GetDC()};
 	auto Document {GetDocument()};
 	const auto CurrentPnt {GetCursorPosition()};
 	static OdGePoint3d rProjPt[2];
@@ -294,8 +294,8 @@ void AeSysView::OnDimensionModeAngle() {
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
 		if (std::get<tGroup>(Selection) == nullptr) { return; }
-		auto Primitive {std::get<1>(Selection)};
-		auto Line {dynamic_cast<EoDbLine*>(Primitive)};
+		const auto Primitive {std::get<1>(Selection)};
+		const auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 		ln = Line->LineSeg();
 		rProjPt[0] = ln.ProjPt(CurrentPnt);
 		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP8);
@@ -305,8 +305,8 @@ void AeSysView::OnDimensionModeAngle() {
 		if (iLns == 1) {
 			auto Selection {SelectLineUsingPoint(CurrentPnt)};
 			if (std::get<tGroup>(Selection) == nullptr) { return; }
-			auto Primitive {std::get<1>(Selection)};
-			auto Line {dynamic_cast<EoDbLine*>(Primitive)};
+			const auto Primitive {std::get<1>(Selection)};
+			const auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 			rProjPt[1] = Line->LineSeg().ProjPt(CurrentPnt);
 			if (ln.intersectWith(Line->LineSeg(), CenterPoint)) {
 				iLns++;
@@ -347,7 +347,7 @@ void AeSysView::OnDimensionModeAngle() {
 				CharacterCellDefinition.SetHeight(.1);
 				g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 				const auto ptPvt {ProjectToward(CurrentPnt, CenterPoint, -.25)};
-				EoGeReferenceSystem ReferenceSystem(ptPvt, PlaneNormal, CharacterCellDefinition);
+				const EoGeReferenceSystem ReferenceSystem {ptPvt, PlaneNormal, CharacterCellDefinition};
 				auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(theApp.FormatAngle(Angle)))};
 				Text->setNormal(PlaneNormal);
 				Text->setRotation(ReferenceSystem.Rotation());
@@ -387,7 +387,7 @@ void AeSysView::OnDimensionModeConvert() {
 			Primitive = Group->GetNext(PrimitivePosition);
 			if (Primitive->SelectUsingPoint(ptView, this, ptProj)) {
 				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
-					auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
+					const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 					auto DimensionPrimitive {new EoDbDimension()};
 					DimensionPrimitive->SetColorIndex2(LinePrimitive->ColorIndex());
 					DimensionPrimitive->SetLinetypeIndex2(LinePrimitive->LinetypeIndex());
@@ -413,7 +413,7 @@ void AeSysView::OnDimensionModeConvert() {
 					auto Line {EoDbLine::Create(BlockTableRecord, DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint())};
 					Line->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->ColorIndex()));
 					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(DimensionPrimitive->LinetypeIndex()));
-					auto LinePrimitive {EoDbLine::Create(Line)};
+					const auto LinePrimitive {EoDbLine::Create(Line)};
 					auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(DimensionPrimitive->Text()))};
 					Text->setNormal(PlaneNormal);
 					Text->setRotation(ReferenceSystem.Rotation());
@@ -422,7 +422,7 @@ void AeSysView::OnDimensionModeConvert() {
 					Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(DimensionPrimitive->FontDef().HorizontalAlignment()));
 					Text->setVerticalMode(EoDbText::ConvertVerticalMode(DimensionPrimitive->FontDef().VerticalAlignment()));
 					Text->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->TextColorIndex()));
-					auto TextPrimitive = EoDbText::Create(Text);
+					const auto TextPrimitive {EoDbText::Create(Text)};
 					Group->InsertAfter(posPrimCur, LinePrimitive);
 					Group->InsertAfter(posPrimCur, TextPrimitive);
 					Group->RemoveAt(posPrimCur);

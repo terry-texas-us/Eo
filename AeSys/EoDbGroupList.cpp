@@ -34,7 +34,7 @@ void EoDbGroupList::Display(AeSysView* view, CDC* deviceContext) {
 }
 
 POSITION EoDbGroupList::Remove(EoDbGroup* group) {
-	auto Position {Find(group)};
+	const auto Position {Find(group)};
 	if (Position != nullptr) { RemoveAt(Position); }
 	return Position;
 }
@@ -112,8 +112,8 @@ int EoDbGroupList::RemoveEmptyGroups() {
 	auto Count {0};
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto posPrev {Position};
-		auto Group {GetNext(Position)};
+		const auto posPrev {Position};
+		const auto Group {GetNext(Position)};
 		if (Group->GetCount() == 0) {
 			RemoveAt(posPrev);
 			delete Group;

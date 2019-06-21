@@ -6,7 +6,7 @@
 void AeSysView::OnModeGroupEdit() {
 	InitializeGroupAndPrimitiveEdit();
 	m_SubModeEditBeginPoint = GetCursorPosition();
-	auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
+	const auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
 	if (Group != nullptr) {
 		m_SubModeEditGroup = Group;
 		theApp.LoadModeResources(ID_MODE_GROUP_EDIT);
@@ -16,7 +16,7 @@ void AeSysView::OnModeGroupEdit() {
 void AeSysView::DoEditGroupCopy() {
 
 	if (m_SubModeEditGroup != nullptr) {
-		auto Group {new EoDbGroup(*m_SubModeEditGroup)};
+		const auto Group {new EoDbGroup(*m_SubModeEditGroup)};
 		GetDocument()->AddWorkLayerGroup(Group);
 		m_SubModeEditGroup = Group;
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_SubModeEditGroup);

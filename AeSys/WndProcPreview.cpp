@@ -24,7 +24,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};
-			auto DeviceContext {ActiveView ? ActiveView->GetDC() : nullptr};
+			const auto DeviceContext {ActiveView ? ActiveView->GetDC() : nullptr};
 			CRect rc;
 			GetClientRect(hwnd, &rc);
 			g_WndProcPreview_Bitmap = new CBitmap;
@@ -45,7 +45,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 			dc.Attach(BeginPaint(hwnd, &ps));
 			CDC dcMem;
 			dcMem.CreateCompatibleDC(NULL);
-			auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
+			const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 			dc.BitBlt(0, 0, rc.right, rc.bottom, &dcMem, 0, 0, SRCCOPY);
 			dcMem.SelectObject(Bitmap);
 			dc.Detach();
@@ -76,7 +76,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	GetClientRect(previewWindow, &rc);
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(NULL);
-	auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
+	const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 	ActiveView->ViewportPushActive();
 	ActiveView->SetViewportSize(rc.right, rc.bottom);
@@ -113,7 +113,7 @@ void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
 	GetClientRect(previewWindow, &rc);
 	CDC dcMem;
 	dcMem.CreateCompatibleDC(NULL);
-	auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
+	const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 	ActiveView->ViewportPushActive();
 	ActiveView->SetViewportSize(rc.right, rc.bottom);

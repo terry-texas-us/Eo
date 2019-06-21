@@ -16,7 +16,7 @@ void AeSysView::CopyActiveModelViewToPreviousModelView() noexcept {
 }
 
 void AeSysView::ExchangeActiveAndPreviousModelViews() {
-	auto ModelView {m_ViewTransform};
+	const auto ModelView {m_ViewTransform};
 	m_ViewTransform = m_PreviousViewTransform;
 	m_PreviousViewTransform = ModelView;
 }

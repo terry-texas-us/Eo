@@ -192,11 +192,11 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGe
 	if (point.x > EoMax(startPoint().x, endPoint().x) + apert) { return false; }
 	if (point.y < EoMin(startPoint().y, endPoint().y) - apert) { return false; }
 	if (point.y > EoMax(startPoint().y, endPoint().y) + apert) { return false; }
-	auto dPBegX {startPoint().x - point.x};
-	auto dPBegY {startPoint().y - point.y};
-	auto dBegEndX {endPoint().x - startPoint().x};
-	auto dBegEndY {endPoint().y - startPoint().y};
-	auto dDivr {dBegEndX * dBegEndX + dBegEndY * dBegEndY};
+	const auto dPBegX {startPoint().x - point.x};
+	const auto dPBegY {startPoint().y - point.y};
+	const auto dBegEndX {endPoint().x - startPoint().x};
+	const auto dBegEndY {endPoint().y - startPoint().y};
+	const auto dDivr {dBegEndX * dBegEndX + dBegEndY * dBegEndY};
 	double DistanceSquared;
 	if (dDivr <= DBL_EPSILON) {
 		relationship = 0.0;
@@ -215,7 +215,7 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGe
 }
 
 bool EoGeLineSeg3d::ParametricRelationshipOf(const OdGePoint3d& point, double& relationship) const {
-	auto Vector {endPoint() - startPoint()};
+	const auto Vector {endPoint() - startPoint()};
 	if (fabs(Vector.x) > DBL_EPSILON) {
 		relationship = (point.x - startPoint().x) / Vector.x;
 		return true;

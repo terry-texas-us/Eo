@@ -23,7 +23,7 @@ void AeSysView::OnPipeModeLine() {
 		CurrentPnt = SnapPointToAxis(m_PipeModePoints[0], CurrentPnt);
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
-		auto Group {new EoDbGroup};
+		const auto Group {new EoDbGroup};
 		GetDocument()->AddWorkLayerGroup(Group);
 		GenerateLineWithFittings(m_PreviousOp, m_PipeModePoints[0], ID_OP2, CurrentPnt, Group);
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
@@ -34,7 +34,7 @@ void AeSysView::OnPipeModeLine() {
 
 void AeSysView::OnPipeModeFitting() {
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) {
@@ -72,7 +72,7 @@ void AeSysView::OnPipeModeFitting() {
 		auto CircleSelection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
 		Group = std::get<tGroup>(CircleSelection);
 		if (Group != nullptr) {
-			auto VerticalSection = std::get<1>(CircleSelection);
+			const auto VerticalSection {std::get<1>(CircleSelection)};
 			CurrentPnt = VerticalSection->Center();
 			if (m_PipeModePoints.empty()) {
 				m_PipeModePoints.append(CurrentPnt);
@@ -108,7 +108,7 @@ void AeSysView::OnPipeModeRise() {
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) { // On an existing horizontal pipe section
-		auto HorizontalSection {std::get<1>(Selection)};
+		const auto HorizontalSection {std::get<1>(Selection)};
 		CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
 		if (m_PipeModePoints.empty()) { // Rising from an existing horizontal pipe section
 			m_PipeModePoints.append(CurrentPnt);
@@ -125,7 +125,7 @@ void AeSysView::OnPipeModeRise() {
 		auto CircleSelection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
 		Group = std::get<0>(CircleSelection);
 		if (Group != nullptr) { // On an existing vertical pipe section
-			auto VerticalSection = std::get<1>(CircleSelection);
+			const auto VerticalSection {std::get<1>(CircleSelection)};
 			CurrentPnt = VerticalSection->Center();
 			if (m_PipeModePoints.empty()) {
 				m_PipeModePoints.append(CurrentPnt);
@@ -171,7 +171,7 @@ void AeSysView::OnPipeModeDrop() {
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) { // On an existing horizontal pipe section
-		auto HorizontalSection {std::get<1>(Selection)};
+		const auto HorizontalSection {std::get<1>(Selection)};
 		CurrentPnt = HorizontalSection->ProjPt_(CurrentPnt);
 		if (m_PipeModePoints.empty()) { // Dropping from an existing horizontal pipe section
 			m_PipeModePoints.append(CurrentPnt);
@@ -188,7 +188,7 @@ void AeSysView::OnPipeModeDrop() {
 		auto CircleSelection {SelectCircleUsingPoint(CurrentPnt, m_PipeRiseDropRadius)};
 		Group = std::get<tGroup>(CircleSelection);
 		if (Group != nullptr) { // On an existing vertical pipe section
-			auto VerticalSection = std::get<1>(CircleSelection);
+			const auto VerticalSection {std::get<1>(CircleSelection)};
 			CurrentPnt = VerticalSection->Center();
 			if (m_PipeModePoints.empty()) {
 				m_PipeModePoints.append(CurrentPnt);
@@ -854,7 +854,7 @@ void AeSysView::OnPipeModeSymbol() {
 
 void AeSysView::OnPipeModeWye() {
 	const auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	if (m_PipeModePoints.empty()) {
 		m_PipeModePoints.append(CurrentPnt);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP9);
@@ -977,7 +977,7 @@ void AeSysView::DoPipeModeMouseMove() {
 }
 
 void AeSysView::GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint, int endType, OdGePoint3d& endPoint, EoDbGroup* group) {
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto pt1 {startPoint};
 	auto pt2 {endPoint};
 	if (beginType == ID_OP3) { // Previous fitting is an elbow or side tee
@@ -1054,7 +1054,7 @@ bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d
 	const auto DistanceToEndPoint {Projection.length()};
 	const auto MarkGenerated {DistanceToEndPoint > DBL_EPSILON};
 	if (MarkGenerated) {
-		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		Projection *= m_PipeTicSize / DistanceToEndPoint;
 		auto TicStartPoint {PointOnLine};
 		TicStartPoint += OdGeVector3d(Projection.y, -Projection.x, 0.0);

@@ -19,7 +19,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	const auto Order {Degree + 1};
 
 	// <tas="Large allocation for weight array is really not used. Allocation failure not tested for"</tas>
-	auto Weight {new double[128 * 128]};
+	const auto Weight {new double[128 * 128]};
 	for (auto i = 0; i < 128 * 128; i++) {
 		Weight[i] = 0.0;
 	}

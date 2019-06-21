@@ -137,7 +137,7 @@ void EoDlgSetActiveLayout::OnCopy() {
 	CString strNewName;
 	Layouts->GetText(m_NewActiveLayout, strSourceName);
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
-	OdString strName(strSourceName);
+	const OdString strName {strSourceName};
 	auto LayoutManager {m_Database->appServices()->layoutManager()};
 	try {
 		OdSmartPtr<OdDbLayout> Layout = LayoutManager->findLayoutNamed(m_Database, strName).safeOpenObject();
@@ -162,8 +162,8 @@ void EoDlgSetActiveLayout::OnNew() {
 }
 
 void EoDlgSetActiveLayout::OnFromTemplate() {
-	OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
-	auto FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
+	const OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
+	const auto FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
 	if (FileName.GetLength() == 0) { return; }
 	auto Database {theApp.readFile(OdString(FileName))};
 	if (Database.isNull()) { return; }

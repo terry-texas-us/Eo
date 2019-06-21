@@ -55,7 +55,7 @@ ODRX_NO_CONS_DEFINE_MEMBERS(EoDbConvertEntityToPrimitive, OdRxObject)
 void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdDbDatabasePtr DatabasePtr = entity->database();
 	primitive->SetEntityObjectId(entity->objectId());
-	auto Color {entity->color()};
+	const auto Color {entity->color()};
 	if (Color.isByBlock()) {
 		primitive->SetColorIndex(7); // 7 is used when entity is not in a block. Primitives are never in blocks so use 7.
 	} else if (Color.isByLayer()) {
@@ -69,7 +69,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	} else if (Linetype == DatabasePtr->getLinetypeByLayerId()) {
 		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
 	} else {
-		auto Name {entity->linetype()};
+		const auto Name {entity->linetype()};
 		primitive->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 	}
 	OdGeExtents3d extents;
@@ -119,7 +119,7 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	CharacterCellDefinition.SetRotationAngle(text->rotation());
 	CharacterCellDefinition.SetWidthFactor(text->widthFactor());
 	CharacterCellDefinition.SetObliqueAngle(text->oblique());
-	EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
+	const EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
 	auto TextPrimitive {new EoDbText()};
 	TextPrimitive->SetFontDefinition(FontDefinition);
 	TextPrimitive->SetReferenceSystem(ReferenceSystem);
@@ -282,7 +282,7 @@ class EoDbCircle_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbCirclePtr CircleEntity = entity;
-		auto CirclePrimitive {new EoDbEllipse(CircleEntity->center(), CircleEntity->normal(), CircleEntity->radius())};
+		const auto CirclePrimitive {new EoDbEllipse(CircleEntity->center(), CircleEntity->normal(), CircleEntity->radius())};
 		ConvertEntityData(CircleEntity, CirclePrimitive);
 		group->AddTail(CirclePrimitive);
 	}
@@ -321,7 +321,7 @@ public:
 class EoDbHatch_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
-		OdDbHatchPtr Hatch = entity;
+		const OdDbHatchPtr Hatch {entity};
 		group->AddTail(EoDbHatch::Create(Hatch));
 	}
 };
@@ -344,7 +344,7 @@ public:
 class EoDbLine_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
-		OdDbLinePtr Line = entity;
+		const OdDbLinePtr Line {entity};
 		group->AddTail(EoDbLine::Create(Line));
 	}
 };
@@ -391,7 +391,7 @@ public:
 class EoDbPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
-		OdDbPolylinePtr Polyline = entity;
+		const OdDbPolylinePtr Polyline {entity};
 		group->AddTail(EoDbPolyline::Create(Polyline));
 	}
 };

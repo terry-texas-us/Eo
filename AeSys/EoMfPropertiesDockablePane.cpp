@@ -229,11 +229,11 @@ void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 }
 
 LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
-	auto Property {reinterpret_cast<CMFCPropertyGridProperty*>(lparam)};
+	const auto Property {reinterpret_cast<CMFCPropertyGridProperty*>(lparam)};
 	auto ResetMDIChild {FALSE};
 	switch (Property->GetData()) {
 		case kTabsStyle: {
-			CString TabStyle = Property->GetValue().bstrVal;
+			const CString TabStyle {Property->GetValue().bstrVal};
 			ResetMDIChild = TRUE;
 			for (auto TabStylesIterator = TabsStyles.begin(); TabStylesIterator != TabsStyles.end(); TabStylesIterator++) {
 
@@ -251,7 +251,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 			break;
 		}
 		case kTabLocation: {
-			CString TabLocation = Property->GetValue().bstrVal;
+			const CString TabLocation {Property->GetValue().bstrVal};
 			theApp.m_Options.m_MdiTabInfo.m_tabLocation = TabLocation == TabsLocations.at(0) ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP;
 			break;
 		}
@@ -279,7 +279,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
 
 void EoMfPropertiesDockablePane::SetWorkspaceTabsSubItemsState() {
 	for (auto i = 0; i < m_PropertyGrid.GetPropertyCount(); i++) {
-		auto PropertyGridProperty {m_PropertyGrid.GetProperty(i)};
+		const auto PropertyGridProperty {m_PropertyGrid.GetProperty(i)};
 		ASSERT_VALID(PropertyGridProperty);
 		if (wcscmp(PropertyGridProperty->GetName(), L"Workspace Tabs") == 0) {
 			for (auto SubItemIndex = 1; SubItemIndex < PropertyGridProperty->GetSubItemsCount(); SubItemIndex++) {

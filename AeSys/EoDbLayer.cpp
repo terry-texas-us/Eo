@@ -22,7 +22,7 @@ void EoDbLayer::BuildVisibleGroupList(AeSysView* view) {
 	if (Document == nullptr) { return; }
 	auto GroupPosition {GetHeadPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {GetNext(GroupPosition)};
+		const auto Group {GetNext(GroupPosition)};
 		if (Group->IsInView(view)) { Document->AddGroupToAllViews(Group); }
 	}
 }
@@ -38,7 +38,7 @@ short EoDbLayer::ColorIndex() const {
 void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 	EoDbPrimitive::SetLayerColorIndex(ColorIndex());
 	EoDbPrimitive::SetLayerLinetypeIndex(LinetypeIndex());
-	auto pCurColTbl {g_CurrentPalette};
+	const auto pCurColTbl {g_CurrentPalette};
 	g_CurrentPalette = IsCurrent() || IsActive() ? g_ColorPalette : g_GreyPalette;
 	EoDbGroupList::Display(view, deviceContext);
 	g_CurrentPalette = pCurColTbl;
@@ -51,7 +51,7 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap)
 		if (!IsOff()) {
 			EoDbPrimitive::SetLayerColorIndex(ColorIndex());
 			EoDbPrimitive::SetLayerLinetypeIndex(LinetypeIndex());
-			auto pCurColTbl {g_CurrentPalette};
+			const auto pCurColTbl {g_CurrentPalette};
 			const auto LayerIsDetectable {IsCurrent() || IsActive()};
 			g_CurrentPalette = LayerIsDetectable ? g_ColorPalette : g_GreyPalette;
 			auto Position {GetHeadPosition()};

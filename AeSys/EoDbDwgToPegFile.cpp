@@ -56,14 +56,14 @@ void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {
 		auto Name {LayerTableRecord->getName()};
 		theApp.AddStringToReportList(ReportItem.format(L"<%s>  %s\n", static_cast<const wchar_t*>(LayerTableRecord->desc()->name()), static_cast<const wchar_t*>(Name)));
 		if (document->FindLayerAt(Name) < 0) {
-			auto Layer {new EoDbLayer(LayerTableRecord)};
+			const auto Layer {new EoDbLayer(LayerTableRecord)};
 			document->AddLayer(Layer);
 			if (LayerTableRecord->isFrozen() || LayerTableRecord->isOff()) {
 				document->GetLayerAt(LayerTableRecord->getName())->SetIsOff(true);
 			}
 			const auto ObjectId {LayerTableRecord->extensionDictionary()};
 			if (!ObjectId.isNull()) {
-				auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
+				const auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
 				OdDbDictionaryPtr Dictionary {ObjectPtr};
 				auto DictionaryIterator {Dictionary->newIterator()};
 				for (; !DictionaryIterator->done(); DictionaryIterator->next()) {
@@ -144,7 +144,7 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 	}
 	const auto ObjectId {block->extensionDictionary()};
 	if (!ObjectId.isNull()) {
-		auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
+		const auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
 		OdDbDictionaryPtr Dictionary = ObjectPtr;
 		auto Iterator {Dictionary->newIterator()};
 		for (; !Iterator->done(); Iterator->next()) {
@@ -166,7 +166,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 		const auto EntityObjectId {EntityIterator->objectId()};
 		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
 		auto Layer {document->GetLayerAt(Entity->layer())};
-		auto Group {new EoDbGroup()};
+		const auto Group {new EoDbGroup()};
 		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
 		EntityConverter->Convert(Entity, Group);
 		if (Group->IsEmpty()) {
@@ -179,7 +179,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 	theApp.AddStringToReportList(ReportItem.format(L" %d Modelspace entitities not loaded\n", EntitiesNotLoaded));
 	const auto ObjectId {Modelspace->extensionDictionary()};
 	if (!ObjectId.isNull()) {
-		auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
+		const auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
 		OdDbDictionaryPtr Dictionary {ObjectPtr};
 		auto Iterator {Dictionary->newIterator()};
 		for (; !Iterator->done(); Iterator->next()) {

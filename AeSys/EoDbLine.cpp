@@ -348,7 +348,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord) {
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Line {OdDbLine::createObject()};
 	Line->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Line);
@@ -376,7 +376,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 		StartPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert();
 		EndPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[20])->Convert();
 	}
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Line {OdDbLine::createObject()};
 	Line->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Line);

@@ -26,9 +26,9 @@ void EoDlgEditTrapCommandsQuery::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	CDialog::OnInitDialog();
-	auto GroupTreeWindowHandle {::GetDlgItem(this->GetSafeHwnd(), IDC_GROUP_TREE)};
+	const auto GroupTreeWindowHandle {::GetDlgItem(this->GetSafeHwnd(), IDC_GROUP_TREE)};
 	auto GroupsInTrap {AeSysDoc::GetDoc()->GroupsInTrap()};
-	auto GroupListTreeItemHandle {CMainFrame::InsertTreeViewControlItem(GroupTreeWindowHandle, TVI_ROOT, L"<Groups>", GroupsInTrap)};
+	const auto GroupListTreeItemHandle {CMainFrame::InsertTreeViewControlItem(GroupTreeWindowHandle, TVI_ROOT, L"<Groups>", GroupsInTrap)};
 	GroupsInTrap->AddToTreeViewControl(GroupTreeWindowHandle, GroupListTreeItemHandle);
 	m_ExtraListViewControl.InsertColumn(0, L"Property", LVCFMT_LEFT, 128);
 	m_ExtraListViewControl.InsertColumn(1, L"Value", LVCFMT_LEFT, 192);
@@ -41,7 +41,7 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 }
 
 void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure, LRESULT* result) {
-	auto pNMTreeView {reinterpret_cast<tagNMTREEVIEWW*>(notifyStructure)};
+	const auto pNMTreeView {reinterpret_cast<tagNMTREEVIEWW*>(notifyStructure)};
 	wchar_t szText[256] {L"\0"};
 	TV_ITEMW item;
 	::ZeroMemory(&item, sizeof item);
@@ -55,7 +55,7 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 	if (wcscmp(item.pszText, L"<Groups>") == 0) {
 	} else if (wcscmp(item.pszText, L"<Group>") == 0) {
 	} else {
-		auto Primitive {reinterpret_cast<EoDbPrimitive*>(item.lParam)};
+		const auto Primitive {reinterpret_cast<EoDbPrimitive*>(item.lParam)};
 		FillExtraList(Primitive);
 		FillGeometryList(Primitive);
 	}
@@ -73,7 +73,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 		m_ExtraListViewControl.InsertItem(iItem, szBuf);
 		nOff += nDel + 1;
 		nDel = Extra.Mid(nOff).Find('\t');
-		auto nLen {static_cast<int>(min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1))};
+		const auto nLen {static_cast<int>(min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1))};
 		wcscpy_s(szBuf, 64, Extra.Mid(nOff, nLen));
 		m_ExtraListViewControl.SetItemText(iItem++, 1, szBuf);
 		nOff += nDel + 1;

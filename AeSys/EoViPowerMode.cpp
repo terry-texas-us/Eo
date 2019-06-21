@@ -10,7 +10,7 @@ void AeSysView::OnPowerModeOptions() noexcept {
 
 void AeSysView::OnPowerModeCircuit() {
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	m_PowerArrow = false;
@@ -19,7 +19,7 @@ void AeSysView::OnPowerModeCircuit() {
 	auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
 	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) {
-		auto SymbolCircle {std::get<1>(Selection)};
+		const auto SymbolCircle {std::get<1>(Selection)};
 		CurrentPnt = SymbolCircle->Center();
 		const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
 		if (m_PowerModePoints.empty()) {
@@ -83,9 +83,9 @@ void AeSysView::OnPowerModeHome() {
 	if (!m_PowerArrow || PointOnCircuit != CurrentPnt) {
 		m_PowerArrow = false;
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
-		auto Group {std::get<tGroup>(Selection)};
+		const auto Group {std::get<tGroup>(Selection)};
 		if (Group != nullptr) {
-			auto Circuit {std::get<1>(Selection)};
+			const auto Circuit {std::get<1>(Selection)};
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= 0.5) {
 				m_CircuitEndPoint = Circuit->EndPoint();
@@ -117,9 +117,9 @@ void AeSysView::DoPowerModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 				m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 				auto Selection {SelectCircleUsingPoint(CurrentPnt, .02)};
-				auto Group {std::get<tGroup>(Selection)};
+				const auto Group {std::get<tGroup>(Selection)};
 				if (Group != nullptr) {
-					auto SymbolCircle {std::get<1>(Selection)};
+					const auto SymbolCircle {std::get<1>(Selection)};
 					const auto CurrentRadius {SymbolCircle->MajorAxis().length()};
 					CurrentPnt = SymbolCircle->Center();
 					CurrentPnt = ProjectToward(CurrentPnt, m_PowerModePoints[0], CurrentRadius);
@@ -127,7 +127,7 @@ void AeSysView::DoPowerModeMouseMove() {
 					CurrentPnt = SnapPointToAxis(m_PowerModePoints[0], CurrentPnt);
 				}
 				const auto pt1 {ProjectToward(m_PowerModePoints[0], CurrentPnt, m_PreviousRadius)};
-				OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+				const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 				auto Line {EoDbLine::Create(BlockTableRecord, pt1, CurrentPnt)};
 				Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
@@ -149,9 +149,9 @@ void AeSysView::DoPowerModeConductor(unsigned short conductorType) {
 	if (!m_PowerConductor || PointOnCircuit != CurrentPnt) {
 		m_PowerConductor = false;
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
-		auto Group {std::get<tGroup>(Selection)};
+		const auto Group {std::get<tGroup>(Selection)};
 		if (Group != nullptr) {
-			auto Circuit {std::get<1>(Selection)};
+			const auto Circuit {std::get<1>(Selection)};
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			const auto BeginPoint {Circuit->StartPoint()};
 			m_CircuitEndPoint = Circuit->EndPoint();
@@ -197,7 +197,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 	Circuit.ProjPtFrom_xy(0.0, .075, Points[2]);
 	auto Group {new EoDbGroup};
 	GetDocument()->AddWorkLayerGroup(Group);
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Polyline {EoDbPolyline::Create(BlockTableRecord)};
 	Polyline->setColorIndex(2);
 	Polyline->setLinetype(L"Continuous");

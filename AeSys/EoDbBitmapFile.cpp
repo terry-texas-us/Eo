@@ -8,7 +8,7 @@ EoDbBitmapFile::EoDbBitmapFile(const CString& fileName) {
 }
 
 bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& palette) {
-	auto Bitmap {static_cast<HBITMAP>(LoadImageW(nullptr, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE))};
+	const auto Bitmap {static_cast<HBITMAP>(LoadImageW(nullptr, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE))};
 	if (Bitmap == nullptr) { return false; }
 	bitmap.Attach(Bitmap);
 	CClientDC ClientDeviceContext(nullptr);
@@ -26,7 +26,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 	if (NumberOfColors > 256) { // Create a halftone palette
 		palette.CreateHalftonePalette(&ClientDeviceContext);
 	} else { // Create a custom palette from the DIB section's color table
-		auto RGBQuad {new RGBQUAD[static_cast<unsigned>(NumberOfColors)]};
+		const auto RGBQuad {new RGBQUAD[static_cast<unsigned>(NumberOfColors)]};
 		CDC dcMem;
 		dcMem.CreateCompatibleDC(&ClientDeviceContext);
 		auto Bitmap {dcMem.SelectObject(&bitmap)};

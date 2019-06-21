@@ -6,7 +6,7 @@
 void AeSysView::OnModePrimitiveEdit() {
 	InitializeGroupAndPrimitiveEdit();
 	m_SubModeEditBeginPoint = GetCursorPosition();
-	auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
+	const auto Group {SelectGroupAndPrimitive(m_SubModeEditBeginPoint)};
 	if (Group != nullptr) {
 		m_SubModeEditGroup = Group;
 		m_SubModeEditPrimitive = EngagedPrimitive();
@@ -16,8 +16,8 @@ void AeSysView::OnModePrimitiveEdit() {
 
 void AeSysView::DoEditPrimitiveCopy() {
 	if (m_SubModeEditPrimitive != nullptr) {
-		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-		auto Primitive {m_SubModeEditPrimitive->Clone(BlockTableRecord)};
+		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+		const auto Primitive {m_SubModeEditPrimitive->Clone(BlockTableRecord)};
 		m_SubModeEditPrimitive = Primitive;
 		m_SubModeEditGroup = new EoDbGroup;
 		m_SubModeEditGroup->AddTail(m_SubModeEditPrimitive);

@@ -21,7 +21,7 @@ bool EoDbTracingFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, EoDbLa
 	if (ReadUInt16() != kGroupsSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kGroupsSection."; }
 	const auto NumberOfGroups {ReadUInt16()};
 	for (unsigned GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
-		auto Group {ReadGroup(blockTableRecord)};
+		const auto Group {ReadGroup(blockTableRecord)};
 		layer->AddTail(Group);
 	}
 	if (ReadUInt16() != kEndOfSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection."; }
@@ -32,7 +32,7 @@ EoDbGroup* EoDbTracingFile::ReadGroup(OdDbBlockTableRecordPtr blockTableRecord) 
 	const auto NumberOfPrimitives {ReadUInt16()};
 	auto Group {new EoDbGroup};
 	for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-		auto Primitive {ReadPrimitive(blockTableRecord)};
+		const auto Primitive {ReadPrimitive(blockTableRecord)};
 		Group->AddTail(Primitive);
 	}
 	return Group;

@@ -20,7 +20,7 @@ void AeSysDoc::CompressTrappedGroups() {
 	auto NewGroup {new EoDbGroup};
 	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
+		const auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
 		NewGroup->AddTail(Group);
@@ -40,7 +40,7 @@ void AeSysDoc::CopyTrappedGroups(const OdGeVector3d& translate) {
 	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group {m_TrappedGroupList.GetNext(GroupPosition)};
-		auto NewGroup {new EoDbGroup(*Group)};
+		const auto NewGroup {new EoDbGroup(*Group)};
 		AddWorkLayerGroup(NewGroup);
 		UpdateGroupInAllViews(EoDb::kGroup, Group);
 		Group->TransformBy(TranslationMatrix);
@@ -59,7 +59,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			const auto Group {GetNextTrappedGroup(GroupPosition)};
 			auto PrimitivePosition {Group->GetHeadPosition()};
 			while (PrimitivePosition != nullptr) {
-				auto Primitive {Group->GetNext(PrimitivePosition)};
+				const auto Primitive {Group->GetNext(PrimitivePosition)};
 				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 					strBuf += dynamic_cast<EoDbText*>(Primitive)->Text();
 					strBuf += L"\r\n";
@@ -67,9 +67,9 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			}
 		}
 		const auto AllocationSize {(strBuf.GetLength() + 1) * sizeof(wchar_t)};
-		GLOBALHANDLE ClipboardDataHandle = static_cast<GLOBALHANDLE>(GlobalAlloc(GHND, AllocationSize));
+		const GLOBALHANDLE ClipboardDataHandle = static_cast<GLOBALHANDLE>(GlobalAlloc(GHND, AllocationSize));
 		if (ClipboardDataHandle != nullptr) {
-			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
+			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 			if (ClipboardData != nullptr) {
 				wcscpy_s(ClipboardData, AllocationSize, strBuf);
 				GlobalUnlock(ClipboardDataHandle);
@@ -79,18 +79,18 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 	}
 	if (theApp.IsClipboardDataImage()) {
 		const auto PrimitiveState {g_PrimitiveState.Save()};
-		auto MetaFile {CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
+		const auto MetaFile {CreateEnhMetaFileW(nullptr, nullptr, nullptr, nullptr)};
 		m_TrappedGroupList.Display(view, CDC::FromHandle(MetaFile));
-		auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
+		const auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
 		SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
-		auto DeviceContext {CDC::FromHandle(MetaFile)};
+		const auto DeviceContext {CDC::FromHandle(MetaFile)};
 		if (DeviceContext) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
 	}
 	if (theApp.IsClipboardDataGroups()) {
 		CMemFile MemoryFile;
 		MemoryFile.SetLength(96);
 		MemoryFile.SeekToEnd();
-		auto Buffer {new unsigned char[EoDbPrimitive::BUFFER_SIZE]};
+		const auto Buffer {new unsigned char[EoDbPrimitive::BUFFER_SIZE]};
 		m_TrappedGroupList.Write(MemoryFile, Buffer);
 		delete[] Buffer;
 		OdGeExtents3d Extents;
@@ -102,9 +102,9 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		MemoryFile.Write(&MinimumPoint.x, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.y, sizeof(double));
 		MemoryFile.Write(&MinimumPoint.z, sizeof(double));
-		auto ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(SizeOfBuffer))};
+		const auto ClipboardDataHandle {GlobalAlloc(GHND, SIZE_T(SizeOfBuffer))};
 		if (ClipboardDataHandle != nullptr) {
-			auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
+			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 			MemoryFile.SeekToBegin();
 			MemoryFile.Read(ClipboardData, gsl::narrow_cast<unsigned>(SizeOfBuffer));
 			GlobalUnlock(ClipboardDataHandle);
@@ -133,10 +133,10 @@ void AeSysDoc::ExpandTrappedGroups() {
 	m_TrappedGroupList.RemoveAll();
 	auto GroupPosition {Groups->GetHeadPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {Groups->GetNext(GroupPosition)};
+		const auto Group {Groups->GetNext(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			auto NewGroup {new EoDbGroup};
 			NewGroup->AddTail(Primitive);
 			AddWorkLayerGroup(NewGroup);

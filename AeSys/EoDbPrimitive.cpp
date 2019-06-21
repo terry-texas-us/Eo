@@ -157,7 +157,7 @@ OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
 }
 
 double ComputeElevation(const OdGePoint3d& point, const OdGeVector3d& normal) {
-	OdGePlane Plane(point, normal);
+	const OdGePlane Plane(point, normal);
 	OdGeMatrix3d WorldToPlaneTransform;
 	WorldToPlaneTransform.setToWorldToPlane(Plane);
 	auto OriginOnPlane {OdGePoint3d::kOrigin.orthoProject(Plane)};
@@ -191,7 +191,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, s
 	} else if (linetypeIndex == LINETYPE_BYBLOCK) {
 		Linetype = Linetypes->getLinetypeByBlockId();
 	} else {
-		auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
+		const auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
 		Linetype = Linetypes->getAt(Name); // <tas="Assumes the linetype created already"/>
 	}
 	return Linetype;

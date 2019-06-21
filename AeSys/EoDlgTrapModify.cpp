@@ -55,7 +55,7 @@ void EoDlgTrapModify::ModifyPolygons() {
 		const auto Group {m_Document->GetNextTrappedGroup(Position)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			auto Primitive {Group->GetNext(PrimitivePosition)};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
 				auto pPolygon {dynamic_cast<EoDbHatch*>(Primitive)};
 				pPolygon->SetInteriorStyle(g_PrimitiveState.HatchInteriorStyle());

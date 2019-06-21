@@ -10,7 +10,7 @@ EoDbPrimitive* EoDbGroup::sm_PrimitiveToIgnore = static_cast<EoDbPrimitive*>(nul
 
 EoDbGroup::EoDbGroup(const EoDbBlock& block) {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Position {block.GetHeadPosition()};
 	while (Position != nullptr) {
 		AddTail(block.GetNext(Position)->Clone(BlockTableRecord));
@@ -19,7 +19,7 @@ EoDbGroup::EoDbGroup(const EoDbBlock& block) {
 
 EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto PrimitivePosition {group.GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		AddTail(group.GetNext(PrimitivePosition)->Clone(BlockTableRecord));
@@ -34,18 +34,18 @@ void EoDbGroup::AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent) {
 }
 
 HTREEITEM EoDbGroup::AddToTreeViewControl(HWND tree, HTREEITEM parent) {
-	auto TreeItem {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Group>", this)};
+	const auto TreeItem {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Group>", this)};
 	AddPrimsToTreeViewControl(tree, TreeItem);
 	return TreeItem;
 }
 
 void EoDbGroup::BreakPolylines() {
 	auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
-	OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
-		auto PrimitivePosition {Position};
-		auto Primitive {GetNext(Position)};
+		const auto PrimitivePosition {Position};
+		const auto Primitive {GetNext(Position)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline))) {
 			const auto Polyline {dynamic_cast<EoDbPolyline*>(Primitive)};
 			OdGePoint3dArray Points;
@@ -79,8 +79,8 @@ void EoDbGroup::BreakSegRefs() {
 		iSegRefs = 0;
 		auto Position {GetHeadPosition()};
 		while (Position != nullptr) {
-			auto PrimitivePosition {Position};
-			auto Primitive {GetNext(Position)};
+			const auto PrimitivePosition {Position};
+			const auto Primitive {GetNext(Position)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
 				iSegRefs++;
 				EoDbBlock* Block;
@@ -102,7 +102,7 @@ void EoDbGroup::BreakSegRefs() {
 void EoDbGroup::DeletePrimitivesAndRemoveAll() {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		const auto EntityObjectId {Primitive->EntityObjectId()};
 		if (!EntityObjectId.isNull()) {
 			OdDbEntityPtr Entity {EntityObjectId.safeOpenObject(OdDb::kForWrite)};
@@ -145,7 +145,7 @@ void EoDbGroup::UndoErase() {
 }
 
 POSITION EoDbGroup::FindAndRemovePrimitive(EoDbPrimitive* primitive) {
-	auto PrimitivePosition {Find(primitive)};
+	const auto PrimitivePosition {Find(primitive)};
 	if (PrimitivePosition != nullptr) {
 		RemoveAt(PrimitivePosition);
 	}
@@ -160,7 +160,7 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
 	auto Count {0};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
 
 			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name) { Count++; }
@@ -184,7 +184,7 @@ void EoDbGroup::GetExtents_(AeSysView* view, OdGeExtents3d& extents) {
 EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive != pointPrimitive && Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint))) {
 			return dynamic_cast<EoDbPoint*>(Primitive);
 		}
@@ -208,7 +208,7 @@ EoDbPrimitive* EoDbGroup::GetNext(POSITION& position) const {
 void EoDbGroup::InsertBefore(POSITION insertPosition, EoDbGroup* group) {
 	auto PrimitivePosition {group->GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {group->GetNext(PrimitivePosition)};
+		const auto Primitive {group->GetNext(PrimitivePosition)};
 		CObList::InsertBefore(insertPosition, Primitive);
 	}
 }
@@ -249,7 +249,7 @@ void EoDbGroup::ModifyLinetypeIndex(short linetypeIndex) {
 void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive != nullptr && Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 			dynamic_cast<EoDbText*>(Primitive)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 		}
@@ -276,8 +276,8 @@ void EoDbGroup::RemoveDuplicatePrimitives() {
 		const auto BasePrimitive {GetNext(BasePosition)};
 		auto TestPosition {BasePosition};
 		while (TestPosition != nullptr) {
-			auto TestPositionSave {TestPosition};
-			auto TestPrimitive {GetNext(TestPosition)};
+			const auto TestPositionSave {TestPosition};
+			const auto TestPrimitive {GetNext(TestPosition)};
 			if (BasePrimitive->IsEqualTo(TestPrimitive)) {
 				RemoveAt(TestPositionSave);
 				delete TestPrimitive;
@@ -290,8 +290,8 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 	auto Count {0};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto posPrev {PrimitivePosition};
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto posPrev {PrimitivePosition};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 
 			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
@@ -327,7 +327,7 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 	EoDbPrimitive* EngagedPrimitive {nullptr};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive == sm_PrimitiveToIgnore) { continue; }
 		const auto pt {Primitive->SelectAtControlPoint(view, point)};
 		if (EoDbPrimitive::ControlPointIndex() != SIZE_T_MAX) {
@@ -343,7 +343,7 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dPicApert, OdGePoint3d& pDetPt) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->SelectUsingPoint(point, view, pDetPt)) {
 			dPicApert = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.0));
 			return Primitive;
@@ -364,9 +364,9 @@ void EoDbGroup::SortTextOnY() {
 		auto Position {GetHeadPosition()};
 		for (auto i = 1; i < Count; i++) {
 			auto pos1 {Position};
-			auto pPrim1 {GetNext(pos1)};
+			const auto pPrim1 {GetNext(pos1)};
 			auto pos2 {pos1};
-			auto pPrim2 {GetNext(pos2)};
+			const auto pPrim2 {GetNext(pos2)};
 			if (pPrim1->IsKindOf(RUNTIME_CLASS(EoDbText)) && pPrim2->IsKindOf(RUNTIME_CLASS(EoDbText))) {
 				const auto dY1 {dynamic_cast<EoDbText*>(pPrim1)->Position().y};
 				const auto dY2 {dynamic_cast<EoDbText*>(pPrim2)->Position().y};
@@ -389,7 +389,7 @@ void EoDbGroup::SortTextOnY() {
 void EoDbGroup::Square(AeSysView* view) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		auto Primitive {GetNext(PrimitivePosition)};
+		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 			dynamic_cast<EoDbLine*>(Primitive)->Square(view);
 		}

@@ -66,17 +66,17 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTableRecord)
 			ConstructBlockReferencePrimitiveFromInsertPrimitive(Primitive);
 			break;
 		case EoDb::kGroupReferencePrimitive: {
-			auto BlockReference {EoDbBlockReference::Create(blockTableRecord, *this)};
+			const auto BlockReference {EoDbBlockReference::Create(blockTableRecord, *this)};
 			Primitive = EoDbBlockReference::Create(BlockReference);
 			break;
 		}
 		case EoDb::kLinePrimitive: {
-			auto Line {EoDbLine::Create(blockTableRecord, *this)};
+			const auto Line {EoDbLine::Create(blockTableRecord, *this)};
 			Primitive = EoDbLine::Create(Line);
 			break;
 		}
 		case EoDb::kHatchPrimitive: {
-			auto Hatch {EoDbHatch::Create(blockTableRecord, *this)};
+			const auto Hatch {EoDbHatch::Create(blockTableRecord, *this)};
 			Primitive = EoDbHatch::Create(Hatch);
 			break;
 		}
@@ -94,7 +94,7 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTableRecord)
 			ConstructPolylinePrimitiveFromCSplinePrimitive(Primitive);
 			break;
 		case EoDb::kPolylinePrimitive: {
-			auto Polyline {EoDbPolyline::Create(blockTableRecord, *this)};
+			const auto Polyline {EoDbPolyline::Create(blockTableRecord, *this)};
 			Primitive = EoDbPolyline::Create(Polyline);
 			break;
 		}

@@ -40,7 +40,7 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 		m_FilterLineComboBoxControl.AddString(Linetype->getName());
 	}
 	m_FilterLineComboBoxControl.SetCurSel(0);
-	auto PrimitiveTypes {theApp.LoadStringResource(IDS_PRIMITIVE_FILTER_LIST)};
+	const auto PrimitiveTypes {theApp.LoadStringResource(IDS_PRIMITIVE_FILTER_LIST)};
 	auto TypesPosition {0};
 	while (TypesPosition < PrimitiveTypes.GetLength()) {
 		m_FilterPrimitiveTypeListBoxControl.AddString(PrimitiveTypes.Tokenize(L"\n", TypesPosition));
@@ -59,7 +59,7 @@ void EoDlgTrapFilter::OnOK() {
 		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t))) {
 			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 			if (!Linetypes->getAt(Name).isNull()) {
-				auto LinetypeIndex {gsl::narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
+				const auto LinetypeIndex {gsl::narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 				FilterByLinetype(LinetypeIndex);
 			}
 		}
@@ -94,7 +94,7 @@ void EoDlgTrapFilter::OnOK() {
 void EoDlgTrapFilter::FilterByColor(short colorIndex) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
@@ -111,7 +111,7 @@ void EoDlgTrapFilter::FilterByColor(short colorIndex) {
 void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
@@ -129,7 +129,7 @@ void EoDlgTrapFilter::FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType) 
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Filter {false};
-		auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};

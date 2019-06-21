@@ -91,10 +91,10 @@ namespace polyline
 				}
 			}
 		} else {
-			auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
+			const auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};
 			auto Database {AeSysDoc::GetDoc()->m_DatabasePtr};
 			OdDbLinetypeTablePtr Linetypes {Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
-			OdDbLinetypeTableRecordPtr Linetype {Linetypes->getAt(Name).safeOpenObject(OdDb::kForRead)};
+			const OdDbLinetypeTableRecordPtr Linetype {Linetypes->getAt(Name).safeOpenObject(OdDb::kForRead)};
 			g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
 			__Display(view, deviceContext, pts_, Linetype);
 			g_PrimitiveState.SetLinetypeIndexPs(deviceContext, linetypeIndex);

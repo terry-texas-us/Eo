@@ -155,7 +155,7 @@ void EoDbDimension::FormatGeometry(CString& geometry) const {
 	Point = m_Line.endPoint();
 	PointString.Format(L"End Point;%f;%f;%f\t", Point.x, Point.y, Point.z);
 	geometry += PointString;
-	auto ReferenceSystem {m_ReferenceSystem};
+	const auto ReferenceSystem {m_ReferenceSystem};
 	const auto Origin {ReferenceSystem.Origin()};
 	CString OriginString;
 	OriginString.Format(L"Text Position;%f;%f;%f\t", Origin.x, Origin.y, Origin.z);
@@ -420,7 +420,7 @@ bool EoDbDimension::Write(EoDbFile& file) const {
 }
 
 void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
-	auto NumberOfCharacters {static_cast<short>(m_strText.GetLength())};
+	const auto NumberOfCharacters {static_cast<short>(m_strText.GetLength())};
 	buffer[3] = static_cast<unsigned char>((118 + NumberOfCharacters) / 32);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kDimensionPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
@@ -435,7 +435,7 @@ void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
 	buffer[40] = static_cast<unsigned char>(m_FontDefinition.Path());
 	buffer[41] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
 	buffer[42] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
-	auto ReferenceSystem {m_ReferenceSystem};
+	const auto ReferenceSystem {m_ReferenceSystem};
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[43])->Convert(ReferenceSystem.Origin());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[55])->Convert(ReferenceSystem.XDirection());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[67])->Convert(ReferenceSystem.YDirection());
@@ -453,7 +453,7 @@ EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) 
 		auto DimensionBlockName {Block->getName()};
 	}
 	const auto Measurement {alignedDimension->getMeasurement()};
-	auto DimensionText {alignedDimension->dimensionText()};
+	const auto DimensionText {alignedDimension->dimensionText()};
 	OdString FormattedMeasurement;
 	if (Measurement >= 0.0) {
 		alignedDimension->formatMeasurement(FormattedMeasurement, Measurement, DimensionText);
@@ -507,7 +507,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 }
 
 OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file) {
-	auto ColorIndex {file.ReadInt16()};
+	const auto ColorIndex {file.ReadInt16()};
 	const auto LinetypeIndex {file.ReadInt16()};
 	const auto StartPoint {file.ReadPoint3d()};
 	const auto EndPoint {file.ReadPoint3d()};
@@ -522,11 +522,11 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	// <tas="Any text override not used. The text is auto generated from the measured value."/>
 	CString Text;
 	file.ReadString(Text);
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto AlignedDimension {OdDbAlignedDimension::createObject()};
 	AlignedDimension->setDatabaseDefaults(Database);
 	OdDbDimStyleTablePtr DimStyleTable = Database->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
-	auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
+	const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 	AlignedDimension->setDimensionStyle(DimStyleRecord);
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 	AlignedDimension->setColorIndex(static_cast<unsigned short>(ColorIndex));
@@ -587,14 +587,14 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[43])->Convert());
 	ReferenceSystem.SetXDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[55])->Convert());
 	ReferenceSystem.SetYDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[67])->Convert());
-	auto TextLength {*reinterpret_cast<short*>(&primitiveBuffer[79])};
+	const auto TextLength {*reinterpret_cast<short*>(&primitiveBuffer[79])};
 	primitiveBuffer[81 + TextLength] = '\0';
 	auto Text {CString(reinterpret_cast<LPCSTR>(&primitiveBuffer[81]))};
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto AlignedDimension {OdDbAlignedDimension::createObject()};
 	AlignedDimension->setDatabaseDefaults(Database);
 	OdDbDimStyleTablePtr DimStyleTable = Database->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
-	auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
+	const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 	AlignedDimension->setDimensionStyle(DimStyleRecord);
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 	AlignedDimension->setColorIndex(static_cast<unsigned short>(ColorIndex));

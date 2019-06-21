@@ -28,7 +28,7 @@ void EoLoadApps::LoadedApps::rxAppLoaded(OdRxModule* appModule) {
 void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 	remove(appName);
 	if (m_pListBox) {
-		auto n {m_pListBox->FindString(0, OdString(appName))};
+		const auto n {m_pListBox->FindString(0, OdString(appName))};
 		if (n != LB_ERR) {
 			m_pListBox->DeleteString(static_cast<unsigned>(n));
 		}

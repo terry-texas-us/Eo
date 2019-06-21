@@ -135,7 +135,7 @@ void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int pe
 		}
 		if (hPen[i] == nullptr) { iPen = i; }
 	}
-	auto NewPenHandle {CreatePen(linetypeIndex, penWidth, g_CurrentPalette[colorIndex])};
+	const auto NewPenHandle {CreatePen(linetypeIndex, penWidth, g_CurrentPalette[colorIndex])};
 	if (NewPenHandle) {
 		hPenCur = NewPenHandle;
 		deviceContext.SelectObject(CPen::FromHandle(NewPenHandle));

@@ -4,13 +4,13 @@
 #include "EoPreviewDib.h"
 
 void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
-	CString FileName(fileName);
+	const CString FileName(fileName);
 	m_odImage.header.clear();
 	m_odImage.bmp.clear();
 	m_odImage.wmf.clear();
 	m_odImage.png.clear();
 	if (!FileName.GetLength()) { return; }
-	auto Extension {FileName.Right(4)};
+	const auto Extension {FileName.Right(4)};
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
 		auto FileStreamBuffer(theApp.createFile(static_cast<const wchar_t*>(FileName)));
 		try {
@@ -69,7 +69,7 @@ typedef struct {
 void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 	CRect cr;
 	if (m_odImage.hasBmp()) {
-		auto pHeader {reinterpret_cast<tagBITMAPINFOHEADER*>(m_odImage.bmp.begin())};
+		const auto pHeader {reinterpret_cast<tagBITMAPINFOHEADER*>(m_odImage.bmp.begin())};
 		cr = Calc(pHeader->biWidth, pHeader->biHeight, width, height);
 		auto p = reinterpret_cast<unsigned char*>(pHeader);
 		p += pHeader->biSize;
@@ -112,12 +112,12 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 			aldusMFHeader = reinterpret_cast<ALDUSMFHEADER*>(m_odImage.wmf.begin());
 			seekpos = ALDUSMFHEADERSIZE;
 		}
-		auto p = static_cast<unsigned char*>(m_odImage.wmf.begin());
+		const auto p {static_cast<unsigned char*>(m_odImage.wmf.begin())};
 		mfHeader = reinterpret_cast<METAHEADER*>(p + seekpos);
 		if (mfHeader->mtType != 1 && mfHeader->mtType != 2) { return; }
 		dwSize = mfHeader->mtSize * 2;
 		// Create the enhanced metafile
-		auto MetaFileHandle {SetWinMetaFileBits(dwSize, reinterpret_cast<const unsigned char*>(mfHeader), nullptr, nullptr)};
+		const auto MetaFileHandle {SetWinMetaFileBits(dwSize, reinterpret_cast<const unsigned char*>(mfHeader), nullptr, nullptr)};
 		CSize size {0, 0};
 		if (aldusMFHeader) {
 			size.cx = 254 * (aldusMFHeader->bbox.right - aldusMFHeader->bbox.left) / aldusMFHeader->inch;

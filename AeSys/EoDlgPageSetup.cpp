@@ -216,8 +216,8 @@ BEGIN_MESSAGE_MAP(EoDlgPageSetup, CDialog)
 END_MESSAGE_MAP()
 
 void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames) {
-	auto PlotCfgName {m_PlotSettings.getPlotCfgName()};
-	auto CanonicalMediaName {m_PlotSettings.getCanonicalMediaName()};
+	const auto PlotCfgName {m_PlotSettings.getPlotCfgName()};
+	const auto CanonicalMediaName {m_PlotSettings.getCanonicalMediaName()};
 	if (validNames && deviceName == PlotCfgName && CanonicalMediaName == canonicalMediaName) { return; }
 	if (m_PlotSettingsValidator->setPlotCfgName(&m_PlotSettings, deviceName, canonicalMediaName) != eOk) // good device, but wrong paper
 	{
@@ -398,7 +398,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	CString NewLocaleMediaName;
 	const auto i {m_PaperSize.GetCurSel()};
 	m_PaperSize.GetLBText(i, NewLocaleMediaName);
-	auto NewCanonicalMediaName {GetCanonicalByLocaleMediaName(static_cast<const wchar_t*>(NewLocaleMediaName))};
+	const auto NewCanonicalMediaName {GetCanonicalByLocaleMediaName(static_cast<const wchar_t*>(NewLocaleMediaName))};
 	m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, NewCanonicalMediaName);
 	const auto MediaNativeUnits {GetMediaNativePPU()};
 	FillPaperSizes();
@@ -427,7 +427,7 @@ OdString EoDlgPageSetup::GetCanonicalByLocaleMediaName(OdString localeMediaName)
 	OdArray<const OdChar*> MediaNames;
 	m_PlotSettingsValidator->canonicalMediaNameList(&m_PlotSettings, MediaNames);
 	OdArray<const OdChar*>::const_iterator NamesIterator = MediaNames.begin();
-	OdArray<const OdChar*>::const_iterator NamesIteratorEnd = MediaNames.end();
+	const OdArray<const OdChar*>::const_iterator NamesIteratorEnd {MediaNames.end()};
 	while (NamesIterator != NamesIteratorEnd) {
 		if (m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, NamesIterator - MediaNames.begin()) == localeMediaName) {
 			return *NamesIterator;
@@ -448,7 +448,7 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 	SetPlotDeviceAndMediaName(DeviceName, CanonicalMediaName, true);
 	m_PlotDeviceName.SelectString(0, DeviceName);
 	if (!FillPaperSizes()) { return; }
-	auto LocaleMediaName {m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, m_PlotSettings.getCanonicalMediaName())};
+	const auto LocaleMediaName {m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, m_PlotSettings.getCanonicalMediaName())};
 	if (m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, LocaleMediaName)) == LB_ERR) {
 		// ALEXR TODO : Autocad use paper w&h to find nearest paper or set a4 ?
 		// ALEXR TODO : SelectString select by part of string. 'q' -> select 'qwe'.
@@ -481,7 +481,7 @@ BOOL EoDlgPageSetup::OnInitDialog() {
 
 	// is stored device name available in system ?
 	auto PlotCfgName {m_PlotSettings.getPlotCfgName()};
-	auto CanonicalMediaName {m_PlotSettings.getCanonicalMediaName()};
+	const auto CanonicalMediaName {m_PlotSettings.getCanonicalMediaName()};
 	SetPlotDeviceAndMediaName(PlotCfgName, CanonicalMediaName, false);
 	if (!FillDeviceCombo()) {
 		return FALSE;
@@ -509,8 +509,8 @@ bool EoDlgPageSetup::FillDeviceCombo() {
 	OdArray<const OdChar*> Devices;
 	m_PlotSettingsValidator->plotDeviceList(Devices);
 	m_PlotDeviceName.ResetContent();
-	OdArray<const OdChar*>::const_iterator DeviceIterator = Devices.begin();
-	OdArray<const OdChar*>::const_iterator DeviceIteratorEnd = Devices.end();
+	OdArray<const OdChar*>::const_iterator DeviceIterator {Devices.begin()};
+	OdArray<const OdChar*>::const_iterator DeviceIteratorEnd {Devices.end()};
 	while (DeviceIterator != DeviceIteratorEnd) {
 		m_PlotDeviceName.AddString(static_cast<LPCTSTR>(OdString(*DeviceIterator)));
 		++DeviceIterator;
@@ -768,7 +768,7 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString>& arrFiles, CString 
 	WIN32_FIND_DATA FindFileData;
 	::ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
 	const auto Folder {pattern.Left(pattern.ReverseFind(L'\\') + 1)};
-	auto FileHandle {FindFirstFileW(pattern, &FindFileData)};
+	const auto FileHandle {FindFirstFileW(pattern, &FindFileData)};
 	auto Find {TRUE};
 	auto IsFind {false};
 	do {
@@ -795,7 +795,7 @@ void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
 		}
 	}
 	auto StyleIndex {0};
-	auto StyleSheet {m_PlotSettings.getCurrentStyleSheet()};
+	const auto StyleSheet {m_PlotSettings.getCurrentStyleSheet()};
 	if (!StyleSheet.isEmpty()) {
 		StyleIndex = m_PlotStyleFiles.FindStringExact(0, StyleSheet);
 		if (StyleIndex == -1) { StyleIndex = 0; }
@@ -945,8 +945,8 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	// <command_view>
 	// Points are returned in eye plane, transform it back to screen plane if it is possible
 	// Workaround, unfortunately can't get screen plane point from IO stream.
-	auto ChildWindow {static_cast<CMDIFrameWnd*>(theApp.GetMainWnd())->MDIGetActive()};
-	auto ActiveView {ChildWindow->GetActiveView()};
+	const auto ChildWindow {static_cast<CMDIFrameWnd*>(theApp.GetMainWnd())->MDIGetActive()};
+	const auto ActiveView {ChildWindow->GetActiveView()};
 	if (CString(ActiveView->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
 		auto View {dynamic_cast<AeSysView*>(ActiveView)};
 		if (View->isModelSpaceView()) {

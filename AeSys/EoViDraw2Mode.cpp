@@ -17,9 +17,9 @@ void AeSysView::OnDraw2ModeJoin() {
 	auto CurrentPnt {GetCursorPosition()};
 	CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
-	auto Group {std::get<tGroup>(Selection)};
+	const auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) {
-		auto Line {std::get<1>(Selection)};
+		const auto Line {std::get<1>(Selection)};
 		CurrentPnt = Line->ProjPt_(CurrentPnt);
 		if (m_PreviousOp == 0) { // Starting at existing wall
 			m_BeginSectionGroup = Group;
@@ -159,7 +159,7 @@ bool AeSysView::CleanPreviousLines() {
 	PreviousRightLine.SetEndPoint(ptInt);
 	m_CurrentRightLine.SetStartPoint(ptInt);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_AssemblyGroup);
-	auto Primitive {dynamic_cast<EoDbPrimitive*>(m_AssemblyGroup->RemoveTail())};
+	const auto Primitive {dynamic_cast<EoDbPrimitive*>(m_AssemblyGroup->RemoveTail())};
 	Primitive->EntityObjectId().safeOpenObject(OdDb::kForWrite)->erase();
 	delete Primitive;
 	auto Position {m_AssemblyGroup->GetTailPosition()};
@@ -169,7 +169,7 @@ bool AeSysView::CleanPreviousLines() {
 }
 
 bool AeSysView::StartAssemblyFromLine() {
-	auto Line {m_BeginSectionLine->LineSeg()};
+	const auto Line {m_BeginSectionLine->LineSeg()};
 	const auto ParallelLines {Line.isParallelTo(m_CurrentReferenceLine)};
 	if (ParallelLines) return false;
 	OdGePoint3d ptInt;
@@ -197,7 +197,7 @@ bool AeSysView::StartAssemblyFromLine() {
 
 void AeSysView::DoDraw2ModeMouseMove() {
 	static auto CurrentPnt {OdGePoint3d()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	if (m_PreviousOp == 0) {
 		CurrentPnt = GetCursorPosition();
 	} else if (m_PreviousOp == ID_OP1 || m_PreviousOp == ID_OP2) {
@@ -207,7 +207,7 @@ void AeSysView::DoDraw2ModeMouseMove() {
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 			CurrentPnt = SnapPointToAxis(m_PreviousPnt, CurrentPnt);
 			EoGeLineSeg3d PreviewLines[2];
-			EoGeLineSeg3d ln(m_PreviousPnt, CurrentPnt);
+			const EoGeLineSeg3d ln(m_PreviousPnt, CurrentPnt);
 			ln.GetParallels(m_DistanceBetweenLines, m_CenterLineEccentricity, PreviewLines[0], PreviewLines[1]);
 			const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 			const auto LinetypeId {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};

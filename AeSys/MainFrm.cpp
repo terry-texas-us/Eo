@@ -149,7 +149,7 @@ BOOL CMainFrame::CreateDockingWindows() {
 
 void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, const OdCmColor& color) {
 	CBrush Brush(RGB(color.red(), color.green(), color.blue()));
-	auto OldBrush {deviceContext.SelectObject(&Brush)};
+	const auto OldBrush {deviceContext.SelectObject(&Brush)};
 	CRect ItemRectangle(itemRectangle);
 	ItemRectangle.DeflateRect(1, 1);
 	ItemRectangle.right = ItemRectangle.left + ItemRectangle.Height();
@@ -160,7 +160,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	deviceContext.FrameRect(&ItemRectangle, &FrameBrush);
 	ItemRectangle.SetRect(ItemRectangle.right + 4, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 	if (ItemRectangle.left <= itemRectangle.right) {
-		auto ColorName {color.colorNameForDisplay()};
+		const auto ColorName {color.colorNameForDisplay()};
 		deviceContext.ExtTextOutW(ItemRectangle.left, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ColorName, static_cast<unsigned>(ColorName.getLength()), nullptr);
 	}
 }
@@ -173,7 +173,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, O
 	Brush.lbColor = RGB(0x00, 0x00, 0x00);
 	Brush.lbHatch = 0;
 	CPen Pen(PS_SOLID | PS_GEOMETRIC | PS_ENDCAP_SQUARE, PixelWidth, &Brush);
-	auto OldPen {deviceContext.SelectObject(&Pen)};
+	const auto OldPen {deviceContext.SelectObject(&Pen)};
 	CRect ItemRectangle(itemRectangle);
 	ItemRectangle.DeflateRect(2, 2);
 	ItemRectangle.right = ItemRectangle.left + 40;
@@ -182,7 +182,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, O
 	deviceContext.SelectObject(OldPen);
 	ItemRectangle.SetRect(ItemRectangle.right + 8, itemRectangle.top, itemRectangle.right, itemRectangle.bottom);
 	if (ItemRectangle.left <= itemRectangle.right) {
-		auto String {StringByLineWeight(lineWeight, false)};
+		const auto String {StringByLineWeight(lineWeight, false)};
 		deviceContext.ExtTextOutW(ItemRectangle.left, ItemRectangle.top, ETO_CLIPPED, &itemRectangle, String, static_cast<unsigned>(String.getLength()), nullptr);
 	}
 }
@@ -199,7 +199,7 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 }
 
 void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
-	auto PropertiesPaneIcon {
+	const auto PropertiesPaneIcon {
 	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(),
 	                              MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND),
 	                              IMAGE_ICON,
@@ -208,7 +208,7 @@ void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
 	                              0))
 	};
 	m_PropertiesPane.SetIcon(PropertiesPaneIcon, FALSE);
-	auto OutputPaneIcon {
+	const auto OutputPaneIcon {
 	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(),
 	                              MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND),
 	                              IMAGE_ICON,
@@ -244,11 +244,11 @@ void CMainFrame::OnViewCustomize() {
 }
 
 LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM name) {
-	auto Result {CMDIFrameWndEx::OnToolbarCreateNew(wp, name)};
+	const auto Result {CMDIFrameWndEx::OnToolbarCreateNew(wp, name)};
 	if (Result == 0) { return 0; }
 	auto UserToolbar {reinterpret_cast<CMFCToolBar*>(Result)};
 	ASSERT_VALID(UserToolbar);
-	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
+	const auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
 	UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
 	return Result;
 }
@@ -319,7 +319,7 @@ BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd
 	}
 
 	// Enable customization button for all user toolbars
-	auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
+	const auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
 	for (auto i = 0; i < MaximumUserToolbars; i++) {
 		auto UserToolbar {GetUserToolBarByIndex(i)};
 		if (UserToolbar != nullptr) {
@@ -346,18 +346,18 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu) {
 	auto ActiveChildWindow {GetActiveFrame()};
 	try {
 		ENSURE(ActiveChildWindow);
-		auto ActiveDocument {ActiveChildWindow->GetActiveDocument()};
+		const auto ActiveDocument {ActiveChildWindow->GetActiveDocument()};
 		ENSURE(ActiveDocument);
 		auto Database {dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr};
 		popupMenu->RemoveAllItems();
 		auto ContextManager {Database->objectContextManager()};
-		auto ScalesCollection {ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)};
+		const auto ScalesCollection {ContextManager->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)};
 		auto ScalesCollectionIterator {ScalesCollection->newIterator()};
 		unsigned ScaleMenuPosition {1};
-		auto CurrentScaleIdentifier {Database->getCANNOSCALE()->uniqueIdentifier()};
+		const auto CurrentScaleIdentifier {Database->getCANNOSCALE()->uniqueIdentifier()};
 		for (; !ScalesCollectionIterator->done() && ScaleMenuPosition < 100; ScalesCollectionIterator->next()) {
 			auto ScaleName {ScalesCollectionIterator->getContext()->getName()};
-			auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
+			const auto ScaleIdentifier {ScalesCollectionIterator->getContext()->uniqueIdentifier()};
 			CMFCToolBarMenuButton MenuButton(ScaleMenuPosition + _APS_NEXT_COMMAND_VALUE, nullptr, -1, ScaleName);
 			if (ScaleIdentifier == CurrentScaleIdentifier) {
 				MenuButton.SetStyle(TBBS_CHECKED);
@@ -446,7 +446,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			popupMenu->RemoveAllItems();
 			CMenu menu;
 			VERIFY(menu.LoadMenuW(IDR_POPUP_TOOLBAR));
-			auto PopupSubMenu {menu.GetSubMenu(0)};
+			const auto PopupSubMenu {menu.GetSubMenu(0)};
 			ASSERT(PopupSubMenu != nullptr);
 			if (PopupSubMenu) {
 				popupMenu->GetMenuBar()->ImportFromMenu(*PopupSubMenu, TRUE);
@@ -473,7 +473,7 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
 			} else {
-				auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
+				const auto ActiveWnd {reinterpret_cast<HWND>(m_wndClientArea.SendMessage(WM_MDIGETACTIVE))};
 				m_wndClientArea.PostMessageW(WM_MDICASCADE);
 				::BringWindowToTop(ActiveWnd);
 			}
@@ -580,7 +580,7 @@ LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
 }
 
 void CMainFrame::OnMdiTabbed() {
-	auto pMDIChild {DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIGetActive())};
+	const auto pMDIChild {DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIGetActive())};
 	if (pMDIChild == nullptr) {
 		ASSERT(FALSE);
 		return;

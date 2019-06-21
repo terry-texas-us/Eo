@@ -5,7 +5,7 @@
 void AeSysView::ModeLineDisplay() {
 	if (theApp.CurrentMode() == 0) { return; }
 	m_OpHighlighted = 0;
-	auto ModeInformation {theApp.LoadStringResource(theApp.CurrentMode())};
+	const auto ModeInformation {theApp.LoadStringResource(theApp.CurrentMode())};
 	CString ModeOp;
 	const gsl::not_null<CDC*> (DeviceContext) {GetDC()};
 	for (auto i = 0; i < 10; i++) {
@@ -18,7 +18,7 @@ void AeSysView::ModeLineDisplay() {
 		GetStatusBar().SetTipText(nStatusOp0 + i, L"Mode Command Tip Text");
 	}
 	if (theApp.ModeInformationOverView()) {
-		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
@@ -48,9 +48,9 @@ unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
 	const auto PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
 	GetStatusBar().SetPaneTextColor(PaneIndex, RGB(255, 0, 0));
 	if (theApp.ModeInformationOverView()) {
-		auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
+		const auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
 		const gsl::not_null<CDC*> (DeviceContext) {GetDC()};
-		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(RGB(255, 0, 0))};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};
@@ -77,9 +77,9 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 	const auto PaneIndex {nStatusOp0 + m_OpHighlighted - ID_OP0};
 	GetStatusBar().SetPaneTextColor(PaneIndex);
 	if (theApp.ModeInformationOverView()) {
-		auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
+		const auto ModeOp {GetStatusBar().GetPaneText(PaneIndex)};
 		const gsl::not_null<CDC*> (DeviceContext) {GetDC()};
-		auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
+		const auto Font {dynamic_cast<CFont*>(DeviceContext->SelectStockObject(SYSTEM_FONT))};
 		const auto TextAlign {DeviceContext->SetTextAlign(TA_LEFT | TA_TOP)};
 		const auto TextColor {DeviceContext->SetTextColor(AppGetTextCol())};
 		const auto BackgroundColor {DeviceContext->SetBkColor(~AppGetTextCol() & 0x00ffffff)};

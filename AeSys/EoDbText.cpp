@@ -78,7 +78,7 @@ void EoDbText::FormatExtra(CString& extra) const {
 }
 
 void EoDbText::FormatGeometry(CString& geometry) const {
-	auto ReferenceSystem {m_ReferenceSystem};
+	const auto ReferenceSystem {m_ReferenceSystem};
 	const auto Origin {ReferenceSystem.Origin()};
 	CString OriginString;
 	OriginString.Format(L"Origin;%f;%f;%f\t", Origin.x, Origin.y, Origin.z);
@@ -246,7 +246,7 @@ bool EoDbText::Write(EoDbFile& file) const {
 }
 
 void EoDbText::Write(CFile& file, unsigned char* buffer) const {
-	unsigned short NumberOfCharacters = static_cast<unsigned short>(m_strText.GetLength());
+	const unsigned short NumberOfCharacters = static_cast<unsigned short>(m_strText.GetLength());
 	buffer[3] = static_cast<unsigned char>((86 + NumberOfCharacters) / 32);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
@@ -256,7 +256,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	buffer[14] = static_cast<unsigned char>(m_FontDefinition.Path());
 	buffer[15] = static_cast<unsigned char>(m_FontDefinition.HorizontalAlignment());
 	buffer[16] = static_cast<unsigned char>(m_FontDefinition.VerticalAlignment());
-	auto ReferenceSystem {m_ReferenceSystem};
+	const auto ReferenceSystem {m_ReferenceSystem};
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[17])->Convert(ReferenceSystem.Origin());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[29])->Convert(ReferenceSystem.XDirection());
 	reinterpret_cast<EoVaxVector3d*>(& buffer[41])->Convert(ReferenceSystem.YDirection());
@@ -475,7 +475,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 		ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[17])->Convert());
 		ReferenceSystem.SetXDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[29])->Convert());
 		ReferenceSystem.SetYDirection(reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[41])->Convert());
-		auto TextLength {*reinterpret_cast<short*>(&primitiveBuffer[53])};
+		const auto TextLength {*reinterpret_cast<short*>(&primitiveBuffer[53])};
 		primitiveBuffer[55 + TextLength] = '\0';
 		TextString = reinterpret_cast<LPCSTR>(& primitiveBuffer[55]);
 	}
@@ -518,7 +518,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 	Text->SetEntityObjectId(text->objectId());
 	Text->SetColorIndex(static_cast<short>(text->colorIndex()));
 	Text->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype())));
-	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr {text->textStyle().safeOpenObject(OdDb::kForRead)};
+	const OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr {text->textStyle().safeOpenObject(OdDb::kForRead)};
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetTo(TextStyleTableRecordPtr);
 	FontDefinition.SetJustification(text->horizontalMode(), text->verticalMode());
@@ -531,7 +531,7 @@ EoDbText* EoDbText::Create(OdDbTextPtr& text) {
 	CharacterCellDefinition.SetWidthFactor(text->widthFactor());
 	CharacterCellDefinition.SetRotationAngle(text->rotation());
 	CharacterCellDefinition.SetObliqueAngle(text->oblique());
-	EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
+	const EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
 	Text->SetText(static_cast<const wchar_t*>(text->textString()));
@@ -543,7 +543,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 	Text->SetEntityObjectId(text->objectId());
 	Text->SetColorIndex(static_cast<short>(text->colorIndex()));
 	Text->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(text->linetype())));
-	OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr = text->textStyle().safeOpenObject(OdDb::kForRead);
+	const OdDbTextStyleTableRecordPtr TextStyleTableRecordPtr {text->textStyle().safeOpenObject(OdDb::kForRead)};
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetTo(TextStyleTableRecordPtr);
 	FontDefinition.SetJustification(text->attachment());
@@ -557,7 +557,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 	//    CharacterCellDefinition.SetWidthFactor(text->??);
 	CharacterCellDefinition.SetRotationAngle(text->rotation());
 	//    CharacterCellDefinition.SetObliqueAngle(text->oblique());
-	EoGeReferenceSystem ReferenceSystem(AlignmentPoint, text->normal(), CharacterCellDefinition);
+	const EoGeReferenceSystem ReferenceSystem {AlignmentPoint, text->normal(), CharacterCellDefinition};
 	Text->SetFontDefinition(FontDefinition);
 	Text->SetReferenceSystem(ReferenceSystem);
 	Text->SetText(static_cast<const wchar_t*>(text->contents()));
@@ -729,7 +729,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	const long* plStrokeFontDef = reinterpret_cast<long*>(theApp.SimplexStrokeFont());
 	if (plStrokeFontDef == nullptr) { return; }
 	const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
-	auto plStrokeChrDef {plStrokeFontDef + 96};
+	const auto plStrokeChrDef {plStrokeFontDef + 96};
 	const auto dChrSpac {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 	auto ptStroke {OdGePoint3d::kOrigin};
 	auto ptChrPos {ptStroke};
@@ -832,7 +832,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	wcscpy_s(FontAttributes.lfFaceName, LF_FACESIZE, fontDefinition.FontName());
 	CFont Font;
 	Font.CreateFontIndirectW(&FontAttributes);
-	auto pfntold {deviceContext->SelectObject(&Font)};
+	const auto pfntold {deviceContext->SelectObject(&Font)};
 	const auto TextAlign {deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE)};
 	const auto BackgroundMode {deviceContext->SetBkMode(TRANSPARENT)};
 	deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));

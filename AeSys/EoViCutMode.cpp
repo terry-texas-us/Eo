@@ -16,12 +16,12 @@ void AeSysView::OnCutModeTorch() {
 	ModelViewTransformPoint(ptView);
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
-		auto Group {GetNextVisibleGroup(GroupPosition)};
+		const auto Group {GetNextVisibleGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->SelectUsingPoint(ptView, this, ptCut)) { // Pick point is within tolerance of primative
-				auto NewGroup {new EoDbGroup};
+				const auto NewGroup {new EoDbGroup};
 				auto TransformMatrix {ModelViewMatrix()};
 				ptCut.transformBy(TransformMatrix.invert());
 				Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, Primitive);
@@ -55,7 +55,7 @@ void AeSysView::OnCutModeSlice() {
 		TransformMatrix.invert();
 		auto GroupPosition {GetFirstVisibleGroupPosition()};
 		while (GroupPosition != nullptr) {
-			auto Group {GetNextVisibleGroup(GroupPosition)};
+			const auto Group {GetNextVisibleGroup(GroupPosition)};
 			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
 			auto PrimitivePosition {Group->GetHeadPosition()};
 			while (PrimitivePosition != nullptr) {
@@ -82,7 +82,7 @@ void AeSysView::OnCutModeSlice() {
 }
 
 void AeSysView::OnCutModeField() {
-	auto DeviceContext {GetDC()};
+	const auto DeviceContext {GetDC()};
 	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP4) {
 		rPrvPos = ptCur;
@@ -104,7 +104,7 @@ void AeSysView::OnCutModeField() {
 		const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 		const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 		auto GroupsOut {new EoDbGroupList};
-		auto GroupsIn {new EoDbGroupList};
+		const auto GroupsIn {new EoDbGroupList};
 		POSITION posSegPrv;
 		for (auto posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
 			Group = GetNextVisibleGroup(posSeg);
@@ -146,7 +146,7 @@ void AeSysView::OnCutModeField() {
 }
 
 void AeSysView::OnCutModeClip() {
-	auto DeviceContext {GetDC()};
+	const auto DeviceContext {GetDC()};
 	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP7) {
 		rPrvPos = ptCur;
@@ -164,8 +164,8 @@ void AeSysView::OnCutModeClip() {
 		TransformMatrix.invert();
 		EoGePoint4d ptView[] = {EoGePoint4d(pt1, 1.0), EoGePoint4d(pt2, 1.0)};
 		ModelViewTransformPoints(2, ptView);
-		auto GroupsOut {new EoDbGroupList};
-		auto GroupsIn {new EoDbGroupList};
+		const auto GroupsOut {new EoDbGroupList};
+		const auto GroupsIn {new EoDbGroupList};
 		POSITION posSeg {nullptr};
 		POSITION posSegPrv {nullptr};
 		for (posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {

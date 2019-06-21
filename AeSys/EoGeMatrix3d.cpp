@@ -39,9 +39,9 @@ EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(double uMin, double uMax, do
 
 EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance) {
 	setToIdentity();
-	auto FieldWidth {uMax - uMin};
-	auto FieldHeight {vMax - vMin};
-	auto NExtent {farClipDistance - nearClipDistance};
+	const auto FieldWidth {uMax - uMin};
+	const auto FieldHeight {vMax - vMin};
+	const auto NExtent {farClipDistance - nearClipDistance};
 	entry[0][0] = 2. * nearClipDistance / FieldWidth;
 	entry[0][2] = (uMax + uMin) / FieldWidth;
 	entry[1][1] = 2. * nearClipDistance / FieldHeight;

@@ -84,7 +84,7 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 			OdString Comments {Line.Tokenize(L"\n", NextToken).GetString()};
 			fl.ReadString(Line);
 			NextToken = 0;
-			auto NumberOfDashes {static_cast<unsigned short>(_wtoi(Line.Tokenize(L",\n", NextToken)))};
+			const auto NumberOfDashes {static_cast<unsigned short>(_wtoi(Line.Tokenize(L",\n", NextToken)))};
 			if (NumberOfDashes > MaxNumberOfDashes) {
 				delete [] DashLengths;
 				DashLengths = new double[NumberOfDashes];

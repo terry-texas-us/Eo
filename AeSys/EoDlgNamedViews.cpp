@@ -148,7 +148,7 @@ void EoDlgNamedViews::OnSetcurrentButton() {
 		pVpPE->setView(ActiveViewportObject, NamedView);
 		pVpPE->setUcs(ActiveViewportObject, NamedView);
 		pVpPE->setProps(ActiveViewportObject, NamedView);
-		auto sLSName {NamedView->getLayerState()};
+		const auto sLSName {NamedView->getLayerState()};
 		if (!sLSName.isEmpty()) {
 			OdDbLayerState::restore(pDb, sLSName, OdDbLayerState::kUndefDoNothing, OdDbLayerState::kOn | OdDbLayerState::kFrozen);
 		}
@@ -160,7 +160,7 @@ void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* /*pRes
 }
 
 void deleteLayerState(OdDbViewTableRecord* pNamedView) {
-	auto sLSName {pNamedView->getLayerState()};
+	const auto sLSName {pNamedView->getLayerState()};
 	if (!sLSName.isEmpty()) {
 		OdDbLayerState::remove(pNamedView->database(), sLSName);
 		pNamedView->setLayerState(L"");
@@ -169,7 +169,7 @@ void deleteLayerState(OdDbViewTableRecord* pNamedView) {
 
 void updateLayerState(OdDbViewTableRecord* pNamedView) {
 	auto sLSName {pNamedView->getLayerState()};
-	auto pDb {pNamedView->database()};
+	const auto pDb {pNamedView->database()};
 	if (sLSName.isEmpty()) {
 		OdString name;
 		name.format(L"ACAD_VIEWS_%s", pNamedView->getName().c_str());

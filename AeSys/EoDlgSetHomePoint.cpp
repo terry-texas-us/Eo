@@ -35,7 +35,7 @@ void EoDlgSetHomePoint::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgSetHomePoint::OnInitDialog() {
 	CDialog::OnInitDialog();
-	auto Names {theApp.LoadStringResource(IDS_HOME_POINT_SET_NAMES)};
+	const auto Names {theApp.LoadStringResource(IDS_HOME_POINT_SET_NAMES)};
 	m_HomePointNames.ResetContent();
 	auto Position {0};
 	while (Position < Names.GetLength()) {

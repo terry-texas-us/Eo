@@ -30,12 +30,12 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 			break;
 		}
 		case EoDb::kLinePrimitive: {
-			auto Line {EoDbLine::Create(blockTableRecord, m_PrimBuf, 3)};
+			const auto Line {EoDbLine::Create(blockTableRecord, m_PrimBuf, 3)};
 			primitive = EoDbLine::Create(Line);
 			break;
 		}
 		case EoDb::kHatchPrimitive: {
-			auto Hatch {EoDbHatch::Create(blockTableRecord, m_PrimBuf, 3)};
+			const auto Hatch {EoDbHatch::Create(blockTableRecord, m_PrimBuf, 3)};
 			primitive = EoDbHatch::Create(Hatch);
 			break;
 		}
@@ -92,7 +92,7 @@ void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTa
 			break;
 		}
 		case 67: {
-			auto Line {EoDbLine::Create(blockTableRecord, m_PrimBuf, 1)};
+			const auto Line {EoDbLine::Create(blockTableRecord, m_PrimBuf, 1)};
 			primitive = EoDbLine::Create(Line);
 			break;
 		}
@@ -102,7 +102,7 @@ void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTa
 			break;
 		}
 		case 100: {
-			auto Hatch {EoDbHatch::Create(blockTableRecord, m_PrimBuf, 1)};
+			const auto Hatch {EoDbHatch::Create(blockTableRecord, m_PrimBuf, 1)};
 			primitive = EoDbHatch::Create(Hatch);
 			break;
 		}
@@ -267,7 +267,7 @@ void EoDbJobFile::WriteLayer(CFile& file, EoDbLayer* layer) {
 	layer->BreakPolylines();
 	auto Position {layer->GetHeadPosition()};
 	while (Position != nullptr) {
-		auto Group {layer->GetNext(Position)};
+		const auto Group {layer->GetNext(Position)};
 		WriteGroup(file, Group);
 	}
 }

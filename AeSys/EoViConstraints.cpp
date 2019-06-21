@@ -179,7 +179,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 }
 
 OdGePoint3d AeSysView::SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) {
-	EoGeLineSeg3d Line(startPoint, endPoint);
+	const EoGeLineSeg3d Line {startPoint, endPoint};
 	return Line.ConstrainToAxis(m_AxisConstraintInfluenceAngle, m_AxisConstraintOffsetAngle);
 }
 

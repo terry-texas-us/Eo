@@ -17,7 +17,7 @@ void AeSysView::OnTrapModePoint() {
 	EoDbPolyline::SetEdgeToEvaluate(0);
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
-		auto Group {GetNextVisibleGroup(Position)};
+		const auto Group {GetNextVisibleGroup(Position)};
 		if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
 		if (Group->IsOn(ptView, this)) { GetDocument()->AddGroupToTrap(Group); }
 	}
@@ -36,7 +36,7 @@ void AeSysView::OnTrapModeStitch() {
 		ModelViewTransformPoints(2, ptView);
 		auto Position {GetFirstVisibleGroupPosition()};
 		while (Position != nullptr) {
-			auto Group {GetNextVisibleGroup(Position)};
+			const auto Group {GetNextVisibleGroup(Position)};
 			if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
 			if (Group->SelectUsingLineSeg(EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d()), this)) { GetDocument()->AddGroupToTrap(Group); }
 		}
@@ -60,7 +60,7 @@ void AeSysView::OnTrapModeField() {
 		const auto UpperRightCorner {EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d()};
 		auto Position {GetFirstVisibleGroupPosition()};
 		while (Position != nullptr) {
-			auto Group {GetNextVisibleGroup(Position)};
+			const auto Group {GetNextVisibleGroup(Position)};
 			if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
 			if (Group->SelectUsingRectangle(LowerLeftCorner, UpperRightCorner, this)) { GetDocument()->AddGroupToTrap(Group); }
 		}
@@ -74,7 +74,7 @@ void AeSysView::OnTrapModeLast() {
 	auto Document {GetDocument()};
 	auto Position {Document->GetLastWorkLayerGroupPosition()};
 	while (Position != nullptr) {
-		auto Group {Document->GetPreviousWorkLayerGroup(Position)};
+		const auto Group {Document->GetPreviousWorkLayerGroup(Position)};
 		if (!Document->FindTrappedGroup(Group)) {
 			Document->AddGroupToTrap(Group);
 			UpdateStateInformation(TrapCount);
@@ -87,7 +87,7 @@ void AeSysView::OnTrapModeEngage() {
 	if (GroupIsEngaged()) {
 		auto Document {GetDocument()};
 		auto Position {Document->FindWorkLayerGroup(EngagedGroup())};
-		auto Group {Document->GetNextWorkLayerGroup(Position)};
+		const auto Group {Document->GetNextWorkLayerGroup(Position)};
 		if (Document->FindTrappedGroup(Group) == nullptr) {
 			Document->AddGroupToTrap(Group);
 			UpdateStateInformation(TrapCount);
@@ -100,7 +100,7 @@ void AeSysView::OnTrapModeEngage() {
 void AeSysView::OnTrapModeMenu() {
 	CPoint CurrentPosition;
 	GetCursorPos(&CurrentPosition);
-	auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
+	const auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
 	auto SubMenu {CMenu::FromHandle(GetSubMenu(TrapMenu, 0))};
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 	DestroyMenu(TrapMenu);
@@ -135,7 +135,7 @@ void AeSysView::OnTraprModePoint() {
 	EoDbPolyline::SetEdgeToEvaluate(0);
 	auto Position {Document->GetFirstTrappedGroupPosition()};
 	while (Position != nullptr) {
-		auto Group {Document->GetNextTrappedGroup(Position)};
+		const auto Group {Document->GetNextTrappedGroup(Position)};
 		if (Group->IsOn(ptView, this)) {
 			Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -158,7 +158,7 @@ void AeSysView::OnTraprModeStitch() {
 		ModelViewTransformPoints(2, ptView);
 		auto Position {Document->GetFirstTrappedGroupPosition()};
 		while (Position != nullptr) {
-			auto Group {Document->GetNextTrappedGroup(Position)};
+			const auto Group {Document->GetNextTrappedGroup(Position)};
 			if (Group->SelectUsingLineSeg(EoGeLineSeg3d(ptView[0].Convert3d(), ptView[1].Convert3d()), this)) {
 				Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -185,7 +185,7 @@ void AeSysView::OnTraprModeField() {
 		const auto UpperRightCorner {EoGePoint4d::Max(ptView[0], ptView[1]).Convert3d()};
 		auto Position {Document->GetFirstTrappedGroupPosition()};
 		while (Position != nullptr) {
-			auto Group {Document->GetNextTrappedGroup(Position)};
+			const auto Group {Document->GetNextTrappedGroup(Position)};
 			if (Group->SelectUsingRectangle(LowerLeftCorner, UpperRightCorner, this)) {
 				Document->RemoveTrappedGroupAt(Document->FindTrappedGroup(Group));
 				Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -200,7 +200,7 @@ void AeSysView::OnTraprModeField() {
 void AeSysView::OnTraprModeLast() {
 
 	if (!GetDocument()->IsTrapEmpty()) {
-		auto Group {GetDocument()->RemoveLastTrappedGroup()};
+		const auto Group {GetDocument()->RemoveLastTrappedGroup()};
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 		UpdateStateInformation(TrapCount);
 	}
@@ -213,7 +213,7 @@ void AeSysView::OnTraprModeEngage() noexcept {
 void AeSysView::OnTraprModeMenu() {
 	CPoint CurrentPosition;
 	GetCursorPos(&CurrentPosition);
-	auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
+	const auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
 	auto SubMenu {CMenu::FromHandle(GetSubMenu(TrapMenu, 0))};
 	SubMenu->TrackPopupMenuEx(0, CurrentPosition.x, CurrentPosition.y, AfxGetMainWnd(), nullptr);
 	DestroyMenu(TrapMenu);

@@ -287,7 +287,7 @@ OdEdCommandPtr OdExEditorObject::Command(const OdString& commandName) {
 }
 
 void OdExEditorObject::Set3DView(_3DViewType type) {
-	auto Target {OdGePoint3d::kOrigin};
+	const auto Target {OdGePoint3d::kOrigin};
 	OdGePoint3d Position;
 	OdGeVector3d Axis;
 	switch (type) {
@@ -448,12 +448,12 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 }
 
 bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned flags, int x, int y) {
-	auto View {ActiveView()};
+	const auto View {ActiveView()};
 	m_LayoutHelper->setActiveViewport(OdGePoint2d(x, y));
 	const auto Changed {View != ActiveView()};
 	if (Changed) {
 		auto ActiveViewport {ActiveViewportId().safeOpenObject()};
-		auto Database {ActiveViewport->database()};
+		const auto Database {ActiveViewport->database()};
 		if (Database->getTILEMODE()) {
 			OdDbViewportTable::cast(Database->getViewportTableId().safeOpenObject(OdDb::kForWrite))->SetActiveViewport(ActiveViewportId());
 		} else {
@@ -479,7 +479,7 @@ bool OdExEditorObject::OnMouseMove(unsigned flags, int x, int y) {
 }
 
 void OdExEditorObject::Dolly(int x, int y) {
-	auto View {ActiveView()};
+	const auto View {ActiveView()};
 	Dolly(View, x, y);
 }
 
@@ -490,7 +490,7 @@ void OdExEditorObject::Dolly(OdGsView* view, int x, int y) {
 }
 
 bool OdExEditorObject::OnMouseWheel(unsigned flags, int x, int y, short zDelta) {
-	auto View {ActiveView()};
+	const auto View {ActiveView()};
 	ZoomAt(View, x, y, zDelta);
 	if (!m_p2dModel.isNull()) {
 		m_p2dModel->invalidate(ActiveTopView());
@@ -561,7 +561,7 @@ static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, 
 }
 
 void zoom_extents(OdGsView* view, OdDbObject* viewportObject) {
-	auto Database {viewportObject->database()};
+	const auto Database {viewportObject->database()};
 	OdAbstractViewPEPtr AbstractView(view);
 	OdGeBoundBlock3d BoundBox;
 	auto ValidBoundBox {AbstractView->viewExtents(view, BoundBox)};
@@ -623,7 +623,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdDbDatabasePtr pDb = pDbCmdCtx->database();
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
-	auto Keywords {L"All Center Dynamic Extents Previous Scale Window Object"};
+	const auto Keywords {L"All Center Dynamic Extents Previous Scale Window Object"};
 	auto ActiveViewport {pDb->activeViewportId().safeOpenObject(OdDb::kForWrite)};
 	OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
 	auto ActiveView {AbstractViewportData->gsView(ActiveViewport)};
@@ -905,7 +905,7 @@ public:
 				m_pModel->setRenderType(OdGsModel::kDirect); // Skip Z-buffer for 2d drawables.
 				m_pModel->setEnableViewExtentsCalculation(false); // Skip extents calculation.
 				m_pModel->setRenderModeOverride(OdGsView::k2DOptimized); // Setup 2dWireframe mode for all underlying geometry.
-				auto visualStyleId {GraphTrackerBase::getVisualStyleOverride(pView->userGiContext()->database())};
+				const auto visualStyleId {GraphTrackerBase::getVisualStyleOverride(pView->userGiContext()->database())};
 				if (visualStyleId) m_pModel->setVisualStyle(visualStyleId); // 2dWireframe visual style.
 			}
 		}
@@ -936,8 +936,8 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 		}
 	}
 	//
-	auto InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveMode"))};
-	auto InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveFrameRate"))};
+	const auto InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveMode"))};
+	const auto InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveFrameRate"))};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
 	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
 	for (;;) {
@@ -1046,8 +1046,8 @@ void OdExDollyCmd::execute(OdEdCommandContext* edCommandContext) {
 		}
 	}
 	//
-	auto InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"AeSys InteractiveMode"))};
-	auto InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"AeSys InteractiveFrameRate"))};
+	const auto InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"AeSys InteractiveMode"))};
+	const auto InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"AeSys InteractiveFrameRate"))};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
 	OdStaticRxObject<RTDollyTracker> DollyTracker;
 	for (;;) {
@@ -1074,9 +1074,9 @@ const OdString OdExInteractivityModeCmd::globalName() const {
 void OdExInteractivityModeCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdDbCommandContextPtr pDbCmdCtx(edCommandContext);
 	OdSmartPtr<OdDbUserIO> pIO = pDbCmdCtx->userIO();
-	auto enable {pIO->getInt(L"\nSet 0 to disable or non-zero to enable Interactivity Mode: ") != 0};
+	const auto enable {pIO->getInt(L"\nSet 0 to disable or non-zero to enable Interactivity Mode: ") != 0};
 	if (enable) {
-		auto frameRate {pIO->getReal(L"\nSpecify frame rate (Hz): ")};
+		const auto frameRate {pIO->getReal(L"\nSpecify frame rate (Hz): ")};
 		edCommandContext->setArbitraryData(L"AeSys InteractiveMode", OdRxVariantValue(true));
 		edCommandContext->setArbitraryData(L"AeSys InteractiveFrameRate", OdRxVariantValue(frameRate));
 	} else {
@@ -1141,7 +1141,7 @@ public:
 
 	void clear() {
 		while (m_pLeaf) {
-			auto Node = m_pLeaf;
+			const auto Node = m_pLeaf;
 			m_pLeaf = Node->m_pParent;
 			delete Node;
 		}
@@ -1329,9 +1329,9 @@ bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, bool bT
 
 OdExCollideGsPath* fromGiPath(const OdGiPathNode* path, bool bTruncateToRef = false) {
 	if (!path) { return nullptr; }
-	auto res {new OdExCollideGsPath};
-	addNodeToPath(res, path, bTruncateToRef);
-	return res;
+	const auto Result {new OdExCollideGsPath};
+	addNodeToPath(Result, path, bTruncateToRef);
+	return Result;
 }
 
 void CollideMoveTracker::doCollideWithAll() {
@@ -1346,8 +1346,8 @@ void CollideMoveTracker::doCollideWithAll() {
 		~OdExCollisionDetectionReactor() = default;
 
 		unsigned long collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
-			auto p {fromGiPath(pPathNode2, !m_bDynHLT)};
-			if (p || pPathNode2->persistentDrawableId()) { m_pathes.push_back(p); }
+			const auto Path {fromGiPath(pPathNode2, !m_bDynHLT)};
+			if (Path || pPathNode2->persistentDrawableId()) { m_pathes.push_back(Path); }
 			return static_cast<unsigned long>(kContinue);
 		}
 
@@ -1447,8 +1447,8 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 		~OdExCollisionDetectionReactor() = default;
 
 		unsigned long collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
-			auto p1 {fromGiPath(pPathNode1, !m_bDynHLT)};
-			auto p2 {fromGiPath(pPathNode2, !m_bDynHLT)};
+			const auto p1 {fromGiPath(pPathNode1, !m_bDynHLT)};
+			const auto p2 {fromGiPath(pPathNode2, !m_bDynHLT)};
 			m_pathes.push_back(p1);
 			m_pathes.push_back(p2);
 			return static_cast<unsigned long>(kContinue);

@@ -155,7 +155,7 @@ void EoDbPolyline::GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const {
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
 	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
 	const auto YAxis {m_Normal.crossProduct(XAxis)};
-	OdGePlane Plane(Origin, XAxis, YAxis);
+	const OdGePlane Plane(Origin, XAxis, YAxis);
 	point.set(Plane, m_Vertices[vertexIndex]);
 }
 
@@ -281,7 +281,7 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 		EoGePoint4d ptEnd(EndPoint, 1.0);
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
-		EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
+		const EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
 		if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
 			projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 			return true;

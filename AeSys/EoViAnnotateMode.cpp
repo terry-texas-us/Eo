@@ -26,7 +26,7 @@ void AeSysView::OnAnnotateModeLine() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Line {EoDbLine::Create(BlockTableRecord)};
 			Line->setStartPoint(EoViAnn_points[0]);
 			Line->setEndPoint(CurrentPnt);
@@ -51,7 +51,7 @@ void AeSysView::OnAnnotateModeArrow() {
 			if (m_PreviousOp == ID_OP3) {
 				GenerateLineEndItem(EndItemType(), EndItemSize(), CurrentPnt, EoViAnn_points[0], Group);
 			}
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Line {EoDbLine::Create(BlockTableRecord)};
 			Line->setStartPoint(EoViAnn_points[0]);
 			Line->setEndPoint(CurrentPnt);
@@ -146,7 +146,7 @@ void AeSysView::OnAnnotateModeBubble() {
 }
 
 void AeSysView::OnAnnotateModeHook() {
-	auto CurrentPnt {GetCursorPosition()};
+	const auto CurrentPnt {GetCursorPosition()};
 	auto Group {new EoDbGroup};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	if (m_PreviousOp == 0) {
@@ -190,12 +190,12 @@ void AeSysView::OnAnnotateModeUnderline() {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
-	auto pText {SelectTextUsingPoint(CurrentPnt)};
+	const auto pText {SelectTextUsingPoint(CurrentPnt)};
 	if (pText != nullptr) {
 		OdGePoint3dArray Underline;
 		pText->GetBoundingBox(Underline, GapSpaceFactor());
 		auto Group {new EoDbGroup};
-		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		auto Line {EoDbLine::Create(BlockTableRecord)};
 		Line->setStartPoint(Underline[0]);
 		Line->setEndPoint(Underline[1]);
@@ -252,7 +252,7 @@ void AeSysView::OnAnnotateModeBox() {
 			JoinedBoxes[3].x = JoinedBoxes[0].x;
 			JoinedBoxes[3].y = JoinedBoxes[2].y;
 			auto Group {new EoDbGroup};
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			for (unsigned i = 0; i < 4; i++) {
 				auto Line {EoDbLine::Create(BlockTableRecord)};
 				Line->setStartPoint(JoinedBoxes[i]);
@@ -351,7 +351,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 
 void AeSysView::OnAnnotateModeConstructionLine() {
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	if (m_PreviousOp != ID_OP9) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP9);
 		EoViAnn_points.clear();
@@ -464,7 +464,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
 	const auto NumberOfPoints {EoViAnn_points.size()};
 	EoViAnn_points.append(CurrentPnt);
-	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	switch (m_PreviousOp) {
@@ -510,7 +510,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 
 void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
 	const auto PlaneNormal {CameraDirection()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	OdGePoint3dArray ItemPoints;
 	ItemPoints.clear();
 	auto Polyline {EoDbPolyline::Create(BlockTableRecord)};

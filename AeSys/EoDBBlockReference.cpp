@@ -50,7 +50,7 @@ void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const 
 void EoDbBlockReference::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
 	EoDbBlock* Block;
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
-	auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
+	const auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
 	static_cast<EoDbGroup*>(Block)->AddPrimsToTreeViewControl(tree, TreeItemHandle);
 }
 

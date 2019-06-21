@@ -130,9 +130,9 @@ void EoDlgEditProperties::OnButton() {
 				case OdDxfCode::Point: {
 					const auto sp1 {m_sValue.Find(' ')};
 					const auto sp2 {m_sValue.Find(' ', sp1 + 1)};
-					auto x {wcstod(m_sValue.Left(sp1), 0)};
-					auto y {wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0)};
-					auto z {wcstod(m_sValue.Mid(sp2 + 1), 0)};
+					const auto x {wcstod(m_sValue.Left(sp1), 0)};
+					const auto y {wcstod(m_sValue.Mid(sp1 + 1, sp2 - sp1 - 1), 0)};
+					const auto z {wcstod(m_sValue.Mid(sp2 + 1), 0)};
 					ResourceBuffer->setPoint3d(OdGePoint3d(x, y, z));
 					break;
 				}

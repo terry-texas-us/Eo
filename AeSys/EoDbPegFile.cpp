@@ -56,7 +56,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 	if (ReadUInt16() != kLinetypeTable) { throw L"Exception ReadLinetypesTable: Expecting sentinel kLinetypeTable."; }
 	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
 	const auto NumberOfLinetypes {ReadUInt16()};
-	auto DashLength {new double[32]};
+	const auto DashLength {new double[32]};
 	for (unsigned LinetypeIndex = 0; LinetypeIndex < NumberOfLinetypes; LinetypeIndex++) {
 		OdString Name;
 		ReadString(Name); /* unsigned short Flags = */
@@ -64,7 +64,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 		OdString Comments;
 		ReadString(Comments);
 		const auto NumberOfDashes {ReadUInt16()};
-		auto PatternLength {ReadDouble()};
+		const auto PatternLength {ReadDouble()};
 		for (auto DashIndex = 0; DashIndex < NumberOfDashes; DashIndex++) {
 			DashLength[DashIndex] = ReadDouble();
 		}
@@ -150,7 +150,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 	if (ReadUInt16() != kBlocksSection) { throw L"Exception ReadBlocksSection: Expecting sentinel kBlocksSection."; }
 	OdDbBlockTablePtr BlockTable {m_Database->getBlockTableId().safeOpenObject(OdDb::kForWrite)};
 	OdString Name;
-	OdString PathName;
+	const OdString PathName;
 	const auto NumberOfBlocks {ReadUInt16()};
 	for (unsigned BlockIndex = 0; BlockIndex < NumberOfBlocks; BlockIndex++) {
 		const auto NumberOfPrimitives {ReadUInt16()};
@@ -169,7 +169,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 		}
 		const auto LayoutBlock {BlockTableRecord->isLayout()};
 		for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-			auto Primitive {ReadPrimitive(BlockTableRecord)};
+			const auto Primitive {ReadPrimitive(BlockTableRecord)};
 			Block->AddTail(Primitive);
 		}
 	}
@@ -178,7 +178,7 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 
 void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	if (ReadUInt16() != kGroupsSection) { throw L"Exception ReadGroupsSection: Expecting sentinel kGroupsSection."; }
-	OdDbBlockTableRecordPtr ModelSpaceBlock {m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	const OdDbBlockTableRecordPtr ModelSpaceBlock {m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto CurrentLayerObjectId {m_Database->getCLAYER()};
 	auto Layers {document->LayerTable(OdDb::kForRead)};
 	const auto NumberOfLayers {static_cast<int>(ReadUInt16())};
@@ -194,7 +194,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 				const auto NumberOfPrimitives {ReadUInt16()};
 				auto Group {new EoDbGroup};
 				for (unsigned PrimitiveIndex = 0; PrimitiveIndex < NumberOfPrimitives; PrimitiveIndex++) {
-					auto Primitive {ReadPrimitive(ModelSpaceBlock)};
+					const auto Primitive {ReadPrimitive(ModelSpaceBlock)};
 					Group->AddTail(Primitive);
 				}
 				Layer->AddTail(Group);

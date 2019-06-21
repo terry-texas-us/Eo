@@ -38,9 +38,9 @@ BOOL EoDlgLineWeight::OnInitDialog() {
 		m_LineWeightList.InsertString(Index, CMainFrame::StringByLineWeight(Index - 1, true));
 		m_LineWeightList.SetItemData(Index, static_cast<DWORD_PTR>(CMainFrame::LineWeightByIndex(char(Index - 1))));
 	}
-	auto OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
+	const auto OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
 	m_LineWeightList.SelectString(-1, OriginalLineWeight);
-	auto Text(L"Original : " + OriginalLineWeight);
+	const auto Text(L"Original : " + OriginalLineWeight);
 	GetDlgItem(IDC_STATIC_LINEWEIGHT_ORIGINAL)->SetWindowTextW(Text);
 	return TRUE;
 }

@@ -13,8 +13,8 @@ static int CALLBACK EoLineweightCompareFunction(LPARAM item1, LPARAM item2, LPAR
 	const auto NewIndex1 {reinterpret_cast<EoLineweightData*>(item1)->m_NewIdx};
 	const auto NewIndex2 {reinterpret_cast<EoLineweightData*>(item2)->m_NewIdx};
 	const CListCtrl* ListCtrl = reinterpret_cast<EoListCtrlSortData*>(sortData)->m_ListCtrl;
-	auto Value1 {_wtof(ListCtrl->GetItemText(NewIndex1, 0))};
-	auto Value2 {_wtof(ListCtrl->GetItemText(NewIndex2, 0))};
+	const auto Value1 {_wtof(ListCtrl->GetItemText(NewIndex1, 0))};
+	const auto Value2 {_wtof(ListCtrl->GetItemText(NewIndex2, 0))};
 	return Value1 > Value2;
 }
 
@@ -74,7 +74,7 @@ void EoDlgPlotStyleEditLineweight::OnOK() {
 	const auto NumberOfLineweights {m_LineweightsListCtrl.GetItemCount()};
 	Lineweights.resize(static_cast<unsigned>(NumberOfLineweights));
 	for (auto LineweightIndex = 0; LineweightIndex < NumberOfLineweights; LineweightIndex++) {
-		auto LineweightDataItem {reinterpret_cast<EoLineweightData*>(m_LineweightsListCtrl.GetItemData(LineweightIndex))};
+		const auto LineweightDataItem {reinterpret_cast<EoLineweightData*>(m_LineweightsListCtrl.GetItemData(LineweightIndex))};
 		Lineweights[static_cast<unsigned>(LineweightIndex)] = LineweightDataItem->m_Value;
 	}
 	m_PlotStyleTable->setLineweights(Lineweights);
@@ -95,13 +95,13 @@ void EoDlgPlotStyleEditLineweight::OnButtonSortlineweight() {
 }
 
 void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* notifyStructure, LRESULT* result) {
-	auto DisplayInfo {reinterpret_cast<NMLVDISPINFOW*>(notifyStructure)};
+	const auto DisplayInfo {reinterpret_cast<NMLVDISPINFOW*>(notifyStructure)};
 	const auto ListViewItem {&static_cast<NMLVDISPINFOW*>(DisplayInfo)->item};
 	if (ListViewItem->mask & LVIF_TEXT) {
 		CString Text;
 		Text.Format(L"%.4f", _wtof(ListViewItem->pszText));
 		m_LineweightsListCtrl.SetItemText(ListViewItem->iItem, ListViewItem->iSubItem, Text);
-		auto LineweightDataItem = reinterpret_cast<EoLineweightData*>(m_LineweightsListCtrl.GetItemData(ListViewItem->iItem));
+		const auto LineweightDataItem = reinterpret_cast<EoLineweightData*>(m_LineweightsListCtrl.GetItemData(ListViewItem->iItem));
 		if (m_InchesButton.GetCheck()) {
 			LineweightDataItem->m_Value = INCHTOMM(_wtof(ListViewItem->pszText));
 		} else {
@@ -160,7 +160,7 @@ bool EoDlgPlotStyleEditLineweight::SetPlotStyleTable(OdPsPlotStyleTable* plotSty
 
 void EoDlgPlotStyleEditLineweight::InitializeLineweightsListCtrlImages() {
 	VERIFY(m_ListCtrlImages.Create(IDB_PS_BITMAP_WHITE, 16, 3, RGB(255, 255, 255)));
-	auto Bitmap {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDB_PS_BITMAP_CHECK), IMAGE_BITMAP, 16, 16, LR_CREATEDIBSECTION))};
+	const auto Bitmap {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDB_PS_BITMAP_CHECK), IMAGE_BITMAP, 16, 16, LR_CREATEDIBSECTION))};
 	m_ListCtrlImages.Add(CBitmap::FromHandle(Bitmap), RGB(255, 255, 255));
 	m_LineweightsListCtrl.SetImageList(&m_ListCtrlImages, LVSIL_SMALL);
 }

@@ -41,7 +41,7 @@ void AeSysView::OnDrawModeLine() {
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
 		CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
-		OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		auto Line {EoDbLine::Create(BlockTableRecord)};
 		Line->setStartPoint(m_DrawModePoints[0]);
 		Line->setEndPoint(CurrentPnt);
@@ -196,7 +196,7 @@ void AeSysView::OnDrawModeReturn() {
 			m_DrawModePoints.append(CurrentPnt);
 			if (NumberOfPoints == 1) { return; }
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-			OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
+			const OdGeCircArc3d CircularArc {m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]};
 			Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1.0, 0.0, CircularArc.endAng());
 			Group = new EoDbGroup;
 			Group->AddTail(EoDbEllipse::Create(Ellipse));
@@ -359,7 +359,7 @@ void AeSysView::DoDrawModeMouseMove() {
 			}
 			if (NumberOfPoints == 2) {
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
-				OdGeCircArc3d CircularArc(m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]);
+				const OdGeCircArc3d CircularArc {m_DrawModePoints[0], m_DrawModePoints[1], m_DrawModePoints[2]};
 				Ellipse->set(CircularArc.center(), CircularArc.normal(), CircularArc.refVec() * CircularArc.radius(), 1.0, 0.0, CircularArc.endAng());
 				m_PreviewGroup.AddTail(EoDbEllipse::Create(Ellipse));
 			}

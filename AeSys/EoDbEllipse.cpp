@@ -58,7 +58,7 @@ void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Report;
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
-	auto LengthAsString {theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits())};
+	const auto LengthAsString {theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits())};
 	if (fabs(m_MajorAxis.lengthSqrd() - m_MinorAxis.lengthSqrd()) <= FLT_EPSILON) {
 		if (fabs(m_SweepAngle - Oda2PI) <= FLT_EPSILON) {
 			Report = L"<Circle>" + Report;
@@ -825,13 +825,13 @@ OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableReco
 	auto Ellipse {OdDbEllipse::createObject()};
 	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Ellipse);
-	OdGeCircArc3d Circle(center, normal, radius);
+	const OdGeCircArc3d Circle {center, normal, radius};
 	Ellipse->set(center, Circle.normal(), Circle.refVec() * radius, 1.0);
 	return Ellipse;
 }
 
 OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file) {
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Ellipse {OdDbEllipse::createObject()};
 	Ellipse->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Ellipse);
@@ -884,7 +884,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[44])->Convert();
 		if (SweepAngle > Oda2PI || SweepAngle < -Oda2PI) { SweepAngle = Oda2PI; }
 	}
-	auto Database {blockTableRecord->database()};
+	const auto Database {blockTableRecord->database()};
 	auto Ellipse {OdDbEllipse::createObject()};
 	Ellipse->setDatabaseDefaults(Database);
 	blockTableRecord->appendOdDbEntity(Ellipse);

@@ -12,7 +12,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 			WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			return TRUE;
 		case WM_NOTIFY: {
-			auto lpofn {reinterpret_cast<_OFNOTIFYW*>(lParam)};
+			const auto lpofn {reinterpret_cast<_OFNOTIFYW*>(lParam)};
 			if (lpofn->hdr.code == CDN_FOLDERCHANGE) {
 				WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			} else if (lpofn->hdr.code == CDN_SELCHANGE) {
@@ -20,10 +20,10 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>(static_cast<wchar_t*>(FilePath)));
 				CFileStatus FileStatus;
 				if (CFile::GetStatus(FilePath, FileStatus)) {
-					auto FileType {AeSys::GetFileType(FilePath)};
+					const auto FileType {AeSys::GetFileType(FilePath)};
 					if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 						auto Layer {Document->GetLayerAt(FilePath)};
-						auto PreviewWindow {GetDlgItem(hDlg, IDC_LAYER_PREVIEW)};
+						const auto PreviewWindow {GetDlgItem(hDlg, IDC_LAYER_PREVIEW)};
 						if (Layer != nullptr) {
 							_WndProcPreviewUpdate(PreviewWindow, Layer);
 						} else {
@@ -46,15 +46,15 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 				theApp.WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
 				return TRUE;
 			}
-			auto Name {PathFindFileNameW(FilePath)};
-			auto FileType {AeSys::GetFileType(FilePath)};
+			const auto Name {PathFindFileNameW(FilePath)};
+			const auto FileType {AeSys::GetFileType(FilePath)};
 			if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
 				theApp.WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
 				return TRUE;
 			}
 			switch (LOWORD(wParam)) {
 				case IDC_APPEND: {
-					auto Layer {Document->GetWorkLayer()};
+					const auto Layer {Document->GetWorkLayer()};
 					Document->TracingLoadLayer(FilePath, Layer);
 					Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 					return TRUE;
@@ -70,7 +70,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 							FileOpenSuccess = true;
 						}
 					} else {
-						auto Layers {Document->LayerTable(OdDb::kForWrite)};
+						const auto Layers {Document->LayerTable(OdDb::kForWrite)};
 						auto LayerTableRecord {OdDbLayerTableRecord::createObject()};
 						LayerTableRecord->setName(Name);
 						Layer = new EoDbLayer(LayerTableRecord);
@@ -110,7 +110,7 @@ unsigned CALLBACK OFNHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPAR
 							FileOpenSuccess = true;
 						}
 					} else {
-						auto Layers {Document->LayerTable(OdDb::kForWrite)};
+						const auto Layers {Document->LayerTable(OdDb::kForWrite)};
 						auto LayerTableRecord = OdDbLayerTableRecord::createObject();
 						LayerTableRecord->setName(Name);
 						Layer = new EoDbLayer(LayerTableRecord);

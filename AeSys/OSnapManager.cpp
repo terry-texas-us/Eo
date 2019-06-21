@@ -203,7 +203,7 @@ void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 	OdGsDCRect DcRectangle;
 	if (m_SnapMode) {
 		const auto WorldToDeviceTransform {m_View->worldToDeviceMatrix()};
-		auto Point {WorldToDeviceTransform * point};
+		const auto Point {WorldToDeviceTransform * point};
 		DcRectangle.m_min.x = OdRoundToLong(Point.x);
 		DcRectangle.m_min.y = OdRoundToLong(Point.y);
 		DcRectangle.m_max = DcRectangle.m_min;
@@ -326,7 +326,7 @@ bool OdBaseSnapManager::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 }
 
 bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint) {
-	auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
+	const auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
 	if (TrackerSnapInfo) { TrackerSnapInfo->m_SnapContext.mValid = false; }
 	m_Redraw = false;
 	m_SnapPoints.clear();
@@ -486,7 +486,7 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode& pathNode, const Od
 		}
 		return static_cast<unsigned long>(kContinue);
 	}
-	auto Entity {OdDbEntity::cast(OdDbObjectId(pathNode.persistentDrawableId()).openObject())};
+	const auto Entity {OdDbEntity::cast(OdDbObjectId(pathNode.persistentDrawableId()).openObject())};
 	if (Entity.isNull()) { return static_cast<unsigned long>(kSkipDrawable); }
 	m_SelectedEntityData.append()->set(pathNode);
 	return static_cast<unsigned long>(kSkipDrawable);
@@ -512,7 +512,7 @@ void OdBaseSnapManager::RecalculateEntityCenters() {
 
 bool OdBaseSnapManager::SetEntityCenters(OdRxObject* rxObject) {
 	m_Centers.clear();
-	auto Database {OdDbDatabase::cast(rxObject).get()};
+	const auto Database {OdDbDatabase::cast(rxObject).get()};
 	if (!Database) { return false; }
 	OdDbBlockTableRecordPtr BlockTableRecord = Database->getActiveLayoutBTRId().safeOpenObject();  // Layout table
 	if (Database->getModelSpaceId() != BlockTableRecord->objectId()) { // it's not ModelSpace, it's PaperSpace which can have many ModelSpace

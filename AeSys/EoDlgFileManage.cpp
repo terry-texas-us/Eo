@@ -168,7 +168,7 @@ void EoDlgFileManage::OnBnClickedNewlayer() {
 		Name.format(L"Layer%d", Suffix++);
 	} while (Layers->has(Name));
 	auto LayerTableRecord {OdDbLayerTableRecord::createObject()};
-	auto Layer {new EoDbLayer(LayerTableRecord)};
+	const auto Layer {new EoDbLayer(LayerTableRecord)};
 	LayerTableRecord->setName(Name);
 	m_Document->AddLayerTo(Layers, Layer);
 	const auto ItemCount {m_LayersList.GetItemCount()};
@@ -184,7 +184,7 @@ void EoDlgFileManage::OnBnClickedSetcurrent() {
 		LayerTableRecord->upgradeOpen();
 		if (!LayerTableRecord.isNull()) {
 			OdDbLayerTableRecordPtr PreviousLayer {m_Database->getCLAYER().safeOpenObject()};
-			auto PreviousLayerName {PreviousLayer->getName()};
+			const auto PreviousLayerName {PreviousLayer->getName()};
 			m_Document->GetLayerAt(PreviousLayerName)->MakeActive();
 			theApp.AddStringToMessageList(L"Status of layer <%s> has changed to active\n", PreviousLayerName);
 			m_Database->setCLAYER(LayerTableRecord->objectId());
@@ -420,7 +420,7 @@ void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESUL
 }
 
 void EoDlgFileManage::UpdateCurrentLayerInfoField() {
-	auto LayerName {OdDbSymUtil::getSymbolName(m_Database->getCLAYER())};
+	const auto LayerName {OdDbSymUtil::getSymbolName(m_Database->getCLAYER())};
 	GetDlgItem(IDC_STATIC_CURRENT_LAYER)->SetWindowTextW(L"Current Layer: " + LayerName);
 }
 
@@ -438,7 +438,7 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure
 	const auto Item {ListViewNotificationDisplayInfo->item};
 	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
 	auto LayerTableRecord {Layer->TableRecord()};
-	OdString NewName(Item.pszText);
+	const OdString NewName(Item.pszText);
 	if (!NewName.isEmpty()) {
 		auto Layers {m_Document->LayerTable(OdDb::kForWrite)};
 		if (LayerTableRecord->objectId() == m_Database->getLayerZeroId()) {
@@ -464,7 +464,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR notifyStructure, LRE
 		const auto SelectionMark {m_LayersList.GetSelectionMark()};
 		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
 		auto LayerTableRecord {Layer->TableRecord()};
-		auto Name {Layer->Name()};
+		const auto Name {Layer->Name()};
 		const auto Result {LayerTableRecord->erase(true)};
 		if (Result) {
 			auto ErrorDescription {m_Database->appServices()->getErrorDescription(Result)};

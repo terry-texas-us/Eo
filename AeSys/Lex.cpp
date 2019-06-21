@@ -67,7 +67,7 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 
 void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefinition, wchar_t* acPic, int* aiLen) noexcept {
 	const auto DataType {columnDefinition->DataType};
-	int DataDimension {LOWORD(columnDefinition->DataDefinition)};
+	const int DataDimension {LOWORD(columnDefinition->DataDefinition)};
 	if (DataType == TOK_STRING) {
 		*aiLen = DataDimension;
 		acPic[0] = '\'';
@@ -76,8 +76,8 @@ void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 		acPic[++*aiLen] = '\0';
 	} else {
 		wchar_t cVal[32] {L"\0"};
-		auto lVal {reinterpret_cast<long*>(cVal)};
-		auto dVal {reinterpret_cast<double*>(cVal)};
+		const auto lVal {reinterpret_cast<long*>(cVal)};
+		const auto dVal {reinterpret_cast<double*>(cVal)};
 		wchar_t* szpVal {nullptr};
 		auto iLoc {0};
 		auto ValueLength {0};
@@ -129,8 +129,8 @@ void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 
 void lex::ConvertValTyp(int valueType, int requiredType, long* definition, void* apVal) noexcept {
 	if (valueType == requiredType) { return; }
-	auto pdVal {static_cast<double*>(apVal)};
-	auto piVal {static_cast<long*>(apVal)};
+	const auto pdVal {static_cast<double*>(apVal)};
+	const auto piVal {static_cast<long*>(apVal)};
 	if (valueType == TOK_STRING) {
 		wchar_t szVal[256];
 		wcscpy_s(szVal, 256, static_cast<wchar_t*>(apVal));
@@ -161,7 +161,7 @@ void lex::ConvertStringToVal(int valueType, long definition, wchar_t* aszVal, lo
 	auto iNxt {0};
 	const auto iTyp {Scan(szTok, aszVal, iNxt)};
 	if (valueType == TOK_INTEGER) { // Conversion to integer
-		auto pVal {static_cast<long*>(aVal)};
+		const auto pVal {static_cast<long*>(aVal)};
 		if (iTyp == TOK_INTEGER) {
 			*pVal = _wtol(szTok);
 		} else if (iTyp == TOK_REAL) {
@@ -171,7 +171,7 @@ void lex::ConvertStringToVal(int valueType, long definition, wchar_t* aszVal, lo
 		}
 		*alDefReq = MAKELONG(1, 1);
 	} else {
-		auto pVal {static_cast<double*>(aVal)};
+		const auto pVal {static_cast<double*>(aVal)};
 		if (iTyp == TOK_INTEGER) {
 			*pVal = static_cast<double>(_wtoi(szTok));
 		} else if (iTyp == TOK_REAL) {
@@ -202,12 +202,12 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 	int iOpStkTyp[32] {0};
 	long lOpStk[32][32] {0};
 	long lOpStkDef[32] {0};
-	auto cOp1 {static_cast<wchar_t*>(apOp)};
-	auto dOp1 {static_cast<double*>(apOp)};
-	auto lOp1 {static_cast<long*>(apOp)};
+	const auto cOp1 {static_cast<wchar_t*>(apOp)};
+	const auto dOp1 {static_cast<double*>(apOp)};
+	const auto lOp1 {static_cast<long*>(apOp)};
 	wchar_t cOp2[256] {L"\0"};
 	const double* dOp2 {reinterpret_cast<double*>(cOp2)};
-	auto lOp2 {reinterpret_cast<long*>(cOp2)};
+	const auto lOp2 {reinterpret_cast<long*>(cOp2)};
 	auto OperandStackTop {0};
 	auto TokenStackIndex {0}; // Start with first token
 	while (TokenStackIndex < NumberOfTokens) {
@@ -406,7 +406,7 @@ void lex::ParseStringOperand(const wchar_t* pszTok) {
 		theApp.AddStringToMessageList(IDS_MSG_ZERO_LENGTH_STRING);
 		return;
 	}
-	auto pszValues {reinterpret_cast<wchar_t*>(& Values[NumberOfValues + 2])};
+	const auto pszValues {reinterpret_cast<wchar_t*>(& Values[NumberOfValues + 2])};
 	auto iDim {0};
 	auto iNxt {1};
 	while (pszTok[iNxt] != '\0') {
@@ -423,7 +423,7 @@ void lex::ParseStringOperand(const wchar_t* pszTok) {
 int lex::Scan(wchar_t* token, const wchar_t* line, int& linePosition) {
 	auto iLen {0};
 	while (line[linePosition] == ' ') { linePosition++; }
-	auto iBegLoc {linePosition};
+	const auto iBegLoc {linePosition};
 	auto iTokLoc {linePosition};
 	auto Result {-1};
 	auto iS {1};
@@ -567,7 +567,7 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, long* alOp) {
 }
 
 wchar_t* lex::ScanForChar(wchar_t c, wchar_t* * ppStr) noexcept {
-	auto p {SkipWhiteSpace(*ppStr)};
+	const auto p {SkipWhiteSpace(*ppStr)};
 	if (*p == c) {
 		*ppStr = p + 1;
 		return p;
@@ -584,7 +584,7 @@ wchar_t* lex::SkipWhiteSpace(wchar_t* pszString) noexcept {
 
 wchar_t* lex::ScanForString(wchar_t* * ppStr, wchar_t* pszTerm, wchar_t* * ppArgBuf) noexcept {
 	auto pIn {SkipWhiteSpace(*ppStr)};
-	auto pStart {*ppArgBuf};
+	const auto pStart {*ppArgBuf};
 	auto pOut {pStart};
 	const auto bInQuotes {*pIn == '"'};
 	if (bInQuotes) { pIn++; }

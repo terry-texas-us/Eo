@@ -40,7 +40,7 @@ bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTabl
 	}
 	m_pPlotStyleTable = pPlotStyleTable;
 	m_pPsTabForPropertyPg = pPlotStyleTable->clone();
-	auto pPsTab {m_pPsTabForPropertyPg.get()};
+	const auto pPsTab {m_pPsTabForPropertyPg.get()};
 	return m_page1.SetPlotStyleTable(pPsTab) && m_page2.SetPlotStyleTable(pPsTab);
 }
 

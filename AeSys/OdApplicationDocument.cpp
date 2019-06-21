@@ -71,7 +71,7 @@ void OdAddAppReactor(OdApplicationReactor* reactor) {
 OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 	auto ViewPosition {document->GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
-		auto View {document->GetNextView(ViewPosition)};
+		const auto View {document->GetNextView(ViewPosition)};
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
 			return dynamic_cast<AeSysView*>(View)->m_LayoutHelper;
 		}
@@ -83,7 +83,7 @@ bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) {
 	auto ViewPosition {document->GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 
-		auto View {document->GetNextView(ViewPosition)};
+		const auto View {document->GetNextView(ViewPosition)};
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
 			return dynamic_cast<AeSysView*>(View)->editorObject().Snap(point, nullptr);
 		}

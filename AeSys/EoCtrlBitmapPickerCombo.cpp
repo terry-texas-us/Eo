@@ -8,7 +8,7 @@ static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CP
 	const int Height {Bitmap.bmHeight};
 	CDC MemoryDeviceContext;
 	MemoryDeviceContext.CreateCompatibleDC(const_cast<CDC*>(deviceContext));
-	auto pBmp {MemoryDeviceContext.SelectObject(const_cast<CBitmap*>(bitmap))};
+	const auto pBmp {MemoryDeviceContext.SelectObject(const_cast<CBitmap*>(bitmap))};
 	const_cast<CDC*>(deviceContext)->BitBlt(point.x, point.y, Width, Height, &MemoryDeviceContext, 0, 0, SRCCOPY);
 	MemoryDeviceContext.SelectObject(pBmp);
 }
@@ -54,8 +54,8 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	if (!IsWindowEnabled()) {
 		CBrush DisabledBrush(RGB(192, 192, 192)); // light gray
 		CPen DisabledPen(PS_SOLID, 1, RGB(192, 192, 192));
-		auto OldBrush {DeviceContext->SelectObject(&DisabledBrush)};
-		auto OldPen {DeviceContext->SelectObject(&DisabledPen)};
+		const auto OldBrush {DeviceContext->SelectObject(&DisabledBrush)};
+		const auto OldPen {DeviceContext->SelectObject(&DisabledPen)};
 		OutputBitmap(drawItemStruct, false);
 		DeviceContext->SelectObject(OldBrush);
 		DeviceContext->SelectObject(OldPen);
@@ -64,8 +64,8 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	if (drawItemStruct->itemState & ODS_SELECTED && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
 		CBrush HighlightBrush(GetSysColor(COLOR_HIGHLIGHT));
 		CPen HighlightPen(PS_SOLID, 1, GetSysColor(COLOR_HIGHLIGHT));
-		auto OldBrush {DeviceContext->SelectObject(&HighlightBrush)};
-		auto OldPen {DeviceContext->SelectObject(&HighlightPen)};
+		const auto OldBrush {DeviceContext->SelectObject(&HighlightBrush)};
+		const auto OldPen {DeviceContext->SelectObject(&HighlightPen)};
 		DeviceContext->Rectangle(&drawItemStruct->rcItem);
 		DeviceContext->SetBkColor(GetSysColor(COLOR_HIGHLIGHT));
 		DeviceContext->SetTextColor(GetSysColor(COLOR_HIGHLIGHTTEXT));
@@ -76,8 +76,8 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	if (!(drawItemStruct->itemState & ODS_SELECTED) && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
 		CBrush WindowBrush(GetSysColor(COLOR_WINDOW));
 		CPen WindowPen(PS_SOLID, 1, GetSysColor(COLOR_WINDOW));
-		auto OldBrush {DeviceContext->SelectObject(&WindowBrush)};
-		auto OldPen {DeviceContext->SelectObject(&WindowPen)};
+		const auto OldBrush {DeviceContext->SelectObject(&WindowBrush)};
+		const auto OldPen {DeviceContext->SelectObject(&WindowPen)};
 		DeviceContext->Rectangle(&drawItemStruct->rcItem);
 		DeviceContext->SetBkColor(GetSysColor(COLOR_WINDOW));
 		DeviceContext->SetTextColor(GetSysColor(COLOR_WINDOWTEXT));

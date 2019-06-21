@@ -16,7 +16,7 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 		case IDOK: {
 			const auto nMaxCount {100};
 			wchar_t sString[nMaxCount] {L"\0"};
-			auto hOwner {GetWindow(hwnd, GW_OWNER)};
+			const auto hOwner {GetWindow(hwnd, GW_OWNER)};
 			::GetWindowText(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
 			const auto pPsDlg {static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner))};
 			auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage())};
@@ -29,14 +29,14 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 			if (codeNotify == EN_CHANGE) {
 				const auto nMaxCount {100};
 				wchar_t sString[nMaxCount];
-				auto hOwner {GetWindow(hwnd, GW_OWNER)};
+				const auto hOwner {GetWindow(hwnd, GW_OWNER)};
 				::GetWindowText(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sString, nMaxCount);
-				auto pPsDlg {static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner))};
+				const auto pPsDlg {static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner))};
 				const auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage())};
 				const auto PlotStyleTable {ActivePage->GetPlotStyleTable()};
-				auto hDInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_DINFO)};
-				auto hSInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_SINFO)};
-				auto hOkBtn {GetDlgItem(hwnd, IDOK)};
+				const auto hDInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_DINFO)};
+				const auto hSInfo {GetDlgItem(hwnd, IDC_PS_ADDPS_STATIC_SINFO)};
+				const auto hOkBtn {GetDlgItem(hwnd, IDOK)};
 				CString NewName {sString};
 				NewName.MakeLower();
 				if (NewName.IsEmpty()) {
@@ -67,10 +67,10 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, unsigned codeNotify) {
 }
 
 BOOL Dlg_OnInit(HWND hwnd, HWND hwndCtl, LPARAM lParam) {
-	auto hOwner {GetWindow(hwnd, GW_OWNER)};
+	const auto hOwner {GetWindow(hwnd, GW_OWNER)};
 	CPropertySheet* pPsDlg = static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner));
 	const EoDlgPlotStyleEditor_FormViewPropertyPage* pPg = static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage());
-	auto PlotStyleTable {pPg->GetPlotStyleTable()};
+	const auto PlotStyleTable {pPg->GetPlotStyleTable()};
 	OdString sName;
 	sName.format(L"Style %d", PlotStyleTable->plotStyleSize());
 	SetWindowTextW(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
@@ -147,13 +147,13 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clo
 	cdc.CreateCompatibleDC(&ClientDeviceContext);
 	clonedBitmap->CreateCompatibleBitmap(&ClientDeviceContext, Bitmap.bmWidth, Bitmap.bmHeight);
 	auto NumberOfBytes {gsl::narrow_cast<unsigned long>(Bitmap.bmWidthBytes * Bitmap.bmHeight)};
-	auto BitmapBuffer {new unsigned char[NumberOfBytes]};
+	const auto BitmapBuffer {new unsigned char[NumberOfBytes]};
 	NumberOfBytes = sourceBitmap->GetBitmapBits(NumberOfBytes, BitmapBuffer);
 	clonedBitmap->SetBitmapBits(NumberOfBytes, BitmapBuffer);
 	delete[]BitmapBuffer;
 	int Width;
 	int Height;
-	auto buf {GetBitmapPixels(*const_cast<CBitmap*>(sourceBitmap), Width, Height)};
+	const auto buf {GetBitmapPixels(*const_cast<CBitmap*>(sourceBitmap), Width, Height)};
 	SetBitmapPixels(*clonedBitmap, buf);
 	return clonedBitmap;
 }
@@ -161,7 +161,7 @@ CBitmap* CBitmapColorInfo::CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clo
 void CBitmapColorInfo::PaintBitmap(CBitmap& bitmap, COLORREF color) {
 	int Width;
 	int Height;
-	auto Bitmap {GetBitmapPixels(bitmap, Width, Height)};
+	const auto Bitmap {GetBitmapPixels(bitmap, Width, Height)};
 	auto pColor {Bitmap};
 	for (auto y = Height - 1; y >= 0; y--) {
 		for (auto x = 0; x < Width; x++, pColor++) {
@@ -206,7 +206,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const 
 CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name)
 	: m_iItem(0xff)
 	, m_color(0) {
-	auto BitmapHandle {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
+	const auto BitmapHandle {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
 	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
 	CloneBitmap(Bitmap, &m_bitmap);
 	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
@@ -321,7 +321,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* pD
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDestroy() {
 	for (auto ListStyleIndex = 0; ListStyleIndex < m_listStyles.GetItemCount(); ++ListStyleIndex) {
-		auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStyleIndex))};
+		const auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStyleIndex))};
 		delete pPsListStyleData;
 	}
 	for (auto& Bitmap : m_bitmapList) {
@@ -384,7 +384,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initLinetypeComboBox() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initLineweightComboBox() {
 	m_Lineweight.AddString(L"Use object lineweight");
 	const auto bInch {m_pPlotStyleTable->isDisplayCustomLineweightUnits()};
-	OdString sUnits = bInch ? L"''" : L" mm";
+	const OdString sUnits = bInch ? L"''" : L" mm";
 	for (unsigned i = 0; i < m_pPlotStyleTable->lineweightSize(); i++) {
 		CString lineweight;
 		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), static_cast<const wchar_t*>(sUnits));
@@ -603,25 +603,25 @@ bool EoDlgPlotStyleEditor_FormViewPropertyPage::SetPlotStyleTable(OdPsPlotStyleT
 HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int height, COLORREF color) noexcept {
 	ICONINFO ii;
 	ii.fIcon = TRUE;
-	auto hScreenDC {::GetDC(nullptr)};
-	auto hIconDC {CreateCompatibleDC(hScreenDC)};
-	auto hMaskDC {CreateCompatibleDC(hScreenDC)};
+	const auto hScreenDC {::GetDC(nullptr)};
+	const auto hIconDC {CreateCompatibleDC(hScreenDC)};
+	const auto hMaskDC {CreateCompatibleDC(hScreenDC)};
 	ii.xHotspot = 0;
 	ii.yHotspot = 0;
 	ii.hbmColor = CreateCompatibleBitmap(hScreenDC, width, height);
 	ii.hbmMask = CreateCompatibleBitmap(hMaskDC, width, height);
 	::ReleaseDC(nullptr, hScreenDC);
-	auto hOldIconDC {SelectObject(hIconDC, ii.hbmColor)};
-	auto hOldMaskDC {SelectObject(hMaskDC, ii.hbmMask)};
+	const auto hOldIconDC {SelectObject(hIconDC, ii.hbmColor)};
+	const auto hOldMaskDC {SelectObject(hMaskDC, ii.hbmMask)};
 	BitBlt(hIconDC, 0, 0, width, height, nullptr, 0, 0, WHITENESS);
 	BitBlt(hMaskDC, 0, 0, width, height, nullptr, 0, 0, BLACKNESS);
 	RECT r = {0, 0, width, height};
-	auto SolidBrush {CreateSolidBrush(color)};
+	const auto SolidBrush {CreateSolidBrush(color)};
 	FillRect(hIconDC, &r, SolidBrush);
 	DeleteObject(SolidBrush);
 	SelectObject(hIconDC, hOldIconDC);
 	SelectObject(hMaskDC, hOldMaskDC);
-	auto Icon {CreateIconIndirect(&ii)};
+	const auto Icon {CreateIconIndirect(&ii)};
 
 	//Cleanup
 	DeleteObject(ii.hbmColor);
@@ -634,7 +634,7 @@ HICON EoDlgPlotStyleEditor_FormViewPropertyPage::initColorIcon(int width, int he
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initImageList() {
 	m_imageList.Create(16, 16, ILC_COLORDDB/*ILC_COLOR32*/, 0, 0);
 	const auto NumberOfPlotStyles = m_pPlotStyleTable->plotStyleSize();
-	auto LightPalette {odcmAcadLightPalette()};
+	const auto LightPalette {odcmAcadLightPalette()};
 	for (unsigned PlotStyleIndex = 0; PlotStyleIndex < NumberOfPlotStyles; PlotStyleIndex++) {
 		m_imageList.Add(initColorIcon(16, 16, LightPalette[PlotStyleIndex + 1]));
 	}
@@ -657,7 +657,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initListCtrl() {
 
 const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	m_listStyles.LockWindowUpdate(); // ***** lock window updates while filling list *****
-	auto PlotStyle {m_pPlotStyleTable->plotStyleAt(index).get()};
+	const auto PlotStyle {m_pPlotStyleTable->plotStyleAt(index).get()};
 	LVITEMW lvItem;
 	::ZeroMemory(&lvItem, sizeof(LVITEMW));
 	lvItem.mask = static_cast<unsigned>(m_pPlotStyleTable->isAciTableAvailable() ? LVIF_TEXT | LVIF_IMAGE | LVIF_STATE : LVIF_TEXT | LVIF_STATE);
@@ -666,7 +666,7 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(int index) {
 	if (m_pPlotStyleTable->isAciTableAvailable()) { lvItem.iImage = index; }
 	lvItem.iItem = index;
 	lvItem.iSubItem = 0;
-	auto str = PlotStyle->localizedName();
+	const auto str = PlotStyle->localizedName();
 	lvItem.pszText = const_cast<wchar_t*>(static_cast<const wchar_t*>(str));
 	const auto nItem {m_listStyles.InsertItem(&lvItem)};
 	const auto pPsListStyleData {new CPsListStyleData(PlotStyle, &m_bitmapList, static_cast<char>(nItem))};
