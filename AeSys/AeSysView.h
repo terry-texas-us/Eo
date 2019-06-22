@@ -372,7 +372,7 @@ public: // Input message handler member functions
 	void PopViewTransform();
 	void PushViewTransform();
 	void ModelViewTransformPoint(EoGePoint4d& point);
-	void ModelViewTransformPoints(EoGePoint4dArray& pointsArray);
+	void ModelViewTransformPoints(EoGePoint4dArray& points);
 	void ModelViewTransformPoints(int numberOfPoints, EoGePoint4d* points);
 	void ModelViewTransformVector(OdGeVector3d& vector);
 	void SetProjectionPlaneField(double fieldWidth, double fieldHeight);
@@ -558,7 +558,7 @@ public:
 	/// true    center point determined
 	/// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
 	/// </Returns>
-	bool FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& intersection);
+	bool FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint);
 	
 	// Nodal mode interface
 	void DoNodalModeMouseMove();
@@ -803,8 +803,8 @@ public:
 	
 	// Status & Mode Line
 	void ModeLineDisplay();
-	unsigned short ModeLineHighlightOp(unsigned short op);
-	void ModeLineUnhighlightOp(unsigned short& op);
+	unsigned short ModeLineHighlightOp(unsigned short command);
+	void ModeLineUnhighlightOp(unsigned short& command);
 	CMFCStatusBar& GetStatusBar() const;
 	void OnBackgroundImageLoad();
 	void OnBackgroundImageRemove();

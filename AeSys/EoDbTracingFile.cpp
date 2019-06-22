@@ -6,8 +6,8 @@
 EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr database) {
 }
 
-EoDbTracingFile::EoDbTracingFile(const OdString& file, unsigned openFlags)
-	: EoDbFile(file, openFlags) {
+EoDbTracingFile::EoDbTracingFile(const OdString& fileName, unsigned openFlags)
+	: EoDbFile(fileName, openFlags) {
 }
 
 void EoDbTracingFile::ReadHeader() {

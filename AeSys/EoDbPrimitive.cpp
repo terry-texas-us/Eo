@@ -22,7 +22,7 @@ EoDbPrimitive::EoDbPrimitive(short colorIndex, short linetypeIndex)
 void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 }
 
-void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* group, EoDbGroupList* newGroup, OdDbDatabasePtr database) {
+void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
 }
 
 int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {

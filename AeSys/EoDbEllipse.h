@@ -68,7 +68,7 @@ public: // Constructors and destructor
 	EoDbEllipse& SetTo2(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle);
 	/// <summary>Ellipse if set to a radial arc defined by three points</summary>
 	EoDbEllipse& SetTo3PointArc(const OdGePoint3d& startPoint, const OdGePoint3d& intermediatePoint, const OdGePoint3d& endPoint);
-	EoDbEllipse& SetToCircle(const OdGePoint3d& center, const OdGeVector3d& unitNormal, double radius);
+	EoDbEllipse& SetToCircle(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
 	[[nodiscard]] OdGePoint3d StartPoint() const;
 	double SwpAngToPt(const OdGePoint3d& point);
 

@@ -257,7 +257,7 @@ void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousS
 	}
 }
 
-bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& center) {
+bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint) {
 	const auto FirstLineStartPoint = firstLineSeg.startPoint();
 	auto FirstLineEndPoint = firstLineSeg.endPoint();
 	const auto FirstLineVector {FirstLineEndPoint - FirstLineStartPoint};
@@ -289,10 +289,10 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGe
 	const auto SignedRadius {FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y >= 0. ? -fabs(radius) : fabs(radius)};
 	const auto dC1RAB1 {SignedRadius};
 	const auto dC2RAB2 {(SecondLineStartPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * SecondLineStartPoint.y) / SecondLineVectorLength + SignedRadius};
-	center.x = (SecondLineB * dC1RAB1 - FirstLineB * dC2RAB2) / Determinant;
-	center.y = (FirstLineA * dC2RAB2 - SecondLineA * dC1RAB1) / Determinant;
-	center.z = 0.0;
+	centerPoint.x = (SecondLineB * dC1RAB1 - FirstLineB * dC2RAB2) / Determinant;
+	centerPoint.y = (FirstLineA * dC2RAB2 - SecondLineA * dC1RAB1) / Determinant;
+	centerPoint.z = 0.0;
 	WorldToPlaneTransform.invert();
-	center.transformBy(WorldToPlaneTransform);
+	centerPoint.transformBy(WorldToPlaneTransform);
 	return true;
 }

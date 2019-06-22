@@ -66,7 +66,7 @@ typedef struct {
 #define ALDUSKEY 0x9AC6CDD7
 #define ALDUSMFHEADERSIZE 22  // Avoid sizeof is struct alignment > 1
 
-void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
+void EoPreviewDib::DrawPreview(HDC deviceContext, int x, int y, int width, int height) {
 	CRect cr;
 	if (m_odImage.hasBmp()) {
 		const auto pHeader {reinterpret_cast<tagBITMAPINFOHEADER*>(m_odImage.bmp.begin())};
@@ -84,19 +84,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 				p += sizeof(RGBQUAD) * 256;
 				break;
 		}
-		StretchDIBits(dc,
-		              cr.left + X,
-		              cr.top + Y,
-		              cr.Width(),
-		              cr.Height(),
-		              0,
-		              0,
-		              pHeader->biWidth,
-		              pHeader->biHeight,
-		              static_cast<const void*>(p),
-		              reinterpret_cast<CONST BITMAPINFO*>(pHeader),
-		              DIB_RGB_COLORS,
-		              SRCCOPY);
+		StretchDIBits(deviceContext, cr.left + x, cr.top + y, cr.Width(), cr.Height(), 0, 0, pHeader->biWidth, pHeader->biHeight, static_cast<const void*>(p), reinterpret_cast<CONST BITMAPINFO*>(pHeader), DIB_RGB_COLORS, SRCCOPY);
 	} else if (m_odImage.hasWmf()) {
 		CDC newDC;
 		unsigned long dwIsAldus {0};
@@ -104,7 +92,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 		ALDUSMFHEADER* aldusMFHeader {nullptr};
 		unsigned long dwSize {0};
 		unsigned long seekpos {0};
-		newDC.Attach(dc);
+		newDC.Attach(deviceContext);
 		dwIsAldus = *reinterpret_cast<unsigned long*>(m_odImage.wmf.begin());
 		if (dwIsAldus != ALDUSKEY) {
 			seekpos = 0;
@@ -124,7 +112,7 @@ void EoPreviewDib::DrawPreview(HDC dc, int X, int Y, int width, int height) {
 			size.cy = 254 * (aldusMFHeader->bbox.bottom - aldusMFHeader->bbox.top) / aldusMFHeader->inch;
 		}
 		cr = Calc(size.cx, size.cy, width, height);
-		cr.OffsetRect(X, Y);
+		cr.OffsetRect(x, y);
 		newDC.PlayMetaFile(MetaFileHandle, &cr);
 	}
 }

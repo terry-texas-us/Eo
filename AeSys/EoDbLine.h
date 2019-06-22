@@ -21,7 +21,7 @@ public:
 	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
-	void FormatGeometry(CString& str) const override;
+	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;

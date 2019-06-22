@@ -205,11 +205,11 @@ EoDbPrimitive* EoDbGroup::GetNext(POSITION& position) const {
 	return (EoDbPrimitive*)CObList::GetNext(position);
 }
 
-void EoDbGroup::InsertBefore(POSITION insertPosition, EoDbGroup* group) {
+void EoDbGroup::InsertBefore(POSITION position, EoDbGroup* group) {
 	auto PrimitivePosition {group->GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {group->GetNext(PrimitivePosition)};
-		CObList::InsertBefore(insertPosition, Primitive);
+		CObList::InsertBefore(position, Primitive);
 	}
 }
 

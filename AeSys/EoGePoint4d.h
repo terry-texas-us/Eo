@@ -17,10 +17,10 @@ public:
 	EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept;
 
 	// Operators
-	void operator/=(double t) noexcept;
+	void operator/=(double d) noexcept;
 	EoGePoint4d operator+(const OdGeVector3d& vector);
 	EoGePoint4d operator-(const OdGeVector3d& vector);
-	OdGeVector3d operator-(const EoGePoint4d& ptQ);
+	OdGeVector3d operator-(const EoGePoint4d& point);
 
 	// Methods
 	[[nodiscard]] OdGePoint3d Convert3d() const;

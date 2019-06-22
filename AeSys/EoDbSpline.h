@@ -29,7 +29,7 @@ public:	// Constructors and destructor
 	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
-	bool IsEqualTo(EoDbPrimitive* primitive) const override;
+	bool IsEqualTo(EoDbPrimitive* other) const override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
 	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

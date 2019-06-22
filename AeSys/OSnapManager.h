@@ -116,10 +116,10 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 
 	using SelectedEntityDataArray = OdArray<SelectedEntityData>;
 	SelectedEntityDataArray m_SelectedEntityData;
-	void CheckSnapPoints(const SelectedEntityData& data, const OdGeMatrix3d& worldToEyeTransform);
+	void CheckSnapPoints(const SelectedEntityData& selectedEntityData, const OdGeMatrix3d& worldToEyeTransform);
 	bool Checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point);
 	using HistEntryArray = OdArray<HistEntry>;
-	static bool AppendToQueue(HistEntryArray& array, const HistEntry& entry);
+	static bool AppendToQueue(HistEntryArray& histEntries, const HistEntry& histEntry);
 	HistEntryArray m_Centers;
 	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;

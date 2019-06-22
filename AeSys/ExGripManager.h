@@ -18,8 +18,8 @@ class OdExGripData : public OdGiDrawableImpl<> {
 public:
 	OdExGripData() noexcept;
 	~OdExGripData();
-	static OdExGripDataPtr createObject(OdDbStub* id, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* owner);
-	static OdExGripDataPtr createObject(OdDbBaseFullSubentPath entPath, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* owner);
+	static OdExGripDataPtr createObject(OdDbStub* id, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* gripManager);
+	static OdExGripDataPtr createObject(OdDbBaseFullSubentPath entPath, OdDbGripDataPtr gripData, const OdGePoint3d& point, OdBaseGripManager* gripManager);
 	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
@@ -48,7 +48,7 @@ public:
 	void setShared(bool shared) noexcept { m_Shared = shared; }
 
 private:
-	bool computeDragPoint(OdGePoint3d& ptOverride) const;
+	bool computeDragPoint(OdGePoint3d& computedPoint) const;
 	OdDbGripOperations::DrawType m_Status;
 	bool m_Invisible;
 	bool m_Shared;
@@ -65,8 +65,8 @@ class OdExGripDrag : public OdGiDrawableImpl<> {
 public:
 	OdExGripDrag() noexcept;
 	~OdExGripDrag() = default;
-	static OdExGripDragPtr createObject(OdDbStub* id, OdBaseGripManager* owner);
-	static OdExGripDragPtr createObject(OdDbBaseFullSubentPath entPath, OdBaseGripManager* owner);
+	static OdExGripDragPtr createObject(OdDbStub* id, OdBaseGripManager* gripManager);
+	static OdExGripDragPtr createObject(OdDbBaseFullSubentPath entPath, OdBaseGripManager* gripManager);
 	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
@@ -77,9 +77,10 @@ public:
 	void notifyDragEnded();
 	void notifyDragAborted();
 	[[nodiscard]] OdDbStub* entityId() const;
-	bool entPath(OdDbBaseFullSubentPath* path = nullptr) const;
-protected:
-	bool locateActiveGrips(OdIntArray& aIndices);
+	bool entPath(OdDbBaseFullSubentPath* subentPath = nullptr) const;
+
+  protected:
+	bool locateActiveGrips(OdIntArray& indices);
 	OdDbBaseFullSubentPath m_SubentPath;
 	OdGiDrawablePtr m_Clone;
 	OdBaseGripManager* m_GripManager;
@@ -124,7 +125,7 @@ public: // Construction. Initialization.
 
 	// Grip selection.
 	void UpdateEntityGrips(OdDbStub* id);
-	void RemoveEntityGrips(OdDbStub* id, bool bFireDone);
+	void RemoveEntityGrips(OdDbStub* id, bool fireDone);
 	void UpdateInvisibleGrips();
 	virtual void DraggingStarted() = 0;
 	virtual void DraggingStopped() = 0;

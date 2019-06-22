@@ -17,7 +17,7 @@ public:
 	};
 
 	EoDbLayer(OdDbLayerTableRecordPtr layer);
-	EoDbLayer(const OdString& name, unsigned short flags);
+	EoDbLayer(const OdString& name, unsigned short stateFlags);
 	~EoDbLayer() = default;
 	[[nodiscard]] COLORREF Color() const;
 	[[nodiscard]] short ColorIndex() const;

@@ -324,8 +324,8 @@ void EoDbDimension::SetStartPoint(const OdGePoint3d& startPoint) {
 	m_Line.SetStartPoint(startPoint);
 }
 
-void EoDbDimension::SetText(const CString& str) {
-	m_strText = str;
+void EoDbDimension::SetText(const CString& text) {
+	m_strText = text;
 }
 
 void EoDbDimension::SetTextColorIndex(short colorIndex) noexcept {

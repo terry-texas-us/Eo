@@ -75,8 +75,8 @@ public: // Constructors and destructor
 	void SetProjectionPlaneField(double uMin, double vMin, double uMax, double vMax) noexcept;
 	void SetRenderMode(const OdGsView::RenderMode& renderMode) noexcept;
 	void SetTarget(const OdGePoint3d& target) noexcept;
-	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight);
-	void SetViewUp(const OdGeVector3d& upVector);
+	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& viewUp, double fieldWidth, double fieldHeight);
+	void SetViewUp(const OdGeVector3d& viewUp);
 	[[nodiscard]] OdGePoint3d Target() const noexcept;
 	[[nodiscard]] OdGeVector3d ViewUp() const noexcept;
 };

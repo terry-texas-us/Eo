@@ -7,7 +7,7 @@ class EoDlgPlotStyleManager final : public CPropertySheet {
 DECLARE_DYNCREATE(EoDlgPlotStyleManager)
 	OdPsPlotStyleTable* m_pPlotStyleTable;
 	OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
-	EoDlgPlotStyleManager(CWnd* pParentWnd = nullptr);
+	EoDlgPlotStyleManager(CWnd* parent = nullptr);
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
 	void SetFileBufPath(OdString sFilePath);
 	[[nodiscard]] OdPsPlotStyleTablePtr GetPlotStyleTable() const;

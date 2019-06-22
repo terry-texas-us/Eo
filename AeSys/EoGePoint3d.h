@@ -8,6 +8,8 @@ bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, 
 
 /// <summary>Projects a point toward or beyond another point.</summary>
 /// <param name="ptQ">point defining direction vector</param>
+/// <param name="fromPoint"></param>
+/// <param name="toPoint"></param>
 /// <param name="distance">magnitude of projection</param>
 /// <returns> projected point or itself if points coincide</returns>
 OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoint, double distance);

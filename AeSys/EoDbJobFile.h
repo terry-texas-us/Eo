@@ -11,7 +11,7 @@ public:
 	void ReadHeader(CFile& file);
 	void ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbLayer* layer);
 	bool GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbGroup*& group);
-	bool GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbPrimitive*& primitve);
+	bool GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbPrimitive*& primitive);
 	bool ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType);
 	int Version() noexcept;
 	void WriteHeader(CFile& file);

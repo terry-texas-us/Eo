@@ -158,14 +158,14 @@ void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, short linetypeIndex) {
 	if (deviceContext) { ManagePenResources(*deviceContext, m_ColorIndex, 0, linetypeIndex); }
 }
 
-int CPrimState::SetROP2(CDC& deviceContext, int iDrawMode) {
+int CPrimState::SetROP2(CDC& deviceContext, int drawMode) {
 	// Sets the current foreground mix mode. GDI uses the foreground mix mode to combine pens and interiors of filled objects with the colors already on the screen.
 	// The foreground mix mode defines how colors from the brush or pen and the colors in the existing image are to be combined.
 	if (g_ColorPalette[0] == RGB(0xFF, 0xFF, 0xFF)) {
 
-		if (iDrawMode == R2_XORPEN) { iDrawMode = R2_NOTXORPEN; }
+		if (drawMode == R2_XORPEN) { drawMode = R2_NOTXORPEN; }
 	}
-	return deviceContext.SetROP2(iDrawMode);
+	return deviceContext.SetROP2(drawMode);
 }
 
 void CPrimState::SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment) {

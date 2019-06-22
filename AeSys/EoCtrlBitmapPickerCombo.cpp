@@ -32,8 +32,8 @@ int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* str
 	return InsertBitmap(GetCount(), bitmap, string);
 }
 
-int EoCtrlBitmapPickerCombo::InsertBitmap(int nIndex, const CBitmap* bitmap, const wchar_t* string) {
-	const auto n {CComboBox::InsertString(nIndex, string ? string : L"")};
+int EoCtrlBitmapPickerCombo::InsertBitmap(int index, const CBitmap* bitmap, const wchar_t* string) {
+	const auto n {CComboBox::InsertString(index, string ? string : L"")};
 	if (!bitmap) { return n; }
 	if (n != CB_ERR && n != CB_ERRSPACE) {
 		SetItemData(n, reinterpret_cast<unsigned long>(bitmap));
@@ -103,18 +103,18 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 			DrawBitmap(bitmap, DeviceContext, point);
 			CRect rcText(drawItemStruct->rcItem);
 			rcText.DeflateRect(m_ItemWidth + 4, 0, 0, 0);
-			DeviceContext->DrawText(string, rcText, DT_SINGLELINE | DT_VCENTER);
+			DeviceContext->DrawTextW(string, rcText, DT_SINGLELINE | DT_VCENTER);
 		}
 	}
 	if (!bitmap) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
-		CString string;
-		if (drawItemStruct->itemID != -1) { GetLBText(static_cast<int>(drawItemStruct->itemID), string); }
-		CPoint point;
-		point.x = drawItemStruct->rcItem.left + 2;
-		point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
-		CRect rcText(drawItemStruct->rcItem);
-		DeviceContext->DrawText(string, rcText, DT_SINGLELINE | DT_VCENTER);
+		CString String;
+		if (drawItemStruct->itemID != -1) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
+		CPoint Point;
+		Point.x = drawItemStruct->rcItem.left + 2;
+		Point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
+		CRect TextRectangle(drawItemStruct->rcItem);
+		DeviceContext->DrawTextW(String, TextRectangle, DT_SINGLELINE | DT_VCENTER);
 	}
 }
 

@@ -27,7 +27,7 @@ public:
 	void UpdateFiltersTree();
 	int OnCreate(LPCREATESTRUCT createStructure);
 	void OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
-	void OnSize(unsigned type, int cx, int cy);
+	void OnSize(unsigned type, int newWidth, int newHeight);
 	void OnSizing(unsigned side, LPRECT rectangle);
 	void OnTvnKeydownLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
 };

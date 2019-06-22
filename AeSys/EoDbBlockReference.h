@@ -93,5 +93,5 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	static EoDbBlockReference* Create(OdDbDatabasePtr& database);
 	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-	static EoDbBlockReference* Create(OdDbBlockReferencePtr line);
+	static EoDbBlockReference* Create(OdDbBlockReferencePtr blockReference);
 };

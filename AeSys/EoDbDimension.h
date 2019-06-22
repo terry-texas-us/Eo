@@ -44,7 +44,7 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	// Methods - virtuals
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
-	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGrous, OdDbDatabasePtr database) override;
+	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
 	void ModifyState() noexcept override;
 
 	// Methods

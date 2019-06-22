@@ -98,7 +98,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 /// <summary> Determines the count of characters in string excluding formatting characters.</summary>
 int TextLengthSansFormattingCharacters(const CString& text);
 /// <summary> Determines the offset to the bottom left alignment position of a string of the specified number of characters and text attributes in the z=0 plane.</summary>
-OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, int iChrs) noexcept;
+OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, int numberOfCharacters) noexcept;
 /// <summary>Returns the region boundaries of a text string applying and optional inflation factor.</summary>
 void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, int numberOfCharacters, double spaceFactor, OdGePoint3dArray& boundingBox);
 OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double dLineSpaceFac, double dChrSpaceFac);

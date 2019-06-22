@@ -28,7 +28,7 @@ public:
 	int m_NumberOfColumns;
 	HWND m_PreviewWindowHandle;
 	CImageList m_StateImages;
-	void DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& rcItem);
+	void DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& itemRectangle);
 	void UpdateCurrentLayerInfoField();
 	void OnBnClickedFuse();
 	void OnBnClickedMelt();
@@ -39,7 +39,7 @@ public:
 	void OnLbnSelchangeBlocksList();
 	void OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 	void OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESULT* result);
-	void OnLvnEndlabeleditLayersListControl(LPNMHDR NMHDR, LRESULT* result);
-	void OnLvnBeginlabeleditLayersListControl(LPNMHDR NMHDR, LRESULT* result);
-	void OnLvnKeydownLayersListControl(LPNMHDR NMHDR, LRESULT* result);
+	void OnLvnEndlabeleditLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+	void OnLvnBeginlabeleditLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+	void OnLvnKeydownLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 };

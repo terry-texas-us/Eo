@@ -31,7 +31,7 @@ public:	// Constructors and destructor
 	/// <summary> Constrains a line to nearest axis pivoting on first endpoint.</summary>
 	/// <remarks> Offset angle only support about z-axis </remarks>
 	/// <returns> Point after snap </returns>
-	[[nodiscard]] OdGePoint3d ConstrainToAxis(double influenceAngle, double offsetAngle) const;
+	[[nodiscard]] OdGePoint3d ConstrainToAxis(double influenceAngle, double axisOffsetAngle) const;
 	/// <summary>Cuts a line a point.</summary>
 	unsigned short CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line);
 	/// <summary>Determines which side of a directed line a point is on.</summary>
@@ -53,14 +53,17 @@ public:	// Constructors and destructor
 	/// Eccentricity is a function of the distance between the lines.
 	/// The first of the two parallel lines lies to the left of line, and the second to the right.
 	/// </remarks>
+	/// <param name="distanceBetweenLines"></param>
 	/// <param name="eccentricity">
 	/// In general; left is (eccentricity * distanceBetweenLines) to the left of this line.
 	///			 right is distanceBetweenLines to the right of the left line
-	/// Left Justifification (0.0) left line on this line and right line is distanceBetweenLines to right of this line
+	/// Left Justification (0.0) left line on this line and right line is distanceBetweenLines to right of this line
 	/// Center Justification (.5) left and right lines the same distance from this line
-	/// Right Justifification (1.0) right line on this line and left line is distanceBetweenLines to left of this line
+	/// Right Justification (1.0) right line on this line and left line is distanceBetweenLines to left of this line
 	/// </param>
-	bool GetParallels(double dDis, double eccentricity, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) const;
+	/// <param name="rightLine"></param>
+	/// <param name="leftLine"></param>
+	bool GetParallels(double distanceBetweenLines, double eccentricity, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) const;
 	/// <summary>Determines intersection of two lines.</summary>
 	/// <returns>true successful completion, false ohterwise (parallel lines)</returns>
 	bool IntersectWith_xy(const EoGeLineSeg3d& line, OdGePoint3d& intersection) const;
@@ -111,6 +114,7 @@ public:	// Constructors and destructor
 	/// <summary>Projects start point toward or beyond the end point of line.</summary>
 	OdGePoint3d ProjToEndPt(double distance);
 	/// <summary>Determines the relationship of a point on a line to the endpoints defining the line.</summary>
+	/// <param name="point"></param>
 	/// <param name="relationship">parametric relationship of point to line endpoints
 	///	 less than 0 - point to left of directed segment
 	///	 equal to 0 - point same as first endpoint of line

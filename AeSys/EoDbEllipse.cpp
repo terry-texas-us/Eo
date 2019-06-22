@@ -774,11 +774,11 @@ void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	file.Write(buffer, 64);
 }
 
-EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& other, OdDbBlockTableRecordPtr& blockTableRecord) {
-	// <tas="Possibly need additional typing of the ObjecId producted by cloning"></tas>
-	OdDbEllipsePtr EllipseEntity = other.EntityObjectId().safeOpenObject()->clone();
+EoDbEllipse* EoDbEllipse::Create3(const EoDbEllipse& ellipse, OdDbBlockTableRecordPtr& blockTableRecord) {
+	// <tas="Possibly need additional typing of the ObjectId produced by cloning"></tas>
+	OdDbEllipsePtr EllipseEntity {ellipse.EntityObjectId().safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(EllipseEntity);
-	auto Ellipse {new EoDbEllipse(other)};
+	auto Ellipse {new EoDbEllipse(ellipse)};
 	Ellipse->SetEntityObjectId(EllipseEntity->objectId());
 	return Ellipse;
 }

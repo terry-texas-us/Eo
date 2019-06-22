@@ -17,8 +17,8 @@ OdDbObjectId CNamedViewListCtrl::viewId(int item) const {
 	return OdDbObjectId(reinterpret_cast<OdDbStub*>(GetItemData(item)));
 }
 
-void CNamedViewListCtrl::setViewId(int nItem, const OdDbObjectId& id) {
-	SetItemData(nItem, reinterpret_cast<unsigned long>(static_cast<OdDbStub*>(id)));
+void CNamedViewListCtrl::setViewId(int item, const OdDbObjectId& id) {
+	SetItemData(item, reinterpret_cast<unsigned long>(static_cast<OdDbStub*>(id)));
 }
 
 OdDbViewTableRecordPtr CNamedViewListCtrl::view(int item) {

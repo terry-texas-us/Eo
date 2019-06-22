@@ -69,6 +69,7 @@ public: // Constructors and destructor
 	/// <param name="points"></param>
 	/// <param name="groups">group to place optional line not defined by the cut points</param>
 	/// <param name="newGroups">group to place line defined by the cut points</param>
+	/// <param name="database"></param>
 	virtual void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database);
 	virtual int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections);
 	virtual void ModifyState() noexcept;

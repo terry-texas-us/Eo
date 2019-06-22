@@ -155,13 +155,13 @@ void lex::ConvertValTyp(int valueType, int requiredType, long* definition, void*
 	}
 }
 
-void lex::ConvertStringToVal(int valueType, long definition, wchar_t* aszVal, long* alDefReq, void* aVal) {
+void lex::ConvertStringToVal(int valueType, long definition, wchar_t* szVal, long* lDefReq, void* p) {
 	if (LOWORD(definition) <= 0) { throw L"Empty string"; }
 	wchar_t szTok[64];
 	auto iNxt {0};
-	const auto iTyp {Scan(szTok, aszVal, iNxt)};
+	const auto iTyp {Scan(szTok, szVal, iNxt)};
 	if (valueType == TOK_INTEGER) { // Conversion to integer
-		const auto pVal {static_cast<long*>(aVal)};
+		const auto pVal {static_cast<long*>(p)};
 		if (iTyp == TOK_INTEGER) {
 			*pVal = _wtol(szTok);
 		} else if (iTyp == TOK_REAL) {
@@ -169,9 +169,9 @@ void lex::ConvertStringToVal(int valueType, long definition, wchar_t* aszVal, lo
 		} else {
 			throw L"String format conversion error";
 		}
-		*alDefReq = MAKELONG(1, 1);
+		*lDefReq = MAKELONG(1, 1);
 	} else {
-		const auto pVal {static_cast<double*>(aVal)};
+		const auto pVal {static_cast<double*>(p)};
 		if (iTyp == TOK_INTEGER) {
 			*pVal = static_cast<double>(_wtoi(szTok));
 		} else if (iTyp == TOK_REAL) {
@@ -179,7 +179,7 @@ void lex::ConvertStringToVal(int valueType, long definition, wchar_t* aszVal, lo
 		} else {
 			throw L"String format conversion error";
 		}
-		*alDefReq = MAKELONG(1, 2);
+		*lDefReq = MAKELONG(1, 2);
 	}
 }
 

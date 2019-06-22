@@ -4,7 +4,7 @@
 
 class EoVarDialog : public CDialog {
 public:
-	EoVarDialog(const wchar_t* templateName, CWnd* parentWindow = nullptr);
+	EoVarDialog(const wchar_t* templateName, CWnd* parent = nullptr);
 	EoVarDialog(unsigned templateId, CWnd* parent = nullptr);
 protected:
 	EoDialogResizeHelper m_resizeHelper;

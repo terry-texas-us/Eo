@@ -61,7 +61,7 @@ protected:  // control bar embedded members
 	void OnDestroy(); // hides non-virtual function of parent
 	LRESULT OnToolbarContextMenu(WPARAM, LPARAM); // hides non-virtual function of parent
 	void OnTimer(UINT_PTR nIDEvent); // hides non-virtual function of parent
-	LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM lp); // hides non-virtual function of parent
+	LRESULT OnToolbarCreateNew(WPARAM wp, LPARAM name); // hides non-virtual function of parent
 	void OnWindowManager();
 	void OnMdiTabbed();
 	void OnUpdateMdiTabbed(CCmdUI* commandUserInterface);
