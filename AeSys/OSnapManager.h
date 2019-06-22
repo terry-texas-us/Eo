@@ -137,7 +137,7 @@ public:
 
 	virtual unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept {
 		// was temporary moved into OSnapManager // return 1 << mode;
-		return static_cast<unsigned>(1 << mode + 1);
+		return static_cast<unsigned>(1 << (mode + 1));
 	}
 
 	virtual OdCmEntityColor SnapTrueColor() const {
@@ -163,9 +163,9 @@ class OSnapManager : public OdBaseSnapManager {
 protected:
 	OSnapManager() = default;
 public:
-	unsigned SnapModes() const noexcept override;
+	[[nodiscard]] unsigned SnapModes() const noexcept override;
 	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
+	[[nodiscard]] unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
 };

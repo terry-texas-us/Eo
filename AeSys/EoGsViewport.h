@@ -16,16 +16,16 @@ public: // Constructors and destructors
 
 	// Methods
 	/// <remarks> Window coordinates are rounded to nearest whole number.</remarks>
-	CPoint DoProjection(const EoGePoint4d& pt) const noexcept;
+	[[nodiscard]] CPoint DoProjection(const EoGePoint4d& pt) const noexcept;
 	/// <remarks>Window coordinates are rounded to nearest whole number. Perspective division to yield normalized device coordinates.</remarks>
 	void DoProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept;
 	/// <remarks>Window coordinates are rounded to nearest whole number. Perspective division to yield normalized device coordinates.</remarks>
 	void DoProjection(CPoint* pnt, EoGePoint4dArray& pointsArray) const;
 	void DoProjectionInverse(OdGePoint3d& point) const noexcept;
-	double HeightInPixels() const noexcept;
-	double HeightInInches() const noexcept;
-	double WidthInPixels() const noexcept;
-	double WidthInInches() const noexcept;
+	[[nodiscard]] double HeightInPixels() const noexcept;
+	[[nodiscard]] double HeightInInches() const noexcept;
+	[[nodiscard]] double WidthInPixels() const noexcept;
+	[[nodiscard]] double WidthInInches() const noexcept;
 	void SetDeviceHeightInInches(double height) noexcept;
 	void SetDeviceWidthInInches(double width) noexcept;
 	void SetSize(int width, int height) noexcept;

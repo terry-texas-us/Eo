@@ -75,17 +75,17 @@ public: // Constructors and destructor
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 
 	// Methods
-	short ColorIndex() const noexcept { return m_ColorIndex; }
+	[[nodiscard]] short ColorIndex() const noexcept { return m_ColorIndex; }
 
-	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
+	[[nodiscard]] OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
 
-	CString FormatColorIndex() const;
-	CString FormatLinetypeIndex() const;
+	[[nodiscard]] CString FormatColorIndex() const;
+	[[nodiscard]] CString FormatLinetypeIndex() const;
 
-	short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
+	[[nodiscard]] short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
 
-	short LogicalColorIndex() const noexcept;
-	short LogicalLinetypeIndex() const noexcept;
+	[[nodiscard]] short LogicalColorIndex() const noexcept;
+	[[nodiscard]] short LogicalLinetypeIndex() const noexcept;
 
 	void SetColorIndex(short colorIndex) noexcept { m_ColorIndex = colorIndex; }
 

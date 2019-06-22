@@ -24,17 +24,17 @@ public:
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 
-	OdDbGripOperations::DrawType status() const noexcept { return m_Status; }
+	[[nodiscard]] OdDbGripOperations::DrawType status() const noexcept { return m_Status; }
 
-	bool isInvisible() const noexcept { return m_Invisible; }
+	[[nodiscard]] bool isInvisible() const noexcept { return m_Invisible; }
 
-	bool isShared() const noexcept { return m_Shared; }
+	[[nodiscard]] bool isShared() const noexcept { return m_Shared; }
 
-	OdGePoint3d point() const noexcept { return m_Point; }
+	[[nodiscard]] OdGePoint3d point() const noexcept { return m_Point; }
 
-	OdDbGripDataPtr GripData() const { return m_GripData; }
+	[[nodiscard]] OdDbGripDataPtr GripData() const { return m_GripData; }
 
-	OdDbStub* entityId() const { return m_SubentPath.objectIds().last(); }
+	[[nodiscard]] OdDbStub* entityId() const { return m_SubentPath.objectIds().last(); }
 
 	bool entPath(OdDbBaseFullSubentPath* path = nullptr) const {
 		if (path) { *path = m_SubentPath; }
@@ -76,7 +76,7 @@ public:
 	void notifyDragStarted();
 	void notifyDragEnded();
 	void notifyDragAborted();
-	OdDbStub* entityId() const;
+	[[nodiscard]] OdDbStub* entityId() const;
 	bool entPath(OdDbBaseFullSubentPath* path = nullptr) const;
 protected:
 	bool locateActiveGrips(OdIntArray& aIndices);
@@ -138,8 +138,8 @@ protected:
 	virtual void HideGrip(OdExGripData* grip, bool model) = 0;
 	virtual OdGsView* ActiveGsView() const = 0;
 	virtual OdDbStub* ActiveViewportId() const;
-	double ActiveViewUnitSize() const;
-	OdGeVector3d ActiveViewDirection() const;
+	[[nodiscard]] double ActiveViewUnitSize() const;
+	[[nodiscard]] OdGeVector3d ActiveViewDirection() const;
 	virtual OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const = 0;
 
 	virtual OdGsModel* GetGsModel() noexcept { return nullptr; }
@@ -233,8 +233,8 @@ private:
 	// Adds/Removes drawables to/from viewports.
 	void ShowGrip(OdExGripData* pGrip, bool bModel) override;
 	void HideGrip(OdExGripData* grip, bool model) override;
-	OdGsView* ActiveGsView() const override;
-	OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
+	[[nodiscard]] OdGsView* ActiveGsView() const override;
+	[[nodiscard]] OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const override;
 	OdGsLayoutHelperPtr m_LayoutHelper;
 	OdDbCommandContext* m_CommandContext {nullptr};
 	OdGsModel* m_pGsModel {nullptr};
@@ -247,7 +247,7 @@ private:
 	OdStaticRxObject<OdExGripDbReactor> m_cDbReactor;
 
 	// Selection set.
-	OdSelectionSetPtr WorkingSelectionSet() const override;
+	[[nodiscard]] OdSelectionSetPtr WorkingSelectionSet() const override;
 	GetSelectionSetPtr m_pGetSelectionSetPtr;
 
 	struct OdExGripCommand : OdEdCommand {

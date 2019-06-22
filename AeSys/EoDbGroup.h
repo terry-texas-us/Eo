@@ -26,7 +26,7 @@ public:
 	void Erase();
 	POSITION FindAndRemovePrimitive(EoDbPrimitive* primitive);
 	EoDbPrimitive* GetAt(POSITION position); // hides non-virtual function of parent
-	int GetBlockReferenceCount(const CString& name) const;
+	[[nodiscard]] int GetBlockReferenceCount(const CString& name) const;
 	void GetExtents_(AeSysView* view, OdGeExtents3d& extents);
 	EoDbPrimitive* GetNext(POSITION& position) const; // hides non-virtual function of parent
 	EoDbPoint* GetFirstDifferentPoint(EoDbPoint* pointPrimitive);

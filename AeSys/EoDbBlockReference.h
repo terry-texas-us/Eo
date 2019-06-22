@@ -47,7 +47,7 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d GetCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const noexcept override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;

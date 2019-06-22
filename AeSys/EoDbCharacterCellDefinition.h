@@ -8,7 +8,7 @@ public:
 	EoDbCharacterCellDefinition() = default;
 	EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) noexcept;
 	EoDbCharacterCellDefinition& operator=(const EoDbCharacterCellDefinition& other) = default;
-	double WidthFactor() const noexcept;
+	[[nodiscard]] double WidthFactor() const noexcept;
 	[[nodiscard]] double Height() const noexcept;
 	[[nodiscard]] double ObliqueAngle() const noexcept;
 	[[nodiscard]] double RotationAngle() const noexcept;

@@ -23,14 +23,14 @@ public: // Constructors and destructor
 	void Read(EoDbFile& file);
 	/// <summary>Takes the current reference directions and rescales using passed character cell state.</summary>
 	void Rescale(const EoDbCharacterCellDefinition& characterCellDefinition);
-	double Rotation() const noexcept;
+	[[nodiscard]] double Rotation() const noexcept;
 	void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	void SetOrigin(const OdGePoint3d& origin) noexcept;
 	void SetXDirection(const OdGeVector3d& xDirection) noexcept;
 	void SetYDirection(const OdGeVector3d& yDirection) noexcept;
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
-	EoGeMatrix3d TransformMatrix() const;
+	[[nodiscard]] EoGeMatrix3d TransformMatrix() const;
 	void Write(EoDbFile& file) const;
-	OdGeVector3d XDirection() const noexcept;
-	OdGeVector3d YDirection() const noexcept;
+	[[nodiscard]] OdGeVector3d XDirection() const noexcept;
+	[[nodiscard]] OdGeVector3d YDirection() const noexcept;
 };

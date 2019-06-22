@@ -23,10 +23,10 @@ public: // Constructors and destructor
 	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d GetCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
