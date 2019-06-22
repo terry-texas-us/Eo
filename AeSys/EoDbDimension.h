@@ -1,6 +1,5 @@
 #pragma once
 #include "DbAlignedDimension.h"
-#include "DbRotatedDimension.h"
 #include "EoGeLineSeg3d.h"
 #include "EoDbFontDefinition.h"
 #include "EoDbPrimitive.h"
@@ -29,7 +28,7 @@ DECLARE_DYNAMIC(EoDbDimension)
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -53,9 +52,9 @@ DECLARE_DYNAMIC(EoDbDimension)
 	const EoDbFontDefinition& FontDef() noexcept;
 	const EoGeLineSeg3d& Line() noexcept;
 	void GetPts(OdGePoint3d& ptBeg, OdGePoint3d& ptEnd);
-	EoGeReferenceSystem ReferenceSystem() const;
-	double Length() const;
-	double ParametricRelationshipOf(const OdGePoint3d& point) const;
+	[[nodiscard]] EoGeReferenceSystem ReferenceSystem() const;
+	[[nodiscard]] double Length() const;
+	[[nodiscard]] double ParametricRelationshipOf(const OdGePoint3d& point) const;
 	void SetDefaultNote();
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept;
 	void SetStartPoint(const OdGePoint3d& startPoint);

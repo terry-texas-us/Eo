@@ -1,29 +1,27 @@
 // From Examples\Editor\EditorObject.cpp (last compare 19.12)
-#include "OdaCommon.h"
-#include "Ge/GeRay3d.h"
-#include "Gi/GiDrawableImpl.h"
-#include "Gi/GiWorldDraw.h"
-#include "Gs/Gs.h"
-#include "Gs/GsBaseVectorizer.h"
+#include <OdaCommon.h>
+#include <Ge/GeRay3d.h>
+#include <Gi/GiDrawableImpl.h>
+#include <Gi/GiWorldDraw.h>
+#include <Gs/Gs.h>
+#include <Gs/GsBaseVectorizer.h>
+#include <GiContextForDbDatabase.h>
+#include <DbLayout.h>
+#include <DbCommandContext.h>
+#include <DbAbstractViewportData.h>
+#include <DbViewport.h>
+#include <DbBlockTableRecord.h>
+#include <DbViewportTable.h>
+#include <DbDictionary.h>
+#include <DbVisualStyle.h>
+#include <DbHostAppServices.h>
+#include <OdDToStr.h>
+#include <ExTrackers.h>
+#include <RxVariantValue.h>
+#include <Gs/GsModel.h>
+#include <Gi/GiPathNode.h>
+#include <DbBlockReference.h>
 #include "EditorObject.h"
-#include "GiContextForDbDatabase.h"
-#include "DbLayout.h"
-#include "DbCommandContext.h"
-#include "DbAbstractViewportData.h"
-#include "DbViewport.h"
-#include "DbBlockTableRecord.h"
-#include "DbViewportTable.h"
-#include "DbDictionary.h"
-#include "DbVisualStyle.h"
-#include "DbHostAppServices.h"
-#include "OdDToStr.h"
-#include "SaveState.h"
-#include "ExTrackers.h"
-#include "RxVariantValue.h"
-#include "Gs/GsModel.h"
-#include "Gi/GiPathNode.h"
-#include "DbBlockReference.h"
-static const int SNAP_SIZE = 10;
 
 class ViewInteractivityMode {
 	bool m_enabled;
@@ -837,7 +835,7 @@ public:
 		}
 	}
 
-	double angle(const OdGePoint3d& value) const {
+	[[nodiscard]] double angle(const OdGePoint3d& value) const {
 		const auto pt2 {m_View->viewingMatrix() * value};
 		auto dist {0.0};
 		if (m_axis == kHorizontal) {
@@ -848,14 +846,14 @@ public:
 		return dist * OdaPI / m_D;
 	}
 
-	double angleZ(const OdGePoint3d& value) const {
+	[[nodiscard]] double angleZ(const OdGePoint3d& value) const {
 		auto pt2 {m_View->viewingMatrix() * value};
 		auto targ {m_View->viewingMatrix() * m_ViewCenter};
 		pt2.z = targ.z = m_pt.z;
 		return (pt2 - targ).angleTo(m_pt - targ, OdGeVector3d::kZAxis);
 	}
 
-	double anglePerp(const OdGePoint3d& value) const {
+	[[nodiscard]] double anglePerp(const OdGePoint3d& value) const {
 		auto pt2 {m_View->viewingMatrix() * value};
 		pt2.z = 0.0;
 		return pt2.distanceTo(m_pt) * OdaPI / m_D;
@@ -1100,13 +1098,13 @@ class OdExCollideGsPath {
 		OdGiDrawablePtr m_Drawable;
 		OdGsMarker m_Marker;
 
-		const OdGiPathNode* parent() const noexcept override { return m_pParent; }
+		[[nodiscard]] const OdGiPathNode* parent() const noexcept override { return m_pParent; }
 
-		OdDbStub* persistentDrawableId() const noexcept override { return m_pId; }
+		[[nodiscard]] OdDbStub* persistentDrawableId() const noexcept override { return m_pId; }
 
-		const OdGiDrawable* transientDrawable() const override { return m_Drawable; }
+		[[nodiscard]] const OdGiDrawable* transientDrawable() const override { return m_Drawable; }
 
-		OdGsMarker selectionMarker() const noexcept override { return m_Marker; }
+		[[nodiscard]] OdGsMarker selectionMarker() const noexcept override { return m_Marker; }
 	};
 
 	const Node* m_pLeaf {nullptr};

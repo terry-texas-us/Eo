@@ -1995,22 +1995,22 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 			PreviewGroupEdit();
 			break;
 	}
-	if (m_RubberbandType != None) {
+	if (m_RubberBandType != None) {
 		auto DeviceContext {GetDC()};
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen RubberbandPen(PS_SOLID, 0, g_RubberBandColor);
 		const auto Pen {DeviceContext->SelectObject(&RubberbandPen)};
-		if (m_RubberbandType == Lines) {
-			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-			m_RubberbandLogicalEndPoint = point;
-			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-		} else if (m_RubberbandType == Rectangles) {
+		if (m_RubberBandType == Lines) {
+			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
+			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
+			m_RubberBandLogicalEndPoint = point;
+			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
+			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
+		} else if (m_RubberBandType == Rectangles) {
 			const auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
-			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
-			m_RubberbandLogicalEndPoint = point;
-			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
+			DeviceContext->Rectangle(m_RubberBandLogicalBeginPoint.x, m_RubberBandLogicalBeginPoint.y, m_RubberBandLogicalEndPoint.x, m_RubberBandLogicalEndPoint.y);
+			m_RubberBandLogicalEndPoint = point;
+			DeviceContext->Rectangle(m_RubberBandLogicalBeginPoint.x, m_RubberBandLogicalBeginPoint.y, m_RubberBandLogicalEndPoint.x, m_RubberBandLogicalEndPoint.y);
 			DeviceContext->SelectObject(Brush);
 		}
 		DeviceContext->SelectObject(Pen);
@@ -2932,8 +2932,8 @@ void AeSysView::DisplayOdometer() {
 		Position += theApp.FormatLength(m_vRelPos.x, Units) + L", ";
 		Position += theApp.FormatLength(m_vRelPos.y, Units) + L", ";
 		Position += theApp.FormatLength(m_vRelPos.z, Units);
-		if (m_RubberbandType == Lines) {
-			const EoGeLineSeg3d Line(m_RubberbandBeginPoint, Point);
+		if (m_RubberBandType == Lines) {
+			const EoGeLineSeg3d Line(m_RubberBandBeginPoint, Point);
 			const auto LineLength {Line.length()};
 			const auto AngleInXYPlane {Line.AngleFromXAxis_xy()};
 			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
@@ -3323,24 +3323,24 @@ void AeSysView::OnEditFind() noexcept {
 }
 // Disables rubberbanding.
 void AeSysView::RubberBandingDisable() {
-	if (m_RubberbandType != None) {
+	if (m_RubberBandType != None) {
 		auto DeviceContext {GetDC()};
 		if (DeviceContext == nullptr) { return; }
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen GreyPen(PS_SOLID, 0, g_RubberBandColor);
 		const auto Pen {DeviceContext->SelectObject(&GreyPen)};
-		if (m_RubberbandType == Lines) {
-			DeviceContext->MoveTo(m_RubberbandLogicalBeginPoint);
-			DeviceContext->LineTo(m_RubberbandLogicalEndPoint);
-		} else if (m_RubberbandType == Rectangles) {
+		if (m_RubberBandType == Lines) {
+			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
+			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
+		} else if (m_RubberBandType == Rectangles) {
 			const auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
-			DeviceContext->Rectangle(m_RubberbandLogicalBeginPoint.x, m_RubberbandLogicalBeginPoint.y, m_RubberbandLogicalEndPoint.x, m_RubberbandLogicalEndPoint.y);
+			DeviceContext->Rectangle(m_RubberBandLogicalBeginPoint.x, m_RubberBandLogicalBeginPoint.y, m_RubberBandLogicalEndPoint.x, m_RubberBandLogicalEndPoint.y);
 			DeviceContext->SelectObject(Brush);
 		}
 		DeviceContext->SelectObject(Pen);
 		DeviceContext->SetROP2(DrawMode);
 		ReleaseDC(DeviceContext);
-		m_RubberbandType = None;
+		m_RubberBandType = None;
 	}
 }
 
@@ -3348,11 +3348,11 @@ void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, ERubs type)
 	EoGePoint4d ptView(point, 1.0);
 	ModelViewTransformPoint(ptView);
 	if (ptView.IsInView()) {
-		m_RubberbandBeginPoint = point;
-		m_RubberbandLogicalBeginPoint = DoViewportProjection(ptView);
-		m_RubberbandLogicalEndPoint = m_RubberbandLogicalBeginPoint;
+		m_RubberBandBeginPoint = point;
+		m_RubberBandLogicalBeginPoint = DoViewportProjection(ptView);
+		m_RubberBandLogicalEndPoint = m_RubberBandLogicalBeginPoint;
 	}
-	m_RubberbandType = type;
+	m_RubberBandType = type;
 }
 
 OdGePoint3d AeSysView::GetCursorPosition() {

@@ -197,10 +197,10 @@ private:
 	bool m_LeftButton {false};
 	bool m_MiddleButton {false};
 	bool m_RightButton {false};
-	ERubs m_RubberbandType {None};
-	OdGePoint3d m_RubberbandBeginPoint;
-	CPoint m_RubberbandLogicalBeginPoint;
-	CPoint m_RubberbandLogicalEndPoint;
+	ERubs m_RubberBandType {None};
+	OdGePoint3d m_RubberBandBeginPoint;
+	CPoint m_RubberBandLogicalBeginPoint;
+	CPoint m_RubberBandLogicalEndPoint;
 	OdGePoint3d m_ptCursorPosDev;
 	OdGePoint3d m_ptCursorPosWorld;
 	CPoint m_MouseClick;

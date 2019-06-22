@@ -2,14 +2,14 @@
 #include "DbPlotSettings.h"
 #include "DbPlotSettingsValidator.h"
 
-class EoDlgPageSetup : public CDialog {
+class EoDlgPageSetup final : public CDialog {
 	OdDbPlotSettings& m_PlotSettings;
 	OdDbPlotSettingsValidatorPtr m_PlotSettingsValidator;
 	OdSmartPtr<OdDbUserIO> m_pIO;
 	OdString GetCanonicalByLocaleMediaName(OdString localeMediaName);
 	void SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames);
-	bool IsWHSwap() const;
-	bool IsPaperWidthLessHeight() const;
+	[[nodiscard]] bool IsWHSwap() const;
+	[[nodiscard]] bool IsPaperWidthLessHeight() const;
 	void UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits);
 	OdDbPlotSettings::PlotPaperUnits GetMediaNativePPU();
 public:
@@ -96,6 +96,6 @@ DECLARE_MESSAGE_MAP()
 	void FillMMInches();
 	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, CString pattern);
 	void FillWindowArea();
-	bool ViewsExist() const;
-	bool IsModelSpacePageSetup() const;
+	[[nodiscard]] bool ViewsExist() const;
+	[[nodiscard]] bool IsModelSpacePageSetup() const;
 };

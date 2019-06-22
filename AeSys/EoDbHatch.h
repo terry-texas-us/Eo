@@ -1,5 +1,4 @@
 #pragma once
-#include "EoDb.h"
 #include "EoDbPrimitive.h"
 #include "DbHatch.h"
 
@@ -52,7 +51,7 @@ public:	// Constructors and destructor
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 
@@ -72,10 +71,10 @@ public:	// Constructors and destructor
 	/// <summary>A Hatch is generated using line patterns.</summary>
 	void DisplayHatch(AeSysView* view, CDC* deviceContext) const;
 	void DisplaySolid(AeSysView* view, CDC* deviceContext) const;
-	CString FormatInteriorStyle() const;
+	[[nodiscard]] CString FormatInteriorStyle() const;
 	OdGePoint3d GetPointAt(unsigned pointIndex);
 	void ModifyState() noexcept override;
-	int NumberOfVertices() const;
+	[[nodiscard]] int NumberOfVertices() const;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	OdGeVector3d RecomputeReferenceSystem();
 	void SetHatchOrigin(const OdGePoint3d& origin) noexcept;
@@ -89,7 +88,7 @@ public:	// Constructors and destructor
 	void SetInteriorStyleIndex2(unsigned styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
-	unsigned SwingVertex() const;
+	[[nodiscard]] unsigned SwingVertex() const;
 
 	// Methods - static
 	static unsigned Edge() noexcept;

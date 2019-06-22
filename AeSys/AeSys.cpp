@@ -1781,8 +1781,8 @@ void AeSys::stop() {
 }
 
 void AeSys::meterProgress() {
-	auto UpdateProgress {false};
-	auto Percent {0};
+	bool UpdateProgress;
+	int Percent;
 	{
 		TD_AUTOLOCK_P_DEF(m_pMeterMutex);
 		const auto OldPercent {m_ProgressPercent};

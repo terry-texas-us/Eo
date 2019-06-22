@@ -5,10 +5,11 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "PrimState.h"
+#include <ColorMapping.h>
 #include <DbLayerTable.h>
 #include <DbLinetypeTable.h>
 #include <DbLinetypeTableRecord.h>
-#include "DbRegAppTable.h"
+#include <DbRegAppTable.h>
 #include <DbRegAppTableRecord.h>
 #include <DbDimStyleTable.h>
 #include <DbDimStyleTableRecord.h>
@@ -17,15 +18,14 @@
 #include <Ed/EdLispEngine.h>
 #include <DbObjectContextCollection.h>
 #include <DbObjectContextManager.h>
-#include "SaveState.h"
+#include <SaveState.h>
+#include <ExStringIO.h>
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 #include "EoDbPegFile.h"
 #include "EoDbTracingFile.h"
-#include <ColorMapping.h>
 #include "EoAppAuditInfo.h"
 #include <ExPageController.h>
-#include <ExStringIO.h>
 #include "EoDlgUserIOConsole.h"
 #include "EoGePoint4d.h"
 #include "EoGeMatrix3d.h"
@@ -44,7 +44,6 @@
 #include "EoDlgSelectGotoHomePoint.h"
 #include "EoDlgSetActiveLayout.h"
 #include "EoDlgSetHomePoint.h"
-#include "EoDlgSetLength.h"
 #include "EoDlgSetPastePosition.h"
 #include "EoDlgSetupColor.h"
 #include "EoDlgSetupHatch.h"
@@ -52,7 +51,6 @@
 #include "EoDlgSetupLinetype.h"
 #include "EoDlgTrapFilter.h"
 #include "lex.h"
-#include <OdValue.h>
 unsigned CALLBACK OFNHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {
@@ -562,11 +560,11 @@ public:
 		m_LastInput = lastInput;
 	}
 
-	const OdString& LastInput() const noexcept {
+	[[nodiscard]] const OdString& LastInput() const noexcept {
 		return m_LastInput;
 	}
 
-	bool isDatabaseModified() const noexcept {
+	[[nodiscard]] bool isDatabaseModified() const noexcept {
 		return m_Modified;
 	}
 

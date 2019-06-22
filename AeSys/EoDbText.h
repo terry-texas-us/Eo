@@ -37,14 +37,14 @@ public:	// Constructors and destructor
 	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
-	OdGePoint3d GetCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const noexcept override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -62,12 +62,12 @@ public:	// Constructors and destructor
 	// Methods
 	/// <summary>Get the bounding box of text.</summary>
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
-	EoDbFontDefinition FontDefinition() const;
+	[[nodiscard]] EoDbFontDefinition FontDefinition() const;
 	void ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt);
-	EoGeReferenceSystem ReferenceSystem() const;
-	double Rotation() const;
+	[[nodiscard]] EoGeReferenceSystem ReferenceSystem() const;
+	[[nodiscard]] double Rotation() const;
 	const CString& Text() noexcept;
-	OdGePoint3d Position() const noexcept;
+	[[nodiscard]] OdGePoint3d Position() const noexcept;
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept;
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);

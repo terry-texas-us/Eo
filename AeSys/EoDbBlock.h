@@ -16,7 +16,7 @@ public:
 	EoDbBlock() = default;
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint);
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint, const OdString& pathName);
-	OdGePoint3d BasePoint() const noexcept;
+	auto BasePoint() const noexcept -> OdGePoint3d;
 	unsigned short GetBlkTypFlgs() noexcept;
 	bool HasAttributes() noexcept;
 	bool IsAnonymous() noexcept;

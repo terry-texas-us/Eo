@@ -3,14 +3,14 @@
 #include "EoDlgPlotStyleTableEditor_GeneralPropertyPage.h"
 class OdPsPlotStyleTable;
 
-class EoDlgPlotStyleManager : public CPropertySheet {
+class EoDlgPlotStyleManager final : public CPropertySheet {
 DECLARE_DYNCREATE(EoDlgPlotStyleManager)
 	OdPsPlotStyleTable* m_pPlotStyleTable;
 	OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
 	EoDlgPlotStyleManager(CWnd* pParentWnd = nullptr);
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
 	void SetFileBufPath(OdString sFilePath);
-	OdPsPlotStyleTablePtr GetPlotStyleTable() const;
+	[[nodiscard]] OdPsPlotStyleTablePtr GetPlotStyleTable() const;
 
 	// Attributes
 	EoDlgPlotStyleEditor_GeneralPropertyPage m_page1;

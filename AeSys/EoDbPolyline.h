@@ -1,6 +1,5 @@
 #pragma once
 #include "DbPolyline.h"
-#include "EoDb.h"
 #include "EoDbPrimitive.h"
 
 /* <remarks>
@@ -44,14 +43,14 @@ public:	// Constructors and destructor
 	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	OdGePoint3d GetCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
 
@@ -69,7 +68,7 @@ public:	// Constructors and destructor
 	// Methods
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0.0, double startWidth = 0.0, double endWidth = 0.0);
 	void GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const;
-	bool IsClosed() const noexcept;
+	[[nodiscard]] bool IsClosed() const noexcept;
 	void SetClosed(bool closed) noexcept;
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	void SetConstantWidth(double constantWidth) noexcept;
@@ -77,7 +76,7 @@ public:	// Constructors and destructor
 	void SetElevation(double elevation) noexcept { m_Elevation = elevation; }
 
 	void SetNormal(const OdGeVector3d& normal);
-	unsigned SwingVertex() const;
+	[[nodiscard]] unsigned SwingVertex() const;
 
 	// Methods - static
 	static unsigned Edge() noexcept;

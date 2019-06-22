@@ -20,23 +20,23 @@ class EoDlgUserIOConsole;
 class Cmd_VIEW : public OdEdCommand {
 public:
 	static const OdString name();
-	const OdString groupName() const final;
-	const OdString globalName() const final;
+	[[nodiscard]] const OdString groupName() const final;
+	[[nodiscard]] const OdString globalName() const final;
 	void execute(OdEdCommandContext* commandContext) final;
-	const OdRxModule* commandApp() const;
+	[[nodiscard]] const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
-	long commandFlags() const;
+	[[nodiscard]] long commandFlags() const;
 };
 
 class Cmd_SELECT : public OdEdCommand {
 public:
 	static const OdString name();
-	const OdString groupName() const final;
-	const OdString globalName() const final;
+	[[nodiscard]] const OdString groupName() const final;
+	[[nodiscard]] const OdString globalName() const final;
 	void execute(OdEdCommandContext* commandContext) final;
-	const OdRxModule* commandApp() const;
+	[[nodiscard]] const OdRxModule* commandApp() const;
 	void commandUndef(bool undefIt);
-	long commandFlags() const;
+	[[nodiscard]] long commandFlags() const;
 };
 
 class OdDbDatabaseDoc : public OdDbDatabase {
@@ -210,7 +210,7 @@ DECLARE_DYNCREATE(AeSysDoc)
 	OdDb::DwgVersion m_SaveAsVer {OdDb::kDHL_CURRENT};
 	OdDb::SaveType m_SaveAsType {OdDb::kDwg};
 	EoDb::FileTypes m_SaveAsType_ {EoDb::kUnknown};
-	OdDbSelectionSetPtr SelectionSet() const;
+	[[nodiscard]] OdDbSelectionSetPtr SelectionSet() const;
 	AeSysView* getViewer() noexcept;
 	void OnCloseVectorizer(AeSysView* view);
 	void setVectorizer(AeSysView* view);
@@ -291,8 +291,8 @@ public:
 	EoDbLayer* AnyLayerRemove(EoDbGroup* group);
 	EoDbLayer* GetLayerAt(const OdString& name);
 	EoDbLayer* GetLayerAt(int layerIndex);
-	int GetLayerTableSize() const;
-	int FindLayerAt(const OdString& name) const;
+	[[nodiscard]] int GetLayerTableSize() const;
+	[[nodiscard]] int FindLayerAt(const OdString& name) const;
 	OdDbLayerTablePtr LayerTable(OdDb::OpenMode openMode = OdDb::kForRead);
 	void RemoveAllLayers();
 	void RemoveLayerAt(int layerIndex);
@@ -312,12 +312,12 @@ public:
 	void AddWorkLayerGroup(EoDbGroup* group);
 	void AddWorkLayerGroups(EoDbGroupList* groups);
 	POSITION FindWorkLayerGroup(EoDbGroup* group) const;
-	POSITION GetFirstWorkLayerGroupPosition() const;
-	EoDbGroup* GetLastWorkLayerGroup() const;
-	POSITION GetLastWorkLayerGroupPosition() const;
+	[[nodiscard]] POSITION GetFirstWorkLayerGroupPosition() const;
+	[[nodiscard]] EoDbGroup* GetLastWorkLayerGroup() const;
+	[[nodiscard]] POSITION GetLastWorkLayerGroupPosition() const;
 	EoDbGroup* GetNextWorkLayerGroup(POSITION& position) const;
 	EoDbGroup* GetPreviousWorkLayerGroup(POSITION& position) const;
-	EoDbLayer* GetWorkLayer() const noexcept;
+	[[nodiscard]] EoDbLayer* GetWorkLayer() const noexcept;
 	void InitializeWorkLayer();
 	OdDbObjectId SetCurrentLayer(OdDbLayerTableRecordPtr layerTableRecord);
 	// </Work Layer>
@@ -346,10 +346,10 @@ public:
 	/// <remarks>The new groups are added to the hot layer even if the trap contained groups from one or more warm layers.</remarks>
 	void ExpandTrappedGroups();
 	POSITION FindTrappedGroup(EoDbGroup* group);
-	POSITION GetFirstTrappedGroupPosition() const;
+	[[nodiscard]] POSITION GetFirstTrappedGroupPosition() const;
 	EoDbGroup* GetNextTrappedGroup(POSITION& position);
 	EoDbGroupList* GroupsInTrap() noexcept;
-	bool IsTrapEmpty() const;
+	[[nodiscard]] bool IsTrapEmpty() const;
 	void ModifyTrappedGroupsColorIndex(short colorIndex);
 	void ModifyTrappedGroupsLinetypeIndex(short linetypeIndex);
 	void ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, EoDbCharacterCellDefinition& cellDef, int attributes);
@@ -363,8 +363,8 @@ public:
 	bool TracingLoadLayer(const OdString& file, EoDbLayer* layer);
 	bool TracingOpen(const OdString& fileName);
 	void TransformTrappedGroups(const EoGeMatrix3d& transformMatrix);
-	int TrapGroupCount() const;
-	OdGePoint3d TrapPivotPoint() const noexcept;
+	[[nodiscard]] int TrapGroupCount() const;
+	[[nodiscard]] OdGePoint3d TrapPivotPoint() const noexcept;
 	
 	// Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
@@ -372,11 +372,11 @@ public:
 	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point);
 	POSITION AddNodalGroup(EoDbGroup* group);
 	POSITION FindNodalGroup(EoDbGroup* group);
-	POSITION GetFirstNodalGroupPosition() const;
+	[[nodiscard]] POSITION GetFirstNodalGroupPosition() const;
 	EoDbGroup* GetNextNodalGroup(POSITION& position);
 	void RemoveAllNodalGroups();
 	POSITION AddMaskedPrimitive(EoDbMaskedPrimitive* maskedPrimitive);
-	POSITION GetFirstMaskedPrimitivePosition() const;
+	[[nodiscard]] POSITION GetFirstMaskedPrimitivePosition() const;
 	EoDbMaskedPrimitive* GetNextMaskedPrimitive(POSITION& position);
 	void RemoveAllMaskedPrimitives();
 	unsigned long GetPrimitiveMask(EoDbPrimitive* primitive);
@@ -385,7 +385,7 @@ public:
 	int AddUniquePoint(const OdGePoint3d& point);
 	void DisplayUniquePoints();
 
-	POSITION GetFirstUniquePointPosition() const { return m_UniquePoints.GetHeadPosition(); }
+	[[nodiscard]] POSITION GetFirstUniquePointPosition() const { return m_UniquePoints.GetHeadPosition(); }
 
 	EoGeUniquePoint* GetNextUniquePoint(POSITION& position);
 	void RemoveUniquePointAt(POSITION position);

@@ -2,7 +2,6 @@
 #include "AeSysDoc.h"
 #include <DbSpline.h>
 #include <DbViewport.h>
-#include <DbBlockTable.h>
 #include <DbBlockTableRecord.h>
 #include <Db2dPolyline.h>
 #include <Db3dPolyline.h>

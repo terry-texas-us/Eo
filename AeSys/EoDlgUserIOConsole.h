@@ -1,9 +1,8 @@
 #pragma once
 #include "DbUserIO.h"
-#include "RxObjectImpl.h"
 #include "ExStringIO.h"
 
-class EoDlgUserIOConsole : public CDialog, public OdEdBaseIO {
+class EoDlgUserIOConsole final : public CDialog, public OdEdBaseIO {
 	static int sm_WindowWidth;
 	static int sm_WindowHeight;
 	using CDialog::operator new;
@@ -16,7 +15,7 @@ class EoDlgUserIOConsole : public CDialog, public OdEdBaseIO {
 protected:
 	EoDlgUserIOConsole(CWnd* parent);
 	void addRef() noexcept override;
-	long numRefs() const noexcept override;
+	[[nodiscard]] long numRefs() const noexcept override;
 	void release() override;
 
 	enum { IDD = IDD_CONSOLE_DLG };

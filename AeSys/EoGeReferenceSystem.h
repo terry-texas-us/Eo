@@ -19,7 +19,7 @@ public: // Constructors and destructor
 
 	// Methods
 	void GetUnitNormal(OdGeVector3d& normal);
-	OdGePoint3d Origin() const noexcept;
+	[[nodiscard]] OdGePoint3d Origin() const noexcept;
 	void Read(EoDbFile& file);
 	/// <summary>Takes the current reference directions and rescales using passed character cell state.</summary>
 	void Rescale(const EoDbCharacterCellDefinition& characterCellDefinition);

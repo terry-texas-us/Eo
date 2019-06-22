@@ -10,7 +10,7 @@ public:
 private:
 	double w;
 public:
-	double W() const noexcept { return w; }
+	[[nodiscard]] double W() const noexcept { return w; }
 
 	// Constructors and destructor
 	EoGePoint4d();
@@ -23,9 +23,9 @@ public:
 	OdGeVector3d operator-(const EoGePoint4d& ptQ);
 
 	// Methods
-	OdGePoint3d Convert3d() const;
+	[[nodiscard]] OdGePoint3d Convert3d() const;
 	/// <summary>Determines the xy distance between two points.</summary>
-	double DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept;
+	[[nodiscard]] double DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept;
 	/// <summary>Performs a containment test on a point.</summary>
 	bool IsInView() noexcept;
 	EoGePoint4d& TransformBy(const EoGeMatrix3d& matrix) noexcept;
