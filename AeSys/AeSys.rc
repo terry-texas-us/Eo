@@ -665,11 +665,11 @@ BEGIN
             MENUITEM "<placeholder>",               ID_VIEW_ANNOTATIONSCALES
         END
     END
-    POPUP "Vectorize"
+    POPUP "Vectorizer Type"
     BEGIN
         MENUITEM SEPARATOR
-        MENUITEM "Add Vectorizer DLL...",       ID_VECTORIZE_ADDVECTORIZERDLL
-        MENUITEM "Clear Menu",                  ID_VECTORIZE_CLEARMENU
+        MENUITEM "Add Vectorizer DLL...",       ID_VECTORIZERTYPE_ADDVECTORIZERDLL
+        MENUITEM "Clear Menu",                  ID_VECTORIZERTYPE_CLEARMENU
     END
     POPUP "&Insert"
     BEGIN
@@ -742,7 +742,7 @@ BEGIN
             MENUITEM "&Delete \tDelete",            ID_TOOLS_GROUP_DELETE
             MENUITEM "&Break\tBreak",               ID_TOOLS_GROUP_BREAK
             MENUITEM "Delete &Last  \tBackspace",   ID_TOOLS_GROUP_DELETELAST
-            MENUITEM "&Undelete\tInsert",           ID_TOOLS_GROUP_UNDELETE
+            MENUITEM "&Restore\tInsert",            ID_TOOLS_GROUP_RESTORE
             MENUITEM "&Exchange\tShift+Insert",     ID_TOOLS_GROUP_EXCHANGE
         END
         POPUP "&Primitive"
@@ -1028,7 +1028,7 @@ BEGIN
             MENUITEM "&Delete \tDelete",            ID_TOOLS_GROUP_DELETE
             MENUITEM "&Break\tBreak",               ID_TOOLS_GROUP_BREAK
             MENUITEM "Delete &Last  \tBackspace",   ID_TOOLS_GROUP_DELETELAST
-            MENUITEM "&Undelete\tInsert",           ID_TOOLS_GROUP_UNDELETE
+            MENUITEM "&Restore\tInsert",            ID_TOOLS_GROUP_RESTORE
             MENUITEM "&Exchange\tShift+Insert",     ID_TOOLS_GROUP_EXCHANGE
         END
         POPUP "&Primitive"
@@ -1350,7 +1350,7 @@ BEGIN
     VK_PAUSE,       ID_TOOLS_GROUP_BREAK,   VIRTKEY, NOINVERT
     VK_BACK,        ID_TOOLS_GROUP_DELETELAST, VIRTKEY, NOINVERT
     VK_INSERT,      ID_TOOLS_GROUP_EXCHANGE, VIRTKEY, SHIFT, NOINVERT
-    VK_INSERT,      ID_TOOLS_GROUP_UNDELETE, VIRTKEY, NOINVERT
+    VK_INSERT,      ID_TOOLS_GROUP_RESTORE, VIRTKEY, NOINVERT
     "Q",            ID_TOOLS_PRIMITIVE_SNAPTO, VIRTKEY, NOINVERT
     "A",            ID_TOOLS_PRIMITIVE_SNAPTOENDPOINT, VIRTKEY, NOINVERT
     VK_DELETE,      ID_TOOLS_PRIMITVE_DELETE, VIRTKEY, SHIFT, NOINVERT
@@ -1473,7 +1473,7 @@ BEGIN
     VK_DELETE,      ID_TOOLS_GROUP_DELETE,  VIRTKEY, NOINVERT
     VK_BACK,        ID_TOOLS_GROUP_DELETELAST, VIRTKEY, NOINVERT
     VK_INSERT,      ID_TOOLS_GROUP_EXCHANGE, VIRTKEY, SHIFT, NOINVERT
-    VK_INSERT,      ID_TOOLS_GROUP_UNDELETE, VIRTKEY, NOINVERT
+    VK_INSERT,      ID_TOOLS_GROUP_RESTORE, VIRTKEY, NOINVERT
     "Q",            ID_TOOLS_PRIMITIVE_SNAPTO, VIRTKEY, NOINVERT
     "A",            ID_TOOLS_PRIMITIVE_SNAPTOENDPOINT, VIRTKEY, NOINVERT
     VK_DELETE,      ID_TOOLS_PRIMITVE_DELETE, VIRTKEY, SHIFT, NOINVERT
@@ -3587,7 +3587,7 @@ BEGIN
                             "Load dynamic extensions and optional vectorizers."
     ID_DRAWINGUTILITIES_AUDIT 
                             "Performs an audit of the drawing file. Useful to check the results of AeSys to AutoCAD merge."
-    ID_VECTORIZE            "Vectorize Active Layout (Via Current Device)\nVectorize"
+    ID_VECTORIZERTYPE       "Set the vectorizer type (Via Current Device)\nVectorizer Type"
 END
 
 STRINGTABLE

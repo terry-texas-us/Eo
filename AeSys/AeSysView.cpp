@@ -358,7 +358,7 @@ void AeSysView::OnInitialUpdate() {
 		return;
 	}
 	Document->setVectorizer(this);
-	m_editor.Initialize(m_LayoutHelper, Document->CommandContext());
+	m_editor.Initialize(m_LayoutHelper, Document->CommandContext0());
 	theApp.OnModeDraw();
 }
 
@@ -503,41 +503,40 @@ inline bool requireAutoRegen(OdGsView* view) {
 }
 
 void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
-	// @@@ probably move this functionality into GsLayoutHelper's?
 	OdGsViewPtr View {getActiveView()};
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
 	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject(OdDb::kForWrite);
 	OdAbstractViewPEPtr AbstractView(pObj);
 	if (!AbstractView.isNull()) {
-		const auto ptTarget(View->target());
-		auto vecDir(View->position() - ptTarget);
-		const auto vecUp(View->upVector());
-		const auto dFieldWidth {View->fieldWidth()};
-		const auto dFieldHeight {View->fieldHeight()};
-		const auto bPersp {View->isPerspective()};
-		const auto dLensLength {View->lensLength()};
-		if (vecDir.isZeroLength()) {
-			vecDir = View->viewingMatrix().inverse().getCsZAxis();
-			if (vecDir.isZeroLength()) vecDir = OdGeVector3d::kZAxis;
-			else vecDir.normalize();
-		}
-		if (!AbstractView->target(pObj).isEqualTo(ptTarget) || !AbstractView->direction(pObj).isEqualTo(vecDir) || !AbstractView->upVector(pObj).isEqualTo(vecUp) || !
-			OdEqual(AbstractView->fieldWidth(pObj), dFieldWidth) || !OdEqual(AbstractView->fieldHeight(pObj), dFieldHeight) || AbstractView->isPerspective(pObj) != bPersp || !OdEqual(
-				AbstractView->lensLength(pObj),
-				dLensLength)) {
-			OdGeVector2d viewOffset;
-			if (AbstractView->direction(pObj).isEqualTo(vecDir) && AbstractView->upVector(pObj).isEqualTo(vecUp) && !bPersp && !AbstractView->isPerspective(pObj)) {
-				const auto vecX {vecUp.crossProduct(vecDir).normal()};
-				viewOffset = AbstractView->viewOffset(pObj);
-				const auto prevTarg {AbstractView->target(pObj) - vecX * viewOffset.x - vecUp * viewOffset.y};
-				viewOffset.x = vecX.dotProduct(ptTarget - prevTarg);
-				viewOffset.y = vecUp.dotProduct(ptTarget - prevTarg);
+		const auto Target(View->target());
+		auto Direction(View->position() - Target);
+		const auto UpVector(View->upVector());
+		const auto FieldWidth {View->fieldWidth()};
+		const auto FieldHeight {View->fieldHeight()};
+		const auto Perspective {View->isPerspective()};
+		const auto LensLength {View->lensLength()};
+		if (Direction.isZeroLength()) {
+			Direction = View->viewingMatrix().inverse().getCsZAxis();
+			if (Direction.isZeroLength()) {
+				Direction = OdGeVector3d::kZAxis;
+			} else {
+				Direction.normalize();
 			}
-			AbstractView->setView(pObj, ptTarget, vecDir, vecUp, dFieldWidth, dFieldHeight, bPersp, viewOffset);
-			AbstractView->setLensLength(pObj, dLensLength);
+		}
+		if (!AbstractView->target(pObj).isEqualTo(Target) || !AbstractView->direction(pObj).isEqualTo(Direction) || !AbstractView->upVector(pObj).isEqualTo(UpVector) || !OdEqual(AbstractView->fieldWidth(pObj), FieldWidth) || !OdEqual(AbstractView->fieldHeight(pObj), FieldHeight) || AbstractView->isPerspective(pObj) != Perspective || !OdEqual(AbstractView->lensLength(pObj), LensLength)) {
+			OdGeVector2d ViewOffset;
+			if (AbstractView->direction(pObj).isEqualTo(Direction) && AbstractView->upVector(pObj).isEqualTo(UpVector) && !Perspective && !AbstractView->isPerspective(pObj)) {
+				const auto vecX {UpVector.crossProduct(Direction).normal()};
+				ViewOffset = AbstractView->viewOffset(pObj);
+				const auto PreviousTarget {AbstractView->target(pObj) - vecX * ViewOffset.x - UpVector * ViewOffset.y};
+				ViewOffset.x = vecX.dotProduct(Target - PreviousTarget);
+				ViewOffset.y = UpVector.dotProduct(Target - PreviousTarget);
+			}
+			AbstractView->setView(pObj, Target, Direction, UpVector, FieldWidth, FieldHeight, Perspective, ViewOffset);
+			AbstractView->setLensLength(pObj, LensLength);
 			// Auto regen
-			if (!theApp.disableAutoRegen() && requireAutoRegen(View)) { const_cast<AeSysView*>(this)->OnViewerRegen(); }
+			if (!theApp.DisableAutoRegenerate() && requireAutoRegen(View)) { const_cast<AeSysView*>(this)->OnViewerRegen(); }
 		}
 		OdDb::RenderMode RenderMode;
 		switch (View->mode()) {
@@ -621,26 +620,24 @@ void AeSysView::plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) 
 	}
 }
 
-void AeSysView::preparePlotstyles(const OdDbLayout* layout, bool bForceReload) {
-	if (m_pPlotStyleTable.get() && !bForceReload) { return; }
+void AeSysView::PreparePlotStyles(const OdDbLayout* layout, bool forceReload) {
+	if (m_pPlotStyleTable.get() && !forceReload) { return; }
 	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
 	OdSmartPtr<OdDbLayout> CurrentLayout;
 	if (!layout) {
-		OdDbBlockTableRecordPtr pLayoutBlock = Database->getActiveLayoutBTRId().safeOpenObject();
-		CurrentLayout = pLayoutBlock->getLayoutId().safeOpenObject();
+		OdDbBlockTableRecordPtr LayoutBlock {Database->getActiveLayoutBTRId().safeOpenObject()};
+		CurrentLayout = LayoutBlock->getLayoutId().safeOpenObject();
 		layout = CurrentLayout;
 	}
 	m_bPlotPlotstyle = layout->plotPlotStyles();
 	m_bShowPlotstyle = layout->showPlotStyles();
 	if (isPlotGeneration() ? m_bPlotPlotstyle : m_bShowPlotstyle) {
-		const auto pssFile(layout->getCurrentStyleSheet());
-		if (!pssFile.isEmpty()) {
-			const auto testpath {Database->appServices()->findFile(pssFile)};
-			if (!testpath.isEmpty()) {
-				auto pFileBuf {odSystemServices()->createFile(testpath)};
-				if (pFileBuf.get()) {
-					loadPlotStyleTable(pFileBuf);
-				}
+		const auto LayoutStyleSheet {layout->getCurrentStyleSheet()};
+		if (!LayoutStyleSheet.isEmpty()) {
+			const auto Testpath {Database->appServices()->findFile(LayoutStyleSheet)};
+			if (!Testpath.isEmpty()) {
+				auto pFileBuf {odSystemServices()->createFile(Testpath)};
+				if (pFileBuf.get()) { loadPlotStyleTable(pFileBuf); }
 			}
 		}
 	}
@@ -820,31 +817,31 @@ void AeSysView::createDevice(bool recreate) {
 					DeviceProperties->putAt(L"WindowHDC", OdRxVariantValue(reinterpret_cast<OdIntPtr>(m_hWindowDC)));
 				}
 				if (DeviceProperties->has(L"DoubleBufferEnabled")) {
-					DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.doubleBufferEnabled()));
+					DeviceProperties->putAt(L"DoubleBufferEnabled", OdRxVariantValue(theApp.DoubleBufferEnabled()));
 				}
 				if (DeviceProperties->has(L"EnableSoftwareHLR")) {
-					DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR()));
+					DeviceProperties->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.UseSoftwareHlr()));
 				}
 				if (DeviceProperties->has(L"DiscardBackFaces")) {
-					DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.discardBackFaces()));
+					DeviceProperties->putAt(L"DiscardBackFaces", OdRxVariantValue(theApp.DiscardBackFaces()));
 				}
 				if (DeviceProperties->has(L"BlocksCache")) {
-					DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.blocksCacheEnabled()));
+					DeviceProperties->putAt(L"BlocksCache", OdRxVariantValue(theApp.BlocksCacheEnabled()));
 				}
 				if (DeviceProperties->has(L"EnableMultithreading")) {
 					DeviceProperties->putAt(L"EnableMultithreading", OdRxVariantValue(theApp.GsDeviceMultithreadingEnabled()));
 				}
-				if (DeviceProperties->has(L"MaxRegenThreads")) {
-					DeviceProperties->putAt(L"MaxRegenThreads", OdRxVariantValue(static_cast<unsigned short>(theApp.mtRegenThreadsCount())));
+				if (DeviceProperties->has(L"MaxRegenerateThreads")) {
+					DeviceProperties->putAt(L"MaxRegenerateThreads", OdRxVariantValue(static_cast<unsigned short>(theApp.MtRegenerateThreadsCount())));
 				}
 				if (DeviceProperties->has(L"UseTextOut")) {
-					DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.enableTTFTextOut()));
+					DeviceProperties->putAt(L"UseTextOut", OdRxVariantValue(theApp.EnableTtfTextOut()));
 				}
 				if (DeviceProperties->has(L"UseTTFCache")) {
-					DeviceProperties->putAt(L"UseTTFCache", OdRxVariantValue(theApp.enableTTFCache()));
+					DeviceProperties->putAt(L"UseTTFCache", OdRxVariantValue(theApp.EnableTtfCache()));
 				}
 				if (DeviceProperties->has(L"DynamicSubEntHlt")) {
-					DeviceProperties->putAt(L"DynamicSubEntHlt", OdRxVariantValue(theApp.enableDynamicSubEntHlt()));
+					DeviceProperties->putAt(L"DynamicSubEntHlt", OdRxVariantValue(theApp.EnableDynamicSubEntHlt()));
 				}
 				/* <tas="MaterialsEditor required for additional GLES device settings">
 				if (DeviceProperties->has(L"UseCompositeMetafiles")) {
@@ -877,9 +874,9 @@ void AeSysView::createDevice(bool recreate) {
 			   </tas> */
 			}
 			enableKeepPSLayoutHelperView(true);
-			enableContextualColorsManagement(theApp.enableContextualColors());
-			setTtfPolyDrawMode(theApp.enableTTFPolyDraw());
-			enableGsModel(theApp.useGsModel());
+			enableContextualColorsManagement(theApp.EnableContextualColors());
+			setTtfPolyDrawMode(theApp.EnableTtfPolyDraw());
+			enableGsModel(theApp.UseGsModel());
 			m_LayoutHelper = OdDbGsManager::setupActiveLayoutViews(GsDevice, this);
 
 			/* <tas="MaterialsEditor required for additional GLES device settings">
@@ -903,7 +900,7 @@ void AeSysView::createDevice(bool recreate) {
 			const auto LayoutHelperOut {OdDbGsManager::setupActiveLayoutViews(LayoutHelperIn->underlyingDevice(), this)};
 			m_LayoutHelper = LayoutHelperOut;
 			LayoutHelperIn.release();
-			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext());
+			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext0());
 		}
 		m_layoutId = m_LayoutHelper->layoutId();
 		const auto Palette {theApp.curPalette()};
@@ -929,7 +926,7 @@ void AeSysView::createDevice(bool recreate) {
 			m_ViewTransform.BuildTransformMatrix();
 			m_OverviewViewTransform = m_ViewTransform;
 		}
-		preparePlotstyles(nullptr, recreate);
+		PreparePlotStyles(nullptr, recreate);
 		if (recreate) {
 			// Call update to share cache from exist views
 			m_LayoutHelper->update();
@@ -1096,14 +1093,14 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		if (GsPrinterDevice.get()) {
 			enableGsModel(true);
 			if (!GsPrinterDevice->properties().isNull() && GsPrinterDevice->properties()->has(L"EnableSoftwareHLR")) {
-				GsPrinterDevice->properties()->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.useSoftwareHLR()));
+				GsPrinterDevice->properties()->putAt(L"EnableSoftwareHLR", OdRxVariantValue(theApp.UseSoftwareHlr()));
 			}
 			if (/*IsPlotViaBitmap &&*/ GsPrinterDevice->properties()->has(L"DPI")) { // #9633 (1)
 				const auto MinimumLogicalPixels {odmin(deviceContext->GetDeviceCaps(LOGPIXELSX), deviceContext->GetDeviceCaps(LOGPIXELSY))};
 				GsPrinterDevice->properties()->putAt(L"DPI", OdRxVariantValue(static_cast<unsigned long>(MinimumLogicalPixels)));
 			}
 			m_pPrinterDevice = OdDbGsManager::setupActiveLayoutViews(GsPrinterDevice, this);
-			preparePlotstyles();
+			PreparePlotStyles();
 			m_pPrinterDevice->setLogicalPalette(odcmAcadLightPalette(), 256);
 			m_pPrinterDevice->setBackgroundColor(ODRGB(255, 255, 255));
 			setPaletteBackground(m_pPrinterDevice->getBackgroundColor());

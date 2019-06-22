@@ -58,7 +58,7 @@ private:
 	bool m_EnableDoubleBuffer {true};
 	bool m_BlocksCache {false};
 	bool m_GsDevMultithreading {false};
-	unsigned m_nMtRegenThreads {4};
+	unsigned m_MtRegenerateThreads {4};
 	bool m_EnablePrintPreviewViaBitmap {true};
 	bool m_UseGsModel {true};
 	bool m_EnableHLR {false};
@@ -70,7 +70,7 @@ private:
 	bool m_GDIGradientsAsBitmap {false};
 	bool m_GDIGradientsAsPolys {false};
 	unsigned char m_nGDIGradientsAsPolysThreshold {10};
-	bool m_DisableAutoRegen {false};
+	bool m_DisableAutoRegenerate {false};
 	ODCOLORREF m_background {g_ViewBackgroundColor};
 	unsigned long m_thisThreadID {0};
 	unsigned m_numCustomCommands {0};
@@ -97,56 +97,56 @@ public:
 	std::vector<OdSmartPtr<OdApplicationReactor> > m_ApplicationReactors;
 	OdDbDatabasePtr openFile(const wchar_t* pathName);
 
-	void setPartialOption(bool partial) noexcept { m_bPartial = partial; }
+	void SetPartialOption(bool partial) noexcept { m_bPartial = partial; }
 
-	void setRecoverOption(bool recover) noexcept { m_bRecover = recover; }
+	void SetRecoverOption(bool recover) noexcept { m_bRecover = recover; }
 
-	void setMTLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
+	void SetMtLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
 
-	OdGsMarker getGSMenuItemMarker() const noexcept { return reinterpret_cast<OdGsMarker>(this); }
+	OdGsMarker GetGsMenuItemMarker() const noexcept { return reinterpret_cast<OdGsMarker>(this); }
 
 	CMenu* CommandMenu(CMenu** toolsSubMenu = nullptr);
 	void RefreshCommandMenu();
 
-	unsigned numCustomCommands() const noexcept { return m_numCustomCommands; }
+	unsigned NumberOfCustomCommands() const noexcept { return m_numCustomCommands; }
 
 	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
 
-	bool printingViaBitmap() const noexcept { return m_EnablePrintPreviewViaBitmap; }
+	bool PrintingViaBitmap() const noexcept { return m_EnablePrintPreviewViaBitmap; }
 
-	bool doubleBufferEnabled() const noexcept { return m_EnableDoubleBuffer; }
+	bool DoubleBufferEnabled() const noexcept { return m_EnableDoubleBuffer; }
 
-	bool blocksCacheEnabled() const noexcept { return m_BlocksCache; }
+	bool BlocksCacheEnabled() const noexcept { return m_BlocksCache; }
 
 	bool GsDeviceMultithreadingEnabled() const noexcept { return m_GsDevMultithreading; }
 
-	unsigned mtRegenThreadsCount() const noexcept { return m_nMtRegenThreads; }
+	unsigned MtRegenerateThreadsCount() const noexcept { return m_MtRegenerateThreads; }
 
-	bool useGsModel() const noexcept { return m_UseGsModel; }
+	bool UseGsModel() const noexcept { return m_UseGsModel; }
 
-	bool useSoftwareHLR() const noexcept { return m_EnableHLR; }
+	bool UseSoftwareHlr() const noexcept { return m_EnableHLR; }
 
-	bool enableContextualColors() const noexcept { return m_ContextColors; }
+	bool EnableContextualColors() const noexcept { return m_ContextColors; }
 
-	bool enableTTFPolyDraw() const noexcept { return m_TTFPolyDraw; }
+	bool EnableTtfPolyDraw() const noexcept { return m_TTFPolyDraw; }
 
-	bool enableTTFTextOut() const noexcept { return m_TTFTextOut; }
+	bool EnableTtfTextOut() const noexcept { return m_TTFTextOut; }
 
-	bool enableTTFCache() const noexcept { return m_TTFCache; }
+	bool EnableTtfCache() const noexcept { return m_TTFCache; }
 
-	bool enableDynamicSubEntHlt() const noexcept { return m_DynamicSubEntHlt; }
+	bool EnableDynamicSubEntHlt() const noexcept { return m_DynamicSubEntHlt; }
 
-	bool enableGDIGradientsAsBitmap() const noexcept { return m_GDIGradientsAsBitmap; }
+	bool EnableGdiGradientsAsBitmap() const noexcept { return m_GDIGradientsAsBitmap; }
 
-	bool enableGDIGradientsAsPolys() const noexcept { return m_GDIGradientsAsPolys; }
+	bool EnableGdiGradientsAsPolys() const noexcept { return m_GDIGradientsAsPolys; }
 
-	unsigned char gdiGradientsAsPolysThreshold() const noexcept { return m_nGDIGradientsAsPolysThreshold; }
+	unsigned char GdiGradientsAsPolysThreshold() const noexcept { return m_nGDIGradientsAsPolysThreshold; }
 
-	bool disableAutoRegen() const noexcept { return m_DisableAutoRegen; }
+	bool DisableAutoRegenerate() const noexcept { return m_DisableAutoRegenerate; }
 
-	bool discardBackFaces() const noexcept { return m_DiscardBackFaces; }
+	bool DiscardBackFaces() const noexcept { return m_DiscardBackFaces; }
 
-	enum DisplayFields {
+	enum display_fields {
 		kSchemaFields,
 		kDxfFields,
 		kDwgFields
@@ -234,7 +234,7 @@ public:
 	OdDbUndoControllerPtr newUndoController() override /* ExHostAppServices */;
 	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
 
-	//	void OnOptionsRenderingdeviceVectorize();
+	//	void OnOptionsRenderingDeviceVectorize();
 	bool getSavePreview() noexcept { return m_SavePreview; }
 
 	bool getSaveWithPassword() noexcept { return m_SaveWithPassword; }
@@ -399,7 +399,7 @@ public:
 	void OnEditCfText() noexcept;
 	void OnUpdateEditCfText(CCmdUI* commandUserInterface);
 	void OnFileOpen(); // hides non-virtual function of parent
-	void OnFilePlotstylemanager();
+	void OnFilePlotStyleManager();
 	void OnHelpContents();
 	void OnModeAnnotate();
 	void OnUpdateModeAnnotate(CCmdUI* commandUserInterface);
@@ -416,7 +416,7 @@ public:
 	void OnModeFixup();
 	void OnUpdateModeFixup(CCmdUI* commandUserInterface);
 	void OnModeLetter();
-	void OnModeLPD();
+	void OnModeLpd();
 	void OnUpdateModeLpd(CCmdUI* commandUserInterface);
 	void OnModeNodal();
 	void OnUpdateModeNodal(CCmdUI* commandUserInterface);
@@ -429,15 +429,15 @@ public:
 	void OnUpdateModeTrap(CCmdUI* commandUserInterface);
 	void OnToolsLoadApplications();
 	void OnTrapCommandsAddGroups();
-	void OnUpdateTrapcommandsAddgroups(CCmdUI* commandUserInterface);
+	void OnUpdateTrapCommandsAddGroups(CCmdUI* commandUserInterface);
 	void OnTrapCommandsHighlight() noexcept;
-	void OnUpdateTrapcommandsHighlight(CCmdUI* commandUserInterface);
+	void OnUpdateTrapCommandsHighlight(CCmdUI* commandUserInterface);
 	void OnViewModeInformation();
-	void OnUpdateViewModeinformation(CCmdUI* commandUserInterface);
-	void OnVectorizeAddVectorizerDLL();
-	void OnUpdateVectorizeAddvectorizerdll(CCmdUI* commandUserInterface);
-	void OnVectorizeClearMenu();
-	void OnUpdateVectorizeClearMenu(CCmdUI* commandUserInterface);
+	void OnUpdateViewModeInformation(CCmdUI* commandUserInterface);
+	void OnVectorizerTypeAddVectorizerDll();
+	void OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* commandUserInterface);
+	void OnVectorizerTypeClearMenu();
+	void OnUpdateVectorizerTypeClearMenu(CCmdUI* commandUserInterface);
 protected:
 DECLARE_MESSAGE_MAP()
 };

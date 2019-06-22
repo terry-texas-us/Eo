@@ -192,7 +192,7 @@ DECLARE_DYNCREATE(AeSysDoc)
 	// <command_console>
 	OdSmartPtr<EoDlgUserIOConsole> m_UserIOConsole;
 	OdSmartPtr<ExStringIO> m_pMacro;
-	OdDbCommandContextPtr CommandContext();
+	OdDbCommandContextPtr CommandContext0();
 	OdEdBaseIO* BaseIO() noexcept;
 	OdString CommandPrompt();
 	OdString RecentCommand();
@@ -419,7 +419,7 @@ public:
 	void OnEditTrapWorkAndActive();
 	void OnFile();
 	void OnFileManage();
-	void OnFilePagesetup();
+	void OnFilePageSetup();
 	void OnFileQuery();
 	void OnFileTracing();
 	void OnHelpKey();
@@ -450,9 +450,9 @@ public:
 	void OnPrimExtractStr();
 	/// <summary>Positions the cursor at a "control" point on the current engaged group.</summary>
 	void OnPrimGotoCenterPoint();
-	/// <summary>Picks a primative and modifies its attributes to current settings.</summary>
+	/// <summary>Picks a primitive and modifies its attributes to current settings.</summary>
 	void OnPrimModifyAttributes();
-	void OnToolsPrimitiveSnaptoendpoint();
+	void OnToolsPrimitiveSnapToEndPoint();
 	/// <summary>Reduces complex primitives and group references to a simpler form</summary>
 	void OnToolsGroupBreak();
 	/// <summary>
@@ -461,10 +461,10 @@ public:
 	/// Notes: The group resources are not freed.
 	/// </summary>
 	void OnToolsGroupDelete();
-	void OnToolsGroupDeletelast();
+	void OnToolsGroupDeleteLast();
 	/// <summary>Exchanges the first and last groups on the deleted group list.</summary>
 	void OnToolsGroupExchange();
-	void OnToolsGroupUndelete();
+	void OnToolsGroupRestore();
 	void OnSetupFillHatch();
 	void OnSetupFillHollow() noexcept;
 	void OnSetupFillPattern() noexcept;
@@ -473,7 +473,7 @@ public:
 	void OnSetupNote();
 	void OnSetupOptionsDraw();
 	void OnSetupPenColor();
-	void OnSetupLayerproperties();
+	void OnSetupLayerProperties();
 	void OnSetupLinetype();
 	void OnSetupSavePoint();
 	void OnTracingActive();
@@ -494,21 +494,20 @@ public:
 protected:
 DECLARE_MESSAGE_MAP()
 public:
-	void OnViewSetactivelayout();
-	void OnDrawingutilitiesAudit();
+	void OnViewSetActiveLayout();
+	void OnDrawingUtilitiesAudit();
 	// <command_console>
-	void OnEditClearselection();
-	void OnEditSelectall();
+	void OnEditClearSelection();
+	void OnEditSelectAll();
 	void OnEditConsole();
 	void OnEditExplode();
 	void OnEditEntget();
 	void OnViewNamedViews();
 	void OnEditUndo();
 	void OnUpdateEditUndo(CCmdUI* commandUserInterface);
-	void OnUpdateEditRedo(CCmdUI* commandUserInterface);
 	void OnEditRedo();
+	void OnUpdateEditRedo(CCmdUI* commandUserInterface);
 	// </command_console>
-	void OnVectorize(); // <tas="This is the vectorize menu and toolbar button handler in Oda"</tas>
-	// <tas="Will not use"> void OnRemoteGeomViewer();"</tas>
-	void OnUpdateVectorize(CCmdUI* commandUserInterface);
+	void OnVectorizerType();
+	void OnUpdateVectorizerType(CCmdUI* commandUserInterface);
 };

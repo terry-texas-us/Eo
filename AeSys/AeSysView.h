@@ -79,7 +79,7 @@ protected:
 	CRect viewportRect() const;
 	static CRect viewRect(OdGsView*);
 	AeSysView() noexcept; // protected constructor used by dynamic creation
-	void preparePlotstyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
+	void PreparePlotStyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
 	unsigned long glyphSize(GlyphType glyphType) const override;
 	void fillContextualColors(OdGiContextualColorsImpl* pCtxColors) override;
 DECLARE_DYNCREATE(AeSysView)

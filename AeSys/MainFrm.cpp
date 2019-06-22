@@ -415,7 +415,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	CMDIFrameWndEx::OnShowPopupMenu(popupMenu);
 	if (popupMenu != nullptr) {
 
-		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VECTORIZE_CLEARMENU) >= 0) {
+		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VECTORIZERTYPE_CLEARMENU) >= 0) {
 
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			CRegKey RegistryKey;

@@ -20,12 +20,12 @@
 #include <DbObjectContextManager.h>
 #include <SaveState.h>
 #include <ExStringIO.h>
+#include <ExPageController.h>
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 #include "EoDbPegFile.h"
 #include "EoDbTracingFile.h"
 #include "EoAppAuditInfo.h"
-#include <ExPageController.h>
 #include "EoDlgUserIOConsole.h"
 #include "EoGePoint4d.h"
 #include "EoGeMatrix3d.h"
@@ -51,15 +51,15 @@
 #include "EoDlgSetupLinetype.h"
 #include "EoDlgTrapFilter.h"
 #include "lex.h"
-unsigned CALLBACK OFNHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
+unsigned CALLBACK OfnHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {
 	auto String {static_cast<const wchar_t*>(string)};
-	unsigned nHash {0};
+	unsigned Hash {0};
 	while (*String) {
-		nHash = (nHash << 5) + nHash + *String++;
+		Hash = (Hash << 5) + Hash + *String++;
 	}
-	return nHash;
+	return Hash;
 }
 
 // AeSysDoc
@@ -127,15 +127,15 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 		ON_COMMAND(ID_PRIM_BREAK, OnPrimBreak)
 		ON_COMMAND(ID_PRIM_EXTRACTNUM, OnPrimExtractNum)
 		ON_COMMAND(ID_PRIM_EXTRACTSTR, OnPrimExtractStr)
-		ON_COMMAND(ID_TOOLS_PRIMITIVE_SNAPTOENDPOINT, OnToolsPrimitiveSnaptoendpoint)
+		ON_COMMAND(ID_TOOLS_PRIMITIVE_SNAPTOENDPOINT, OnToolsPrimitiveSnapToEndPoint)
 		ON_COMMAND(ID_PRIM_GOTOCENTERPOINT, OnPrimGotoCenterPoint)
 		ON_COMMAND(ID_TOOLS_PRIMITVE_DELETE, OnToolsPrimitiveDelete)
 		ON_COMMAND(ID_PRIM_MODIFY_ATTRIBUTES, OnPrimModifyAttributes)
 		ON_COMMAND(ID_TOOLS_GROUP_BREAK, OnToolsGroupBreak)
 		ON_COMMAND(ID_TOOLS_GROUP_DELETE, OnToolsGroupDelete)
-		ON_COMMAND(ID_TOOLS_GROUP_DELETELAST, OnToolsGroupDeletelast)
+		ON_COMMAND(ID_TOOLS_GROUP_DELETELAST, OnToolsGroupDeleteLast)
 		ON_COMMAND(ID_TOOLS_GROUP_EXCHANGE, OnToolsGroupExchange)
-		ON_COMMAND(ID_TOOLS_GROUP_UNDELETE, OnToolsGroupUndelete)
+		ON_COMMAND(ID_TOOLS_GROUP_RESTORE, OnToolsGroupRestore)
 		ON_COMMAND(ID_SETUP_PENCOLOR, OnSetupPenColor)
 		ON_COMMAND(ID_SETUP_LINETYPE, OnSetupLinetype)
 		ON_COMMAND(ID_SETUP_FILL_HOLLOW, OnSetupFillHollow)
@@ -160,22 +160,22 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 		ON_COMMAND(ID_TRAPCOMMANDS_BLOCK, OnTrapCommandsBlock)
 		ON_COMMAND(ID_TRAPCOMMANDS_UNBLOCK, OnTrapCommandsUnblock)
 		ON_COMMAND(ID_HELP_KEY, OnHelpKey)
-		ON_COMMAND(ID_SETUP_LAYERPROPERTIES, &AeSysDoc::OnSetupLayerproperties)
+		ON_COMMAND(ID_SETUP_LAYERPROPERTIES, &AeSysDoc::OnSetupLayerProperties)
 		ON_COMMAND(ID_INSERT_TRACING, &AeSysDoc::OnInsertTracing)
-		ON_COMMAND(ID_FILE_PAGESETUP, &AeSysDoc::OnFilePagesetup)
-		ON_COMMAND(ID_VIEW_SETACTIVELAYOUT, &AeSysDoc::OnViewSetactivelayout)
-		ON_COMMAND(ID_DRAWINGUTILITIES_AUDIT, &AeSysDoc::OnDrawingutilitiesAudit)
-		ON_COMMAND(ID_SELECTIONSETCOMMANDS_CLEAR, &AeSysDoc::OnEditClearselection)
+		ON_COMMAND(ID_FILE_PAGESETUP, &AeSysDoc::OnFilePageSetup)
+		ON_COMMAND(ID_VIEW_SETACTIVELAYOUT, &AeSysDoc::OnViewSetActiveLayout)
+		ON_COMMAND(ID_DRAWINGUTILITIES_AUDIT, &AeSysDoc::OnDrawingUtilitiesAudit)
+		ON_COMMAND(ID_SELECTIONSETCOMMANDS_CLEAR, &AeSysDoc::OnEditClearSelection)
 		ON_COMMAND(ID_EDIT_CONSOLE, &AeSysDoc::OnEditConsole)
 		ON_COMMAND(ID_VIEW_NAMEDVIEWS, &AeSysDoc::OnViewNamedViews)
 		ON_COMMAND(ID_EDIT_UNDO, OnEditUndo)
 		ON_UPDATE_COMMAND_UI(ID_EDIT_UNDO, OnUpdateEditUndo)
 		ON_UPDATE_COMMAND_UI(ID_EDIT_REDO, OnUpdateEditRedo)
 		ON_COMMAND(ID_EDIT_REDO, OnEditRedo)
-		ON_COMMAND(ID_SELECTIONSETCOMMANDS_SELECTALL, &AeSysDoc::OnEditSelectall)
+		ON_COMMAND(ID_SELECTIONSETCOMMANDS_SELECTALL, &AeSysDoc::OnEditSelectAll)
 		ON_COMMAND(ID_SELECTIONSETCOMMANDS_ENTGET, &AeSysDoc::OnEditEntget)
-		ON_COMMAND(ID_VECTORIZE, &AeSysDoc::OnVectorize)
-		ON_UPDATE_COMMAND_UI(ID_VECTORIZE, &AeSysDoc::OnUpdateVectorize)
+		ON_COMMAND(ID_VECTORIZERTYPE, &AeSysDoc::OnVectorizerType)
+		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE, &AeSysDoc::OnUpdateVectorizerType)
 END_MESSAGE_MAP()
 unsigned short AeSysDoc::ClipboardData::m_FormatR15 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
 unsigned short AeSysDoc::ClipboardData::m_FormatR16 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r16"));
@@ -272,7 +272,7 @@ AeSysView* AeSysDoc::getViewer() noexcept {
 	return m_pViewer;
 }
 
-void AeSysDoc::OnViewSetactivelayout() {
+void AeSysDoc::OnViewSetActiveLayout() {
 	EoDlgSetActiveLayout ActiveLayoutDialog(m_DatabasePtr, theApp.GetMainWnd());
 	m_LayoutSwitchable = true;
 	if (ActiveLayoutDialog.DoModal() == IDOK) {
@@ -314,7 +314,7 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 				ParentRectangle.right = BottomRightPoint.x;
 				ParentRectangle.bottom = BottomRightPoint.y;
 				View->GetParent()->SendMessageW(WM_CLOSE);
-				OnVectorize();
+				OnVectorizerType();
 				// Search again for new view
 				auto ViewPosition {GetFirstViewPosition()};
 				while (ViewPosition != nullptr) {
@@ -366,7 +366,7 @@ void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	auto Document {Database->document()};
 	auto View {Document->getViewer()};
 	if (View == nullptr) { throw OdEdCancel(); }
-	Document->OnEditClearselection();
+	Document->OnEditClearSelection();
 	Document->UpdateAllViews(nullptr);
 	auto UserIO {CommandContext->dbUserIO()};
 	UserIO->setPickfirst(nullptr);
@@ -408,21 +408,21 @@ void AeSysDoc::setVectorizer(AeSysView* view) {
 	m_pViewer = view;
 }
 
-void AeSysDoc::OnVectorize() {
+void AeSysDoc::OnVectorizerType() {
 	OnVectorize(theApp.RecentGsDevicePath());
 }
 
-void AeSysDoc::OnUpdateVectorize(CCmdUI* commandUserInterface) {
+void AeSysDoc::OnUpdateVectorizerType(CCmdUI* commandUserInterface) {
 	commandUserInterface->Enable(m_pViewer == nullptr && !theApp.RecentGsDevicePath().isEmpty());
 }
 
-OdDbCommandContextPtr AeSysDoc::CommandContext() {
+OdDbCommandContextPtr AeSysDoc::CommandContext0() {
 	if (m_CommandContext.isNull()) { m_CommandContext = ExDbCommandContext::createObject(BaseIO(), m_DatabasePtr); }
 	return m_CommandContext;
 }
 
 OdDbSelectionSetPtr AeSysDoc::SelectionSet() const {
-	OdDbCommandContext* CommandContext {const_cast<AeSysDoc*>(this)->CommandContext()};
+	OdDbCommandContext* CommandContext {const_cast<AeSysDoc*>(this)->CommandContext0()};
 	OdDbSelectionSetPtr SelectionSet {CommandContext->arbitraryData(L"AeSys Working Selection Set")};
 	if (SelectionSet.isNull()) {
 		SelectionSet = OdDbSelectionSet::createObject(m_DatabasePtr);
@@ -498,7 +498,7 @@ OdString AeSysDoc::CommandPrompt() {
 
 void AeSysDoc::OnEditConsole() {
 	auto CommandStack {odedRegCmds()};
-	OdDbCommandContextPtr CommandContext(CommandContext());
+	OdDbCommandContextPtr CommandContext(CommandContext0());
 	OdSaveState<bool> saveConsoleMode(m_bConsole, true);
 	try {
 		if (m_pViewer && m_pViewer->isGettingString()) {
@@ -623,7 +623,7 @@ private:
 void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
 	++m_nCmdActive;
-	OdDbCommandContextPtr CommandContext(CommandContext());
+	OdDbCommandContextPtr CommandContext(CommandContext0());
 	CmdReactor CommandReactor(CommandContext);
 	try {
 		auto CommandStack {odedRegCmds()};
@@ -668,7 +668,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	}
 	if (CommandReactor.isDatabaseModified() || SelectionSet()->numEntities()) {
 
-		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearselection(); }
+		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearSelection(); }
 		UpdateAllViews(nullptr);
 	}
 }
@@ -683,7 +683,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 			if (TopMenu->GetMenuItemInfoW(commandId, &MenuItemInfo, FALSE)) {
 
 				// <tas="Will not use. Need to decide if/how to select a vectorizer. Possible OpenGL is a desired option to Directx">
-				if (MenuItemInfo.dwItemData == gsl::narrow_cast<unsigned>(theApp.getGSMenuItemMarker())) {
+				if (MenuItemInfo.dwItemData == gsl::narrow_cast<unsigned>(theApp.GetGsMenuItemMarker())) {
 					CString Vectorizer;
 					TopMenu->GetSubMenu(3)->GetMenuStringW(commandId, Vectorizer, MF_BYCOMMAND);
 					if (messageCategory == CN_COMMAND) {
@@ -695,7 +695,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 					return TRUE;
 				}
 				// </tas>
-				if (commandId >= _APS_NEXT_COMMAND_VALUE + 100 && commandId <= _APS_NEXT_COMMAND_VALUE + theApp.numCustomCommands() + 100) { // custom commands
+				if (commandId >= _APS_NEXT_COMMAND_VALUE + 100 && commandId <= _APS_NEXT_COMMAND_VALUE + theApp.NumberOfCustomCommands() + 100) { // custom commands
 					OdRxObjectPtr ItemData(reinterpret_cast<OdRxObject*>(MenuItemInfo.dwItemData));
 					if (ItemData.get()) {
 
@@ -1780,7 +1780,7 @@ void AeSysDoc::OnPurgeUnusedLayers() {
 	RemoveEmptyLayers();
 }
 
-void AeSysDoc::OnToolsGroupUndelete() {
+void AeSysDoc::OnToolsGroupRestore() {
 	DeletedGroupsRestore();
 }
 
@@ -2102,7 +2102,7 @@ void AeSysDoc::OnToolsGroupDelete() {
 	}
 }
 
-void AeSysDoc::OnToolsGroupDeletelast() {
+void AeSysDoc::OnToolsGroupDeleteLast() {
 	AeSysView::GetActiveView()->DeleteLastGroup();
 }
 
@@ -2115,24 +2115,24 @@ void AeSysDoc::OnToolsGroupExchange() {
 	}
 }
 
-void AeSysDoc::OnToolsPrimitiveSnaptoendpoint() {
+void AeSysDoc::OnToolsPrimitiveSnapToEndPoint() {
 	auto ActiveView {AeSysView::GetActiveView()};
-	EoGePoint4d ptView(ActiveView->GetCursorPosition(), 1.0);
-	ActiveView->ModelViewTransformPoint(ptView);
+	EoGePoint4d View(ActiveView->GetCursorPosition(), 1.0);
+	ActiveView->ModelViewTransformPoint(View);
 	if (ActiveView->GroupIsEngaged()) {
 		auto Primitive {ActiveView->EngagedPrimitive()};
-		if (Primitive->PivotOnGripPoint(ActiveView, ptView)) {
+		if (Primitive->PivotOnGripPoint(ActiveView, View)) {
 			const auto ptEng {ActiveView->DetPt()};
 			Primitive->AddReportToMessageList(ptEng);
 			ActiveView->SetCursorPosition(ptEng);
 			return;
 		}
 		// Did not pivot on engaged primitive
-		if (Primitive->IsPointOnControlPoint(ActiveView, ptView)) {
+		if (Primitive->IsPointOnControlPoint(ActiveView, View)) {
 			EoDbGroup::SetPrimitiveToIgnore(Primitive);
 		}
 	}
-	if (ActiveView->SelSegAndPrimAtCtrlPt(ptView) != nullptr) {
+	if (ActiveView->SelSegAndPrimAtCtrlPt(View) != nullptr) {
 		const auto ptEng {ActiveView->DetPt()};
 		ActiveView->EngagedPrimitive()->AddReportToMessageList(ptEng);
 		ActiveView->SetCursorPosition(ptEng);
@@ -2228,7 +2228,7 @@ void AeSysDoc::OnFileTracing() {
 	OpenFileName.lpstrTitle = L"Load Tracing";
 	OpenFileName.Flags = OFN_EXPLORER | OFN_ENABLETEMPLATE | OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 	OpenFileName.lpstrDefExt = L"tra";
-	OpenFileName.lpfnHook = OFNHookProcFileTracing;
+	OpenFileName.lpfnHook = OfnHookProcFileTracing;
 	OpenFileName.lpTemplateName = MAKEINTRESOURCEW(IDD_TRACING_EX);
 	if (GetOpenFileNameW(&OpenFileName)) {
 		FilterIndex = OpenFileName.nFilterIndex;
@@ -2606,7 +2606,7 @@ unsigned long AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
 	return MaskedPrimitivePosition != nullptr ? MaskedPrimitive->GetMask() : 0UL;
 }
 
-void AeSysDoc::OnSetupLayerproperties() {
+void AeSysDoc::OnSetupLayerProperties() {
 	EoDlgLayerPropertiesManager LayerPropertiesManager(m_DatabasePtr);
 	if (IDOK == LayerPropertiesManager.DoModal()) {
 		UpdateAllViews(nullptr);
@@ -2654,7 +2654,7 @@ void AeSysDoc::OnInsertTracing() {
 	delete[] OpenFileName.lpstrFile;
 }
 
-void AeSysDoc::OnFilePagesetup() {
+void AeSysDoc::OnFilePageSetup() {
 	OdSmartPtr<OdDbUserIO> pIO; // = pDbCmdCtx->userIO();
 	const auto idLayout {OdDbBlockTableRecordPtr(m_DatabasePtr->getActiveLayoutBTRId().safeOpenObject())->getLayoutId()};
 	OdSmartPtr<OdDbLayout> Layout {idLayout.safeOpenObject(OdDb::kForWrite)};
@@ -2671,21 +2671,21 @@ AeSysDoc::DataSource::DataSource() {
 void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) {
 	Empty();
 	const auto ObjectIds {document->SelectionSet()->objectIdArray()};
-	auto pDb {document->m_DatabasePtr->wblock(ObjectIds, OdGePoint3d::kOrigin)};
-	wchar_t tempdir[MAX_PATH];
-	::GetTempPath(MAX_PATH, tempdir);
-	wchar_t tempname[MAX_PATH];
-	::GetTempFileName(tempdir, L"", 0, tempname);
-	m_tmpPath = tempname;
+	auto Database {document->m_DatabasePtr->wblock(ObjectIds, OdGePoint3d::kOrigin)};
+	wchar_t TemporaryPath[MAX_PATH];
+	::GetTempPath(MAX_PATH, TemporaryPath);
+	wchar_t TemporaryName[MAX_PATH];
+	::GetTempFileName(TemporaryPath, L"", 0, TemporaryName);
+	m_tmpPath = TemporaryName;
 	m_tmpPath.makeLower();
 	m_tmpPath.replace(L".tmp", L".dwg");
-	auto sbuf {theApp.createFile(m_tmpPath, Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kCreateNew)};
+	auto StreamBuffer {theApp.createFile(m_tmpPath, Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kCreateNew)};
 
-	//pDb->writeFile(sbuf,OdDb::kDwg,OdDb::vAC21);
-	//HGLOBAL hGlobal = GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR15));
-	//new (hGlobal) AcadClipDataR15(m_tmpPath, OdString(pDoc->GetPathName()), p2 );
+	//Database->writeFile(StreamBuffer,OdDb::kDwg,OdDb::vAC21);
+	//auto hGlobal {GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR15))};
+	//new (hGlobal) AcadClipDataR15(m_tmpPath, OdString(document->GetPathName()), point);
 	//CacheGlobalData(ClipboardData::m_FormatR16, hGlobal);
-	pDb->writeFile(sbuf, OdDb::kDwg, OdDb::vAC21);
+	Database->writeFile(StreamBuffer, OdDb::kDwg, OdDb::vAC21);
 	auto hGlobalR21 {GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR21))};
 	new(hGlobalR21)AcadClipDataR21(m_tmpPath, OdString(document->GetPathName()), point);
 	CacheGlobalData(ClipboardData::m_FormatR17, hGlobalR21);
@@ -2706,7 +2706,7 @@ AeSysDoc::DataSource::~DataSource() {
 	Empty();
 }
 
-void AeSysDoc::OnDrawingutilitiesAudit() {
+void AeSysDoc::OnDrawingUtilitiesAudit() {
 	const auto FixErrors {AfxMessageBox(L"Fix any errors detected?", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES};
 	ODA_ASSERT(!theApp.m_pAuditDlg);
 	theApp.m_pAuditDlg = new EoDlgAudit();
@@ -2743,81 +2743,81 @@ void AeSysDoc::OnDrawingutilitiesAudit() {
 }
 
 BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate) {
-	const auto dwgver {m_DatabasePtr->originalFileVersion()};
+	const auto DwgVersion {m_DatabasePtr->originalFileVersion()};
 	auto Extension {fileName.Right(3)};
-	const auto isDwg {Extension.CompareNoCase(L"dxf") != 0};
-	CString title;
-	VERIFY(title.LoadString(nIDSTitle));
+	const auto IsDwg {Extension.CompareNoCase(L"dxf") != 0};
+	CString Title;
+	VERIFY(Title.LoadString(nIDSTitle));
 	CFileDialog FileDialog(openFileDialog);
 	FileDialog.m_ofn.Flags |= flags;
 	CString Filter;
 	Filter = L"AutoCAD 2018 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC32) FileDialog.m_ofn.nFilterIndex = 1;
+	if (IsDwg && DwgVersion == OdDb::vAC32) FileDialog.m_ofn.nFilterIndex = 1;
 	Filter += L"AutoCAD 2013 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC27) FileDialog.m_ofn.nFilterIndex = 2;
+	if (IsDwg && DwgVersion == OdDb::vAC27) FileDialog.m_ofn.nFilterIndex = 2;
 	Filter += "AutoCAD 2010 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC24) FileDialog.m_ofn.nFilterIndex = 3;
+	if (IsDwg && DwgVersion == OdDb::vAC24) FileDialog.m_ofn.nFilterIndex = 3;
 	Filter += "AutoCAD 2007 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC21) FileDialog.m_ofn.nFilterIndex = 4;
+	if (IsDwg && DwgVersion == OdDb::vAC21) FileDialog.m_ofn.nFilterIndex = 4;
 	Filter += L"AutoCAD 2004 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 5;
+	if (IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 5;
 	Filter += L"AutoCAD 2000 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC15) FileDialog.m_ofn.nFilterIndex = 6;
+	if (IsDwg && DwgVersion == OdDb::vAC15) FileDialog.m_ofn.nFilterIndex = 6;
 	Filter += L"AutoCAD R14 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 7;
+	if (IsDwg && DwgVersion == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 7;
 	Filter += L"AutoCAD R13 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver == OdDb::vAC13) FileDialog.m_ofn.nFilterIndex = 8;
+	if (IsDwg && DwgVersion == OdDb::vAC13) FileDialog.m_ofn.nFilterIndex = 8;
 	Filter += L"AutoCAD R12 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (isDwg && dwgver <= OdDb::vAC12) FileDialog.m_ofn.nFilterIndex = 9;
+	if (IsDwg && DwgVersion <= OdDb::vAC12) FileDialog.m_ofn.nFilterIndex = 9;
 	Filter += L"AutoCAD 2018 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC32) FileDialog.m_ofn.nFilterIndex = 10;
+	if (!IsDwg && DwgVersion == OdDb::vAC32) FileDialog.m_ofn.nFilterIndex = 10;
 	Filter += L"AutoCAD 2013 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::kDHL_1027) FileDialog.m_ofn.nFilterIndex = 11;
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1027) FileDialog.m_ofn.nFilterIndex = 11;
 	Filter += L"AutoCAD 2010 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::kDHL_1024) FileDialog.m_ofn.nFilterIndex = 12;
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1024) FileDialog.m_ofn.nFilterIndex = 12;
 	Filter += L"AutoCAD 2007 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::kDHL_1021) FileDialog.m_ofn.nFilterIndex = 13;
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1021) FileDialog.m_ofn.nFilterIndex = 13;
 	Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && (dwgver == OdDb::kDHL_1800a || dwgver == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 14;
+	if (!IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 14;
 	Filter += L"AutoCAD 2000 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC15) FileDialog.m_ofn.nFilterIndex = 15;
+	if (!IsDwg && DwgVersion == OdDb::vAC15) FileDialog.m_ofn.nFilterIndex = 15;
 	Filter += L"AutoCAD R14 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 16;
+	if (!IsDwg && DwgVersion == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 16;
 	Filter += L"AutoCAD R13 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC13) FileDialog.m_ofn.nFilterIndex = 17;
+	if (!IsDwg && DwgVersion == OdDb::vAC13) FileDialog.m_ofn.nFilterIndex = 17;
 	Filter += L"AutoCAD R12 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC12) FileDialog.m_ofn.nFilterIndex = 18;
+	if (!IsDwg && DwgVersion == OdDb::vAC12) FileDialog.m_ofn.nFilterIndex = 18;
 	Filter += L"AutoCAD R10 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC10) FileDialog.m_ofn.nFilterIndex = 19;
+	if (!IsDwg && DwgVersion == OdDb::vAC10) FileDialog.m_ofn.nFilterIndex = 19;
 	Filter += L"AutoCAD R9 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!isDwg && dwgver == OdDb::vAC09) FileDialog.m_ofn.nFilterIndex = 20;
+	if (!IsDwg && DwgVersion == OdDb::vAC09) FileDialog.m_ofn.nFilterIndex = 20;
 	Filter += L"|";
 	Filter.Replace('|', '\0');
 	if (fileName.Find('.') != -1) {
 		fileName = fileName.Left(fileName.Find('.'));
 	}
 	FileDialog.m_ofn.lpstrFilter = Filter;
-	FileDialog.m_ofn.lpstrTitle = title;
+	FileDialog.m_ofn.lpstrTitle = Title;
 	FileDialog.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
 	const LPARAM nResult = FileDialog.DoModal();
 	fileName.ReleaseBuffer();
@@ -2872,7 +2872,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned 
 	return nResult == IDOK;
 }
 
-void AeSysDoc::OnEditClearselection() {
+void AeSysDoc::OnEditClearSelection() {
 	if (m_DisableClearSelection) { return; }
 	auto Cleared {false};
 	auto ViewPosition {GetFirstViewPosition()};
@@ -2929,8 +2929,8 @@ void AeSysDoc::OnUpdateEditRedo(CCmdUI* commandUserInterface) {
 	commandUserInterface->Enable(m_DatabasePtr->hasRedo() ? TRUE : FALSE);
 }
 
-void AeSysDoc::OnEditSelectall() {
-	OnEditClearselection();
+void AeSysDoc::OnEditSelectAll() {
+	OnEditClearSelection();
 	m_DisableClearSelection = true;
 	ExecuteCommand(L"select single all");
 	m_DisableClearSelection = false;

@@ -45,7 +45,7 @@ OdEdBaseIO* OdApplicationDocumentImpl::BaseIO() {
 }
 
 OdDbCommandContextPtr OdApplicationDocumentImpl::CommandContext() {
-	return (*m_pImp)->CommandContext();
+	return (*m_pImp)->CommandContext0();
 }
 
 void OdApplicationDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {

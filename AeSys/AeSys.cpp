@@ -204,7 +204,7 @@ BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
 		ON_COMMAND(ID_MODE_FIXUP, &AeSys::OnModeFixup)
 		ON_UPDATE_COMMAND_UI(ID_MODE_FIXUP, &AeSys::OnUpdateModeFixup)
 		ON_COMMAND(ID_MODE_LETTER, &AeSys::OnModeLetter)
-		ON_COMMAND(ID_MODE_LPD, &AeSys::OnModeLPD)
+		ON_COMMAND(ID_MODE_LPD, &AeSys::OnModeLpd)
 		ON_UPDATE_COMMAND_UI(ID_MODE_LPD, &AeSys::OnUpdateModeLpd)
 		ON_COMMAND(ID_MODE_NODAL, &AeSys::OnModeNodal)
 		ON_UPDATE_COMMAND_UI(ID_MODE_NODAL, &AeSys::OnUpdateModeNodal)
@@ -216,17 +216,17 @@ BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
 		ON_COMMAND(ID_MODE_TRAP, &AeSys::OnModeTrap)
 		ON_UPDATE_COMMAND_UI(ID_MODE_TRAP, &AeSys::OnUpdateModeTrap)
 		ON_COMMAND(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnTrapCommandsAddGroups)
-		ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnUpdateTrapcommandsAddgroups)
+		ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_ADDGROUPS, &AeSys::OnUpdateTrapCommandsAddGroups)
 		ON_COMMAND(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnTrapCommandsHighlight)
-		ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnUpdateTrapcommandsHighlight)
+		ON_UPDATE_COMMAND_UI(ID_TRAPCOMMANDS_HIGHLIGHT, &AeSys::OnUpdateTrapCommandsHighlight)
 		ON_COMMAND(ID_VIEW_MODEINFORMATION, &AeSys::OnViewModeInformation)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_MODEINFORMATION, &AeSys::OnUpdateViewModeinformation)
-		ON_COMMAND(ID_FILE_PLOTSTYLEMANAGER, &AeSys::OnFilePlotstylemanager)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_MODEINFORMATION, &AeSys::OnUpdateViewModeInformation)
+		ON_COMMAND(ID_FILE_PLOTSTYLEMANAGER, &AeSys::OnFilePlotStyleManager)
 		ON_COMMAND(ID_TOOLS_LOADAPPLICATIONS, &AeSys::OnToolsLoadApplications)
-		ON_COMMAND(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnVectorizeAddVectorizerDLL)
-		ON_UPDATE_COMMAND_UI(ID_VECTORIZE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizeAddvectorizerdll)
-		ON_COMMAND(ID_VECTORIZE_CLEARMENU, OnVectorizeClearMenu)
-		ON_UPDATE_COMMAND_UI(ID_VECTORIZE_CLEARMENU, OnUpdateVectorizeClearMenu)
+		ON_COMMAND(ID_VECTORIZERTYPE_ADDVECTORIZERDLL, &AeSys::OnVectorizerTypeAddVectorizerDll)
+		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizerTypeAddVectorizerDll)
+		ON_COMMAND(ID_VECTORIZERTYPE_CLEARMENU, OnVectorizerTypeClearMenu)
+		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE_CLEARMENU, OnUpdateVectorizerTypeClearMenu)
 END_MESSAGE_MAP()
 
 
@@ -824,7 +824,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Enable Double Buffer", m_EnableDoubleBuffer);
 	theApp.WriteInt(L"Enable Blocks Cache", m_BlocksCache);
 	theApp.WriteInt(L"Gs Device Multithreading", m_GsDevMultithreading);
-	theApp.WriteInt(L"Mt Regen Threads Count", static_cast<int>(m_nMtRegenThreads));
+	theApp.WriteInt(L"Mt Regenerate Threads Count", static_cast<int>(m_MtRegenerateThreads));
 	theApp.WriteInt(L"Print/Preview via bitmap device", m_EnablePrintPreviewViaBitmap);
 	theApp.WriteInt(L"UseGsModel", m_UseGsModel);
 	theApp.WriteInt(L"Enable Software HLR", m_EnableHLR);
@@ -836,7 +836,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"GDI Gradients as Bitmaps", m_GDIGradientsAsBitmap);
 	theApp.WriteInt(L"GDI Gradients as Polys", m_GDIGradientsAsPolys);
 	theApp.WriteInt(L"GDI Gradients as Polys Threshold", m_nGDIGradientsAsPolysThreshold);
-	theApp.WriteInt(L"Disable Auto-Regen", m_DisableAutoRegen);
+	theApp.WriteInt(L"Disable Auto-Regen", m_DisableAutoRegenerate);
 	theApp.WriteInt(L"Save round trip information", m_SaveRoundTrip);
 	theApp.WriteInt(L"Save Preview", m_SavePreview);
 	theApp.WriteInt(L"Background colour", static_cast<int>(m_background));
@@ -1104,12 +1104,12 @@ bool AeSys::InitializeOda() {
 
 BOOL AeSys::InitInstance() {
 	// InitCommonControlsEx() is required on Windows XP if an application manifest specifies use of ComCtl32.dll version 6 or later to enable visual styles. Otherwise, any window creation will fail.
-	INITCOMMONCONTROLSEX InitCtrls;
-	InitCtrls.dwSize = sizeof InitCtrls;
+	INITCOMMONCONTROLSEX InitializeCommonControls;
+	InitializeCommonControls.dwSize = sizeof InitializeCommonControls;
 
 	// Load animate control, header, hot key, list-view, progress bar, status bar, tab, tooltip, toolbar, trackbar, tree-view, and up-down control classes.
-	InitCtrls.dwICC = ICC_WIN95_CLASSES;
-	InitCommonControlsEx(&InitCtrls);
+	InitializeCommonControls.dwICC = ICC_WIN95_CLASSES;
+	InitCommonControlsEx(&InitializeCommonControls);
 	if (!AfxOleInit()) { // Failed to initialize OLE support for the application.
 		AfxMessageBox(IDP_OLE_INIT_FAILED);
 		return FALSE;
@@ -1128,7 +1128,7 @@ BOOL AeSys::InitInstance() {
 	m_EnableDoubleBuffer = GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
 	m_BlocksCache = GetInt(L"Enable Blocks Cache", false);
 	m_GsDevMultithreading = GetInt(L"Gs Device Multithreading", false);
-	m_nMtRegenThreads = static_cast<unsigned>(GetInt(L"Mt Regen Threads Count", 4));
+	m_MtRegenerateThreads = static_cast<unsigned>(GetInt(L"Mt Regenerate Threads Count", 4));
 	m_EnablePrintPreviewViaBitmap = GetInt(L"Print/Preview via bitmap device", true);
 	m_UseGsModel = GetInt(L"UseGsModel", true);
 	m_EnableHLR = GetInt(L"Enable Software HLR", false);
@@ -1140,7 +1140,7 @@ BOOL AeSys::InitInstance() {
 	m_GDIGradientsAsBitmap = GetInt(L"GDI Gradients as Bitmaps", false);
 	m_GDIGradientsAsPolys = GetInt(L"GDI Gradients as Polys", false);
 	m_nGDIGradientsAsPolysThreshold = gsl::narrow_cast<unsigned char>(GetInt(L"GDI Gradients as Polys Threshold", 10));
-	m_DisableAutoRegen = GetInt(L"Disable Auto-Regen", false);
+	m_DisableAutoRegenerate = GetInt(L"Disable Auto-Regen", false);
 
 	//	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
 	m_SaveRoundTrip = GetInt(L"Save round trip information", true);
@@ -1342,7 +1342,7 @@ void AeSys::OnFileOpen() {
 	if (Result == IDOK) { OpenDocumentFile(FileName); }
 }
 
-void AeSys::OnFilePlotstylemanager() {
+void AeSys::OnFilePlotStyleManager() {
 	OPENFILENAME OpenFileName;
 	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
 	OpenFileName.lStructSize = sizeof(OPENFILENAME);
@@ -1430,7 +1430,7 @@ void AeSys::OnModeLetter() {
 	Dialog.DoModal();
 }
 
-void AeSys::OnModeLPD() {
+void AeSys::OnModeLpd() {
 	m_ModeResourceIdentifier = IDR_LPD_MODE;
 	LoadModeResources(ID_MODE_LPD);
 }
@@ -1542,15 +1542,15 @@ void AeSys::OnUpdateModeTrap(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_CurrentMode == ID_MODE_TRAP);
 }
 
-void AeSys::OnUpdateTrapcommandsAddgroups(CCmdUI* commandUserInterface) {
+void AeSys::OnUpdateTrapCommandsAddGroups(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_TrapModeAddGroups);
 }
 
-void AeSys::OnUpdateTrapcommandsHighlight(CCmdUI* commandUserInterface) {
+void AeSys::OnUpdateTrapCommandsHighlight(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_TrapHighlighted);
 }
 
-void AeSys::OnUpdateViewModeinformation(CCmdUI* commandUserInterface) {
+void AeSys::OnUpdateViewModeInformation(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_ModeInformationOverView);
 }
 
@@ -1970,7 +1970,7 @@ bool AddGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers
 		MENUITEMINFO menuItemInfo;
 		menuItemInfo.cbSize = sizeof menuItemInfo;
 		menuItemInfo.fMask = MIIM_DATA;
-		menuItemInfo.dwItemData = static_cast<unsigned long>(theApp.getGSMenuItemMarker());
+		menuItemInfo.dwItemData = static_cast<unsigned long>(theApp.GetGsMenuItemMarker());
 		VERIFY(::SetMenuItemInfoW(vectorizePopupMenu->m_hMenu, numberOfVectorizers, TRUE, &menuItemInfo));
 		if (theApp.RecentGsDevicePath().iCompare(OdString(vectorizerPath)) == 0) {
 			vectorizePopupMenu->CheckMenuItem(numberOfVectorizers, MF_BYPOSITION | MF_CHECKED);
@@ -1981,7 +1981,7 @@ bool AddGsMenuItem(CMenu* vectorizePopupMenu, unsigned long& numberOfVectorizers
 	return false;
 }
 
-void AeSys::OnVectorizeAddVectorizerDLL() {
+void AeSys::OnVectorizerTypeAddVectorizerDll() {
 	const unsigned long Flags {OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST};
 	CString Filter {L"Graphic System DLL (*." VECTORIZATION_MODULE_EXTENSION_W L")|*." VECTORIZATION_MODULE_EXTENSION_W L"|Windows DLL (*.dll)|*.dll||"};
 	CFileDialog FileDialog(TRUE, VECTORIZATION_MODULE_EXTENSION_W, L"", Flags, Filter, AfxGetMainWnd());
@@ -1995,12 +1995,12 @@ void AeSys::OnVectorizeAddVectorizerDLL() {
 		auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
 		AddGsMenuItem(VectorizePopupMenu, m_numGSMenuItems, m_sVectorizerPath);
 		WriteProfileStringW(L"options\\vectorizers", m_sVectorizerPath, L"");
-		GetMainWnd()->SendMessageW(WM_COMMAND, ID_VECTORIZE);
+		GetMainWnd()->SendMessageW(WM_COMMAND, ID_VECTORIZERTYPE);
 	}
 	ApplicationPath.ReleaseBuffer();
 }
 
-void AeSys::OnUpdateVectorizeAddvectorizerdll(CCmdUI* commandUserInterface) {
+void AeSys::OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* commandUserInterface) {
 	if (m_numGSMenuItems == 0) {
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		const auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
@@ -2022,7 +2022,7 @@ void AeSys::OnUpdateVectorizeAddvectorizerdll(CCmdUI* commandUserInterface) {
 	}
 }
 
-void AeSys::OnVectorizeClearMenu() {
+void AeSys::OnVectorizerTypeClearMenu() {
 	const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 	auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};
 	while (VectorizePopupMenu->GetMenuItemCount() > 3) {
@@ -2035,7 +2035,7 @@ void AeSys::OnVectorizeClearMenu() {
 	m_numGSMenuItems = 0;
 }
 
-void AeSys::OnUpdateVectorizeClearMenu(CCmdUI* commandUserInterface) {
+void AeSys::OnUpdateVectorizerTypeClearMenu(CCmdUI* commandUserInterface) {
 	commandUserInterface->Enable(m_numGSMenuItems > 0);
 }
 /// </section>
