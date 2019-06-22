@@ -146,11 +146,7 @@ public:
 
 	bool DiscardBackFaces() const noexcept { return m_DiscardBackFaces; }
 
-	enum display_fields {
-		kSchemaFields,
-		kDxfFields,
-		kDwgFields
-	};
+	enum DisplayFields { kSchemaFields, kDxfFields, kDwgFields };
 
 	int m_displayFields {0};
 	bool m_SaveRoundTrip {true};

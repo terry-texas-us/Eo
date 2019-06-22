@@ -367,9 +367,9 @@ bool AeSysView::regenAbort() const noexcept {
 }
 
 LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
-	if (m_bInRegen) { return 1; }
-	m_bInRegen = true;
-	m_bRegenAbort = false;
+	if (m_IncompleteRegenerate) { return 1; }
+	m_IncompleteRegenerate = true;
+	m_RegenerateAbort = false;
 	auto MainFrame {dynamic_cast<CMainFrame*>(theApp.GetMainWnd())};
 	if (!regenAbort()) {
 		try {
@@ -379,7 +379,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 				m_LayoutHelper->update();
 			}
 			if (!regenAbort()) {
-				MainFrame->StopTimer(m_paintMode == PaintMode_Regen ? L"Regen" : L"Redraw");
+				MainFrame->StopTimer(m_paintMode == kRegenerate ? L"Regen" : L"Redraw");
 			}
 		} catch (const OdError& Error) {
 			theApp.reportError(L"Rendering aborted", Error);
@@ -395,15 +395,15 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 		}
 #endif //#ifndef _DEBUG
 	}
-	m_bRegenAbort = false;
-	m_bInRegen = false;
-	m_paintMode = PaintMode_Redraw;
+	m_RegenerateAbort = false;
+	m_IncompleteRegenerate = false;
+	m_paintMode = kRedraw;
 	return 1;
 }
 
 void AeSysView::OnPaint() {
 	/* <tas="Code section to enable when custom redraw message processing added">
-		m_bRegenAbort = true;
+		m_RegenerateAbort = true;
 
 		PAINTSTRUCT PaintStruct;
 		BeginPaint(&PaintStruct);
@@ -1459,7 +1459,7 @@ void AeSysView::OnViewerRegen() {
 	if (m_LayoutHelper->gsModel()) {
 		m_LayoutHelper->gsModel()->invalidate(OdGsModel::kInvalidateAll);
 	}
-	m_paintMode = PaintMode_Regen;
+	m_paintMode = kRegenerate;
 	PostMessageW(WM_PAINT);
 }
 
@@ -1468,7 +1468,7 @@ void AeSysView::OnViewerVpregen() {
 	if (m_LayoutHelper->gsModel()) {
 		m_LayoutHelper->gsModel()->invalidate(getActiveView());
 	}
-	m_paintMode = PaintMode_Regen;
+	m_paintMode = kRegenerate;
 	PostMessageW(WM_PAINT);
 }
 

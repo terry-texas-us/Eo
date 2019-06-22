@@ -32,11 +32,11 @@ class AeSysView
 	ExEdInputParser m_inpars;
 	static unsigned g_nRedrawMSG;
 	OdExEditorObject m_editor;
-	mutable bool m_bRegenAbort {false};
-	mutable bool m_bInRegen {false}; // flag to avoid reentrancy in regen, if new redraw message is received while regen is incomplete (e.g. when assert pops up)
-	enum PaintMode { PaintMode_Redraw, PaintMode_Regen };
+	mutable bool m_RegenerateAbort {false};
+	mutable bool m_IncompleteRegenerate {false}; // flag to avoid reentrancy in regenerate, if new redraw message is received while regenerate is incomplete (e.g. when assert pops up)
+	enum PaintMode { kRedraw, kRegenerate };
 
-	PaintMode m_paintMode {PaintMode_Regen};
+	PaintMode m_paintMode {kRegenerate};
 	CPoint m_oldPoint;
 	HCURSOR m_hCursor {nullptr};
 

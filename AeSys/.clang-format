@@ -1,4 +1,4 @@
-# Visual Studio generated .clang-format file
+# Visual Studio generated .clang-format file https://clang.llvm.org/docs/ClangFormatStyleOptions.html
 
 BasedOnStyle: LLVM
 Language: Cpp
