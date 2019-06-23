@@ -21,7 +21,7 @@ static int CALLBACK EoLineweightCompareFunction(const LPARAM item1, const LPARAM
 IMPLEMENT_DYNAMIC(EoDlgPlotStyleEditLineweight, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditLineweight, CDialog)
-		ON_BN_CLICKED(IDC_MILLIMETERS, OnRadioMillimetrs)
+		ON_BN_CLICKED(IDC_MILLIMETERS, OnRadioMillimeters)
 		ON_BN_CLICKED(IDC_INCHES, OnRadioInches)
 		ON_BN_CLICKED(IDC_EDITLINEWEIGHT, OnButtonEditlineweight)
 		ON_BN_CLICKED(IDC_SORTLINEWEIGHT, OnButtonSortlineweight)
@@ -144,7 +144,7 @@ void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
 	}
 }
 
-void EoDlgPlotStyleEditLineweight::OnRadioMillimetrs() {
+void EoDlgPlotStyleEditLineweight::OnRadioMillimeters() {
 	SetUnitIntoList(false);
 }
 

@@ -99,7 +99,7 @@ void AeSysView::OnEditModeMove() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, kLines);
 	} else {
 		EoGeMatrix3d tm;
 		tm.setToTranslation(CurrentPnt - Document->TrapPivotPoint());
@@ -115,7 +115,7 @@ void AeSysView::OnEditModeCopy() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp != ID_OP5) {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP5);
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, kLines);
 	} else {
 		ModeLineUnhighlightOp(m_PreviousOp);
 		RubberBandingDisable();

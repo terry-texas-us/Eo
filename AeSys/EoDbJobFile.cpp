@@ -130,8 +130,8 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 		if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { return false; }
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
-		const auto wPrims {*reinterpret_cast<unsigned short*>(m_Version == 1 ? &m_PrimBuf[2] : &m_PrimBuf[1])};
-		for (unsigned w = 1; w < wPrims; w++) {
+		const auto NumberOfPrimitives {*reinterpret_cast<unsigned short*>(m_Version == 1 ? &m_PrimBuf[2] : &m_PrimBuf[1])};
+		for (unsigned w = 1; w < NumberOfPrimitives; w++) {
 			try {
 				Position = file.GetPosition();
 				if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { throw L"Exception.FileJob: Unexpected end of file."; }

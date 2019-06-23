@@ -208,7 +208,7 @@ void EoDbEllipse::GenPts(const OdGePlane& plane, const double sweepAngle) const 
 	ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.0));
 	OdGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(plane); // <tas=Builds a matrix which performs rotation and translation, but no scaling.</tas>
-	// Number of points based on angle and a smothness coefficient
+	// Number of points based on angle and a smoothness coefficient
 	const auto dLen {EoMax(m_MajorAxis.length(), m_MinorAxis.length())};
 	auto NumberOfPoints {EoMax(2, abs(EoRound(sweepAngle / Oda2PI * 32.)))};
 	NumberOfPoints = EoMin(128, EoMax(NumberOfPoints, abs(EoRound(sweepAngle * dLen / 0.25))));
@@ -319,7 +319,7 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 		if (arBeg.y >= m_Center.y) { // Arc begins in quadrant one
 			if (arEnd.x >= m_Center.x) {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
-					if (arBeg.x > arEnd.x) { // Arc in qraudrant one only
+					if (arBeg.x > arEnd.x) { // Arc in quadrant one only
 						(*arMin).x = arEnd.x;
 						(*arMin).y = arBeg.y;
 						(*arMax).x = arBeg.x;
@@ -342,7 +342,7 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 					(*arMin).y = arBeg.y;
 					(*arMax).y = arEnd.y;
 				} else { // Arc ends in quadrant four
-					if (arBeg.x < arEnd.x) { // Arc in qraudrant one only
+					if (arBeg.x < arEnd.x) { // Arc in quadrant one only
 						(*arMin).x = arBeg.x;
 						(*arMin).y = arBeg.y;
 						(*arMax).x = arEnd.x;
@@ -368,7 +368,7 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 				}
 			} else {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
-					if (arBeg.x > arEnd.x) { // Arc in qraudrant two only
+					if (arBeg.x > arEnd.x) { // Arc in quadrant two only
 						(*arMin).x = arEnd.x;
 						(*arMin).y = arEnd.y;
 						(*arMax).x = arBeg.x;
@@ -393,7 +393,7 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					(*arMin).x = EoMin(arBeg.x, arEnd.x);
 				} else { // Arc ends in quadrant three
-					if (arBeg.x < arEnd.x) { // Arc in qraudrant three only
+					if (arBeg.x < arEnd.x) { // Arc in quadrant three only
 						(*arMin).x = arBeg.x;
 						(*arMin).y = arEnd.y;
 						(*arMax).x = arEnd.x;
@@ -537,7 +537,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 			}
 		}
 	}
-	if (fabs(m_SweepAngle - Oda2PI) <= DBL_EPSILON) { // Arc is a circle in disuise
+	if (fabs(m_SweepAngle - Oda2PI) <= DBL_EPSILON) { // Arc is a circle in disguise
 	} else {
 		if (ptBeg.x >= lowerLeftCorner.x && ptBeg.x <= upperRightCorner.x && ptBeg.y >= lowerLeftCorner.y && ptBeg.y <= upperRightCorner.y) { // Add beg point to int set
 			for (auto i = IntersectionIndex; i > 0; i--) {
@@ -579,15 +579,15 @@ bool EoDbEllipse::IsInView(AeSysView* view) const {
 
 OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
-	auto dAPert {sm_SelectApertureSize};
+	auto Aperture {sm_SelectApertureSize};
 	OdGePoint3d ptCtrl[] = {StartPoint(), EndPoint()};
 	for (unsigned w = 0; w < 2; w++) {
 		EoGePoint4d pt(ptCtrl[w], 1.0);
 		view->ModelViewTransformPoint(pt);
 		const auto dDis {point.DistanceToPointXY(pt)};
-		if (dDis < dAPert) {
+		if (dDis < Aperture) {
 			sm_ControlPointIndex = w;
-			dAPert = dDis;
+			Aperture = dDis;
 		}
 	}
 	return sm_ControlPointIndex == SIZE_T_MAX ? OdGePoint3d::kOrigin : ptCtrl[sm_ControlPointIndex];

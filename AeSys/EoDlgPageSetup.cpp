@@ -703,7 +703,7 @@ void EoDlgPageSetup::FillPlotAreaCombo(const bool fillCombo) {
 		m_PlotAreaType.ResetContent();
 		if (IsModelSpacePageSetup()) {
 			m_PlotAreaType.AddString(L"Display");
-			m_PlotAreaType.AddString(L"Extents");// TODO : depends on entities existance
+			m_PlotAreaType.AddString(L"Extents");// TODO : depends on entities existence
 			m_PlotAreaType.AddString(L"Limits");
 			if (ViewsExist()) {
 				m_PlotAreaType.AddString(L"View");
@@ -711,7 +711,7 @@ void EoDlgPageSetup::FillPlotAreaCombo(const bool fillCombo) {
 			m_PlotAreaType.AddString(L"Window");
 		} else {
 			m_PlotAreaType.AddString(L"Display");
-			m_PlotAreaType.AddString(L"Extents");// TODO : depends on entities existance
+			m_PlotAreaType.AddString(L"Extents");// TODO : depends on entities existence
 			m_PlotAreaType.AddString(L"Layout");
 			if (ViewsExist()) {
 				m_PlotAreaType.AddString(L"View");

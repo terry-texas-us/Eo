@@ -34,7 +34,6 @@ public:	// Constructors and destructor
 	const EoDbText& operator=(const EoDbText&);
 	~EoDbText() = default;
 
-	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;

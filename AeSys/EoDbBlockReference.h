@@ -39,7 +39,6 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	const EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
 	~EoDbBlockReference() = default;
 
-	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
 	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;

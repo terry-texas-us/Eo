@@ -40,7 +40,6 @@ public:	// Constructors and destructor
 	const EoDbPolyline& operator=(const EoDbPolyline& other);
 	~EoDbPolyline() = default;
 
-	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -84,5 +83,5 @@ public:	// Constructors and destructor
 	static EoDbPolyline* Create(OdDbPolylinePtr polyline);
 	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbPolylinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);
-	// <tas="No contruction from job files."/>
+	// <tas="No construction from job files."/>
 };

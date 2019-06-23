@@ -249,7 +249,7 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) n
 
 OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	sm_ControlPointIndex = SIZE_T_MAX;
-	auto dApert {sm_SelectApertureSize};
+	auto Aperture {sm_SelectApertureSize};
 	sm_PivotVertex = m_Vertices.size();
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		OdGePoint3d Point;
@@ -257,9 +257,9 @@ OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView* view, const EoGePoint4
 		EoGePoint4d pt(Point, 1.0);
 		view->ModelViewTransformPoint(pt);
 		const auto dDis {point.DistanceToPointXY(pt)};
-		if (dDis < dApert) {
+		if (dDis < Aperture) {
 			sm_ControlPointIndex = VertexIndex;
-			dApert = dDis;
+			Aperture = dDis;
 			sm_Edge = VertexIndex + 1;
 			sm_PivotVertex = VertexIndex;
 		}

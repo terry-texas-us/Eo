@@ -144,28 +144,28 @@ protected:
 	//	void adjustDevice(OdGsDevice* device);
 	void createDevice(bool recreate = false);
 	bool regenAbort() const noexcept override;
-public: // Methods - virtuals 
+public:
 	unsigned long getKeyState() noexcept override;
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
 	bool UpdateStringTrackerCursor();
 
-	enum EStateInformationItem {
-		WorkCount = 0x0001,
-		TrapCount = 0x0002,
-		BothCounts = WorkCount | TrapCount,
-		Pen = 0x0004,
-		Line = 0x0008,
-		TextHeight = 0x0010,
-		WndRatio = 0x0020,
-		Scale = 0x0040,
-		DimLen = 0x0080,
-		DimAng = 0x0100,
-		All = BothCounts | Pen | Line | TextHeight | WndRatio | Scale | DimLen | DimAng
+	enum StateInformationItem {
+		kWorkCount = 0x0001,
+		kTrapCount = 0x0002,
+		kBothCounts = kWorkCount | kTrapCount,
+		kPen = 0x0004,
+		kLine = 0x0008,
+		kTextHeight = 0x0010,
+		kWndRatio = 0x0020,
+		kScale = 0x0040,
+		kDimLen = 0x0080,
+		kDimAng = 0x0100,
+		kAll = kBothCounts | kPen | kLine | kTextHeight | kWndRatio | kScale | kDimLen | kDimAng
 	};
 
-	enum ERubs { None, Lines, Rectangles };
+	enum RubberBandingTypes { kNone, kLines, kRectangles };
 
 private:
 	static const double sm_MaximumWindowRatio;
@@ -197,7 +197,7 @@ private:
 	bool m_LeftButton {false};
 	bool m_MiddleButton {false};
 	bool m_RightButton {false};
-	ERubs m_RubberBandType {None};
+	RubberBandingTypes m_RubberBandType {kNone};
 	OdGePoint3d m_RubberBandBeginPoint;
 	CPoint m_RubberBandLogicalBeginPoint;
 	CPoint m_RubberBandLogicalEndPoint;
@@ -296,9 +296,9 @@ public: // Input message handler member functions
 	static AeSysView* GetActiveView();
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
-	void UpdateStateInformation(EStateInformationItem item);
+	void UpdateStateInformation(StateInformationItem item);
 	void RubberBandingDisable();
-	void RubberBandingStartAtEnable(const OdGePoint3d& point, ERubs type);
+	void RubberBandingStartAtEnable(const OdGePoint3d& point, RubberBandingTypes type);
 	OdGePoint3d GetCursorPosition();
 	OdGePoint3d GetWorldCoordinates(CPoint point);
 	/// <summary> Positions cursor at targeted position.</summary>
@@ -580,13 +580,13 @@ public:
 	
 	// Cut mode interface
 	void OnCutModeOptions() noexcept;
-	/// <summary>Cuts a primative at cursor position.</summary>
+	/// <summary>Cuts a primitive at cursor position.</summary>
 	void OnCutModeTorch();
-	/// <summary>Cuts all primatives which intersect with line defined by two points.</summary>
+	/// <summary>Cuts all primitives which intersect with line defined by two points.</summary>
 	// Notes: Colinear fill area edges are not considered to intersect.
 	void OnCutModeSlice();
 	void OnCutModeField();
-	/// <summary>Cuts a primative at two pnts and puts non-null middle piece in trap.</summary>
+	/// <summary>Cuts a primitive at two pnts and puts non-null middle piece in trap.</summary>
 	// Notes:	Accuracy of arc section cuts diminishes with high
 	//			eccentricities. if two cut points are coincident
 	//			nothing happens.

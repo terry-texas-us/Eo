@@ -113,7 +113,7 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_LinetypesListControl.DeleteAllItems();
 	m_LinetypesListControl.InsertColumn(Name, L"Name", LVCFMT_LEFT, 128);
-	m_LinetypesListControl.InsertColumn(Appearance, L"Apearance", LVCFMT_LEFT, 144);
+	m_LinetypesListControl.InsertColumn(Appearance, L"Appearance", LVCFMT_LEFT, 144);
 	m_LinetypesListControl.InsertColumn(Description, L"Description", LVCFMT_LEFT, 128);
 	OdDbDatabasePtr Database {m_LinetypeTable->database()};
 	auto Iterator {m_LinetypeTable->newIterator()};

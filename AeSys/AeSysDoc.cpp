@@ -1339,14 +1339,14 @@ int AeSysDoc::RemoveEmptyGroups() {
 void AeSysDoc::AddWorkLayerGroup(EoDbGroup* group) {
 	m_WorkLayer->AddTail(group);
 	AddGroupToAllViews(group);
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::WorkCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kWorkCount);
 	SetModifiedFlag(TRUE);
 }
 
 void AeSysDoc::AddWorkLayerGroups(EoDbGroupList* groups) {
 	m_WorkLayer->AddTail(groups);
 	AddGroupsToAllViews(groups);
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::WorkCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kWorkCount);
 	SetModifiedFlag(TRUE);
 }
 
@@ -1403,7 +1403,7 @@ EoDbLayer* AeSysDoc::AnyLayerRemove(EoDbGroup* group) {
 		if (Layer->IsCurrent() || Layer->IsActive()) {
 
 			if (Layer->Remove(group) != nullptr) {
-				AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::WorkCount);
+				AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kWorkCount);
 				SetModifiedFlag(TRUE);
 				return Layer;
 			}
@@ -1857,7 +1857,7 @@ void AeSysDoc::OnEditTrapDelete() {
 
 void AeSysDoc::OnEditTrapQuit() {
 	RemoveAllTrappedGroups();
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
 void AeSysDoc::OnEditTrapCopy() {
@@ -1934,7 +1934,7 @@ void AeSysDoc::OnEditTrapPaste() {
 void AeSysDoc::OnEditTrapWork() {
 	RemoveAllTrappedGroups();
 	AddGroupsToTrap(GetWorkLayer());
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
 void AeSysDoc::OnEditTrapWorkAndActive() {
@@ -1944,7 +1944,7 @@ void AeSysDoc::OnEditTrapWorkAndActive() {
 		if (Layer->IsCurrent() || Layer->IsActive()) { AddGroupsToTrap(Layer); }
 
 	}
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
 void AeSysDoc::OnTrapCommandsCompress() {
@@ -2021,7 +2021,7 @@ void AeSysDoc::OnSetupPenColor() {
 	Dialog.m_ColorIndex = static_cast<unsigned>(g_PrimitiveState.ColorIndex());
 	if (Dialog.DoModal() == IDOK) {
 		g_PrimitiveState.SetColorIndex(nullptr, static_cast<short>(Dialog.m_ColorIndex));
-		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Pen);
+		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kPen);
 	}
 }
 
@@ -2032,7 +2032,7 @@ void AeSysDoc::OnSetupLinetype() {
 		const auto Name {Dialog.m_Linetype->getName()};
 		const auto LinetypeIndex {static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 		g_PrimitiveState.SetLinetypeIndexPs(nullptr, LinetypeIndex);
-		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::Line);
+		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kLine);
 	}
 }
 
@@ -2094,7 +2094,7 @@ void AeSysDoc::OnToolsGroupDelete() {
 		AnyLayerRemove(Group);
 		RemoveGroupFromAllViews(Group);
 		if (RemoveTrappedGroup(Group) != nullptr) {
-			ActiveView->UpdateStateInformation(AeSysView::TrapCount);
+			ActiveView->UpdateStateInformation(AeSysView::kTrapCount);
 		}
 		UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 		DeletedGroupsAddTail(Group);
@@ -2170,7 +2170,7 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 			AnyLayerRemove(Group);
 			RemoveGroupFromAllViews(Group);
 			if (RemoveTrappedGroup(Group) != nullptr) {
-				ActiveView->UpdateStateInformation(AeSysView::TrapCount);
+				ActiveView->UpdateStateInformation(AeSysView::kTrapCount);
 			}
 		}
 		DeletedGroupsAddTail(Group);
@@ -2203,7 +2203,7 @@ void AeSysDoc::OnSetupGotoPoint() {
 void AeSysDoc::OnSetupOptionsDraw() {
 	EoDlgDrawOptions Dialog;
 	if (Dialog.DoModal() == IDOK) {
-		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::All);
+		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kAll);
 	}
 }
 

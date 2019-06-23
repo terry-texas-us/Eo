@@ -34,10 +34,10 @@ void EoDialogResizeHelper::Add(HWND a_hWnd) {
 
 void EoDialogResizeHelper::OnSize() {
 	if (IsWindow(m_hParent)) {
-		CRect currParentSize;
-		GetWindowRect(m_hParent, currParentSize);
-		const auto xRatio {static_cast<double>(currParentSize.Width()) / m_origParentSize.Width()};
-		const auto yRatio {static_cast<double>(currParentSize.Height()) / m_origParentSize.Height()};
+		CRect CurrentParentSize;
+		GetWindowRect(m_hParent, CurrentParentSize);
+		const auto xRatio {static_cast<double>(CurrentParentSize.Width()) / m_origParentSize.Width()};
+		const auto yRatio {static_cast<double>(CurrentParentSize.Height()) / m_origParentSize.Height()};
 		for (CtrlCont_t::const_iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 			CRect currCtrlSize;
 			const auto hFix {it->m_hFix};
@@ -47,20 +47,20 @@ void EoDialogResizeHelper::OnSize() {
 			if (hFix & kLeft) {
 				currCtrlSize.left = it->m_origSize.left;
 			} else {
-				currCtrlSize.left = hFix & kWidth && hFix & kRight ? it->m_origSize.left + currParentSize.Width() - m_origParentSize.Width() : static_cast<long>(it->m_origSize.left * xRatio);
+				currCtrlSize.left = hFix & kWidth && hFix & kRight ? it->m_origSize.left + CurrentParentSize.Width() - m_origParentSize.Width() : static_cast<long>(it->m_origSize.left * xRatio);
 			}
 			if (hFix & kRight) {
-				currCtrlSize.right = it->m_origSize.right + currParentSize.Width() - m_origParentSize.Width();
+				currCtrlSize.right = it->m_origSize.right + CurrentParentSize.Width() - m_origParentSize.Width();
 			} else {
 				currCtrlSize.right = hFix & kWidth ? currCtrlSize.left + it->m_origSize.Width() : static_cast<long>(it->m_origSize.right * xRatio);
 			}
 			if (vFix & kTop) {
 				currCtrlSize.top = it->m_origSize.top;
 			} else {
-				currCtrlSize.top = vFix & kHeight && vFix & kBottom ? it->m_origSize.top + currParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
+				currCtrlSize.top = vFix & kHeight && vFix & kBottom ? it->m_origSize.top + CurrentParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
 			}
 			if (vFix & kBottom) {
-				currCtrlSize.bottom = it->m_origSize.bottom + currParentSize.Height() - m_origParentSize.Height();
+				currCtrlSize.bottom = it->m_origSize.bottom + CurrentParentSize.Height() - m_origParentSize.Height();
 			} else {
 				currCtrlSize.bottom = vFix & kHeight ? currCtrlSize.top + it->m_origSize.Height() : static_cast<long>(it->m_origSize.bottom * yRatio);
 			}

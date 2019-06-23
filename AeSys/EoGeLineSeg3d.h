@@ -85,7 +85,7 @@ public:	// Constructors and destructor
 	/// true if point is within acceptance aperture of line segment
 	///	false otherwise
 	/// </returns>
-	bool IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGePoint3d& ptProj, double& relationship) const;
+	bool IsSelectedBy_xy(const OdGePoint3d& point, double pickAperture, OdGePoint3d& ptProj, double& relationship) const;
 	/// <summary>Projects a point onto line.</summary>
 	[[nodiscard]] OdGePoint3d ProjPt(const OdGePoint3d& point) const;
 	/// <summary>Determines the coordinates of point projected along a line.</summary>

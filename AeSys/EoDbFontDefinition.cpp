@@ -60,7 +60,7 @@ void EoDbFontDefinition::SetVerticalAlignment(const EoDb::VerticalAlignment vert
 	m_VerticalAlignment = verticalAlignment;
 }
 
-CString EoDbFontDefinition::FormatHorizonatlAlignment() const {
+CString EoDbFontDefinition::FormatHorizontalAlignment() const {
 	std::vector<const wchar_t*> HorizontalAlignments {L"Left", L"Center", L"Right"};
 	return m_HorizontalAlignment >= EoDb::kAlignLeft && m_HorizontalAlignment <= EoDb::kAlignRight ? HorizontalAlignments.at(m_HorizontalAlignment - 1) : L"Invalid!";
 }

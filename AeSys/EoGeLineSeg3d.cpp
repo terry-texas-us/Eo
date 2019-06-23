@@ -188,30 +188,30 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 	}
 }
 
-bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert, OdGePoint3d& ptProj, double& relationship) const {
-	if (point.x < EoMin(startPoint().x, endPoint().x) - apert) { return false; }
-	if (point.x > EoMax(startPoint().x, endPoint().x) + apert) { return false; }
-	if (point.y < EoMin(startPoint().y, endPoint().y) - apert) { return false; }
-	if (point.y > EoMax(startPoint().y, endPoint().y) + apert) { return false; }
-	const auto dPBegX {startPoint().x - point.x};
-	const auto dPBegY {startPoint().y - point.y};
-	const auto dBegEndX {endPoint().x - startPoint().x};
-	const auto dBegEndY {endPoint().y - startPoint().y};
-	const auto dDivr {dBegEndX * dBegEndX + dBegEndY * dBegEndY};
+bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double pickAperture, OdGePoint3d& ptProj, double& relationship) const {
+	if (point.x < EoMin(startPoint().x, endPoint().x) - pickAperture) { return false; }
+	if (point.x > EoMax(startPoint().x, endPoint().x) + pickAperture) { return false; }
+	if (point.y < EoMin(startPoint().y, endPoint().y) - pickAperture) { return false; }
+	if (point.y > EoMax(startPoint().y, endPoint().y) + pickAperture) { return false; }
+	const auto StartX {startPoint().x - point.x};
+	const auto StartY {startPoint().y - point.y};
+	const auto StartEndX {endPoint().x - startPoint().x};
+	const auto StartEndY {endPoint().y - startPoint().y};
+	const auto Divisor {StartEndX * StartEndX + StartEndY * StartEndY};
 	double DistanceSquared;
-	if (dDivr <= DBL_EPSILON) {
+	if (Divisor <= DBL_EPSILON) {
 		relationship = 0.0;
-		DistanceSquared = dPBegX * dPBegX + dPBegY * dPBegY;
+		DistanceSquared = StartX * StartX + StartY * StartY;
 	} else {
-		relationship = - (dPBegX * dBegEndX + dPBegY * dBegEndY) / dDivr;
+		relationship = -(StartX * StartEndX + StartY * StartEndY) / Divisor;
 		relationship = EoMax(0.0, EoMin(1.0, relationship));
-		const auto dx {dPBegX + relationship * dBegEndX};
-		const auto dy {dPBegY + relationship * dBegEndY};
-		DistanceSquared = dx * dx + dy * dy;
+		const auto X {StartX + relationship * StartEndX};
+		const auto Y {StartY + relationship * StartEndY};
+		DistanceSquared = X * X + Y * Y;
 	}
-	if (DistanceSquared > apert * apert) { return false; }
-	ptProj.x = startPoint().x + relationship * dBegEndX;
-	ptProj.y = startPoint().y + relationship * dBegEndY;
+	if (DistanceSquared > pickAperture * pickAperture) { return false; }
+	ptProj.x = startPoint().x + relationship * StartEndX;
+	ptProj.y = startPoint().y + relationship * StartEndY;
 	return true;
 }
 

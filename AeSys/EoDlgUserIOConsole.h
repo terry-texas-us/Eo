@@ -36,7 +36,6 @@ public:
 	void OnDestroy();
 	void OnShowWindow(BOOL show, unsigned status);
 
-	// Methods - virtuals
 	unsigned long getKeyState() noexcept override { return 0; }
 
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;

@@ -60,7 +60,7 @@ void AeSysView::OnNodalModeArea() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP3) {
 		PreviousNodalCursorPosition = CurrentPnt;
-		RubberBandingStartAtEnable(CurrentPnt, Rectangles);
+		RubberBandingStartAtEnable(CurrentPnt, kRectangles);
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP3);
 	} else {
 		if (PreviousNodalCursorPosition != CurrentPnt) {
@@ -95,7 +95,7 @@ void AeSysView::OnNodalModeMove() {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP4);
 		m_NodalModePoints.clear();
 		m_NodalModePoints.append(CurrentPnt);
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, kLines);
 		ConstructPreviewGroup();
 	} else {
 		OnNodalModeReturn();
@@ -108,7 +108,7 @@ void AeSysView::OnNodalModeCopy() {
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP5);
 		m_NodalModePoints.clear();
 		m_NodalModePoints.append(CurrentPnt);
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, kLines);
 		ConstructPreviewGroupForNodalGroups();
 	} else {
 		OnNodalModeReturn();
@@ -119,7 +119,7 @@ void AeSysView::OnNodalModeToLine() {
 	auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP6) {
 		PreviousNodalCursorPosition = CurrentPnt;
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, kLines);
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP6);
 	} else {
 		if (PreviousNodalCursorPosition != CurrentPnt) {
@@ -151,7 +151,7 @@ void AeSysView::OnNodalModeToPolygon() {
 	auto CurrentPnt {GetCursorPosition()};
 	if (PreviousNodalCommand != ID_OP7) {
 		PreviousNodalCursorPosition = CurrentPnt;
-		RubberBandingStartAtEnable(CurrentPnt, Lines);
+		RubberBandingStartAtEnable(CurrentPnt, kLines);
 		PreviousNodalCommand = ModeLineHighlightOp(ID_OP7);
 	} else {
 		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};

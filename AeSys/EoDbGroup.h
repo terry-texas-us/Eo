@@ -4,7 +4,7 @@
 #include "DbGroup.h"
 using SelectionPair = std::pair<EoDbGroup*, EoDbPrimitive*>;
 
-enum GroupPrimitvePair { tGroup, tPrimitive };
+enum GroupPrimitivePair { tGroup, tPrimitive };
 
 class AeSysDoc;
 class EoDbBlock;
@@ -17,7 +17,7 @@ public:
 	~EoDbGroup() = default;
 	EoDbGroup(const EoDbGroup& group);
 	EoDbGroup(const EoDbBlock& block);
-	void AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent);
+	void AddPrimitivesToTreeViewControl(HWND tree, HTREEITEM parent);
 	HTREEITEM AddToTreeViewControl(HWND tree, HTREEITEM parent);
 	void BreakPolylines();
 	void BreakSegRefs();
@@ -44,7 +44,7 @@ public:
 	void RemoveDuplicatePrimitives();
 	int RemoveEmptyNotesAndDelete();
 	/// <summary>Picks a prim if close enough to point.  Working in view space.</summary>
-	EoDbPrimitive* SelPrimUsingPoint(const EoGePoint4d& point, AeSysView* view, double&, OdGePoint3d&);
+	EoDbPrimitive* SelectPrimitiveUsingPoint(const EoGePoint4d& point, AeSysView* view, double&, OdGePoint3d&);
 	/// <summary>Determines if the line crosses any primitive in the group</summary>
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view) const;
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const;

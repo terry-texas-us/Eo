@@ -35,7 +35,6 @@ public: // Constructors and destructor
 	EoDbPrimitive(short colorIndex, short linetypeIndex);
 	virtual ~EoDbPrimitive() = default;
 
-	// Methods - absolute virtuals
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;
 	virtual EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const = 0;
 	virtual void Display(AeSysView* view, CDC* deviceContext) = 0;
@@ -63,7 +62,6 @@ public: // Constructors and destructor
 	virtual bool Write(EoDbFile& file) const = 0;
 	virtual void Write(CFile& file, unsigned char* buffer) const = 0;
 
-	// Methods - virtuals
 	virtual void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup);
 	/// <summary>Cuts a primitive at two points.</summary>
 	/// <param name="points"></param>

@@ -112,7 +112,7 @@ void AeSysView::OnDimensionModeLine() {
 		}
 		PreviousDimensionPosition = CurrentPnt;
 	}
-	RubberBandingStartAtEnable(CurrentPnt, Lines);
+	RubberBandingStartAtEnable(CurrentPnt, kLines);
 }
 
 void AeSysView::OnDimensionModeDLine() {
@@ -150,7 +150,7 @@ void AeSysView::OnDimensionModeDLine() {
 		PreviousDimensionPosition = CurrentPnt;
 	}
 	SetCursorPosition(CurrentPnt);
-	RubberBandingStartAtEnable(CurrentPnt, Lines);
+	RubberBandingStartAtEnable(CurrentPnt, kLines);
 }
 
 void AeSysView::OnDimensionModeDLine2() {
@@ -189,7 +189,7 @@ void AeSysView::OnDimensionModeDLine2() {
 		// error finish prior op first
 	}
 	SetCursorPosition(CurrentPnt);
-	RubberBandingStartAtEnable(CurrentPnt, Lines);
+	RubberBandingStartAtEnable(CurrentPnt, kLines);
 }
 
 void AeSysView::OnDimensionModeExten() {

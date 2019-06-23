@@ -18,7 +18,6 @@ DECLARE_DYNAMIC(EoDbDimension)
 	const EoDbDimension& operator=(const EoDbDimension& other);
 	~EoDbDimension() = default;
 
-	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -42,7 +41,6 @@ DECLARE_DYNAMIC(EoDbDimension)
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods - virtuals
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
 	void ModifyState() noexcept override;

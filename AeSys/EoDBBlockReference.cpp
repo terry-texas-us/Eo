@@ -54,7 +54,7 @@ void EoDbBlockReference::AddToTreeViewControl(const HWND tree, const HTREEITEM p
 	EoDbBlock* Block;
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
 	const auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
-	static_cast<EoDbGroup*>(Block)->AddPrimsToTreeViewControl(tree, TreeItemHandle);
+	static_cast<EoDbGroup*>(Block)->AddPrimitivesToTreeViewControl(tree, TreeItemHandle);
 }
 
 EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoint) const {

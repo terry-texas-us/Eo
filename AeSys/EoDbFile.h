@@ -3,7 +3,7 @@
 
 class EoDbFile : public CFile {
 public:
-	enum Sentinals {
+	enum Sentinels {
 		kHeaderSection = 0x0101,
 		kTablesSection = 0x0102,
 		kBlocksSection = 0x0103,

@@ -269,7 +269,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 		case kActiveViewScale: {
 			auto ActiveView {AeSysView::GetActiveView()};
 			ActiveView->SetWorldScale(Property->GetValue().dblVal);
-			ActiveView->UpdateStateInformation(AeSysView::Scale);
+			ActiveView->UpdateStateInformation(AeSysView::kScale);
 			return 0;
 		}
 	}

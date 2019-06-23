@@ -138,7 +138,7 @@ void EoDbDimension::FormatExtra(CString& extra) const {
 	extra += L"Font;" + m_FontDefinition.FontName() + L"\t";
 	extra += L"Precision;" + m_FontDefinition.FormatPrecision() + L"\t";
 	extra += L"Path;" + m_FontDefinition.FormatPath() + L"\t";
-	extra += L"Alignment;(" + m_FontDefinition.FormatHorizonatlAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")\t";
+	extra += L"Alignment;(" + m_FontDefinition.FormatHorizontalAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")\t";
 	CString Spacing;
 	Spacing.Format(L"Spacing;%f\t", m_FontDefinition.CharacterSpacing());
 	extra += Spacing;

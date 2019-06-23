@@ -17,8 +17,8 @@ EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_DeltaHeight(0)
 	, m_DeltaWidth(0)
-	, m_InititialHeight(0)
-	, m_InititialWidth(0) {
+	, m_InitialHeight(0)
+	, m_InitialWidth(0) {
 }
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent)
@@ -26,8 +26,8 @@ EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr databas
 	, m_Database(database)
 	, m_DeltaHeight(0)
 	, m_DeltaWidth(0)
-	, m_InititialHeight(0)
-	, m_InititialWidth(0) {
+	, m_InitialHeight(0)
+	, m_InitialWidth(0) {
 }
 
 EoDlgLayerPropertiesManager::~EoDlgLayerPropertiesManager() {
@@ -42,8 +42,8 @@ int EoDlgLayerPropertiesManager::OnCreate(const LPCREATESTRUCTW createStructure)
 	if (CDialog::OnCreate(createStructure) == -1) {
 		return -1;
 	}
-	m_InititialWidth = createStructure->cx;
-	m_InititialHeight = createStructure->cy;
+	m_InitialWidth = createStructure->cx;
+	m_InitialHeight = createStructure->cy;
 	return 0;
 }
 
@@ -177,23 +177,23 @@ void EoDlgLayerPropertiesManager::OnSizing(const unsigned side, const LPRECT rec
 	GetWindowRect(&dlgRect);
 	m_DeltaWidth = dlgRect.Width();
 	m_DeltaHeight = dlgRect.Height();
-	if (rct.Width() < m_InititialWidth) {
+	if (rct.Width() < m_InitialWidth) {
 		switch (side) {
 			case WMSZ_LEFT: case WMSZ_BOTTOMLEFT: case WMSZ_TOPLEFT:
-				rectangle->left = rectangle->right - m_InititialWidth;
+				rectangle->left = rectangle->right - m_InitialWidth;
 				break;
 			case WMSZ_RIGHT: case WMSZ_BOTTOMRIGHT: case WMSZ_TOPRIGHT:
-				rectangle->right = rectangle->left + m_InititialWidth;
+				rectangle->right = rectangle->left + m_InitialWidth;
 				break;
 		}
 	}
-	if (rct.Height() < m_InititialHeight) {
+	if (rct.Height() < m_InitialHeight) {
 		switch (side) {
 			case WMSZ_BOTTOM: case WMSZ_BOTTOMLEFT: case WMSZ_BOTTOMRIGHT:
-				rectangle->bottom = rectangle->top + m_InititialHeight;
+				rectangle->bottom = rectangle->top + m_InitialHeight;
 				break;
 			case WMSZ_TOP: case WMSZ_TOPLEFT: case WMSZ_TOPRIGHT:
-				rectangle->top = rectangle->bottom - m_InititialHeight;
+				rectangle->top = rectangle->bottom - m_InitialHeight;
 				break;
 		}
 	}

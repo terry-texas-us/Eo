@@ -291,7 +291,7 @@ public:
 class EoDbEllipse_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	/// <remarks>
-	/// Can only properly convert ellipse which is radial (trival) or non radials which have a start parameter of 0.
+	/// Can only properly convert ellipse which is radial (trivial) or non radials which have a start parameter of 0.
 	/// </remarks>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbEllipsePtr Ellipse = entity;
@@ -301,7 +301,7 @@ public:
 
 class EoDbFace_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	/// <remarks>Four sided, not necessarily planar, surface. It hides other objects and fills with solid color. No support for individual edge visibilty.</remarks>
+	/// <remarks>Four sided, not necessarily planar, surface. It hides other objects and fills with solid color. No support for individual edge visibility.</remarks>
 	/// <tas="Convert Face entity to 2 triangular polygons to ensure planar surface"</tas>
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbFacePtr FaceEntity = entity;
@@ -425,7 +425,7 @@ public:
 		OdDbBlockTableRecordPtr Block = RotatedDimensionEntity->dimBlockId().safeOpenObject(OdDb::kForRead);
 		ConvertDimensionData(RotatedDimensionEntity);
 
-		// <tas="Improper conversion - entity is used alot"/>
+		// <tas="Improper conversion - entity is used a lot"/>
 		auto BlockReferencePrimitive {new EoDbBlockReference()};
 		BlockReferencePrimitive->SetName(Block->getName());
 		BlockReferencePrimitive->SetPosition(OdGePoint3d::kOrigin);

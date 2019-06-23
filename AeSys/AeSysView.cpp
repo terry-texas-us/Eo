@@ -330,11 +330,11 @@ void AeSysView::OnDraw(CDC* deviceContext) {
 			Document->DisplayAllLayers(this, deviceContext);
 		} else {
 			Document->BuildVisibleGroupList(this);
-			// <tas="background and grid display are obscurred by this update."/>
+			// <tas="background and grid display are obscured by this update."/>
 			m_LayoutHelper->update();
 		}
 		Document->DisplayUniquePoints();
-		UpdateStateInformation(All);
+		UpdateStateInformation(kAll);
 		ModeLineDisplay();
 		ValidateRect(nullptr);
 	} catch (CException* Exception) {
@@ -1992,18 +1992,18 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 			PreviewGroupEdit();
 			break;
 	}
-	if (m_RubberBandType != None) {
+	if (m_RubberBandType != kNone) {
 		auto DeviceContext {GetDC()};
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen RubberbandPen(PS_SOLID, 0, g_RubberBandColor);
 		const auto Pen {DeviceContext->SelectObject(&RubberbandPen)};
-		if (m_RubberBandType == Lines) {
+		if (m_RubberBandType == kLines) {
 			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
 			m_RubberBandLogicalEndPoint = point;
 			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
-		} else if (m_RubberBandType == Rectangles) {
+		} else if (m_RubberBandType == kRectangles) {
 			const auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 			DeviceContext->Rectangle(m_RubberBandLogicalBeginPoint.x, m_RubberBandLogicalBeginPoint.y, m_RubberBandLogicalEndPoint.x, m_RubberBandLogicalEndPoint.y);
 			m_RubberBandLogicalEndPoint = point;
@@ -2684,7 +2684,7 @@ void AeSysView::OnSetupDimLength() {
 	SetLengthDialog.m_Length = theApp.DimensionLength();
 	if (SetLengthDialog.DoModal() == IDOK) {
 		theApp.SetDimensionLength(SetLengthDialog.m_Length);
-		UpdateStateInformation(DimLen);
+		UpdateStateInformation(kDimLen);
 	}
 }
 
@@ -2694,7 +2694,7 @@ void AeSysView::OnSetupDimAngle() {
 	dlg.m_dAngle = theApp.DimensionAngle();
 	if (dlg.DoModal() == IDOK) {
 		theApp.SetDimensionAngle(dlg.m_dAngle);
-		UpdateStateInformation(DimAng);
+		UpdateStateInformation(kDimAng);
 	}
 }
 
@@ -2711,7 +2711,7 @@ void AeSysView::OnSetupUnits() {
 void AeSysView::OnSetupConstraints() {
 	EoDlgSetupConstraints Dialog(this);
 	if (Dialog.DoModal() == IDOK) {
-		UpdateStateInformation(All);
+		UpdateStateInformation(kAll);
 	}
 }
 
@@ -2929,7 +2929,7 @@ void AeSysView::DisplayOdometer() {
 		Position += theApp.FormatLength(m_vRelPos.x, Units) + L", ";
 		Position += theApp.FormatLength(m_vRelPos.y, Units) + L", ";
 		Position += theApp.FormatLength(m_vRelPos.z, Units);
-		if (m_RubberBandType == Lines) {
+		if (m_RubberBandType == kLines) {
 			const EoGeLineSeg3d Line(m_RubberBandBeginPoint, Point);
 			const auto LineLength {Line.length()};
 			const auto AngleInXYPlane {Line.AngleFromXAxis_xy()};
@@ -3001,7 +3001,7 @@ void AeSysView::DeleteLastGroup() {
 		Document->AnyLayerRemove(Group);
 		if (Document->RemoveTrappedGroup(Group) != nullptr) { // Display it normal color so the erase xor will work
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
-			UpdateStateInformation(TrapCount);
+			UpdateStateInformation(kTrapCount);
 		}
 		Document->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 		Document->DeletedGroupsAddTail(Group);
@@ -3096,7 +3096,7 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNextVisibleGroup(Position)};
-		const auto Primitive {Group->SelPrimUsingPoint(ptView, this, SelectionApertureSize, ptEng)};
+		const auto Primitive {Group->SelectPrimitiveUsingPoint(ptView, this, SelectionApertureSize, ptEng)};
 		if (Primitive != nullptr) {
 			m_ptDet = ptEng;
 			m_ptDet.transformBy(TransformMatrix);
@@ -3316,18 +3316,18 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 
 void AeSysView::OnEditFind() noexcept {
 }
-// Disables rubberbanding.
+
 void AeSysView::RubberBandingDisable() {
-	if (m_RubberBandType != None) {
+	if (m_RubberBandType != kNone) {
 		auto DeviceContext {GetDC()};
 		if (DeviceContext == nullptr) { return; }
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen GreyPen(PS_SOLID, 0, g_RubberBandColor);
 		const auto Pen {DeviceContext->SelectObject(&GreyPen)};
-		if (m_RubberBandType == Lines) {
+		if (m_RubberBandType == kLines) {
 			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
-		} else if (m_RubberBandType == Rectangles) {
+		} else if (m_RubberBandType == kRectangles) {
 			const auto Brush {dynamic_cast<CBrush*>(DeviceContext->SelectStockObject(NULL_BRUSH))};
 			DeviceContext->Rectangle(m_RubberBandLogicalBeginPoint.x, m_RubberBandLogicalBeginPoint.y, m_RubberBandLogicalEndPoint.x, m_RubberBandLogicalEndPoint.y);
 			DeviceContext->SelectObject(Brush);
@@ -3335,11 +3335,11 @@ void AeSysView::RubberBandingDisable() {
 		DeviceContext->SelectObject(Pen);
 		DeviceContext->SetROP2(DrawMode);
 		ReleaseDC(DeviceContext);
-		m_RubberBandType = None;
+		m_RubberBandType = kNone;
 	}
 }
 
-void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, const ERubs type) {
+void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, const RubberBandingTypes type) {
 	EoGePoint4d ptView(point, 1.0);
 	ModelViewTransformPoint(ptView);
 	if (ptView.IsInView()) {
@@ -3454,7 +3454,7 @@ void AeSysView::SetModeCursor(const unsigned mode) {
 void AeSysView::SetWorldScale(const double scale) {
 	if (scale > FLT_EPSILON) {
 		m_WorldScale = scale;
-		UpdateStateInformation(Scale);
+		UpdateStateInformation(kScale);
 		auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 		MainFrame->GetPropertiesPane().GetActiveViewScaleProperty().SetValue(m_WorldScale);
 	}
@@ -3469,7 +3469,7 @@ void AeSysView::OnUpdateViewStateinformation(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_ViewStateInformation);
 }
 
-void AeSysView::UpdateStateInformation(const EStateInformationItem item) {
+void AeSysView::UpdateStateInformation(const StateInformationItem item) {
 	if (m_ViewStateInformation) {
 		auto Document {AeSysDoc::GetDoc()};
 		auto DeviceContext {GetDC()};
@@ -3483,44 +3483,44 @@ void AeSysView::UpdateStateInformation(const EStateInformationItem item) {
 		GetClientRect(&ClientRectangle);
 		CRect rc;
 		wchar_t szBuf[32];
-		if ((item & WorkCount) == WorkCount) {
+		if ((item & kWorkCount) == kWorkCount) {
 			rc.SetRect(0, ClientRectangle.top, 8 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->NumberOfGroupsInWorkLayer() + Document->NumberOfGroupsInActiveLayers());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
-		if ((item & TrapCount) == TrapCount) {
+		if ((item & kTrapCount) == kTrapCount) {
 			rc.SetRect(8 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 16 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"%-4i", Document->TrapGroupCount());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
-		if ((item & Pen) == Pen) {
+		if ((item & kPen) == kPen) {
 			rc.SetRect(16 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 22 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"P%-4i", g_PrimitiveState.ColorIndex());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
-		if ((item & Line) == Line) {
+		if ((item & kLine) == kLine) {
 			rc.SetRect(22 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 28 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"L%-4i", g_PrimitiveState.LinetypeIndex());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
-		if ((item & TextHeight) == TextHeight) {
+		if ((item & kTextHeight) == kTextHeight) {
 			const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 			rc.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
-		if ((item & Scale) == Scale) {
+		if ((item & kScale) == kScale) {
 			rc.SetRect(38 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 48 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			swprintf_s(szBuf, 32, L"1:%-6.2f", WorldScale());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
 		}
-		if ((item & WndRatio) == WndRatio) {
+		if ((item & kWndRatio) == kWndRatio) {
 			rc.SetRect(48 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 58 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			CString ZoomFactorAsString;
 			ZoomFactorAsString.Format(L"=%-8.3f", ZoomFactor());
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, nullptr);
 		}
-		if ((item & DimLen) == DimLen || (item & DimAng) == DimAng) {
+		if ((item & kDimLen) == kDimLen || (item & kDimAng) == kDimAng) {
 			rc.SetRect(58 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 90 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			CString LengthAndAngle;
 			LengthAndAngle += theApp.FormatLength(theApp.DimensionLength(), theApp.GetUnits());

@@ -1569,7 +1569,7 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 	switch (toupper(static_cast<int>(StopString[0]))) {
 		case '\'': // Feet and maybe inches
 			ReturnValue *= 12.0; // Reduce to inches
-			ReturnValue += wcstod(&StopString[1], &StopString); // Begin scan for inches at character following foot delimeter
+			ReturnValue += wcstod(&StopString[1], &StopString); // Begin scan for inches at character following foot delimiter
 			break;
 		case 'M': // meters or millimeters
 			if (toupper(static_cast<int>(StopString[1])) == 'M') {
@@ -1578,7 +1578,7 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 				ReturnValue *= 39.37007874015748;
 			}
 			break;
-		case 'C': // centimenters
+		case 'C': // centimeters
 			ReturnValue *= 0.3937007874015748;
 			break;
 		case 'D': // decimeters

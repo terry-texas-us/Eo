@@ -109,7 +109,7 @@ void EoDlgTrapFilter::FilterByColor(const short colorIndex) {
 			}
 		}
 	}
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
 void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
@@ -126,7 +126,7 @@ void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
 			}
 		}
 	}
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
 void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
@@ -169,5 +169,5 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 			}
 		}
 	}
-	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
+	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }

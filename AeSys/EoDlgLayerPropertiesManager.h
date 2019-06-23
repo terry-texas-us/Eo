@@ -19,8 +19,8 @@ public:
 	OdDbDatabasePtr m_Database;
 	int m_DeltaHeight;
 	int m_DeltaWidth;
-	int m_InititialHeight;
-	int m_InititialWidth;
+	int m_InitialHeight;
+	int m_InitialWidth;
 	OdLyLayerFilterPtr m_RootFilter;
 	CTreeCtrl m_TreeFilters;
 	CImageList m_TreeImages;

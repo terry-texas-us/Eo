@@ -35,7 +35,7 @@ void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
 	Report += L" Font:" + m_FontDefinition.FontName();
 	Report += L" Precision:" + m_FontDefinition.FormatPrecision();
 	Report += L" Path:" + m_FontDefinition.FormatPath();
-	Report += L" Alignment:(" + m_FontDefinition.FormatHorizonatlAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")";
+	Report += L" Alignment:(" + m_FontDefinition.FormatHorizontalAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")";
 	theApp.AddStringToMessageList(Report);
 }
 
@@ -68,7 +68,7 @@ void EoDbText::FormatExtra(CString& extra) const {
 	extra += L"Font;" + m_FontDefinition.FontName() + L"\t";
 	extra += L"Precision;" + m_FontDefinition.FormatPrecision() + L"\t";
 	extra += L"Path;" + m_FontDefinition.FormatPath() + L"\t";
-	extra += L"Alignment;(" + m_FontDefinition.FormatHorizonatlAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")\t";
+	extra += L"Alignment;(" + m_FontDefinition.FormatHorizontalAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")\t";
 	CString Spacing;
 	Spacing.Format(L"Spacing;%f\t", m_FontDefinition.CharacterSpacing());
 	extra += Spacing;
@@ -549,7 +549,7 @@ EoDbText* EoDbText::Create(OdDbMTextPtr& text) {
 	FontDefinition.SetTo(TextStyleTableRecordPtr);
 	FontDefinition.SetJustification(text->attachment());
 
-	// <tas="defines the bounding rectangle size for paragraph feastures"</tas>
+	// <tas="defines the bounding rectangle size for paragraph features"</tas>
 	//    double Width = text->width();
 	//    double Height = text->height();
 	const auto AlignmentPoint {text->location()};
@@ -570,7 +570,7 @@ bool HasFormattingCharacters(const CString& text) {
 		if (text[i] == '\\') {
 			switch (text[i + 1]) { // Parameter Meaning
 				case 'P': // Hard line break
-					//case '~':	// Nonbreaking space
+					//case '~':	// Non-breaking space
 					//case '/':	// Single backslash; otherwise used as an escape character
 					//case '{':	// Single opening curly bracket; otherwise used as block begin
 					//case '}':	// Single closing curly bracket; otherwise used as block end
@@ -585,7 +585,7 @@ bool HasFormattingCharacters(const CString& text) {
 					//case 'o': // End overlining
 					//case 'T':	// Change kerning, i.e. character spacing
 					//case 'W':	// Change character width, i.e X scaling
-				case 'S':	// Stacked text or fractions: the S is follwed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
+				case 'S':	// Stacked text or fractions: the S is followed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
 					return true;
 			}
 		}
@@ -729,7 +729,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	if (plStrokeFontDef == nullptr) { return; }
 	const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
 	const auto plStrokeChrDef {plStrokeFontDef + 96};
-	const auto dChrSpac {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
+	const auto CharacterSpacing {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 	auto ptStroke {OdGePoint3d::kOrigin};
 	auto ptChrPos {ptStroke};
 	auto n {startPosition};
@@ -752,16 +752,16 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 		polyline::__End(view, deviceContext, 1);
 		switch (fontDefinition.Path()) {
 			case EoDb::kPathLeft:
-				ptChrPos.x -= dChrSpac;
+				ptChrPos.x -= CharacterSpacing;
 				break;
 			case EoDb::kPathUp:
-				ptChrPos.y += dChrSpac;
+				ptChrPos.y += CharacterSpacing;
 				break;
 			case EoDb::kPathDown:
-				ptChrPos.y -= dChrSpac;
+				ptChrPos.y -= CharacterSpacing;
 				break;
 			case EoDb::kPathRight: default:
-				ptChrPos.x += dChrSpac;
+				ptChrPos.x += CharacterSpacing;
 		}
 		ptStroke = ptChrPos;
 		n++;
@@ -923,7 +923,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						// Offset the line position back down left
 						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6) - 0.72));
 						InsertionPoint = ReferenceSystem.Origin();
-						if (text[TextSegmentDelimiter] == '/') { // display the text segment delimitier
+						if (text[TextSegmentDelimiter] == '/') { // display the text segment delimiter
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, TextSegmentDelimiter, 1, text);
 						}
 						StartPosition = TextSegmentDelimiter + 1;

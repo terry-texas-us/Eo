@@ -1,9 +1,9 @@
 #pragma once
 
 // EoDlgTrapModify dialog
-/// <summary>Modifies attributes of all group primatives in current trap to current settings.</summary>
+/// <summary>Modifies attributes of all group primitives in current trap to current settings.</summary>
 /// <remarks>Trap color index is not modified.</remarks>
-class EoDlgTrapModify : public CDialog {
+class EoDlgTrapModify final : public CDialog {
 DECLARE_DYNAMIC(EoDlgTrapModify)
 	EoDlgTrapModify(CWnd* parent = nullptr) noexcept;
 	EoDlgTrapModify(AeSysDoc* document, CWnd* parent = nullptr);

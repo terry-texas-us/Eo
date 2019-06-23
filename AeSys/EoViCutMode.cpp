@@ -42,7 +42,7 @@ void AeSysView::OnCutModeSlice() {
 	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP2) {
 		rPrvPos = ptCur;
-		RubberBandingStartAtEnable(ptCur, Lines);
+		RubberBandingStartAtEnable(ptCur, kLines);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP2);
 	} else {
 		const auto pt1 {rPrvPos};
@@ -87,7 +87,7 @@ void AeSysView::OnCutModeField() {
 	const auto ptCur {GetCursorPosition()};
 	if (wPrvKeyDwn != ID_OP4) {
 		rPrvPos = ptCur;
-		RubberBandingStartAtEnable(ptCur, Rectangles);
+		RubberBandingStartAtEnable(ptCur, kRectangles);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP4);
 	} else {
 		OdGePoint3d rLL, rUR;
@@ -140,7 +140,7 @@ void AeSysView::OnCutModeField() {
 		delete GroupsIn;
 		delete GroupsOut;
 		g_PrimitiveState.SetPen(this, DeviceContext, ColorIndex, LinetypeIndex);
-		UpdateStateInformation(BothCounts);
+		UpdateStateInformation(kBothCounts);
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(wPrvKeyDwn);
 	}
@@ -210,7 +210,7 @@ void AeSysView::OnCutModeClip() {
 		delete GroupsIn;
 		delete GroupsOut;
 		g_PrimitiveState.SetPen(this, DeviceContext, ColorIndex, LinetypeIndex);
-		UpdateStateInformation(BothCounts);
+		UpdateStateInformation(kBothCounts);
 		ModeLineUnhighlightOp(wPrvKeyDwn);
 	}
 }

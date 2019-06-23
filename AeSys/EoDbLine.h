@@ -15,7 +15,6 @@ public:
 	const EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
 	~EoDbLine() = default;
 
-	// Methods - absolute virtuals
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
@@ -38,7 +37,6 @@ public:
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods - virtuals
 	/// <summary>Cuts a line a point.</summary>
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) override;

@@ -28,7 +28,7 @@ void AeSysDoc::CompressTrappedGroups() {
 		// delete the original group but not its primitives
 		delete Group;
 	}
-	// emtpy trap group list
+	// empty trap group list
 	m_TrappedGroupList.RemoveAll();
 	AddWorkLayerGroup(NewGroup);
 	m_TrappedGroupList.AddTail(NewGroup);

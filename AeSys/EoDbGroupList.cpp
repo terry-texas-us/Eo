@@ -145,7 +145,7 @@ EoDbGroup* EoDbGroupList::SelectGroupBy(const OdGePoint3d& point) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};
-		if (Group->SelPrimUsingPoint(ptView, ActiveView, ApertureSize, PointAtSelection) != nullptr) { SelectedGroup = Group; }
+		if (Group->SelectPrimitiveUsingPoint(ptView, ActiveView, ApertureSize, PointAtSelection) != nullptr) { SelectedGroup = Group; }
 	}
 	return SelectedGroup;
 }

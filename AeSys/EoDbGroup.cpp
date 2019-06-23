@@ -26,7 +26,7 @@ EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 	}
 }
 
-void EoDbGroup::AddPrimsToTreeViewControl(const HWND tree, const HTREEITEM parent) {
+void EoDbGroup::AddPrimitivesToTreeViewControl(const HWND tree, const HTREEITEM parent) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->AddToTreeViewControl(tree, parent);
@@ -35,7 +35,7 @@ void EoDbGroup::AddPrimsToTreeViewControl(const HWND tree, const HTREEITEM paren
 
 HTREEITEM EoDbGroup::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) {
 	const auto TreeItem {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Group>", this)};
-	AddPrimsToTreeViewControl(tree, TreeItem);
+	AddPrimitivesToTreeViewControl(tree, TreeItem);
 	return TreeItem;
 }
 
@@ -340,12 +340,12 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 	return EngagedPrimitive;
 }
 
-EoDbPrimitive* EoDbGroup::SelPrimUsingPoint(const EoGePoint4d& point, AeSysView* view, double& dPicApert, OdGePoint3d& pDetPt) {
+EoDbPrimitive* EoDbGroup::SelectPrimitiveUsingPoint(const EoGePoint4d& point, AeSysView* view, double& pickAperture, OdGePoint3d& pDetPt) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->SelectUsingPoint(point, view, pDetPt)) {
-			dPicApert = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.0));
+			pickAperture = point.DistanceToPointXY(EoGePoint4d(pDetPt, 1.0));
 			return Primitive;
 		}
 	}

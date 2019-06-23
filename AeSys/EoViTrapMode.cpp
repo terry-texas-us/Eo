@@ -21,13 +21,13 @@ void AeSysView::OnTrapModePoint() {
 		if (GetDocument()->FindTrappedGroup(Group) != nullptr) { continue; }
 		if (Group->IsOn(ptView, this)) { GetDocument()->AddGroupToTrap(Group); }
 	}
-	UpdateStateInformation(TrapCount);
+	UpdateStateInformation(kTrapCount);
 }
 
 void AeSysView::OnTrapModeStitch() {
 	if (m_PreviousOp != ID_OP2) {
 		m_PreviousPnt = GetCursorPosition();
-		RubberBandingStartAtEnable(m_PreviousPnt, Lines);
+		RubberBandingStartAtEnable(m_PreviousPnt, kLines);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
@@ -42,14 +42,14 @@ void AeSysView::OnTrapModeStitch() {
 		}
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(m_PreviousOp);
-		UpdateStateInformation(TrapCount);
+		UpdateStateInformation(kTrapCount);
 	}
 }
 
 void AeSysView::OnTrapModeField() {
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousPnt = GetCursorPosition();
-		RubberBandingStartAtEnable(m_PreviousPnt, Rectangles);
+		RubberBandingStartAtEnable(m_PreviousPnt, kRectangles);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
@@ -66,7 +66,7 @@ void AeSysView::OnTrapModeField() {
 		}
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(m_PreviousOp);
-		UpdateStateInformation(TrapCount);
+		UpdateStateInformation(kTrapCount);
 	}
 }
 
@@ -77,7 +77,7 @@ void AeSysView::OnTrapModeLast() {
 		const auto Group {Document->GetPreviousWorkLayerGroup(Position)};
 		if (!Document->FindTrappedGroup(Group)) {
 			Document->AddGroupToTrap(Group);
-			UpdateStateInformation(TrapCount);
+			UpdateStateInformation(kTrapCount);
 			break;
 		}
 	}
@@ -90,7 +90,7 @@ void AeSysView::OnTrapModeEngage() {
 		const auto Group {Document->GetNextWorkLayerGroup(Position)};
 		if (Document->FindTrappedGroup(Group) == nullptr) {
 			Document->AddGroupToTrap(Group);
-			UpdateStateInformation(TrapCount);
+			UpdateStateInformation(kTrapCount);
 		}
 	} else {
 		theApp.AddModeInformationToMessageList();
@@ -141,14 +141,14 @@ void AeSysView::OnTraprModePoint() {
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 		}
 	}
-	UpdateStateInformation(TrapCount);
+	UpdateStateInformation(kTrapCount);
 }
 
 void AeSysView::OnTraprModeStitch() {
 
 	if (m_PreviousOp != ID_OP2) {
 		m_PreviousPnt = GetCursorPosition();
-		RubberBandingStartAtEnable(m_PreviousPnt, Lines);
+		RubberBandingStartAtEnable(m_PreviousPnt, kLines);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP2);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
@@ -166,14 +166,14 @@ void AeSysView::OnTraprModeStitch() {
 		}
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(m_PreviousOp);
-		UpdateStateInformation(TrapCount);
+		UpdateStateInformation(kTrapCount);
 	}
 }
 
 void AeSysView::OnTraprModeField() {
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousPnt = GetCursorPosition();
-		RubberBandingStartAtEnable(m_PreviousPnt, Rectangles);
+		RubberBandingStartAtEnable(m_PreviousPnt, kRectangles);
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 	} else {
 		const auto CurrentPnt {GetCursorPosition()};
@@ -193,7 +193,7 @@ void AeSysView::OnTraprModeField() {
 		}
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(m_PreviousOp);
-		UpdateStateInformation(TrapCount);
+		UpdateStateInformation(kTrapCount);
 	}
 }
 
@@ -202,7 +202,7 @@ void AeSysView::OnTraprModeLast() {
 	if (!GetDocument()->IsTrapEmpty()) {
 		const auto Group {GetDocument()->RemoveLastTrappedGroup()};
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
-		UpdateStateInformation(TrapCount);
+		UpdateStateInformation(kTrapCount);
 	}
 }
 

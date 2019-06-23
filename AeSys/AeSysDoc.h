@@ -253,7 +253,7 @@ public:
 	void UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive);
 	void InitializeGroupAndPrimitiveEdit();
 
-	/// <summary>Constructs 0 to many seperate text primitives for each "\r\n" delimited text block</summary>
+	/// <summary>Constructs 0 to many separate text primitives for each "\r\n" delimited text block</summary>
 	void AddTextBlock(wchar_t* text);
 
 	// Text Style Table interface
@@ -368,7 +368,7 @@ public:
 	
 	// Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
-	/// <summary>Maintains a list of the primatives with at least one identified node.</summary>
+	/// <summary>Maintains a list of the primitives with at least one identified node.</summary>
 	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point);
 	POSITION AddNodalGroup(EoDbGroup* group);
 	POSITION FindNodalGroup(EoDbGroup* group);

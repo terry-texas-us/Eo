@@ -42,7 +42,7 @@ public:
 	void SetUnitIntoList(bool isInchUnits);
 	void SetInitialSelection(int selection) noexcept;
 protected:
-	void OnRadioMillimetrs();
+	void OnRadioMillimeters();
 	void OnRadioInches();
 	void OnButtonEditlineweight();
 	void OnButtonSortlineweight();
