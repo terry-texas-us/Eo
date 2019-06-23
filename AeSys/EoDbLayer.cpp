@@ -10,7 +10,7 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer)
 	const auto LinetypeObjectId {layer->linetypeObjectId()};
 }
 
-EoDbLayer::EoDbLayer(const OdString& name, unsigned short stateFlags) {
+EoDbLayer::EoDbLayer(const OdString& name, const unsigned short stateFlags) {
 	// <tas="need to check this .. no defaults"></tas>
 	m_TracingFlags = 0;
 	m_StateFlags = stateFlags;
@@ -45,7 +45,7 @@ void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 	g_CurrentPalette = pCurColTbl;
 }
 
-void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap) {
+void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, const bool identifyTrap) {
 	auto Document {AeSysDoc::GetDoc()};
 	if (Document == nullptr) { return; }
 	try {
@@ -113,7 +113,7 @@ OdString EoDbLayer::LinetypeName() {
 	return Linetype->getName();
 }
 
-void EoDbLayer::MakeInternal(bool isInternal) noexcept {
+void EoDbLayer::MakeInternal(const bool isInternal) noexcept {
 
 	if (isInternal) {
 		m_StateFlags |= kIsInternal;
@@ -122,7 +122,7 @@ void EoDbLayer::MakeInternal(bool isInternal) noexcept {
 	}
 }
 
-void EoDbLayer::MakeResident(bool isResident) noexcept {
+void EoDbLayer::MakeResident(const bool isResident) noexcept {
 
 	if (isResident) {
 		m_StateFlags |= kIsResident;
@@ -146,7 +146,7 @@ OdDbLayerTableRecordPtr EoDbLayer::TableRecord() const {
 	return m_Layer;
 }
 
-void EoDbLayer::SetIsOff(bool isOff) {
+void EoDbLayer::SetIsOff(const bool isOff) {
 	// <tas="
 	// Legacy convention visibility state is exclusive. Never was a SetIsOff(false), always changed state buy MakeCurrent, MakeActive, MakeStatic.
 	// This conflicts with Teigha where off layers can retain state as current, frozen or locked.
@@ -163,13 +163,13 @@ void EoDbLayer::SetIsOff(bool isOff) {
 	m_Layer->downgradeOpen();
 }
 
-void EoDbLayer::SetIsFrozen(bool isFrozen) {
+void EoDbLayer::SetIsFrozen(const bool isFrozen) {
 	m_Layer->upgradeOpen();
 	m_Layer->setIsFrozen(isFrozen);
 	m_Layer->downgradeOpen();
 }
 
-void EoDbLayer::SetIsLocked(bool isLocked) {
+void EoDbLayer::SetIsLocked(const bool isLocked) {
 	OdCmTransparency Transparency;
 	if (isLocked) {
 		m_StateFlags &= ~(kIsCurrent | kIsActive | kIsOff);
@@ -194,7 +194,7 @@ OdString EoDbLayer::Name() const {
 	return m_Layer->getName();
 }
 
-void EoDbLayer::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
+void EoDbLayer::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	for (unsigned ColorIndex = 0; ColorIndex < numberOfColors; ColorIndex++) {
 		if (m_Layer->colorIndex() == pCol.at(ColorIndex)) {
 			m_Layer->setColorIndex(static_cast<short>(newColors.at(ColorIndex)));
@@ -204,13 +204,13 @@ void EoDbLayer::PenTranslation(unsigned numberOfColors, std::vector<int>& newCol
 	EoDbGroupList::PenTranslation(numberOfColors, newColors, pCol);
 }
 
-void EoDbLayer::SetColorIndex(short colorIndex) {
+void EoDbLayer::SetColorIndex(const short colorIndex) {
 	m_Layer->upgradeOpen();
 	m_Layer->setColorIndex(colorIndex);
 	m_Layer->downgradeOpen();
 }
 
-void EoDbLayer::SetLinetype(OdDbObjectId linetype) {
+void EoDbLayer::SetLinetype(const OdDbObjectId linetype) {
 	m_Layer->upgradeOpen();
 	m_Layer->setLinetypeObjectId(linetype);
 	m_Layer->downgradeOpen();
@@ -222,7 +222,7 @@ void EoDbLayer::SetName(const OdString& name) {
 	m_Layer->downgradeOpen();
 }
 
-void EoDbLayer::SetStateFlags(unsigned short flags) noexcept {
+void EoDbLayer::SetStateFlags(const unsigned short flags) noexcept {
 	m_StateFlags = flags;
 }
 

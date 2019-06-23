@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "EoDialogResizeHelper.h"
 
-void EoDialogResizeHelper::Init(HWND a_hParent) {
-	m_hParent = a_hParent;
+void EoDialogResizeHelper::Init(HWND parent) {
+	m_hParent = parent;
 	m_ctrls.clear();
 	if (IsWindow(m_hParent)) { // keep original parent size
 		GetWindowRect(m_hParent, m_origParentSize);
@@ -70,7 +70,7 @@ void EoDialogResizeHelper::OnSize() {
 	}
 }
 
-BOOL EoDialogResizeHelper::Fix(HWND a_hCtrl, EHFix a_hFix, EVFix a_vFix) {
+BOOL EoDialogResizeHelper::Fix(HWND a_hCtrl, const EHFix a_hFix, const EVFix a_vFix) {
 	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		if (it->m_hCtrl == a_hCtrl) {
 			it->m_hFix = a_hFix;
@@ -81,11 +81,11 @@ BOOL EoDialogResizeHelper::Fix(HWND a_hCtrl, EHFix a_hFix, EVFix a_vFix) {
 	return FALSE;
 }
 
-BOOL EoDialogResizeHelper::Fix(int a_itemId, EHFix a_hFix, EVFix a_vFix) {
+BOOL EoDialogResizeHelper::Fix(const int a_itemId, const EHFix a_hFix, const EVFix a_vFix) {
 	return Fix(GetDlgItem(m_hParent, a_itemId), a_hFix, a_vFix);
 }
 
-BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
+BOOL EoDialogResizeHelper::Fix(const EHFix a_hFix, const EVFix a_vFix) {
 	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
 		it->m_hFix = a_hFix;
 		it->m_vFix = a_vFix;
@@ -93,7 +93,7 @@ BOOL EoDialogResizeHelper::Fix(EHFix a_hFix, EVFix a_vFix) {
 	return TRUE;
 }
 
-unsigned EoDialogResizeHelper::Fix(const wchar_t* a_pszClassName, EHFix a_hFix, EVFix a_vFix) {
+unsigned EoDialogResizeHelper::Fix(const wchar_t* a_pszClassName, const EHFix a_hFix, const EVFix a_vFix) {
 	wchar_t pszCN[200];  // ToDo: size?
 	unsigned cnt {0};
 	for (CtrlCont_t::iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {

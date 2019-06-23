@@ -116,7 +116,7 @@ public:
 
 	[[nodiscard]] bool IsSnapOn() const noexcept { return GETBIT(m_flags, kSnapOn); }
 
-	void SetSnapOn(bool snapOn) noexcept {
+	void SetSnapOn(const bool snapOn) noexcept {
 		SETBIT(m_flags, kSnapOn, snapOn);
 	}
 

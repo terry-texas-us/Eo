@@ -28,7 +28,7 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 		ON_EN_CHANGE(IDC_PS_GENERAL_EDIT_SCALE_FACTOR, OnEditScalefactor)
 END_MESSAGE_MAP()
 
-void DrawTransparentBitmap(HDC hdc, HBITMAP bitmap, short xStart, short yStart, COLORREF transparentColor) noexcept {
+void DrawTransparentBitmap(const HDC hdc, const HBITMAP bitmap, const short xStart, const short yStart, const COLORREF transparentColor) noexcept {
 	const auto hdcTemp {CreateCompatibleDC(hdc)};
 	SelectObject(hdcTemp, bitmap);
 	BITMAP bm;

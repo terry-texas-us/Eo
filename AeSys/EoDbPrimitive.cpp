@@ -14,7 +14,7 @@ unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
-EoDbPrimitive::EoDbPrimitive(short colorIndex, short linetypeIndex)
+EoDbPrimitive::EoDbPrimitive(const short colorIndex, const short linetypeIndex)
 	: m_ColorIndex(colorIndex)
 	, m_LinetypeIndex(linetypeIndex) {
 }
@@ -90,7 +90,7 @@ unsigned EoDbPrimitive::ControlPointIndex() noexcept {
 	return sm_ControlPointIndex;
 }
 
-bool EoDbPrimitive::IsSupportedLinetype(int linetype) noexcept {
+bool EoDbPrimitive::IsSupportedLinetype(const int linetype) noexcept {
 	return linetype <= 7 && linetype != 4 && linetype != 5;
 }
 
@@ -98,7 +98,7 @@ short EoDbPrimitive::LayerColorIndex() noexcept {
 	return sm_LayerColorIndex;
 }
 
-void EoDbPrimitive::SetLayerColorIndex(short colorIndex) noexcept {
+void EoDbPrimitive::SetLayerColorIndex(const short colorIndex) noexcept {
 	sm_LayerColorIndex = colorIndex;
 }
 
@@ -106,7 +106,7 @@ short EoDbPrimitive::LayerLinetypeIndex() noexcept {
 	return sm_LayerLinetypeIndex;
 }
 
-void EoDbPrimitive::SetLayerLinetypeIndex(short linetypeIndex) noexcept {
+void EoDbPrimitive::SetLayerLinetypeIndex(const short linetypeIndex) noexcept {
 	sm_LayerLinetypeIndex = linetypeIndex;
 }
 
@@ -114,7 +114,7 @@ double EoDbPrimitive::RelationshipOfPoint() noexcept {
 	return sm_RelationshipOfPoint;
 }
 
-void EoDbPrimitive::SetColorIndex2(short colorIndex) {
+void EoDbPrimitive::SetColorIndex2(const short colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (!m_EntityObjectId.isNull()) {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
@@ -122,7 +122,7 @@ void EoDbPrimitive::SetColorIndex2(short colorIndex) {
 	}
 }
 
-void EoDbPrimitive::SetLinetypeIndex2(short linetypeIndex) {
+void EoDbPrimitive::SetLinetypeIndex2(const short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 	if (!m_EntityObjectId.isNull()) {
 		const auto Linetype {LinetypeObjectFromIndex(LinetypeIndex())};
@@ -139,11 +139,11 @@ short EoDbPrimitive::HighlightLinetypeIndex() noexcept {
 	return sm_HighlightLinetypeIndex;
 }
 
-void EoDbPrimitive::SetHighlightColorIndex(short colorIndex) noexcept {
+void EoDbPrimitive::SetHighlightColorIndex(const short colorIndex) noexcept {
 	sm_HighlightColorIndex = colorIndex;
 }
 
-void EoDbPrimitive::SetHighlightLinetypeIndex(short linetypeIndex) noexcept {
+void EoDbPrimitive::SetHighlightLinetypeIndex(const short linetypeIndex) noexcept {
 	sm_HighlightLinetypeIndex = linetypeIndex;
 }
 
@@ -176,7 +176,7 @@ OdGeVector3d ComputeNormal(const OdGePoint3d& pointU, const OdGePoint3d& origin,
 	return Normal.normalize();
 }
 
-OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(short linetypeIndex) {
+OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(const short linetypeIndex) {
 	const auto Document {AeSysDoc::GetDoc()};
 	if (Document != nullptr) {
 		return LinetypeObjectFromIndex0(Document->m_DatabasePtr, linetypeIndex);
@@ -185,7 +185,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(short linetypeIndex) {
 	return nullptr;
 }
 
-OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, short linetypeIndex) {
+OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, const short linetypeIndex) {
 	OdDbObjectId Linetype {nullptr};
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 	if (linetypeIndex == LINETYPE_BYLAYER) {

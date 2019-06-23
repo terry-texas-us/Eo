@@ -95,7 +95,7 @@ struct EoPlotUnitsInfo {
 	const wchar_t* m_Name1;
 	const wchar_t* m_Name2;
 
-	static const wchar_t* GetTextByValue(double value, const EoPlotUnitsInfo& info) noexcept {
+	static const wchar_t* GetTextByValue(const double value, const EoPlotUnitsInfo& info) noexcept {
 		return fabs(value) <= 1.0 ? info.m_Name1 : info.m_Name2;
 	}
 };
@@ -215,7 +215,7 @@ BEGIN_MESSAGE_MAP(EoDlgPageSetup, CDialog)
 		ON_EN_KILLFOCUS(IDC_PAGESETUP_DRAWING_UNIT, OnChangeEditScaleUnit)
 END_MESSAGE_MAP()
 
-void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames) {
+void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, const bool validNames) {
 	const auto PlotCfgName {m_PlotSettings.getPlotCfgName()};
 	const auto CanonicalMediaName {m_PlotSettings.getCanonicalMediaName()};
 	if (validNames && deviceName == PlotCfgName && CanonicalMediaName == canonicalMediaName) { return; }
@@ -243,7 +243,7 @@ void EoDlgPageSetup::FillMMInches() {
 	}
 }
 
-void EoDlgPageSetup::FillViewCombo(bool fillCombo) {
+void EoDlgPageSetup::FillViewCombo(const bool fillCombo) {
 	if (fillCombo) {
 		m_Views.ResetContent();
 		OdDbViewTablePtr ViewTable = m_PlotSettings.database()->getViewTableId().safeOpenObject();
@@ -262,7 +262,7 @@ void EoDlgPageSetup::FillViewCombo(bool fillCombo) {
 	}
 }
 
-void EoDlgPageSetup::FillShadePlotQualityDPI(bool fillCombo) {
+void EoDlgPageSetup::FillShadePlotQualityDPI(const bool fillCombo) {
 	if (fillCombo) {
 		m_Quality.ResetContent();
 		m_Quality.AddString(L"Draft");
@@ -530,7 +530,7 @@ bool EoDlgPageSetup::FillPaperSizes() {
 	return true;
 }
 
-void EoDlgPageSetup::FillScaleValues(bool fillCombo) {
+void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	if (fillCombo) {
 		m_ScaleValues.ResetContent();
 		const auto NumberOfScaleVaules {StandardPlotScaleValues.size()};
@@ -698,7 +698,7 @@ bool EoDlgPageSetup::ViewsExist() const {
 	return false;
 }
 
-void EoDlgPageSetup::FillPlotAreaCombo(bool fillCombo) {
+void EoDlgPageSetup::FillPlotAreaCombo(const bool fillCombo) {
 	if (fillCombo) {
 		m_PlotAreaType.ResetContent();
 		if (IsModelSpacePageSetup()) {
@@ -784,7 +784,7 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString>& arrFiles, CString 
 	return IsFind;
 }
 
-void EoDlgPageSetup::FillPlotStyleCombo(bool fillCombo) {
+void EoDlgPageSetup::FillPlotStyleCombo(const bool fillCombo) {
 	USES_CONVERSION;
 	if (fillCombo) {
 		OdArray<const OdChar*> StyleList;
@@ -875,7 +875,7 @@ void EoDlgPageSetup::OnSelChangeViewsList() {
 	FillViewCombo(false);
 }
 
-void EoDlgPageSetup::UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits) {
+void EoDlgPageSetup::UnitsConverted(const OdDbPlotSettings::PlotPaperUnits prevUnits, const OdDbPlotSettings::PlotPaperUnits plotPaperUnits) {
 	double ConversionFactor(0);
 	if (plotPaperUnits == OdDbPlotSettings::kMillimeters && prevUnits == OdDbPlotSettings::kInches) {
 		ConversionFactor = 25.4;

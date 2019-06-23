@@ -38,7 +38,7 @@ void AeSysView::DoEditPrimitiveEscape() {
 	}
 }
 
-void AeSysView::DoEditPrimitiveTransform(unsigned short operation) {
+void AeSysView::DoEditPrimitiveTransform(const unsigned short operation) {
 	if (m_SubModeEditPrimitive != nullptr) {
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(-m_SubModeEditBeginPoint.asVector());

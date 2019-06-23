@@ -35,7 +35,7 @@ void AeSysView::DoEditGroupEscape() {
 	}
 }
 
-void AeSysView::DoEditGroupTransform(unsigned short operation) {
+void AeSysView::DoEditGroupTransform(const unsigned short operation) {
 
 	if (m_SubModeEditGroup != nullptr) {
 		EoGeMatrix3d TransformMatrix;

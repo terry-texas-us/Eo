@@ -75,7 +75,7 @@ namespace polyline
 		}
 	}
 
-	void __End(AeSysView* view, CDC* deviceContext, short linetypeIndex) {
+	void __End(AeSysView* view, CDC* deviceContext, const short linetypeIndex) {
 		if (EoDbPrimitive::IsSupportedLinetype(linetypeIndex)) {
 			const auto Size {pts_.GetSize()};
 			if (Size > 1) {
@@ -104,7 +104,7 @@ namespace polyline
 		}
 	}
 
-	void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, double radius, unsigned numberOfPoints, OdGePoint3dArray& points) {
+	void GeneratePointsForNPoly(const OdGePoint3d& centerPoint, const OdGeVector3d& planeNormal, const double radius, const unsigned numberOfPoints, OdGePoint3dArray& points) {
 		auto MajorAxis {ComputeArbitraryAxis(planeNormal)};
 		MajorAxis.normalize();
 		auto MinorAxis {planeNormal.crossProduct(MajorAxis)};

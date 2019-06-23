@@ -24,18 +24,18 @@ double EoDbCharacterCellDefinition::RotationAngle() const noexcept {
 	return m_RotationAngle;
 }
 
-void EoDbCharacterCellDefinition::SetWidthFactor(double widthFactor) noexcept {
+void EoDbCharacterCellDefinition::SetWidthFactor(const double widthFactor) noexcept {
 	m_WidthFactor = widthFactor;
 }
 
-void EoDbCharacterCellDefinition::SetHeight(double height) noexcept {
+void EoDbCharacterCellDefinition::SetHeight(const double height) noexcept {
 	m_Height = height;
 }
 
-void EoDbCharacterCellDefinition::SetObliqueAngle(double obliqueAngle) noexcept {
+void EoDbCharacterCellDefinition::SetObliqueAngle(const double obliqueAngle) noexcept {
 	m_ObliqueAngle = obliqueAngle;
 }
 
-void EoDbCharacterCellDefinition::SetRotationAngle(double rotationAngle) noexcept {
+void EoDbCharacterCellDefinition::SetRotationAngle(const double rotationAngle) noexcept {
 	m_RotationAngle = rotationAngle;
 }

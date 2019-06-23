@@ -34,7 +34,7 @@ void EoMfPropertiesDockablePane::AdjustLayout() {
 	m_PropertyGrid.SetWindowPos(nullptr, rectClient.left, rectClient.top + m_nComboHeight + cyTlb, rectClient.Width(), rectClient.Height() - (m_nComboHeight + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
-int EoMfPropertiesDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
+int EoMfPropertiesDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CDockablePane::OnCreate(createStructure) == -1) { return -1; }
 	CRect EmptyRect;
 	EmptyRect.SetRectEmpty();
@@ -69,7 +69,7 @@ int EoMfPropertiesDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	return 0;
 }
 
-void EoMfPropertiesDockablePane::OnSize(unsigned type, int cx, int cy) {
+void EoMfPropertiesDockablePane::OnSize(const unsigned type, const int cx, const int cy) {
 	CDockablePane::OnSize(type, cx, cy);
 	AdjustLayout();
 }
@@ -209,7 +209,7 @@ void EoMfPropertiesDockablePane::OnSetFocus(CWnd* oldWindow) {
 	m_PropertyGrid.SetFocus();
 }
 
-void EoMfPropertiesDockablePane::OnSettingChange(unsigned flags, const wchar_t* section) {
+void EoMfPropertiesDockablePane::OnSettingChange(const unsigned flags, const wchar_t* section) {
 	CDockablePane::OnSettingChange(flags, section);
 	SetPropertyGridFont();
 }
@@ -228,7 +228,7 @@ void EoMfPropertiesDockablePane::SetPropertyGridFont() {
 	m_PropertyGrid.SetFont(&m_PropertyGridFont);
 }
 
-LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, LPARAM lparam) {
+LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lparam) {
 	const auto Property {reinterpret_cast<CMFCPropertyGridProperty*>(lparam)};
 	auto ResetMDIChild {FALSE};
 	switch (Property->GetData()) {

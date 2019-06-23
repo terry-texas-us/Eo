@@ -60,7 +60,7 @@ void EoDlgFileManage::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_GROUPS, m_Groups);
 }
 
-void EoDlgFileManage::DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& itemRectangle) {
+void EoDlgFileManage::DrawItem(CDC& deviceContext, const int itemID, const int labelIndex, const RECT& itemRectangle) {
 	const EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(itemID))};
 	auto LayerTableRecord {Layer->TableRecord()};
 	OdString ItemName;
@@ -200,7 +200,7 @@ void EoDlgFileManage::OnBnClickedSetcurrent() {
 	}
 }
 
-void EoDlgFileManage::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct) {
+void EoDlgFileManage::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct) {
 	if (controlIdentifier == IDC_LAYERS_LIST_CONTROL) {
 		switch (drawItemStruct->itemAction) {
 			case ODA_DRAWENTIRE: {
@@ -427,7 +427,7 @@ void EoDlgFileManage::UpdateCurrentLayerInfoField() {
 	GetDlgItem(IDC_STATIC_CURRENT_LAYER)->SetWindowTextW(L"Current Layer: " + LayerName);
 }
 
-void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(NMHDR* const notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const auto Item {ListViewNotificationDisplayInfo->item};
 	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
@@ -436,7 +436,7 @@ void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(LPNMHDR notifyStructu
 	result = nullptr;
 }
 
-void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(NMHDR* const notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const auto Item {ListViewNotificationDisplayInfo->item};
 	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
@@ -461,7 +461,7 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(LPNMHDR notifyStructure
 	result = nullptr;
 }
 
-void EoDlgFileManage::OnLvnKeydownLayersListControl(LPNMHDR notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnLvnKeydownLayersListControl(NMHDR* const notifyStructure, LRESULT* result) {
 	const auto pLVKeyDow {reinterpret_cast<tagLVKEYDOWN*>(notifyStructure)};
 	if (pLVKeyDow->wVKey == VK_DELETE) {
 		const auto SelectionMark {m_LayersList.GetSelectionMark()};

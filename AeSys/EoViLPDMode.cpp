@@ -5,7 +5,7 @@
 #include "PrimState.h"
 #include "EoDlgLowPressureDuctOptions.h"
 
-std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor) {
+std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoint3d& point, const double tolerance, const short pointColor) {
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group = GetNextVisibleGroup(GroupPosition);
@@ -23,7 +23,7 @@ std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoi
 
 /// <remarks>
 ///Only check for actual end-cap marker is by attributes. No error processing for invalid width or depth values.
-///Group data contains whatever primative follows marker (hopefully this is associated end-cap line).
+///Group data contains whatever primitive follows marker (hopefully this is associated end-cap line).
 ///Issues:
 /// xor operations on transition not clean
 /// ending section with 3 key will generate a shortened section if the point is less than transition length from the begin point.
@@ -379,7 +379,7 @@ void AeSysView::DoDuctModeMouseMove() {
 	}
 }
 
-void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, Section section, EoDbGroup* group) {
+void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, const Section section, EoDbGroup* group) {
 	const auto Midpoint {startPoint + (endPoint - startPoint) * 0.5};
 	auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 	ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, section.Width()));
@@ -400,7 +400,7 @@ void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d&
 	group->AddTail(EoDbLine::Create(Line));
 }
 
-void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSectionReferenceLine, Section existingSection, EoDbGroup* group) {
+void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSectionReferenceLine, const Section existingSection, EoDbGroup* group) {
 	const auto NewSectionDirection {existingSectionReferenceLine.endPoint() - existingSectionReferenceLine.startPoint()};
 	auto IntersectionPoint {existingSectionReferenceLine.ProjPt(m_PreviousPnt)};
 	EoGeLineSeg3d PreviousReferenceLine(m_PreviousPnt, IntersectionPoint);
@@ -468,7 +468,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSect
 	*/
 }
 
-void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group) {
+void AeSysView::GenerateRiseDrop(const unsigned short riseDropIndicator, const Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group) {
 	const auto SectionLength {referenceLine.length()};
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
@@ -505,8 +505,7 @@ void AeSysView::GenerateRiseDrop(unsigned short riseDropIndicator, Section secti
 	group->AddTail(EoDbLine::Create(Line));
 }
 
-void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group,
-                                         bool generateEndCaps) {
+void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, const Section previousSection, EoGeLineSeg3d& currentReferenceLine, const Section currentSection, EoDbGroup* group, const bool generateEndCaps) {
 	if (previousReferenceLine.isParallelTo(currentReferenceLine)) { return; }
 	const OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	const auto EndPoint {previousReferenceLine.endPoint()};
@@ -553,7 +552,7 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, S
 	}
 }
 
-void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double eccentricity, Section section, EoDbGroup* group) {
+void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, const double eccentricity, const Section section, EoDbGroup* group) {
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;
@@ -573,7 +572,7 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double 
 	}
 }
 
-void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section section) {
+void AeSysView::GenSizeNote(const OdGePoint3d& position, const double angle, const Section section) {
 	const auto XDirection {OdGeVector3d(0.06, 0.0, 0.0).rotateBy(angle, OdGeVector3d::kZAxis)};
 	const auto YDirection {OdGeVector3d(0.0, 0.1, 0.0).rotateBy(angle, OdGeVector3d::kZAxis)};
 	EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
@@ -608,7 +607,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, double angle, Section s
 	ReleaseDC(DeviceContext);
 }
 
-bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
+bool AeSysView::GenerateRectangularTap(const EJust justification, const Section section) {
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
@@ -673,7 +672,7 @@ bool AeSysView::GenerateRectangularTap(EJust justification, Section section) {
 	return true;
 }
 
-void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, double eccentricity, EJust justification, double slope, Section previousSection, Section currentSection, EoDbGroup* group) {
+void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, const double eccentricity, const EJust justification, const double slope, const Section previousSection, const Section currentSection, EoDbGroup* group) {
 	const auto ReferenceLength {referenceLine.length()};
 	if (ReferenceLength <= FLT_EPSILON) return;
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
@@ -731,7 +730,7 @@ void AeSysView::SetDuctOptions(Section& section) {
 	theApp.SetUnits(Units);
 }
 
-double AeSysView::LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept {
+double AeSysView::LengthOfTransition(const EJust justification, const double slope, const Section previousSection, const Section currentSection) noexcept {
 	const auto WidthChange {currentSection.Width() - previousSection.Width()};
 	const auto DepthChange {currentSection.Depth() - previousSection.Depth()};
 	auto Length {EoMax(fabs(WidthChange), fabs(DepthChange)) * slope};
@@ -741,7 +740,7 @@ double AeSysView::LengthOfTransition(EJust justification, double slope, Section 
 	return Length;
 }
 
-bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, double angularTolerance, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) {
+bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, const double angularTolerance, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) {
 	EoDbLine* LeftLinePrimitive {nullptr};
 	EoDbLine* RightLinePrimitive {nullptr};
 	auto DirectedRelationship {0};

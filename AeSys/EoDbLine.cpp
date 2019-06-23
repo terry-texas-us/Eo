@@ -43,7 +43,7 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.SetEngagedAngle(AngleInXYPlane);
 }
 
-void EoDbLine::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbLine::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Line>", this);
 }
 
@@ -302,7 +302,7 @@ void EoDbLine::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_LineSeg.transformBy(transformMatrix);
 }
 
-void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 	if ((mask & 1) == 1) { SetStartPoint(m_LineSeg.startPoint() + translate); }
 	if ((mask & 2) == 2) { SetEndPoint(m_LineSeg.endPoint() + translate); }
 }
@@ -361,7 +361,7 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
 	return Line;
 }
 
-OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex {0};
 	short LinetypeIndex {0};
 	OdGePoint3d StartPoint;

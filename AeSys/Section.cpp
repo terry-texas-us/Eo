@@ -1,7 +1,7 @@
 #include "StdAfx.h"
 #include "Section.h"
 
-Section::Section(double width, double depth, long properties) noexcept {
+Section::Section(const double width, const double depth, const long properties) noexcept {
 	m_Width = width;
 	m_Depth = depth;
 	m_Properties = properties;
@@ -15,17 +15,17 @@ bool Section::operator!=(const Section& other) noexcept {
 	return !Identical(other);
 }
 
-void Section::operator()(double width, double depth, long properties) noexcept {
+void Section::operator()(const double width, const double depth, const long properties) noexcept {
 	m_Width = width;
 	m_Depth = depth;
 	m_Properties = properties;
 }
 
-void Section::SetWidth(double width) noexcept {
+void Section::SetWidth(const double width) noexcept {
 	m_Width = width;
 }
 
-void Section::SetDepth(double depth) noexcept {
+void Section::SetDepth(const double depth) noexcept {
 	m_Depth = depth;
 }
 

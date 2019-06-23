@@ -40,7 +40,7 @@ void EoVarDialog::makeGripper() {
 	m_Grip.Create(Style, InitialRect, this, AFX_IDW_SIZE_BOX);
 }
 
-void EoVarDialog::OnSize(unsigned type, int cx, int cy) {
+void EoVarDialog::OnSize(const unsigned type, const int cx, const int cy) {
 	CDialog::OnSize(type, cx, cy);
 	m_resizeHelper.OnSize();
 	if (m_bInitialized) { SetupGripper(); }

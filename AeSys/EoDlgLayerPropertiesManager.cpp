@@ -38,7 +38,7 @@ void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* pDX) {
 	DDX_Control(pDX, IDC_LAYER_FILTER_TREE, m_TreeFilters);
 }
 
-int EoDlgLayerPropertiesManager::OnCreate(LPCREATESTRUCT createStructure) {
+int EoDlgLayerPropertiesManager::OnCreate(const LPCREATESTRUCTW createStructure) {
 	if (CDialog::OnCreate(createStructure) == -1) {
 		return -1;
 	}
@@ -113,7 +113,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	return 0;
 }
 ///<summary>Recursive filter tree filling helper</summary>
-static void UpdateFilterTree(CTreeCtrl& tree, HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
+static void UpdateFilterTree(CTreeCtrl& tree, const HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
 	if (root) {
 		const auto TreeItem {tree.InsertItem(root->name(), parent)};
 		tree.SetItemData(TreeItem, reinterpret_cast<unsigned long>((void*)root));
@@ -135,7 +135,7 @@ void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	m_TreeFilters.SetItemImage(m_TreeFilters.GetRootItem(), 0, 0);
 }
 
-void EoDlgLayerPropertiesManager::OnSize(unsigned type, int newWidth, int newHeight) {
+void EoDlgLayerPropertiesManager::OnSize(const unsigned type, const int newWidth, const int newHeight) {
 	CDialog::OnSize(type, newWidth, newHeight);
 	CRect itemRect;
 	CRect dlgRect;
@@ -170,7 +170,7 @@ void EoDlgLayerPropertiesManager::OnSize(unsigned type, int newWidth, int newHei
 	}
 }
 
-void EoDlgLayerPropertiesManager::OnSizing(unsigned side, LPRECT rectangle) {
+void EoDlgLayerPropertiesManager::OnSizing(const unsigned side, const LPRECT rectangle) {
 	CDialog::OnSizing(side, rectangle);
 	const CRect rct(*rectangle);
 	CRect dlgRect;

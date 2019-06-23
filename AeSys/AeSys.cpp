@@ -245,7 +245,7 @@ public:
 		, m_Exit {false} {
 	}
 
-	void ParseParam(const wchar_t* parameter, BOOL flag, BOOL last) override /* CCommandLineInfo */ {
+	void ParseParam(const wchar_t* parameter, const BOOL flag, const BOOL last) override /* CCommandLineInfo */ {
 		auto is {false};
 		if (flag) {
 			if (!_wcsnicmp(parameter, L"bat:", 4)) {
@@ -354,7 +354,7 @@ const ODCOLORREF* AeSys::curPalette() const {
 	return odcmAcadPalette(m_background);
 }
 
-OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, unsigned long flags) {
+OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, const unsigned long flags) {
 	try {
 		OdGsModulePtr Module;
 		if (GETBIT(flags, kFor2dExportRender)) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
@@ -398,13 +398,13 @@ OdDbPageControllerPtr AeSys::newPageController() {
 	return static_cast<OdDbPageController*>(nullptr);
 }
 
-int AeSys::SetPagingType(int pagingType) noexcept {
+int AeSys::SetPagingType(const int pagingType) noexcept {
 	const auto oldType {m_pagingType};
 	m_pagingType = pagingType;
 	return oldType;
 }
 
-bool AeSys::SetUndoType(bool useTempFiles) noexcept {
+bool AeSys::SetUndoType(const bool useTempFiles) noexcept {
 	const auto oldType {m_bUseTempFiles};
 	m_bUseTempFiles = useTempFiles;
 	return oldType;
@@ -422,7 +422,7 @@ OdRxClass* AeSys::databaseClass() const {
 	return OdDbDatabaseDoc::desc();
 }
 
-OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database, FindFileHint hint) {
+OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database, const FindFileHint hint) {
 	CString FilePathAndName;
 	FilePathAndName.SetString(ExHostAppServices::findFile(fileToFind, database, hint));
 	if (FilePathAndName.IsEmpty()) {
@@ -688,12 +688,12 @@ void AeSys::AddStringToMessageList(const wchar_t* message, const wchar_t* string
 	AddStringToMessageList(FormatString);
 }
 
-void AeSys::AddStringToMessageList(unsigned stringResourceIdentifier) const {
+void AeSys::AddStringToMessageList(const unsigned stringResourceIdentifier) const {
 	const auto ResourceString {LoadStringResource(stringResourceIdentifier)};
 	AddStringToMessageList(ResourceString);
 }
 
-void AeSys::AddStringToMessageList(unsigned stringResourceIdentifier, const wchar_t* string) const {
+void AeSys::AddStringToMessageList(const unsigned stringResourceIdentifier, const wchar_t* string) const {
 	const auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
 	AddStringToMessageList(FormatSpecification, string);
 }
@@ -780,7 +780,7 @@ double AeSys::EngagedLength() const noexcept {
 	return m_EngagedLength;
 }
 
-CString AeSys::BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple) {
+CString AeSys::BrowseWithPreview(const HWND parentWindow, const wchar_t* filter, bool multiple) {
 	CString FileName;
 	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	const CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
@@ -853,7 +853,7 @@ int AeSys::ExitInstance() {
 	return CWinAppEx::ExitInstance();
 }
 
-CString AeSys::FormatAngle(double angle, int width, int precision) {
+CString AeSys::FormatAngle(const double angle, const int width, const int precision) {
 	CString FormatSpecification;
 	FormatSpecification.Format(L"%%%i.%if°", width, precision);
 	CString AngleAsString;
@@ -861,7 +861,7 @@ CString AeSys::FormatAngle(double angle, int width, int precision) {
 	return AngleAsString;
 }
 
-CString AeSys::FormatLength(double length, Units units, int width, int precision) const {
+CString AeSys::FormatLength(const double length, const Units units, const int width, const int precision) const {
 	wchar_t LengthAsString[32];
 	FormatLengthStacked(LengthAsString, 32, units, length, width, precision);
 	return CString(LengthAsString).TrimLeft();
@@ -877,7 +877,7 @@ CString AeSys::FormatLength(double length, Units units, int width, int precision
 ///	[feet]'[inches].[decimal inches]"
 ///All other units formatted using floating decimal.
 /// </summary>
-void AeSys::FormatLengthStacked(wchar_t* lengthAsString, unsigned bufSize, Units units, double length, int width, int precision) const {
+void AeSys::FormatLengthStacked(wchar_t* lengthAsString, const unsigned bufSize, const Units units, const double length, const int width, const int precision) const {
 	wchar_t szBuf[16] {L"\0"};
 	auto ScaledLength {length * AeSysView::GetActiveView()->WorldScale()};
 	CString FormatSpecification;
@@ -1001,7 +1001,7 @@ EoDb::FileTypes AeSys::GetFileType(const OdString& file) {
 	return Type;
 }
 
-COLORREF AeSys::GetHotColor(short colorIndex) noexcept {
+COLORREF AeSys::GetHotColor(const short colorIndex) noexcept {
 	return g_ColorPalette[colorIndex];
 }
 
@@ -1013,7 +1013,7 @@ HMENU AeSys::GetAeSysMenu() const noexcept {
 	return m_AeSysMenuHandle;
 }
 
-HMENU AeSys::GetAeSysSubMenu(int position) const noexcept {
+HMENU AeSys::GetAeSysSubMenu(const int position) const noexcept {
 	return GetSubMenu(m_AeSysMenuHandle, position);
 }
 
@@ -1023,7 +1023,7 @@ AeSys::Units AeSys::GetUnits() const noexcept {
 
 /// <summary>Finds the greatest common divisor of arbitrary integers.</summary>
 /// <returns>First number if second number is zero, greatest common divisor otherwise.</returns>
-int AeSys::GreatestCommonDivisor(int number1, int number2) const noexcept {
+int AeSys::GreatestCommonDivisor(const int number1, const int number2) const noexcept {
 	auto ReturnValue {abs(number1)};
 	auto Divisor {abs(number2)};
 	while (Divisor != 0) {
@@ -1038,12 +1038,12 @@ bool AeSys::HighColorMode() const noexcept {
 	return m_HighColorMode;
 }
 
-OdGePoint3d AeSys::HomePointGet(int i) noexcept {
+OdGePoint3d AeSys::HomePointGet(const int i) noexcept {
 	if (i >= 0 && i < 9) { return m_HomePoints[i]; }
 	return OdGePoint3d::kOrigin;
 }
 
-void AeSys::HomePointSave(int i, const OdGePoint3d& point) noexcept {
+void AeSys::HomePointSave(const int i, const OdGePoint3d& point) noexcept {
 	if (i >= 0 && i < 9) { m_HomePoints[i] = point; }
 }
 
@@ -1252,7 +1252,7 @@ void AeSys::LoadColorPalletFromFile(const CString& fileName) {
 	}
 }
 
-void AeSys::LoadModeResources(unsigned mode) {
+void AeSys::LoadModeResources(const unsigned mode) {
 	BuildModeSpecificAcceleratorTable();
 	m_CurrentMode = mode;
 	AddModeInformationToMessageList();
@@ -1302,7 +1302,7 @@ void AeSys::LoadSimplexStrokeFont(const CString& pathName) {
 	}
 }
 
-CString AeSys::LoadStringResource(unsigned resourceIdentifier) {
+CString AeSys::LoadStringResource(const unsigned resourceIdentifier) {
 	CString String;
 	VERIFY(String.LoadStringW(resourceIdentifier) == TRUE);
 	return String;
@@ -1591,7 +1591,7 @@ double AeSys::ParseLength(const wchar_t* lengthAsString) {
 	return ReturnValue / AeSysView::GetActiveView()->WorldScale();
 }
 
-double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
+double AeSys::ParseLength(const Units units, const wchar_t* lengthAsString) {
 	try {
 		auto iTokId {0};
 		long DataDefinition;
@@ -1631,7 +1631,7 @@ double AeSys::ParseLength(Units units, const wchar_t* lengthAsString) {
 	}
 }
 
-double AeSys::PenWidthsGet(short colorIndex) noexcept {
+double AeSys::PenWidthsGet(const short colorIndex) noexcept {
 	return g_PenWidths[colorIndex];
 }
 /// <remarks> Processing occurs immediately before the framework loads the application state from the registry. </remarks>
@@ -1649,7 +1649,7 @@ const OdString AeSys::product() {
 	return L"AeSys Application";
 }
 
-bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept {
+bool GetRegistryString(const HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, const int size) noexcept {
 	auto ReturnValue {false};
 	HKEY OpenedKey;
 	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
@@ -1756,7 +1756,7 @@ void AeSys::SetRecentGsDevicePath(const OdString& vectorizerPath) {
 	m_sVectorizerPath = vectorizerPath;
 }
 
-void AeSys::SetStatusPaneTextAt(int index, const wchar_t* newText) {
+void AeSys::SetStatusPaneTextAt(const int index, const wchar_t* newText) {
 	dynamic_cast<CMainFrame*>(GetMainWnd())->SetStatusPaneTextAt(index, newText);
 }
 
@@ -1796,7 +1796,7 @@ void AeSys::meterProgress() {
 			CMainFrame* m_MainFrame;
 			AeSys* m_Application;
 
-			StatusUpdater(int percent, CMainFrame* mainFrame, AeSys* application) noexcept
+			StatusUpdater(const int percent, CMainFrame* mainFrame, AeSys* application) noexcept
 				: m_Percent(percent)
 				, m_MainFrame(mainFrame)
 				, m_Application(application) {
@@ -1828,11 +1828,11 @@ void AeSys::meterProgress() {
 	}
 }
 
-void AeSys::setLimit(int max) noexcept {
+void AeSys::setLimit(const int max) noexcept {
 	m_ProgressLimit = max ? max : 1;
 }
 
-int AeSys::ConfirmMessageBox(unsigned stringResourceIdentifier, const wchar_t* string) {
+int AeSys::ConfirmMessageBox(const unsigned stringResourceIdentifier, const wchar_t* string) {
 	const auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
 	CString FormattedResourceString;
 	FormattedResourceString.Format(FormatSpecification, string);
@@ -1848,7 +1848,7 @@ void AeSys::warning(const char* warnVisGroup, const OdString& text) {
 	}
 }
 
-void AeSys::WarningMessageBox(unsigned stringResourceIdentifier) {
+void AeSys::WarningMessageBox(const unsigned stringResourceIdentifier) {
 	const auto ResourceString {LoadStringResource(stringResourceIdentifier)};
 	auto NextToken {0};
 	const auto Text {ResourceString.Tokenize(L"\t", NextToken)};
@@ -1856,7 +1856,7 @@ void AeSys::WarningMessageBox(unsigned stringResourceIdentifier) {
 	MessageBoxW(nullptr, Text, Caption, MB_ICONWARNING | MB_OK);
 }
 
-void AeSys::WarningMessageBox(unsigned stringResourceIdentifier, const wchar_t* string) {
+void AeSys::WarningMessageBox(const unsigned stringResourceIdentifier, const wchar_t* string) {
 	const auto FormatSpecification {LoadStringResource(stringResourceIdentifier)};
 	CString FormattedResourceString;
 	FormattedResourceString.Format(FormatSpecification, string);
@@ -1875,23 +1875,23 @@ CString AeSys::ResourceFolderPath() {
 	return getApplicationPath() + L"\\res\\";
 }
 
-void AeSys::SetArchitecturalUnitsFractionPrecision(int precision) noexcept {
+void AeSys::SetArchitecturalUnitsFractionPrecision(const int precision) noexcept {
 	if (precision > 0) m_ArchitecturalUnitsFractionPrecision = precision;
 }
 
-void AeSys::SetDimensionAngle(double angle) noexcept {
+void AeSys::SetDimensionAngle(const double angle) noexcept {
 	m_DimensionAngle = angle;
 }
 
-void AeSys::SetDimensionLength(double length) noexcept {
+void AeSys::SetDimensionLength(const double length) noexcept {
 	m_DimensionLength = length;
 }
 
-void AeSys::SetEngagedAngle(double angle) noexcept {
+void AeSys::SetEngagedAngle(const double angle) noexcept {
 	m_EngagedAngle = angle;
 }
 
-void AeSys::SetEngagedLength(double length) noexcept {
+void AeSys::SetEngagedLength(const double length) noexcept {
 	m_EngagedLength = length;
 }
 
@@ -1906,7 +1906,7 @@ int AeSys::SetShadowFolderPath(const CString& folder) {
 	return _wmkdir(m_ShadowFolderPath);
 }
 
-void AeSys::SetUnits(Units units) noexcept {
+void AeSys::SetUnits(const Units units) noexcept {
 	m_Units = units;
 }
 
@@ -1945,11 +1945,11 @@ void AeSys::UninitializeTeigha() {
 	}
 }
 
-void AeSys::UpdateMDITabs(BOOL resetMDIChild) {
+void AeSys::UpdateMDITabs(const BOOL resetMDIChild) {
 	dynamic_cast<CMainFrame*>(AfxGetMainWnd())->UpdateMDITabs(resetMDIChild);
 }
 
-BOOL AeSys::OnIdle(long count) {
+BOOL AeSys::OnIdle(const long count) {
 	for (auto& ApplicationReactor : m_ApplicationReactors) {
 		ApplicationReactor->OnIdle(count);
 	}

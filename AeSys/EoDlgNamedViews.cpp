@@ -13,19 +13,19 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-OdDbObjectId CNamedViewListCtrl::viewId(int item) const {
+OdDbObjectId CNamedViewListCtrl::viewId(const int item) const {
 	return OdDbObjectId(reinterpret_cast<OdDbStub*>(GetItemData(item)));
 }
 
-void CNamedViewListCtrl::setViewId(int item, const OdDbObjectId& id) {
+void CNamedViewListCtrl::setViewId(const int item, const OdDbObjectId& id) {
 	SetItemData(item, reinterpret_cast<unsigned long>(static_cast<OdDbStub*>(id)));
 }
 
-OdDbViewTableRecordPtr CNamedViewListCtrl::view(int item) {
+OdDbViewTableRecordPtr CNamedViewListCtrl::view(const int item) {
 	return viewId(item).safeOpenObject(OdDb::kForWrite);
 }
 
-void CNamedViewListCtrl::setView(int item, const OdDbViewTableRecord* view) {
+void CNamedViewListCtrl::setView(const int item, const OdDbViewTableRecord* view) {
 	setViewId(item, view->objectId());
 }
 
@@ -71,7 +71,7 @@ OdString ucsString(const OdDbObject* viewport) {
 	return Result;
 }
 
-void CNamedViewListCtrl::InsertItem(int i, const OdDbViewTableRecord* pView) {
+void CNamedViewListCtrl::InsertItem(const int i, const OdDbViewTableRecord* pView) {
 	CListCtrl::InsertItem(i, pView->getName());
 	setView(i, pView);
 	SetItemText(i, 1, pView->getCategoryName());

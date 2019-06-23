@@ -165,7 +165,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 	}
 }
 
-void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, OdDb::LineWeight lineWeight) {
+void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
 	const auto PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
 	const auto PixelWidth {lineWeight <= 0 ? 0 : int(double(lineWeight) / 100. * PixelsPerLogicalMillimeter + 0.5)};
 	LOGBRUSH Brush;
@@ -198,23 +198,13 @@ void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, co
 	}
 }
 
-void CMainFrame::SetDockablePanesIcons(bool highColorMode) {
+void CMainFrame::SetDockablePanesIcons(const bool highColorMode) {
 	const auto PropertiesPaneIcon {
-	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(),
-	                              MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND),
-	                              IMAGE_ICON,
-	                              GetSystemMetrics(SM_CXSMICON),
-	                              GetSystemMetrics(SM_CYSMICON),
-	                              0))
+	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_PROPERTIES_WND_HC : IDI_PROPERTIES_WND), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0))
 	};
 	m_PropertiesPane.SetIcon(PropertiesPaneIcon, FALSE);
 	const auto OutputPaneIcon {
-	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(),
-	                              MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND),
-	                              IMAGE_ICON,
-	                              GetSystemMetrics(SM_CXSMICON),
-	                              GetSystemMetrics(SM_CYSMICON),
-	                              0))
+	static_cast<HICON>(LoadImageW(AfxGetResourceHandle(), MAKEINTRESOURCEW(highColorMode ? IDI_OUTPUT_WND_HC : IDI_OUTPUT_WND), IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON), 0))
 	};
 	m_OutputPane.SetIcon(OutputPaneIcon, FALSE);
 	UpdateMDITabbedBarsIcons();
@@ -243,7 +233,7 @@ void CMainFrame::OnViewCustomize() {
 	Dialog->Create();
 }
 
-LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM name) {
+LRESULT CMainFrame::OnToolbarCreateNew(const WPARAM wp, const LPARAM name) {
 	const auto Result {CMDIFrameWndEx::OnToolbarCreateNew(wp, name)};
 	if (Result == 0) { return 0; }
 	auto UserToolbar {reinterpret_cast<CMFCToolBar*>(Result)};
@@ -253,7 +243,7 @@ LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM name) {
 	return Result;
 }
 
-LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
+LRESULT CMainFrame::OnToolbarReset(const WPARAM toolbarResourceId, LPARAM lparam) {
 	switch (toolbarResourceId) {
 		case IDR_MAINFRAME: case IDR_MAINFRAME_256: {
 			m_StandardToolBar.ReplaceButton(ID_EDIT_FIND, EoCtrlFindComboBox(), FALSE);
@@ -265,7 +255,7 @@ LRESULT CMainFrame::OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam) {
 	return 0;
 }
 
-void CMainFrame::OnApplicationLook(unsigned look) {
+void CMainFrame::OnApplicationLook(const unsigned look) {
 	theApp.m_ApplicationLook = look;
 	switch (theApp.m_ApplicationLook) {
 		case ID_VIEW_APPLOOK_WINDOWS_7:
@@ -301,7 +291,7 @@ void CMainFrame::OnUpdateApplicationLook(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetRadio(theApp.m_ApplicationLook == commandUserInterface->m_nID);
 }
 
-BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
+BOOL CMainFrame::LoadFrame(const unsigned resourceId, const unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
 	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) { return FALSE; }
 
 	// Add some tools for example....
@@ -329,7 +319,7 @@ BOOL CMainFrame::LoadFrame(unsigned resourceId, unsigned long defaultStyle, CWnd
 	return TRUE;
 }
 
-LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, LPARAM point) {
+LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, const LPARAM point) {
 	CMenu PopupToolbarMenu;
 	VERIFY(PopupToolbarMenu.LoadMenuW(IDR_POPUP_TOOLBAR));
 	auto SubMenu {PopupToolbarMenu.GetSubMenu(0)};
@@ -461,7 +451,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	return TRUE;
 }
 
-void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
+void CMainFrame::UpdateMDITabs(const BOOL resetMDIChild) {
 	switch (theApp.m_Options.m_nTabsStyle) {
 		case EoApOptions::None: {
 			int MDITabsType;
@@ -548,15 +538,15 @@ void CMainFrame::UpdateMDITabs(BOOL resetMDIChild) {
 }
 
 // CMainFrame message handlers
-BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedItems, BOOL bDrop) {
-	if (bDrop || !theApp.m_Options.m_TabsContextMenu) { return FALSE; }
+BOOL CMainFrame::OnShowMDITabContextMenu(const CPoint point, const unsigned long allowedItems, const BOOL drop) {
+	if (drop || !theApp.m_Options.m_TabsContextMenu) { return FALSE; }
 	CMenu menu;
 	VERIFY(menu.LoadMenuW(IDR_POPUP_MDITABS));
 	auto PopupSubMenu {menu.GetSubMenu(0)};
 	ASSERT(PopupSubMenu != nullptr);
 	if (PopupSubMenu) {
 
-		if ((dwAllowedItems & AFX_MDI_CAN_BE_DOCKED) == 0) {
+		if ((allowedItems & AFX_MDI_CAN_BE_DOCKED) == 0) {
 			PopupSubMenu->DeleteMenu(ID_MDI_TABBED, MF_BYCOMMAND);
 		}
 		auto PopupMenu {new CMFCPopupMenu};
@@ -568,7 +558,7 @@ BOOL CMainFrame::OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedIt
 	return TRUE;
 }
 
-LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, LPARAM lp) {
+LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, const LPARAM lp) {
 	auto TabToolTipInfo {reinterpret_cast<CMFCTabToolTipInfo*>(lp)};
 	ASSERT(TabToolTipInfo != nullptr);
 	if (TabToolTipInfo) {
@@ -596,11 +586,11 @@ void CMainFrame::OnDestroy() {
 	PostQuitMessage(0); 		// Force WM_QUIT message to terminate message loop
 }
 
-void CMainFrame::SetStatusPaneTextAt(int index, const wchar_t* newText) {
+void CMainFrame::SetStatusPaneTextAt(const int index, const wchar_t* newText) {
 	m_StatusBar.SetPaneText(index, newText);
 }
 
-void CMainFrame::SetStatusPaneTextColorAt(int index, COLORREF textColor) {
+void CMainFrame::SetStatusPaneTextColorAt(const int index, const COLORREF textColor) {
 	m_StatusBar.SetPaneTextColor(index, textColor);
 }
 
@@ -619,7 +609,7 @@ void CMainFrame::OnStartProgress() {
 	TimerId = SetTimer(2, 1, nullptr);
 }
 
-void CMainFrame::OnTimer(UINT_PTR nIDEvent) {
+void CMainFrame::OnTimer(const UINT_PTR nIDEvent) {
 
 	if (nIDEvent == TimerId) {
 		m_CurrentProgress += 10;
@@ -662,7 +652,7 @@ HTREEITEM CMainFrame::InsertTreeViewControlItem(HWND tree, HTREEITEM parent, con
 	return TreeView_InsertItem(tree, &tvIS);
 }
 
-OdDb::LineWeight CMainFrame::LineWeightByIndex(char lineWeight) noexcept {
+OdDb::LineWeight CMainFrame::LineWeightByIndex(const char lineWeight) noexcept {
 	switch (lineWeight) {
 		case 0:
 			return OdDb::kLnWt000;
@@ -720,7 +710,7 @@ OdDb::LineWeight CMainFrame::LineWeightByIndex(char lineWeight) noexcept {
 	return OdDb::kLnWtByLayer;
 }
 
-OdString CMainFrame::StringByLineWeight(int lineWeight, bool lineWeightByIndex) {
+OdString CMainFrame::StringByLineWeight(int lineWeight, const bool lineWeightByIndex) {
 	if (lineWeightByIndex) {
 		lineWeight = LineWeightByIndex(gsl::narrow_cast<char>(lineWeight));
 	}

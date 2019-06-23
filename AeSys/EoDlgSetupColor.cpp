@@ -99,7 +99,7 @@ void EoDlgSetupColor::OnChangeColorEdit() {
 	DrawSelectionInformation(Index);
 }
 
-BOOL EoDlgSetupColor::OnNotify(WPARAM controlId, LPARAM notificationMessage, LRESULT* result) {
+BOOL EoDlgSetupColor::OnNotify(const WPARAM controlId, const LPARAM notificationMessage, LRESULT* result) {
 	const auto NotifyMessage {reinterpret_cast<NMHDR*>(notificationMessage)};
 	if (NotifyMessage->hwndFrom != nullptr) {
 		const auto ColorsButton {dynamic_cast<EoCtrlColorsButton*>(FromHandle(NotifyMessage->hwndFrom))};

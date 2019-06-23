@@ -43,7 +43,7 @@ unsigned OSnapManager::SnapModes() const noexcept {
 	return m_SnapModes;
 }
 
-void OSnapManager::SetSnapModes(unsigned snapModes) noexcept {
+void OSnapManager::SetSnapModes(const unsigned snapModes) noexcept {
 	m_SnapModes = snapModes;
 }
 
@@ -378,7 +378,7 @@ bool OdBaseSnapManager::selected(const OdGiDrawableDesc&) {
 	return false;
 }
 
-inline bool OdBaseSnapManager::Checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point) {
+inline bool OdBaseSnapManager::Checkpoint(const OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point) {
 	const auto WorldToDeviceTransform {m_View->worldToDeviceMatrix()};
 	const auto p1((WorldToDeviceTransform * *m_PickPoint).convert2d());
 	const auto p2((WorldToDeviceTransform * point).convert2d());

@@ -75,7 +75,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	return iPts;
 }
 
-void EoGeNurbCurve3d::SetDefaultKnotVector(int degree, const OdGePoint3dArray& controlPoints, OdGeKnotVector& knots) {
+void EoGeNurbCurve3d::SetDefaultKnotVector(const int degree, const OdGePoint3dArray& controlPoints, OdGeKnotVector& knots) {
 	const auto Order {gsl::narrow_cast<unsigned>(degree + 1)};
 	const auto NumberOfControlPoints {controlPoints.size()};
 	knots.setLogicalLength(0);

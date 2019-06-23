@@ -195,7 +195,7 @@ void AeSysView::OnFixupModeEscape() {
 	ModeLineUnhighlightOp(PreviousFixupCommand);
 }
 
-void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, int cornerType) {
+void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, const int cornerType) {
 	auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(previousSelection))};
 	auto PreviousLineSeg {PreviousLine->LineSeg()};
 	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(currentSelection))};
@@ -257,7 +257,7 @@ void AeSysView::GenerateCorner(OdGePoint3d intersection, SelectionPair previousS
 	}
 }
 
-bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint) {
+bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(const double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint) {
 	const auto FirstLineStartPoint = firstLineSeg.startPoint();
 	auto FirstLineEndPoint = firstLineSeg.endPoint();
 	const auto FirstLineVector {FirstLineEndPoint - FirstLineStartPoint};

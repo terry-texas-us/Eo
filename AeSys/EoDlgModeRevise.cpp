@@ -82,7 +82,7 @@ void EoDlgModeRevise::OnOK() {
 	CDialog::OnOK();
 }
 
-void EoDlgModeRevise::OnSize(unsigned type, int cx, int cy) {
+void EoDlgModeRevise::OnSize(const unsigned type, const int cx, const int cy) {
 	CDialog::OnSize(type, cx, cy);
 	if (IsWindow(m_TextEditControl.GetSafeHwnd())) {
 		m_TextEditControl.MoveWindow(0, 0, cx, cy, TRUE);

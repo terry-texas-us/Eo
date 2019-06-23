@@ -85,7 +85,7 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 	}
 }
 
-void EoDbHatch::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbHatch::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Hatch>", this);
 }
 
@@ -279,7 +279,7 @@ void EoDbHatch::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 	// nothing done to hatch coordinate origin
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		if ((mask >> VertexIndex & 1UL) == 1) {
@@ -547,7 +547,7 @@ CString EoDbHatch::FormatInteriorStyle() const {
 	return str;
 }
 
-OdGePoint3d EoDbHatch::GetPointAt(unsigned pointIndex) {
+OdGePoint3d EoDbHatch::GetPointAt(const unsigned pointIndex) {
 	return m_Vertices[pointIndex];
 }
 
@@ -615,7 +615,7 @@ void EoDbHatch::SetHatchYAxis(const OdGeVector3d& yAxis) noexcept {
 	m_HatchYAxis = yAxis;
 }
 
-void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY) {
+void EoDbHatch::SetHatRefVecs(const double patternAngle, const double patternScaleX, const double patternScaleY) {
 	m_HatchXAxis = OdGeVector3d(m_Vertices[1] - m_Vertices[0]);
 	m_HatchYAxis = OdGeVector3d(m_Vertices[2] - m_Vertices[0]);
 	auto PlaneNormal {m_HatchXAxis.crossProduct(m_HatchYAxis)};
@@ -631,11 +631,11 @@ void EoDbHatch::SetHatRefVecs(double patternAngle, double patternScaleX, double 
 	m_HatchYAxis *= patternScaleY;
 }
 
-void EoDbHatch::SetInteriorStyle(short interiorStyle) noexcept {
+void EoDbHatch::SetInteriorStyle(const short interiorStyle) noexcept {
 	m_InteriorStyle = interiorStyle;
 }
 
-void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
+void EoDbHatch::SetInteriorStyleIndex2(const unsigned styleIndex) {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 		auto HatchPatternManager {theApp.patternManager()};
@@ -652,7 +652,7 @@ void EoDbHatch::SetInteriorStyleIndex2(unsigned styleIndex) {
 	m_InteriorStyleIndex = styleIndex;
 }
 
-void EoDbHatch::SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity) {
+void EoDbHatch::SetLoopAt(const int loopIndex, const OdDbHatchPtr& hatchEntity) {
 	hatchEntity->getLoopAt(loopIndex, m_Vertices2d, m_Bulges);
 	OdGePlane Plane;
 	OdDb::Planarity ResultPlanarity;
@@ -666,7 +666,7 @@ void EoDbHatch::SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity) {
 	}
 }
 
-void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale) {
+void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const double patternAngle, const double patternScale) {
 	m_HatchOrigin = origin;
 	m_HatchXAxis = ComputeArbitraryAxis(normal);
 	m_HatchXAxis.rotateBy(patternAngle, normal);
@@ -693,7 +693,7 @@ unsigned EoDbHatch::Edge() noexcept {
 	return sm_Edge;
 }
 
-void EoDbHatch::SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept {
+void EoDbHatch::SetEdgeToEvaluate(const unsigned edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 
@@ -701,7 +701,7 @@ void EoDbHatch::SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept {
 #include "Ge/GeEllipArc2d.h"
 #include "Ge/GeNurbCurve2d.h"
 
-void EoDbHatch::ConvertPolylineType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
+void EoDbHatch::ConvertPolylineType(const int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
 	hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
 }
 
@@ -726,7 +726,7 @@ void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept {
 	// <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>
 }
 
-void EoDbHatch::ConvertEdgesType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
+void EoDbHatch::ConvertEdgesType(const int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
 	EdgeArray Edges;
 	hatchEntity->getLoopAt(loopIndex, Edges);
 	auto Lower {0.0};
@@ -863,7 +863,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 	return Hatch;
 }
 
-OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex {0};
 	short InteriorStyle {0};
 	unsigned InteriorStyleIndex {0};

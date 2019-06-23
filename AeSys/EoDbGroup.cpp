@@ -26,14 +26,14 @@ EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 	}
 }
 
-void EoDbGroup::AddPrimsToTreeViewControl(HWND tree, HTREEITEM parent) {
+void EoDbGroup::AddPrimsToTreeViewControl(const HWND tree, const HTREEITEM parent) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->AddToTreeViewControl(tree, parent);
 	}
 }
 
-HTREEITEM EoDbGroup::AddToTreeViewControl(HWND tree, HTREEITEM parent) {
+HTREEITEM EoDbGroup::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) {
 	const auto TreeItem {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Group>", this)};
 	AddPrimsToTreeViewControl(tree, TreeItem);
 	return TreeItem;
@@ -152,7 +152,7 @@ POSITION EoDbGroup::FindAndRemovePrimitive(EoDbPrimitive* primitive) {
 	return PrimitivePosition;
 }
 
-EoDbPrimitive* EoDbGroup::GetAt(POSITION position) {
+EoDbPrimitive* EoDbGroup::GetAt(const POSITION position) {
 	return dynamic_cast<EoDbPrimitive*>(CObList::GetAt(position));
 }
 
@@ -192,7 +192,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 	return nullptr;
 }
 
-int EoDbGroup::GetLinetypeIndexRefCount(short linetypeIndex) {
+int EoDbGroup::GetLinetypeIndexRefCount(const short linetypeIndex) {
 	auto Count {0};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -205,7 +205,7 @@ EoDbPrimitive* EoDbGroup::GetNext(POSITION& position) const {
 	return (EoDbPrimitive*)CObList::GetNext(position);
 }
 
-void EoDbGroup::InsertBefore(POSITION position, EoDbGroup* group) {
+void EoDbGroup::InsertBefore(const POSITION position, EoDbGroup* group) {
 	auto PrimitivePosition {group->GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {group->GetNext(PrimitivePosition)};
@@ -232,21 +232,21 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	return false;
 }
 
-void EoDbGroup::ModifyColorIndex(short colorIndex) {
+void EoDbGroup::ModifyColorIndex(const short colorIndex) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->SetColorIndex2(colorIndex);
 	}
 }
 
-void EoDbGroup::ModifyLinetypeIndex(short linetypeIndex) {
+void EoDbGroup::ModifyLinetypeIndex(const short linetypeIndex) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->SetLinetypeIndex2(linetypeIndex);
 	}
 }
 
-void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
+void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -256,7 +256,7 @@ void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharac
 	}
 }
 
-void EoDbGroup::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
+void EoDbGroup::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};

@@ -13,7 +13,7 @@ BEGIN_MESSAGE_MAP(EoMfOutputDockablePane, CDockablePane)
 		ON_WM_SIZE()
 END_MESSAGE_MAP()
 
-int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
+int EoMfOutputDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CDockablePane::OnCreate(createStructure) == - 1) { return - 1; }
 	m_Font.CreateStockObject(DEFAULT_GUI_FONT);
 	CRect EmptyRect;
@@ -42,7 +42,7 @@ int EoMfOutputDockablePane::OnCreate(LPCREATESTRUCT createStructure) {
 	return 0;
 }
 
-void EoMfOutputDockablePane::OnSize(unsigned type, int cx, int cy) {
+void EoMfOutputDockablePane::OnSize(const unsigned type, const int cx, const int cy) {
 	CDockablePane::OnSize(type, cx, cy);
 
 	// Tab control should cover the whole client area:
@@ -58,7 +58,7 @@ BEGIN_MESSAGE_MAP(EoMfOutputListBox, CListBox)
 END_MESSAGE_MAP()
 
 // EoMfOutputListBox message handlers
-void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, CPoint point) {
+void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, const CPoint point) {
 	if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
 		CMenu Menu;
 		Menu.LoadMenuW(IDR_OUTPUT_POPUP);

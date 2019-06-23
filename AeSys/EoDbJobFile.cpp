@@ -18,7 +18,7 @@ EoDbJobFile::~EoDbJobFile() {
 	delete[] m_PrimBuf;
 }
 
-void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive, short PrimitiveType) {
+void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive, const short PrimitiveType) {
 	switch (PrimitiveType) {
 		case EoDb::kTagPrimitive: case EoDb::kPointPrimitive: {
 			if (PrimitiveType == EoDb::kTagPrimitive) {
@@ -212,7 +212,7 @@ int EoDbJobFile::Version() noexcept {
 	return m_Version;
 }
 
-bool EoDbJobFile::IsValidPrimitive(short primitiveType) noexcept {
+bool EoDbJobFile::IsValidPrimitive(const short primitiveType) noexcept {
 	switch (primitiveType) {
 		case EoDb::kPointPrimitive: // 0x0100
 		case EoDb::kLinePrimitive: // 0x0200

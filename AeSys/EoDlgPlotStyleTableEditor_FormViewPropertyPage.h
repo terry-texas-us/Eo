@@ -75,14 +75,14 @@ struct DIBCOLOR {
 	unsigned char b;
 	unsigned char reserved;
 
-	DIBCOLOR(unsigned char ar, unsigned char ag, unsigned char ab) noexcept
+	DIBCOLOR(const unsigned char ar, const unsigned char ag, const unsigned char ab) noexcept
 		: r(ar)
 		, g(ag)
 		, b(ab)
 		, reserved(0) {
 	}
 
-	DIBCOLOR(COLORREF color) noexcept
+	DIBCOLOR(const COLORREF color) noexcept
 		: r(GetRValue(color))
 		, g(GetGValue(color))
 		, b(GetBValue(color))

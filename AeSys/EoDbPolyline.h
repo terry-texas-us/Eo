@@ -73,7 +73,7 @@ public:	// Constructors and destructor
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 	void SetConstantWidth(double constantWidth) noexcept;
 
-	void SetElevation(double elevation) noexcept { m_Elevation = elevation; }
+	void SetElevation(const double elevation) noexcept { m_Elevation = elevation; }
 
 	void SetNormal(const OdGeVector3d& normal);
 	[[nodiscard]] unsigned SwingVertex() const;

@@ -10,7 +10,7 @@
 #include "Ge/GeCircArc3d.h"
 IMPLEMENT_DYNAMIC(EoDbEllipse, EoDbPrimitive)
 
-EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept
+EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double sweepAngle) noexcept
 	: m_Center(center)
 	, m_MajorAxis(majorAxis)
 	, m_MinorAxis(minorAxis)
@@ -19,7 +19,7 @@ EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxi
 	m_LinetypeIndex = g_PrimitiveState.LinetypeIndex();
 }
 
-EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius)
+EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, const double radius)
 	: m_Center(center) {
 	m_ColorIndex = g_PrimitiveState.ColorIndex();
 	m_LinetypeIndex = g_PrimitiveState.LinetypeIndex();
@@ -76,7 +76,7 @@ void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.AddStringToMessageList(Report);
 }
 
-void EoDbEllipse::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbEllipse::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Arc>", this);
 }
 
@@ -203,7 +203,7 @@ void EoDbEllipse::FormatGeometry(CString& geometry) const {
 	geometry += NormalString;
 }
 
-void EoDbEllipse::GenPts(const OdGePlane& plane, double sweepAngle) const {
+void EoDbEllipse::GenPts(const OdGePlane& plane, const double sweepAngle) const {
 	OdGeMatrix3d ScaleMatrix;
 	ScaleMatrix.setToScaling(OdGeScale3d(m_MajorAxis.length(), m_MinorAxis.length(), 1.0));
 	OdGeMatrix3d PlaneToWorldTransform;
@@ -307,7 +307,7 @@ double EoDbEllipse::SweepAngle() const noexcept {
 	return m_SweepAngle;
 }
 
-void EoDbEllipse::GetXYExtents(OdGePoint3d arBeg, OdGePoint3d arEnd, OdGePoint3d* arMin, OdGePoint3d* arMax) noexcept {
+void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd, OdGePoint3d* arMin, OdGePoint3d* arMax) noexcept {
 	const auto dx {m_Center.x - arBeg.x};
 	const auto dy {m_Center.y - arBeg.y};
 	const auto dRad {sqrt(dx * dx + dy * dy)};
@@ -623,11 +623,11 @@ void EoDbEllipse::SetMinorAxis(const OdGeVector3d& minorAxis) noexcept {
 	m_MinorAxis = minorAxis;
 }
 
-void EoDbEllipse::SetSweepAngle(double angle) noexcept {
+void EoDbEllipse::SetSweepAngle(const double angle) noexcept {
 	m_SweepAngle = angle;
 }
 
-EoDbEllipse& EoDbEllipse::SetTo2(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) {
+EoDbEllipse& EoDbEllipse::SetTo2(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double sweepAngle) {
 	auto PlaneNormal {majorAxis.crossProduct(minorAxis)};
 	if (!PlaneNormal.isZeroLength()) {
 		m_Center = center;
@@ -704,7 +704,7 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d& startPoint, const Od
 	return *this;
 }
 
-EoDbEllipse& EoDbEllipse::SetToCircle(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius) {
+EoDbEllipse& EoDbEllipse::SetToCircle(const OdGePoint3d& center, const OdGeVector3d& planeNormal, const double radius) {
 	if (!planeNormal.isZeroLength()) {
 		auto PlaneNormal(planeNormal);
 		PlaneNormal.normalize();
@@ -739,7 +739,7 @@ void EoDbEllipse::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_MinorAxis.transformBy(transformMatrix);
 }
 
-void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 
 	if (mask != 0) { m_Center += translate; }
 }
@@ -822,7 +822,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord) {
 	return Ellipse;
 }
 
-OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius) {
+OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, const double radius) {
 	auto Ellipse {OdDbEllipse::createObject()};
 	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Ellipse);
@@ -853,7 +853,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr& blockTableRecord, Eo
 	return Ellipse;
 }
 
-OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex;
 	short LinetypeIndex;
 	OdGePoint3d CenterPoint;
@@ -901,7 +901,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 	return Ellipse;
 }
 
-OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double angle) {
+OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double angle) {
 	OdGeMatrix3d ScaleMatrix;
 	ScaleMatrix.setToScaling(OdGeScale3d(majorAxis.length(), minorAxis.length(), 1.0));
 	EoGeMatrix3d PlaneToWorldTransform;

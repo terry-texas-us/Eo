@@ -101,4 +101,4 @@ int TextLengthSansFormattingCharacters(const CString& text);
 OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, int numberOfCharacters) noexcept;
 /// <summary>Returns the region boundaries of a text string applying and optional inflation factor.</summary>
 void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, int numberOfCharacters, double spaceFactor, OdGePoint3dArray& boundingBox);
-OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double dLineSpaceFac, double dChrSpaceFac);
+OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double lineSpaceFactor, double characterSpaceFactor);

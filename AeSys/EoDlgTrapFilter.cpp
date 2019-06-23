@@ -95,7 +95,7 @@ void EoDlgTrapFilter::OnOK() {
 	CDialog::OnOK();
 }
 
-void EoDlgTrapFilter::FilterByColor(short colorIndex) {
+void EoDlgTrapFilter::FilterByColor(const short colorIndex) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
 		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
@@ -112,7 +112,7 @@ void EoDlgTrapFilter::FilterByColor(short colorIndex) {
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
 
-void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
+void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
 		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
@@ -129,7 +129,7 @@ void EoDlgTrapFilter::FilterByLinetype(short linetypeIndex) {
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::TrapCount);
 }
 
-void EoDlgTrapFilter::FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType) {
+void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
 	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Filter {false};

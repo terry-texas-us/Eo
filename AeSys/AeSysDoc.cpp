@@ -193,7 +193,7 @@ AeSysDoc::~AeSysDoc() {
 	m_pRefDocument->m_pImp->SetNull();
 }
 
-BOOL AeSysDoc::DoSave(const wchar_t* pathName, BOOL replace) {
+BOOL AeSysDoc::DoSave(const wchar_t* pathName, const BOOL replace) {
 	m_SaveAsVer = m_DatabasePtr->originalFileVersion();
 	CString PathName(pathName);
 	if (PathName.IsEmpty()) { // Save As
@@ -448,7 +448,7 @@ unsigned long AeSysDoc::getKeyState() noexcept {
 	return KeyState;
 }
 
-OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
+OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, const int options, OdEdPointTracker* tracker) {
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
 		const auto strRes {getString(prompt, options, nullptr)};
 		throw OdEdOtherInput(strRes);
@@ -461,7 +461,7 @@ OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, int options, OdEdPointTra
 	return UserIOConsole()->getPoint(prompt, options, tracker);
 }
 
-OdString AeSysDoc::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+OdString AeSysDoc::getString(const OdString& prompt, const int options, OdEdStringTracker* tracker) {
 	OdString Result;
 	if (m_pMacro.get() && !m_pMacro->isEof()) {
 		Result = m_pMacro->getString(prompt, options, tracker);
@@ -620,7 +620,7 @@ private:
 	}
 };
 
-void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
+void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 	OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
 	++m_nCmdActive;
 	OdDbCommandContextPtr CommandContext(CommandContext0());
@@ -673,7 +673,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, bool echo) {
 	}
 }
 
-BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
+BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
 	if (handlerInfo == nullptr) {
 		auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		if (TopMenu) { // Check if it is a theApp's dynamic menu item
@@ -740,7 +740,7 @@ BOOL AeSysDoc::OnCmdMsg(unsigned commandId, int messageCategory, void* commandOb
 	return COleDocument::OnCmdMsg(commandId, messageCategory, commandObject, handlerInfo);
 }
 
-void AeSysDoc::DeleteSelection(bool force) {
+void AeSysDoc::DeleteSelection(const bool force) {
 
 	if (m_DatabasePtr->appServices()->getPICKFIRST() && SelectionSet()->numEntities()) {
 
@@ -994,19 +994,19 @@ void AeSysDoc::Dump(CDumpContext& dc) const {
 	COleDocument::Dump(dc);
 }
 #endif //_DEBUG
-void AeSysDoc::UpdateGroupInAllViews(LPARAM hint, EoDbGroup* group) {
+void AeSysDoc::UpdateGroupInAllViews(const LPARAM hint, EoDbGroup* group) {
 	UpdateAllViews(nullptr, hint, group);
 }
 
-void AeSysDoc::UpdateGroupsInAllViews(LPARAM hint, EoDbGroupList* groups) {
+void AeSysDoc::UpdateGroupsInAllViews(const LPARAM hint, EoDbGroupList* groups) {
 	UpdateAllViews(nullptr, hint, groups);
 }
 
-void AeSysDoc::UpdateLayerInAllViews(LPARAM hint, EoDbLayer* layer) {
+void AeSysDoc::UpdateLayerInAllViews(const LPARAM hint, EoDbLayer* layer) {
 	UpdateAllViews(nullptr, hint, layer);
 }
 
-void AeSysDoc::UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive) {
+void AeSysDoc::UpdatePrimitiveInAllViews(const LPARAM hint, EoDbPrimitive* primitive) {
 	UpdateAllViews(nullptr, hint, primitive);
 }
 
@@ -1086,7 +1086,7 @@ void AeSysDoc::DeletedGroupsRestore() {
 	}
 }
 
-int AeSysDoc::LinetypeIndexReferenceCount(short linetypeIndex) {
+int AeSysDoc::LinetypeIndexReferenceCount(const short linetypeIndex) {
 	auto Count {0};
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
@@ -1178,7 +1178,7 @@ EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) {
 	return i < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(i);
 }
 
-EoDbLayer* AeSysDoc::GetLayerAt(int layerIndex) {
+EoDbLayer* AeSysDoc::GetLayerAt(const int layerIndex) {
 	return layerIndex >= static_cast<int>(m_LayerTable.GetSize()) ? nullptr : m_LayerTable.GetAt(layerIndex);
 }
 
@@ -1190,7 +1190,7 @@ int AeSysDoc::FindLayerAt(const OdString& name) const {
 	return -1;
 }
 
-OdDbLayerTablePtr AeSysDoc::LayerTable(OdDb::OpenMode openMode) {
+OdDbLayerTablePtr AeSysDoc::LayerTable(const OdDb::OpenMode openMode) {
 	return m_DatabasePtr->getLayerTableId().safeOpenObject(openMode);
 }
 
@@ -1205,7 +1205,7 @@ void AeSysDoc::RemoveAllLayers() {
 	m_LayerTable.RemoveAll();
 }
 
-void AeSysDoc::RemoveLayerAt(int layerIndex) {
+void AeSysDoc::RemoveLayerAt(const int layerIndex) {
 	auto Layer {GetLayerAt(layerIndex)};
 	Layer->DeleteGroupsAndRemoveAll();
 	delete Layer;
@@ -1273,7 +1273,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 	return bRetVal;
 }
 
-void AeSysDoc::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
+void AeSysDoc::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		Layer->PenTranslation(numberOfColors, newColors, pCol);
@@ -2435,7 +2435,7 @@ void AeSysDoc::DeleteNodalResources() {
 	RemoveAllNodalGroups();
 }
 
-void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point) {
+void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, const unsigned long mask, const int bit, const OdGePoint3d point) {
 	if (theApp.m_NodalModeAddGroups) {
 		if (!btest(mask, bit)) {
 			if (!FindNodalGroup(group)) {
@@ -2517,7 +2517,7 @@ EoGeUniquePoint* AeSysDoc::GetNextUniquePoint(POSITION& position) {
 	return static_cast<EoGeUniquePoint*>(m_UniquePoints.GetNext(position));
 }
 
-void AeSysDoc::RemoveUniquePointAt(POSITION position) {
+void AeSysDoc::RemoveUniquePointAt(const POSITION position) {
 	m_UniquePoints.RemoveAt(position);
 }
 
@@ -2558,7 +2558,7 @@ int AeSysDoc::RemoveUniquePoint(const OdGePoint3d& point) {
 	return References;
 }
 
-void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, int bit) {
+void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, const int bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive {nullptr};
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
@@ -2576,7 +2576,7 @@ void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, int bit) {
 	MaskedPrimitive->SetMaskBit(bit);
 }
 
-void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive* primitive, int bit) {
+void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive* primitive, const int bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive = nullptr;
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {

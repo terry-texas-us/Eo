@@ -66,7 +66,7 @@ typedef struct {
 #define ALDUSKEY 0x9AC6CDD7
 #define ALDUSMFHEADERSIZE 22  // Avoid sizeof is struct alignment > 1
 
-void EoPreviewDib::DrawPreview(HDC deviceContext, int x, int y, int width, int height) {
+void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y, const int width, const int height) {
 	CRect cr;
 	if (m_odImage.hasBmp()) {
 		const auto pHeader {reinterpret_cast<tagBITMAPINFOHEADER*>(m_odImage.bmp.begin())};

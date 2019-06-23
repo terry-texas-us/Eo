@@ -32,7 +32,7 @@ int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* str
 	return InsertBitmap(GetCount(), bitmap, string);
 }
 
-int EoCtrlBitmapPickerCombo::InsertBitmap(int index, const CBitmap* bitmap, const wchar_t* string) {
+int EoCtrlBitmapPickerCombo::InsertBitmap(const int index, const CBitmap* bitmap, const wchar_t* string) {
 	const auto n {CComboBox::InsertString(index, string ? string : L"")};
 	if (!bitmap) { return n; }
 	if (n != CB_ERR && n != CB_ERRSPACE) {
@@ -44,7 +44,7 @@ int EoCtrlBitmapPickerCombo::InsertBitmap(int index, const CBitmap* bitmap, cons
 	return n;
 }
 
-void EoCtrlBitmapPickerCombo::MeasureItem(LPMEASUREITEMSTRUCT lpMIS) noexcept {
+void EoCtrlBitmapPickerCombo::MeasureItem(const LPMEASUREITEMSTRUCT lpMIS) noexcept {
 	lpMIS->itemWidth = static_cast<unsigned>(m_ItemWidth + 2);
 	lpMIS->itemHeight = static_cast<unsigned>(m_ItemHeight + 2);
 }
@@ -88,7 +88,7 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	if (drawItemStruct->itemAction & ODA_FOCUS) { DeviceContext->DrawFocusRect(&drawItemStruct->rcItem); }
 }
 
-void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool selected) {
+void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool selected) {
 	const auto bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
 	if (bitmap && bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
@@ -118,7 +118,7 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool
 	}
 }
 
-void EoCtrlBitmapPickerCombo::SetSize(int width, int height) {
+void EoCtrlBitmapPickerCombo::SetSize(const int width, const int height) {
 	if (width > m_ItemWidth) { m_ItemWidth = width; }
 	if (height > m_ItemHeight) { m_ItemHeight = height; }
 	for (auto i = -1; i < GetCount(); i++) {

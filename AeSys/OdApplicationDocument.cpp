@@ -48,7 +48,7 @@ OdDbCommandContextPtr OdApplicationDocumentImpl::CommandContext() {
 	return (*m_pImp)->CommandContext0();
 }
 
-void OdApplicationDocumentImpl::ExecuteCommand(const OdString& command, bool echo) {
+void OdApplicationDocumentImpl::ExecuteCommand(const OdString& command, const bool echo) {
 	(*m_pImp)->ExecuteCommand(command, echo);
 }
 

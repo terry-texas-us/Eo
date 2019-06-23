@@ -67,7 +67,7 @@ void EoDbPoint::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.AddStringToMessageList(Report);
 }
 
-void EoDbPoint::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbPoint::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Point>", this);
 }
 
@@ -190,7 +190,7 @@ bool EoDbPoint::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const O
 	return pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y ? true : false;
 }
 
-double EoDbPoint::DataAt(unsigned short dataIndex) const noexcept {
+double EoDbPoint::DataAt(const unsigned short dataIndex) const noexcept {
 	return m_Data[dataIndex];
 }
 
@@ -213,7 +213,7 @@ bool EoDbPoint::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view
 	return false;
 }
 
-void EoDbPoint::SetData(unsigned short numberOfDatums, double* data) {
+void EoDbPoint::SetData(const unsigned short numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
 
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
@@ -225,7 +225,7 @@ void EoDbPoint::SetData(unsigned short numberOfDatums, double* data) {
 	}
 }
 
-void EoDbPoint::SetPointDisplayMode(short displayMode) noexcept {
+void EoDbPoint::SetPointDisplayMode(const short displayMode) noexcept {
 	m_PointDisplayMode = displayMode;
 }
 
@@ -233,7 +233,7 @@ void EoDbPoint::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Position.transformBy(transformMatrix);
 }
 
-void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 
 	if (mask != 0) { m_Position += translate; }
 }
@@ -316,7 +316,7 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 	return Point;
 }
 
-OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex {0};
 	short PointDisplayMode {0};
 	OdGePoint3d Position;

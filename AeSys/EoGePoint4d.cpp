@@ -9,14 +9,14 @@ EoGePoint4d::EoGePoint4d() {
 	w = 1.0;
 }
 
-EoGePoint4d::EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept {
+EoGePoint4d::EoGePoint4d(const OdGePoint3d& initialPoint, const double initialW) noexcept {
 	x = initialPoint.x;
 	y = initialPoint.y;
 	z = initialPoint.z;
 	w = initialW;
 }
 
-void EoGePoint4d::operator/=(double d) noexcept {
+void EoGePoint4d::operator/=(const double d) noexcept {
 	x /= d;
 	y /= d;
 	z /= d;

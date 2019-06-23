@@ -54,7 +54,7 @@ unsigned short EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& na
 	return Index;
 }
 
-OdString EoDbHatchPatternTable::LegacyHatchPatternName(unsigned index) {
+OdString EoDbHatchPatternTable::LegacyHatchPatternName(const unsigned index) {
 	const auto Index {index < ms_NumberOfLegacyHatchPatterns ? index : 1};
 	return LegacyHatchPatterns[Index];
 }

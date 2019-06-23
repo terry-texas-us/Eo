@@ -36,11 +36,11 @@ EoDb::VerticalAlignment EoDbFontDefinition::VerticalAlignment() const noexcept {
 	return m_VerticalAlignment;
 }
 
-void EoDbFontDefinition::SetCharacterSpacing(double spacing) noexcept {
+void EoDbFontDefinition::SetCharacterSpacing(const double spacing) noexcept {
 	m_CharacterSpacing = spacing;
 }
 
-void EoDbFontDefinition::SetHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept {
+void EoDbFontDefinition::SetHorizontalAlignment(const EoDb::HorizontalAlignment horizontalAlignment) noexcept {
 	m_HorizontalAlignment = horizontalAlignment;
 }
 
@@ -48,15 +48,15 @@ void EoDbFontDefinition::SetFontName(const CString& fontName) {
 	m_FontName = fontName;
 }
 
-void EoDbFontDefinition::SetPath(EoDb::Path path) noexcept {
+void EoDbFontDefinition::SetPath(const EoDb::Path path) noexcept {
 	m_Path = path;
 }
 
-void EoDbFontDefinition::SetPrecision(EoDb::Precision precision) noexcept {
+void EoDbFontDefinition::SetPrecision(const EoDb::Precision precision) noexcept {
 	m_Precision = precision;
 }
 
-void EoDbFontDefinition::SetVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept {
+void EoDbFontDefinition::SetVerticalAlignment(const EoDb::VerticalAlignment verticalAlignment) noexcept {
 	m_VerticalAlignment = verticalAlignment;
 }
 
@@ -117,12 +117,12 @@ void EoDbFontDefinition::SetTo(OdDbTextStyleTableRecordPtr textStyleTableRecord)
 	}
 }
 
-void EoDbFontDefinition::SetJustification(OdDb::TextHorzMode horizontalMode, OdDb::TextVertMode verticalMode) noexcept {
+void EoDbFontDefinition::SetJustification(const OdDb::TextHorzMode horizontalMode, const OdDb::TextVertMode verticalMode) noexcept {
 	m_HorizontalAlignment = EoDbText::ConvertHorizontalAlignment(horizontalMode);
 	m_VerticalAlignment = EoDbText::ConvertVerticalAlignment(verticalMode);
 }
 
-void EoDbFontDefinition::SetJustification(OdDbMText::AttachmentPoint attachmentPoint) noexcept {
+void EoDbFontDefinition::SetJustification(const OdDbMText::AttachmentPoint attachmentPoint) noexcept {
 	switch (attachmentPoint) {
 		case OdDbMText::kTopLeft:
 			m_HorizontalAlignment = EoDb::kAlignLeft;

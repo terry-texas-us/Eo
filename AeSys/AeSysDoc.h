@@ -132,13 +132,13 @@ public:
 		static unsigned short m_FormatR18;
 		static unsigned short m_FormatR19;
 
-		static bool isAcadDataAvailable(COleDataObject* dataObject, bool attach = false) {
+		static bool isAcadDataAvailable(COleDataObject* dataObject, const bool attach = false) {
 			if (attach && !dataObject->AttachClipboard()) { return false; }
 			return dataObject->IsDataAvailable(m_FormatR15) || dataObject->IsDataAvailable(m_FormatR16) || dataObject->IsDataAvailable(m_FormatR17) || dataObject->IsDataAvailable(m_FormatR18) ||
 				dataObject->IsDataAvailable(m_FormatR19);
 		}
 
-		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, bool attach = false) {
+		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, const bool attach = false) {
 			if (attach && !dataObject->AttachClipboard()) { return nullptr; }
 			OdSharedPtr<ClipboardData> Data {new ClipboardData()};
 			if (Data->read(dataObject)) { return Data; }

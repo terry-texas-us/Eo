@@ -83,7 +83,7 @@ public:	// Constructors and destructor
 	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
 	void SetInteriorStyle(short interiorStyle) noexcept;
 
-	void SetInteriorStyleIndex(unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
+	void SetInteriorStyleIndex(const unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
 
 	void SetInteriorStyleIndex2(unsigned styleIndex);
 	void SetLoopAt(int loopIndex, const OdDbHatchPtr& hatchEntity);

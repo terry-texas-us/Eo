@@ -97,11 +97,11 @@ public:
 	std::vector<OdSmartPtr<OdApplicationReactor> > m_ApplicationReactors;
 	OdDbDatabasePtr openFile(const wchar_t* pathName);
 
-	void SetPartialOption(bool partial) noexcept { m_bPartial = partial; }
+	void SetPartialOption(const bool partial) noexcept { m_bPartial = partial; }
 
-	void SetRecoverOption(bool recover) noexcept { m_bRecover = recover; }
+	void SetRecoverOption(const bool recover) noexcept { m_bRecover = recover; }
 
-	void SetMtLoadingOption(bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
+	void SetMtLoadingOption(const bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
 
 	OdGsMarker GetGsMenuItemMarker() const noexcept { return reinterpret_cast<OdGsMarker>(this); }
 
@@ -190,17 +190,17 @@ public:
 	} // OdDbBaseHostAppServices (to suppress C4266 warning)
 	void warning(OdWarning warningOb) noexcept override {
 	} // OdDbBaseHostAppServices (to suppress C4266 warning)
-	static int messageBox(HWND parent, const wchar_t* caption, const wchar_t* text, unsigned type) noexcept {
+	static int messageBox(const HWND parent, const wchar_t* caption, const wchar_t* text, const unsigned type) noexcept {
 		return ::MessageBox(parent, text, caption, type);
 	}
 
-	int messageBox(const wchar_t* caption, const wchar_t* text, unsigned type) {
+	int messageBox(const wchar_t* caption, const wchar_t* text, const unsigned type) {
 		const auto MainWindow {GetMainWnd()};
 		if (MainWindow == nullptr) { return 0; }
 		return messageBox(MainWindow->m_hWnd, caption, text, type);
 	}
 
-	void reportError(HWND parent, const wchar_t* contextMessage, const OdError& error) {
+	void reportError(const HWND parent, const wchar_t* contextMessage, const OdError& error) {
 		messageBox(parent, contextMessage, error.description(), MB_OK | MB_ICONERROR);
 	}
 
@@ -208,7 +208,7 @@ public:
 		messageBox(contextMessage, error.description(), MB_OK | MB_ICONERROR);
 	}
 
-	void reportError(const wchar_t* contextMessage, unsigned error) {
+	void reportError(const wchar_t* contextMessage, const unsigned error) {
 		messageBox(contextMessage, getErrorDescription(error), MB_OK | MB_ICONERROR);
 	}
 
@@ -239,7 +239,7 @@ public:
 
 	const OdString& GetRecentCmd() noexcept { return m_RecentCommand; }
 
-	static OdString objectIdAndClassName(OdDbObjectId id) {
+	static OdString objectIdAndClassName(const OdDbObjectId id) {
 		return objectIdAndClassName(id.openObject());
 	}
 
@@ -278,7 +278,7 @@ public:
 
 	bool supportFileSelectionViaDialog() const noexcept { return m_bSupportFileSelectionViaDialog; }
 
-	void setSupportFileSelectionViaDialog(bool supportFileSelectionViaDialog) noexcept { m_bSupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
+	void setSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept { m_bSupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
 
 	static CString getApplicationPath();
 

@@ -9,7 +9,7 @@ typedef struct {
 	char m_Type; // not used
 } EoListCtrlSortData;
 
-static int CALLBACK EoLineweightCompareFunction(LPARAM item1, LPARAM item2, LPARAM sortData) {
+static int CALLBACK EoLineweightCompareFunction(const LPARAM item1, const LPARAM item2, const LPARAM sortData) {
 	const auto NewIndex1 {reinterpret_cast<EoLineweightData*>(item1)->m_NewIdx};
 	const auto NewIndex2 {reinterpret_cast<EoLineweightData*>(item2)->m_NewIdx};
 	const CListCtrl* ListCtrl = reinterpret_cast<EoListCtrlSortData*>(sortData)->m_ListCtrl;
@@ -122,11 +122,11 @@ void EoDlgPlotStyleEditLineweight::OnButtonEditlineweight() {
 	m_LineweightsListCtrl.EditLabel(m_LineweightsListCtrl.GetSelectionMark());
 }
 
-void EoDlgPlotStyleEditLineweight::SetInitialSelection(int selection) noexcept {
+void EoDlgPlotStyleEditLineweight::SetInitialSelection(const int selection) noexcept {
 	m_InitialSelection = static_cast<unsigned>(!selection ? selection : selection - 1);
 }
 
-void EoDlgPlotStyleEditLineweight::SetUnitIntoList(bool isInchUnits) {
+void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
 	CString Lineweight;
 	const auto NumberOfLineweights {m_LineweightsListCtrl.GetItemCount()};
 	for (auto LineweightIndex = 0; LineweightIndex < NumberOfLineweights; LineweightIndex++) {
@@ -197,7 +197,7 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 	m_LineweightsListCtrl.SetItemState(static_cast<int>(m_InitialSelection), LVIS_SELECTED, LVIS_SELECTED);
 }
 
-int EoDlgPlotStyleEditLineweight::InsertLineweightAt(int index, const OdString& lineweight, bool isUse) {
+int EoDlgPlotStyleEditLineweight::InsertLineweightAt(const int index, const OdString& lineweight, const bool isUse) {
 	m_LineweightsListCtrl.LockWindowUpdate();
 	LVITEMW lvItem;
 	lvItem.mask = LVIF_TEXT | LVIF_STATE;

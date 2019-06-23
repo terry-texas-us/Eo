@@ -41,14 +41,14 @@ OdGeScale3d AeSysView::EditModeScaleFactors() const noexcept {
 	return m_ScaleFactors;
 }
 
-void AeSysView::SetEditModeScaleFactors(double sx, double sy, double sz) noexcept {
+void AeSysView::SetEditModeScaleFactors(const double sx, const double sy, const double sz) noexcept {
 	// <tas="Verify scale factors are always not zero"</tas>
 	m_ScaleFactors.sx = sx;
 	m_ScaleFactors.sy = sy;
 	m_ScaleFactors.sz = sz;
 }
 
-void AeSysView::SetEditModeRotationAngles(double x, double y, double z) noexcept {
+void AeSysView::SetEditModeRotationAngles(const double x, const double y, const double z) noexcept {
 	m_EditModeRotationAngles.x = x;
 	m_EditModeRotationAngles.y = y;
 	m_EditModeRotationAngles.z = z;
@@ -58,7 +58,7 @@ OdGeScale3d AeSysView::EditModeMirrorScaleFactors() const noexcept {
 	return m_MirrorScaleFactors;
 }
 
-void AeSysView::SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept {
+void AeSysView::SetEditModeMirrorScaleFactors(const double sx, const double sy, const double sz) noexcept {
 	m_MirrorScaleFactors.set(sx, sy, sz);
 }
 

@@ -44,7 +44,7 @@ void CChildFrame::Dump(CDumpContext& dc) const {
 	CMDIChildWndEx::Dump(dc);
 }
 #endif //_DEBUG
-void CChildFrame::OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd) {
+void CChildFrame::OnMDIActivate(const BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd) {
 	CMDIChildWndEx::OnMDIActivate(activate, activateWnd, deactivateWnd);
 	auto ActivatedFrame {dynamic_cast<CFrameWnd*>(activateWnd)};
 	auto DeactivatedFrame {dynamic_cast<CFrameWnd*>(deactivateWnd)};
@@ -110,7 +110,7 @@ static void UpdateAnnotationScalesPopupMenu(CMenu* popupMenu, OdDbDatabase* data
 const int gc_ViewMenuPosition(2);
 const int gc_AnnotationScalesMenuPosition(19);
 
-void CChildFrame::OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuAlt) {
+void CChildFrame::OnUpdateFrameMenu(const BOOL active, CWnd* activeWindow, const HMENU menuAlt) {
 	CMDIChildWndEx::OnUpdateFrameMenu(active, activeWindow, menuAlt);
 	const auto ActiveDocument {GetActiveDocument()};
 	if (active && ActiveDocument) {

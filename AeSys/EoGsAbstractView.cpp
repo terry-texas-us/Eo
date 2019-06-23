@@ -21,7 +21,7 @@ EoGsAbstractView::EoGsAbstractView(const EoGsAbstractView& other) {
 	m_FarClipDistance = other.m_FarClipDistance;
 }
 
-void EoGsAbstractView::AdjustWindow(double aspectRatio) noexcept {
+void EoGsAbstractView::AdjustWindow(const double aspectRatio) noexcept {
 	const auto FieldWidth {m_FieldWidthMaximum - m_FieldWidthMinimum};
 	const auto FieldHeight {m_FieldHeightMaximum - m_FieldHeightMinimum};
 	if (FieldWidth <= FLT_EPSILON || FieldHeight / FieldWidth > aspectRatio) {
@@ -95,7 +95,7 @@ OdGsView::RenderMode EoGsAbstractView::RenderMode() const noexcept {
 	return m_RenderMode;
 }
 
-void EoGsAbstractView::SetFarClipDistance(double distance) noexcept {
+void EoGsAbstractView::SetFarClipDistance(const double distance) noexcept {
 	m_FarClipDistance = distance;
 }
 
@@ -103,15 +103,15 @@ void EoGsAbstractView::SetRenderMode(const OdGsView::RenderMode& renderMode) noe
 	m_RenderMode = renderMode;
 }
 
-void EoGsAbstractView::SetNearClipDistance(double distance) noexcept {
+void EoGsAbstractView::SetNearClipDistance(const double distance) noexcept {
 	m_NearClipDistance = distance;
 }
 
-void EoGsAbstractView::SetLensLength(double length) noexcept {
+void EoGsAbstractView::SetLensLength(const double length) noexcept {
 	m_LensLength = length;
 }
 
-void EoGsAbstractView::EnablePerspective(bool enabled) noexcept {
+void EoGsAbstractView::EnablePerspective(const bool enabled) noexcept {
 	if (enabled) {
 		m_ViewMode |= AV_PERSPECTIVE;
 	} else {
@@ -123,7 +123,7 @@ void EoGsAbstractView::SetPosition_(const OdGePoint3d& position) noexcept {
 	m_Position = position;
 }
 
-void EoGsAbstractView::SetProjectionPlaneField(double fieldWidth, double fieldHeight) noexcept {
+void EoGsAbstractView::SetProjectionPlaneField(const double fieldWidth, const double fieldHeight) noexcept {
 	m_FieldWidthMinimum = - fieldWidth * 0.5;
 	m_FieldHeightMinimum = - fieldHeight * 0.5;
 	m_FieldWidthMaximum = m_FieldWidthMinimum + fieldWidth;
@@ -134,7 +134,7 @@ void EoGsAbstractView::SetTarget(const OdGePoint3d& target) noexcept {
 	m_Target = target;
 }
 
-void EoGsAbstractView::SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& viewUp, double fieldWidth, double fieldHeight) {
+void EoGsAbstractView::SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& viewUp, const double fieldWidth, const double fieldHeight) {
 	m_Position = position;
 	m_Target = target;
 	SetViewUp(viewUp);
@@ -150,7 +150,7 @@ void EoGsAbstractView::SetViewUp(const OdGeVector3d& viewUp) {
 	}
 }
 
-void EoGsAbstractView::SetProjectionPlaneField(double uMin, double vMin, double uMax, double vMax) noexcept {
+void EoGsAbstractView::SetProjectionPlaneField(const double uMin, const double vMin, const double uMax, const double vMax) noexcept {
 	m_FieldWidthMinimum = uMin;
 	m_FieldHeightMinimum = vMin;
 	m_FieldWidthMaximum = uMax;

@@ -423,7 +423,7 @@ BOOL AeSysView::OnEraseBkgnd(CDC* deviceContext) {
 	return __super::OnEraseBkgnd(deviceContext);
 }
 
-void AeSysView::OnSize(unsigned type, int cx, int cy) {
+void AeSysView::OnSize(const unsigned type, const int cx, const int cy) {
 	if (cx && cy) {
 		if (m_LayoutHelper.isNull()) {
 			__super::OnSize(type, cx, cy);
@@ -451,7 +451,7 @@ void AeSysView::OnDestroy() {
 	CView::OnDestroy();
 }
 
-int AeSysView::OnCreate(LPCREATESTRUCT createStructure) {
+int AeSysView::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CView::OnCreate(createStructure) == -1) {
 		return -1;
 	}
@@ -620,7 +620,7 @@ void AeSysView::plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) 
 	}
 }
 
-void AeSysView::PreparePlotStyles(const OdDbLayout* layout, bool forceReload) {
+void AeSysView::PreparePlotStyles(const OdDbLayout* layout, const bool forceReload) {
 	if (m_pPlotStyleTable.get() && !forceReload) { return; }
 	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
 	OdSmartPtr<OdDbLayout> CurrentLayout;
@@ -644,7 +644,7 @@ void AeSysView::PreparePlotStyles(const OdDbLayout* layout, bool forceReload) {
 }
 
 CString GetRegistryAcadProfilesKey(); // external defined in AeSys
-static bool GetRegistryUnsignedLong(HKEY key, const wchar_t* subKey, const wchar_t* name, unsigned long& value) noexcept {
+static bool GetRegistryUnsignedLong(const HKEY key, const wchar_t* subKey, const wchar_t* name, unsigned long& value) noexcept {
 	auto ReturnValue {false};
 	HKEY KeyHandle {nullptr};
 	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
@@ -667,7 +667,7 @@ static bool GetAcadProfileRegistryUnsignedLong(const wchar_t* subKey, const wcha
 	return false;
 }
 
-unsigned long AeSysView::glyphSize(GlyphType glyphType) const {
+unsigned long AeSysView::glyphSize(const GlyphType glyphType) const {
 	auto Processed {false};
 	unsigned long Value {0};
 	switch (glyphType) {
@@ -799,7 +799,7 @@ void AeSysView::fillContextualColors(OdGiContextualColorsImpl* pCtxColors) {
 	OdIntPtr odExGLES2SceneGraphOptions(); // Defined in MaterialsEditor.cpp
 	const OdString& odExLoadGsStateSetting(); // Defined in MaterialsEditor.cpp
    </tas> */
-void AeSysView::createDevice(bool recreate) {
+void AeSysView::createDevice(const bool recreate) {
 	CRect ClientRectangle;
 	GetClientRect(&ClientRectangle);
 	try {
@@ -973,7 +973,7 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 
 #include "BmpTilesGen.h"
 
-void generateTiles(HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, long tileWidth, long tileHeight) {
+void generateTiles(const HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, const long tileWidth, const long tileHeight) {
 	CRect destRectangle {drawRectangle};
 	destRectangle.NormalizeRect();
 	OdGsDCRect step(0, 0, 0, 0);
@@ -1490,7 +1490,7 @@ protected:
 	AeSysView* m_View;
 	HCURSOR m_Cursor;
 public:
-	SaveViewParams(AeSysView* view, OdEdInputTracker* inputTracker, HCURSOR cursor, bool snap)
+	SaveViewParams(AeSysView* view, OdEdInputTracker* inputTracker, const HCURSOR cursor, const bool snap)
 		: m_View(view)
 		, m_Cursor(view->cursor()) {
 		view->track(inputTracker);
@@ -1514,7 +1514,7 @@ void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, un
 class SaveViewParams2 : public SaveViewParams {
 	bool m_bTimerSet;
 public:
-	SaveViewParams2(AeSysView* view, OdEdStringTracker* tracker, HCURSOR cursor)
+	SaveViewParams2(AeSysView* view, OdEdStringTracker* tracker, const HCURSOR cursor)
 		: SaveViewParams(view, tracker, cursor, false) {
 		if (tracker) {
 			tracker->setCursor(true);
@@ -1542,7 +1542,7 @@ bool AeSysView::UpdateStringTrackerCursor() {
 	return false;
 }
 
-void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, unsigned long time) {
+void CALLBACK StringTrackerTimer(const HWND hWnd, unsigned nMsg, const unsigned nIDTimer, unsigned long time) {
 	try {
 		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(hWnd))};
 		if (!View->UpdateStringTrackerCursor()) { KillTimer(hWnd, nIDTimer); }
@@ -1560,7 +1560,7 @@ unsigned long AeSysView::getKeyState() noexcept {
 	return KeyState;
 }
 
-OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) {
+OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdPointTracker* tracker) {
 	m_sPrompt.empty();
 	OdSaveState<OdString> savePrompt(m_sPrompt);
 	putString(prompt);
@@ -1586,7 +1586,7 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, int options, OdEdPointTr
 	throw OdEdCancel();
 }
 
-OdString AeSysView::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStringTracker* tracker) {
 	m_sPrompt.empty();
 	OdSaveState<OdString> savePrompt(m_sPrompt);
 	putString(prompt);
@@ -1627,7 +1627,7 @@ HCURSOR AeSysView::cursor() const noexcept {
 	return m_hCursor;
 }
 
-void AeSysView::setCursor(HCURSOR cursor) noexcept {
+void AeSysView::setCursor(const HCURSOR cursor) noexcept {
 	m_hCursor = cursor;
 	SetCursor(cursor);
 }
@@ -1647,7 +1647,7 @@ struct ReactorSort {
 	using second_argument_type = OdDbObjectId;
 	using result_type = bool;
 
-	bool operator()(OdDbObjectId firstObjectId, OdDbObjectId secondObjectId) {
+	bool operator()(const OdDbObjectId firstObjectId, const OdDbObjectId secondObjectId) {
 		auto SecondObject {secondObjectId.openObject()};
 		if (SecondObject.isNull()) { return false; }
 		const auto SecondObjectReactors {SecondObject->getPersistentReactors()};
@@ -1665,7 +1665,7 @@ void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transf
 }
 
 // <command_console>
-BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint point) {
+BOOL AeSysView::OnDrop(COleDataObject* dataObject, const DROPEFFECT dropEffect, const CPoint point) {
 	auto ClipboardData {AeSysDoc::ClipboardData::get(dataObject)};
 	if (ClipboardData) {
 		auto Document {GetDocument()};
@@ -1700,7 +1700,7 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint
 	return __super::OnDrop(dataObject, dropEffect, point);
 }
 // </command_console>
-DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) {
+DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, const unsigned long keyState, const CPoint point) {
 	if (m_mode == kQuiescent || m_mode == kDragDrop) {
 		if (AeSysDoc::ClipboardData::isAcadDataAvailable(dataObject)) {
 			return static_cast<DROPEFFECT>(GetKeyState(VK_CONTROL) & 0xff00 ? DROPEFFECT_COPY : DROPEFFECT_MOVE);
@@ -1714,7 +1714,7 @@ BOOL AeSysView::PreCreateWindow(CREATESTRUCT& createStructure) {
 	return CView::PreCreateWindow(createStructure);
 }
 
-void AeSysView::OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) {
+void AeSysView::OnUpdate(CView* sender, const LPARAM hint, CObject* hintObject) {
 	auto DeviceContext {GetDC()};
 	if (DeviceContext == nullptr) { return; }
 	const auto BackgroundColor {DeviceContext->GetBkColor()};
@@ -1768,7 +1768,7 @@ CRect AeSysView::viewRect(OdGsView* view) {
 	return {OdRoundToLong(LowerLeftPoint.x), OdRoundToLong(UpperRightPoint.y), OdRoundToLong(UpperRightPoint.x), OdRoundToLong(LowerLeftPoint.y)};
 }
 
-void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsigned flags) {
+void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, const unsigned flags) {
 	__super::OnChar(characterCodeValue, repeatCount, flags);
 	m_response.m_string = m_inpars.result();
 	switch (characterCodeValue) {
@@ -1825,7 +1825,7 @@ void AeSysView::OnChar(unsigned characterCodeValue, unsigned repeatCount, unsign
 	}
 }
 
-void AeSysView::OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags) {
+void AeSysView::OnKeyDown(const unsigned nChar, const unsigned repeatCount, const unsigned flags) {
 	switch (nChar) {
 		case VK_ESCAPE:
 			break;
@@ -1840,7 +1840,7 @@ void AeSysView::OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags) 
 	__super::OnKeyDown(nChar, repeatCount, flags);
 }
 
-void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
+void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 	if (AeSys::CustomLButtonDownCharacters.IsEmpty()) {
 		__super::OnLButtonDown(flags, point);
 		switch (m_mode) {
@@ -1874,7 +1874,7 @@ void AeSysView::OnLButtonDown(unsigned flags, CPoint point) {
 	}
 }
 
-void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
+void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 	if (AeSys::CustomLButtonUpCharacters.IsEmpty()) {
 		__super::OnLButtonUp(flags, point);
 		if (m_mode == kGetPoint && GetCapture() == this) {
@@ -1902,18 +1902,18 @@ void AeSysView::OnLButtonUp(unsigned flags, CPoint point) {
 	}
 }
 
-void AeSysView::OnMButtonDown(unsigned flags, CPoint point) {
+void AeSysView::OnMButtonDown(const unsigned flags, const CPoint point) {
 	m_MiddleButton = true;
 	m_MousePosition = point;
 	__super::OnMButtonDown(flags, point);
 }
 
-void AeSysView::OnMButtonUp(unsigned flags, CPoint point) {
+void AeSysView::OnMButtonUp(const unsigned flags, const CPoint point) {
 	m_MiddleButton = false;
 	__super::OnMButtonUp(flags, point);
 }
 
-void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
+void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 	DisplayOdometer();
 	if (m_MousePosition != point) {
 		switch (m_mode) {
@@ -2016,7 +2016,7 @@ void AeSysView::OnMouseMove(unsigned flags, CPoint point) {
 	}
 }
 
-BOOL AeSysView::OnMouseWheel(unsigned flags, short zDelta, CPoint point) {
+BOOL AeSysView::OnMouseWheel(const unsigned flags, const short zDelta, const CPoint point) {
 	//ScreenToClient(&point);
 	//if (m_editor.OnMouseWheel(flags, point.x, point.y, zDelta)) {
 	//    PostMessageW(WM_PAINT);
@@ -2027,7 +2027,7 @@ BOOL AeSysView::OnMouseWheel(unsigned flags, short zDelta, CPoint point) {
 	return __super::OnMouseWheel(flags, zDelta, point);
 }
 
-void AeSysView::OnRButtonDown(unsigned flags, CPoint point) {
+void AeSysView::OnRButtonDown(const unsigned flags, const CPoint point) {
 	if (AeSys::CustomRButtonDownCharacters.IsEmpty()) {
 		m_RightButton = true;
 		m_MousePosition = point;
@@ -2037,7 +2037,7 @@ void AeSysView::OnRButtonDown(unsigned flags, CPoint point) {
 	}
 }
 
-void AeSysView::OnRButtonUp(unsigned flags, CPoint point) {
+void AeSysView::OnRButtonUp(const unsigned flags, const CPoint point) {
 	if (AeSys::CustomRButtonUpCharacters.IsEmpty()) {
 		m_RightButton = false;
 
@@ -2095,7 +2095,7 @@ OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
 	return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId);
 }
 
-unsigned long AeSysView::drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) {
+unsigned long AeSysView::drawableFilterFunction(const OdIntPtr functionId, const OdGiDrawable* drawable, const unsigned long flags) {
 	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
 		getDatabase()->pageObjects();
 	}
@@ -2114,7 +2114,7 @@ OdDbDatabasePtr AeSysView::Database() const {
 	return GetDocument()->m_DatabasePtr;
 }
 
-void AeSysView::OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) {
+void AeSysView::OnActivateFrame(const unsigned state, CFrameWnd* deactivateFrame) {
 	CView::OnActivateFrame(state, deactivateFrame);
 }
 
@@ -2174,7 +2174,7 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 	}
 }
 
-void AeSysView::OnContextMenu(CWnd*, CPoint point) {
+void AeSysView::OnContextMenu(CWnd*, const CPoint point) {
 	theApp.ShowPopupMenu(IDR_CONTEXT_MENU, point, this);
 }
 
@@ -2268,7 +2268,7 @@ CPoint AeSysView::DoViewportProjection(const EoGePoint4d& point) const noexcept 
 	return m_Viewport.DoProjection(point);
 }
 
-void AeSysView::DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept {
+void AeSysView::DoViewportProjection(CPoint* pnt, const int iPts, EoGePoint4d* pt) const noexcept {
 	m_Viewport.DoProjection(pnt, iPts, pt);
 }
 
@@ -2300,15 +2300,15 @@ void AeSysView::ViewportPushActive() {
 	m_Viewports.AddTail(m_Viewport);
 }
 
-void AeSysView::SetViewportSize(int width, int height) noexcept {
+void AeSysView::SetViewportSize(const int width, const int height) noexcept {
 	m_Viewport.SetSize(width, height);
 }
 
-void AeSysView::SetDeviceHeightInInches(double height) noexcept {
+void AeSysView::SetDeviceHeightInInches(const double height) noexcept {
 	m_Viewport.SetDeviceHeightInInches(height);
 }
 
-void AeSysView::SetDeviceWidthInInches(double width) noexcept {
+void AeSysView::SetDeviceWidthInInches(const double width) noexcept {
 	m_Viewport.SetDeviceWidthInInches(width);
 }
 // AeSysView printing
@@ -2336,7 +2336,7 @@ void AeSysView::OnFilePrint() {
 	CView::OnFilePrint();
 }
 
-unsigned AeSysView::NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages) {
+unsigned AeSysView::NumPages(CDC* deviceContext, const double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages) {
 	OdGeExtents3d Extents;
 	GetDocument()->GetExtents___(this, Extents);
 	const auto MinimumPoint {Extents.minPoint()};
@@ -2356,7 +2356,7 @@ void AeSysView::DisplayPixel(CDC* deviceContext, COLORREF cr, const OdGePoint3d&
 	}
 }
 
-void AeSysView::Orbit(double x, double y) {
+void AeSysView::Orbit(const double x, const double y) {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	FirstView->orbit(x, y);
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
@@ -2384,7 +2384,7 @@ void AeSysView::Dolly() {
 	SetCursorPosition(FirstView->target());
 }
 
-void AeSysView::DollyAndZoom(double zoomFactor) {
+void AeSysView::DollyAndZoom(const double zoomFactor) {
 	Dolly();
 	auto FirstView {m_LayoutHelper->viewAt(0)};
 	FirstView->zoom(zoomFactor);
@@ -2540,7 +2540,7 @@ void AeSysView::OnViewPenWidths() {
 	InvalidateRect(nullptr);
 }
 
-void AeSysView::OnViewRendermode(unsigned commandId) {
+void AeSysView::OnViewRendermode(const unsigned commandId) {
 	const auto RenderMode {OdGsView::RenderMode(commandId - ID_VIEW_RENDERMODE_2DOPTIMIZED)};
 	SetRenderMode(RenderMode);
 }
@@ -3108,7 +3108,7 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 	return nullptr;
 }
 
-std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance) {
+std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGePoint3d& point, const double tolerance) {
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group {GetNextVisibleGroup(GroupPosition)};
@@ -3118,9 +3118,7 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
 				auto Arc {dynamic_cast<EoDbEllipse*>(Primitive)};
 				if (fabs(Arc->SweepAngle() - Oda2PI) <= DBL_EPSILON && Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd() <= DBL_EPSILON) {
-					if (point.distanceTo(Arc->Center()) <= tolerance) {
-						return {Group, Arc};
-					}
+					if (point.distanceTo(Arc->Center()) <= tolerance) { return {Group, Arc}; }
 				}
 			}
 		}
@@ -3341,7 +3339,7 @@ void AeSysView::RubberBandingDisable() {
 	}
 }
 
-void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, ERubs type) {
+void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, const ERubs type) {
 	EoGePoint4d ptView(point, 1.0);
 	ModelViewTransformPoint(ptView);
 	if (ptView.IsInView()) {
@@ -3367,7 +3365,7 @@ OdGePoint3d AeSysView::GetCursorPosition() {
 	return m_ptCursorPosWorld;
 }
 
-OdGePoint3d AeSysView::GetWorldCoordinates(CPoint point) {
+OdGePoint3d AeSysView::GetWorldCoordinates(const CPoint point) {
 	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 	OdGePoint3d WCSPoint(point.x, point.y, 0.0);
 	WCSPoint.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
@@ -3398,7 +3396,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d& cursorPosition) {
 	SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
 
-void AeSysView::SetModeCursor(unsigned mode) {
+void AeSysView::SetModeCursor(const unsigned mode) {
 	unsigned short ResourceIdentifier {0};
 	switch (mode) {
 		case ID_MODE_ANNOTATE:
@@ -3453,7 +3451,7 @@ void AeSysView::SetModeCursor(unsigned mode) {
 	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, reinterpret_cast<long>(CursorHandle));
 }
 
-void AeSysView::SetWorldScale(double scale) {
+void AeSysView::SetWorldScale(const double scale) {
 	if (scale > FLT_EPSILON) {
 		m_WorldScale = scale;
 		UpdateStateInformation(Scale);
@@ -3471,7 +3469,7 @@ void AeSysView::OnUpdateViewStateinformation(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_ViewStateInformation);
 }
 
-void AeSysView::UpdateStateInformation(EStateInformationItem item) {
+void AeSysView::UpdateStateInformation(const EStateInformationItem item) {
 	if (m_ViewStateInformation) {
 		auto Document {AeSysDoc::GetDoc()};
 		auto DeviceContext {GetDC()};
@@ -3543,7 +3541,7 @@ const ODCOLORREF* AeSysView::CurrentPalette() const {
 	return Color;
 }
 
-void AeSysView::SetRenderMode(OdGsView::RenderMode renderMode) {
+void AeSysView::SetRenderMode(const OdGsView::RenderMode renderMode) {
 	OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
 	if (FirstView->mode() != renderMode) {
 		FirstView->setMode(renderMode);

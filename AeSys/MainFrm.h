@@ -73,7 +73,7 @@ protected:  // control bar embedded members
 	LRESULT OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam);
 DECLARE_MESSAGE_MAP()
 	BOOL OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) override;
-	BOOL OnShowMDITabContextMenu(CPoint point, unsigned long dwAllowedItems, BOOL bDrop) override;
+	BOOL OnShowMDITabContextMenu(CPoint point, unsigned long allowedItems, BOOL drop) override;
 	BOOL CreateDockingWindows();
 	void SetDockablePanesIcons(bool highColorMode);
 	void ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu);

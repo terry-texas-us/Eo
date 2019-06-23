@@ -6,7 +6,7 @@
 #include "EoDb.h"
 #include "Preview.h"
 
-unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, unsigned windowMessage, WPARAM wParam, LPARAM lParam) {
+unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage, WPARAM wParam, LPARAM lParam) {
 	auto Document {AeSysDoc::GetDoc()};
 	switch (windowMessage) {
 		case WM_INITDIALOG:

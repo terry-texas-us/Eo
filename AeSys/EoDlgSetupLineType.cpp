@@ -40,7 +40,7 @@ void EoDlgSetupLinetype::OnBnClickedBylayerButton() {
 	CDialog::OnOK();
 }
 
-void EoDlgSetupLinetype::OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct) {
+void EoDlgSetupLinetype::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct) {
 	if (controlIdentifier == IDC_LINETYPES_LIST_CONTROL) {
 		switch (drawItemStruct->itemAction) {
 			case ODA_DRAWENTIRE: {

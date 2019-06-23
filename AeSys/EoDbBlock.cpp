@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include "EoDbBlock.h"
 
-EoDbBlock::EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint) {
+EoDbBlock::EoDbBlock(const unsigned short flags, const OdGePoint3d& basePoint) {
 	m_wBlkTypFlgs = flags;
 	m_BasePoint = basePoint;
 }
 
-EoDbBlock::EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint, const OdString& pathName) {
+EoDbBlock::EoDbBlock(const unsigned short flags, const OdGePoint3d& basePoint, const OdString& pathName) {
 	m_wBlkTypFlgs = flags;
 	m_BasePoint = basePoint;
 	m_strXRefPathName = pathName;
@@ -32,7 +32,7 @@ bool EoDbBlock::IsFromExternalReference() noexcept {
 	return (m_wBlkTypFlgs & 4) == 4;
 }
 
-void EoDbBlock::SetBlkTypFlgs(unsigned short flags) noexcept {
+void EoDbBlock::SetBlkTypFlgs(const unsigned short flags) noexcept {
 	m_wBlkTypFlgs = flags;
 }
 

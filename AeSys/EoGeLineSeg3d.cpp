@@ -35,7 +35,7 @@ double EoGeLineSeg3d::AngleFromXAxis_xy() const {
 	return Angle;
 }
 
-OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(double influenceAngle, double axisOffsetAngle) const {
+OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(const double influenceAngle, const double axisOffsetAngle) const {
 	EoGeMatrix3d TransformMatrix;
 	TransformMatrix.setToTranslation(- startPoint().asVector());
 	EoGeMatrix3d RotationMatrix;
@@ -122,7 +122,7 @@ void EoGeLineSeg3d::Extents(OdGePoint3d& minimum, OdGePoint3d& maximum) {
 	maximum.z = EoMax(startPoint().z, endPoint().z);
 }
 
-bool EoGeLineSeg3d::GetParallels(double distanceBetweenLines, double eccentricity, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) const {
+bool EoGeLineSeg3d::GetParallels(const double distanceBetweenLines, const double eccentricity, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) const {
 	leftLine = *this;
 	rightLine = *this;
 	const auto LengthOfLines {length()};
@@ -188,7 +188,7 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 	}
 }
 
-bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, double apert, OdGePoint3d& ptProj, double& relationship) const {
+bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double apert, OdGePoint3d& ptProj, double& relationship) const {
 	if (point.x < EoMin(startPoint().x, endPoint().x) - apert) { return false; }
 	if (point.x > EoMax(startPoint().x, endPoint().x) + apert) { return false; }
 	if (point.y < EoMin(startPoint().y, endPoint().y) - apert) { return false; }
@@ -243,7 +243,7 @@ OdGePoint3d EoGeLineSeg3d::ProjPt(const OdGePoint3d& point) const {
 	return startPoint() + vBegEnd;
 }
 
-int EoGeLineSeg3d::ProjPtFrom_xy(double parallelDistance, double perpendicularDistance, OdGePoint3d& projectedPoint) {
+int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double perpendicularDistance, OdGePoint3d& projectedPoint) {
 	auto dX {endPoint().x - startPoint().x};
 	auto dY {endPoint().y - startPoint().y};
 	auto dLen {sqrt(dX * dX + dY * dY)};
@@ -266,14 +266,14 @@ int EoGeLineSeg3d::ProjPtFrom_xy(double parallelDistance, double perpendicularDi
 	return TRUE;
 }
 
-OdGePoint3d EoGeLineSeg3d::ProjToBegPt(double distance) {
+OdGePoint3d EoGeLineSeg3d::ProjToBegPt(const double distance) {
 	auto vEndBeg {startPoint() - endPoint()};
 	const auto dLen {vEndBeg.length()};
 	if (dLen > DBL_EPSILON) vEndBeg *= distance / dLen;
 	return endPoint() + vEndBeg;
 }
 
-OdGePoint3d EoGeLineSeg3d::ProjToEndPt(double distance) {
+OdGePoint3d EoGeLineSeg3d::ProjToEndPt(const double distance) {
 	auto vBegEnd {endPoint() - startPoint()};
 	const auto Length {vBegEnd.length()};
 	if (Length > DBL_EPSILON) { vBegEnd *= distance / Length; }

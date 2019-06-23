@@ -26,11 +26,11 @@ DECLARE_DYNAMIC(EoCtrlColorsButton)
 		m_CurrentIndex = index;
 	}
 
-	static void SetPalette(gsl::span<COLORREF> palette) noexcept {
+	static void SetPalette(const gsl::span<COLORREF> palette) noexcept {
 		m_Palette = palette;
 	}
 
-	void SetLayout(Layouts layout, const CSize& cellSize) noexcept {
+	void SetLayout(const Layouts layout, const CSize& cellSize) noexcept {
 		m_Layout = layout;
 		m_CellSize = cellSize;
 	}

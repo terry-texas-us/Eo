@@ -9,7 +9,7 @@ public:
 	enum EVFix { kNoVFix = 0, kHeight = 1, kTop = 2, kBottom = 4, kHeightTop = 3, kHeightBottom = 5, kTopBottom = 6 };
 
 	// initialize with parent window, all child windows must already have their original position/size
-	void Init(HWND a_hParent);
+	void Init(HWND parent);
 
 	// explicitly add a window to the list of child windows (e.g. a sibling window)
 	// Note: you've got to call Init() before you can add a window

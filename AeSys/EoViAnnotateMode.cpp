@@ -384,7 +384,7 @@ void AeSysView::OnAnnotateModeEscape() {
 	ModeLineUnhighlightOp(m_PreviousOp);
 }
 
-bool AeSysView::CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const {
+bool AeSysView::CorrectLeaderEndpoints(const int beginType, const int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const {
 	const auto LineSegmentLength {OdGeVector3d(endPoint - startPoint).length()};
 	auto BeginDistance {0.0};
 	if (beginType == ID_OP4) {
@@ -409,7 +409,7 @@ double AeSysView::BubbleRadius() const noexcept {
 	return m_BubbleRadius;
 }
 
-void AeSysView::SetBubbleRadius(double radius) noexcept {
+void AeSysView::SetBubbleRadius(const double radius) noexcept {
 	m_BubbleRadius = radius;
 }
 
@@ -417,7 +417,7 @@ double AeSysView::CircleRadius() const noexcept {
 	return m_CircleRadius;
 }
 
-void AeSysView::SetCircleRadius(double radius) noexcept {
+void AeSysView::SetCircleRadius(const double radius) noexcept {
 	m_CircleRadius = radius;
 }
 
@@ -433,7 +433,7 @@ double AeSysView::EndItemSize() const noexcept {
 	return m_EndItemSize;
 }
 
-void AeSysView::SetEndItemSize(double size) noexcept {
+void AeSysView::SetEndItemSize(const double size) noexcept {
 	m_EndItemSize = size;
 }
 
@@ -441,7 +441,7 @@ int AeSysView::EndItemType() noexcept {
 	return m_EndItemType;
 }
 
-void AeSysView::SetEndItemType(int type) noexcept {
+void AeSysView::SetEndItemType(const int type) noexcept {
 	m_EndItemType = type;
 }
 
@@ -449,7 +449,7 @@ double AeSysView::GapSpaceFactor() const noexcept {
 	return m_GapSpaceFactor;
 }
 
-void AeSysView::SetGapSpaceFactor(double factor) noexcept {
+void AeSysView::SetGapSpaceFactor(const double factor) noexcept {
 	m_GapSpaceFactor = factor;
 }
 
@@ -457,7 +457,7 @@ int AeSysView::NumberOfSides() const noexcept {
 	return m_NumberOfSides;
 }
 
-void AeSysView::SetNumberOfSides(int number) noexcept {
+void AeSysView::SetNumberOfSides(const int number) noexcept {
 	m_NumberOfSides = number;
 }
 
@@ -509,7 +509,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
 
-void AeSysView::GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
+void AeSysView::GenerateLineEndItem(const int type, const double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
 	const auto PlaneNormal {CameraDirection()};
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	OdGePoint3dArray ItemPoints;

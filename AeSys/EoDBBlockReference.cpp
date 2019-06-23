@@ -50,7 +50,7 @@ void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const 
 	theApp.AddStringToMessageList(Report);
 }
 
-void EoDbBlockReference::AddToTreeViewControl(HWND tree, HTREEITEM parent) const {
+void EoDbBlockReference::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const {
 	EoDbBlock* Block;
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
 	const auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
@@ -224,7 +224,7 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 
 	if (mask != 0) { m_Position += translate; }
 }
@@ -312,23 +312,23 @@ void EoDbBlockReference::SetScaleFactors(const OdGeScale3d& scaleFactors) noexce
 	m_ScaleFactors = scaleFactors;
 }
 
-void EoDbBlockReference::SetRotation(double rotation) noexcept {
+void EoDbBlockReference::SetRotation(const double rotation) noexcept {
 	m_Rotation = rotation;
 }
 
-void EoDbBlockReference::SetRows(unsigned short rows) noexcept {
+void EoDbBlockReference::SetRows(const unsigned short rows) noexcept {
 	m_Rows = rows;
 }
 
-void EoDbBlockReference::SetRowSpacing(double rowSpacing) noexcept {
+void EoDbBlockReference::SetRowSpacing(const double rowSpacing) noexcept {
 	m_RowSpacing = rowSpacing;
 }
 
-void EoDbBlockReference::SetColumns(unsigned short columns) noexcept {
+void EoDbBlockReference::SetColumns(const unsigned short columns) noexcept {
 	m_Columns = columns;
 }
 
-void EoDbBlockReference::SetColumnSpacing(double columnSpacing) noexcept {
+void EoDbBlockReference::SetColumnSpacing(const double columnSpacing) noexcept {
 	m_ColumnSpacing = columnSpacing;
 }
 

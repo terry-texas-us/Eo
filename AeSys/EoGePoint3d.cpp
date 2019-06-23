@@ -12,7 +12,7 @@ bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, 
 	return true;
 }
 
-OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoint, double distance) {
+OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoint, const double distance) {
 	auto Direction {toPoint - fromPoint};
 	if (!Direction.isZeroLength()) {
 		Direction *= distance / Direction.length();

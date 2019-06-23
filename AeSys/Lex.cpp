@@ -127,7 +127,7 @@ void lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 	}
 }
 
-void lex::ConvertValTyp(int valueType, int requiredType, long* definition, void* apVal) noexcept {
+void lex::ConvertValTyp(const int valueType, const int requiredType, long* definition, void* apVal) noexcept {
 	if (valueType == requiredType) { return; }
 	const auto pdVal {static_cast<double*>(apVal)};
 	const auto piVal {static_cast<long*>(apVal)};
@@ -155,7 +155,7 @@ void lex::ConvertValTyp(int valueType, int requiredType, long* definition, void*
 	}
 }
 
-void lex::ConvertStringToVal(int valueType, long definition, wchar_t* szVal, long* lDefReq, void* p) {
+void lex::ConvertStringToVal(const int valueType, const long definition, wchar_t* szVal, long* lDefReq, void* p) {
 	if (LOWORD(definition) <= 0) { throw L"Empty string"; }
 	wchar_t szTok[64];
 	auto iNxt {0};
@@ -451,11 +451,11 @@ int lex::Scan(wchar_t* token, const wchar_t* line, int& linePosition) {
 	return Result;
 }
 
-int lex::TokenType(int aiTokId) noexcept {
+int lex::TokenType(const int aiTokId) noexcept {
 	return aiTokId >= 0 && aiTokId < iToks ? TokenTypes[aiTokId] : - 1;
 }
 
-void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, double* adOp) {
+void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* adOp) {
 	LexColumnDefinition cd;
 	wchar_t szTok[32];
 	int i;
@@ -532,7 +532,7 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, double* adOp) 
 	}
 }
 
-void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, long* alOp) {
+void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, long* alOp) {
 	LexColumnDefinition cd;
 	wchar_t szTok[32];
 	int iDim {LOWORD(*definition)};
@@ -566,7 +566,7 @@ void lex::UnaryOp(int aiTokTyp, int* valueType, long* definition, long* alOp) {
 	}
 }
 
-wchar_t* lex::ScanForChar(wchar_t c, wchar_t* * ppStr) noexcept {
+wchar_t* lex::ScanForChar(const wchar_t c, wchar_t* * ppStr) noexcept {
 	const auto p {SkipWhiteSpace(*ppStr)};
 	if (*p == c) {
 		*ppStr = p + 1;

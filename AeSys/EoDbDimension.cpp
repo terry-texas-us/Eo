@@ -54,7 +54,7 @@ void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.SetEngagedAngle(AngleInXYPlane);
 }
 
-void EoDbDimension::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbDimension::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Dimension>", this);
 }
 
@@ -175,7 +175,7 @@ void EoDbDimension::GetAllPoints(OdGePoint3dArray& points) const {
 }
 
 // Determination of text extent.
-void EoDbDimension::GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const {
+void EoDbDimension::GetBoundingBox(OdGePoint3dArray& boundingBox, const double spaceFactor) const {
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), spaceFactor, boundingBox);
 }
 
@@ -328,7 +328,7 @@ void EoDbDimension::SetText(const CString& text) {
 	m_strText = text;
 }
 
-void EoDbDimension::SetTextColorIndex(short colorIndex) noexcept {
+void EoDbDimension::SetTextColorIndex(const short colorIndex) noexcept {
 	m_TextColorIndex = colorIndex;
 }
 
@@ -383,11 +383,11 @@ void EoDbDimension::SetReferenceSystem(const EoGeReferenceSystem& referenceSyste
 	m_ReferenceSystem = referenceSystem;
 }
 
-void EoDbDimension::SetTextHorizontalAlignment(EoDb::HorizontalAlignment horizontalAlignment) noexcept {
+void EoDbDimension::SetTextHorizontalAlignment(const EoDb::HorizontalAlignment horizontalAlignment) noexcept {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 }
 
-void EoDbDimension::SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept {
+void EoDbDimension::SetTextVerticalAlignment(const EoDb::VerticalAlignment verticalAlignment) noexcept {
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 }
 
@@ -401,7 +401,7 @@ void EoDbDimension::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbDimension::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbDimension::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 	if ((mask & 1) == 1) { m_Line.SetStartPoint(m_Line.startPoint() + translate); }
 	if ((mask & 2) == 2) { m_Line.SetEndPoint(m_Line.endPoint() + translate); }
 	SetDefaultNote();

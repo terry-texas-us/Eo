@@ -37,7 +37,7 @@ void EoDbSpline::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.AddStringToMessageList(Report);
 }
 
-void EoDbSpline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbSpline::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BSpline>", this);
 }
 
@@ -173,7 +173,7 @@ bool EoDbSpline::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* vie
 	return false;
 }
 
-void EoDbSpline::Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic) {
+void EoDbSpline::Set(const int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, const bool isPeriodic) {
 	m_Spline.set(degree, knots, controlPoints, weights, isPeriodic);
 }
 
@@ -181,7 +181,7 @@ void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Spline.transformBy(transformMatrix);
 }
 
-void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 	for (auto ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
 		if ((mask >> ControlPointIndex & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);
@@ -247,7 +247,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 	return Spline;
 }
 
-OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex;
 	short LinetypeIndex;
 	unsigned short NumberOfControlPoints {0};

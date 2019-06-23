@@ -88,13 +88,13 @@ public: // Constructors and destructor
 	[[nodiscard]] short LogicalColorIndex() const noexcept;
 	[[nodiscard]] short LogicalLinetypeIndex() const noexcept;
 
-	void SetColorIndex(short colorIndex) noexcept { m_ColorIndex = colorIndex; }
+	void SetColorIndex(const short colorIndex) noexcept { m_ColorIndex = colorIndex; }
 
 	void SetColorIndex2(short colorIndex);
 
-	void SetEntityObjectId(OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
+	void SetEntityObjectId(const OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
 
-	void SetLinetypeIndex(short linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
+	void SetLinetypeIndex(const short linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
 
 	void SetLinetypeIndex2(short linetypeIndex);
 	

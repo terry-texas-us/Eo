@@ -19,7 +19,7 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleManager, CPropertySheet)
 		ON_WM_CREATE()
 END_MESSAGE_MAP()
 
-int EoDlgPlotStyleManager::OnCreate(LPCREATESTRUCT createStructure) {
+int EoDlgPlotStyleManager::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CPropertySheet::OnCreate(createStructure) == -1) {
 		return -1;
 	}

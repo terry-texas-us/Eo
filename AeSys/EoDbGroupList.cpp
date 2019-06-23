@@ -3,7 +3,7 @@
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 
-void EoDbGroupList::AddToTreeViewControl(HWND tree, HTREEITEM htiParent) {
+void EoDbGroupList::AddToTreeViewControl(const HWND tree, const HTREEITEM htiParent) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};
@@ -55,7 +55,7 @@ void EoDbGroupList::GetExtents__(AeSysView* view, OdGeExtents3d& extents) {
 	}
 }
 
-int EoDbGroupList::GetLinetypeIndexRefCount(short linetypeIndex) {
+int EoDbGroupList::GetLinetypeIndexRefCount(const short linetypeIndex) {
 	auto Count {0};
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
@@ -64,28 +64,28 @@ int EoDbGroupList::GetLinetypeIndexRefCount(short linetypeIndex) {
 	return Count;
 }
 
-void EoDbGroupList::ModifyColorIndex(short colorIndex) {
+void EoDbGroupList::ModifyColorIndex(const short colorIndex) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		GetNext(Position)->ModifyColorIndex(colorIndex);
 	}
 }
 
-void EoDbGroupList::ModifyLinetypeIndex(short linetypeIndex) {
+void EoDbGroupList::ModifyLinetypeIndex(const short linetypeIndex) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		GetNext(Position)->ModifyLinetypeIndex(linetypeIndex);
 	}
 }
 
-void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
+void EoDbGroupList::ModifyNotes(EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		GetNext(Position)->ModifyNotes(fontDefinition, characterCellDefinition, iAtt);
 	}
 }
 
-void EoDbGroupList::PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
+void EoDbGroupList::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		GetNext(Position)->PenTranslation(numberOfColors, newColors, pCol);

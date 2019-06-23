@@ -9,7 +9,7 @@ BEGIN_MESSAGE_MAP(EoGripperScrollBar, CScrollBar)
 		ON_WM_NCHITTEST()
 END_MESSAGE_MAP()
 
-LRESULT EoGripperScrollBar::OnNcHitTest(CPoint point) {
+LRESULT EoGripperScrollBar::OnNcHitTest(const CPoint point) {
 	auto HitTest {CScrollBar::OnNcHitTest(point)};
 	if (HitTest == HTCLIENT) { HitTest = HTBOTTOMRIGHT; }
 	return HitTest;

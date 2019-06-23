@@ -135,7 +135,7 @@ public:
 	bool Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint);
 	virtual unsigned SnapModes() const = 0;
 
-	virtual unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept {
+	virtual unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept {
 		// was temporary moved into OSnapManager // return 1 << mode;
 		return static_cast<unsigned>(1 << (mode + 1));
 	}
@@ -167,5 +167,5 @@ public:
 	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	[[nodiscard]] unsigned ToSnapModes(OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
+	[[nodiscard]] unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
 };

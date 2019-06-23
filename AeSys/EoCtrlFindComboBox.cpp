@@ -11,28 +11,23 @@ IMPLEMENT_SERIAL(EoCtrlFindComboBox, CMFCToolBarComboBoxButton, 1)
 
 BOOL EoCtrlFindComboBox::m_HasFocus = FALSE;
 
-BOOL EoCtrlFindComboBox::NotifyCommand(int notifyCode) {
+BOOL EoCtrlFindComboBox::NotifyCommand(const int notifyCode) {
 	TRACE1("EoCtrlFindComboBox::NotifyCommand(%i)\n", notifyCode);
 	auto CommandProcessed {CMFCToolBarComboBoxButton::NotifyCommand(notifyCode)};
 	switch (notifyCode) {
-		case CBN_SELCHANGE: // notifyCode 1
-		case CBN_DBLCLK: // notifyCode 2
+		case CBN_SELCHANGE: case CBN_DBLCLK:
 			break;
-		case CBN_SETFOCUS: // notifyCode 3
+		case CBN_SETFOCUS:
 			m_HasFocus = TRUE;
 			CommandProcessed = TRUE;
 			break;
-		case CBN_KILLFOCUS: // notifyCode 4
+		case CBN_KILLFOCUS:
 			m_HasFocus = FALSE;
 			CommandProcessed = TRUE;
 			break;
-		case CBN_EDITCHANGE: // notifyCode 5
-		case CBN_EDITUPDATE: // notifyCode 6
-		case CBN_DROPDOWN: // notifyCode 7
-		case CBN_CLOSEUP: // notifyCode 8
-		case CBN_SELENDOK: // notifyCode 9
-		case CBN_SELENDCANCEL: // notifyCode 10
+		case CBN_EDITCHANGE: case CBN_EDITUPDATE: case CBN_DROPDOWN: case CBN_CLOSEUP: case CBN_SELENDOK: case CBN_SELENDCANCEL:
 			break;
+		default: ;
 	}
 	return CommandProcessed;
 }

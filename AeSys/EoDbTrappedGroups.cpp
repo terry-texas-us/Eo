@@ -170,15 +170,15 @@ bool AeSysDoc::IsTrapEmpty() const {
 	return m_TrappedGroupList.IsEmpty();
 }
 
-void AeSysDoc::ModifyTrappedGroupsColorIndex(short colorIndex) {
+void AeSysDoc::ModifyTrappedGroupsColorIndex(const short colorIndex) {
 	m_TrappedGroupList.ModifyColorIndex(colorIndex);
 }
 
-void AeSysDoc::ModifyTrappedGroupsLinetypeIndex(short linetypeIndex) {
+void AeSysDoc::ModifyTrappedGroupsLinetypeIndex(const short linetypeIndex) {
 	m_TrappedGroupList.ModifyLinetypeIndex(linetypeIndex);
 }
 
-void AeSysDoc::ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, EoDbCharacterCellDefinition& cellDef, int attributes) {
+void AeSysDoc::ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, EoDbCharacterCellDefinition& cellDef, const int attributes) {
 	m_TrappedGroupList.ModifyNotes(fontDef, cellDef, attributes);
 }
 
@@ -199,7 +199,7 @@ POSITION AeSysDoc::RemoveTrappedGroup(EoDbGroup* group) {
 	return m_TrappedGroupList.Remove(group);
 }
 
-void AeSysDoc::RemoveTrappedGroupAt(POSITION position) {
+void AeSysDoc::RemoveTrappedGroupAt(const POSITION position) {
 	m_TrappedGroupList.RemoveAt(position);
 }
 

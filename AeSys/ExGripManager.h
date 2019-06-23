@@ -41,11 +41,11 @@ public:
 		return m_SubentPath.subentId() != OdDbSubentId();
 	}
 
-	void setStatus(OdDbGripOperations::DrawType status) noexcept { m_Status = status; }
+	void setStatus(const OdDbGripOperations::DrawType status) noexcept { m_Status = status; }
 
-	void setInvisible(bool invisible) noexcept { m_Invisible = invisible; }
+	void setInvisible(const bool invisible) noexcept { m_Invisible = invisible; }
 
-	void setShared(bool shared) noexcept { m_Shared = shared; }
+	void setShared(const bool shared) noexcept { m_Shared = shared; }
 
 private:
 	bool computeDragPoint(OdGePoint3d& computedPoint) const;
@@ -218,8 +218,8 @@ public: // Construction. Initialization.
 	OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, int bitFlags) override;
 	OdResult MoveGripPointsAt(OdGiDrawable* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 	void SubentGripStatus(OdGiDrawable* entity, OdDb::GripStat status, const OdDbBaseFullSubentPath& subentity) override;
-	void GripStatus(OdGiDrawable* entity, OdDb::GripStat st) override;
-	void DragStatus(OdGiDrawable* entity, OdDb::DragStat st) override;
+	void GripStatus(OdGiDrawable* entity, OdDb::GripStat status) override;
+	void DragStatus(OdGiDrawable* entity, OdDb::DragStat status) override;
 	bool IsModel(OdGiDrawable* entity) noexcept override;
 
 	// Events from Windows.

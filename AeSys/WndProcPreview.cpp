@@ -21,7 +21,7 @@ ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {
 	return ::RegisterClass(&Class);
 }
 
-LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LPARAM lParam) {
+LRESULT CALLBACK WndProcPreview(const HWND hwnd, const unsigned message, const unsigned nParam, const LPARAM lParam) {
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};
@@ -60,7 +60,7 @@ LRESULT CALLBACK WndProcPreview(HWND hwnd, unsigned message, unsigned nParam, LP
 	return DefWindowProc(hwnd, message, nParam, lParam);
 }
 
-void WndProcPreviewClear(HWND previewWindow) {
+void WndProcPreviewClear(const HWND previewWindow) {
 	CRect rc;
 	GetClientRect(previewWindow, &rc);
 	CDC dcMem;
@@ -71,7 +71,7 @@ void WndProcPreviewClear(HWND previewWindow) {
 	InvalidateRect(previewWindow, nullptr, TRUE);
 }
 
-void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
+void WndProcPreviewUpdate(const HWND previewWindow, EoDbBlock* block) {
 	auto ActiveView {AeSysView::GetActiveView()};
 	CRect rc;
 	GetClientRect(previewWindow, &rc);
@@ -108,7 +108,7 @@ void WndProcPreviewUpdate(HWND previewWindow, EoDbBlock* block) {
 	InvalidateRect(previewWindow, nullptr, TRUE);
 }
 
-void _WndProcPreviewUpdate(HWND previewWindow, EoDbGroupList* groups) {
+void _WndProcPreviewUpdate(const HWND previewWindow, EoDbGroupList* groups) {
 	auto ActiveView {AeSysView::GetActiveView()};
 	CRect rc;
 	GetClientRect(previewWindow, &rc);

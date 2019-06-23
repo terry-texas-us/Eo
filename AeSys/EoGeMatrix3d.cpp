@@ -26,7 +26,7 @@ EoGeMatrix3d& EoGeMatrix3d::SetTo3AxisRotation(const OdGeVector3d& rotationAngle
 	return *this;
 }
 
-EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance) {
+EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(const double uMin, const double uMax, const double vMin, const double vMax, const double nearClipDistance, const double farClipDistance) {
 	setToIdentity();
 	entry[0][0] = 2. / (uMax - uMin);
 	entry[0][3] = - (uMax + uMin) / (uMax - uMin);
@@ -37,7 +37,7 @@ EoGeMatrix3d& EoGeMatrix3d::SetToParallelProjection(double uMin, double uMax, do
 	return *this;
 }
 
-EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax, double vMin, double vMax, double nearClipDistance, double farClipDistance) {
+EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(const double uMin, const double uMax, const double vMin, const double vMax, const double nearClipDistance, const double farClipDistance) {
 	setToIdentity();
 	const auto FieldWidth {uMax - uMin};
 	const auto FieldHeight {vMax - vMin};
@@ -53,7 +53,7 @@ EoGeMatrix3d& EoGeMatrix3d::SetToPerspectiveProjection(double uMin, double uMax,
 	return *this;
 }
 
-EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(OdGePoint3d position, OdGePoint3d target, const OdGeVector3d& viewUp) {
+EoGeMatrix3d& EoGeMatrix3d::SetToViewTransform(OdGePoint3d position, const OdGePoint3d target, const OdGeVector3d& viewUp) {
 	setToIdentity();
 	auto Normal {position - target};
 	Normal.normalize();

@@ -36,7 +36,7 @@ void AeSysView::SetCameraTarget(const OdGePoint3d& target) {
 	m_ViewTransform.BuildTransformMatrix();
 }
 
-void AeSysView::SetProjectionPlaneField(double fieldWidth, double fieldHeight) {
+void AeSysView::SetProjectionPlaneField(const double fieldWidth, const double fieldHeight) {
 	m_ViewTransform.SetProjectionPlaneField(fieldWidth, fieldHeight);
 	m_ViewTransform.BuildTransformMatrix();
 }
@@ -46,12 +46,12 @@ void AeSysView::SetViewTransform(EoGsViewTransform& viewTransform) {
 	m_ViewTransform.BuildTransformMatrix();
 }
 
-void AeSysView::SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight) {
+void AeSysView::SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, const double fieldWidth, const double fieldHeight) {
 	m_ViewTransform.SetView(position, target, upVector, fieldWidth, fieldHeight);
 	m_ViewTransform.BuildTransformMatrix();
 }
 
-void AeSysView::SetViewWindow(double uMin, double vMin, double uMax, double vMax) {
+void AeSysView::SetViewWindow(const double uMin, const double vMin, const double uMax, const double vMax) {
 	m_ViewTransform.SetProjectionPlaneField(uMin, vMin, uMax, vMax);
 	m_ViewTransform.BuildTransformMatrix();
 }
@@ -103,7 +103,7 @@ void AeSysView::ModelViewTransformPoints(EoGePoint4dArray& points) {
 	}
 }
 
-void AeSysView::ModelViewTransformPoints(int numberOfPoints, EoGePoint4d* points) {
+void AeSysView::ModelViewTransformPoints(const int numberOfPoints, EoGePoint4d* points) {
 	auto Matrix {m_ViewTransform.Matrix()};
 	if (m_ModelTransform.Depth() != 0) {
 		Matrix.postMultBy(m_ModelTransform.ModelMatrix());

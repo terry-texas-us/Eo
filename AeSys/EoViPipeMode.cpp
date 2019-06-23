@@ -977,7 +977,7 @@ void AeSysView::DoPipeModeMouseMove() {
 	m_PipeModePoints.setLogicalLength(NumberOfPoints);
 }
 
-void AeSysView::GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint, int endType, OdGePoint3d& endPoint, EoDbGroup* group) {
+void AeSysView::GenerateLineWithFittings(const int beginType, OdGePoint3d& startPoint, const int endType, OdGePoint3d& endPoint, EoDbGroup* group) {
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto pt1 {startPoint};
 	auto pt2 {endPoint};
@@ -1049,7 +1049,7 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, Eo
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }
 
-bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, double distance, EoDbGroup* group) {
+bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, const double distance, EoDbGroup* group) {
 	const auto PointOnLine {ProjectToward(startPoint, endPoint, distance)};
 	auto Projection {endPoint - PointOnLine};
 	const auto DistanceToEndPoint {Projection.length()};

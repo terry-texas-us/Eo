@@ -41,7 +41,7 @@ void AeSysView::ModeLineDisplay() {
 	ReleaseDC(DeviceContext);
 }
 
-unsigned short AeSysView::ModeLineHighlightOp(unsigned short command) {
+unsigned short AeSysView::ModeLineHighlightOp(const unsigned short command) {
 	ModeLineUnhighlightOp(m_OpHighlighted);
 	m_OpHighlighted = command;
 	if (command == 0) { return 0; }

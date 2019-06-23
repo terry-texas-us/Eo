@@ -44,7 +44,7 @@ unsigned CPrimState::HatchInteriorStyleIndex() const noexcept {
 	return m_HatchInteriorStyleIndex;
 }
 
-void CPrimState::Restore(CDC& deviceContext, int saveIndex) {
+void CPrimState::Restore(CDC& deviceContext, const int saveIndex) {
 	if (saveIndex >= sizeof SavedStates / sizeof SavedStates[0]) { return; }
 	if (SavedStates[saveIndex] != nullptr) {
 		SetPen(nullptr, &deviceContext, SavedStates[saveIndex]->ColorIndex(), SavedStates[saveIndex]->LinetypeIndex());
@@ -100,7 +100,7 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, s
 	}
 }
 
-void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int penWidth, short linetypeIndex) {
+void CPrimState::ManagePenResources(CDC& deviceContext, const short colorIndex, const int penWidth, short linetypeIndex) {
 	static const auto NumberOfPens {8};
 	static HPEN hPen[NumberOfPens] {nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr, nullptr};
 	static COLORREF crColRef[NumberOfPens];
@@ -148,12 +148,12 @@ void CPrimState::ManagePenResources(CDC& deviceContext, short colorIndex, int pe
 	}
 }
 
-void CPrimState::SetColorIndex(CDC* deviceContext, short colorIndex) {
+void CPrimState::SetColorIndex(CDC* deviceContext, const short colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (deviceContext) { ManagePenResources(*deviceContext, colorIndex, 0, m_LinetypeIndex); }
 }
 
-void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, short linetypeIndex) {
+void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, const short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 	if (deviceContext) { ManagePenResources(*deviceContext, m_ColorIndex, 0, linetypeIndex); }
 }
@@ -168,7 +168,7 @@ int CPrimState::SetROP2(CDC& deviceContext, int drawMode) {
 	return deviceContext.SetROP2(drawMode);
 }
 
-void CPrimState::SetTxtAlign(CDC* deviceContext, EoDb::HorizontalAlignment horizontalAlignment, EoDb::VerticalAlignment verticalAlignment) {
+void CPrimState::SetTxtAlign(CDC* deviceContext, const EoDb::HorizontalAlignment horizontalAlignment, const EoDb::VerticalAlignment verticalAlignment) {
 	m_FontDefinition.SetHorizontalAlignment(horizontalAlignment);
 	m_FontDefinition.SetVerticalAlignment(verticalAlignment);
 	deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE);
@@ -183,14 +183,14 @@ void CPrimState::SetFontDefinition(CDC* deviceContext, const EoDbFontDefinition&
 	SetTxtAlign(deviceContext, m_FontDefinition.HorizontalAlignment(), m_FontDefinition.VerticalAlignment());
 }
 
-void CPrimState::SetPointDisplayMode(short pointDisplayMode) noexcept {
+void CPrimState::SetPointDisplayMode(const short pointDisplayMode) noexcept {
 	m_PointDisplayMode = pointDisplayMode;
 }
 
-void CPrimState::SetHatchInteriorStyle(short interiorStyle) noexcept {
+void CPrimState::SetHatchInteriorStyle(const short interiorStyle) noexcept {
 	m_HatchInteriorStyle = interiorStyle;
 }
 
-void CPrimState::SetHatchInteriorStyleIndex(unsigned styleIndex) noexcept {
+void CPrimState::SetHatchInteriorStyleIndex(const unsigned styleIndex) noexcept {
 	m_HatchInteriorStyleIndex = styleIndex;
 }

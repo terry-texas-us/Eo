@@ -80,7 +80,7 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 	}
 }
 
-void EoDbPolyline::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbPolyline::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Polyline>", this);
 }
 
@@ -152,7 +152,7 @@ void EoDbPolyline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 }
 
 /// <summary> This function sets point to the 3D location of the vertex index in World Coordinates.</summary>
-void EoDbPolyline::GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const {
+void EoDbPolyline::GetPointAt(const unsigned vertexIndex, OdGePoint3d& point) const {
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
 	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
 	const auto YAxis {m_Normal.crossProduct(XAxis)};
@@ -322,7 +322,7 @@ bool EoDbPolyline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, cons
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
-void EoDbPolyline::SetClosed(bool closed) noexcept {
+void EoDbPolyline::SetClosed(const bool closed) noexcept {
 	if (closed) {
 		m_Flags |= sm_Closed;
 	} else {
@@ -330,7 +330,7 @@ void EoDbPolyline::SetClosed(bool closed) noexcept {
 	}
 }
 
-void EoDbPolyline::AppendVertex(const OdGePoint2d& vertex, double bulge, double startWidth, double endWidth) {
+void EoDbPolyline::AppendVertex(const OdGePoint2d& vertex, const double bulge, const double startWidth, const double endWidth) {
 	const auto VertexIndex {m_Vertices.append(vertex)};
 	m_Bulges.append(bulge);
 	m_StartWidths.append(startWidth);
@@ -343,7 +343,7 @@ bool EoDbPolyline::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* v
 	return false;
 }
 
-void EoDbPolyline::SetConstantWidth(double constantWidth) noexcept {
+void EoDbPolyline::SetConstantWidth(const double constantWidth) noexcept {
 	m_ConstantWidth = constantWidth;
 }
 
@@ -406,7 +406,7 @@ unsigned EoDbPolyline::Edge() noexcept {
 	return sm_Edge;
 }
 
-void EoDbPolyline::SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept {
+void EoDbPolyline::SetEdgeToEvaluate(const unsigned edgeToEvaluate) noexcept {
 	sm_EdgeToEvaluate = edgeToEvaluate;
 }
 

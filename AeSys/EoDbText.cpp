@@ -39,7 +39,7 @@ void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
 	theApp.AddStringToMessageList(Report);
 }
 
-void EoDbText::AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept {
+void EoDbText::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
 	CMainFrame::InsertTreeViewControlItem(tree, parent, L"<Text>", this);
 }
 
@@ -96,7 +96,7 @@ void EoDbText::GetAllPoints(OdGePoint3dArray& points) const {
 	points.append(m_ReferenceSystem.Origin());
 }
 
-void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const {
+void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, const double spaceFactor) const {
 	const auto Length {TextLengthSansFormattingCharacters(m_strText)};
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, Length, spaceFactor, boundingBox);
 }
@@ -140,7 +140,7 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 	return point.DistanceToPointXY(pt) < sm_SelectApertureSize ? true : false;
 }
 
-void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, int iAtt) {
+void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {
 	if (iAtt == TM_TEXT_ALL) {
 		m_ColorIndex = g_PrimitiveState.ColorIndex();
 		m_FontDefinition = fontDefinition;
@@ -231,7 +231,7 @@ void EoDbText::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_ReferenceSystem.TransformBy(transformMatrix);
 }
 
-void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
 
 	if (mask != 0) { m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate); }
 }
@@ -271,7 +271,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	file.Write(buffer, buffer[3] * 32u);
 }
 
-EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(OdDb::TextHorzMode horizontalMode) noexcept {
+EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
 	auto HorizontalAlignment {EoDb::kAlignLeft};
 	switch (horizontalMode) {
 		case OdDb::kTextMid: case OdDb::kTextCenter:
@@ -286,7 +286,7 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(OdDb::TextHorzMod
 	return HorizontalAlignment;
 }
 
-EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(OdDb::TextVertMode verticalMode) noexcept {
+EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
 	auto VerticalAlignment {EoDb::kAlignBottom};
 	switch (verticalMode) {
 		case OdDb::kTextVertMid:
@@ -301,7 +301,7 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(OdDb::TextVertMode ve
 	return VerticalAlignment;
 }
 
-OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(unsigned horizontalAlignment) noexcept {
+OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const unsigned horizontalAlignment) noexcept {
 	auto HorizontalMode {OdDb::kTextLeft};
 	switch (horizontalAlignment) {
 		case EoDb::kAlignCenter:
@@ -316,7 +316,7 @@ OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(unsigned horizontalAlignment)
 	return HorizontalMode;
 }
 
-OdDb::TextVertMode EoDbText::ConvertVerticalMode(unsigned verticalAlignment) noexcept {
+OdDb::TextVertMode EoDbText::ConvertVerticalMode(const unsigned verticalAlignment) noexcept {
 	auto VerticalMode {OdDb::kTextBottom};
 	switch (verticalAlignment) {
 		case EoDb::kAlignMiddle:
@@ -362,7 +362,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile
 	return Text;
 }
 
-OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex {1};
 	EoDbFontDefinition FontDefinition;
 	EoGeReferenceSystem ReferenceSystem;
@@ -602,7 +602,7 @@ int FontEscapementAngle(const OdGeVector3d& xAxis) noexcept {
 	return EoRound(EoToDegree(Angle) * 10.);
 }
 
-OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, int numberOfCharacters) noexcept {
+OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, const int numberOfCharacters) noexcept {
 	auto InsertionPoint {OdGePoint3d::kOrigin};
 	if (numberOfCharacters > 0) {
 		const auto dTxtExt {double(numberOfCharacters) + (double(numberOfCharacters) - 1.0) * (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
@@ -707,8 +707,7 @@ void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDe
 	DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 }
 
-void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters,
-                        const CString& text) {
+void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const int startPosition, const int numberOfCharacters, const CString& text) {
 	if (deviceContext != nullptr && fontDefinition.Precision() == EoDb::kTrueType && view->ViewTrueTypeFonts()) {
 		auto XDirection {referenceSystem.XDirection()};
 		auto YDirection {referenceSystem.YDirection()};
@@ -724,8 +723,7 @@ void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition&
 	DisplayTextSegmentUsingStrokeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text);
 }
 
-void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters,
-                                       const CString& text) {
+void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const int startPosition, const int numberOfCharacters, const CString& text) {
 	if (numberOfCharacters == 0) { return; }
 	const long* plStrokeFontDef = reinterpret_cast<long*>(theApp.SimplexStrokeFont());
 	if (plStrokeFontDef == nullptr) { return; }
@@ -770,7 +768,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	}
 }
 
-bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const CString& text) {
+bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, const int x, const int y, const CString& text) {
 	deviceContext->BeginPath();
 	deviceContext->TextOutW(x, y, text);
 	deviceContext->EndPath();
@@ -800,8 +798,7 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, int x, int y, const 
 	return true;
 }
 
-bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, int startPosition, int numberOfCharacters,
-                                         const CString& text) {
+bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const int startPosition, const int numberOfCharacters, const CString& text) {
 	if (numberOfCharacters <= 0) { return true; }
 	const auto ReferenceSystemToWorldTransform {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
 	auto Origin {OdGePoint3d::kOrigin};
@@ -951,7 +948,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 	DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 }
 
-void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, int numberOfCharacters, double spaceFactor, OdGePoint3dArray& boundingBox) {
+void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeReferenceSystem& referenceSystem, const int numberOfCharacters, const double spaceFactor, OdGePoint3dArray& boundingBox) {
 	boundingBox.setLogicalLength(4);
 	if (numberOfCharacters > 0) {
 		const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
@@ -999,16 +996,16 @@ void text_GetBoundingBox(const EoDbFontDefinition& fontDefinition, const EoGeRef
 	}
 }
 
-OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, double dLineSpaceFac, double dChrSpaceFac) {
+OdGePoint3d text_GetNewLinePos(EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const double lineSpaceFactor, const double characterSpaceFactor) {
 	auto pt {referenceSystem.Origin()};
 	auto vPath {referenceSystem.XDirection()};
 	const auto YDirection {referenceSystem.YDirection()};
 	if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
-		pt += vPath * dChrSpaceFac;
+		pt += vPath * characterSpaceFactor;
 		OdGeVector3d vRefNorm;
 		referenceSystem.GetUnitNormal(vRefNorm);
 		vPath.normalize();
-		vPath *= -(YDirection.length() * dLineSpaceFac);
+		vPath *= -(YDirection.length() * lineSpaceFactor);
 		vPath.rotateBy(OdaPI2, vRefNorm);
 	}
 	return pt + vPath * 1.5;

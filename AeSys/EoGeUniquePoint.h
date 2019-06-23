@@ -11,7 +11,7 @@ public:
 		m_Point = OdGePoint3d::kOrigin;
 	}
 
-	EoGeUniquePoint(int references, const OdGePoint3d& point) {
+	EoGeUniquePoint(const int references, const OdGePoint3d& point) {
 		m_References = references;
 		m_Point = point;
 	}

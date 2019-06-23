@@ -196,7 +196,7 @@ void OdExEditorObject::UcsPlane(OdGePlane& plane) const {
 	plane.set(ucsOrigin, ucsXAxis, ucsYAxis);
 }
 
-OdGePoint3d OdExEditorObject::ToEyeToWorld(int x, int y) const {
+OdGePoint3d OdExEditorObject::ToEyeToWorld(const int x, const int y) const {
 	OdGePoint3d wcsPt(x, y, 0.0);
 	const auto View {ActiveView()};
 	if (View->isPerspective()) { wcsPt.z = View->projectionMatrix()(2, 3); }
@@ -222,12 +222,12 @@ bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPt) const {
 	return Plane.intersectWith(Ray, wcsPt);
 }
 
-OdGePoint3d OdExEditorObject::ToScreenCoord(int x, int y) const {
-	OdGePoint3d scrPt(x, y, 0.0);
+OdGePoint3d OdExEditorObject::ToScreenCoord(const int x, const int y) const {
+	OdGePoint3d ScreenPoint(x, y, 0.0);
 	const auto View {ActiveView()};
-	scrPt.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
-	scrPt.z = 0.0;
-	return scrPt;
+	ScreenPoint.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
+	ScreenPoint.z = 0.0;
+	return ScreenPoint;
 }
 
 OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
@@ -249,7 +249,7 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
 	return scrPt;
 }
 
-bool OdExEditorObject::OnSize(unsigned flags, int w, int h) {
+bool OdExEditorObject::OnSize(unsigned flags, const int w, const int h) {
 	if (m_LayoutHelper.get()) {
 		m_LayoutHelper->onSize(OdGsDCRect(0, w, h, 0));
 		return true;
@@ -269,7 +269,7 @@ unsigned OdExEditorObject::GetSnapModes() const {
 	return m_ObjectSnapManager.SnapModes();
 }
 
-void OdExEditorObject::SetSnapModes(bool snapOn, unsigned snapModes) {
+void OdExEditorObject::SetSnapModes(const bool snapOn, const unsigned snapModes) {
 	SETBIT(m_flags, kSnapOn, snapOn);
 	m_ObjectSnapManager.SetSnapModes(snapModes);
 }
@@ -284,7 +284,7 @@ OdEdCommandPtr OdExEditorObject::Command(const OdString& commandName) {
 	return OdEdCommandPtr();
 }
 
-void OdExEditorObject::Set3DView(_3DViewType type) {
+void OdExEditorObject::Set3DView(const _3DViewType type) {
 	const auto Target {OdGePoint3d::kOrigin};
 	OdGePoint3d Position;
 	OdGeVector3d Axis;
@@ -380,7 +380,7 @@ void OdExEditorObject::OnDestroy() {
 	m_CommandContext = nullptr;
 }
 
-bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleDragCallback* dragCallback) {
+bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x, const int y, OleDragCallback* dragCallback) {
 	const auto ShiftIsDown {(OdEdBaseIO::kShiftIsDown & flags) != 0};
 	const auto ControlIsDown {(OdEdBaseIO::kControlIsDown & flags) != 0};
 	const auto pt {ToEyeToWorld(x, y)};
@@ -445,7 +445,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(unsigned flags, int x, int y, OleD
 	return true;
 }
 
-bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned flags, int x, int y) {
+bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned flags, const int x, const int y) {
 	const auto View {ActiveView()};
 	m_LayoutHelper->setActiveViewport(OdGePoint2d(x, y));
 	const auto Changed {View != ActiveView()};
@@ -472,22 +472,22 @@ bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned flags, int x, int 
 	return true;
 }
 
-bool OdExEditorObject::OnMouseMove(unsigned flags, int x, int y) {
+bool OdExEditorObject::OnMouseMove(unsigned flags, const int x, const int y) {
 	return m_GripManager.OnMouseMove(x, y);
 }
 
-void OdExEditorObject::Dolly(int x, int y) {
+void OdExEditorObject::Dolly(const int x, const int y) {
 	const auto View {ActiveView()};
 	Dolly(View, x, y);
 }
 
-void OdExEditorObject::Dolly(OdGsView* view, int x, int y) {
+void OdExEditorObject::Dolly(OdGsView* view, const int x, const int y) {
 	OdGeVector3d vec(-x, -y, 0.0);
 	vec.transformBy((view->screenMatrix() * view->projectionMatrix()).inverse());
 	view->dolly(vec);
 }
 
-bool OdExEditorObject::OnMouseWheel(unsigned flags, int x, int y, short zDelta) {
+bool OdExEditorObject::OnMouseWheel(unsigned flags, const int x, const int y, const short zDelta) {
 	const auto View {ActiveView()};
 	ZoomAt(View, x, y, zDelta);
 	if (!m_p2dModel.isNull()) {
@@ -496,16 +496,16 @@ bool OdExEditorObject::OnMouseWheel(unsigned flags, int x, int y, short zDelta) 
 	return true;
 }
 
-void OdExEditorObject::ZoomAt(OdGsView* view, int x, int y, short zDelta) {
-	auto pos(view->position());
-	pos.transformBy(view->worldToDeviceMatrix());
+void OdExEditorObject::ZoomAt(OdGsView* view, const int x, const int y, const short zDelta) {
+	auto ViewPosition {view->position()};
+	ViewPosition.transformBy(view->worldToDeviceMatrix());
 
 	// In 2d mode perspective zoom change lens length instead of fieldWidth/fieldHeight. This is non-standard mode. Practically 2d mode can't be perspective.
 	if (view->isPerspective() && view->mode() == OdGsView::k2DOptimized) {
-		pos = OdGePoint3d(0.5, 0.5, 0.0).transformBy(view->screenMatrix());
+		ViewPosition = OdGePoint3d(0.5, 0.5, 0.0).transformBy(view->screenMatrix());
 	}
-	auto vx {static_cast<int>(OdRound(pos.x))};
-	auto vy {static_cast<int>(OdRound(pos.y))};
+	auto vx {static_cast<int>(OdRound(ViewPosition.x))};
+	auto vy {static_cast<int>(OdRound(ViewPosition.y))};
 	vx = x - vx;
 	vy = y - vy;
 	Dolly(view, -vx, -vy);
@@ -949,12 +949,12 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	}
 }
 
-void OdExEditorObject::TurnOrbitOn(bool orbitOn) {
+void OdExEditorObject::TurnOrbitOn(const bool orbitOn) {
 	SETBIT(m_flags, kOrbitOn, orbitOn);
 	SetTracker(orbitOn ? OdRxObjectImpl<RTOrbitTracker>::createObject().get() : nullptr);
 }
 
-bool OdExEditorObject::OnOrbitBeginDrag(int x, int y) {
+bool OdExEditorObject::OnOrbitBeginDrag(const int x, const int y) {
 	if (IsOrbitOn()) {
 		static_cast<RTOrbitTracker*>(m_InputTracker.get())->init(ActiveView(), ToEyeToWorld(x, y));
 		return true;
@@ -970,14 +970,14 @@ bool OdExEditorObject::OnOrbitEndDrag(int x, int y) {
 	return false;
 }
 
-bool OdExEditorObject::OnZoomWindowBeginDrag(int x, int y) {
+bool OdExEditorObject::OnZoomWindowBeginDrag(const int x, const int y) {
 	const auto Point {ToEyeToWorld(x, y)};
 	SetTracker(RectFrame::create(Point, GsModel()));
 	TrackPoint(Point);
 	return true;
 }
 
-bool OdExEditorObject::OnZoomWindowEndDrag(int x, int y) {
+bool OdExEditorObject::OnZoomWindowEndDrag(const int x, const int y) {
 	zoom_window2(OdEdPointDefTrackerPtr(m_InputTracker)->basePoint(), ToEyeToWorld(x, y), ActiveView());
 	SetTracker(nullptr);
 	return true;
@@ -1109,7 +1109,7 @@ class OdExCollideGsPath {
 
 	const Node* m_pLeaf {nullptr};
 
-	void add(const OdGiDrawable* drawable, const OdDbObjectId& drawableId, OdGsMarker gsMarker = -1) {
+	void add(const OdGiDrawable* drawable, const OdDbObjectId& drawableId, const OdGsMarker gsMarker = -1) {
 		auto pNode {new Node()};
 		pNode->m_pParent = m_pLeaf;
 		m_pLeaf = pNode;
@@ -1150,7 +1150,7 @@ public:
 		set(path, kNullSubentIndex);
 	}
 
-	void set(const OdDbFullSubentPath& path, OdGsMarker gsMarker) {
+	void set(const OdDbFullSubentPath& path, const OdGsMarker gsMarker) {
 		clear();
 		const auto& PathObjectIds {path.objectIds()};
 		auto PathObjectIdsIterator {PathObjectIds.begin()};
@@ -1163,11 +1163,11 @@ public:
 		addNode(*PathObjectIdsIterator, gsMarker);
 	}
 
-	void addNode(const OdDbObjectId& drawableId, OdGsMarker gsMarker = kNullSubentIndex) {
+	void addNode(const OdDbObjectId& drawableId, const OdGsMarker gsMarker = kNullSubentIndex) {
 		add(nullptr, drawableId, gsMarker);
 	}
 
-	void addNode(const OdGiDrawable* pDrawable, OdGsMarker gsMarker = kNullSubentIndex) {
+	void addNode(const OdGiDrawable* pDrawable, const OdGsMarker gsMarker = kNullSubentIndex) {
 		add(pDrawable->isPersistent() ? nullptr : pDrawable, pDrawable->id(), gsMarker);
 	}
 
@@ -1197,7 +1197,7 @@ protected:
 	}
 
 public:
-	CollideMoveTracker(OdGePoint3d ptBase, OdDbSelectionSet* selectionSet, OdDbDatabasePtr database, OdGsView* view, bool bDynHLT)
+	CollideMoveTracker(const OdGePoint3d ptBase, OdDbSelectionSet* selectionSet, OdDbDatabasePtr database, OdGsView* view, const bool bDynHLT)
 		: m_ptBase(ptBase)
 		, m_bDynHLT(bDynHLT) {
 		m_pDb = database;
@@ -1307,7 +1307,7 @@ public:
 	}
 };
 
-bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, bool bTruncateToRef = false) {
+bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, const bool bTruncateToRef = false) {
 	auto bAdd {true};
 	if (pPath->parent()) {
 		bAdd = addNodeToPath(result, pPath->parent(), bTruncateToRef);
@@ -1325,7 +1325,7 @@ bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, bool bT
 	return bAdd;
 }
 
-OdExCollideGsPath* fromGiPath(const OdGiPathNode* path, bool bTruncateToRef = false) {
+OdExCollideGsPath* fromGiPath(const OdGiPathNode* path, const bool bTruncateToRef = false) {
 	if (!path) { return nullptr; }
 	const auto Result {new OdExCollideGsPath};
 	addNodeToPath(Result, path, bTruncateToRef);
@@ -1337,7 +1337,7 @@ void CollideMoveTracker::doCollideWithAll() {
 		OdArray<OdExCollideGsPath*> m_pathes;
 		bool m_bDynHLT;
 	public:
-		OdExCollisionDetectionReactor(bool bDynHLT)
+		OdExCollisionDetectionReactor(const bool bDynHLT)
 			: m_bDynHLT(bDynHLT) {
 		}
 
@@ -1438,7 +1438,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 		OdArray<OdExCollideGsPath*> m_pathes;
 		bool m_bDynHLT;
 	public:
-		OdExCollisionDetectionReactor(bool bDynHLT)
+		OdExCollisionDetectionReactor(const bool bDynHLT)
 			: m_bDynHLT(bDynHLT) {
 		}
 

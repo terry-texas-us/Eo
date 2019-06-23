@@ -66,7 +66,7 @@ unsigned short EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	return Index;
 }
 
-OdString EoDbLinetypeTable::LegacyLinetypeName(int index) {
+OdString EoDbLinetypeTable::LegacyLinetypeName(const int index) {
 	const auto Index {index < NumberOfLegacyLinetypes ? index : 1};
 	return LegacyLinetypes[Index];
 }

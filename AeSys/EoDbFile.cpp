@@ -16,7 +16,7 @@ EoDbFile::EoDbFile(OdDbDatabasePtr database)
 	: m_Database {database} {
 }
 
-EoDbFile::EoDbFile(const OdString& fileName, unsigned openFlags)
+EoDbFile::EoDbFile(const OdString& fileName, const unsigned openFlags)
 	: CFile(fileName, openFlags) {
 }
 

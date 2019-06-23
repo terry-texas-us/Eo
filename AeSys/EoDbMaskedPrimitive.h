@@ -8,12 +8,12 @@ public:
 		m_Mask = 0;
 	}
 
-	EoDbMaskedPrimitive(EoDbPrimitive* primitive, unsigned long mask) {
+	EoDbMaskedPrimitive(EoDbPrimitive* primitive, const unsigned long mask) {
 		m_Primitive = primitive;
 		m_Mask = mask;
 	}
 
-	void ClearMaskBit(int bit) noexcept {
+	void ClearMaskBit(const int bit) noexcept {
 		m_Mask &= ~(1UL << bit);
 	}
 
@@ -25,7 +25,7 @@ public:
 		return m_Primitive;
 	}
 
-	void SetMaskBit(int bit) noexcept {
+	void SetMaskBit(const int bit) noexcept {
 		m_Mask |= 1UL << bit;
 	}
 };
