@@ -16,7 +16,7 @@ EoDbLine::EoDbLine(const EoDbLine& other) {
 	m_LineSeg = other.m_LineSeg;
 }
 
-const EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
+EoDbLine& EoDbLine::operator=(const EoDbLine& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_ColorIndex = other.m_ColorIndex;

@@ -43,7 +43,7 @@ EoDbEllipse::EoDbEllipse(const EoDbEllipse& other) {
 	m_SweepAngle = other.m_SweepAngle;
 }
 
-const EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
+EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_ColorIndex = other.m_ColorIndex;

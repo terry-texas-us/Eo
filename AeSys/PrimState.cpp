@@ -6,7 +6,7 @@
 // State list maintenance
 CPrimState* SavedStates[] = {nullptr, nullptr, nullptr, nullptr};
 
-const CPrimState& CPrimState::operator=(const CPrimState& other) noexcept {
+CPrimState& CPrimState::operator=(const CPrimState& other) noexcept {
 	m_FontDefinition = other.m_FontDefinition;
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;

@@ -31,7 +31,7 @@ private:
 public:	// Constructors and destructor
 	EoDbText() = default;
 	EoDbText(const EoDbText& other);
-	const EoDbText& operator=(const EoDbText&);
+	EoDbText& operator=(const EoDbText&);
 	~EoDbText() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

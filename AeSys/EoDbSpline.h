@@ -15,7 +15,7 @@ class EoDbSpline : public EoDbPrimitive {
 public:	// Constructors and destructor
 	EoDbSpline() = default;
 	EoDbSpline(const EoDbSpline& other);
-	const EoDbSpline& operator=(const EoDbSpline& other);
+	EoDbSpline& operator=(const EoDbSpline& other);
 	~EoDbSpline() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

@@ -252,7 +252,7 @@ private:
 	GetSelectionSetPtr m_pGetSelectionSetPtr;
 
 	struct OdExGripCommand : OdEdCommand {
-		OdExGripManager* m_parent;
+		OdExGripManager* m_parent {nullptr};
 
 		const OdString groupName() const override { return L"EDIT"; }
 

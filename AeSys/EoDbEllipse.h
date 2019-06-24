@@ -17,7 +17,7 @@ public: // Constructors and destructor
 	/// <summary>Ellipse is constructed using a center point and a radius about view plane normal</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
 	EoDbEllipse(const EoDbEllipse& other);
-	const EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
+	EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
 	~EoDbEllipse() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

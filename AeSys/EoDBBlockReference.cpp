@@ -27,7 +27,7 @@ EoDbBlockReference::EoDbBlockReference(const EoDbBlockReference& other) {
 	m_RowSpacing = other.m_RowSpacing;
 }
 
-const EoDbBlockReference& EoDbBlockReference::operator=(const EoDbBlockReference& other) {
+EoDbBlockReference& EoDbBlockReference::operator=(const EoDbBlockReference& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_Name = other.m_Name;

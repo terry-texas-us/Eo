@@ -25,7 +25,7 @@ EoDbDimension::EoDbDimension(const EoDbDimension& other) {
 	m_strText = other.m_strText;
 }
 
-const EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
+EoDbDimension& EoDbDimension::operator=(const EoDbDimension& other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_LinetypeIndex = other.m_LinetypeIndex;
 	m_Line = other.m_Line;

@@ -35,7 +35,7 @@ EoDbPolyline::EoDbPolyline(const EoDbPolyline& other) {
 	m_Normal = other.m_Normal;
 }
 
-const EoDbPolyline& EoDbPolyline::operator=(const EoDbPolyline& other) {
+EoDbPolyline& EoDbPolyline::operator=(const EoDbPolyline& other) {
 	m_Flags = other.m_Flags;
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;

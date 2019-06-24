@@ -12,7 +12,7 @@ public:
 	// Constructors and destructor
 	EoDbLine() = default;
 	EoDbLine(const EoDbLine& other);
-	const EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
+	EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
 	~EoDbLine() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

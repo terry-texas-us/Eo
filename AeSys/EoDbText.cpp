@@ -19,7 +19,7 @@ EoDbText::EoDbText(const EoDbText& other) {
 	m_strText = other.m_strText;
 }
 
-const EoDbText& EoDbText::operator=(const EoDbText& other) {
+EoDbText& EoDbText::operator=(const EoDbText& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_ColorIndex = other.m_ColorIndex;

@@ -13,7 +13,7 @@ class CPrimState {
 	short m_HatchInteriorStyle {0};
 	unsigned m_HatchInteriorStyleIndex {0};
 public: // Constructors and destructor
-	const CPrimState& operator=(const CPrimState& other) noexcept;
+	CPrimState& operator=(const CPrimState& other) noexcept;
 
 	// Methods
 	[[nodiscard]] EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;

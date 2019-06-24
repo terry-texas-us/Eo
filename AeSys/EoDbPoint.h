@@ -13,7 +13,7 @@ public: // Constructors and destructor
 	EoDbPoint() noexcept;
 	EoDbPoint(const OdGePoint3d& point) noexcept;
 	EoDbPoint(const EoDbPoint& other);
-	const EoDbPoint& operator=(const EoDbPoint& other);
+	EoDbPoint& operator=(const EoDbPoint& other);
 	~EoDbPoint();
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

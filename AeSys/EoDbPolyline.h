@@ -37,7 +37,7 @@ private:
 public:	// Constructors and destructor
 	EoDbPolyline();
 	EoDbPolyline(const EoDbPolyline& other);
-	const EoDbPolyline& operator=(const EoDbPolyline& other);
+	EoDbPolyline& operator=(const EoDbPolyline& other);
 	~EoDbPolyline() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

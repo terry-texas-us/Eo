@@ -38,7 +38,7 @@ private:
 public:	// Constructors and destructor
 	EoDbHatch() noexcept;
 	EoDbHatch(const EoDbHatch& other);
-	const EoDbHatch& operator=(const EoDbHatch& other);
+	EoDbHatch& operator=(const EoDbHatch& other);
 	~EoDbHatch() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

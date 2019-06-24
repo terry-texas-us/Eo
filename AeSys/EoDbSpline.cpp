@@ -21,7 +21,7 @@ EoDbSpline::EoDbSpline(const EoDbSpline& other) {
 	m_Spline = other.m_Spline;
 }
 
-const EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
+EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_ColorIndex = other.m_ColorIndex;

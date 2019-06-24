@@ -456,7 +456,7 @@ int lex::TokenType(const int aiTokId) noexcept {
 }
 
 void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* adOp) {
-	LexColumnDefinition cd;
+	LexColumnDefinition ColumnDefinition {0, 0};
 	wchar_t szTok[32];
 	int i;
 	int iDim {LOWORD(*definition)};
@@ -520,9 +520,9 @@ void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* 
 			break;
 		case TOK_TOSTRING:	// Conversion to string
 			*valueType = TOK_STRING;
-			cd.DataType = TOK_REAL;
-			cd.DataDefinition = *definition;
-			ConvertValToString(reinterpret_cast<wchar_t*>(adOp), &cd, szTok, &iDim);
+			ColumnDefinition.DataType = TOK_REAL;
+			ColumnDefinition.DataDefinition = *definition;
+			ConvertValToString(reinterpret_cast<wchar_t*>(adOp), &ColumnDefinition, szTok, &iDim);
 			iLen = 1 + (iDim - 1) / 4;
 			wcscpy(reinterpret_cast<wchar_t*>(adOp), szTok);
 			*definition = MAKELONG(iDim, iLen);
@@ -533,7 +533,7 @@ void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* 
 }
 
 void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, long* alOp) {
-	LexColumnDefinition cd;
+	LexColumnDefinition ColumnDefinition {0, 0};
 	wchar_t szTok[32];
 	int iDim {LOWORD(*definition)};
 	int iLen {HIWORD(*definition)};
@@ -554,9 +554,9 @@ void lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, long* al
 			break;
 		case TOK_TOSTRING:
 			*valueType = TOK_STRING;
-			cd.DataType = TOK_INTEGER;
-			cd.DataDefinition = *definition;
-			ConvertValToString(reinterpret_cast<wchar_t*>(alOp), &cd, szTok, &iDim);
+			ColumnDefinition.DataType = TOK_INTEGER;
+			ColumnDefinition.DataDefinition = *definition;
+			ConvertValToString(reinterpret_cast<wchar_t*>(alOp), &ColumnDefinition, szTok, &iDim);
 			iLen = 1 + (iDim - 1) / 4;
 			wcscpy(reinterpret_cast<wchar_t*>(alOp), szTok);
 			*definition = MAKELONG(iDim, iLen);

@@ -36,7 +36,7 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	// Constructors and destructor
 	EoDbBlockReference() = default;
 	EoDbBlockReference(const EoDbBlockReference& other);
-	const EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
+	EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
 	~EoDbBlockReference() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

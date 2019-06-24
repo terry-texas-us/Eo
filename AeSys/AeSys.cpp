@@ -1075,8 +1075,8 @@ bool AeSys::InitializeOda() {
 		EoLoadApps::rxInit();
 		OdApplicationReactor::rxInit();
 		OdApplicationDocument::rxInit();
-		odrxDynamicLinker()->loadModule(OdGripPointsModuleName); // GripPoints module
-		odrxDynamicLinker()->loadModule(OdDbCommandsModuleName); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
+		odrxDynamicLinker()->loadModule(OdGripPointsModuleName, false); // GripPoints module
+		odrxDynamicLinker()->loadModule(OdDbCommandsModuleName, false); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
 		odrxDynamicLinker()->loadModule(OdExCommandsModuleName);
 		odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName); // PlotSettingsValidator module (To include support for plot settings)
 		AddPaperDrawingCustomization();

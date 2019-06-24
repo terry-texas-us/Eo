@@ -589,10 +589,10 @@ void zoom_scaleXP(double factor) noexcept {
 
 // Zoom command
 class RTZoomTracker : public OdEdPointTracker {
-	OdGsView* m_View;
-	double m_base;
-	double m_fw;
-	double m_fh;
+	OdGsView* m_View {nullptr};
+	double m_base {0.0};
+	double m_fw {0.0};
+	double m_fh {0.0};
 public:
 	void init(OdGsView* view, const OdGePoint3d& base) {
 		m_View = view;

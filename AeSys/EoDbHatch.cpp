@@ -46,7 +46,7 @@ EoDbHatch::EoDbHatch(const EoDbHatch& other) {
 	m_Vertices.append(other.m_Vertices);
 }
 
-const EoDbHatch& EoDbHatch::operator=(const EoDbHatch& other) {
+EoDbHatch& EoDbHatch::operator=(const EoDbHatch& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_ColorIndex = other.m_ColorIndex;

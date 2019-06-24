@@ -15,7 +15,7 @@ DECLARE_DYNAMIC(EoDbDimension)
 	// Constructors and destructor
 	EoDbDimension() = default;
 	EoDbDimension(const EoDbDimension& other);
-	const EoDbDimension& operator=(const EoDbDimension& other);
+	EoDbDimension& operator=(const EoDbDimension& other);
 	~EoDbDimension() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;

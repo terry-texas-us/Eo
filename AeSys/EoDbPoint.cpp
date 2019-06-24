@@ -40,7 +40,7 @@ EoDbPoint::~EoDbPoint() {
 	if (m_NumberOfDatums != 0) { delete[] m_Data; }
 }
 
-const EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
+EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 	m_LayerId = other.m_LayerId;
 	m_EntityObjectId = other.m_EntityObjectId;
 	m_ColorIndex = other.m_ColorIndex;
