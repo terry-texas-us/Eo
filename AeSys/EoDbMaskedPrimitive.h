@@ -1,5 +1,5 @@
 #pragma once
-class EoDbMaskedPrimitive : public CObject {
+class EoDbMaskedPrimitive final : public CObject {
 	EoDbPrimitive* m_Primitive;
 	unsigned long m_Mask;
 public:

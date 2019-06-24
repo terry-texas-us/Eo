@@ -8,10 +8,10 @@ class CPrimState {
 	short m_PointDisplayMode {0};
 	short m_ColorIndex {0};
 	short m_LinetypeIndex {0};
-	EoDbFontDefinition m_FontDefinition;
-	EoDbCharacterCellDefinition m_CharacterCellDefinition;
 	short m_HatchInteriorStyle {0};
 	unsigned m_HatchInteriorStyleIndex {0};
+	EoDbFontDefinition m_FontDefinition;
+	EoDbCharacterCellDefinition m_CharacterCellDefinition;
 public: // Constructors and destructor
 	CPrimState& operator=(const CPrimState& other) noexcept;
 

@@ -79,7 +79,7 @@ public:	// Constructors and destructor
 	void SetHatchOrigin(const OdGePoint3d& origin) noexcept;
 	void SetHatchXAxis(const OdGeVector3d& xAxis) noexcept;
 	void SetHatchYAxis(const OdGeVector3d& yAxis) noexcept;
-	void SetHatRefVecs(double patternAngle, double patternScaleX, double patternScaleY);
+	void SetHatchReferenceAxes(double patternAngle, double patternScaleX, double patternScaleY);
 	void SetInteriorStyle(short interiorStyle) noexcept;
 
 	void SetInteriorStyleIndex(const unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }

@@ -1,7 +1,7 @@
 #pragma once
 #define btest(m, p) ((bool) (((((unsigned long) m) >> ((int) p)) & 1UL) == 1 ? true : false))
 
-class EoGeUniquePoint : public CObject {
+class EoGeUniquePoint final : public CObject {
 public:
 	int m_References;
 	OdGePoint3d m_Point;

@@ -289,7 +289,7 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 					}
 				} else if (iTokTyp == TOK_MULTIPLY) {
 
-					if (iTyp1 == TOK_STRING) { throw L"Can not mutiply strings"; }
+					if (iTyp1 == TOK_STRING) { throw L"Can not multiply strings"; }
 					if (iTyp1 == TOK_INTEGER) {
 						lOp1[0] *= lOp2[0];
 					} else {

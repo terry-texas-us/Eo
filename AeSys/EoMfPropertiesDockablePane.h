@@ -1,5 +1,5 @@
 #pragma once
-class EoMfPropertiesMFCToolBar : public CMFCToolBar {
+class EoMfPropertiesMFCToolBar final : public CMFCToolBar {
 public:
 	void OnUpdateCmdUI(CFrameWnd* /* target */, const BOOL disableIfNoHndler) override {
 		CMFCToolBar::OnUpdateCmdUI(static_cast<CFrameWnd*>(GetOwner()), disableIfNoHndler);

@@ -25,31 +25,32 @@ END_MESSAGE_MAP()
 
 void EoMfPropertiesDockablePane::AdjustLayout() {
 	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()) { return; }
-	CRect rectClient, rectCombo;
-	GetClientRect(rectClient);
-	m_wndObjectCombo.GetWindowRect(&rectCombo);
+	CRect ClientRectangle;
+	CRect ComboRectangle;
+	GetClientRect(ClientRectangle);
+	m_wndObjectCombo.GetWindowRect(&ComboRectangle);
 	const int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
-	m_wndObjectCombo.SetWindowPos(nullptr, rectClient.left, rectClient.top, rectClient.Width(), m_nComboHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertiesToolBar.SetWindowPos(nullptr, rectClient.left, rectClient.top + m_nComboHeight, rectClient.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertyGrid.SetWindowPos(nullptr, rectClient.left, rectClient.top + m_nComboHeight + cyTlb, rectClient.Width(), rectClient.Height() - (m_nComboHeight + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
+	m_wndObjectCombo.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top, ClientRectangle.Width(), m_nComboHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertiesToolBar.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top + m_nComboHeight, ClientRectangle.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertyGrid.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top + m_nComboHeight + cyTlb, ClientRectangle.Width(), ClientRectangle.Height() - (m_nComboHeight + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 int EoMfPropertiesDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CDockablePane::OnCreate(createStructure) == -1) { return -1; }
-	CRect EmptyRect;
-	EmptyRect.SetRectEmpty();
-	if (!m_wndObjectCombo.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRect, this, 1)) {
+	CRect EmptyRectangle;
+	EmptyRectangle.SetRectEmpty();
+	if (!m_wndObjectCombo.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRectangle, this, 1)) {
 		TRACE0("Failed to create Properties Combo\n");
 		return -1;
 	}
 	m_wndObjectCombo.AddString(L"Application");
-	m_wndObjectCombo.AddString(L"Persistant");
+	m_wndObjectCombo.AddString(L"Persistent");
 	m_wndObjectCombo.SetFont(CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT))), TRUE);
 	m_wndObjectCombo.SetCurSel(0);
-	CRect rectCombo;
-	m_wndObjectCombo.GetClientRect(&rectCombo);
-	m_nComboHeight = rectCombo.Height();
-	if (!m_PropertyGrid.Create(WS_VISIBLE | WS_CHILD, EmptyRect, this, 2)) {
+	CRect ComboRectangle;
+	m_wndObjectCombo.GetClientRect(&ComboRectangle);
+	m_nComboHeight = ComboRectangle.Height();
+	if (!m_PropertyGrid.Create(WS_VISIBLE | WS_CHILD, EmptyRectangle, this, 2)) {
 		TRACE0("Failed to create Properties Grid \n");
 		return -1;
 	}

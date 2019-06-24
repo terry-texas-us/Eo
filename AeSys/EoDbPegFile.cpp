@@ -309,7 +309,7 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 		WriteUInt16(0);
 		unsigned short NumberOfPrimitives {0};
 		WriteString(Name);
-		WriteUInt16(Block->GetBlkTypFlgs());
+		WriteUInt16(Block->GetTypeFlags());
 		WritePoint3d(Block->BasePoint());
 		auto PrimitivePosition {Block->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {

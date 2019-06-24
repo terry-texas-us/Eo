@@ -1,5 +1,5 @@
 #pragma once
-class EoDlgNewView : public CDialog {
+class EoDlgNewView final : public CDialog {
 public:
 	EoDlgNewView(CWnd* parent = nullptr);
 

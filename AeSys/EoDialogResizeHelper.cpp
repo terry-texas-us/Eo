@@ -39,33 +39,33 @@ void EoDialogResizeHelper::OnSize() {
 		const auto xRatio {static_cast<double>(CurrentParentSize.Width()) / m_origParentSize.Width()};
 		const auto yRatio {static_cast<double>(CurrentParentSize.Height()) / m_origParentSize.Height()};
 		for (CtrlCont_t::const_iterator it = m_ctrls.begin(); it != m_ctrls.end(); ++it) {
-			CRect currCtrlSize;
+			CRect CurrentControlRectangle;
 			const auto hFix {it->m_hFix};
 			const auto vFix {it->m_vFix};
 
 			// might go easier ;-)
 			if (hFix & kLeft) {
-				currCtrlSize.left = it->m_origSize.left;
+				CurrentControlRectangle.left = it->m_origSize.left;
 			} else {
-				currCtrlSize.left = hFix & kWidth && hFix & kRight ? it->m_origSize.left + CurrentParentSize.Width() - m_origParentSize.Width() : static_cast<long>(it->m_origSize.left * xRatio);
+				CurrentControlRectangle.left = hFix & kWidth && hFix & kRight ? it->m_origSize.left + CurrentParentSize.Width() - m_origParentSize.Width() : static_cast<long>(it->m_origSize.left * xRatio);
 			}
 			if (hFix & kRight) {
-				currCtrlSize.right = it->m_origSize.right + CurrentParentSize.Width() - m_origParentSize.Width();
+				CurrentControlRectangle.right = it->m_origSize.right + CurrentParentSize.Width() - m_origParentSize.Width();
 			} else {
-				currCtrlSize.right = hFix & kWidth ? currCtrlSize.left + it->m_origSize.Width() : static_cast<long>(it->m_origSize.right * xRatio);
+				CurrentControlRectangle.right = hFix & kWidth ? CurrentControlRectangle.left + it->m_origSize.Width() : static_cast<long>(it->m_origSize.right * xRatio);
 			}
 			if (vFix & kTop) {
-				currCtrlSize.top = it->m_origSize.top;
+				CurrentControlRectangle.top = it->m_origSize.top;
 			} else {
-				currCtrlSize.top = vFix & kHeight && vFix & kBottom ? it->m_origSize.top + CurrentParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
+				CurrentControlRectangle.top = vFix & kHeight && vFix & kBottom ? it->m_origSize.top + CurrentParentSize.Height() - m_origParentSize.Height() : static_cast<long>(it->m_origSize.top * yRatio);
 			}
 			if (vFix & kBottom) {
-				currCtrlSize.bottom = it->m_origSize.bottom + CurrentParentSize.Height() - m_origParentSize.Height();
+				CurrentControlRectangle.bottom = it->m_origSize.bottom + CurrentParentSize.Height() - m_origParentSize.Height();
 			} else {
-				currCtrlSize.bottom = vFix & kHeight ? currCtrlSize.top + it->m_origSize.Height() : static_cast<long>(it->m_origSize.bottom * yRatio);
+				CurrentControlRectangle.bottom = vFix & kHeight ? CurrentControlRectangle.top + it->m_origSize.Height() : static_cast<long>(it->m_origSize.bottom * yRatio);
 			}
 			// resize child window
-			MoveWindow(it->m_hCtrl, currCtrlSize.left, currCtrlSize.top, currCtrlSize.Width(), currCtrlSize.Height(), TRUE);
+			MoveWindow(it->m_hCtrl, CurrentControlRectangle.left, CurrentControlRectangle.top, CurrentControlRectangle.Width(), CurrentControlRectangle.Height(), TRUE);
 		}
 	}
 }

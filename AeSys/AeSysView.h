@@ -292,7 +292,7 @@ public: // Input message handler member functions
 	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 	void OnViewStateInformation();
-	void OnUpdateViewStateinformation(CCmdUI* commandUserInterface);
+	void OnUpdateViewStateInformation(CCmdUI* commandUserInterface);
 	static AeSysView* GetActiveView();
 	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
@@ -618,7 +618,7 @@ public:
 	void OnEditModeEnlarge();
 	void OnEditModeReturn() noexcept;
 	void OnEditModeEscape();
-	void OnInsertBlockreference();
+	void OnInsertBlockReference();
 	void OnTrapModeRemoveAdd();
 	void OnTrapModePoint();
 	/// <summary>Identifies groups which intersect with a line and adds them to the trap.</summary>
@@ -841,13 +841,13 @@ public:
 	void OnRelativeMovesLeftRotate();
 	void OnRelativeMovesDownRotate();
 	void OnSetupScale();
-	void OnToolsPrimitiveSnapto();
+	void OnToolsPrimitiveSnapTo();
 	void OnUpdateViewOdometer(CCmdUI* commandUserInterface);
 	void OnUpdateViewTrueTypeFonts(CCmdUI* commandUserInterface);
 	void OnUpdateViewBackgroundImage(CCmdUI* commandUserInterface);
-	void OnUpdateBackgroundimageLoad(CCmdUI* commandUserInterface);
-	void OnUpdateBackgroundimageRemove(CCmdUI* commandUserInterface);
-	void OnUpdateViewPenwidths(CCmdUI* commandUserInterface);
+	void OnUpdateBackgroundImageLoad(CCmdUI* commandUserInterface);
+	void OnUpdateBackgroundImageRemove(CCmdUI* commandUserInterface);
+	void OnUpdateViewPenWidths(CCmdUI* commandUserInterface);
 	void OnUpdateWindowZoomWindow(CCmdUI* commandUserInterface);
 	void OnViewBackgroundImage();
 	void OnViewTrueTypeFonts();
@@ -855,12 +855,12 @@ public:
 	void OnViewOdometer();
 	void OnViewRefresh();
 	void OnViewParameters();
-	void OnUpdateViewRendermode2doptimized(CCmdUI* commandUserInterface);
-	void OnUpdateViewRendermodeWireframe(CCmdUI* commandUserInterface);
-	void OnUpdateViewRendermodeHiddenline(CCmdUI* commandUserInterface);
-	void OnUpdateViewRendermodeFlatshaded(CCmdUI* commandUserInterface);
-	void OnUpdateViewRendermodeSmoothshaded(CCmdUI* commandUserInterface);
-	void OnViewRendermode(unsigned commandId);
+	void OnUpdateViewRenderMode2dOptimized(CCmdUI* commandUserInterface);
+	void OnUpdateViewRenderModeWireframe(CCmdUI* commandUserInterface);
+	void OnUpdateViewRenderModeHiddenLine(CCmdUI* commandUserInterface);
+	void OnUpdateViewRenderModeFlatShaded(CCmdUI* commandUserInterface);
+	void OnUpdateViewRenderModeSmoothShaded(CCmdUI* commandUserInterface);
+	void OnViewRenderMode(unsigned commandId);
 	void OnWindowZoomSpecial();
 	void OnWindowNormal();
 	void OnWindowBest();
@@ -887,7 +887,7 @@ public:
 	void OnModePrimitiveEdit();
 	void OnModeGroupEdit();
 	void OnModePrimitiveMend();
-	void OnPrimPerpJump();
+	void OnPrimitivePerpendicularJump();
 	void OnHelpKey();
 	void OnOp0();
 	void OnOp2();

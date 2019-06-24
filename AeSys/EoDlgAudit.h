@@ -2,7 +2,7 @@
 #include "EoVarDialog.h"
 class OdDbAuditInfo;
 
-class EoDlgAudit : public EoVarDialog {
+class EoDlgAudit final : public EoVarDialog {
 public:
 	EoDlgAudit(CWnd* parent = nullptr);
 	void printReport(OdDbAuditInfo* auditInfo);

@@ -3,7 +3,7 @@ class AeSysDoc;
 class OdDbViewTableRecord;
 using OdDbViewTableRecordPtr = OdSmartPtr<OdDbViewTableRecord>;
 
-class CNamedViewListCtrl : public CListCtrl {
+class CNamedViewListCtrl final : public CListCtrl {
 	void setViewId(int item, const OdDbObjectId& id);
 	void setView(int item, const OdDbViewTableRecord* view);
 public:
@@ -13,7 +13,7 @@ public:
 	void InsertItem(int i, const OdDbViewTableRecord* pView);
 };
 
-class EoDlgNamedViews : public CDialog {
+class EoDlgNamedViews final : public CDialog {
 	AeSysDoc* m_pDoc;
 public:
 	EoDlgNamedViews(AeSysDoc* pDoc, CWnd* parent = nullptr);

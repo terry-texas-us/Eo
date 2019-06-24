@@ -17,7 +17,7 @@
 #undef DODEF_APSTUDIO_READONLY_SYMBOLS
 #endif
 #include "MainFrm.h"
-#include "ColorMapping.h"
+#include <ColorMapping.h>
 #include "EoApOptions.h"
 #include "EoDb.h"
 extern COLORREF g_ViewBackgroundColor;
@@ -32,11 +32,9 @@ extern COLORREF* g_CurrentPalette;
 #include <RxObjectImpl.h>
 #include <ExHostAppServices.h>
 #include <ExSystemServices.h>
-//#include "DynamicLinker.h"
 #include <DbObject.h>
 #include <Gs/Gs.h>
 #include <Ed/EdCommandStack.h>
-//#include "TaskBarWin7Ext.h"
 #include <ThreadsCounter.h>
 class EoDlgAudit;
 #include <ExDbCommandContext.h>
@@ -84,8 +82,8 @@ private:
 	bool m_bUseMTLoading {false};
 	// ODA_MT_DBIO_END
 	bool m_bRemoteGeomViewer {false};
-	int m_pagingType {0};
 	bool m_bUseTempFiles {false};
+	int m_pagingType {0};
 	CStringArray m_tempFilesList;
 	bool m_bSupportFileSelectionViaDialog {true};
 

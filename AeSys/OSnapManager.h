@@ -17,7 +17,7 @@ class OdEdInputTracker;
 class OdEdOSnapMan;
 using OdEdOSnapManPtr = OdSmartPtr<OdEdOSnapMan>;
 
-class OdEdPointTrackerWithSnapInfo : public OdStaticRxObject<OdEdPointTracker> {
+class OdEdPointTrackerWithSnapInfo final : public OdStaticRxObject<OdEdPointTracker> {
 public:
 	struct SnapContext {
 		bool mValid {false};

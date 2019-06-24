@@ -2,7 +2,7 @@
 #include "EoDbGroup.h"
 
 class EoDbBlock : public EoDbGroup {
-	unsigned short m_wBlkTypFlgs {0};	// block type flag values
+	unsigned short m_TypeFlags {0}; // block type flag values
 	//		b0 set - anonymous block
 	//		b1 set - block has attribute definitions
 	//		b2 set - block is an external reference
@@ -16,12 +16,12 @@ public:
 	EoDbBlock() = default;
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint);
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint, const OdString& pathName);
-	[[nodiscard]] auto BasePoint() const noexcept -> OdGePoint3d;
-	unsigned short GetBlkTypFlgs() noexcept;
-	bool HasAttributes() noexcept;
-	bool IsAnonymous() noexcept;
-	bool IsFromExternalReference() noexcept;
-	void SetBlkTypFlgs(unsigned short flags) noexcept;
+	[[nodiscard]] OdGePoint3d BasePoint() const noexcept;
+	[[nodiscard]] unsigned short GetTypeFlags() const noexcept;
+	[[nodiscard]] bool HasAttributes() const noexcept;
+	[[nodiscard]] bool IsAnonymous() const noexcept;
+	[[nodiscard]] bool IsFromExternalReference() const noexcept;
+	void SetTypeFlags(unsigned short flags) noexcept;
 	void SetBasePoint(const OdGePoint3d& basePoint) noexcept;
 };
 

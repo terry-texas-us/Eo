@@ -54,17 +54,17 @@ BOOL EoLoadApps::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_AppsList.ResetContent();
 	m_LoadedApps->m_pListBox = &m_AppsList;
-	for (unsigned i = 0; i < m_LoadedApps->size(); ++i) {
-		const auto n {m_AppsList.AddString(m_LoadedApps->at(i))};
-		auto pModule {odrxDynamicLinker()->loadModule(m_LoadedApps->at(i))};
-		m_AppsList.SetItemData(n, reinterpret_cast<LPARAM>(pModule.get()));
+	for (unsigned LoadedAppIndex = 0; LoadedAppIndex < m_LoadedApps->size(); ++LoadedAppIndex) {
+		const auto n {m_AppsList.AddString(m_LoadedApps->at(LoadedAppIndex))};
+		auto Module {odrxDynamicLinker()->loadModule(m_LoadedApps->at(LoadedAppIndex))};
+		m_AppsList.SetItemData(n, reinterpret_cast<LPARAM>(Module.get()));
 	}
 	OnAppsListEvent();
 	return TRUE;
 }
 
 void EoLoadApps::OnLoadApp() {
-	CFileDialog FileDialog(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Run-time Extentions (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
+	CFileDialog FileDialog(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Run-time Extensions (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
 	FileDialog.m_ofn.lpstrTitle = L"Load application";
 	auto Path {AeSys::getApplicationPath()};
 	FileDialog.m_ofn.lpstrInitialDir = Path.GetBuffer(Path.GetLength());

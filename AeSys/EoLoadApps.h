@@ -1,9 +1,9 @@
 #pragma once
 #include "RxDLinkerReactor.h"
 
-class EoLoadApps : public CDialog {
+class EoLoadApps final : public CDialog {
 public:
-	class LoadedApps : public OdArray<OdString>, public OdStaticRxObject<OdRxDLinkerReactor> {
+	class LoadedApps final : public OdArray<OdString>, public OdStaticRxObject<OdRxDLinkerReactor> {
 	public:
 		ODRX_HEAP_OPERATORS()
 

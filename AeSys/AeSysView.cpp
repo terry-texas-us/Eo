@@ -78,9 +78,9 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_3DVIEWS_RIGHT, On3dViewsRight)
 		ON_COMMAND(ID_3DVIEWS_TOP, On3dViewsTop)
 		ON_COMMAND(ID_BACKGROUNDIMAGE_LOAD, OnBackgroundImageLoad)
-		ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_LOAD, OnUpdateBackgroundimageLoad)
+		ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_LOAD, OnUpdateBackgroundImageLoad)
 		ON_COMMAND(ID_BACKGROUNDIMAGE_REMOVE, OnBackgroundImageRemove)
-		ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_REMOVE, OnUpdateBackgroundimageRemove)
+		ON_UPDATE_COMMAND_UI(ID_BACKGROUNDIMAGE_REMOVE, OnUpdateBackgroundImageRemove)
 		ON_COMMAND(ID_CAMERA_ROTATELEFT, OnCameraRotateLeft)
 		ON_COMMAND(ID_CAMERA_ROTATERIGHT, OnCameraRotateRight)
 		ON_COMMAND(ID_CAMERA_ROTATEUP, OnCameraRotateUp)
@@ -98,7 +98,7 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_MODE_GROUP_EDIT, OnModeGroupEdit)
 		ON_COMMAND(ID_MODE_PRIMITIVE_EDIT, OnModePrimitiveEdit)
 		ON_COMMAND(ID_MODE_PRIMITIVE_MEND, OnModePrimitiveMend)
-		ON_COMMAND(ID_PRIM_PERPJUMP, OnPrimPerpJump)
+		ON_COMMAND(ID_PRIM_PERPJUMP, OnPrimitivePerpendicularJump)
 		ON_COMMAND(ID_RELATIVEMOVES_ENG_DOWN, OnRelativeMovesEngDown)
 		ON_COMMAND(ID_RELATIVEMOVES_ENG_DOWNROTATE, OnRelativeMovesEngDownRotate)
 		ON_COMMAND(ID_RELATIVEMOVES_ENG_IN, OnRelativeMovesEngIn)
@@ -125,26 +125,26 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_SETUP_MOUSEBUTTONS, OnSetupMouseButtons)
 		ON_COMMAND(ID_SETUP_SCALE, OnSetupScale)
 		ON_COMMAND(ID_SETUP_UNITS, OnSetupUnits)
-		ON_COMMAND(ID_TOOLS_PRIMITIVE_SNAPTO, OnToolsPrimitiveSnapto)
+		ON_COMMAND(ID_TOOLS_PRIMITIVE_SNAPTO, OnToolsPrimitiveSnapTo)
 		ON_COMMAND(ID_VIEW_BACKGROUNDIMAGE, OnViewBackgroundImage)
 		ON_UPDATE_COMMAND_UI(ID_VIEW_BACKGROUNDIMAGE, OnUpdateViewBackgroundImage)
 		ON_COMMAND(ID_VIEW_ODOMETER, OnViewOdometer)
 		ON_UPDATE_COMMAND_UI(ID_VIEW_ODOMETER, OnUpdateViewOdometer)
 		ON_COMMAND(ID_VIEW_PARAMETERS, OnViewParameters)
 		ON_COMMAND(ID_VIEW_PENWIDTHS, OnViewPenWidths)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_PENWIDTHS, OnUpdateViewPenwidths)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_PENWIDTHS, OnUpdateViewPenWidths)
 		ON_COMMAND(ID_VIEW_REFRESH, OnViewRefresh)
 		ON_COMMAND(ID_VIEW_STATEINFORMATION, OnViewStateInformation)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_STATEINFORMATION, OnUpdateViewStateinformation)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_STATEINFORMATION, OnUpdateViewStateInformation)
 		ON_COMMAND(ID_VIEW_TRUETYPEFONTS, OnViewTrueTypeFonts)
 		ON_UPDATE_COMMAND_UI(ID_VIEW_TRUETYPEFONTS, OnUpdateViewTrueTypeFonts)
 		ON_COMMAND(ID_VIEW_WINDOW, OnViewWindow)
-		ON_COMMAND_RANGE(ID_VIEW_RENDERMODE_2DOPTIMIZED, ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnViewRendermode)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_2DOPTIMIZED, &AeSysView::OnUpdateViewRendermode2doptimized)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_WIREFRAME, &AeSysView::OnUpdateViewRendermodeWireframe)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_HIDDENLINE, &AeSysView::OnUpdateViewRendermodeHiddenline)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_FLATSHADED, &AeSysView::OnUpdateViewRendermodeFlatshaded)
-		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnUpdateViewRendermodeSmoothshaded)
+		ON_COMMAND_RANGE(ID_VIEW_RENDERMODE_2DOPTIMIZED, ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnViewRenderMode)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_2DOPTIMIZED, &AeSysView::OnUpdateViewRenderMode2dOptimized)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_WIREFRAME, &AeSysView::OnUpdateViewRenderModeWireframe)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_HIDDENLINE, &AeSysView::OnUpdateViewRenderModeHiddenLine)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_FLATSHADED, &AeSysView::OnUpdateViewRenderModeFlatShaded)
+		ON_UPDATE_COMMAND_UI(ID_VIEW_RENDERMODE_SMOOTHSHADED, &AeSysView::OnUpdateViewRenderModeSmoothShaded)
 		ON_COMMAND(ID_WINDOW_BEST, OnWindowBest)
 		ON_COMMAND(ID_WINDOW_NORMAL, OnWindowNormal)
 		ON_COMMAND(ID_WINDOW_LAST, OnWindowLast)
@@ -286,7 +286,7 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_NODAL_MODE_ENGAGE, &AeSysView::OnNodalModeEngage)
 		ON_COMMAND(ID_NODAL_MODE_RETURN, &AeSysView::OnNodalModeReturn)
 		ON_COMMAND(ID_NODAL_MODE_ESCAPE, &AeSysView::OnNodalModeEscape)
-		ON_COMMAND(ID_INSERT_BLOCKREFERENCE, &AeSysView::OnInsertBlockreference)
+		ON_COMMAND(ID_INSERT_BLOCKREFERENCE, &AeSysView::OnInsertBlockReference)
 END_MESSAGE_MAP()
 
 AeSysView::AeSysView() noexcept {
@@ -2540,7 +2540,7 @@ void AeSysView::OnViewPenWidths() {
 	InvalidateRect(nullptr);
 }
 
-void AeSysView::OnViewRendermode(const unsigned commandId) {
+void AeSysView::OnViewRenderMode(const unsigned commandId) {
 	const auto RenderMode {OdGsView::RenderMode(commandId - ID_VIEW_RENDERMODE_2DOPTIMIZED)};
 	SetRenderMode(RenderMode);
 }
@@ -2572,23 +2572,23 @@ void AeSysView::OnViewRefresh() {
 	InvalidateRect(nullptr);
 }
 
-void AeSysView::OnUpdateViewRendermode2doptimized(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewRenderMode2dOptimized(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(RenderMode() == OdGsView::k2DOptimized ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeSmoothshaded(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewRenderModeSmoothShaded(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(RenderMode() == OdGsView::kGouraudShaded ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeFlatshaded(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewRenderModeFlatShaded(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(RenderMode() == OdGsView::kFlatShaded ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeHiddenline(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewRenderModeHiddenLine(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(RenderMode() == OdGsView::kHiddenLine ? MF_CHECKED : MF_UNCHECKED);
 }
 
-void AeSysView::OnUpdateViewRendermodeWireframe(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewRenderModeWireframe(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(RenderMode() == OdGsView::kWireframe ? MF_CHECKED : MF_UNCHECKED);
 }
 
@@ -2859,18 +2859,18 @@ void AeSysView::OnRelativeMovesUp() {
 
 void AeSysView::OnRelativeMovesUpRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.y += theApp.DimensionLength();
-	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto MovedPoint {Origin};
+	MovedPoint.y += theApp.DimensionLength();
+	MovedPoint.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(MovedPoint);
 }
 
-void AeSysView::OnToolsPrimitiveSnapto() {
-	const auto pt {GetCursorPosition()};
+void AeSysView::OnToolsPrimitiveSnapTo() {
+	const auto CurrentPoint {GetCursorPosition()};
 	OdGePoint3d ptDet;
 	if (GroupIsEngaged()) {
 		const auto Primitive {m_EngagedPrimitive};
-		EoGePoint4d ptView(pt, 1.0);
+		EoGePoint4d ptView(CurrentPoint, 1.0);
 		ModelViewTransformPoint(ptView);
 		EoDbHatch::SetEdgeToEvaluate(EoDbHatch::Edge());
 		EoDbPolyline::SetEdgeToEvaluate(EoDbPolyline::Edge());
@@ -2882,14 +2882,14 @@ void AeSysView::OnToolsPrimitiveSnapto() {
 			return;
 		}
 	}
-	if (SelectGroupAndPrimitive(pt) != nullptr) {
+	if (SelectGroupAndPrimitive(CurrentPoint) != nullptr) {
 		ptDet = m_ptDet;
 		m_EngagedPrimitive->AddReportToMessageList(ptDet);
 		SetCursorPosition(ptDet);
 	}
 }
 
-void AeSysView::OnPrimPerpJump() {
+void AeSysView::OnPrimitivePerpendicularJump() {
 	auto CursorPosition {GetCursorPosition()};
 	if (SelectGroupAndPrimitive(CursorPosition) != nullptr) {
 		if (m_EngagedPrimitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
@@ -2974,15 +2974,15 @@ void AeSysView::OnUpdateViewBackgroundImage(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_ViewBackgroundImage);
 }
 
-void AeSysView::OnUpdateBackgroundimageLoad(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateBackgroundImageLoad(CCmdUI* commandUserInterface) {
 	commandUserInterface->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) == nullptr);
 }
 
-void AeSysView::OnUpdateBackgroundimageRemove(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateBackgroundImageRemove(CCmdUI* commandUserInterface) {
 	commandUserInterface->Enable(static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr);
 }
 
-void AeSysView::OnUpdateViewPenwidths(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewPenWidths(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_ViewPenWidths);
 }
 
@@ -3465,7 +3465,7 @@ void AeSysView::OnViewStateInformation() {
 	AeSysDoc::GetDoc()->UpdateAllViews(nullptr);
 }
 
-void AeSysView::OnUpdateViewStateinformation(CCmdUI* commandUserInterface) {
+void AeSysView::OnUpdateViewStateInformation(CCmdUI* commandUserInterface) {
 	commandUserInterface->SetCheck(m_ViewStateInformation);
 }
 
@@ -3572,7 +3572,7 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 	}
 }
 
-void AeSysView::OnInsertBlockreference() {
+void AeSysView::OnInsertBlockReference() {
 	// <tas="Just a placeholder for BlockReference. It works but position, scale & rotation need to be specified."</tas>
 	auto Document {GetDocument()};
 	if (Document->BlockTableSize() > 0) {

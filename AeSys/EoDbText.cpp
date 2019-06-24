@@ -830,7 +830,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	wcscpy_s(FontAttributes.lfFaceName, LF_FACESIZE, fontDefinition.FontName());
 	CFont Font;
 	Font.CreateFontIndirectW(&FontAttributes);
-	const auto pfntold {deviceContext->SelectObject(&Font)};
+	const auto OldFont {deviceContext->SelectObject(&Font)};
 	const auto TextAlign {deviceContext->SetTextAlign(TA_LEFT | TA_BASELINE)};
 	const auto BackgroundMode {deviceContext->SetBkMode(TRANSPARENT)};
 	deviceContext->TextOutW(ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
@@ -838,7 +838,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	//	DisplayTextUsingWindowsFontOutline(deviceContext, ProjectedStartPoint.x, ProjectedStartPoint.y, text.Mid(startPosition, numberOfCharacters));
 	deviceContext->SetBkMode(BackgroundMode);
 	deviceContext->SetTextAlign(TextAlign);
-	deviceContext->SelectObject(pfntold);
+	deviceContext->SelectObject(OldFont);
 	return true;
 }
 

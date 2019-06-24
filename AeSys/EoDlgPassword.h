@@ -1,5 +1,5 @@
 #pragma once
-class EoDlgPassword : public CDialog {
+class EoDlgPassword final : public CDialog {
 public:
 	EoDlgPassword(CWnd* parent = nullptr);
 

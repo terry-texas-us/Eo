@@ -288,13 +288,13 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 			return true;
 		}
 	} else { // Evaluate entire polyline
-		auto NumberofEdges = NumberOfVertices;
-		if (!IsClosed()) { NumberofEdges--; }
+		auto NumberOfEdges = NumberOfVertices;
+		if (!IsClosed()) { NumberOfEdges--; }
 		OdGePoint3d StartPoint;
 		GetPointAt(0, StartPoint);
 		EoGePoint4d ptBeg(StartPoint, 1.0);
 		view->ModelViewTransformPoint(ptBeg);
-		for (unsigned VertexIndex = 1; VertexIndex <= NumberofEdges; VertexIndex++) {
+		for (unsigned VertexIndex = 1; VertexIndex <= NumberOfEdges; VertexIndex++) {
 			OdGePoint3d EndPoint;
 			GetPointAt(VertexIndex % NumberOfVertices, EndPoint);
 			EoGePoint4d ptEnd(EndPoint, 1.0);

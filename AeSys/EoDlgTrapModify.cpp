@@ -60,7 +60,7 @@ void EoDlgTrapModify::ModifyPolygons() {
 				auto pPolygon {dynamic_cast<EoDbHatch*>(Primitive)};
 				pPolygon->SetInteriorStyle(g_PrimitiveState.HatchInteriorStyle());
 				pPolygon->SetInteriorStyleIndex2(g_PrimitiveState.HatchInteriorStyleIndex());
-				pPolygon->SetHatRefVecs(EoDbHatch::sm_PatternAngle, EoDbHatch::sm_PatternScaleX, EoDbHatch::sm_PatternScaleY);
+				pPolygon->SetHatchReferenceAxes(EoDbHatch::sm_PatternAngle, EoDbHatch::sm_PatternScaleX, EoDbHatch::sm_PatternScaleY);
 			}
 		}
 	}

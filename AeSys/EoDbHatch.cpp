@@ -615,7 +615,7 @@ void EoDbHatch::SetHatchYAxis(const OdGeVector3d& yAxis) noexcept {
 	m_HatchYAxis = yAxis;
 }
 
-void EoDbHatch::SetHatRefVecs(const double patternAngle, const double patternScaleX, const double patternScaleY) {
+void EoDbHatch::SetHatchReferenceAxes(const double patternAngle, const double patternScaleX, const double patternScaleY) {
 	m_HatchXAxis = OdGeVector3d(m_Vertices[1] - m_Vertices[0]);
 	m_HatchYAxis = OdGeVector3d(m_Vertices[2] - m_Vertices[0]);
 	auto PlaneNormal {m_HatchXAxis.crossProduct(m_HatchYAxis)};

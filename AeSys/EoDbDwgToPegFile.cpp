@@ -143,7 +143,7 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 		}
 	}
 	if (EntitiesNotLoaded != 0) {
-		theApp.AddStringToReportList(ReportItem.format(L" %d entitities not loaded\n", EntitiesNotLoaded));
+		theApp.AddStringToReportList(ReportItem.format(L" %d entities not loaded\n", EntitiesNotLoaded));
 	}
 	const auto ObjectId {block->extensionDictionary()};
 	if (!ObjectId.isNull()) {
@@ -159,12 +159,12 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 	ConvertEntityToPrimitiveProtocolExtension ProtocolExtensions(document);
 	ProtocolExtensions.Initialize();
-	OdDbBlockTableRecordPtr Modelspace = m_DatabasePtr_->getModelSpaceId().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTableRecordPtr ModelSpace {m_DatabasePtr_->getModelSpaceId().safeOpenObject(OdDb::kForRead)};
 	OdString ReportItem;
-	theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading Layout Object definitions ...\n", static_cast<const wchar_t*>(Modelspace->desc()->name())));
-	theApp.AddStringToReportList(ReportItem.format(L"Loading %s entity definitions ...\n", static_cast<const wchar_t*>(Modelspace->getName())));
+	theApp.AddStringToReportList(ReportItem.format(L"<%s> Loading Layout Object definitions ...\n", static_cast<const wchar_t*>(ModelSpace->desc()->name())));
+	theApp.AddStringToReportList(ReportItem.format(L"Loading %s entity definitions ...\n", static_cast<const wchar_t*>(ModelSpace->getName())));
 	auto EntitiesNotLoaded {0};
-	auto EntityIterator {Modelspace->newIterator()};
+	auto EntityIterator {ModelSpace->newIterator()};
 	for (; !EntityIterator->done(); EntityIterator->step()) {
 		const auto EntityObjectId {EntityIterator->objectId()};
 		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
@@ -179,8 +179,8 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 			Layer->AddTail(Group);
 		}
 	}
-	theApp.AddStringToReportList(ReportItem.format(L" %d Modelspace entitities not loaded\n", EntitiesNotLoaded));
-	const auto ObjectId {Modelspace->extensionDictionary()};
+	theApp.AddStringToReportList(ReportItem.format(L" %d Modelspace entities not loaded\n", EntitiesNotLoaded));
+	const auto ObjectId {ModelSpace->extensionDictionary()};
 	if (!ObjectId.isNull()) {
 		const auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
 		OdDbDictionaryPtr Dictionary {ObjectPtr};
@@ -213,7 +213,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 				Layer->AddTail(Group);
 			}
 		}
-		TRACE1(" %d Paperspace entitities not loaded\n", EntitiesNotLoaded);
+		TRACE1(" %d Paperspace entities not loaded\n", EntitiesNotLoaded);
 	*/
 	// </tas>
 }
