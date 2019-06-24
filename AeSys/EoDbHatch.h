@@ -14,7 +14,7 @@ Hatch(Polygon) primitive
   Hatch / pattern reference y-axis  EoGeVector3d[34-37][38-41][42-45]
   {0 or more points}                EoGePoint3d[46- ]
 </remarks> */
-class EoDbHatch : public EoDbPrimitive {
+class EoDbHatch final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbHatch)
 	static unsigned sm_EdgeToEvaluate;
 	static unsigned sm_Edge;

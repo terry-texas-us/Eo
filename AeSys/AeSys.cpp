@@ -231,7 +231,7 @@ END_MESSAGE_MAP()
 
 
 /// <remarks> Specialization of CCommandLineInfo to add the following switches: bat:, ld:, scr:, exe:, s:, and exit</remarks>
-class CFullCommandLineInfo : public CCommandLineInfo {
+class CFullCommandLineInfo final : public CCommandLineInfo {
 public:
 	CString m_SaveName;
 	bool m_Exit;

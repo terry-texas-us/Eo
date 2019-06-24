@@ -1,5 +1,5 @@
 #pragma once
-class EoCtrlFindComboBox : public CMFCToolBarComboBoxButton {
+class EoCtrlFindComboBox final : public CMFCToolBarComboBoxButton {
 DECLARE_SERIAL(EoCtrlFindComboBox)
 
 	EoCtrlFindComboBox()

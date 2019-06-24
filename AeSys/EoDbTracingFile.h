@@ -2,7 +2,7 @@
 #include "DbBlockTableRecord.h"
 #include "EoDbLayer.h"
 
-class EoDbTracingFile : public EoDbFile {
+class EoDbTracingFile final : public EoDbFile {
 public:
 	EoDbTracingFile(OdDbDatabasePtr database);
 	EoDbTracingFile(const OdString& fileName, unsigned openFlags);

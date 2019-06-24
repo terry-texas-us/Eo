@@ -10,7 +10,7 @@ Spline primitive
   Number of control points          unsigned short[6-7]
   {0 or more control points}        OdGePoint3d[8- ]
 </remarks> */
-class EoDbSpline : public EoDbPrimitive {
+class EoDbSpline final : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;
 public:	// Constructors and destructor
 	EoDbSpline() = default;

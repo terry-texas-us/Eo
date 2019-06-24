@@ -14,11 +14,6 @@ unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
-EoDbPrimitive::EoDbPrimitive(const short colorIndex, const short linetypeIndex)
-	: m_ColorIndex(colorIndex)
-	, m_LinetypeIndex(linetypeIndex) {
-}
-
 void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 }
 
@@ -34,31 +29,19 @@ bool EoDbPrimitive::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) 
 }
 
 CString EoDbPrimitive::FormatColorIndex() const {
-	CString str;
-	if (m_ColorIndex == COLORINDEX_BYLAYER) {
-		str = L"ByLayer";
-	} else if (m_ColorIndex == COLORINDEX_BYBLOCK) {
-		str = L"ByBlock";
-	} else {
-		wchar_t szBuf[16];
-		_itow_s(m_ColorIndex, szBuf, 16, 10);
-		str = szBuf;
-	}
-	return str;
+	if (m_ColorIndex == COLORINDEX_BYLAYER) { return L"ByLayer"; }
+	if (m_ColorIndex == COLORINDEX_BYBLOCK) { return L"ByBlock"; }
+	wchar_t Buffer[16];
+	_itow_s(m_ColorIndex, Buffer, 16, 10);
+	return Buffer;
 }
 
 CString EoDbPrimitive::FormatLinetypeIndex() const {
-	CString str;
-	if (m_LinetypeIndex == LINETYPE_BYLAYER) {
-		str = L"ByLayer";
-	} else if (m_LinetypeIndex == LINETYPE_BYBLOCK) {
-		str = L"ByBlock";
-	} else {
-		wchar_t szBuf[16];
-		_itow_s(m_LinetypeIndex, szBuf, 16, 10);
-		str = szBuf;
-	}
-	return str;
+	if (m_LinetypeIndex == LINETYPE_BYLAYER) { return L"ByLayer"; }
+	if (m_LinetypeIndex == LINETYPE_BYBLOCK) { return L"ByBlock"; }
+	wchar_t Buffer[16];
+	_itow_s(m_LinetypeIndex, Buffer, 16, 10);
+	return Buffer;
 }
 
 short EoDbPrimitive::LogicalColorIndex() const noexcept {
@@ -186,7 +169,7 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(const short linetypeIndex) {
 }
 
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, const short linetypeIndex) {
-	OdDbObjectId Linetype {nullptr};
+	OdDbObjectId Linetype;
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 	if (linetypeIndex == LINETYPE_BYLAYER) {
 		Linetype = Linetypes->getLinetypeByLayerId();

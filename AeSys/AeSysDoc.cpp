@@ -2143,8 +2143,8 @@ void AeSysDoc::OnToolsPrimitiveSnapToEndPoint() {
 void AeSysDoc::OnPrimGotoCenterPoint() {
 	auto ActiveView {AeSysView::GetActiveView()};
 	if (ActiveView->GroupIsEngaged()) {
-		const auto pt {ActiveView->EngagedPrimitive()->GetCtrlPt()};
-		ActiveView->SetCursorPosition(pt);
+		const auto ControlPoint {ActiveView->EngagedPrimitive()->GetCtrlPt()};
+		ActiveView->SetCursorPosition(ControlPoint);
 	}
 }
 
@@ -2154,15 +2154,15 @@ void AeSysDoc::OnToolsPrimitiveDelete() {
 	auto Group {ActiveView->SelectGroupAndPrimitive(CurrentPnt)};
 	if (Group != nullptr) {
 		const auto Position {FindTrappedGroup(Group)};
-		LPARAM lHint = Position != nullptr ? EoDb::kGroupEraseSafeTrap : EoDb::kGroupEraseSafe;
+		LPARAM Hint = Position != nullptr ? EoDb::kGroupEraseSafeTrap : EoDb::kGroupEraseSafe;
 		// erase entire group even if group has more than one primitive
-		UpdateGroupInAllViews(lHint, Group);
+		UpdateGroupInAllViews(Hint, Group);
 		if (Group->GetCount() > 1) { // remove primitive from group
 			const auto Primitive {ActiveView->EngagedPrimitive()};
 			Group->FindAndRemovePrimitive(Primitive);
-			lHint = Position != nullptr ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
+			Hint = Position != nullptr ? EoDb::kGroupSafeTrap : EoDb::kGroupSafe;
 			// display the group with the primitive removed
-			UpdateGroupInAllViews(lHint, Group);
+			UpdateGroupInAllViews(Hint, Group);
 			// new group required to allow primitive to be placed into deleted group list
 			Group = new EoDbGroup;
 			Group->AddTail(Primitive);

@@ -39,7 +39,7 @@ public:
 	[[nodiscard]] long commandFlags() const;
 };
 
-class OdDbDatabaseDoc : public OdDbDatabase {
+class OdDbDatabaseDoc final : public OdDbDatabase {
 	static AeSysDoc* g_pDoc;
 	mutable AeSysDoc* m_pDoc;
 public:

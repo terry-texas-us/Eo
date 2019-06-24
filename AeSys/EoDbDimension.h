@@ -4,7 +4,7 @@
 #include "EoDbFontDefinition.h"
 #include "EoDbPrimitive.h"
 
-class EoDbDimension : public EoDbPrimitive {
+class EoDbDimension final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbDimension)
 	EoGeLineSeg3d m_Line;
 	short m_TextColorIndex {1};

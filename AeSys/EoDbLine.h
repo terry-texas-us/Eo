@@ -3,7 +3,7 @@
 #include "EoGeLineSeg3d.h"
 #include "EoDbPrimitive.h"
 
-class EoDbLine : public EoDbPrimitive {
+class EoDbLine final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbLine)
 private:
 	EoGeLineSeg3d m_LineSeg;

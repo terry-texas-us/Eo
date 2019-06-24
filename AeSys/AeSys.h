@@ -168,7 +168,7 @@ public:
 	}
 
 	OdDbHostAppProgressMeter* newProgressMeter() override /* ExHostAppServices */;
-	void start(const OdString& displayString = L"") override /* ExHostAppServices */;
+	void start(const OdString& displayString = OdString::kEmpty) override /* ExHostAppServices */;
 	void stop() override /* ExHostAppServices */;
 	void meterProgress() override /* ExHostAppServices */;
 	void setLimit(int max) noexcept override /* ExHostAppServices */;

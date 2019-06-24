@@ -2,7 +2,7 @@
 #include "DbLayerTableRecord.h"
 #include "EoDbGroupList.h"
 
-class EoDbLayer : public EoDbGroupList {
+class EoDbLayer final : public EoDbGroupList {
 	OdDbLayerTableRecordPtr m_Layer;
 	unsigned short m_StateFlags;
 	unsigned short m_TracingFlags;

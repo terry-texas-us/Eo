@@ -2,7 +2,7 @@
 #include "DbPoint.h"
 #include "EoDbPrimitive.h"
 
-class EoDbPoint : public EoDbPrimitive {
+class EoDbPoint final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbPoint)
 private:
 	OdGePoint3d m_Position;

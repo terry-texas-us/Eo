@@ -16,7 +16,7 @@ Polyline primitive(never made it release : if already written flags not streamed
   {0 or more Vertices} {Vertex, StartWidth, EndWidth, Bulge}
 									{OdGePoint2d, double, double, double} [34- ]
 </remarks> */
-class EoDbPolyline : public EoDbPrimitive {
+class EoDbPolyline final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbPolyline)
 private:
 	static unsigned sm_EdgeToEvaluate;

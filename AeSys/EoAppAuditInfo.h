@@ -1,7 +1,7 @@
 #pragma once
 #include "DbAudit.h"
 
-class EoAppAuditInfo : public OdDbAuditInfo {
+class EoAppAuditInfo final : public OdDbAuditInfo {
 public:
 	EoAppAuditInfo() noexcept;
 

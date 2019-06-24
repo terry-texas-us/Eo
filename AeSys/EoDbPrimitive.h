@@ -32,7 +32,7 @@ protected:
 	static double sm_SelectApertureSize;
 public: // Constructors and destructor
 	EoDbPrimitive() = default;
-	EoDbPrimitive(short colorIndex, short linetypeIndex);
+
 	virtual ~EoDbPrimitive() = default;
 
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;

@@ -22,7 +22,7 @@ Text primitive in Peg files and Tracing files
   Local reference y-axis    OdGeVector3d
   Text('\t' terminated)     string
 </remarks> */
-class EoDbText : public EoDbPrimitive {
+class EoDbText final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbText)
 private:
 	EoDbFontDefinition m_FontDefinition;

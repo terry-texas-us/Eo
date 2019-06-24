@@ -3,7 +3,7 @@
 #include "EoDbPrimitive.h"
 #include "DbEllipse.h"
 
-class EoDbEllipse : public EoDbPrimitive {
+class EoDbEllipse final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbEllipse)
 private:
 	OdGePoint3d m_Center {OdGePoint3d::kOrigin};
