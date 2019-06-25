@@ -1,24 +1,22 @@
 #pragma once
 
-// EoDlgLowPressureDuctOptions dialog
 class EoDlgLowPressureDuctOptions : public CDialog {
 DECLARE_DYNAMIC(EoDlgLowPressureDuctOptions)
 	EoDlgLowPressureDuctOptions(CWnd* parent = nullptr);
 	virtual ~EoDlgLowPressureDuctOptions();
 
-	// Dialog Data
 	enum { IDD = IDD_DLGPROC_LPD_OPTIONS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 public:
-	double m_Width;
-	double m_Depth;
-	double m_RadiusFactor;
-	bool m_GenerateVanes;
-	int m_Justification;
-	bool m_BeginWithTransition;
+	double width {0.0};
+	double depth {0.0};
+	double radiusFactor {0.0};
+	bool generateVanes {false};
+	int justification {0};
+	bool beginWithTransition {false};
 	void OnBnClickedOk();
 	void OnBnClickedGenVanes() noexcept;
 	void OnEnChangeWidth();

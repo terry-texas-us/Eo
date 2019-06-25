@@ -1,21 +1,18 @@
 #pragma once
 
-// EoDlgSelectGotHomePoint dialog
-class EoDlgSelectGotoHomePoint : public CDialog {
+class EoDlgSelectGotoHomePoint final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSelectGotoHomePoint)
 	EoDlgSelectGotoHomePoint(CWnd* parent = nullptr);
 	EoDlgSelectGotoHomePoint(AeSysView* activeView, CWnd* parent = nullptr);
 	virtual ~EoDlgSelectGotoHomePoint();
 
-	// Dialog Data
 	enum { IDD = IDD_HOME_POINT_GO };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	AeSysView* m_ActiveView;
-public:
 	CComboBox m_HomePointNames;
 	CEdit m_X;
 	CEdit m_Y;

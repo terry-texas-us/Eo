@@ -4,15 +4,13 @@
 #include "EoDbHatch.h"
 #include "EoDlgTrapModify.h"
 
-// EoDlgTrapModify dialog
 IMPLEMENT_DYNAMIC(EoDlgTrapModify, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) noexcept
-	: CDialog(IDD, parent)
-	, m_Document(nullptr) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
@@ -20,11 +18,10 @@ EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
 	, m_Document(document) {
 }
 
-EoDlgTrapModify::~EoDlgTrapModify() {
-}
+EoDlgTrapModify::~EoDlgTrapModify() = default;
 
-void EoDlgTrapModify::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void EoDlgTrapModify::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
 }
 
 void EoDlgTrapModify::OnOK() {

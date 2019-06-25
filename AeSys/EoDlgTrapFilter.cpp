@@ -8,36 +8,33 @@
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
 
-// EoDlgTrapFilter dialog
 IMPLEMENT_DYNAMIC(EoDlgTrapFilter, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgTrapFilter, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgTrapFilter::EoDlgTrapFilter(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_Document(nullptr) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgTrapFilter::EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Document(document)
-	, m_Database(database) {
+	, EoDlgTrapFilter::document {document}
+	, EoDlgTrapFilter::database {database} {
 }
 
-EoDlgTrapFilter::~EoDlgTrapFilter() {
-}
+EoDlgTrapFilter::~EoDlgTrapFilter() = default;
 
-void EoDlgTrapFilter::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TRAP_FILTER_LINE_LIST, m_FilterLineComboBoxControl);
-	DDX_Control(pDX, IDC_TRAP_FILTER_ELEMENT_LIST, m_FilterPrimitiveTypeListBoxControl);
+void EoDlgTrapFilter::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_TRAP_FILTER_LINE_LIST, m_FilterLineComboBoxControl);
+	DDX_Control(dataExchange, IDC_TRAP_FILTER_ELEMENT_LIST, m_FilterPrimitiveTypeListBoxControl);
 }
 
 BOOL EoDlgTrapFilter::OnInitDialog() {
 	CDialog::OnInitDialog();
 	SetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 1, FALSE);
-	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 	auto Iterator {Linetypes->newIterator()};
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
@@ -61,7 +58,7 @@ void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE)) {
 		wchar_t Name[32];
 		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t))) {
-			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+			OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 			if (!Linetypes->getAt(Name).isNull()) {
 				const auto LinetypeIndex {gsl::narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 				FilterByLinetype(LinetypeIndex);
@@ -97,15 +94,15 @@ void EoDlgTrapFilter::OnOK() {
 }
 
 void EoDlgTrapFilter::FilterByColor(const short colorIndex) {
-	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
+	auto GroupPosition {document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->ColorIndex() == colorIndex) {
-				m_Document->RemoveTrappedGroup(Group);
-				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				document->RemoveTrappedGroup(Group);
+				document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}
@@ -114,15 +111,15 @@ void EoDlgTrapFilter::FilterByColor(const short colorIndex) {
 }
 
 void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
-	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
+	auto GroupPosition {document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->LinetypeIndex() == linetypeIndex) {
-				m_Document->RemoveTrappedGroup(Group);
-				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				document->RemoveTrappedGroup(Group);
+				document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}
@@ -131,10 +128,10 @@ void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
 }
 
 void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
-	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
+	auto GroupPosition {document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Filter {false};
-		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
@@ -164,8 +161,8 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 					break;
 			}
 			if (Filter) {
-				m_Document->RemoveTrappedGroup(Group);
-				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				document->RemoveTrappedGroup(Group);
+				document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}

@@ -13,7 +13,7 @@ public:
 	BOOL m_bSaveUCS;
 	CString m_sUcsName;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 DECLARE_MESSAGE_MAP()
 };

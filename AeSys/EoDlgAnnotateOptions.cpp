@@ -3,7 +3,6 @@
 #include "AeSysView.h"
 #include "EoDlgAnnotateOptions.h"
 
-// EoDlgAnnotateOptions dialog
 IMPLEMENT_DYNAMIC(EoDlgAnnotateOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgAnnotateOptions, CDialog)
@@ -24,15 +23,15 @@ EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
 	m_DefaultText = view->DefaultText();
 }
 
-void EoDlgAnnotateOptions::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_ANN_ARR_TYP, m_EndItemTypeComboBox);
-	DDX_Text(pDX, IDC_ANN_GAP_SPACE_FAC, m_GapSpaceFactor);
-	DDX_Text(pDX, IDC_ANN_HOOK_RAD, m_CircleRadius);
-	DDX_Text(pDX, IDC_ANN_ARR_SIZ, m_EndItemSize);
-	DDX_Text(pDX, IDC_ANN_BUB_RAD, m_BubbleRadius);
-	DDX_Text(pDX, IDC_ANN_BUB_FACETS, m_NumberOfSides);
-	DDX_Text(pDX, IDC_ANN_DEF_TXT, m_DefaultText);
+void EoDlgAnnotateOptions::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_ANN_ARR_TYP, m_EndItemTypeComboBox);
+	DDX_Text(dataExchange, IDC_ANN_GAP_SPACE_FAC, m_GapSpaceFactor);
+	DDX_Text(dataExchange, IDC_ANN_HOOK_RAD, m_CircleRadius);
+	DDX_Text(dataExchange, IDC_ANN_ARR_SIZ, m_EndItemSize);
+	DDX_Text(dataExchange, IDC_ANN_BUB_RAD, m_BubbleRadius);
+	DDX_Text(dataExchange, IDC_ANN_BUB_FACETS, m_NumberOfSides);
+	DDX_Text(dataExchange, IDC_ANN_DEF_TXT, m_DefaultText);
 }
 
 BOOL EoDlgAnnotateOptions::OnInitDialog() {

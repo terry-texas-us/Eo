@@ -26,7 +26,7 @@ public:
 	CButton m_UnloadButton;
 	CListBox m_AppsList;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnLoadApp();
 	void OnUnloadApp();

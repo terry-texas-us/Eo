@@ -1,29 +1,27 @@
 #pragma once
 #include "LyLayerFilter.h"
 
-// EoDlgLayerPropertiesManager dialog
-class EoDlgLayerPropertiesManager : public CDialog {
+class EoDlgLayerPropertiesManager final : public CDialog {
 DECLARE_DYNAMIC(EoDlgLayerPropertiesManager)
 	EoDlgLayerPropertiesManager(CWnd* parent = nullptr);
 	EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent = nullptr);
 	virtual ~EoDlgLayerPropertiesManager();
 
-	// Dialog Data
 	enum { IDD = IDD_LAYER_PROPERTIES_MANAGER };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 DECLARE_MESSAGE_MAP()
 public:
 	OdDbDatabasePtr m_Database;
-	int m_DeltaHeight;
-	int m_DeltaWidth;
-	int m_InitialHeight;
-	int m_InitialWidth;
-	OdLyLayerFilterPtr m_RootFilter;
-	CTreeCtrl m_TreeFilters;
-	CImageList m_TreeImages;
+	int deltaHeight;
+	int deltaWidth;
+	int initialHeight;
+	int initialWidth;
+	OdLyLayerFilterPtr rootFilter;
+	CTreeCtrl treeFilters;
+	CImageList treeImages;
 	void UpdateFiltersTree();
 	int OnCreate(LPCREATESTRUCT createStructure);
 	void OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);

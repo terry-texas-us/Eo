@@ -1,27 +1,25 @@
 #pragma once
 
-// EoDlgSetHomePoint dialog
-class EoDlgSetHomePoint : public CDialog {
+class EoDlgSetHomePoint final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetHomePoint)
 	EoDlgSetHomePoint(CWnd* parent = nullptr);
 	EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent = nullptr);
 	virtual ~EoDlgSetHomePoint();
 
-	// Dialog Data
 	enum { IDD = IDD_HOME_POINT_EDIT };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
-	AeSysView* m_ActiveView;
+	AeSysView* m_ActiveView {nullptr};
 	static OdGePoint3d m_CursorPosition;
 public:
-	CComboBox m_HomePointNames;
-	CEdit m_X;
-	CEdit m_Y;
-	CEdit m_Z;
-	void OnCbnEditupdateList();
+	CComboBox homePointNames;
+	CEdit x;
+	CEdit y;
+	CEdit z;
+	void OnCbnEditUpdateList();
 protected:
 DECLARE_MESSAGE_MAP()
 };

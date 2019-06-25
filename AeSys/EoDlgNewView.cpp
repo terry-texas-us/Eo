@@ -19,15 +19,15 @@ EoDlgNewView::EoDlgNewView(CWnd* parent)
 	m_sUcsName = L"";
 }
 
-void EoDlgNewView::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_COMBO_UCSNAME, m_UCSs);
-	DDX_Control(pDX, IDC_COMBO_VIEWCATEGORY, m_categories);
-	DDX_Text(pDX, IDC_EDIT_VIEWNAME, m_sViewName);
-	DDX_CBString(pDX, IDC_COMBO_VIEWCATEGORY, m_sViewCategory);
-	DDX_Check(pDX, IDC_CHECK_STORE_LS, m_bStoreLS);
-	DDX_Check(pDX, IDC_CHECK_SAVEUCS, m_bSaveUCS);
-	DDX_CBString(pDX, IDC_COMBO_UCSNAME, m_sUcsName);
+void EoDlgNewView::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_COMBO_UCSNAME, m_UCSs);
+	DDX_Control(dataExchange, IDC_COMBO_VIEWCATEGORY, m_categories);
+	DDX_Text(dataExchange, IDC_EDIT_VIEWNAME, m_sViewName);
+	DDX_CBString(dataExchange, IDC_COMBO_VIEWCATEGORY, m_sViewCategory);
+	DDX_Check(dataExchange, IDC_CHECK_STORE_LS, m_bStoreLS);
+	DDX_Check(dataExchange, IDC_CHECK_SAVEUCS, m_bSaveUCS);
+	DDX_CBString(dataExchange, IDC_COMBO_UCSNAME, m_sUcsName);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgNewView, CDialog)

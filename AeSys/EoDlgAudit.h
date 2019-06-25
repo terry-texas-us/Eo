@@ -13,7 +13,7 @@ public:
 	CListCtrl m_AuditInfoList;
 	CListCtrl m_AuditErrList;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 DECLARE_MESSAGE_MAP()
 };

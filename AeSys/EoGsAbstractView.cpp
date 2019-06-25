@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "EoGsAbstractView.h"
 
-EoGsAbstractView::EoGsAbstractView() {
-}
+EoGsAbstractView::EoGsAbstractView() = default;
 
 EoGsAbstractView::EoGsAbstractView(const EoGsAbstractView& other) {
 	m_ViewMode = other.m_ViewMode;

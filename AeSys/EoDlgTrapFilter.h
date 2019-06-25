@@ -1,19 +1,17 @@
 #pragma once
 
-// EoDlgTrapFilter dialog
-class EoDlgTrapFilter : public CDialog {
+class EoDlgTrapFilter final : public CDialog {
 DECLARE_DYNAMIC(EoDlgTrapFilter)
 	EoDlgTrapFilter(CWnd* parent = nullptr);
 	EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
 	~EoDlgTrapFilter();
 
-	// Dialog Data
 	enum { IDD = IDD_TRAP_FILTER };
 
-	AeSysDoc* m_Document;
-	OdDbDatabasePtr m_Database;
+	AeSysDoc* document {nullptr};
+	OdDbDatabasePtr database;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 public:

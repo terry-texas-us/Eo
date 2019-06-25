@@ -149,7 +149,7 @@ public:
 	enum { IDD = IDD_ABOUTBOX };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 DECLARE_MESSAGE_MAP()
 public:
 	BOOL OnInitDialog() final;
@@ -169,8 +169,8 @@ BOOL EoDlgAbout::OnInitDialog() {
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void EoDlgAbout::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void EoDlgAbout::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)

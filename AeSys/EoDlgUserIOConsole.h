@@ -24,7 +24,7 @@ protected:
 	CString m_Input;
 	CString m_Prompt;
 	CString m_Output;
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnPaint();
 DECLARE_MESSAGE_MAP()

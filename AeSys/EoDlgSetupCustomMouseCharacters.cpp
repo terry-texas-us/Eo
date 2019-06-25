@@ -2,7 +2,6 @@
 #include "AeSys.h"
 #include "EoDlgSetupCustomMouseCharacters.h"
 
-// EoDlgSetupCustomMouseCharacters dialog
 IMPLEMENT_DYNAMIC(EoDlgSetupCustomMouseCharacters, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupCustomMouseCharacters, CDialog)
@@ -12,11 +11,10 @@ EoDlgSetupCustomMouseCharacters::EoDlgSetupCustomMouseCharacters(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetupCustomMouseCharacters::~EoDlgSetupCustomMouseCharacters() {
-}
+EoDlgSetupCustomMouseCharacters::~EoDlgSetupCustomMouseCharacters() = default;
 
-void EoDlgSetupCustomMouseCharacters::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void EoDlgSetupCustomMouseCharacters::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
 }
 
 BOOL EoDlgSetupCustomMouseCharacters::OnInitDialog() {

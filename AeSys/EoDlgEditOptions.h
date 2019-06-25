@@ -1,17 +1,15 @@
 #pragma once
 
-// EoDlgEditOptions dialog
-class EoDlgEditOptions : public CDialog {
+class EoDlgEditOptions final : public CDialog {
 DECLARE_DYNAMIC(EoDlgEditOptions)
 	EoDlgEditOptions(CWnd* parent = nullptr);
 	EoDlgEditOptions(AeSysView* view, CWnd* parent = nullptr);
 	virtual ~EoDlgEditOptions();
 
-	// Dialog Data
 	enum { IDD = IDD_EDIT_OPTIONS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	AeSysView* m_ActiveView;

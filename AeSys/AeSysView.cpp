@@ -2396,10 +2396,10 @@ void AeSysView::DollyAndZoom(const double zoomFactor) {
 }
 
 void AeSysView::OnSetupScale() {
-	EoDlgSetScale dlg;
-	dlg.m_Scale = WorldScale();
-	if (dlg.DoModal() == IDOK) {
-		SetWorldScale(dlg.m_Scale);
+	EoDlgSetScale SetScaleDialog;
+	SetScaleDialog.scale = WorldScale();
+	if (SetScaleDialog.DoModal() == IDOK) {
+		SetWorldScale(SetScaleDialog.scale);
 	}
 }
 
@@ -2522,12 +2522,12 @@ void AeSysView::OnCameraRotateDown() {
 }
 
 void AeSysView::OnViewParameters() {
-	EoDlgViewParameters Dialog;
+	EoDlgViewParameters ViewParametersDialog;
 	auto ModelView(m_ViewTransform);
-	Dialog.m_ModelView = unsigned long(&ModelView);
-	Dialog.m_PerspectiveProjection = m_ViewTransform.IsPerspectiveOn();
-	if (Dialog.DoModal() == IDOK) {
-		m_ViewTransform.EnablePerspective(Dialog.m_PerspectiveProjection == TRUE);
+	ViewParametersDialog.modelView = unsigned long(&ModelView);
+	ViewParametersDialog.perspectiveProjection = m_ViewTransform.IsPerspectiveOn();
+	if (ViewParametersDialog.DoModal() == IDOK) {
+		m_ViewTransform.EnablePerspective(ViewParametersDialog.perspectiveProjection == TRUE);
 	}
 }
 
@@ -2681,31 +2681,31 @@ void AeSysView::OnWindowZoomSpecial() {
 
 void AeSysView::OnSetupDimLength() {
 	EoDlgSetLength SetLengthDialog;
-	SetLengthDialog.m_Title = L"Set Dimension Length";
-	SetLengthDialog.m_Length = theApp.DimensionLength();
+	SetLengthDialog.title = L"Set Dimension Length";
+	SetLengthDialog.length = theApp.DimensionLength();
 	if (SetLengthDialog.DoModal() == IDOK) {
-		theApp.SetDimensionLength(SetLengthDialog.m_Length);
+		theApp.SetDimensionLength(SetLengthDialog.length);
 		UpdateStateInformation(kDimLen);
 	}
 }
 
 void AeSysView::OnSetupDimAngle() {
-	EoDlgSetAngle dlg;
-	dlg.m_strTitle = L"Set Dimension Angle";
-	dlg.m_dAngle = theApp.DimensionAngle();
-	if (dlg.DoModal() == IDOK) {
-		theApp.SetDimensionAngle(dlg.m_dAngle);
+	EoDlgSetAngle SetAngleDialog;
+	SetAngleDialog.title = L"Set Dimension Angle";
+	SetAngleDialog.angle = theApp.DimensionAngle();
+	if (SetAngleDialog.DoModal() == IDOK) {
+		theApp.SetDimensionAngle(SetAngleDialog.angle);
 		UpdateStateInformation(kDimAng);
 	}
 }
 
 void AeSysView::OnSetupUnits() {
-	EoDlgSetUnitsAndPrecision Dialog;
-	Dialog.m_Units = theApp.GetUnits();
-	Dialog.m_Precision = theApp.ArchitecturalUnitsFractionPrecision();
-	if (Dialog.DoModal() == IDOK) {
-		theApp.SetUnits(Dialog.m_Units);
-		theApp.SetArchitecturalUnitsFractionPrecision(Dialog.m_Precision);
+	EoDlgSetUnitsAndPrecision SetUnitsAndPrecisionDialog;
+	SetUnitsAndPrecisionDialog.units = theApp.GetUnits();
+	SetUnitsAndPrecisionDialog.precision = theApp.ArchitecturalUnitsFractionPrecision();
+	if (SetUnitsAndPrecisionDialog.DoModal() == IDOK) {
+		theApp.SetUnits(SetUnitsAndPrecisionDialog.units);
+		theApp.SetArchitecturalUnitsFractionPrecision(SetUnitsAndPrecisionDialog.precision);
 	}
 }
 

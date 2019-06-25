@@ -3,7 +3,6 @@
 #include "AeSysDoc.h"
 #include "EoDlgSetPastePosition.h"
 
-// EoDlgSetPastePosition dialog
 IMPLEMENT_DYNAMIC(EoDlgSetPastePosition, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetPastePosition, CDialog)
@@ -13,11 +12,10 @@ EoDlgSetPastePosition::EoDlgSetPastePosition(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetPastePosition::~EoDlgSetPastePosition() {
-}
+EoDlgSetPastePosition::~EoDlgSetPastePosition() = default;
 
-void EoDlgSetPastePosition::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void EoDlgSetPastePosition::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
 }
 
 void EoDlgSetPastePosition::OnOK() {

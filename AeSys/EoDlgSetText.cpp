@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "EoDlgSetText.h"
 
-// EoDlgSetText dialog
 IMPLEMENT_DYNAMIC(EoDlgSetText, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetText, CDialog)
@@ -11,17 +10,16 @@ EoDlgSetText::EoDlgSetText(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetText::~EoDlgSetText() {
-}
+EoDlgSetText::~EoDlgSetText() = default;
 
-void EoDlgSetText::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_TEXT, m_sText);
+void EoDlgSetText::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Text(dataExchange, IDC_TEXT, text);
 }
 
 BOOL EoDlgSetText::OnInitDialog() {
-	if (!m_strTitle.IsEmpty()) {
-		SetWindowTextW(m_strTitle);
+	if (!title.IsEmpty()) {
+		SetWindowTextW(title);
 	}
 	CDialog::OnInitDialog();
 	return TRUE;

@@ -17,27 +17,25 @@ BEGIN_MESSAGE_MAP(EoDlgSetupColor, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupColor::EoDlgSetupColor(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_ColorIndex(0) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgSetupColor::~EoDlgSetupColor() {
-}
+EoDlgSetupColor::~EoDlgSetupColor() = default;
 
-void EoDlgSetupColor::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_EVEN_COLORS, m_EvenColorsButton);
-	DDX_Control(pDX, IDC_ODD_COLORS, m_OddColorsButton);
-	DDX_Control(pDX, IDC_NAMED_COLORS, m_NamedColorsButton);
-	DDX_Control(pDX, IDC_GRAYS, m_GraysButton);
-	DDX_Control(pDX, IDC_SELECTION_COLOR, m_SelectionButton);
-	DDX_Control(pDX, IDC_COLOR_EDIT, m_ColorEditControl);
+void EoDlgSetupColor::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_EVEN_COLORS, m_EvenColorsButton);
+	DDX_Control(dataExchange, IDC_ODD_COLORS, m_OddColorsButton);
+	DDX_Control(dataExchange, IDC_NAMED_COLORS, m_NamedColorsButton);
+	DDX_Control(dataExchange, IDC_GRAYS, m_GraysButton);
+	DDX_Control(dataExchange, IDC_SELECTION_COLOR, m_SelectionButton);
+	DDX_Control(dataExchange, IDC_COLOR_EDIT, m_ColorEditControl);
 }
 
 BOOL EoDlgSetupColor::OnInitDialog() {
 	CDialog::OnInitDialog();
 	EoCtrlColorsButton::SetPalette(g_ColorPalette);
-	EoCtrlColorsButton::SetCurrentIndex(m_ColorIndex);
+	EoCtrlColorsButton::SetCurrentIndex(colorIndex);
 	m_EvenColorsButton.SetLayout(EoCtrlColorsButton::GridUp5RowsEvenOnly, CSize(13, 13));
 	m_EvenColorsButton.SetSequenceRange(10, 248);
 	m_EvenColorsButton.SizeToContent();
@@ -51,46 +49,46 @@ BOOL EoDlgSetupColor::OnInitDialog() {
 	m_GraysButton.SetSequenceRange(250, 255);
 	m_GraysButton.SizeToContent();
 	m_SelectionButton.SetLayout(EoCtrlColorsButton::SimpleSingleRow, CSize(80, 20));
-	m_SelectionButton.SetSequenceRange(m_ColorIndex, m_ColorIndex);
+	m_SelectionButton.SetSequenceRange(colorIndex, colorIndex);
 	m_SelectionButton.SizeToContent();
-	DrawSelectionInformation(m_ColorIndex);
-	SetDlgItemInt(IDC_COLOR_EDIT, gsl::narrow_cast<unsigned>(m_ColorIndex), FALSE);
+	DrawSelectionInformation(colorIndex);
+	SetDlgItemInt(IDC_COLOR_EDIT, gsl::narrow_cast<unsigned>(colorIndex), FALSE);
 	return TRUE;
 }
 
 void EoDlgSetupColor::OnOK() {
-	m_ColorIndex = gsl::narrow_cast<unsigned short>(GetDlgItemInt(IDC_COLOR_EDIT));
-	m_ColorIndex = m_ColorIndex < 255u ? m_ColorIndex : 255u;
+	colorIndex = gsl::narrow_cast<unsigned short>(GetDlgItemInt(IDC_COLOR_EDIT));
+	colorIndex = colorIndex < 255u ? colorIndex : 255u;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnClickedNamedColors() {
-	m_ColorIndex = m_NamedColorsButton.m_SubItem;
+	colorIndex = m_NamedColorsButton.m_SubItem;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnClickedGrays() {
-	m_ColorIndex = m_GraysButton.m_SubItem;
+	colorIndex = m_GraysButton.m_SubItem;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnClickedEvenColors() {
-	m_ColorIndex = m_EvenColorsButton.m_SubItem;
+	colorIndex = m_EvenColorsButton.m_SubItem;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnClickedOddColors() {
-	m_ColorIndex = m_OddColorsButton.m_SubItem;
+	colorIndex = m_OddColorsButton.m_SubItem;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnBnClickedByblockButton() {
-	m_ColorIndex = EoDbPrimitive::COLORINDEX_BYBLOCK;
+	colorIndex = EoDbPrimitive::COLORINDEX_BYBLOCK;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnBnClickedBylayerButton() {
-	m_ColorIndex = EoDbPrimitive::COLORINDEX_BYLAYER;
+	colorIndex = EoDbPrimitive::COLORINDEX_BYLAYER;
 	CDialog::OnOK();
 }
 

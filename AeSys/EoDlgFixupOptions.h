@@ -1,19 +1,17 @@
 #pragma once
 
-// EoDlgFixupOptions dialog
-class EoDlgFixupOptions : public CDialog {
+class EoDlgFixupOptions final : public CDialog {
 DECLARE_DYNAMIC(EoDlgFixupOptions)
 	EoDlgFixupOptions(CWnd* parent = nullptr);
 	virtual ~EoDlgFixupOptions();
 
-	// Dialog Data
 	enum { IDD = IDD_FIXUP_OPTIONS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 public:
-	double m_AxisTolerance;
-	double m_CornerSize;
+	double axisTolerance;
+	double cornerSize;
 protected:
 DECLARE_MESSAGE_MAP()
 };

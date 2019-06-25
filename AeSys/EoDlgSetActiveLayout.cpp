@@ -13,8 +13,8 @@ EoDlgSetActiveLayout::EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent)
 	, m_CreateNewLayout(false) {
 }
 
-void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgSetActiveLayout, CDialog)

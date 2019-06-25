@@ -3,156 +3,156 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "EoDlgFixupOptions.h"
-SelectionPair ReferenceSelection {nullptr, nullptr};
-SelectionPair PreviousSelection {nullptr, nullptr};
-SelectionPair CurrentSelection {nullptr, nullptr};
-unsigned short PreviousFixupCommand = 0;
+SelectionPair g_ReferenceSelection {nullptr, nullptr};
+SelectionPair g_PreviousSelection {nullptr, nullptr};
+SelectionPair g_CurrentSelection {nullptr, nullptr};
+unsigned short g_PreviousFixupCommand = 0;
 
 // <tas="FixupMode Axis Tolerance is not properly independent of the global Constraint influence angle"</tas>
 void AeSysView::OnFixupModeOptions() {
 	EoDlgFixupOptions Dialog;
-	Dialog.m_AxisTolerance = m_AxisTolerance;
-	Dialog.m_CornerSize = m_CornerSize;
+	Dialog.axisTolerance = m_AxisTolerance;
+	Dialog.cornerSize = m_CornerSize;
 	if (Dialog.DoModal() == IDOK) {
-		m_CornerSize = EoMax(0.0, Dialog.m_CornerSize);
-		m_AxisTolerance = EoMax(0.0, Dialog.m_AxisTolerance);
+		m_CornerSize = EoMax(0.0, Dialog.cornerSize);
+		m_AxisTolerance = EoMax(0.0, Dialog.axisTolerance);
 		SetAxisConstraintInfluenceAngle(m_AxisTolerance);
 	}
 }
 
 void AeSysView::OnFixupModeReference() {
-	CurrentSelection = {nullptr, nullptr};
-	ReferenceSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(ReferenceSelection) == nullptr) { return; }
-	if (PreviousFixupCommand == 0) {
-		PreviousFixupCommand = ModeLineHighlightOp(ID_OP1);
-	} else if (PreviousFixupCommand == ID_OP1) {
+	g_CurrentSelection = {nullptr, nullptr};
+	g_ReferenceSelection = SelectLineUsingPoint(GetCursorPosition());
+	if (std::get<tGroup>(g_ReferenceSelection) == nullptr) { return; }
+	if (g_PreviousFixupCommand == 0) {
+		g_PreviousFixupCommand = ModeLineHighlightOp(ID_OP1);
+	} else if (g_PreviousFixupCommand == ID_OP1) {
 	} else {
 		OdGePoint3d IntersectionPoint;
-		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(ReferenceSelection))->LineSeg()};
-		const auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(PreviousSelection))};
+		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
+		const auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_PreviousSelection))};
 		const auto PreviousLineSeg {PreviousLine->LineSeg()};
 		if (!PreviousLineSeg.intersectWith(ReferenceLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		if (PreviousFixupCommand == ID_OP2) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, kTrimPreviousToIntersection);
-		} else if (PreviousFixupCommand == ID_OP3) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, kTrimPreviousToSize | kChamfer);
-		} else if (PreviousFixupCommand == ID_OP4) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, ReferenceSelection, kTrimPreviousToSize | kFillet);
+		if (g_PreviousFixupCommand == ID_OP2) {
+			GenerateCorner(IntersectionPoint, g_PreviousSelection, g_ReferenceSelection, kTrimPreviousToIntersection);
+		} else if (g_PreviousFixupCommand == ID_OP3) {
+			GenerateCorner(IntersectionPoint, g_PreviousSelection, g_ReferenceSelection, kTrimPreviousToSize | kChamfer);
+		} else if (g_PreviousFixupCommand == ID_OP4) {
+			GenerateCorner(IntersectionPoint, g_PreviousSelection, g_ReferenceSelection, kTrimPreviousToSize | kFillet);
 		}
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	}
 }
 
 void AeSysView::OnFixupModeMend() {
-	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(CurrentSelection) == nullptr) {
+	g_CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) {
 		AeSys::AddStringToMessageList(L"0 lines found");
 		return;
 	}
-	const auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))};
+	const auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))};
 	const auto CurrentLineSeg {CurrentLine->LineSeg()};
 	OdGePoint3d IntersectionPoint;
-	if (PreviousFixupCommand == 0) {
-		PreviousSelection = CurrentSelection;
-		PreviousFixupCommand = ModeLineHighlightOp(ID_OP2);
-	} else if (PreviousFixupCommand == ID_OP1) {
-		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(ReferenceSelection))->LineSeg()};
+	if (g_PreviousFixupCommand == 0) {
+		g_PreviousSelection = g_CurrentSelection;
+		g_PreviousFixupCommand = ModeLineHighlightOp(ID_OP2);
+	} else if (g_PreviousFixupCommand == ID_OP1) {
+		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
 		if (!ReferenceLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, kTrimCurrentToIntersection);
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		GenerateCorner(IntersectionPoint, g_ReferenceSelection, g_CurrentSelection, kTrimCurrentToIntersection);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	} else {
-		const auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(PreviousSelection))};
+		const auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_PreviousSelection))};
 		const auto PreviousLineSeg {PreviousLine->LineSeg()};
 		if (!PreviousLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		if (PreviousFixupCommand == ID_OP2) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection);
-		} else if (PreviousFixupCommand == ID_OP3) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, kTrimPreviousToSize | kTrimCurrentToIntersection | kChamfer);
-		} else if (PreviousFixupCommand == ID_OP4) {
-			GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, kTrimPreviousToSize | kTrimCurrentToIntersection | kFillet);
+		if (g_PreviousFixupCommand == ID_OP2) {
+			GenerateCorner(IntersectionPoint, g_PreviousSelection, g_CurrentSelection);
+		} else if (g_PreviousFixupCommand == ID_OP3) {
+			GenerateCorner(IntersectionPoint, g_PreviousSelection, g_CurrentSelection, kTrimPreviousToSize | kTrimCurrentToIntersection | kChamfer);
+		} else if (g_PreviousFixupCommand == ID_OP4) {
+			GenerateCorner(IntersectionPoint, g_PreviousSelection, g_CurrentSelection, kTrimPreviousToSize | kTrimCurrentToIntersection | kFillet);
 		}
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	}
 }
 
 void AeSysView::OnFixupModeChamfer() {
-	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(CurrentSelection) == nullptr) {
+	g_CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) {
 		AeSys::AddStringToMessageList(L"0 lines found");
 		return;
 	}
-	const auto CurrentLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))->LineSeg()};
+	const auto CurrentLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))->LineSeg()};
 	OdGePoint3d IntersectionPoint;
-	if (PreviousFixupCommand == 0) {
-		PreviousSelection = CurrentSelection;
-		PreviousFixupCommand = ModeLineHighlightOp(ID_OP3);
-	} else if (PreviousFixupCommand == ID_OP1) {
-		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(ReferenceSelection))->LineSeg()};
+	if (g_PreviousFixupCommand == 0) {
+		g_PreviousSelection = g_CurrentSelection;
+		g_PreviousFixupCommand = ModeLineHighlightOp(ID_OP3);
+	} else if (g_PreviousFixupCommand == ID_OP1) {
+		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
 		if (!ReferenceLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, kTrimCurrentToSize | kChamfer);
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		GenerateCorner(IntersectionPoint, g_ReferenceSelection, g_CurrentSelection, kTrimCurrentToSize | kChamfer);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	} else {
-		const auto PreviousLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(PreviousSelection))->LineSeg()};
+		const auto PreviousLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_PreviousSelection))->LineSeg()};
 		if (!PreviousLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		const auto CornerType {(PreviousFixupCommand == ID_OP2 ? kTrimPreviousToIntersection : kTrimPreviousToSize) | kTrimCurrentToSize | kChamfer};
-		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, CornerType);
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		const auto CornerType {(g_PreviousFixupCommand == ID_OP2 ? kTrimPreviousToIntersection : kTrimPreviousToSize) | kTrimCurrentToSize | kChamfer};
+		GenerateCorner(IntersectionPoint, g_PreviousSelection, g_CurrentSelection, CornerType);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	}
 }
 
 void AeSysView::OnFixupModeFillet() {
-	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(CurrentSelection) == nullptr) {
+	g_CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) {
 		AeSys::AddStringToMessageList(L"0 lines found");
 		return;
 	}
-	const auto CurrentLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))->LineSeg()};
+	const auto CurrentLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))->LineSeg()};
 	OdGePoint3d IntersectionPoint;
-	if (PreviousFixupCommand == 0) {
-		PreviousSelection = CurrentSelection;
-		PreviousFixupCommand = ModeLineHighlightOp(ID_OP4);
-	} else if (PreviousFixupCommand == ID_OP1) {
-		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(ReferenceSelection))->LineSeg()};
+	if (g_PreviousFixupCommand == 0) {
+		g_PreviousSelection = g_CurrentSelection;
+		g_PreviousFixupCommand = ModeLineHighlightOp(ID_OP4);
+	} else if (g_PreviousFixupCommand == ID_OP1) {
+		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
 		if (!ReferenceLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_NO_INTERSECTION_WITH_REFERENCE);
 			return;
 		}
-		GenerateCorner(IntersectionPoint, ReferenceSelection, CurrentSelection, kTrimCurrentToSize | kFillet);
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		GenerateCorner(IntersectionPoint, g_ReferenceSelection, g_CurrentSelection, kTrimCurrentToSize | kFillet);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	} else {
-		const auto PreviousLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(PreviousSelection))->LineSeg()};
+		const auto PreviousLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_PreviousSelection))->LineSeg()};
 		if (!PreviousLineSeg.intersectWith(CurrentLineSeg, IntersectionPoint)) {
 			theApp.AddStringToMessageList(IDS_SELECTED_LINES_DO_NOT_INTERSECT);
 			return;
 		}
-		const auto CornerType {(PreviousFixupCommand == ID_OP2 ? kTrimPreviousToIntersection : kTrimPreviousToSize) | kTrimCurrentToSize | kFillet};
-		GenerateCorner(IntersectionPoint, PreviousSelection, CurrentSelection, CornerType);
-		ModeLineUnhighlightOp(PreviousFixupCommand);
+		const auto CornerType {(g_PreviousFixupCommand == ID_OP2 ? kTrimPreviousToIntersection : kTrimPreviousToSize) | kTrimCurrentToSize | kFillet};
+		GenerateCorner(IntersectionPoint, g_PreviousSelection, g_CurrentSelection, CornerType);
+		ModeLineUnhighlightOp(g_PreviousFixupCommand);
 	}
 }
 
 void AeSysView::OnFixupModeSquare() {
 	auto Document {GetDocument()};
 	auto CurrentPnt {GetCursorPosition()};
-	CurrentSelection = SelectLineUsingPoint(CurrentPnt);
-	if (std::get<tGroup>(CurrentSelection) == nullptr) { return; }
-	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))};
+	g_CurrentSelection = SelectLineUsingPoint(CurrentPnt);
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) { return; }
+	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))};
 	const auto CurrentLineSeg {CurrentLine->LineSeg()};
 	CurrentPnt = CurrentLineSeg.ProjPt(CurrentPnt);
 	const auto CurrentLineSegLength {CurrentLineSeg.length()};
@@ -166,15 +166,15 @@ void AeSysView::OnFixupModeSquare() {
 
 void AeSysView::OnFixupModeParallel() {
 	auto Document {GetDocument()};
-	if (std::get<tGroup>(ReferenceSelection) == nullptr) {
+	if (std::get<tGroup>(g_ReferenceSelection) == nullptr) {
 		AeSys::AddStringToMessageList(L"Reference line must be selected first.");
 		return;
 	}
-	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(CurrentSelection) == nullptr) { return; }
-	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))};
+	g_CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) { return; }
+	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))};
 	auto CurrentLineSeg {CurrentLine->LineSeg()};
-	const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(ReferenceSelection))->LineSeg()};
+	const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
 	CurrentLineSeg.set(ReferenceLineSeg.ProjPt(CurrentLine->StartPoint()), ReferenceLineSeg.ProjPt(CurrentLine->EndPoint()));
 	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
 	const auto StartPoint {CurrentLineSeg.startPoint()};
@@ -188,11 +188,11 @@ void AeSysView::OnFixupModeReturn() {
 }
 
 void AeSysView::OnFixupModeEscape() {
-	ReferenceSelection = {nullptr, nullptr};
-	CurrentSelection = {nullptr, nullptr};
-	PreviousSelection = {nullptr, nullptr};
+	g_ReferenceSelection = {nullptr, nullptr};
+	g_CurrentSelection = {nullptr, nullptr};
+	g_PreviousSelection = {nullptr, nullptr};
 	AeSys::AddStringToMessageList(L"*cancel*");
-	ModeLineUnhighlightOp(PreviousFixupCommand);
+	ModeLineUnhighlightOp(g_PreviousFixupCommand);
 }
 
 void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, const int cornerType) {

@@ -1,21 +1,19 @@
 #pragma once
 
-// EoDlgSetLength dialog
-class EoDlgSetLength : public CDialog {
+class EoDlgSetLength final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetLength)
 	EoDlgSetLength(CWnd* parent = nullptr);
 	virtual ~EoDlgSetLength();
 
-	// Dialog Data
 	enum { IDD = IDD_SET_LENGTH };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 public:
-	double m_Length;
-	CString m_Title;
+	double length {0.0};
+	CString title;
 protected:
 DECLARE_MESSAGE_MAP()
 };

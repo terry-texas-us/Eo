@@ -101,9 +101,9 @@ OdDbDatabase* EoDlgNamedViews::database() {
 	return document()->m_DatabasePtr;
 }
 
-void EoDlgNamedViews::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_NAMEDVIEWS, m_views);
+void EoDlgNamedViews::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_NAMEDVIEWS, m_views);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgNamedViews, CDialog)

@@ -1986,8 +1986,8 @@ void AeSysDoc::OnTrapCommandsQuery() {
 }
 
 void AeSysDoc::OnTrapCommandsFilter() {
-	EoDlgTrapFilter Dialog(this, m_DatabasePtr);
-	if (Dialog.DoModal() == IDOK) {
+	EoDlgTrapFilter TrapFilterDialog(this, m_DatabasePtr);
+	if (TrapFilterDialog.DoModal() == IDOK) {
 	}
 }
 
@@ -2017,19 +2017,19 @@ void AeSysDoc::OnTrapCommandsUnblock() {
 }
 
 void AeSysDoc::OnSetupPenColor() {
-	EoDlgSetupColor Dialog;
-	Dialog.m_ColorIndex = static_cast<unsigned>(g_PrimitiveState.ColorIndex());
-	if (Dialog.DoModal() == IDOK) {
-		g_PrimitiveState.SetColorIndex(nullptr, static_cast<short>(Dialog.m_ColorIndex));
+	EoDlgSetupColor SetupColorDialog;
+	SetupColorDialog.colorIndex = static_cast<unsigned>(g_PrimitiveState.ColorIndex());
+	if (SetupColorDialog.DoModal() == IDOK) {
+		g_PrimitiveState.SetColorIndex(nullptr, static_cast<short>(SetupColorDialog.colorIndex));
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kPen);
 	}
 }
 
 void AeSysDoc::OnSetupLinetype() {
 	const OdDbLinetypeTablePtr Linetypes {m_DatabasePtr->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
-	EoDlgSetupLinetype Dialog(Linetypes);
-	if (Dialog.DoModal() == IDOK) {
-		const auto Name {Dialog.m_Linetype->getName()};
+	EoDlgSetupLinetype SetupLinetypeDialog(Linetypes);
+	if (SetupLinetypeDialog.DoModal() == IDOK) {
+		const auto Name {SetupLinetypeDialog.linetype->getName()};
 		const auto LinetypeIndex {static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 		g_PrimitiveState.SetLinetypeIndexPs(nullptr, LinetypeIndex);
 		AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kLine);
@@ -2048,15 +2048,15 @@ void AeSysDoc::OnSetupFillPattern() noexcept {
 }
 
 void AeSysDoc::OnSetupFillHatch() {
-	EoDlgSetupHatch Dialog;
-	Dialog.m_HatchXScaleFactor = EoDbHatch::sm_PatternScaleX;
-	Dialog.m_HatchYScaleFactor = EoDbHatch::sm_PatternScaleY;
-	Dialog.m_HatchRotationAngle = EoToDegree(EoDbHatch::sm_PatternAngle);
-	if (Dialog.DoModal() == IDOK) {
+	EoDlgSetupHatch SetupHatchDialog;
+	SetupHatchDialog.hatchXScaleFactor = EoDbHatch::sm_PatternScaleX;
+	SetupHatchDialog.hatchYScaleFactor = EoDbHatch::sm_PatternScaleY;
+	SetupHatchDialog.hatchRotationAngle = EoToDegree(EoDbHatch::sm_PatternAngle);
+	if (SetupHatchDialog.DoModal() == IDOK) {
 		g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kHatch);
-		EoDbHatch::sm_PatternScaleX = EoMax(.01, Dialog.m_HatchXScaleFactor);
-		EoDbHatch::sm_PatternScaleY = EoMax(.01, Dialog.m_HatchYScaleFactor);
-		EoDbHatch::sm_PatternAngle = EoArcLength(Dialog.m_HatchRotationAngle);
+		EoDbHatch::sm_PatternScaleX = EoMax(.01, SetupHatchDialog.hatchXScaleFactor);
+		EoDbHatch::sm_PatternScaleY = EoMax(.01, SetupHatchDialog.hatchYScaleFactor);
+		EoDbHatch::sm_PatternAngle = EoArcLength(SetupHatchDialog.hatchRotationAngle);
 	}
 }
 
@@ -2064,15 +2064,15 @@ void AeSysDoc::OnSetupNote() {
 	auto FontDefinition {g_PrimitiveState.FontDefinition()};
 	EoDlgSetupNote Dialog(&FontDefinition);
 	auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
-	Dialog.m_Height = CharacterCellDefinition.Height();
-	Dialog.m_RotationAngle = EoToDegree(CharacterCellDefinition.RotationAngle());
-	Dialog.m_WidthFactor = CharacterCellDefinition.WidthFactor();
-	Dialog.m_ObliqueAngle = EoToDegree(CharacterCellDefinition.ObliqueAngle());
+	Dialog.height = CharacterCellDefinition.Height();
+	Dialog.rotationAngle = EoToDegree(CharacterCellDefinition.RotationAngle());
+	Dialog.widthFactor = CharacterCellDefinition.WidthFactor();
+	Dialog.obliqueAngle = EoToDegree(CharacterCellDefinition.ObliqueAngle());
 	if (Dialog.DoModal() == IDOK) {
-		CharacterCellDefinition.SetHeight(Dialog.m_Height);
-		CharacterCellDefinition.SetRotationAngle(EoToRadian(Dialog.m_RotationAngle));
-		CharacterCellDefinition.SetWidthFactor(Dialog.m_WidthFactor);
-		CharacterCellDefinition.SetObliqueAngle(EoToRadian(Dialog.m_ObliqueAngle));
+		CharacterCellDefinition.SetHeight(Dialog.height);
+		CharacterCellDefinition.SetRotationAngle(EoToRadian(Dialog.rotationAngle));
+		CharacterCellDefinition.SetWidthFactor(Dialog.widthFactor);
+		CharacterCellDefinition.SetObliqueAngle(EoToRadian(Dialog.obliqueAngle));
 		g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 		auto ActiveView {AeSysView::GetActiveView()};
 		const auto DeviceContext {ActiveView ? ActiveView->GetDC() : nullptr};

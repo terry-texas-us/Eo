@@ -3,7 +3,6 @@
 #include "AeSysView.h"
 #include "EoDlgLowPressureDuctOptions.h"
 
-// EoDlgLowPressureDuctOptions dialog
 IMPLEMENT_DYNAMIC(EoDlgLowPressureDuctOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgLowPressureDuctOptions, CDialog)
@@ -12,31 +11,24 @@ BEGIN_MESSAGE_MAP(EoDlgLowPressureDuctOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLowPressureDuctOptions::EoDlgLowPressureDuctOptions(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_Width(0.0)
-	, m_Depth(0.0)
-	, m_RadiusFactor(0.0)
-	, m_GenerateVanes(false)
-	, m_Justification(0)
-	, m_BeginWithTransition(false) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgLowPressureDuctOptions::~EoDlgLowPressureDuctOptions() {
-}
+EoDlgLowPressureDuctOptions::~EoDlgLowPressureDuctOptions() = default;
 
-void EoDlgLowPressureDuctOptions::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_RADIUS_FACTOR, m_RadiusFactor);
+void EoDlgLowPressureDuctOptions::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Text(dataExchange, IDC_RADIUS_FACTOR, radiusFactor);
 }
 
 BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 	CDialog::OnInitDialog();
 	const auto Units {max(theApp.GetUnits(), AeSys::kInches)};
-	SetDlgItemTextW(IDC_WIDTH, theApp.FormatLength(m_Width, Units, 12, 3));
-	SetDlgItemTextW(IDC_DEPTH, theApp.FormatLength(m_Depth, Units, 12, 3));
-	CheckRadioButton(IDC_LEFT, IDC_RIGHT, IDC_CENTER + m_Justification);
-	CheckDlgButton(IDC_GEN_VANES, m_GenerateVanes ? 1u : 0u);
-	CheckDlgButton(IDC_BEGINWITHTRANSITION, m_BeginWithTransition ? 1u : 0u);
+	SetDlgItemTextW(IDC_WIDTH, theApp.FormatLength(width, Units, 12, 3));
+	SetDlgItemTextW(IDC_DEPTH, theApp.FormatLength(depth, Units, 12, 3));
+	CheckRadioButton(IDC_LEFT, IDC_RIGHT, IDC_CENTER + justification);
+	CheckDlgButton(IDC_GEN_VANES, generateVanes ? 1u : 0u);
+	CheckDlgButton(IDC_BEGINWITHTRANSITION, beginWithTransition ? 1u : 0u);
 	return TRUE;
 }
 
@@ -44,12 +36,12 @@ BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 void EoDlgLowPressureDuctOptions::OnBnClickedOk() {
 	wchar_t String[32];
 	GetDlgItemTextW(IDC_WIDTH, String, 32);
-	m_Width = AeSys::ParseLength(theApp.GetUnits(), String);
+	width = AeSys::ParseLength(theApp.GetUnits(), String);
 	GetDlgItemTextW(IDC_DEPTH, String, 32);
-	m_Depth = AeSys::ParseLength(theApp.GetUnits(), String);
-	m_Justification = GetCheckedRadioButton(IDC_LEFT, IDC_RIGHT) - IDC_CENTER;
-	m_GenerateVanes = IsDlgButtonChecked(IDC_GEN_VANES) == 0 ? false : true;
-	m_BeginWithTransition = IsDlgButtonChecked(IDC_BEGINWITHTRANSITION) == 0 ? false : true;
+	depth = AeSys::ParseLength(theApp.GetUnits(), String);
+	justification = GetCheckedRadioButton(IDC_LEFT, IDC_RIGHT) - IDC_CENTER;
+	generateVanes = IsDlgButtonChecked(IDC_GEN_VANES) == 0 ? false : true;
+	beginWithTransition = IsDlgButtonChecked(IDC_BEGINWITHTRANSITION) == 0 ? false : true;
 	OnOK();
 }
 

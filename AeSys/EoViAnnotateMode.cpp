@@ -72,12 +72,12 @@ void AeSysView::OnAnnotateModeArrow() {
 void AeSysView::OnAnnotateModeBubble() {
 	static CString CurrentText;
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	EoDlgSetText dlg;
-	dlg.m_strTitle = L"Set Bubble Text";
-	dlg.m_sText = CurrentText;
-	if (dlg.DoModal() == IDOK) {
-		CurrentText = dlg.m_sText;
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	EoDlgSetText SetTextDialog;
+	SetTextDialog.title = L"Set Bubble Text";
+	SetTextDialog.text = CurrentText;
+	if (SetTextDialog.DoModal() == IDOK) {
+		CurrentText = SetTextDialog.text;
 	}
 	auto Group {new EoDbGroup};
 	GetDocument()->AddWorkLayerGroup(Group);
@@ -279,11 +279,11 @@ void AeSysView::OnAnnotateModeCutIn() {
 		auto EngagedLine {std::get<1>(Selection)};
 		CurrentPnt = EngagedLine->ProjPt_(CurrentPnt);
 		CString CurrentText;
-		EoDlgSetText dlg;
-		dlg.m_strTitle = L"Set Cut-in Text";
-		dlg.m_sText = CurrentText;
-		if (dlg.DoModal() == IDOK) {
-			CurrentText = dlg.m_sText;
+		EoDlgSetText SetTextDialog;
+		SetTextDialog.title = L"Set Cut-in Text";
+		SetTextDialog.text = CurrentText;
+		if (SetTextDialog.DoModal() == IDOK) {
+			CurrentText = SetTextDialog.text;
 		}
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, Group);
 		const auto PrimitiveState {g_PrimitiveState.Save()};

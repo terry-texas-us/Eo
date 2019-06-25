@@ -139,50 +139,49 @@ EoDlgPageSetup::EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUs
 	m_yMax = L"0.";
 }
 
-EoDlgPageSetup::~EoDlgPageSetup() {
-}
+EoDlgPageSetup::~EoDlgPageSetup() = default;
 
-void EoDlgPageSetup::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PAGESETUP_QUALITY, m_Quality);
-	DDX_Control(pDX, IDC_PAGESETUP_SHADE_PLOT, m_ShadePlot);
-	DDX_Control(pDX, IDC_PAGESETUP_VIEWS, m_Views);
-	DDX_Control(pDX, IDC_COMBO_MM_INCHES, m_MMInches);
-	DDX_Control(pDX, IDC_PAGESETUP_COMBO_PLOTSTYLEFILES, m_PlotStyleFiles);
-	DDX_Control(pDX, IDC_PAGESETUP_DEVICE, m_PlotDeviceName);
-	DDX_Control(pDX, IDC_PAGESETUP_SIZE, m_PaperSize);
-	DDX_Control(pDX, IDC_PAGESETUP_PLOTAREATYPE, m_PlotAreaType);
-	DDX_Check(pDX, IDC_CHECK_CENTERTHEPLOT, m_CenterThePlot);
-	DDX_Check(pDX, IDC_CHECK_FIT_TO_PAPER, m_FitToPaper);
-	DDX_Check(pDX, IDC_CHECK_SCALE_LW, m_ScaleLW);
-	DDX_Check(pDX, IDC_CHECK_UPSIDEDOWN, m_PlotUpsideDown);
-	DDX_Check(pDX, IDC_CHECK_DISPLAY_PLOT_STYLES, m_DisplayPlotStyles);
-	DDX_Text(pDX, IDC_PAGESETUP_OFFSET_X, m_OffsetX);
-	DDX_Text(pDX, IDC_PAGESETUP_OFFSET_Y, m_OffsetY);
-	DDX_Text(pDX, IDC_CANONICAL_MEDIA_NAME, m_CanonicalMediaName);
-	DDX_Text(pDX, IDC_PIO_XX, m_PaperImageOriginX);
-	DDX_Text(pDX, IDC_PIO_YY, m_PaperImageOriginY);
-	DDX_Text(pDX, IDC_PAGESETUP_DPI, m_CustomDPI);
-	DDX_Text(pDX, IDC_MARGINS_L, m_LeftMargin);
-	DDX_Text(pDX, IDC_MARGINS_R, m_RightMargin);
-	DDX_Text(pDX, IDC_MARGINS_T, m_TopMargin);
-	DDX_Text(pDX, IDC_MARGINS_B, m_BottomMargin);
-	//DDX_Text(pDX, IDC_PAGESETUP_PAPER_UNIT_STATIC, m_PaperUnitText);
-	DDX_Text(pDX, IDC_PAGESETUP_DRAWING_UNIT_STATIC, m_DrawingUnitText);
-	DDX_Text(pDX, IDC_PAGESETUP_OFFSET_X_STATIC, m_OffsetXText);
-	DDX_Text(pDX, IDC_PAGESETUP_OFFSET_Y_STATIC, m_OffsetYText);
-	DDX_Text(pDX, IDC_WINDOW_MINX, m_xMin);
-	DDX_Text(pDX, IDC_WINDOW_MINY, m_yMin);
-	DDX_Text(pDX, IDC_WINDOW_MAXX, m_xMax);
-	DDX_Text(pDX, IDC_WINDOW_MAXY, m_yMax);
-	DDX_Radio(pDX, IDC_PAGESETUP_PORTRAIT, m_DrawingOrientation);
-	DDX_Control(pDX, IDC_PAGESETUP_SCALE, m_ScaleValues);
-	DDX_Text(pDX, IDC_PAGESETUP_PAPER_UNIT, m_PaperScaleUnit);
-	DDX_Text(pDX, IDC_PAGESETUP_DRAWING_UNIT, m_DrawingScaleUnit);
-	DDX_Check(pDX, IDC_CHECK_PLOT_OBJECT_LW, m_PlotObjectLW);
-	DDX_Check(pDX, IDC_CHECK_PLOT_WITH_PLOTSTYLES, m_PlotWithPlotStyles);
-	DDX_Check(pDX, IDC_CHECK_PLOT_PAPERSPACE_LAST, m_PlotPaperspaceLast);
-	DDX_Check(pDX, IDC_CHECK_HIDE_PAPERSPACE_OBJECTS, m_HidePaperspaceObjects);
+void EoDlgPageSetup::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_PAGESETUP_QUALITY, m_Quality);
+	DDX_Control(dataExchange, IDC_PAGESETUP_SHADE_PLOT, m_ShadePlot);
+	DDX_Control(dataExchange, IDC_PAGESETUP_VIEWS, m_Views);
+	DDX_Control(dataExchange, IDC_COMBO_MM_INCHES, m_MMInches);
+	DDX_Control(dataExchange, IDC_PAGESETUP_COMBO_PLOTSTYLEFILES, m_PlotStyleFiles);
+	DDX_Control(dataExchange, IDC_PAGESETUP_DEVICE, m_PlotDeviceName);
+	DDX_Control(dataExchange, IDC_PAGESETUP_SIZE, m_PaperSize);
+	DDX_Control(dataExchange, IDC_PAGESETUP_PLOTAREATYPE, m_PlotAreaType);
+	DDX_Check(dataExchange, IDC_CHECK_CENTERTHEPLOT, m_CenterThePlot);
+	DDX_Check(dataExchange, IDC_CHECK_FIT_TO_PAPER, m_FitToPaper);
+	DDX_Check(dataExchange, IDC_CHECK_SCALE_LW, m_ScaleLW);
+	DDX_Check(dataExchange, IDC_CHECK_UPSIDEDOWN, m_PlotUpsideDown);
+	DDX_Check(dataExchange, IDC_CHECK_DISPLAY_PLOT_STYLES, m_DisplayPlotStyles);
+	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_X, m_OffsetX);
+	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_Y, m_OffsetY);
+	DDX_Text(dataExchange, IDC_CANONICAL_MEDIA_NAME, m_CanonicalMediaName);
+	DDX_Text(dataExchange, IDC_PIO_XX, m_PaperImageOriginX);
+	DDX_Text(dataExchange, IDC_PIO_YY, m_PaperImageOriginY);
+	DDX_Text(dataExchange, IDC_PAGESETUP_DPI, m_CustomDPI);
+	DDX_Text(dataExchange, IDC_MARGINS_L, m_LeftMargin);
+	DDX_Text(dataExchange, IDC_MARGINS_R, m_RightMargin);
+	DDX_Text(dataExchange, IDC_MARGINS_T, m_TopMargin);
+	DDX_Text(dataExchange, IDC_MARGINS_B, m_BottomMargin);
+	//DDX_Text(dataExchange, IDC_PAGESETUP_PAPER_UNIT_STATIC, m_PaperUnitText);
+	DDX_Text(dataExchange, IDC_PAGESETUP_DRAWING_UNIT_STATIC, m_DrawingUnitText);
+	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_X_STATIC, m_OffsetXText);
+	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_Y_STATIC, m_OffsetYText);
+	DDX_Text(dataExchange, IDC_WINDOW_MINX, m_xMin);
+	DDX_Text(dataExchange, IDC_WINDOW_MINY, m_yMin);
+	DDX_Text(dataExchange, IDC_WINDOW_MAXX, m_xMax);
+	DDX_Text(dataExchange, IDC_WINDOW_MAXY, m_yMax);
+	DDX_Radio(dataExchange, IDC_PAGESETUP_PORTRAIT, m_DrawingOrientation);
+	DDX_Control(dataExchange, IDC_PAGESETUP_SCALE, m_ScaleValues);
+	DDX_Text(dataExchange, IDC_PAGESETUP_PAPER_UNIT, m_PaperScaleUnit);
+	DDX_Text(dataExchange, IDC_PAGESETUP_DRAWING_UNIT, m_DrawingScaleUnit);
+	DDX_Check(dataExchange, IDC_CHECK_PLOT_OBJECT_LW, m_PlotObjectLW);
+	DDX_Check(dataExchange, IDC_CHECK_PLOT_WITH_PLOTSTYLES, m_PlotWithPlotStyles);
+	DDX_Check(dataExchange, IDC_CHECK_PLOT_PAPERSPACE_LAST, m_PlotPaperspaceLast);
+	DDX_Check(dataExchange, IDC_CHECK_HIDE_PAPERSPACE_OBJECTS, m_HidePaperspaceObjects);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgPageSetup, CDialog)

@@ -713,19 +713,19 @@ void AeSysView::SetDuctOptions(Section& section) {
 	const auto Units {theApp.GetUnits()};
 	theApp.SetUnits(max(Units, AeSys::kInches));
 	EoDlgLowPressureDuctOptions dlg(this);
-	dlg.m_Width = section.Width();
-	dlg.m_Depth = section.Depth();
-	dlg.m_RadiusFactor = m_InsideRadiusFactor;
-	dlg.m_Justification = m_DuctJustification;
-	dlg.m_GenerateVanes = m_GenerateTurningVanes;
-	dlg.m_BeginWithTransition = m_BeginWithTransition;
+	dlg.width = section.Width();
+	dlg.depth = section.Depth();
+	dlg.radiusFactor = m_InsideRadiusFactor;
+	dlg.justification = m_DuctJustification;
+	dlg.generateVanes = m_GenerateTurningVanes;
+	dlg.beginWithTransition = m_BeginWithTransition;
 	if (dlg.DoModal() == IDOK) {
-		section.SetWidth(dlg.m_Width);
-		section.SetDepth(dlg.m_Depth);
-		m_InsideRadiusFactor = dlg.m_RadiusFactor;
-		m_DuctJustification = EJust(dlg.m_Justification);
-		m_GenerateTurningVanes = dlg.m_GenerateVanes;
-		m_BeginWithTransition = dlg.m_BeginWithTransition;
+		section.SetWidth(dlg.width);
+		section.SetDepth(dlg.depth);
+		m_InsideRadiusFactor = dlg.radiusFactor;
+		m_DuctJustification = EJust(dlg.justification);
+		m_GenerateTurningVanes = dlg.generateVanes;
+		m_BeginWithTransition = dlg.beginWithTransition;
 	}
 	theApp.SetUnits(Units);
 }

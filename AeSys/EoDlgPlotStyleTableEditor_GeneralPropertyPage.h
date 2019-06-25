@@ -19,7 +19,7 @@ DECLARE_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage)
 	CStatic m_staticBitmap;
 	CStatic m_staticRegular;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 public:

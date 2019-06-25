@@ -9,17 +9,16 @@ IMPLEMENT_DYNAMIC(EoDlgEditProperties, CDialog)
 EoDlgEditProperties::EoDlgEditProperties(OdDbObjectId& id, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_pObjectId(id)
-	, m_nCurItem(-1) {
+	, m_CurrentItem(-1) {
 }
 
-EoDlgEditProperties::~EoDlgEditProperties() {
-}
+EoDlgEditProperties::~EoDlgEditProperties() = default;
 
-void EoDlgEditProperties::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_BUTTON1, m_doset);
-	DDX_Control(pDX, IDC_PROPLIST, m_propList);
-	DDX_Text(pDX, IDC_VALUE, m_sValue);
+void EoDlgEditProperties::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_BUTTON1, m_doset);
+	DDX_Control(dataExchange, IDC_PROPLIST, m_propList);
+	DDX_Text(dataExchange, IDC_VALUE, m_sValue);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgEditProperties, CDialog)
@@ -95,10 +94,10 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 
 void EoDlgEditProperties::OnButton() {
 	UpdateData();
-	if (m_nCurItem == -1) { return; }
+	if (m_CurrentItem == -1) { return; }
 	auto ResourceBuffer {m_ResourceBuffer};
 	auto i {0};
-	while (!ResourceBuffer.isNull() && i < m_nCurItem) {
+	while (!ResourceBuffer.isNull() && i < m_CurrentItem) {
 		++i;
 		ResourceBuffer = ResourceBuffer->next();
 	}
@@ -143,7 +142,7 @@ void EoDlgEditProperties::OnButton() {
 					break;
 			}
 	}
-	m_propList.SetItemText(m_nCurItem, 1, m_sValue);
+	m_propList.SetItemText(m_CurrentItem, 1, m_sValue);
 	try {
 		oddbEntMod(m_pObjectId, m_ResourceBuffer);
 	} catch (const OdError& Error) {
@@ -157,10 +156,10 @@ void EoDlgEditProperties::OnClickProplist(NMHDR* notifyStructure, LRESULT* resul
 }
 
 void EoDlgEditProperties::OnSetfocusValue() {
-	m_nCurItem = m_propList.GetSelectionMark();
-	m_doset.EnableWindow(m_nCurItem != -1);
-	if (m_nCurItem != -1) {
-		m_sValue = m_propList.GetItemText(m_nCurItem, 1);
+	m_CurrentItem = m_propList.GetSelectionMark();
+	m_doset.EnableWindow(m_CurrentItem != -1);
+	if (m_CurrentItem != -1) {
+		m_sValue = m_propList.GetItemText(m_CurrentItem, 1);
 		UpdateData(FALSE);
 	}
 }

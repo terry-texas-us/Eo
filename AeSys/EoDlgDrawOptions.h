@@ -1,16 +1,14 @@
 #pragma once
 
-// EoDlgDrawOptions dialog
-class EoDlgDrawOptions : public CDialog {
+class EoDlgDrawOptions final : public CDialog {
 DECLARE_DYNAMIC(EoDlgDrawOptions)
 	EoDlgDrawOptions(CWnd* parent = nullptr);
 	~EoDlgDrawOptions();
 
-	// Dialog Data
 	enum { IDD = IDD_DRAW_OPTIONS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 public:

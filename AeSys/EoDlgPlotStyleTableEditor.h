@@ -5,11 +5,11 @@ class OdPsPlotStyleTable;
 
 class EoDlgPlotStyleManager final : public CPropertySheet {
 DECLARE_DYNCREATE(EoDlgPlotStyleManager)
-	OdPsPlotStyleTable* m_pPlotStyleTable;
-	OdPsPlotStyleTablePtr m_pPsTabForPropertyPg;
+	OdPsPlotStyleTable* plotStyleTable {nullptr};
+	OdPsPlotStyleTablePtr plotStyleTableForPropertyPage;
 	EoDlgPlotStyleManager(CWnd* parent = nullptr);
-	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable);
-	void SetFileBufPath(OdString sFilePath);
+	bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable);
+	void SetFileBufPath(const OdString& filePath);
 	[[nodiscard]] OdPsPlotStyleTablePtr GetPlotStyleTable() const;
 
 	// Attributes

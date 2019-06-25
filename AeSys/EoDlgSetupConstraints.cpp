@@ -3,15 +3,13 @@
 #include "AeSysView.h"
 #include "EoDlgSetupConstraints.h"
 
-// EoDlgSetContraints dialog
 IMPLEMENT_DYNAMIC(EoDlgSetupConstraints, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupConstraints, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_ActiveView(nullptr) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent)
@@ -19,25 +17,24 @@ EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent)
 	, m_ActiveView(view) {
 }
 
-EoDlgSetupConstraints::~EoDlgSetupConstraints() {
-}
+EoDlgSetupConstraints::~EoDlgSetupConstraints() = default;
 
-void EoDlgSetupConstraints::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_USR_GRID_X_INT, m_GridXSnapSpacing);
-	DDX_Control(pDX, IDC_USR_GRID_Y_INT, m_GridYSnapSpacing);
-	DDX_Control(pDX, IDC_USR_GRID_Z_INT, m_GridZSnapSpacing);
-	DDX_Control(pDX, IDC_GRID_DOT_INT_X, m_GridXPointSpacing);
-	DDX_Control(pDX, IDC_GRID_DOT_INT_Y, m_GridYPointSpacing);
-	DDX_Control(pDX, IDC_GRID_DOT_INT_Z, m_GridZPointSpacing);
-	DDX_Control(pDX, IDC_GRID_LN_INT_X, m_GridXLineSpacing);
-	DDX_Control(pDX, IDC_GRID_LN_INT_Y, m_GridYLineSpacing);
-	DDX_Control(pDX, IDC_GRID_LN_INT_Z, m_GridZLineSpacing);
-	DDX_Control(pDX, IDC_GRID_SNAP_ON, m_GridSnapEnableButton);
-	DDX_Control(pDX, IDC_GRID_PTS_DIS_ON, m_GridDisplayButton);
-	DDX_Control(pDX, IDC_GRID_LNS_DIS_ON, m_GridLineDisplayButton);
-	DDX_Control(pDX, IDC_USR_AX_INF_ANG, m_AxisInfluenceAngle);
-	DDX_Control(pDX, IDC_USR_AX_Z_OFF_ANG, m_AxisZOffsetAngle);
+void EoDlgSetupConstraints::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_USR_GRID_X_INT, m_GridXSnapSpacing);
+	DDX_Control(dataExchange, IDC_USR_GRID_Y_INT, m_GridYSnapSpacing);
+	DDX_Control(dataExchange, IDC_USR_GRID_Z_INT, m_GridZSnapSpacing);
+	DDX_Control(dataExchange, IDC_GRID_DOT_INT_X, m_GridXPointSpacing);
+	DDX_Control(dataExchange, IDC_GRID_DOT_INT_Y, m_GridYPointSpacing);
+	DDX_Control(dataExchange, IDC_GRID_DOT_INT_Z, m_GridZPointSpacing);
+	DDX_Control(dataExchange, IDC_GRID_LN_INT_X, m_GridXLineSpacing);
+	DDX_Control(dataExchange, IDC_GRID_LN_INT_Y, m_GridYLineSpacing);
+	DDX_Control(dataExchange, IDC_GRID_LN_INT_Z, m_GridZLineSpacing);
+	DDX_Control(dataExchange, IDC_GRID_SNAP_ON, m_GridSnapEnableButton);
+	DDX_Control(dataExchange, IDC_GRID_PTS_DIS_ON, m_GridDisplayButton);
+	DDX_Control(dataExchange, IDC_GRID_LNS_DIS_ON, m_GridLineDisplayButton);
+	DDX_Control(dataExchange, IDC_USR_AX_INF_ANG, m_AxisInfluenceAngle);
+	DDX_Control(dataExchange, IDC_USR_AX_Z_OFF_ANG, m_AxisZOffsetAngle);
 }
 
 BOOL EoDlgSetupConstraints::OnInitDialog() {

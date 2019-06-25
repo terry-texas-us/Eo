@@ -140,7 +140,7 @@ public:
 	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; }
 };
 
-class EoDlgPlotStyleEditor_FormViewPropertyPage : public CPropertyPage {
+class EoDlgPlotStyleEditor_FormViewPropertyPage final : public CPropertyPage {
 DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
 	void mtHideHelpBtn();
 	CImageList m_imageList;
@@ -176,7 +176,7 @@ DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
 	CButton m_LineweightButton;
 	CButton m_SaveButton;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void initBitmapList();
 	void initAdaptiveComboBox();

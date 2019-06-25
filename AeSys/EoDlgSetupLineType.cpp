@@ -13,12 +13,11 @@ BEGIN_MESSAGE_MAP(EoDlgSetupLinetype, CDialog)
 		ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
 
-EoDlgSetupLinetype::~EoDlgSetupLinetype() {
-}
+EoDlgSetupLinetype::~EoDlgSetupLinetype() = default;
 
-void EoDlgSetupLinetype::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LINETYPES_LIST_CONTROL, m_LinetypesListControl);
+void EoDlgSetupLinetype::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_LINETYPES_LIST_CONTROL, m_LinetypesListControl);
 }
 
 EoDlgSetupLinetype::EoDlgSetupLinetype(CWnd* parent)
@@ -31,12 +30,12 @@ EoDlgSetupLinetype::EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd*
 }
 
 void EoDlgSetupLinetype::OnBnClickedByblockButton() {
-	m_Linetype = m_LinetypeTable->getLinetypeByBlockId().safeOpenObject(OdDb::kForRead);
+	linetype = m_LinetypeTable->getLinetypeByBlockId().safeOpenObject(OdDb::kForRead);
 	CDialog::OnOK();
 }
 
 void EoDlgSetupLinetype::OnBnClickedBylayerButton() {
-	m_Linetype = m_LinetypeTable->getLinetypeByLayerId().safeOpenObject(OdDb::kForRead);
+	linetype = m_LinetypeTable->getLinetypeByLayerId().safeOpenObject(OdDb::kForRead);
 	CDialog::OnOK();
 }
 
@@ -126,12 +125,12 @@ BOOL EoDlgSetupLinetype::OnInitDialog() {
 }
 
 void EoDlgSetupLinetype::OnOK() {
-	m_Linetype = m_Linetype = m_LinetypeTable->getAt(L"Continuous").safeOpenObject(OdDb::kForRead);
+	linetype = linetype = m_LinetypeTable->getAt(L"Continuous").safeOpenObject(OdDb::kForRead);
 	auto Position {m_LinetypesListControl.GetFirstSelectedItemPosition()};
 	if (Position != nullptr) {
 		const auto Item {m_LinetypesListControl.GetNextSelectedItem(Position)};
 		const OdDbObjectId ItemData {reinterpret_cast<OdDbStub*>(static_cast<unsigned long>(m_LinetypesListControl.GetItemData(Item)))};
-		m_Linetype = ItemData.safeOpenObject(OdDb::kForRead);
+		linetype = ItemData.safeOpenObject(OdDb::kForRead);
 	}
 	CDialog::OnOK();
 }

@@ -1,7 +1,6 @@
 #pragma once
 
-// EoDlgSelectIsometricView dialog
-class EoDlgSelectIsometricView : public CDialog {
+class EoDlgSelectIsometricView final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSelectIsometricView)
 	EoDlgSelectIsometricView(CWnd* parent = nullptr);
 	virtual ~EoDlgSelectIsometricView();
@@ -10,7 +9,7 @@ DECLARE_DYNAMIC(EoDlgSelectIsometricView)
 	enum { IDD = IDD_SELECT_ISOMETRIC_VIEW };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 public:
 	int m_LeftRight;

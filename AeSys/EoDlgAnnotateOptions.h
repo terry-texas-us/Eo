@@ -1,17 +1,15 @@
 #pragma once
 
-// EoDlgAnnotateOptions dialog
 class EoDlgAnnotateOptions : public CDialog {
 DECLARE_DYNAMIC(EoDlgAnnotateOptions)
 	EoDlgAnnotateOptions(CWnd* parent = nullptr);
 	EoDlgAnnotateOptions(AeSysView* view, CWnd* parent = nullptr);
 	~EoDlgAnnotateOptions() = default;
 
-	// Dialog Data
 	enum { IDD = IDD_ANNOTATE_OPTIONS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	AeSysView* m_ActiveView {nullptr};

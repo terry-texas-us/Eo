@@ -1,24 +1,21 @@
 #include "stdafx.h"
 #include "EoDlgViewZoom.h"
 
-// EoDlgViewZoom dialog
 IMPLEMENT_DYNAMIC(EoDlgViewZoom, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgViewZoom, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgViewZoom::EoDlgViewZoom(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_ZoomFactor(1.0) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgViewZoom::~EoDlgViewZoom() {
-}
+EoDlgViewZoom::~EoDlgViewZoom() = default;
 
-void EoDlgViewZoom::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_RATIO, m_ZoomFactor);
-	DDV_MinMaxDouble(pDX, m_ZoomFactor, 0.001, 999.);
+void EoDlgViewZoom::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Text(dataExchange, IDC_RATIO, m_ZoomFactor);
+	DDV_MinMaxDouble(dataExchange, m_ZoomFactor, 0.001, 999.);
 }
 
 BOOL EoDlgViewZoom::OnInitDialog() {
@@ -32,4 +29,3 @@ BOOL EoDlgViewZoom::OnInitDialog() {
 	CDialog::OnInitDialog();
 	return TRUE;
 }
-// EoDlgViewZoom message handlers

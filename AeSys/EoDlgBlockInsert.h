@@ -1,17 +1,15 @@
 #pragma once
 
-// EoDlgBlockInsert dialog
 class EoDlgBlockInsert : public CDialog {
 DECLARE_DYNAMIC(EoDlgBlockInsert)
 	EoDlgBlockInsert(CWnd* parent = nullptr);
 	EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = nullptr);
 	~EoDlgBlockInsert();
 
-	// Dialog Data
 	enum { IDD = IDD_INSERT_BLOCK };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) override;
+	void DoDataExchange(CDataExchange* dataExchange) override;
 	BOOL OnInitDialog() override;
 	void OnOK() override;
 	static OdGePoint3d InsertionPoint;

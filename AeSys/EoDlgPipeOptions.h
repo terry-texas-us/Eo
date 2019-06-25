@@ -1,21 +1,19 @@
 #pragma once
 
-// EoDlgPipeOptions dialog
-class EoDlgPipeOptions : public CDialog {
+class EoDlgPipeOptions final : public CDialog {
 DECLARE_DYNAMIC(EoDlgPipeOptions)
 	EoDlgPipeOptions(CWnd* parent = nullptr);
 	virtual ~EoDlgPipeOptions();
 
-	// Dialog Data
 	enum { IDD = IDD_PIPE_OPTIONS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 public:
-	double m_PipeTicSize;
-	double m_PipeRiseDropRadius;
+	double pipeTicSize {0.0};
+	double pipeRiseDropRadius {0.0};
 protected:
 DECLARE_MESSAGE_MAP()
 };

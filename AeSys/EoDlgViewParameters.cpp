@@ -3,7 +3,6 @@
 #include "AeSysView.h"
 #include "EoDlgViewParameters.h"
 
-// EoDlgViewParameters dialog
 IMPLEMENT_DYNAMIC(EoDlgViewParameters, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgViewParameters, CDialog)
@@ -21,17 +20,14 @@ BEGIN_MESSAGE_MAP(EoDlgViewParameters, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgViewParameters::EoDlgViewParameters(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_PerspectiveProjection(FALSE)
-	, m_ModelView(0) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgViewParameters::~EoDlgViewParameters() {
-}
+EoDlgViewParameters::~EoDlgViewParameters() = default;
 
-void EoDlgViewParameters::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Check(pDX, IDC_PERSPECTIVE_PROJECTION, m_PerspectiveProjection);
+void EoDlgViewParameters::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Check(dataExchange, IDC_PERSPECTIVE_PROJECTION, perspectiveProjection);
 }
 
 // EoDlgViewParameters message handlers
@@ -39,7 +35,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	auto ActiveView {AeSysView::GetActiveView()};
 	EoGsViewport Viewport;
 	ActiveView->ModelViewGetViewport(Viewport);
-	auto ModelView {reinterpret_cast<EoGsViewTransform*>(m_ModelView)};
+	auto ModelView {reinterpret_cast<EoGsViewTransform*>(modelView)};
 	wchar_t String[32];
 	OdGePoint3d Position;
 	GetDlgItemTextW(IDC_POSITION_X, String, 32);
@@ -73,7 +69,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 	ModelView->SetLensLength(LensLength);
 	ModelView->SetNearClipDistance(NearClipDistance);
 	ModelView->SetFarClipDistance(FarClipDistance);
-	ModelView->EnablePerspective(m_PerspectiveProjection == TRUE);
+	ModelView->EnablePerspective(perspectiveProjection == TRUE);
 	const auto AspectRatio {Viewport.HeightInInches() / Viewport.WidthInInches()};
 	auto FieldWidth {ModelView->FieldWidth()};
 	auto FieldHeight {ModelView->FieldHeight()};
@@ -91,7 +87,7 @@ void EoDlgViewParameters::OnBnClickedApply() {
 
 BOOL EoDlgViewParameters::OnInitDialog() {
 	CDialog::OnInitDialog();
-	const EoGsViewTransform* ModelView = reinterpret_cast<EoGsViewTransform*>(m_ModelView);
+	const EoGsViewTransform* ModelView = reinterpret_cast<EoGsViewTransform*>(modelView);
 	const auto Units {max(theApp.GetUnits(), AeSys::kEngineering)};
 	SetDlgItemTextW(IDC_POSITION_X, theApp.FormatLength(ModelView->Position().x, Units));
 	SetDlgItemTextW(IDC_POSITION_Y, theApp.FormatLength(ModelView->Position().y, Units));

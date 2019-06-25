@@ -35,10 +35,10 @@ void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 	}
 }
 
-void EoLoadApps::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_UNLOAD_APP, m_UnloadButton);
-	DDX_Control(pDX, IDC_APPS_LIST, m_AppsList);
+void EoLoadApps::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_UNLOAD_APP, m_UnloadButton);
+	DDX_Control(dataExchange, IDC_APPS_LIST, m_AppsList);
 }
 
 BEGIN_MESSAGE_MAP(EoLoadApps, CDialog)

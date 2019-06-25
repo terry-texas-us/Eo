@@ -6,11 +6,11 @@
 #include "EoDlgSetLength.h"
 
 void AeSysView::OnDraw2ModeOptions() {
-	EoDlgSetLength dlg;
-	dlg.m_Title = L"Set Distance Between Lines";
-	dlg.m_Length = m_DistanceBetweenLines;
-	if (dlg.DoModal() == IDOK) {
-		m_DistanceBetweenLines = dlg.m_Length;
+	EoDlgSetLength SetLengthDialog;
+	SetLengthDialog.title = L"Set Distance Between Lines";
+	SetLengthDialog.length = m_DistanceBetweenLines;
+	if (SetLengthDialog.DoModal() == IDOK) {
+		m_DistanceBetweenLines = SetLengthDialog.length;
 	}
 }
 

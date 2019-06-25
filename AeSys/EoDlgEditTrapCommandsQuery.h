@@ -1,16 +1,14 @@
 #pragma once
 
-// EoDlgEditTrapCommandsQuery dialog
-class EoDlgEditTrapCommandsQuery : public CDialog {
+class EoDlgEditTrapCommandsQuery final : public CDialog {
 DECLARE_DYNAMIC(EoDlgEditTrapCommandsQuery)
 	EoDlgEditTrapCommandsQuery(CWnd* parent = nullptr);
 	virtual ~EoDlgEditTrapCommandsQuery();
 
-	// Dialog Data
 	enum { IDD = IDD_EDIT_TRAPCOMMANDS_QUERY };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	CTreeCtrl m_GroupTreeViewControl;
 	CListCtrl m_GeometryListViewControl;

@@ -283,32 +283,31 @@ EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewProperty
 	m_bEditChanging = false;
 }
 
-EoDlgPlotStyleEditor_FormViewPropertyPage::~EoDlgPlotStyleEditor_FormViewPropertyPage() {
-}
+EoDlgPlotStyleEditor_FormViewPropertyPage::~EoDlgPlotStyleEditor_FormViewPropertyPage() = default;
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* pDX) {
-	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_DITHER, m_Dither);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_GRAYSCALE, m_Grayscale);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_ADAPTIVE, m_Adaptive);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_LINETYPE, m_Linetype);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_LINEWEIGHT, m_Lineweight);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_LINEENDSTYLE, m_Lineendstyle);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_LINEJOINSTYLE, m_Linejoinstyle);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_FILLSTYLE, m_Fillstyle);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_COMBO_COLOR, m_Color);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_EDIT_DESCRIPTION, m_editDescription);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_SPIN_PEN, m_spinPen);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_EDIT_PEN, m_editPen);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_SPIN_VIRTPEN, m_spinVirtpen);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_EDIT_VIRTPEN, m_editVirtpen);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_SPIN_SCREENING, m_spinScreening);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_EDIT_SCREENING, m_editScreening);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_LIST_STYLES, m_listStyles);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_ADDSTYLE, m_AddstyleButton);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_DELSTYLE, m_DelstyleButton);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_LINEWEIGHT, m_LineweightButton);
-	DDX_Control(pDX, IDC_PS_FORMVIEW_BTN_SAVE, m_SaveButton);
+void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* dataExchange) {
+	CPropertyPage::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_DITHER, m_Dither);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_GRAYSCALE, m_Grayscale);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_ADAPTIVE, m_Adaptive);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_LINETYPE, m_Linetype);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_LINEWEIGHT, m_Lineweight);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_LINEENDSTYLE, m_Lineendstyle);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_LINEJOINSTYLE, m_Linejoinstyle);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_FILLSTYLE, m_Fillstyle);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_COMBO_COLOR, m_Color);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_EDIT_DESCRIPTION, m_editDescription);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_SPIN_PEN, m_spinPen);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_EDIT_PEN, m_editPen);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_SPIN_VIRTPEN, m_spinVirtpen);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_EDIT_VIRTPEN, m_editVirtpen);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_SPIN_SCREENING, m_spinScreening);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_EDIT_SCREENING, m_editScreening);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_LIST_STYLES, m_listStyles);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_BTN_ADDSTYLE, m_AddstyleButton);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_BTN_DELSTYLE, m_DelstyleButton);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_BTN_LINEWEIGHT, m_LineweightButton);
+	DDX_Control(dataExchange, IDC_PS_FORMVIEW_BTN_SAVE, m_SaveButton);
 	m_spinPen.SetBuddy(&m_editPen);
 	m_spinPen.SetRange(0, PS_SPIN_MAX_PEN);
 	m_spinVirtpen.SetBuddy(&m_editVirtpen);

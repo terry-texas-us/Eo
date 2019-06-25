@@ -13,15 +13,14 @@
 #include "EoDlgSetupLinetype.h"
 #include "Preview.h"
 
-/// EoDlgFileManage dialog
 IMPLEMENT_DYNAMIC(EoDlgFileManage, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 		ON_WM_DRAWITEM()
 		ON_BN_CLICKED(IDC_FUSE, &EoDlgFileManage::OnBnClickedFuse)
 		ON_BN_CLICKED(IDC_MELT, &EoDlgFileManage::OnBnClickedMelt)
-		ON_BN_CLICKED(IDC_NEWLAYER, &EoDlgFileManage::OnBnClickedNewlayer)
-		ON_BN_CLICKED(IDC_SETCURRENT, &EoDlgFileManage::OnBnClickedSetcurrent)
+		ON_BN_CLICKED(IDC_NEWLAYER, &EoDlgFileManage::OnBnClickedNewLayer)
+		ON_BN_CLICKED(IDC_SETCURRENT, &EoDlgFileManage::OnBnClickedSetCurrent)
 		ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgFileManage::OnLbnSelchangeBlocksList)
 		ON_NOTIFY(NM_CLICK, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnNMClickLayersListControl)
 		ON_NOTIFY(NM_DBLCLK, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnNMDblclkLayersListControl)
@@ -50,22 +49,21 @@ EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, C
 	, m_PreviewWindowHandle(nullptr) {
 }
 
-EoDlgFileManage::~EoDlgFileManage() {
+EoDlgFileManage::~EoDlgFileManage() = default;
+
+void EoDlgFileManage::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_LAYERS_LIST_CONTROL, m_LayersList);
+	DDX_Control(dataExchange, IDC_BLOCKS_LIST, m_BlocksList);
+	DDX_Control(dataExchange, IDC_GROUPS, m_Groups);
 }
 
-void EoDlgFileManage::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LAYERS_LIST_CONTROL, m_LayersList);
-	DDX_Control(pDX, IDC_BLOCKS_LIST, m_BlocksList);
-	DDX_Control(pDX, IDC_GROUPS, m_Groups);
-}
-
-void EoDlgFileManage::DrawItem(CDC& deviceContext, const int itemID, const int labelIndex, const RECT& itemRectangle) {
-	const EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(itemID))};
+void EoDlgFileManage::DrawItem(CDC& deviceContext, const int itemId, const int labelIndex, const RECT& itemRectangle) {
+	const EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(itemId))};
 	auto LayerTableRecord {Layer->TableRecord()};
 	OdString ItemName;
 	switch (labelIndex) {
-		case Status:
+		case kStatus:
 			if (Layer->IsCurrent()) {
 				m_StateImages.Draw(&deviceContext, 8, ((CRect&)itemRectangle).TopLeft(), ILD_TRANSPARENT);
 			} else if (LayerTableRecord->isInUse()) {
@@ -74,37 +72,37 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, const int itemID, const int l
 				m_StateImages.Draw(&deviceContext, 10, ((CRect&)itemRectangle).TopLeft(), ILD_TRANSPARENT);
 			}
 			break;
-		case Name:
+		case kName:
 			ItemName = Layer->Name();
 			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			break;
-		case On:
+		case kOn:
 			m_StateImages.Draw(&deviceContext, Layer->IsOff() ? 3 : 2, ((CRect&)itemRectangle).TopLeft(), ILD_TRANSPARENT);
 			break;
-		case Freeze:
+		case kFreeze:
 			m_StateImages.Draw(&deviceContext, LayerTableRecord->isFrozen() ? 4 : 5, ((CRect&)itemRectangle).TopLeft(), ILD_TRANSPARENT);
 			break;
-		case Lock:
+		case kLock:
 			m_StateImages.Draw(&deviceContext, LayerTableRecord->isLocked() ? 0 : 1, ((CRect&)itemRectangle).TopLeft(), ILD_TRANSPARENT);
 			break;
-		case Color:
+		case kColor:
 			CMainFrame::DrawColorBox(deviceContext, itemRectangle, LayerTableRecord->color());
 			break;
-		case Linetype:
+		case kLinetype:
 			ItemName = OdDbSymUtil::getSymbolName(LayerTableRecord->linetypeObjectId());
 			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			break;
-		case Lineweight:
+		case kLineweight:
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight());
 			break;
-		case PlotStyle:
+		case kPlotStyle:
 			ItemName = LayerTableRecord->plotStyleName();
 			CMainFrame::DrawPlotStyle(deviceContext, itemRectangle, ItemName, m_Database);
 			break;
-		case Plot:
+		case kPlot:
 			m_StateImages.Draw(&deviceContext, LayerTableRecord->isPlottable() ? 6 : 7, ((CRect&)itemRectangle).TopLeft(), ILD_TRANSPARENT);
 			break;
-		case VpFreeze:
+		case kVpFreeze:
 			if (labelIndex != m_Description) {
 				auto Viewport {OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject())};
 				if (Viewport.get()) {
@@ -115,20 +113,21 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, const int itemID, const int l
 				deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			}
 			break;
-		case VpColor:
+		case kVpColor:
 			CMainFrame::DrawColorBox(deviceContext, itemRectangle, LayerTableRecord->color(m_ActiveViewport));
 			break;
-		case VpLinetype:
+		case kVpLinetype:
 			ItemName = OdDbSymUtil::getSymbolName(LayerTableRecord->linetypeObjectId(m_ActiveViewport));
 			deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, ItemName, static_cast<unsigned>(ItemName.getLength()), nullptr);
 			break;
-		case VpLineweight:
+		case kVpLineweight:
 			CMainFrame::DrawLineWeight(deviceContext, itemRectangle, LayerTableRecord->lineWeight(m_ActiveViewport));
 			break;
-		case VpPlotStyle:
+		case kVpPlotStyle:
 			ItemName = LayerTableRecord->plotStyleName(m_ActiveViewport);
 			CMainFrame::DrawPlotStyle(deviceContext, itemRectangle, ItemName, m_Database);
 			break;
+		default: ;
 	}
 }
 
@@ -163,7 +162,7 @@ void EoDlgFileManage::OnBnClickedMelt() {
 	}
 }
 
-void EoDlgFileManage::OnBnClickedNewlayer() {
+void EoDlgFileManage::OnBnClickedNewLayer() {
 	auto Layers {m_Document->LayerTable(OdDb::kForWrite)};
 	OdString Name;
 	auto Suffix {1};
@@ -179,7 +178,7 @@ void EoDlgFileManage::OnBnClickedNewlayer() {
 	m_LayersList.SetItemData(ItemCount, DWORD_PTR(m_Document->GetLayerAt(Name)));
 }
 
-void EoDlgFileManage::OnBnClickedSetcurrent() {
+void EoDlgFileManage::OnBnClickedSetCurrent() {
 	const auto SelectionMark {m_LayersList.GetSelectionMark()};
 	if (SelectionMark > -1) {
 		const auto Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark))};
@@ -244,23 +243,23 @@ BOOL EoDlgFileManage::OnInitDialog() {
 	SetWindowTextW(CaptionText + L" - " + m_Document->GetPathName());
 	m_PreviewWindowHandle = GetDlgItem(IDC_LAYER_PREVIEW)->GetSafeHwnd();
 	m_LayersList.DeleteAllItems();
-	m_LayersList.InsertColumn(Status, L"Status", LVCFMT_LEFT, 32);
-	m_LayersList.InsertColumn(Name, L"Name", LVCFMT_LEFT, 96);
-	m_LayersList.InsertColumn(On, L"On", LVCFMT_LEFT, 32);
-	m_LayersList.InsertColumn(Freeze, L"Freeze in all VP", LVCFMT_LEFT, 32);
-	m_LayersList.InsertColumn(Lock, L"Lock", LVCFMT_LEFT, 32);
-	m_LayersList.InsertColumn(Color, L"Color", LVCFMT_LEFT, 96);
-	m_LayersList.InsertColumn(Linetype, L"Linetype", LVCFMT_LEFT, 96);
-	m_LayersList.InsertColumn(Lineweight, L"Lineweight", LVCFMT_LEFT, 96);
-	m_LayersList.InsertColumn(PlotStyle, L"Plot Style", LVCFMT_LEFT, 64);
-	m_NumberOfColumns = m_LayersList.InsertColumn(Plot, L"Plot", LVCFMT_LEFT, 32);
+	m_LayersList.InsertColumn(kStatus, L"Status", LVCFMT_LEFT, 32);
+	m_LayersList.InsertColumn(kName, L"Name", LVCFMT_LEFT, 96);
+	m_LayersList.InsertColumn(kOn, L"On", LVCFMT_LEFT, 32);
+	m_LayersList.InsertColumn(kFreeze, L"Freeze in all VP", LVCFMT_LEFT, 32);
+	m_LayersList.InsertColumn(kLock, L"Lock", LVCFMT_LEFT, 32);
+	m_LayersList.InsertColumn(kColor, L"Color", LVCFMT_LEFT, 96);
+	m_LayersList.InsertColumn(kLinetype, L"Linetype", LVCFMT_LEFT, 96);
+	m_LayersList.InsertColumn(kLineweight, L"Lineweight", LVCFMT_LEFT, 96);
+	m_LayersList.InsertColumn(kPlotStyle, L"Plot Style", LVCFMT_LEFT, 64);
+	m_NumberOfColumns = m_LayersList.InsertColumn(kPlot, L"Plot", LVCFMT_LEFT, 32);
 	if (!m_Database->getTILEMODE()) { // Layout (not Model) tab is active
 		m_ActiveViewport = m_Database->activeViewportId();
-		m_LayersList.InsertColumn(VpFreeze, L"VP Freeze", LVCFMT_LEFT, 32);
-		m_LayersList.InsertColumn(VpColor, L"VP Color", LVCFMT_LEFT, 96);
-		m_LayersList.InsertColumn(VpLinetype, L"VP Linetype", LVCFMT_LEFT, 96);
-		m_LayersList.InsertColumn(VpLineweight, L"VP Lineweight", LVCFMT_LEFT, 96);
-		m_NumberOfColumns = m_LayersList.InsertColumn(VpPlotStyle, L"Plot Style", LVCFMT_LEFT, 64);
+		m_LayersList.InsertColumn(kVpFreeze, L"VP Freeze", LVCFMT_LEFT, 32);
+		m_LayersList.InsertColumn(kVpColor, L"VP Color", LVCFMT_LEFT, 96);
+		m_LayersList.InsertColumn(kVpLinetype, L"VP Linetype", LVCFMT_LEFT, 96);
+		m_LayersList.InsertColumn(kVpLineweight, L"VP Lineweight", LVCFMT_LEFT, 96);
+		m_NumberOfColumns = m_LayersList.InsertColumn(kVpPlotStyle, L"Plot Style", LVCFMT_LEFT, 64);
 	}
 	m_Description = m_LayersList.InsertColumn(++m_NumberOfColumns, L"Description", LVCFMT_LEFT, 96);
 	m_NumberOfColumns++;
@@ -322,65 +321,65 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 	const auto pNMItemActivate {reinterpret_cast<tagNMITEMACTIVATE*>(notifyStructure)};
 	const auto Item {pNMItemActivate->iItem};
 	const auto SubItem {pNMItemActivate->iSubItem};
-	EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item))};
+	auto Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item))};
 	auto LayerTableRecord {Layer->TableRecord()};
 	m_ClickToColumnStatus = false;
 	switch (SubItem) {
-		case Status:
+		case kStatus:
 			m_ClickToColumnStatus = true;
 			break;
-		case Name:
+		case kName:
 			break;
-		case On:
+		case kOn:
 			if (Layer->IsCurrent()) {
 				AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, LayerTableRecord->getName());
 			} else {
 				Layer->SetIsOff(!Layer->IsOff());
 			}
 			break;
-		case Freeze:
+		case kFreeze:
 			Layer->SetIsFrozen(!LayerTableRecord->isFrozen());
 			break;
-		case Lock:
+		case kLock:
 			if (Layer->IsCurrent()) {
 				AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_STATIC, LayerTableRecord->getName());
 			} else {
 				Layer->SetIsLocked(!Layer->IsLocked());
 			}
 			break;
-		case Color: {
-			EoDlgSetupColor Dialog;
-			Dialog.m_ColorIndex = static_cast<unsigned short>(LayerTableRecord->colorIndex());
-			if (Dialog.DoModal() == IDOK) {
-				Layer->SetColorIndex(static_cast<short>(Dialog.m_ColorIndex));
+		case kColor: {
+			EoDlgSetupColor SetupColorDialog;
+			SetupColorDialog.colorIndex = static_cast<unsigned short>(LayerTableRecord->colorIndex());
+			if (SetupColorDialog.DoModal() == IDOK) {
+				Layer->SetColorIndex(static_cast<short>(SetupColorDialog.colorIndex));
 			}
 			break;
 		}
-		case Linetype: {
+		case kLinetype: {
 			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject();
 			EoDlgSetupLinetype Dialog(Linetypes);
 			if (Dialog.DoModal() == IDOK) {
-				Layer->SetLinetype(Dialog.m_Linetype->objectId());
+				Layer->SetLinetype(Dialog.linetype->objectId());
 			}
 			break;
 		}
-		case Lineweight: {
+		case kLineweight: {
 			EoDlgLineWeight Dialog(LayerTableRecord->lineWeight());
 			if (Dialog.DoModal() == IDOK) {
 				LayerTableRecord->upgradeOpen();
-				LayerTableRecord->setLineWeight(Dialog.m_LineWeight);
+				LayerTableRecord->setLineWeight(Dialog.lineWeight);
 				LayerTableRecord->downgradeOpen();
 			}
 			break;
 		}
-		case PlotStyle:
+		case kPlotStyle:
 			break;
-		case Plot:
+		case kPlot:
 			LayerTableRecord->upgradeOpen();
 			LayerTableRecord->setIsPlottable(!LayerTableRecord->isPlottable());
 			LayerTableRecord->downgradeOpen();
 			break;
-		case VpFreeze: case Descr:
+		case kVpFreeze: case kDescr:
 			if (SubItem != m_Description) {
 				auto pVp {OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject(OdDb::kForWrite))};
 				//			if (pVp.get()) {
@@ -396,20 +395,20 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 			} else {
 			}
 			break;
-		case VpColor:
+		case kVpColor:
 			break;
-		case VpLinetype:
+		case kVpLinetype:
 			break;
-		case VpLineweight: {
+		case kVpLineweight: {
 			EoDlgLineWeight dlg(LayerTableRecord->lineWeight());
 			if (IDOK == dlg.DoModal()) {
 				LayerTableRecord->upgradeOpen();
-				LayerTableRecord->setLineWeight(dlg.m_LineWeight, m_ActiveViewport);
+				LayerTableRecord->setLineWeight(dlg.lineWeight, m_ActiveViewport);
 				LayerTableRecord->downgradeOpen();
 			}
 			break;
 		}
-		case VpPlotStyle:
+		case kVpPlotStyle:
 			break;
 		default: ;
 	}
@@ -419,7 +418,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 
 void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
 	if (m_ClickToColumnStatus) {
-		OnBnClickedSetcurrent();
+		OnBnClickedSetCurrent();
 	}
 	*result = 0;
 }

@@ -4,7 +4,6 @@
 #include "AeSysView.h"
 #include "EoDlgDrawOptions.h"
 
-// EoDlgDrawOptions dialog
 IMPLEMENT_DYNAMIC(EoDlgDrawOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgDrawOptions, CDialog)
@@ -19,11 +18,10 @@ EoDlgDrawOptions::EoDlgDrawOptions(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgDrawOptions::~EoDlgDrawOptions() {
-}
+EoDlgDrawOptions::~EoDlgDrawOptions() = default;
 
-void EoDlgDrawOptions::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
+void EoDlgDrawOptions::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
 }
 
 BOOL EoDlgDrawOptions::OnInitDialog() {

@@ -1,7 +1,7 @@
 #pragma once
 #include "EoCtrlColorsButton.h"
 
-class EoDlgSetupColor : public CDialog {
+class EoDlgSetupColor final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetupColor)
 	EoDlgSetupColor(CWnd* parent = nullptr);
 	~EoDlgSetupColor();
@@ -10,7 +10,7 @@ DECLARE_DYNAMIC(EoDlgSetupColor)
 	enum { IDD = IDD_SETUP_COLOR };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	BOOL OnNotify(WPARAM controlId, LPARAM notificationMessage, LRESULT* result) final;
@@ -22,7 +22,7 @@ protected:
 	CEdit m_ColorEditControl;
 	void DrawSelectionInformation(unsigned short index);
 public:
-	unsigned short m_ColorIndex;
+	unsigned short colorIndex {0};
 	void OnBnClickedByblockButton();
 	void OnBnClickedBylayerButton();
 	void OnClickedEvenColors();

@@ -8,11 +8,11 @@
 
 void AeSysView::OnPipeModeOptions() {
 	EoDlgPipeOptions Dialog;
-	Dialog.m_PipeTicSize = m_PipeTicSize;
-	Dialog.m_PipeRiseDropRadius = m_PipeRiseDropRadius;
+	Dialog.pipeTicSize = m_PipeTicSize;
+	Dialog.pipeRiseDropRadius = m_PipeRiseDropRadius;
 	if (Dialog.DoModal() == IDOK) {
-		m_PipeTicSize = Dialog.m_PipeTicSize;
-		m_PipeRiseDropRadius = Dialog.m_PipeRiseDropRadius;
+		m_PipeTicSize = Dialog.pipeTicSize;
+		m_PipeRiseDropRadius = Dialog.pipeRiseDropRadius;
 	}
 }
 
@@ -280,9 +280,9 @@ void AeSysView::OnPipeModeSymbol() {
 	if (Group == nullptr) { return; }
 	auto HorizontalSection {std::get<1>(Selection)};
 	EoDlgPipeSymbol Dialog;
-	Dialog.m_CurrentPipeSymbolIndex = m_CurrentPipeSymbolIndex;
+	Dialog.currentPipeSymbolIndex = m_CurrentPipeSymbolIndex;
 	if (Dialog.DoModal() == IDOK) {
-		m_CurrentPipeSymbolIndex = Dialog.m_CurrentPipeSymbolIndex;
+		m_CurrentPipeSymbolIndex = Dialog.currentPipeSymbolIndex;
 	}
 	const auto BeginPoint {HorizontalSection->StartPoint()};
 	const auto EndPoint {HorizontalSection->EndPoint()};

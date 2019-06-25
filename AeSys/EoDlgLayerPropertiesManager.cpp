@@ -2,7 +2,6 @@
 #include "DbSymUtl.h"
 #include "EoDlgLayerPropertiesManager.h"
 
-// EoDlgLayerPropertiesManager dialog
 IMPLEMENT_DYNAMIC(EoDlgLayerPropertiesManager, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
@@ -15,41 +14,40 @@ END_MESSAGE_MAP()
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_DeltaHeight(0)
-	, m_DeltaWidth(0)
-	, m_InitialHeight(0)
-	, m_InitialWidth(0) {
+	, deltaHeight(0)
+	, deltaWidth(0)
+	, initialHeight(0)
+	, initialWidth(0) {
 }
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_Database(database)
-	, m_DeltaHeight(0)
-	, m_DeltaWidth(0)
-	, m_InitialHeight(0)
-	, m_InitialWidth(0) {
+	, deltaHeight(0)
+	, deltaWidth(0)
+	, initialHeight(0)
+	, initialWidth(0) {
 }
 
-EoDlgLayerPropertiesManager::~EoDlgLayerPropertiesManager() {
-}
+EoDlgLayerPropertiesManager::~EoDlgLayerPropertiesManager() = default;
 
-void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LAYER_FILTER_TREE, m_TreeFilters);
+void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_LAYER_FILTER_TREE, treeFilters);
 }
 
 int EoDlgLayerPropertiesManager::OnCreate(const LPCREATESTRUCTW createStructure) {
 	if (CDialog::OnCreate(createStructure) == -1) {
 		return -1;
 	}
-	m_InitialWidth = createStructure->cx;
-	m_InitialHeight = createStructure->cy;
+	initialWidth = createStructure->cx;
+	initialHeight = createStructure->cy;
 	return 0;
 }
 
 void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
-	if (auto h = m_TreeFilters.GetSelectedItem()) {
-		const OdLyLayerFilter* lf = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(h)));
+	if (auto h = treeFilters.GetSelectedItem()) {
+		const OdLyLayerFilter* lf = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(h)));
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {
 			//OdaLayerFilterPropDlg(lf, this).DoModal();
 		}
@@ -60,13 +58,13 @@ void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructu
 void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
 	const auto pTVKeyDown {reinterpret_cast<tagTVKEYDOWN*>(notifyStructure)};
 	if (pTVKeyDown->wVKey == VK_DELETE) {
-		if (auto SelectedItem = m_TreeFilters.GetSelectedItem()) {
-			const auto Filter {static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(SelectedItem)))};
+		if (auto SelectedItem = treeFilters.GetSelectedItem()) {
+			const auto Filter {static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(SelectedItem)))};
 			if (Filter->dynamicallyGenerated()) return;
 			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) return;
 			Filter->parent()->removeNested(Filter);
-			m_TreeFilters.DeleteItem(SelectedItem);
-			const OdLyLayerFilter* Root = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(m_TreeFilters.GetItemData(m_TreeFilters.GetRootItem())));
+			treeFilters.DeleteItem(SelectedItem);
+			const OdLyLayerFilter* Root = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(treeFilters.GetRootItem())));
 			odlyGetLayerFilterManager(m_Database)->setFilters(Root, Root);
 		}
 	}
@@ -77,9 +75,9 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	CDialog::OnInitDialog();
 	CBitmap Bitmap;
 	Bitmap.LoadBitmapW(IDB_LAYER_FILTERS);
-	m_TreeImages.Create(16, 16, ILC_COLOR32, 0, 1);
-	m_TreeImages.Add(&Bitmap, RGB(0, 0, 0));
-	m_TreeFilters.SetImageList(&m_TreeImages, TVSIL_NORMAL);
+	treeImages.Create(16, 16, ILC_COLOR32, 0, 1);
+	treeImages.Add(&Bitmap, RGB(0, 0, 0));
+	treeFilters.SetImageList(&treeImages, TVSIL_NORMAL);
 	Bitmap.DeleteObject();
 	UpdateFiltersTree();
 
@@ -127,12 +125,12 @@ static void UpdateFilterTree(CTreeCtrl& tree, const HTREEITEM parent, const OdLy
 }
 
 void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
-	m_TreeFilters.DeleteAllItems();
+	treeFilters.DeleteAllItems();
 	auto FilterManager {odlyGetLayerFilterManager(m_Database)};
 	OdLyLayerFilterPtr pCurrent;
-	if (FilterManager->getFilters(m_RootFilter, pCurrent) != eOk) { return; }
-	UpdateFilterTree(m_TreeFilters, TVI_ROOT, m_RootFilter, pCurrent);
-	m_TreeFilters.SetItemImage(m_TreeFilters.GetRootItem(), 0, 0);
+	if (FilterManager->getFilters(rootFilter, pCurrent) != eOk) { return; }
+	UpdateFilterTree(treeFilters, TVI_ROOT, rootFilter, pCurrent);
+	treeFilters.SetItemImage(treeFilters.GetRootItem(), 0, 0);
 }
 
 void EoDlgLayerPropertiesManager::OnSize(const unsigned type, const int newWidth, const int newHeight) {
@@ -143,21 +141,21 @@ void EoDlgLayerPropertiesManager::OnSize(const unsigned type, const int newWidth
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
-		itemRect.right += dlgRect.Width() - m_DeltaWidth;
+		itemRect.right += dlgRect.Width() - deltaWidth;
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->MoveWindow(itemRect);
 	}
 	if (GetDlgItem(IDC_STATIC_LAYER_STATISTIC)) {
 		GetDlgItem(IDC_STATIC_LAYER_STATISTIC)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
-		GetDlgItem(IDC_STATIC_LAYER_STATISTIC)->MoveWindow(itemRect.left, itemRect.top + (dlgRect.Height() - m_DeltaHeight), itemRect.Width() + (dlgRect.Width() - m_DeltaWidth), itemRect.Height());
+		GetDlgItem(IDC_STATIC_LAYER_STATISTIC)->MoveWindow(itemRect.left, itemRect.top + (dlgRect.Height() - deltaHeight), itemRect.Width() + (dlgRect.Width() - deltaWidth), itemRect.Height());
 	}
 	if (GetDlgItem(IDCANCEL)) {
 		GetDlgItem(IDCANCEL)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
 		GetDlgItem(IDCANCEL)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDCANCEL)->MoveWindow(itemRect.left + (dlgRect.Width() - m_DeltaWidth), itemRect.top + (dlgRect.Height() - m_DeltaHeight), itemRect.Width(), itemRect.Height());
+		GetDlgItem(IDCANCEL)->MoveWindow(itemRect.left + (dlgRect.Width() - deltaWidth), itemRect.top + (dlgRect.Height() - deltaHeight), itemRect.Width(), itemRect.Height());
 		GetDlgItem(IDCANCEL)->ShowWindow(SW_SHOW);
 	}
 	if (GetDlgItem(IDOK)) {
@@ -165,7 +163,7 @@ void EoDlgLayerPropertiesManager::OnSize(const unsigned type, const int newWidth
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
 		GetDlgItem(IDOK)->ShowWindow(SW_HIDE);
-		GetDlgItem(IDOK)->MoveWindow(itemRect.left + (dlgRect.Width() - m_DeltaWidth), itemRect.top + (dlgRect.Height() - m_DeltaHeight), itemRect.Width(), itemRect.Height());
+		GetDlgItem(IDOK)->MoveWindow(itemRect.left + (dlgRect.Width() - deltaWidth), itemRect.top + (dlgRect.Height() - deltaHeight), itemRect.Width(), itemRect.Height());
 		GetDlgItem(IDOK)->ShowWindow(SW_SHOW);
 	}
 }
@@ -175,25 +173,25 @@ void EoDlgLayerPropertiesManager::OnSizing(const unsigned side, const LPRECT rec
 	const CRect rct(*rectangle);
 	CRect dlgRect;
 	GetWindowRect(&dlgRect);
-	m_DeltaWidth = dlgRect.Width();
-	m_DeltaHeight = dlgRect.Height();
-	if (rct.Width() < m_InitialWidth) {
+	deltaWidth = dlgRect.Width();
+	deltaHeight = dlgRect.Height();
+	if (rct.Width() < initialWidth) {
 		switch (side) {
 			case WMSZ_LEFT: case WMSZ_BOTTOMLEFT: case WMSZ_TOPLEFT:
-				rectangle->left = rectangle->right - m_InitialWidth;
+				rectangle->left = rectangle->right - initialWidth;
 				break;
 			case WMSZ_RIGHT: case WMSZ_BOTTOMRIGHT: case WMSZ_TOPRIGHT:
-				rectangle->right = rectangle->left + m_InitialWidth;
+				rectangle->right = rectangle->left + initialWidth;
 				break;
 		}
 	}
-	if (rct.Height() < m_InitialHeight) {
+	if (rct.Height() < initialHeight) {
 		switch (side) {
 			case WMSZ_BOTTOM: case WMSZ_BOTTOMLEFT: case WMSZ_BOTTOMRIGHT:
-				rectangle->bottom = rectangle->top + m_InitialHeight;
+				rectangle->bottom = rectangle->top + initialHeight;
 				break;
 			case WMSZ_TOP: case WMSZ_TOPLEFT: case WMSZ_TOPRIGHT:
-				rectangle->top = rectangle->bottom - m_InitialHeight;
+				rectangle->top = rectangle->bottom - initialHeight;
 				break;
 		}
 	}

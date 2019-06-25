@@ -13,25 +13,24 @@ struct EoLineweightData {
 	}
 };
 
-class EoDlgPlotStyleEditLineweight : public CDialog {
+class EoDlgPlotStyleEditLineweight final : public CDialog {
 DECLARE_DYNAMIC(EoDlgPlotStyleEditLineweight)
-	OdPsPlotStyleTable* m_PlotStyleTable;
-	CImageList m_ListCtrlImages;
-	unsigned m_InitialSelection;
-	EoLineweightData* m_LineweightData;
+	OdPsPlotStyleTable* plotStyleTable;
+	CImageList listCtrlImages;
+	unsigned initialSelection;
+	EoLineweightData* lineweightData;
 	EoDlgPlotStyleEditLineweight(CWnd* parent = nullptr);
 
-	virtual ~EoDlgPlotStyleEditLineweight() {
-	}
+	virtual ~EoDlgPlotStyleEditLineweight() = default;
 
-	enum { IDD = IDD_PLOTSTYLE_LINEWEIGHT };
+enum { IDD = IDD_PLOTSTYLE_LINEWEIGHT };
 
-	CListCtrl m_LineweightsListCtrl;
-	CButton m_MillimetrsButton;
-	CButton m_InchesButton;
+	CListCtrl lineweightsListCtrl;
+	CButton millimetersButton;
+	CButton inchesButton;
 protected:
 	BOOL DestroyWindow() final;
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	void InitializeListCtrl();
@@ -44,8 +43,8 @@ public:
 protected:
 	void OnRadioMillimeters();
 	void OnRadioInches();
-	void OnButtonEditlineweight();
-	void OnButtonSortlineweight();
+	void OnButtonEditLineweight();
+	void OnButtonSortLineweight();
 	void OnEndlabeleditListLineweight(NMHDR* notifyStructure, LRESULT* result);
 DECLARE_MESSAGE_MAP()
 };

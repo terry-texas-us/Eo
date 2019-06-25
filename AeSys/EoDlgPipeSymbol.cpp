@@ -2,23 +2,20 @@
 #include "AeSys.h"
 #include "EoDlgPipeSymbol.h"
 
-// EoDlgPipeSymbol dialog
 IMPLEMENT_DYNAMIC(EoDlgPipeSymbol, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgPipeSymbol, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgPipeSymbol::EoDlgPipeSymbol(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_CurrentPipeSymbolIndex(0) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgPipeSymbol::~EoDlgPipeSymbol() {
-}
+EoDlgPipeSymbol::~EoDlgPipeSymbol() = default;
 
-void EoDlgPipeSymbol::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST, m_PipeSymbolsListBoxControl);
+void EoDlgPipeSymbol::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_LIST, pipeSymbolsListBoxControl);
 }
 
 BOOL EoDlgPipeSymbol::OnInitDialog() {
@@ -27,13 +24,13 @@ BOOL EoDlgPipeSymbol::OnInitDialog() {
 	auto Position {0};
 	while (Position < Names.GetLength()) {
 		auto NamesItem {Names.Tokenize(L"\n", Position)};
-		m_PipeSymbolsListBoxControl.AddString(NamesItem);
+		pipeSymbolsListBoxControl.AddString(NamesItem);
 	}
-	m_PipeSymbolsListBoxControl.SetCurSel(m_CurrentPipeSymbolIndex);
+	pipeSymbolsListBoxControl.SetCurSel(currentPipeSymbolIndex);
 	return TRUE;
 }
 
 void EoDlgPipeSymbol::OnOK() {
-	m_CurrentPipeSymbolIndex = m_PipeSymbolsListBoxControl.GetCurSel();
+	currentPipeSymbolIndex = pipeSymbolsListBoxControl.GetCurSel();
 	CDialog::OnOK();
 }

@@ -11,10 +11,10 @@ EoDlgAudit::EoDlgAudit(CWnd* parent)
 	: EoVarDialog(IDD, parent) {
 }
 
-void EoDlgAudit::DoDataExchange(CDataExchange* pDX) {
-	EoVarDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_AUDITSUM_LIST, m_AuditInfoList);
-	DDX_Control(pDX, IDC_AUDITINFO_LIST, m_AuditErrList);
+void EoDlgAudit::DoDataExchange(CDataExchange* dataExchange) {
+	EoVarDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_AUDITSUM_LIST, m_AuditInfoList);
+	DDX_Control(dataExchange, IDC_AUDITINFO_LIST, m_AuditErrList);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgAudit, EoVarDialog)

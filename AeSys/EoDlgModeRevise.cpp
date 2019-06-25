@@ -5,7 +5,6 @@
 #include "EoDb.h"
 #include "EoDlgModeRevise.h"
 
-// EoDlgModeRevise dialog
 /// <remarks>
 ///Text related attributes for all notes generated will be same as those of the text last picked.
 ///Upon exit attributes restored to their entry values.
@@ -15,29 +14,28 @@ IMPLEMENT_DYNAMIC(EoDlgModeRevise, CDialog)
 BEGIN_MESSAGE_MAP(EoDlgModeRevise, CDialog)
 		ON_WM_SIZE()
 END_MESSAGE_MAP()
-EoDbFontDefinition EoDlgModeRevise::sm_FontDefinition;
-EoGeReferenceSystem EoDlgModeRevise::sm_ReferenceSystem;
-EoDbText* EoDlgModeRevise::sm_TextPrimitive;
+EoDbFontDefinition EoDlgModeRevise::m_FontDefinition;
+EoGeReferenceSystem EoDlgModeRevise::m_ReferenceSystem;
+EoDbText* EoDlgModeRevise::m_TextPrimitive;
 
 EoDlgModeRevise::EoDlgModeRevise(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgModeRevise::~EoDlgModeRevise() {
-}
+EoDlgModeRevise::~EoDlgModeRevise() = default;
 
-void EoDlgModeRevise::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TEXT, m_TextEditControl);
+void EoDlgModeRevise::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_TEXT, textEditControl);
 }
 
 BOOL EoDlgModeRevise::OnInitDialog() {
 	CDialog::OnInitDialog();
-	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(AeSys::GetCursorPosition());
-	if (sm_TextPrimitive != nullptr) {
-		sm_FontDefinition = sm_TextPrimitive->FontDefinition();
-		sm_ReferenceSystem = sm_TextPrimitive->ReferenceSystem();
-		m_TextEditControl.SetWindowTextW(sm_TextPrimitive->Text());
+	m_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(AeSys::GetCursorPosition());
+	if (m_TextPrimitive != nullptr) {
+		m_FontDefinition = m_TextPrimitive->FontDefinition();
+		m_ReferenceSystem = m_TextPrimitive->ReferenceSystem();
+		textEditControl.SetWindowTextW(m_TextPrimitive->Text());
 	} else {
 		EndDialog(TRUE);
 	}
@@ -48,43 +46,43 @@ void EoDlgModeRevise::OnOK() {
 	auto Document {AeSysDoc::GetDoc()};
 	auto Database {Document->m_DatabasePtr};
 	CString TextString;
-	m_TextEditControl.GetWindowTextW(TextString);
-	if (sm_TextPrimitive != nullptr) {
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, sm_TextPrimitive);
-		sm_TextPrimitive->SetText(TextString);
-		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, sm_TextPrimitive);
+	textEditControl.GetWindowTextW(TextString);
+	if (m_TextPrimitive != nullptr) {
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_TextPrimitive);
+		m_TextPrimitive->SetText(TextString);
+		Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_TextPrimitive);
 	} else {
 		OdGeVector3d PlaneNormal;
-		sm_ReferenceSystem.GetUnitNormal(PlaneNormal);
+		m_ReferenceSystem.GetUnitNormal(PlaneNormal);
 		OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-		auto Text {EoDbText::Create(BlockTableRecord, sm_ReferenceSystem.Origin(), static_cast<const wchar_t*>(TextString))};
+		auto Text {EoDbText::Create(BlockTableRecord, m_ReferenceSystem.Origin(), static_cast<const wchar_t*>(TextString))};
 		Text->setNormal(PlaneNormal);
-		Text->setRotation(sm_ReferenceSystem.Rotation());
-		Text->setHeight(sm_ReferenceSystem.YDirection().length());
-		Text->setAlignmentPoint(sm_ReferenceSystem.Origin());
-		Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(sm_FontDefinition.HorizontalAlignment()));
-		Text->setVerticalMode(EoDbText::ConvertVerticalMode(sm_FontDefinition.VerticalAlignment()));
+		Text->setRotation(m_ReferenceSystem.Rotation());
+		Text->setHeight(m_ReferenceSystem.YDirection().length());
+		Text->setAlignmentPoint(m_ReferenceSystem.Origin());
+		Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(m_FontDefinition.HorizontalAlignment()));
+		Text->setVerticalMode(EoDbText::ConvertVerticalMode(m_FontDefinition.VerticalAlignment()));
 		auto Group {new EoDbGroup};
 		Group->AddTail(EoDbText::Create(Text));
 		Document->AddWorkLayerGroup(Group);
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
-	sm_ReferenceSystem.SetOrigin(text_GetNewLinePos(sm_FontDefinition, sm_ReferenceSystem, 1.0, 0));
-	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(sm_ReferenceSystem.Origin());
-	if (sm_TextPrimitive != nullptr) {
-		sm_FontDefinition = sm_TextPrimitive->FontDefinition();
-		sm_ReferenceSystem = sm_TextPrimitive->ReferenceSystem();
-		m_TextEditControl.SetWindowTextW(sm_TextPrimitive->Text());
+	m_ReferenceSystem.SetOrigin(text_GetNewLinePos(m_FontDefinition, m_ReferenceSystem, 1.0, 0));
+	m_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(m_ReferenceSystem.Origin());
+	if (m_TextPrimitive != nullptr) {
+		m_FontDefinition = m_TextPrimitive->FontDefinition();
+		m_ReferenceSystem = m_TextPrimitive->ReferenceSystem();
+		textEditControl.SetWindowTextW(m_TextPrimitive->Text());
 	} else {
-		m_TextEditControl.SetWindowTextW(L"");
+		textEditControl.SetWindowTextW(L"");
 	}
-	m_TextEditControl.SetFocus();
+	textEditControl.SetFocus();
 	CDialog::OnOK();
 }
 
 void EoDlgModeRevise::OnSize(const unsigned type, const int cx, const int cy) {
 	CDialog::OnSize(type, cx, cy);
-	if (IsWindow(m_TextEditControl.GetSafeHwnd())) {
-		m_TextEditControl.MoveWindow(0, 0, cx, cy, TRUE);
+	if (IsWindow(textEditControl.GetSafeHwnd())) {
+		textEditControl.MoveWindow(0, 0, cx, cy, TRUE);
 	}
 }

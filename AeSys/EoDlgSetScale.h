@@ -1,18 +1,16 @@
 #pragma once
 
-// EoDlgSetScale dialog
-class EoDlgSetScale : public CDialog {
+class EoDlgSetScale final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetScale)
 	EoDlgSetScale(CWnd* parent = nullptr);
 	virtual ~EoDlgSetScale();
 
-	// Dialog Data
 	enum { IDD = IDD_SET_SCALE };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 public:
-	double m_Scale;
+	double scale {0.0};
 protected:
 DECLARE_MESSAGE_MAP()
 };

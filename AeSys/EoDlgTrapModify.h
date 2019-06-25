@@ -1,6 +1,5 @@
 #pragma once
 
-// EoDlgTrapModify dialog
 /// <summary>Modifies attributes of all group primitives in current trap to current settings.</summary>
 /// <remarks>Trap color index is not modified.</remarks>
 class EoDlgTrapModify final : public CDialog {
@@ -9,13 +8,12 @@ DECLARE_DYNAMIC(EoDlgTrapModify)
 	EoDlgTrapModify(AeSysDoc* document, CWnd* parent = nullptr);
 	~EoDlgTrapModify();
 
-	// Dialog Data
 	enum { IDD = IDD_TRAP_MODIFY };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	void OnOK() final;
-	AeSysDoc* m_Document;
+	AeSysDoc* m_Document {nullptr};
 public:
 	void ModifyPolygons();
 protected:

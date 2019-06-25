@@ -1,21 +1,19 @@
 #pragma once
 
-// EoDlgSetupHatch dialog
-class EoDlgSetupHatch : public CDialog {
+class EoDlgSetupHatch final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetupHatch)
 	EoDlgSetupHatch(CWnd* parent = nullptr) noexcept;
 	~EoDlgSetupHatch();
 
-	// Dialog Data
 	enum { IDD = IDD_SETUP_HATCH };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 DECLARE_MESSAGE_MAP()
 public:
-	double m_HatchXScaleFactor;
-	double m_HatchYScaleFactor;
-	double m_HatchRotationAngle;
+	double hatchXScaleFactor {1.0};
+	double hatchYScaleFactor {1.0};
+	double hatchRotationAngle {0.0};
 };

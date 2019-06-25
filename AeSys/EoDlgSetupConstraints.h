@@ -1,20 +1,18 @@
 #pragma once
 
-// EoDlgSetupConstraints dialog
-class EoDlgSetupConstraints : public CDialog {
+class EoDlgSetupConstraints final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetupConstraints)
 	EoDlgSetupConstraints(CWnd* parent = nullptr);
 	EoDlgSetupConstraints(AeSysView* view, CWnd* parent = nullptr);
 	virtual ~EoDlgSetupConstraints();
 
-	// Dialog Data
 	enum { IDD = IDD_SETUP_CONSTRAINTS_GRID };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
-	AeSysView* m_ActiveView;
+	AeSysView* m_ActiveView {nullptr};
 	CEdit m_GridXSnapSpacing;
 	CEdit m_GridYSnapSpacing;
 	CEdit m_GridZSnapSpacing;

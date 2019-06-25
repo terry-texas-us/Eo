@@ -1,21 +1,19 @@
 #pragma once
 
-// EoDlgViewParameters dialog
-class EoDlgViewParameters : public CDialog {
+class EoDlgViewParameters final : public CDialog {
 DECLARE_DYNAMIC(EoDlgViewParameters)
 	EoDlgViewParameters(CWnd* parent = nullptr);
 	virtual ~EoDlgViewParameters();
 
-	// Dialog Data
 	enum { IDD = IDD_VIEW_PARAMETERS };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 public:
-	BOOL m_PerspectiveProjection;
-	unsigned long m_ModelView;
+	BOOL perspectiveProjection {FALSE};
+	unsigned long modelView {0};
 	void OnBnClickedApply();
 	void OnEnChangePositionX();
 	void OnEnChangePositionY();

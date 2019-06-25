@@ -1,7 +1,6 @@
 #pragma once
 
-// EoDlgFileManage dialog
-class EoDlgFileManage : public CDialog {
+class EoDlgFileManage final : public CDialog {
 DECLARE_DYNAMIC(EoDlgFileManage)
 	EoDlgFileManage(CWnd* parent = nullptr);
 	EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent = nullptr);
@@ -11,11 +10,11 @@ DECLARE_DYNAMIC(EoDlgFileManage)
 	enum { IDD = IDD_FILE_MANAGE };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 DECLARE_MESSAGE_MAP()
 public:
-	enum ColumnLabels { Status, Name, On, Freeze, Lock, Color, Linetype, Lineweight, PlotStyle, Plot, VpFreeze, VpColor, VpLinetype, VpLineweight, VpPlotStyle, Descr };
+	enum ColumnLabels { kStatus, kName, kOn, kFreeze, kLock, kColor, kLinetype, kLineweight, kPlotStyle, kPlot, kVpFreeze, kVpColor, kVpLinetype, kVpLineweight, kVpPlotStyle, kDescr };
 
 	AeSysDoc* m_Document;
 	OdDbDatabasePtr m_Database;
@@ -28,12 +27,12 @@ public:
 	int m_NumberOfColumns;
 	HWND m_PreviewWindowHandle;
 	CImageList m_StateImages;
-	void DrawItem(CDC& deviceContext, int itemID, int labelIndex, const RECT& itemRectangle);
+	void DrawItem(CDC& deviceContext, int itemId, int labelIndex, const RECT& itemRectangle);
 	void UpdateCurrentLayerInfoField();
 	void OnBnClickedFuse();
 	void OnBnClickedMelt();
-	void OnBnClickedNewlayer();
-	void OnBnClickedSetcurrent();
+	void OnBnClickedNewLayer();
+	void OnBnClickedSetCurrent();
 	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct);
 	void OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 	void OnLbnSelchangeBlocksList();

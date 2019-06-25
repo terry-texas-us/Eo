@@ -1,20 +1,18 @@
 #pragma once
 
-// EoDlgSetText dialog
-class EoDlgSetText : public CDialog {
+class EoDlgSetText final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetText)
 	EoDlgSetText(CWnd* parent = nullptr);
 	virtual ~EoDlgSetText();
 
-	// Dialog Data
 	enum { IDD = IDD_SET_TEXT };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 public:
-	CString m_sText;
-	CString m_strTitle;
+	CString text;
+	CString title;
 protected:
 DECLARE_MESSAGE_MAP()
 };

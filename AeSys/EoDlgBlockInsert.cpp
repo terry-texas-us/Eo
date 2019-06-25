@@ -6,7 +6,6 @@
 #include "EoDbBlockReference.h"
 #include "EoDlgBlockInsert.h"
 
-// EoDlgBlockInsert dialog
 IMPLEMENT_DYNAMIC(EoDlgBlockInsert, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)
@@ -26,23 +25,22 @@ EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* parent)
 	, m_Document(document) {
 }
 
-EoDlgBlockInsert::~EoDlgBlockInsert() {
-}
+EoDlgBlockInsert::~EoDlgBlockInsert() = default;
 
-void EoDlgBlockInsert::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_BLOCKS_LIST, m_BlocksListBoxControl);
-	DDX_Control(pDX, IDC_INSERTION_POINT_ONSCREEN, m_InsertionPointOnscreen);
-	DDX_Control(pDX, IDC_INSERTION_POINT_X, m_InsertionPointX);
-	DDX_Control(pDX, IDC_INSERTION_POINT_Y, m_InsertionPointY);
-	DDX_Control(pDX, IDC_INSERTION_POINT_Z, m_InsertionPointZ);
-	DDX_Control(pDX, IDC_SCALE_ONSCREEN, m_ScaleOnscreen);
-	DDX_Control(pDX, IDC_SCALE_X, m_ScaleX);
-	DDX_Control(pDX, IDC_SCALE_Y, m_ScaleY);
-	DDX_Control(pDX, IDC_SCALE_Z, m_ScaleZ);
-	DDX_Control(pDX, IDC_ROTATION_ONSCREEN, m_RotationOnscreen);
-	DDX_Control(pDX, IDC_ROTATION_ANGLE, m_RotationAngle);
-	DDX_Control(pDX, IDC_EXPLODE, m_Explode);
+void EoDlgBlockInsert::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_BLOCKS_LIST, m_BlocksListBoxControl);
+	DDX_Control(dataExchange, IDC_INSERTION_POINT_ONSCREEN, m_InsertionPointOnscreen);
+	DDX_Control(dataExchange, IDC_INSERTION_POINT_X, m_InsertionPointX);
+	DDX_Control(dataExchange, IDC_INSERTION_POINT_Y, m_InsertionPointY);
+	DDX_Control(dataExchange, IDC_INSERTION_POINT_Z, m_InsertionPointZ);
+	DDX_Control(dataExchange, IDC_SCALE_ONSCREEN, m_ScaleOnscreen);
+	DDX_Control(dataExchange, IDC_SCALE_X, m_ScaleX);
+	DDX_Control(dataExchange, IDC_SCALE_Y, m_ScaleY);
+	DDX_Control(dataExchange, IDC_SCALE_Z, m_ScaleZ);
+	DDX_Control(dataExchange, IDC_ROTATION_ONSCREEN, m_RotationOnscreen);
+	DDX_Control(dataExchange, IDC_ROTATION_ANGLE, m_RotationAngle);
+	DDX_Control(dataExchange, IDC_EXPLODE, m_Explode);
 }
 
 BOOL EoDlgBlockInsert::OnInitDialog() {

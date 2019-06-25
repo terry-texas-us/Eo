@@ -58,7 +58,7 @@ private:
 	CString m_xMax;
 	CString m_yMax;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	void OnCancel() final;

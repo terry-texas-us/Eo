@@ -1,30 +1,24 @@
 #pragma once
 
-// EoDlgSetupLinetype dialog
-class EoDlgSetupLinetype : public CDialog {
+class EoDlgSetupLinetype final : public CDialog {
 DECLARE_DYNAMIC(EoDlgSetupLinetype)
 	EoDlgSetupLinetype(CWnd* parent = nullptr);
 	EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent = nullptr);
 	virtual ~EoDlgSetupLinetype();
 
-	// Dialog Data
 	enum { IDD = IDD_SETUP_LINETYPE };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 
-	enum LinetypesListColumnLabels {
-		Name,
-		Appearance,
-		Description
-	};
+enum LinetypesListColumnLabels { Name, Appearance, Description };
 
 	OdDbLinetypeTablePtr m_LinetypeTable;
 	CListCtrl m_LinetypesListControl;
 public:
-	OdDbLinetypeTableRecordPtr m_Linetype;
+	OdDbLinetypeTableRecordPtr linetype;
 	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct);
 	void OnBnClickedBylayerButton();
 	void OnBnClickedByblockButton();

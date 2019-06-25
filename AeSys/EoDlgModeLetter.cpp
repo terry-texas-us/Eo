@@ -6,7 +6,6 @@
 #include "EoDb.h"
 #include "EoDlgModeLetter.h"
 
-// EoDlgModeLetter dialog
 IMPLEMENT_DYNAMIC(EoDlgModeLetter, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgModeLetter, CDialog)
@@ -18,12 +17,11 @@ EoDlgModeLetter::EoDlgModeLetter(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgModeLetter::~EoDlgModeLetter() {
-}
+EoDlgModeLetter::~EoDlgModeLetter() = default;
 
-void EoDlgModeLetter::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_TEXT, m_TextEditControl);
+void EoDlgModeLetter::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_TEXT, textEditControl);
 }
 
 BOOL EoDlgModeLetter::OnInitDialog() {
@@ -38,10 +36,10 @@ void EoDlgModeLetter::OnOK() {
 	const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	EoGeReferenceSystem ReferenceSystem(m_Point, AeSysView::GetActiveView(), CharacterCellDefinition);
 	auto FontDefinition {g_PrimitiveState.FontDefinition()};
-	if (m_TextEditControl.GetWindowTextLengthW() != 0) {
+	if (textEditControl.GetWindowTextLengthW() != 0) {
 		CString TextEditControl;
-		m_TextEditControl.GetWindowTextW(TextEditControl);
-		m_TextEditControl.SetWindowTextW(L"");
+		textEditControl.GetWindowTextW(TextEditControl);
+		textEditControl.SetWindowTextW(L"");
 		EoDbText* TextPrimitive;
 		const auto HardLineBreakPosition {TextEditControl.Find(L"\r\n")};
 		if (HardLineBreakPosition == -1) { // single line text
@@ -66,13 +64,13 @@ void EoDlgModeLetter::OnOK() {
 		Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	}
 	m_Point = text_GetNewLinePos(FontDefinition, ReferenceSystem, 1.0, 0);
-	m_TextEditControl.SetFocus();
+	textEditControl.SetFocus();
 	CDialog::OnOK();
 }
 
 void EoDlgModeLetter::OnSize(const unsigned type, const int cx, const int cy) {
 	CDialog::OnSize(type, cx, cy);
-	if (IsWindow(m_TextEditControl.GetSafeHwnd())) {
-		m_TextEditControl.MoveWindow(0, 0, cx, cy, TRUE);
+	if (IsWindow(textEditControl.GetSafeHwnd())) {
+		textEditControl.MoveWindow(0, 0, cx, cy, TRUE);
 	}
 }

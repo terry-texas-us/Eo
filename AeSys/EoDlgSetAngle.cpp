@@ -1,30 +1,25 @@
 #include "stdafx.h"
 #include "EoDlgSetAngle.h"
 
-// EoDlgSetAngle dialog
 IMPLEMENT_DYNAMIC(EoDlgSetAngle, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetAngle::EoDlgSetAngle(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_dAngle(0) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgSetAngle::~EoDlgSetAngle() {
-}
+EoDlgSetAngle::~EoDlgSetAngle() = default;
 
-void EoDlgSetAngle::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Text(pDX, IDC_ANGLE, m_dAngle);
-	DDV_MinMaxDouble(pDX, m_dAngle, -360., 360.);
+void EoDlgSetAngle::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Text(dataExchange, IDC_ANGLE, angle);
+	DDV_MinMaxDouble(dataExchange, angle, -360., 360.);
 }
 
 BOOL EoDlgSetAngle::OnInitDialog() {
 	CDialog::OnInitDialog();
-	if (!m_strTitle.IsEmpty()) {
-		SetWindowTextW(m_strTitle);
-	}
+	if (!title.IsEmpty()) { SetWindowTextW(title); }
 	return TRUE;
 }

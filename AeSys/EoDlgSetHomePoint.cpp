@@ -4,17 +4,15 @@
 #include "AeSysView.h"
 #include "EoDlgSetHomePoint.h"
 
-// EoDlgSetHomePoint dialog
 IMPLEMENT_DYNAMIC(EoDlgSetHomePoint, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetHomePoint, CDialog)
-		ON_CBN_EDITUPDATE(IDC_LIST, &EoDlgSetHomePoint::OnCbnEditupdateList)
+	ON_CBN_EDITUPDATE(IDC_LIST, &EoDlgSetHomePoint::OnCbnEditUpdateList)
 END_MESSAGE_MAP()
-OdGePoint3d EoDlgSetHomePoint::m_CursorPosition = OdGePoint3d::kOrigin;
+OdGePoint3d EoDlgSetHomePoint::m_CursorPosition {0.0, 0.0, 0.0};
 
 EoDlgSetHomePoint::EoDlgSetHomePoint(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_ActiveView(nullptr) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent)
@@ -22,27 +20,26 @@ EoDlgSetHomePoint::EoDlgSetHomePoint(AeSysView* activeView, CWnd* parent)
 	, m_ActiveView(activeView) {
 }
 
-EoDlgSetHomePoint::~EoDlgSetHomePoint() {
-}
+EoDlgSetHomePoint::~EoDlgSetHomePoint() = default;
 
-void EoDlgSetHomePoint::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_LIST, m_HomePointNames);
-	DDX_Control(pDX, IDC_X, m_X);
-	DDX_Control(pDX, IDC_Y, m_Y);
-	DDX_Control(pDX, IDC_Z, m_Z);
+void EoDlgSetHomePoint::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_LIST, homePointNames);
+	DDX_Control(dataExchange, IDC_X, x);
+	DDX_Control(dataExchange, IDC_Y, y);
+	DDX_Control(dataExchange, IDC_Z, z);
 }
 
 BOOL EoDlgSetHomePoint::OnInitDialog() {
 	CDialog::OnInitDialog();
 	const auto Names {AeSys::LoadStringResource(IDS_HOME_POINT_SET_NAMES)};
-	m_HomePointNames.ResetContent();
+	homePointNames.ResetContent();
 	auto Position {0};
 	while (Position < Names.GetLength()) {
 		auto NamesItem {Names.Tokenize(L"\n", Position)};
-		m_HomePointNames.AddString(NamesItem);
+		homePointNames.AddString(NamesItem);
 	}
-	m_HomePointNames.SetCurSel(9);
+	homePointNames.SetCurSel(9);
 	m_CursorPosition = AeSys::GetCursorPosition();
 	SetDlgItemTextW(IDC_X, theApp.FormatLength(m_CursorPosition.x, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 	SetDlgItemTextW(IDC_Y, theApp.FormatLength(m_CursorPosition.y, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
@@ -51,15 +48,15 @@ BOOL EoDlgSetHomePoint::OnInitDialog() {
 }
 
 void EoDlgSetHomePoint::OnOK() {
-	wchar_t szBuf[32];
+	wchar_t StringBuffer[32];
 	const auto CurrentUnits {theApp.GetUnits()};
-	m_X.GetWindowTextW(szBuf, 32);
-	m_CursorPosition.x = AeSys::ParseLength(CurrentUnits, szBuf);
-	m_Y.GetWindowTextW(szBuf, 32);
-	m_CursorPosition.y = AeSys::ParseLength(CurrentUnits, szBuf);
-	m_Z.GetWindowTextW(szBuf, 32);
-	m_CursorPosition.z = AeSys::ParseLength(CurrentUnits, szBuf);
-	const auto NamesItemIndex {m_HomePointNames.GetCurSel()};
+	x.GetWindowTextW(StringBuffer, 32);
+	m_CursorPosition.x = AeSys::ParseLength(CurrentUnits, StringBuffer);
+	y.GetWindowTextW(StringBuffer, 32);
+	m_CursorPosition.y = AeSys::ParseLength(CurrentUnits, StringBuffer);
+	z.GetWindowTextW(StringBuffer, 32);
+	m_CursorPosition.z = AeSys::ParseLength(CurrentUnits, StringBuffer);
+	const auto NamesItemIndex {homePointNames.GetCurSel()};
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {
 			case 9:
@@ -78,10 +75,10 @@ void EoDlgSetHomePoint::OnOK() {
 	}
 }
 
-void EoDlgSetHomePoint::OnCbnEditupdateList() {
+void EoDlgSetHomePoint::OnCbnEditUpdateList() {
 	CString NamesItem;
-	m_HomePointNames.GetWindowTextW(NamesItem);
-	const auto NamesItemIndex {m_HomePointNames.FindString(-1, NamesItem)};
+	homePointNames.GetWindowTextW(NamesItem);
+	const auto NamesItemIndex {homePointNames.FindString(-1, NamesItem)};
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {
 			case 9:

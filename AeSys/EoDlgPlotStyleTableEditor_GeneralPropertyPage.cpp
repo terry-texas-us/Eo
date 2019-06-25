@@ -8,18 +8,17 @@ EoDlgPlotStyleEditor_GeneralPropertyPage::EoDlgPlotStyleEditor_GeneralPropertyPa
 	, m_pPlotStyleTable(nullptr) {
 }
 
-EoDlgPlotStyleEditor_GeneralPropertyPage::~EoDlgPlotStyleEditor_GeneralPropertyPage() {
-}
+EoDlgPlotStyleEditor_GeneralPropertyPage::~EoDlgPlotStyleEditor_GeneralPropertyPage() = default;
 
-void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* pDX) {
-	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PS_GENERAL_EDIT_DESCRIPTION, m_editDescription);
-	DDX_Control(pDX, IDC_PS_GENERAL_EDIT_SCALE_FACTOR, m_editScalefactor);
-	DDX_Control(pDX, IDC_PS_GENERAL_CHECK_SCALE_FACTOR, m_checkScalefactor);
-	DDX_Control(pDX, IDC_PS_GENERAL_STATIC_FILEPATH, m_staticFilepath);
-	DDX_Control(pDX, IDC_PS_GENERAL_STATIC_FILE_NAME, m_staticFilename);
-	DDX_Control(pDX, IDC_PS_GENERAL_STATIC_BITMAP, m_staticBitmap);
-	DDX_Control(pDX, IDC_PS_GENERAL_STATIC_REGULAR, m_staticRegular);
+void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* dataExchange) {
+	CPropertyPage::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_EDIT_DESCRIPTION, m_editDescription);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_EDIT_SCALE_FACTOR, m_editScalefactor);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_CHECK_SCALE_FACTOR, m_checkScalefactor);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_FILEPATH, m_staticFilepath);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_FILE_NAME, m_staticFilename);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_BITMAP, m_staticBitmap);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_REGULAR, m_staticRegular);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)

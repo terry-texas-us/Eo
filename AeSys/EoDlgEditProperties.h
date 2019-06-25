@@ -1,5 +1,5 @@
 #pragma once
-class EoDlgEditProperties : public CDialog {
+class EoDlgEditProperties final : public CDialog {
 DECLARE_DYNAMIC(EoDlgEditProperties)
 	EoDlgEditProperties(OdDbObjectId& id, CWnd* parent = nullptr);
 	virtual ~EoDlgEditProperties();
@@ -7,11 +7,11 @@ DECLARE_DYNAMIC(EoDlgEditProperties)
 	enum { IDD = IDD_PROPERTIES };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	OdDbObjectId& m_pObjectId;
 	OdResBufPtr m_ResourceBuffer;
-	int m_nCurItem;
+	int m_CurrentItem;
 	CButton m_doset;
 	CListCtrl m_propList;
 	CString m_sValue;

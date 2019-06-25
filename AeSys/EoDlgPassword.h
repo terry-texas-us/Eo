@@ -9,6 +9,6 @@ public:
 	CString m_sFileName;
 	OdPassword m_password;
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 DECLARE_MESSAGE_MAP()
 };

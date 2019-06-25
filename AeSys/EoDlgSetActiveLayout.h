@@ -14,7 +14,7 @@ public:
 	enum { IDD = IDD_SET_ACTIVE_LAYOUT };
 
 protected:
-	void DoDataExchange(CDataExchange* pDX) final;
+	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnLayoutDlgClose();
 	void OnSelchangeLayoutlist();

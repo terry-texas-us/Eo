@@ -3,7 +3,6 @@
 #include "AeSysDoc.h"
 #include "EoDlgEditTrapCommandsQuery.h"
 
-// EoDlgEditTrapCommandsQuery dialog
 IMPLEMENT_DYNAMIC(EoDlgEditTrapCommandsQuery, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
@@ -14,14 +13,13 @@ EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgEditTrapCommandsQuery::~EoDlgEditTrapCommandsQuery() {
-}
+EoDlgEditTrapCommandsQuery::~EoDlgEditTrapCommandsQuery() = default;
 
-void EoDlgEditTrapCommandsQuery::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_GROUP_TREE, m_GroupTreeViewControl);
-	DDX_Control(pDX, IDC_GEOMETRY_LIST, m_GeometryListViewControl);
-	DDX_Control(pDX, IDC_EXTRA_LIST_CTRL, m_ExtraListViewControl);
+void EoDlgEditTrapCommandsQuery::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_GROUP_TREE, m_GroupTreeViewControl);
+	DDX_Control(dataExchange, IDC_GEOMETRY_LIST, m_GeometryListViewControl);
+	DDX_Control(dataExchange, IDC_EXTRA_LIST_CTRL, m_ExtraListViewControl);
 }
 
 BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {

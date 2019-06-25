@@ -33,11 +33,11 @@ void EoDlgUserIOConsole::release() {
 	if (!--m_RefCounter) { delete this; }
 }
 
-void EoDlgUserIOConsole::DoDataExchange(CDataExchange* pDX) {
-	CDialog::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PROMPT, m_PromptWindow);
-	DDX_Text(pDX, IDC_INPUT, m_Input);
-	DDX_Text(pDX, IDC_PROMPT, m_Prompt);
+void EoDlgUserIOConsole::DoDataExchange(CDataExchange* dataExchange) {
+	CDialog::DoDataExchange(dataExchange);
+	DDX_Control(dataExchange, IDC_PROMPT, m_PromptWindow);
+	DDX_Text(dataExchange, IDC_INPUT, m_Input);
+	DDX_Text(dataExchange, IDC_PROMPT, m_Prompt);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgUserIOConsole, CDialog)
