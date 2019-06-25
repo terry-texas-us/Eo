@@ -40,13 +40,13 @@ public:
 };
 
 class OdDbDatabaseDoc final : public OdDbDatabase {
-	static AeSysDoc* g_pDoc;
+	static AeSysDoc* g_DatabaseDocument;
 	mutable AeSysDoc* m_pDoc;
 public:
 ODRX_DECLARE_MEMBERS(OdDbDatabaseDoc);
 	OdDbDatabaseDoc() noexcept;
-	AeSysDoc* document() const noexcept;
-	static void setDocToAssign(AeSysDoc* document) noexcept;
+	AeSysDoc* Document() const noexcept;
+	static void SetDocumentToAssign(AeSysDoc* document) noexcept;
 };
 
 using OdDbDatabaseDocPtr = OdSmartPtr<OdDbDatabaseDoc>;
@@ -126,16 +126,16 @@ protected:
 public:
 	class ClipboardData {
 	public:
-		static unsigned short m_FormatR15;
-		static unsigned short m_FormatR16;
-		static unsigned short m_FormatR17;
-		static unsigned short m_FormatR18;
-		static unsigned short m_FormatR19;
+		static unsigned short formatR15;
+		static unsigned short formatR16;
+		static unsigned short formatR17;
+		static unsigned short formatR18;
+		static unsigned short formatR19;
 
 		static bool isAcadDataAvailable(COleDataObject* dataObject, const bool attach = false) {
 			if (attach && !dataObject->AttachClipboard()) { return false; }
-			return dataObject->IsDataAvailable(m_FormatR15) || dataObject->IsDataAvailable(m_FormatR16) || dataObject->IsDataAvailable(m_FormatR17) || dataObject->IsDataAvailable(m_FormatR18) ||
-				dataObject->IsDataAvailable(m_FormatR19);
+			return dataObject->IsDataAvailable(formatR15) || dataObject->IsDataAvailable(formatR16) || dataObject->IsDataAvailable(formatR17) || dataObject->IsDataAvailable(formatR18) ||
+				dataObject->IsDataAvailable(formatR19);
 		}
 
 		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, const bool attach = false) {
@@ -149,12 +149,12 @@ public:
 
 		bool read(COleDataObject* dataObject) {
 			OdSharedPtr<CFile> File;
-			if ((File = dataObject->GetFileData(m_FormatR15)).get() || (File = dataObject->GetFileData(m_FormatR16)).get()) {
+			if ((File = dataObject->GetFileData(formatR15)).get() || (File = dataObject->GetFileData(formatR16)).get()) {
 				_isR15format = true;
 				_data._r15.read(File);
 				return true;
 			}
-			if ((File = dataObject->GetFileData(m_FormatR17)).get() || (File = dataObject->GetFileData(m_FormatR18)).get() || (File = dataObject->GetFileData(m_FormatR19)).get()) {
+			if ((File = dataObject->GetFileData(formatR17)).get() || (File = dataObject->GetFileData(formatR18)).get() || (File = dataObject->GetFileData(formatR19)).get()) {
 				_isR15format = false;
 				_data._r21.read(File);
 				return true;

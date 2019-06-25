@@ -275,7 +275,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 		}
 		default: ;
 	}
-	AeSys::UpdateMDITabs(ResetMDIChild);
+	AeSys::UpdateMdiTabs(ResetMDIChild);
 	return 0;
 }
 

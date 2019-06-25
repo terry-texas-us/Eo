@@ -19,17 +19,17 @@ void EoDlgSetupCustomMouseCharacters::DoDataExchange(CDataExchange* dataExchange
 
 BOOL EoDlgSetupCustomMouseCharacters::OnInitDialog() {
 	CDialog::OnInitDialog();
-	SetDlgItemTextW(IDC_LEFT_DOWN, AeSys::CustomLButtonDownCharacters);
-	SetDlgItemTextW(IDC_LEFT_UP, AeSys::CustomLButtonUpCharacters);
-	SetDlgItemTextW(IDC_RIGHT_DOWN, AeSys::CustomRButtonDownCharacters);
-	SetDlgItemTextW(IDC_RIGHT_UP, AeSys::CustomRButtonUpCharacters);
+	SetDlgItemTextW(IDC_LEFT_DOWN, AeSys::customLButtonDownCharacters);
+	SetDlgItemTextW(IDC_LEFT_UP, AeSys::customLButtonUpCharacters);
+	SetDlgItemTextW(IDC_RIGHT_DOWN, AeSys::customRButtonDownCharacters);
+	SetDlgItemTextW(IDC_RIGHT_UP, AeSys::customRButtonUpCharacters);
 	return TRUE;
 }
 
 void EoDlgSetupCustomMouseCharacters::OnOK() {
-	GetDlgItemTextW(IDC_LEFT_DOWN, AeSys::CustomLButtonDownCharacters);
-	GetDlgItemTextW(IDC_LEFT_UP, AeSys::CustomLButtonUpCharacters);
-	GetDlgItemTextW(IDC_RIGHT_DOWN, AeSys::CustomRButtonDownCharacters);
-	GetDlgItemTextW(IDC_RIGHT_UP, AeSys::CustomRButtonUpCharacters);
+	GetDlgItemTextW(IDC_LEFT_DOWN, AeSys::customLButtonDownCharacters);
+	GetDlgItemTextW(IDC_LEFT_UP, AeSys::customLButtonUpCharacters);
+	GetDlgItemTextW(IDC_RIGHT_DOWN, AeSys::customRButtonDownCharacters);
+	GetDlgItemTextW(IDC_RIGHT_UP, AeSys::customRButtonUpCharacters);
 	CDialog::OnOK();
 }

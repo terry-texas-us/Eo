@@ -68,19 +68,19 @@ IMPLEMENT_DYNCREATE(AeSysDoc, COleDocument)
 #define NEW_CONSTR(CLASS) OdSmartPtr<CLASS>(new CLASS, kOdRxObjAttach)
 ODRX_CONS_DEFINE_MEMBERS(OdDbDatabaseDoc, OdDbDatabase, NEW_CONSTR);
 
-AeSysDoc* OdDbDatabaseDoc::g_pDoc = nullptr;
+AeSysDoc* OdDbDatabaseDoc::g_DatabaseDocument {nullptr};
 
 OdDbDatabaseDoc::OdDbDatabaseDoc() noexcept
-	: m_pDoc(g_pDoc) {
-	g_pDoc = nullptr;
+	: m_pDoc(g_DatabaseDocument) {
+	g_DatabaseDocument = nullptr;
 }
 
-AeSysDoc* OdDbDatabaseDoc::document() const noexcept {
+AeSysDoc* OdDbDatabaseDoc::Document() const noexcept {
 	return m_pDoc;
 }
 
-void OdDbDatabaseDoc::setDocToAssign(AeSysDoc* document) noexcept {
-	g_pDoc = document;
+void OdDbDatabaseDoc::SetDocumentToAssign(AeSysDoc* document) noexcept {
+	g_DatabaseDocument = document;
 }
 
 BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
@@ -177,15 +177,15 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 		ON_COMMAND(ID_VECTORIZERTYPE, &AeSysDoc::OnVectorizerType)
 		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE, &AeSysDoc::OnUpdateVectorizerType)
 END_MESSAGE_MAP()
-unsigned short AeSysDoc::ClipboardData::m_FormatR15 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR16 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r16"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR17 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r17"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR18 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r18"));
-unsigned short AeSysDoc::ClipboardData::m_FormatR19 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r19"));
-AeSysDoc* g_pDoc {nullptr};
+unsigned short AeSysDoc::ClipboardData::formatR15 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
+unsigned short AeSysDoc::ClipboardData::formatR16 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r16"));
+unsigned short AeSysDoc::ClipboardData::formatR17 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r17"));
+unsigned short AeSysDoc::ClipboardData::formatR18 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r18"));
+unsigned short AeSysDoc::ClipboardData::formatR19 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r19"));
+AeSysDoc* g_Document {nullptr};
 
 AeSysDoc::AeSysDoc() noexcept {
-	g_pDoc = this;
+	g_Document = this;
 	m_pRefDocument = OdApplicationDocumentImpl::createObject(this);
 }
 // <tas="crash with smart pointer m_DatabasePtr release"\>
@@ -243,9 +243,9 @@ void AeSysDoc::DeleteContents() {
 	RemoveAllGroupsFromAllViews();
 	DeleteNodalResources();
 	ResetAllViews();
-	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
+	const auto NumberOfReactors {theApp.applicationReactors.size()};
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentToBeDestroyed(this);
+		theApp.applicationReactors.at(ReactorIndex)->DocumentToBeDestroyed(this);
 	}
 	if (!m_DatabasePtr.isNull()) {
 		m_DatabasePtr->appServices()->layoutManager()->removeReactor(this);
@@ -254,7 +254,7 @@ void AeSysDoc::DeleteContents() {
 	m_DatabasePtr.release();
 	COleDocument::DeleteContents();
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentDestroyed(static_cast<const wchar_t*>(GetPathName()));
+		theApp.applicationReactors.at(ReactorIndex)->DocumentDestroyed(static_cast<const wchar_t*>(GetPathName()));
 	}
 }
 
@@ -348,7 +348,7 @@ const OdString Cmd_VIEW::globalName() const { return name(); }
 void Cmd_VIEW::execute(OdEdCommandContext* commandContext) {
 	OdDbCommandContextPtr CommandContext(commandContext);
 	OdDbDatabaseDocPtr Database = CommandContext->database();
-	EoDlgNamedViews NamedViewsDialog(Database->document(), theApp.GetMainWnd());
+	EoDlgNamedViews NamedViewsDialog(Database->Document(), theApp.GetMainWnd());
 	if (NamedViewsDialog.DoModal() != IDOK) {
 		throw OdEdCancel();
 	}
@@ -363,7 +363,7 @@ const OdString Cmd_SELECT::globalName() const { return name(); }
 void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
 	OdDbCommandContextPtr CommandContext(commandContext);
 	OdDbDatabaseDocPtr Database = CommandContext->database();
-	auto Document {Database->document()};
+	auto Document {Database->Document()};
 	auto View {Document->getViewer()};
 	if (View == nullptr) { throw OdEdCancel(); }
 	Document->OnEditClearSelection();
@@ -577,7 +577,7 @@ public:
 	}
 
 	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) override {
-		auto pViewer {OdDbDatabaseDocPtr(m_CommandContext->database())->document()->getViewer()};
+		auto pViewer {OdDbDatabaseDocPtr(m_CommandContext->database())->Document()->getViewer()};
 		if (pViewer) {
 			auto Command {pViewer->command(commandName)};
 			if (Command.get()) { return Command; }
@@ -835,12 +835,12 @@ void AeSysDoc::AddRegisteredApp(const OdString& name) {
 }
 
 BOOL AeSysDoc::OnNewDocument() {
-	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
+	const auto NumberOfReactors {theApp.applicationReactors.size()};
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentCreateStarted(this);
+		theApp.applicationReactors.at(ReactorIndex)->DocumentCreateStarted(this);
 	}
 	if (COleDocument::OnNewDocument()) {
-		OdDbDatabaseDoc::setDocToAssign(this);
+		OdDbDatabaseDoc::SetDocumentToAssign(this);
 		try { // create *database* populated with the default set of objects(all tables, ModelSpace and PaperSpace blocks etc.)
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 		} catch (const OdError& Error) {
@@ -868,18 +868,18 @@ BOOL AeSysDoc::OnNewDocument() {
 			m_DatabasePtr->appServices()->layoutManager()->addReactor(this);
 		}
 		for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-			theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentCreated(this);
+			theApp.applicationReactors.at(ReactorIndex)->DocumentCreated(this);
 		}
 		return TRUE;
 	}
 	for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-		theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentCreateCanceled(this);
+		theApp.applicationReactors.at(ReactorIndex)->DocumentCreateCanceled(this);
 	}
 	return FALSE;
 }
 
 BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
-	OdDbDatabaseDoc::setDocToAssign(this);
+	OdDbDatabaseDoc::SetDocumentToAssign(this);
 	const auto FileType {AeSys::GetFileType(file)};
 	switch (FileType) {
 		case EoDb::kDwg: case EoDb::kDxf: {
@@ -2688,7 +2688,7 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 	Database->writeFile(StreamBuffer, OdDb::kDwg, OdDb::vAC21);
 	auto hGlobalR21 {GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR21))};
 	new(hGlobalR21)AcadClipDataR21(m_tmpPath, OdString(document->GetPathName()), point);
-	CacheGlobalData(ClipboardData::m_FormatR17, hGlobalR21);
+	CacheGlobalData(ClipboardData::formatR17, hGlobalR21);
 }
 // </command_console>
 bool AeSysDoc::DataSource::DoDragDrop() {
@@ -2708,13 +2708,13 @@ AeSysDoc::DataSource::~DataSource() {
 
 void AeSysDoc::OnDrawingUtilitiesAudit() {
 	const auto FixErrors {AfxMessageBox(L"Fix any errors detected?", MB_YESNO | MB_ICONQUESTION | MB_DEFBUTTON2) == IDYES};
-	ODA_ASSERT(!theApp.m_pAuditDlg);
-	theApp.m_pAuditDlg = new EoDlgAudit();
-	if (!theApp.m_pAuditDlg) {
+	ODA_ASSERT(!theApp.auditDialog);
+	theApp.auditDialog = new EoDlgAudit();
+	if (!theApp.auditDialog) {
 		AfxMessageBox(L"Error Creating Audit Dialog Object");
 		return;
 	}
-	if (!theApp.m_pAuditDlg->Create(IDD_AUDITINFO)) {
+	if (!theApp.auditDialog->Create(IDD_AUDITINFO)) {
 		AfxMessageBox(L"Error Creating Audit Dialog Window");
 		return;
 	}
@@ -2725,21 +2725,21 @@ void AeSysDoc::OnDrawingUtilitiesAudit() {
 		aiAppAudit.setHostAppServices(&theApp);
 		m_DatabasePtr->auditDatabase(&aiAppAudit);
 	} catch (const OdError& Error) {
-		delete theApp.m_pAuditDlg;
-		theApp.m_pAuditDlg = nullptr;
+		delete theApp.auditDialog;
+		theApp.auditDialog = nullptr;
 		theApp.reportError(L"Error Auditing Database...", Error);
 		AfxThrowUserException();
 	} catch (const UserBreak&) {
-		delete theApp.m_pAuditDlg;
-		theApp.m_pAuditDlg = nullptr;
+		delete theApp.auditDialog;
+		theApp.auditDialog = nullptr;
 	}
-	if (!theApp.m_pAuditDlg) {
+	if (!theApp.auditDialog) {
 		return;
 	}
 	const auto Title(L"Audit info - " + GetTitle());
-	theApp.m_pAuditDlg->SetWindowTextW(Title);
-	theApp.m_pAuditDlg->ShowWindow(SW_SHOW);
-	theApp.m_pAuditDlg = nullptr;
+	theApp.auditDialog->SetWindowTextW(Title);
+	theApp.auditDialog->ShowWindow(SW_SHOW);
+	theApp.auditDialog = nullptr;
 }
 
 BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate) {

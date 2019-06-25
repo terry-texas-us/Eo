@@ -55,7 +55,7 @@ ID_OP9,
 
 // CMainFrame construction/destruction
 CMainFrame::CMainFrame() {
-	theApp.m_ApplicationLook = static_cast<unsigned>(theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK));
+	theApp.applicationLook = static_cast<unsigned>(theApp.GetInt(L"ApplicationLook", ID_VIEW_APPLOOK_OFF_2007_BLACK));
 }
 
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
@@ -104,7 +104,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	DockPane(&m_OutputPane);
 	m_PropertiesPane.EnableDocking(CBRS_ALIGN_ANY);
 	DockPane(&m_PropertiesPane);
-	OnApplicationLook(theApp.m_ApplicationLook);
+	OnApplicationLook(theApp.applicationLook);
 	EnableWindowsDialog(ID_WINDOW_MANAGER, IDS_WINDOWS_MANAGER, TRUE);
 
 	// Enable automatic creation and management of the pop-up pane menu, which displays a list of application panes.
@@ -256,13 +256,13 @@ LRESULT CMainFrame::OnToolbarReset(const WPARAM toolbarResourceId, LPARAM lparam
 }
 
 void CMainFrame::OnApplicationLook(const unsigned look) {
-	theApp.m_ApplicationLook = look;
-	switch (theApp.m_ApplicationLook) {
+	theApp.applicationLook = look;
+	switch (theApp.applicationLook) {
 		case ID_VIEW_APPLOOK_WINDOWS_7:
 			CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
 			break;
 		default:
-			switch (theApp.m_ApplicationLook) {
+			switch (theApp.applicationLook) {
 				case ID_VIEW_APPLOOK_OFF_2007_BLUE:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_LunaBlue);
 					break;
@@ -285,11 +285,11 @@ void CMainFrame::OnApplicationLook(const unsigned look) {
 	CDockingManager::SetDockingMode(DT_SMART);
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
-	theApp.WriteInt(L"ApplicationLook", static_cast<int>(theApp.m_ApplicationLook));
+	theApp.WriteInt(L"ApplicationLook", static_cast<int>(theApp.applicationLook));
 }
 
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* commandUserInterface) {
-	commandUserInterface->SetRadio(theApp.m_ApplicationLook == commandUserInterface->m_nID);
+	commandUserInterface->SetRadio(theApp.applicationLook == commandUserInterface->m_nID);
 }
 
 BOOL CMainFrame::LoadFrame(const unsigned resourceId, const unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {

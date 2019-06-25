@@ -66,7 +66,7 @@ BOOL EoLoadApps::OnInitDialog() {
 void EoLoadApps::OnLoadApp() {
 	CFileDialog FileDialog(TRUE, nullptr, nullptr, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, L"Run-time Extensions (*.dll,*.tx)|*.dll;*.tx|Any file (*.*)|*.*||", this);
 	FileDialog.m_ofn.lpstrTitle = L"Load application";
-	auto Path {AeSys::getApplicationPath()};
+	auto Path {AeSys::GetApplicationPath()};
 	FileDialog.m_ofn.lpstrInitialDir = Path.GetBuffer(Path.GetLength());
 	if (FileDialog.DoModal() == IDOK) {
 		try {

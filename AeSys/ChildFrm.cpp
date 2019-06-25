@@ -50,23 +50,23 @@ void CChildFrame::OnMDIActivate(const BOOL activate, CWnd* activateWnd, CWnd* de
 	auto DeactivatedFrame {dynamic_cast<CFrameWnd*>(deactivateWnd)};
 	const auto ActivatedDocument {ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr};
 	const auto DeactivatedDocument {DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr};
-	const auto NumberOfReactors {theApp.m_ApplicationReactors.size()};
+	const auto NumberOfReactors {theApp.applicationReactors.size()};
 	if (activate) {
 		if (DeactivatedDocument) {
 			for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentToBeDeactivated(DeactivatedDocument);
+				theApp.applicationReactors.at(ReactorIndex)->DocumentToBeDeactivated(DeactivatedDocument);
 			}
 		}
 		if (ActivatedDocument) {
 			for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentActivated(ActivatedDocument);
-				theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentBecameCurrent(ActivatedDocument);
+				theApp.applicationReactors.at(ReactorIndex)->DocumentActivated(ActivatedDocument);
+				theApp.applicationReactors.at(ReactorIndex)->DocumentBecameCurrent(ActivatedDocument);
 			}
 		}
 	} else {
 		if (ActivatedDocument) {
 			for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
-				theApp.m_ApplicationReactors.at(ReactorIndex)->DocumentToBeActivated(ActivatedDocument);
+				theApp.applicationReactors.at(ReactorIndex)->DocumentToBeActivated(ActivatedDocument);
 			}
 		}
 	}

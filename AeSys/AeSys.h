@@ -59,54 +59,54 @@ private:
 	unsigned m_MtRegenerateThreads {4};
 	bool m_EnablePrintPreviewViaBitmap {true};
 	bool m_UseGsModel {true};
-	bool m_EnableHLR {false};
+	bool m_EnableHlr {false};
 	bool m_ContextColors {true};
-	bool m_TTFPolyDraw {false};
-	bool m_TTFTextOut {false};
-	bool m_TTFCache {false};
+	bool m_TtfPolyDraw {false};
+	bool m_TtfTextOut {false};
+	bool m_TtfCache {false};
 	bool m_DynamicSubEntHlt {false};
-	bool m_GDIGradientsAsBitmap {false};
-	bool m_GDIGradientsAsPolys {false};
-	unsigned char m_nGDIGradientsAsPolysThreshold {10};
+	bool m_GdiGradientsAsBitmap {false};
+	bool m_GdiGradientsAsPolys {false};
+	unsigned char m_NGdiGradientsAsPolysThreshold {10};
 	bool m_DisableAutoRegenerate {false};
-	ODCOLORREF m_background {g_ViewBackgroundColor};
-	unsigned long m_thisThreadID {0};
-	unsigned m_numCustomCommands {0};
-	unsigned long m_numGSMenuItems {0};
-	OdString m_sVectorizerPath;
+	ODCOLORREF m_BackgroundColor {g_ViewBackgroundColor};
+	unsigned long m_ThisThreadId {0};
+	unsigned m_NumCustomCommands {0};
+	unsigned long m_NumGsMenuItems {0};
+	OdString m_VectorizerPath;
 	OdString m_RecentCommand;
-	bool m_bPartial {false};
-	bool m_bRecover {false};
-	bool m_bLoading {false};
+	bool m_Partial {false};
+	bool m_Recover {false};
+	bool m_Loading {false};
 	// ODA_MT_DBIO_BEGIN
-	bool m_bUseMTLoading {false};
+	bool m_UseMtLoading {false};
 	// ODA_MT_DBIO_END
-	bool m_bRemoteGeomViewer {false};
-	bool m_bUseTempFiles {false};
-	int m_pagingType {0};
-	CStringArray m_tempFilesList;
-	bool m_bSupportFileSelectionViaDialog {true};
+	bool m_RemoteGeometryViewer {false};
+	bool m_UseTempFiles {false};
+	int m_PagingType {0};
+	CStringArray m_TempFilesList;
+	bool m_SupportFileSelectionViaDialog {true};
 
 	//	void UpdateFieldDisplay();
 public:
-	unsigned m_ApplicationLook {ID_VIEW_APPLOOK_OFF_2007_BLACK};
+	unsigned applicationLook {ID_VIEW_APPLOOK_OFF_2007_BLACK};
 	void AddReactor(const OdApplicationReactor* reactor);
 	void RemoveReactor(const OdApplicationReactor* reactor);
-	std::vector<OdSmartPtr<OdApplicationReactor> > m_ApplicationReactors;
+	std::vector<OdSmartPtr<OdApplicationReactor> > applicationReactors;
 	OdDbDatabasePtr openFile(const wchar_t* pathName);
 
-	void SetPartialOption(const bool partial) noexcept { m_bPartial = partial; }
+	void SetPartialOption(const bool partial) noexcept { m_Partial = partial; }
 
-	void SetRecoverOption(const bool recover) noexcept { m_bRecover = recover; }
+	void SetRecoverOption(const bool recover) noexcept { m_Recover = recover; }
 
-	void SetMtLoadingOption(const bool useMTLoading) noexcept { m_bUseMTLoading = useMTLoading; }
+	void SetMtLoadingOption(const bool useMtLoading) noexcept { m_UseMtLoading = useMtLoading; }
 
 	OdGsMarker GetGsMenuItemMarker() const noexcept { return reinterpret_cast<OdGsMarker>(this); }
 
 	CMenu* CommandMenu(CMenu** toolsSubMenu = nullptr);
 	void RefreshCommandMenu();
 
-	unsigned NumberOfCustomCommands() const noexcept { return m_numCustomCommands; }
+	unsigned NumberOfCustomCommands() const noexcept { return m_NumCustomCommands; }
 
 	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
 
@@ -122,23 +122,23 @@ public:
 
 	bool UseGsModel() const noexcept { return m_UseGsModel; }
 
-	bool UseSoftwareHlr() const noexcept { return m_EnableHLR; }
+	bool UseSoftwareHlr() const noexcept { return m_EnableHlr; }
 
 	bool EnableContextualColors() const noexcept { return m_ContextColors; }
 
-	bool EnableTtfPolyDraw() const noexcept { return m_TTFPolyDraw; }
+	bool EnableTtfPolyDraw() const noexcept { return m_TtfPolyDraw; }
 
-	bool EnableTtfTextOut() const noexcept { return m_TTFTextOut; }
+	bool EnableTtfTextOut() const noexcept { return m_TtfTextOut; }
 
-	bool EnableTtfCache() const noexcept { return m_TTFCache; }
+	bool EnableTtfCache() const noexcept { return m_TtfCache; }
 
 	bool EnableDynamicSubEntHlt() const noexcept { return m_DynamicSubEntHlt; }
 
-	bool EnableGdiGradientsAsBitmap() const noexcept { return m_GDIGradientsAsBitmap; }
+	bool EnableGdiGradientsAsBitmap() const noexcept { return m_GdiGradientsAsBitmap; }
 
-	bool EnableGdiGradientsAsPolys() const noexcept { return m_GDIGradientsAsPolys; }
+	bool EnableGdiGradientsAsPolys() const noexcept { return m_GdiGradientsAsPolys; }
 
-	unsigned char GdiGradientsAsPolysThreshold() const noexcept { return m_nGDIGradientsAsPolysThreshold; }
+	unsigned char GdiGradientsAsPolysThreshold() const noexcept { return m_NGdiGradientsAsPolysThreshold; }
 
 	bool DisableAutoRegenerate() const noexcept { return m_DisableAutoRegenerate; }
 
@@ -146,13 +146,13 @@ public:
 
 	enum DisplayFields { kSchemaFields, kDxfFields, kDwgFields };
 
-	int m_displayFields {0};
-	bool m_SaveRoundTrip {true};
-	bool m_SavePreview {false};
-	bool m_SaveWithPassword {false};
-	EoDlgAudit* m_pAuditDlg {nullptr};
+	int displayFields {0};
+	bool saveRoundTrip {true};
+	bool savePreview {false};
+	bool saveWithPassword {false};
+	EoDlgAudit* auditDialog {nullptr};
 	//	CTaskBarWin7Ext m_tbExt;
-	OdMutexPtr m_pMeterMutex;
+	OdMutexPtr meterMutex;
 	AeSys() noexcept;
 	OdString RecentGsDevicePath() const;
 	void SetRecentGsDevicePath(const OdString& vectorizerPath);
@@ -217,21 +217,21 @@ public:
 	const OdString product() override /* ExHostAppServices */;
 	OdString getTempPath() const override /* ExSystemServices*/;
 	BOOL ProcessShellCommand(CCommandLineInfo& commandLineInfo); // hides non-virtual function of parent
-	static void initPlotStyleSheetEnv();
+	static void InitPlotStyleSheetEnv();
 	BOOL InitInstance() override /* CWinAppEx (CWinThread) */;
 	int ExitInstance() override /* CWinAppEx (CWinThread) */;
 	BOOL OnIdle(long count) override /* CWinAppEx (CWinThread) */;
 
-	bool getSAVEROUNDTRIP() const noexcept override { return m_SaveRoundTrip; }
+	bool getSAVEROUNDTRIP() const noexcept override { return saveRoundTrip; }
 
 	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override /* ExHostAppServices */;
 	OdDbUndoControllerPtr newUndoController() override /* ExHostAppServices */;
 	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
 
 	//	void OnOptionsRenderingDeviceVectorize();
-	bool getSavePreview() noexcept { return m_SavePreview; }
+	bool getSavePreview() noexcept { return savePreview; }
 
-	bool getSaveWithPassword() noexcept { return m_SaveWithPassword; }
+	bool getSaveWithPassword() noexcept { return saveWithPassword; }
 
 	void SetRecentCommand(const OdString& command);
 
@@ -248,9 +248,9 @@ public:
 		return OdString(L"00 : < >");
 	}
 
-	ODCOLORREF activeBackground() const noexcept { return m_background; }
+	ODCOLORREF activeBackground() const noexcept { return m_BackgroundColor; }
 
-	void setActiveBackground(const ODCOLORREF& color) noexcept { m_background = color & 0xffffff; }
+	void setActiveBackground(const ODCOLORREF& color) noexcept { m_BackgroundColor = color & 0xffffff; }
 
 	const ODCOLORREF* curPalette() const;
 	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = NULL, OdDbBaseDatabase* database = NULL, unsigned long flags = 0) override;
@@ -261,24 +261,24 @@ public:
 	OdDbPageControllerPtr newPageController() override;
 	int SetPagingType(int pagingType) noexcept;
 
-	int pagingType() const noexcept { return m_pagingType & 0x0f; }
+	int pagingType() const noexcept { return m_PagingType & 0x0f; }
 
 	bool SetUndoType(bool useTempFiles) noexcept;
 
-	bool undoType() const noexcept { return m_bUseTempFiles; }
+	bool undoType() const noexcept { return m_UseTempFiles; }
 
 	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
 	BOOL PreTranslateMessage(MSG* message) override;
 
-	bool remoteGeomViewer() const noexcept { return m_bRemoteGeomViewer; }
+	bool remoteGeomViewer() const noexcept { return m_RemoteGeometryViewer; }
 
-	void setRemoteGeomViewer() noexcept { m_bRemoteGeomViewer = true; }
+	void setRemoteGeomViewer() noexcept { m_RemoteGeometryViewer = true; }
 
-	bool supportFileSelectionViaDialog() const noexcept { return m_bSupportFileSelectionViaDialog; }
+	bool supportFileSelectionViaDialog() const noexcept { return m_SupportFileSelectionViaDialog; }
 
-	void setSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept { m_bSupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
+	void setSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept { m_SupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
 
-	static CString getApplicationPath();
+	static CString GetApplicationPath();
 
 	/// </Open Design Alliance>
 	void PreLoadState() override;
@@ -313,10 +313,10 @@ private:
 	bool m_TrapHighlighted {true};
 	Units m_Units {kInches};
 public:
-	static CString CustomLButtonDownCharacters;
-	static CString CustomLButtonUpCharacters;
-	static CString CustomRButtonDownCharacters;
-	static CString CustomRButtonUpCharacters;
+	static CString customLButtonDownCharacters;
+	static CString customLButtonUpCharacters;
+	static CString customRButtonDownCharacters;
+	static CString customRButtonUpCharacters;
 	bool m_NodalModeAddGroups {true};
 	EoApOptions m_Options;
 	void AddModeInformationToMessageList() const;
@@ -384,7 +384,7 @@ public:
 	char* SimplexStrokeFont() const noexcept;
 	short TrapHighlightColor() const noexcept;
 	static void UninitializeTeigha();
-	static void UpdateMDITabs(BOOL resetMDIChild);
+	static void UpdateMdiTabs(BOOL resetMdiChild);
 	void OnAppAbout();
 	void OnEditCfGroups() noexcept;
 	void OnUpdateEditCfGroups(CCmdUI* commandUserInterface);

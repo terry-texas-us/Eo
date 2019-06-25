@@ -1841,7 +1841,7 @@ void AeSysView::OnKeyDown(const unsigned nChar, const unsigned repeatCount, cons
 }
 
 void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
-	if (AeSys::CustomLButtonDownCharacters.IsEmpty()) {
+	if (AeSys::customLButtonDownCharacters.IsEmpty()) {
 		__super::OnLButtonDown(flags, point);
 		switch (m_mode) {
 			case kQuiescent:
@@ -1870,12 +1870,12 @@ void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 				break;
 		}
 	} else {
-		DoCustomMouseClick(AeSys::CustomLButtonDownCharacters);
+		DoCustomMouseClick(AeSys::customLButtonDownCharacters);
 	}
 }
 
 void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
-	if (AeSys::CustomLButtonUpCharacters.IsEmpty()) {
+	if (AeSys::customLButtonUpCharacters.IsEmpty()) {
 		__super::OnLButtonUp(flags, point);
 		if (m_mode == kGetPoint && GetCapture() == this) {
 			m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
@@ -1898,7 +1898,7 @@ void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 		//			}
 		//		}
 	} else {
-		DoCustomMouseClick(AeSys::CustomLButtonUpCharacters);
+		DoCustomMouseClick(AeSys::customLButtonUpCharacters);
 	}
 }
 
@@ -2029,23 +2029,23 @@ BOOL AeSysView::OnMouseWheel(const unsigned flags, const short zDelta, const CPo
 }
 
 void AeSysView::OnRButtonDown(const unsigned flags, const CPoint point) {
-	if (AeSys::CustomRButtonDownCharacters.IsEmpty()) {
+	if (AeSys::customRButtonDownCharacters.IsEmpty()) {
 		m_RightButton = true;
 		m_MousePosition = point;
 		__super::OnRButtonDown(flags, point);
 	} else {
-		DoCustomMouseClick(AeSys::CustomRButtonDownCharacters);
+		DoCustomMouseClick(AeSys::customRButtonDownCharacters);
 	}
 }
 
 void AeSysView::OnRButtonUp(const unsigned flags, const CPoint point) {
-	if (AeSys::CustomRButtonUpCharacters.IsEmpty()) {
+	if (AeSys::customRButtonUpCharacters.IsEmpty()) {
 		m_RightButton = false;
 
 		// <tas="Context menus using right mouse button goes here."/>
 		__super::OnRButtonUp(flags, point);
 	} else {
-		DoCustomMouseClick(AeSys::CustomRButtonUpCharacters);
+		DoCustomMouseClick(AeSys::customRButtonUpCharacters);
 	}
 }
 
