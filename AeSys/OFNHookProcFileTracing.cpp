@@ -44,13 +44,13 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>((wchar_t*)FilePath));
 			CFileStatus FileStatus;
 			if (!CFile::GetStatus(FilePath, FileStatus)) {
-				theApp.WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
+				AeSys::WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
 				return TRUE;
 			}
 			const auto Name {PathFindFileNameW(FilePath)};
 			const auto FileType {AeSys::GetFileType(FilePath)};
 			if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
-				theApp.WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
+				AeSys::WarningMessageBox(IDS_MSG_INVALID_TRACING_FILE_NAME, FilePath);
 				return TRUE;
 			}
 			switch (LOWORD(wParam)) {
@@ -66,7 +66,7 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 					if (Layer != nullptr) {
 
 						if (Layer->IsCurrent()) {
-							theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
+							AeSys::WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
 						} else {
 							FileOpenSuccess = true;
 						}
@@ -106,7 +106,7 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 					if (Layer != nullptr) {
 
 						if (Layer->IsCurrent()) {
-							theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
+							AeSys::WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
 						} else {
 							FileOpenSuccess = true;
 						}

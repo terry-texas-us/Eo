@@ -33,7 +33,7 @@ void EoDlgModeRevise::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgModeRevise::OnInitDialog() {
 	CDialog::OnInitDialog();
-	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(theApp.GetCursorPosition());
+	sm_TextPrimitive = AeSysView::GetActiveView()->SelectTextUsingPoint(AeSys::GetCursorPosition());
 	if (sm_TextPrimitive != nullptr) {
 		sm_FontDefinition = sm_TextPrimitive->FontDefinition();
 		sm_ReferenceSystem = sm_TextPrimitive->ReferenceSystem();

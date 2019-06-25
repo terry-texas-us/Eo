@@ -273,8 +273,9 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 			ActiveView->UpdateStateInformation(AeSysView::kScale);
 			return 0;
 		}
+		default: ;
 	}
-	theApp.UpdateMDITabs(ResetMDIChild);
+	AeSys::UpdateMDITabs(ResetMDIChild);
 	return 0;
 }
 

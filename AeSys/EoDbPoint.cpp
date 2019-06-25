@@ -64,7 +64,7 @@ void EoDbPoint::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Mode;
 	Mode.Format(L" Point Display Mode:%d", m_PointDisplayMode);
 	Report += Mode;
-	theApp.AddStringToMessageList(Report);
+	AeSys::AddStringToMessageList(Report);
 }
 
 void EoDbPoint::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
@@ -79,33 +79,32 @@ EoDbPrimitive* EoDbPoint::Clone(OdDbBlockTableRecordPtr blockTableRecord) const 
 
 void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
-	const auto HotColor {theApp.GetHotColor(ColorIndex)};
+	const auto HotColor {AeSys::GetHotColor(ColorIndex)};
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 	if (pt.IsInView()) {
 		const auto pnt {view->DoViewportProjection(pt)};
-		auto i {0};
 		switch (m_PointDisplayMode) {
 			case 0:	// 3 pixel plus
-				for (i = -1; i <= 1; i++) {
+				for (auto i = -1; i <= 1; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y, HotColor);
 					deviceContext->SetPixel(pnt.x, pnt.y + i, HotColor);
 				}
 				break;
 			case 1:  // 5 pixel plus
-				for (i = -2; i <= 2; i++) {
+				for (auto i = -2; i <= 2; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y, HotColor);
 					deviceContext->SetPixel(pnt.x, pnt.y + i, HotColor);
 				}
 				break;
 			case 2: // 9 pixel plus
-				for (i = -4; i <= 4; i++) {
+				for (auto i = -4; i <= 4; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y, HotColor);
 					deviceContext->SetPixel(pnt.x, pnt.y + i, HotColor);
 				}
 				break;
 			case 3: // 9 pixel cross
-				for (i = -4; i <= 4; i++) {
+				for (auto i = -4; i <= 4; i++) {
 					deviceContext->SetPixel(pnt.x + i, pnt.y - i, HotColor);
 					deviceContext->SetPixel(pnt.x + i, pnt.y + i, HotColor);
 				}
@@ -317,8 +316,8 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFi
 }
 
 OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
-	short ColorIndex {0};
-	short PointDisplayMode {0};
+	short ColorIndex;
+	short PointDisplayMode;
 	OdGePoint3d Position;
 	if (versionNumber == 1) {
 		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);

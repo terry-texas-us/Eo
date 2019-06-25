@@ -36,7 +36,6 @@ BOOL EoDlgSetActiveLayout::OnInitDialog() {
 
 void EoDlgSetActiveLayout::FillListBox() {
 	try {
-		auto ItemIndex {0u};
 		OdArray<OdString> Items;
 		const auto Database {m_Database};
 		OdDbDictionaryPtr LayoutDictionary {Database->getLayoutDictionaryId().safeOpenObject()};
@@ -45,7 +44,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		m_OldActiveLayout = -1;
 		while (!LayoutIterator->done()) {
 			OdSmartPtr<OdDbLayout> Layout {LayoutIterator->objectId().safeOpenObject()};
-			ItemIndex = static_cast<unsigned>(Layout->getTabOrder());
+			auto ItemIndex {static_cast<unsigned>(Layout->getTabOrder())};
 			if (ItemIndex >= Items.size()) {
 				Items.resize(ItemIndex + 1);
 			}
@@ -163,7 +162,7 @@ void EoDlgSetActiveLayout::OnNew() {
 
 void EoDlgSetActiveLayout::OnFromTemplate() {
 	const OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
-	const auto FileName {theApp.BrowseWithPreview(GetSafeHwnd(), Filter)};
+	const auto FileName {AeSys::BrowseWithPreview(GetSafeHwnd(), Filter)};
 	if (FileName.GetLength() == 0) { return; }
 	auto Database {theApp.readFile(OdString(FileName))};
 	if (Database.isNull()) { return; }

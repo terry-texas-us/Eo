@@ -112,7 +112,7 @@ EoDbPrimitive* EoDbFile::ReadPrimitive(OdDbBlockTableRecordPtr blockTableRecord)
 			break;
 		}
 		default:
-			theApp.WarningMessageBox(IDS_MSG_BAD_PRIM_TYPE);
+			AeSys::WarningMessageBox(IDS_MSG_BAD_PRIM_TYPE);
 	}
 	return Primitive;
 }

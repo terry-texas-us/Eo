@@ -48,8 +48,8 @@ void EoDbDimension::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Report(L"<Dimension>");
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
-	Report += L" [" + theApp.FormatLength(Length, theApp.GetUnits()) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
-	theApp.AddStringToMessageList(Report);
+	Report += L" [" + theApp.FormatLength(Length, theApp.GetUnits()) + L" @ " + AeSys::FormatAngle(AngleInXYPlane) + L"]";
+	AeSys::AddStringToMessageList(Report);
 	theApp.SetEngagedLength(Length);
 	theApp.SetEngagedAngle(AngleInXYPlane);
 }
@@ -76,7 +76,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 }
 
 void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
-	EoDbDimension* Dimension {nullptr};
+	EoDbDimension* Dimension;
 	double dRel[2];
 	m_Line.ParametricRelationshipOf(points[0], dRel[0]);
 	m_Line.ParametricRelationshipOf(points[1], dRel[1]);

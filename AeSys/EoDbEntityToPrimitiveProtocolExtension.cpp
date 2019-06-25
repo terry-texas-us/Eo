@@ -167,7 +167,7 @@ public:
 		for (auto i = 0; !Iterator->done(); i++, Iterator->step()) {
 			OdDb2dVertexPtr Vertex = Iterator->entity();
 			if (Vertex.get()) {
-				auto Point(Vertex->position());
+				auto Point {Vertex->position()};
 				Point.z = PolylineEntity->elevation();
 				PolylinePrimitive->AppendVertex(Vertex->position().convert2d(), Vertex->bulge(), Vertex->startWidth(), Vertex->endWidth());
 			}

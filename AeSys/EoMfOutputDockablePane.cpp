@@ -31,9 +31,9 @@ int EoMfOutputDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	m_OutputReportsList.SetFont(&m_Font);
 
 	// Attach list windows to tab:
-	auto TabLabel {theApp.LoadStringResource(IDS_OUTPUT_MESSAGES)};
+	auto TabLabel {AeSys::LoadStringResource(IDS_OUTPUT_MESSAGES)};
 	m_wndTabs.AddTab(&m_OutputMessagesList, TabLabel);
-	TabLabel = theApp.LoadStringResource(IDS_OUTPUT_REPORTS);
+	TabLabel = AeSys::LoadStringResource(IDS_OUTPUT_REPORTS);
 	m_wndTabs.AddTab(&m_OutputReportsList, TabLabel);
 
 	// Dummy data

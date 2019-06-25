@@ -230,23 +230,18 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const int x, const int y) const {
 	return ScreenPoint;
 }
 
-OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& wcsPt) const {
-	// To DCS
-	auto scrPt(wcsPt);
+OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& worldPoint) const {
 	const auto View {ActiveView()};
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
-	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject();
-	OdAbstractViewPEPtr AbstractView(pObj);
-	const auto vecY {AbstractView->upVector(pObj)};
-	const auto vecZ {AbstractView->direction(pObj)};
-	const auto vecX {vecY.crossProduct(vecZ).normal()};
-	const auto offset {AbstractView->viewOffset(pObj)};
-	const auto prTarg {AbstractView->target(pObj) - vecX * offset.x - vecY * offset.y};
-	scrPt.x = vecX.dotProduct(wcsPt - prTarg);
-	scrPt.y = vecY.dotProduct(wcsPt - prTarg);
-	scrPt.z = 0.0;
-	return scrPt;
+	OdRxObjectPtr Viewport {OdDbObjectId(ClientViewInfo.viewportObjectId).openObject()};
+	OdAbstractViewPEPtr AbstractView(Viewport);
+	const auto UpVector {AbstractView->upVector(Viewport)};
+	const auto Direction {AbstractView->direction(Viewport)};
+	const auto vecX {UpVector.crossProduct(Direction).normal()};
+	const auto ViewOffset {AbstractView->viewOffset(Viewport)};
+	const auto Target {AbstractView->target(Viewport) - vecX * ViewOffset.x - UpVector * ViewOffset.y};
+	return {vecX.dotProduct(worldPoint - Target), UpVector.dotProduct(worldPoint - Target), 0.0};
 }
 
 bool OdExEditorObject::OnSize(unsigned flags, const int w, const int h) {

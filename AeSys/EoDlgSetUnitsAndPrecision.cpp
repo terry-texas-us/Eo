@@ -28,7 +28,7 @@ BOOL EoDlgSetUnitsAndPrecision::OnInitDialog() {
 	CDialog::OnInitDialog();
 	const auto CheckButtonId {EoMin(IDC_ARCHITECTURAL + m_Units, IDC_METRIC)};
 	CheckRadioButton(IDC_ARCHITECTURAL, IDC_METRIC, CheckButtonId);
-	const auto MetricUnits {theApp.LoadStringResource(IDS_METRIC_UNITS)};
+	const auto MetricUnits {AeSys::LoadStringResource(IDS_METRIC_UNITS)};
 	auto Position {0};
 	while (Position < MetricUnits.GetLength()) {
 		auto UnitsItem {MetricUnits.Tokenize(L"\n", Position)};

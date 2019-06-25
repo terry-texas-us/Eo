@@ -121,7 +121,7 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 #pragma warning (default: 4767) // (level 4) section name 'symbol' is longer than 8 characters and will be truncated by the linker
 #pragma warning (default: 4774) // (level 4) 'string' : format string expected in argument number is not a string literal
 #pragma warning (default: 4777) // (level 4) 'function' : format string 'string' requires an argument of type 'type1', but variadic argument number has type 'type2'
-#pragma warning (default: 4800) // (level 4) Implicit conversion from 'type' to bool.Possible information loss
+// <tas="requires VS 2019"/>#pragma warning (default: 4800) // (level 4) Implicit conversion from 'type' to bool.Possible information loss
 #pragma warning (default: 4820) // (level 4) 'bytes' bytes padding added after construct 'member_name'
 #pragma warning (default: 4837) // (level 4) trigraph detected : '??character' replaced by 'character'
 #pragma warning (default: 4841) // (level 4) non - standard extension used : compound member designator used in offsetof

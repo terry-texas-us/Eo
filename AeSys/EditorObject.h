@@ -95,7 +95,7 @@ public:
 	[[nodiscard]] OdGePoint3d ToEyeToWorld(int x, int y) const;
 	bool ToUcsToWorld(OdGePoint3d& wcsPt) const;
 	[[nodiscard]] OdGePoint3d ToScreenCoord(int x, int y) const;
-	[[nodiscard]] OdGePoint3d ToScreenCoord(const OdGePoint3d& wcsPt) const;
+	[[nodiscard]] OdGePoint3d ToScreenCoord(const OdGePoint3d& WorldPoint) const;
 
 	class OleDragCallback {
 	public:

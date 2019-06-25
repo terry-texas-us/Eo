@@ -17,7 +17,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 	if ((ClientDeviceContext.GetDeviceCaps(RASTERCAPS) & RC_PALETTE) == 0) { return true; }
 	DIBSECTION ds;
 	bitmap.GetObjectW(sizeof(DIBSECTION), &ds);
-	auto NumberOfColors {0};
+	int NumberOfColors;
 	if (ds.dsBmih.biClrUsed != 0) {
 		NumberOfColors = static_cast<int>(ds.dsBmih.biClrUsed);
 	} else {

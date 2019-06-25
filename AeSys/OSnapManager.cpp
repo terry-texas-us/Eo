@@ -432,7 +432,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 
 			if (nSnapModes & ToSnapModes(ObjectSnapMode)) // so not all types are tested
 			{
-				auto Result {eOk};
+				OdResult Result;
 				if (InsertionMatrix) {
 					Result = Entity->getOsnapPoints(ObjectSnapMode, Marker, ModelPickPoint, ModelLastPoint, worldToEyeTransform, m_SnapPoints, ModelToWorldTransform);
 				} else {
@@ -448,6 +448,18 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, SnapPoint));
 								m_Redraw = true;
 								break;
+							case OdDb::kOsModeEnd: break;
+							case OdDb::kOsModeMid: break;
+							case OdDb::kOsModeNode: break;
+							case OdDb::kOsModeQuad: break;
+							case OdDb::kOsModeIntersec: break;
+							case OdDb::kOsModeIns: break;
+							case OdDb::kOsModePerp: break;
+							case OdDb::kOsModeTan: break;
+							case OdDb::kOsModeNear: break;
+							case OdDb::kOsModeApint: break;
+							case OdDb::kOsModePar: break;
+							case OdDb::kOsModeStart: break;
 							default:
 								// no op
 								break;

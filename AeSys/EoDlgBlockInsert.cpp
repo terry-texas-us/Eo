@@ -47,7 +47,7 @@ void EoDlgBlockInsert::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgBlockInsert::OnInitDialog() {
 	CDialog::OnInitDialog();
-	InsertionPoint = theApp.GetCursorPosition();
+	InsertionPoint = AeSys::GetCursorPosition();
 	CString BlockName;
 	EoDbBlock* Block;
 	auto BlockPosition {m_Document->GetFirstBlockPosition()};

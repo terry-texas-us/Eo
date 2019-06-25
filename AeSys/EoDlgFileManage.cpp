@@ -321,7 +321,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 	const auto pNMItemActivate {reinterpret_cast<tagNMITEMACTIVATE*>(notifyStructure)};
 	const auto Item {pNMItemActivate->iItem};
 	const auto SubItem {pNMItemActivate->iSubItem};
-	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item));
+	EoDbLayer* Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item))};
 	auto LayerTableRecord {Layer->TableRecord()};
 	m_ClickToColumnStatus = false;
 	switch (SubItem) {
@@ -332,7 +332,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 			break;
 		case On:
 			if (Layer->IsCurrent()) {
-				theApp.WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, LayerTableRecord->getName());
+				AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, LayerTableRecord->getName());
 			} else {
 				Layer->SetIsOff(!Layer->IsOff());
 			}
@@ -342,7 +342,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 			break;
 		case Lock:
 			if (Layer->IsCurrent()) {
-				theApp.WarningMessageBox(IDS_MSG_LAYER_NO_STATIC, LayerTableRecord->getName());
+				AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_STATIC, LayerTableRecord->getName());
 			} else {
 				Layer->SetIsLocked(!Layer->IsLocked());
 			}
@@ -410,6 +410,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 		}
 		case VpPlotStyle:
 			break;
+		default: ;
 	}
 	m_LayersList.Invalidate();
 	*result = 0;
@@ -445,7 +446,7 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(NMHDR* const notifyStru
 	if (!NewName.isEmpty()) {
 		auto Layers {m_Document->LayerTable(OdDb::kForWrite)};
 		if (LayerTableRecord->objectId() == m_Database->getLayerZeroId()) {
-			theApp.WarningMessageBox(IDS_MSG_LAYER_NO_RENAME_0);
+			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_RENAME_0);
 		} else {
 
 			if (Layers->getAt(NewName).isNull()) {

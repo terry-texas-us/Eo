@@ -95,14 +95,14 @@ void EoDlgUserIOConsole::AddString(const CString& string) {
 }
 
 void EoDlgUserIOConsole::AddOut(const CString& string) {
-	auto n {0};
-	auto n0 {0};
-	while ((n = string.Find('\n', n0)) > -1) {
-		AddString(string.Mid(n0, n - n0));
-		n0 = ++n;
+	int Count;
+	auto First {0};
+	while ((Count = string.Find('\n', First)) > -1) {
+		AddString(string.Mid(First, Count - First));
+		First = ++Count;
 	}
-	n = string.GetLength();
-	AddString(string.Mid(n0, n - n0));
+	Count = string.GetLength();
+	AddString(string.Mid(First, Count - First));
 }
 
 void EoDlgUserIOConsole::putString(const OdString& string) {

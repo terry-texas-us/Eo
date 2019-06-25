@@ -300,7 +300,7 @@ void AeSysView::OnDimensionModeAngle() {
 		ln = Line->LineSeg();
 		rProjPt[0] = ln.ProjPt(CurrentPnt);
 		PreviousDimensionCommand = ModeLineHighlightOp(ID_OP8);
-		theApp.AddStringToMessageList(L"Select the second line.");
+		AeSys::AddStringToMessageList(L"Select the second line.");
 		iLns = 1;
 	} else {
 		if (iLns == 1) {
@@ -311,7 +311,7 @@ void AeSysView::OnDimensionModeAngle() {
 			rProjPt[1] = Line->LineSeg().ProjPt(CurrentPnt);
 			if (ln.intersectWith(Line->LineSeg(), CenterPoint)) {
 				iLns++;
-				theApp.AddStringToMessageList(L"Specify the location for the dimension arc.");
+				AeSys::AddStringToMessageList(L"Specify the location for the dimension arc.");
 			}
 		} else {
 			double Angle;
@@ -349,7 +349,7 @@ void AeSysView::OnDimensionModeAngle() {
 				g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 				const auto ptPvt {ProjectToward(CurrentPnt, CenterPoint, -.25)};
 				const EoGeReferenceSystem ReferenceSystem {ptPvt, PlaneNormal, CharacterCellDefinition};
-				auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(theApp.FormatAngle(Angle)))};
+				auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(AeSys::FormatAngle(Angle)))};
 				Text->setNormal(PlaneNormal);
 				Text->setRotation(ReferenceSystem.Rotation());
 				Text->setHeight(ReferenceSystem.YDirection().length());
@@ -373,19 +373,16 @@ void AeSysView::OnDimensionModeConvert() {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 	}
-	EoDbGroup* Group {nullptr};
-	EoDbPrimitive* Primitive {nullptr};
 	OdGePoint3d ptProj;
-	POSITION posPrimCur {nullptr};
 	EoGePoint4d ptView(CurrentPnt, 1.0);
 	ModelViewTransformPoint(ptView);
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
-		Group = GetNextVisibleGroup(GroupPosition);
+		auto Group {GetNextVisibleGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
-			posPrimCur = PrimitivePosition;
-			Primitive = Group->GetNext(PrimitivePosition);
+			const auto CurrentPrimitivePosition {PrimitivePosition};
+			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->SelectUsingPoint(ptView, this, ptProj)) {
 				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 					const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
@@ -399,8 +396,8 @@ void AeSysView::OnDimensionModeConvert() {
 					DimensionPrimitive->SetTextHorizontalAlignment(EoDb::kAlignCenter);
 					DimensionPrimitive->SetTextVerticalAlignment(EoDb::kAlignMiddle);
 					DimensionPrimitive->SetDefaultNote();
-					Group->InsertAfter(posPrimCur, DimensionPrimitive);
-					Group->RemoveAt(posPrimCur);
+					Group->InsertAfter(CurrentPrimitivePosition, DimensionPrimitive);
+					Group->RemoveAt(CurrentPrimitivePosition);
 					delete Primitive;
 					PreviousDimensionPosition = ptProj;
 					return;
@@ -424,9 +421,9 @@ void AeSysView::OnDimensionModeConvert() {
 					Text->setVerticalMode(EoDbText::ConvertVerticalMode(DimensionPrimitive->FontDef().VerticalAlignment()));
 					Text->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->TextColorIndex()));
 					const auto TextPrimitive {EoDbText::Create(Text)};
-					Group->InsertAfter(posPrimCur, LinePrimitive);
-					Group->InsertAfter(posPrimCur, TextPrimitive);
-					Group->RemoveAt(posPrimCur);
+					Group->InsertAfter(CurrentPrimitivePosition, LinePrimitive);
+					Group->InsertAfter(CurrentPrimitivePosition, TextPrimitive);
+					Group->RemoveAt(CurrentPrimitivePosition);
 					delete Primitive;
 					PreviousDimensionPosition = ptProj;
 					return;

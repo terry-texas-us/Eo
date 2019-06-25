@@ -769,7 +769,7 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString>& arrFiles, CString 
 	::ZeroMemory(&FindFileData, sizeof(WIN32_FIND_DATA));
 	const auto Folder {pattern.Left(pattern.ReverseFind(L'\\') + 1)};
 	const auto FileHandle {FindFirstFileW(pattern, &FindFileData)};
-	auto Find {TRUE};
+	int Find;
 	auto IsFind {false};
 	do {
 		if (FindFileData.dwFileAttributes & ~FILE_ATTRIBUTE_DIRECTORY) {
@@ -876,11 +876,11 @@ void EoDlgPageSetup::OnSelChangeViewsList() {
 }
 
 void EoDlgPageSetup::UnitsConverted(const OdDbPlotSettings::PlotPaperUnits prevUnits, const OdDbPlotSettings::PlotPaperUnits plotPaperUnits) {
-	double ConversionFactor(0);
+	double ConversionFactor;
 	if (plotPaperUnits == OdDbPlotSettings::kMillimeters && prevUnits == OdDbPlotSettings::kInches) {
 		ConversionFactor = 25.4;
 	} else if (plotPaperUnits == OdDbPlotSettings::kInches && prevUnits == OdDbPlotSettings::kMillimeters) {
-		ConversionFactor = 1. / 25.4;
+		ConversionFactor = 1.0 / 25.4;
 	} else {
 		return;
 	}

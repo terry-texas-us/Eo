@@ -133,12 +133,12 @@ BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
 BOOL CMainFrame::CreateDockingWindows() {
 	const CSize DefaultSize(200, 200);
 	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI};
-	auto Caption {theApp.LoadStringResource(IDS_OUTPUT)};
+	auto Caption {AeSys::LoadStringResource(IDS_OUTPUT)};
 	if (!m_OutputPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_OUTPUTWND, SharedStyles | CBRS_BOTTOM)) {
 		TRACE0("Failed to create Output pane\n");
 		return FALSE;
 	}
-	Caption = theApp.LoadStringResource(IDS_PROPERTIES);
+	Caption = AeSys::LoadStringResource(IDS_PROPERTIES);
 	if (!m_PropertiesPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_PROPERTIESWND, SharedStyles | CBRS_RIGHT)) {
 		TRACE0("Failed to create Properties pane\n");
 		return FALSE;
@@ -238,7 +238,7 @@ LRESULT CMainFrame::OnToolbarCreateNew(const WPARAM wp, const LPARAM name) {
 	if (Result == 0) { return 0; }
 	auto UserToolbar {reinterpret_cast<CMFCToolBar*>(Result)};
 	ASSERT_VALID(UserToolbar);
-	const auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
+	const auto Customize {AeSys::LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
 	UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
 	return Result;
 }
@@ -275,13 +275,14 @@ void CMainFrame::OnApplicationLook(const unsigned look) {
 				case ID_VIEW_APPLOOK_OFF_2007_SILVER:
 					CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Silver);
 					break;
+				default: ;
 			}
 			CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2007));
 	}
 	auto DockingManager {GetDockingManager()};
 	ASSERT_VALID(DockingManager);
 	DockingManager->AdjustPaneFrames();
-	DockingManager->SetDockingMode(DT_SMART);
+	CDockingManager::SetDockingMode(DT_SMART);
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_FRAME | RDW_ERASE);
 	theApp.WriteInt(L"ApplicationLook", static_cast<int>(theApp.m_ApplicationLook));
@@ -309,7 +310,7 @@ BOOL CMainFrame::LoadFrame(const unsigned resourceId, const unsigned long defaul
 	}
 
 	// Enable customization button for all user toolbars
-	const auto Customize {theApp.LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
+	const auto Customize {AeSys::LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
 	for (auto i = 0; i < MaximumUserToolbars; i++) {
 		auto UserToolbar {GetUserToolBarByIndex(i)};
 		if (UserToolbar != nullptr) {
@@ -356,7 +357,7 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu) {
 			ScaleMenuPosition++;
 		}
 	} catch (...) {
-		theApp.AddStringToMessageList(L"Annotation scale popup menu construction failed");
+		AeSys::AddStringToMessageList(L"Annotation scale popup menu construction failed");
 	}
 }
 
@@ -397,7 +398,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
 			}
 		}
 	} catch (...) {
-		theApp.AddStringToMessageList(L"Registered commands popup menu construction failed");
+		AeSys::AddStringToMessageList(L"Registered commands popup menu construction failed");
 	}
 }
 // </command_console>

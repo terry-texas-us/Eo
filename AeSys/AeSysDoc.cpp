@@ -480,7 +480,7 @@ OdString AeSysDoc::getString(const OdString& prompt, const int options, OdEdStri
 
 void AeSysDoc::putString(const OdString& string) {
 	if (m_pViewer) { m_pViewer->putString(string); }
-	theApp.AddStringToMessageList(string);
+	AeSys::AddStringToMessageList(string);
 	UserIOConsole()->putString(string);
 }
 
@@ -892,7 +892,7 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			m_DatabasePtr->startUndoRecord();
 			OdString FileAndVersion;
 			FileAndVersion.format(L"Opened <%s> (Version: %d)\n", static_cast<const wchar_t*>(m_DatabasePtr->getFilename()), m_DatabasePtr->originalFileVersion());
-			theApp.AddStringToMessageList(FileAndVersion);
+			AeSys::AddStringToMessageList(FileAndVersion);
 			EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
 			DwgToPegFile.ConvertToPeg(this);
 			m_SaveAsType_ = FileType;
@@ -944,7 +944,7 @@ BOOL AeSysDoc::OnSaveDocument(const wchar_t* pathName) {
 			if (Layer != nullptr) {
 				CFile File(pathName, CFile::modeCreate | CFile::modeWrite);
 				if (File == CFile::hFileNull) {
-					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, pathName);
+					AeSys::WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, pathName);
 					return FALSE;
 				}
 				EoDbJobFile JobFile;
@@ -960,7 +960,7 @@ BOOL AeSysDoc::OnSaveDocument(const wchar_t* pathName) {
 			if (Layer != nullptr) {
 				EoDbTracingFile TracingFile(pathName, CFile::modeCreate | CFile::modeWrite);
 				if (TracingFile == CFile::hFileNull) {
-					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, pathName);
+					AeSys::WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, pathName);
 					return FALSE;
 				}
 				TracingFile.WriteHeader();
@@ -979,7 +979,7 @@ BOOL AeSysDoc::OnSaveDocument(const wchar_t* pathName) {
 			ReturnStatus = TRUE;
 			break;
 		case EoDb::kDxb: case EoDb::kUnknown: default:
-			theApp.WarningMessageBox(IDS_MSG_NOTHING_TO_SAVE);
+			AeSys::WarningMessageBox(IDS_MSG_NOTHING_TO_SAVE);
 	}
 	return ReturnStatus;
 }
@@ -1011,7 +1011,7 @@ void AeSysDoc::UpdatePrimitiveInAllViews(const LPARAM hint, EoDbPrimitive* primi
 }
 
 void AeSysDoc::AddTextBlock(wchar_t* text) {
-	const auto CurrentPnt {theApp.GetCursorPosition()};
+	const auto CurrentPnt {AeSys::GetCursorPosition()};
 	auto FontDefinition {g_PrimitiveState.FontDefinition()};
 	const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	EoGeReferenceSystem ReferenceSystem(CurrentPnt, AeSysView::GetActiveView(), CharacterCellDefinition);
@@ -1246,7 +1246,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 			if (FileType == EoDb::kJob) {
 				CFile File(name, CFile::modeWrite | CFile::modeCreate);
 				if (File == CFile::hFileNull) {
-					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
+					AeSys::WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
 					return false;
 				}
 				EoDbJobFile JobFile;
@@ -1255,7 +1255,7 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 			} else {
 				EoDbTracingFile TracingFile(name, CFile::modeWrite | CFile::modeCreate);
 				if (TracingFile == CFile::hFileNull) {
-					theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
+					AeSys::WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, name);
 					return false;
 				}
 				TracingFile.WriteHeader();
@@ -1454,7 +1454,7 @@ bool AeSysDoc::TracingLoadLayer(const OdString& file, EoDbLayer* layer) {
 			JobFile.ReadLayer(m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite), File, layer);
 			return true;
 		}
-		theApp.WarningMessageBox(IDS_MSG_TRACING_OPEN_FAILURE, file);
+		AeSys::WarningMessageBox(IDS_MSG_TRACING_OPEN_FAILURE, file);
 	}
 	return FileOpen;
 }
@@ -1496,10 +1496,10 @@ void AeSysDoc::WriteShadowFile() {
 			if (!PegFile.Open(ShadowFilePath, CFile::modeWrite, &e)) {
 				PegFile.Open(ShadowFilePath, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e);
 				PegFile.Unload(this);
-				theApp.WarningMessageBox(IDS_MSG_FILE_SHADOWED_AS, ShadowFilePath);
+				AeSys::WarningMessageBox(IDS_MSG_FILE_SHADOWED_AS, ShadowFilePath);
 				return;
 			}
-			theApp.WarningMessageBox(IDS_MSG_SHADOW_FILE_CREATE_FAILURE);
+			AeSys::WarningMessageBox(IDS_MSG_SHADOW_FILE_CREATE_FAILURE);
 		}
 	}
 }
@@ -1618,7 +1618,7 @@ void AeSysDoc::OnPrimBreak() {
 }
 
 void AeSysDoc::OnEditSegToWork() {
-	const auto Point {theApp.GetCursorPosition()};
+	const auto Point {AeSys::GetCursorPosition()};
 	auto Layer {SelectLayerBy(Point)};
 	if (Layer != nullptr) {
 		if (Layer->IsInternal()) {
@@ -1634,7 +1634,7 @@ void AeSysDoc::OnEditSegToWork() {
 }
 
 void AeSysDoc::OnFileQuery() {
-	const auto pt {theApp.GetCursorPosition()};
+	const auto pt {AeSys::GetCursorPosition()};
 	const auto Layer {SelectLayerBy(pt)};
 	if (Layer != nullptr) {
 		CPoint CurrentPosition;
@@ -1665,7 +1665,7 @@ void AeSysDoc::OnLayerActive() {
 	if (Layer == nullptr) {
 	} else {
 		if (Layer->IsCurrent()) {
-			theApp.WarningMessageBox(IDS_MSG_LAYER_NO_ACTIVE, m_IdentifiedLayerName);
+			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_ACTIVE, m_IdentifiedLayerName);
 		} else {
 			Layer->MakeActive();
 			UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
@@ -1678,7 +1678,7 @@ void AeSysDoc::OnLayerLock() {
 	if (Layer != nullptr) {
 
 		if (Layer->IsCurrent()) {
-			theApp.WarningMessageBox(IDS_MSG_LAYER_NO_STATIC, m_IdentifiedLayerName);
+			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_STATIC, m_IdentifiedLayerName);
 		} else {
 			Layer->SetIsLocked(true);
 			UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
@@ -1691,7 +1691,7 @@ void AeSysDoc::OnLayerOff() {
 	if (Layer != nullptr) {
 
 		if (Layer->IsCurrent()) {
-			theApp.WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, m_IdentifiedLayerName);
+			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, m_IdentifiedLayerName);
 		} else {
 			UpdateLayerInAllViews(EoDb::kLayerErase, Layer);
 			Layer->SetIsOff(true);
@@ -1712,7 +1712,7 @@ void AeSysDoc::OnLayerCurrent() {
 void AeSysDoc::OnTracingActive() {
 	auto Layer {GetLayerAt(m_IdentifiedLayerName)};
 	if (Layer->IsCurrent()) {
-		theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, m_IdentifiedLayerName);
+		AeSys::WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, m_IdentifiedLayerName);
 	} else {
 		Layer->MakeActive();
 		UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
@@ -1733,7 +1733,7 @@ void AeSysDoc::OnTracingFuse() {
 void AeSysDoc::OnTracingLock() {
 	auto Layer {GetLayerAt(m_IdentifiedLayerName)};
 	if (Layer->IsCurrent()) {
-		theApp.WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, m_IdentifiedLayerName);
+		AeSys::WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, m_IdentifiedLayerName);
 	} else {
 		Layer->SetIsLocked(true);
 		UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
@@ -1755,7 +1755,7 @@ void AeSysDoc::OnTracingOff() {
 			SetCurrentLayer(Layer->TableRecord());
 			m_SaveAsType_ = EoDb::kUnknown;
 		} else {
-			theApp.WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, m_IdentifiedLayerName);
+			AeSys::WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, m_IdentifiedLayerName);
 		}
 	}
 }
@@ -1845,7 +1845,7 @@ void AeSysDoc::OnEditTrace() {
 		}
 		CloseClipboard();
 	} else {
-		theApp.WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
+		AeSys::WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
 	}
 }
 
@@ -1879,7 +1879,7 @@ void AeSysDoc::OnEditTrapPaste() {
 				const auto ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
 				if (ClipboardDataHandle != nullptr) {
 					OdGePoint3d LowerLeftExtent;
-					const auto InsertionPoint {theApp.GetCursorPosition()};
+					const auto InsertionPoint {AeSys::GetCursorPosition()};
 					SetTrapPivotPoint(InsertionPoint);
 					const auto ClipboardData {static_cast<const char*>(GlobalLock(ClipboardDataHandle))};
 					const auto ClipboardDataLength {*(unsigned long*)ClipboardData};
@@ -1927,7 +1927,7 @@ void AeSysDoc::OnEditTrapPaste() {
 		}
 		CloseClipboard();
 	} else {
-		theApp.WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
+		AeSys::WarningMessageBox(IDS_MSG_CLIPBOARD_LOCKED);
 	}
 }
 
@@ -2149,7 +2149,7 @@ void AeSysDoc::OnPrimGotoCenterPoint() {
 }
 
 void AeSysDoc::OnToolsPrimitiveDelete() {
-	const auto CurrentPnt {theApp.GetCursorPosition()};
+	const auto CurrentPnt {AeSys::GetCursorPosition()};
 	auto ActiveView {AeSysView::GetActiveView()};
 	auto Group {ActiveView->SelectGroupAndPrimitive(CurrentPnt)};
 	if (Group != nullptr) {
@@ -2246,22 +2246,22 @@ void AeSysDoc::OnPurgeEmptyNotes() {
 	const auto NumberOfEmptyGroups {RemoveEmptyGroups()};
 	OdString Message;
 	Message.format(L"%d notes were removed resulting in %d empty groups which were also removed.", NumberOfEmptyNotes, NumberOfEmptyGroups);
-	theApp.AddStringToMessageList(Message);
+	AeSys::AddStringToMessageList(Message);
 }
 
 void AeSysDoc::OnPurgeEmptyGroups() {
 	const auto NumberOfEmptyGroups = RemoveEmptyGroups();
 	OdString Message;
 	Message.format(L"%d were removed.", NumberOfEmptyGroups);
-	theApp.AddStringToMessageList(Message);
+	AeSys::AddStringToMessageList(Message);
 }
 
 void AeSysDoc::OnPensEditColors() {
-	theApp.EditColorPalette();
+	AeSys::EditColorPalette();
 }
 
 void AeSysDoc::OnPensLoadColors() {
-	const auto InitialDirectory {theApp.ResourceFolderPath() + L"Pens\\Colors\\"};
+	const auto InitialDirectory {AeSys::ResourceFolderPath() + L"Pens\\Colors\\"};
 	OPENFILENAME OpenFileName;
 	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
 	OpenFileName.lStructSize = sizeof(OPENFILENAME);
@@ -2277,9 +2277,9 @@ void AeSysDoc::OnPensLoadColors() {
 	OpenFileName.lpstrDefExt = L"txt";
 	if (GetOpenFileNameW(&OpenFileName)) {
 		if ((OpenFileName.Flags & OFN_EXTENSIONDIFFERENT) == 0) {
-			theApp.LoadColorPalletFromFile(OpenFileName.lpstrFile);
+			AeSys::LoadColorPalletFromFile(OpenFileName.lpstrFile);
 			UpdateAllViews(nullptr);
-		} else theApp.WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
+		} else AeSys::WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
 	}
 	delete[] OpenFileName.lpstrFile;
 }
@@ -2334,7 +2334,7 @@ void AeSysDoc::OnPrimExtractNum() {
 		wchar_t Message[64];
 		swprintf_s(Message, 64, L"%10.4f ", dVal[0]);
 		wcscat_s(Message, 64, L"was extracted from drawing");
-		theApp.AddStringToMessageList(Message);
+		AeSys::AddStringToMessageList(Message);
 	}
 }
 
@@ -2352,7 +2352,7 @@ void AeSysDoc::OnPrimExtractStr() {
 			return;
 		}
 		String += L" was extracted from drawing";
-		theApp.AddStringToMessageList(String);
+		AeSys::AddStringToMessageList(String);
 	}
 }
 

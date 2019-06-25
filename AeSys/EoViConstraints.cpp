@@ -110,7 +110,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 	if (DisplayGridWithPoints()) {
 		OdGePoint3d pt;
 		if (fabs(m_YGridPointSpacing) > DBL_EPSILON && fabs(m_ZGridPointSpacing) > DBL_EPSILON) {
-			const auto Color {theApp.GetHotColor(1)};
+			const auto Color {AeSys::GetHotColor(1)};
 			pt.x = m_GridOrigin.x;
 			pt.z = m_GridOrigin.z - dHalfPts * m_ZGridPointSpacing;
 			for (auto i = 0; i < m_MaximumDotsPerLine; i++) {
@@ -123,7 +123,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 			}
 		}
 		if (fabs(m_XGridPointSpacing) > DBL_EPSILON && fabs(m_ZGridPointSpacing) > DBL_EPSILON) {
-			const auto Color {theApp.GetHotColor(2)};
+			const auto Color {AeSys::GetHotColor(2)};
 			pt.x = m_GridOrigin.x - dHalfPts * m_XGridPointSpacing;
 			pt.y = m_GridOrigin.y;
 			for (auto i = 0; i < m_MaximumDotsPerLine; i++) {
@@ -136,7 +136,7 @@ void AeSysView::DisplayGrid(CDC* deviceContext) {
 			}
 		}
 		if (fabs(m_XGridPointSpacing) > DBL_EPSILON && fabs(m_YGridPointSpacing) > DBL_EPSILON) {
-			const auto Color {theApp.GetHotColor(3)};
+			const auto Color {AeSys::GetHotColor(3)};
 			pt.y = m_GridOrigin.y - dHalfPts * m_YGridPointSpacing;
 			pt.z = m_GridOrigin.z;
 			for (auto i = 0; i < m_MaximumDotsPerLine; i++) {

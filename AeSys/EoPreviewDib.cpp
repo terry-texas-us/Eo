@@ -67,10 +67,10 @@ typedef struct {
 #define ALDUSMFHEADERSIZE 22  // Avoid sizeof is struct alignment > 1
 
 void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y, const int width, const int height) {
-	CRect cr;
+	CRect BitmapRectangle;
 	if (m_odImage.hasBmp()) {
 		const auto pHeader {reinterpret_cast<tagBITMAPINFOHEADER*>(m_odImage.bmp.begin())};
-		cr = Calc(pHeader->biWidth, pHeader->biHeight, width, height);
+		BitmapRectangle = Calc(pHeader->biWidth, pHeader->biHeight, width, height);
 		auto p = reinterpret_cast<unsigned char*>(pHeader);
 		p += pHeader->biSize;
 		switch (pHeader->biBitCount) {
@@ -83,36 +83,34 @@ void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y
 			case 8:
 				p += sizeof(RGBQUAD) * 256;
 				break;
+			default: ;
 		}
-		StretchDIBits(deviceContext, cr.left + x, cr.top + y, cr.Width(), cr.Height(), 0, 0, pHeader->biWidth, pHeader->biHeight, static_cast<const void*>(p), reinterpret_cast<CONST BITMAPINFO*>(pHeader), DIB_RGB_COLORS, SRCCOPY);
+		StretchDIBits(deviceContext, BitmapRectangle.left + x, BitmapRectangle.top + y, BitmapRectangle.Width(), BitmapRectangle.Height(), 0, 0, pHeader->biWidth, pHeader->biHeight, static_cast<const void*>(p), reinterpret_cast<CONST BITMAPINFO*>(pHeader), DIB_RGB_COLORS, SRCCOPY);
 	} else if (m_odImage.hasWmf()) {
-		CDC newDC;
-		unsigned long dwIsAldus {0};
-		METAHEADER* mfHeader {nullptr};
-		ALDUSMFHEADER* aldusMFHeader {nullptr};
-		unsigned long dwSize {0};
-		unsigned long seekpos {0};
-		newDC.Attach(deviceContext);
-		dwIsAldus = *reinterpret_cast<unsigned long*>(m_odImage.wmf.begin());
-		if (dwIsAldus != ALDUSKEY) {
-			seekpos = 0;
+		CDC NewDeviceContext;
+		ALDUSMFHEADER* AldusMfHeader {nullptr};
+		unsigned long SeekPosition;
+		NewDeviceContext.Attach(deviceContext);
+		const auto IsAldus {*reinterpret_cast<unsigned long*>(m_odImage.wmf.begin())};
+		if (IsAldus != ALDUSKEY) {
+			SeekPosition = 0;
 		} else {
-			aldusMFHeader = reinterpret_cast<ALDUSMFHEADER*>(m_odImage.wmf.begin());
-			seekpos = ALDUSMFHEADERSIZE;
+			AldusMfHeader = reinterpret_cast<ALDUSMFHEADER*>(m_odImage.wmf.begin());
+			SeekPosition = ALDUSMFHEADERSIZE;
 		}
 		const auto p {static_cast<unsigned char*>(m_odImage.wmf.begin())};
-		mfHeader = reinterpret_cast<METAHEADER*>(p + seekpos);
-		if (mfHeader->mtType != 1 && mfHeader->mtType != 2) { return; }
-		dwSize = mfHeader->mtSize * 2;
+		const auto MetaHeader {reinterpret_cast<METAHEADER*>(p + SeekPosition)};
+		if (MetaHeader->mtType != 1 && MetaHeader->mtType != 2) { return; }
+		const auto Size {MetaHeader->mtSize * 2};
 		// Create the enhanced metafile
-		const auto MetaFileHandle {SetWinMetaFileBits(dwSize, reinterpret_cast<const unsigned char*>(mfHeader), nullptr, nullptr)};
-		CSize size {0, 0};
-		if (aldusMFHeader) {
-			size.cx = 254 * (aldusMFHeader->bbox.right - aldusMFHeader->bbox.left) / aldusMFHeader->inch;
-			size.cy = 254 * (aldusMFHeader->bbox.bottom - aldusMFHeader->bbox.top) / aldusMFHeader->inch;
+		const auto MetaFileHandle {SetWinMetaFileBits(Size, reinterpret_cast<const unsigned char*>(MetaHeader), nullptr, nullptr)};
+		CSize InitialSize {0, 0};
+		if (AldusMfHeader) {
+			InitialSize.cx = 254 * (AldusMfHeader->bbox.right - AldusMfHeader->bbox.left) / AldusMfHeader->inch;
+			InitialSize.cy = 254 * (AldusMfHeader->bbox.bottom - AldusMfHeader->bbox.top) / AldusMfHeader->inch;
 		}
-		cr = Calc(size.cx, size.cy, width, height);
-		cr.OffsetRect(x, y);
-		newDC.PlayMetaFile(MetaFileHandle, &cr);
+		BitmapRectangle = Calc(InitialSize.cx, InitialSize.cy, width, height);
+		BitmapRectangle.OffsetRect(x, y);
+		NewDeviceContext.PlayMetaFile(MetaFileHandle, &BitmapRectangle);
 	}
 }

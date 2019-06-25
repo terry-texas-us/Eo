@@ -229,7 +229,7 @@ CPsListStyleData::CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoAr
 	OdPsPlotStyleData OdPsData;
 	plotStyle->getData(OdPsData);
 	const auto PlotStyleDataColor {OdPsData.color()};
-	unsigned long PlotStyleDataRgb {0};
+	unsigned long PlotStyleDataRgb;
 	if (PlotStyleDataColor.isByACI()) {
 		PlotStyleDataRgb = odcmLookupRGB(PlotStyleDataColor.colorIndex(), odcmAcadLightPalette());
 	} else {
@@ -412,14 +412,14 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initFillstyleComboBox() {
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
-	auto item {-1};
-	for (unsigned i = 0; i < m_bitmapList.size(); i++) {
-		if (!i) {
-			item = m_Color.AddBitmap(nullptr, m_bitmapList[i]->m_name);
+	int Item;
+	for (unsigned BitmapIndex = 0; BitmapIndex < m_bitmapList.size(); BitmapIndex++) {
+		if (!BitmapIndex) {
+			Item = m_Color.AddBitmap(nullptr, m_bitmapList[BitmapIndex]->m_name);
 		} else {
-			item = m_Color.AddBitmap(&m_bitmapList[i]->m_bitmap, m_bitmapList[i]->m_name);
+			Item = m_Color.AddBitmap(&m_bitmapList[BitmapIndex]->m_bitmap, m_bitmapList[BitmapIndex]->m_name);
 		}
-		m_bitmapList[i]->m_iItem = static_cast<unsigned char>(item);
+		m_bitmapList[BitmapIndex]->m_iItem = static_cast<unsigned char>(Item);
 	}
 	m_Color.SetCurSel(0);
 }
@@ -716,10 +716,10 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 	// TODO: Add your control notification handler code here
-	short intColorPolicy = 1;
+	short intColorPolicy;
 	const auto CurrentSelection {m_Color.GetCurSel()};
 	const auto ListStylesItem {m_listStyles.GetSelectionMark()};
-	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStylesItem));
+	auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(ListStylesItem))};
 	if (CurrentSelection == m_Color.GetCount() - 1) {
 		CColorDialog dlgColor;
 		if (dlgColor.DoModal() == IDOK) {

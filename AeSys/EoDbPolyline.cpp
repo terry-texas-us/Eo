@@ -63,20 +63,20 @@ void EoDbPolyline::AddReportToMessageList(const OdGePoint3d& point) const {
 			GetPointAt(sm_PivotVertex, ptBeg);
 			GetPointAt(SwingVertex(), ptEnd);
 		}
-		auto AngleInXYPlane {0.0};
+		double AngleInXyPlane;
 		const auto EdgeLength {OdGeVector3d(ptEnd - ptBeg).length()};
 		if (OdGeVector3d(ptBeg - point).length() > EdgeLength * 0.5) {
-			AngleInXYPlane = EoGeLineSeg3d(ptEnd, ptBeg).AngleFromXAxis_xy();
+			AngleInXyPlane = EoGeLineSeg3d(ptEnd, ptBeg).AngleFromXAxis_xy();
 		} else {
-			AngleInXYPlane = EoGeLineSeg3d(ptBeg, ptEnd).AngleFromXAxis_xy();
+			AngleInXyPlane = EoGeLineSeg3d(ptBeg, ptEnd).AngleFromXAxis_xy();
 		}
 		CString Report(L"<Polyline-Edge>");
 		Report += L" Color:" + FormatColorIndex();
 		Report += L" Linetype:" + FormatLinetypeIndex();
-		Report += L" [" + theApp.FormatLength(EdgeLength, theApp.GetUnits()) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
-		theApp.AddStringToMessageList(Report);
+		Report += L" [" + theApp.FormatLength(EdgeLength, theApp.GetUnits()) + L" @ " + AeSys::FormatAngle(AngleInXyPlane) + L"]";
+		AeSys::AddStringToMessageList(Report);
 		theApp.SetEngagedLength(EdgeLength);
-		theApp.SetEngagedAngle(AngleInXYPlane);
+		theApp.SetEngagedAngle(AngleInXyPlane);
 	}
 }
 

@@ -34,7 +34,7 @@ void EoDbSpline::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Report {L"<BSpline>"};
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
-	theApp.AddStringToMessageList(Report);
+	AeSys::AddStringToMessageList(Report);
 }
 
 void EoDbSpline::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
@@ -250,7 +250,7 @@ OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDb
 OdDbSplinePtr EoDbSpline::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
 	short ColorIndex;
 	short LinetypeIndex;
-	unsigned short NumberOfControlPoints {0};
+	unsigned short NumberOfControlPoints;
 	OdGePoint3dArray ControlPoints;
 	if (versionNumber == 1) {
 		ColorIndex = short(primitiveBuffer[4] & 0x000f);

@@ -48,7 +48,7 @@ void AeSysView::OnLpdModeJoin() {
 		Message += theApp.FormatLength(m_PreviousSection.Width(), max(theApp.GetUnits(), AeSys::kInches), 12, 2);
 		Message += L" by ";
 		Message += theApp.FormatLength(m_PreviousSection.Depth(), max(theApp.GetUnits(), AeSys::kInches), 12, 2);
-		theApp.AddStringToMessageList(Message);
+		AeSys::AddStringToMessageList(Message);
 		SetCursorPosition(m_PreviousPnt);
 	}
 }
@@ -141,7 +141,7 @@ void AeSysView::OnLpdModeTap() {
 		} else if (Relationship == -1) {
 			Justification = Right;
 		} else {
-			theApp.AddStringToMessageList(L"Could not determine orientation of component");
+			AeSys::AddStringToMessageList(L"Could not determine orientation of component");
 			return;
 		}
 		if (m_PreviousOp == ID_OP2) {
@@ -742,7 +742,6 @@ double AeSysView::LengthOfTransition(const EJust justification, const double slo
 
 bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, const double angularTolerance, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) {
 	EoDbLine* LeftLinePrimitive {nullptr};
-	EoDbLine* RightLinePrimitive {nullptr};
 	auto DirectedRelationship {0};
 	const auto TestLine {testLinePrimitive->LineSeg()};
 	const auto TestLineAngle {fmod(TestLine.AngleFromXAxis_xy(), OdaPI)};
@@ -770,10 +769,9 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, const 
 					leftLine = LineSeg;
 				} else {
 					if (DirectedRelationship == TestLine.DirectedRelationshipOf(LineSeg.startPoint())) { // Both lines are on the same side of test line
-						RightLinePrimitive = LinePrimitive;
 						rightLine = LineSeg;
 						if (rightLine.DirectedRelationshipOf(leftLine.startPoint()) != 1) {
-							RightLinePrimitive = LeftLinePrimitive;
+							auto RightLinePrimitive {LeftLinePrimitive};
 							rightLine = leftLine;
 							LeftLinePrimitive = LinePrimitive;
 							leftLine = LineSeg;

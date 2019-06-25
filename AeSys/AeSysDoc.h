@@ -148,7 +148,7 @@ public:
 		ClipboardData() noexcept = default;
 
 		bool read(COleDataObject* dataObject) {
-			OdSharedPtr<CFile> File {nullptr};
+			OdSharedPtr<CFile> File;
 			if ((File = dataObject->GetFileData(m_FormatR15)).get() || (File = dataObject->GetFileData(m_FormatR16)).get()) {
 				_isR15format = true;
 				_data._r15.read(File);

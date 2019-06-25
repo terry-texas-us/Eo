@@ -35,7 +35,7 @@ void EoDlgSetHomePoint::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgSetHomePoint::OnInitDialog() {
 	CDialog::OnInitDialog();
-	const auto Names {theApp.LoadStringResource(IDS_HOME_POINT_SET_NAMES)};
+	const auto Names {AeSys::LoadStringResource(IDS_HOME_POINT_SET_NAMES)};
 	m_HomePointNames.ResetContent();
 	auto Position {0};
 	while (Position < Names.GetLength()) {
@@ -43,7 +43,7 @@ BOOL EoDlgSetHomePoint::OnInitDialog() {
 		m_HomePointNames.AddString(NamesItem);
 	}
 	m_HomePointNames.SetCurSel(9);
-	m_CursorPosition = theApp.GetCursorPosition();
+	m_CursorPosition = AeSys::GetCursorPosition();
 	SetDlgItemTextW(IDC_X, theApp.FormatLength(m_CursorPosition.x, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 	SetDlgItemTextW(IDC_Y, theApp.FormatLength(m_CursorPosition.y, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
 	SetDlgItemTextW(IDC_Z, theApp.FormatLength(m_CursorPosition.z, max(theApp.GetUnits(), AeSys::kEngineering), 12, 4));
@@ -54,11 +54,11 @@ void EoDlgSetHomePoint::OnOK() {
 	wchar_t szBuf[32];
 	const auto CurrentUnits {theApp.GetUnits()};
 	m_X.GetWindowTextW(szBuf, 32);
-	m_CursorPosition.x = theApp.ParseLength(CurrentUnits, szBuf);
+	m_CursorPosition.x = AeSys::ParseLength(CurrentUnits, szBuf);
 	m_Y.GetWindowTextW(szBuf, 32);
-	m_CursorPosition.y = theApp.ParseLength(CurrentUnits, szBuf);
+	m_CursorPosition.y = AeSys::ParseLength(CurrentUnits, szBuf);
 	m_Z.GetWindowTextW(szBuf, 32);
-	m_CursorPosition.z = theApp.ParseLength(CurrentUnits, szBuf);
+	m_CursorPosition.z = AeSys::ParseLength(CurrentUnits, szBuf);
 	const auto NamesItemIndex {m_HomePointNames.GetCurSel()};
 	if (NamesItemIndex != CB_ERR) {
 		switch (NamesItemIndex) {

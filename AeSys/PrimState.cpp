@@ -4,7 +4,7 @@
 #include "PrimState.h"
 
 // State list maintenance
-CPrimState* SavedStates[] = {nullptr, nullptr, nullptr, nullptr};
+CPrimState* g_SavedStates[] = {nullptr, nullptr, nullptr, nullptr};
 
 CPrimState& CPrimState::operator=(const CPrimState& other) noexcept {
 	m_FontDefinition = other.m_FontDefinition;
@@ -45,32 +45,32 @@ unsigned CPrimState::HatchInteriorStyleIndex() const noexcept {
 }
 
 void CPrimState::Restore(CDC& deviceContext, const int saveIndex) {
-	if (saveIndex >= sizeof SavedStates / sizeof SavedStates[0]) { return; }
-	if (SavedStates[saveIndex] != nullptr) {
-		SetPen(nullptr, &deviceContext, SavedStates[saveIndex]->ColorIndex(), SavedStates[saveIndex]->LinetypeIndex());
-		m_FontDefinition = SavedStates[saveIndex]->m_FontDefinition;
+	if (saveIndex >= static_cast<int>(sizeof g_SavedStates / sizeof g_SavedStates[0])) { return; }
+	if (g_SavedStates[saveIndex] != nullptr) {
+		SetPen(nullptr, &deviceContext, g_SavedStates[saveIndex]->ColorIndex(), g_SavedStates[saveIndex]->LinetypeIndex());
+		m_FontDefinition = g_SavedStates[saveIndex]->m_FontDefinition;
 		SetTxtAlign(&deviceContext, m_FontDefinition.HorizontalAlignment(), m_FontDefinition.VerticalAlignment());
-		SetHatchInteriorStyle(SavedStates[saveIndex]->HatchInteriorStyle());
-		SetHatchInteriorStyleIndex(SavedStates[saveIndex]->HatchInteriorStyleIndex());
-		delete SavedStates[saveIndex];
-		SavedStates[saveIndex] = nullptr;
+		SetHatchInteriorStyle(g_SavedStates[saveIndex]->HatchInteriorStyle());
+		SetHatchInteriorStyleIndex(g_SavedStates[saveIndex]->HatchInteriorStyleIndex());
+		delete g_SavedStates[saveIndex];
+		g_SavedStates[saveIndex] = nullptr;
 	}
 }
 
 int CPrimState::Save() {
-	int iSaveId = sizeof SavedStates / sizeof SavedStates[0] - 1;
-	while (iSaveId >= 0 && SavedStates[iSaveId] != nullptr) {
-		iSaveId--;
+	int SaveIndex {sizeof g_SavedStates / sizeof g_SavedStates[0] - 1};
+	while (SaveIndex >= 0 && g_SavedStates[SaveIndex] != nullptr) {
+		SaveIndex--;
 	}
-	if (iSaveId < 0) {
-		theApp.WarningMessageBox(IDS_MSG_SAVE_STATE_LIST_ERROR);
+	if (SaveIndex < 0) {
+		AeSys::WarningMessageBox(IDS_MSG_SAVE_STATE_LIST_ERROR);
 	} else {
 		SetHatchInteriorStyle(g_PrimitiveState.HatchInteriorStyle());
-		SavedStates[iSaveId] = new CPrimState;
-		*SavedStates[iSaveId] = g_PrimitiveState;
+		g_SavedStates[SaveIndex] = new CPrimState;
+		*g_SavedStates[SaveIndex] = g_PrimitiveState;
 	}
 	// return id to use for restore reference
-	return iSaveId;
+	return SaveIndex;
 }
 
 void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, short linetypeIndex) noexcept {
@@ -91,7 +91,7 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, s
 	auto LogicalWidth {0.0};
 	if (view && view->PenWidthsOn()) {
 		const auto LogicalPixelsX {deviceContext->GetDeviceCaps(LOGPIXELSX)};
-		LogicalWidth = theApp.PenWidthsGet(colorIndex) * double(LogicalPixelsX);
+		LogicalWidth = AeSys::PenWidthsGet(colorIndex) * double(LogicalPixelsX);
 		LogicalWidth *= EoMin(1.0, view->ZoomFactor());
 		LogicalWidth = EoRound(LogicalWidth);
 	}

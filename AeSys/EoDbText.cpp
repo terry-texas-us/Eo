@@ -36,7 +36,7 @@ void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
 	Report += L" Precision:" + m_FontDefinition.FormatPrecision();
 	Report += L" Path:" + m_FontDefinition.FormatPath();
 	Report += L" Alignment:(" + m_FontDefinition.FormatHorizontalAlignment() + L"," + m_FontDefinition.FormatVerticalAlignment() + L")";
-	theApp.AddStringToMessageList(Report);
+	AeSys::AddStringToMessageList(Report);
 }
 
 void EoDbText::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
@@ -172,11 +172,8 @@ EoGeReferenceSystem EoDbText::ReferenceSystem() const {
 
 double EoDbText::Rotation() const {
 	const auto HorizontalAxis {ReferenceSystem().XDirection()};
-	auto Angle {0.0};
-	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
-	if (Angle < 0.0) {
-		Angle += Oda2PI;
-	}
+	auto Angle {atan2(HorizontalAxis.y, HorizontalAxis.x)}; // -pi to pi radians
+	if (Angle < 0.0) { Angle += Oda2PI; }
 	return Angle;
 }
 
@@ -272,7 +269,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 }
 
 EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {
-	auto HorizontalAlignment {EoDb::kAlignLeft};
+	EoDb::HorizontalAlignment HorizontalAlignment;
 	switch (horizontalMode) {
 		case OdDb::kTextMid: case OdDb::kTextCenter:
 			HorizontalAlignment = EoDb::kAlignCenter;
@@ -287,7 +284,7 @@ EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextH
 }
 
 EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertMode verticalMode) noexcept {
-	auto VerticalAlignment {EoDb::kAlignBottom};
+	EoDb::VerticalAlignment VerticalAlignment;
 	switch (verticalMode) {
 		case OdDb::kTextVertMid:
 			VerticalAlignment = EoDb::kAlignMiddle;
@@ -302,7 +299,7 @@ EoDb::VerticalAlignment EoDbText::ConvertVerticalAlignment(const OdDb::TextVertM
 }
 
 OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const unsigned horizontalAlignment) noexcept {
-	auto HorizontalMode {OdDb::kTextLeft};
+	OdDb::TextHorzMode HorizontalMode;
 	switch (horizontalAlignment) {
 		case EoDb::kAlignCenter:
 			HorizontalMode = OdDb::kTextCenter;
@@ -317,7 +314,7 @@ OdDb::TextHorzMode EoDbText::ConvertHorizontalMode(const unsigned horizontalAlig
 }
 
 OdDb::TextVertMode EoDbText::ConvertVerticalMode(const unsigned verticalAlignment) noexcept {
-	auto VerticalMode {OdDb::kTextBottom};
+	OdDb::TextVertMode VerticalMode;
 	switch (verticalAlignment) {
 		case EoDb::kAlignMiddle:
 			VerticalMode = OdDb::kTextVertMid;
@@ -363,7 +360,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile
 }
 
 OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
-	short ColorIndex {1};
+	short ColorIndex;
 	EoDbFontDefinition FontDefinition;
 	EoGeReferenceSystem ReferenceSystem;
 	OdString TextString;
@@ -594,11 +591,8 @@ bool HasFormattingCharacters(const CString& text) {
 }
 
 int FontEscapementAngle(const OdGeVector3d& xAxis) noexcept {
-	auto Angle {0.0};
-	Angle = atan2(xAxis.y, xAxis.x); // -pi to pi radians
-	if (Angle < 0.0) {
-		Angle += Oda2PI;
-	}
+	auto Angle {atan2(xAxis.y, xAxis.x)}; // -pi to pi radians
+	if (Angle < 0.0) { Angle += Oda2PI; }
 	return EoRound(EoToDegree(Angle) * 10.);
 }
 

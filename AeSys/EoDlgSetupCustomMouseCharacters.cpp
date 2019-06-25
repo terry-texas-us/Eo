@@ -21,17 +21,17 @@ void EoDlgSetupCustomMouseCharacters::DoDataExchange(CDataExchange* pDX) {
 
 BOOL EoDlgSetupCustomMouseCharacters::OnInitDialog() {
 	CDialog::OnInitDialog();
-	SetDlgItemTextW(IDC_LEFT_DOWN, theApp.CustomLButtonDownCharacters);
-	SetDlgItemTextW(IDC_LEFT_UP, theApp.CustomLButtonUpCharacters);
-	SetDlgItemTextW(IDC_RIGHT_DOWN, theApp.CustomRButtonDownCharacters);
-	SetDlgItemTextW(IDC_RIGHT_UP, theApp.CustomRButtonUpCharacters);
+	SetDlgItemTextW(IDC_LEFT_DOWN, AeSys::CustomLButtonDownCharacters);
+	SetDlgItemTextW(IDC_LEFT_UP, AeSys::CustomLButtonUpCharacters);
+	SetDlgItemTextW(IDC_RIGHT_DOWN, AeSys::CustomRButtonDownCharacters);
+	SetDlgItemTextW(IDC_RIGHT_UP, AeSys::CustomRButtonUpCharacters);
 	return TRUE;
 }
 
 void EoDlgSetupCustomMouseCharacters::OnOK() {
-	GetDlgItemTextW(IDC_LEFT_DOWN, theApp.CustomLButtonDownCharacters);
-	GetDlgItemTextW(IDC_LEFT_UP, theApp.CustomLButtonUpCharacters);
-	GetDlgItemTextW(IDC_RIGHT_DOWN, theApp.CustomRButtonDownCharacters);
-	GetDlgItemTextW(IDC_RIGHT_UP, theApp.CustomRButtonUpCharacters);
+	GetDlgItemTextW(IDC_LEFT_DOWN, AeSys::CustomLButtonDownCharacters);
+	GetDlgItemTextW(IDC_LEFT_UP, AeSys::CustomLButtonUpCharacters);
+	GetDlgItemTextW(IDC_RIGHT_DOWN, AeSys::CustomRButtonDownCharacters);
+	GetDlgItemTextW(IDC_RIGHT_UP, AeSys::CustomRButtonUpCharacters);
 	CDialog::OnOK();
 }

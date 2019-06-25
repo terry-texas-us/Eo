@@ -67,13 +67,13 @@ void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
 		} else {
 			Report = L"<Arc>" + Report;
 			Report += L" Radius:" + LengthAsString;
-			Report += L" SweepAngle:" + theApp.FormatAngle(m_SweepAngle);
+			Report += L" SweepAngle:" + AeSys::FormatAngle(m_SweepAngle);
 		}
 	} else {
 		Report = L"<Ellipse>" + Report;
 		Report += L" MajorAxisLength:" + LengthAsString;
 	}
-	theApp.AddStringToMessageList(Report);
+	AeSys::AddStringToMessageList(Report);
 }
 
 void EoDbEllipse::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const noexcept {
@@ -183,7 +183,7 @@ void EoDbEllipse::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
-	extra += L"Sweep Angle;" + theApp.FormatAngle(m_SweepAngle) + L"\t";
+	extra += L"Sweep Angle;" + AeSys::FormatAngle(m_SweepAngle) + L"\t";
 	extra += L"Major Axis Length;" + theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
 }
 
@@ -456,8 +456,8 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 		// No extent overlap
 		return 0;
 	OdGePoint3d ptWrk[8];
-	auto dDis {0.0};
-	auto dOff {0.0};
+	double dDis;
+	double dOff;
 	auto iSecs {0};
 	const auto dRad {OdGeVector3d(ptBeg - m_Center).length()};
 	if (ptMax.x > upperRightCorner.x) { // Arc may intersect with right window boundary

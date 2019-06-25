@@ -70,11 +70,8 @@ void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCe
 
 double EoGeReferenceSystem::Rotation() const noexcept {
 	const auto HorizontalAxis {m_XDirection};
-	auto Angle {0.0};
-	Angle = atan2(HorizontalAxis.y, HorizontalAxis.x); // -pi to pi radians
-	if (Angle < 0.0) {
-		Angle += Oda2PI;
-	}
+	auto Angle {atan2(HorizontalAxis.y, HorizontalAxis.x)}; // -pi to pi radians
+	if (Angle < 0.0) { Angle += Oda2PI; }
 	return Angle;
 }
 

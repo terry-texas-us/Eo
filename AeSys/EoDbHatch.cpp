@@ -69,7 +69,7 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 			StartPoint = m_Vertices[sm_PivotVertex];
 			EndPoint = m_Vertices[SwingVertex()];
 		}
-		auto AngleInXYPlane {0.};
+		double AngleInXYPlane;
 		const auto Length {OdGeVector3d(EndPoint - StartPoint).length()};
 		if (OdGeVector3d(StartPoint - point).length() > Length * 0.5) {
 			AngleInXYPlane = EoGeLineSeg3d(EndPoint, StartPoint).AngleFromXAxis_xy();
@@ -78,8 +78,8 @@ void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 		}
 		CString Report(L"<Hatch-Edge> ");
 		Report += L" Color:" + FormatColorIndex();
-		Report += L" [" + theApp.FormatLength(Length, theApp.GetUnits()) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
-		theApp.AddStringToMessageList(Report);
+		Report += L" [" + theApp.FormatLength(Length, theApp.GetUnits()) + L" @ " + AeSys::FormatAngle(AngleInXYPlane) + L"]";
+		AeSys::AddStringToMessageList(Report);
 		theApp.SetEngagedLength(Length);
 		theApp.SetEngagedAngle(AngleInXYPlane);
 	}
@@ -478,7 +478,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 							if (HatchPatternLine.m_dashes[DashIndex] == 0.0) {
 								auto Dot(StartPoint);
 								Dot.transformBy(tmInv);
-								view->DisplayPixel(deviceContext, theApp.GetHotColor(ColorIndex), Dot);
+								view->DisplayPixel(deviceContext, AeSys::GetHotColor(ColorIndex), Dot);
 							} else {
 								EoGeLineSeg3d Line(StartPoint, EndPoint);
 								Line.transformBy(tmInv);
@@ -677,7 +677,7 @@ void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeV
 
 unsigned EoDbHatch::SwingVertex() const {
 	const auto NumberOfVertices {m_Vertices.size()};
-	unsigned SwingVertex {0};
+	unsigned SwingVertex;
 	if (sm_PivotVertex == 0) {
 		SwingVertex = sm_Edge == 1 ? 1 : NumberOfVertices - 1;
 	} else if (sm_PivotVertex == NumberOfVertices - 1) {
@@ -864,8 +864,8 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFil
 }
 
 OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
-	short ColorIndex {0};
-	short InteriorStyle {0};
+	short ColorIndex;
+	short InteriorStyle;
 	unsigned InteriorStyleIndex {0};
 	OdGePoint3d HatchOrigin;
 	OdGeVector3d HatchXAxis;

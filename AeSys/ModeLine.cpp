@@ -5,7 +5,7 @@
 void AeSysView::ModeLineDisplay() {
 	if (theApp.CurrentMode() == 0) { return; }
 	m_OpHighlighted = 0;
-	const auto ModeInformation {theApp.LoadStringResource(theApp.CurrentMode())};
+	const auto ModeInformation {AeSys::LoadStringResource(theApp.CurrentMode())};
 	CString ModeOp;
 	const gsl::not_null<CDC*> (DeviceContext) {GetDC()};
 	for (auto i = 0; i < 10; i++) {

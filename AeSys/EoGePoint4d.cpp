@@ -182,7 +182,7 @@ bool EoGePoint4d::IsInView() noexcept {
 }
 
 EoGePoint4d& EoGePoint4d::TransformBy(const EoGeMatrix3d& matrix) noexcept {
-	auto Point(*this);
+	EoGePoint4d Point;
 	Point.x = x * matrix.entry[0][0] + y * matrix.entry[0][1] + z * matrix.entry[0][2] + w * matrix.entry[0][3];
 	Point.y = x * matrix.entry[1][0] + y * matrix.entry[1][1] + z * matrix.entry[1][2] + w * matrix.entry[1][3];
 	Point.z = x * matrix.entry[2][0] + y * matrix.entry[2][1] + z * matrix.entry[2][2] + w * matrix.entry[2][3];

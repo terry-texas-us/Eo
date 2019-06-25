@@ -42,11 +42,11 @@ BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 
 // EoDlgLowPressureDuctOptions message handlers
 void EoDlgLowPressureDuctOptions::OnBnClickedOk() {
-	wchar_t szBuf[32];
-	GetDlgItemTextW(IDC_WIDTH, szBuf, 32);
-	m_Width = theApp.ParseLength(theApp.GetUnits(), szBuf);
-	GetDlgItemTextW(IDC_DEPTH, szBuf, 32);
-	m_Depth = theApp.ParseLength(theApp.GetUnits(), szBuf);
+	wchar_t String[32];
+	GetDlgItemTextW(IDC_WIDTH, String, 32);
+	m_Width = AeSys::ParseLength(theApp.GetUnits(), String);
+	GetDlgItemTextW(IDC_DEPTH, String, 32);
+	m_Depth = AeSys::ParseLength(theApp.GetUnits(), String);
 	m_Justification = GetCheckedRadioButton(IDC_LEFT, IDC_RIGHT) - IDC_CENTER;
 	m_GenerateVanes = IsDlgButtonChecked(IDC_GEN_VANES) == 0 ? false : true;
 	m_BeginWithTransition = IsDlgButtonChecked(IDC_BEGINWITHTRANSITION) == 0 ? false : true;

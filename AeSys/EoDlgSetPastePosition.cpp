@@ -21,6 +21,6 @@ void EoDlgSetPastePosition::DoDataExchange(CDataExchange* pDX) {
 }
 
 void EoDlgSetPastePosition::OnOK() {
-	AeSysDoc::GetDoc()->SetTrapPivotPoint(theApp.GetCursorPosition());
+	AeSysDoc::GetDoc()->SetTrapPivotPoint(AeSys::GetCursorPosition());
 	CDialog::OnOK();
 }

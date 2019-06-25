@@ -32,6 +32,6 @@ BOOL EoDlgSetLength::OnInitDialog() {
 void EoDlgSetLength::OnOK() {
 	wchar_t String[32];
 	GetDlgItemTextW(IDC_DISTANCE, String, 32);
-	m_Length = theApp.ParseLength(theApp.GetUnits(), String);
+	m_Length = AeSys::ParseLength(theApp.GetUnits(), String);
 	CDialog::OnOK();
 }

@@ -47,7 +47,7 @@ void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const 
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
 	Report += L" BlockName:" + m_Name;
-	theApp.AddStringToMessageList(Report);
+	AeSys::AddStringToMessageList(Report);
 }
 
 void EoDbBlockReference::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const {
@@ -200,7 +200,7 @@ bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* v
 
 void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	if (m_EntityObjectId.isNull()) {
-		theApp.AddStringToMessageList(L"Expected valid entity object to exist.");
+		AeSys::AddStringToMessageList(L"Expected valid entity object to exist.");
 	} else {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject();
 		if (Entity->isKindOf(OdDbBlockReference::desc())) {
@@ -210,7 +210,7 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 			SetScaleFactors(BlockReference->scaleFactors());
 			m_Rotation = BlockReference->rotation();
 		} else {
-			theApp.AddStringToMessageList(L"Block used for unsupported entity type. Rotation is incorrect.");
+			AeSys::AddStringToMessageList(L"Block used for unsupported entity type. Rotation is incorrect.");
 			m_Position.transformBy(transformMatrix);
 			m_Normal.transformBy(transformMatrix);
 			OdGeMatrix3d ScaleMatrix;

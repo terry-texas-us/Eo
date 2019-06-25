@@ -50,7 +50,7 @@ void AeSysView::OnFixupModeReference() {
 void AeSysView::OnFixupModeMend() {
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 	if (std::get<tGroup>(CurrentSelection) == nullptr) {
-		theApp.AddStringToMessageList(L"0 lines found");
+		AeSys::AddStringToMessageList(L"0 lines found");
 		return;
 	}
 	const auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))};
@@ -88,7 +88,7 @@ void AeSysView::OnFixupModeMend() {
 void AeSysView::OnFixupModeChamfer() {
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 	if (std::get<tGroup>(CurrentSelection) == nullptr) {
-		theApp.AddStringToMessageList(L"0 lines found");
+		AeSys::AddStringToMessageList(L"0 lines found");
 		return;
 	}
 	const auto CurrentLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))->LineSeg()};
@@ -119,7 +119,7 @@ void AeSysView::OnFixupModeChamfer() {
 void AeSysView::OnFixupModeFillet() {
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
 	if (std::get<tGroup>(CurrentSelection) == nullptr) {
-		theApp.AddStringToMessageList(L"0 lines found");
+		AeSys::AddStringToMessageList(L"0 lines found");
 		return;
 	}
 	const auto CurrentLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(CurrentSelection))->LineSeg()};
@@ -167,7 +167,7 @@ void AeSysView::OnFixupModeSquare() {
 void AeSysView::OnFixupModeParallel() {
 	auto Document {GetDocument()};
 	if (std::get<tGroup>(ReferenceSelection) == nullptr) {
-		theApp.AddStringToMessageList(L"Reference line must be selected first.");
+		AeSys::AddStringToMessageList(L"Reference line must be selected first.");
 		return;
 	}
 	CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
@@ -191,7 +191,7 @@ void AeSysView::OnFixupModeEscape() {
 	ReferenceSelection = {nullptr, nullptr};
 	CurrentSelection = {nullptr, nullptr};
 	PreviousSelection = {nullptr, nullptr};
-	theApp.AddStringToMessageList(L"*cancel*");
+	AeSys::AddStringToMessageList(L"*cancel*");
 	ModeLineUnhighlightOp(PreviousFixupCommand);
 }
 

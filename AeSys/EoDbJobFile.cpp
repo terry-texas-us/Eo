@@ -137,7 +137,7 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 				if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { throw L"Exception.FileJob: Unexpected end of file."; }
 				group->AddTail(Primitive);
 			} catch (const wchar_t* Message) {
-				theApp.AddStringToMessageList(Message);
+				AeSys::AddStringToMessageList(Message);
 				file.Seek(static_cast<long long>(Position + 32), CFile::begin);
 			}
 		}

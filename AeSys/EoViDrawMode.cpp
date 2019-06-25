@@ -17,7 +17,7 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-unsigned short PreviousDrawCommand = 0;
+unsigned short g_PreviousDrawCommand = 0;
 
 void AeSysView::OnDrawModeOptions() {
 	AeSysDoc::GetDoc()->OnSetupOptionsDraw();
@@ -36,8 +36,8 @@ void AeSysView::OnDrawModePoint() {
 
 void AeSysView::OnDrawModeLine() {
 	auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP2) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP2);
+	if (g_PreviousDrawCommand != ID_OP2) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP2);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
@@ -56,8 +56,8 @@ void AeSysView::OnDrawModeLine() {
 
 void AeSysView::OnDrawModePolygon() {
 	auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP3) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP3);
+	if (g_PreviousDrawCommand != ID_OP3) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP3);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
@@ -71,8 +71,8 @@ void AeSysView::OnDrawModePolygon() {
 
 void AeSysView::OnDrawModeQuad() {
 	const auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP4) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP4);
+	if (g_PreviousDrawCommand != ID_OP4) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP4);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
@@ -82,8 +82,8 @@ void AeSysView::OnDrawModeQuad() {
 
 void AeSysView::OnDrawModeArc() {
 	const auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP5) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP5);
+	if (g_PreviousDrawCommand != ID_OP5) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP5);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
@@ -93,8 +93,8 @@ void AeSysView::OnDrawModeArc() {
 
 void AeSysView::OnDrawModeBspline() {
 	const auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP6) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP6);
+	if (g_PreviousDrawCommand != ID_OP6) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP6);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
@@ -106,8 +106,8 @@ void AeSysView::OnDrawModeBspline() {
 
 void AeSysView::OnDrawModeCircle() {
 	const auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP7) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP7);
+	if (g_PreviousDrawCommand != ID_OP7) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP7);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
@@ -118,8 +118,8 @@ void AeSysView::OnDrawModeCircle() {
 
 void AeSysView::OnDrawModeEllipse() {
 	const auto CurrentPnt {GetCursorPosition()};
-	if (PreviousDrawCommand != ID_OP8) {
-		PreviousDrawCommand = ModeLineHighlightOp(ID_OP8);
+	if (g_PreviousDrawCommand != ID_OP8) {
+		g_PreviousDrawCommand = ModeLineHighlightOp(ID_OP8);
 		m_DrawModePoints.clear();
 		m_DrawModePoints.append(CurrentPnt);
 	} else {
@@ -139,9 +139,9 @@ void AeSysView::OnDrawModeInsert() {
 void AeSysView::OnDrawModeReturn() {
 	auto CurrentPnt {GetCursorPosition()};
 	const auto NumberOfPoints {m_DrawModePoints.size()};
-	EoDbGroup* Group {nullptr};
+	EoDbGroup* Group;
 	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
-	switch (PreviousDrawCommand) {
+	switch (g_PreviousDrawCommand) {
 		case ID_OP2: {
 			CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);
 			auto Line {EoDbLine::Create(BlockTableRecord)};
@@ -269,21 +269,21 @@ void AeSysView::OnDrawModeReturn() {
 	GetDocument()->AddWorkLayerGroup(Group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 	m_DrawModePoints.clear();
-	ModeLineUnhighlightOp(PreviousDrawCommand);
+	ModeLineUnhighlightOp(g_PreviousDrawCommand);
 }
 
 void AeSysView::OnDrawModeEscape() {
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	m_DrawModePoints.clear();
-	ModeLineUnhighlightOp(PreviousDrawCommand);
+	ModeLineUnhighlightOp(g_PreviousDrawCommand);
 }
 
 void AeSysView::DoDrawModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	const auto NumberOfPoints {m_DrawModePoints.size()};
-	switch (PreviousDrawCommand) {
+	switch (g_PreviousDrawCommand) {
 		case ID_OP2:
 			if (m_DrawModePoints[0] != CurrentPnt) {
 				CurrentPnt = SnapPointToAxis(m_DrawModePoints[0], CurrentPnt);

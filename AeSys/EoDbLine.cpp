@@ -37,8 +37,8 @@ void EoDbLine::AddReportToMessageList(const OdGePoint3d& point) const {
 	CString Report(L"<Line>");
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
-	Report += L" [" + theApp.FormatLength(Length, theApp.GetUnits()) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
-	theApp.AddStringToMessageList(Report);
+	Report += L" [" + theApp.FormatLength(Length, theApp.GetUnits()) + L" @ " + AeSys::FormatAngle(AngleInXYPlane) + L"]";
+	AeSys::AddStringToMessageList(Report);
 	theApp.SetEngagedLength(Length);
 	theApp.SetEngagedAngle(AngleInXYPlane);
 }
@@ -69,7 +69,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 }
 
 void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) {
-	EoDbLine* LineIn {nullptr};
+	EoDbLine* LineIn;
 	double FirstPointParameter;
 	double SecondPointParameter;
 	m_LineSeg.ParametricRelationshipOf(points[0], FirstPointParameter);
@@ -130,7 +130,7 @@ void EoDbLine::FormatExtra(CString& extra) const {
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	extra += L"Length;" + theApp.FormatLength(Length(), theApp.GetUnits()) + L"\t";
-	extra += L"Z-Angle;" + theApp.FormatAngle(m_LineSeg.AngleFromXAxis_xy());
+	extra += L"Z-Angle;" + AeSys::FormatAngle(m_LineSeg.AngleFromXAxis_xy());
 }
 
 void EoDbLine::FormatGeometry(CString& geometry) const {
@@ -362,8 +362,8 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile&
 }
 
 OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, const int versionNumber) {
-	short ColorIndex {0};
-	short LinetypeIndex {0};
+	short ColorIndex;
+	short LinetypeIndex;
 	OdGePoint3d StartPoint;
 	OdGePoint3d EndPoint;
 	if (versionNumber == 1) {

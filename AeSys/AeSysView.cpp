@@ -1615,7 +1615,7 @@ void AeSysView::putString(const OdString& string) {
 	const auto n {m_sPrompt.reverseFind('\n')};
 	const wchar_t* Text {string};
 	if (n >= 0) { Text = Text + n + 1; }
-	theApp.AddStringToMessageList(Text);
+	AeSys::AddStringToMessageList(Text);
 	theApp.SetStatusPaneTextAt(nStatusInfo, Text);
 }
 
@@ -2933,7 +2933,7 @@ void AeSysView::DisplayOdometer() {
 			const EoGeLineSeg3d Line(m_RubberBandBeginPoint, Point);
 			const auto LineLength {Line.length()};
 			const auto AngleInXYPlane {Line.AngleFromXAxis_xy()};
-			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + theApp.FormatAngle(AngleInXYPlane) + L"]";
+			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + AeSys::FormatAngle(AngleInXYPlane) + L"]";
 		}
 		auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 		MainFrame->SetStatusPaneTextAt(nStatusInfo, Position);
@@ -3397,7 +3397,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d& cursorPosition) {
 }
 
 void AeSysView::SetModeCursor(const unsigned mode) {
-	unsigned short ResourceIdentifier {0};
+	unsigned short ResourceIdentifier;
 	switch (mode) {
 		case ID_MODE_ANNOTATE:
 			ResourceIdentifier = IDR_ANNOTATE_MODE;
@@ -3525,7 +3525,7 @@ void AeSysView::UpdateStateInformation(const StateInformationItem item) {
 			CString LengthAndAngle;
 			LengthAndAngle += theApp.FormatLength(theApp.DimensionLength(), theApp.GetUnits());
 			LengthAndAngle += L" @ ";
-			LengthAndAngle += theApp.FormatAngle(EoToRadian(theApp.DimensionAngle()));
+			LengthAndAngle += AeSys::FormatAngle(EoToRadian(theApp.DimensionAngle()));
 			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, nullptr);
 		}
 		DeviceContext->SetBkColor(BackgroundColor);
