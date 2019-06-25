@@ -294,7 +294,7 @@ public: // Input message handler member functions
 	void OnViewStateInformation();
 	void OnUpdateViewStateInformation(CCmdUI* commandUserInterface);
 	static AeSysView* GetActiveView();
-	void VerifyFindString(CMFCToolBarComboBoxButton* findCombo, OdString& findText);
+	void VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText);
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
 	void UpdateStateInformation(StateInformationItem item);
 	void RubberBandingDisable();
@@ -646,7 +646,7 @@ public:
 	void OnTraprModeMenu();
 	void OnTraprModeModify();
 	void OnTraprModeEscape();
-private: // Low Pressure Duct (retangular) interface
+private: // Low Pressure Duct (rectangular) interface
 	double m_InsideRadiusFactor {1.5};
 	double m_DuctSeamSize {0.03125};
 	double m_DuctTapSize {0.03125};

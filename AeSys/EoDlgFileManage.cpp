@@ -230,6 +230,7 @@ void EoDlgFileManage::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUCT d
 			case ODA_FOCUS:
 				//::DrawFocusRect(drawItemStruct->hDC, &(drawItemStruct->rcItem));
 				break;
+			default: ;
 		}
 		return;
 	}
@@ -293,7 +294,7 @@ void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRE
 	const auto ListViewNotificationMessage = reinterpret_cast<tagNMLISTVIEW*>(notifyStructure);
 	if ((ListViewNotificationMessage->uNewState & LVIS_FOCUSED) == LVFIS_FOCUSED) {
 		const auto Item {ListViewNotificationMessage->iItem};
-		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item));
+		auto Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item))};
 		CString NumberOfGroups;
 		NumberOfGroups.Format(L"%-4i", Layer->GetCount());
 		m_Groups.SetWindowTextW(NumberOfGroups);
@@ -310,7 +311,7 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 		if (m_BlocksList.GetTextLen(CurrentSelection) != LB_ERR) {
 			CString BlockName;
 			m_BlocksList.GetText(CurrentSelection, BlockName);
-			EoDbBlock* Block = reinterpret_cast<EoDbBlock*>(m_BlocksList.GetItemData(CurrentSelection));
+			const auto Block {reinterpret_cast<EoDbBlock*>(m_BlocksList.GetItemData(CurrentSelection))};
 			m_Groups.SetDlgItemInt(IDC_GROUPS, static_cast<unsigned>(Block->GetCount()), FALSE);
 			WndProcPreviewUpdate(m_PreviewWindowHandle, Block);
 		}
@@ -440,7 +441,7 @@ void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(NMHDR* const notifySt
 void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(NMHDR* const notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const auto Item {ListViewNotificationDisplayInfo->item};
-	EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));
+	auto Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem))};
 	auto LayerTableRecord {Layer->TableRecord()};
 	const OdString NewName(Item.pszText);
 	if (!NewName.isEmpty()) {
@@ -466,7 +467,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(NMHDR* const notifyStructure
 	const auto pLVKeyDow {reinterpret_cast<tagLVKEYDOWN*>(notifyStructure)};
 	if (pLVKeyDow->wVKey == VK_DELETE) {
 		const auto SelectionMark {m_LayersList.GetSelectionMark()};
-		EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark));
+		const auto Layer {reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(SelectionMark))};
 		auto LayerTableRecord {Layer->TableRecord()};
 		const auto Name {Layer->Name()};
 		const auto Result {LayerTableRecord->erase(true)};

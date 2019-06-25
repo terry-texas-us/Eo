@@ -792,7 +792,7 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
 	auto MinorAxis(ellipse->minorAxis());
 	auto StartAngle {ellipse->startAngle()};
 	auto EndAngle {ellipse->endAngle()};
-	if (StartAngle >= Oda2PI) { // need to rationalize angs to first period angles in range on (0 to twopi)
+	if (StartAngle >= Oda2PI) { // need to rationalize angles to first period angles in range on (0 to twopi)
 		StartAngle -= Oda2PI;
 		EndAngle -= Oda2PI;
 	}

@@ -1991,12 +1991,13 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 		case ID_MODE_GROUP_EDIT:
 			PreviewGroupEdit();
 			break;
+		default: ;
 	}
 	if (m_RubberBandType != kNone) {
 		auto DeviceContext {GetDC()};
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
-		CPen RubberbandPen(PS_SOLID, 0, g_RubberBandColor);
-		const auto Pen {DeviceContext->SelectObject(&RubberbandPen)};
+		CPen RubberBandPen(PS_SOLID, 0, g_RubberBandColor);
+		const auto Pen {DeviceContext->SelectObject(&RubberBandPen)};
 		if (m_RubberBandType == kLines) {
 			DeviceContext->MoveTo(m_RubberBandLogicalBeginPoint);
 			DeviceContext->LineTo(m_RubberBandLogicalEndPoint);
@@ -2234,7 +2235,7 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		const auto dU {Target.x - ptTargetOver.x};
 		const auto dV {Target.y - ptTargetOver.y};
 
-		// Determine the region of the bitmap to tranfer to display
+		// Determine the region of the bitmap to transfer to display
 		CRect rcWnd;
 		rcWnd.left = EoRound((m_ViewTransform.FieldWidthMinimum() - OverviewUMin() + dU) / OverviewUExt() * static_cast<double>(bm.bmWidth));
 		rcWnd.top = EoRound((1. - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + dV) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
@@ -3169,6 +3170,7 @@ void AeSysView::OnOp0() {
 		case ID_MODE_PRIMITIVE_EDIT: case ID_MODE_GROUP_EDIT:
 			OnEditModeOptions();
 			break;
+		default: ;
 	}
 }
 
@@ -3180,6 +3182,7 @@ void AeSysView::OnOp2() {
 		case ID_MODE_GROUP_EDIT:
 			DoEditGroupTransform(ID_OP2);
 			break;
+		default: ;
 	}
 }
 
@@ -3191,6 +3194,7 @@ void AeSysView::OnOp3() {
 		case ID_MODE_GROUP_EDIT:
 			DoEditGroupTransform(ID_OP3);
 			break;
+		default: ;
 	}
 }
 
@@ -3204,6 +3208,7 @@ void AeSysView::OnOp4() {
 			theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 			GetDocument()->InitializeGroupAndPrimitiveEdit();
 			break;
+		default: ;
 	}
 }
 
@@ -3215,6 +3220,7 @@ void AeSysView::OnOp5() {
 		case ID_MODE_GROUP_EDIT:
 			DoEditGroupCopy();
 			break;
+		default: ;
 	}
 }
 
@@ -3226,6 +3232,7 @@ void AeSysView::OnOp6() {
 		case ID_MODE_GROUP_EDIT:
 			DoEditGroupTransform(ID_OP6);
 			break;
+		default: ;
 	}
 }
 
@@ -3237,6 +3244,7 @@ void AeSysView::OnOp7() {
 		case ID_MODE_GROUP_EDIT:
 			DoEditGroupTransform(ID_OP7);
 			break;
+		default: ;
 	}
 }
 
@@ -3248,6 +3256,7 @@ void AeSysView::OnOp8() {
 		case ID_MODE_GROUP_EDIT:
 			DoEditGroupTransform(ID_OP8);
 			break;
+		default: ;
 	}
 }
 
@@ -3264,6 +3273,7 @@ void AeSysView::OnReturn() {
 		case ID_MODE_PRIMITIVE_MEND:
 			MendPrimitiveReturn();
 			break;
+		default: ;
 	}
 }
 
@@ -3278,6 +3288,7 @@ void AeSysView::OnEscape() {
 		case ID_MODE_PRIMITIVE_MEND:
 			MendPrimitiveEscape();
 			break;
+		default: ;
 	}
 }
 
@@ -3298,10 +3309,10 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 		const auto Count {gsl::narrow_cast<unsigned>(ComboBox->GetCount())};
 		unsigned Position {0};
 		while (Position < Count) {
-			CString LBText;
-			ComboBox->GetLBText(static_cast<int>(Position), LBText);
-			if (LBText.GetLength() == findText.getLength()) {
-				if (static_cast<const wchar_t*>(LBText) == findText) { break; }
+			CString ListBoxText;
+			ComboBox->GetLBText(static_cast<int>(Position), ListBoxText);
+			if (ListBoxText.GetLength() == findText.getLength()) {
+				if (static_cast<const wchar_t*>(ListBoxText) == findText) { break; }
 			}
 			Position++;
 		}

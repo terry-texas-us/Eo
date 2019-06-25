@@ -89,7 +89,7 @@ void EoDlgPlotStyleEditLineweight::OnButtonSortlineweight() {
 	m_LineweightsListCtrl.SortItems(EoLineweightCompareFunction, reinterpret_cast<DWORD_PTR>(&SortData));
 	const auto NumberOfLineweights {m_LineweightsListCtrl.GetItemCount()};
 	for (auto LineWeightIndex = 0; LineWeightIndex < NumberOfLineweights; LineWeightIndex++) {
-		EoLineweightData* LineweightDataItem = reinterpret_cast<EoLineweightData*>(m_LineweightsListCtrl.GetItemData(LineWeightIndex));
+		auto LineweightDataItem {reinterpret_cast<EoLineweightData*>(m_LineweightsListCtrl.GetItemData(LineWeightIndex))};
 		LineweightDataItem->m_NewIdx = LineWeightIndex;
 	}
 }

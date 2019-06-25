@@ -100,11 +100,10 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 					delete pLayer;
 					return TRUE;
 				}
-				case IDC_VIEW:
+				case IDC_VIEW: {
 					auto FileOpenSuccess {false};
 					auto Layer {Document->GetLayerAt(Name)};
 					if (Layer != nullptr) {
-
 						if (Layer->IsCurrent()) {
 							AeSys::WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
 						} else {
@@ -128,8 +127,10 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 						Document->UpdateLayerInAllViews(EoDb::kLayerSafe, Layer);
 					}
 					return TRUE;
+				}
+				default: ;
 			}
 		}
 	}
-	return FALSE; 		// Message for default dialog handlers
+	return FALSE;
 }

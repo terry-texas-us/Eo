@@ -676,6 +676,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 			}
 			case 7: // Object
 				break;
+			default: ;
 		}
 	}
 	AbstractViewportData->setView(ActiveViewport, ActiveView);

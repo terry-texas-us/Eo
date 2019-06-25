@@ -1,5 +1,5 @@
 #pragma once
-class EoCtrlBitmapPickerCombo : public CComboBox {
+class EoCtrlBitmapPickerCombo final : public CComboBox {
 	int m_ItemWidth {0};
 	int m_ItemHeight {0};
 	void OutputBitmap(LPDRAWITEMSTRUCT drawItemStruct, bool selected);

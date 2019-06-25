@@ -90,6 +90,7 @@ void EoDlgTrapFilter::OnOK() {
 				break;
 			case 6:
 				FilterByPrimitiveType(EoDb::kPolylinePrimitive);
+			default: ;
 		}
 	}
 	CDialog::OnOK();

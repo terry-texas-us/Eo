@@ -219,7 +219,7 @@ public:
 		const auto Center(ArcEntity->center());
 		auto StartAngle {ArcEntity->startAngle()};
 		auto EndAngle {ArcEntity->endAngle()};
-		if (StartAngle >= Oda2PI) { // need to rationalize angs to first period angles in range on (0 to twopi)
+		if (StartAngle >= Oda2PI) { // need to rationalize angles to first period angles in range on (0 to twopi)
 			StartAngle -= Oda2PI;
 			EndAngle -= Oda2PI;
 		}

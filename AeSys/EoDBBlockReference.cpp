@@ -372,7 +372,7 @@ OdDbBlockReferencePtr EoDbBlockReference::Create(OdDbBlockTableRecordPtr blockTa
 	const auto Linetype {LinetypeObjectFromIndex(file.ReadInt16())};
 	BlockReference->setLinetype(Linetype);
 
-	// <tas="BlockReference Association not trueview. Known issue postion when z normal is (0,0,-1)"</tas>
+	// <tas="BlockReference Association not trueview. Known issue position when z normal is (0,0,-1)"</tas>
 	OdDbDatabasePtr Database {BlockReference->database()};
 	OdDbBlockTablePtr BlockTable {Database->getBlockTableId().safeOpenObject(OdDb::kForRead)};
 	CString Name;
@@ -417,7 +417,7 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockRefere
 		if (!AttributePtr.isNull()) {
 
 			if (!AttributePtr->isConstant() && !AttributePtr->isInvisible()) {
-				/* <tas="Attribute pointer is to OdDbText entity. The atribute data is retained by the BlockReference entity, so it can be retrieved when needed.">
+				/* <tas="Attribute pointer is to OdDbText entity. The attribute data is retained by the BlockReference entity, so it can be retrieved when needed.">
 				auto AttributeText {static_cast<OdDbText*>(AttributePtr)};
 				</tas> */
 			}

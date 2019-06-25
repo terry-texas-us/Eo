@@ -244,7 +244,7 @@ bool EoDbText::Write(EoDbFile& file) const {
 }
 
 void EoDbText::Write(CFile& file, unsigned char* buffer) const {
-	const unsigned short NumberOfCharacters = static_cast<unsigned short>(m_strText.GetLength());
+	const auto NumberOfCharacters {static_cast<unsigned short>(m_strText.GetLength())};
 	buffer[3] = static_cast<unsigned char>((86 + NumberOfCharacters) / 32);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
@@ -584,6 +584,7 @@ bool HasFormattingCharacters(const CString& text) {
 					//case 'W':	// Change character width, i.e X scaling
 				case 'S':	// Stacked text or fractions: the S is followed by two text segments separated by a / (fraction bar) or ^ (no fraction bar)
 					return true;
+				default: ;
 			}
 		}
 	}

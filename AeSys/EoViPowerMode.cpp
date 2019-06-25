@@ -136,6 +136,7 @@ void AeSysView::DoPowerModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
 			break;
+		default: ;
 	}
 	m_PowerModePoints.setLogicalLength(NumberOfPoints);
 }

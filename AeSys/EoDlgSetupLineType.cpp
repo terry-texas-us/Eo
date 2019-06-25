@@ -85,24 +85,19 @@ void EoDlgSetupLinetype::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUC
 					ActiveView->ViewportPopActive();
 					m_LinetypesListControl.GetSubItemRect(Item, Description, LVIR_LABEL, SubItemRectangle);
 					const auto Description {Linetype->comments()};
-					DeviceContext.ExtTextOutW(SubItemRectangle.left + 6,
-					                          SubItemRectangle.top + 1,
-					                          ETO_CLIPPED,
-					                          &SubItemRectangle,
-					                          Description,
-					                          static_cast<unsigned>(Description.getLength()),
-					                          nullptr);
+					DeviceContext.ExtTextOutW(SubItemRectangle.left + 6, SubItemRectangle.top + 1, ETO_CLIPPED, &SubItemRectangle, Description, static_cast<unsigned>(Description.getLength()), nullptr);
 					g_PrimitiveState.SetColorIndex(&DeviceContext, ColorIndex);
 				}
 				DeviceContext.Detach();
+				break;
 			}
-			break;
 			case ODA_SELECT:
 				InvertRect(drawItemStruct->hDC, &drawItemStruct->rcItem);
 				break;
 			case ODA_FOCUS:
 				// TODO: Focus indication?
 				break;
+			default: ;
 		}
 		return;
 	}

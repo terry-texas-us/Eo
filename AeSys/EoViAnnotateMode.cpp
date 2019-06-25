@@ -505,6 +505,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
 			break;
+		default: ;
 	}
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }

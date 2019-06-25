@@ -61,13 +61,13 @@ LRESULT CALLBACK WndProcPreview(const HWND hwnd, const unsigned message, const u
 }
 
 void WndProcPreviewClear(const HWND previewWindow) {
-	CRect rc;
-	GetClientRect(previewWindow, &rc);
-	CDC dcMem;
-	dcMem.CreateCompatibleDC(nullptr);
-	CBitmap* Bitmap = static_cast<CBitmap*>(dcMem.SelectObject(g_WndProcPreview_Bitmap));
-	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
-	dcMem.SelectObject(Bitmap);
+	CRect PreviewWindowRectangle;
+	GetClientRect(previewWindow, &PreviewWindowRectangle);
+	CDC DeviceContext;
+	DeviceContext.CreateCompatibleDC(nullptr);
+	auto Bitmap {static_cast<CBitmap*>(DeviceContext.SelectObject(g_WndProcPreview_Bitmap))};
+	DeviceContext.PatBlt(0, 0, PreviewWindowRectangle.right, PreviewWindowRectangle.bottom, BLACKNESS);
+	DeviceContext.SelectObject(Bitmap);
 	InvalidateRect(previewWindow, nullptr, TRUE);
 }
 

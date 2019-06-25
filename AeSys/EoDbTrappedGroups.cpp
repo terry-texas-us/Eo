@@ -68,7 +68,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			}
 		}
 		const auto AllocationSize {(strBuf.GetLength() + 1) * sizeof(wchar_t)};
-		const GLOBALHANDLE ClipboardDataHandle = static_cast<GLOBALHANDLE>(GlobalAlloc(GHND, AllocationSize));
+		const auto ClipboardDataHandle {static_cast<GLOBALHANDLE>(GlobalAlloc(GHND, AllocationSize))};
 		if (ClipboardDataHandle != nullptr) {
 			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 			if (ClipboardData != nullptr) {
@@ -129,7 +129,7 @@ void AeSysDoc::DeleteAllTrappedGroups() {
 
 void AeSysDoc::ExpandTrappedGroups() {
 	if (m_TrappedGroupList.IsEmpty()) { return; }
-	EoDbGroupList* Groups = new EoDbGroupList;
+	auto Groups {new EoDbGroupList};
 	Groups->AddTail(&m_TrappedGroupList);
 	m_TrappedGroupList.RemoveAll();
 	auto GroupPosition {Groups->GetHeadPosition()};

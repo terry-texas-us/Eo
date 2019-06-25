@@ -847,6 +847,7 @@ void AeSysView::OnPipeModeSymbol() {
 			m_PipeTicSize = m_PipeTicSize * 2.;
 			GenerateTicMark(PointOnSection, BeginPoint, 0.0, Group);
 			break;
+		default: ;
 	}
 	m_PipeTicSize = TicSize;
 	GetDocument()->AddWorkLayerGroup(Group);
@@ -973,6 +974,7 @@ void AeSysView::DoPipeModeMouseMove() {
 			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			break;
 		}
+		default: ;
 	}
 	m_PipeModePoints.setLogicalLength(NumberOfPoints);
 }

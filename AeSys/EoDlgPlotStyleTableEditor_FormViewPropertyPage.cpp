@@ -67,24 +67,25 @@ void Dlg_OnCommand(const HWND hwnd, const int id, HWND hwndCtl, const unsigned c
 }
 
 BOOL Dlg_OnInit(const HWND hwnd, HWND hwndCtl, LPARAM lParam) {
-	const auto hOwner {GetWindow(hwnd, GW_OWNER)};
-	CPropertySheet* pPsDlg = static_cast<CPropertySheet*>(CWnd::FromHandle(hOwner));
-	const EoDlgPlotStyleEditor_FormViewPropertyPage* pPg = static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(pPsDlg->GetActivePage());
-	const auto PlotStyleTable {pPg->GetPlotStyleTable()};
-	OdString sName;
-	sName.format(L"Style %d", PlotStyleTable->plotStyleSize());
-	SetWindowTextW(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), sName);
+	const auto Owner {GetWindow(hwnd, GW_OWNER)};
+	const auto PropertySheet {static_cast<CPropertySheet*>(CWnd::FromHandle(Owner))};
+	const auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(PropertySheet->GetActivePage())};
+	const auto PlotStyleTable {ActivePage->GetPlotStyleTable()};
+	OdString Name;
+	Name.format(L"Style %d", PlotStyleTable->plotStyleSize());
+	SetWindowTextW(GetDlgItem(hwnd, IDC_PS_ADDPS_EDIT_PSNAME), Name);
 	return TRUE;
 }
 
-int WINAPI Dlg_Proc(const HWND hwnd, const unsigned uMsg, const WPARAM wParam, const LPARAM lParam) {
-	switch (uMsg) {
+int WINAPI Dlg_Proc(const HWND hwnd, const unsigned message, const WPARAM wParam, const LPARAM lParam) {
+	switch (message) {
 		case WM_CLOSE:
-			return SetDlgMsgResult(hwnd, uMsg, HANDLE_WM_CLOSE(hwnd, wParam, lParam, Dlg_OnClose));
+			return SetDlgMsgResult(hwnd, message, HANDLE_WM_CLOSE(hwnd, wParam, lParam, Dlg_OnClose));
 		case WM_COMMAND:
-			return SetDlgMsgResult(hwnd, uMsg, HANDLE_WM_COMMAND(hwnd, wParam, lParam, Dlg_OnCommand));
+			return SetDlgMsgResult(hwnd, message, HANDLE_WM_COMMAND(hwnd, wParam, lParam, Dlg_OnCommand));
 		case WM_INITDIALOG:
-			return SetDlgMsgResult(hwnd, uMsg, HANDLE_WM_INITDIALOG(hwnd, wParam, lParam, Dlg_OnInit));
+			return SetDlgMsgResult(hwnd, message, HANDLE_WM_INITDIALOG(hwnd, wParam, lParam, Dlg_OnInit));
+		default: ;
 	}
 	return FALSE;
 }
@@ -431,7 +432,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* n
 		return;
 	}
 	m_bEditChanging = true;
-	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(pNMListView->iItem));
+	auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(pNMListView->iItem))};
 	m_pPlotStyleActive = pPsListStyleData->GetOdPsPlotStyle();
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -555,13 +556,13 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 	if (m_bEditChanging) { return; }
 	m_bEditChanging = true;
-	const auto iItem {m_listStyles.GetSelectionMark()};
-	if (iItem < 0) { return; }
-	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(iItem));
-	auto PlotStyle {pPsListStyleData->GetOdPsPlotStyle()};
-	CString pVal;
-	m_editDescription.GetWindowText(pVal);
-	PlotStyle->setDescription(OdString(pVal));
+	const auto Item {m_listStyles.GetSelectionMark()};
+	if (Item < 0) { return; }
+	auto PlotStyleListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(Item))};
+	auto PlotStyle {PlotStyleListStyleData->GetOdPsPlotStyle()};
+	CString String;
+	m_editDescription.GetWindowTextW(String);
+	PlotStyle->setDescription(OdString(String));
 	m_bEditChanging = false;
 }
 
@@ -579,14 +580,14 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* 
 		*result = 0;
 		return;
 	}
-	const auto iLastItem {m_listStyles.GetSelectionMark()};
-	if (iLastItem < 0) * result = 0;
-	const auto iItem {m_listStyles.GetSelectionMark()};
-	if (iItem < 0) {
+	const auto LastItem {m_listStyles.GetSelectionMark()};
+	if (LastItem < 0) * result = 0;
+	const auto Item {m_listStyles.GetSelectionMark()};
+	if (Item < 0) {
 		*result = 0;
 		return;
 	}
-	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(iItem));
+	auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(Item))};
 	pPsListStyleData->SetActiveListIndex(m_Color.GetCurSel());
 	*result = 0;
 }
@@ -673,8 +674,8 @@ const int EoDlgPlotStyleEditor_FormViewPropertyPage::insertItem(const int index)
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initBitmapList() {
-	CBitmapColorInfo* pBitmapColorInfo = new CBitmapColorInfo(MAKEINTRESOURCEW(IDB_SELECT_TRUE_COLOR), L"Select true color...");
-	const CBitmap* bitmapSrc = &pBitmapColorInfo->m_bitmap;
+	auto BitmapColorInfo {new CBitmapColorInfo(MAKEINTRESOURCEW(IDB_SELECT_TRUE_COLOR), L"Select true color...")};
+	const CBitmap* bitmapSrc = &BitmapColorInfo->m_bitmap;
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 255, 255), L"Use object color"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 0, 0), L"Red"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 255, 0), L"Yellow"));
@@ -683,7 +684,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initBitmapList() {
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(0, 0, 255), L"Blue"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(255, 0, 255), L"Magenta"));
 	m_bitmapList.push_back(new CBitmapColorInfo(bitmapSrc, RGB(0, 0, 0), L"Black"));
-	m_bitmapList.push_back(pBitmapColorInfo);
+	m_bitmapList.push_back(BitmapColorInfo);
 }
 
 BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
@@ -811,7 +812,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDelBtnStyle() {
 	// TODO: Add your control notification handler code here
 	const auto Item {m_listStyles.GetSelectionMark()};
 	m_pPlotStyleActive = m_pPlotStyleTable->delPlotStyle(m_pPlotStyleActive);
-	CPsListStyleData* pPsListStyleData = reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(Item));
+	const auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(Item))};
 	m_listStyles.DeleteItem(Item);
 	delete pPsListStyleData;
 	m_listStyles.SetItemState(Item - 1, LVIS_SELECTED, LVIS_SELECTED);
