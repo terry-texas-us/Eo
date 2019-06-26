@@ -839,7 +839,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteInt(L"Disable Auto-Regen", m_DisableAutoRegenerate);
 	theApp.WriteInt(L"Save round trip information", saveRoundTrip);
 	theApp.WriteInt(L"Save Preview", savePreview);
-	theApp.WriteInt(L"Background colour", static_cast<int>(m_BackgroundColor));
+	theApp.WriteInt(L"Background color", static_cast<int>(m_BackgroundColor));
 	theApp.WriteInt(L"Save DWG with password", saveWithPassword);
 	theApp.WriteString(L"recent GS", m_VectorizerPath);
 	theApp.WriteString(L"Recent Command", m_RecentCommand);
@@ -1145,7 +1145,7 @@ BOOL AeSys::InitInstance() {
 	//	m_displayFields = GetProfileInt(_T("options"), _T("Field display format"), 0);
 	saveRoundTrip = GetInt(L"Save round trip information", true);
 	savePreview = GetInt(L"Save Preview", false);
-	m_BackgroundColor = static_cast<unsigned>(GetInt(L"Background colour", static_cast<int>(g_ViewBackgroundColor)));
+	m_BackgroundColor = static_cast<unsigned>(GetInt(L"Background color", static_cast<int>(g_ViewBackgroundColor)));
 	saveWithPassword = GetInt(L"Save DWG with password", false);
 	m_VectorizerPath = GetString(L"recent GS", OdWinDirectXModuleName);
 	m_RecentCommand = GetString(L"Recent Command", L"");

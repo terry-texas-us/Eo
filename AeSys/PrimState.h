@@ -12,10 +12,9 @@ class CPrimState {
 	unsigned m_HatchInteriorStyleIndex {0};
 	EoDbFontDefinition m_FontDefinition;
 	EoDbCharacterCellDefinition m_CharacterCellDefinition;
-public: // Constructors and destructor
+public:
 	CPrimState& operator=(const CPrimState& other) noexcept;
 
-	// Methods
 	[[nodiscard]] EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
 	[[nodiscard]] short ColorIndex() const noexcept;
 	[[nodiscard]] EoDbFontDefinition FontDefinition() const noexcept;

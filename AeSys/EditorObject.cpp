@@ -570,7 +570,7 @@ void zoom_extents(OdGsView* view, OdDbObject* viewportObject) {
 	}
 	if (!ValidBoundBox) { // set to somewhat reasonable (e.g. paper size)
 		if (Database->getMEASUREMENT() == OdDb::kMetric) {
-			BoundBox.set(OdGePoint3d::kOrigin, OdGePoint3d(297.0, 210.0, 0.0)); // set to papersize ISO A4 (portrait)
+			BoundBox.set(OdGePoint3d::kOrigin, OdGePoint3d(297.0, 210.0, 0.0)); // set to paper size ISO A4 (portrait)
 		} else {
 			BoundBox.set(OdGePoint3d::kOrigin, OdGePoint3d(11.0, 8.5, 0.0)); // ANSI A (8.50 x 11.00) (landscape)
 		}

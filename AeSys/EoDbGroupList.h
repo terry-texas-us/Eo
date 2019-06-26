@@ -1,6 +1,6 @@
 #pragma once
 class EoDbGroupList : public CObList {
-public: // Constructors and destructor
+public:
 	EoDbGroupList() = default;
 	~EoDbGroupList() = default;
 
@@ -33,7 +33,6 @@ public: // Constructors and destructor
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveTail());
 	}
 
-	// Methods
 	void AddToTreeViewControl(HWND tree, HTREEITEM htiParent);
 	void BreakPolylines();
 	void BreakSegRefs();

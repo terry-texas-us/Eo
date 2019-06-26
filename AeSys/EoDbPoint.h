@@ -9,7 +9,7 @@ private:
 	short m_PointDisplayMode;
 	unsigned short m_NumberOfDatums;
 	double* m_Data;
-public: // Constructors and destructor
+public:
 	EoDbPoint() noexcept;
 	EoDbPoint(const OdGePoint3d& point) noexcept;
 	EoDbPoint(const EoDbPoint& other);
@@ -38,7 +38,6 @@ public: // Constructors and destructor
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods
 	[[nodiscard]] double DataAt(unsigned short dataIndex) const noexcept;
 	void ModifyState() noexcept override;
 	[[nodiscard]] short PointDisplayMode() const noexcept;
@@ -46,7 +45,6 @@ public: // Constructors and destructor
 	void SetData(unsigned short numberOfDatums, double* data);
 	void SetPointDisplayMode(short displayMode) noexcept;
 
-	// Methods - static
 	static EoDbPoint* Create(OdDbPointPtr& point);
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbPointPtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);

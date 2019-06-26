@@ -1,6 +1,6 @@
 #pragma once
 class EoApOptions {
-public: // Constructors and destructor
+public:
 	EoApOptions();
 	~EoApOptions() = default;
 
@@ -11,7 +11,6 @@ public: // Constructors and destructor
 	bool m_TabsContextMenu;
 	bool m_DisableSetRedraw;
 
-	// Methods
 	void Load();
 	void Save();
 };

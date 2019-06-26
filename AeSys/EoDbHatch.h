@@ -35,7 +35,7 @@ private:
 	OdGePoint3dArray m_Vertices;
 	OdGePoint2dArray m_Vertices2d;
 	OdGeDoubleArray m_Bulges;
-public:	// Constructors and destructor
+public:
 	EoDbHatch() noexcept;
 	EoDbHatch(const EoDbHatch& other);
 	EoDbHatch& operator=(const EoDbHatch& other);
@@ -65,7 +65,6 @@ public:	// Constructors and destructor
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods
 	int Append(const OdGePoint3d& vertex);
 	/// <summary>A Hatch is generated using line patterns.</summary>
 	void DisplayHatch(AeSysView* view, CDC* deviceContext) const;
@@ -89,7 +88,6 @@ public:	// Constructors and destructor
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
 	[[nodiscard]] unsigned SwingVertex() const;
 
-	// Methods - static
 	static unsigned Edge() noexcept;
 	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
 	static void ConvertPolylineType(int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive);

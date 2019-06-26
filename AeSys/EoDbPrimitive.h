@@ -30,7 +30,7 @@ protected:
 	static unsigned sm_ControlPointIndex;
 	static double sm_RelationshipOfPoint;
 	static double sm_SelectApertureSize;
-public: // Constructors and destructor
+public:
 	EoDbPrimitive() = default;
 
 	virtual ~EoDbPrimitive() = default;
@@ -73,7 +73,6 @@ public: // Constructors and destructor
 	virtual void ModifyState() noexcept;
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 
-	// Methods
 	[[nodiscard]] short ColorIndex() const noexcept { return m_ColorIndex; }
 
 	[[nodiscard]] OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
@@ -96,7 +95,6 @@ public: // Constructors and destructor
 
 	void SetLinetypeIndex2(short linetypeIndex);
 	
-	// Methods - static
 	static unsigned ControlPointIndex() noexcept;
 	static short HighlightColorIndex() noexcept;
 	static short HighlightLinetypeIndex() noexcept;

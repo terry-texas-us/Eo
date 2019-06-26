@@ -28,7 +28,7 @@ private:
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
-public:	// Constructors and destructor
+public:
 	EoDbText() = default;
 	EoDbText(const EoDbText& other);
 	EoDbText& operator=(const EoDbText&);
@@ -58,7 +58,6 @@ public:	// Constructors and destructor
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods
 	/// <summary>Get the bounding box of text.</summary>
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	[[nodiscard]] EoDbFontDefinition FontDefinition() const;
@@ -71,7 +70,6 @@ public:	// Constructors and destructor
 	void SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) noexcept;
 	void SetText(const CString& text);
 
-	// Methods - static
 	static EoDb::HorizontalAlignment ConvertHorizontalAlignment(OdDb::TextHorzMode horizontalMode) noexcept;
 	static EoDb::VerticalAlignment ConvertVerticalAlignment(OdDb::TextVertMode verticalMode) noexcept;
 	static OdDb::TextHorzMode ConvertHorizontalMode(unsigned horizontalAlignment) noexcept;

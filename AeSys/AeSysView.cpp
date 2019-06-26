@@ -393,7 +393,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 			theApp.reportError(L"Rendering aborted", OdError("Unknown exception is caught..."));
 			GetParent()->PostMessageW(WM_CLOSE);
 		}
-#endif //#ifndef _DEBUG
+#endif // _DEBUG
 	}
 	m_RegenerateAbort = false;
 	m_IncompleteRegenerate = false;
@@ -1071,7 +1071,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	} prevGiContextParams(this);
 
 	// To get paper size of selected printer and to get properties (scale, offset) from PlotSettings to set using them OverAll View;
-	//  Note: if we want to get the same Plot View for Paper Layout as AutoCAD then pIter needs to create pseudo DC having the requisite settings & properties.
+	//  Note: if we want to get the same Plot View for Paper Layout as AutoCAD then Iterator needs to create pseudo DC having the requisite settings & properties.
 	//        Look at OnPreparePrinting() where we try to set required printer device.
 	//        Otherwise CPreviewView uses settings and properties of current Printer/plotter (see CPreviewView::OnDraw()) to draw empty page on screen.
 	auto IsPlotViaBitmap {AfxGetApp()->GetProfileIntW(L"options", L"Print/Preview via bitmap device", 1) != 0};
@@ -1311,7 +1311,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			FieldHeight = ViewportHeight;
 		} else if (plotType == OdDbPlotSettings::kExtents || plotType == OdDbPlotSettings::kLimits && !IsPlanView) {
 			OdGeBoundBlock3d BoundBox;
-			if (AbstractView->plotExtents(pVObject, BoundBox)) { // pIter also skip 'off layers'
+			if (AbstractView->plotExtents(pVObject, BoundBox)) { // Iterator also skip 'off layers'
 				BoundBox.transformBy(EyeToWorldTransform);
 				ViewTarget = (BoundBox.minPoint() + BoundBox.maxPoint().asVector()) / 2.;
 				BoundBox.transformBy(WorldToEyeTransform);
@@ -1328,31 +1328,31 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			FieldHeight = (dry2 - dry1) / ScaleFactor;
 			ViewTarget.set(FieldWidth / 2. - PaperImageOrigin.x - offsetX / ScaleFactor, FieldHeight / 2. - PaperImageOrigin.y - offsetY / ScaleFactor, 0); // in mm
 			if (!IsMetric) {
-				ViewTarget /= kMmPerInch; // must be in plotpaper units
+				ViewTarget /= kMmPerInch; // must be in plot paper units
 				FieldWidth /= kMmPerInch;
 				FieldHeight /= kMmPerInch;
 			}
-			offsetX = 0.0; // pIter was applied to viewTarget, reset pIter.
+			offsetX = 0.0; // Iterator was applied to viewTarget, reset Iterator.
 			offsetY = 0.0;
 			PaperImageOrigin.x = 0.0;
 			PaperImageOrigin.y = 0.0;
 			IsCentered = false;
-			IsScaledToFit = false; // kLayout doesn't support pIter.
+			IsScaledToFit = false; // kLayout doesn't support Iterator.
 		}
 		if (plotType != OdDbPlotSettings::kView) { // AlexR : 3952
 			ViewTarget = ViewTarget.orthoProject(OdGePlane(OldTarget, ViewDirection));
 		}
-		// in plotpaper units
+		// in plot paper units
 		pOverallView->setView(ViewTarget + ViewDirection, ViewTarget, ViewUpVector, FieldWidth, FieldHeight, IsPerspective ? OdGsView::kPerspective : OdGsView::kParallel);
 		if (!IsMetric) {
 			FieldWidth *= kMmPerInch;
 			FieldHeight *= kMmPerInch;
 		}
-		if (IsScaledToFit) { // Scale factor can be stored in layout, but preview recalculate pIter if bScaledToFit = true.
-			// Some times stored factor isn't correct, due to autocad isn't update pIter before saving.
+		if (IsScaledToFit) { // Scale factor can be stored in layout, but preview recalculate Iterator if bScaledToFit = true.
+			// Some times stored factor isn't correct, due to autocad isn't update Iterator before saving.
 			ScaleFactor = odmin((drx2 - drx1) / FieldWidth, (dry2 - dry1) / FieldHeight);
 		}
-		if (IsCentered) { // Offset also can be incorectly saved.
+		if (IsCentered) { // Offset also can be incorrectly saved.
 			offsetX = (drx2 - drx1 - FieldWidth * ScaleFactor) / 2.;
 			offsetY = (dry2 - dry1 - FieldHeight * ScaleFactor) / 2.;
 			if (IsPrint90Degrees || IsPrint180Degrees) {

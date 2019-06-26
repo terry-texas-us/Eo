@@ -56,7 +56,6 @@ public:
 	void Write(EoDbFile& file);
 	void Write(CFile& file, unsigned char* buffer);
 
-	// Methods - static
 	static void SetPrimitiveToIgnore(EoDbPrimitive* primitive) noexcept;
 	static std::pair<EoDbGroup*, OdDbGroupPtr> Create(OdDbDatabasePtr database);
 };

@@ -688,7 +688,6 @@ unsigned EoDbHatch::SwingVertex() const {
 	return SwingVertex;
 }
 
-// Methods - static
 unsigned EoDbHatch::Edge() noexcept {
 	return sm_Edge;
 }

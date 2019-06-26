@@ -3,13 +3,12 @@
 class AeSysView;
 
 class EoGeLineSeg3d final : public OdGeLineSeg3d {
-public:	// Constructors and destructor
+public:
 	EoGeLineSeg3d();
 	EoGeLineSeg3d(const EoGeLineSeg3d& line) = default;
 	EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 	virtual ~EoGeLineSeg3d() = default;
 
-	// Methods
 	/// <summary>Determines the angle between two lines.</summary>
 	/// <notes>
 	///	Angle is found using the inner product.
@@ -65,7 +64,7 @@ public:	// Constructors and destructor
 	/// <param name="leftLine"></param>
 	bool GetParallels(double distanceBetweenLines, double eccentricity, EoGeLineSeg3d& leftLine, EoGeLineSeg3d& rightLine) const;
 	/// <summary>Determines intersection of two lines.</summary>
-	/// <returns>true successful completion, false ohterwise (parallel lines)</returns>
+	/// <returns>true successful completion, false otherwise (parallel lines)</returns>
 	bool IntersectWith_xy(const EoGeLineSeg3d& line, OdGePoint3d& intersection) const;
 	/// <summary> Determines if line segment in wholly or partially contained within window passed.</summary>
 	/// <remarks> Assumes window passed with min/max corners correct.</remarks>

@@ -18,14 +18,14 @@
 #include "Gs/GsModel.h"
 
 // Menu animation flags
-#if !defined(ODA_UNIXOS) //EMCC
+#if !defined(ODA_UNIXOS)
 #ifndef TPM_VERPOSANIMATION
 static const unsigned TPM_VERPOSANIMATION = 0x1000L;
 #endif
 #ifndef TPM_NOANIMATION
 static const unsigned TPM_NOANIMATION = 0x4000L;
 #endif
-#endif //#ifndef EMCC
+#endif // ODA_UNIXOS
 //
 #define GM_PAGE_EACH_OBJECT 200
 
@@ -526,7 +526,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 							break;
 						}
 					}
-					// Remove if new paths added also (workaround. tehnically new pathes must be added on second step)
+					// Remove if new paths added also (workaround. technically new paths must be added on second step)
 					if (!Removed) {
 						auto SelectionSetIterator {searchObjectSSetIterator(selectionSet, GripDataIterator->first)};
 						for (unsigned SubEntityIndex = 0; SubEntityIndex < SelectionSetIterator->subentCount(); SubEntityIndex++) {

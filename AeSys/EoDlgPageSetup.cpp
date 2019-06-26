@@ -449,8 +449,8 @@ void EoDlgPageSetup::OnSelchangeDeviceList() {
 	if (!FillPaperSizes()) { return; }
 	const auto LocaleMediaName {m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, m_PlotSettings.getCanonicalMediaName())};
 	if (m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, LocaleMediaName)) == LB_ERR) {
-		// ALEXR TODO : Autocad use paper w&h to find nearest paper or set a4 ?
-		// ALEXR TODO : SelectString select by part of string. 'q' -> select 'qwe'.
+		// TODO : Autocad use paper w&h to find nearest paper or set a4 ?
+		// TODO : SelectString select by part of string. 'q' -> select 'qwe'.
 		CString csLocaleMediaName;
 		m_PaperSize.GetLBText(0, csLocaleMediaName);
 		if (csLocaleMediaName == L"") { return; }
@@ -624,7 +624,7 @@ void EoDlgPageSetup::OnSelChangePlotAreaType() {
 		// This is differences between dialog and validator. Validator doesn't change UseStandardScale to false.
 		// Example is kExtents, kFit2Paper -> kLayout ->kExtents
 		// Dialog has kFit2Paper disabled, but validator don't clear kFit2Paper flag.
-		// Validator also don't change PlotOrigin to 0,0, if plotsenteres was true, but it change scale to 1:1 if fittopaper was true
+		// Validator also don't change PlotOrigin to 0,0, if plot centers was true, but it change scale to 1:1 if fit to paper was true
 		if (m_CenterThePlot) {
 			m_PlotSettingsValidator->setPlotOrigin(&m_PlotSettings, 0.0, 0.0);
 		}

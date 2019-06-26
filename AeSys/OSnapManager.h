@@ -64,7 +64,7 @@ private:
 #define hitradius 15
 
 class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSelectionReactor {
-	// TODO move using of OdDbdatabase, OdDbObject & OdDbObjectId into OSnapManager
+	// TODO move using of OdDbDatabase, OdDbObject & OdDbObjectId into OSnapManager
 	OdGsView* m_View {nullptr};
 	OdGePoint3d* m_PickPoint {nullptr};
 	const OdGePoint3d* m_LastPoint {nullptr};

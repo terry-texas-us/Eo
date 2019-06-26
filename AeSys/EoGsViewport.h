@@ -8,13 +8,12 @@ class EoGsViewport {
 	double m_DeviceWidthInInches {0.0};
 	double m_HeightInPixels {0.0};
 	double m_WidthInPixels {0.0};
-public: // Constructors and destructors
+public:
 	EoGsViewport() = default;
 	EoGsViewport(const EoGsViewport& other) noexcept;
 	~EoGsViewport() = default;
 	EoGsViewport& operator=(const EoGsViewport& other) = default;
 
-	// Methods
 	/// <remarks> Window coordinates are rounded to nearest whole number.</remarks>
 	[[nodiscard]] CPoint DoProjection(const EoGePoint4d& point) const noexcept;
 	/// <remarks>Window coordinates are rounded to nearest whole number. Perspective division to yield normalized device coordinates.</remarks>

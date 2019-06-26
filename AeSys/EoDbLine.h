@@ -8,8 +8,6 @@ DECLARE_DYNAMIC(EoDbLine)
 private:
 	EoGeLineSeg3d m_LineSeg;
 public:
-	
-	// Constructors and destructor
 	EoDbLine() = default;
 	EoDbLine(const EoDbLine& other);
 	EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
@@ -42,7 +40,6 @@ public:
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) override;
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 
-	// Methods
 	[[nodiscard]] OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
 
 	[[nodiscard]] EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
@@ -57,8 +54,6 @@ public:
 
 	[[nodiscard]] OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
 
-
-	// Methods - static
 	static EoDbLine* Create(const OdDbLinePtr& line);
 	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbLinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);

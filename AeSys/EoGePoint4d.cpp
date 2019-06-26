@@ -136,7 +136,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 	for (auto i = 1; i < iPtsIn; i++) {
 		ptEdge[1] = pointsArrayIn[i];
 		bEdgeVis[1] = OdGeVector3d(ptEdge[1].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
-		if (bEdgeVis[0] != bEdgeVis[1]) { // Vetices of edge on opposite sides of clip plane
+		if (bEdgeVis[0] != bEdgeVis[1]) { // Vertices of edge on opposite sides of clip plane
 			pt = IntersectionWithPln4(ptEdge[0], ptEdge[1], EoGePoint4d(pointOnPlane, 1.0), planeNormal);
 			pointsArrayOut.Add(pt);
 		}

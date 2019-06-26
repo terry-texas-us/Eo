@@ -12,7 +12,7 @@ Spline primitive
 </remarks> */
 class EoDbSpline final : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;
-public:	// Constructors and destructor
+public:
 	EoDbSpline() = default;
 	EoDbSpline(const EoDbSpline& other);
 	EoDbSpline& operator=(const EoDbSpline& other);
@@ -40,10 +40,8 @@ public:	// Constructors and destructor
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
 
-	// Methods - static
 	static EoDbSpline* Create(OdDbSplinePtr& spline);
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);

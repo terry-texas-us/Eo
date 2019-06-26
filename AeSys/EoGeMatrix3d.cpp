@@ -7,7 +7,6 @@ EoGeMatrix3d::EoGeMatrix3d()
 	: OdGeMatrix3d() {
 }
 
-// Methods
 EoGeMatrix3d& EoGeMatrix3d::SetTo3AxisRotation(const OdGeVector3d& rotationAngles) {
 	setToIdentity();
 	EoGeMatrix3d RotationMatrix;

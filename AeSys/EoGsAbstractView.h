@@ -43,13 +43,12 @@ protected:
 	double m_FieldHeightMaximum {0.5};
 	double m_NearClipDistance {20.0}; // distance from the target to the near (front) clipping plane along the target-camera line.
 	double m_FarClipDistance {100.0}; // distance from the target to the far (back) clipping plane along the target-camera line
-public: // Constructors and destructor
+public:
 	EoGsAbstractView();
 	EoGsAbstractView(const EoGsAbstractView& other);
 	EoGsAbstractView& operator=(const EoGsAbstractView& other) = default;
 	virtual ~EoGsAbstractView() = default;
 
-	// Methods
 	void AdjustWindow(double aspectRatio) noexcept;
 	void EnablePerspective(bool enabled) noexcept;
 	[[nodiscard]] double FarClipDistance() const noexcept;

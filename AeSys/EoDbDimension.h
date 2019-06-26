@@ -12,7 +12,6 @@ DECLARE_DYNAMIC(EoDbDimension)
 	EoGeReferenceSystem m_ReferenceSystem;
 	CString m_strText;
 
-	// Constructors and destructor
 	EoDbDimension() = default;
 	EoDbDimension(const EoDbDimension& other);
 	EoDbDimension& operator=(const EoDbDimension& other);
@@ -45,7 +44,6 @@ DECLARE_DYNAMIC(EoDbDimension)
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
 	void ModifyState() noexcept override;
 
-	// Methods
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 	const EoDbFontDefinition& FontDef() noexcept;
 	const EoGeLineSeg3d& Line() noexcept;
@@ -66,7 +64,7 @@ DECLARE_DYNAMIC(EoDbDimension)
 	const short& TextColorIndex() noexcept;
 private:
 	static unsigned short sm_wFlags;	// bit 1 clear if dimension selected at note, set if dimension selected at line
-public: // Methods - static
+public:
 	static EoDbDimension* Create(OdDbAlignedDimensionPtr& alignedDimension);
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord);
 	static OdDbAlignedDimensionPtr Create(OdDbBlockTableRecordPtr blockTableRecord, EoDbFile& file);

@@ -33,7 +33,6 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	unsigned short m_Rows {1};
 	double m_RowSpacing {0.0};
 
-	// Constructors and destructor
 	EoDbBlockReference() = default;
 	EoDbBlockReference(const EoDbBlockReference& other);
 	EoDbBlockReference& operator=(const EoDbBlockReference& other); // hides non-virtual function of parent
@@ -62,7 +61,6 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
-	// Methods
 	[[nodiscard]] EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
 	[[nodiscard]] unsigned short Columns() const noexcept;
 	[[nodiscard]] double ColumnSpacing() const noexcept;
@@ -87,7 +85,6 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	void SetColumns(unsigned short columns) noexcept;
 	void SetColumnSpacing(double columnSpacing) noexcept;
 
-	// Methods - static
 	static EoDbBlockReference* Create(const EoDbBlockReference& other, OdDbDatabasePtr database);
 	static EoDbBlockReference* Create(OdDbDatabasePtr& database);
 	static OdDbBlockReferencePtr Create(OdDbBlockTableRecordPtr blockTableRecord);

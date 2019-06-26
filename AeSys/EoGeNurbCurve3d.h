@@ -2,13 +2,11 @@
 #include "Ge/GeNurbCurve3d.h"
 
 class EoGeNurbCurve3d : public OdGeNurbCurve3d {
-public:	// Constructors and destructor
+public:
 	EoGeNurbCurve3d();
 	EoGeNurbCurve3d(const EoGeNurbCurve3d& spline) = default;
 	virtual ~EoGeNurbCurve3d() = default;
 
-	// Methods
-	// Methods - static
 	/// <summary>
 	/// Generates the required B-spline curves of various order (capped to 4th) using the Cox and de Boor algorithm.
 	/// </summary>

@@ -34,7 +34,7 @@ private:
 	OdGeDoubleArray m_StartWidths;
 	OdGeDoubleArray m_EndWidths;
 	OdGeDoubleArray m_Bulges;
-public:	// Constructors and destructor
+public:
 	EoDbPolyline();
 	EoDbPolyline(const EoDbPolyline& other);
 	EoDbPolyline& operator=(const EoDbPolyline& other);
@@ -64,7 +64,6 @@ public:	// Constructors and destructor
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
-	// Methods
 	void AppendVertex(const OdGePoint2d& vertex, double bulge = 0.0, double startWidth = 0.0, double endWidth = 0.0);
 	void GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const;
 	[[nodiscard]] bool IsClosed() const noexcept;
@@ -77,7 +76,6 @@ public:	// Constructors and destructor
 	void SetNormal(const OdGeVector3d& normal);
 	[[nodiscard]] unsigned SwingVertex() const;
 
-	// Methods - static
 	static unsigned Edge() noexcept;
 	static void SetEdgeToEvaluate(unsigned edgeToEvaluate) noexcept;
 	static EoDbPolyline* Create(OdDbPolylinePtr polyline);

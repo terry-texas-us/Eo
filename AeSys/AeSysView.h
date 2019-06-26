@@ -586,7 +586,7 @@ public:
 	// Notes: Colinear fill area edges are not considered to intersect.
 	void OnCutModeSlice();
 	void OnCutModeField();
-	/// <summary>Cuts a primitive at two pnts and puts non-null middle piece in trap.</summary>
+	/// <summary>Cuts a primitive at two points and puts non-null middle piece in trap.</summary>
 	// Notes:	Accuracy of arc section cuts diminishes with high
 	//			eccentricities. if two cut points are coincident
 	//			nothing happens.
@@ -636,7 +636,7 @@ public:
 	void OnTraprModePoint();
 	/// <summary>Identifies groups which intersect with a line and removes them from the trap.</summary>
 	void OnTraprModeStitch();
-	/// <summary>Identifies groups which lie wholly or partially within a orthoganal rectangular area.</summary>
+	/// <summary>Identifies groups which lie wholly or partially within a orthogonal rectangular area.</summary>
 	// Notes: This routine fails in all but top view. !!
 	// Parameters:	pt1 	one corner of the area
 	//				pt2 	other corner of the area

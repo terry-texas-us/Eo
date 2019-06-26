@@ -10,7 +10,7 @@ private:
 	OdGeVector3d m_MajorAxis {OdGeVector3d::kXAxis};
 	OdGeVector3d m_MinorAxis {OdGeVector3d::kYAxis};
 	double m_SweepAngle {Oda2PI};
-public: // Constructors and destructor
+public:
 	EoDbEllipse() = default;
 	/// <summary>Ellipse segment is constructed using a center point, a major and minor vector and a sweep ang.</summary>
 	EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double sweepAngle) noexcept;
@@ -45,7 +45,6 @@ public: // Constructors and destructor
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	// Methods
 	[[nodiscard]] OdGePoint3d Center() const noexcept;
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
@@ -71,7 +70,6 @@ public: // Constructors and destructor
 	[[nodiscard]] OdGePoint3d StartPoint() const;
 	double SwpAngToPt(const OdGePoint3d& point);
 
-	// Methods - static
 	static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
 	static OdDbEllipsePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
