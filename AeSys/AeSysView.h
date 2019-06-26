@@ -55,7 +55,7 @@ class AeSysView
 	Response m_response;
 	int m_inpOptions {0};
 	void exeCmd(const OdString& szCmdStr);
-	bool beginDragCallback(const OdGePoint3d& point) override;
+	bool BeginDragCallback(const OdGePoint3d& point) override;
 protected:
 	using CView::operator new;
 	using CView::operator delete;

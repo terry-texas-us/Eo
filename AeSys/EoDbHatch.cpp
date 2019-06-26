@@ -19,12 +19,12 @@ double EoDbHatch::sm_PatternScaleX = .1;
 double EoDbHatch::sm_PatternScaleY = .1;
 
 struct EoEdge {
-	double dMinY; // minimum y extent of edge
-	double dMaxY; // maximum y extent of edge
-	double dX; // x intersection on edge
+	double minimumExtentY {0.0}; // minimum y extent of edge
+	double maximumExtentY {0.0}; // maximum y extent of edge
+	double intersectionX {0.0}; // x intersection on edge
 	union {
-		double dInvSlope; // inverse slope of edge
-		double dStepSiz; // change in x for each scanline
+		double inverseSlope {0.0}; // inverse slope of edge
+		double stepSize; // change in x for each scanline
 	};
 };
 
@@ -335,7 +335,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 	const auto NumberOfLoops {1};
 	int LoopPointsOffsets[2];
 	LoopPointsOffsets[0] = static_cast<int>(m_Vertices.size());
-	EoEdge Edges[128] {0};
+	EoEdge Edges[128];
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
@@ -377,19 +377,19 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 					const auto dMaxY {EoMax(StartPoint.y, EndPoint.y)};
 					auto CurrentEdgeIndex {ActiveEdges + 1};
 					// Find correct insertion point for edge in edge list using ymax as sort key
-					while (CurrentEdgeIndex != 1 && Edges[CurrentEdgeIndex - 1].dMaxY < dMaxY) {
+					while (CurrentEdgeIndex != 1 && Edges[CurrentEdgeIndex - 1].maximumExtentY < dMaxY) {
 						Edges[CurrentEdgeIndex] = Edges[CurrentEdgeIndex - 1];		// Move entry down
 						CurrentEdgeIndex--;
 					}
 					// Insert information about new edge
-					Edges[CurrentEdgeIndex].dMaxY = dMaxY;
-					Edges[CurrentEdgeIndex].dInvSlope = Edge.x / Edge.y;
+					Edges[CurrentEdgeIndex].maximumExtentY = dMaxY;
+					Edges[CurrentEdgeIndex].inverseSlope = Edge.x / Edge.y;
 					if (StartPoint.y > EndPoint.y) {
-						Edges[CurrentEdgeIndex].dMinY = EndPoint.y;
-						Edges[CurrentEdgeIndex].dX = StartPoint.x;
+						Edges[CurrentEdgeIndex].minimumExtentY = EndPoint.y;
+						Edges[CurrentEdgeIndex].intersectionX = StartPoint.x;
 					} else {
-						Edges[CurrentEdgeIndex].dMinY = StartPoint.y;
-						Edges[CurrentEdgeIndex].dX = EndPoint.x;
+						Edges[CurrentEdgeIndex].minimumExtentY = StartPoint.y;
+						Edges[CurrentEdgeIndex].intersectionX = EndPoint.x;
 					}
 					ActiveEdges++;
 				}
@@ -401,8 +401,8 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 			PatternOffset.negate();
 		}
 		// Determine where first scan position is
-		auto dScan {Edges[1].dMaxY - fmod(Edges[1].dMaxY - RotatedBasePoint.y, PatternOffset.y)};
-		if (Edges[1].dMaxY < dScan) {
+		auto dScan {Edges[1].maximumExtentY - fmod(Edges[1].maximumExtentY - RotatedBasePoint.y, PatternOffset.y)};
+		if (Edges[1].maximumExtentY < dScan) {
 			dScan = dScan - PatternOffset.y;
 		}
 		auto dSecBeg {RotatedBasePoint.x + PatternOffset.x * (dScan - RotatedBasePoint.y) / PatternOffset.y};
@@ -411,18 +411,18 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 		auto iEndEdg {1};
 		// Determine relative epsilon to be used for extent tests
 	l1: const auto dEps1 {DBL_EPSILON + DBL_EPSILON * fabs(dScan)};
-		while (iEndEdg <= ActiveEdges && Edges[iEndEdg].dMaxY >= dScan - dEps1) {
+		while (iEndEdg <= ActiveEdges && Edges[iEndEdg].maximumExtentY >= dScan - dEps1) {
 			// Set x intersection back to last scanline
-			Edges[iEndEdg].dX += Edges[iEndEdg].dInvSlope * (PatternOffset.y + dScan - Edges[iEndEdg].dMaxY);
+			Edges[iEndEdg].intersectionX += Edges[iEndEdg].inverseSlope * (PatternOffset.y + dScan - Edges[iEndEdg].maximumExtentY);
 			// Determine the change in x per scan
-			Edges[iEndEdg].dStepSiz = -Edges[iEndEdg].dInvSlope * PatternOffset.y;
+			Edges[iEndEdg].stepSize = -Edges[iEndEdg].inverseSlope * PatternOffset.y;
 			iEndEdg++;
 		}
 		for (auto i = iBegEdg; i < iEndEdg; i++) {
 			auto CurrentEdgeIndex {i};
-			if (Edges[i].dMinY < dScan - dEps1) { // Edge y-extent overlaps current scan . determine intersections
-				Edges[i].dX += Edges[i].dStepSiz;
-				while (CurrentEdgeIndex > iBegEdg && Edges[CurrentEdgeIndex].dX < Edges[CurrentEdgeIndex - 1].dX) {
+			if (Edges[i].minimumExtentY < dScan - dEps1) { // Edge y-extent overlaps current scan . determine intersections
+				Edges[i].intersectionX += Edges[i].stepSize;
+				while (CurrentEdgeIndex > iBegEdg && Edges[CurrentEdgeIndex].intersectionX < Edges[CurrentEdgeIndex - 1].intersectionX) {
 					Edges[0] = Edges[CurrentEdgeIndex];
 					Edges[CurrentEdgeIndex] = Edges[CurrentEdgeIndex - 1];
 					Edges[CurrentEdgeIndex - 1] = Edges[0];
@@ -440,8 +440,8 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 			auto CurrentEdgeIndex {iBegEdg};
 			if (HatchPatternLine.m_dashes.isEmpty()) {
 				for (auto EdgePairIndex = 1; EdgePairIndex <= (iEndEdg - iBegEdg) / 2; EdgePairIndex++) {
-					const OdGePoint3d StartPoint(Edges[CurrentEdgeIndex].dX, dScan, 0.0);
-					const OdGePoint3d EndPoint(Edges[CurrentEdgeIndex + 1].dX, dScan, 0.0);
+					const OdGePoint3d StartPoint(Edges[CurrentEdgeIndex].intersectionX, dScan, 0.0);
+					const OdGePoint3d EndPoint(Edges[CurrentEdgeIndex + 1].intersectionX, dScan, 0.0);
 					if (!StartPoint.isEqualTo(EndPoint)) {
 						EoGeLineSeg3d Line(StartPoint, EndPoint);
 						Line.transformBy(tmInv);
@@ -455,13 +455,13 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 				StartPoint.y = dScan;
 				EndPoint.y = dScan;
 				for (auto EdgePairIndex = 1; EdgePairIndex <= (iEndEdg - iBegEdg) / 2; EdgePairIndex++) {
-					StartPoint.x = Edges[CurrentEdgeIndex].dX - fmod(Edges[CurrentEdgeIndex].dX - dSecBeg, TotalPatternLength);
-					if (StartPoint.x > Edges[CurrentEdgeIndex].dX) {
+					StartPoint.x = Edges[CurrentEdgeIndex].intersectionX - fmod(Edges[CurrentEdgeIndex].intersectionX - dSecBeg, TotalPatternLength);
+					if (StartPoint.x > Edges[CurrentEdgeIndex].intersectionX) {
 						StartPoint.x -= TotalPatternLength;
 					}
 					// Determine the index of the pattern item which intersects the left edge and how much of it is between the edges
 					auto DashIndex = 0u;
-					auto DistanceToLeftEdge {Edges[CurrentEdgeIndex].dX - StartPoint.x};
+					auto DistanceToLeftEdge {Edges[CurrentEdgeIndex].intersectionX - StartPoint.x};
 					auto CurrentDashLength {fabs(HatchPatternLine.m_dashes[DashIndex])};
 					while (CurrentDashLength <= DistanceToLeftEdge + DBL_EPSILON) {
 						StartPoint.x += CurrentDashLength;
@@ -469,9 +469,9 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 						DashIndex = (DashIndex + 1) % NumberOfDashesInPattern;
 						CurrentDashLength = fabs(HatchPatternLine.m_dashes[DashIndex]);
 					}
-					StartPoint.x = Edges[CurrentEdgeIndex].dX;
+					StartPoint.x = Edges[CurrentEdgeIndex].intersectionX;
 					CurrentDashLength -= DistanceToLeftEdge;
-					auto DistanceToRightEdge {Edges[CurrentEdgeIndex + 1].dX - Edges[CurrentEdgeIndex].dX};
+					auto DistanceToRightEdge {Edges[CurrentEdgeIndex + 1].intersectionX - Edges[CurrentEdgeIndex].intersectionX};
 					while (CurrentDashLength <= DistanceToRightEdge + DBL_EPSILON) {
 						EndPoint.x = StartPoint.x + CurrentDashLength;
 						if (HatchPatternLine.m_dashes[DashIndex] >= 0.0) {
@@ -491,7 +491,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 						StartPoint.x = EndPoint.x;
 					}
 					if (HatchPatternLine.m_dashes[DashIndex] >= 0.0) {
-						EndPoint.x = Edges[CurrentEdgeIndex + 1].dX;
+						EndPoint.x = Edges[CurrentEdgeIndex + 1].intersectionX;
 						if (!StartPoint.isEqualTo(EndPoint)) {
 							EoGeLineSeg3d Line(StartPoint, EndPoint);
 							Line.transformBy(tmInv);

@@ -421,7 +421,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	OdGePoint3d ModelLastPoint;
 	auto nSnapModes {SnapModes()};
 	if (m_LastPoint) {
-		SETBIT(nSnapModes, ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan) | ToSnapModes(OdDb::kOsModePerp), 0);
+		nSnapModes &= ~(ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan) | ToSnapModes(OdDb::kOsModePerp));
 		ModelLastPoint = ModelToWorldTransform * *m_LastPoint;
 	}
 	auto PointTrackerWithSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};

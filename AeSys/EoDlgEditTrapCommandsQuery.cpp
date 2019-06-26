@@ -6,7 +6,7 @@
 IMPLEMENT_DYNAMIC(EoDlgEditTrapCommandsQuery, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
-		ON_NOTIFY(TVN_SELCHANGED, IDC_GROUP_TREE, &EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree)
+		ON_NOTIFY(TVN_SELCHANGED, IDC_GROUP_TREE, &EoDlgEditTrapCommandsQuery::OnSelectionChangedGroupTree)
 END_MESSAGE_MAP()
 
 EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent)
@@ -38,22 +38,22 @@ BOOL EoDlgEditTrapCommandsQuery::OnInitDialog() {
 	return TRUE;
 }
 
-void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure, LRESULT* result) {
-	const auto pNMTreeView {reinterpret_cast<tagNMTREEVIEWW*>(notifyStructure)};
-	wchar_t szText[256] {L"\0"};
-	TV_ITEMW item;
-	::ZeroMemory(&item, sizeof item);
-	item.hItem = pNMTreeView->itemNew.hItem;
-	item.mask = TVIF_TEXT | TVIF_PARAM;
-	item.pszText = szText;
-	item.cchTextMax = sizeof szText / sizeof(wchar_t);
-	m_GroupTreeViewControl.GetItem(&item);
+void EoDlgEditTrapCommandsQuery::OnSelectionChangedGroupTree(NMHDR* notifyStructure, LRESULT* result) {
+	const auto TreeViewNotificationMessage {reinterpret_cast<tagNMTREEVIEWW*>(notifyStructure)};
+	wchar_t Text[256] {L""};
+	TV_ITEMW Item;
+	::ZeroMemory(&Item, sizeof Item);
+	Item.hItem = TreeViewNotificationMessage->itemNew.hItem;
+	Item.mask = TVIF_TEXT | TVIF_PARAM;
+	Item.pszText = Text;
+	Item.cchTextMax = sizeof Text / sizeof(wchar_t);
+	m_GroupTreeViewControl.GetItem(&Item);
 	m_ExtraListViewControl.DeleteAllItems();
 	m_GeometryListViewControl.DeleteAllItems();
-	if (wcscmp(item.pszText, L"<Groups>") == 0) {
-	} else if (wcscmp(item.pszText, L"<Group>") == 0) {
+	if (wcscmp(Item.pszText, L"<Groups>") == 0) {
+	} else if (wcscmp(Item.pszText, L"<Group>") == 0) {
 	} else {
-		const auto Primitive {reinterpret_cast<EoDbPrimitive*>(item.lParam)};
+		const auto Primitive {reinterpret_cast<EoDbPrimitive*>(Item.lParam)};
 		FillExtraList(Primitive);
 		FillGeometryList(Primitive);
 	}
@@ -61,46 +61,46 @@ void EoDlgEditTrapCommandsQuery::OnTvnSelchangedGroupTree(NMHDR* notifyStructure
 }
 
 void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
-	wchar_t szBuf[64] {L""};
-	auto iItem {0};
+	wchar_t Token[64] {L""};
+	auto Item {0};
 	CString Extra;
 	primitive->FormatExtra(Extra);
-	auto nOff {0};
-	for (auto nDel = Extra.Mid(nOff).Find(';'); nDel != -1;) {
-		wcscpy_s(szBuf, Extra.Mid(nOff, nDel));
-		m_ExtraListViewControl.InsertItem(iItem, szBuf);
-		nOff += nDel + 1;
-		nDel = Extra.Mid(nOff).Find('\t');
-		const auto nLen {static_cast<int>(min(nDel, sizeof(szBuf) / sizeof(wchar_t) - 1))};
-		wcscpy_s(szBuf, 64, Extra.Mid(nOff, nLen));
-		m_ExtraListViewControl.SetItemText(iItem++, 1, szBuf);
-		nOff += nDel + 1;
-		nDel = Extra.Mid(nOff).Find(';');
+	auto Offset {0};
+	for (auto Delimiter = Extra.Mid(Offset).Find(';'); Delimiter != -1;) {
+		wcscpy_s(Token, Extra.Mid(Offset, Delimiter));
+		m_ExtraListViewControl.InsertItem(Item, Token);
+		Offset += Delimiter + 1;
+		Delimiter = Extra.Mid(Offset).Find('\t');
+		const auto Length {static_cast<int>(min(Delimiter, sizeof(Token) / sizeof(wchar_t) - 1))};
+		wcscpy_s(Token, 64, Extra.Mid(Offset, Length));
+		m_ExtraListViewControl.SetItemText(Item++, 1, Token);
+		Offset += Delimiter + 1;
+		Delimiter = Extra.Mid(Offset).Find(';');
 	}
 }
 
 void EoDlgEditTrapCommandsQuery::FillGeometryList(EoDbPrimitive* primitive) {
-	wchar_t szBuf[64] {L""};
-	auto iItem {0};
-	CString strBuf;
-	primitive->FormatGeometry(strBuf);
-	auto nOff {0};
-	for (auto nDel = strBuf.Mid(nOff).Find(';'); nDel != -1;) {
-		wcscpy_s(szBuf, 64, strBuf.Mid(nOff, nDel));
-		m_GeometryListViewControl.InsertItem(iItem, szBuf);
-		nOff += nDel + 1;
-		nDel = strBuf.Mid(nOff).Find(';');
-		wcscpy_s(szBuf, 64, strBuf.Mid(nOff, nDel));
-		m_GeometryListViewControl.SetItemText(iItem, 1, szBuf);
-		nOff += nDel + 1;
-		nDel = strBuf.Mid(nOff).Find(';');
-		wcscpy_s(szBuf, 64, strBuf.Mid(nOff, nDel));
-		m_GeometryListViewControl.SetItemText(iItem, 2, szBuf);
-		nOff += nDel + 1;
-		nDel = strBuf.Mid(nOff).Find('\t');
-		wcscpy_s(szBuf, 64, strBuf.Mid(nOff, nDel));
-		m_GeometryListViewControl.SetItemText(iItem++, 3, szBuf);
-		nOff += nDel + 1;
-		nDel = strBuf.Mid(nOff).Find(';');
+	wchar_t Token[64] {L""};
+	auto Item {0};
+	CString Geometry;
+	primitive->FormatGeometry(Geometry);
+	auto Offset {0};
+	for (auto Delimiter = Geometry.Mid(Offset).Find(';'); Delimiter != -1;) {
+		wcscpy_s(Token, 64, Geometry.Mid(Offset, Delimiter));
+		m_GeometryListViewControl.InsertItem(Item, Token);
+		Offset += Delimiter + 1;
+		Delimiter = Geometry.Mid(Offset).Find(';');
+		wcscpy_s(Token, 64, Geometry.Mid(Offset, Delimiter));
+		m_GeometryListViewControl.SetItemText(Item, 1, Token);
+		Offset += Delimiter + 1;
+		Delimiter = Geometry.Mid(Offset).Find(';');
+		wcscpy_s(Token, 64, Geometry.Mid(Offset, Delimiter));
+		m_GeometryListViewControl.SetItemText(Item, 2, Token);
+		Offset += Delimiter + 1;
+		Delimiter = Geometry.Mid(Offset).Find('\t');
+		wcscpy_s(Token, 64, Geometry.Mid(Offset, Delimiter));
+		m_GeometryListViewControl.SetItemText(Item++, 3, Token);
+		Offset += Delimiter + 1;
+		Delimiter = Geometry.Mid(Offset).Find(';');
 	}
 }

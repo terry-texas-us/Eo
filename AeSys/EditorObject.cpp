@@ -99,7 +99,7 @@ public:
 };
 
 OdExEditorObject::OdExEditorObject() {
-	SETBIT(m_flags, kSnapOn, true);
+	m_flags |= kSnapOn;
 }
 
 void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext) {
@@ -265,7 +265,7 @@ unsigned OdExEditorObject::GetSnapModes() const {
 }
 
 void OdExEditorObject::SetSnapModes(const bool snapOn, const unsigned snapModes) {
-	SETBIT(m_flags, kSnapOn, snapOn);
+	snapOn ? (m_flags |= kSnapOn) : m_flags &= ~kSnapOn;
 	m_ObjectSnapManager.SetSnapModes(snapModes);
 }
 
@@ -397,7 +397,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 				SelectionSetAtPointIterator->next();
 			}
 			if (SelectionSetAtPointIterator.isNull()) {
-				if (dragCallback->beginDragCallback(pt)) {
+				if (dragCallback->BeginDragCallback(pt)) {
 					// Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
 					//workingSSet()->clear();
 					//SelectionSetChanged();
@@ -635,7 +635,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 		for (;;) {
 			try {
 				tracker.init(ActiveView, pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptBeginDrag | OdEd::kGptNoOSnap));
-				pIO->getPoint(L"Press ESC or ENTER to exit."), OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptEndDrag | OdEd::kGptNoOSnap, 0, L"", &tracker;
+				pIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptEndDrag | OdEd::kGptNoOSnap, nullptr, L"", &tracker);
 			} catch (const OdEdCancel) {
 				break;
 			}
@@ -756,9 +756,9 @@ class RTOrbitTracker : public OdEdPointTracker {
 public:
 	RTOrbitTracker() = default;
 
-	void reset() noexcept { m_View = nullptr; }
+	void Reset() noexcept { m_View = nullptr; }
 
-	void init(OdGsView* view, const OdGePoint3d& pt) {
+	void Initialize(OdGsView* view, const OdGePoint3d& pt) {
 		m_View = view;
 		m_Position = view->position();
 		m_Target = view->target();
@@ -768,36 +768,36 @@ public:
 		m_pt = m_InitialViewingMatrixInverted * pt;
 		m_pt.z = 0.0;
 		m_InitialViewingMatrixInverted.invert();
-		OdGePoint3d pt1;
-		OdGePoint2d pt2;
-		viewportDcCorners(reinterpret_cast<OdGePoint2d&>(pt1), pt2);
-		pt2.x -= pt1.x;
-		pt2.y -= pt1.y;
-		const auto r {odmin(pt2.x, pt2.y) / 9. * 7. / 2.};
+		OdGePoint3d LowerLeftPoint;
+		OdGePoint2d UpperRightPoint;
+		viewportDcCorners(reinterpret_cast<OdGePoint2d&>(LowerLeftPoint), UpperRightPoint);
+		UpperRightPoint.x -= LowerLeftPoint.x;
+		UpperRightPoint.y -= LowerLeftPoint.y;
+		const auto r {odmin(UpperRightPoint.x, UpperRightPoint.y) / 9. * 7. / 2.};
 		m_D = 2.0 * r;
-		reinterpret_cast<OdGePoint2d&>(pt1) += pt2.asVector() / 2.;
+		reinterpret_cast<OdGePoint2d&>(LowerLeftPoint) += UpperRightPoint.asVector() / 2.;
 		const auto r2sqrd {r * r / 400.};
-		pt1.y += r;
-		if ((pt1 - m_pt).lengthSqrd() <= r2sqrd) {
+		LowerLeftPoint.y += r;
+		if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
 			m_axis = kHorizontal;
 		} else {
-			pt1.y -= r;
-			pt1.y -= r;
-			if ((pt1 - m_pt).lengthSqrd() <= r2sqrd) {
+			LowerLeftPoint.y -= r;
+			LowerLeftPoint.y -= r;
+			if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
 				m_axis = kHorizontal;
 			} else {
-				pt1.y += r;
-				pt1.x += r;
-				if ((pt1 - m_pt).lengthSqrd() <= r2sqrd) {
+				LowerLeftPoint.y += r;
+				LowerLeftPoint.x += r;
+				if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
 					m_axis = kVertical;
 				} else {
-					pt1.x -= r;
-					pt1.x -= r;
-					if ((pt1 - m_pt).lengthSqrd() <= r2sqrd) {
+					LowerLeftPoint.x -= r;
+					LowerLeftPoint.x -= r;
+					if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
 						m_axis = kVertical;
 					} else {
-						pt1.x += r;
-						if ((pt1 - m_pt).lengthSqrd() <= r * r) {
+						LowerLeftPoint.x += r;
+						if ((LowerLeftPoint - m_pt).lengthSqrd() <= r * r) {
 							m_axis = kPerpDir;
 						} else {
 							m_axis = kEye;
@@ -811,15 +811,15 @@ public:
 			OdGsClientViewInfo ClientViewInfo;
 			view->clientViewInfo(ClientViewInfo);
 			OdDbObjectId spaceId;
-			if (!GETBIT(ClientViewInfo.viewportFlags, OdGsClientViewInfo::kDependentGeometry)) {
+			if (!((ClientViewInfo.viewportFlags & OdGsClientViewInfo::kDependentGeometry) != 0)) {
 				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getModelSpaceId();
 			} else {
 				spaceId = OdDbDatabasePtr(view->userGiContext()->database())->getPaperSpaceId();
 			}
 			auto pBTR {spaceId.openObject()};
-			OdGeExtents3d wcsExt;
-			if (pBTR->gsNode() && pBTR->gsNode()->extents(wcsExt)) {
-				m_ViewCenter = wcsExt.center(), ComputeExtents = false;
+			OdGeExtents3d ExtentsWcs;
+			if (pBTR->gsNode() && pBTR->gsNode()->extents(ExtentsWcs)) {
+				m_ViewCenter = ExtentsWcs.center(), ComputeExtents = false;
 			}
 		}
 		if (ComputeExtents) { // Compute extents if no extents cached
@@ -831,28 +831,28 @@ public:
 		}
 	}
 
-	[[nodiscard]] double angle(const OdGePoint3d& value) const {
-		const auto pt2 {m_View->viewingMatrix() * value};
-		auto dist {0.0};
+	[[nodiscard]] double Angle(const OdGePoint3d& value) const {
+		const auto Point {m_View->viewingMatrix() * value};
+		auto Distance {0.0};
 		if (m_axis == kHorizontal) {
-			dist = pt2.y - m_pt.y;
+			Distance = Point.y - m_pt.y;
 		} else if (m_axis == kVertical) {
-			dist = pt2.x - m_pt.x;
+			Distance = Point.x - m_pt.x;
 		}
-		return dist * OdaPI / m_D;
+		return Distance * OdaPI / m_D;
 	}
 
-	[[nodiscard]] double angleZ(const OdGePoint3d& value) const {
-		auto pt2 {m_View->viewingMatrix() * value};
-		auto targ {m_View->viewingMatrix() * m_ViewCenter};
-		pt2.z = targ.z = m_pt.z;
-		return (pt2 - targ).angleTo(m_pt - targ, OdGeVector3d::kZAxis);
+	[[nodiscard]] double AngleZ(const OdGePoint3d& value) const {
+		auto Point {m_View->viewingMatrix() * value};
+		auto Target {m_View->viewingMatrix() * m_ViewCenter};
+		Point.z = Target.z = m_pt.z;
+		return (Point - Target).angleTo(m_pt - Target, OdGeVector3d::kZAxis);
 	}
 
-	[[nodiscard]] double anglePerp(const OdGePoint3d& value) const {
-		auto pt2 {m_View->viewingMatrix() * value};
-		pt2.z = 0.0;
-		return pt2.distanceTo(m_pt) * OdaPI / m_D;
+	[[nodiscard]] double AnglePerpendicular(const OdGePoint3d& value) const {
+		auto Point {m_View->viewingMatrix() * value};
+		Point.z = 0.0;
+		return Point.distanceTo(m_pt) * OdaPI / m_D;
 	}
 
 	void setValue(const OdGePoint3d& value) override {
@@ -860,13 +860,13 @@ public:
 			OdGeMatrix3d x;
 			switch (m_axis) {
 				case kHorizontal:
-					x.setToRotation(-angle(value), m_X, m_ViewCenter);
+					x.setToRotation(-Angle(value), m_X, m_ViewCenter);
 					break;
 				case kVertical:
-					x.setToRotation(-angle(value), m_UpVector, m_ViewCenter);
+					x.setToRotation(-Angle(value), m_UpVector, m_ViewCenter);
 					break;
 				case kEye:
-					x.setToRotation(-angleZ(value), m_Target - m_Position, m_ViewCenter);
+					x.setToRotation(-AngleZ(value), m_Target - m_Position, m_ViewCenter);
 					break;
 				case kPerpDir: {
 					auto value1 {value};
@@ -877,7 +877,7 @@ public:
 					OdGeVector3d perp3d(perp.x, perp.y, 0.0);
 					perp3d.normalizeGetLength();
 					perp3d.transformBy(m_InitialViewingMatrixInverted);
-					x.setToRotation(-anglePerp(value), perp3d, m_ViewCenter);
+					x.setToRotation(-AnglePerpendicular(value), perp3d, m_ViewCenter);
 					break;
 				}
 			}
@@ -936,9 +936,9 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
 	for (;;) {
 		try {
-			OrbitTracker.init(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, L"", &OrbitTracker));
+			OrbitTracker.Initialize(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, L"", &OrbitTracker));
 			UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptEndDrag, nullptr, L"", &OrbitTracker);
-			OrbitTracker.reset();
+			OrbitTracker.Reset();
 		} catch (const OdEdCancel) {
 			break;
 		}
@@ -946,13 +946,13 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 }
 
 void OdExEditorObject::TurnOrbitOn(const bool orbitOn) {
-	SETBIT(m_flags, kOrbitOn, orbitOn);
+	orbitOn ? (m_flags |= kOrbitOn) : m_flags &= ~kOrbitOn;
 	SetTracker(orbitOn ? OdRxObjectImpl<RTOrbitTracker>::createObject().get() : nullptr);
 }
 
 bool OdExEditorObject::OnOrbitBeginDrag(const int x, const int y) {
 	if (IsOrbitOn()) {
-		static_cast<RTOrbitTracker*>(m_InputTracker.get())->init(ActiveView(), ToEyeToWorld(x, y));
+		dynamic_cast<RTOrbitTracker*>(m_InputTracker.get())->Initialize(ActiveView(), ToEyeToWorld(x, y));
 		return true;
 	}
 	return false;
@@ -960,7 +960,7 @@ bool OdExEditorObject::OnOrbitBeginDrag(const int x, const int y) {
 
 bool OdExEditorObject::OnOrbitEndDrag(int x, int y) {
 	if (IsOrbitOn()) {
-		static_cast<RTOrbitTracker*>(m_InputTracker.get())->reset();
+		dynamic_cast<RTOrbitTracker*>(m_InputTracker.get())->Reset();
 		return true;
 	}
 	return false;
@@ -1497,22 +1497,22 @@ void OdExEditorObject::SetTracker(OdEdInputTracker* inputTracker) {
 	m_InputTracker = inputTracker;
 	m_BasePt = nullptr;
 	if (inputTracker) {
-		SETBIT(m_flags, kTrackerHasDrawables, inputTracker->addDrawables(ActiveTopView()) != 0);
+		inputTracker->addDrawables(ActiveTopView()) != 0 ? (m_flags |= kTrackerHasDrawables) : m_flags &= ~kTrackerHasDrawables;
 		auto PointDefTracker {OdEdPointDefTracker::cast(inputTracker)};
 		if (PointDefTracker.get()) {
 			m_basePt = PointDefTracker->basePoint();
 			m_BasePt = &m_basePt;
 		}
 	} else {
-		SETBIT(m_flags, kTrackerHasDrawables, false);
+		m_flags &= ~kTrackerHasDrawables;
 	}
 }
 
 bool OdExEditorObject::TrackString(const OdString& value) {
 	if (m_InputTracker.get()) {
 		ODA_ASSERT(m_InputTracker->isKindOf(OdEdStringTracker::desc()));
-		static_cast<OdEdStringTracker*>(m_InputTracker.get())->setValue(value);
-		return GETBIT(m_flags, kTrackerHasDrawables);
+		dynamic_cast<OdEdStringTracker*>(m_InputTracker.get())->setValue(value);
+		return (m_flags & kTrackerHasDrawables) != 0;
 	}
 	return false;
 }
@@ -1520,8 +1520,8 @@ bool OdExEditorObject::TrackString(const OdString& value) {
 bool OdExEditorObject::TrackPoint(const OdGePoint3d& point) {
 	if (m_InputTracker.get()) {
 		ODA_ASSERT(m_InputTracker->isKindOf(OdEdPointTracker::desc()));
-		static_cast<OdEdPointTracker*>(m_InputTracker.get())->setValue(point);
-		return GETBIT(m_flags, kTrackerHasDrawables);
+		dynamic_cast<OdEdPointTracker*>(m_InputTracker.get())->setValue(point);
+		return (m_flags & kTrackerHasDrawables) != 0;
 	}
 	return false;
 }

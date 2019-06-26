@@ -117,7 +117,7 @@ protected:
 		}
 
 		AcadClipDataConstr() {
-			AcadClipData<wchar_t>::init();
+			AcadClipData<wchar_t>::Initialize();
 		}
 	};
 

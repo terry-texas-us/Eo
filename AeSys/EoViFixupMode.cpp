@@ -212,16 +212,16 @@ void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair pre
 	if (FindCenterPointGivenRadiusAndTwoLineSegments(m_CornerSize, PreviousLineSeg, CurrentLineSeg, CenterPoint)) {
 		auto Document {GetDocument()};
 		PreviousLineSeg.SetEndPoint(PreviousLineSeg.ProjPt(CenterPoint));
-		if (GETBIT(cornerType, kTrimPrevious)) {
+		if ((cornerType & kTrimPrevious) != 0) {
 			const auto StartPoint {PreviousLineSeg.startPoint()};
-			const auto EndPoint {GETBIT(cornerType, kTrimPreviousToSize) ? PreviousLineSeg.endPoint() : intersection};
+			const auto EndPoint {(cornerType & kTrimPreviousToSize) != 0 ? PreviousLineSeg.endPoint() : intersection};
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, PreviousLine);
 			PreviousLine->SetStartPoint(StartPoint);
 			PreviousLine->SetEndPoint(EndPoint);
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, PreviousLine);
 		}
-		if (GETBIT(cornerType, kTrimCurrent)) {
-			const auto StartPoint {GETBIT(cornerType, kTrimCurrentToSize) ? CurrentLineSeg.ProjPt(CenterPoint) : intersection};
+		if ((cornerType & kTrimCurrent) != 0) {
+			const auto StartPoint {(cornerType & kTrimCurrentToSize) != 0 ? CurrentLineSeg.ProjPt(CenterPoint) : intersection};
 			const auto EndPoint {CurrentLineSeg.endPoint()};
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, CurrentLine);
 			CurrentLine->SetStartPoint(StartPoint);
@@ -229,17 +229,17 @@ void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair pre
 			Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 		}
 		CurrentLineSeg.SetStartPoint(CurrentLineSeg.ProjPt(CenterPoint));
-		if (!GETBIT(cornerType, kCorner)) {
+		if (!((cornerType & kCorner) != 0)) {
 			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Group {new EoDbGroup};
 			const auto StartPoint {PreviousLineSeg.endPoint()};
 			const auto EndPoint {CurrentLineSeg.startPoint()};
-			if (GETBIT(cornerType, kChamfer)) {
+			if ((cornerType & kChamfer) != 0) {
 				auto Line {EoDbLine::Create(BlockTableRecord, StartPoint, EndPoint)};
 				Line->setColorIndex(static_cast<unsigned short>(PreviousLine->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(PreviousLine->LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
-			} else if (GETBIT(cornerType, kFillet)) {
+			} else if ((cornerType & kFillet) != 0) {
 				auto PlaneNormal {(intersection - StartPoint).crossProduct(EndPoint - StartPoint)};
 				PlaneNormal.normalize();
 				double SweepAngle;

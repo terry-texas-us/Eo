@@ -99,7 +99,7 @@ public:
 
 	class OleDragCallback {
 	public:
-		virtual bool beginDragCallback(const OdGePoint3d& pt) = 0;
+		virtual bool BeginDragCallback(const OdGePoint3d& pt) = 0;
 	};
 
 	bool OnSize(unsigned flags, int w, int h);
@@ -114,13 +114,13 @@ public:
 
 	[[nodiscard]] bool HasSelection() const { return workingSSet()->numEntities() > 0; }
 
-	[[nodiscard]] bool IsSnapOn() const noexcept { return GETBIT(m_flags, kSnapOn); }
+	[[nodiscard]] bool IsSnapOn() const noexcept { return m_flags & kSnapOn ? true : false; }
 
 	void SetSnapOn(const bool snapOn) noexcept {
-		SETBIT(m_flags, kSnapOn, snapOn);
+		snapOn ? (m_flags |= kSnapOn) : m_flags &= ~kSnapOn;
 	}
 
-	[[nodiscard]] bool IsOrbitOn() const noexcept { return GETBIT(m_flags, kOrbitOn); }
+	[[nodiscard]] bool IsOrbitOn() const noexcept { return m_flags & kOrbitOn ? true : false; }
 
 	void TurnOrbitOn(bool orbitOn);
 	bool OnOrbitBeginDrag(int x, int y);

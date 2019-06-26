@@ -357,8 +357,8 @@ const ODCOLORREF* AeSys::CurrentPalette() const {
 OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, const unsigned long flags) {
 	try {
 		OdGsModulePtr Module;
-		if (GETBIT(flags, kFor2dExportRender)) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
-			if (GETBIT(flags, kFor2dExportRenderHLR)) { return OdGsDevicePtr(); }
+		if ((flags & kFor2dExportRender) != 0) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
+			if ((flags & kFor2dExportRenderHLR) != 0) { return OdGsDevicePtr(); }
 
 			// Try to export shaded viewports using OpenGL device.
 			Module = odrxDynamicLinker()->loadModule(OdWinOpenGLModuleName);
@@ -1272,7 +1272,7 @@ void AeSys::LoadPenWidthsFromFile(const CString& fileName) {
 			wchar_t* NextToken {nullptr};
 			const auto PenIndex {_wtoi(wcstok_s(PenWidths, L"=", &NextToken))};
 			const auto Width {_wtof(wcstok_s(nullptr, L",\n", &NextToken))};
-			if (PenIndex >= 0 && PenIndex < sizeof g_PenWidths / sizeof g_PenWidths[0]) { g_PenWidths[PenIndex] = Width; }
+			if (PenIndex >= 0 && PenIndex < static_cast<int>(sizeof g_PenWidths / sizeof g_PenWidths[0])) { g_PenWidths[PenIndex] = Width; }
 		}
 	}
 }

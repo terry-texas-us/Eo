@@ -1562,16 +1562,16 @@ unsigned long AeSysView::getKeyState() noexcept {
 
 OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdPointTracker* tracker) {
 	m_sPrompt.empty();
-	OdSaveState<OdString> savePrompt(m_sPrompt);
+	OdSaveState<OdString> SavePrompt(m_sPrompt);
 	putString(prompt);
-	OdSaveState<Mode> saved_m_mode(m_mode, kGetPoint);
+	OdSaveState<Mode> SavedMode(m_mode, kGetPoint);
 	m_response.m_type = Response::kNone;
 	m_inpOptions = options;
-	SaveViewParams svp(this, tracker, LoadCursorW(nullptr, IDC_CROSS), !GETBIT(options, OdEd::kGptNoOSnap));
+	SaveViewParams svp(this, tracker, LoadCursorW(nullptr, IDC_CROSS), !((options & OdEd::kGptNoOSnap) != 0));
 	while (theApp.PumpMessage()) {
 		switch (m_response.m_type) {
 			case Response::kPoint:
-				if (GETBIT(m_inpOptions, OdEd::kGptBeginDrag)) { SetCapture(); }
+				if ((m_inpOptions & OdEd::kGptBeginDrag) != 0) { SetCapture(); }
 				return m_response.m_Point;
 			case Response::kString:
 				throw OdEdOtherInput(m_response.m_string);
@@ -1636,7 +1636,7 @@ void AeSysView::OnRefresh() {
 	PostMessageW(WM_PAINT);
 }
 
-bool AeSysView::beginDragCallback(const OdGePoint3d& point) {
+bool AeSysView::BeginDragCallback(const OdGePoint3d& point) {
 	OdSaveState<Mode> saved_m_mode(m_mode, kDragDrop);
 	GetDocument()->StartDrag(point);
 	return true;
@@ -1845,15 +1845,11 @@ void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 		__super::OnLButtonDown(flags, point);
 		switch (m_mode) {
 			case kQuiescent:
-				if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
-					PostMessageW(WM_PAINT);
-				}
+				if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) { PostMessageW(WM_PAINT); }
 				break;
 			case kGetPoint:
 				m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
-				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-					if (!m_editor.ToUcsToWorld(m_response.m_Point)) break;
-				}
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_editor.ToUcsToWorld(m_response.m_Point)) { break; }
 				m_editor.Snap(m_response.m_Point);
 				m_response.m_type = Response::kPoint;
 				break;
@@ -1879,9 +1875,7 @@ void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 		__super::OnLButtonUp(flags, point);
 		if (m_mode == kGetPoint && GetCapture() == this) {
 			m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
-			if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-				if (!m_editor.ToUcsToWorld(m_response.m_Point)) { return; }
-			}
+			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_editor.ToUcsToWorld(m_response.m_Point)) { return; }
 			m_response.m_type = Response::kPoint;
 			ReleaseCapture();
 		}
@@ -1922,30 +1916,26 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 				break;
 			case kGetPoint: {
 				auto Point {m_editor.ToEyeToWorld(point.x, point.y)};
-				if (!GETBIT(m_inpOptions, OdEd::kGptNoUCS)) {
-					if (!m_editor.ToUcsToWorld(Point)) { return; }
-				}
-				if (!GETBIT(m_inpOptions, OdEd::kGptNoOSnap)) {
-					m_editor.Snap(Point);
-				}
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_editor.ToUcsToWorld(Point)) { return; }
+				if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) { m_editor.Snap(Point); }
 				m_editor.TrackPoint(Point);
 				break;
 			}
 			case kGetString: case kDragDrop: default:
 				break;
 		}
-		if (m_LeftButton == true) {
+		if (m_LeftButton) {
 			CClientDC ClientDeviceContext(this);
-			CRect rcZoomOld;
-			rcZoomOld.SetRect(m_MouseClick.x, m_MouseClick.y, m_MousePosition.x, m_MousePosition.y);
-			rcZoomOld.NormalizeRect();
-			rcZoomOld.InflateRect(1, 1);
-			RedrawWindow(&rcZoomOld);
-			CRect rcZoom;
-			rcZoom.SetRect(m_MouseClick.x, m_MouseClick.y, point.x, point.y);
-			rcZoom.NormalizeRect();
-			ClientDeviceContext.DrawFocusRect(&rcZoom);
-		} else if (m_MiddleButton == true) {
+			CRect ZoomOldRectangle;
+			ZoomOldRectangle.SetRect(m_MouseClick.x, m_MouseClick.y, m_MousePosition.x, m_MousePosition.y);
+			ZoomOldRectangle.NormalizeRect();
+			ZoomOldRectangle.InflateRect(1, 1);
+			RedrawWindow(&ZoomOldRectangle);
+			CRect ZoomRectangle;
+			ZoomRectangle.SetRect(m_MouseClick.x, m_MouseClick.y, point.x, point.y);
+			ZoomRectangle.NormalizeRect();
+			ClientDeviceContext.DrawFocusRect(&ZoomRectangle);
+		} else if (m_MiddleButton) {
 			OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
 			OdGeVector3d DollyVector(static_cast<double>(m_MousePosition.x) - static_cast<double>(point.x), static_cast<double>(m_MousePosition.y) - static_cast<double>(point.y), 0.0);
 			DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
@@ -1953,7 +1943,7 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 			m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 			m_ViewTransform.BuildTransformMatrix();
 			PostMessageW(WM_PAINT);
-		} else if (m_RightButton == true) {
+		} else if (m_RightButton) {
 			Orbit((static_cast<double>(m_MousePosition.y) - static_cast<double>(point.y)) / 100., (static_cast<double>(m_MousePosition.x) - static_cast<double>(point.x)) / 100.);
 			PostMessageW(WM_PAINT);
 		}

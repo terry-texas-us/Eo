@@ -4,7 +4,7 @@
 #include <DbLinetypeTable.h>
 #include <DbLinetypeTableRecord.h>
 #include "EoDbLinetypeTable.h"
-const wchar_t* EoDbLinetypeTable::LegacyLinetypes[] = {
+const wchar_t* EoDbLinetypeTable::m_LegacyLinetypes[] = {
 	L"0",
 L"Continuous",
 L"2",
@@ -58,33 +58,33 @@ unsigned short EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	} else if (name.iCompare(L"ByLayer") == 0) {
 		Index = EoDbPrimitive::LINETYPE_BYLAYER;
 	} else {
-		while (Index < NumberOfLegacyLinetypes && name.iCompare(LegacyLinetypes[Index]) != 0) {
+		while (Index < c_NumberOfLegacyLinetypes && name.iCompare(m_LegacyLinetypes[Index]) != 0) {
 			Index++;
 		}
-		Index = Index < NumberOfLegacyLinetypes ? Index : 0u;
+		Index = Index < c_NumberOfLegacyLinetypes ? Index : 0u;
 	}
 	return Index;
 }
 
 OdString EoDbLinetypeTable::LegacyLinetypeName(const int index) {
-	const auto Index {index < NumberOfLegacyLinetypes ? index : 1};
-	return LegacyLinetypes[Index];
+	const auto Index {index < c_NumberOfLegacyLinetypes ? index : 1};
+	return m_LegacyLinetypes[Index];
 }
 
 void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const CString& fileName) {
-	OdDbLinetypeTablePtr Linetypes = database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite);
-	CStdioFile fl;
-	if (fl.Open(fileName, CFile::modeRead | CFile::typeText)) {
+	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
+	CStdioFile StreamFile;
+	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
 
 		unsigned short MaxNumberOfDashes {12};
 		auto DashLengths {new double[MaxNumberOfDashes]};
 		CString Line;
-		while (fl.ReadString(Line) != 0) {
-			auto NextToken {0}; /* unsigned short Label = */
-			static_cast<unsigned short>(_wtoi(Line.Tokenize(L"=", NextToken)));
+		while (StreamFile.ReadString(Line) != 0) {
+			auto NextToken {0};
+			_wtoi(Line.Tokenize(L"=", NextToken)); // Label is unused
 			OdString Name {Line.Tokenize(L",", NextToken).GetString()};
 			OdString Comments {Line.Tokenize(L"\n", NextToken).GetString()};
-			fl.ReadString(Line);
+			StreamFile.ReadString(Line);
 			NextToken = 0;
 			const auto NumberOfDashes {static_cast<unsigned short>(_wtoi(Line.Tokenize(L",\n", NextToken)))};
 			if (NumberOfDashes > MaxNumberOfDashes) {
