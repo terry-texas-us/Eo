@@ -2,7 +2,7 @@
 #include "DbUserIO.h"
 #include "ExStringIO.h"
 
-class EoDlgUserIOConsole final : public CDialog, public OdEdBaseIO {
+class EoDlgUserIoConsole final : public CDialog, public OdEdBaseIO {
 	static int sm_WindowWidth;
 	static int sm_WindowHeight;
 	using CDialog::operator new;
@@ -13,7 +13,7 @@ class EoDlgUserIOConsole final : public CDialog, public OdEdBaseIO {
 	void AddOut(const CString& string);
 	void AddString(const CString& string);
 protected:
-	EoDlgUserIOConsole(CWnd* parent);
+	EoDlgUserIoConsole(CWnd* parent);
 	void addRef() noexcept override;
 	[[nodiscard]] long numRefs() const noexcept override;
 	void release() override;
@@ -31,7 +31,7 @@ DECLARE_MESSAGE_MAP()
 public:
 	void Echo(const OdString& string);
 	OdString GetLastString();
-	static OdSmartPtr<EoDlgUserIOConsole> create(CWnd* parent);
+	static OdSmartPtr<EoDlgUserIoConsole> create(CWnd* parent);
 	void OnSize(unsigned type, int cx, int cy);
 	void OnDestroy();
 	void OnShowWindow(BOOL show, unsigned status);

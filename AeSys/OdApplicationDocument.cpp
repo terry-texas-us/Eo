@@ -41,7 +41,7 @@ bool OdApplicationDocumentImpl::isQuiescent() const noexcept { return false; }
 void* OdApplicationDocumentImpl::contextPtr() const noexcept { return nullptr; }
 
 OdEdBaseIO* OdApplicationDocumentImpl::BaseIO() {
-	return (*m_pImp)->BaseIO();
+	return (*m_pImp)->BaseIo();
 }
 
 OdDbCommandContextPtr OdApplicationDocumentImpl::CommandContext() {

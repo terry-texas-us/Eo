@@ -30,7 +30,7 @@ BOOL CChildFrame::DestroyWindow() {
 
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
 	if (!CMDIChildWndEx::PreCreateWindow(createStructure)) { return FALSE; }
-	if (theApp.m_Options.m_nTabsStyle != EoApOptions::None) {
+	if (theApp.applicationOptions.m_nTabsStyle != EoApOptions::None) {
 		createStructure.style &= ~WS_SYSMENU;
 	}
 	return TRUE;

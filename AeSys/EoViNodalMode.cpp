@@ -14,8 +14,8 @@ unsigned short PreviousNodalCommand = 0;
 OdGePoint3d PreviousNodalCursorPosition;
 
 void AeSysView::OnNodalModeAddRemove() {
-	theApp.m_NodalModeAddGroups = !theApp.m_NodalModeAddGroups;
-	if (theApp.m_NodalModeAddGroups) {
+	theApp.nodalModeAddGroups = !theApp.nodalModeAddGroups;
+	if (theApp.nodalModeAddGroups) {
 		SetModeCursor(ID_MODE_NODAL);
 	} else {
 		SetModeCursor(ID_MODE_NODALR);

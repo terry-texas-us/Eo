@@ -198,15 +198,15 @@ public:
 		return messageBox(MainWindow->m_hWnd, caption, text, type);
 	}
 
-	void reportError(const HWND parent, const wchar_t* contextMessage, const OdError& error) {
+	void ReportError(const HWND parent, const wchar_t* contextMessage, const OdError& error) const {
 		messageBox(parent, contextMessage, error.description(), MB_OK | MB_ICONERROR);
 	}
 
-	void reportError(const wchar_t* contextMessage, const OdError& error) {
+	void ReportError(const wchar_t* contextMessage, const OdError& error) {
 		messageBox(contextMessage, error.description(), MB_OK | MB_ICONERROR);
 	}
 
-	void reportError(const wchar_t* contextMessage, const unsigned error) {
+	void ReportError(const wchar_t* contextMessage, const unsigned error) {
 		messageBox(contextMessage, getErrorDescription(error), MB_OK | MB_ICONERROR);
 	}
 
@@ -237,22 +237,22 @@ public:
 
 	const OdString& GetRecentCmd() noexcept { return m_RecentCommand; }
 
-	static OdString objectIdAndClassName(const OdDbObjectId id) {
-		return objectIdAndClassName(id.openObject());
+	static OdString ObjectIdAndClassName(const OdDbObjectId id) {
+		return ObjectIdAndClassName(id.openObject());
 	}
 
-	static OdString objectIdAndClassName(const OdDbObject* object) {
+	static OdString ObjectIdAndClassName(const OdDbObject* object) {
 		if (object != nullptr) {
 			return OdString().format(L"%02I64X : <%ls>", OdUInt64(object->objectId().getHandle()), object->isA()->name().c_str());
 		}
 		return OdString(L"00 : < >");
 	}
 
-	ODCOLORREF activeBackground() const noexcept { return m_BackgroundColor; }
+	ODCOLORREF ActiveBackground() const noexcept { return m_BackgroundColor; }
 
-	void setActiveBackground(const ODCOLORREF& color) noexcept { m_BackgroundColor = color & 0xffffff; }
+	void SetActiveBackground(const ODCOLORREF& color) noexcept { m_BackgroundColor = color & 0xffffff; }
 
-	const ODCOLORREF* curPalette() const;
+	const ODCOLORREF* CurrentPalette() const;
 	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = NULL, OdDbBaseDatabase* database = NULL, unsigned long flags = 0) override;
 
 	//	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
@@ -261,22 +261,22 @@ public:
 	OdDbPageControllerPtr newPageController() override;
 	int SetPagingType(int pagingType) noexcept;
 
-	int pagingType() const noexcept { return m_PagingType & 0x0f; }
+	int PagingType() const noexcept { return m_PagingType & 0x0f; }
 
 	bool SetUndoType(bool useTempFiles) noexcept;
 
-	bool undoType() const noexcept { return m_UseTempFiles; }
+	bool UndoType() const noexcept { return m_UseTempFiles; }
 
 	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
 	BOOL PreTranslateMessage(MSG* message) override;
 
-	bool remoteGeomViewer() const noexcept { return m_RemoteGeometryViewer; }
+	bool RemoteGeometryViewer() const noexcept { return m_RemoteGeometryViewer; }
 
-	void setRemoteGeomViewer() noexcept { m_RemoteGeometryViewer = true; }
+	void SetRemoteGeometryViewer() noexcept { m_RemoteGeometryViewer = true; }
 
-	bool supportFileSelectionViaDialog() const noexcept { return m_SupportFileSelectionViaDialog; }
+	bool SupportFileSelectionViaDialog() const noexcept { return m_SupportFileSelectionViaDialog; }
 
-	void setSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept { m_SupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
+	void SetSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept { m_SupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
 
 	static CString GetApplicationPath();
 
@@ -317,8 +317,8 @@ public:
 	static CString customLButtonUpCharacters;
 	static CString customRButtonDownCharacters;
 	static CString customRButtonUpCharacters;
-	bool m_NodalModeAddGroups {true};
-	EoApOptions m_Options;
+	bool nodalModeAddGroups {true};
+	EoApOptions applicationOptions;
 	void AddModeInformationToMessageList() const;
 	static void AddStringToMessageList(const wchar_t* message);
 	void AddStringToMessageList(const wchar_t* message, const wchar_t* string) const;

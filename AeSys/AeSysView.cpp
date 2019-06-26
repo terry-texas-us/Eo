@@ -357,7 +357,7 @@ void AeSysView::OnInitialUpdate() {
 		GetParent()->PostMessageW(WM_CLOSE);
 		return;
 	}
-	Document->setVectorizer(this);
+	Document->SetVectorizer(this);
 	m_editor.Initialize(m_LayoutHelper, Document->CommandContext0());
 	theApp.OnModeDraw();
 }
@@ -382,10 +382,10 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 				MainFrame->StopTimer(m_paintMode == kRegenerate ? L"Regen" : L"Redraw");
 			}
 		} catch (const OdError& Error) {
-			theApp.reportError(L"Rendering aborted", Error);
+			theApp.ReportError(L"Rendering aborted", Error);
 			GetParent()->PostMessageW(WM_CLOSE);
 		} catch (const UserBreak&) {
-			theApp.reportError(L"Rendering aborted", OdError(eUserBreak));
+			theApp.ReportError(L"Rendering aborted", OdError(eUserBreak));
 			GetParent()->PostMessageW(WM_CLOSE);
 		}
 #ifndef _DEBUG
@@ -597,10 +597,10 @@ void AeSysView::setViewportBorderProperties() {
 				View->setViewportBorderVisibility(false);
 			} else if (View != ActiveView) {
 				View->setViewportBorderVisibility(true);
-				View->setViewportBorderProperties(theApp.curPalette()[7], 2);
+				View->setViewportBorderProperties(theApp.CurrentPalette()[7], 2);
 			} else {
 				View->setViewportBorderVisibility(true);
-				View->setViewportBorderProperties(theApp.curPalette()[7], 2);
+				View->setViewportBorderProperties(theApp.CurrentPalette()[7], 2);
 			}
 		}
 	}
@@ -903,10 +903,10 @@ void AeSysView::createDevice(const bool recreate) {
 			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext0());
 		}
 		m_layoutId = m_LayoutHelper->layoutId();
-		const auto Palette {theApp.curPalette()};
+		const auto Palette {theApp.CurrentPalette()};
 		ODGSPALETTE PaletteCopy;
 		PaletteCopy.insert(PaletteCopy.begin(), Palette, Palette + 256);
-		PaletteCopy[0] = theApp.activeBackground();
+		PaletteCopy[0] = theApp.ActiveBackground();
 		m_LayoutHelper->setLogicalPalette(PaletteCopy.asArrayPtr(), 256);
 		auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 		if (PaperLayoutHelper.isNull()) {
@@ -916,7 +916,7 @@ void AeSysView::createDevice(const bool recreate) {
 			m_PsOverall = PaperLayoutHelper->overallView().get() == PaperLayoutHelper->activeView().get();
 			m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
 		}
-		setPaletteBackground(theApp.activeBackground());
+		setPaletteBackground(theApp.ActiveBackground());
 		setViewportBorderProperties();
 		if (ClientRectangle.Width() && ClientRectangle.Height()) {
 			m_LayoutHelper->onSize(OdGsDCRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top));
@@ -943,7 +943,7 @@ void AeSysView::createDevice(const bool recreate) {
 		}
 	} catch (const OdError& Error) {
 		destroyDevice();
-		theApp.reportError(L"Graphic System Initialization Error", Error);
+		theApp.ReportError(L"Graphic System Initialization Error", Error);
 	}
 }
 
@@ -1638,7 +1638,7 @@ void AeSysView::OnRefresh() {
 
 bool AeSysView::beginDragCallback(const OdGePoint3d& point) {
 	OdSaveState<Mode> saved_m_mode(m_mode, kDragDrop);
-	GetDocument()->startDrag(point);
+	GetDocument()->StartDrag(point);
 	return true;
 }
 
@@ -1666,7 +1666,7 @@ void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transf
 
 // <command_console>
 BOOL AeSysView::OnDrop(COleDataObject* dataObject, const DROPEFFECT dropEffect, const CPoint point) {
-	auto ClipboardData {AeSysDoc::ClipboardData::get(dataObject)};
+	auto ClipboardData {AeSysDoc::ClipboardData::Get(dataObject)};
 	if (ClipboardData) {
 		auto Document {GetDocument()};
 		OdDbDatabase* Database {Document->m_DatabasePtr};
@@ -1702,7 +1702,7 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, const DROPEFFECT dropEffect, 
 // </command_console>
 DROPEFFECT AeSysView::OnDragOver(COleDataObject* dataObject, const unsigned long keyState, const CPoint point) {
 	if (m_mode == kQuiescent || m_mode == kDragDrop) {
-		if (AeSysDoc::ClipboardData::isAcadDataAvailable(dataObject)) {
+		if (AeSysDoc::ClipboardData::IsAcadDataAvailable(dataObject)) {
 			return static_cast<DROPEFFECT>(GetKeyState(VK_CONTROL) & 0xff00 ? DROPEFFECT_COPY : DROPEFFECT_MOVE);
 		}
 	}
@@ -2090,14 +2090,14 @@ bool AeSysView::isModelSpaceView() const {
 }
 
 OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
-	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
+	if (theApp.PagingType() == OdDb::kPage || theApp.PagingType() == OdDb::kUnload) {
 		return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId) | kDrawableFilterAppRangeStart;
 	}
 	return OdGiContextForDbDatabase::drawableFilterFunctionId(viewportId);
 }
 
 unsigned long AeSysView::drawableFilterFunction(const OdIntPtr functionId, const OdGiDrawable* drawable, const unsigned long flags) {
-	if (theApp.pagingType() == OdDb::kPage || theApp.pagingType() == OdDb::kUnload) {
+	if (theApp.PagingType() == OdDb::kPage || theApp.PagingType() == OdDb::kUnload) {
 		getDatabase()->pageObjects();
 	}
 	return OdGiContextForDbDatabase::drawableFilterFunction(functionId & ~kDrawableFilterAppRangeMask, drawable, flags);

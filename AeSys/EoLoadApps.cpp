@@ -72,7 +72,7 @@ void EoLoadApps::OnLoadApp() {
 		try {
 			odrxDynamicLinker()->loadModule(static_cast<const wchar_t*>(FileDialog.GetPathName()), false);
 		} catch (const OdError& Error) {
-			theApp.reportError(L"Error", Error);
+			theApp.ReportError(L"Error", Error);
 		}
 	}
 	OnAppsListEvent();

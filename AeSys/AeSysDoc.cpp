@@ -26,7 +26,7 @@
 #include "EoDbPegFile.h"
 #include "EoDbTracingFile.h"
 #include "EoAppAuditInfo.h"
-#include "EoDlgUserIOConsole.h"
+#include "EoDlgUserIoConsole.h"
 #include "EoGePoint4d.h"
 #include "EoGeMatrix3d.h"
 #include "EoDlgAudit.h"
@@ -194,7 +194,7 @@ AeSysDoc::~AeSysDoc() {
 }
 
 BOOL AeSysDoc::DoSave(const wchar_t* pathName, const BOOL replace) {
-	m_SaveAsVer = m_DatabasePtr->originalFileVersion();
+	saveAsVersion = m_DatabasePtr->originalFileVersion();
 	CString PathName(pathName);
 	if (PathName.IsEmpty()) { // Save As
 		const auto DocTemplate {GetDocTemplate()};
@@ -268,29 +268,29 @@ BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
 	return CDocument::CanCloseFrame(frame);
 }
 
-AeSysView* AeSysDoc::getViewer() noexcept {
-	return m_pViewer;
+AeSysView* AeSysDoc::GetViewer() noexcept {
+	return m_Viewer;
 }
 
 void AeSysDoc::OnViewSetActiveLayout() {
 	EoDlgSetActiveLayout ActiveLayoutDialog(m_DatabasePtr, theApp.GetMainWnd());
-	m_LayoutSwitchable = true;
+	layoutSwitchable = true;
 	if (ActiveLayoutDialog.DoModal() == IDOK) {
 		try {
 			m_DatabasePtr->startUndoRecord();
 			m_DatabasePtr->setCurrentLayout(OdString(ActiveLayoutDialog.m_NewLayoutName));
 		} catch (const OdError& Error) {
-			theApp.reportError(L"Error Setting Layout...", Error);
+			theApp.ReportError(L"Error Setting Layout...", Error);
 			m_DatabasePtr->disableUndoRecording(true);
 			m_DatabasePtr->undo();
 			m_DatabasePtr->disableUndoRecording(false);
 		}
 	}
-	m_LayoutSwitchable = false;
+	layoutSwitchable = false;
 }
 
 void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) {
-	if (!m_LayoutSwitchable) { return; }
+	if (!layoutSwitchable) { return; }
 
 	// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
 	auto ViewPosition {GetFirstViewPosition()};
@@ -339,40 +339,40 @@ void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId&
 	}
 }
 
-const OdString Cmd_VIEW::groupName() const { return L"AeSys"; }
+const OdString CommandView::groupName() const { return L"AeSys"; }
 
-const OdString Cmd_VIEW::name() { return L"VIEW"; }
+const OdString CommandView::Name() { return L"VIEW"; }
 
-const OdString Cmd_VIEW::globalName() const { return name(); }
+const OdString CommandView::globalName() const { return Name(); }
 
-void Cmd_VIEW::execute(OdEdCommandContext* commandContext) {
+void CommandView::execute(OdEdCommandContext* commandContext) {
 	OdDbCommandContextPtr CommandContext(commandContext);
-	OdDbDatabaseDocPtr Database = CommandContext->database();
+	OdDbDatabaseDocPtr Database {CommandContext->database()};
 	EoDlgNamedViews NamedViewsDialog(Database->Document(), theApp.GetMainWnd());
 	if (NamedViewsDialog.DoModal() != IDOK) {
 		throw OdEdCancel();
 	}
 }
 
-const OdString Cmd_SELECT::groupName() const { return L"AeSys"; }
+const OdString CommandSelect::groupName() const { return L"AeSys"; }
 
-const OdString Cmd_SELECT::name() { return L"SELECT"; }
+const OdString CommandSelect::Name() { return L"SELECT"; }
 
-const OdString Cmd_SELECT::globalName() const { return name(); }
+const OdString CommandSelect::globalName() const { return Name(); }
 
-void Cmd_SELECT::execute(OdEdCommandContext* commandContext) {
+void CommandSelect::execute(OdEdCommandContext* commandContext) {
 	OdDbCommandContextPtr CommandContext(commandContext);
-	OdDbDatabaseDocPtr Database = CommandContext->database();
+	OdDbDatabaseDocPtr Database {CommandContext->database()};
 	auto Document {Database->Document()};
-	auto View {Document->getViewer()};
+	auto View {Document->GetViewer()};
 	if (View == nullptr) { throw OdEdCancel(); }
 	Document->OnEditClearSelection();
 	Document->UpdateAllViews(nullptr);
-	auto UserIO {CommandContext->dbUserIO()};
-	UserIO->setPickfirst(nullptr);
+	auto UserIo {CommandContext->dbUserIO()};
+	UserIo->setPickfirst(nullptr);
 	const auto SelectOptions {OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty};
 	try {
-		OdDbSelectionSetPtr SelectionSet {UserIO->select(L"", SelectOptions, View->editorObject().workingSSet())};
+		OdDbSelectionSetPtr SelectionSet {UserIo->select(L"", SelectOptions, View->editorObject().workingSSet())};
 		View->editorObject().SetWorkingSelectionSet(SelectionSet);
 	} catch (const OdError&) {
 		throw OdEdCancel();
@@ -394,18 +394,18 @@ void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 	DocTemplate->SetViewToCreate(RUNTIME_CLASS(AeSysView));
 	const auto NewFrame {DocTemplate->CreateNewFrame(this, nullptr)};
 	DocTemplate->InitialUpdateFrame(NewFrame, this);
-	m_pViewer = dynamic_cast<AeSysView*>(NewFrame->GetActiveView());
+	m_Viewer = dynamic_cast<AeSysView*>(NewFrame->GetActiveView());
 }
 
 void AeSysDoc::OnCloseVectorizer(AeSysView* view) {
-	if (view != m_pViewer) { TRACE0("Vectorizer does not match expected viewer\n"); }
-	m_pViewer = nullptr;
+	if (view != m_Viewer) { TRACE0("Vectorizer does not match expected viewer\n"); }
+	m_Viewer = nullptr;
 }
 
-void AeSysDoc::setVectorizer(AeSysView* view) {
+void AeSysDoc::SetVectorizer(AeSysView* view) {
 	// <tas="limits the command context to a single view per document. So New window crashes."/>"
-	ODA_ASSERT(m_pViewer == nullptr);
-	m_pViewer = view;
+	ODA_ASSERT(m_Viewer == nullptr);
+	m_Viewer = view;
 }
 
 void AeSysDoc::OnVectorizerType() {
@@ -413,11 +413,11 @@ void AeSysDoc::OnVectorizerType() {
 }
 
 void AeSysDoc::OnUpdateVectorizerType(CCmdUI* commandUserInterface) {
-	commandUserInterface->Enable(m_pViewer == nullptr && !theApp.RecentGsDevicePath().isEmpty());
+	commandUserInterface->Enable(m_Viewer == nullptr && !theApp.RecentGsDevicePath().isEmpty());
 }
 
 OdDbCommandContextPtr AeSysDoc::CommandContext0() {
-	if (m_CommandContext.isNull()) { m_CommandContext = ExDbCommandContext::createObject(BaseIO(), m_DatabasePtr); }
+	if (m_CommandContext.isNull()) { m_CommandContext = ExDbCommandContext::createObject(BaseIo(), m_DatabasePtr); }
 	return m_CommandContext;
 }
 
@@ -432,13 +432,13 @@ OdDbSelectionSetPtr AeSysDoc::SelectionSet() const {
 	return SelectionSet;
 }
 
-OdEdBaseIO* AeSysDoc::BaseIO() noexcept {
+OdEdBaseIO* AeSysDoc::BaseIo() noexcept {
 	return this;
 }
 
-EoDlgUserIOConsole* AeSysDoc::UserIOConsole() {
-	if (m_UserIOConsole.isNull()) { m_UserIOConsole = EoDlgUserIOConsole::create(theApp.GetMainWnd()); }
-	return m_UserIOConsole;
+EoDlgUserIoConsole* AeSysDoc::UserIoConsole() {
+	if (m_UserIoConsole.isNull()) { m_UserIoConsole = EoDlgUserIoConsole::create(theApp.GetMainWnd()); }
+	return m_UserIoConsole;
 }
 
 unsigned long AeSysDoc::getKeyState() noexcept {
@@ -449,39 +449,39 @@ unsigned long AeSysDoc::getKeyState() noexcept {
 }
 
 OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, const int options, OdEdPointTracker* tracker) {
-	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		const auto strRes {getString(prompt, options, nullptr)};
-		throw OdEdOtherInput(strRes);
+	if (m_Macro.get() && !m_Macro->isEof()) {
+		const auto Input {getString(prompt, options, nullptr)};
+		throw OdEdOtherInput(Input);
 	}
-	if (m_bConsole) { return m_UserIOConsole->getPoint(prompt, options, tracker); }
-	if (m_pViewer) {
-		UserIOConsole()->putString(prompt);
-		return m_pViewer->getPoint(prompt, options, tracker);
+	if (m_Console) { return m_UserIoConsole->getPoint(prompt, options, tracker); }
+	if (m_Viewer) {
+		UserIoConsole()->putString(prompt);
+		return m_Viewer->getPoint(prompt, options, tracker);
 	}
-	return UserIOConsole()->getPoint(prompt, options, tracker);
+	return UserIoConsole()->getPoint(prompt, options, tracker);
 }
 
 OdString AeSysDoc::getString(const OdString& prompt, const int options, OdEdStringTracker* tracker) {
 	OdString Result;
-	if (m_pMacro.get() && !m_pMacro->isEof()) {
-		Result = m_pMacro->getString(prompt, options, tracker);
+	if (m_Macro.get() && !m_Macro->isEof()) {
+		Result = m_Macro->getString(prompt, options, tracker);
 		putString(prompt + L" " + Result);
 		return Result;
 	}
-	if (m_bConsole) { return UserIOConsole()->getString(prompt, options, tracker); }
-	if (m_pViewer) {
+	if (m_Console) { return UserIoConsole()->getString(prompt, options, tracker); }
+	if (m_Viewer) {
 		m_ConsoleResponded = prompt.isEmpty();
-		Result = m_pViewer->getString(prompt, options, tracker);
+		Result = m_Viewer->getString(prompt, options, tracker);
 		if (!m_ConsoleResponded) { putString(OdString(prompt) + L" " + Result); }
 		return Result;
 	}
-	return UserIOConsole()->getString(prompt, options, tracker);
+	return UserIoConsole()->getString(prompt, options, tracker);
 }
 
 void AeSysDoc::putString(const OdString& string) {
-	if (m_pViewer) { m_pViewer->putString(string); }
+	if (m_Viewer) { m_Viewer->putString(string); }
 	AeSys::AddStringToMessageList(string);
-	UserIOConsole()->putString(string);
+	UserIoConsole()->putString(string);
 }
 
 OdString AeSysDoc::RecentCommand() {
@@ -498,12 +498,12 @@ OdString AeSysDoc::CommandPrompt() {
 
 void AeSysDoc::OnEditConsole() {
 	auto CommandStack {odedRegCmds()};
-	OdDbCommandContextPtr CommandContext(CommandContext0());
-	OdSaveState<bool> saveConsoleMode(m_bConsole, true);
+	auto CommandContext(CommandContext0());
+	OdSaveState<bool> saveConsoleMode(m_Console, true);
 	try {
-		if (m_pViewer && m_pViewer->isGettingString()) {
+		if (m_Viewer && m_Viewer->isGettingString()) {
 
-			m_pViewer->respond(UserIOConsole()->getString(m_pViewer->prompt(), m_pViewer->inpOptions(), nullptr));
+			m_Viewer->respond(UserIoConsole()->getString(m_Viewer->prompt(), m_Viewer->inpOptions(), nullptr));
 			m_ConsoleResponded = true;
 
 		} else {
@@ -524,7 +524,7 @@ void AeSysDoc::OnEditConsole() {
 	}
 }
 
-OdString commandMessageCaption(const OdString& command) {
+OdString CommandMessageCaption(const OdString& command) {
 	OdString Caption;
 	Caption.format(L"Command: %ls", command.c_str());
 	return Caption;
@@ -534,18 +534,17 @@ class CmdReactor : public OdStaticRxObject<OdEdCommandStackReactor>, public OdSt
 	ODRX_NO_HEAP_OPERATORS()
 
 	OdDbCommandContext* m_CommandContext;
-	bool m_Modified;
+	bool m_Modified {false};
 	OdString m_LastInput;
 
-	void setModified() {
+	void SetModified() {
 		m_Modified = true;
 		m_CommandContext->database()->removeReactor(this);
 	}
 
 public:
 	CmdReactor(OdDbCommandContext* dbCommandContext)
-		: m_CommandContext(dbCommandContext)
-		, m_Modified(false) {
+		: m_CommandContext(dbCommandContext) {
 		ODA_ASSERT(m_CommandContext);
 		odedRegCmds()->addReactor(this);
 		m_CommandContext->database()->addReactor(this);
@@ -564,22 +563,22 @@ public:
 		return m_LastInput;
 	}
 
-	[[nodiscard]] bool isDatabaseModified() const noexcept {
+	[[nodiscard]] bool IsDatabaseModified() const noexcept {
 		return m_Modified;
 	}
 
 	void objectOpenedForModify(const OdDbDatabase* database, const OdDbObject* object) override {
-		setModified();
+		SetModified();
 	}
 
 	void headerSysVarWillChange(const OdDbDatabase* database, const OdString& variableName) override {
-		setModified();
+		SetModified();
 	}
 
 	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) override {
-		auto pViewer {OdDbDatabaseDocPtr(m_CommandContext->database())->Document()->getViewer()};
-		if (pViewer) {
-			auto Command {pViewer->command(commandName)};
+		auto Viewer {OdDbDatabaseDocPtr(m_CommandContext->database())->Document()->GetViewer()};
+		if (Viewer) {
+			auto Command {Viewer->command(commandName)};
 			if (Command.get()) { return Command; }
 		}
 		OdString String;
@@ -590,27 +589,27 @@ public:
 
 	void commandWillStart(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
 		m_LastInput.makeUpper();
-		if (!GETBIT(command->flags(), OdEdCommand::kNoHistory)) { theApp.SetRecentCommand(m_LastInput); }
-		if (!GETBIT(command->flags(), OdEdCommand::kNoUndoMarker)) { m_CommandContext->database()->startUndoRecord(); }
+		if (!((command->flags() & OdEdCommand::kNoHistory) != 0)) { theApp.SetRecentCommand(m_LastInput); }
+		if (!((command->flags() & OdEdCommand::kNoUndoMarker) != 0)) { m_CommandContext->database()->startUndoRecord(); }
 	}
 
 	void commandCancelled(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
-		undoCmd();
+		UndoCommand();
 	}
 
 	void commandFailed(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
-		undoCmd();
+		UndoCommand();
 	}
 
 private:
-	void undoCmd() {
+	void UndoCommand() {
 		auto Database {m_CommandContext->database()};
 		try {
 			Database->disableUndoRecording(true);
 			Database->undo();
 			Database->disableUndoRecording(false);
 		} catch (const OdError& Error) {
-			theApp.reportError(L"Can't repair database", Error);
+			theApp.ReportError(L"Can't repair database", Error);
 		}
 #ifndef _DEBUG
 		catch (...) {
@@ -621,52 +620,51 @@ private:
 };
 
 void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
-	OdSaveState<int> save_m_nCmdActive(m_nCmdActive);
-	++m_nCmdActive;
-	OdDbCommandContextPtr CommandContext(CommandContext0());
+	OdSaveState<int> SaveCommandActive(m_CommandActive);
+	++m_CommandActive;
+	auto CommandContext(CommandContext0());
 	CmdReactor CommandReactor(CommandContext);
 	try {
 		auto CommandStack {odedRegCmds()};
-		auto pExCmdCtx {dynamic_cast<ExDbCommandContext*>(CommandContext.get())};
+		auto ExecuteCommandContext {dynamic_cast<ExDbCommandContext*>(CommandContext.get())};
 		if (m_DatabasePtr->appServices()->getPICKFIRST()) {
-			pExCmdCtx->setPickfirst(SelectionSet());
+			ExecuteCommandContext->setPickfirst(SelectionSet());
 		}
 		if (command[0] == '(') {
-			OdEdLispModulePtr lspMod = odrxDynamicLinker()->loadApp(OdLspModuleName);
-			if (!lspMod.isNull()) { lspMod->createLispEngine()->execute(pExCmdCtx, command); }
-
+			OdEdLispModulePtr LispModule {odrxDynamicLinker()->loadApp(OdLspModuleName)};
+			if (!LispModule.isNull()) { LispModule->createLispEngine()->execute(ExecuteCommandContext, command); }
 		} else {
-			auto s {command.spanExcluding(L" \t\r\n")};
-			if (s.getLength() == command.getLength()) {
+			auto CommandName {command.spanExcluding(L" \t\r\n")};
+			if (CommandName.getLength() == command.getLength()) {
 
-				if (echo) { CommandContext->userIO()->putString(CommandPrompt() + L" " + s); }
-				s.makeUpper();
-				CommandReactor.SetLastInput(s);
-				CommandStack->executeCommand(s, CommandContext);
+				if (echo) { CommandContext->userIO()->putString(CommandPrompt() + L" " + CommandName); }
+				CommandName.makeUpper();
+				CommandReactor.SetLastInput(CommandName);
+				CommandStack->executeCommand(CommandName, CommandContext);
 			} else {
-				m_pMacro = ExStringIO::create(command);
-				while (!m_pMacro->isEof()) {
+				m_Macro = ExStringIO::create(command);
+				while (!m_Macro->isEof()) {
 					try {
-						s = CommandContext->userIO()->getString(CommandPrompt());
-						s.makeUpper();
-						CommandReactor.SetLastInput(s);
-					} catch (const OdEdEmptyInput) {
-						s = RecentCommandName();
+						CommandName = CommandContext->userIO()->getString(CommandPrompt());
+						CommandName.makeUpper();
+						CommandReactor.SetLastInput(CommandName);
+					} catch (OdEdEmptyInput) {
+						CommandName = RecentCommandName();
 					}
-					CommandStack->executeCommand(s, CommandContext);
+					CommandStack->executeCommand(CommandName, CommandContext);
 				}
 			}
 		}
-		if (getViewer()) { getViewer()->propagateActiveViewChanges(); }
+		if (GetViewer()) { GetViewer()->propagateActiveViewChanges(); }
 
-	} catch (const OdEdEmptyInput) {
-	} catch (const OdEdCancel) {
-	} catch (const OdError& Error) {
+	} catch (OdEdEmptyInput) {
+	} catch (OdEdCancel) {
+	} catch (OdError& Error) {
 
-		if (!m_bConsole) { theApp.reportError(commandMessageCaption(command), Error); }
-		BaseIO()->putString(Error.description());
+		if (!m_Console) { theApp.ReportError(CommandMessageCaption(command), Error); }
+		BaseIo()->putString(Error.description());
 	}
-	if (CommandReactor.isDatabaseModified() || SelectionSet()->numEntities()) {
+	if (CommandReactor.IsDatabaseModified() || SelectionSet()->numEntities()) {
 
 		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearSelection(); }
 		UpdateAllViews(nullptr);
@@ -676,7 +674,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
 	if (handlerInfo == nullptr) {
 		auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
-		if (TopMenu) { // Check if it is a theApp's dynamic menu item
+		if (TopMenu) { // Check if it is theApp's dynamic menu item
 			MENUITEMINFO MenuItemInfo;
 			MenuItemInfo.cbSize = sizeof MenuItemInfo;
 			MenuItemInfo.fMask = MIIM_DATA;
@@ -689,7 +687,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 					if (messageCategory == CN_COMMAND) {
 						OnVectorize(static_cast<const wchar_t*>(Vectorizer));
 					} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
-						static_cast<CCmdUI*>(commandObject)->Enable(m_pViewer == nullptr);
+						static_cast<CCmdUI*>(commandObject)->Enable(m_Viewer == nullptr);
 						static_cast<CCmdUI*>(commandObject)->SetCheck(Vectorizer == static_cast<const wchar_t*>(theApp.RecentGsDevicePath()));
 					}
 					return TRUE;
@@ -749,27 +747,25 @@ void AeSysDoc::DeleteSelection(const bool force) {
 		} else {
 			ExecuteCommand(L"erase");
 		}
-		if (m_pViewer) {
-			m_pViewer->editorObject().SetEntityCenters();
+		if (m_Viewer) {
+			m_Viewer->editorObject().SetEntityCenters();
 		}
 	}
 }
 
-void AeSysDoc::startDrag(const OdGePoint3d& point) {
-	DataSource ds;
-	ds.Create(this, point);
-	if (ds.DoDragDrop()) {
-		UpdateAllViews(nullptr);
-	}
+void AeSysDoc::StartDrag(const OdGePoint3d& point) {
+	DataSource DragDataSource;
+	DragDataSource.Create(this, point);
+	if (DragDataSource.DoDragDrop()) { UpdateAllViews(nullptr); }
 }
 
-OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(OdString name, OdDbTextStyleTablePtr& textStyles) {
+OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(const OdString& name, OdDbTextStyleTablePtr& textStyles) {
 	auto TextStyle {OdDbTextStyleTableRecord::createObject()};
 	try {
 		TextStyle->setName(name);
 		textStyles->add(TextStyle);
 	} catch (const OdError& Error) {
-		theApp.reportError(L"Error adding new text style...", Error);
+		theApp.ReportError(L"Error adding new text style...", Error);
 		TextStyle->erase();
 	}
 	return TextStyle;
@@ -795,7 +791,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 	}
 	auto DimStyle {OdDbDimStyleTableRecord::createObject()};
 	DimStyle->setName(L"EoStandard");
-	auto dimStyleId {DimStyleTable->add(DimStyle)};
+	DimStyleTable->add(DimStyle);
 	DimStyle->setDimtxsty(m_DatabasePtr->getTextStyleStandardId());
 	DimStyle->setDimse1(true);
 	DimStyle->setDimse2(true);
@@ -809,7 +805,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 	Color.setColorIndex(5);
 	DimStyle->setDimclrt(Color); // Text color
 	//	DimStyle->setDimtxt(.1); // Text Height
-	OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForRead);
+	OdDbTextStyleTablePtr TextStyles {m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForRead)};
 	if (TextStyles->has(L"EoStandard")) {
 		const auto TextStyle {TextStyles->getAt(L"EoStandard")};
 		DimStyle->setDimtxsty(TextStyle);
@@ -821,7 +817,7 @@ OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
 }
 
 void AeSysDoc::AddRegisteredApp(const OdString& name) {
-	OdDbRegAppTablePtr RegisteredApps = m_DatabasePtr->getRegAppTableId().safeOpenObject(OdDb::kForWrite);
+	OdDbRegAppTablePtr RegisteredApps {m_DatabasePtr->getRegAppTableId().safeOpenObject(OdDb::kForWrite)};
 	if (!RegisteredApps->has(name)) {
 		auto RegisteredApp {OdDbRegAppTableRecord::createObject()};
 		try {
@@ -829,7 +825,7 @@ void AeSysDoc::AddRegisteredApp(const OdString& name) {
 			RegisteredApps->add(RegisteredApp);
 		} catch (const OdError& Error) {
 			RegisteredApp->erase();
-			theApp.reportError(L"ODA Error - AeSysDoc::AddRegisteredApp", Error);
+			theApp.ReportError(L"ODA Error - AeSysDoc::AddRegisteredApp", Error);
 		}
 	}
 }
@@ -845,7 +841,7 @@ BOOL AeSysDoc::OnNewDocument() {
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 		} catch (const OdError& Error) {
 			m_DatabasePtr = nullptr;
-			theApp.reportError(L"Database Creating Error...", Error);
+			theApp.ReportError(L"Database Creating Error...", Error);
 			return FALSE;
 		}
 		auto TextStyle {AddStandardTextStyle()};
@@ -861,7 +857,7 @@ BOOL AeSysDoc::OnNewDocument() {
 
 		// <tas="Continuous Linetype initialization ??"</tas>
 		m_LinetypeTable.LoadLinetypesFromTxtFile(m_DatabasePtr, AeSys::ResourceFolderPath() + L"Pens\\Linetypes.txt");
-		m_SaveAsType_ = EoDb::kPeg;
+		saveAsType_ = EoDb::kPeg;
 		SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 		InitializeGroupAndPrimitiveEdit();
 		if (!m_DatabasePtr.isNull()) {
@@ -895,7 +891,7 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			AeSys::AddStringToMessageList(FileAndVersion);
 			EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
 			DwgToPegFile.ConvertToPeg(this);
-			m_SaveAsType_ = FileType;
+			saveAsType_ = FileType;
 			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 			break;
 		}
@@ -910,10 +906,10 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			DwgToPegFile.ConvertToPeg(this);
 			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 			EoDbPegFile PegFile(m_DatabasePtr);
-			CFileException e;
-			if (PegFile.Open(file, CFile::modeRead | CFile::shareDenyNone, &e)) {
+			CFileException FileException;
+			if (PegFile.Open(file, CFile::modeRead | CFile::shareDenyNone, &FileException)) {
 				PegFile.Load(this);
-				m_SaveAsType_ = EoDb::kPeg;
+				saveAsType_ = EoDb::kPeg;
 			}
 			break;
 		}
@@ -928,12 +924,12 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 
 BOOL AeSysDoc::OnSaveDocument(const wchar_t* pathName) {
 	auto ReturnStatus {FALSE};
-	switch (m_SaveAsType_) {
+	switch (saveAsType_) {
 		case EoDb::kPeg: {
 			// <tas="shadow files disabled"/> WriteShadowFile();
 			EoDbPegFile DwgToPegFile(m_DatabasePtr);
-			CFileException e;
-			if (DwgToPegFile.Open(pathName, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e)) {
+			CFileException FileException;
+			if (DwgToPegFile.Open(pathName, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &FileException)) {
 				DwgToPegFile.Unload(this);
 				ReturnStatus = TRUE;
 			}
@@ -1174,8 +1170,8 @@ int AeSysDoc::GetLayerTableSize() const {
 }
 
 EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) {
-	const auto i {FindLayerAt(name)};
-	return i < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(i);
+	const auto LayerIndex {FindLayerAt(name)};
+	return LayerIndex < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(LayerIndex);
 }
 
 EoDbLayer* AeSysDoc::GetLayerAt(const int layerIndex) {
@@ -1226,7 +1222,7 @@ void AeSysDoc::RemoveEmptyLayers() {
 bool AeSysDoc::LayerMelt(OdString& name) {
 	auto Layer {GetLayerAt(name)};
 	if (Layer == nullptr) { return false; }
-	auto bRetVal {false};
+	auto Result {false};
 	OPENFILENAME OpenFileName;
 	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
 	OpenFileName.lStructSize = sizeof(OPENFILENAME);
@@ -1266,11 +1262,11 @@ bool AeSysDoc::LayerMelt(OdString& name) {
 			Layer->MakeInternal(false);
 			Layer->SetIsLocked(true);
 			Layer->SetName(name);
-			bRetVal = true;
+			Result = true;
 		}
 	}
 	delete[] OpenFileName.lpstrFile;
-	return bRetVal;
+	return Result;
 }
 
 void AeSysDoc::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
@@ -1429,18 +1425,14 @@ void AeSysDoc::TracingFuse(OdString& nameAndLocation) {
 }
 
 bool AeSysDoc::TracingLoadLayer(const OdString& file, EoDbLayer* layer) {
-	if (!layer) return false;
+	if (!layer) { return false; }
 	const auto FileType {AeSys::GetFileType(file)};
-	if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
-		return false;
-	}
+	if (FileType != EoDb::kTracing && FileType != EoDb::kJob) { return false; }
 	const auto FileOpen {false};
 	if (FileType == EoDb::kTracing) {
-		CFileException e;
 		EoDbTracingFile TracingFile(file, CFile::modeRead | CFile::shareDenyNone);
 		if (TracingFile != CFile::hFileNull) {
-
-			m_SaveAsType_ = EoDb::kTracing;
+			saveAsType_ = EoDb::kTracing;
 			SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 			TracingFile.ReadHeader();
 			TracingFile.ReadLayer(m_DatabasePtr->getModelSpaceId().safeOpenObject(OdDb::kForWrite), layer);
@@ -1475,26 +1467,26 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 	TracingLoadLayer(fileName, Layer);
 	AddGroupsToAllViews(Layer);
 	Layer->MakeCurrent();
-	m_SaveAsType_ = EoDb::kTracing;
+	saveAsType_ = EoDb::kTracing;
 	UpdateAllViews(nullptr);
 	return true;
 }
 
 void AeSysDoc::WriteShadowFile() {
-	if (m_SaveAsType_ == EoDb::kPeg) {
+	if (saveAsType_ == EoDb::kPeg) {
 		auto ShadowFilePath(theApp.ShadowFolderPath());
 		ShadowFilePath += GetTitle();
-		const auto nExt {ShadowFilePath.Find('.')};
-		if (nExt > 0) {
-			CFileStatus fs;
-			CFile::GetStatus(GetPathName(), fs);
-			ShadowFilePath.Truncate(nExt);
-			ShadowFilePath += fs.m_mtime.Format(L"_%Y%m%d%H%M");
+		const auto Extension {ShadowFilePath.Find('.')};
+		if (Extension > 0) {
+			CFileStatus FileStatus;
+			CFile::GetStatus(GetPathName(), FileStatus);
+			ShadowFilePath.Truncate(Extension);
+			ShadowFilePath += FileStatus.m_mtime.Format(L"_%Y%m%d%H%M");
 			ShadowFilePath += L".peg";
-			CFileException e;
+			CFileException FileException;
 			EoDbPegFile PegFile(m_DatabasePtr);
-			if (!PegFile.Open(ShadowFilePath, CFile::modeWrite, &e)) {
-				PegFile.Open(ShadowFilePath, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &e);
+			if (!PegFile.Open(ShadowFilePath, CFile::modeWrite, &FileException)) {
+				PegFile.Open(ShadowFilePath, CFile::modeCreate | CFile::modeWrite | CFile::shareExclusive, &FileException);
 				PegFile.Unload(this);
 				AeSys::WarningMessageBox(IDS_MSG_FILE_SHADOWED_AS, ShadowFilePath);
 				return;
@@ -1587,8 +1579,8 @@ void AeSysDoc::OnPrimBreak() {
 			OdGePoint3dArray Points;
 			PolylinePrimitive->GetAllPoints(Points);
 			OdDbLinePtr Line;
-			for (unsigned w = 0; w < Points.size() - 1; w++) {
-				Line = EoDbLine::Create(BlockTableRecord, Points[w], Points[w + 1]);
+			for (unsigned PointIndex = 0; PointIndex < Points.size() - 1; PointIndex++) {
+				Line = EoDbLine::Create(BlockTableRecord, Points[PointIndex], Points[PointIndex + 1]);
 				Line->setColorIndex(static_cast<unsigned short>(Primitive->ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(Primitive->LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
@@ -1607,9 +1599,9 @@ void AeSysDoc::OnPrimBreak() {
 			if (LookupBlock(BlockReference->Name(), Block) != 0) {
 				Group->FindAndRemovePrimitive(Primitive);
 				const auto BlockTransform {BlockReference->BlockTransformMatrix(Block->BasePoint())};
-				auto pSegT {new EoDbGroup(*Block)};
-				pSegT->TransformBy(BlockTransform);
-				Group->AddTail(pSegT);
+				auto BlockCopy {new EoDbGroup(*Block)};
+				BlockCopy->TransformBy(BlockTransform);
+				Group->AddTail(BlockCopy);
 				delete Primitive;
 				ResetAllViews();
 			}
@@ -1634,8 +1626,8 @@ void AeSysDoc::OnEditSegToWork() {
 }
 
 void AeSysDoc::OnFileQuery() {
-	const auto pt {AeSys::GetCursorPosition()};
-	const auto Layer {SelectLayerBy(pt)};
+	const auto CurrentPnt {AeSys::GetCursorPosition()};
+	const auto Layer {SelectLayerBy(CurrentPnt)};
 	if (Layer != nullptr) {
 		CPoint CurrentPosition;
 		GetCursorPos(&CurrentPosition);
@@ -1753,7 +1745,7 @@ void AeSysDoc::OnTracingOff() {
 			// <tas="If a single layer tracing if being set off no layers will be visible. Need to correct."</tas>
 			Layer = GetLayerAt(0);
 			SetCurrentLayer(Layer->TableRecord());
-			m_SaveAsType_ = EoDb::kUnknown;
+			saveAsType_ = EoDb::kUnknown;
 		} else {
 			AeSys::WarningMessageBox(IDS_MSG_TRACING_WRITE_FAILURE, m_IdentifiedLayerName);
 		}
@@ -1819,12 +1811,12 @@ void AeSysDoc::OnEditImageToClipboard() {
 
 void AeSysDoc::OnEditTrace() {
 	if (OpenClipboard(nullptr)) {
-		wchar_t sBuf[16] {0};
+		wchar_t FormatName[16] {L""};
 		unsigned ClipboardFormat;
 		unsigned Format {0};
 		while ((ClipboardFormat = EnumClipboardFormats(Format)) != 0) {
-			GetClipboardFormatNameW(ClipboardFormat, sBuf, 16);
-			if (wcscmp(sBuf, L"EoGroups") == 0) {
+			GetClipboardFormatNameW(ClipboardFormat, FormatName, 16);
+			if (wcscmp(FormatName, L"EoGroups") == 0) {
 				const auto ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
 				if (ClipboardDataHandle != nullptr) {
 
@@ -1905,8 +1897,8 @@ void AeSysDoc::OnEditTrapPaste() {
 				if (ClipboardData != nullptr) {
 					const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
 					const auto Text {new wchar_t[ClipboardDataSize]};
-					for (unsigned i = 0; i < ClipboardDataSize; i++) {
-						Text[i] = static_cast<wchar_t>(ClipboardData[i]);
+					for (unsigned ClipboardDataIndex = 0; ClipboardDataIndex < ClipboardDataSize; ClipboardDataIndex++) {
+						Text[ClipboardDataIndex] = static_cast<wchar_t>(ClipboardData[ClipboardDataIndex]);
 					}
 					GlobalUnlock(ClipboardDataHandle);
 					AddTextBlock(Text);
@@ -1918,8 +1910,8 @@ void AeSysDoc::OnEditTrapPaste() {
 			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
 			const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
 			const auto Text {new wchar_t[ClipboardDataSize]};
-			for (unsigned i = 0; i < ClipboardDataSize; i++) {
-				Text[i] = ClipboardData[i];
+			for (unsigned ClipboardDataIndex = 0; ClipboardDataIndex < ClipboardDataSize; ClipboardDataIndex++) {
+				Text[ClipboardDataIndex] = ClipboardData[ClipboardDataIndex];
 			}
 			GlobalUnlock(ClipboardDataHandle);
 			AddTextBlock(Text);
@@ -1994,19 +1986,19 @@ void AeSysDoc::OnTrapCommandsFilter() {
 void AeSysDoc::OnTrapCommandsBlock() {
 	if (m_TrappedGroupList.GetCount() == 0) { return; }
 	EoDbBlock* Block {nullptr};
-	auto w {BlockTableSize()};
+	auto BlockIndex {BlockTableSize()};
 	wchar_t BlockName[16];
 	do {
-		swprintf_s(BlockName, 16, L"_%.3i", ++w);
+		swprintf_s(BlockName, 16, L"_%.3i", ++BlockIndex);
 	} while (LookupBlock(BlockName, Block));
 	Block = new EoDbBlock;
 	auto Position {GetFirstTrappedGroupPosition()};
 	while (Position != nullptr) {
 		const auto Group {GetNextTrappedGroup(Position)};
-		auto pSeg2 {new EoDbGroup(*Group)};
-		Block->AddTail(pSeg2);
-		pSeg2->RemoveAll();
-		delete pSeg2;
+		auto GroupCopy {new EoDbGroup(*Group)};
+		Block->AddTail(GroupCopy);
+		GroupCopy->RemoveAll();
+		delete GroupCopy;
 	}
 	Block->SetBasePoint(m_TrapPivotPoint);
 	InsertBlock(BlockName, Block);
@@ -2122,9 +2114,9 @@ void AeSysDoc::OnToolsPrimitiveSnapToEndPoint() {
 	if (ActiveView->GroupIsEngaged()) {
 		auto Primitive {ActiveView->EngagedPrimitive()};
 		if (Primitive->PivotOnGripPoint(ActiveView, View)) {
-			const auto ptEng {ActiveView->DetPt()};
-			Primitive->AddReportToMessageList(ptEng);
-			ActiveView->SetCursorPosition(ptEng);
+			const auto EngagedPoint {ActiveView->DetPt()};
+			Primitive->AddReportToMessageList(EngagedPoint);
+			ActiveView->SetCursorPosition(EngagedPoint);
 			return;
 		}
 		// Did not pivot on engaged primitive
@@ -2133,9 +2125,9 @@ void AeSysDoc::OnToolsPrimitiveSnapToEndPoint() {
 		}
 	}
 	if (ActiveView->SelSegAndPrimAtCtrlPt(View) != nullptr) {
-		const auto ptEng {ActiveView->DetPt()};
-		ActiveView->EngagedPrimitive()->AddReportToMessageList(ptEng);
-		ActiveView->SetCursorPosition(ptEng);
+		const auto EngagedPoint {ActiveView->DetPt()};
+		ActiveView->EngagedPrimitive()->AddReportToMessageList(EngagedPoint);
+		ActiveView->SetCursorPosition(EngagedPoint);
 	}
 	EoDbGroup::SetPrimitiveToIgnore(static_cast<EoDbPrimitive*>(nullptr));
 }
@@ -2208,8 +2200,8 @@ void AeSysDoc::OnSetupOptionsDraw() {
 }
 
 void AeSysDoc::OnFileManage() {
-	EoDlgFileManage dlg(this, m_DatabasePtr);
-	if (dlg.DoModal() == IDOK) {
+	EoDlgFileManage FileManageDialog(this, m_DatabasePtr);
+	if (FileManageDialog.DoModal() == IDOK) {
 	}
 }
 
@@ -2288,13 +2280,13 @@ void AeSysDoc::OnPensLoadColors() {
 void AeSysDoc::OnPensTranslate() {
 	CStdioFile StreamFile;
 	if (StreamFile.Open(AeSys::ResourceFolderPath() + L"\\Pens\\xlate.txt", CFile::modeRead | CFile::typeText)) {
-		wchar_t pBuf[128];
+		wchar_t Line[128];
 		std::vector<int> ColorIndex;
 		std::vector<int> NewColorIndex;
 		wchar_t* NextToken {nullptr};
-		while (StreamFile.ReadString(pBuf, sizeof pBuf / sizeof(wchar_t) - 1) != nullptr) {
+		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) != nullptr) {
 			NextToken = nullptr;
-			ColorIndex.push_back(_wtoi(wcstok_s(pBuf, L",", &NextToken)));
+			ColorIndex.push_back(_wtoi(wcstok_s(Line, L",", &NextToken)));
 			NewColorIndex.push_back(_wtoi(wcstok_s(nullptr, L"\n", &NextToken)));
 		}
 		PenTranslation(NewColorIndex.size(), NewColorIndex, ColorIndex);
@@ -2322,17 +2314,17 @@ void AeSysDoc::OnPrimExtractNum() {
 		} else {
 			return;
 		}
-		double dVal[32];
-		auto iTyp {0};
+		double Value[32];
+		auto Type {0};
 		long DataDefinition {0};
-		auto iTokId = 0;
+		auto TokenId {0};
 		lex::Parse(Number);
-		lex::EvalTokenStream(&iTokId, &DataDefinition, &iTyp, static_cast<void*>(dVal));
-		if (iTyp != lex::TOK_LENGTH_OPERAND) {
-			lex::ConvertValTyp(iTyp, lex::TOK_REAL, &DataDefinition, dVal);
+		lex::EvalTokenStream(&TokenId, &DataDefinition, &Type, static_cast<void*>(Value));
+		if (Type != lex::TOK_LENGTH_OPERAND) {
+			lex::ConvertValTyp(Type, lex::TOK_REAL, &DataDefinition, Value);
 		}
 		wchar_t Message[64];
-		swprintf_s(Message, 64, L"%10.4f ", dVal[0]);
+		swprintf_s(Message, 64, L"%10.4f ", Value[0]);
 		wcscat_s(Message, 64, L"was extracted from drawing");
 		AeSys::AddStringToMessageList(Message);
 	}
@@ -2436,7 +2428,7 @@ void AeSysDoc::DeleteNodalResources() {
 }
 
 void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, const unsigned long mask, const int bit, const OdGePoint3d point) {
-	if (theApp.m_NodalModeAddGroups) {
+	if (theApp.nodalModeAddGroups) {
 		if (!btest(mask, bit)) {
 			if (!FindNodalGroup(group)) {
 				AddNodalGroup(group);
@@ -2562,10 +2554,10 @@ void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, const int bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive {nullptr};
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
-		const auto posCur = MaskedPrimitivePosition;
+		const auto CurrentPosition = MaskedPrimitivePosition;
 		MaskedPrimitive = GetNextMaskedPrimitive(MaskedPrimitivePosition);
 		if (MaskedPrimitive->GetPrimitive() == primitive) {
-			MaskedPrimitivePosition = posCur;
+			MaskedPrimitivePosition = CurrentPosition;
 			break;
 		}
 	}
@@ -2580,10 +2572,10 @@ void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive* primitive, const int bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive = nullptr;
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
-		const auto posCur {MaskedPrimitivePosition};
+		const auto CurrentPosition {MaskedPrimitivePosition};
 		MaskedPrimitive = GetNextMaskedPrimitive(MaskedPrimitivePosition);
 		if (MaskedPrimitive->GetPrimitive() == primitive) {
-			MaskedPrimitivePosition = posCur;
+			MaskedPrimitivePosition = CurrentPosition;
 			break;
 		}
 	}
@@ -2596,10 +2588,10 @@ unsigned long AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
 	EoDbMaskedPrimitive* MaskedPrimitive {nullptr};
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
-		const auto posCur {MaskedPrimitivePosition};
+		const auto CurrentPosition {MaskedPrimitivePosition};
 		MaskedPrimitive = GetNextMaskedPrimitive(MaskedPrimitivePosition);
 		if (MaskedPrimitive->GetPrimitive() == primitive) {
-			MaskedPrimitivePosition = posCur;
+			MaskedPrimitivePosition = CurrentPosition;
 			break;
 		}
 	}
@@ -2631,7 +2623,7 @@ void AeSysDoc::OnInsertTracing() {
 	if (GetOpenFileNameW(&OpenFileName)) {
 		FilterIndex = OpenFileName.nFilterIndex;
 		OdString Name {OpenFileName.lpstrFile};
-		auto strPath {Name.left(OpenFileName.nFileOffset)};
+		auto FilePath {Name.left(OpenFileName.nFileOffset)};
 		Name = Name.mid(OpenFileName.nFileOffset);
 		const auto FileType {AeSys::GetFileType(Name)};
 		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) { return; }
@@ -2655,11 +2647,11 @@ void AeSysDoc::OnInsertTracing() {
 }
 
 void AeSysDoc::OnFilePageSetup() {
-	OdSmartPtr<OdDbUserIO> pIO; // = pDbCmdCtx->userIO();
-	const auto idLayout {OdDbBlockTableRecordPtr(m_DatabasePtr->getActiveLayoutBTRId().safeOpenObject())->getLayoutId()};
-	OdSmartPtr<OdDbLayout> Layout {idLayout.safeOpenObject(OdDb::kForWrite)};
+	OdSmartPtr<OdDbUserIO> UserIo; // = pDbCmdCtx->userIO();
+	const auto LayoutId {OdDbBlockTableRecordPtr(m_DatabasePtr->getActiveLayoutBTRId().safeOpenObject())->getLayoutId()};
+	OdSmartPtr<OdDbLayout> Layout {LayoutId.safeOpenObject(OdDb::kForWrite)};
 	OdDbPlotSettings* PlotSettings = Layout.get();
-	EoDlgPageSetup PageSetupDialog(*PlotSettings, pIO);
+	EoDlgPageSetup PageSetupDialog(*PlotSettings, UserIo);
 	if (PageSetupDialog.DoModal() == IDOK) {
 	}
 }
@@ -2676,10 +2668,10 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 	::GetTempPath(MAX_PATH, TemporaryPath);
 	wchar_t TemporaryName[MAX_PATH];
 	::GetTempFileName(TemporaryPath, L"", 0, TemporaryName);
-	m_tmpPath = TemporaryName;
-	m_tmpPath.makeLower();
-	m_tmpPath.replace(L".tmp", L".dwg");
-	auto StreamBuffer {theApp.createFile(m_tmpPath, Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kCreateNew)};
+	m_TemporaryPath = TemporaryName;
+	m_TemporaryPath.makeLower();
+	m_TemporaryPath.replace(L".tmp", L".dwg");
+	auto StreamBuffer {theApp.createFile(m_TemporaryPath, Oda::kFileWrite, Oda::kShareDenyWrite, Oda::kCreateNew)};
 
 	//Database->writeFile(StreamBuffer,OdDb::kDwg,OdDb::vAC21);
 	//auto hGlobal {GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR15))};
@@ -2687,7 +2679,7 @@ void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) 
 	//CacheGlobalData(ClipboardData::m_FormatR16, hGlobal);
 	Database->writeFile(StreamBuffer, OdDb::kDwg, OdDb::vAC21);
 	auto hGlobalR21 {GlobalAlloc(GMEM_FIXED, sizeof(AcadClipDataR21))};
-	new(hGlobalR21)AcadClipDataR21(m_tmpPath, OdString(document->GetPathName()), point);
+	new(hGlobalR21)AcadClipDataR21(m_TemporaryPath, OdString(document->GetPathName()), point);
 	CacheGlobalData(ClipboardData::formatR17, hGlobalR21);
 }
 // </command_console>
@@ -2697,9 +2689,7 @@ bool AeSysDoc::DataSource::DoDragDrop() {
 
 void AeSysDoc::DataSource::Empty() {
 	COleDataSource::Empty();
-	if (!m_tmpPath.isEmpty()) {
-		DeleteFile(m_tmpPath);
-	}
+	if (!m_TemporaryPath.isEmpty()) { DeleteFile(m_TemporaryPath); }
 }
 
 AeSysDoc::DataSource::~DataSource() {
@@ -2719,35 +2709,33 @@ void AeSysDoc::OnDrawingUtilitiesAudit() {
 		return;
 	}
 	try {
-		EoAppAuditInfo aiAppAudit;
-		aiAppAudit.setFixErrors(FixErrors);
-		aiAppAudit.setPrintDest(OdDbAuditInfo::kBoth);
-		aiAppAudit.setHostAppServices(&theApp);
-		m_DatabasePtr->auditDatabase(&aiAppAudit);
+		EoAppAuditInfo ApplicationAuditInfo;
+		ApplicationAuditInfo.setFixErrors(FixErrors);
+		ApplicationAuditInfo.setPrintDest(OdDbAuditInfo::kBoth);
+		ApplicationAuditInfo.setHostAppServices(&theApp);
+		m_DatabasePtr->auditDatabase(&ApplicationAuditInfo);
 	} catch (const OdError& Error) {
 		delete theApp.auditDialog;
 		theApp.auditDialog = nullptr;
-		theApp.reportError(L"Error Auditing Database...", Error);
+		theApp.ReportError(L"Error Auditing Database...", Error);
 		AfxThrowUserException();
 	} catch (const UserBreak&) {
 		delete theApp.auditDialog;
 		theApp.auditDialog = nullptr;
 	}
-	if (!theApp.auditDialog) {
-		return;
-	}
+	if (!theApp.auditDialog) { return; }
 	const auto Title(L"Audit info - " + GetTitle());
 	theApp.auditDialog->SetWindowTextW(Title);
 	theApp.auditDialog->ShowWindow(SW_SHOW);
 	theApp.auditDialog = nullptr;
 }
 
-BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate) {
+BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate) {
 	const auto DwgVersion {m_DatabasePtr->originalFileVersion()};
 	auto Extension {fileName.Right(3)};
 	const auto IsDwg {Extension.CompareNoCase(L"dxf") != 0};
 	CString Title;
-	VERIFY(Title.LoadString(nIDSTitle));
+	VERIFY(Title.LoadStringW(titleResourceId));
 	CFileDialog FileDialog(openFileDialog);
 	FileDialog.m_ofn.Flags |= flags;
 	CString Filter;
@@ -2819,7 +2807,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned 
 	FileDialog.m_ofn.lpstrFilter = Filter;
 	FileDialog.m_ofn.lpstrTitle = Title;
 	FileDialog.m_ofn.lpstrFile = fileName.GetBuffer(MAX_PATH);
-	const LPARAM nResult = FileDialog.DoModal();
+	const LPARAM Result {FileDialog.DoModal()};
 	fileName.ReleaseBuffer();
 	if (fileName.Find('.') == -1) {
 		if (FileDialog.m_ofn.nFilterIndex < 10) {
@@ -2829,51 +2817,51 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned 
 		}
 	}
 	if (FileDialog.m_ofn.nFilterIndex < 10) {
-		m_SaveAsType = OdDb::kDwg;
+		saveAsType = OdDb::kDwg;
 	} else {
-		m_SaveAsType = OdDb::kDxf;
+		saveAsType = OdDb::kDxf;
 	}
 	switch (FileDialog.m_ofn.nFilterIndex) {
 		case 1: case 10:
-			m_SaveAsVer = OdDb::vAC32; // R32 (2018) release
+			saveAsVersion = OdDb::vAC32; // R32 (2018) release
 		case 2: case 11:
-			m_SaveAsVer = OdDb::vAC27; // R27 (2013) release
+			saveAsVersion = OdDb::vAC27; // R27 (2013) release
 			break;
 		case 3: case 12:
-			m_SaveAsVer = OdDb::vAC24; // R24 (2010) release
+			saveAsVersion = OdDb::vAC24; // R24 (2010) release
 			break;
 		case 4: case 13:
-			m_SaveAsVer = OdDb::vAC21;  // R21 (2007) release
+			saveAsVersion = OdDb::vAC21;  // R21 (2007) release
 			break;
 		case 5: case 14:
-			m_SaveAsVer = OdDb::vAC18; // R18 (2004) release
+			saveAsVersion = OdDb::vAC18; // R18 (2004) release
 			break;
 		case 6: case 15:
-			m_SaveAsVer = OdDb::vAC15; // R15 (2000) release
+			saveAsVersion = OdDb::vAC15; // R15 (2000) release
 			break;
 		case 7: case 16:
-			m_SaveAsVer = OdDb::vAC14; // R14 (release date 1997)
+			saveAsVersion = OdDb::vAC14; // R14 (release date 1997)
 			break;
 		case 8: case 17:
-			m_SaveAsVer = OdDb::vAC13; // R13 (release date 1994)
+			saveAsVersion = OdDb::vAC13; // R13 (release date 1994)
 			break;
 		case 9: case 18:
-			m_SaveAsVer = OdDb::vAC12; // R11 & R12 (release date 1990)
+			saveAsVersion = OdDb::vAC12; // R11 & R12 (release date 1990)
 			break;
 		case 19:
-			m_SaveAsVer = OdDb::vAC10; // R10 (release date 1988)
+			saveAsVersion = OdDb::vAC10; // R10 (release date 1988)
 			break;
 		case 20:
-			m_SaveAsVer = OdDb::vAC09; // R9 (release date 1987) 
+			saveAsVersion = OdDb::vAC09; // R9 (release date 1987) 
 			break;
 		default:
-			m_SaveAsVer = m_DatabasePtr->originalFileVersion();
+			saveAsVersion = m_DatabasePtr->originalFileVersion();
 	}
-	return nResult == IDOK;
+	return Result == IDOK;
 }
 
 void AeSysDoc::OnEditClearSelection() {
-	if (m_DisableClearSelection) { return; }
+	if (disableClearSelection) { return; }
 	auto Cleared {false};
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
@@ -2895,8 +2883,8 @@ void AeSysDoc::OnEditExplode() {
 void AeSysDoc::OnEditEntget() {
 	OdDbSelectionSetIteratorPtr SelectionSetIterator {SelectionSet()->newIterator()};
 	if (!SelectionSetIterator->done()) {
-		auto selId {SelectionSetIterator->objectId()};
-		EoDlgEditProperties EditPropertiesDialog(selId, theApp.GetMainWnd());
+		auto SelectionSetId {SelectionSetIterator->objectId()};
+		EoDlgEditProperties EditPropertiesDialog(SelectionSetId, theApp.GetMainWnd());
 		m_DatabasePtr->startUndoRecord();
 		EditPropertiesDialog.DoModal();
 	}
@@ -2907,9 +2895,9 @@ void AeSysDoc::OnViewNamedViews() {
 }
 
 void AeSysDoc::OnEditUndo() {
-	m_LayoutSwitchable = true;
+	layoutSwitchable = true;
 	m_DatabasePtr->undo();
-	m_LayoutSwitchable = false;
+	layoutSwitchable = false;
 	UpdateAllViews(nullptr);
 }
 
@@ -2919,9 +2907,9 @@ void AeSysDoc::OnUpdateEditUndo(CCmdUI* commandUserInterface) {
 }
 
 void AeSysDoc::OnEditRedo() {
-	m_LayoutSwitchable = true;
+	layoutSwitchable = true;
 	m_DatabasePtr->redo();
-	m_LayoutSwitchable = false;
+	layoutSwitchable = false;
 	UpdateAllViews(nullptr);
 }
 
@@ -2931,9 +2919,9 @@ void AeSysDoc::OnUpdateEditRedo(CCmdUI* commandUserInterface) {
 
 void AeSysDoc::OnEditSelectAll() {
 	OnEditClearSelection();
-	m_DisableClearSelection = true;
+	disableClearSelection = true;
 	ExecuteCommand(L"select single all");
-	m_DisableClearSelection = false;
+	disableClearSelection = false;
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		const auto View {GetNextView(ViewPosition)};

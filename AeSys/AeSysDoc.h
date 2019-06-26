@@ -15,11 +15,11 @@
 #include "EoDbLinetypeTable.h"
 # include "OdApplicationImpl.h"
 class ExStringIO;
-class EoDlgUserIOConsole;
+class EoDlgUserIoConsole;
 
-class Cmd_VIEW : public OdEdCommand {
+class CommandView : public OdEdCommand {
 public:
-	static const OdString name();
+	static const OdString Name();
 	[[nodiscard]] const OdString groupName() const final;
 	[[nodiscard]] const OdString globalName() const final;
 	void execute(OdEdCommandContext* commandContext) final;
@@ -28,9 +28,9 @@ public:
 	[[nodiscard]] long commandFlags() const;
 };
 
-class Cmd_SELECT : public OdEdCommand {
+class CommandSelect : public OdEdCommand {
 public:
-	static const OdString name();
+	static const OdString Name();
 	[[nodiscard]] const OdString groupName() const final;
 	[[nodiscard]] const OdString globalName() const final;
 	void execute(OdEdCommandContext* commandContext) final;
@@ -59,15 +59,15 @@ class AeSysDoc : public COleDocument, protected OdStaticRxObject<AeSysAppDocStat
 protected:
 	using COleDocument::operator new;
 	using COleDocument::operator delete;
-	AeSysView* m_pViewer {nullptr};
-	EoDlgUserIOConsole* UserIOConsole();
-	bool m_bConsole {false};
+	AeSysView* m_Viewer {nullptr};
+	EoDlgUserIoConsole* UserIoConsole();
+	bool m_Console {false};
 	bool m_ConsoleResponded {false};
-	int m_nCmdActive {0};
+	int m_CommandActive {0};
 
 	class DataSource : COleDataSource {
 		friend class AeSysDoc;
-		OdString m_tmpPath;
+		OdString m_TemporaryPath;
 	public:
 		DataSource();
 		void Create(AeSysDoc* document, const OdGePoint3d& point = OdGePoint3d::kOrigin);
@@ -78,11 +78,11 @@ protected:
 
 	template <class T>
 	struct AcadClipData {
-		void init() noexcept {
+		void Initialize() noexcept {
 			memset(this, 0, sizeof(AcadClipData<T>));
 		}
 
-		void read(CFile* file) {
+		void Read(CFile* file) {
 			file->Read(this, sizeof(AcadClipData<T>));
 		}
 
@@ -102,7 +102,7 @@ protected:
 	template <class T>
 	struct AcadClipDataConstr : AcadClipData<T> {
 		AcadClipDataConstr(const OdString& tempFileName, const OdString& origFileName, const OdGePoint3d& pickPoint) {
-			AcadClipData<wchar_t>::init();
+			AcadClipData<wchar_t>::Initialize();
 			AcadClipData<wchar_t>::_one1 = 1;
 			AcadClipData<wchar_t>::_one2 = 1;
 			AcadClipData<wchar_t>::_version[0] = 'R';
@@ -132,31 +132,31 @@ public:
 		static unsigned short formatR18;
 		static unsigned short formatR19;
 
-		static bool isAcadDataAvailable(COleDataObject* dataObject, const bool attach = false) {
+		static bool IsAcadDataAvailable(COleDataObject* dataObject, const bool attach = false) {
 			if (attach && !dataObject->AttachClipboard()) { return false; }
 			return dataObject->IsDataAvailable(formatR15) || dataObject->IsDataAvailable(formatR16) || dataObject->IsDataAvailable(formatR17) || dataObject->IsDataAvailable(formatR18) ||
 				dataObject->IsDataAvailable(formatR19);
 		}
 
-		static OdSharedPtr<ClipboardData> get(COleDataObject* dataObject, const bool attach = false) {
+		static OdSharedPtr<ClipboardData> Get(COleDataObject* dataObject, const bool attach = false) {
 			if (attach && !dataObject->AttachClipboard()) { return nullptr; }
 			OdSharedPtr<ClipboardData> Data {new ClipboardData()};
-			if (Data->read(dataObject)) { return Data; }
+			if (Data->Read(dataObject)) { return Data; }
 			return nullptr;
 		}
 
 		ClipboardData() noexcept = default;
 
-		bool read(COleDataObject* dataObject) {
+		bool Read(COleDataObject* dataObject) {
 			OdSharedPtr<CFile> File;
 			if ((File = dataObject->GetFileData(formatR15)).get() || (File = dataObject->GetFileData(formatR16)).get()) {
 				_isR15format = true;
-				_data._r15.read(File);
+				_data._r15.Read(File);
 				return true;
 			}
 			if ((File = dataObject->GetFileData(formatR17)).get() || (File = dataObject->GetFileData(formatR18)).get() || (File = dataObject->GetFileData(formatR19)).get()) {
 				_isR15format = false;
-				_data._r21.read(File);
+				_data._r21.Read(File);
 				return true;
 			}
 			return false;
@@ -176,7 +176,7 @@ public:
 			AcadClipData<wchar_t> _r21;
 
 			Data() noexcept {
-				_r21.init();
+				_r21.Initialize();
 			}
 		} _data;
 
@@ -186,38 +186,39 @@ public:
 protected:
 	AeSysDoc() noexcept;
 DECLARE_DYNCREATE(AeSysDoc)
-	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate);
+	BOOL DoPromptFileName(CString& fileName, unsigned titleResourceId, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate);
+private:
 	OdDbCommandContextPtr m_CommandContext;
 
-	// <command_console>
-	OdSmartPtr<EoDlgUserIOConsole> m_UserIOConsole;
-	OdSmartPtr<ExStringIO> m_pMacro;
+	OdSmartPtr<EoDlgUserIoConsole> m_UserIoConsole;
+	OdSmartPtr<ExStringIO> m_Macro;
+public:
 	OdDbCommandContextPtr CommandContext0();
-	OdEdBaseIO* BaseIO() noexcept;
-	OdString CommandPrompt();
-	OdString RecentCommand();
-	OdString RecentCommandName();
+	OdEdBaseIO* BaseIo() noexcept;
+	static OdString CommandPrompt();
+	static OdString RecentCommand();
+	static OdString RecentCommandName();
 	unsigned long getKeyState() noexcept override;
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 	void putString(const OdString& string) override;
-	// </command_console>
+
 	// OdDbLayoutManagerReactor
-	bool m_LayoutSwitchable {false};
+	bool layoutSwitchable {false};
 	void layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) override;
-	bool m_DisableClearSelection {false};
-	bool m_bPartial {false};
-	OdDb::DwgVersion m_SaveAsVer {OdDb::kDHL_CURRENT};
-	OdDb::SaveType m_SaveAsType {OdDb::kDwg};
-	EoDb::FileTypes m_SaveAsType_ {EoDb::kUnknown};
+	bool disableClearSelection {false};
+	bool partial {false};
+	OdDb::DwgVersion saveAsVersion {OdDb::kDHL_CURRENT};
+	OdDb::SaveType saveAsType {OdDb::kDwg};
+	EoDb::FileTypes saveAsType_ {EoDb::kUnknown};
 	[[nodiscard]] OdDbSelectionSetPtr SelectionSet() const;
-	AeSysView* getViewer() noexcept;
+	AeSysView* GetViewer() noexcept;
 	void OnCloseVectorizer(AeSysView* view);
-	void setVectorizer(AeSysView* view);
+	void SetVectorizer(AeSysView* view);
 	void ExecuteCommand(const OdString& command, bool echo = true);
 	OdDbDatabasePtr m_DatabasePtr;
 	void DeleteSelection(bool force);
-	void startDrag(const OdGePoint3d& point);
+	void StartDrag(const OdGePoint3d& point);
 	BOOL OnSaveDocument(const wchar_t* pathName) override;
 	BOOL OnCmdMsg(unsigned commandId, int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) override;
 	BOOL OnNewDocument() override;
@@ -258,7 +259,7 @@ public:
 
 	// Text Style Table interface
 	/// <summary>Add a new text style to the text style table.</summary>
-	OdDbTextStyleTableRecordPtr AddNewTextStyle(OdString name, OdDbTextStyleTablePtr& textStyles);
+	static OdDbTextStyleTableRecordPtr AddNewTextStyle(const OdString& name, OdDbTextStyleTablePtr& textStyles);
 	OdDbTextStyleTableRecordPtr AddStandardTextStyle();
 	OdDbDimStyleTableRecordPtr AddStandardDimensionStyle();
 

@@ -15,23 +15,23 @@ EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent)
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_ActiveView(view) {
-	m_GapSpaceFactor = view->GapSpaceFactor();
-	m_CircleRadius = view->CircleRadius();
-	m_EndItemSize = view->EndItemSize();
-	m_BubbleRadius = view->BubbleRadius();
-	m_NumberOfSides = view->NumberOfSides();
-	m_DefaultText = view->DefaultText();
+	gapSpaceFactor = view->GapSpaceFactor();
+	circleRadius = view->CircleRadius();
+	endItemSize = view->EndItemSize();
+	bubbleRadius = view->BubbleRadius();
+	numberOfSides = view->NumberOfSides();
+	defaultText = view->DefaultText();
 }
 
 void EoDlgAnnotateOptions::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_ANN_ARR_TYP, m_EndItemTypeComboBox);
-	DDX_Text(dataExchange, IDC_ANN_GAP_SPACE_FAC, m_GapSpaceFactor);
-	DDX_Text(dataExchange, IDC_ANN_HOOK_RAD, m_CircleRadius);
-	DDX_Text(dataExchange, IDC_ANN_ARR_SIZ, m_EndItemSize);
-	DDX_Text(dataExchange, IDC_ANN_BUB_RAD, m_BubbleRadius);
-	DDX_Text(dataExchange, IDC_ANN_BUB_FACETS, m_NumberOfSides);
-	DDX_Text(dataExchange, IDC_ANN_DEF_TXT, m_DefaultText);
+	DDX_Text(dataExchange, IDC_ANN_GAP_SPACE_FAC, gapSpaceFactor);
+	DDX_Text(dataExchange, IDC_ANN_HOOK_RAD, circleRadius);
+	DDX_Text(dataExchange, IDC_ANN_ARR_SIZ, endItemSize);
+	DDX_Text(dataExchange, IDC_ANN_BUB_RAD, bubbleRadius);
+	DDX_Text(dataExchange, IDC_ANN_BUB_FACETS, numberOfSides);
+	DDX_Text(dataExchange, IDC_ANN_DEF_TXT, defaultText);
 }
 
 BOOL EoDlgAnnotateOptions::OnInitDialog() {
@@ -42,11 +42,11 @@ BOOL EoDlgAnnotateOptions::OnInitDialog() {
 
 void EoDlgAnnotateOptions::OnOK() {
 	CDialog::OnOK();
-	m_ActiveView->SetDefaultText(m_DefaultText);
-	m_ActiveView->SetNumberOfSides(m_NumberOfSides);
-	m_ActiveView->SetBubbleRadius(m_BubbleRadius);
-	m_ActiveView->SetEndItemSize(m_EndItemSize);
-	m_ActiveView->SetCircleRadius(m_CircleRadius);
-	m_ActiveView->SetGapSpaceFactor(m_GapSpaceFactor);
+	m_ActiveView->SetDefaultText(defaultText);
+	m_ActiveView->SetNumberOfSides(numberOfSides);
+	m_ActiveView->SetBubbleRadius(bubbleRadius);
+	m_ActiveView->SetEndItemSize(endItemSize);
+	m_ActiveView->SetCircleRadius(circleRadius);
+	m_ActiveView->SetGapSpaceFactor(gapSpaceFactor);
 	m_ActiveView->SetEndItemType(m_EndItemTypeComboBox.GetCurSel() + 1);
 }

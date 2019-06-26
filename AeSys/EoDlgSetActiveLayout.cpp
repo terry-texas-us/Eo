@@ -61,7 +61,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		m_NewActiveLayout = m_OldActiveLayout;
 		GetDlgItem(IDC_NEWNAME)->SetWindowTextW(Items[static_cast<unsigned>(m_OldActiveLayout)]);
 	} catch (const OdError& Error) {
-		theApp.reportError(L"Error Selecting Layout", Error);
+		theApp.ReportError(L"Error Selecting Layout", Error);
 	}
 }
 
@@ -104,7 +104,7 @@ void EoDlgSetActiveLayout::OnRename() {
 		try {
 			m_Database->renameLayout(OdString(OldName), OdString(NewName));
 		} catch (const OdError& Error) {
-			theApp.reportError(L"Error Renaming Layout", Error);
+			theApp.ReportError(L"Error Renaming Layout", Error);
 			return;
 		}
 		Layouts->DeleteString(static_cast<unsigned>(m_NewActiveLayout));
@@ -121,7 +121,7 @@ void EoDlgSetActiveLayout::OnDelete() {
 		m_Database->startUndoRecord();
 		m_Database->deleteLayout(OdString(currName));
 	} catch (const OdError& Error) {
-		theApp.reportError(L"Error Deleting Layout", Error);
+		theApp.ReportError(L"Error Deleting Layout", Error);
 		m_Database->disableUndoRecording(true);
 		m_Database->undo();
 		m_Database->disableUndoRecording(false);
@@ -142,7 +142,7 @@ void EoDlgSetActiveLayout::OnCopy() {
 		OdSmartPtr<OdDbLayout> Layout = LayoutManager->findLayoutNamed(m_Database, strName).safeOpenObject();
 		LayoutManager->cloneLayout(m_Database, Layout, OdString(strNewName));
 	} catch (const OdError& Error) {
-		theApp.reportError(L"Error Cloning Layout", Error);
+		theApp.ReportError(L"Error Cloning Layout", Error);
 		return;
 	}
 	FillListBox();
@@ -154,7 +154,7 @@ void EoDlgSetActiveLayout::OnNew() {
 	try {
 		m_Database->createLayout(OdString(LayoutName));
 	} catch (const OdError& Error) {
-		theApp.reportError(L"Error Creating Layout", Error);
+		theApp.ReportError(L"Error Creating Layout", Error);
 		return;
 	}
 	FillListBox();
@@ -174,7 +174,7 @@ void EoDlgSetActiveLayout::OnFromTemplate() {
 	try {
 		LayoutManager->cloneLayout(m_Database, Layout, OdString(NewName));
 	} catch (const OdError& Error) {
-		theApp.reportError(L"Error Cloning Layout", Error);
+		theApp.ReportError(L"Error Cloning Layout", Error);
 		return;
 	}
 	FillListBox();

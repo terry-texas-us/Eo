@@ -61,8 +61,8 @@ CString AeSys::customRButtonUpCharacters(L"" /* L"{27}" for VK_ESCAPE */);
 void rxInit_COleClientItem_handler();
 void rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
-OdStaticRxObject<Cmd_VIEW> g_CmdView;
-OdStaticRxObject<Cmd_SELECT> g_CmdSelect;
+OdStaticRxObject<CommandView> g_CommandView;
+OdStaticRxObject<CommandSelect> g_CommandSelect;
 
 static void AddPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
@@ -350,7 +350,7 @@ static CString FindConfigFile(const CString& configType, CString file, OdDbSyste
 
 AeSys theApp;
 
-const ODCOLORREF* AeSys::curPalette() const {
+const ODCOLORREF* AeSys::CurrentPalette() const {
 	return odcmAcadPalette(m_BackgroundColor);
 }
 
@@ -411,7 +411,7 @@ bool AeSys::SetUndoType(const bool useTempFiles) noexcept {
 }
 
 OdString AeSys::fileDialog(int flags, const OdString& prompt, const OdString& defExt, const OdString& fileName, const OdString& filter) {
-	if (!supportFileSelectionViaDialog()) { return OdString(L"*unsupported*"); }
+	if (!SupportFileSelectionViaDialog()) { return OdString(L"*unsupported*"); }
 	CFileDialog FileDialog(flags == OdEd::kGfpForOpen, defExt, fileName, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, filter, AfxGetMainWnd());
 	FileDialog.m_ofn.lpstrTitle = prompt;
 	if (FileDialog.DoModal() == IDOK) { return OdString(FileDialog.GetPathName()); }
@@ -497,11 +497,11 @@ CString AeSys::GetApplicationPath() {
 }
 
 void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
-	if (auditDialog) { auditDialog->printReport(dynamic_cast<OdDbAuditInfo*>(auditInfo)); }
+	if (auditDialog) { auditDialog->PrintReport(dynamic_cast<OdDbAuditInfo*>(auditInfo)); }
 }
 
 OdDbUndoControllerPtr AeSys::newUndoController() {
-	if (undoType()) {
+	if (UndoType()) {
 		auto FileUndoController {OdRxObjectImpl<ExFileUndoController>::createObject()};
 		FileUndoController->setStorage(newUndoStream());
 		return FileUndoController;
@@ -650,7 +650,7 @@ OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
 	} catch (const OdError& Error) {
 		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
-		reportError(L"Loading Error...", Error);
+		ReportError(L"Loading Error...", Error);
 	} catch (const UserBreak&) {
 		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
@@ -845,7 +845,7 @@ int AeSys::ExitInstance() {
 	theApp.WriteString(L"Recent Command", m_RecentCommand);
 	theApp.WriteInt(L"Fill TTF text", static_cast<int>(getTEXTFILL()));
 	SetRegistryBase(L"Options");
-	m_Options.Save();
+	applicationOptions.Save();
 	SetRegistryBase(L"MFC Auto");
 	ReleaseSimplexStrokeFont();
 	UninitializeTeigha();
@@ -1086,14 +1086,14 @@ bool AeSys::InitializeOda() {
 		::rxInit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
 		auto CommandStack {odedRegCmds()};
-		CommandStack->addCommand(&g_CmdView);
-		CommandStack->addCommand(&g_CmdSelect);
+		CommandStack->addCommand(&g_CommandView);
+		CommandStack->addCommand(&g_CommandSelect);
 
 		/* <tas>
 		rxInitMaterialsEditorObjects();
 		   </tas> */
 	} catch (const OdError& Error) {
-		theApp.reportError(L"odInitialize error", Error);
+		theApp.ReportError(L"odInitialize error", Error);
 		return false;
 	} catch (...) {
 		MessageBoxW(nullptr, L"odInitialize error", L"Teigha", MB_ICONERROR | MB_OK);
@@ -1122,7 +1122,7 @@ BOOL AeSys::InitInstance() {
 	SetRegistryKey(L"Engineers Office");
 	LoadStdProfileSettings(8U); // Load the list of most recently used (MRU) files and last preview state.
 	SetRegistryBase(L"Options");
-	m_Options.Load();
+	applicationOptions.Load();
 	SetRegistryBase(L"ODA View");
 	m_DiscardBackFaces = GetInt(L"Discard Back Faces", true);
 	m_EnableDoubleBuffer = GetInt(L"Enable Double Buffer", true); // <tas="true unless debugging"</tas>
@@ -1932,8 +1932,8 @@ void AeSys::UninitializeTeigha() {
 		rxUninitMaterialsEditorObjects();
 		   </tas> */
 		auto CommandStack {odedRegCmds()};
-		CommandStack->removeCmd(&g_CmdSelect);
-		CommandStack->removeCmd(&g_CmdView);
+		CommandStack->removeCmd(&g_CommandSelect);
+		CommandStack->removeCmd(&g_CommandView);
 		OdDbDatabaseDoc::rxUninit();
 #ifdef OD_OLE_SUPPORT
 		::rxUninit_COleClientItem_handler();
@@ -1942,7 +1942,7 @@ void AeSys::UninitializeTeigha() {
 		RemoveMaterialTextureLoadingMonitor();
 		odUninitialize();
 	} catch (const OdError& Error) {
-		theApp.reportError(L"", Error);
+		theApp.ReportError(L"", Error);
 	}
 }
 

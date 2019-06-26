@@ -4,9 +4,9 @@
 #include <ExDbCommandContext.h>
 #include <Ge/GeExtents2d.h>
 #include "AeSys.h"
-#include "EoDlgUserIOConsole.h"
+#include "EoDlgUserIoConsole.h"
 
-EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
+EoDlgUserIoConsole::EoDlgUserIoConsole(CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_RefCounter(1)
 	, m_NumberOfStrings(0) {
@@ -14,49 +14,49 @@ EoDlgUserIOConsole::EoDlgUserIOConsole(CWnd* parent)
 	m_Prompt = L"";
 }
 
-OdString EoDlgUserIOConsole::GetLastString() {
+OdString EoDlgUserIoConsole::GetLastString() {
 	const auto EolDelimiter {m_Output.ReverseFind('\r')};
 	if (EolDelimiter == -1) { return static_cast<const wchar_t*>(m_Output); }
 	return static_cast<const wchar_t*>(m_Output.Mid(EolDelimiter + 2));
 }
 
-void EoDlgUserIOConsole::addRef() noexcept {
+void EoDlgUserIoConsole::addRef() noexcept {
 	m_RefCounter++;
 }
 
-long EoDlgUserIOConsole::numRefs() const noexcept {
+long EoDlgUserIoConsole::numRefs() const noexcept {
 	return static_cast<long>(m_RefCounter);
 }
 
-void EoDlgUserIOConsole::release() {
+void EoDlgUserIoConsole::release() {
 	ODA_ASSERT(m_RefCounter > 0);
 	if (!--m_RefCounter) { delete this; }
 }
 
-void EoDlgUserIOConsole::DoDataExchange(CDataExchange* dataExchange) {
+void EoDlgUserIoConsole::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_PROMPT, m_PromptWindow);
 	DDX_Text(dataExchange, IDC_INPUT, m_Input);
 	DDX_Text(dataExchange, IDC_PROMPT, m_Prompt);
 }
 
-BEGIN_MESSAGE_MAP(EoDlgUserIOConsole, CDialog)
+BEGIN_MESSAGE_MAP(EoDlgUserIoConsole, CDialog)
 		ON_WM_PAINT()
 		ON_WM_SIZE()
 		ON_WM_DESTROY()
 		ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
 
-OdSmartPtr<EoDlgUserIOConsole> EoDlgUserIOConsole::create(CWnd* parent) {
-	return OdSmartPtr<EoDlgUserIOConsole>(new EoDlgUserIOConsole(parent), kOdRxObjAttach);
+OdSmartPtr<EoDlgUserIoConsole> EoDlgUserIoConsole::create(CWnd* parent) {
+	return OdSmartPtr<EoDlgUserIoConsole>(new EoDlgUserIoConsole(parent), kOdRxObjAttach);
 }
 
-void EoDlgUserIOConsole::Echo(const OdString& string) {
+void EoDlgUserIoConsole::Echo(const OdString& string) {
 	m_Output += L" ";
 	m_Output += static_cast<const wchar_t*>(string);
 }
 
-OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+OdString EoDlgUserIoConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
 	putString(prompt);
 	m_Input.Empty();
 	m_Prompt = m_Output;
@@ -69,7 +69,7 @@ OdString EoDlgUserIOConsole::getString(const OdString& prompt, int options, OdEd
 	return static_cast<const wchar_t*>(m_Input);
 }
 
-void EoDlgUserIOConsole::AddString(const CString& string) {
+void EoDlgUserIoConsole::AddString(const CString& string) {
 	const auto MaxStringLength {128};
 	auto& OutputString {m_Output};
 	if (string.GetLength() <= MaxStringLength) {
@@ -94,7 +94,7 @@ void EoDlgUserIOConsole::AddString(const CString& string) {
 	}
 }
 
-void EoDlgUserIOConsole::AddOut(const CString& string) {
+void EoDlgUserIoConsole::AddOut(const CString& string) {
 	int Count;
 	auto First {0};
 	while ((Count = string.Find('\n', First)) > -1) {
@@ -105,11 +105,11 @@ void EoDlgUserIOConsole::AddOut(const CString& string) {
 	AddString(string.Mid(First, Count - First));
 }
 
-void EoDlgUserIOConsole::putString(const OdString& string) {
+void EoDlgUserIoConsole::putString(const OdString& string) {
 	AddOut(static_cast<const wchar_t*>(string));
 }
 
-BOOL EoDlgUserIOConsole::OnInitDialog() {
+BOOL EoDlgUserIoConsole::OnInitDialog() {
 	CDialog::OnInitDialog();
 	if (!m_Font.m_hObject) {
 		m_Font.CreateFont(10, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, L"Courier");
@@ -117,12 +117,12 @@ BOOL EoDlgUserIOConsole::OnInitDialog() {
 	return TRUE;
 }
 
-void EoDlgUserIOConsole::OnPaint() {
+void EoDlgUserIoConsole::OnPaint() {
 	CPaintDC dc(this);
 	m_PromptWindow.SetFont(&m_Font);
 }
 
-void EoDlgUserIOConsole::OnSize(const unsigned type, const int cx, const int cy) {
+void EoDlgUserIoConsole::OnSize(const unsigned type, const int cx, const int cy) {
 	CRect PromptRect;
 	CRect InputRect;
 	GetDlgItem(IDC_PROMPT)->GetWindowRect(&PromptRect);
@@ -141,10 +141,10 @@ void EoDlgUserIOConsole::OnSize(const unsigned type, const int cx, const int cy)
 	GetDlgItem(IDC_INPUT)->MoveWindow(InputRect);
 }
 
-int EoDlgUserIOConsole::sm_WindowWidth = 660;
-int EoDlgUserIOConsole::sm_WindowHeight = 200;
+int EoDlgUserIoConsole::sm_WindowWidth = 660;
+int EoDlgUserIoConsole::sm_WindowHeight = 200;
 
-void EoDlgUserIOConsole::OnDestroy() {
+void EoDlgUserIoConsole::OnDestroy() {
 	CRect WindowRectangle;
 	GetWindowRect(WindowRectangle);
 	sm_WindowWidth = WindowRectangle.Width();
@@ -152,7 +152,7 @@ void EoDlgUserIOConsole::OnDestroy() {
 	CDialog::OnDestroy();
 }
 
-void EoDlgUserIOConsole::OnShowWindow(const BOOL show, const unsigned status) {
+void EoDlgUserIoConsole::OnShowWindow(const BOOL show, const unsigned status) {
 	CDialog::OnShowWindow(show, status);
 	CRect WindowRectangle;
 	GetWindowRect(&WindowRectangle);
