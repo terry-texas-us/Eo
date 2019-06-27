@@ -678,7 +678,7 @@ void AeSys::AddStringToMessageList(const wchar_t* message) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 	MainFrame->GetOutputPane().AddStringToMessageList(message);
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
-		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
+		MainFrame->SetStatusPaneTextAt(gc_StatusInfo, message);
 	}
 }
 
@@ -702,7 +702,7 @@ void AeSys::AddStringToReportList(const wchar_t* message) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 	MainFrame->GetOutputPane().AddStringToReportsList(message);
 	if (!MainFrame->GetOutputPane().IsWindowVisible()) {
-		MainFrame->SetStatusPaneTextAt(nStatusInfo, message);
+		MainFrame->SetStatusPaneTextAt(gc_StatusInfo, message);
 	}
 }
 

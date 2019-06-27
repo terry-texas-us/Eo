@@ -799,8 +799,8 @@ void OdBaseGripManager::UpdateInvisibleGrips() {
 void OdBaseGripManager::setValue(const OdGePoint3d& value) {
 	const auto NewPoint {EyeToUcsPlane(value, m_BasePoint)};
 	const auto Size {m_GripDrags.size()};
-	for (unsigned i = 0; i < Size; i++) {
-		m_GripDrags[i]->CloneEntity(NewPoint);
+	for (unsigned GripDragIndex = 0; GripDragIndex < Size; GripDragIndex++) {
+		m_GripDrags[GripDragIndex]->CloneEntity(NewPoint);
 	}
 	m_LastPoint = NewPoint;
 }
@@ -863,7 +863,7 @@ OdExGripManager::OdExGripManager() noexcept {
 	m_pGetSelectionSetPtr = nullptr;
 }
 
-void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr pGetSSet) {
+void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr getSSet) {
 	m_LayoutHelper = device;
 	m_pGsModel = gsModel;
 	m_CommandContext = dbCommandContext;
@@ -877,7 +877,7 @@ void OdExGripManager::Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCom
 		m_GRIPHOVER.setColorIndex(HostApplicationServices->getGRIPHOVER());
 		m_GRIPHOT.setColorIndex(HostApplicationServices->getGRIPHOT());
 	}
-	m_pGetSelectionSetPtr = pGetSSet;
+	m_pGetSelectionSetPtr = getSSet;
 	m_gripStretchCommand.m_parent = this;
 }
 
@@ -1012,8 +1012,8 @@ void OdExGripManager::ShowGrip(OdExGripData* gripData, bool model) {
 			PaperLayoutHelper->overallView()->add(gripData, m_pGsModel);
 		}
 	} else {
-		for (auto i = 0; i < NumberOfViews; i++) {
-			m_LayoutHelper->viewAt(i)->add(gripData, m_pGsModel);
+		for (auto ViewIndex = 0; ViewIndex < NumberOfViews; ViewIndex++) {
+			m_LayoutHelper->viewAt(ViewIndex)->add(gripData, m_pGsModel);
 		}
 	}
 }
@@ -1022,12 +1022,12 @@ void OdExGripManager::HideGrip(OdExGripData* gripData, bool model) {
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	if (PaperLayoutHelper.get()) {
-		for (auto i = 0; i < NumberOfViews; i++) {
-			m_LayoutHelper->viewAt(i)->erase(gripData);
+		for (auto ViewIndex = 0; ViewIndex < NumberOfViews; ViewIndex++) {
+			m_LayoutHelper->viewAt(ViewIndex)->erase(gripData);
 		}
 	} else {
-		for (auto i = 0; i < NumberOfViews; i++) {
-			m_LayoutHelper->viewAt(i)->erase(gripData);
+		for (auto ViewIndex = 0; ViewIndex < NumberOfViews; ViewIndex++) {
+			m_LayoutHelper->viewAt(ViewIndex)->erase(gripData);
 		}
 	}
 }

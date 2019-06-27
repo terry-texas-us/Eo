@@ -2,10 +2,10 @@
 #include "DbBlockTableRecord.h"
 #include "EoMfOutputDockablePane.h"
 #include "EoMfPropertiesDockablePane.h"
-const int nStatusIcon = 0;
-const int nStatusInfo = 1;
-const int nStatusProgress = 2;
-const int nStatusOp0 = 3;
+const int gc_StatusIcon = 0;
+const int gc_StatusInfo = 1;
+const int gc_StatusProgress = 2;
+const int gc_StatusOp0 = 3;
 
 class CMainFrame : public CMDIFrameWndEx {
 	LARGE_INTEGER m_pc0;
@@ -25,7 +25,7 @@ DECLARE_DYNAMIC(CMainFrame)
 			OdString NewText;
 			auto OperationName {operationName ? operationName : L"Operation"};
 			NewText.format(L"%s Time: %.6f sec.", OperationName, loadTime);
-			SetStatusPaneTextAt(wcscmp(L"Redraw", OperationName) == 0 ? nStatusProgress : nStatusInfo, NewText);
+			SetStatusPaneTextAt(wcscmp(L"Redraw", OperationName) == 0 ? gc_StatusProgress : gc_StatusInfo, NewText);
 		}
 	}
 
@@ -72,7 +72,7 @@ protected:  // control bar embedded members
 	LRESULT OnGetTabToolTip(WPARAM wp, LPARAM lp);
 	LRESULT OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam);
 DECLARE_MESSAGE_MAP()
-	BOOL OnShowPopupMenu(CMFCPopupMenu* pMenuPopup) override;
+	BOOL OnShowPopupMenu(CMFCPopupMenu* popupMenu) override;
 	BOOL OnShowMDITabContextMenu(CPoint point, unsigned long allowedItems, BOOL drop) override;
 	BOOL CreateDockingWindows();
 	void SetDockablePanesIcons(bool highColorMode);

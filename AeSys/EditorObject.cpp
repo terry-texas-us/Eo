@@ -222,7 +222,7 @@ bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPt) const {
 	return Plane.intersectWith(Ray, wcsPt);
 }
 
-OdGePoint3d OdExEditorObject::ToScreenCoord(const int x, const int y) const {
+OdGePoint3d OdExEditorObject::ToScreenCoordinates(const int x, const int y) const {
 	OdGePoint3d ScreenPoint(x, y, 0.0);
 	const auto View {ActiveView()};
 	ScreenPoint.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
@@ -230,7 +230,7 @@ OdGePoint3d OdExEditorObject::ToScreenCoord(const int x, const int y) const {
 	return ScreenPoint;
 }
 
-OdGePoint3d OdExEditorObject::ToScreenCoord(const OdGePoint3d& worldPoint) const {
+OdGePoint3d OdExEditorObject::ToScreenCoordinates(const OdGePoint3d& worldPoint) const {
 	const auto View {ActiveView()};
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
@@ -252,9 +252,9 @@ bool OdExEditorObject::OnSize(unsigned flags, const int w, const int h) {
 	return false;
 }
 
-bool OdExEditorObject::OnPaintFrame(unsigned flags, OdGsDCRect* updatedRect) {
+bool OdExEditorObject::OnPaintFrame(unsigned flags, OdGsDCRect* updatedRectangle) {
 	if (m_LayoutHelper.get() && !m_LayoutHelper->isValid()) {
-		m_LayoutHelper->update(updatedRect);
+		m_LayoutHelper->update(updatedRectangle);
 		return true;
 	}
 	return false;
@@ -1106,20 +1106,20 @@ class OdExCollideGsPath {
 	const Node* m_pLeaf {nullptr};
 
 	void add(const OdGiDrawable* drawable, const OdDbObjectId& drawableId, const OdGsMarker gsMarker = -1) {
-		auto pNode {new Node()};
-		pNode->m_pParent = m_pLeaf;
-		m_pLeaf = pNode;
-		pNode->m_Drawable = drawable;
-		pNode->m_pId = drawableId;
-		pNode->m_Marker = gsMarker;
+		auto NewNode {new Node()};
+		NewNode->m_pParent = m_pLeaf;
+		m_pLeaf = NewNode;
+		NewNode->m_Drawable = drawable;
+		NewNode->m_pId = drawableId;
+		NewNode->m_Marker = gsMarker;
 	}
 
-	void addNode(OdDbObjectIdArray::const_iterator& iter) {
-		auto Drawable {iter->safeOpenObject()};
+	void AddNode(OdDbObjectIdArray::const_iterator& objectIterator) {
+		auto Drawable {objectIterator->safeOpenObject()};
 		addNode(Drawable);
-		auto pInsert {OdDbBlockReference::cast(Drawable)};
-		if (pInsert.get()) addNode(pInsert->blockTableRecord());
-		++iter;
+		auto Insert {OdDbBlockReference::cast(Drawable)};
+		if (Insert.get()) addNode(Insert->blockTableRecord());
+		++objectIterator;
 	}
 
 public:
@@ -1174,49 +1174,49 @@ public:
 #include "OdaSTL.h"
 
 class CollideMoveTracker : public OdStaticRxObject<OdEdPointTracker> {
-	OdArray<OdDbEntityPtr> m_ents; // Selection set entities
-	OdGeMatrix3d m_xForm; // Last transformation
-	OdArray<OdExCollideGsPath*> m_pathes;
-	OdArray<OdExCollideGsPath*> m_prevHLPathes;
-	OdArray<const OdGiPathNode*> inputArray;
+	OdArray<OdDbEntityPtr> m_SelectionSetEntities;
+	OdGeMatrix3d m_LastTransform;
+	OdArray<OdExCollideGsPath*> m_Paths;
+	OdArray<OdExCollideGsPath*> m_PreviousHlPaths;
+	OdArray<const OdGiPathNode*> m_PathNodes;
 protected:
-	OdGePoint3d m_ptBase;
-	OdDbDatabasePtr m_pDb;
+	OdGePoint3d m_BasePoint;
+	OdDbDatabasePtr m_Database;
 	OdGsView* m_View;
-	OdGsModel* m_pModel;
-	bool m_bDynHLT;
+	OdGsModel* m_Model;
+	bool m_DynamicHlt;
 
 	virtual OdGeMatrix3d getTransform(const OdGePoint3d& value) {
-		OdGeMatrix3d mRet;
-		mRet.setTranslation(value - m_ptBase);
-		return mRet;
+		OdGeMatrix3d TranslationTransform;
+		TranslationTransform.setTranslation(value - m_BasePoint);
+		return TranslationTransform;
 	}
 
 public:
 	CollideMoveTracker(const OdGePoint3d ptBase, OdDbSelectionSet* selectionSet, OdDbDatabasePtr database, OdGsView* view, const bool bDynHLT)
-		: m_ptBase(ptBase)
-		, m_bDynHLT(bDynHLT) {
-		m_pDb = database;
+		: m_BasePoint(ptBase)
+		, m_DynamicHlt(bDynHLT) {
+		m_Database = database;
 		m_View = view;
 		OdDbSelectionSetIteratorPtr SelectionSetIterator {selectionSet->newIterator()};
-		m_pModel = nullptr;
+		m_Model = nullptr;
 
 		//obtain GsModel
 		while (!SelectionSetIterator->done()) {
 			const auto SelectionSetObject {SelectionSetIterator->objectId()};
 			OdDbEntityPtr Entity {SelectionSetObject.openObject(OdDb::kForWrite)};
-			if (!m_pModel && Entity->gsNode()) { m_pModel = Entity->gsNode()->model(); }
+			if (!m_Model && Entity->gsNode()) { m_Model = Entity->gsNode()->model(); }
 			if (!Entity.isNull()) {
 				OdDbEntityPtr pSubEnt;
 				if (SelectionSetIterator->subentCount() == 0) {
-					m_ents.push_back(Entity);
+					m_SelectionSetEntities.push_back(Entity);
 				} else {
 					OdDbFullSubentPath pathSubent;
 					OdDbFullSubentPathArray arrPaths;
 					for (unsigned i = 0; i < SelectionSetIterator->subentCount(); i++) {
 						SelectionSetIterator->getSubentity(i, pathSubent);
 						pSubEnt = Entity->subentPtr(pathSubent);
-						if (!pSubEnt.isNull()) { m_ents.push_back(pSubEnt); }
+						if (!pSubEnt.isNull()) { m_SelectionSetEntities.push_back(pSubEnt); }
 					}
 				}
 			}
@@ -1225,7 +1225,7 @@ public:
 				auto gsPath {new OdExCollideGsPath};
 				gsPath->addNode(SelectionSetIterator->objectId().safeOpenObject()->ownerId());
 				gsPath->addNode(SelectionSetIterator->objectId());
-				m_pathes.push_back(gsPath);
+				m_Paths.push_back(gsPath);
 				Entity->dragStatus(OdDb::kDragStart);
 			} else {
 				for (unsigned i = 0; i < SelectionSetIterator->subentCount(); ++i) {
@@ -1237,98 +1237,98 @@ public:
 							for (auto& Marker : gsMarkers) {
 								auto gsPath {new OdExCollideGsPath};
 								gsPath->set(p, Marker);
-								m_pathes.push_back(gsPath);
+								m_Paths.push_back(gsPath);
 								auto SubEnt {Entity->subentPtr(p)};
 								SubEnt->dragStatus(OdDb::kDragStart);
 							}
 						} else {
 							auto gsPath {new OdExCollideGsPath(p)};
-							m_pathes.push_back(gsPath);
+							m_Paths.push_back(gsPath);
 						}
 					}
 				}
 			}
 			SelectionSetIterator->next();
 		}
-		for (auto& Path : m_pathes) {
-			m_pModel->highlight(Path->operator const OdGiPathNode&(), false);
-			inputArray.push_back(&Path->operator const OdGiPathNode&());
+		for (auto& Path : m_Paths) {
+			m_Model->highlight(Path->operator const OdGiPathNode&(), false);
+			m_PathNodes.push_back(&Path->operator const OdGiPathNode&());
 		}
 	}
 
 	virtual ~CollideMoveTracker() {
-		if (!m_prevHLPathes.empty()) {
-			for (auto& PreviousPath : m_prevHLPathes) {
-				m_pModel->highlight(PreviousPath->operator const OdGiPathNode&(), false);
+		if (!m_PreviousHlPaths.empty()) {
+			for (auto& PreviousPath : m_PreviousHlPaths) {
+				m_Model->highlight(PreviousPath->operator const OdGiPathNode&(), false);
 				delete PreviousPath;
 			}
-			m_prevHLPathes.clear();
+			m_PreviousHlPaths.clear();
 		}
-		inputArray.clear();
-		for (auto& Path : m_pathes) {
+		m_PathNodes.clear();
+		for (auto& Path : m_Paths) {
 			delete Path;
 		}
-		m_pathes.clear();
+		m_Paths.clear();
 		m_View->invalidate();
 		m_View->update();
 	}
 
 	void setValue(const OdGePoint3d& value) override {
-		const auto matNewTransform = getTransform(value);
+		const auto NewTransform = getTransform(value);
 		// Compensate previous transform
-		auto xTrans {m_xForm.inverse()};
-		xTrans.preMultBy(matNewTransform);
+		auto Transform {m_LastTransform.inverse()};
+		Transform.preMultBy(NewTransform);
 		// Remember last transform
-		m_xForm = matNewTransform;
-		for (int i = m_ents.size() - 1; i >= 0; --i) {
-			m_ents[i]->transformBy(xTrans);
+		m_LastTransform = NewTransform;
+		for (int EntityIndex = m_SelectionSetEntities.size() - 1; EntityIndex >= 0; --EntityIndex) {
+			m_SelectionSetEntities[EntityIndex]->transformBy(Transform);
 		}
-		doCollideWithAll();
+		DoCollideWithAll();
 	}
 
-	virtual void doCollideWithAll();
-	virtual void highlight(OdArray<OdExCollideGsPath*>& newPathes);
+	virtual void DoCollideWithAll();
+	virtual void Highlight(OdArray<OdExCollideGsPath*>& newPaths);
 
 	int addDrawables(OdGsView* pView) override {
-		for (int i = m_ents.size() - 1; i >= 0; --i) {
-			pView->add(m_ents[i], nullptr);
+		for (int EntityIndex = m_SelectionSetEntities.size() - 1; EntityIndex >= 0; --EntityIndex) {
+			pView->add(m_SelectionSetEntities[EntityIndex], nullptr);
 		}
 		return 1;
 	}
 
 	void removeDrawables(OdGsView* pView) override {
-		for (int i = m_ents.size() - 1; i >= 0; --i) {
-			pView->erase(m_ents[i]);
+		for (int EntityIndex = m_SelectionSetEntities.size() - 1; EntityIndex >= 0; --EntityIndex) {
+			pView->erase(m_SelectionSetEntities[EntityIndex]);
 		}
 	}
 };
 
-bool addNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, const bool bTruncateToRef = false) {
-	auto bAdd {true};
-	if (pPath->parent()) {
-		bAdd = addNodeToPath(result, pPath->parent(), bTruncateToRef);
+bool AddNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, const bool bTruncateToRef = false) {
+	auto Add {true};
+	if (pPath->parent()) { 
+		Add = AddNodeToPath(result, pPath->parent(), bTruncateToRef);
 	}
-	if (bAdd) {
+	if (Add) {
 		result->addNode(pPath->persistentDrawableId() ? pPath->persistentDrawableId() : pPath->transientDrawable()->id(), bTruncateToRef ? 0 : pPath->selectionMarker());
 		if (bTruncateToRef && pPath->persistentDrawableId()) {
-			const OdDbObjectId id(pPath->persistentDrawableId());
-			auto pObj {id.safeOpenObject()};
-			if (!pObj.isNull()) {
-				if (pObj->isKindOf(OdDbBlockReference::desc())) { bAdd = false; }
+			const OdDbObjectId ObjectId(pPath->persistentDrawableId());
+			auto Object {ObjectId.safeOpenObject()};
+			if (!Object.isNull()) {
+				if (Object->isKindOf(OdDbBlockReference::desc())) { Add = false; }
 			}
 		}
 	}
-	return bAdd;
+	return Add;
 }
 
-OdExCollideGsPath* fromGiPath(const OdGiPathNode* path, const bool bTruncateToRef = false) {
+OdExCollideGsPath* FromGiPath(const OdGiPathNode* path, const bool bTruncateToRef = false) {
 	if (!path) { return nullptr; }
 	const auto Result {new OdExCollideGsPath};
-	addNodeToPath(Result, path, bTruncateToRef);
+	AddNodeToPath(Result, path, bTruncateToRef);
 	return Result;
 }
 
-void CollideMoveTracker::doCollideWithAll() {
+void CollideMoveTracker::DoCollideWithAll() {
 	class OdExCollisionDetectionReactor : public OdGsCollisionDetectionReactor {
 		OdArray<OdExCollideGsPath*> m_pathes;
 		bool m_bDynHLT;
@@ -1340,29 +1340,29 @@ void CollideMoveTracker::doCollideWithAll() {
 		~OdExCollisionDetectionReactor() = default;
 
 		unsigned long collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
-			const auto Path {fromGiPath(pPathNode2, !m_bDynHLT)};
+			const auto Path {FromGiPath(pPathNode2, !m_bDynHLT)};
 			if (Path || pPathNode2->persistentDrawableId()) { m_pathes.push_back(Path); }
 			return static_cast<unsigned long>(kContinue);
 		}
 
 		OdArray<OdExCollideGsPath*>& pathes() { return m_pathes; }
 	};
-	OdExCollisionDetectionReactor reactor(m_bDynHLT);
-	m_View->collide(inputArray.asArrayPtr(), inputArray.size(), &reactor, nullptr, 0);
-	highlight(reactor.pathes());
+	OdExCollisionDetectionReactor reactor(m_DynamicHlt);
+	m_View->collide(m_PathNodes.asArrayPtr(), m_PathNodes.size(), &reactor, nullptr, 0);
+	Highlight(reactor.pathes());
 }
 
-void CollideMoveTracker::highlight(OdArray<OdExCollideGsPath*>& newPaths) {
-	if (!m_prevHLPathes.empty()) { // Unhighlight old paths
-		for (auto& PreviousPath : m_prevHLPathes) {
-			m_pModel->highlight(PreviousPath->operator const OdGiPathNode&(), false);
+void CollideMoveTracker::Highlight(OdArray<OdExCollideGsPath*>& newPaths) {
+	if (!m_PreviousHlPaths.empty()) { // Unhighlight old paths
+		for (auto& PreviousPath : m_PreviousHlPaths) {
+			m_Model->highlight(PreviousPath->operator const OdGiPathNode&(), false);
 			delete PreviousPath;
 		}
-		m_prevHLPathes.clear();
+		m_PreviousHlPaths.clear();
 	}
 	for (auto& NewPath : newPaths) {
-		m_pModel->highlight(NewPath->operator const OdGiPathNode&(), true);
-		m_prevHLPathes.push_back(NewPath);
+		m_Model->highlight(NewPath->operator const OdGiPathNode&(), true);
+		m_PreviousHlPaths.push_back(NewPath);
 	}
 }
 
@@ -1441,8 +1441,8 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 		~OdExCollisionDetectionReactor() = default;
 
 		unsigned long collisionDetected(const OdGiPathNode* pPathNode1, const OdGiPathNode* pPathNode2) override {
-			const auto p1 {fromGiPath(pPathNode1, !m_bDynHLT)};
-			const auto p2 {fromGiPath(pPathNode2, !m_bDynHLT)};
+			const auto p1 {FromGiPath(pPathNode1, !m_bDynHLT)};
+			const auto p2 {FromGiPath(pPathNode2, !m_bDynHLT)};
 			m_pathes.push_back(p1);
 			m_pathes.push_back(p2);
 			return static_cast<unsigned long>(kContinue);

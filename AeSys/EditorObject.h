@@ -64,7 +64,7 @@ class OdExEditorObject {
 	OdStaticRxObject<OdExCollideAllCmd> m_cmd_COLLIDE_ALL;
 	OdEdInputTrackerPtr m_InputTracker;
 	OdGePoint3d m_basePt;
-	const OdGePoint3d* m_BasePt;
+	const OdGePoint3d* m_BasePt {nullptr};
 
 	enum Flags { kSnapOn = 4, kOrbitOn = 8, kDragging = 16, kTrackerHasDrawables = 32 };
 
@@ -94,8 +94,8 @@ public:
 	OdEdCommandPtr Command(const OdString& commandName);
 	[[nodiscard]] OdGePoint3d ToEyeToWorld(int x, int y) const;
 	bool ToUcsToWorld(OdGePoint3d& wcsPt) const;
-	[[nodiscard]] OdGePoint3d ToScreenCoord(int x, int y) const;
-	[[nodiscard]] OdGePoint3d ToScreenCoord(const OdGePoint3d& WorldPoint) const;
+	[[nodiscard]] OdGePoint3d ToScreenCoordinates(int x, int y) const;
+	[[nodiscard]] OdGePoint3d ToScreenCoordinates(const OdGePoint3d& worldPoint) const;
 
 	class OleDragCallback {
 	public:

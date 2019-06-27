@@ -86,9 +86,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 		return -1;
 	}
 	m_StatusBar.SetIndicators(Indicators, sizeof Indicators / sizeof(unsigned));
-	m_StatusBar.SetPaneStyle(nStatusIcon, SBPS_NOBORDERS);
-	m_StatusBar.SetPaneStyle(nStatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
-	m_StatusBar.SetPaneWidth(nStatusProgress, 96);
+	m_StatusBar.SetPaneStyle(gc_StatusIcon, SBPS_NOBORDERS);
+	m_StatusBar.SetPaneStyle(gc_StatusInfo, SBPS_STRETCH | SBPS_NOBORDERS);
+	m_StatusBar.SetPaneWidth(gc_StatusProgress, 96);
 	m_MenuBar.EnableDocking(CBRS_ALIGN_ANY);
 	m_StandardToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
@@ -596,11 +596,11 @@ static UINT_PTR TimerId = 2;
 void CMainFrame::OnStartProgress() {
 	if (m_InProgress) {
 		KillTimer(TimerId);
-		m_StatusBar.EnablePaneProgressBar(nStatusProgress, -1);
+		m_StatusBar.EnablePaneProgressBar(gc_StatusProgress, -1);
 		m_InProgress = false;
 		return;
 	}
-	m_StatusBar.EnablePaneProgressBar(nStatusProgress, 100);
+	m_StatusBar.EnablePaneProgressBar(gc_StatusProgress, 100);
 	m_CurrentProgress = 0;
 	m_InProgress = true;
 	TimerId = SetTimer(2, 1, nullptr);
@@ -613,7 +613,7 @@ void CMainFrame::OnTimer(const UINT_PTR nIDEvent) {
 		if (m_CurrentProgress > 100) {
 			m_CurrentProgress = 0;
 		}
-		m_StatusBar.SetPaneProgress(nStatusProgress, m_CurrentProgress);
+		m_StatusBar.SetPaneProgress(gc_StatusProgress, m_CurrentProgress);
 	}
 }
 

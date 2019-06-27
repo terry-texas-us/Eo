@@ -123,11 +123,11 @@ void AeSysView::OnTrapModeEscape() {
 	ModeLineUnhighlightOp(m_PreviousOp);
 }
 
-void AeSysView::OnTraprModeRemoveAdd() {
+void AeSysView::OnTrapRemoveModeRemoveAdd() {
 	theApp.OnTrapCommandsAddGroups();
 }
 
-void AeSysView::OnTraprModePoint() {
+void AeSysView::OnTrapRemoveModePoint() {
 	auto Document {GetDocument()};
 	EoGePoint4d ptView(GetCursorPosition(), 1.0);
 	ModelViewTransformPoint(ptView);
@@ -144,7 +144,7 @@ void AeSysView::OnTraprModePoint() {
 	UpdateStateInformation(kTrapCount);
 }
 
-void AeSysView::OnTraprModeStitch() {
+void AeSysView::OnTrapRemoveModeStitch() {
 
 	if (m_PreviousOp != ID_OP2) {
 		m_PreviousPnt = GetCursorPosition();
@@ -170,7 +170,7 @@ void AeSysView::OnTraprModeStitch() {
 	}
 }
 
-void AeSysView::OnTraprModeField() {
+void AeSysView::OnTrapRemoveModeField() {
 	if (m_PreviousOp != ID_OP4) {
 		m_PreviousPnt = GetCursorPosition();
 		RubberBandingStartAtEnable(m_PreviousPnt, kRectangles);
@@ -197,7 +197,7 @@ void AeSysView::OnTraprModeField() {
 	}
 }
 
-void AeSysView::OnTraprModeLast() {
+void AeSysView::OnTrapRemoveModeLast() {
 
 	if (!GetDocument()->IsTrapEmpty()) {
 		const auto Group {GetDocument()->RemoveLastTrappedGroup()};
@@ -206,11 +206,11 @@ void AeSysView::OnTraprModeLast() {
 	}
 }
 
-void AeSysView::OnTraprModeEngage() noexcept {
+void AeSysView::OnTrapRemoveModeEngage() noexcept {
 	// TODO: Add your command handler code here
 }
 
-void AeSysView::OnTraprModeMenu() {
+void AeSysView::OnTrapRemoveModeMenu() {
 	CPoint CurrentPosition;
 	GetCursorPos(&CurrentPosition);
 	const auto TrapMenu {LoadMenuW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_TRAP))};
@@ -219,7 +219,7 @@ void AeSysView::OnTraprModeMenu() {
 	DestroyMenu(TrapMenu);
 }
 
-void AeSysView::OnTraprModeModify() {
+void AeSysView::OnTrapRemoveModeModify() {
 
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
@@ -231,7 +231,7 @@ void AeSysView::OnTraprModeModify() {
 	}
 }
 
-void AeSysView::OnTraprModeEscape() {
+void AeSysView::OnTrapRemoveModeEscape() {
 	RubberBandingDisable();
 	ModeLineUnhighlightOp(m_PreviousOp);
 }

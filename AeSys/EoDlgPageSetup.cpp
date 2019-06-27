@@ -949,8 +949,8 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	if (CString(ActiveView->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0) {
 		auto View {dynamic_cast<AeSysView*>(ActiveView)};
 		if (View->isModelSpaceView()) {
-			FirstCorner = View->editorObject().ToScreenCoord(FirstCorner);
-			OppositeCorner = View->editorObject().ToScreenCoord(OppositeCorner);
+			FirstCorner = View->editorObject().ToScreenCoordinates(FirstCorner);
+			OppositeCorner = View->editorObject().ToScreenCoordinates(OppositeCorner);
 		}
 	}
 	// </command_view>

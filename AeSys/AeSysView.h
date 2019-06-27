@@ -54,7 +54,7 @@ class AeSysView
 
 	Response m_response;
 	int m_inpOptions {0};
-	void exeCmd(const OdString& szCmdStr);
+	void exeCmd(const OdString& commandName);
 	bool BeginDragCallback(const OdGePoint3d& point) override;
 protected:
 	using CView::operator new;
@@ -632,20 +632,20 @@ public:
 	void OnTrapModeMenu();
 	void OnTrapModeModify();
 	void OnTrapModeEscape();
-	void OnTraprModeRemoveAdd();
-	void OnTraprModePoint();
+	void OnTrapRemoveModeRemoveAdd();
+	void OnTrapRemoveModePoint();
 	/// <summary>Identifies groups which intersect with a line and removes them from the trap.</summary>
-	void OnTraprModeStitch();
+	void OnTrapRemoveModeStitch();
 	/// <summary>Identifies groups which lie wholly or partially within a orthogonal rectangular area.</summary>
 	// Notes: This routine fails in all but top view. !!
 	// Parameters:	pt1 	one corner of the area
 	//				pt2 	other corner of the area
-	void OnTraprModeField();
-	void OnTraprModeLast();
-	void OnTraprModeEngage() noexcept;
-	void OnTraprModeMenu();
-	void OnTraprModeModify();
-	void OnTraprModeEscape();
+	void OnTrapRemoveModeField();
+	void OnTrapRemoveModeLast();
+	void OnTrapRemoveModeEngage() noexcept;
+	void OnTrapRemoveModeMenu();
+	void OnTrapRemoveModeModify();
+	void OnTrapRemoveModeEscape();
 private: // Low Pressure Duct (rectangular) interface
 	double m_InsideRadiusFactor {1.5};
 	double m_DuctSeamSize {0.03125};
@@ -706,8 +706,12 @@ public:
 	/// <summary>Generates rise or drop fitting.</summary>
 	/// <param name="riseDropIndicator">	rise or drop indicator; 1 rise, 2 drop</param>
 	/// <param name="section">horizontal section width and depth</param>
+	/// <param name="referenceLine"></param>
+	/// <param name="group"></param>
 	void GenerateRiseDrop(unsigned short riseDropIndicator, Section section, EoGeLineSeg3d& referenceLine, EoDbGroup* group);
 	/// <summary>Generates rectangular section using a set of parallel lines.</summary>
+	/// <param name="referenceLine"></param>
+	/// <param name="eccentricity"></param>
 	/// <param name="section">width and depth of section</param>
 	/// <param name="group"></param>
 	void GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double eccentricity, Section section, EoDbGroup* group);
@@ -718,8 +722,8 @@ public:
 	/// <param name="currentReferenceLine">on exit the start point is the same as the point on the endcap</param>
 	/// <param name="currentSection"></param>
 	/// <param name="group"></param>
-	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group,
-	                              bool generateEndCaps = true);
+	/// <param name="generateEndCaps"></param>
+	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group, bool generateEndCaps = true);
 	/// <summary>Generates rectangular tap fitting.</summary>
 	/// <param name="justification"></param>
 	/// <param name="section"></param>

@@ -94,7 +94,7 @@ public: // Construction. Initialization.
 	~OdBaseGripManager();
 
 	// OdEdPointTracker protocol
-	void setValue(const OdGePoint3d& ptValue) override;
+	void setValue(const OdGePoint3d& value) override;
 
 	// Events from Windows.
 	virtual void OnModified(OdGiDrawable* pGrip) = 0;

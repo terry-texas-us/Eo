@@ -154,7 +154,6 @@ void EoDlgPlotStyleEditLineweight::OnRadioInches() {
 
 bool EoDlgPlotStyleEditLineweight::SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) noexcept {
 	if (!plotStyleTable) { return false; }
-	plotStyleTable = plotStyleTable;
 	return true;
 }
 

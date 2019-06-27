@@ -31,8 +31,8 @@ EoDbPoint::EoDbPoint(const EoDbPoint& other) {
 	m_Position = other.m_Position;
 	m_NumberOfDatums = other.m_NumberOfDatums;
 	m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
-	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
-		m_Data[n] = other.m_Data[n];
+	for (unsigned DatumIndex = 0; DatumIndex < m_NumberOfDatums; DatumIndex++) {
+		m_Data[DatumIndex] = other.m_Data[DatumIndex];
 	}
 }
 
@@ -52,8 +52,8 @@ EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 		m_NumberOfDatums = other.m_NumberOfDatums;
 		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 	}
-	for (unsigned n = 0; n < m_NumberOfDatums; n++) {
-		m_Data[n] = other.m_Data[n];
+	for (unsigned DatumIndex = 0; DatumIndex < m_NumberOfDatums; DatumIndex++) {
+		m_Data[DatumIndex] = other.m_Data[DatumIndex];
 	}
 	return *this;
 }
@@ -219,8 +219,8 @@ void EoDbPoint::SetData(const unsigned short numberOfDatums, double* data) {
 		m_NumberOfDatums = numberOfDatums;
 		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
 	}
-	for (unsigned w = 0; w < m_NumberOfDatums; w++) {
-		m_Data[w] = data[w];
+	for (unsigned DatumIndex = 0; DatumIndex < m_NumberOfDatums; DatumIndex++) {
+		m_Data[DatumIndex] = data[DatumIndex];
 	}
 }
 
