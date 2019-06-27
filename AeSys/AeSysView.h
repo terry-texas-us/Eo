@@ -25,7 +25,7 @@ class AeSysView
 	, public OdGiContextForDbDatabase
 	, OdEdBaseIO
 	, OdExEditorObject::OleDragCallback {
-	friend class SaveViewParams;
+	friend class SaveViewParameters;
 	void destroyDevice();
 	COleDropTarget m_dropTarget;
 	OdString m_sPrompt;
