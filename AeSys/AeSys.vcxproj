@@ -41,7 +41,7 @@
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\ODA\15;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\ODA\20.5_15;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -60,7 +60,7 @@
     <ProjectReference />
     <Link>
       <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;RecomputeDimBlock.lib;htmlhelp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\ODA\15\Kernel_vc15dlldbg\lib\vc15dlldbg;E:\ODA\15\Drawings_vc15dlldbg\lib\vc15dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\VS 2017\Eo\vc15dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\ODA\20.5_15\Kernel_vc15dlldbg\lib\vc15dlldbg;E:\ODA\20.5_15\Drawings_vc15dlldbg\lib\vc15dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\VS 2017\Eo\vc15dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
@@ -70,37 +70,37 @@
     <Bscmake />
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
+    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSys.cpp" />
