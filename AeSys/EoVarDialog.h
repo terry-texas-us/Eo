@@ -10,11 +10,11 @@ protected:
 	EoDialogResizeHelper m_resizeHelper;
 	void initResizeHelper();
 	BOOL OnInitDialog() override;
-	void OnSize(unsigned type, int cx, int cy);
-DECLARE_MESSAGE_MAP()
+	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
+	DECLARE_MESSAGE_MAP()
 private:
 	void SetupGripper();
-	void makeGripper();
+	void MakeGripper();
 	CPoint m_origSize;
 	BOOL m_bInitialized {FALSE};
 	EoGripperScrollBar m_Grip;

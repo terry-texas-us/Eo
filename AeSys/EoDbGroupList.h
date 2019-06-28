@@ -19,19 +19,19 @@ public:
 
 	EoDbGroup* GetNext(POSITION& position) {
 		return dynamic_cast<EoDbGroup*>(CObList::GetNext(position));
-	}
+	} // hides non-virtual function of parent
 
 	EoDbGroup* GetPrev(POSITION& position) {
 		return dynamic_cast<EoDbGroup*>(CObList::GetPrev(position));
-	}
+	} // hides non-virtual function of parent
 
 	EoDbGroup* RemoveHead() {
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveHead());
-	}
+	} // hides non-virtual function of parent
 
 	EoDbGroup* RemoveTail() {
 		return dynamic_cast<EoDbGroup*>(CObList::RemoveTail());
-	}
+	} // hides non-virtual function of parent
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM htiParent);
 	void BreakPolylines();

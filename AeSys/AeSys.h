@@ -188,28 +188,6 @@ public:
 	} // OdDbBaseHostAppServices (to suppress C4266 warning)
 	void warning(OdWarning warningOb) noexcept override {
 	} // OdDbBaseHostAppServices (to suppress C4266 warning)
-	static int messageBox(const HWND parent, const wchar_t* caption, const wchar_t* text, const unsigned type) noexcept {
-		return ::MessageBox(parent, text, caption, type);
-	}
-
-	int messageBox(const wchar_t* caption, const wchar_t* text, const unsigned type) {
-		const auto MainWindow {GetMainWnd()};
-		if (MainWindow == nullptr) { return 0; }
-		return messageBox(MainWindow->m_hWnd, caption, text, type);
-	}
-
-	void ReportError(const HWND parent, const wchar_t* contextMessage, const OdError& error) const {
-		messageBox(parent, contextMessage, error.description(), MB_OK | MB_ICONERROR);
-	}
-
-	void ReportError(const wchar_t* contextMessage, const OdError& error) {
-		messageBox(contextMessage, error.description(), MB_OK | MB_ICONERROR);
-	}
-
-	void ReportError(const wchar_t* contextMessage, const unsigned error) {
-		messageBox(contextMessage, getErrorDescription(error), MB_OK | MB_ICONERROR);
-	}
-
 	OdRxClass* databaseClass() const override /* ExHostAppServices */;
 	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = nullptr, FindFileHint hint = kDefault) override /* ExHostAppServices */;
 	OdString getFontMapFileName() const override /* ExHostAppServices */;
@@ -229,13 +207,13 @@ public:
 	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
 
 	//	void OnOptionsRenderingDeviceVectorize();
-	bool getSavePreview() noexcept { return savePreview; }
+	bool GetSavePreview() const noexcept { return savePreview; }
 
-	bool getSaveWithPassword() noexcept { return saveWithPassword; }
+	bool GetSaveWithPassword() const noexcept { return saveWithPassword; }
 
 	void SetRecentCommand(const OdString& command);
 
-	const OdString& GetRecentCmd() noexcept { return m_RecentCommand; }
+	const OdString& GetRecentCommand() const noexcept { return m_RecentCommand; }
 
 	static OdString ObjectIdAndClassName(const OdDbObjectId id) {
 		return ObjectIdAndClassName(id.openObject());
@@ -324,10 +302,12 @@ public:
 	void AddStringToMessageList(const wchar_t* message, const wchar_t* string) const;
 	void AddStringToMessageList(unsigned stringResourceIdentifier) const;
 	void AddStringToMessageList(unsigned stringResourceIdentifier, const wchar_t* string) const;
-	void AddStringToReportList(const wchar_t* message);
+
+	static void AddStringToReportList(const wchar_t* message);
 	static int ConfirmMessageBox(unsigned stringResourceIdentifier, const wchar_t* string);
 	static void WarningMessageBox(unsigned stringResourceIdentifier);
 	static void WarningMessageBox(unsigned stringResourceIdentifier, const wchar_t* string);
+	void ErrorMessageBox(const wchar_t* caption, const OdError& error);
 	int ArchitecturalUnitsFractionPrecision() const noexcept;
 	void BuildModeSpecificAcceleratorTable() const;
 	unsigned ClipboardFormatIdentifierForEoGroups() const noexcept;

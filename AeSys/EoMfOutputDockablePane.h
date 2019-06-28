@@ -2,18 +2,24 @@
 class EoMfOutputListBox : public CListBox {
 public:
 	EoMfOutputListBox() = default;
+
 	virtual ~EoMfOutputListBox() = default;
+
 protected:
-	void OnContextMenu(CWnd* pWnd, CPoint point);
+	void OnContextMenu(CWnd* pWnd, CPoint point); // hides non-virtual function of parent
 	void OnEditCopy() noexcept;
+
 	void OnEditClear() noexcept;
+
 	void OnViewOutput();
+
 DECLARE_MESSAGE_MAP()
 };
 
 class EoMfOutputDockablePane : public CDockablePane {
 public:
 	EoMfOutputDockablePane() = default;
+
 protected:
 	CFont m_Font;
 	CMFCTabCtrl m_wndTabs;
@@ -35,7 +41,7 @@ public:
 	}
 
 protected:
-	int OnCreate(LPCREATESTRUCT createStructure);
-	void OnSize(unsigned type, int cx, int cy);
+	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
+	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 DECLARE_MESSAGE_MAP()
 };

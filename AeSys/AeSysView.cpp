@@ -395,10 +395,10 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 				MainFrame->StopTimer(m_paintMode == kRegenerate ? L"Regen" : L"Redraw");
 			}
 		} catch (const OdError& Error) {
-			theApp.ReportError(L"Rendering aborted", Error);
+			theApp.ErrorMessageBox(L"Rendering aborted", Error);
 			GetParent()->PostMessageW(WM_CLOSE);
 		} catch (const UserBreak&) {
-			theApp.ReportError(L"Rendering aborted", OdError(eUserBreak));
+			theApp.ErrorMessageBox(L"Rendering aborted", OdError(eUserBreak));
 			GetParent()->PostMessageW(WM_CLOSE);
 		}
 #ifndef _DEBUG
@@ -956,7 +956,7 @@ void AeSysView::createDevice(const bool recreate) {
 		}
 	} catch (const OdError& Error) {
 		destroyDevice();
-		theApp.ReportError(L"Graphic System Initialization Error", Error);
+		theApp.ErrorMessageBox(L"Graphic System Initialization Error", Error);
 	}
 }
 
@@ -2115,7 +2115,7 @@ BOOL AeSysView::OnIdle(long count) {
 	return TRUE;
 }
 
-// <tas=Transition - code above sourced from Teigha examples"</tas>
+// <tas=Transition - code above sourced from ODA examples"</tas>
 OdDbDatabasePtr AeSysView::Database() const {
 	return GetDocument()->m_DatabasePtr;
 }
@@ -3562,7 +3562,7 @@ void AeSysView::SetRenderMode(const OdGsView::RenderMode renderMode) {
 	if (FirstView->mode() != renderMode) {
 		FirstView->setMode(renderMode);
 		if (FirstView->mode() != renderMode) {
-			::MessageBoxW(nullptr, L"Render mode is not supported by the current device", L"Teigha", MB_ICONWARNING);
+			::MessageBoxW(nullptr, L"Render mode is not supported by the current device", L"Open Design Alliance", MB_ICONWARNING);
 		} else {
 			m_ViewTransform.SetRenderMode(renderMode);
 			InvalidateRect(nullptr);

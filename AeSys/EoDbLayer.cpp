@@ -147,9 +147,8 @@ OdDbLayerTableRecordPtr EoDbLayer::TableRecord() const {
 }
 
 void EoDbLayer::SetIsOff(const bool isOff) {
-	// <tas="
-	// Legacy convention visibility state is exclusive. Never was a SetIsOff(false), always changed state buy MakeCurrent, MakeActive, MakeStatic.
-	// This conflicts with Teigha where off layers can retain state as current, frozen or locked.
+	// <tas="Legacy convention visibility state is exclusive. Never was a SetIsOff(false), always changed state buy MakeCurrent, MakeActive, MakeStatic.
+	// This conflicts with dwg where off layers can retain state as current, frozen or locked.
 	// If called with state false - setting layer state to Active for now.
 	// </tas>
 	if (isOff) {

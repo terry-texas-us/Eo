@@ -31,6 +31,6 @@ protected:
 	void OnLoadApp();
 	void OnUnloadApp();
 	void OnAppsListEvent();
-	void OnDestroy();
-DECLARE_MESSAGE_MAP()
+	void OnDestroy(); // hides non-virtual function of parent
+	DECLARE_MESSAGE_MAP()
 };

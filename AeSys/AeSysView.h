@@ -507,9 +507,9 @@ public:
 	bool CleanPreviousLines();
 	bool StartAssemblyFromLine();
 
-	enum EJust { Left = -1, Center, Right };
+	enum EJust { kLeft = -1, kCenter, kRight };
 
-	enum EElbow { Mittered, Radial };
+	enum EElbow { kMitered, kRadial };
 
 	void OnDimensionModeOptions();
 	void OnDimensionModeArrow();
@@ -651,8 +651,8 @@ private: // Low Pressure Duct (rectangular) interface
 	double m_DuctSeamSize {0.03125};
 	double m_DuctTapSize {0.03125};
 	bool m_GenerateTurningVanes {true};
-	EElbow m_ElbowType {Mittered};
-	EJust m_DuctJustification {Center};
+	EElbow m_ElbowType {kMitered};
+	EJust m_DuctJustification {kCenter};
 	double m_TransitionSlope {4.0};
 	bool m_BeginWithTransition {false};
 	bool m_ContinueSection {false};

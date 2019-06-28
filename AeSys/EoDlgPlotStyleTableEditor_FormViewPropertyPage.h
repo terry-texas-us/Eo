@@ -226,6 +226,6 @@ protected:
 	void OnSelendokComboLineEndStyle();
 	void OnSelendokComboLineJoinStyle();
 	void OnSelendokComboFillStyle();
-	void OnDestroy();
-DECLARE_MESSAGE_MAP()
+	void OnDestroy(); // hides non-virtual function of parent
+	DECLARE_MESSAGE_MAP()
 };

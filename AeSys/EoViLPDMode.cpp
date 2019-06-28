@@ -137,9 +137,9 @@ void AeSysView::OnLpdModeTap() {
 		EJust Justification;
 		const auto Relationship {m_CurrentReferenceLine.DirectedRelationshipOf(TestPoint)};
 		if (Relationship == 1) {
-			Justification = Left;
+			Justification = kLeft;
 		} else if (Relationship == -1) {
-			Justification = Right;
+			Justification = kRight;
 		} else {
 			AeSys::AddStringToMessageList(L"Could not determine orientation of component");
 			return;
@@ -639,7 +639,7 @@ bool AeSysView::GenerateRectangularTap(const EJust justification, const Section 
 	m_CurrentReferenceLine.SetStartPoint(ReferenceLine.endPoint());
 	m_CurrentReferenceLine.GetParallels(section.Width(), m_CenterLineEccentricity, LeftLine, RightLine);
 	OdGePoint3d EndPoint;
-	if (justification == Right) {
+	if (justification == kRight) {
 		RightLine.ProjPtFrom_xy(m_DuctTapSize, -m_DuctTapSize, EndPoint);
 		RightLine.SetEndPoint(EndPoint);
 	} else {
@@ -656,7 +656,7 @@ bool AeSysView::GenerateRectangularTap(const EJust justification, const Section 
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 	if (m_GenerateTurningVanes) {
-		const auto BeginPoint {(justification == Left ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
+		const auto BeginPoint {(justification == kLeft ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
 		EndPoint = m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.);
 		const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 		auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, BeginPoint, ActiveViewPlaneNormal, .01)};
@@ -685,12 +685,12 @@ void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, const double ec
 	EoGeLineSeg3d RightLine;
 	referenceLine.GetParallels(previousSection.Width(), eccentricity, LeftLine, RightLine);
 	OdGePoint3d EndPoint;
-	if (justification == Center) {
+	if (justification == kCenter) {
 		LeftLine.ProjPtFrom_xy(TransitionLength, WidthChange * 0.5, EndPoint);
 		LeftLine.SetEndPoint(EndPoint);
 		RightLine.ProjPtFrom_xy(TransitionLength, -WidthChange * 0.5, EndPoint);
 		RightLine.SetEndPoint(EndPoint);
-	} else if (justification == Right) {
+	} else if (justification == kRight) {
 		RightLine.ProjPtFrom_xy(TransitionLength, -WidthChange, EndPoint);
 		RightLine.SetEndPoint(EndPoint);
 	} else {
@@ -734,7 +734,7 @@ double AeSysView::LengthOfTransition(const EJust justification, const double slo
 	const auto WidthChange {currentSection.Width() - previousSection.Width()};
 	const auto DepthChange {currentSection.Depth() - previousSection.Depth()};
 	auto Length {EoMax(fabs(WidthChange), fabs(DepthChange)) * slope};
-	if (justification == Center) {
+	if (justification == kCenter) {
 		Length *= 0.5;
 	}
 	return Length;

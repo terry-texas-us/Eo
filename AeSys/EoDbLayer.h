@@ -22,7 +22,7 @@ public:
 	COLORREF Color() const;
 	short ColorIndex() const;
 	void BuildVisibleGroupList(AeSysView* view);
-	void Display(AeSysView* view, CDC* deviceContext);
+	void Display(AeSysView* view, CDC* deviceContext); // hides non-virtual function of parent
 	void Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap);
 	bool IsActive() const noexcept;
 	bool IsCurrent() const;
@@ -37,7 +37,7 @@ public:
 	void MakeInternal(bool isInternal) noexcept;
 	void MakeResident(bool isResident) noexcept;
 	OdString Name() const;
-	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol);
+	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol); // hides non-virtual function of parent
 	void SetColorIndex(short colorIndex);
 	void SetIsFrozen(bool isFrozen);
 	void SetIsLocked(bool isLocked);

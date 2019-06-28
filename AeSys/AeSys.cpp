@@ -617,7 +617,7 @@ OdDbDatabasePtr AeSys::OpenFile(const wchar_t* pathName) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(GetMainWnd())};
 	OdDbDatabasePtr Database;
 	auto MtMode {getMtMode()};
-	m_UseMtLoading ? (MtMode |= 1) : (MtMode &= ~1);
+	m_UseMtLoading ? (MtMode |= 1) : MtMode &= ~1;
 	setMtMode(MtMode);
 
 	// open an existing document
@@ -651,7 +651,7 @@ OdDbDatabasePtr AeSys::OpenFile(const wchar_t* pathName) {
 	} catch (const OdError& Error) {
 		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
-		ReportError(L"Loading Error...", Error);
+		ErrorMessageBox(L"Loading Error...", Error);
 	} catch (const UserBreak&) {
 		Database = nullptr;
 		MainFrame->SetStatusPaneTextAt(0, L"");
@@ -1094,10 +1094,10 @@ bool AeSys::InitializeOda() {
 		rxInitMaterialsEditorObjects();
 		   </tas> */
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"odInitialize error", Error);
+		theApp.ErrorMessageBox(L"odInitialize error", Error);
 		return false;
 	} catch (...) {
-		MessageBoxW(nullptr, L"odInitialize error", L"Teigha", MB_ICONERROR | MB_OK);
+		MessageBoxW(nullptr, L"odInitialize error", L"Open Design Alliance", MB_ICONERROR | MB_OK);
 		return false;
 	}
 	return true;
@@ -1844,6 +1844,12 @@ int AeSys::ConfirmMessageBox(const unsigned stringResourceIdentifier, const wcha
 	return MessageBoxW(nullptr, Text, Caption, MB_ICONINFORMATION | MB_YESNOCANCEL | MB_DEFBUTTON2);
 }
 
+void AeSys::ErrorMessageBox(const wchar_t* caption, const OdError& error) {
+	const auto MainWindow {GetMainWnd()};
+	const auto ParentWindow {MainWindow != nullptr ? MainWindow->m_hWnd : nullptr};
+	MessageBoxW(ParentWindow, error.description(), caption, MB_OK | MB_ICONERROR);
+}
+
 void AeSys::warning(const char* warnVisGroup, const OdString& text) {
 	if (m_Loading && (!warnVisGroup || !*warnVisGroup) && !m_UseMtLoading) {
 		if (MessageBoxW(nullptr, text + L"\n\nDo you want to proceed ?", L"Warning!", MB_ICONWARNING | MB_YESNO) == IDNO) { throw UserBreak(); }
@@ -1943,7 +1949,7 @@ void AeSys::UninitializeTeigha() {
 		RemoveMaterialTextureLoadingMonitor();
 		odUninitialize();
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"", Error);
+		theApp.ErrorMessageBox(L"", Error);
 	}
 }
 

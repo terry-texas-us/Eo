@@ -4,6 +4,6 @@ public:
 	EoGripperScrollBar() = default;
 	~EoGripperScrollBar() = default;
 protected:
-	LRESULT OnNcHitTest(CPoint point);
-DECLARE_MESSAGE_MAP()
+	LRESULT OnNcHitTest(CPoint point); // hides non-virtual function of parent
+	DECLARE_MESSAGE_MAP()
 };

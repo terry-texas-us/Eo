@@ -61,7 +61,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		m_NewActiveLayout = m_OldActiveLayout;
 		GetDlgItem(IDC_NEWNAME)->SetWindowTextW(Items[static_cast<unsigned>(m_OldActiveLayout)]);
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error Selecting Layout", Error);
+		theApp.ErrorMessageBox(L"Error Selecting Layout", Error);
 	}
 }
 
@@ -104,7 +104,7 @@ void EoDlgSetActiveLayout::OnRename() {
 		try {
 			m_Database->renameLayout(OdString(OldName), OdString(NewName));
 		} catch (const OdError& Error) {
-			theApp.ReportError(L"Error Renaming Layout", Error);
+			theApp.ErrorMessageBox(L"Error Renaming Layout", Error);
 			return;
 		}
 		Layouts->DeleteString(static_cast<unsigned>(m_NewActiveLayout));
@@ -115,13 +115,13 @@ void EoDlgSetActiveLayout::OnRename() {
 
 void EoDlgSetActiveLayout::OnDelete() {
 	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
-	CString currName;
-	Layouts->GetText(m_NewActiveLayout, currName);
+	CString CurrentName;
+	Layouts->GetText(m_NewActiveLayout, CurrentName);
 	try {
 		m_Database->startUndoRecord();
-		m_Database->deleteLayout(OdString(currName));
+		m_Database->deleteLayout(OdString(CurrentName));
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error Deleting Layout", Error);
+		theApp.ErrorMessageBox(L"Error Deleting Layout", Error);
 		m_Database->disableUndoRecording(true);
 		m_Database->undo();
 		m_Database->disableUndoRecording(false);
@@ -132,17 +132,17 @@ void EoDlgSetActiveLayout::OnDelete() {
 
 void EoDlgSetActiveLayout::OnCopy() {
 	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
-	CString strSourceName;
-	CString strNewName;
-	Layouts->GetText(m_NewActiveLayout, strSourceName);
-	GetDlgItem(IDC_NEWNAME)->GetWindowText(strNewName);
-	const OdString strName {strSourceName};
+	CString SourceName;
+	CString NewName;
+	Layouts->GetText(m_NewActiveLayout, SourceName);
+	GetDlgItem(IDC_NEWNAME)->GetWindowText(NewName);
+	const OdString Name {SourceName};
 	auto LayoutManager {m_Database->appServices()->layoutManager()};
 	try {
-		OdSmartPtr<OdDbLayout> Layout = LayoutManager->findLayoutNamed(m_Database, strName).safeOpenObject();
-		LayoutManager->cloneLayout(m_Database, Layout, OdString(strNewName));
+		OdSmartPtr<OdDbLayout> Layout {LayoutManager->findLayoutNamed(m_Database, Name).safeOpenObject()};
+		LayoutManager->cloneLayout(m_Database, Layout, OdString(NewName));
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error Cloning Layout", Error);
+		theApp.ErrorMessageBox(L"Error Cloning Layout", Error);
 		return;
 	}
 	FillListBox();
@@ -154,7 +154,7 @@ void EoDlgSetActiveLayout::OnNew() {
 	try {
 		m_Database->createLayout(OdString(LayoutName));
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error Creating Layout", Error);
+		theApp.ErrorMessageBox(L"Error Creating Layout", Error);
 		return;
 	}
 	FillListBox();
@@ -174,7 +174,7 @@ void EoDlgSetActiveLayout::OnFromTemplate() {
 	try {
 		LayoutManager->cloneLayout(m_Database, Layout, OdString(NewName));
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error Cloning Layout", Error);
+		theApp.ErrorMessageBox(L"Error Cloning Layout", Error);
 		return;
 	}
 	FillListBox();

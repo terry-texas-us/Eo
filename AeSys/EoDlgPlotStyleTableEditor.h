@@ -21,7 +21,7 @@ DECLARE_DYNCREATE(EoDlgPlotStyleManager)
 
 	virtual ~EoDlgPlotStyleManager();
 protected:
-	int OnCreate(LPCREATESTRUCT createStructure);
+	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	BOOL OnInitDialog() final;
 DECLARE_MESSAGE_MAP()
 };

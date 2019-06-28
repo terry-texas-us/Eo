@@ -19,7 +19,7 @@ enum LinetypesListColumnLabels { Name, Appearance, Description };
 	CListCtrl m_LinetypesListControl;
 public:
 	OdDbLinetypeTableRecordPtr linetype;
-	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct);
+  void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct); // hides non-virtual function of parent
 	void OnBnClickedBylayerButton();
 	void OnBnClickedByblockButton();
 protected:

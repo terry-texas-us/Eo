@@ -132,7 +132,7 @@ BOOL EoDlgNamedViews::OnInitDialog() {
 			m_views.InsertItem(Index++, ViewTableRecord);
 		}
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error creating Named Views dialog", Error);
+		theApp.ErrorMessageBox(L"Error creating Named Views dialog", Error);
 		EndDialog(IDCANCEL);
 		return FALSE;
 	}

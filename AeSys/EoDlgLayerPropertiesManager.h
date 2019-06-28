@@ -23,9 +23,9 @@ public:
 	CTreeCtrl treeFilters;
 	CImageList treeImages;
 	void UpdateFiltersTree();
-	int OnCreate(LPCREATESTRUCT createStructure);
+	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	void OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
-	void OnSize(unsigned type, int newWidth, int newHeight);
-	void OnSizing(unsigned side, LPRECT rectangle);
+	void OnSize(unsigned type, int newWidth, int newHeight); // hides non-virtual function of parent
+	void OnSizing(unsigned side, LPRECT rectangle); // hides non-virtual function of parent
 	void OnTvnKeydownLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
 };

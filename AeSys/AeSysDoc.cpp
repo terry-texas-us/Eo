@@ -280,7 +280,7 @@ void AeSysDoc::OnViewSetActiveLayout() {
 			m_DatabasePtr->startUndoRecord();
 			m_DatabasePtr->setCurrentLayout(OdString(ActiveLayoutDialog.m_NewLayoutName));
 		} catch (const OdError& Error) {
-			theApp.ReportError(L"Error Setting Layout...", Error);
+			theApp.ErrorMessageBox(L"Error Setting Layout...", Error);
 			m_DatabasePtr->disableUndoRecording(true);
 			m_DatabasePtr->undo();
 			m_DatabasePtr->disableUndoRecording(false);
@@ -485,11 +485,11 @@ void AeSysDoc::putString(const OdString& string) {
 }
 
 OdString AeSysDoc::RecentCommand() {
-	return theApp.GetRecentCmd();
+	return theApp.GetRecentCommand();
 }
 
 OdString AeSysDoc::RecentCommandName() {
-	return theApp.GetRecentCmd().spanExcluding(L" \n");
+	return theApp.GetRecentCommand().spanExcluding(L" \n");
 }
 
 OdString AeSysDoc::CommandPrompt() {
@@ -609,7 +609,7 @@ private:
 			Database->undo();
 			Database->disableUndoRecording(false);
 		} catch (const OdError& Error) {
-			theApp.ReportError(L"Can't repair database", Error);
+			theApp.ErrorMessageBox(L"Can't repair database", Error);
 		}
 #ifndef _DEBUG
 		catch (...) {
@@ -661,7 +661,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 	} catch (OdEdCancel) {
 	} catch (OdError& Error) {
 
-		if (!m_Console) { theApp.ReportError(CommandMessageCaption(command), Error); }
+		if (!m_Console) { theApp.ErrorMessageBox(CommandMessageCaption(command), Error); }
 		BaseIo()->putString(Error.description());
 	}
 	if (CommandReactor.IsDatabaseModified() || SelectionSet()->numEntities()) {
@@ -765,7 +765,7 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(const OdString& name, OdDb
 		TextStyle->setName(name);
 		textStyles->add(TextStyle);
 	} catch (const OdError& Error) {
-		theApp.ReportError(L"Error adding new text style...", Error);
+		theApp.ErrorMessageBox(L"Error adding new text style...", Error);
 		TextStyle->erase();
 	}
 	return TextStyle;
@@ -825,7 +825,7 @@ void AeSysDoc::AddRegisteredApp(const OdString& name) {
 			RegisteredApps->add(RegisteredApp);
 		} catch (const OdError& Error) {
 			RegisteredApp->erase();
-			theApp.ReportError(L"ODA Error - AeSysDoc::AddRegisteredApp", Error);
+			theApp.ErrorMessageBox(L"ODA Error - AeSysDoc::AddRegisteredApp", Error);
 		}
 	}
 }
@@ -841,7 +841,7 @@ BOOL AeSysDoc::OnNewDocument() {
 			m_DatabasePtr = theApp.createDatabase(true, OdDb::kEnglish);
 		} catch (const OdError& Error) {
 			m_DatabasePtr = nullptr;
-			theApp.ReportError(L"Database Creating Error...", Error);
+			theApp.ErrorMessageBox(L"Database Creating Error...", Error);
 			return FALSE;
 		}
 		auto TextStyle {AddStandardTextStyle()};
@@ -2717,7 +2717,7 @@ void AeSysDoc::OnDrawingUtilitiesAudit() {
 	} catch (const OdError& Error) {
 		delete theApp.auditDialog;
 		theApp.auditDialog = nullptr;
-		theApp.ReportError(L"Error Auditing Database...", Error);
+		theApp.ErrorMessageBox(L"Error Auditing Database...", Error);
 		AfxThrowUserException();
 	} catch (const UserBreak&) {
 		delete theApp.auditDialog;

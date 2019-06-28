@@ -26,15 +26,15 @@ protected:
 	CString m_Output;
 	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
-	void OnPaint();
-DECLARE_MESSAGE_MAP()
+	void OnPaint(); // hides non-virtual function of parent
+	DECLARE_MESSAGE_MAP()
 public:
 	void Echo(const OdString& string);
 	OdString GetLastString();
 	static OdSmartPtr<EoDlgUserIoConsole> create(CWnd* parent);
-	void OnSize(unsigned type, int cx, int cy);
-	void OnDestroy();
-	void OnShowWindow(BOOL show, unsigned status);
+	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
+	void OnDestroy(); // hides non-virtual function of parent
+	void OnShowWindow(BOOL show, unsigned status); // hides non-virtual function of parent
 
 	unsigned long getKeyState() noexcept override { return 0; }
 

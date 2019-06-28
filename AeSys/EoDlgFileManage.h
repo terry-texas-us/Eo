@@ -33,7 +33,7 @@ public:
 	void OnBnClickedMelt();
 	void OnBnClickedNewLayer();
 	void OnBnClickedSetCurrent();
-	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct);
+	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct); // hides non-virtual function of parent
 	void OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 	void OnLbnSelchangeBlocksList();
 	void OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result);

@@ -28,10 +28,10 @@ void EoVarDialog::initResizeHelper() {
 	GetWindowRect(WindowRect);
 	m_origSize = CPoint(WindowRect.Width(), WindowRect.Height());
 	m_resizeHelper.Init(m_hWnd);
-	makeGripper();
+	MakeGripper();
 }
 
-void EoVarDialog::makeGripper() {
+void EoVarDialog::MakeGripper() {
 	CRect InitialRect;
 	GetClientRect(InitialRect);
 	InitialRect.left = InitialRect.right - GetSystemMetrics(SM_CXHSCROLL);

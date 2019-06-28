@@ -42,12 +42,12 @@ DECLARE_DYNAMIC(EoCtrlColorsButton)
 
 	void OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) override;
 	CSize SizeToContent(BOOL calculateOnly = FALSE) override;
-	unsigned OnGetDlgCode() noexcept;
+	unsigned OnGetDlgCode() noexcept; // hides non-virtual function of parent
 	void OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent
-	void OnPaint();
-	void OnSetFocus(CWnd* oldWindow);
-protected:
+	void OnPaint(); // hides non-virtual function of parent
+	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
+  protected:
 DECLARE_MESSAGE_MAP()
 };
