@@ -372,12 +372,12 @@ void CommandSelect::execute(OdEdCommandContext* commandContext) {
 	UserIo->setPickfirst(nullptr);
 	const auto SelectOptions {OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty};
 	try {
-		OdDbSelectionSetPtr SelectionSet {UserIo->select(L"", SelectOptions, View->editorObject().workingSSet())};
-		View->editorObject().SetWorkingSelectionSet(SelectionSet);
+		OdDbSelectionSetPtr SelectionSet {UserIo->select(L"", SelectOptions, View->EditorObject().workingSSet())};
+		View->EditorObject().SetWorkingSelectionSet(SelectionSet);
 	} catch (const OdError&) {
 		throw OdEdCancel();
 	}
-	View->editorObject().SelectionSetChanged();
+	View->EditorObject().SelectionSetChanged();
 	Database->pageObjects();
 }
 
@@ -503,7 +503,7 @@ void AeSysDoc::OnEditConsole() {
 	try {
 		if (m_Viewer && m_Viewer->isGettingString()) {
 
-			m_Viewer->respond(UserIoConsole()->getString(m_Viewer->prompt(), m_Viewer->inpOptions(), nullptr));
+			m_Viewer->Respond(UserIoConsole()->getString(m_Viewer->prompt(), m_Viewer->inpOptions(), nullptr));
 			m_ConsoleResponded = true;
 
 		} else {
@@ -748,7 +748,7 @@ void AeSysDoc::DeleteSelection(const bool force) {
 			ExecuteCommand(L"erase");
 		}
 		if (m_Viewer) {
-			m_Viewer->editorObject().SetEntityCenters();
+			m_Viewer->EditorObject().SetEntityCenters();
 		}
 	}
 }
@@ -2867,7 +2867,7 @@ void AeSysDoc::OnEditClearSelection() {
 	while (ViewPosition != nullptr) {
 		const auto View {GetNextView(ViewPosition)};
 		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0 && View->GetDocument() == this) {
-			dynamic_cast<AeSysView*>(View)->editorObject().Unselect();
+			dynamic_cast<AeSysView*>(View)->EditorObject().Unselect();
 			Cleared = true;
 		}
 	}
@@ -2926,7 +2926,7 @@ void AeSysDoc::OnEditSelectAll() {
 	while (ViewPosition != nullptr) {
 		const auto View {GetNextView(ViewPosition)};
 		if (CString(View->GetRuntimeClass()->m_lpszClassName).Compare(L"AeSysView") == 0 && View->GetDocument() == this) {
-			dynamic_cast<AeSysView*>(View)->editorObject().SelectionSetChanged();
+			dynamic_cast<AeSysView*>(View)->EditorObject().SelectionSetChanged();
 		}
 	}
 }

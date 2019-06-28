@@ -1650,7 +1650,7 @@ void AeSysView::OnRefresh() {
 }
 
 bool AeSysView::BeginDragCallback(const OdGePoint3d& point) {
-	OdSaveState<Mode> saved_m_mode(m_mode, kDragDrop);
+	OdSaveState<Mode> SaveMode(m_mode, kDragDrop);
 	GetDocument()->StartDrag(point);
 	return true;
 }
@@ -1664,15 +1664,14 @@ struct ReactorSort {
 		auto SecondObject {secondObjectId.openObject()};
 		if (SecondObject.isNull()) { return false; }
 		const auto SecondObjectReactors {SecondObject->getPersistentReactors()};
-		if (SecondObjectReactors.contains(firstObjectId)) { return true; }
-		return false;
+		return SecondObjectReactors.contains(firstObjectId);
 	}
 };
 
-void transform_object_set(OdDbObjectIdArray& objects, const OdGeMatrix3d& transformMatrix) {
+void TransformObjectSet(OdDbObjectIdArray& objects, const OdGeMatrix3d& transformMatrix) {
 	std::sort(objects.begin(), objects.end(), ReactorSort());
-	for (auto& object : objects) {
-		OdDbEntityPtr Entity {object.safeOpenObject(OdDb::kForWrite)};
+	for (auto& Object : objects) {
+		OdDbEntityPtr Entity {Object.safeOpenObject(OdDb::kForWrite)};
 		Entity->transformBy(transformMatrix);
 	}
 }
@@ -1689,20 +1688,20 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, const DROPEFFECT dropEffect, 
 			auto SelectionSet {Document->SelectionSet()};
 			auto SelectionSetObjects {SelectionSet->objectIdArray()};
 			if (GetKeyState(VK_CONTROL) & 0xff00) {
-				auto pIdMapping {OdDbIdMapping::createObject()};
+				auto IdMapping {OdDbIdMapping::createObject()};
 				auto HostDatabase {Database};
-				HostDatabase->deepCloneObjects(SelectionSetObjects, HostDatabase->getActiveLayoutBTRId(), *pIdMapping);
+				HostDatabase->deepCloneObjects(SelectionSetObjects, HostDatabase->getActiveLayoutBTRId(), *IdMapping);
 				for (auto& SelectionSetObject : SelectionSetObjects) {
 					OdDbIdPair Pair(SelectionSetObject);
-					pIdMapping->compute(Pair);
+					IdMapping->compute(Pair);
 					SelectionSetObject = Pair.value();
 				}
 			}
-			transform_object_set(SelectionSetObjects, TransformMatrix);
+			TransformObjectSet(SelectionSetObjects, TransformMatrix);
 		} else {
 			try {
-				auto pTmpDb {theApp.readFile(ClipboardData->tempFileName(), true, false, Oda::kShareDenyNo)};
-				Database->insert(TransformMatrix, pTmpDb);
+				auto TemporaryDatabase {theApp.readFile(ClipboardData->tempFileName(), true, false, Oda::kShareDenyNo)};
+				Database->insert(TransformMatrix, TemporaryDatabase);
 			} catch (const OdError& Error) {
 				AfxMessageBox(Error.description());
 				return FALSE;
@@ -1760,18 +1759,18 @@ void AeSysView::OnUpdate(CView* sender, const LPARAM hint, CObject* hintObject) 
 	ReleaseDC(DeviceContext);
 }
 
-void AeSysView::respond(const OdString& s) {
+void AeSysView::Respond(const OdString& string) {
 	m_response.m_type = Response::kString;
-	m_response.m_string = s;
+	m_response.m_string = string;
 }
 
-CRect AeSysView::viewportRect() const {
+CRect AeSysView::ViewportRectangle() const {
 	CRect ClientRectangle;
 	GetClientRect(&ClientRectangle);
 	return ClientRectangle;
 }
 
-CRect AeSysView::viewRect(OdGsView* view) {
+CRect AeSysView::ViewRectangle(OdGsView* view) {
 	OdGePoint3d LowerLeftPoint;
 	OdGePoint3d UpperRightPoint;
 	view->getViewport(reinterpret_cast<OdGePoint2d&>(LowerLeftPoint), reinterpret_cast<OdGePoint2d&>(UpperRightPoint));
@@ -1838,8 +1837,8 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 	}
 }
 
-void AeSysView::OnKeyDown(const unsigned nChar, const unsigned repeatCount, const unsigned flags) {
-	switch (nChar) {
+void AeSysView::OnKeyDown(const unsigned character, const unsigned repeatCount, const unsigned flags) {
+	switch (character) {
 		case VK_ESCAPE:
 			break;
 		case VK_F5:
@@ -1849,8 +1848,9 @@ void AeSysView::OnKeyDown(const unsigned nChar, const unsigned repeatCount, cons
 			GetDocument()->DeleteSelection(false);
 			PostMessageW(WM_PAINT);
 			break;
+		default: ;
 	}
-	__super::OnKeyDown(nChar, repeatCount, flags);
+	__super::OnKeyDown(character, repeatCount, flags);
 }
 
 void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
@@ -2079,17 +2079,16 @@ OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 	return m_Editor.Command(commandName);
 }
 
-OdExEditorObject& AeSysView::editorObject() noexcept {
+OdExEditorObject& AeSysView::EditorObject() noexcept {
 	return m_Editor;
 }
 
-const OdExEditorObject& AeSysView::editorObject() const noexcept {
+const OdExEditorObject& AeSysView::EditorObject() const noexcept {
 	return m_Editor;
 }
 
-bool AeSysView::isModelSpaceView() const {
+bool AeSysView::IsModelSpaceView() const {
 	return getDatabase()->getTILEMODE();
-	//return m_PsOverall;
 }
 
 OdIntPtr AeSysView::drawableFilterFunctionId(OdDbStub* viewportId) const {
@@ -2122,7 +2121,7 @@ void AeSysView::OnActivateFrame(const unsigned state, CFrameWnd* deactivateFrame
 	CView::OnActivateFrame(state, deactivateFrame);
 }
 
-void AeSysView::OnActivateView(BOOL activate, CView* activateView, CView* deactiveView) {
+void AeSysView::OnActivateView(BOOL activate, CView* activateView, CView* deactivateView) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 	if (activate) {
 		if (CopyAcceleratorTableW(MainFrame->m_hAccelTable, nullptr, 0) == 0) { // Accelerator table was destroyed when keyboard focus was killed - reload resource
@@ -2133,7 +2132,7 @@ void AeSysView::OnActivateView(BOOL activate, CView* activateView, CView* deacti
 	ActiveViewScaleProperty.SetValue(m_WorldScale);
 	ActiveViewScaleProperty.Enable(activate);
 	SetCursorPosition(OdGePoint3d::kOrigin);
-	CView::OnActivateView(activate, activateView, deactiveView);
+	CView::OnActivateView(activate, activateView, deactivateView);
 }
 
 void AeSysView::OnSetFocus(CWnd* oldWindow) {
@@ -2159,15 +2158,15 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 			unsigned HorizontalPages;
 			unsigned VerticalPages;
 			NumPages(deviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages);
-			const auto dX {(printInformation->m_nCurPage - 1) % HorizontalPages * HorizontalSizeInInches};
-			const auto dY {(printInformation->m_nCurPage - 1) / HorizontalPages * VerticalSizeInInches};
+			const auto X {(printInformation->m_nCurPage - 1) % HorizontalPages * HorizontalSizeInInches};
+			const auto Y {(printInformation->m_nCurPage - 1) / HorizontalPages * VerticalSizeInInches};
 			m_ViewTransform.SetProjectionPlaneField(0.0, 0.0, HorizontalSizeInInches, VerticalSizeInInches);
-			const auto Target(OdGePoint3d(dX, dY, 0.0));
+			const auto Target(OdGePoint3d(X, Y, 0.0));
 			m_ViewTransform.SetTarget(Target);
 			const auto Position(Target + OdGeVector3d::kZAxis);
 			m_ViewTransform.SetPosition_(Position);
 			m_ViewTransform.SetViewUp(OdGeVector3d::kYAxis);
-			// <tas="Near Far clipping on Plot DC prepare?
+			// <tas="Near Far clipping on Plot DC prepare?>
 			m_ViewTransform.SetNearClipDistance(-1000.);
 			m_ViewTransform.SetFarClipDistance(1000.);
 			//</tas>
@@ -2224,47 +2223,47 @@ void AeSysView::PopModelTransform() {
 
 void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 	if (m_ViewBackgroundImage && static_cast<HBITMAP>(m_BackgroundImageBitmap) != nullptr) {
-		const auto iWidDst {static_cast<int>(m_Viewport.WidthInPixels())};
-		const auto iHgtDst {static_cast<int>(m_Viewport.HeightInPixels())};
+		const auto DestinationWidth {static_cast<int>(m_Viewport.WidthInPixels())};
+		const auto DestinationHeight {static_cast<int>(m_Viewport.HeightInPixels())};
 		BITMAP bm;
 		m_BackgroundImageBitmap.GetBitmap(&bm);
-		CDC dcMem;
-		dcMem.CreateCompatibleDC(nullptr);
-		const auto Bitmap {dcMem.SelectObject(&m_BackgroundImageBitmap)};
+		CDC MemoryDeviceContext;
+		MemoryDeviceContext.CreateCompatibleDC(nullptr);
+		const auto Bitmap {MemoryDeviceContext.SelectObject(&m_BackgroundImageBitmap)};
 		const auto Palette {deviceContext->SelectPalette(&m_BackgroundImagePalette, FALSE)};
 		deviceContext->RealizePalette();
 		const auto Target {m_ViewTransform.Target()};
-		const auto ptTargetOver {m_OverviewViewTransform.Target()};
-		const auto dU {Target.x - ptTargetOver.x};
-		const auto dV {Target.y - ptTargetOver.y};
+		const auto OverviewTarget {m_OverviewViewTransform.Target()};
+		const auto U {Target.x - OverviewTarget.x};
+		const auto V {Target.y - OverviewTarget.y};
 
 		// Determine the region of the bitmap to transfer to display
 		CRect rcWnd;
-		rcWnd.left = EoRound((m_ViewTransform.FieldWidthMinimum() - OverviewUMin() + dU) / OverviewUExt() * static_cast<double>(bm.bmWidth));
-		rcWnd.top = EoRound((1. - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + dV) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
-		rcWnd.right = EoRound((m_ViewTransform.FieldWidthMaximum() - OverviewUMin() + dU) / OverviewUExt() * static_cast<double>(bm.bmWidth));
-		rcWnd.bottom = EoRound((1. - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + dV) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
+		rcWnd.left = EoRound((m_ViewTransform.FieldWidthMinimum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
+		rcWnd.top = EoRound((1. - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
+		rcWnd.right = EoRound((m_ViewTransform.FieldWidthMaximum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
+		rcWnd.bottom = EoRound((1. - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
 		const auto SourceWidth {rcWnd.Width()};
 		const auto SourceHeight {rcWnd.Height()};
-		deviceContext->StretchBlt(0, 0, iWidDst, iHgtDst, &dcMem, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), SourceWidth, SourceHeight, SRCCOPY);
-		dcMem.SelectObject(Bitmap);
+		deviceContext->StretchBlt(0, 0, DestinationWidth, DestinationHeight, &MemoryDeviceContext, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), SourceWidth, SourceHeight, SRCCOPY);
+		MemoryDeviceContext.SelectObject(Bitmap);
 		deviceContext->SelectPalette(Palette, FALSE);
 	}
 }
 
-double AeSysView::OverviewUExt() noexcept {
+double AeSysView::OverviewUExt() const noexcept {
 	return m_OverviewViewTransform.FieldWidth();
 }
 
-double AeSysView::OverviewUMin() noexcept {
+double AeSysView::OverviewUMin() const noexcept {
 	return m_OverviewViewTransform.FieldWidthMinimum();
 }
 
-double AeSysView::OverviewVExt() noexcept {
+double AeSysView::OverviewVExt() const noexcept {
 	return m_OverviewViewTransform.FieldHeight();
 }
 
-double AeSysView::OverviewVMin() noexcept {
+double AeSysView::OverviewVMin() const noexcept {
 	return m_OverviewViewTransform.FieldHeightMinimum();
 }
 

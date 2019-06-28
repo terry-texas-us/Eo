@@ -76,8 +76,8 @@ protected:
 	OdGsLayoutHelperPtr m_pPrinterDevice;
 	HDC m_hWindowDC {nullptr};
 	int m_pagingCounter {0};
-	CRect viewportRect() const;
-	static CRect viewRect(OdGsView*);
+	CRect ViewportRectangle() const;
+	static CRect ViewRectangle(OdGsView* view);
 	AeSysView() noexcept; // protected constructor used by dynamic creation
 	void PreparePlotStyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
 	unsigned long glyphSize(GlyphType glyphType) const override;
@@ -107,11 +107,11 @@ DECLARE_DYNCREATE(AeSysView)
 
 	int inpOptions() const noexcept { return m_inpOptions; }
 
-	void respond(const OdString& s);
+	void Respond(const OdString& string);
 	OdEdCommandPtr command(const OdString& commandName);
-	OdExEditorObject& editorObject() noexcept;
-	const OdExEditorObject& editorObject() const noexcept;
-	bool isModelSpaceView() const;
+	OdExEditorObject& EditorObject() noexcept;
+	const OdExEditorObject& EditorObject() const noexcept;
+	bool IsModelSpaceView() const;
 	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const override; // OdGiContextForDbDatabase
 	unsigned long drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) override; // OdGiContextForDbDatabase
 	// </command_view>
@@ -124,7 +124,7 @@ protected:
 	BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
 	void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
 	void OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) override;
-	void OnActivateView(BOOL bActivate, CView* pActivateView, CView* pDeactiveView) override;
+	void OnActivateView(BOOL activate, CView* activateView, CView* deactivateView) override;
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
@@ -272,8 +272,8 @@ public:
 protected: // Windows messages
 	void OnContextMenu(CWnd*, CPoint point); // hides non-virtual function of parent
 public: // Input message handler member functions
-	void OnChar(unsigned characterCodeValue, unsigned RepeatCount, unsigned flags); // hides non-virtual function of parent
-	void OnKeyDown(unsigned nChar, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
+	void OnChar(unsigned characterCodeValue, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
+	void OnKeyDown(unsigned character, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnMButtonDown(unsigned flags, CPoint point); // hides non-virtual function of parent
@@ -384,10 +384,10 @@ public: // Input message handler member functions
 
 	/// <summary>Determines the number of pages for 1 to 1 print</summary>
 	unsigned NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages);
-	double OverviewUExt() noexcept;
-	double OverviewUMin() noexcept;
-	double OverviewVExt() noexcept;
-	double OverviewVMin() noexcept;
+	double OverviewUExt() const noexcept;
+	double OverviewUMin() const noexcept;
+	double OverviewVExt() const noexcept;
+	double OverviewVMin() const noexcept;
 	CPoint DoViewportProjection(const EoGePoint4d& point) const noexcept;
 	void DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept;
 	void DoViewportProjection(CPoint* pnt, EoGePoint4dArray& points) const;
@@ -912,7 +912,7 @@ protected:
 	void OnUpdateViewerRegen(CCmdUI* commandUserInterface);
 DECLARE_MESSAGE_MAP()
 public:
-	BOOL OnDrop(COleDataObject* pDataObject, DROPEFFECT dropEffect, CPoint point) override;
+	BOOL OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint point) override;
 	DROPEFFECT OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) override;
 	BOOL OnIdle(long count);
 };
