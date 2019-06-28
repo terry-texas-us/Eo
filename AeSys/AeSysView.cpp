@@ -2062,7 +2062,7 @@ struct OdExRegenCmd : OdEdCommand {
 
 	const OdString globalName() const override { return L"REGEN"; }
 
-	[[nodiscard]] long flags() const override {
+	long flags() const override {
 		return OdEdCommand::flags() | kNoUndoMarker;
 	}
 

@@ -10,43 +10,43 @@
 
 class OdExZoomCmd : public OdEdCommand {
 public:
-	[[nodiscard]] const OdString groupName() const override;
-	[[nodiscard]] const OdString globalName() const override;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdEx3dOrbitCmd : public OdEdCommand {
 public:
-	[[nodiscard]] const OdString groupName() const override;
-	[[nodiscard]] const OdString globalName() const override;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExDollyCmd : public OdEdCommand {
 public:
-	[[nodiscard]] const OdString groupName() const override;
-	[[nodiscard]] const OdString globalName() const override;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExInteractivityModeCmd : public OdEdCommand {
 public:
-	[[nodiscard]] const OdString groupName() const override;
-	[[nodiscard]] const OdString globalName() const override;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExCollideCmd : public OdEdCommand {
 public:
-	[[nodiscard]] const OdString groupName() const override;
-	[[nodiscard]] const OdString globalName() const override;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
 class OdExCollideAllCmd : public OdEdCommand {
 public:
-	[[nodiscard]] const OdString groupName() const override;
-	[[nodiscard]] const OdString globalName() const override;
+	const OdString groupName() const override;
+	const OdString globalName() const override;
 	void execute(OdEdCommandContext* edCommandContext) override;
 };
 
@@ -70,11 +70,11 @@ class OdExEditorObject {
 
 	unsigned long m_flags;
 public:
-	[[nodiscard]] const OdGsView* ActiveView() const;
+	const OdGsView* ActiveView() const;
 	OdGsView* ActiveView();
-	[[nodiscard]] const OdGsView* ActiveTopView() const;
+	const OdGsView* ActiveTopView() const;
 	OdGsView* ActiveTopView();
-	[[nodiscard]] OdDbObjectId ActiveViewportId() const;
+	OdDbObjectId ActiveViewportId() const;
 	void UcsPlane(OdGePlane& plane) const;
 	void Dolly(int x, int y);
 	static void ZoomAt(OdGsView* view, int x, int y, short zDelta);
@@ -86,16 +86,16 @@ public:
 	OdExEditorObject();
 	void Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext);
 	void Uninitialize();
-	[[nodiscard]] OdDbSelectionSetPtr workingSSet() const;
+	OdDbSelectionSetPtr workingSSet() const;
 	void SetWorkingSelectionSet(OdDbSelectionSet* selectionSet);
 	void SelectionSetChanged();
-	[[nodiscard]] OdGiDrawablePtr SnapDrawable() const;
+	OdGiDrawablePtr SnapDrawable() const;
 	bool Unselect();
 	OdEdCommandPtr Command(const OdString& commandName);
-	[[nodiscard]] OdGePoint3d ToEyeToWorld(int x, int y) const;
+	OdGePoint3d ToEyeToWorld(int x, int y) const;
 	bool ToUcsToWorld(OdGePoint3d& wcsPt) const;
-	[[nodiscard]] OdGePoint3d ToScreenCoordinates(int x, int y) const;
-	[[nodiscard]] OdGePoint3d ToScreenCoordinates(const OdGePoint3d& worldPoint) const;
+	OdGePoint3d ToScreenCoordinates(int x, int y) const;
+	OdGePoint3d ToScreenCoordinates(const OdGePoint3d& worldPoint) const;
 
 	class OleDragCallback {
 	public:
@@ -112,15 +112,15 @@ public:
 	bool OnCtrlClick();
 	void OnDestroy();
 
-	[[nodiscard]] bool HasSelection() const { return workingSSet()->numEntities() > 0; }
+	bool HasSelection() const { return workingSSet()->numEntities() > 0; }
 
-	[[nodiscard]] bool IsSnapOn() const noexcept { return m_flags & kSnapOn ? true : false; }
+	bool IsSnapOn() const noexcept { return m_flags & kSnapOn ? true : false; }
 
 	void SetSnapOn(const bool snapOn) noexcept {
 		snapOn ? (m_flags |= kSnapOn) : m_flags &= ~kSnapOn;
 	}
 
-	[[nodiscard]] bool IsOrbitOn() const noexcept { return m_flags & kOrbitOn ? true : false; }
+	bool IsOrbitOn() const noexcept { return m_flags & kOrbitOn ? true : false; }
 
 	void TurnOrbitOn(bool orbitOn);
 	bool OnOrbitBeginDrag(int x, int y);
@@ -128,7 +128,7 @@ public:
 	bool OnZoomWindowBeginDrag(int x, int y);
 	bool OnZoomWindowEndDrag(int x, int y);
 	bool Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint = nullptr);
-	[[nodiscard]] unsigned GetSnapModes() const;
+	unsigned GetSnapModes() const;
 	void SetSnapModes(bool snapOn, unsigned snapModes);
 	void ResetSnapManager();
 	void InitializeSnapping(OdGsView* view, OdEdInputTracker* inputTracker);
@@ -148,7 +148,7 @@ public:
 	void SetTracker(OdEdInputTracker* inputTracker);
 	bool TrackString(const OdString& value);
 	bool TrackPoint(const OdGePoint3d& point);
-	[[nodiscard]] bool HasDatabase() const;
+	bool HasDatabase() const;
 };
 
 inline OdGiDrawablePtr OdExEditorObject::SnapDrawable() const {

@@ -127,11 +127,11 @@ public:
 	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, char item);
 	~CPsListStyleData();
 
-	[[nodiscard]] OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; }
+	OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; }
 
-	[[nodiscard]] CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; }
+	CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; }
 
-	[[nodiscard]] int GetActiveListIndex() const noexcept { return m_iActiveListIndex; }
+	int GetActiveListIndex() const noexcept { return m_iActiveListIndex; }
 
 	bool ReplaceBitmapColorInfo(COLORREF color, int item);
 	bool SetActiveListIndex(int index, bool bitmapInfo = false);
@@ -201,7 +201,7 @@ public:
 	void SetFileBufPath(OdString filePath);
 	void AddNewPlotStyle(const wchar_t* styleName);
 
-	[[nodiscard]] const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; }
+	const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; }
 
 protected:
 	void OnLineweightBtn();

@@ -18,18 +18,18 @@ public:
 	~EoGeReferenceSystem() = default;
 
 	void GetUnitNormal(OdGeVector3d& normal);
-	[[nodiscard]] OdGePoint3d Origin() const noexcept;
+	OdGePoint3d Origin() const noexcept;
 	void Read(EoDbFile& file);
 	/// <summary>Takes the current reference directions and rescales using passed character cell state.</summary>
 	void Rescale(const EoDbCharacterCellDefinition& characterCellDefinition);
-	[[nodiscard]] double Rotation() const noexcept;
+	double Rotation() const noexcept;
 	void Set(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept;
 	void SetOrigin(const OdGePoint3d& origin) noexcept;
 	void SetXDirection(const OdGeVector3d& xDirection) noexcept;
 	void SetYDirection(const OdGeVector3d& yDirection) noexcept;
 	void TransformBy(const EoGeMatrix3d& transformMatrix);
-	[[nodiscard]] EoGeMatrix3d TransformMatrix() const;
+	EoGeMatrix3d TransformMatrix() const;
 	void Write(EoDbFile& file) const;
-	[[nodiscard]] OdGeVector3d XDirection() const noexcept;
-	[[nodiscard]] OdGeVector3d YDirection() const noexcept;
+	OdGeVector3d XDirection() const noexcept;
+	OdGeVector3d YDirection() const noexcept;
 };

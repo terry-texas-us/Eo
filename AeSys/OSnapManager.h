@@ -163,9 +163,9 @@ class OSnapManager : public OdBaseSnapManager {
 protected:
 	OSnapManager() = default;
 public:
-	[[nodiscard]] unsigned SnapModes() const noexcept override;
+	unsigned SnapModes() const noexcept override;
 	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	[[nodiscard]] unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
+	unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
 };

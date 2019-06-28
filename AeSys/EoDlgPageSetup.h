@@ -8,8 +8,8 @@ class EoDlgPageSetup final : public CDialog {
 	OdSmartPtr<OdDbUserIO> m_pIO;
 	OdString GetCanonicalByLocaleMediaName(OdString localeMediaName);
 	void SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames);
-	[[nodiscard]] bool IsWHSwap() const;
-	[[nodiscard]] bool IsPaperWidthLessHeight() const;
+	bool IsWHSwap() const;
+	bool IsPaperWidthLessHeight() const;
 	void UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits);
 	OdDbPlotSettings::PlotPaperUnits GetMediaNativePPU();
 public:
@@ -96,6 +96,6 @@ DECLARE_MESSAGE_MAP()
 	void FillMMInches();
 	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, CString pattern);
 	void FillWindowArea();
-	[[nodiscard]] bool ViewsExist() const;
-	[[nodiscard]] bool IsModelSpacePageSetup() const;
+	bool ViewsExist() const;
+	bool IsModelSpacePageSetup() const;
 };

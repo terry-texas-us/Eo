@@ -73,17 +73,17 @@ public:
 	virtual void ModifyState() noexcept;
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 
-	[[nodiscard]] short ColorIndex() const noexcept { return m_ColorIndex; }
+	short ColorIndex() const noexcept { return m_ColorIndex; }
 
-	[[nodiscard]] OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
+	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
 
-	[[nodiscard]] CString FormatColorIndex() const;
-	[[nodiscard]] CString FormatLinetypeIndex() const;
+	CString FormatColorIndex() const;
+	CString FormatLinetypeIndex() const;
 
-	[[nodiscard]] short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
+	short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
 
-	[[nodiscard]] short LogicalColorIndex() const noexcept;
-	[[nodiscard]] short LogicalLinetypeIndex() const noexcept;
+	short LogicalColorIndex() const noexcept;
+	short LogicalLinetypeIndex() const noexcept;
 
 	void SetColorIndex(const short colorIndex) noexcept { m_ColorIndex = colorIndex; }
 

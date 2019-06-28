@@ -317,9 +317,9 @@ AeSys::AeSys() noexcept {
 	m_HighColorMode = ClientDeviceContext.GetDeviceCaps(BITSPIXEL) > 8; // Detect color depth. 256 color toolbars can be used in the high or true color modes only
 }
 
-#define EO_REGISTRY_BUFFER_SIZE 1040
-#define EO_REGISTRY_MAX_PROFILE_NAME 128
-#define EO_REGISTRY_MAX_PATH 1024
+constexpr int gc_RegistryBufferSize = 1040;
+constexpr int gc_RegistryMaxProfileName = 128;
+constexpr int gc_RegistryMaxPath = 1024;
 CString GetRegistryAcadLocation();
 CString GetRegistryAcadProfilesKey();
 bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept;
@@ -329,10 +329,10 @@ static CString FindConfigPath(const CString& configType) {
 	auto SubKey {GetRegistryAcadProfilesKey()};
 	if (!SubKey.IsEmpty()) {
 		SubKey += L"\\General";
-		wchar_t SearchValue[EO_REGISTRY_MAX_PATH] {L"\0"};
-		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, configType, SearchValue, EO_REGISTRY_MAX_PATH)) {
-			wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
-			ExpandEnvironmentStringsW(SearchValue, ExpandedPath, EO_REGISTRY_MAX_PATH);
+		wchar_t SearchValue[gc_RegistryMaxPath] {L"\0"};
+		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, configType, SearchValue, gc_RegistryMaxPath)) {
+			wchar_t ExpandedPath[gc_RegistryMaxPath] {L"\0"};
+			ExpandEnvironmentStringsW(SearchValue, ExpandedPath, gc_RegistryMaxPath);
 			return CString(ExpandedPath);
 		}
 	}
@@ -1653,16 +1653,16 @@ bool GetRegistryString(const HKEY key, const wchar_t* subKey, const wchar_t* nam
 	auto ReturnValue {false};
 	HKEY OpenedKey;
 	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
-		unsigned long RegistryBufferSize {EO_REGISTRY_BUFFER_SIZE};
-		unsigned char Data[EO_REGISTRY_BUFFER_SIZE] {0};
-		wchar_t Data_t[EO_REGISTRY_BUFFER_SIZE] {L""};
+		unsigned long RegistryBufferSize {gc_RegistryBufferSize};
+		unsigned char Data[gc_RegistryBufferSize] {0};
+		wchar_t Data_t[gc_RegistryBufferSize] {L""};
 		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, Data, &RegistryBufferSize) == ERROR_SUCCESS) {
-			memcpy_s(&Data_t, EO_REGISTRY_BUFFER_SIZE, &Data, RegistryBufferSize);
+			memcpy_s(&Data_t, gc_RegistryBufferSize, &Data, RegistryBufferSize);
 			ReturnValue = true;
 		} else {
 			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, Data_t, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
 		}
-		if (size < EO_REGISTRY_BUFFER_SIZE) {
+		if (size < gc_RegistryBufferSize) {
 			swprintf_s(value, static_cast<size_t>(size), L"%s\0", Data_t);
 		} else {
 			wcsncpy(value, Data_t, static_cast<size_t>(size - 1));
@@ -1683,8 +1683,8 @@ CString GetRegistryAcadLocation() {
 	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", SubVersion, 32) == 0) { return L""; }
 	SubKey += L"\\";
 	SubKey += SubVersion;
-	wchar_t SearchPaths[EO_REGISTRY_MAX_PATH] {L""};
-	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"AcadLocation", SearchPaths, EO_REGISTRY_MAX_PATH) == 0) { return L""; }
+	wchar_t SearchPaths[gc_RegistryMaxPath] {L""};
+	if (GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"AcadLocation", SearchPaths, gc_RegistryMaxPath) == 0) { return L""; }
 	return CString(SearchPaths);
 }
 
@@ -1699,8 +1699,8 @@ CString GetRegistryAcadProfilesKey() {
 	SubKey += L"\\";
 	SubKey += SubVersion;
 	SubKey += L"\\Profiles";
-	wchar_t Profile[EO_REGISTRY_MAX_PROFILE_NAME] {L"\0"};
-	if (GetRegistryString(HKEY_CURRENT_USER, SubKey, L"", Profile, EO_REGISTRY_MAX_PROFILE_NAME) == 0) { return L""; }
+	wchar_t Profile[gc_RegistryMaxProfileName] {L"\0"};
+	if (GetRegistryString(HKEY_CURRENT_USER, SubKey, L"", Profile, gc_RegistryMaxProfileName) == 0) { return L""; }
 	SubKey += L"\\";
 	SubKey += Profile;
 	return SubKey;
@@ -1711,15 +1711,15 @@ OdString AeSys::getSubstituteFont(const OdString& fontName, OdFontType fontType)
 }
 
 OdString AeSys::getFontMapFileName() const {
-	wchar_t FontMapFile[EO_REGISTRY_MAX_PATH] {L"\0"};
-	wchar_t ExpandedPath[EO_REGISTRY_MAX_PATH] {L"\0"};
+	wchar_t FontMapFile[gc_RegistryMaxPath] {L"\0"};
+	wchar_t ExpandedPath[gc_RegistryMaxPath] {L"\0"};
 	auto SubKey {GetRegistryAcadProfilesKey()};
 	if (!SubKey.IsEmpty()) {
 		SubKey += L"\\Editor Configuration";
-		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, L"FontMappingFile", FontMapFile, EO_REGISTRY_MAX_PATH) == 0) {
+		if (GetRegistryString(HKEY_CURRENT_USER, SubKey, L"FontMappingFile", FontMapFile, gc_RegistryMaxPath) == 0) {
 			return L"";
 		}
-		ExpandEnvironmentStringsW(FontMapFile, ExpandedPath, EO_REGISTRY_MAX_PATH);
+		ExpandEnvironmentStringsW(FontMapFile, ExpandedPath, gc_RegistryMaxPath);
 		return OdString(ExpandedPath);
 	}
 	return L"C:\\acad.fmp";

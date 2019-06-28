@@ -8,8 +8,8 @@ class EoGsModelTransform {
 public:
 	EoGsModelTransform();
 	~EoGsModelTransform() = default;
-	[[nodiscard]] EoGeMatrix3d ModelMatrix() const noexcept;
-	[[nodiscard]] unsigned Depth() const noexcept;
+	EoGeMatrix3d ModelMatrix() const noexcept;
+	unsigned Depth() const noexcept;
 	/// <summary> Removes the top transformation off the current transformation stack.</summary>
 	void PopModelTransform();
 	/// <summary> The specified transformation is concatenated to the current model transformation (which is initially the identity transform).</summary>

@@ -559,11 +559,11 @@ public:
 		m_LastInput = lastInput;
 	}
 
-	[[nodiscard]] const OdString& LastInput() const noexcept {
+	const OdString& LastInput() const noexcept {
 		return m_LastInput;
 	}
 
-	[[nodiscard]] bool IsDatabaseModified() const noexcept {
+	bool IsDatabaseModified() const noexcept {
 		return m_Modified;
 	}
 

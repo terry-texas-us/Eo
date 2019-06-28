@@ -19,14 +19,14 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
+	OdGePoint3d GetCtrlPt() const override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
+	OdGePoint3d GoToNxtCtrlPt() const override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -48,9 +48,9 @@ DECLARE_DYNAMIC(EoDbDimension)
 	const EoDbFontDefinition& FontDef() noexcept;
 	const EoGeLineSeg3d& Line() noexcept;
 	void GetPts(OdGePoint3d& ptBeg, OdGePoint3d& ptEnd);
-	[[nodiscard]] EoGeReferenceSystem ReferenceSystem() const;
-	[[nodiscard]] double Length() const;
-	[[nodiscard]] double ParametricRelationshipOf(const OdGePoint3d& point) const;
+	EoGeReferenceSystem ReferenceSystem() const;
+	double Length() const;
+	double ParametricRelationshipOf(const OdGePoint3d& point) const;
 	void SetDefaultNote();
 	void SetFontDefinition(const EoDbFontDefinition& fontDefinition) noexcept;
 	void SetStartPoint(const OdGePoint3d& startPoint);

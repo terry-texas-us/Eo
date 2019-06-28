@@ -49,7 +49,7 @@
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <LanguageStandard>stdcpp14</LanguageStandard>
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
     </ClCompile>

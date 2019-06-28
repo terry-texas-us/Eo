@@ -7,7 +7,7 @@ class CNamedViewListCtrl final : public CListCtrl {
 	void setViewId(int item, const OdDbObjectId& id);
 	void setView(int item, const OdDbViewTableRecord* view);
 public:
-	[[nodiscard]] OdDbObjectId viewId(int item) const;
+	OdDbObjectId viewId(int item) const;
 	OdDbViewTableRecordPtr view(int item);
 	OdDbViewTableRecordPtr selectedView();
 	void InsertItem(int i, const OdDbViewTableRecord* pView);

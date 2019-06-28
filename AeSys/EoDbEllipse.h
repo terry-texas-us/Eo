@@ -22,15 +22,15 @@ public:
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
-	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
+	OdGePoint3d GetCtrlPt() const noexcept override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
+	OdGePoint3d GoToNxtCtrlPt() const override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
@@ -45,17 +45,17 @@ public:
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	[[nodiscard]] OdGePoint3d Center() const noexcept;
+	OdGePoint3d Center() const noexcept;
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 	void CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) override;
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>
 	void GetBoundingBox(OdGePoint3dArray&) const;
-	[[nodiscard]] OdGePoint3d EndPoint() const;
-	[[nodiscard]] OdGeVector3d MajorAxis() const noexcept;
-	[[nodiscard]] OdGeVector3d MinorAxis() const noexcept;
-	[[nodiscard]] double SweepAngle() const noexcept;
+	OdGePoint3d EndPoint() const;
+	OdGeVector3d MajorAxis() const noexcept;
+	OdGeVector3d MinorAxis() const noexcept;
+	double SweepAngle() const noexcept;
 	void GetXYExtents(OdGePoint3d, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 	void SetCenter(const OdGePoint3d& center) noexcept;
@@ -67,7 +67,7 @@ public:
 	/// <summary>Ellipse if set to a radial arc defined by three points</summary>
 	EoDbEllipse& SetTo3PointArc(const OdGePoint3d& startPoint, const OdGePoint3d& intermediatePoint, const OdGePoint3d& endPoint);
 	EoDbEllipse& SetToCircle(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
-	[[nodiscard]] OdGePoint3d StartPoint() const;
+	OdGePoint3d StartPoint() const;
 	double SwpAngToPt(const OdGePoint3d& point);
 
 	static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);

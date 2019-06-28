@@ -10,7 +10,7 @@ DECLARE_DYNCREATE(EoDlgPlotStyleManager)
 	EoDlgPlotStyleManager(CWnd* parent = nullptr);
 	bool SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable);
 	void SetFileBufPath(const OdString& filePath);
-	[[nodiscard]] OdPsPlotStyleTablePtr GetPlotStyleTable() const;
+	OdPsPlotStyleTablePtr GetPlotStyleTable() const;
 
 	// Attributes
 	EoDlgPlotStyleEditor_GeneralPropertyPage m_page1;

@@ -40,14 +40,14 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
-	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 	void Display(AeSysView* view, CDC* deviceContext) override;
 	void FormatExtra(CString& extra) const override;
 	void FormatGeometry(CString& geometry) const override;
 	void GetAllPoints(OdGePoint3dArray& points) const override;
-	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
+	OdGePoint3d GetCtrlPt() const noexcept override;
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
-	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const noexcept override;
+	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
@@ -61,16 +61,16 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 	bool Write(EoDbFile& file) const override;
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
-	[[nodiscard]] EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
-	[[nodiscard]] unsigned short Columns() const noexcept;
-	[[nodiscard]] double ColumnSpacing() const noexcept;
-	[[nodiscard]] CString Name() const;
-	[[nodiscard]] OdGeVector3d Normal() const noexcept;
-	[[nodiscard]] OdGePoint3d Position() const noexcept;
-	[[nodiscard]] double Rotation() const noexcept;
-	[[nodiscard]] unsigned short Rows() const noexcept;
-	[[nodiscard]] double RowSpacing() const noexcept;
-	[[nodiscard]] OdGeScale3d ScaleFactors() const noexcept;
+	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
+	unsigned short Columns() const noexcept;
+	double ColumnSpacing() const noexcept;
+	CString Name() const;
+	OdGeVector3d Normal() const noexcept;
+	OdGePoint3d Position() const noexcept;
+	double Rotation() const noexcept;
+	unsigned short Rows() const noexcept;
+	double RowSpacing() const noexcept;
+	OdGeScale3d ScaleFactors() const noexcept;
 	void SetName(const wchar_t* name);
 
 	void SetNormal(const OdGeVector3d& normal) noexcept { m_Normal = normal; }

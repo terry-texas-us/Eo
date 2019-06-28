@@ -18,8 +18,8 @@ public:
 	void operator()(double width, double depth, long properties) noexcept;
 	void SetWidth(double width) noexcept;
 	void SetDepth(double depth) noexcept;
-	[[nodiscard]] double Width() const noexcept;
-	[[nodiscard]] double Depth() const noexcept;
+	double Width() const noexcept;
+	double Depth() const noexcept;
 	bool Identical(const Section& section) noexcept;
 	bool IsRectangular() noexcept;
 	bool IsRound() noexcept;

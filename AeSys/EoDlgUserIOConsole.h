@@ -15,7 +15,7 @@ class EoDlgUserIoConsole final : public CDialog, public OdEdBaseIO {
 protected:
 	EoDlgUserIoConsole(CWnd* parent);
 	void addRef() noexcept override;
-	[[nodiscard]] long numRefs() const noexcept override;
+	long numRefs() const noexcept override;
 	void release() override;
 
 	enum { IDD = IDD_CONSOLE_DLG };

@@ -22,15 +22,15 @@ public:
 	/// </notes>
 	/// <returns>angle between lines (in radians)</returns>
 	/// <param name="line">other line</param>
-	[[nodiscard]] double AngleBetween_xy(const EoGeLineSeg3d& line) const;
+	double AngleBetween_xy(const EoGeLineSeg3d& line) const;
 	/// <summary> Determines the angle of a line defined by 2 points. </summary>
 	/// <remarks> /// If null length or parallel to z-axis, angle is 0. </remarks>
 	/// <returns> The angle (in radians) from the X axis (0 to Oda2PI) to a point (x,y). </returns>
-	[[nodiscard]] double AngleFromXAxis_xy() const;
+	double AngleFromXAxis_xy() const;
 	/// <summary> Constrains a line to nearest axis pivoting on first endpoint.</summary>
 	/// <remarks> Offset angle only support about z-axis </remarks>
 	/// <returns> Point after snap </returns>
-	[[nodiscard]] OdGePoint3d ConstrainToAxis(double influenceAngle, double axisOffsetAngle) const;
+	OdGePoint3d ConstrainToAxis(double influenceAngle, double axisOffsetAngle) const;
 	/// <summary>Cuts a line a point.</summary>
 	unsigned short CutAt(const OdGePoint3d& point, EoGeLineSeg3d& line);
 	/// <summary>Determines which side of a directed line a point is on.</summary>
@@ -43,7 +43,7 @@ public:
 	/// 0 point is on line
 	/// - 1 point is to right of line
 	/// </returns>
-	[[nodiscard]] int DirectedRelationshipOf(const OdGePoint3d& point) const;
+	int DirectedRelationshipOf(const OdGePoint3d& point) const;
 	void Display(AeSysView* view, CDC* deviceContext);
 	/// <summary>Determines the extents of a line.</summary>
 	void Extents(OdGePoint3d& minimum, OdGePoint3d& maximum);
@@ -70,7 +70,7 @@ public:
 	/// <remarks> Assumes window passed with min/max corners correct.</remarks>
 	/// <returns> true line is wholly or partially within window, false otherwise</returns>
 	bool IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection);
-	[[nodiscard]] bool IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const;
+	bool IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const;
 	/// <summary>
 	///Evaluates the proximity of a point to a line segment.
 	/// </summary>
@@ -86,7 +86,7 @@ public:
 	/// </returns>
 	bool IsSelectedBy_xy(const OdGePoint3d& point, double pickAperture, OdGePoint3d& ptProj, double& relationship) const;
 	/// <summary>Projects a point onto line.</summary>
-	[[nodiscard]] OdGePoint3d ProjPt(const OdGePoint3d& point) const;
+	OdGePoint3d ProjPt(const OdGePoint3d& point) const;
 	/// <summary>Determines the coordinates of point projected along a line.</summary>
 	/// <remarks>
 	///t = 0 point is the start point
