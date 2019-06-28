@@ -1546,7 +1546,7 @@ public:
 
 // Blink cursor timer
 bool AeSysView::UpdateStringTrackerCursor() {
-	if (m_mode == kGetString && m_response.m_type != Response::kString) {
+	if (m_mode == kGetString && m_Response.type != Response::kString) {
 		if (m_Editor.TrackString(m_InputParser.result())) {
 			GetLayoutActiveTopView()->invalidate();
 			PostMessageW(WM_PAINT);
@@ -1578,16 +1578,16 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 	OdSaveState<OdString> SavePrompt(m_Prompt);
 	putString(prompt);
 	OdSaveState<Mode> SavedMode(m_mode, kGetPoint);
-	m_response.m_type = Response::kNone;
+	m_Response.type = Response::kNone;
 	m_inpOptions = options;
 	SaveViewParameters svp(this, tracker, LoadCursorW(nullptr, IDC_CROSS), !((options & OdEd::kGptNoOSnap) != 0));
 	while (theApp.PumpMessage()) {
-		switch (m_response.m_type) {
+		switch (m_Response.type) {
 			case Response::kPoint:
 				if ((m_inpOptions & OdEd::kGptBeginDrag) != 0) { SetCapture(); }
-				return m_response.m_Point;
+				return m_Response.point;
 			case Response::kString:
-				throw OdEdOtherInput(m_response.m_string);
+				throw OdEdOtherInput(m_Response.string);
 			case Response::kCancel:
 				throw OdEdCancel();
 			case Response::kNone: default:
@@ -1604,14 +1604,14 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 	OdSaveState<OdString> SavePrompt(m_Prompt);
 	putString(prompt);
 	OdSaveState<Mode> SaveMode(m_mode, kGetString);
-	m_response.m_type = Response::kNone;
+	m_Response.type = Response::kNone;
 	if (tracker) { m_InputParser.reset(true); }
 	m_inpOptions = options;
 	SaveViewParametersTimer svp(this, tracker, LoadCursorW(nullptr, IDC_IBEAM));
 	while (theApp.PumpMessage()) {
-		switch (m_response.m_type) {
+		switch (m_Response.type) {
 			case Response::kString:
-				return m_response.m_string;
+				return m_Response.string;
 			case Response::kCancel:
 				throw OdEdCancel();
 			case Response::kPoint: case Response::kNone: default:
@@ -1760,8 +1760,8 @@ void AeSysView::OnUpdate(CView* sender, const LPARAM hint, CObject* hintObject) 
 }
 
 void AeSysView::Respond(const OdString& string) {
-	m_response.m_type = Response::kString;
-	m_response.m_string = string;
+	m_Response.type = Response::kString;
+	m_Response.string = string;
 }
 
 CRect AeSysView::ViewportRectangle() const {
@@ -1782,7 +1782,7 @@ CRect AeSysView::ViewRectangle(OdGsView* view) {
 
 void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, const unsigned flags) {
 	__super::OnChar(characterCodeValue, repeatCount, flags);
-	m_response.m_string = m_InputParser.result();
+	m_Response.string = m_InputParser.result();
 	switch (characterCodeValue) {
 		case VK_BACK:
 			while (repeatCount--) {
@@ -1790,7 +1790,7 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 			}
 			break;
 		case VK_ESCAPE:
-			m_response.m_type = Response::kCancel;
+			m_Response.type = Response::kCancel;
 			m_InputParser.reset(false);
 			switch (m_mode) {
 				case kQuiescent:
@@ -1806,14 +1806,14 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 					m_InputParser.reset(false);
 					switch (m_mode) {
 						case kQuiescent:
-							if (m_response.m_string.isEmpty()) {
+							if (m_Response.string.isEmpty()) {
 								GetDocument()->ExecuteCommand(GetDocument()->RecentCommandName());
 							} else {
-								GetDocument()->ExecuteCommand(m_response.m_string);
+								GetDocument()->ExecuteCommand(m_Response.string);
 							}
 							break;
 						case kGetPoint: case kGetString:
-							m_response.m_type = Response::kString;
+							m_Response.type = Response::kString;
 							break;
 						case kDragDrop:
 							break;
@@ -1822,7 +1822,7 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 			}
 			break;
 	}
-	if (m_mode == kGetString && m_response.m_type != Response::kString && m_InputParser.result() != m_response.m_string) {
+	if (m_mode == kGetString && m_Response.type != Response::kString && m_InputParser.result() != m_Response.string) {
 		if (m_Editor.TrackString(m_InputParser.result())) {
 			GetLayoutActiveTopView()->invalidate();
 			PostMessageW(WM_PAINT);
@@ -1861,10 +1861,10 @@ void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 				if (m_Editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) { PostMessageW(WM_PAINT); }
 				break;
 			case kGetPoint:
-				m_response.m_Point = m_Editor.ToEyeToWorld(point.x, point.y);
-				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_response.m_Point)) { break; }
-				m_Editor.Snap(m_response.m_Point);
-				m_response.m_type = Response::kPoint;
+				m_Response.point = m_Editor.ToEyeToWorld(point.x, point.y);
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_Response.point)) { break; }
+				m_Editor.Snap(m_Response.point);
+				m_Response.type = Response::kPoint;
 				break;
 			case kGetString: case kDragDrop:
 				//			default:
@@ -1887,9 +1887,9 @@ void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 	if (AeSys::customLButtonUpCharacters.IsEmpty()) {
 		__super::OnLButtonUp(flags, point);
 		if (m_mode == kGetPoint && GetCapture() == this) {
-			m_response.m_Point = m_Editor.ToEyeToWorld(point.x, point.y);
-			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_response.m_Point)) { return; }
-			m_response.m_type = Response::kPoint;
+			m_Response.point = m_Editor.ToEyeToWorld(point.x, point.y);
+			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_Response.point)) { return; }
+			m_Response.type = Response::kPoint;
 			ReleaseCapture();
 		}
 		m_Editor.SetEntityCenters();

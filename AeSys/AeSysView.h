@@ -47,12 +47,12 @@ class AeSysView
 	struct Response {
 		enum Type { kNone, kPoint, kString, kCancel };
 
-		OdGePoint3d m_Point;
-		OdString m_string;
-		Type m_type;
+		OdGePoint3d point;
+		OdString string;
+		Type type {kNone};
 	};
 
-	Response m_response;
+	Response m_Response;
 	int m_inpOptions {0};
 	void exeCmd(const OdString& commandName);
 	bool BeginDragCallback(const OdGePoint3d& point) override;
