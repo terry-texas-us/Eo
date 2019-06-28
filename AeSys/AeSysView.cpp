@@ -37,7 +37,7 @@ struct EoRectangle {
 	T right;
 	T bottom;
 
-	T Width() { return right - left; };
+	T Width() { return right - left; }
 
 	T Height() { return top - bottom; }
 };
@@ -48,9 +48,9 @@ struct EoRectangle {
 static char THIS_FILE[] = __FILE__;
 #endif
 using ODGSPALETTE = OdArray<ODCOLORREF, OdMemoryAllocator<ODCOLORREF> >;
-const double AeSysView::sm_MaximumWindowRatio = 999.0;
-const double AeSysView::sm_MinimumWindowRatio = 0.001;
-unsigned AeSysView::g_nRedrawMSG = 0;
+const double AeSysView::mc_MaximumWindowRatio = 999.0;
+const double AeSysView::mc_MinimumWindowRatio = 0.001;
+unsigned AeSysView::ms_RedrawMessage = 0;
 IMPLEMENT_DYNCREATE(AeSysView, CView)
 
 BEGIN_MESSAGE_MAP(AeSysView, CView)
@@ -106,7 +106,7 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_FILE_PRINT, OnFilePrint)
 		ON_COMMAND(ID_FILE_PRINT_DIRECT, OnFilePrint)
 		ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)
-		ON_REGISTERED_MESSAGE(g_nRedrawMSG, OnRedraw)
+		ON_REGISTERED_MESSAGE(ms_RedrawMessage, OnRedraw)
 		ON_COMMAND(ID_HELP_KEY, OnHelpKey)
 		ON_COMMAND(ID_MODE_GROUP_EDIT, OnModeGroupEdit)
 		ON_COMMAND(ID_MODE_PRIMITIVE_EDIT, OnModePrimitiveEdit)
@@ -330,7 +330,7 @@ AeSysDoc* AeSysView::GetDocument() const {
 #endif //_DEBUG
 void AeSysView::exeCmd(const OdString& commandName) {
 	GetDocument()->ExecuteCommand(commandName);
-	propagateActiveViewChanges(true);
+	PropagateLayoutActiveViewChanges(true);
 }
 
 void AeSysView::OnDraw(CDC* deviceContext) {
@@ -362,16 +362,16 @@ void AeSysView::OnInitialUpdate() {
 	OdDbDatabase* Database {Document->m_DatabasePtr};
 	setDatabase(Database);
 	m_hWindowDC = ::GetDC(m_hWnd);
-	if (!g_nRedrawMSG) {
-		g_nRedrawMSG = RegisterWindowMessageW(L"AeSys::AeSysView::WM_REDRAW");
+	if (!ms_RedrawMessage) {
+		ms_RedrawMessage = RegisterWindowMessageW(L"AeSys::AeSysView::WM_REDRAW");
 	}
-	createDevice();
+	CreateDevice();
 	if (m_LayoutHelper.isNull()) {
 		GetParent()->PostMessageW(WM_CLOSE);
 		return;
 	}
 	Document->SetVectorizer(this);
-	m_editor.Initialize(m_LayoutHelper, Document->CommandContext0());
+	m_Editor.Initialize(m_LayoutHelper, Document->CommandContext0());
 	theApp.OnModeDraw();
 }
 
@@ -388,11 +388,11 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 		try {
 			MainFrame->StartTimer();
 			if (m_LayoutHelper.get()) {
-				setViewportBorderProperties();
+				SetViewportBorderProperties();
 				m_LayoutHelper->update();
 			}
 			if (!regenAbort()) {
-				MainFrame->StopTimer(m_paintMode == kRegenerate ? L"Regen" : L"Redraw");
+				MainFrame->StopTimer(m_PaintMode == kRegenerate ? L"Regen" : L"Redraw");
 			}
 		} catch (const OdError& Error) {
 			theApp.ErrorMessageBox(L"Rendering aborted", Error);
@@ -410,7 +410,7 @@ LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
 	}
 	m_RegenerateAbort = false;
 	m_IncompleteRegenerate = false;
-	m_paintMode = kRedraw;
+	m_PaintMode = kRedraw;
 	return 1;
 }
 
@@ -456,8 +456,8 @@ void AeSysView::OnSize(const unsigned type, const int cx, const int cy) {
 
 void AeSysView::OnDestroy() {
 	GetDocument()->OnCloseVectorizer(this);
-	m_editor.Uninitialize();
-	destroyDevice();
+	m_Editor.Uninitialize();
+	DestroyDevice();
 	m_pPrinterDevice.release();
 	::ReleaseDC(m_hWnd, m_hWindowDC);
 	m_hWindowDC = nullptr;
@@ -465,22 +465,20 @@ void AeSysView::OnDestroy() {
 }
 
 int AeSysView::OnCreate(const LPCREATESTRUCT createStructure) {
-	if (CView::OnCreate(createStructure) == -1) {
-		return -1;
-	}
+	if (CView::OnCreate(createStructure) == -1) { return -1; }
 	return 0;
 }
 
-OdGsView* AeSysView::getActiveView() {
+OdGsView* AeSysView::GetLayoutActiveView() {
 	return m_LayoutHelper->activeView();
 }
 
-const OdGsView* AeSysView::getActiveView() const {
+const OdGsView* AeSysView::GetLayoutActiveView() const {
 	return m_LayoutHelper->activeView();
 }
 
-OdGsView* AeSysView::getActiveTopView() {
-	auto ActiveView {getActiveView()};
+OdGsView* AeSysView::GetLayoutActiveTopView() {
+	auto ActiveView {GetLayoutActiveView()};
 	if (!getDatabase()->getTILEMODE()) {
 		auto ActiveViewport {getDatabase()->activeViewportId().safeOpenObject()};
 		OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
@@ -491,8 +489,8 @@ OdGsView* AeSysView::getActiveTopView() {
 	return ActiveView;
 }
 
-const OdGsView* AeSysView::getActiveTopView() const {
-	auto ActiveView {getActiveView()};
+const OdGsView* AeSysView::GetLayoutActiveTopView() const {
+	auto ActiveView {GetLayoutActiveView()};
 	if (!getDatabase()->getTILEMODE()) {
 		auto ActiveViewport {getDatabase()->activeViewportId().safeOpenObject()};
 		OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
@@ -503,7 +501,7 @@ const OdGsView* AeSysView::getActiveTopView() const {
 	return ActiveView;
 }
 
-inline bool requireAutoRegen(OdGsView* view) {
+inline bool RequireAutoRegen(OdGsView* view) {
 	auto Device {view->device()};
 	if (!Device) { return false; }
 	auto DeviceProperties = Device->properties();
@@ -515,16 +513,16 @@ inline bool requireAutoRegen(OdGsView* view) {
 	return false;
 }
 
-void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
-	OdGsViewPtr View {getActiveView()};
+void AeSysView::PropagateLayoutActiveViewChanges(bool forceAutoRegen) const {
+	OdGsViewPtr View {GetLayoutActiveView()};
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
-	OdRxObjectPtr pObj = OdDbObjectId(ClientViewInfo.viewportObjectId).openObject(OdDb::kForWrite);
-	OdAbstractViewPEPtr AbstractView(pObj);
+	OdRxObjectPtr ViewportObject {OdDbObjectId(ClientViewInfo.viewportObjectId).openObject(OdDb::kForWrite)};
+	OdAbstractViewPEPtr AbstractView(ViewportObject);
 	if (!AbstractView.isNull()) {
 		const auto Target(View->target());
-		auto Direction(View->position() - Target);
-		const auto UpVector(View->upVector());
+		auto Direction {View->position() - Target};
+		const auto UpVector {View->upVector()};
 		const auto FieldWidth {View->fieldWidth()};
 		const auto FieldHeight {View->fieldHeight()};
 		const auto Perspective {View->isPerspective()};
@@ -537,19 +535,19 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 				Direction.normalize();
 			}
 		}
-		if (!AbstractView->target(pObj).isEqualTo(Target) || !AbstractView->direction(pObj).isEqualTo(Direction) || !AbstractView->upVector(pObj).isEqualTo(UpVector) || !OdEqual(AbstractView->fieldWidth(pObj), FieldWidth) || !OdEqual(AbstractView->fieldHeight(pObj), FieldHeight) || AbstractView->isPerspective(pObj) != Perspective || !OdEqual(AbstractView->lensLength(pObj), LensLength)) {
+		if (!AbstractView->target(ViewportObject).isEqualTo(Target) || !AbstractView->direction(ViewportObject).isEqualTo(Direction) || !AbstractView->upVector(ViewportObject).isEqualTo(UpVector) || !OdEqual(AbstractView->fieldWidth(ViewportObject), FieldWidth) || !OdEqual(AbstractView->fieldHeight(ViewportObject), FieldHeight) || AbstractView->isPerspective(ViewportObject) != Perspective || !OdEqual(AbstractView->lensLength(ViewportObject), LensLength)) {
 			OdGeVector2d ViewOffset;
-			if (AbstractView->direction(pObj).isEqualTo(Direction) && AbstractView->upVector(pObj).isEqualTo(UpVector) && !Perspective && !AbstractView->isPerspective(pObj)) {
+			if (AbstractView->direction(ViewportObject).isEqualTo(Direction) && AbstractView->upVector(ViewportObject).isEqualTo(UpVector) && !Perspective && !AbstractView->isPerspective(ViewportObject)) {
 				const auto vecX {UpVector.crossProduct(Direction).normal()};
-				ViewOffset = AbstractView->viewOffset(pObj);
-				const auto PreviousTarget {AbstractView->target(pObj) - vecX * ViewOffset.x - UpVector * ViewOffset.y};
+				ViewOffset = AbstractView->viewOffset(ViewportObject);
+				const auto PreviousTarget {AbstractView->target(ViewportObject) - vecX * ViewOffset.x - UpVector * ViewOffset.y};
 				ViewOffset.x = vecX.dotProduct(Target - PreviousTarget);
 				ViewOffset.y = UpVector.dotProduct(Target - PreviousTarget);
 			}
-			AbstractView->setView(pObj, Target, Direction, UpVector, FieldWidth, FieldHeight, Perspective, ViewOffset);
-			AbstractView->setLensLength(pObj, LensLength);
+			AbstractView->setView(ViewportObject, Target, Direction, UpVector, FieldWidth, FieldHeight, Perspective, ViewOffset);
+			AbstractView->setLensLength(ViewportObject, LensLength);
 			// Auto regen
-			if (!theApp.DisableAutoRegenerate() && requireAutoRegen(View)) { const_cast<AeSysView*>(this)->OnViewerRegen(); }
+			if (!theApp.DisableAutoRegenerate() && RequireAutoRegen(View)) { const_cast<AeSysView*>(this)->OnViewerRegen(); }
 		}
 		OdDb::RenderMode RenderMode;
 		switch (View->mode()) {
@@ -574,13 +572,13 @@ void AeSysView::propagateActiveViewChanges(bool forceAutoRegen) const {
 			case OdGsView::kNone: case OdGsView::k2DOptimized: case OdGsView::kBoundingBox: default:
 				RenderMode = OdDb::k2DOptimized;
 		}
-		if (AbstractView->renderMode(pObj) != RenderMode) { AbstractView->setRenderMode(pObj, RenderMode); }
+		if (AbstractView->renderMode(ViewportObject) != RenderMode) { AbstractView->setRenderMode(ViewportObject, RenderMode); }
 		const OdDbObjectId ObjectVisualStyle(View->visualStyle());
-		if (AbstractView->visualStyle(pObj) != ObjectVisualStyle && !ObjectVisualStyle.isNull()) { AbstractView->setVisualStyle(pObj, View->visualStyle()); }
+		if (AbstractView->visualStyle(ViewportObject) != ObjectVisualStyle && !ObjectVisualStyle.isNull()) { AbstractView->setVisualStyle(ViewportObject, View->visualStyle()); }
 	}
 }
 
-inline OdGsViewPtr overallView(OdGsDevice* device) {
+inline OdGsViewPtr GetOverallView(OdGsDevice* device) {
 	OdGsViewPtr OverallView;
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(device)};
 	if (PaperLayoutHelper.get()) {
@@ -596,8 +594,8 @@ inline OdGsViewPtr activeView(OdGsDevice* device) {
 	return ActiveView;
 }
 
-void AeSysView::setViewportBorderProperties() {
-	const auto OverallView {overallView(m_LayoutHelper)};
+void AeSysView::SetViewportBorderProperties() {
+	const auto OverallView {GetOverallView(m_LayoutHelper)};
 	const auto ActiveView {activeView(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	if (NumberOfViews > 1) {
@@ -812,12 +810,12 @@ void AeSysView::fillContextualColors(OdGiContextualColorsImpl* pCtxColors) {
 	OdIntPtr odExGLES2SceneGraphOptions(); // Defined in MaterialsEditor.cpp
 	const OdString& odExLoadGsStateSetting(); // Defined in MaterialsEditor.cpp
    </tas> */
-void AeSysView::createDevice(const bool recreate) {
+void AeSysView::CreateDevice(const bool recreate) {
 	CRect ClientRectangle;
 	GetClientRect(&ClientRectangle);
 	try {
-		OdArray<OdGsViewPtr> m_prevViews;
-		OdGsModelPtr m_pModel;
+		OdArray<OdGsViewPtr> PreviousViews;
+		OdGsModelPtr Model;
 		if (!recreate) {
 			OdGsModulePtr GsModule {odrxDynamicLinker()->loadModule(theApp.RecentGsDevicePath(), false)};
 			auto GsDevice {GsModule->createDevice()};
@@ -906,14 +904,14 @@ void AeSysView::createDevice(const bool recreate) {
 		} else { // Store current device views to keep cache alive, detach views from exist device, create new helper for exist device, and release existing helper device
 			auto LayoutHelperIn {m_LayoutHelper};
 			for (auto ViewIndex = 0; ViewIndex < LayoutHelperIn->numViews(); ViewIndex++) {
-				m_prevViews.append(LayoutHelperIn->viewAt(ViewIndex));
+				PreviousViews.append(LayoutHelperIn->viewAt(ViewIndex));
 			}
-			m_pModel = LayoutHelperIn->gsModel();
+			Model = LayoutHelperIn->gsModel();
 			LayoutHelperIn->eraseAllViews();
 			const auto LayoutHelperOut {OdDbGsManager::setupActiveLayoutViews(LayoutHelperIn->underlyingDevice(), this)};
 			m_LayoutHelper = LayoutHelperOut;
 			LayoutHelperIn.release();
-			m_editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext0());
+			m_Editor.Initialize(m_LayoutHelper, GetDocument()->CommandContext0());
 		}
 		m_layoutId = m_LayoutHelper->layoutId();
 		const auto Palette {theApp.CurrentPalette()};
@@ -930,7 +928,7 @@ void AeSysView::createDevice(const bool recreate) {
 			m_LayoutHelper->setBackgroundColor(ODRGB(173, 174, 173)); // ACAD's color for paper bg
 		}
 		setPaletteBackground(theApp.ActiveBackground());
-		setViewportBorderProperties();
+		SetViewportBorderProperties();
 		if (ClientRectangle.Width() && ClientRectangle.Height()) {
 			m_LayoutHelper->onSize(OdGsDCRect(ClientRectangle.left, ClientRectangle.right, ClientRectangle.bottom, ClientRectangle.top));
 			OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
@@ -944,23 +942,23 @@ void AeSysView::createDevice(const bool recreate) {
 			// Call update to share cache from exist views
 			m_LayoutHelper->update();
 			// Invalidate views for exist Gs model (i. e. remove unused drawables and mark view props as invalid)
-			if (!m_pModel.isNull()) {
-				const auto Views {m_prevViews.asArrayPtr()};
-				const auto NumberOfViews {m_prevViews.size()};
+			if (!Model.isNull()) {
+				const auto Views {PreviousViews.asArrayPtr()};
+				const auto NumberOfViews {PreviousViews.size()};
 				for (unsigned ViewIndex = 0; ViewIndex < NumberOfViews; ViewIndex++) {
-					m_pModel->invalidate(Views[ViewIndex]);
+					Model->invalidate(Views[ViewIndex]);
 				}
 			}
 			// Release exist views to detach from Gs and keep released slots free.
-			m_prevViews.clear();
+			PreviousViews.clear();
 		}
 	} catch (const OdError& Error) {
-		destroyDevice();
+		DestroyDevice();
 		theApp.ErrorMessageBox(L"Graphic System Initialization Error", Error);
 	}
 }
 
-void AeSysView::destroyDevice() {
+void AeSysView::DestroyDevice() {
 	m_LayoutHelper.release();
 }
 
@@ -986,37 +984,37 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 
 #include "BmpTilesGen.h"
 
-void generateTiles(const HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, const long tileWidth, const long tileHeight) {
-	CRect destRectangle {drawRectangle};
-	destRectangle.NormalizeRect();
-	OdGsDCRect step(0, 0, 0, 0);
-	OdGsDCRect rc(drawRectangle.left, drawRectangle.right, drawRectangle.bottom, drawRectangle.top);
-	const auto Width {abs(rc.m_max.x - rc.m_min.x)};
-	rc.m_max.x -= rc.m_min.x;
-	if (rc.m_max.x < 0) {
-		rc.m_min.x = -rc.m_max.x;
-		rc.m_max.x = 0;
-		step.m_min.x = tileWidth;
+void GenerateTiles(const HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, const long tileWidth, const long tileHeight) {
+	CRect DestinationRectangle {drawRectangle};
+	DestinationRectangle.NormalizeRect();
+	OdGsDCRect Step(0, 0, 0, 0);
+	OdGsDCRect Rectangle(drawRectangle.left, drawRectangle.right, drawRectangle.bottom, drawRectangle.top);
+	const auto Width {abs(Rectangle.m_max.x - Rectangle.m_min.x)};
+	Rectangle.m_max.x -= Rectangle.m_min.x;
+	if (Rectangle.m_max.x < 0) {
+		Rectangle.m_min.x = -Rectangle.m_max.x;
+		Rectangle.m_max.x = 0;
+		Step.m_min.x = tileWidth;
 	} else {
-		rc.m_min.x = 0;
-		step.m_max.x = tileWidth;
+		Rectangle.m_min.x = 0;
+		Step.m_max.x = tileWidth;
 	}
-	const auto Height {abs(rc.m_max.y - rc.m_min.y)};
-	rc.m_max.y -= rc.m_min.y;
-	if (rc.m_max.y < 0) {
-		rc.m_min.y = -rc.m_max.y;
-		rc.m_max.y = 0;
-		step.m_min.y = tileHeight;
+	const auto Height {abs(Rectangle.m_max.y - Rectangle.m_min.y)};
+	Rectangle.m_max.y -= Rectangle.m_min.y;
+	if (Rectangle.m_max.y < 0) {
+		Rectangle.m_min.y = -Rectangle.m_max.y;
+		Rectangle.m_max.y = 0;
+		Step.m_min.y = tileHeight;
 	} else {
-		rc.m_min.y = 0;
-		step.m_max.y = tileHeight;
+		Rectangle.m_min.y = 0;
+		Step.m_max.y = tileHeight;
 	}
 	const auto m {Width / tileWidth + (Width % tileWidth ? 1 : 0)};
 	const auto n {Height / tileHeight + (Height % tileHeight ? 1 : 0)};
-	BmpTilesGen tilesGen(pBmpDevice, rc);
-	pBmpDevice->onSize(rc);
-	const int dx {(step.m_max.x - step.m_min.x)};
-	const int dy {(step.m_max.y - step.m_min.y)};
+	BmpTilesGen tilesGen(pBmpDevice, Rectangle);
+	pBmpDevice->onSize(Rectangle);
+	const int dx {(Step.m_max.x - Step.m_min.x)};
+	const int dy {(Step.m_max.y - Step.m_min.y)};
 	const auto dx2 {m > 1 ? dx / abs(dx) * 8 : 0};
 	const auto dy2 {n > 1 ? dy / abs(dy) * 8 : 0};
 	BITMAPINFO BitmapInfo;
@@ -1031,29 +1029,29 @@ void generateTiles(const HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDev
 	BitmapInfo.bmiHeader.biSizeImage = 0;
 	BitmapInfo.bmiHeader.biXPelsPerMeter = 0;
 	BitmapInfo.bmiHeader.biYPelsPerMeter = 0;
-	const auto bmpDC = CreateCompatibleDC(hdc);
-	if (bmpDC) {
+	const auto MemoryDeviceContext = CreateCompatibleDC(hdc);
+	if (MemoryDeviceContext) {
 		void* pBuf;
 		const auto hBmp {CreateDIBSection(nullptr, &BitmapInfo, DIB_RGB_COLORS, &pBuf, nullptr, 0)};
 		if (hBmp) {
-			const auto hOld {static_cast<HBITMAP>(SelectObject(bmpDC, hBmp))};
+			const auto hOld {static_cast<HBITMAP>(SelectObject(MemoryDeviceContext, hBmp))};
 			for (long i = 0; i < m; ++i) {
 				for (long j = 0; j < n; ++j) {
-					const int minx {rc.m_min.x + i * dx};
+					const int minx {Rectangle.m_min.x + i * dx};
 					const auto maxx {minx + dx};
-					const int miny {rc.m_min.y + j * dy};
+					const int miny {Rectangle.m_min.y + j * dy};
 					const auto maxy {miny + dy};
 
 					// render wider then a tile area to reduce gaps in lines.
 					auto RasterImage {tilesGen.regenTile(OdGsDCRect(minx - dx2, maxx + dx2, miny - dy2, maxy + dy2))};
 					RasterImage->scanLines(static_cast<unsigned char*>(pBuf), 0, static_cast<unsigned long>(tileHeight));
-					BitBlt(hdc, destRectangle.left + odmin(minx, maxx), destRectangle.top + odmin(miny, maxy), tileWidth, tileHeight, bmpDC, abs(dx2), 0, SRCCOPY);
+					BitBlt(hdc, DestinationRectangle.left + odmin(minx, maxx), DestinationRectangle.top + odmin(miny, maxy), tileWidth, tileHeight, MemoryDeviceContext, abs(dx2), 0, SRCCOPY);
 				}
 			}
-			SelectObject(bmpDC, hOld);
+			SelectObject(MemoryDeviceContext, hOld);
 			DeleteObject(hBmp);
 		}
-		DeleteDC(bmpDC);
+		DeleteDC(MemoryDeviceContext);
 	}
 }
 
@@ -1061,7 +1059,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	const auto Database {getDatabase()};
 	auto ActiveViewport {Database->activeViewportId().safeOpenObject(OdDb::kForWrite)};
 	OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
-	const auto View {getActiveView()};
+	const auto View {GetLayoutActiveView()};
 	if (View) {
 		AbstractViewportData->setView(ActiveViewport, View);
 	}
@@ -1428,7 +1426,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			m_pPrinterDevice->update(nullptr);
 		} else {
 			const CRect DrawRectangle(ViewportRectangle.m_min.x, ViewportRectangle.m_max.y, ViewportRectangle.m_max.x, ViewportRectangle.m_min.y);
-			generateTiles(deviceContext->m_hDC, DrawRectangle, m_pPrinterDevice, 1000, 1000);
+			GenerateTiles(deviceContext->m_hDC, DrawRectangle, m_pPrinterDevice, 1000, 1000);
 		}
 	} else {
 		AfxMessageBox(L"Can't initialize GS for printing...");
@@ -1446,15 +1444,15 @@ BOOL AeSysView::OnPreparePrinting(CPrintInfo* printInformation) {
 	if (m_Plot) {
 		CPrintInfo PrintInfo;
 		if (theApp.GetPrinterDeviceDefaults(&PrintInfo.m_pPD->m_pd)) {
-			auto hDC {PrintInfo.m_pPD->m_pd.hDC};
-			if (hDC == nullptr) {
-				hDC = PrintInfo.m_pPD->CreatePrinterDC();
+			auto PrinterDeviceContext {PrintInfo.m_pPD->m_pd.hDC};
+			if (PrinterDeviceContext == nullptr) {
+				PrinterDeviceContext = PrintInfo.m_pPD->CreatePrinterDC();
 			}
-			if (hDC != nullptr) {
+			if (PrinterDeviceContext != nullptr) {
 				unsigned HorizontalPages;
 				unsigned VerticalPages;
 				CDC DeviceContext;
-				DeviceContext.Attach(hDC);
+				DeviceContext.Attach(PrinterDeviceContext);
 				printInformation->SetMaxPage(NumPages(&DeviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages));
 				DeleteDC(DeviceContext.Detach());
 			}
@@ -1476,16 +1474,16 @@ void AeSysView::OnViewerRegen() {
 	if (m_LayoutHelper->gsModel()) {
 		m_LayoutHelper->gsModel()->invalidate(OdGsModel::kInvalidateAll);
 	}
-	m_paintMode = kRegenerate;
+	m_PaintMode = kRegenerate;
 	PostMessageW(WM_PAINT);
 }
 
-void AeSysView::OnViewerVpregen() {
+void AeSysView::OnViewerViewportRegen() {
 	m_LayoutHelper->invalidate();
 	if (m_LayoutHelper->gsModel()) {
-		m_LayoutHelper->gsModel()->invalidate(getActiveView());
+		m_LayoutHelper->gsModel()->invalidate(GetLayoutActiveView());
 	}
-	m_paintMode = kRegenerate;
+	m_PaintMode = kRegenerate;
 	PostMessageW(WM_PAINT);
 }
 
@@ -1494,7 +1492,7 @@ void AeSysView::OnUpdateViewerRegen(CCmdUI* commandUserInterface) {
 }
 
 // <command_view>
-bool AeSysView::canClose() const {
+bool AeSysView::CanClose() const {
 	if (m_mode != kQuiescent) {
 		AfxMessageBox(L"Can not exit while command is active.", MB_OK | MB_ICONEXCLAMATION);
 		return false;
@@ -1509,23 +1507,23 @@ protected:
 public:
 	SaveViewParameters(AeSysView* view, OdEdInputTracker* inputTracker, const HCURSOR cursor, const bool snap)
 		: m_View(view)
-		, m_Cursor(view->cursor()) {
-		view->track(inputTracker);
+		, m_Cursor(view->Cursor()) {
+		view->Track(inputTracker);
 		view->setCursor(cursor);
-		if (snap) { view->m_editor.InitializeSnapping(view->getActiveTopView(), inputTracker); }
+		if (snap) { view->m_Editor.InitializeSnapping(view->GetLayoutActiveTopView(), inputTracker); }
 	}
 
 	~SaveViewParameters() {
-		m_View->track(nullptr);
+		m_View->Track(nullptr);
 		m_View->setCursor(m_Cursor);
-		m_View->m_editor.UninitializeSnapping(m_View->getActiveTopView());
+		m_View->m_Editor.UninitializeSnapping(m_View->GetLayoutActiveTopView());
 	}
 };
 
 constexpr unsigned gc_BlinkCursorTimer = 888;
 const unsigned gc_BlinkCursorRate = GetCaretBlinkTime();
 
-void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, unsigned long time);
+void CALLBACK StringTrackerTimer(HWND window, unsigned message, unsigned timerId, unsigned long time);
 
 class SaveViewParametersTimer : public SaveViewParameters {
 	bool m_TimerSet;
@@ -1549,8 +1547,8 @@ public:
 // Blink cursor timer
 bool AeSysView::UpdateStringTrackerCursor() {
 	if (m_mode == kGetString && m_response.m_type != Response::kString) {
-		if (m_editor.TrackString(m_inpars.result())) {
-			getActiveTopView()->invalidate();
+		if (m_Editor.TrackString(m_InputParser.result())) {
+			GetLayoutActiveTopView()->invalidate();
 			PostMessageW(WM_PAINT);
 			return true;
 		}
@@ -1558,12 +1556,12 @@ bool AeSysView::UpdateStringTrackerCursor() {
 	return false;
 }
 
-void CALLBACK StringTrackerTimer(const HWND hWnd, unsigned nMsg, const unsigned nIDTimer, unsigned long time) {
+void CALLBACK StringTrackerTimer(const HWND window, unsigned message, const unsigned timerId, unsigned long time) {
 	try {
-		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(hWnd))};
-		if (!View->UpdateStringTrackerCursor()) { KillTimer(hWnd, nIDTimer); }
+		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(window))};
+		if (!View->UpdateStringTrackerCursor()) { KillTimer(window, timerId); }
 	} catch (...) {
-		KillTimer(hWnd, nIDTimer);
+		KillTimer(window, timerId);
 	}
 }
 
@@ -1576,8 +1574,8 @@ unsigned long AeSysView::getKeyState() noexcept {
 }
 
 OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdPointTracker* tracker) {
-	m_sPrompt.empty();
-	OdSaveState<OdString> SavePrompt(m_sPrompt);
+	m_Prompt.empty();
+	OdSaveState<OdString> SavePrompt(m_Prompt);
 	putString(prompt);
 	OdSaveState<Mode> SavedMode(m_mode, kGetPoint);
 	m_response.m_type = Response::kNone;
@@ -1602,12 +1600,12 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 }
 
 OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStringTracker* tracker) {
-	m_sPrompt.empty();
-	OdSaveState<OdString> savePrompt(m_sPrompt);
+	m_Prompt.empty();
+	OdSaveState<OdString> SavePrompt(m_Prompt);
 	putString(prompt);
-	OdSaveState<Mode> saved_m_mode(m_mode, kGetString);
+	OdSaveState<Mode> SaveMode(m_mode, kGetString);
 	m_response.m_type = Response::kNone;
-	if (tracker) { m_inpars.reset(true); }
+	if (tracker) { m_InputParser.reset(true); }
 	m_inpOptions = options;
 	SaveViewParametersTimer svp(this, tracker, LoadCursorW(nullptr, IDC_IBEAM));
 	while (theApp.PumpMessage()) {
@@ -1626,19 +1624,19 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 }
 
 void AeSysView::putString(const OdString& string) {
-	m_sPrompt = string;
-	const auto n {m_sPrompt.reverseFind('\n')};
+	m_Prompt = string;
+	const auto n {m_Prompt.reverseFind('\n')};
 	const wchar_t* Text {string};
 	if (n >= 0) { Text = Text + n + 1; }
 	AeSys::AddStringToMessageList(Text);
 	theApp.SetStatusPaneTextAt(gc_StatusInfo, Text);
 }
 
-void AeSysView::track(OdEdInputTracker* inputTracker) {
-	m_editor.SetTracker(inputTracker);
+void AeSysView::Track(OdEdInputTracker* inputTracker) {
+	m_Editor.SetTracker(inputTracker);
 }
 
-HCURSOR AeSysView::cursor() const noexcept {
+HCURSOR AeSysView::Cursor() const noexcept {
 	return m_hCursor;
 }
 
@@ -1686,7 +1684,7 @@ BOOL AeSysView::OnDrop(COleDataObject* dataObject, const DROPEFFECT dropEffect, 
 		auto Document {GetDocument()};
 		OdDbDatabase* Database {Document->m_DatabasePtr};
 		Database->startUndoRecord();
-		const auto TransformMatrix {OdGeMatrix3d::translation(m_editor.ToEyeToWorld(point.x, point.y) - ClipboardData->pickPoint())};
+		const auto TransformMatrix {OdGeMatrix3d::translation(m_Editor.ToEyeToWorld(point.x, point.y) - ClipboardData->pickPoint())};
 		if (m_mode == kDragDrop) {
 			auto SelectionSet {Document->SelectionSet()};
 			auto SelectionSetObjects {SelectionSet->objectIdArray()};
@@ -1785,19 +1783,19 @@ CRect AeSysView::viewRect(OdGsView* view) {
 
 void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, const unsigned flags) {
 	__super::OnChar(characterCodeValue, repeatCount, flags);
-	m_response.m_string = m_inpars.result();
+	m_response.m_string = m_InputParser.result();
 	switch (characterCodeValue) {
 		case VK_BACK:
 			while (repeatCount--) {
-				m_inpars.eraseChar();
+				m_InputParser.eraseChar();
 			}
 			break;
 		case VK_ESCAPE:
 			m_response.m_type = Response::kCancel;
-			m_inpars.reset(false);
+			m_InputParser.reset(false);
 			switch (m_mode) {
 				case kQuiescent:
-					if (m_editor.Unselect()) { PostMessageW(WM_PAINT); }
+					if (m_Editor.Unselect()) { PostMessageW(WM_PAINT); }
 					break;
 				case kGetPoint: case kGetString: case kDragDrop: default:
 					break;
@@ -1805,8 +1803,8 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 			break;
 		default:
 			while (repeatCount--) {
-				if (!m_inpars.addChar(static_cast<wchar_t>(characterCodeValue))) {
-					m_inpars.reset(false);
+				if (!m_InputParser.addChar(static_cast<wchar_t>(characterCodeValue))) {
+					m_InputParser.reset(false);
 					switch (m_mode) {
 						case kQuiescent:
 							if (m_response.m_string.isEmpty()) {
@@ -1825,18 +1823,18 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 			}
 			break;
 	}
-	if (m_mode == kGetString && m_response.m_type != Response::kString && m_inpars.result() != m_response.m_string) {
-		if (m_editor.TrackString(m_inpars.result())) {
-			getActiveTopView()->invalidate();
+	if (m_mode == kGetString && m_response.m_type != Response::kString && m_InputParser.result() != m_response.m_string) {
+		if (m_Editor.TrackString(m_InputParser.result())) {
+			GetLayoutActiveTopView()->invalidate();
 			PostMessageW(WM_PAINT);
 		}
 	}
-	if (m_sPrompt.isEmpty()) {
-		m_sPrompt = L"command: ";
-	} else if (m_inpars.result().isEmpty()) {
-		theApp.SetStatusPaneTextAt(gc_StatusInfo, m_sPrompt);
+	if (m_Prompt.isEmpty()) {
+		m_Prompt = L"command: ";
+	} else if (m_InputParser.result().isEmpty()) {
+		theApp.SetStatusPaneTextAt(gc_StatusInfo, m_Prompt);
 	} else {
-		theApp.SetStatusPaneTextAt(gc_StatusInfo, m_inpars.result());
+		theApp.SetStatusPaneTextAt(gc_StatusInfo, m_InputParser.result());
 	}
 }
 
@@ -1860,12 +1858,12 @@ void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 		__super::OnLButtonDown(flags, point);
 		switch (m_mode) {
 			case kQuiescent:
-				if (m_editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) { PostMessageW(WM_PAINT); }
+				if (m_Editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) { PostMessageW(WM_PAINT); }
 				break;
 			case kGetPoint:
-				m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
-				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_editor.ToUcsToWorld(m_response.m_Point)) { break; }
-				m_editor.Snap(m_response.m_Point);
+				m_response.m_Point = m_Editor.ToEyeToWorld(point.x, point.y);
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_response.m_Point)) { break; }
+				m_Editor.Snap(m_response.m_Point);
 				m_response.m_type = Response::kPoint;
 				break;
 			case kGetString: case kDragDrop:
@@ -1889,12 +1887,12 @@ void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 	if (AeSys::customLButtonUpCharacters.IsEmpty()) {
 		__super::OnLButtonUp(flags, point);
 		if (m_mode == kGetPoint && GetCapture() == this) {
-			m_response.m_Point = m_editor.ToEyeToWorld(point.x, point.y);
-			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_editor.ToUcsToWorld(m_response.m_Point)) { return; }
+			m_response.m_Point = m_Editor.ToEyeToWorld(point.x, point.y);
+			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_response.m_Point)) { return; }
 			m_response.m_type = Response::kPoint;
 			ReleaseCapture();
 		}
-		m_editor.SetEntityCenters();
+		m_Editor.SetEntityCenters();
 
 		//		m_LeftButton = false;
 		//		if (m_ZoomWindow == true) {
@@ -1927,13 +1925,13 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 	if (m_MousePosition != point) {
 		switch (m_mode) {
 			case kQuiescent:
-				m_editor.OnMouseMove(flags, point.x, point.y);
+				m_Editor.OnMouseMove(flags, point.x, point.y);
 				break;
 			case kGetPoint: {
-				auto Point {m_editor.ToEyeToWorld(point.x, point.y)};
-				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_editor.ToUcsToWorld(Point)) { return; }
-				if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) { m_editor.Snap(Point); }
-				m_editor.TrackPoint(Point);
+				auto Point {m_Editor.ToEyeToWorld(point.x, point.y)};
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(Point)) { return; }
+				if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) { m_Editor.Snap(Point); }
+				m_Editor.TrackPoint(Point);
 				break;
 			}
 			case kGetString: case kDragDrop: default:
@@ -2078,15 +2076,15 @@ OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 		c->m_LayoutHelper = m_LayoutHelper;
 		return c;
 	}
-	return m_editor.Command(commandName);
+	return m_Editor.Command(commandName);
 }
 
 OdExEditorObject& AeSysView::editorObject() noexcept {
-	return m_editor;
+	return m_Editor;
 }
 
 const OdExEditorObject& AeSysView::editorObject() const noexcept {
-	return m_editor;
+	return m_Editor;
 }
 
 bool AeSysView::isModelSpaceView() const {

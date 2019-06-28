@@ -26,18 +26,18 @@ class AeSysView
 	, OdEdBaseIO
 	, OdExEditorObject::OleDragCallback {
 	friend class SaveViewParameters;
-	void destroyDevice();
-	COleDropTarget m_dropTarget;
-	OdString m_sPrompt;
-	ExEdInputParser m_inpars;
-	static unsigned g_nRedrawMSG;
-	OdExEditorObject m_editor;
+	void DestroyDevice();
+	COleDropTarget m_DropTarget;
+	OdString m_Prompt;
+	ExEdInputParser m_InputParser;
+	static unsigned ms_RedrawMessage;
+	OdExEditorObject m_Editor;
 	mutable bool m_RegenerateAbort {false};
 	mutable bool m_IncompleteRegenerate {false}; // flag to avoid reentrancy in regenerate, if new redraw message is received while regenerate is incomplete (e.g. when assert pops up)
 	enum PaintMode { kRedraw, kRegenerate };
 
-	PaintMode m_paintMode {kRegenerate};
-	CPoint m_oldPoint;
+	PaintMode m_PaintMode {kRegenerate};
+	CPoint m_OldPoint;
 	HCURSOR m_hCursor {nullptr};
 
 	enum Mode { kQuiescent, kGetPoint, kGetString, kDragDrop };
@@ -83,27 +83,27 @@ protected:
 	unsigned long glyphSize(GlyphType glyphType) const override;
 	void fillContextualColors(OdGiContextualColorsImpl* pCtxColors) override;
 DECLARE_DYNCREATE(AeSysView)
-	OdGsView* getActiveView();
-	const OdGsView* getActiveView() const;
-	OdGsView* getActiveTopView();
-	const OdGsView* getActiveTopView() const;
+	OdGsView* GetLayoutActiveView();
+	const OdGsView* GetLayoutActiveView() const;
+	OdGsView* GetLayoutActiveTopView();
+	const OdGsView* GetLayoutActiveTopView() const;
 
 	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
 
-	void propagateActiveViewChanges(bool forceAutoRegen = false) const;
+	void PropagateLayoutActiveViewChanges(bool forceAutoRegen = false) const;
 
-	void recreateDevice() { createDevice(true); }
+	void recreateDevice() { CreateDevice(true); }
 
-	void track(OdEdInputTracker* inputTracker);
+	void Track(OdEdInputTracker* inputTracker);
 	void setCursor(HCURSOR cursor) noexcept;
-	HCURSOR cursor() const noexcept;
-	void setViewportBorderProperties();
+	HCURSOR Cursor() const noexcept;
+	void SetViewportBorderProperties();
 	// <command_view>
-	bool canClose() const;
+	bool CanClose() const;
 
 	bool isGettingString() const noexcept { return m_mode != kQuiescent; }
 
-	OdString prompt() const { return m_sPrompt; }
+	OdString prompt() const { return m_Prompt; }
 
 	int inpOptions() const noexcept { return m_inpOptions; }
 
@@ -142,7 +142,7 @@ protected:
 #endif
 
 	//	void adjustDevice(OdGsDevice* device);
-	void createDevice(bool recreate = false);
+	void CreateDevice(bool recreate = false);
 	bool regenAbort() const noexcept override;
 public:
 	unsigned long getKeyState() noexcept override;
@@ -168,8 +168,8 @@ public:
 	enum RubberBandingTypes { kNone, kLines, kRectangles };
 
 private:
-	static const double sm_MaximumWindowRatio;
-	static const double sm_MinimumWindowRatio;
+	static const double mc_MaximumWindowRatio;
+	static const double mc_MinimumWindowRatio;
 	EoGsModelTransform m_ModelTransform;
 	EoGsViewport m_Viewport;
 	EoGsViewTransform m_ViewTransform;
@@ -908,7 +908,7 @@ public:
 	void OnRefresh();
 	void OnViewerRegen();
 protected:
-	void OnViewerVpregen();
+	void OnViewerViewportRegen();
 	void OnUpdateViewerRegen(CCmdUI* commandUserInterface);
 DECLARE_MESSAGE_MAP()
 public:

@@ -262,7 +262,7 @@ BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
 	const auto ActiveView {frame->GetActiveView()};
 	if (ActiveView->IsKindOf(&AeSysView::classAeSysView)) {
 
-		if (!dynamic_cast<AeSysView*>(ActiveView)->canClose()) { return FALSE; }
+		if (!dynamic_cast<AeSysView*>(ActiveView)->CanClose()) { return FALSE; }
 
 	}
 	return CDocument::CanCloseFrame(frame);
@@ -655,7 +655,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 				}
 			}
 		}
-		if (GetViewer()) { GetViewer()->propagateActiveViewChanges(); }
+		if (GetViewer()) { GetViewer()->PropagateLayoutActiveViewChanges(); }
 
 	} catch (OdEdEmptyInput) {
 	} catch (OdEdCancel) {
