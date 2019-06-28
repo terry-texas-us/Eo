@@ -1522,8 +1522,8 @@ public:
 	}
 };
 
-#define BLINK_CURSOR_TIMER 888
-#define BLINK_CURSOR_RATE GetCaretBlinkTime()
+constexpr unsigned gc_BlinkCursorTimer = 888;
+const unsigned gc_BlinkCursorRate = GetCaretBlinkTime();
 
 void CALLBACK StringTrackerTimer(HWND hWnd, unsigned nMsg, unsigned nIDTimer, unsigned long time);
 
@@ -1534,7 +1534,7 @@ public:
 		: SaveViewParameters(view, tracker, cursor, false) {
 		if (tracker) {
 			tracker->setCursor(true);
-			SetTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER, BLINK_CURSOR_RATE, static_cast<TIMERPROC>(StringTrackerTimer));
+			SetTimer(m_View->m_hWnd, gc_BlinkCursorTimer, gc_BlinkCursorRate, static_cast<TIMERPROC>(StringTrackerTimer));
 			m_TimerSet = true;
 		} else {
 			m_TimerSet = false;
@@ -1542,7 +1542,7 @@ public:
 	}
 
 	~SaveViewParametersTimer() {
-		if (m_TimerSet) { KillTimer(m_View->m_hWnd, BLINK_CURSOR_TIMER); }
+		if (m_TimerSet) { KillTimer(m_View->m_hWnd, gc_BlinkCursorTimer); }
 	}
 };
 

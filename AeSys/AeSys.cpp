@@ -12,7 +12,7 @@
 #include <ExFileUndoController.h>
 #include <ExPageController.h>
 #include <ExUndoController.h>
-#include <MemFileStreamImpl.h>
+#include <memfilestreamimpl.h>
 #include <FileDlgExt.h>
 #include "EoAppAuditInfo.h"
 #include "EoDbHatchPatternTable.h"
@@ -27,6 +27,8 @@
 #include "EoDbHatch.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
 #endif
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
 double g_PenWidths[] {
@@ -108,15 +110,14 @@ static void AddPaperDrawingCustomization() {
 			}
 			return true;
 		}
-	} s_PaperDrawExt;
-	OdDbLayout::desc()->addX(OdDbLayoutPaperPE::desc(), &s_PaperDrawExt);
+	} PaperDrawProtocolObject;
+	OdDbLayout::desc()->addX(OdDbLayoutPaperPE::desc(), &PaperDrawProtocolObject);
 }
 
-static void removePaperDrawingCustomization() {
+static void RemovePaperDrawingCustomization() {
 	OdDbLayout::desc()->delX(OdDbLayoutPaperPE::desc());
 }
 
-/// <section="Material textures loading monitor protocol extension">
 static void AddMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
 	public:
@@ -131,16 +132,16 @@ static void AddMaterialTextureLoadingMonitor() {
 		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* database) override {
 			TRACE1("Failed to load material texture: %s\n", fileName.c_str());
 		}
-	} s_MatLoadExt;
-	OdGiMaterialTextureEntry::desc()->addX(OdGiMaterialTextureLoadPE::desc(), &s_MatLoadExt);
+	} MaterialLoadProtocolObject;
+	OdGiMaterialTextureEntry::desc()->addX(OdGiMaterialTextureLoadPE::desc(), &MaterialLoadProtocolObject);
 }
 
 void RemoveMaterialTextureLoadingMonitor() {
 	OdGiMaterialTextureEntry::desc()->delX(OdGiMaterialTextureLoadPE::desc());
 }
-/// </section>
-#include "DbLibraryInfo.h"
-#include "summinfo.h"
+
+#include <DbLibraryInfo.h>
+#include <summinfo.h>
 
 class EoDlgAbout final : public CDialog {
 public:
@@ -612,7 +613,7 @@ void AeSys::RemoveReactor(const OdApplicationReactor* reactor) {
 	applicationReactors.erase(std::remove(applicationReactors.begin(), applicationReactors.end(), OdApplicationReactorPtr(reactor)), applicationReactors.end());
 }
 
-OdDbDatabasePtr AeSys::openFile(const wchar_t* pathName) {
+OdDbDatabasePtr AeSys::OpenFile(const wchar_t* pathName) {
 	auto MainFrame {dynamic_cast<CMainFrame*>(GetMainWnd())};
 	OdDbDatabasePtr Database;
 	auto MtMode {getMtMode()};
@@ -786,11 +787,11 @@ CString AeSys::BrowseWithPreview(const HWND parentWindow, const wchar_t* filter,
 	const CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
 	const auto LibraryModule {LoadLibraryW(LibraryFileName)};
 	if (LibraryModule != nullptr) {
-		const auto fpDlgProc {reinterpret_cast<ODA_OPEN_DLGPROC>(GetProcAddress(LibraryModule, "CreateOpenWithPreviewDlg"))};
-		if (fpDlgProc != nullptr) {
-			EoPreviewDib statDib;
+		const auto OpenWithPreviewDlgProc {reinterpret_cast<ODA_OPEN_DLGPROC>(GetProcAddress(LibraryModule, "CreateOpenWithPreviewDlg"))};
+		if (OpenWithPreviewDlgProc != nullptr) {
+			EoPreviewDib PreviewDeviceIndependentBitmap;
 			OpenWithPreviewDlg* OpenWithPreviewDialog;
-			(fpDlgProc)(&statDib, parentWindow, nullptr, filter, Flags, &OpenWithPreviewDialog);
+			(OpenWithPreviewDlgProc)(&PreviewDeviceIndependentBitmap, parentWindow, nullptr, filter, Flags, &OpenWithPreviewDialog);
 			if (IDOK == OpenWithPreviewDialog->ShowModal()) {
 				long BufferLength {MAX_PATH};
 				OpenWithPreviewDialog->GetFullFileName(FileName.GetBuffer(BufferLength), BufferLength);
@@ -1655,17 +1656,17 @@ bool GetRegistryString(const HKEY key, const wchar_t* subKey, const wchar_t* nam
 	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &OpenedKey) == ERROR_SUCCESS) {
 		unsigned long RegistryBufferSize {gc_RegistryBufferSize};
 		unsigned char Data[gc_RegistryBufferSize] {0};
-		wchar_t Data_t[gc_RegistryBufferSize] {L""};
+		wchar_t DataW[gc_RegistryBufferSize] {L""};
 		if (RegQueryValueExW(OpenedKey, name, nullptr, nullptr, Data, &RegistryBufferSize) == ERROR_SUCCESS) {
-			memcpy_s(&Data_t, gc_RegistryBufferSize, &Data, RegistryBufferSize);
+			memcpy_s(&DataW, gc_RegistryBufferSize, &Data, RegistryBufferSize);
 			ReturnValue = true;
 		} else {
-			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, Data_t, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
+			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, DataW, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
 		}
 		if (size < gc_RegistryBufferSize) {
-			swprintf_s(value, static_cast<size_t>(size), L"%s\0", Data_t);
+			swprintf_s(value, static_cast<size_t>(size), L"%s\0", DataW);
 		} else {
-			wcsncpy(value, Data_t, static_cast<size_t>(size - 1));
+			wcsncpy(value, DataW, static_cast<size_t>(size - 1));
 			value[size - 1] = '\0';
 		}
 		RegCloseKey(OpenedKey);
@@ -1804,17 +1805,17 @@ void AeSys::meterProgress() {
 			}
 
 			static void Exec(void* statusUpdater) {
-				const auto pExec {static_cast<StatusUpdater*>(statusUpdater)};
+				const auto StatusUpdaterExec {static_cast<StatusUpdater*>(statusUpdater)};
 				CString ProgressMessage;
-				ProgressMessage.Format(L"%s %d", pExec->m_Application->m_ProgressMessage.GetString(), pExec->m_Percent);
+				ProgressMessage.Format(L"%s %d", StatusUpdaterExec->m_Application->m_ProgressMessage.GetString(), StatusUpdaterExec->m_Percent);
 				// <tas="pExec->m_MainFrame->m_wndStatusBar.SetPaneText(0, ProgressMessage);:</tas>
 				// <tas="pExec->m_Application->m_tbExt.SetProgressValue(::AfxGetMainWnd()->GetSafeHwnd(), (ULONG) pExec->m_ProgressPercent, 100);"</tas>
 				MSG Message;
-				while (PeekMessageW(&Message, pExec->m_MainFrame->m_hWnd, WM_KEYUP, WM_KEYUP, 1)) {
+				while (PeekMessageW(&Message, StatusUpdaterExec->m_MainFrame->m_hWnd, WM_KEYUP, WM_KEYUP, 1)) {
 					auto Dup {false};
 					if (Message.wParam == VK_ESCAPE && !Dup) {
 						Dup = true;
-						ProgressMessage.Format(L"Are you sure you want to terminate\n%s ?", pExec->m_Application->m_ProgressMessage.GetString());
+						ProgressMessage.Format(L"Are you sure you want to terminate\n%s ?", StatusUpdaterExec->m_Application->m_ProgressMessage.GetString());
 						// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_Paused);"</tas>
 						if (AfxMessageBox(ProgressMessage, MB_YESNO | MB_ICONQUESTION) == IDYES) {
 							// <tas="pExec->m_Application->m_tbExt.SetProgressState(::AfxGetMainWnd()->GetSafeHwnd(), CTaskBarWin7Ext::PS_NoProgress);"</tas>
@@ -1824,8 +1825,8 @@ void AeSys::meterProgress() {
 					}
 				}
 			}
-		} execArg(Percent, dynamic_cast<CMainFrame*>(GetMainWnd()), this);
-		odExecuteMainThreadAction(StatusUpdater::Exec, &execArg);
+		} ExecArg(Percent, dynamic_cast<CMainFrame*>(GetMainWnd()), this);
+		odExecuteMainThreadAction(StatusUpdater::Exec, &ExecArg);
 	}
 }
 
@@ -1938,7 +1939,7 @@ void AeSys::UninitializeTeigha() {
 #ifdef OD_OLE_SUPPORT
 		::rxUninit_COleClientItem_handler();
 #endif // OD_OLE_SUPPORT
-		removePaperDrawingCustomization();
+		RemovePaperDrawingCustomization();
 		RemoveMaterialTextureLoadingMonitor();
 		odUninitialize();
 	} catch (const OdError& Error) {

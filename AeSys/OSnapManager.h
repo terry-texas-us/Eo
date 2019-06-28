@@ -61,7 +61,7 @@ private:
 	OdDbObjectIdArray m_ObjectIds;
 };
 
-#define hitradius 15
+constexpr auto gc_HitRadius = 15.0;
 
 class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSelectionReactor {
 	// TODO move using of OdDbDatabase, OdDbObject & OdDbObjectId into OSnapManager
@@ -75,7 +75,7 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 	OdGePoint3d m_SnapPoint;
 	OdDb::OsnapMode m_SnapMode;
 	bool m_Redraw;
-	double m_HitRadius {hitradius};
+	double m_HitRadius {gc_HitRadius};
 	long GetAperture(OdDbDatabase* database) const;
 
 	struct SubentId {

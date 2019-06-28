@@ -1,6 +1,6 @@
 #pragma once
-#include "Ps/PlotStyles.h"
-#define PS_EDIT_MAX_SCALEFACTOR 10
+#include "Ps/plotstyles.h"
+constexpr double gc_PlotStyleEditMaxScaleFactor = 10.0;
 
 class EoDlgPlotStyleEditor_GeneralPropertyPage : public CPropertyPage {
 DECLARE_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage)
@@ -12,8 +12,8 @@ DECLARE_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage)
 	enum { IDD = IDD_PLOTSTYLE_GENERAL_PROPERTY_PAGE };
 
 	CEdit m_editDescription;
-	CButton m_checkScalefactor;
-	CEdit m_editScalefactor;
+	CButton m_checkScaleFactor;
+	CEdit m_editScaleFactor;
 	CStatic m_staticFilepath;
 	CStatic m_staticFilename;
 	CStatic m_staticBitmap;
@@ -27,7 +27,7 @@ public:
 	void SetFileBufPath(OdString filePath);
 protected:
 	void OnChangeEditDescription();
-	void OnCheckScalefactor();
-	void OnEditScalefactor();
+	void OnCheckScaleFactor();
+	void OnEditScaleFactor();
 DECLARE_MESSAGE_MAP()
 };

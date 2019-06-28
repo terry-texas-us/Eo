@@ -50,7 +50,7 @@
 #include "EoDlgSetupNote.h"
 #include "EoDlgSetupLinetype.h"
 #include "EoDlgTrapFilter.h"
-#include "lex.h"
+#include "Lex.h"
 unsigned CALLBACK OfnHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {

@@ -27,7 +27,7 @@ static const unsigned TPM_NOANIMATION = 0x4000L;
 #endif
 #endif // ODA_UNIXOS
 //
-#define GM_PAGE_EACH_OBJECT 200
+constexpr unsigned gc_GripManagerPageEachObject = 200;
 
 namespace
 {
@@ -554,7 +554,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 		const auto Size {aOld.size()};
 		for (unsigned i = 0; i < Size; i++) {
 			RemoveEntityGrips(aOld[i], true);
-			if (i % GM_PAGE_EACH_OBJECT && Database) { Database->pageObjects(); }
+			if (i % gc_GripManagerPageEachObject && Database) { Database->pageObjects(); }
 		}
 	}
 	{ // New Entities.
@@ -568,7 +568,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 		const auto Size {aNew.size()};
 		for (unsigned i = 0; i < Size; i++) {
 			UpdateEntityGrips(aNew[i]);
-			if (i % GM_PAGE_EACH_OBJECT && Database) { Database->pageObjects(); }
+			if (i % gc_GripManagerPageEachObject && Database) { Database->pageObjects(); }
 		}
 	}
 	UpdateInvisibleGrips();
@@ -1210,4 +1210,3 @@ void OdExGripDbReactor::objectErased(const OdDbDatabase* database, const OdDbObj
 		m_GripManager->UpdateInvisibleGrips();
 	}
 }
-#undef GM_PAGE_EACH_OBJECT

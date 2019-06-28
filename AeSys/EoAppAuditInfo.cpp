@@ -2,9 +2,9 @@
 #include "AeSys.h"
 #include "EoAppAuditInfo.h"
 #ifdef _DEBUG
+#define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
-#define new DEBUG_NEW
 #endif
 EoAppAuditInfo::EoAppAuditInfo() noexcept {
 	m_pHostAppServices = nullptr;

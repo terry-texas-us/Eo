@@ -2,10 +2,10 @@
 #include "DbDatabase.h"
 #include "EoDlgPlotStyleEditLineweight.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
-#include "Ps/PlotStyles.h"
-#include "ColorMapping.h"
-#include "DynamicLinker.h"
-#include "WindowsX.h"
+#include <Ps/plotstyles.h>
+#include <ColorMapping.h>
+#include <DynamicLinker.h>
+#include <WindowsX.h>
 
 void Dlg_OnClose(const HWND hwnd) noexcept {
 	DestroyWindow(hwnd);
@@ -188,11 +188,11 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, 
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
 	if (colorIndex <= 0) {
-		wcscpy_s(m_name, PS_COLOR_MAX_NAME, L"Custom Color");
+		wcscpy_s(m_name, gc_PlotStyleColorMaxName, L"Custom Color");
 	} else {
 		OdString ColorName;
 		ColorName.format(L"Color %d", colorIndex);
-		wcscpy_s(m_name, PS_COLOR_MAX_NAME, ColorName);
+		wcscpy_s(m_name, gc_PlotStyleColorMaxName, ColorName);
 	}
 }
 
@@ -201,7 +201,7 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, 
 	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
-	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
+	wcsncpy(m_name, name, gc_PlotStyleColorMaxName);
 }
 
 CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name)
@@ -210,7 +210,7 @@ CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* n
 	const auto BitmapHandle {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
 	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
 	CloneBitmap(Bitmap, &m_bitmap);
-	wcsncpy(m_name, name, PS_COLOR_MAX_NAME);
+	wcsncpy(m_name, name, gc_PlotStyleColorMaxName);
 }
 
 int CPsListStyleData::getPublicArrayIndexByColor(const COLORREF color) {
@@ -309,11 +309,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* da
 	DDX_Control(dataExchange, IDC_PS_FORMVIEW_BTN_LINEWEIGHT, m_LineweightButton);
 	DDX_Control(dataExchange, IDC_PS_FORMVIEW_BTN_SAVE, m_SaveButton);
 	m_spinPen.SetBuddy(&m_editPen);
-	m_spinPen.SetRange(0, PS_SPIN_MAX_PEN);
+	m_spinPen.SetRange(0, gc_PlotStyleSpinMaxPen);
 	m_spinVirtpen.SetBuddy(&m_editVirtpen);
-	m_spinVirtpen.SetRange(0, PS_SPIN_MAX_VIRTPEN);
+	m_spinVirtpen.SetRange(0, gc_PlotStyleSpinMaxVirtpen);
 	m_spinScreening.SetBuddy(&m_editScreening);
-	m_spinScreening.SetRange(0, PS_SPIN_MAX_SCREENING);
+	m_spinScreening.SetRange(0, gc_PlotStyleSpinMaxScreening);
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDestroy() {
@@ -484,7 +484,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
 	int num;
 	if (pVal == L"Automatic") { pVal = L"0"; }
 	_stscanf(pVal, L"%d", &num);
-	if (num < 0 || num > PS_SPIN_MAX_PEN) {
+	if (num < 0 || num > gc_PlotStyleSpinMaxPen) {
 		num = 0;
 		m_spinScreening.SetPos(num);
 	}
@@ -505,23 +505,23 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 	m_bEditChanging = true;
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
-	CString pVal;
-	m_editPen.GetWindowText(pVal);
-	int num;
-	if (pVal == L"Automatic") { pVal = L"0"; }
-	_stscanf(pVal, L"%d", &num);
-	if (num < 0 || num > PS_SPIN_MAX_PEN) {
-		num = 0;
-		m_spinPen.SetPos(num);
+	CString String;
+	m_editPen.GetWindowTextW(String);
+	int Number;
+	if (String == L"Automatic") { String = L"0"; }
+	swscanf(String, L"%d", &Number);
+	if (Number < 0 || Number > gc_PlotStyleSpinMaxPen) {
+		Number = 0;
+		m_spinPen.SetPos(Number);
 	}
-	OdPsData.setPhysicalPenNumber(static_cast<short>(num));
+	OdPsData.setPhysicalPenNumber(static_cast<short>(Number));
 	m_pPlotStyleActive->setData(OdPsData);
 	if (!m_spinPen.GetPos()) {
 		m_editPen.SetWindowTextW(L"Automatic");
 	} else {
-		wchar_t buffer[256];
-		_itot(num, buffer, 10);
-		m_editPen.SetWindowTextW(buffer);
+		wchar_t Buffer[256];
+		_itow(Number, Buffer, 10);
+		m_editPen.SetWindowTextW(Buffer);
 	}
 	m_bEditChanging = false;
 }
@@ -536,7 +536,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
 	int num;
 	if (pVal == L"Automatic") { pVal = L"0"; }
 	_stscanf(pVal, L"%d", &num);
-	if (num < 0 || num > PS_SPIN_MAX_VIRTPEN) {
+	if (num < 0 || num > gc_PlotStyleSpinMaxVirtpen) {
 		num = 0;
 		m_spinVirtpen.SetPos(num);
 	}
@@ -900,7 +900,9 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnLineweightBtn() {
 }
 
 int EoDlgPlotStyleEditor_FormViewPropertyPage::deleteCustomColor() {
-	if (m_Color.GetCount() > PS_COMBO_COLOR_POSITION + 1) { m_Color.DeleteString(PS_COMBO_COLOR_POSITION); }
+	if (m_Color.GetCount() > gc_PlotStyleComboColorPosition + 1) {
+		m_Color.DeleteString(gc_PlotStyleComboColorPosition);
+	}
 	return 0;
 }
 
@@ -908,7 +910,7 @@ int EoDlgPlotStyleEditor_FormViewPropertyPage::appendCustomColor(const int item)
 	const auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(item))};
 	const auto pBitmapColorInfo {pPsListStyleData->GetBitmapColorInfo()};
 	if (!pBitmapColorInfo) { return pPsListStyleData->GetActiveListIndex(); }
-	return m_Color.InsertBitmap(PS_COMBO_COLOR_POSITION, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
+	return m_Color.InsertBitmap(gc_PlotStyleComboColorPosition, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
 }
 
 int EoDlgPlotStyleEditor_FormViewPropertyPage::replaceCustomColor(const COLORREF color, const int item) {
@@ -916,5 +918,5 @@ int EoDlgPlotStyleEditor_FormViewPropertyPage::replaceCustomColor(const COLORREF
 	pPsListStyleData->ReplaceBitmapColorInfo(color, item);
 	const auto pBitmapColorInfo {pPsListStyleData->GetBitmapColorInfo()};
 	if (!pBitmapColorInfo) { return pPsListStyleData->GetActiveListIndex(); }
-	return m_Color.InsertBitmap(PS_COMBO_COLOR_POSITION, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
+	return m_Color.InsertBitmap(gc_PlotStyleComboColorPosition, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
 }

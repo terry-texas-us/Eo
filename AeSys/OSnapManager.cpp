@@ -12,7 +12,7 @@
 #include "DbHostAppServices.h"
 #include "Gi/GiLocalDrawableDesc.h"
 #include "Gs/GsViewImpl.h"
-#define snapPtSize 5
+constexpr long gc_SnapPointSize = 5;
 
 OdBaseSnapManager::SubentId::SubentId(const OdGiPathNode& pathNode) {
 	m_Marker = pathNode.selectionMarker();
@@ -62,7 +62,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	const auto WorldToEyeTransform {Viewport.getWorldToEyeTransform()};
 	Viewport.getNumPixelsInUnitSquare(Viewport.getCameraTarget(), reinterpret_cast<OdGePoint2d&>(Points[0]));
 	const auto pix {1.0 / Points[0].x};
-	const auto s {snapPtSize * pix};
+	const auto s {gc_SnapPointSize * pix};
 	auto& SubEntityTraits {viewportDraw->subEntityTraits()};
 	OdGiDrawFlagsHelper DrawFlagsHelper(SubEntityTraits, OdGiSubEntityTraits::kDrawNoPlotstyle);
 	if (m_SnapMode > 0 && static_cast<unsigned long>(m_SnapMode) < 100) {
@@ -191,10 +191,10 @@ void OdBaseSnapManager::InvalidateViewport(const HistEntryArray& centers) const 
 		DcRectangle.m_min.x = OdRoundToLong(Point.x);
 		DcRectangle.m_min.y = OdRoundToLong(Point.y);
 		DcRectangle.m_max = DcRectangle.m_min;
-		DcRectangle.m_min.x -= snapPtSize;
-		DcRectangle.m_min.y -= snapPtSize;
-		DcRectangle.m_max.x += snapPtSize;
-		DcRectangle.m_max.y += snapPtSize;
+		DcRectangle.m_min.x -= gc_SnapPointSize;
+		DcRectangle.m_min.y -= gc_SnapPointSize;
+		DcRectangle.m_max.x += gc_SnapPointSize;
+		DcRectangle.m_max.y += gc_SnapPointSize;
 		m_View->invalidate(DcRectangle);
 	}
 }
@@ -207,10 +207,10 @@ void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 		DcRectangle.m_min.x = OdRoundToLong(Point.x);
 		DcRectangle.m_min.y = OdRoundToLong(Point.y);
 		DcRectangle.m_max = DcRectangle.m_min;
-		DcRectangle.m_min.x -= snapPtSize * 2;
-		DcRectangle.m_min.y -= snapPtSize * 2;
-		DcRectangle.m_max.x += snapPtSize * 2;
-		DcRectangle.m_max.y += snapPtSize * 2;
+		DcRectangle.m_min.x -= gc_SnapPointSize * 2;
+		DcRectangle.m_min.y -= gc_SnapPointSize * 2;
+		DcRectangle.m_max.x += gc_SnapPointSize * 2;
+		DcRectangle.m_max.y += gc_SnapPointSize * 2;
 
 		/*
 	  switch(m_SnapMode)

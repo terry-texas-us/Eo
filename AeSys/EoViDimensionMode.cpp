@@ -7,7 +7,7 @@
 #include <DbAlignedDimension.h>
 #include <DbRotatedDimension.h>
 #include "EoDbDimension.h"
-double DimensionModePickTolerance = .05;
+double g_DimensionModePickTolerance = 0.05;
 OdGePoint3d PreviousDimensionPosition;
 unsigned short PreviousDimensionCommand = 0;
 
@@ -29,7 +29,7 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 			} else {
 				continue;
 			}
-			if (LineSeg.IsSelectedBy_xy(point, DimensionModePickTolerance, ptProj, Relationship)) {
+			if (LineSeg.IsSelectedBy_xy(point, g_DimensionModePickTolerance, ptProj, Relationship)) {
 				return Relationship <= 0.5 ? LineSeg.startPoint() : LineSeg.endPoint();
 			}
 		}
@@ -70,7 +70,7 @@ void AeSysView::OnDimensionModeArrow() {
 			}
 			OdGePoint3d ptProj;
 			double dRel;
-			if (TestLine.IsSelectedBy_xy(CurrentPnt, DimensionModePickTolerance, ptProj, dRel)) {
+			if (TestLine.IsSelectedBy_xy(CurrentPnt, g_DimensionModePickTolerance, ptProj, dRel)) {
 				OdGePoint3d pt;
 				const auto NewGroup {new EoDbGroup};
 				if (dRel <= 0.5) {

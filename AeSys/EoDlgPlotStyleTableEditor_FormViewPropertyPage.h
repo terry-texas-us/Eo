@@ -1,12 +1,12 @@
 #pragma once
-#include <Ps/PlotStyles.h>
+#include <Ps/plotstyles.h>
 #include "EoCtrlBitmapPickerCombo.h"
-#define  PS_COLOR_MAX_NAME 25
-#define  PS_COMBO_COLOR_POSITION 8
-#define  PS_SPIN_MAX_PEN 32
-#define  PS_SPIN_MAX_VIRTPEN 255
-#define  PS_SPIN_MAX_SCREENING 100
-#define MMTOINCH(mm) (double(mm)  / kMmPerInch)
+constexpr unsigned gc_PlotStyleColorMaxName = 25;
+constexpr int gc_PlotStyleComboColorPosition = 8;
+constexpr short gc_PlotStyleSpinMaxPen = 32;
+constexpr short gc_PlotStyleSpinMaxVirtpen = 255;
+constexpr short gc_PlotStyleSpinMaxScreening = 100;
+#define MMTOINCH(mm) (double(mm) / kMmPerInch)
 #define INCHTOMM(inch) (double(inch) * kMmPerInch)
 static OdString g_PlotStylesLineTypes[] = {
 L"Solid",
@@ -99,7 +99,7 @@ public:
 	unsigned char m_iItem;
 	COLORREF m_color;
 	CBitmap m_bitmap;
-	wchar_t m_name[PS_COLOR_MAX_NAME];
+	wchar_t m_name[gc_PlotStyleColorMaxName];
 	CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name);
 	CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsigned char colorItem, int colorIndex = -1);
 	CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name);

@@ -62,9 +62,8 @@ typedef struct {
 	unsigned short checksum;
 } ALDUSMFHEADER;
 
-#define METAFILE_VERSION 1
-#define ALDUSKEY 0x9AC6CDD7
-#define ALDUSMFHEADERSIZE 22  // Avoid sizeof is struct alignment > 1
+constexpr auto gc_AldusKey = 0x9AC6CDD7;
+constexpr unsigned long gc_AldusMetafileHeaderSize = 22;
 
 void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y, const int width, const int height) {
 	CRect BitmapRectangle;
@@ -92,11 +91,11 @@ void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y
 		unsigned long SeekPosition;
 		NewDeviceContext.Attach(deviceContext);
 		const auto IsAldus {*reinterpret_cast<unsigned long*>(m_odImage.wmf.begin())};
-		if (IsAldus != ALDUSKEY) {
+		if (IsAldus != gc_AldusKey) {
 			SeekPosition = 0;
 		} else {
 			AldusMfHeader = reinterpret_cast<ALDUSMFHEADER*>(m_odImage.wmf.begin());
-			SeekPosition = ALDUSMFHEADERSIZE;
+			SeekPosition = gc_AldusMetafileHeaderSize;
 		}
 		const auto p {static_cast<unsigned char*>(m_odImage.wmf.begin())};
 		const auto MetaHeader {reinterpret_cast<METAHEADER*>(p + SeekPosition)};

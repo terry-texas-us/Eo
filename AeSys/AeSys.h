@@ -93,7 +93,7 @@ public:
 	void AddReactor(const OdApplicationReactor* reactor);
 	void RemoveReactor(const OdApplicationReactor* reactor);
 	std::vector<OdSmartPtr<OdApplicationReactor> > applicationReactors;
-	OdDbDatabasePtr openFile(const wchar_t* pathName);
+	OdDbDatabasePtr OpenFile(const wchar_t* pathName);
 
 	void SetPartialOption(const bool partial) noexcept { m_Partial = partial; }
 

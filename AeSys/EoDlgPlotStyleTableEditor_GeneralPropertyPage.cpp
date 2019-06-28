@@ -13,8 +13,8 @@ EoDlgPlotStyleEditor_GeneralPropertyPage::~EoDlgPlotStyleEditor_GeneralPropertyP
 void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* dataExchange) {
 	CPropertyPage::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_PS_GENERAL_EDIT_DESCRIPTION, m_editDescription);
-	DDX_Control(dataExchange, IDC_PS_GENERAL_EDIT_SCALE_FACTOR, m_editScalefactor);
-	DDX_Control(dataExchange, IDC_PS_GENERAL_CHECK_SCALE_FACTOR, m_checkScalefactor);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_EDIT_SCALE_FACTOR, m_editScaleFactor);
+	DDX_Control(dataExchange, IDC_PS_GENERAL_CHECK_SCALE_FACTOR, m_checkScaleFactor);
 	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_FILEPATH, m_staticFilepath);
 	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_FILE_NAME, m_staticFilename);
 	DDX_Control(dataExchange, IDC_PS_GENERAL_STATIC_BITMAP, m_staticBitmap);
@@ -23,8 +23,8 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* dat
 
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 		ON_EN_CHANGE(IDC_PS_GENERAL_EDIT_DESCRIPTION, OnChangeEditDescription)
-		ON_BN_CLICKED(IDC_PS_GENERAL_CHECK_SCALE_FACTOR, OnCheckScalefactor)
-		ON_EN_CHANGE(IDC_PS_GENERAL_EDIT_SCALE_FACTOR, OnEditScalefactor)
+		ON_BN_CLICKED(IDC_PS_GENERAL_CHECK_SCALE_FACTOR, OnCheckScaleFactor)
+		ON_EN_CHANGE(IDC_PS_GENERAL_EDIT_SCALE_FACTOR, OnEditScaleFactor)
 END_MESSAGE_MAP()
 
 void DrawTransparentBitmap(const HDC hdc, const HBITMAP bitmap, const short xStart, const short yStart, const COLORREF transparentColor) noexcept {
@@ -110,11 +110,11 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	const auto description {m_pPlotStyleTable->description()};
 	m_editDescription.SetWindowTextW(description);
 	const auto check {m_pPlotStyleTable->isApplyScaleFactor()};
-	m_checkScalefactor.SetCheck(check);
-	m_editScalefactor.EnableWindow(check);
+	m_checkScaleFactor.SetCheck(check);
+	m_editScaleFactor.EnableWindow(check);
 	OdString sScaleFactor;
 	sScaleFactor.format(L"%.1f", m_pPlotStyleTable->scaleFactor());
-	m_editScalefactor.SetWindowTextW(sScaleFactor);
+	m_editScaleFactor.SetWindowTextW(sScaleFactor);
 	const auto editDC {::GetDC(m_staticFilepath.m_hWnd)};
 	//  CRect rect;
 	//  m_staticFilepath.GetClientRect(&rect);
@@ -151,22 +151,22 @@ void EoDlgPlotStyleEditor_GeneralPropertyPage::OnChangeEditDescription() {
 	m_pPlotStyleTable->setDescription(OdString(pVal));
 }
 
-void EoDlgPlotStyleEditor_GeneralPropertyPage::OnCheckScalefactor() {
-	const auto Check {m_checkScalefactor.GetCheck()};
-	m_pPlotStyleTable->setApplyScaleFactor(Check ? true : false);
-	m_editScalefactor.EnableWindow(Check);
+void EoDlgPlotStyleEditor_GeneralPropertyPage::OnCheckScaleFactor() {
+	const auto Check {m_checkScaleFactor.GetCheck()};
+	m_pPlotStyleTable->setApplyScaleFactor(Check != 0);
+	m_editScaleFactor.EnableWindow(Check);
 }
 
-void EoDlgPlotStyleEditor_GeneralPropertyPage::OnEditScalefactor() {
-	CString pVal;
-	m_editScalefactor.GetWindowText(pVal);
-	double scaleFactor;
-	swscanf(pVal, L"%lf", &scaleFactor);
-	if (scaleFactor <= 0 || scaleFactor > PS_EDIT_MAX_SCALEFACTOR) {
-		scaleFactor = 0.01;
-		m_editScalefactor.SetWindowTextW(L"0.01");
+void EoDlgPlotStyleEditor_GeneralPropertyPage::OnEditScaleFactor() {
+	CString String;
+	m_editScaleFactor.GetWindowTextW(String);
+	double ScaleFactor;
+	swscanf(String, L"%lf", &ScaleFactor);
+	if (ScaleFactor <= 0.0 || ScaleFactor > gc_PlotStyleEditMaxScaleFactor) {
+		ScaleFactor = 0.01;
+		m_editScaleFactor.SetWindowTextW(L"0.01");
 	}
-	m_pPlotStyleTable->setScaleFactor(scaleFactor);
+	m_pPlotStyleTable->setScaleFactor(ScaleFactor);
 }
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::OnOK() {
