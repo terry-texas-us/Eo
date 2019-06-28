@@ -307,7 +307,7 @@ public: // Input message handler member functions
 	std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 	std::pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
 	std::pair<EoDbGroup*, EoDbPoint*> SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
-	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& pt);
+	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& point);
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
 	OdGePoint3d& DetPt() noexcept;
@@ -315,7 +315,7 @@ public: // Input message handler member functions
 	EoDbGroup*& EngagedGroup() noexcept;
 	/// <summary>Set a pixel.</summary>
 	void DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point);
-	bool GroupIsEngaged() noexcept;
+	bool GroupIsEngaged() const noexcept;
 	double SelectApertureSize() const noexcept;
 	void BreakAllPolylines();
 	void BreakAllSegRefs();

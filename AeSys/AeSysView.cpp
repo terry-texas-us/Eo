@@ -1,21 +1,21 @@
 #include "stdafx.h"
-#include "DbViewport.h"
-#include "DbViewportTable.h"
+#include <DbViewport.h>
+#include <DbViewportTable.h>
 #include "DbViewportTableRecord.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "PrimState.h"
 #include "AbstractViewPE.h"
-#include "ColorMapping.h"
-#include "DbAbstractViewportData.h"
-#include "DbViewTable.h"
-#include "DbViewTableRecord.h"
-#include "DbGsManager.h"
-#include "RxVariantValue.h"
-#include "SaveState.h"
-#include "DbPageController.h"
-#include "DbIdMapping.h"
+#include <ColorMapping.h>
+#include <DbAbstractViewportData.h>
+#include <DbViewTable.h>
+#include <DbViewTableRecord.h>
+#include <DbGsManager.h>
+#include <RxVariantValue.h>
+#include <SaveState.h>
+#include <DbPageController.h>
+#include <DbIdMapping.h>
 #include "EoDlgSetAngle.h"
 #include "EoDlgSetUnitsAndPrecision.h"
 #include "EoDlgSetupConstraints.h"
@@ -1625,9 +1625,9 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 
 void AeSysView::putString(const OdString& string) {
 	m_Prompt = string;
-	const auto n {m_Prompt.reverseFind('\n')};
+	const auto NewLineDelimiter {m_Prompt.reverseFind('\n')};
 	const wchar_t* Text {string};
-	if (n >= 0) { Text = Text + n + 1; }
+	if (NewLineDelimiter >= 0) { Text = Text + NewLineDelimiter + 1; }
 	AeSys::AddStringToMessageList(Text);
 	theApp.SetStatusPaneTextAt(gc_StatusInfo, Text);
 }
@@ -2371,14 +2371,14 @@ void AeSysView::Dolly() {
 	CPoint Point;
 	GetCursorPos(&Point);
 	ScreenToClient(&Point);
-	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
+	OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
 	auto Position(FirstView->position());
 	Position.transformBy(FirstView->worldToDeviceMatrix());
-	auto x {static_cast<int>(OdRound(Position.x))};
-	auto y {static_cast<int>(OdRound(Position.y))};
-	x = Point.x - x;
-	y = Point.y - y;
-	OdGeVector3d DollyVector(static_cast<double>(x), static_cast<double>(y), 0.0);
+	auto X {static_cast<int>(OdRound(Position.x))};
+	auto Y {static_cast<int>(OdRound(Position.y))};
+	X = Point.x - X;
+	Y = Point.y - Y;
+	OdGeVector3d DollyVector(static_cast<double>(X), static_cast<double>(Y), 0.0);
 	DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
 	FirstView->dolly(DollyVector);
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
@@ -2726,169 +2726,169 @@ void AeSysView::OnSetupMouseButtons() {
 
 void AeSysView::OnRelativeMovesEngDown() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.y -= theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.y -= theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngDownRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.y -= theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.y -= theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngIn() {
-	auto pt {GetCursorPosition()};
-	pt.z -= theApp.EngagedLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.z -= theApp.EngagedLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngLeft() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.x -= theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.x -= theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngLeftRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.x -= theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.x -= theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngOut() {
-	auto pt {GetCursorPosition()};
-	pt.z += theApp.EngagedLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.z += theApp.EngagedLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngRight() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.x += theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.x += theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngRightRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.x += theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.x += theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngUp() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.y += theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.y += theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle(), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesEngUpRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.y += theApp.EngagedLength();
-	ptSec.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.y += theApp.EngagedLength();
+	RelativePoint.rotateBy(theApp.EngagedAngle() + EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesDown() {
-	auto pt {GetCursorPosition()};
-	pt.y -= theApp.DimensionLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.y -= theApp.DimensionLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesDownRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.y -= theApp.DimensionLength();
-	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.y -= theApp.DimensionLength();
+	RelativePoint.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesLeft() {
-	auto pt {GetCursorPosition()};
-	pt.x -= theApp.DimensionLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.x -= theApp.DimensionLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesLeftRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.x -= theApp.DimensionLength();
-	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.x -= theApp.DimensionLength();
+	RelativePoint.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesIn() {
-	auto pt {GetCursorPosition()};
-	pt.z -= theApp.DimensionLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.z -= theApp.DimensionLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesOut() {
-	auto pt {GetCursorPosition()};
-	pt.z += theApp.DimensionLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.z += theApp.DimensionLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesRight() {
-	auto pt {GetCursorPosition()};
-	pt.x += theApp.DimensionLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.x += theApp.DimensionLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesRightRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto ptSec {Origin};
-	ptSec.x += theApp.DimensionLength();
-	ptSec.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(ptSec);
+	auto RelativePoint {Origin};
+	RelativePoint.x += theApp.DimensionLength();
+	RelativePoint.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesUp() {
-	auto pt {GetCursorPosition()};
-	pt.y += theApp.DimensionLength();
-	SetCursorPosition(pt);
+	auto RelativePoint {GetCursorPosition()};
+	RelativePoint.y += theApp.DimensionLength();
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnRelativeMovesUpRotate() {
 	const auto Origin {GetCursorPosition()};
-	auto MovedPoint {Origin};
-	MovedPoint.y += theApp.DimensionLength();
-	MovedPoint.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
-	SetCursorPosition(MovedPoint);
+	auto RelativePoint {Origin};
+	RelativePoint.y += theApp.DimensionLength();
+	RelativePoint.rotateBy(EoToRadian(theApp.DimensionAngle()), OdGeVector3d::kZAxis, Origin);
+	SetCursorPosition(RelativePoint);
 }
 
 void AeSysView::OnToolsPrimitiveSnapTo() {
 	const auto CurrentPoint {GetCursorPosition()};
-	OdGePoint3d ptDet;
+	OdGePoint3d PrimitiveSnapPoint;
 	if (GroupIsEngaged()) {
 		const auto Primitive {m_EngagedPrimitive};
-		EoGePoint4d ptView(CurrentPoint, 1.0);
-		ModelViewTransformPoint(ptView);
+		EoGePoint4d PointInView(CurrentPoint, 1.0);
+		ModelViewTransformPoint(PointInView);
 		EoDbHatch::SetEdgeToEvaluate(EoDbHatch::Edge());
 		EoDbPolyline::SetEdgeToEvaluate(EoDbPolyline::Edge());
-		if (Primitive->SelectUsingPoint(ptView, this, ptDet)) {
-			ptDet = Primitive->GoToNxtCtrlPt();
-			m_ptDet = ptDet;
-			Primitive->AddReportToMessageList(ptDet);
-			SetCursorPosition(ptDet);
+		if (Primitive->SelectUsingPoint(PointInView, this, PrimitiveSnapPoint)) {
+			PrimitiveSnapPoint = Primitive->GoToNxtCtrlPt();
+			m_ptDet = PrimitiveSnapPoint;
+			Primitive->AddReportToMessageList(PrimitiveSnapPoint);
+			SetCursorPosition(PrimitiveSnapPoint);
 			return;
 		}
 	}
 	if (SelectGroupAndPrimitive(CurrentPoint) != nullptr) {
-		ptDet = m_ptDet;
-		m_EngagedPrimitive->AddReportToMessageList(ptDet);
-		SetCursorPosition(ptDet);
+		PrimitiveSnapPoint = m_ptDet;
+		m_EngagedPrimitive->AddReportToMessageList(PrimitiveSnapPoint);
+		SetCursorPosition(PrimitiveSnapPoint);
 	}
 }
 
@@ -2908,11 +2908,11 @@ void AeSysView::OnHelpKey() {
 }
 
 AeSysView* AeSysView::GetActiveView() {
-	const auto MDIFrameWnd {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};
-	if (MDIFrameWnd == nullptr) { return nullptr; }
-	const CMDIChildWndEx* MDIChildWnd = DYNAMIC_DOWNCAST(CMDIChildWndEx, MDIFrameWnd->MDIGetActive());
-	if (MDIChildWnd == nullptr) { return nullptr; }
-	const auto View {MDIChildWnd->GetActiveView()};
+	const auto MdiFrameWnd {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};
+	if (MdiFrameWnd == nullptr) { return nullptr; }
+	const CMDIChildWndEx* MdiChildWnd = DYNAMIC_DOWNCAST(CMDIChildWndEx, MdiFrameWnd->MDIGetActive());
+	if (MdiChildWnd == nullptr) { return nullptr; }
+	const auto View {MdiChildWnd->GetActiveView()};
 
 	// View can be wrong kind with splitter windows, or additional views in a single document.
 	if (!View->IsKindOf(RUNTIME_CLASS(AeSysView))) { return nullptr; }
@@ -2935,8 +2935,8 @@ void AeSysView::DisplayOdometer() {
 		if (m_RubberBandType == kLines) {
 			const EoGeLineSeg3d Line(m_RubberBandBeginPoint, Point);
 			const auto LineLength {Line.length()};
-			const auto AngleInXYPlane {Line.AngleFromXAxis_xy()};
-			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + AeSys::FormatAngle(AngleInXYPlane) + L"]";
+			const auto AngleInXyPlane {Line.AngleFromXAxis_xy()};
+			Position += L" [" + theApp.FormatLength(LineLength, Units) + L" @ " + AeSys::FormatAngle(AngleInXyPlane) + L"]";
 		}
 		auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 		MainFrame->SetStatusPaneTextAt(gc_StatusInfo, Position);
@@ -3077,7 +3077,7 @@ EoDbGroup*& AeSysView::EngagedGroup() noexcept {
 	return m_EngagedGroup;
 }
 
-bool AeSysView::GroupIsEngaged() noexcept {
+bool AeSysView::GroupIsEngaged() const noexcept {
 	return m_EngagedGroup != nullptr;
 }
 
@@ -3086,11 +3086,11 @@ double AeSysView::SelectApertureSize() const noexcept {
 }
 
 EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
-	OdGePoint3d ptEng;
+	OdGePoint3d PrimitiveSelectionPoint;
 	m_EngagedGroup = nullptr;
 	m_EngagedPrimitive = nullptr;
-	EoGePoint4d ptView(point, 1.0);
-	ModelViewTransformPoint(ptView);
+	EoGePoint4d PointInView(point, 1.0);
+	ModelViewTransformPoint(PointInView);
 	auto TransformMatrix {ModelViewMatrix()};
 	TransformMatrix.invert();
 	auto SelectionApertureSize {m_SelectApertureSize};
@@ -3099,9 +3099,9 @@ EoDbGroup* AeSysView::SelectGroupAndPrimitive(const OdGePoint3d& point) {
 	auto Position {GetFirstVisibleGroupPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNextVisibleGroup(Position)};
-		const auto Primitive {Group->SelectPrimitiveUsingPoint(ptView, this, SelectionApertureSize, ptEng)};
+		const auto Primitive {Group->SelectPrimitiveUsingPoint(PointInView, this, SelectionApertureSize, PrimitiveSelectionPoint)};
 		if (Primitive != nullptr) {
-			m_ptDet = ptEng;
+			m_ptDet = PrimitiveSelectionPoint;
 			m_ptDet.transformBy(TransformMatrix);
 			m_EngagedGroup = Group;
 			m_EngagedPrimitive = Primitive;
@@ -3130,8 +3130,8 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 }
 
 std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint3d& point) {
-	EoGePoint4d ptView(point, 1.0);
-	ModelViewTransformPoint(ptView);
+	EoGePoint4d PointInView(point, 1.0);
+	ModelViewTransformPoint(PointInView);
 	auto GroupPosition {GetFirstVisibleGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Group {GetNextVisibleGroup(GroupPosition)};
@@ -3140,7 +3140,7 @@ std::pair<EoDbGroup*, EoDbLine*> AeSysView::SelectLineUsingPoint(const OdGePoint
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
 				OdGePoint3d PointOnLine;
-				if (Primitive->SelectUsingPoint(ptView, this, PointOnLine)) {
+				if (Primitive->SelectUsingPoint(PointInView, this, PointOnLine)) {
 					return {Group, dynamic_cast<EoDbLine*>(Primitive)};
 				}
 			}
@@ -3353,11 +3353,11 @@ void AeSysView::RubberBandingDisable() {
 }
 
 void AeSysView::RubberBandingStartAtEnable(const OdGePoint3d& point, const RubberBandingTypes type) {
-	EoGePoint4d ptView(point, 1.0);
-	ModelViewTransformPoint(ptView);
-	if (ptView.IsInView()) {
+	EoGePoint4d PointInView(point, 1.0);
+	ModelViewTransformPoint(PointInView);
+	if (PointInView.IsInView()) {
 		m_RubberBandBeginPoint = point;
-		m_RubberBandLogicalBeginPoint = DoViewportProjection(ptView);
+		m_RubberBandLogicalBeginPoint = DoViewportProjection(PointInView);
 		m_RubberBandLogicalEndPoint = m_RubberBandLogicalBeginPoint;
 	}
 	m_RubberBandType = type;
@@ -3379,12 +3379,12 @@ OdGePoint3d AeSysView::GetCursorPosition() {
 }
 
 OdGePoint3d AeSysView::GetWorldCoordinates(const CPoint point) {
-	OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
-	OdGePoint3d WCSPoint(point.x, point.y, 0.0);
-	WCSPoint.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
-	WCSPoint.z = 0.0;
-	WCSPoint.transformBy(OdAbstractViewPEPtr(FirstView)->eyeToWorld(FirstView));
-	return WCSPoint;
+	OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
+	OdGePoint3d WcsPoint(point.x, point.y, 0.0);
+	WcsPoint.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
+	WcsPoint.z = 0.0;
+	WcsPoint.transformBy(OdAbstractViewPEPtr(FirstView)->eyeToWorld(FirstView));
+	return WcsPoint;
 }
 
 void AeSysView::SetCursorPosition(const OdGePoint3d& point) {
@@ -3494,52 +3494,52 @@ void AeSysView::UpdateStateInformation(const StateInformationItem item) {
 		DeviceContext->GetTextMetricsW(&TextMetrics);
 		CRect ClientRectangle;
 		GetClientRect(&ClientRectangle);
-		CRect rc;
-		wchar_t szBuf[32];
+		CRect TextRectangle;
+		wchar_t Buffer[32];
 		if ((item & kWorkCount) == kWorkCount) {
-			rc.SetRect(0, ClientRectangle.top, 8 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"%-4i", Document->NumberOfGroupsInWorkLayer() + Document->NumberOfGroupsInActiveLayers());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
+			TextRectangle.SetRect(0, ClientRectangle.top, 8 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			swprintf_s(Buffer, 32, L"%-4i", Document->NumberOfGroupsInWorkLayer() + Document->NumberOfGroupsInActiveLayers());
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, Buffer, wcslen(Buffer), nullptr);
 		}
 		if ((item & kTrapCount) == kTrapCount) {
-			rc.SetRect(8 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 16 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"%-4i", Document->TrapGroupCount());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
+			TextRectangle.SetRect(8 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 16 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			swprintf_s(Buffer, 32, L"%-4i", Document->TrapGroupCount());
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, Buffer, wcslen(Buffer), nullptr);
 		}
 		if ((item & kPen) == kPen) {
-			rc.SetRect(16 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 22 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"P%-4i", g_PrimitiveState.ColorIndex());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
+			TextRectangle.SetRect(16 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 22 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			swprintf_s(Buffer, 32, L"P%-4i", g_PrimitiveState.ColorIndex());
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, Buffer, wcslen(Buffer), nullptr);
 		}
 		if ((item & kLine) == kLine) {
-			rc.SetRect(22 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 28 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"L%-4i", g_PrimitiveState.LinetypeIndex());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
+			TextRectangle.SetRect(22 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 28 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			swprintf_s(Buffer, 32, L"L%-4i", g_PrimitiveState.LinetypeIndex());
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, Buffer, wcslen(Buffer), nullptr);
 		}
 		if ((item & kTextHeight) == kTextHeight) {
 			const auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
-			rc.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"T%-6.2f", CharacterCellDefinition.Height());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
+			TextRectangle.SetRect(28 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 38 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			swprintf_s(Buffer, 32, L"T%-6.2f", CharacterCellDefinition.Height());
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, Buffer, wcslen(Buffer), nullptr);
 		}
 		if ((item & kScale) == kScale) {
-			rc.SetRect(38 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 48 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
-			swprintf_s(szBuf, 32, L"1:%-6.2f", WorldScale());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, szBuf, wcslen(szBuf), nullptr);
+			TextRectangle.SetRect(38 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 48 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			swprintf_s(Buffer, 32, L"1:%-6.2f", WorldScale());
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, Buffer, wcslen(Buffer), nullptr);
 		}
 		if ((item & kWndRatio) == kWndRatio) {
-			rc.SetRect(48 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 58 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			TextRectangle.SetRect(48 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 58 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			CString ZoomFactorAsString;
 			ZoomFactorAsString.Format(L"=%-8.3f", ZoomFactor());
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, ZoomFactorAsString, nullptr);
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, ZoomFactorAsString, nullptr);
 		}
 		if ((item & kDimLen) == kDimLen || (item & kDimAng) == kDimAng) {
-			rc.SetRect(58 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 90 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
+			TextRectangle.SetRect(58 * TextMetrics.tmAveCharWidth, ClientRectangle.top, 90 * TextMetrics.tmAveCharWidth, ClientRectangle.top + TextMetrics.tmHeight);
 			CString LengthAndAngle;
 			LengthAndAngle += theApp.FormatLength(theApp.DimensionLength(), theApp.GetUnits());
 			LengthAndAngle += L" @ ";
 			LengthAndAngle += AeSys::FormatAngle(EoToRadian(theApp.DimensionAngle()));
-			DeviceContext->ExtTextOutW(rc.left, rc.top, ETO_CLIPPED | ETO_OPAQUE, &rc, LengthAndAngle, nullptr);
+			DeviceContext->ExtTextOutW(TextRectangle.left, TextRectangle.top, ETO_CLIPPED | ETO_OPAQUE, &TextRectangle, LengthAndAngle, nullptr);
 		}
 		DeviceContext->SetBkColor(BackgroundColor);
 		DeviceContext->SetTextColor(TextColor);
