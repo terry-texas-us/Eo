@@ -7,7 +7,7 @@
 #endif
 #define APSTUDIO_INVOKED
 #undef APSTUDIO_READONLY_SYMBOLS
-#include "resource.h"       // main symbols
+#include "Resource.h"       // main symbols
 #ifdef DOUNDEF_APSTUDIO_INVOKED
 #undef APSTUDIO_INVOKED
 #undef DOUNDEF_APSTUDIO_INVOKED
@@ -87,7 +87,7 @@ private:
 	CStringArray m_TempFilesList;
 	bool m_SupportFileSelectionViaDialog {true};
 
-	//	void UpdateFieldDisplay();
+	//void UpdateFieldDisplay();
 public:
 	unsigned applicationLook {ID_VIEW_APPLOOK_OFF_2007_BLACK};
 	void AddReactor(const OdApplicationReactor* reactor);
@@ -151,60 +151,45 @@ public:
 	bool savePreview {false};
 	bool saveWithPassword {false};
 	EoDlgAudit* auditDialog {nullptr};
-	//	CTaskBarWin7Ext m_tbExt;
+	//CTaskBarWin7Ext m_tbExt;
 	OdMutexPtr meterMutex;
 	AeSys() noexcept;
 	OdString RecentGsDevicePath() const;
 	void SetRecentGsDevicePath(const OdString& vectorizerPath);
 
-	//	void setStatusText(const wchar_t* msg);
-	//	void setStatusText(int nCol, const wchar_t* msg);
+	//void setStatusText(const wchar_t* msg);
+	//void setStatusText(int nCol, const wchar_t* msg);
 	void SetStatusPaneTextAt(int index, const wchar_t* newText);
 
-	void addRef() noexcept override /* ExHostAppServices */ {
+	void addRef() noexcept override {
 	}
 
-	void release() noexcept override /* ExHostAppServices */ {
+	void release() noexcept override {
 	}
 
-	OdDbHostAppProgressMeter* newProgressMeter() override /* ExHostAppServices */;
-	void start(const OdString& displayString = OdString::kEmpty) override /* ExHostAppServices */;
-	void stop() override /* ExHostAppServices */;
-	void meterProgress() override /* ExHostAppServices */;
-	void setLimit(int max) noexcept override /* ExHostAppServices */;
+	OdDbHostAppProgressMeter* newProgressMeter() override;
+	void start(const OdString& displayString = OdString::kEmpty) override;
+	void stop() override;
+	void meterProgress() override;
+	void setLimit(int max) noexcept override;
 	void warning(const char* warnVisGroup, const OdString& text) override;
-
-	void warning(const char* warnVisGroup, const OdError& error) noexcept override {
-	} // OdDbHostAppServices (to suppress C4266 warning)
-	void warning(const OdError& error) noexcept override {
-	} // OdDbHostAppServices (to suppress C4266 warning)
-	void warning(const char* warnVisGroup, OdWarning warningOb, OdDbObjectId objectId) noexcept override {
-	} // OdDbHostAppServices (to suppress C4266 warning)
-	void warning(OdWarning warningOb, OdDbObjectId objectId) noexcept override {
-	} // OdDbHostAppServices (to suppress C4266 warning)
-	void warning(const OdString& message) noexcept override {
-	} // OdDbBaseHostAppServices (to suppress C4266 warning)
-	void warning(const char* warnVisGroup, OdWarning warningOb) noexcept override {
-	} // OdDbBaseHostAppServices (to suppress C4266 warning)
-	void warning(OdWarning warningOb) noexcept override {
-	} // OdDbBaseHostAppServices (to suppress C4266 warning)
-	OdRxClass* databaseClass() const override /* ExHostAppServices */;
-	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = nullptr, FindFileHint hint = kDefault) override /* ExHostAppServices */;
-	OdString getFontMapFileName() const override /* ExHostAppServices */;
-	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType) override /* ExHostAppServices */;
-	const OdString product() override /* ExHostAppServices */;
-	OdString getTempPath() const override /* ExSystemServices*/;
+	OdRxClass* databaseClass() const override;
+	OdString findFile(const OdString& fileToFind, OdDbBaseDatabase* database = nullptr, FindFileHint hint = kDefault) override;
+	OdString getFontMapFileName() const override;
+	OdString getSubstituteFont(const OdString& fontName, OdFontType fontType) override;
+	const OdString product() override;
+	OdString getTempPath() const override;
 	BOOL ProcessShellCommand(CCommandLineInfo& commandLineInfo); // hides non-virtual function of parent
 	static void InitPlotStyleSheetEnv();
-	BOOL InitInstance() override /* CWinAppEx (CWinThread) */;
-	int ExitInstance() override /* CWinAppEx (CWinThread) */;
-	BOOL OnIdle(long count) override /* CWinAppEx (CWinThread) */;
+	BOOL InitInstance() override;
+	int ExitInstance() override;
+	BOOL OnIdle(long count) override;
 
 	bool getSAVEROUNDTRIP() const noexcept override { return saveRoundTrip; }
 
-	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override /* ExHostAppServices */;
-	OdDbUndoControllerPtr newUndoController() override /* ExHostAppServices */;
-	OdStreamBufPtr newUndoStream() override /* ExHostAppServices */;
+	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override;
+	OdDbUndoControllerPtr newUndoController() override;
+	OdStreamBufPtr newUndoStream() override;
 
 	//	void OnOptionsRenderingDeviceVectorize();
 	bool GetSavePreview() const noexcept { return savePreview; }

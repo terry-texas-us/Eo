@@ -19,7 +19,7 @@
 #include <gsl/string_span> // zstring, string_span, zstring_builder...
 #pragma warning (pop)
 // </tas>
-#include "resource.h"
+#include "Resource.h"
 
 // OD_OLE_SUPPORT
 // Vectorization support for OLE objects on Windows can be obtained by including this module: OdOleItemHandler

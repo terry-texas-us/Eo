@@ -1850,9 +1850,25 @@ void AeSys::ErrorMessageBox(const wchar_t* caption, const OdError& error) {
 	MessageBoxW(ParentWindow, error.description(), caption, MB_OK | MB_ICONERROR);
 }
 
+static bool g_IgnoreWarnings = false;
+
 void AeSys::warning(const char* warnVisGroup, const OdString& text) {
-	if (m_Loading && (!warnVisGroup || !*warnVisGroup) && !m_UseMtLoading) {
-		if (MessageBoxW(nullptr, text + L"\n\nDo you want to proceed ?", L"Warning!", MB_ICONWARNING | MB_YESNO) == IDNO) { throw UserBreak(); }
+	if (m_UseMtLoading) {
+		// TODO: MT: Implement correct processing of AeSys::warning() in Multithreading loading mode
+		return;
+	}
+	if (!g_IgnoreWarnings && (!warnVisGroup || !*warnVisGroup)) {
+		auto Type {MB_ICONWARNING};
+#ifdef _DEBUG
+		Type |= MB_CANCELTRYCONTINUE;
+#else
+		Type |= MB_YESNO;
+#endif
+		const auto ReturnValue {MessageBoxW(nullptr, text + L"\n\nDo you want to proceed ?", L"Warning!", Type)};
+		if (ReturnValue == IDCANCEL || ReturnValue == IDNO) {
+			throw UserBreak();
+		}
+		if (ReturnValue == IDTRYAGAIN) { g_IgnoreWarnings = true; }
 	}
 }
 
