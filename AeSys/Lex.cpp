@@ -191,7 +191,7 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 	int LocationOfTokens[32];
 	BreakExpression(*aiTokId, NumberOfTokens, TypeOfTokens, LocationOfTokens);
 	int iOpStkTyp[32] {0};
-	long lOpStk[32][32] {0};
+	long lOpStk[32][32] {{0}};
 	long lOpStkDef[32] {0};
 	const auto cOp1 {static_cast<wchar_t*>(apOp)};
 	const auto dOp1 {static_cast<double*>(apOp)};

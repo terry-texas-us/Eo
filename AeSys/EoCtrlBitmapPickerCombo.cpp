@@ -89,27 +89,27 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 }
 
 void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool selected) {
-	const auto bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
-	if (bitmap && bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
-		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
-		CString string;
-		if (drawItemStruct->itemID != -1) { GetLBText(static_cast<int>(drawItemStruct->itemID), string); }
-		if (string.IsEmpty()) {
-			DrawBitmap(bitmap, DeviceContext, drawItemStruct->rcItem);
-		} else {
-			CPoint point;
-			point.x = drawItemStruct->rcItem.left + 2;
-			point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
-			DrawBitmap(bitmap, DeviceContext, point);
-			CRect rcText(drawItemStruct->rcItem);
-			rcText.DeflateRect(m_ItemWidth + 4, 0, 0, 0);
-			DeviceContext->DrawTextW(string, rcText, DT_SINGLELINE | DT_VCENTER);
-		}
-	}
-	if (!bitmap) {
+	const auto Bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
+	if (Bitmap && Bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString String;
-		if (drawItemStruct->itemID != -1) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
+		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
+		if (String.IsEmpty()) {
+			DrawBitmap(Bitmap, DeviceContext, drawItemStruct->rcItem);
+		} else {
+			CPoint Point;
+			Point.x = drawItemStruct->rcItem.left + 2;
+			Point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
+			DrawBitmap(Bitmap, DeviceContext, Point);
+			CRect rcText(drawItemStruct->rcItem);
+			rcText.DeflateRect(m_ItemWidth + 4, 0, 0, 0);
+			DeviceContext->DrawTextW(String, rcText, DT_SINGLELINE | DT_VCENTER);
+		}
+	}
+	if (!Bitmap) {
+		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
+		CString String;
+		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
 		CPoint Point;
 		Point.x = drawItemStruct->rcItem.left + 2;
 		Point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;

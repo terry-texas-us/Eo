@@ -686,7 +686,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 					TopMenu->GetSubMenu(3)->GetMenuStringW(commandId, Vectorizer, MF_BYCOMMAND);
 					if (messageCategory == CN_COMMAND) {
 						OnVectorize(static_cast<const wchar_t*>(Vectorizer));
-					} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
+					} else if (static_cast<unsigned>(messageCategory) == CN_UPDATE_COMMAND_UI) {
 						static_cast<CCmdUI*>(commandObject)->Enable(m_Viewer == nullptr);
 						static_cast<CCmdUI*>(commandObject)->SetCheck(Vectorizer == static_cast<const wchar_t*>(theApp.RecentGsDevicePath()));
 					}
@@ -703,7 +703,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 								ExecuteCommand(EdCommand->globalName());
 								return TRUE;
 							}
-						} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
+						} else if (static_cast<unsigned>(messageCategory) == CN_UPDATE_COMMAND_UI) {
 							static_cast<CCmdUI*>(commandObject)->Enable(TRUE);
 						}
 						return TRUE;
@@ -727,7 +727,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 								TopMenu->SetMenuItemInfoW(_APS_NEXT_COMMAND_VALUE + ScaleIndex, &MenuItemInfo, FALSE);
 							}
 						}
-					} else if (messageCategory == CN_UPDATE_COMMAND_UI) {
+					} else if (static_cast<unsigned>(messageCategory) == CN_UPDATE_COMMAND_UI) {
 						static_cast<CCmdUI*>(commandObject)->Enable(TRUE);
 					}
 					return TRUE;

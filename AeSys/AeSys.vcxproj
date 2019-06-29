@@ -398,7 +398,7 @@
     <ClInclude Include="TargetVer.h" />
     <ClInclude Include="EoDlgViewParameters.h" />
     <ClInclude Include="EoGsViewport.h" />
-    <ClInclude Include="EoDlgUserIOConsole.h" />
+    <ClInclude Include="EoDlgUserIoConsole.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\bitmap1.bmp" />

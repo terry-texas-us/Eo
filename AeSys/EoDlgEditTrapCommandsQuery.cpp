@@ -71,7 +71,7 @@ void EoDlgEditTrapCommandsQuery::FillExtraList(EoDbPrimitive* primitive) {
 		m_ExtraListViewControl.InsertItem(Item, Token);
 		Offset += Delimiter + 1;
 		Delimiter = Extra.Mid(Offset).Find('\t');
-		const auto Length {static_cast<int>(min(Delimiter, sizeof(Token) / sizeof(wchar_t) - 1))};
+		const auto Length {min(Delimiter, static_cast<int>(sizeof(Token) / sizeof(wchar_t) - 1))};
 		wcscpy_s(Token, 64, Extra.Mid(Offset, Length));
 		m_ExtraListViewControl.SetItemText(Item++, 1, Token);
 		Offset += Delimiter + 1;
