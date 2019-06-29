@@ -594,7 +594,7 @@ bool HasFormattingCharacters(const CString& text) {
 int FontEscapementAngle(const OdGeVector3d& xAxis) noexcept {
 	auto Angle {atan2(xAxis.y, xAxis.x)}; // -pi to pi radians
 	if (Angle < 0.0) { Angle += Oda2PI; }
-	return EoRound(EoToDegree(Angle) * 10.);
+	return lround(EoToDegree(Angle) * 10.0);
 }
 
 OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, const int numberOfCharacters) noexcept {
@@ -818,7 +818,7 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	if (Height == 0.0) { return true; }
 	LOGFONT FontAttributes;
 	memset(&FontAttributes, 0, sizeof FontAttributes);
-	FontAttributes.lfHeight = -EoRound(1.33 * Height);
+	FontAttributes.lfHeight = -lround(1.33 * Height);
 	FontAttributes.lfEscapement = -FontEscapementAngle(vX);
 	FontAttributes.lfOrientation = FontAttributes.lfEscapement;
 	FontAttributes.lfWeight = FW_NORMAL;

@@ -11,10 +11,10 @@ EoGsViewport::EoGsViewport(const EoGsViewport& other) noexcept {
 }
 
 CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
-	CPoint pnt;
-	pnt.x = EoRound((point.x / point.W() + 1.0) * ((m_WidthInPixels - 1.0) / 2.));
-	pnt.y = EoRound((-point.y / point.W() + 1.0) * ((m_HeightInPixels - 1.0) / 2.));
-	return pnt;
+	CPoint Point;
+	Point.x = lround((point.x / point.W() + 1.0) * ((m_WidthInPixels - 1.0) / 2.0));
+	Point.y = lround((-point.y / point.W() + 1.0) * ((m_HeightInPixels - 1.0) / 2.0));
+	return Point;
 }
 
 void EoGsViewport::DoProjection(CPoint* pnt, const int numberOfPoints, EoGePoint4d* points) const noexcept {

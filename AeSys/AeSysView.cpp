@@ -2239,10 +2239,10 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 
 		// Determine the region of the bitmap to transfer to display
 		CRect rcWnd;
-		rcWnd.left = EoRound((m_ViewTransform.FieldWidthMinimum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
-		rcWnd.top = EoRound((1. - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
-		rcWnd.right = EoRound((m_ViewTransform.FieldWidthMaximum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
-		rcWnd.bottom = EoRound((1. - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
+		rcWnd.left = lround((m_ViewTransform.FieldWidthMinimum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
+		rcWnd.top = lround((1. - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
+		rcWnd.right = lround((m_ViewTransform.FieldWidthMaximum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
+		rcWnd.bottom = lround((1. - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
 		const auto SourceWidth {rcWnd.Width()};
 		const auto SourceHeight {rcWnd.Height()};
 		deviceContext->StretchBlt(0, 0, DestinationWidth, DestinationHeight, &MemoryDeviceContext, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), SourceWidth, SourceHeight, SRCCOPY);
@@ -2346,8 +2346,9 @@ unsigned AeSysView::NumPages(CDC* deviceContext, const double scaleFactor, unsig
 	const auto MaximumPoint {Extents.maxPoint()};
 	const auto HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / kMmPerInch};
 	const auto VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / kMmPerInch};
-	horizontalPages = gsl::narrow_cast<unsigned>(EoRound((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches + 0.5));
-	verticalPages = gsl::narrow_cast<unsigned>(EoRound((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches + 0.5));
+	// <tas="Numpages possibly using + 0.5 which is done also in lround for calculation of horizontalPages and verticalPages. check operator precedence also."/>
+	horizontalPages = gsl::narrow_cast<unsigned>(lround((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches + 0.5));
+	verticalPages = gsl::narrow_cast<unsigned>(lround((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches + 0.5));
 	return horizontalPages * verticalPages;
 }
 

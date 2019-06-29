@@ -209,21 +209,21 @@ void EoDbEllipse::GenPts(const OdGePlane& plane, const double sweepAngle) const 
 	OdGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(plane); // <tas=Builds a matrix which performs rotation and translation, but no scaling.</tas>
 	// Number of points based on angle and a smoothness coefficient
-	const auto dLen {EoMax(m_MajorAxis.length(), m_MinorAxis.length())};
-	auto NumberOfPoints {EoMax(2, abs(EoRound(sweepAngle / Oda2PI * 32.)))};
-	NumberOfPoints = EoMin(128, EoMax(NumberOfPoints, abs(EoRound(sweepAngle * dLen / 0.25))));
+	const auto Length {EoMax(m_MajorAxis.length(), m_MinorAxis.length())};
+	auto NumberOfPoints {EoMax(2L, labs(lround(sweepAngle / Oda2PI * 32.0)))};
+	NumberOfPoints = EoMin(128L, EoMax(NumberOfPoints, labs(lround(sweepAngle * Length / 0.25))));
 	const auto Angle {m_SweepAngle / (static_cast<double>(NumberOfPoints) - 1.0)};
-	const auto dCos {cos(Angle)};
-	const auto dSin {sin(Angle)};
+	const auto CosineAngle {cos(Angle)};
+	const auto SineAngle {sin(Angle)};
 
 	// Generate an origin-centered unit radial curve, then scale before transforming back the world
-	OdGePoint3d pt(1.0, 0.0, 0.0);
-	for (auto i = 0; i < NumberOfPoints; i++) {
-		polyline::SetVertex(PlaneToWorldTransform * ScaleMatrix * pt);
-		const auto X {pt.x};
-		pt.x = X * dCos - pt.y * dSin;
-		pt.y = pt.y * dCos + X * dSin;
-		pt.z = 0.0;
+	OdGePoint3d Point(1.0, 0.0, 0.0);
+	for (auto PointIndex = 0; PointIndex < NumberOfPoints; PointIndex++) {
+		polyline::SetVertex(PlaneToWorldTransform * ScaleMatrix * Point);
+		const auto X {Point.x};
+		Point.x = X * CosineAngle - Point.y * SineAngle;
+		Point.y = Point.y * CosineAngle + X * SineAngle;
+		Point.z = 0.0;
 	}
 }
 

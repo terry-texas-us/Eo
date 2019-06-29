@@ -31,6 +31,7 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
+
 double g_PenWidths[] {
 0.0,
 0.0075,
@@ -151,7 +152,9 @@ public:
 
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 DECLARE_MESSAGE_MAP()
+
 public:
 	BOOL OnInitDialog() final;
 };
@@ -321,8 +324,11 @@ AeSys::AeSys() noexcept {
 constexpr int gc_RegistryBufferSize = 1040;
 constexpr int gc_RegistryMaxProfileName = 128;
 constexpr int gc_RegistryMaxPath = 1024;
+
 CString GetRegistryAcadLocation();
+
 CString GetRegistryAcadProfilesKey();
+
 bool GetRegistryString(HKEY key, const wchar_t* subKey, const wchar_t* name, wchar_t* value, int size) noexcept;
 
 // get the value for the ACAD entry in the registry
@@ -890,7 +896,7 @@ void AeSys::FormatLengthStacked(wchar_t* lengthAsString, const unsigned bufSize,
 			auto Feet {static_cast<int>(ScaledLength / 12.)};
 			auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
 			const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
-			auto Numerator {int(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision) + 0.5)}; // Numerator of fractional component of inches
+			auto Numerator {lround(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision))}; // Numerator of fractional component of inches
 			if (Numerator == FractionPrecision) {
 				if (Inches == 11) {
 					Feet++;
@@ -1237,7 +1243,8 @@ void AeSys::LoadColorPalletFromFile(const CString& fileName) {
 	CStdioFile StreamFile;
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
 		wchar_t Line[128] {L"\0"};
-		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0) {}
+		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && _tcsnicmp(Line, L"<Colors>", 8) != 0) {
+		}
 		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) && *Line != '<') {
 			wchar_t* NextToken {nullptr};
 			const auto Index {wcstok_s(Line, L"=", &NextToken)};
@@ -2038,7 +2045,6 @@ void AeSys::OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* commandUserInterface)
 			Path.ReleaseBuffer();
 			if (Status == ERROR_SUCCESS) {
 				if (!AddGsMenuItem(VectorizePopupMenu, m_NumGsMenuItems, Path)) { break; }
-
 			} else {
 				break;
 			}

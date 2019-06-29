@@ -507,7 +507,7 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode& pathNode, const Od
 void OdBaseSnapManager::RecalculateEntityCenters() {
 	for (int i = m_Centers.size() - 1; i >= 0; --i) {
 		auto SubentId = m_Centers[i].m_SubentId;
-		if (SubentId.m_Path.size() <= 0) continue;
+		if (SubentId.m_Path.empty()) { continue; }
 		auto Entity {OdDbEntity::cast(SubentId.m_Path[0].openObject())};
 		if (Entity.isNull()) {
 			m_Centers.erase(m_Centers.begin() + i);
@@ -515,7 +515,7 @@ void OdBaseSnapManager::RecalculateEntityCenters() {
 		}
 		OdGePoint3dArray SnapPoints;
 		Entity->getOsnapPoints(OdDb::kOsModeCen, OdGsMarker(), OdGePoint3d(), OdGePoint3d(), OdGeMatrix3d(), SnapPoints);
-		if (SnapPoints.size() > 0) {
+		if (!SnapPoints.empty()) {
 			m_Centers[i].m_Point = SnapPoints[0]; // recalculation center
 		}
 

@@ -25,10 +25,6 @@ inline double EoToRadian(const double angleInDegrees) noexcept {
 	return angleInDegrees * OdaPI / 180.0;
 }
 
-inline int EoRound(const double number) noexcept { // closest integer
-	return static_cast<int>(number + 0.5);
-}
-
 inline double EoRound(const double number, int precision) {
 	precision = number >= 1.0 ? precision - int(log10(number)) - 1 : precision;
 	CString FormatSpecification;

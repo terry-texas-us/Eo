@@ -1,5 +1,5 @@
 #pragma once
-#define btest(m, p) ((bool) (((((unsigned long) m) >> ((int) p)) & 1UL) == 1 ? true : false))
+#define btest(m, p) ((bool) (((((unsigned long) (m)) >> ((int) (p))) & 1UL) == 1 ? true : false))
 
 class EoGeUniquePoint final : public CObject {
 public:
