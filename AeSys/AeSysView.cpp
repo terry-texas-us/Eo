@@ -1807,7 +1807,7 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 					switch (m_mode) {
 						case kQuiescent:
 							if (m_Response.string.isEmpty()) {
-								GetDocument()->ExecuteCommand(GetDocument()->RecentCommandName());
+								GetDocument()->ExecuteCommand(AeSysDoc::RecentCommandName());
 							} else {
 								GetDocument()->ExecuteCommand(m_Response.string);
 							}
@@ -3296,7 +3296,7 @@ void AeSysView::OnEscape() {
 
 void AeSysView::OnFind() {
 	OdString FindComboText;
-	VerifyFindString(dynamic_cast<CMainFrame*>(AfxGetMainWnd())->GetFindCombo(), FindComboText);
+	VerifyFindString(CMainFrame::GetFindCombo(), FindComboText);
 	if (!FindComboText.isEmpty()) {
 		TRACE1("AeSysView::OnFind() ComboText = %s\n", static_cast<const wchar_t*>(FindComboText));
 	}

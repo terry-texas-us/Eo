@@ -246,7 +246,7 @@ public:
 		, exit {false} {
 	}
 
-	void ParseParam(const wchar_t* parameter, const BOOL flag, const BOOL last) override /* CCommandLineInfo */ {
+	void ParseParam(const wchar_t* parameter, const BOOL flag, const BOOL last) override {
 		auto Is {false};
 		if (flag) {
 			if (!_wcsnicmp(parameter, L"bat:", 4)) {

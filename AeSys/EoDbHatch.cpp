@@ -644,7 +644,7 @@ void EoDbHatch::SetInteriorStyleIndex2(const unsigned styleIndex) {
 		if (HatchPatternManager->retrievePattern(Hatch->patternType(), HatchName, OdDb::kEnglish, HatchPattern) != eOk) {
 			OdString ReportItem;
 			ReportItem.format(L"Hatch pattern not defined for %s (%s)\n", static_cast<const wchar_t*>(HatchName), static_cast<const wchar_t*>(Hatch->patternName()));
-			theApp.AddStringToReportList(ReportItem);
+			AeSys::AddStringToReportList(ReportItem);
 		} else {
 			Hatch->setPattern(OdDbHatch::kPreDefined, HatchName);
 		}
@@ -806,7 +806,7 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
 	// <tas="Seed points not incorporated in peg/tracing"></tas>
 	const auto NumberOfLoops {hatch->numLoops()};
 	if (NumberOfLoops > 1) {
-		theApp.AddStringToReportList(L"Only used one loop in multiple loop Hatch.");
+		AeSys::AddStringToReportList(L"Only used one loop in multiple loop Hatch.");
 	}
 	for (auto i = 0; i < hatch->numLoops(); i++) {
 

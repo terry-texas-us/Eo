@@ -856,7 +856,7 @@ BOOL AeSysDoc::OnNewDocument() {
 		DwgToPegFile.ConvertToPeg(this);
 
 		// <tas="Continuous Linetype initialization ??"</tas>
-		m_LinetypeTable.LoadLinetypesFromTxtFile(m_DatabasePtr, AeSys::ResourceFolderPath() + L"Pens\\Linetypes.txt");
+		EoDbLinetypeTable::LoadLinetypesFromTxtFile(m_DatabasePtr, AeSys::ResourceFolderPath() + L"Pens\\Linetypes.txt");
 		saveAsType_ = EoDb::kPeg;
 		SetCurrentLayer(m_DatabasePtr->getCLAYER().safeOpenObject());
 		InitializeGroupAndPrimitiveEdit();
