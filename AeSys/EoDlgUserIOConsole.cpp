@@ -56,7 +56,7 @@ void EoDlgUserIoConsole::Echo(const OdString& string) {
 	m_Output += static_cast<const wchar_t*>(string);
 }
 
-OdString EoDlgUserIoConsole::getString(const OdString& prompt, int options, OdEdStringTracker* tracker) {
+OdString EoDlgUserIoConsole::getString(const OdString& prompt, int /*options*/, OdEdStringTracker* /*tracker*/) {
 	putString(prompt);
 	m_Input.Empty();
 	m_Prompt = m_Output;

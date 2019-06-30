@@ -29,7 +29,7 @@ EoDbText& EoDbText::operator=(const EoDbText& other) {
 	return *this;
 }
 
-void EoDbText::AddReportToMessageList(const OdGePoint3d& point) const {
+void EoDbText::AddReportToMessageList(const OdGePoint3d& /*point*/) const {
 	CString Report(L"<Text>");
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Font:" + m_FontDefinition.FontName();
@@ -105,7 +105,7 @@ OdGePoint3d EoDbText::GetCtrlPt() const noexcept {
 	return m_ReferenceSystem.Origin();
 }
 
-void EoDbText::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbText::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	OdGePoint3dArray BoundingBox;
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
 	for (const auto& Point : BoundingBox) {
@@ -117,7 +117,7 @@ OdGePoint3d EoDbText::GoToNxtCtrlPt() const noexcept {
 	return m_ReferenceSystem.Origin();
 }
 
-bool EoDbText::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
+bool EoDbText::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept {
 	return false;
 }
 
@@ -202,7 +202,7 @@ bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGeP
 	return true;
 }
 
-bool EoDbText::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbText::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* /*view*/, OdGePoint3dArray& /*intersections*/) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;

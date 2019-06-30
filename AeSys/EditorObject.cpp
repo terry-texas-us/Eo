@@ -84,7 +84,7 @@ public:
 		return pRes;
 	}
 
-	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
+	unsigned long subSetAttributes(OdGiDrawableTraits* /*drawableTraits*/) const noexcept override {
 		return kDrawableUsesNesting;
 	}
 
@@ -94,7 +94,7 @@ public:
 		return true;
 	}
 
-	void subViewportDraw(OdGiViewportDraw* viewportDraw) const noexcept override {
+	void subViewportDraw(OdGiViewportDraw* /*viewportDraw*/) const noexcept override {
 	}
 };
 
@@ -117,7 +117,7 @@ void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* dbComm
 }
 
 void OdExEditorObject::Uninitialize() {
-	auto SelectionSet {workingSSet()};
+	auto SelectionSet {GetWorkingSelectionSet()};
 	if (SelectionSet.get()) {
 		SelectionSet->clear();
 		m_GripManager.SelectionSetChanged(SelectionSet);
@@ -137,7 +137,7 @@ void OdExEditorObject::UninitializeSnapping(OdGsView* view) {
 	m_ObjectSnapManager.Track(nullptr);
 }
 
-OdDbSelectionSetPtr OdExEditorObject::workingSSet() const {
+OdDbSelectionSetPtr OdExEditorObject::GetWorkingSelectionSet() const {
 	return WorkingSelectionSet(m_CommandContext);
 }
 
@@ -146,7 +146,7 @@ void OdExEditorObject::SetWorkingSelectionSet(OdDbSelectionSet* selectionSet) {
 }
 
 void OdExEditorObject::SelectionSetChanged() {
-	m_GripManager.SelectionSetChanged(workingSSet());
+	m_GripManager.SelectionSetChanged(GetWorkingSelectionSet());
 }
 
 const OdGsView* OdExEditorObject::ActiveView() const {
@@ -197,29 +197,29 @@ void OdExEditorObject::UcsPlane(OdGePlane& plane) const {
 }
 
 OdGePoint3d OdExEditorObject::ToEyeToWorld(const int x, const int y) const {
-	OdGePoint3d wcsPt(x, y, 0.0);
+	OdGePoint3d wcsPoint(x, y, 0.0);
 	const auto View {ActiveView()};
-	if (View->isPerspective()) { wcsPt.z = View->projectionMatrix()(2, 3); }
-	wcsPt.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
-	wcsPt.z = 0.0;
-	// eye CS at this point.
-	wcsPt.transformBy(OdAbstractViewPEPtr(View)->eyeToWorld(View));
-	return wcsPt;
+	if (View->isPerspective()) { wcsPoint.z = View->projectionMatrix()(2, 3); }
+	wcsPoint.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
+	wcsPoint.z = 0.0;
+	// Eye coordinate system at this point.
+	wcsPoint.transformBy(OdAbstractViewPEPtr(View)->eyeToWorld(View));
+	return wcsPoint;
 }
 
-bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPt) const {
+bool OdExEditorObject::ToUcsToWorld(OdGePoint3d& wcsPoint) const {
 	const auto View {ActiveView()};
 	OdGePlane Plane;
 	UcsPlane(Plane);
 	if (!View->isPerspective()) { // For orthogonal projection we simply check intersection between viewing direction and UCS plane.
-		const OdGeLine3d Line(wcsPt, OdAbstractViewPEPtr(View)->direction(View));
-		return Plane.intersectWith(Line, wcsPt);
+		const OdGeLine3d Line(wcsPoint, OdAbstractViewPEPtr(View)->direction(View));
+		return Plane.intersectWith(Line, wcsPoint);
 	}
 	// For perspective projection we emit ray from viewer position through WCS point.
 	const auto FocalLength {-1.0 / View->projectionMatrix()(3, 2)};
-	const auto pos {View->target() + OdAbstractViewPEPtr(View)->direction(View).normal() * FocalLength};
-	const OdGeRay3d Ray(pos, wcsPt);
-	return Plane.intersectWith(Ray, wcsPt);
+	const auto ViewerPosition {View->target() + OdAbstractViewPEPtr(View)->direction(View).normal() * FocalLength};
+	const OdGeRay3d Ray(ViewerPosition, wcsPoint);
+	return Plane.intersectWith(Ray, wcsPoint);
 }
 
 OdGePoint3d OdExEditorObject::ToScreenCoordinates(const int x, const int y) const {
@@ -244,7 +244,7 @@ OdGePoint3d OdExEditorObject::ToScreenCoordinates(const OdGePoint3d& worldPoint)
 	return {vecX.dotProduct(worldPoint - Target), UpVector.dotProduct(worldPoint - Target), 0.0};
 }
 
-bool OdExEditorObject::OnSize(unsigned flags, const int w, const int h) {
+bool OdExEditorObject::OnSize(unsigned /*flags*/, const int w, const int h) {
 	if (m_LayoutHelper.get()) {
 		m_LayoutHelper->onSize(OdGsDCRect(0, w, h, 0));
 		return true;
@@ -252,7 +252,7 @@ bool OdExEditorObject::OnSize(unsigned flags, const int w, const int h) {
 	return false;
 }
 
-bool OdExEditorObject::OnPaintFrame(unsigned flags, OdGsDCRect* updatedRectangle) {
+bool OdExEditorObject::OnPaintFrame(unsigned /*flags*/, OdGsDCRect* updatedRectangle) {
 	if (m_LayoutHelper.get() && !m_LayoutHelper->isValid()) {
 		m_LayoutHelper->update(updatedRectangle);
 		return true;
@@ -336,7 +336,7 @@ void OdExEditorObject::Set3DView(const _3DViewType type) {
 	View->setView(Position, Target, Axis, View->fieldWidth(), View->fieldHeight(), View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 }
 
-bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
+bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* /*lastPoint*/) {
 	if (IsSnapOn()) {
 		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_BasePt)) {
 			if (!m_p2dModel.isNull()) { m_p2dModel->onModified(&m_ObjectSnapManager, static_cast<OdGiDrawable*>(nullptr)); }
@@ -348,7 +348,7 @@ bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 
 bool OdExEditorObject::Unselect() {
 	auto Result {false};
-	auto SelectionSet {workingSSet()};
+	auto SelectionSet {GetWorkingSelectionSet()};
 	OdDbSelectionSetIteratorPtr SelectionSetIterator {SelectionSet->newIterator()};
 	while (!SelectionSetIterator->done()) {
 		auto Entity {OdDbEntity::cast(SelectionSetIterator->objectId().openObject())};
@@ -378,16 +378,13 @@ void OdExEditorObject::OnDestroy() {
 bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x, const int y, OleDragCallback* dragCallback) {
 	const auto ShiftIsDown {(OdEdBaseIO::kShiftIsDown & flags) != 0};
 	const auto ControlIsDown {(OdEdBaseIO::kControlIsDown & flags) != 0};
-	const auto pt {ToEyeToWorld(x, y)};
+	const auto WorldPoint {ToEyeToWorld(x, y)};
 	if (m_GripManager.OnMouseDown(x, y, ShiftIsDown)) { return true; }
 	try {
 		if (dragCallback && !ShiftIsDown) {
-			auto SelectionSet {workingSSet()};
-			auto SelectionSetAtPoint = OdDbSelectionSet::select(ActiveViewportId(),
-			                                                    1,
-			                                                    &pt,
-			                                                    OdDbVisualSelection::kPoint,
-			                                                    ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents);
+			auto SelectionSet {GetWorkingSelectionSet()};
+			const auto SubEntitiesSelectionMode {ControlIsDown ? OdDbVisualSelection::kEnableSubents : OdDbVisualSelection::kDisableSubents};
+			auto SelectionSetAtPoint {OdDbSelectionSet::select(ActiveViewportId(), 1, &WorldPoint, OdDbVisualSelection::kPoint, SubEntitiesSelectionMode)};
 			OdDbSelectionSetIteratorPtr SelectionSetAtPointIterator {SelectionSetAtPoint->newIterator()};
 			while (!SelectionSetAtPointIterator->done()) {
 				if (SelectionSet->isMember(SelectionSetAtPointIterator->objectId()) && !ControlIsDown) {
@@ -397,7 +394,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 				SelectionSetAtPointIterator->next();
 			}
 			if (SelectionSetAtPointIterator.isNull()) {
-				if (dragCallback->BeginDragCallback(pt)) {
+				if (dragCallback->BeginDragCallback(WorldPoint)) {
 					// Not good idea to clear selection set if already selected object has been selected, but if selection set is being cleared - items must be unhighlighted too.
 					//workingSSet()->clear();
 					//SelectionSetChanged();
@@ -409,14 +406,13 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 	} catch (const OdError&) {
 		return false;
 	}
-	auto UserIO {m_CommandContext->dbUserIO()};
-	UserIO->setLASTPOINT(pt);
-	UserIO->setPickfirst(nullptr);
+	auto UserIo {m_CommandContext->dbUserIO()};
+	UserIo->setLASTPOINT(WorldPoint);
+	UserIo->setPickfirst(nullptr);
 	auto SelectOptions {OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces};
 	if (HasDatabase()) {
 		if (ShiftIsDown) {
 			if (m_CommandContext->database()->appServices()->getPICKADD() > 0) { SelectOptions |= OdEd::kSelRemove; }
-
 		} else {
 			if (m_CommandContext->database()->appServices()->getPICKADD() == 0) { Unselect(); }
 		}
@@ -426,7 +422,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 	try {
 		EnableEnhRectFrame _enhRect(m_CommandContext);
 		SetSnapOn(false);
-		OdDbSelectionSetPtr SelectionSet {UserIO->select(L"", SelectOptions, workingSSet())};
+		OdDbSelectionSetPtr SelectionSet {UserIo->select(L"", SelectOptions, GetWorkingSelectionSet())};
 		SetWorkingSelectionSet(SelectionSet);
 		SetSnapOn(SavedSnapMode);
 	} catch (const OdError&) {
@@ -440,7 +436,7 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 	return true;
 }
 
-bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned flags, const int x, const int y) {
+bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned /*flags*/, const int x, const int y) {
 	const auto View {ActiveView()};
 	m_LayoutHelper->setActiveViewport(OdGePoint2d(x, y));
 	const auto Changed {View != ActiveView()};
@@ -457,7 +453,7 @@ bool OdExEditorObject::OnMouseLeftButtonDoubleClick(unsigned flags, const int x,
 	return Changed;
 }
 
-bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned flags, int x, int y) {
+bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned /*flags*/, int /*x*/, int /*y*/) {
 	Unselect();
 	auto View {ActiveView()};
 
@@ -467,22 +463,17 @@ bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned flags, int x, int 
 	return true;
 }
 
-bool OdExEditorObject::OnMouseMove(unsigned flags, const int x, const int y) {
+bool OdExEditorObject::OnMouseMove(unsigned /*flags*/, const int x, const int y) {
 	return m_GripManager.OnMouseMove(x, y);
 }
 
-void OdExEditorObject::Dolly(const int x, const int y) {
-	const auto View {ActiveView()};
-	Dolly(View, x, y);
-}
-
 void OdExEditorObject::Dolly(OdGsView* view, const int x, const int y) {
-	OdGeVector3d vec(-x, -y, 0.0);
-	vec.transformBy((view->screenMatrix() * view->projectionMatrix()).inverse());
-	view->dolly(vec);
+	OdGeVector3d TranslationToOrigin(-x, -y, 0.0);
+	TranslationToOrigin.transformBy((view->screenMatrix() * view->projectionMatrix()).inverse());
+	view->dolly(TranslationToOrigin);
 }
 
-bool OdExEditorObject::OnMouseWheel(unsigned flags, const int x, const int y, const short zDelta) {
+bool OdExEditorObject::OnMouseWheel(unsigned /*flags*/, const int x, const int y, const short zDelta) {
 	const auto View {ActiveView()};
 	ZoomAt(View, x, y, zDelta);
 	if (!m_p2dModel.isNull()) {
@@ -538,7 +529,7 @@ void zoom_window2(const OdGePoint3d& pt1, const OdGePoint3d& pt2, OdGsView* pVie
 	zoom_window(pt1c, pt2c, pView);
 }
 
-void zoom_scale(double factor) noexcept {
+void zoom_scale(double /*factor*/) noexcept {
 }
 
 static bool getLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, OdGeBoundBlock3d& boundBox) {
@@ -579,7 +570,7 @@ void zoom_extents(OdGsView* view, OdDbObject* viewportObject) {
 	AbstractView->zoomExtents(view, &BoundBox);
 }
 
-void zoom_scaleXP(double factor) noexcept {
+void zoom_scaleXP(double /*factor*/) noexcept {
 }
 
 // Zoom command
@@ -606,9 +597,9 @@ public:
 		m_View->setView(m_View->position(), m_View->target(), m_View->upVector(), m_fw * fac, m_fh * fac, m_View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 	}
 
-	int addDrawables(OdGsView* view) noexcept override { return 1; }
+	int addDrawables(OdGsView* /*view*/) noexcept override { return 1; }
 
-	void removeDrawables(OdGsView* view) noexcept override {
+	void removeDrawables(OdGsView* /*view*/) noexcept override {
 	}
 };
 
@@ -693,11 +684,11 @@ const OdString OdEx3dOrbitCmd::globalName() const {
 
 class OrbitCtrl : public OdGiDrawableImpl<> {
 public:
-	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const noexcept override {
+	unsigned long subSetAttributes(OdGiDrawableTraits* /*drawableTraits*/) const noexcept override {
 		return kDrawableIsAnEntity | kDrawableRegenDraw;
 	}
 
-	bool subWorldDraw(OdGiWorldDraw* worldDraw) const noexcept override {
+	bool subWorldDraw(OdGiWorldDraw* /*worldDraw*/) const noexcept override {
 		return false;
 	}
 
@@ -958,7 +949,7 @@ bool OdExEditorObject::OnOrbitBeginDrag(const int x, const int y) {
 	return false;
 }
 
-bool OdExEditorObject::OnOrbitEndDrag(int x, int y) {
+bool OdExEditorObject::OnOrbitEndDrag(int /*x*/, int /*y*/) {
 	if (IsOrbitOn()) {
 		dynamic_cast<RTOrbitTracker*>(m_InputTracker.get())->Reset();
 		return true;
@@ -1014,9 +1005,9 @@ public:
 		}
 	}
 
-	int addDrawables(OdGsView* view) noexcept override { return 0; }
+	int addDrawables(OdGsView* /*view*/) noexcept override { return 0; }
 
-	void removeDrawables(OdGsView* view) noexcept override {
+	void removeDrawables(OdGsView* /*view*/) noexcept override {
 	}
 };
 

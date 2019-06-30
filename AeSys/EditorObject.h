@@ -76,7 +76,6 @@ public:
 	OdGsView* ActiveTopView();
 	OdDbObjectId ActiveViewportId() const;
 	void UcsPlane(OdGePlane& plane) const;
-	void Dolly(int x, int y);
 	static void ZoomAt(OdGsView* view, int x, int y, short zDelta);
 	static void Dolly(OdGsView* view, int x, int y);
 
@@ -86,14 +85,14 @@ public:
 	OdExEditorObject();
 	void Initialize(OdGsDevice* device, OdDbCommandContext* dbCommandContext);
 	void Uninitialize();
-	OdDbSelectionSetPtr workingSSet() const;
+	OdDbSelectionSetPtr GetWorkingSelectionSet() const;
 	void SetWorkingSelectionSet(OdDbSelectionSet* selectionSet);
 	void SelectionSetChanged();
 	OdGiDrawablePtr SnapDrawable() const;
 	bool Unselect();
 	OdEdCommandPtr Command(const OdString& commandName);
 	OdGePoint3d ToEyeToWorld(int x, int y) const;
-	bool ToUcsToWorld(OdGePoint3d& wcsPt) const;
+	bool ToUcsToWorld(OdGePoint3d& wcsPoint) const;
 	OdGePoint3d ToScreenCoordinates(int x, int y) const;
 	OdGePoint3d ToScreenCoordinates(const OdGePoint3d& worldPoint) const;
 
@@ -112,7 +111,7 @@ public:
 	bool OnCtrlClick();
 	void OnDestroy();
 
-	bool HasSelection() const { return workingSSet()->numEntities() > 0; }
+	bool HasSelection() const { return GetWorkingSelectionSet()->numEntities() > 0; }
 
 	bool IsSnapOn() const noexcept { return m_flags & kSnapOn ? true : false; }
 

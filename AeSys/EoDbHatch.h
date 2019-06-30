@@ -52,7 +52,7 @@ public:
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 	OdGePoint3d GoToNxtCtrlPt() const override;
 
-	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override { return false; }
+	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override { return false; }
 
 	bool IsInView(AeSysView* view) const override;
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const override;

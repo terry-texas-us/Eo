@@ -20,7 +20,7 @@ EoDbFile::EoDbFile(const OdString& fileName, const unsigned openFlags)
 	: CFile(fileName, openFlags) {
 }
 
-void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& primitive) noexcept {
+void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& /*primitive*/) noexcept {
 }
 
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive) {

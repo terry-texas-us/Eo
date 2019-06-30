@@ -150,7 +150,7 @@ void EoDlgEditProperties::OnButton() {
 	}
 }
 
-void EoDlgEditProperties::OnClickProplist(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgEditProperties::OnClickProplist(NMHDR* /*notifyStructure*/, LRESULT* result) {
 	OnSetfocusValue();
 	*result = 0;
 }
@@ -164,7 +164,7 @@ void EoDlgEditProperties::OnSetfocusValue() {
 	}
 }
 
-void EoDlgEditProperties::OnKeydownProplist(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgEditProperties::OnKeydownProplist(NMHDR* /*notifyStructure*/, LRESULT* result) {
 	OnSetfocusValue();
 	*result = 0;
 }

@@ -79,7 +79,7 @@ void EoMfPropertiesDockablePane::OnExpandAllProperties() {
 	m_PropertyGrid.ExpandAll();
 }
 
-void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* commandUserInterface) noexcept {
+void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /*commandUserInterface*/) noexcept {
 }
 
 void EoMfPropertiesDockablePane::OnSortProperties() {
@@ -94,7 +94,7 @@ void EoMfPropertiesDockablePane::OnProperties1() noexcept {
 	// TODO: Add your command handler code here
 }
 
-void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* commandUserInterface) noexcept {
+void EoMfPropertiesDockablePane::OnUpdateProperties1(CCmdUI* /*commandUserInterface*/) noexcept {
 	// TODO: Add your command update UI handler code here
 }
 

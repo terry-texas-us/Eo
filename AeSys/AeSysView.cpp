@@ -379,7 +379,7 @@ bool AeSysView::regenAbort() const noexcept {
 	return false;
 }
 
-LRESULT AeSysView::OnRedraw(WPARAM wParam, LPARAM lParam) {
+LRESULT AeSysView::OnRedraw(WPARAM /*wParam*/, LPARAM /*lParam*/) {
 	if (m_IncompleteRegenerate) { return 1; }
 	m_IncompleteRegenerate = true;
 	m_RegenerateAbort = false;
@@ -513,7 +513,7 @@ inline bool RequireAutoRegen(OdGsView* view) {
 	return false;
 }
 
-void AeSysView::PropagateLayoutActiveViewChanges(bool forceAutoRegen) const {
+void AeSysView::PropagateLayoutActiveViewChanges(bool /*forceAutoRegen*/) const {
 	OdGsViewPtr View {GetLayoutActiveView()};
 	OdGsClientViewInfo ClientViewInfo;
 	View->clientViewInfo(ClientViewInfo);
@@ -1435,7 +1435,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 	CView::OnPrint(deviceContext, printInformation);
 }
 
-void AeSysView::OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) {
+void AeSysView::OnEndPrinting(CDC* /*deviceContext*/, CPrintInfo* /*printInformation*/) {
 	PopViewTransform();
 	ViewportPopActive();
 }
@@ -1556,7 +1556,7 @@ bool AeSysView::UpdateStringTrackerCursor() {
 	return false;
 }
 
-void CALLBACK StringTrackerTimer(const HWND window, unsigned message, const unsigned timerId, unsigned long time) {
+void CALLBACK StringTrackerTimer(const HWND window, unsigned /*message*/, const unsigned timerId, unsigned long /*time*/) {
 	try {
 		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(window))};
 		if (!View->UpdateStringTrackerCursor()) { KillTimer(window, timerId); }
@@ -1950,14 +1950,14 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 			ClientDeviceContext.DrawFocusRect(&ZoomRectangle);
 		} else if (m_MiddleButton) {
 			OdGsViewPtr FirstView {m_LayoutHelper->viewAt(0)};
-			OdGeVector3d DollyVector(static_cast<double>(m_MousePosition.x) - static_cast<double>(point.x), static_cast<double>(m_MousePosition.y) - static_cast<double>(point.y), 0.0);
+			OdGeVector3d DollyVector(static_cast<double>(m_MousePosition.x - point.x), static_cast<double>(m_MousePosition.y - point.y), 0.0);
 			DollyVector.transformBy((FirstView->screenMatrix() * FirstView->projectionMatrix()).inverse());
 			FirstView->dolly(DollyVector);
 			m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 			m_ViewTransform.BuildTransformMatrix();
 			PostMessageW(WM_PAINT);
 		} else if (m_RightButton) {
-			Orbit((static_cast<double>(m_MousePosition.y) - static_cast<double>(point.y)) / 100., (static_cast<double>(m_MousePosition.x) - static_cast<double>(point.x)) / 100.);
+			Orbit(static_cast<double>(m_MousePosition.y - point.y) / 100.0, static_cast<double>(m_MousePosition.x - point.x) / 100.0);
 			PostMessageW(WM_PAINT);
 		}
 		m_MousePosition = point;
@@ -2064,7 +2064,7 @@ struct OdExRegenCmd : OdEdCommand {
 		return OdEdCommand::flags() | kNoUndoMarker;
 	}
 
-	void execute(OdEdCommandContext* edCommandContext) noexcept override {
+	void execute(OdEdCommandContext* /*edCommandContext*/) noexcept override {
 		// <tas="placeholder until implemented" m_View->OnViewerRegen();"</tas>
 	}
 };
@@ -2105,7 +2105,7 @@ unsigned long AeSysView::drawableFilterFunction(const OdIntPtr functionId, const
 	return OdGiContextForDbDatabase::drawableFilterFunction(functionId & ~kDrawableFilterAppRangeMask, drawable, flags);
 }
 
-BOOL AeSysView::OnIdle(long count) {
+BOOL AeSysView::OnIdle(long /*count*/) {
 	if (!m_LayoutHelper->isValid()) {
 		PostMessageW(WM_PAINT);
 	}

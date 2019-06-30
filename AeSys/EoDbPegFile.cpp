@@ -23,7 +23,7 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 	}
 }
 
-void EoDbPegFile::ReadHeaderSection(AeSysDoc* document) {
+void EoDbPegFile::ReadHeaderSection(AeSysDoc* /*document*/) {
 	if (ReadUInt16() != kHeaderSection) {
 		throw L"Exception ReadHeaderSection: Expecting sentinel kHeaderSection.";
 	}
@@ -47,7 +47,7 @@ void EoDbPegFile::ReadTablesSection(AeSysDoc* document) {
 	}
 }
 
-void EoDbPegFile::ReadViewportTable(AeSysDoc* document) {
+void EoDbPegFile::ReadViewportTable(AeSysDoc* /*document*/) {
 	if (ReadUInt16() != kViewPortTable) {
 		throw L"Exception ReadViewportTable: Expecting sentinel kViewPortTable.";
 	}
@@ -225,7 +225,7 @@ void EoDbPegFile::Unload(AeSysDoc* document) {
 	CFile::Flush();
 }
 
-void EoDbPegFile::WriteHeaderSection(AeSysDoc* document) {
+void EoDbPegFile::WriteHeaderSection(AeSysDoc* /*document*/) {
 	WriteUInt16(kHeaderSection);
 
 	// header variable items go here
@@ -240,13 +240,13 @@ void EoDbPegFile::WriteTablesSection(AeSysDoc* document) {
 	WriteUInt16(kEndOfSection);
 }
 
-void EoDbPegFile::WriteVPortTable(AeSysDoc* document) {
+void EoDbPegFile::WriteVPortTable(AeSysDoc* /*document*/) {
 	WriteUInt16(kViewPortTable);
 	WriteUInt16(0);
 	WriteUInt16(kEndOfTable);
 }
 
-void EoDbPegFile::WriteLinetypeTable(AeSysDoc* document) {
+void EoDbPegFile::WriteLinetypeTable(AeSysDoc* /*document*/) {
 	WriteUInt16(kLinetypeTable);
 	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
 	auto Iterator {Linetypes->newIterator()};

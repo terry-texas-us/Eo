@@ -68,7 +68,7 @@ private:
 	PStyleType plotStyleType() const override;
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
 
-	void plotStyle(int penNumber, OdPsPlotStyleData& plotStyleData) const noexcept override {
+	void plotStyle(int /*penNumber*/, OdPsPlotStyleData& /*plotStyleData*/) const noexcept override {
 	} // OdGiContextForDbDatabase (to suppress C4266 warning)
 protected:
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);

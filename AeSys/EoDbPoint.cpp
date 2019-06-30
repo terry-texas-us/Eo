@@ -58,7 +58,7 @@ EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 	return *this;
 }
 
-void EoDbPoint::AddReportToMessageList(const OdGePoint3d& point) const {
+void EoDbPoint::AddReportToMessageList(const OdGePoint3d& /*point*/) const {
 	CString Report(L"<Point>");
 	Report += L" Color:" + FormatColorIndex();
 	CString Mode;
@@ -145,7 +145,7 @@ OdGePoint3d EoDbPoint::GetCtrlPt() const noexcept {
 	return m_Position;
 }
 
-void EoDbPoint::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbPoint::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	extents.addPoint(m_Position);
 }
 
@@ -206,7 +206,7 @@ void EoDbPoint::ModifyState() noexcept {
 	m_PointDisplayMode = g_PrimitiveState.PointDisplayMode();
 }
 
-bool EoDbPoint::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbPoint::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* /*view*/, OdGePoint3dArray& /*intersections*/) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;

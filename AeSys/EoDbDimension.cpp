@@ -75,7 +75,7 @@ void EoDbDimension::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	SetDefaultNote();
 }
 
-void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
+void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr /*database*/) {
 	EoDbDimension* Dimension;
 	double dRel[2];
 	m_Line.ParametricRelationshipOf(points[0], dRel[0]);
@@ -183,7 +183,7 @@ OdGePoint3d EoDbDimension::GetCtrlPt() const {
 	return m_Line.midPoint();
 }
 
-void EoDbDimension::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbDimension::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	extents.addPoint(m_Line.startPoint());
 	extents.addPoint(m_Line.endPoint());
 	// <tas="Add BoundingBox to extents"</tas>
@@ -204,7 +204,7 @@ OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
 	return sm_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint();
 }
 
-bool EoDbDimension::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
+bool EoDbDimension::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept {
 	return false;
 }
 
@@ -541,7 +541,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	return AlignedDimension;
 }
 
-OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber) {
+OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int /*versionNumber*/) {
 	const auto ColorIndex {static_cast<short>(primitiveBuffer[6])};
 	const auto LinetypeIndex {static_cast<short>(primitiveBuffer[7])};
 	EoGeLineSeg3d Line;

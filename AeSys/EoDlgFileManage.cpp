@@ -416,7 +416,7 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 	*result = 0;
 }
 
-void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* /*notifyStructure*/, LRESULT* result) {
 	if (m_ClickToColumnStatus) {
 		OnBnClickedSetCurrent();
 	}

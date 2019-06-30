@@ -532,7 +532,7 @@ public:
 
 class EoDbViewport_Converter : public EoDbConvertEntityToPrimitive {
 public:
-	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
+	void Convert(OdDbEntity* entity, EoDbGroup* /*group*/) override {
 		OdDbViewportPtr ViewportEntity = entity;
 		TRACE1("%s was not converted ...\n", static_cast<const wchar_t*>(ViewportEntity->desc()->name()));
 		OdDbObjectIdArray layerIds;

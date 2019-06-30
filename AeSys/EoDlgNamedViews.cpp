@@ -155,7 +155,7 @@ void EoDlgNamedViews::OnSetcurrentButton() {
 	}
 }
 
-void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* /*pResult*/) {
+void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* /*notifyStructure*/, LRESULT* /*pResult*/) {
 	OnSetcurrentButton();
 }
 

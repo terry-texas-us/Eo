@@ -143,7 +143,7 @@ OdGePoint3d EoDbPolyline::GetCtrlPt() const {
 	return EoGeLineSeg3d(StartPoint, EndPoint).midPoint();
 }
 
-void EoDbPolyline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbPolyline::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	OdGePoint3d Point;
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		GetPointAt(VertexIndex, Point);
@@ -222,7 +222,7 @@ bool EoDbPolyline::IsInView(AeSysView* view) const {
 	return false;
 }
 
-bool EoDbPolyline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
+bool EoDbPolyline::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d& /*point*/) const noexcept {
 	// <tas="Polyline: need to implement IsPointOnControlPoint"</tas>
 	return false;
 }
@@ -337,7 +337,7 @@ void EoDbPolyline::AppendVertex(const OdGePoint2d& vertex, const double bulge, c
 	m_EndWidths.append(endWidth);
 }
 
-bool EoDbPolyline::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbPolyline::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* /*view*/, OdGePoint3dArray& /*intersections*/) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
@@ -351,14 +351,14 @@ void EoDbPolyline::SetNormal(const OdGeVector3d& normal) {
 	m_Normal = normal.isZeroLength() ? OdGeVector3d::kZAxis : normal;
 }
 
-void EoDbPolyline::TransformBy(const EoGeMatrix3d& transformMatrix) {
+void EoDbPolyline::TransformBy(const EoGeMatrix3d& /*transformMatrix*/) {
 	// <tas="TransformBy broken. Need to go to world and back?"</tas>
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		//m_Vertices[VertexIndex].transformBy(transformMatrix);
 	}
 }
 
-void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) {
+void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& /*translate*/, unsigned long /*mask*/) {
 	// <tas="TranslateUsingMask broken. Need to go to world and back? This type of operation could get polyline vertex off plane"</tas>
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		//	if (((mask >> VertexIndex) & 1UL) == 1)
@@ -386,7 +386,7 @@ bool EoDbPolyline::Write(EoDbFile& file) const {
 }
 
 /// <remarks> Job (.jb1) files did not have a polyline primitive</remarks>
-void EoDbPolyline::Write(CFile& file, unsigned char* buffer) const noexcept {
+void EoDbPolyline::Write(CFile& /*file*/, unsigned char* /*buffer*/) const noexcept {
 }
 
 unsigned EoDbPolyline::SwingVertex() const {

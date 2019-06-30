@@ -68,7 +68,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 	}
 }
 
-void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr database) {
+void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbGroupList* groupsIn, OdDbDatabasePtr /*database*/) {
 	EoDbLine* LineIn;
 	double FirstPointParameter;
 	double SecondPointParameter;
@@ -153,7 +153,7 @@ OdGePoint3d EoDbLine::GetCtrlPt() const {
 	return m_LineSeg.midPoint();
 }
 
-void EoDbLine::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbLine::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	extents.addPoint(m_LineSeg.startPoint());
 	extents.addPoint(m_LineSeg.endPoint());
 }

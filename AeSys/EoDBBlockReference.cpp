@@ -42,7 +42,7 @@ EoDbBlockReference& EoDbBlockReference::operator=(const EoDbBlockReference& othe
 	return *this;
 }
 
-void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& point) const {
+void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& /*point*/) const {
 	CString Report(L"<BlockReference>");
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
@@ -136,7 +136,7 @@ OdGePoint3d EoDbBlockReference::GoToNxtCtrlPt() const noexcept {
 	return m_Position;
 }
 
-bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
+bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept {
 	return false;
 }
 
@@ -150,7 +150,7 @@ bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	return bInView;
 }
 
-bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
+bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d& /*point*/) const noexcept {
 	return false;
 }
 
@@ -251,7 +251,7 @@ bool EoDbBlockReference::Write(EoDbFile& file) const {
 	return true;
 }
 
-void EoDbBlockReference::Write(CFile& file, unsigned char* buffer) const noexcept {
+void EoDbBlockReference::Write(CFile& /*file*/, unsigned char* /*buffer*/) const noexcept {
 }
 
 unsigned short EoDbBlockReference::Columns() const noexcept {
@@ -290,7 +290,7 @@ double EoDbBlockReference::RowSpacing() const noexcept {
 	return m_RowSpacing;
 }
 
-bool EoDbBlockReference::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbBlockReference::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* /*view*/, OdGePoint3dArray& /*intersections*/) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;

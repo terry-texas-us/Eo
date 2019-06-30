@@ -122,15 +122,15 @@ static void RemovePaperDrawingCustomization() {
 static void AddMaterialTextureLoadingMonitor() {
 	static class OdGiMaterialTextureLoadPEImpl : public OdStaticRxObject<OdGiMaterialTextureLoadPE> {
 	public:
-		void startTextureLoading(OdString& fileName, OdDbBaseDatabase* database) noexcept override {
+		void startTextureLoading(OdString& /*fileName*/, OdDbBaseDatabase* /*database*/) noexcept override {
 			// Material texture to be loaded. Correct loading path here.
 		}
 
-		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* database) override {
+		void textureLoaded(const OdString& fileName, OdDbBaseDatabase* /*database*/) override {
 			TRACE1("Material texture loaded: %s\n", fileName.c_str());
 		}
 		/// <remarks> Called by texture loader after file loading, only if texture loading failed. </remarks>
-		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* database) override {
+		void textureLoadingFailed(const OdString& fileName, OdDbBaseDatabase* /*database*/) override {
 			TRACE1("Failed to load material texture: %s\n", fileName.c_str());
 		}
 	} MaterialLoadProtocolObject;
@@ -277,7 +277,7 @@ public:
 		}
 	}
 
-	void ParseParam(const char* parameter, BOOL flag, BOOL last) override {
+	void ParseParam(const char* /*parameter*/, BOOL /*flag*/, BOOL /*last*/) override {
 	} // CCommandLineInfo (to suppress C4266 warning)
 };
 
@@ -361,7 +361,7 @@ const ODCOLORREF* AeSys::CurrentPalette() const {
 	return odcmAcadPalette(m_BackgroundColor);
 }
 
-OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* view, OdDbBaseDatabase* database, const unsigned long flags) {
+OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* /*view*/, OdDbBaseDatabase* /*database*/, const unsigned long flags) {
 	try {
 		OdGsModulePtr Module;
 		if ((flags & kFor2dExportRender) != 0) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
@@ -503,7 +503,7 @@ CString AeSys::GetApplicationPath() {
 	return L"";
 }
 
-void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const {
+void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& /*line*/, int /*printDest*/) const {
 	if (auditDialog) { auditDialog->PrintReport(dynamic_cast<OdDbAuditInfo*>(auditInfo)); }
 }
 
@@ -787,7 +787,7 @@ double AeSys::EngagedLength() const noexcept {
 	return m_EngagedLength;
 }
 
-CString AeSys::BrowseWithPreview(const HWND parentWindow, const wchar_t* filter, bool multiple) {
+CString AeSys::BrowseWithPreview(const HWND parentWindow, const wchar_t* filter, bool /*multiple*/) {
 	CString FileName;
 	const unsigned long Flags(OFN_HIDEREADONLY | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST);
 	const CString LibraryFileName(L"FileDlgExt" TD_DLL_VERSION_SUFFIX_STR L".dll");
@@ -1714,7 +1714,7 @@ CString GetRegistryAcadProfilesKey() {
 	return SubKey;
 }
 
-OdString AeSys::getSubstituteFont(const OdString& fontName, OdFontType fontType) {
+OdString AeSys::getSubstituteFont(const OdString& /*fontName*/, OdFontType /*fontType*/) {
 	return OdString(L"simplex.shx");
 }
 
@@ -2031,7 +2031,7 @@ void AeSys::OnVectorizerTypeAddVectorizerDll() {
 	ApplicationPath.ReleaseBuffer();
 }
 
-void AeSys::OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* commandUserInterface) {
+void AeSys::OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* /*commandUserInterface*/) {
 	if (m_NumGsMenuItems == 0) {
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		const auto VectorizePopupMenu {TopMenu->GetSubMenu(3)};

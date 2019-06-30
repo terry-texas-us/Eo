@@ -147,7 +147,7 @@ OdGePoint3d EoDbHatch::GetCtrlPt() const {
 	return EoGeLineSeg3d(m_Vertices[StartPointIndex], m_Vertices[EndPointIndex]).midPoint();
 }
 
-void EoDbHatch::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbHatch::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	for (const auto& Vertex : m_Vertices) {
 		extents.addPoint(Vertex);
 	}
@@ -597,7 +597,7 @@ OdGeVector3d EoDbHatch::RecomputeReferenceSystem() {
 	return PlaneNormal;
 }
 
-bool EoDbHatch::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbHatch::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* /*view*/, OdGePoint3dArray& /*intersections*/) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;
@@ -704,19 +704,19 @@ void EoDbHatch::ConvertPolylineType(const int loopIndex, const OdDbHatchPtr& hat
 	hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);
 }
 
-void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* edge) noexcept {
+void EoDbHatch::ConvertCircularArcEdge(OdGeCurve2d* /*edge*/) noexcept {
 	/* OdGeCircArc2d* CircularArcEdge = */
 	
 	// <tas="Properties: center, radius, startAng, endAng, isClockWise"></tas>
 }
 
-void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* edge) noexcept {
+void EoDbHatch::ConvertEllipticalArcEdge(OdGeCurve2d* /*edge*/) noexcept {
 	/* OdGeEllipArc2d* EllipticalArcEdge = */
 
 	// <tas="Properties: center, majorRadius, minorRadius, majorAxis, minorAxis, startAng, endAng, isClockWise"></tas>
 }
 
-void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* edge) noexcept {
+void EoDbHatch::ConvertNurbCurveEdge(OdGeCurve2d* /*edge*/) noexcept {
 	/* OdGeNurbCurve2d* NurbCurveEdge = */
 
 	// <tas="Properties: degree, isRational, isPeriodic, numKnots, numControlPoints, controlPointAt, weightAt"></tas>

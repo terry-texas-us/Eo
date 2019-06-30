@@ -107,7 +107,7 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 	return 0;
 }
 
-void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) {
+void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle*/, unsigned /*state*/) {
 	m_SelectedIndex = 0;
 	for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 		if (m_Layout == SimpleSingleRow) {

@@ -30,7 +30,7 @@ EoDbSpline& EoDbSpline::operator=(const EoDbSpline& other) {
 	return *this;
 }
 
-void EoDbSpline::AddReportToMessageList(const OdGePoint3d& point) const {
+void EoDbSpline::AddReportToMessageList(const OdGePoint3d& /*point*/) const {
 	CString Report {L"<BSpline>"};
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
@@ -94,7 +94,7 @@ OdGePoint3d EoDbSpline::GetCtrlPt() const {
 	return Point;
 }
 
-void EoDbSpline::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbSpline::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	if (!m_EntityObjectId.isNull()) {
 		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
 		OdGeExtents3d Extents;
@@ -144,7 +144,7 @@ bool EoDbSpline::IsInView(AeSysView* view) const {
 	return false;
 }
 
-bool EoDbSpline::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept {
+bool EoDbSpline::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d& /*point*/) const noexcept {
 	return false;
 }
 
@@ -167,7 +167,7 @@ bool EoDbSpline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const 
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, ControlPoints);
 }
 
-bool EoDbSpline::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
+bool EoDbSpline::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* /*view*/, OdGePoint3dArray& /*intersections*/) {
 	const CRuntimeClass* PrimitiveClass = GetRuntimeClass();
 	theApp.AddStringToMessageList(L"Selection by line segment not implemented for <%s>\n", CString(PrimitiveClass->m_lpszClassName));
 	return false;

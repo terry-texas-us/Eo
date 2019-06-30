@@ -90,13 +90,8 @@ void AeSysView::OnCutModeField() {
 		RubberBandingStartAtEnable(CurrentPnt, kRectangles);
 		wPrvKeyDwn = ModeLineHighlightOp(ID_OP4);
 	} else {
-		OdGePoint3d rLL, rUR;
-		rLL.x = EoMin(rPrvPos.x, CurrentPnt.x);
-		rLL.y = EoMin(rPrvPos.y, CurrentPnt.y);
-		rUR.x = EoMax(rPrvPos.x, CurrentPnt.x);
-		rUR.y = EoMax(rPrvPos.y, CurrentPnt.y);
-		const auto ptLL {rLL};
-		const auto ptUR {rUR};
+		const OdGePoint3d LowerLeftCorner {EoMin(rPrvPos.x, CurrentPnt.x), EoMin(rPrvPos.y, CurrentPnt.y), 0.0};
+		const OdGePoint3d UpperRightCorner {EoMax(rPrvPos.x, CurrentPnt.x), EoMax(rPrvPos.y, CurrentPnt.y), 0.0};
 		int NumberOfIntersections;
 		OdGePoint3d Intersections[10];
 		auto Document {GetDocument()};
@@ -104,15 +99,15 @@ void AeSysView::OnCutModeField() {
 		const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 		auto GroupsOut {new EoDbGroupList};
 		const auto GroupsIn {new EoDbGroupList};
-		POSITION posSegPrv;
-		for (auto posSeg = GetFirstVisibleGroupPosition(); (posSegPrv = posSeg) != nullptr;) {
-			auto Group {GetNextVisibleGroup(posSeg)};
+		POSITION PreviousGroupPosition;
+		for (auto GroupPosition = GetFirstVisibleGroupPosition(); (PreviousGroupPosition = GroupPosition) != nullptr;) {
+			auto Group {GetNextVisibleGroup(GroupPosition)};
 			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
 			POSITION PrimitivePosition;
 			POSITION PreviousPrimitivePosition;
 			for (PrimitivePosition = Group->GetHeadPosition(); (PreviousPrimitivePosition = PrimitivePosition) != nullptr;) {
 				auto Primitive {Group->GetNext(PrimitivePosition)};
-				if ((NumberOfIntersections = Primitive->IsWithinArea(ptLL, ptUR, Intersections)) == 0) { continue; }
+				if ((NumberOfIntersections = Primitive->IsWithinArea(LowerLeftCorner, UpperRightCorner, Intersections)) == 0) { continue; }
 				Group->RemoveAt(PreviousPrimitivePosition);
 				for (auto i = 0; i < NumberOfIntersections; i += 2) {
 

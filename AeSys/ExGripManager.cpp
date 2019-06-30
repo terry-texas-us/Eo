@@ -889,7 +889,7 @@ void OdExGripManager::Uninitialize() {
 	m_LayoutHelper = nullptr;
 }
 
-void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext* edCommandContext) {
+void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext* /*edCommandContext*/) {
 	auto Ok = true;
 	try {
 		const auto FinalPoint {
@@ -1000,7 +1000,7 @@ bool OdExGripManager::onControlClick() {
 	return true;
 }
 
-void OdExGripManager::ShowGrip(OdExGripData* gripData, bool model) {
+void OdExGripManager::ShowGrip(OdExGripData* gripData, bool /*model*/) {
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	if (PaperLayoutHelper.get()) {
@@ -1018,7 +1018,7 @@ void OdExGripManager::ShowGrip(OdExGripData* gripData, bool model) {
 	}
 }
 
-void OdExGripManager::HideGrip(OdExGripData* gripData, bool model) {
+void OdExGripManager::HideGrip(OdExGripData* gripData, bool /*model*/) {
 	auto PaperLayoutHelper {OdGsPaperLayoutHelper::cast(m_LayoutHelper)};
 	const auto NumberOfViews {m_LayoutHelper->numViews()};
 	if (PaperLayoutHelper.get()) {
@@ -1195,7 +1195,7 @@ bool OdExGripManager::IsModel(OdGiDrawable* entity) noexcept {
 	return !Entity || Entity->database()->getTILEMODE();
 }
 
-void OdExGripDbReactor::objectAppended(const OdDbDatabase* database, const OdDbObject* dbObject) noexcept {
+void OdExGripDbReactor::objectAppended(const OdDbDatabase* /*database*/, const OdDbObject* /*dbObject*/) noexcept {
 	// New object.
 }
 
@@ -1204,7 +1204,7 @@ void OdExGripDbReactor::objectModified(const OdDbDatabase*, const OdDbObject* db
 	m_GripManager->UpdateInvisibleGrips();
 }
 
-void OdExGripDbReactor::objectErased(const OdDbDatabase* database, const OdDbObject* dbObject, const bool erased) {
+void OdExGripDbReactor::objectErased(const OdDbDatabase* /*database*/, const OdDbObject* dbObject, const bool erased) {
 	if (erased) {
 		m_GripManager->RemoveEntityGrips(dbObject->objectId(), true);
 		m_GripManager->UpdateInvisibleGrips();

@@ -289,7 +289,7 @@ void AeSysDoc::OnViewSetActiveLayout() {
 	layoutSwitchable = false;
 }
 
-void AeSysDoc::layoutSwitched(const OdString& newLayoutName, const OdDbObjectId& newLayout) {
+void AeSysDoc::layoutSwitched(const OdString& /*newLayoutName*/, const OdDbObjectId& /*newLayout*/) {
 	if (!layoutSwitchable) { return; }
 
 	// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
@@ -372,7 +372,7 @@ void CommandSelect::execute(OdEdCommandContext* commandContext) {
 	UserIo->setPickfirst(nullptr);
 	const auto SelectOptions {OdEd::kSelLeaveHighlighted | OdEd::kSelAllowEmpty};
 	try {
-		OdDbSelectionSetPtr SelectionSet {UserIo->select(L"", SelectOptions, View->EditorObject().workingSSet())};
+		OdDbSelectionSetPtr SelectionSet {UserIo->select(L"", SelectOptions, View->EditorObject().GetWorkingSelectionSet())};
 		View->EditorObject().SetWorkingSelectionSet(SelectionSet);
 	} catch (const OdError&) {
 		throw OdEdCancel();
@@ -567,15 +567,15 @@ public:
 		return m_Modified;
 	}
 
-	void objectOpenedForModify(const OdDbDatabase* database, const OdDbObject* object) override {
+	void objectOpenedForModify(const OdDbDatabase* /*database*/, const OdDbObject* /*object*/) override {
 		SetModified();
 	}
 
-	void headerSysVarWillChange(const OdDbDatabase* database, const OdString& variableName) override {
+	void headerSysVarWillChange(const OdDbDatabase* /*database*/, const OdString& /*variableName*/) override {
 		SetModified();
 	}
 
-	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* commandContext) override {
+	OdEdCommandPtr unknownCommand(const OdString& commandName, OdEdCommandContext* /*commandContext*/) override {
 		auto Viewer {OdDbDatabaseDocPtr(m_CommandContext->database())->Document()->GetViewer()};
 		if (Viewer) {
 			auto Command {Viewer->command(commandName)};
@@ -587,17 +587,17 @@ public:
 		return OdEdCommandPtr();
 	}
 
-	void commandWillStart(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
+	void commandWillStart(OdEdCommand* command, OdEdCommandContext* /*edCommandContext*/) override {
 		m_LastInput.makeUpper();
 		if (!((command->flags() & OdEdCommand::kNoHistory) != 0)) { theApp.SetRecentCommand(m_LastInput); }
 		if (!((command->flags() & OdEdCommand::kNoUndoMarker) != 0)) { m_CommandContext->database()->startUndoRecord(); }
 	}
 
-	void commandCancelled(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
+	void commandCancelled(OdEdCommand* /*command*/, OdEdCommandContext* /*edCommandContext*/) override {
 		UndoCommand();
 	}
 
-	void commandFailed(OdEdCommand* command, OdEdCommandContext* edCommandContext) override {
+	void commandFailed(OdEdCommand* /*command*/, OdEdCommandContext* /*edCommandContext*/) override {
 		UndoCommand();
 	}
 
@@ -2730,7 +2730,7 @@ void AeSysDoc::OnDrawingUtilitiesAudit() {
 	theApp.auditDialog = nullptr;
 }
 
-BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, unsigned long flags, BOOL openFileDialog, CDocTemplate* documentTemplate) {
+BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, unsigned long flags, BOOL openFileDialog, CDocTemplate* /*documentTemplate*/) {
 	const auto DwgVersion {m_DatabasePtr->originalFileVersion()};
 	auto Extension {fileName.Right(3)};
 	const auto IsDwg {Extension.CompareNoCase(L"dxf") != 0};

@@ -11,7 +11,7 @@ void Dlg_OnClose(const HWND hwnd) noexcept {
 	DestroyWindow(hwnd);
 }
 
-void Dlg_OnCommand(const HWND hwnd, const int id, HWND hwndCtl, const unsigned codeNotify) {
+void Dlg_OnCommand(const HWND hwnd, const int id, HWND /*hwndCtl*/, const unsigned codeNotify) {
 	switch (id) {
 		case IDOK: {
 			const auto nMaxCount {100};
@@ -66,7 +66,7 @@ void Dlg_OnCommand(const HWND hwnd, const int id, HWND hwndCtl, const unsigned c
 	}
 }
 
-BOOL Dlg_OnInit(const HWND hwnd, HWND hwndCtl, LPARAM lParam) {
+BOOL Dlg_OnInit(const HWND hwnd, HWND /*hwndCtl*/, LPARAM /*lParam*/) {
 	const auto Owner {GetWindow(hwnd, GW_OWNER)};
 	const auto PropertySheet {static_cast<CPropertySheet*>(CWnd::FromHandle(Owner))};
 	const auto ActivePage {static_cast<EoDlgPlotStyleEditor_FormViewPropertyPage*>(PropertySheet->GetActivePage())};
@@ -568,7 +568,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnUpdateEditDescription() noexcept {
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* notifyStructure, LRESULT* result) noexcept {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* /*notifyStructure*/, LRESULT* result) noexcept {
 	*result = 0;
 }
 
@@ -832,7 +832,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
 	m_listStyles.SetFocus();
 }
 
-BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags) {
+BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned /*nIDSTitle*/, unsigned long flags) {
 	auto ext {fileName.Right(3)};
 	const auto isCtb {m_pPlotStyleTable->isAciTableAvailable()};
 	CFileDialog FileDialog(FALSE);

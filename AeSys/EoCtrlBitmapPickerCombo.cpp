@@ -88,7 +88,7 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	if (drawItemStruct->itemAction & ODA_FOCUS) { DeviceContext->DrawFocusRect(&drawItemStruct->rcItem); }
 }
 
-void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool selected) {
+void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool /*selected*/) {
 	const auto Bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
 	if (Bitmap && Bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};

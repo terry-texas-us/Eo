@@ -14,17 +14,17 @@ unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::sm_SelectApertureSize = .02;
 
-void EoDbPrimitive::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
+void EoDbPrimitive::CutAt(const OdGePoint3d& /*point*/, EoDbGroup* /*newGroup*/) {
 }
 
-void EoDbPrimitive::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbGroupList* newGroups, OdDbDatabasePtr database) {
+void EoDbPrimitive::CutAt2Points(OdGePoint3d* /*points*/, EoDbGroupList* /*groups*/, EoDbGroupList* /*newGroups*/, OdDbDatabasePtr /*database*/) {
 }
 
-int EoDbPrimitive::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
+int EoDbPrimitive::IsWithinArea(const OdGePoint3d& /*lowerLeftCorner*/, const OdGePoint3d& /*upperRightCorner*/, OdGePoint3d* /*intersections*/) {
 	return 0;
 }
 
-bool EoDbPrimitive::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
+bool EoDbPrimitive::PivotOnGripPoint(AeSysView* /*view*/, const EoGePoint4d& /*point*/) noexcept {
 	return false;
 }
 

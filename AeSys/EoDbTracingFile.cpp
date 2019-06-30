@@ -3,7 +3,7 @@
 #include "EoDbFile.h"
 #include "EoDbTracingFile.h"
 
-EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr database) {
+EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr /*database*/) {
 }
 
 EoDbTracingFile::EoDbTracingFile(const OdString& fileName, const unsigned openFlags)

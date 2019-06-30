@@ -55,7 +55,7 @@ EoDbEllipse& EoDbEllipse::operator=(const EoDbEllipse& other) noexcept {
 	return *this;
 }
 
-void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& point) const {
+void EoDbEllipse::AddReportToMessageList(const OdGePoint3d& /*point*/) const {
 	CString Report;
 	Report += L" Color:" + FormatColorIndex();
 	Report += L" Linetype:" + FormatLinetypeIndex();
@@ -405,7 +405,7 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 	}
 }
 
-void EoDbEllipse::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
+void EoDbEllipse::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	if (!m_EntityObjectId.isNull()) {
 		auto Entity {m_EntityObjectId.safeOpenObject()};
 		OdGeExtents3d Extents;
@@ -559,7 +559,7 @@ OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
 	return pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng);
 }
 
-bool EoDbEllipse::IsEqualTo(EoDbPrimitive* primitive) const noexcept {
+bool EoDbEllipse::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept {
 	return false;
 }
 

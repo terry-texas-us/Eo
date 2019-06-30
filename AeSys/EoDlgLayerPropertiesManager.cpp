@@ -45,7 +45,7 @@ int EoDlgLayerPropertiesManager::OnCreate(const LPCREATESTRUCTW createStructure)
 	return 0;
 }
 
-void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* /*notifyStructure*/, LRESULT* result) {
 	if (auto h = treeFilters.GetSelectedItem()) {
 		const OdLyLayerFilter* lf = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(h)));
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {
