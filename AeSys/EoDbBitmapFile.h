@@ -1,5 +1,5 @@
 #pragma once
-class EoDbBitmapFile : public CFile {
+class EoDbBitmapFile final : public CFile {
 public:
 	EoDbBitmapFile() = default;
 	EoDbBitmapFile(const CString& fileName);

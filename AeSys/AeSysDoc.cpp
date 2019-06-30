@@ -499,13 +499,11 @@ OdString AeSysDoc::CommandPrompt() {
 void AeSysDoc::OnEditConsole() {
 	auto CommandStack {odedRegCmds()};
 	auto CommandContext(CommandContext0());
-	OdSaveState<bool> saveConsoleMode(m_Console, true);
+	OdSaveState<bool> SaveConsoleMode(m_Console, true);
 	try {
 		if (m_Viewer && m_Viewer->isGettingString()) {
-
 			m_Viewer->Respond(UserIoConsole()->getString(m_Viewer->prompt(), m_Viewer->inpOptions(), nullptr));
 			m_ConsoleResponded = true;
-
 		} else {
 			for (;;) {
 				auto CommandName {CommandContext->userIO()->getString(CommandPrompt(), 0, L"")};

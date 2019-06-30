@@ -6,7 +6,6 @@ class EoCtrlBitmapPickerCombo final : public CComboBox {
 	void SetSize(int width, int height);
 public:
 	EoCtrlBitmapPickerCombo();
-	~EoCtrlBitmapPickerCombo() = default;
 	int AddBitmap(const CBitmap* bitmap, const wchar_t* string = nullptr);
 	int InsertBitmap(int index, const CBitmap* bitmap, const wchar_t* string = nullptr);
 protected:

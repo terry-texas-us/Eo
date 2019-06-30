@@ -3,24 +3,22 @@
 // EoCtrlColorsButton
 class EoCtrlColorsButton : public CMFCButton {
 DECLARE_DYNAMIC(EoCtrlColorsButton)
+enum Layouts { kSimpleSingleRow, kGridDown5RowsOddOnly, kGridUp5RowsEvenOnly };
+private:
 	static gsl::span<COLORREF> m_Palette;
 	static unsigned short m_CurrentIndex;
 	static unsigned short m_SelectedIndex;
-
-	enum Layouts { SimpleSingleRow, GridDown5RowsOddOnly, GridUp5RowsEvenOnly };
-
-	Layouts m_Layout {SimpleSingleRow};
+	Layouts m_Layout {kSimpleSingleRow};
 	CSize m_CellSize {8, 8};
 	CSize m_CellSpacing {1, 1};
 	CSize m_Margins {3, 3};
 	unsigned short m_BeginIndex {1};
 	unsigned short m_EndIndex {1};
+public:
 	unsigned short m_SubItem {0};
 	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
 	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept;
-	EoCtrlColorsButton() = default;
-	~EoCtrlColorsButton() = default;
 
 	static void SetCurrentIndex(const unsigned short index) noexcept {
 		m_CurrentIndex = index;

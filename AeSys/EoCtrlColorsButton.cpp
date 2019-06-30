@@ -63,14 +63,14 @@ void EoCtrlColorsButton::SubItemRectangleByIndex(const unsigned short index, CRe
 	rectangle.top = m_Margins.cx + m_CellSpacing.cy;
 	rectangle.left = m_Margins.cy + m_CellSpacing.cx;
 	switch (m_Layout) {
-		case SimpleSingleRow:
+		case kSimpleSingleRow:
 			rectangle.left += (index - m_BeginIndex) * (m_CellSize.cx + m_CellSpacing.cx);
 			break;
-		case GridDown5RowsOddOnly:
+		case kGridDown5RowsOddOnly:
 			rectangle.top += (index - m_BeginIndex) % 10 / 2 * (m_CellSize.cy + m_CellSpacing.cy);
 			rectangle.left += (index - m_BeginIndex) / 10 * (m_CellSize.cx + m_CellSpacing.cx);
 			break;
-		case GridUp5RowsEvenOnly:
+		case kGridUp5RowsEvenOnly:
 			rectangle.top += (4 - (index - m_BeginIndex) % 10 / 2) * (m_CellSize.cy + m_CellSpacing.cy);
 			rectangle.left += (index - m_BeginIndex) / 10 * (m_CellSize.cx + m_CellSpacing.cx);
 	}
@@ -82,13 +82,13 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 	CRect Rectangle;
 	Rectangle.SetRectEmpty();
 	switch (m_Layout) {
-		case SimpleSingleRow:
+		case kSimpleSingleRow:
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				SubItemRectangleByIndex(Index, Rectangle);
 				if (Rectangle.PtInRect(point) == TRUE) { return Index; }
 			}
 			break;
-		case GridDown5RowsOddOnly:
+		case kGridDown5RowsOddOnly:
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 != 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
@@ -96,7 +96,7 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 				}
 			}
 			break;
-		case GridUp5RowsEvenOnly:
+		case kGridUp5RowsEvenOnly:
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 == 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
@@ -110,11 +110,11 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept 
 void EoCtrlColorsButton::OnDraw(CDC* deviceContext, const CRect& /*rectangle*/, unsigned /*state*/) {
 	m_SelectedIndex = 0;
 	for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
-		if (m_Layout == SimpleSingleRow) {
+		if (m_Layout == kSimpleSingleRow) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
-		} else if (m_Layout == GridDown5RowsOddOnly && Index % 2 != 0) {
+		} else if (m_Layout == kGridDown5RowsOddOnly && Index % 2 != 0) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
-		} else if (m_Layout == GridUp5RowsEvenOnly && Index % 2 == 0) {
+		} else if (m_Layout == kGridUp5RowsEvenOnly && Index % 2 == 0) {
 			DrawCell(deviceContext, Index, m_Palette.at(Index));
 		}
 	}
@@ -129,7 +129,7 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 		const auto DeviceContext {GetDC()};
 		m_SelectedIndex = 0;
 		DrawCell(DeviceContext, m_SubItem, m_Palette.at(m_SubItem));
-		if (m_Layout == SimpleSingleRow) {
+		if (m_Layout == kSimpleSingleRow) {
 			switch (keyCode) {
 				case VK_RIGHT:
 					m_SubItem++;
@@ -138,7 +138,7 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 					m_SubItem--;
 					break;
 			}
-		} else if (m_Layout == GridDown5RowsOddOnly) {
+		} else if (m_Layout == kGridDown5RowsOddOnly) {
 			switch (keyCode) {
 				case VK_DOWN:
 					m_SubItem += 2;
@@ -153,7 +153,7 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 					m_SubItem -= 2;
 					break;
 			}
-		} else if (m_Layout == GridUp5RowsEvenOnly) {
+		} else if (m_Layout == kGridUp5RowsEvenOnly) {
 			switch (keyCode) {
 				case VK_DOWN:
 					m_SubItem -= 2;

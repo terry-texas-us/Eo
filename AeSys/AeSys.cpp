@@ -611,7 +611,7 @@ void AeSys::RefreshCommandMenu() {
 
 void AeSys::AddReactor(const OdApplicationReactor* reactor) {
 	if (applicationReactors.end() == std::find(applicationReactors.begin(), applicationReactors.end(), OdApplicationReactorPtr(reactor))) {
-		applicationReactors.push_back(reactor);
+		applicationReactors.emplace_back(reactor);
 	}
 }
 

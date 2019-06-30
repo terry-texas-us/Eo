@@ -65,7 +65,7 @@ protected:
 	bool m_ConsoleResponded {false};
 	int m_CommandActive {0};
 
-	class DataSource : COleDataSource {
+	class DataSource final : COleDataSource {
 		friend class AeSysDoc;
 		OdString m_TemporaryPath;
 	public:

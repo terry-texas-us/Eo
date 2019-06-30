@@ -2,52 +2,52 @@
 #include "AeSys.h"
 
 EoApOptions::EoApOptions() {
-	m_nTabsStyle = Grouped;
-	m_MdiTabInfo.m_tabLocation = CMFCTabCtrl::LOCATION_BOTTOM;
-	m_MdiTabInfo.m_style = CMFCTabCtrl::STYLE_3D_VS2005;
-	m_MdiTabInfo.m_bTabIcons = TRUE;
-	m_MdiTabInfo.m_bTabCloseButton = FALSE;
-	m_MdiTabInfo.m_bTabCustomTooltips = TRUE;
-	m_MdiTabInfo.m_bAutoColor = FALSE;
-	m_MdiTabInfo.m_bDocumentMenu = TRUE;
-	m_MdiTabInfo.m_bEnableTabSwap = TRUE;
-	m_MdiTabInfo.m_bFlatFrame = TRUE;
-	m_MdiTabInfo.m_bActiveTabCloseButton = TRUE;
-	m_MdiTabInfo.m_nTabBorderSize = 1;
-	m_TabsContextMenu = true;
-	m_DisableSetRedraw = true;
+	tabsStyle = kGrouped;
+	mdiTabInfo.m_tabLocation = CMFCTabCtrl::LOCATION_BOTTOM;
+	mdiTabInfo.m_style = CMFCTabCtrl::STYLE_3D_VS2005;
+	mdiTabInfo.m_bTabIcons = TRUE;
+	mdiTabInfo.m_bTabCloseButton = FALSE;
+	mdiTabInfo.m_bTabCustomTooltips = TRUE;
+	mdiTabInfo.m_bAutoColor = FALSE;
+	mdiTabInfo.m_bDocumentMenu = TRUE;
+	mdiTabInfo.m_bEnableTabSwap = TRUE;
+	mdiTabInfo.m_bFlatFrame = TRUE;
+	mdiTabInfo.m_bActiveTabCloseButton = TRUE;
+	mdiTabInfo.m_nTabBorderSize = 1;
+	tabsContextMenu = true;
+	disableSetRedraw = true;
 }
 
 void EoApOptions::Load() {
-	m_nTabsStyle = static_cast<TabsStyle>(theApp.GetInt(L"TabsStyle", Grouped));
-	m_MdiTabInfo.m_tabLocation = static_cast<CMFCTabCtrl::Location>(theApp.GetInt(L"TabLocation", CMFCTabCtrl::LOCATION_BOTTOM));
-	m_MdiTabInfo.m_style = static_cast<CMFCTabCtrl::Style>(theApp.GetInt(L"TabsAppearance", CMFCTabCtrl::STYLE_3D_VS2005));
-	m_MdiTabInfo.m_bTabIcons = theApp.GetInt(L"TabIcons", TRUE);
-	m_MdiTabInfo.m_bTabCloseButton = theApp.GetInt(L"TabCloseButton", FALSE);
-	m_MdiTabInfo.m_bTabCustomTooltips = theApp.GetInt(L"CustomTooltips", TRUE);
-	m_MdiTabInfo.m_bAutoColor = theApp.GetInt(L"AutoColor", FALSE);
-	m_MdiTabInfo.m_bDocumentMenu = theApp.GetInt(L"DocumentMenu", TRUE);
-	m_MdiTabInfo.m_bEnableTabSwap = theApp.GetInt(L"EnableTabSwap", TRUE);
-	m_MdiTabInfo.m_bFlatFrame = theApp.GetInt(L"FlatFrame", TRUE);
-	m_MdiTabInfo.m_bActiveTabCloseButton = theApp.GetInt(L"ActiveTabCloseButton", TRUE);
-	m_MdiTabInfo.m_nTabBorderSize = theApp.GetInt(L"TabBorderSize", 1);
-	m_TabsContextMenu = theApp.GetInt(L"TabsContextMenu", true);
-	m_DisableSetRedraw = theApp.GetInt(L"DisableSetRedraw", true);
+	tabsStyle = static_cast<TabsStyle>(theApp.GetInt(L"TabsStyle", kGrouped));
+	mdiTabInfo.m_tabLocation = static_cast<CMFCTabCtrl::Location>(theApp.GetInt(L"TabLocation", CMFCTabCtrl::LOCATION_BOTTOM));
+	mdiTabInfo.m_style = static_cast<CMFCTabCtrl::Style>(theApp.GetInt(L"TabsAppearance", CMFCTabCtrl::STYLE_3D_VS2005));
+	mdiTabInfo.m_bTabIcons = theApp.GetInt(L"TabIcons", TRUE);
+	mdiTabInfo.m_bTabCloseButton = theApp.GetInt(L"TabCloseButton", FALSE);
+	mdiTabInfo.m_bTabCustomTooltips = theApp.GetInt(L"CustomTooltips", TRUE);
+	mdiTabInfo.m_bAutoColor = theApp.GetInt(L"AutoColor", FALSE);
+	mdiTabInfo.m_bDocumentMenu = theApp.GetInt(L"DocumentMenu", TRUE);
+	mdiTabInfo.m_bEnableTabSwap = theApp.GetInt(L"EnableTabSwap", TRUE);
+	mdiTabInfo.m_bFlatFrame = theApp.GetInt(L"FlatFrame", TRUE);
+	mdiTabInfo.m_bActiveTabCloseButton = theApp.GetInt(L"ActiveTabCloseButton", TRUE);
+	mdiTabInfo.m_nTabBorderSize = theApp.GetInt(L"TabBorderSize", 1);
+	tabsContextMenu = theApp.GetInt(L"TabsContextMenu", true);
+	disableSetRedraw = theApp.GetInt(L"DisableSetRedraw", true);
 }
 
 void EoApOptions::Save() {
-	theApp.WriteInt(L"TabsStyle", m_nTabsStyle);
-	theApp.WriteInt(L"TabLocation", m_MdiTabInfo.m_tabLocation);
-	theApp.WriteInt(L"TabsAppearance", m_MdiTabInfo.m_style);
-	theApp.WriteInt(L"TabIcons", m_MdiTabInfo.m_bTabIcons);
-	theApp.WriteInt(L"TabCloseButton", m_MdiTabInfo.m_bTabCloseButton);
-	theApp.WriteInt(L"CustomTooltips", m_MdiTabInfo.m_bTabCustomTooltips);
-	theApp.WriteInt(L"AutoColor", m_MdiTabInfo.m_bAutoColor);
-	theApp.WriteInt(L"DocumentMenu", m_MdiTabInfo.m_bDocumentMenu);
-	theApp.WriteInt(L"EnableTabSwap", m_MdiTabInfo.m_bEnableTabSwap);
-	theApp.WriteInt(L"FlatFrame", m_MdiTabInfo.m_bFlatFrame);
-	theApp.WriteInt(L"ActiveTabCloseButton", m_MdiTabInfo.m_bActiveTabCloseButton);
-	theApp.WriteInt(L"TabBorderSize", m_MdiTabInfo.m_nTabBorderSize);
-	theApp.WriteInt(L"TabsContextMenu", m_TabsContextMenu);
-	theApp.WriteInt(L"DisableSetRedraw", m_DisableSetRedraw);
+	theApp.WriteInt(L"TabsStyle", tabsStyle);
+	theApp.WriteInt(L"TabLocation", mdiTabInfo.m_tabLocation);
+	theApp.WriteInt(L"TabsAppearance", mdiTabInfo.m_style);
+	theApp.WriteInt(L"TabIcons", mdiTabInfo.m_bTabIcons);
+	theApp.WriteInt(L"TabCloseButton", mdiTabInfo.m_bTabCloseButton);
+	theApp.WriteInt(L"CustomTooltips", mdiTabInfo.m_bTabCustomTooltips);
+	theApp.WriteInt(L"AutoColor", mdiTabInfo.m_bAutoColor);
+	theApp.WriteInt(L"DocumentMenu", mdiTabInfo.m_bDocumentMenu);
+	theApp.WriteInt(L"EnableTabSwap", mdiTabInfo.m_bEnableTabSwap);
+	theApp.WriteInt(L"FlatFrame", mdiTabInfo.m_bFlatFrame);
+	theApp.WriteInt(L"ActiveTabCloseButton", mdiTabInfo.m_bActiveTabCloseButton);
+	theApp.WriteInt(L"TabBorderSize", mdiTabInfo.m_nTabBorderSize);
+	theApp.WriteInt(L"TabsContextMenu", tabsContextMenu);
+	theApp.WriteInt(L"DisableSetRedraw", disableSetRedraw);
 }

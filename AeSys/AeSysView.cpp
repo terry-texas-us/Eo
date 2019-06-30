@@ -41,7 +41,6 @@ struct EoRectangle {
 
 	T Height() { return top - bottom; }
 };
-
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -1068,7 +1067,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		OdGiContextForDbDatabase* m_GiContext;
 		bool m_PreviousGsModelState;
 		ODCOLORREF m_PreviousBackgroundColor;
-	  public:
+	public:
 		explicit KeepPreviousGiContextParameters(OdGiContextForDbDatabase* giContext)
 			: m_GiContext(giContext) {
 			m_PreviousGsModelState = giContext->useGsModel();

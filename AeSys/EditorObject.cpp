@@ -24,23 +24,23 @@
 #include "EditorObject.h"
 
 class ViewInteractivityMode {
-	bool m_enabled;
+	bool m_Enabled;
 	OdGsView* m_View;
 public:
 	ViewInteractivityMode(OdRxVariantValue enable, OdRxVariantValue frameRate, OdGsView* view) {
-		m_enabled = false;
+		m_Enabled = false;
 		m_View = view;
 		if (!enable.isNull()) {
-			m_enabled = static_cast<bool>(enable);
-			if (m_enabled && !frameRate.isNull()) {
-				const auto rate {frameRate.get()->getDouble()};
-				view->beginInteractivity(rate);
+			m_Enabled = static_cast<bool>(enable);
+			if (m_Enabled && !frameRate.isNull()) {
+				const auto Rate {frameRate.get()->getDouble()};
+				view->beginInteractivity(Rate);
 			}
 		}
 	}
 
 	~ViewInteractivityMode() {
-		if (m_enabled) { m_View->endInteractivity(); }
+		if (m_Enabled) { m_View->endInteractivity(); }
 	}
 };
 
@@ -714,7 +714,7 @@ public:
 	}
 };
 
-class RTOrbitTracker : public OdEdPointTracker {
+class RtOrbitTracker : public OdEdPointTracker {
 	OdGsView* m_View {nullptr};
 	OdGePoint3d m_pt;
 	OdGiDrawablePtr m_Drawable;
@@ -725,27 +725,27 @@ class RTOrbitTracker : public OdEdPointTracker {
 	OdGePoint3d m_ViewCenter;
 	OdGeMatrix3d m_InitialViewingMatrixInverted;
 	double m_D {0.0}; // diameter of orbit control in projected coordinates
-	OdGsModelPtr m_pModel;
+	OdGsModelPtr m_Model;
 
 	enum Axis {
 		kHorizontal,
 		kVertical,
 		kPerpDir, // orbit around perpendicular to mouse direction
 		kEye,
-	} m_axis;
+	} m_Axis {kHorizontal};
 
-	void viewportDcCorners(OdGePoint2d& lower_left, OdGePoint2d& upper_right) const {
+	void ViewportDcCorners(OdGePoint2d& lowerLeft, OdGePoint2d& upperRight) const {
 		const auto Target {m_View->viewingMatrix() * m_View->target()};
 		const auto HalfFieldWidth {m_View->fieldWidth() / 2.0};
 		const auto HalfFieldHeight {m_View->fieldHeight() / 2.0};
-		lower_left.x = Target.x - HalfFieldWidth;
-		lower_left.y = Target.y - HalfFieldHeight;
-		upper_right.x = Target.x + HalfFieldWidth;
-		upper_right.y = Target.y + HalfFieldHeight;
+		lowerLeft.x = Target.x - HalfFieldWidth;
+		lowerLeft.y = Target.y - HalfFieldHeight;
+		upperRight.x = Target.x + HalfFieldWidth;
+		upperRight.y = Target.y + HalfFieldHeight;
 	}
 
 public:
-	RTOrbitTracker() = default;
+	RtOrbitTracker() = default;
 
 	void Reset() noexcept { m_View = nullptr; }
 
@@ -761,7 +761,7 @@ public:
 		m_InitialViewingMatrixInverted.invert();
 		OdGePoint3d LowerLeftPoint;
 		OdGePoint2d UpperRightPoint;
-		viewportDcCorners(reinterpret_cast<OdGePoint2d&>(LowerLeftPoint), UpperRightPoint);
+		ViewportDcCorners(reinterpret_cast<OdGePoint2d&>(LowerLeftPoint), UpperRightPoint);
 		UpperRightPoint.x -= LowerLeftPoint.x;
 		UpperRightPoint.y -= LowerLeftPoint.y;
 		const auto r {odmin(UpperRightPoint.x, UpperRightPoint.y) / 9. * 7. / 2.};
@@ -770,28 +770,28 @@ public:
 		const auto r2sqrd {r * r / 400.};
 		LowerLeftPoint.y += r;
 		if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
-			m_axis = kHorizontal;
+			m_Axis = kHorizontal;
 		} else {
 			LowerLeftPoint.y -= r;
 			LowerLeftPoint.y -= r;
 			if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
-				m_axis = kHorizontal;
+				m_Axis = kHorizontal;
 			} else {
 				LowerLeftPoint.y += r;
 				LowerLeftPoint.x += r;
 				if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
-					m_axis = kVertical;
+					m_Axis = kVertical;
 				} else {
 					LowerLeftPoint.x -= r;
 					LowerLeftPoint.x -= r;
 					if ((LowerLeftPoint - m_pt).lengthSqrd() <= r2sqrd) {
-						m_axis = kVertical;
+						m_Axis = kVertical;
 					} else {
 						LowerLeftPoint.x += r;
 						if ((LowerLeftPoint - m_pt).lengthSqrd() <= r * r) {
-							m_axis = kPerpDir;
+							m_Axis = kPerpDir;
 						} else {
-							m_axis = kEye;
+							m_Axis = kEye;
 						}
 					}
 				}
@@ -825,9 +825,9 @@ public:
 	double Angle(const OdGePoint3d& value) const {
 		const auto Point {m_View->viewingMatrix() * value};
 		auto Distance {0.0};
-		if (m_axis == kHorizontal) {
+		if (m_Axis == kHorizontal) {
 			Distance = Point.y - m_pt.y;
-		} else if (m_axis == kVertical) {
+		} else if (m_Axis == kVertical) {
 			Distance = Point.x - m_pt.x;
 		}
 		return Distance * OdaPI / m_D;
@@ -849,7 +849,7 @@ public:
 	void setValue(const OdGePoint3d& value) override {
 		if (m_View) {
 			OdGeMatrix3d x;
-			switch (m_axis) {
+			switch (m_Axis) {
 				case kHorizontal:
 					x.setToRotation(-Angle(value), m_X, m_ViewCenter);
 					break;
@@ -884,17 +884,17 @@ public:
 
 	int addDrawables(OdGsView* pView) override {
 		m_Drawable = OdRxObjectImpl<OrbitCtrl>::createObject();
-		if (m_pModel.isNull()) {
-			m_pModel = pView->device()->createModel();
-			if (!m_pModel.isNull()) {
-				m_pModel->setRenderType(OdGsModel::kDirect); // Skip Z-buffer for 2d drawables.
-				m_pModel->setEnableViewExtentsCalculation(false); // Skip extents calculation.
-				m_pModel->setRenderModeOverride(OdGsView::k2DOptimized); // Setup 2dWireframe mode for all underlying geometry.
+		if (m_Model.isNull()) {
+			m_Model = pView->device()->createModel();
+			if (!m_Model.isNull()) {
+				m_Model->setRenderType(OdGsModel::kDirect); // Skip Z-buffer for 2d drawables.
+				m_Model->setEnableViewExtentsCalculation(false); // Skip extents calculation.
+				m_Model->setRenderModeOverride(OdGsView::k2DOptimized); // Setup 2dWireframe mode for all underlying geometry.
 				const auto visualStyleId {GraphTrackerBase::getVisualStyleOverride(pView->userGiContext()->database())};
-				if (visualStyleId) m_pModel->setVisualStyle(visualStyleId); // 2dWireframe visual style.
+				if (visualStyleId) m_Model->setVisualStyle(visualStyleId); // 2dWireframe visual style.
 			}
 		}
-		pView->add(m_Drawable, m_pModel.get());
+		pView->add(m_Drawable, m_Model.get());
 		return 1;
 	}
 
@@ -924,7 +924,7 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 	const auto InteractiveMode {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveMode"))};
 	const auto InteractiveFrameRate {static_cast<OdRxVariantValue>(edCommandContext->arbitraryData(L"Bitmap InteractiveFrameRate"))};
 	ViewInteractivityMode mode(InteractiveMode, InteractiveFrameRate, View);
-	OdStaticRxObject<RTOrbitTracker> OrbitTracker;
+	OdStaticRxObject<RtOrbitTracker> OrbitTracker;
 	for (;;) {
 		try {
 			OrbitTracker.Initialize(View, UserIO->getPoint(L"Press ESC or ENTER to exit.", OdEd::kInpThrowEmpty | OdEd::kGptNoUCS | OdEd::kGptNoOSnap | OdEd::kGptBeginDrag, nullptr, L"", &OrbitTracker));
@@ -938,12 +938,12 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 
 void OdExEditorObject::TurnOrbitOn(const bool orbitOn) {
 	orbitOn ? (m_flags |= kOrbitOn) : m_flags &= ~kOrbitOn;
-	SetTracker(orbitOn ? OdRxObjectImpl<RTOrbitTracker>::createObject().get() : nullptr);
+	SetTracker(orbitOn ? OdRxObjectImpl<RtOrbitTracker>::createObject().get() : nullptr);
 }
 
 bool OdExEditorObject::OnOrbitBeginDrag(const int x, const int y) {
 	if (IsOrbitOn()) {
-		dynamic_cast<RTOrbitTracker*>(m_InputTracker.get())->Initialize(ActiveView(), ToEyeToWorld(x, y));
+		dynamic_cast<RtOrbitTracker*>(m_InputTracker.get())->Initialize(ActiveView(), ToEyeToWorld(x, y));
 		return true;
 	}
 	return false;
@@ -951,7 +951,7 @@ bool OdExEditorObject::OnOrbitBeginDrag(const int x, const int y) {
 
 bool OdExEditorObject::OnOrbitEndDrag(int /*x*/, int /*y*/) {
 	if (IsOrbitOn()) {
-		dynamic_cast<RTOrbitTracker*>(m_InputTracker.get())->Reset();
+		dynamic_cast<RtOrbitTracker*>(m_InputTracker.get())->Reset();
 		return true;
 	}
 	return false;

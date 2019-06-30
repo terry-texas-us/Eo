@@ -1,15 +1,12 @@
 #pragma once
-class EoApOptions {
-public:
+struct EoApOptions {
 	EoApOptions();
-	~EoApOptions() = default;
 
-	enum TabsStyle { None, Standard, Grouped };
-
-	TabsStyle m_nTabsStyle;
-	CMDITabInfo m_MdiTabInfo;
-	bool m_TabsContextMenu;
-	bool m_DisableSetRedraw;
+	enum TabsStyle { kNone, kStandard, kGrouped };
+	TabsStyle tabsStyle;
+	CMDITabInfo mdiTabInfo;
+	bool tabsContextMenu;
+	bool disableSetRedraw;
 
 	void Load();
 	void Save();
