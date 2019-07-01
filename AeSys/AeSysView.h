@@ -20,13 +20,11 @@
 class AeSysDoc;
 class EoDbText;
 
-class AeSysView 
-	: public CView
-	, public OdGiContextForDbDatabase
-	, OdEdBaseIO
-	, OdExEditorObject::OleDragCallback {
+class AeSysView : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, OdExEditorObject::OleDragCallback {
 	friend class SaveViewParameters;
+
 	void DestroyDevice();
+
 	COleDropTarget m_DropTarget;
 	OdString m_Prompt;
 	ExEdInputParser m_InputParser;
@@ -54,8 +52,11 @@ class AeSysView
 
 	Response m_Response;
 	int m_inpOptions {0};
+
 	void exeCmd(const OdString& commandName);
+
 	bool BeginDragCallback(const OdGePoint3d& point) override;
+
 protected:
 	using CView::operator new;
 	using CView::operator delete;
@@ -65,27 +66,40 @@ private:
 	bool m_bPlotPlotstyle {false};
 	bool m_bShowPlotstyle {false};
 	bool m_bPlotGrayscale {false};
+
 	PStyleType plotStyleType() const override;
+
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
 
 	void plotStyle(int /*penNumber*/, OdPsPlotStyleData& /*plotStyleData*/) const noexcept override {
 	} // OdGiContextForDbDatabase (to suppress C4266 warning)
 protected:
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
+
 	OdGsLayoutHelperPtr m_LayoutHelper;
 	OdGsLayoutHelperPtr m_pPrinterDevice;
 	HDC m_hWindowDC {nullptr};
 	int m_pagingCounter {0};
+
 	CRect ViewportRectangle() const;
+
 	static CRect ViewRectangle(OdGsView* view);
+
 	AeSysView() noexcept; // protected constructor used by dynamic creation
 	void PreparePlotStyles(const OdDbLayout* layout = nullptr, bool forceReload = false);
+
 	unsigned long glyphSize(GlyphType glyphType) const override;
+
 	void fillContextualColors(OdGiContextualColorsImpl* pCtxColors) override;
+
 DECLARE_DYNCREATE(AeSysView)
+
 	OdGsView* GetLayoutActiveView();
+
 	const OdGsView* GetLayoutActiveView() const;
+
 	OdGsView* GetLayoutActiveTopView();
+
 	const OdGsView* GetLayoutActiveTopView() const;
 
 	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
@@ -95,8 +109,11 @@ DECLARE_DYNCREATE(AeSysView)
 	void recreateDevice() { CreateDevice(true); }
 
 	void Track(OdEdInputTracker* inputTracker);
+
 	void setCursor(HCURSOR cursor) noexcept;
+
 	HCURSOR Cursor() const noexcept;
+
 	void SetViewportBorderProperties();
 	// <command_view>
 	bool CanClose() const;
@@ -108,24 +125,39 @@ DECLARE_DYNCREATE(AeSysView)
 	int inpOptions() const noexcept { return m_inpOptions; }
 
 	void Respond(const OdString& string);
+
 	OdEdCommandPtr command(const OdString& commandName);
+
 	OdExEditorObject& EditorObject() noexcept;
+
 	const OdExEditorObject& EditorObject() const noexcept;
+
 	bool IsModelSpaceView() const;
+
 	OdIntPtr drawableFilterFunctionId(OdDbStub* viewportId) const override; // OdGiContextForDbDatabase
 	unsigned long drawableFilterFunction(OdIntPtr functionId, const OdGiDrawable* drawable, unsigned long flags) override; // OdGiContextForDbDatabase
 	// </command_view>
 	void OnInitialUpdate() override;
+
 protected:
 	void OnDraw(CDC* deviceContext) override;
+
 	void OnPrint(CDC* deviceContext, CPrintInfo* printInformation) override;
+
 	void OnEndPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+
 	void OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation) override;
+
 	BOOL OnPreparePrinting(CPrintInfo* printInformation) override;
+
 	void OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) override;
+
 	void OnActivateFrame(unsigned state, CFrameWnd* deactivateFrame) override;
+
 	void OnActivateView(BOOL activate, CView* activateView, CView* deactivateView) override;
+
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
+
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
 	void addRef() noexcept override {
@@ -135,34 +167,30 @@ protected:
 	}
 
 	AeSysDoc* GetDocument() const; // hides non-virtual function of parent
-	~AeSysView();
 #ifdef _DEBUG
 	void AssertValid() const override;
+
 	void Dump(CDumpContext& dc) const override;
 #endif
 
 	//	void adjustDevice(OdGsDevice* device);
 	void CreateDevice(bool recreate = false);
+
 	bool regenAbort() const noexcept override;
+
 public:
 	unsigned long getKeyState() noexcept override;
+
 	OdGePoint3d getPoint(const OdString& prompt, int options, OdEdPointTracker* tracker) override;
+
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
+
 	void putString(const OdString& string) override;
+
 	bool UpdateStringTrackerCursor();
 
 	enum StateInformationItem {
-		kWorkCount = 0x0001,
-		kTrapCount = 0x0002,
-		kBothCounts = kWorkCount | kTrapCount,
-		kPen = 0x0004,
-		kLine = 0x0008,
-		kTextHeight = 0x0010,
-		kWndRatio = 0x0020,
-		kScale = 0x0040,
-		kDimLen = 0x0080,
-		kDimAng = 0x0100,
-		kAll = kBothCounts | kPen | kLine | kTextHeight | kWndRatio | kScale | kDimLen | kDimAng
+		kWorkCount = 0x0001, kTrapCount = 0x0002, kBothCounts = kWorkCount | kTrapCount, kPen = 0x0004, kLine = 0x0008, kTextHeight = 0x0010, kWndRatio = 0x0020, kScale = 0x0040, kDimLen = 0x0080, kDimAng = 0x0100, kAll = kBothCounts | kPen | kLine | kTextHeight | kWndRatio | kScale | kDimLen | kDimAng
 	};
 
 	enum RubberBandingTypes { kNone, kLines, kRectangles };
@@ -234,19 +262,31 @@ private:
 	bool m_GridSnap {false};
 public:
 	double AxisConstraintInfluenceAngle() const noexcept;
+
 	void SetAxisConstraintInfluenceAngle(double angle) noexcept;
+
 	double AxisConstraintOffsetAngle() const noexcept;
+
 	void SetAxisConstraintOffsetAngle(double angle) noexcept;
+
 	void InitializeConstraints() noexcept;
 	/// <summary>Generates a point display centered about the user origin in one or more of the three orthogonal planes for the current user grid.</summary>
 	void DisplayGrid(CDC* deviceContext);
+
 	OdGePoint3d GridOrigin() const noexcept;
+
 	void SetGridOrigin(const OdGePoint3d& origin) noexcept;
+
 	void GetGridLineSpacing(double& x, double& y, double& z) noexcept;
+
 	void SetGridLineSpacing(double x, double y, double z) noexcept;
+
 	void GetGridPointSpacing(double& x, double& y, double& z) noexcept;
+
 	void SetGridPointSpacing(double x, double y, double z) noexcept;
+
 	void GetGridSnapSpacing(double& x, double& y, double& z) noexcept;
+
 	void SetGridSnapSpacing(double x, double y, double z) noexcept;
 	/// <summary>Determines the nearest point on system constraining grid.</summary>
 	OdGePoint3d SnapPointToGrid(const OdGePoint3d& point) noexcept;
@@ -254,13 +294,21 @@ public:
 	/// <remarks>Offset angle only support about z-axis</remarks>
 	/// <returns>Point after snap</returns>
 	OdGePoint3d SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
+
 	bool DisplayGridWithLines() const noexcept;
+
 	void EnableDisplayGridWithLines(bool display) noexcept;
+
 	void EnableDisplayGridWithPoints(bool display) noexcept;
+
 	bool DisplayGridWithPoints() const noexcept;
+
 	bool GridSnap() const noexcept;
+
 	void EnableGridSnap(bool snap) noexcept;
+
 	void ZoomWindow(OdGePoint3d point1, OdGePoint3d point2);
+
 	void SetRenderMode(OdGsView::RenderMode renderMode);
 
 	OdGsView::RenderMode RenderMode() const noexcept {
@@ -268,7 +316,9 @@ public:
 	}
 
 	const ODCOLORREF* CurrentPalette() const;
+
 	OdDbDatabasePtr Database() const;
+
 protected: // Windows messages
 	void OnContextMenu(CWnd*, CPoint point); // hides non-virtual function of parent
 public: // Input message handler member functions
@@ -285,43 +335,71 @@ public: // Input message handler member functions
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
 	void OnDestroy(); // hides non-virtual function of parent
 	void OnDrag();
+
 	void OnUpdateDrag(CCmdUI* commandUserInterface);
+
 	BOOL OnEraseBkgnd(CDC* deviceContext); // hides non-virtual function of parent
 	void OnKillFocus(CWnd* newWindow); // hides non-virtual function of parent
 	void OnPaint(); // hides non-virtual function of parent
 	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 	void OnViewStateInformation();
+
 	void OnUpdateViewStateInformation(CCmdUI* commandUserInterface);
+
 	static AeSysView* GetActiveView();
+
 	void VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText);
+
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
 	void UpdateStateInformation(StateInformationItem item);
+
 	void RubberBandingDisable();
+
 	void RubberBandingStartAtEnable(const OdGePoint3d& point, RubberBandingTypes type);
+
 	OdGePoint3d GetCursorPosition();
+
 	OdGePoint3d GetWorldCoordinates(CPoint point);
 	/// <summary> Positions cursor at targeted position.</summary>
 	void SetCursorPosition(const OdGePoint3d& point);
+
 	void SetModeCursor(unsigned mode);
+
 	std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
+
 	std::pair<EoDbGroup*, EoDbLine*> SelectLineUsingPoint(const OdGePoint3d& point);
+
 	std::pair<EoDbGroup*, EoDbPoint*> SelectPointUsingPoint(const OdGePoint3d& point, double tolerance, short pointColor);
+
 	EoDbGroup* SelSegAndPrimAtCtrlPt(const EoGePoint4d& point);
+
 	EoDbText* SelectTextUsingPoint(const OdGePoint3d& point);
+
 	EoDbGroup* SelectGroupAndPrimitive(const OdGePoint3d& point);
+
 	OdGePoint3d& DetPt() noexcept;
+
 	EoDbPrimitive*& EngagedPrimitive() noexcept;
+
 	EoDbGroup*& EngagedGroup() noexcept;
 	/// <summary>Set a pixel.</summary>
 	void DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point);
+
 	bool GroupIsEngaged() const noexcept;
+
 	double SelectApertureSize() const noexcept;
+
 	void BreakAllPolylines();
+
 	void BreakAllSegRefs();
+
 	bool PenWidthsOn() noexcept;
+
 	double WorldScale() const noexcept;
+
 	void SetWorldScale(double scale);
+
 	void ResetView() noexcept;
 
 	/// <summary> Deletes last group detectable in the this view.</summary>
@@ -347,57 +425,103 @@ public: // Input message handler member functions
 	EoDbGroup* GetPreviousGroup(POSITION& position) { return m_VisibleGroupList.GetPrev(position); }
 	/// </Section>
 	void BackgroundImageDisplay(CDC* deviceContext);
+
 	bool ViewTrueTypeFonts() noexcept;
+
 	void DisplayOdometer();
 	/// <summary> Streams a sequence of characters as WM_KEYDOWN or WM_CHAR window messages.</summary>
 	/// <remarks> This is a legacy feature.</remarks>
 	void DoCustomMouseClick(const CString& characters);
+
 	void Orbit(double x, double y);
+
 	void Dolly();
+
 	void DollyAndZoom(double zoomFactor);
+
 	void CopyActiveModelViewToPreviousModelView() noexcept;
+
 	EoGsViewTransform PreviousModelView();
+
 	void ExchangeActiveAndPreviousModelViews();
+
 	EoGeMatrix3d ModelToWorldTransform() const noexcept;
+
 	void PushModelTransform(const EoGeMatrix3d& transformation);
+
 	void PopModelTransform();
+
 	void ModelTransformPoint(OdGePoint3d& point);
+
 	void ModelViewGetViewport(EoGsViewport& viewport) noexcept;
+
 	OdGeVector3d CameraDirection() const;
+
 	EoGeMatrix3d ModelViewMatrix() const noexcept;
+
 	OdGePoint3d CameraTarget() const noexcept;
+
 	double ZoomFactor() const noexcept;
+
 	OdGeVector3d ViewUp() const noexcept;
+
 	void ModelViewInitialize();
+
 	void PopViewTransform();
+
 	void PushViewTransform();
+
 	void ModelViewTransformPoint(EoGePoint4d& point);
+
 	void ModelViewTransformPoints(EoGePoint4dArray& points);
+
 	void ModelViewTransformPoints(int numberOfPoints, EoGePoint4d* points);
+
 	void ModelViewTransformVector(OdGeVector3d& vector);
+
 	void SetProjectionPlaneField(double fieldWidth, double fieldHeight);
+
 	void SetViewTransform(EoGsViewTransform& viewTransform);
+
 	void SetCameraPosition(const OdGeVector3d& direction);
+
 	void SetCameraTarget(const OdGePoint3d& target);
+
 	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& upVector, double fieldWidth, double fieldHeight);
+
 	void SetViewWindow(double uMin, double vMin, double uMax, double vMax);
 
 	/// <summary>Determines the number of pages for 1 to 1 print</summary>
 	unsigned NumPages(CDC* deviceContext, double scaleFactor, unsigned& horizontalPages, unsigned& verticalPages);
+
 	double OverviewUExt() const noexcept;
+
 	double OverviewUMin() const noexcept;
+
 	double OverviewVExt() const noexcept;
+
 	double OverviewVMin() const noexcept;
+
 	CPoint DoViewportProjection(const EoGePoint4d& point) const noexcept;
+
 	void DoViewportProjection(CPoint* pnt, int iPts, EoGePoint4d* pt) const noexcept;
+
 	void DoViewportProjection(CPoint* pnt, EoGePoint4dArray& points) const;
+
 	OdGePoint3d DoViewportProjectionInverse(const OdGePoint3d& point) const noexcept;
+
 	double ViewportHeightInInches() const noexcept;
+
 	double ViewportWidthInInches() const noexcept;
+
 	void ViewportPopActive();
+
 	void ViewportPushActive();
+
 	void SetViewportSize(int width, int height) noexcept;
+
 	void SetDeviceHeightInInches(double height) noexcept;
+
 	void SetDeviceWidthInInches(double width) noexcept;
 	
 	// Group and Primitive operations
@@ -406,22 +530,36 @@ public: // Input message handler member functions
 	OdGePoint3d m_SubModeEditBeginPoint;
 	OdGePoint3d m_SubModeEditEndPoint;
 	EoGeMatrix3d m_tmEditSeg;
+
 	void InitializeGroupAndPrimitiveEdit();
+
 	void DoEditGroupCopy();
+
 	void DoEditGroupEscape();
+
 	void DoEditGroupTransform(unsigned short operation);
+
 	void DoEditPrimitiveTransform(unsigned short operation);
+
 	void DoEditPrimitiveCopy();
+
 	void DoEditPrimitiveEscape();
+
 	void PreviewPrimitiveEdit();
+
 	void PreviewGroupEdit();
+
 	OdGePoint3d m_MendPrimitiveBegin;
 	unsigned long m_MendPrimitiveVertexIndex {0};
 	EoDbPrimitive* m_PrimitiveToMend {nullptr};
 	EoDbPrimitive* m_PrimitiveToMendCopy {nullptr};
+
 	void PreviewMendPrimitive();
+
 	void MendPrimitiveEscape();
+
 	void MendPrimitiveReturn();
+
 private: // Annotate and Dimension interface
 	double m_GapSpaceFactor {0.5}; // Edge space factor 50 percent of character height
 	double m_CircleRadius {0.03125};
@@ -432,32 +570,56 @@ private: // Annotate and Dimension interface
 	CString m_DefaultText;
 public:
 	double BubbleRadius() const noexcept;
+
 	void SetBubbleRadius(double radius) noexcept;
+
 	double CircleRadius() const noexcept;
+
 	void SetCircleRadius(double radius) noexcept;
+
 	CString DefaultText() const;
+
 	void SetDefaultText(const CString& text);
+
 	double EndItemSize() const noexcept;
+
 	void SetEndItemSize(double size) noexcept;
+
 	int EndItemType() noexcept;
+
 	void SetEndItemType(int type) noexcept;
+
 	double GapSpaceFactor() const noexcept;
+
 	void SetGapSpaceFactor(double factor) noexcept;
+
 	int NumberOfSides() const noexcept;
+
 	void SetNumberOfSides(int number) noexcept;
 	
 	// Annotate mode interface
 	void DoAnnotateModeMouseMove();
+
 	void OnAnnotateModeOptions();
+
 	void OnAnnotateModeLine();
+
 	void OnAnnotateModeArrow();
+
 	void OnAnnotateModeBubble();
+
 	void OnAnnotateModeHook();
+
 	void OnAnnotateModeUnderline();
+
 	void OnAnnotateModeBox();
+
 	void OnAnnotateModeCutIn();
+
 	void OnAnnotateModeConstructionLine();
+
 	void OnAnnotateModeReturn() noexcept;
+
 	void OnAnnotateModeEscape();
 
 	/// <summary>Generates arrow heads for annotation mode.</summary>
@@ -467,22 +629,36 @@ public:
 	/// <param name="endPoint">head of line segment defining arrow head</param>
 	/// <param name="group">group where primitives are placed</param>
 	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group);
+
 	bool CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const;
 	
 	// Draw mode interface
 	void DoDrawModeMouseMove();
+
 	void OnDrawModeOptions();
+
 	void OnDrawModePoint();
+
 	void OnDrawModeLine();
+
 	void OnDrawModePolygon();
+
 	void OnDrawModeQuad();
+
 	void OnDrawModeArc();
+
 	void OnDrawModeBspline();
+
 	void OnDrawModeCircle();
+
 	void OnDrawModeEllipse();
+
 	void OnDrawModeInsert();
+
 	void OnDrawModeReturn();
+
 	void OnDrawModeEscape();
+
 private: // Draw2 mode interface
 	double m_CenterLineEccentricity {0.5}; // Center line eccentricity for parallel lines
 	bool m_ContinueCorner {false};
@@ -498,13 +674,19 @@ private: // Draw2 mode interface
 	EoDbLine* m_EndSectionLine {nullptr};
 public:
 	void DoDraw2ModeMouseMove();
+
 	void OnDraw2ModeOptions();
 	/// <summary>Searches for an existing wall side or endcap</summary>
 	void OnDraw2ModeJoin();
+
 	void OnDraw2ModeWall();
+
 	void OnDraw2ModeReturn();
+
 	void OnDraw2ModeEscape();
+
 	bool CleanPreviousLines();
+
 	bool StartAssemblyFromLine();
 
 	enum EJust { kLeft = -1, kCenter, kRight };
@@ -512,44 +694,55 @@ public:
 	enum EElbow { kMitered, kRadial };
 
 	void OnDimensionModeOptions();
+
 	void OnDimensionModeArrow();
+
 	void OnDimensionModeLine();
+
 	void OnDimensionModeDLine();
+
 	void OnDimensionModeDLine2();
+
 	void OnDimensionModeExten();
+
 	void OnDimensionModeRadius();
+
 	void OnDimensionModeDiameter();
+
 	void OnDimensionModeAngle();
+
 	void OnDimensionModeConvert();
+
 	void OnDimensionModeReturn();
+
 	void OnDimensionModeEscape();
 	
 	// Fixup mode interface
 	enum CornerFlags {
-		kTrimPreviousToIntersection = 0x001,
-		kTrimCurrentToIntersection = 0x002,
-		kTrimPreviousToSize = 0x004,
-		kTrimCurrentToSize = 0x008,
-		kCorner = 0x100,
-		kChamfer = 0x200,
-		kFillet = 0x400,
-		kCircle = 0x800,
-		kTrimBothToIntersection = kTrimPreviousToIntersection | kTrimCurrentToIntersection,
-		kTrimPrevious = kTrimPreviousToIntersection | kTrimPreviousToSize,
-		kTrimCurrent = kTrimCurrentToIntersection | kTrimCurrentToSize,
+		kTrimPreviousToIntersection = 0x001, kTrimCurrentToIntersection = 0x002, kTrimPreviousToSize = 0x004, kTrimCurrentToSize = 0x008, kCorner = 0x100, kChamfer = 0x200, kFillet = 0x400, kCircle = 0x800, kTrimBothToIntersection = kTrimPreviousToIntersection | kTrimCurrentToIntersection, kTrimPrevious = kTrimPreviousToIntersection | kTrimPreviousToSize, kTrimCurrent = kTrimCurrentToIntersection | kTrimCurrentToSize,
 	};
 
 	double m_AxisTolerance {2.0};
 	double m_CornerSize {0.25};
+
 	void OnFixupModeOptions();
+
 	void OnFixupModeReference();
+
 	void OnFixupModeMend();
+
 	void OnFixupModeChamfer();
+
 	void OnFixupModeFillet();
+
 	void OnFixupModeSquare();
+
 	void OnFixupModeParallel();
+
 	void OnFixupModeReturn();
+
 	void OnFixupModeEscape();
+
 	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, int cornerType = kCorner | kTrimBothToIntersection);
 
 	/// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
@@ -562,20 +755,33 @@ public:
 	
 	// Nodal mode interface
 	void DoNodalModeMouseMove();
+
 	void OnNodalModeAddRemove();
+
 	void OnNodalModePoint();
+
 	void OnNodalModeLine();
+
 	void OnNodalModeArea();
 	/// <summary>Translate all control points identified</summary>
 	void OnNodalModeMove();
+
 	void OnNodalModeCopy();
+
 	void OnNodalModeToLine();
+
 	void OnNodalModeToPolygon();
+
 	void OnNodalModeEmpty();
+
 	void OnNodalModeEngage();
+
 	void OnNodalModeReturn();
+
 	void OnNodalModeEscape();
+
 	void ConstructPreviewGroup();
+
 	void ConstructPreviewGroupForNodalGroups();
 	
 	// Cut mode interface
@@ -585,41 +791,67 @@ public:
 	/// <summary>Cuts all primitives which intersect with line defined by two points.</summary>
 	// Notes: Colinear fill area edges are not considered to intersect.
 	void OnCutModeSlice();
+
 	void OnCutModeField();
 	/// <summary>Cuts a primitive at two points and puts non-null middle piece in trap.</summary>
 	// Notes:	Accuracy of arc section cuts diminishes with high
 	//			eccentricities. if two cut points are coincident
 	//			nothing happens.
 	void OnCutModeClip();
+
 	void OnCutModeDivide() noexcept;
+
 	void OnCutModeReturn();
+
 	void OnCutModeEscape();
 	
 	// Edit mode interface
 	OdGeScale3d m_MirrorScaleFactors;
 	OdGeVector3d m_EditModeRotationAngles;
 	OdGeScale3d m_ScaleFactors;
+
 	OdGeVector3d EditModeRotationAngles() const noexcept;
+
 	EoGeMatrix3d EditModeInvertedRotationMatrix() const;
+
 	OdGeScale3d EditModeMirrorScaleFactors() const noexcept;
+
 	EoGeMatrix3d EditModeRotationMatrix() const;
+
 	OdGeScale3d EditModeScaleFactors() const noexcept;
+
 	void SetEditModeScaleFactors(double sx, double sy, double sz) noexcept;
+
 	void SetEditModeRotationAngles(double x, double y, double z) noexcept;
+
 	void SetEditModeMirrorScaleFactors(double sx, double sy, double sz) noexcept;
+
 	void OnEditModeOptions();
+
 	void OnEditModePivot();
+
 	void OnEditModeRotccw();
+
 	void OnEditModeRotcw();
+
 	void OnEditModeMove();
+
 	void OnEditModeCopy();
+
 	void OnEditModeFlip();
+
 	void OnEditModeReduce();
+
 	void OnEditModeEnlarge();
+
 	void OnEditModeReturn() noexcept;
+
 	void OnEditModeEscape();
+
 	void OnInsertBlockReference();
+
 	void OnTrapModeRemoveAdd();
+
 	void OnTrapModePoint();
 	/// <summary>Identifies groups which intersect with a line and adds them to the trap.</summary>
 	void OnTrapModeStitch();
@@ -628,11 +860,17 @@ public:
 	void OnTrapModeField();
 	/// <summary>Adds last detectable group which is not already in trap to trap</summary>
 	void OnTrapModeLast();
+
 	void OnTrapModeEngage();
+
 	void OnTrapModeMenu();
+
 	void OnTrapModeModify();
+
 	void OnTrapModeEscape();
+
 	void OnTrapRemoveModeRemoveAdd();
+
 	void OnTrapRemoveModePoint();
 	/// <summary>Identifies groups which intersect with a line and removes them from the trap.</summary>
 	void OnTrapRemoveModeStitch();
@@ -641,11 +879,17 @@ public:
 	// Parameters:	pt1 	one corner of the area
 	//				pt2 	other corner of the area
 	void OnTrapRemoveModeField();
+
 	void OnTrapRemoveModeLast();
+
 	void OnTrapRemoveModeEngage() noexcept;
+
 	void OnTrapRemoveModeMenu();
+
 	void OnTrapRemoveModeModify();
+
 	void OnTrapRemoveModeEscape();
+
 private: // Low Pressure Duct (rectangular) interface
 	double m_InsideRadiusFactor {1.5};
 	double m_DuctSeamSize {0.03125};
@@ -665,16 +909,27 @@ private: // Low Pressure Duct (rectangular) interface
 	Section m_CurrentSection {0.125, 0.0625, Section::mc_Rectangular};
 public:
 	void DoDuctModeMouseMove();
+
 	void OnLpdModeOptions();
+
 	void OnLpdModeJoin();
+
 	void OnLpdModeDuct();
+
 	void OnLpdModeTransition();
+
 	void OnLpdModeTap();
+
 	void OnLpdModeEll();
+
 	void OnLpdModeTee();
+
 	void OnLpdModeUpDown();
+
 	void OnLpdModeSize();
+
 	void OnLpdModeReturn();
+
 	void OnLpdModeEscape();
 
 	/// <summary>
@@ -762,6 +1017,7 @@ public:
 	/// <param name="currentSection">width and depth of end section</param>
 	/// <returns>length of the transition</returns>
 	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept;
+
 private: // Pipe mode interface
 	int m_CurrentPipeSymbolIndex {0};
 	double m_PipeTicSize {0.03125};
@@ -771,20 +1027,32 @@ private: // Pipe mode interface
 	void GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint, int endType, OdGePoint3d& endPoint, EoDbGroup* group);
 	/// <summary>Draws tic mark at a point distance from start point on the line defined by begin and end points.</summary>
 	bool GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, double distance, EoDbGroup* group);
+
 	void DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section);
+
 	void DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section);
+
 public:
 	void DoPipeModeMouseMove();
+
 	void OnPipeModeOptions();
+
 	void OnPipeModeLine();
+
 	void OnPipeModeFitting();
+
 	void OnPipeModeRise();
+
 	void OnPipeModeDrop();
 	/// <summary>Generates a piping symbol at point specified if pipe section located.</summary>
 	void OnPipeModeSymbol();
+
 	void OnPipeModeWye();
+
 	void OnPipeModeReturn();
+
 	void OnPipeModeEscape();
+
 private: // Power mode interface
 	bool m_PowerArrow {false};
 	bool m_PowerConductor {false};
@@ -793,128 +1061,245 @@ private: // Power mode interface
 	double m_PreviousRadius {0.0};
 public:
 	void DoPowerModeMouseMove();
+
 	void OnPowerModeOptions() noexcept;
+
 	void OnPowerModeCircuit();
+
 	void OnPowerModeGround();
+
 	void OnPowerModeHot();
+
 	void OnPowerModeSwitch();
+
 	void OnPowerModeNeutral();
+
 	void OnPowerModeHome();
+
 	void OnPowerModeReturn();
+
 	void OnPowerModeEscape();
+
 	void GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
+
 	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
+
 	void DoPowerModeConductor(unsigned short conductorType);
 	
 	// Status & Mode Line
 	void ModeLineDisplay();
+
 	unsigned short ModeLineHighlightOp(unsigned short command);
+
 	void ModeLineUnhighlightOp(unsigned short& command);
+
 	CMFCStatusBar& GetStatusBar() const;
+
 	void OnBackgroundImageLoad();
+
 	void OnBackgroundImageRemove();
+
 	void OnFilePlotHalf();
+
 	void OnFilePlotFull();
+
 	void OnFilePlotQuarter();
+
 	void OnFilePrint(); // hides non-virtual function of parent
 	void OnFind();
+
 	void On3dViewsBack();
+
 	void On3dViewsBottom();
+
 	void On3dViewsFront();
+
 	void On3dViewsIsometric();
+
 	void On3dViewsLeft();
+
 	void On3dViewsRight();
+
 	void On3dViewsTop();
+
 	void OnRelativeMovesEngDown();
+
 	void OnRelativeMovesEngDownRotate();
+
 	void OnRelativeMovesEngIn();
+
 	void OnRelativeMovesEngOut();
+
 	void OnRelativeMovesEngLeft();
+
 	void OnRelativeMovesEngLeftRotate();
+
 	void OnRelativeMovesEngRight();
+
 	void OnRelativeMovesEngRightRotate();
+
 	void OnRelativeMovesEngUp();
+
 	void OnRelativeMovesEngUpRotate();
+
 	void OnRelativeMovesRight();
+
 	void OnRelativeMovesUp();
+
 	void OnRelativeMovesLeft();
+
 	void OnRelativeMovesDown();
+
 	void OnRelativeMovesIn();
+
 	void OnRelativeMovesOut();
+
 	void OnRelativeMovesRightRotate();
+
 	void OnRelativeMovesUpRotate();
+
 	void OnRelativeMovesLeftRotate();
+
 	void OnRelativeMovesDownRotate();
+
 	void OnSetupScale();
+
 	void OnToolsPrimitiveSnapTo();
+
 	void OnUpdateViewOdometer(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewTrueTypeFonts(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewBackgroundImage(CCmdUI* commandUserInterface);
+
 	void OnUpdateBackgroundImageLoad(CCmdUI* commandUserInterface);
+
 	void OnUpdateBackgroundImageRemove(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewPenWidths(CCmdUI* commandUserInterface);
+
 	void OnUpdateWindowZoomWindow(CCmdUI* commandUserInterface);
+
 	void OnViewBackgroundImage();
+
 	void OnViewTrueTypeFonts();
+
 	void OnViewPenWidths();
+
 	void OnViewOdometer();
+
 	void OnViewRefresh();
+
 	void OnViewParameters();
+
 	void OnUpdateViewRenderMode2dOptimized(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewRenderModeWireframe(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewRenderModeHiddenLine(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewRenderModeFlatShaded(CCmdUI* commandUserInterface);
+
 	void OnUpdateViewRenderModeSmoothShaded(CCmdUI* commandUserInterface);
+
 	void OnViewRenderMode(unsigned commandId);
+
 	void OnWindowZoomSpecial();
+
 	void OnWindowNormal();
+
 	void OnWindowBest();
+
 	void OnWindowLast();
+
 	void OnWindowSheet();
+
 	void OnWindowZoomIn();
+
 	void OnWindowZoomOut();
+
 	void OnWindowZoomWindow();
+
 	void OnWindowPan();
+
 	void OnWindowPanLeft();
+
 	void OnWindowPanRight();
+
 	void OnWindowPanUp();
+
 	void OnWindowPanDown();
+
 	void OnCameraRotateLeft();
+
 	void OnCameraRotateRight();
+
 	void OnCameraRotateUp();
+
 	void OnCameraRotateDown();
+
 	void OnViewWindow();
+
 	void OnSetupDimLength();
+
 	void OnSetupDimAngle();
+
 	void OnSetupUnits();
+
 	void OnSetupConstraints();
+
 	void OnSetupMouseButtons();
+
 	void OnModePrimitiveEdit();
+
 	void OnModeGroupEdit();
+
 	void OnModePrimitiveMend();
+
 	void OnPrimitivePerpendicularJump();
+
 	void OnHelpKey();
+
 	void OnOp0();
+
 	void OnOp2();
+
 	void OnOp3();
+
 	void OnOp4();
+
 	void OnOp5();
+
 	void OnOp6();
+
 	void OnOp7();
+
 	void OnOp8();
+
 	void OnReturn();
+
 	void OnEscape();
+
 	void OnEditFind() noexcept;
+
 	LRESULT OnRedraw(WPARAM wParam, LPARAM lParam);
+
 	void OnRefresh();
+
 	void OnViewerRegen();
+
 protected:
 	void OnViewerViewportRegen();
+
 	void OnUpdateViewerRegen(CCmdUI* commandUserInterface);
+
 DECLARE_MESSAGE_MAP()
+
 public:
 	BOOL OnDrop(COleDataObject* dataObject, DROPEFFECT dropEffect, CPoint point) override;
+
 	DROPEFFECT OnDragOver(COleDataObject* dataObject, unsigned long keyState, CPoint point) override;
+
 	BOOL OnIdle(long count);
 };
 #ifndef _DEBUG  // debug version in PegView.cpp

@@ -312,7 +312,6 @@ AeSysView::AeSysView() noexcept {
 	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / kMmPerInch);
 }
 
-AeSysView::~AeSysView() = default;
 #ifdef _DEBUG
 void AeSysView::AssertValid() const {
 	CView::AssertValid();

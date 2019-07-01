@@ -137,6 +137,7 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 				case VK_LEFT:
 					m_SubItem--;
 					break;
+				default: ;
 			}
 		} else if (m_Layout == kGridDown5RowsOddOnly) {
 			switch (keyCode) {
@@ -152,6 +153,7 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 				case VK_UP:
 					m_SubItem -= 2;
 					break;
+				default: ;
 			}
 		} else if (m_Layout == kGridUp5RowsEvenOnly) {
 			switch (keyCode) {
@@ -167,6 +169,7 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 				case VK_UP:
 					m_SubItem += 2;
 					break;
+				default: ;
 			}
 		}
 		m_SubItem = EoMax(m_BeginIndex, EoMin(m_EndIndex, m_SubItem));

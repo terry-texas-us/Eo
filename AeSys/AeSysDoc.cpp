@@ -2655,8 +2655,7 @@ void AeSysDoc::OnFilePageSetup() {
 }
 
 // <command_console>
-AeSysDoc::DataSource::DataSource() {
-}
+AeSysDoc::DataSource::DataSource() = default;
 
 void AeSysDoc::DataSource::Create(AeSysDoc* document, const OdGePoint3d& point) {
 	Empty();
