@@ -5,7 +5,7 @@
 class EoDlgPageSetup final : public CDialog {
 	OdDbPlotSettings& m_PlotSettings;
 	OdDbPlotSettingsValidatorPtr m_PlotSettingsValidator;
-	OdSmartPtr<OdDbUserIO> m_pIO;
+	OdSmartPtr<OdDbUserIO> m_UserIo;
 	OdString GetCanonicalByLocaleMediaName(OdString localeMediaName);
 	void SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames);
 	bool IsWHSwap() const;
@@ -13,9 +13,9 @@ class EoDlgPageSetup final : public CDialog {
 	void UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits);
 	OdDbPlotSettings::PlotPaperUnits GetMediaNativePPU();
 public:
-	EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> pIO);
-	~EoDlgPageSetup();
-private:
+	EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> userIo);
+	~EoDlgPageSetup() = default;
+  private:
 	enum { IDD = IDD_PAGE_SETUP };
 
 	CComboBox m_PlotStyleFiles;
@@ -26,22 +26,22 @@ private:
 	CComboBox m_Quality;
 	CComboBox m_ShadePlot;
 	CComboBox m_Views;
-	CComboBox m_MMInches;
-	int m_CenterThePlot;
-	int m_DisplayPlotStyles;
-	double m_OffsetX;
-	double m_OffsetY;
-	int m_DrawingOrientation;
-	int m_PlotUpsideDown;
-	double m_PaperScaleUnit;
-	double m_DrawingScaleUnit;
-	int m_FitToPaper;
-	int m_ScaleLW;
-	int m_PlotObjectLW;
-	int m_PlotWithPlotStyles;
-	int m_PlotPaperspaceLast;
-	int m_HidePaperspaceObjects;
-	short m_CustomDPI;
+	CComboBox m_MmInches;
+	int m_CenterThePlot {0};
+	int m_DisplayPlotStyles {0};
+	double m_OffsetX {0.0};
+	double m_OffsetY {0.0};
+	int m_DrawingOrientation {0};
+	int m_PlotUpsideDown {0};
+	double m_PaperScaleUnit {0.0};
+	double m_DrawingScaleUnit {0.0};
+	int m_FitToPaper {0};
+	int m_ScaleLineweights {0};
+	int m_PlotObjectLineweights {0};
+	int m_PlotWithPlotStyles {0};
+	int m_PlotPaperspaceLast {0};
+	int m_HidePaperspaceObjects {0};
+	short m_CustomDPI {0};
 	//CString m_PaperUnitText;
 	CString m_DrawingUnitText;
 	CString m_OffsetXText;
@@ -53,17 +53,18 @@ private:
 	CString m_RightMargin;
 	CString m_TopMargin;
 	CString m_BottomMargin;
-	CString m_xMin;
-	CString m_yMin;
-	CString m_xMax;
-	CString m_yMax;
-protected:
+	CString m_WindowMinX;
+	CString m_WindowMinY;
+	CString m_WindowMaxX;
+	CString m_WindowMaxY;
+
+  protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnOK() final;
 	void OnCancel() final;
-	void OnSelchangeScaleValues();
-	void OnSelchangeDeviceList();
+	void OnSelChangeScaleValues();
+	void OnSelChangeDeviceList();
 	void OnSelChangeMediaList();
 	void OnSelChangeQualityList();
 	void OnSelChangeShadePlotList();
@@ -73,9 +74,9 @@ protected:
 	void OnCheckCenterThePlot();
 	void OnCheckDisplayPlotStyles();
 	void OnCheckFitToPaper();
-	void OnCheckScaleLW();
-	void OnChangeEditOffsetXY();
-	void OnChangeEditDPI();
+	void OnCheckScaleLineweights();
+	void OnChangeEditOffsetXy();
+	void OnChangeEditDpi();
 	void OnChangeEditScaleUnit();
 	void OnClickPortraitLandscape();
 	void OnClickPlotStyles();
@@ -85,7 +86,7 @@ protected:
 DECLARE_MESSAGE_MAP()
 	bool FillDeviceCombo();
 	bool FillPaperSizes();
-	void FillShadePlotQualityDPI(bool fillCombo);
+	void FillShadePlotQualityDpi(bool fillCombo);
 	void FillScaleValues(bool fillCombo);
 	void FillPlotAreaCombo(bool fillCombo);
 	void FillPlotOffset();
@@ -93,7 +94,7 @@ DECLARE_MESSAGE_MAP()
 	void FillPlotStyles();
 	void FillPlotStyleCombo(bool fillCombo);
 	void FillViewCombo(bool fillCombo);
-	void FillMMInches();
+	void FillMmInches();
 	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, CString pattern);
 	void FillWindowArea();
 	bool ViewsExist() const;

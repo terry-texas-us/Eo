@@ -155,7 +155,7 @@ bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePo
 }
 
 OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = SIZE_T_MAX;
+	ms_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ptCtrl;
 	EoDbBlock* Block;
 	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return ptCtrl; }
@@ -164,7 +164,7 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGe
 	while (Position != nullptr) {
 		const auto Primitive {Block->GetNext(Position)};
 		ptCtrl = Primitive->SelectAtControlPoint(view, point);
-		if (sm_ControlPointIndex != SIZE_T_MAX) {
+		if (ms_ControlPointIndex != SIZE_T_MAX) {
 			view->ModelTransformPoint(ptCtrl);
 			break;
 		}

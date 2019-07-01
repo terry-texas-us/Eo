@@ -7,8 +7,9 @@ class EoGsModelTransform {
 	EoGeMatrix3dList m_TransformMatrixList;
 public:
 	EoGsModelTransform();
-	~EoGsModelTransform() = default;
+
 	EoGeMatrix3d ModelMatrix() const noexcept;
+
 	unsigned Depth() const noexcept;
 	/// <summary> Removes the top transformation off the current transformation stack.</summary>
 	void PopModelTransform();

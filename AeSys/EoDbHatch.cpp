@@ -11,12 +11,12 @@
 #include "EoDbHatchPatternTable.h"
 IMPLEMENT_DYNAMIC(EoDbHatch, EoDbPrimitive)
 
-unsigned EoDbHatch::sm_EdgeToEvaluate = 0;
-unsigned EoDbHatch::sm_Edge = 0;
-unsigned EoDbHatch::sm_PivotVertex = 0;
-double EoDbHatch::sm_PatternAngle = 0.0;
-double EoDbHatch::sm_PatternScaleX = .1;
-double EoDbHatch::sm_PatternScaleY = .1;
+unsigned EoDbHatch::ms_EdgeToEvaluate = 0;
+unsigned EoDbHatch::ms_Edge = 0;
+unsigned EoDbHatch::ms_PivotVertex = 0;
+double EoDbHatch::patternAngle = 0.0;
+double EoDbHatch::patternScaleX = 0.1;
+double EoDbHatch::patternScaleY = 0.1;
 
 struct EoEdge {
 	double minimumExtentY {0.0}; // minimum y extent of edge
@@ -62,11 +62,11 @@ EoDbHatch& EoDbHatch::operator=(const EoDbHatch& other) {
 
 void EoDbHatch::AddReportToMessageList(const OdGePoint3d& point) const {
 	const auto NumberOfVertices {m_Vertices.size()};
-	if (sm_Edge > 0 && sm_Edge <= NumberOfVertices) {
-		auto StartPoint {m_Vertices[sm_Edge - 1]};
-		auto EndPoint {m_Vertices[sm_Edge % NumberOfVertices]};
-		if (sm_PivotVertex < NumberOfVertices) {
-			StartPoint = m_Vertices[sm_PivotVertex];
+	if (ms_Edge > 0 && ms_Edge <= NumberOfVertices) {
+		auto StartPoint {m_Vertices[ms_Edge - 1]};
+		auto EndPoint {m_Vertices[ms_Edge % NumberOfVertices]};
+		if (ms_PivotVertex < NumberOfVertices) {
+			StartPoint = m_Vertices[ms_PivotVertex];
 			EndPoint = m_Vertices[SwingVertex()];
 		}
 		double AngleInXYPlane;
@@ -142,8 +142,8 @@ void EoDbHatch::GetAllPoints(OdGePoint3dArray& points) const {
 }
 
 OdGePoint3d EoDbHatch::GetCtrlPt() const {
-	const auto StartPointIndex = sm_Edge - 1;
-	const auto EndPointIndex = sm_Edge % m_Vertices.size();
+	const auto StartPointIndex = ms_Edge - 1;
+	const auto EndPointIndex = ms_Edge % m_Vertices.size();
 	return EoGeLineSeg3d(m_Vertices[StartPointIndex], m_Vertices[EndPointIndex]).midPoint();
 }
 
@@ -155,40 +155,40 @@ void EoDbHatch::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 
 OdGePoint3d EoDbHatch::GoToNxtCtrlPt() const {
 	const auto NumberOfVertices {m_Vertices.size()};
-	if (sm_PivotVertex >= NumberOfVertices) { // have not yet rocked to a vertex
-		const auto StartVertexIndex {sm_Edge - 1};
+	if (ms_PivotVertex >= NumberOfVertices) { // have not yet rocked to a vertex
+		const auto StartVertexIndex {ms_Edge - 1};
 		const auto StartPoint(m_Vertices[StartVertexIndex]);
-		const auto EndVertexIndex {sm_Edge % NumberOfVertices};
+		const auto EndVertexIndex {ms_Edge % NumberOfVertices};
 		const auto EndPoint(m_Vertices[EndVertexIndex]);
 		if (EndPoint.x > StartPoint.x) {
-			sm_PivotVertex = StartVertexIndex;
+			ms_PivotVertex = StartVertexIndex;
 		} else if (EndPoint.x < StartPoint.x) {
-			sm_PivotVertex = EndVertexIndex;
+			ms_PivotVertex = EndVertexIndex;
 		} else if (EndPoint.y > StartPoint.y) {
-			sm_PivotVertex = StartVertexIndex;
+			ms_PivotVertex = StartVertexIndex;
 		} else {
-			sm_PivotVertex = EndVertexIndex;
+			ms_PivotVertex = EndVertexIndex;
 		}
-	} else if (sm_PivotVertex == 0) {
-		if (sm_Edge == 1) {
-			sm_PivotVertex = 1;
+	} else if (ms_PivotVertex == 0) {
+		if (ms_Edge == 1) {
+			ms_PivotVertex = 1;
 		} else {
-			sm_PivotVertex = NumberOfVertices - 1;
+			ms_PivotVertex = NumberOfVertices - 1;
 		}
-	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		if (sm_Edge == NumberOfVertices) {
-			sm_PivotVertex = 0;
+	} else if (ms_PivotVertex == NumberOfVertices - 1) {
+		if (ms_Edge == NumberOfVertices) {
+			ms_PivotVertex = 0;
 		} else {
-			sm_PivotVertex--;
+			ms_PivotVertex--;
 		}
 	} else {
-		if (sm_Edge == sm_PivotVertex) {
-			sm_PivotVertex--;
+		if (ms_Edge == ms_PivotVertex) {
+			ms_PivotVertex--;
 		} else {
-			sm_PivotVertex++;
+			ms_PivotVertex++;
 		}
 	}
-	return m_Vertices[sm_PivotVertex];
+	return m_Vertices[ms_PivotVertex];
 }
 
 bool EoDbHatch::IsInView(AeSysView* view) const {
@@ -208,27 +208,27 @@ bool EoDbHatch::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point)
 	for (const auto& Vertex : m_Vertices) {
 		EoGePoint4d Point(Vertex, 1.0);
 		view->ModelViewTransformPoint(Point);
-		if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
+		if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
 	}
 	return false;
 }
 
 OdGePoint3d EoDbHatch::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = SIZE_T_MAX;
-	auto Aperture {sm_SelectApertureSize};
-	sm_PivotVertex = m_Vertices.size();
+	ms_ControlPointIndex = SIZE_T_MAX;
+	auto Aperture {ms_SelectApertureSize};
+	ms_PivotVertex = m_Vertices.size();
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		EoGePoint4d pt(m_Vertices[VertexIndex], 1.0);
 		view->ModelViewTransformPoint(pt);
 		const auto dDis {point.DistanceToPointXY(pt)};
 		if (dDis < Aperture) {
-			sm_ControlPointIndex = VertexIndex;
+			ms_ControlPointIndex = VertexIndex;
 			Aperture = dDis;
-			sm_Edge = VertexIndex + 1;
-			sm_PivotVertex = VertexIndex;
+			ms_Edge = VertexIndex + 1;
+			ms_PivotVertex = VertexIndex;
 		}
 	}
-	return sm_ControlPointIndex == SIZE_T_MAX ? OdGePoint3d::kOrigin : m_Vertices[sm_ControlPointIndex];
+	return ms_ControlPointIndex == SIZE_T_MAX ? OdGePoint3d::kOrigin : m_Vertices[ms_ControlPointIndex];
 }
 
 bool EoDbHatch::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -241,14 +241,14 @@ bool EoDbHatch::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const O
 
 bool EoDbHatch::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	const auto NumberOfVertices {m_Vertices.size()};
-	if (sm_EdgeToEvaluate > 0 && sm_EdgeToEvaluate <= NumberOfVertices) { // Evaluate specified edge of polygon
-		EoGePoint4d ptBeg(m_Vertices[sm_EdgeToEvaluate - 1], 1.0);
-		EoGePoint4d ptEnd(m_Vertices[sm_EdgeToEvaluate % NumberOfVertices], 1.0);
+	if (ms_EdgeToEvaluate > 0 && ms_EdgeToEvaluate <= NumberOfVertices) { // Evaluate specified edge of polygon
+		EoGePoint4d ptBeg(m_Vertices[ms_EdgeToEvaluate - 1], 1.0);
+		EoGePoint4d ptEnd(m_Vertices[ms_EdgeToEvaluate % NumberOfVertices], 1.0);
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
 		const EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
-		if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
-			projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
+		if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, ms_RelationshipOfPoint)) {
+			projectedPoint.z = ptBeg.z + ms_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 			return true;
 		}
 	} else { // Evaluate entire polygon
@@ -258,10 +258,10 @@ bool EoDbHatch::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGe
 			EoGePoint4d ptEnd(m_Vertices[VertexIndex % NumberOfVertices], 1.0);
 			view->ModelViewTransformPoint(ptEnd);
 			EoGeLineSeg3d Edge(ptBeg.Convert3d(), ptEnd.Convert3d());
-			if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
-				projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
-				sm_Edge = VertexIndex;
-				sm_PivotVertex = NumberOfVertices;
+			if (Edge.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, ms_RelationshipOfPoint)) {
+				projectedPoint.z = ptBeg.z + ms_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
+				ms_Edge = VertexIndex;
+				ms_PivotVertex = NumberOfVertices;
 				return true;
 			}
 			ptBeg = ptEnd;
@@ -310,7 +310,7 @@ bool EoDbHatch::Write(EoDbFile& file) const {
 void EoDbHatch::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = static_cast<unsigned char>((79 + m_Vertices.size() * 12) / 32);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kHatchPrimitive);
-	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_InteriorStyle);
 	*reinterpret_cast<short*>(& buffer[8]) = static_cast<short>(m_InteriorStyleIndex);
 	*reinterpret_cast<short*>(& buffer[10]) = static_cast<short>(m_Vertices.size());
@@ -563,22 +563,22 @@ int EoDbHatch::NumberOfVertices() const {
 
 bool EoDbHatch::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
 	const auto NumberOfVertices = m_Vertices.size();
-	if (sm_PivotVertex >= NumberOfVertices) { // Not engaged at a vertex
+	if (ms_PivotVertex >= NumberOfVertices) { // Not engaged at a vertex
 		return false;
 	}
-	EoGePoint4d ptCtrl(m_Vertices[sm_PivotVertex], 1.0);
+	EoGePoint4d ptCtrl(m_Vertices[ms_PivotVertex], 1.0);
 	view->ModelViewTransformPoint(ptCtrl);
-	if (ptCtrl.DistanceToPointXY(point) >= sm_SelectApertureSize) { // Not on proper vertex
+	if (ptCtrl.DistanceToPointXY(point) >= ms_SelectApertureSize) { // Not on proper vertex
 		return false;
 	}
-	if (sm_PivotVertex == 0) {
-		sm_Edge = sm_Edge == 1 ? NumberOfVertices : 1;
-	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		sm_Edge = sm_Edge == NumberOfVertices ? sm_Edge - 1 : NumberOfVertices;
-	} else if (sm_PivotVertex == sm_Edge) {
-		sm_Edge++;
+	if (ms_PivotVertex == 0) {
+		ms_Edge = ms_Edge == 1 ? NumberOfVertices : 1;
+	} else if (ms_PivotVertex == NumberOfVertices - 1) {
+		ms_Edge = ms_Edge == NumberOfVertices ? ms_Edge - 1 : NumberOfVertices;
+	} else if (ms_PivotVertex == ms_Edge) {
+		ms_Edge++;
 	} else {
-		sm_Edge--;
+		ms_Edge--;
 	}
 	return true;
 }
@@ -678,22 +678,22 @@ void EoDbHatch::SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeV
 unsigned EoDbHatch::SwingVertex() const {
 	const auto NumberOfVertices {m_Vertices.size()};
 	unsigned SwingVertex;
-	if (sm_PivotVertex == 0) {
-		SwingVertex = sm_Edge == 1 ? 1 : NumberOfVertices - 1;
-	} else if (sm_PivotVertex == NumberOfVertices - 1) {
-		SwingVertex = sm_Edge == NumberOfVertices ? 0 : sm_PivotVertex - 1;
+	if (ms_PivotVertex == 0) {
+		SwingVertex = ms_Edge == 1 ? 1 : NumberOfVertices - 1;
+	} else if (ms_PivotVertex == NumberOfVertices - 1) {
+		SwingVertex = ms_Edge == NumberOfVertices ? 0 : ms_PivotVertex - 1;
 	} else {
-		SwingVertex = sm_Edge == sm_PivotVertex ? sm_PivotVertex - 1 : sm_PivotVertex + 1;
+		SwingVertex = ms_Edge == ms_PivotVertex ? ms_PivotVertex - 1 : ms_PivotVertex + 1;
 	}
 	return SwingVertex;
 }
 
 unsigned EoDbHatch::Edge() noexcept {
-	return sm_Edge;
+	return ms_Edge;
 }
 
 void EoDbHatch::SetEdgeToEvaluate(const unsigned edgeToEvaluate) noexcept {
-	sm_EdgeToEvaluate = edgeToEvaluate;
+	ms_EdgeToEvaluate = edgeToEvaluate;
 }
 
 #include "Ge/GeCircArc2d.h"

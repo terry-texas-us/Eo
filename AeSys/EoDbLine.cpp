@@ -159,18 +159,18 @@ void EoDbLine::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 }
 
 OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
-	if (sm_ControlPointIndex == 0) sm_ControlPointIndex = 1;
-	else if (sm_ControlPointIndex == 1) {
-		sm_ControlPointIndex = 0;
+	if (ms_ControlPointIndex == 0) ms_ControlPointIndex = 1;
+	else if (ms_ControlPointIndex == 1) {
+		ms_ControlPointIndex = 0;
 	} else { // Initial rock .. jump to point at lower left or down if vertical
 		const auto StartPoint {m_LineSeg.startPoint()};
 		const auto EndPoint {m_LineSeg.endPoint()};
-		if (EndPoint.x > StartPoint.x) sm_ControlPointIndex = 0;
-		else if (EndPoint.x < StartPoint.x) sm_ControlPointIndex = 1;
-		else if (EndPoint.y > StartPoint.y) sm_ControlPointIndex = 0;
-		else sm_ControlPointIndex = 1;
+		if (EndPoint.x > StartPoint.x) ms_ControlPointIndex = 0;
+		else if (EndPoint.x < StartPoint.x) ms_ControlPointIndex = 1;
+		else if (EndPoint.y > StartPoint.y) ms_ControlPointIndex = 0;
+		else ms_ControlPointIndex = 1;
 	}
-	return sm_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint();
+	return ms_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint();
 }
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive) const {
@@ -190,10 +190,10 @@ bool EoDbLine::IsInView(AeSysView* view) const {
 bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	auto Point {EoGePoint4d(m_LineSeg.startPoint(), 1.0)};
 	view->ModelViewTransformPoint(Point);
-	if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
+	if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
 	Point = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
 	view->ModelViewTransformPoint(Point);
-	if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
+	if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
 	return false;
 }
 
@@ -237,15 +237,15 @@ double EoDbLine::ParametricRelationshipOf(const OdGePoint3d& point) const {
 }
 
 OdGePoint3d EoDbLine::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = SIZE_T_MAX;
+	ms_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
-	auto Aperture {sm_SelectApertureSize};
+	auto Aperture {ms_SelectApertureSize};
 	for (unsigned ControlPointIndex = 0; ControlPointIndex < 2; ControlPointIndex++) {
 		EoGePoint4d pt(ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint(), 1.0);
 		view->ModelViewTransformPoint(pt);
 		const auto Distance {point.DistanceToPointXY(pt)};
 		if (Distance < Aperture) {
-			sm_ControlPointIndex = ControlPointIndex;
+			ms_ControlPointIndex = ControlPointIndex;
 			ControlPoint = ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint();
 			Aperture = Distance;
 		}
@@ -264,7 +264,7 @@ bool EoDbLine::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGeP
 	polyline::BeginLineStrip();
 	polyline::SetVertex(m_LineSeg.startPoint());
 	polyline::SetVertex(m_LineSeg.endPoint());
-	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, projectedPoint);
+	return polyline::SelectUsingPoint(point, view, ms_RelationshipOfPoint, projectedPoint);
 }
 
 bool EoDbLine::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -319,8 +319,8 @@ bool EoDbLine::Write(EoDbFile& file) const {
 void EoDbLine::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kLinePrimitive);
-	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_LineSeg.startPoint());
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[20])->Convert(m_LineSeg.endPoint());

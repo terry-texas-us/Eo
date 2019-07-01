@@ -15,7 +15,7 @@ EoDlgViewZoom::~EoDlgViewZoom() = default;
 void EoDlgViewZoom::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Text(dataExchange, IDC_RATIO, m_ZoomFactor);
-	DDV_MinMaxDouble(dataExchange, m_ZoomFactor, 0.001, 999.);
+	DDV_MinMaxDouble(dataExchange, m_ZoomFactor, 0.001, 999.0);
 }
 
 BOOL EoDlgViewZoom::OnInitDialog() {

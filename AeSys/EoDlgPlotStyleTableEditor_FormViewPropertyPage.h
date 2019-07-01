@@ -155,13 +155,14 @@ class EoDlgPlotStyleEditor_FormViewPropertyPage final : public CPropertyPage {
 DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
 	void mtHideHelpBtn();
 	CImageList m_imageList;
-	OdPsPlotStyleTable* m_pPlotStyleTable;
-	OdPsPlotStyle* m_pPlotStyleActive;
+	OdPsPlotStyleTable* m_pPlotStyleTable {nullptr};
+	OdPsPlotStyle* m_pPlotStyleActive {nullptr};
 	OdBitmapColorInfoArray m_bitmapList;
 	OdString m_sFileBufPath;
-	bool m_bEditChanging;
+	bool m_bEditChanging {false};
 	EoDlgPlotStyleEditor_FormViewPropertyPage();
-	~EoDlgPlotStyleEditor_FormViewPropertyPage();
+	~EoDlgPlotStyleEditor_FormViewPropertyPage() = default;
+
 
 	enum { IDD = IDD_PLOTSTYLE_FORMVIEW_PROPERTY_PAGE };
 

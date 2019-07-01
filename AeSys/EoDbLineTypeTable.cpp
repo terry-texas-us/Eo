@@ -54,9 +54,9 @@ L"PHANTOMX2"
 unsigned short EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 	unsigned short Index = 0;
 	if (name.iCompare(L"ByBlock") == 0) {
-		Index = EoDbPrimitive::LINETYPE_BYBLOCK;
+		Index = EoDbPrimitive::mc_LinetypeByblock;
 	} else if (name.iCompare(L"ByLayer") == 0) {
-		Index = EoDbPrimitive::LINETYPE_BYLAYER;
+		Index = EoDbPrimitive::mc_LinetypeBylayer;
 	} else {
 		while (Index < c_NumberOfLegacyLinetypes && name.iCompare(m_LegacyLinetypes[Index]) != 0) {
 			Index++;

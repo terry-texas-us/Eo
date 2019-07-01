@@ -1,8 +1,5 @@
 #pragma once
-class EoGripperScrollBar : public CScrollBar {
-public:
-	EoGripperScrollBar() = default;
-	~EoGripperScrollBar() = default;
+class EoGripperScrollBar final : public CScrollBar {
 protected:
 	LRESULT OnNcHitTest(CPoint point); // hides non-virtual function of parent
 DECLARE_MESSAGE_MAP()

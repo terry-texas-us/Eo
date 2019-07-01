@@ -11,9 +11,6 @@ class EoDbFontDefinition {
 	EoDb::HorizontalAlignment m_HorizontalAlignment {EoDb::kAlignLeft};
 	EoDb::VerticalAlignment m_VerticalAlignment {EoDb::kAlignBottom};
 public:
-	EoDbFontDefinition() = default;
-	EoDbFontDefinition(const EoDbFontDefinition& other);
-	EoDbFontDefinition& operator=(const EoDbFontDefinition& other) = default;
 	CString FormatHorizontalAlignment() const;
 	CString FormatPath() const;
 	CString FormatPrecision() const;

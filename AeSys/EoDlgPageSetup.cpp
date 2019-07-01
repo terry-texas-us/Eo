@@ -108,52 +108,25 @@ static EoPlotUnitsInfo PlotUnitsInfo[] = {
 };
 
 // EoDlgPageSetup
-EoDlgPageSetup::EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> pIO)
+EoDlgPageSetup::EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> userIo)
 	: CDialog(IDD, nullptr)
 	, m_PlotSettings(plotSettings)
-	, m_pIO(pIO) {
-	m_CustomDPI = 0;
-	m_CenterThePlot = 0;
-	m_OffsetX = 0.0;
-	m_OffsetY = 0.0;
-	m_PaperImageOriginX = L"0.";
-	m_PaperImageOriginY = L"0.";
-	m_DrawingOrientation = 0;
-	m_PaperScaleUnit = 0.0;
-	m_DrawingScaleUnit = 0.0;
-	m_FitToPaper = 0;
-	m_LeftMargin = L"0.";
-	m_RightMargin = L"0.";
-	m_TopMargin = L"0.";
-	m_BottomMargin = L"0.";
-	m_DisplayPlotStyles = 0;
-	m_PlotUpsideDown = 0;
-	m_ScaleLW = 0;
-	m_PlotObjectLW = 0;
-	m_PlotWithPlotStyles = 0;
-	m_PlotPaperspaceLast = 0;
-	m_HidePaperspaceObjects = 0;
-	m_xMin = L"0.";
-	m_yMin = L"0.";
-	m_xMax = L"0.";
-	m_yMax = L"0.";
+	, m_UserIo(userIo) {
 }
-
-EoDlgPageSetup::~EoDlgPageSetup() = default;
 
 void EoDlgPageSetup::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_PAGESETUP_QUALITY, m_Quality);
 	DDX_Control(dataExchange, IDC_PAGESETUP_SHADE_PLOT, m_ShadePlot);
 	DDX_Control(dataExchange, IDC_PAGESETUP_VIEWS, m_Views);
-	DDX_Control(dataExchange, IDC_COMBO_MM_INCHES, m_MMInches);
+	DDX_Control(dataExchange, IDC_COMBO_MM_INCHES, m_MmInches);
 	DDX_Control(dataExchange, IDC_PAGESETUP_COMBO_PLOTSTYLEFILES, m_PlotStyleFiles);
 	DDX_Control(dataExchange, IDC_PAGESETUP_DEVICE, m_PlotDeviceName);
 	DDX_Control(dataExchange, IDC_PAGESETUP_SIZE, m_PaperSize);
 	DDX_Control(dataExchange, IDC_PAGESETUP_PLOTAREATYPE, m_PlotAreaType);
 	DDX_Check(dataExchange, IDC_CHECK_CENTERTHEPLOT, m_CenterThePlot);
 	DDX_Check(dataExchange, IDC_CHECK_FIT_TO_PAPER, m_FitToPaper);
-	DDX_Check(dataExchange, IDC_CHECK_SCALE_LW, m_ScaleLW);
+	DDX_Check(dataExchange, IDC_CHECK_SCALE_LW, m_ScaleLineweights);
 	DDX_Check(dataExchange, IDC_CHECK_UPSIDEDOWN, m_PlotUpsideDown);
 	DDX_Check(dataExchange, IDC_CHECK_DISPLAY_PLOT_STYLES, m_DisplayPlotStyles);
 	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_X, m_OffsetX);
@@ -170,23 +143,23 @@ void EoDlgPageSetup::DoDataExchange(CDataExchange* dataExchange) {
 	DDX_Text(dataExchange, IDC_PAGESETUP_DRAWING_UNIT_STATIC, m_DrawingUnitText);
 	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_X_STATIC, m_OffsetXText);
 	DDX_Text(dataExchange, IDC_PAGESETUP_OFFSET_Y_STATIC, m_OffsetYText);
-	DDX_Text(dataExchange, IDC_WINDOW_MINX, m_xMin);
-	DDX_Text(dataExchange, IDC_WINDOW_MINY, m_yMin);
-	DDX_Text(dataExchange, IDC_WINDOW_MAXX, m_xMax);
-	DDX_Text(dataExchange, IDC_WINDOW_MAXY, m_yMax);
+	DDX_Text(dataExchange, IDC_WINDOW_MINX, m_WindowMinX);
+	DDX_Text(dataExchange, IDC_WINDOW_MINY, m_WindowMinY);
+	DDX_Text(dataExchange, IDC_WINDOW_MAXX, m_WindowMaxX);
+	DDX_Text(dataExchange, IDC_WINDOW_MAXY, m_WindowMaxY);
 	DDX_Radio(dataExchange, IDC_PAGESETUP_PORTRAIT, m_DrawingOrientation);
 	DDX_Control(dataExchange, IDC_PAGESETUP_SCALE, m_ScaleValues);
 	DDX_Text(dataExchange, IDC_PAGESETUP_PAPER_UNIT, m_PaperScaleUnit);
 	DDX_Text(dataExchange, IDC_PAGESETUP_DRAWING_UNIT, m_DrawingScaleUnit);
-	DDX_Check(dataExchange, IDC_CHECK_PLOT_OBJECT_LW, m_PlotObjectLW);
+	DDX_Check(dataExchange, IDC_CHECK_PLOT_OBJECT_LW, m_PlotObjectLineweights);
 	DDX_Check(dataExchange, IDC_CHECK_PLOT_WITH_PLOTSTYLES, m_PlotWithPlotStyles);
 	DDX_Check(dataExchange, IDC_CHECK_PLOT_PAPERSPACE_LAST, m_PlotPaperspaceLast);
 	DDX_Check(dataExchange, IDC_CHECK_HIDE_PAPERSPACE_OBJECTS, m_HidePaperspaceObjects);
 }
 
 BEGIN_MESSAGE_MAP(EoDlgPageSetup, CDialog)
-		ON_CBN_SELCHANGE(IDC_PAGESETUP_DEVICE, OnSelchangeDeviceList)
-		ON_CBN_SELCHANGE(IDC_PAGESETUP_SCALE, OnSelchangeScaleValues)
+		ON_CBN_SELCHANGE(IDC_PAGESETUP_DEVICE, OnSelChangeDeviceList)
+		ON_CBN_SELCHANGE(IDC_PAGESETUP_SCALE, OnSelChangeScaleValues)
 		ON_CBN_SELCHANGE(IDC_PAGESETUP_SIZE, OnSelChangeMediaList)
 		ON_CBN_SELCHANGE(IDC_PAGESETUP_PLOTAREATYPE, OnSelChangePlotAreaType)
 		ON_CBN_SELCHANGE(IDC_PAGESETUP_QUALITY, OnSelChangeQualityList)
@@ -196,7 +169,7 @@ BEGIN_MESSAGE_MAP(EoDlgPageSetup, CDialog)
 		ON_CBN_SELCHANGE(IDC_COMBO_MM_INCHES, OnSelChangeMMInchesList)
 		ON_BN_CLICKED(IDC_CHECK_CENTERTHEPLOT, OnCheckCenterThePlot)
 		ON_BN_CLICKED(IDC_CHECK_FIT_TO_PAPER, OnCheckFitToPaper)
-		ON_BN_CLICKED(IDC_CHECK_SCALE_LW, OnCheckScaleLW)
+		ON_BN_CLICKED(IDC_CHECK_SCALE_LW, OnCheckScaleLineweights)
 		ON_BN_CLICKED(IDC_PAGESETUP_PORTRAIT, OnClickPortraitLandscape)
 		ON_BN_CLICKED(IDC_PAGESETUP_LANDSCAPE, OnClickPortraitLandscape)
 		ON_BN_CLICKED(IDC_CHECK_UPSIDEDOWN, OnClickPortraitLandscape)
@@ -207,9 +180,9 @@ BEGIN_MESSAGE_MAP(EoDlgPageSetup, CDialog)
 		ON_BN_CLICKED(IDC_CHECK_PLOT_WITH_PLOTSTYLES, OnClickPlotStyles)
 		ON_BN_CLICKED(IDC_CHECK_PLOT_PAPERSPACE_LAST, OnClickPlotStyles)
 		ON_BN_CLICKED(IDC_CHECK_HIDE_PAPERSPACE_OBJECTS, OnClickPlotStyles)
-		ON_EN_KILLFOCUS(IDC_PAGESETUP_DPI, OnChangeEditDPI)
-		ON_EN_KILLFOCUS(IDC_PAGESETUP_OFFSET_X, OnChangeEditOffsetXY)
-		ON_EN_KILLFOCUS(IDC_PAGESETUP_OFFSET_Y, OnChangeEditOffsetXY)
+		ON_EN_KILLFOCUS(IDC_PAGESETUP_DPI, OnChangeEditDpi)
+		ON_EN_KILLFOCUS(IDC_PAGESETUP_OFFSET_X, OnChangeEditOffsetXy)
+		ON_EN_KILLFOCUS(IDC_PAGESETUP_OFFSET_Y, OnChangeEditOffsetXy)
 		ON_EN_KILLFOCUS(IDC_PAGESETUP_PAPER_UNIT, OnChangeEditScaleUnit)
 		ON_EN_KILLFOCUS(IDC_PAGESETUP_DRAWING_UNIT, OnChangeEditScaleUnit)
 END_MESSAGE_MAP()
@@ -227,18 +200,18 @@ void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString& deviceName, OdString ca
 	}
 }
 
-void EoDlgPageSetup::FillMMInches() {
-	m_MMInches.ResetContent();
+void EoDlgPageSetup::FillMmInches() {
+	m_MmInches.ResetContent();
 	const auto PaperUnits {m_PlotSettings.plotPaperUnits()};
 	if (PaperUnits == OdDbPlotSettings::kPixels) {
-		m_MMInches.AddString(L"pixels");
-		m_MMInches.EnableWindow(FALSE);
-		m_MMInches.SetCurSel(0);
+		m_MmInches.AddString(L"pixels");
+		m_MmInches.EnableWindow(FALSE);
+		m_MmInches.SetCurSel(0);
 	} else {
-		m_MMInches.AddString(L"inches");
-		m_MMInches.AddString(L"mm");
-		m_MMInches.EnableWindow(TRUE);
-		m_MMInches.SetCurSel(PaperUnits == OdDbPlotSettings::kMillimeters);
+		m_MmInches.AddString(L"inches");
+		m_MmInches.AddString(L"mm");
+		m_MmInches.EnableWindow(TRUE);
+		m_MmInches.SetCurSel(PaperUnits == OdDbPlotSettings::kMillimeters);
 	}
 }
 
@@ -261,7 +234,7 @@ void EoDlgPageSetup::FillViewCombo(const bool fillCombo) {
 	}
 }
 
-void EoDlgPageSetup::FillShadePlotQualityDPI(const bool fillCombo) {
+void EoDlgPageSetup::FillShadePlotQualityDpi(const bool fillCombo) {
 	if (fillCombo) {
 		m_Quality.ResetContent();
 		m_Quality.AddString(L"Draft");
@@ -297,7 +270,7 @@ void EoDlgPageSetup::FillShadePlotQualityDPI(const bool fillCombo) {
 
 void EoDlgPageSetup::OnClickPlotStyles() {
 	UpdateData();
-	m_PlotSettings.setPrintLineweights(m_PlotObjectLW == 1);
+	m_PlotSettings.setPrintLineweights(m_PlotObjectLineweights == 1);
 	m_PlotSettings.setPlotPlotStyles(m_PlotWithPlotStyles == 1);
 	m_PlotSettings.setDrawViewportsFirst(m_PlotPaperspaceLast == 1);
 	m_PlotSettings.setPlotHidden(m_HidePaperspaceObjects == 1);
@@ -305,7 +278,7 @@ void EoDlgPageSetup::OnClickPlotStyles() {
 }
 
 void EoDlgPageSetup::FillPlotStyles() {
-	m_PlotObjectLW = m_PlotSettings.printLineweights();
+	m_PlotObjectLineweights = m_PlotSettings.printLineweights();
 	m_PlotWithPlotStyles = m_PlotSettings.plotPlotStyles();
 	m_PlotPaperspaceLast = m_PlotSettings.drawViewportsFirst();
 	m_HidePaperspaceObjects = m_PlotSettings.plotHidden();
@@ -313,7 +286,7 @@ void EoDlgPageSetup::FillPlotStyles() {
 	GetDlgItem(IDC_CHECK_HIDE_PAPERSPACE_OBJECTS)->EnableWindow(!IsModelSpacePageSetup());
 	GetDlgItem(IDC_CHECK_PLOT_OBJECT_LW)->EnableWindow(!m_PlotWithPlotStyles);
 	if (m_PlotWithPlotStyles) {
-		m_PlotObjectLW = 1;
+		m_PlotObjectLineweights = 1;
 	}
 	UpdateData(FALSE);
 }
@@ -367,15 +340,15 @@ void EoDlgPageSetup::OnCheckFitToPaper() {
 	FillPlotOffset();
 }
 
-void EoDlgPageSetup::OnCheckScaleLW() {
+void EoDlgPageSetup::OnCheckScaleLineweights() {
 	UpdateData();
-	m_PlotSettings.setScaleLineweights(m_ScaleLW != 0);
+	m_PlotSettings.setScaleLineweights(m_ScaleLineweights != 0);
 	FillPaperOrientation();
 	FillScaleValues(false);
 	FillPlotOffset();
 }
 
-void EoDlgPageSetup::OnSelchangeScaleValues() {
+void EoDlgPageSetup::OnSelChangeScaleValues() {
 	UpdateData();
 	const auto CurrentSelection {m_ScaleValues.GetCurSel()};
 	if (CurrentSelection != 0) { // skip Custom
@@ -417,7 +390,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 
 	// and reset units to paper native
 	if (MediaNativeUnits == OdDbPlotSettings::kInches || MediaNativeUnits == OdDbPlotSettings::kMillimeters) {
-		m_MMInches.SetCurSel(MediaNativeUnits == OdDbPlotSettings::kMillimeters);
+		m_MmInches.SetCurSel(MediaNativeUnits == OdDbPlotSettings::kMillimeters);
 		OnSelChangeMMInchesList();
 	}
 }
@@ -437,7 +410,7 @@ OdString EoDlgPageSetup::GetCanonicalByLocaleMediaName(OdString localeMediaName)
 	return MediaNames.first();
 }
 
-void EoDlgPageSetup::OnSelchangeDeviceList() {
+void EoDlgPageSetup::OnSelChangeDeviceList() {
 	UpdateData();
 	CString NewDeviceName;
 	const auto CurrentSelection {m_PlotDeviceName.GetCurSel()};
@@ -491,13 +464,13 @@ BOOL EoDlgPageSetup::OnInitDialog() {
 	// select active paper from plot settings
 	// au doesn't use media name stored in dxf, possible au
 	// look for name by paper parameters.
-	OnSelchangeDeviceList();
+	OnSelChangeDeviceList();
 	FillPlotAreaCombo(true);
 	FillPlotOffset();
 	FillScaleValues(true);
 	FillPaperOrientation();
 	FillPlotStyles();
-	FillShadePlotQualityDPI(true);
+	FillShadePlotQualityDpi(true);
 	FillPlotStyleCombo(true);
 	FillViewCombo(true);
 	FillWindowArea();
@@ -546,7 +519,7 @@ void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	const auto IsModel {IsModelSpacePageSetup()};
 	const auto IsLayout {m_PlotSettings.plotType() == OdDbPlotSettings::kLayout};
 	m_FitToPaper = m_PlotSettings.useStandardScale() && !IsLayout && ScaleType == OdDbPlotSettings::kScaleToFit;
-	m_ScaleLW = m_PlotSettings.scaleLineweights();
+	m_ScaleLineweights = m_PlotSettings.scaleLineweights();
 	if (IsLayout) {
 		m_FitToPaper = m_CenterThePlot = false;
 	}
@@ -562,7 +535,7 @@ void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	} else {
 		m_PlotSettings.getCustomPrintScale(m_PaperScaleUnit, m_DrawingScaleUnit);
 	}
-	FillMMInches();
+	FillMmInches();
 	//m_PaperUnitText = CString(EoPlotUnitsInfo::GetTextByValue(m_PaperScaleUnit, PlotUnitsInfo[PaperUnits])) + L" =");
 	m_DrawingUnitText = EoPlotUnitsInfo::GetTextByValue(m_DrawingScaleUnit, PlotUnitsInfo[3]);
 	UpdateData(FALSE);
@@ -573,7 +546,7 @@ bool EoDlgPageSetup::IsWHSwap() const {
 	return Rotation == OdDbPlotSettings::k90degrees || Rotation == OdDbPlotSettings::k270degrees;
 }
 
-void EoDlgPageSetup::OnChangeEditOffsetXY() {
+void EoDlgPageSetup::OnChangeEditOffsetXy() {
 	UpdateData();
 	const auto PaperUnits {m_PlotSettings.plotPaperUnits()};
 	if (PaperUnits == OdDbPlotSettings::kInches) {
@@ -645,15 +618,15 @@ bool EoDlgPageSetup::IsPaperWidthLessHeight() const {
 }
 
 void EoDlgPageSetup::FillWindowArea() {
-	double xmin;
-	double ymin;
-	double xmax;
-	double ymax;
-	m_PlotSettings.getPlotWindowArea(xmin, ymin, xmax, ymax);
-	m_xMin.Format(L"%.6f", xmin);
-	m_yMin.Format(L"%.6f", ymin);
-	m_xMax.Format(L"%.6f", xmax);
-	m_yMax.Format(L"%.6f", ymax);
+	double MinX;
+	double MinY;
+	double MaxX;
+	double MaxY;
+	m_PlotSettings.getPlotWindowArea(MinX, MinY, MaxX, MaxY);
+	m_WindowMinX.Format(L"%.6f", MinX);
+	m_WindowMinY.Format(L"%.6f", MinY);
+	m_WindowMaxX.Format(L"%.6f", MaxX);
+	m_WindowMaxY.Format(L"%.6f", MaxY);
 	UpdateData(FALSE);
 }
 
@@ -855,14 +828,14 @@ void EoDlgPageSetup::OnSelChangeQualityList() {
 	UpdateData();
 	const auto CurrentSelection {m_Quality.GetCurSel()};
 	m_PlotSettings.setShadePlotResLevel(static_cast<OdDbPlotSettings::ShadePlotResLevel>(CurrentSelection));
-	FillShadePlotQualityDPI(false);
+	FillShadePlotQualityDpi(false);
 }
 
 void EoDlgPageSetup::OnSelChangeShadePlotList() {
 	UpdateData();
 	const auto CurrentSelection {m_ShadePlot.GetCurSel()};
 	m_PlotSettings.setShadePlot(static_cast<OdDbPlotSettings::ShadePlotType>(CurrentSelection));
-	FillShadePlotQualityDPI(false);
+	FillShadePlotQualityDpi(false);
 }
 
 void EoDlgPageSetup::OnSelChangeViewsList() {
@@ -903,8 +876,8 @@ void EoDlgPageSetup::UnitsConverted(const OdDbPlotSettings::PlotPaperUnits prevU
 void EoDlgPageSetup::OnSelChangeMMInchesList() {
 	UpdateData();
 	CString Units;
-	const auto CurrentSelection {m_MMInches.GetCurSel()};
-	m_MMInches.GetLBText(CurrentSelection, Units);
+	const auto CurrentSelection {m_MmInches.GetCurSel()};
+	m_MmInches.GetLBText(CurrentSelection, Units);
 	auto PaperUnits {OdDbPlotSettings::kPixels};
 	if (Units == "mm") {
 		PaperUnits = OdDbPlotSettings::kMillimeters;
@@ -920,10 +893,10 @@ void EoDlgPageSetup::OnSelChangeMMInchesList() {
 	FillPlotOffset();
 }
 
-void EoDlgPageSetup::OnChangeEditDPI() {
+void EoDlgPageSetup::OnChangeEditDpi() {
 	UpdateData();
 	m_PlotSettings.setShadePlotCustomDPI(m_CustomDPI);
-	FillShadePlotQualityDPI(false);
+	FillShadePlotQualityDpi(false);
 }
 
 void EoDlgPageSetup::OnCheckDisplayPlotStyles() {
@@ -938,8 +911,8 @@ void EoDlgPageSetup::OnClickWindowButton() {
 	auto ParentWindow {GetParent()};
 	ParentWindow->EnableWindow(TRUE);
 	ParentWindow->BringWindowToTop();
-	auto FirstCorner {m_pIO->getPoint(L"Specify first corner:", OdEd::kGptNoUCS)};
-	auto OppositeCorner {m_pIO->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame)};
+	auto FirstCorner {m_UserIo->getPoint(L"Specify first corner:", OdEd::kGptNoUCS)};
+	auto OppositeCorner {m_UserIo->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame)};
 
 	// <command_view>
 	// Points are returned in eye plane, transform it back to screen plane if it is possible

@@ -166,14 +166,14 @@ bool EoDbPoint::IsInView(AeSysView* view) const {
 bool EoDbPoint::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-	return point.DistanceToPointXY(pt) < sm_SelectApertureSize ? true : false;
+	return point.DistanceToPointXY(pt) < ms_SelectApertureSize ? true : false;
 }
 
 OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-	sm_ControlPointIndex = point.DistanceToPointXY(pt) < sm_SelectApertureSize ? 0 : SIZE_T_MAX;
-	return sm_ControlPointIndex == 0 ? m_Position : OdGePoint3d::kOrigin;
+	ms_ControlPointIndex = point.DistanceToPointXY(pt) < ms_SelectApertureSize ? 0 : SIZE_T_MAX;
+	return ms_ControlPointIndex == 0 ? m_Position : OdGePoint3d::kOrigin;
 }
 
 bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
@@ -252,7 +252,7 @@ bool EoDbPoint::Write(EoDbFile& file) const {
 void EoDbPoint::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 1;
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kPointPrimitive);
-	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_PointDisplayMode);
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Position);
 	::ZeroMemory(&buffer[20], 12);

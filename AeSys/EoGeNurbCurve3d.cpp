@@ -3,10 +3,6 @@
 #include "EoGePolyline.h"
 #include "EoGeNurbCurve3d.h"
 
-EoGeNurbCurve3d::EoGeNurbCurve3d()
-	: OdGeNurbCurve3d() {
-}
-
 int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 	const auto NumberOfControlPoints {spline.numControlPoints()};
 	const auto Degree {EoMin(spline.degree(), NumberOfControlPoints - 1)};

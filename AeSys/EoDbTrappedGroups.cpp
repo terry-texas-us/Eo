@@ -91,7 +91,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		CMemFile MemoryFile;
 		MemoryFile.SetLength(96);
 		MemoryFile.SeekToEnd();
-		const auto Buffer {new unsigned char[EoDbPrimitive::BUFFER_SIZE]};
+		const auto Buffer {new unsigned char[EoDbPrimitive::mc_BufferSize]};
 		m_TrappedGroupList.Write(MemoryFile, Buffer);
 		delete[] Buffer;
 		OdGeExtents3d Extents;

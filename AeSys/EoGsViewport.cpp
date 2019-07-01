@@ -1,15 +1,6 @@
 #include "stdafx.h"
 #include "EoGsViewport.h"
 
-EoGsViewport::EoGsViewport(const EoGsViewport& other) noexcept {
-	m_DeviceHeightInPixels = other.m_DeviceHeightInPixels;
-	m_DeviceWidthInPixels = other.m_DeviceWidthInPixels;
-	m_DeviceHeightInInches = other.m_DeviceHeightInInches;
-	m_DeviceWidthInInches = other.m_DeviceWidthInInches;
-	m_HeightInPixels = other.m_HeightInPixels;
-	m_WidthInPixels = other.m_WidthInPixels;
-}
-
 CPoint EoGsViewport::DoProjection(const EoGePoint4d& point) const noexcept {
 	CPoint Point;
 	Point.x = lround((point.x / point.W() + 1.0) * ((m_WidthInPixels - 1.0) / 2.0));

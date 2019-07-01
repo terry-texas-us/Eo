@@ -12,8 +12,6 @@ EoDlgSetPastePosition::EoDlgSetPastePosition(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetPastePosition::~EoDlgSetPastePosition() = default;
-
 void EoDlgSetPastePosition::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }

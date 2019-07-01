@@ -275,12 +275,7 @@ IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 
 EoDlgPlotStyleEditor_FormViewPropertyPage::EoDlgPlotStyleEditor_FormViewPropertyPage()
 	: CPropertyPage(IDD) {
-	m_pPlotStyleTable = nullptr;
-	m_pPlotStyleActive = nullptr;
-	m_bEditChanging = false;
 }
-
-EoDlgPlotStyleEditor_FormViewPropertyPage::~EoDlgPlotStyleEditor_FormViewPropertyPage() = default;
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::DoDataExchange(CDataExchange* dataExchange) {
 	CPropertyPage::DoDataExchange(dataExchange);

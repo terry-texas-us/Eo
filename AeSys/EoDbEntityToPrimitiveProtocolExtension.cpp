@@ -59,15 +59,15 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	if (Color.isByBlock()) {
 		primitive->SetColorIndex(7); // 7 is used when entity is not in a block. Primitives are never in blocks so use 7.
 	} else if (Color.isByLayer()) {
-		primitive->SetColorIndex(EoDbPrimitive::COLORINDEX_BYLAYER);
+		primitive->SetColorIndex(EoDbPrimitive::mc_ColorindexBylayer);
 	} else {
 		primitive->SetColorIndex(static_cast<short>(Color.colorIndex()));
 	}
 	const auto Linetype {entity->linetypeId()};
 	if (Linetype == DatabasePtr->getLinetypeByBlockId()) {
-		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYBLOCK);
+		primitive->SetLinetypeIndex(EoDbPrimitive::mc_LinetypeByblock);
 	} else if (Linetype == DatabasePtr->getLinetypeByLayerId()) {
-		primitive->SetLinetypeIndex(EoDbPrimitive::LINETYPE_BYLAYER);
+		primitive->SetLinetypeIndex(EoDbPrimitive::mc_LinetypeBylayer);
 	} else {
 		const auto Name {entity->linetype()};
 		primitive->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));

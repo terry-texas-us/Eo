@@ -1,20 +1,22 @@
 #pragma once
-
 class EoDlgBlockInsert : public CDialog {
 DECLARE_DYNAMIC(EoDlgBlockInsert)
+
 	EoDlgBlockInsert(CWnd* parent = nullptr);
+
 	EoDlgBlockInsert(AeSysDoc* document, CWnd* parent = nullptr);
-	~EoDlgBlockInsert();
 
 	enum { IDD = IDD_INSERT_BLOCK };
 
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) override;
+
 	BOOL OnInitDialog() override;
+
 	void OnOK() override;
-	static OdGePoint3d InsertionPoint;
+
+	static OdGePoint3d ms_InsertionPoint;
 	AeSysDoc* m_Document;
-public:
 	CListBox m_BlocksListBoxControl;
 	CEdit m_InsertionPointX;
 	CEdit m_InsertionPointY;
@@ -27,9 +29,11 @@ public:
 	CButton m_ScaleOnscreen;
 	CButton m_RotationOnscreen;
 	CButton m_Explode;
-	void OnLbnSelchangeBlocksList();
-	void OnBnClickedPurge();
-DECLARE_MESSAGE_MAP()
 public:
+	void OnLbnSelchangeBlocksList();
+
+	void OnBnClickedPurge();
+
 	void OnBnClickedCancel();
+DECLARE_MESSAGE_MAP()
 };

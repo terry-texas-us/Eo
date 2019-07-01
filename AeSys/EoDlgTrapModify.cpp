@@ -52,10 +52,10 @@ void EoDlgTrapModify::ModifyPolygons() {
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
-				auto pPolygon {dynamic_cast<EoDbHatch*>(Primitive)};
-				pPolygon->SetInteriorStyle(g_PrimitiveState.HatchInteriorStyle());
-				pPolygon->SetInteriorStyleIndex2(g_PrimitiveState.HatchInteriorStyleIndex());
-				pPolygon->SetHatchReferenceAxes(EoDbHatch::sm_PatternAngle, EoDbHatch::sm_PatternScaleX, EoDbHatch::sm_PatternScaleY);
+				auto Polygon {dynamic_cast<EoDbHatch*>(Primitive)};
+				Polygon->SetInteriorStyle(g_PrimitiveState.HatchInteriorStyle());
+				Polygon->SetInteriorStyleIndex2(g_PrimitiveState.HatchInteriorStyleIndex());
+				Polygon->SetHatchReferenceAxes(EoDbHatch::patternAngle, EoDbHatch::patternScaleX, EoDbHatch::patternScaleY);
 			}
 		}
 	}

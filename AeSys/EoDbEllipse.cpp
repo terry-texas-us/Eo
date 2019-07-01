@@ -424,7 +424,7 @@ bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& poin
 	EoGePoint4d Points[] {EoGePoint4d(StartPoint(), 1.0), EoGePoint4d(EndPoint(), 1.0)};
 	for (auto& Point : Points) {
 		view->ModelViewTransformPoint(Point);
-		if (point.DistanceToPointXY(Point) < sm_SelectApertureSize) { return true; }
+		if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
 	}
 	return false;
 }
@@ -555,7 +555,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 }
 
 OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
-	const auto dAng {sm_RelationshipOfPoint <= DBL_EPSILON ? m_SweepAngle : 0.0};
+	const auto dAng {ms_RelationshipOfPoint <= DBL_EPSILON ? m_SweepAngle : 0.0};
 	return pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng);
 }
 
@@ -578,19 +578,19 @@ bool EoDbEllipse::IsInView(AeSysView* view) const {
 }
 
 OdGePoint3d EoDbEllipse::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = SIZE_T_MAX;
-	auto Aperture {sm_SelectApertureSize};
+	ms_ControlPointIndex = SIZE_T_MAX;
+	auto Aperture {ms_SelectApertureSize};
 	OdGePoint3d ptCtrl[] = {StartPoint(), EndPoint()};
 	for (unsigned w = 0; w < 2; w++) {
 		EoGePoint4d pt(ptCtrl[w], 1.0);
 		view->ModelViewTransformPoint(pt);
 		const auto dDis {point.DistanceToPointXY(pt)};
 		if (dDis < Aperture) {
-			sm_ControlPointIndex = w;
+			ms_ControlPointIndex = w;
 			Aperture = dDis;
 		}
 	}
-	return sm_ControlPointIndex == SIZE_T_MAX ? OdGePoint3d::kOrigin : ptCtrl[sm_ControlPointIndex];
+	return ms_ControlPointIndex == SIZE_T_MAX ? OdGePoint3d::kOrigin : ptCtrl[ms_ControlPointIndex];
 }
 
 bool EoDbEllipse::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) {
@@ -602,7 +602,7 @@ bool EoDbEllipse::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* vi
 bool EoDbEllipse::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	polyline::BeginLineStrip();
 	GenPts(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis), m_SweepAngle);
-	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, projectedPoint);
+	return polyline::SelectUsingPoint(point, view, ms_RelationshipOfPoint, projectedPoint);
 }
 
 bool EoDbEllipse::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -764,8 +764,8 @@ bool EoDbEllipse::Write(EoDbFile& file) const {
 void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = 2;
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
-	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
 	if (buffer[7] >= 16) buffer[7] = 2;
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Center);
 	reinterpret_cast<EoVaxVector3d*>(& buffer[20])->Convert(m_MajorAxis);

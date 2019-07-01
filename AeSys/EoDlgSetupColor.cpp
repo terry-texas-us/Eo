@@ -20,8 +20,6 @@ EoDlgSetupColor::EoDlgSetupColor(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetupColor::~EoDlgSetupColor() = default;
-
 void EoDlgSetupColor::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_EVEN_COLORS, m_EvenColorsButton);
@@ -83,12 +81,12 @@ void EoDlgSetupColor::OnClickedOddColors() {
 }
 
 void EoDlgSetupColor::OnBnClickedByblockButton() {
-	colorIndex = EoDbPrimitive::COLORINDEX_BYBLOCK;
+	colorIndex = EoDbPrimitive::mc_ColorindexByblock;
 	CDialog::OnOK();
 }
 
 void EoDlgSetupColor::OnBnClickedBylayerButton() {
-	colorIndex = EoDbPrimitive::COLORINDEX_BYLAYER;
+	colorIndex = EoDbPrimitive::mc_ColorindexBylayer;
 	CDialog::OnOK();
 }
 

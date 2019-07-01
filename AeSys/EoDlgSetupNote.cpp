@@ -10,16 +10,13 @@ BEGIN_MESSAGE_MAP(EoDlgSetupNote, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupNote::EoDlgSetupNote(CWnd* parent)
-	: CDialog(IDD, parent)
-	, fontDefinition(nullptr) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgSetupNote::EoDlgSetupNote(EoDbFontDefinition* fontDefinition, CWnd* parent)
 	: CDialog(IDD, parent)
 	, fontDefinition(fontDefinition) {
 }
-
-EoDlgSetupNote::~EoDlgSetupNote() = default;
 
 void EoDlgSetupNote::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

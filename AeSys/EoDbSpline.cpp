@@ -111,8 +111,8 @@ void EoDbSpline::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 
 OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 	OdGePoint3d pt;
-	if (sm_RelationshipOfPoint <= DBL_EPSILON) pt = m_Spline.endPoint();
-	else if (sm_RelationshipOfPoint >= 1. - DBL_EPSILON) pt = m_Spline.startPoint();
+	if (ms_RelationshipOfPoint <= DBL_EPSILON) pt = m_Spline.endPoint();
+	else if (ms_RelationshipOfPoint >= 1. - DBL_EPSILON) pt = m_Spline.startPoint();
 	else if (m_Spline.endPoint().x > m_Spline.startPoint().x) pt = m_Spline.startPoint();
 	else if (m_Spline.endPoint().x < m_Spline.startPoint().x) pt = m_Spline.endPoint();
 	else if (m_Spline.endPoint().y > m_Spline.startPoint().y) pt = m_Spline.startPoint();
@@ -149,14 +149,14 @@ bool EoDbSpline::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d& /
 }
 
 OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = SIZE_T_MAX;
+	ms_ControlPointIndex = SIZE_T_MAX;
 	return point.Convert3d();
 }
 
 bool EoDbSpline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& ptProj) const {
 	polyline::BeginLineStrip();
 	EoGeNurbCurve3d::GeneratePoints(m_Spline);
-	return polyline::SelectUsingPoint(point, view, sm_RelationshipOfPoint, ptProj);
+	return polyline::SelectUsingPoint(point, view, ms_RelationshipOfPoint, ptProj);
 }
 
 bool EoDbSpline::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
@@ -203,8 +203,8 @@ bool EoDbSpline::Write(EoDbFile& file) const {
 void EoDbSpline::Write(CFile& file, unsigned char* buffer) const {
 	buffer[3] = static_cast<unsigned char>((2 + m_Spline.numControlPoints() * 3) / 8 + 1);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
-	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
-	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == LINETYPE_BYLAYER ? sm_LayerLinetypeIndex : m_LinetypeIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
+	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
 	*reinterpret_cast<short*>(& buffer[8]) = static_cast<short>(m_Spline.numControlPoints());
 	auto i {10};
 	for (unsigned short w = 0; w < m_Spline.numControlPoints(); w++) {

@@ -13,7 +13,7 @@ BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)
 		ON_BN_CLICKED(IDC_PURGE, &EoDlgBlockInsert::OnBnClickedPurge)
 		ON_BN_CLICKED(IDCANCEL, &EoDlgBlockInsert::OnBnClickedCancel)
 END_MESSAGE_MAP()
-OdGePoint3d EoDlgBlockInsert::InsertionPoint;
+OdGePoint3d EoDlgBlockInsert::ms_InsertionPoint;
 
 EoDlgBlockInsert::EoDlgBlockInsert(CWnd* parent)
 	: CDialog(IDD, parent)
@@ -24,8 +24,6 @@ EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_Document(document) {
 }
-
-EoDlgBlockInsert::~EoDlgBlockInsert() = default;
 
 void EoDlgBlockInsert::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -45,7 +43,7 @@ void EoDlgBlockInsert::DoDataExchange(CDataExchange* dataExchange) {
 
 BOOL EoDlgBlockInsert::OnInitDialog() {
 	CDialog::OnInitDialog();
-	InsertionPoint = AeSys::GetCursorPosition();
+	ms_InsertionPoint = AeSys::GetCursorPosition();
 	CString BlockName;
 	EoDbBlock* Block;
 	auto BlockPosition {m_Document->GetFirstBlockPosition()};
@@ -73,7 +71,7 @@ void EoDlgBlockInsert::OnOK() {
 		m_BlocksListBoxControl.GetText(CurrentSelection, BlockName);
 		auto BlockReference {new EoDbBlockReference()};
 		BlockReference->SetName(BlockName);
-		BlockReference->SetPosition2(InsertionPoint);
+		BlockReference->SetPosition2(ms_InsertionPoint);
 		auto Group {new EoDbGroup};
 		Group->AddTail(BlockReference);
 		m_Document->AddWorkLayerGroup(Group);

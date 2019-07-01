@@ -2482,13 +2482,13 @@ void AeSysView::On3dViewsIsometric() {
 	static auto FrontBack {0};
 	static auto AboveUnder {0};
 	EoDlgSelectIsometricView Dialog;
-	Dialog.m_LeftRight = LeftRight;
-	Dialog.m_FrontBack = FrontBack;
-	Dialog.m_AboveUnder = AboveUnder;
+	Dialog.leftRight = LeftRight;
+	Dialog.frontBack = FrontBack;
+	Dialog.aboveUnder = AboveUnder;
 	if (Dialog.DoModal()) {
-		LeftRight = Dialog.m_LeftRight;
-		FrontBack = Dialog.m_FrontBack;
-		AboveUnder = Dialog.m_AboveUnder;
+		LeftRight = Dialog.leftRight;
+		FrontBack = Dialog.frontBack;
+		AboveUnder = Dialog.aboveUnder;
 		OdGeVector3d Direction;
 		Direction.x = LeftRight == 0 ? .5773503 : -.5773503;
 		Direction.y = FrontBack == 0 ? .5773503 : -.5773503;

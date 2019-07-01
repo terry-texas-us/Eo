@@ -11,8 +11,6 @@ EoDlgSetupCustomMouseCharacters::EoDlgSetupCustomMouseCharacters(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetupCustomMouseCharacters::~EoDlgSetupCustomMouseCharacters() = default;
-
 void EoDlgSetupCustomMouseCharacters::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }

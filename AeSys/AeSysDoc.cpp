@@ -2039,14 +2039,14 @@ void AeSysDoc::OnSetupFillPattern() noexcept {
 
 void AeSysDoc::OnSetupFillHatch() {
 	EoDlgSetupHatch SetupHatchDialog;
-	SetupHatchDialog.hatchXScaleFactor = EoDbHatch::sm_PatternScaleX;
-	SetupHatchDialog.hatchYScaleFactor = EoDbHatch::sm_PatternScaleY;
-	SetupHatchDialog.hatchRotationAngle = EoToDegree(EoDbHatch::sm_PatternAngle);
+	SetupHatchDialog.hatchXScaleFactor = EoDbHatch::patternScaleX;
+	SetupHatchDialog.hatchYScaleFactor = EoDbHatch::patternScaleY;
+	SetupHatchDialog.hatchRotationAngle = EoToDegree(EoDbHatch::patternAngle);
 	if (SetupHatchDialog.DoModal() == IDOK) {
 		g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kHatch);
-		EoDbHatch::sm_PatternScaleX = EoMax(.01, SetupHatchDialog.hatchXScaleFactor);
-		EoDbHatch::sm_PatternScaleY = EoMax(.01, SetupHatchDialog.hatchYScaleFactor);
-		EoDbHatch::sm_PatternAngle = EoArcLength(SetupHatchDialog.hatchRotationAngle);
+		EoDbHatch::patternScaleX = EoMax(0.01, SetupHatchDialog.hatchXScaleFactor);
+		EoDbHatch::patternScaleY = EoMax(0.01, SetupHatchDialog.hatchYScaleFactor);
+		EoDbHatch::patternAngle = EoArcLength(SetupHatchDialog.hatchRotationAngle);
 	}
 }
 

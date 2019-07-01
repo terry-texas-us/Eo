@@ -3,10 +3,6 @@
 
 class EoGeNurbCurve3d : public OdGeNurbCurve3d {
 public:
-	EoGeNurbCurve3d();
-	EoGeNurbCurve3d(const EoGeNurbCurve3d& spline) = default;
-	virtual ~EoGeNurbCurve3d() = default;
-
 	/// <summary>
 	/// Generates the required B-spline curves of various order (capped to 4th) using the Cox and de Boor algorithm.
 	/// </summary>
@@ -18,5 +14,6 @@ public:
 	///	use of repeating vertices. The degree of the spline, which is one less than the order.
 	/// </remarks>
 	static int GeneratePoints(const EoGeNurbCurve3d& spline);
+
 	static void SetDefaultKnotVector(int degree, const OdGePoint3dArray& controlPoints, OdGeKnotVector& knots);
 };

@@ -11,7 +11,7 @@
 
 EoDbJobFile::EoDbJobFile() {
 	m_Version = 3;
-	m_PrimBuf = new unsigned char[EoDbPrimitive::BUFFER_SIZE];
+	m_PrimBuf = new unsigned char[EoDbPrimitive::mc_BufferSize];
 }
 
 EoDbJobFile::~EoDbJobFile() {
@@ -189,7 +189,7 @@ bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& p
 	const unsigned LengthInChunks = m_Version == 1 ? buffer[6] : buffer[3];
 	if (LengthInChunks > 1) {
 		const auto BytesRemaining {(LengthInChunks - 1) * 32};
-		if (BytesRemaining >= EoDbPrimitive::BUFFER_SIZE - 32) { throw L"Exception.FileJob: Primitive buffer overflow."; }
+		if (BytesRemaining >= EoDbPrimitive::mc_BufferSize - 32) { throw L"Exception.FileJob: Primitive buffer overflow."; }
 		if (file.Read(&buffer[32], BytesRemaining) < BytesRemaining) { throw L"Exception.FileJob: Unexpected end of file."; }
 	}
 	return true;

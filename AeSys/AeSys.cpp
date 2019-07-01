@@ -1057,9 +1057,9 @@ void AeSys::HomePointSave(const int i, const OdGePoint3d& point) noexcept {
 void AeSys::InitializeGlobals(CDC* deviceContext) {
 	g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kHatch);
 	g_PrimitiveState.SetHatchInteriorStyleIndex(1);
-	EoDbHatch::sm_PatternScaleX = 0.1;
-	EoDbHatch::sm_PatternScaleY = 0.1;
-	EoDbHatch::sm_PatternAngle = 0.0;
+	EoDbHatch::patternScaleX = 0.1;
+	EoDbHatch::patternScaleY = 0.1;
+	EoDbHatch::patternAngle = 0.0;
 	const EoDbCharacterCellDefinition CharacterCellDefinition;
 	g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 	const EoDbFontDefinition FontDefinition;

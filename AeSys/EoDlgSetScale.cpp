@@ -10,10 +10,8 @@ EoDlgSetScale::EoDlgSetScale(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetScale::~EoDlgSetScale() = default;
-
 void EoDlgSetScale::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Text(dataExchange, IDC_SCALE, scale);
-	DDV_MinMaxDouble(dataExchange, scale, .0001, 10000.);
+	DDV_MinMaxDouble(dataExchange, scale, 0.0001, 10000.0);
 }

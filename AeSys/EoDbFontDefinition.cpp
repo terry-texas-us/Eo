@@ -3,15 +3,6 @@
 #include "EoDbFile.h"
 #include "EoDbText.h"
 
-EoDbFontDefinition::EoDbFontDefinition(const EoDbFontDefinition& other) {
-	m_Precision = other.m_Precision;
-	m_FontName = other.m_FontName;
-	m_Path = other.m_Path;
-	m_HorizontalAlignment = other.m_HorizontalAlignment;
-	m_VerticalAlignment = other.m_VerticalAlignment;
-	m_CharacterSpacing = other.m_CharacterSpacing;
-}
-
 double EoDbFontDefinition::CharacterSpacing() const noexcept {
 	return m_CharacterSpacing;
 }

@@ -6,13 +6,13 @@
 
 IMPLEMENT_DYNAMIC(EoDbPrimitive, CObject)
 
-short EoDbPrimitive::sm_LayerColorIndex = 1;
-short EoDbPrimitive::sm_LayerLinetypeIndex = 1;
-short EoDbPrimitive::sm_HighlightLinetypeIndex = 0;
-short EoDbPrimitive::sm_HighlightColorIndex = 0;
-unsigned EoDbPrimitive::sm_ControlPointIndex = SIZE_T_MAX;
-double EoDbPrimitive::sm_RelationshipOfPoint = 0.0;
-double EoDbPrimitive::sm_SelectApertureSize = .02;
+short EoDbPrimitive::ms_LayerColorIndex = 1;
+short EoDbPrimitive::ms_LayerLinetypeIndex = 1;
+short EoDbPrimitive::ms_HighlightLinetypeIndex = 0;
+short EoDbPrimitive::ms_HighlightColorIndex = 0;
+unsigned EoDbPrimitive::ms_ControlPointIndex = SIZE_T_MAX;
+double EoDbPrimitive::ms_RelationshipOfPoint = 0.0;
+double EoDbPrimitive::ms_SelectApertureSize = .02;
 
 void EoDbPrimitive::CutAt(const OdGePoint3d& /*point*/, EoDbGroup* /*newGroup*/) {
 }
@@ -29,36 +29,36 @@ bool EoDbPrimitive::PivotOnGripPoint(AeSysView* /*view*/, const EoGePoint4d& /*p
 }
 
 CString EoDbPrimitive::FormatColorIndex() const {
-	if (m_ColorIndex == COLORINDEX_BYLAYER) { return L"ByLayer"; }
-	if (m_ColorIndex == COLORINDEX_BYBLOCK) { return L"ByBlock"; }
+	if (m_ColorIndex == mc_ColorindexBylayer) { return L"ByLayer"; }
+	if (m_ColorIndex == mc_ColorindexByblock) { return L"ByBlock"; }
 	wchar_t Buffer[16];
 	_itow_s(m_ColorIndex, Buffer, 16, 10);
 	return Buffer;
 }
 
 CString EoDbPrimitive::FormatLinetypeIndex() const {
-	if (m_LinetypeIndex == LINETYPE_BYLAYER) { return L"ByLayer"; }
-	if (m_LinetypeIndex == LINETYPE_BYBLOCK) { return L"ByBlock"; }
+	if (m_LinetypeIndex == mc_LinetypeBylayer) { return L"ByLayer"; }
+	if (m_LinetypeIndex == mc_LinetypeByblock) { return L"ByBlock"; }
 	wchar_t Buffer[16];
 	_itow_s(m_LinetypeIndex, Buffer, 16, 10);
 	return Buffer;
 }
 
 short EoDbPrimitive::LogicalColorIndex() const noexcept {
-	auto ColorIndex {sm_HighlightColorIndex == 0 ? m_ColorIndex : sm_HighlightColorIndex};
-	if (ColorIndex == COLORINDEX_BYLAYER) {
-		ColorIndex = sm_LayerColorIndex;
-	} else if (ColorIndex == COLORINDEX_BYBLOCK) {
+	auto ColorIndex {ms_HighlightColorIndex == 0 ? m_ColorIndex : ms_HighlightColorIndex};
+	if (ColorIndex == mc_ColorindexBylayer) {
+		ColorIndex = ms_LayerColorIndex;
+	} else if (ColorIndex == mc_ColorindexByblock) {
 		ColorIndex = 7;
 	}
 	return ColorIndex;
 }
 
 short EoDbPrimitive::LogicalLinetypeIndex() const noexcept {
-	auto LinetypeIndex {sm_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : sm_HighlightLinetypeIndex};
-	if (LinetypeIndex == LINETYPE_BYLAYER) {
-		LinetypeIndex = sm_LayerLinetypeIndex;
-	} else if (LinetypeIndex == LINETYPE_BYBLOCK) {
+	auto LinetypeIndex {ms_HighlightLinetypeIndex == 0 ? m_LinetypeIndex : ms_HighlightLinetypeIndex};
+	if (LinetypeIndex == mc_LinetypeBylayer) {
+		LinetypeIndex = ms_LayerLinetypeIndex;
+	} else if (LinetypeIndex == mc_LinetypeByblock) {
 		LinetypeIndex = 1;
 	}
 	return LinetypeIndex;
@@ -70,7 +70,7 @@ void EoDbPrimitive::ModifyState() noexcept {
 }
 
 unsigned EoDbPrimitive::ControlPointIndex() noexcept {
-	return sm_ControlPointIndex;
+	return ms_ControlPointIndex;
 }
 
 bool EoDbPrimitive::IsSupportedLinetype(const int linetype) noexcept {
@@ -78,23 +78,23 @@ bool EoDbPrimitive::IsSupportedLinetype(const int linetype) noexcept {
 }
 
 short EoDbPrimitive::LayerColorIndex() noexcept {
-	return sm_LayerColorIndex;
+	return ms_LayerColorIndex;
 }
 
 void EoDbPrimitive::SetLayerColorIndex(const short colorIndex) noexcept {
-	sm_LayerColorIndex = colorIndex;
+	ms_LayerColorIndex = colorIndex;
 }
 
 short EoDbPrimitive::LayerLinetypeIndex() noexcept {
-	return sm_LayerLinetypeIndex;
+	return ms_LayerLinetypeIndex;
 }
 
 void EoDbPrimitive::SetLayerLinetypeIndex(const short linetypeIndex) noexcept {
-	sm_LayerLinetypeIndex = linetypeIndex;
+	ms_LayerLinetypeIndex = linetypeIndex;
 }
 
 double EoDbPrimitive::RelationshipOfPoint() noexcept {
-	return sm_RelationshipOfPoint;
+	return ms_RelationshipOfPoint;
 }
 
 void EoDbPrimitive::SetColorIndex2(const short colorIndex) {
@@ -115,19 +115,19 @@ void EoDbPrimitive::SetLinetypeIndex2(const short linetypeIndex) {
 }
 
 short EoDbPrimitive::HighlightColorIndex() noexcept {
-	return sm_HighlightColorIndex;
+	return ms_HighlightColorIndex;
 }
 
 short EoDbPrimitive::HighlightLinetypeIndex() noexcept {
-	return sm_HighlightLinetypeIndex;
+	return ms_HighlightLinetypeIndex;
 }
 
 void EoDbPrimitive::SetHighlightColorIndex(const short colorIndex) noexcept {
-	sm_HighlightColorIndex = colorIndex;
+	ms_HighlightColorIndex = colorIndex;
 }
 
 void EoDbPrimitive::SetHighlightLinetypeIndex(const short linetypeIndex) noexcept {
-	sm_HighlightLinetypeIndex = linetypeIndex;
+	ms_HighlightLinetypeIndex = linetypeIndex;
 }
 
 OdGeVector3d ComputeArbitraryAxis(const OdGeVector3d& normal) {
@@ -171,9 +171,9 @@ OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex(const short linetypeIndex) {
 OdDbObjectId EoDbPrimitive::LinetypeObjectFromIndex0(OdDbDatabasePtr database, const short linetypeIndex) {
 	OdDbObjectId Linetype;
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
-	if (linetypeIndex == LINETYPE_BYLAYER) {
+	if (linetypeIndex == mc_LinetypeBylayer) {
 		Linetype = Linetypes->getLinetypeByLayerId();
-	} else if (linetypeIndex == LINETYPE_BYBLOCK) {
+	} else if (linetypeIndex == mc_LinetypeByblock) {
 		Linetype = Linetypes->getLinetypeByBlockId();
 	} else {
 		const auto Name {EoDbLinetypeTable::LegacyLinetypeName(linetypeIndex)};

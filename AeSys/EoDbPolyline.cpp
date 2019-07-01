@@ -234,7 +234,7 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) n
 	GetPointAt(ms_PivotVertex, Point);
 	EoGePoint4d ptCtrl(Point, 1.0);
 	view->ModelViewTransformPoint(ptCtrl);
-	if (ptCtrl.DistanceToPointXY(point) >= sm_SelectApertureSize) { return false; } // Not on proper vertex
+	if (ptCtrl.DistanceToPointXY(point) >= ms_SelectApertureSize) { return false; } // Not on proper vertex
 	if (ms_PivotVertex == 0) {
 		ms_Edge = ms_Edge == 1 ? NumberOfVertices : 1;
 	} else if (ms_PivotVertex == NumberOfVertices - 1) {
@@ -248,8 +248,8 @@ bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) n
 }
 
 OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = SIZE_T_MAX;
-	auto Aperture {sm_SelectApertureSize};
+	ms_ControlPointIndex = SIZE_T_MAX;
+	auto Aperture {ms_SelectApertureSize};
 	ms_PivotVertex = m_Vertices.size();
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		OdGePoint3d Point;
@@ -258,15 +258,15 @@ OdGePoint3d EoDbPolyline::SelectAtControlPoint(AeSysView* view, const EoGePoint4
 		view->ModelViewTransformPoint(pt);
 		const auto dDis {point.DistanceToPointXY(pt)};
 		if (dDis < Aperture) {
-			sm_ControlPointIndex = VertexIndex;
+			ms_ControlPointIndex = VertexIndex;
 			Aperture = dDis;
 			ms_Edge = VertexIndex + 1;
 			ms_PivotVertex = VertexIndex;
 		}
 	}
 	auto ControlPoint {OdGePoint3d::kOrigin};
-	if (sm_ControlPointIndex != SIZE_T_MAX) {
-		GetPointAt(sm_ControlPointIndex, ControlPoint);
+	if (ms_ControlPointIndex != SIZE_T_MAX) {
+		GetPointAt(ms_ControlPointIndex, ControlPoint);
 	}
 	return ControlPoint;
 }
@@ -283,8 +283,8 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 		view->ModelViewTransformPoint(ptBeg);
 		view->ModelViewTransformPoint(ptEnd);
 		const EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
-		if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
-			projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
+		if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, ms_RelationshipOfPoint)) {
+			projectedPoint.z = ptBeg.z + ms_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 			return true;
 		}
 	} else { // Evaluate entire polyline
@@ -300,8 +300,8 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 			EoGePoint4d ptEnd(EndPoint, 1.0);
 			view->ModelViewTransformPoint(ptEnd);
 			EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
-			if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, sm_RelationshipOfPoint)) {
-				projectedPoint.z = ptBeg.z + sm_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
+			if (LineSegment.IsSelectedBy_xy(point.Convert3d(), view->SelectApertureSize(), projectedPoint, ms_RelationshipOfPoint)) {
+				projectedPoint.z = ptBeg.z + ms_RelationshipOfPoint * (ptEnd.z - ptBeg.z);
 				ms_Edge = VertexIndex;
 				ms_PivotVertex = NumberOfVertices;
 				return true;

@@ -17,8 +17,6 @@ EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent)
 	, m_ActiveView(view) {
 }
 
-EoDlgSetupConstraints::~EoDlgSetupConstraints() = default;
-
 void EoDlgSetupConstraints::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_USR_GRID_X_INT, m_GridXSnapSpacing);

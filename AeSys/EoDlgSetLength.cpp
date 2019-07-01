@@ -11,8 +11,6 @@ EoDlgSetLength::EoDlgSetLength(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetLength::~EoDlgSetLength() = default;
-
 void EoDlgSetLength::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }

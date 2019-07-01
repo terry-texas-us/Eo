@@ -137,7 +137,7 @@ bool EoDbText::IsInView(AeSysView* view) const {
 bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_ReferenceSystem.Origin(), 1.0);
 	view->ModelViewTransformPoint(pt);
-	return point.DistanceToPointXY(pt) < sm_SelectApertureSize ? true : false;
+	return point.DistanceToPointXY(pt) < ms_SelectApertureSize ? true : false;
 }
 
 void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {
@@ -178,7 +178,7 @@ double EoDbText::Rotation() const {
 }
 
 OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {
-	sm_ControlPointIndex = USHRT_MAX;
+	ms_ControlPointIndex = USHRT_MAX;
 	return point.Convert3d();
 }
 
@@ -247,7 +247,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	const auto NumberOfCharacters {static_cast<unsigned short>(m_Text.GetLength())};
 	buffer[3] = static_cast<unsigned char>((86 + NumberOfCharacters) / 32);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
-	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
+	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_FontDefinition.Precision());
 	*reinterpret_cast<short*>(& buffer[8]) = 0;
 	reinterpret_cast<EoVaxFloat*>(& buffer[10])->Convert(m_FontDefinition.CharacterSpacing());
