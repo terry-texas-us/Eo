@@ -11,7 +11,7 @@ protected:
 	void initResizeHelper();
 	BOOL OnInitDialog() override;
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 private:
 	void SetupGripper();
 	void MakeGripper();

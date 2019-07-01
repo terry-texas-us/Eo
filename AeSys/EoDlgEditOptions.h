@@ -29,7 +29,6 @@ public:
 	void OnBnClickedEditOpMirX();
 	void OnBnClickedEditOpMirY();
 	void OnBnClickedEditOpMirZ();
-protected:
 DECLARE_MESSAGE_MAP()
 public:
 	double m_ScaleFactorX;

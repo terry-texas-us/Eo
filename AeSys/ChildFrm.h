@@ -10,7 +10,6 @@ DECLARE_DYNCREATE(CChildFrame)
 #endif
 
 	// Generated message map functions
-protected:
 DECLARE_MESSAGE_MAP()
 public:
 	void ActivateFrame(int nCmdShow = -1) override;

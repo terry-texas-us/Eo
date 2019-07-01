@@ -29,7 +29,6 @@ public:
 	CButton m_Explode;
 	void OnLbnSelchangeBlocksList();
 	void OnBnClickedPurge();
-protected:
 DECLARE_MESSAGE_MAP()
 public:
 	void OnBnClickedCancel();

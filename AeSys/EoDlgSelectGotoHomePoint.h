@@ -25,6 +25,5 @@ protected:
 
 	void OnCbnSelchangeList();
 
-protected:
 DECLARE_MESSAGE_MAP()
 };

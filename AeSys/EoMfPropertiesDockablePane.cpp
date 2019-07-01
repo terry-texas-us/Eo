@@ -7,8 +7,8 @@
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-std::vector<const wchar_t*> EoMfPropertiesDockablePane::TabsStyles {L"None", L"Standard", L"Grouped"};
-std::vector<const wchar_t*> EoMfPropertiesDockablePane::TabsLocations {L"On Bottom", L"On Top"};
+std::vector<const wchar_t*> EoMfPropertiesDockablePane::ms_TabsStyles {L"None", L"Standard", L"Grouped"};
+std::vector<const wchar_t*> EoMfPropertiesDockablePane::ms_TabsLocations {L"On Bottom", L"On Top"};
 BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 		ON_WM_CREATE()
 		ON_WM_SETFOCUS()
@@ -28,28 +28,28 @@ void EoMfPropertiesDockablePane::AdjustLayout() {
 	CRect ClientRectangle;
 	CRect ComboRectangle;
 	GetClientRect(ClientRectangle);
-	m_wndObjectCombo.GetWindowRect(&ComboRectangle);
+	m_ComboBox.GetWindowRect(&ComboRectangle);
 	const int cyTlb = m_PropertiesToolBar.CalcFixedLayout(FALSE, TRUE).cy;
-	m_wndObjectCombo.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top, ClientRectangle.Width(), m_nComboHeight, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertiesToolBar.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top + m_nComboHeight, ClientRectangle.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
-	m_PropertyGrid.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top + m_nComboHeight + cyTlb, ClientRectangle.Width(), ClientRectangle.Height() - (m_nComboHeight + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
+	m_ComboBox.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top, ClientRectangle.Width(), m_ComboHeight, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertiesToolBar.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top + m_ComboHeight, ClientRectangle.Width(), cyTlb, SWP_NOACTIVATE | SWP_NOZORDER);
+	m_PropertyGrid.SetWindowPos(nullptr, ClientRectangle.left, ClientRectangle.top + m_ComboHeight + cyTlb, ClientRectangle.Width(), ClientRectangle.Height() - (m_ComboHeight + cyTlb), SWP_NOACTIVATE | SWP_NOZORDER);
 }
 
 int EoMfPropertiesDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CDockablePane::OnCreate(createStructure) == -1) { return -1; }
 	CRect EmptyRectangle;
 	EmptyRectangle.SetRectEmpty();
-	if (!m_wndObjectCombo.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRectangle, this, 1)) {
+	if (!m_ComboBox.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRectangle, this, 1)) {
 		TRACE0("Failed to create Properties Combo\n");
 		return -1;
 	}
-	m_wndObjectCombo.AddString(L"Application");
-	m_wndObjectCombo.AddString(L"Persistent");
-	m_wndObjectCombo.SetFont(CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT))), TRUE);
-	m_wndObjectCombo.SetCurSel(0);
+	m_ComboBox.AddString(L"Application");
+	m_ComboBox.AddString(L"Persistent");
+	m_ComboBox.SetFont(CFont::FromHandle(static_cast<HFONT>(GetStockObject(DEFAULT_GUI_FONT))), TRUE);
+	m_ComboBox.SetCurSel(0);
 	CRect ComboRectangle;
-	m_wndObjectCombo.GetClientRect(&ComboRectangle);
-	m_nComboHeight = ComboRectangle.Height();
+	m_ComboBox.GetClientRect(&ComboRectangle);
+	m_ComboHeight = ComboRectangle.Height();
 	if (!m_PropertyGrid.Create(WS_VISIBLE | WS_CHILD, EmptyRectangle, this, 2)) {
 		TRACE0("Failed to create Properties Grid \n");
 		return -1;
@@ -107,16 +107,16 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	m_PropertyGrid.MarkModifiedProperties();
 	auto WorkspaceTabsGroup {new CMFCPropertyGridProperty(L"Workspace Tabs")};
 	auto TabsStyle {new CMFCPropertyGridProperty(L"Tabs Style", L"", L"Set the Tabs Style to None, Standard, or Grouped", kTabsStyle)};
-	TabsStyle->AddOption(TabsStyles[0]);
-	TabsStyle->AddOption(TabsStyles[1]);
-	TabsStyle->AddOption(TabsStyles[2]);
-	TabsStyle->SetValue(TabsStyles.at(theApp.applicationOptions.tabsStyle));
+	TabsStyle->AddOption(ms_TabsStyles[0]);
+	TabsStyle->AddOption(ms_TabsStyles[1]);
+	TabsStyle->AddOption(ms_TabsStyles[2]);
+	TabsStyle->SetValue(ms_TabsStyles.at(theApp.applicationOptions.tabsStyle));
 	TabsStyle->AllowEdit(FALSE);
 	WorkspaceTabsGroup->AddSubItem(TabsStyle);
 	auto TabLocation {new CMFCPropertyGridProperty(L"Tab Location", L"", L"Set the Tab Location to Top or Bottom", kTabLocation)};
-	TabLocation->AddOption(TabsLocations[0]);
-	TabLocation->AddOption(TabsLocations[1]);
-	TabLocation->SetValue(TabsLocations.at(theApp.applicationOptions.mdiTabInfo.m_tabLocation));
+	TabLocation->AddOption(ms_TabsLocations[0]);
+	TabLocation->AddOption(ms_TabsLocations[1]);
+	TabLocation->SetValue(ms_TabsLocations.at(theApp.applicationOptions.mdiTabInfo.m_tabLocation));
 	TabLocation->AllowEdit(FALSE);
 	WorkspaceTabsGroup->AddSubItem(TabLocation);
 	COleVariant TabsAutoColor(static_cast<short>(theApp.applicationOptions.mdiTabInfo.m_bAutoColor == TRUE), VT_BOOL);
@@ -236,12 +236,12 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 		case kTabsStyle: {
 			const CString TabStyle {Property->GetValue().bstrVal};
 			ResetMDIChild = TRUE;
-			for (auto TabStylesIterator = TabsStyles.begin(); TabStylesIterator != TabsStyles.end(); TabStylesIterator++) {
+			for (auto TabStylesIterator = ms_TabsStyles.begin(); TabStylesIterator != ms_TabsStyles.end(); TabStylesIterator++) {
 
 				if (TabStyle == *TabStylesIterator) {
-					if (*TabStylesIterator == TabsStyles.at(0)) {
+					if (*TabStylesIterator == ms_TabsStyles.at(0)) {
 						theApp.applicationOptions.tabsStyle = EoApOptions::kNone;
-					} else if (*TabStylesIterator == TabsStyles.at(1)) {
+					} else if (*TabStylesIterator == ms_TabsStyles.at(1)) {
 						theApp.applicationOptions.tabsStyle = EoApOptions::kStandard;
 					} else {
 						theApp.applicationOptions.tabsStyle = EoApOptions::kGrouped;
@@ -253,7 +253,7 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 		}
 		case kTabLocation: {
 			const CString TabLocation {Property->GetValue().bstrVal};
-			theApp.applicationOptions.mdiTabInfo.m_tabLocation = TabLocation == TabsLocations.at(0) ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP;
+			theApp.applicationOptions.mdiTabInfo.m_tabLocation = TabLocation == ms_TabsLocations.at(0) ? CMFCTabCtrl::LOCATION_BOTTOM : CMFCTabCtrl::LOCATION_TOP;
 			break;
 		}
 		case kTabsAutoColor:

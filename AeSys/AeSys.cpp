@@ -1977,7 +1977,7 @@ void AeSys::UninitializeTeigha() {
 }
 
 void AeSys::UpdateMdiTabs(const BOOL resetMdiChild) {
-	dynamic_cast<CMainFrame*>(AfxGetMainWnd())->UpdateMDITabs(resetMdiChild);
+	dynamic_cast<CMainFrame*>(AfxGetMainWnd())->UpdateMdiTabs(resetMdiChild);
 }
 
 BOOL AeSys::OnIdle(const long count) {

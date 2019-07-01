@@ -39,6 +39,5 @@ public:
 
 	void OnBnClickedPerspectiveProjection();
 
-protected:
 DECLARE_MESSAGE_MAP()
 };

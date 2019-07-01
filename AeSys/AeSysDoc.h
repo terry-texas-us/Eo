@@ -492,7 +492,6 @@ public:
 	void OnTrapCommandsUnblock();
 	// Returns a pointer to the currently active document.
 	static AeSysDoc* GetDoc();
-protected:
 DECLARE_MESSAGE_MAP()
 public:
 	void OnViewSetActiveLayout();

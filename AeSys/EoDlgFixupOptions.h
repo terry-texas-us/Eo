@@ -12,6 +12,5 @@ protected:
 public:
 	double axisTolerance {0.0};
 	double cornerSize {0.0};
-protected:
 DECLARE_MESSAGE_MAP()
 };

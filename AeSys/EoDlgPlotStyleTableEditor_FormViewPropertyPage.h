@@ -238,5 +238,5 @@ protected:
 	void OnSelendokComboLineJoinStyle();
 	void OnSelendokComboFillStyle();
 	void OnDestroy(); // hides non-virtual function of parent
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 };

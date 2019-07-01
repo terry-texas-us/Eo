@@ -16,6 +16,5 @@ public:
 	void OnBnClickedText();
 	void OnBnClickedFill();
 	void OnBnClickedConstraints();
-protected:
 DECLARE_MESSAGE_MAP()
 };

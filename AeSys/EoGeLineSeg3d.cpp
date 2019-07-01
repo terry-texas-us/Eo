@@ -3,10 +3,6 @@
 #include "PrimState.h"
 #include "EoGePolyline.h"
 
-EoGeLineSeg3d::EoGeLineSeg3d()
-	: OdGeLineSeg3d() {
-}
-
 EoGeLineSeg3d::EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint)
 	: OdGeLineSeg3d(startPoint, endPoint) {
 }

@@ -141,14 +141,14 @@ bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 }
 
 void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {
-	if (iAtt == TM_TEXT_ALL) {
+	if (iAtt == gc_TrapModifyTextAll) {
 		m_ColorIndex = g_PrimitiveState.ColorIndex();
 		m_FontDefinition = fontDefinition;
 		m_ReferenceSystem.Rescale(characterCellDefinition);
-	} else if (iAtt == TM_TEXT_FONT) {
+	} else if (iAtt == gc_TrapModifyTextFont) {
 		m_FontDefinition.SetFontName(fontDefinition.FontName());
 		m_FontDefinition.SetPrecision(fontDefinition.Precision());
-	} else if (iAtt == TM_TEXT_HEIGHT) {
+	} else if (iAtt == gc_TrapModifyTextHeight) {
 		m_FontDefinition.SetCharacterSpacing(fontDefinition.CharacterSpacing());
 		m_FontDefinition.SetPath(fontDefinition.Path());
 		m_ReferenceSystem.Rescale(characterCellDefinition);

@@ -20,6 +20,5 @@ public:
 	double widthFactor {0.0};
 	double obliqueAngle {0.0};
 	double rotationAngle {0.0};
-protected:
 DECLARE_MESSAGE_MAP()
 };

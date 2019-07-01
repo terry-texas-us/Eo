@@ -13,9 +13,9 @@ static char THIS_FILE[] = __FILE__;
 // CMainFrame
 IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 
-const int MaximumUserToolbars = 10;
-const unsigned FirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
-const unsigned LastUserToolBarId = FirstUserToolBarId + MaximumUserToolbars - 1;
+const int gc_MaximumUserToolbars = 10;
+const unsigned gc_FirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
+const unsigned gc_LastUserToolBarId = gc_FirstUserToolBarId + gc_MaximumUserToolbars - 1;
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 		ON_WM_CREATE()
 		ON_WM_DESTROY()
@@ -60,7 +60,7 @@ CMainFrame::CMainFrame() {
 
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	if (CMDIFrameWndEx::OnCreate(createStructure) == -1) { return -1; }
-	UpdateMDITabs(FALSE);
+	UpdateMdiTabs(FALSE);
 	if (!m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE)) {
 		TRACE0("Failed to create menubar\n");
 		return -1;
@@ -80,7 +80,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	}
 	m_StandardToolBar.SetWindowTextW(L"Standard");
 	m_StandardToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...");
-	InitUserToolbars(nullptr, FirstUserToolBarId, LastUserToolBarId);
+	InitUserToolbars(nullptr, gc_FirstUserToolBarId, gc_LastUserToolBarId);
 	if (!m_StatusBar.Create(this)) {
 		TRACE0("Failed to create status bar\n");
 		return -1;
@@ -311,7 +311,7 @@ BOOL CMainFrame::LoadFrame(const unsigned resourceId, const unsigned long defaul
 
 	// Enable customization button for all user toolbars
 	const auto Customize {AeSys::LoadStringResource(IDS_TOOLBAR_CUSTOMIZE)};
-	for (auto i = 0; i < MaximumUserToolbars; i++) {
+	for (auto i = 0; i < gc_MaximumUserToolbars; i++) {
 		auto UserToolbar {GetUserToolBarByIndex(i)};
 		if (UserToolbar != nullptr) {
 			UserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, Customize);
@@ -435,9 +435,9 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			popupMenu->RemoveAllItems();
-			CMenu menu;
-			VERIFY(menu.LoadMenuW(IDR_POPUP_TOOLBAR));
-			const auto PopupSubMenu {menu.GetSubMenu(0)};
+			CMenu PopupToolbarMenu;
+			VERIFY(PopupToolbarMenu.LoadMenuW(IDR_POPUP_TOOLBAR));
+			const auto PopupSubMenu {PopupToolbarMenu.GetSubMenu(0)};
 			ASSERT(PopupSubMenu != nullptr);
 			if (PopupSubMenu) {
 				popupMenu->GetMenuBar()->ImportFromMenu(*PopupSubMenu, TRUE);
@@ -452,14 +452,14 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	return TRUE;
 }
 
-void CMainFrame::UpdateMDITabs(const BOOL resetMDIChild) {
+void CMainFrame::UpdateMdiTabs(const BOOL resetMdiChild) {
 	switch (theApp.applicationOptions.tabsStyle) {
 		case EoApOptions::kNone: {
-			int MDITabsType;
-			if (AreMDITabs(&MDITabsType)) {
-				if (MDITabsType == 1) {
+			int MdiTabsType;
+			if (AreMDITabs(&MdiTabsType)) {
+				if (MdiTabsType == 1) {
 					EnableMDITabs(FALSE);
-				} else if (MDITabsType == 2) {
+				} else if (MdiTabsType == 2) {
 					const CMDITabInfo TabInfo; // ignored when tabbed groups are disabled
 					EnableMDITabbedGroups(FALSE, TabInfo);
 				}
@@ -498,7 +498,7 @@ void CMainFrame::UpdateMDITabs(const BOOL resetMDIChild) {
 		lstCommands.AddTail(ID_WINDOW_TILE_VERT);
 	}
 	CMFCToolBar::SetNonPermittedCommands(lstCommands);
-	if (resetMDIChild) {
+	if (resetMdiChild) {
 		const auto Maximize {theApp.applicationOptions.tabsStyle != EoApOptions::kNone};
 		auto hwndT {::GetWindow(m_hWndMDIClient, GW_CHILD)};
 		while (hwndT != nullptr) {

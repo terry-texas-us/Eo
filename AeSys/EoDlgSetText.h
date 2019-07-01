@@ -13,6 +13,5 @@ protected:
 public:
 	CString text;
 	CString title;
-protected:
 DECLARE_MESSAGE_MAP()
 };

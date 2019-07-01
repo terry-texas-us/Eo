@@ -11,6 +11,5 @@ protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
 public:
 	double scale {0.0};
-protected:
 DECLARE_MESSAGE_MAP()
 };

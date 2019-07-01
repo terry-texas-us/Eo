@@ -20,6 +20,5 @@ public:
 
 	void OnBnClickedMetric();
 
-protected:
 DECLARE_MESSAGE_MAP()
 };

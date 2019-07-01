@@ -20,6 +20,5 @@ public:
 	void OnBnClickedOk();
 	void OnBnClickedGenVanes() noexcept;
 	void OnEnChangeWidth();
-protected:
 DECLARE_MESSAGE_MAP()
 };

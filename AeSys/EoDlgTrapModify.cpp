@@ -18,8 +18,6 @@ EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
 	, m_Document(document) {
 }
 
-EoDlgTrapModify::~EoDlgTrapModify() = default;
-
 void EoDlgTrapModify::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }
@@ -37,11 +35,11 @@ void EoDlgTrapModify::OnOK() {
 	auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	auto FontDefinition {g_PrimitiveState.FontDefinition()};
 	if (IsDlgButtonChecked(IDC_MOD_NOTE)) {
-		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_ALL);
+		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, gc_TrapModifyTextAll);
 	} else if (IsDlgButtonChecked(IDC_FONT)) {
-		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_FONT);
+		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, gc_TrapModifyTextFont);
 	} else if (IsDlgButtonChecked(IDC_HEIGHT)) {
-		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, TM_TEXT_HEIGHT);
+		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, gc_TrapModifyTextHeight);
 	}
 	CDialog::OnOK();
 }

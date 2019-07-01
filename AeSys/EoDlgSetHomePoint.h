@@ -20,6 +20,5 @@ public:
 	CEdit y;
 	CEdit z;
 	void OnCbnEditUpdateList();
-protected:
 DECLARE_MESSAGE_MAP()
 };

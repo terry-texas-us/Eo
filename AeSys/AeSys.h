@@ -397,7 +397,6 @@ public:
 	void OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* commandUserInterface);
 	void OnVectorizerTypeClearMenu();
 	void OnUpdateVectorizerTypeClearMenu(CCmdUI* commandUserInterface);
-protected:
 DECLARE_MESSAGE_MAP()
 };
 

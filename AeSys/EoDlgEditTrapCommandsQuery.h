@@ -17,6 +17,5 @@ public:
 	void FillExtraList(EoDbPrimitive* primitive);
 	void FillGeometryList(EoDbPrimitive* primitive);
 	void OnSelectionChangedGroupTree(NMHDR* notifyStructure, LRESULT* result);
-protected:
 DECLARE_MESSAGE_MAP()
 };

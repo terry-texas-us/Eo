@@ -30,6 +30,5 @@ public:
 	void OnClickedNamedColors();
 	void OnClickedOddColors();
 	void OnChangeColorEdit();
-protected:
 DECLARE_MESSAGE_MAP()
 };

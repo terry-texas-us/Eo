@@ -27,7 +27,7 @@ protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
 	BOOL OnInitDialog() final;
 	void OnPaint(); // hides non-virtual function of parent
-	DECLARE_MESSAGE_MAP()
+DECLARE_MESSAGE_MAP()
 public:
 	void Echo(const OdString& string);
 	OdString GetLastString();

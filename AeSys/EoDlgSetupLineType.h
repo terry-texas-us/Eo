@@ -22,6 +22,5 @@ public:
   void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct); // hides non-virtual function of parent
 	void OnBnClickedBylayerButton();
 	void OnBnClickedByblockButton();
-protected:
 DECLARE_MESSAGE_MAP()
 };

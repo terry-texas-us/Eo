@@ -4,10 +4,8 @@ class AeSysView;
 
 class EoGeLineSeg3d final : public OdGeLineSeg3d {
 public:
-	EoGeLineSeg3d();
-	EoGeLineSeg3d(const EoGeLineSeg3d& line) = default;
+	EoGeLineSeg3d() = default;
 	EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
-	virtual ~EoGeLineSeg3d() = default;
 
 	/// <summary>Determines the angle between two lines.</summary>
 	/// <notes>

@@ -15,6 +15,5 @@ public:
 	int m_LeftRight;
 	int m_FrontBack;
 	int m_AboveUnder;
-protected:
 DECLARE_MESSAGE_MAP()
 };

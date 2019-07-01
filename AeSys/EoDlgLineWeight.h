@@ -23,6 +23,5 @@ public:
 
 	void OnLbnDblclkListLineweight();
 
-protected:
 DECLARE_MESSAGE_MAP()
 };

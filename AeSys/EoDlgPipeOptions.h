@@ -16,6 +16,5 @@ protected:
 public:
 	double pipeTicSize {0.0};
 	double pipeRiseDropRadius {0.0};
-protected:
 DECLARE_MESSAGE_MAP()
 };

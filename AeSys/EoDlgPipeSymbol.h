@@ -14,6 +14,5 @@ protected:
 public:
 	CListBox pipeSymbolsListBoxControl;
 	int currentPipeSymbolIndex {0};
-protected:
 DECLARE_MESSAGE_MAP()
 };

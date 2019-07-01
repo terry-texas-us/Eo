@@ -8,22 +8,23 @@ const int gc_StatusProgress = 2;
 const int gc_StatusOp0 = 3;
 
 class CMainFrame : public CMDIFrameWndEx {
-	LARGE_INTEGER m_pc0;
-	LARGE_INTEGER m_pc1;
-DECLARE_DYNAMIC(CMainFrame)
+	LARGE_INTEGER m_PerformanceCounter0 {{0L, 0L}};
+	LARGE_INTEGER m_PerformanceCounter1 {{0L, 0L}};
+
+	DECLARE_DYNAMIC(CMainFrame)
 	CMainFrame();
 
 	void StartTimer() noexcept {
-		QueryPerformanceCounter(&m_pc0);
+		QueryPerformanceCounter(&m_PerformanceCounter0);
 	}
 
 	void StopTimer(const wchar_t* operationName = nullptr) {
-		QueryPerformanceCounter(&m_pc1);
-		m_pc1.QuadPart -= m_pc0.QuadPart;
-		if (QueryPerformanceFrequency(&m_pc0)) {
-			const auto loadTime {static_cast<double>(m_pc1.QuadPart) / static_cast<double>(m_pc0.QuadPart)};
+		QueryPerformanceCounter(&m_PerformanceCounter1);
+		m_PerformanceCounter1.QuadPart -= m_PerformanceCounter0.QuadPart;
+		if (QueryPerformanceFrequency(&m_PerformanceCounter0)) {
+			const auto loadTime {static_cast<double>(m_PerformanceCounter1.QuadPart) / static_cast<double>(m_PerformanceCounter0.QuadPart)};
 			OdString NewText;
-			auto OperationName {operationName ? operationName : L"Operation"};
+			const auto OperationName {operationName ? operationName : L"Operation"};
 			NewText.format(L"%s Time: %.6f sec.", OperationName, loadTime);
 			SetStatusPaneTextAt(wcscmp(L"Redraw", OperationName) == 0 ? gc_StatusProgress : gc_StatusInfo, NewText);
 		}
@@ -35,9 +36,9 @@ private:
 	int m_CurrentProgress {0};
 	bool m_InProgress {false};
 public:
-	void UpdateMDITabs(BOOL resetMDIChild);
+	void UpdateMdiTabs(BOOL resetMdiChild);
 	BOOL PreCreateWindow(CREATESTRUCT& createStructure) override;
-	BOOL LoadFrame(unsigned resourceId, unsigned long defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = nullptr, CCreateContext* createContext = nullptr) override;
+	BOOL LoadFrame(unsigned resourceId, unsigned long defaultStyle = WS_OVERLAPPEDWINDOW | FWS_ADDTOTITLE, CWnd* parentWindow = NULL, CCreateContext* createContext = NULL) override;
 	~CMainFrame() = default;
 #ifdef _DEBUG
 	void AssertValid() const override;

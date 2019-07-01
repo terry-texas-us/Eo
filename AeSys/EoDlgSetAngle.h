@@ -14,6 +14,5 @@ protected:
 public:
 	double angle {0.0};
 	CString title;
-protected:
 DECLARE_MESSAGE_MAP()
 };

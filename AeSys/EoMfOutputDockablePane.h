@@ -1,10 +1,5 @@
 #pragma once
-class EoMfOutputListBox : public CListBox {
-public:
-	EoMfOutputListBox() = default;
-
-	virtual ~EoMfOutputListBox() = default;
-
+class EoMfOutputListBox final : public CListBox {
 protected:
 	void OnContextMenu(CWnd* pWnd, CPoint point); // hides non-virtual function of parent
 	void OnEditCopy() noexcept;
@@ -16,18 +11,13 @@ protected:
 DECLARE_MESSAGE_MAP()
 };
 
-class EoMfOutputDockablePane : public CDockablePane {
-public:
-	EoMfOutputDockablePane() = default;
-
+class EoMfOutputDockablePane final : public CDockablePane {
 protected:
 	CFont m_Font;
 	CMFCTabCtrl m_wndTabs;
 	EoMfOutputListBox m_OutputMessagesList;
 	EoMfOutputListBox m_OutputReportsList;
 public:
-	virtual ~EoMfOutputDockablePane() = default;
-
 	void ModifyCaption(const CString& string) {
 		SetWindowTextW(string);
 	}

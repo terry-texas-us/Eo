@@ -46,6 +46,5 @@ public:
 	void OnMouseMove(unsigned flags, CPoint point); // hides non-virtual function of parent
 	void OnPaint(); // hides non-virtual function of parent
 	void OnSetFocus(CWnd* oldWindow); // hides non-virtual function of parent
-  protected:
 DECLARE_MESSAGE_MAP()
 };

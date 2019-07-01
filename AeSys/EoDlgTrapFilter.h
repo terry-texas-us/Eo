@@ -20,6 +20,5 @@ public:
 	void FilterByColor(short colorIndex);
 	void FilterByLinetype(short linetypeIndex);
 	void FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType);
-protected:
 DECLARE_MESSAGE_MAP()
 };
