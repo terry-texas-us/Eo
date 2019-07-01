@@ -4,8 +4,7 @@
 class EoDlgLayerPropertiesManager final : public CDialog {
 DECLARE_DYNAMIC(EoDlgLayerPropertiesManager)
 	EoDlgLayerPropertiesManager(CWnd* parent = nullptr);
-	EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent = nullptr);
-	virtual ~EoDlgLayerPropertiesManager();
+	EoDlgLayerPropertiesManager(const OdDbDatabasePtr& database, CWnd* parent = nullptr);
 
 	enum { IDD = IDD_LAYER_PROPERTIES_MANAGER };
 
@@ -15,10 +14,10 @@ protected:
 DECLARE_MESSAGE_MAP()
 public:
 	OdDbDatabasePtr m_Database;
-	int deltaHeight;
-	int deltaWidth;
-	int initialHeight;
-	int initialWidth;
+	int deltaHeight {0};
+	int deltaWidth {0};
+	int initialHeight {0};
+	int initialWidth {0};
 	OdLyLayerFilterPtr rootFilter;
 	CTreeCtrl treeFilters;
 	CImageList treeImages;

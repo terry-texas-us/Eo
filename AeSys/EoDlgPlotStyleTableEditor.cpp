@@ -11,7 +11,6 @@ EoDlgPlotStyleManager::EoDlgPlotStyleManager(CWnd* parent)
 	AddPage(&m_page2);
 }
 
-EoDlgPlotStyleManager::~EoDlgPlotStyleManager() = default;
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleManager, CPropertySheet)
 		ON_WM_CREATE()
 END_MESSAGE_MAP()
@@ -23,7 +22,6 @@ int EoDlgPlotStyleManager::OnCreate(const LPCREATESTRUCT createStructure) {
 
 BOOL EoDlgPlotStyleManager::OnInitDialog() {
 	CPropertySheet::OnInitDialog();
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 	// EXCEPTION: OCX Property Pages should return FALSE
 }

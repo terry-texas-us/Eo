@@ -18,7 +18,6 @@ public:
 
 	EoDbLayer(OdDbLayerTableRecordPtr layer);
 	EoDbLayer(const OdString& name, unsigned short stateFlags);
-	~EoDbLayer() = default;
 	COLORREF Color() const;
 	short ColorIndex() const;
 	void BuildVisibleGroupList(AeSysView* view);

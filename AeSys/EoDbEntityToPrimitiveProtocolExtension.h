@@ -15,7 +15,7 @@ class ConvertEntityToPrimitiveProtocolExtension {
 public:
 	static AeSysDoc* m_Document;
 	ConvertEntityToPrimitiveProtocolExtension(AeSysDoc* document) noexcept;
-	virtual ~ConvertEntityToPrimitiveProtocolExtension();
+	~ConvertEntityToPrimitiveProtocolExtension();
 	void Initialize();
 	void Uninitialize();
 };

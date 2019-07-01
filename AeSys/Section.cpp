@@ -37,14 +37,14 @@ double Section::Depth() const noexcept {
 	return m_Depth;
 }
 
-bool Section::Identical(const Section& section) noexcept {
+bool Section::Identical(const Section& section) const noexcept {
 	return m_Width == section.m_Width && m_Depth == section.m_Depth && m_Properties == section.m_Properties ? true : false;
 }
 
-bool Section::IsRectangular() noexcept {
-	return (m_Properties & Rectangular) == Rectangular;
+bool Section::IsRectangular() const noexcept {
+	return (m_Properties & mc_Rectangular) == mc_Rectangular;
 }
 
-bool Section::IsRound() noexcept {
-	return (m_Properties & Round) == Round;
+bool Section::IsRound() const noexcept {
+	return (m_Properties & mc_Round) == mc_Round;
 }

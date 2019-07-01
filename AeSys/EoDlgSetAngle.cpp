@@ -10,12 +10,10 @@ EoDlgSetAngle::EoDlgSetAngle(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetAngle::~EoDlgSetAngle() = default;
-
 void EoDlgSetAngle::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Text(dataExchange, IDC_ANGLE, angle);
-	DDV_MinMaxDouble(dataExchange, angle, -360., 360.);
+	DDV_MinMaxDouble(dataExchange, angle, -360.0, 360.0);
 }
 
 BOOL EoDlgSetAngle::OnInitDialog() {

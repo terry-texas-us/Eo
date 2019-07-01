@@ -173,18 +173,18 @@ void CBitmapColorInfo::PaintBitmap(CBitmap& bitmap, const COLORREF color) {
 }
 
 const OdCmEntityColor CBitmapColorInfo::GetColor() {
-	const auto EntityColor {OdCmEntityColor(static_cast<unsigned char>(m_color >> 16 & 0xFF), static_cast<unsigned char>(m_color >> 8 & 0xFF), static_cast<unsigned char>(m_color & 0xFF))};
+	const auto EntityColor {OdCmEntityColor(static_cast<unsigned char>(m_Color >> 16 & 0xFF), static_cast<unsigned char>(m_Color >> 8 & 0xFF), static_cast<unsigned char>(m_Color & 0xFF))};
 	return EntityColor;
 }
 
 bool CBitmapColorInfo::IsColor(COLORREF color, const unsigned char item) noexcept {
 	color = static_cast<unsigned long>((item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
-	return m_color == color;
+	return m_Color == color;
 }
 
 CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, const unsigned char colorItem, const int colorIndex)
-	: m_iItem(colorItem) {
-	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
+	: m_Item(colorItem) {
+	m_Color = static_cast<unsigned long>((m_Item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
 	if (colorIndex <= 0) {
@@ -196,17 +196,14 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, 
 	}
 }
 
-CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, const wchar_t* name)
-	: m_iItem(0xff) {
-	m_color = static_cast<unsigned long>((m_iItem << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
+CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, const wchar_t* name) {
+	m_Color = static_cast<unsigned long>((m_Item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
 	wcsncpy(m_name, name, gc_PlotStyleColorMaxName);
 }
 
-CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name)
-	: m_iItem(0xff)
-	, m_color(0) {
+CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name) {
 	const auto BitmapHandle {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
 	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
 	CloneBitmap(Bitmap, &m_bitmap);
@@ -419,7 +416,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 		} else {
 			Item = m_Color.AddBitmap(&m_bitmapList[BitmapIndex]->m_bitmap, m_bitmapList[BitmapIndex]->m_name);
 		}
-		m_bitmapList[BitmapIndex]->m_iItem = static_cast<unsigned char>(Item);
+		m_bitmapList[BitmapIndex]->m_Item = static_cast<unsigned char>(Item);
 	}
 	m_Color.SetCurSel(0);
 }

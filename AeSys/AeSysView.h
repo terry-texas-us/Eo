@@ -661,8 +661,8 @@ private: // Low Pressure Duct (rectangular) interface
 	EoDbGroup* m_EndCapGroup {nullptr};
 	bool m_OriginalPreviousGroupDisplayed {true};
 	EoDbGroup* m_OriginalPreviousGroup {nullptr};
-	Section m_PreviousSection {0.125, 0.0625, Section::Rectangular};
-	Section m_CurrentSection {0.125, 0.0625, Section::Rectangular};
+	Section m_PreviousSection {0.125, 0.0625, Section::mc_Rectangular};
+	Section m_CurrentSection {0.125, 0.0625, Section::mc_Rectangular};
 public:
 	void DoDuctModeMouseMove();
 	void OnLpdModeOptions();
@@ -740,7 +740,8 @@ public:
 	/// <param name="existingSectionWidth"></param>
 	/// <param name="existingSectionDepth"></param>
 	/// <param name="group"></param>
-	OdGePoint3d GenerateBullheadTee(EoDbGroup* existingGroup, EoGeLineSeg3d& existingSectionReferenceLine, double existingSectionWidth, double existingSectionDepth, EoDbGroup* group);
+	OdGePoint3d GenerateBullheadTee(EoDbGroup* existingGroup, EoGeLineSeg3d& existingSectionReferenceLine, double existingSectionWidth, double existingSectionDepth, EoDbGroup* group) {
+	}
 	/// <summary>Generates a full elbow takeoff fitting.</summary>
 	void GenerateFullElbowTakeoff(EoDbGroup* existingGroup, EoGeLineSeg3d& existingSectionReferenceLine, Section existingSection, EoDbGroup* group);
 	/// <summary>Generates section which transitions from one rectangle to another</summary>

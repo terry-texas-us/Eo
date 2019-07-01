@@ -1,18 +1,13 @@
 #include "stdafx.h"
 #include "EoDlgPipeOptions.h"
-
 IMPLEMENT_DYNAMIC(EoDlgPipeOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgPipeOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgPipeOptions::EoDlgPipeOptions(CWnd* parent)
-	: CDialog(IDD, parent)
-	, pipeTicSize(0)
-	, pipeRiseDropRadius(0) {
+	: CDialog(IDD, parent) {
 }
-
-EoDlgPipeOptions::~EoDlgPipeOptions() = default;
 
 void EoDlgPipeOptions::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

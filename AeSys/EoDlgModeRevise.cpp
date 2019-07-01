@@ -22,8 +22,6 @@ EoDlgModeRevise::EoDlgModeRevise(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgModeRevise::~EoDlgModeRevise() = default;
-
 void EoDlgModeRevise::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_TEXT, textEditControl);

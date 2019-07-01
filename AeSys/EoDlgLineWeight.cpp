@@ -21,8 +21,6 @@ EoDlgLineWeight::EoDlgLineWeight(int originalLineWeight, CWnd* parent)
 	, lineWeight(static_cast<OdDb::LineWeight>(originalLineWeight)) {
 }
 
-EoDlgLineWeight::~EoDlgLineWeight() = default;
-
 void EoDlgLineWeight::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_LIST_LINEWEIGHT, lineWeightList);

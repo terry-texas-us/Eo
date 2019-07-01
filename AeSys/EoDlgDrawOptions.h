@@ -3,7 +3,6 @@
 class EoDlgDrawOptions final : public CDialog {
 DECLARE_DYNAMIC(EoDlgDrawOptions)
 	EoDlgDrawOptions(CWnd* parent = nullptr);
-	~EoDlgDrawOptions();
 
 	enum { IDD = IDD_DRAW_OPTIONS };
 

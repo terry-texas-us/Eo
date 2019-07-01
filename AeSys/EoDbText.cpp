@@ -16,7 +16,7 @@ EoDbText::EoDbText(const EoDbText& other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_FontDefinition = other.m_FontDefinition;
 	m_ReferenceSystem = other.m_ReferenceSystem;
-	m_strText = other.m_strText;
+	m_Text = other.m_Text;
 }
 
 EoDbText& EoDbText::operator=(const EoDbText& other) {
@@ -25,7 +25,7 @@ EoDbText& EoDbText::operator=(const EoDbText& other) {
 	m_ColorIndex = other.m_ColorIndex;
 	m_FontDefinition = other.m_FontDefinition;
 	m_ReferenceSystem = other.m_ReferenceSystem;
-	m_strText = other.m_strText;
+	m_Text = other.m_Text;
 	return *this;
 }
 
@@ -54,7 +54,7 @@ void EoDbText::Display(AeSysView* view, CDC* deviceContext) {
 	g_PrimitiveState.SetColorIndex(deviceContext, ColorIndex);
 	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, 1);
-	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_strText);
+	DisplayText(view, deviceContext, m_FontDefinition, m_ReferenceSystem, m_Text);
 	g_PrimitiveState.SetLinetypeIndexPs(deviceContext, LinetypeIndex);
 }
 
@@ -73,9 +73,9 @@ void EoDbText::FormatExtra(CString& extra) const {
 	Spacing.Format(L"Spacing;%f\t", m_FontDefinition.CharacterSpacing());
 	extra += Spacing;
 	CString Length;
-	Length.Format(L"Number of Characters;%d\t", m_strText.GetLength());
+	Length.Format(L"Number of Characters;%d\t", m_Text.GetLength());
 	extra += Length;
-	extra += L"Text;" + m_strText;
+	extra += L"Text;" + m_Text;
 }
 
 void EoDbText::FormatGeometry(CString& geometry) const {
@@ -97,7 +97,7 @@ void EoDbText::GetAllPoints(OdGePoint3dArray& points) const {
 }
 
 void EoDbText::GetBoundingBox(OdGePoint3dArray& boundingBox, const double spaceFactor) const {
-	const auto Length {TextLengthSansFormattingCharacters(m_strText)};
+	const auto Length {TextLengthSansFormattingCharacters(m_Text)};
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, Length, spaceFactor, boundingBox);
 }
 
@@ -107,7 +107,7 @@ OdGePoint3d EoDbText::GetCtrlPt() const noexcept {
 
 void EoDbText::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	OdGePoint3dArray BoundingBox;
-	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
+	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_Text.GetLength(), 0.0, BoundingBox);
 	for (const auto& Point : BoundingBox) {
 		extents.addPoint(Point);
 	}
@@ -124,7 +124,7 @@ bool EoDbText::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept {
 bool EoDbText::IsInView(AeSysView* view) const {
 	EoGePoint4d pt[2];
 	OdGePoint3dArray BoundingBox;
-	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
+	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_Text.GetLength(), 0.0, BoundingBox);
 	for (unsigned n = 0; n <= 2;) {
 		pt[0] = EoGePoint4d(BoundingBox[n++], 1.0);
 		pt[1] = EoGePoint4d(BoundingBox[n++], 1.0);
@@ -184,14 +184,14 @@ OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point)
 
 bool EoDbText::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	OdGePoint3dArray Points;
-	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, Points);
+	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_Text.GetLength(), 0.0, Points);
 	return polyline::SelectUsingRectangle(view, lowerLeftCorner, upperRightCorner, Points);
 }
 
 bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
-	if (m_strText.GetLength() == 0) { return false; }
+	if (m_Text.GetLength() == 0) { return false; }
 	OdGePoint3dArray BoundingBox;
-	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_strText.GetLength(), 0.0, BoundingBox);
+	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_Text.GetLength(), 0.0, BoundingBox);
 	EoGePoint4d pt0[] = {EoGePoint4d(BoundingBox[0], 1.0), EoGePoint4d(BoundingBox[1], 1.0), EoGePoint4d(BoundingBox[2], 1.0), EoGePoint4d(BoundingBox[3], 1.0)};
 	view->ModelViewTransformPoints(4, pt0);
 	for (unsigned n = 0; n < 4; n++) {
@@ -217,11 +217,11 @@ void EoDbText::SetReferenceSystem(const EoGeReferenceSystem& referenceSystem) no
 }
 
 void EoDbText::SetText(const CString& text) {
-	m_strText = text;
+	m_Text = text;
 }
 
 const CString& EoDbText::Text() noexcept {
-	return m_strText;
+	return m_Text;
 }
 
 void EoDbText::TransformBy(const EoGeMatrix3d& transformMatrix) {
@@ -239,12 +239,12 @@ bool EoDbText::Write(EoDbFile& file) const {
 	file.WriteInt16(m_LinetypeIndex);
 	m_FontDefinition.Write(file);
 	m_ReferenceSystem.Write(file);
-	file.WriteString(m_strText);
+	file.WriteString(m_Text);
 	return true;
 }
 
 void EoDbText::Write(CFile& file, unsigned char* buffer) const {
-	const auto NumberOfCharacters {static_cast<unsigned short>(m_strText.GetLength())};
+	const auto NumberOfCharacters {static_cast<unsigned short>(m_Text.GetLength())};
 	buffer[3] = static_cast<unsigned char>((86 + NumberOfCharacters) / 32);
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kTextPrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == COLORINDEX_BYLAYER ? sm_LayerColorIndex : m_ColorIndex);
@@ -263,7 +263,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	*reinterpret_cast<unsigned short*>(& buffer[53]) = NumberOfCharacters;
 	unsigned BufferOffset = 55;
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
-		buffer[BufferOffset++] = static_cast<unsigned char>(m_strText[static_cast<int>(CharacterIndex)]);
+		buffer[BufferOffset++] = static_cast<unsigned char>(m_Text[static_cast<int>(CharacterIndex)]);
 	}
 	file.Write(buffer, buffer[3] * 32u);
 }

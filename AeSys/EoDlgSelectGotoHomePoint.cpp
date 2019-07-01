@@ -21,8 +21,6 @@ EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(AeSysView* activeView, CWnd* 
 	, m_ActiveView(activeView) {
 }
 
-EoDlgSelectGotoHomePoint::~EoDlgSelectGotoHomePoint() = default;
-
 void EoDlgSelectGotoHomePoint::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_LIST, m_HomePointNames);

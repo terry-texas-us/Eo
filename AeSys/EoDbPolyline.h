@@ -19,11 +19,11 @@ Polyline primitive(never made it release : if already written flags not streamed
 class EoDbPolyline final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbPolyline)
 private:
-	static unsigned sm_EdgeToEvaluate;
-	static unsigned sm_Edge;
-	static unsigned sm_PivotVertex;
+	static unsigned ms_EdgeToEvaluate;
+	static unsigned ms_Edge;
+	static unsigned ms_PivotVertex;
 public:
-	static const unsigned short sm_Closed = 0x0001;
+	static const unsigned short ms_Closed = 0x0001;
 private:
 	unsigned short m_Flags {0};
 	double m_ConstantWidth {0.0};

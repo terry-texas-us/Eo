@@ -27,12 +27,11 @@ DECLARE_DYNAMIC(EoDbText)
 private:
 	EoDbFontDefinition m_FontDefinition;
 	EoGeReferenceSystem m_ReferenceSystem;
-	CString m_strText;
+	CString m_Text;
 public:
 	EoDbText() = default;
 	EoDbText(const EoDbText& other);
 	EoDbText& operator=(const EoDbText&);
-	~EoDbText() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;

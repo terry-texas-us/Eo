@@ -13,23 +13,13 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
-	: CDialog(IDD, parent)
-	, deltaHeight(0)
-	, deltaWidth(0)
-	, initialHeight(0)
-	, initialWidth(0) {
+	: CDialog(IDD, parent) {
 }
 
-EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(OdDbDatabasePtr database, CWnd* parent)
+EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(const OdDbDatabasePtr& database, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Database(database)
-	, deltaHeight(0)
-	, deltaWidth(0)
-	, initialHeight(0)
-	, initialWidth(0) {
+	, m_Database(database) {
 }
-
-EoDlgLayerPropertiesManager::~EoDlgLayerPropertiesManager() = default;
 
 void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

@@ -4,7 +4,6 @@ class EoDlgAnnotateOptions : public CDialog {
 DECLARE_DYNAMIC(EoDlgAnnotateOptions)
 	EoDlgAnnotateOptions(CWnd* parent = nullptr);
 	EoDlgAnnotateOptions(AeSysView* view, CWnd* parent = nullptr);
-	~EoDlgAnnotateOptions() = default;
 
 	enum { IDD = IDD_ANNOTATE_OPTIONS };
 

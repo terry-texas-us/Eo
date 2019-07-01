@@ -32,24 +32,14 @@ END_MESSAGE_MAP()
 
 EoDlgFileManage::EoDlgFileManage(CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Document(nullptr)
-	, m_ClickToColumnStatus(false)
-	, m_Description(0)
-	, m_NumberOfColumns(0)
-	, m_PreviewWindowHandle(nullptr) {
+	, m_Document(nullptr) {
 }
 
 EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_Document(document)
-	, m_Database(database)
-	, m_ClickToColumnStatus(false)
-	, m_Description(0)
-	, m_NumberOfColumns(0)
-	, m_PreviewWindowHandle(nullptr) {
+	, m_Database(database) {
 }
-
-EoDlgFileManage::~EoDlgFileManage() = default;
 
 void EoDlgFileManage::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

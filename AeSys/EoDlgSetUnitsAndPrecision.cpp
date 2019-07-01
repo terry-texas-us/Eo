@@ -12,8 +12,6 @@ EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgSetUnitsAndPrecision::~EoDlgSetUnitsAndPrecision() = default;
-
 void EoDlgSetUnitsAndPrecision::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_METRIC_UNITS, m_MetricUnitsListBoxControl);

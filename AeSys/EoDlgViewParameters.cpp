@@ -23,8 +23,6 @@ EoDlgViewParameters::EoDlgViewParameters(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgViewParameters::~EoDlgViewParameters() = default;
-
 void EoDlgViewParameters::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Check(dataExchange, IDC_PERSPECTIVE_PROJECTION, perspectiveProjection);

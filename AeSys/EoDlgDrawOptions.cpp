@@ -18,8 +18,6 @@ EoDlgDrawOptions::EoDlgDrawOptions(CWnd* parent)
 	: CDialog(IDD, parent) {
 }
 
-EoDlgDrawOptions::~EoDlgDrawOptions() = default;
-
 void EoDlgDrawOptions::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }

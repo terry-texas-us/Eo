@@ -185,7 +185,7 @@ void AeSysView::OnLpdModeEll() {
 		}
 		const auto EndPointPrimitive {std::get<1>(Selection)};
 		CurrentPnt = EndPointPrimitive->Position();
-		const Section ExistingSection {EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular};
+		const Section ExistingSection {EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::mc_Rectangular};
 		const auto BeginPointPrimitive {ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive)};
 		if (BeginPointPrimitive != nullptr) {
 			EoGeLineSeg3d ExistingSectionReferenceLine(BeginPointPrimitive->Position(), CurrentPnt);
@@ -215,12 +215,11 @@ void AeSysView::OnLpdModeEll() {
 }
 
 void AeSysView::OnLpdModeTee() {
-	const auto CurrentPnt {GetCursorPosition()};
 	if (m_PreviousOp != 0) {
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
-	//m_PreviousPnt = GenerateBullheadTee(this, m_PreviousPnt, CurrentPnt, m_PreviousSection);
+	// <tas="GenerateBullheadTee not implemented"/>
 	m_ContinueSection = false;
 	m_PreviousOp = ID_OP2;
 }
@@ -329,7 +328,7 @@ void AeSysView::DoDuctModeMouseMove() {
 		if (ExistingGroup != nullptr) {
 			const auto EndPointPrimitive {std::get<1>(Selection)};
 			CurrentPnt = EndPointPrimitive->Position();
-			const Section ExistingSection {EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::Rectangular};
+			const Section ExistingSection {EndPointPrimitive->DataAt(0), EndPointPrimitive->DataAt(1), Section::mc_Rectangular};
 			const auto BeginPointPrimitive {ExistingGroup->GetFirstDifferentPoint(EndPointPrimitive)};
 			if (BeginPointPrimitive != nullptr) {
 				EoGeLineSeg3d ExistingSectionReferenceLine(BeginPointPrimitive->Position(), CurrentPnt);
@@ -432,8 +431,8 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSect
 		EoGeLineSeg3d TransitionReferenceLine(MiddleOfTransition, MiddleOfTransition + NewSectionDirection);
 		const auto Width {m_PreviousSection.Width() + existingSection.Width()};
 		const auto Depth {m_PreviousSection.Depth() + existingSection.Depth()};
-		const Section ContinueGroup(Width, Depth, Section::Rectangular);
-		const Section CurrentSection(Width * .75, Depth * .75, Section::Rectangular);
+		const Section ContinueGroup(Width, Depth, Section::mc_Rectangular);
+		const Section CurrentSection(Width * .75, Depth * .75, Section::mc_Rectangular);
 		GenerateTransition(TransitionReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, ContinueGroup, CurrentSection, group);
 	}
 	/*

@@ -1,18 +1,13 @@
 #include "stdafx.h"
 #include "EoDlgFixupOptions.h"
-
 IMPLEMENT_DYNAMIC(EoDlgFixupOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgFixupOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgFixupOptions::EoDlgFixupOptions(CWnd* parent)
-	: CDialog(IDD, parent)
-	, axisTolerance(0.0)
-	, cornerSize(0.0) {
+	: CDialog(IDD, parent) {
 }
-
-EoDlgFixupOptions::~EoDlgFixupOptions() = default;
 
 void EoDlgFixupOptions::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

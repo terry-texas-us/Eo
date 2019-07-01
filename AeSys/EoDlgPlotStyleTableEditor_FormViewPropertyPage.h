@@ -95,22 +95,33 @@ struct DIBCOLOR {
 };
 
 class CBitmapColorInfo {
+	friend class EoDlgPlotStyleEditor_FormViewPropertyPage;
+	unsigned char m_Item {0xff};
+	COLORREF m_Color {0};
 public:
-	unsigned char m_iItem;
-	COLORREF m_color;
 	CBitmap m_bitmap;
 	wchar_t m_name[gc_PlotStyleColorMaxName];
+
 	CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name);
+
 	CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsigned char colorItem, int colorIndex = -1);
+
 	CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name);
+
 protected:
 	void SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels);
+
 	DIBCOLOR* GetBitmapPixels(CBitmap& bitmap, int& width, int& height);
+
 	void GetBitmapSizes(CBitmap& bitmap, int& width, int& height);
+
 public:
 	CBitmap* CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clonedBitmap);
+
 	void PaintBitmap(CBitmap& bitmap, COLORREF color);
+
 	bool IsColor(COLORREF color, unsigned char item) noexcept;
+
 	const OdCmEntityColor GetColor();
 };
 

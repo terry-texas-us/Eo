@@ -18,10 +18,10 @@ EoDbJobFile::~EoDbJobFile() {
 	delete[] m_PrimBuf;
 }
 
-void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive, const short PrimitiveType) {
-	switch (PrimitiveType) {
+void EoDbJobFile::ConstructPrimitive(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive, const short primitiveType) {
+	switch (primitiveType) {
 		case EoDb::kTagPrimitive: case EoDb::kPointPrimitive: {
-			if (PrimitiveType == EoDb::kTagPrimitive) {
+			if (primitiveType == EoDb::kTagPrimitive) {
 				*reinterpret_cast<unsigned short*>(& m_PrimBuf[4]) = EoDb::kPointPrimitive;
 				::ZeroMemory(&m_PrimBuf[20], 12);
 			}
@@ -45,7 +45,7 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 			break;
 		}
 		case EoDb::kCSplinePrimitive: case EoDb::kSplinePrimitive: {
-			if (PrimitiveType == EoDb::kCSplinePrimitive) {
+			if (primitiveType == EoDb::kCSplinePrimitive) {
 				const auto NumberOfControlPoints {*reinterpret_cast<unsigned short*>(&m_PrimBuf[10])};
 				m_PrimBuf[3] = static_cast<unsigned char>((2 + NumberOfControlPoints * 3) / 8 + 1);
 				*reinterpret_cast<unsigned short*>(&m_PrimBuf[4]) = static_cast<unsigned short>(EoDb::kSplinePrimitive);
@@ -72,7 +72,7 @@ void EoDbJobFile::ConstructPrimitive(OdDbBlockTableRecordPtr blockTableRecord, E
 	}
 }
 
-void EoDbJobFile::ConstructPrimitiveFromVersion1(OdDbBlockTableRecordPtr blockTableRecord, EoDbPrimitive*& primitive) {
+void EoDbJobFile::ConstructPrimitiveFromVersion1(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive) {
 	switch (m_PrimBuf[5]) {
 		case 17: {
 			auto Text {EoDbText::Create(blockTableRecord, m_PrimBuf, 1)};
