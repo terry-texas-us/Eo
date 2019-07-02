@@ -17,35 +17,63 @@ public:
 	};
 
 	EoDbLayer(OdDbLayerTableRecordPtr layer);
+
 	EoDbLayer(const OdString& name, unsigned short stateFlags);
+
 	COLORREF Color() const;
+
 	short ColorIndex() const;
+
 	void BuildVisibleGroupList(AeSysView* view);
+
 	void Display(AeSysView* view, CDC* deviceContext); // hides non-virtual function of parent
 	void Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap);
+
 	bool IsActive() const noexcept;
+
 	bool IsCurrent() const;
+
 	bool IsInternal() const noexcept;
+
 	bool IsLocked() const noexcept;
+
 	bool IsOff() const noexcept;
+
 	bool IsResident() const noexcept;
+
 	short LinetypeIndex();
+
 	OdString LinetypeName();
+
 	void MakeActive();
+
 	void MakeCurrent() noexcept;
+
 	void MakeInternal(bool isInternal) noexcept;
+
 	void MakeResident(bool isResident) noexcept;
+
 	OdString Name() const;
+
 	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol); // hides non-virtual function of parent
 	void SetColorIndex(short colorIndex);
+
 	void SetIsFrozen(bool isFrozen);
+
 	void SetIsLocked(bool isLocked);
+
 	void SetIsOff(bool isOff);
+
 	void SetLinetype(OdDbObjectId linetype);
+
 	void SetName(const OdString& name);
+
 	void SetStateFlags(unsigned short flags) noexcept;
+
 	void SetTransparency(const OdCmTransparency& transparency);
+
 	unsigned short StateFlags() const noexcept;
+
 	OdDbLayerTableRecordPtr TableRecord() const;
 };
 

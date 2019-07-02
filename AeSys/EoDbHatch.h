@@ -25,7 +25,9 @@ public:
 	static double patternAngle;
 	static double patternScaleX;
 	static double patternScaleY;
+
 	enum InteriorStyle { kHollow, kSolid, kPattern, kHatch };
+
 private:
 	short m_InteriorStyle {kHatch};
 	unsigned m_InteriorStyleIndex {1};

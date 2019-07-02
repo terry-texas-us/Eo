@@ -3,7 +3,9 @@
 // EoCtrlColorsButton
 class EoCtrlColorsButton : public CMFCButton {
 DECLARE_DYNAMIC(EoCtrlColorsButton)
-enum Layouts { kSimpleSingleRow, kGridDown5RowsOddOnly, kGridUp5RowsEvenOnly };
+
+	enum Layouts { kSimpleSingleRow, kGridDown5RowsOddOnly, kGridUp5RowsEvenOnly };
+
 private:
 	static gsl::span<COLORREF> m_Palette;
 	static unsigned short m_CurrentIndex;
@@ -16,8 +18,11 @@ private:
 	unsigned short m_EndIndex {1};
 public:
 	unsigned short m_SubItem {0};
+
 	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
+
 	unsigned short SubItemByPoint(const CPoint& point) noexcept;
+
 	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept;
 
 	static void SetCurrentIndex(const unsigned short index) noexcept {
@@ -39,7 +44,9 @@ public:
 	}
 
 	void OnDraw(CDC* deviceContext, const CRect& rectangle, unsigned state) override;
+
 	CSize SizeToContent(BOOL calculateOnly = FALSE) override;
+
 	unsigned OnGetDlgCode() noexcept; // hides non-virtual function of parent
 	void OnKeyDown(unsigned keyCode, unsigned repeatCount, unsigned flags); // hides non-virtual function of parent
 	void OnLButtonUp(unsigned flags, CPoint point); // hides non-virtual function of parent

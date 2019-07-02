@@ -64,7 +64,6 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 					auto FileOpenSuccess {false};
 					auto Layer {Document->GetLayerAt(Name)};
 					if (Layer != nullptr) {
-
 						if (Layer->IsCurrent()) {
 							AeSys::WarningMessageBox(IDS_MSG_CLOSE_TRACING_FIRST, Name);
 						} else {

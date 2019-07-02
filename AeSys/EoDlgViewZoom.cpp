@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "EoDlgViewZoom.h"
-
 IMPLEMENT_DYNAMIC(EoDlgViewZoom, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgViewZoom, CDialog)

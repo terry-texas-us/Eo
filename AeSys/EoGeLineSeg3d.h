@@ -5,6 +5,7 @@ class AeSysView;
 class EoGeLineSeg3d final : public OdGeLineSeg3d {
 public:
 	EoGeLineSeg3d() = default;
+
 	EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
 
 	/// <summary>Determines the angle between two lines.</summary>
@@ -42,6 +43,7 @@ public:
 	/// - 1 point is to right of line
 	/// </returns>
 	int DirectedRelationshipOf(const OdGePoint3d& point) const;
+
 	void Display(AeSysView* view, CDC* deviceContext);
 	/// <summary>Determines the extents of a line.</summary>
 	void Extents(OdGePoint3d& minimum, OdGePoint3d& maximum);
@@ -68,6 +70,7 @@ public:
 	/// <remarks> Assumes window passed with min/max corners correct.</remarks>
 	/// <returns> true line is wholly or partially within window, false otherwise</returns>
 	bool IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection);
+
 	bool IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const;
 	/// <summary>
 	///Evaluates the proximity of a point to a line segment.
@@ -122,6 +125,8 @@ public:
 	/// </param>
 	/// <returns> true  successful completion, false coincidental endpoints .. relationship undefined</returns>
 	bool ParametricRelationshipOf(const OdGePoint3d& point, double& relationship) const;
+
 	void SetEndPoint(const OdGePoint3d& endPoint);
+
 	void SetStartPoint(const OdGePoint3d& startPoint);
 };

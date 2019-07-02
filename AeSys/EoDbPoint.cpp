@@ -47,7 +47,6 @@ EoDbPoint& EoDbPoint::operator=(const EoDbPoint& other) {
 	m_PointDisplayMode = other.m_PointDisplayMode;
 	m_Position = other.m_Position;
 	if (m_NumberOfDatums != other.m_NumberOfDatums) {
-
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
 		m_NumberOfDatums = other.m_NumberOfDatums;
 		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
@@ -117,7 +116,6 @@ void EoDbPoint::Display(AeSysView* view, CDC* deviceContext) {
 						}
 					}
 				}
-
 		}
 	}
 }
@@ -214,7 +212,6 @@ bool EoDbPoint::SelectUsingLineSeg(const EoGeLineSeg3d& /*lineSeg*/, AeSysView* 
 
 void EoDbPoint::SetData(const unsigned short numberOfDatums, double* data) {
 	if (m_NumberOfDatums != numberOfDatums) {
-
 		if (m_NumberOfDatums != 0) { delete[] m_Data; }
 		m_NumberOfDatums = numberOfDatums;
 		m_Data = m_NumberOfDatums == 0 ? nullptr : new double[m_NumberOfDatums];
@@ -233,7 +230,6 @@ void EoDbPoint::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
-
 	if (mask != 0) { m_Position += translate; }
 }
 

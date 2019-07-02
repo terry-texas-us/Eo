@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "EoDlgSetUnitsAndPrecision.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetUnitsAndPrecision, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetUnitsAndPrecision, CDialog)

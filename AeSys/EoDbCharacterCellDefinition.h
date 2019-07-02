@@ -6,14 +6,24 @@ class EoDbCharacterCellDefinition {
 	double m_ObliqueAngle {0.0};
 public:
 	EoDbCharacterCellDefinition() = default;
+
 	EoDbCharacterCellDefinition(const EoDbCharacterCellDefinition& other) noexcept;
+
 	EoDbCharacterCellDefinition& operator=(const EoDbCharacterCellDefinition& other) = default;
+
 	double WidthFactor() const noexcept;
+
 	double Height() const noexcept;
+
 	double ObliqueAngle() const noexcept;
+
 	double RotationAngle() const noexcept;
+
 	void SetWidthFactor(double widthFactor) noexcept;
+
 	void SetHeight(double height) noexcept;
+
 	void SetObliqueAngle(double obliqueAngle) noexcept;
+
 	void SetRotationAngle(double rotationAngle) noexcept;
 };

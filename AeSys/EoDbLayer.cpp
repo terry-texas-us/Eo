@@ -59,7 +59,6 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, const bool identif
 			while (Position != nullptr) {
 				auto Group {GetNext(Position)};
 				if (Group->IsInView(view)) {
-
 					if (LayerIsDetectable) { Document->AddGroupToAllViews(Group); }
 					if (identifyTrap && Document->FindTrappedGroup(Group) != nullptr) {
 						EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
@@ -114,7 +113,6 @@ OdString EoDbLayer::LinetypeName() {
 }
 
 void EoDbLayer::MakeInternal(const bool isInternal) noexcept {
-
 	if (isInternal) {
 		m_StateFlags |= kIsInternal;
 	} else {
@@ -123,7 +121,6 @@ void EoDbLayer::MakeInternal(const bool isInternal) noexcept {
 }
 
 void EoDbLayer::MakeResident(const bool isResident) noexcept {
-
 	if (isResident) {
 		m_StateFlags |= kIsResident;
 	} else {

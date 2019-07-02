@@ -62,26 +62,42 @@ ODRX_DECLARE_MEMBERS(OdApplicationReactor);
 };
 
 using OdApplicationReactorPtr = OdSmartPtr<OdApplicationReactor>;
+
 __declspec(dllexport) void OdAddAppReactor(OdApplicationReactor* reactor);
 
 class __declspec(dllexport) OdApplicationDocument : public OdRxObject {
 public:
 ODRX_DECLARE_MEMBERS(OdApplicationDocument);
+
 	virtual OdString fileName() const = 0;
+
 	virtual CDocument* cDoc() const = 0;
+
 	virtual OdDbDatabasePtr database() const = 0;
+
 	virtual void lockMode(bool includeMyLocks) const = 0;
+
 	virtual void myLockMode() const = 0;
+
 	virtual bool isQuiescent() const = 0;
+
 	virtual void* contextPtr() const = 0;
+
 	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
+
 	virtual OdEdBaseIO* BaseIO() = 0;
+
 	virtual OdDbCommandContextPtr CommandContext() = 0;
+
 	virtual OdString RecentCommand() = 0;
+
 	virtual OdDbSelectionSetPtr SelectionSet() const = 0;
 };
 
 using OdApDocumentPtr = OdSmartPtr<OdApplicationDocument>;
+
 __declspec(dllexport) OdApDocumentPtr odGetApplicationDocument(CDocument* document);
+
 __declspec(dllexport) OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
+
 __declspec(dllexport) bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point);

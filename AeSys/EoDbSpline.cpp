@@ -100,7 +100,6 @@ void EoDbSpline::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 		OdGeExtents3d Extents;
 		Spline->getGeomExtents(Extents);
 		extents.addExt(Extents);
-
 	} else {
 		// <tas="Extents should use the points on the curve and not the control points"</tas>
 		for (unsigned short w = 0; w < m_Spline.numControlPoints(); w++) {

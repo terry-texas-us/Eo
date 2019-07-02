@@ -311,7 +311,6 @@ AeSysView::AeSysView() noexcept {
 	m_Viewport.SetDeviceWidthInInches(theApp.DeviceWidthInMillimeters() / kMmPerInch);
 	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / kMmPerInch);
 }
-
 #ifdef _DEBUG
 void AeSysView::AssertValid() const {
 	CView::AssertValid();
@@ -1865,15 +1864,6 @@ void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 				m_Response.type = Response::kPoint;
 				break;
 			case kGetString: case kDragDrop:
-				//			default:
-				//				m_LeftButton = true;
-				//				m_MousePosition = point;
-				//				m_MouseClick = point;
-				//
-				//				if (m_ZoomWindow == true) {
-				//					m_Points.clear();
-				//					m_Points.append(GetWorldCoordinates(point));
-				//				}
 				break;
 		}
 	} else {
@@ -1891,17 +1881,6 @@ void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 			ReleaseCapture();
 		}
 		m_Editor.SetEntityCenters();
-
-		//		m_LeftButton = false;
-		//		if (m_ZoomWindow == true) {
-		//			m_Points.append(GetWorldCoordinates(point));
-		//			if (m_Points.length() == 2) // Zoom rectangle has been completely defined
-		//			{
-		//				ZoomWindow(m_Points[0], m_Points[1]);
-		//				m_ZoomWindow = false;
-		//				m_Points.clear();
-		//			}
-		//		}
 	} else {
 		DoCustomMouseClick(AeSys::customLButtonUpCharacters);
 	}

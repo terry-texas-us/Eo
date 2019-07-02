@@ -2,7 +2,6 @@
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "EoDlgSetPastePosition.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetPastePosition, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetPastePosition, CDialog)

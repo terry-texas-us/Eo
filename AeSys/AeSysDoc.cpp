@@ -51,6 +51,7 @@
 #include "EoDlgSetupLinetype.h"
 #include "EoDlgTrapFilter.h"
 #include "Lex.h"
+
 unsigned CALLBACK OfnHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
 unsigned AFXAPI HashKey(const CString& string) noexcept {
@@ -261,9 +262,7 @@ void AeSysDoc::DeleteContents() {
 BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
 	const auto ActiveView {frame->GetActiveView()};
 	if (ActiveView->IsKindOf(&AeSysView::classAeSysView)) {
-
 		if (!dynamic_cast<AeSysView*>(ActiveView)->CanClose()) { return FALSE; }
-
 	}
 	return CDocument::CanCloseFrame(frame);
 }
@@ -297,7 +296,6 @@ void AeSysDoc::layoutSwitched(const OdString& /*newLayoutName*/, const OdDbObjec
 	while (ViewPosition != nullptr) {
 		const auto View {GetNextView(ViewPosition)};
 		if (OdString(View->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0) {
-
 			if (View->GetDocument() == this) {
 				const auto Parent {View->GetParent()};
 				// Get prev params
@@ -320,11 +318,9 @@ void AeSysDoc::layoutSwitched(const OdString& /*newLayoutName*/, const OdDbObjec
 				while (ViewPosition != nullptr) {
 					const auto view {GetNextView(ViewPosition)};
 					if (OdString(view->GetRuntimeClass()->m_lpszClassName).compare(L"AeSysView") == 0) {
-
 						if (view->GetDocument() == this) {
 							auto Parent {view->GetParent()};
 							if (Zoomed) {
-
 								if (!Parent->IsZoomed()) { dynamic_cast<CMDIChildWnd*>(Parent)->MDIMaximize(); }
 							} else {
 								dynamic_cast<CMDIChildWnd*>(Parent)->MDIRestore();
@@ -541,8 +537,8 @@ class CmdReactor : public OdStaticRxObject<OdEdCommandStackReactor>, public OdSt
 	}
 
 public:
-	CmdReactor(OdDbCommandContext* dbCommandContext)
-		: m_CommandContext(dbCommandContext) {
+	CmdReactor(OdDbCommandContext* commandContext)
+		: m_CommandContext(commandContext) {
 		ODA_ASSERT(m_CommandContext);
 		odedRegCmds()->addReactor(this);
 		m_CommandContext->database()->addReactor(this);
@@ -634,7 +630,6 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 		} else {
 			auto CommandName {command.spanExcluding(L" \t\r\n")};
 			if (CommandName.getLength() == command.getLength()) {
-
 				if (echo) { CommandContext->userIO()->putString(CommandPrompt() + L" " + CommandName); }
 				CommandName.makeUpper();
 				CommandReactor.SetLastInput(CommandName);
@@ -654,16 +649,13 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 			}
 		}
 		if (GetViewer()) { GetViewer()->PropagateLayoutActiveViewChanges(); }
-
 	} catch (OdEdEmptyInput) {
 	} catch (OdEdCancel) {
 	} catch (OdError& Error) {
-
 		if (!m_Console) { theApp.ErrorMessageBox(CommandMessageCaption(command), Error); }
 		BaseIo()->putString(Error.description());
 	}
 	if (CommandReactor.IsDatabaseModified() || SelectionSet()->numEntities()) {
-
 		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearSelection(); }
 		UpdateAllViews(nullptr);
 	}
@@ -694,7 +686,6 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 				if (commandId >= _APS_NEXT_COMMAND_VALUE + 100 && commandId <= _APS_NEXT_COMMAND_VALUE + theApp.NumberOfCustomCommands() + 100) { // custom commands
 					OdRxObjectPtr ItemData(reinterpret_cast<OdRxObject*>(MenuItemInfo.dwItemData));
 					if (ItemData.get()) {
-
 						if (messageCategory == CN_COMMAND) {
 							auto EdCommand {OdEdCommand::cast(ItemData)};
 							if (EdCommand.get()) {
@@ -711,7 +702,6 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 						const auto SelectedScale {commandId - _APS_NEXT_COMMAND_VALUE - 1};
 						auto ScalesCollectionIterator {m_DatabasePtr->objectContextManager()->contextCollection(ODDB_ANNOTATIONSCALES_COLLECTION)->newIterator()};
 						for (unsigned ScaleIndex = 0; !ScalesCollectionIterator->done(); ScalesCollectionIterator->next()) {
-
 							if (ScaleIndex++ == SelectedScale) {
 								m_DatabasePtr->setCANNOSCALE(OdDbAnnotationScalePtr(ScalesCollectionIterator->getContext()));
 								MenuItemInfo.fMask = MIIM_STATE;
@@ -737,9 +727,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 }
 
 void AeSysDoc::DeleteSelection(const bool force) {
-
 	if (m_DatabasePtr->appServices()->getPICKFIRST() && SelectionSet()->numEntities()) {
-
 		if (force) {
 			ExecuteCommand(L"ForceErase");
 		} else {
@@ -1097,7 +1085,6 @@ int AeSysDoc::LinetypeIndexReferenceCount(const short linetypeIndex) {
 }
 
 void AeSysDoc::GetExtents___(AeSysView* view, OdGeExtents3d& extents) {
-
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		if (!Layer->IsOff()) {
@@ -1395,7 +1382,6 @@ EoDbLayer* AeSysDoc::AnyLayerRemove(EoDbGroup* group) {
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
 		if (Layer->IsCurrent() || Layer->IsActive()) {
-
 			if (Layer->Remove(group) != nullptr) {
 				AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kWorkCount);
 				SetModifiedFlag(TRUE);
@@ -1666,7 +1652,6 @@ void AeSysDoc::OnLayerActive() {
 void AeSysDoc::OnLayerLock() {
 	auto Layer {GetLayerAt(m_IdentifiedLayerName)};
 	if (Layer != nullptr) {
-
 		if (Layer->IsCurrent()) {
 			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_STATIC, m_IdentifiedLayerName);
 		} else {
@@ -1679,7 +1664,6 @@ void AeSysDoc::OnLayerLock() {
 void AeSysDoc::OnLayerOff() {
 	auto Layer {GetLayerAt(m_IdentifiedLayerName)};
 	if (Layer != nullptr) {
-
 		if (Layer->IsCurrent()) {
 			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_HIDDEN, m_IdentifiedLayerName);
 		} else {
@@ -1817,7 +1801,6 @@ void AeSysDoc::OnEditTrace() {
 			if (wcscmp(FormatName, L"EoGroups") == 0) {
 				const auto ClipboardDataHandle {GetClipboardData(ClipboardFormat)};
 				if (ClipboardDataHandle != nullptr) {
-
 					const auto ClipboardData {static_cast<const char*>(GlobalLock(ClipboardDataHandle))};
 					if (ClipboardData != nullptr) {
 						const auto ClipboardDataLength {*(unsigned long*)ClipboardData};
@@ -1932,7 +1915,6 @@ void AeSysDoc::OnEditTrapWorkAndActive() {
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		const auto Layer {GetLayerAt(LayerIndex)};
 		if (Layer->IsCurrent() || Layer->IsActive()) { AddGroupsToTrap(Layer); }
-
 	}
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }

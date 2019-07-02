@@ -45,37 +45,68 @@ protected:
 	double m_FarClipDistance {100.0}; // distance from the target to the far (back) clipping plane along the target-camera line
 public:
 	EoGsAbstractView();
+
 	EoGsAbstractView(const EoGsAbstractView& other);
+
 	EoGsAbstractView& operator=(const EoGsAbstractView& other) = default;
+
 	virtual ~EoGsAbstractView() = default;
 
 	void AdjustWindow(double aspectRatio) noexcept;
+
 	void EnablePerspective(bool enabled) noexcept;
+
 	double FarClipDistance() const noexcept;
+
 	double FieldHeight() const noexcept;
+
 	double FieldHeightMaximum() const noexcept;
+
 	double FieldHeightMinimum() const noexcept;
+
 	double FieldWidth() const noexcept;
+
 	double FieldWidthMaximum() const noexcept;
+
 	double FieldWidthMinimum() const noexcept;
+
 	bool IsFarClipOn() const noexcept;
+
 	bool IsNearClipAtEyeOn() const noexcept;
+
 	bool IsNearClipOn() const noexcept;
+
 	bool IsPerspectiveOn() const noexcept;
+
 	double LensLength() const noexcept;
+
 	double NearClipDistance() const noexcept;
+
 	OdGePoint3d Position() const noexcept;
+
 	OdGsView::RenderMode RenderMode() const noexcept;
+
 	void SetFarClipDistance(double distance) noexcept;
+
 	void SetLensLength(double length) noexcept;
+
 	void SetNearClipDistance(double distance) noexcept;
+
 	void SetPosition_(const OdGePoint3d& position) noexcept;
+
 	void SetProjectionPlaneField(double fieldWidth, double fieldHeight) noexcept;
+
 	void SetProjectionPlaneField(double uMin, double vMin, double uMax, double vMax) noexcept;
+
 	void SetRenderMode(const OdGsView::RenderMode& renderMode) noexcept;
+
 	void SetTarget(const OdGePoint3d& target) noexcept;
+
 	void SetView(const OdGePoint3d& position, const OdGePoint3d& target, const OdGeVector3d& viewUp, double fieldWidth, double fieldHeight);
+
 	void SetViewUp(const OdGeVector3d& viewUp);
+
 	OdGePoint3d Target() const noexcept;
+
 	OdGeVector3d ViewUp() const noexcept;
 };

@@ -76,13 +76,17 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 	OdDb::OsnapMode m_SnapMode;
 	bool m_Redraw;
 	double m_HitRadius {gc_HitRadius};
+
 	long GetAperture(OdDbDatabase* database) const;
 
 	struct SubentId {
 		SubentId() = default;
+
 		OdDbObjectIdArray m_Path;
 		OdGsMarker m_Marker {0};
+
 		SubentId(const OdGiPathNode& pathNode);
+
 		bool operator==(const SubentId& other) const;
 	};
 
@@ -116,23 +120,39 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 
 	using SelectedEntityDataArray = OdArray<SelectedEntityData>;
 	SelectedEntityDataArray m_SelectedEntityData;
+
 	void CheckSnapPoints(const SelectedEntityData& selectedEntityData, const OdGeMatrix3d& worldToEyeTransform);
+
 	bool Checkpoint(OdDb::OsnapMode objectSnapMode, const OdGePoint3d& point);
+
 	using HistEntryArray = OdArray<HistEntry>;
+
 	static bool AppendToQueue(HistEntryArray& histEntries, const HistEntry& histEntry);
+
 	HistEntryArray m_Centers;
+
 	unsigned long subSetAttributes(OdGiDrawableTraits* drawableTraits) const override;
+
 	bool subWorldDraw(OdGiWorldDraw* worldDraw) const override;
+
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
+
 	bool selected(const OdGiDrawableDesc& drawableDesc) override;
+
 	unsigned long selected(const OdGiPathNode& pathNode, const OdGiViewport& viewInfo) override;
+
 	void InvalidateViewport(const OdGePoint3d& point) const;
+
 	void InvalidateViewport(const HistEntryArray& centers) const;
+
 protected:
 	OdBaseSnapManager() noexcept;
+
 public:
 	void Track(OdEdInputTracker* inputTracker);
+
 	bool Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint);
+
 	virtual unsigned SnapModes() const = 0;
 
 	virtual unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept {
@@ -153,8 +173,11 @@ public:
 	}
 
 	void Reset();
+
 	void RecalculateEntityCenters();
+
 	virtual bool SetEntityCenters(OdRxObject* rxObject);
+
 	void SetEntityCenters(OdDbBlockTableRecord* blockTableRecord, const OdGeMatrix3d& matrix = OdGeMatrix3d::kIdentity);
 };
 
@@ -162,8 +185,10 @@ class OSnapManager : public OdBaseSnapManager {
 	unsigned m_SnapModes {0xFFFFFFFF};
 protected:
 	OSnapManager() = default;
+
 public:
 	unsigned SnapModes() const noexcept override;
+
 	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour

@@ -5,7 +5,7 @@
 #include <DbLinetypeTableRecord.h>
 #include "EoDbLinetypeTable.h"
 const wchar_t* EoDbLinetypeTable::m_LegacyLinetypes[] = {
-	L"0",
+L"0",
 L"Continuous",
 L"2",
 L"3",
@@ -75,7 +75,6 @@ void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
 	CStdioFile StreamFile;
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
-
 		unsigned short MaxNumberOfDashes {12};
 		auto DashLengths {new double[MaxNumberOfDashes]};
 		CString Line;

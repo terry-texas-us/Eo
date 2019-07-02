@@ -3,9 +3,13 @@ class EoDbDwgToPegFile {
 	OdDbDatabasePtr m_DatabasePtr_;
 public:
 	EoDbDwgToPegFile(OdDbDatabasePtr database);
+
 	void ConvertToPeg(AeSysDoc* document);
+
 	void ConvertHeaderSection(AeSysDoc* document) noexcept;
+
 	void ConvertViewportTable(AeSysDoc* document);
+
 	void ConvertLayerTable(AeSysDoc* document);
 
 	/// <summary>
@@ -14,7 +18,10 @@ public:
 	/// The two type of local block containers are layout and non-layout.
 	/// </summary>
 	void ConvertBlockTable(gsl::not_null<AeSysDoc*> document);
+
 	void ConvertBlocks(AeSysDoc* document);
+
 	void ConvertEntities(AeSysDoc* document);
+
 	void ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* document);
 };

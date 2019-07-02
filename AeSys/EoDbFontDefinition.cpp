@@ -139,8 +139,7 @@ void EoDbFontDefinition::SetJustification(const OdDbMText::AttachmentPoint attac
 			m_HorizontalAlignment = EoDb::kAlignRight;
 			m_VerticalAlignment = EoDb::kAlignMiddle;
 			break;
-		case OdDbMText::kBaseCenter: case OdDbMText::kBaseAlign: case OdDbMText::kBaseFit: case OdDbMText::kBaseMid: case OdDbMText::kBottomCenter: case OdDbMText::kBottomAlign: case OdDbMText::
-		kBottomFit: case OdDbMText::kBottomMid:
+		case OdDbMText::kBaseCenter: case OdDbMText::kBaseAlign: case OdDbMText::kBaseFit: case OdDbMText::kBaseMid: case OdDbMText::kBottomCenter: case OdDbMText::kBottomAlign: case OdDbMText::kBottomFit: case OdDbMText::kBottomMid:
 			m_HorizontalAlignment = EoDb::kAlignCenter;
 			m_VerticalAlignment = EoDb::kAlignBottom;
 			break;

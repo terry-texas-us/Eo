@@ -3,7 +3,6 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "EoDlgDrawOptions.h"
-
 IMPLEMENT_DYNAMIC(EoDlgDrawOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgDrawOptions, CDialog)

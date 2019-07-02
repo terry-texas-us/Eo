@@ -5,7 +5,6 @@
 #include "EoDb.h"
 #include "EoDbBlockReference.h"
 #include "EoDlgBlockInsert.h"
-
 IMPLEMENT_DYNAMIC(EoDlgBlockInsert, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)

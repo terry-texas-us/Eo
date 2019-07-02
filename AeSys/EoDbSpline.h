@@ -14,36 +14,62 @@ class EoDbSpline final : public EoDbPrimitive {
 	EoGeNurbCurve3d m_Spline;
 public:
 	EoDbSpline() = default;
+
 	EoDbSpline(const EoDbSpline& other);
+
 	EoDbSpline& operator=(const EoDbSpline& other);
+
 	~EoDbSpline() = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
+
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
+
 	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+
 	void Display(AeSysView* view, CDC* deviceContext) override;
+
 	void FormatExtra(CString& extra) const override;
+
 	void FormatGeometry(CString& geometry) const override;
+
 	void GetAllPoints(OdGePoint3dArray& points) const override;
+
 	OdGePoint3d GetCtrlPt() const override;
+
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
+
 	OdGePoint3d GoToNxtCtrlPt() const override;
+
 	bool IsEqualTo(EoDbPrimitive* other) const override;
+
 	bool IsInView(AeSysView* view) const override;
+
 	bool IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const noexcept override;
+
 	OdGePoint3d SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const override;
+
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view, OdGePoint3dArray& intersections) override;
+
 	bool SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const override;
+
 	bool SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d&) const override;
+
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
+
 	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
+
 	bool Write(EoDbFile& file) const override;
+
 	void Write(CFile& file, unsigned char* buffer) const override;
 
 	void Set(int degree, const OdGeKnotVector& knots, const OdGePoint3dArray& controlPoints, const OdGeDoubleArray& weights, bool isPeriodic = false);
 
 	static EoDbSpline* Create(OdDbSplinePtr& spline);
+
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord);
+
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr& blockTableRecord, EoDbFile& file);
+
 	static OdDbSplinePtr Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned char* primitiveBuffer, int versionNumber);
 };

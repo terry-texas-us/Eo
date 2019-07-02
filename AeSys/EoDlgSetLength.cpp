@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "EoDlgSetLength.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetLength, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetLength, CDialog)

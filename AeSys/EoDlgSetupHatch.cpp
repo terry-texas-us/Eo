@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "PrimState.h"
 #include "EoDlgSetupHatch.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetupHatch, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupHatch, CDialog)

@@ -2,7 +2,6 @@
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "EoDlgLowPressureDuctOptions.h"
-
 IMPLEMENT_DYNAMIC(EoDlgLowPressureDuctOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgLowPressureDuctOptions, CDialog)

@@ -162,7 +162,6 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference))) {
-
 			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name) { Count++; }
 		}
 	}
@@ -226,7 +225,6 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	OdGePoint3d Point;
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-
 		if (GetNext(PrimitivePosition)->SelectUsingPoint(point, view, Point)) { return true; }
 	}
 	return false;
@@ -293,7 +291,6 @@ int EoDbGroup::RemoveEmptyNotesAndDelete() {
 		const auto posPrev {PrimitivePosition};
 		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
-
 			if (dynamic_cast<EoDbText*>(Primitive)->Text().GetLength() == 0) {
 				RemoveAt(posPrev);
 				delete Primitive;
@@ -308,7 +305,6 @@ bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view
 	OdGePoint3dArray Intersections;
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-
 		if (GetNext(PrimitivePosition)->SelectUsingLineSeg(lineSeg, view, Intersections)) { return true; }
 	}
 	return false;
@@ -317,7 +313,6 @@ bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view
 bool EoDbGroup::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-
 		if (GetNext(PrimitivePosition)->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)) { return true; }
 	}
 	return false;

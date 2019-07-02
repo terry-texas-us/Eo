@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "EoDlgSetAngle.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetAngle, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)

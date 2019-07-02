@@ -4,6 +4,7 @@
 class EoDbConvertEntityToPrimitive : public OdRxObject {
 public:
 ODRX_DECLARE_MEMBERS(EoDbConvertEntityToPrimitive);
+
 	virtual void Convert(OdDbEntity* entity, EoDbGroup* group);
 };
 
@@ -14,8 +15,12 @@ class ConvertEntityToPrimitiveProtocolExtension {
 	Converters* m_Converters;
 public:
 	static AeSysDoc* m_Document;
+
 	ConvertEntityToPrimitiveProtocolExtension(AeSysDoc* document) noexcept;
+
 	~ConvertEntityToPrimitiveProtocolExtension();
+
 	void Initialize();
+
 	void Uninitialize();
 };

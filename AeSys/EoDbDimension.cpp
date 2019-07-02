@@ -293,7 +293,6 @@ bool EoDbDimension::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, 
 	pt[3] = EoGePoint4d(ptsExt[3], 1.0);
 	view->ModelViewTransformPoints(4, pt);
 	for (auto n = 0; n < 4; n++) {
-
 		if (EoGeLineSeg3d(pt[n].Convert3d(), pt[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
 	}
 	projectedPoint = point.Convert3d();

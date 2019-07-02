@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "DbSymUtl.h"
 #include "EoDlgLayerPropertiesManager.h"
-
 IMPLEMENT_DYNAMIC(EoDlgLayerPropertiesManager, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)

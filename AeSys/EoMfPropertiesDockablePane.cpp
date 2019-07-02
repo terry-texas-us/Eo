@@ -237,7 +237,6 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 			const CString TabStyle {Property->GetValue().bstrVal};
 			ResetMDIChild = TRUE;
 			for (auto TabStylesIterator = ms_TabsStyles.begin(); TabStylesIterator != ms_TabsStyles.end(); TabStylesIterator++) {
-
 				if (TabStyle == *TabStylesIterator) {
 					if (*TabStylesIterator == ms_TabsStyles.at(0)) {
 						theApp.applicationOptions.tabsStyle = EoApOptions::kNone;

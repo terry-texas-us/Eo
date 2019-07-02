@@ -72,8 +72,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	LeftMatrix.preMultBy(RightMatrix);
 	RightMatrix.setToRotation(m_Rotation, OdGeVector3d::kZAxis);
 	LeftMatrix.preMultBy(RightMatrix);
-	RightMatrix.
-		setToPlaneToWorld(m_Normal); // <tas="setToPlaneToWorld method change vs2013 to vs2015. It likely will not matter since this call uses normal instead of major, minor axis like ellipse usage. Have not checked if this is broken."</tas>
+	RightMatrix.setToPlaneToWorld(m_Normal); // <tas="setToPlaneToWorld method change vs2013 to vs2015. It likely will not matter since this call uses normal instead of major, minor axis like ellipse usage. Have not checked if this is broken."</tas>
 	LeftMatrix.preMultBy(RightMatrix);
 	RightMatrix.setToTranslation(m_Position.asVector());
 	LeftMatrix.preMultBy(RightMatrix);
@@ -225,7 +224,6 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
-
 	if (mask != 0) { m_Position += translate; }
 }
 
@@ -415,7 +413,6 @@ EoDbBlockReference* EoDbBlockReference::Create(OdDbBlockReferencePtr blockRefere
 	for (auto i = 0; !ObjectIterator->done(); i++, ObjectIterator->step()) {
 		OdDbAttributePtr AttributePtr {ObjectIterator->entity()};
 		if (!AttributePtr.isNull()) {
-
 			if (!AttributePtr->isConstant() && !AttributePtr->isInvisible()) {
 				/* <tas="Attribute pointer is to OdDbText entity. The attribute data is retained by the BlockReference entity, so it can be retrieved when needed.">
 				auto AttributeText {static_cast<OdDbText*>(AttributePtr)};

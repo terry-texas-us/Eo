@@ -2,7 +2,6 @@
 #include "MainFrm.h"
 #include "AeSysDoc.h"
 #include "EoDlgEditTrapCommandsQuery.h"
-
 IMPLEMENT_DYNAMIC(EoDlgEditTrapCommandsQuery, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)

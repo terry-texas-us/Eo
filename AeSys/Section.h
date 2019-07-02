@@ -11,15 +11,26 @@ private:
 	int m_Properties {0};
 public:
 	Section() = default;
+
 	Section(double width, double depth, long properties) noexcept;
+
 	bool operator==(const Section& other) noexcept;
+
 	bool operator!=(const Section& other) noexcept;
+
 	void operator()(double width, double depth, long properties) noexcept;
+
 	void SetWidth(double width) noexcept;
+
 	void SetDepth(double depth) noexcept;
+
 	double Width() const noexcept;
+
 	double Depth() const noexcept;
+
 	bool Identical(const Section& section) const noexcept;
+
 	bool IsRectangular() const noexcept;
+
 	bool IsRound() const noexcept;
 };

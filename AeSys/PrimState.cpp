@@ -162,7 +162,6 @@ int CPrimState::SetROP2(CDC& deviceContext, int drawMode) {
 	// Sets the current foreground mix mode. GDI uses the foreground mix mode to combine pens and interiors of filled objects with the colors already on the screen.
 	// The foreground mix mode defines how colors from the brush or pen and the colors in the existing image are to be combined.
 	if (g_ColorPalette[0] == RGB(0xFF, 0xFF, 0xFF)) {
-
 		if (drawMode == R2_XORPEN) { drawMode = R2_NOTXORPEN; }
 	}
 	return deviceContext.SetROP2(drawMode);

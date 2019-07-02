@@ -12,7 +12,6 @@
 #include "EoDlgSetupColor.h"
 #include "EoDlgSetupLinetype.h"
 #include "Preview.h"
-
 IMPLEMENT_DYNAMIC(EoDlgFileManage, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
@@ -438,7 +437,6 @@ void EoDlgFileManage::OnLvnEndlabeleditLayersListControl(NMHDR* const notifyStru
 		if (LayerTableRecord->objectId() == m_Database->getLayerZeroId()) {
 			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_RENAME_0);
 		} else {
-
 			if (Layers->getAt(NewName).isNull()) {
 				Layer->SetName(NewName);
 				if (LayerTableRecord->objectId() == m_Database->getCLAYER()) {

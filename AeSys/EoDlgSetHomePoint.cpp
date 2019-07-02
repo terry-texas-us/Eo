@@ -3,11 +3,10 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "EoDlgSetHomePoint.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetHomePoint, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetHomePoint, CDialog)
-	ON_CBN_EDITUPDATE(IDC_LIST, &EoDlgSetHomePoint::OnCbnEditUpdateList)
+		ON_CBN_EDITUPDATE(IDC_LIST, &EoDlgSetHomePoint::OnCbnEditUpdateList)
 END_MESSAGE_MAP()
 OdGePoint3d EoDlgSetHomePoint::m_CursorPosition {0.0, 0.0, 0.0};
 

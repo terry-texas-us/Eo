@@ -364,7 +364,6 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 		auto ActiveEdges {0};
 		auto FirstLoopPointIndex {0};
 		for (auto LoopIndex = 0; LoopIndex < NumberOfLoops; LoopIndex++) {
-
 			if (LoopIndex != 0) { FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1]; }
 			auto StartPoint(m_Vertices[static_cast<unsigned>(FirstLoopPointIndex)]);
 			StartPoint.transformBy(tm);		// Apply transform to get areas first point in z0 plane
@@ -806,7 +805,6 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
 		AeSys::AddStringToReportList(L"Only used one loop in multiple loop Hatch.");
 	}
 	for (auto i = 0; i < hatch->numLoops(); i++) {
-
 		if (hatch->loopTypeAt(i) & OdDbHatch::kPolyline) {
 			if (i == 0) {
 				// <tas="Only handling the first loop"</tas>

@@ -4,6 +4,7 @@
 #include "EoDbBlock.h"
 #include "Preview.h"
 CBitmap* g_WndProcPreview_Bitmap = nullptr;
+
 LRESULT CALLBACK WndProcPreview(HWND, unsigned, WPARAM, LPARAM);
 
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance) noexcept {

@@ -121,7 +121,6 @@ void EoDbFile::ReadString(CString& string) {
 	string.Empty();
 	char c;
 	while (Read(&c, 1) == 1) {
-
 		if (c == '\t') { return; }
 		string += c;
 	}
@@ -131,7 +130,6 @@ void EoDbFile::ReadString(OdString& string) {
 	string.empty();
 	char c;
 	while (Read(&c, 1) == 1) {
-
 		if (c == '\t') { return; }
 		string += static_cast<wchar_t>(c);
 	}

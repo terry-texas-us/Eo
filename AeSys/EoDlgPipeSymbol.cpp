@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "EoDlgPipeSymbol.h"
-
 IMPLEMENT_DYNAMIC(EoDlgPipeSymbol, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgPipeSymbol, CDialog)

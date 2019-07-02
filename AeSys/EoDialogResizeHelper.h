@@ -27,12 +27,14 @@ public:
 
 	// resize child windows according to changes of parent window and fix attributes
 	void OnSize();
+
 private:
 	struct CtrlSize {
 		CRect m_origSize;
 		HWND m_hCtrl {nullptr};
 		EHFix m_hFix {kNoHFix};
 		EVFix m_vFix {kNoVFix};
+
 		CtrlSize() = default;
 	};
 

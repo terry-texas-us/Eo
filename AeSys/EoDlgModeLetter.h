@@ -1,16 +1,20 @@
 #pragma once
-
 class EoDlgModeLetter final : public CDialog {
 DECLARE_DYNAMIC(EoDlgModeLetter)
+
 	EoDlgModeLetter(CWnd* parent = nullptr);
+
 	virtual ~EoDlgModeLetter();
 
 	enum { IDD = IDD_ADD_NOTE };
 
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 	void OnOK() final;
+
 	static OdGePoint3d m_Point;
 public:
 	CEdit textEditControl;

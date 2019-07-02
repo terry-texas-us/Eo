@@ -2,7 +2,6 @@
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "EoDlgSetupConstraints.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetupConstraints, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupConstraints, CDialog)

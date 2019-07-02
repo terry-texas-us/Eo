@@ -82,7 +82,6 @@ void WinPathToDos(wchar_t* str) {
 	CString sNewStr;
 	auto pos {0};
 	while (pos >= 0) {
-
 		pos = pStr.Find('\\');
 		CString s;
 		if (pos < 0) {
@@ -128,12 +127,7 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	m_staticFilename.SetWindowTextW(sFileName);
 	if (m_pPlotStyleTable->isAciTableAvailable()) { m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)"); }
 	const auto BitmapHandle {
-	static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(),
-	                                MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB),
-	                                IMAGE_BITMAP,
-	                                32,
-	                                32,
-	                                LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))
+	static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))
 	};
 	const CClientDC ClientDeviceContext(&m_staticBitmap);
 	DrawTransparentBitmap(ClientDeviceContext.m_hDC, BitmapHandle, 0, 0, 0x00FFFFFF);

@@ -3,7 +3,6 @@
 #include "PrimState.h"
 #include "EoDbHatch.h"
 #include "EoDlgTrapModify.h"
-
 IMPLEMENT_DYNAMIC(EoDlgTrapModify, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)

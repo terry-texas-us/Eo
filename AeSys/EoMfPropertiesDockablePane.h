@@ -11,6 +11,7 @@ public:
 class EoMfPropertiesDockablePane final : public CDockablePane {
 public:
 	void AdjustLayout() override;
+
 protected:
 	CMFCPropertyGridCtrl m_PropertyGrid;
 	CFont m_PropertyGridFont;
@@ -24,16 +25,27 @@ protected:
 	void OnSettingChange(unsigned flags, const wchar_t* section); // hides non-virtual function of parent
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 	LRESULT OnPropertyChanged(WPARAM, LPARAM);
+
 	void OnExpandAllProperties();
+
 	void OnProperties1() noexcept;
+
 	void OnSortProperties();
+
 	void OnUpdateExpandAllProperties(CCmdUI* commandUserInterface) noexcept;
+
 	void OnUpdateProperties1(CCmdUI* commandUserInterface) noexcept;
+
 	void OnUpdateSortProperties(CCmdUI* commandUserInterface);
+
 DECLARE_MESSAGE_MAP()
+
 	void InitializePropertyGrid();
+
 	void SetPropertyGridFont();
+
 	void SetWorkspaceTabsSubItemsState();
+
 	int m_ComboHeight {0};
 	static std::vector<const wchar_t*> ms_TabsStyles;
 	static std::vector<const wchar_t*> ms_TabsLocations;

@@ -14,7 +14,6 @@ void AeSysView::OnModeGroupEdit() {
 }
 
 void AeSysView::DoEditGroupCopy() {
-
 	if (m_SubModeEditGroup != nullptr) {
 		const auto Group {new EoDbGroup(*m_SubModeEditGroup)};
 		GetDocument()->AddWorkLayerGroup(Group);
@@ -36,7 +35,6 @@ void AeSysView::DoEditGroupEscape() {
 }
 
 void AeSysView::DoEditGroupTransform(const unsigned short operation) {
-
 	if (m_SubModeEditGroup != nullptr) {
 		EoGeMatrix3d TransformMatrix;
 		TransformMatrix.setToTranslation(-m_SubModeEditBeginPoint.asVector());

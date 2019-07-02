@@ -188,7 +188,6 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 }
 
 void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const OdString& textOut, const OdDbDatabasePtr& database) {
-
 	if (database->getPSTYLEMODE() == 1) {
 		const auto OldTextColor {deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT))};
 		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, static_cast<unsigned>(textOut.getLength()), nullptr);
@@ -405,9 +404,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
 BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	CMDIFrameWndEx::OnShowPopupMenu(popupMenu);
 	if (popupMenu != nullptr) {
-
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VECTORIZERTYPE_CLEARMENU) >= 0) {
-
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			CRegKey RegistryKey;
 			RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
@@ -427,12 +424,10 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_TOOLS_REGISTEREDCOMMANDS) >= 0) {
-
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			ShowRegisteredCommandsPopupMenu(popupMenu);
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_TOOLBARS) >= 0) {
-
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			popupMenu->RemoveAllItems();
 			CMenu PopupToolbarMenu;
@@ -444,7 +439,6 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_ANNOTATIONSCALES) >= 0) {
-
 			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
 			ShowAnnotationScalesPopupMenu(popupMenu);
 		}
@@ -542,7 +536,6 @@ BOOL CMainFrame::OnShowMDITabContextMenu(const CPoint point, const unsigned long
 	auto PopupSubMenu {menu.GetSubMenu(0)};
 	ASSERT(PopupSubMenu != nullptr);
 	if (PopupSubMenu) {
-
 		if ((allowedItems & AFX_MDI_CAN_BE_DOCKED) == 0) {
 			PopupSubMenu->DeleteMenu(ID_MDI_TABBED, MF_BYCOMMAND);
 		}
@@ -607,7 +600,6 @@ void CMainFrame::OnStartProgress() {
 }
 
 void CMainFrame::OnTimer(const UINT_PTR nIDEvent) {
-
 	if (nIDEvent == TimerId) {
 		m_CurrentProgress += 10;
 		if (m_CurrentProgress > 100) {

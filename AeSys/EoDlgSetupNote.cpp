@@ -3,7 +3,6 @@
 //#include "AeSysView.h"
 #include "EoDbBlockReference.h"
 #include "EoDlgSetupNote.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetupNote, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupNote, CDialog)

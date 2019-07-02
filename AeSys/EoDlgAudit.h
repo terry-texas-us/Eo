@@ -5,7 +5,9 @@ class OdDbAuditInfo;
 class EoDlgAudit final : public EoVarDialog {
 public:
 	EoDlgAudit(CWnd* parent = nullptr);
+
 	void PrintReport(OdDbAuditInfo* auditInfo);
+
 	void OnCancel() override;
 
 	enum { IDD = IDD_AUDITINFO };
@@ -14,6 +16,8 @@ public:
 	CListCtrl auditErrorList;
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 DECLARE_MESSAGE_MAP()
 };

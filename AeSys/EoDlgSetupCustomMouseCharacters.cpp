@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "EoDlgSetupCustomMouseCharacters.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetupCustomMouseCharacters, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetupCustomMouseCharacters, CDialog)

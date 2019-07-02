@@ -27,7 +27,6 @@ bool OdBaseSnapManager::SubentId::operator==(const SubentId& other) const {
 	if (m_Marker != other.m_Marker) { return false; }
 	if (m_Path.size() != other.m_Path.size()) { return false; }
 	for (unsigned i = 0; i < m_Path.size(); ++i) {
-
 		if (m_Path[i] != other.m_Path[i]) { return false; }
 	}
 	return true;
@@ -429,7 +428,6 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	const auto Marker {selectedEntityData.SubentId.m_Marker};
 	if (!PointTrackerWithSnapInfo) {
 		for (auto ObjectSnapMode = OdDb::kOsModeEnd; ObjectSnapMode <= OdDb::kOsModeNear; ObjectSnapMode = OdDb::OsnapMode(ObjectSnapMode + 1)) {
-
 			if (nSnapModes & ToSnapModes(ObjectSnapMode)) // so not all types are tested
 			{
 				OdResult Result;
@@ -439,7 +437,6 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 					Result = Entity->getOsnapPoints(ObjectSnapMode, Marker, ModelPickPoint, ModelLastPoint, worldToEyeTransform, m_SnapPoints);
 				}
 				if (Result == eOk) {
-
 					for (auto& SnapPoint : m_SnapPoints) {
 						SnapPoint.transformBy(ModelToWorldTransform);
 						Checkpoint(ObjectSnapMode, SnapPoint);
@@ -448,18 +445,30 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, SnapPoint));
 								m_Redraw = true;
 								break;
-							case OdDb::kOsModeEnd: break;
-							case OdDb::kOsModeMid: break;
-							case OdDb::kOsModeNode: break;
-							case OdDb::kOsModeQuad: break;
-							case OdDb::kOsModeIntersec: break;
-							case OdDb::kOsModeIns: break;
-							case OdDb::kOsModePerp: break;
-							case OdDb::kOsModeTan: break;
-							case OdDb::kOsModeNear: break;
-							case OdDb::kOsModeApint: break;
-							case OdDb::kOsModePar: break;
-							case OdDb::kOsModeStart: break;
+							case OdDb::kOsModeEnd:
+								break;
+							case OdDb::kOsModeMid:
+								break;
+							case OdDb::kOsModeNode:
+								break;
+							case OdDb::kOsModeQuad:
+								break;
+							case OdDb::kOsModeIntersec:
+								break;
+							case OdDb::kOsModeIns:
+								break;
+							case OdDb::kOsModePerp:
+								break;
+							case OdDb::kOsModeTan:
+								break;
+							case OdDb::kOsModeNear:
+								break;
+							case OdDb::kOsModeApint:
+								break;
+							case OdDb::kOsModePar:
+								break;
+							case OdDb::kOsModeStart:
+								break;
 							default:
 								// no op
 								break;
@@ -475,7 +484,6 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 		OdArray<OdDb::OsnapMode> snapModes;
 		PointTrackerWithSnapInfo->GetSnapModes(Entity, snapModes);
 		for (auto it = snapModes.begin(); it != snapModes.end(); it++) {
-
 			if (Entity->getOsnapPoints(*it, Marker, ModelPickPoint, ModelLastPoint, worldToEyeTransform, m_SnapPoints) == eOk) {
 				PointTrackerWithSnapInfo->m_SnapContext.mEntityObjectId = Entity->objectId();
 				PointTrackerWithSnapInfo->m_SnapContext.mMarker = Marker;
@@ -518,7 +526,6 @@ void OdBaseSnapManager::RecalculateEntityCenters() {
 		if (!SnapPoints.empty()) {
 			m_Centers[i].m_Point = SnapPoints[0]; // recalculation center
 		}
-
 	}
 }
 

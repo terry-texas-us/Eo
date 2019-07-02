@@ -86,6 +86,5 @@ void EoMfOutputListBox::OnViewOutput() {
 		MainFrame->SetFocus();
 		MainFrame->ShowPane(ParentBar, FALSE, FALSE, FALSE);
 		MainFrame->RecalcLayout();
-
 	}
 }

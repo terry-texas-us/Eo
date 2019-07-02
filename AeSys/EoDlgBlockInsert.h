@@ -35,5 +35,6 @@ public:
 	void OnBnClickedPurge();
 
 	void OnBnClickedCancel();
+
 DECLARE_MESSAGE_MAP()
 };

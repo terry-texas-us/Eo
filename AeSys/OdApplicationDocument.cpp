@@ -82,7 +82,6 @@ OdGsLayoutHelperPtr odGetDocDevice(CDocument* document) {
 bool odGetDocOsnapPoint(CDocument* document, OdGePoint3d& point) {
 	auto ViewPosition {document->GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
-
 		const auto View {document->GetNextView(ViewPosition)};
 		if (View->IsKindOf(RUNTIME_CLASS(AeSysView))) {
 			return dynamic_cast<AeSysView*>(View)->EditorObject().Snap(point, nullptr);

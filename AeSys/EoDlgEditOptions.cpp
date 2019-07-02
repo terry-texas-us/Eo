@@ -2,7 +2,6 @@
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "EoDlgEditOptions.h"
-
 IMPLEMENT_DYNAMIC(EoDlgEditOptions, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgEditOptions, CDialog)

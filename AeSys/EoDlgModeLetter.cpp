@@ -5,7 +5,6 @@
 #include "PrimState.h"
 #include "EoDb.h"
 #include "EoDlgModeLetter.h"
-
 IMPLEMENT_DYNAMIC(EoDlgModeLetter, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgModeLetter, CDialog)

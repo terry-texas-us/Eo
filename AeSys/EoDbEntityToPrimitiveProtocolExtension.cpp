@@ -482,7 +482,6 @@ public:
 		for (auto n = 0; n < Knots.length(); n++) {
 		}
 		if (Rational) {
-
 			for (unsigned n = 0; n < Weights.size(); n++) {
 			}
 		}

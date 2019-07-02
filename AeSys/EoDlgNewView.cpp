@@ -32,7 +32,9 @@ void EoDlgNewView::DoDataExchange(CDataExchange* dataExchange) {
 
 BEGIN_MESSAGE_MAP(EoDlgNewView, CDialog)
 END_MESSAGE_MAP()
+
 OdString orthoTypeString(OdDb::OrthographicView type);
+
 OdString ucsString(const OdDbObject* pViewObj);
 
 BOOL EoDlgNewView::OnInitDialog() {
@@ -45,7 +47,6 @@ BOOL EoDlgNewView::OnInitDialog() {
 		OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
 		auto CategoryName {ViewTableRecord->getCategoryName()};
 		if (!CategoryName.isEmpty()) {
-
 			if (m_categories.FindString(-1, CategoryName) == -1) {
 				m_categories.AddString(CategoryName);
 			}

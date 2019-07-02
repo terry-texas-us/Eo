@@ -688,7 +688,6 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d& startPoint, const Od
 		if (fabs(dAng[1] - dMax) > DBL_EPSILON && fabs(dAng[1] - dMin) > DBL_EPSILON) { // Inside line is not colinear with outside lines
 			m_SweepAngle = dMax - dMin;
 			if (dAng[1] > dMin && dAng[1] < dMax) {
-
 				if (dAng[0] == dMax) m_SweepAngle = -m_SweepAngle;
 			} else {
 				m_SweepAngle = Oda2PI - m_SweepAngle;
@@ -740,7 +739,6 @@ void EoDbEllipse::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
-
 	if (mask != 0) { m_Center += translate; }
 }
 
@@ -933,9 +931,7 @@ int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& 
 	if (fabs(dT[1] - dTMax) > DBL_EPSILON && fabs(dT[1] - dTMin) > DBL_EPSILON) { // Inside line is not colinear with outside lines
 		auto dTheta {dTMax - dTMin};
 		if (dT[1] > dTMin && dT[1] < dTMax) {
-
 			if (dT[0] == dTMax) { dTheta = -dTheta; }
-
 		} else {
 			dTheta = Oda2PI - dTheta;
 			if (dT[2] == dTMax) { dTheta = -dTheta; }

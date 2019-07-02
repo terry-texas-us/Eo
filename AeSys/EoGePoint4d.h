@@ -13,11 +13,15 @@ public:
 	double W() const noexcept { return w; }
 
 	EoGePoint4d();
+
 	EoGePoint4d(const OdGePoint3d& initialPoint, double initialW) noexcept;
 
 	void operator/=(double d) noexcept;
+
 	EoGePoint4d operator+(const OdGeVector3d& vector);
+
 	EoGePoint4d operator-(const OdGeVector3d& vector);
+
 	OdGeVector3d operator-(const EoGePoint4d& point);
 
 	OdGePoint3d Convert3d() const;
@@ -25,6 +29,7 @@ public:
 	double DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept;
 	/// <summary>Performs a containment test on a point.</summary>
 	bool IsInView() noexcept;
+
 	EoGePoint4d& TransformBy(const EoGeMatrix3d& matrix) noexcept;
 
 	static bool ClipLine(EoGePoint4d& ptA, EoGePoint4d& ptB);
@@ -42,6 +47,8 @@ public:
 	/// <param name="planeNormal">clip plane normal vector</param>
 	/// <returns>Intersection point. If line and plane are parallel start point of line is returned. Not good!</returns>
 	static EoGePoint4d IntersectionWithPln4(EoGePoint4d& startPoint, EoGePoint4d& endPoint, const EoGePoint4d& pointOnPlane, const OdGeVector3d& planeNormal) noexcept;
+
 	static EoGePoint4d Max(EoGePoint4d& ptA, EoGePoint4d& ptB);
+
 	static EoGePoint4d Min(EoGePoint4d& ptA, EoGePoint4d& ptB);
 };

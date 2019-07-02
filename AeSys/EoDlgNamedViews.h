@@ -5,11 +5,16 @@ using OdDbViewTableRecordPtr = OdSmartPtr<OdDbViewTableRecord>;
 
 class CNamedViewListCtrl final : public CListCtrl {
 	void setViewId(int item, const OdDbObjectId& id);
+
 	void setView(int item, const OdDbViewTableRecord* view);
+
 public:
 	OdDbObjectId viewId(int item) const;
+
 	OdDbViewTableRecordPtr view(int item);
+
 	OdDbViewTableRecordPtr selectedView();
+
 	void InsertItem(int i, const OdDbViewTableRecord* pView);
 };
 
@@ -31,11 +36,18 @@ public:
 	CNamedViewListCtrl m_views;
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 	void OnSetcurrentButton();
+
 	void OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* pResult);
+
 	void OnNewButton();
+
 	void OnUpdateLayersButton();
+
 	void OnDeleteButton();
+
 DECLARE_MESSAGE_MAP()
 };

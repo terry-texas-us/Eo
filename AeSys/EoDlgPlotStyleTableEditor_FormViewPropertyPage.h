@@ -134,8 +134,10 @@ class CPsListStyleData {
 	int m_iActiveListIndex;
 protected:
 	int getPublicArrayIndexByColor(COLORREF color);
+
 public:
 	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, char item);
+
 	~CPsListStyleData();
 
 	OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; }
@@ -145,7 +147,9 @@ public:
 	int GetActiveListIndex() const noexcept { return m_iActiveListIndex; }
 
 	bool ReplaceBitmapColorInfo(COLORREF color, int item);
+
 	bool SetActiveListIndex(int index, bool bitmapInfo = false);
+
 	const OdCmEntityColor GetColor();
 
 	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; }
@@ -153,16 +157,19 @@ public:
 
 class EoDlgPlotStyleEditor_FormViewPropertyPage final : public CPropertyPage {
 DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
+
 	void mtHideHelpBtn();
+
 	CImageList m_imageList;
 	OdPsPlotStyleTable* m_pPlotStyleTable {nullptr};
 	OdPsPlotStyle* m_pPlotStyleActive {nullptr};
 	OdBitmapColorInfoArray m_bitmapList;
 	OdString m_sFileBufPath;
 	bool m_bEditChanging {false};
-	EoDlgPlotStyleEditor_FormViewPropertyPage();
-	~EoDlgPlotStyleEditor_FormViewPropertyPage() = default;
 
+	EoDlgPlotStyleEditor_FormViewPropertyPage();
+
+	~EoDlgPlotStyleEditor_FormViewPropertyPage() = default;
 
 	enum { IDD = IDD_PLOTSTYLE_FORMVIEW_PROPERTY_PAGE };
 
@@ -189,55 +196,99 @@ DECLARE_DYNCREATE(EoDlgPlotStyleEditor_FormViewPropertyPage)
 	CButton m_SaveButton;
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 	void initBitmapList();
+
 	void initAdaptiveComboBox();
+
 	void initGrayscaleComboBox();
+
 	void initDitherComboBox();
+
 	void initLinetypeComboBox();
+
 	void initLineweightComboBox();
+
 	void initLineendstyleComboBox();
+
 	void initLinejoinstyleComboBox();
+
 	void initFillstyleComboBox();
+
 	void initColorComboBox();
+
 	void initListCtrl();
+
 	const int insertItem(int index);
+
 	HICON initColorIcon(int width, int height, COLORREF color) noexcept;
+
 	void initImageList();
+
 	int deleteCustomColor();
+
 	int appendCustomColor(int item);
+
 	int replaceCustomColor(COLORREF color, int item);
+
 public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
+
 	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags);
+
 	void SetFileBufPath(OdString filePath);
+
 	void AddNewPlotStyle(const wchar_t* styleName);
 
 	const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; }
 
 protected:
 	void OnLineweightBtn();
+
 	void OnAddBtnStyle();
+
 	void OnSaveBtn();
+
 	void OnDelBtnStyle();
+
 	void OnUpdateEditDescription() noexcept;
+
 	void OnChangeEditDescription();
+
 	void OnChangeEditPen();
+
 	void OnChangeEditVirtPen();
+
 	void OnChangeEditScreening();
+
 	void OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result);
+
 	void OnItemchangingListStyles(NMHDR* notifyStructure, LRESULT* result);
+
 	void OnDeltaposSpinPen(NMHDR* notifyStructure, LRESULT* result) noexcept;
+
 	void OnSelchangeComboColor();
+
 	void OnSelendokComboColor() noexcept;
+
 	void OnSelendokComboDither();
+
 	void OnSelendokComboGrayScale();
+
 	void OnSelendokComboLineType();
+
 	void OnSelendokComboAdaptive();
+
 	void OnSelendokComboLineWeight();
+
 	void OnSelendokComboLineEndStyle();
+
 	void OnSelendokComboLineJoinStyle();
+
 	void OnSelendokComboFillStyle();
+
 	void OnDestroy(); // hides non-virtual function of parent
 DECLARE_MESSAGE_MAP()
 };

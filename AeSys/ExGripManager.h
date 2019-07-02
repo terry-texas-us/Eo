@@ -247,9 +247,9 @@ public:
 using OdExGripDbReactorPtr = OdSmartPtr<OdExGripDbReactor>;
 class OdDbCommandContext;
 
-typedef OdDbSelectionSetPtr (*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);
+typedef OdDbSelectionSetPtr (*GetSelectionSetPtr)(OdDbCommandContext* commandContext);
 
-typedef OdDbSelectionSetPtr (*GetSelectionSetPtr)(OdDbCommandContext* dbCommandContext);
+typedef OdDbSelectionSetPtr (*GetSelectionSetPtr)(OdDbCommandContext* commandContext);
 
 class OdExGripManager : public OdBaseGripManager {
 public: // Construction. Initialization.
@@ -257,7 +257,7 @@ public: // Construction. Initialization.
 
 	~OdExGripManager() = default;
 
-	void Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* dbCommandContext, GetSelectionSetPtr getSSet);
+	void Initialize(OdGsDevice* device, OdGsModel* gsModel, OdDbCommandContext* commandContext, GetSelectionSetPtr getSSet);
 
 	void Uninitialize();
 

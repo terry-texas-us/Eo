@@ -20,7 +20,7 @@
 class AeSysDoc;
 class EoDbText;
 
-class AeSysView : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, OdExEditorObject::OleDragCallback {
+class AeSysView final : public CView, public OdGiContextForDbDatabase, OdEdBaseIO, OdExEditorObject::OleDragCallback {
 	friend class SaveViewParameters;
 
 	void DestroyDevice();

@@ -14,14 +14,23 @@ class EoDbBlock final : public EoDbGroup {
 	OdString m_strXRefPathName; // external reference (XRef) path name
 public:
 	EoDbBlock() = default;
+
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint);
+
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint, const OdString& pathName);
+
 	OdGePoint3d BasePoint() const noexcept;
+
 	unsigned short GetTypeFlags() const noexcept;
+
 	bool HasAttributes() const noexcept;
+
 	bool IsAnonymous() const noexcept;
+
 	bool IsFromExternalReference() const noexcept;
+
 	void SetTypeFlags(unsigned short flags) noexcept;
+
 	void SetBasePoint(const OdGePoint3d& basePoint) noexcept;
 };
 

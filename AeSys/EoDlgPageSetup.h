@@ -6,16 +6,25 @@ class EoDlgPageSetup final : public CDialog {
 	OdDbPlotSettings& m_PlotSettings;
 	OdDbPlotSettingsValidatorPtr m_PlotSettingsValidator;
 	OdSmartPtr<OdDbUserIO> m_UserIo;
+
 	OdString GetCanonicalByLocaleMediaName(OdString localeMediaName);
+
 	void SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames);
+
 	bool IsWHSwap() const;
+
 	bool IsPaperWidthLessHeight() const;
+
 	void UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits);
+
 	OdDbPlotSettings::PlotPaperUnits GetMediaNativePPU();
+
 public:
 	EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> userIo);
+
 	~EoDlgPageSetup() = default;
-  private:
+
+private:
 	enum { IDD = IDD_PAGE_SETUP };
 
 	CComboBox m_PlotStyleFiles;
@@ -57,46 +66,84 @@ public:
 	CString m_WindowMinY;
 	CString m_WindowMaxX;
 	CString m_WindowMaxY;
-
-  protected:
+protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 	void OnOK() final;
+
 	void OnCancel() final;
+
 	void OnSelChangeScaleValues();
+
 	void OnSelChangeDeviceList();
+
 	void OnSelChangeMediaList();
+
 	void OnSelChangeQualityList();
+
 	void OnSelChangeShadePlotList();
+
 	void OnSelChangeViewsList();
+
 	void OnSelChangeMMInchesList();
+
 	void OnSelChangePlotAreaType();
+
 	void OnCheckCenterThePlot();
+
 	void OnCheckDisplayPlotStyles();
+
 	void OnCheckFitToPaper();
+
 	void OnCheckScaleLineweights();
+
 	void OnChangeEditOffsetXy();
+
 	void OnChangeEditDpi();
+
 	void OnChangeEditScaleUnit();
+
 	void OnClickPortraitLandscape();
+
 	void OnClickPlotStyles();
+
 	void OnClickPlotStyleFilesBtn();
+
 	void OnSelChangePlotStyleFiles();
+
 	void OnClickWindowButton();
+
 DECLARE_MESSAGE_MAP()
+
 	bool FillDeviceCombo();
+
 	bool FillPaperSizes();
+
 	void FillShadePlotQualityDpi(bool fillCombo);
+
 	void FillScaleValues(bool fillCombo);
+
 	void FillPlotAreaCombo(bool fillCombo);
+
 	void FillPlotOffset();
+
 	void FillPaperOrientation();
+
 	void FillPlotStyles();
+
 	void FillPlotStyleCombo(bool fillCombo);
+
 	void FillViewCombo(bool fillCombo);
+
 	void FillMmInches();
+
 	bool FillArrayByPatternFile(OdArray<CString>& arrFiles, CString pattern);
+
 	void FillWindowArea();
+
 	bool ViewsExist() const;
+
 	bool IsModelSpacePageSetup() const;
 };

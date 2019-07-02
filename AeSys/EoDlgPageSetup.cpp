@@ -750,7 +750,6 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString>& arrFiles, CString 
 			IsFind = true;
 		}
 		Find = FindNextFile(FileHandle, &FindFileData);
-
 	} while (Find && Find != ERROR_NO_MORE_FILES);
 	FindClose(FileHandle);
 	return IsFind;

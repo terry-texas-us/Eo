@@ -3,7 +3,6 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "EoDlgSelectGotoHomePoint.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSelectGotoHomePoint, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSelectGotoHomePoint, CDialog)

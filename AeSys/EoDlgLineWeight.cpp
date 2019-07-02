@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "MainFrm.h"
 #include "EoDlgLineWeight.h"
-
 IMPLEMENT_DYNAMIC(EoDlgLineWeight, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgLineWeight, CDialog)

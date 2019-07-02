@@ -8,7 +8,9 @@ class EoVaxFloat {
 	float m_f {0.0f};
 public:
 	EoVaxFloat() = default;
+
 	void Convert(const double& dMS) noexcept;
+
 	double Convert();
 };
 

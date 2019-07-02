@@ -4,9 +4,12 @@ constexpr double gc_PlotStyleEditMaxScaleFactor = 10.0;
 
 class EoDlgPlotStyleEditor_GeneralPropertyPage : public CPropertyPage {
 DECLARE_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage)
+
 	OdPsPlotStyleTable* m_pPlotStyleTable;
 	OdString m_sFileBufPath;
+
 	EoDlgPlotStyleEditor_GeneralPropertyPage();
+
 	~EoDlgPlotStyleEditor_GeneralPropertyPage();
 
 	enum { IDD = IDD_PLOTSTYLE_GENERAL_PROPERTY_PAGE };
@@ -20,14 +23,22 @@ DECLARE_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage)
 	CStatic m_staticRegular;
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 	void OnOK() final;
+
 public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
+
 	void SetFileBufPath(OdString filePath);
+
 protected:
 	void OnChangeEditDescription();
+
 	void OnCheckScaleFactor();
+
 	void OnEditScaleFactor();
+
 DECLARE_MESSAGE_MAP()
 };

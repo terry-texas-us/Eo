@@ -2,7 +2,6 @@
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "EoDlgViewParameters.h"
-
 IMPLEMENT_DYNAMIC(EoDlgViewParameters, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgViewParameters, CDialog)

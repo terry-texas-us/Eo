@@ -195,7 +195,6 @@ bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGeP
 	EoGePoint4d pt0[] = {EoGePoint4d(BoundingBox[0], 1.0), EoGePoint4d(BoundingBox[1], 1.0), EoGePoint4d(BoundingBox[2], 1.0), EoGePoint4d(BoundingBox[3], 1.0)};
 	view->ModelViewTransformPoints(4, pt0);
 	for (unsigned n = 0; n < 4; n++) {
-
 		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
 	}
 	projectedPoint = point.Convert3d();
@@ -229,7 +228,6 @@ void EoDbText::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
-
 	if (mask != 0) { m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate); }
 }
 

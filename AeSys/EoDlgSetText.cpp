@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "EoDlgSetText.h"
-
 IMPLEMENT_DYNAMIC(EoDlgSetText, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSetText, CDialog)

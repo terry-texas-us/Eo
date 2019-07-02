@@ -61,7 +61,6 @@ void EoDlgPlotStyleEditLineweight::OnOK() {
 		const auto lineweight {static_cast<int>(PlotStyleData.lineweight()) - 1};
 		for (unsigned j = 0; j < LineweightQnt; j++) {
 			if (lineweightData[j].oldIndex == lineweight) {
-
 				if (lineweightData[j].oldIndex != lineweightData[j].newIndex) {
 					PlotStyleData.setLineweight(static_cast<double>(lineweightData[j].newIndex) + 1.0);
 					PlotStyle->setData(PlotStyleData);

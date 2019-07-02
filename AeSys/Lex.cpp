@@ -271,7 +271,6 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 						}
 					}
 				} else if (iTokTyp == TOK_BINARY_MINUS) {
-
 					if (iTyp1 == TOK_STRING) { throw L"Can not subtract strings"; }
 					if (iTyp1 == TOK_INTEGER) {
 						lOp1[0] = lOp2[0] - lOp1[0];
@@ -279,7 +278,6 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 						dOp1[0] = dOp2[0] - dOp1[0];
 					}
 				} else if (iTokTyp == TOK_MULTIPLY) {
-
 					if (iTyp1 == TOK_STRING) { throw L"Can not multiply strings"; }
 					if (iTyp1 == TOK_INTEGER) {
 						lOp1[0] *= lOp2[0];
@@ -295,7 +293,6 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 						dOp1[0] *= dOp2[0];
 					}
 				} else if (iTokTyp == TOK_DIVIDE) {
-
 					if (iTyp1 == TOK_STRING) { throw L"Can not divide strings"; }
 					if (iTyp1 == TOK_INTEGER) {
 						if (lOp1[0] == 0) throw L"Attempting to divide by 0";

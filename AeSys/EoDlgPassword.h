@@ -10,5 +10,6 @@ public:
 	OdPassword m_password;
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 DECLARE_MESSAGE_MAP()
 };

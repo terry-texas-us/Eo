@@ -1402,6 +1402,7 @@ namespace lex
 	//				alDefReq	dimension (lo word) and length (hi word) of result
 	//				aVal		result
 	void ConvertStringToVal(int valueType, long definition, wchar_t* szVal, long* lDefReq, void* p);
+
 	void ConvertValToString(wchar_t*, LexColumnDefinition*, wchar_t*, int*) noexcept;
 	/// <summary>Does value type conversion</summary>
 	// Parameters:	valueType	type of value(s)
@@ -1417,9 +1418,11 @@ namespace lex
 	//				valueType		type of result
 	//				apOp		result
 	void EvalTokenStream(int*, long*, int*, void*);
+
 	void Init() noexcept;
 	/// <summary>Parses line into tokens.</summary>
 	void Parse(const wchar_t* szLine);
+
 	void ParseStringOperand(const wchar_t* pszTok);
 	/// <summary>Scan a buffer for a given character.</summary>
 	// Notes:	If the character is found the scan pointer is updated
@@ -1431,6 +1434,7 @@ namespace lex
 	//			arg buffer pointer is updated to point to the next free character.
 	// Returns: Pointer tot he string or 0 if an error occurs.
 	wchar_t* ScanForString(wchar_t* * ppStr, wchar_t* pszTerm, wchar_t* * ppArgBuf) noexcept;
+
 	int Scan(wchar_t* token, const wchar_t* line, int& linePosition);
 	/// <summary>Skip over any white space characters.</summary>
 	/// <param name="pszString">Pointer to the current buffer position.</param>
@@ -1440,6 +1444,8 @@ namespace lex
 	// Returns:  token type
 	//		 - 1 if token identifier out of range
 	int TokenType(int) noexcept;
+
 	void UnaryOp(int, int*, long*, double*);
+
 	void UnaryOp(int, int*, long*, long*);
 }

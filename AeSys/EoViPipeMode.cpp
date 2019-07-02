@@ -308,7 +308,6 @@ void AeSysView::OnPipeModeSymbol() {
 	const auto ColorIndex {static_cast<unsigned short>(g_PrimitiveState.ColorIndex())};
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	switch (m_CurrentPipeSymbolIndex) {
-
 		case 0: { // Generate flow switch
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, PointOnSection, ActiveViewPlaneNormal, SymbolSize[0])};
 			Circle->setColorIndex(ColorIndex);

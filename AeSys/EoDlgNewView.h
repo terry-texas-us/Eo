@@ -14,6 +14,8 @@ public:
 	CString m_sUcsName;
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
+
 	BOOL OnInitDialog() final;
+
 DECLARE_MESSAGE_MAP()
 };

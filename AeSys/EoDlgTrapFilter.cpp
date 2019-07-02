@@ -7,7 +7,6 @@
 #include "EoDlgTrapFilter.h"
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
-
 IMPLEMENT_DYNAMIC(EoDlgTrapFilter, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgTrapFilter, CDialog)

@@ -263,7 +263,6 @@ void AeSysView::OnLpdModeSize() {
 	const auto CurrentPnt {GetCursorPosition()};
 	auto Angle {0.0};
 	if (m_EndCapPoint != nullptr) {
-
 		if (m_EndCapPoint->ColorIndex() == 15) {
 			auto Position {m_EndCapGroup->Find(m_EndCapPoint)};
 			m_EndCapGroup->GetNext(Position);
@@ -644,7 +643,6 @@ bool AeSysView::GenerateRectangularTap(const EJust justification, const Section 
 	} else {
 		LeftLine.ProjPtFrom_xy(m_DuctTapSize, m_DuctTapSize, EndPoint);
 		LeftLine.SetEndPoint(EndPoint);
-
 	}
 	Line = EoDbLine::Create(BlockTableRecord, RightLine.startPoint(), RightLine.endPoint());
 	Line->setColorIndex(static_cast<unsigned short>(ColorIndex));

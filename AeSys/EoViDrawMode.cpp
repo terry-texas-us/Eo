@@ -130,7 +130,6 @@ void AeSysView::OnDrawModeEllipse() {
 void AeSysView::OnDrawModeInsert() {
 	auto Document {GetDocument()};
 	if (Document->BlockTableSize() > 0) {
-
 		EoDlgBlockInsert Dialog(Document);
 		Dialog.DoModal();
 	}
@@ -427,7 +426,6 @@ void AeSysView::DoDrawModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
 			break;
-
 	}
 	m_DrawModePoints.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
 }

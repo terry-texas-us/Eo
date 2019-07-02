@@ -110,7 +110,6 @@ void AeSysView::OnCutModeField() {
 				if ((NumberOfIntersections = Primitive->IsWithinArea(LowerLeftCorner, UpperRightCorner, Intersections)) == 0) { continue; }
 				Group->RemoveAt(PreviousPrimitivePosition);
 				for (auto i = 0; i < NumberOfIntersections; i += 2) {
-
 					if (i != 0) { GroupsOut->RemoveTail(); }
 					Primitive->CutAt2Points(&Intersections[i], GroupsOut, GroupsIn, Database());
 				}

@@ -107,7 +107,6 @@ void AeSysView::OnTrapModeMenu() {
 }
 
 void AeSysView::OnTrapModeModify() {
-
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
 		if (Dialog.DoModal() == IDOK) {
@@ -145,7 +144,6 @@ void AeSysView::OnTrapRemoveModePoint() {
 }
 
 void AeSysView::OnTrapRemoveModeStitch() {
-
 	if (m_PreviousOp != ID_OP2) {
 		m_PreviousPnt = GetCursorPosition();
 		RubberBandingStartAtEnable(m_PreviousPnt, kLines);
@@ -198,7 +196,6 @@ void AeSysView::OnTrapRemoveModeField() {
 }
 
 void AeSysView::OnTrapRemoveModeLast() {
-
 	if (!GetDocument()->IsTrapEmpty()) {
 		const auto Group {GetDocument()->RemoveLastTrappedGroup()};
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
@@ -220,7 +217,6 @@ void AeSysView::OnTrapRemoveModeMenu() {
 }
 
 void AeSysView::OnTrapRemoveModeModify() {
-
 	if (!GetDocument()->IsTrapEmpty()) {
 		EoDlgTrapModify Dialog(GetDocument());
 		if (Dialog.DoModal() == IDOK) {

@@ -32,7 +32,9 @@
 #include <Ge/GePoint3d.h>
 #include <Ge/GeVector3d.h>
 #include <Ge/GeMatrix3d.h>
+
 unsigned AFXAPI HashKey(CString& string) noexcept;
+
 #include "SafeMath.h"
 
 
