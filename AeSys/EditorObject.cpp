@@ -458,8 +458,9 @@ bool OdExEditorObject::OnMouseRightButtonDoubleClick(unsigned /*flags*/, int /*x
 	return true;
 }
 
-bool OdExEditorObject::OnMouseMove(unsigned /*flags*/, const int x, const int y) {
-	return m_GripManager.OnMouseMove(x, y);
+bool OdExEditorObject::OnMouseMove(const unsigned flags, const int x, const int y) {
+	const auto ShiftIsDown {(OdEdBaseIO::kShiftIsDown & flags) != 0};
+	return m_GripManager.OnMouseMove(x, y, ShiftIsDown);
 }
 
 void OdExEditorObject::Dolly(const int x, const int y) {

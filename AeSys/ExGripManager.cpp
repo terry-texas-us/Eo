@@ -446,78 +446,45 @@ bool OdBaseGripManager::OnMouseDown(const int x, const int y, const bool shiftIs
 	return true;
 }
 
-bool OdBaseGripManager::StartHover(const int x, const int y) {
-	auto bRet {EndHover()};
-	OdExGripDataPtrArray aKeys;
-	LocateGripsAt(x, y, aKeys);
-	if (!aKeys.empty()) {
-		m_HoverGripsData = aKeys;
-		for (auto HoverGripData : m_HoverGripsData) {
-			if (HoverGripData->Status() == OdDbGripOperations::kWarmGrip) {
-				HoverGripData->SetStatus(OdDbGripOperations::kHoverGrip);
-				if (!HoverGripData->GripData().isNull()) {
-					if (HoverGripData->GripData()->hoverFunc() != nullptr) {
-						auto Flags {0};
-						if (HoverGripData->IsShared()) { Flags = OdDbGripOperations::kSharedGrip; }
-						(*HoverGripData->GripData()->hoverFunc())(HoverGripData->GripData(), HoverGripData->EntityId(), Flags);
-					}
-				}
-				OnModified(HoverGripData);
-			}
-		}
-		bRet = true;
-	}
-	return bRet;
-}
-
-OdResult OdBaseGripManager::startHover(int x, int y, bool bShift) {
-	OdResult eRet = eOk;
+OdResult OdBaseGripManager::StartHover(const int x, const int y, const bool shiftIsDown) {
+	auto Result {eOk};
 	if (!EndHover()) {
-		eRet = eGripOpFailure;
+		Result = eGripOpFailure;
 		clockStartHover = 0;
 	}
 	OdExGripDataPtrArray aKeys;
 	LocateGripsAt(x, y, aKeys);
 	if (!aKeys.empty()) {
 		m_HoverGripsData = aKeys;
-		OdUInt32 i, iSize = m_HoverGripsData.size();
-		for (i = 0; i < iSize; i++) {
-			OdExGripDataPtr pGrip = m_HoverGripsData[i];
-			if (pGrip->Status() == OdDbGripOperations::kWarmGrip) {
-				pGrip->SetStatus(OdDbGripOperations::kHoverGrip);
-				if (!pGrip->GripData().isNull()) {
-					if ((0 != pGrip->GripData()->hoverFunc()) && !bShift) {
-						if (!clockStartHover)
-							clockStartHover = clock();
-						// 300 ms delay before hoverFunc()
-						if ((clock() - clockStartHover) * 1000 / CLOCKS_PER_SEC > 300) {
-							int iFlags = 0;
-							if (pGrip->IsShared())
-								iFlags = OdDbGripOperations::kSharedGrip;
-							eRet = (*pGrip->GripData()->hoverFunc())(pGrip->GripData(), pGrip->EntityId(), iFlags);
-							if (eRet == eGripOpGetNewGripPoints) {
+		for (unsigned i = 0; i < m_HoverGripsData.size(); i++) {
+			auto Grip {m_HoverGripsData[i]};
+			if (Grip->Status() == OdDbGripOperations::kWarmGrip) {
+				Grip->SetStatus(OdDbGripOperations::kHoverGrip);
+				if (!Grip->GripData().isNull()) {
+					if ((Grip->GripData()->hoverFunc() != nullptr) && !shiftIsDown) {
+						if (!clockStartHover) { clockStartHover = clock(); }
+						if ((clock() - clockStartHover) * 1000 / CLOCKS_PER_SEC > 300) { // 300 ms delay before hover
+							auto Flags {0};
+							if (Grip->IsShared()) { Flags = OdDbGripOperations::kSharedGrip; }
+							Result = (*Grip->GripData()->hoverFunc())(Grip->GripData(), Grip->EntityId(), Flags);
+							if (Result == eGripOpGetNewGripPoints) {
 								clockStartHover = 0;
 								aKeys[i]->SetStatus(OdDbGripOperations::kHotGrip);
 								m_BasePoint = aKeys.first()->Point();
 								m_LastPoint = m_BasePoint;
-								{
-									// Use alternative point if needed.
-									OdDbGripDataPtr pFirstData = aKeys.first()->GripData();
-									if (0 != pFirstData.get()) {
-										if (0 != pFirstData->alternateBasePoint()) {
-											m_BasePoint = *(pFirstData->alternateBasePoint());
-										}
-									}
+								auto FirstData {aKeys.first()->GripData()};
+								if (FirstData.get() != nullptr && FirstData->alternateBasePoint() != nullptr) { // Use alternative point
+									m_BasePoint = *(FirstData->alternateBasePoint());
 								}
 							}
 						}
 					}
 				}
-				OnModified(pGrip);
+				OnModified(Grip);
 			}
 		}
 	}
-	return eRet;
+	return Result;
 }
 
 bool OdBaseGripManager::EndHover() {
@@ -1050,30 +1017,20 @@ bool OdExGripManager::OnMouseDown(const int x, const int y, const bool shiftIsDo
 	return true;
 }
 
-bool OdExGripManager::OnMouseMove(const int x, const int y) {
-	return StartHover(x, y);
-}
-
-bool OdExGripManager::onMouseMove(int x, int y, bool bShift) {
+bool OdExGripManager::OnMouseMove(const int x, const int y, const bool shiftIsDown) {
 	// restart hover operation
-	OdResult eRet = startHover(x, y, bShift);
-	if (eRet == eGripOpFailure)
-		return false;
-	else if (eRet == eGripOpGetNewGripPoints) {
-		OdExGripDataPtrArray aActiveKeys;
-		LocateGripsByStatus(OdDbGripOperations::kHotGrip, aActiveKeys);
-		if (aActiveKeys.empty()) {
-			// Valid situation.
-			// If trigger grip performed entity modification and returned eGripHotToWarm
-			// then nothing is to be done cause entity modification will cause reactor to regen grips.
-			return false;
-		}
-		AddToDrag(aActiveKeys);
+	const auto Result {StartHover(x, y, shiftIsDown)};
+	if (Result == eGripOpFailure) { return false; }
+	if (Result == eGripOpGetNewGripPoints) {
+		OdExGripDataPtrArray ActiveKeys;
+		LocateGripsByStatus(OdDbGripOperations::kHotGrip, ActiveKeys);
+		if (ActiveKeys.empty()) { return false; } // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
+		AddToDrag(ActiveKeys);
 		m_CommandContext->database()->startUndoRecord();
 		::odedRegCmds()->executeCommand(&m_gripStretchCommand, m_CommandContext);
-		int iSize = aActiveKeys.size();
-		for (int i = 0; i < iSize; i++)
-			aActiveKeys[i]->SetStatus(OdDbGripOperations::kWarmGrip);
+		for (auto& ActiveKey : ActiveKeys) {
+			ActiveKey->SetStatus(OdDbGripOperations::kWarmGrip);
+		}
 	}
 	return true;
 }

@@ -152,8 +152,7 @@ public: // Construction. Initialization.
 	virtual bool IsModel(OdGiDrawable* /*entity*/) noexcept { return true; }
 
 	// Hover control.
-	bool StartHover(int x, int y);
-	OdResult startHover(int x, int y, bool bShift);
+	OdResult StartHover(int x, int y, bool shiftIsDown);
 
 	bool EndHover();
 
@@ -296,9 +295,7 @@ public: // Construction. Initialization.
 	// Events from Windows.
 	bool OnMouseDown(int x, int y, bool shiftIsDown) override;
 
-	bool OnMouseMove(int x, int y);
-
-	bool onMouseMove(int x, int y, bool bShift);
+	bool OnMouseMove(int x, int y, bool shiftIsDown);
 
 	bool OnControlClick();
 
