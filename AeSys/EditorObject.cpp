@@ -362,7 +362,7 @@ bool OdExEditorObject::Unselect() {
 }
 
 bool OdExEditorObject::OnCtrlClick() {
-	return m_GripManager.onControlClick();
+	return m_GripManager.OnControlClick();
 }
 
 void OdExEditorObject::OnDestroy() {

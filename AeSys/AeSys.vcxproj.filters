@@ -569,7 +569,6 @@
     <None Include="..\..\..\..\Autodesk\AutoCAD 2019\UserDataCache\en-us\Support\acadiso.lin">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
     <None Include=".clang-format" />
   </ItemGroup>
   <ItemGroup>
