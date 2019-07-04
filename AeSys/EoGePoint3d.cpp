@@ -6,10 +6,7 @@ bool ContainmentOf(const OdGePoint3d& point, const OdGePoint3d& lowerLeftPoint, 
 		return false;
 	}
 	RelativeTolerance = DBL_EPSILON + fabs(DBL_EPSILON * point.y);
-	if (lowerLeftPoint.y > point.y + RelativeTolerance || upperRightPoint.y < point.y - RelativeTolerance) {
-		return false;
-	}
-	return true;
+	return !(lowerLeftPoint.y > point.y + RelativeTolerance || upperRightPoint.y < point.y - RelativeTolerance);
 }
 
 OdGePoint3d ProjectToward(const OdGePoint3d& fromPoint, const OdGePoint3d& toPoint, const double distance) {

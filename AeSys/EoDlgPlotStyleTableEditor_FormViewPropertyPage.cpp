@@ -739,7 +739,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboDither() {
 	const auto CurrentSelection {m_Dither.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
-	OdPsData.setDitherOn(CurrentSelection == 0 ? true : false);
+	OdPsData.setDitherOn(CurrentSelection == 0);
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
@@ -747,7 +747,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboGrayScale() {
 	const auto CurrentSelection {m_Grayscale.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
-	OdPsData.setGrayScaleOn(CurrentSelection == 0 ? true : false);
+	OdPsData.setGrayScaleOn(CurrentSelection == 0);
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
@@ -755,7 +755,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboAdaptive() {
 	const auto CurrentSelection {m_Adaptive.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
-	OdPsData.setAdaptiveLinetype(CurrentSelection == 0 ? true : false);
+	OdPsData.setAdaptiveLinetype(CurrentSelection == 0);
 	m_pPlotStyleActive->setData(OdPsData);
 }
 

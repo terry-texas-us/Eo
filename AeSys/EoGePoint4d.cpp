@@ -126,7 +126,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 	EoGePoint4d pt;
 	EoGePoint4d ptEdge[2];
 	bool bEdgeVis[2];
-	const auto bVisVer0 {OdGeVector3d(pointsArrayIn[0].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= -DBL_EPSILON ? true : false};
+	const auto bVisVer0 {OdGeVector3d(pointsArrayIn[0].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= -DBL_EPSILON};
 	ptEdge[0] = pointsArrayIn[0];
 	bEdgeVis[0] = bVisVer0;
 	if (bVisVer0) {
@@ -135,7 +135,7 @@ void EoGePoint4d::IntersectionWithPln(EoGePoint4dArray& pointsArrayIn, const OdG
 	const auto iPtsIn {static_cast<int>(pointsArrayIn.GetSize())};
 	for (auto i = 1; i < iPtsIn; i++) {
 		ptEdge[1] = pointsArrayIn[i];
-		bEdgeVis[1] = OdGeVector3d(ptEdge[1].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON ? true : false;
+		bEdgeVis[1] = OdGeVector3d(ptEdge[1].Convert3d() - pointOnPlane).dotProduct(planeNormal) >= - DBL_EPSILON;
 		if (bEdgeVis[0] != bEdgeVis[1]) { // Vertices of edge on opposite sides of clip plane
 			pt = IntersectionWithPln4(ptEdge[0], ptEdge[1], EoGePoint4d(pointOnPlane, 1.0), planeNormal);
 			pointsArrayOut.Add(pt);

@@ -193,8 +193,7 @@ bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 	if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
 	Point = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
 	view->ModelViewTransformPoint(Point);
-	if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
-	return false;
+	return point.DistanceToPointXY(Point) < ms_SelectApertureSize;
 }
 
 int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {

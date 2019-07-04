@@ -137,7 +137,7 @@ bool EoDbText::IsInView(AeSysView* view) const {
 bool EoDbText::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_ReferenceSystem.Origin(), 1.0);
 	view->ModelViewTransformPoint(pt);
-	return point.DistanceToPointXY(pt) < ms_SelectApertureSize ? true : false;
+	return point.DistanceToPointXY(pt) < ms_SelectApertureSize;
 }
 
 void EoDbText::ModifyNotes(const EoDbFontDefinition& fontDefinition, const EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {

@@ -629,10 +629,9 @@ bool OdExGripManager::OnMouseMove(const int x, const int y, const bool shiftIsDo
 }
 
 bool OdExGripManager::OnControlClick() const {
-	if (m_GripDrags.empty()) { return false; }
 	// TODO: Notify active grips.
 	// AEC grips use CTRL key to change mode, but how to pass it threw standard interface is currently unknown.
-	return true;
+	return !m_GripDrags.empty();
 }
 
 void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {

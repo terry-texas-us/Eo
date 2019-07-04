@@ -167,7 +167,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 		}
 	}
 	auto Marker {0};
-	if (m_Centers.size()) {
+	if (!m_Centers.empty()) {
 		viewportDraw->subEntityTraits().setTrueColor(CenterTrueColor());
 		for (unsigned i = 0; i < m_Centers.size(); i++, Marker++) {
 			SubEntityTraits.setSelectionMarker(Marker);
@@ -353,7 +353,7 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 	if (pViewImpl) { pViewImpl->setSnapping(true); }
 	m_SelectedEntityData.clear();
 	view->select(DcPoints, 2, this);
-	if (m_SelectedEntityData.size()) { // dna: only one can be selected currently
+	if (!m_SelectedEntityData.empty()) { // only one can be selected currently
 		CheckSnapPoints(m_SelectedEntityData[0], pViewImpl->worldToEyeMatrix());
 	}
 	if (pViewImpl) { pViewImpl->setSnapping(false); }

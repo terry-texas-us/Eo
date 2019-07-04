@@ -305,7 +305,7 @@ void AeSysView::DoNodalModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
 	const auto NumberOfPoints {m_NodalModePoints.size()};
 	switch (PreviousNodalCommand) {
-		case ID_OP4: VERIFY(m_NodalModePoints.size() > 0);
+		case ID_OP4: VERIFY(!m_NodalModePoints.empty());
 			if (m_NodalModePoints[0] != CurrentPnt) {
 				CurrentPnt = SnapPointToAxis(m_NodalModePoints[0], CurrentPnt);
 				m_NodalModePoints.append(CurrentPnt);

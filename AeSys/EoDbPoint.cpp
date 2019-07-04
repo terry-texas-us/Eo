@@ -164,7 +164,7 @@ bool EoDbPoint::IsInView(AeSysView* view) const {
 bool EoDbPoint::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-	return point.DistanceToPointXY(pt) < ms_SelectApertureSize ? true : false;
+	return point.DistanceToPointXY(pt) < ms_SelectApertureSize;
 }
 
 OdGePoint3d EoDbPoint::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
@@ -178,13 +178,13 @@ bool EoDbPoint::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGe
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
 	projectedPoint = pt.Convert3d();
-	return point.DistanceToPointXY(pt) <= view->SelectApertureSize() ? true : false;
+	return point.DistanceToPointXY(pt) <= view->SelectApertureSize();
 }
 
 bool EoDbPoint::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoGePoint4d pt(m_Position, 1.0);
 	view->ModelViewTransformPoint(pt);
-	return pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y ? true : false;
+	return pt.x >= lowerLeftCorner.x && pt.x <= upperRightCorner.x && pt.y >= lowerLeftCorner.y && pt.y <= upperRightCorner.y;
 }
 
 double EoDbPoint::DataAt(const unsigned short dataIndex) const noexcept {

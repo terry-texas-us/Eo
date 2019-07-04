@@ -115,7 +115,7 @@ void AeSysView::OnLpdModeDuct() {
 void AeSysView::OnLpdModeTransition() {
 	m_CurrentSection = m_PreviousSection;
 	SetDuctOptions(m_CurrentSection);
-	m_BeginWithTransition = m_PreviousOp == 0 ? true : false;
+	m_BeginWithTransition = m_PreviousOp == 0;
 	DoDuctModeMouseMove();
 	OnLpdModeDuct();
 }

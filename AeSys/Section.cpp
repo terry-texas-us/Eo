@@ -38,7 +38,7 @@ double Section::Depth() const noexcept {
 }
 
 bool Section::Identical(const Section& section) const noexcept {
-	return m_Width == section.m_Width && m_Depth == section.m_Depth && m_Properties == section.m_Properties ? true : false;
+	return m_Width == section.m_Width && m_Depth == section.m_Depth && m_Properties == section.m_Properties;
 }
 
 bool Section::IsRectangular() const noexcept {

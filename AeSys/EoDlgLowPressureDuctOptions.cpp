@@ -39,8 +39,8 @@ void EoDlgLowPressureDuctOptions::OnBnClickedOk() {
 	GetDlgItemTextW(IDC_DEPTH, String, 32);
 	depth = AeSys::ParseLength(theApp.GetUnits(), String);
 	justification = GetCheckedRadioButton(IDC_LEFT, IDC_RIGHT) - IDC_CENTER;
-	generateVanes = IsDlgButtonChecked(IDC_GEN_VANES) == 0 ? false : true;
-	beginWithTransition = IsDlgButtonChecked(IDC_BEGINWITHTRANSITION) == 0 ? false : true;
+	generateVanes = IsDlgButtonChecked(IDC_GEN_VANES) != 0;
+	beginWithTransition = IsDlgButtonChecked(IDC_BEGINWITHTRANSITION) != 0;
 	OnOK();
 }
 
