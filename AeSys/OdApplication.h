@@ -1,6 +1,6 @@
+// From OdaMfcApp\OdaMfcExport.h  (last compare 20.5)
 #pragma once
 
-// From OdaMfcApp\OdaMfcExport.h  (last compare 19.12)
 #include "DbGsManager.h"
 
 class __declspec(dllexport) OdApplicationReactor : public OdRxObject {
@@ -83,11 +83,11 @@ ODRX_DECLARE_MEMBERS(OdApplicationDocument);
 
 	[[nodiscard]] virtual void* contextPtr() const = 0;
 
-	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
-
 	virtual OdEdBaseIO* BaseIO() = 0;
 
 	virtual OdDbCommandContextPtr CommandContext() = 0;
+
+	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
 
 	virtual OdString RecentCommand() = 0;
 

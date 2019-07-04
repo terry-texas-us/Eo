@@ -1,4 +1,4 @@
-// From OdaMfcApp\OdaMfcExport.cpp (last compare 19.12)
+// From OdaMfcApp\OdaMfcExport.cpp (last compare 20.5)
 #include "stdafx.h"
 #include "AeSysDoc.h"
 #include "AeSys.h"

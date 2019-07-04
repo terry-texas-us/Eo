@@ -1,6 +1,6 @@
+// From Examples\Editor\OSnapManager.h  (last compare 20.5)
 #pragma once
 
-// From Examples\Editor\OSnapManager.h  (last compare 19.12)
 #include <Gi/GiDrawableImpl.h>
 #include <Gs/Gs.h>
 #include <Si/SiSpatialIndex.h>
@@ -73,7 +73,7 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 	double m_WorldToDevice {0.0};
 	double m_NearDist;
 	OdGePoint3d m_SnapPoint;
-	OdDb::OsnapMode m_SnapMode;
+	OdDb::OsnapMode m_SnapMode {};
 	bool m_Redraw;
 	double m_HitRadius {gc_HitRadius};
 

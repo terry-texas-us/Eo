@@ -199,7 +199,7 @@ BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
 		ON_UPDATE_COMMAND_UI(ID_MODE_CUT, &AeSys::OnUpdateModeCut)
 		ON_COMMAND(ID_MODE_DIMENSION, &AeSys::OnModeDimension)
 		ON_UPDATE_COMMAND_UI(ID_MODE_DIMENSION, &AeSys::OnUpdateModeDimension)
-		ON_COMMAND(ID_MODE_DRAW, OnModeDraw)
+		ON_COMMAND(ID_MODE_DRAW, &AeSys::OnModeDraw)
 		ON_UPDATE_COMMAND_UI(ID_MODE_DRAW, &AeSys::OnUpdateModeDraw)
 		ON_COMMAND(ID_MODE_DRAW2, &AeSys::OnModeDraw2)
 		ON_UPDATE_COMMAND_UI(ID_MODE_DRAW2, &AeSys::OnUpdateModeDraw2)
@@ -229,8 +229,8 @@ BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
 		ON_COMMAND(ID_TOOLS_LOADAPPLICATIONS, &AeSys::OnToolsLoadApplications)
 		ON_COMMAND(ID_VECTORIZERTYPE_ADDVECTORIZERDLL, &AeSys::OnVectorizerTypeAddVectorizerDll)
 		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE_ADDVECTORIZERDLL, &AeSys::OnUpdateVectorizerTypeAddVectorizerDll)
-		ON_COMMAND(ID_VECTORIZERTYPE_CLEARMENU, OnVectorizerTypeClearMenu)
-		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE_CLEARMENU, OnUpdateVectorizerTypeClearMenu)
+		ON_COMMAND(ID_VECTORIZERTYPE_CLEARMENU, &AeSys::OnVectorizerTypeClearMenu)
+		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE_CLEARMENU, &AeSys::OnUpdateVectorizerTypeClearMenu)
 END_MESSAGE_MAP()
 
 
@@ -862,7 +862,7 @@ int AeSys::ExitInstance() {
 
 CString AeSys::FormatAngle(const double angle, const int width, const int precision) {
 	CString FormatSpecification;
-	FormatSpecification.Format(L"%%%i.%if°", width, precision);
+	FormatSpecification.Format(L"%%%i.%if\u00b0", width, precision);
 	CString AngleAsString;
 	AngleAsString.Format(FormatSpecification, EoToDegree(angle));
 	return AngleAsString;
@@ -912,7 +912,7 @@ void AeSys::FormatLengthStacked(wchar_t* lengthAsString, const unsigned bufSize,
 			_itow_s(Inches, Buffer, 16, 10);
 			wcscat_s(lengthAsString, bufSize, Buffer);
 			if (Numerator > 0) {
-				wcscat_s(lengthAsString, bufSize, units == kArchitecturalS ? L"\\S" : L"·" /* middle dot [U+00B7] */);
+				wcscat_s(lengthAsString, bufSize, units == kArchitecturalS ? L"\\S" : L"\u00b7" /*middle dot*/);
 				const auto Divisor {GreatestCommonDivisor(Numerator, FractionPrecision)};
 				Numerator /= Divisor;
 				const auto Denominator {FractionPrecision / Divisor}; // Add fractional component of inches

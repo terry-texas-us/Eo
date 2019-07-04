@@ -1,6 +1,5 @@
+// From OdaMfcApp\OdaMfcExportImpl.h  (last compare 20.5)
 #pragma once
-
-// From OdaMfcApp\OdaMfcExportImpl.h  (last compare 19.12)
 #include "stdafx.h"
 #include "OdApplication.h"
 class AeSysDoc;
@@ -58,11 +57,11 @@ public:
 
 	[[nodiscard]] void* contextPtr() const noexcept override;
 
-	void ExecuteCommand(const OdString& command, bool echo) override;
-
 	OdEdBaseIO* BaseIO() override;
 
 	OdDbCommandContextPtr CommandContext() override;
+
+	void ExecuteCommand(const OdString& command, bool echo) override;
 
 	OdString RecentCommand() override;
 

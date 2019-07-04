@@ -1,17 +1,17 @@
-// From Examples\Editor\OSnapManager.cpp (last compare 19.12)
-#include "OdaCommon.h"
+// From Examples\Editor\OSnapManager.cpp (last compare 20.5)
+#include <OdaCommon.h>
 #include "OSnapManager.h"
-#include "Gi/GiPathNode.h"
-#include "OdRound.h"
-#include "SaveState.h"
+#include <Gi/GiPathNode.h>
+#include <OdRound.h>
+#include <SaveState.h>
 #define STL_USING_LIMITS
-#include "OdaSTL.h"
-#include "DbBlockTableRecord.h"
-#include "DbBlockReference.h"
-#include "DbLayout.h"
-#include "DbHostAppServices.h"
-#include "Gi/GiLocalDrawableDesc.h"
-#include "Gs/GsViewImpl.h"
+#include <OdaSTL.h>
+#include <DbBlockTableRecord.h>
+#include <DbBlockReference.h>
+#include <DbLayout.h>
+#include <DbHostAppServices.h>
+#include <Gi/GiLocalDrawableDesc.h>
+#include <Gs/GsViewImpl.h>
 constexpr long gc_SnapPointSize = 5;
 
 OdBaseSnapManager::SubentId::SubentId(const OdGiPathNode& pathNode) {
@@ -64,7 +64,7 @@ void OdBaseSnapManager::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 	const auto s {gc_SnapPointSize * pix};
 	auto& SubEntityTraits {viewportDraw->subEntityTraits()};
 	OdGiDrawFlagsHelper DrawFlagsHelper(SubEntityTraits, OdGiSubEntityTraits::kDrawNoPlotstyle);
-	if (m_SnapMode > 0 && static_cast<unsigned long>(m_SnapMode) < 100) {
+	if (m_SnapMode > 0 && static_cast<unsigned>(m_SnapMode) < 100) {
 		SubEntityTraits.setTrueColor(SnapTrueColor());
 		SubEntityTraits.setFillType(kOdGiFillNever);
 		SubEntityTraits.setSelectionMarker(kNullSubentIndex);
@@ -211,107 +211,6 @@ void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 		DcRectangle.m_max.x += gc_SnapPointSize * 2;
 		DcRectangle.m_max.y += gc_SnapPointSize * 2;
 
-		/*
-	  switch(m_SnapMode)
-	  {
-	  case OdDb::kOsModeEnd:
-		DcRectangle.m_min.x -= snapPtSize;
-		DcRectangle.m_min.y -= snapPtSize;
-		DcRectangle.m_max.x += snapPtSize;
-		DcRectangle.m_max.y += snapPtSize;
-		break;
-
-	  case OdDb::kOsModeMid:
-		Points[1].set(Points[0].x - s * 1.2, Points[0].y - s * 0.6, 0.0);
-		Points[2].set(Points[0].x,           Points[0].y + s * 1.4, 0.0);
-		Points[3].set(Points[0].x + s * 1.2, Points[0].y - s * 0.6, 0.0);
-		geom.polygonEye(3, Points+1);
-
-		Points[1].set(Points[1].x - pix, Points[1].y - pix, 0.0);
-		Points[2].set(Points[2].x,       Points[2].y + pix, 0.0);
-		Points[3].set(Points[3].x + pix, Points[3].y - pix, 0.0);
-		geom.polygonEye(3, Points+1);
-		break;
-
-	  case OdDb::kOsModeCen:
-		geom.pushModelTransform(vp.getEyeToWorldTransform());
-		geom.circle(Points[0], s * 1.4, OdGeVector3d::kZAxis);
-		geom.popModelTransform();
-		break;
-
-	  case OdDb::kOsModeQuad:
-		Points[1].set(Points[0].x - s,  Points[0].y,     0.0);
-		Points[2].set(Points[0].x,      Points[0].y + s, 0.0);
-		Points[3].set(Points[0].x + s,  Points[0].y,     0.0);
-		Points[0].set(Points[0].x,      Points[0].y - s, 0.0);
-		geom.polygonEye(4, Points);
-		Points[1].set(Points[1].x - pix,  Points[1].y,       0.0);
-		Points[2].set(Points[2].x,        Points[2].y + pix, 0.0);
-		Points[3].set(Points[3].x + pix,  Points[3].y,       0.0);
-		Points[0].set(Points[0].x,        Points[0].y - pix, 0.0);
-		geom.polygonEye(4, Points);
-		break;
-
-	  case OdDb::kOsModePerp:
-		Points[1].set(Points[0].x - s,       Points[0].y + s + pix, 0.0);
-		Points[2].set(Points[0].x - s,       Points[0].y - s, 0.0);
-		Points[3].set(Points[0].x + s + pix, Points[0].y - s, 0.0);
-		geom.polylineEye(3, Points+1);
-		Points[1].set(Points[1].x - pix, Points[1].y,       0.0);
-		Points[2].set(Points[2].x - pix, Points[2].y - pix, 0.0);
-		Points[3].set(Points[3].x,       Points[3].y - pix, 0.0);
-		geom.polylineEye(3, Points+1);
-
-		Points[1].set(Points[0].x - s,  Points[0].y, 0.0);
-		Points[2].set(Points[0].x,      Points[0].y, 0.0);
-		Points[3].set(Points[0].x,      Points[0].y - s, 0.0);
-		geom.polylineEye(3, Points+1);
-		Points[1].set(Points[1].x - pix, Points[1].y + pix, 0.0);
-		Points[2].set(Points[2].x + pix, Points[2].y + pix, 0.0);
-		Points[3].set(Points[3].x + pix, Points[3].y,       0.0);
-		geom.polylineEye(3, Points+1);
-		break;
-
-	  case OdDb::kOsModeTan:
-		geom.pushModelTransform(vp.getEyeToWorldTransform());
-		geom.circle(Points[0], s, OdGeVector3d::kZAxis);
-		geom.popModelTransform();
-		Points[1].set(Points[0].x - s, Points[0].y + s, 0.0);
-		Points[2].set(Points[0].x + s, Points[0].y + s, 0.0);
-		geom.polylineEye(2, Points+1);
-		Points[1].set(Points[1].x, Points[1].y + pix, 0.0);
-		Points[2].set(Points[2].x, Points[2].y + pix, 0.0);
-		geom.polylineEye(2, Points+1);
-		break;
-
-	  case OdDb::kOsModeNear:
-		Points[1].set(Points[0].x - s, Points[0].y + s, 0.0);
-		Points[2].set(Points[0].x + s, Points[0].y - s, 0.0);
-		Points[3].set(Points[0].x - s, Points[0].y - s, 0.0);
-		Points[0].set(Points[0].x + s, Points[0].y + s, 0.0);
-		geom.polygonEye(4, Points);
-		Points[1].set(Points[1].x - pix, Points[1].y + pix, 0.0);
-		Points[2].set(Points[2].x + pix, Points[2].y - pix, 0.0);
-		Points[3].set(Points[3].x - pix, Points[3].y - pix, 0.0);
-		Points[0].set(Points[0].x + pix, Points[0].y + pix, 0.0);
-		geom.polygonEye(4, Points);
-		break;
-
-	  default:
-		Points[1].set(Points[0].x - s, Points[0].y + s, 0.0);
-		Points[2].set(Points[0].x + s, Points[0].y - s, 0.0);
-		geom.polygonEye(2, Points + 1);
-		Points[1].set(Points[0].x - s, Points[0].y - s, 0.0);
-		Points[2].set(Points[0].x + s, Points[0].y + s, 0.0);
-		geom.polygonEye(2, Points + 1);
-		Points[1].set(Points[0].x - s - pix, Points[0].y + s + pix, 0.0);
-		Points[2].set(Points[0].x - s - pix, Points[0].y - s - pix, 0.0);
-		Points[3].set(Points[0].x + s + pix, Points[0].y - s - pix, 0.0);
-		Points[0].set(Points[0].x + s + pix, Points[0].y + s + pix, 0.0);
-		geom.polygonEye(4, Points);
-		break;
-	  }
-	  */
 		m_View->invalidate(DcRectangle);
 	}
 }
@@ -357,10 +256,10 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 		CheckSnapPoints(m_SelectedEntityData[0], pViewImpl->worldToEyeMatrix());
 	}
 	if (pViewImpl) { pViewImpl->setSnapping(false); }
-	if (m_SnapMode > 0 && static_cast<unsigned long>(m_SnapMode) < 100) {
+	if (m_SnapMode > 0 && static_cast<unsigned>(m_SnapMode) < 100) {
 		point = m_SnapPoint;
 	} else {
-		if (PreviousMode > 0 && static_cast<unsigned long>(PreviousMode) < 100) { InvalidateViewport(PreviousPoint); }
+		if (PreviousMode > 0 && static_cast<unsigned>(PreviousMode) < 100) { InvalidateViewport(PreviousPoint); }
 		m_SnapMode = OdDb::OsnapMode(0);
 	}
 	auto Result {true};
@@ -420,8 +319,9 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	OdGePoint3d ModelLastPoint;
 	auto nSnapModes {SnapModes()};
 	if (m_LastPoint) {
-		nSnapModes &= ~(ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan) | ToSnapModes(OdDb::kOsModePerp));
 		ModelLastPoint = ModelToWorldTransform * *m_LastPoint;
+	} else {
+		nSnapModes &= ~(ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan));
 	}
 	auto PointTrackerWithSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
 	OdDbEntityPtr Entity {selectedEntityData.SubentId.m_Path.first().safeOpenObject()};
@@ -445,30 +345,6 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, SnapPoint));
 								m_Redraw = true;
 								break;
-							case OdDb::kOsModeEnd:
-								break;
-							case OdDb::kOsModeMid:
-								break;
-							case OdDb::kOsModeNode:
-								break;
-							case OdDb::kOsModeQuad:
-								break;
-							case OdDb::kOsModeIntersec:
-								break;
-							case OdDb::kOsModeIns:
-								break;
-							case OdDb::kOsModePerp:
-								break;
-							case OdDb::kOsModeTan:
-								break;
-							case OdDb::kOsModeNear:
-								break;
-							case OdDb::kOsModeApint:
-								break;
-							case OdDb::kOsModePar:
-								break;
-							case OdDb::kOsModeStart:
-								break;
 							default:
 								// no op
 								break;
@@ -480,7 +356,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 		}
 	} else {
 		if (!PointTrackerWithSnapInfo->IsTargetEntity(Entity)) { return; }
-		OdSaveState<double> ssHitRadius(m_HitRadius, 1500.);
+		OdSaveState<double> ssHitRadius(m_HitRadius, 1500.0);
 		OdArray<OdDb::OsnapMode> snapModes;
 		PointTrackerWithSnapInfo->GetSnapModes(Entity, snapModes);
 		for (auto it = snapModes.begin(); it != snapModes.end(); it++) {
@@ -561,7 +437,7 @@ void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord,
 		dd.persistId = Entity->objectId();
 		OdGePoint3dArray snapPoints;
 		Entity->getOsnapPoints(OdDb::kOsModeCen, OdGsMarker(), OdGePoint3d::kOrigin, OdGePoint3d::kOrigin, OdGeMatrix3d(), snapPoints);
-		for (unsigned long i = 0; i < snapPoints.size() && m_Centers.size() < nMaxHist; i++) {
+		for (unsigned i = 0; i < snapPoints.size() && m_Centers.size() < nMaxHist; i++) {
 			m_Centers.append(HistEntry(dd, snapPoints[i].transformBy(matrix)));
 		}
 	}
