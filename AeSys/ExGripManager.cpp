@@ -17,6 +17,7 @@
 #include <Gs/GsModel.h>
 #include "ExGripManager.h"
 #include "OdExGripDrag.h"
+#include "OdExGripData.h"
 
 // Menu animation flags
 #if !defined(ODA_UNIXOS)
@@ -61,112 +62,6 @@ void OdExGripManager::OnModified(OdGiDrawable* grip) {
 		GetGsModel()->onModified(grip, static_cast<OdGiDrawable*>(nullptr));
 	} else if (GetGsLayoutHelper()) {
 		GetGsLayoutHelper()->invalidate();
-	}
-}
-
-OdExGripDataPtr OdExGripData::CreateObject(OdDbStub* id, const OdDbGripDataPtr& gripData, const OdGePoint3d& point, OdBaseGripManager* gripManager) {
-	auto GripData {RXIMPL_CONSTR(OdExGripData)};
-	GripData->m_SubentPath.objectIds().append(id);
-	GripData->m_GripData = gripData;
-	GripData->m_GripManager = gripManager;
-	GripData->m_Point = point;
-	return GripData;
-}
-
-OdExGripDataPtr OdExGripData::CreateObject(const OdDbBaseFullSubentPath& entityPath, const OdDbGripDataPtr& gripData, const OdGePoint3d& point, OdBaseGripManager* gripManager) {
-	auto GripData {RXIMPL_CONSTR(OdExGripData)};
-	GripData->m_SubentPath = entityPath;
-	GripData->m_GripData = gripData;
-	GripData->m_GripManager = gripManager;
-	GripData->m_Point = point;
-	return GripData;
-}
-
-OdExGripData::OdExGripData() noexcept {
-}
-
-OdExGripData::~OdExGripData() {
-	if (m_GripData.get() && m_GripData->alternateBasePoint()) {
-		delete m_GripData->alternateBasePoint();
-		m_GripData->setAlternateBasePoint(nullptr);
-	}
-}
-
-bool OdExGripData::ComputeDragPoint(OdGePoint3d& computedPoint) const {
-	auto BasePoint {Point()};
-	if (GripData().get() && GripData()->alternateBasePoint()) {
-		BasePoint = *GripData()->alternateBasePoint();
-	}
-	auto Override {false};
-	computedPoint = BasePoint;
-	if (Status() == OdDbGripOperations::kDragImageGrip && GripData().get() && GripData()->drawAtDragImageGripPoint()) {
-		computedPoint = BasePoint + (m_GripManager->m_LastPoint - m_GripManager->m_BasePoint);
-		Override = true;
-	}
-	return Override;
-}
-
-unsigned long OdExGripData::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
-	if (IsInvisible()) { return kDrawableIsInvisible; }
-	auto EntityTraits = OdGiSubEntityTraits::cast(drawableTraits);
-	if (!EntityTraits.get()) { return kDrawableNone; }
-	switch (Status()) {
-		case OdDbGripOperations::kWarmGrip:
-			EntityTraits->setTrueColor(m_GripManager->m_GripColor);
-			break;
-		case OdDbGripOperations::kHotGrip: case OdDbGripOperations::kDragImageGrip:
-			EntityTraits->setTrueColor(m_GripManager->m_GripHotColor);
-			break;
-		case OdDbGripOperations::kHoverGrip:
-			EntityTraits->setTrueColor(m_GripManager->m_GripHoverColor);
-			break;
-	}
-	EntityTraits->setMaterial(nullptr);
-	EntityTraits->setLineWeight(OdDb::kLnWt000);
-	return kDrawableRegenDraw;
-}
-
-bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
-	auto GripSize {static_cast<double>(m_GripManager->m_GripSize)};
-	if (!worldDraw->context() || !worldDraw->context()->database()) { GripSize = m_GripManager->m_GripSize; }
-
-	// Here is the design flaw: ARX help says that grip size passed in callback below should be calculated individually for each viewport.
-	if (GripData().get() && GripData()->worldDraw()) {
-		OdGePoint3d ComputedPoint;
-		OdGePoint3d* DrawAtDrag {nullptr};
-		if (ComputeDragPoint(ComputedPoint)) { DrawAtDrag = &ComputedPoint; }
-		OdGiDrawFlagsHelper DrawFlagsHelper(worldDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
-		return (*GripData()->worldDraw())(static_cast<OdDbGripData*>(GripData().get()), worldDraw, EntityId(), Status(), DrawAtDrag, GripSize);
-	}
-	return false;
-}
-
-void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
-	OdGePoint3d ComputedPoint;
-	OdGePoint3d* DrawAtDrag {nullptr};
-	if (ComputeDragPoint(ComputedPoint)) { DrawAtDrag = &ComputedPoint; }
-	OdGiDrawFlagsHelper DrawFlagsHelper(viewportDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
-	auto Default {true};
-	if (GripData().get() && GripData()->viewportDraw()) {
-		(*GripData()->viewportDraw())(static_cast<OdDbGripData*>(GripData().get()), viewportDraw, EntityId(), Status(), DrawAtDrag, m_GripManager->m_GripSize);
-		Default = false;
-	}
-	if (Default) {
-		OdGePoint2d ptDim;
-		viewportDraw->viewport().getNumPixelsInUnitSquare(Point(), ptDim);
-		OdGeVector3d v(m_GripManager->m_GripSize / ptDim.x, 0.0, 0.0);
-		v.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
-		const auto GripSize {v.length()};
-		auto OnScreenPoint {ComputedPoint};
-		OnScreenPoint.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
-		viewportDraw->subEntityTraits().setFillType(kOdGiFillAlways);
-		viewportDraw->subEntityTraits().setDrawFlags(OdGiSubEntityTraits::kDrawSolidFill | OdGiSubEntityTraits::kDrawPolygonFill);
-		OdGePoint3d PolygonPoints[4];
-		PolygonPoints[0].set(OnScreenPoint.x - GripSize, OnScreenPoint.y - GripSize, OnScreenPoint.z);
-		PolygonPoints[1].set(OnScreenPoint.x + GripSize, OnScreenPoint.y - GripSize, OnScreenPoint.z);
-		PolygonPoints[2].set(OnScreenPoint.x + GripSize, OnScreenPoint.y + GripSize, OnScreenPoint.z);
-		PolygonPoints[3].set(OnScreenPoint.x - GripSize, OnScreenPoint.y + GripSize, OnScreenPoint.z);
-		viewportDraw->geometry().polygonEye(4, PolygonPoints);
 	}
 }
 

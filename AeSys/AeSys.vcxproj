@@ -150,6 +150,7 @@
     <ClCompile Include="EoVaxFloat.cpp" />
     <ClCompile Include="EoViModelView.cpp" />
     <ClCompile Include="ExGripManager.cpp" />
+    <ClCompile Include="OdExGripData.cpp" />
     <ClCompile Include="OdExGripDrag.cpp" />
     <ClCompile Include="OFNHookProcFileTracing.cpp" />
     <ClCompile Include="EoDlgFixupOptions.cpp" />
