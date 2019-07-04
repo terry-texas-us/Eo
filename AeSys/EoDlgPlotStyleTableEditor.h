@@ -19,7 +19,7 @@ public:
 
 	void SetFileBufPath(const OdString& filePath);
 
-	OdPsPlotStyleTablePtr GetPlotStyleTable() const;
+	[[nodiscard]] OdPsPlotStyleTablePtr GetPlotStyleTable() const;
 
 	// Operations
 	enum { IDD = IDD_PLOTSTYLE_MANAGER };

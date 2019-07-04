@@ -20,7 +20,7 @@ public:
 	// An "up" direction defined by the application becomes the positive Y axis.
 	void BuildTransformMatrix();
 
-	EoGeMatrix3d Matrix() const noexcept;
+	[[nodiscard]] EoGeMatrix3d Matrix() const noexcept;
 };
 
 using EoGsViewTransforms = CList<EoGsViewTransform>;

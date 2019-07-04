@@ -21,34 +21,34 @@ class CommandView : public OdEdCommand {
 public:
 	static const OdString Name();
 
-	const OdString groupName() const final;
+	[[nodiscard]] const OdString groupName() const final;
 
-	const OdString globalName() const final;
+	[[nodiscard]] const OdString globalName() const final;
 
 	void execute(OdEdCommandContext* commandContext) final;
 
-	const OdRxModule* commandApp() const;
+	[[nodiscard]] const OdRxModule* commandApp() const;
 
 	void commandUndef(bool undefIt);
 
-	long commandFlags() const;
+	[[nodiscard]] long commandFlags() const;
 };
 
 class CommandSelect : public OdEdCommand {
 public:
 	static const OdString Name();
 
-	const OdString groupName() const final;
+	[[nodiscard]] const OdString groupName() const final;
 
-	const OdString globalName() const final;
+	[[nodiscard]] const OdString globalName() const final;
 
 	void execute(OdEdCommandContext* commandContext) final;
 
-	const OdRxModule* commandApp() const;
+	[[nodiscard]] const OdRxModule* commandApp() const;
 
 	void commandUndef(bool undefIt);
 
-	long commandFlags() const;
+	[[nodiscard]] long commandFlags() const;
 };
 
 class OdDbDatabaseDoc final : public OdDbDatabase {
@@ -242,7 +242,7 @@ public:
 	OdDb::SaveType saveAsType {OdDb::kDwg};
 	EoDb::FileTypes saveAsType_ {EoDb::kUnknown};
 
-	OdDbSelectionSetPtr SelectionSet() const;
+	[[nodiscard]] OdDbSelectionSetPtr SelectionSet() const;
 
 	AeSysView* GetViewer() noexcept;
 
@@ -365,9 +365,9 @@ public:
 
 	EoDbLayer* GetLayerAt(int layerIndex);
 
-	int GetLayerTableSize() const;
+	[[nodiscard]] int GetLayerTableSize() const;
 
-	int FindLayerAt(const OdString& name) const;
+	[[nodiscard]] int FindLayerAt(const OdString& name) const;
 
 	OdDbLayerTablePtr LayerTable(OdDb::OpenMode openMode = OdDb::kForRead);
 
@@ -404,17 +404,17 @@ public:
 
 	POSITION FindWorkLayerGroup(EoDbGroup* group) const;
 
-	POSITION GetFirstWorkLayerGroupPosition() const;
+	[[nodiscard]] POSITION GetFirstWorkLayerGroupPosition() const;
 
-	EoDbGroup* GetLastWorkLayerGroup() const;
+	[[nodiscard]] EoDbGroup* GetLastWorkLayerGroup() const;
 
-	POSITION GetLastWorkLayerGroupPosition() const;
+	[[nodiscard]] POSITION GetLastWorkLayerGroupPosition() const;
 
 	EoDbGroup* GetNextWorkLayerGroup(POSITION& position) const;
 
 	EoDbGroup* GetPreviousWorkLayerGroup(POSITION& position) const;
 
-	EoDbLayer* GetWorkLayer() const noexcept;
+	[[nodiscard]] EoDbLayer* GetWorkLayer() const noexcept;
 
 	void InitializeWorkLayer();
 
@@ -454,13 +454,13 @@ public:
 
 	POSITION FindTrappedGroup(EoDbGroup* group);
 
-	POSITION GetFirstTrappedGroupPosition() const;
+	[[nodiscard]] POSITION GetFirstTrappedGroupPosition() const;
 
 	EoDbGroup* GetNextTrappedGroup(POSITION& position);
 
 	EoDbGroupList* GroupsInTrap() noexcept;
 
-	bool IsTrapEmpty() const;
+	[[nodiscard]] bool IsTrapEmpty() const;
 
 	void ModifyTrappedGroupsColorIndex(short colorIndex);
 
@@ -488,9 +488,9 @@ public:
 
 	void TransformTrappedGroups(const EoGeMatrix3d& transformMatrix);
 
-	int TrapGroupCount() const;
+	[[nodiscard]] int TrapGroupCount() const;
 
-	OdGePoint3d TrapPivotPoint() const noexcept;
+	[[nodiscard]] OdGePoint3d TrapPivotPoint() const noexcept;
 	
 	// Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
@@ -501,7 +501,7 @@ public:
 
 	POSITION FindNodalGroup(EoDbGroup* group);
 
-	POSITION GetFirstNodalGroupPosition() const;
+	[[nodiscard]] POSITION GetFirstNodalGroupPosition() const;
 
 	EoDbGroup* GetNextNodalGroup(POSITION& position);
 
@@ -509,7 +509,7 @@ public:
 
 	POSITION AddMaskedPrimitive(EoDbMaskedPrimitive* maskedPrimitive);
 
-	POSITION GetFirstMaskedPrimitivePosition() const;
+	[[nodiscard]] POSITION GetFirstMaskedPrimitivePosition() const;
 
 	EoDbMaskedPrimitive* GetNextMaskedPrimitive(POSITION& position);
 
@@ -525,7 +525,7 @@ public:
 
 	void DisplayUniquePoints();
 
-	POSITION GetFirstUniquePointPosition() const { return m_UniquePoints.GetHeadPosition(); }
+	[[nodiscard]] POSITION GetFirstUniquePointPosition() const { return m_UniquePoints.GetHeadPosition(); }
 
 	EoGeUniquePoint* GetNextUniquePoint(POSITION& position);
 

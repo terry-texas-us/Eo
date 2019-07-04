@@ -812,7 +812,7 @@ public:
 		}
 	}
 
-	double Angle(const OdGePoint3d& value) const {
+	[[nodiscard]] double Angle(const OdGePoint3d& value) const {
 		const auto Point {m_View->viewingMatrix() * value};
 		auto Distance {0.0};
 		if (m_Axis == kHorizontal) {
@@ -823,14 +823,14 @@ public:
 		return Distance * OdaPI / m_D;
 	}
 
-	double AngleZ(const OdGePoint3d& value) const {
+	[[nodiscard]] double AngleZ(const OdGePoint3d& value) const {
 		auto Point {m_View->viewingMatrix() * value};
 		auto Target {m_View->viewingMatrix() * m_ViewCenter};
 		Point.z = Target.z = m_Point.z;
 		return (Point - Target).angleTo(m_Point - Target, OdGeVector3d::kZAxis);
 	}
 
-	double AnglePerpendicular(const OdGePoint3d& value) const {
+	[[nodiscard]] double AnglePerpendicular(const OdGePoint3d& value) const {
 		auto Point {m_View->viewingMatrix() * value};
 		Point.z = 0.0;
 		return Point.distanceTo(m_Point) * OdaPI / m_D;
@@ -1074,13 +1074,13 @@ class OdExCollideGsPath {
 		OdGiDrawablePtr drawable;
 		OdGsMarker marker;
 
-		const OdGiPathNode* parent() const noexcept override { return m_Parent; }
+		[[nodiscard]] const OdGiPathNode* parent() const noexcept override { return m_Parent; }
 
-		OdDbStub* persistentDrawableId() const noexcept override { return drawableId; }
+		[[nodiscard]] OdDbStub* persistentDrawableId() const noexcept override { return drawableId; }
 
-		const OdGiDrawable* transientDrawable() const override { return drawable; }
+		[[nodiscard]] const OdGiDrawable* transientDrawable() const override { return drawable; }
 
-		OdGsMarker selectionMarker() const noexcept override { return marker; }
+		[[nodiscard]] OdGsMarker selectionMarker() const noexcept override { return marker; }
 	};
 
 	const Node* m_Leaf {nullptr};

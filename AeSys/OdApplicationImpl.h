@@ -44,19 +44,19 @@ public:
 
 	~OdApplicationDocumentImpl();
 
-	OdString fileName() const override;
+	[[nodiscard]] OdString fileName() const override;
 
-	CDocument* cDoc() const noexcept override;
+	[[nodiscard]] CDocument* cDoc() const noexcept override;
 
-	OdDbDatabasePtr database() const override;
+	[[nodiscard]] OdDbDatabasePtr database() const override;
 
 	void lockMode(bool includeMyLocks) const noexcept override;
 
 	void myLockMode() const noexcept override;
 
-	bool isQuiescent() const noexcept override;
+	[[nodiscard]] bool isQuiescent() const noexcept override;
 
-	void* contextPtr() const noexcept override;
+	[[nodiscard]] void* contextPtr() const noexcept override;
 
 	void ExecuteCommand(const OdString& command, bool echo) override;
 
@@ -66,7 +66,7 @@ public:
 
 	OdString RecentCommand() override;
 
-	OdDbSelectionSetPtr SelectionSet() const override;
+	[[nodiscard]] OdDbSelectionSetPtr SelectionSet() const override;
 
 	MfcObjectWrapper<AeSysDoc>* m_pImp;
 };

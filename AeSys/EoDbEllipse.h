@@ -28,13 +28,13 @@ public:
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
 
 	void FormatExtra(CString& extra) const override;
 
@@ -42,7 +42,7 @@ public:
 	/// <summary>Determines the extent. Actually the extents of the bounding region of the arc.</summary>
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 
@@ -66,7 +66,7 @@ public:
 
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	OdGePoint3d Center() const noexcept;
+	[[nodiscard]] OdGePoint3d Center() const noexcept;
 
 	void CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) override;
 
@@ -76,13 +76,13 @@ public:
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>
 	void GetBoundingBox(OdGePoint3dArray&) const;
 
-	OdGePoint3d EndPoint() const;
+	[[nodiscard]] OdGePoint3d EndPoint() const;
 
-	OdGeVector3d MajorAxis() const noexcept;
+	[[nodiscard]] OdGeVector3d MajorAxis() const noexcept;
 
-	OdGeVector3d MinorAxis() const noexcept;
+	[[nodiscard]] OdGeVector3d MinorAxis() const noexcept;
 
-	double SweepAngle() const noexcept;
+	[[nodiscard]] double SweepAngle() const noexcept;
 
 	void GetXYExtents(OdGePoint3d, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
 
@@ -102,7 +102,7 @@ public:
 
 	EoDbEllipse& SetToCircle(const OdGePoint3d& center, const OdGeVector3d& planeNormal, double radius);
 
-	OdGePoint3d StartPoint() const;
+	[[nodiscard]] OdGePoint3d StartPoint() const;
 
 	double SwpAngToPt(const OdGePoint3d& point);
 

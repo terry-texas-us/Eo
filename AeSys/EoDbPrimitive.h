@@ -41,7 +41,7 @@ public:
 
 	virtual void AddToTreeViewControl(HWND tree, HTREEITEM parent) const = 0;
 
-	virtual EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const = 0;
+	[[nodiscard]] virtual EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const = 0;
 
 	virtual void Display(AeSysView* view, CDC* deviceContext) = 0;
 
@@ -53,11 +53,11 @@ public:
 
 	virtual void GetAllPoints(OdGePoint3dArray& points) const = 0;
 
-	virtual OdGePoint3d GetCtrlPt() const = 0;
+	[[nodiscard]] virtual OdGePoint3d GetCtrlPt() const = 0;
 
 	virtual void GetExtents(AeSysView* view, OdGeExtents3d& extents) const = 0;
 
-	virtual OdGePoint3d GoToNxtCtrlPt() const = 0;
+	[[nodiscard]] virtual OdGePoint3d GoToNxtCtrlPt() const = 0;
 
 	virtual bool IsEqualTo(EoDbPrimitive* primitive) const = 0;
 	/// <summary>Tests whether a line is wholly or partially within the current view volume.</summary>
@@ -95,19 +95,19 @@ public:
 
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 
-	short ColorIndex() const noexcept { return m_ColorIndex; }
+	[[nodiscard]] short ColorIndex() const noexcept { return m_ColorIndex; }
 
-	OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
+	[[nodiscard]] OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
 
-	CString FormatColorIndex() const;
+	[[nodiscard]] CString FormatColorIndex() const;
 
-	CString FormatLinetypeIndex() const;
+	[[nodiscard]] CString FormatLinetypeIndex() const;
 
-	short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
+	[[nodiscard]] short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
 
-	short LogicalColorIndex() const noexcept;
+	[[nodiscard]] short LogicalColorIndex() const noexcept;
 
-	short LogicalLinetypeIndex() const noexcept;
+	[[nodiscard]] short LogicalLinetypeIndex() const noexcept;
 
 	void SetColorIndex(const short colorIndex) noexcept { m_ColorIndex = colorIndex; }
 

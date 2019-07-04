@@ -15,21 +15,21 @@ class CPrimState {
 public:
 	CPrimState& operator=(const CPrimState& other) noexcept;
 
-	EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
+	[[nodiscard]] EoDbCharacterCellDefinition CharacterCellDefinition() const noexcept;
 
-	short ColorIndex() const noexcept;
+	[[nodiscard]] short ColorIndex() const noexcept;
 
-	EoDbFontDefinition FontDefinition() const noexcept;
+	[[nodiscard]] EoDbFontDefinition FontDefinition() const noexcept;
 
-	short HatchInteriorStyle() const noexcept;
+	[[nodiscard]] short HatchInteriorStyle() const noexcept;
 
-	unsigned HatchInteriorStyleIndex() const noexcept;
+	[[nodiscard]] unsigned HatchInteriorStyleIndex() const noexcept;
 
-	short LinetypeIndex() const noexcept;
+	[[nodiscard]] short LinetypeIndex() const noexcept;
 	/// <summary>Manages a small set of pen definitions.</summary>
 	void ManagePenResources(CDC& deviceContext, short colorIndex, int penWidth, short linetypeIndex);
 
-	short PointDisplayMode() const noexcept;
+	[[nodiscard]] short PointDisplayMode() const noexcept;
 
 	void Restore(CDC& deviceContext, int saveIndex);
 

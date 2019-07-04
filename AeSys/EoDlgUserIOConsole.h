@@ -20,7 +20,7 @@ protected:
 
 	void addRef() noexcept override;
 
-	long numRefs() const noexcept override;
+	[[nodiscard]] long numRefs() const noexcept override;
 
 	void release() override;
 

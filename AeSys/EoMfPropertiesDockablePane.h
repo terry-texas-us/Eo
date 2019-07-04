@@ -5,7 +5,7 @@ public:
 		CMFCToolBar::OnUpdateCmdUI(static_cast<CFrameWnd*>(GetOwner()), disableIfNoHandler);
 	}
 
-	BOOL AllowShowOnList() const noexcept override { return FALSE; }
+	[[nodiscard]] BOOL AllowShowOnList() const noexcept override { return FALSE; }
 };
 
 class EoMfPropertiesDockablePane final : public CDockablePane {
@@ -54,7 +54,7 @@ public:
 		return m_PropertyGrid;
 	}
 
-	CMFCPropertyGridProperty& GetActiveViewScaleProperty() const {
+	[[nodiscard]] CMFCPropertyGridProperty& GetActiveViewScaleProperty() const {
 		return *m_PropertyGrid.FindItemByData(kActiveViewScale);
 	}
 };

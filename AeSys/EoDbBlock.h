@@ -19,15 +19,15 @@ public:
 
 	EoDbBlock(unsigned short flags, const OdGePoint3d& basePoint, const OdString& pathName);
 
-	OdGePoint3d BasePoint() const noexcept;
+	[[nodiscard]] OdGePoint3d BasePoint() const noexcept;
 
-	unsigned short GetTypeFlags() const noexcept;
+	[[nodiscard]] unsigned short GetTypeFlags() const noexcept;
 
-	bool HasAttributes() const noexcept;
+	[[nodiscard]] bool HasAttributes() const noexcept;
 
-	bool IsAnonymous() const noexcept;
+	[[nodiscard]] bool IsAnonymous() const noexcept;
 
-	bool IsFromExternalReference() const noexcept;
+	[[nodiscard]] bool IsFromExternalReference() const noexcept;
 
 	void SetTypeFlags(unsigned short flags) noexcept;
 

@@ -11,13 +11,13 @@ public:
 
 	EoDbCharacterCellDefinition& operator=(const EoDbCharacterCellDefinition& other) = default;
 
-	double WidthFactor() const noexcept;
+	[[nodiscard]] double WidthFactor() const noexcept;
 
-	double Height() const noexcept;
+	[[nodiscard]] double Height() const noexcept;
 
-	double ObliqueAngle() const noexcept;
+	[[nodiscard]] double ObliqueAngle() const noexcept;
 
-	double RotationAngle() const noexcept;
+	[[nodiscard]] double RotationAngle() const noexcept;
 
 	void SetWidthFactor(double widthFactor) noexcept;
 

@@ -20,7 +20,7 @@ public:
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
@@ -30,11 +30,11 @@ public:
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 
@@ -65,15 +65,15 @@ public:
 
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 
-	OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
+	[[nodiscard]] OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
 
-	EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
+	[[nodiscard]] EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
 
-	double Length() const { return m_LineSeg.length(); }
+	[[nodiscard]] double Length() const { return m_LineSeg.length(); }
 
-	OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
+	[[nodiscard]] OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 
-	double ParametricRelationshipOf(const OdGePoint3d& point) const;
+	[[nodiscard]] double ParametricRelationshipOf(const OdGePoint3d& point) const;
 
 	void SetEndPoint(const OdGePoint3d& endPoint);
 
@@ -81,7 +81,7 @@ public:
 
 	void Square(AeSysView* view);
 
-	OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
+	[[nodiscard]] OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
 
 	static EoDbLine* Create(const OdDbLinePtr& line);
 

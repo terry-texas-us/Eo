@@ -48,7 +48,7 @@ public:
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
@@ -58,11 +58,11 @@ public:
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override { return false; }
 
@@ -90,7 +90,7 @@ public:
 
 	void GetPointAt(unsigned vertexIndex, OdGePoint3d& point) const;
 
-	bool IsClosed() const noexcept;
+	[[nodiscard]] bool IsClosed() const noexcept;
 
 	void SetClosed(bool closed) noexcept;
 
@@ -102,7 +102,7 @@ public:
 
 	void SetNormal(const OdGeVector3d& normal);
 
-	unsigned SwingVertex() const;
+	[[nodiscard]] unsigned SwingVertex() const;
 
 	static unsigned Edge() noexcept;
 

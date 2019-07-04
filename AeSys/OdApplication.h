@@ -69,19 +69,19 @@ class __declspec(dllexport) OdApplicationDocument : public OdRxObject {
 public:
 ODRX_DECLARE_MEMBERS(OdApplicationDocument);
 
-	virtual OdString fileName() const = 0;
+	[[nodiscard]] virtual OdString fileName() const = 0;
 
-	virtual CDocument* cDoc() const = 0;
+	[[nodiscard]] virtual CDocument* cDoc() const = 0;
 
-	virtual OdDbDatabasePtr database() const = 0;
+	[[nodiscard]] virtual OdDbDatabasePtr database() const = 0;
 
 	virtual void lockMode(bool includeMyLocks) const = 0;
 
 	virtual void myLockMode() const = 0;
 
-	virtual bool isQuiescent() const = 0;
+	[[nodiscard]] virtual bool isQuiescent() const = 0;
 
-	virtual void* contextPtr() const = 0;
+	[[nodiscard]] virtual void* contextPtr() const = 0;
 
 	virtual void ExecuteCommand(const OdString& command, bool echo) = 0;
 
@@ -91,7 +91,7 @@ ODRX_DECLARE_MEMBERS(OdApplicationDocument);
 
 	virtual OdString RecentCommand() = 0;
 
-	virtual OdDbSelectionSetPtr SelectionSet() const = 0;
+	[[nodiscard]] virtual OdDbSelectionSetPtr SelectionSet() const = 0;
 };
 
 using OdApDocumentPtr = OdSmartPtr<OdApplicationDocument>;

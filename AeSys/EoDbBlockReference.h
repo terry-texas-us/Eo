@@ -43,7 +43,7 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
@@ -53,11 +53,11 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
 
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const noexcept override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 
@@ -81,25 +81,25 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 
 	void Write(CFile& file, unsigned char* buffer) const noexcept override;
 
-	EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
+	[[nodiscard]] EoGeMatrix3d BlockTransformMatrix(const OdGePoint3d& basePoint) const;
 
-	unsigned short Columns() const noexcept;
+	[[nodiscard]] unsigned short Columns() const noexcept;
 
-	double ColumnSpacing() const noexcept;
+	[[nodiscard]] double ColumnSpacing() const noexcept;
 
-	CString Name() const;
+	[[nodiscard]] CString Name() const;
 
-	OdGeVector3d Normal() const noexcept;
+	[[nodiscard]] OdGeVector3d Normal() const noexcept;
 
-	OdGePoint3d Position() const noexcept;
+	[[nodiscard]] OdGePoint3d Position() const noexcept;
 
-	double Rotation() const noexcept;
+	[[nodiscard]] double Rotation() const noexcept;
 
-	unsigned short Rows() const noexcept;
+	[[nodiscard]] unsigned short Rows() const noexcept;
 
-	double RowSpacing() const noexcept;
+	[[nodiscard]] double RowSpacing() const noexcept;
 
-	OdGeScale3d ScaleFactors() const noexcept;
+	[[nodiscard]] OdGeScale3d ScaleFactors() const noexcept;
 
 	void SetName(const wchar_t* name);
 

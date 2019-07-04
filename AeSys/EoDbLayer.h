@@ -20,26 +20,26 @@ public:
 
 	EoDbLayer(const OdString& name, unsigned short stateFlags);
 
-	COLORREF Color() const;
+	[[nodiscard]] COLORREF Color() const;
 
-	short ColorIndex() const;
+	[[nodiscard]] short ColorIndex() const;
 
 	void BuildVisibleGroupList(AeSysView* view);
 
 	void Display(AeSysView* view, CDC* deviceContext); // hides non-virtual function of parent
 	void Display_(AeSysView* view, CDC* deviceContext, bool identifyTrap);
 
-	bool IsActive() const noexcept;
+	[[nodiscard]] bool IsActive() const noexcept;
 
-	bool IsCurrent() const;
+	[[nodiscard]] bool IsCurrent() const;
 
-	bool IsInternal() const noexcept;
+	[[nodiscard]] bool IsInternal() const noexcept;
 
-	bool IsLocked() const noexcept;
+	[[nodiscard]] bool IsLocked() const noexcept;
 
-	bool IsOff() const noexcept;
+	[[nodiscard]] bool IsOff() const noexcept;
 
-	bool IsResident() const noexcept;
+	[[nodiscard]] bool IsResident() const noexcept;
 
 	short LinetypeIndex();
 
@@ -53,7 +53,7 @@ public:
 
 	void MakeResident(bool isResident) noexcept;
 
-	OdString Name() const;
+	[[nodiscard]] OdString Name() const;
 
 	void PenTranslation(unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol); // hides non-virtual function of parent
 	void SetColorIndex(short colorIndex);
@@ -72,9 +72,9 @@ public:
 
 	void SetTransparency(const OdCmTransparency& transparency);
 
-	unsigned short StateFlags() const noexcept;
+	[[nodiscard]] unsigned short StateFlags() const noexcept;
 
-	OdDbLayerTableRecordPtr TableRecord() const;
+	[[nodiscard]] OdDbLayerTableRecordPtr TableRecord() const;
 };
 
 using EoDbLayerTable = CTypedPtrArray<CObArray, EoDbLayer*>;

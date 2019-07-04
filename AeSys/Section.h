@@ -24,13 +24,13 @@ public:
 
 	void SetDepth(double depth) noexcept;
 
-	double Width() const noexcept;
+	[[nodiscard]] double Width() const noexcept;
 
-	double Depth() const noexcept;
+	[[nodiscard]] double Depth() const noexcept;
 
-	bool Identical(const Section& section) const noexcept;
+	[[nodiscard]] bool Identical(const Section& section) const noexcept;
 
-	bool IsRectangular() const noexcept;
+	[[nodiscard]] bool IsRectangular() const noexcept;
 
-	bool IsRound() const noexcept;
+	[[nodiscard]] bool IsRound() const noexcept;
 };

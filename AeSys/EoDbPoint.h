@@ -25,7 +25,7 @@ public:
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
@@ -35,11 +35,11 @@ public:
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const noexcept override;
 
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const noexcept override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const noexcept override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const override;
 
@@ -63,13 +63,13 @@ public:
 
 	void Write(CFile& file, unsigned char* buffer) const override;
 
-	double DataAt(unsigned short dataIndex) const noexcept;
+	[[nodiscard]] double DataAt(unsigned short dataIndex) const noexcept;
 
 	void ModifyState() noexcept override;
 
-	short PointDisplayMode() const noexcept;
+	[[nodiscard]] short PointDisplayMode() const noexcept;
 
-	OdGePoint3d Position() const noexcept;
+	[[nodiscard]] OdGePoint3d Position() const noexcept;
 
 	void SetData(unsigned short numberOfDatums, double* data);
 

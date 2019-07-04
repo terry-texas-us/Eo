@@ -11,25 +11,25 @@ class EoDbFontDefinition {
 	EoDb::HorizontalAlignment m_HorizontalAlignment {EoDb::kAlignLeft};
 	EoDb::VerticalAlignment m_VerticalAlignment {EoDb::kAlignBottom};
 public:
-	CString FormatHorizontalAlignment() const;
+	[[nodiscard]] CString FormatHorizontalAlignment() const;
 
-	CString FormatPath() const;
+	[[nodiscard]] CString FormatPath() const;
 
-	CString FormatPrecision() const;
+	[[nodiscard]] CString FormatPrecision() const;
 
-	CString FormatVerticalAlignment() const;
+	[[nodiscard]] CString FormatVerticalAlignment() const;
 
-	double CharacterSpacing() const noexcept;
+	[[nodiscard]] double CharacterSpacing() const noexcept;
 
-	EoDb::HorizontalAlignment HorizontalAlignment() const noexcept;
+	[[nodiscard]] EoDb::HorizontalAlignment HorizontalAlignment() const noexcept;
 
-	CString FontName() const;
+	[[nodiscard]] CString FontName() const;
 
-	EoDb::Path Path() const noexcept;
+	[[nodiscard]] EoDb::Path Path() const noexcept;
 
-	EoDb::Precision Precision() const noexcept;
+	[[nodiscard]] EoDb::Precision Precision() const noexcept;
 
-	EoDb::VerticalAlignment VerticalAlignment() const noexcept;
+	[[nodiscard]] EoDb::VerticalAlignment VerticalAlignment() const noexcept;
 
 	void SetCharacterSpacing(double spacing) noexcept;
 

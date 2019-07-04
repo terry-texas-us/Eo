@@ -11,9 +11,9 @@ class EoDlgPageSetup final : public CDialog {
 
 	void SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, bool validNames);
 
-	bool IsWHSwap() const;
+	[[nodiscard]] bool IsWHSwap() const;
 
-	bool IsPaperWidthLessHeight() const;
+	[[nodiscard]] bool IsPaperWidthLessHeight() const;
 
 	void UnitsConverted(OdDbPlotSettings::PlotPaperUnits prevUnits, OdDbPlotSettings::PlotPaperUnits plotPaperUnits);
 
@@ -143,7 +143,7 @@ DECLARE_MESSAGE_MAP()
 
 	void FillWindowArea();
 
-	bool ViewsExist() const;
+	[[nodiscard]] bool ViewsExist() const;
 
-	bool IsModelSpacePageSetup() const;
+	[[nodiscard]] bool IsModelSpacePageSetup() const;
 };

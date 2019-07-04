@@ -25,7 +25,7 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
@@ -35,11 +35,11 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* primitive) const noexcept override;
 
@@ -77,11 +77,11 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void GetPts(OdGePoint3d& ptBeg, OdGePoint3d& ptEnd);
 
-	EoGeReferenceSystem ReferenceSystem() const;
+	[[nodiscard]] EoGeReferenceSystem ReferenceSystem() const;
 
-	double Length() const;
+	[[nodiscard]] double Length() const;
 
-	double ParametricRelationshipOf(const OdGePoint3d& point) const;
+	[[nodiscard]] double ParametricRelationshipOf(const OdGePoint3d& point) const;
 
 	void SetDefaultNote();
 

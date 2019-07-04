@@ -51,7 +51,7 @@ public:
 
 	void AddToTreeViewControl(HWND tree, HTREEITEM parent) const noexcept override;
 
-	EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
+	[[nodiscard]] EoDbPrimitive* Clone(OdDbBlockTableRecordPtr blockTableRecord) const override;
 
 	void Display(AeSysView* view, CDC* deviceContext) override;
 
@@ -61,11 +61,11 @@ public:
 
 	void GetAllPoints(OdGePoint3dArray& points) const override;
 
-	OdGePoint3d GetCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GetCtrlPt() const override;
 
 	void GetExtents(AeSysView* view, OdGeExtents3d& extents) const override;
 
-	OdGePoint3d GoToNxtCtrlPt() const override;
+	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
 	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override { return false; }
 
@@ -95,13 +95,13 @@ public:
 
 	void DisplaySolid(AeSysView* view, CDC* deviceContext) const;
 
-	CString FormatInteriorStyle() const;
+	[[nodiscard]] CString FormatInteriorStyle() const;
 
 	OdGePoint3d GetPointAt(unsigned pointIndex);
 
 	void ModifyState() noexcept override;
 
-	int NumberOfVertices() const;
+	[[nodiscard]] int NumberOfVertices() const;
 
 	bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept override;
 
@@ -125,7 +125,7 @@ public:
 
 	void SetPatternReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, double patternAngle, double patternScale);
 
-	unsigned SwingVertex() const;
+	[[nodiscard]] unsigned SwingVertex() const;
 
 	static unsigned Edge() noexcept;
 

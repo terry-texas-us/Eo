@@ -56,35 +56,35 @@ public:
 
 	void EnablePerspective(bool enabled) noexcept;
 
-	double FarClipDistance() const noexcept;
+	[[nodiscard]] double FarClipDistance() const noexcept;
 
-	double FieldHeight() const noexcept;
+	[[nodiscard]] double FieldHeight() const noexcept;
 
-	double FieldHeightMaximum() const noexcept;
+	[[nodiscard]] double FieldHeightMaximum() const noexcept;
 
-	double FieldHeightMinimum() const noexcept;
+	[[nodiscard]] double FieldHeightMinimum() const noexcept;
 
-	double FieldWidth() const noexcept;
+	[[nodiscard]] double FieldWidth() const noexcept;
 
-	double FieldWidthMaximum() const noexcept;
+	[[nodiscard]] double FieldWidthMaximum() const noexcept;
 
-	double FieldWidthMinimum() const noexcept;
+	[[nodiscard]] double FieldWidthMinimum() const noexcept;
 
-	bool IsFarClipOn() const noexcept;
+	[[nodiscard]] bool IsFarClipOn() const noexcept;
 
-	bool IsNearClipAtEyeOn() const noexcept;
+	[[nodiscard]] bool IsNearClipAtEyeOn() const noexcept;
 
-	bool IsNearClipOn() const noexcept;
+	[[nodiscard]] bool IsNearClipOn() const noexcept;
 
-	bool IsPerspectiveOn() const noexcept;
+	[[nodiscard]] bool IsPerspectiveOn() const noexcept;
 
-	double LensLength() const noexcept;
+	[[nodiscard]] double LensLength() const noexcept;
 
-	double NearClipDistance() const noexcept;
+	[[nodiscard]] double NearClipDistance() const noexcept;
 
-	OdGePoint3d Position() const noexcept;
+	[[nodiscard]] OdGePoint3d Position() const noexcept;
 
-	OdGsView::RenderMode RenderMode() const noexcept;
+	[[nodiscard]] OdGsView::RenderMode RenderMode() const noexcept;
 
 	void SetFarClipDistance(double distance) noexcept;
 
@@ -106,7 +106,7 @@ public:
 
 	void SetViewUp(const OdGeVector3d& viewUp);
 
-	OdGePoint3d Target() const noexcept;
+	[[nodiscard]] OdGePoint3d Target() const noexcept;
 
-	OdGeVector3d ViewUp() const noexcept;
+	[[nodiscard]] OdGeVector3d ViewUp() const noexcept;
 };

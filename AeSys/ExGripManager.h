@@ -296,7 +296,7 @@ public:
 
 	bool OnMouseMove(int x, int y, bool shiftIsDown);
 
-	bool OnControlClick() const;
+	[[nodiscard]] bool OnControlClick() const;
 
 	void DraggingStarted() override;
 

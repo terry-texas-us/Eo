@@ -153,20 +153,20 @@ public:
 
 	bool Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint);
 
-	virtual unsigned SnapModes() const = 0;
+	[[nodiscard]] virtual unsigned SnapModes() const = 0;
 
-	virtual unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept {
+	[[nodiscard]] virtual unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept {
 		// was temporary moved into OSnapManager // return 1 << mode;
 		return static_cast<unsigned>(1 << (mode + 1));
 	}
 
-	virtual OdCmEntityColor SnapTrueColor() const {
+	[[nodiscard]] virtual OdCmEntityColor SnapTrueColor() const {
 		OdCmEntityColor Color;
 		Color.setColorIndex(OdCmEntityColor::kACIYellow);
 		return Color;
 	}
 
-	virtual OdCmEntityColor CenterTrueColor() const {
+	[[nodiscard]] virtual OdCmEntityColor CenterTrueColor() const {
 		OdCmEntityColor Color;
 		Color.setColorIndex(OdCmEntityColor::kACIforeground);
 		return Color;
@@ -187,10 +187,10 @@ protected:
 	OSnapManager() = default;
 
 public:
-	unsigned SnapModes() const noexcept override;
+	[[nodiscard]] unsigned SnapModes() const noexcept override;
 
 	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
+	[[nodiscard]] unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
 };
