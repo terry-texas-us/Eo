@@ -150,6 +150,7 @@
     <ClCompile Include="EoVaxFloat.cpp" />
     <ClCompile Include="EoViModelView.cpp" />
     <ClCompile Include="ExGripManager.cpp" />
+    <ClCompile Include="OdExGripDrag.cpp" />
     <ClCompile Include="OFNHookProcFileTracing.cpp" />
     <ClCompile Include="EoDlgFixupOptions.cpp" />
     <ClCompile Include="EoDlgSetHomePoint.cpp" />
@@ -384,6 +385,8 @@
     <ClInclude Include="EoGeMatrix3d.h" />
     <ClInclude Include="EoGsModelTransform.h" />
     <ClInclude Include="EoGsViewTransform.h" />
+    <ClInclude Include="OdExGripData.h" />
+    <ClInclude Include="OdExGripDrag.h" />
     <ClInclude Include="OSnapManager.h" />
     <ClInclude Include="PegColors.h" />
     <ClInclude Include="Preview.h" />

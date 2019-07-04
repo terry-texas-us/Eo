@@ -40,6 +40,12 @@
     <Filter Include="Source Files\Kernel ExRender">
       <UniqueIdentifier>{713709bd-6c84-4450-a3bc-04131fd744af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Editor">
+      <UniqueIdentifier>{3e420982-26b4-4cd7-b237-e6142259dd1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Editor">
+      <UniqueIdentifier>{cc8c284a-2ca1-48b7-a4fd-1dc3825b8d87}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Section.cpp">
@@ -435,12 +441,6 @@
     <ClCompile Include="EditorObject.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ExGripManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="OSnapManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
       <Filter>Source Files\Drawing ExServices</Filter>
     </ClCompile>
@@ -464,6 +464,15 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OdExGripDrag.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="ExGripManager.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="OSnapManager.cpp">
+      <Filter>Source Files\Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -910,12 +919,6 @@
     <ClInclude Include="EditorObject.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ExGripManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="OSnapManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OdApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -927,6 +930,18 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OdExGripDrag.h">
+      <Filter>Header Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="ExGripManager.h">
+      <Filter>Header Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="OSnapManager.h">
+      <Filter>Header Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="OdExGripData.h">
+      <Filter>Header Files\Editor</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
