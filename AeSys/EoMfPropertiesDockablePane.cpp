@@ -24,7 +24,7 @@ BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 END_MESSAGE_MAP()
 
 void EoMfPropertiesDockablePane::AdjustLayout() {
-	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic()) { return; }
+	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic() != 0) { return; }
 	CRect ClientRectangle;
 	CRect ComboRectangle;
 	GetClientRect(ClientRectangle);
@@ -39,7 +39,7 @@ int EoMfPropertiesDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CDockablePane::OnCreate(createStructure) == -1) { return -1; }
 	CRect EmptyRectangle;
 	EmptyRectangle.SetRectEmpty();
-	if (!m_ComboBox.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRectangle, this, 1)) {
+	if (m_ComboBox.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRectangle, this, 1) == 0) {
 		TRACE0("Failed to create Properties Combo\n");
 		return -1;
 	}
@@ -50,7 +50,7 @@ int EoMfPropertiesDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	CRect ComboRectangle;
 	m_ComboBox.GetClientRect(&ComboRectangle);
 	m_ComboHeight = ComboRectangle.Height();
-	if (!m_PropertyGrid.Create(WS_VISIBLE | WS_CHILD, EmptyRectangle, this, 2)) {
+	if (m_PropertyGrid.Create(WS_VISIBLE | WS_CHILD, EmptyRectangle, this, 2) == 0) {
 		TRACE0("Failed to create Properties Grid \n");
 		return -1;
 	}
@@ -83,7 +83,7 @@ void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /*commandUs
 }
 
 void EoMfPropertiesDockablePane::OnSortProperties() {
-	m_PropertyGrid.SetAlphabeticMode(!m_PropertyGrid.IsAlphabeticMode());
+	m_PropertyGrid.SetAlphabeticMode(static_cast<BOOL>(!m_PropertyGrid.IsAlphabeticMode()));
 }
 
 void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* commandUserInterface) {
@@ -130,13 +130,13 @@ void EoMfPropertiesDockablePane::InitializePropertyGrid() {
 	WorkspaceTabsGroup->AddSubItem(BorderSize);
 	m_PropertyGrid.AddProperty(WorkspaceTabsGroup);
 	auto ActiveView {AeSysView::GetActiveView()};
-	const auto Scale {ActiveView ? ActiveView->WorldScale() : 1.0};
+	const auto Scale {ActiveView != nullptr ? ActiveView->WorldScale() : 1.0};
 	auto ActiveViewGroup {new CMFCPropertyGridProperty(L"Active View")};
 	auto WorldScaleProperty {new CMFCPropertyGridProperty(L"World Scale", static_cast<_variant_t>(Scale), L"Specifies the world scale used in the Active View", kActiveViewScale)};
 	ActiveViewGroup->AddSubItem(WorldScaleProperty);
 	ActiveViewGroup->AddSubItem(new CMFCPropertyGridProperty(L"Use True Type fonts", static_cast<_variant_t>(true), L"Specifies that the Active View uses True Type fonts"));
 	m_PropertyGrid.AddProperty(ActiveViewGroup);
-	WorldScaleProperty->Enable(ActiveView != nullptr);
+	WorldScaleProperty->Enable(static_cast<BOOL>(ActiveView != nullptr));
 	auto AppearanceGroup {new CMFCPropertyGridProperty(L"Appearance")};
 	AppearanceGroup->AddSubItem(new CMFCPropertyGridProperty(L"3D Look", static_cast<_variant_t>(false), L"Specifies the window's font will be non-bold and controls will have a 3D border"));
 	auto LengthUnits {new CMFCPropertyGridProperty(L"Length Units", L"Engineering", L"Specifies the units used to display lengths")};
@@ -256,10 +256,10 @@ LRESULT EoMfPropertiesDockablePane::OnPropertyChanged(WPARAM, const LPARAM lpara
 			break;
 		}
 		case kTabsAutoColor:
-			theApp.applicationOptions.mdiTabInfo.m_bAutoColor = Property->GetValue().boolVal == VARIANT_TRUE;
+			theApp.applicationOptions.mdiTabInfo.m_bAutoColor = static_cast<BOOL>(Property->GetValue().boolVal == VARIANT_TRUE);
 			break;
 		case kTabIcons:
-			theApp.applicationOptions.mdiTabInfo.m_bTabIcons = Property->GetValue().boolVal == VARIANT_TRUE;
+			theApp.applicationOptions.mdiTabInfo.m_bTabIcons = static_cast<BOOL>(Property->GetValue().boolVal == VARIANT_TRUE);
 			break;
 		case kTabBorderSize: {
 			const int Border {Property->GetValue().iVal};
@@ -286,7 +286,7 @@ void EoMfPropertiesDockablePane::SetWorkspaceTabsSubItemsState() {
 			for (auto SubItemIndex = 1; SubItemIndex < PropertyGridProperty->GetSubItemsCount(); SubItemIndex++) {
 				auto SubProperty {PropertyGridProperty->GetSubItem(SubItemIndex)};
 				ASSERT_VALID(SubProperty);
-				SubProperty->Enable(theApp.applicationOptions.tabsStyle != EoApOptions::kNone);
+				SubProperty->Enable(static_cast<BOOL>(theApp.applicationOptions.tabsStyle != EoApOptions::kNone));
 			}
 		}
 	}

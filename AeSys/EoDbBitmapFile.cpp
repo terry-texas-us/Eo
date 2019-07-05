@@ -3,7 +3,7 @@
 
 EoDbBitmapFile::EoDbBitmapFile(const CString& fileName) {
 	CFileException e;
-	if (CFile::Open(fileName, modeRead | shareDenyNone, &e)) {
+	if (CFile::Open(fileName, modeRead | shareDenyNone, &e) != 0) {
 	}
 }
 

@@ -4,12 +4,12 @@
 void EoDialogResizeHelper::Init(HWND parent) {
 	m_hParent = parent;
 	m_ctrls.clear();
-	if (IsWindow(m_hParent)) { // keep original parent size
+	if (IsWindow(m_hParent) != 0) { // keep original parent size
 		GetWindowRect(m_hParent, m_origParentSize);
 
 		// get all child windows and store their original sizes and positions
 		auto hCtrl {GetTopWindow(m_hParent)};
-		while (hCtrl) {
+		while (hCtrl != nullptr) {
 			CtrlSize cs;
 			cs.m_hCtrl = hCtrl;
 			GetWindowRect(hCtrl, cs.m_origSize);
@@ -22,7 +22,7 @@ void EoDialogResizeHelper::Init(HWND parent) {
 }
 
 void EoDialogResizeHelper::Add(HWND a_hWnd) {
-	if (m_hParent && a_hWnd) {
+	if (m_hParent != nullptr && a_hWnd != nullptr) {
 		CtrlSize cs;
 		cs.m_hCtrl = a_hWnd;
 		GetWindowRect(a_hWnd, cs.m_origSize);
@@ -33,7 +33,7 @@ void EoDialogResizeHelper::Add(HWND a_hWnd) {
 }
 
 void EoDialogResizeHelper::OnSize() {
-	if (IsWindow(m_hParent)) {
+	if (IsWindow(m_hParent) != 0) {
 		CRect CurrentParentSize;
 		GetWindowRect(m_hParent, CurrentParentSize);
 		const auto xRatio {static_cast<double>(CurrentParentSize.Width()) / m_origParentSize.Width()};

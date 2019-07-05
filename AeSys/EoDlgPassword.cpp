@@ -15,7 +15,7 @@ void EoDlgPassword::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_EDIT_PWD, m_pswCtrl);
 	DDX_Text(dataExchange, IDC_PASS_FILE_NAME, m_sFileName);
-	if (dataExchange->m_bSaveAndValidate) {
+	if (dataExchange->m_bSaveAndValidate != 0) {
 		CString s;
 		m_pswCtrl.GetWindowTextW(s);
 		m_password = s;

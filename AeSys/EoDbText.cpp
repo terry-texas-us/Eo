@@ -427,7 +427,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			TextString = L"EoDbJobFile.PrimText error: Text too long.";
 		} else {
 			while (*pChr != 0) {
-				if (!isprint(*pChr)) * pChr = '.';
+				if (isprint(*pChr) == 0) * pChr = '.';
 				pChr++;
 			}
 			TextString = reinterpret_cast<LPCSTR>(&primitiveBuffer[44]);

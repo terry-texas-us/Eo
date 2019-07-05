@@ -75,7 +75,7 @@ void AeSysView::OnTrapModeLast() {
 	auto Position {Document->GetLastWorkLayerGroupPosition()};
 	while (Position != nullptr) {
 		const auto Group {Document->GetPreviousWorkLayerGroup(Position)};
-		if (!Document->FindTrappedGroup(Group)) {
+		if (Document->FindTrappedGroup(Group) == nullptr) {
 			Document->AddGroupToTrap(Group);
 			UpdateStateInformation(kTrapCount);
 			break;

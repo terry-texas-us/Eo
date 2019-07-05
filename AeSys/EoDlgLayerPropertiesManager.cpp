@@ -101,7 +101,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 }
 ///<summary>Recursive filter tree filling helper</summary>
 static void UpdateFilterTree(CTreeCtrl& tree, const HTREEITEM parent, const OdLyLayerFilter* root, const OdLyLayerFilter* current) {
-	if (root) {
+	if (root != nullptr) {
 		const auto TreeItem {tree.InsertItem(root->name(), parent)};
 		tree.SetItemData(TreeItem, reinterpret_cast<unsigned long>((void*)root));
 		const auto Image {root->isIdFilter() ? 2 : 1};
@@ -126,20 +126,20 @@ void EoDlgLayerPropertiesManager::OnSize(const unsigned type, const int newWidth
 	CDialog::OnSize(type, newWidth, newHeight);
 	CRect itemRect;
 	CRect dlgRect;
-	if (GetDlgItem(IDC_STATIC_CURRENT_LAYER)) {
+	if (GetDlgItem(IDC_STATIC_CURRENT_LAYER) != nullptr) {
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
 		itemRect.right += dlgRect.Width() - deltaWidth;
 		GetDlgItem(IDC_STATIC_CURRENT_LAYER)->MoveWindow(itemRect);
 	}
-	if (GetDlgItem(IDC_STATIC_LAYER_STATISTIC)) {
+	if (GetDlgItem(IDC_STATIC_LAYER_STATISTIC) != nullptr) {
 		GetDlgItem(IDC_STATIC_LAYER_STATISTIC)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
 		GetDlgItem(IDC_STATIC_LAYER_STATISTIC)->MoveWindow(itemRect.left, itemRect.top + (dlgRect.Height() - deltaHeight), itemRect.Width() + (dlgRect.Width() - deltaWidth), itemRect.Height());
 	}
-	if (GetDlgItem(IDCANCEL)) {
+	if (GetDlgItem(IDCANCEL) != nullptr) {
 		GetDlgItem(IDCANCEL)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);
@@ -147,7 +147,7 @@ void EoDlgLayerPropertiesManager::OnSize(const unsigned type, const int newWidth
 		GetDlgItem(IDCANCEL)->MoveWindow(itemRect.left + (dlgRect.Width() - deltaWidth), itemRect.top + (dlgRect.Height() - deltaHeight), itemRect.Width(), itemRect.Height());
 		GetDlgItem(IDCANCEL)->ShowWindow(SW_SHOW);
 	}
-	if (GetDlgItem(IDOK)) {
+	if (GetDlgItem(IDOK) != nullptr) {
 		GetDlgItem(IDOK)->GetWindowRect(&itemRect);
 		ScreenToClient(itemRect);
 		GetWindowRect(&dlgRect);

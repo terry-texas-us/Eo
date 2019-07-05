@@ -99,7 +99,7 @@ BOOL EoDlgSetupColor::OnNotify(const WPARAM controlId, const LPARAM notification
 	const auto NotifyMessage {reinterpret_cast<NMHDR*>(notificationMessage)};
 	if (NotifyMessage->hwndFrom != nullptr) {
 		const auto ColorsButton {dynamic_cast<EoCtrlColorsButton*>(FromHandle(NotifyMessage->hwndFrom))};
-		if (ColorsButton != nullptr && ColorsButton->IsKindOf(RUNTIME_CLASS(EoCtrlColorsButton))) { DrawSelectionInformation(ColorsButton->m_SubItem); }
+		if (ColorsButton != nullptr && ColorsButton->IsKindOf(RUNTIME_CLASS(EoCtrlColorsButton)) != 0) { DrawSelectionInformation(ColorsButton->m_SubItem); }
 	}
 	return CDialog::OnNotify(controlId, notificationMessage, result);
 }

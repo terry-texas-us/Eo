@@ -22,22 +22,22 @@ void EoDlgTrapModify::DoDataExchange(CDataExchange* dataExchange) {
 }
 
 void EoDlgTrapModify::OnOK() {
-	if (IsDlgButtonChecked(IDC_MOD_PEN)) {
+	if (IsDlgButtonChecked(IDC_MOD_PEN) != 0u) {
 		m_Document->ModifyTrappedGroupsColorIndex(g_PrimitiveState.ColorIndex());
 	}
-	if (IsDlgButtonChecked(IDC_MOD_LINE)) {
+	if (IsDlgButtonChecked(IDC_MOD_LINE) != 0u) {
 		m_Document->ModifyTrappedGroupsLinetypeIndex(g_PrimitiveState.LinetypeIndex());
 	}
-	if (IsDlgButtonChecked(IDC_MOD_FILL)) {
+	if (IsDlgButtonChecked(IDC_MOD_FILL) != 0u) {
 		ModifyPolygons();
 	}
 	auto CharacterCellDefinition {g_PrimitiveState.CharacterCellDefinition()};
 	auto FontDefinition {g_PrimitiveState.FontDefinition()};
-	if (IsDlgButtonChecked(IDC_MOD_NOTE)) {
+	if (IsDlgButtonChecked(IDC_MOD_NOTE) != 0u) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, gc_TrapModifyTextAll);
-	} else if (IsDlgButtonChecked(IDC_FONT)) {
+	} else if (IsDlgButtonChecked(IDC_FONT) != 0u) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, gc_TrapModifyTextFont);
-	} else if (IsDlgButtonChecked(IDC_HEIGHT)) {
+	} else if (IsDlgButtonChecked(IDC_HEIGHT) != 0u) {
 		m_Document->ModifyTrappedGroupsNoteAttributes(FontDefinition, CharacterCellDefinition, gc_TrapModifyTextHeight);
 	}
 	CDialog::OnOK();
@@ -50,7 +50,7 @@ void EoDlgTrapModify::ModifyPolygons() {
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch)) != 0) {
 				auto Polygon {dynamic_cast<EoDbHatch*>(Primitive)};
 				Polygon->SetInteriorStyle(g_PrimitiveState.HatchInteriorStyle());
 				Polygon->SetInteriorStyleIndex2(g_PrimitiveState.HatchInteriorStyleIndex());

@@ -170,7 +170,7 @@ void AeSysView::OnNodalModeToPolygon() {
 					const auto Primitive {Group->GetNext(PrimitivePosition)};
 					const auto Mask {GetDocument()->GetPrimitiveMask(Primitive)};
 					if (Mask != 0) {
-						if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+						if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0) {
 							if ((Mask & 3) == 3) {
 								const auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 								Points[0] = Line->StartPoint();
@@ -190,11 +190,11 @@ void AeSysView::OnNodalModeToPolygon() {
 								GetDocument()->AddWorkLayerGroup(NewGroup);
 								GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, NewGroup);
 							}
-						} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch))) {
+						} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch)) != 0) {
 							auto Hatch {dynamic_cast<EoDbHatch*>(Primitive)};
 							const auto iPts {static_cast<unsigned>(Hatch->NumberOfVertices())};
 							for (unsigned i = 0; i < iPts; i++) {
-								if (btest(Mask, i) && btest(Mask, ((i + 1) % iPts))) {
+								if (btest(Mask, i) && btest(Mask, (i + 1) % iPts)) {
 									Points[0] = Hatch->GetPointAt(i);
 									Points[1] = Hatch->GetPointAt((i + 1) % iPts);
 									Points[2] = Points[1] + Translate;

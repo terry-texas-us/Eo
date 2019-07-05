@@ -31,8 +31,8 @@ void EoApOptions::Load() {
 	mdiTabInfo.m_bFlatFrame = theApp.GetInt(L"FlatFrame", TRUE);
 	mdiTabInfo.m_bActiveTabCloseButton = theApp.GetInt(L"ActiveTabCloseButton", TRUE);
 	mdiTabInfo.m_nTabBorderSize = theApp.GetInt(L"TabBorderSize", 1);
-	tabsContextMenu = theApp.GetInt(L"TabsContextMenu", true);
-	disableSetRedraw = theApp.GetInt(L"DisableSetRedraw", true);
+	tabsContextMenu = theApp.GetInt(L"TabsContextMenu", 1) != 0;
+	disableSetRedraw = theApp.GetInt(L"DisableSetRedraw", 1) != 0;
 }
 
 void EoApOptions::Save() {
@@ -48,6 +48,6 @@ void EoApOptions::Save() {
 	theApp.WriteInt(L"FlatFrame", mdiTabInfo.m_bFlatFrame);
 	theApp.WriteInt(L"ActiveTabCloseButton", mdiTabInfo.m_bActiveTabCloseButton);
 	theApp.WriteInt(L"TabBorderSize", mdiTabInfo.m_nTabBorderSize);
-	theApp.WriteInt(L"TabsContextMenu", tabsContextMenu);
-	theApp.WriteInt(L"DisableSetRedraw", disableSetRedraw);
+	theApp.WriteInt(L"TabsContextMenu", static_cast<int>(tabsContextMenu));
+	theApp.WriteInt(L"DisableSetRedraw", static_cast<int>(disableSetRedraw));
 }

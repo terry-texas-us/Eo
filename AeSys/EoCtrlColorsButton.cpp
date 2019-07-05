@@ -48,7 +48,7 @@ CSize EoCtrlColorsButton::SizeToContent(const BOOL calculateOnly) {
 	auto Size = UnionRectangle.Size();
 	Size.cx += 2 * (m_CellSpacing.cx + m_Margins.cx);
 	Size.cy += 2 * (m_CellSpacing.cy + m_Margins.cy);
-	if (!calculateOnly) {
+	if (calculateOnly == 0) {
 		CRect ClientRectangle;
 		GetWindowRect(ClientRectangle);
 		GetParent()->ScreenToClient(ClientRectangle);

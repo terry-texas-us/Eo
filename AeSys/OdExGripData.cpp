@@ -1,3 +1,4 @@
+// Extracted class from Examples\Editor\ExGripManager.cpp (last compare 20.5)
 #include "stdafx.h"
 #include <Gi/GiCommonDraw.h>
 #include <Gi/GiWorldDraw.h>

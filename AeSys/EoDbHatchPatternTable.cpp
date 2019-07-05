@@ -64,13 +64,13 @@ OdString EoDbHatchPatternTable::LegacyHatchPatternName(const unsigned index) {
 void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	CFileException e;
 	CStdioFile StreamFile;
-	if (!StreamFile.Open(fileName, CFile::modeRead | CFile::typeText, &e)) { return; }
+	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText, &e) == 0) { return; }
 	// <tas="failure to open and then continue Pattern file, but still continues."</tas>
 	auto HatchPatternManager {theApp.patternManager()};
 	OdString PatternName;
 	OdHatchPattern HatchPattern;
 	wchar_t LineText[128];
-	while (StreamFile.ReadString(LineText, sizeof LineText / sizeof(wchar_t) - 1)) {
+	while (StreamFile.ReadString(LineText, sizeof LineText / sizeof(wchar_t) - 1) != nullptr) {
 		if (LineText[0] == '*') { // New Hatch pattern
 			if (!PatternName.isEmpty()) {
 				HatchPatternManager->appendPattern(OdDbHatch::kCustomDefined, PatternName, HatchPattern);

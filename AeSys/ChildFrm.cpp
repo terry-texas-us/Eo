@@ -23,7 +23,7 @@ void CChildFrame::ActivateFrame(int nCmdShow) {
 
 BOOL CChildFrame::DestroyWindow() {
 	auto DeviceContext {GetDC()};
-	if (DeviceContext) { // Stock objects are never left "current" so it is safe to delete whatever the old object is
+	if (DeviceContext != nullptr) { // Stock objects are never left "current" so it is safe to delete whatever the old object is
 		DeviceContext->SelectStockObject(BLACK_PEN)->DeleteObject();
 		DeviceContext->SelectStockObject(WHITE_BRUSH)->DeleteObject();
 	}
@@ -31,7 +31,7 @@ BOOL CChildFrame::DestroyWindow() {
 }
 
 BOOL CChildFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
-	if (!CMDIChildWndEx::PreCreateWindow(createStructure)) { return FALSE; }
+	if (CMDIChildWndEx::PreCreateWindow(createStructure) == 0) { return FALSE; }
 	if (theApp.applicationOptions.tabsStyle != EoApOptions::kNone) {
 		createStructure.style &= ~WS_SYSMENU;
 	}
@@ -53,20 +53,20 @@ void CChildFrame::OnMDIActivate(const BOOL activate, CWnd* activateWnd, CWnd* de
 	const auto ActivatedDocument {ActivatedFrame != nullptr ? ActivatedFrame->GetActiveDocument() : nullptr};
 	const auto DeactivatedDocument {DeactivatedFrame != nullptr ? DeactivatedFrame->GetActiveDocument() : nullptr};
 	const auto NumberOfReactors {theApp.applicationReactors.size()};
-	if (activate) {
-		if (DeactivatedDocument) {
+	if (activate != 0) {
+		if (DeactivatedDocument != nullptr) {
 			for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 				theApp.applicationReactors.at(ReactorIndex)->DocumentToBeDeactivated(DeactivatedDocument);
 			}
 		}
-		if (ActivatedDocument) {
+		if (ActivatedDocument != nullptr) {
 			for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 				theApp.applicationReactors.at(ReactorIndex)->DocumentActivated(ActivatedDocument);
 				theApp.applicationReactors.at(ReactorIndex)->DocumentBecameCurrent(ActivatedDocument);
 			}
 		}
 	} else {
-		if (ActivatedDocument) {
+		if (ActivatedDocument != nullptr) {
 			for (unsigned ReactorIndex = 0; ReactorIndex < NumberOfReactors; ReactorIndex++) {
 				theApp.applicationReactors.at(ReactorIndex)->DocumentToBeActivated(ActivatedDocument);
 			}
@@ -115,11 +115,11 @@ const int gc_AnnotationScalesMenuPosition(19);
 void CChildFrame::OnUpdateFrameMenu(const BOOL active, CWnd* activeWindow, const HMENU menuAlt) {
 	CMDIChildWndEx::OnUpdateFrameMenu(active, activeWindow, menuAlt);
 	const auto ActiveDocument {GetActiveDocument()};
-	if (active && ActiveDocument) {
+	if (active != 0 && ActiveDocument != nullptr) {
 		const auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
 		ENSURE(TopMenu);
 		const auto ScalesSubMenu {TopMenu->GetSubMenu(gc_ViewMenuPosition)->GetSubMenu(gc_AnnotationScalesMenuPosition)};
-		if (ScalesSubMenu) {
+		if (ScalesSubMenu != nullptr) {
 			UpdateAnnotationScalesPopupMenu(ScalesSubMenu, dynamic_cast<AeSysDoc*>(ActiveDocument)->m_DatabasePtr);
 		}
 	}

@@ -50,7 +50,7 @@
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <WarningLevel>Level4</WarningLevel>
+      <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <ResourceCompile>
@@ -150,6 +150,7 @@
     <ClCompile Include="EoVaxFloat.cpp" />
     <ClCompile Include="EoViModelView.cpp" />
     <ClCompile Include="ExGripManager.cpp" />
+    <ClCompile Include="OdBaseGripManager.cpp" />
     <ClCompile Include="OdExGripData.cpp" />
     <ClCompile Include="OdExGripDrag.cpp" />
     <ClCompile Include="OFNHookProcFileTracing.cpp" />
@@ -386,6 +387,7 @@
     <ClInclude Include="EoGeMatrix3d.h" />
     <ClInclude Include="EoGsModelTransform.h" />
     <ClInclude Include="EoGsViewTransform.h" />
+    <ClInclude Include="OdBaseGripManager.h" />
     <ClInclude Include="OdExGripData.h" />
     <ClInclude Include="OdExGripDrag.h" />
     <ClInclude Include="OSnapManager.h" />

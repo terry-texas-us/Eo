@@ -61,7 +61,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 			auto PrimitivePosition {Group->GetHeadPosition()};
 			while (PrimitivePosition != nullptr) {
 				const auto Primitive {Group->GetNext(PrimitivePosition)};
-				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText))) {
+				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText)) != 0) {
 					strBuf += dynamic_cast<EoDbText*>(Primitive)->Text();
 					strBuf += L"\r\n";
 				}
@@ -85,7 +85,7 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		const auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
 		SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
 		const auto DeviceContext {CDC::FromHandle(MetaFile)};
-		if (DeviceContext) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
+		if (DeviceContext != nullptr) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
 	}
 	if (theApp.IsClipboardDataGroups()) {
 		CMemFile MemoryFile;
@@ -128,7 +128,7 @@ void AeSysDoc::DeleteAllTrappedGroups() {
 }
 
 void AeSysDoc::ExpandTrappedGroups() {
-	if (m_TrappedGroupList.IsEmpty()) { return; }
+	if (m_TrappedGroupList.IsEmpty() != 0) { return; }
 	auto Groups {new EoDbGroupList};
 	Groups->AddTail(&m_TrappedGroupList);
 	m_TrappedGroupList.RemoveAll();
@@ -167,7 +167,7 @@ EoDbGroupList* AeSysDoc::GroupsInTrap() noexcept {
 }
 
 bool AeSysDoc::IsTrapEmpty() const {
-	return m_TrappedGroupList.IsEmpty();
+	return m_TrappedGroupList.IsEmpty() != 0;
 }
 
 void AeSysDoc::ModifyTrappedGroupsColorIndex(const short colorIndex) {
@@ -183,7 +183,7 @@ void AeSysDoc::ModifyTrappedGroupsNoteAttributes(EoDbFontDefinition& fontDef, Eo
 }
 
 void AeSysDoc::RemoveAllTrappedGroups() {
-	if (!m_TrappedGroupList.IsEmpty()) {
+	if (m_TrappedGroupList.IsEmpty() == 0) {
 		if (theApp.IsTrapHighlighted()) {
 			UpdateGroupsInAllViews(EoDb::kGroupsSafe, &m_TrappedGroupList);
 		}

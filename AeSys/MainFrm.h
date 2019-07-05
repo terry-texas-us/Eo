@@ -21,10 +21,10 @@ DECLARE_DYNAMIC(CMainFrame)
 	void StopTimer(const wchar_t* operationName = nullptr) {
 		QueryPerformanceCounter(&m_PerformanceCounter1);
 		m_PerformanceCounter1.QuadPart -= m_PerformanceCounter0.QuadPart;
-		if (QueryPerformanceFrequency(&m_PerformanceCounter0)) {
+		if (QueryPerformanceFrequency(&m_PerformanceCounter0) != 0) {
 			const auto loadTime {static_cast<double>(m_PerformanceCounter1.QuadPart) / static_cast<double>(m_PerformanceCounter0.QuadPart)};
 			OdString NewText;
-			const auto OperationName {operationName ? operationName : L"Operation"};
+			const auto OperationName {operationName != nullptr ? operationName : L"Operation"};
 			NewText.format(L"%s Time: %.6f sec.", OperationName, loadTime);
 			SetStatusPaneTextAt(wcscmp(L"Redraw", OperationName) == 0 ? gc_StatusProgress : gc_StatusInfo, NewText);
 		}

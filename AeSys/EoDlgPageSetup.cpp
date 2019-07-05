@@ -211,7 +211,7 @@ void EoDlgPageSetup::FillMmInches() {
 		m_MmInches.AddString(L"inches");
 		m_MmInches.AddString(L"mm");
 		m_MmInches.EnableWindow(TRUE);
-		m_MmInches.SetCurSel(PaperUnits == OdDbPlotSettings::kMillimeters);
+		m_MmInches.SetCurSel(static_cast<int>(PaperUnits == OdDbPlotSettings::kMillimeters));
 	}
 }
 
@@ -229,7 +229,7 @@ void EoDlgPageSetup::FillViewCombo(const bool fillCombo) {
 		}
 	}
 	GetDlgItem(IDC_PAGESETUP_VIEWS)->EnableWindow(m_Views.GetCount());
-	if (m_Views.GetCount()) {
+	if (m_Views.GetCount() != 0) {
 		m_Views.SetCurSel(m_Views.FindStringExact(0, m_PlotSettings.getPlotViewName()));
 	}
 }
@@ -258,12 +258,12 @@ void EoDlgPageSetup::FillShadePlotQualityDpi(const bool fillCombo) {
 	}
 	if (IsModelSpacePageSetup()) {
 		const auto bEnableWindows {PlotType == OdDbPlotSettings::kAsDisplayed || PlotType == OdDbPlotSettings::kRendered};
-		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(bEnableWindows);
-		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(ResLevel == OdDbPlotSettings::kCustom && bEnableWindows);
+		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(static_cast<BOOL>(bEnableWindows));
+		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(static_cast<BOOL>(ResLevel == OdDbPlotSettings::kCustom && bEnableWindows));
 	} else {
 		GetDlgItem(IDC_PAGESETUP_SHADE_PLOT)->EnableWindow(FALSE);
 		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(TRUE);
-		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(ResLevel == OdDbPlotSettings::kCustom);
+		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(static_cast<BOOL>(ResLevel == OdDbPlotSettings::kCustom));
 	}
 	UpdateData(FALSE);
 }
@@ -278,14 +278,14 @@ void EoDlgPageSetup::OnClickPlotStyles() {
 }
 
 void EoDlgPageSetup::FillPlotStyles() {
-	m_PlotObjectLineweights = m_PlotSettings.printLineweights();
-	m_PlotWithPlotStyles = m_PlotSettings.plotPlotStyles();
-	m_PlotPaperspaceLast = m_PlotSettings.drawViewportsFirst();
-	m_HidePaperspaceObjects = m_PlotSettings.plotHidden();
-	GetDlgItem(IDC_CHECK_PLOT_PAPERSPACE_LAST)->EnableWindow(!IsModelSpacePageSetup());
-	GetDlgItem(IDC_CHECK_HIDE_PAPERSPACE_OBJECTS)->EnableWindow(!IsModelSpacePageSetup());
-	GetDlgItem(IDC_CHECK_PLOT_OBJECT_LW)->EnableWindow(!m_PlotWithPlotStyles);
-	if (m_PlotWithPlotStyles) {
+	m_PlotObjectLineweights = static_cast<int>(m_PlotSettings.printLineweights());
+	m_PlotWithPlotStyles = static_cast<int>(m_PlotSettings.plotPlotStyles());
+	m_PlotPaperspaceLast = static_cast<int>(m_PlotSettings.drawViewportsFirst());
+	m_HidePaperspaceObjects = static_cast<int>(m_PlotSettings.plotHidden());
+	GetDlgItem(IDC_CHECK_PLOT_PAPERSPACE_LAST)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
+	GetDlgItem(IDC_CHECK_HIDE_PAPERSPACE_OBJECTS)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
+	GetDlgItem(IDC_CHECK_PLOT_OBJECT_LW)->EnableWindow(static_cast<BOOL>(!m_PlotWithPlotStyles));
+	if (m_PlotWithPlotStyles != 0) {
 		m_PlotObjectLineweights = 1;
 	}
 	UpdateData(FALSE);
@@ -295,7 +295,7 @@ void EoDlgPageSetup::FillPaperOrientation() {
 	const auto Rotation {m_PlotSettings.plotRotation()};
 	m_DrawingOrientation = Rotation & 1;
 	if (!IsPaperWidthLessHeight()) {
-		m_DrawingOrientation = !m_DrawingOrientation;
+		m_DrawingOrientation = static_cast<int>(!m_DrawingOrientation);
 	}
 	m_PlotUpsideDown = (Rotation & 2) / 2;
 	UpdateData(FALSE);
@@ -307,7 +307,7 @@ void EoDlgPageSetup::OnClickPortraitLandscape() {
 	if (IsPaperWidthLessHeight()) {
 		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(!m_DrawingOrientation + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(static_cast<int>(!m_DrawingOrientation) + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 	FillPaperOrientation();
@@ -330,7 +330,7 @@ void EoDlgPageSetup::OnChangeEditScaleUnit() {
 
 void EoDlgPageSetup::OnCheckFitToPaper() {
 	UpdateData();
-	if (m_FitToPaper) {
+	if (m_FitToPaper != 0) {
 		m_PlotSettingsValidator->setStdScaleType(&m_PlotSettings, OdDbPlotSettings::kScaleToFit);
 	} else {
 		m_PlotSettingsValidator->setUseStandardScale(&m_PlotSettings, false);
@@ -381,7 +381,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	if (IsPaperWidthLessHeight()) {
 		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(!m_DrawingOrientation + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(static_cast<int>(!m_DrawingOrientation) + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 	FillPaperOrientation();
@@ -390,7 +390,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 
 	// and reset units to paper native
 	if (MediaNativeUnits == OdDbPlotSettings::kInches || MediaNativeUnits == OdDbPlotSettings::kMillimeters) {
-		m_MmInches.SetCurSel(MediaNativeUnits == OdDbPlotSettings::kMillimeters);
+		m_MmInches.SetCurSel(static_cast<int>(MediaNativeUnits == OdDbPlotSettings::kMillimeters));
 		OnSelChangeMMInchesList();
 	}
 }
@@ -439,10 +439,10 @@ void EoDlgPageSetup::OnSelChangeDeviceList() {
 }
 
 BOOL EoDlgPageSetup::OnInitDialog() {
-	if (!CDialog::OnInitDialog()) {
+	if (CDialog::OnInitDialog() == 0) {
 		return FALSE;
 	}
-	if (!m_PlotSettings.database() || !m_PlotSettings.database()->appServices()) {
+	if (m_PlotSettings.database() == nullptr || m_PlotSettings.database()->appServices() == nullptr) {
 		return FALSE;
 	}
 	m_PlotSettingsValidator = m_PlotSettings.database()->appServices()->plotSettingsValidator();
@@ -518,18 +518,18 @@ void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	}
 	const auto IsModel {IsModelSpacePageSetup()};
 	const auto IsLayout {m_PlotSettings.plotType() == OdDbPlotSettings::kLayout};
-	m_FitToPaper = m_PlotSettings.useStandardScale() && !IsLayout && ScaleType == OdDbPlotSettings::kScaleToFit;
-	m_ScaleLineweights = m_PlotSettings.scaleLineweights();
+	m_FitToPaper = static_cast<int>(m_PlotSettings.useStandardScale() && !IsLayout && ScaleType == OdDbPlotSettings::kScaleToFit);
+	m_ScaleLineweights = static_cast<int>(m_PlotSettings.scaleLineweights());
 	if (IsLayout) {
-		m_FitToPaper = m_CenterThePlot = false;
+		m_FitToPaper = m_CenterThePlot = 0;
 	}
-	GetDlgItem(IDC_CHECK_SCALE_LW)->EnableWindow(!IsModel);
-	GetDlgItem(IDC_CHECK_FIT_TO_PAPER)->EnableWindow(!IsLayout);
-	GetDlgItem(IDC_CHECK_CENTERTHEPLOT)->EnableWindow(!IsLayout);
-	GetDlgItem(IDC_PAGESETUP_SCALE)->EnableWindow(!m_FitToPaper);
-	GetDlgItem(IDC_PAGESETUP_PAPER_UNIT)->EnableWindow(!m_FitToPaper);
-	GetDlgItem(IDC_PAGESETUP_DRAWING_UNIT)->EnableWindow(!m_FitToPaper);
-	if (m_PlotSettings.useStandardScale() && !m_FitToPaper) {
+	GetDlgItem(IDC_CHECK_SCALE_LW)->EnableWindow(static_cast<BOOL>(!IsModel));
+	GetDlgItem(IDC_CHECK_FIT_TO_PAPER)->EnableWindow(static_cast<BOOL>(!IsLayout));
+	GetDlgItem(IDC_CHECK_CENTERTHEPLOT)->EnableWindow(static_cast<BOOL>(!IsLayout));
+	GetDlgItem(IDC_PAGESETUP_SCALE)->EnableWindow(static_cast<BOOL>(!m_FitToPaper));
+	GetDlgItem(IDC_PAGESETUP_PAPER_UNIT)->EnableWindow(static_cast<BOOL>(!m_FitToPaper));
+	GetDlgItem(IDC_PAGESETUP_DRAWING_UNIT)->EnableWindow(static_cast<BOOL>(!m_FitToPaper));
+	if (m_PlotSettings.useStandardScale() && m_FitToPaper == 0) {
 		m_PaperScaleUnit = plotScaleSetting[ScaleType].m_RealWorldUnits;
 		m_DrawingScaleUnit = plotScaleSetting[ScaleType].m_DrawingUnits;
 	} else {
@@ -598,10 +598,10 @@ void EoDlgPageSetup::OnSelChangePlotAreaType() {
 		// Example is kExtents, kFit2Paper -> kLayout ->kExtents
 		// Dialog has kFit2Paper disabled, but validator don't clear kFit2Paper flag.
 		// Validator also don't change PlotOrigin to 0,0, if plot centers was true, but it change scale to 1:1 if fit to paper was true
-		if (m_CenterThePlot) {
+		if (m_CenterThePlot != 0) {
 			m_PlotSettingsValidator->setPlotOrigin(&m_PlotSettings, 0.0, 0.0);
 		}
-		if (m_FitToPaper) {
+		if (m_FitToPaper != 0) {
 			m_PlotSettingsValidator->setUseStandardScale(&m_PlotSettings, false);
 		}
 	}
@@ -631,9 +631,9 @@ void EoDlgPageSetup::FillWindowArea() {
 }
 
 void EoDlgPageSetup::FillPlotOffset() {
-	m_CenterThePlot = m_PlotSettings.plotCentered();
-	GetDlgItem(IDC_PAGESETUP_OFFSET_X)->EnableWindow(!m_CenterThePlot);
-	GetDlgItem(IDC_PAGESETUP_OFFSET_Y)->EnableWindow(!m_CenterThePlot);
+	m_CenterThePlot = static_cast<int>(m_PlotSettings.plotCentered());
+	GetDlgItem(IDC_PAGESETUP_OFFSET_X)->EnableWindow(static_cast<BOOL>(!m_CenterThePlot));
+	GetDlgItem(IDC_PAGESETUP_OFFSET_Y)->EnableWindow(static_cast<BOOL>(!m_CenterThePlot));
 	if (IsWHSwap()) {
 		m_PlotSettings.getPlotOrigin(m_OffsetY, m_OffsetX);
 	} else {
@@ -750,7 +750,7 @@ bool EoDlgPageSetup::FillArrayByPatternFile(OdArray<CString>& arrFiles, CString 
 			IsFind = true;
 		}
 		Find = FindNextFile(FileHandle, &FindFileData);
-	} while (Find && Find != ERROR_NO_MORE_FILES);
+	} while (Find != 0 && Find != ERROR_NO_MORE_FILES);
 	FindClose(FileHandle);
 	return IsFind;
 }
@@ -773,8 +773,8 @@ void EoDlgPageSetup::FillPlotStyleCombo(const bool fillCombo) {
 	}
 	m_PlotStyleFiles.SetCurSel(StyleIndex);
 	OnSelChangePlotStyleFiles();
-	GetDlgItem(IDC_CHECK_DISPLAY_PLOT_STYLES)->EnableWindow(!IsModelSpacePageSetup());
-	m_DisplayPlotStyles = m_PlotSettings.showPlotStyles();
+	GetDlgItem(IDC_CHECK_DISPLAY_PLOT_STYLES)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
+	m_DisplayPlotStyles = static_cast<int>(m_PlotSettings.showPlotStyles());
 	UpdateData(FALSE);
 }
 
@@ -795,9 +795,9 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 		}
 		if (!bSucc) { return; }
 		OdPsPlotStyleTablePtr PlotStyleTable;
-		if (StreamBuffer.get()) {
+		if (StreamBuffer.get() != nullptr) {
 			OdPsPlotStyleServicesPtr PlotStyleServices = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);
-			if (PlotStyleServices.get()) {
+			if (PlotStyleServices.get() != nullptr) {
 				PlotStyleTable = PlotStyleServices->loadPlotStyleTable(StreamBuffer);
 			}
 		}
@@ -814,7 +814,7 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 void EoDlgPageSetup::OnSelChangePlotStyleFiles() {
 	const auto CurrentSelection {m_PlotStyleFiles.GetCurSel()};
 	GetDlgItem(IDC_PAGESETUP_BUTTON_PLOTSTYLEFILES)->EnableWindow(CurrentSelection);
-	if (CurrentSelection) {
+	if (CurrentSelection != 0) {
 		CString StyleFileName;
 		m_PlotStyleFiles.GetLBText(CurrentSelection, StyleFileName);
 		m_PlotSettingsValidator->setCurrentStyleSheet(&m_PlotSettings, static_cast<const wchar_t*>(StyleFileName));

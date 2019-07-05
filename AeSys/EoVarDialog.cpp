@@ -43,21 +43,21 @@ void EoVarDialog::MakeGripper() {
 void EoVarDialog::OnSize(const unsigned type, const int cx, const int cy) {
 	CDialog::OnSize(type, cx, cy);
 	m_resizeHelper.OnSize();
-	if (m_bInitialized) { SetupGripper(); }
+	if (m_bInitialized != 0) { SetupGripper(); }
 }
 
 void EoVarDialog::SetupGripper() {
 	WINDOWPLACEMENT WindowPlacement;
 	GetWindowPlacement(&WindowPlacement);
-	const BOOL bMaximized = WindowPlacement.showCmd == SW_MAXIMIZE;
-	if (bMaximized) {
+	const BOOL Maximized {static_cast<const BOOL>(WindowPlacement.showCmd == SW_MAXIMIZE)};
+	if (Maximized) {
 		m_Grip.ShowWindow(SW_HIDE);
 	} else {
 		m_Grip.ShowWindow(SW_SHOW);
 	}
-	if (!bMaximized) {
+	if (Maximized == 0) {
 		auto SizeBoxWindow {GetDlgItem(AFX_IDW_SIZE_BOX)};
-		if (SizeBoxWindow) {
+		if (SizeBoxWindow != nullptr) {
 			CRect WindowRect;
 			SizeBoxWindow->GetWindowRect(&WindowRect);
 			CRect ClientRect;

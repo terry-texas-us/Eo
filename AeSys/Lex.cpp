@@ -559,7 +559,7 @@ wchar_t* lex::ScanForChar(const wchar_t c, wchar_t* * ppStr) noexcept {
 }
 
 wchar_t* lex::SkipWhiteSpace(wchar_t* pszString) noexcept {
-	while (pszString && *pszString && isspace(*pszString)) {
+	while (pszString != nullptr && *pszString != 0U && isspace(*pszString) != 0) {
 		pszString++;
 	}
 	return pszString;
@@ -577,7 +577,7 @@ wchar_t* lex::ScanForString(wchar_t* * ppStr, wchar_t* pszTerm, wchar_t* * ppArg
 				pIn++;
 				break;
 			}
-		} else if (isalnum(*pIn)) {
+		} else if (isalnum(*pIn) != 0) {
 		} else { // allow some peg specials
 			if (!(*pIn == '_' || *pIn == '$' || *pIn == '.' || *pIn == '-' || *pIn == ':' || *pIn == '\\')) { break; }
 		}
@@ -588,10 +588,10 @@ wchar_t* lex::ScanForString(wchar_t* * ppStr, wchar_t* pszTerm, wchar_t* * ppArg
 			pIn++;
 		}
 		*pOut++ = *pIn++; // the char to the arg buffer
-	} while (*pIn);
+	} while (*pIn != 0u);
 	*pOut++ = '\0'; // Set up the terminating char and update the scan pointer
 	*pszTerm = *pIn;
-	if (*pIn) {
+	if (*pIn != 0u) {
 		*ppStr = pIn + 1;
 	} else {
 		*ppStr = pIn;

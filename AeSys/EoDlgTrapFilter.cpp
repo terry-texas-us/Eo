@@ -50,13 +50,13 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 }
 
 void EoDlgTrapFilter::OnOK() {
-	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN)) {
-		const auto ColorIndex {short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 0, FALSE))};
+	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN) != 0u) {
+		const auto ColorIndex {short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, nullptr, FALSE))};
 		FilterByColor(ColorIndex);
 	}
-	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE)) {
+	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE) != 0u) {
 		wchar_t Name[32];
-		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t))) {
+		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t)) != 0) {
 			OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 			if (!Linetypes->getAt(Name).isNull()) {
 				const auto LinetypeIndex {gsl::narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
@@ -64,7 +64,7 @@ void EoDlgTrapFilter::OnOK() {
 			}
 		}
 	}
-	if (IsDlgButtonChecked(IDC_TRAP_FILTER_ELEMENT)) {
+	if (IsDlgButtonChecked(IDC_TRAP_FILTER_ELEMENT) != 0u) {
 		switch (m_FilterPrimitiveTypeListBoxControl.GetCurSel()) {
 			case 0:
 				FilterByPrimitiveType(EoDb::kEllipsePrimitive);
@@ -136,25 +136,25 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			switch (primitiveType) {
 				case EoDb::kLinePrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0;
 					break;
 				case EoDb::kEllipsePrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse)) != 0;
 					break;
 				case EoDb::kGroupReferencePrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference)) != 0;
 					break;
 				case EoDb::kTextPrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbText));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbText)) != 0;
 					break;
 				case EoDb::kHatchPrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbHatch)) != 0;
 					break;
 				case EoDb::kPolylinePrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPolyline)) != 0;
 					break;
 				case EoDb::kPointPrimitive:
-					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint));
+					Filter = Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint)) != 0;
 					break;
 				case EoDb::kInsertPrimitive: case EoDb::kSplinePrimitive: case EoDb::kCSplinePrimitive: case EoDb::kTagPrimitive: case EoDb::kDimensionPrimitive: default:
 					break;

@@ -30,7 +30,7 @@ long EoDlgUserIoConsole::numRefs() const noexcept {
 
 void EoDlgUserIoConsole::release() {
 	ODA_ASSERT(m_RefCounter > 0);
-	if (!--m_RefCounter) { delete this; }
+	if (--m_RefCounter == 0u) { delete this; }
 }
 
 void EoDlgUserIoConsole::DoDataExchange(CDataExchange* dataExchange) {
@@ -111,7 +111,7 @@ void EoDlgUserIoConsole::putString(const OdString& string) {
 
 BOOL EoDlgUserIoConsole::OnInitDialog() {
 	CDialog::OnInitDialog();
-	if (!m_Font.m_hObject) {
+	if (m_Font.m_hObject == nullptr) {
 		m_Font.CreateFont(10, 0, 0, 0, FW_NORMAL, FALSE, FALSE, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH, L"Courier");
 	}
 	return TRUE;

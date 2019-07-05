@@ -189,7 +189,7 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 	const auto NumberOfLayers {static_cast<int>(ReadUInt16())};
 	for (auto LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
-		if (!Layer) { return; }
+		if (Layer == nullptr) { return; }
 		auto LayerName {Layer->Name()};
 		const auto LayerObjectId {Layers->getAt(LayerName)};
 		m_Database->setCLAYER(LayerObjectId);

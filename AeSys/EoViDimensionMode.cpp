@@ -22,9 +22,9 @@ OdGePoint3d ProjPtToLn(const OdGePoint3d& point) {
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0) {
 				LineSeg = dynamic_cast<EoDbLine*>(Primitive)->LineSeg();
-			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
+			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension)) != 0) {
 				LineSeg = dynamic_cast<EoDbDimension*>(Primitive)->Line();
 			} else {
 				continue;
@@ -59,10 +59,10 @@ void AeSysView::OnDimensionModeArrow() {
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0) {
 				const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 				TestLine = LinePrimitive->LineSeg();
-			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
+			} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension)) != 0) {
 				auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
 				TestLine = DimensionPrimitive->Line();
 			} else {
@@ -224,7 +224,7 @@ void AeSysView::OnDimensionModeRadius() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const auto ptEnd {DetPt()};
-		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
+		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse)) != 0) {
 			const auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 			const auto ptBeg {pArc->Center()};
 			auto Group {new EoDbGroup};
@@ -255,7 +255,7 @@ void AeSysView::OnDimensionModeDiameter() {
 	const auto CurrentPnt {GetCursorPosition()};
 	if (SelectGroupAndPrimitive(CurrentPnt) != nullptr) {
 		const auto ptEnd {DetPt()};
-		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse))) {
+		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse)) != 0) {
 			const auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
 			const auto ptBeg {ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length())};
 			auto Group {new EoDbGroup};
@@ -319,7 +319,7 @@ void AeSysView::OnDimensionModeAngle() {
 			const auto vCenterToCur {CurrentPnt - CenterPoint};
 			auto PlaneNormal {vCenterToProjPt.crossProduct(vCenterToCur)};
 			PlaneNormal.normalize();
-			if (pFndSwpAngGivPlnAnd3Lns(PlaneNormal, rProjPt[0], CurrentPnt, rProjPt[1], CenterPoint, Angle)) {
+			if (pFndSwpAngGivPlnAnd3Lns(PlaneNormal, rProjPt[0], CurrentPnt, rProjPt[1], CenterPoint, Angle) != 0) {
 				const auto Radius {(CurrentPnt - CenterPoint).length()};
 				ln.set(ProjectToward(CenterPoint, rProjPt[0], Radius), ln.startPoint());
 				ln.endPoint().rotateBy(Angle, PlaneNormal, CenterPoint);
@@ -384,7 +384,7 @@ void AeSysView::OnDimensionModeConvert() {
 			const auto CurrentPrimitivePosition {PrimitivePosition};
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->SelectUsingPoint(ptView, this, ptProj)) {
-				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0) {
 					const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 					auto DimensionPrimitive {new EoDbDimension()};
 					DimensionPrimitive->SetColorIndex2(LinePrimitive->ColorIndex());
@@ -402,7 +402,7 @@ void AeSysView::OnDimensionModeConvert() {
 					PreviousDimensionPosition = ptProj;
 					return;
 				}
-				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension))) {
+				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension)) != 0) {
 					auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
 					auto ReferenceSystem {DimensionPrimitive->ReferenceSystem()};
 					OdGeVector3d PlaneNormal;

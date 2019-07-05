@@ -44,7 +44,7 @@ static OdString FormatValue(const OdResBuf* resourceBuffer) {
 			FormattedValue = resourceBuffer->getString();
 			break;
 		case OdDxfCode::Bool:
-			FormattedValue.format(L"%d", resourceBuffer->getBool());
+			FormattedValue.format(L"%d", static_cast<int>(resourceBuffer->getBool()));
 			break;
 		case OdDxfCode::Integer8:
 			FormattedValue.format(L"%d", resourceBuffer->getInt8());
@@ -157,7 +157,7 @@ void EoDlgEditProperties::OnClickProplist(NMHDR* /*notifyStructure*/, LRESULT* r
 
 void EoDlgEditProperties::OnSetfocusValue() {
 	m_CurrentItem = m_propList.GetSelectionMark();
-	m_doset.EnableWindow(m_CurrentItem != -1);
+	m_doset.EnableWindow(static_cast<BOOL>(m_CurrentItem != -1));
 	if (m_CurrentItem != -1) {
 		m_sValue = m_propList.GetItemText(m_CurrentItem, 1);
 		UpdateData(FALSE);

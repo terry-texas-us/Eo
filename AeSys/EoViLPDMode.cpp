@@ -12,7 +12,7 @@ std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoi
 		auto PrimitivePosition = Group->GetHeadPosition();
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint)) && Primitive->ColorIndex() == pointColor) {
+			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint)) != 0 && Primitive->ColorIndex() == pointColor) {
 				const auto Point {dynamic_cast<EoDbPoint*>(Primitive)};
 				if (point.distanceTo(Point->Position()) <= tolerance) { return {Group, Point}; }
 			}
@@ -748,7 +748,7 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, const 
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive == testLinePrimitive || !Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) { continue; }
+			if (Primitive == testLinePrimitive || Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) == 0) { continue; }
 			const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 			auto LineSeg {LinePrimitive->LineSeg()};
 			if (LineSeg.startPoint() == TestLine.startPoint() || LineSeg.startPoint() == TestLine.endPoint()) { // Exchange points

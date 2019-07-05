@@ -9,7 +9,7 @@ void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
 	m_odImage.bmp.clear();
 	m_odImage.wmf.clear();
 	m_odImage.png.clear();
-	if (!FileName.GetLength()) { return; }
+	if (FileName.GetLength() == 0) { return; }
 	const auto Extension {FileName.Right(4)};
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
 		auto FileStreamBuffer(theApp.createFile(static_cast<const wchar_t*>(FileName)));
@@ -104,7 +104,7 @@ void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y
 		// Create the enhanced metafile
 		const auto MetaFileHandle {SetWinMetaFileBits(Size, reinterpret_cast<const unsigned char*>(MetaHeader), nullptr, nullptr)};
 		CSize InitialSize {0, 0};
-		if (AldusMfHeader) {
+		if (AldusMfHeader != nullptr) {
 			InitialSize.cx = 254 * (AldusMfHeader->bbox.right - AldusMfHeader->bbox.left) / AldusMfHeader->inch;
 			InitialSize.cy = 254 * (AldusMfHeader->bbox.bottom - AldusMfHeader->bbox.top) / AldusMfHeader->inch;
 		}

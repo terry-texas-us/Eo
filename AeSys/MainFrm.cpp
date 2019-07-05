@@ -61,7 +61,7 @@ CMainFrame::CMainFrame() {
 int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	if (CMDIFrameWndEx::OnCreate(createStructure) == -1) { return -1; }
 	UpdateMdiTabs(FALSE);
-	if (!m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE)) {
+	if (m_MenuBar.Create(this, AFX_DEFAULT_TOOLBAR_STYLE) == 0) {
 		TRACE0("Failed to create menubar\n");
 		return -1;
 	}
@@ -74,14 +74,14 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	// Prevent the menu bar from taking the focus on activation
 	CMFCPopupMenu::SetForceMenuFocus(FALSE);
 	const unsigned long Style {WS_CHILD | WS_VISIBLE | CBRS_TOP | CBRS_GRIPPER | CBRS_TOOLTIPS | CBRS_FLYBY | CBRS_SIZE_DYNAMIC};
-	if (!m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) || !m_StandardToolBar.LoadToolBar(static_cast<unsigned>(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME))) {
+	if (m_StandardToolBar.CreateEx(this, TBSTYLE_FLAT, Style) == 0 || m_StandardToolBar.LoadToolBar(static_cast<unsigned>(theApp.HighColorMode() ? IDR_MAINFRAME_256 : IDR_MAINFRAME)) == 0) {
 		TRACE0("Failed to create toolbar\n");
 		return -1;
 	}
 	m_StandardToolBar.SetWindowTextW(L"Standard");
 	m_StandardToolBar.EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, L"Customize...");
 	InitUserToolbars(nullptr, gc_FirstUserToolBarId, gc_LastUserToolBarId);
-	if (!m_StatusBar.Create(this)) {
+	if (m_StatusBar.Create(this) == 0) {
 		TRACE0("Failed to create status bar\n");
 		return -1;
 	}
@@ -96,7 +96,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	DockPane(&m_StandardToolBar);
 	CDockingManager::SetDockingMode(DT_SMART);
 	EnableAutoHidePanes(CBRS_ALIGN_ANY);
-	if (!CreateDockingWindows()) {
+	if (CreateDockingWindows() == 0) {
 		TRACE0("Failed to create docking windows\n");
 		return -1;
 	}
@@ -113,7 +113,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 	EnableFullScreenMainMenu(TRUE);
 	CMFCToolBar::EnableQuickCustomization();
 	if (CMFCToolBar::GetUserImages() == nullptr) { // load user-defined toolbar images
-		if (m_UserImages.Load(L"res\\UserImages.bmp")) {
+		if (m_UserImages.Load(L"res\\UserImages.bmp") != 0) {
 			m_UserImages.SetImageSize(CSize(16, 16), FALSE);
 			CMFCToolBar::SetUserImages(&m_UserImages);
 		}
@@ -124,9 +124,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT createStructure) {
 }
 
 BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& createStructure) {
-	if (!CMDIFrameWndEx::PreCreateWindow(createStructure)) {
-		return FALSE;
-	}
+	if (CMDIFrameWndEx::PreCreateWindow(createStructure) == 0) { return FALSE; }
 	return TRUE;
 }
 
@@ -134,12 +132,12 @@ BOOL CMainFrame::CreateDockingWindows() {
 	const CSize DefaultSize(200, 200);
 	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_FLOAT_MULTI};
 	auto Caption {AeSys::LoadStringResource(IDS_OUTPUT)};
-	if (!m_OutputPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_OUTPUTWND, SharedStyles | CBRS_BOTTOM)) {
+	if (m_OutputPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_OUTPUTWND, SharedStyles | CBRS_BOTTOM) == 0) {
 		TRACE0("Failed to create Output pane\n");
 		return FALSE;
 	}
 	Caption = AeSys::LoadStringResource(IDS_PROPERTIES);
-	if (!m_PropertiesPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_PROPERTIESWND, SharedStyles | CBRS_RIGHT)) {
+	if (m_PropertiesPane.Create(Caption, this, DefaultSize, TRUE, ID_VIEW_PROPERTIESWND, SharedStyles | CBRS_RIGHT) == 0) {
 		TRACE0("Failed to create Properties pane\n");
 		return FALSE;
 	}
@@ -188,7 +186,7 @@ void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, c
 }
 
 void CMainFrame::DrawPlotStyle(CDC& deviceContext, const RECT& itemRectangle, const OdString& textOut, const OdDbDatabasePtr& database) {
-	if (database->getPSTYLEMODE() == 1) {
+	if (static_cast<int>(database->getPSTYLEMODE()) == 1) {
 		const auto OldTextColor {deviceContext.SetTextColor(GetSysColor(COLOR_GRAYTEXT))};
 		deviceContext.ExtTextOutW(itemRectangle.left + 6, itemRectangle.top + 1, ETO_CLIPPED, &itemRectangle, textOut, static_cast<unsigned>(textOut.getLength()), nullptr);
 		deviceContext.SetTextColor(OldTextColor);
@@ -288,15 +286,15 @@ void CMainFrame::OnApplicationLook(const unsigned look) {
 }
 
 void CMainFrame::OnUpdateApplicationLook(CCmdUI* commandUserInterface) {
-	commandUserInterface->SetRadio(theApp.applicationLook == commandUserInterface->m_nID);
+	commandUserInterface->SetRadio(static_cast<BOOL>(theApp.applicationLook == commandUserInterface->m_nID));
 }
 
 BOOL CMainFrame::LoadFrame(const unsigned resourceId, const unsigned long defaultStyle, CWnd* parentWindow, CCreateContext* createContext) {
-	if (!CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext)) { return FALSE; }
+	if (CMDIFrameWndEx::LoadFrame(resourceId, defaultStyle, parentWindow, createContext) == 0) { return FALSE; }
 
 	// Add some tools for example....
 	auto UserToolsManager {theApp.GetUserToolsManager()};
-	if (UserToolsManager != nullptr && UserToolsManager->GetUserTools().IsEmpty()) {
+	if (UserToolsManager != nullptr && UserToolsManager->GetUserTools().IsEmpty() != 0) {
 		auto Tool1 {UserToolsManager->CreateNewTool()};
 		Tool1->m_strLabel = L"&Notepad";
 		Tool1->SetCommand(L"notepad.exe");
@@ -324,7 +322,7 @@ LRESULT CMainFrame::OnToolbarContextMenu(WPARAM, const LPARAM point) {
 	VERIFY(PopupToolbarMenu.LoadMenuW(IDR_POPUP_TOOLBAR));
 	auto SubMenu {PopupToolbarMenu.GetSubMenu(0)};
 	ASSERT(SubMenu != nullptr);
-	if (SubMenu) {
+	if (SubMenu != nullptr) {
 		const CPoint Point(AFX_GET_X_LPARAM(point), AFX_GET_Y_LPARAM(point));
 		auto PopupMenu {new CMFCPopupMenu};
 		PopupMenu->Create(this, Point.x, Point.y, SubMenu->Detach());
@@ -405,7 +403,7 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 	CMDIFrameWndEx::OnShowPopupMenu(popupMenu);
 	if (popupMenu != nullptr) {
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VECTORIZERTYPE_CLEARMENU) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+			if (CMFCToolBar::IsCustomizeMode() != 0) { return FALSE; }
 			CRegKey RegistryKey;
 			RegistryKey.Create(HKEY_CURRENT_USER, L"Software\\Engineers Office\\AeSys\\options\\vectorizers");
 			unsigned long VectorizerIndex {0};
@@ -424,22 +422,22 @@ BOOL CMainFrame::OnShowPopupMenu(CMFCPopupMenu* popupMenu) {
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_TOOLS_REGISTEREDCOMMANDS) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+			if (CMFCToolBar::IsCustomizeMode() != 0) { return FALSE; }
 			ShowRegisteredCommandsPopupMenu(popupMenu);
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_TOOLBARS) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+			if (CMFCToolBar::IsCustomizeMode() != 0) { return FALSE; }
 			popupMenu->RemoveAllItems();
 			CMenu PopupToolbarMenu;
 			VERIFY(PopupToolbarMenu.LoadMenuW(IDR_POPUP_TOOLBAR));
 			const auto PopupSubMenu {PopupToolbarMenu.GetSubMenu(0)};
 			ASSERT(PopupSubMenu != nullptr);
-			if (PopupSubMenu) {
+			if (PopupSubMenu != nullptr) {
 				popupMenu->GetMenuBar()->ImportFromMenu(*PopupSubMenu, TRUE);
 			}
 		}
 		if (popupMenu->GetMenuBar()->CommandToIndex(ID_VIEW_ANNOTATIONSCALES) >= 0) {
-			if (CMFCToolBar::IsCustomizeMode()) { return FALSE; }
+			if (CMFCToolBar::IsCustomizeMode() != 0) { return FALSE; }
 			ShowAnnotationScalesPopupMenu(popupMenu);
 		}
 	}
@@ -450,7 +448,7 @@ void CMainFrame::UpdateMdiTabs(const BOOL resetMdiChild) {
 	switch (theApp.applicationOptions.tabsStyle) {
 		case EoApOptions::kNone: {
 			int MdiTabsType;
-			if (AreMDITabs(&MdiTabsType)) {
+			if (AreMDITabs(&MdiTabsType) != 0) {
 				if (MdiTabsType == 1) {
 					EnableMDITabs(FALSE);
 				} else if (MdiTabsType == 2) {
@@ -485,14 +483,14 @@ void CMainFrame::UpdateMdiTabs(const BOOL resetMdiChild) {
 		}
 	}
 	CList<unsigned, unsigned> lstCommands;
-	if (AreMDITabs()) {
+	if (AreMDITabs() != 0) {
 		lstCommands.AddTail(ID_WINDOW_ARRANGE);
 		lstCommands.AddTail(ID_WINDOW_CASCADE);
 		lstCommands.AddTail(ID_WINDOW_TILE_HORZ);
 		lstCommands.AddTail(ID_WINDOW_TILE_VERT);
 	}
 	CMFCToolBar::SetNonPermittedCommands(lstCommands);
-	if (resetMdiChild) {
+	if (resetMdiChild != 0) {
 		const auto Maximize {theApp.applicationOptions.tabsStyle != EoApOptions::kNone};
 		auto hwndT {::GetWindow(m_hWndMDIClient, GW_CHILD)};
 		while (hwndT != nullptr) {
@@ -516,31 +514,31 @@ void CMainFrame::UpdateMdiTabs(const BOOL resetMdiChild) {
 		}
 		if (Maximize) { m_MenuBar.SetMaximizeMode(FALSE); }
 	}
-	if (m_PropertiesPane.IsAutoHideMode()) {
+	if (m_PropertiesPane.IsAutoHideMode() != 0) {
 		m_PropertiesPane.BringWindowToTop();
 		auto Divider {m_PropertiesPane.GetDefaultPaneDivider()};
 		if (Divider != nullptr) { Divider->BringWindowToTop(); }
 	}
-	m_bDisableSetRedraw = theApp.applicationOptions.disableSetRedraw;
+	m_bDisableSetRedraw = static_cast<BOOL>(theApp.applicationOptions.disableSetRedraw);
 	RecalcLayout();
 	RedrawWindow(nullptr, nullptr, RDW_ALLCHILDREN | RDW_INVALIDATE | RDW_UPDATENOW | RDW_ERASE);
 }
 
 // CMainFrame message handlers
 BOOL CMainFrame::OnShowMDITabContextMenu(const CPoint point, const unsigned long allowedItems, const BOOL drop) {
-	if (drop || !theApp.applicationOptions.tabsContextMenu) {
+	if (drop != 0 || !theApp.applicationOptions.tabsContextMenu) {
 		return FALSE;
 	}
 	CMenu menu;
 	VERIFY(menu.LoadMenuW(IDR_POPUP_MDITABS));
 	auto PopupSubMenu {menu.GetSubMenu(0)};
 	ASSERT(PopupSubMenu != nullptr);
-	if (PopupSubMenu) {
+	if (PopupSubMenu != nullptr) {
 		if ((allowedItems & AFX_MDI_CAN_BE_DOCKED) == 0) {
 			PopupSubMenu->DeleteMenu(ID_MDI_TABBED, MF_BYCOMMAND);
 		}
 		auto PopupMenu {new CMFCPopupMenu};
-		if (PopupMenu) {
+		if (PopupMenu != nullptr) {
 			PopupMenu->SetAutoDestroy(FALSE);
 			PopupMenu->Create(this, point.x, point.y, PopupSubMenu->GetSafeHmenu());
 		}
@@ -551,9 +549,9 @@ BOOL CMainFrame::OnShowMDITabContextMenu(const CPoint point, const unsigned long
 LRESULT CMainFrame::OnGetTabToolTip(WPARAM /*wp*/, const LPARAM lp) {
 	auto TabToolTipInfo {reinterpret_cast<CMFCTabToolTipInfo*>(lp)};
 	ASSERT(TabToolTipInfo != nullptr);
-	if (TabToolTipInfo) {
+	if (TabToolTipInfo != nullptr) {
 		ASSERT_VALID(TabToolTipInfo->m_pTabWnd);
-		if (!TabToolTipInfo->m_pTabWnd->IsMDITab()) { return 0; }
+		if (TabToolTipInfo->m_pTabWnd->IsMDITab() == 0) { return 0; }
 		TabToolTipInfo->m_strText.Format(L"Tab #%d Custom Tooltip", TabToolTipInfo->m_nTabIndex + 1);
 	}
 	return 0;

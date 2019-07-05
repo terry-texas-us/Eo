@@ -114,7 +114,7 @@ void AeSysView::OnCutModeField() {
 					Primitive->CutAt2Points(&Intersections[i], GroupsOut, GroupsIn, Database());
 				}
 			}
-			if (Group->IsEmpty()) { // seg was emptied remove from lists
+			if (Group->IsEmpty() != 0) { // seg was emptied remove from lists
 				Document->AnyLayerRemove(Group);
 				Document->RemoveGroupFromAllViews(Group);
 				Group->DeletePrimitivesAndRemoveAll();
@@ -182,7 +182,7 @@ void AeSysView::OnCutModeClip() {
 				Group->RemoveAt(SecondPrimitivePosition);
 				Primitive->CutAt2Points(ptCut, GroupsOut, GroupsIn, Database());
 			}
-			if (Group->IsEmpty()) { // seg was emptied remove from lists
+			if (Group->IsEmpty() != 0) { // seg was emptied remove from lists
 				Document->AnyLayerRemove(Group);
 				Document->RemoveGroupFromAllViews(Group);
 				Group->DeletePrimitivesAndRemoveAll();

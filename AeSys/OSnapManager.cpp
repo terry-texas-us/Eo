@@ -1,11 +1,10 @@
 // From Examples\Editor\OSnapManager.cpp (last compare 20.5)
+#include <limits>
 #include <OdaCommon.h>
 #include "OSnapManager.h"
 #include <Gi/GiPathNode.h>
 #include <OdRound.h>
 #include <SaveState.h>
-#define STL_USING_LIMITS
-#include <OdaSTL.h>
 #include <DbBlockTableRecord.h>
 #include <DbBlockReference.h>
 #include <DbLayout.h>

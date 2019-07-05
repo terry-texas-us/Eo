@@ -166,7 +166,7 @@ public:
 		auto Iterator {PolylineEntity->vertexIterator()};
 		for (auto i = 0; !Iterator->done(); i++, Iterator->step()) {
 			OdDb2dVertexPtr Vertex = Iterator->entity();
-			if (Vertex.get()) {
+			if (Vertex.get() != nullptr) {
 				auto Point {Vertex->position()};
 				Point.z = PolylineEntity->elevation();
 				PolylinePrimitive->AppendVertex(Vertex->position().convert2d(), Vertex->bulge(), Vertex->startWidth(), Vertex->endWidth());
@@ -536,7 +536,7 @@ public:
 		TRACE1("%s was not converted ...\n", static_cast<const wchar_t*>(ViewportEntity->desc()->name()));
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
-		if (layerIds.length()) {
+		if (layerIds.length() != 0u) {
 			for (auto i = 0; i < static_cast<int>(layerIds.length()); i++) {
 			}
 		} else {
@@ -644,7 +644,7 @@ ConvertEntityToPrimitiveProtocolExtension::ConvertEntityToPrimitiveProtocolExten
 }
 
 ConvertEntityToPrimitiveProtocolExtension::~ConvertEntityToPrimitiveProtocolExtension() {
-	if (m_Converters) {
+	if (m_Converters != nullptr) {
 		Uninitialize();
 	}
 }

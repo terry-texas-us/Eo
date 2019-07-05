@@ -74,7 +74,7 @@ OdString EoDbLinetypeTable::LegacyLinetypeName(const int index) {
 void EoDbLinetypeTable::LoadLinetypesFromTxtFile(OdDbDatabasePtr database, const CString& fileName) {
 	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
 	CStdioFile StreamFile;
-	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText)) {
+	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText) != 0) {
 		unsigned short MaxNumberOfDashes {12};
 		auto DashLengths {new double[MaxNumberOfDashes]};
 		CString Line;

@@ -27,7 +27,7 @@ BOOL EoDlgPlotStyleManager::OnInitDialog() {
 }
 
 bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) {
-	if (!plotStyleTable) { return false; }
+	if (plotStyleTable == nullptr) { return false; }
 	EoDlgPlotStyleManager::plotStyleTable = plotStyleTable;
 	plotStyleTableForPropertyPage = plotStyleTable->clone();
 	const auto PlotStyleTable {plotStyleTableForPropertyPage.get()};

@@ -1,3 +1,4 @@
+// Extracted class from Examples\Editor\ExGripManager.h (last compare 20.5)
 #pragma once
 #include "ExGripManager.h"
 class OdBaseGripManager;

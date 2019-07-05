@@ -94,7 +94,7 @@ void EoDlgFileManage::DrawItem(CDC& deviceContext, const int itemId, const int l
 		case kVpFreeze:
 			if (labelIndex != m_Description) {
 				auto Viewport {OdDbViewport::cast(LayerTableRecord->database()->activeViewportId().safeOpenObject())};
-				if (Viewport.get()) {
+				if (Viewport.get() != nullptr) {
 					//				m_StateImages.Draw(&deviceContext, Viewport->isLayerFrozenInViewport(ItemData) ? 4 : 5, ((CRect&) itemRectangle).TopLeft(), ILD_TRANSPARENT);
 				}
 			} else {
@@ -458,7 +458,7 @@ void EoDlgFileManage::OnLvnKeydownLayersListControl(NMHDR* const notifyStructure
 		auto LayerTableRecord {Layer->TableRecord()};
 		const auto Name {Layer->Name()};
 		const auto Result {LayerTableRecord->erase(true)};
-		if (Result) {
+		if (Result != 0) {
 			auto ErrorDescription {m_Database->appServices()->getErrorDescription(Result)};
 			ErrorDescription += L": <%s> layer can not be deleted";
 			theApp.AddStringToMessageList(ErrorDescription, Name);

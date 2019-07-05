@@ -15,7 +15,7 @@ static int CALLBACK EoLineweightCompareFunction(const LPARAM item1, const LPARAM
 	const CListCtrl* ListCtrl = reinterpret_cast<EoListCtrlSortData*>(sortData)->listControl;
 	const auto Value1 {_wtof(ListCtrl->GetItemText(NewIndex1, 0))};
 	const auto Value2 {_wtof(ListCtrl->GetItemText(NewIndex2, 0))};
-	return Value1 > Value2;
+	return static_cast<int>(Value1 > Value2);
 }
 
 IMPLEMENT_DYNAMIC(EoDlgPlotStyleEditLineweight, CDialog)
@@ -51,7 +51,7 @@ void EoDlgPlotStyleEditLineweight::DoDataExchange(CDataExchange* dataExchange) {
 void EoDlgPlotStyleEditLineweight::OnOK() {
 	// <tas="Is extra validation needed here?"</tas>
 	OnButtonSortLineweight();
-	plotStyleTable->setDisplayCustomLineweightUnits(inchesButton.GetCheck() ? true : false);
+	plotStyleTable->setDisplayCustomLineweightUnits(inchesButton.GetCheck() != 0 ? true : false);
 	const auto NumberOfPlotStyles {plotStyleTable->plotStyleSize()};
 	OdPsPlotStyleData PlotStyleData;
 	const auto LineweightQnt {plotStyleTable->lineweightSize()};
@@ -101,7 +101,7 @@ void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* notifyStr
 		Text.Format(L"%.4f", _wtof(ListViewItem->pszText));
 		lineweightsListCtrl.SetItemText(ListViewItem->iItem, ListViewItem->iSubItem, Text);
 		const auto LineweightDataItem = reinterpret_cast<EoLineweightData*>(lineweightsListCtrl.GetItemData(ListViewItem->iItem));
-		if (inchesButton.GetCheck()) {
+		if (inchesButton.GetCheck() != 0) {
 			LineweightDataItem->value = INCHTOMM(_wtof(ListViewItem->pszText));
 		} else {
 			LineweightDataItem->value = _wtof(ListViewItem->pszText);
@@ -122,7 +122,7 @@ void EoDlgPlotStyleEditLineweight::OnButtonEditLineweight() {
 }
 
 void EoDlgPlotStyleEditLineweight::SetInitialSelection(const int selection) noexcept {
-	initialSelection = static_cast<unsigned>(!selection ? selection : selection - 1);
+	initialSelection = static_cast<unsigned>(selection == 0 ? selection : selection - 1);
 }
 
 void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
@@ -218,7 +218,7 @@ int EoDlgPlotStyleEditLineweight::InsertLineweightAt(const int index, const OdSt
 
 BOOL EoDlgPlotStyleEditLineweight::OnInitDialog() {
 	CDialog::OnInitDialog();
-	if (!plotStyleTable) {
+	if (plotStyleTable == nullptr) {
 		return FALSE;
 	}
 	if (plotStyleTable->isDisplayCustomLineweightUnits()) {

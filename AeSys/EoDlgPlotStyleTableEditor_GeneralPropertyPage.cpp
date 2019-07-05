@@ -70,9 +70,7 @@ void DrawTransparentBitmap(const HDC hdc, const HBITMAP bitmap, const short xSta
 }
 
 bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
-	if (!pPlotStyleTable) {
-		return false;
-	}
+	if (pPlotStyleTable == nullptr) { return false; }
 	m_pPlotStyleTable = pPlotStyleTable;
 	return true;
 }
@@ -105,12 +103,12 @@ void WinPathToDos(wchar_t* str) {
 
 BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
-	if (!m_pPlotStyleTable) { return FALSE; }
+	if (m_pPlotStyleTable == nullptr) { return FALSE; }
 	const auto description {m_pPlotStyleTable->description()};
 	m_editDescription.SetWindowTextW(description);
 	const auto check {m_pPlotStyleTable->isApplyScaleFactor()};
-	m_checkScaleFactor.SetCheck(check);
-	m_editScaleFactor.EnableWindow(check);
+	m_checkScaleFactor.SetCheck(static_cast<int>(check));
+	m_editScaleFactor.EnableWindow(static_cast<BOOL>(check));
 	OdString sScaleFactor;
 	sScaleFactor.format(L"%.1f", m_pPlotStyleTable->scaleFactor());
 	m_editScaleFactor.SetWindowTextW(sScaleFactor);

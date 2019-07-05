@@ -172,7 +172,7 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 		const auto Group {new EoDbGroup()};
 		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
 		EntityConverter->Convert(Entity, Group);
-		if (Group->IsEmpty()) {
+		if (Group->IsEmpty() != 0) {
 			delete Group;
 			EntitiesNotLoaded++;
 		} else {

@@ -18,12 +18,12 @@ int EoMfOutputDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	m_Font.CreateStockObject(DEFAULT_GUI_FONT);
 	CRect EmptyRect;
 	EmptyRect.SetRectEmpty();
-	if (!m_wndTabs.Create(CMFCTabCtrl::STYLE_FLAT, EmptyRect, this, 1, CMFCTabCtrl::LOCATION_BOTTOM)) {
+	if (m_wndTabs.Create(CMFCTabCtrl::STYLE_FLAT, EmptyRect, this, 1, CMFCTabCtrl::LOCATION_BOTTOM) == 0) {
 		TRACE0("Failed to create output tab window\n");
 		return - 1;
 	}
 	const unsigned long SharedStyles {WS_CHILD | WS_VISIBLE | WS_HSCROLL | WS_VSCROLL | LBS_NOINTEGRALHEIGHT};
-	if (!m_OutputMessagesList.Create(SharedStyles, EmptyRect, &m_wndTabs, 2) || !m_OutputReportsList.Create(SharedStyles, EmptyRect, &m_wndTabs, 4)) {
+	if (m_OutputMessagesList.Create(SharedStyles, EmptyRect, &m_wndTabs, 2) == 0 || m_OutputReportsList.Create(SharedStyles, EmptyRect, &m_wndTabs, 4) == 0) {
 		TRACE0("Failed to create output windows\n");
 		return - 1;
 	}
@@ -59,12 +59,12 @@ END_MESSAGE_MAP()
 
 // EoMfOutputListBox message handlers
 void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, const CPoint point) {
-	if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx))) {
+	if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx)) != 0) {
 		CMenu Menu;
 		Menu.LoadMenuW(IDR_OUTPUT_POPUP);
 		const auto SubMenu {Menu.GetSubMenu(0)};
 		auto PopupMenu {new CMFCPopupMenu};
-		if (!PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE)) { return; }
+		if (PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE) == 0) { return; }
 		static_cast<CMDIFrameWndEx*>(AfxGetMainWnd())->OnShowPopupMenu(PopupMenu);
 		UpdateDialogControls(this, FALSE);
 	}

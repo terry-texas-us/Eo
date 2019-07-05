@@ -53,7 +53,7 @@ OdString ucsString(const OdDbObject* viewport) {
 			break;
 		case OdDb::kNonOrthoView: default: {
 			OdDbUCSTableRecordPtr pUCS {OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject()};
-			if (pUCS.get()) {
+			if (pUCS.get() != nullptr) {
 				Result = pUCS->getName();
 			} else {
 				OdGePoint3d Origin;
@@ -141,7 +141,7 @@ BOOL EoDlgNamedViews::OnInitDialog() {
 
 void EoDlgNamedViews::OnSetcurrentButton() {
 	auto NamedView {m_views.selectedView()};
-	if (NamedView.get()) {
+	if (NamedView.get() != nullptr) {
 		OdDbDatabase* pDb = m_pDoc->m_DatabasePtr;
 		auto ActiveViewportObject {pDb->activeViewportId().safeOpenObject(OdDb::kForWrite)};
 		OdDbAbstractViewportDataPtr pVpPE(ActiveViewportObject);
@@ -204,14 +204,14 @@ void EoDlgNamedViews::OnNewButton() {
 		auto ActiveViewportObject {pDb->activeViewportId().safeOpenObject()};
 		OdDbAbstractViewportDataPtr pViewPE(pNamedView);
 		pViewPE->setView(pNamedView, ActiveViewportObject);
-		if (newDlg.m_bSaveUCS) {
+		if (newDlg.m_bSaveUCS != 0) {
 			if (newDlg.m_sUcsName == L"Unnamed") pViewPE->setUcs(pNamedView, ActiveViewportObject);
 			else if (newDlg.m_sUcsName == L"World") pNamedView->setUcsToWorld();
 			else pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb));
 		} else pNamedView->disassociateUcsFromView();
 		pViewPE->setProps(pNamedView, ActiveViewportObject);
 		pNamedView->setCategoryName(OdString(newDlg.m_sViewCategory));
-		if (newDlg.m_bStoreLS) updateLayerState(pNamedView);
+		if (newDlg.m_bStoreLS != 0) updateLayerState(pNamedView);
 		else deleteLayerState(pNamedView);
 		m_views.InsertItem(i, pNamedView);
 		break;

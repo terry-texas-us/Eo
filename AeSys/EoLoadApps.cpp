@@ -20,14 +20,14 @@ EoLoadApps::EoLoadApps(CWnd* parent)
 
 void EoLoadApps::LoadedApps::rxAppLoaded(OdRxModule* appModule) {
 	append(appModule->moduleName());
-	if (m_pListBox) {
+	if (m_pListBox != nullptr) {
 		m_pListBox->SetCurSel(m_pListBox->AddString(appModule->moduleName()));
 	}
 }
 
 void EoLoadApps::LoadedApps::rxAppUnloaded(const OdString& appName) {
 	remove(appName);
-	if (m_pListBox) {
+	if (m_pListBox != nullptr) {
 		const auto n {m_pListBox->FindString(0, OdString(appName))};
 		if (n != LB_ERR) {
 			m_pListBox->DeleteString(static_cast<unsigned>(n));
@@ -97,7 +97,7 @@ void EoLoadApps::OnUnloadApp() {
 }
 
 void EoLoadApps::OnAppsListEvent() {
-	m_UnloadButton.EnableWindow(m_AppsList.GetCurSel() != LB_ERR);
+	m_UnloadButton.EnableWindow(static_cast<BOOL>(m_AppsList.GetCurSel() != LB_ERR));
 }
 
 void EoLoadApps::OnDestroy() {

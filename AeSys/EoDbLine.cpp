@@ -175,7 +175,7 @@ OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
 
 bool EoDbLine::IsEqualTo(EoDbPrimitive* primitive) const {
 	auto Result {false};
-	if (primitive->IsKindOf(RUNTIME_CLASS(EoDbLine))) {
+	if (primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0) {
 		Result = m_LineSeg.isEqualTo(dynamic_cast<EoDbLine*>(primitive)->LineSeg());
 	}
 	return Result;

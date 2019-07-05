@@ -152,12 +152,12 @@ public:
 		static unsigned short formatR19;
 
 		static bool IsAcadDataAvailable(COleDataObject* dataObject, const bool attach = false) {
-			if (attach && !dataObject->AttachClipboard()) { return false; }
-			return dataObject->IsDataAvailable(formatR15) || dataObject->IsDataAvailable(formatR16) || dataObject->IsDataAvailable(formatR17) || dataObject->IsDataAvailable(formatR18) || dataObject->IsDataAvailable(formatR19);
+			if (attach && dataObject->AttachClipboard() == 0) { return false; }
+			return dataObject->IsDataAvailable(formatR15) != 0 || dataObject->IsDataAvailable(formatR16) != 0 || dataObject->IsDataAvailable(formatR17) != 0 || dataObject->IsDataAvailable(formatR18) != 0 || dataObject->IsDataAvailable(formatR19) != 0;
 		}
 
 		static OdSharedPtr<ClipboardData> Get(COleDataObject* dataObject, const bool attach = false) {
-			if (attach && !dataObject->AttachClipboard()) { return nullptr; }
+			if (attach && dataObject->AttachClipboard() == 0) { return nullptr; }
 			OdSharedPtr<ClipboardData> Data {new ClipboardData()};
 			if (Data->Read(dataObject)) { return Data; }
 			return nullptr;
@@ -167,12 +167,12 @@ public:
 
 		bool Read(COleDataObject* dataObject) {
 			OdSharedPtr<CFile> File;
-			if ((File = dataObject->GetFileData(formatR15)).get() || (File = dataObject->GetFileData(formatR16)).get()) {
+			if ((File = dataObject->GetFileData(formatR15)).get() != nullptr || (File = dataObject->GetFileData(formatR16)).get() != nullptr) {
 				_isR15format = true;
 				_data._r15.Read(File);
 				return true;
 			}
-			if ((File = dataObject->GetFileData(formatR17)).get() || (File = dataObject->GetFileData(formatR18)).get() || (File = dataObject->GetFileData(formatR19)).get()) {
+			if ((File = dataObject->GetFileData(formatR17)).get() != nullptr || (File = dataObject->GetFileData(formatR18)).get() != nullptr || (File = dataObject->GetFileData(formatR19)).get() != nullptr) {
 				_isR15format = false;
 				_data._r21.Read(File);
 				return true;
