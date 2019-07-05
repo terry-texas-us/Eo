@@ -129,7 +129,7 @@ bool EoDbText::IsInView(AeSysView* view) const {
 		pt[0] = EoGePoint4d(BoundingBox[n++], 1.0);
 		pt[1] = EoGePoint4d(BoundingBox[n++], 1.0);
 		view->ModelViewTransformPoints(2, pt);
-		if (EoGePoint4d::ClipLine(pt[0], pt[1])) return true;
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
 	}
 	return false;
 }
@@ -427,7 +427,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			TextString = L"EoDbJobFile.PrimText error: Text too long.";
 		} else {
 			while (*pChr != 0) {
-				if (isprint(*pChr) == 0) * pChr = '.';
+				if (isprint(*pChr) == 0) { * pChr = '.'; }
 				pChr++;
 			}
 			TextString = reinterpret_cast<LPCSTR>(&primitiveBuffer[44]);
@@ -601,24 +601,30 @@ OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, co
 		const auto dTxtExt {double(numberOfCharacters) + (double(numberOfCharacters) - 1.0) * (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 		if (fontDefinition.Path() == EoDb::kPathRight || fontDefinition.Path() == EoDb::kPathLeft) {
 			if (fontDefinition.Path() == EoDb::kPathRight) {
-				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) InsertionPoint.x = -dTxtExt * 0.5;
-				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) InsertionPoint.x = -dTxtExt;
+				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
+					InsertionPoint.x = -dTxtExt * 0.5;
+				} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) { InsertionPoint.x = -dTxtExt; }
 			} else {
-				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) InsertionPoint.x = dTxtExt;
-				else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) InsertionPoint.x = dTxtExt * 0.5;
+				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) {
+					InsertionPoint.x = dTxtExt;
+				} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) { InsertionPoint.x = dTxtExt * 0.5; }
 				InsertionPoint.x = InsertionPoint.x - 1.0;
 			}
-			if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) InsertionPoint.y = -.5;
-			else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) InsertionPoint.y = -1.0;
+			if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
+				InsertionPoint.y = -0.5;
+			} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) { InsertionPoint.y = -1.0; }
 		} else if (fontDefinition.Path() == EoDb::kPathDown || fontDefinition.Path() == EoDb::kPathUp) {
-			if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) InsertionPoint.x = -.5;
-			else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) InsertionPoint.x = -1.0;
+			if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
+				InsertionPoint.x = -0.5;
+			} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) { InsertionPoint.x = -1.0; }
 			if (fontDefinition.Path() == EoDb::kPathUp) {
-				if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) InsertionPoint.y = -dTxtExt * 0.5;
-				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) InsertionPoint.y = -dTxtExt;
+				if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
+					InsertionPoint.y = -dTxtExt * 0.5;
+				} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) { InsertionPoint.y = -dTxtExt; }
 			} else {
-				if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom) InsertionPoint.y = dTxtExt;
-				else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) InsertionPoint.y = dTxtExt * 0.5;
+				if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom) {
+					InsertionPoint.y = dTxtExt;
+				} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) { InsertionPoint.y = dTxtExt * 0.5; }
 				InsertionPoint.y = InsertionPoint.y - 1.0;
 			}
 		}
@@ -658,7 +664,7 @@ int TextLengthSansFormattingCharacters(const CString& text) {
 				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					auto TextSegmentDelimiter {text.Find('/', CurrentPosition)};
-					if (TextSegmentDelimiter == -1) TextSegmentDelimiter = text.Find('^', CurrentPosition);
+					if (TextSegmentDelimiter == -1) { TextSegmentDelimiter = text.Find('^', CurrentPosition); }
 					if (TextSegmentDelimiter != -1 && TextSegmentDelimiter < EndSemicolon) {
 						Length -= 4;
 						CurrentPosition = EndSemicolon + 1;
@@ -729,7 +735,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	while (n < startPosition + numberOfCharacters) {
 		polyline::BeginLineStrip();
 		int Character = text.GetAt(n);
-		if (Character < 32 || Character > 126) Character = '.';
+		if (Character < 32 || Character > 126) { Character = '.'; }
 		for (auto i = static_cast<int>(plStrokeFontDef[Character - 32]); i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
 			auto iY {static_cast<int>(plStrokeChrDef[i - 1] % 4096L)};
 			if ((iY & 2048) != 0) { iY = -(iY - 2048); }
@@ -898,7 +904,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					auto TextSegmentDelimiter {text.Find('/', CurrentPosition)};
-					if (TextSegmentDelimiter == -1) TextSegmentDelimiter = text.Find('^', CurrentPosition);
+					if (TextSegmentDelimiter == -1) { TextSegmentDelimiter = text.Find('^', CurrentPosition); }
 					if (TextSegmentDelimiter != -1 && TextSegmentDelimiter < EndSemicolon) {
 						if (NumberOfCharactersToDisplay > 0) { // display text segment preceding the formatting
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);

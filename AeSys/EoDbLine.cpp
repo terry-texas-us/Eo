@@ -159,16 +159,22 @@ void EoDbLine::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 }
 
 OdGePoint3d EoDbLine::GoToNxtCtrlPt() const {
-	if (ms_ControlPointIndex == 0) ms_ControlPointIndex = 1;
-	else if (ms_ControlPointIndex == 1) {
+	if (ms_ControlPointIndex == 0) {
+		ms_ControlPointIndex = 1;
+	} else if (ms_ControlPointIndex == 1) {
 		ms_ControlPointIndex = 0;
 	} else { // Initial rock .. jump to point at lower left or down if vertical
 		const auto StartPoint {m_LineSeg.startPoint()};
 		const auto EndPoint {m_LineSeg.endPoint()};
-		if (EndPoint.x > StartPoint.x) ms_ControlPointIndex = 0;
-		else if (EndPoint.x < StartPoint.x) ms_ControlPointIndex = 1;
-		else if (EndPoint.y > StartPoint.y) ms_ControlPointIndex = 0;
-		else ms_ControlPointIndex = 1;
+		if (EndPoint.x > StartPoint.x) {
+			ms_ControlPointIndex = 0;
+		} else if (EndPoint.x < StartPoint.x) {
+			ms_ControlPointIndex = 1;
+		} else if (EndPoint.y > StartPoint.y) {
+			ms_ControlPointIndex = 0;
+		} else {
+			ms_ControlPointIndex = 1;
+		}
 	}
 	return ms_ControlPointIndex == 0 ? m_LineSeg.startPoint() : m_LineSeg.endPoint();
 }
@@ -205,7 +211,7 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 		iLoc[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
 	}
 	while (iLoc[0] != 0 || iLoc[1] != 0) {
-		if ((iLoc[0] & iLoc[1]) != 0) return 0;
+		if ((iLoc[0] & iLoc[1]) != 0) { return 0; }
 		i = iLoc[0] != 0 ? 0 : 1;
 		if ((iLoc[i] & 1) != 0) { // Clip against top
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (upperRightCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
@@ -320,7 +326,7 @@ void EoDbLine::Write(CFile& file, unsigned char* buffer) const {
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kLinePrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
-	if (buffer[7] >= 16) buffer[7] = 2;
+	if (buffer[7] >= 16) { buffer[7] = 2; }
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_LineSeg.startPoint());
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[20])->Convert(m_LineSeg.endPoint());
 	file.Write(buffer, 32);

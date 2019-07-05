@@ -438,9 +438,6 @@
     <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
       <Filter>Source Files\Kernel ExServices</Filter>
     </ClCompile>
-    <ClCompile Include="EditorObject.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
       <Filter>Source Files\Drawing ExServices</Filter>
     </ClCompile>
@@ -478,6 +475,9 @@
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
     <ClCompile Include="OdBaseGripManager.cpp">
+      <Filter>Source Files\Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="EditorObject.cpp">
       <Filter>Source Files\Editor</Filter>
     </ClCompile>
   </ItemGroup>
@@ -922,9 +922,6 @@
     <ClInclude Include="framework.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="EditorObject.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="OdApplication.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -950,6 +947,9 @@
       <Filter>Header Files\Editor</Filter>
     </ClInclude>
     <ClInclude Include="OdBaseGripManager.h">
+      <Filter>Header Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EditorObject.h">
       <Filter>Header Files\Editor</Filter>
     </ClInclude>
   </ItemGroup>

@@ -190,16 +190,22 @@ void EoDbDimension::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) cons
 }
 
 OdGePoint3d EoDbDimension::GoToNxtCtrlPt() const {
-	if (ms_ControlPointIndex == 0) ms_ControlPointIndex = 1;
-	else if (ms_ControlPointIndex == 1) {
+	if (ms_ControlPointIndex == 0) { 
+		ms_ControlPointIndex = 1;
+	} else if (ms_ControlPointIndex == 1) {
 		ms_ControlPointIndex = 0;
 	} else { // Initial rock .. jump to point at lower left or down if vertical
 		const auto StartPoint {m_Line.startPoint()};
 		const auto EndPoint {m_Line.endPoint()};
-		if (EndPoint.x > StartPoint.x) ms_ControlPointIndex = 0;
-		else if (EndPoint.x < StartPoint.x) ms_ControlPointIndex = 1;
-		else if (EndPoint.y > StartPoint.y) ms_ControlPointIndex = 0;
-		else ms_ControlPointIndex = 1;
+		if (EndPoint.x > StartPoint.x) {
+			ms_ControlPointIndex = 0;
+		} else if (EndPoint.x < StartPoint.x) {
+			ms_ControlPointIndex = 1;
+		} else if (EndPoint.y > StartPoint.y) {
+			ms_ControlPointIndex = 0;
+		} else {
+			ms_ControlPointIndex = 1;
+		}
 	}
 	return ms_ControlPointIndex == 0 ? m_Line.startPoint() : m_Line.endPoint();
 }

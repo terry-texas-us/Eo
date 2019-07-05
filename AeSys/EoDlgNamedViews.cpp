@@ -205,14 +205,17 @@ void EoDlgNamedViews::OnNewButton() {
 		OdDbAbstractViewportDataPtr pViewPE(pNamedView);
 		pViewPE->setView(pNamedView, ActiveViewportObject);
 		if (newDlg.m_bSaveUCS != 0) {
-			if (newDlg.m_sUcsName == L"Unnamed") pViewPE->setUcs(pNamedView, ActiveViewportObject);
-			else if (newDlg.m_sUcsName == L"World") pNamedView->setUcsToWorld();
-			else pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb));
-		} else pNamedView->disassociateUcsFromView();
+			if (newDlg.m_sUcsName == L"Unnamed") {
+				pViewPE->setUcs(pNamedView, ActiveViewportObject);
+			} else if (newDlg.m_sUcsName == L"World") {
+				pNamedView->setUcsToWorld();
+			} else pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb));
+		} else { pNamedView->disassociateUcsFromView(); }
 		pViewPE->setProps(pNamedView, ActiveViewportObject);
 		pNamedView->setCategoryName(OdString(newDlg.m_sViewCategory));
-		if (newDlg.m_bStoreLS != 0) updateLayerState(pNamedView);
-		else deleteLayerState(pNamedView);
+		if (newDlg.m_bStoreLS != 0) {
+			updateLayerState(pNamedView);
+		} else { deleteLayerState(pNamedView); }
 		m_views.InsertItem(i, pNamedView);
 		break;
 	}

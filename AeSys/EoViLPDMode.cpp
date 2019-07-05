@@ -167,7 +167,7 @@ void AeSysView::OnLpdModeTap() {
 			m_ContinueSection = false;
 			m_PreviousPnt = CurrentPnt;
 		}
-	} else theApp.AddStringToMessageList(IDS_MSG_LINE_NOT_SELECTED);
+	} else { theApp.AddStringToMessageList(IDS_MSG_LINE_NOT_SELECTED); }
 }
 
 void AeSysView::OnLpdModeEll() {
@@ -671,7 +671,7 @@ bool AeSysView::GenerateRectangularTap(const EJust justification, const Section 
 
 void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, const double eccentricity, const EJust justification, const double slope, const Section previousSection, const Section currentSection, EoDbGroup* group) {
 	const auto ReferenceLength {referenceLine.length()};
-	if (ReferenceLength <= FLT_EPSILON) return;
+	if (ReferenceLength <= FLT_EPSILON) { return; }
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};

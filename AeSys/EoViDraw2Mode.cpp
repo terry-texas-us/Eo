@@ -128,7 +128,7 @@ void AeSysView::OnDraw2ModeWall() {
 }
 
 void AeSysView::OnDraw2ModeReturn() {
-	if (m_PreviousOp != 0) OnDraw2ModeEscape();
+	if (m_PreviousOp != 0) { OnDraw2ModeEscape(); }
 	m_PreviousPnt = GetCursorPosition();
 }
 
@@ -172,7 +172,7 @@ bool AeSysView::CleanPreviousLines() {
 bool AeSysView::StartAssemblyFromLine() {
 	const auto Line {m_BeginSectionLine->LineSeg()};
 	const auto ParallelLines {Line.isParallelTo(m_CurrentReferenceLine)};
-	if (ParallelLines) return false;
+	if (ParallelLines) { return false; }
 	OdGePoint3d ptInt;
 	m_AssemblyGroup = m_BeginSectionGroup;
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, m_AssemblyGroup);

@@ -1905,7 +1905,7 @@ CString AeSys::ResourceFolderPath() {
 }
 
 void AeSys::SetArchitecturalUnitsFractionPrecision(const int precision) noexcept {
-	if (precision > 0) m_ArchitecturalUnitsFractionPrecision = precision;
+	if (precision > 0) { m_ArchitecturalUnitsFractionPrecision = precision; }
 }
 
 void AeSys::SetDimensionAngle(const double angle) noexcept {

@@ -180,11 +180,11 @@ void AeSysView::OnDimensionModeDLine2() {
 			AlignedDimension->setDimensionStyle(DimStyleRecord);
 			AlignedDimension->downgradeOpen();
 			Group->AddTail(EoDbDimension::Create(AlignedDimension));
-			GenerateLineEndItem(1, .1, PreviousDimensionPosition, CurrentPnt, Group);
+			GenerateLineEndItem(1, 0.1, PreviousDimensionPosition, CurrentPnt, Group);
 			Document->AddWorkLayerGroup(Group);
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			PreviousDimensionPosition = CurrentPnt;
-		} else theApp.AddModeInformationToMessageList();
+		} else { theApp.AddModeInformationToMessageList(); }
 	} else {
 		// error finish prior op first
 	}

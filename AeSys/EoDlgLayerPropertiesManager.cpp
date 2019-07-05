@@ -49,8 +49,8 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStruc
 	if (pTVKeyDown->wVKey == VK_DELETE) {
 		if (auto SelectedItem = treeFilters.GetSelectedItem()) {
 			const auto Filter {static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(SelectedItem)))};
-			if (Filter->dynamicallyGenerated()) return;
-			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) return;
+			if (Filter->dynamicallyGenerated()) { return; }
+			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) { return; }
 			Filter->parent()->removeNested(Filter);
 			treeFilters.DeleteItem(SelectedItem);
 			const OdLyLayerFilter* Root = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(treeFilters.GetRootItem())));

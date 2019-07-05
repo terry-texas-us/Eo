@@ -1,6 +1,6 @@
+// From Examples\Editor\EditorObject.h  (last compare 20.5)
 #pragma once
 
-// From Examples\Editor\EditorObject.h  (last compare 20.5)
 #include <Ed/EdCommandStack.h>
 #include <ExDbCommandContext.h>
 #include <DbGsManager.h>

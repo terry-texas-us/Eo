@@ -2251,7 +2251,7 @@ void AeSysDoc::OnPensLoadColors() {
 		if ((OpenFileName.Flags & OFN_EXTENSIONDIFFERENT) == 0) {
 			AeSys::LoadColorPalletFromFile(OpenFileName.lpstrFile);
 			UpdateAllViews(nullptr);
-		} else AeSys::WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
+		} else { AeSys::WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR); }
 	}
 	delete[] OpenFileName.lpstrFile;
 }
@@ -2720,43 +2720,43 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 	CString Filter;
 	Filter = L"AutoCAD 2018 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC32) FileDialog.m_ofn.nFilterIndex = 1;
+	if (IsDwg && DwgVersion == OdDb::vAC32) { FileDialog.m_ofn.nFilterIndex = 1; }
 	Filter += L"AutoCAD 2013 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC27) FileDialog.m_ofn.nFilterIndex = 2;
+	if (IsDwg && DwgVersion == OdDb::vAC27) { FileDialog.m_ofn.nFilterIndex = 2; }
 	Filter += "AutoCAD 2010 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC24) FileDialog.m_ofn.nFilterIndex = 3;
+	if (IsDwg && DwgVersion == OdDb::vAC24) { FileDialog.m_ofn.nFilterIndex = 3; }
 	Filter += "AutoCAD 2007 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC21) FileDialog.m_ofn.nFilterIndex = 4;
+	if (IsDwg && DwgVersion == OdDb::vAC21) { FileDialog.m_ofn.nFilterIndex = 4; }
 	Filter += L"AutoCAD 2004 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
 	if (IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 5;
 	Filter += L"AutoCAD 2000 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC15) FileDialog.m_ofn.nFilterIndex = 6;
+	if (IsDwg && DwgVersion == OdDb::vAC15) { FileDialog.m_ofn.nFilterIndex = 6; }
 	Filter += L"AutoCAD R14 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 7;
+	if (IsDwg && DwgVersion == OdDb::vAC14) { FileDialog.m_ofn.nFilterIndex = 7; }
 	Filter += L"AutoCAD R13 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC13) FileDialog.m_ofn.nFilterIndex = 8;
+	if (IsDwg && DwgVersion == OdDb::vAC13) { FileDialog.m_ofn.nFilterIndex = 8; }
 	Filter += L"AutoCAD R12 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion <= OdDb::vAC12) FileDialog.m_ofn.nFilterIndex = 9;
+	if (IsDwg && DwgVersion <= OdDb::vAC12) { FileDialog.m_ofn.nFilterIndex = 9; }
 	Filter += L"AutoCAD 2018 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC32) FileDialog.m_ofn.nFilterIndex = 10;
+	if (!IsDwg && DwgVersion == OdDb::vAC32) { FileDialog.m_ofn.nFilterIndex = 10; }
 	Filter += L"AutoCAD 2013 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::kDHL_1027) FileDialog.m_ofn.nFilterIndex = 11;
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1027) { FileDialog.m_ofn.nFilterIndex = 11; }
 	Filter += L"AutoCAD 2010 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::kDHL_1024) FileDialog.m_ofn.nFilterIndex = 12;
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1024) { FileDialog.m_ofn.nFilterIndex = 12; }
 	Filter += L"AutoCAD 2007 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::kDHL_1021) FileDialog.m_ofn.nFilterIndex = 13;
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1021) { FileDialog.m_ofn.nFilterIndex = 13; }
 	Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 14;
@@ -2768,13 +2768,13 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 	if (!IsDwg && DwgVersion == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 16;
 	Filter += L"AutoCAD R13 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC13) FileDialog.m_ofn.nFilterIndex = 17;
+	if (!IsDwg && DwgVersion == OdDb::vAC13) { FileDialog.m_ofn.nFilterIndex = 17; }
 	Filter += L"AutoCAD R12 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC12) FileDialog.m_ofn.nFilterIndex = 18;
+	if (!IsDwg && DwgVersion == OdDb::vAC12) { FileDialog.m_ofn.nFilterIndex = 18; }
 	Filter += L"AutoCAD R10 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC10) FileDialog.m_ofn.nFilterIndex = 19;
+	if (!IsDwg && DwgVersion == OdDb::vAC10) { FileDialog.m_ofn.nFilterIndex = 19; }
 	Filter += L"AutoCAD R9 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!IsDwg && DwgVersion == OdDb::vAC09) FileDialog.m_ofn.nFilterIndex = 20;

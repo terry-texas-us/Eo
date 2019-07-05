@@ -170,7 +170,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 }
 
 void EoDbEllipse::Display(AeSysView* view, CDC* deviceContext) {
-	if (fabs(m_SweepAngle) <= DBL_EPSILON) return;
+	if (fabs(m_SweepAngle) <= DBL_EPSILON) { return; }
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
 	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
@@ -325,14 +325,16 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 						(*arMax).x = arBeg.x;
 						(*arMax).y = arEnd.y;
 					}
-				} else											// Arc ends in quadrant four
+				} else { // Arc ends in quadrant four
 					(*arMax).x = EoMax(arBeg.x, arEnd.x);
+				}
 			} else {
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					(*arMin).x = arEnd.x;
 					(*arMin).y = EoMin(arBeg.y, arEnd.y);
-				} else // Arc ends in quadrant three
+				} else { // Arc ends in quadrant three
 					(*arMin).y = arEnd.y;
+				}
 				(*arMax).x = arBeg.x;
 			}
 		} else { // Arc begins in quadrant four
@@ -353,8 +355,9 @@ void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd,
 				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
 					(*arMin).x = arEnd.x;
 					(*arMin).y = arBeg.y;
-				} else											// Arc ends in quadrant three
+				} else { // Arc ends in quadrant three
 					(*arMin).y = EoMin(arBeg.y, arEnd.y);
+				}
 			}
 		}
 	} else {
@@ -452,9 +455,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 		intersections[1] = ptEnd;
 		return 2;
 	}
-	if (ptMin.x >= upperRightCorner.x || ptMax.x <= lowerLeftCorner.x || ptMin.y >= upperRightCorner.y || ptMax.y <= lowerLeftCorner.y)
-		// No extent overlap
-		return 0;
+	if (ptMin.x >= upperRightCorner.x || ptMax.x <= lowerLeftCorner.x || ptMin.y >= upperRightCorner.y || ptMax.y <= lowerLeftCorner.y) { return 0; }
 	OdGePoint3d ptWrk[8];
 	double dDis;
 	double dOff;
@@ -518,7 +519,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 		if (AngleIntersections[IntersectionIndex] < 0.0) { AngleIntersections[IntersectionIndex] += Oda2PI; }
 		if (fabs(AngleIntersections[IntersectionIndex]) - m_SweepAngle < 0.0) { // Intersection lies on arc
 			int i;
-			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++);
+			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++) {}
 			if (i == IntersectionIndex) { // Unique intersection
 				intersections[IntersectionIndex++] = ptWrk[i2];
 			}
@@ -688,10 +689,10 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d& startPoint, const Od
 		if (fabs(dAng[1] - dMax) > DBL_EPSILON && fabs(dAng[1] - dMin) > DBL_EPSILON) { // Inside line is not colinear with outside lines
 			m_SweepAngle = dMax - dMin;
 			if (dAng[1] > dMin && dAng[1] < dMax) {
-				if (dAng[0] == dMax) m_SweepAngle = -m_SweepAngle;
+				if (dAng[0] == dMax) { m_SweepAngle = -m_SweepAngle; }
 			} else {
 				m_SweepAngle = Oda2PI - m_SweepAngle;
-				if (dAng[2] == dMax) m_SweepAngle = -m_SweepAngle;
+				if (dAng[2] == dMax) { m_SweepAngle = -m_SweepAngle; }
 			}
 			auto ptRot {startPoint};
 			ptRot.rotateBy(OdaPI2, PlaneNormal, m_Center);
@@ -795,7 +796,7 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
 		EndAngle -= Oda2PI;
 	}
 	auto SweepAngle {EndAngle - StartAngle};
-	if (SweepAngle <= FLT_EPSILON) SweepAngle += Oda2PI;
+	if (SweepAngle <= FLT_EPSILON) { SweepAngle += Oda2PI; }
 	if (StartAngle != 0.0) {
 		MajorAxis.rotateBy(StartAngle, ellipse->normal());
 		MinorAxis.rotateBy(StartAngle, ellipse->normal());

@@ -290,14 +290,14 @@ void AeSysView::OnAnnotateModeCutIn() {
 		if (!CurrentText.IsEmpty()) {
 			auto LineSeg {EngagedLine->LineSeg()};
 			auto dAng {LineSeg.AngleFromXAxis_xy()};
-			if (dAng > .25 * Oda2PI && dAng < .75 * Oda2PI) dAng += OdaPI;
+			if (dAng > 0.25 * Oda2PI && dAng < 0.75 * Oda2PI) { dAng += OdaPI; }
 			const auto PlaneNormal {CameraDirection()};
 			auto MinorAxis {ViewUp()};
 			MinorAxis.rotateBy(dAng, PlaneNormal);
 			auto MajorAxis {MinorAxis};
 			MajorAxis.rotateBy(-OdaPI2, PlaneNormal);
-			MajorAxis *= .06;
-			MinorAxis *= .1;
+			MajorAxis *= 0.06;
+			MinorAxis *= 0.1;
 			EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis, MinorAxis);
 			const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 			g_PrimitiveState.SetColorIndex(DeviceContext, 2);
@@ -395,10 +395,10 @@ bool AeSysView::CorrectLeaderEndpoints(const int beginType, const int endType, O
 	auto EndDistance {0.0};
 	if (endType == ID_OP4) {
 		EndDistance = BubbleRadius();
-	} else if (endType == ID_OP5) EndDistance = CircleRadius();
+	} else if (endType == ID_OP5) { EndDistance = CircleRadius(); }
 	if (LineSegmentLength > BeginDistance + EndDistance + DBL_EPSILON) {
-		if (BeginDistance != 0.0) startPoint = ProjectToward(startPoint, endPoint, BeginDistance);
-		if (EndDistance != 0.0) endPoint = ProjectToward(endPoint, startPoint, EndDistance);
+		if (BeginDistance != 0.0) { startPoint = ProjectToward(startPoint, endPoint, BeginDistance); }
+		if (EndDistance != 0.0) { endPoint = ProjectToward(endPoint, startPoint, EndDistance); }
 		return true;
 	}
 	theApp.AddModeInformationToMessageList();

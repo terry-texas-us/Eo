@@ -90,10 +90,10 @@ void AeSysView::OnPowerModeHome() {
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			if (Circuit->ParametricRelationshipOf(CurrentPnt) <= 0.5) {
 				m_CircuitEndPoint = Circuit->EndPoint();
-				if (CurrentPnt.distanceTo(Circuit->StartPoint()) <= .1) CurrentPnt = Circuit->StartPoint();
+				if (CurrentPnt.distanceTo(Circuit->StartPoint()) <= 0.1) { CurrentPnt = Circuit->StartPoint(); }
 			} else {
 				m_CircuitEndPoint = Circuit->StartPoint();
-				if (CurrentPnt.distanceTo(Circuit->EndPoint()) <= .1) CurrentPnt = Circuit->EndPoint();
+				if (CurrentPnt.distanceTo(Circuit->EndPoint()) <= 0.1) { CurrentPnt = Circuit->EndPoint(); }
 			}
 			m_PowerArrow = CurrentPnt.distanceTo(m_CircuitEndPoint) > m_PowerConductorSpacing;
 			GenerateHomeRunArrow(CurrentPnt, m_CircuitEndPoint);
@@ -157,9 +157,9 @@ void AeSysView::DoPowerModeConductor(const unsigned short conductorType) {
 			CurrentPnt = Circuit->ProjPt_(CurrentPnt);
 			const auto BeginPoint {Circuit->StartPoint()};
 			m_CircuitEndPoint = Circuit->EndPoint();
-			if (fabs(m_CircuitEndPoint.x - BeginPoint.x) > .025) {
-				if (BeginPoint.x > m_CircuitEndPoint.x) m_CircuitEndPoint = BeginPoint;
-			} else if (BeginPoint.y > m_CircuitEndPoint.y) m_CircuitEndPoint = BeginPoint;
+			if (fabs(m_CircuitEndPoint.x - BeginPoint.x) > 0.025) {
+				if (BeginPoint.x > m_CircuitEndPoint.x) { m_CircuitEndPoint = BeginPoint; }
+			} else if (BeginPoint.y > m_CircuitEndPoint.y) { m_CircuitEndPoint = BeginPoint; }
 			GeneratePowerConductorSymbol(conductorType, CurrentPnt, m_CircuitEndPoint);
 			CurrentPnt = ProjectToward(CurrentPnt, m_CircuitEndPoint, m_PowerConductorSpacing);
 			SetCursorPosition(CurrentPnt);

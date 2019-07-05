@@ -12,7 +12,7 @@ public:
 	}
 
 	T* operator->() {
-		if (m_pUnderlayObj == nullptr) throw OdError(eNullObjectPointer);
+		if (m_pUnderlayObj == nullptr) { throw OdError(eNullObjectPointer); }
 		return m_pUnderlayObj;
 	}
 

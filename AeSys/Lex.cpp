@@ -61,7 +61,7 @@ void lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 		CurrentTokenType = TokenType(++firstTokenLocation);
 	}
 	if (NumberOfOpenParentheses > 0) { throw L"Unbalanced parentheses"; }
-	while (TopOfOperatorStack > 1) typeOfTokens[numberOfTokens++] = OperatorStack[TopOfOperatorStack--];
+	while (TopOfOperatorStack > 1) { typeOfTokens[numberOfTokens++] = OperatorStack[TopOfOperatorStack--]; }
 	if (numberOfTokens == 0) { throw L"Syntax error"; }
 }
 

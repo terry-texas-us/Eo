@@ -249,7 +249,7 @@ bool CPsListStyleData::SetActiveListIndex(const int index, const bool bitmapInfo
 	if (static_cast<unsigned>(index) >= m_pPublicBitmapList->size() - 1) { return false; }
 	if (index < 0) { return false; }
 	m_iActiveListIndex = index;
-	if (bitmapInfo) return true;
+	if (bitmapInfo) { return true; }
 	delete m_pBitmapColorInfo;
 	m_pBitmapColorInfo = nullptr;
 	return true;
@@ -467,7 +467,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* n
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditScreening() {
-	if (m_bEditChanging) return;
+	if (m_bEditChanging) { return; }
 	m_bEditChanging = true;
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -519,7 +519,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
-	if (m_bEditChanging) return;
+	if (m_bEditChanging) { return; }
 	m_bEditChanging = true;
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -572,7 +572,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* 
 		return;
 	}
 	const auto LastItem {m_listStyles.GetSelectionMark()};
-	if (LastItem < 0) * result = 0;
+	if (LastItem < 0) { * result = 0; }
 	const auto Item {m_listStyles.GetSelectionMark()};
 	if (Item < 0) {
 		*result = 0;
@@ -722,7 +722,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 		}
 	} else {
 		pPsListStyleData->SetActiveListIndex(CurrentSelection);
-		if (CurrentSelection != 0) intColorPolicy = 5;
+		if (CurrentSelection != 0) { intColorPolicy = 5; }
 	}
 	const auto color {pPsListStyleData->GetColor()};
 	// m_pPlotStyleActive->setColorPolicy(intColorPolicy);

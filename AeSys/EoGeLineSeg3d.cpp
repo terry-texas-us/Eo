@@ -26,7 +26,7 @@ double EoGeLineSeg3d::AngleFromXAxis_xy() const {
 	auto Angle {0.0};
 	if (fabs(Vector.x) > DBL_EPSILON || fabs(Vector.y) > DBL_EPSILON) {
 		Angle = atan2(Vector.y, Vector.x);
-		if (Angle < 0.0) Angle += Oda2PI;
+		if (Angle < 0.0) { Angle += Oda2PI; }
 	}
 	return Angle;
 }
@@ -46,25 +46,28 @@ OdGePoint3d EoGeLineSeg3d::ConstrainToAxis(const double influenceAngle, const do
 	if (dLen > DBL_EPSILON) { // Not a zero length line
 		if (dX >= EoMax(dY, dZ)) { // Major component of line is along x-axis
 			dLen = sqrt(dY + dZ);
-			if (dLen > DBL_EPSILON) 				// Not already on the x-axis
+			if (dLen > DBL_EPSILON) { // Not already on the x-axis
 				if (dLen / fabs(pt.x) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to x-axis
 					pt.y = 0.0;
 					pt.z = 0.0;
 				}
+			}
 		} else if (dY >= dZ) { // Major component of line is along y-axis
 			dLen = sqrt(dX + dZ);
-			if (dLen > DBL_EPSILON)					// Not already on the y-axis
+			if (dLen > DBL_EPSILON) { // Not already on the y-axis
 				if (dLen / fabs(pt.y) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to y-axis
 					pt.x = 0.0;
 					pt.z = 0.0;
 				}
+			}
 		} else {
 			dLen = sqrt(dX + dY);
-			if (dLen > DBL_EPSILON)					// Not already on the z-axis
+			if (dLen > DBL_EPSILON) { // Not already on the z-axis
 				if (dLen / fabs(pt.z) < tan(EoToRadian(influenceAngle))) { // Within cone of influence .. snap to z-axis
 					pt.x = 0.0;
 					pt.y = 0.0;
 				}
+			}
 		}
 	}
 	TransformMatrix.invert();
@@ -165,8 +168,8 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 	iOut[0] = RelationshipToRectangleOf(pt[0], lowerLeftPoint, upperRightPoint);
 	for (;;) {
 		iOut[i] = RelationshipToRectangleOf(pt[i], lowerLeftPoint, upperRightPoint);
-		if (iOut[0] == 0 && iOut[1] == 0) return true;
-		if ((iOut[0] & iOut[1]) != 0) return false;
+		if (iOut[0] == 0 && iOut[1] == 0) { return true; }
+		if ((iOut[0] & iOut[1]) != 0) { return false; }
 		i = iOut[0] == 0 ? 1 : 0;
 		if ((iOut[i] & 1) == 1) { // Above window
 			pt[i].x = pt[i].x + dX * (upperRightPoint.y - pt[i].y) / dY;
@@ -243,7 +246,7 @@ int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double per
 	auto dX {endPoint().x - startPoint().x};
 	auto dY {endPoint().y - startPoint().y};
 	auto dLen {sqrt(dX * dX + dY * dY)};
-	if (dLen <= DBL_EPSILON) return FALSE;
+	if (dLen <= DBL_EPSILON) { return FALSE; }
 	double dRatio;
 	projectedPoint = startPoint();
 	if (fabs(parallelDistance) > DBL_EPSILON) {
@@ -265,7 +268,7 @@ int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double per
 OdGePoint3d EoGeLineSeg3d::ProjToBegPt(const double distance) {
 	auto vEndBeg {startPoint() - endPoint()};
 	const auto dLen {vEndBeg.length()};
-	if (dLen > DBL_EPSILON) vEndBeg *= distance / dLen;
+	if (dLen > DBL_EPSILON) { vEndBeg *= distance / dLen; }
 	return endPoint() + vEndBeg;
 }
 

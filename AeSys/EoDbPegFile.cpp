@@ -95,7 +95,7 @@ void EoDbPegFile::ReadLinetypesTable() {
 		}
 	}
 	delete [] DashLength;
-	if (ReadUInt16() != kEndOfTable) throw L"Exception ReadLinetypesTable: Expecting sentinel kEndOfTable.";
+	if (ReadUInt16() != kEndOfTable) { throw L"Exception ReadLinetypesTable: Expecting sentinel kEndOfTable."; }
 }
 
 void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
@@ -285,7 +285,7 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 			WriteUInt16(Layer->StateFlags());
 			WriteInt16(Layer->ColorIndex());
 			WriteString(Layer->LinetypeName());
-		} else NumberOfLayers--;
+		} else { NumberOfLayers--; }
 	}
 	WriteUInt16(kEndOfTable);
 	if (NumberOfLayers != document->GetLayerTableSize()) {

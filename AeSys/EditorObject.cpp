@@ -882,7 +882,7 @@ public:
 				m_Model->setEnableViewExtentsCalculation(false); // Skip extents calculation.
 				m_Model->setRenderModeOverride(OdGsView::k2DOptimized); // Setup 2dWireframe mode for all underlying geometry.
 				const auto VisualStyleId {GraphTrackerBase::getVisualStyleOverride(pView->userGiContext()->database())};
-				if (VisualStyleId != nullptr) m_Model->setVisualStyle(VisualStyleId); // 2dWireframe visual style.
+				if (VisualStyleId != nullptr) { m_Model->setVisualStyle(VisualStyleId); } // 2dWireframe visual style.
 			}
 		}
 		pView->add(m_Drawable, m_Model.get());
@@ -907,7 +907,7 @@ void OdEx3dOrbitCmd::execute(OdEdCommandContext* edCommandContext) {
 		if (!Database->getTILEMODE()) {
 			OdSmartPtr<OdDbLayout> Layout {Database->currentLayoutId().openObject()};
 			if (Layout->drawViewportsFirst()) {
-				if (View->device()->viewAt(View->device()->numViews() - 1) == View) View = View->device()->viewAt(0);
+				if (View->device()->viewAt(View->device()->numViews() - 1) == View) { View = View->device()->viewAt(0); }
 			}
 		}
 	}

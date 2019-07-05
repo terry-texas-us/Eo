@@ -110,12 +110,17 @@ void EoDbSpline::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 
 OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 	OdGePoint3d pt;
-	if (ms_RelationshipOfPoint <= DBL_EPSILON) pt = m_Spline.endPoint();
-	else if (ms_RelationshipOfPoint >= 1. - DBL_EPSILON) pt = m_Spline.startPoint();
-	else if (m_Spline.endPoint().x > m_Spline.startPoint().x) pt = m_Spline.startPoint();
-	else if (m_Spline.endPoint().x < m_Spline.startPoint().x) pt = m_Spline.endPoint();
-	else if (m_Spline.endPoint().y > m_Spline.startPoint().y) pt = m_Spline.startPoint();
-	else pt = m_Spline.endPoint();
+	if (ms_RelationshipOfPoint <= DBL_EPSILON) {
+		pt = m_Spline.endPoint();
+	} else if (ms_RelationshipOfPoint >= 1. - DBL_EPSILON) {
+		pt = m_Spline.startPoint();
+	} else if (m_Spline.endPoint().x > m_Spline.startPoint().x) {
+		pt = m_Spline.startPoint();
+	} else if (m_Spline.endPoint().x < m_Spline.startPoint().x) {
+		pt = m_Spline.endPoint();
+	} else if (m_Spline.endPoint().y > m_Spline.startPoint().y) {
+		pt = m_Spline.startPoint();
+	} else { pt = m_Spline.endPoint(); }
 	return pt;
 }
 
@@ -137,7 +142,7 @@ bool EoDbSpline::IsInView(AeSysView* view) const {
 	for (unsigned short w = 1; w < m_Spline.numControlPoints(); w++) {
 		pt[1] = EoGePoint4d(m_Spline.controlPointAt(w), 1.0);
 		view->ModelViewTransformPoint(pt[1]);
-		if (EoGePoint4d::ClipLine(pt[0], pt[1])) return true;
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
 		pt[0] = pt[1];
 	}
 	return false;
@@ -181,10 +186,11 @@ void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
-	for (auto ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++)
+	for (auto ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
 		if ((mask >> ControlPointIndex & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);
 		}
+	}
 }
 
 // <tas="Currently allowing 1st degree (only 2 control points) splines to be saved. This likely will not load in legacy apps"</tas>

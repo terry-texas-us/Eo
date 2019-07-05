@@ -432,7 +432,7 @@ void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord,
 			}
 			continue;
 		}
-		if (Entity.isNull()) continue;
+		if (Entity.isNull()) { continue; }
 		dd.persistId = Entity->objectId();
 		OdGePoint3dArray snapPoints;
 		Entity->getOsnapPoints(OdDb::kOsModeCen, OdGsMarker(), OdGePoint3d::kOrigin, OdGePoint3d::kOrigin, OdGeMatrix3d(), snapPoints);

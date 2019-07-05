@@ -1591,7 +1591,7 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++) != 0);
+		while (theApp.OnIdle(Idle++) != 0) {}
 	}
 	throw OdEdCancel();
 }
@@ -1615,7 +1615,7 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++) != 0);
+		while (theApp.OnIdle(Idle++) != 0) {}
 	}
 	throw OdEdCancel();
 }

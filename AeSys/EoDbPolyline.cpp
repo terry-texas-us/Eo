@@ -94,8 +94,9 @@ void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
 	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
-	if (IsClosed()) polyline::BeginLineLoop();
-	else polyline::BeginLineStrip();
+	if (IsClosed()) {
+		polyline::BeginLineLoop();
+	} else { polyline::BeginLineStrip(); }
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
 	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
 	const auto YAxis {m_Normal.crossProduct(XAxis)};
