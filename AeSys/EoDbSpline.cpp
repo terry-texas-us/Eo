@@ -152,7 +152,7 @@ bool EoDbSpline::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d& /
 	return false;
 }
 
-OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {
+OdGePoint3d EoDbSpline::SelectAtControlPoint(AeSysView* /*view*/, const EoGePoint4d& point) const {
 	ms_ControlPointIndex = SIZE_T_MAX;
 	return point.Convert3d();
 }
@@ -185,7 +185,7 @@ void EoDbSpline::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Spline.transformBy(transformMatrix);
 }
 
-void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbSpline::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
 	for (auto ControlPointIndex = 0; ControlPointIndex < m_Spline.numControlPoints(); ControlPointIndex++) {
 		if ((mask >> ControlPointIndex & 1UL) == 1) {
 			m_Spline.setControlPointAt(ControlPointIndex, m_Spline.controlPointAt(ControlPointIndex) + translate);

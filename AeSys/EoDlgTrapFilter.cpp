@@ -50,11 +50,11 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 }
 
 void EoDlgTrapFilter::OnOK() {
-	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN) != 0u) {
+	if (IsDlgButtonChecked(IDC_TRAP_FILTER_PEN) != 0U) {
 		const auto ColorIndex {short(GetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, nullptr, FALSE))};
 		FilterByColor(ColorIndex);
 	}
-	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE) != 0u) {
+	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE) != 0U) {
 		wchar_t Name[32];
 		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t)) != 0) {
 			OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
@@ -64,7 +64,7 @@ void EoDlgTrapFilter::OnOK() {
 			}
 		}
 	}
-	if (IsDlgButtonChecked(IDC_TRAP_FILTER_ELEMENT) != 0u) {
+	if (IsDlgButtonChecked(IDC_TRAP_FILTER_ELEMENT) != 0U) {
 		switch (m_FilterPrimitiveTypeListBoxControl.GetCurSel()) {
 			case 0:
 				FilterByPrimitiveType(EoDb::kEllipsePrimitive);

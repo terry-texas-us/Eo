@@ -557,7 +557,7 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 
 OdGePoint3d EoDbEllipse::GoToNxtCtrlPt() const {
 	const auto dAng {ms_RelationshipOfPoint <= DBL_EPSILON ? m_SweepAngle : 0.0};
-	return pFndPtOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng);
+	return FindPointOnArc(m_Center, m_MajorAxis, m_MinorAxis, dAng);
 }
 
 bool EoDbEllipse::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept {
@@ -739,7 +739,7 @@ void EoDbEllipse::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_MinorAxis.transformBy(transformMatrix);
 }
 
-void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
 	if (mask != 0) { m_Center += translate; }
 }
 
@@ -765,7 +765,7 @@ void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
-	if (buffer[7] >= 16) buffer[7] = 2;
+	if (buffer[7] >= 16) { buffer[7] = 2; }
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Center);
 	reinterpret_cast<EoVaxVector3d*>(& buffer[20])->Convert(m_MajorAxis);
 	reinterpret_cast<EoVaxVector3d*>(& buffer[32])->Convert(m_MinorAxis);
@@ -860,8 +860,8 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 	OdGeVector3d MinorAxis;
 	double SweepAngle;
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000fU);
+		LinetypeIndex = static_cast<short>((primitiveBuffer[4] & 0x00ffU) >> 4U);
 		const auto BeginPoint {OdGePoint3d(reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[8])->Convert(), reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[12])->Convert(), 0.0) * 1.e-3};
 		CenterPoint = OdGePoint3d(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[20])->Convert(), reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[24])->Convert(), 0.0) * 1.e-3;
 		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[28])->Convert();
@@ -900,7 +900,7 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 	return Ellipse;
 }
 
-OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double angle) {
+OdGePoint3d FindPointOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double angle) {
 	OdGeMatrix3d ScaleMatrix;
 	ScaleMatrix.setToScaling(OdGeScale3d(majorAxis.length(), minorAxis.length(), 1.0));
 	EoGeMatrix3d PlaneToWorldTransform;
@@ -911,17 +911,17 @@ OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis
 	return pt;
 }
 
-int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d& arP1, const OdGePoint3d& arP2, const OdGePoint3d& arP3, const OdGePoint3d& center, double& sweepAngle) {
+int FindSweepAngleGivenPlaneAnd3Lines(const OdGeVector3d& planeNormal, const OdGePoint3d& firstPoint, const OdGePoint3d& secondPoint, const OdGePoint3d& thirdPoint, const OdGePoint3d& center, double& sweepAngle) {
 	double dT[3];
 	OdGePoint3d rR[3];
-	if (arP1 == center || arP2 == center || arP3 == center) { return FALSE; }
+	if (firstPoint == center || secondPoint == center || thirdPoint == center) { return FALSE; }
 
 	// None of the points coincide with center point
 	EoGeMatrix3d WorldToPlaneTransform;
 	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(center, planeNormal));
-	rR[0] = arP1;
-	rR[1] = arP2;
-	rR[2] = arP3;
+	rR[0] = firstPoint;
+	rR[1] = secondPoint;
+	rR[2] = thirdPoint;
 	for (auto i = 0; i < 3; i++) { // Translate points into z=0 plane with center point at origin
 		rR[i].transformBy(WorldToPlaneTransform);
 		dT[i] = atan2(rR[i].y, rR[i].x);

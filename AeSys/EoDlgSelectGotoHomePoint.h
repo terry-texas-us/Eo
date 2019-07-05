@@ -15,7 +15,7 @@ protected:
 
 	void OnOK() final;
 
-	AeSysView* m_ActiveView;
+	AeSysView* m_ActiveView {nullptr};
 	CComboBox m_HomePointNames;
 	CEdit m_X;
 	CEdit m_Y;

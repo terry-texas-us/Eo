@@ -229,7 +229,7 @@ void EoDbPoint::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_Position.transformBy(transformMatrix);
 }
 
-void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbPoint::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
 	if (mask != 0) { m_Position += translate; }
 }
 
@@ -316,8 +316,8 @@ OdDbPointPtr EoDbPoint::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	short PointDisplayMode;
 	OdGePoint3d Position;
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
-		PointDisplayMode = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000fU);
+		PointDisplayMode = static_cast<short>((primitiveBuffer[4] & 0x00ffU) >> 4);
 		Position = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert() * 1.e-3;
 	} else {
 		ColorIndex = static_cast<short>(primitiveBuffer[6]);

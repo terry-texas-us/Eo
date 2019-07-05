@@ -23,9 +23,8 @@ private:
 	static unsigned ms_EdgeToEvaluate;
 	static unsigned ms_Edge;
 	static unsigned ms_PivotVertex;
-public:
-	static const unsigned short ms_Closed = 0x0001;
-private:
+	static const unsigned short ms_Closed = 0x0001U;
+
 	unsigned short m_Flags {0};
 	double m_ConstantWidth {0.0};
 	double m_Elevation {0.0};
@@ -80,7 +79,7 @@ public:
 
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 
-	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned mask) override;
 
 	bool Write(EoDbFile& file) const override;
 

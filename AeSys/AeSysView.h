@@ -189,11 +189,11 @@ public:
 
 	bool UpdateStringTrackerCursor();
 
-	enum StateInformationItem {
+	enum StateInformationItem : unsigned {
 		kWorkCount = 0x0001, kTrapCount = 0x0002, kBothCounts = kWorkCount | kTrapCount, kPen = 0x0004, kLine = 0x0008, kTextHeight = 0x0010, kWndRatio = 0x0020, kScale = 0x0040, kDimLen = 0x0080, kDimAng = 0x0100, kAll = kBothCounts | kPen | kLine | kTextHeight | kWndRatio | kScale | kDimLen | kDimAng
 	};
 
-	enum RubberBandingTypes { kNone, kLines, kRectangles };
+	enum RubberBandingTypes : unsigned { kNone, kLines, kRectangles };
 
 private:
 	static const double mc_MaximumWindowRatio;
@@ -550,7 +550,7 @@ public: // Input message handler member functions
 	void PreviewGroupEdit();
 
 	OdGePoint3d m_MendPrimitiveBegin;
-	unsigned long m_MendPrimitiveVertexIndex {0};
+	unsigned m_MendPrimitiveVertexIndex {0};
 	EoDbPrimitive* m_PrimitiveToMend {nullptr};
 	EoDbPrimitive* m_PrimitiveToMendCopy {nullptr};
 
@@ -718,7 +718,7 @@ public:
 	void OnDimensionModeEscape();
 	
 	// Fixup mode interface
-	enum CornerFlags {
+	enum CornerFlags : unsigned {
 		kTrimPreviousToIntersection = 0x001, kTrimCurrentToIntersection = 0x002, kTrimPreviousToSize = 0x004, kTrimCurrentToSize = 0x008, kCorner = 0x100, kChamfer = 0x200, kFillet = 0x400, kCircle = 0x800, kTrimBothToIntersection = kTrimPreviousToIntersection | kTrimCurrentToIntersection, kTrimPrevious = kTrimPreviousToIntersection | kTrimPreviousToSize, kTrimCurrent = kTrimCurrentToIntersection | kTrimCurrentToSize,
 	};
 
@@ -743,7 +743,7 @@ public:
 
 	void OnFixupModeEscape();
 
-	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, int cornerType = kCorner | kTrimBothToIntersection);
+	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, unsigned cornerType = kCorner | kTrimBothToIntersection);
 
 	/// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
 	/// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
@@ -751,7 +751,7 @@ public:
 	/// true    center point determined
 	/// false   endpoints of first line coincide or endpoints of second line coincide or two lines are parallel or four points are not coplanar
 	/// </Returns>
-	bool FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint);
+	bool FindCenterPointGivenRadiusAndTwoLineSegments(double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint) const;
 	
 	// Nodal mode interface
 	void DoNodalModeMouseMove();

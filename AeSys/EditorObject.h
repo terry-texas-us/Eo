@@ -72,9 +72,9 @@ class OdExEditorObject {
 	OdGePoint3d m_basePt;
 	const OdGePoint3d* m_BasePt {nullptr};
 
-	enum Flags { kSnapOn = 4, kOrbitOn = 8, kDragging = 16, kTrackerHasDrawables = 32 };
+	enum Flags : unsigned { kSnapOn = 4, kOrbitOn = 8, kDragging = 16, kTrackerHasDrawables = 32 };
 
-	unsigned long m_Flags;
+	unsigned m_Flags {kSnapOn};
 public:
 	[[nodiscard]] const OdGsView* ActiveView() const;
 
@@ -98,8 +98,8 @@ public:
 
 	void Set3DView(_3DViewType type);
 
-	OdExEditorObject();
-
+	OdExEditorObject() = default;
+	
 	void Initialize(OdGsDevice* device, OdDbCommandContext* commandContext);
 
 	void Uninitialize();
@@ -145,19 +145,19 @@ public:
 
 	bool OnMouseRightButtonDoubleClick(unsigned flags, int x, int y);
 
-	bool OnCtrlClick();
+	bool OnCtrlClick() const;
 
 	void OnDestroy();
 
 	[[nodiscard]] bool HasSelection() const { return GetWorkingSelectionSet()->numEntities() > 0; }
 
-	[[nodiscard]] bool IsSnapOn() const noexcept { return m_Flags & kSnapOn ? true : false; }
+	[[nodiscard]] bool IsSnapOn() const noexcept { return (m_Flags & kSnapOn) != 0U ? true : false; }
 
 	void SetSnapOn(const bool snapOn) noexcept {
 		snapOn ? (m_Flags |= kSnapOn) : m_Flags &= ~kSnapOn;
 	}
 
-	[[nodiscard]] bool IsOrbitOn() const noexcept { return m_Flags & kOrbitOn ? true : false; }
+	[[nodiscard]] bool IsOrbitOn() const noexcept { return (m_Flags & kOrbitOn) != 0U ? true : false; }
 
 	void TurnOrbitOn(bool orbitOn);
 

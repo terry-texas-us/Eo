@@ -5,6 +5,7 @@
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "PrimState.h"
+#include "EoGeUniquePoint.h"
 #include <ColorMapping.h>
 #include <DbLayerTable.h>
 #include <DbLinetypeTable.h>
@@ -58,7 +59,7 @@ unsigned AFXAPI HashKey(const CString& string) noexcept {
 	auto String {static_cast<const wchar_t*>(string)};
 	unsigned Hash {0};
 	while (*String != 0U) {
-		Hash = (Hash << 5) + Hash + *String++;
+		Hash = (Hash << 5U) + Hash + *String++;
 	}
 	return Hash;
 }
@@ -2407,7 +2408,7 @@ void AeSysDoc::DeleteNodalResources() {
 	RemoveAllNodalGroups();
 }
 
-void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, const unsigned long mask, const int bit, const OdGePoint3d point) {
+void AeSysDoc::UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, const unsigned mask, const unsigned bit, const OdGePoint3d point) {
 	if (theApp.nodalModeAddGroups) {
 		if (!btest(mask, bit)) {
 			if (FindNodalGroup(group) == nullptr) {
@@ -2463,7 +2464,7 @@ POSITION AeSysDoc::GetFirstMaskedPrimitivePosition() const {
 }
 
 EoDbMaskedPrimitive* AeSysDoc::GetNextMaskedPrimitive(POSITION& position) {
-	return static_cast<EoDbMaskedPrimitive*>(m_MaskedPrimitives.GetNext(position));
+	return dynamic_cast<EoDbMaskedPrimitive*>(m_MaskedPrimitives.GetNext(position));
 }
 
 void AeSysDoc::RemoveAllMaskedPrimitives() {
@@ -2474,11 +2475,11 @@ int AeSysDoc::AddUniquePoint(const OdGePoint3d& point) {
 	auto UniquePointPosition {m_UniquePoints.GetHeadPosition()};
 	while (UniquePointPosition != nullptr) {
 		const auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
-		if ((point - UniquePoint->m_Point).length() <= OdGeContext::gTol.equalPoint()) {
+		if ((point - UniquePoint->mPoint).length() <= OdGeContext::gTol.equalPoint()) {
 
-			//		if (point == UniquePoint->m_Point) {
-			UniquePoint->m_References++;
-			return UniquePoint->m_References;
+			//		if (point == UniquePoint->mPoint) {
+			UniquePoint->mReferences++;
+			return UniquePoint->mReferences;
 		}
 	}
 	m_UniquePoints.AddTail(new EoGeUniquePoint(1, point));
@@ -2486,7 +2487,7 @@ int AeSysDoc::AddUniquePoint(const OdGePoint3d& point) {
 }
 
 EoGeUniquePoint* AeSysDoc::GetNextUniquePoint(POSITION& position) {
-	return static_cast<EoGeUniquePoint*>(m_UniquePoints.GetNext(position));
+	return dynamic_cast<EoGeUniquePoint*>(m_UniquePoints.GetNext(position));
 }
 
 void AeSysDoc::RemoveUniquePointAt(const POSITION position) {
@@ -2503,7 +2504,7 @@ void AeSysDoc::DisplayUniquePoints() {
 	auto UniquePointPosition {m_UniquePoints.GetHeadPosition()};
 	while (UniquePointPosition != nullptr) {
 		const auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
-		auto PointPrimitive {new EoDbPoint(UniquePoint->m_Point)};
+		auto PointPrimitive {new EoDbPoint(UniquePoint->mPoint)};
 		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		Group.AddTail(PointPrimitive);
@@ -2518,8 +2519,8 @@ int AeSysDoc::RemoveUniquePoint(const OdGePoint3d& point) {
 	while (UniquePointPosition != nullptr) {
 		const auto Position {UniquePointPosition};
 		auto UniquePoint {GetNextUniquePoint(UniquePointPosition)};
-		if (point == UniquePoint->m_Point) {
-			References = --UniquePoint->m_References;
+		if (point == UniquePoint->mPoint) {
+			References = --UniquePoint->mReferences;
 			if (References == 0) {
 				RemoveUniquePointAt(Position);
 				delete UniquePoint;
@@ -2530,7 +2531,7 @@ int AeSysDoc::RemoveUniquePoint(const OdGePoint3d& point) {
 	return References;
 }
 
-void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, const int bit) {
+void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, const unsigned bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive {nullptr};
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
@@ -2548,7 +2549,7 @@ void AeSysDoc::AddPrimitiveBit(EoDbPrimitive* primitive, const int bit) {
 	MaskedPrimitive->SetMaskBit(bit);
 }
 
-void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive* primitive, const int bit) {
+void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive* primitive, const unsigned bit) {
 	EoDbMaskedPrimitive* MaskedPrimitive = nullptr;
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
@@ -2564,7 +2565,7 @@ void AeSysDoc::RemovePrimitiveBit(EoDbPrimitive* primitive, const int bit) {
 	}
 }
 
-unsigned long AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
+unsigned AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
 	EoDbMaskedPrimitive* MaskedPrimitive {nullptr};
 	auto MaskedPrimitivePosition {GetFirstMaskedPrimitivePosition()};
 	while (MaskedPrimitivePosition != nullptr) {
@@ -2575,7 +2576,7 @@ unsigned long AeSysDoc::GetPrimitiveMask(EoDbPrimitive* primitive) {
 			break;
 		}
 	}
-	return MaskedPrimitivePosition != nullptr ? MaskedPrimitive->GetMask() : 0UL;
+	return MaskedPrimitivePosition != nullptr ? MaskedPrimitive->GetMask() : 0U;
 }
 
 void AeSysDoc::OnSetupLayerProperties() {
@@ -2732,7 +2733,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 	if (IsDwg && DwgVersion == OdDb::vAC21) { FileDialog.m_ofn.nFilterIndex = 4; }
 	Filter += L"AutoCAD 2004 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 5;
+	if (IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) { FileDialog.m_ofn.nFilterIndex = 5; }
 	Filter += L"AutoCAD 2000 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
 	if (IsDwg && DwgVersion == OdDb::vAC15) { FileDialog.m_ofn.nFilterIndex = 6; }
@@ -2759,13 +2760,13 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 	if (!IsDwg && DwgVersion == OdDb::kDHL_1021) { FileDialog.m_ofn.nFilterIndex = 13; }
 	Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) FileDialog.m_ofn.nFilterIndex = 14;
+	if (!IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) { FileDialog.m_ofn.nFilterIndex = 14; }
 	Filter += L"AutoCAD 2000 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC15) FileDialog.m_ofn.nFilterIndex = 15;
+	if (!IsDwg && DwgVersion == OdDb::vAC15) { FileDialog.m_ofn.nFilterIndex = 15; }
 	Filter += L"AutoCAD R14 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC14) FileDialog.m_ofn.nFilterIndex = 16;
+	if (!IsDwg && DwgVersion == OdDb::vAC14) { FileDialog.m_ofn.nFilterIndex = 16; }
 	Filter += L"AutoCAD R13 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
 	if (!IsDwg && DwgVersion == OdDb::vAC13) { FileDialog.m_ofn.nFilterIndex = 17; }
@@ -2777,7 +2778,7 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 	if (!IsDwg && DwgVersion == OdDb::vAC10) { FileDialog.m_ofn.nFilterIndex = 19; }
 	Filter += L"AutoCAD R9 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC09) FileDialog.m_ofn.nFilterIndex = 20;
+	if (!IsDwg && DwgVersion == OdDb::vAC09) { FileDialog.m_ofn.nFilterIndex = 20; }
 	Filter += L"|";
 	Filter.Replace('|', '\0');
 	if (fileName.Find('.') != -1) {

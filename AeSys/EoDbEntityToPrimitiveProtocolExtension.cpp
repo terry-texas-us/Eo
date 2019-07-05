@@ -146,7 +146,7 @@ void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdGePoint3d EndPoint;
 	if (eOk == Curve->getEndPoint(EndPoint)) {
 	}
-	static_cast<EoDbPolyline*>(primitive)->SetClosed(Curve->isClosed());
+	dynamic_cast<EoDbPolyline*>(primitive)->SetClosed(Curve->isClosed());
 	double Area;
 	if (eOk == Curve->getArea(Area)) {
 	}
@@ -154,7 +154,7 @@ void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 }
 
 //<summary>This is the default implementation to be attached to OdDbEntity as a catch-all. This guarantees that this protocol extension will be found for any entity, so the search up the OdRxClass tree will not fail and abort.</summary>
-void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup*) {
+void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup* group) {
 	TRACE1("Entity %s was not converted ...\n", static_cast<const wchar_t*>(entity->isA()->name()));
 }
 
@@ -246,7 +246,7 @@ public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbAttributeDefinitionPtr AttributeDefinitionEntity = entity;
 		if (AttributeDefinitionEntity->isConstant() && !AttributeDefinitionEntity->isInvisible()) {
-			ConvertTextData(static_cast<OdDbText*>(entity), group);
+			ConvertTextData(dynamic_cast<OdDbText*>(entity), group);
 		}
 	}
 };
@@ -536,7 +536,7 @@ public:
 		TRACE1("%s was not converted ...\n", static_cast<const wchar_t*>(ViewportEntity->desc()->name()));
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
-		if (layerIds.length() != 0u) {
+		if (layerIds.length() != 0U) {
 			for (auto i = 0; i < static_cast<int>(layerIds.length()); i++) {
 			}
 		} else {

@@ -60,7 +60,7 @@ public:
 
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 
-	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned mask) override;
 
 	bool Write(EoDbFile& file) const override;
 
@@ -74,7 +74,7 @@ public:
 	/// <summary>Generates a set of points which may be used to represent a arc using a double angle algorithm.</summary>
 	void GenPts(const OdGePlane& plane, double sweepAngle) const;
 	/// <summary>Determines the bounding region. This is always a quad, but it may not be xy oriented.</summary>
-	void GetBoundingBox(OdGePoint3dArray&) const;
+	void GetBoundingBox(OdGePoint3dArray& boundingBox) const;
 
 	[[nodiscard]] OdGePoint3d EndPoint() const;
 
@@ -84,7 +84,7 @@ public:
 
 	[[nodiscard]] double SweepAngle() const noexcept;
 
-	void GetXYExtents(OdGePoint3d, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
+	void GetXYExtents(OdGePoint3d extents, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
 
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 
@@ -119,6 +119,6 @@ public:
 	static OdDbEllipsePtr CreateCircle(OdDbBlockTableRecordPtr& blockTableRecord, const OdGePoint3d& center, const OdGeVector3d& normal, double radius);
 };
 
-OdGePoint3d pFndPtOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double angle);
+OdGePoint3d FindPointOnArc(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, double angle);
 
-int pFndSwpAngGivPlnAnd3Lns(const OdGeVector3d& planeNormal, const OdGePoint3d&, const OdGePoint3d&, const OdGePoint3d&, const OdGePoint3d&, double& sweepAngle);
+int FindSweepAngleGivenPlaneAnd3Lines(const OdGeVector3d& planeNormal, const OdGePoint3d& firstPoint, const OdGePoint3d& secondPoint, const OdGePoint3d& thirdPoint, const OdGePoint3d& center, double& sweepAngle);

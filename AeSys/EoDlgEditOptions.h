@@ -17,7 +17,7 @@ protected:
 
 	void OnOK() final;
 
-	AeSysView* m_ActiveView;
+	AeSysView* m_ActiveView {nullptr};
 public:
 	CEdit m_RotationXEditControl;
 	CEdit m_RotationYEditControl;
@@ -44,10 +44,10 @@ public:
 DECLARE_MESSAGE_MAP()
 
 public:
-	double m_ScaleFactorX;
-	double m_ScaleFactorY;
-	double m_ScaleFactorZ;
-	double m_EditModeRotationAngleX;
-	double m_EditModeRotationAngleY;
-	double m_EditModeRotationAngleZ;
+	double m_ScaleFactorX {0.0};
+	double m_ScaleFactorY {0.0};
+	double m_ScaleFactorZ {0.0};
+	double m_EditModeRotationAngleX {0.0};
+	double m_EditModeRotationAngleY {0.0};
+	double m_EditModeRotationAngleZ {0.0};
 };

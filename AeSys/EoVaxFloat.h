@@ -5,7 +5,7 @@
 /// MS: the excess 127 exponent .. range is -127 (0x00 - 0x7f) to 128 (0xff - 0x7f)
 /// </remarks>
 class EoVaxFloat {
-	float m_f {0.0f};
+	float m_f {0.0F};
 public:
 	EoVaxFloat() = default;
 

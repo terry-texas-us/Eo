@@ -30,8 +30,7 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgFileManage::EoDlgFileManage(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_Document(nullptr) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)

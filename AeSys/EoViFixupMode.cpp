@@ -195,7 +195,7 @@ void AeSysView::OnFixupModeEscape() {
 	ModeLineUnhighlightOp(g_PreviousFixupCommand);
 }
 
-void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, const int cornerType) {
+void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, const unsigned cornerType) {
 	auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(previousSelection))};
 	auto PreviousLineSeg {PreviousLine->LineSeg()};
 	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(currentSelection))};
@@ -243,7 +243,7 @@ void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair pre
 				auto PlaneNormal {(intersection - StartPoint).crossProduct(EndPoint - StartPoint)};
 				PlaneNormal.normalize();
 				double SweepAngle;
-				pFndSwpAngGivPlnAnd3Lns(PlaneNormal, StartPoint, intersection, EndPoint, CenterPoint, SweepAngle);
+				FindSweepAngleGivenPlaneAnd3Lines(PlaneNormal, StartPoint, intersection, EndPoint, CenterPoint, SweepAngle);
 				const auto MajorAxis {StartPoint - CenterPoint};
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 				Ellipse->set(CenterPoint, PlaneNormal, MajorAxis, 1.0, 0.0, SweepAngle);
@@ -257,7 +257,7 @@ void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair pre
 	}
 }
 
-bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(const double radius, OdGeLineSeg3d firstLineSeg, OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint) {
+bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(const double radius, const OdGeLineSeg3d firstLineSeg, const OdGeLineSeg3d secondLineSeg, OdGePoint3d& centerPoint) const {
 	const auto FirstLineStartPoint = firstLineSeg.startPoint();
 	auto FirstLineEndPoint = firstLineSeg.endPoint();
 	const auto FirstLineVector {FirstLineEndPoint - FirstLineStartPoint};

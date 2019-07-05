@@ -177,7 +177,7 @@ double EoDbText::Rotation() const {
 	return Angle;
 }
 
-OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView*, const EoGePoint4d& point) const {
+OdGePoint3d EoDbText::SelectAtControlPoint(AeSysView* /*view*/, const EoGePoint4d& point) const {
 	ms_ControlPointIndex = USHRT_MAX;
 	return point.Convert3d();
 }
@@ -227,7 +227,7 @@ void EoDbText::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_ReferenceSystem.TransformBy(transformMatrix);
 }
 
-void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
 	if (mask != 0) { m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate); }
 }
 
@@ -263,7 +263,7 @@ void EoDbText::Write(CFile& file, unsigned char* buffer) const {
 	for (unsigned CharacterIndex = 0; CharacterIndex < NumberOfCharacters; CharacterIndex++) {
 		buffer[BufferOffset++] = static_cast<unsigned char>(m_Text[static_cast<int>(CharacterIndex)]);
 	}
-	file.Write(buffer, buffer[3] * 32u);
+	file.Write(buffer, buffer[3] * 32U);
 }
 
 EoDb::HorizontalAlignment EoDbText::ConvertHorizontalAlignment(const OdDb::TextHorzMode horizontalMode) noexcept {

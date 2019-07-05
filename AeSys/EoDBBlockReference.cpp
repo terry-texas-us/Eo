@@ -52,7 +52,7 @@ void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& /*point*/) co
 
 void EoDbBlockReference::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const {
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return; }
 	const auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
 	static_cast<EoDbGroup*>(Block)->AddPrimitivesToTreeViewControl(tree, TreeItemHandle);
 }
@@ -85,7 +85,7 @@ EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecor
 
 void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return; }
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	Block->Display(view, deviceContext);
 	view->PopModelTransform();
@@ -124,7 +124,7 @@ OdGePoint3d EoDbBlockReference::GetCtrlPt() const noexcept {
 
 void EoDbBlockReference::GetExtents(AeSysView* view, OdGeExtents3d& extents) const {
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) != 0) {
+	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
 		view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 		Block->GetExtents_(view, extents);
 		view->PopModelTransform();
@@ -142,11 +142,11 @@ bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept 
 bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	// Test whether an instance of a block is wholly or partially within the current view volume.
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return false; }
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	const auto bInView {Block->IsInView(view)};
+	const auto IsInView {Block->IsInView(view)};
 	view->PopModelTransform();
-	return bInView;
+	return IsInView;
 }
 
 bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d& /*point*/) const noexcept {
@@ -155,36 +155,36 @@ bool EoDbBlockReference::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePo
 
 OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	ms_ControlPointIndex = SIZE_T_MAX;
-	OdGePoint3d ptCtrl;
+	OdGePoint3d ControlPoint;
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return ptCtrl; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return ControlPoint; }
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
 		const auto Primitive {Block->GetNext(Position)};
-		ptCtrl = Primitive->SelectAtControlPoint(view, point);
+		ControlPoint = Primitive->SelectAtControlPoint(view, point);
 		if (ms_ControlPointIndex != SIZE_T_MAX) {
-			view->ModelTransformPoint(ptCtrl);
+			view->ModelTransformPoint(ControlPoint);
 			break;
 		}
 	}
 	view->PopModelTransform();
-	return ptCtrl;
+	return ControlPoint;
 }
 
 bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return false; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return false; }
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
-	const auto bResult {Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)};
+	const auto Result {Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)};
 	view->PopModelTransform();
-	return bResult;
+	return Result;
 }
 
 bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	auto Result {false};
 	EoDbBlock* Block;
-	if (AeSysDoc::GetDoc()->LookupBlock(m_Name, Block) == 0) { return Result; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return Result; }
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
@@ -223,7 +223,7 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
 	if (mask != 0) { m_Position += translate; }
 }
 

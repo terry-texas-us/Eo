@@ -29,7 +29,7 @@ void AeSysView::OnModePrimitiveMend() {
 		const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		m_PrimitiveToMendCopy = m_PrimitiveToMend->Clone(BlockTableRecord);
 		m_MendPrimitiveBegin = m_PrimitiveToMend->SelectAtControlPoint(this, ptView);
-		m_MendPrimitiveVertexIndex = static_cast<unsigned long>(1 << EoDbPrimitive::ControlPointIndex());
+		m_MendPrimitiveVertexIndex = static_cast<unsigned>(1U << EoDbPrimitive::ControlPointIndex());
 		theApp.LoadModeResources(ID_MODE_PRIMITIVE_MEND);
 	}
 }

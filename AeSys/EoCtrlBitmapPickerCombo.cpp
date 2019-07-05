@@ -73,7 +73,7 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 		DeviceContext->SelectObject(OldBrush);
 		DeviceContext->SelectObject(OldPen);
 	}
-	if ((drawItemStruct->itemState & ODS_SELECTED) == 0u && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
+	if ((drawItemStruct->itemState & ODS_SELECTED) == 0U && drawItemStruct->itemAction & (ODA_SELECT | ODA_DRAWENTIRE)) {
 		CBrush WindowBrush(GetSysColor(COLOR_WINDOW));
 		CPen WindowPen(PS_SOLID, 1, GetSysColor(COLOR_WINDOW));
 		const auto OldBrush {DeviceContext->SelectObject(&WindowBrush)};

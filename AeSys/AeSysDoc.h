@@ -7,7 +7,6 @@
 #include <ExDbCommandContext.h>
 #include <DbLayoutManager.h>
 #include <ExEdBaseIO.h>
-#include "EoGeUniquePoint.h"
 #include "EoDbText.h"
 #include "EoDbMaskedPrimitive.h"
 #include "EoDbBlock.h"
@@ -16,6 +15,7 @@
 # include "OdApplicationImpl.h"
 class ExStringIO;
 class EoDlgUserIoConsole;
+struct EoGeUniquePoint;
 
 class CommandView : public OdEdCommand {
 public:
@@ -495,7 +495,7 @@ public:
 	// Nodal list interface (includes list of groups, primitives and unique points)
 	void DeleteNodalResources();
 	/// <summary>Maintains a list of the primitives with at least one identified node.</summary>
-	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned long mask, int bit, OdGePoint3d point);
+	void UpdateNodalList(EoDbGroup* group, EoDbPrimitive* primitive, unsigned mask, unsigned bit, OdGePoint3d point);
 
 	POSITION AddNodalGroup(EoDbGroup* group);
 
@@ -515,11 +515,11 @@ public:
 
 	void RemoveAllMaskedPrimitives();
 
-	unsigned long GetPrimitiveMask(EoDbPrimitive* primitive);
+	unsigned GetPrimitiveMask(EoDbPrimitive* primitive);
 
-	void AddPrimitiveBit(EoDbPrimitive* primitive, int bit);
+	void AddPrimitiveBit(EoDbPrimitive* primitive, unsigned bit);
 
-	void RemovePrimitiveBit(EoDbPrimitive* primitive, int bit);
+	void RemovePrimitiveBit(EoDbPrimitive* primitive, unsigned bit);
 
 	int AddUniquePoint(const OdGePoint3d& point);
 

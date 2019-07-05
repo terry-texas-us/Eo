@@ -1,6 +1,7 @@
 #pragma once
 #include <Ps/plotstyles.h>
 #include "EoCtrlBitmapPickerCombo.h"
+class CPsListStyleData;
 constexpr unsigned gc_PlotStyleColorMaxName = 25;
 constexpr int gc_PlotStyleComboColorPosition = 8;
 constexpr short gc_PlotStyleSpinMaxPen = 32;
@@ -73,20 +74,18 @@ struct DIBCOLOR {
 	unsigned char r;
 	unsigned char g;
 	unsigned char b;
-	unsigned char reserved;
+	unsigned char reserved {0};
 
 	DIBCOLOR(const unsigned char ar, const unsigned char ag, const unsigned char ab) noexcept
 		: r(ar)
 		, g(ag)
-		, b(ab)
-		, reserved(0) {
+		, b(ab) {
 	}
 
 	DIBCOLOR(const COLORREF color) noexcept
 		: r(GetRValue(color))
 		, g(GetGValue(color))
-		, b(GetBValue(color))
-		, reserved(0) {
+		, b(GetBValue(color)) {
 	}
 
 	operator unsigned long() noexcept {
@@ -95,27 +94,19 @@ struct DIBCOLOR {
 };
 
 class CBitmapColorInfo {
+	friend CPsListStyleData;
 	friend class EoDlgPlotStyleEditor_FormViewPropertyPage;
 	unsigned char m_Item {0xff};
 	COLORREF m_Color {0};
-public:
 	CBitmap m_bitmap;
-	wchar_t m_name[gc_PlotStyleColorMaxName];
-
+	wchar_t m_Name[gc_PlotStyleColorMaxName] {};
+public:
 	CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, const wchar_t* name);
 
 	CBitmapColorInfo(const CBitmap* bitmap, COLORREF color, unsigned char colorItem, int colorIndex = -1);
 
 	CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name);
 
-protected:
-	void SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels);
-
-	DIBCOLOR* GetBitmapPixels(CBitmap& bitmap, int& width, int& height);
-
-	void GetBitmapSizes(CBitmap& bitmap, int& width, int& height);
-
-public:
 	CBitmap* CloneBitmap(const CBitmap* sourceBitmap, CBitmap* clonedBitmap);
 
 	void PaintBitmap(CBitmap& bitmap, COLORREF color);
@@ -123,6 +114,13 @@ public:
 	bool IsColor(COLORREF color, unsigned char item) noexcept;
 
 	const OdCmEntityColor GetColor();
+
+protected:
+	void SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels);
+
+	DIBCOLOR* GetBitmapPixels(CBitmap& bitmap, int& width, int& height);
+
+	void GetBitmapSizes(CBitmap& bitmap, int& width, int& height);
 };
 
 using OdBitmapColorInfoArray = OdArray<CBitmapColorInfo*>;

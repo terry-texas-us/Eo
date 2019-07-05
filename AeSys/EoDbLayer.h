@@ -7,13 +7,13 @@ class EoDbLayer final : public EoDbGroupList {
 	unsigned short m_StateFlags;
 	unsigned short m_TracingFlags;
 public:
-	enum StateFlags {
-		kIsResident = 0x0001,	// entry in table list is saved
-		kIsInternal = 0x0002,	// group list saved within drawing
-		kIsCurrent = 0x0004,	// may have groups added (0 or 1), displayed using hot color set
-		kIsActive = 0x0008,		// may have groups modified (0 or more), displayed using warm color set
-		kIsLocked = 0x0010,		// tracing which is viewed or layer which is static (no additions or modifications), displayed using warm color set
-		kIsOff = 0x0020
+	enum StateFlags : unsigned {
+		kIsResident = 0x0001U, // entry in table list is saved
+		kIsInternal = 0x0002U, // group list saved within drawing
+		kIsCurrent = 0x0004U, // may have groups added (0 or 1), displayed using hot color set
+		kIsActive = 0x0008U, // may have groups modified (0 or more), displayed using warm color set
+		kIsLocked = 0x0010U, // tracing which is viewed or layer which is static (no additions or modifications), displayed using warm color set
+		kIsOff = 0x0020U
 	};
 
 	EoDbLayer(OdDbLayerTableRecordPtr layer);

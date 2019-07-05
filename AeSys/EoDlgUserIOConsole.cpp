@@ -30,7 +30,7 @@ long EoDlgUserIoConsole::numRefs() const noexcept {
 
 void EoDlgUserIoConsole::release() {
 	ODA_ASSERT(m_RefCounter > 0);
-	if (--m_RefCounter == 0u) { delete this; }
+	if (--m_RefCounter == 0U) { delete this; }
 }
 
 void EoDlgUserIoConsole::DoDataExchange(CDataExchange* dataExchange) {

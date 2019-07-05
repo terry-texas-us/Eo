@@ -4,12 +4,13 @@
 #include "AeSysView.h"
 #include "PrimState.h"
 #include "EoDbHatch.h"
+#include "EoGeUniquePoint.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-double NodalModePickTolerance = .05;
+double NodalModePickTolerance = 0.05;
 unsigned short PreviousNodalCommand = 0;
 OdGePoint3d PreviousNodalCursorPosition;
 
@@ -35,7 +36,7 @@ void AeSysView::OnNodalModePoint() {
 			Primitive->GetAllPoints(Points);
 			for (unsigned i = 0; i < Points.size(); i++) {
 				if (OdGeVector3d(CurrentPnt - Points[i]).length() <= NodalModePickTolerance) {
-					GetDocument()->UpdateNodalList(Group, Primitive, Mask, static_cast<int>(i), Points[i]);
+					GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
 				}
 			}
 		}
@@ -51,7 +52,7 @@ void AeSysView::OnNodalModeLine() {
 		const auto Mask {GetDocument()->GetPrimitiveMask(Primitive)};
 		Primitive->GetAllPoints(Points);
 		for (unsigned i = 0; i < Points.size(); i++) {
-			GetDocument()->UpdateNodalList(Group, Primitive, Mask, static_cast<int>(i), Points[i]);
+			GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
 		}
 	}
 }
@@ -78,7 +79,7 @@ void AeSysView::OnNodalModeArea() {
 					Primitive->GetAllPoints(Points);
 					for (unsigned i = 0; i < Points.size(); i++) {
 						if (ContainmentOf(Points[i], MinExtent, MaxExtent)) {
-							GetDocument()->UpdateNodalList(Group, Primitive, Mask, static_cast<int>(i), Points[i]);
+							GetDocument()->UpdateNodalList(Group, Primitive, Mask, i, Points[i]);
 						}
 					}
 				}
@@ -130,7 +131,7 @@ void AeSysView::OnNodalModeToLine() {
 			auto PointPosition {GetDocument()->GetFirstUniquePointPosition()};
 			while (PointPosition != nullptr) {
 				const auto UniquePoint {GetDocument()->GetNextUniquePoint(PointPosition)};
-				auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->m_Point, UniquePoint->m_Point + Translate)};
+				auto Line {EoDbLine::Create(BlockTableRecord, UniquePoint->mPoint, UniquePoint->mPoint + Translate)};
 				Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
 				Group->AddTail(EoDbLine::Create(Line));
@@ -171,7 +172,7 @@ void AeSysView::OnNodalModeToPolygon() {
 					const auto Mask {GetDocument()->GetPrimitiveMask(Primitive)};
 					if (Mask != 0) {
 						if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) != 0) {
-							if ((Mask & 3) == 3) {
+							if ((Mask & 3U) == 3) {
 								const auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 								Points[0] = Line->StartPoint();
 								Points[1] = Line->EndPoint();
@@ -235,7 +236,7 @@ void AeSysView::OnNodalModeEngage() {
 		OdGePoint3dArray Points;
 		EngagedPrimitive()->GetAllPoints(Points);
 		for (unsigned i = 0; i < Points.size(); i++) {
-			GetDocument()->UpdateNodalList(EngagedGroup(), EngagedPrimitive(), Mask, static_cast<int>(i), Points[i]);
+			GetDocument()->UpdateNodalList(EngagedGroup(), EngagedPrimitive(), Mask, i, Points[i]);
 		}
 	}
 }
@@ -257,7 +258,7 @@ void AeSysView::OnNodalModeReturn() {
 				auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
 				while (UniquePointPosition != nullptr) {
 					auto Point {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
-					Point->m_Point += Translate;
+					Point->mPoint += Translate;
 				}
 				SetCursorPosition(CurrentPnt);
 			}
@@ -319,12 +320,12 @@ void AeSysView::DoNodalModeMouseMove() {
 					const auto Primitive {MaskedPrimitive->GetPrimitive()};
 					const auto Mask {MaskedPrimitive->GetMask()};
 					m_PreviewGroup.AddTail(Primitive->Clone(BlockTableRecord));
-					static_cast<EoDbPrimitive*>(m_PreviewGroup.GetTail())->TranslateUsingMask(Translate, Mask);
+					dynamic_cast<EoDbPrimitive*>(m_PreviewGroup.GetTail())->TranslateUsingMask(Translate, Mask);
 				}
 				auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
 				while (UniquePointPosition != nullptr) {
 					const auto UniquePoint {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
-					const auto Point {UniquePoint->m_Point + Translate};
+					const auto Point {UniquePoint->mPoint + Translate};
 					auto PointPrimitive {new EoDbPoint(Point)};
 					PointPrimitive->SetColorIndex2(252);
 					PointPrimitive->SetPointDisplayMode(8);
@@ -346,6 +347,7 @@ void AeSysView::DoNodalModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
 			break;
+		default: ;
 	}
 	m_NodalModePoints.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
 }
@@ -362,7 +364,7 @@ void AeSysView::ConstructPreviewGroup() {
 	auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
 	while (UniquePointPosition != nullptr) {
 		const auto UniquePoint {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
-		auto PointPrimitive {new EoDbPoint(UniquePoint->m_Point)};
+		auto PointPrimitive {new EoDbPoint(UniquePoint->mPoint)};
 		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		m_PreviewGroup.AddTail(PointPrimitive);
@@ -383,7 +385,7 @@ void AeSysView::ConstructPreviewGroupForNodalGroups() {
 	auto UniquePointPosition {GetDocument()->GetFirstUniquePointPosition()};
 	while (UniquePointPosition != nullptr) {
 		const auto UniquePoint {GetDocument()->GetNextUniquePoint(UniquePointPosition)};
-		auto PointPrimitive {new EoDbPoint(UniquePoint->m_Point)};
+		auto PointPrimitive {new EoDbPoint(UniquePoint->mPoint)};
 		PointPrimitive->SetColorIndex2(252);
 		PointPrimitive->SetPointDisplayMode(8);
 		m_PreviewGroup.AddTail(PointPrimitive);

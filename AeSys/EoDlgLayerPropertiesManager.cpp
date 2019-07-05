@@ -172,6 +172,7 @@ void EoDlgLayerPropertiesManager::OnSizing(const unsigned side, const LPRECT rec
 			case WMSZ_RIGHT: case WMSZ_BOTTOMRIGHT: case WMSZ_TOPRIGHT:
 				rectangle->right = rectangle->left + initialWidth;
 				break;
+			default: ;
 		}
 	}
 	if (rct.Height() < initialHeight) {
@@ -182,6 +183,7 @@ void EoDlgLayerPropertiesManager::OnSizing(const unsigned side, const LPRECT rec
 			case WMSZ_TOP: case WMSZ_TOPLEFT: case WMSZ_TOPRIGHT:
 				rectangle->top = rectangle->bottom - initialHeight;
 				break;
+			default: ;
 		}
 	}
 }

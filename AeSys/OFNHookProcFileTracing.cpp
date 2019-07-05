@@ -20,7 +20,7 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 				wchar_t FilePath[MAX_PATH] {L"\0"};
 				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>(static_cast<wchar_t*>(FilePath)));
 				CFileStatus FileStatus;
-				if (CFile::GetStatus(FilePath, FileStatus)) {
+				if (CFile::GetStatus(FilePath, FileStatus) != 0) {
 					const auto FileType {AeSys::GetFileType(FilePath)};
 					if (FileType == EoDb::kTracing || FileType == EoDb::kJob) {
 						auto Layer {Document->GetLayerAt(FilePath)};
@@ -41,9 +41,9 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 		}
 		case WM_COMMAND: {
 			wchar_t FilePath[MAX_PATH] {L"\0"};
-			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>((wchar_t*)FilePath));
+			::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>(static_cast<wchar_t*>(FilePath)));
 			CFileStatus FileStatus;
-			if (!CFile::GetStatus(FilePath, FileStatus)) {
+			if (CFile::GetStatus(FilePath, FileStatus) == 0) {
 				AeSys::WarningMessageBox(IDS_MSG_FILE_NOT_FOUND, FilePath);
 				return TRUE;
 			}
@@ -130,6 +130,7 @@ unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage
 				default: ;
 			}
 		}
+		default: ;
 	}
 	return FALSE;
 }

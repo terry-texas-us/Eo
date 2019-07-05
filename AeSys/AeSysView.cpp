@@ -353,13 +353,13 @@ void AeSysView::OnDraw(CDC* deviceContext) {
 }
 
 void AeSysView::OnInitialUpdate() {
-	::SetClassLongPtr(GetSafeHwnd(), GCLP_HBRBACKGROUND, reinterpret_cast<LONG_PTR>(CreateSolidBrush(g_ViewBackgroundColor)));
+	SetClassLongW(GetSafeHwnd(), GCLP_HBRBACKGROUND, reinterpret_cast<long>(CreateSolidBrush(g_ViewBackgroundColor)));
 	CView::OnInitialUpdate();
 	auto Document {GetDocument()};
 	OdDbDatabase* Database {Document->m_DatabasePtr};
 	setDatabase(Database);
 	m_hWindowDC = ::GetDC(m_hWnd);
-	if (ms_RedrawMessage == 0u) {
+	if (ms_RedrawMessage == 0U) {
 		ms_RedrawMessage = RegisterWindowMessageW(L"AeSys::AeSysView::WM_REDRAW");
 	}
 	CreateDevice();
@@ -624,7 +624,7 @@ OdGiContext::PStyleType AeSysView::plotStyleType() const {
 void AeSysView::plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const {
 	OdGiContextForDbDatabase::plotStyle(psNameId, plotStyleData);
 	if (m_bPlotGrayscale) { // #4203 : make grayscale preview if printer doesn't support color mode
-		plotStyleData.setColorPolicy(plotStyleData.colorPolicy() | 2);
+		plotStyleData.setColorPolicy(plotStyleData.colorPolicy() | 2U);
 	}
 }
 
@@ -1015,7 +1015,7 @@ void GenerateTiles(const HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDev
 	const auto dx2 {m > 1 ? dx / abs(dx) * 8 : 0};
 	const auto dy2 {n > 1 ? dy / abs(dy) * 8 : 0};
 	BITMAPINFO BitmapInfo;
-	BitmapInfo.bmiHeader.biBitCount = 24u;
+	BitmapInfo.bmiHeader.biBitCount = 24U;
 	BitmapInfo.bmiHeader.biWidth = tileWidth + abs(dx2) * 2;
 	BitmapInfo.bmiHeader.biHeight = tileHeight;
 	BitmapInfo.bmiHeader.biClrImportant = 0;
@@ -3439,7 +3439,7 @@ void AeSysView::SetModeCursor(const unsigned mode) {
 	auto CursorHandle {static_cast<HCURSOR>(LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
 	VERIFY(CursorHandle);
 	SetCursor(CursorHandle);
-	::SetClassLongPtr(this->GetSafeHwnd(), GCLP_HCURSOR, reinterpret_cast<long>(CursorHandle));
+	SetClassLongW(this->GetSafeHwnd(), GCLP_HCURSOR, reinterpret_cast<long>(CursorHandle));
 }
 
 void AeSysView::SetWorldScale(const double scale) {

@@ -26,6 +26,6 @@ BOOL EoDlgSetupHatch::OnInitDialog() {
 }
 
 void EoDlgSetupHatch::OnOK() {
-	g_PrimitiveState.SetHatchInteriorStyleIndex(GetDlgItemInt(IDC_FIL_AREA_HAT_ID, 0, FALSE));
+	g_PrimitiveState.SetHatchInteriorStyleIndex(GetDlgItemInt(IDC_FIL_AREA_HAT_ID, nullptr, FALSE));
 	CDialog::OnOK();
 }

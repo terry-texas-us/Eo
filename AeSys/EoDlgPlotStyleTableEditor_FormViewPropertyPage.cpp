@@ -63,6 +63,7 @@ void Dlg_OnCommand(const HWND hwnd, const int id, HWND /*hwndCtl*/, const unsign
 				break;
 			}
 		}
+		default: ;
 	}
 }
 
@@ -188,11 +189,11 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, 
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
 	if (colorIndex <= 0) {
-		wcscpy_s(m_name, gc_PlotStyleColorMaxName, L"Custom Color");
+		wcscpy_s(m_Name, gc_PlotStyleColorMaxName, L"Custom Color");
 	} else {
 		OdString ColorName;
 		ColorName.format(L"Color %d", colorIndex);
-		wcscpy_s(m_name, gc_PlotStyleColorMaxName, ColorName);
+		wcscpy_s(m_Name, gc_PlotStyleColorMaxName, ColorName);
 	}
 }
 
@@ -200,14 +201,14 @@ CBitmapColorInfo::CBitmapColorInfo(const CBitmap* bitmap, const COLORREF color, 
 	m_Color = static_cast<unsigned long>((m_Item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	CloneBitmap(bitmap, &m_bitmap);
 	PaintBitmap(m_bitmap, color);
-	wcsncpy(m_name, name, gc_PlotStyleColorMaxName);
+	wcsncpy(m_Name, name, gc_PlotStyleColorMaxName);
 }
 
 CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* name) {
 	const auto BitmapHandle {static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), resourceName, IMAGE_BITMAP, 13, 13, LR_CREATEDIBSECTION))};
 	const auto Bitmap {CBitmap::FromHandle(BitmapHandle)};
 	CloneBitmap(Bitmap, &m_bitmap);
-	wcsncpy(m_name, name, gc_PlotStyleColorMaxName);
+	wcsncpy(m_Name, name, gc_PlotStyleColorMaxName);
 }
 
 int CPsListStyleData::getPublicArrayIndexByColor(const COLORREF color) {
@@ -406,10 +407,10 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initFillstyleComboBox() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 	int Item;
 	for (unsigned BitmapIndex = 0; BitmapIndex < m_bitmapList.size(); BitmapIndex++) {
-		if (BitmapIndex == 0u) {
-			Item = m_Color.AddBitmap(nullptr, m_bitmapList[BitmapIndex]->m_name);
+		if (BitmapIndex == 0U) {
+			Item = m_Color.AddBitmap(nullptr, m_bitmapList[BitmapIndex]->m_Name);
 		} else {
-			Item = m_Color.AddBitmap(&m_bitmapList[BitmapIndex]->m_bitmap, m_bitmapList[BitmapIndex]->m_name);
+			Item = m_Color.AddBitmap(&m_bitmapList[BitmapIndex]->m_bitmap, m_bitmapList[BitmapIndex]->m_Name);
 		}
 		m_bitmapList[BitmapIndex]->m_Item = static_cast<unsigned char>(Item);
 	}
@@ -418,7 +419,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result) {
 	const NM_LISTVIEW* pNMListView = reinterpret_cast<NM_LISTVIEW*>(notifyStructure);
-	if (pNMListView->uNewState == 0u) {
+	if (pNMListView->uNewState == 0U) {
 		*result = 0;
 		return;
 	}
@@ -902,7 +903,7 @@ int EoDlgPlotStyleEditor_FormViewPropertyPage::appendCustomColor(const int item)
 	const auto pPsListStyleData {reinterpret_cast<CPsListStyleData*>(m_listStyles.GetItemData(item))};
 	const auto pBitmapColorInfo {pPsListStyleData->GetBitmapColorInfo()};
 	if (pBitmapColorInfo == nullptr) { return pPsListStyleData->GetActiveListIndex(); }
-	return m_Color.InsertBitmap(gc_PlotStyleComboColorPosition, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
+	return m_Color.InsertBitmap(gc_PlotStyleComboColorPosition, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_Name);
 }
 
 int EoDlgPlotStyleEditor_FormViewPropertyPage::replaceCustomColor(const COLORREF color, const int item) {
@@ -910,5 +911,5 @@ int EoDlgPlotStyleEditor_FormViewPropertyPage::replaceCustomColor(const COLORREF
 	pPsListStyleData->ReplaceBitmapColorInfo(color, item);
 	const auto pBitmapColorInfo {pPsListStyleData->GetBitmapColorInfo()};
 	if (pBitmapColorInfo == nullptr) { return pPsListStyleData->GetActiveListIndex(); }
-	return m_Color.InsertBitmap(gc_PlotStyleComboColorPosition, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_name);
+	return m_Color.InsertBitmap(gc_PlotStyleComboColorPosition, &pBitmapColorInfo->m_bitmap, pBitmapColorInfo->m_Name);
 }

@@ -26,8 +26,8 @@ BOOL EoDlgLowPressureDuctOptions::OnInitDialog() {
 	SetDlgItemTextW(IDC_WIDTH, theApp.FormatLength(width, Units, 12, 3));
 	SetDlgItemTextW(IDC_DEPTH, theApp.FormatLength(depth, Units, 12, 3));
 	CheckRadioButton(IDC_LEFT, IDC_RIGHT, IDC_CENTER + justification);
-	CheckDlgButton(IDC_GEN_VANES, generateVanes ? 1u : 0u);
-	CheckDlgButton(IDC_BEGINWITHTRANSITION, beginWithTransition ? 1u : 0u);
+	CheckDlgButton(IDC_GEN_VANES, generateVanes ? 1U : 0U);
+	CheckDlgButton(IDC_BEGINWITHTRANSITION, beginWithTransition ? 1U : 0U);
 	return TRUE;
 }
 

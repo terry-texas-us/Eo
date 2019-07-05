@@ -17,7 +17,7 @@ DECLARE_MESSAGE_MAP()
 
 	enum ColumnLabels { kStatus, kName, kOn, kFreeze, kLock, kColor, kLinetype, kLineweight, kPlotStyle, kPlot, kVpFreeze, kVpColor, kVpLinetype, kVpLineweight, kVpPlotStyle, kDescr };
 
-	AeSysDoc* m_Document;
+	AeSysDoc* m_Document {nullptr};
 	OdDbDatabasePtr m_Database;
 	OdDbObjectId m_ActiveViewport;
 	CListBox m_BlocksList;

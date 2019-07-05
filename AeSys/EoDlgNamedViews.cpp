@@ -191,7 +191,7 @@ void EoDlgNamedViews::OnNewButton() {
 		LVFINDINFO lvfi = {LVFI_STRING, newDlg.m_sViewName, 0, {0, 0}, 0};
 		auto i {m_views.FindItem(&lvfi)};
 		if (i >= 0) {
-			if (AfxMessageBox(newDlg.m_sViewName + L" already exists.\nDo you want to replace it?", MB_YESNOCANCEL) != IDYES) continue;
+			if (AfxMessageBox(newDlg.m_sViewName + L" already exists.\nDo you want to replace it?", MB_YESNOCANCEL) != IDYES) { continue; }
 			pNamedView = m_views.view(i);
 			m_views.DeleteItem(i);
 		} else {
@@ -209,7 +209,7 @@ void EoDlgNamedViews::OnNewButton() {
 				pViewPE->setUcs(pNamedView, ActiveViewportObject);
 			} else if (newDlg.m_sUcsName == L"World") {
 				pNamedView->setUcsToWorld();
-			} else pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb));
+			} else { pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb)); }
 		} else { pNamedView->disassociateUcsFromView(); }
 		pViewPE->setProps(pNamedView, ActiveViewportObject);
 		pNamedView->setCategoryName(OdString(newDlg.m_sViewCategory));

@@ -3,8 +3,8 @@
 
 void EoVaxFloat::Convert(const double& dMS) noexcept {
 	auto fMS {float(dMS)};
-	auto fVax {0.f};
-	if (fMS != 0.f) {
+	auto fVax {0.0F};
+	if (fMS != 0.0F) {
 		const auto pMS {reinterpret_cast<unsigned char*>(&fMS)};
 		const auto pVax {reinterpret_cast<unsigned char*>(&fVax)};
 		const auto bSign {static_cast<unsigned char>(pMS[3] & 0x80)};
@@ -25,7 +25,7 @@ void EoVaxFloat::Convert(const double& dMS) noexcept {
 }
 
 double EoVaxFloat::Convert() {
-	auto fMS {0.f};
+	auto fMS {0.0F};
 	const auto pvax {reinterpret_cast<unsigned char*>(&m_f)};
 	const auto pms {reinterpret_cast<unsigned char*>(&fMS)};
 	const auto bSign {static_cast<unsigned char>(pvax[1] & 0x80)};

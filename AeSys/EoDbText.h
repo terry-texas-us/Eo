@@ -34,7 +34,7 @@ public:
 
 	EoDbText(const EoDbText& other);
 
-	EoDbText& operator=(const EoDbText&);
+	EoDbText& operator=(const EoDbText& other);
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 
@@ -74,7 +74,7 @@ public:
 
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 
-	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned mask) override;
 
 	bool Write(EoDbFile& file) const override;
 

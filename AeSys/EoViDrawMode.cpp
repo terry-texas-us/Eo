@@ -426,6 +426,7 @@ void AeSysView::DoDrawModeMouseMove() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			}
 			break;
+		default: ;
 	}
 	m_DrawModePoints.setLogicalLength(static_cast<unsigned>(NumberOfPoints));
 }

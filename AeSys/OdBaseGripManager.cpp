@@ -58,7 +58,7 @@ bool OdBaseGripManager::OnMouseDown(const int x, const int y, const bool shiftIs
 				if (Grip->GripData()->triggerGrip()) {
 					CurrentStatus = OdDbGripOperations::kWarmGrip;
 				} else {
-					if (Grip->GripData()->hotGripFunc()) {
+					if (Grip->GripData()->hotGripFunc() != nullptr) {
 						int Flags {OdDbGripOperations::kMultiHotGrip};
 						if (Grip->IsShared()) {
 							Flags |= OdDbGripOperations::kSharedGrip;
@@ -154,7 +154,7 @@ OdResult OdBaseGripManager::StartHover(const int x, const int y, const bool shif
 				Grip->SetStatus(OdDbGripOperations::kHoverGrip);
 				if (!Grip->GripData().isNull()) {
 					if (Grip->GripData()->hoverFunc() != nullptr && !shiftIsDown) {
-						if (!m_ClockStartHover) {
+						if (m_ClockStartHover == 0) {
 							m_ClockStartHover = clock();
 						}
 						if ((clock() - m_ClockStartHover) * 1000 / CLOCKS_PER_SEC > 300) { // 300 ms delay before hover
@@ -254,7 +254,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 		const auto Size {aOld.size()};
 		for (unsigned i = 0; i < Size; i++) {
 			RemoveEntityGrips(aOld[i], true);
-			if (i % gc_GripManagerPageEachObject && Database) {
+			if (i % gc_GripManagerPageEachObject && Database != nullptr) {
 				Database->pageObjects();
 			}
 		}
@@ -271,7 +271,7 @@ void OdBaseGripManager::SelectionSetChanged(OdSelectionSet* selectionSet) {
 		const auto Size {aNew.size()};
 		for (unsigned i = 0; i < Size; i++) {
 			UpdateEntityGrips(aNew[i]);
-			if (i % gc_GripManagerPageEachObject && Database) {
+			if (i % gc_GripManagerPageEachObject && Database != nullptr) {
 				Database->pageObjects();
 			}
 		}
@@ -293,7 +293,7 @@ void OdBaseGripManager::UpdateEntityGrips(OdDbStub* id) {
 	OdDbGripDataPtrArray aPts;
 	auto SelectionSetIterator {SearchObjectSelectionSetIterator(SelectionSet, id)};
 	if (SelectionSetIterator->subentCount() > 0) {
-		for (unsigned long se = 0; se < SelectionSetIterator->subentCount(); se++) {
+		for (unsigned se = 0; se < SelectionSetIterator->subentCount(); se++) {
 			OdDbBaseFullSubentPath subEntPath;
 			SelectionSetIterator->getSubentity(se, subEntPath);
 			aPts.clear();
@@ -359,7 +359,7 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, const bool fireDone) {
 	auto GripDataIterator {m_GripData.find(id)};
 	if (GripDataIterator != m_GripData.end()) {
 		auto Entity {OpenObject(id)};
-		if (Entity.get()) {
+		if (Entity.get() != nullptr) {
 			GripStatus(Entity, OdDb::kGripsToBeDeleted);
 		}
 		const auto Model {IsModel(Entity)};
@@ -367,7 +367,7 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, const bool fireDone) {
 		for (unsigned i = 0; i < Size; i++) {
 			auto GripData {GripDataIterator->second.dataArray[i]};
 			HideGrip(GripData, Model);
-			if (!GripDataIterator->second.dataArray[i]->GripData().isNull() && GripDataIterator->second.dataArray[i]->GripData()->gripOpStatFunc()) {
+			if (!GripDataIterator->second.dataArray[i]->GripData().isNull() && (GripDataIterator->second.dataArray[i]->GripData()->gripOpStatFunc() != nullptr)) {
 				(*GripDataIterator->second.dataArray[i]->GripData()->gripOpStatFunc())(GripDataIterator->second.dataArray[i]->GripData(), id, OdDbGripOperations::kGripEnd);
 			}
 			GripDataIterator->second.dataArray[i] = nullptr;
@@ -380,9 +380,7 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, const bool fireDone) {
 			}
 		}
 		if (fireDone) {
-			if (Entity.get()) {
-				GripStatus(Entity, OdDb::kGripsDone);
-			}
+			if (Entity.get() != nullptr) { GripStatus(Entity, OdDb::kGripsDone); 	}
 		}
 		m_GripData.erase(GripDataIterator);
 	}

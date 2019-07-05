@@ -284,10 +284,8 @@ void EoDlgPageSetup::FillPlotStyles() {
 	m_HidePaperspaceObjects = static_cast<int>(m_PlotSettings.plotHidden());
 	GetDlgItem(IDC_CHECK_PLOT_PAPERSPACE_LAST)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
 	GetDlgItem(IDC_CHECK_HIDE_PAPERSPACE_OBJECTS)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
-	GetDlgItem(IDC_CHECK_PLOT_OBJECT_LW)->EnableWindow(static_cast<BOOL>(!m_PlotWithPlotStyles));
-	if (m_PlotWithPlotStyles != 0) {
-		m_PlotObjectLineweights = 1;
-	}
+	GetDlgItem(IDC_CHECK_PLOT_OBJECT_LW)->EnableWindow(static_cast<BOOL>(m_PlotWithPlotStyles == 0));
+	if (m_PlotWithPlotStyles != 0) { m_PlotObjectLineweights = 1; }
 	UpdateData(FALSE);
 }
 
@@ -295,9 +293,9 @@ void EoDlgPageSetup::FillPaperOrientation() {
 	const auto Rotation {m_PlotSettings.plotRotation()};
 	m_DrawingOrientation = Rotation & 1;
 	if (!IsPaperWidthLessHeight()) {
-		m_DrawingOrientation = static_cast<int>(!m_DrawingOrientation);
+		m_DrawingOrientation = static_cast<int>(m_DrawingOrientation == 0);
 	}
-	m_PlotUpsideDown = (Rotation & 2) / 2;
+	m_PlotUpsideDown = (Rotation & 2U) / 2;
 	UpdateData(FALSE);
 }
 
@@ -307,7 +305,7 @@ void EoDlgPageSetup::OnClickPortraitLandscape() {
 	if (IsPaperWidthLessHeight()) {
 		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(static_cast<int>(!m_DrawingOrientation) + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(static_cast<int>(m_DrawingOrientation == 0) + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 	FillPaperOrientation();
@@ -381,7 +379,7 @@ void EoDlgPageSetup::OnSelChangeMediaList() {
 	if (IsPaperWidthLessHeight()) {
 		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(m_DrawingOrientation + m_PlotUpsideDown * 2);
 	} else {
-		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(static_cast<int>(!m_DrawingOrientation) + m_PlotUpsideDown * 2);
+		Rotation = static_cast<OdDbPlotSettings::PlotRotation>(static_cast<int>(m_DrawingOrientation == 0) + m_PlotUpsideDown * 2);
 	}
 	m_PlotSettingsValidator->setPlotRotation(&m_PlotSettings, Rotation);
 	FillPaperOrientation();
@@ -526,9 +524,9 @@ void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	GetDlgItem(IDC_CHECK_SCALE_LW)->EnableWindow(static_cast<BOOL>(!IsModel));
 	GetDlgItem(IDC_CHECK_FIT_TO_PAPER)->EnableWindow(static_cast<BOOL>(!IsLayout));
 	GetDlgItem(IDC_CHECK_CENTERTHEPLOT)->EnableWindow(static_cast<BOOL>(!IsLayout));
-	GetDlgItem(IDC_PAGESETUP_SCALE)->EnableWindow(static_cast<BOOL>(!m_FitToPaper));
-	GetDlgItem(IDC_PAGESETUP_PAPER_UNIT)->EnableWindow(static_cast<BOOL>(!m_FitToPaper));
-	GetDlgItem(IDC_PAGESETUP_DRAWING_UNIT)->EnableWindow(static_cast<BOOL>(!m_FitToPaper));
+	GetDlgItem(IDC_PAGESETUP_SCALE)->EnableWindow(static_cast<BOOL>(m_FitToPaper == 0));
+	GetDlgItem(IDC_PAGESETUP_PAPER_UNIT)->EnableWindow(static_cast<BOOL>(m_FitToPaper == 0));
+	GetDlgItem(IDC_PAGESETUP_DRAWING_UNIT)->EnableWindow(static_cast<BOOL>(m_FitToPaper == 0));
 	if (m_PlotSettings.useStandardScale() && m_FitToPaper == 0) {
 		m_PaperScaleUnit = plotScaleSetting[ScaleType].m_RealWorldUnits;
 		m_DrawingScaleUnit = plotScaleSetting[ScaleType].m_DrawingUnits;
@@ -632,8 +630,8 @@ void EoDlgPageSetup::FillWindowArea() {
 
 void EoDlgPageSetup::FillPlotOffset() {
 	m_CenterThePlot = static_cast<int>(m_PlotSettings.plotCentered());
-	GetDlgItem(IDC_PAGESETUP_OFFSET_X)->EnableWindow(static_cast<BOOL>(!m_CenterThePlot));
-	GetDlgItem(IDC_PAGESETUP_OFFSET_Y)->EnableWindow(static_cast<BOOL>(!m_CenterThePlot));
+	GetDlgItem(IDC_PAGESETUP_OFFSET_X)->EnableWindow(static_cast<BOOL>(m_CenterThePlot == 0));
+	GetDlgItem(IDC_PAGESETUP_OFFSET_Y)->EnableWindow(static_cast<BOOL>(m_CenterThePlot == 0));
 	if (IsWHSwap()) {
 		m_PlotSettings.getPlotOrigin(m_OffsetY, m_OffsetX);
 	} else {

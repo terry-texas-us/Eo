@@ -14,25 +14,12 @@ BEGIN_MESSAGE_MAP(EoDlgEditOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgEditOptions::EoDlgEditOptions(CWnd* parent)
-	: CDialog(IDD, parent)
-	, m_ActiveView(nullptr)
-	, m_ScaleFactorX(0.0)
-	, m_ScaleFactorY(0.0)
-	, m_ScaleFactorZ(0.0)
-	, m_EditModeRotationAngleX(0.0)
-	, m_EditModeRotationAngleY(0.0)
-	, m_EditModeRotationAngleZ(0.0) {
+	: CDialog(IDD, parent) {
 }
 
 EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_ActiveView(view)
-	, m_ScaleFactorX(0.0)
-	, m_ScaleFactorY(0.0)
-	, m_ScaleFactorZ(0.0)
-	, m_EditModeRotationAngleX(0.0)
-	, m_EditModeRotationAngleY(0.0)
-	, m_EditModeRotationAngleZ(0.0) {
+	, m_ActiveView(view) {
 }
 
 EoDlgEditOptions::~EoDlgEditOptions() = default;

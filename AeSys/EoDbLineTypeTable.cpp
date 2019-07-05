@@ -61,7 +61,7 @@ unsigned short EoDbLinetypeTable::LegacyLinetypeIndex(const OdString& name) {
 		while (Index < c_NumberOfLegacyLinetypes && name.iCompare(m_LegacyLinetypes[Index]) != 0) {
 			Index++;
 		}
-		Index = Index < c_NumberOfLegacyLinetypes ? Index : 0u;
+		Index = Index < c_NumberOfLegacyLinetypes ? Index : 0U;
 	}
 	return Index;
 }

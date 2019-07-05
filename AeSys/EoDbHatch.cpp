@@ -279,7 +279,7 @@ void EoDbHatch::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
+void EoDbHatch::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
 	// nothing done to hatch coordinate origin
 	for (unsigned VertexIndex = 0; VertexIndex < m_Vertices.size(); VertexIndex++) {
 		if ((mask >> VertexIndex & 1UL) == 1) {
@@ -459,7 +459,7 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 						StartPoint.x -= TotalPatternLength;
 					}
 					// Determine the index of the pattern item which intersects the left edge and how much of it is between the edges
-					auto DashIndex = 0u;
+					auto DashIndex = 0U;
 					auto DistanceToLeftEdge {Edges[CurrentEdgeIndex].intersectionX - StartPoint.x};
 					auto CurrentDashLength {fabs(HatchPatternLine.m_dashes[DashIndex])};
 					while (CurrentDashLength <= DistanceToLeftEdge + DBL_EPSILON) {
@@ -866,7 +866,7 @@ OdDbHatchPtr EoDbHatch::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigne
 	OdGeVector3d HatchYAxis;
 	OdGePoint3dArray Vertices;
 	if (versionNumber == 1) {
-		ColorIndex = short(primitiveBuffer[4] & 0x000f);
+		ColorIndex = short(primitiveBuffer[4] & 0x000fU);
 		const auto StyleDefinition {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[12])->Convert()};
 		InteriorStyle = short(int(StyleDefinition) % 16);
 		switch (InteriorStyle) {

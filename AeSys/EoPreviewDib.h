@@ -1,7 +1,7 @@
 #pragma once
 #include "ThumbnailImage.h"
 
-class EoPreviewDib : public CAbstractPreview {
+class EoPreviewDib final : public CAbstractPreview {
 public:
 	void SetPreviewFile(const wchar_t* fileName) override;
 

@@ -295,7 +295,7 @@ void lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 				} else if (iTokTyp == TOK_DIVIDE) {
 					if (iTyp1 == TOK_STRING) { throw L"Can not divide strings"; }
 					if (iTyp1 == TOK_INTEGER) {
-						if (lOp1[0] == 0) throw L"Attempting to divide by 0";
+						if (lOp1[0] == 0) { throw L"Attempting to divide by 0"; }
 						lOp1[0] = lOp2[0] / lOp1[0];
 					} else if (iTyp1 <= iTyp2) {
 						if (dOp1[0] == 0.0) { throw L"Attempting to divide by 0."; }
@@ -384,6 +384,7 @@ void lex::Parse(const wchar_t* szLine) {
 				memcpy(&Values[NumberOfValues++], &dVal, sizeof(double));
 				NumberOfValues++;
 				break;
+			default: ;
 		}
 		iToks++;
 	}
@@ -588,10 +589,10 @@ wchar_t* lex::ScanForString(wchar_t* * ppStr, wchar_t* pszTerm, wchar_t* * ppArg
 			pIn++;
 		}
 		*pOut++ = *pIn++; // the char to the arg buffer
-	} while (*pIn != 0u);
+	} while (*pIn != 0U);
 	*pOut++ = '\0'; // Set up the terminating char and update the scan pointer
 	*pszTerm = *pIn;
-	if (*pIn != 0u) {
+	if (*pIn != 0U) {
 		*ppStr = pIn + 1;
 	} else {
 		*ppStr = pIn;

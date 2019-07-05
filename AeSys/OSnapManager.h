@@ -112,7 +112,7 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 
 		void set(const OdGiPathNode& pathNode) {
 			SubentId = pathNode;
-			if (pathNode.modelToWorld()) {
+			if (pathNode.modelToWorld() != nullptr) {
 				ModelToWorldTransform = *pathNode.modelToWorld();
 			}
 		}

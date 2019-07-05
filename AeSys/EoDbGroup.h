@@ -65,7 +65,7 @@ public:
 
 	int RemoveEmptyNotesAndDelete();
 	/// <summary>Picks a prim if close enough to point.  Working in view space.</summary>
-	EoDbPrimitive* SelectPrimitiveUsingPoint(const EoGePoint4d& point, AeSysView* view, double&, OdGePoint3d&);
+	EoDbPrimitive* SelectPrimitiveUsingPoint(const EoGePoint4d& point, AeSysView* view, double& pickAperture, OdGePoint3d&);
 	/// <summary>Determines if the line crosses any primitive in the group</summary>
 	bool SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view) const;
 

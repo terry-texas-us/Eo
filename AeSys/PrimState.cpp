@@ -89,13 +89,13 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, s
 	m_ColorIndex = colorIndex;
 	m_LinetypeIndex = linetypeIndex;
 	auto LogicalWidth {0.0};
-	if (view && view->PenWidthsOn()) {
+	if ((view != nullptr) && view->PenWidthsOn()) {
 		const auto LogicalPixelsX {deviceContext->GetDeviceCaps(LOGPIXELSX)};
 		LogicalWidth = AeSys::PenWidthsGet(colorIndex) * double(LogicalPixelsX);
 		LogicalWidth *= EoMin(1.0, view->ZoomFactor());
 		LogicalWidth = lround(LogicalWidth);
 	}
-	if (deviceContext) {
+	if (deviceContext != nullptr) {
 		ManagePenResources(*deviceContext, colorIndex, int(LogicalWidth), linetypeIndex);
 	}
 }
@@ -129,7 +129,7 @@ void CPrimState::ManagePenResources(CDC& deviceContext, const short colorIndex, 
 	deviceContext.SetTextColor(g_CurrentPalette[colorIndex]);
 	auto iPen {0};
 	for (auto i = 0; i < NumberOfPens; i++) {
-		if (hPen[i] && LinetypeIndexes[i] == linetypeIndex && PenWidths[i] == penWidth && crColRef[i] == g_CurrentPalette[colorIndex]) {
+		if (hPen[i] != nullptr && LinetypeIndexes[i] == linetypeIndex && PenWidths[i] == penWidth && crColRef[i] == g_CurrentPalette[colorIndex]) {
 			hPenCur = hPen[i];
 			deviceContext.SelectObject(CPen::FromHandle(hPenCur));
 			return;
@@ -137,10 +137,10 @@ void CPrimState::ManagePenResources(CDC& deviceContext, const short colorIndex, 
 		if (hPen[i] == nullptr) { iPen = i; }
 	}
 	const auto NewPenHandle {CreatePen(linetypeIndex, penWidth, g_CurrentPalette[colorIndex])};
-	if (NewPenHandle) {
+	if (NewPenHandle != nullptr) {
 		hPenCur = NewPenHandle;
 		deviceContext.SelectObject(CPen::FromHandle(NewPenHandle));
-		if (hPen[iPen]) { DeleteObject(hPen[iPen]); }
+		if (hPen[iPen] != nullptr) { DeleteObject(hPen[iPen]); }
 		hPen[iPen] = NewPenHandle;
 		LinetypeIndexes[iPen] = linetypeIndex;
 		PenWidths[iPen] = penWidth;
@@ -150,12 +150,12 @@ void CPrimState::ManagePenResources(CDC& deviceContext, const short colorIndex, 
 
 void CPrimState::SetColorIndex(CDC* deviceContext, const short colorIndex) {
 	m_ColorIndex = colorIndex;
-	if (deviceContext) { ManagePenResources(*deviceContext, colorIndex, 0, m_LinetypeIndex); }
+	if (deviceContext != nullptr) { ManagePenResources(*deviceContext, colorIndex, 0, m_LinetypeIndex); }
 }
 
 void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, const short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
-	if (deviceContext) { ManagePenResources(*deviceContext, m_ColorIndex, 0, linetypeIndex); }
+	if (deviceContext != nullptr) { ManagePenResources(*deviceContext, m_ColorIndex, 0, linetypeIndex); }
 }
 
 int CPrimState::SetROP2(CDC& deviceContext, int drawMode) {

@@ -26,7 +26,7 @@ LRESULT CALLBACK WndProcPreview(const HWND hwnd, const unsigned message, const u
 	switch (message) {
 		case WM_CREATE: {
 			auto ActiveView {AeSysView::GetActiveView()};
-			const auto DeviceContext {ActiveView ? ActiveView->GetDC() : nullptr};
+			const auto DeviceContext {ActiveView != nullptr ? ActiveView->GetDC() : nullptr};
 			CRect rc;
 			GetClientRect(hwnd, &rc);
 			g_WndProcPreview_Bitmap = new CBitmap;
@@ -57,6 +57,7 @@ LRESULT CALLBACK WndProcPreview(const HWND hwnd, const unsigned message, const u
 		case WM_LBUTTONDOWN:
 			SetFocus(hwnd);
 			return FALSE;
+		default: ;
 	}
 	return DefWindowProc(hwnd, message, nParam, lParam);
 }

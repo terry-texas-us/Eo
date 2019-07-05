@@ -66,7 +66,7 @@ void EoDbGroup::BreakPolylines() {
 			delete Primitive;
 		} else if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference)) != 0) {
 			EoDbBlock* Block;
-			if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
+			if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block)) {
 				Block->BreakPolylines();
 			}
 		}
@@ -84,7 +84,7 @@ void EoDbGroup::BreakSegRefs() {
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference)) != 0) {
 				iSegRefs++;
 				EoDbBlock* Block;
-				if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block) != 0) {
+				if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block)) {
 					auto pSegT {new EoDbGroup(*Block)};
 					auto BlockTransform {dynamic_cast<EoDbBlockReference*>(Primitive)->BlockTransformMatrix(Block->BasePoint())};
 					pSegT->TransformBy(BlockTransform);

@@ -21,7 +21,7 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 	if (ds.dsBmih.biClrUsed != 0) {
 		NumberOfColors = static_cast<int>(ds.dsBmih.biClrUsed);
 	} else {
-		NumberOfColors = 1 << ds.dsBmih.biBitCount;
+		NumberOfColors = 1U << ds.dsBmih.biBitCount;
 	}
 	if (NumberOfColors > 256) { // Create a halftone palette
 		palette.CreateHalftonePalette(&ClientDeviceContext);

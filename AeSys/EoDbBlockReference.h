@@ -75,7 +75,7 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 
-	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned mask) override;
 
 	bool Write(EoDbFile& file) const override;
 

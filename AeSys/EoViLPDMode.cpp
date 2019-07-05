@@ -398,7 +398,7 @@ void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d&
 	group->AddTail(EoDbLine::Create(Line));
 }
 
-void AeSysView::GenerateFullElbowTakeoff(EoDbGroup*, EoGeLineSeg3d& existingSectionReferenceLine, const Section existingSection, EoDbGroup* group) {
+void AeSysView::GenerateFullElbowTakeoff(EoDbGroup* /*group*/, EoGeLineSeg3d& existingSectionReferenceLine, const Section existingSection, EoDbGroup* group) {
 	const auto NewSectionDirection {existingSectionReferenceLine.endPoint() - existingSectionReferenceLine.startPoint()};
 	auto IntersectionPoint {existingSectionReferenceLine.ProjPt(m_PreviousPnt)};
 	EoGeLineSeg3d PreviousReferenceLine(m_PreviousPnt, IntersectionPoint);

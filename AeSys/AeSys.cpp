@@ -70,17 +70,17 @@ OdStaticRxObject<CommandSelect> g_CommandSelect;
 static void AddPaperDrawingCustomization() {
 	static class OdDbLayoutPaperPEImpl : public OdStaticRxObject<OdDbLayoutPaperPE> {
 	public:
-		bool drawPaper(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
+		bool drawPaper(const OdDbLayout* /*layout*/, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
 		}
 
-		bool drawBorder(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
+		bool drawBorder(const OdDbLayout* /*layout*/, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			worldDraw->geometry().polygon(4, points);
 			return true;
 		}
 
-		bool drawMargins(const OdDbLayout*, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
+		bool drawMargins(const OdDbLayout* /*layout*/, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
 			if (points[0] == points[1] || points[1] == points[2]) { return true; }
 			auto NumberOfDashes {15};
 			OdGiGeometry& Geometry {worldDraw->geometry()};
@@ -393,7 +393,7 @@ bool AeSys::getPassword(const OdString& drawingName, bool /*isXref*/, OdPassword
 }
 
 OdDbPageControllerPtr AeSys::newPageController() {
-	switch (m_PagingType & 0x0f) {
+	switch (m_PagingType & 0x0fU) {
 		case 1: // OdDb::kUnload - Simple unloading of objects for partially loaded database.
 			return OdRxObjectImpl<ExUnloadController>::createObject();
 		case 2: // OdDb::kPage
@@ -495,7 +495,7 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 
 CString AeSys::GetApplicationPath() {
 	wchar_t FileName[MAX_PATH];
-	if (GetModuleFileNameW(GetModuleHandleW(nullptr), FileName, MAX_PATH) != 0u) {
+	if (GetModuleFileNameW(GetModuleHandleW(nullptr), FileName, MAX_PATH) != 0U) {
 		const CString FilePath(FileName);
 		const auto Delimiter {FilePath.ReverseFind('\\')};
 		return FilePath.Left(Delimiter);
@@ -1208,7 +1208,7 @@ BOOL AeSys::InitInstance() {
 
 	// Dispatch commands specified on the command line
 	if (ProcessShellCommand(CommandLineInfo) == 0) { return FALSE; }
-	if (RegisterPreviewWindowClass(m_hInstance) == 0u) { return FALSE; }
+	if (RegisterPreviewWindowClass(m_hInstance) == 0U) { return FALSE; }
 	SetShadowFolderPath(L"AeSys Shadow Folder");
 	LoadSimplexStrokeFont(ResourceFolderPath() + L"Simplex.psf");
 	EoDbHatchPatternTable::LoadHatchesFromFile(ResourceFolderPath() + L"Hatches\\DefaultSet.pat");

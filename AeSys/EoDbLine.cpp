@@ -204,29 +204,29 @@ bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) 
 
 int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
 	int i;
-	int iLoc[2];
+	unsigned Relationship[2];
 	intersections[0] = m_LineSeg.startPoint();
 	intersections[1] = m_LineSeg.endPoint();
 	for (i = 0; i < 2; i++) {
-		iLoc[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
+		Relationship[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
 	}
-	while (iLoc[0] != 0 || iLoc[1] != 0) {
-		if ((iLoc[0] & iLoc[1]) != 0) { return 0; }
-		i = iLoc[0] != 0 ? 0 : 1;
-		if ((iLoc[i] & 1) != 0) { // Clip against top
+	while (Relationship[0] != 0 || Relationship[1] != 0) {
+		if ((Relationship[0] & Relationship[1]) != 0) { return 0; }
+		i = Relationship[0] != 0 ? 0 : 1;
+		if ((Relationship[i] & 1U) != 0) { // Clip against top
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (upperRightCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
 			intersections[i].y = upperRightCorner.y;
-		} else if ((iLoc[i] & 2) != 0) { // Clip against bottom
+		} else if ((Relationship[i] & 2U) != 0) { // Clip against bottom
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (lowerLeftCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
 			intersections[i].y = lowerLeftCorner.y;
-		} else if ((iLoc[i] & 4) != 0) { // Clip against right
+		} else if ((Relationship[i] & 4U) != 0) { // Clip against right
 			intersections[i].y = intersections[i].y + (intersections[1].y - intersections[0].y) * (upperRightCorner.x - intersections[i].x) / (intersections[1].x - intersections[0].x);
 			intersections[i].x = upperRightCorner.x;
-		} else if ((iLoc[i] & 8) != 0) { // Clip against left
+		} else if ((Relationship[i] & 8U) != 0) { // Clip against left
 			intersections[i].y = intersections[i].y + (intersections[1].y - intersections[0].y) * (lowerLeftCorner.x - intersections[i].x) / (intersections[1].x - intersections[0].x);
 			intersections[i].x = lowerLeftCorner.x;
 		}
-		iLoc[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
+		Relationship[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
 	}
 	return 2;
 }
@@ -307,9 +307,9 @@ void EoDbLine::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	m_LineSeg.transformBy(transformMatrix);
 }
 
-void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const unsigned long mask) {
-	if ((mask & 1) == 1) { SetStartPoint(m_LineSeg.startPoint() + translate); }
-	if ((mask & 2) == 2) { SetEndPoint(m_LineSeg.endPoint() + translate); }
+void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
+	if ((mask & 1U) == 1) { SetStartPoint(m_LineSeg.startPoint() + translate); }
+	if ((mask & 2U) == 2) { SetEndPoint(m_LineSeg.endPoint() + translate); }
 }
 
 bool EoDbLine::Write(EoDbFile& file) const {
@@ -372,8 +372,8 @@ OdDbLinePtr EoDbLine::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 	OdGePoint3d StartPoint;
 	OdGePoint3d EndPoint;
 	if (versionNumber == 1) {
-		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000f);
-		LinetypeIndex = static_cast<short>((primitiveBuffer[4] & 0x00ff) >> 4);
+		ColorIndex = static_cast<short>(primitiveBuffer[4] & 0x000fU);
+		LinetypeIndex = static_cast<short>((primitiveBuffer[4] & 0x00ffU) >> 4);
 		StartPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert() * 1.e-3;
 		EndPoint = reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[20])->Convert() * 1.e-3;
 	} else {

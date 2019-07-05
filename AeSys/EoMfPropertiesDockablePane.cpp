@@ -83,7 +83,7 @@ void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /*commandUs
 }
 
 void EoMfPropertiesDockablePane::OnSortProperties() {
-	m_PropertyGrid.SetAlphabeticMode(static_cast<BOOL>(!m_PropertyGrid.IsAlphabeticMode()));
+	m_PropertyGrid.SetAlphabeticMode(static_cast<BOOL>(m_PropertyGrid.IsAlphabeticMode() == 0));
 }
 
 void EoMfPropertiesDockablePane::OnUpdateSortProperties(CCmdUI* commandUserInterface) {

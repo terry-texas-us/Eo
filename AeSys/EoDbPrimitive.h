@@ -75,7 +75,7 @@ public:
 
 	virtual void TransformBy(const EoGeMatrix3d& transformMatrix) = 0;
 
-	virtual void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) = 0;
+	virtual void TranslateUsingMask(const OdGeVector3d& translate, unsigned mask) = 0;
 
 	virtual bool Write(EoDbFile& file) const = 0;
 

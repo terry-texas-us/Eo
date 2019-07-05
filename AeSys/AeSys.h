@@ -83,7 +83,7 @@ private:
 	// ODA_MT_DBIO_END
 	bool m_RemoteGeometryViewer {false};
 	bool m_UseTempFiles {false};
-	int m_PagingType {0};
+	unsigned m_PagingType {0};
 	CStringArray m_TempFilesList;
 	bool m_SupportFileSelectionViaDialog {true};
 
@@ -238,7 +238,7 @@ public:
 
 	ODCOLORREF ActiveBackground() const noexcept { return m_BackgroundColor; }
 
-	void SetActiveBackground(const ODCOLORREF& color) noexcept { m_BackgroundColor = color & 0xffffff; }
+	void SetActiveBackground(const ODCOLORREF& color) noexcept { m_BackgroundColor = color & 0xffffffU; }
 
 	const ODCOLORREF* CurrentPalette() const;
 
@@ -252,7 +252,7 @@ public:
 
 	int SetPagingType(int pagingType) noexcept;
 
-	int PagingType() const noexcept { return m_PagingType & 0x0f; }
+	unsigned PagingType() const noexcept { return m_PagingType & 0x0fU; }
 
 	bool SetUndoType(bool useTempFiles) noexcept;
 

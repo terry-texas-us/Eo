@@ -45,22 +45,22 @@ CRect EoPreviewDib::Calc(int bmpWid, int bmpDep, int wndWid, int wndDep) noexcep
 }
 
 // Placeable metafile data definitions
-typedef struct tagOLDRECT {
+using OLDRECT = struct tagOLDRECT {
 	short left;
 	short top;
 	short right;
 	short bottom;
-} OLDRECT;
+};
 
 // Placeable metafile header
-typedef struct {
+using ALDUSMFHEADER = struct {
 	unsigned long key;
 	unsigned short hmf;
 	OLDRECT bbox;
 	unsigned short inch;
 	unsigned long reserved;
 	unsigned short checksum;
-} ALDUSMFHEADER;
+};
 
 constexpr auto gc_AldusKey = 0x9AC6CDD7;
 constexpr unsigned long gc_AldusMetafileHeaderSize = 22;

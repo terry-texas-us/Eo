@@ -19,7 +19,7 @@ OdBaseSnapManager::SubentId::SubentId(const OdGiPathNode& pathNode) {
 	do {
 		m_Path.append(PathNode->persistentDrawableId());
 		PathNode = PathNode->parent();
-	} while (PathNode);
+	} while (PathNode != nullptr);
 }
 
 bool OdBaseSnapManager::SubentId::operator==(const SubentId& other) const {
@@ -199,7 +199,7 @@ void OdBaseSnapManager::InvalidateViewport(const HistEntryArray& centers) const 
 
 void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 	OdGsDCRect DcRectangle;
-	if (m_SnapMode) {
+	if (m_SnapMode != 0) {
 		const auto WorldToDeviceTransform {m_View->worldToDeviceMatrix()};
 		const auto Point {WorldToDeviceTransform * point};
 		DcRectangle.m_min.x = OdRoundToLong(Point.x);
@@ -224,7 +224,7 @@ bool OdBaseSnapManager::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 
 bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint) {
 	const auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
-	if (TrackerSnapInfo) { TrackerSnapInfo->m_SnapContext.mValid = false; }
+	if (TrackerSnapInfo != nullptr) { TrackerSnapInfo->m_SnapContext.mValid = false; }
 	m_Redraw = false;
 	m_SnapPoints.clear();
 	m_View = view;
@@ -248,13 +248,13 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 	m_HitRadius = static_cast<double>(Aperture);
 	m_WorldToDevice = view->worldToDeviceMatrix().getCsXAxis().length();
 	auto pViewImpl {dynamic_cast<OdGsViewImpl*>(view)};
-	if (pViewImpl) { pViewImpl->setSnapping(true); }
+	if (pViewImpl != nullptr) { pViewImpl->setSnapping(true); }
 	m_SelectedEntityData.clear();
 	view->select(DcPoints, 2, this);
 	if (!m_SelectedEntityData.empty()) { // only one can be selected currently
 		CheckSnapPoints(m_SelectedEntityData[0], pViewImpl->worldToEyeMatrix());
 	}
-	if (pViewImpl) { pViewImpl->setSnapping(false); }
+	if (pViewImpl != nullptr) { pViewImpl->setSnapping(false); }
 	if (m_SnapMode > 0 && static_cast<unsigned>(m_SnapMode) < 100) {
 		point = m_SnapPoint;
 	} else {
@@ -268,7 +268,7 @@ bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint
 		if (PreviousPoint.x < 1e100) { InvalidateViewport(PreviousPoint); }
 		if (m_SnapPoint.x < 1e100) { InvalidateViewport(m_SnapPoint); }
 	}
-	return Result | m_Redraw;
+	return Result || m_Redraw; // <tas"This was bitwise or. Changed to logical or."/>
 }
 
 bool OdBaseSnapManager::selected(const OdGiDrawableDesc&) {
@@ -286,7 +286,7 @@ inline bool OdBaseSnapManager::Checkpoint(const OdDb::OsnapMode objectSnapMode, 
 			m_NearDist = dist;
 			m_SnapPoint = point;
 			m_SnapMode = objectSnapMode;
-			if (TrackerSnapInfo) {
+			if (TrackerSnapInfo != nullptr) {
 				TrackerSnapInfo->m_SnapContext.mPoint = point;
 				TrackerSnapInfo->m_SnapContext.mMode = objectSnapMode;
 				TrackerSnapInfo->m_SnapContext.mValid = true;
@@ -317,7 +317,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	const auto ModelPickPoint {ModelToWorldTransform * *m_PickPoint};
 	OdGePoint3d ModelLastPoint;
 	auto nSnapModes {SnapModes()};
-	if (m_LastPoint) {
+	if (m_LastPoint != nullptr) {
 		ModelLastPoint = ModelToWorldTransform * *m_LastPoint;
 	} else {
 		nSnapModes &= ~(ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan));
@@ -325,7 +325,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	auto PointTrackerWithSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
 	OdDbEntityPtr Entity {selectedEntityData.SubentId.m_Path.first().safeOpenObject()};
 	const auto Marker {selectedEntityData.SubentId.m_Marker};
-	if (!PointTrackerWithSnapInfo) {
+	if (PointTrackerWithSnapInfo == nullptr) {
 		for (auto ObjectSnapMode = OdDb::kOsModeEnd; ObjectSnapMode <= OdDb::kOsModeNear; ObjectSnapMode = OdDb::OsnapMode(ObjectSnapMode + 1)) {
 			if (nSnapModes & ToSnapModes(ObjectSnapMode)) // so not all types are tested
 			{
@@ -344,8 +344,19 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, SnapPoint));
 								m_Redraw = true;
 								break;
-							default:
-								// no op
+							case OdDb::kOsModeEnd: break;
+							case OdDb::kOsModeMid: break;
+							case OdDb::kOsModeNode: break;
+							case OdDb::kOsModeQuad: break;
+							case OdDb::kOsModeIntersec: break;
+							case OdDb::kOsModeIns: break;
+							case OdDb::kOsModePerp: break;
+							case OdDb::kOsModeTan: break;
+							case OdDb::kOsModeNear: break;
+							case OdDb::kOsModeApint: break;
+							case OdDb::kOsModePar: break;
+							case OdDb::kOsModeStart: break;
+ 							default:
 								break;
 						}
 					}
@@ -388,7 +399,7 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode& pathNode, const Od
 }
 
 void OdBaseSnapManager::RecalculateEntityCenters() {
-	for (int i = m_Centers.size() - 1; i >= 0; --i) {
+	for (unsigned i = m_Centers.size() - 1; i >= 0; --i) {
 		auto SubentId = m_Centers[i].m_SubentId;
 		if (SubentId.m_Path.empty()) { continue; }
 		auto Entity {OdDbEntity::cast(SubentId.m_Path[0].openObject())};
@@ -407,7 +418,7 @@ void OdBaseSnapManager::RecalculateEntityCenters() {
 bool OdBaseSnapManager::SetEntityCenters(OdRxObject* rxObject) {
 	m_Centers.clear();
 	const auto Database {OdDbDatabase::cast(rxObject).get()};
-	if (!Database) { return false; }
+	if (Database == nullptr) { return false; }
 	OdDbBlockTableRecordPtr BlockTableRecord = Database->getActiveLayoutBTRId().safeOpenObject();  // Layout table
 	if (Database->getModelSpaceId() != BlockTableRecord->objectId()) { // it's not ModelSpace, it's PaperSpace which can have many ModelSpace
 		OdSmartPtr<OdDbLayout> Layout {BlockTableRecord->getLayoutId().safeOpenObject()};

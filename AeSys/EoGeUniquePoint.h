@@ -1,18 +1,14 @@
 #pragma once
-#define btest(m, p) ((bool) (((((unsigned long) (m)) >> ((int) (p))) & 1UL) == 1 ? true : false))
+#define btest(m, b) (((static_cast<unsigned>(m) >> static_cast<unsigned>(b)) & 1UL) == 1)
 
-class EoGeUniquePoint final : public CObject {
-public:
-	int m_References;
-	OdGePoint3d m_Point;
+struct EoGeUniquePoint final : public CObject {
+	int mReferences {0};
+	OdGePoint3d mPoint {OdGePoint3d::kOrigin};
 
-	EoGeUniquePoint() noexcept {
-		m_References = 0;
-		m_Point = OdGePoint3d::kOrigin;
-	}
+	EoGeUniquePoint() noexcept = default;
 
 	EoGeUniquePoint(const int references, const OdGePoint3d& point) {
-		m_References = references;
-		m_Point = point;
+		mReferences = references;
+		mPoint = point;
 	}
 };

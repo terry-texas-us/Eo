@@ -319,7 +319,7 @@ void AeSysView::OnDimensionModeAngle() {
 			const auto vCenterToCur {CurrentPnt - CenterPoint};
 			auto PlaneNormal {vCenterToProjPt.crossProduct(vCenterToCur)};
 			PlaneNormal.normalize();
-			if (pFndSwpAngGivPlnAnd3Lns(PlaneNormal, rProjPt[0], CurrentPnt, rProjPt[1], CenterPoint, Angle) != 0) {
+			if (FindSweepAngleGivenPlaneAnd3Lines(PlaneNormal, rProjPt[0], CurrentPnt, rProjPt[1], CenterPoint, Angle) != 0) {
 				const auto Radius {(CurrentPnt - CenterPoint).length()};
 				ln.set(ProjectToward(CenterPoint, rProjPt[0], Radius), ln.startPoint());
 				ln.endPoint().rotateBy(Angle, PlaneNormal, CenterPoint);
@@ -417,8 +417,8 @@ void AeSysView::OnDimensionModeConvert() {
 					Text->setRotation(ReferenceSystem.Rotation());
 					Text->setHeight(ReferenceSystem.YDirection().length());
 					Text->setAlignmentPoint(ReferenceSystem.Origin());
-					Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(DimensionPrimitive->FontDef().HorizontalAlignment()));
-					Text->setVerticalMode(EoDbText::ConvertVerticalMode(DimensionPrimitive->FontDef().VerticalAlignment()));
+					Text->setHorizontalMode(EoDbText::ConvertHorizontalMode(DimensionPrimitive->FontDefinition().HorizontalAlignment()));
+					Text->setVerticalMode(EoDbText::ConvertVerticalMode(DimensionPrimitive->FontDefinition().VerticalAlignment()));
 					Text->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->TextColorIndex()));
 					const auto TextPrimitive {EoDbText::Create(Text)};
 					Group->InsertAfter(CurrentPrimitivePosition, LinePrimitive);

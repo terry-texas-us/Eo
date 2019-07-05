@@ -4,11 +4,8 @@
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 
 EoDlgPlotStyleEditor_GeneralPropertyPage::EoDlgPlotStyleEditor_GeneralPropertyPage()
-	: CPropertyPage(IDD)
-	, m_pPlotStyleTable(nullptr) {
+	: CPropertyPage(IDD) {
 }
-
-EoDlgPlotStyleEditor_GeneralPropertyPage::~EoDlgPlotStyleEditor_GeneralPropertyPage() = default;
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* dataExchange) {
 	CPropertyPage::DoDataExchange(dataExchange);

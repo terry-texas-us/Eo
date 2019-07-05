@@ -3,11 +3,11 @@
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
 #include "Ge/GeIntArray.h"
 
-typedef struct {
+using EoListCtrlSortData = struct {
 	CListCtrl* listControl;
 	int subItem; // not used
 	char type; // not used
-} EoListCtrlSortData;
+};
 
 static int CALLBACK EoLineweightCompareFunction(const LPARAM item1, const LPARAM item2, const LPARAM sortData) {
 	const auto NewIndex1 {reinterpret_cast<EoLineweightData*>(item1)->newIndex};

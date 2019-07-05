@@ -41,8 +41,9 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 				iPts2++;
 				for (auto i2 = 2; i2 <= Order; i2++) {
 					for (auto i = 0; i <= NumberOfControlPoints - 1; i++) { // Determine first term of weighting function equation
-						if (Weight[128 * i + i2 - 1] == 0.0) W1 = 0.0;
-						else W1 = (T - spline.knotAt(i)) * Weight[128 * i + i2 - 1] / (spline.knotAt(i + i2 - 1) - spline.knotAt(i));
+						if (Weight[128 * i + i2 - 1] == 0.0) {
+							W1 = 0.0;
+						} else { W1 = (T - spline.knotAt(i)) * Weight[128 * i + i2 - 1] / (spline.knotAt(i + i2 - 1) - spline.knotAt(i)); }
 						if (Weight[128 * (i + 1) + i2 - 1] == 0.0) { 	// Determine second term of weighting function equation
 							W2 = 0.0;
 						} else { W2 = (spline.knotAt(i + i2) - T) * Weight[128 * (i + 1) + i2 - 1] / (spline.knotAt(i + i2) - spline.knotAt(i + 1)); }
@@ -51,7 +52,7 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 						H = spline.controlPointAt(i).y * Weight[128 * i + i2] + H;
 						Z = spline.controlPointAt(i).z * Weight[128 * i + i2] + Z;
 					}
-					if (i2 == Order) break;
+					if (i2 == Order) { break; }
 					G = 0.0;
 					H = 0.0;
 					Z = 0.0;

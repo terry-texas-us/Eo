@@ -21,15 +21,15 @@ unsigned short EoDbBlock::GetTypeFlags() const noexcept {
 }
 
 bool EoDbBlock::HasAttributes() const noexcept {
-	return (m_TypeFlags & 2) == 2;
+	return (m_TypeFlags & 2U) == 2U;
 }
 
 bool EoDbBlock::IsAnonymous() const noexcept {
-	return (m_TypeFlags & 1) == 1;
+	return (m_TypeFlags & 1U) == 1U;
 }
 
 bool EoDbBlock::IsFromExternalReference() const noexcept {
-	return (m_TypeFlags & 4) == 4;
+	return (m_TypeFlags & 4U) == 4U;
 }
 
 void EoDbBlock::SetTypeFlags(const unsigned short flags) noexcept {

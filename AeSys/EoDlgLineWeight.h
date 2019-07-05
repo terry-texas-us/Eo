@@ -14,10 +14,10 @@ protected:
 	BOOL OnInitDialog() final;
 
 private:
-	int m_OriginalLineWeight;
+	int m_OriginalLineWeight {0};
 public:
 	CListBox lineWeightList;
-	OdDb::LineWeight lineWeight;
+	OdDb::LineWeight lineWeight {OdDb::LineWeight::kLnWt000};
 
 	void OnBnClickedOk();
 

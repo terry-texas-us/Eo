@@ -100,10 +100,6 @@ public:
 	}
 };
 
-OdExEditorObject::OdExEditorObject() {
-	m_Flags |= kSnapOn;
-}
-
 void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* commandContext) {
 	m_LayoutHelper = device;
 	m_CommandContext = commandContext;
@@ -362,7 +358,7 @@ bool OdExEditorObject::Unselect() {
 	return Result;
 }
 
-bool OdExEditorObject::OnCtrlClick() {
+bool OdExEditorObject::OnCtrlClick() const {
 	return m_GripManager.OnControlClick();
 }
 
@@ -632,7 +628,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 				ActiveView->zoom(ScaleFactor);
 			} else if (OdString(End).iCompare(L"XP") == 0) {
 				ZoomScaleXp(ScaleFactor);
-			} else if (*End == 0u) {
+			} else if (*End == 0U) {
 				ActiveView->zoom(ScaleFactor);
 			}
 		}
@@ -1099,7 +1095,7 @@ class OdExCollideGsPath {
 		auto Drawable {objectIterator->safeOpenObject()};
 		AddNode(Drawable);
 		auto Insert {OdDbBlockReference::cast(Drawable)};
-		if (Insert.get() != nullptr) AddNode(Insert->blockTableRecord());
+		if (Insert.get() != nullptr) { AddNode(Insert->blockTableRecord()); }
 		++objectIterator;
 	}
 
@@ -1389,7 +1385,7 @@ void OdExCollideCmd::execute(OdEdCommandContext* edCommandContext) {
 		throw OdEdCancel();
 	}
 	OdDbSelectionSetPtr SelectionSet {UserIo->select(L"Collide: Select objects to be checked:", OdEd::kSelAllowObjects | OdEd::kSelAllowSubents | OdEd::kSelLeaveHighlighted)};
-	if (SelectionSet->numEntities() == 0u) { throw OdEdCancel(); }
+	if (SelectionSet->numEntities() == 0U) { throw OdEdCancel(); }
 	OdExTransactionSaver Saver(Database);
 	Saver.StartTransaction();
 	const auto BasePoint {UserIo->getPoint(L"Collide: Specify base point:")};

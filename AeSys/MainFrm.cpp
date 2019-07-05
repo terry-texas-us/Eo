@@ -248,6 +248,7 @@ LRESULT CMainFrame::OnToolbarReset(const WPARAM toolbarResourceId, LPARAM lparam
 		}
 		case IDR_PROPERTIES:
 			break;
+		default: ;
 	}
 	return 0;
 }
@@ -693,6 +694,7 @@ OdDb::LineWeight CMainFrame::LineWeightByIndex(const char lineWeight) noexcept {
 			return OdDb::kLnWtByBlock;
 		case 31:
 			return OdDb::kLnWtByLwDefault;
+		default: ;
 	}
 	return OdDb::kLnWtByLayer;
 }

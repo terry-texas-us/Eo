@@ -46,11 +46,11 @@ L"ZIGZAG"
 };
 
 unsigned short EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& name) {
-	unsigned short Index = 0;
+	unsigned short Index {0};
 	while (Index < ms_NumberOfLegacyHatchPatterns && name.iCompare(LegacyHatchPatterns[Index]) != 0) {
 		Index++;
 	}
-	Index = Index < ms_NumberOfLegacyHatchPatterns ? Index : 0u;
+	Index = Index < ms_NumberOfLegacyHatchPatterns ? Index : 0U;
 	return Index;
 }
 

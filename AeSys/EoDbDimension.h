@@ -57,7 +57,7 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void TransformBy(const EoGeMatrix3d& transformMatrix) override;
 
-	void TranslateUsingMask(const OdGeVector3d& translate, unsigned long mask) override;
+	void TranslateUsingMask(const OdGeVector3d& translate, unsigned mask) override;
 
 	bool Write(EoDbFile& file) const override;
 
@@ -71,11 +71,11 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void GetBoundingBox(OdGePoint3dArray& boundingBox, double spaceFactor) const;
 
-	const EoDbFontDefinition& FontDef() noexcept;
+	[[nodiscard]] const EoDbFontDefinition& FontDefinition() const noexcept;
 
-	const EoGeLineSeg3d& Line() noexcept;
+	[[nodiscard]] const EoGeLineSeg3d& Line() const noexcept;
 
-	void GetPts(OdGePoint3d& ptBeg, OdGePoint3d& ptEnd);
+	void GetPts(OdGePoint3d& startPoint, OdGePoint3d& endPoint) const;
 
 	[[nodiscard]] EoGeReferenceSystem ReferenceSystem() const;
 

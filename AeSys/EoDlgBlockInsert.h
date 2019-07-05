@@ -16,7 +16,7 @@ protected:
 	void OnOK() override;
 
 	static OdGePoint3d ms_InsertionPoint;
-	AeSysDoc* m_Document;
+	AeSysDoc* m_Document {nullptr};
 	CListBox m_BlocksListBoxControl;
 	CEdit m_InsertionPointX;
 	CEdit m_InsertionPointY;
