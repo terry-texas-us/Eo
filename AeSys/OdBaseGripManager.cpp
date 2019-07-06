@@ -380,7 +380,7 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, const bool fireDone) {
 			}
 		}
 		if (fireDone) {
-			if (Entity.get() != nullptr) { GripStatus(Entity, OdDb::kGripsDone); 	}
+			if (Entity.get() != nullptr) { GripStatus(Entity, OdDb::kGripsDone); }
 		}
 		m_GripData.erase(GripDataIterator);
 	}

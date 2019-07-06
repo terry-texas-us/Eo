@@ -105,7 +105,6 @@ void OdExGripData::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
 		OnScreenPoint.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
 		viewportDraw->subEntityTraits().setFillType(kOdGiFillAlways);
 		viewportDraw->subEntityTraits().setDrawFlags(OdGiSubEntityTraits::kDrawSolidFill | OdGiSubEntityTraits::kDrawPolygonFill);
-
 		OdGePoint3d PolygonPoints[4];
 		PolygonPoints[0].set(OnScreenPoint.x - GripSize, OnScreenPoint.y - GripSize, OnScreenPoint.z);
 		PolygonPoints[1].set(OnScreenPoint.x + GripSize, OnScreenPoint.y - GripSize, OnScreenPoint.z);

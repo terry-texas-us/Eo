@@ -1,7 +1,7 @@
 #pragma once
+#include <DbGroup.h>
 #include "EoDbFontDefinition.h"
 #include "EoDbPoint.h"
-#include <DbGroup.h>
 using SelectionPair = std::pair<EoDbGroup*, EoDbPrimitive*>;
 
 enum GroupPrimitivePair { tGroup, tPrimitive };

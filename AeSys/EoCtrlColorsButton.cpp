@@ -5,7 +5,8 @@ gsl::span<COLORREF> EoCtrlColorsButton::m_Palette;
 unsigned short EoCtrlColorsButton::m_CurrentIndex;
 unsigned short EoCtrlColorsButton::m_SelectedIndex;
 IMPLEMENT_DYNAMIC(EoCtrlColorsButton, CMFCButton)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoCtrlColorsButton, CMFCButton)
 		ON_WM_GETDLGCODE()
 		ON_WM_KEYDOWN()
@@ -14,7 +15,7 @@ BEGIN_MESSAGE_MAP(EoCtrlColorsButton, CMFCButton)
 		ON_WM_PAINT()
 		ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 void EoCtrlColorsButton::DrawCell(CDC* deviceContext, const unsigned short index, const COLORREF color) {
 	if (deviceContext != nullptr && index != 0) {
 		CRect CellRectangle;

@@ -2,7 +2,8 @@
 #include <DbSymUtl.h>
 #include "EoDlgLayerPropertiesManager.h"
 IMPLEMENT_DYNAMIC(EoDlgLayerPropertiesManager, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 		ON_WM_CREATE()
 		ON_WM_SIZE()
@@ -10,7 +11,7 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 		ON_NOTIFY(NM_DBLCLK, IDC_LAYER_FILTER_TREE, &EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree)
 		ON_NOTIFY(TVN_KEYDOWN, IDC_LAYER_FILTER_TREE, &EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
 	: CDialog(IDD, parent) {
 }

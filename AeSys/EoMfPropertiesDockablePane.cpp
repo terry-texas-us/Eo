@@ -9,6 +9,8 @@ static char THIS_FILE[] = __FILE__;
 #endif
 std::vector<const wchar_t*> EoMfPropertiesDockablePane::ms_TabsStyles {L"None", L"Standard", L"Grouped"};
 std::vector<const wchar_t*> EoMfPropertiesDockablePane::ms_TabsLocations {L"On Bottom", L"On Top"};
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 		ON_WM_CREATE()
 		ON_WM_SETFOCUS()
@@ -22,7 +24,7 @@ BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 		ON_UPDATE_COMMAND_UI(ID_PROPERTIES1, OnUpdateProperties1)
 		ON_UPDATE_COMMAND_UI(ID_SORTPROPERTIES, OnUpdateSortProperties)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 void EoMfPropertiesDockablePane::AdjustLayout() {
 	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic() != 0) { return; }
 	CRect ClientRectangle;

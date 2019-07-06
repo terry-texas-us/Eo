@@ -177,6 +177,8 @@ void EoDlgAbout::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }
 
+#pragma warning (push)
+#pragma warning (disable: 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)
 END_MESSAGE_MAP()
 BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
@@ -232,7 +234,7 @@ BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
 		ON_COMMAND(ID_VECTORIZERTYPE_CLEARMENU, &AeSys::OnVectorizerTypeClearMenu)
 		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE_CLEARMENU, &AeSys::OnUpdateVectorizerTypeClearMenu)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 
 /// <remarks> Specialization of CCommandLineInfo to add the following switches: bat:, ld:, scr:, exe:, s:, and exit</remarks>
 class CFullCommandLineInfo final : public CCommandLineInfo {
@@ -405,7 +407,7 @@ OdDbPageControllerPtr AeSys::newPageController() {
 	return static_cast<OdDbPageController*>(nullptr);
 }
 
-int AeSys::SetPagingType(const int pagingType) noexcept {
+unsigned AeSys::SetPagingType(const unsigned pagingType) noexcept {
 	const auto OldType {m_PagingType};
 	m_PagingType = pagingType;
 	return OldType;
@@ -1741,7 +1743,7 @@ OdString AeSys::getTempPath() const {
 		if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"TempDirectory", TempPath, MAX_PATH)) {
 			return OdDbHostAppServices::getTempPath();
 		}
-		if (_waccess(TempPath, 0) != 0) { 	return OdDbHostAppServices::getTempPath(); }
+		if (_waccess(TempPath, 0) != 0) { return OdDbHostAppServices::getTempPath(); }
 		CString Result(TempPath, static_cast<int>(wcslen(TempPath)));
 		if (Result.GetAt(Result.GetLength() - 1) != '\\') { Result += '\\'; }
 		return Result.GetString();
@@ -1863,11 +1865,11 @@ void AeSys::warning(const char* warnVisGroup, const OdString& text) {
 		return;
 	}
 	if (!g_IgnoreWarnings && (warnVisGroup == nullptr || *warnVisGroup == 0)) {
-		auto Type {MB_ICONWARNING};
+		unsigned Type {MB_ICONWARNING};
 #ifdef _DEBUG
-		Type |= MB_CANCELTRYCONTINUE;
+		Type |= static_cast<unsigned>(MB_CANCELTRYCONTINUE);
 #else
-		Type |= MB_YESNO;
+		Type |= static_cast<unsigned>(MB_YESNO);
 #endif
 		const auto ReturnValue {MessageBoxW(nullptr, text + L"\n\nDo you want to proceed ?", L"Warning!", Type)};
 		if (ReturnValue == IDCANCEL || ReturnValue == IDNO) {

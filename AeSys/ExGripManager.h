@@ -1,6 +1,5 @@
 // From Examples\Editor\ExGripManager.h  (last compare 20.5)
 #pragma once
-
 #include <DbGsManager.h>
 #include <DbDatabaseReactor.h>
 #include <DbGrip.h>
@@ -9,11 +8,9 @@
 #include <Ed/EdCommandStack.h>
 #include <Gi/GiDrawableImpl.h>
 #include "OdBaseGripManager.h"
-#include "OdExGripDrag.h" 
+#include "OdExGripDrag.h"
 #include "OdExGripData.h"
-
 class OdBaseGripManager;
-
 using OdExGripDataPtr = OdSmartPtr<class OdExGripData>;
 using OdExGripDataPtrArray = OdArray<OdExGripDataPtr>;
 using OdExGripDragPtr = OdSmartPtr<class OdExGripDrag>;

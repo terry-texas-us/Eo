@@ -10,11 +10,12 @@ EoDlgPlotStyleManager::EoDlgPlotStyleManager(CWnd* parent)
 	AddPage(&m_page1);
 	AddPage(&m_page2);
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleManager, CPropertySheet)
 		ON_WM_CREATE()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 int EoDlgPlotStyleManager::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CPropertySheet::OnCreate(createStructure) == -1) { return -1; }
 	return 0;

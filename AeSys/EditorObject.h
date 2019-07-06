@@ -1,10 +1,6 @@
 // From Examples\Editor\EditorObject.h  (last compare 20.5)
 #pragma once
-
-#include <Ed/EdCommandStack.h>
 #include <ExDbCommandContext.h>
-#include <DbGsManager.h>
-#include <StaticRxObject.h>
 #include "OSnapManager.h"
 #include "ExGripManager.h"
 

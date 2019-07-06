@@ -1,6 +1,5 @@
 // From Examples\Editor\OSnapManager.h  (last compare 20.5)
 #pragma once
-
 #include <Gi/GiDrawableImpl.h>
 #include <Gs/Gs.h>
 #include <Si/SiSpatialIndex.h>

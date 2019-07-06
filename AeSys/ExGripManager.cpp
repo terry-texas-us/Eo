@@ -23,7 +23,6 @@ static const unsigned TPM_VERPOSANIMATION = 0x1000L;
 static const unsigned TPM_NOANIMATION = 0x4000L;
 #endif
 #endif // ODA_UNIXOS
-
 OdGiDrawablePtr OdExGripManager::CloneEntity(OdDbStub* id) {
 	auto Entity {OdDbEntity::cast(OdDbObjectId(id).openObject())};
 	if (Entity.isNull()) { return OdGiDrawablePtr(); }

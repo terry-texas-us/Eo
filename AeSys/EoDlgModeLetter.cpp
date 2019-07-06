@@ -6,10 +6,12 @@
 #include "EoDb.h"
 #include "EoDlgModeLetter.h"
 IMPLEMENT_DYNAMIC(EoDlgModeLetter, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgModeLetter, CDialog)
 		ON_WM_SIZE()
 END_MESSAGE_MAP()
+#pragma warning (pop)
 OdGePoint3d EoDlgModeLetter::m_Point = OdGePoint3d::kOrigin;
 
 EoDlgModeLetter::EoDlgModeLetter(CWnd* parent)

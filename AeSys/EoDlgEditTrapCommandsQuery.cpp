@@ -3,11 +3,12 @@
 #include "AeSysDoc.h"
 #include "EoDlgEditTrapCommandsQuery.h"
 IMPLEMENT_DYNAMIC(EoDlgEditTrapCommandsQuery, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
 		ON_NOTIFY(TVN_SELCHANGED, IDC_GROUP_TREE, &EoDlgEditTrapCommandsQuery::OnSelectionChangedGroupTree)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent)
 	: CDialog(IDD, parent) {
 }

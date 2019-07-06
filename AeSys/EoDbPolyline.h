@@ -1,7 +1,5 @@
 #pragma once
 #include <DbPolyline.h>
-#include "EoDbPrimitive.h"
-
 /* <remarks>
 Polyline primitive(never made it release : if already written flags not streamed)
   Type code <0x2002>                unsigned short[0-1]
@@ -24,7 +22,6 @@ private:
 	static unsigned ms_Edge;
 	static unsigned ms_PivotVertex;
 	static const unsigned short ms_Closed = 0x0001U;
-
 	unsigned short m_Flags {0};
 	double m_ConstantWidth {0.0};
 	double m_Elevation {0.0};

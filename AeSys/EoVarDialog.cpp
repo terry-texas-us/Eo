@@ -12,11 +12,12 @@ EoVarDialog::EoVarDialog(const wchar_t* templateName, CWnd* parent)
 EoVarDialog::EoVarDialog(unsigned templateId, CWnd* parent)
 	: CDialog(templateId, parent) {
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoVarDialog, CDialog)
-		ON_WM_SIZE()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 BOOL EoVarDialog::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_bInitialized = TRUE;

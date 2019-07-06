@@ -11,11 +11,12 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 IMPLEMENT_DYNCREATE(CChildFrame, CMDIChildWndEx)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(CChildFrame, CMDIChildWndEx)
 		ON_WM_MDIACTIVATE()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 void CChildFrame::ActivateFrame(int nCmdShow) {
 	nCmdShow = SW_SHOWMAXIMIZED;
 	CMDIChildWndEx::ActivateFrame(nCmdShow);

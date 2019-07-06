@@ -27,17 +27,10 @@ extern COLORREF g_GreyPalette[16];
 extern COLORREF* g_CurrentPalette;
 
 /// <Open Design Alliance>
-#include <OdToolKit.h>
-#include <DbObjectId.h>
-#include <RxObjectImpl.h>
 #include <ExHostAppServices.h>
 #include <ExSystemServices.h>
-#include <DbObject.h>
-#include <Gs/Gs.h>
-#include <Ed/EdCommandStack.h>
 #include <ThreadsCounter.h>
 class EoDlgAudit;
-#include <ExDbCommandContext.h>
 #include "OdApplication.h"
 
 class UserBreak {
@@ -250,7 +243,7 @@ public:
 
 	OdDbPageControllerPtr newPageController() override;
 
-	int SetPagingType(int pagingType) noexcept;
+	unsigned SetPagingType(unsigned pagingType) noexcept;
 
 	unsigned PagingType() const noexcept { return m_PagingType & 0x0fU; }
 

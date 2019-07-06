@@ -1,6 +1,4 @@
 #pragma once
-#include <OdaCommon.h>
-#include "EoDbPrimitive.h"
 #include <DbEllipse.h>
 
 class EoDbEllipse final : public EoDbPrimitive {

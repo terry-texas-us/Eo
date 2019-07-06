@@ -295,7 +295,7 @@ void EoDlgPageSetup::FillPaperOrientation() {
 	if (!IsPaperWidthLessHeight()) {
 		m_DrawingOrientation = static_cast<int>(m_DrawingOrientation == 0);
 	}
-	m_PlotUpsideDown = (Rotation & 2U) / 2;
+	m_PlotUpsideDown = static_cast<int>(static_cast<unsigned>(Rotation) & 2U) / 2;
 	UpdateData(FALSE);
 }
 

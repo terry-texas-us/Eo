@@ -209,7 +209,6 @@ void OdBaseSnapManager::InvalidateViewport(const OdGePoint3d& point) const {
 		DcRectangle.m_min.y -= gc_SnapPointSize * 2;
 		DcRectangle.m_max.x += gc_SnapPointSize * 2;
 		DcRectangle.m_max.y += gc_SnapPointSize * 2;
-
 		m_View->invalidate(DcRectangle);
 	}
 }
@@ -344,18 +343,30 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 								AppendToQueue(m_Centers, HistEntry(selectedEntityData.SubentId, SnapPoint));
 								m_Redraw = true;
 								break;
-							case OdDb::kOsModeEnd: break;
-							case OdDb::kOsModeMid: break;
-							case OdDb::kOsModeNode: break;
-							case OdDb::kOsModeQuad: break;
-							case OdDb::kOsModeIntersec: break;
-							case OdDb::kOsModeIns: break;
-							case OdDb::kOsModePerp: break;
-							case OdDb::kOsModeTan: break;
-							case OdDb::kOsModeNear: break;
-							case OdDb::kOsModeApint: break;
-							case OdDb::kOsModePar: break;
-							case OdDb::kOsModeStart: break;
+							case OdDb::kOsModeEnd:
+								break;
+							case OdDb::kOsModeMid:
+								break;
+							case OdDb::kOsModeNode:
+								break;
+							case OdDb::kOsModeQuad:
+							break;
+							case OdDb::kOsModeIntersec:
+							break;
+							case OdDb::kOsModeIns:
+							break;
+							case OdDb::kOsModePerp:
+							break;
+							case OdDb::kOsModeTan:
+							break;
+							case OdDb::kOsModeNear:
+							break;
+							case OdDb::kOsModeApint:
+							break;
+							case OdDb::kOsModePar:
+							break;
+							case OdDb::kOsModeStart:
+							break;
  							default:
 								break;
 						}

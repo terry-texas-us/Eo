@@ -519,7 +519,8 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 		if (AngleIntersections[IntersectionIndex] < 0.0) { AngleIntersections[IntersectionIndex] += Oda2PI; }
 		if (fabs(AngleIntersections[IntersectionIndex]) - m_SweepAngle < 0.0) { // Intersection lies on arc
 			int i;
-			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++) {}
+			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++) {
+			}
 			if (i == IntersectionIndex) { // Unique intersection
 				intersections[IntersectionIndex++] = ptWrk[i2];
 			}

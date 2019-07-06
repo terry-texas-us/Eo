@@ -20,14 +20,15 @@ void EoDlgEditProperties::DoDataExchange(CDataExchange* dataExchange) {
 	DDX_Control(dataExchange, IDC_PROPLIST, m_propList);
 	DDX_Text(dataExchange, IDC_VALUE, m_sValue);
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgEditProperties, CDialog)
-ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
-ON_BN_CLICKED(IDC_BUTTON1, OnButton)
-ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
-ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
+		ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
+		ON_BN_CLICKED(IDC_BUTTON1, OnButton)
+		ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
+		ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 static OdString FormatValue(const OdResBuf* resourceBuffer) {
 	if (resourceBuffer->restype() == OdResBuf::kRtEntName || resourceBuffer->restype() == OdResBuf::kDxfEnd) {
 		const auto ObjectId {resourceBuffer->getObjectId(nullptr)};

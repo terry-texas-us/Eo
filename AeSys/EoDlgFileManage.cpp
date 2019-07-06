@@ -13,7 +13,8 @@
 #include "EoDlgSetupLinetype.h"
 #include "Preview.h"
 IMPLEMENT_DYNAMIC(EoDlgFileManage, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 		ON_WM_DRAWITEM()
 		ON_BN_CLICKED(IDC_FUSE, &EoDlgFileManage::OnBnClickedFuse)
@@ -28,7 +29,7 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 		ON_NOTIFY(LVN_BEGINLABELEDIT, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnBeginlabeleditLayersListControl)
 		ON_NOTIFY(LVN_KEYDOWN, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnKeydownLayersListControl)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 EoDlgFileManage::EoDlgFileManage(CWnd* parent)
 	: CDialog(IDD, parent) {
 }

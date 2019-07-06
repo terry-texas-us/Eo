@@ -1,6 +1,4 @@
 #pragma once
-#include <RxObject.h>
-
 class EoDbConvertEntityToPrimitive : public OdRxObject {
 public:
 ODRX_DECLARE_MEMBERS(EoDbConvertEntityToPrimitive);

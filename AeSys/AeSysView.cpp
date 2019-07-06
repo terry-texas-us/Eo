@@ -52,7 +52,8 @@ const double AeSysView::mc_MaximumWindowRatio = 999.0;
 const double AeSysView::mc_MinimumWindowRatio = 0.001;
 unsigned AeSysView::ms_RedrawMessage = 0;
 IMPLEMENT_DYNCREATE(AeSysView, CView)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_WM_CHAR()
 		ON_WM_CONTEXTMENU()
@@ -301,7 +302,7 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_NODAL_MODE_ESCAPE, &AeSysView::OnNodalModeEscape)
 		ON_COMMAND(ID_INSERT_BLOCKREFERENCE, &AeSysView::OnInsertBlockReference)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 AeSysView::AeSysView() noexcept {
 	m_Background = g_ViewBackgroundColor;
 	SetEditModeMirrorScaleFactors(-1.0, 1.0, 1.0);
@@ -625,7 +626,7 @@ OdGiContext::PStyleType AeSysView::plotStyleType() const {
 void AeSysView::plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const {
 	OdGiContextForDbDatabase::plotStyle(psNameId, plotStyleData);
 	if (m_bPlotGrayscale) { // #4203 : make grayscale preview if printer doesn't support color mode
-		plotStyleData.setColorPolicy(plotStyleData.colorPolicy() | 2U);
+		plotStyleData.setColorPolicy(static_cast<unsigned>(plotStyleData.colorPolicy()) | 2U);
 	}
 }
 
@@ -1590,7 +1591,8 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++) != 0) {}
+		while (theApp.OnIdle(Idle++) != 0) {
+		}
 	}
 	throw OdEdCancel();
 }
@@ -1614,7 +1616,8 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++) != 0) {}
+		while (theApp.OnIdle(Idle++) != 0) {
+		}
 	}
 	throw OdEdCancel();
 }

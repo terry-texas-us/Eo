@@ -319,7 +319,8 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDestroy() {
 	}
 	CPropertyPage::OnDestroy();
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_LINEWEIGHT, OnLineweightBtn)
 		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_SAVE, OnSaveBtn)
@@ -345,7 +346,7 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_FILLSTYLE, OnSelendokComboFillStyle)
 		ON_WM_DESTROY()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 void EoDlgPlotStyleEditor_FormViewPropertyPage::initAdaptiveComboBox() {
 	m_Adaptive.AddString(L"On");
 	m_Adaptive.AddString(L"Off");

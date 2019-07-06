@@ -2,7 +2,6 @@
 #include <Ge/GeIntArray.h>
 #include "EoDlgPlotStyleEditLineweight.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
-
 using EoListCtrlSortData = struct {
 	CListCtrl* listControl;
 	int subItem; // not used
@@ -19,7 +18,8 @@ static int CALLBACK EoLineweightCompareFunction(const LPARAM item1, const LPARAM
 }
 
 IMPLEMENT_DYNAMIC(EoDlgPlotStyleEditLineweight, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditLineweight, CDialog)
 		ON_BN_CLICKED(IDC_MILLIMETERS, OnRadioMillimeters)
 		ON_BN_CLICKED(IDC_INCHES, OnRadioInches)
@@ -27,7 +27,7 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditLineweight, CDialog)
 		ON_BN_CLICKED(IDC_SORTLINEWEIGHT, OnButtonSortLineweight)
 		ON_NOTIFY(LVN_ENDLABELEDIT, IDC_LIST_LINEWEIGHTS, OnEndlabeleditListLineweight)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 EoDlgPlotStyleEditLineweight::EoDlgPlotStyleEditLineweight(CWnd* parent)
 	: CDialog(IDD, parent) {
 	plotStyleTable = nullptr;

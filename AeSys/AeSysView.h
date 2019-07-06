@@ -1,10 +1,5 @@
 #pragma once
-#include <Ge/GeScale3d.h>
-#include <DbGsManager.h>
 #include <GiContextForDbDatabase.h>
-#include <ExEdBaseIO.h>
-#include <Gs/Gs.h>
-#include <atltypes.h>
 #include "EditorObject.h"
 #include <ExEdInputParser.h>
 #include "EoGsViewport.h"

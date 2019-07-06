@@ -1,12 +1,7 @@
 #pragma once
-#include <DbLayerTableRecord.h>
 #include <DbSymUtl.h>
-#include <DbDatabase.h>
-#include <DbCommandContext.h>
 #include <Ed/EdCommandStack.h>
-#include <ExDbCommandContext.h>
 #include <DbLayoutManager.h>
-#include <ExEdBaseIO.h>
 #include "EoDbText.h"
 #include "EoDbMaskedPrimitive.h"
 #include "EoDbBlock.h"

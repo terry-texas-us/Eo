@@ -4,10 +4,11 @@
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "OdApplicationImpl.h"
+#pragma warning(push)
+#pragma warning(disable : 4548) // (level 1) expression before comma has no effect; expected expression with side - effect
 ODRX_CONS_DEFINE_MEMBERS(OdApplicationReactor, OdRxObject, RXIMPL_CONSTR);
-
 ODRX_NO_CONS_DEFINE_MEMBERS(OdApplicationDocument, OdRxObject);
-
+#pragma warning(pop)
 OdSmartPtr<OdApplicationDocumentImpl> OdApplicationDocumentImpl::createObject(CDocument* document) {
 	OdSmartPtr<OdApplicationDocumentImpl> pRes = OdRxObjectImpl<OdApplicationDocumentImpl>::createObject();
 	pRes->m_pImp = new MfcObjectWrapper<AeSysDoc>(dynamic_cast<AeSysDoc*>(document));

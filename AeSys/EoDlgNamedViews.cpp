@@ -105,7 +105,8 @@ void EoDlgNamedViews::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 	DDX_Control(dataExchange, IDC_NAMEDVIEWS, m_views);
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgNamedViews, CDialog)
 		ON_BN_CLICKED(IDC_SETCURRENT_BUTTON, OnSetcurrentButton)
 		ON_NOTIFY(NM_DBLCLK, IDC_NAMEDVIEWS, OnDblclkNamedviews)
@@ -113,7 +114,7 @@ BEGIN_MESSAGE_MAP(EoDlgNamedViews, CDialog)
 		ON_BN_CLICKED(IDC_UPDATE_LAYERS_BUTTON, OnUpdateLayersButton)
 		ON_BN_CLICKED(IDC_DELETE_BUTTON, OnDeleteButton)
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 BOOL EoDlgNamedViews::OnInitDialog() {
 	CDialog::OnInitDialog();
 	m_views.InsertColumn(0, L"Name", LVCFMT_LEFT, 100);

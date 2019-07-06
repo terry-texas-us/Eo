@@ -1,7 +1,4 @@
 #pragma once
-#include <DbPlotSettings.h>
-#include <DbPlotSettingsValidator.h>
-
 class EoDlgPageSetup final : public CDialog {
 	OdDbPlotSettings& m_PlotSettings;
 	OdDbPlotSettingsValidatorPtr m_PlotSettingsValidator;

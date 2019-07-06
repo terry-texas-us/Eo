@@ -68,8 +68,10 @@ unsigned AFXAPI HashKey(const CString& string) noexcept {
 IMPLEMENT_DYNCREATE(AeSysDoc, COleDocument)
 
 #define NEW_CONSTR(CLASS) OdSmartPtr<CLASS>(new CLASS, kOdRxObjAttach)
+#pragma warning(push)
+#pragma warning(disable : 4548) // (level 1) expression before comma has no effect; expected expression with side - effect
 ODRX_CONS_DEFINE_MEMBERS(OdDbDatabaseDoc, OdDbDatabase, NEW_CONSTR);
-
+#pragma warning(pop)
 AeSysDoc* OdDbDatabaseDoc::g_DatabaseDocument {nullptr};
 
 OdDbDatabaseDoc::OdDbDatabaseDoc() noexcept
@@ -84,7 +86,8 @@ AeSysDoc* OdDbDatabaseDoc::Document() const noexcept {
 void OdDbDatabaseDoc::SetDocumentToAssign(AeSysDoc* document) noexcept {
 	g_DatabaseDocument = document;
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 		ON_COMMAND(ID_PURGE_UNREFERENCEDBLOCKS, OnPurgeUnreferencedBlocks)
 		ON_COMMAND(ID_CLEAR_ACTIVELAYERS, OnClearActiveLayers)
@@ -179,7 +182,8 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 		ON_COMMAND(ID_VECTORIZERTYPE, &AeSysDoc::OnVectorizerType)
 		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE, &AeSysDoc::OnUpdateVectorizerType)
 END_MESSAGE_MAP()
-unsigned short AeSysDoc::ClipboardData::formatR15 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
+#pragma warning (pop)
+unsigned short AeSysDoc::ClipboardData::formatR15 = static_cast < unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
 unsigned short AeSysDoc::ClipboardData::formatR16 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r16"));
 unsigned short AeSysDoc::ClipboardData::formatR17 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r17"));
 unsigned short AeSysDoc::ClipboardData::formatR18 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r18"));

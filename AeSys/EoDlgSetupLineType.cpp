@@ -6,13 +6,14 @@
 #include <DbLinetypeTableRecord.h>
 #include "EoDlgSetupLinetype.h"
 IMPLEMENT_DYNAMIC(EoDlgSetupLinetype, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgSetupLinetype, CDialog)
 		ON_BN_CLICKED(IDC_BYLAYER_BUTTON, &EoDlgSetupLinetype::OnBnClickedBylayerButton)
 		ON_BN_CLICKED(IDC_BYBLOCK_BUTTON, &EoDlgSetupLinetype::OnBnClickedByblockButton)
 		ON_WM_DRAWITEM()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 EoDlgSetupLinetype::~EoDlgSetupLinetype() = default;
 
 void EoDlgSetupLinetype::DoDataExchange(CDataExchange* dataExchange) {

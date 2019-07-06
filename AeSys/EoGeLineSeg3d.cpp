@@ -158,31 +158,31 @@ bool EoGeLineSeg3d::IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d
 }
 
 bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const {
-	OdGePoint3d pt[2];
-	pt[0] = startPoint();
-	pt[1] = endPoint();
+	OdGePoint3d Points[2];
+	Points[0] = startPoint();
+	Points[1] = endPoint();
 	const auto dX {endPoint().x - startPoint().x};
 	const auto dY {endPoint().y - startPoint().y};
 	auto i {1};
-	int iOut[2];
-	iOut[0] = RelationshipToRectangleOf(pt[0], lowerLeftPoint, upperRightPoint);
+	unsigned Out[2];
+	Out[0] = RelationshipToRectangleOf(Points[0], lowerLeftPoint, upperRightPoint);
 	for (;;) {
-		iOut[i] = RelationshipToRectangleOf(pt[i], lowerLeftPoint, upperRightPoint);
-		if (iOut[0] == 0 && iOut[1] == 0) { return true; }
-		if ((iOut[0] & iOut[1]) != 0) { return false; }
-		i = iOut[0] == 0 ? 1 : 0;
-		if ((iOut[i] & 1) == 1) { // Above window
-			pt[i].x = pt[i].x + dX * (upperRightPoint.y - pt[i].y) / dY;
-			pt[i].y = upperRightPoint.y;
-		} else if ((iOut[i] & 2) == 2) { // Below window
-			pt[i].x = pt[i].x + dX * (lowerLeftPoint.y - pt[i].y) / dY;
-			pt[i].y = lowerLeftPoint.y;
-		} else if ((iOut[i] & 4) == 4) {
-			pt[i].y = pt[i].y + dY * (upperRightPoint.x - pt[i].x) / dX;
-			pt[i].x = upperRightPoint.x;
+		Out[i] = RelationshipToRectangleOf(Points[i], lowerLeftPoint, upperRightPoint);
+		if (Out[0] == 0 && Out[1] == 0) { return true; }
+		if ((Out[0] & Out[1]) != 0) { return false; }
+		i = Out[0] == 0 ? 1 : 0;
+		if ((Out[i] & 1) == 1) { // Above window
+			Points[i].x = Points[i].x + dX * (upperRightPoint.y - Points[i].y) / dY;
+			Points[i].y = upperRightPoint.y;
+		} else if ((Out[i] & 2) == 2) { // Below window
+			Points[i].x = Points[i].x + dX * (lowerLeftPoint.y - Points[i].y) / dY;
+			Points[i].y = lowerLeftPoint.y;
+		} else if ((Out[i] & 4) == 4) {
+			Points[i].y = Points[i].y + dY * (upperRightPoint.x - Points[i].x) / dX;
+			Points[i].x = upperRightPoint.x;
 		} else {
-			pt[i].y = pt[i].y + dY * (lowerLeftPoint.x - pt[i].x) / dX;
-			pt[i].x = lowerLeftPoint.x;
+			Points[i].y = Points[i].y + dY * (lowerLeftPoint.x - Points[i].x) / dX;
+			Points[i].x = lowerLeftPoint.x;
 		}
 	}
 }

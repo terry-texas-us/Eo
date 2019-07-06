@@ -16,6 +16,8 @@ IMPLEMENT_DYNAMIC(CMainFrame, CMDIFrameWndEx)
 const int gc_MaximumUserToolbars = 10;
 const unsigned gc_FirstUserToolBarId = AFX_IDW_CONTROLBAR_FIRST + 40;
 const unsigned gc_LastUserToolBarId = gc_FirstUserToolBarId + gc_MaximumUserToolbars - 1;
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 		ON_WM_CREATE()
 		ON_WM_DESTROY()
@@ -37,7 +39,8 @@ BEGIN_MESSAGE_MAP(CMainFrame, CMDIFrameWndEx)
 		ON_COMMAND_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnApplicationLook)
 		ON_UPDATE_COMMAND_UI_RANGE(ID_VIEW_APPLOOK_OFF_2007_BLUE, ID_VIEW_APPLOOK_WINDOWS_7, &CMainFrame::OnUpdateApplicationLook)
 END_MESSAGE_MAP()
-static unsigned Indicators[] = {
+#pragma warning (pop)
+unsigned Indicators[] = {
 ID_INDICATOR_ICON, // status icon
 ID_SEPARATOR, // status line indicator
 ID_INDICATOR_PROGRESS, // progress bar

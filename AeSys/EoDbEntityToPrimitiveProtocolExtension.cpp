@@ -50,8 +50,10 @@ static char THIS_FILE[] = __FILE__;
 /// dwg class name coinciding with the class name, and uses the ODRX_DEFINE_MEMBERS2 macro.
 /// To implement the empty pseudo-constructor, it uses the EMPTY_CONSTR substituting macro. 
 /// </remarks>
+#pragma warning(push)
+#pragma warning(disable : 4548) // (level 1) expression before comma has no effect; expected expression with side - effect
 ODRX_NO_CONS_DEFINE_MEMBERS(EoDbConvertEntityToPrimitive, OdRxObject)
-
+#pragma warning (pop)
 void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdDbDatabasePtr DatabasePtr = entity->database();
 	primitive->SetEntityObjectId(entity->objectId());

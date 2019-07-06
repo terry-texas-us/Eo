@@ -3,7 +3,8 @@
 #include "EoDbPrimitive.h"
 #include "EoDlgSetupColor.h"
 IMPLEMENT_DYNAMIC(EoDlgSetupColor, CDialog)
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgSetupColor, CDialog)
 		ON_BN_CLICKED(IDC_BYBLOCK_BUTTON, &EoDlgSetupColor::OnBnClickedByblockButton)
 		ON_BN_CLICKED(IDC_BYLAYER_BUTTON, &EoDlgSetupColor::OnBnClickedBylayerButton)
@@ -15,7 +16,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupColor, CDialog)
 		ON_WM_GETDLGCODE()
 		ON_WM_PAINT()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 EoDlgSetupColor::EoDlgSetupColor(CWnd* parent)
 	: CDialog(IDD, parent) {
 }

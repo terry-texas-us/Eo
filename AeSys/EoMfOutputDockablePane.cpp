@@ -7,12 +7,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-// COutputBar
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoMfOutputDockablePane, CDockablePane)
 		ON_WM_CREATE()
 		ON_WM_SIZE()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 int EoMfOutputDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	if (CDockablePane::OnCreate(createStructure) == - 1) { return - 1; }
 	m_Font.CreateStockObject(DEFAULT_GUI_FONT);
@@ -48,7 +49,8 @@ void EoMfOutputDockablePane::OnSize(const unsigned type, const int cx, const int
 	// Tab control should cover the whole client area:
 	m_wndTabs.SetWindowPos(nullptr, - 1, - 1, cx, cy, SWP_NOMOVE | SWP_NOACTIVATE | SWP_NOZORDER);
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoMfOutputListBox, CListBox)
 		ON_WM_CONTEXTMENU()
 		ON_COMMAND(ID_EDIT_COPY, OnEditCopy)
@@ -56,7 +58,7 @@ BEGIN_MESSAGE_MAP(EoMfOutputListBox, CListBox)
 		ON_COMMAND(ID_VIEW_OUTPUTWND, OnViewOutput)
 		ON_WM_WINDOWPOSCHANGING()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 // EoMfOutputListBox message handlers
 void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, const CPoint point) {
 	if (AfxGetMainWnd()->IsKindOf(RUNTIME_CLASS(CMDIFrameWndEx)) != 0) {

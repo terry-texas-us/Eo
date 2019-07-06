@@ -61,7 +61,6 @@ using ALDUSMFHEADER = struct {
 	unsigned long reserved;
 	unsigned short checksum;
 };
-
 constexpr auto gc_AldusKey = 0x9AC6CDD7;
 constexpr unsigned long gc_AldusMetafileHeaderSize = 22;
 

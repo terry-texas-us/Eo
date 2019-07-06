@@ -39,14 +39,15 @@ void EoDlgUserIoConsole::DoDataExchange(CDataExchange* dataExchange) {
 	DDX_Text(dataExchange, IDC_INPUT, m_Input);
 	DDX_Text(dataExchange, IDC_PROMPT, m_Prompt);
 }
-
+#pragma warning(push)
+#pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgUserIoConsole, CDialog)
 		ON_WM_PAINT()
 		ON_WM_SIZE()
 		ON_WM_DESTROY()
 		ON_WM_SHOWWINDOW()
 END_MESSAGE_MAP()
-
+#pragma warning (pop)
 OdSmartPtr<EoDlgUserIoConsole> EoDlgUserIoConsole::create(CWnd* parent) {
 	return OdSmartPtr<EoDlgUserIoConsole>(new EoDlgUserIoConsole(parent), kOdRxObjAttach);
 }
