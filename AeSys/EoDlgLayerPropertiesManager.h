@@ -1,5 +1,5 @@
 #pragma once
-#include "LyLayerFilter.h"
+#include <LyLayerFilter.h>
 
 class EoDlgLayerPropertiesManager final : public CDialog {
 DECLARE_DYNAMIC(EoDlgLayerPropertiesManager)

@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "AeSysDoc.h"
-#include "DbObjectContextCollection.h"
-#include "DbObjectContextManager.h"
+#include <DbObjectContextCollection.h>
+#include <DbObjectContextManager.h>
 #include "EoCtrlFindComboBox.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW

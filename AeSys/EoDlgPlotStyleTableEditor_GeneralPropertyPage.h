@@ -1,5 +1,5 @@
 #pragma once
-#include "Ps/plotstyles.h"
+#include <Ps/plotstyles.h>
 constexpr double gc_PlotStyleEditMaxScaleFactor = 10.0;
 
 class EoDlgPlotStyleEditor_GeneralPropertyPage : public CPropertyPage {

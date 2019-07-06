@@ -1,5 +1,5 @@
 #pragma once
-#include "RxDLinkerReactor.h"
+#include <RxDLinkerReactor.h>
 
 class EoLoadApps final : public CDialog {
 public:

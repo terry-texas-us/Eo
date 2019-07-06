@@ -1,5 +1,5 @@
 #pragma once
-#include "Gs/Gs.h"
+#include <Gs/Gs.h>
 
 /*
 The view target and the direction create a display coordinate system (DCS).

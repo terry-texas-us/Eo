@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include <Ge/GeIntArray.h>
 #include "EoDlgPlotStyleEditLineweight.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
-#include "Ge/GeIntArray.h"
 
 using EoListCtrlSortData = struct {
 	CListCtrl* listControl;

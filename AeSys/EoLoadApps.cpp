@@ -1,7 +1,7 @@
 #include "stdafx.h"
+#include <RxModule.h>
 #include "AeSys.h"
 #include "EoLoadApps.h"
-#include "RxModule.h"
 EoLoadApps::LoadedApps* EoLoadApps::m_LoadedApps = nullptr;
 
 void EoLoadApps::rxInit() {

@@ -1,7 +1,7 @@
 #pragma once
-#include "OdaCommon.h"
+#include <OdaCommon.h>
 #include "EoDbPrimitive.h"
-#include "DbEllipse.h"
+#include <DbEllipse.h>
 
 class EoDbEllipse final : public EoDbPrimitive {
 DECLARE_DYNAMIC(EoDbEllipse)

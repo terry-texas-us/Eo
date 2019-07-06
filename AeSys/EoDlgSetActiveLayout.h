@@ -1,5 +1,5 @@
 #pragma once
-#include "DbDatabase.h"
+#include <DbDatabase.h>
 
 class EoDlgSetActiveLayout final : public CDialog {
 	OdDbDatabase* m_Database;

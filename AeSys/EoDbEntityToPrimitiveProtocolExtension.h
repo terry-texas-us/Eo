@@ -1,5 +1,5 @@
 #pragma once
-#include "RxObject.h"
+#include <RxObject.h>
 
 class EoDbConvertEntityToPrimitive : public OdRxObject {
 public:

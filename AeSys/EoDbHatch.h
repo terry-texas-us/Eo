@@ -1,6 +1,6 @@
 #pragma once
+#include <DbHatch.h>
 #include "EoDbPrimitive.h"
-#include "DbHatch.h"
 
 /* <remarks>
 Hatch(Polygon) primitive

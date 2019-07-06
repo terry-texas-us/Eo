@@ -1,5 +1,5 @@
 #pragma once
-#include "DbLayerTableRecord.h"
+#include <DbLayerTableRecord.h>
 #include "EoDbGroupList.h"
 
 class EoDbLayer final : public EoDbGroupList {

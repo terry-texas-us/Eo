@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "AeSys.h"
-//#include "AeSysView.h"
 #include "EoDbBlockReference.h"
 #include "EoDlgSetupNote.h"
 IMPLEMENT_DYNAMIC(EoDlgSetupNote, CDialog)

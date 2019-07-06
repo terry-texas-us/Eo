@@ -1,12 +1,12 @@
 #include "stdafx.h"
 #include <DbViewport.h>
 #include <DbViewportTable.h>
-#include "DbViewportTableRecord.h"
+#include <DbViewportTableRecord.h>
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
 #include "PrimState.h"
-#include "AbstractViewPE.h"
+#include <AbstractViewPE.h>
 #include <ColorMapping.h>
 #include <DbAbstractViewportData.h>
 #include <DbViewTable.h>
@@ -16,6 +16,7 @@
 #include <SaveState.h>
 #include <DbPageController.h>
 #include <DbIdMapping.h>
+#include <BmpTilesGen.h>
 #include "EoDlgSetAngle.h"
 #include "EoDlgSetUnitsAndPrecision.h"
 #include "EoDlgSetupConstraints.h"
@@ -978,8 +979,6 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 		m_ViewTransform.BuildTransformMatrix();
 	}
 }
-
-#include "BmpTilesGen.h"
 
 void GenerateTiles(const HDC hdc, const RECT& drawRectangle, OdGsDevice* pBmpDevice, const long tileWidth, const long tileHeight) {
 	CRect DestinationRectangle {drawRectangle};

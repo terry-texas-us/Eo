@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DbDatabase.h"
+#include <DbDatabase.h>
 #include "EoDlgPlotStyleEditLineweight.h"
 #include "EoDlgPlotStyleTableEditor_FormViewPropertyPage.h"
 #include <Ps/plotstyles.h>

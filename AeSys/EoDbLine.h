@@ -1,5 +1,5 @@
 #pragma once
-#include "DbLine.h"
+#include <DbLine.h>
 #include "EoGeLineSeg3d.h"
 #include "EoDbPrimitive.h"
 

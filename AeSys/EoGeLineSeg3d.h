@@ -1,5 +1,5 @@
 #pragma once
-#include "Ge/GeLineSeg3d.h"
+#include <Ge/GeLineSeg3d.h>
 class AeSysView;
 
 class EoGeLineSeg3d final : public OdGeLineSeg3d {

@@ -1,7 +1,7 @@
 // From OdaMfcApp\OdaMfcExport.h  (last compare 20.5)
 #pragma once
 
-#include "DbGsManager.h"
+#include <DbGsManager.h>
 
 class __declspec(dllexport) OdApplicationReactor : public OdRxObject {
 public:

@@ -1,6 +1,6 @@
 #include "stdafx.h"
+#include <HatchPatternManager.h>
 #include "AeSys.h"
-#include "HatchPatternManager.h"
 #include "EoDbHatchPatternTable.h"
 const wchar_t* EoDbHatchPatternTable::LegacyHatchPatterns[] = {
 L"ExternalHatch",

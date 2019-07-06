@@ -1,5 +1,5 @@
 #pragma once
-#include "Ge/GeNurbCurve3d.h"
+#include <Ge/GeNurbCurve3d.h>
 
 class EoGeNurbCurve3d : public OdGeNurbCurve3d {
 public:

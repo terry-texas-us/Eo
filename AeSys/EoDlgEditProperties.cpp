@@ -1,8 +1,8 @@
 #include "stdafx.h"
-#include "DbDatabase.h"
-#include "DbFiler.h"
-#include "DbObject.h"
-#include "DbUnitsFormatter.h"
+#include <DbDatabase.h>
+#include <DbFiler.h>
+#include <DbObject.h>
+#include <DbUnitsFormatter.h>
 #include "EoDlgEditProperties.h"
 IMPLEMENT_DYNAMIC(EoDlgEditProperties, CDialog)
 
@@ -22,10 +22,10 @@ void EoDlgEditProperties::DoDataExchange(CDataExchange* dataExchange) {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgEditProperties, CDialog)
-		ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
-		ON_BN_CLICKED(IDC_BUTTON1, OnButton)
-		ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
-		ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
+ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
+ON_BN_CLICKED(IDC_BUTTON1, OnButton)
+ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
+ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
 END_MESSAGE_MAP()
 
 static OdString FormatValue(const OdResBuf* resourceBuffer) {

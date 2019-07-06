@@ -1,5 +1,5 @@
 #pragma once
-#include "DbAlignedDimension.h"
+#include <DbAlignedDimension.h>
 #include "EoGeLineSeg3d.h"
 #include "EoDbFontDefinition.h"
 #include "EoDbPrimitive.h"

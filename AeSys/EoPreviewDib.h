@@ -1,5 +1,5 @@
 #pragma once
-#include "ThumbnailImage.h"
+#include <ThumbnailImage.h>
 
 class EoPreviewDib final : public CAbstractPreview {
 public:

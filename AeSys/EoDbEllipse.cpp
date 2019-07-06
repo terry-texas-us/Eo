@@ -1,4 +1,6 @@
 #include "stdafx.h"
+#include <DbEllipse.h>
+#include <Ge/GeCircArc3d.h>
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -6,8 +8,6 @@
 #include "EoVaxFloat.h"
 #include "EoGePolyline.h"
 #include "EoDbFile.h"
-#include "DbEllipse.h"
-#include "Ge/GeCircArc3d.h"
 IMPLEMENT_DYNAMIC(EoDbEllipse, EoDbPrimitive)
 
 EoDbEllipse::EoDbEllipse(const OdGePoint3d& center, const OdGeVector3d& majorAxis, const OdGeVector3d& minorAxis, const double sweepAngle) noexcept

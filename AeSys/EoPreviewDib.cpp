@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "AeSys.h"
-#include "FileDlgExt.h"
+#include <FileDlgExt.h>
 #include "EoPreviewDib.h"
 
 void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "AeSys.h"
 #include "EoDlgAudit.h"
-#include "DbAudit.h"
+#include <DbAudit.h>
 
 EoDlgAudit::EoDlgAudit(CWnd* parent)
 	: EoVarDialog(IDD, parent) {

@@ -1,5 +1,5 @@
 #pragma once
-#include "DbText.h"
+#include <DbText.h>
 #include "EoGeReferenceSystem.h"
 #include "EoDb.h"
 #include "EoDbFontDefinition.h"

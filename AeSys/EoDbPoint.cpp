@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DbBlockTableRecord.h"
+#include <DbBlockTableRecord.h>
 #include "AeSys.h"
 #include "AeSysView.h"
 #include "PrimState.h"

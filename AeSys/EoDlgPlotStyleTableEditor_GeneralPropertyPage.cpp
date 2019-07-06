@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "Shlwapi.h"
+#include <Shlwapi.h>
 #include "EoDlgPlotStyleTableEditor_GeneralPropertyPage.h"
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 

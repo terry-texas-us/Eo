@@ -1,5 +1,5 @@
 #pragma once
-#include "DbBlockTableRecord.h"
+#include <DbBlockTableRecord.h>
 #include "EoMfOutputDockablePane.h"
 #include "EoMfPropertiesDockablePane.h"
 const int gc_StatusIcon = 0;

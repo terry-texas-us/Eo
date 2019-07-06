@@ -1,6 +1,6 @@
 #pragma once
-#include "DbUserIO.h"
-#include "ExStringIO.h"
+#include <DbUserIO.h>
+#include <ExStringIO.h>
 
 class EoDlgUserIoConsole final : public CDialog, public OdEdBaseIO {
 	static int sm_WindowWidth;

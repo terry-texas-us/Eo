@@ -1,4 +1,8 @@
 #include "stdafx.h"
+#include <Ge/GeCircArc2d.h>
+#include <Ge/GeEllipArc2d.h>
+#include <Ge/GeNurbCurve2d.h>
+#include <HatchPatternManager.h>
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
@@ -7,7 +11,6 @@
 #include "EoGePolyline.h"
 #include "EoDbFile.h"
 #include "EoDbHatch.h"
-#include "HatchPatternManager.h"
 #include "EoDbHatchPatternTable.h"
 IMPLEMENT_DYNAMIC(EoDbHatch, EoDbPrimitive)
 
@@ -694,10 +697,6 @@ unsigned EoDbHatch::Edge() noexcept {
 void EoDbHatch::SetEdgeToEvaluate(const unsigned edgeToEvaluate) noexcept {
 	ms_EdgeToEvaluate = edgeToEvaluate;
 }
-
-#include "Ge/GeCircArc2d.h"
-#include "Ge/GeEllipArc2d.h"
-#include "Ge/GeNurbCurve2d.h"
 
 void EoDbHatch::ConvertPolylineType(const int loopIndex, const OdDbHatchPtr& hatchEntity, EoDbHatch* hatchPrimitive) {
 	hatchPrimitive->SetLoopAt(loopIndex, hatchEntity);

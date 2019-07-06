@@ -1,5 +1,5 @@
 #pragma once
-#include "DbBlockTableRecord.h"
+#include <DbBlockTableRecord.h>
 #include "EoDbLayer.h"
 
 class EoDbTracingFile final : public EoDbFile {

@@ -2,9 +2,9 @@
 #include "AeSys.h"
 #include "EoDlgNewView.h"
 #include "EoDlgNamedViews.h"
-#include "DbSymbolTable.h"
-#include "DbViewTableRecord.h"
-#include "DbUCSTableRecord.h"
+#include <DbSymbolTable.h>
+#include <DbViewTableRecord.h>
+#include <DbUCSTableRecord.h>
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

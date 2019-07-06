@@ -1,5 +1,5 @@
 #pragma once
-#include "DbMText.h"
+#include <DbMText.h>
 #include "EoDb.h"
 class EoDbFile;
 

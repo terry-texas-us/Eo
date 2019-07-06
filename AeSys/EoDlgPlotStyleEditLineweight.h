@@ -1,5 +1,5 @@
 #pragma once
-#include "Ps/plotstyles.h"
+#include <Ps/plotstyles.h>
 
 struct EoLineweightData {
 	int oldIndex {-1};

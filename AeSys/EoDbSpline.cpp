@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "DbSpline.h"
+#include <DbSpline.h>
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"

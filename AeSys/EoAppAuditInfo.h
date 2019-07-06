@@ -1,5 +1,5 @@
 #pragma once
-#include "DbAudit.h"
+#include <DbAudit.h>
 
 class EoAppAuditInfo final : public OdDbAuditInfo {
 public:
