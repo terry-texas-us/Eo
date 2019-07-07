@@ -4,7 +4,7 @@
 IMPLEMENT_DYNAMIC(EoDlgLineWeight, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgLineWeight, CDialog)
-		ON_LBN_DBLCLK(IDC_LIST_LINEWEIGHT, &EoDlgLineWeight::OnLbnDblclkListLineweight)
+		ON_LBN_DBLCLK(IDC_LIST_LINEWEIGHT, &EoDlgLineWeight::OnLbnDoubleClickListLineweight)
 		ON_BN_CLICKED(IDOK, &EoDlgLineWeight::OnBnClickedOk)
 END_MESSAGE_MAP()
 
@@ -44,6 +44,6 @@ void EoDlgLineWeight::OnBnClickedOk() {
 	CDialog::OnOK();
 }
 
-void EoDlgLineWeight::OnLbnDblclkListLineweight() {
+void EoDlgLineWeight::OnLbnDoubleClickListLineweight() {
 	OnBnClickedOk();
 }

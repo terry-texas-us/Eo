@@ -8,7 +8,7 @@
 IMPLEMENT_DYNAMIC(EoDlgBlockInsert, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)
-		ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelchangeBlocksList)
+ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelectionChangeBlocksList)
 		ON_BN_CLICKED(IDC_PURGE, &EoDlgBlockInsert::OnBnClickedPurge)
 		ON_BN_CLICKED(IDCANCEL, &EoDlgBlockInsert::OnBnClickedCancel)
 END_MESSAGE_MAP()
@@ -78,7 +78,7 @@ void EoDlgBlockInsert::OnOK() {
 	CDialog::OnOK();
 }
 
-void EoDlgBlockInsert::OnLbnSelchangeBlocksList() {
+void EoDlgBlockInsert::OnLbnSelectionChangeBlocksList() {
 	const auto CurrentSelection {m_BlocksListBoxControl.GetCurSel()};
 	if (CurrentSelection != LB_ERR) {
 		CString BlockName;

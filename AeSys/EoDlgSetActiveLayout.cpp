@@ -19,8 +19,8 @@ void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* dataExchange) {
 
 BEGIN_MESSAGE_MAP(EoDlgSetActiveLayout, CDialog)
 		ON_COMMAND(IDC_ALAYOUT_CLOSE, OnLayoutDlgClose)
-		ON_LBN_SELCHANGE(IDC_LAYOUTLIST, OnSelchangeLayoutlist)
-		ON_LBN_DBLCLK(IDC_LAYOUTLIST, OnDblclkLayoutlist)
+		ON_LBN_SELCHANGE(IDC_LAYOUTLIST, OnSelectionChangeLayoutlist)
+		ON_LBN_DBLCLK(IDC_LAYOUTLIST, OnDoubleClickLayoutlist)
 		ON_BN_CLICKED(IDC_RENAME, OnRename)
 		ON_BN_CLICKED(IDC_DELETE, OnDelete)
 		ON_BN_CLICKED(IDC_COPY, OnCopy)
@@ -69,7 +69,7 @@ void EoDlgSetActiveLayout::OnLayoutDlgClose() {
 	EndDialog(m_OldActiveLayout != m_NewActiveLayout ? IDOK : IDCANCEL);
 }
 
-void EoDlgSetActiveLayout::OnSelchangeLayoutlist() {
+void EoDlgSetActiveLayout::OnSelectionChangeLayoutlist() {
 	const auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
 	m_NewActiveLayout = Layouts->GetCurSel();
 	Layouts->GetText(m_NewActiveLayout, m_NewLayoutName);
@@ -90,7 +90,7 @@ void EoDlgSetActiveLayout::OnSelchangeLayoutlist() {
 	*/
 }
 
-void EoDlgSetActiveLayout::OnDblclkLayoutlist() {
+void EoDlgSetActiveLayout::OnDoubleClickLayoutlist() {
 	EndDialog(m_OldActiveLayout != m_NewActiveLayout ? IDOK : IDCANCEL);
 }
 

@@ -257,35 +257,35 @@ protected:
 
 	void OnChangeEditPen();
 
-	void OnChangeEditVirtPen();
+	void OnChangeEditVirtualPen();
 
 	void OnChangeEditScreening();
 
-	void OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result);
+	void OnItemChangedListStyles(NMHDR* notifyStructure, LRESULT* result);
 
-	void OnItemchangingListStyles(NMHDR* notifyStructure, LRESULT* result);
+	void OnItemChangingListStyles(NMHDR* notifyStructure, LRESULT* result);
 
-	void OnDeltaposSpinPen(NMHDR* notifyStructure, LRESULT* result) noexcept;
+	void OnDeltaPositionSpinPen(NMHDR* notifyStructure, LRESULT* result) noexcept;
 
-	void OnSelchangeComboColor();
+	void OnSelectionChangeComboColor();
 
-	void OnSelendokComboColor() noexcept;
+	void OnSelectionEndOkComboColor() noexcept;
 
-	void OnSelendokComboDither();
+	void OnSelectionEndOkComboDither();
 
-	void OnSelendokComboGrayScale();
+	void OnSelectionEndOkComboGrayScale();
 
-	void OnSelendokComboLineType();
+	void OnSelectionEndOkComboLineType();
 
-	void OnSelendokComboAdaptive();
+	void OnSelectionEndOkComboAdaptive();
 
-	void OnSelendokComboLineWeight();
+	void OnSelectionEndOkComboLineWeight();
 
-	void OnSelendokComboLineEndStyle();
+	void OnSelectionEndOkComboLineEndStyle();
 
-	void OnSelendokComboLineJoinStyle();
+	void OnSelectionEndOkComboLineJoinStyle();
 
-	void OnSelendokComboFillStyle();
+	void OnSelectionEndOkComboFillStyle();
 
 	void OnDestroy(); // hides non-virtual function of parent
 DECLARE_MESSAGE_MAP()

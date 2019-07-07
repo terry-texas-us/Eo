@@ -30,7 +30,7 @@ public:
 	void UpdateFiltersTree();
 
 	int OnCreate(LPCREATESTRUCT createStructure); // hides non-virtual function of parent
-	void OnNMDblclkLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
+	void OnNmDoubleClickLayerFilterTree(NMHDR* notifyStructure, LRESULT* result);
 
 	void OnSize(unsigned type, int newWidth, int newHeight); // hides non-virtual function of parent
 	void OnSizing(unsigned side, LPRECT rectangle); // hides non-virtual function of parent

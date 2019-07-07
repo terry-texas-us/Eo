@@ -21,7 +21,7 @@ public:
 
 	void OnBnClickedOk();
 
-	void OnLbnDblclkListLineweight();
+	void OnLbnDoubleClickListLineweight();
 
 DECLARE_MESSAGE_MAP()
 };

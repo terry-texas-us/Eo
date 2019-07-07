@@ -21,9 +21,9 @@ protected:
 	CEdit m_Y;
 	CEdit m_Z;
 
-	void OnCbnEditupdateList();
+	void OnCbnEditUpdateList();
 
-	void OnCbnSelchangeList();
+	void OnCbnSelectionChangeList();
 
 DECLARE_MESSAGE_MAP()
 };

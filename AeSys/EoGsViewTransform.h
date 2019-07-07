@@ -2,7 +2,7 @@
 #include "EoGeMatrix3d.h"
 #include "EoGsAbstractView.h"
 
-class EoGsViewTransform : public EoGsAbstractView {
+class EoGsViewTransform final : public EoGsAbstractView {
 	EoGeMatrix3d m_Matrix;
 	EoGeMatrix3d m_ViewMatrix;
 	EoGeMatrix3d m_ProjectionMatrix;

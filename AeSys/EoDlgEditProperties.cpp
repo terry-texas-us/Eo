@@ -16,14 +16,14 @@ EoDlgEditProperties::~EoDlgEditProperties() = default;
 
 void EoDlgEditProperties::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
-	DDX_Control(dataExchange, IDC_BUTTON1, m_doset);
+	DDX_Control(dataExchange, IDC_BUTTON1, m_SetValue);
 	DDX_Control(dataExchange, IDC_PROPLIST, m_propList);
 	DDX_Text(dataExchange, IDC_VALUE, m_sValue);
 }
 #pragma warning(push)
 #pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgEditProperties, CDialog)
-		ON_EN_SETFOCUS(IDC_VALUE, OnSetfocusValue)
+		ON_EN_SETFOCUS(IDC_VALUE, OnSetFocusValue)
 		ON_BN_CLICKED(IDC_BUTTON1, OnButton)
 		ON_NOTIFY(NM_CLICK, IDC_PROPLIST, OnClickProplist)
 		ON_NOTIFY(LVN_KEYDOWN, IDC_PROPLIST, OnKeydownProplist)
@@ -152,13 +152,13 @@ void EoDlgEditProperties::OnButton() {
 }
 
 void EoDlgEditProperties::OnClickProplist(NMHDR* /*notifyStructure*/, LRESULT* result) {
-	OnSetfocusValue();
+	OnSetFocusValue();
 	*result = 0;
 }
 
-void EoDlgEditProperties::OnSetfocusValue() {
+void EoDlgEditProperties::OnSetFocusValue() {
 	m_CurrentItem = m_propList.GetSelectionMark();
-	m_doset.EnableWindow(static_cast<BOOL>(m_CurrentItem != -1));
+	m_SetValue.EnableWindow(static_cast<BOOL>(m_CurrentItem != -1));
 	if (m_CurrentItem != -1) {
 		m_sValue = m_propList.GetItemText(m_CurrentItem, 1);
 		UpdateData(FALSE);
@@ -166,6 +166,6 @@ void EoDlgEditProperties::OnSetfocusValue() {
 }
 
 void EoDlgEditProperties::OnKeydownProplist(NMHDR* /*notifyStructure*/, LRESULT* result) {
-	OnSetfocusValue();
+	OnSetFocusValue();
 	*result = 0;
 }

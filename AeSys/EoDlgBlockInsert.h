@@ -30,7 +30,7 @@ protected:
 	CButton m_RotationOnscreen;
 	CButton m_Explode;
 public:
-	void OnLbnSelchangeBlocksList();
+	void OnLbnSelectionChangeBlocksList();
 
 	void OnBnClickedPurge();
 

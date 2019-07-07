@@ -21,12 +21,12 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 		ON_BN_CLICKED(IDC_MELT, &EoDlgFileManage::OnBnClickedMelt)
 		ON_BN_CLICKED(IDC_NEWLAYER, &EoDlgFileManage::OnBnClickedNewLayer)
 		ON_BN_CLICKED(IDC_SETCURRENT, &EoDlgFileManage::OnBnClickedSetCurrent)
-		ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgFileManage::OnLbnSelchangeBlocksList)
-		ON_NOTIFY(NM_CLICK, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnNMClickLayersListControl)
-		ON_NOTIFY(NM_DBLCLK, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnNMDblclkLayersListControl)
-		ON_NOTIFY(LVN_ITEMCHANGED, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnItemchangedLayersListControl)
+		ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgFileManage::OnLbnSelectionChangeBlocksList)
+		ON_NOTIFY(NM_CLICK, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnNmClickLayersListControl)
+		ON_NOTIFY(NM_DBLCLK, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnNmDoubleClickLayersListControl)
+		ON_NOTIFY(LVN_ITEMCHANGED, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnItemChangedLayersListControl)
 		ON_NOTIFY(LVN_ENDLABELEDIT, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnEndlabeleditLayersListControl)
-		ON_NOTIFY(LVN_BEGINLABELEDIT, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnBeginlabeleditLayersListControl)
+		ON_NOTIFY(LVN_BEGINLABELEDIT, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnBeginLabelEditLayersListControl)
 		ON_NOTIFY(LVN_KEYDOWN, IDC_LAYERS_LIST_CONTROL, &EoDlgFileManage::OnLvnKeydownLayersListControl)
 END_MESSAGE_MAP()
 #pragma warning (pop)
@@ -278,7 +278,7 @@ BOOL EoDlgFileManage::OnInitDialog() {
 	return TRUE;
 }
 
-void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnItemChangedLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
 	const auto ListViewNotificationMessage = reinterpret_cast<tagNMLISTVIEW*>(notifyStructure);
 	if ((ListViewNotificationMessage->uNewState & LVIS_FOCUSED) == LVFIS_FOCUSED) {
 		const auto Item {ListViewNotificationMessage->iItem};
@@ -293,7 +293,7 @@ void EoDlgFileManage::OnItemchangedLayersListControl(NMHDR* notifyStructure, LRE
 	*result = 0;
 }
 
-void EoDlgFileManage::OnLbnSelchangeBlocksList() {
+void EoDlgFileManage::OnLbnSelectionChangeBlocksList() {
 	const auto CurrentSelection {m_BlocksList.GetCurSel()};
 	if (CurrentSelection != LB_ERR) {
 		if (m_BlocksList.GetTextLen(CurrentSelection) != LB_ERR) {
@@ -306,7 +306,7 @@ void EoDlgFileManage::OnLbnSelchangeBlocksList() {
 	}
 }
 
-void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnNmClickLayersListControl(NMHDR* notifyStructure, LRESULT* result) {
 	const auto pNMItemActivate {reinterpret_cast<tagNMITEMACTIVATE*>(notifyStructure)};
 	const auto Item {pNMItemActivate->iItem};
 	const auto SubItem {pNMItemActivate->iSubItem};
@@ -405,10 +405,8 @@ void EoDlgFileManage::OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT
 	*result = 0;
 }
 
-void EoDlgFileManage::OnNMDblclkLayersListControl(NMHDR* /*notifyStructure*/, LRESULT* result) {
-	if (m_ClickToColumnStatus) {
-		OnBnClickedSetCurrent();
-	}
+void EoDlgFileManage::OnNmDoubleClickLayersListControl(NMHDR* /*notifyStructure*/, LRESULT* result) {
+	if (m_ClickToColumnStatus) { OnBnClickedSetCurrent(); }
 	*result = 0;
 }
 
@@ -417,7 +415,7 @@ void EoDlgFileManage::UpdateCurrentLayerInfoField() {
 	GetDlgItem(IDC_STATIC_CURRENT_LAYER)->SetWindowTextW(L"Current Layer: " + LayerName);
 }
 
-void EoDlgFileManage::OnLvnBeginlabeleditLayersListControl(NMHDR* const notifyStructure, LRESULT* result) {
+void EoDlgFileManage::OnLvnBeginLabelEditLayersListControl(NMHDR* const notifyStructure, LRESULT* result) {
 	const NMLVDISPINFO* ListViewNotificationDisplayInfo = reinterpret_cast<NMLVDISPINFO*>(notifyStructure);
 	const auto Item {ListViewNotificationDisplayInfo->item};
 	const EoDbLayer* Layer = reinterpret_cast<EoDbLayer*>(m_LayersList.GetItemData(Item.iItem));

@@ -8,7 +8,7 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 		ON_WM_CREATE()
 		ON_WM_SIZE()
 		ON_WM_SIZING()
-		ON_NOTIFY(NM_DBLCLK, IDC_LAYER_FILTER_TREE, &EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree)
+		ON_NOTIFY(NM_DBLCLK, IDC_LAYER_FILTER_TREE, &EoDlgLayerPropertiesManager::OnNmDoubleClickLayerFilterTree)
 		ON_NOTIFY(TVN_KEYDOWN, IDC_LAYER_FILTER_TREE, &EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree)
 END_MESSAGE_MAP()
 #pragma warning (pop)
@@ -35,7 +35,7 @@ int EoDlgLayerPropertiesManager::OnCreate(const LPCREATESTRUCTW createStructure)
 	return 0;
 }
 
-void EoDlgLayerPropertiesManager::OnNMDblclkLayerFilterTree(NMHDR* /*notifyStructure*/, LRESULT* result) {
+void EoDlgLayerPropertiesManager::OnNmDoubleClickLayerFilterTree(NMHDR* /*notifyStructure*/, LRESULT* result) {
 	if (auto h = treeFilters.GetSelectedItem()) {
 		const OdLyLayerFilter* lf = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(h)));
 		if (!lf->dynamicallyGenerated() && !lf->isIdFilter()) {

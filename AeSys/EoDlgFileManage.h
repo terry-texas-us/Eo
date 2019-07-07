@@ -42,17 +42,17 @@ public:
 	void OnBnClickedSetCurrent();
 
 	void OnDrawItem(int controlIdentifier, LPDRAWITEMSTRUCT drawItemStruct); // hides non-virtual function of parent
-	void OnItemchangedLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+	void OnItemChangedLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 
-	void OnLbnSelchangeBlocksList();
+	void OnLbnSelectionChangeBlocksList();
 
-	void OnNMClickLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+	void OnNmClickLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 
-	void OnNMDblclkLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+	void OnNmDoubleClickLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 
 	void OnLvnEndlabeleditLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 
-	void OnLvnBeginlabeleditLayersListControl(NMHDR* notifyStructure, LRESULT* result);
+	void OnLvnBeginLabelEditLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 
 	void OnLvnKeydownLayersListControl(NMHDR* notifyStructure, LRESULT* result);
 };

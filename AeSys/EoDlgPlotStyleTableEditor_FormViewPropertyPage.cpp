@@ -328,22 +328,22 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleEditor_FormViewPropertyPage, CPropertyPage)
 		ON_BN_CLICKED(IDC_PS_FORMVIEW_BTN_ADDSTYLE, OnAddBtnStyle)
 		ON_EN_UPDATE(IDC_PS_FORMVIEW_EDIT_DESCRIPTION, OnUpdateEditDescription)
 		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_DESCRIPTION, OnChangeEditDescription)
-		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_VIRTPEN, OnChangeEditVirtPen)
+		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_VIRTPEN, OnChangeEditVirtualPen)
 		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_PEN, OnChangeEditPen)
 		ON_EN_CHANGE(IDC_PS_FORMVIEW_EDIT_SCREENING, OnChangeEditScreening)
-		ON_NOTIFY(LVN_ITEMCHANGED, IDC_PS_FORMVIEW_LIST_STYLES, OnItemchangedListStyles)
-		ON_NOTIFY(LVN_ITEMCHANGING, IDC_PS_FORMVIEW_LIST_STYLES, OnItemchangingListStyles)
-		ON_NOTIFY(UDN_DELTAPOS, IDC_PS_FORMVIEW_SPIN_PEN, OnDeltaposSpinPen)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelchangeComboColor)
-		ON_CBN_SELENDOK(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelendokComboColor)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_DITHER, OnSelendokComboDither)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_GRAYSCALE, OnSelendokComboGrayScale)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINETYPE, OnSelendokComboLineType)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_ADAPTIVE, OnSelendokComboAdaptive)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEWEIGHT, OnSelendokComboLineWeight)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEENDSTYLE, OnSelendokComboLineEndStyle)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEJOINSTYLE, OnSelendokComboLineJoinStyle)
-		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_FILLSTYLE, OnSelendokComboFillStyle)
+		ON_NOTIFY(LVN_ITEMCHANGED, IDC_PS_FORMVIEW_LIST_STYLES, OnItemChangedListStyles)
+		ON_NOTIFY(LVN_ITEMCHANGING, IDC_PS_FORMVIEW_LIST_STYLES, OnItemChangingListStyles)
+		ON_NOTIFY(UDN_DELTAPOS, IDC_PS_FORMVIEW_SPIN_PEN, OnDeltaPositionSpinPen)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelectionChangeComboColor)
+		ON_CBN_SELENDOK(IDC_PS_FORMVIEW_COMBO_COLOR, OnSelectionEndOkComboColor)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_DITHER, OnSelectionEndOkComboDither)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_GRAYSCALE, OnSelectionEndOkComboGrayScale)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINETYPE, OnSelectionEndOkComboLineType)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_ADAPTIVE, OnSelectionEndOkComboAdaptive)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEWEIGHT, OnSelectionEndOkComboLineWeight)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEENDSTYLE, OnSelectionEndOkComboLineEndStyle)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_LINEJOINSTYLE, OnSelectionEndOkComboLineJoinStyle)
+		ON_CBN_SELCHANGE(IDC_PS_FORMVIEW_COMBO_FILLSTYLE, OnSelectionEndOkComboFillStyle)
 		ON_WM_DESTROY()
 END_MESSAGE_MAP()
 #pragma warning (pop)
@@ -418,7 +418,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::initColorComboBox() {
 	m_Color.SetCurSel(0);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangedListStyles(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemChangedListStyles(NMHDR* notifyStructure, LRESULT* result) {
 	const NM_LISTVIEW* pNMListView = reinterpret_cast<NM_LISTVIEW*>(notifyStructure);
 	if (pNMListView->uNewState == 0U) {
 		*result = 0;
@@ -520,7 +520,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditPen() {
 	m_bEditChanging = false;
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtPen() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditVirtualPen() {
 	if (m_bEditChanging) { return; }
 	m_bEditChanging = true;
 	OdPsPlotStyleData OdPsData;
@@ -562,11 +562,11 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnChangeEditDescription() {
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnUpdateEditDescription() noexcept {
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaposSpinPen(NMHDR* /*notifyStructure*/, LRESULT* result) noexcept {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnDeltaPositionSpinPen(NMHDR* /*notifyStructure*/, LRESULT* result) noexcept {
 	*result = 0;
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemchangingListStyles(NMHDR* notifyStructure, LRESULT* result) {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnItemChangingListStyles(NMHDR* notifyStructure, LRESULT* result) {
 	const NM_LISTVIEW* pNMListView = reinterpret_cast<NM_LISTVIEW*>(notifyStructure);
 	// TODO: Add your control notification handler code here
 	if (pNMListView->uNewState == 0U) {
@@ -708,7 +708,7 @@ BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::OnInitDialog() {
 	// EXCEPTION: OCX Property Pages should return FALSE
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionChangeComboColor() {
 	// TODO: Add your control notification handler code here
 	short intColorPolicy;
 	const auto CurrentSelection {m_Color.GetCurSel()};
@@ -734,10 +734,10 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelchangeComboColor() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboColor() noexcept {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboColor() noexcept {
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboDither() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboDither() {
 	const auto CurrentSelection {m_Dither.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -745,7 +745,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboDither() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboGrayScale() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboGrayScale() {
 	const auto CurrentSelection {m_Grayscale.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -753,7 +753,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboGrayScale() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboAdaptive() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboAdaptive() {
 	const auto CurrentSelection {m_Adaptive.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -761,7 +761,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboAdaptive() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineWeight() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboLineWeight() {
 	const auto CurrentSelection {m_Lineweight.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -769,7 +769,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineWeight() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineEndStyle() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboLineEndStyle() {
 	const auto CurrentSelection {m_Lineendstyle.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -777,7 +777,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineEndStyle() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboFillStyle() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboFillStyle() {
 	const auto CurrentSelection {m_Fillstyle.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -785,7 +785,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboFillStyle() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineJoinStyle() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboLineJoinStyle() {
 	const auto CurrentSelection {m_Linejoinstyle.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);
@@ -793,7 +793,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineJoinStyle() {
 	m_pPlotStyleActive->setData(OdPsData);
 }
 
-void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelendokComboLineType() {
+void EoDlgPlotStyleEditor_FormViewPropertyPage::OnSelectionEndOkComboLineType() {
 	const auto CurrentSelection {m_Linetype.GetCurSel()};
 	OdPsPlotStyleData OdPsData;
 	m_pPlotStyleActive->getData(OdPsData);

@@ -55,7 +55,7 @@ static char THIS_FILE[] = __FILE__;
 ODRX_NO_CONS_DEFINE_MEMBERS(EoDbConvertEntityToPrimitive, OdRxObject)
 #pragma warning (pop)
 void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
-	OdDbDatabasePtr DatabasePtr = entity->database();
+	OdDbDatabasePtr DatabasePtr {entity->database()};
 	primitive->SetEntityObjectId(entity->objectId());
 	const auto Color {entity->color()};
 	if (Color.isByBlock()) {
@@ -74,17 +74,17 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 		const auto Name {entity->linetype()};
 		primitive->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 	}
-	OdGeExtents3d extents;
-	if (eOk == entity->getGeomExtents(extents)) {
+	OdGeExtents3d Extents;
+	if (eOk == entity->getGeomExtents(Extents)) {
 	}
-	OdGePlane plane;
-	auto planarity {OdDb::kNonPlanar};
-	entity->getPlane(plane, planarity);
+	OdGePlane Plane;
+	auto Planarity {OdDb::kNonPlanar};
+	entity->getPlane(Plane, Planarity);
 	if (entity->isPlanar()) {
-		OdGePoint3d origin;
-		OdGeVector3d uAxis;
-		OdGeVector3d vAxis;
-		plane.get(origin, uAxis, vAxis);
+		OdGePoint3d Origin;
+		OdGeVector3d UAxis;
+		OdGeVector3d VAxis;
+		Plane.get(Origin, UAxis, VAxis);
 	}
 }
 

@@ -63,19 +63,19 @@ double EoGsAbstractView::FieldWidthMinimum() const noexcept {
 }
 
 bool EoGsAbstractView::IsNearClipAtEyeOn() const noexcept {
-	return (m_ViewMode & AV_NEARCLIPPINGATEYE) == AV_NEARCLIPPINGATEYE;
+	return (m_ViewMode & mc_NearClippingAtEye) == mc_NearClippingAtEye;
 }
 
 bool EoGsAbstractView::IsNearClipOn() const noexcept {
-	return (m_ViewMode & AV_NEARCLIPPING) == AV_NEARCLIPPING;
+	return (m_ViewMode & mc_NearClipping) == mc_NearClipping;
 }
 
 bool EoGsAbstractView::IsFarClipOn() const noexcept {
-	return (m_ViewMode & AV_FARCLIPPING) == AV_FARCLIPPING;
+	return (m_ViewMode & mc_FarClipping) == mc_FarClipping;
 }
 
 bool EoGsAbstractView::IsPerspectiveOn() const noexcept {
-	return (m_ViewMode & AV_PERSPECTIVE) == AV_PERSPECTIVE;
+	return (m_ViewMode & mc_Perspective) == mc_Perspective;
 }
 
 double EoGsAbstractView::LensLength() const noexcept {
@@ -112,9 +112,9 @@ void EoGsAbstractView::SetLensLength(const double length) noexcept {
 
 void EoGsAbstractView::EnablePerspective(const bool enabled) noexcept {
 	if (enabled) {
-		m_ViewMode |= AV_PERSPECTIVE;
+		m_ViewMode |= mc_Perspective;
 	} else {
-		m_ViewMode &= ~AV_PERSPECTIVE;
+		m_ViewMode &= ~mc_Perspective;
 	}
 }
 

@@ -41,7 +41,7 @@ protected:
 
 	void OnSetcurrentButton();
 
-	void OnDblclkNamedviews(NMHDR* notifyStructure, LRESULT* pResult);
+	void OnDoubleClickNamedviews(NMHDR* notifyStructure, LRESULT* pResult);
 
 	void OnNewButton();
 

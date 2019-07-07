@@ -20,9 +20,9 @@ protected:
 
 	void OnLayoutDlgClose();
 
-	void OnSelchangeLayoutlist();
+	void OnSelectionChangeLayoutlist();
 
-	void OnDblclkLayoutlist();
+	void OnDoubleClickLayoutlist();
 
 	void OnRename();
 

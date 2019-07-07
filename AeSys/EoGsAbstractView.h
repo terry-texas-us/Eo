@@ -23,12 +23,12 @@ Perspective projections:
 */
 class EoGsAbstractView {
 public:
-	static const short AV_PERSPECTIVE = 0x01; // bit 1 Perspective mode flag for this view
-	static const short AV_NEARCLIPPING = 0x02; // bit 2 Near (Front) clipping plane status for this view
-	static const short AV_FARCLIPPING = 0x04; // bit 3 Far (Back) clipping plane status for this view
-	static const short AV_NEARCLIPPINGATEYE = 0x10; // bit 16 Front clipping plane is located at the camera
+	static const unsigned mc_Perspective = 0x01; // bit 1 Perspective mode flag for this view
+	static const unsigned mc_NearClipping = 0x02; // bit 2 Near (Front) clipping plane status for this view
+	static const unsigned mc_FarClipping = 0x04; // bit 3 Far (Back) clipping plane status for this view
+	static const unsigned mc_NearClippingAtEye = 0x10; // bit 16 Front clipping plane is located at the camera
 protected:
-	short m_ViewMode {0}; // Parallel projection, No front clipping, No back clipping
+	unsigned m_ViewMode {0}; // Parallel projection, No front clipping, No back clipping
 	OdGsView::RenderMode m_RenderMode {OdGsView::k2DOptimized};
 	double m_Elevation {0.0}; // elevation of the UCS plane for this view
 	double m_LensLength {50.0}; // lens length used for perspective mode in this view

@@ -6,8 +6,8 @@
 IMPLEMENT_DYNAMIC(EoDlgSelectGotoHomePoint, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgSelectGotoHomePoint, CDialog)
-		ON_CBN_EDITUPDATE(IDC_LIST, &EoDlgSelectGotoHomePoint::OnCbnEditupdateList)
-		ON_CBN_SELCHANGE(IDC_LIST, &EoDlgSelectGotoHomePoint::OnCbnSelchangeList)
+		ON_CBN_EDITUPDATE(IDC_LIST, &EoDlgSelectGotoHomePoint::OnCbnEditUpdateList)
+		ON_CBN_SELCHANGE(IDC_LIST, &EoDlgSelectGotoHomePoint::OnCbnSelectionChangeList)
 END_MESSAGE_MAP()
 
 EoDlgSelectGotoHomePoint::EoDlgSelectGotoHomePoint(CWnd* parent)
@@ -48,7 +48,7 @@ void EoDlgSelectGotoHomePoint::OnOK() {
 	CDialog::OnOK();
 }
 
-void EoDlgSelectGotoHomePoint::OnCbnEditupdateList() {
+void EoDlgSelectGotoHomePoint::OnCbnEditUpdateList() {
 	CString NamesItem;
 	m_HomePointNames.GetWindowTextW(NamesItem);
 	const auto NamesItemIndex {m_HomePointNames.FindString(-1, NamesItem)};
@@ -75,7 +75,7 @@ void EoDlgSelectGotoHomePoint::OnCbnEditupdateList() {
 	}
 }
 
-void EoDlgSelectGotoHomePoint::OnCbnSelchangeList() {
+void EoDlgSelectGotoHomePoint::OnCbnSelectionChangeList() {
 	const auto NamesItemIndex {m_HomePointNames.GetCurSel()};
 	if (NamesItemIndex != CB_ERR) {
 		OdGePoint3d Point;

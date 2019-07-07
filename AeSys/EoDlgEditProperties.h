@@ -16,11 +16,11 @@ protected:
 	OdDbObjectId& m_pObjectId;
 	OdResBufPtr m_ResourceBuffer;
 	int m_CurrentItem;
-	CButton m_doset;
+	CButton m_SetValue;
 	CListCtrl m_propList;
 	CString m_sValue;
 
-	void OnSetfocusValue();
+	void OnSetFocusValue();
 
 	void OnButton();
 

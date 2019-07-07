@@ -109,7 +109,7 @@ void EoDlgNamedViews::DoDataExchange(CDataExchange* dataExchange) {
 #pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgNamedViews, CDialog)
 		ON_BN_CLICKED(IDC_SETCURRENT_BUTTON, OnSetcurrentButton)
-		ON_NOTIFY(NM_DBLCLK, IDC_NAMEDVIEWS, OnDblclkNamedviews)
+ON_NOTIFY(NM_DBLCLK, IDC_NAMEDVIEWS, OnDoubleClickNamedviews)
 		ON_BN_CLICKED(IDC_NEW_BUTTON, OnNewButton)
 		ON_BN_CLICKED(IDC_UPDATE_LAYERS_BUTTON, OnUpdateLayersButton)
 		ON_BN_CLICKED(IDC_DELETE_BUTTON, OnDeleteButton)
@@ -156,7 +156,7 @@ void EoDlgNamedViews::OnSetcurrentButton() {
 	}
 }
 
-void EoDlgNamedViews::OnDblclkNamedviews(NMHDR* /*notifyStructure*/, LRESULT* /*pResult*/) {
+void EoDlgNamedViews::OnDoubleClickNamedviews(NMHDR* /*notifyStructure*/, LRESULT* /*pResult*/) {
 	OnSetcurrentButton();
 }
 
@@ -185,39 +185,41 @@ void updateLayerState(OdDbViewTableRecord* pNamedView) {
 }
 
 void EoDlgNamedViews::OnNewButton() {
-	EoDlgNewView newDlg(this);
-	OdDbViewTableRecordPtr pNamedView;
-	const OdDbDatabase* pDb = m_pDoc->m_DatabasePtr;
-	while (newDlg.DoModal() == IDOK) {
-		LVFINDINFO lvfi = {LVFI_STRING, newDlg.m_sViewName, 0, {0, 0}, 0};
-		auto i {m_views.FindItem(&lvfi)};
+	EoDlgNewView NewDlg(this);
+	OdDbViewTableRecordPtr NamedView;
+	const OdDbDatabase* Database {m_pDoc->m_DatabasePtr};
+	while (NewDlg.DoModal() == IDOK) {
+		LVFINDINFOW FindInfo {LVFI_STRING, NewDlg.m_sViewName, 0, {0, 0}, 0};
+		auto i {m_views.FindItem(&FindInfo)};
 		if (i >= 0) {
-			if (AfxMessageBox(newDlg.m_sViewName + L" already exists.\nDo you want to replace it?", MB_YESNOCANCEL) != IDYES) { continue; }
-			pNamedView = m_views.view(i);
+			if (AfxMessageBox(NewDlg.m_sViewName + L" already exists.\nDo you want to replace it?", MB_YESNOCANCEL) != IDYES) { continue; }
+			NamedView = m_views.view(i);
 			m_views.DeleteItem(i);
 		} else {
-			OdDbViewTablePtr pViewTable = pDb->getViewTableId().safeOpenObject(OdDb::kForWrite);
-			pNamedView = OdDbViewTableRecord::createObject();
-			pNamedView->setName(OdString(newDlg.m_sViewName));
-			pViewTable->add(pNamedView);
+			OdDbViewTablePtr pViewTable = Database->getViewTableId().safeOpenObject(OdDb::kForWrite);
+			NamedView = OdDbViewTableRecord::createObject();
+			NamedView->setName(OdString(NewDlg.m_sViewName));
+			pViewTable->add(NamedView);
 			i = m_views.GetItemCount();
 		}
-		auto ActiveViewportObject {pDb->activeViewportId().safeOpenObject()};
-		OdDbAbstractViewportDataPtr pViewPE(pNamedView);
-		pViewPE->setView(pNamedView, ActiveViewportObject);
-		if (newDlg.m_bSaveUCS != 0) {
-			if (newDlg.m_sUcsName == L"Unnamed") {
-				pViewPE->setUcs(pNamedView, ActiveViewportObject);
-			} else if (newDlg.m_sUcsName == L"World") {
-				pNamedView->setUcsToWorld();
-			} else { pNamedView->setUcs(OdDbSymUtil::getUCSId(OdString(newDlg.m_sUcsName), pDb)); }
-		} else { pNamedView->disassociateUcsFromView(); }
-		pViewPE->setProps(pNamedView, ActiveViewportObject);
-		pNamedView->setCategoryName(OdString(newDlg.m_sViewCategory));
-		if (newDlg.m_bStoreLS != 0) {
-			updateLayerState(pNamedView);
-		} else { deleteLayerState(pNamedView); }
-		m_views.InsertItem(i, pNamedView);
+		auto ActiveViewportObject {Database->activeViewportId().safeOpenObject()};
+		OdDbAbstractViewportDataPtr AbstractViewportData(NamedView);
+		AbstractViewportData->setView(NamedView, ActiveViewportObject);
+		if (NewDlg.m_bSaveUCS != 0) {
+			if (NewDlg.m_sUcsName == L"Unnamed") {
+				AbstractViewportData->setUcs(NamedView, ActiveViewportObject);
+			} else if (NewDlg.m_sUcsName == L"World") {
+				NamedView->setUcsToWorld();
+			} else {
+				NamedView->setUcs(OdDbSymUtil::getUCSId(OdString(NewDlg.m_sUcsName), Database));
+			}
+		} else { NamedView->disassociateUcsFromView(); }
+		AbstractViewportData->setProps(NamedView, ActiveViewportObject);
+		NamedView->setCategoryName(OdString(NewDlg.m_sViewCategory));
+		if (NewDlg.m_bStoreLS != 0) {
+			updateLayerState(NamedView);
+		} else { deleteLayerState(NamedView); }
+		m_views.InsertItem(i, NamedView);
 		break;
 	}
 }

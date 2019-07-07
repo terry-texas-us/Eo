@@ -503,8 +503,8 @@ bool EoDlgPageSetup::FillPaperSizes() {
 void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	if (fillCombo) {
 		m_ScaleValues.ResetContent();
-		const auto NumberOfScaleVaules {StandardPlotScaleValues.size()};
-		for (unsigned ScaleValueIndex = 0; ScaleValueIndex < NumberOfScaleVaules; ScaleValueIndex++) {
+		const auto NumberOfScaleValues {StandardPlotScaleValues.size()};
+		for (unsigned ScaleValueIndex = 0; ScaleValueIndex < NumberOfScaleValues; ScaleValueIndex++) {
 			m_ScaleValues.AddString(StandardPlotScaleValues.at(ScaleValueIndex));
 		}
 	}
@@ -781,17 +781,17 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 	CString tmp;
 	m_PlotStyleFiles.GetLBText(CurrentSelection, tmp);
 	try {
-		auto bSucc(false);
+		auto Success(false);
 		auto SystemServices {odSystemServices()};
 		OdString sPath = static_cast<const wchar_t*>(tmp);
 		sPath = m_PlotSettings.database()->appServices()->findFile(sPath);
 		if (sPath.isEmpty()) { return; }
 		OdStreamBufPtr StreamBuffer;
 		if (SystemServices->accessFile(sPath, Oda::kFileRead)) {
-			bSucc = true;
+			Success = true;
 			StreamBuffer = SystemServices->createFile(sPath);
 		}
-		if (!bSucc) { return; }
+		if (!Success) { return; }
 		OdPsPlotStyleTablePtr PlotStyleTable;
 		if (StreamBuffer.get() != nullptr) {
 			OdPsPlotStyleServicesPtr PlotStyleServices = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);

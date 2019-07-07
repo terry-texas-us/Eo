@@ -101,11 +101,11 @@ void AeSysView::OnEditModeMove() {
 		m_PreviousOp = ModeLineHighlightOp(ID_OP4);
 		RubberBandingStartAtEnable(CurrentPnt, kLines);
 	} else {
-		EoGeMatrix3d tm;
-		tm.setToTranslation(CurrentPnt - Document->TrapPivotPoint());
+		EoGeMatrix3d TranslationTransform;
+		TranslationTransform.setToTranslation(CurrentPnt - Document->TrapPivotPoint());
 		ModeLineUnhighlightOp(m_PreviousOp);
 		RubberBandingDisable();
-		Document->TransformTrappedGroups(tm);
+		Document->TransformTrappedGroups(TranslationTransform);
 	}
 	Document->SetTrapPivotPoint(CurrentPnt);
 }

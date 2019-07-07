@@ -2325,7 +2325,7 @@ unsigned AeSysView::NumPages(CDC* deviceContext, const double scaleFactor, unsig
 	const auto MaximumPoint {Extents.maxPoint()};
 	const auto HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / kMmPerInch};
 	const auto VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / kMmPerInch};
-	// <tas="Numpages possibly using + 0.5 which is done also in lround for calculation of horizontalPages and verticalPages. check operator precedence also."/>
+	// <tas="Pages counts possibly using + 0.5 which is done also in lround for calculation of horizontalPages and verticalPages. check operator precedence also."/>
 	horizontalPages = gsl::narrow_cast<unsigned>(lround((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches + 0.5));
 	verticalPages = gsl::narrow_cast<unsigned>(lround((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches + 0.5));
 	return horizontalPages * verticalPages;
