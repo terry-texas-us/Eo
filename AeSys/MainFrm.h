@@ -93,7 +93,7 @@ protected:  // control bar embedded members
 
 	LRESULT OnGetTabToolTip(WPARAM wp, LPARAM lp);
 
-	LRESULT OnToolbarReset(WPARAM toolbarResourceId, LPARAM lparam);
+	LRESULT OnToolbarReset(WPARAM toolbarResourceId, LPARAM parameter);
 
 DECLARE_MESSAGE_MAP()
 

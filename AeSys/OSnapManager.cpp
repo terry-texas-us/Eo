@@ -441,10 +441,10 @@ bool OdBaseSnapManager::SetEntityCenters(OdRxObject* rxObject) {
 }
 
 void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord, const OdGeMatrix3d& matrix) {
-	OdGiDrawableDesc* dd0 = nullptr;
-	OdGiLocalDrawableDesc dd(dd0); // need for build OdGiPathNode
-	for (auto pIter = blockTableRecord->newIterator(); !pIter->done() && m_Centers.size() < nMaxHist; pIter->step()) {
-		auto Entity {pIter->entity()};
+	OdGiDrawableDesc* DrawableDescriptor {nullptr};
+	OdGiLocalDrawableDesc LocalDrawableDescriptor(DrawableDescriptor); // need for build OdGiPathNode
+	for (auto BlockTableIterator = blockTableRecord->newIterator(); !BlockTableIterator->done() && m_Centers.size() < nMaxHist; BlockTableIterator->step()) {
+		auto Entity {BlockTableIterator->entity()};
 		auto BlockReference {OdDbBlockReference::cast(Entity)};
 		if (!BlockReference.isNull()) {
 			auto BlockTableRecord {OdDbBlockTableRecord::cast(BlockReference->blockTableRecord().openObject())};
@@ -454,11 +454,11 @@ void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord,
 			continue;
 		}
 		if (Entity.isNull()) { continue; }
-		dd.persistId = Entity->objectId();
-		OdGePoint3dArray snapPoints;
-		Entity->getOsnapPoints(OdDb::kOsModeCen, OdGsMarker(), OdGePoint3d::kOrigin, OdGePoint3d::kOrigin, OdGeMatrix3d(), snapPoints);
-		for (unsigned i = 0; i < snapPoints.size() && m_Centers.size() < nMaxHist; i++) {
-			m_Centers.append(HistEntry(dd, snapPoints[i].transformBy(matrix)));
+		LocalDrawableDescriptor.persistId = Entity->objectId();
+		OdGePoint3dArray SnapPoints;
+		Entity->getOsnapPoints(OdDb::kOsModeCen, OdGsMarker(), OdGePoint3d::kOrigin, OdGePoint3d::kOrigin, OdGeMatrix3d(), SnapPoints);
+		for (unsigned i = 0; i < SnapPoints.size() && m_Centers.size() < nMaxHist; i++) {
+			m_Centers.append(HistEntry(LocalDrawableDescriptor, SnapPoints[i].transformBy(matrix)));
 		}
 	}
 }

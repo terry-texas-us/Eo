@@ -310,8 +310,8 @@ AeSysView::AeSysView() noexcept {
 	SetEditModeRotationAngles(0.0, 0.0, 45.0);
 	m_Viewport.SetDeviceWidthInPixels(theApp.DeviceWidthInPixels());
 	m_Viewport.SetDeviceHeightInPixels(theApp.DeviceHeightInPixels());
-	m_Viewport.SetDeviceWidthInInches(theApp.DeviceWidthInMillimeters() / kMmPerInch);
-	m_Viewport.SetDeviceHeightInInches(theApp.DeviceHeightInMillimeters() / kMmPerInch);
+	m_Viewport.SetDeviceWidthInInches(MillimetersToInches(theApp.DeviceWidthInMillimeters()));
+	m_Viewport.SetDeviceHeightInInches(MillimetersToInches(theApp.DeviceHeightInMillimeters()));
 }
 #ifdef _DEBUG
 void AeSysView::AssertValid() const {
@@ -969,8 +969,8 @@ void AeSysView::OnBeginPrinting(CDC* deviceContext, CPrintInfo* printInformation
 	SetViewportSize(HorizontalPixelWidth, VerticalPixelWidth);
 	const auto HorizontalSize {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE))};
 	const auto VerticalSize {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE))};
-	SetDeviceWidthInInches(HorizontalSize / kMmPerInch);
-	SetDeviceHeightInInches(VerticalSize / kMmPerInch);
+	SetDeviceWidthInInches(MillimetersToInches(HorizontalSize));
+	SetDeviceHeightInInches(MillimetersToInches(VerticalSize));
 	if (m_Plot) {
 		unsigned HorizontalPages;
 		unsigned VerticalPages;
@@ -1136,7 +1136,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		struct {
 			double x;
 			double y;
-		} Coefficient {LogicalPixelsX / kMmPerInch, LogicalPixelsY / kMmPerInch};
+		} Coefficient {MillimetersToInches(LogicalPixelsX), MillimetersToInches(LogicalPixelsY)};
 		const auto IsModelLayout {m_pPrinterDevice->isKindOf(OdGsModelLayoutHelper::desc())};
 		OdSmartPtr<OdDbLayout> Layout {m_pPrinterDevice->layoutId().safeOpenObject()};
 		auto IsScaledToFit {Layout->useStandardScale() && OdDbPlotSettings::kScaleToFit == Layout->stdScaleType()};
@@ -1156,7 +1156,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		const auto PlotType {Layout->plotType()};
 		if (IsPrintLineweights && IsModelLayout) { // set LineWeight scale factor for model space
 			auto ViewAt {m_pPrinterDevice->viewAt(0)};
-			ViewAt->setLineweightToDcScale(odmax(LogicalPixelsX, LogicalPixelsY) / kMmPerInch * 0.01);
+			ViewAt->setLineweightToDcScale(MillimetersToInches(odmax(LogicalPixelsX, LogicalPixelsY)) * 0.01);
 		}
 		if (printInformation->m_bPreview != 0) { // Apply paper rotation to paper parameters
 			switch (Layout->plotRotation()) {
@@ -1341,8 +1341,8 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			ViewTarget.set(FieldWidth / 2. - PaperImageOrigin.x - Offset.x / ScaleFactor, FieldHeight / 2. - PaperImageOrigin.y - Offset.y / ScaleFactor, 0); // in mm
 			if (!IsMetric) {
 				ViewTarget /= kMmPerInch; // must be in plot paper units
-				FieldWidth /= kMmPerInch;
-				FieldHeight /= kMmPerInch;
+				FieldWidth = MillimetersToInches(FieldWidth);
+				FieldHeight = MillimetersToInches(FieldHeight);
 			}
 			Offset.x = 0.0; // Iterator was applied to viewTarget, reset Iterator.
 			Offset.y = 0.0;
@@ -1357,8 +1357,8 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		// in plot paper units
 		OverallView->setView(ViewTarget + ViewDirection, ViewTarget, ViewUpVector, FieldWidth, FieldHeight, IsPerspective ? OdGsView::kPerspective : OdGsView::kParallel);
 		if (!IsMetric) {
-			FieldWidth *= kMmPerInch;
-			FieldHeight *= kMmPerInch;
+			FieldWidth = InchesToMillimeters(FieldWidth);
+			FieldWidth = InchesToMillimeters(FieldHeight);
 		}
 		if (IsScaledToFit) { // Scale factor can be stored in layout, but preview recalculate Iterator if bScaledToFit = true.
 			// Some times stored factor isn't correct, due to autocad isn't update Iterator before saving.
@@ -2132,8 +2132,8 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 	CView::OnPrepareDC(deviceContext, printInformation);
 	if (deviceContext->IsPrinting() != 0) {
 		if (m_Plot) {
-			const auto HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE) / kMmPerInch) / m_PlotScaleFactor};
-			const auto VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE) / kMmPerInch) / m_PlotScaleFactor};
+			const auto HorizontalSizeInInches {MillimetersToInches(static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE))) / m_PlotScaleFactor};
+			const auto VerticalSizeInInches {MillimetersToInches(static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE))) / m_PlotScaleFactor};
 			unsigned HorizontalPages;
 			unsigned VerticalPages;
 			NumPages(deviceContext, m_PlotScaleFactor, HorizontalPages, VerticalPages);
@@ -2323,8 +2323,8 @@ unsigned AeSysView::NumPages(CDC* deviceContext, const double scaleFactor, unsig
 	GetDocument()->GetExtents___(this, Extents);
 	const auto MinimumPoint {Extents.minPoint()};
 	const auto MaximumPoint {Extents.maxPoint()};
-	const auto HorizontalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)) / kMmPerInch};
-	const auto VerticalSizeInInches {static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)) / kMmPerInch};
+	const auto HorizontalSizeInInches {MillimetersToInches(static_cast<double>(deviceContext->GetDeviceCaps(HORZSIZE)))};
+	const auto VerticalSizeInInches {MillimetersToInches(static_cast<double>(deviceContext->GetDeviceCaps(VERTSIZE)))};
 	// <tas="Pages counts possibly using + 0.5 which is done also in lround for calculation of horizontalPages and verticalPages. check operator precedence also."/>
 	horizontalPages = gsl::narrow_cast<unsigned>(lround((MaximumPoint.x - MinimumPoint.x) * scaleFactor / HorizontalSizeInInches + 0.5));
 	verticalPages = gsl::narrow_cast<unsigned>(lround((MaximumPoint.y - MinimumPoint.y) * scaleFactor / VerticalSizeInInches + 0.5));

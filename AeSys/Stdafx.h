@@ -37,6 +37,9 @@ unsigned AFXAPI HashKey(CString& string) noexcept;
 
 #include "SafeMath.h"
 
+inline double MillimetersToInches(const double millimeters) { return millimeters / kMmPerInch; }
+
+inline double InchesToMillimeters(const double inches) { return inches * kMmPerInch; }
 
 // <tas="Static analysis"/>
 // Compiler warnings that are off by default (https://docs.microsoft.com/en-us/cpp/preprocessor/compiler-warnings-that-are-off-by-default?view=vs-2019)

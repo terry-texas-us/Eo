@@ -33,9 +33,7 @@ void EoDlgNewView::DoDataExchange(CDataExchange* dataExchange) {
 BEGIN_MESSAGE_MAP(EoDlgNewView, CDialog)
 END_MESSAGE_MAP()
 
-OdString orthoTypeString(OdDb::OrthographicView type);
-
-OdString ucsString(const OdDbObject* pViewObj);
+OdString UcsString(const OdDbObject* pViewObj);
 
 BOOL EoDlgNewView::OnInitDialog() {
 	CDialog::OnInitDialog();
@@ -54,7 +52,7 @@ BOOL EoDlgNewView::OnInitDialog() {
 	}
 	ViewTable = Database->getUCSTableId().safeOpenObject();
 	m_UCSs.AddString(L"World");
-	m_sUcsName = static_cast<const wchar_t*>(ucsString(Database->activeViewportId().safeOpenObject()));
+	m_sUcsName = static_cast<const wchar_t*>(UcsString(Database->activeViewportId().safeOpenObject()));
 	if (m_sUcsName == L"Unnamed") {
 		m_UCSs.AddString(m_sUcsName);
 	}

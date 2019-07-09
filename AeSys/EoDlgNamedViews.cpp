@@ -29,7 +29,7 @@ void CNamedViewListCtrl::setView(const int item, const OdDbViewTableRecord* view
 	setViewId(item, view->objectId());
 }
 
-OdString ucsString(const OdDbObject* viewport) {
+OdString UcsString(const OdDbObject* viewport) {
 	OdString Result;
 	OdDbAbstractViewportDataPtr AbstractViewportData(viewport);
 	switch (AbstractViewportData->orthoUcs(viewport)) {
@@ -52,9 +52,9 @@ OdString ucsString(const OdDbObject* viewport) {
 			Result = L"Right";
 			break;
 		case OdDb::kNonOrthoView: default: {
-			OdDbUCSTableRecordPtr pUCS {OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject()};
-			if (pUCS.get() != nullptr) {
-				Result = pUCS->getName();
+			OdDbUCSTableRecordPtr UcsTableRecord {OdDbObjectId(AbstractViewportData->ucsName(viewport)).openObject()};
+			if (UcsTableRecord.get() != nullptr) {
+				Result = UcsTableRecord->getName();
 			} else {
 				OdGePoint3d Origin;
 				OdGeVector3d XAxis;
@@ -79,7 +79,7 @@ void CNamedViewListCtrl::InsertItem(const int i, const OdDbViewTableRecord* pVie
 	SetItemText(i, 3, pView->isViewAssociatedToViewport() ? L"True" : L"");
 	SetItemText(i, 4, pView->getLayerState().isEmpty() ? L"" : L"Saved");
 	if (pView->isUcsAssociatedToView()) {
-		SetItemText(i, 5, ucsString(pView));
+		SetItemText(i, 5, UcsString(pView));
 	}
 	SetItemText(i, 6, pView->perspectiveEnabled() ? L"On" : L"Off");
 }

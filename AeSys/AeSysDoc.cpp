@@ -2303,10 +2303,10 @@ void AeSysDoc::OnPrimExtractNum() {
 		auto Type {0};
 		long DataDefinition {0};
 		auto TokenId {0};
-		lex::Parse(Number);
-		lex::EvalTokenStream(&TokenId, &DataDefinition, &Type, static_cast<void*>(Value));
-		if (Type != lex::TOK_LENGTH_OPERAND) {
-			lex::ConvertValTyp(Type, lex::TOK_REAL, &DataDefinition, Value);
+		Lex::Parse(Number);
+		Lex::EvalTokenStream(&TokenId, &DataDefinition, &Type, static_cast<void*>(Value));
+		if (Type != Lex::gc_TokenLengthOperand) {
+			Lex::ConvertValTyp(Type, Lex::gc_TokenReal, &DataDefinition, Value);
 		}
 		wchar_t Message[64];
 		swprintf_s(Message, 64, L"%10.4f ", Value[0]);

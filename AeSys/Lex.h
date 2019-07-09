@@ -1,21 +1,21 @@
 #pragma once
-enum ETokClass { Other, Constant, Identifier, BinaryArithOp, BinaryRelatOp, BinaryLogicOp, UnaryLogicOp, AssignOp, OpenParen, CloseParen };
+enum ETokClass { kOther, kConstant, kIdentifier, kBinaryArithmeticOp, kBinaryRelationalOp, kBinaryLogicalOp, kUnaryLogicalOp, kAssignmentOp, kOpenParenthesis, kCloseParenthesis };
 
 struct LexColumnDefinition {
-	long DataDefinition;
-	long DataType;
+	long dataDefinition;
+	long dataType;
 };
 
-struct tokent {
-	int InComingPriority;
-	int InStackPriority;
+struct TokenTableItem {
+	int inComingPriority;
+	int inStackPriority;
 	ETokClass Class;
 };
 
-namespace lex
+namespace Lex
 {
 	/// <LexTable> The following static table data (from LexTable.h) is a legacy from the removed command parser features. The only pieces still used are for simple expression evaluation. Lexgen can still produce this table but likely will be replaced by third party tools.
-	static int iBase[] = {
+	static int g_Base[] = {
 	0,
 	0,
 	195,
@@ -92,7 +92,7 @@ namespace lex
 	274,
 	266
 	};
-	static int iDefault[] = {
+	static int g_Default[] = {
 	0,
 	0,
 	0,
@@ -169,7 +169,7 @@ namespace lex
 	13,
 	13
 	};
-	static int iTokVal[] = {
+	static int g_TokenValue[] = {
 	0,
 	0,
 	39,
@@ -246,7 +246,7 @@ namespace lex
 	25,
 	25
 	};
-	static int iNext[] = {
+	static int g_Next[] = {
 	0,
 	0,
 	0,
@@ -769,7 +769,7 @@ namespace lex
 	37,
 	37
 	};
-	static int iCheck[] = {
+	static int g_Check[] = {
 	0,
 	0,
 	0,
@@ -1293,93 +1293,95 @@ namespace lex
 	37
 	};
 	/// </LexTable> 
-	const int MaximumNumberOfTokens = 128;
-	const int VALS_MAX = 256;
-	const int TOK_UNARY_OPERATOR = 1;
-	const int TOK_BINARY_OPERATOR = 2;
-	const int TOK_COMPARISON_OPERATOR = 4;
-	const int TOK_LOGICAL_OPERATOR = 8;
-	const int TOK_ABS = 1;
-	const int TOK_ACOS = 2;
-	const int TOK_ASIN = 3;
-	const int TOK_ATAN = 4;
-	const int TOK_TOSTRING = 5;
-	const int TOK_COS = 6;
-	const int TOK_EXP = 7;
-	const int TOK_TOINTEGER = 8;
-	const int TOK_LN = 9;
-	const int TOK_LOG = 10;
-	const int TOK_SIN = 11;
-	const int TOK_SQRT = 12;
-	const int TOK_TAN = 13;
-	const int TOK_TOREAL = 14;
-	const int TOK_UNARY_PLUS = 15;
-	const int TOK_UNARY_MINUS = 16;
-	const int TOK_INTEGER = 20;
-	const int TOK_REAL = 21;
-	const int TOK_LENGTH_OPERAND = 22;
-	const int TOK_AREA_OPERAND = 23;
-	const int TOK_STRING = 24;
-	const int TOK_IDENTIFIER = 25;
-	const int TOK_EXPONENTIATE = 26;
-	const int TOK_MULTIPLY = 27;
-	const int TOK_DIVIDE = 28;
-	const int TOK_BINARY_PLUS = 29;
-	const int TOK_BINARY_MINUS = 30;
-	const int TOK_EQ = 31;
-	const int TOK_NE = 32;
-	const int TOK_GT = 33;
-	const int TOK_GE = 34;
-	const int TOK_LT = 35;
-	const int TOK_LE = 36;
-	const int TOK_AND = 37;
-	const int TOK_OR = 38;
-	const int TOK_NOT = 39;
-	const int TOK_LPAREN = 40;
-	const int TOK_RPAREN = 41;
-	static tokent TokenTable[] = {
-		{0, 0, Other},			// unused
-		{110, 85, Other},			// abs
-		{110, 85, Other},			// acos
-		{110, 85, Other},			// asin
-		{110, 85, Other},			// atan
-		{110, 85, Other},			// string
-		{110, 85, Other},			// cos
-		{110, 85, Other},			// exp
-		{110, 85, Other},			// int
-		{110, 85, Other},			// ln
-		{110, 85, Other},			// log
-		{110, 85, Other},			// sin
-		{110, 85, Other},			// sqrt
-		{110, 85, Other},			// tan
-		{110, 85, Other},			// real
-		{110, 85, Other},			// unary+
-		{110, 85, Other},			// unary-
-		{0, 0, Other},			// unused
-		{0, 0, Other},			// unused
-		{0, 0, Other},			// unused
-		{0, 0, Constant},		// integer
-		{0, 0, Constant},		// real
-		{0, 0, Constant},		// length
-		{0, 0, Constant},		// area
-		{0, 0, Constant},		// string
-		{0, 0, Identifier},	// identifier
-		{80, 79, BinaryArithOp},	// **
-		{70, 71, BinaryArithOp},	// *
-		{70, 71, BinaryArithOp},	// /
-		{60, 61, BinaryArithOp},	// +
-		{60, 61, BinaryArithOp},	// -
-		{40, 41, BinaryRelatOp},	// ==
-		{40, 41, BinaryRelatOp},	// !=
-		{40, 41, BinaryRelatOp},	// >
-		{40, 41, BinaryRelatOp},	// >=
-		{40, 41, BinaryRelatOp},	// <
-		{40, 41, BinaryRelatOp},	// <=
-		{20, 21, BinaryLogicOp},	// &
-		{10, 11, BinaryLogicOp},	// |
-		{30, 31, UnaryLogicOp},	// !
-		{110, 1, OpenParen},		// (
-		{0, 0, CloseParen}		// )
+	/// <TokenIdentifiers> from lex_regexp.dat
+	const int gc_MaximumNumberOfTokens = 128;
+	const int gc_ValuesMax = 256;
+	const int gc_TokenUnaryOperator = 1;
+	const int gc_TokenBinaryOperator = 2;
+	const int gc_TokenComparisonOperator = 4;
+	const int gc_TokenLogicalOperator = 8;
+	const int gc_TokenAbs = 1;
+	const int gc_TokenAcos = 2;
+	const int gc_TokenAsin = 3;
+	const int gc_TokenAtan = 4;
+	const int gc_TokenToString = 5;
+	const int gc_TokenCos = 6;
+	const int gc_TokenExp = 7;
+	const int gc_TokenToInteger = 8;
+	const int gc_TokenLn = 9;
+	const int gc_TokenLog = 10;
+	const int gc_TokenSin = 11;
+	const int gc_TokenSqrt = 12;
+	const int gc_TokenTan = 13;
+	const int gc_TokenToReal = 14;
+	const int gc_TokenUnaryPlus = 15;
+	const int gc_TokenUnaryMinus = 16;
+	const int gc_TokenInteger = 20;
+	const int gc_TokenReal = 21;
+	const int gc_TokenLengthOperand = 22;
+	const int gc_TokenAreaOperand = 23;
+	const int gc_TokenString = 24;
+	const int gc_TokenIdentifier = 25;
+	const int gc_TokenExponentiate = 26;
+	const int gc_TokenMultiply = 27;
+	const int gc_TokenDivide = 28;
+	const int gc_TokenBinaryPlus = 29;
+	const int gc_TokenBinaryMinus = 30;
+	const int gc_TokenEq = 31;
+	const int gc_TokenNe = 32;
+	const int gc_TokenGt = 33;
+	const int gc_TokenGe = 34;
+	const int gc_TokenLt = 35;
+	const int gc_TokenLe = 36;
+	const int gc_TokenAnd = 37;
+	const int gc_TokenOr = 38;
+	const int gc_TokenNot = 39;
+	const int gc_TokenLparen = 40;
+	const int gc_TokenRparen = 41;
+	/// </TokenIdentifiers>
+	static TokenTableItem g_TokenTable[] = {
+		{0, 0, kOther}, // unused
+		{110, 85, kOther}, // abs
+		{110, 85, kOther},	// acos
+		{110, 85, kOther},	// asin
+		{110, 85, kOther},	// atan
+		{110, 85, kOther},	// string
+		{110, 85, kOther},	// cos
+		{110, 85, kOther},	// exp
+		{110, 85, kOther},	// int
+		{110, 85, kOther},	// ln
+		{110, 85, kOther},	// log
+		{110, 85, kOther},	// sin
+		{110, 85, kOther},	// sqrt
+		{110, 85, kOther},	// tan
+		{110, 85, kOther},	// real
+		{110, 85, kOther},	// unary+
+		{110, 85, kOther},	// unary-
+		{0, 0, kOther}, // unused
+		{0, 0, kOther}, // unused
+		{0, 0, kOther}, // unused
+		{0, 0, kConstant}, // integer
+		{0, 0, kConstant},	// real
+		{0, 0, kConstant},	// length
+		{0, 0, kConstant},	// area
+		{0, 0, kConstant},	// string
+		{0, 0, kIdentifier}, // identifier
+		{80, 79, kBinaryArithmeticOp},	// **
+		{70, 71, kBinaryArithmeticOp},	// *
+		{70, 71, kBinaryArithmeticOp},	// /
+		{60, 61, kBinaryArithmeticOp},	// +
+		{60, 61, kBinaryArithmeticOp},	// -
+		{40, 41, kBinaryRelationalOp},	// ==
+		{40, 41, kBinaryRelationalOp}, // !=
+		{40, 41, kBinaryRelationalOp}, // >
+		{40, 41, kBinaryRelationalOp}, // >=
+		{40, 41, kBinaryRelationalOp}, // <
+		{40, 41, kBinaryRelationalOp}, // <=
+		{20, 21, kBinaryLogicalOp},	// &
+		{10, 11, kBinaryLogicalOp},	// |
+		{30, 31, kUnaryLogicalOp}, // !
+		{110, 1, kOpenParenthesis}, // (
+		{0, 0, kCloseParenthesis} // )
 	};
 	/// <summary>
 	///Converts a stream of tokens into a postfix stack for evaluation.

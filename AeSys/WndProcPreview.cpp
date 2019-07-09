@@ -83,8 +83,8 @@ void WndProcPreviewUpdate(const HWND previewWindow, EoDbBlock* block) {
 	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
 	ActiveView->ViewportPushActive();
 	ActiveView->SetViewportSize(rc.right, rc.bottom);
-	ActiveView->SetDeviceWidthInInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE)) / kMmPerInch);
-	ActiveView->SetDeviceHeightInInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE)) / kMmPerInch);
+	ActiveView->SetDeviceWidthInInches(MillimetersToInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE))));
+	ActiveView->SetDeviceHeightInInches(MillimetersToInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE))));
 	OdGeExtents3d Extents;
 	block->GetExtents_(ActiveView, Extents);
 	const auto MinimumPoint {Extents.minPoint()};
@@ -112,16 +112,16 @@ void WndProcPreviewUpdate(const HWND previewWindow, EoDbBlock* block) {
 
 void _WndProcPreviewUpdate(const HWND previewWindow, EoDbGroupList* groups) {
 	auto ActiveView {AeSysView::GetActiveView()};
-	CRect rc;
-	GetClientRect(previewWindow, &rc);
-	CDC dcMem;
-	dcMem.CreateCompatibleDC(nullptr);
-	const auto Bitmap {dcMem.SelectObject(g_WndProcPreview_Bitmap)};
-	dcMem.PatBlt(0, 0, rc.right, rc.bottom, BLACKNESS);
+	CRect PreviewRectangle;
+	GetClientRect(previewWindow, &PreviewRectangle);
+	CDC MemoryDeviceContext;
+	MemoryDeviceContext.CreateCompatibleDC(nullptr);
+	const auto Bitmap {MemoryDeviceContext.SelectObject(g_WndProcPreview_Bitmap)};
+	MemoryDeviceContext.PatBlt(0, 0, PreviewRectangle.right, PreviewRectangle.bottom, BLACKNESS);
 	ActiveView->ViewportPushActive();
-	ActiveView->SetViewportSize(rc.right, rc.bottom);
-	ActiveView->SetDeviceWidthInInches(static_cast<double>(dcMem.GetDeviceCaps(HORZSIZE)) / kMmPerInch);
-	ActiveView->SetDeviceHeightInInches(static_cast<double>(dcMem.GetDeviceCaps(VERTSIZE)) / kMmPerInch);
+	ActiveView->SetViewportSize(PreviewRectangle.right, PreviewRectangle.bottom);
+	ActiveView->SetDeviceWidthInInches(MillimetersToInches(static_cast<double>(MemoryDeviceContext.GetDeviceCaps(HORZSIZE))));
+	ActiveView->SetDeviceHeightInInches(MillimetersToInches(static_cast<double>(MemoryDeviceContext.GetDeviceCaps(VERTSIZE))));
 	OdGeExtents3d Extents;
 	groups->GetExtents__(ActiveView, Extents);
 	const auto MinimumPoint {Extents.minPoint()};
@@ -139,10 +139,10 @@ void _WndProcPreviewUpdate(const HWND previewWindow, EoDbGroupList* groups) {
 	const auto Position(Target + OdGeVector3d::kZAxis * 50.0);
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
 	const auto PrimitiveState {g_PrimitiveState.Save()};
-	groups->Display(ActiveView, &dcMem);
-	g_PrimitiveState.Restore(dcMem, PrimitiveState);
+	groups->Display(ActiveView, &MemoryDeviceContext);
+	g_PrimitiveState.Restore(MemoryDeviceContext, PrimitiveState);
 	ActiveView->PopViewTransform();
 	ActiveView->ViewportPopActive();
-	dcMem.SelectObject(Bitmap);
+	MemoryDeviceContext.SelectObject(Bitmap);
 	InvalidateRect(previewWindow, nullptr, TRUE);
 }

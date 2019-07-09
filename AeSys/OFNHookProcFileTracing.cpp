@@ -6,17 +6,17 @@
 #include "EoDb.h"
 #include "Preview.h"
 
-unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage, WPARAM wParam, LPARAM lParam) {
+unsigned CALLBACK OfnHookProcFileTracing(HWND hDlg, const unsigned windowMessage, WPARAM wParam, LPARAM openFileNameNotifications) {
 	auto Document {AeSysDoc::GetDoc()};
 	switch (windowMessage) {
 		case WM_INITDIALOG:
 			WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
 			return TRUE;
 		case WM_NOTIFY: {
-			const auto lpofn {reinterpret_cast<_OFNOTIFYW*>(lParam)};
-			if (lpofn->hdr.code == CDN_FOLDERCHANGE) {
+			const auto OpenFileNameNotifications {reinterpret_cast<_OFNOTIFYW*>(openFileNameNotifications)};
+			if (OpenFileNameNotifications->hdr.code == CDN_FOLDERCHANGE) {
 				WndProcPreviewClear(GetDlgItem(hDlg, IDC_LAYER_PREVIEW));
-			} else if (lpofn->hdr.code == CDN_SELCHANGE) {
+			} else if (OpenFileNameNotifications->hdr.code == CDN_SELCHANGE) {
 				wchar_t FilePath[MAX_PATH] {L"\0"};
 				::SendMessage(GetParent(hDlg), CDM_GETFILEPATH, MAX_PATH, reinterpret_cast<LPARAM>(static_cast<wchar_t*>(FilePath)));
 				CFileStatus FileStatus;

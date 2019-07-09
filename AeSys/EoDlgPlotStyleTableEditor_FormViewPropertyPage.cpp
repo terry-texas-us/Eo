@@ -98,9 +98,9 @@ void CBitmapColorInfo::GetBitmapSizes(CBitmap& bitmap, int& width, int& height) 
 	height = Bitmap.bmHeight;
 }
 
-DIBCOLOR* CBitmapColorInfo::GetBitmapPixels(CBitmap& bitmap, int& width, int& height) {
-	CDC DeviceContext;
-	DeviceContext.CreateCompatibleDC(nullptr);
+DeviceIndependentBitmapColor* CBitmapColorInfo::GetBitmapPixels(CBitmap& bitmap, int& width, int& height) {
+	CDC MemoryDeviceContext;
+	MemoryDeviceContext.CreateCompatibleDC(nullptr);
 	GetBitmapSizes(bitmap, width, height);
 	BITMAPINFO BitmapInfo;
 	BitmapInfo.bmiHeader.biSize = sizeof BitmapInfo.bmiHeader;
@@ -113,13 +113,13 @@ DIBCOLOR* CBitmapColorInfo::GetBitmapPixels(CBitmap& bitmap, int& width, int& he
 	BitmapInfo.bmiHeader.biClrUsed = 0;
 	BitmapInfo.bmiHeader.biClrImportant = 0;
 	void* Bits {new char[static_cast<unsigned>(height * width * 4)]};
-	GetDIBits(DeviceContext.m_hDC, static_cast<HBITMAP>(bitmap.m_hObject), 0, static_cast<unsigned>(height), Bits, &BitmapInfo, DIB_RGB_COLORS);
-	return static_cast<DIBCOLOR*>(Bits);
+	GetDIBits(MemoryDeviceContext.m_hDC, static_cast<HBITMAP>(bitmap.m_hObject), 0, static_cast<unsigned>(height), Bits, &BitmapInfo, DIB_RGB_COLORS);
+	return static_cast<DeviceIndependentBitmapColor*>(Bits);
 }
 
-void CBitmapColorInfo::SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels) {
-	CDC DeviceContext;
-	DeviceContext.CreateCompatibleDC(nullptr);
+void CBitmapColorInfo::SetBitmapPixels(CBitmap& bitmap, DeviceIndependentBitmapColor* pixels) {
+	CDC MemoryDeviceContext;
+	MemoryDeviceContext.CreateCompatibleDC(nullptr);
 	int Width;
 	int Height;
 	GetBitmapSizes(bitmap, Width, Height);
@@ -133,7 +133,7 @@ void CBitmapColorInfo::SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels) {
 	BitmapInfo.bmiHeader.biSizeImage = static_cast<unsigned long>(Height * Width * 4);
 	BitmapInfo.bmiHeader.biClrUsed = 0;
 	BitmapInfo.bmiHeader.biClrImportant = 0;
-	SetDIBits(DeviceContext.m_hDC, static_cast<HBITMAP>(bitmap.m_hObject), 0, static_cast<unsigned>(Height), pixels, &BitmapInfo, DIB_RGB_COLORS);
+	SetDIBits(MemoryDeviceContext.m_hDC, static_cast<HBITMAP>(bitmap.m_hObject), 0, static_cast<unsigned>(Height), pixels, &BitmapInfo, DIB_RGB_COLORS);
 	delete pixels;
 }
 
@@ -167,7 +167,7 @@ void CBitmapColorInfo::PaintBitmap(CBitmap& bitmap, const COLORREF color) {
 	auto pColor {Bitmap};
 	for (auto y = Height - 1; y >= 0; y--) {
 		for (auto x = 0; x < Width; x++, pColor++) {
-			*pColor = DIBCOLOR(color);
+			*pColor = DeviceIndependentBitmapColor(color);
 		}
 	}
 	SetBitmapPixels(bitmap, Bitmap);
@@ -378,7 +378,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::InitializeLineweightComboBox() {
 	const OdString sUnits = bInch ? L"''" : L" mm";
 	for (unsigned i = 0; i < m_pPlotStyleTable->lineweightSize(); i++) {
 		CString lineweight;
-		lineweight.Format(L"%.4f%s", bInch ? MMTOINCH(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), static_cast<const wchar_t*>(sUnits));
+		lineweight.Format(L"%.4f%s", bInch ? MillimetersToInches(m_pPlotStyleTable->getLineweightAt(i)) : m_pPlotStyleTable->getLineweightAt(i), static_cast<const wchar_t*>(sUnits));
 		m_Lineweight.AddString(lineweight);
 	}
 	m_Lineweight.SetCurSel(0);

@@ -1176,7 +1176,7 @@ BOOL AeSys::InitInstance() {
 	const auto FillTtf = GetInt(L"Fill TTF text", 1);
 	setTEXTFILL(FillTtf != 0);
 	SetRegistryBase(L"MFC Auto");
-	lex::Init();
+	Lex::Init();
 
 	// Initialize application managers for usage. They are automatically constructed if not yet present
 	InitContextMenuManager(); // Manages shortcut menus, also known as context menus.
@@ -1622,10 +1622,10 @@ double AeSys::ParseLength(const Units units, const wchar_t* lengthAsString) {
 		long DataDefinition;
 		int TokenType;
 		double ReturnValue[32];
-		lex::Parse(lengthAsString);
-		lex::EvalTokenStream(&TokenIndex, &DataDefinition, &TokenType, static_cast<void*>(ReturnValue));
-		if (TokenType == lex::TOK_LENGTH_OPERAND) { return ReturnValue[0]; }
-		lex::ConvertValTyp(TokenType, lex::TOK_REAL, &DataDefinition, ReturnValue);
+		Lex::Parse(lengthAsString);
+		Lex::EvalTokenStream(&TokenIndex, &DataDefinition, &TokenType, static_cast<void*>(ReturnValue));
+		if (TokenType == Lex::gc_TokenLengthOperand) { return ReturnValue[0]; }
+		Lex::ConvertValTyp(TokenType, Lex::gc_TokenReal, &DataDefinition, ReturnValue);
 		switch (units) {
 			case kArchitectural: case kArchitecturalS: case kEngineering: case kFeet:
 				ReturnValue[0] *= 12.0;

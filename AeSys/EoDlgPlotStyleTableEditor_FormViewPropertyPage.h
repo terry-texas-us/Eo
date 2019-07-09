@@ -7,8 +7,6 @@ constexpr int gc_PlotStyleComboColorPosition = 8;
 constexpr short gc_PlotStyleSpinMaxPen = 32;
 constexpr short gc_PlotStyleSpinMaxVirtpen = 255;
 constexpr short gc_PlotStyleSpinMaxScreening = 100;
-#define MMTOINCH(mm) (double(mm) / kMmPerInch)
-#define INCHTOMM(inch) (double(inch) * kMmPerInch)
 static OdString g_PlotStylesLineTypes[] = {
 L"Solid",
 L"Dashed",
@@ -70,27 +68,28 @@ L"Diamond",
 L"Use object join style"
 };
 
-struct DIBCOLOR {
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-	unsigned char reserved {0};
-
-	DIBCOLOR(const unsigned char ar, const unsigned char ag, const unsigned char ab) noexcept
-		: r(ar)
-		, g(ag)
-		, b(ab) {
+struct DeviceIndependentBitmapColor {
+	DeviceIndependentBitmapColor(const unsigned char r, const unsigned char g, const unsigned char b) noexcept
+		: m_R(r)
+		, m_G(g)
+		, m_B(b) {
 	}
 
-	DIBCOLOR(const COLORREF color) noexcept
-		: r(GetRValue(color))
-		, g(GetGValue(color))
-		, b(GetBValue(color)) {
+	explicit DeviceIndependentBitmapColor(const COLORREF color) noexcept
+		: m_R(GetRValue(color))
+		, m_G(GetGValue(color))
+		, m_B(GetBValue(color)) {
 	}
 
 	operator unsigned long() noexcept {
 		return *reinterpret_cast<unsigned long*>(this);
 	}
+
+private:
+	unsigned char m_R;
+	unsigned char m_G;
+	unsigned char m_B;
+	unsigned char m_Reserved {0};
 };
 
 class CBitmapColorInfo {
@@ -116,9 +115,9 @@ public:
 	const OdCmEntityColor GetColor();
 
 protected:
-	void SetBitmapPixels(CBitmap& bitmap, DIBCOLOR* pixels);
+	void SetBitmapPixels(CBitmap& bitmap, DeviceIndependentBitmapColor* pixels);
 
-	DIBCOLOR* GetBitmapPixels(CBitmap& bitmap, int& width, int& height);
+	DeviceIndependentBitmapColor* GetBitmapPixels(CBitmap& bitmap, int& width, int& height);
 
 	void GetBitmapSizes(CBitmap& bitmap, int& width, int& height);
 };

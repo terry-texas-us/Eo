@@ -100,7 +100,7 @@ struct EoPlotUnitsInfo {
 	}
 };
 
-static EoPlotUnitsInfo PlotUnitsInfo[] = {
+static EoPlotUnitsInfo g_PlotUnitsInfo[] = {
 	{kMmPerInch, L"inch", L"inches"},
 	{1.0, L"mm", L"mm"},
 	{1.0, L"pixel", L"pixels"},
@@ -535,7 +535,7 @@ void EoDlgPageSetup::FillScaleValues(const bool fillCombo) {
 	}
 	FillMmInches();
 	//m_PaperUnitText = CString(EoPlotUnitsInfo::GetTextByValue(m_PaperScaleUnit, PlotUnitsInfo[PaperUnits])) + L" =");
-	m_DrawingUnitText = EoPlotUnitsInfo::GetTextByValue(m_DrawingScaleUnit, PlotUnitsInfo[3]);
+	m_DrawingUnitText = EoPlotUnitsInfo::GetTextByValue(m_DrawingScaleUnit, g_PlotUnitsInfo[3]);
 	UpdateData(FALSE);
 }
 
@@ -548,8 +548,8 @@ void EoDlgPageSetup::OnChangeEditOffsetXy() {
 	UpdateData();
 	const auto PaperUnits {m_PlotSettings.plotPaperUnits()};
 	if (PaperUnits == OdDbPlotSettings::kInches) {
-		m_OffsetX *= PlotUnitsInfo[PaperUnits].m_Scale;
-		m_OffsetY *= PlotUnitsInfo[PaperUnits].m_Scale;
+		m_OffsetX *= g_PlotUnitsInfo[PaperUnits].m_Scale;
+		m_OffsetY *= g_PlotUnitsInfo[PaperUnits].m_Scale;
 	}
 	if (IsWHSwap()) {
 		m_PlotSettingsValidator->setPlotOrigin(&m_PlotSettings, m_OffsetY, m_OffsetX);
@@ -639,8 +639,8 @@ void EoDlgPageSetup::FillPlotOffset() {
 	}
 	const auto PaperUnits {m_PlotSettings.plotPaperUnits()};
 	if (PaperUnits == OdDbPlotSettings::kInches) {
-		m_OffsetX /= PlotUnitsInfo[PaperUnits].m_Scale;
-		m_OffsetY /= PlotUnitsInfo[PaperUnits].m_Scale;
+		m_OffsetX /= g_PlotUnitsInfo[PaperUnits].m_Scale;
+		m_OffsetY /= g_PlotUnitsInfo[PaperUnits].m_Scale;
 	}
 	// it doesn't changed with IsWHSwap
 	m_PaperImageOriginX.Format(L"%.6f", m_PlotSettings.getPaperImageOrigin().x);
@@ -650,8 +650,8 @@ void EoDlgPageSetup::FillPlotOffset() {
 	m_TopMargin.Format(L"%.6f", m_PlotSettings.getTopMargin());
 	m_BottomMargin.Format(L"%.6f", m_PlotSettings.getBottomMargin());
 	m_CanonicalMediaName = static_cast<const wchar_t*>(m_PlotSettings.getCanonicalMediaName());
-	m_OffsetXText = EoPlotUnitsInfo::GetTextByValue(m_OffsetX, PlotUnitsInfo[PaperUnits]);
-	m_OffsetYText = EoPlotUnitsInfo::GetTextByValue(m_OffsetY, PlotUnitsInfo[PaperUnits]);
+	m_OffsetXText = EoPlotUnitsInfo::GetTextByValue(m_OffsetX, g_PlotUnitsInfo[PaperUnits]);
+	m_OffsetYText = EoPlotUnitsInfo::GetTextByValue(m_OffsetY, g_PlotUnitsInfo[PaperUnits]);
 	UpdateData(FALSE);
 }
 

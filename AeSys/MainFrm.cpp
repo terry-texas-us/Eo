@@ -167,7 +167,7 @@ void CMainFrame::DrawColorBox(CDC& deviceContext, const RECT& itemRectangle, con
 }
 
 void CMainFrame::DrawLineWeight(CDC& deviceContext, const RECT& itemRectangle, const OdDb::LineWeight lineWeight) {
-	const auto PixelsPerLogicalMillimeter {static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)) / kMmPerInch};
+	const auto PixelsPerLogicalMillimeter {MillimetersToInches(static_cast<double>(deviceContext.GetDeviceCaps(LOGPIXELSY)))};
 	const auto PixelWidth {lineWeight <= 0 ? 0 : lround(double(lineWeight) / 100.0 * PixelsPerLogicalMillimeter)};
 	LOGBRUSH Brush;
 	Brush.lbStyle = BS_SOLID;
@@ -243,7 +243,7 @@ LRESULT CMainFrame::OnToolbarCreateNew(const WPARAM wp, const LPARAM name) {
 	return Result;
 }
 
-LRESULT CMainFrame::OnToolbarReset(const WPARAM toolbarResourceId, LPARAM lparam) {
+LRESULT CMainFrame::OnToolbarReset(const WPARAM toolbarResourceId, LPARAM /*parameter*/) {
 	switch (toolbarResourceId) {
 		case IDR_MAINFRAME: case IDR_MAINFRAME_256: {
 			m_StandardToolBar.ReplaceButton(ID_EDIT_FIND, EoCtrlFindComboBox(), FALSE);

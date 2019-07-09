@@ -1,0 +1,44 @@
+!function keywords
+1 = abs
+2 = acos
+3 = asin
+4 = atan
+5 = string
+6 = cos
+7 = exp
+8 = int
+9 = ln
+10 = log
+11 = sin
+12 = sqrt
+13 = tan
+14 = real
+!constants
+20 = [0-9]{[0-9]}
+21 = ([0-9]{[0-9]}.{[0-9]}|{[0-9]}.[0-9]{[0-9]})
+22 = ([0-9]{[0-9]}|([0-9]{[0-9]}.{[0-9]}|{[0-9]}.[0-9]{[0-9]}))('{([0-9]{[0-9]}|([0-9]{[0-9]}.{[0-9]}|{[0-9]}.[0-9]{[0-9]})){"}}|"|mm|cm|dm|m|km)
+!23 = area
+24 = "{([\h20-\h21]|[\h23-\h7e])}"{"{([\h20-\h21]|[\h23-\h7e])}"}
+!identifier
+25 = ([a-z]|[A-Z]){([a-z]|[A-Z]|[0-9]|_)}
+!binary arithmetic operators
+26 = **
+27 = *
+28 = /
+29 = +
+30 = -
+!binary relational operators
+31 = ==
+32 = \!=
+33 = >
+34 = >=
+35 = <
+36 = <=
+!binary logical operators
+37 = &
+38 = \|
+!unary logical operator
+39 = \!
+!puctuation
+40 = \(
+41 = \)

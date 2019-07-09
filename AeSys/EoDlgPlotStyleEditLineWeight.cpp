@@ -102,7 +102,7 @@ void EoDlgPlotStyleEditLineweight::OnEndlabeleditListLineweight(NMHDR* notifyStr
 		lineweightsListCtrl.SetItemText(ListViewItem->iItem, ListViewItem->iSubItem, Text);
 		const auto LineweightDataItem = reinterpret_cast<EoLineweightData*>(lineweightsListCtrl.GetItemData(ListViewItem->iItem));
 		if (inchesButton.GetCheck() != 0) {
-			LineweightDataItem->value = INCHTOMM(_wtof(ListViewItem->pszText));
+			LineweightDataItem->value = InchesToMillimeters(_wtof(ListViewItem->pszText));
 		} else {
 			LineweightDataItem->value = _wtof(ListViewItem->pszText);
 		}
@@ -131,7 +131,7 @@ void EoDlgPlotStyleEditLineweight::SetUnitIntoList(const bool isInchUnits) {
 	for (auto LineweightIndex = 0; LineweightIndex < NumberOfLineweights; LineweightIndex++) {
 		const auto LineweightDataItem {reinterpret_cast<EoLineweightData*>(lineweightsListCtrl.GetItemData(LineweightIndex))};
 		const auto Value {LineweightDataItem->value};
-		Lineweight.Format(L"%.4f", isInchUnits ? MMTOINCH(Value) : Value);
+		Lineweight.Format(L"%.4f", isInchUnits ? MillimetersToInches(Value) : Value);
 		LVITEMW lvi;
 		lvi.mask = LVIF_TEXT;
 		lvi.iItem = LineweightIndex;
@@ -184,7 +184,7 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		lineweightData[i].newIndex = static_cast<int>(i);
 		lineweightData[i].value = plotStyleTable->getLineweightAt(i);
 		OdString lineweight;
-		lineweight.format(L"%.4f", Inch ? MMTOINCH(lineweightData[i].value) : lineweightData[i].value);
+		lineweight.format(L"%.4f", Inch ? MillimetersToInches(lineweightData[i].value) : lineweightData[i].value);
 		auto IsUse {false};
 		unsigned nIndex {0};
 		if (useLineWeightIndex.find(static_cast<int>(i), nIndex)) { IsUse = true; }
