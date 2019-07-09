@@ -1572,12 +1572,12 @@ unsigned long AeSysView::getKeyState() noexcept {
 
 OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdPointTracker* tracker) {
 	m_Prompt.empty();
-	OdSaveState<OdString> SavePrompt(m_Prompt);
+	OdSaveState<OdString> SavedPrompt(m_Prompt);
 	putString(prompt);
 	OdSaveState<Mode> SavedMode(m_mode, kGetPoint);
 	m_Response.type = Response::kNone;
 	m_inpOptions = options;
-	SaveViewParameters svp(this, tracker, LoadCursorW(nullptr, IDC_CROSS), !((options & OdEd::kGptNoOSnap) != 0));
+	SaveViewParameters SavedViewParameters(this, tracker, LoadCursorW(nullptr, IDC_CROSS), !((options & OdEd::kGptNoOSnap) != 0));
 	while (theApp.PumpMessage() != 0) {
 		switch (m_Response.type) {
 			case Response::kPoint:
@@ -1599,13 +1599,13 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 
 OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStringTracker* tracker) {
 	m_Prompt.empty();
-	OdSaveState<OdString> SavePrompt(m_Prompt);
+	OdSaveState<OdString> SavedPrompt(m_Prompt);
 	putString(prompt);
-	OdSaveState<Mode> SaveMode(m_mode, kGetString);
+	OdSaveState<Mode> SavedMode(m_mode, kGetString);
 	m_Response.type = Response::kNone;
 	if (tracker != nullptr) { m_InputParser.reset(true); }
 	m_inpOptions = options;
-	SaveViewParametersTimer svp(this, tracker, LoadCursorW(nullptr, IDC_IBEAM));
+	SaveViewParametersTimer SavedViewParameters(this, tracker, LoadCursorW(nullptr, IDC_IBEAM));
 	while (theApp.PumpMessage() != 0) {
 		switch (m_Response.type) {
 			case Response::kString:
@@ -1649,7 +1649,7 @@ void AeSysView::OnRefresh() {
 }
 
 bool AeSysView::BeginDragCallback(const OdGePoint3d& point) {
-	OdSaveState<Mode> SaveMode(m_mode, kDragDrop);
+	OdSaveState<Mode> SavedMode(m_mode, kDragDrop);
 	GetDocument()->StartDrag(point);
 	return true;
 }
@@ -3530,7 +3530,7 @@ void AeSysView::UpdateStateInformation(const StateInformationItem item) {
 }
 
 const ODCOLORREF* AeSysView::CurrentPalette() const {
-	const ODCOLORREF* Color {odcmAcadPalette(m_Background)};
+	const auto Color {odcmAcadPalette(m_Background)};
 	return Color;
 }
 

@@ -131,10 +131,10 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 }
 
 void ConvertDimensionData(OdDbDimension* dimension) {
-	OdDbBlockTableRecordPtr Block = dimension->dimBlockId().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTableRecordPtr Block {dimension->dimBlockId().safeOpenObject(OdDb::kForRead)};
 	if (dimension->getMeasurement() >= 0.0) {
-		OdString formattedMeasurement;
-		dimension->formatMeasurement(formattedMeasurement, dimension->getMeasurement(), dimension->dimensionText());
+		OdString FormattedMeasurement;
+		dimension->formatMeasurement(FormattedMeasurement, dimension->getMeasurement(), dimension->dimensionText());
 	}
 	//OdCmColor bgrndTxtColor;
 	//unsigned short bgrndTxtFlags = dimension->getBgrndTxtColor(bgrndTxtColor));
@@ -156,7 +156,7 @@ void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 }
 
 //<summary>This is the default implementation to be attached to OdDbEntity as a catch-all. This guarantees that this protocol extension will be found for any entity, so the search up the OdRxClass tree will not fail and abort.</summary>
-void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup* group) {
+void EoDbConvertEntityToPrimitive::Convert(OdDbEntity* entity, EoDbGroup* /*group*/) {
 	TRACE1("Entity %s was not converted ...\n", static_cast<const wchar_t*>(entity->isA()->name()));
 }
 
@@ -543,10 +543,10 @@ public:
 			}
 		} else {
 		}
-		OdGePoint3d origin;
-		OdGeVector3d xAxis;
-		OdGeVector3d yAxis;
-		ViewportEntity->getUcs(origin, xAxis, yAxis);
+		OdGePoint3d Origin;
+		OdGeVector3d XAxis;
+		OdGeVector3d YAxis;
+		ViewportEntity->getUcs(Origin, XAxis, YAxis);
 		if (!ViewportEntity->nonRectClipEntityId().isNull()) {
 		}
 		if (!ViewportEntity->ucsName().isNull()) {

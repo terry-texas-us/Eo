@@ -89,7 +89,7 @@ void CPrimState::SetPen(AeSysView* view, CDC* deviceContext, short colorIndex, s
 	m_ColorIndex = colorIndex;
 	m_LinetypeIndex = linetypeIndex;
 	auto LogicalWidth {0.0};
-	if ((view != nullptr) && view->PenWidthsOn()) {
+	if (view != nullptr && view->PenWidthsOn()) {
 		const auto LogicalPixelsX {deviceContext->GetDeviceCaps(LOGPIXELSX)};
 		LogicalWidth = AeSys::PenWidthsGet(colorIndex) * double(LogicalPixelsX);
 		LogicalWidth *= EoMin(1.0, view->ZoomFactor());

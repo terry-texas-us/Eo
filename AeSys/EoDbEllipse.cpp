@@ -240,33 +240,33 @@ OdGePoint3d EoDbEllipse::StartPoint() const {
 	return m_Center + m_MajorAxis;
 }
 
-void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& ptsBox) const {
-	ptsBox.setLogicalLength(4);
-	ptsBox[0] = OdGePoint3d(-1.0, -1.0, 0.0);
-	ptsBox[1] = OdGePoint3d(1.0, -1.0, 0.0);
-	ptsBox[2] = OdGePoint3d(1.0, 1.0, 0.0);
-	ptsBox[3] = OdGePoint3d(-1.0, 1.0, 0.0);
+void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& boundingBox) const {
+	boundingBox.setLogicalLength(4);
+	boundingBox[0] = OdGePoint3d(-1.0, -1.0, 0.0);
+	boundingBox[1] = OdGePoint3d(1.0, -1.0, 0.0);
+	boundingBox[2] = OdGePoint3d(1.0, 1.0, 0.0);
+	boundingBox[3] = OdGePoint3d(-1.0, 1.0, 0.0);
 	if (m_SweepAngle < 3. * Oda2PI / 4.) {
-		const auto dEndX {cos(m_SweepAngle)};
-		const auto dEndY {sin(m_SweepAngle)};
-		if (dEndX >= 0.0) {
-			if (dEndY >= 0.0) { // Arc ends in quadrant one
-				ptsBox[0].x = dEndX;
-				ptsBox[0].y = 0.0;
-				ptsBox[1].y = 0.0;
-				ptsBox[2].y = dEndY;
-				ptsBox[3].x = dEndX;
-				ptsBox[3].y = dEndY;
+		const auto EndX {cos(m_SweepAngle)};
+		const auto EndY {sin(m_SweepAngle)};
+		if (EndX >= 0.0) {
+			if (EndY >= 0.0) { // Arc ends in quadrant one
+				boundingBox[0].x = EndX;
+				boundingBox[0].y = 0.0;
+				boundingBox[1].y = 0.0;
+				boundingBox[2].y = EndY;
+				boundingBox[3].x = EndX;
+				boundingBox[3].y = EndY;
 			}
 		} else {
-			if (dEndY >= 0.0) { // Arc ends in quadrant two
-				ptsBox[0].x = dEndX;
-				ptsBox[0].y = 0.0;
-				ptsBox[1].y = 0.0;
-				ptsBox[3].x = dEndX;
+			if (EndY >= 0.0) { // Arc ends in quadrant two
+				boundingBox[0].x = EndX;
+				boundingBox[0].y = 0.0;
+				boundingBox[1].y = 0.0;
+				boundingBox[3].x = EndX;
 			} else { // Arc ends in quadrant three
-				ptsBox[0].y = dEndY;
-				ptsBox[1].y = dEndY;
+				boundingBox[0].y = EndY;
+				boundingBox[1].y = EndY;
 			}
 		}
 	}
@@ -276,7 +276,7 @@ void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& ptsBox) const {
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis));
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
 	for (unsigned w = 0; w < 4; w++) {
-		ptsBox[w].transformBy(PlaneToWorldTransform);
+		boundingBox[w].transformBy(PlaneToWorldTransform);
 	}
 }
 
@@ -286,9 +286,9 @@ OdGePoint3d EoDbEllipse::EndPoint() const {
 	EoGeMatrix3d PlaneToWorldTransform;
 	PlaneToWorldTransform.setToPlaneToWorld(OdGePlane(m_Center, m_MajorAxis, m_MinorAxis));
 	PlaneToWorldTransform.postMultBy(ScaleMatrix);
-	OdGePoint3d pt(cos(m_SweepAngle), sin(m_SweepAngle), 0.0);
-	pt.transformBy(PlaneToWorldTransform);
-	return pt;
+	OdGePoint3d Point(cos(m_SweepAngle), sin(m_SweepAngle), 0.0);
+	Point.transformBy(PlaneToWorldTransform);
+	return Point;
 }
 
 OdGeVector3d EoDbEllipse::MajorAxis() const noexcept {
@@ -307,100 +307,100 @@ double EoDbEllipse::SweepAngle() const noexcept {
 	return m_SweepAngle;
 }
 
-void EoDbEllipse::GetXYExtents(const OdGePoint3d arBeg, const OdGePoint3d arEnd, OdGePoint3d* arMin, OdGePoint3d* arMax) noexcept {
-	const auto dx {m_Center.x - arBeg.x};
-	const auto dy {m_Center.y - arBeg.y};
-	const auto dRad {sqrt(dx * dx + dy * dy)};
-	(*arMin).x = m_Center.x - dRad;
-	(*arMin).y = m_Center.y - dRad;
-	(*arMax).x = m_Center.x + dRad;
-	(*arMax).y = m_Center.y + dRad;
-	if (arBeg.x >= m_Center.x) {
-		if (arBeg.y >= m_Center.y) { // Arc begins in quadrant one
-			if (arEnd.x >= m_Center.x) {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
-					if (arBeg.x > arEnd.x) { // Arc in quadrant one only
-						(*arMin).x = arEnd.x;
-						(*arMin).y = arBeg.y;
-						(*arMax).x = arBeg.x;
-						(*arMax).y = arEnd.y;
+void EoDbEllipse::GetXYExtents(const OdGePoint3d startPoint, const OdGePoint3d endPoint, OdGePoint3d* minimumPoint, OdGePoint3d* maximumPoint) const noexcept {
+	const auto X {m_Center.x - startPoint.x};
+	const auto Y {m_Center.y - startPoint.y};
+	const auto Radius {sqrt(X * X + Y * Y)};
+	(*minimumPoint).x = m_Center.x - Radius;
+	(*minimumPoint).y = m_Center.y - Radius;
+	(*maximumPoint).x = m_Center.x + Radius;
+	(*maximumPoint).y = m_Center.y + Radius;
+	if (startPoint.x >= m_Center.x) {
+		if (startPoint.y >= m_Center.y) { // Arc begins in quadrant one
+			if (endPoint.x >= m_Center.x) {
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant one
+					if (startPoint.x > endPoint.x) { // Arc in quadrant one only
+						(*minimumPoint).x = endPoint.x;
+						(*minimumPoint).y = startPoint.y;
+						(*maximumPoint).x = startPoint.x;
+						(*maximumPoint).y = endPoint.y;
 					}
 				} else { // Arc ends in quadrant four
-					(*arMax).x = EoMax(arBeg.x, arEnd.x);
+					(*maximumPoint).x = EoMax(startPoint.x, endPoint.x);
 				}
 			} else {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
-					(*arMin).x = arEnd.x;
-					(*arMin).y = EoMin(arBeg.y, arEnd.y);
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant two
+					(*minimumPoint).x = endPoint.x;
+					(*minimumPoint).y = EoMin(startPoint.y, endPoint.y);
 				} else { // Arc ends in quadrant three
-					(*arMin).y = arEnd.y;
+					(*minimumPoint).y = endPoint.y;
 				}
-				(*arMax).x = arBeg.x;
+				(*maximumPoint).x = startPoint.x;
 			}
 		} else { // Arc begins in quadrant four
-			if (arEnd.x >= m_Center.x) {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
-					(*arMin).x = EoMin(arBeg.x, arEnd.x);
-					(*arMin).y = arBeg.y;
-					(*arMax).y = arEnd.y;
+			if (endPoint.x >= m_Center.x) {
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant one
+					(*minimumPoint).x = EoMin(startPoint.x, endPoint.x);
+					(*minimumPoint).y = startPoint.y;
+					(*maximumPoint).y = endPoint.y;
 				} else { // Arc ends in quadrant four
-					if (arBeg.x < arEnd.x) { // Arc in quadrant one only
-						(*arMin).x = arBeg.x;
-						(*arMin).y = arBeg.y;
-						(*arMax).x = arEnd.x;
-						(*arMax).y = arEnd.y;
+					if (startPoint.x < endPoint.x) { // Arc in quadrant one only
+						(*minimumPoint).x = startPoint.x;
+						(*minimumPoint).y = startPoint.y;
+						(*maximumPoint).x = endPoint.x;
+						(*maximumPoint).y = endPoint.y;
 					}
 				}
 			} else {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
-					(*arMin).x = arEnd.x;
-					(*arMin).y = arBeg.y;
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant two
+					(*minimumPoint).x = endPoint.x;
+					(*minimumPoint).y = startPoint.y;
 				} else { // Arc ends in quadrant three
-					(*arMin).y = EoMin(arBeg.y, arEnd.y);
+					(*minimumPoint).y = EoMin(startPoint.y, endPoint.y);
 				}
 			}
 		}
 	} else {
-		if (arBeg.y >= m_Center.y) { // Arc begins in quadrant two
-			if (arEnd.x >= m_Center.x) {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
-					(*arMax).y = EoMax(arBeg.y, arEnd.y);
+		if (startPoint.y >= m_Center.y) { // Arc begins in quadrant two
+			if (endPoint.x >= m_Center.x) {
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant one
+					(*maximumPoint).y = EoMax(startPoint.y, endPoint.y);
 				} else { // Arc ends in quadrant four
-					(*arMax).x = arEnd.x;
-					(*arMax).y = arBeg.y;
+					(*maximumPoint).x = endPoint.x;
+					(*maximumPoint).y = startPoint.y;
 				}
 			} else {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
-					if (arBeg.x > arEnd.x) { // Arc in quadrant two only
-						(*arMin).x = arEnd.x;
-						(*arMin).y = arEnd.y;
-						(*arMax).x = arBeg.x;
-						(*arMax).y = arBeg.y;
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant two
+					if (startPoint.x > endPoint.x) { // Arc in quadrant two only
+						(*minimumPoint).x = endPoint.x;
+						(*minimumPoint).y = endPoint.y;
+						(*maximumPoint).x = startPoint.x;
+						(*maximumPoint).y = startPoint.y;
 					}
 				} else { // Arc ends in quadrant three
-					(*arMin).y = arEnd.y;
-					(*arMax).x = EoMax(arBeg.x, arEnd.x);
-					(*arMax).y = arBeg.y;
+					(*minimumPoint).y = endPoint.y;
+					(*maximumPoint).x = EoMax(startPoint.x, endPoint.x);
+					(*maximumPoint).y = startPoint.y;
 				}
 			}
 		} else { // Arc begins in quadrant three
-			if (arEnd.x >= m_Center.x) {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant one
-					(*arMax).y = arEnd.y;
+			if (endPoint.x >= m_Center.x) {
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant one
+					(*maximumPoint).y = endPoint.y;
 				} else { // Arc ends in quadrant four
-					(*arMax).x = arEnd.x;
-					(*arMax).y = EoMax(arBeg.y, arEnd.y);
+					(*maximumPoint).x = endPoint.x;
+					(*maximumPoint).y = EoMax(startPoint.y, endPoint.y);
 				}
-				(*arMin).x = arBeg.x;
+				(*minimumPoint).x = startPoint.x;
 			} else {
-				if (arEnd.y >= m_Center.y) { // Arc ends in quadrant two
-					(*arMin).x = EoMin(arBeg.x, arEnd.x);
+				if (endPoint.y >= m_Center.y) { // Arc ends in quadrant two
+					(*minimumPoint).x = EoMin(startPoint.x, endPoint.x);
 				} else { // Arc ends in quadrant three
-					if (arBeg.x < arEnd.x) { // Arc in quadrant three only
-						(*arMin).x = arBeg.x;
-						(*arMin).y = arEnd.y;
-						(*arMax).x = arEnd.x;
-						(*arMax).y = arBeg.y;
+					if (startPoint.x < endPoint.x) { // Arc in quadrant three only
+						(*minimumPoint).x = startPoint.x;
+						(*minimumPoint).y = endPoint.y;
+						(*maximumPoint).x = endPoint.x;
+						(*maximumPoint).y = startPoint.y;
 					}
 				}
 			}

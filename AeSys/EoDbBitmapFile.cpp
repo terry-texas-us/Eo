@@ -15,23 +15,23 @@ bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& pa
 	
 	// Return now if device does not support palettes
 	if ((ClientDeviceContext.GetDeviceCaps(RASTERCAPS) & RC_PALETTE) == 0) { return true; }
-	DIBSECTION ds;
-	bitmap.GetObjectW(sizeof(DIBSECTION), &ds);
+	DIBSECTION DeviceIndependentBitmapSection;
+	bitmap.GetObjectW(sizeof(DIBSECTION), &DeviceIndependentBitmapSection);
 	int NumberOfColors;
-	if (ds.dsBmih.biClrUsed != 0) {
-		NumberOfColors = static_cast<int>(ds.dsBmih.biClrUsed);
+	if (DeviceIndependentBitmapSection.dsBmih.biClrUsed != 0) {
+		NumberOfColors = static_cast<int>(DeviceIndependentBitmapSection.dsBmih.biClrUsed);
 	} else {
-		NumberOfColors = static_cast<int>(1U << ds.dsBmih.biBitCount);
+		NumberOfColors = static_cast<int>(1U << DeviceIndependentBitmapSection.dsBmih.biBitCount);
 	}
 	if (NumberOfColors > 256) { // Create a halftone palette
 		palette.CreateHalftonePalette(&ClientDeviceContext);
 	} else { // Create a custom palette from the DIB section's color table
 		const auto RGBQuad {new RGBQUAD[static_cast<unsigned>(NumberOfColors)]};
-		CDC dcMem;
-		dcMem.CreateCompatibleDC(&ClientDeviceContext);
-		auto Bitmap {dcMem.SelectObject(&bitmap)};
-		GetDIBColorTable(static_cast<HDC>(dcMem), 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
-		dcMem.SelectObject(Bitmap);
+		CDC MemoryDeviceContext;
+		MemoryDeviceContext.CreateCompatibleDC(&ClientDeviceContext);
+		auto Bitmap {MemoryDeviceContext.SelectObject(&bitmap)};
+		GetDIBColorTable(static_cast<HDC>(MemoryDeviceContext), 0, static_cast<unsigned>(NumberOfColors), RGBQuad);
+		MemoryDeviceContext.SelectObject(Bitmap);
 		const auto Size {sizeof(LOGPALETTE) + sizeof(PALETTEENTRY) * (NumberOfColors - 1)};
 		auto LogicalPalette {reinterpret_cast<LOGPALETTE*>(new unsigned char[Size])};
 		LogicalPalette->palVersion = 0x300;

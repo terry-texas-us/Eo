@@ -33,7 +33,6 @@ bool OdBaseSnapManager::SubentId::operator==(const SubentId& other) const {
 
 OdBaseSnapManager::OdBaseSnapManager() noexcept
 	: m_NearDist(std::numeric_limits<double>::max())
-	, m_SnapMode(OdDb::OsnapMode(0))
 	, m_Redraw(m_Redraw) {
 }
 
@@ -377,7 +376,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 		}
 	} else {
 		if (!PointTrackerWithSnapInfo->IsTargetEntity(Entity)) { return; }
-		OdSaveState<double> ssHitRadius(m_HitRadius, 1500.0);
+		OdSaveState<double> SavedHitRadius(m_HitRadius, 1500.0);
 		OdArray<OdDb::OsnapMode> snapModes;
 		PointTrackerWithSnapInfo->GetSnapModes(Entity, snapModes);
 		for (auto it = snapModes.begin(); it != snapModes.end(); it++) {
@@ -410,7 +409,7 @@ unsigned long OdBaseSnapManager::selected(const OdGiPathNode& pathNode, const Od
 }
 
 void OdBaseSnapManager::RecalculateEntityCenters() {
-	for (unsigned i = m_Centers.size() - 1; i >= 0; --i) {
+	for (auto i = m_Centers.size() - 1; i >= 0; --i) {
 		auto SubentId = m_Centers[i].m_SubentId;
 		if (SubentId.m_Path.empty()) { continue; }
 		auto Entity {OdDbEntity::cast(SubentId.m_Path[0].openObject())};

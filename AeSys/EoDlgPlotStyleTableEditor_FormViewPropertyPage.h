@@ -197,39 +197,39 @@ protected:
 
 	BOOL OnInitDialog() final;
 
-	void initBitmapList();
+	void InitializeBitmapList();
 
-	void initAdaptiveComboBox();
+	void InitializeAdaptiveComboBox();
 
-	void initGrayscaleComboBox();
+	void InitializeGrayscaleComboBox();
 
-	void initDitherComboBox();
+	void InitializeDitherComboBox();
 
-	void initLinetypeComboBox();
+	void InitializeLinetypeComboBox();
 
-	void initLineweightComboBox();
+	void InitializeLineweightComboBox();
 
-	void initLineendstyleComboBox();
+	void InitializeLineendstyleComboBox();
 
-	void initLinejoinstyleComboBox();
+	void InitializeLinejoinstyleComboBox();
 
-	void initFillstyleComboBox();
+	void InitializeFillstyleComboBox();
 
-	void initColorComboBox();
+	void InitializeColorComboBox();
 
-	void initListCtrl();
+	void InitializeListCtrl();
 
-	const int insertItem(int index);
+	const int InsertItem(int index);
 
-	HICON initColorIcon(int width, int height, COLORREF color) noexcept;
+	HICON InitializeColorIcon(int width, int height, COLORREF color) noexcept;
 
-	void initImageList();
+	void InitializeImageList();
 
-	int deleteCustomColor();
+	int DeleteCustomColor();
 
-	int appendCustomColor(int item);
+	int AppendCustomColor(int item);
 
-	int replaceCustomColor(COLORREF color, int item);
+	int ReplaceCustomColor(COLORREF color, int item);
 
 public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;

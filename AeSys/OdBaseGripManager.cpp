@@ -367,7 +367,7 @@ void OdBaseGripManager::RemoveEntityGrips(OdDbStub* id, const bool fireDone) {
 		for (unsigned i = 0; i < Size; i++) {
 			auto GripData {GripDataIterator->second.dataArray[i]};
 			HideGrip(GripData, Model);
-			if (!GripDataIterator->second.dataArray[i]->GripData().isNull() && (GripDataIterator->second.dataArray[i]->GripData()->gripOpStatFunc() != nullptr)) {
+			if (!GripDataIterator->second.dataArray[i]->GripData().isNull() && GripDataIterator->second.dataArray[i]->GripData()->gripOpStatFunc() != nullptr) {
 				(*GripDataIterator->second.dataArray[i]->GripData()->gripOpStatFunc())(GripDataIterator->second.dataArray[i]->GripData(), id, OdDbGripOperations::kGripEnd);
 			}
 			GripDataIterator->second.dataArray[i] = nullptr;

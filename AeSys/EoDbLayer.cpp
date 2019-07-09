@@ -4,16 +4,12 @@
 #include <DbLinetypeTableRecord.h>
 
 EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer)
-	: m_Layer(layer) {
-	m_TracingFlags = 0;
-	m_StateFlags = kIsResident | kIsInternal | kIsActive;
+	: m_Layer {layer} {
 	const auto LinetypeObjectId {layer->linetypeObjectId()};
 }
 
-EoDbLayer::EoDbLayer(const OdString& /*name*/, const unsigned short stateFlags) {
-	// <tas="need to check this .. no defaults"></tas>
-	m_TracingFlags = 0;
-	m_StateFlags = stateFlags;
+EoDbLayer::EoDbLayer(const OdString& /*name*/, const unsigned short stateFlags) 
+	: m_StateFlags {stateFlags} {
 }
 
 void EoDbLayer::BuildVisibleGroupList(AeSysView* view) {

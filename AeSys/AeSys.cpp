@@ -166,7 +166,6 @@ EoDlgAbout::EoDlgAbout() noexcept
 BOOL EoDlgAbout::OnInitDialog() {
 	const auto LibraryInfo {oddbGetLibraryInfo()};
 	const auto BuildComments {LibraryInfo->getBuildComments()};
-	auto CopyRight {LibraryInfo->getCopyright()};
 	CDialog::OnInitDialog();
 	SetDlgItemTextW(IDC_INFO_BUILD, BuildComments);
 	return TRUE; // return TRUE unless you set the focus to a control
@@ -1085,9 +1084,25 @@ bool AeSys::InitializeOda() {
 		OdApplicationReactor::rxInit();
 		OdApplicationDocument::rxInit();
 		odrxDynamicLinker()->loadModule(OdGripPointsModuleName, false); // GripPoints module
+		odrxDynamicLinker()->loadModule(OdDynBlocksModuleName, false); // Core dynamic blocks support
+		odrxDynamicLinker()->loadModule(Od3DSolidHistoryTxModuleName, false);
+		odrxDynamicLinker()->loadModule(DbConstraintsModuleName, false); // Drawings constraints module
+		odrxDynamicLinker()->loadModule(TfModuleName, false); // ODA Platform format import/export module
+		// odrxDynamicLinker()->loadModule(ExDimAssocModuleName, false); // interface for recalculation of associative dimensions, leaders, mleaders
 		odrxDynamicLinker()->loadModule(OdDbCommandsModuleName, false); // DbCommands module (ERASE,EXPLODE,PURGE, etc.)
-		odrxDynamicLinker()->loadModule(OdExCommandsModuleName);
-		odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName); // PlotSettingsValidator module (To include support for plot settings)
+		odrxDynamicLinker()->loadModule(OdExCustObjsModuleName, false);
+		odrxDynamicLinker()->loadModule(OdRecomputeDimBlockModuleName, false);
+		odrxDynamicLinker()->loadModule(OdAcIdViewObjModuleName, false);
+		odrxDynamicLinker()->loadModule(OdExCommandsModuleName, false);
+		odrxDynamicLinker()->loadModule(OdRasterExportModuleName, false);
+		odrxDynamicLinker()->loadModule(OdExDeepCloningModuleName, false);
+		odrxDynamicLinker()->loadModule(OdExDynamicBlocksModuleName, false); // Sample commands illustrating dynamic blocks usage
+		odrxDynamicLinker()->loadModule(OdAveModuleName, false); // Support of old style materials, lights, etc. (AVE_*)
+		odrxDynamicLinker()->loadModule(OdExFieldEvaluatorModuleName, false); // Field evaluator for "AcVar", and "AcDiesel" fields
+		odrxDynamicLinker()->loadModule(OdAutoSurfServicesModuleName, false); // OdAsSurfBody object support module (loads dependency TD_Br_20.5_15.dll if necessary)
+		odrxDynamicLinker()->loadModule(OdModelDocObjModuleName, false);
+		odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName, false); // PlotSettingsValidator module (To include support for plot settings)
+		odrxDynamicLinker()->loadModule(L"ExampleRevisionControl", false);
 		AddPaperDrawingCustomization();
 		AddMaterialTextureLoadingMonitor();
 		OdDbDatabaseDoc::rxInit();

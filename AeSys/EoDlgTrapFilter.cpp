@@ -18,34 +18,34 @@ EoDlgTrapFilter::EoDlgTrapFilter(CWnd* parent)
 
 EoDlgTrapFilter::EoDlgTrapFilter(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
 	: CDialog(IDD, parent)
-	, EoDlgTrapFilter::document {document}
-	, EoDlgTrapFilter::database {database} {
+	, m_Document {document}
+	, m_Database {database} {
 }
 
 EoDlgTrapFilter::~EoDlgTrapFilter() = default;
 
 void EoDlgTrapFilter::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
-	DDX_Control(dataExchange, IDC_TRAP_FILTER_LINE_LIST, m_FilterLineComboBoxControl);
-	DDX_Control(dataExchange, IDC_TRAP_FILTER_ELEMENT_LIST, m_FilterPrimitiveTypeListBoxControl);
+	DDX_Control(dataExchange, IDC_TRAP_FILTER_LINE_LIST, filterLineComboBoxControl);
+	DDX_Control(dataExchange, IDC_TRAP_FILTER_ELEMENT_LIST, filterPrimitiveTypeListBoxControl);
 }
 
 BOOL EoDlgTrapFilter::OnInitDialog() {
 	CDialog::OnInitDialog();
 	SetDlgItemInt(IDC_TRAP_FILTER_PEN_ID, 1, FALSE);
-	OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 	auto Iterator {Linetypes->newIterator()};
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
-		m_FilterLineComboBoxControl.AddString(Linetype->getName());
+		filterLineComboBoxControl.AddString(Linetype->getName());
 	}
-	m_FilterLineComboBoxControl.SetCurSel(0);
+	filterLineComboBoxControl.SetCurSel(0);
 	const auto PrimitiveTypes {AeSys::LoadStringResource(IDS_PRIMITIVE_FILTER_LIST)};
 	auto TypesPosition {0};
 	while (TypesPosition < PrimitiveTypes.GetLength()) {
-		m_FilterPrimitiveTypeListBoxControl.AddString(PrimitiveTypes.Tokenize(L"\n", TypesPosition));
+		filterPrimitiveTypeListBoxControl.AddString(PrimitiveTypes.Tokenize(L"\n", TypesPosition));
 	}
-	m_FilterPrimitiveTypeListBoxControl.SetCurSel(0);
+	filterPrimitiveTypeListBoxControl.SetCurSel(0);
 	return TRUE;
 }
 
@@ -57,7 +57,7 @@ void EoDlgTrapFilter::OnOK() {
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_LINE) != 0U) {
 		wchar_t Name[32];
 		if (GetDlgItemTextW(IDC_TRAP_FILTER_LINE_LIST, Name, sizeof Name / sizeof(wchar_t)) != 0) {
-			OdDbLinetypeTablePtr Linetypes {database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
+			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 			if (!Linetypes->getAt(Name).isNull()) {
 				const auto LinetypeIndex {gsl::narrow_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name))};
 				FilterByLinetype(LinetypeIndex);
@@ -65,7 +65,7 @@ void EoDlgTrapFilter::OnOK() {
 		}
 	}
 	if (IsDlgButtonChecked(IDC_TRAP_FILTER_ELEMENT) != 0U) {
-		switch (m_FilterPrimitiveTypeListBoxControl.GetCurSel()) {
+		switch (filterPrimitiveTypeListBoxControl.GetCurSel()) {
 			case 0:
 				FilterByPrimitiveType(EoDb::kEllipsePrimitive);
 				break;
@@ -92,16 +92,16 @@ void EoDlgTrapFilter::OnOK() {
 	CDialog::OnOK();
 }
 
-void EoDlgTrapFilter::FilterByColor(const short colorIndex) {
-	auto GroupPosition {document->GetFirstTrappedGroupPosition()};
+void EoDlgTrapFilter::FilterByColor(const short colorIndex) const {
+	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		const auto Group {document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->ColorIndex() == colorIndex) {
-				document->RemoveTrappedGroup(Group);
-				document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				m_Document->RemoveTrappedGroup(Group);
+				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}
@@ -109,16 +109,16 @@ void EoDlgTrapFilter::FilterByColor(const short colorIndex) {
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
-void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
-	auto GroupPosition {document->GetFirstTrappedGroupPosition()};
+void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) const {
+	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
-		const auto Group {document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->LinetypeIndex() == linetypeIndex) {
-				document->RemoveTrappedGroup(Group);
-				document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				m_Document->RemoveTrappedGroup(Group);
+				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}
@@ -126,11 +126,11 @@ void EoDlgTrapFilter::FilterByLinetype(const short linetypeIndex) {
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
 
-void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) {
-	auto GroupPosition {document->GetFirstTrappedGroupPosition()};
+void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitiveType) const {
+	auto GroupPosition {m_Document->GetFirstTrappedGroupPosition()};
 	while (GroupPosition != nullptr) {
 		auto Filter {false};
-		const auto Group {document->GetNextTrappedGroup(GroupPosition)};
+		const auto Group {m_Document->GetNextTrappedGroup(GroupPosition)};
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
@@ -160,8 +160,8 @@ void EoDlgTrapFilter::FilterByPrimitiveType(const EoDb::PrimitiveTypes primitive
 					break;
 			}
 			if (Filter) {
-				document->RemoveTrappedGroup(Group);
-				document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
+				m_Document->RemoveTrappedGroup(Group);
+				m_Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 				break;
 			}
 		}

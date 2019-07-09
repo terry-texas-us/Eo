@@ -235,7 +235,7 @@ public:
 
 	const ODCOLORREF* CurrentPalette() const;
 
-	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = NULL, OdDbBaseDatabase* database = NULL, unsigned long flags = 0) override;
+	OdGsDevicePtr gsBitmapDevice(OdRxObject* view = nullptr, OdDbBaseDatabase* database = nullptr, unsigned long flags = 0) override;
 
 	//	bool encryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);
 	//	bool decryptData(OdBinaryData& buffer, const OdSecurityParams* securityParams);

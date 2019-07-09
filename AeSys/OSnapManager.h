@@ -156,7 +156,7 @@ public:
 
 	[[nodiscard]] virtual unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept {
 		// was temporary moved into OSnapManager // return 1 << mode;
-		return static_cast<unsigned>(1 << (mode + 1));
+		return static_cast<unsigned>(1U << (static_cast<unsigned>(mode) + 1U));
 	}
 
 	[[nodiscard]] virtual OdCmEntityColor SnapTrueColor() const {

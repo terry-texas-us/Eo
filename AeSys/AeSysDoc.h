@@ -197,7 +197,7 @@ public:
 	};
 
 protected:
-	AeSysDoc() noexcept;
+	AeSysDoc();
 
 DECLARE_DYNCREATE(AeSysDoc)
 
@@ -531,8 +531,6 @@ public:
 	int RemoveUniquePoint(const OdGePoint3d& point);
 	
 	// Generated message map functions
-	void OnBlocksLoad();
-
 	void OnPurgeUnreferencedBlocks();
 
 	void OnClearActiveLayers();

@@ -19,7 +19,7 @@ public:
 
 	EoDbPoint& operator=(const EoDbPoint& other);
 
-	~EoDbPoint();
+	~EoDbPoint() override;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 

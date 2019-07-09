@@ -138,7 +138,7 @@ void EoDbHatch::FormatGeometry(CString& geometry) const {
 }
 
 void EoDbHatch::GetAllPoints(OdGePoint3dArray& points) const {
-	points.empty();
+	points.clear();
 	for (const auto& Vertex : m_Vertices) {
 		points.append(Vertex);
 	}

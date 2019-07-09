@@ -990,7 +990,8 @@ public:
 	/// <param name="existingSectionWidth"></param>
 	/// <param name="existingSectionDepth"></param>
 	/// <param name="group"></param>
-	OdGePoint3d GenerateBullheadTee(EoDbGroup* existingGroup, EoGeLineSeg3d& existingSectionReferenceLine, double existingSectionWidth, double existingSectionDepth, EoDbGroup* group) {
+	OdGePoint3d GenerateBullheadTee(EoDbGroup* /*existingGroup*/, EoGeLineSeg3d& /*existingSectionReferenceLine*/, double /*existingSectionWidth*/, double /*existingSectionDepth*/, EoDbGroup* /*group*/) {
+		return OdGePoint3d::kOrigin;
 	}
 	/// <summary>Generates a full elbow takeoff fitting.</summary>
 	void GenerateFullElbowTakeoff(EoDbGroup* existingGroup, EoGeLineSeg3d& existingSectionReferenceLine, Section existingSection, EoDbGroup* group);

@@ -74,29 +74,29 @@ void EoDbGroup::BreakPolylines() {
 }
 
 void EoDbGroup::BreakSegRefs() {
-	int iSegRefs;
+	int BlockReferences;
 	do {
-		iSegRefs = 0;
+		BlockReferences = 0;
 		auto Position {GetHeadPosition()};
 		while (Position != nullptr) {
 			const auto PrimitivePosition {Position};
 			const auto Primitive {GetNext(Position)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference)) != 0) {
-				iSegRefs++;
+				BlockReferences++;
 				EoDbBlock* Block;
 				if (AeSysDoc::GetDoc()->LookupBlock(dynamic_cast<EoDbBlockReference*>(Primitive)->Name(), Block)) {
-					auto pSegT {new EoDbGroup(*Block)};
+					auto BlockCopy {new EoDbGroup(*Block)};
 					auto BlockTransform {dynamic_cast<EoDbBlockReference*>(Primitive)->BlockTransformMatrix(Block->BasePoint())};
-					pSegT->TransformBy(BlockTransform);
-					this->InsertBefore(PrimitivePosition, pSegT);
+					BlockCopy->TransformBy(BlockTransform);
+					this->InsertBefore(PrimitivePosition, BlockCopy);
 					this->RemoveAt(PrimitivePosition);
 					delete Primitive;
-					pSegT->RemoveAll();
-					delete pSegT;
+					BlockCopy->RemoveAll();
+					delete BlockCopy;
 				}
 			}
 		}
-	} while (iSegRefs != 0);
+	} while (BlockReferences != 0);
 }
 
 void EoDbGroup::DeletePrimitivesAndRemoveAll() {

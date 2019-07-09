@@ -14,7 +14,7 @@ public:
 	EoDbLine(const EoDbLine& other);
 
 	EoDbLine& operator=(const EoDbLine& other); // hides non-virtual function of parent
-	~EoDbLine() = default;
+	~EoDbLine() override = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 

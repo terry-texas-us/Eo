@@ -33,7 +33,7 @@ struct OdExInteractivityModeCmd : OdEdCommand {
 
 	[[nodiscard]] const OdString globalName() const override;
 
-	void execute(OdEdCommandContext* edCommandContext) override;
+	void execute(OdEdCommandContext* commandContext) override;
 };
 
 struct OdExCollideCmd : OdEdCommand {

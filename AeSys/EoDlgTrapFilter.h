@@ -10,8 +10,15 @@ DECLARE_DYNAMIC(EoDlgTrapFilter)
 
 	enum { IDD = IDD_TRAP_FILTER };
 
-	AeSysDoc* document {nullptr};
-	OdDbDatabasePtr database;
+	CComboBox filterLineComboBoxControl;
+	CListBox filterPrimitiveTypeListBoxControl;
+
+	void FilterByColor(short colorIndex) const;
+
+	void FilterByLinetype(short linetypeIndex) const;
+
+	void FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType) const;
+
 protected:
 	void DoDataExchange(CDataExchange* dataExchange) final;
 
@@ -19,15 +26,8 @@ protected:
 
 	void OnOK() final;
 
-public:
-	CComboBox m_FilterLineComboBoxControl;
-	CListBox m_FilterPrimitiveTypeListBoxControl;
-
-	void FilterByColor(short colorIndex);
-
-	void FilterByLinetype(short linetypeIndex);
-
-	void FilterByPrimitiveType(EoDb::PrimitiveTypes primitiveType);
-
+private:
+	AeSysDoc* m_Document {nullptr};
+	OdDbDatabasePtr m_Database;
 DECLARE_MESSAGE_MAP()
 };

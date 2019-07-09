@@ -110,9 +110,6 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString String;
 		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
-		CPoint Point;
-		Point.x = drawItemStruct->rcItem.left + 2;
-		Point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
 		CRect TextRectangle(drawItemStruct->rcItem);
 		DeviceContext->DrawTextW(String, TextRectangle, DT_SINGLELINE | DT_VCENTER);
 	}

@@ -7,10 +7,7 @@
 
 EoDlgSetActiveLayout::EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Database(database)
-	, m_OldActiveLayout(0)
-	, m_NewActiveLayout(0)
-	, m_CreateNewLayout(false) {
+	, m_Database(database) {
 }
 
 void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* dataExchange) {
@@ -18,14 +15,14 @@ void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* dataExchange) {
 }
 
 BEGIN_MESSAGE_MAP(EoDlgSetActiveLayout, CDialog)
-		ON_COMMAND(IDC_ALAYOUT_CLOSE, OnLayoutDlgClose)
-		ON_LBN_SELCHANGE(IDC_LAYOUTLIST, OnSelectionChangeLayoutlist)
-		ON_LBN_DBLCLK(IDC_LAYOUTLIST, OnDoubleClickLayoutlist)
-		ON_BN_CLICKED(IDC_RENAME, OnRename)
-		ON_BN_CLICKED(IDC_DELETE, OnDelete)
-		ON_BN_CLICKED(IDC_COPY, OnCopy)
-		ON_BN_CLICKED(IDC_NEW, OnNew)
-		ON_BN_CLICKED(IDC_FROM_TEMPLATE, OnFromTemplate)
+		ON_COMMAND(IDC_ALAYOUT_CLOSE, &EoDlgSetActiveLayout::OnLayoutDlgClose)
+		ON_LBN_SELCHANGE(IDC_LAYOUTLIST, &EoDlgSetActiveLayout::OnSelectionChangeLayoutlist)
+		ON_LBN_DBLCLK(IDC_LAYOUTLIST, &EoDlgSetActiveLayout::OnDoubleClickLayoutlist)
+		ON_BN_CLICKED(IDC_RENAME, &EoDlgSetActiveLayout::OnRename)
+		ON_BN_CLICKED(IDC_DELETE, &EoDlgSetActiveLayout::OnDelete)
+		ON_BN_CLICKED(IDC_COPY, &EoDlgSetActiveLayout::OnCopy)
+		ON_BN_CLICKED(IDC_NEW, &EoDlgSetActiveLayout::OnNew)
+		ON_BN_CLICKED(IDC_FROM_TEMPLATE, &EoDlgSetActiveLayout::OnFromTemplate)
 END_MESSAGE_MAP()
 
 BOOL EoDlgSetActiveLayout::OnInitDialog() {
@@ -44,7 +41,7 @@ void EoDlgSetActiveLayout::FillListBox() {
 		m_OldActiveLayout = -1;
 		while (!LayoutIterator->done()) {
 			OdSmartPtr<OdDbLayout> Layout {LayoutIterator->objectId().safeOpenObject()};
-			auto ItemIndex {static_cast<unsigned>(Layout->getTabOrder())};
+			const auto ItemIndex {static_cast<unsigned>(Layout->getTabOrder())};
 			if (ItemIndex >= Items.size()) {
 				Items.resize(ItemIndex + 1);
 			}

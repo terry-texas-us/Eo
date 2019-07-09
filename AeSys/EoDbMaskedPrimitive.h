@@ -3,7 +3,7 @@ class EoDbMaskedPrimitive final : public CObject {
 	EoDbPrimitive* m_Primitive {nullptr};
 	unsigned m_Mask {0};
 public:
-	EoDbMaskedPrimitive() noexcept = default;
+	EoDbMaskedPrimitive() = default;
 
 	EoDbMaskedPrimitive(EoDbPrimitive* primitive, const unsigned mask) 
 		: m_Primitive(primitive)

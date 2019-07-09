@@ -20,7 +20,7 @@ public:
 
 	EoDbEllipse& operator=(const EoDbEllipse& other) noexcept;
 
-	~EoDbEllipse() = default;
+	~EoDbEllipse() override = default;
 
 	void AddReportToMessageList(const OdGePoint3d& point) const override;
 
@@ -82,7 +82,7 @@ public:
 
 	[[nodiscard]] double SweepAngle() const noexcept;
 
-	void GetXYExtents(OdGePoint3d extents, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) noexcept;
+	void GetXYExtents(OdGePoint3d extents, OdGePoint3d, OdGePoint3d*, OdGePoint3d*) const noexcept;
 
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 

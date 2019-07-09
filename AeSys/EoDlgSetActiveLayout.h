@@ -1,10 +1,10 @@
 #pragma once
 class EoDlgSetActiveLayout final : public CDialog {
 	OdDbDatabase* m_Database;
-	int m_OldActiveLayout;
+	int m_OldActiveLayout {0};
 public:
-	int m_NewActiveLayout;
-	bool m_CreateNewLayout;
+	int m_NewActiveLayout {0};
+	bool m_CreateNewLayout {false};
 	CString m_NewLayoutName;
 
 	EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent = nullptr);
