@@ -43,7 +43,7 @@ void EoDlgTrapModify::OnOK() {
 	CDialog::OnOK();
 }
 
-void EoDlgTrapModify::ModifyPolygons() {
+void EoDlgTrapModify::ModifyPolygons() const {
 	auto Position {m_Document->GetFirstTrappedGroupPosition()};
 	while (Position != nullptr) {
 		const auto Group {m_Document->GetNextTrappedGroup(Position)};

@@ -25,7 +25,7 @@ public:
 
 	void CloneEntity(const OdGePoint3d& ptMoveAt);
 
-	void MoveEntity(const OdGePoint3d& ptMoveAt);
+	void MoveEntity(const OdGePoint3d& moveAtPoint) const;
 
 	void NotifyDragStarted() const;
 

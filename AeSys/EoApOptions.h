@@ -11,5 +11,5 @@ struct EoApOptions {
 
 	void Load();
 
-	void Save();
+	void Save() const;
 };

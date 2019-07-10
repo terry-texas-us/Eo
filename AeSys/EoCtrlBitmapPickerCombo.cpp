@@ -88,7 +88,7 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 	if (drawItemStruct->itemAction & ODA_FOCUS) { DeviceContext->DrawFocusRect(&drawItemStruct->rcItem); }
 }
 
-void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool /*selected*/) {
+void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool /*selected*/) const {
 	const auto Bitmap {reinterpret_cast<const CBitmap*>(drawItemStruct->itemData)};
 	if (Bitmap != nullptr && Bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
@@ -101,9 +101,9 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct
 			Point.x = drawItemStruct->rcItem.left + 2;
 			Point.y = drawItemStruct->rcItem.top + (drawItemStruct->rcItem.bottom - drawItemStruct->rcItem.top) / 2 - m_ItemHeight / 2;
 			DrawBitmap(Bitmap, DeviceContext, Point);
-			CRect rcText(drawItemStruct->rcItem);
-			rcText.DeflateRect(m_ItemWidth + 4, 0, 0, 0);
-			DeviceContext->DrawTextW(String, rcText, DT_SINGLELINE | DT_VCENTER);
+			CRect TextRectangle(drawItemStruct->rcItem);
+			TextRectangle.DeflateRect(m_ItemWidth + 4, 0, 0, 0);
+			DeviceContext->DrawTextW(String, TextRectangle, DT_SINGLELINE | DT_VCENTER);
 		}
 	}
 	if (Bitmap == nullptr) {

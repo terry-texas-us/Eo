@@ -26,7 +26,7 @@ EoDbGroup::EoDbGroup(const EoDbGroup& group) {
 	}
 }
 
-void EoDbGroup::AddPrimitivesToTreeViewControl(const HWND tree, const HTREEITEM parent) {
+void EoDbGroup::AddPrimitivesToTreeViewControl(const HWND tree, const HTREEITEM parent) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->AddToTreeViewControl(tree, parent);
@@ -113,14 +113,14 @@ void EoDbGroup::DeletePrimitivesAndRemoveAll() {
 	RemoveAll();
 }
 
-void EoDbGroup::Display(AeSysView* view, CDC* deviceContext) {
+void EoDbGroup::Display(AeSysView* view, CDC* deviceContext) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->Display(view, deviceContext);
 	}
 }
 
-void EoDbGroup::Erase() {
+void EoDbGroup::Erase() const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -132,7 +132,7 @@ void EoDbGroup::Erase() {
 	}
 }
 
-void EoDbGroup::UndoErase() {
+void EoDbGroup::UndoErase() const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -168,7 +168,7 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
 	return Count;
 }
 
-void EoDbGroup::GetExtents_(AeSysView* view, OdGeExtents3d& extents) {
+void EoDbGroup::GetExtents_(AeSysView* view, OdGeExtents3d& extents) const {
 	OdGeExtents3d GroupExtents;
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -180,7 +180,7 @@ void EoDbGroup::GetExtents_(AeSysView* view, OdGeExtents3d& extents) {
 	}
 }
 
-EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
+EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -191,7 +191,7 @@ EoDbPoint* EoDbGroup::GetFirstDifferentPoint(EoDbPoint* pointPrimitive) {
 	return nullptr;
 }
 
-int EoDbGroup::GetLinetypeIndexRefCount(const short linetypeIndex) {
+int EoDbGroup::GetLinetypeIndexRefCount(const short linetypeIndex) const {
 	auto Count {0};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -230,21 +230,21 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	return false;
 }
 
-void EoDbGroup::ModifyColorIndex(const short colorIndex) {
+void EoDbGroup::ModifyColorIndex(const short colorIndex) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->SetColorIndex2(colorIndex);
 	}
 }
 
-void EoDbGroup::ModifyLinetypeIndex(const short linetypeIndex) {
+void EoDbGroup::ModifyLinetypeIndex(const short linetypeIndex) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		GetNext(PrimitivePosition)->SetLinetypeIndex2(linetypeIndex);
 	}
 }
 
-void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) {
+void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharacterCellDefinition& characterCellDefinition, const int iAtt) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -254,7 +254,7 @@ void EoDbGroup::ModifyNotes(const EoDbFontDefinition& fontDefinition, EoDbCharac
 	}
 }
 
-void EoDbGroup::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) {
+void EoDbGroup::PenTranslation(const unsigned numberOfColors, std::vector<int>& newColors, std::vector<int>& pCol) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
@@ -318,7 +318,7 @@ bool EoDbGroup::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const O
 	return false;
 }
 
-EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d* ptCtrl) {
+EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysView* view, OdGePoint3d* ptCtrl) const {
 	EoDbPrimitive* EngagedPrimitive {nullptr};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
@@ -335,7 +335,7 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 	return EngagedPrimitive;
 }
 
-EoDbPrimitive* EoDbGroup::SelectPrimitiveUsingPoint(const EoGePoint4d& point, AeSysView* view, double& pickAperture, OdGePoint3d& pDetPt) {
+EoDbPrimitive* EoDbGroup::SelectPrimitiveUsingPoint(const EoGePoint4d& point, AeSysView* view, double& pickAperture, OdGePoint3d& pDetPt) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -381,7 +381,7 @@ void EoDbGroup::SortTextOnY() {
 	} while (iT != 0);
 }
 
-void EoDbGroup::Square(AeSysView* view) {
+void EoDbGroup::Square(AeSysView* view) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
@@ -391,7 +391,7 @@ void EoDbGroup::Square(AeSysView* view) {
 	}
 }
 
-void EoDbGroup::TransformBy(const EoGeMatrix3d& transformMatrix) {
+void EoDbGroup::TransformBy(const EoGeMatrix3d& transformMatrix) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		auto Primitive {GetNext(PrimitivePosition)};
@@ -404,14 +404,14 @@ void EoDbGroup::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	}
 }
 
-void EoDbGroup::Write(EoDbFile& file) {
+void EoDbGroup::Write(EoDbFile& file) const {
 	file.WriteUInt16(static_cast<unsigned short>(GetCount()));
 	for (auto PrimitivePosition = GetHeadPosition(); PrimitivePosition != nullptr;) {
 		GetNext(PrimitivePosition)->Write(file);
 	}
 }
 
-void EoDbGroup::Write(CFile& file, unsigned char* buffer) {
+void EoDbGroup::Write(CFile& file, unsigned char* buffer) const {
 	// group flags
 	buffer[0] = 0;
 	// number of primitives in group

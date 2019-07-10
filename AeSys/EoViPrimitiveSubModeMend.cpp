@@ -52,7 +52,7 @@ void AeSysView::MendPrimitiveReturn() {
 	theApp.LoadModeResources(static_cast<unsigned>(theApp.PrimaryMode()));
 }
 
-void AeSysView::MendPrimitiveEscape() {
+void AeSysView::MendPrimitiveEscape() const {
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, m_PrimitiveToMendCopy);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, m_PrimitiveToMend);
 	delete m_PrimitiveToMendCopy;

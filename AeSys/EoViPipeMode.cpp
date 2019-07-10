@@ -978,7 +978,7 @@ void AeSysView::DoPipeModeMouseMove() {
 	m_PipeModePoints.setLogicalLength(NumberOfPoints);
 }
 
-void AeSysView::GenerateLineWithFittings(const int beginType, OdGePoint3d& startPoint, const int endType, OdGePoint3d& endPoint, EoDbGroup* group) {
+void AeSysView::GenerateLineWithFittings(const int beginType, OdGePoint3d& startPoint, const int endType, OdGePoint3d& endPoint, EoDbGroup* group) const {
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto pt1 {startPoint};
 	auto pt2 {endPoint};
@@ -1004,7 +1004,7 @@ void AeSysView::GenerateLineWithFittings(const int beginType, OdGePoint3d& start
 	group->AddTail(EoDbLine::Create(Line));
 }
 
-void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) {
+void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) const {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, section);
 	const auto BeginPoint {section->StartPoint()};
@@ -1029,7 +1029,7 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }
 
-void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) {
+void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) const {
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	const auto BeginPoint {section->StartPoint()};
 	const auto EndPoint {section->EndPoint()};
@@ -1050,7 +1050,7 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, Eo
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }
 
-bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, const double distance, EoDbGroup* group) {
+bool AeSysView::GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, const double distance, EoDbGroup* group) const {
 	const auto PointOnLine {ProjectToward(startPoint, endPoint, distance)};
 	auto Projection {endPoint - PointOnLine};
 	const auto DistanceToEndPoint {Projection.length()};

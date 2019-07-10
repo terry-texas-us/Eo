@@ -5,7 +5,6 @@
 class EoDbLayer final : public EoDbGroupList {
 	OdDbLayerTableRecordPtr m_Layer;
 	unsigned short m_StateFlags {kIsResident | kIsInternal | kIsActive};
-	unsigned short m_TracingFlags {0U};
 public:
 	enum StateFlags : unsigned {
 		kIsResident = 0x0001U, // entry in table list is saved

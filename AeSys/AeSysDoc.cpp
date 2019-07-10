@@ -272,7 +272,7 @@ BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
 	return CDocument::CanCloseFrame(frame);
 }
 
-AeSysView* AeSysDoc::GetViewer() noexcept {
+AeSysView* AeSysDoc::GetViewer() const noexcept {
 	return m_Viewer;
 }
 
@@ -601,7 +601,7 @@ public:
 	}
 
 private:
-	void UndoCommand() {
+	void UndoCommand() const {
 		auto Database {m_CommandContext->database()};
 		try {
 			Database->disableUndoRecording(true);
@@ -1159,12 +1159,12 @@ int AeSysDoc::GetLayerTableSize() const {
 	return m_LayerTable.GetSize();
 }
 
-EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) {
+EoDbLayer* AeSysDoc::GetLayerAt(const OdString& name) const {
 	const auto LayerIndex {FindLayerAt(name)};
 	return LayerIndex < 0 ? static_cast<EoDbLayer*>(nullptr) : m_LayerTable.GetAt(LayerIndex);
 }
 
-EoDbLayer* AeSysDoc::GetLayerAt(const int layerIndex) {
+EoDbLayer* AeSysDoc::GetLayerAt(const int layerIndex) const {
 	return layerIndex >= static_cast<int>(m_LayerTable.GetSize()) ? nullptr : m_LayerTable.GetAt(layerIndex);
 }
 
@@ -2341,7 +2341,7 @@ AeSysDoc* AeSysDoc::GetDoc() {
 	return Child == nullptr ? nullptr : dynamic_cast<AeSysDoc*>(Child->GetActiveDocument());
 }
 
-void AeSysDoc::AddGroupToAllViews(EoDbGroup* group) {
+void AeSysDoc::AddGroupToAllViews(EoDbGroup* group) const {
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
@@ -2349,7 +2349,7 @@ void AeSysDoc::AddGroupToAllViews(EoDbGroup* group) {
 	}
 }
 
-void AeSysDoc::AddGroupsToAllViews(EoDbGroupList* groups) {
+void AeSysDoc::AddGroupsToAllViews(EoDbGroupList* groups) const {
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
@@ -2357,7 +2357,7 @@ void AeSysDoc::AddGroupsToAllViews(EoDbGroupList* groups) {
 	}
 }
 
-void AeSysDoc::RemoveAllGroupsFromAllViews() {
+void AeSysDoc::RemoveAllGroupsFromAllViews() const {
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
@@ -2365,7 +2365,7 @@ void AeSysDoc::RemoveAllGroupsFromAllViews() {
 	}
 }
 
-void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup* group) {
+void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup* group) const {
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
@@ -2373,7 +2373,7 @@ void AeSysDoc::RemoveGroupFromAllViews(EoDbGroup* group) {
 	}
 }
 
-void AeSysDoc::ResetAllViews() {
+void AeSysDoc::ResetAllViews() const {
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};
@@ -2443,7 +2443,7 @@ POSITION AeSysDoc::AddNodalGroup(EoDbGroup* group) {
 	return m_NodalGroupList.AddTail(group);
 }
 
-POSITION AeSysDoc::FindNodalGroup(EoDbGroup* group) {
+POSITION AeSysDoc::FindNodalGroup(EoDbGroup* group) const {
 	return m_NodalGroupList.Find(group);
 }
 

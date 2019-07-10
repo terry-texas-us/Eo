@@ -116,10 +116,10 @@ void OdExGripDrag::CloneEntity(const OdGePoint3d& ptMoveAt) {
 	m_GripManager->OnModified(this);
 }
 
-void OdExGripDrag::MoveEntity(const OdGePoint3d& ptMoveAt) {
+void OdExGripDrag::MoveEntity(const OdGePoint3d& moveAtPoint) const {
 	OdIntArray Indices;
 	const auto ExMethod {LocateActiveGrips(Indices)};
-	const auto Offset {ptMoveAt - m_GripManager->m_BasePoint};
+	const auto Offset {moveAtPoint - m_GripManager->m_BasePoint};
 	auto Entity {m_GripManager->OpenObject(EntityId(), OdDb::kForWrite != 0)};
 	ODA_ASSERT(Entity.get());
 	const auto& rData {EntityPath() ? GetSubentGripData(m_GripManager->m_GripData[EntityId()], m_SubentPath).subData : m_GripManager->m_GripData[EntityId()].dataArray};

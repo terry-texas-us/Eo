@@ -35,7 +35,7 @@ void EoApOptions::Load() {
 	disableSetRedraw = theApp.GetInt(L"DisableSetRedraw", 1) != 0;
 }
 
-void EoApOptions::Save() {
+void EoApOptions::Save() const {
 	theApp.WriteInt(L"TabsStyle", tabsStyle);
 	theApp.WriteInt(L"TabLocation", mdiTabInfo.m_tabLocation);
 	theApp.WriteInt(L"TabsAppearance", mdiTabInfo.m_style);

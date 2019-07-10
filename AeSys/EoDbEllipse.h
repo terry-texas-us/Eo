@@ -102,7 +102,7 @@ public:
 
 	[[nodiscard]] OdGePoint3d StartPoint() const;
 
-	double SwpAngToPt(const OdGePoint3d& point);
+	double SwpAngToPt(const OdGePoint3d& point) const;
 
 	static EoDbEllipse* Create(OdDbEllipsePtr& ellipse);
 

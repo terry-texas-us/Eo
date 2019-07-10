@@ -11,7 +11,7 @@ class CNamedViewListCtrl final : public CListCtrl {
 public:
 	[[nodiscard]] OdDbObjectId viewId(int item) const;
 
-	OdDbViewTableRecordPtr view(int item);
+	OdDbViewTableRecordPtr view(int item) const;
 
 	OdDbViewTableRecordPtr selectedView();
 
@@ -25,7 +25,7 @@ public:
 
 	enum { kUnchangedItem = 0, kNewItem = 1, kReplace = 2 };
 
-	AeSysDoc* document() noexcept {
+	AeSysDoc* document() const noexcept {
 		return m_pDoc;
 	}
 

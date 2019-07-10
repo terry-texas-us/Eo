@@ -720,17 +720,17 @@ EoDbEllipse& EoDbEllipse::SetToCircle(const OdGePoint3d& center, const OdGeVecto
 	return *this;
 }
 
-double EoDbEllipse::SwpAngToPt(const OdGePoint3d& point) {
+double EoDbEllipse::SwpAngToPt(const OdGePoint3d& point) const {
 	auto PlaneNormal {m_MajorAxis.crossProduct(m_MinorAxis)};
 	PlaneNormal.normalize();
-	EoGeMatrix3d tm;
-	tm.setToWorldToPlane(OdGePlane(m_Center, PlaneNormal));
+	EoGeMatrix3d WorldToPlaneTransform;
+	WorldToPlaneTransform.setToWorldToPlane(OdGePlane(m_Center, PlaneNormal));
 	auto StartPoint {m_Center + m_MajorAxis};
 	auto Point {point};
 
 	// Translate points into z=0 plane
-	StartPoint.transformBy(tm);
-	Point.transformBy(tm);
+	StartPoint.transformBy(WorldToPlaneTransform);
+	Point.transformBy(WorldToPlaneTransform);
 	return EoGeLineSeg3d(OdGePoint3d::kOrigin, StartPoint).AngleBetween_xy(EoGeLineSeg3d(OdGePoint3d::kOrigin, Point));
 }
 

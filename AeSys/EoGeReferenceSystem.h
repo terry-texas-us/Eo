@@ -23,7 +23,7 @@ public:
 
 	~EoGeReferenceSystem() = default;
 
-	void GetUnitNormal(OdGeVector3d& normal);
+	void GetUnitNormal(OdGeVector3d& normal) const;
 
 	[[nodiscard]] OdGePoint3d Origin() const noexcept;
 

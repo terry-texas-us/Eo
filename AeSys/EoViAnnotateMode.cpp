@@ -437,7 +437,7 @@ void AeSysView::SetEndItemSize(const double size) noexcept {
 	m_EndItemSize = size;
 }
 
-int AeSysView::EndItemType() noexcept {
+int AeSysView::EndItemType() const noexcept {
 	return m_EndItemType;
 }
 
@@ -510,7 +510,7 @@ void AeSysView::DoAnnotateModeMouseMove() {
 	EoViAnn_points.setLogicalLength(NumberOfPoints);
 }
 
-void AeSysView::GenerateLineEndItem(const int type, const double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) {
+void AeSysView::GenerateLineEndItem(const int type, const double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) const {
 	const auto PlaneNormal {CameraDirection()};
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	OdGePoint3dArray ItemPoints;

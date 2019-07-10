@@ -272,23 +272,23 @@ public:
 
 	void SetGridOrigin(const OdGePoint3d& origin) noexcept;
 
-	void GetGridLineSpacing(double& x, double& y, double& z) noexcept;
+	void GetGridLineSpacing(double& x, double& y, double& z) const noexcept;
 
 	void SetGridLineSpacing(double x, double y, double z) noexcept;
 
-	void GetGridPointSpacing(double& x, double& y, double& z) noexcept;
+	void GetGridPointSpacing(double& x, double& y, double& z) const noexcept;
 
 	void SetGridPointSpacing(double x, double y, double z) noexcept;
 
-	void GetGridSnapSpacing(double& x, double& y, double& z) noexcept;
+	void GetGridSnapSpacing(double& x, double& y, double& z) const noexcept;
 
 	void SetGridSnapSpacing(double x, double y, double z) noexcept;
 	/// <summary>Determines the nearest point on system constraining grid.</summary>
-	OdGePoint3d SnapPointToGrid(const OdGePoint3d& point) noexcept;
+	OdGePoint3d SnapPointToGrid(const OdGePoint3d& point) const noexcept;
 	/// <summary>Set Axis constraint tolerance angle and offset axis constraint offset angle. Constrains a line to nearest axis pivoting on first endpoint.</summary>
 	/// <remarks>Offset angle only support about z-axis</remarks>
 	/// <returns>Point after snap</returns>
-	OdGePoint3d SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint);
+	OdGePoint3d SnapPointToAxis(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint) const;
 
 	bool DisplayGridWithLines() const noexcept;
 
@@ -344,7 +344,7 @@ public: // Input message handler member functions
 
 	static AeSysView* GetActiveView();
 
-	void VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText);
+	void VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText) const;
 
 	bool m_ViewStateInformation {true}; // Legacy state info within the view
 	void UpdateStateInformation(StateInformationItem item);
@@ -359,7 +359,7 @@ public: // Input message handler member functions
 	/// <summary> Positions cursor at targeted position.</summary>
 	void SetCursorPosition(const OdGePoint3d& point);
 
-	void SetModeCursor(unsigned mode);
+	void SetModeCursor(unsigned mode) const;
 
 	std::pair<EoDbGroup*, EoDbEllipse*> SelectCircleUsingPoint(const OdGePoint3d& point, double tolerance);
 
@@ -379,7 +379,7 @@ public: // Input message handler member functions
 
 	EoDbGroup*& EngagedGroup() noexcept;
 	/// <summary>Set a pixel.</summary>
-	void DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point);
+	void DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point) const;
 
 	bool GroupIsEngaged() const noexcept;
 
@@ -389,7 +389,7 @@ public: // Input message handler member functions
 
 	void BreakAllSegRefs();
 
-	bool PenWidthsOn() noexcept;
+	bool PenWidthsOn() const noexcept;
 
 	double WorldScale() const noexcept;
 
@@ -421,7 +421,7 @@ public: // Input message handler member functions
 	/// </Section>
 	void BackgroundImageDisplay(CDC* deviceContext);
 
-	bool ViewTrueTypeFonts() noexcept;
+	bool ViewTrueTypeFonts() const noexcept;
 
 	void DisplayOdometer();
 	/// <summary> Streams a sequence of characters as WM_KEYDOWN or WM_CHAR window messages.</summary>
@@ -436,7 +436,7 @@ public: // Input message handler member functions
 
 	void CopyActiveModelViewToPreviousModelView() noexcept;
 
-	EoGsViewTransform PreviousModelView();
+	EoGsViewTransform PreviousModelView() const;
 
 	void ExchangeActiveAndPreviousModelViews();
 
@@ -446,9 +446,9 @@ public: // Input message handler member functions
 
 	void PopModelTransform();
 
-	void ModelTransformPoint(OdGePoint3d& point);
+	void ModelTransformPoint(OdGePoint3d& point) const;
 
-	void ModelViewGetViewport(EoGsViewport& viewport) noexcept;
+	void ModelViewGetViewport(EoGsViewport& viewport) const noexcept;
 
 	OdGeVector3d CameraDirection() const;
 
@@ -466,13 +466,13 @@ public: // Input message handler member functions
 
 	void PushViewTransform();
 
-	void ModelViewTransformPoint(EoGePoint4d& point);
+	void ModelViewTransformPoint(EoGePoint4d& point) const;
 
-	void ModelViewTransformPoints(EoGePoint4dArray& points);
+	void ModelViewTransformPoints(EoGePoint4dArray& points) const;
 
-	void ModelViewTransformPoints(int numberOfPoints, EoGePoint4d* points);
+	void ModelViewTransformPoints(int numberOfPoints, EoGePoint4d* points) const;
 
-	void ModelViewTransformVector(OdGeVector3d& vector);
+	void ModelViewTransformVector(OdGeVector3d& vector) const;
 
 	void SetProjectionPlaneField(double fieldWidth, double fieldHeight);
 
@@ -551,7 +551,7 @@ public: // Input message handler member functions
 
 	void PreviewMendPrimitive();
 
-	void MendPrimitiveEscape();
+	void MendPrimitiveEscape() const;
 
 	void MendPrimitiveReturn();
 
@@ -580,7 +580,7 @@ public:
 
 	void SetEndItemSize(double size) noexcept;
 
-	int EndItemType() noexcept;
+	int EndItemType() const noexcept;
 
 	void SetEndItemType(int type) noexcept;
 
@@ -623,7 +623,7 @@ public:
 	/// <param name="startPoint">tail of line segment defining arrow head</param>
 	/// <param name="endPoint">head of line segment defining arrow head</param>
 	/// <param name="group">group where primitives are placed</param>
-	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group);
+	void GenerateLineEndItem(int type, double size, const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, EoDbGroup* group) const;
 
 	bool CorrectLeaderEndpoints(int beginType, int endType, OdGePoint3d& startPoint, OdGePoint3d& endPoint) const;
 	
@@ -738,7 +738,7 @@ public:
 
 	void OnFixupModeEscape();
 
-	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, unsigned cornerType = kCorner | kTrimBothToIntersection);
+	void GenerateCorner(OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, unsigned cornerType = kCorner | kTrimBothToIntersection) const;
 
 	/// <summary>Finds center point of a circle given radius and two tangent vectors.</summary>
 	/// <Notes>A radius and two lines define four center points. The center point selected is on the concave side of the angle formed by the two vectors defined by the line endpoints. These two vectors are oriented with the tail of the second vector at the head of the first.</notes>
@@ -952,7 +952,7 @@ public:
 	/// <param name="endPoint">end point of the line</param>
 	/// <param name="section">width and depth data</param>
 	/// <param name="group"></param>
-	void GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, Section section, EoDbGroup* group);
+	void GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, Section section, EoDbGroup* group) const;
 	/// <summary>Generates rise or drop fitting.</summary>
 	/// <param name="riseDropIndicator">	rise or drop indicator; 1 rise, 2 drop</param>
 	/// <param name="section">horizontal section width and depth</param>
@@ -964,7 +964,7 @@ public:
 	/// <param name="eccentricity"></param>
 	/// <param name="section">width and depth of section</param>
 	/// <param name="group"></param>
-	void GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double eccentricity, Section section, EoDbGroup* group);
+	void GenerateRectangularSection(EoGeLineSeg3d& referenceLine, double eccentricity, Section section, EoDbGroup* group) const;
 	/// <summary> Generates text segment representing width and depth of a piece of duct. </summary>
 	void GenSizeNote(const OdGePoint3d& position, double angle, Section section);
 	/// <param name="previousReferenceLine"></param>
@@ -973,7 +973,7 @@ public:
 	/// <param name="currentSection"></param>
 	/// <param name="group"></param>
 	/// <param name="generateEndCaps"></param>
-	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group, bool generateEndCaps = true);
+	void GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, Section previousSection, EoGeLineSeg3d& currentReferenceLine, Section currentSection, EoDbGroup* group, bool generateEndCaps = true) const;
 	/// <summary>Generates rectangular tap fitting.</summary>
 	/// <param name="justification"></param>
 	/// <param name="section"></param>
@@ -1003,7 +1003,7 @@ public:
 	/// <param name="previousSection">width and depth at start of the transition</param>
 	/// <param name="currentSection">width and depth at end of the transition</param>
 	/// <param name="group">group receiving the primitives</param>
-	void GenerateTransition(EoGeLineSeg3d& referenceLine, double eccentricity, EJust justification, double slope, Section previousSection, Section currentSection, EoDbGroup* group);
+	void GenerateTransition(EoGeLineSeg3d& referenceLine, double eccentricity, EJust justification, double slope, Section previousSection, Section currentSection, EoDbGroup* group) const;
 	/// <summary>Sets the width and depth of ductwork.</summary>
 	void SetDuctOptions(Section& section);
 	/// <summary>Determines the total length required to transition duct from one size to another</summary>
@@ -1012,7 +1012,7 @@ public:
 	/// <param name="previousSection">width and depth of start section</param>
 	/// <param name="currentSection">width and depth of end section</param>
 	/// <returns>length of the transition</returns>
-	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) noexcept;
+	double LengthOfTransition(EJust justification, double slope, Section previousSection, Section currentSection) const noexcept;
 
 private: // Pipe mode interface
 	int m_CurrentPipeSymbolIndex {0};
@@ -1020,13 +1020,13 @@ private: // Pipe mode interface
 	double m_PipeRiseDropRadius {0.03125};
 
 	/// <summary>Adds a fitting indication to horizontal pipe section as required by previous fitting type.</summary>
-	void GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint, int endType, OdGePoint3d& endPoint, EoDbGroup* group);
+	void GenerateLineWithFittings(int beginType, OdGePoint3d& startPoint, int endType, OdGePoint3d& endPoint, EoDbGroup* group) const;
 	/// <summary>Draws tic mark at a point distance from start point on the line defined by begin and end points.</summary>
-	bool GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, double distance, EoDbGroup* group);
+	bool GenerateTicMark(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint, double distance, EoDbGroup* group) const;
 
-	void DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section);
+	void DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) const;
 
-	void DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section);
+	void DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) const;
 
 public:
 	void DoPipeModeMouseMove();
@@ -1076,9 +1076,9 @@ public:
 
 	void OnPowerModeEscape();
 
-	void GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
+	void GeneratePowerConductorSymbol(unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) const;
 
-	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint);
+	void GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) const;
 
 	void DoPowerModeConductor(unsigned short conductorType);
 	

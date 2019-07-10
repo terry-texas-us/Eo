@@ -14,7 +14,7 @@ EoDlgUserIoConsole::EoDlgUserIoConsole(CWnd* parent)
 	m_Prompt = L"";
 }
 
-OdString EoDlgUserIoConsole::GetLastString() {
+OdString EoDlgUserIoConsole::GetLastString() const {
 	const auto EolDelimiter {m_Output.ReverseFind('\r')};
 	if (EolDelimiter == -1) { return static_cast<const wchar_t*>(m_Output); }
 	return static_cast<const wchar_t*>(m_Output.Mid(EolDelimiter + 2));

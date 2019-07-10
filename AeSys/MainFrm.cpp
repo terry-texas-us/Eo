@@ -363,16 +363,16 @@ void CMainFrame::ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu) {
 }
 
 // <command_console>
-void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
+void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) const {
 	try {
 		popupMenu->RemoveAllItems();
 		MENUITEMINFO MenuItemInfo;
 		MenuItemInfo.cbSize = sizeof(MENUITEMINFO);
 		MenuItemInfo.fMask = MIIM_DATA;
 		auto CommandStack {odedRegCmds()};
-		auto bHasNoCommand {CommandStack->newIterator()->done()};
+		auto HasNoCommand {CommandStack->newIterator()->done()};
 		auto CommandId {_APS_NEXT_COMMAND_VALUE + 100};
-		if (!bHasNoCommand) {
+		if (!HasNoCommand) {
 			auto CommandStackGroupIterator {CommandStack->newGroupIterator()};
 			while (!CommandStackGroupIterator->done()) {
 				OdRxDictionaryPtr Group = CommandStackGroupIterator->object();
@@ -381,13 +381,13 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) {
 				OdRxIteratorPtr GroupCommandIterator = Group->newIterator(OdRx::kDictSorted);
 				OdString GroupName;
 				while (!GroupCommandIterator->done()) {
-					OdEdCommandPtr pCmd = GroupCommandIterator->object().get();
+					OdEdCommandPtr Command {GroupCommandIterator->object().get()};
 					if (GroupName.isEmpty()) {
-						GroupName = pCmd->groupName();
+						GroupName = Command->groupName();
 					}
-					auto CommandName {pCmd->globalName()};
+					auto CommandName {Command->globalName()};
 					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
-					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(pCmd.get());
+					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(Command.get());
 					SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
 					GroupCommandIterator->next();
 					CommandId++;

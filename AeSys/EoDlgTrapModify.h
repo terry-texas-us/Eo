@@ -18,7 +18,7 @@ protected:
 
 	AeSysDoc* m_Document {nullptr};
 public:
-	void ModifyPolygons();
+	void ModifyPolygons() const;
 
 DECLARE_MESSAGE_MAP()
 };

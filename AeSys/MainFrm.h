@@ -7,7 +7,7 @@ const int gc_StatusInfo = 1;
 const int gc_StatusProgress = 2;
 const int gc_StatusOp0 = 3;
 
-class CMainFrame : public CMDIFrameWndEx {
+class CMainFrame final : public CMDIFrameWndEx {
 	LARGE_INTEGER m_PerformanceCounter0 {{0L, 0L}};
 	LARGE_INTEGER m_PerformanceCounter1 {{0L, 0L}};
 DECLARE_DYNAMIC(CMainFrame)
@@ -107,7 +107,7 @@ DECLARE_MESSAGE_MAP()
 
 	void ShowAnnotationScalesPopupMenu(CMFCPopupMenu* popupMenu);
 
-	void ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu);
+	void ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) const;
 
 public:
 	void OnStartProgress();

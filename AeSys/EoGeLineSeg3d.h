@@ -44,9 +44,9 @@ public:
 	/// </returns>
 	[[nodiscard]] int DirectedRelationshipOf(const OdGePoint3d& point) const;
 
-	void Display(AeSysView* view, CDC* deviceContext);
+	void Display(AeSysView* view, CDC* deviceContext) const;
 	/// <summary>Determines the extents of a line.</summary>
-	void Extents(OdGePoint3d& minimum, OdGePoint3d& maximum);
+	void Extents(OdGePoint3d& minimum, OdGePoint3d& maximum) const;
 	/// <summary>Generates coordinate sets for parallel lines.</summary>
 	/// <remarks>
 	/// Eccentricity is a function of the distance between the lines.
@@ -69,7 +69,7 @@ public:
 	/// <summary> Determines if line segment in wholly or partially contained within window passed.</summary>
 	/// <remarks> Assumes window passed with min/max corners correct.</remarks>
 	/// <returns> true line is wholly or partially within window, false otherwise</returns>
-	bool IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection);
+	bool IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection) const;
 
 	[[nodiscard]] bool IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const OdGePoint3d& upperRightPoint) const;
 	/// <summary>
@@ -108,11 +108,11 @@ public:
 	/// Projected point is undefined if point one and point two coincide.
 	/// </remarks>
 	/// <returns>TRUE  successful completion and FALSE failure (p1 and p2 coincide)</returns>
-	int ProjPtFrom_xy(double parallelDistance, double perpendicularDistance, OdGePoint3d& projectedPoint);
+	int ProjPtFrom_xy(double parallelDistance, double perpendicularDistance, OdGePoint3d& projectedPoint) const;
 	/// <summary>Projects end point toward or beyond the start point of line.</summary>
-	OdGePoint3d ProjToBegPt(double distance);
+	OdGePoint3d ProjToBegPt(double distance) const;
 	/// <summary>Projects start point toward or beyond the end point of line.</summary>
-	OdGePoint3d ProjToEndPt(double distance);
+	OdGePoint3d ProjToEndPt(double distance) const;
 	/// <summary>Determines the relationship of a point on a line to the endpoints defining the line.</summary>
 	/// <param name="point"></param>
 	/// <param name="relationship">parametric relationship of point to line endpoints

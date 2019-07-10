@@ -91,7 +91,7 @@ public:
 
 	[[nodiscard]] double Rotation() const;
 
-	const CString& Text() noexcept;
+	const CString& Text() const noexcept;
 
 	[[nodiscard]] OdGePoint3d Position() const noexcept;
 

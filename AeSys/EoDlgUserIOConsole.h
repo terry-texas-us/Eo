@@ -38,7 +38,7 @@ DECLARE_MESSAGE_MAP()
 public:
 	void Echo(const OdString& string);
 
-	OdString GetLastString();
+	OdString GetLastString() const;
 
 	static OdSmartPtr<EoDlgUserIoConsole> create(CWnd* parent);
 

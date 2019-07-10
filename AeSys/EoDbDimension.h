@@ -101,9 +101,9 @@ DECLARE_DYNAMIC(EoDbDimension)
 
 	void SetTextVerticalAlignment(EoDb::VerticalAlignment verticalAlignment) noexcept;
 
-	const CString& Text() noexcept;
+	const CString& Text() const noexcept;
 
-	const short& TextColorIndex() noexcept;
+	const short& TextColorIndex() const noexcept;
 
 private:
 	static unsigned short sm_wFlags;	// bit 1 clear if dimension selected at note, set if dimension selected at line

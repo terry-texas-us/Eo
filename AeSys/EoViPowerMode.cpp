@@ -188,7 +188,7 @@ void AeSysView::OnPowerModeEscape() {
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 }
 
-void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
+void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) const {
 	const auto PlaneNormal {CameraDirection()};
 	OdGePoint3dArray Points;
 	Points.setLogicalLength(3);
@@ -216,7 +216,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 }
 
-void AeSysView::GeneratePowerConductorSymbol(const unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) {
+void AeSysView::GeneratePowerConductorSymbol(const unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) const {
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	OdGePoint3d Points[5];

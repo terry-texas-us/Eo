@@ -239,7 +239,7 @@ public:
 
 	[[nodiscard]] OdDbSelectionSetPtr SelectionSet() const;
 
-	AeSysView* GetViewer() noexcept;
+	AeSysView* GetViewer() const noexcept;
 
 	void OnCloseVectorizer(AeSysView* view);
 
@@ -300,7 +300,7 @@ public:
 
 	void UpdatePrimitiveInAllViews(LPARAM hint, EoDbPrimitive* primitive);
 
-	void InitializeGroupAndPrimitiveEdit();
+	void InitializeGroupAndPrimitiveEdit() const;
 
 	/// <summary>Constructs 0 to many separate text primitives for each "\r\n" delimited text block</summary>
 	void AddTextBlock(wchar_t* text);
@@ -316,17 +316,17 @@ public:
 	// Block Table interface
 	EoDbBlockTable* BlockTable() noexcept;
 
-	bool BlockTableIsEmpty();
+	bool BlockTableIsEmpty() const;
 
-	unsigned short BlockTableSize();
+	unsigned short BlockTableSize() const;
 
 	int GetBlockReferenceCount(const CString& name);
 
-	POSITION GetFirstBlockPosition();
+	POSITION GetFirstBlockPosition() const;
 
-	void GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block);
+	void GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block) const;
 
-	bool LookupBlock(const wchar_t* name, EoDbBlock*& block);
+	bool LookupBlock(const wchar_t* name, EoDbBlock*& block) const;
 	/// <summary>Removes all blocks and defining primitives.</summary>
 	void RemoveAllBlocks();
 
@@ -356,9 +356,9 @@ public:
 
 	EoDbLayer* AnyLayerRemove(EoDbGroup* group);
 
-	EoDbLayer* GetLayerAt(const OdString& name);
+	EoDbLayer* GetLayerAt(const OdString& name) const;
 
-	EoDbLayer* GetLayerAt(int layerIndex);
+	EoDbLayer* GetLayerAt(int layerIndex) const;
 
 	[[nodiscard]] int GetLayerTableSize() const;
 
@@ -382,15 +382,15 @@ public:
 
 	int RemoveEmptyGroups();
 
-	void ResetAllViews();
+	void ResetAllViews() const;
 
-	void AddGroupToAllViews(EoDbGroup* group);
+	void AddGroupToAllViews(EoDbGroup* group) const;
 
-	void AddGroupsToAllViews(EoDbGroupList* groups);
+	void AddGroupsToAllViews(EoDbGroupList* groups) const;
 
-	void RemoveGroupFromAllViews(EoDbGroup* group);
+	void RemoveGroupFromAllViews(EoDbGroup* group) const;
 
-	void RemoveAllGroupsFromAllViews();
+	void RemoveAllGroupsFromAllViews() const;
 
 	// <Work Layer> interface
 	void AddWorkLayerGroup(EoDbGroup* group);
@@ -447,7 +447,7 @@ public:
 	/// <remarks>The new groups are added to the hot layer even if the trap contained groups from one or more warm layers.</remarks>
 	void ExpandTrappedGroups();
 
-	POSITION FindTrappedGroup(EoDbGroup* group);
+	POSITION FindTrappedGroup(EoDbGroup* group) const;
 
 	[[nodiscard]] POSITION GetFirstTrappedGroupPosition() const;
 
@@ -494,7 +494,7 @@ public:
 
 	POSITION AddNodalGroup(EoDbGroup* group);
 
-	POSITION FindNodalGroup(EoDbGroup* group);
+	POSITION FindNodalGroup(EoDbGroup* group) const;
 
 	[[nodiscard]] POSITION GetFirstNodalGroupPosition() const;
 

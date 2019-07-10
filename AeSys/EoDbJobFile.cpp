@@ -72,7 +72,7 @@ void EoDbJobFile::ConstructPrimitive(const OdDbBlockTableRecordPtr& blockTableRe
 	}
 }
 
-void EoDbJobFile::ConstructPrimitiveFromVersion1(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive) {
+void EoDbJobFile::ConstructPrimitiveFromVersion1(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive) const {
 	switch (m_PrimBuf[5]) {
 		case 17: {
 			auto Text {EoDbText::Create(blockTableRecord, m_PrimBuf, 1)};
@@ -180,7 +180,7 @@ void EoDbJobFile::ReadMemFile(OdDbBlockTableRecordPtr blockTableRecord, CFile& f
 	}
 }
 
-bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType) {
+bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType) const {
 	if (file.Read(buffer, 32) < 32) { return false; }
 	primitiveType = *reinterpret_cast<short*>(& buffer[4]);
 	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
@@ -243,7 +243,7 @@ bool EoDbJobFile::IsValidVersion1Primitive(short primitiveType) noexcept {
 	}
 }
 
-void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
+void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) const {
 	m_PrimBuf[0] = 0;
 	*reinterpret_cast<unsigned short*>(& m_PrimBuf[1]) = static_cast<unsigned short>(group->GetCount());
 	auto Position {group->GetHeadPosition()};
@@ -253,7 +253,7 @@ void EoDbJobFile::WriteGroup(CFile& file, EoDbGroup* group) {
 	}
 }
 
-void EoDbJobFile::WriteHeader(CFile& file) {
+void EoDbJobFile::WriteHeader(CFile& file) const {
 	::ZeroMemory(m_PrimBuf, 96);
 	m_PrimBuf[4] = 'T';
 	m_PrimBuf[5] = 'c';

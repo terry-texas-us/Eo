@@ -110,9 +110,9 @@ public:
 
 	void PaintBitmap(CBitmap& bitmap, COLORREF color);
 
-	bool IsColor(COLORREF color, unsigned char item) noexcept;
+	bool IsColor(COLORREF color, unsigned char item) const noexcept;
 
-	const OdCmEntityColor GetColor();
+	const OdCmEntityColor GetColor() const;
 
 protected:
 	void SetBitmapPixels(CBitmap& bitmap, DeviceIndependentBitmapColor* pixels);
@@ -130,7 +130,7 @@ class CPsListStyleData {
 	CBitmapColorInfo* m_pBitmapColorInfo;
 	int m_iActiveListIndex;
 protected:
-	int getPublicArrayIndexByColor(COLORREF color);
+	int GetPublicArrayIndexByColor(COLORREF color) const;
 
 public:
 	CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoArray* publicBitmapList, char item);
@@ -147,7 +147,7 @@ public:
 
 	bool SetActiveListIndex(int index, bool bitmapInfo = false);
 
-	const OdCmEntityColor GetColor();
+	const OdCmEntityColor GetColor() const;
 
 	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; }
 };
@@ -218,7 +218,7 @@ protected:
 
 	void InitializeListCtrl();
 
-	const int InsertItem(int index);
+	int InsertItem(int index);
 
 	HICON InitializeColorIcon(int width, int height, COLORREF color) noexcept;
 
@@ -233,7 +233,7 @@ protected:
 public:
 	bool SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept;
 
-	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags);
+	BOOL DoPromptFileName(CString& fileName, unsigned nIDSTitle, unsigned long flags) const;
 
 	void SetFileBufPath(OdString filePath);
 

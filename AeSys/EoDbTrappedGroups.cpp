@@ -150,7 +150,7 @@ void AeSysDoc::ExpandTrappedGroups() {
 	delete Groups;
 }
 
-POSITION AeSysDoc::FindTrappedGroup(EoDbGroup* group) {
+POSITION AeSysDoc::FindTrappedGroup(EoDbGroup* group) const {
 	return m_TrappedGroupList.Find(group);
 }
 

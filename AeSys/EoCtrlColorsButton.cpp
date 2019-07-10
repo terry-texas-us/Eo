@@ -16,7 +16,7 @@ BEGIN_MESSAGE_MAP(EoCtrlColorsButton, CMFCButton)
 		ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 #pragma warning (pop)
-void EoCtrlColorsButton::DrawCell(CDC* deviceContext, const unsigned short index, const COLORREF color) {
+void EoCtrlColorsButton::DrawCell(CDC* deviceContext, const unsigned short index, const COLORREF color) const {
 	if (deviceContext != nullptr && index != 0) {
 		CRect CellRectangle;
 		SubItemRectangleByIndex(index, CellRectangle);
@@ -60,7 +60,7 @@ CSize EoCtrlColorsButton::SizeToContent(const BOOL calculateOnly) {
 	return Size;
 }
 
-void EoCtrlColorsButton::SubItemRectangleByIndex(const unsigned short index, CRect& rectangle) noexcept {
+void EoCtrlColorsButton::SubItemRectangleByIndex(const unsigned short index, CRect& rectangle) const noexcept {
 	rectangle.top = m_Margins.cx + m_CellSpacing.cy;
 	rectangle.left = m_Margins.cy + m_CellSpacing.cx;
 	switch (m_Layout) {
@@ -79,7 +79,7 @@ void EoCtrlColorsButton::SubItemRectangleByIndex(const unsigned short index, CRe
 	rectangle.right = rectangle.left + m_CellSize.cx;
 }
 
-unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) noexcept {
+unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) const noexcept {
 	CRect Rectangle;
 	Rectangle.SetRectEmpty();
 	switch (m_Layout) {

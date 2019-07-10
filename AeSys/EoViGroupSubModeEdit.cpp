@@ -83,7 +83,7 @@ void AeSysView::PreviewGroupEdit() {
 	}
 }
 
-void AeSysDoc::InitializeGroupAndPrimitiveEdit() {
+void AeSysDoc::InitializeGroupAndPrimitiveEdit() const {
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {
 		auto View {dynamic_cast<AeSysView*>(GetNextView(ViewPosition))};

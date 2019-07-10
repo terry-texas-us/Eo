@@ -21,19 +21,19 @@ EoDbBlockTable* AeSysDoc::BlockTable() noexcept {
 	return &m_BlockTable;
 }
 
-bool AeSysDoc::BlockTableIsEmpty() {
+bool AeSysDoc::BlockTableIsEmpty() const {
 	return m_BlockTable.IsEmpty() == TRUE;
 }
 
-unsigned short AeSysDoc::BlockTableSize() {
+unsigned short AeSysDoc::BlockTableSize() const {
 	return static_cast<unsigned short>(m_BlockTable.GetSize());
 }
 
-POSITION AeSysDoc::GetFirstBlockPosition() {
+POSITION AeSysDoc::GetFirstBlockPosition() const {
 	return m_BlockTable.GetStartPosition();
 }
 
-void AeSysDoc::GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block) {
+void AeSysDoc::GetNextBlock(POSITION& position, CString& name, EoDbBlock*& block) const {
 	m_BlockTable.GetNextAssoc(position, name, block);
 }
 
@@ -41,7 +41,7 @@ void AeSysDoc::InsertBlock(const wchar_t* name, EoDbBlock* block) {
 	m_BlockTable.SetAt(name, block);
 }
 
-bool AeSysDoc::LookupBlock(const wchar_t* name, EoDbBlock*& block) {
+bool AeSysDoc::LookupBlock(const wchar_t* name, EoDbBlock*& block) const {
 	if (m_BlockTable.Lookup(name, block) != 0) { return true; }
 	block = nullptr;
 	return false;

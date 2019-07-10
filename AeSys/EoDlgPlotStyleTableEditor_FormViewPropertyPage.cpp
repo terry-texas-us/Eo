@@ -173,12 +173,12 @@ void CBitmapColorInfo::PaintBitmap(CBitmap& bitmap, const COLORREF color) {
 	SetBitmapPixels(bitmap, Bitmap);
 }
 
-const OdCmEntityColor CBitmapColorInfo::GetColor() {
+const OdCmEntityColor CBitmapColorInfo::GetColor() const {
 	const auto EntityColor {OdCmEntityColor(static_cast<unsigned char>(m_Color >> 16 & 0xFF), static_cast<unsigned char>(m_Color >> 8 & 0xFF), static_cast<unsigned char>(m_Color & 0xFF))};
 	return EntityColor;
 }
 
-bool CBitmapColorInfo::IsColor(COLORREF color, const unsigned char item) noexcept {
+bool CBitmapColorInfo::IsColor(COLORREF color, const unsigned char item) const noexcept {
 	color = static_cast<unsigned long>((item << 24) + (GetRValue(color) << 16) + (GetGValue(color) << 8) + GetBValue(color));
 	return m_Color == color;
 }
@@ -211,7 +211,7 @@ CBitmapColorInfo::CBitmapColorInfo(const wchar_t* resourceName, const wchar_t* n
 	wcsncpy(m_Name, name, gc_PlotStyleColorMaxName);
 }
 
-int CPsListStyleData::getPublicArrayIndexByColor(const COLORREF color) {
+int CPsListStyleData::GetPublicArrayIndexByColor(const COLORREF color) const {
 	for (unsigned PublicBitmapIndex = 0; PublicBitmapIndex < m_pPublicBitmapList->size(); PublicBitmapIndex++) {
 		const auto EntityColor {OdCmEntityColor(GetRValue(color), GetGValue(color), GetBValue(color))};
 		if ((*m_pPublicBitmapList)[PublicBitmapIndex]->GetColor() == EntityColor) { return static_cast<int>(PublicBitmapIndex); }
@@ -234,7 +234,7 @@ CPsListStyleData::CPsListStyleData(OdPsPlotStyle* plotStyle, OdBitmapColorInfoAr
 	} else {
 		PlotStyleDataRgb = RGB(PlotStyleDataColor.red(), PlotStyleDataColor.green(), PlotStyleDataColor.blue());
 	}
-	m_iActiveListIndex = getPublicArrayIndexByColor(PlotStyleDataRgb);
+	m_iActiveListIndex = GetPublicArrayIndexByColor(PlotStyleDataRgb);
 	if (m_iActiveListIndex < 0) {
 		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, PlotStyleDataRgb, static_cast<unsigned char>(item), PlotStyleDataColor.isByACI() ? PlotStyleDataColor.colorIndex() : -1);
 	}
@@ -260,14 +260,14 @@ bool CPsListStyleData::ReplaceBitmapColorInfo(const COLORREF color, const int it
 	if (m_pPlotStyles == nullptr && m_pPublicBitmapList == nullptr) { return false; }
 	delete m_pBitmapColorInfo;
 	m_pBitmapColorInfo = nullptr;
-	m_iActiveListIndex = getPublicArrayIndexByColor(color);
+	m_iActiveListIndex = GetPublicArrayIndexByColor(color);
 	if (m_iActiveListIndex < 0) {
 		m_pBitmapColorInfo = new CBitmapColorInfo(&(*m_pPublicBitmapList)[m_pPublicBitmapList->size() - 1]->m_bitmap, color, static_cast<unsigned char>(item));
 	}
 	return true;
 }
 
-const OdCmEntityColor CPsListStyleData::GetColor() {
+const OdCmEntityColor CPsListStyleData::GetColor() const {
 	if (m_iActiveListIndex < 0) { return m_pBitmapColorInfo->GetColor(); }
 	return (*m_pPublicBitmapList)[static_cast<unsigned>(m_iActiveListIndex)]->GetColor();
 }
@@ -646,7 +646,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::InitializeListCtrl() {
 	}
 }
 
-const int EoDlgPlotStyleEditor_FormViewPropertyPage::InsertItem(const int index) {
+int EoDlgPlotStyleEditor_FormViewPropertyPage::InsertItem(const int index) {
 	m_listStyles.LockWindowUpdate(); // ***** lock window updates while filling list *****
 	const auto PlotStyle {m_pPlotStyleTable->plotStyleAt(index).get()};
 	LVITEMW lvItem;
@@ -826,7 +826,7 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
 	m_listStyles.SetFocus();
 }
 
-BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned /*nIDSTitle*/, unsigned long flags) {
+BOOL EoDlgPlotStyleEditor_FormViewPropertyPage::DoPromptFileName(CString& fileName, unsigned /*nIDSTitle*/, unsigned long flags) const {
 	auto ext {fileName.Right(3)};
 	const auto isCtb {m_pPlotStyleTable->isAciTableAvailable()};
 	CFileDialog FileDialog(FALSE);

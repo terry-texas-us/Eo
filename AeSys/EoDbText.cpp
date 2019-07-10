@@ -219,7 +219,7 @@ void EoDbText::SetText(const CString& text) {
 	m_Text = text;
 }
 
-const CString& EoDbText::Text() noexcept {
+const CString& EoDbText::Text() const noexcept {
 	return m_Text;
 }
 

@@ -18,17 +18,17 @@ public:
 
 	void operator/=(double d) noexcept;
 
-	EoGePoint4d operator+(const OdGeVector3d& vector);
+	EoGePoint4d operator+(const OdGeVector3d& vector) const;
 
-	EoGePoint4d operator-(const OdGeVector3d& vector);
+	EoGePoint4d operator-(const OdGeVector3d& vector) const;
 
-	OdGeVector3d operator-(const EoGePoint4d& point);
+	OdGeVector3d operator-(const EoGePoint4d& point) const;
 
 	[[nodiscard]] OdGePoint3d Convert3d() const;
 	/// <summary>Determines the xy distance between two points.</summary>
 	[[nodiscard]] double DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept;
 	/// <summary>Performs a containment test on a point.</summary>
-	bool IsInView() noexcept;
+	bool IsInView() const noexcept;
 
 	EoGePoint4d& TransformBy(const EoGeMatrix3d& matrix) noexcept;
 

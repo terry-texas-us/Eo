@@ -19,11 +19,11 @@ private:
 public:
 	unsigned short m_SubItem {0};
 
-	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color);
+	void DrawCell(CDC* deviceContext, unsigned short index, COLORREF color) const;
 
-	unsigned short SubItemByPoint(const CPoint& point) noexcept;
+	unsigned short SubItemByPoint(const CPoint& point) const noexcept;
 
-	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) noexcept;
+	void SubItemRectangleByIndex(unsigned short index, CRect& rectangle) const noexcept;
 
 	static void SetCurrentIndex(const unsigned short index) noexcept {
 		m_CurrentIndex = index;

@@ -2331,7 +2331,7 @@ unsigned AeSysView::NumPages(CDC* deviceContext, const double scaleFactor, unsig
 	return horizontalPages * verticalPages;
 }
 
-void AeSysView::DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point) {
+void AeSysView::DisplayPixel(CDC* deviceContext, COLORREF colorReference, const OdGePoint3d& point) const {
 	EoGePoint4d View(point, 1.0);
 	ModelViewTransformPoint(View);
 	if (View.IsInView()) {
@@ -2992,7 +2992,7 @@ void AeSysView::DeleteLastGroup() {
 	}
 }
 
-bool AeSysView::ViewTrueTypeFonts() noexcept {
+bool AeSysView::ViewTrueTypeFonts() const noexcept {
 	return m_ViewTrueTypeFonts;
 }
 
@@ -3012,7 +3012,7 @@ void AeSysView::BreakAllSegRefs() {
 	}
 }
 
-bool AeSysView::PenWidthsOn() noexcept {
+bool AeSysView::PenWidthsOn() const noexcept {
 	return m_ViewPenWidths;
 }
 
@@ -3282,7 +3282,7 @@ void AeSysView::OnFind() {
 	}
 }
 
-void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText) {
+void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText) const {
 	if (findComboBox == nullptr) { return; }
 	const auto IsLastCommandFromButton {CMFCToolBar::IsLastCommandFromButton(findComboBox)};
 	if (IsLastCommandFromButton != 0) { findText = findComboBox->GetText(); }
@@ -3389,7 +3389,7 @@ void AeSysView::SetCursorPosition(const OdGePoint3d& point) {
 	SetCursorPos(CursorPosition.x, CursorPosition.y);
 }
 
-void AeSysView::SetModeCursor(const unsigned mode) {
+void AeSysView::SetModeCursor(const unsigned mode) const {
 	unsigned short ResourceIdentifier;
 	switch (mode) {
 		case ID_MODE_ANNOTATE:

@@ -94,7 +94,7 @@ int EoGeLineSeg3d::DirectedRelationshipOf(const OdGePoint3d& point) const {
 	return 0;
 }
 
-void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
+void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) const {
 	const auto LinetypeIndex {g_PrimitiveState.LinetypeIndex()};
 	if (EoDbPrimitive::IsSupportedLinetype(LinetypeIndex)) {
 		EoGePoint4d pt[] = {EoGePoint4d(startPoint(), 1.0), EoGePoint4d(endPoint(), 1.0)};
@@ -112,7 +112,7 @@ void EoGeLineSeg3d::Display(AeSysView* view, CDC* deviceContext) {
 	}
 }
 
-void EoGeLineSeg3d::Extents(OdGePoint3d& minimum, OdGePoint3d& maximum) {
+void EoGeLineSeg3d::Extents(OdGePoint3d& minimum, OdGePoint3d& maximum) const {
 	minimum.x = EoMin(startPoint().x, endPoint().x);
 	minimum.y = EoMin(startPoint().y, endPoint().y);
 	minimum.z = EoMin(startPoint().z, endPoint().z);
@@ -149,7 +149,7 @@ bool EoGeLineSeg3d::IntersectWith_xy(const EoGeLineSeg3d& line, OdGePoint3d& int
 	return false;
 }
 
-bool EoGeLineSeg3d::IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection) {
+bool EoGeLineSeg3d::IntersectWithInfinite(const EoGeLineSeg3d& line, OdGePoint3d& intersection) const {
 	OdGeLine3d InfiniteFirstLine;
 	getLine(InfiniteFirstLine);
 	OdGeLine3d InfiniteSecondLine;
@@ -233,46 +233,46 @@ bool EoGeLineSeg3d::ParametricRelationshipOf(const OdGePoint3d& point, double& r
 
 OdGePoint3d EoGeLineSeg3d::ProjPt(const OdGePoint3d& point) const {
 	auto vBegEnd {endPoint() - startPoint()};
-	const auto dSum {vBegEnd.lengthSqrd()};
-	if (dSum > DBL_EPSILON) {
+	const auto Sum {vBegEnd.lengthSqrd()};
+	if (Sum > DBL_EPSILON) {
 		const auto vBegPt {point - startPoint()};
-		const auto Scale {vBegPt.dotProduct(vBegEnd) / dSum};
+		const auto Scale {vBegPt.dotProduct(vBegEnd) / Sum};
 		vBegEnd *= Scale;
 	}
 	return startPoint() + vBegEnd;
 }
 
-int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double perpendicularDistance, OdGePoint3d& projectedPoint) {
-	auto dX {endPoint().x - startPoint().x};
-	auto dY {endPoint().y - startPoint().y};
-	auto dLen {sqrt(dX * dX + dY * dY)};
-	if (dLen <= DBL_EPSILON) { return FALSE; }
-	double dRatio;
+int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double perpendicularDistance, OdGePoint3d& projectedPoint) const {
+	auto X {endPoint().x - startPoint().x};
+	auto Y {endPoint().y - startPoint().y};
+	auto Length {sqrt(X * X + Y * Y)};
+	if (Length <= DBL_EPSILON) { return FALSE; }
+	double Ratio;
 	projectedPoint = startPoint();
 	if (fabs(parallelDistance) > DBL_EPSILON) {
-		dRatio = parallelDistance / dLen;
-		dLen = parallelDistance;
-		dX = dRatio * dX;
-		dY = dRatio * dY;
-		projectedPoint.x = startPoint().x + dX;
-		projectedPoint.y = startPoint().y + dY;
+		Ratio = parallelDistance / Length;
+		Length = parallelDistance;
+		X = Ratio * X;
+		Y = Ratio * Y;
+		projectedPoint.x = startPoint().x + X;
+		projectedPoint.y = startPoint().y + Y;
 	}
 	if (fabs(perpendicularDistance) > DBL_EPSILON) {
-		dRatio = perpendicularDistance / dLen;
-		projectedPoint.x -= dRatio * dY;
-		projectedPoint.y += dRatio * dX;
+		Ratio = perpendicularDistance / Length;
+		projectedPoint.x -= Ratio * Y;
+		projectedPoint.y += Ratio * X;
 	}
 	return TRUE;
 }
 
-OdGePoint3d EoGeLineSeg3d::ProjToBegPt(const double distance) {
+OdGePoint3d EoGeLineSeg3d::ProjToBegPt(const double distance) const {
 	auto vEndBeg {startPoint() - endPoint()};
 	const auto dLen {vEndBeg.length()};
 	if (dLen > DBL_EPSILON) { vEndBeg *= distance / dLen; }
 	return endPoint() + vEndBeg;
 }
 
-OdGePoint3d EoGeLineSeg3d::ProjToEndPt(const double distance) {
+OdGePoint3d EoGeLineSeg3d::ProjToEndPt(const double distance) const {
 	auto vBegEnd {endPoint() - startPoint()};
 	const auto Length {vBegEnd.length()};
 	if (Length > DBL_EPSILON) { vBegEnd *= distance / Length; }

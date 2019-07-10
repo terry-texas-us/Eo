@@ -21,7 +21,7 @@ void CNamedViewListCtrl::setViewId(const int item, const OdDbObjectId& id) {
 	SetItemData(item, reinterpret_cast<unsigned long>(static_cast<OdDbStub*>(id)));
 }
 
-OdDbViewTableRecordPtr CNamedViewListCtrl::view(const int item) {
+OdDbViewTableRecordPtr CNamedViewListCtrl::view(const int item) const {
 	return viewId(item).safeOpenObject(OdDb::kForWrite);
 }
 

@@ -38,7 +38,7 @@ EoGeReferenceSystem::EoGeReferenceSystem(const EoGeReferenceSystem& other) {
 }
 
 // <tas="Likely misuse of .normal"/>
-void EoGeReferenceSystem::GetUnitNormal(OdGeVector3d& normal) {
+void EoGeReferenceSystem::GetUnitNormal(OdGeVector3d& normal) const {
 	normal = m_XDirection.crossProduct(m_YDirection).normal();
 }
 

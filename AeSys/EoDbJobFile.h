@@ -18,19 +18,19 @@ public:
 
 	bool GetNextPrimitive(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbPrimitive*& primitive);
 
-	bool ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType);
+	bool ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType) const;
 
 	int Version() noexcept;
 
-	void WriteHeader(CFile& file);
+	void WriteHeader(CFile& file) const;
 
 	void WriteLayer(CFile& file, EoDbLayer* layer);
 
-	void WriteGroup(CFile& file, EoDbGroup* group);
+	void WriteGroup(CFile& file, EoDbGroup* group) const;
 
 	void ConstructPrimitive(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive, short primitiveType);
 
-	void ConstructPrimitiveFromVersion1(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive);
+	void ConstructPrimitiveFromVersion1(const OdDbBlockTableRecordPtr& blockTableRecord, EoDbPrimitive*& primitive) const;
 
 	static bool IsValidPrimitive(short primitiveType) noexcept;
 

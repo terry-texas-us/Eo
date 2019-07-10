@@ -341,11 +341,11 @@ void EoDbDimension::SetEndPoint(const OdGePoint3d& endPoint) {
 	m_Line.SetEndPoint(endPoint);
 }
 
-const CString& EoDbDimension::Text() noexcept {
+const CString& EoDbDimension::Text() const noexcept {
 	return m_strText;
 }
 
-const short& EoDbDimension::TextColorIndex() noexcept {
+const short& EoDbDimension::TextColorIndex() const noexcept {
 	return m_TextColorIndex;
 }
 

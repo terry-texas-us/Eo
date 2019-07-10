@@ -23,11 +23,11 @@ void EoGePoint4d::operator/=(const double d) noexcept {
 	w /= d;
 }
 
-OdGeVector3d EoGePoint4d::operator-(const EoGePoint4d& point) {
+OdGeVector3d EoGePoint4d::operator-(const EoGePoint4d& point) const {
 	return {x - point.x, y - point.y, z - point.z};
 }
 
-EoGePoint4d EoGePoint4d::operator-(const OdGeVector3d& vector) {
+EoGePoint4d EoGePoint4d::operator-(const OdGeVector3d& vector) const {
 	EoGePoint4d Point;
 	Point.x = x - vector.x;
 	Point.y = y - vector.y;
@@ -36,7 +36,7 @@ EoGePoint4d EoGePoint4d::operator-(const OdGeVector3d& vector) {
 	return Point;
 }
 
-EoGePoint4d EoGePoint4d::operator+(const OdGeVector3d& vector) {
+EoGePoint4d EoGePoint4d::operator+(const OdGeVector3d& vector) const {
 	EoGePoint4d Point;
 	Point.x = x + vector.x;
 	Point.y = y + vector.y;
@@ -174,7 +174,7 @@ double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept {
 	return sqrt(X * X + Y * Y);
 }
 
-bool EoGePoint4d::IsInView() noexcept {
+bool EoGePoint4d::IsInView() const noexcept {
 	if (w + x <= 0. || w - x <= 0.0) { return false; }
 	if (w + y <= 0. || w - y <= 0.0) { return false; }
 	if (w + z <= 0. || w - z <= 0.0) { return false; }

@@ -195,7 +195,7 @@ void AeSysView::OnFixupModeEscape() {
 	ModeLineUnhighlightOp(g_PreviousFixupCommand);
 }
 
-void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, const unsigned cornerType) {
+void AeSysView::GenerateCorner(const OdGePoint3d intersection, SelectionPair previousSelection, SelectionPair currentSelection, const unsigned cornerType) const {
 	auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(previousSelection))};
 	auto PreviousLineSeg {PreviousLine->LineSeg()};
 	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(currentSelection))};
