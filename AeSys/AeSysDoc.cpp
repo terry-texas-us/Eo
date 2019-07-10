@@ -183,7 +183,7 @@ BEGIN_MESSAGE_MAP(AeSysDoc, CDocument)
 		ON_UPDATE_COMMAND_UI(ID_VECTORIZERTYPE, &AeSysDoc::OnUpdateVectorizerType)
 END_MESSAGE_MAP()
 #pragma warning (pop)
-unsigned short AeSysDoc::ClipboardData::formatR15 = static_cast < unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
+unsigned short AeSysDoc::ClipboardData::formatR15 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r15"));
 unsigned short AeSysDoc::ClipboardData::formatR16 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r16"));
 unsigned short AeSysDoc::ClipboardData::formatR17 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r17"));
 unsigned short AeSysDoc::ClipboardData::formatR18 = static_cast<unsigned short>(RegisterClipboardFormatW(L"AutoCAD.r18"));

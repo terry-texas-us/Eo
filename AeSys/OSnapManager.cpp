@@ -349,24 +349,24 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 							case OdDb::kOsModeNode:
 								break;
 							case OdDb::kOsModeQuad:
-							break;
+								break;
 							case OdDb::kOsModeIntersec:
-							break;
+								break;
 							case OdDb::kOsModeIns:
-							break;
+								break;
 							case OdDb::kOsModePerp:
-							break;
+								break;
 							case OdDb::kOsModeTan:
-							break;
+								break;
 							case OdDb::kOsModeNear:
-							break;
+								break;
 							case OdDb::kOsModeApint:
-							break;
+								break;
 							case OdDb::kOsModePar:
-							break;
+								break;
 							case OdDb::kOsModeStart:
-							break;
- 							default:
+								break;
+							default:
 								break;
 						}
 					}

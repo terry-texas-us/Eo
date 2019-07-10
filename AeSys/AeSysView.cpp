@@ -103,7 +103,6 @@ BEGIN_MESSAGE_MAP(AeSysView, CView)
 		ON_COMMAND(ID_FILE_PLOT_QUARTER, OnFilePlotQuarter)
 		ON_COMMAND(ID_FILE_PLOT_HALF, OnFilePlotHalf)
 		ON_COMMAND(ID_FILE_PLOT_FULL, OnFilePlotFull)
-	// Standard printing commands
 		ON_COMMAND(ID_FILE_PRINT, OnFilePrint)
 		ON_COMMAND(ID_FILE_PRINT_DIRECT, OnFilePrint)
 		ON_COMMAND(ID_FILE_PRINT_PREVIEW, CView::OnFilePrintPreview)

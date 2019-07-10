@@ -175,7 +175,6 @@ BOOL EoDlgAbout::OnInitDialog() {
 void EoDlgAbout::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
 }
-
 #pragma warning (push)
 #pragma warning (disable: 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)

@@ -604,9 +604,7 @@ void OdExZoomCmd::execute(OdEdCommandContext* edCommandContext) {
 	OdDbAbstractViewportDataPtr AbstractViewportData(ActiveViewport);
 	auto ActiveView {AbstractViewportData->gsView(ActiveViewport)};
 	try {
-		auto FirstCorner {
-			UserIo->getPoint(L"Specify corner of window, enter a scale factor (nX or nXP), or\n[All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>:", OdEd::kInpThrowEmpty | OdEd::kInpThrowOther | OdEd::kGptNoOSnap, nullptr, Keywords)
-		};
+		auto FirstCorner {UserIo->getPoint(L"Specify corner of window, enter a scale factor (nX or nXP), or\n[All/Center/Dynamic/Extents/Previous/Scale/Window/Object] <real time>:", OdEd::kInpThrowEmpty | OdEd::kInpThrowOther | OdEd::kGptNoOSnap, nullptr, Keywords)};
 		auto OppositeCorner {UserIo->getPoint(L"Specify opposite corner:", OdEd::kGptNoUCS | OdEd::kGptRectFrame | OdEd::kGptNoOSnap)};
 		ZoomWindow(FirstCorner, OppositeCorner, ActiveView);
 	} catch (const OdEdEmptyInput&) // real time
