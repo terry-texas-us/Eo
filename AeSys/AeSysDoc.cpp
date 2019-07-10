@@ -1,57 +1,59 @@
 #include "stdafx.h"
-#include <atlbase.h>
-#include <strsafe.h>
 #include "AeSys.h"
 #include "AeSysDoc.h"
 #include "AeSysView.h"
-#include "PrimState.h"
-#include "EoGeUniquePoint.h"
-#include <ColorMapping.h>
-#include <DbLayerTable.h>
-#include <DbLinetypeTable.h>
-#include <DbLinetypeTableRecord.h>
-#include <DbRegAppTable.h>
-#include <DbRegAppTableRecord.h>
-#include <DbDimStyleTable.h>
-#include <DbDimStyleTableRecord.h>
-#include <DbTextStyleTable.h>
-#include <DbTextStyleTableRecord.h>
-#include <Ed/EdLispEngine.h>
-#include <DbObjectContextCollection.h>
-#include <DbObjectContextManager.h>
-#include <SaveState.h>
-#include <ExStringIO.h>
-#include <ExPageController.h>
-#include "EoDbHatch.h"
-#include "EoDbPolyline.h"
-#include "EoDbPegFile.h"
-#include "EoDbTracingFile.h"
 #include "EoAppAuditInfo.h"
-#include "EoDlgUserIoConsole.h"
-#include "EoGePoint4d.h"
-#include "EoGeMatrix3d.h"
-#include "EoDlgAudit.h"
-#include "EoDlgEditProperties.h"
-#include "EoDbDwgToPegFile.h"
-#include "EoDlgLayerPropertiesManager.h"
-#include "EoDlgPageSetup.h"
-#include "EoDlgNamedViews.h"
 #include "EoDbBlockReference.h"
 #include "EoDbDimension.h"
+#include "EoDbDwgToPegFile.h"
+#include "EoDbHatch.h"
 #include "EoDbJobFile.h"
+#include "EoDbPegFile.h"
+#include "EoDbPolyline.h"
+#include "EoDbTracingFile.h"
+#include "EoDlgAudit.h"
 #include "EoDlgDrawOptions.h"
+#include "EoDlgEditProperties.h"
 #include "EoDlgEditTrapCommandsQuery.h"
 #include "EoDlgFileManage.h"
+#include "EoDlgLayerPropertiesManager.h"
+#include "EoDlgNamedViews.h"
+#include "EoDlgPageSetup.h"
 #include "EoDlgSelectGotoHomePoint.h"
 #include "EoDlgSetActiveLayout.h"
 #include "EoDlgSetHomePoint.h"
 #include "EoDlgSetPastePosition.h"
 #include "EoDlgSetupColor.h"
 #include "EoDlgSetupHatch.h"
-#include "EoDlgSetupNote.h"
 #include "EoDlgSetupLinetype.h"
+#include "EoDlgSetupNote.h"
 #include "EoDlgTrapFilter.h"
+#include "EoDlgUserIoConsole.h"
+#include "EoGeMatrix3d.h"
+#include "EoGePoint4d.h"
+#include "EoGeUniquePoint.h"
+#include "EoPageSetup.h"
 #include "Lex.h"
+#include "PrimState.h"
+#include <ColorMapping.h>
+#include <DbDimStyleTable.h>
+#include <DbDimStyleTableRecord.h>
+#include <DbLayerTable.h>
+#include <DbLinetypeTable.h>
+#include <DbLinetypeTableRecord.h>
+#include <DbObjectContextCollection.h>
+#include <DbObjectContextManager.h>
+#include <DbRegAppTable.h>
+#include <DbRegAppTableRecord.h>
+#include <DbTextStyleTable.h>
+#include <DbTextStyleTableRecord.h>
+#include <DbViewportTableRecord.h>
+#include <Ed/EdLispEngine.h>
+#include <ExPageController.h>
+#include <ExStringIO.h>
+#include <SaveState.h>
+#include <atlbase.h>
+#include <strsafe.h>
 
 unsigned CALLBACK OfnHookProcFileTracing(HWND, unsigned, WPARAM, LPARAM);
 
@@ -694,7 +696,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 						if (messageCategory == CN_COMMAND) {
 							auto EdCommand {OdEdCommand::cast(ItemData)};
 							if (EdCommand.get() != nullptr) {
-								ExecuteCommand(EdCommand->globalName());
+								ExecuteCommand(EdCommand->globalName(), true);
 								return TRUE;
 							}
 						} else if (static_cast<unsigned>(messageCategory) == CN_UPDATE_COMMAND_UI) {
@@ -712,7 +714,7 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 								MenuItemInfo.fMask = MIIM_STATE;
 								MenuItemInfo.fState = MFS_CHECKED;
 								TopMenu->SetMenuItemInfoW(commandId, &MenuItemInfo, FALSE);
-								ExecuteCommand(L"REGEN");
+								ExecuteCommand(L"REGEN", true);
 								UpdateAllViews(nullptr);
 							} else {
 								MenuItemInfo.fMask = MIIM_STATE;
@@ -734,9 +736,9 @@ BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, voi
 void AeSysDoc::DeleteSelection(const bool force) {
 	if (m_DatabasePtr->appServices()->getPICKFIRST() && SelectionSet()->numEntities() != 0U) {
 		if (force) {
-			ExecuteCommand(L"ForceErase");
+			ExecuteCommand(L"ForceErase", true);
 		} else {
-			ExecuteCommand(L"erase");
+			ExecuteCommand(L"erase", true);
 		}
 		if (m_Viewer != nullptr) {
 			m_Viewer->EditorObject().SetEntityCenters();
@@ -2632,13 +2634,19 @@ void AeSysDoc::OnInsertTracing() {
 }
 
 void AeSysDoc::OnFilePageSetup() {
-	OdSmartPtr<OdDbUserIO> UserIo; // = pDbCmdCtx->userIO();
-	const auto LayoutId {OdDbBlockTableRecordPtr(m_DatabasePtr->getActiveLayoutBTRId().safeOpenObject())->getLayoutId()};
-	OdSmartPtr<OdDbLayout> Layout {LayoutId.safeOpenObject(OdDb::kForWrite)};
-	OdDbPlotSettings* PlotSettings = Layout.get();
-	EoDlgPageSetup PageSetupDialog(*PlotSettings, UserIo);
-	if (PageSetupDialog.DoModal() == IDOK) {
+	if (GetViewer() != nullptr) {
+		const OdGsView* LayoutActiveView {GetViewer()->GetLayoutActiveView()};
+		if (LayoutActiveView != nullptr) {
+			auto Viewport {m_DatabasePtr->activeViewportId().safeOpenObject(OdDb::kForWrite)};
+			OdDbAbstractViewportDataPtr AbstractViewportData(Viewport);
+			AbstractViewportData->setView(Viewport, LayoutActiveView);
+		}
 	}
+	OdStaticRxObject<OdPageSetupCmd> PageSetupCmd;
+	odedRegCmds()->addCommand(&PageSetupCmd);
+	ExecuteCommand(L"PageSetup", true);
+	odedRegCmds()->removeCmd(&PageSetupCmd);
+	// Get PlotInfo for active layout (Printer/Plotter name, Paper size...)
 }
 
 // <command_console>
@@ -2861,7 +2869,7 @@ void AeSysDoc::OnEditClearSelection() {
 }
 
 void AeSysDoc::OnEditExplode() {
-	ExecuteCommand(L"explode");
+	ExecuteCommand(L"explode", true);
 }
 
 void AeSysDoc::OnEditEntget() {
@@ -2875,7 +2883,7 @@ void AeSysDoc::OnEditEntget() {
 }
 
 void AeSysDoc::OnViewNamedViews() {
-	ExecuteCommand(L"VIEW");
+	ExecuteCommand(L"VIEW", true);
 }
 
 void AeSysDoc::OnEditUndo() {
@@ -2904,7 +2912,7 @@ void AeSysDoc::OnUpdateEditRedo(CCmdUI* commandUserInterface) {
 void AeSysDoc::OnEditSelectAll() {
 	OnEditClearSelection();
 	disableClearSelection = true;
-	ExecuteCommand(L"select single all");
+	ExecuteCommand(L"select single all", true);
 	disableClearSelection = false;
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {

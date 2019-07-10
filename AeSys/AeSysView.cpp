@@ -327,7 +327,7 @@ AeSysDoc* AeSysView::GetDocument() const {
 }
 #endif //_DEBUG
 void AeSysView::exeCmd(const OdString& commandName) {
-	GetDocument()->ExecuteCommand(commandName);
+	GetDocument()->ExecuteCommand(commandName, true);
 	PropagateLayoutActiveViewChanges(true);
 }
 
@@ -1805,9 +1805,9 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 					switch (m_mode) {
 						case kQuiescent:
 							if (m_Response.string.isEmpty()) {
-								GetDocument()->ExecuteCommand(AeSysDoc::RecentCommandName());
+								GetDocument()->ExecuteCommand(AeSysDoc::RecentCommandName(), true);
 							} else {
-								GetDocument()->ExecuteCommand(m_Response.string);
+								GetDocument()->ExecuteCommand(m_Response.string, true);
 							}
 							break;
 						case kGetPoint: case kGetString:

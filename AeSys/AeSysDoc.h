@@ -245,7 +245,7 @@ public:
 
 	void SetVectorizer(AeSysView* view);
 
-	void ExecuteCommand(const OdString& command, bool echo = true);
+	void ExecuteCommand(const OdString& command, bool echo);
 
 	OdDbDatabasePtr m_DatabasePtr;
 

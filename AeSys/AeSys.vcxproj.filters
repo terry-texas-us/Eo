@@ -46,6 +46,12 @@
     <Filter Include="Source Files\Editor">
       <UniqueIdentifier>{cc8c284a-2ca1-48b7-a4fd-1dc3825b8d87}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Commands">
+      <UniqueIdentifier>{604f8eb4-4408-4223-957b-e30a99b79f49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Commands">
+      <UniqueIdentifier>{7493dd6e-0d37-42a5-a0d8-9e801d07a34b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Section.cpp">
@@ -951,6 +957,9 @@
     </ClInclude>
     <ClInclude Include="EditorObject.h">
       <Filter>Header Files\Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="EoPageSetup.h">
+      <Filter>Header Files\Commands</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

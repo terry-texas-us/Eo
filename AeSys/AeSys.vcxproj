@@ -296,6 +296,7 @@
     <ClInclude Include="EoDlgNewView.h" />
     <ClInclude Include="EoDlgPassword.h" />
     <ClInclude Include="EoGripperScrollBar.h" />
+    <ClInclude Include="EoPageSetup.h" />
     <ClInclude Include="OdApplication.h" />
     <ClInclude Include="AeSysView.h" />
     <ClInclude Include="EoCtrlBitmapPickerCombo.h" />

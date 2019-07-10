@@ -439,7 +439,7 @@ void rxUninit_COleClientItem_handler() {
 
 void AeSysDoc::OnInsertOleobject() {
 	BeginWaitCursor();
-	ExecuteCommand(L"insertobj");
+	ExecuteCommand(L"insertobj", true);
 	EndWaitCursor();
 }
 #endif // OD_OLE_SUPPORT

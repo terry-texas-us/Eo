@@ -298,12 +298,12 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 			CString Command;
 			while (ScriptFile.ReadString(Command) != 0) {
 				if (!Command.IsEmpty() && Command[0] != _T('#')) {
-					TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(Command));
+					TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(Command), true);
 				}
 			}
 		}
 		for (auto CommandIndex = 0; CommandIndex < FullCommandLineInfo.commandsToExecute.GetCount(); ++CommandIndex) {
-			TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(FullCommandLineInfo.commandsToExecute.GetAt(CommandIndex)));
+			TemporaryDocument->ExecuteCommand(static_cast<const wchar_t*>(FullCommandLineInfo.commandsToExecute.GetAt(CommandIndex)), true);
 		}
 	} else {
 		CWinAppEx::ProcessShellCommand(commandLineInfo);
