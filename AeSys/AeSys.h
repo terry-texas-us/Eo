@@ -533,6 +533,7 @@ public:
 	void OnUpdateVectorizerTypeClearMenu(CCmdUI* commandUserInterface);
 
 DECLARE_MESSAGE_MAP()
+#pragma warning (suppress: 4266) // (level 4) 'function': no override available for virtual member function from base 'type'; function is hidden
 };
 
 extern AeSys theApp;

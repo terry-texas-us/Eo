@@ -387,7 +387,7 @@ void CMainFrame::ShowRegisteredCommandsPopupMenu(CMFCPopupMenu* popupMenu) const
 					}
 					auto CommandName {Command->globalName()};
 					GroupMenu.AppendMenuW(MF_STRING, static_cast<unsigned>(CommandId), CommandName);
-					MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(Command.get());
+					MenuItemInfo.dwItemData = static_cast<unsigned long>(reinterpret_cast<long>(Command.get()));
 					SetMenuItemInfoW(GroupMenu.m_hMenu, static_cast<unsigned>(CommandId), FALSE, &MenuItemInfo);
 					GroupCommandIterator->next();
 					CommandId++;

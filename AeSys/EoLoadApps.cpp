@@ -57,7 +57,7 @@ BOOL EoLoadApps::OnInitDialog() {
 	for (unsigned LoadedAppIndex = 0; LoadedAppIndex < m_LoadedApps->size(); ++LoadedAppIndex) {
 		const auto n {m_AppsList.AddString(m_LoadedApps->at(LoadedAppIndex))};
 		auto Module {odrxDynamicLinker()->loadModule(m_LoadedApps->at(LoadedAppIndex))};
-		m_AppsList.SetItemData(n, reinterpret_cast<LPARAM>(Module.get()));
+		m_AppsList.SetItemData(n, static_cast<unsigned long>(reinterpret_cast<long>(Module.get())));
 	}
 	OnAppsListEvent();
 	return TRUE;

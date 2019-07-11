@@ -26,10 +26,10 @@ void EoDlgLineWeight::DoDataExchange(CDataExchange* dataExchange) {
 BOOL EoDlgLineWeight::OnInitDialog() {
 	CDialog::OnInitDialog();
 	lineWeightList.InsertString(0, CMainFrame::StringByLineWeight(OdDb::kLnWtByLwDefault, false));
-	lineWeightList.SetItemData(0, static_cast<DWORD_PTR>(OdDb::kLnWtByLwDefault));
+	lineWeightList.SetItemData(0, static_cast<unsigned long>(OdDb::kLnWtByLwDefault));
 	for (auto Index = 1; Index < 25; ++Index) {
 		lineWeightList.InsertString(Index, CMainFrame::StringByLineWeight(Index - 1, true));
-		lineWeightList.SetItemData(Index, static_cast<DWORD_PTR>(CMainFrame::LineWeightByIndex(char(Index - 1))));
+		lineWeightList.SetItemData(Index, static_cast<unsigned long>(CMainFrame::LineWeightByIndex(char(Index - 1))));
 	}
 	const auto OriginalLineWeight {CMainFrame::StringByLineWeight(m_OriginalLineWeight, false)};
 	lineWeightList.SelectString(-1, OriginalLineWeight);

@@ -596,12 +596,12 @@ void AeSys::RefreshCommandMenu() {
 				if (GroupName.isEmpty()) { GroupName = Command->groupName(); }
 				auto CommandName(Command->globalName());
 				GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
-				MenuItemInfo.dwItemData = reinterpret_cast<LPARAM>(Command.get());
+				MenuItemInfo.dwItemData = static_cast<unsigned long>(reinterpret_cast<long>(Command.get()));
 				SetMenuItemInfoW(GroupMenu.m_hMenu, CommandId, FALSE, &MenuItemInfo);
 				GroupCommandIterator->next();
 				CommandId++;
 			}
-			ENSURE(RegisteredCommandsSubMenu->AppendMenuW(MF_STRING | MF_POPUP, reinterpret_cast<LPARAM>(GroupMenu.Detach()), GroupName) != 0);
+			ENSURE(RegisteredCommandsSubMenu->AppendMenuW(MF_STRING | MF_POPUP, static_cast<UINT_PTR>(reinterpret_cast<LPARAM>(GroupMenu.Detach())), GroupName) != 0);
 			CommandStackGroupIterator->next();
 			GroupName.empty();
 		}

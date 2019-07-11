@@ -125,10 +125,10 @@ protected:
 using OdBitmapColorInfoArray = OdArray<CBitmapColorInfo*>;
 
 class CPsListStyleData {
-	OdPsPlotStyle* m_pPlotStyles;
-	OdBitmapColorInfoArray* m_pPublicBitmapList;
-	CBitmapColorInfo* m_pBitmapColorInfo;
-	int m_iActiveListIndex;
+	OdPsPlotStyle* m_PlotStyles;
+	OdBitmapColorInfoArray* m_PublicBitmapList;
+	CBitmapColorInfo* m_BitmapColorInfo;
+	int m_ActiveListIndex;
 protected:
 	int GetPublicArrayIndexByColor(COLORREF color) const;
 
@@ -137,11 +137,11 @@ public:
 
 	~CPsListStyleData();
 
-	[[nodiscard]] OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_pPlotStyles; }
+	[[nodiscard]] OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_PlotStyles; }
 
-	[[nodiscard]] CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_pBitmapColorInfo; }
+	[[nodiscard]] CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_BitmapColorInfo; }
 
-	[[nodiscard]] int GetActiveListIndex() const noexcept { return m_iActiveListIndex; }
+	[[nodiscard]] int GetActiveListIndex() const noexcept { return m_ActiveListIndex; }
 
 	bool ReplaceBitmapColorInfo(COLORREF color, int item);
 
@@ -149,7 +149,7 @@ public:
 
 	const OdCmEntityColor GetColor() const;
 
-	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_pPlotStyles; }
+	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_PlotStyles; }
 };
 
 class EoDlgPlotStyleEditor_FormViewPropertyPage final : public CPropertyPage {
