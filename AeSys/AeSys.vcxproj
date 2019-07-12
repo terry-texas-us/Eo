@@ -110,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="Eo3dOrbitCmd.cpp" />
     <ClCompile Include="EoAppAuditInfo.cpp" />
+    <ClCompile Include="EoCollideAllCmd.cpp" />
+    <ClCompile Include="EoCollideCmd.cpp" />
+    <ClCompile Include="EoCollideMoveTracker.cpp" />
     <ClCompile Include="EoDbHatchPatternTable.cpp" />
     <ClCompile Include="EoDialogResizeHelper.cpp" />
     <ClCompile Include="EoDlgAudit.cpp" />
@@ -119,6 +122,7 @@
     <ClCompile Include="EoDlgPassword.cpp" />
     <ClCompile Include="EoDollyCmd.cpp" />
     <ClCompile Include="EoGripperScrollBar.cpp" />
+    <ClCompile Include="EoInteractivityModeCmd.cpp" />
     <ClCompile Include="EoOrbitCtrl.cpp" />
     <ClCompile Include="EoRtOrbitTracker.cpp" />
     <ClCompile Include="EoZoomCmd.cpp" />
@@ -294,6 +298,10 @@
     <ClInclude Include="EditorObject.h" />
     <ClInclude Include="Eo3dOrbitCmd.h" />
     <ClInclude Include="EoAppAuditInfo.h" />
+    <ClInclude Include="EoCollideAllCmd.h" />
+    <ClInclude Include="EoCollideCmd.h" />
+    <ClInclude Include="EoCollideGsPath.h" />
+    <ClInclude Include="EoCollideMoveTracker.h" />
     <ClInclude Include="EoDbHatchPatternTable.h" />
     <ClInclude Include="EoDialogResizeHelper.h" />
     <ClInclude Include="EoDlgAudit.h" />
@@ -302,6 +310,7 @@
     <ClInclude Include="EoDlgNewView.h" />
     <ClInclude Include="EoDlgPassword.h" />
     <ClInclude Include="EoGripperScrollBar.h" />
+    <ClInclude Include="EoInteractivityModeCmd.h" />
     <ClInclude Include="EoOrbitCtrl.h" />
     <ClInclude Include="EoPageSetup.h" />
     <ClInclude Include="EoDollyCmd.h" />

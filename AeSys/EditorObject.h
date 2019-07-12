@@ -6,30 +6,9 @@
 #include "OSnapManager.h"
 #include <ExDbCommandContext.h>
 #include "EoZoomCmd.h"
-
-struct OdExInteractivityModeCmd : OdEdCommand {
-	[[nodiscard]] const OdString groupName() const override;
-
-	[[nodiscard]] const OdString globalName() const override;
-
-	void execute(OdEdCommandContext* commandContext) override;
-};
-
-struct OdExCollideCmd : OdEdCommand {
-	[[nodiscard]] const OdString groupName() const override;
-
-	[[nodiscard]] const OdString globalName() const override;
-
-	void execute(OdEdCommandContext* edCommandContext) override;
-};
-
-struct OdExCollideAllCmd : OdEdCommand {
-	[[nodiscard]] const OdString groupName() const override;
-
-	[[nodiscard]] const OdString globalName() const override;
-
-	void execute(OdEdCommandContext* edCommandContext) override;
-};
+#include "EoCollideCmd.h"
+#include "EoInteractivityModeCmd.h"
+#include "EoCollideAllCmd.h"
 
 class OdExEditorObject {
 	OdGsLayoutHelperPtr m_LayoutHelper;
