@@ -106,8 +106,9 @@
     <ClCompile Include="AeSys.cpp" />
     <ClCompile Include="AeSysDoc.cpp" />
     <ClCompile Include="EditorObject.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Eo3dOrbitCmd.cpp" />
     <ClCompile Include="EoAppAuditInfo.cpp" />
     <ClCompile Include="EoDbHatchPatternTable.cpp" />
     <ClCompile Include="EoDialogResizeHelper.cpp" />
@@ -116,7 +117,11 @@
     <ClCompile Include="EoDlgNamedViews.cpp" />
     <ClCompile Include="EoDlgNewView.cpp" />
     <ClCompile Include="EoDlgPassword.cpp" />
+    <ClCompile Include="EoDollyCmd.cpp" />
     <ClCompile Include="EoGripperScrollBar.cpp" />
+    <ClCompile Include="EoOrbitCtrl.cpp" />
+    <ClCompile Include="EoRtOrbitTracker.cpp" />
+    <ClCompile Include="EoZoomCmd.cpp" />
     <ClCompile Include="OdApplicationDocument.cpp" />
     <ClCompile Include="AeSysView.cpp" />
     <ClCompile Include="EoCtrlBitmapPickerCombo.cpp" />
@@ -287,6 +292,7 @@
     <ClInclude Include="AeSys.h" />
     <ClInclude Include="AeSysDoc.h" />
     <ClInclude Include="EditorObject.h" />
+    <ClInclude Include="Eo3dOrbitCmd.h" />
     <ClInclude Include="EoAppAuditInfo.h" />
     <ClInclude Include="EoDbHatchPatternTable.h" />
     <ClInclude Include="EoDialogResizeHelper.h" />
@@ -296,7 +302,14 @@
     <ClInclude Include="EoDlgNewView.h" />
     <ClInclude Include="EoDlgPassword.h" />
     <ClInclude Include="EoGripperScrollBar.h" />
+    <ClInclude Include="EoOrbitCtrl.h" />
     <ClInclude Include="EoPageSetup.h" />
+    <ClInclude Include="EoDollyCmd.h" />
+    <ClInclude Include="EoRtDollyTracker.h" />
+    <ClInclude Include="EoRtOrbitTracker.h" />
+    <ClInclude Include="EoRtZoomTracker.h" />
+    <ClInclude Include="EoViewInteractivityMode.h" />
+    <ClInclude Include="EoZoomCmd.h" />
     <ClInclude Include="OdApplication.h" />
     <ClInclude Include="AeSysView.h" />
     <ClInclude Include="EoCtrlBitmapPickerCombo.h" />

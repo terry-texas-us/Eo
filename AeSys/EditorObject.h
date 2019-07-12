@@ -1,32 +1,11 @@
 // From Examples\Editor\EditorObject.h  (last compare 20.5)
 #pragma once
-#include <ExDbCommandContext.h>
-#include "OSnapManager.h"
+#include "Eo3dOrbitCmd.h"
+#include "EoDollyCmd.h"
 #include "ExGripManager.h"
-
-struct OdExZoomCmd : OdEdCommand {
-	[[nodiscard]] const OdString groupName() const override;
-
-	[[nodiscard]] const OdString globalName() const override;
-
-	void execute(OdEdCommandContext* edCommandContext) override;
-};
-
-struct OdEx3dOrbitCmd : OdEdCommand {
-	[[nodiscard]] const OdString groupName() const override;
-
-	[[nodiscard]] const OdString globalName() const override;
-
-	void execute(OdEdCommandContext* edCommandContext) override;
-};
-
-struct OdExDollyCmd : OdEdCommand {
-	[[nodiscard]] const OdString groupName() const override;
-
-	[[nodiscard]] const OdString globalName() const override;
-
-	void execute(OdEdCommandContext* edCommandContext) override;
-};
+#include "OSnapManager.h"
+#include <ExDbCommandContext.h>
+#include "EoZoomCmd.h"
 
 struct OdExInteractivityModeCmd : OdEdCommand {
 	[[nodiscard]] const OdString groupName() const override;
