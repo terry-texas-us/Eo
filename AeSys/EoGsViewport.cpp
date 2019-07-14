@@ -22,8 +22,8 @@ void EoGsViewport::DoProjection(CPoint* pnt, EoGePoint4dArray& points) const {
 }
 
 void EoGsViewport::DoProjectionInverse(OdGePoint3d& point) const noexcept {
-	point.x = point.x * 2. / (m_WidthInPixels - 1.0) - 1.0;
-	point.y = -(point.y * 2. / (m_HeightInPixels - 1.0) - 1.0);
+	point.x = point.x * 2.0 / (m_WidthInPixels - 1.0) - 1.0;
+	point.y = -(point.y * 2.0 / (m_HeightInPixels - 1.0) - 1.0);
 }
 
 double EoGsViewport::HeightInPixels() const noexcept {

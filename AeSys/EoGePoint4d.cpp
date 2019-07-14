@@ -189,13 +189,13 @@ double EoGePoint4d::DistanceToPointXY(const EoGePoint4d& ptQ) const noexcept {
 }
 
 bool EoGePoint4d::IsInView() const noexcept {
-	if (w + x <= 0. || w - x <= 0.0) {
+	if (w + x <= 0.0 || w - x <= 0.0) {
 		return false;
 	}
-	if (w + y <= 0. || w - y <= 0.0) {
+	if (w + y <= 0.0 || w - y <= 0.0) {
 		return false;
 	}
-	if (w + z <= 0. || w - z <= 0.0) {
+	if (w + z <= 0.0 || w - z <= 0.0) {
 		return false;
 	}
 	return true;

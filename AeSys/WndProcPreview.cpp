@@ -98,8 +98,8 @@ void WndProcPreviewUpdate(const HWND previewWindow, EoDbBlock* block) {
 	} else {
 		FieldHeight = FieldWidth * AspectRatio;
 	}
-	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2., (MinimumPoint.y + MaximumPoint.y) / 2., 0.0);
-	const auto Position(Target + OdGeVector3d::kZAxis * 50.);
+	const OdGePoint3d Target((MinimumPoint.x + MaximumPoint.x) / 2.0, (MinimumPoint.y + MaximumPoint.y) / 2.0, 0.0);
+	const auto Position(Target + OdGeVector3d::kZAxis * 50.0);
 	ActiveView->SetView(Position, Target, OdGeVector3d::kYAxis, FieldWidth, FieldHeight);
 	const auto PrimitiveState {g_PrimitiveState.Save()};
 	block->Display(ActiveView, &dcMem);

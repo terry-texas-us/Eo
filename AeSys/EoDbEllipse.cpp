@@ -91,7 +91,7 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}
 	const auto Relationship {SwpAngToPt(point) / m_SweepAngle};
-	if (Relationship <= DBL_EPSILON || Relationship >= 1. - DBL_EPSILON) {
+	if (Relationship <= DBL_EPSILON || Relationship >= 1.0 - DBL_EPSILON) {
 		return;
 	}
 	const auto SweepAngle {m_SweepAngle * Relationship};
@@ -113,7 +113,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 	double dRel[2];
 	dRel[0] = SwpAngToPt(points[0]) / m_SweepAngle;
 	dRel[1] = SwpAngToPt(points[1]) / m_SweepAngle;
-	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1. - DBL_EPSILON) { // Put entire arc in trap
+	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1.0 - DBL_EPSILON) { // Put entire arc in trap
 		pArc = this;
 	} else { // Something gets cut
 		OdDbBlockTableRecordPtr BlockTableRecord {database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
@@ -133,7 +133,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 			const auto dAng1 {dRel[0] * m_SweepAngle};
 			const auto dAng2 {dRel[1] * m_SweepAngle};
 			if (isgreater(dRel[0], 0.0)) { }
-			if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) { // Cut section out of middle
+			if (dRel[0] > DBL_EPSILON && dRel[1] < 1.0 - DBL_EPSILON) { // Cut section out of middle
 				pArc->SetSweepAngle(dAng1);
 				auto Group {new EoDbGroup};
 				Group->AddTail(pArc);
@@ -145,7 +145,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 				m_MajorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 				m_MinorAxis.rotateBy(m_SweepAngle, PlaneNormal);
 				m_SweepAngle = dSwpAng - dAng2;
-			} else if (dRel[1] < 1. - DBL_EPSILON) { // Cut section in two and place begin section in trap
+			} else if (dRel[1] < 1.0 - DBL_EPSILON) { // Cut section in two and place begin section in trap
 				pArc->SetSweepAngle(dAng2);
 				m_MajorAxis.rotateBy(dAng2, PlaneNormal);
 				m_MinorAxis.rotateBy(dAng2, PlaneNormal);
@@ -249,7 +249,7 @@ void EoDbEllipse::GetBoundingBox(OdGePoint3dArray& boundingBox) const {
 	boundingBox[1] = OdGePoint3d(1.0, -1.0, 0.0);
 	boundingBox[2] = OdGePoint3d(1.0, 1.0, 0.0);
 	boundingBox[3] = OdGePoint3d(-1.0, 1.0, 0.0);
-	if (m_SweepAngle < 3. * Oda2PI / 4.) {
+	if (m_SweepAngle < 3.0 * Oda2PI / 4.0) {
 		const auto EndX {cos(m_SweepAngle)};
 		const auto EndY {sin(m_SweepAngle)};
 		if (EndX >= 0.0) {

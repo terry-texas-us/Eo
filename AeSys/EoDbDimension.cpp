@@ -80,11 +80,11 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 	double dRel[2];
 	m_Line.ParametricRelationshipOf(points[0], dRel[0]);
 	m_Line.ParametricRelationshipOf(points[1], dRel[1]);
-	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1. - DBL_EPSILON) { // Put entire dimension in trap
+	if (dRel[0] <= DBL_EPSILON && dRel[1] >= 1.0 - DBL_EPSILON) { // Put entire dimension in trap
 		Dimension = this;
 	} else { // Something gets cut
 		Dimension = new EoDbDimension(*this);
-		if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) { // Cut section out of middle
+		if (dRel[0] > DBL_EPSILON && dRel[1] < 1.0 - DBL_EPSILON) { // Cut section out of middle
 			Dimension->SetStartPoint(points[1]);
 			Dimension->SetDefaultNote();
 			auto Group {new EoDbGroup};
@@ -95,7 +95,7 @@ void EoDbDimension::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoD
 			Dimension->SetEndPoint(points[1]);
 			Dimension->SetDefaultNote();
 			m_Line.SetEndPoint(points[0]);
-		} else if (dRel[1] < 1. - DBL_EPSILON) { // Cut in two and place begin section in trap
+		} else if (dRel[1] < 1.0 - DBL_EPSILON) { // Cut in two and place begin section in trap
 			Dimension->SetEndPoint(points[1]);
 			Dimension->SetDefaultNote();
 			m_Line.SetStartPoint(points[1]);

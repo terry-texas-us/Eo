@@ -872,7 +872,7 @@ void EoDlgPageSetup::UnitsConverted(const OdDbPlotSettings::PlotPaperUnits prevU
 		double StandardScale;
 		m_PlotSettings.getStdScale(StandardScale);
 		if (StandardScale != 0.0) { // skip Fit to paper
-			m_PlotSettingsValidator->setCustomPrintScale(&m_PlotSettings, StandardScale, 1. / ConversionFactor);
+			m_PlotSettingsValidator->setCustomPrintScale(&m_PlotSettings, StandardScale, 1.0 / ConversionFactor);
 		}
 	} else {
 		double Numerator;

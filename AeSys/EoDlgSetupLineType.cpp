@@ -77,7 +77,7 @@ void EoDlgSetupLinetype::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUC
 					ActiveView->SetCameraPosition(OdGeVector3d::kZAxis);
 					const auto FieldWidthMinimum {double(SubItemRectangle.left) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX))};
 					const auto FieldWidthMaximum {double(SubItemRectangle.right) / double(DeviceContext.GetDeviceCaps(LOGPIXELSX))};
-					auto Line {EoGeLineSeg3d(OdGePoint3d(FieldWidthMinimum, FieldHeight / 2., 0.0), OdGePoint3d(FieldWidthMaximum, FieldHeight / 2., 0.0))};
+					auto Line {EoGeLineSeg3d(OdGePoint3d(FieldWidthMinimum, FieldHeight / 2.0, 0.0), OdGePoint3d(FieldWidthMaximum, FieldHeight / 2.0, 0.0))};
 					Line.Display(ActiveView, &DeviceContext);
 					ActiveView->PopViewTransform();
 					ActiveView->ViewportPopActive();

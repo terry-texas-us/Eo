@@ -259,7 +259,7 @@ void AeSysView::OnDrawModeReturn() {
 			auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
 			if (OdGreater(RadiusRatio, 1.0)) { // Minor axis is longer than major axis - switch
 				MajorAxis = MinorAxis;
-				RadiusRatio = 1. / RadiusRatio;
+				RadiusRatio = 1.0 / RadiusRatio;
 			}
 			Group = new EoDbGroup;
 			auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
@@ -423,7 +423,7 @@ void AeSysView::DoDrawModeMouseMove() {
 					auto RadiusRatio {MinorAxis.length() / MajorAxis.length()};
 					if (OdGreater(RadiusRatio, 1.0)) {
 						MajorAxis = MinorAxis;
-						RadiusRatio = 1. / RadiusRatio;
+						RadiusRatio = 1.0 / RadiusRatio;
 					}
 					auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 					Ellipse->set(m_DrawModePoints[0], ActiveViewPlaneNormal, MajorAxis, RadiusRatio);

@@ -37,7 +37,7 @@ void AeSysView::OnLpdModeOptions() {
 
 void AeSysView::OnLpdModeJoin() {
 	const auto CurrentPnt {GetCursorPosition()};
-	auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
+	auto Selection {SelectPointUsingPoint(CurrentPnt, 0.01, 15)};
 	m_EndCapGroup = std::get<tGroup>(Selection);
 	if (m_EndCapGroup != nullptr) {
 		m_EndCapPoint = std::get<1>(Selection);
@@ -72,7 +72,7 @@ void AeSysView::OnLpdModeDuct() {
 			m_OriginalPreviousGroupDisplayed = true;
 			m_PreviousSection = m_CurrentSection;
 		}
-		const auto TransitionLength {m_PreviousSection == m_CurrentSection ? 0. : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection)};
+		const auto TransitionLength {m_PreviousSection == m_CurrentSection ? 0.0 : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection)};
 		auto ReferenceLine {m_CurrentReferenceLine};
 		if (m_BeginWithTransition) {
 			if (TransitionLength != 0.0) {
@@ -181,7 +181,7 @@ void AeSysView::OnLpdModeEll() {
 		m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	}
 	if (m_PreviousOp == ID_OP2) {
-		auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
+		auto Selection {SelectPointUsingPoint(CurrentPnt, 0.01, 15)};
 		auto ExistingGroup {std::get<tGroup>(Selection)};
 		if (ExistingGroup == nullptr) {
 			theApp.AddStringToMessageList(IDS_MSG_LPD_NO_END_CAP_LOC);
@@ -330,7 +330,7 @@ void AeSysView::DoDuctModeMouseMove() {
 			GenerateRectangularElbow(PreviousReferenceLine, m_PreviousSection, m_CurrentReferenceLine, m_CurrentSection, &m_PreviewGroup, false);
 			GenerateRectangularSection(PreviousReferenceLine, m_CenterLineEccentricity, m_PreviousSection, &m_PreviewGroup);
 		}
-		auto Selection {SelectPointUsingPoint(CurrentPnt, .01, 15)};
+		auto Selection {SelectPointUsingPoint(CurrentPnt, 0.01, 15)};
 		auto ExistingGroup {std::get<tGroup>(Selection)};
 		if (ExistingGroup != nullptr) {
 			const auto EndPointPrimitive {std::get<1>(Selection)};
@@ -353,7 +353,7 @@ void AeSysView::DoDuctModeMouseMove() {
 				}
 			}
 		} else {
-			const auto TransitionLength {m_PreviousSection == m_CurrentSection ? 0. : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection)};
+			const auto TransitionLength {m_PreviousSection == m_CurrentSection ? 0.0 : LengthOfTransition(m_DuctJustification, m_TransitionSlope, m_PreviousSection, m_CurrentSection)};
 			auto ReferenceLine {m_CurrentReferenceLine};
 			if (m_BeginWithTransition) {
 				if (TransitionLength != 0.0) {
@@ -419,7 +419,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup* /*group*/, EoGeLineSeg3d& ex
 		if (fabs(Relationship) > FLT_EPSILON && fabs(Relationship - 1.0) > FLT_EPSILON) { // need to add a section either from the elbow or the existing section
 			const auto SectionLength {existingSectionReferenceLine.length()};
 			auto DistanceToBeginPoint {Relationship * SectionLength};
-			if (Relationship > FLT_EPSILON && Relationship < 1. - FLT_EPSILON) { // section from the elbow
+			if (Relationship > FLT_EPSILON && Relationship < 1.0 - FLT_EPSILON) { // section from the elbow
 				const auto StartPoint {CurrentReferenceLine.startPoint()};
 				CurrentReferenceLine.SetEndPoint(ProjectToward(StartPoint, CurrentReferenceLine.endPoint(), SectionLength - DistanceToBeginPoint));
 				GenerateRectangularSection(CurrentReferenceLine, m_CenterLineEccentricity, m_PreviousSection, group);
@@ -439,7 +439,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup* /*group*/, EoGeLineSeg3d& ex
 		const auto Width {m_PreviousSection.Width() + existingSection.Width()};
 		const auto Depth {m_PreviousSection.Depth() + existingSection.Depth()};
 		const Section ContinueGroup(Width, Depth, Section::mc_Rectangular);
-		const Section CurrentSection(Width * .75, Depth * .75, Section::mc_Rectangular);
+		const Section CurrentSection(Width * 0.75, Depth * 0.75, Section::mc_Rectangular);
 		GenerateTransition(TransitionReferenceLine, m_CenterLineEccentricity, m_DuctJustification, m_TransitionSlope, ContinueGroup, CurrentSection, group);
 	}
 	/*
@@ -461,7 +461,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup* /*group*/, EoGeLineSeg3d& ex
 			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(pstate.LinetypeIndex()));
 			Group->AddTail(EoDbLine::Create(Line));
 	
-			Group->AddTail(new EoDbEllipse(1, pstate.LinetypeIndex(), Points[3], .01));
+			Group->AddTail(new EoDbEllipse(1, pstate.LinetypeIndex(), Points[3], 0.01));
 	
 			auto Line {EoDbLine::Create(BlockTableRecord, Points[3], Points[4])};
 			Line->setColorIndex(1);
@@ -665,10 +665,10 @@ bool AeSysView::GenerateRectangularTap(const EJust justification, const Section 
 	Line->setLinetype(Linetype);
 	Section->AddTail(EoDbLine::Create(Line));
 	if (m_GenerateTurningVanes) {
-		const auto BeginPoint {(justification == kLeft ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.)};
-		EndPoint = m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.);
+		const auto BeginPoint {(justification == kLeft ? RightLine : LeftLine).ProjToBegPt(-m_DuctTapSize / 3.0)};
+		EndPoint = m_CurrentReferenceLine.ProjToBegPt(-m_DuctTapSize / 2.0);
 		const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
-		auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, BeginPoint, ActiveViewPlaneNormal, .01)};
+		auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, BeginPoint, ActiveViewPlaneNormal, 0.01)};
 		Circle->setColorIndex(1);
 		Circle->setLinetype(L"Continuous");
 		Section->AddTail(EoDbEllipse::Create(Circle));

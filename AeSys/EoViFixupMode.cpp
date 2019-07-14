@@ -296,7 +296,7 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(const double radius
 	const auto SecondLineA {-SecondLineVector.y / SecondLineVectorLength};
 	const auto SecondLineB {SecondLineVector.x / SecondLineVectorLength};
 	const auto Determinant {SecondLineA * FirstLineB - FirstLineA * SecondLineB};
-	const auto SignedRadius {FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y >= 0. ? -fabs(radius) : fabs(radius)};
+	const auto SignedRadius {FirstLineEndPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * FirstLineEndPoint.y >= 0.0 ? -fabs(radius) : fabs(radius)};
 	const auto dC1RAB1 {SignedRadius};
 	const auto dC2RAB2 {(SecondLineStartPoint.x * SecondLineEndPoint.y - SecondLineEndPoint.x * SecondLineStartPoint.y) / SecondLineVectorLength + SignedRadius};
 	centerPoint.x = (SecondLineB * dC1RAB1 - FirstLineB * dC2RAB2) / Determinant;

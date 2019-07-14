@@ -448,7 +448,7 @@ void AeSysView::OnSize(const unsigned type, const int cx, const int cy) {
 		} else {
 			SetViewportSize(cx, cy);
 			m_LayoutHelper->onSize(OdGsDCRect(0, cx, cy, 0));
-			const auto Target {OdGePoint3d(m_ViewTransform.FieldWidth() / 2., m_ViewTransform.FieldHeight() / 2., 0.0)};
+			const auto Target {OdGePoint3d(m_ViewTransform.FieldWidth() / 2.0, m_ViewTransform.FieldHeight() / 2.0, 0.0)};
 			const auto Position {Target + OdGeVector3d::kZAxis * m_ViewTransform.LensLength()};
 			OdGsViewPtr FirstView = m_LayoutHelper->viewAt(0);
 			FirstView->setView(Position, Target, OdGeVector3d::kYAxis, m_ViewTransform.FieldWidth(), m_ViewTransform.FieldHeight());
@@ -1342,7 +1342,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			FieldWidth = PlotWindowAreaMax.x - PlotWindowAreaMin.x;
 			FieldHeight = PlotWindowAreaMax.y - PlotWindowAreaMin.y;
 			const auto TargetToCenter {ViewportCenter - ViewTarget};
-			ViewTarget.set((PlotWindowAreaMin.x + PlotWindowAreaMax.x) / 2., (PlotWindowAreaMin.y + PlotWindowAreaMax.y) / 2., 0);
+			ViewTarget.set((PlotWindowAreaMin.x + PlotWindowAreaMax.x) / 2.0, (PlotWindowAreaMin.y + PlotWindowAreaMax.y) / 2.0, 0);
 			ViewTarget.transformBy(EyeToWorldTransform);
 			ViewTarget -= TargetToCenter;
 		} else if (PlotType == OdDbPlotSettings::kDisplay) {
@@ -1366,7 +1366,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			SkipClipping = true; // used full paper drawing area.
 			FieldWidth = (DrawableArea.right - DrawableArea.left) / ScaleFactor; // drx in mm -> fieldWidth in mm
 			FieldHeight = (DrawableArea.bottom - DrawableArea.top) / ScaleFactor;
-			ViewTarget.set(FieldWidth / 2. - PaperImageOrigin.x - Offset.x / ScaleFactor, FieldHeight / 2. - PaperImageOrigin.y - Offset.y / ScaleFactor, 0); // in mm
+			ViewTarget.set(FieldWidth / 2.0 - PaperImageOrigin.x - Offset.x / ScaleFactor, FieldHeight / 2.0 - PaperImageOrigin.y - Offset.y / ScaleFactor, 0); // in mm
 			if (!IsMetric) {
 				ViewTarget /= kMmPerInch; // must be in plot paper units
 				FieldWidth = MillimetersToInches(FieldWidth);
@@ -2075,7 +2075,7 @@ BOOL AeSysView::OnMouseWheel(const unsigned flags, const short zDelta, const CPo
 	//    PostMessageW(WM_PAINT);
 	//    propagateActiveViewChanges();
 	//}
-	DollyAndZoom(zDelta > 0 ? 1. / 0.9 : 0.9);
+	DollyAndZoom(zDelta > 0 ? 1.0 / 0.9 : 0.9);
 	InvalidateRect(nullptr);
 	return __super::OnMouseWheel(flags, zDelta, point);
 }
@@ -2199,8 +2199,8 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 			m_ViewTransform.SetPosition_(Position);
 			m_ViewTransform.SetViewUp(OdGeVector3d::kYAxis);
 			// <tas="Near Far clipping on Plot DC prepare?>
-			m_ViewTransform.SetNearClipDistance(-1000.);
-			m_ViewTransform.SetFarClipDistance(1000.);
+			m_ViewTransform.SetNearClipDistance(-1000.0);
+			m_ViewTransform.SetFarClipDistance(1000.0);
 			//</tas>
 			m_ViewTransform.EnablePerspective(false);
 			m_ViewTransform.BuildTransformMatrix();
@@ -2271,9 +2271,9 @@ void AeSysView::BackgroundImageDisplay(CDC* deviceContext) {
 		// Determine the region of the bitmap to transfer to display
 		CRect rcWnd;
 		rcWnd.left = lround((m_ViewTransform.FieldWidthMinimum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
-		rcWnd.top = lround((1. - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
+		rcWnd.top = lround((1.0 - (m_ViewTransform.FieldHeightMaximum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
 		rcWnd.right = lround((m_ViewTransform.FieldWidthMaximum() - OverviewUMin() + U) / OverviewUExt() * static_cast<double>(bm.bmWidth));
-		rcWnd.bottom = lround((1. - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
+		rcWnd.bottom = lround((1.0 - (m_ViewTransform.FieldHeightMinimum() - OverviewVMin() + V) / OverviewVExt()) * static_cast<double>(bm.bmHeight));
 		const auto SourceWidth {rcWnd.Width()};
 		const auto SourceHeight {rcWnd.Height()};
 		deviceContext->StretchBlt(0, 0, DestinationWidth, DestinationHeight, &MemoryDeviceContext, gsl::narrow_cast<int>(rcWnd.left), gsl::narrow_cast<int>(rcWnd.top), SourceWidth, SourceHeight, SRCCOPY);
@@ -2522,9 +2522,9 @@ void AeSysView::On3dViewsIsometric() {
 		FrontBack = Dialog.frontBack;
 		AboveUnder = Dialog.aboveUnder;
 		OdGeVector3d Direction;
-		Direction.x = LeftRight == 0 ? .5773503 : -.5773503;
-		Direction.y = FrontBack == 0 ? .5773503 : -.5773503;
-		Direction.z = AboveUnder == 0 ? -.5773503 : .5773503;
+		Direction.x = LeftRight == 0 ? 0.5773503 : -0.5773503;
+		Direction.y = FrontBack == 0 ? 0.5773503 : -0.5773503;
+		Direction.z = AboveUnder == 0 ? -0.5773503 : 0.5773503;
 		auto FirstView {m_LayoutHelper->viewAt(0)};
 		m_ViewTransform.EnablePerspective(false);
 		const auto Target(FirstView->target());
@@ -2540,19 +2540,19 @@ void AeSysView::On3dViewsIsometric() {
 }
 
 void AeSysView::OnCameraRotateLeft() {
-	Orbit(0.0, EoToRadian(-10.));
+	Orbit(0.0, EoToRadian(-10.0));
 }
 
 void AeSysView::OnCameraRotateRight() {
-	Orbit(0.0, EoToRadian(10.));
+	Orbit(0.0, EoToRadian(10.0));
 }
 
 void AeSysView::OnCameraRotateUp() {
-	Orbit(EoToRadian(-10.), 0.0);
+	Orbit(EoToRadian(-10.0), 0.0);
 }
 
 void AeSysView::OnCameraRotateDown() {
-	Orbit(EoToRadian(10.), 0.0);
+	Orbit(EoToRadian(10.0), 0.0);
 }
 
 void AeSysView::OnViewParameters() {
@@ -2654,7 +2654,7 @@ void AeSysView::OnWindowSheet() {
 }
 
 void AeSysView::OnWindowZoomIn() {
-	DollyAndZoom(1. / 0.9);
+	DollyAndZoom(1.0 / 0.9);
 }
 
 void AeSysView::OnWindowZoomOut() {
@@ -2668,7 +2668,7 @@ void AeSysView::OnWindowPan() {
 
 void AeSysView::OnWindowPanLeft() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const auto Delta {-1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth())};
+	const auto Delta {-1.0 / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth())};
 	FirstView->dolly(OdGeVector3d(Delta, 0.0, 0.0));
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2677,7 +2677,7 @@ void AeSysView::OnWindowPanLeft() {
 
 void AeSysView::OnWindowPanRight() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const auto Delta {1. / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth())};
+	const auto Delta {1.0 / (m_Viewport.WidthInInches() / m_ViewTransform.FieldWidth())};
 	FirstView->dolly(OdGeVector3d(Delta, 0.0, 0.0));
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2686,7 +2686,7 @@ void AeSysView::OnWindowPanRight() {
 
 void AeSysView::OnWindowPanUp() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const auto Delta {1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight())};
+	const auto Delta {1.0 / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight())};
 	FirstView->dolly(OdGeVector3d(0.0, Delta, 0.0));
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();
@@ -2695,7 +2695,7 @@ void AeSysView::OnWindowPanUp() {
 
 void AeSysView::OnWindowPanDown() {
 	auto FirstView {m_LayoutHelper->viewAt(0)};
-	const auto Delta {-1. / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight())};
+	const auto Delta {-1.0 / (m_Viewport.HeightInInches() / m_ViewTransform.FieldHeight())};
 	FirstView->dolly(OdGeVector3d(0.0, Delta, 0.0));
 	m_ViewTransform.SetView(FirstView->position(), FirstView->target(), FirstView->upVector(), FirstView->fieldWidth(), FirstView->fieldHeight());
 	m_ViewTransform.BuildTransformMatrix();

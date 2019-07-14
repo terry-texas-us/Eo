@@ -23,7 +23,7 @@ public:
 	/// <param name="line">other line</param>
 	[[nodiscard]] double AngleBetween_xy(const EoGeLineSeg3d& line) const;
 	/// <summary> Determines the angle of a line defined by 2 points. </summary>
-	/// <remarks> /// If null length or parallel to z-axis, angle is 0. </remarks>
+	/// <remarks> /// If null length or parallel to z-axis, angle is 0.0 </remarks>
 	/// <returns> The angle (in radians) from the X axis (0 to Oda2PI) to a point (x,y). </returns>
 	[[nodiscard]] double AngleFromXAxis_xy() const;
 	/// <summary> Constrains a line to nearest axis pivoting on first endpoint.</summary>

@@ -91,8 +91,9 @@ void EoDlgSetupColor::OnBnClickedBylayerButton() {
 }
 
 void EoDlgSetupColor::OnChangeColorEdit() {
-	const auto Index {gsl::narrow_cast<unsigned short>(GetDlgItemInt(IDC_COLOR_EDIT))};
-	DrawSelectionInformation(Index);
+	const auto Index {min(GetDlgItemInt(IDC_COLOR_EDIT), 255)};
+	
+	DrawSelectionInformation(static_cast<unsigned short>(Index));
 }
 
 BOOL EoDlgSetupColor::OnNotify(const WPARAM controlId, const LPARAM notificationMessage, LRESULT* result) {

@@ -87,7 +87,7 @@ OdGePoint3d EoDbSpline::GetCtrlPt() const {
 		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
 		double EndParameter;
 		Spline->getEndParam(EndParameter);
-		Spline->getPointAtParam(EndParameter / 2., Point);
+		Spline->getPointAtParam(EndParameter / 2.0, Point);
 	} else {
 		Point = m_Spline.controlPointAt(m_Spline.numControlPoints() / 2);
 	}
@@ -112,7 +112,7 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 	OdGePoint3d pt;
 	if (ms_RelationshipOfPoint <= DBL_EPSILON) {
 		pt = m_Spline.endPoint();
-	} else if (ms_RelationshipOfPoint >= 1. - DBL_EPSILON) {
+	} else if (ms_RelationshipOfPoint >= 1.0 - DBL_EPSILON) {
 		pt = m_Spline.startPoint();
 	} else if (m_Spline.endPoint().x > m_Spline.startPoint().x) {
 		pt = m_Spline.startPoint();

@@ -11,7 +11,7 @@ short EoDbPrimitive::ms_HighlightLinetypeIndex = 0;
 short EoDbPrimitive::ms_HighlightColorIndex = 0;
 unsigned EoDbPrimitive::ms_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::ms_RelationshipOfPoint = 0.0;
-double EoDbPrimitive::ms_SelectApertureSize = .02;
+double EoDbPrimitive::ms_SelectApertureSize = 0.02;
 
 void EoDbPrimitive::CutAt(const OdGePoint3d& /*point*/, EoDbGroup* /*newGroup*/) {}
 

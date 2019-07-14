@@ -377,9 +377,9 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 	if (versionNumber == 1) {
 		ColorIndex = short(primitiveBuffer[4] & 0x000f);
 		FontDefinition.SetCharacterSpacing(reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[36])->Convert());
-		FontDefinition.SetCharacterSpacing(min(max(FontDefinition.CharacterSpacing(), 0.0), 4.));
+		FontDefinition.SetCharacterSpacing(min(max(FontDefinition.CharacterSpacing(), 0.0), 4.0));
 		const auto d {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[40])->Convert()};
-		switch (int(fmod(d, 10.))) {
+		switch (int(fmod(d, 10.0))) {
 			case 3:
 				FontDefinition.SetPath(EoDb::kPathDown);
 				break;
@@ -392,7 +392,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			default:
 				FontDefinition.SetPath(EoDb::kPathRight);
 		}
-		switch (int(fmod(d / 10., 10.))) {
+		switch (int(fmod(d / 10.0, 10.0))) {
 			case 3:
 				FontDefinition.SetHorizontalAlignment(EoDb::kAlignRight);
 				break;
@@ -402,7 +402,7 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			default:
 				FontDefinition.SetHorizontalAlignment(EoDb::kAlignLeft);
 		}
-		switch (int(d / 100.)) {
+		switch (int(d / 100.0)) {
 			case 2:
 				FontDefinition.SetVerticalAlignment(EoDb::kAlignTop);
 				break;
@@ -414,9 +414,9 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 		}
 		ReferenceSystem.SetOrigin(reinterpret_cast<EoVaxPoint3d*>(& primitiveBuffer[8])->Convert() * 1.e-3);
 		auto dChrHgt {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[20])->Convert()};
-		dChrHgt = min(max(dChrHgt, .01e3), 100.e3);
+		dChrHgt = min(max(dChrHgt, 0.01e3), 100.e3);
 		auto dChrExpFac {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[24])->Convert()};
-		dChrExpFac = min(max(dChrExpFac, 0.0), 10.);
+		dChrExpFac = min(max(dChrExpFac, 0.0), 10.0);
 		ReferenceSystem.SetXDirection(OdGeVector3d(0.6 * dChrHgt * dChrExpFac, 0.0, 0.0) * 1.e-3);
 		ReferenceSystem.SetYDirection(OdGeVector3d(0.0, dChrHgt, 0.0) * 1.e-3);
 		auto Angle {reinterpret_cast<EoVaxFloat*>(&primitiveBuffer[28])->Convert()};
@@ -766,7 +766,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	}
 	const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
 	const auto plStrokeChrDef {plStrokeFontDef + 96};
-	const auto CharacterSpacing {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
+	const auto CharacterSpacing {1.0 + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
 	auto ptStroke {OdGePoint3d::kOrigin};
 	auto ptChrPos {ptStroke};
 	auto n {startPosition};
@@ -785,7 +785,7 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 			if ((iX & 2048) != 0) {
 				iX = -(iX - 2048);
 			}
-			ptStroke += OdGeVector3d(.01 / 0.6 * iX, .01 * iY, 0.0);
+			ptStroke += OdGeVector3d(.01 / 0.6 * iX, 0.01 * iY, 0.0);
 			if (plStrokeChrDef[i - 1] / 16777216 == 5) {
 				polyline::__End(view, deviceContext, 1);
 				polyline::BeginLineStrip();
@@ -949,7 +949,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 							if (Parameter == '1') {
 								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, 0.5, 0.0));
 							} else if (Parameter == '2') {
-								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -.5, 0.0));
+								ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -0.5, 0.0));
 							}
 						}
 					}
@@ -967,7 +967,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 							StartPosition += NumberOfCharactersToDisplay;
 						}
 						// Offset the line position up and conditionally left of current position
-						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -.35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6)));
+						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -0.35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6)));
 						InsertionPoint = ReferenceSystem.Origin();
 						StartPosition += 2; // skip the formatting characters
 						NumberOfCharactersToDisplay = TextSegmentDelimiter - StartPosition;
@@ -976,7 +976,7 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 							StartPosition += NumberOfCharactersToDisplay;
 						}
 						// Offset the line position back down left
-						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6) - 0.72));
+						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, 0.35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6) - 0.72));
 						InsertionPoint = ReferenceSystem.Origin();
 						if (text[TextSegmentDelimiter] == '/') { // display the text segment delimiter
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, TextSegmentDelimiter, 1, text);
@@ -984,13 +984,13 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 						StartPosition = TextSegmentDelimiter + 1;
 						NumberOfCharactersToDisplay = EndSemicolon - StartPosition;
 						//Offset the line position down
-						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, .35, .72));
+						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, 0.35, 0.72));
 						InsertionPoint = ReferenceSystem.Origin();
 						if (NumberOfCharactersToDisplay > 0) { // Display subscripted text segment
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);
 							StartPosition += NumberOfCharactersToDisplay;
 						}
-						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -.35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6)));
+						ReferenceSystem.SetOrigin(text_GetNewLinePos(fontDefinition, ReferenceSystem, -0.35, NumberOfCharactersToDisplay * (1 + 0.32 / 0.6)));
 						InsertionPoint = ReferenceSystem.Origin();
 						NumberOfCharactersToDisplay = 0;
 						StartPosition = EndSemicolon + 1;

@@ -106,7 +106,7 @@ void AeSysView::OnAnnotateModeBubble() {
 	if (!CurrentText.IsEmpty()) {
 		auto MinorAxis {MajorAxis};
 		MinorAxis.rotateBy(OdaPI2, ActiveViewPlaneNormal);
-		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis * .06, MinorAxis * .1);
+		EoGeReferenceSystem ReferenceSystem(CurrentPnt, MajorAxis * 0.06, MinorAxis * 0.1);
 		auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(CurrentText))};
 		Text->setNormal(ActiveViewPlaneNormal);
 		Text->setRotation(ReferenceSystem.Rotation());
@@ -326,13 +326,13 @@ void AeSysView::OnAnnotateModeCutIn() {
 			OdGePoint3dArray BoundingBox;
 			TextPrimitive->GetBoundingBox(BoundingBox, GapSpaceFactor());
 			const auto dGap {OdGeVector3d(BoundingBox[1] - BoundingBox[0]).length()};
-			BoundingBox[0] = ProjectToward(CurrentPnt, EngagedLine->StartPoint(), dGap / 2.);
-			BoundingBox[1] = ProjectToward(CurrentPnt, EngagedLine->EndPoint(), dGap / 2.);
+			BoundingBox[0] = ProjectToward(CurrentPnt, EngagedLine->StartPoint(), dGap / 2.0);
+			BoundingBox[1] = ProjectToward(CurrentPnt, EngagedLine->EndPoint(), dGap / 2.0);
 			double dRel[2];
 			dRel[0] = EngagedLine->ParametricRelationshipOf(BoundingBox[0]);
 			dRel[1] = EngagedLine->ParametricRelationshipOf(BoundingBox[1]);
 			OdDbLinePtr Line {EngagedLine->EntityObjectId().safeOpenObject(OdDb::kForWrite)};
-			if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) {
+			if (dRel[0] > DBL_EPSILON && dRel[1] < 1.0 - DBL_EPSILON) {
 				OdDbLinePtr NewLine {Line->clone()};
 				BlockTableRecord->appendOdDbEntity(NewLine);
 				Line->setEndPoint(BoundingBox[0]);
@@ -342,7 +342,7 @@ void AeSysView::OnAnnotateModeCutIn() {
 			} else if (dRel[0] <= DBL_EPSILON) {
 				Line->setStartPoint(BoundingBox[1]);
 				EngagedLine->SetStartPoint(BoundingBox[1]);
-			} else if (dRel[1] >= 1. - DBL_EPSILON) {
+			} else if (dRel[1] >= 1.0 - DBL_EPSILON) {
 				Line->setEndPoint(BoundingBox[0]);
 				EngagedLine->SetEndPoint(BoundingBox[0]);
 			}
@@ -362,8 +362,8 @@ void AeSysView::OnAnnotateModeConstructionLine() {
 		EoViAnn_points.append(CurrentPnt);
 	} else {
 		CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
-		EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
-		EoViAnn_points.append(ProjectToward(EoViAnn_points[1], EoViAnn_points[0], 96.));
+		EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.0));
+		EoViAnn_points.append(ProjectToward(EoViAnn_points[1], EoViAnn_points[0], 96.0));
 		auto Group {new EoDbGroup};
 		auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[1], EoViAnn_points[2])};
 		Line->setColorIndex(15);
@@ -505,8 +505,8 @@ void AeSysView::DoAnnotateModeMouseMove() {
 		case ID_OP9:
 			if (EoViAnn_points[0] != CurrentPnt) {
 				CurrentPnt = SnapPointToAxis(EoViAnn_points[0], CurrentPnt);
-				EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.));
-				EoViAnn_points.append(ProjectToward(EoViAnn_points[2], EoViAnn_points[0], 96.));
+				EoViAnn_points.append(ProjectToward(EoViAnn_points[0], CurrentPnt, 48.0));
+				EoViAnn_points.append(ProjectToward(EoViAnn_points[2], EoViAnn_points[0], 96.0));
 				auto Line {EoDbLine::Create(BlockTableRecord, EoViAnn_points[2], EoViAnn_points[3])};
 				Line->setColorIndex(15);
 				Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
@@ -528,24 +528,24 @@ void AeSysView::GenerateLineEndItem(const int type, const double size, const OdG
 	Polyline->setColorIndex(1);
 	Polyline->setLinetype(L"Continuous");
 	if (type == 1 || type == 2) { // open arrow or closed arrow
-		const auto Angle {.244978663127};
-		const auto Size {size / .970142500145};
+		const auto Angle {0.244978663127};
+		const auto Size {size / 0.970142500145};
 		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(endPoint);
-		ItemPoints.append(BasePoint.rotateBy(-2. * Angle, PlaneNormal, endPoint));
+		ItemPoints.append(BasePoint.rotateBy(-2.0 * Angle, PlaneNormal, endPoint));
 		if (type == 2) {
 			Polyline->setClosed(true);
 		}
 	} else if (type == 3) { // half arrow
 		const auto Angle {9.96686524912e-2};
-		const auto Size {size / .99503719021};
+		const auto Size {size / 0.99503719021};
 		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(endPoint);
 	} else { // hash
-		const auto Angle {.785398163397};
-		const auto Size {.5 * size / .707106781187};
+		const auto Angle {0.785398163397};
+		const auto Size {0.5 * size / 0.707106781187};
 		auto BasePoint {ProjectToward(endPoint, startPoint, Size)};
 		ItemPoints.append(BasePoint.rotateBy(Angle, PlaneNormal, endPoint));
 		ItemPoints.append(BasePoint.rotateBy(OdaPI, PlaneNormal, endPoint));

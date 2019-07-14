@@ -316,9 +316,9 @@ void AeSysView::OnPipeModeSymbol() {
 			Circle->setLinetype(Linetype);
 			Group->AddTail(EoDbEllipse::Create(Circle));
 			EndSection.ProjPtFrom_xy(SymbolSize[0], -SymbolSize[0] * 1.5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[0], -SymbolSize[0] * 2., m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(SymbolSize[0], -SymbolSize[0] * 2.0, m_PipeModePoints[1]);
 			BeginSection.ProjPtFrom_xy(SymbolSize[0], SymbolSize[0] * 1.5, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[0], SymbolSize[0] * 2., SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[0], SymbolSize[0] * 2.0, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolEndPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -355,7 +355,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 			m_PipeModePoints[0] = SymbolBeginPoint;
-			m_PipeModePoints[0].rotateBy(3. * OdaPI4, OdGeVector3d::kZAxis, PointOnSection);
+			m_PipeModePoints[0].rotateBy(3.0 * OdaPI4, OdGeVector3d::kZAxis, PointOnSection);
 			m_PipeModePoints[1] = m_PipeModePoints[0];
 			m_PipeModePoints[1].rotateBy(OdaPI, OdGeVector3d::kZAxis, PointOnSection);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
@@ -417,7 +417,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			BeginSection.ProjPtFrom_xy(SymbolSize[4], -SymbolSize[4] * .3, m_PipeModePoints[0]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[4], -SymbolSize[4] * 0.3, m_PipeModePoints[0]);
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, SymbolBeginPoint, ActiveViewPlaneNormal, (m_PipeModePoints[0] - SymbolBeginPoint).length())};
 			Circle->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 			Circle->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
@@ -441,7 +441,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			BeginSection.ProjPtFrom_xy(SymbolSize[5], -SymbolSize[5] * .3, m_PipeModePoints[0]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[5], -SymbolSize[5] * 0.3, m_PipeModePoints[0]);
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, SymbolBeginPoint, ActiveViewPlaneNormal, (m_PipeModePoints[0] - SymbolBeginPoint).length())};
 			Circle->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 			Circle->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
@@ -496,7 +496,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[7] * .25);
+			m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[7] * 0.25);
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, PointOnSection, ActiveViewPlaneNormal, (m_PipeModePoints[0] - PointOnSection).length())};
 			Circle->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 			Circle->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
@@ -524,7 +524,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[8] * .25);
+			m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[8] * 0.25);
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, PointOnSection, ActiveViewPlaneNormal, (m_PipeModePoints[0] - PointOnSection).length())};
 			Circle->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 			Circle->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
@@ -534,8 +534,8 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			m_PipeTicSize = SymbolSize[8] * .25;
-			GenerateTicMark(PointOnSection, m_PipeModePoints[0], SymbolSize[8] * .75, Group);
+			m_PipeTicSize = SymbolSize[8] * 0.25;
+			GenerateTicMark(PointOnSection, m_PipeModePoints[0], SymbolSize[8] * 0.75, Group);
 			break;
 		}
 		case 9: { // Generate pressure reducing valve
@@ -559,7 +559,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[9] * .25);
+			m_PipeModePoints[0] = ProjectToward(PointOnSection, EndPoint, SymbolSize[9] * 0.25);
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, PointOnSection, ActiveViewPlaneNormal, (m_PipeModePoints[0] - PointOnSection).length())};
 			Circle->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
 			Circle->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex()));
@@ -569,7 +569,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			EndSection.ProjPtFrom_xy(SymbolSize[9] * 0.5, SymbolSize[9] * .75, m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(SymbolSize[9] * 0.5, SymbolSize[9] * 0.75, m_PipeModePoints[1]);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -607,10 +607,10 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * 0.5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[10] * .25, SymbolSize[10] * .75, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, -SymbolSize[10] * .75, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[10] * .25, -SymbolSize[10] * 0.5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[10] * 0.25, SymbolSize[10] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[10] * 0.25, SymbolSize[10] * 0.75, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[10] * 0.25, -SymbolSize[10] * 0.75, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[10] * 0.25, -SymbolSize[10] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -655,10 +655,10 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * 0.5, m_PipeModePoints[0]);
-			EndSection.ProjPtFrom_xy(SymbolSize[11] * .25, SymbolSize[11] * .75, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, -SymbolSize[11] * .75, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[11] * .25, -SymbolSize[11] * 0.5, SymbolEndPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[11] * 0.25, SymbolSize[11] * 0.5, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(SymbolSize[11] * 0.25, SymbolSize[11] * 0.75, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[11] * 0.25, -SymbolSize[11] * 0.75, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[11] * 0.25, -SymbolSize[11] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -717,8 +717,8 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			EndSection.ProjPtFrom_xy(SymbolSize[12] * .25, SymbolSize[12] * 0.5, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * .25, -SymbolSize[12] * 0.5, SymbolBeginPoint);
+			EndSection.ProjPtFrom_xy(SymbolSize[12] * 0.25, SymbolSize[12] * 0.5, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 0.25, -SymbolSize[12] * 0.5, SymbolBeginPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -729,9 +729,9 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(2));
 			Group->AddTail(EoDbLine::Create(Line));
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, -SymbolSize[12] * .75, m_PipeModePoints[1]);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., -SymbolSize[12] * .75, SymbolBeginPoint);
-			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2., -SymbolSize[12] * 0.5, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 1.25, -SymbolSize[12] * 0.75, m_PipeModePoints[1]);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2.0, -SymbolSize[12] * 0.75, SymbolBeginPoint);
+			BeginSection.ProjPtFrom_xy(SymbolSize[12] * 2.0, -SymbolSize[12] * 0.5, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[0], m_PipeModePoints[1]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -797,15 +797,15 @@ void AeSysView::OnPipeModeSymbol() {
 			break;
 		}
 		case 15: {
-			EndSection.ProjPtFrom_xy(0.0, -.250, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(0.0, -0.250, m_PipeModePoints[0]);
 			Line = EoDbLine::Create(BlockTableRecord, PointOnSection, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 			GenerateTicMark(PointOnSection, m_PipeModePoints[0], TicDistance[15], Group);
-			BeginSection.ProjPtFrom_xy(.0625, .1875, m_PipeModePoints[1]);
-			EndSection.ProjPtFrom_xy(.0625, -.1875, SymbolBeginPoint);
-			EndSection.ProjPtFrom_xy(.0625, -.125, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(0.0625, 0.1875, m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(0.0625, -0.1875, SymbolBeginPoint);
+			EndSection.ProjPtFrom_xy(0.0625, -0.125, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -817,15 +817,15 @@ void AeSysView::OnPipeModeSymbol() {
 			break;
 		}
 		case 16: {
-			EndSection.ProjPtFrom_xy(0.0, -.250, m_PipeModePoints[0]);
+			EndSection.ProjPtFrom_xy(0.0, -0.250, m_PipeModePoints[0]);
 			Line = EoDbLine::Create(BlockTableRecord, PointOnSection, m_PipeModePoints[0]);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
 			GenerateTicMark(PointOnSection, m_PipeModePoints[0], TicDistance[16], Group);
-			BeginSection.ProjPtFrom_xy(.0625, .1875, m_PipeModePoints[1]);
-			EndSection.ProjPtFrom_xy(.0625, -.1875, SymbolBeginPoint);
-			EndSection.ProjPtFrom_xy(.0625, -.125, SymbolEndPoint);
+			BeginSection.ProjPtFrom_xy(0.0625, 0.1875, m_PipeModePoints[1]);
+			EndSection.ProjPtFrom_xy(0.0625, -0.1875, SymbolBeginPoint);
+			EndSection.ProjPtFrom_xy(0.0625, -0.125, SymbolEndPoint);
 			Line = EoDbLine::Create(BlockTableRecord, m_PipeModePoints[1], SymbolBeginPoint);
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
@@ -834,7 +834,7 @@ void AeSysView::OnPipeModeSymbol() {
 			Line->setColorIndex(ColorIndex);
 			Line->setLinetype(Linetype);
 			Group->AddTail(EoDbLine::Create(Line));
-			m_PipeModePoints[1] = ProjectToward(PointOnSection, m_PipeModePoints[0], .28125);
+			m_PipeModePoints[1] = ProjectToward(PointOnSection, m_PipeModePoints[0], 0.28125);
 			auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, m_PipeModePoints[1], ActiveViewPlaneNormal, (m_PipeModePoints[0] - m_PipeModePoints[1]).length())};
 			Circle->setColorIndex(ColorIndex);
 			Circle->setLinetype(Linetype);
@@ -870,13 +870,13 @@ void AeSysView::OnPipeModeWye() {
 		auto PointOnSection {HorizontalSection->ProjPt_(CurrentPnt)};
 		const auto BeginPointProjectedToSection {HorizontalSection->ProjPt_(m_PipeModePoints[0])};
 		const auto DistanceToSection {(BeginPointProjectedToSection - m_PipeModePoints[0]).length()};
-		if (DistanceToSection >= .25) {
+		if (DistanceToSection >= 0.25) {
 			GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 			m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 			const auto BeginPoint {HorizontalSection->StartPoint()};
 			const auto EndPoint {HorizontalSection->EndPoint()};
 			const auto DistanceBetweenSectionPoints {(PointOnSection - BeginPointProjectedToSection).length()};
-			if (fabs(DistanceBetweenSectionPoints - DistanceToSection) <= .25) { // Just need to shift point on section and do a single 45 degree line
+			if (fabs(DistanceBetweenSectionPoints - DistanceToSection) <= 0.25) { // Just need to shift point on section and do a single 45 degree line
 				PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, DistanceToSection);
 				HorizontalSection->SetEndPoint(PointOnSection);
 				Group = new EoDbGroup;
@@ -896,7 +896,7 @@ void AeSysView::OnPipeModeWye() {
 				GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			} else {
 				OdGePoint3d PointAtBend;
-				if (DistanceBetweenSectionPoints - .25 <= DistanceToSection) {
+				if (DistanceBetweenSectionPoints - 0.25 <= DistanceToSection) {
 					const auto d3 {DistanceBetweenSectionPoints > 0.25 ? DistanceBetweenSectionPoints : 0.125};
 					PointAtBend = ProjectToward(BeginPointProjectedToSection, m_PipeModePoints[0], d3);
 					PointOnSection = ProjectToward(BeginPointProjectedToSection, PointOnSection, d3);
@@ -990,15 +990,15 @@ void AeSysView::GenerateLineWithFittings(const int beginType, OdGePoint3d& start
 		pt1 = ProjectToward(startPoint, endPoint, m_PipeRiseDropRadius);
 		GenerateTicMark(pt1, endPoint, m_PipeRiseDropRadius, group);
 	} else if (beginType == ID_OP5) { // Previous fitting is an elbow up, riser up or top tee
-		GenerateTicMark(startPoint, endPoint, 2. * m_PipeRiseDropRadius, group);
+		GenerateTicMark(startPoint, endPoint, 2.0 * m_PipeRiseDropRadius, group);
 	}
 	if (endType == ID_OP3) { // Current fitting is an elbow or side tee
 		GenerateTicMark(endPoint, startPoint, m_PipeRiseDropRadius, group);
 	} else if (endType == ID_OP4) { // Current fitting is an elbow down, riser down or bottom tee
-		GenerateTicMark(endPoint, startPoint, 2. * m_PipeRiseDropRadius, group);
+		GenerateTicMark(endPoint, startPoint, 2.0 * m_PipeRiseDropRadius, group);
 	} else if (endType == ID_OP5) { // Current fitting is an elbow up, riser up or top tee
 		pt2 = ProjectToward(endPoint, startPoint, m_PipeRiseDropRadius);
-		GenerateTicMark(endPoint, startPoint, 2. * m_PipeRiseDropRadius, group);
+		GenerateTicMark(endPoint, startPoint, 2.0 * m_PipeRiseDropRadius, group);
 	}
 	auto Line {EoDbLine::Create(BlockTableRecord, pt1, pt2)};
 	Line->setColorIndex(static_cast<unsigned short>(g_PrimitiveState.ColorIndex()));
@@ -1020,13 +1020,13 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
 	group->AddTail(EoDbLine::Create(Line));
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 	group = new EoDbGroup;
-	GenerateTicMark(point, BeginPoint, 2. * m_PipeRiseDropRadius, group);
+	GenerateTicMark(point, BeginPoint, 2.0 * m_PipeRiseDropRadius, group);
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 	auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, point, ActiveViewPlaneNormal, m_PipeRiseDropRadius)};
 	Circle->setColorIndex(1);
 	Circle->setLinetype(L"Continuous");
 	group->AddTail(EoDbEllipse::Create(Circle));
-	GenerateTicMark(point, EndPoint, 2. * m_PipeRiseDropRadius, group);
+	GenerateTicMark(point, EndPoint, 2.0 * m_PipeRiseDropRadius, group);
 	GetDocument()->AddWorkLayerGroup(group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }
@@ -1041,13 +1041,13 @@ void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, Eo
 	Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(section->LinetypeIndex()));
 	group->AddTail(EoDbLine::Create(Line));
 	group = new EoDbGroup;
-	GenerateTicMark(point, BeginPoint, 2. * m_PipeRiseDropRadius, group);
+	GenerateTicMark(point, BeginPoint, 2.0 * m_PipeRiseDropRadius, group);
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
 	auto Circle {EoDbEllipse::CreateCircle(BlockTableRecord, point, ActiveViewPlaneNormal, m_PipeRiseDropRadius)};
 	Circle->setColorIndex(1);
 	Circle->setLinetype(L"Continuous");
 	group->AddTail(EoDbEllipse::Create(Circle));
-	GenerateTicMark(point, EndPoint, 2. * m_PipeRiseDropRadius, group);
+	GenerateTicMark(point, EndPoint, 2.0 * m_PipeRiseDropRadius, group);
 	GetDocument()->AddWorkLayerGroup(group);
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, group);
 }

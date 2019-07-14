@@ -37,7 +37,7 @@ namespace polyline {
 		CPoint pnt[2];
 		OdGePoint3d pt[2];
 		auto DashIndex {0};
-		auto SectionLength {EoMax(.025 * 96., fabs(linetype->dashLengthAt(DashIndex)))};
+		auto SectionLength {EoMax(0.025 * 96.0, fabs(linetype->dashLengthAt(DashIndex)))};
 		for (auto i = 0; i < pointsArray.GetSize() - 1; i++) {
 			const auto vLn {pointsArray[i + 1].Convert3d() - pointsArray[i].Convert3d()};
 			pt[0] = pointsArray[i].Convert3d();
@@ -145,9 +145,9 @@ namespace polyline {
 			if (lineSeg.IntersectWith_xy(EoGeLineSeg3d(StartPoint.Convert3d(), EndPoint.Convert3d()), Intersection)) {
 				double Relationship;
 				lineSeg.ParametricRelationshipOf(Intersection, Relationship);
-				if (Relationship >= - DBL_EPSILON && Relationship <= 1. + DBL_EPSILON) {
+				if (Relationship >= - DBL_EPSILON && Relationship <= 1.0 + DBL_EPSILON) {
 					EoGeLineSeg3d(StartPoint.Convert3d(), EndPoint.Convert3d()).ParametricRelationshipOf(Intersection, Relationship);
-					if (Relationship >= - DBL_EPSILON && Relationship <= 1. + DBL_EPSILON) {
+					if (Relationship >= - DBL_EPSILON && Relationship <= 1.0 + DBL_EPSILON) {
 						Intersection.z = StartPoint.z + Relationship * (EndPoint.z - StartPoint.z);
 						intersections.append(Intersection);
 					}

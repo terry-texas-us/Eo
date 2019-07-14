@@ -90,7 +90,7 @@ static void AddPaperDrawingCustomization() {
 			OdGiGeometry& Geometry {worldDraw->geometry()};
 			OdGePoint3d Dash1[2];
 			OdGePoint3d Dash2[2];
-			auto Step {(points[1] - points[0]) / (static_cast<double>(NumberOfDashes) * 2. + 1.0)};
+			auto Step {(points[1] - points[0]) / (static_cast<double>(NumberOfDashes) * 2.0 + 1.0)};
 			Dash1[0] = points[0];
 			Dash2[0] = points[2];
 			for (auto DashIndex = 0; DashIndex <= NumberOfDashes; ++DashIndex) {
@@ -102,7 +102,7 @@ static void AddPaperDrawingCustomization() {
 				Dash2[0] = Dash2[1] - Step;
 			}
 			NumberOfDashes = static_cast<int>((points[2] - points[1]).length() / Step.length() - 1.0) / 2;
-			Step = (points[2] - points[1]) / (static_cast<double>(NumberOfDashes) * 2. + 1.0);
+			Step = (points[2] - points[1]) / (static_cast<double>(NumberOfDashes) * 2.0 + 1.0);
 			Dash1[0] = points[1];
 			Dash2[0] = points[3];
 			for (auto DashIndex = 0; DashIndex <= NumberOfDashes; ++DashIndex) {
@@ -925,8 +925,8 @@ void AeSys::FormatLengthStacked(wchar_t* lengthAsString, const unsigned bufSize,
 		case kArchitectural: case kArchitecturalS: {
 			wcscpy_s(lengthAsString, bufSize, length >= 0.0 ? L" " : L"-");
 			ScaledLength = fabs(ScaledLength);
-			auto Feet {static_cast<int>(ScaledLength / 12.)};
-			auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.)))};
+			auto Feet {static_cast<int>(ScaledLength / 12.0)};
+			auto Inches {abs(static_cast<int>(fmod(ScaledLength, 12.0)))};
 			const auto FractionPrecision {ArchitecturalUnitsFractionPrecision()};
 			auto Numerator {lround(fabs(fmod(ScaledLength, 1.0)) * static_cast<double>(FractionPrecision))}; // Numerator of fractional component of inches
 			if (Numerator == FractionPrecision) {
@@ -965,9 +965,9 @@ void AeSys::FormatLengthStacked(wchar_t* lengthAsString, const unsigned bufSize,
 			ScaledLength = fabs(ScaledLength);
 			const auto Precision {ScaledLength >= 1.0 ? precision - int(log10(ScaledLength)) - 1 : precision};
 			if (Precision >= 0) {
-				_itow_s(int(ScaledLength / 12.), Buffer, 16, 10);
+				_itow_s(int(ScaledLength / 12.0), Buffer, 16, 10);
 				wcscat_s(lengthAsString, bufSize, Buffer);
-				ScaledLength = fmod(ScaledLength, 12.);
+				ScaledLength = fmod(ScaledLength, 12.0);
 				wcscat_s(lengthAsString, bufSize, L"'");
 				_itow_s(int(ScaledLength), Buffer, 16, 10);
 				wcscat_s(lengthAsString, bufSize, Buffer);

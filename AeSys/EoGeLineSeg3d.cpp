@@ -134,7 +134,7 @@ bool EoGeLineSeg3d::GetParallels(const double distanceBetweenLines, const double
 		const auto X {(endPoint().y - startPoint().y) * distanceBetweenLines / LengthOfLines};
 		const auto Y {(endPoint().x - startPoint().x) * distanceBetweenLines / LengthOfLines};
 		leftLine.translateBy(OdGeVector3d(- X * eccentricity, Y * eccentricity, 0.0));
-		rightLine.translateBy(OdGeVector3d(X * (1. - eccentricity), - Y * (1. - eccentricity), 0.0));
+		rightLine.translateBy(OdGeVector3d(X * (1.0 - eccentricity), - Y * (1.0 - eccentricity), 0.0));
 		return true;
 	}
 	return false;

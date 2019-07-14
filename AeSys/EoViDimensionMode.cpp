@@ -74,10 +74,10 @@ void AeSysView::OnDimensionModeArrow() {
 				OdGePoint3d pt;
 				const auto NewGroup {new EoDbGroup};
 				if (dRel <= 0.5) {
-					GenerateLineEndItem(1, .1, TestLine.endPoint(), TestLine.startPoint(), NewGroup);
+					GenerateLineEndItem(1, 0.1, TestLine.endPoint(), TestLine.startPoint(), NewGroup);
 					pt = TestLine.startPoint();
 				} else {
-					GenerateLineEndItem(1, .1, TestLine.startPoint(), TestLine.endPoint(), NewGroup);
+					GenerateLineEndItem(1, 0.1, TestLine.startPoint(), TestLine.endPoint(), NewGroup);
 					pt = TestLine.endPoint();
 				}
 				Document->AddWorkLayerGroup(NewGroup);
@@ -122,7 +122,7 @@ void AeSysView::OnDimensionModeDLine() {
 		if (PreviousDimensionPosition != CurrentPnt) {
 			auto Group {new EoDbGroup};
 			if (PreviousDimensionCommand == ID_OP4) {
-				GenerateLineEndItem(1, .1, CurrentPnt, PreviousDimensionPosition, Group);
+				GenerateLineEndItem(1, 0.1, CurrentPnt, PreviousDimensionPosition, Group);
 				ModeLineUnhighlightOp(PreviousDimensionCommand);
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP3);
 			}
@@ -164,7 +164,7 @@ void AeSysView::OnDimensionModeDLine2() {
 		if (PreviousDimensionPosition != CurrentPnt) {
 			auto Group {new EoDbGroup};
 			if (PreviousDimensionCommand == ID_OP4) {
-				GenerateLineEndItem(1, .1, CurrentPnt, PreviousDimensionPosition, Group);
+				GenerateLineEndItem(1, 0.1, CurrentPnt, PreviousDimensionPosition, Group);
 			} else {
 				ModeLineUnhighlightOp(PreviousDimensionCommand);
 				PreviousDimensionCommand = ModeLineHighlightOp(ID_OP4);
@@ -205,8 +205,8 @@ void AeSysView::OnDimensionModeExten() {
 	} else {
 		CurrentPnt = ProjPtToLn(CurrentPnt);
 		if (PreviousDimensionPosition != CurrentPnt) {
-			CurrentPnt = ProjectToward(CurrentPnt, PreviousDimensionPosition, -.1875);
-			PreviousDimensionPosition = ProjectToward(PreviousDimensionPosition, CurrentPnt, .0625);
+			CurrentPnt = ProjectToward(CurrentPnt, PreviousDimensionPosition, -0.1875);
+			PreviousDimensionPosition = ProjectToward(PreviousDimensionPosition, CurrentPnt, 0.0625);
 			const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 			auto Group {new EoDbGroup};
 			auto Line {EoDbLine::Create(BlockTableRecord, PreviousDimensionPosition, CurrentPnt)};
@@ -259,7 +259,7 @@ void AeSysView::OnDimensionModeDiameter() {
 		const auto ptEnd {DetPt()};
 		if (EngagedPrimitive()->IsKindOf(RUNTIME_CLASS(EoDbEllipse)) != 0) {
 			const auto pArc {dynamic_cast<EoDbEllipse*>(EngagedPrimitive())};
-			const auto ptBeg {ProjectToward(ptEnd, pArc->Center(), 2. * pArc->MajorAxis().length())};
+			const auto ptBeg {ProjectToward(ptEnd, pArc->Center(), 2.0 * pArc->MajorAxis().length())};
 			auto Group {new EoDbGroup};
 			GenerateLineEndItem(1, 0.1, ptEnd, ptBeg, Group);
 			auto DimensionPrimitive {new EoDbDimension()};
@@ -333,7 +333,7 @@ void AeSysView::OnDimensionModeAngle() {
 				auto ptArrow {ln.startPoint()};
 				ptArrow.rotateBy(OdaPI / 180.0, PlaneNormal, CenterPoint);
 				auto Group {new EoDbGroup};
-				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.startPoint(), Group);
+				// <tas> GenerateLineEndItem(1, 0.1, ptArrow, ln.startPoint(), Group);
 				OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 				auto Ellipse {EoDbEllipse::Create(BlockTableRecord)};
 				Ellipse->setColorIndex(1);
@@ -343,7 +343,7 @@ void AeSysView::OnDimensionModeAngle() {
 				ptArrow = ln.startPoint();
 				ptArrow.rotateBy(Angle - OdaPI / 180.0, PlaneNormal, CenterPoint);
 				// <tas="This LineEndItem is wrong"</tas>
-				// <tas> GenerateLineEndItem(1, .1, ptArrow, ln.endPoint(), Group);
+				// <tas> GenerateLineEndItem(1, 0.1, ptArrow, ln.endPoint(), Group);
 				const auto PrimitiveState {g_PrimitiveState.Save()};
 				auto FontDefinition {g_PrimitiveState.FontDefinition()};
 				FontDefinition.SetHorizontalAlignment(EoDb::kAlignCenter);
@@ -353,7 +353,7 @@ void AeSysView::OnDimensionModeAngle() {
 				CharacterCellDefinition.SetRotationAngle(0.0);
 				CharacterCellDefinition.SetHeight(.1);
 				g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
-				const auto ptPvt {ProjectToward(CurrentPnt, CenterPoint, -.25)};
+				const auto ptPvt {ProjectToward(CurrentPnt, CenterPoint, -0.25)};
 				const EoGeReferenceSystem ReferenceSystem {ptPvt, PlaneNormal, CharacterCellDefinition};
 				auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), static_cast<const wchar_t*>(AeSys::FormatAngle(Angle)))};
 				Text->setNormal(PlaneNormal);

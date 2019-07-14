@@ -74,13 +74,13 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 	double SecondPointParameter;
 	m_LineSeg.ParametricRelationshipOf(points[0], FirstPointParameter);
 	m_LineSeg.ParametricRelationshipOf(points[1], SecondPointParameter);
-	if (FirstPointParameter <= DBL_EPSILON && SecondPointParameter >= 1. - DBL_EPSILON) { // Put entire line in trap
+	if (FirstPointParameter <= DBL_EPSILON && SecondPointParameter >= 1.0 - DBL_EPSILON) { // Put entire line in trap
 		LineIn = this;
 	} else { // Something gets cut
 		OdDbBlockTableRecordPtr BlockTableRecord {m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		OdDbLinePtr Line {m_EntityObjectId.safeOpenObject()->clone()};
 		BlockTableRecord->appendOdDbEntity(Line);
-		if (FirstPointParameter > DBL_EPSILON && SecondPointParameter < 1. - DBL_EPSILON) { // Cut section out of middle
+		if (FirstPointParameter > DBL_EPSILON && SecondPointParameter < 1.0 - DBL_EPSILON) { // Cut section out of middle
 			Line->setStartPoint(points[1]);
 			auto Group {new EoDbGroup};
 			Group->AddTail(Create(Line));
@@ -93,7 +93,7 @@ void EoDbLine::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groupsOut, EoDbG
 			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
 			Line->setEndPoint(points[0]);
 			m_LineSeg.SetEndPoint(points[0]);
-		} else if (SecondPointParameter < 1. - DBL_EPSILON) { // Cut in two and place begin section in trap
+		} else if (SecondPointParameter < 1.0 - DBL_EPSILON) { // Cut in two and place begin section in trap
 			Line->setEndPoint(points[1]);
 			LineIn = Create(Line);
 			Line = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
