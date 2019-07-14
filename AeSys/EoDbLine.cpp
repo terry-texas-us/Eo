@@ -130,7 +130,7 @@ void EoDbLine::FormatExtra(CString& extra) const {
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	extra += L"Length;" + theApp.FormatLength(Length(), theApp.GetUnits()) + L"\t";
-	extra += L"Z-Angle;" + AeSys::FormatAngle(m_LineSeg.AngleFromXAxis_xy());
+	extra += L"Z-Angle;" + AeSys::FormatAngle(m_LineSeg.AngleFromXAxis_xy()) + L"\t";
 }
 
 void EoDbLine::FormatGeometry(CString& geometry) const {

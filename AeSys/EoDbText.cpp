@@ -75,7 +75,7 @@ void EoDbText::FormatExtra(CString& extra) const {
 	CString Length;
 	Length.Format(L"Number of Characters;%d\t", m_Text.GetLength());
 	extra += Length;
-	extra += L"Text;" + m_Text;
+	extra += L"Text;" + m_Text + L"\t";
 }
 
 void EoDbText::FormatGeometry(CString& geometry) const {

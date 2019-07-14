@@ -221,7 +221,7 @@ bool OdBaseSnapManager::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 }
 
 bool OdBaseSnapManager::Snap(OdGsView* view, OdGePoint3d& point, const OdGePoint3d* lastPoint) {
-	const auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
+	const auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_SnapInputTracker)};
 	if (TrackerSnapInfo != nullptr) { TrackerSnapInfo->m_SnapContext.mValid = false; }
 	m_Redraw = false;
 	m_SnapPoints.clear();
@@ -278,7 +278,7 @@ inline bool OdBaseSnapManager::Checkpoint(const OdDb::OsnapMode objectSnapMode, 
 	const auto p1((WorldToDeviceTransform * *m_PickPoint).convert2d());
 	const auto p2((WorldToDeviceTransform * point).convert2d());
 	const auto dist {(p1 - p2).length()};
-	auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
+	auto TrackerSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_SnapInputTracker)};
 	if (dist < m_HitRadius) {
 		if (dist < m_NearDist) {
 			m_NearDist = dist;
@@ -320,7 +320,7 @@ void OdBaseSnapManager::CheckSnapPoints(const SelectedEntityData& selectedEntity
 	} else {
 		nSnapModes &= ~(ToSnapModes(OdDb::kOsModePerp) | ToSnapModes(OdDb::kOsModeTan));
 	}
-	auto PointTrackerWithSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_InputTracker)};
+	auto PointTrackerWithSnapInfo {dynamic_cast<OdEdPointTrackerWithSnapInfo*>(m_SnapInputTracker)};
 	OdDbEntityPtr Entity {selectedEntityData.SubentId.m_Path.first().safeOpenObject()};
 	const auto Marker {selectedEntityData.SubentId.m_Marker};
 	if (PointTrackerWithSnapInfo == nullptr) {
@@ -464,5 +464,5 @@ void OdBaseSnapManager::SetEntityCenters(OdDbBlockTableRecord* blockTableRecord,
 }
 
 void OdBaseSnapManager::Track(OdEdInputTracker* inputTracker) {
-	m_InputTracker = inputTracker;
+	m_SnapInputTracker = inputTracker;
 }

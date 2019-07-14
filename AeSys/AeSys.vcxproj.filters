@@ -513,6 +513,12 @@
     <ClCompile Include="EoCollideAllCmd.cpp">
       <Filter>Source Files\Commands</Filter>
     </ClCompile>
+    <ClCompile Include="EoViewCmd.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
+    <ClCompile Include="EoSelectCmd.cpp">
+      <Filter>Source Files\Commands</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\AeSys.rc2">
@@ -1025,6 +1031,15 @@
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
     <ClInclude Include="EoInteractivityModeCmd.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="EoViewCmd.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="EoSelectCmd.h">
+      <Filter>Header Files\Commands</Filter>
+    </ClInclude>
+    <ClInclude Include="EoRegenCmd.h">
       <Filter>Header Files\Commands</Filter>
     </ClInclude>
   </ItemGroup>

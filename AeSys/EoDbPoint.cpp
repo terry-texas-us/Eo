@@ -124,7 +124,7 @@ void EoDbPoint::FormatExtra(CString& extra) const {
 	extra.Empty();
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	CString Mode;
-	Mode.Format(L"Point Display Mode;%d", m_PointDisplayMode);
+	Mode.Format(L"Point Display Mode;%d\t", m_PointDisplayMode);
 	extra += Mode;
 }
 

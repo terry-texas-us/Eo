@@ -697,7 +697,7 @@ BEGIN
         MENUITEM "D&imension\tShift+End",       ID_MODE_DIMENSION
         MENUITEM "&Cutup\tShift+Prior",         ID_MODE_CUT
         MENUITEM "&Nodal\tShift+Next",          ID_MODE_NODAL
-        MENUITEM "&Fixup\t+",                   ID_MODE_FIXUP
+        MENUITEM "&Fixup\t*",                   ID_MODE_FIXUP
         MENUITEM SEPARATOR
         MENUITEM "&Letter\t'",                  ID_MODE_LETTER
         MENUITEM "&Revise\t''",                 ID_MODE_REVISE
@@ -988,7 +988,7 @@ BEGIN
         MENUITEM "D&imension\tShift+End",       ID_MODE_DIMENSION
         MENUITEM "&Cutup\tShift+Prior",         ID_MODE_CUT
         MENUITEM "&Nodal\tShift+Next",          ID_MODE_NODAL
-        MENUITEM "&Fixup\t+",                   ID_MODE_FIXUP
+        MENUITEM "&Fixup\t*",                   ID_MODE_FIXUP
         MENUITEM SEPARATOR
         MENUITEM "&Letter\t'",                  ID_MODE_LETTER
         MENUITEM "&Revise\t''",                 ID_MODE_REVISE
@@ -1289,7 +1289,7 @@ BEGIN
     VK_HOME,        ID_MODE_DRAW2,          VIRTKEY, SHIFT, NOINVERT
     ",",            ID_MODE_EDIT,           ASCII,  NOINVERT
     VK_NEXT,        ID_MODE_EDIT,           VIRTKEY, NOINVERT
-    "+",            ID_MODE_FIXUP,          ASCII,  NOINVERT
+    "*",            ID_MODE_FIXUP,          ASCII,  NOINVERT
     ":",            ID_MODE_GROUP_EDIT,     ASCII,  NOINVERT
     "'",            ID_MODE_LETTER,         ASCII,  NOINVERT
     "1",            ID_MODE_LPD,            VIRTKEY, ALT, NOINVERT
@@ -1602,7 +1602,7 @@ BEGIN
 END
 
 IDD_PROPERTIES DIALOGEX 0, 0, 222, 295
-STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+STYLE DS_SETFONT | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 CAPTION "PROPERTIES"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
@@ -2958,8 +2958,8 @@ BEGIN
     100, 100, 0, 0,
     100, 100, 0, 0,
     100, 0, 0, 0,
-    100, 100, 0, 0,
-    100, 100, 0, 0,
+    100, 0, 0, 100,
+    100, 0, 0, 100,
     0, 0, 100, 100,
     100, 100, 0, 0
 END
@@ -3013,6 +3013,14 @@ BEGIN
     0, 100, 0, 0,
     0, 100, 0, 0,
     0, 0, 0, 100
+END
+
+IDD_PROPERTIES AFX_DIALOG_LAYOUT
+BEGIN
+    0,
+    0, 0, 100, 100,
+    100, 100, 0, 0,
+    100, 100, 0, 0
 END
 
 

@@ -1,4 +1,6 @@
 #pragma once
+#include <Ed/EdCommandStack.h>
+
 struct OdExDollyCmd : OdEdCommand {
 	[[nodiscard]] const OdString groupName() const override;
 

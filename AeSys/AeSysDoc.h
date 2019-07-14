@@ -12,40 +12,6 @@ class ExStringIO;
 class EoDlgUserIoConsole;
 struct EoGeUniquePoint;
 
-class CommandView : public OdEdCommand {
-public:
-	static const OdString Name();
-
-	[[nodiscard]] const OdString groupName() const final;
-
-	[[nodiscard]] const OdString globalName() const final;
-
-	void execute(OdEdCommandContext* commandContext) final;
-
-	[[nodiscard]] const OdRxModule* commandApp() const;
-
-	void commandUndef(bool undefIt);
-
-	[[nodiscard]] long commandFlags() const;
-};
-
-class CommandSelect : public OdEdCommand {
-public:
-	static const OdString Name();
-
-	[[nodiscard]] const OdString groupName() const final;
-
-	[[nodiscard]] const OdString globalName() const final;
-
-	void execute(OdEdCommandContext* commandContext) final;
-
-	[[nodiscard]] const OdRxModule* commandApp() const;
-
-	void commandUndef(bool undefIt);
-
-	[[nodiscard]] long commandFlags() const;
-};
-
 class OdDbDatabaseDoc final : public OdDbDatabase {
 	static AeSysDoc* g_DatabaseDocument;
 	mutable AeSysDoc* m_pDoc;

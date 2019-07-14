@@ -1,5 +1,6 @@
 #pragma once
 #include <Ed/EdCommandStack.h>
+class OdGsView;
 
 struct OdExZoomCmd : OdEdCommand {
 	[[nodiscard]] const OdString groupName() const override;

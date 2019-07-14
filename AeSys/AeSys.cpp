@@ -25,6 +25,8 @@
 #include "EoPreviewDib.h"
 #include "Lex.h"
 #include "EoDbHatch.h"
+#include "EoViewCmd.h"
+#include "EoSelectCmd.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

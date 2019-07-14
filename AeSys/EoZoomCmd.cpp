@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "EoZoomCmd.h"
 #include <Gi/GiDrawableImpl.h>
 #include <Gs/Gs.h>
 #include <Gs/GsBaseVectorizer.h>
@@ -12,8 +13,6 @@
 #include <DbHostAppServices.h>
 #include <OdDToStr.h>
 #include <ExTrackers.h>
-#include "EditorObject.h"
-#include "EoRtOrbitTracker.h"
 #include "EoRtZoomTracker.h"
 
 static bool GetLayoutExtents(const OdDbObjectId& spaceId, const OdGsView* view, OdGeBoundBlock3d& boundBox) {

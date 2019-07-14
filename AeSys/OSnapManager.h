@@ -68,7 +68,7 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 	OdGePoint3d* m_PickPoint {nullptr};
 	const OdGePoint3d* m_LastPoint {nullptr};
 	OdGePoint3dArray m_SnapPoints;
-	OdEdInputTracker* m_InputTracker {nullptr};
+	OdEdInputTracker* m_SnapInputTracker {nullptr};
 	double m_WorldToDevice {0.0};
 	double m_NearDist;
 	OdGePoint3d m_SnapPoint;

@@ -61,7 +61,7 @@ void EoDbSpline::FormatExtra(CString& extra) const {
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	CString NumberOfPoints;
-	NumberOfPoints.Format(L"Number of Control Points;%d", m_Spline.numControlPoints());
+	NumberOfPoints.Format(L"Number of Control Points;%d\t", m_Spline.numControlPoints());
 	extra += NumberOfPoints;
 }
 

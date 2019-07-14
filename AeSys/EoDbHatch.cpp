@@ -116,7 +116,7 @@ void EoDbHatch::FormatExtra(CString& extra) const {
 	extra += L"Interior Style;" + FormatInteriorStyle() + L"\t";
 	extra += L"Interior Style Name;" + CString(static_cast<const wchar_t*>(EoDbHatchPatternTable::LegacyHatchPatternName(m_InteriorStyleIndex))) + L"\t";
 	CString NumberOfVertices;
-	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
+	NumberOfVertices.Format(L"Number of Vertices;%d\t", m_Vertices.size());
 	extra += NumberOfVertices;
 }
 

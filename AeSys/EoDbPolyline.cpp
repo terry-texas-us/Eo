@@ -114,7 +114,7 @@ void EoDbPolyline::FormatExtra(CString& extra) const {
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	CString NumberOfVertices;
-	NumberOfVertices.Format(L"Number of Vertices;%d", m_Vertices.size());
+	NumberOfVertices.Format(L"Number of Vertices;%d\t", m_Vertices.size());
 	extra += NumberOfVertices;
 }
 

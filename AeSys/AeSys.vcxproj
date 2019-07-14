@@ -125,6 +125,8 @@
     <ClCompile Include="EoInteractivityModeCmd.cpp" />
     <ClCompile Include="EoOrbitCtrl.cpp" />
     <ClCompile Include="EoRtOrbitTracker.cpp" />
+    <ClCompile Include="EoSelectCmd.cpp" />
+    <ClCompile Include="EoViewCmd.cpp" />
     <ClCompile Include="EoZoomCmd.cpp" />
     <ClCompile Include="OdApplicationDocument.cpp" />
     <ClCompile Include="AeSysView.cpp" />
@@ -314,9 +316,12 @@
     <ClInclude Include="EoOrbitCtrl.h" />
     <ClInclude Include="EoPageSetup.h" />
     <ClInclude Include="EoDollyCmd.h" />
+    <ClInclude Include="EoRegenCmd.h" />
     <ClInclude Include="EoRtDollyTracker.h" />
     <ClInclude Include="EoRtOrbitTracker.h" />
     <ClInclude Include="EoRtZoomTracker.h" />
+    <ClInclude Include="EoSelectCmd.h" />
+    <ClInclude Include="EoViewCmd.h" />
     <ClInclude Include="EoViewInteractivityMode.h" />
     <ClInclude Include="EoZoomCmd.h" />
     <ClInclude Include="OdApplication.h" />

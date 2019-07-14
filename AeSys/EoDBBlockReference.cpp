@@ -102,7 +102,7 @@ void EoDbBlockReference::FormatExtra(CString& extra) const {
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	extra += L"Block Name;" + m_Name + L"\t";
 	CString Angle;
-	Angle.Format(L"Angle;%f", m_Rotation);
+	Angle.Format(L"Angle;%f\t", m_Rotation);
 	extra += Angle;
 }
 

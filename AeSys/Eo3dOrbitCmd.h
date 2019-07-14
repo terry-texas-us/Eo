@@ -1,6 +1,5 @@
 #pragma once
 #include <Ed/EdCommandStack.h>
-class OdEdCommandContext;
 
 struct OdEx3dOrbitCmd : OdEdCommand {
 	[[nodiscard]] const OdString groupName() const override;

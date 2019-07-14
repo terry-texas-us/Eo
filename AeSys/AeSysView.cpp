@@ -30,6 +30,7 @@
 #include "EoDlgViewParameters.h"
 #include "EoDbHatch.h"
 #include "EoDbPolyline.h"
+#include "EoRegenCmd.h"
 
 template <class T>
 struct EoRectangle {
@@ -2030,29 +2031,12 @@ void AeSysView::OnRButtonUp(const unsigned flags, const CPoint point) {
 	}
 }
 
-struct OdExRegenCmd : OdEdCommand {
-	OdGsLayoutHelper* m_LayoutHelper {nullptr};
-	AeSysView* m_View {nullptr};
-
-	const OdString groupName() const override { return L"REGEN"; }
-
-	const OdString globalName() const override { return L"REGEN"; }
-
-	[[nodiscard]] long flags() const override {
-		return OdEdCommand::flags() | kNoUndoMarker;
-	}
-
-	void execute(OdEdCommandContext* /*edCommandContext*/) noexcept override {
-		// <tas="placeholder until implemented" m_View->OnViewerRegen();"</tas>
-	}
-};
-
 OdEdCommandPtr AeSysView::command(const OdString& commandName) {
 	if (commandName.iCompare(L"REGEN") == 0) {
-		auto c {OdRxObjectImpl<OdExRegenCmd>::createObject()};
-		c->m_View = this;
-		c->m_LayoutHelper = m_LayoutHelper;
-		return c;
+		auto RegenCmd {OdRxObjectImpl<OdExRegenCmd>::createObject()};
+		RegenCmd->m_View = this;
+		RegenCmd->m_LayoutHelper = m_LayoutHelper;
+		return RegenCmd;
 	}
 	return m_Editor.Command(commandName);
 }

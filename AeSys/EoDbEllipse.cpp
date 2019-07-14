@@ -184,7 +184,7 @@ void EoDbEllipse::FormatExtra(CString& extra) const {
 	extra += L"Color;" + FormatColorIndex() + L"\t";
 	extra += L"Linetype;" + FormatLinetypeIndex() + L"\t";
 	extra += L"Sweep Angle;" + AeSys::FormatAngle(m_SweepAngle) + L"\t";
-	extra += L"Major Axis Length;" + theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits());
+	extra += L"Major Axis Length;" + theApp.FormatLength(m_MajorAxis.length(), theApp.GetUnits()) + L"\t";
 }
 
 void EoDbEllipse::FormatGeometry(CString& geometry) const {

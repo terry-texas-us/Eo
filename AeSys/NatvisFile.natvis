@@ -9,5 +9,5 @@
   </Type>
   <Type Name = "OdString">
     <DisplayString>Data: {m_pData}</DisplayString>
-  </Type>  
+  </Type>
 </AutoVisualizer>

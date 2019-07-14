@@ -20,6 +20,8 @@ void EoDbPegFile::Load(AeSysDoc* document) {
 		ReadGroupsSection(document);
 	} catch (const wchar_t* Message) {
 		MessageBoxW(nullptr, Message, L"EoDbPegFile", MB_ICONWARNING | MB_OK);
+	} catch (const OdError& Error) {
+		theApp.ErrorMessageBox(L"", Error);
 	}
 }
 
