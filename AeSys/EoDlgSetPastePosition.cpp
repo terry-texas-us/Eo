@@ -8,8 +8,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetPastePosition, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetPastePosition::EoDlgSetPastePosition(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSetPastePosition::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

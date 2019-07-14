@@ -8,57 +8,40 @@ public:
 ODRX_DECLARE_MEMBERS(OdApplicationReactor);
 
 	// App events.
-	virtual void OnBeginQuit() noexcept {
-	}
+	virtual void OnBeginQuit() noexcept { }
 
-	virtual void OnEnterModal() noexcept {
-	}
+	virtual void OnEnterModal() noexcept { }
 
-	virtual void OnIdle(int) noexcept {
-	}
+	virtual void OnIdle(int) noexcept { }
 
-	virtual void OnLeaveModal() noexcept {
-	}
+	virtual void OnLeaveModal() noexcept { }
 
-	virtual void OnPreTranslateMessage(MSG* message) noexcept {
-	}
+	virtual void OnPreTranslateMessage(MSG* message) noexcept { }
 
-	virtual void OnQuitAborted() noexcept {
-	}
+	virtual void OnQuitAborted() noexcept { }
 
-	virtual void OnQuitWillStart() noexcept {
-	}
+	virtual void OnQuitWillStart() noexcept { }
 
 	// Document events.
-	virtual void DocumentCreateStarted(CDocument* document) noexcept {
-	}
+	virtual void DocumentCreateStarted(CDocument* document) noexcept { }
 
-	virtual void DocumentCreated(CDocument* document) noexcept {
-	}
+	virtual void DocumentCreated(CDocument* document) noexcept { }
 
-	virtual void DocumentToBeDestroyed(CDocument* document) noexcept {
-	}
+	virtual void DocumentToBeDestroyed(CDocument* document) noexcept { }
 
-	virtual void DocumentDestroyed(const OdString& pathName) noexcept {
-	}
+	virtual void DocumentDestroyed(const OdString& pathName) noexcept { }
 
-	virtual void DocumentCreateCanceled(CDocument* document) noexcept {
-	}
+	virtual void DocumentCreateCanceled(CDocument* document) noexcept { }
 
-	virtual void DocumentBecameCurrent(CDocument* document) noexcept {
-	}
+	virtual void DocumentBecameCurrent(CDocument* document) noexcept { }
 
-	virtual void DocumentToBeActivated(CDocument* document) noexcept {
-	}
+	virtual void DocumentToBeActivated(CDocument* document) noexcept { }
 
-	virtual void DocumentToBeDeactivated(CDocument* document) noexcept {
-	}
+	virtual void DocumentToBeDeactivated(CDocument* document) noexcept { }
 
-	virtual void DocumentActivationModified(bool modified) noexcept {
-	}
+	virtual void DocumentActivationModified(bool modified) noexcept { }
 
-	virtual void DocumentActivated(CDocument* document) noexcept {
-	}
+	virtual void DocumentActivated(CDocument* document) noexcept { }
 };
 
 using OdApplicationReactorPtr = OdSmartPtr<OdApplicationReactor>;

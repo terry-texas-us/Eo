@@ -15,8 +15,7 @@ END_MESSAGE_MAP()
 OdGePoint3d EoDlgModeLetter::m_Point = OdGePoint3d::kOrigin;
 
 EoDlgModeLetter::EoDlgModeLetter(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgModeLetter::~EoDlgModeLetter() = default;
 

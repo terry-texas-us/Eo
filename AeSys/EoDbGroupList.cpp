@@ -8,7 +8,9 @@ void EoDbGroupList::AddToTreeViewControl(const HWND tree, const HTREEITEM htiPar
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};
 		const auto TreeItem {Group->AddToTreeViewControl(tree, htiParent)};
-		if (Group->GetCount() == 1) { TreeView_Expand(tree, TreeItem, TVE_EXPAND); }
+		if (Group->GetCount() == 1) {
+			TreeView_Expand(tree, TreeItem, TVE_EXPAND);
+		}
 	}
 }
 
@@ -35,7 +37,9 @@ void EoDbGroupList::Display(AeSysView* view, CDC* deviceContext) {
 
 POSITION EoDbGroupList::Remove(EoDbGroup* group) {
 	const auto Position {Find(group)};
-	if (Position != nullptr) { RemoveAt(Position); }
+	if (Position != nullptr) {
+		RemoveAt(Position);
+	}
 	return Position;
 }
 
@@ -145,7 +149,9 @@ EoDbGroup* EoDbGroupList::SelectGroupBy(const OdGePoint3d& point) {
 	auto Position {GetHeadPosition()};
 	while (Position != nullptr) {
 		auto Group {GetNext(Position)};
-		if (Group->SelectPrimitiveUsingPoint(ptView, ActiveView, ApertureSize, PointAtSelection) != nullptr) { SelectedGroup = Group; }
+		if (Group->SelectPrimitiveUsingPoint(ptView, ActiveView, ApertureSize, PointAtSelection) != nullptr) {
+			SelectedGroup = Group;
+		}
 	}
 	return SelectedGroup;
 }

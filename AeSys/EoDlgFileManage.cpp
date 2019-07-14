@@ -31,14 +31,12 @@ BEGIN_MESSAGE_MAP(EoDlgFileManage, CDialog)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 EoDlgFileManage::EoDlgFileManage(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgFileManage::EoDlgFileManage(AeSysDoc* document, OdDbDatabasePtr database, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_Document(document)
-	, m_Database(database) {
-}
+	, m_Database(database) {}
 
 void EoDlgFileManage::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -198,7 +196,9 @@ void EoDlgFileManage::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUCT d
 				DeviceContext.Attach(drawItemStruct->hDC);
 				CBrush BackgroundBrush(BackgroundColor);
 				DeviceContext.FillRect(rcItem, &BackgroundBrush);
-				if (drawItemStruct->itemState & ODS_FOCUS) { DeviceContext.DrawFocusRect(rcItem); }
+				if (drawItemStruct->itemState & ODS_FOCUS) {
+					DeviceContext.DrawFocusRect(rcItem);
+				}
 				const auto ItemID {gsl::narrow_cast<int>(drawItemStruct->itemID)};
 				if (ItemID != -1) { // The text color is stored as the item data.
 					const auto TextColor {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
@@ -381,8 +381,7 @@ void EoDlgFileManage::OnNmClickLayersListControl(NMHDR* notifyStructure, LRESULT
 				//					pVp->freezeLayersInViewport(ids);
 				//				}
 				//			}
-			} else {
-			}
+			} else { }
 			break;
 		case kVpColor:
 			break;
@@ -406,7 +405,9 @@ void EoDlgFileManage::OnNmClickLayersListControl(NMHDR* notifyStructure, LRESULT
 }
 
 void EoDlgFileManage::OnNmDoubleClickLayersListControl(NMHDR* /*notifyStructure*/, LRESULT* result) {
-	if (m_ClickToColumnStatus) { OnBnClickedSetCurrent(); }
+	if (m_ClickToColumnStatus) {
+		OnBnClickedSetCurrent();
+	}
 	*result = 0;
 }
 

@@ -3,8 +3,7 @@
 #include "Lex.h"
 using namespace Lex;
 
-namespace Lex
-{
+namespace Lex {
 	int g_TokenTypes[gc_MaximumNumberOfTokens];
 	int g_Tokens;
 	int g_NumberOfValues;
@@ -31,7 +30,9 @@ void Lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 				NumberOfOpenParentheses++;
 				break;
 			case kCloseParenthesis:
-				if (NumberOfOpenParentheses == 0) { break; }
+				if (NumberOfOpenParentheses == 0) {
+					break;
+				}
 				while (OperatorStack[TopOfOperatorStack] != gc_TokenLparen) { // Move operator to token stack
 					typeOfTokens[numberOfTokens++] = OperatorStack[TopOfOperatorStack--];
 				}
@@ -60,9 +61,15 @@ void Lex::BreakExpression(int& firstTokenLocation, int& numberOfTokens, int* typ
 		PreviousTokenType = CurrentTokenType;
 		CurrentTokenType = TokenType(++firstTokenLocation);
 	}
-	if (NumberOfOpenParentheses > 0) { throw L"Unbalanced parentheses"; }
-	while (TopOfOperatorStack > 1) { typeOfTokens[numberOfTokens++] = OperatorStack[TopOfOperatorStack--]; }
-	if (numberOfTokens == 0) { throw L"Syntax error"; }
+	if (NumberOfOpenParentheses > 0) {
+		throw L"Unbalanced parentheses";
+	}
+	while (TopOfOperatorStack > 1) {
+		typeOfTokens[numberOfTokens++] = OperatorStack[TopOfOperatorStack--];
+	}
+	if (numberOfTokens == 0) {
+		throw L"Syntax error";
+	}
 }
 
 void Lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefinition, wchar_t* acPic, int* aiLen) noexcept {
@@ -82,14 +89,18 @@ void Lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 		auto ValueIndex {0};
 		auto LineLocation {0};
 		int DataLength {HIWORD(columnDefinition->dataDefinition)};
-		if (DataType != gc_TokenInteger) { DataLength = DataLength / 2; }
+		if (DataType != gc_TokenInteger) {
+			DataLength = DataLength / 2;
+		}
 		if (DataDimension != DataLength) { // Matrix
 			acPic[0] = '[';
 			LineLocation++;
 		}
 		for (auto i1 = 0; i1 < DataLength; i1++) {
 			LineLocation++;
-			if (DataLength != 1 && i1 % DataDimension == 0) { acPic[LineLocation++] = '['; }
+			if (DataLength != 1 && i1 % DataDimension == 0) {
+				acPic[LineLocation++] = '[';
+			}
 			if (DataType == gc_TokenInteger) {
 				memcpy(LongValue, &acVal[ValueIndex], 4);
 				ValueIndex += 4;
@@ -113,7 +124,9 @@ void Lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 					LineLocation += ValueLength;
 				}
 			}
-			if (DataLength != 1 && i1 % DataDimension == DataDimension - 1) { acPic[LineLocation++] = ']'; }
+			if (DataLength != 1 && i1 % DataDimension == DataDimension - 1) {
+				acPic[LineLocation++] = ']';
+			}
 		}
 		if (DataDimension == DataLength) {
 			*aiLen = LineLocation - 1;
@@ -125,7 +138,9 @@ void Lex::ConvertValToString(wchar_t* acVal, LexColumnDefinition* columnDefiniti
 }
 
 void Lex::ConvertValTyp(const int valueType, const int requiredType, long* definition, void* apVal) noexcept {
-	if (valueType == requiredType) { return; }
+	if (valueType == requiredType) {
+		return;
+	}
 	const auto pdVal {static_cast<double*>(apVal)};
 	const auto piVal {static_cast<long*>(apVal)};
 	if (valueType == gc_TokenString) {
@@ -146,14 +161,14 @@ void Lex::ConvertValTyp(const int valueType, const int requiredType, long* defin
 			*definition = MAKELONG(1, 2);
 		}
 	} else { // real
-		if (requiredType == gc_TokenString) {
-		} else if (requiredType == gc_TokenInteger) {
-		}
+		if (requiredType == gc_TokenString) { } else if (requiredType == gc_TokenInteger) { }
 	}
 }
 
 void Lex::ConvertStringToVal(const int valueType, const long definition, wchar_t* szVal, long* lDefReq, void* p) {
-	if (LOWORD(definition) <= 0) { throw L"Empty string"; }
+	if (LOWORD(definition) <= 0) {
+		throw L"Empty string";
+	}
 	wchar_t szTok[64];
 	auto iNxt {0};
 	const auto iTyp {Scan(szTok, szVal, iNxt)};
@@ -212,7 +227,9 @@ void Lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 			lDef1 = g_Values[g_LocationOfValue[iTokLoc]];
 			memcpy(cOp1, &g_Values[g_LocationOfValue[iTokLoc] + 1], static_cast<unsigned>(HIWORD(lDef1) * 4));
 		} else { // Token is an operator .. Pop an operand from operand stack
-			if (OperandStackTop == 0) { throw L"Operand stack is empty"; }
+			if (OperandStackTop == 0) {
+				throw L"Operand stack is empty";
+			}
 			iTyp1 = iOpStkTyp[OperandStackTop];
 			lDef1 = lOpStkDef[OperandStackTop];
 			int iLen1 {HIWORD(lDef1)};
@@ -227,8 +244,7 @@ void Lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 					} else if (iTokTyp == gc_TokenReal) {
 						iTyp1 = gc_TokenReal;
 						ConvertStringToVal(gc_TokenReal, lDef1, szTok, &lDef1, cOp1);
-					} else if (iTokTyp == gc_TokenString) {
-					} else {
+					} else if (iTokTyp == gc_TokenString) { } else {
 						throw L"String operand conversions error: unknown";
 					}
 				} else if (iTyp1 == gc_TokenInteger) {
@@ -237,7 +253,9 @@ void Lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 					UnaryOp(iTokTyp, &iTyp1, &lDef1, dOp1);
 				}
 			} else if (g_TokenTable[iTokTyp].Class == kBinaryArithmeticOp) { // Binary arithmetic operator
-				if (OperandStackTop == 0) { throw L"Binary Arithmetic: Only one operand."; }
+				if (OperandStackTop == 0) {
+					throw L"Binary Arithmetic: Only one operand.";
+				}
 				auto iTyp2 {iOpStkTyp[OperandStackTop]}; // Pop second operand from operand stack
 				lDef2 = lOpStkDef[OperandStackTop];
 				int iLen2 {HIWORD(lDef2)};
@@ -271,21 +289,24 @@ void Lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 						}
 					}
 				} else if (iTokTyp == gc_TokenBinaryMinus) {
-					if (iTyp1 == gc_TokenString) { throw L"Can not subtract strings"; }
+					if (iTyp1 == gc_TokenString) {
+						throw L"Can not subtract strings";
+					}
 					if (iTyp1 == gc_TokenInteger) {
 						lOp1[0] = lOp2[0] - lOp1[0];
 					} else {
 						dOp1[0] = dOp2[0] - dOp1[0];
 					}
 				} else if (iTokTyp == gc_TokenMultiply) {
-					if (iTyp1 == gc_TokenString) { throw L"Can not multiply strings"; }
+					if (iTyp1 == gc_TokenString) {
+						throw L"Can not multiply strings";
+					}
 					if (iTyp1 == gc_TokenInteger) {
 						lOp1[0] *= lOp2[0];
 					} else {
 						if (iTyp1 == gc_TokenReal) {
 							iTyp1 = iTyp2;
-						} else if (iTyp2 == gc_TokenReal) {
-						} else if (iTyp1 == gc_TokenLengthOperand && iTyp2 == gc_TokenLengthOperand) {
+						} else if (iTyp2 == gc_TokenReal) { } else if (iTyp1 == gc_TokenLengthOperand && iTyp2 == gc_TokenLengthOperand) {
 							iTyp1 = gc_TokenAreaOperand;
 						} else {
 							throw L"Invalid mix of multiplicands";
@@ -293,12 +314,18 @@ void Lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 						dOp1[0] *= dOp2[0];
 					}
 				} else if (iTokTyp == gc_TokenDivide) {
-					if (iTyp1 == gc_TokenString) { throw L"Can not divide strings"; }
+					if (iTyp1 == gc_TokenString) {
+						throw L"Can not divide strings";
+					}
 					if (iTyp1 == gc_TokenInteger) {
-						if (lOp1[0] == 0) { throw L"Attempting to divide by 0"; }
+						if (lOp1[0] == 0) {
+							throw L"Attempting to divide by 0";
+						}
 						lOp1[0] = lOp2[0] / lOp1[0];
 					} else if (iTyp1 <= iTyp2) {
-						if (dOp1[0] == 0.0) { throw L"Attempting to divide by 0."; }
+						if (dOp1[0] == 0.0) {
+							throw L"Attempting to divide by 0.";
+						}
 						if (iTyp1 == iTyp2) {
 							iTyp1 = gc_TokenReal;
 						} else if (iTyp1 == gc_TokenReal) {
@@ -312,11 +339,15 @@ void Lex::EvalTokenStream(int* aiTokId, long* definition, int* valueType, void* 
 					}
 				} else if (iTokTyp == gc_TokenExponentiate) {
 					if (iTyp1 == gc_TokenInteger) {
-						if (lOp1[0] >= 0 && lOp1[0] > DBL_MAX_10_EXP || lOp1[0] < 0 && lOp1[0] < DBL_MIN_10_EXP) { throw L"Exponentiation error"; }
+						if (lOp1[0] >= 0 && lOp1[0] > DBL_MAX_10_EXP || lOp1[0] < 0 && lOp1[0] < DBL_MIN_10_EXP) {
+							throw L"Exponentiation error";
+						}
 						lOp1[0] = static_cast<int>(pow(static_cast<double>(lOp2[0]), lOp1[0]));
 					} else if (iTyp1 == gc_TokenReal) {
 						const auto iExp {static_cast<int>(dOp1[0])};
-						if (iExp >= 0 && iExp > DBL_MAX_10_EXP || iExp < 0 && iExp < DBL_MIN_10_EXP) { throw L"Exponentiation error"; }
+						if (iExp >= 0 && iExp > DBL_MAX_10_EXP || iExp < 0 && iExp < DBL_MIN_10_EXP) {
+							throw L"Exponentiation error";
+						}
 						dOp1[0] = pow(dOp2[0], dOp1[0]);
 					}
 				}
@@ -354,8 +385,12 @@ void Lex::Parse(const wchar_t* szLine) {
 	const auto iLnLen {static_cast<int>(wcslen(szLine))};
 	while (iBeg < iLnLen) {
 		const auto iTyp {Scan(szTok, szLine, iBeg)};
-		if (iTyp == -1) { return; }
-		if (g_Tokens == gc_MaximumNumberOfTokens) { return; }
+		if (iTyp == -1) {
+			return;
+		}
+		if (g_Tokens == gc_MaximumNumberOfTokens) {
+			return;
+		}
 		g_TokenTypes[g_Tokens] = iTyp;
 		int iLen;
 		int iDim;
@@ -399,7 +434,9 @@ void Lex::ParseStringOperand(const wchar_t* pszTok) {
 	auto iDim {0};
 	auto iNxt {1};
 	while (pszTok[iNxt] != '\0') {
-		if (pszTok[iNxt] == '"' && pszTok[iNxt + 1] == '"') { iNxt++; }
+		if (pszTok[iNxt] == '"' && pszTok[iNxt + 1] == '"') {
+			iNxt++;
+		}
 		pszValues[iDim++] = pszTok[iNxt++];
 	}
 	pszValues[--iDim] = '\0';
@@ -410,7 +447,9 @@ void Lex::ParseStringOperand(const wchar_t* pszTok) {
 }
 
 int Lex::Scan(wchar_t* token, const wchar_t* line, int& linePosition) {
-	while (line[linePosition] == ' ') { linePosition++; }
+	while (line[linePosition] == ' ') {
+		linePosition++;
+	}
 	const auto iBegLoc {linePosition};
 	auto iTokLoc {linePosition};
 	auto Result {-1};
@@ -435,7 +474,9 @@ int Lex::Scan(wchar_t* token, const wchar_t* line, int& linePosition) {
 	wcsncpy(token, &line[iBegLoc], static_cast<unsigned>(iLen));
 	token[iLen] = '\0';
 	TRACE2("LinePointer = %d, TokenID = %d\n", linePosition, Result);
-	if (Result == - 1) { linePosition = iBegLoc + 1; }
+	if (Result == - 1) {
+		linePosition = iBegLoc + 1;
+	}
 	return Result;
 }
 
@@ -459,12 +500,16 @@ void Lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* 
 			adOp[0] = fabs(adOp[0]);
 			break;
 		case gc_TokenAcos: {
-			if (fabs(adOp[0]) > 1.0) { throw L"Math error: acos of a value greater than 1."; }
+			if (fabs(adOp[0]) > 1.0) {
+				throw L"Math error: acos of a value greater than 1.";
+			}
 			adOp[0] = acos(EoToDegree(adOp[0]));
 			break;
 		}
 		case gc_TokenAsin: {
-			if (fabs(adOp[0]) > 1.0) { throw L"Math error: asin of a value greater than 1."; }
+			if (fabs(adOp[0]) > 1.0) {
+				throw L"Math error: asin of a value greater than 1.";
+			}
 			adOp[0] = asin(EoToDegree(adOp[0]));
 			break;
 		}
@@ -484,12 +529,16 @@ void Lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* 
 			*valueType = gc_TokenInteger;
 			break;
 		case gc_TokenLn: {
-			if (adOp[0] <= 0.0) { throw L"Math error: ln of a non-positive number"; }
+			if (adOp[0] <= 0.0) {
+				throw L"Math error: ln of a non-positive number";
+			}
 			adOp[0] = log(adOp[0]);
 			break;
 		}
 		case gc_TokenLog: {
-			if (adOp[0] <= 0.0) { throw L"Math error: log of a non-positive number"; }
+			if (adOp[0] <= 0.0) {
+				throw L"Math error: log of a non-positive number";
+			}
 			adOp[0] = log10(adOp[0]);
 			break;
 		}
@@ -497,7 +546,9 @@ void Lex::UnaryOp(const int aiTokTyp, int* valueType, long* definition, double* 
 			adOp[0] = sin(EoToRadian(adOp[0]));
 			break;
 		case gc_TokenSqrt: {
-			if (adOp[0] < 0.0) { throw L"Math error: sqrt of a negative number"; }
+			if (adOp[0] < 0.0) {
+				throw L"Math error: sqrt of a negative number";
+			}
 			adOp[0] = sqrt(adOp[0]);
 			break;
 		}
@@ -571,16 +622,19 @@ wchar_t* Lex::ScanForString(wchar_t* * ppStr, wchar_t* pszTerm, wchar_t* * ppArg
 	const auto pStart {*ppArgBuf};
 	auto pOut {pStart};
 	const auto bInQuotes {*pIn == '"'};
-	if (bInQuotes) { pIn++; }
+	if (bInQuotes) {
+		pIn++;
+	}
 	do {
 		if (bInQuotes) {
 			if (*pIn == '"' && *(pIn + 1) != '"') { // Skip over the quote
 				pIn++;
 				break;
 			}
-		} else if (isalnum(*pIn) != 0) {
-		} else { // allow some peg specials
-			if (!(*pIn == '_' || *pIn == '$' || *pIn == '.' || *pIn == '-' || *pIn == ':' || *pIn == '\\')) { break; }
+		} else if (isalnum(*pIn) != 0) { } else { // allow some peg specials
+			if (!(*pIn == '_' || *pIn == '$' || *pIn == '.' || *pIn == '-' || *pIn == ':' || *pIn == '\\')) {
+				break;
+			}
 		}
 		if (*pIn == '"' && *(pIn + 1) == '"') { // Skip the escaping first quote
 			pIn++;

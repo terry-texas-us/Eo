@@ -30,8 +30,7 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 		bool m_DynamicHlt;
 	public:
 		OdExCollisionDetectionReactor(const bool dynamicHlt)
-			: m_DynamicHlt(dynamicHlt) {
-		}
+			: m_DynamicHlt(dynamicHlt) { }
 
 		~OdExCollisionDetectionReactor() = default;
 
@@ -43,7 +42,9 @@ void OdExCollideAllCmd::execute(OdEdCommandContext* edCommandContext) {
 			return static_cast<unsigned long>(kContinue);
 		}
 
-		OdArray<OdExCollideGsPath*>& Paths() { return m_paths; }
+		OdArray<OdExCollideGsPath*>& Paths() {
+			return m_paths;
+		}
 	};
 	OdDbCommandContextPtr CommandContext(edCommandContext);
 	OdSmartPtr<OdDbUserIO> UserIo {CommandContext->userIO()};

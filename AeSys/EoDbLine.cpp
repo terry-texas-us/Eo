@@ -196,7 +196,9 @@ bool EoDbLine::IsInView(AeSysView* view) const {
 bool EoDbLine::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point) const {
 	auto Point {EoGePoint4d(m_LineSeg.startPoint(), 1.0)};
 	view->ModelViewTransformPoint(Point);
-	if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
+	if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) {
+		return true;
+	}
 	Point = EoGePoint4d(m_LineSeg.endPoint(), 1.0);
 	view->ModelViewTransformPoint(Point);
 	return point.DistanceToPointXY(Point) < ms_SelectApertureSize;
@@ -211,7 +213,9 @@ int EoDbLine::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d
 		Relationship[i] = RelationshipToRectangleOf(intersections[i], lowerLeftCorner, upperRightCorner);
 	}
 	while (Relationship[0] != 0 || Relationship[1] != 0) {
-		if ((Relationship[0] & Relationship[1]) != 0) { return 0; }
+		if ((Relationship[0] & Relationship[1]) != 0) {
+			return 0;
+		}
 		i = Relationship[0] != 0 ? 0 : 1;
 		if ((Relationship[i] & 1U) != 0) { // Clip against top
 			intersections[i].x = intersections[i].x + (intersections[1].x - intersections[0].x) * (upperRightCorner.y - intersections[i].y) / (intersections[1].y - intersections[0].y);
@@ -308,8 +312,12 @@ void EoDbLine::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbLine::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
-	if ((mask & 1U) == 1) { SetStartPoint(m_LineSeg.startPoint() + translate); }
-	if ((mask & 2U) == 2) { SetEndPoint(m_LineSeg.endPoint() + translate); }
+	if ((mask & 1U) == 1) {
+		SetStartPoint(m_LineSeg.startPoint() + translate);
+	}
+	if ((mask & 2U) == 2) {
+		SetEndPoint(m_LineSeg.endPoint() + translate);
+	}
 }
 
 bool EoDbLine::Write(EoDbFile& file) const {
@@ -326,7 +334,9 @@ void EoDbLine::Write(CFile& file, unsigned char* buffer) const {
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kLinePrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
-	if (buffer[7] >= 16) { buffer[7] = 2; }
+	if (buffer[7] >= 16) {
+		buffer[7] = 2;
+	}
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_LineSeg.startPoint());
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[20])->Convert(m_LineSeg.endPoint());
 	file.Write(buffer, 32);

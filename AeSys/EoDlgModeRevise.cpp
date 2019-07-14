@@ -13,7 +13,7 @@ IMPLEMENT_DYNAMIC(EoDlgModeRevise, CDialog)
 #pragma warning(push)
 #pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoDlgModeRevise, CDialog)
-	ON_WM_SIZE()
+		ON_WM_SIZE()
 END_MESSAGE_MAP()
 #pragma warning (pop)
 EoDbFontDefinition EoDlgModeRevise::m_FontDefinition;
@@ -21,8 +21,7 @@ EoGeReferenceSystem EoDlgModeRevise::m_ReferenceSystem;
 EoDbText* EoDlgModeRevise::m_TextPrimitive;
 
 EoDlgModeRevise::EoDlgModeRevise(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgModeRevise::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

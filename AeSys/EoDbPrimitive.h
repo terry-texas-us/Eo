@@ -95,27 +95,39 @@ public:
 
 	virtual bool PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept;
 
-	[[nodiscard]] short ColorIndex() const noexcept { return m_ColorIndex; }
+	[[nodiscard]] short ColorIndex() const noexcept {
+		return m_ColorIndex;
+	}
 
-	[[nodiscard]] OdDbObjectId EntityObjectId() const noexcept { return m_EntityObjectId; }
+	[[nodiscard]] OdDbObjectId EntityObjectId() const noexcept {
+		return m_EntityObjectId;
+	}
 
 	[[nodiscard]] CString FormatColorIndex() const;
 
 	[[nodiscard]] CString FormatLinetypeIndex() const;
 
-	[[nodiscard]] short LinetypeIndex() const noexcept { return m_LinetypeIndex; }
+	[[nodiscard]] short LinetypeIndex() const noexcept {
+		return m_LinetypeIndex;
+	}
 
 	[[nodiscard]] short LogicalColorIndex() const noexcept;
 
 	[[nodiscard]] short LogicalLinetypeIndex() const noexcept;
 
-	void SetColorIndex(const short colorIndex) noexcept { m_ColorIndex = colorIndex; }
+	void SetColorIndex(const short colorIndex) noexcept {
+		m_ColorIndex = colorIndex;
+	}
 
 	void SetColorIndex2(short colorIndex);
 
-	void SetEntityObjectId(const OdDbObjectId entityObjectId) noexcept { m_EntityObjectId = entityObjectId; }
+	void SetEntityObjectId(const OdDbObjectId entityObjectId) noexcept {
+		m_EntityObjectId = entityObjectId;
+	}
 
-	void SetLinetypeIndex(const short linetypeIndex) noexcept { m_LinetypeIndex = linetypeIndex; }
+	void SetLinetypeIndex(const short linetypeIndex) noexcept {
+		m_LinetypeIndex = linetypeIndex;
+	}
 
 	void SetLinetypeIndex2(short linetypeIndex);
 

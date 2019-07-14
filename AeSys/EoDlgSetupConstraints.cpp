@@ -8,13 +8,11 @@ BEGIN_MESSAGE_MAP(EoDlgSetupConstraints, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgSetupConstraints::EoDlgSetupConstraints(AeSysView* view, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_ActiveView(view) {
-}
+	, m_ActiveView(view) {}
 
 void EoDlgSetupConstraints::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

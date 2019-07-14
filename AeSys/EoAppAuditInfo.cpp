@@ -41,10 +41,18 @@ void EoAppAuditInfo::printError(const OdString& name, const OdString& value, con
 	MessageInfo.strValidation = validation;
 	setLastInfo(MessageInfo);
 	OdString Line;
-	if (!name.isEmpty()) { Line += name + L". "; }
-	if (!value.isEmpty()) { Line += L"An invalid " + value + L" was found. "; }
-	if (!validation.isEmpty()) { Line += L"Validation: " + validation + L". "; }
-	if (!defaultValue.isEmpty()) { Line += (fixErrors() ? L"Replaced by " : L"Default value is ") + defaultValue + L"."; }
+	if (!name.isEmpty()) {
+		Line += name + L". ";
+	}
+	if (!value.isEmpty()) {
+		Line += L"An invalid " + value + L" was found. ";
+	}
+	if (!validation.isEmpty()) {
+		Line += L"Validation: " + validation + L". ";
+	}
+	if (!defaultValue.isEmpty()) {
+		Line += (fixErrors() ? L"Replaced by " : L"Default value is ") + defaultValue + L".";
+	}
 	m_pHostAppServices->auditPrintReport(this, Line, getPrintDest());
 	TRACE1("%ls\n", Line.c_str());
 }

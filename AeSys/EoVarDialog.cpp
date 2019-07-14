@@ -6,16 +6,14 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 EoVarDialog::EoVarDialog(const wchar_t* templateName, CWnd* parent)
-	: CDialog(templateName, parent) {
-}
+	: CDialog(templateName, parent) {}
 
 EoVarDialog::EoVarDialog(unsigned templateId, CWnd* parent)
-	: CDialog(templateId, parent) {
-}
+	: CDialog(templateId, parent) {}
 #pragma warning(push)
 #pragma warning(disable : 4191) // (level 3) 'operator': unsafe conversion from 'type_of_expression' to 'type_required'
 BEGIN_MESSAGE_MAP(EoVarDialog, CDialog)
-	ON_WM_SIZE()
+		ON_WM_SIZE()
 END_MESSAGE_MAP()
 #pragma warning (pop)
 BOOL EoVarDialog::OnInitDialog() {
@@ -44,7 +42,9 @@ void EoVarDialog::MakeGripper() {
 void EoVarDialog::OnSize(const unsigned type, const int cx, const int cy) {
 	CDialog::OnSize(type, cx, cy);
 	m_resizeHelper.OnSize();
-	if (m_bInitialized != 0) { SetupGripper(); }
+	if (m_bInitialized != 0) {
+		SetupGripper();
+	}
 }
 
 void EoVarDialog::SetupGripper() {

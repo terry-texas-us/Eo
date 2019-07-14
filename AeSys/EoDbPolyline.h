@@ -60,7 +60,9 @@ public:
 
 	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
-	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override { return false; }
+	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override {
+		return false;
+	}
 
 	bool IsInView(AeSysView* view) const override;
 
@@ -94,7 +96,9 @@ public:
 
 	void SetConstantWidth(double constantWidth) noexcept;
 
-	void SetElevation(const double elevation) noexcept { m_Elevation = elevation; }
+	void SetElevation(const double elevation) noexcept {
+		m_Elevation = elevation;
+	}
 
 	void SetNormal(const OdGeVector3d& normal);
 

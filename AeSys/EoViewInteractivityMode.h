@@ -18,6 +18,8 @@ public:
 	}
 
 	~ViewInteractivityMode() {
-		if (m_Enabled) { m_View->endInteractivity(); }
+		if (m_Enabled) {
+			m_View->endInteractivity();
+		}
 	}
 };

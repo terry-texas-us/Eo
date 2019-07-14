@@ -6,8 +6,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetScale, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetScale::EoDlgSetScale(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSetScale::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

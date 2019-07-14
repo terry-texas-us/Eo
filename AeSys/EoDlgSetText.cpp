@@ -6,8 +6,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetText, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetText::EoDlgSetText(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgSetText::~EoDlgSetText() = default;
 

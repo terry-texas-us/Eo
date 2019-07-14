@@ -8,11 +8,12 @@ template <class T>
 class MfcObjectWrapper {
 public:
 	MfcObjectWrapper(T* object) noexcept
-		: m_pUnderlayObj(object) {
-	}
+		: m_pUnderlayObj(object) { }
 
 	T* operator->() {
-		if (m_pUnderlayObj == nullptr) { throw OdError(eNullObjectPointer); }
+		if (m_pUnderlayObj == nullptr) {
+			throw OdError(eNullObjectPointer);
+		}
 		return m_pUnderlayObj;
 	}
 

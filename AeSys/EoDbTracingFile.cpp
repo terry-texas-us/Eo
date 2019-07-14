@@ -3,28 +3,34 @@
 #include "EoDbFile.h"
 #include "EoDbTracingFile.h"
 
-EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr /*database*/) {
-}
+EoDbTracingFile::EoDbTracingFile(OdDbDatabasePtr /*database*/) {}
 
 EoDbTracingFile::EoDbTracingFile(const OdString& fileName, const unsigned openFlags)
-	: EoDbFile(fileName, openFlags) {
-}
+	: EoDbFile(fileName, openFlags) {}
 
 void EoDbTracingFile::ReadHeader() {
-	if (ReadUInt16() != kHeaderSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kHeaderSection."; }
+	if (ReadUInt16() != kHeaderSection) {
+		throw L"Exception EoDbTracingFile: Expecting sentinel kHeaderSection.";
+	}
 
 	// 	with addition of info here will loop key-value pairs till kEndOfSection sentinel
-	if (ReadUInt16() != kEndOfSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection."; }
+	if (ReadUInt16() != kEndOfSection) {
+		throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection.";
+	}
 }
 
 bool EoDbTracingFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, EoDbLayer* layer) {
-	if (ReadUInt16() != kGroupsSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kGroupsSection."; }
+	if (ReadUInt16() != kGroupsSection) {
+		throw L"Exception EoDbTracingFile: Expecting sentinel kGroupsSection.";
+	}
 	const auto NumberOfGroups {ReadUInt16()};
 	for (unsigned GroupIndex = 0; GroupIndex < NumberOfGroups; GroupIndex++) {
 		const auto Group {ReadGroup(blockTableRecord)};
 		layer->AddTail(Group);
 	}
-	if (ReadUInt16() != kEndOfSection) { throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection."; }
+	if (ReadUInt16() != kEndOfSection) {
+		throw L"Exception EoDbTracingFile: Expecting sentinel kEndOfSection.";
+	}
 	return true;
 }
 

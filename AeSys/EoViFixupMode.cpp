@@ -23,11 +23,12 @@ void AeSysView::OnFixupModeOptions() {
 void AeSysView::OnFixupModeReference() {
 	g_CurrentSelection = {nullptr, nullptr};
 	g_ReferenceSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(g_ReferenceSelection) == nullptr) { return; }
+	if (std::get<tGroup>(g_ReferenceSelection) == nullptr) {
+		return;
+	}
 	if (g_PreviousFixupCommand == 0) {
 		g_PreviousFixupCommand = ModeLineHighlightOp(ID_OP1);
-	} else if (g_PreviousFixupCommand == ID_OP1) {
-	} else {
+	} else if (g_PreviousFixupCommand == ID_OP1) { } else {
 		OdGePoint3d IntersectionPoint;
 		const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
 		const auto PreviousLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_PreviousSelection))};
@@ -151,7 +152,9 @@ void AeSysView::OnFixupModeSquare() {
 	auto Document {GetDocument()};
 	auto CurrentPnt {GetCursorPosition()};
 	g_CurrentSelection = SelectLineUsingPoint(CurrentPnt);
-	if (std::get<tGroup>(g_CurrentSelection) == nullptr) { return; }
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) {
+		return;
+	}
 	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))};
 	const auto CurrentLineSeg {CurrentLine->LineSeg()};
 	CurrentPnt = CurrentLineSeg.ProjPt(CurrentPnt);
@@ -171,7 +174,9 @@ void AeSysView::OnFixupModeParallel() {
 		return;
 	}
 	g_CurrentSelection = SelectLineUsingPoint(GetCursorPosition());
-	if (std::get<tGroup>(g_CurrentSelection) == nullptr) { return; }
+	if (std::get<tGroup>(g_CurrentSelection) == nullptr) {
+		return;
+	}
 	auto CurrentLine {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_CurrentSelection))};
 	auto CurrentLineSeg {CurrentLine->LineSeg()};
 	const auto ReferenceLineSeg {dynamic_cast<EoDbLine*>(std::get<tPrimitive>(g_ReferenceSelection))->LineSeg()};
@@ -184,8 +189,7 @@ void AeSysView::OnFixupModeParallel() {
 	Document->UpdatePrimitiveInAllViews(EoDb::kPrimitiveSafe, CurrentLine);
 }
 
-void AeSysView::OnFixupModeReturn() {
-}
+void AeSysView::OnFixupModeReturn() {}
 
 void AeSysView::OnFixupModeEscape() {
 	g_ReferenceSelection = {nullptr, nullptr};
@@ -261,15 +265,21 @@ bool AeSysView::FindCenterPointGivenRadiusAndTwoLineSegments(const double radius
 	const auto FirstLineStartPoint = firstLineSeg.startPoint();
 	auto FirstLineEndPoint = firstLineSeg.endPoint();
 	const auto FirstLineVector {FirstLineEndPoint - FirstLineStartPoint};
-	if (FirstLineVector.isZeroLength()) { return false; }
+	if (FirstLineVector.isZeroLength()) {
+		return false;
+	}
 	const auto FirstLineVectorLength {FirstLineVector.length()};
 	auto SecondLineStartPoint = secondLineSeg.startPoint();
 	auto SecondLineEndPoint = secondLineSeg.endPoint();
 	auto SecondLineVector {SecondLineEndPoint - SecondLineStartPoint};
-	if (SecondLineVector.isZeroLength()) { return false; }
+	if (SecondLineVector.isZeroLength()) {
+		return false;
+	}
 	const auto SecondLineVectorLength {SecondLineVector.length()};
 	auto Normal {FirstLineVector.crossProduct(SecondLineVector)};
-	if (Normal.isZeroLength()) { return false; }
+	if (Normal.isZeroLength()) {
+		return false;
+	}
 	Normal.normalize();
 	if (fabs(Normal.dotProduct(SecondLineStartPoint - FirstLineStartPoint)) > DBL_EPSILON) { // Four points are not coplanar
 		return false;

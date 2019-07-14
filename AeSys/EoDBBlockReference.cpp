@@ -52,7 +52,9 @@ void EoDbBlockReference::AddReportToMessageList(const OdGePoint3d& /*point*/) co
 
 void EoDbBlockReference::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) const {
 	EoDbBlock* Block;
-	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
+		return;
+	}
 	const auto TreeItemHandle {CMainFrame::InsertTreeViewControlItem(tree, parent, L"<BlockReference>", this)};
 	static_cast<EoDbGroup*>(Block)->AddPrimitivesToTreeViewControl(tree, TreeItemHandle);
 }
@@ -62,8 +64,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	// <tas="Type checking for access the BlockReference methods required"</tas>
 	if (!m_EntityObjectId.isNull()) {
 		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject();
-		if (!Entity->isKindOf(OdDbBlockReference::desc())) {
-		}
+		if (!Entity->isKindOf(OdDbBlockReference::desc())) { }
 	}
 	EoGeMatrix3d LeftMatrix;
 	EoGeMatrix3d RightMatrix;
@@ -85,7 +86,9 @@ EoDbPrimitive* EoDbBlockReference::Clone(OdDbBlockTableRecordPtr blockTableRecor
 
 void EoDbBlockReference::Display(AeSysView* view, CDC* deviceContext) {
 	EoDbBlock* Block;
-	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
+		return;
+	}
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	Block->Display(view, deviceContext);
 	view->PopModelTransform();
@@ -142,7 +145,9 @@ bool EoDbBlockReference::IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept 
 bool EoDbBlockReference::IsInView(AeSysView* view) const {
 	// Test whether an instance of a block is wholly or partially within the current view volume.
 	EoDbBlock* Block;
-	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return false; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
+		return false;
+	}
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	const auto IsInView {Block->IsInView(view)};
 	view->PopModelTransform();
@@ -157,7 +162,9 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGe
 	ms_ControlPointIndex = SIZE_T_MAX;
 	OdGePoint3d ControlPoint;
 	EoDbBlock* Block;
-	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return ControlPoint; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
+		return ControlPoint;
+	}
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
@@ -174,7 +181,9 @@ OdGePoint3d EoDbBlockReference::SelectAtControlPoint(AeSysView* view, const EoGe
 
 bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	EoDbBlock* Block;
-	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return false; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
+		return false;
+	}
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	const auto Result {Block->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)};
 	view->PopModelTransform();
@@ -184,7 +193,9 @@ bool EoDbBlockReference::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner
 bool EoDbBlockReference::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
 	auto Result {false};
 	EoDbBlock* Block;
-	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) { return Result; }
+	if (!AeSysDoc::GetDoc()->LookupBlock(m_Name, Block)) {
+		return Result;
+	}
 	view->PushModelTransform(BlockTransformMatrix(Block->BasePoint()));
 	auto Position {Block->GetHeadPosition()};
 	while (Position != nullptr) {
@@ -224,7 +235,9 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbBlockReference::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
-	if (mask != 0) { m_Position += translate; }
+	if (mask != 0) {
+		m_Position += translate;
+	}
 }
 
 bool EoDbBlockReference::Write(EoDbFile& file) const {
@@ -249,8 +262,7 @@ bool EoDbBlockReference::Write(EoDbFile& file) const {
 	return true;
 }
 
-void EoDbBlockReference::Write(CFile& /*file*/, unsigned char* /*buffer*/) const noexcept {
-}
+void EoDbBlockReference::Write(CFile& /*file*/, unsigned char* /*buffer*/) const noexcept {}
 
 unsigned short EoDbBlockReference::Columns() const noexcept {
 	return m_Columns;

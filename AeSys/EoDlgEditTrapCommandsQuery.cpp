@@ -10,8 +10,7 @@ BEGIN_MESSAGE_MAP(EoDlgEditTrapCommandsQuery, CDialog)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 EoDlgEditTrapCommandsQuery::EoDlgEditTrapCommandsQuery(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgEditTrapCommandsQuery::~EoDlgEditTrapCommandsQuery() = default;
 
@@ -50,9 +49,7 @@ void EoDlgEditTrapCommandsQuery::OnSelectionChangedGroupTree(NMHDR* notifyStruct
 	m_GroupTreeViewControl.GetItem(&Item);
 	m_ExtraListViewControl.DeleteAllItems();
 	m_GeometryListViewControl.DeleteAllItems();
-	if (wcscmp(Item.pszText, L"<Groups>") == 0) {
-	} else if (wcscmp(Item.pszText, L"<Group>") == 0) {
-	} else {
+	if (wcscmp(Item.pszText, L"<Groups>") == 0) { } else if (wcscmp(Item.pszText, L"<Group>") == 0) { } else {
 		const auto Primitive {reinterpret_cast<EoDbPrimitive*>(Item.lParam)};
 		FillExtraList(Primitive);
 		FillGeometryList(Primitive);

@@ -79,19 +79,25 @@ void AeSysView::ModelViewInitialize() {
 }
 
 void AeSysView::ModelTransformPoint(OdGePoint3d& point) const {
-	if (m_ModelTransform.Depth() != 0) { point.transformBy(m_ModelTransform.ModelMatrix()); }
+	if (m_ModelTransform.Depth() != 0) {
+		point.transformBy(m_ModelTransform.ModelMatrix());
+	}
 }
 
 void AeSysView::ModelViewTransformPoint(EoGePoint4d& point) const {
 	auto Matrix {m_ViewTransform.Matrix()};
-	if (m_ModelTransform.Depth() != 0) { Matrix.postMultBy(m_ModelTransform.ModelMatrix()); }
+	if (m_ModelTransform.Depth() != 0) {
+		Matrix.postMultBy(m_ModelTransform.ModelMatrix());
+	}
 	point.TransformBy(Matrix);
 }
 
 void AeSysView::ModelViewTransformPoints(EoGePoint4dArray& points) const {
 	const auto NumberOfPoints {static_cast<int>(points.GetSize())};
 	auto Matrix {m_ViewTransform.Matrix()};
-	if (m_ModelTransform.Depth() != 0) { Matrix.postMultBy(m_ModelTransform.ModelMatrix()); }
+	if (m_ModelTransform.Depth() != 0) {
+		Matrix.postMultBy(m_ModelTransform.ModelMatrix());
+	}
 	for (auto PointIndex = 0; PointIndex < NumberOfPoints; PointIndex++) {
 		points[PointIndex].TransformBy(Matrix);
 	}
@@ -99,7 +105,9 @@ void AeSysView::ModelViewTransformPoints(EoGePoint4dArray& points) const {
 
 void AeSysView::ModelViewTransformPoints(const int numberOfPoints, EoGePoint4d* points) const {
 	auto Matrix {m_ViewTransform.Matrix()};
-	if (m_ModelTransform.Depth() != 0) { Matrix.postMultBy(m_ModelTransform.ModelMatrix()); }
+	if (m_ModelTransform.Depth() != 0) {
+		Matrix.postMultBy(m_ModelTransform.ModelMatrix());
+	}
 	for (auto PointIndex = 0; PointIndex < numberOfPoints; PointIndex++) {
 		points[PointIndex].TransformBy(Matrix);
 	}
@@ -107,6 +115,8 @@ void AeSysView::ModelViewTransformPoints(const int numberOfPoints, EoGePoint4d* 
 
 void AeSysView::ModelViewTransformVector(OdGeVector3d& vector) const {
 	auto Matrix {m_ViewTransform.Matrix()};
-	if (m_ModelTransform.Depth() != 0) { Matrix.postMultBy(m_ModelTransform.ModelMatrix()); }
+	if (m_ModelTransform.Depth() != 0) {
+		Matrix.postMultBy(m_ModelTransform.ModelMatrix());
+	}
 	vector.transformBy(Matrix);
 }

@@ -18,8 +18,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupColor, CDialog)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 EoDlgSetupColor::EoDlgSetupColor(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSetupColor::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -100,7 +99,9 @@ BOOL EoDlgSetupColor::OnNotify(const WPARAM controlId, const LPARAM notification
 	const auto NotifyMessage {reinterpret_cast<NMHDR*>(notificationMessage)};
 	if (NotifyMessage->hwndFrom != nullptr) {
 		const auto ColorsButton {dynamic_cast<EoCtrlColorsButton*>(FromHandle(NotifyMessage->hwndFrom))};
-		if (ColorsButton != nullptr && ColorsButton->IsKindOf(RUNTIME_CLASS(EoCtrlColorsButton)) != 0) { DrawSelectionInformation(ColorsButton->m_SubItem); }
+		if (ColorsButton != nullptr && ColorsButton->IsKindOf(RUNTIME_CLASS(EoCtrlColorsButton)) != 0) {
+			DrawSelectionInformation(ColorsButton->m_SubItem);
+		}
 	}
 	return CDialog::OnNotify(controlId, notificationMessage, result);
 }

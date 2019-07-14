@@ -21,7 +21,9 @@ void CommandSelect::execute(OdEdCommandContext* commandContext) {
 	OdDbDatabaseDocPtr Database {CommandContext->database()};
 	auto Document {Database->Document()};
 	auto View {Document->GetViewer()};
-	if (View == nullptr) { throw OdEdCancel(); }
+	if (View == nullptr) {
+		throw OdEdCancel();
+	}
 	Document->OnEditClearSelection();
 	Document->UpdateAllViews(nullptr);
 	auto UserIo {CommandContext->dbUserIO()};

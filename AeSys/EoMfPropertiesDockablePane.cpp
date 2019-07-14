@@ -26,7 +26,9 @@ BEGIN_MESSAGE_MAP(EoMfPropertiesDockablePane, CDockablePane)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 void EoMfPropertiesDockablePane::AdjustLayout() {
-	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic() != 0) { return; }
+	if (GetSafeHwnd() == nullptr || AfxGetMainWnd() != nullptr && AfxGetMainWnd()->IsIconic() != 0) {
+		return;
+	}
 	CRect ClientRectangle;
 	CRect ComboRectangle;
 	GetClientRect(ClientRectangle);
@@ -38,7 +40,9 @@ void EoMfPropertiesDockablePane::AdjustLayout() {
 }
 
 int EoMfPropertiesDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
-	if (CDockablePane::OnCreate(createStructure) == -1) { return -1; }
+	if (CDockablePane::OnCreate(createStructure) == -1) {
+		return -1;
+	}
 	CRect EmptyRectangle;
 	EmptyRectangle.SetRectEmpty();
 	if (m_ComboBox.Create(WS_CHILD | WS_VISIBLE | CBS_DROPDOWNLIST | WS_BORDER | CBS_SORT | WS_CLIPSIBLINGS | WS_CLIPCHILDREN, EmptyRectangle, this, 1) == 0) {
@@ -81,8 +85,7 @@ void EoMfPropertiesDockablePane::OnExpandAllProperties() {
 	m_PropertyGrid.ExpandAll();
 }
 
-void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /*commandUserInterface*/) noexcept {
-}
+void EoMfPropertiesDockablePane::OnUpdateExpandAllProperties(CCmdUI* /*commandUserInterface*/) noexcept {}
 
 void EoMfPropertiesDockablePane::OnSortProperties() {
 	m_PropertyGrid.SetAlphabeticMode(static_cast<BOOL>(m_PropertyGrid.IsAlphabeticMode() == 0));
@@ -292,5 +295,7 @@ void EoMfPropertiesDockablePane::SetWorkspaceTabsSubItemsState() {
 			}
 		}
 	}
-	if (m_PropertyGrid.GetSafeHwnd() != nullptr) { m_PropertyGrid.RedrawWindow(); }
+	if (m_PropertyGrid.GetSafeHwnd() != nullptr) {
+		m_PropertyGrid.RedrawWindow();
+	}
 }

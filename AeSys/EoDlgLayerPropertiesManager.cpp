@@ -13,13 +13,11 @@ BEGIN_MESSAGE_MAP(EoDlgLayerPropertiesManager, CDialog)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgLayerPropertiesManager::EoDlgLayerPropertiesManager(const OdDbDatabasePtr& database, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Database(database) {
-}
+	, m_Database(database) {}
 
 void EoDlgLayerPropertiesManager::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -50,8 +48,12 @@ void EoDlgLayerPropertiesManager::OnTvnKeydownLayerFilterTree(NMHDR* notifyStruc
 	if (pTVKeyDown->wVKey == VK_DELETE) {
 		if (auto SelectedItem = treeFilters.GetSelectedItem()) {
 			const auto Filter {static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(SelectedItem)))};
-			if (Filter->dynamicallyGenerated()) { return; }
-			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) { return; }
+			if (Filter->dynamicallyGenerated()) {
+				return;
+			}
+			if (AfxMessageBox(L"Delete this filter?", MB_YESNO) != IDYES) {
+				return;
+			}
 			Filter->parent()->removeNested(Filter);
 			treeFilters.DeleteItem(SelectedItem);
 			const OdLyLayerFilter* Root = static_cast<OdLyLayerFilter*>(reinterpret_cast<void*>(treeFilters.GetItemData(treeFilters.GetRootItem())));
@@ -110,7 +112,9 @@ static void UpdateFilterTree(CTreeCtrl& tree, const HTREEITEM parent, const OdLy
 		for (const auto& Filter : root->getNestedFilters()) {
 			UpdateFilterTree(tree, TreeItem, Filter, current);
 		}
-		if (current == root) { tree.SelectItem(TreeItem); }
+		if (current == root) {
+			tree.SelectItem(TreeItem);
+		}
 	}
 }
 
@@ -118,7 +122,9 @@ void EoDlgLayerPropertiesManager::UpdateFiltersTree() {
 	treeFilters.DeleteAllItems();
 	auto FilterManager {odlyGetLayerFilterManager(m_Database)};
 	OdLyLayerFilterPtr pCurrent;
-	if (FilterManager->getFilters(rootFilter, pCurrent) != eOk) { return; }
+	if (FilterManager->getFilters(rootFilter, pCurrent) != eOk) {
+		return;
+	}
 	UpdateFilterTree(treeFilters, TVI_ROOT, rootFilter, pCurrent);
 	treeFilters.SetItemImage(treeFilters.GetRootItem(), 0, 0);
 }

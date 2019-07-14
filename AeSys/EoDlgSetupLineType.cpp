@@ -22,13 +22,11 @@ void EoDlgSetupLinetype::DoDataExchange(CDataExchange* dataExchange) {
 }
 
 EoDlgSetupLinetype::EoDlgSetupLinetype(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgSetupLinetype::EoDlgSetupLinetype(OdDbLinetypeTablePtr linetypeTable, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_LinetypeTable(linetypeTable) {
-}
+	, m_LinetypeTable(linetypeTable) {}
 
 void EoDlgSetupLinetype::OnBnClickedByblockButton() {
 	linetype = m_LinetypeTable->getLinetypeByBlockId().safeOpenObject(OdDb::kForRead);

@@ -5,8 +5,7 @@
 #include <DbLinetypeTable.h>
 #include <DbLinetypeTableRecord.h>
 
-namespace polyline
-{
+namespace polyline {
 	EoGePoint4dArray pts_;
 	bool LoopLine;
 
@@ -22,14 +21,18 @@ namespace polyline
 
 	bool AnyPointsInView(EoGePoint4dArray& pointsArray) {
 		for (auto i = 0; i < pointsArray.GetSize(); i++) {
-			if (pointsArray[i].IsInView()) { return true; }
+			if (pointsArray[i].IsInView()) {
+				return true;
+			}
 		}
 		return false;
 	}
 
 	void __Display(AeSysView* view, CDC* deviceContext, EoGePoint4dArray& pointsArray, OdDbLinetypeTableRecordPtr linetype) {
 		const auto NumberOfDashes {linetype->numDashes()};
-		if (NumberOfDashes == 0) { return; }
+		if (NumberOfDashes == 0) {
+			return;
+		}
 		EoGePoint4d ln[2];
 		CPoint pnt[2];
 		OdGePoint3d pt[2];
@@ -180,7 +183,9 @@ namespace polyline
 			auto EndPoint(pts_[w]);
 			view->ModelViewTransformPoint(EndPoint);
 			EoGeLineSeg3d LineSegment(StartPoint.Convert3d(), EndPoint.Convert3d());
-			if (LineSegment.IsContainedBy_xy(lowerLeftPoint, upperRightPoint)) { return true; }
+			if (LineSegment.IsContainedBy_xy(lowerLeftPoint, upperRightPoint)) {
+				return true;
+			}
 			StartPoint = EndPoint;
 		}
 		return false;
@@ -193,7 +198,9 @@ namespace polyline
 			EoGePoint4d ptEnd(points[w], 1.0);
 			view->ModelViewTransformPoint(ptEnd);
 			EoGeLineSeg3d LineSegment(ptBeg.Convert3d(), ptEnd.Convert3d());
-			if (LineSegment.IsContainedBy_xy(lowerLeftCorner, upperRightCorner)) { return true; }
+			if (LineSegment.IsContainedBy_xy(lowerLeftCorner, upperRightCorner)) {
+				return true;
+			}
 			ptBeg = ptEnd;
 		}
 		return false;

@@ -113,14 +113,20 @@ public:
 		static unsigned short formatR19;
 
 		static bool IsAcadDataAvailable(COleDataObject* dataObject, const bool attach = false) {
-			if (attach && dataObject->AttachClipboard() == 0) { return false; }
+			if (attach && dataObject->AttachClipboard() == 0) {
+				return false;
+			}
 			return dataObject->IsDataAvailable(formatR15) != 0 || dataObject->IsDataAvailable(formatR16) != 0 || dataObject->IsDataAvailable(formatR17) != 0 || dataObject->IsDataAvailable(formatR18) != 0 || dataObject->IsDataAvailable(formatR19) != 0;
 		}
 
 		static OdSharedPtr<ClipboardData> Get(COleDataObject* dataObject, const bool attach = false) {
-			if (attach && dataObject->AttachClipboard() == 0) { return nullptr; }
+			if (attach && dataObject->AttachClipboard() == 0) {
+				return nullptr;
+			}
 			OdSharedPtr<ClipboardData> Data {new ClipboardData()};
-			if (Data->Read(dataObject)) { return Data; }
+			if (Data->Read(dataObject)) {
+				return Data;
+			}
 			return nullptr;
 		}
 
@@ -486,7 +492,9 @@ public:
 
 	void DisplayUniquePoints();
 
-	[[nodiscard]] POSITION GetFirstUniquePointPosition() const { return m_UniquePoints.GetHeadPosition(); }
+	[[nodiscard]] POSITION GetFirstUniquePointPosition() const {
+		return m_UniquePoints.GetHeadPosition();
+	}
 
 	EoGeUniquePoint* GetNextUniquePoint(POSITION& position);
 

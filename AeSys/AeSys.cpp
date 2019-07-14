@@ -35,22 +35,22 @@ static char THIS_FILE[] = __FILE__;
 ATOM WINAPI RegisterPreviewWindowClass(HINSTANCE instance);
 
 double g_PenWidths[] {
-0.0,
-0.0075,
-0.015,
-0.02,
-0.03,
-0.0075,
-0.015,
-0.0225,
-0.03,
-0.0075,
-0.015,
-0.0225,
-0.03,
-0.0075,
-0.015,
-0.0225
+	0.0,
+	0.0075,
+	0.015,
+	0.02,
+	0.03,
+	0.0075,
+	0.015,
+	0.0225,
+	0.03,
+	0.0075,
+	0.015,
+	0.0225,
+	0.03,
+	0.0075,
+	0.015,
+	0.0225
 };
 #include "PegColors.h"
 COLORREF* g_CurrentPalette {g_ColorPalette};
@@ -83,7 +83,9 @@ static void AddPaperDrawingCustomization() {
 		}
 
 		bool drawMargins(const OdDbLayout* /*layout*/, OdGiWorldDraw* worldDraw, OdGePoint3d* points) override {
-			if (points[0] == points[1] || points[1] == points[2]) { return true; }
+			if (points[0] == points[1] || points[1] == points[2]) {
+				return true;
+			}
 			auto NumberOfDashes {15};
 			OdGiGeometry& Geometry {worldDraw->geometry()};
 			OdGePoint3d Dash1[2];
@@ -162,8 +164,7 @@ public:
 };
 
 EoDlgAbout::EoDlgAbout() noexcept
-	: CDialog(IDD) {
-}
+	: CDialog(IDD) {}
 
 BOOL EoDlgAbout::OnInitDialog() {
 	const auto LibraryInfo {oddbGetLibraryInfo()};
@@ -183,10 +184,10 @@ BEGIN_MESSAGE_MAP(EoDlgAbout, CDialog)
 END_MESSAGE_MAP()
 BEGIN_MESSAGE_MAP(AeSys, CWinAppEx)
 		ON_COMMAND(ID_APP_ABOUT, &AeSys::OnAppAbout)
-	// Standard file based document commands
+		// Standard file based document commands
 		ON_COMMAND(ID_FILE_NEW, &CWinAppEx::OnFileNew)
 		ON_COMMAND(ID_FILE_OPEN, &AeSys::OnFileOpen)
-	// Standard print setup command
+		// Standard print setup command
 		ON_COMMAND(ID_FILE_PRINT_SETUP, &CWinAppEx::OnFilePrintSetup)
 		ON_COMMAND(ID_EDIT_CF_GROUPS, &AeSys::OnEditCfGroups)
 		ON_UPDATE_COMMAND_UI(ID_EDIT_CF_GROUPS, &AeSys::OnUpdateEditCfGroups)
@@ -248,8 +249,7 @@ public:
 
 	CFullCommandLineInfo() noexcept
 		: CCommandLineInfo()
-		, exit {false} {
-	}
+		, exit {false} { }
 
 	void ParseParam(const wchar_t* parameter, const BOOL flag, const BOOL last) override {
 		auto Is {false};
@@ -279,8 +279,7 @@ public:
 		}
 	}
 
-	void ParseParam(const char* /*parameter*/, BOOL /*flag*/, BOOL /*last*/) override {
-	} // CCommandLineInfo (to suppress C4266 warning)
+	void ParseParam(const char* /*parameter*/, BOOL /*flag*/, BOOL /*last*/) override { } // CCommandLineInfo (to suppress C4266 warning)
 };
 
 BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
@@ -294,7 +293,9 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 	AeSysDoc* TemporaryDocument {nullptr};
 	if (commandLineInfo.m_nShellCommand == CCommandLineInfo::FileOpen) {
 		TemporaryDocument = dynamic_cast<AeSysDoc*>(OpenDocumentFile(commandLineInfo.m_strFileName));
-		if (TemporaryDocument == nullptr) { return FALSE; }
+		if (TemporaryDocument == nullptr) {
+			return FALSE;
+		}
 		if (!FullCommandLineInfo.scriptToExecute.IsEmpty()) {
 			CStdioFile ScriptFile(FullCommandLineInfo.scriptToExecute, CFile::modeRead);
 			CString Command;
@@ -311,9 +312,13 @@ BOOL AeSys::ProcessShellCommand(CCommandLineInfo& commandLineInfo) {
 		CWinAppEx::ProcessShellCommand(commandLineInfo);
 	}
 	if (!FullCommandLineInfo.saveName.IsEmpty()) {
-		if (TemporaryDocument->OnSaveDocument(FullCommandLineInfo.saveName) == 0) { return FALSE; }
+		if (TemporaryDocument->OnSaveDocument(FullCommandLineInfo.saveName) == 0) {
+			return FALSE;
+		}
 	}
-	if (FullCommandLineInfo.exit) { PostQuitMessage(0); }
+	if (FullCommandLineInfo.exit) {
+		PostQuitMessage(0);
+	}
 	return TRUE;
 }
 
@@ -352,7 +357,9 @@ static CString FindConfigFile(const CString& configType, CString file, OdDbSyste
 	const auto ConfigurationPath {FindConfigPath(configType)};
 	if (!ConfigurationPath.IsEmpty()) {
 		file = ConfigurationPath + L"\\" + file;
-		if (systemServices->accessFile(file.GetString(), Oda::kFileRead)) { return file; }
+		if (systemServices->accessFile(file.GetString(), Oda::kFileRead)) {
+			return file;
+		}
 	}
 	return CString(L"\0");
 }
@@ -367,7 +374,9 @@ OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* /*view*/, OdDbBaseDatabase* /*da
 	try {
 		OdGsModulePtr Module;
 		if ((flags & kFor2dExportRender) != 0) { // Don't export HiddenLine viewports as bitmap in Pdf/Dwf/Svg exports.
-			if ((flags & kFor2dExportRenderHLR) != 0) { return OdGsDevicePtr(); }
+			if ((flags & kFor2dExportRenderHLR) != 0) {
+				return OdGsDevicePtr();
+			}
 
 			// Try to export shaded viewports using OpenGL device.
 			Module = odrxDynamicLinker()->loadModule(OdWinOpenGLModuleName);
@@ -376,10 +385,11 @@ OdGsDevicePtr AeSys::gsBitmapDevice(OdRxObject* /*view*/, OdDbBaseDatabase* /*da
 		if (Module.isNull()) {
 			Module = odrxDynamicLinker()->loadModule(m_VectorizerPath);
 		}
-		if (Module.isNull()) { return OdGsDevicePtr(); }
+		if (Module.isNull()) {
+			return OdGsDevicePtr();
+		}
 		return Module->createBitmapDevice();
-	} catch (const OdError&) {
-	}
+	} catch (const OdError&) { }
 	return OdGsDevicePtr();
 }
 
@@ -388,7 +398,9 @@ bool AeSys::getPassword(const OdString& drawingName, bool /*isXref*/, OdPassword
 	PasswordDialog.m_sFileName = static_cast<const wchar_t*>(drawingName);
 	if (PasswordDialog.DoModal() == IDOK) {
 		password = PasswordDialog.m_password;
-		if (drawingName.right(4) == L".dwg") { password.makeUpper(); }
+		if (drawingName.right(4) == L".dwg") {
+			password.makeUpper();
+		}
 		return true;
 	}
 	return false;
@@ -420,10 +432,14 @@ bool AeSys::SetUndoType(const bool useTempFiles) noexcept {
 }
 
 OdString AeSys::fileDialog(int flags, const OdString& prompt, const OdString& defExt, const OdString& fileName, const OdString& filter) {
-	if (!SupportFileSelectionViaDialog()) { return OdString(L"*unsupported*"); }
+	if (!SupportFileSelectionViaDialog()) {
+		return OdString(L"*unsupported*");
+	}
 	CFileDialog FileDialog(static_cast<BOOL>(flags == OdEd::kGfpForOpen), defExt, fileName, OFN_HIDEREADONLY | OFN_EXPLORER | OFN_PATHMUSTEXIST, filter, AfxGetMainWnd());
 	FileDialog.m_ofn.lpstrTitle = prompt;
-	if (FileDialog.DoModal() == IDOK) { return OdString(FileDialog.GetPathName()); }
+	if (FileDialog.DoModal() == IDOK) {
+		return OdString(FileDialog.GetPathName());
+	}
 	throw OdEdCancel();
 }
 
@@ -476,18 +492,24 @@ OdString AeSys::findFile(const OdString& fileToFind, OdDbBaseDatabase* database,
 			} else {
 				Path = FilePathAndName.Left(PathDelimiter);
 				Path += L"\\" + FileToFind;
-				if (SystemServices->accessFile(Path.GetString(), Oda::kFileRead)) { return Path.GetString(); }
+				if (SystemServices->accessFile(Path.GetString(), Oda::kFileRead)) {
+					return Path.GetString();
+				}
 				FilePathAndName = FilePathAndName.Right(FilePathAndName.GetLength() - PathDelimiter - 1);
 			}
 		}
-		if (hint == kTextureMapFile) { return FilePathAndName.GetString(); }
+		if (hint == kTextureMapFile) {
+			return FilePathAndName.GetString();
+		}
 		if (FilePathAndName.IsEmpty()) {
 			const auto AcadLocation {GetRegistryAcadLocation()};
 			if (!AcadLocation.IsEmpty()) {
 				FilePathAndName = AcadLocation + L"\\Fonts\\" + FileToFind;
 				if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) {
 					FilePathAndName = AcadLocation + L"\\Support\\" + FileToFind;
-					if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) { FilePathAndName.Empty(); }
+					if (!SystemServices->accessFile(FilePathAndName.GetString(), Oda::kFileRead)) {
+						FilePathAndName.Empty();
+					}
 				}
 			}
 		}
@@ -506,7 +528,9 @@ CString AeSys::GetApplicationPath() {
 }
 
 void AeSys::auditPrintReport(OdAuditInfo* auditInfo, const OdString& /*line*/, int /*printDest*/) const {
-	if (auditDialog != nullptr) { auditDialog->PrintReport(dynamic_cast<OdDbAuditInfo*>(auditInfo)); }
+	if (auditDialog != nullptr) {
+		auditDialog->PrintReport(dynamic_cast<OdDbAuditInfo*>(auditInfo));
+	}
 }
 
 OdDbUndoControllerPtr AeSys::newUndoController() {
@@ -550,7 +574,9 @@ CMenu* AeSys::CommandMenu(CMenu** toolsSubMenu) {
 		}
 	}
 	ASSERT(ToolsSubMenu != nullptr);
-	if (toolsSubMenu != nullptr) { *toolsSubMenu = ToolsSubMenu; }
+	if (toolsSubMenu != nullptr) {
+		*toolsSubMenu = ToolsSubMenu;
+	}
 	CMenu* RegisteredCommandsSubMenu {nullptr};
 	for (auto ToolsMenuItem = 0; ToolsMenuItem < ToolsSubMenu->GetMenuItemCount(); ToolsMenuItem++) {
 		MenuItemInfo.dwTypeData = nullptr;
@@ -573,7 +599,9 @@ void AeSys::RefreshCommandMenu() {
 	auto RegisteredCommandsSubMenu {CommandMenu(&ToolsSubMenu)};
 	for (auto Item = RegisteredCommandsSubMenu->GetMenuItemCount() - 1; Item >= 0; Item--) {
 		auto SubMenu {RegisteredCommandsSubMenu->GetSubMenu(Item)};
-		if (SubMenu != nullptr) { SubMenu->DestroyMenu(); }
+		if (SubMenu != nullptr) {
+			SubMenu->DestroyMenu();
+		}
 		RegisteredCommandsSubMenu->DeleteMenu(static_cast<unsigned>(Item), MF_BYPOSITION);
 	}
 	ENSURE(RegisteredCommandsSubMenu->GetMenuItemCount() == 0);
@@ -595,7 +623,9 @@ void AeSys::RefreshCommandMenu() {
 			OdString GroupName;
 			while (!GroupCommandIterator->done()) {
 				OdEdCommandPtr Command {GroupCommandIterator->object().get()};
-				if (GroupName.isEmpty()) { GroupName = Command->groupName(); }
+				if (GroupName.isEmpty()) {
+					GroupName = Command->groupName();
+				}
 				auto CommandName(Command->globalName());
 				GroupMenu.AppendMenuW(MF_STRING, CommandId, CommandName);
 				MenuItemInfo.dwItemData = static_cast<unsigned long>(reinterpret_cast<long>(Command.get()));
@@ -923,7 +953,9 @@ void AeSys::FormatLengthStacked(wchar_t* lengthAsString, const unsigned bufSize,
 				wcscat_s(lengthAsString, bufSize, L"/");
 				_itow_s(Denominator, Buffer, 16, 10);
 				wcscat_s(lengthAsString, bufSize, Buffer);
-				if (units == kArchitecturalS) { wcscat_s(lengthAsString, bufSize, L";"); }
+				if (units == kArchitecturalS) {
+					wcscat_s(lengthAsString, bufSize, L";");
+				}
 			}
 			wcscat_s(lengthAsString, bufSize, L"\"");
 			break;
@@ -1048,12 +1080,16 @@ bool AeSys::HighColorMode() const noexcept {
 }
 
 OdGePoint3d AeSys::HomePointGet(const int i) noexcept {
-	if (i >= 0 && i < 9) { return m_HomePoints[i]; }
+	if (i >= 0 && i < 9) {
+		return m_HomePoints[i];
+	}
 	return OdGePoint3d::kOrigin;
 }
 
 void AeSys::HomePointSave(const int i, const OdGePoint3d& point) noexcept {
-	if (i >= 0 && i < 9) { m_HomePoints[i] = point; }
+	if (i >= 0 && i < 9) {
+		m_HomePoints[i] = point;
+	}
 }
 
 void AeSys::InitializeGlobals(CDC* deviceContext) {
@@ -1189,14 +1225,20 @@ BOOL AeSys::InitInstance() {
 	EnableUserTools(ID_TOOLS_ENTRY, ID_USER_TOOL1, ID_USER_TOOL10, RUNTIME_CLASS(CUserTool), IDR_MENU_ARGS, IDR_MENU_DIRS);
 	CMFCButton::EnableWindowsTheming();
 	CWinAppEx::InitInstance();
-	if (!InitializeOda()) { return FALSE; }
+	if (!InitializeOda()) {
+		return FALSE;
+	}
 
 	// Register the application's document templates.  Document templates serve as the connection between documents, frame windows and views.
 	const auto AeSysDocTemplate {new CMultiDocTemplate(IDR_AESYSTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
-	if (AeSysDocTemplate == nullptr) { return FALSE; }
+	if (AeSysDocTemplate == nullptr) {
+		return FALSE;
+	}
 	AddDocTemplate(AeSysDocTemplate);
 	const auto TracingDocTemplate {new CMultiDocTemplate(IDR_TRACINGTYPE, RUNTIME_CLASS(AeSysDoc), RUNTIME_CLASS(CChildFrame), RUNTIME_CLASS(AeSysView))};
-	if (TracingDocTemplate == nullptr) { return FALSE; }
+	if (TracingDocTemplate == nullptr) {
+		return FALSE;
+	}
 	AddDocTemplate(TracingDocTemplate);
 
 	// Create main MDI Frame window
@@ -1220,13 +1262,19 @@ BOOL AeSys::InitInstance() {
 	// Parse command line for standard shell commands, DDE, file open
 	CFullCommandLineInfo CommandLineInfo;
 	ParseCommandLine(CommandLineInfo);
-	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) { CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing; }
+	if (CommandLineInfo.m_nShellCommand == CCommandLineInfo::FileNew) {
+		CommandLineInfo.m_nShellCommand = CCommandLineInfo::FileNothing;
+	}
 	EnableShellOpen();
 	RegisterShellFileTypes(TRUE);
 
 	// Dispatch commands specified on the command line
-	if (ProcessShellCommand(CommandLineInfo) == 0) { return FALSE; }
-	if (RegisterPreviewWindowClass(m_hInstance) == 0U) { return FALSE; }
+	if (ProcessShellCommand(CommandLineInfo) == 0) {
+		return FALSE;
+	}
+	if (RegisterPreviewWindowClass(m_hInstance) == 0U) {
+		return FALSE;
+	}
 	SetShadowFolderPath(L"AeSys Shadow Folder");
 	LoadSimplexStrokeFont(ResourceFolderPath() + L"Simplex.psf");
 	EoDbHatchPatternTable::LoadHatchesFromFile(ResourceFolderPath() + L"Hatches\\DefaultSet.pat");
@@ -1261,8 +1309,7 @@ void AeSys::LoadColorPalletFromFile(const CString& fileName) {
 	CStdioFile StreamFile;
 	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText) != 0) {
 		wchar_t Line[128] {L"\0"};
-		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) != nullptr && _tcsnicmp(Line, L"<Colors>", 8) != 0) {
-		}
+		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) != nullptr && _tcsnicmp(Line, L"<Colors>", 8) != 0) { }
 		while (StreamFile.ReadString(Line, sizeof Line / sizeof(wchar_t) - 1) != nullptr && *Line != '<') {
 			wchar_t* NextToken {nullptr};
 			const auto Index {wcstok_s(Line, L"=", &NextToken)};
@@ -1298,7 +1345,9 @@ void AeSys::LoadPenWidthsFromFile(const CString& fileName) {
 			wchar_t* NextToken {nullptr};
 			const auto PenIndex {_wtoi(wcstok_s(PenWidths, L"=", &NextToken))};
 			const auto Width {_wtof(wcstok_s(nullptr, L",\n", &NextToken))};
-			if (PenIndex >= 0 && PenIndex < static_cast<int>(sizeof g_PenWidths / sizeof g_PenWidths[0])) { g_PenWidths[PenIndex] = Width; }
+			if (PenIndex >= 0 && PenIndex < static_cast<int>(sizeof g_PenWidths / sizeof g_PenWidths[0])) {
+				g_PenWidths[PenIndex] = Width;
+			}
 		}
 	}
 }
@@ -1312,9 +1361,13 @@ void AeSys::LoadSimplexStrokeFont(const CString& pathName) {
 	const auto OpenHandle {CreateFileW(pathName, GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, nullptr)};
 	if (OpenHandle != INVALID_HANDLE_VALUE) {
 		if (SetFilePointer(OpenHandle, 0, nullptr, FILE_BEGIN) != INVALID_SET_FILE_POINTER) {
-			if (m_SimplexStrokeFont == nullptr) { m_SimplexStrokeFont = new char[16384]; }
+			if (m_SimplexStrokeFont == nullptr) {
+				m_SimplexStrokeFont = new char[16384];
+			}
 			unsigned long NumberOfBytesRead;
-			if (ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, nullptr) == 0) { ReleaseSimplexStrokeFont(); }
+			if (ReadFile(OpenHandle, m_SimplexStrokeFont, 16384U, &NumberOfBytesRead, nullptr) == 0) {
+				ReleaseSimplexStrokeFont();
+			}
 		}
 		CloseHandle(OpenHandle);
 	} else {
@@ -1365,7 +1418,9 @@ void AeSys::OnFileOpen() {
 	FileDialog.m_ofn.lpstrTitle = Title;
 	const auto Result {FileDialog.DoModal()};
 	FileName.ReleaseBuffer();
-	if (Result == IDOK) { OpenDocumentFile(FileName); }
+	if (Result == IDOK) {
+		OpenDocumentFile(FileName);
+	}
 }
 
 void AeSys::OnFilePlotStyleManager() {
@@ -1402,8 +1457,7 @@ void AeSys::OnFilePlotStyleManager() {
 					PlotStyleTable->copyFrom(PsTableEditorDlg.GetPlotStyleTable());
 				}
 			}
-		} catch (...) {
-		}
+		} catch (...) { }
 	}
 }
 
@@ -1625,7 +1679,9 @@ double AeSys::ParseLength(const Units units, const wchar_t* lengthAsString) {
 		double ReturnValue[32];
 		Lex::Parse(lengthAsString);
 		Lex::EvalTokenStream(&TokenIndex, &DataDefinition, &TokenType, static_cast<void*>(ReturnValue));
-		if (TokenType == Lex::gc_TokenLengthOperand) { return ReturnValue[0]; }
+		if (TokenType == Lex::gc_TokenLengthOperand) {
+			return ReturnValue[0];
+		}
 		Lex::ConvertValTyp(TokenType, Lex::gc_TokenReal, &DataDefinition, ReturnValue);
 		switch (units) {
 			case kArchitectural: case kArchitecturalS: case kEngineering: case kFeet:
@@ -1686,7 +1742,9 @@ bool GetRegistryString(const HKEY key, const wchar_t* subKey, const wchar_t* nam
 			memcpy_s(&DataW, gc_RegistryBufferSize, &Data, RegistryBufferSize);
 			ReturnValue = true;
 		} else {
-			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, DataW, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) { ReturnValue = true; }
+			if (ERROR_SUCCESS == RegEnumKeyExW(OpenedKey, 0, DataW, &RegistryBufferSize, nullptr, nullptr, nullptr, nullptr)) {
+				ReturnValue = true;
+			}
 		}
 		if (size < gc_RegistryBufferSize) {
 			swprintf_s(value, static_cast<size_t>(size), L"%s\0", DataW);
@@ -1702,31 +1760,43 @@ bool GetRegistryString(const HKEY key, const wchar_t* subKey, const wchar_t* nam
 CString GetRegistryAcadLocation() {
 	CString SubKey {L"SOFTWARE\\Autodesk\\AutoCAD"};
 	wchar_t Version[32] {L""};
-	if (!GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", Version, 32)) { return L""; }
+	if (!GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", Version, 32)) {
+		return L"";
+	}
 	SubKey += L"\\";
 	SubKey += Version;
 	wchar_t SubVersion[32] {L""};
-	if (!GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", SubVersion, 32)) { return L""; }
+	if (!GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"CurVer", SubVersion, 32)) {
+		return L"";
+	}
 	SubKey += L"\\";
 	SubKey += SubVersion;
 	wchar_t SearchPaths[gc_RegistryMaxPath] {L""};
-	if (!GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"AcadLocation", SearchPaths, gc_RegistryMaxPath)) { return L""; }
+	if (!GetRegistryString(HKEY_LOCAL_MACHINE, SubKey, L"AcadLocation", SearchPaths, gc_RegistryMaxPath)) {
+		return L"";
+	}
 	return CString(SearchPaths);
 }
 
 CString GetRegistryAcadProfilesKey() {
 	CString SubKey {L"SOFTWARE\\Autodesk\\AutoCAD"};
 	wchar_t Version[32] {L"\0"};
-	if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"CurVer", Version, 32)) { return L""; }
+	if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"CurVer", Version, 32)) {
+		return L"";
+	}
 	SubKey += L"\\";
 	SubKey += Version;
 	wchar_t SubVersion[32] {L"\0"};
-	if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"CurVer", SubVersion, 32)) { return L""; }
+	if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"CurVer", SubVersion, 32)) {
+		return L"";
+	}
 	SubKey += L"\\";
 	SubKey += SubVersion;
 	SubKey += L"\\Profiles";
 	wchar_t Profile[gc_RegistryMaxProfileName] {L"\0"};
-	if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"", Profile, gc_RegistryMaxProfileName)) { return L""; }
+	if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"", Profile, gc_RegistryMaxProfileName)) {
+		return L"";
+	}
 	SubKey += L"\\";
 	SubKey += Profile;
 	return SubKey;
@@ -1759,9 +1829,13 @@ OdString AeSys::getTempPath() const {
 		if (!GetRegistryString(HKEY_CURRENT_USER, SubKey, L"TempDirectory", TempPath, MAX_PATH)) {
 			return OdDbHostAppServices::getTempPath();
 		}
-		if (_waccess(TempPath, 0) != 0) { return OdDbHostAppServices::getTempPath(); }
+		if (_waccess(TempPath, 0) != 0) {
+			return OdDbHostAppServices::getTempPath();
+		}
 		CString Result(TempPath, static_cast<int>(wcslen(TempPath)));
-		if (Result.GetAt(Result.GetLength() - 1) != '\\') { Result += '\\'; }
+		if (Result.GetAt(Result.GetLength() - 1) != '\\') {
+			Result += '\\';
+		}
 		return Result.GetString();
 	}
 	return OdDbHostAppServices::getTempPath();
@@ -1785,7 +1859,9 @@ void AeSys::SetStatusPaneTextAt(const int index, const wchar_t* newText) {
 }
 
 OdDbHostAppProgressMeter* AeSys::newProgressMeter() {
-	if (m_ThisThreadId != GetCurrentThreadId()) { return nullptr; }
+	if (m_ThisThreadId != GetCurrentThreadId()) {
+		return nullptr;
+	}
 	return ExHostAppServices::newProgressMeter();
 }
 
@@ -1824,8 +1900,7 @@ void AeSys::meterProgress() {
 			StatusUpdater(const int percent, CMainFrame* mainFrame, AeSys* application) noexcept
 				: m_Percent(percent)
 				, m_MainFrame(mainFrame)
-				, m_Application(application) {
-			}
+				, m_Application(application) { }
 
 			static void Exec(void* statusUpdater) {
 				const auto StatusUpdaterExec {static_cast<StatusUpdater*>(statusUpdater)};
@@ -1891,7 +1966,9 @@ void AeSys::warning(const char* warnVisGroup, const OdString& text) {
 		if (ReturnValue == IDCANCEL || ReturnValue == IDNO) {
 			throw UserBreak();
 		}
-		if (ReturnValue == IDTRYAGAIN) { g_IgnoreWarnings = true; }
+		if (ReturnValue == IDTRYAGAIN) {
+			g_IgnoreWarnings = true;
+		}
 	}
 }
 
@@ -1923,7 +2000,9 @@ CString AeSys::ResourceFolderPath() {
 }
 
 void AeSys::SetArchitecturalUnitsFractionPrecision(const int precision) noexcept {
-	if (precision > 0) { m_ArchitecturalUnitsFractionPrecision = precision; }
+	if (precision > 0) {
+		m_ArchitecturalUnitsFractionPrecision = precision;
+	}
 }
 
 void AeSys::SetDimensionAngle(const double angle) noexcept {
@@ -2060,7 +2139,9 @@ void AeSys::OnUpdateVectorizerTypeAddVectorizerDll(CCmdUI* /*commandUserInterfac
 			const auto Status {RegEnumValueW(RegistryKey, m_NumGsMenuItems, Path.GetBuffer(static_cast<int>(PathSize)), &PathSize, nullptr, nullptr, nullptr, nullptr)};
 			Path.ReleaseBuffer();
 			if (Status == ERROR_SUCCESS) {
-				if (!AddGsMenuItem(VectorizePopupMenu, m_NumGsMenuItems, Path)) { break; }
+				if (!AddGsMenuItem(VectorizePopupMenu, m_NumGsMenuItems, Path)) {
+					break;
+				}
 			} else {
 				break;
 			}

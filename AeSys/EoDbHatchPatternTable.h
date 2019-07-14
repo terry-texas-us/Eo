@@ -9,7 +9,9 @@ public:
 
 	static OdString LegacyHatchPatternName(unsigned index);
 
-	static unsigned short NumberOfLegacyHatchPatterns() noexcept { return ms_NumberOfLegacyHatchPatterns; }
+	static unsigned short NumberOfLegacyHatchPatterns() noexcept {
+		return ms_NumberOfLegacyHatchPatterns;
+	}
 
 	static void LoadHatchesFromFile(const CString& fileName);
 

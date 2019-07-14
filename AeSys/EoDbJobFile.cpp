@@ -127,14 +127,18 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 	group = nullptr;
 	try {
 		EoDbPrimitive* Primitive;
-		if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { return false; }
+		if (!GetNextPrimitive(blockTableRecord, file, Primitive)) {
+			return false;
+		}
 		group = new EoDbGroup;
 		group->AddTail(Primitive);
 		const auto NumberOfPrimitives {*reinterpret_cast<unsigned short*>(m_Version == 1 ? &m_PrimBuf[2] : &m_PrimBuf[1])};
 		for (unsigned w = 1; w < NumberOfPrimitives; w++) {
 			try {
 				Position = file.GetPosition();
-				if (!GetNextPrimitive(blockTableRecord, file, Primitive)) { throw L"Exception.FileJob: Unexpected end of file."; }
+				if (!GetNextPrimitive(blockTableRecord, file, Primitive)) {
+					throw L"Exception.FileJob: Unexpected end of file.";
+				}
 				group->AddTail(Primitive);
 			} catch (const wchar_t* Message) {
 				AeSys::AddStringToMessageList(Message);
@@ -143,7 +147,9 @@ bool EoDbJobFile::GetNextVisibleGroup(OdDbBlockTableRecordPtr blockTableRecord, 
 		}
 	} catch (const wchar_t* Message) {
 		if (Position >= 96) {
-			if (MessageBoxW(nullptr, Message, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) { return false; }
+			if (MessageBoxW(nullptr, Message, nullptr, MB_ICONERROR | MB_RETRYCANCEL) == IDCANCEL) {
+				return false;
+			}
 		}
 		file.Seek(static_cast<long long>(Position + 32), CFile::begin);
 	}
@@ -166,7 +172,9 @@ void EoDbJobFile::ReadHeader(CFile& file) {
 void EoDbJobFile::ReadLayer(OdDbBlockTableRecordPtr blockTableRecord, CFile& file, EoDbLayer* layer) {
 	EoDbGroup* Group;
 	while (GetNextVisibleGroup(blockTableRecord, file, Group)) {
-		if (Group != nullptr) { layer->AddTail(Group); }
+		if (Group != nullptr) {
+			layer->AddTail(Group);
+		}
 	}
 }
 
@@ -181,14 +189,22 @@ void EoDbJobFile::ReadMemFile(OdDbBlockTableRecordPtr blockTableRecord, CFile& f
 }
 
 bool EoDbJobFile::ReadNextPrimitive(CFile& file, unsigned char* buffer, short& primitiveType) const {
-	if (file.Read(buffer, 32) < 32) { return false; }
+	if (file.Read(buffer, 32) < 32) {
+		return false;
+	}
 	primitiveType = *reinterpret_cast<short*>(& buffer[4]);
-	if (!IsValidPrimitive(primitiveType)) { throw L"Exception.FileJob: Invalid primitive type."; }
+	if (!IsValidPrimitive(primitiveType)) {
+		throw L"Exception.FileJob: Invalid primitive type.";
+	}
 	const unsigned LengthInChunks = m_Version == 1 ? buffer[6] : buffer[3];
 	if (LengthInChunks > 1) {
 		const auto BytesRemaining {(LengthInChunks - 1) * 32};
-		if (BytesRemaining >= EoDbPrimitive::mc_BufferSize - 32) { throw L"Exception.FileJob: Primitive buffer overflow."; }
-		if (file.Read(&buffer[32], BytesRemaining) < BytesRemaining) { throw L"Exception.FileJob: Unexpected end of file."; }
+		if (BytesRemaining >= EoDbPrimitive::mc_BufferSize - 32) {
+			throw L"Exception.FileJob: Primitive buffer overflow.";
+		}
+		if (file.Read(&buffer[32], BytesRemaining) < BytesRemaining) {
+			throw L"Exception.FileJob: Unexpected end of file.";
+		}
 	}
 	return true;
 }

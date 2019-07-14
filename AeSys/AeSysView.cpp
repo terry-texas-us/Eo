@@ -39,9 +39,13 @@ struct EoRectangle {
 	T right;
 	T bottom;
 
-	T Width() { return right - left; }
+	T Width() {
+		return right - left;
+	}
 
-	T Height() { return top - bottom; }
+	T Height() {
+		return top - bottom;
+	}
 };
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -379,7 +383,9 @@ bool AeSysView::regenAbort() const noexcept {
 }
 
 LRESULT AeSysView::OnRedraw(WPARAM /*wParam*/, LPARAM /*lParam*/) {
-	if (m_IncompleteRegenerate) { return 1; }
+	if (m_IncompleteRegenerate) {
+		return 1;
+	}
 	m_IncompleteRegenerate = true;
 	m_RegenerateAbort = false;
 	auto MainFrame {dynamic_cast<CMainFrame*>(theApp.GetMainWnd())};
@@ -464,7 +470,9 @@ void AeSysView::OnDestroy() {
 }
 
 int AeSysView::OnCreate(const LPCREATESTRUCT createStructure) {
-	if (CView::OnCreate(createStructure) == -1) { return -1; }
+	if (CView::OnCreate(createStructure) == -1) {
+		return -1;
+	}
 	return 0;
 }
 
@@ -502,7 +510,9 @@ const OdGsView* AeSysView::GetLayoutActiveTopView() const {
 
 inline bool RequireAutoRegen(OdGsView* view) {
 	auto Device {view->device()};
-	if (Device == nullptr) { return false; }
+	if (Device == nullptr) {
+		return false;
+	}
 	auto DeviceProperties = Device->properties();
 	if (!DeviceProperties.isNull()) {
 		if (DeviceProperties->has(L"RegenCoef")) {
@@ -546,7 +556,9 @@ void AeSysView::PropagateLayoutActiveViewChanges(bool /*forceAutoRegen*/) const 
 			AbstractView->setView(ViewportObject, Target, Direction, UpVector, FieldWidth, FieldHeight, Perspective, ViewOffset);
 			AbstractView->setLensLength(ViewportObject, LensLength);
 			// Auto regen
-			if (!theApp.DisableAutoRegenerate() && RequireAutoRegen(View)) { const_cast<AeSysView*>(this)->OnViewerRegen(); }
+			if (!theApp.DisableAutoRegenerate() && RequireAutoRegen(View)) {
+				const_cast<AeSysView*>(this)->OnViewerRegen();
+			}
 		}
 		OdDb::RenderMode RenderMode;
 		switch (View->mode()) {
@@ -571,9 +583,13 @@ void AeSysView::PropagateLayoutActiveViewChanges(bool /*forceAutoRegen*/) const 
 			case OdGsView::kNone: case OdGsView::k2DOptimized: case OdGsView::kBoundingBox: default:
 				RenderMode = OdDb::k2DOptimized;
 		}
-		if (AbstractView->renderMode(ViewportObject) != RenderMode) { AbstractView->setRenderMode(ViewportObject, RenderMode); }
+		if (AbstractView->renderMode(ViewportObject) != RenderMode) {
+			AbstractView->setRenderMode(ViewportObject, RenderMode);
+		}
 		const OdDbObjectId ObjectVisualStyle(View->visualStyle());
-		if (AbstractView->visualStyle(ViewportObject) != ObjectVisualStyle && !ObjectVisualStyle.isNull()) { AbstractView->setVisualStyle(ViewportObject, View->visualStyle()); }
+		if (AbstractView->visualStyle(ViewportObject) != ObjectVisualStyle && !ObjectVisualStyle.isNull()) {
+			AbstractView->setVisualStyle(ViewportObject, View->visualStyle());
+		}
 	}
 }
 
@@ -589,7 +605,9 @@ inline OdGsViewPtr GetOverallView(OdGsDevice* device) {
 inline OdGsViewPtr activeView(OdGsDevice* device) {
 	OdGsViewPtr ActiveView;
 	auto LayoutHelper {OdGsLayoutHelper::cast(device)};
-	if (LayoutHelper.get() != nullptr) { ActiveView = LayoutHelper->activeView(); }
+	if (LayoutHelper.get() != nullptr) {
+		ActiveView = LayoutHelper->activeView();
+	}
 	return ActiveView;
 }
 
@@ -631,7 +649,9 @@ void AeSysView::plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) 
 }
 
 void AeSysView::PreparePlotStyles(const OdDbLayout* layout, const bool forceReload) {
-	if (m_pPlotStyleTable.get() != nullptr && !forceReload) { return; }
+	if (m_pPlotStyleTable.get() != nullptr && !forceReload) {
+		return;
+	}
 	const OdDbDatabase* Database {GetDocument()->m_DatabasePtr};
 	OdSmartPtr<OdDbLayout> CurrentLayout;
 	if (layout == nullptr) {
@@ -647,7 +667,9 @@ void AeSysView::PreparePlotStyles(const OdDbLayout* layout, const bool forceRelo
 			const auto TestPath {Database->appServices()->findFile(LayoutStyleSheet)};
 			if (!TestPath.isEmpty()) {
 				auto FileBuffer {odSystemServices()->createFile(TestPath)};
-				if (FileBuffer.get() != nullptr) { loadPlotStyleTable(FileBuffer); }
+				if (FileBuffer.get() != nullptr) {
+					loadPlotStyleTable(FileBuffer);
+				}
 			}
 		}
 	}
@@ -659,7 +681,9 @@ static bool GetRegistryUnsignedLong(const HKEY key, const wchar_t* subKey, const
 	HKEY KeyHandle {nullptr};
 	if (RegOpenKeyExW(key, subKey, 0, KEY_READ, &KeyHandle) == ERROR_SUCCESS) {
 		unsigned long ValueSize {sizeof(unsigned long)};
-		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, reinterpret_cast<LPBYTE>(&value), &ValueSize) == ERROR_SUCCESS) { ReturnValue = true; }
+		if (RegQueryValueExW(KeyHandle, name, nullptr, nullptr, reinterpret_cast<LPBYTE>(&value), &ValueSize) == ERROR_SUCCESS) {
+			ReturnValue = true;
+		}
 		RegCloseKey(KeyHandle);
 	}
 	return ReturnValue;
@@ -688,7 +712,9 @@ unsigned long AeSysView::glyphSize(const GlyphType glyphType) const {
 			Processed = GetAcadProfileRegistryUnsignedLong(L"Dialogs\\AcCamera", L"GlyphSize", Value);
 			break;
 	}
-	if (Processed) { return gsl::narrow_cast<unsigned long>(Value); }
+	if (Processed) {
+		return gsl::narrow_cast<unsigned long>(Value);
+	}
 	return OdGiContextForDbDatabase::glyphSize(glyphType);
 }
 
@@ -1123,7 +1149,9 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 		auto IsPrint180Degrees(false);
 		auto IsPrint270Degrees(false);
 		double PrinterWidth = deviceContext->GetDeviceCaps(PHYSICALWIDTH);
-		if (printInformation->m_bPreview != 0) { PrinterWidth -= 2; }
+		if (printInformation->m_bPreview != 0) {
+			PrinterWidth -= 2;
+		}
 		const auto PrinterHeight {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALHEIGHT))};
 		const auto PrinterLeftMargin {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALOFFSETX))};
 		const auto PrinterTopMargin {static_cast<double>(deviceContext->GetDeviceCaps(PHYSICALOFFSETY))};
@@ -1507,7 +1535,9 @@ public:
 		, m_Cursor(view->Cursor()) {
 		view->Track(inputTracker);
 		view->setCursor(cursor);
-		if (snap) { view->m_Editor.InitializeSnapping(view->GetLayoutActiveTopView(), inputTracker); }
+		if (snap) {
+			view->m_Editor.InitializeSnapping(view->GetLayoutActiveTopView(), inputTracker);
+		}
 	}
 
 	~SaveViewParameters() {
@@ -1537,7 +1567,9 @@ public:
 	}
 
 	~SaveViewParametersTimer() {
-		if (m_TimerSet) { KillTimer(m_View->m_hWnd, gc_BlinkCursorTimer); }
+		if (m_TimerSet) {
+			KillTimer(m_View->m_hWnd, gc_BlinkCursorTimer);
+		}
 	}
 };
 
@@ -1556,7 +1588,9 @@ bool AeSysView::UpdateStringTrackerCursor() {
 void CALLBACK StringTrackerTimer(const HWND window, unsigned /*message*/, const unsigned timerId, unsigned long /*time*/) {
 	try {
 		auto View {dynamic_cast<AeSysView*>(CWnd::FromHandle(window))};
-		if (!View->UpdateStringTrackerCursor()) { KillTimer(window, timerId); }
+		if (!View->UpdateStringTrackerCursor()) {
+			KillTimer(window, timerId);
+		}
 	} catch (...) {
 		KillTimer(window, timerId);
 	}
@@ -1565,8 +1599,12 @@ void CALLBACK StringTrackerTimer(const HWND window, unsigned /*message*/, const 
 // </command_view>
 unsigned long AeSysView::getKeyState() noexcept {
 	unsigned long KeyState(0);
-	if (GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
-	if (GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
+	if (GetKeyState(VK_CONTROL) != 0) {
+		KeyState |= MK_CONTROL;
+	}
+	if (GetKeyState(VK_SHIFT) != 0) {
+		KeyState |= MK_SHIFT;
+	}
 	return KeyState;
 }
 
@@ -1581,7 +1619,9 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 	while (theApp.PumpMessage() != 0) {
 		switch (m_Response.type) {
 			case Response::kPoint:
-				if ((m_inpOptions & OdEd::kGptBeginDrag) != 0) { SetCapture(); }
+				if ((m_inpOptions & OdEd::kGptBeginDrag) != 0) {
+					SetCapture();
+				}
 				return m_Response.point;
 			case Response::kString:
 				throw OdEdOtherInput(m_Response.string);
@@ -1591,8 +1631,7 @@ OdGePoint3d AeSysView::getPoint(const OdString& prompt, const int options, OdEdP
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++) != 0) {
-		}
+		while (theApp.OnIdle(Idle++) != 0) { }
 	}
 	throw OdEdCancel();
 }
@@ -1603,7 +1642,9 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 	putString(prompt);
 	OdSaveState<Mode> SavedMode(m_mode, kGetString);
 	m_Response.type = Response::kNone;
-	if (tracker != nullptr) { m_InputParser.reset(true); }
+	if (tracker != nullptr) {
+		m_InputParser.reset(true);
+	}
 	m_inpOptions = options;
 	SaveViewParametersTimer SavedViewParameters(this, tracker, LoadCursorW(nullptr, IDC_IBEAM));
 	while (theApp.PumpMessage() != 0) {
@@ -1616,8 +1657,7 @@ OdString AeSysView::getString(const OdString& prompt, const int options, OdEdStr
 				break;
 		}
 		long Idle = 0;
-		while (theApp.OnIdle(Idle++) != 0) {
-		}
+		while (theApp.OnIdle(Idle++) != 0) { }
 	}
 	throw OdEdCancel();
 }
@@ -1626,7 +1666,9 @@ void AeSysView::putString(const OdString& string) {
 	m_Prompt = string;
 	const auto NewLineDelimiter {m_Prompt.reverseFind('\n')};
 	const wchar_t* Text {string};
-	if (NewLineDelimiter >= 0) { Text = Text + NewLineDelimiter + 1; }
+	if (NewLineDelimiter >= 0) {
+		Text = Text + NewLineDelimiter + 1;
+	}
 	AeSys::AddStringToMessageList(Text);
 	theApp.SetStatusPaneTextAt(gc_StatusInfo, Text);
 }
@@ -1661,7 +1703,9 @@ struct ReactorSort {
 
 	bool operator()(const OdDbObjectId firstObjectId, const OdDbObjectId secondObjectId) {
 		auto SecondObject {secondObjectId.openObject()};
-		if (SecondObject.isNull()) { return false; }
+		if (SecondObject.isNull()) {
+			return false;
+		}
 		const auto SecondObjectReactors {SecondObject->getPersistentReactors()};
 		return SecondObjectReactors.contains(firstObjectId);
 	}
@@ -1727,14 +1771,22 @@ BOOL AeSysView::PreCreateWindow(CREATESTRUCT& createStructure) {
 
 void AeSysView::OnUpdate(CView* sender, const LPARAM hint, CObject* hintObject) {
 	auto DeviceContext {GetDC()};
-	if (DeviceContext == nullptr) { return; }
+	if (DeviceContext == nullptr) {
+		return;
+	}
 	const auto BackgroundColor {DeviceContext->GetBkColor()};
 	DeviceContext->SetBkColor(g_ViewBackgroundColor);
 	auto PrimitiveState {0};
 	auto DrawMode {0};
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) { PrimitiveState = g_PrimitiveState.Save(); }
-	if ((hint & EoDb::kErase) == EoDb::kErase) { DrawMode = g_PrimitiveState.SetROP2(*DeviceContext, R2_XORPEN); }
-	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor()); }
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
+		PrimitiveState = g_PrimitiveState.Save();
+	}
+	if ((hint & EoDb::kErase) == EoDb::kErase) {
+		DrawMode = g_PrimitiveState.SetROP2(*DeviceContext, R2_XORPEN);
+	}
+	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
+		EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
+	}
 	switch (hint) {
 		case EoDb::kPrimitive: case EoDb::kPrimitiveSafe: case EoDb::kPrimitiveEraseSafe:
 			dynamic_cast<EoDbPrimitive*>(hintObject)->Display(this, DeviceContext);
@@ -1751,9 +1803,15 @@ void AeSysView::OnUpdate(CView* sender, const LPARAM hint, CObject* hintObject) 
 		default:
 			CView::OnUpdate(sender, hint, hintObject);
 	}
-	if ((hint & EoDb::kTrap) == EoDb::kTrap) { EoDbPrimitive::SetHighlightColorIndex(0); }
-	if ((hint & EoDb::kErase) == EoDb::kErase) { g_PrimitiveState.SetROP2(*DeviceContext, DrawMode); }
-	if ((hint & EoDb::kSafe) == EoDb::kSafe) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
+	if ((hint & EoDb::kTrap) == EoDb::kTrap) {
+		EoDbPrimitive::SetHighlightColorIndex(0);
+	}
+	if ((hint & EoDb::kErase) == EoDb::kErase) {
+		g_PrimitiveState.SetROP2(*DeviceContext, DrawMode);
+	}
+	if ((hint & EoDb::kSafe) == EoDb::kSafe) {
+		g_PrimitiveState.Restore(*DeviceContext, PrimitiveState);
+	}
 	DeviceContext->SetBkColor(BackgroundColor);
 	ReleaseDC(DeviceContext);
 }
@@ -1793,7 +1851,9 @@ void AeSysView::OnChar(const unsigned characterCodeValue, unsigned repeatCount, 
 			m_InputParser.reset(false);
 			switch (m_mode) {
 				case kQuiescent:
-					if (m_Editor.Unselect()) { PostMessageW(WM_PAINT); }
+					if (m_Editor.Unselect()) {
+						PostMessageW(WM_PAINT);
+					}
 					break;
 				case kGetPoint: case kGetString: case kDragDrop: default:
 					break;
@@ -1857,11 +1917,15 @@ void AeSysView::OnLButtonDown(const unsigned flags, const CPoint point) {
 		__super::OnLButtonDown(flags, point);
 		switch (m_mode) {
 			case kQuiescent:
-				if (m_Editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) { PostMessageW(WM_PAINT); }
+				if (m_Editor.OnMouseLeftButtonClick(flags, point.x, point.y, this)) {
+					PostMessageW(WM_PAINT);
+				}
 				break;
 			case kGetPoint:
 				m_Response.point = m_Editor.ToEyeToWorld(point.x, point.y);
-				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_Response.point)) { break; }
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_Response.point)) {
+					break;
+				}
 				m_Editor.Snap(m_Response.point);
 				m_Response.type = Response::kPoint;
 				break;
@@ -1878,7 +1942,9 @@ void AeSysView::OnLButtonUp(const unsigned flags, const CPoint point) {
 		__super::OnLButtonUp(flags, point);
 		if (m_mode == kGetPoint && GetCapture() == this) {
 			m_Response.point = m_Editor.ToEyeToWorld(point.x, point.y);
-			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_Response.point)) { return; }
+			if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(m_Response.point)) {
+				return;
+			}
 			m_Response.type = Response::kPoint;
 			ReleaseCapture();
 		}
@@ -1908,8 +1974,12 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 				break;
 			case kGetPoint: {
 				auto Point {m_Editor.ToEyeToWorld(point.x, point.y)};
-				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(Point)) { return; }
-				if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) { m_Editor.Snap(Point); }
+				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(Point)) {
+					return;
+				}
+				if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) {
+					m_Editor.Snap(Point);
+				}
 				m_Editor.TrackPoint(Point);
 				break;
 			}
@@ -2134,8 +2204,7 @@ void AeSysView::OnPrepareDC(CDC* deviceContext, CPrintInfo* printInformation) {
 			//</tas>
 			m_ViewTransform.EnablePerspective(false);
 			m_ViewTransform.BuildTransformMatrix();
-		} else {
-		}
+		} else { }
 	}
 }
 
@@ -2683,8 +2752,7 @@ void AeSysView::OnSetupConstraints() {
 
 void AeSysView::OnSetupMouseButtons() {
 	EoDlgSetupCustomMouseCharacters Dialog;
-	if (Dialog.DoModal() == IDOK) {
-	}
+	if (Dialog.DoModal() == IDOK) { }
 }
 
 void AeSysView::OnRelativeMovesEngDown() {
@@ -2872,13 +2940,19 @@ void AeSysView::OnHelpKey() {
 
 AeSysView* AeSysView::GetActiveView() {
 	const auto MdiFrameWnd {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};
-	if (MdiFrameWnd == nullptr) { return nullptr; }
+	if (MdiFrameWnd == nullptr) {
+		return nullptr;
+	}
 	const CMDIChildWndEx* MdiChildWnd = DYNAMIC_DOWNCAST(CMDIChildWndEx, MdiFrameWnd->MDIGetActive());
-	if (MdiChildWnd == nullptr) { return nullptr; }
+	if (MdiChildWnd == nullptr) {
+		return nullptr;
+	}
 	const auto View {MdiChildWnd->GetActiveView()};
 
 	// View can be wrong kind with splitter windows, or additional views in a single document.
-	if (View->IsKindOf(RUNTIME_CLASS(AeSysView)) == 0) { return nullptr; }
+	if (View->IsKindOf(RUNTIME_CLASS(AeSysView)) == 0) {
+		return nullptr;
+	}
 	return dynamic_cast<AeSysView*>(View);
 }
 
@@ -3084,7 +3158,9 @@ std::pair<EoDbGroup*, EoDbEllipse*> AeSysView::SelectCircleUsingPoint(const OdGe
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbEllipse)) != 0) {
 				auto Arc {dynamic_cast<EoDbEllipse*>(Primitive)};
 				if (fabs(Arc->SweepAngle() - Oda2PI) <= DBL_EPSILON && Arc->MajorAxis().lengthSqrd() - Arc->MinorAxis().lengthSqrd() <= DBL_EPSILON) {
-					if (point.distanceTo(Arc->Center()) <= tolerance) { return {Group, Arc}; }
+					if (point.distanceTo(Arc->Center()) <= tolerance) {
+						return {Group, Arc};
+					}
 				}
 			}
 		}
@@ -3123,7 +3199,9 @@ EoDbText* AeSysView::SelectTextUsingPoint(const OdGePoint3d& point) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbText)) != 0) {
 				OdGePoint3d ProjectedPoint;
-				if (dynamic_cast<EoDbText*>(Primitive)->SelectUsingPoint(View, this, ProjectedPoint)) { return dynamic_cast<EoDbText*>(Primitive); }
+				if (dynamic_cast<EoDbText*>(Primitive)->SelectUsingPoint(View, this, ProjectedPoint)) {
+					return dynamic_cast<EoDbText*>(Primitive);
+				}
 			}
 		}
 	}
@@ -3266,9 +3344,13 @@ void AeSysView::OnFind() {
 }
 
 void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdString& findText) const {
-	if (findComboBox == nullptr) { return; }
+	if (findComboBox == nullptr) {
+		return;
+	}
 	const auto IsLastCommandFromButton {CMFCToolBar::IsLastCommandFromButton(findComboBox)};
-	if (IsLastCommandFromButton != 0) { findText = findComboBox->GetText(); }
+	if (IsLastCommandFromButton != 0) {
+		findText = findComboBox->GetText();
+	}
 	auto ComboBox {findComboBox->GetComboBox()};
 	if (!findText.isEmpty()) {
 		const auto Count {gsl::narrow_cast<unsigned>(ComboBox->GetCount())};
@@ -3277,7 +3359,9 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 			CString ListBoxText;
 			ComboBox->GetLBText(static_cast<int>(Position), ListBoxText);
 			if (ListBoxText.GetLength() == findText.getLength()) {
-				if (static_cast<const wchar_t*>(ListBoxText) == findText) { break; }
+				if (static_cast<const wchar_t*>(ListBoxText) == findText) {
+					break;
+				}
 			}
 			Position++;
 		}
@@ -3286,17 +3370,20 @@ void AeSysView::VerifyFindString(CMFCToolBarComboBoxButton* findComboBox, OdStri
 		}
 		ComboBox->InsertString(0, findText);
 		ComboBox->SetCurSel(0);
-		if (IsLastCommandFromButton == 0) { findComboBox->SetText(findText); }
+		if (IsLastCommandFromButton == 0) {
+			findComboBox->SetText(findText);
+		}
 	}
 }
 
-void AeSysView::OnEditFind() noexcept {
-}
+void AeSysView::OnEditFind() noexcept {}
 
 void AeSysView::RubberBandingDisable() {
 	if (m_RubberBandType != kNone) {
 		auto DeviceContext {GetDC()};
-		if (DeviceContext == nullptr) { return; }
+		if (DeviceContext == nullptr) {
+			return;
+		}
 		const auto DrawMode {DeviceContext->SetROP2(R2_XORPEN)};
 		CPen GreyPen(PS_SOLID, 0, g_RubberBandColor);
 		const auto Pen {DeviceContext->SelectObject(&GreyPen)};

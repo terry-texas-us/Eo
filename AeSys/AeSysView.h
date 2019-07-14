@@ -66,8 +66,7 @@ private:
 
 	void plotStyle(OdDbStub* psNameId, OdPsPlotStyleData& plotStyleData) const override;
 
-	void plotStyle(int /*penNumber*/, OdPsPlotStyleData& /*plotStyleData*/) const noexcept override {
-	} // OdGiContextForDbDatabase (to suppress C4266 warning)
+	void plotStyle(int /*penNumber*/, OdPsPlotStyleData& /*plotStyleData*/) const noexcept override { } // OdGiContextForDbDatabase (to suppress C4266 warning)
 protected:
 	friend OdGsLayoutHelperPtr odGetDocDevice(CDocument* document);
 
@@ -97,11 +96,15 @@ DECLARE_DYNCREATE(AeSysView)
 
 	const OdGsView* GetLayoutActiveTopView() const;
 
-	OdGsLayoutHelper* getDevice() { return m_LayoutHelper; }
+	OdGsLayoutHelper* getDevice() {
+		return m_LayoutHelper;
+	}
 
 	void PropagateLayoutActiveViewChanges(bool forceAutoRegen = false) const;
 
-	void recreateDevice() { CreateDevice(true); }
+	void recreateDevice() {
+		CreateDevice(true);
+	}
 
 	void Track(OdEdInputTracker* inputTracker);
 
@@ -113,11 +116,17 @@ DECLARE_DYNCREATE(AeSysView)
 	// <command_view>
 	bool CanClose() const;
 
-	bool isGettingString() const noexcept { return m_mode != kQuiescent; }
+	bool isGettingString() const noexcept {
+		return m_mode != kQuiescent;
+	}
 
-	OdString prompt() const { return m_Prompt; }
+	OdString prompt() const {
+		return m_Prompt;
+	}
 
-	int inpOptions() const noexcept { return m_inpOptions; }
+	int inpOptions() const noexcept {
+		return m_inpOptions;
+	}
 
 	void Respond(const OdString& string);
 
@@ -155,11 +164,9 @@ protected:
 
 	void OnUpdate(CView* sender, LPARAM hint, CObject* hintObject) override;
 
-	void addRef() noexcept override {
-	}
+	void addRef() noexcept override { }
 
-	void release() noexcept override {
-	}
+	void release() noexcept override { }
 
 	AeSysDoc* GetDocument() const; // hides non-virtual function of parent
 #ifdef _DEBUG
@@ -401,23 +408,39 @@ public: // Input message handler member functions
 	void DeleteLastGroup();
 
 	/// <Section="Visible group interface">
-	POSITION AddVisibleGroup(EoDbGroup* group) { return m_VisibleGroupList.AddTail(group); }
+	POSITION AddVisibleGroup(EoDbGroup* group) {
+		return m_VisibleGroupList.AddTail(group);
+	}
 
-	void AddVisibleGroups(EoDbGroupList* groups) { return m_VisibleGroupList.AddTail(groups); }
+	void AddVisibleGroups(EoDbGroupList* groups) {
+		return m_VisibleGroupList.AddTail(groups);
+	}
 
-	POSITION RemoveVisibleGroup(EoDbGroup* group) { return m_VisibleGroupList.Remove(group); }
+	POSITION RemoveVisibleGroup(EoDbGroup* group) {
+		return m_VisibleGroupList.Remove(group);
+	}
 
-	void RemoveAllVisibleGroups() { m_VisibleGroupList.RemoveAll(); }
+	void RemoveAllVisibleGroups() {
+		m_VisibleGroupList.RemoveAll();
+	}
 
 	EoDbGroup* RemoveLastVisibleGroup();
 
-	POSITION GetFirstVisibleGroupPosition() const { return m_VisibleGroupList.GetHeadPosition(); }
+	POSITION GetFirstVisibleGroupPosition() const {
+		return m_VisibleGroupList.GetHeadPosition();
+	}
 
-	POSITION GetLastGroupPosition() const { return m_VisibleGroupList.GetTailPosition(); }
+	POSITION GetLastGroupPosition() const {
+		return m_VisibleGroupList.GetTailPosition();
+	}
 
-	EoDbGroup* GetNextVisibleGroup(POSITION& position) { return m_VisibleGroupList.GetNext(position); }
+	EoDbGroup* GetNextVisibleGroup(POSITION& position) {
+		return m_VisibleGroupList.GetNext(position);
+	}
 
-	EoDbGroup* GetPreviousGroup(POSITION& position) { return m_VisibleGroupList.GetPrev(position); }
+	EoDbGroup* GetPreviousGroup(POSITION& position) {
+		return m_VisibleGroupList.GetPrev(position);
+	}
 	/// </Section>
 	void BackgroundImageDisplay(CDC* deviceContext);
 

@@ -3,8 +3,7 @@
 #include "OdExGripDrag.h"
 #include "ExGripManager.h"
 
-namespace
-{
+namespace {
 	OdBaseGripManager::OdExGripDataSubent& GetSubentGripData(OdBaseGripManager::OdExGripDataExt& ext, const OdDbBaseFullSubentPath& entityPath) {
 		for (auto& GripData : ext.gripDataSubEntity) {
 			if (GripData.subentPath == entityPath) {
@@ -145,7 +144,9 @@ void OdExGripDrag::MoveEntity(const OdGePoint3d& moveAtPoint) const {
 }
 
 void OdExGripDrag::NotifyDragStarted() const {
-	if (m_GripManager == nullptr) { return; }
+	if (m_GripManager == nullptr) {
+		return;
+	}
 	auto Entity {m_GripManager->OpenObject(EntityId())};
 	if (Entity.get() != nullptr) {
 		m_GripManager->DragStatus(Entity, OdDb::kDragStart);
@@ -154,7 +155,9 @@ void OdExGripDrag::NotifyDragStarted() const {
 }
 
 void OdExGripDrag::NotifyDragEnded() const {
-	if (m_GripManager == nullptr) { return; }
+	if (m_GripManager == nullptr) {
+		return;
+	}
 	auto Entity {m_GripManager->OpenObject(EntityId())};
 	if (Entity.get() != nullptr) {
 		m_GripManager->DragStatus(Entity, OdDb::kDragEnd);
@@ -163,7 +166,9 @@ void OdExGripDrag::NotifyDragEnded() const {
 }
 
 void OdExGripDrag::NotifyDragAborted() const {
-	if (m_GripManager == nullptr) { return; }
+	if (m_GripManager == nullptr) {
+		return;
+	}
 	auto Entity {m_GripManager->OpenObject(EntityId())};
 	if (Entity.get() != nullptr) {
 		m_GripManager->DragStatus(Entity, OdDb::kDragAbort);
@@ -172,10 +177,14 @@ void OdExGripDrag::NotifyDragAborted() const {
 }
 
 unsigned long OdExGripDrag::subSetAttributes(OdGiDrawableTraits* drawableTraits) const {
-	if (m_Clone.isNull()) { return kDrawableIsInvisible; }
+	if (m_Clone.isNull()) {
+		return kDrawableIsInvisible;
+	}
 	const auto Result {m_Clone->setAttributes(drawableTraits)};
 	auto EntityTraits {OdGiSubEntityTraits::cast(drawableTraits)};
-	if (EntityTraits.get() != nullptr) { EntityTraits->setFillType(kOdGiFillNever); }
+	if (EntityTraits.get() != nullptr) {
+		EntityTraits->setFillType(kOdGiFillNever);
+	}
 	return Result;
 }
 
@@ -187,5 +196,7 @@ bool OdExGripDrag::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 }
 
 void OdExGripDrag::subViewportDraw(OdGiViewportDraw* viewportDraw) const {
-	if (m_Clone.get() != nullptr) { m_Clone->viewportDraw(viewportDraw); }
+	if (m_Clone.get() != nullptr) {
+		m_Clone->viewportDraw(viewportDraw);
+	}
 }

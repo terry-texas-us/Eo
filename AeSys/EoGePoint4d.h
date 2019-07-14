@@ -10,7 +10,9 @@ public:
 private:
 	double w;
 public:
-	[[nodiscard]] double W() const noexcept { return w; }
+	[[nodiscard]] double W() const noexcept {
+		return w;
+	}
 
 	EoGePoint4d();
 

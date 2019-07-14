@@ -3,7 +3,9 @@
 #include "AeSysView.h"
 
 void AeSysView::ModeLineDisplay() {
-	if (theApp.CurrentMode() == 0) { return; }
+	if (theApp.CurrentMode() == 0) {
+		return;
+	}
 	m_OpHighlighted = 0;
 	const auto ModeInformation {AeSys::LoadStringResource(theApp.CurrentMode())};
 	CString ModeOp;
@@ -43,7 +45,9 @@ void AeSysView::ModeLineDisplay() {
 unsigned short AeSysView::ModeLineHighlightOp(const unsigned short command) {
 	ModeLineUnhighlightOp(m_OpHighlighted);
 	m_OpHighlighted = command;
-	if (command == 0) { return 0; }
+	if (command == 0) {
+		return 0;
+	}
 	const auto PaneIndex {gc_StatusOp0 + m_OpHighlighted - ID_OP0};
 	GetStatusBar().SetPaneTextColor(PaneIndex, RGB(255, 0, 0));
 	if (theApp.ModeInformationOverView()) {
@@ -71,7 +75,9 @@ unsigned short AeSysView::ModeLineHighlightOp(const unsigned short command) {
 }
 
 void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
-	if (command == 0 || m_OpHighlighted == 0) { return; }
+	if (command == 0 || m_OpHighlighted == 0) {
+		return;
+	}
 	const auto PaneIndex {gc_StatusOp0 + m_OpHighlighted - ID_OP0};
 	GetStatusBar().SetPaneTextColor(PaneIndex);
 	if (theApp.ModeInformationOverView()) {

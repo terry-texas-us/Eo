@@ -6,8 +6,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetAngle, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetAngle::EoDlgSetAngle(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSetAngle::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -17,6 +16,8 @@ void EoDlgSetAngle::DoDataExchange(CDataExchange* dataExchange) {
 
 BOOL EoDlgSetAngle::OnInitDialog() {
 	CDialog::OnInitDialog();
-	if (!title.IsEmpty()) { SetWindowTextW(title); }
+	if (!title.IsEmpty()) {
+		SetWindowTextW(title);
+	}
 	return TRUE;
 }

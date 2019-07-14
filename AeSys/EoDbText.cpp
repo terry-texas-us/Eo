@@ -129,7 +129,9 @@ bool EoDbText::IsInView(AeSysView* view) const {
 		pt[0] = EoGePoint4d(BoundingBox[n++], 1.0);
 		pt[1] = EoGePoint4d(BoundingBox[n++], 1.0);
 		view->ModelViewTransformPoints(2, pt);
-		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -173,7 +175,9 @@ EoGeReferenceSystem EoDbText::ReferenceSystem() const {
 double EoDbText::Rotation() const {
 	const auto HorizontalAxis {ReferenceSystem().XDirection()};
 	auto Angle {atan2(HorizontalAxis.y, HorizontalAxis.x)}; // -pi to pi radians
-	if (Angle < 0.0) { Angle += Oda2PI; }
+	if (Angle < 0.0) {
+		Angle += Oda2PI;
+	}
 	return Angle;
 }
 
@@ -189,13 +193,17 @@ bool EoDbText::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const Od
 }
 
 bool EoDbText::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, OdGePoint3d& projectedPoint) const {
-	if (m_Text.GetLength() == 0) { return false; }
+	if (m_Text.GetLength() == 0) {
+		return false;
+	}
 	OdGePoint3dArray BoundingBox;
 	text_GetBoundingBox(m_FontDefinition, m_ReferenceSystem, m_Text.GetLength(), 0.0, BoundingBox);
 	EoGePoint4d pt0[] = {EoGePoint4d(BoundingBox[0], 1.0), EoGePoint4d(BoundingBox[1], 1.0), EoGePoint4d(BoundingBox[2], 1.0), EoGePoint4d(BoundingBox[3], 1.0)};
 	view->ModelViewTransformPoints(4, pt0);
 	for (unsigned n = 0; n < 4; n++) {
-		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) { return false; }
+		if (EoGeLineSeg3d(pt0[n].Convert3d(), pt0[(n + 1) % 4].Convert3d()).DirectedRelationshipOf(point.Convert3d()) < 0) {
+			return false;
+		}
 	}
 	projectedPoint = point.Convert3d();
 	return true;
@@ -228,7 +236,9 @@ void EoDbText::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbText::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
-	if (mask != 0) { m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate); }
+	if (mask != 0) {
+		m_ReferenceSystem.SetOrigin(m_ReferenceSystem.Origin() + translate);
+	}
 }
 
 bool EoDbText::Write(EoDbFile& file) const {
@@ -427,7 +437,9 @@ OdDbTextPtr EoDbText::Create(OdDbBlockTableRecordPtr blockTableRecord, unsigned 
 			TextString = L"EoDbJobFile.PrimText error: Text too long.";
 		} else {
 			while (*pChr != 0) {
-				if (isprint(*pChr) == 0) { * pChr = '.'; }
+				if (isprint(*pChr) == 0) {
+					* pChr = '.';
+				}
 				pChr++;
 			}
 			TextString = reinterpret_cast<LPCSTR>(&primitiveBuffer[44]);
@@ -591,7 +603,9 @@ bool HasFormattingCharacters(const CString& text) {
 
 int FontEscapementAngle(const OdGeVector3d& xAxis) noexcept {
 	auto Angle {atan2(xAxis.y, xAxis.x)}; // -pi to pi radians
-	if (Angle < 0.0) { Angle += Oda2PI; }
+	if (Angle < 0.0) {
+		Angle += Oda2PI;
+	}
 	return lround(EoToDegree(Angle) * 10.0);
 }
 
@@ -603,28 +617,40 @@ OdGePoint3d CalculateInsertionPoint(const EoDbFontDefinition& fontDefinition, co
 			if (fontDefinition.Path() == EoDb::kPathRight) {
 				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
 					InsertionPoint.x = -dTxtExt * 0.5;
-				} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) { InsertionPoint.x = -dTxtExt; }
+				} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) {
+					InsertionPoint.x = -dTxtExt;
+				}
 			} else {
 				if (fontDefinition.HorizontalAlignment() == EoDb::kAlignLeft) {
 					InsertionPoint.x = dTxtExt;
-				} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) { InsertionPoint.x = dTxtExt * 0.5; }
+				} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
+					InsertionPoint.x = dTxtExt * 0.5;
+				}
 				InsertionPoint.x = InsertionPoint.x - 1.0;
 			}
 			if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
 				InsertionPoint.y = -0.5;
-			} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) { InsertionPoint.y = -1.0; }
+			} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) {
+				InsertionPoint.y = -1.0;
+			}
 		} else if (fontDefinition.Path() == EoDb::kPathDown || fontDefinition.Path() == EoDb::kPathUp) {
 			if (fontDefinition.HorizontalAlignment() == EoDb::kAlignCenter) {
 				InsertionPoint.x = -0.5;
-			} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) { InsertionPoint.x = -1.0; }
+			} else if (fontDefinition.HorizontalAlignment() == EoDb::kAlignRight) {
+				InsertionPoint.x = -1.0;
+			}
 			if (fontDefinition.Path() == EoDb::kPathUp) {
 				if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
 					InsertionPoint.y = -dTxtExt * 0.5;
-				} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) { InsertionPoint.y = -dTxtExt; }
+				} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignTop) {
+					InsertionPoint.y = -dTxtExt;
+				}
 			} else {
 				if (fontDefinition.VerticalAlignment() == EoDb::kAlignBottom) {
 					InsertionPoint.y = dTxtExt;
-				} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) { InsertionPoint.y = dTxtExt * 0.5; }
+				} else if (fontDefinition.VerticalAlignment() == EoDb::kAlignMiddle) {
+					InsertionPoint.y = dTxtExt * 0.5;
+				}
 				InsertionPoint.y = InsertionPoint.y - 1.0;
 			}
 		}
@@ -664,7 +690,9 @@ int TextLengthSansFormattingCharacters(const CString& text) {
 				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					auto TextSegmentDelimiter {text.Find('/', CurrentPosition)};
-					if (TextSegmentDelimiter == -1) { TextSegmentDelimiter = text.Find('^', CurrentPosition); }
+					if (TextSegmentDelimiter == -1) {
+						TextSegmentDelimiter = text.Find('^', CurrentPosition);
+					}
 					if (TextSegmentDelimiter != -1 && TextSegmentDelimiter < EndSemicolon) {
 						Length -= 4;
 						CurrentPosition = EndSemicolon + 1;
@@ -677,7 +705,9 @@ int TextLengthSansFormattingCharacters(const CString& text) {
 }
 
 void DisplayText(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const CString& text) {
-	if (text.IsEmpty()) { return; }
+	if (text.IsEmpty()) {
+		return;
+	}
 	if (HasFormattingCharacters(text)) {
 		DisplayTextWithFormattingCharacters(view, deviceContext, fontDefinition, referenceSystem, text);
 		return;
@@ -713,19 +743,27 @@ void DisplayTextSegment(AeSysView* view, CDC* deviceContext, EoDbFontDefinition&
 		view->ModelViewTransformVector(XDirection);
 		view->ModelViewTransformVector(YDirection);
 		auto PlaneNormal {XDirection.crossProduct(YDirection)};
-		if (PlaneNormal.isZeroLength()) { return; }
+		if (PlaneNormal.isZeroLength()) {
+			return;
+		}
 		PlaneNormal.normalize();
 		if (PlaneNormal.isEqualTo(OdGeVector3d::kZAxis)) {
-			if (DisplayTextSegmentUsingTrueTypeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text)) { return; }
+			if (DisplayTextSegmentUsingTrueTypeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text)) {
+				return;
+			}
 		}
 	}
 	DisplayTextSegmentUsingStrokeFont(view, deviceContext, fontDefinition, referenceSystem, startPosition, numberOfCharacters, text);
 }
 
 void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const int startPosition, const int numberOfCharacters, const CString& text) {
-	if (numberOfCharacters == 0) { return; }
+	if (numberOfCharacters == 0) {
+		return;
+	}
 	const long* plStrokeFontDef = reinterpret_cast<long*>(theApp.SimplexStrokeFont());
-	if (plStrokeFontDef == nullptr) { return; }
+	if (plStrokeFontDef == nullptr) {
+		return;
+	}
 	const auto tm {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
 	const auto plStrokeChrDef {plStrokeFontDef + 96};
 	const auto CharacterSpacing {1. + (0.32 + fontDefinition.CharacterSpacing()) / 0.6};
@@ -735,12 +773,18 @@ void DisplayTextSegmentUsingStrokeFont(AeSysView* view, CDC* deviceContext, EoDb
 	while (n < startPosition + numberOfCharacters) {
 		polyline::BeginLineStrip();
 		int Character = text.GetAt(n);
-		if (Character < 32 || Character > 126) { Character = '.'; }
+		if (Character < 32 || Character > 126) {
+			Character = '.';
+		}
 		for (auto i = static_cast<int>(plStrokeFontDef[Character - 32]); i <= plStrokeFontDef[Character - 32 + 1] - 1; i++) {
 			auto iY {static_cast<int>(plStrokeChrDef[i - 1] % 4096L)};
-			if ((iY & 2048) != 0) { iY = -(iY - 2048); }
+			if ((iY & 2048) != 0) {
+				iY = -(iY - 2048);
+			}
 			auto iX {static_cast<int>(plStrokeChrDef[i - 1] / 4096L % 4096L)};
-			if ((iX & 2048) != 0) { iX = -(iX - 2048); }
+			if ((iX & 2048) != 0) {
+				iX = -(iX - 2048);
+			}
 			ptStroke += OdGeVector3d(.01 / 0.6 * iX, .01 * iY, 0.0);
 			if (plStrokeChrDef[i - 1] / 16777216 == 5) {
 				polyline::__End(view, deviceContext, 1);
@@ -772,7 +816,9 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, const int x, const i
 	deviceContext->TextOutW(x, y, text);
 	deviceContext->EndPath();
 	auto NumberOfPointsInPath {deviceContext->GetPath(nullptr, nullptr, 0)};
-	if (NumberOfPointsInPath == 0) { return true; }
+	if (NumberOfPointsInPath == 0) {
+		return true;
+	}
 
 	// Allocate memory to hold points and stroke types from the path.
 	LPPOINT Points {nullptr};
@@ -787,18 +833,24 @@ bool DisplayTextUsingWindowsFontOutline(CDC* deviceContext, const int x, const i
 		Types = nullptr;
 		Exception->Delete();
 	}
-	if (Points == nullptr || Types == nullptr) { return true; }
+	if (Points == nullptr || Types == nullptr) {
+		return true;
+	}
 
 	// Now that we have the memory, really get the path data.
 	NumberOfPointsInPath = deviceContext->GetPath(Points, Types, NumberOfPointsInPath);
-	if (NumberOfPointsInPath != -1) { deviceContext->PolyDraw(Points, Types, NumberOfPointsInPath); }
+	if (NumberOfPointsInPath != -1) {
+		deviceContext->PolyDraw(Points, Types, NumberOfPointsInPath);
+	}
 	delete[] Points;
 	delete[] Types;
 	return true;
 }
 
 bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, EoDbFontDefinition& fontDefinition, EoGeReferenceSystem& referenceSystem, const int startPosition, const int numberOfCharacters, const CString& text) {
-	if (numberOfCharacters <= 0) { return true; }
+	if (numberOfCharacters <= 0) {
+		return true;
+	}
 	const auto ReferenceSystemToWorldTransform {EoGeMatrix3d::ReferenceSystemToWorld(referenceSystem)};
 	auto Origin {OdGePoint3d::kOrigin};
 	EoGePoint4d StartPoint(Origin.transformBy(ReferenceSystemToWorldTransform), 1.0);
@@ -819,7 +871,9 @@ bool DisplayTextSegmentUsingTrueTypeFont(AeSysView* view, CDC* deviceContext, Eo
 	const OdGeVector3d vX(static_cast<double>(pnt[2].x) - static_cast<double>(ProjectedStartPoint.x), static_cast<double>(pnt[2].y) - static_cast<double>(ProjectedStartPoint.y), 0.0);
 	const OdGeVector3d vY(static_cast<double>(pnt[1].x) - static_cast<double>(ProjectedStartPoint.x), static_cast<double>(pnt[1].y) - static_cast<double>(ProjectedStartPoint.y), 0.0);
 	const auto Height = vY.length();
-	if (Height == 0.0) { return true; }
+	if (Height == 0.0) {
+		return true;
+	}
 	LOGFONT FontAttributes;
 	memset(&FontAttributes, 0, sizeof FontAttributes);
 	FontAttributes.lfHeight = -lround(1.33 * Height);
@@ -904,7 +958,9 @@ void DisplayTextWithFormattingCharacters(AeSysView* view, CDC* deviceContext, Eo
 				const auto EndSemicolon {text.Find(';', CurrentPosition)};
 				if (EndSemicolon != -1) {
 					auto TextSegmentDelimiter {text.Find('/', CurrentPosition)};
-					if (TextSegmentDelimiter == -1) { TextSegmentDelimiter = text.Find('^', CurrentPosition); }
+					if (TextSegmentDelimiter == -1) {
+						TextSegmentDelimiter = text.Find('^', CurrentPosition);
+					}
 					if (TextSegmentDelimiter != -1 && TextSegmentDelimiter < EndSemicolon) {
 						if (NumberOfCharactersToDisplay > 0) { // display text segment preceding the formatting
 							DisplayTextSegment(view, deviceContext, fontDefinition, ReferenceSystem, StartPosition, NumberOfCharactersToDisplay, text);

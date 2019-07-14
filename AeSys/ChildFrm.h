@@ -23,7 +23,6 @@ public:
 
 	void OnUpdateFrameMenu(BOOL active, CWnd* activeWindow, HMENU menuAlt) override;
 
-	void OnUpdateFrameMenu(HMENU /*menuAlt*/) override {
-	} // CFrameWnd (to suppress C4266 warning)
+	void OnUpdateFrameMenu(HMENU /*menuAlt*/) override { } // CFrameWnd (to suppress C4266 warning)
 	void OnMDIActivate(BOOL activate, CWnd* activateWnd, CWnd* deactivateWnd); // hides non-virtual function of parent
 };

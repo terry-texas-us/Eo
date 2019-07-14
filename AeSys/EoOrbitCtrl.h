@@ -9,4 +9,3 @@ public:
 
 	void subViewportDraw(OdGiViewportDraw* viewportDraw) const override;
 };
-

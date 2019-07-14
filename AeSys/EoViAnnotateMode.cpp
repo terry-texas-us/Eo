@@ -11,8 +11,7 @@ OdGePoint3dArray EoViAnn_points;
 
 void AeSysView::OnAnnotateModeOptions() {
 	EoDlgAnnotateOptions Dialog(this);
-	if (Dialog.DoModal() == IDOK) {
-	}
+	if (Dialog.DoModal() == IDOK) { }
 }
 
 void AeSysView::OnAnnotateModeLine() {
@@ -271,7 +270,9 @@ void AeSysView::OnAnnotateModeBox() {
 
 void AeSysView::OnAnnotateModeCutIn() {
 	auto DeviceContext {GetDC()};
-	if (DeviceContext == nullptr) { return; }
+	if (DeviceContext == nullptr) {
+		return;
+	}
 	auto CurrentPnt {GetCursorPosition()};
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
@@ -290,7 +291,9 @@ void AeSysView::OnAnnotateModeCutIn() {
 		if (!CurrentText.IsEmpty()) {
 			auto LineSeg {EngagedLine->LineSeg()};
 			auto dAng {LineSeg.AngleFromXAxis_xy()};
-			if (dAng > 0.25 * Oda2PI && dAng < 0.75 * Oda2PI) { dAng += OdaPI; }
+			if (dAng > 0.25 * Oda2PI && dAng < 0.75 * Oda2PI) {
+				dAng += OdaPI;
+			}
 			const auto PlaneNormal {CameraDirection()};
 			auto MinorAxis {ViewUp()};
 			MinorAxis.rotateBy(dAng, PlaneNormal);
@@ -395,10 +398,16 @@ bool AeSysView::CorrectLeaderEndpoints(const int beginType, const int endType, O
 	auto EndDistance {0.0};
 	if (endType == ID_OP4) {
 		EndDistance = BubbleRadius();
-	} else if (endType == ID_OP5) { EndDistance = CircleRadius(); }
+	} else if (endType == ID_OP5) {
+		EndDistance = CircleRadius();
+	}
 	if (LineSegmentLength > BeginDistance + EndDistance + DBL_EPSILON) {
-		if (BeginDistance != 0.0) { startPoint = ProjectToward(startPoint, endPoint, BeginDistance); }
-		if (EndDistance != 0.0) { endPoint = ProjectToward(endPoint, startPoint, EndDistance); }
+		if (BeginDistance != 0.0) {
+			startPoint = ProjectToward(startPoint, endPoint, BeginDistance);
+		}
+		if (EndDistance != 0.0) {
+			endPoint = ProjectToward(endPoint, startPoint, EndDistance);
+		}
 		return true;
 	}
 	theApp.AddModeInformationToMessageList();

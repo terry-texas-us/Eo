@@ -15,8 +15,7 @@ void EoLoadApps::rxUninit() {
 }
 
 EoLoadApps::EoLoadApps(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoLoadApps::LoadedApps::rxAppLoaded(OdRxModule* appModule) {
 	append(appModule->moduleName());

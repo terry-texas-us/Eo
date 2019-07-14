@@ -8,20 +8,18 @@
 IMPLEMENT_DYNAMIC(EoDlgBlockInsert, CDialog)
 
 BEGIN_MESSAGE_MAP(EoDlgBlockInsert, CDialog)
-ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelectionChangeBlocksList)
+		ON_LBN_SELCHANGE(IDC_BLOCKS_LIST, &EoDlgBlockInsert::OnLbnSelectionChangeBlocksList)
 		ON_BN_CLICKED(IDC_PURGE, &EoDlgBlockInsert::OnBnClickedPurge)
 		ON_BN_CLICKED(IDCANCEL, &EoDlgBlockInsert::OnBnClickedCancel)
 END_MESSAGE_MAP()
 OdGePoint3d EoDlgBlockInsert::ms_InsertionPoint;
 
 EoDlgBlockInsert::EoDlgBlockInsert(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgBlockInsert::EoDlgBlockInsert(AeSysDoc* document, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Document(document) {
-}
+	, m_Document(document) {}
 
 void EoDlgBlockInsert::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -47,7 +45,9 @@ BOOL EoDlgBlockInsert::OnInitDialog() {
 	auto BlockPosition {m_Document->GetFirstBlockPosition()};
 	while (BlockPosition != nullptr) {
 		m_Document->GetNextBlock(BlockPosition, BlockName, Block);
-		if (!Block->IsAnonymous()) { m_BlocksListBoxControl.AddString(BlockName); }
+		if (!Block->IsAnonymous()) {
+			m_BlocksListBoxControl.AddString(BlockName);
+		}
 	}
 	m_BlocksListBoxControl.SetCurSel(0);
 	if (m_Document->BlockTableIsEmpty()) {

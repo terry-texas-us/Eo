@@ -7,8 +7,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetupHatch, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetupHatch::EoDlgSetupHatch(CWnd* parent) noexcept
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgSetupHatch::~EoDlgSetupHatch() = default;
 

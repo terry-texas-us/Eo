@@ -46,8 +46,7 @@ void EoDbDwgToPegFile::ConvertBlockTable(gsl::not_null<AeSysDoc*> document) {
 	}
 }
 
-void EoDbDwgToPegFile::ConvertHeaderSection(AeSysDoc* /*document*/) noexcept {
-}
+void EoDbDwgToPegFile::ConvertHeaderSection(AeSysDoc* /*document*/) noexcept {}
 
 void EoDbDwgToPegFile::ConvertLayerTable(AeSysDoc* document) {
 	OdDbLayerTablePtr Layers {m_DatabasePtr_->getLayerTableId().safeOpenObject(OdDb::kForWrite)};
@@ -85,8 +84,7 @@ void EoDbDwgToPegFile::ConvertViewportTable(AeSysDoc* /*document*/) {
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
 		OdDbViewportTableRecordPtr Viewport {Iterator->getRecordId().safeOpenObject(OdDb::kForRead)};
 		AeSys::AddStringToReportList(ReportItem.format(L"<%s>  %s\n", static_cast<const wchar_t*>(Viewport->desc()->name()), static_cast<const wchar_t*>(Viewport->getName())));
-		if (Viewport->extensionDictionary()) {
-		}
+		if (Viewport->extensionDictionary()) { }
 	}
 }
 

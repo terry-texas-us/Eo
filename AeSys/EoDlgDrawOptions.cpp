@@ -14,8 +14,7 @@ BEGIN_MESSAGE_MAP(EoDlgDrawOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgDrawOptions::EoDlgDrawOptions(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgDrawOptions::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

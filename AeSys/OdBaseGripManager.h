@@ -44,7 +44,9 @@ public:
 
 	virtual void DragStatus(OdGiDrawable* entity, OdDb::DragStat st) = 0;
 
-	virtual bool IsModel(OdGiDrawable* /*entity*/) noexcept { return true; }
+	virtual bool IsModel(OdGiDrawable* /*entity*/) noexcept {
+		return true;
+	}
 	// Hover control.
 	OdResult StartHover(int x, int y, bool shiftIsDown);
 
@@ -80,16 +82,22 @@ protected:
 
 	[[nodiscard]] virtual OdGePoint3d EyeToUcsPlane(const OdGePoint3d& pPoint, const OdGePoint3d& pBasePoint) const = 0;
 
-	virtual OdGsModel* GetGsModel() noexcept { return nullptr; }
+	virtual OdGsModel* GetGsModel() noexcept {
+		return nullptr;
+	}
 
-	virtual OdGsLayoutHelper* GetGsLayoutHelper() noexcept { return nullptr; }
+	virtual OdGsLayoutHelper* GetGsLayoutHelper() noexcept {
+		return nullptr;
+	}
 
 	bool m_Disabled {true};
 
 	virtual void Disable(bool disable);
 
 public:
-	[[nodiscard]] bool IsDisabled() const noexcept { return m_Disabled; }
+	[[nodiscard]] bool IsDisabled() const noexcept {
+		return m_Disabled;
+	}
 
 	struct OdExGripDataSubent {
 		OdDbBaseFullSubentPath subentPath;

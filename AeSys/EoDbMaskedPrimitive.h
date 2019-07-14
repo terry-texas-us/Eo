@@ -5,10 +5,9 @@ class EoDbMaskedPrimitive final : public CObject {
 public:
 	EoDbMaskedPrimitive() = default;
 
-	EoDbMaskedPrimitive(EoDbPrimitive* primitive, const unsigned mask) 
+	EoDbMaskedPrimitive(EoDbPrimitive* primitive, const unsigned mask)
 		: m_Primitive(primitive)
-		, m_Mask(mask) {
-	}
+		, m_Mask(mask) { }
 
 	void ClearMaskBit(const unsigned bit) noexcept {
 		m_Mask &= ~(1U << bit);

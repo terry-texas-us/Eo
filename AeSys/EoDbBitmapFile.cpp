@@ -3,18 +3,21 @@
 
 EoDbBitmapFile::EoDbBitmapFile(const CString& fileName) {
 	CFileException e;
-	if (CFile::Open(fileName, modeRead | shareDenyNone, &e) != 0) {
-	}
+	if (CFile::Open(fileName, modeRead | shareDenyNone, &e) != 0) { }
 }
 
 bool EoDbBitmapFile::Load(const CString& fileName, CBitmap& bitmap, CPalette& palette) {
 	const auto Bitmap {static_cast<HBITMAP>(LoadImageW(nullptr, fileName, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION | LR_LOADFROMFILE))};
-	if (Bitmap == nullptr) { return false; }
+	if (Bitmap == nullptr) {
+		return false;
+	}
 	bitmap.Attach(Bitmap);
 	CClientDC ClientDeviceContext(nullptr);
 	
 	// Return now if device does not support palettes
-	if ((ClientDeviceContext.GetDeviceCaps(RASTERCAPS) & RC_PALETTE) == 0) { return true; }
+	if ((ClientDeviceContext.GetDeviceCaps(RASTERCAPS) & RC_PALETTE) == 0) {
+		return true;
+	}
 	DIBSECTION DeviceIndependentBitmapSection;
 	bitmap.GetObjectW(sizeof(DIBSECTION), &DeviceIndependentBitmapSection);
 	int NumberOfColors;

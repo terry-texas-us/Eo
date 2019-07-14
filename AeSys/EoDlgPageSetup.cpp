@@ -12,39 +12,39 @@
 #include "EoDlgPageSetup.h"
 #include "EoDlgPlotStyleTableEditor.h"
 std::vector<const wchar_t*> StandardPlotScaleValues = {
-L"Custom",
-L"1/128\" = 1'",
-L"1/64\" = 1'",
-L"1/32\" = 1'",
-L"1/16\" = 1'",
-L"3/32\" = 1'",
-L"1/8\" = 1'",
-L"3/16\" = 1'",
-L"1/4\" = 1'",
-L"3/8\" = 1'",
-L"1/2\" = 1'",
-L"3/4\" = 1'",
-L"1\" = 1'",
-L"3\" = 1'",
-L"6\" = 1'",
-L"1' = 1'",
-L"1:1",
-L"1:2",
-L"1:4",
-L"1:8",
-L"1:10",
-L"1:16",
-L"1:20",
-L"1:30",
-L"1:40",
-L"1:50",
-L"1:100",
-L"2:1",
-L"4:1",
-L"8:1",
-L"10:1",
-L"100:1",
-L"1000:1"
+	L"Custom",
+	L"1/128\" = 1'",
+	L"1/64\" = 1'",
+	L"1/32\" = 1'",
+	L"1/16\" = 1'",
+	L"3/32\" = 1'",
+	L"1/8\" = 1'",
+	L"3/16\" = 1'",
+	L"1/4\" = 1'",
+	L"3/8\" = 1'",
+	L"1/2\" = 1'",
+	L"3/4\" = 1'",
+	L"1\" = 1'",
+	L"3\" = 1'",
+	L"6\" = 1'",
+	L"1' = 1'",
+	L"1:1",
+	L"1:2",
+	L"1:4",
+	L"1:8",
+	L"1:10",
+	L"1:16",
+	L"1:20",
+	L"1:30",
+	L"1:40",
+	L"1:50",
+	L"1:100",
+	L"2:1",
+	L"4:1",
+	L"8:1",
+	L"10:1",
+	L"100:1",
+	L"1000:1"
 };
 
 struct EoPlotScaleSetting {
@@ -111,8 +111,7 @@ static EoPlotUnitsInfo g_PlotUnitsInfo[] = {
 EoDlgPageSetup::EoDlgPageSetup(OdDbPlotSettings& plotSettings, OdSmartPtr<OdDbUserIO> userIo)
 	: CDialog(IDD, nullptr)
 	, m_PlotSettings(plotSettings)
-	, m_UserIo(userIo) {
-}
+	, m_UserIo(userIo) {}
 
 void EoDlgPageSetup::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -190,7 +189,9 @@ END_MESSAGE_MAP()
 void EoDlgPageSetup::SetPlotDeviceAndMediaName(OdString& deviceName, OdString canonicalMediaName, const bool validNames) {
 	const auto PlotCfgName {m_PlotSettings.getPlotCfgName()};
 	const auto CanonicalMediaName {m_PlotSettings.getCanonicalMediaName()};
-	if (validNames && deviceName == PlotCfgName && CanonicalMediaName == canonicalMediaName) { return; }
+	if (validNames && deviceName == PlotCfgName && CanonicalMediaName == canonicalMediaName) {
+		return;
+	}
 	if (m_PlotSettingsValidator->setPlotCfgName(&m_PlotSettings, deviceName, canonicalMediaName) != eOk) // good device, but wrong paper
 	{
 		if (m_PlotSettingsValidator->setPlotCfgName(&m_PlotSettings, deviceName) != eOk) { // wrong device
@@ -285,7 +286,9 @@ void EoDlgPageSetup::FillPlotStyles() {
 	GetDlgItem(IDC_CHECK_PLOT_PAPERSPACE_LAST)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
 	GetDlgItem(IDC_CHECK_HIDE_PAPERSPACE_OBJECTS)->EnableWindow(static_cast<BOOL>(!IsModelSpacePageSetup()));
 	GetDlgItem(IDC_CHECK_PLOT_OBJECT_LW)->EnableWindow(static_cast<BOOL>(m_PlotWithPlotStyles == 0));
-	if (m_PlotWithPlotStyles != 0) { m_PlotObjectLineweights = 1; }
+	if (m_PlotWithPlotStyles != 0) {
+		m_PlotObjectLineweights = 1;
+	}
 	UpdateData(FALSE);
 }
 
@@ -417,14 +420,18 @@ void EoDlgPageSetup::OnSelChangeDeviceList() {
 	OdString DeviceName(NewDeviceName);
 	SetPlotDeviceAndMediaName(DeviceName, CanonicalMediaName, true);
 	m_PlotDeviceName.SelectString(0, DeviceName);
-	if (!FillPaperSizes()) { return; }
+	if (!FillPaperSizes()) {
+		return;
+	}
 	const auto LocaleMediaName {m_PlotSettingsValidator->getLocaleMediaName(&m_PlotSettings, m_PlotSettings.getCanonicalMediaName())};
 	if (m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, LocaleMediaName)) == LB_ERR) {
 		// TODO : Autocad use paper w&h to find nearest paper or set a4 ?
 		// TODO : SelectString select by part of string. 'q' -> select 'qwe'.
 		CString csLocaleMediaName;
 		m_PaperSize.GetLBText(0, csLocaleMediaName);
-		if (csLocaleMediaName == L"") { return; }
+		if (csLocaleMediaName == L"") {
+			return;
+		}
 		CanonicalMediaName = GetCanonicalByLocaleMediaName(static_cast<const wchar_t*>(csLocaleMediaName));
 		m_PlotSettingsValidator->setCanonicalMediaName(&m_PlotSettings, CanonicalMediaName);
 		m_PaperSize.SetCurSel(m_PaperSize.FindStringExact(0, csLocaleMediaName));
@@ -767,7 +774,9 @@ void EoDlgPageSetup::FillPlotStyleCombo(const bool fillCombo) {
 	const auto StyleSheet {m_PlotSettings.getCurrentStyleSheet()};
 	if (!StyleSheet.isEmpty()) {
 		StyleIndex = m_PlotStyleFiles.FindStringExact(0, StyleSheet);
-		if (StyleIndex == -1) { StyleIndex = 0; }
+		if (StyleIndex == -1) {
+			StyleIndex = 0;
+		}
 	}
 	m_PlotStyleFiles.SetCurSel(StyleIndex);
 	OnSelChangePlotStyleFiles();
@@ -785,13 +794,17 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 		auto SystemServices {odSystemServices()};
 		OdString sPath = static_cast<const wchar_t*>(tmp);
 		sPath = m_PlotSettings.database()->appServices()->findFile(sPath);
-		if (sPath.isEmpty()) { return; }
+		if (sPath.isEmpty()) {
+			return;
+		}
 		OdStreamBufPtr StreamBuffer;
 		if (SystemServices->accessFile(sPath, Oda::kFileRead)) {
 			Success = true;
 			StreamBuffer = SystemServices->createFile(sPath);
 		}
-		if (!Success) { return; }
+		if (!Success) {
+			return;
+		}
 		OdPsPlotStyleTablePtr PlotStyleTable;
 		if (StreamBuffer.get() != nullptr) {
 			OdPsPlotStyleServicesPtr PlotStyleServices = odrxDynamicLinker()->loadApp(ODPS_PLOTSTYLE_SERVICES_APPNAME);
@@ -805,8 +818,7 @@ void EoDlgPageSetup::OnClickPlotStyleFilesBtn() {
 		if (PsTableEditorDlg.DoModal() == IDOK) {
 			PlotStyleTable->copyFrom(PsTableEditorDlg.GetPlotStyleTable());
 		}
-	} catch (...) {
-	}
+	} catch (...) { }
 }
 
 void EoDlgPageSetup::OnSelChangePlotStyleFiles() {

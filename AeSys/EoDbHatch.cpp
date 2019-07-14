@@ -32,8 +32,7 @@ struct EoEdge {
 };
 
 EoDbHatch::EoDbHatch() noexcept
-	: m_Vertices(0) {
-}
+	: m_Vertices(0) {}
 
 EoDbHatch::EoDbHatch(const EoDbHatch& other) {
 	m_LayerId = other.m_LayerId;
@@ -201,7 +200,9 @@ bool EoDbHatch::IsInView(AeSysView* view) const {
 	for (auto i = m_Vertices.size() - 1; i > 0; i--) {
 		pt[1] = EoGePoint4d(m_Vertices[i], 1.0);
 		view->ModelViewTransformPoint(pt[1]);
-		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) {
+			return true;
+		}
 		pt[0] = pt[1];
 	}
 	return false;
@@ -211,7 +212,9 @@ bool EoDbHatch::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& point)
 	for (const auto& Vertex : m_Vertices) {
 		EoGePoint4d Point(Vertex, 1.0);
 		view->ModelViewTransformPoint(Point);
-		if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
+		if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -367,7 +370,9 @@ void EoDbHatch::DisplayHatch(AeSysView* view, CDC* deviceContext) const {
 		auto ActiveEdges {0};
 		auto FirstLoopPointIndex {0};
 		for (auto LoopIndex = 0; LoopIndex < NumberOfLoops; LoopIndex++) {
-			if (LoopIndex != 0) { FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1]; }
+			if (LoopIndex != 0) {
+				FirstLoopPointIndex = LoopPointsOffsets[LoopIndex - 1];
+			}
 			auto StartPoint(m_Vertices[static_cast<unsigned>(FirstLoopPointIndex)]);
 			StartPoint.transformBy(tm);		// Apply transform to get areas first point in z0 plane
 			const auto SizeOfCurrentLoop {LoopPointsOffsets[LoopIndex] - FirstLoopPointIndex};
@@ -660,7 +665,9 @@ void EoDbHatch::SetLoopAt(const int loopIndex, const OdDbHatchPtr& hatchEntity) 
 	OdDb::Planarity ResultPlanarity;
 	const auto Result {hatchEntity->getPlane(Plane, ResultPlanarity)};
 	auto PlaneToWorld {OdGeMatrix3d::kIdentity};
-	if (Result == eOk && ResultPlanarity == OdDb::kPlanar) { PlaneToWorld = PlaneToWorld.setToPlaneToWorld(Plane); }
+	if (Result == eOk && ResultPlanarity == OdDb::kPlanar) {
+		PlaneToWorld = PlaneToWorld.setToPlaneToWorld(Plane);
+	}
 	for (auto& Vertex2d : m_Vertices2d) {
 		auto Vertex {OdGePoint3d(Vertex2d.x, Vertex2d.y, hatchEntity->elevation())};
 		Vertex.transformBy(PlaneToWorld);
@@ -791,8 +798,7 @@ EoDbHatch* EoDbHatch::Create(const OdDbHatchPtr& hatch) {
 		}
 	}
 	if (hatch->isGradient()) {
-		if (hatch->getGradientOneColorMode()) {
-		}
+		if (hatch->getGradientOneColorMode()) { }
 		OdCmColorArray colors;
 		OdGeDoubleArray values;
 		hatch->getGradientColors(colors, values);

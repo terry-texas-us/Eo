@@ -5,7 +5,9 @@
 #include "PrimState.h"
 
 void AeSysDoc::AddGroupsToTrap(EoDbGroupList* groups) {
-	if (theApp.IsTrapHighlighted()) { UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, groups); }
+	if (theApp.IsTrapHighlighted()) {
+		UpdateGroupsInAllViews(EoDb::kGroupsSafeTrap, groups);
+	}
 	m_TrappedGroupList.AddTail(groups);
 }
 
@@ -17,7 +19,9 @@ POSITION AeSysDoc::AddGroupToTrap(EoDbGroup* group) {
 }
 
 void AeSysDoc::CompressTrappedGroups() {
-	if (m_TrappedGroupList.GetCount() <= 1) { return; }
+	if (m_TrappedGroupList.GetCount() <= 1) {
+		return;
+	}
 	auto NewGroup {new EoDbGroup};
 	auto GroupPosition {m_TrappedGroupList.GetHeadPosition()};
 	while (GroupPosition != nullptr) {
@@ -85,7 +89,9 @@ void AeSysDoc::CopyTrappedGroupsToClipboard(AeSysView* view) {
 		const auto MetaFileHandle {CloseEnhMetaFile(MetaFile)};
 		SetClipboardData(CF_ENHMETAFILE, MetaFileHandle);
 		const auto DeviceContext {CDC::FromHandle(MetaFile)};
-		if (DeviceContext != nullptr) { g_PrimitiveState.Restore(*DeviceContext, PrimitiveState); }
+		if (DeviceContext != nullptr) {
+			g_PrimitiveState.Restore(*DeviceContext, PrimitiveState);
+		}
 	}
 	if (theApp.IsClipboardDataGroups()) {
 		CMemFile MemoryFile;
@@ -128,7 +134,9 @@ void AeSysDoc::DeleteAllTrappedGroups() {
 }
 
 void AeSysDoc::ExpandTrappedGroups() {
-	if (m_TrappedGroupList.IsEmpty() != 0) { return; }
+	if (m_TrappedGroupList.IsEmpty() != 0) {
+		return;
+	}
 	auto Groups {new EoDbGroupList};
 	Groups->AddTail(&m_TrappedGroupList);
 	m_TrappedGroupList.RemoveAll();

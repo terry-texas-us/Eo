@@ -25,8 +25,9 @@ public:
 		m_View->setView(m_View->position(), m_View->target(), m_View->upVector(), m_FieldWidth * FieldScaleFactor, m_FieldHeight * FieldScaleFactor, m_View->isPerspective() ? OdGsView::kPerspective : OdGsView::kParallel);
 	}
 
-	int addDrawables(OdGsView* /*view*/) noexcept override { return 1; }
-
-	void removeDrawables(OdGsView* /*view*/) noexcept override {
+	int addDrawables(OdGsView* /*view*/) noexcept override {
+		return 1;
 	}
+
+	void removeDrawables(OdGsView* /*view*/) noexcept override { }
 };

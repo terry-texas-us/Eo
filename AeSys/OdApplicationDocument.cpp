@@ -7,6 +7,7 @@
 #pragma warning(push)
 #pragma warning(disable : 4548) // (level 1) expression before comma has no effect; expected expression with side - effect
 ODRX_CONS_DEFINE_MEMBERS(OdApplicationReactor, OdRxObject, RXIMPL_CONSTR);
+
 ODRX_NO_CONS_DEFINE_MEMBERS(OdApplicationDocument, OdRxObject);
 #pragma warning(pop)
 OdSmartPtr<OdApplicationDocumentImpl> OdApplicationDocumentImpl::createObject(CDocument* document) {
@@ -31,15 +32,17 @@ OdDbDatabasePtr OdApplicationDocumentImpl::database() const {
 	return (*m_pImp)->m_DatabasePtr;
 }
 
-void OdApplicationDocumentImpl::lockMode(bool includeMyLocks) const noexcept {
+void OdApplicationDocumentImpl::lockMode(bool includeMyLocks) const noexcept {}
+
+void OdApplicationDocumentImpl::myLockMode() const noexcept {}
+
+bool OdApplicationDocumentImpl::isQuiescent() const noexcept {
+	return false;
 }
 
-void OdApplicationDocumentImpl::myLockMode() const noexcept {
+void* OdApplicationDocumentImpl::contextPtr() const noexcept {
+	return nullptr;
 }
-
-bool OdApplicationDocumentImpl::isQuiescent() const noexcept { return false; }
-
-void* OdApplicationDocumentImpl::contextPtr() const noexcept { return nullptr; }
 
 OdEdBaseIO* OdApplicationDocumentImpl::BaseIO() {
 	return (*m_pImp)->BaseIo();

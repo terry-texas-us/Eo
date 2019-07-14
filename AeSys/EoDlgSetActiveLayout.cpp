@@ -7,8 +7,7 @@
 
 EoDlgSetActiveLayout::EoDlgSetActiveLayout(OdDbDatabase* database, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Database(database) {
-}
+	, m_Database(database) {}
 
 void EoDlgSetActiveLayout::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);
@@ -46,7 +45,9 @@ void EoDlgSetActiveLayout::FillListBox() {
 				Items.resize(ItemIndex + 1);
 			}
 			Items[ItemIndex] = LayoutIterator->name();
-			if (Layout->getBlockTableRecordId() == ActiveLayoutBlockTableRecord) { m_OldActiveLayout = static_cast<int>(ItemIndex); }
+			if (Layout->getBlockTableRecordId() == ActiveLayoutBlockTableRecord) {
+				m_OldActiveLayout = static_cast<int>(ItemIndex);
+			}
 			LayoutIterator->next();
 		}
 		auto Layouts {static_cast<CListBox*>(GetDlgItem(IDC_LAYOUTLIST))};
@@ -160,12 +161,18 @@ void EoDlgSetActiveLayout::OnNew() {
 void EoDlgSetActiveLayout::OnFromTemplate() {
 	const OdString Filter {L"DWG files (*.dwg)|*.dwg|DXF files (*.dxf)|*.dxf|All Files (*.*)|*.*||"};
 	const auto FileName {AeSys::BrowseWithPreview(GetSafeHwnd(), Filter)};
-	if (FileName.GetLength() == 0) { return; }
+	if (FileName.GetLength() == 0) {
+		return;
+	}
 	auto Database {theApp.readFile(OdString(FileName))};
-	if (Database.isNull()) { return; }
+	if (Database.isNull()) {
+		return;
+	}
 	auto LayoutManager {m_Database->appServices()->layoutManager()};
 	auto Layout {OdDbLayout::cast(LayoutManager->findLayoutNamed(Database, L"Layout1").openObject())};
-	if (Layout.isNull()) { return; }
+	if (Layout.isNull()) {
+		return;
+	}
 	CString NewName;
 	GetDlgItem(IDC_NEWNAME)->GetWindowText(NewName);
 	try {

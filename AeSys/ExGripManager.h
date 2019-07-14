@@ -88,7 +88,7 @@ public:
 
 private:
 	bool HandleMappedRtClk(OdExGripDataPtrArray& activeKeys, int x, int y);
-	
+
 	void AddToDrag(OdExGripDataPtrArray& activeKeys);
 	
 	// Adds/Removes drawables to/from viewports.
@@ -104,9 +104,13 @@ private:
 	OdDbCommandContext* m_CommandContext {nullptr};
 	OdGsModel* m_GsModel {nullptr};
 
-	OdGsModel* GetGsModel() noexcept override { return m_GsModel; }
+	OdGsModel* GetGsModel() noexcept override {
+		return m_GsModel;
+	}
 
-	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override { return m_LayoutHelper.get(); }
+	OdGsLayoutHelper* GetGsLayoutHelper() noexcept override {
+		return m_LayoutHelper.get();
+	}
 
 	void Disable(bool disable) override;
 
@@ -120,9 +124,13 @@ private:
 	struct OdExGripCommand : OdEdCommand {
 		OdExGripManager* parent {nullptr};
 
-		const OdString groupName() const override { return L"EDIT"; }
+		const OdString groupName() const override {
+			return L"EDIT";
+		}
 
-		const OdString globalName() const override { return L"GROUP_STRETCH"; }
+		const OdString globalName() const override {
+			return L"GROUP_STRETCH";
+		}
 
 		void execute(OdEdCommandContext* edCommandContext) override;
 	};

@@ -8,8 +8,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetUnitsAndPrecision, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetUnitsAndPrecision::EoDlgSetUnitsAndPrecision(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSetUnitsAndPrecision::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

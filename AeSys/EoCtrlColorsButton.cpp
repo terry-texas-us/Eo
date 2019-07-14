@@ -86,14 +86,18 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) const noe
 		case kSimpleSingleRow:
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				SubItemRectangleByIndex(Index, Rectangle);
-				if (Rectangle.PtInRect(point) == TRUE) { return Index; }
+				if (Rectangle.PtInRect(point) == TRUE) {
+					return Index;
+				}
 			}
 			break;
 		case kGridDown5RowsOddOnly:
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 != 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
-					if (Rectangle.PtInRect(point) == TRUE) { return Index; }
+					if (Rectangle.PtInRect(point) == TRUE) {
+						return Index;
+					}
 				}
 			}
 			break;
@@ -101,7 +105,9 @@ unsigned short EoCtrlColorsButton::SubItemByPoint(const CPoint& point) const noe
 			for (auto Index = m_BeginIndex; Index <= m_EndIndex; Index++) {
 				if (Index % 2 == 0) {
 					SubItemRectangleByIndex(Index, Rectangle);
-					if (Rectangle.PtInRect(point) == TRUE) { return Index; }
+					if (Rectangle.PtInRect(point) == TRUE) {
+						return Index;
+					}
 				}
 			}
 	}
@@ -190,7 +196,9 @@ void EoCtrlColorsButton::OnKeyDown(const unsigned keyCode, const unsigned repeat
 
 void EoCtrlColorsButton::OnLButtonUp(const unsigned flags, const CPoint point) {
 	const auto CurrentSubItem {SubItemByPoint(point)};
-	if (CurrentSubItem != 0) { m_SubItem = CurrentSubItem; }
+	if (CurrentSubItem != 0) {
+		m_SubItem = CurrentSubItem;
+	}
 	CMFCButton::OnLButtonUp(flags, point);
 }
 

@@ -11,12 +11,26 @@ class OdExCollideGsPath {
 		OdDbStub* drawableId;
 		OdGiDrawablePtr drawable;
 		OdGsMarker marker;
-		[[nodiscard]] const OdGiPathNode* parent() const noexcept override { return m_Parent; }
-		[[nodiscard]] OdDbStub* persistentDrawableId() const noexcept override { return drawableId; }
-		[[nodiscard]] const OdGiDrawable* transientDrawable() const override { return drawable; }
-		[[nodiscard]] OdGsMarker selectionMarker() const noexcept override { return marker; }
+
+		[[nodiscard]] const OdGiPathNode* parent() const noexcept override {
+			return m_Parent;
+		}
+
+		[[nodiscard]] OdDbStub* persistentDrawableId() const noexcept override {
+			return drawableId;
+		}
+
+		[[nodiscard]] const OdGiDrawable* transientDrawable() const override {
+			return drawable;
+		}
+
+		[[nodiscard]] OdGsMarker selectionMarker() const noexcept override {
+			return marker;
+		}
 	};
+
 	const Node* m_Leaf {nullptr};
+
 	void Add(const OdGiDrawable* drawable, const OdDbObjectId& drawableId, const OdGsMarker gsMarker = -1) {
 		auto NewNode {new Node()};
 		NewNode->m_Parent = m_Leaf;
@@ -25,6 +39,7 @@ class OdExCollideGsPath {
 		NewNode->drawableId = drawableId;
 		NewNode->marker = gsMarker;
 	}
+
 	void AddNode(OdDbObjectIdArray::const_iterator& objectIterator) {
 		auto Drawable {objectIterator->safeOpenObject()};
 		AddNode(Drawable);
@@ -34,14 +49,18 @@ class OdExCollideGsPath {
 		}
 		++objectIterator;
 	}
-  public:
+
+public:
 	OdExCollideGsPath() = default;
+
 	~OdExCollideGsPath() {
 		Clear();
 	}
+
 	OdExCollideGsPath(const OdDbFullSubentPath& path) {
 		Set(path);
 	}
+
 	void Clear() {
 		while (m_Leaf != nullptr) {
 			const auto Node = m_Leaf;
@@ -50,9 +69,11 @@ class OdExCollideGsPath {
 		}
 		m_Leaf = nullptr;
 	}
+
 	void Set(const OdDbFullSubentPath& path) {
 		Set(path, kNullSubentIndex);
 	}
+
 	void Set(const OdDbFullSubentPath& path, const OdGsMarker gsMarker) {
 		Clear();
 		const auto& PathObjectIds {path.objectIds()};
@@ -67,11 +88,16 @@ class OdExCollideGsPath {
 		}
 		AddNode(*PathObjectIdsIterator, gsMarker);
 	}
+
 	void AddNode(const OdDbObjectId& drawableId, const OdGsMarker gsMarker = kNullSubentIndex) {
 		Add(nullptr, drawableId, gsMarker);
 	}
+
 	void AddNode(const OdGiDrawable* drawable, const OdGsMarker gsMarker = kNullSubentIndex) {
 		Add(drawable->isPersistent() ? nullptr : drawable, drawable->id(), gsMarker);
 	}
-	operator const OdGiPathNode&() const noexcept { return *m_Leaf; }
+
+	operator const OdGiPathNode&() const noexcept {
+		return *m_Leaf;
+	}
 };

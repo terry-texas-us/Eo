@@ -43,7 +43,7 @@ public:
 	void UcsPlane(OdGePlane& plane) const;
 
 	void Dolly(int x, int y);
-	
+
 	static void ZoomAt(OdGsView* view, int x, int y, short zDelta);
 
 	static void Dolly(OdGsView* view, int x, int y);
@@ -53,7 +53,7 @@ public:
 	void Set3DView(_3DViewType type);
 
 	OdExEditorObject() = default;
-	
+
 	void Initialize(OdGsDevice* device, OdDbCommandContext* commandContext);
 
 	void Uninitialize();
@@ -103,15 +103,21 @@ public:
 
 	void OnDestroy();
 
-	[[nodiscard]] bool HasSelection() const { return GetWorkingSelectionSet()->numEntities() > 0; }
+	[[nodiscard]] bool HasSelection() const {
+		return GetWorkingSelectionSet()->numEntities() > 0;
+	}
 
-	[[nodiscard]] bool IsSnapOn() const noexcept { return (m_Flags & kSnapOn) != 0U ? true : false; }
+	[[nodiscard]] bool IsSnapOn() const noexcept {
+		return (m_Flags & kSnapOn) != 0U ? true : false;
+	}
 
 	void SetSnapOn(const bool snapOn) noexcept {
 		snapOn ? (m_Flags |= kSnapOn) : m_Flags &= ~kSnapOn;
 	}
 
-	[[nodiscard]] bool IsOrbitOn() const noexcept { return (m_Flags & kOrbitOn) != 0U ? true : false; }
+	[[nodiscard]] bool IsOrbitOn() const noexcept {
+		return (m_Flags & kOrbitOn) != 0U ? true : false;
+	}
 
 	void TurnOrbitOn(bool orbitOn);
 
@@ -135,14 +141,18 @@ public:
 
 	void UninitializeSnapping(OdGsView* view);
 
-	OdGsModel* GsModel() { return m_2dModel.get(); }
+	OdGsModel* GsModel() {
+		return m_2dModel.get();
+	}
 
 	void RecalculateEntityCenters() {
 		m_ObjectSnapManager.RecalculateEntityCenters();
 	}
 
 	void SetEntityCenters() {
-		if (HasDatabase()) { m_ObjectSnapManager.SetEntityCenters(m_CommandContext->database()); }
+		if (HasDatabase()) {
+			m_ObjectSnapManager.SetEntityCenters(m_CommandContext->database());
+		}
 	}
 
 	void SetTracker(OdEdInputTracker* inputTracker);

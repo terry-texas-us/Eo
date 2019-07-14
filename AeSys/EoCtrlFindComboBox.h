@@ -3,8 +3,7 @@ class EoCtrlFindComboBox final : public CMFCToolBarComboBoxButton {
 DECLARE_SERIAL(EoCtrlFindComboBox)
 
 	EoCtrlFindComboBox()
-		: CMFCToolBarComboBoxButton(ID_EDIT_FIND_COMBO, GetCmdMgr()->GetCmdImage(ID_EDIT_FIND), CBS_DROPDOWN) {
-	}
+		: CMFCToolBarComboBoxButton(ID_EDIT_FIND_COMBO, GetCmdMgr()->GetCmdImage(ID_EDIT_FIND), CBS_DROPDOWN) { }
 
 protected:
 	static BOOL m_HasFocus;

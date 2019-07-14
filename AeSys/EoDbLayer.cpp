@@ -8,19 +8,26 @@ EoDbLayer::EoDbLayer(OdDbLayerTableRecordPtr layer)
 	const auto LinetypeObjectId {layer->linetypeObjectId()};
 }
 
-EoDbLayer::EoDbLayer(const OdString& /*name*/, const unsigned short stateFlags) 
-	: m_StateFlags {stateFlags} {
-}
+EoDbLayer::EoDbLayer(const OdString& /*name*/, const unsigned short stateFlags)
+	: m_StateFlags {stateFlags} {}
 
 void EoDbLayer::BuildVisibleGroupList(AeSysView* view) {
-	if (IsOff()) { return; }
-	if (!IsCurrent() && !IsActive()) { return; }
+	if (IsOff()) {
+		return;
+	}
+	if (!IsCurrent() && !IsActive()) {
+		return;
+	}
 	auto Document {AeSysDoc::GetDoc()};
-	if (Document == nullptr) { return; }
+	if (Document == nullptr) {
+		return;
+	}
 	auto GroupPosition {GetHeadPosition()};
 	while (GroupPosition != nullptr) {
 		const auto Group {GetNext(GroupPosition)};
-		if (Group->IsInView(view)) { Document->AddGroupToAllViews(Group); }
+		if (Group->IsInView(view)) {
+			Document->AddGroupToAllViews(Group);
+		}
 	}
 }
 
@@ -43,7 +50,9 @@ void EoDbLayer::Display(AeSysView* view, CDC* deviceContext) {
 
 void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, const bool identifyTrap) {
 	auto Document {AeSysDoc::GetDoc()};
-	if (Document == nullptr) { return; }
+	if (Document == nullptr) {
+		return;
+	}
 	try {
 		if (!IsOff()) {
 			EoDbPrimitive::SetLayerColorIndex(ColorIndex());
@@ -55,7 +64,9 @@ void EoDbLayer::Display_(AeSysView* view, CDC* deviceContext, const bool identif
 			while (Position != nullptr) {
 				auto Group {GetNext(Position)};
 				if (Group->IsInView(view)) {
-					if (LayerIsDetectable) { Document->AddGroupToAllViews(Group); }
+					if (LayerIsDetectable) {
+						Document->AddGroupToAllViews(Group);
+					}
 					if (identifyTrap && Document->FindTrappedGroup(Group) != nullptr) {
 						EoDbPrimitive::SetHighlightColorIndex(theApp.TrapHighlightColor());
 						Group->Display(view, deviceContext);

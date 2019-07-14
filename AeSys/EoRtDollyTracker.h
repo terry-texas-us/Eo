@@ -8,7 +8,9 @@ class RtDollyTracker : public OdEdPointTracker {
 public:
 	RtDollyTracker() = default;
 
-	void Reset() noexcept { m_View = nullptr; }
+	void Reset() noexcept {
+		m_View = nullptr;
+	}
 
 	void Initialize(OdGsView* view, const OdGePoint3d& point) {
 		m_View = view;
@@ -26,8 +28,9 @@ public:
 		}
 	}
 
-	int addDrawables(OdGsView* /*view*/) noexcept override { return 0; }
-
-	void removeDrawables(OdGsView* /*view*/) noexcept override {
+	int addDrawables(OdGsView* /*view*/) noexcept override {
+		return 0;
 	}
+
+	void removeDrawables(OdGsView* /*view*/) noexcept override { }
 };

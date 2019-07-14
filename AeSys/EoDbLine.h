@@ -65,11 +65,17 @@ public:
 
 	int IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) override;
 
-	[[nodiscard]] OdGePoint3d EndPoint() const { return m_LineSeg.endPoint(); }
+	[[nodiscard]] OdGePoint3d EndPoint() const {
+		return m_LineSeg.endPoint();
+	}
 
-	[[nodiscard]] EoGeLineSeg3d LineSeg() const { return m_LineSeg; }
+	[[nodiscard]] EoGeLineSeg3d LineSeg() const {
+		return m_LineSeg;
+	}
 
-	[[nodiscard]] double Length() const { return m_LineSeg.length(); }
+	[[nodiscard]] double Length() const {
+		return m_LineSeg.length();
+	}
 
 	[[nodiscard]] OdGePoint3d ProjPt_(const OdGePoint3d& point) const;
 
@@ -81,7 +87,9 @@ public:
 
 	void Square(AeSysView* view);
 
-	[[nodiscard]] OdGePoint3d StartPoint() const { return m_LineSeg.startPoint(); }
+	[[nodiscard]] OdGePoint3d StartPoint() const {
+		return m_LineSeg.startPoint();
+	}
 
 	static EoDbLine* Create(const OdDbLinePtr& line);
 

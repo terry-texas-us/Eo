@@ -33,8 +33,7 @@ extern COLORREF* g_CurrentPalette;
 class EoDlgAudit;
 #include "OdApplication.h"
 
-class UserBreak {
-};
+class UserBreak {};
 
 class AeSys final : public CWinAppEx, public ExSystemServices, public ExHostAppServices {
 protected:
@@ -92,55 +91,99 @@ public:
 
 	OdDbDatabasePtr OpenFile(const wchar_t* pathName);
 
-	void SetPartialOption(const bool partial) noexcept { m_Partial = partial; }
+	void SetPartialOption(const bool partial) noexcept {
+		m_Partial = partial;
+	}
 
-	void SetRecoverOption(const bool recover) noexcept { m_Recover = recover; }
+	void SetRecoverOption(const bool recover) noexcept {
+		m_Recover = recover;
+	}
 
-	void SetMtLoadingOption(const bool useMtLoading) noexcept { m_UseMtLoading = useMtLoading; }
+	void SetMtLoadingOption(const bool useMtLoading) noexcept {
+		m_UseMtLoading = useMtLoading;
+	}
 
-	OdGsMarker GetGsMenuItemMarker() const noexcept { return reinterpret_cast<OdGsMarker>(this); }
+	OdGsMarker GetGsMenuItemMarker() const noexcept {
+		return reinterpret_cast<OdGsMarker>(this);
+	}
 
 	CMenu* CommandMenu(CMenu** toolsSubMenu = nullptr);
 
 	void RefreshCommandMenu();
 
-	unsigned NumberOfCustomCommands() const noexcept { return m_NumCustomCommands; }
+	unsigned NumberOfCustomCommands() const noexcept {
+		return m_NumCustomCommands;
+	}
 
 	static CString BrowseWithPreview(HWND parentWindow, const wchar_t* filter, bool multiple = false);
 
-	bool PrintingViaBitmap() const noexcept { return m_EnablePrintPreviewViaBitmap; }
+	bool PrintingViaBitmap() const noexcept {
+		return m_EnablePrintPreviewViaBitmap;
+	}
 
-	bool DoubleBufferEnabled() const noexcept { return m_EnableDoubleBuffer; }
+	bool DoubleBufferEnabled() const noexcept {
+		return m_EnableDoubleBuffer;
+	}
 
-	bool BlocksCacheEnabled() const noexcept { return m_BlocksCache; }
+	bool BlocksCacheEnabled() const noexcept {
+		return m_BlocksCache;
+	}
 
-	bool GsDeviceMultithreadingEnabled() const noexcept { return m_GsDevMultithreading; }
+	bool GsDeviceMultithreadingEnabled() const noexcept {
+		return m_GsDevMultithreading;
+	}
 
-	unsigned MtRegenerateThreadsCount() const noexcept { return m_MtRegenerateThreads; }
+	unsigned MtRegenerateThreadsCount() const noexcept {
+		return m_MtRegenerateThreads;
+	}
 
-	bool UseGsModel() const noexcept { return m_UseGsModel; }
+	bool UseGsModel() const noexcept {
+		return m_UseGsModel;
+	}
 
-	bool UseSoftwareHlr() const noexcept { return m_EnableHlr; }
+	bool UseSoftwareHlr() const noexcept {
+		return m_EnableHlr;
+	}
 
-	bool EnableContextualColors() const noexcept { return m_ContextColors; }
+	bool EnableContextualColors() const noexcept {
+		return m_ContextColors;
+	}
 
-	bool EnableTtfPolyDraw() const noexcept { return m_TtfPolyDraw; }
+	bool EnableTtfPolyDraw() const noexcept {
+		return m_TtfPolyDraw;
+	}
 
-	bool EnableTtfTextOut() const noexcept { return m_TtfTextOut; }
+	bool EnableTtfTextOut() const noexcept {
+		return m_TtfTextOut;
+	}
 
-	bool EnableTtfCache() const noexcept { return m_TtfCache; }
+	bool EnableTtfCache() const noexcept {
+		return m_TtfCache;
+	}
 
-	bool EnableDynamicSubEntHlt() const noexcept { return m_DynamicSubEntHlt; }
+	bool EnableDynamicSubEntHlt() const noexcept {
+		return m_DynamicSubEntHlt;
+	}
 
-	bool EnableGdiGradientsAsBitmap() const noexcept { return m_GdiGradientsAsBitmap; }
+	bool EnableGdiGradientsAsBitmap() const noexcept {
+		return m_GdiGradientsAsBitmap;
+	}
 
-	bool EnableGdiGradientsAsPolys() const noexcept { return m_GdiGradientsAsPolys; }
+	bool EnableGdiGradientsAsPolys() const noexcept {
+		return m_GdiGradientsAsPolys;
+	}
 
-	unsigned char GdiGradientsAsPolysThreshold() const noexcept { return m_NGdiGradientsAsPolysThreshold; }
+	unsigned char GdiGradientsAsPolysThreshold() const noexcept {
+		return m_NGdiGradientsAsPolysThreshold;
+	}
 
-	bool DisableAutoRegenerate() const noexcept { return m_DisableAutoRegenerate; }
+	bool DisableAutoRegenerate() const noexcept {
+		return m_DisableAutoRegenerate;
+	}
 
-	bool DiscardBackFaces() const noexcept { return m_DiscardBackFaces; }
+	bool DiscardBackFaces() const noexcept {
+		return m_DiscardBackFaces;
+	}
 
 	enum DisplayFields { kSchemaFields, kDxfFields, kDwgFields };
 
@@ -162,11 +205,9 @@ public:
 	//void setStatusText(int nCol, const wchar_t* msg);
 	void SetStatusPaneTextAt(int index, const wchar_t* newText);
 
-	void addRef() noexcept override {
-	}
+	void addRef() noexcept override { }
 
-	void release() noexcept override {
-	}
+	void release() noexcept override { }
 
 	OdDbHostAppProgressMeter* newProgressMeter() override;
 
@@ -201,7 +242,9 @@ public:
 
 	BOOL OnIdle(long count) override;
 
-	bool getSAVEROUNDTRIP() const noexcept override { return saveRoundTrip; }
+	bool getSAVEROUNDTRIP() const noexcept override {
+		return saveRoundTrip;
+	}
 
 	void auditPrintReport(OdAuditInfo* auditInfo, const OdString& line, int printDest) const override;
 
@@ -210,13 +253,19 @@ public:
 	OdStreamBufPtr newUndoStream() override;
 
 	//	void OnOptionsRenderingDeviceVectorize();
-	bool GetSavePreview() const noexcept { return savePreview; }
+	bool GetSavePreview() const noexcept {
+		return savePreview;
+	}
 
-	bool GetSaveWithPassword() const noexcept { return saveWithPassword; }
+	bool GetSaveWithPassword() const noexcept {
+		return saveWithPassword;
+	}
 
 	void SetRecentCommand(const OdString& command);
 
-	const OdString& GetRecentCommand() const noexcept { return m_RecentCommand; }
+	const OdString& GetRecentCommand() const noexcept {
+		return m_RecentCommand;
+	}
 
 	static OdString ObjectIdAndClassName(const OdDbObjectId id) {
 		return ObjectIdAndClassName(id.openObject());
@@ -229,9 +278,13 @@ public:
 		return OdString(L"00 : < >");
 	}
 
-	ODCOLORREF ActiveBackground() const noexcept { return m_BackgroundColor; }
+	ODCOLORREF ActiveBackground() const noexcept {
+		return m_BackgroundColor;
+	}
 
-	void SetActiveBackground(const ODCOLORREF& color) noexcept { m_BackgroundColor = color & 0xffffffU; }
+	void SetActiveBackground(const ODCOLORREF& color) noexcept {
+		m_BackgroundColor = color & 0xffffffU;
+	}
 
 	const ODCOLORREF* CurrentPalette() const;
 
@@ -245,23 +298,35 @@ public:
 
 	unsigned SetPagingType(unsigned pagingType) noexcept;
 
-	unsigned PagingType() const noexcept { return m_PagingType & 0x0fU; }
+	unsigned PagingType() const noexcept {
+		return m_PagingType & 0x0fU;
+	}
 
 	bool SetUndoType(bool useTempFiles) noexcept;
 
-	bool UndoType() const noexcept { return m_UseTempFiles; }
+	bool UndoType() const noexcept {
+		return m_UseTempFiles;
+	}
 
 	OdString fileDialog(int flags, const OdString& prompt = OdString::kEmpty, const OdString& defExt = OdString::kEmpty, const OdString& fileName = OdString::kEmpty, const OdString& filter = OdString::kEmpty) override;
 
 	BOOL PreTranslateMessage(MSG* message) override;
 
-	bool RemoteGeometryViewer() const noexcept { return m_RemoteGeometryViewer; }
+	bool RemoteGeometryViewer() const noexcept {
+		return m_RemoteGeometryViewer;
+	}
 
-	void SetRemoteGeometryViewer() noexcept { m_RemoteGeometryViewer = true; }
+	void SetRemoteGeometryViewer() noexcept {
+		m_RemoteGeometryViewer = true;
+	}
 
-	bool SupportFileSelectionViaDialog() const noexcept { return m_SupportFileSelectionViaDialog; }
+	bool SupportFileSelectionViaDialog() const noexcept {
+		return m_SupportFileSelectionViaDialog;
+	}
 
-	void SetSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept { m_SupportFileSelectionViaDialog = supportFileSelectionViaDialog; }
+	void SetSupportFileSelectionViaDialog(const bool supportFileSelectionViaDialog) noexcept {
+		m_SupportFileSelectionViaDialog = supportFileSelectionViaDialog;
+	}
 
 	static CString GetApplicationPath();
 

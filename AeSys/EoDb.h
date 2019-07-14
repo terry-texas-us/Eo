@@ -1,8 +1,7 @@
 #pragma once
 
 //class EoDbPrimitive;
-namespace EoDb
-{
+namespace EoDb {
 	enum FileTypes {
 		kDwg = 0x00, kDxf = 0x01, kDxb = 0x02, kPeg = 0x20, kJob = 0x21, kTracing = 0x22, kUnknown = -1
 	};

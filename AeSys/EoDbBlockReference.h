@@ -103,9 +103,13 @@ DECLARE_DYNAMIC(EoDbBlockReference)
 
 	void SetName(const wchar_t* name);
 
-	void SetNormal(const OdGeVector3d& normal) noexcept { m_Normal = normal; }
+	void SetNormal(const OdGeVector3d& normal) noexcept {
+		m_Normal = normal;
+	}
 
-	void SetPosition(const OdGePoint3d& position) noexcept { m_Position = position; }
+	void SetPosition(const OdGePoint3d& position) noexcept {
+		m_Position = position;
+	}
 
 	void SetPosition2(const OdGePoint3d& position);
 

@@ -14,13 +14,11 @@ BEGIN_MESSAGE_MAP(EoDlgEditOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgEditOptions::EoDlgEditOptions(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgEditOptions::EoDlgEditOptions(AeSysView* view, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_ActiveView(view) {
-}
+	, m_ActiveView(view) {}
 
 EoDlgEditOptions::~EoDlgEditOptions() = default;
 

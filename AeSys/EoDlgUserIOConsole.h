@@ -45,7 +45,9 @@ public:
 	void OnSize(unsigned type, int cx, int cy); // hides non-virtual function of parent
 	void OnDestroy(); // hides non-virtual function of parent
 	void OnShowWindow(BOOL show, unsigned status); // hides non-virtual function of parent
-	unsigned long getKeyState() noexcept override { return 0; }
+	unsigned long getKeyState() noexcept override {
+		return 0;
+	}
 
 	OdString getString(const OdString& prompt, int options, OdEdStringTracker* tracker) override;
 

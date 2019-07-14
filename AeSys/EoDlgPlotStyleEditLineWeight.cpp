@@ -175,7 +175,9 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		PlotStyle->getData(OdPsData);
 		const auto value {static_cast<int>(OdPsData.lineweight()) - 1};
 		unsigned nIndex;
-		if (!useLineWeightIndex.find(value, nIndex)) { useLineWeightIndex.push_back(value); }
+		if (!useLineWeightIndex.find(value, nIndex)) {
+			useLineWeightIndex.push_back(value);
+		}
 	}
 	lineweightData = new EoLineweightData[plotStyleTable->lineweightSize()];
 	const auto Inch {plotStyleTable->isDisplayCustomLineweightUnits()};
@@ -187,7 +189,9 @@ void EoDlgPlotStyleEditLineweight::InitializeListCtrl() {
 		lineweight.format(L"%.4f", Inch ? MillimetersToInches(lineweightData[i].value) : lineweightData[i].value);
 		auto IsUse {false};
 		unsigned nIndex {0};
-		if (useLineWeightIndex.find(static_cast<int>(i), nIndex)) { IsUse = true; }
+		if (useLineWeightIndex.find(static_cast<int>(i), nIndex)) {
+			IsUse = true;
+		}
 		const auto item {InsertLineweightAt(static_cast<int>(i), lineweight, IsUse)};
 		lineweightsListCtrl.SetItemData(item, reinterpret_cast<unsigned long>(&lineweightData[i]));
 	}

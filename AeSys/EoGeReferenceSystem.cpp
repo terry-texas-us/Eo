@@ -18,8 +18,7 @@ EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, AeSysView* v
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& xDirection, const OdGeVector3d& yDirection) noexcept
 	: m_Origin(origin)
 	, m_XDirection(xDirection)
-	, m_YDirection(yDirection) {
-}
+	, m_YDirection(yDirection) {}
 
 EoGeReferenceSystem::EoGeReferenceSystem(const OdGePoint3d& origin, const OdGeVector3d& normal, const EoDbCharacterCellDefinition& characterCellDefinition)
 	: m_Origin(origin) {
@@ -71,7 +70,9 @@ void EoGeReferenceSystem::Rescale(const EoDbCharacterCellDefinition& characterCe
 double EoGeReferenceSystem::Rotation() const noexcept {
 	const auto HorizontalAxis {m_XDirection};
 	auto Angle {atan2(HorizontalAxis.y, HorizontalAxis.x)}; // -pi to pi radians
-	if (Angle < 0.0) { Angle += Oda2PI; }
+	if (Angle < 0.0) {
+		Angle += Oda2PI;
+	}
 	return Angle;
 }
 

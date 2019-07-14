@@ -4,8 +4,7 @@
 #include <DbAudit.h>
 
 EoDlgAudit::EoDlgAudit(CWnd* parent)
-	: EoVarDialog(IDD, parent) {
-}
+	: EoVarDialog(IDD, parent) {}
 
 void EoDlgAudit::DoDataExchange(CDataExchange* dataExchange) {
 	EoVarDialog::DoDataExchange(dataExchange);

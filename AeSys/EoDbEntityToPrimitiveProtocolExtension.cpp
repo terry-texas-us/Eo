@@ -75,8 +75,7 @@ void ConvertEntityData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 		primitive->SetLinetypeIndex(static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Name)));
 	}
 	OdGeExtents3d Extents;
-	if (eOk == entity->getGeomExtents(Extents)) {
-	}
+	if (eOk == entity->getGeomExtents(Extents)) { }
 	OdGePlane Plane;
 	auto Planarity {OdDb::kNonPlanar};
 	entity->getPlane(Plane, Planarity);
@@ -110,7 +109,9 @@ void ConvertTextData(OdDbText* text, EoDbGroup* group) {
 	const auto VerticalAlignment {EoDbText::ConvertVerticalAlignment(text->verticalMode())};
 	const auto HorizontalAlignment {EoDbText::ConvertHorizontalAlignment(text->horizontalMode())};
 	auto AlignmentPoint {text->position()};
-	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom) { AlignmentPoint = text->alignmentPoint(); }
+	if (HorizontalAlignment != EoDb::kAlignLeft || VerticalAlignment != EoDb::kAlignBottom) {
+		AlignmentPoint = text->alignmentPoint();
+	}
 	EoDbFontDefinition FontDefinition;
 	FontDefinition.SetPrecision(EoDb::kTrueType);
 	FontDefinition.SetFontName(static_cast<const wchar_t*>(FileName));
@@ -143,15 +144,12 @@ void ConvertDimensionData(OdDbDimension* dimension) {
 void ConvertCurveData(OdDbEntity* entity, EoDbPrimitive* primitive) {
 	OdDbCurvePtr Curve = entity;
 	OdGePoint3d StartPoint;
-	if (eOk == Curve->getStartPoint(StartPoint)) {
-	}
+	if (eOk == Curve->getStartPoint(StartPoint)) { }
 	OdGePoint3d EndPoint;
-	if (eOk == Curve->getEndPoint(EndPoint)) {
-	}
+	if (eOk == Curve->getEndPoint(EndPoint)) { }
 	dynamic_cast<EoDbPolyline*>(primitive)->SetClosed(Curve->isClosed());
 	double Area;
-	if (eOk == Curve->getArea(Area)) {
-	}
+	if (eOk == Curve->getArea(Area)) { }
 	ConvertEntityData(entity, primitive);
 }
 
@@ -178,9 +176,7 @@ public:
 		PolylinePrimitive->SetNormal(PolylineEntity->normal());
 		PolylinePrimitive->SetElevation(PolylineEntity->elevation());
 		ConvertCurveData(PolylineEntity, PolylinePrimitive);
-		if (PolylineEntity->polyType() == OdDb::k2dCubicSplinePoly) {
-		} else if (PolylineEntity->polyType() == OdDb::k2dQuadSplinePoly) {
-		}
+		if (PolylineEntity->polyType() == OdDb::k2dCubicSplinePoly) { } else if (PolylineEntity->polyType() == OdDb::k2dQuadSplinePoly) { }
 		group->AddTail(PolylinePrimitive);
 	}
 };
@@ -196,9 +192,7 @@ public:
 			OdDb3dPolylineVertexPtr Vertex = Iterator->entity();
 		}
 		auto PolylinePrimitive {new EoDbPolyline()};
-		if (PolylineEntity->polyType() == OdDb::k3dCubicSplinePoly) {
-		} else if (PolylineEntity->polyType() == OdDb::k3dQuadSplinePoly) {
-		}
+		if (PolylineEntity->polyType() == OdDb::k3dCubicSplinePoly) { } else if (PolylineEntity->polyType() == OdDb::k3dQuadSplinePoly) { }
 		PolylinePrimitive->SetClosed(PolylineEntity->isClosed());
 		ConvertCurveData(PolylineEntity, PolylinePrimitive);
 		group->AddTail(PolylinePrimitive);
@@ -402,11 +396,8 @@ class EoDbProxyEntity_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		OdDbProxyEntityPtr ProxyEntityEntity = entity;
-		if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kNoMetafile) {
-		} else {
-			if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kBoundingBox) {
-			} else if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kFullGraphics) {
-			}
+		if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kNoMetafile) { } else {
+			if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kBoundingBox) { } else if (ProxyEntityEntity->graphicsMetafileType() == ProxyEntityEntity->kFullGraphics) { }
 			OdRxObjectPtrArray EntitySet;
 			ProxyEntityEntity->explodeGeometry(EntitySet);
 			const auto NumberOfEntities {EntitySet.size()};
@@ -479,13 +470,10 @@ public:
 		OdGeKnotVector Knots;
 		double Tolerance;
 		SplineEntity->getNurbsData(Degree, Rational, Closed, Periodic, ControlPoints, Knots, Weights, Tolerance);
-		for (unsigned n = 0; n < ControlPoints.size(); n++) {
-		}
-		for (auto n = 0; n < Knots.length(); n++) {
-		}
+		for (unsigned n = 0; n < ControlPoints.size(); n++) { }
+		for (auto n = 0; n < Knots.length(); n++) { }
 		if (Rational) {
-			for (unsigned n = 0; n < Weights.size(); n++) {
-			}
+			for (unsigned n = 0; n < Weights.size(); n++) { }
 		}
 		if (Periodic) {
 			// <tas="Only creating non-periodic splines."</tas>
@@ -539,20 +527,16 @@ public:
 		OdDbObjectIdArray layerIds;
 		ViewportEntity->getFrozenLayerList(layerIds);
 		if (layerIds.length() != 0U) {
-			for (auto i = 0; i < static_cast<int>(layerIds.length()); i++) {
-			}
-		} else {
-		}
+			for (auto i = 0; i < static_cast<int>(layerIds.length()); i++) { }
+		} else { }
 		OdGePoint3d Origin;
 		OdGeVector3d XAxis;
 		OdGeVector3d YAxis;
 		ViewportEntity->getUcs(Origin, XAxis, YAxis);
-		if (!ViewportEntity->nonRectClipEntityId().isNull()) {
-		}
+		if (!ViewportEntity->nonRectClipEntityId().isNull()) { }
 		if (!ViewportEntity->ucsName().isNull()) {
 			OdDbUCSTableRecordPtr UCS = ViewportEntity->ucsName().safeOpenObject(OdDb::kForRead);
-		} else {
-		}
+		} else { }
 		//ConvertEntityData(ViewportEntity, );
 	}
 };

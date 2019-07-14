@@ -35,7 +35,9 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 			for (auto i = 0; i <= KnotsLength - 1; i++) { // Calculate values for weighting value
 				if (i != i4 || spline.knotAt(i) == spline.knotAt(i + 1)) {
 					Weight[128 * i + 1] = 0.0;
-				} else { Weight[128 * i + 1] = 1.0; }
+				} else {
+					Weight[128 * i + 1] = 1.0;
+				}
 			}
 			for (auto T = spline.knotAt(i4); T <= spline.knotAt(i4 + 1) - Step; T += Step) {
 				iPts2++;
@@ -43,16 +45,22 @@ int EoGeNurbCurve3d::GeneratePoints(const EoGeNurbCurve3d& spline) {
 					for (auto i = 0; i <= NumberOfControlPoints - 1; i++) { // Determine first term of weighting function equation
 						if (Weight[128 * i + i2 - 1] == 0.0) {
 							W1 = 0.0;
-						} else { W1 = (T - spline.knotAt(i)) * Weight[128 * i + i2 - 1] / (spline.knotAt(i + i2 - 1) - spline.knotAt(i)); }
+						} else {
+							W1 = (T - spline.knotAt(i)) * Weight[128 * i + i2 - 1] / (spline.knotAt(i + i2 - 1) - spline.knotAt(i));
+						}
 						if (Weight[128 * (i + 1) + i2 - 1] == 0.0) { 	// Determine second term of weighting function equation
 							W2 = 0.0;
-						} else { W2 = (spline.knotAt(i + i2) - T) * Weight[128 * (i + 1) + i2 - 1] / (spline.knotAt(i + i2) - spline.knotAt(i + 1)); }
+						} else {
+							W2 = (spline.knotAt(i + i2) - T) * Weight[128 * (i + 1) + i2 - 1] / (spline.knotAt(i + i2) - spline.knotAt(i + 1));
+						}
 						Weight[128 * i + i2] = W1 + W2;
 						G = spline.controlPointAt(i).x * Weight[128 * i + i2] + G;
 						H = spline.controlPointAt(i).y * Weight[128 * i + i2] + H;
 						Z = spline.controlPointAt(i).z * Weight[128 * i + i2] + Z;
 					}
-					if (i2 == Order) { break; }
+					if (i2 == Order) {
+						break;
+					}
 					G = 0.0;
 					H = 0.0;
 					Z = 0.0;

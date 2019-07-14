@@ -19,8 +19,7 @@ BEGIN_MESSAGE_MAP(EoDlgViewParameters, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgViewParameters::EoDlgViewParameters(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgViewParameters::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

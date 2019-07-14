@@ -16,7 +16,9 @@ EoDlgUserIoConsole::EoDlgUserIoConsole(CWnd* parent)
 
 OdString EoDlgUserIoConsole::GetLastString() const {
 	const auto EolDelimiter {m_Output.ReverseFind('\r')};
-	if (EolDelimiter == -1) { return static_cast<const wchar_t*>(m_Output); }
+	if (EolDelimiter == -1) {
+		return static_cast<const wchar_t*>(m_Output);
+	}
 	return static_cast<const wchar_t*>(m_Output.Mid(EolDelimiter + 2));
 }
 
@@ -30,7 +32,9 @@ long EoDlgUserIoConsole::numRefs() const noexcept {
 
 void EoDlgUserIoConsole::release() {
 	ODA_ASSERT(m_RefCounter > 0);
-	if (--m_RefCounter == 0U) { delete this; }
+	if (--m_RefCounter == 0U) {
+		delete this;
+	}
 }
 
 void EoDlgUserIoConsole::DoDataExchange(CDataExchange* dataExchange) {

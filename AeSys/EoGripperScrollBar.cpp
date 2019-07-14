@@ -13,6 +13,8 @@ END_MESSAGE_MAP()
 #pragma warning (pop)
 LRESULT EoGripperScrollBar::OnNcHitTest(const CPoint point) {
 	auto HitTest {CScrollBar::OnNcHitTest(point)};
-	if (HitTest == HTCLIENT) { HitTest = HTBOTTOMRIGHT; }
+	if (HitTest == HTCLIENT) {
+		HitTest = HTBOTTOMRIGHT;
+	}
 	return HitTest;
 }

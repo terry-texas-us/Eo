@@ -25,7 +25,9 @@ static const unsigned TPM_NOANIMATION = 0x4000L;
 #endif // ODA_UNIXOS
 OdGiDrawablePtr OdExGripManager::CloneEntity(OdDbStub* id) {
 	auto Entity {OdDbEntity::cast(OdDbObjectId(id).openObject())};
-	if (Entity.isNull()) { return OdGiDrawablePtr(); }
+	if (Entity.isNull()) {
+		return OdGiDrawablePtr();
+	}
 	OdDbEntityPtr Clone;
 	if (Entity->cloneMeForDragging()) {
 		Clone = OdDbEntity::cast(Entity->clone());
@@ -79,7 +81,7 @@ void OdExGripManager::OdExGripCommand::execute(OdEdCommandContext* /*edCommandCo
 	auto Ok = true;
 	try {
 		const auto FinalPoint {
-		parent->m_CommandContext->dbUserIO()->getPoint(L"Specify stretch point or [Base point/Copy/Undo/eXit]:", OdEd::kGptNoLimCheck | OdEd::kGptDefault | OdEd::kGptNoUCS, &parent->m_BasePoint, L"Base Copy Undo eXit", parent)
+			parent->m_CommandContext->dbUserIO()->getPoint(L"Specify stretch point or [Base point/Copy/Undo/eXit]:", OdEd::kGptNoLimCheck | OdEd::kGptDefault | OdEd::kGptNoUCS, &parent->m_BasePoint, L"Base Copy Undo eXit", parent)
 		};
 		for (auto& ParentGripDrag : parent->m_GripDrags) {
 			ParentGripDrag->MoveEntity(parent->EyeToUcsPlane(FinalPoint, parent->m_BasePoint));
@@ -132,7 +134,9 @@ void OdExGripManager::AddToDrag(OdExGripDataPtrArray& activeKeys) {
 				}
 			}
 		}
-		if (Active) { m_GripDrags.push_back(Drag); }
+		if (Active) {
+			m_GripDrags.push_back(Drag);
+		}
 		it++;
 	}
 	for (auto& GripDrag : m_GripDrags) {
@@ -142,15 +146,25 @@ void OdExGripManager::AddToDrag(OdExGripDataPtrArray& activeKeys) {
 }
 
 bool OdExGripManager::OnMouseDown(const int x, const int y, const bool shiftIsDown) {
-	if (!OdBaseGripManager::OnMouseDown(x, y, shiftIsDown)) { return false; }
-	if (shiftIsDown) { return true; }
+	if (!OdBaseGripManager::OnMouseDown(x, y, shiftIsDown)) {
+		return false;
+	}
+	if (shiftIsDown) {
+		return true;
+	}
 	OdExGripDataPtrArray Keys;
 	LocateGripsAt(x, y, Keys);
-	if (Keys.empty()) { return true; }
+	if (Keys.empty()) {
+		return true;
+	}
 	OdExGripDataPtrArray ActiveKeys;
 	LocateGripsByStatus(OdDbGripOperations::kHotGrip, ActiveKeys);
-	if (ActiveKeys.empty()) { return false; } // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
-	if (HandleMappedRtClk(ActiveKeys, x, y)) { return true; }
+	if (ActiveKeys.empty()) {
+		return false;
+	} // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
+	if (HandleMappedRtClk(ActiveKeys, x, y)) {
+		return true;
+	}
 	AddToDrag(ActiveKeys);
 	m_BasePoint = Keys.first()->Point();
 	m_LastPoint = m_BasePoint;
@@ -169,11 +183,15 @@ bool OdExGripManager::OnMouseDown(const int x, const int y, const bool shiftIsDo
 bool OdExGripManager::OnMouseMove(const int x, const int y, const bool shiftIsDown) {
 	// restart hover operation
 	const auto Result {StartHover(x, y, shiftIsDown)};
-	if (Result == eGripOpFailure) { return false; }
+	if (Result == eGripOpFailure) {
+		return false;
+	}
 	if (Result == eGripOpGetNewGripPoints) {
 		OdExGripDataPtrArray ActiveKeys;
 		LocateGripsByStatus(OdDbGripOperations::kHotGrip, ActiveKeys);
-		if (ActiveKeys.empty()) { return false; } // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
+		if (ActiveKeys.empty()) {
+			return false;
+		} // Valid situation. If trigger grip performed entity modification and returned eGripHotToWarm then nothing is to be done cause entity modification will cause reactor to regen grips.
 		AddToDrag(ActiveKeys);
 		m_CommandContext->database()->startUndoRecord();
 		odedRegCmds()->executeCommand(&m_GripStretchCommand, m_CommandContext);
@@ -239,10 +257,16 @@ void OdExGripManager::removeDrawables(OdGsView* view) {
 }
 
 inline void ResetDragging(OdGsDevice* device, const bool option) {
-	if (device == nullptr) { return; }
+	if (device == nullptr) {
+		return;
+	}
 	auto Properties {device->properties()};
-	if (Properties.isNull()) { return; }
-	if (!Properties->has(L"DrawDragging")) { return; }
+	if (Properties.isNull()) {
+		return;
+	}
+	if (!Properties->has(L"DrawDragging")) {
+		return;
+	}
 	Properties->putAt(L"DrawDragging", OdRxVariantValue(option));
 }
 
@@ -283,7 +307,9 @@ OdGePoint3d OdExGripManager::EyeToUcsPlane(const OdGePoint3d& point, const OdGeP
 	OdGePoint3d NewPoint;
 	if (!Plane.intersectWith(Line, NewPoint)) {
 		Line.set(point, UcsXAxis.crossProduct(UcsYAxis));
-		if (!Plane.intersectWith(Line, NewPoint)) { NewPoint = basePoint; }
+		if (!Plane.intersectWith(Line, NewPoint)) {
+			NewPoint = basePoint;
+		}
 	}
 	return NewPoint;
 }
@@ -343,7 +369,9 @@ void OdExGripManager::Disable(const bool disable) {
 
 OdGiDrawablePtr OdExGripManager::OpenObject(OdDbStub* id, const bool isForWriteMode) {
 	OdGiDrawablePtr Drawable;
-	if (id == nullptr) { return Drawable; }
+	if (id == nullptr) {
+		return Drawable;
+	}
 	Drawable = OdGiDrawable::cast(OdDbObjectId(id).openObject(isForWriteMode ? OdDb::kForWrite : OdDb::kForRead));
 	return Drawable;
 }
@@ -354,13 +382,17 @@ OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const 
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize, const OdGeVector3d& curViewDir, const int bitFlags) const {
 	OdDbEntity* Entity {OdDbEntity::cast(entity)};
-	if (Entity == nullptr) { return eNotApplicable; }
+	if (Entity == nullptr) {
+		return eNotApplicable;
+	}
 	return Entity->getGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const {
 	OdDbEntity* Entity {OdDbEntity::cast(entity)};
-	if (Entity == nullptr) { return eNotApplicable; }
+	if (Entity == nullptr) {
+		return eNotApplicable;
+	}
 	return Entity->getGripPoints(gripPoints);
 }
 

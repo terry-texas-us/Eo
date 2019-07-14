@@ -25,8 +25,7 @@ static void DrawBitmap(const CBitmap* bitmap, const CDC* deviceContext, const CR
 }
 
 EoCtrlBitmapPickerCombo::EoCtrlBitmapPickerCombo()
-	: CComboBox() {
-}
+	: CComboBox() {}
 
 int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* string) {
 	return InsertBitmap(GetCount(), bitmap, string);
@@ -34,7 +33,9 @@ int EoCtrlBitmapPickerCombo::AddBitmap(const CBitmap* bitmap, const wchar_t* str
 
 int EoCtrlBitmapPickerCombo::InsertBitmap(const int index, const CBitmap* bitmap, const wchar_t* string) {
 	const auto n {CComboBox::InsertString(index, string != nullptr ? string : L"")};
-	if (bitmap == nullptr) { return n; }
+	if (bitmap == nullptr) {
+		return n;
+	}
 	if (n != CB_ERR && n != CB_ERRSPACE) {
 		SetItemData(n, reinterpret_cast<unsigned long>(bitmap));
 		BITMAP Bitmap;
@@ -85,7 +86,9 @@ void EoCtrlBitmapPickerCombo::DrawItem(LPDRAWITEMSTRUCT drawItemStruct) {
 		DeviceContext->SelectObject(OldBrush);
 		DeviceContext->SelectObject(OldPen);
 	}
-	if (drawItemStruct->itemAction & ODA_FOCUS) { DeviceContext->DrawFocusRect(&drawItemStruct->rcItem); }
+	if (drawItemStruct->itemAction & ODA_FOCUS) {
+		DeviceContext->DrawFocusRect(&drawItemStruct->rcItem);
+	}
 }
 
 void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct, bool /*selected*/) const {
@@ -93,7 +96,9 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct
 	if (Bitmap != nullptr && Bitmap != reinterpret_cast<const CBitmap*>(0xffffffff)) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString String;
-		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
+		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) {
+			GetLBText(static_cast<int>(drawItemStruct->itemID), String);
+		}
 		if (String.IsEmpty()) {
 			DrawBitmap(Bitmap, DeviceContext, drawItemStruct->rcItem);
 		} else {
@@ -109,15 +114,21 @@ void EoCtrlBitmapPickerCombo::OutputBitmap(const LPDRAWITEMSTRUCT drawItemStruct
 	if (Bitmap == nullptr) {
 		auto DeviceContext {CDC::FromHandle(drawItemStruct->hDC)};
 		CString String;
-		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) { GetLBText(static_cast<int>(drawItemStruct->itemID), String); }
+		if (drawItemStruct->itemID != static_cast<unsigned>(-1)) {
+			GetLBText(static_cast<int>(drawItemStruct->itemID), String);
+		}
 		CRect TextRectangle(drawItemStruct->rcItem);
 		DeviceContext->DrawTextW(String, TextRectangle, DT_SINGLELINE | DT_VCENTER);
 	}
 }
 
 void EoCtrlBitmapPickerCombo::SetSize(const int width, const int height) {
-	if (width > m_ItemWidth) { m_ItemWidth = width; }
-	if (height > m_ItemHeight) { m_ItemHeight = height; }
+	if (width > m_ItemWidth) {
+		m_ItemWidth = width;
+	}
+	if (height > m_ItemHeight) {
+		m_ItemHeight = height;
+	}
 	for (auto i = -1; i < GetCount(); i++) {
 		SetItemHeight(i, static_cast<unsigned>(m_ItemHeight + 6));
 	}

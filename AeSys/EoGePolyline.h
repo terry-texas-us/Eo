@@ -4,8 +4,7 @@
 class AeSysView;
 class EoGeLineSeg3d;
 
-namespace polyline
-{
+namespace polyline {
 	void BeginLineStrip();
 
 	void BeginLineLoop();

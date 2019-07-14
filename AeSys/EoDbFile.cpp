@@ -13,15 +13,12 @@
 #include "EoDbText.h"
 
 EoDbFile::EoDbFile(OdDbDatabasePtr database)
-	: m_Database {database} {
-}
+	: m_Database {database} {}
 
 EoDbFile::EoDbFile(const OdString& fileName, const unsigned openFlags)
-	: CFile(fileName, openFlags) {
-}
+	: CFile(fileName, openFlags) {}
 
-void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& /*primitive*/) noexcept {
-}
+void EoDbFile::ConstructBlockReferencePrimitiveFromInsertPrimitive(EoDbPrimitive*& /*primitive*/) noexcept {}
 
 void EoDbFile::ConstructPointPrimitiveFromTagPrimitive(EoDbPrimitive*& primitive) {
 	const auto ColorIndex {ReadInt16()};
@@ -121,7 +118,9 @@ void EoDbFile::ReadString(CString& string) {
 	string.Empty();
 	char c;
 	while (Read(&c, 1) == 1) {
-		if (c == '\t') { return; }
+		if (c == '\t') {
+			return;
+		}
 		string += c;
 	}
 }
@@ -130,7 +129,9 @@ void EoDbFile::ReadString(OdString& string) {
 	string.empty();
 	char c;
 	while (Read(&c, 1) == 1) {
-		if (c == '\t') { return; }
+		if (c == '\t') {
+			return;
+		}
 		string += static_cast<wchar_t>(c);
 	}
 }

@@ -6,8 +6,7 @@ BEGIN_MESSAGE_MAP(EoDlgViewZoom, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgViewZoom::EoDlgViewZoom(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgViewZoom::~EoDlgViewZoom() = default;
 

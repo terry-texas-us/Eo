@@ -91,7 +91,9 @@ void EoDbEllipse::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 		// <tas="Never allowing a point cut on closed ellipse"</tas>
 	}
 	const auto Relationship {SwpAngToPt(point) / m_SweepAngle};
-	if (Relationship <= DBL_EPSILON || Relationship >= 1. - DBL_EPSILON) { return; }
+	if (Relationship <= DBL_EPSILON || Relationship >= 1. - DBL_EPSILON) {
+		return;
+	}
 	const auto SweepAngle {m_SweepAngle * Relationship};
 	OdDbDatabasePtr Database {this->m_EntityObjectId.database()};
 	OdDbBlockTableRecordPtr BlockTableRecord {Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
@@ -130,8 +132,7 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 			const auto dSwpAng {m_SweepAngle};
 			const auto dAng1 {dRel[0] * m_SweepAngle};
 			const auto dAng2 {dRel[1] * m_SweepAngle};
-			if (isgreater(dRel[0], 0.0)) {
-			}
+			if (isgreater(dRel[0], 0.0)) { }
 			if (dRel[0] > DBL_EPSILON && dRel[1] < 1. - DBL_EPSILON) { // Cut section out of middle
 				pArc->SetSweepAngle(dAng1);
 				auto Group {new EoDbGroup};
@@ -170,7 +171,9 @@ void EoDbEllipse::CutAt2Points(OdGePoint3d* points, EoDbGroupList* groups, EoDbG
 }
 
 void EoDbEllipse::Display(AeSysView* view, CDC* deviceContext) {
-	if (fabs(m_SweepAngle) <= DBL_EPSILON) { return; }
+	if (fabs(m_SweepAngle) <= DBL_EPSILON) {
+		return;
+	}
 	const auto ColorIndex {LogicalColorIndex()};
 	const auto LinetypeIndex {LogicalLinetypeIndex()};
 	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
@@ -427,7 +430,9 @@ bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& poin
 	EoGePoint4d Points[] {EoGePoint4d(StartPoint(), 1.0), EoGePoint4d(EndPoint(), 1.0)};
 	for (auto& Point : Points) {
 		view->ModelViewTransformPoint(Point);
-		if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) { return true; }
+		if (point.DistanceToPointXY(Point) < ms_SelectApertureSize) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -435,8 +440,12 @@ bool EoDbEllipse::IsPointOnControlPoint(AeSysView* view, const EoGePoint4d& poin
 int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, OdGePoint3d* intersections) {
 	auto PlaneNormal {m_MajorAxis.crossProduct(m_MinorAxis)};
 	PlaneNormal.normalize();
-	if (!OdGeVector3d::kZAxis.crossProduct(PlaneNormal).isZeroLength()) { return 0; } // not on plane normal to z-axis
-	if (fabs(m_MajorAxis.length() - m_MinorAxis.length()) > FLT_EPSILON) { return 0; } // not radial
+	if (!OdGeVector3d::kZAxis.crossProduct(PlaneNormal).isZeroLength()) {
+		return 0;
+	} // not on plane normal to z-axis
+	if (fabs(m_MajorAxis.length() - m_MinorAxis.length()) > FLT_EPSILON) {
+		return 0;
+	} // not radial
 	OdGePoint3d ptMin;
 	OdGePoint3d ptMax;
 	auto ptBeg {StartPoint()};
@@ -455,7 +464,9 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 		intersections[1] = ptEnd;
 		return 2;
 	}
-	if (ptMin.x >= upperRightCorner.x || ptMax.x <= lowerLeftCorner.x || ptMin.y >= upperRightCorner.y || ptMax.y <= lowerLeftCorner.y) { return 0; }
+	if (ptMin.x >= upperRightCorner.x || ptMax.x <= lowerLeftCorner.x || ptMin.y >= upperRightCorner.y || ptMax.y <= lowerLeftCorner.y) {
+		return 0;
+	}
 	OdGePoint3d ptWrk[8];
 	double dDis;
 	double dOff;
@@ -509,24 +520,29 @@ int EoDbEllipse::IsWithinArea(const OdGePoint3d& lowerLeftCorner, const OdGePoin
 			ptWrk[iSecs++].y = lowerLeftCorner.y;
 		}
 	}
-	if (iSecs == 0) { return 0; }
+	if (iSecs == 0) {
+		return 0;
+	}
 	const auto BeginAngle {atan2(ptBeg.y - m_Center.y, ptBeg.x - m_Center.x)}; // Arc begin angle (- pi to pi)
 	double AngleIntersections[8] {0.0};
 	auto IntersectionIndex {0};
 	for (auto i2 = 0; i2 < iSecs; i2++) { // Loop thru possible intersections
 		const auto CurrentIntersectionAngle {atan2(ptWrk[i2].y - m_Center.y, ptWrk[i2].x - m_Center.x)};
 		AngleIntersections[IntersectionIndex] = CurrentIntersectionAngle - BeginAngle;
-		if (AngleIntersections[IntersectionIndex] < 0.0) { AngleIntersections[IntersectionIndex] += Oda2PI; }
+		if (AngleIntersections[IntersectionIndex] < 0.0) {
+			AngleIntersections[IntersectionIndex] += Oda2PI;
+		}
 		if (fabs(AngleIntersections[IntersectionIndex]) - m_SweepAngle < 0.0) { // Intersection lies on arc
 			int i;
-			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++) {
-			}
+			for (i = 0; i < IntersectionIndex && ptWrk[i2] != intersections[i]; i++) { }
 			if (i == IntersectionIndex) { // Unique intersection
 				intersections[IntersectionIndex++] = ptWrk[i2];
 			}
 		}
 	}
-	if (IntersectionIndex == 0) { return 0; } // None of the intersections are on sweep of arc
+	if (IntersectionIndex == 0) {
+		return 0;
+	} // None of the intersections are on sweep of arc
 	for (auto i1 = 0; i1 < IntersectionIndex; i1++) { // Sort intersections from begin to end of sweep
 		for (auto i2 = 1; i2 < IntersectionIndex - i1; i2++) {
 			if (fabs(AngleIntersections[i2]) < fabs(AngleIntersections[i2 - 1])) {
@@ -573,7 +589,9 @@ bool EoDbEllipse::IsInView(AeSysView* view) const {
 	for (unsigned w = 1; w < 4; w++) {
 		EoGePoint4d ptEnd(BoundingBox[w], 1.0);
 		view->ModelViewTransformPoint(ptEnd);
-		if (EoGePoint4d::ClipLine(ptBeg, ptEnd)) { return true; }
+		if (EoGePoint4d::ClipLine(ptBeg, ptEnd)) {
+			return true;
+		}
 		ptBeg = ptEnd;
 	}
 	return false;
@@ -683,17 +701,23 @@ EoDbEllipse& EoDbEllipse::SetTo3PointArc(const OdGePoint3d& startPoint, const Od
 		for (auto i = 0; i < 3; i++) { // Translate points into z=0 plane with center point at origin
 			pt[i].transformBy(WorldToPlaneAtCenterPointTransform);
 			dAng[i] = atan2(pt[i].y, pt[i].x);
-			if (dAng[i] < 0.0) { dAng[i] += Oda2PI; }
+			if (dAng[i] < 0.0) {
+				dAng[i] += Oda2PI;
+			}
 		}
 		const auto dMin {EoMin(dAng[0], dAng[2])};
 		const auto dMax {EoMax(dAng[0], dAng[2])};
 		if (fabs(dAng[1] - dMax) > DBL_EPSILON && fabs(dAng[1] - dMin) > DBL_EPSILON) { // Inside line is not colinear with outside lines
 			m_SweepAngle = dMax - dMin;
 			if (dAng[1] > dMin && dAng[1] < dMax) {
-				if (dAng[0] == dMax) { m_SweepAngle = -m_SweepAngle; }
+				if (dAng[0] == dMax) {
+					m_SweepAngle = -m_SweepAngle;
+				}
 			} else {
 				m_SweepAngle = Oda2PI - m_SweepAngle;
-				if (dAng[2] == dMax) { m_SweepAngle = -m_SweepAngle; }
+				if (dAng[2] == dMax) {
+					m_SweepAngle = -m_SweepAngle;
+				}
 			}
 			auto ptRot {startPoint};
 			ptRot.rotateBy(OdaPI2, PlaneNormal, m_Center);
@@ -741,7 +765,9 @@ void EoDbEllipse::TransformBy(const EoGeMatrix3d& transformMatrix) {
 }
 
 void EoDbEllipse::TranslateUsingMask(const OdGeVector3d& translate, const unsigned mask) {
-	if (mask != 0) { m_Center += translate; }
+	if (mask != 0) {
+		m_Center += translate;
+	}
 }
 
 bool EoDbEllipse::Write(EoDbFile& file) const {
@@ -766,7 +792,9 @@ void EoDbEllipse::Write(CFile& file, unsigned char* buffer) const {
 	*reinterpret_cast<unsigned short*>(& buffer[4]) = static_cast<unsigned short>(EoDb::kEllipsePrimitive);
 	buffer[6] = static_cast<unsigned char>(m_ColorIndex == mc_ColorindexBylayer ? ms_LayerColorIndex : m_ColorIndex);
 	buffer[7] = static_cast<unsigned char>(m_LinetypeIndex == mc_LinetypeBylayer ? ms_LayerLinetypeIndex : m_LinetypeIndex);
-	if (buffer[7] >= 16) { buffer[7] = 2; }
+	if (buffer[7] >= 16) {
+		buffer[7] = 2;
+	}
 	reinterpret_cast<EoVaxPoint3d*>(& buffer[8])->Convert(m_Center);
 	reinterpret_cast<EoVaxVector3d*>(& buffer[20])->Convert(m_MajorAxis);
 	reinterpret_cast<EoVaxVector3d*>(& buffer[32])->Convert(m_MinorAxis);
@@ -797,7 +825,9 @@ EoDbEllipse* EoDbEllipse::Create(OdDbEllipsePtr& ellipse) {
 		EndAngle -= Oda2PI;
 	}
 	auto SweepAngle {EndAngle - StartAngle};
-	if (SweepAngle <= FLT_EPSILON) { SweepAngle += Oda2PI; }
+	if (SweepAngle <= FLT_EPSILON) {
+		SweepAngle += Oda2PI;
+	}
 	if (StartAngle != 0.0) {
 		MajorAxis.rotateBy(StartAngle, ellipse->normal());
 		MinorAxis.rotateBy(StartAngle, ellipse->normal());
@@ -883,7 +913,9 @@ OdDbEllipsePtr EoDbEllipse::Create(OdDbBlockTableRecordPtr blockTableRecord, uns
 		MajorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[20])->Convert();
 		MinorAxis = reinterpret_cast<EoVaxVector3d*>(& primitiveBuffer[32])->Convert();
 		SweepAngle = reinterpret_cast<EoVaxFloat*>(& primitiveBuffer[44])->Convert();
-		if (SweepAngle > Oda2PI || SweepAngle < -Oda2PI) { SweepAngle = Oda2PI; }
+		if (SweepAngle > Oda2PI || SweepAngle < -Oda2PI) {
+			SweepAngle = Oda2PI;
+		}
 	}
 	const auto Database {blockTableRecord->database()};
 	auto Ellipse {OdDbEllipse::createObject()};
@@ -915,7 +947,9 @@ OdGePoint3d FindPointOnArc(const OdGePoint3d& center, const OdGeVector3d& majorA
 int FindSweepAngleGivenPlaneAnd3Lines(const OdGeVector3d& planeNormal, const OdGePoint3d& firstPoint, const OdGePoint3d& secondPoint, const OdGePoint3d& thirdPoint, const OdGePoint3d& center, double& sweepAngle) {
 	double dT[3];
 	OdGePoint3d rR[3];
-	if (firstPoint == center || secondPoint == center || thirdPoint == center) { return FALSE; }
+	if (firstPoint == center || secondPoint == center || thirdPoint == center) {
+		return FALSE;
+	}
 
 	// None of the points coincide with center point
 	EoGeMatrix3d WorldToPlaneTransform;
@@ -926,17 +960,23 @@ int FindSweepAngleGivenPlaneAnd3Lines(const OdGeVector3d& planeNormal, const OdG
 	for (auto i = 0; i < 3; i++) { // Translate points into z=0 plane with center point at origin
 		rR[i].transformBy(WorldToPlaneTransform);
 		dT[i] = atan2(rR[i].y, rR[i].x);
-		if (dT[i] < 0.0) { dT[i] += Oda2PI; }
+		if (dT[i] < 0.0) {
+			dT[i] += Oda2PI;
+		}
 	}
 	const auto dTMin {EoMin(dT[0], dT[2])};
 	const auto dTMax {EoMax(dT[0], dT[2])};
 	if (fabs(dT[1] - dTMax) > DBL_EPSILON && fabs(dT[1] - dTMin) > DBL_EPSILON) { // Inside line is not colinear with outside lines
 		auto dTheta {dTMax - dTMin};
 		if (dT[1] > dTMin && dT[1] < dTMax) {
-			if (dT[0] == dTMax) { dTheta = -dTheta; }
+			if (dT[0] == dTMax) {
+				dTheta = -dTheta;
+			}
 		} else {
 			dTheta = Oda2PI - dTheta;
-			if (dT[2] == dTMax) { dTheta = -dTheta; }
+			if (dT[2] == dTMax) {
+				dTheta = -dTheta;
+			}
 		}
 		sweepAngle = dTheta;
 		return TRUE;

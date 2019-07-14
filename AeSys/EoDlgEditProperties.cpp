@@ -9,8 +9,7 @@ IMPLEMENT_DYNAMIC(EoDlgEditProperties, CDialog)
 EoDlgEditProperties::EoDlgEditProperties(OdDbObjectId& id, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_pObjectId(id)
-	, m_CurrentItem(-1) {
-}
+	, m_CurrentItem(-1) {}
 
 EoDlgEditProperties::~EoDlgEditProperties() = default;
 
@@ -95,14 +94,18 @@ BOOL EoDlgEditProperties::OnInitDialog() {
 
 void EoDlgEditProperties::OnButton() {
 	UpdateData();
-	if (m_CurrentItem == -1) { return; }
+	if (m_CurrentItem == -1) {
+		return;
+	}
 	auto ResourceBuffer {m_ResourceBuffer};
 	auto i {0};
 	while (!ResourceBuffer.isNull() && i < m_CurrentItem) {
 		++i;
 		ResourceBuffer = ResourceBuffer->next();
 	}
-	if (ResourceBuffer.isNull()) { return; }
+	if (ResourceBuffer.isNull()) {
+		return;
+	}
 	switch (ResourceBuffer->restype()) {
 		case OdResBuf::kRtColor:
 			ResourceBuffer->setColor(OdDbUnitsFormatter::unformatColor(static_cast<const wchar_t*>(m_sValue)));

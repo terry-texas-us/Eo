@@ -14,7 +14,9 @@ std::pair<EoDbGroup*, EoDbPoint*> AeSysView::SelectPointUsingPoint(const OdGePoi
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
 			if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbPoint)) != 0 && Primitive->ColorIndex() == pointColor) {
 				const auto Point {dynamic_cast<EoDbPoint*>(Primitive)};
-				if (point.distanceTo(Point->Position()) <= tolerance) { return {Group, Point}; }
+				if (point.distanceTo(Point->Position()) <= tolerance) {
+					return {Group, Point};
+				}
 			}
 		}
 	}
@@ -167,7 +169,9 @@ void AeSysView::OnLpdModeTap() {
 			m_ContinueSection = false;
 			m_PreviousPnt = CurrentPnt;
 		}
-	} else { theApp.AddStringToMessageList(IDS_MSG_LINE_NOT_SELECTED); }
+	} else {
+		theApp.AddStringToMessageList(IDS_MSG_LINE_NOT_SELECTED);
+	}
 }
 
 void AeSysView::OnLpdModeEll() {
@@ -269,13 +273,17 @@ void AeSysView::OnLpdModeSize() {
 			const auto pLine {dynamic_cast<EoDbLine*>(m_EndCapGroup->GetAt(Position))};
 			const auto Line {pLine->LineSeg()};
 			Angle = fmod(Line.AngleFromXAxis_xy(), OdaPI);
-			if (Angle <= OdaPI / 180.0) { Angle += OdaPI; }
+			if (Angle <= OdaPI / 180.0) {
+				Angle += OdaPI;
+			}
 			Angle -= OdaPI2;
 		}
 		m_EndCapPoint = nullptr;
 	}
 	GenSizeNote(CurrentPnt, Angle, m_PreviousSection);
-	if (m_PreviousOp != 0) { RubberBandingDisable(); }
+	if (m_PreviousOp != 0) {
+		RubberBandingDisable();
+	}
 	m_PreviousOp = 0;
 	m_ContinueSection = false;
 }
@@ -504,7 +512,9 @@ void AeSysView::GenerateRiseDrop(const unsigned short riseDropIndicator, const S
 }
 
 void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, const Section previousSection, EoGeLineSeg3d& currentReferenceLine, const Section currentSection, EoDbGroup* group, const bool generateEndCaps) const {
-	if (previousReferenceLine.isParallelTo(currentReferenceLine)) { return; }
+	if (previousReferenceLine.isParallelTo(currentReferenceLine)) {
+		return;
+	}
 	const OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
 	const auto EndPoint {previousReferenceLine.endPoint()};
 	previousReferenceLine.SetEndPoint(ProjectToward(EndPoint, previousReferenceLine.startPoint(), m_DuctSeamSize + previousSection.Width() * m_CenterLineEccentricity));
@@ -520,7 +530,9 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, c
 	OdGePoint3d OutsideCorner;
 	PreviousLeftLine.IntersectWith_xy(CurrentLeftLine, InsideCorner);
 	PreviousRightLine.IntersectWith_xy(CurrentRightLine, OutsideCorner);
-	if (generateEndCaps) { GenerateEndCap(PreviousLeftLine.endPoint(), PreviousRightLine.endPoint(), previousSection, group); }
+	if (generateEndCaps) {
+		GenerateEndCap(PreviousLeftLine.endPoint(), PreviousRightLine.endPoint(), previousSection, group);
+	}
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 	const auto LinetypeObjectId {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	auto Line = EoDbLine::Create(BlockTableRecord, PreviousLeftLine.endPoint(), InsideCorner);
@@ -671,7 +683,9 @@ bool AeSysView::GenerateRectangularTap(const EJust justification, const Section 
 
 void AeSysView::GenerateTransition(EoGeLineSeg3d& referenceLine, const double eccentricity, const EJust justification, const double slope, const Section previousSection, const Section currentSection, EoDbGroup* group) const {
 	const auto ReferenceLength {referenceLine.length()};
-	if (ReferenceLength <= FLT_EPSILON) { return; }
+	if (ReferenceLength <= FLT_EPSILON) {
+		return;
+	}
 	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
@@ -731,7 +745,9 @@ double AeSysView::LengthOfTransition(const EJust justification, const double slo
 	const auto WidthChange {currentSection.Width() - previousSection.Width()};
 	const auto DepthChange {currentSection.Depth() - previousSection.Depth()};
 	auto Length {EoMax(fabs(WidthChange), fabs(DepthChange)) * slope};
-	if (justification == kCenter) { Length *= 0.5; }
+	if (justification == kCenter) {
+		Length *= 0.5;
+	}
 	return Length;
 }
 
@@ -746,7 +762,9 @@ bool AeSysView::Find2LinesUsingLineEndpoints(EoDbLine* testLinePrimitive, const 
 		auto PrimitivePosition {Group->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Group->GetNext(PrimitivePosition)};
-			if (Primitive == testLinePrimitive || Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) == 0) { continue; }
+			if (Primitive == testLinePrimitive || Primitive->IsKindOf(RUNTIME_CLASS(EoDbLine)) == 0) {
+				continue;
+			}
 			const auto LinePrimitive {dynamic_cast<EoDbLine*>(Primitive)};
 			auto LineSeg {LinePrimitive->LineSeg()};
 			if (LineSeg.startPoint() == TestLine.startPoint() || LineSeg.startPoint() == TestLine.endPoint()) { // Exchange points

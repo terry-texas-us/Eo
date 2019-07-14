@@ -231,44 +231,44 @@ void AeSysView::OnPipeModeDrop() {
 
 void AeSysView::OnPipeModeSymbol() {
 	const double SymbolSize[] = {
-	.09375,
-	.09375,
-	.09375,
-	.09375,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	.125,
-	0.0,
-	0.0,
-	.09375
+		.09375,
+		.09375,
+		.09375,
+		.09375,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		.125,
+		0.0,
+		0.0,
+		.09375
 	};
 	const double TicDistance[] = {
-	.125,
-	.125,
-	.125,
-	.125,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.15625,
-	.03125,
-	.03125,
-	.125
+		.125,
+		.125,
+		.125,
+		.125,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.15625,
+		.03125,
+		.03125,
+		.125
 	};
 	const auto CurrentPnt {GetCursorPosition()};
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
@@ -277,7 +277,9 @@ void AeSysView::OnPipeModeSymbol() {
 	m_PipeModePoints.setLogicalLength(2);
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
-	if (Group == nullptr) { return; }
+	if (Group == nullptr) {
+		return;
+	}
 	auto HorizontalSection {std::get<1>(Selection)};
 	EoDlgPipeSymbol Dialog;
 	Dialog.currentPipeSymbolIndex = m_CurrentPipeSymbolIndex;

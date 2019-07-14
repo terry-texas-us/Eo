@@ -29,7 +29,9 @@ public:
 		m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", OdRxVariantValue(true));
 	}
 
-	~EnableEnhRectFrame() { m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", nullptr); }
+	~EnableEnhRectFrame() {
+		m_CommandContext->setArbitraryData(L"ExDbCommandContext_EnhRectFrame", nullptr);
+	}
 };
 
 void SetWorkingSelectionSet(OdDbCommandContext* commandContext, OdDbSelectionSet* selectionSet) {
@@ -72,8 +74,7 @@ public:
 		return true;
 	}
 
-	void subViewportDraw(OdGiViewportDraw* /*viewportDraw*/) const noexcept override {
-	}
+	void subViewportDraw(OdGiViewportDraw* /*viewportDraw*/) const noexcept override { }
 };
 
 void OdExEditorObject::Initialize(OdGsDevice* device, OdDbCommandContext* commandContext) {
@@ -163,14 +164,18 @@ void OdExEditorObject::UcsPlane(OdGePlane& plane) const {
 	OdGeVector3d ucsYAxis;
 	AbstractViewportData->getUcs(ActiveViewport, ucsOrigin, ucsXAxis, ucsYAxis);
 	const auto Elevation {AbstractViewportData->elevation(ActiveViewport)};
-	if (!OdZero(Elevation)) { ucsOrigin += ucsXAxis.crossProduct(ucsYAxis) * Elevation; }
+	if (!OdZero(Elevation)) {
+		ucsOrigin += ucsXAxis.crossProduct(ucsYAxis) * Elevation;
+	}
 	plane.set(ucsOrigin, ucsXAxis, ucsYAxis);
 }
 
 OdGePoint3d OdExEditorObject::ToEyeToWorld(const int x, const int y) const {
 	OdGePoint3d wcsPoint(x, y, 0.0);
 	const auto View {ActiveView()};
-	if (View->isPerspective()) { wcsPoint.z = View->projectionMatrix()(2, 3); }
+	if (View->isPerspective()) {
+		wcsPoint.z = View->projectionMatrix()(2, 3);
+	}
 	wcsPoint.transformBy((View->screenMatrix() * View->projectionMatrix()).inverse());
 	wcsPoint.z = 0.0;
 	// Eye coordinate system at this point.
@@ -241,12 +246,24 @@ void OdExEditorObject::SetSnapModes(const bool snapOn, const unsigned snapModes)
 }
 
 OdEdCommandPtr OdExEditorObject::Command(const OdString& commandName) const {
-	if (commandName == m_cmd_ZOOM.globalName()) { return &m_cmd_ZOOM; }
-	if (commandName == m_cmd_3DORBIT.globalName()) { return &m_cmd_3DORBIT; }
-	if (commandName == m_cmd_DOLLY.globalName()) { return &m_cmd_DOLLY; }
-	if (commandName == m_cmd_INTERACTIVITY.globalName()) { return &m_cmd_INTERACTIVITY; }
-	if (commandName == m_cmd_COLLIDE.globalName()) { return &m_cmd_COLLIDE; }
-	if (commandName == m_cmd_COLLIDE_ALL.globalName()) { return &m_cmd_COLLIDE_ALL; }
+	if (commandName == m_cmd_ZOOM.globalName()) {
+		return &m_cmd_ZOOM;
+	}
+	if (commandName == m_cmd_3DORBIT.globalName()) {
+		return &m_cmd_3DORBIT;
+	}
+	if (commandName == m_cmd_DOLLY.globalName()) {
+		return &m_cmd_DOLLY;
+	}
+	if (commandName == m_cmd_INTERACTIVITY.globalName()) {
+		return &m_cmd_INTERACTIVITY;
+	}
+	if (commandName == m_cmd_COLLIDE.globalName()) {
+		return &m_cmd_COLLIDE;
+	}
+	if (commandName == m_cmd_COLLIDE_ALL.globalName()) {
+		return &m_cmd_COLLIDE_ALL;
+	}
 	return OdEdCommandPtr();
 }
 
@@ -308,7 +325,9 @@ void OdExEditorObject::Set3DView(const _3DViewType type) {
 bool OdExEditorObject::Snap(OdGePoint3d& point, const OdGePoint3d* /*lastPoint*/) {
 	if (IsSnapOn()) {
 		if (m_ObjectSnapManager.Snap(ActiveView(), point, m_BasePt)) {
-			if (!m_2dModel.isNull()) { m_2dModel->onModified(&m_ObjectSnapManager, static_cast<OdGiDrawable*>(nullptr)); }
+			if (!m_2dModel.isNull()) {
+				m_2dModel->onModified(&m_ObjectSnapManager, static_cast<OdGiDrawable*>(nullptr));
+			}
 			return true;
 		}
 	}
@@ -348,7 +367,9 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 	const auto ShiftIsDown {(OdEdBaseIO::kShiftIsDown & flags) != 0};
 	const auto ControlIsDown {(OdEdBaseIO::kControlIsDown & flags) != 0};
 	const auto WorldPoint {ToEyeToWorld(x, y)};
-	if (m_GripManager.OnMouseDown(x, y, ShiftIsDown)) { return true; }
+	if (m_GripManager.OnMouseDown(x, y, ShiftIsDown)) {
+		return true;
+	}
 	try {
 		if (dragCallback != nullptr && !ShiftIsDown) {
 			auto SelectionSet {GetWorkingSelectionSet()};
@@ -381,12 +402,18 @@ bool OdExEditorObject::OnMouseLeftButtonClick(const unsigned flags, const int x,
 	auto SelectOptions {OdEd::kSelPickLastPoint | OdEd::kSelSinglePass | OdEd::kSelLeaveHighlighted | OdEd::kSelAllowInactSpaces};
 	if (HasDatabase()) {
 		if (ShiftIsDown) {
-			if (m_CommandContext->database()->appServices()->getPICKADD() > 0) { SelectOptions |= OdEd::kSelRemove; }
+			if (m_CommandContext->database()->appServices()->getPICKADD() > 0) {
+				SelectOptions |= OdEd::kSelRemove;
+			}
 		} else {
-			if (m_CommandContext->database()->appServices()->getPICKADD() == 0) { Unselect(); }
+			if (m_CommandContext->database()->appServices()->getPICKADD() == 0) {
+				Unselect();
+			}
 		}
 	}
-	if (ControlIsDown) { SelectOptions |= OdEd::kSelAllowSubents; }
+	if (ControlIsDown) {
+		SelectOptions |= OdEd::kSelAllowSubents;
+	}
 	const auto SavedSnapMode {IsSnapOn()};
 	try {
 		SetSnapOn(false);
@@ -450,7 +477,9 @@ void OdExEditorObject::Dolly(OdGsView* view, const int x, const int y) {
 bool OdExEditorObject::OnMouseWheel(unsigned /*flags*/, const int x, const int y, const short zDelta) {
 	const auto View {ActiveView()};
 	ZoomAt(View, x, y, zDelta);
-	if (!m_2dModel.isNull()) { m_2dModel->invalidate(ActiveTopView()); }
+	if (!m_2dModel.isNull()) {
+		m_2dModel->invalidate(ActiveTopView());
+	}
 	return true;
 }
 

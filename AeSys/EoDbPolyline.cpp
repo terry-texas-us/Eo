@@ -96,7 +96,9 @@ void EoDbPolyline::Display(AeSysView* view, CDC* deviceContext) {
 	g_PrimitiveState.SetPen(view, deviceContext, ColorIndex, LinetypeIndex);
 	if (IsClosed()) {
 		polyline::BeginLineLoop();
-	} else { polyline::BeginLineStrip(); }
+	} else {
+		polyline::BeginLineStrip();
+	}
 	const auto Origin {OdGePoint3d::kOrigin + m_Normal * m_Elevation};
 	const auto XAxis {ComputeArbitraryAxis(m_Normal)};
 	const auto YAxis {m_Normal.crossProduct(XAxis)};
@@ -217,7 +219,9 @@ bool EoDbPolyline::IsInView(AeSysView* view) const {
 		GetPointAt(VertexIndex, Point);
 		pt[1] = EoGePoint4d(Point, 1.0);
 		view->ModelViewTransformPoint(pt[1]);
-		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) {
+			return true;
+		}
 		pt[0] = pt[1];
 	}
 	return false;
@@ -230,12 +234,16 @@ bool EoDbPolyline::IsPointOnControlPoint(AeSysView* /*view*/, const EoGePoint4d&
 
 bool EoDbPolyline::PivotOnGripPoint(AeSysView* view, const EoGePoint4d& point) noexcept {
 	const auto NumberOfVertices {m_Vertices.size()};
-	if (ms_PivotVertex >= NumberOfVertices) { return false; } // Not engaged at a vertex
+	if (ms_PivotVertex >= NumberOfVertices) {
+		return false;
+	} // Not engaged at a vertex
 	OdGePoint3d Point;
 	GetPointAt(ms_PivotVertex, Point);
 	EoGePoint4d ptCtrl(Point, 1.0);
 	view->ModelViewTransformPoint(ptCtrl);
-	if (ptCtrl.DistanceToPointXY(point) >= ms_SelectApertureSize) { return false; } // Not on proper vertex
+	if (ptCtrl.DistanceToPointXY(point) >= ms_SelectApertureSize) {
+		return false;
+	} // Not on proper vertex
 	if (ms_PivotVertex == 0) {
 		ms_Edge = ms_Edge == 1 ? NumberOfVertices : 1;
 	} else if (ms_PivotVertex == NumberOfVertices - 1) {
@@ -290,7 +298,9 @@ bool EoDbPolyline::SelectUsingPoint(const EoGePoint4d& point, AeSysView* view, O
 		}
 	} else { // Evaluate entire polyline
 		auto NumberOfEdges = NumberOfVertices;
-		if (!IsClosed()) { NumberOfEdges--; }
+		if (!IsClosed()) {
+			NumberOfEdges--;
+		}
 		OdGePoint3d StartPoint;
 		GetPointAt(0, StartPoint);
 		EoGePoint4d ptBeg(StartPoint, 1.0);
@@ -387,8 +397,7 @@ bool EoDbPolyline::Write(EoDbFile& file) const {
 }
 
 /// <remarks> Job (.jb1) files did not have a polyline primitive</remarks>
-void EoDbPolyline::Write(CFile& /*file*/, unsigned char* /*buffer*/) const noexcept {
-}
+void EoDbPolyline::Write(CFile& /*file*/, unsigned char* /*buffer*/) const noexcept {}
 
 unsigned EoDbPolyline::SwingVertex() const {
 	const auto NumberOfVertices = m_Vertices.size();

@@ -6,8 +6,7 @@ BEGIN_MESSAGE_MAP(EoDlgFixupOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgFixupOptions::EoDlgFixupOptions(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgFixupOptions::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

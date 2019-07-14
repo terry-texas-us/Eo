@@ -6,8 +6,7 @@ BEGIN_MESSAGE_MAP(EoDlgSelectIsometricView, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSelectIsometricView::EoDlgSelectIsometricView(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSelectIsometricView::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

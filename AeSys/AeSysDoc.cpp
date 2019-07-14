@@ -210,7 +210,9 @@ BOOL AeSysDoc::DoSave(const wchar_t* pathName, const BOOL replace) {
 		if (replace != 0 && PathName.IsEmpty()) {
 			PathName = m_strTitle;
 			const auto BadCharacterPosition {PathName.FindOneOf(L" #%;/\\")};
-			if (BadCharacterPosition != -1) { PathName.ReleaseBuffer(BadCharacterPosition); }
+			if (BadCharacterPosition != -1) {
+				PathName.ReleaseBuffer(BadCharacterPosition);
+			}
 			CString Extension;
 			if (DocTemplate->GetDocString(Extension, CDocTemplate::filterExt) != 0 && !Extension.IsEmpty()) {
 				ASSERT(Extension[0] == '.');
@@ -238,7 +240,9 @@ BOOL AeSysDoc::DoSave(const wchar_t* pathName, const BOOL replace) {
 		}
 		return FALSE;
 	}
-	if (replace != 0) { SetPathName(PathName); }
+	if (replace != 0) {
+		SetPathName(PathName);
+	}
 	return TRUE;
 }
 
@@ -269,7 +273,9 @@ void AeSysDoc::DeleteContents() {
 BOOL AeSysDoc::CanCloseFrame(CFrameWnd* frame) {
 	const auto ActiveView {frame->GetActiveView()};
 	if (ActiveView->IsKindOf(&AeSysView::classAeSysView) != 0) {
-		if (!dynamic_cast<AeSysView*>(ActiveView)->CanClose()) { return FALSE; }
+		if (!dynamic_cast<AeSysView*>(ActiveView)->CanClose()) {
+			return FALSE;
+		}
 	}
 	return CDocument::CanCloseFrame(frame);
 }
@@ -296,7 +302,9 @@ void AeSysDoc::OnViewSetActiveLayout() {
 }
 
 void AeSysDoc::layoutSwitched(const OdString& /*newLayoutName*/, const OdDbObjectId& /*newLayout*/) {
-	if (!layoutSwitchable) { return; }
+	if (!layoutSwitchable) {
+		return;
+	}
 
 	// This test can be exchanged by remove/add reactor in layout manager, but this operations must be added into all functions which can call setCurrentLayout (but where vectorization no need to be changed).
 	auto ViewPosition {GetFirstViewPosition()};
@@ -328,10 +336,14 @@ void AeSysDoc::layoutSwitched(const OdString& /*newLayoutName*/, const OdDbObjec
 						if (view->GetDocument() == this) {
 							auto Parent {view->GetParent()};
 							if (Zoomed) {
-								if (Parent->IsZoomed() == 0) { dynamic_cast<CMDIChildWnd*>(Parent)->MDIMaximize(); }
+								if (Parent->IsZoomed() == 0) {
+									dynamic_cast<CMDIChildWnd*>(Parent)->MDIMaximize();
+								}
 							} else {
 								dynamic_cast<CMDIChildWnd*>(Parent)->MDIRestore();
-								if (!Iconic) { Parent->SetWindowPos(nullptr, ParentRectangle.left, ParentRectangle.top, ParentRectangle.Width(), ParentRectangle.Height(), SWP_NOZORDER); }
+								if (!Iconic) {
+									Parent->SetWindowPos(nullptr, ParentRectangle.left, ParentRectangle.top, ParentRectangle.Width(), ParentRectangle.Height(), SWP_NOZORDER);
+								}
 							}
 							break;
 						}
@@ -359,7 +371,9 @@ void AeSysDoc::OnVectorize(const OdString& vectorizerPath) {
 }
 
 void AeSysDoc::OnCloseVectorizer(AeSysView* view) {
-	if (view != m_Viewer) { TRACE0("Vectorizer does not match expected viewer\n"); }
+	if (view != m_Viewer) {
+		TRACE0("Vectorizer does not match expected viewer\n");
+	}
 	m_Viewer = nullptr;
 }
 
@@ -378,7 +392,9 @@ void AeSysDoc::OnUpdateVectorizerType(CCmdUI* commandUserInterface) {
 }
 
 OdDbCommandContextPtr AeSysDoc::CommandContext0() {
-	if (m_CommandContext.isNull()) { m_CommandContext = ExDbCommandContext::createObject(BaseIo(), m_DatabasePtr); }
+	if (m_CommandContext.isNull()) {
+		m_CommandContext = ExDbCommandContext::createObject(BaseIo(), m_DatabasePtr);
+	}
 	return m_CommandContext;
 }
 
@@ -398,14 +414,20 @@ OdEdBaseIO* AeSysDoc::BaseIo() noexcept {
 }
 
 EoDlgUserIoConsole* AeSysDoc::UserIoConsole() {
-	if (m_UserIoConsole.isNull()) { m_UserIoConsole = EoDlgUserIoConsole::create(theApp.GetMainWnd()); }
+	if (m_UserIoConsole.isNull()) {
+		m_UserIoConsole = EoDlgUserIoConsole::create(theApp.GetMainWnd());
+	}
 	return m_UserIoConsole;
 }
 
 unsigned long AeSysDoc::getKeyState() noexcept {
 	unsigned long KeyState(0);
-	if (GetKeyState(VK_CONTROL) != 0) { KeyState |= MK_CONTROL; }
-	if (GetKeyState(VK_SHIFT) != 0) { KeyState |= MK_SHIFT; }
+	if (GetKeyState(VK_CONTROL) != 0) {
+		KeyState |= MK_CONTROL;
+	}
+	if (GetKeyState(VK_SHIFT) != 0) {
+		KeyState |= MK_SHIFT;
+	}
 	return KeyState;
 }
 
@@ -414,7 +436,9 @@ OdGePoint3d AeSysDoc::getPoint(const OdString& prompt, const int options, OdEdPo
 		const auto Input {getString(prompt, options, nullptr)};
 		throw OdEdOtherInput(Input);
 	}
-	if (m_Console) { return m_UserIoConsole->getPoint(prompt, options, tracker); }
+	if (m_Console) {
+		return m_UserIoConsole->getPoint(prompt, options, tracker);
+	}
 	if (m_Viewer != nullptr) {
 		UserIoConsole()->putString(prompt);
 		return m_Viewer->getPoint(prompt, options, tracker);
@@ -429,18 +453,24 @@ OdString AeSysDoc::getString(const OdString& prompt, const int options, OdEdStri
 		putString(prompt + L" " + Result);
 		return Result;
 	}
-	if (m_Console) { return UserIoConsole()->getString(prompt, options, tracker); }
+	if (m_Console) {
+		return UserIoConsole()->getString(prompt, options, tracker);
+	}
 	if (m_Viewer != nullptr) {
 		m_ConsoleResponded = prompt.isEmpty();
 		Result = m_Viewer->getString(prompt, options, tracker);
-		if (!m_ConsoleResponded) { putString(OdString(prompt) + L" " + Result); }
+		if (!m_ConsoleResponded) {
+			putString(OdString(prompt) + L" " + Result);
+		}
 		return Result;
 	}
 	return UserIoConsole()->getString(prompt, options, tracker);
 }
 
 void AeSysDoc::putString(const OdString& string) {
-	if (m_Viewer != nullptr) { m_Viewer->putString(string); }
+	if (m_Viewer != nullptr) {
+		m_Viewer->putString(string);
+	}
 	AeSys::AddStringToMessageList(string);
 	UserIoConsole()->putString(string);
 }
@@ -479,8 +509,7 @@ void AeSysDoc::OnEditConsole() {
 				}
 			}
 		}
-	} catch (const OdEdCancel&) {
-	}
+	} catch (const OdEdCancel&) { }
 }
 
 OdString CommandMessageCaption(const OdString& command) {
@@ -511,7 +540,9 @@ public:
 
 	~CmdReactor() {
 		odedRegCmds()->removeReactor(this);
-		if (!m_Modified) { m_CommandContext->database()->removeReactor(this); }
+		if (!m_Modified) {
+			m_CommandContext->database()->removeReactor(this);
+		}
 	}
 
 	void SetLastInput(const OdString& lastInput) {
@@ -538,7 +569,9 @@ public:
 		auto Viewer {OdDbDatabaseDocPtr(m_CommandContext->database())->Document()->GetViewer()};
 		if (Viewer != nullptr) {
 			auto Command {Viewer->command(commandName)};
-			if (Command.get() != nullptr) { return Command; }
+			if (Command.get() != nullptr) {
+				return Command;
+			}
 		}
 		OdString String;
 		String.format(L"Unknown command \"%ls\".", commandName.c_str());
@@ -548,8 +581,12 @@ public:
 
 	void commandWillStart(OdEdCommand* command, OdEdCommandContext* /*edCommandContext*/) override {
 		m_LastInput.makeUpper();
-		if (!((command->flags() & OdEdCommand::kNoHistory) != 0)) { theApp.SetRecentCommand(m_LastInput); }
-		if (!((command->flags() & OdEdCommand::kNoUndoMarker) != 0)) { m_CommandContext->database()->startUndoRecord(); }
+		if (!((command->flags() & OdEdCommand::kNoHistory) != 0)) {
+			theApp.SetRecentCommand(m_LastInput);
+		}
+		if (!((command->flags() & OdEdCommand::kNoUndoMarker) != 0)) {
+			m_CommandContext->database()->startUndoRecord();
+		}
 	}
 
 	void commandCancelled(OdEdCommand* /*command*/, OdEdCommandContext* /*edCommandContext*/) override {
@@ -591,11 +628,15 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 		}
 		if (command[0] == '(') {
 			OdEdLispModulePtr LispModule {odrxDynamicLinker()->loadApp(OdLspModuleName)};
-			if (!LispModule.isNull()) { LispModule->createLispEngine()->execute(ExecuteCommandContext, command); }
+			if (!LispModule.isNull()) {
+				LispModule->createLispEngine()->execute(ExecuteCommandContext, command);
+			}
 		} else {
 			auto CommandName {command.spanExcluding(L" \t\r\n")};
 			if (CommandName.getLength() == command.getLength()) {
-				if (echo) { CommandContext->userIO()->putString(CommandPrompt() + L" " + CommandName); }
+				if (echo) {
+					CommandContext->userIO()->putString(CommandPrompt() + L" " + CommandName);
+				}
 				CommandName.makeUpper();
 				CommandReactor.SetLastInput(CommandName);
 				CommandStack->executeCommand(CommandName, CommandContext);
@@ -613,15 +654,19 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 				}
 			}
 		}
-		if (GetViewer() != nullptr) { GetViewer()->PropagateLayoutActiveViewChanges(); }
-	} catch (OdEdEmptyInput) {
-	} catch (OdEdCancel) {
-	} catch (OdError& Error) {
-		if (!m_Console) { theApp.ErrorMessageBox(CommandMessageCaption(command), Error); }
+		if (GetViewer() != nullptr) {
+			GetViewer()->PropagateLayoutActiveViewChanges();
+		}
+	} catch (OdEdEmptyInput) { } catch (OdEdCancel) { } catch (OdError& Error) {
+		if (!m_Console) {
+			theApp.ErrorMessageBox(CommandMessageCaption(command), Error);
+		}
 		BaseIo()->putString(Error.description());
 	}
 	if (CommandReactor.IsDatabaseModified() || SelectionSet()->numEntities() != 0U) {
-		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) { OnEditClearSelection(); }
+		if (0 != CommandReactor.LastInput().iCompare(L"SELECT") || CommandContext->database()->appServices()->getPICKADD() != 2) {
+			OnEditClearSelection();
+		}
 		UpdateAllViews(nullptr);
 	}
 }
@@ -707,7 +752,9 @@ void AeSysDoc::DeleteSelection(const bool force) {
 void AeSysDoc::StartDrag(const OdGePoint3d& point) {
 	DataSource DragDataSource;
 	DragDataSource.Create(this, point);
-	if (DragDataSource.DoDragDrop()) { UpdateAllViews(nullptr); }
+	if (DragDataSource.DoDragDrop()) {
+		UpdateAllViews(nullptr);
+	}
 }
 
 OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(const OdString& name, OdDbTextStyleTablePtr& textStyles) {
@@ -833,7 +880,9 @@ BOOL AeSysDoc::OnOpenDocument(const wchar_t* file) {
 			m_DatabasePtr = theApp.readFile(file, false, false);
 
 			//<tas="disable lineweight display until lineweight by default is properly defined"</tas>
-			if (m_DatabasePtr->getLWDISPLAY()) { m_DatabasePtr->setLWDISPLAY(false); }
+			if (m_DatabasePtr->getLWDISPLAY()) {
+				m_DatabasePtr->setLWDISPLAY(false);
+			}
 			auto TextStyle {AddStandardTextStyle()};
 			AddStandardDimensionStyle();
 			m_DatabasePtr->startUndoRecord();
@@ -983,7 +1032,9 @@ void AeSysDoc::AddTextBlock(wchar_t* text) {
 		}
 		ReferenceSystem.SetOrigin(text_GetNewLinePos(FontDefinition, ReferenceSystem, 1.0, 0));
 		TextLine = wcstok_s(nullptr, L"\r", &NextToken);
-		if (TextLine == nullptr) { break; }
+		if (TextLine == nullptr) {
+			break;
+		}
 		TextLine++;
 	}
 }
@@ -1131,7 +1182,9 @@ EoDbLayer* AeSysDoc::GetLayerAt(const int layerIndex) const {
 int AeSysDoc::FindLayerAt(const OdString& name) const {
 	for (unsigned short LayerIndex = 0; LayerIndex < m_LayerTable.GetSize(); LayerIndex++) {
 		const auto Layer {m_LayerTable.GetAt(LayerIndex)};
-		if (name.iCompare(Layer->Name()) == 0) { return LayerIndex; }
+		if (name.iCompare(Layer->Name()) == 0) {
+			return LayerIndex;
+		}
 	}
 	return -1;
 }
@@ -1171,7 +1224,9 @@ void AeSysDoc::RemoveEmptyLayers() {
 
 bool AeSysDoc::LayerMelt(OdString& name) {
 	auto Layer {GetLayerAt(name)};
-	if (Layer == nullptr) { return false; }
+	if (Layer == nullptr) {
+		return false;
+	}
 	auto Result {false};
 	OPENFILENAME OpenFileName;
 	::ZeroMemory(&OpenFileName, sizeof(OPENFILENAME));
@@ -1231,12 +1286,16 @@ EoDbLayer* AeSysDoc::SelectLayerBy(const OdGePoint3d& point) {
 	if (Group != nullptr) {
 		for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 			const auto Layer {GetLayerAt(LayerIndex)};
-			if (Layer->Find(Group) != nullptr) { return Layer; }
+			if (Layer->Find(Group) != nullptr) {
+				return Layer;
+			}
 		}
 	}
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
-		if (Layer->SelectGroupBy(point) != nullptr) { return Layer; }
+		if (Layer->SelectGroupBy(point) != nullptr) {
+			return Layer;
+		}
 	}
 	return nullptr;
 }
@@ -1374,9 +1433,13 @@ void AeSysDoc::TracingFuse(OdString& nameAndLocation) {
 }
 
 bool AeSysDoc::TracingLoadLayer(const OdString& file, EoDbLayer* layer) {
-	if (layer == nullptr) { return false; }
+	if (layer == nullptr) {
+		return false;
+	}
 	const auto FileType {AeSys::GetFileType(file)};
-	if (FileType != EoDb::kTracing && FileType != EoDb::kJob) { return false; }
+	if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
+		return false;
+	}
 	const auto FileOpen {false};
 	if (FileType == EoDb::kTracing) {
 		EoDbTracingFile TracingFile(file, CFile::modeRead | CFile::shareDenyNone);
@@ -1603,8 +1666,7 @@ void AeSysDoc::OnFileQuery() {
 
 void AeSysDoc::OnLayerActive() {
 	auto Layer {GetLayerAt(m_IdentifiedLayerName)};
-	if (Layer == nullptr) {
-	} else {
+	if (Layer == nullptr) { } else {
 		if (Layer->IsCurrent()) {
 			AeSys::WarningMessageBox(IDS_MSG_LAYER_NO_ACTIVE, m_IdentifiedLayerName);
 		} else {
@@ -1702,7 +1764,9 @@ void AeSysDoc::OnTracingOff() {
 void AeSysDoc::OnLayersSetAllActive() {
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
-		if (!Layer->IsCurrent()) { Layer->MakeActive(); }
+		if (!Layer->IsCurrent()) {
+			Layer->MakeActive();
+		}
 	}
 	UpdateAllViews(nullptr);
 }
@@ -1710,7 +1774,9 @@ void AeSysDoc::OnLayersSetAllActive() {
 void AeSysDoc::OnLayersSetAllLocked() {
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
-		if (!Layer->IsCurrent()) { Layer->SetIsLocked(true); }
+		if (!Layer->IsCurrent()) {
+			Layer->SetIsLocked(true);
+		}
 	}
 	UpdateAllViews(nullptr);
 }
@@ -1879,7 +1945,9 @@ void AeSysDoc::OnEditTrapWorkAndActive() {
 	RemoveAllTrappedGroups();
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		const auto Layer {GetLayerAt(LayerIndex)};
-		if (Layer->IsCurrent() || Layer->IsActive()) { AddGroupsToTrap(Layer); }
+		if (Layer->IsCurrent() || Layer->IsActive()) {
+			AddGroupsToTrap(Layer);
+		}
 	}
 	AeSysView::GetActiveView()->UpdateStateInformation(AeSysView::kTrapCount);
 }
@@ -1918,18 +1986,18 @@ void AeSysDoc::OnTrapCommandsSquare() {
 
 void AeSysDoc::OnTrapCommandsQuery() {
 	EoDlgEditTrapCommandsQuery Dialog;
-	if (Dialog.DoModal() == IDOK) {
-	}
+	if (Dialog.DoModal() == IDOK) { }
 }
 
 void AeSysDoc::OnTrapCommandsFilter() {
 	EoDlgTrapFilter TrapFilterDialog(this, m_DatabasePtr);
-	if (TrapFilterDialog.DoModal() == IDOK) {
-	}
+	if (TrapFilterDialog.DoModal() == IDOK) { }
 }
 
 void AeSysDoc::OnTrapCommandsBlock() {
-	if (m_TrappedGroupList.GetCount() == 0) { return; }
+	if (m_TrappedGroupList.GetCount() == 0) {
+		return;
+	}
 	EoDbBlock* Block {nullptr};
 	auto BlockIndex {BlockTableSize()};
 	wchar_t BlockName[16];
@@ -1981,8 +2049,7 @@ void AeSysDoc::OnSetupFillSolid() noexcept {
 	g_PrimitiveState.SetHatchInteriorStyle(EoDbHatch::kSolid);
 }
 
-void AeSysDoc::OnSetupFillPattern() noexcept {
-}
+void AeSysDoc::OnSetupFillPattern() noexcept {}
 
 void AeSysDoc::OnSetupFillHatch() {
 	EoDlgSetupHatch SetupHatchDialog;
@@ -2127,14 +2194,12 @@ void AeSysDoc::OnPrimModifyAttributes() {
 
 void AeSysDoc::OnSetupSavePoint() {
 	EoDlgSetHomePoint Dialog(AeSysView::GetActiveView());
-	if (Dialog.DoModal() == IDOK) {
-	}
+	if (Dialog.DoModal() == IDOK) { }
 }
 
 void AeSysDoc::OnSetupGotoPoint() {
 	EoDlgSelectGotoHomePoint Dialog(AeSysView::GetActiveView());
-	if (Dialog.DoModal() == IDOK) {
-	}
+	if (Dialog.DoModal() == IDOK) { }
 }
 
 void AeSysDoc::OnSetupOptionsDraw() {
@@ -2146,8 +2211,7 @@ void AeSysDoc::OnSetupOptionsDraw() {
 
 void AeSysDoc::OnFileManage() {
 	EoDlgFileManage FileManageDialog(this, m_DatabasePtr);
-	if (FileManageDialog.DoModal() == IDOK) {
-	}
+	if (FileManageDialog.DoModal() == IDOK) { }
 }
 
 void AeSysDoc::OnFileTracing() {
@@ -2216,7 +2280,9 @@ void AeSysDoc::OnPensLoadColors() {
 		if ((OpenFileName.Flags & OFN_EXTENSIONDIFFERENT) == 0) {
 			AeSys::LoadColorPalletFromFile(OpenFileName.lpstrFile);
 			UpdateAllViews(nullptr);
-		} else { AeSys::WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR); }
+		} else {
+			AeSys::WarningMessageBox(IDS_MSG_FILE_TYPE_ERROR);
+		}
 	}
 	delete[] OpenFileName.lpstrFile;
 }
@@ -2296,7 +2362,9 @@ void AeSysDoc::OnPrimExtractStr() {
 // Returns a pointer to the currently active document.
 AeSysDoc* AeSysDoc::GetDoc() {
 	const CMDIFrameWndEx* Frame {dynamic_cast<CMDIFrameWndEx*>(AfxGetMainWnd())};
-	if (Frame == nullptr) { return nullptr; }
+	if (Frame == nullptr) {
+		return nullptr;
+	}
 	auto Child {dynamic_cast<CMDIChildWndEx*>(Frame->MDIGetActive())};
 	return Child == nullptr ? nullptr : dynamic_cast<AeSysDoc*>(Child->GetActiveDocument());
 }
@@ -2463,7 +2531,9 @@ void AeSysDoc::RemoveAllUniquePoints() {
 }
 
 void AeSysDoc::DisplayUniquePoints() {
-	if (m_UniquePoints.IsEmpty() != 0) { return; }
+	if (m_UniquePoints.IsEmpty() != 0) {
+		return;
+	}
 	EoDbGroup Group;
 	auto UniquePointPosition {m_UniquePoints.GetHeadPosition()};
 	while (UniquePointPosition != nullptr) {
@@ -2571,7 +2641,9 @@ void AeSysDoc::OnInsertTracing() {
 		auto FilePath {Name.left(OpenFileName.nFileOffset)};
 		Name = Name.mid(OpenFileName.nFileOffset);
 		const auto FileType {AeSys::GetFileType(Name)};
-		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) { return; }
+		if (FileType != EoDb::kTracing && FileType != EoDb::kJob) {
+			return;
+		}
 		auto Layers {LayerTable(OdDb::kForWrite)};
 		if (Layers->getAt(Name).isNull()) {
 			auto LayerTableRecord {OdDbLayerTableRecord::createObject()};
@@ -2639,7 +2711,9 @@ bool AeSysDoc::DataSource::DoDragDrop() {
 
 void AeSysDoc::DataSource::Empty() {
 	COleDataSource::Empty();
-	if (!m_TemporaryPath.isEmpty()) { DeleteFile(m_TemporaryPath); }
+	if (!m_TemporaryPath.isEmpty()) {
+		DeleteFile(m_TemporaryPath);
+	}
 }
 
 AeSysDoc::DataSource::~DataSource() {
@@ -2673,7 +2747,9 @@ void AeSysDoc::OnDrawingUtilitiesAudit() {
 		delete theApp.auditDialog;
 		theApp.auditDialog = nullptr;
 	}
-	if (theApp.auditDialog == nullptr) { return; }
+	if (theApp.auditDialog == nullptr) {
+		return;
+	}
 	const auto Title(L"Audit info - " + GetTitle());
 	theApp.auditDialog->SetWindowTextW(Title);
 	theApp.auditDialog->ShowWindow(SW_SHOW);
@@ -2691,64 +2767,104 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 	CString Filter;
 	Filter = L"AutoCAD 2018 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC32) { FileDialog.m_ofn.nFilterIndex = 1; }
+	if (IsDwg && DwgVersion == OdDb::vAC32) {
+		FileDialog.m_ofn.nFilterIndex = 1;
+	}
 	Filter += L"AutoCAD 2013 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC27) { FileDialog.m_ofn.nFilterIndex = 2; }
+	if (IsDwg && DwgVersion == OdDb::vAC27) {
+		FileDialog.m_ofn.nFilterIndex = 2;
+	}
 	Filter += "AutoCAD 2010 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC24) { FileDialog.m_ofn.nFilterIndex = 3; }
+	if (IsDwg && DwgVersion == OdDb::vAC24) {
+		FileDialog.m_ofn.nFilterIndex = 3;
+	}
 	Filter += "AutoCAD 2007 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC21) { FileDialog.m_ofn.nFilterIndex = 4; }
+	if (IsDwg && DwgVersion == OdDb::vAC21) {
+		FileDialog.m_ofn.nFilterIndex = 4;
+	}
 	Filter += L"AutoCAD 2004 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) { FileDialog.m_ofn.nFilterIndex = 5; }
+	if (IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) {
+		FileDialog.m_ofn.nFilterIndex = 5;
+	}
 	Filter += L"AutoCAD 2000 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC15) { FileDialog.m_ofn.nFilterIndex = 6; }
+	if (IsDwg && DwgVersion == OdDb::vAC15) {
+		FileDialog.m_ofn.nFilterIndex = 6;
+	}
 	Filter += L"AutoCAD R14 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC14) { FileDialog.m_ofn.nFilterIndex = 7; }
+	if (IsDwg && DwgVersion == OdDb::vAC14) {
+		FileDialog.m_ofn.nFilterIndex = 7;
+	}
 	Filter += L"AutoCAD R13 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion == OdDb::vAC13) { FileDialog.m_ofn.nFilterIndex = 8; }
+	if (IsDwg && DwgVersion == OdDb::vAC13) {
+		FileDialog.m_ofn.nFilterIndex = 8;
+	}
 	Filter += L"AutoCAD R12 Compatible Drawing |*.dwg|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (IsDwg && DwgVersion <= OdDb::vAC12) { FileDialog.m_ofn.nFilterIndex = 9; }
+	if (IsDwg && DwgVersion <= OdDb::vAC12) {
+		FileDialog.m_ofn.nFilterIndex = 9;
+	}
 	Filter += L"AutoCAD 2018 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC32) { FileDialog.m_ofn.nFilterIndex = 10; }
+	if (!IsDwg && DwgVersion == OdDb::vAC32) {
+		FileDialog.m_ofn.nFilterIndex = 10;
+	}
 	Filter += L"AutoCAD 2013 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::kDHL_1027) { FileDialog.m_ofn.nFilterIndex = 11; }
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1027) {
+		FileDialog.m_ofn.nFilterIndex = 11;
+	}
 	Filter += L"AutoCAD 2010 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::kDHL_1024) { FileDialog.m_ofn.nFilterIndex = 12; }
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1024) {
+		FileDialog.m_ofn.nFilterIndex = 12;
+	}
 	Filter += L"AutoCAD 2007 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::kDHL_1021) { FileDialog.m_ofn.nFilterIndex = 13; }
+	if (!IsDwg && DwgVersion == OdDb::kDHL_1021) {
+		FileDialog.m_ofn.nFilterIndex = 13;
+	}
 	Filter += L"AutoCAD 2004 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) { FileDialog.m_ofn.nFilterIndex = 14; }
+	if (!IsDwg && (DwgVersion == OdDb::kDHL_1800a || DwgVersion == OdDb::kDHL_1800)) {
+		FileDialog.m_ofn.nFilterIndex = 14;
+	}
 	Filter += L"AutoCAD 2000 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC15) { FileDialog.m_ofn.nFilterIndex = 15; }
+	if (!IsDwg && DwgVersion == OdDb::vAC15) {
+		FileDialog.m_ofn.nFilterIndex = 15;
+	}
 	Filter += L"AutoCAD R14 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC14) { FileDialog.m_ofn.nFilterIndex = 16; }
+	if (!IsDwg && DwgVersion == OdDb::vAC14) {
+		FileDialog.m_ofn.nFilterIndex = 16;
+	}
 	Filter += L"AutoCAD R13 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC13) { FileDialog.m_ofn.nFilterIndex = 17; }
+	if (!IsDwg && DwgVersion == OdDb::vAC13) {
+		FileDialog.m_ofn.nFilterIndex = 17;
+	}
 	Filter += L"AutoCAD R12 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC12) { FileDialog.m_ofn.nFilterIndex = 18; }
+	if (!IsDwg && DwgVersion == OdDb::vAC12) {
+		FileDialog.m_ofn.nFilterIndex = 18;
+	}
 	Filter += L"AutoCAD R10 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC10) { FileDialog.m_ofn.nFilterIndex = 19; }
+	if (!IsDwg && DwgVersion == OdDb::vAC10) {
+		FileDialog.m_ofn.nFilterIndex = 19;
+	}
 	Filter += L"AutoCAD R9 Compatible DXF |*.dxf|";
 	FileDialog.m_ofn.nMaxCustFilter++;
-	if (!IsDwg && DwgVersion == OdDb::vAC09) { FileDialog.m_ofn.nFilterIndex = 20; }
+	if (!IsDwg && DwgVersion == OdDb::vAC09) {
+		FileDialog.m_ofn.nFilterIndex = 20;
+	}
 	Filter += L"|";
 	Filter.Replace('|', '\0');
 	if (fileName.Find('.') != -1) {
@@ -2811,7 +2927,9 @@ BOOL AeSysDoc::DoPromptFileName(CString& fileName, unsigned titleResourceId, uns
 }
 
 void AeSysDoc::OnEditClearSelection() {
-	if (disableClearSelection) { return; }
+	if (disableClearSelection) {
+		return;
+	}
 	auto Cleared {false};
 	auto ViewPosition {GetFirstViewPosition()};
 	while (ViewPosition != nullptr) {

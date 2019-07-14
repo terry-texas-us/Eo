@@ -120,7 +120,9 @@ OdGePoint3d EoDbSpline::GoToNxtCtrlPt() const {
 		pt = m_Spline.endPoint();
 	} else if (m_Spline.endPoint().y > m_Spline.startPoint().y) {
 		pt = m_Spline.startPoint();
-	} else { pt = m_Spline.endPoint(); }
+	} else {
+		pt = m_Spline.endPoint();
+	}
 	return pt;
 }
 
@@ -142,7 +144,9 @@ bool EoDbSpline::IsInView(AeSysView* view) const {
 	for (unsigned short w = 1; w < m_Spline.numControlPoints(); w++) {
 		pt[1] = EoGePoint4d(m_Spline.controlPointAt(w), 1.0);
 		view->ModelViewTransformPoint(pt[1]);
-		if (EoGePoint4d::ClipLine(pt[0], pt[1])) { return true; }
+		if (EoGePoint4d::ClipLine(pt[0], pt[1])) {
+			return true;
+		}
 		pt[0] = pt[1];
 	}
 	return false;

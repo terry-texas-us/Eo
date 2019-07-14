@@ -49,8 +49,7 @@ void ZoomWindow2(const OdGePoint3d& pt1, const OdGePoint3d& pt2, OdGsView* pView
 	ZoomWindow(pt1c, pt2c, pView);
 }
 
-void ZoomScaleXp(double /*factor*/) noexcept {
-}
+void ZoomScaleXp(double /*factor*/) noexcept {}
 
 void ZoomExtents(OdGsView* view, OdDbObject* viewportObject) {
 	const auto Database {viewportObject->database()};

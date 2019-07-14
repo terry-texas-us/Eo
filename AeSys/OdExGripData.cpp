@@ -50,7 +50,9 @@ unsigned long OdExGripData::subSetAttributes(OdGiDrawableTraits* drawableTraits)
 		return kDrawableIsInvisible;
 	}
 	auto EntityTraits = OdGiSubEntityTraits::cast(drawableTraits);
-	if (EntityTraits.get() == nullptr) { return kDrawableNone; }
+	if (EntityTraits.get() == nullptr) {
+		return kDrawableNone;
+	}
 	switch (Status()) {
 		case OdDbGripOperations::kWarmGrip:
 			EntityTraits->setTrueColor(m_GripManager->m_GripColor);
@@ -76,7 +78,9 @@ bool OdExGripData::subWorldDraw(OdGiWorldDraw* worldDraw) const {
 	if (GripData().get() != nullptr && GripData()->worldDraw() != nullptr) {
 		OdGePoint3d ComputedPoint;
 		OdGePoint3d* DrawAtDrag {nullptr};
-		if (ComputeDragPoint(ComputedPoint)) { DrawAtDrag = &ComputedPoint; }
+		if (ComputeDragPoint(ComputedPoint)) {
+			DrawAtDrag = &ComputedPoint;
+		}
 		OdGiDrawFlagsHelper DrawFlagsHelper(worldDraw->subEntityTraits(), OdGiSubEntityTraits::kDrawNoPlotstyle);
 		return (*GripData()->worldDraw())(static_cast<OdDbGripData*>(GripData().get()), worldDraw, EntityId(), Status(), DrawAtDrag, GripSize);
 	}

@@ -14,7 +14,9 @@ BEGIN_MESSAGE_MAP(EoMfOutputDockablePane, CDockablePane)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 int EoMfOutputDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
-	if (CDockablePane::OnCreate(createStructure) == - 1) { return - 1; }
+	if (CDockablePane::OnCreate(createStructure) == - 1) {
+		return - 1;
+	}
 	m_Font.CreateStockObject(DEFAULT_GUI_FONT);
 	CRect EmptyRect;
 	EmptyRect.SetRectEmpty();
@@ -65,7 +67,9 @@ void EoMfOutputListBox::OnContextMenu(CWnd* /* window */, const CPoint point) {
 		Menu.LoadMenuW(IDR_OUTPUT_POPUP);
 		const auto SubMenu {Menu.GetSubMenu(0)};
 		auto PopupMenu {new CMFCPopupMenu};
-		if (PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE) == 0) { return; }
+		if (PopupMenu->Create(this, point.x, point.y, SubMenu->GetSafeHmenu(), FALSE, TRUE) == 0) {
+			return;
+		}
 		static_cast<CMDIFrameWndEx*>(AfxGetMainWnd())->OnShowPopupMenu(PopupMenu);
 		UpdateDialogControls(this, FALSE);
 	}

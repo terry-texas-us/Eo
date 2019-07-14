@@ -9,15 +9,16 @@ void EoPreviewDib::SetPreviewFile(const wchar_t* fileName) {
 	m_odImage.bmp.clear();
 	m_odImage.wmf.clear();
 	m_odImage.png.clear();
-	if (FileName.GetLength() == 0) { return; }
+	if (FileName.GetLength() == 0) {
+		return;
+	}
 	const auto Extension {FileName.Right(4)};
 	if (Extension.CompareNoCase(L".dwg") == 0 || Extension.CompareNoCase(L".dxf") == 0) {
 		auto FileStreamBuffer(theApp.createFile(static_cast<const wchar_t*>(FileName)));
 		try {
 			odDbGetPreviewBitmap(FileStreamBuffer, &m_odImage);
 			m_odImage.convPngToBmp();
-		} catch (...) {
-		}
+		} catch (...) { }
 	}
 }
 
@@ -98,7 +99,9 @@ void EoPreviewDib::DrawPreview(const HDC deviceContext, const int x, const int y
 		}
 		const auto p {static_cast<unsigned char*>(m_odImage.wmf.begin())};
 		const auto MetaHeader {reinterpret_cast<METAHEADER*>(p + SeekPosition)};
-		if (MetaHeader->mtType != 1 && MetaHeader->mtType != 2) { return; }
+		if (MetaHeader->mtType != 1 && MetaHeader->mtType != 2) {
+			return;
+		}
 		const auto Size {MetaHeader->mtSize * 2};
 		// Create the enhanced metafile
 		const auto MetaFileHandle {SetWinMetaFileBits(Size, reinterpret_cast<const unsigned char*>(MetaHeader), nullptr, nullptr)};

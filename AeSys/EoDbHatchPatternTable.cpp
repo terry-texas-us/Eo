@@ -3,46 +3,46 @@
 #include "AeSys.h"
 #include "EoDbHatchPatternTable.h"
 const wchar_t* EoDbHatchPatternTable::LegacyHatchPatterns[] = {
-L"ExternalHatch",
-L"LINE",
-L"NET",
-L"ANGLE",
-L"ANSI31",
-L"ANSI32",
-L"ANSI33",
-L"ANSI34",
-L"ANSI35",
-L"ANSI36",
-L"ANSI37",
-L"ANSI38",
-L"BOX",
-L"BRICK",
-L"CLAY",
-L"CORK",
-L"CROSS",
-L"DASH",
-L"DOLMIT",
-L"DOTS",
-L"EARTH",
-L"ESCHER",
-L"FLEX",
-L"GRASS",
-L"GRATE",
-L"HEX",
-L"HONEY",
-L"HOUND",
-L"INSUL",
-L"MUDST",
-L"NET3",
-L"PLAST",
-L"PLASTI",
-L"SACNCR",
-L"SQUARE",
-L"STARS",
-L"SWAMP",
-L"TRANS",
-L"TRIANG",
-L"ZIGZAG"
+	L"ExternalHatch",
+	L"LINE",
+	L"NET",
+	L"ANGLE",
+	L"ANSI31",
+	L"ANSI32",
+	L"ANSI33",
+	L"ANSI34",
+	L"ANSI35",
+	L"ANSI36",
+	L"ANSI37",
+	L"ANSI38",
+	L"BOX",
+	L"BRICK",
+	L"CLAY",
+	L"CORK",
+	L"CROSS",
+	L"DASH",
+	L"DOLMIT",
+	L"DOTS",
+	L"EARTH",
+	L"ESCHER",
+	L"FLEX",
+	L"GRASS",
+	L"GRATE",
+	L"HEX",
+	L"HONEY",
+	L"HOUND",
+	L"INSUL",
+	L"MUDST",
+	L"NET3",
+	L"PLAST",
+	L"PLASTI",
+	L"SACNCR",
+	L"SQUARE",
+	L"STARS",
+	L"SWAMP",
+	L"TRANS",
+	L"TRIANG",
+	L"ZIGZAG"
 };
 
 unsigned short EoDbHatchPatternTable::LegacyHatchPatternIndex(const OdString& name) {
@@ -64,7 +64,9 @@ OdString EoDbHatchPatternTable::LegacyHatchPatternName(const unsigned index) {
 void EoDbHatchPatternTable::LoadHatchesFromFile(const CString& fileName) {
 	CFileException e;
 	CStdioFile StreamFile;
-	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText, &e) == 0) { return; }
+	if (StreamFile.Open(fileName, CFile::modeRead | CFile::typeText, &e) == 0) {
+		return;
+	}
 	// <tas="failure to open and then continue Pattern file, but still continues."</tas>
 	auto HatchPatternManager {theApp.patternManager()};
 	OdString PatternName;

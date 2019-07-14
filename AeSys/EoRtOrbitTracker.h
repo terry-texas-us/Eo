@@ -31,7 +31,9 @@ class RtOrbitTracker : public OdEdPointTracker {
 public:
 	RtOrbitTracker() = default;
 
-	void Reset() noexcept { m_View = nullptr; }
+	void Reset() noexcept {
+		m_View = nullptr;
+	}
 
 	void Initialize(OdGsView* view, const OdGePoint3d& pt);
 
@@ -47,4 +49,3 @@ public:
 
 	void removeDrawables(OdGsView* pView) override;
 };
-

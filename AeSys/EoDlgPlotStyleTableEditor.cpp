@@ -17,7 +17,9 @@ BEGIN_MESSAGE_MAP(EoDlgPlotStyleManager, CPropertySheet)
 END_MESSAGE_MAP()
 #pragma warning (pop)
 int EoDlgPlotStyleManager::OnCreate(const LPCREATESTRUCT createStructure) {
-	if (CPropertySheet::OnCreate(createStructure) == -1) { return -1; }
+	if (CPropertySheet::OnCreate(createStructure) == -1) {
+		return -1;
+	}
 	return 0;
 }
 
@@ -28,7 +30,9 @@ BOOL EoDlgPlotStyleManager::OnInitDialog() {
 }
 
 bool EoDlgPlotStyleManager::SetPlotStyleTable(OdPsPlotStyleTable* plotStyleTable) {
-	if (plotStyleTable == nullptr) { return false; }
+	if (plotStyleTable == nullptr) {
+		return false;
+	}
 	EoDlgPlotStyleManager::plotStyleTable = plotStyleTable;
 	plotStyleTableForPropertyPage = plotStyleTable->clone();
 	const auto PlotStyleTable {plotStyleTableForPropertyPage.get()};

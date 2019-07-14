@@ -8,8 +8,7 @@ BEGIN_MESSAGE_MAP(EoDlgAnnotateOptions, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgAnnotateOptions::EoDlgAnnotateOptions(AeSysView* view, CWnd* parent)
 	: CDialog(IDD, parent)

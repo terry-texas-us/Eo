@@ -9,13 +9,11 @@ BEGIN_MESSAGE_MAP(EoDlgTrapModify, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgTrapModify::EoDlgTrapModify(CWnd* parent) noexcept
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgTrapModify::EoDlgTrapModify(AeSysDoc* document, CWnd* parent)
 	: CDialog(IDD, parent)
-	, m_Document(document) {
-}
+	, m_Document(document) {}
 
 void EoDlgTrapModify::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

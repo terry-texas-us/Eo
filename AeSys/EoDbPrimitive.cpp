@@ -13,11 +13,9 @@ unsigned EoDbPrimitive::ms_ControlPointIndex = SIZE_T_MAX;
 double EoDbPrimitive::ms_RelationshipOfPoint = 0.0;
 double EoDbPrimitive::ms_SelectApertureSize = .02;
 
-void EoDbPrimitive::CutAt(const OdGePoint3d& /*point*/, EoDbGroup* /*newGroup*/) {
-}
+void EoDbPrimitive::CutAt(const OdGePoint3d& /*point*/, EoDbGroup* /*newGroup*/) {}
 
-void EoDbPrimitive::CutAt2Points(OdGePoint3d* /*points*/, EoDbGroupList* /*groups*/, EoDbGroupList* /*newGroups*/, OdDbDatabasePtr /*database*/) {
-}
+void EoDbPrimitive::CutAt2Points(OdGePoint3d* /*points*/, EoDbGroupList* /*groups*/, EoDbGroupList* /*newGroups*/, OdDbDatabasePtr /*database*/) {}
 
 int EoDbPrimitive::IsWithinArea(const OdGePoint3d& /*lowerLeftCorner*/, const OdGePoint3d& /*upperRightCorner*/, OdGePoint3d* /*intersections*/) {
 	return 0;
@@ -28,16 +26,24 @@ bool EoDbPrimitive::PivotOnGripPoint(AeSysView* /*view*/, const EoGePoint4d& /*p
 }
 
 CString EoDbPrimitive::FormatColorIndex() const {
-	if (m_ColorIndex == mc_ColorindexBylayer) { return L"ByLayer"; }
-	if (m_ColorIndex == mc_ColorindexByblock) { return L"ByBlock"; }
+	if (m_ColorIndex == mc_ColorindexBylayer) {
+		return L"ByLayer";
+	}
+	if (m_ColorIndex == mc_ColorindexByblock) {
+		return L"ByBlock";
+	}
 	wchar_t Buffer[16];
 	_itow_s(m_ColorIndex, Buffer, 16, 10);
 	return Buffer;
 }
 
 CString EoDbPrimitive::FormatLinetypeIndex() const {
-	if (m_LinetypeIndex == mc_LinetypeBylayer) { return L"ByLayer"; }
-	if (m_LinetypeIndex == mc_LinetypeByblock) { return L"ByBlock"; }
+	if (m_LinetypeIndex == mc_LinetypeBylayer) {
+		return L"ByLayer";
+	}
+	if (m_LinetypeIndex == mc_LinetypeByblock) {
+		return L"ByBlock";
+	}
 	wchar_t Buffer[16];
 	_itow_s(m_LinetypeIndex, Buffer, 16, 10);
 	return Buffer;

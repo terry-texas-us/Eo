@@ -4,8 +4,7 @@
 IMPLEMENT_DYNCREATE(EoDlgPlotStyleEditor_GeneralPropertyPage, CPropertyPage)
 
 EoDlgPlotStyleEditor_GeneralPropertyPage::EoDlgPlotStyleEditor_GeneralPropertyPage()
-	: CPropertyPage(IDD) {
-}
+	: CPropertyPage(IDD) {}
 
 void EoDlgPlotStyleEditor_GeneralPropertyPage::DoDataExchange(CDataExchange* dataExchange) {
 	CPropertyPage::DoDataExchange(dataExchange);
@@ -67,7 +66,9 @@ void DrawTransparentBitmap(const HDC hdc, const HBITMAP bitmap, const short xSta
 }
 
 bool EoDlgPlotStyleEditor_GeneralPropertyPage::SetPlotStyleTable(OdPsPlotStyleTable* pPlotStyleTable) noexcept {
-	if (pPlotStyleTable == nullptr) { return false; }
+	if (pPlotStyleTable == nullptr) {
+		return false;
+	}
 	m_pPlotStyleTable = pPlotStyleTable;
 	return true;
 }
@@ -100,7 +101,9 @@ void WinPathToDos(wchar_t* str) {
 
 BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	CPropertyPage::OnInitDialog();
-	if (m_pPlotStyleTable == nullptr) { return FALSE; }
+	if (m_pPlotStyleTable == nullptr) {
+		return FALSE;
+	}
 	const auto description {m_pPlotStyleTable->description()};
 	m_editDescription.SetWindowTextW(description);
 	const auto check {m_pPlotStyleTable->isApplyScaleFactor()};
@@ -120,9 +123,11 @@ BOOL EoDlgPlotStyleEditor_GeneralPropertyPage::OnInitDialog() {
 	m_staticFilepath.SetWindowTextW(lpStr);
 	const auto sFileName {m_sFileBufPath.right(m_sFileBufPath.getLength() - m_sFileBufPath.reverseFind('\\') - 1)};
 	m_staticFilename.SetWindowTextW(sFileName);
-	if (m_pPlotStyleTable->isAciTableAvailable()) { m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)"); }
+	if (m_pPlotStyleTable->isAciTableAvailable()) {
+		m_staticRegular.SetWindowTextW(L"Legacy (can be used to import old DWGs)");
+	}
 	const auto BitmapHandle {
-	static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))
+		static_cast<HBITMAP>(LoadImageW(AfxGetInstanceHandle(), MAKEINTRESOURCEW(m_pPlotStyleTable->isAciTableAvailable() ? IDB_PS_BITMAP_GENERAL_CTB : IDB_PS_BITMAP_GENERAL_STB), IMAGE_BITMAP, 32, 32, LR_LOADTRANSPARENT | LR_LOADMAP3DCOLORS))
 	};
 	const CClientDC ClientDeviceContext(&m_staticBitmap);
 	DrawTransparentBitmap(ClientDeviceContext.m_hDC, BitmapHandle, 0, 0, 0x00FFFFFF);

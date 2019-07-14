@@ -162,7 +162,9 @@ int EoDbGroup::GetBlockReferenceCount(const CString& name) const {
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
 		if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbBlockReference)) != 0) {
-			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name) { Count++; }
+			if (dynamic_cast<EoDbBlockReference*>(Primitive)->Name() == name) {
+				Count++;
+			}
 		}
 	}
 	return Count;
@@ -195,7 +197,9 @@ int EoDbGroup::GetLinetypeIndexRefCount(const short linetypeIndex) const {
 	auto Count {0};
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		if (GetNext(PrimitivePosition)->LinetypeIndex() == linetypeIndex) { Count++; }
+		if (GetNext(PrimitivePosition)->LinetypeIndex() == linetypeIndex) {
+			Count++;
+		}
 	}
 	return Count;
 }
@@ -216,7 +220,9 @@ bool EoDbGroup::IsInView(AeSysView* view) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
-		if (Primitive != nullptr && Primitive->IsInView(view)) { return true; }
+		if (Primitive != nullptr && Primitive->IsInView(view)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -225,7 +231,9 @@ bool EoDbGroup::IsOn(const EoGePoint4d& point, AeSysView* view) const {
 	OdGePoint3d Point;
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		if (GetNext(PrimitivePosition)->SelectUsingPoint(point, view, Point)) { return true; }
+		if (GetNext(PrimitivePosition)->SelectUsingPoint(point, view, Point)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -305,7 +313,9 @@ bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view
 	OdGePoint3dArray Intersections;
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		if (GetNext(PrimitivePosition)->SelectUsingLineSeg(lineSeg, view, Intersections)) { return true; }
+		if (GetNext(PrimitivePosition)->SelectUsingLineSeg(lineSeg, view, Intersections)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -313,7 +323,9 @@ bool EoDbGroup::SelectUsingLineSeg(const EoGeLineSeg3d& lineSeg, AeSysView* view
 bool EoDbGroup::SelectUsingRectangle(const OdGePoint3d& lowerLeftCorner, const OdGePoint3d& upperRightCorner, AeSysView* view) const {
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
-		if (GetNext(PrimitivePosition)->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)) { return true; }
+		if (GetNext(PrimitivePosition)->SelectUsingRectangle(lowerLeftCorner, upperRightCorner, view)) {
+			return true;
+		}
 	}
 	return false;
 }
@@ -323,7 +335,9 @@ EoDbPrimitive* EoDbGroup::SelectControlPointBy(const EoGePoint4d& point, AeSysVi
 	auto PrimitivePosition {GetHeadPosition()};
 	while (PrimitivePosition != nullptr) {
 		const auto Primitive {GetNext(PrimitivePosition)};
-		if (Primitive == sm_PrimitiveToIgnore) { continue; }
+		if (Primitive == sm_PrimitiveToIgnore) {
+			continue;
+		}
 		const auto pt {Primitive->SelectAtControlPoint(view, point)};
 		if (EoDbPrimitive::ControlPointIndex() != SIZE_T_MAX) {
 			EngagedPrimitive = Primitive;

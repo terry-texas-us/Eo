@@ -9,8 +9,7 @@
 #include "EoDbPegFile.h"
 
 EoDbPegFile::EoDbPegFile(OdDbDatabasePtr database)
-	: EoDbFile(database) {
-}
+	: EoDbFile(database) {}
 
 void EoDbPegFile::Load(AeSysDoc* document) {
 	try {
@@ -60,7 +59,9 @@ void EoDbPegFile::ReadViewportTable(AeSysDoc* /*document*/) {
 }
 
 void EoDbPegFile::ReadLinetypesTable() {
-	if (ReadUInt16() != kLinetypeTable) { throw L"Exception ReadLinetypesTable: Expecting sentinel kLinetypeTable."; }
+	if (ReadUInt16() != kLinetypeTable) {
+		throw L"Exception ReadLinetypesTable: Expecting sentinel kLinetypeTable.";
+	}
 	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForWrite)};
 	const auto NumberOfLinetypes {ReadUInt16()};
 	const auto DashLength {new double[32]};
@@ -97,7 +98,9 @@ void EoDbPegFile::ReadLinetypesTable() {
 		}
 	}
 	delete [] DashLength;
-	if (ReadUInt16() != kEndOfTable) { throw L"Exception ReadLinetypesTable: Expecting sentinel kEndOfTable."; }
+	if (ReadUInt16() != kEndOfTable) {
+		throw L"Exception ReadLinetypesTable: Expecting sentinel kEndOfTable.";
+	}
 }
 
 void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
@@ -154,7 +157,9 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 }
 
 void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
-	if (ReadUInt16() != kBlocksSection) { throw L"Exception ReadBlocksSection: Expecting sentinel kBlocksSection."; }
+	if (ReadUInt16() != kBlocksSection) {
+		throw L"Exception ReadBlocksSection: Expecting sentinel kBlocksSection.";
+	}
 	OdDbBlockTablePtr BlockTable {m_Database->getBlockTableId().safeOpenObject(OdDb::kForWrite)};
 	OdString Name;
 	const OdString PathName;
@@ -180,18 +185,24 @@ void EoDbPegFile::ReadBlocksSection(AeSysDoc* document) {
 			Block->AddTail(Primitive);
 		}
 	}
-	if (ReadUInt16() != kEndOfSection) { throw L"Exception ReadBlocksSection: Expecting sentinel kEndOfSection."; }
+	if (ReadUInt16() != kEndOfSection) {
+		throw L"Exception ReadBlocksSection: Expecting sentinel kEndOfSection.";
+	}
 }
 
 void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
-	if (ReadUInt16() != kGroupsSection) { throw L"Exception ReadGroupsSection: Expecting sentinel kGroupsSection."; }
+	if (ReadUInt16() != kGroupsSection) {
+		throw L"Exception ReadGroupsSection: Expecting sentinel kGroupsSection.";
+	}
 	const OdDbBlockTableRecordPtr ModelSpaceBlock {m_Database->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto CurrentLayerObjectId {m_Database->getCLAYER()};
 	auto Layers {document->LayerTable(OdDb::kForRead)};
 	const auto NumberOfLayers {static_cast<int>(ReadUInt16())};
 	for (auto LayerIndex = 0; LayerIndex < NumberOfLayers; LayerIndex++) {
 		auto Layer {document->GetLayerAt(LayerIndex)};
-		if (Layer == nullptr) { return; }
+		if (Layer == nullptr) {
+			return;
+		}
 		auto LayerName {Layer->Name()};
 		const auto LayerObjectId {Layers->getAt(LayerName)};
 		m_Database->setCLAYER(LayerObjectId);
@@ -213,7 +224,9 @@ void EoDbPegFile::ReadGroupsSection(AeSysDoc* document) {
 		}
 	}
 	m_Database->setCLAYER(CurrentLayerObjectId);
-	if (ReadUInt16() != kEndOfSection) { throw L"Exception ReadGroupsSection: Expecting sentinel kEndOfSection."; }
+	if (ReadUInt16() != kEndOfSection) {
+		throw L"Exception ReadGroupsSection: Expecting sentinel kEndOfSection.";
+	}
 }
 
 void EoDbPegFile::Unload(AeSysDoc* document) {
@@ -287,7 +300,9 @@ void EoDbPegFile::WriteLayerTable(AeSysDoc* document) {
 			WriteUInt16(Layer->StateFlags());
 			WriteInt16(Layer->ColorIndex());
 			WriteString(Layer->LinetypeName());
-		} else { NumberOfLayers--; }
+		} else {
+			NumberOfLayers--;
+		}
 	}
 	WriteUInt16(kEndOfTable);
 	if (NumberOfLayers != document->GetLayerTableSize()) {
@@ -316,7 +331,9 @@ void EoDbPegFile::WriteBlocksSection(AeSysDoc* document) {
 		auto PrimitivePosition {Block->GetHeadPosition()};
 		while (PrimitivePosition != nullptr) {
 			const auto Primitive {Block->GetNext(PrimitivePosition)};
-			if (Primitive->Write(*this)) { NumberOfPrimitives++; }
+			if (Primitive->Write(*this)) {
+				NumberOfPrimitives++;
+			}
 		}
 		const auto CurrentFilePosition {static_cast<long long>(CFile::GetPosition())};
 		CFile::Seek(SavedFilePosition, begin);

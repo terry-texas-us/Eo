@@ -5,8 +5,7 @@
 unsigned short wPrvKeyDwn = 0;
 OdGePoint3d rPrvPos;
 
-void AeSysView::OnCutModeOptions() noexcept {
-}
+void AeSysView::OnCutModeOptions() noexcept {}
 
 void AeSysView::OnCutModeTorch() {
 	auto Document {GetDocument()};
@@ -57,7 +56,9 @@ void AeSysView::OnCutModeSlice() {
 		auto GroupPosition {GetFirstVisibleGroupPosition()};
 		while (GroupPosition != nullptr) {
 			const auto Group {GetNextVisibleGroup(GroupPosition)};
-			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
+			if (Document->FindTrappedGroup(Group) != nullptr) {
+				continue;
+			}
 			auto PrimitivePosition {Group->GetHeadPosition()};
 			while (PrimitivePosition != nullptr) {
 				auto Primitive {Group->GetNext(PrimitivePosition)};
@@ -102,15 +103,21 @@ void AeSysView::OnCutModeField() {
 		POSITION PreviousGroupPosition;
 		for (auto GroupPosition = GetFirstVisibleGroupPosition(); (PreviousGroupPosition = GroupPosition) != nullptr;) {
 			auto Group {GetNextVisibleGroup(GroupPosition)};
-			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
+			if (Document->FindTrappedGroup(Group) != nullptr) {
+				continue;
+			}
 			POSITION PrimitivePosition;
 			POSITION PreviousPrimitivePosition;
 			for (PrimitivePosition = Group->GetHeadPosition(); (PreviousPrimitivePosition = PrimitivePosition) != nullptr;) {
 				auto Primitive {Group->GetNext(PrimitivePosition)};
-				if ((NumberOfIntersections = Primitive->IsWithinArea(LowerLeftCorner, UpperRightCorner, Intersections)) == 0) { continue; }
+				if ((NumberOfIntersections = Primitive->IsWithinArea(LowerLeftCorner, UpperRightCorner, Intersections)) == 0) {
+					continue;
+				}
 				Group->RemoveAt(PreviousPrimitivePosition);
 				for (auto i = 0; i < NumberOfIntersections; i += 2) {
-					if (i != 0) { GroupsOut->RemoveTail(); }
+					if (i != 0) {
+						GroupsOut->RemoveTail();
+					}
 					Primitive->CutAt2Points(&Intersections[i], GroupsOut, GroupsIn, Database());
 				}
 			}
@@ -147,7 +154,9 @@ void AeSysView::OnCutModeClip() {
 	} else {
 		const auto pt1 {rPrvPos};
 		const auto pt2 {ptCur};
-		if (pt1 == pt2) { return; }
+		if (pt1 == pt2) {
+			return;
+		}
 		double dRel[2];
 		OdGePoint3d ptCut[2];
 		const auto ColorIndex {g_PrimitiveState.ColorIndex()};
@@ -162,14 +171,20 @@ void AeSysView::OnCutModeClip() {
 		POSITION PreviousGroupPosition;
 		for (auto VisibleGroupPosition = GetFirstVisibleGroupPosition(); (PreviousGroupPosition = VisibleGroupPosition) != nullptr;) {
 			auto Group {GetNextVisibleGroup(VisibleGroupPosition)};
-			if (Document->FindTrappedGroup(Group) != nullptr) { continue; }
+			if (Document->FindTrappedGroup(Group) != nullptr) {
+				continue;
+			}
 			POSITION FirstPrimitivePosition {nullptr};
 			POSITION SecondPrimitivePosition;
 			for (FirstPrimitivePosition = Group->GetHeadPosition(); (SecondPrimitivePosition = FirstPrimitivePosition) != nullptr;) {
 				auto Primitive {Group->GetNext(FirstPrimitivePosition)};
-				if (!Primitive->SelectUsingPoint(ptView[0], this, ptCut[0])) { continue; }
+				if (!Primitive->SelectUsingPoint(ptView[0], this, ptCut[0])) {
+					continue;
+				}
 				dRel[0] = EoDbPrimitive::RelationshipOfPoint();
-				if (!Primitive->SelectUsingPoint(ptView[1], this, ptCut[1])) { continue; }
+				if (!Primitive->SelectUsingPoint(ptView[1], this, ptCut[1])) {
+					continue;
+				}
 				dRel[1] = EoDbPrimitive::RelationshipOfPoint();
 				// Both pick points are within tolerance of primitive
 				ptCut[0].transformBy(TransformMatrix);
@@ -206,8 +221,7 @@ void AeSysView::OnCutModeClip() {
 	}
 }
 
-void AeSysView::OnCutModeDivide() noexcept {
-}
+void AeSysView::OnCutModeDivide() noexcept {}
 
 void AeSysView::OnCutModeReturn() {
 	RubberBandingDisable();

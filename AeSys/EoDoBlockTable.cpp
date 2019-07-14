@@ -42,7 +42,9 @@ void AeSysDoc::InsertBlock(const wchar_t* name, EoDbBlock* block) {
 }
 
 bool AeSysDoc::LookupBlock(const wchar_t* name, EoDbBlock*& block) const {
-	if (m_BlockTable.Lookup(name, block) != 0) { return true; }
+	if (m_BlockTable.Lookup(name, block) != 0) {
+		return true;
+	}
 	block = nullptr;
 	return false;
 }

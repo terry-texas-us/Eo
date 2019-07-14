@@ -4,8 +4,7 @@
 #include "EoGePolyline.h"
 
 EoGeLineSeg3d::EoGeLineSeg3d(const OdGePoint3d& startPoint, const OdGePoint3d& endPoint)
-	: OdGeLineSeg3d(startPoint, endPoint) {
-}
+	: OdGeLineSeg3d(startPoint, endPoint) {}
 
 double EoGeLineSeg3d::AngleBetween_xy(const EoGeLineSeg3d& line) const {
 	auto v1 {endPoint() - startPoint()};
@@ -26,7 +25,9 @@ double EoGeLineSeg3d::AngleFromXAxis_xy() const {
 	auto Angle {0.0};
 	if (fabs(Vector.x) > DBL_EPSILON || fabs(Vector.y) > DBL_EPSILON) {
 		Angle = atan2(Vector.y, Vector.x);
-		if (Angle < 0.0) { Angle += Oda2PI; }
+		if (Angle < 0.0) {
+			Angle += Oda2PI;
+		}
 	}
 	return Angle;
 }
@@ -89,8 +90,12 @@ unsigned short EoGeLineSeg3d::CutAt(const OdGePoint3d& point, EoGeLineSeg3d& lin
 
 int EoGeLineSeg3d::DirectedRelationshipOf(const OdGePoint3d& point) const {
 	const auto Determinant {startPoint().x * (endPoint().y - point.y) - endPoint().x * (startPoint().y - point.y) + point.x * (startPoint().y - endPoint().y)};
-	if (Determinant > DBL_EPSILON) { return 1; }
-	if (Determinant < -DBL_EPSILON) { return -1; }
+	if (Determinant > DBL_EPSILON) {
+		return 1;
+	}
+	if (Determinant < -DBL_EPSILON) {
+		return -1;
+	}
 	return 0;
 }
 
@@ -168,8 +173,12 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 	Out[0] = RelationshipToRectangleOf(Points[0], lowerLeftPoint, upperRightPoint);
 	for (;;) {
 		Out[i] = RelationshipToRectangleOf(Points[i], lowerLeftPoint, upperRightPoint);
-		if (Out[0] == 0 && Out[1] == 0) { return true; }
-		if ((Out[0] & Out[1]) != 0) { return false; }
+		if (Out[0] == 0 && Out[1] == 0) {
+			return true;
+		}
+		if ((Out[0] & Out[1]) != 0) {
+			return false;
+		}
 		i = Out[0] == 0 ? 1 : 0;
 		if ((Out[i] & 1) == 1) { // Above window
 			Points[i].x = Points[i].x + dX * (upperRightPoint.y - Points[i].y) / dY;
@@ -188,10 +197,18 @@ bool EoGeLineSeg3d::IsContainedBy_xy(const OdGePoint3d& lowerLeftPoint, const Od
 }
 
 bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double pickAperture, OdGePoint3d& ptProj, double& relationship) const {
-	if (point.x < EoMin(startPoint().x, endPoint().x) - pickAperture) { return false; }
-	if (point.x > EoMax(startPoint().x, endPoint().x) + pickAperture) { return false; }
-	if (point.y < EoMin(startPoint().y, endPoint().y) - pickAperture) { return false; }
-	if (point.y > EoMax(startPoint().y, endPoint().y) + pickAperture) { return false; }
+	if (point.x < EoMin(startPoint().x, endPoint().x) - pickAperture) {
+		return false;
+	}
+	if (point.x > EoMax(startPoint().x, endPoint().x) + pickAperture) {
+		return false;
+	}
+	if (point.y < EoMin(startPoint().y, endPoint().y) - pickAperture) {
+		return false;
+	}
+	if (point.y > EoMax(startPoint().y, endPoint().y) + pickAperture) {
+		return false;
+	}
 	const auto StartX {startPoint().x - point.x};
 	const auto StartY {startPoint().y - point.y};
 	const auto StartEndX {endPoint().x - startPoint().x};
@@ -208,7 +225,9 @@ bool EoGeLineSeg3d::IsSelectedBy_xy(const OdGePoint3d& point, const double pickA
 		const auto Y {StartY + relationship * StartEndY};
 		DistanceSquared = X * X + Y * Y;
 	}
-	if (DistanceSquared > pickAperture * pickAperture) { return false; }
+	if (DistanceSquared > pickAperture * pickAperture) {
+		return false;
+	}
 	ptProj.x = startPoint().x + relationship * StartEndX;
 	ptProj.y = startPoint().y + relationship * StartEndY;
 	return true;
@@ -246,7 +265,9 @@ int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double per
 	auto X {endPoint().x - startPoint().x};
 	auto Y {endPoint().y - startPoint().y};
 	auto Length {sqrt(X * X + Y * Y)};
-	if (Length <= DBL_EPSILON) { return FALSE; }
+	if (Length <= DBL_EPSILON) {
+		return FALSE;
+	}
 	double Ratio;
 	projectedPoint = startPoint();
 	if (fabs(parallelDistance) > DBL_EPSILON) {
@@ -268,14 +289,18 @@ int EoGeLineSeg3d::ProjPtFrom_xy(const double parallelDistance, const double per
 OdGePoint3d EoGeLineSeg3d::ProjToBegPt(const double distance) const {
 	auto vEndBeg {startPoint() - endPoint()};
 	const auto dLen {vEndBeg.length()};
-	if (dLen > DBL_EPSILON) { vEndBeg *= distance / dLen; }
+	if (dLen > DBL_EPSILON) {
+		vEndBeg *= distance / dLen;
+	}
 	return endPoint() + vEndBeg;
 }
 
 OdGePoint3d EoGeLineSeg3d::ProjToEndPt(const double distance) const {
 	auto vBegEnd {endPoint() - startPoint()};
 	const auto Length {vBegEnd.length()};
-	if (Length > DBL_EPSILON) { vBegEnd *= distance / Length; }
+	if (Length > DBL_EPSILON) {
+		vBegEnd *= distance / Length;
+	}
 	return startPoint() + vBegEnd;
 }
 

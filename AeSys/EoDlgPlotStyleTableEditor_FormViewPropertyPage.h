@@ -8,78 +8,76 @@ constexpr short gc_PlotStyleSpinMaxPen = 32;
 constexpr short gc_PlotStyleSpinMaxVirtpen = 255;
 constexpr short gc_PlotStyleSpinMaxScreening = 100;
 static OdString g_PlotStylesLineTypes[] = {
-L"Solid",
-L"Dashed",
-L"Dotted",
-L"Dash Dot",
-L"Short Dash",
-L"Medium Dash",
-L"Long Dash",
-L"Short Dash X2",
-L"Medium Dash X2",
-L"Long Dash X2",
-L"Medium Long Dash",
-L"Medium Dash Short Dash Short Dash",
-L"Long Dash Short Dash",
-L"Long Dash Dot Dot",
-L"Long Dash Dot",
-L"Medium Dash Dot Short Dash Dot",
-L"Sparse Dot",
-L"ISO Dash",
-L"ISO Dash Space",
-L"ISO Long Dash Dot",
-L"ISO Long Dash Double Dot",
-L"ISO Long Dash Triple Dot",
-L"ISO Dot",
-L"ISO Long Dash Short Dash",
-L"ISO Long Dash Double Short Dash",
-L"ISO Dash Dot",
-L"ISO Double Dash Dot",
-L"ISO Dash Double Dot",
-L"ISO Double Dash Double Dot",
-L"ISO Dash Triple Dot",
-L"ISO Double Dash Triple Dot",
-L"Use object linetype"
+	L"Solid",
+	L"Dashed",
+	L"Dotted",
+	L"Dash Dot",
+	L"Short Dash",
+	L"Medium Dash",
+	L"Long Dash",
+	L"Short Dash X2",
+	L"Medium Dash X2",
+	L"Long Dash X2",
+	L"Medium Long Dash",
+	L"Medium Dash Short Dash Short Dash",
+	L"Long Dash Short Dash",
+	L"Long Dash Dot Dot",
+	L"Long Dash Dot",
+	L"Medium Dash Dot Short Dash Dot",
+	L"Sparse Dot",
+	L"ISO Dash",
+	L"ISO Dash Space",
+	L"ISO Long Dash Dot",
+	L"ISO Long Dash Double Dot",
+	L"ISO Long Dash Triple Dot",
+	L"ISO Dot",
+	L"ISO Long Dash Short Dash",
+	L"ISO Long Dash Double Short Dash",
+	L"ISO Dash Dot",
+	L"ISO Double Dash Dot",
+	L"ISO Dash Double Dot",
+	L"ISO Double Dash Double Dot",
+	L"ISO Dash Triple Dot",
+	L"ISO Double Dash Triple Dot",
+	L"Use object linetype"
 };
 static OdString g_PlotStylesFillStyles[] = {
-L"Solid",
-L"Checkerboard",
-L"Crosshatch",
-L"Diamonds",
-L"HorizontalBars",
-L"SlantLeft",
-L"SlantRight",
-L"SquareDots",
-L"VerticalBars",
-L"Use object fill style"
+	L"Solid",
+	L"Checkerboard",
+	L"Crosshatch",
+	L"Diamonds",
+	L"HorizontalBars",
+	L"SlantLeft",
+	L"SlantRight",
+	L"SquareDots",
+	L"VerticalBars",
+	L"Use object fill style"
 };
 static OdString g_PlotStylesLineEndStyles[] = {
-L"Butt",
-L"Square",
-L"Round",
-L"Diamond",
-L"Use object end style"
+	L"Butt",
+	L"Square",
+	L"Round",
+	L"Diamond",
+	L"Use object end style"
 };
 static OdString g_PlotStylesLineJoinStyles[] = {
-L"Miter",
-L"Bevel",
-L"Round",
-L"Diamond",
-L"Use object join style"
+	L"Miter",
+	L"Bevel",
+	L"Round",
+	L"Diamond",
+	L"Use object join style"
 };
 
 struct DeviceIndependentBitmapColor {
 	DeviceIndependentBitmapColor(const unsigned char r, const unsigned char g, const unsigned char b) noexcept
 		: m_R(r)
 		, m_G(g)
-		, m_B(b) {
-	}
+		, m_B(b) { }
 
 	explicit DeviceIndependentBitmapColor(const COLORREF color) noexcept
 		: m_R(GetRValue(color))
 		, m_G(GetGValue(color))
-		, m_B(GetBValue(color)) {
-	}
+		, m_B(GetBValue(color)) { }
 
 	operator unsigned long() noexcept {
 		return *reinterpret_cast<unsigned long*>(this);
@@ -137,11 +135,17 @@ public:
 
 	~CPsListStyleData();
 
-	[[nodiscard]] OdPsPlotStyle* GetOdPsPlotStyle() const noexcept { return m_PlotStyles; }
+	[[nodiscard]] OdPsPlotStyle* GetOdPsPlotStyle() const noexcept {
+		return m_PlotStyles;
+	}
 
-	[[nodiscard]] CBitmapColorInfo* GetBitmapColorInfo() const noexcept { return m_BitmapColorInfo; }
+	[[nodiscard]] CBitmapColorInfo* GetBitmapColorInfo() const noexcept {
+		return m_BitmapColorInfo;
+	}
 
-	[[nodiscard]] int GetActiveListIndex() const noexcept { return m_ActiveListIndex; }
+	[[nodiscard]] int GetActiveListIndex() const noexcept {
+		return m_ActiveListIndex;
+	}
 
 	bool ReplaceBitmapColorInfo(COLORREF color, int item);
 
@@ -149,7 +153,9 @@ public:
 
 	const OdCmEntityColor GetColor() const;
 
-	OdPsPlotStyle* GetOdPsPlotStyle() noexcept { return m_PlotStyles; }
+	OdPsPlotStyle* GetOdPsPlotStyle() noexcept {
+		return m_PlotStyles;
+	}
 };
 
 class EoDlgPlotStyleEditor_FormViewPropertyPage final : public CPropertyPage {
@@ -239,7 +245,9 @@ public:
 
 	void AddNewPlotStyle(const wchar_t* styleName);
 
-	[[nodiscard]] const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept { return m_pPlotStyleTable; }
+	[[nodiscard]] const OdPsPlotStyleTable* GetPlotStyleTable() const noexcept {
+		return m_pPlotStyleTable;
+	}
 
 protected:
 	void OnLineweightBtn();

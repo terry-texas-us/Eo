@@ -67,7 +67,9 @@ public:
 
 	[[nodiscard]] OdGePoint3d GoToNxtCtrlPt() const override;
 
-	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override { return false; }
+	bool IsEqualTo(EoDbPrimitive* /*primitive*/) const noexcept override {
+		return false;
+	}
 
 	bool IsInView(AeSysView* view) const override;
 
@@ -117,7 +119,9 @@ public:
 
 	void SetInteriorStyle(short interiorStyle) noexcept;
 
-	void SetInteriorStyleIndex(const unsigned styleIndex) noexcept { m_InteriorStyleIndex = styleIndex; }
+	void SetInteriorStyleIndex(const unsigned styleIndex) noexcept {
+		m_InteriorStyleIndex = styleIndex;
+	}
 
 	void SetInteriorStyleIndex2(unsigned styleIndex);
 

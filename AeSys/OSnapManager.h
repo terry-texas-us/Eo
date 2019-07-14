@@ -33,7 +33,9 @@ public:
 
 	virtual void GetSnapModes(const OdDbEntity* entity, OdArray<OdDb::OsnapMode>& snapModes) {
 		auto Curve {OdDbCurve::cast(entity)};
-		if (Curve.isNull()) { return; }
+		if (Curve.isNull()) {
+			return;
+		}
 		if (Curve->isA()->isEqualTo(OdDbLine::desc()) || Curve->isA()->isEqualTo(OdDbArc::desc())) {
 			snapModes.append(OdDb::kOsModeEnd);
 			snapModes.append(OdDb::kOsModeMid);
@@ -43,18 +45,18 @@ public:
 		}
 	}
 
-	void setValue(const OdGePoint3d& value) noexcept override {
-	}
+	void setValue(const OdGePoint3d& value) noexcept override { }
 
 	OdEdPointTrackerWithSnapInfo(const OdDbObjectIdArray& objectIds) {
 		m_ObjectIds = objectIds;
 		m_SnapContext.mValid = false;
 	}
 
-	int addDrawables(OdGsView* view) noexcept override { return 0; }
-
-	void removeDrawables(OdGsView* view) noexcept override {
+	int addDrawables(OdGsView* view) noexcept override {
+		return 0;
 	}
+
+	void removeDrawables(OdGsView* view) noexcept override { }
 
 private:
 	OdDbObjectIdArray m_ObjectIds;
@@ -94,8 +96,7 @@ class OdBaseSnapManager : public OdGiDrawableImpl<OdGiDrawable>, public OdGsSele
 
 		HistEntry(const SubentId& subentId, const OdGePoint3d& point)
 			: m_SubentId(subentId)
-			, m_Point(point) {
-		}
+			, m_Point(point) { }
 
 		bool operator==(const HistEntry& other) const {
 			return other.m_SubentId == m_SubentId;
@@ -191,5 +192,7 @@ public:
 	void SetSnapModes(unsigned snapModes) noexcept;
 
 	// TODO comment next override with mistake and check OdaMfcApp behaviour
-	[[nodiscard]] unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override { return static_cast<unsigned>(1 << mode); }
+	[[nodiscard]] unsigned ToSnapModes(const OdDb::OsnapMode mode) const noexcept override {
+		return static_cast<unsigned>(1 << mode);
+	}
 };

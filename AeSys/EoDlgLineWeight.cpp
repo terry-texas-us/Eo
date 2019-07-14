@@ -9,14 +9,12 @@ BEGIN_MESSAGE_MAP(EoDlgLineWeight, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgLineWeight::EoDlgLineWeight(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 EoDlgLineWeight::EoDlgLineWeight(int originalLineWeight, CWnd* parent)
 	: CDialog(IDD, parent)
 	, m_OriginalLineWeight(originalLineWeight)
-	, lineWeight(static_cast<OdDb::LineWeight>(originalLineWeight)) {
-}
+	, lineWeight(static_cast<OdDb::LineWeight>(originalLineWeight)) {}
 
 void EoDlgLineWeight::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

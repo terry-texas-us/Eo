@@ -28,7 +28,9 @@ bool AddNodeToPath(OdExCollideGsPath* result, const OdGiPathNode* pPath, const b
 }
 
 OdExCollideGsPath* FromGiPath(const OdGiPathNode* path, const bool truncateToRef) {
-	if (path == nullptr) { return nullptr; }
+	if (path == nullptr) {
+		return nullptr;
+	}
 	const auto Result {new OdExCollideGsPath};
 	AddNodeToPath(Result, path, truncateToRef);
 	return Result;
@@ -136,12 +138,12 @@ void CollideMoveTracker::DoCollideWithAll() {
 	class OdExCollisionDetectionReactor : public OdGsCollisionDetectionReactor {
 		OdArray<OdExCollideGsPath*> m_Paths;
 		bool m_DynamicHlt;
-
-	  public:
+	public:
 		OdExCollisionDetectionReactor(const bool dynamicHlt)
-			: m_DynamicHlt(dynamicHlt) {
-		}
+			: m_DynamicHlt(dynamicHlt) { }
+
 		~OdExCollisionDetectionReactor() = default;
+
 		unsigned long collisionDetected(const OdGiPathNode* /*pPathNode1*/, const OdGiPathNode* pPathNode2) override {
 			const auto Path {FromGiPath(pPathNode2, !m_DynamicHlt)};
 			if (Path != nullptr || pPathNode2->persistentDrawableId() != nullptr) {
@@ -149,7 +151,10 @@ void CollideMoveTracker::DoCollideWithAll() {
 			}
 			return static_cast<unsigned long>(kContinue);
 		}
-		OdArray<OdExCollideGsPath*>& Paths() { return m_Paths; }
+
+		OdArray<OdExCollideGsPath*>& Paths() {
+			return m_Paths;
+		}
 	};
 	OdExCollisionDetectionReactor Reactor(m_DynamicHlt);
 	m_View->collide(m_PathNodes.asArrayPtr(), m_PathNodes.size(), &Reactor, nullptr, 0);

@@ -7,8 +7,7 @@ BEGIN_MESSAGE_MAP(EoDlgSetLength, CDialog)
 END_MESSAGE_MAP()
 
 EoDlgSetLength::EoDlgSetLength(CWnd* parent)
-	: CDialog(IDD, parent) {
-}
+	: CDialog(IDD, parent) {}
 
 void EoDlgSetLength::DoDataExchange(CDataExchange* dataExchange) {
 	CDialog::DoDataExchange(dataExchange);

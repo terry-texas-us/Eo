@@ -45,7 +45,9 @@ unsigned CPrimState::HatchInteriorStyleIndex() const noexcept {
 }
 
 void CPrimState::Restore(CDC& deviceContext, const int saveIndex) {
-	if (saveIndex >= static_cast<int>(sizeof g_SavedStates / sizeof g_SavedStates[0])) { return; }
+	if (saveIndex >= static_cast<int>(sizeof g_SavedStates / sizeof g_SavedStates[0])) {
+		return;
+	}
 	if (g_SavedStates[saveIndex] != nullptr) {
 		SetPen(nullptr, &deviceContext, g_SavedStates[saveIndex]->ColorIndex(), g_SavedStates[saveIndex]->LinetypeIndex());
 		m_FontDefinition = g_SavedStates[saveIndex]->m_FontDefinition;
@@ -134,13 +136,17 @@ void CPrimState::ManagePenResources(CDC& deviceContext, const short colorIndex, 
 			deviceContext.SelectObject(CPen::FromHandle(hPenCur));
 			return;
 		}
-		if (hPen[i] == nullptr) { iPen = i; }
+		if (hPen[i] == nullptr) {
+			iPen = i;
+		}
 	}
 	const auto NewPenHandle {CreatePen(linetypeIndex, penWidth, g_CurrentPalette[colorIndex])};
 	if (NewPenHandle != nullptr) {
 		hPenCur = NewPenHandle;
 		deviceContext.SelectObject(CPen::FromHandle(NewPenHandle));
-		if (hPen[iPen] != nullptr) { DeleteObject(hPen[iPen]); }
+		if (hPen[iPen] != nullptr) {
+			DeleteObject(hPen[iPen]);
+		}
 		hPen[iPen] = NewPenHandle;
 		LinetypeIndexes[iPen] = linetypeIndex;
 		PenWidths[iPen] = penWidth;
@@ -150,19 +156,25 @@ void CPrimState::ManagePenResources(CDC& deviceContext, const short colorIndex, 
 
 void CPrimState::SetColorIndex(CDC* deviceContext, const short colorIndex) {
 	m_ColorIndex = colorIndex;
-	if (deviceContext != nullptr) { ManagePenResources(*deviceContext, colorIndex, 0, m_LinetypeIndex); }
+	if (deviceContext != nullptr) {
+		ManagePenResources(*deviceContext, colorIndex, 0, m_LinetypeIndex);
+	}
 }
 
 void CPrimState::SetLinetypeIndexPs(CDC* deviceContext, const short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
-	if (deviceContext != nullptr) { ManagePenResources(*deviceContext, m_ColorIndex, 0, linetypeIndex); }
+	if (deviceContext != nullptr) {
+		ManagePenResources(*deviceContext, m_ColorIndex, 0, linetypeIndex);
+	}
 }
 
 int CPrimState::SetROP2(CDC& deviceContext, int drawMode) {
 	// Sets the current foreground mix mode. GDI uses the foreground mix mode to combine pens and interiors of filled objects with the colors already on the screen.
 	// The foreground mix mode defines how colors from the brush or pen and the colors in the existing image are to be combined.
 	if (g_ColorPalette[0] == RGB(0xFF, 0xFF, 0xFF)) {
-		if (drawMode == R2_XORPEN) { drawMode = R2_NOTXORPEN; }
+		if (drawMode == R2_XORPEN) {
+			drawMode = R2_NOTXORPEN;
+		}
 	}
 	return deviceContext.SetROP2(drawMode);
 }

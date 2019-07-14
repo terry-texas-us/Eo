@@ -184,7 +184,9 @@ void AeSysView::OnDimensionModeDLine2() {
 			Document->AddWorkLayerGroup(Group);
 			Document->UpdateGroupInAllViews(EoDb::kGroupSafe, Group);
 			PreviousDimensionPosition = CurrentPnt;
-		} else { theApp.AddModeInformationToMessageList(); }
+		} else {
+			theApp.AddModeInformationToMessageList();
+		}
 	} else {
 		// error finish prior op first
 	}
@@ -294,7 +296,9 @@ void AeSysView::OnDimensionModeAngle() {
 		RubberBandingDisable();
 		ModeLineUnhighlightOp(PreviousDimensionCommand);
 		auto Selection {SelectLineUsingPoint(CurrentPnt)};
-		if (std::get<tGroup>(Selection) == nullptr) { return; }
+		if (std::get<tGroup>(Selection) == nullptr) {
+			return;
+		}
 		const auto Primitive {std::get<1>(Selection)};
 		const auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 		ln = Line->LineSeg();
@@ -305,7 +309,9 @@ void AeSysView::OnDimensionModeAngle() {
 	} else {
 		if (iLns == 1) {
 			auto Selection {SelectLineUsingPoint(CurrentPnt)};
-			if (std::get<tGroup>(Selection) == nullptr) { return; }
+			if (std::get<tGroup>(Selection) == nullptr) {
+				return;
+			}
 			const auto Primitive {std::get<1>(Selection)};
 			const auto Line {dynamic_cast<EoDbLine*>(Primitive)};
 			rProjPt[1] = Line->LineSeg().ProjPt(CurrentPnt);

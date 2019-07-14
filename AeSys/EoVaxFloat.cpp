@@ -10,7 +10,9 @@ void EoVaxFloat::Convert(const double& intelDouble) noexcept {
 		const auto Sign {static_cast<unsigned char>(Intel[3] & 0x80)};
 		auto Exponent {static_cast<unsigned char>(Intel[3] << 1 & 0xff)};
 		Exponent |= Intel[2] >> 7U;
-		if (Exponent > 0xfd) { Exponent = 0xfd; }
+		if (Exponent > 0xfd) {
+			Exponent = 0xfd;
+		}
 
 		// - 127 + 128 + 1 (to get hidden 1 to the right of the binary point)
 		Exponent += 2;
@@ -32,7 +34,9 @@ double EoVaxFloat::Convert() {
 	auto Exponent = static_cast<unsigned char>(Vax[1] << 1 & 0xff);
 	Exponent |= Vax[0] >> 7U;
 	if (Exponent == 0) {
-		if (Sign != 0) { throw L"EoVaxFloat: Conversion to Intel - Reserve operand fault"; }
+		if (Sign != 0) {
+			throw L"EoVaxFloat: Conversion to Intel - Reserve operand fault";
+		}
 	} else if (Exponent == 1) { // this is a valid vax exponent but because the vax places the hidden leading 1 to the right of the binary point we have a problem .. the possible values are 2.94e-39 to 5.88e-39 .. just call it 0.
 	} else { // - 128 + 127 - 1 (to get hidden 1 to the left of the binary point)
 		Exponent -= 2;
