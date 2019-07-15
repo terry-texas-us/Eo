@@ -1,10 +1,9 @@
 // Extracted class from Examples\Editor\ExGripManager.cpp (last compare 20.5)
 #include "stdafx.h"
+#include "OdExGripData.h"
 #include <Gi/GiCommonDraw.h>
 #include <Gi/GiWorldDraw.h>
 #include <Gi/GiViewportDraw.h>
-#include "OdExGripData.h"
-#include "ExGripManager.h"
 
 OdExGripDataPtr OdExGripData::CreateObject(OdDbStub* id, const OdDbGripDataPtr& gripData, const OdGePoint3d& point, OdBaseGripManager* gripManager) {
 	auto GripData {RXIMPL_CONSTR(OdExGripData)};
