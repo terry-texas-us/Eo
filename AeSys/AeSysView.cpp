@@ -1986,6 +1986,11 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 			case kGetString: case kDragDrop: default:
 				break;
 		}
+	    if(!GetLayoutActiveView()->isValid() || !GetLayoutActiveTopView()->isValid()) {
+			// GetLayoutActiveView()->invalidate();
+			PostMessage(WM_PAINT);
+			// InvalidateRect(nullptr, false);
+		}
 		if (m_LeftButton) {
 			CClientDC ClientDeviceContext(this);
 			CRect ZoomOldRectangle;
