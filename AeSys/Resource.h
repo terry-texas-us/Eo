@@ -87,6 +87,7 @@
 #define IDI_PROPERTIES_WND_HC           245
 #define IDI_PROPERTIES_WND              246
 #define ID_VIEW_OUTPUTWND               247
+#define IDR_COMMAND_MODE                260
 #define IDR_TRAPR_MODE                  267
 #define IDR_TRAP_MODE                   268
 #define IDR_EDIT_MODE                   269
@@ -101,7 +102,6 @@
 #define IDR_NODAL_MODE                  278
 #define IDR_NODALR_MODE                 279
 #define IDR_LPD_MODE                    280
-#define IDR_MAINFRAME_ORIGINAL          281
 #define IDD_LAYER_PROPERTIES_MANAGER    286
 #define IDB_LAYER_FILTERS               287
 #define IDB_LAYER_STATES                288
@@ -952,8 +952,8 @@
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        349
-#define _APS_NEXT_COMMAND_VALUE         4964
+#define _APS_NEXT_RESOURCE_VALUE        350
+#define _APS_NEXT_COMMAND_VALUE         4967
 #define _APS_NEXT_CONTROL_VALUE         1612
 #define _APS_NEXT_SYMED_VALUE           500
 #endif

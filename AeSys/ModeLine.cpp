@@ -75,7 +75,8 @@ unsigned short AeSysView::ModeLineHighlightOp(const unsigned short command) {
 }
 
 void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
-	if (command == 0 || m_OpHighlighted == 0) {
+	command = 0;
+	if (m_OpHighlighted == 0) {
 		return;
 	}
 	const auto PaneIndex {gc_StatusOp0 + m_OpHighlighted - ID_OP0};
@@ -101,6 +102,5 @@ void AeSysView::ModeLineUnhighlightOp(unsigned short& command) {
 		DeviceContext->SelectObject(Font);
 		ReleaseDC(DeviceContext);
 	}
-	command = 0;
 	m_OpHighlighted = 0;
 }

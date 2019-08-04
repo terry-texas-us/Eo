@@ -370,6 +370,8 @@ public:
 	bool nodalModeAddGroups {true};
 	EoApOptions applicationOptions;
 
+	void ResetModes();
+
 	void AddModeInformationToMessageList() const;
 
 	static void AddStringToMessageList(const wchar_t* message);

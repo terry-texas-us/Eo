@@ -278,6 +278,7 @@ void AeSysView::OnDrawModeReturn() {
 }
 
 void AeSysView::OnDrawModeEscape() {
+	theApp.ResetModes();
 	GetDocument()->UpdateGroupInAllViews(EoDb::kGroupEraseSafe, &m_PreviewGroup);
 	m_PreviewGroup.DeletePrimitivesAndRemoveAll();
 	m_DrawModePoints.clear();

@@ -265,6 +265,7 @@
     <None Include="res\AeSys.rc2" />
     <None Include="res\AeSys_Gold.ico" />
     <None Include="res\AnnotateMode.cur" />
+    <None Include="res\CommandMode.cur" />
     <None Include="res\CutMode.cur" />
     <None Include="res\DimensionMode.cur" />
     <None Include="res\Draw2Mode.cur" />

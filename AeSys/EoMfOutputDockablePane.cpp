@@ -20,7 +20,8 @@ int EoMfOutputDockablePane::OnCreate(const LPCREATESTRUCT createStructure) {
 	m_Font.CreateStockObject(DEFAULT_GUI_FONT);
 	CRect EmptyRect;
 	EmptyRect.SetRectEmpty();
-	if (m_wndTabs.Create(CMFCTabCtrl::STYLE_FLAT, EmptyRect, this, 1, CMFCTabCtrl::LOCATION_BOTTOM) == 0) {
+	if (m_wndTabs.Create(CMFCTabCtrl::STYLE_3D_VS2005
+		, EmptyRect, this, 1, CMFCTabCtrl::LOCATION_TOP) == 0) {
 		TRACE0("Failed to create output tab window\n");
 		return - 1;
 	}

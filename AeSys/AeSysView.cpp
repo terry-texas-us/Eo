@@ -375,7 +375,8 @@ void AeSysView::OnInitialUpdate() {
 	}
 	Document->SetVectorizer(this);
 	m_Editor.Initialize(m_LayoutHelper, Document->CommandContext0());
-	theApp.OnModeDraw();
+	theApp.ResetModes();
+	//	theApp.OnModeDraw();
 }
 
 bool AeSysView::regenAbort() const noexcept {
@@ -1968,29 +1969,6 @@ void AeSysView::OnMButtonUp(const unsigned flags, const CPoint point) {
 void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 	DisplayOdometer();
 	if (m_MousePosition != point != 0) {
-		switch (m_mode) {
-			case kQuiescent:
-				m_Editor.OnMouseMove(flags, point.x, point.y);
-				break;
-			case kGetPoint: {
-				auto Point {m_Editor.ToEyeToWorld(point.x, point.y)};
-				if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(Point)) {
-					return;
-				}
-				if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) {
-					m_Editor.Snap(Point);
-				}
-				m_Editor.TrackPoint(Point);
-				break;
-			}
-			case kGetString: case kDragDrop: default:
-				break;
-		}
-	    if(!GetLayoutActiveView()->isValid() || !GetLayoutActiveTopView()->isValid()) {
-			// GetLayoutActiveView()->invalidate();
-			PostMessage(WM_PAINT);
-			// InvalidateRect(nullptr, false);
-		}
 		if (m_LeftButton) {
 			CClientDC ClientDeviceContext(this);
 			CRect ZoomOldRectangle;
@@ -2048,7 +2026,30 @@ void AeSysView::OnMouseMove(const unsigned flags, const CPoint point) {
 		case ID_MODE_GROUP_EDIT:
 			PreviewGroupEdit();
 			break;
-		default: ;
+		default:
+			switch (m_mode) {
+				case kQuiescent:
+					m_Editor.OnMouseMove(flags, point.x, point.y);
+					break;
+				case kGetPoint: {
+					auto Point {m_Editor.ToEyeToWorld(point.x, point.y)};
+					if (!((m_inpOptions & OdEd::kGptNoUCS) != 0) && !m_Editor.ToUcsToWorld(Point)) {
+						return;
+					}
+					if (!((m_inpOptions & OdEd::kGptNoOSnap) != 0)) {
+						m_Editor.Snap(Point);
+					}
+					m_Editor.TrackPoint(Point);
+					break;
+				}
+				case kGetString: case kDragDrop: default:
+					break;
+			}
+			if (!GetLayoutActiveView()->isValid() || !GetLayoutActiveTopView()->isValid()) {
+				// GetLayoutActiveView()->invalidate();
+				PostMessage(WM_PAINT);
+				// InvalidateRect(nullptr, false);
+			}
 	}
 	if (m_RubberBandType != kNone) {
 		auto DeviceContext {GetDC()};
@@ -3510,8 +3511,7 @@ void AeSysView::SetModeCursor(const unsigned mode) const {
 			ResourceIdentifier = IDR_TRAPR_MODE;
 			break;
 		default:
-			SetCursor(static_cast<HCURSOR>(LoadImageW(HINSTANCE(nullptr), IDC_CROSS, IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE)));
-			return;
+			ResourceIdentifier = IDR_COMMAND_MODE;
 	}
 	auto CursorHandle {static_cast<HCURSOR>(LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(ResourceIdentifier), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
 	VERIFY(CursorHandle);

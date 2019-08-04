@@ -753,15 +753,19 @@ void AeSys::BuildModeSpecificAcceleratorTable() const {
 	const auto MainFrame {dynamic_cast<CMainFrame*>(AfxGetMainWnd())};
 	auto AcceleratorTableHandle {MainFrame->m_hAccelTable};
 	DestroyAcceleratorTable(AcceleratorTableHandle);
-	const auto ModeAcceleratorTableHandle {LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(m_ModeResourceIdentifier))};
-	const auto ModeAcceleratorTableEntries {CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0)};
-	AcceleratorTableHandle = LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME));
-	const auto AcceleratorTableEntries {CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
-	const auto ModifiedAcceleratorTable {new tagACCEL[static_cast<unsigned>(AcceleratorTableEntries + ModeAcceleratorTableEntries)]};
-	CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
-	CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
-	MainFrame->m_hAccelTable = ::CreateAcceleratorTable(ModifiedAcceleratorTable, AcceleratorTableEntries + ModeAcceleratorTableEntries);
-	delete[] ModifiedAcceleratorTable;
+	if (m_ModeResourceIdentifier == 0 || m_ModeResourceIdentifier == IDR_COMMAND_MODE) {
+		MainFrame->m_hAccelTable = LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_COMMAND_MODE));
+	} else {
+		const auto ModeAcceleratorTableHandle {LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(m_ModeResourceIdentifier))};
+		const auto ModeAcceleratorTableEntries {CopyAcceleratorTableW(ModeAcceleratorTableHandle, nullptr, 0)};
+		AcceleratorTableHandle = LoadAcceleratorsW(m_hInstance, MAKEINTRESOURCEW(IDR_MAINFRAME));
+		const auto AcceleratorTableEntries {CopyAcceleratorTableW(AcceleratorTableHandle, nullptr, 0)};
+		const auto ModifiedAcceleratorTable {new tagACCEL[static_cast<unsigned>(AcceleratorTableEntries + ModeAcceleratorTableEntries)]};
+		CopyAcceleratorTableW(ModeAcceleratorTableHandle, ModifiedAcceleratorTable, ModeAcceleratorTableEntries);
+		CopyAcceleratorTableW(AcceleratorTableHandle, &ModifiedAcceleratorTable[ModeAcceleratorTableEntries], AcceleratorTableEntries);
+		MainFrame->m_hAccelTable = ::CreateAcceleratorTable(ModifiedAcceleratorTable, AcceleratorTableEntries + ModeAcceleratorTableEntries);
+		delete[] ModifiedAcceleratorTable;
+	}
 }
 
 unsigned AeSys::ClipboardFormatIdentifierForEoGroups() const noexcept {
@@ -1463,6 +1467,22 @@ void AeSys::OnFilePlotStyleManager() {
 
 void AeSys::OnHelpContents() {
 	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm", HH_DISPLAY_TOPIC, NULL);
+}
+
+void AeSys::ResetModes() {
+	m_ModeResourceIdentifier = IDR_COMMAND_MODE;
+	m_PrimaryMode = 0;
+	m_CurrentMode = 0;
+	auto ActiveView {AeSysView::GetActiveView()};
+	if (ActiveView != nullptr) {
+		auto CursorHandle {static_cast<HCURSOR>(LoadImageW(theApp.GetInstance(), MAKEINTRESOURCEW(IDR_COMMAND_MODE), IMAGE_CURSOR, 0, 0, LR_DEFAULTSIZE))};
+		VERIFY(CursorHandle);
+		SetCursor(CursorHandle);
+		SetClassLongW(ActiveView->GetSafeHwnd(), GCLP_HCURSOR, reinterpret_cast<long>(CursorHandle));
+		ActiveView->ModeLineDisplay();
+		ActiveView->RubberBandingDisable();
+	}
+	BuildModeSpecificAcceleratorTable();
 }
 
 void AeSys::OnModeAnnotate() {

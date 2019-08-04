@@ -23,7 +23,7 @@ public:
 	}
 
 	void AddStringToMessageList(const CString& string) {
-		m_OutputMessagesList.InsertString(0, string);
+		m_OutputMessagesList.InsertString(-1, string);
 	}
 
 	void AddStringToReportsList(const CString& string) {

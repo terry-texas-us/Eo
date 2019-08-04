@@ -388,7 +388,10 @@ class EoDbPolyline_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
 		const OdDbPolylinePtr Polyline {entity};
-		group->AddTail(EoDbPolyline::Create(Polyline));
+		const auto NumberOfVertices {Polyline->numVerts()};
+		if (NumberOfVertices != 0U) {
+			group->AddTail(EoDbPolyline::Create(Polyline));
+		}
 	}
 };
 
@@ -480,7 +483,7 @@ public:
 		} else {
 			auto SplinePrimitive {new EoDbSpline()};
 			SplinePrimitive->Set(Degree, Knots, ControlPoints, Weights, Periodic);
-			ConvertCurveData(entity, SplinePrimitive);
+			//ConvertCurveData(entity, SplinePrimitive);
 			group->AddTail(SplinePrimitive);
 		}
 	}

@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="vc15dlldbg|Win32">
+      <Configuration>vc15dlldbg</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGUID>{CA71D987-7378-4AA0-808E-72DE6ED26A11}</ProjectGUID>
+    <SccProjectName />
+    <SccLocalPath />
+    <Keyword>Win32Proj</Keyword>
+    <Platform>Win32</Platform>
+    <ProjectName>GripPoints</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseOfMfc>false</UseOfMfc>
+    <UseOfAtl>false</UseOfAtl>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v141</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">E:\Projects\VS 2017\Eo\vc15dlldbg\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">GripPoints.dir\vc15dlldbg\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">GripPoints_20.5_15</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">.tx</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">false</GenerateManifest>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\..\..\..\ThirdParty;..\..\..\..\..\ThirdParty\activation;E:\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <CompileAs>CompileAsCpp</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <DisableSpecificWarnings>4996;4131;4244;4127</DisableSpecificWarnings>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;UNLOCK_2019;GRIPPOINTS_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR="Debug";GripPoints_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <AssemblerListingLocation>Debug</AssemblerListingLocation>
+      <ProgramDataBaseFileName>E:\Projects\VS 2017\Eo\vc15dlldbg\GripPoints_20.5_15.pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;UNLOCK_2019;GRIPPOINTS_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR=\"Debug\";GripPoints_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\..\..\..\ThirdParty;..\..\..\..\..\ThirdParty\activation;E:\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Include;E:\Projects\VS 2017\Eo\AeSys;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Midl>
+      <AdditionalIncludeDirectories>..\..\..\..\..\ThirdParty;..\..\..\..\..\ThirdParty\activation;..\..\..\..\..\Drawing\Include;..\..\..\..\..\Kernel\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+    <Link>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib;TD_Db.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Root.lib;TD_Alloc.lib;RText.lib;TD_DbEntities.lib;TD_DbIO.lib;TD_DbCore.lib;ATEXT.lib;ISM.lib;WipeOut.lib;AcMPolygonObj15.lib;ACCAMERA.lib;SCENEOE.lib;UTF.lib;Secur32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\ODA\20.5_15\Kernel_vc15dlldbg\exe\vc15dlldbg;E:\ODA\20.5_15\Drawings_vc15dlldbg\lib\vc15dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>Debug</GenerateDebugInformation>
+      <ImportLibrary>..\..\..\..\..\lib\vc15dlldbg\GripPoints.lib</ImportLibrary>
+      <ProgramDataBaseFile>E:\Projects\VS 2017\Eo\vc15dlldbg\GripPoints_20.5_15.pdb</ProgramDataBaseFile>
+      <StackReserveSize>10000000</StackReserveSize>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+      <Version>
+      </Version>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="GripPoints\StdAfx.h" />
+    <ClInclude Include="OdGripPointsModule.h" />
+    <ClInclude Include="DbArcGripPoints.h" />
+    <ClInclude Include="DbMlineGripPoints.h" />
+    <ClInclude Include="DbLineGripPoints.h" />
+    <ClInclude Include="DbTextGripPoints.h" />
+    <ClInclude Include="DbCircleGripPoints.h" />
+    <ClInclude Include="DbDimGripPoints.h" />
+    <ClInclude Include="DbBlockReferenceGripPoints.h" />
+    <ClInclude Include="DbEntityGripPoints.h" />
+    <ClInclude Include="DbPolylineGripPoints.h" />
+    <ClInclude Include="Db2dPolylineGripPoints.h" />
+    <ClInclude Include="Db3dPolylineGripPoints.h" />
+    <ClInclude Include="DbPolygonMeshGripPoints.h" />
+    <ClInclude Include="DbRasterImageGripPoints.h" />
+    <ClInclude Include="DbUnderlayGripPoints.h" />
+    <ClInclude Include="DbPdfUnderlayGripPoints.h" />
+    <ClInclude Include="DbDgnUnderlayGripPoints.h" />
+    <ClInclude Include="DbViewportGripPoints.h" />
+    <ClInclude Include="DbTraceGripPoints.h" />
+    <ClInclude Include="DbCameraGripPoints.h" />
+    <ClInclude Include="DbMleaderGripPoints.h" />
+    <ClInclude Include="DbGeoPositionMarkerGripPoints.h" />
+    <ClInclude Include="DbOleGripPoints.h" />
+    <ClInclude Include="DbWipeOutGripPoints.h" />
+    <ClInclude Include="DbEllipseGripPoints.h" />
+    <ClInclude Include="DbFaceGripPoints.h" />
+    <ClCompile Include="StdAfx.cpp" />
+    <ClCompile Include="DbLineGripPoints.cpp" />
+    <ClCompile Include="DbTextGripPoints.cpp" />
+    <ClCompile Include="DbCircleGripPoints.cpp" />
+    <ClCompile Include="DbDimGripPoints.cpp" />
+    <ClCompile Include="DbArcGripPoints.cpp" />
+    <ClCompile Include="DbPolylineGripPoints.cpp" />
+    <ClCompile Include="Db2dPolylineGripPoints.cpp" />
+    <ClCompile Include="Db3dPolylineGripPoints.cpp" />
+    <ClCompile Include="DbMlineGripPoints.cpp" />
+    <ClCompile Include="OdGripPointsModule.cpp" />
+    <ClCompile Include="DbEntityGripPoints.cpp" />
+    <ClCompile Include="DbBlockReferenceGripPoints.cpp" />
+    <ClCompile Include="DbMleaderGripPoints.cpp" />
+    <ClCompile Include="DbUnderlayGripPoints.cpp" />
+    <ClCompile Include="DbPdfUnderlayGripPoints.cpp" />
+    <ClCompile Include="DbDgnUnderlayGripPoints.cpp" />
+    <ClCompile Include="DbPolygonMeshGripPoints.cpp" />
+    <ClCompile Include="DbRasterImageGripPoints.cpp" />
+    <ClCompile Include="DbViewportGripPoints.cpp" />
+    <ClCompile Include="DbTraceGripPoints.cpp" />
+    <ClCompile Include="DbCameraGripPoints.cpp" />
+    <ClCompile Include="DbGeoPositionMarkerGripPoints.cpp" />
+    <ClCompile Include="DbOleGripPoints.cpp" />
+    <ClCompile Include="DbWipeOutGripPoints.cpp" />
+    <ClCompile Include="DbEllipseGripPoints.cpp" />
+    <ClCompile Include="DbFaceGripPoints.cpp" />
+    <ClInclude Include="resource.h" />
+    <ResourceCompile Include="GripPoints.rc" />
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

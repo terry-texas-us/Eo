@@ -210,6 +210,9 @@ bool EoDbPolyline::IsClosed() const noexcept {
 }
 
 bool EoDbPolyline::IsInView(AeSysView* view) const {
+	if (m_Vertices.size() == 0) { 
+		return false;
+	}
 	OdGePoint3d Point;
 	EoGePoint4d pt[2];
 	GetPointAt(0, Point);
@@ -378,6 +381,9 @@ void EoDbPolyline::TranslateUsingMask(const OdGeVector3d& /*translate*/, unsigne
 }
 
 bool EoDbPolyline::Write(EoDbFile& file) const {
+	if (m_Vertices.size() == 0) {
+		return false;
+	}
 	file.WriteUInt16(EoDb::kPolylinePrimitive);
 	file.WriteInt16(m_ColorIndex);
 	file.WriteInt16(m_LinetypeIndex);
