@@ -20,7 +20,6 @@
 #define TD_MINOR_VERSION                5
 #define TD_MAJOR_VERSION                20
 #define IDC_STATIC                      -1
-
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

@@ -16,7 +16,6 @@ using OdExGripDataPtrArray = OdArray<OdExGripDataPtr>;
 using OdExGripDragPtr = OdSmartPtr<class OdExGripDrag>;
 using OdExGripDragPtrArray = OdArray<OdExGripDragPtr>;
 
-///////////////////////////////////////////////////////////////////////////////
 struct OdExGripDbReactor : OdDbDatabaseReactor {
 	OdExGripDbReactor() = default;
 

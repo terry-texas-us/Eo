@@ -51,12 +51,13 @@
       <Optimization>Disabled</Optimization>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
-      <WarningLevel>Level3</WarningLevel>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <WarningLevel>Level4</WarningLevel>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;UNLOCK_2019;GRIPPOINTS_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR="Debug";GripPoints_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ObjectFileName>$(IntDir)</ObjectFileName>
       <AssemblerListingLocation>Debug</AssemblerListingLocation>
       <ProgramDataBaseFileName>E:\Projects\VS 2017\Eo\vc15dlldbg\GripPoints_20.5_15.pdb</ProgramDataBaseFileName>
+      <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;WIN32;_WIN32;_WINDOWS;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_DEBUG;ODA_LICENSING_ENABLED;_CRTDBG_MAP_ALLOC;UNLOCK_2019;GRIPPOINTS_DLL_EXPORTS;ODA_LINT;_TOOLKIT_IN_DLL_;CMAKE_INTDIR=\"Debug\";GripPoints_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -87,7 +88,6 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="GripPoints\StdAfx.h" />
     <ClInclude Include="OdGripPointsModule.h" />
     <ClInclude Include="DbArcGripPoints.h" />
     <ClInclude Include="DbMlineGripPoints.h" />
@@ -114,7 +114,6 @@
     <ClInclude Include="DbWipeOutGripPoints.h" />
     <ClInclude Include="DbEllipseGripPoints.h" />
     <ClInclude Include="DbFaceGripPoints.h" />
-    <ClCompile Include="StdAfx.cpp" />
     <ClCompile Include="DbLineGripPoints.cpp" />
     <ClCompile Include="DbTextGripPoints.cpp" />
     <ClCompile Include="DbCircleGripPoints.cpp" />
@@ -145,6 +144,7 @@
     <ResourceCompile Include="GripPoints.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".clang-format" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
