@@ -1195,10 +1195,10 @@ OdResult OdDbRadialDimLargeGripPointsPE::moveGripPoint(OdDbEntity* entity, const
 		OdGePoint3d IntersectPoint;
 		line1.intersectWith(line2, IntersectPoint);
 		line1.set(ocsDimOverrideCenterPt, vR);
-		OdGePoint3d intersec2Pt;
-		line1.intersectWith(line2, intersec2Pt);
-		auto dimLen {fabs(OdGeVector3d(IntersectPoint - intersec2Pt).length())};
-		auto vR2 {IntersectPoint - intersec2Pt};
+		OdGePoint3d Intersect2Point;
+		line1.intersectWith(line2, Intersect2Point);
+		auto dimLen {fabs(OdGeVector3d(IntersectPoint - Intersect2Point).length())};
+		auto vR2 {IntersectPoint - Intersect2Point};
 		vR2.normalize();
 		vR2 *= dimLen / 2;
 		ocsDimJogPt = IntersectPoint - vR2;

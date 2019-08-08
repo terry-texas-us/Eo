@@ -21,12 +21,12 @@ OdResult OdDbCameraGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoi
 }
 
 OdResult OdDbCameraGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto size {indices.size()};
-	if (size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
 	OdDbCameraPtr pCamera = entity;
-	if (size > 1 || indices[0] == 1) {
+	if (IndicesSize > 1 || indices[0] == 1) {
 		pCamera->transformBy(OdGeMatrix3d::translation(offset));
 	} else {
 		auto pView {pCamera->openView(OdDb::kForWrite)};

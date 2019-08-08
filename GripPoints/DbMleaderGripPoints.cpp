@@ -163,15 +163,15 @@ static double getScale(OdDbMLeader* pMLeader) {
 	{
 		// INT-6499 problem with attachment of CORE-10120 via annotative scale. 
 		dScale = 1.0;
-		auto pAnno {OdDbAnnotativeObjectPE::cast(pMLeader)};
-		auto isAnno {pAnno.get() && pAnno->annotative(pMLeader)};
-		ODA_ASSERT_ONCE_X(MLEADER, isAnno);
+		auto AnnotativeObject {OdDbAnnotativeObjectPE::cast(pMLeader)};
+		auto IsAnnotative {AnnotativeObject.get() && AnnotativeObject->annotative(pMLeader)};
+		ODA_ASSERT_ONCE_X(MLEADER, IsAnnotative);
 		OdGiAnnoScaleSet res;
 		auto pDbPE {OdDbBaseDatabasePE::cast(pMLeader->database()).get()};
 		if (pDbPE && !pDbPE->getAnnoScaleSet(pMLeader->objectId(), res)) {
-			isAnno = false;
+			IsAnnotative = false;
 		}
-		if (isAnno) {
+		if (IsAnnotative) {
 			const auto pDb {pMLeader->database()};
 			ODA_ASSERT_ONCE_X(MLEADER, pDb);
 			OdDbAnnotationScalePtr pScale;
@@ -332,15 +332,15 @@ OdResult OdDbMleaderGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePo
 	return eOk;
 } //#endif
 OdResult OdDbMleaderGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto size {indices.size()};
-	if (size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
 	auto pMLeader {OdDbMLeader::cast(entity)};
 	bool bConnectedAtDogLeg = true, bUseDogLegCenterGrip = true, bSkipForLastVertex = false, bEnableDogleg = IsDoglegEnabled(pMLeader, &bConnectedAtDogLeg, &bUseDogLegCenterGrip, &bSkipForLastVertex);
 	OdIntArray leaderIndexes;
 	pMLeader->getLeaderIndexes(leaderIndexes);
-	for (unsigned iPt = 0; iPt < size; iPt++) {
+	for (unsigned iPt = 0; iPt < IndicesSize; iPt++) {
 		const auto iIndex {indices[iPt]};
 		auto iCurIndex {0};
 		auto MoveGripPoint {false};
@@ -512,7 +512,7 @@ OdResult OdDbMleaderGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 	return eOk;
 }
 
-OdResult OdDbMleaderGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* entity, const OdDbFullSubentPath& path, OdDbGripDataPtrArray& grips, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*currentViewDirection*/, const OdUInt32 /*bitflags*/) const {
+OdResult OdDbMleaderGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* entity, const OdDbFullSubentPath& path, OdDbGripDataPtrArray& grips, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*currentViewDirection*/, const OdUInt32 /*bitFlags*/) const {
 	OdDbMLeader* pMLeader = OdDbMLeader::cast(entity);
 	const auto gsMarker {(int) path.subentId().index()};
 	if (gsMarker < OdDbMLeader::kLeaderLineMark || gsMarker >= OdDbMLeader::kBlockAttribute) {
@@ -607,11 +607,14 @@ OdResult OdDbMleaderGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* en
 	return eOk;
 }
 
-OdResult OdDbMleaderGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* entity, const OdDbFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, const OdUInt32 /*bitflags*/) {
+OdResult OdDbMleaderGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* entity, const OdDbFullSubentPathArray& paths, const OdDbVoidPtrArray& gripAppData, const OdGeVector3d& offset, const OdUInt32 /*bitFlags*/) {
 	OdDbMLeader* pMLeader = OdDbMLeader::cast(entity);
-	bool bConnectedAtDogLeg = true, bUseDogLegCenterGrip = true, bSkipForLastVertex = false, bEnableDogleg = IsDoglegEnabled(pMLeader, &bConnectedAtDogLeg, &bUseDogLegCenterGrip, &bSkipForLastVertex);
-	OdIntArray leaderIndexes;
-	pMLeader->getLeaderIndexes(leaderIndexes);
+	auto ConnectedAtDogLeg {true};
+	auto UseDogLegCenterGrip {true};
+	auto SkipForLastVertex {false};
+	const auto EnableDogleg {IsDoglegEnabled(pMLeader, &ConnectedAtDogLeg, &UseDogLegCenterGrip, &SkipForLastVertex)};
+	OdIntArray LeaderIndexes;
+	pMLeader->getLeaderIndexes(LeaderIndexes);
 	for (OdUInt32 i = 0; i < paths.size(); i++) {
 		auto pArr {paths[i].objectIds()};
 		auto CurId {pArr[pArr.size() - 1]};
@@ -625,16 +628,16 @@ OdResult OdDbMleaderGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* entity
 			continue;
 		}
 		if (gsMarker >= OdDbMLeader::kDoglegMark && gsMarker < OdDbMLeader::kMTextMark) {
-			for (OdUInt32 i = 0; i < leaderIndexes.size(); i++) {
-				if (gsMarker != OdDbMLeader::kDoglegMark + leaderIndexes[i]) {
+			for (OdUInt32 i = 0; i < LeaderIndexes.size(); i++) {
+				if (gsMarker != OdDbMLeader::kDoglegMark + LeaderIndexes[i]) {
 					continue;
 				}
 				OdGePoint3d ptConnect;
 				OdGeVector3d vrDoglegDir;
 				double dDoglegLength = 0, dScale = 1.0;
-				const auto bRes {GetConnectionData(pMLeader, leaderIndexes[i], bEnableDogleg, bConnectedAtDogLeg, ptConnect, vrDoglegDir, dDoglegLength, &dScale)};
+				const auto bRes {GetConnectionData(pMLeader, LeaderIndexes[i], EnableDogleg, ConnectedAtDogLeg, ptConnect, vrDoglegDir, dDoglegLength, &dScale)};
 				if (bRes) {
-					if (bEnableDogleg) {
+					if (EnableDogleg) {
 						auto StartDoglegPt {ptConnect};
 						auto EndDoglegPt(ptConnect + vrDoglegDir * dDoglegLength);
 						if (iGripType == DOGLEG_START_GRIP) {
@@ -654,9 +657,9 @@ OdResult OdDbMleaderGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* entity
 							if (!ZeroLength) {
 								auto vrNewOffset {tmpNewPt - ptConnect};
 								pMLeader->moveMLeader(vrNewOffset, OdDbMLeader::kMoveContentAndDoglegPoints, false);
-								pMLeader->setDoglegLength(leaderIndexes[i], dNewLength / dScale);
+								pMLeader->setDoglegLength(LeaderIndexes[i], dNewLength / dScale);
 							}
-						} else if (bUseDogLegCenterGrip && iGripType == DOGLEG_CENTER_GRIP) {
+						} else if (UseDogLegCenterGrip && iGripType == DOGLEG_CENTER_GRIP) {
 							pMLeader->moveMLeader(offset, OdDbMLeader::kMoveContentAndDoglegPoints, false);
 						} else if (iGripType == DOGLEG_END_GRIP) {
 							if (dDoglegLength < 1e-8) {
@@ -675,7 +678,7 @@ OdResult OdDbMleaderGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* entity
 							}
 							if (!ZeroLength) {
 								ODA_ASSERT_ONCE_X(MLEADER, iGripType == DOGLEG_END_GRIP)
-								pMLeader->setDoglegLength(leaderIndexes[i], dNewLength / dScale);
+								pMLeader->setDoglegLength(LeaderIndexes[i], dNewLength / dScale);
 							}
 						}
 					}
@@ -683,19 +686,19 @@ OdResult OdDbMleaderGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* entity
 			}
 		} else if (gsMarker >= OdDbMLeader::kLeaderLineMark && gsMarker < OdDbMLeader::kDoglegMark) {
 			auto MoveGripPoint {false};
-			for (OdUInt32 i = 0; i < leaderIndexes.size(); i++) {
+			for (OdUInt32 i = 0; i < LeaderIndexes.size(); i++) {
 				OdIntArray leaderLineIndexes;
-				pMLeader->getLeaderLineIndexes(leaderIndexes[i], leaderLineIndexes);
+				pMLeader->getLeaderLineIndexes(LeaderIndexes[i], leaderLineIndexes);
 				for (OdUInt32 k = 0; k < leaderLineIndexes.size(); k++) {
 					if (gsMarker != OdDbMLeader::kLeaderLineMark + leaderLineIndexes[k]) {
 						continue;
 					}
 					auto nVertices {0};
 					if (pMLeader->numVertices(leaderLineIndexes[k], nVertices) == eOk) {
-						if (bSkipForLastVertex) {
+						if (SkipForLastVertex) {
 							nVertices--;
 						}
-						if (iGripType == LINE_START_GRIP && !bEnableDogleg) {
+						if (iGripType == LINE_START_GRIP && !EnableDogleg) {
 							pMLeader->moveMLeader(offset, OdDbMLeader::kMoveContentAndDoglegPoints, false);
 						} else if (iGripType > LINE_START_GRIP && iGripType <= (OdInt32)(LINE_START_GRIP + nVertices)) {
 							const auto iVertex {iGripType - LINE_START_GRIP - 1};

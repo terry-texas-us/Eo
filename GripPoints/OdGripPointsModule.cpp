@@ -43,6 +43,7 @@ extern "C" int APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID) {
 	return TRUE;
 }
 #endif //_TOOLKIT_IN_DLL_ //  MacOS X dynamic library loading.
+#pragma warning (suppress: 5043)
 ODRX_DEFINE_DYNAMIC_MODULE(OdGripPointsModule)
 
 OdGripPointsModule::OdGripPointsModule() {}

@@ -17,26 +17,26 @@ OdResult OdDbWipeOutGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePo
 }
 
 OdResult OdDbWipeOutGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto size {indices.size()};
-	if (size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbWipeoutPtr pWipeout = entity;
-	OdGePoint3dArray odGePoint3dArray;
-	pWipeout->getVertices(odGePoint3dArray);
+	OdDbWipeoutPtr Wipeout {entity};
+	OdGePoint3dArray Points;
+	Wipeout->getVertices(Points);
 	// for the closed polyline boundary last coincident point is not returned as a grip
-	const auto hasClosedPolylineBoundary {odGePoint3dArray.size() > 2 && odGePoint3dArray.last().isEqualTo(odGePoint3dArray.first())};
-	for (unsigned i = 0; i < size; ++i) {
-		if (indices[i] < (int)odGePoint3dArray.length()) {
-			auto pt3D {odGePoint3dArray.getAt(indices[i])};
+	const auto HasClosedPolylineBoundary {Points.size() > 2 && Points.last().isEqualTo(Points.first())};
+	for (unsigned i = 0; i < IndicesSize; ++i) {
+		if (indices[i] < (int)Points.length()) {
+			auto pt3D {Points.getAt(indices[i])};
 			pt3D += offset;
-			odGePoint3dArray.setAt(indices[i], pt3D);
+			Points.setAt(indices[i], pt3D);
 		}
 	}
-	if (hasClosedPolylineBoundary) {
-		odGePoint3dArray[odGePoint3dArray.length() - 1] = odGePoint3dArray.first();
+	if (HasClosedPolylineBoundary) {
+		Points[Points.length() - 1] = Points.first();
 	}
-	pWipeout->setBoundary(odGePoint3dArray);
+	Wipeout->setBoundary(Points);
 	return eOk;
 }
 
@@ -49,7 +49,7 @@ OdResult OdDbWipeOutGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const 
 }
 
 OdResult OdDbWipeOutGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDbWipeoutPtr Wipeout = entity;
+	OdDbWipeoutPtr Wipeout {entity};
 	OdGePoint3dArray odGePoint3dArray;
 	Wipeout->getVertices(odGePoint3dArray);
 	const auto Size {snapPoints.size()};

@@ -65,26 +65,25 @@ OdResult OdDbCircleGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const O
 	return eOk;
 }
 
-
 /**
  * \brief Return snap Points into snapPoints, depending on type objectSnapMode
  * \param entity 
  * \param objectSnapMode 
- * \param pickPoint_  Point, which moves
- * \param lastPoint_  Point, from which draw line
- * \param worldToEyeTransform 
+ * \param pickPoint  Point, which moves
+ * \param lastPoint  Point, from which draw line
+ * \param
  * \param snapPoints 
  * \return 
  */
-OdResult OdDbCircleGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbCircleGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdGePoint3dArray GripPoints;
 	const auto Result {getGripPoints(entity, GripPoints)};
 	if (Result != eOk || GripPoints.size() < 5) {
 		return Result;
 	}
 	OdDbCirclePtr Circle {entity};
-	const auto PickPointInPlane {GetPlanePoint(Circle, pickPoint_)};
-	const auto LastPointInPlane {GetPlanePoint(Circle, lastPoint_)};
+	const auto PickPointInPlane {GetPlanePoint(Circle, pickPoint)};
+	const auto LastPointInPlane {GetPlanePoint(Circle, lastPoint)};
 	auto Center {Circle->center()};
 	const auto Radius {Circle->radius()};
 	const auto PickPoint {PickPointInPlane - Center.asVector()};

@@ -28,71 +28,68 @@ OdResult OdDbPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGeP
 }
 
 OdResult OdDbPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto size {indices.size()};
-	if (size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbPolylinePtr pPoly = entity;
-	const auto x {OdGeMatrix3d::worldToPlane(pPoly->normal())};
-	const auto nVerts {pPoly->numVerts()};
-	auto iPolyIndex {0};
+	OdDbPolylinePtr Polyline {entity};
+	const auto x {OdGeMatrix3d::worldToPlane(Polyline->normal())};
+	const auto NumberOfVertices {Polyline->numVerts()};
+	auto PolyLineIndex {0};
 	unsigned iUStart = 0;
 	unsigned i = 0;
-	for (i = 0; i < size; ++i) {
-		iPolyIndex = indices[i] / 2;
-		if (indices[i] % 2 == 0) {
-			// "Vertex. Check if near middle grip point presents. If yes skip this vertex
-			auto iPrev {indices[i] - 1};
-			if (iPrev < 0) {
-				if (pPoly->isClosed()) {
-					iPrev = nVerts * 2 - 1;
+	for (i = 0; i < IndicesSize; ++i) {
+		PolyLineIndex = indices[i] / 2;
+		if (indices[i] % 2 == 0) { // "Vertex. Check if near middle grip point presents. If yes skip this vertex
+			auto PreviousIndex {indices[i] - 1};
+			if (PreviousIndex < 0) {
+				if (Polyline->isClosed()) {
+					PreviousIndex = NumberOfVertices * 2 - 1;
 				}
 			}
-			if (iPrev >= 0 && indices.find(iPrev, iUStart)) {
+			if (PreviousIndex >= 0 && indices.find(PreviousIndex, iUStart)) {
 				continue;
 			}
-			auto iNext {indices[i] + 1};
-			if (iNext > (nVerts - 1) * 2) {
-				iNext = pPoly->isClosed() ? 1 : -1;
+			auto NextIndex {indices[i] + 1};
+			if (NextIndex > (static_cast<int>(NumberOfVertices) - 1) * 2) {
+				NextIndex = Polyline->isClosed() ? 1 : -1;
 			}
-			if (iNext >= 0 && indices.find(iNext, iUStart)) {
+			if (NextIndex >= 0 && indices.find(NextIndex, iUStart)) {
 				continue;
 			}
 			OdGePoint3d pt;
-			pPoly->getPointAt(iPolyIndex, pt);
+			Polyline->getPointAt(PolyLineIndex, pt);
 			pt += offset;
-			pPoly->setPointAt(iPolyIndex, (x * pt).convert2d());
-		} else {
-			// Middle of segment point
-			const auto iPolyIndex1 {iPolyIndex != pPoly->numVerts() - 1 ? iPolyIndex + 1 : 0};
-			if (!OdZero(pPoly->getBulgeAt(iPolyIndex))) {
-				// Arc segment
+			Polyline->setPointAt(PolyLineIndex, (x * pt).convert2d());
+		} else { // Middle of segment point
+			const auto PolylineIndex1 {PolyLineIndex != static_cast<int>(Polyline->numVerts()) - 1 ? PolyLineIndex + 1 : 0};
+			if (!OdZero(Polyline->getBulgeAt(PolyLineIndex))) { // Arc segment
 				OdGePoint2d p0;
-				pPoly->getPointAt(iPolyIndex, p0);
+				Polyline->getPointAt(PolyLineIndex, p0);
 				OdGePoint2d p1;
-				pPoly->getPointAt(iPolyIndex1, p1);
+				Polyline->getPointAt(PolylineIndex1, p1);
 				OdGePoint3d pt;
-				pPoly->getPointAtParam(iPolyIndex + 0.5, pt);
+				Polyline->getPointAtParam(PolyLineIndex + 0.5, pt);
 				pt += offset;
 				auto p {(x * pt).convert2d()};
 				try {
-					OdGeCircArc2d arc(p0, p, p1);
-					auto bulge {tan((arc.endAng() - arc.startAng()) / 4)};
-					if (arc.isClockWise()) {
+					OdGeCircArc2d CircularArc(p0, p, p1);
+					auto bulge {tan((CircularArc.endAng() - CircularArc.startAng()) / 4)};
+					if (CircularArc.isClockWise()) {
 						bulge = -bulge;
 					}
-					pPoly->setBulgeAt(iPolyIndex, bulge);
+					Polyline->setBulgeAt(PolyLineIndex, bulge);
 				} catch (OdError& e) {
 					return e.code();
 				}
 			} else { // Line segment
 				OdGePoint3d pt;
-				pPoly->getPointAt(iPolyIndex, pt);
+				Polyline->getPointAt(PolyLineIndex, pt);
 				pt += offset;
-				pPoly->setPointAt(iPolyIndex, (x * pt).convert2d());
-				pPoly->getPointAt(iPolyIndex1, pt);
+				Polyline->setPointAt(PolyLineIndex, (x * pt).convert2d());
+				Polyline->getPointAt(PolylineIndex1, pt);
 				pt += offset;
-				pPoly->setPointAt(iPolyIndex1, (x * pt).convert2d());
+				Polyline->setPointAt(PolylineIndex1, (x * pt).convert2d());
 			}
 		}
 	}

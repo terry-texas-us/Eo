@@ -19,8 +19,8 @@ OdResult OdDb2dPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdG
 }
 
 OdResult OdDb2dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto size {indices.size()};
-	if (size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
 	OdDb2dPolylinePtr pPoly = entity;
@@ -30,7 +30,7 @@ OdResult OdDb2dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const 
 	while (!pIt->done()) {
 		auto pVertex {OdDb2dVertex::cast(pIt->entity())};
 		if (pVertex->vertexType() == OdDb::k2dVertex) {
-			for (unsigned i = 0; i < size; i++) {
+			for (unsigned i = 0; i < IndicesSize; i++) {
 				if (indices[i] == counter) {
 					pVertex->upgradeOpen();
 					pVertex->setPosition(pVertex->position() + offset);

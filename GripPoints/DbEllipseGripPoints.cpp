@@ -22,42 +22,38 @@ OdResult OdDbEllipseGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePo
 }
 
 // Move circle or change radius
-OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& vOffset) {
-	if (indices.size() == 0) { // indices[0] - defines for what point we pull:
+OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
+	if (indices.empty()) { // indices[0] - defines for what point we pull:
 		return eOk; // center or other
 	}
-	OdDbEllipsePtr circle = entity;
+	OdDbEllipsePtr Ellipse {entity};
 	auto Center {true};
-	auto offset {vOffset};
-	if (!ProjectOffset(circle->database(), circle->normal(), offset))   // Project offset on entity's plane in view direction
-	{
-		circle->setCenter(circle->center() + offset);                   // View direction is perpendicular to normal
-		return eOk;                                                       // Move the circle
+	auto Offset {offset};
+	if (!ProjectOffset(Ellipse->database(), Ellipse->normal(), Offset)) { // Project offset on entity's plane in view direction. View direction is perpendicular to normal. Move the ellipse
+		Ellipse->setCenter(Ellipse->center() + Offset);                   
+		return eOk;                                                       
 	}
 	for (unsigned i = 0; i < indices.size(); i++) {
-		if (indices[i] % 5 == 0)                                          // point center - move circle
-		{
-			if (Center)                                                  // move center only one time
-			{
-				circle->setCenter(circle->center() + offset);
+		if (indices[i] % 5 == 0) { // point center - move circle
+			if (Center) {// move center only one time
+				Ellipse->setCenter(Ellipse->center() + Offset);
 				Center = false;
 			}
-		} else                                                            // change radius
-		{
+		} else {// change radius
 			OdGePoint3dArray gripPoints;
-			circle->getGripPoints(gripPoints);
+			Ellipse->getGripPoints(gripPoints);
 			const auto Dist1 {gripPoints[1].distanceTo(gripPoints[2])};
 			const auto Dist2 {gripPoints[3].distanceTo(gripPoints[4])};
-			auto point {gripPoints[indices[i] % 5] + offset};
-			auto Normal {circle->normal()};
-			auto Center {circle->center()};
-			auto newDist {circle->center().distanceTo(point)};
+			auto point {gripPoints[indices[i] % 5] + Offset};
+			auto Normal {Ellipse->normal()};
+			auto Center {Ellipse->center()};
+			auto newDist {Ellipse->center().distanceTo(point)};
 			newDist = newDist < 1.e-10 ? 1.e-10 : newDist;
-			auto major {circle->majorAxis()};
-			auto minor {circle->minorAxis()};
-			auto radiusRatio {circle->radiusRatio()};
-			auto startAngle {circle->startAngle()};
-			auto endAngle {circle->endAngle()};
+			auto major {Ellipse->majorAxis()};
+			auto minor {Ellipse->minorAxis()};
+			auto radiusRatio {Ellipse->radiusRatio()};
+			auto startAngle {Ellipse->startAngle()};
+			auto endAngle {Ellipse->endAngle()};
 			auto SwapMajorMinor {false};
 			if (indices[i] < 3 && Dist1 > Dist2 || indices[i] >= 3 && Dist1 < Dist2) {
 				radiusRatio = minor.length() / newDist;
@@ -85,7 +81,7 @@ OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 						endAngle = endAngle + Oda2PI;
 					}
 				}
-				circle->set(Center, Normal, major, radiusRatio, startAngle, endAngle);
+				Ellipse->set(Center, Normal, major, radiusRatio, startAngle, endAngle);
 			} catch (...) { }
 		}
 	}
@@ -113,28 +109,28 @@ OdResult OdDbEllipseGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const 
  * \brief Return snap Points into snapPoints, depending on type objectSnapMode
  * \param entity 
  * \param objectSnapMode 
- * \param selectionMarker 
- * \param pickPoint_         Point, which moves
- * \param lastPoint_         Point, from which draw line
- * \param worldToEyeTransform 
+ * \param 
+ * \param pickPoint         Point, which moves
+ * \param lastPoint         Point, from which draw line
+ * \param 
  * \param snapPoints 
  * \return 
  */
-OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdGePoint3dArray gripPoints;
 	const auto Result {getGripPoints(entity, gripPoints)};
 	if (Result != eOk || gripPoints.size() < 5) {
 		return Result;
 	}
 	OdDbEllipsePtr Ellipse = entity;
-	const auto pickPoint {GetPlanePoint(Ellipse, pickPoint_)}; // recalculated pickPoint and lastPoint in plane of circle
-	const auto lastPoint {GetPlanePoint(Ellipse, lastPoint_)};
+	const auto PickPointInPlane {GetPlanePoint(Ellipse, pickPoint)}; // recalculated pickPoint and lastPoint in plane of circle
+	const auto LastPointInPlane {GetPlanePoint(Ellipse, lastPoint)};
 	auto Center {Ellipse->center()};
 	const auto Radius {0.0}; // circle->radius();
-	const auto ptPick {pickPoint - Center.asVector()};
-	const auto rdPick {pickPoint.distanceTo(Center)};
-	const auto ptLast {lastPoint - Center.asVector()};
-	const auto rdLast {lastPoint.distanceTo(Center)};
+	const auto ptPick {PickPointInPlane - Center.asVector()};
+	const auto rdPick {PickPointInPlane.distanceTo(Center)};
+	const auto ptLast {LastPointInPlane - Center.asVector()};
+	const auto rdLast {LastPointInPlane.distanceTo(Center)};
 	const auto bThickness {false}; //OdZero(circle->thickness());
 	OdGeVector3d vThickness; //= circle->normal()*circle->thickness();
 	switch (objectSnapMode) {

@@ -9,16 +9,16 @@
 #include <Gi/GiViewportDraw.h>
 ODRX_CONS_DEFINE_MEMBERS(OdDbBlockGripAppData, OdRxObject, RXIMPL_CONSTR);
 
-static OdDbSpatialFilterPtr getBlockReferenceSpatialFilter(OdDbBlockReference* pBR, OdDb::OpenMode openMode) {
-	auto pDict {OdDbDictionary::cast(pBR->extensionDictionary().openObject())};
-	if (pDict.isNull()) {
+static OdDbSpatialFilterPtr GetBlockReferenceSpatialFilter(OdDbBlockReference* blockReference, const OdDb::OpenMode openMode) {
+	auto Dictionary {OdDbDictionary::cast(blockReference->extensionDictionary().openObject())};
+	if (Dictionary.isNull()) {
 		return OdDbSpatialFilterPtr();
 	}
-	auto pFDict {OdDbDictionary::cast(pDict->getAt(L"ACAD_FILTER", OdDb::kForRead))};
-	if (pFDict.isNull()) {
+	auto AcadFilterDictionary {OdDbDictionary::cast(Dictionary->getAt(L"ACAD_FILTER", OdDb::kForRead))};
+	if (AcadFilterDictionary.isNull()) {
 		return OdDbSpatialFilterPtr();
 	}
-	return OdDbSpatialFilter::cast(pFDict->getAt(L"SPATIAL", openMode));
+	return OdDbSpatialFilter::cast(AcadFilterDictionary->getAt(L"SPATIAL", openMode));
 }
 
 void OdDbBlockGripOpStatus(OdDbGripData* gripData, OdDbStub* /*stub*/, OdDbGripOperations::GripStatus status) {
@@ -28,39 +28,39 @@ void OdDbBlockGripOpStatus(OdDbGripData* gripData, OdDbStub* /*stub*/, OdDbGripO
 	}
 }
 
-static double getGripSize(OdGiViewportDraw* pWd, const OdGePoint3d& eyePt, int gripSize) {
-	OdGePoint2d ptDim;
-	auto wcsPt {eyePt};
-	wcsPt.transformBy(pWd->viewport().getEyeToWorldTransform());
-	pWd->viewport().getNumPixelsInUnitSquare(wcsPt, ptDim);
-	OdGeVector3d v(gripSize / ptDim.x, 0, 0);
-	v.transformBy(pWd->viewport().getWorldToEyeTransform());
+static double GetGripSize(OdGiViewportDraw* viewportDraw, const OdGePoint3d& eyePoint, int gripSize) {
+	OdGePoint2d PixelDensity;
+	auto wcsPt {eyePoint};
+	wcsPt.transformBy(viewportDraw->viewport().getEyeToWorldTransform());
+	viewportDraw->viewport().getNumPixelsInUnitSquare(wcsPt, PixelDensity);
+	OdGeVector3d v(gripSize / PixelDensity.x, 0.0, 0.0);
+	v.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
 	return v.length();
 }
 
-static void drawFlipArrow(OdGiViewportDraw* pWd, const OdGePoint3d& p, int gripSize, const OdGeVector3d& orient) {
+static void DrawFlipArrow(OdGiViewportDraw* viewportDraw, const OdGePoint3d& point, const int gripSize, const OdGeVector3d& orient) {
 	auto v {orient};
 	v.normalize();
-	const auto GripSize {getGripSize(pWd, p, gripSize)};
+	const auto GripSize {GetGripSize(viewportDraw, point, gripSize)};
 	v *= GripSize;
 	auto n {v};
 	n.rotateBy(OdaPI2, OdGeVector3d::kZAxis);
 	n *= 0.75;
 	OdGePoint3d pp[7];
-	pp[0] = p + n * 0.5;
-	pp[1] = p + n;
-	pp[3] = p - n;
-	pp[4] = p - n * 0.5;
-	pp[2] = p + v;
-	pp[5] = p - v - n * 0.5;
-	pp[6] = p - v + n * 0.5;
-	pWd->geometry().polygonEye(7, pp);
+	pp[0] = point + n * 0.5;
+	pp[1] = point + n;
+	pp[3] = point - n;
+	pp[4] = point - n * 0.5;
+	pp[2] = point + v;
+	pp[5] = point - v - n * 0.5;
+	pp[6] = point - v + n * 0.5;
+	viewportDraw->geometry().polygonEye(7, pp);
 }
 
-static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* viewportDraw, OdDbStub* /*entId*/, OdDbGripOperations::DrawType type, OdGePoint3d* imageGripPoint, int gripSize) {
+static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* viewportDraw, OdDbStub* /*entityId*/, OdDbGripOperations::DrawType type, OdGePoint3d* imageGripPoint, int gripSize) {
 	ODA_ASSERT(gripData->appDataOdRxClass() == OdDbBlockGripAppData::desc());
-	auto p {imageGripPoint == nullptr ? gripData->gripPoint() : *imageGripPoint};
-	p.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
+	auto Point {imageGripPoint == nullptr ? gripData->gripPoint() : *imageGripPoint};
+	Point.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
 	switch (type) {
 		case OdDbGripOperations::kWarmGrip:
 			viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACICyan);
@@ -76,199 +76,196 @@ static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* 
 			break;
 	}
 	viewportDraw->subEntityTraits().setFillType(kOdGiFillAlways);
-	drawFlipArrow(viewportDraw, p, gripSize, ((OdDbBlockGripAppData*)gripData->appData())->m_vClipInvertOrientation);
+	DrawFlipArrow(viewportDraw, Point, gripSize, ((OdDbBlockGripAppData*)gripData->appData())->m_vClipInvertOrientation);
 }
 
-OdResult OdDbBlockHotGrip(OdDbGripData* gripData, OdDbStub* entId, int status) {
+OdResult OdDbBlockHotGrip(OdDbGripData* gripData, OdDbStub* entityId, int status) {
 	if ((status & OdDbGripOperations::kSharedGrip) != 0) {
 		return eOk;
 	}
-	auto appdata {(OdDbBlockGripAppData*) gripData->appData()};
-	if (!appdata->m_bClipInvertGrip) {
+	auto AppData {(OdDbBlockGripAppData*) gripData->appData()};
+	if (!AppData->m_bClipInvertGrip) {
 		return eOk;
 	}
-	appdata->m_vClipInvertOrientation.negate();
-	OdDbBlockReferencePtr pBtr = OdDbObjectId(entId).safeOpenObject(OdDb::kForWrite);
-	auto pSpatialFilter {getBlockReferenceSpatialFilter(pBtr, OdDb::kForWrite)};
-	pSpatialFilter->setFilterInverted(!pSpatialFilter->isFilterInverted());
-	pBtr->assertWriteEnabled();
+	AppData->m_vClipInvertOrientation.negate();
+	OdDbBlockReferencePtr BlockReference {OdDbObjectId(entityId).safeOpenObject(OdDb::kForWrite)};
+	auto SpatialFilter {GetBlockReferenceSpatialFilter(BlockReference, OdDb::kForWrite)};
+	SpatialFilter->setFilterInverted(!SpatialFilter->isFilterInverted());
+	BlockReference->assertWriteEnabled();
 	return eOk;
 }
 
 OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdDbGripDataPtrArray& grips, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& currentViewDirection, const int /*bitFlags*/) const {
-	OdDbBlockReferencePtr pBtr(entity);
+	OdDbBlockReferencePtr BlockReference(entity);
+	// Origin
 	{
-		// Origin
-		OdDbGripDataPtr originGrip(new OdDbGripData());
-		originGrip->setGripPoint(pBtr->position());
-		originGrip->setGripOpStatFunc(OdDbBlockGripOpStatus);
-		originGrip->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
-		auto originAppData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
-		originGrip->setAppData(originAppData.detach());
-		grips.append(originGrip);
+		OdDbGripDataPtr OriginGripData(new OdDbGripData());
+		OriginGripData->setGripPoint(BlockReference->position());
+		OriginGripData->setGripOpStatFunc(OdDbBlockGripOpStatus);
+		OriginGripData->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
+		auto OriginAppData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
+		OriginGripData->setAppData(OriginAppData.detach());
+		grips.append(OriginGripData);
 	}
+	// XCLIP boundary
 	{
-		// XCLIP boundary
-		auto pSpatialFilter {getBlockReferenceSpatialFilter(pBtr, OdDb::kForRead)};
-		OdGePoint2dArray clipPoints;
-		if (!pSpatialFilter.isNull() && pSpatialFilter->isEnabled()) {
-			pSpatialFilter->boundary(clipPoints);
-			OdGeMatrix3d xClipSpace = pSpatialFilter->getClipSpaceToWCSMatrix(xClipSpace);
-			xClipSpace.invert();
-			OdGeMatrix3d xClipInvBlock = pSpatialFilter->getOriginalInverseBlockXform(xClipInvBlock);
-			const auto xBlockXForm {pBtr->blockTransform()};
-			const OdGeMatrix3d xFullXForm = xBlockXForm * xClipInvBlock * xClipSpace;
-			for (OdUInt32 nClipPoint = 0; nClipPoint < clipPoints.size(); nClipPoint++) {
-				OdGePoint3d clipPoint(clipPoints[nClipPoint].x, clipPoints[nClipPoint].y, 0.0);
-				clipPoint.transformBy(xFullXForm);
-				OdDbGripDataPtr aGrip(new OdDbGripData());
-				aGrip->setGripPoint(clipPoint);
-				aGrip->setGripOpStatFunc(OdDbBlockGripOpStatus);
-				aGrip->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
+		auto SpatialFilter {GetBlockReferenceSpatialFilter(BlockReference, OdDb::kForRead)};
+		OdGePoint2dArray ClipPoints;
+		if (!SpatialFilter.isNull() && SpatialFilter->isEnabled()) {
+			SpatialFilter->boundary(ClipPoints);
+			OdGeMatrix3d ClipSpaceTransform {SpatialFilter->getClipSpaceToWCSMatrix(ClipSpaceTransform)};
+			ClipSpaceTransform.invert();
+			OdGeMatrix3d ClipInverseBlockTransform {SpatialFilter->getOriginalInverseBlockXform(ClipInverseBlockTransform)};
+			const auto BlockTransform {BlockReference->blockTransform()};
+			const auto FullTransform {BlockTransform * ClipInverseBlockTransform * ClipSpaceTransform};
+			for (OdUInt32 ClipPointIndex = 0; ClipPointIndex < ClipPoints.size(); ClipPointIndex++) {
+				OdGePoint3d ClipPoint(ClipPoints[ClipPointIndex].x, ClipPoints[ClipPointIndex].y, 0.0);
+				ClipPoint.transformBy(FullTransform);
+				OdDbGripDataPtr GripData(new OdDbGripData());
+				GripData->setGripPoint(ClipPoint);
+				GripData->setGripOpStatFunc(OdDbBlockGripOpStatus);
+				GripData->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
 				auto appData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
-				appData->m_nClipGripGripIndex = nClipPoint;
-				aGrip->setAppData(appData.detach());
-				grips.append(aGrip);
-			} // XCLIP inversion
-			if (clipPoints.size() > 1) {
-				OdGePoint3d p1(clipPoints[0].x, clipPoints[0].y, 0.0);
-				OdGePoint3d p2(clipPoints[1].x, clipPoints[1].y, 0.0);
-				p1.transformBy(xFullXForm);
-				p2.transformBy(xFullXForm);
+				appData->m_nClipGripGripIndex = ClipPointIndex;
+				GripData->setAppData(appData.detach());
+				grips.append(GripData);
+			}
+			// XCLIP inversion
+			if (ClipPoints.size() > 1) {
+				OdGePoint3d p1(ClipPoints[0].x, ClipPoints[0].y, 0.0);
+				OdGePoint3d p2(ClipPoints[1].x, ClipPoints[1].y, 0.0);
+				p1.transformBy(FullTransform);
+				p2.transformBy(FullTransform);
 				auto v {p2 - p1};
 				const auto MidPoint {p1 + v / 2};
-				OdDbGripDataPtr aGrip(new OdDbGripData());
-				aGrip->setGripPoint(MidPoint);
-				aGrip->setGripOpStatFunc(OdDbBlockGripOpStatus);
-				aGrip->setViewportDraw(OdDbBlockGripViewportDraw);
-				aGrip->setHotGripFunc(OdDbBlockHotGrip);
-				aGrip->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
-				auto appData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
-				appData->m_bClipInvertGrip = true;
-				auto flag {OdGe::kOk};
-				v.normalize(OdGeContext::gTol, flag);
-				if (flag == OdGe::kOk) {
+				OdDbGripDataPtr GripData(new OdDbGripData());
+				GripData->setGripPoint(MidPoint);
+				GripData->setGripOpStatFunc(OdDbBlockGripOpStatus);
+				GripData->setViewportDraw(OdDbBlockGripViewportDraw);
+				GripData->setHotGripFunc(OdDbBlockHotGrip);
+				GripData->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
+				auto AppData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
+				AppData->m_bClipInvertGrip = true;
+				auto Flag {OdGe::kOk};
+				v.normalize(OdGeContext::gTol, Flag);
+				if (Flag == OdGe::kOk) {
 					v.rotateBy(OdaPI2, currentViewDirection);
-					if (pSpatialFilter->isFilterInverted()) {
+					if (SpatialFilter->isFilterInverted()) {
 						v.negate();
 					}
-					appData->m_vClipInvertOrientation = v;
+					AppData->m_vClipInvertOrientation = v;
 				}
-				aGrip->setAppData(appData.detach());
-				grips.append(aGrip);
+				GripData->setAppData(AppData.detach());
+				grips.append(GripData);
 			}
-		} // Attributes
-		auto attributeIndex {0};
-		for (auto i = pBtr->attributeIterator(); !i->done(); i->step()) {
-			OdDbAttributePtr attr(i->entity());
-			if (attr->lockPositionInBlock()) {
+		} 
+		// Attributes
+		auto AttributeIndex {0};
+		for (auto i = BlockReference->attributeIterator(); !i->done(); i->step()) {
+			OdDbAttributePtr Attribute(i->entity());
+			if (Attribute->lockPositionInBlock()) {
 				continue;
 			}
-			OdDbGripDataPtr aGrip(new OdDbGripData());
-			if (attr->isMTextAttribute()) {
-				aGrip->setGripPoint(attr->getMTextAttribute()->location());
+			OdDbGripDataPtr GripData(new OdDbGripData());
+			if (Attribute->isMTextAttribute()) {
+				GripData->setGripPoint(Attribute->getMTextAttribute()->location());
 			} else {
-				if (attr->horizontalMode() == OdDb::kTextLeft && attr->verticalMode() == OdDb::kTextBase) {
-					aGrip->setGripPoint(attr->position());
+				if (Attribute->horizontalMode() == OdDb::kTextLeft && Attribute->verticalMode() == OdDb::kTextBase) {
+					GripData->setGripPoint(Attribute->position());
 				} else {
-					aGrip->setGripPoint(attr->alignmentPoint());
+					GripData->setGripPoint(Attribute->alignmentPoint());
 				}
 			}
-			aGrip->setGripOpStatFunc(OdDbBlockGripOpStatus);
-			aGrip->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
-			auto appData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
-			appData->m_nAttributeIndex = attributeIndex++;
-			aGrip->setAppData(appData.detach());
-			grips.append(aGrip);
+			GripData->setGripOpStatFunc(OdDbBlockGripOpStatus);
+			GripData->setAppDataOdRxClass(OdDbBlockGripAppData::desc());
+			auto AppData {OdRxObjectImpl<OdDbBlockGripAppData>::createObject()};
+			AppData->m_nAttributeIndex = AttributeIndex++;
+			GripData->setAppData(AppData.detach());
+			grips.append(GripData);
 		}
 	}
 	return eOk;
 }
 
 OdResult OdDbBlockReferenceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdDbVoidPtrArray& grips, const OdGeVector3d& offset, int /*bitFlags*/) {
-	OdDbBlockReferencePtr pBtr(entity);
+	OdDbBlockReferencePtr BlockReference(entity);
 	const OdGeMatrix3d Transform(offset); // XCLIP boundary
-	auto pSpatialFilter {getBlockReferenceSpatialFilter(pBtr, OdDb::kForWrite)};
-	OdGePoint2dArray clipPoints;
+	auto SpatialFilter {GetBlockReferenceSpatialFilter(BlockReference, OdDb::kForWrite)};
+	OdGePoint2dArray ClipPoints;
 	OdGeVector3d cbOffset;
 	auto BoundaryChanged {false};
-	if (!pSpatialFilter.isNull() && pSpatialFilter->isEnabled()) {
-		pSpatialFilter->boundary(clipPoints);
-		OdGeMatrix3d xClipSpace = pSpatialFilter->getClipSpaceToWCSMatrix(xClipSpace);
-		xClipSpace.invert();
-		OdGeMatrix3d xClipInvBlock = pSpatialFilter->getOriginalInverseBlockXform(xClipInvBlock);
-		const auto xBlockXForm {pBtr->blockTransform()};
-		const auto xFullXForm {(xBlockXForm * xClipInvBlock * xClipSpace).invert()};
+	if (!SpatialFilter.isNull() && SpatialFilter->isEnabled()) {
+		SpatialFilter->boundary(ClipPoints);
+		OdGeMatrix3d ClipSpaceTransform {SpatialFilter->getClipSpaceToWCSMatrix(ClipSpaceTransform)};
+		ClipSpaceTransform.invert();
+		OdGeMatrix3d ClipInverseBlockTransform = SpatialFilter->getOriginalInverseBlockXform(ClipInverseBlockTransform);
+		const auto BlockTransform {BlockReference->blockTransform()};
+		const auto FullTransform {(BlockTransform * ClipInverseBlockTransform * ClipSpaceTransform).invert()};
 		cbOffset = offset;
-		cbOffset.transformBy(xFullXForm);
+		cbOffset.transformBy(FullTransform);
 	}
 	for (unsigned k = 0; k < grips.size(); ++k) {
 		if (grips[k] == nullptr || ((OdRxObject*)grips[k])->isA() != OdDbBlockGripAppData::desc()) { // not our grip (maybe overruled)
 			continue;
 		}
-		const auto pAppData {(OdDbBlockGripAppData*) grips[k]};
-		if (pAppData->m_nClipGripGripIndex >= 0) {
-			// XCLIP boundary
-			clipPoints[pAppData->m_nClipGripGripIndex] += OdGeVector2d(cbOffset.x, cbOffset.y);
+		const auto AppData {(OdDbBlockGripAppData*) grips[k]};
+		if (AppData->m_nClipGripGripIndex >= 0) { // XCLIP boundary
+			ClipPoints[AppData->m_nClipGripGripIndex] += OdGeVector2d(cbOffset.x, cbOffset.y);
 			BoundaryChanged = true;
-		} else if (pAppData->m_nAttributeIndex >= 0) {
+		} else if (AppData->m_nAttributeIndex >= 0) {
 			auto n {0};
-			for (auto i = pBtr->attributeIterator(); !i->done(); i->step()) {
-				OdDbAttributePtr attr(i->entity(OdDb::kForWrite));
-				if (attr->lockPositionInBlock()) {
+			for (auto i = BlockReference->attributeIterator(); !i->done(); i->step()) {
+				OdDbAttributePtr Attribute(i->entity(OdDb::kForWrite));
+				if (Attribute->lockPositionInBlock()) {
 					continue;
 				}
-				if (n == pAppData->m_nAttributeIndex) {
-					// We need to care about annotation contexts and alignment
-					// attr->setPosition(attr->position() + offset);
-					attr->transformBy(Transform);
+				if (n == AppData->m_nAttributeIndex) {
+					Attribute->transformBy(Transform);
 				}
 				++n;
 			}
-		} else if (!pAppData->m_bClipInvertGrip) {
-			pBtr->setPosition(pBtr->position() + offset);
-			for (auto i = pBtr->attributeIterator(); !i->done(); i->step()) {
+		} else if (!AppData->m_bClipInvertGrip) {
+			BlockReference->setPosition(BlockReference->position() + offset);
+			for (auto i = BlockReference->attributeIterator(); !i->done(); i->step()) {
 				OdDbAttributePtr attr(i->entity(OdDb::kForWrite));
-				// We need to care about annotation contexts and alignment
-				// attr->setPosition(attr->position() + offset);
 				attr->transformBy(Transform);
 			}
 		}
 	}
 	if (BoundaryChanged) {
-		OdGiClipBoundary clipBnd;
+		OdGiClipBoundary ClipBoundary;
 		bool Enabled;
-		pSpatialFilter->getDefinition(clipBnd, Enabled);
-		const auto Inverted {pSpatialFilter->isFilterInverted()};
-		clipBnd.m_Points = clipPoints;
-		pSpatialFilter->setDefinition(clipBnd, Enabled);
+		SpatialFilter->getDefinition(ClipBoundary, Enabled);
+		const auto Inverted {SpatialFilter->isFilterInverted()};
+		ClipBoundary.m_Points = ClipPoints;
+		SpatialFilter->setDefinition(ClipBoundary, Enabled);
 		if (Inverted) {
-			pSpatialFilter->setFilterInverted(Inverted);
+			SpatialFilter->setFilterInverted(Inverted);
 		}
-		pBtr->assertWriteEnabled();
+		BlockReference->assertWriteEnabled();
 		// Force modification in case if boundary was changed
 	}
 	return eOk;
 }
 
 OdResult OdDbBlockReferenceGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	OdDbBlockReferencePtr pBtr(entity);
-	stretchPoints.append(pBtr->position());
+	OdDbBlockReferencePtr BlockReference(entity);
+	stretchPoints.append(BlockReference->position());
 	// basic block reference has only one stretch point
 	return eOk;
 }
 
 OdResult OdDbBlockReferenceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& /*indices*/, const OdGeVector3d& offset) {
-	OdDbBlockReferencePtr pBtr(entity);
-	pBtr->transformBy(OdGeMatrix3d::translation(offset));
+	OdDbBlockReferencePtr BlockReference(entity);
+	BlockReference->transformBy(OdGeMatrix3d::translation(offset));
 	return eOk;
 }
 
+// Should return:
+// Osnap points for block contents transformed by own transformation.
+// Plus for INS - own position and INS should be called for attributes
+//
+// Note selectionMarker also needs to be taken care of
 OdResult OdDbBlockReferenceGripPointsPE::getOsnapPoints(const OdDbEntity* /*entity*/, OdDb::OsnapMode /*objectSnapMode*/, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& /*snapPoints*/) const {
-	// Should return:
-	// Osnap points for block contents transformed by own transformation.
-	// Plus for INS - own position and INS should be called for attributes
-	//
-	// Note selectionMarker also needs to be taken care of
 	return eNotImplemented;
 }

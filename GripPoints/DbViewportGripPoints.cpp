@@ -74,7 +74,6 @@ OdResult OdDbViewportGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const Od
 		widthD *= 2;
 		heightD *= 2;
 		OdAbstractViewPEPtr pViewPE(pVpt);
-		auto viewTarget {pViewPE->target(pVpt)};
 		const auto zAxis {pViewPE->direction(pVpt)};
 		const auto yAxis {pViewPE->upVector(pVpt)};
 		const auto xAxis {yAxis.crossProduct(zAxis).normal()};

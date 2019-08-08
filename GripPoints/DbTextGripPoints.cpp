@@ -25,20 +25,20 @@ OdResult OdDbTextGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint
 }
 
 // Move text
-OdResult OdDbTextGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& vOffset) {
+OdResult OdDbTextGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
 	const auto IndicesSize {indices.size()};
 	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbTextPtr pText = entity;
+	OdDbTextPtr Text {entity};
 	auto MovePosition {false};
 	auto MoveAlignmentPoint {false};
-	auto offset {vOffset};
+	auto Offset {offset};
 	// Project offset on entity's plane in view direction
-	const auto bPlaneChanges {!ProjectOffset(pText->database(), pText->normal(), offset)};
-	if (IsJustifyLeft(pText)) {
+	const auto bPlaneChanges {!ProjectOffset(Text->database(), Text->normal(), Offset)};
+	if (IsJustifyLeft(Text)) {
 		MovePosition = true;
-	} else if (IsJustifyAligned(pText) || IsJustifyFit(pText)) {
+	} else if (IsJustifyAligned(Text) || IsJustifyFit(Text)) {
 		// Both points can be moved
 		if (bPlaneChanges) {
 			//Move both points
@@ -62,12 +62,12 @@ OdResult OdDbTextGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntA
 	}
 	try {
 		if (MovePosition) {
-			pText->setPosition(pText->position() + offset);
+			Text->setPosition(Text->position() + Offset);
 		}
 		if (MoveAlignmentPoint) {
-			pText->setAlignmentPoint(pText->alignmentPoint() + offset);
+			Text->setAlignmentPoint(Text->alignmentPoint() + Offset);
 		}
-		pText->adjustAlignment();
+		Text->adjustAlignment();
 	} catch (const OdError& e) {
 		return e.code();
 	}
@@ -76,20 +76,20 @@ OdResult OdDbTextGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntA
 
 // Stretched
 OdResult OdDbTextGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	OdDbTextPtr pText = entity;
-	const auto dThickness {pText->thickness()};
-	const auto vExtrusion {pText->normal() * dThickness};
-	if (IsJustifyLeft(pText) || IsJustifyAligned(pText) || IsJustifyFit(pText)) {
-		stretchPoints.append(pText->position()); // left lower corner of Text
-		if (!OdZero(dThickness)) {
-			stretchPoints.append(pText->position() + vExtrusion);
+	OdDbTextPtr Text {entity};
+	const auto Thickness {Text->thickness()};
+	const auto Extrusion {Text->normal() * Thickness};
+	if (IsJustifyLeft(Text) || IsJustifyAligned(Text) || IsJustifyFit(Text)) {
+		stretchPoints.append(Text->position()); // left lower corner of Text
+		if (!OdZero(Thickness)) {
+			stretchPoints.append(Text->position() + Extrusion);
 		}
 	}
-	if (!IsJustifyLeft(pText)) {
-		stretchPoints.append(pText->alignmentPoint());
+	if (!IsJustifyLeft(Text)) {
+		stretchPoints.append(Text->alignmentPoint());
 		// OdDbText (except Justify_Left) always has stretchPoint alignmentPoint
-		if (!OdZero(dThickness)) {
-			stretchPoints.append(pText->alignmentPoint() + vExtrusion);
+		if (!OdZero(Thickness)) {
+			stretchPoints.append(Text->alignmentPoint() + Extrusion);
 		}
 	}
 	return eOk;
@@ -103,10 +103,10 @@ OdResult OdDbTextGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
  * \brief  Return snap Points into snapPoints, depending on type on snapMode
  * \param entity 
  * \param objectSnapMode 
- * \param selectionMarker 
- * \param pickPoint  Point, which moves
- * \param lastPoint  Point, from which draw line
- * \param worldToEyeTransform 
+ * \param
+ * \param
+ * \param
+ * \param
  * \param snapPoints 
  * \return 
  */

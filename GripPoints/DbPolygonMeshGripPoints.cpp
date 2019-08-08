@@ -5,33 +5,31 @@
 #include <DbLine.h>
 
 OdResult OdDbPolygonMeshGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbPolygonMesh* pMesh = OdDbPolygonMesh::cast(entity);
-	auto pIter {pMesh->vertexIterator()};
-	while (!pIter->done()) {
-		OdDbPolygonMeshVertexPtr pVertex = pIter->entity();
-		gripPoints.append(pVertex->position());
-		pIter->step();
+	OdDbPolygonMesh* Mesh = OdDbPolygonMesh::cast(entity);
+	auto VertexIterator {Mesh->vertexIterator()};
+	while (!VertexIterator->done()) {
+		OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
+		gripPoints.append(Vertex->position());
+		VertexIterator->step();
 	}
 	return eOk;
 }
 
 OdResult OdDbPolygonMeshGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDbPolygonMesh* pMesh = OdDbPolygonMesh::cast(entity);
-	OdDbObjectIteratorPtr pIter;
-	for (unsigned iPt = 0; iPt < indices.size(); iPt++) {
-		const auto iIndex {indices[iPt]};
-		pIter = pMesh->vertexIterator();
-		auto iCurIndex {0};
-		while (!pIter->done()) {
-			if (iCurIndex == iIndex) {
-				OdDbPolygonMeshVertexPtr pVertex = pIter->entity();
-				pMesh->openVertex(pVertex->id(), OdDb::kForWrite);
-				pVertex->setPosition(pVertex->position() + offset);
-				pMesh->subClose();
+	OdDbPolygonMesh* Mesh = OdDbPolygonMesh::cast(entity);
+	for (auto Index : indices) {
+		OdDbObjectIteratorPtr VertexIterator {Mesh->vertexIterator()};
+		auto CurrentIndex {0};
+		while (!VertexIterator->done()) {
+			if (CurrentIndex == Index) {
+				OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
+				Mesh->openVertex(Vertex->id(), OdDb::kForWrite);
+				Vertex->setPosition(Vertex->position() + offset);
+				Mesh->subClose();
 				break;
 			}
-			iCurIndex++;
-			pIter->step();
+			CurrentIndex++;
+			VertexIterator->step();
 		}
 	}
 	return eOk;
@@ -46,41 +44,41 @@ OdResult OdDbPolygonMeshGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, co
 }
 
 OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
-	OdDbPolygonMesh* pMesh = OdDbPolygonMesh::cast(entity);
-	auto pIter {pMesh->vertexIterator()};
+	OdDbPolygonMesh* Mesh {OdDbPolygonMesh::cast(entity)};
+	auto VertexIterator {Mesh->vertexIterator()};
 	OdGePoint3dArray pPosArr;
-	while (!pIter->done()) {
-		OdDbPolygonMeshVertexPtr pVertex = pIter->entity();
-		pPosArr.append(pVertex->position());
-		pIter->step();
+	while (!VertexIterator->done()) {
+		OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
+		pPosArr.append(Vertex->position());
+		VertexIterator->step();
 	}
-	const OdInt32 nCols {pMesh->nSize()};
-	const OdInt32 nRows {pMesh->mSize()};
-	const auto bColsClosed {pMesh->isNClosed()};
-	const auto bRowsClosed {pMesh->isMClosed()};
-	for (auto i = 0; i < nRows; i++) {
-		for (auto j = 0; j < nCols; j++) {
-			if (j < nCols - 1) {
-				auto pLine {OdDbLine::createObject()};
-				pLine->setStartPoint(pPosArr[i * nCols + j]);
-				pLine->setEndPoint(pPosArr[i * nCols + j + 1]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
-			} else if (j == nCols - 1 && bColsClosed) {
-				auto pLine {OdDbLine::createObject()};
-				pLine->setStartPoint(pPosArr[i * nCols + j]);
-				pLine->setEndPoint(pPosArr[i * nCols]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
+	const OdInt32 NumberOfColumns {Mesh->nSize()};
+	const OdInt32 NumberOfRows {Mesh->mSize()};
+	const auto ColumnsClosed {Mesh->isNClosed()};
+	const auto RowsClosed {Mesh->isMClosed()};
+	for (auto i = 0; i < NumberOfRows; i++) {
+		for (auto j = 0; j < NumberOfColumns; j++) {
+			if (j < NumberOfColumns - 1) {
+				auto Line {OdDbLine::createObject()};
+				Line->setStartPoint(pPosArr[i * NumberOfColumns + j]);
+				Line->setEndPoint(pPosArr[i * NumberOfColumns + j + 1]);
+				Line->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
+			} else if (j == NumberOfColumns - 1 && ColumnsClosed) {
+				auto Line {OdDbLine::createObject()};
+				Line->setStartPoint(pPosArr[i * NumberOfColumns + j]);
+				Line->setEndPoint(pPosArr[i * NumberOfColumns]);
+				Line->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 			}
-			if (i < nRows - 1) {
-				auto pLine {OdDbLine::createObject()};
-				pLine->setStartPoint(pPosArr[i * nCols + j]);
-				pLine->setEndPoint(pPosArr[(i + 1) * nCols + j]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
-			} else if (i == nRows - 1 && bRowsClosed) {
-				auto pLine {OdDbLine::createObject()};
-				pLine->setStartPoint(pPosArr[i * nCols + j]);
-				pLine->setEndPoint(pPosArr[j]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
+			if (i < NumberOfRows - 1) {
+				auto Line {OdDbLine::createObject()};
+				Line->setStartPoint(pPosArr[i * NumberOfColumns + j]);
+				Line->setEndPoint(pPosArr[(i + 1) * NumberOfColumns + j]);
+				Line->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
+			} else if (i == NumberOfRows - 1 && RowsClosed) {
+				auto Line {OdDbLine::createObject()};
+				Line->setStartPoint(pPosArr[i * NumberOfColumns + j]);
+				Line->setEndPoint(pPosArr[j]);
+				Line->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 			}
 		}
 	}

@@ -58,18 +58,18 @@ OdResult OdDbTraceGripPointsPE_Base::getGripPoints(const _DbTraceGPRedir* trace,
 }
 
 OdResult OdDbTraceGripPointsPE_Base::moveGripPointsAt(_DbTraceGPRedir* trace, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdGeVector3d planarBasis[3];
-	double planarCoefs[3];
+	OdGeVector3d PlanarBasis[3];
+	double PlanarCoefficients[3];
 	int nPt;
-	planarBasis[2] = trace->normal();
-	planarBasis[0] = planarBasis[2].perpVector().normal();
-	planarBasis[1] = planarBasis[2].crossProduct(planarBasis[0]).normal();
+	PlanarBasis[2] = trace->normal();
+	PlanarBasis[0] = PlanarBasis[2].perpVector().normal();
+	PlanarBasis[1] = PlanarBasis[2].crossProduct(PlanarBasis[0]).normal();
 	for (nPt = 0; nPt < 3; nPt++) {
-		planarCoefs[nPt] = planarBasis[nPt].dotProduct(offset);
+		PlanarCoefficients[nPt] = PlanarBasis[nPt].dotProduct(offset);
 	}
-	if (OdNonZero(planarCoefs[0]) || OdNonZero(planarCoefs[1])) {
+	if (OdNonZero(PlanarCoefficients[0]) || OdNonZero(PlanarCoefficients[1])) {
 		bool bMarkIds[4] = {false, false, false, false};
-		const auto delta {planarBasis[0] * planarCoefs[0] + planarBasis[1] * planarCoefs[1]};
+		const auto delta {PlanarBasis[0] * PlanarCoefficients[0] + PlanarBasis[1] * PlanarCoefficients[1]};
 		for (nPt = 0; nPt < (int)indices.size(); nPt++) {
 			bMarkIds[indices[nPt] % 4] = true;
 		}
@@ -82,8 +82,8 @@ OdResult OdDbTraceGripPointsPE_Base::moveGripPointsAt(_DbTraceGPRedir* trace, co
 			}
 		}
 	}
-	if (OdNonZero(planarCoefs[2])) {
-		const auto delta {planarBasis[2] * planarCoefs[2]};
+	if (OdNonZero(PlanarCoefficients[2])) {
+		const auto delta {PlanarBasis[2] * PlanarCoefficients[2]};
 		for (nPt = 0; nPt < 4; nPt++) {
 			OdGePoint3d movePt;
 			trace->getPointAt(nPt, movePt);
@@ -118,50 +118,50 @@ OdResult OdDbTraceGripPointsPE_Base::getOsnapPoints(const _DbTraceGPRedir* trace
 	return eOk;
 } // TracePE
 OdResult OdDbTraceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	_DbTraceGPRedirImpl<OdDbTracePtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getGripPoints(&redir, gripPoints);
+	_DbTraceGPRedirImpl<OdDbTracePtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::getGripPoints(&Redir, gripPoints);
 }
 
 OdResult OdDbTraceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	_DbTraceGPRedirImpl<OdDbTracePtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::moveGripPointsAt(&redir, indices, offset);
+	_DbTraceGPRedirImpl<OdDbTracePtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::moveGripPointsAt(&Redir, indices, offset);
 }
 
 OdResult OdDbTraceGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	_DbTraceGPRedirImpl<OdDbTracePtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getStretchPoints(&redir, stretchPoints);
+	_DbTraceGPRedirImpl<OdDbTracePtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::getStretchPoints(&Redir, stretchPoints);
 }
 
 OdResult OdDbTraceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	_DbTraceGPRedirImpl<OdDbTracePtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::moveStretchPointsAt(&redir, indices, offset);
+	_DbTraceGPRedirImpl<OdDbTracePtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::moveStretchPointsAt(&Redir, indices, offset);
 }
 
-OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const {
-	_DbTraceGPRedirImpl<OdDbTracePtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&redir, objectSnapMode, selectionMarker, pickPoint, lastPoint, viewXform, snapPoints);
+OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+	_DbTraceGPRedirImpl<OdDbTracePtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&Redir, objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 } // SolidPE
 OdResult OdDbSolidGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getGripPoints(&redir, gripPoints);
+	_DbTraceGPRedirImpl<OdDbSolidPtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::getGripPoints(&Redir, gripPoints);
 }
 
 OdResult OdDbSolidGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::moveGripPointsAt(&redir, indices, offset);
+	_DbTraceGPRedirImpl<OdDbSolidPtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::moveGripPointsAt(&Redir, indices, offset);
 }
 
 OdResult OdDbSolidGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getStretchPoints(&redir, stretchPoints);
+	_DbTraceGPRedirImpl<OdDbSolidPtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::getStretchPoints(&Redir, stretchPoints);
 }
 
 OdResult OdDbSolidGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::moveStretchPointsAt(&redir, indices, offset);
+	_DbTraceGPRedirImpl<OdDbSolidPtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::moveStretchPointsAt(&Redir, indices, offset);
 }
 
-OdResult OdDbSolidGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const {
-	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&redir, objectSnapMode, selectionMarker, pickPoint, lastPoint, viewXform, snapPoints);
+OdResult OdDbSolidGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+	_DbTraceGPRedirImpl<OdDbSolidPtr> Redir(entity);
+	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&Redir, objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 }

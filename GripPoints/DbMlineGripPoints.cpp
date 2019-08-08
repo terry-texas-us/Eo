@@ -15,12 +15,12 @@ OdResult OdDbMlineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoin
 }
 
 OdResult OdDbMlineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto Size {indices.size()};
-	if (Size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
 	OdDbMline* Mline = OdDbMline::cast(entity);
-	for (unsigned i = 0; i < Size; ++i) {
+	for (unsigned i = 0; i < IndicesSize; ++i) {
 		Mline->moveVertexAt(indices[i], Mline->vertexAt(indices[i]) + offset);
 	}
 	return eOk;
