@@ -1,15 +1,20 @@
 #pragma once
-#include <Ge/GeLine3d.h>
 #include <DbEllipse.h>
 #include <DbGripPoints.h>
 
 class OdDbEllipseGripPointsPE : public OdDbGripPointsPE {
-	OdGePoint3d getPlanePoint(const OdDbEllipsePtr circle, OdGePoint3d Point) const {
-		OdGePlane plane; // recalculated Point in plane of pCircle
-		OdDb::Planarity planarity;
-		circle->getPlane(plane, planarity);
-		plane.intersectWith(OdGeLine3d(Point, circle->normal()), Point);
-		return Point;
+	/**
+	 * \brief 
+	 * \param ellipse 
+	 * \param point 
+	 * \return   recalculated point in plane of ellipse
+	 */
+	static OdGePoint3d GetPlanePoint(const OdDbEllipsePtr& ellipse, OdGePoint3d point) {
+		OdGePlane Plane;
+		OdDb::Planarity Planarity;
+		ellipse->getPlane(Plane, Planarity);
+		Plane.intersectWith(OdGeLine3d(point, ellipse->normal()), point);
+		return point;
 	}
 
 public:
@@ -21,8 +26,8 @@ public:
 
 	OdResult moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 
-	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const override;
+	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const override;
 
 protected:
-	double m_lll;
+	double m_lll {0.0};
 };

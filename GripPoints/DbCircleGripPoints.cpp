@@ -22,34 +22,28 @@ OdResult OdDbCircleGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoi
 }
 
 // Move circle or change radius
-OdResult OdDbCircleGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& vOffset) {
-	if (indices.size() == 0) { // indices[0] - defines for what point we pull:
+OdResult OdDbCircleGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
+	if (indices.empty()) { // indices[0] - defines for what point we pull:
 		return eOk; // center or other
 	} 
-	OdDbCirclePtr circle = entity;
-	auto bCenter {true};
-	auto offset {vOffset};
-	if (!projectOffset(circle->database(), circle->normal(), offset))
-		// Project offset on entity's plane in view direction
-	{
-		circle->setCenter(circle->center() + offset);
-		// View direction is perpendicular to normal
-		return eOk; // Move the circle
+	OdDbCirclePtr Circle {entity};
+	auto Center {true};
+	auto Offset {offset};
+	if (!ProjectOffset(Circle->database(), Circle->normal(), Offset)) { // Project offset on entity's plane in view direction. View direction is perpendicular to normal
+		Circle->setCenter(Circle->center() + Offset);
+		return eOk;
 	}
-	for (unsigned i = 0; i < indices.size(); i++) {
-		if (indices[i] % 5 == 0) // point center - move circle
-		{
-			if (bCenter) // move center only one time
-			{
-				circle->setCenter(circle->center() + offset);
-				bCenter = false;
+	for (auto Index : indices) {
+		if (Index % 5 == 0) { // point center - move circle
+			if (Center) { // move center only one time
+				Circle->setCenter(Circle->center() + Offset);
+				Center = false;
 			}
-		} else // change radius
-		{
-			OdGePoint3dArray gripPoints;
-			circle->getGripPoints(gripPoints);
-			auto point {gripPoints[indices[i] % 5] + offset};
-			circle->setRadius(circle->center().distanceTo(point));
+		} else { // change radius
+			OdGePoint3dArray GripPoints;
+			Circle->getGripPoints(GripPoints);
+			auto Point {GripPoints[Index % 5] + Offset};
+			Circle->setRadius(Circle->center().distanceTo(Point));
 		}
 	}
 	return eOk;
@@ -57,18 +51,17 @@ OdResult OdDbCircleGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIn
 
 // Cannot be stretched
 OdResult OdDbCircleGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	OdDbCirclePtr circle = entity;
-	stretchPoints.append(circle->center()); // center
-	if (!OdZero(circle->thickness()))       // next center
-	{
-		stretchPoints.append(circle->center() + circle->normal() * circle->thickness());
+	OdDbCirclePtr Circle {entity};
+	stretchPoints.append(Circle->center());
+	if (!OdZero(Circle->thickness())) { // next center
+		stretchPoints.append(Circle->center() + Circle->normal() * Circle->thickness());
 	}
 	return eOk;
 }
 
-OdResult OdDbCircleGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& /*indices_*/, const OdGeVector3d& offset) {
-	OdDbCirclePtr circle = entity;
-	circle->setCenter(circle->center() + offset);
+OdResult OdDbCircleGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& /*indices*/, const OdGeVector3d& offset) {
+	OdDbCirclePtr Circle {entity};
+	Circle->setCenter(Circle->center() + offset);
 	return eOk;
 }
 
@@ -79,103 +72,102 @@ OdResult OdDbCircleGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const O
  * \param objectSnapMode 
  * \param pickPoint_  Point, which moves
  * \param lastPoint_  Point, from which draw line
- * \param xWorldToEye 
+ * \param worldToEyeTransform 
  * \param snapPoints 
  * \return 
  */
-OdResult OdDbCircleGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& snapPoints) const {
-	OdGePoint3dArray gripPoints;
-	const auto Result {getGripPoints(entity, gripPoints)};
-	if (Result != eOk || gripPoints.size() < 5) {
+OdResult OdDbCircleGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+	OdGePoint3dArray GripPoints;
+	const auto Result {getGripPoints(entity, GripPoints)};
+	if (Result != eOk || GripPoints.size() < 5) {
 		return Result;
 	}
-	OdDbCirclePtr Circle = entity;
-	const auto pickPoint {getPlanePoint(Circle, pickPoint_)}; // recalculated pickPoint and lastPoint in plane of circle
-	const auto lastPoint {getPlanePoint(Circle, lastPoint_)};
-	auto center {Circle->center()};
-	const auto radius {Circle->radius()};
-	const auto ptPick {pickPoint - center.asVector()};
-	const auto rdPick {pickPoint.distanceTo(center)};
-	const auto ptLast {lastPoint - center.asVector()};
-	const auto rdLast {lastPoint.distanceTo(center)};
-	const auto bThickness {!OdZero(Circle->thickness())};
-	const auto vThickness {Circle->normal() * Circle->thickness()};
+	OdDbCirclePtr Circle {entity};
+	const auto PickPointInPlane {GetPlanePoint(Circle, pickPoint_)};
+	const auto LastPointInPlane {GetPlanePoint(Circle, lastPoint_)};
+	auto Center {Circle->center()};
+	const auto Radius {Circle->radius()};
+	const auto PickPoint {PickPointInPlane - Center.asVector()};
+	const auto PickRadius {PickPointInPlane.distanceTo(Center)};
+	const auto LastPoint {LastPointInPlane - Center.asVector()};
+	const auto LastRadius {LastPointInPlane.distanceTo(Center)};
+	const auto ThicknessNotZero {!OdZero(Circle->thickness())};
+	const auto Thickness {Circle->normal() * Circle->thickness()};
 	switch (objectSnapMode) {
-		case OdDb::kOsModeCen: // Center: draw cross
-			for (unsigned i = 0; i < gripPoints.size(); i += 5) {
-				snapPoints.append(gripPoints[i]);
+		case OdDb::kOsModeCen: // draw cross
+			for (unsigned i = 0; i < GripPoints.size(); i += 5) {
+				snapPoints.append(GripPoints[i]);
 			}
 			break;
-		case OdDb::kOsModeQuad: // Quadrant: cursor as square turned on 45 degrees
-			for (unsigned i = 1; i < gripPoints.size(); i++) {
+		case OdDb::kOsModeQuad: // cursor as square turned on 45 degrees
+			for (unsigned i = 1; i < GripPoints.size(); i++) {
 				if (i == 5) {
 					continue;
 				}
-				snapPoints.append(gripPoints[i]);
+				snapPoints.append(GripPoints[i]);
 			}
 			break;
 		case OdDb::kOsModePerp: // Perpendicular: cursor as angle 90
-			if (rdLast > 0) {
-				auto Point {ptLast * radius / rdLast};
-				snapPoints.append(center + Point.asVector());
-				snapPoints.append(center - Point.asVector());
-				if (bThickness) {
-					snapPoints.append(center + Point.asVector() + vThickness);
-					snapPoints.append(center - Point.asVector() + vThickness);
+			if (LastRadius > 0) {
+				auto Point {LastPoint * Radius / LastRadius};
+				snapPoints.append(Center + Point.asVector());
+				snapPoints.append(Center - Point.asVector());
+				if (ThicknessNotZero) {
+					snapPoints.append(Center + Point.asVector() + Thickness);
+					snapPoints.append(Center - Point.asVector() + Thickness);
 				}
 			}
 			break;
-		case OdDb::kOsModeTan: // Tangent: cursor as circle with tangent
-			if (rdLast <= radius) {
+		case OdDb::kOsModeTan: // cursor as circle with tangent
+			if (LastRadius <= Radius) {
 				break;
 			}
-			if (ptLast.y != 0) {
-				const auto a {1 + pow(ptLast.x, 2) / pow(ptLast.y, 2)};
-				const auto b {-2 * pow(radius, 2) * ptLast.x / pow(ptLast.y, 2)};
-				const auto c {pow(radius, 4) / pow(ptLast.y, 2) - pow(radius, 2)};
+			if (LastPoint.y != 0) {
+				const auto a {1 + pow(LastPoint.x, 2) / pow(LastPoint.y, 2)};
+				const auto b {-2 * pow(Radius, 2) * LastPoint.x / pow(LastPoint.y, 2)};
+				const auto c {pow(Radius, 4) / pow(LastPoint.y, 2) - pow(Radius, 2)};
 				if (pow(b, 2) - 4 * a * c >= 0) {
 					auto x {(-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a)};
-					auto y {(pow(radius, 2) - ptLast.x * x) / ptLast.y};
-					snapPoints.append(center + OdGeVector3d(x, y, 0));
-					if (bThickness) {
-						snapPoints.append(center + OdGeVector3d(x, y, 0) + vThickness);
+					auto y {(pow(Radius, 2) - LastPoint.x * x) / LastPoint.y};
+					snapPoints.append(Center + OdGeVector3d(x, y, 0));
+					if (ThicknessNotZero) {
+						snapPoints.append(Center + OdGeVector3d(x, y, 0) + Thickness);
 					}
 					x = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
-					y = (pow(radius, 2) - ptLast.x * x) / ptLast.y;
-					snapPoints.append(center + OdGeVector3d(x, y, 0));
-					if (bThickness) {
-						snapPoints.append(center + OdGeVector3d(x, y, 0) + vThickness);
+					y = (pow(Radius, 2) - LastPoint.x * x) / LastPoint.y;
+					snapPoints.append(Center + OdGeVector3d(x, y, 0));
+					if (ThicknessNotZero) {
+						snapPoints.append(Center + OdGeVector3d(x, y, 0) + Thickness);
 					}
 				}
 			} else {
-				const auto x {pow(radius, 2) / ptLast.x};
-				const auto y {sqrt(pow(radius, 2) - pow(x, 2))};
-				snapPoints.append(center + OdGeVector3d(x, y, 0));
-				snapPoints.append(center + OdGeVector3d(x, -y, 0));
-				if (bThickness) {
-					snapPoints.append(center + OdGeVector3d(x, y, 0) + vThickness);
-					snapPoints.append(center + OdGeVector3d(x, -y, 0) + vThickness);
+				const auto x {pow(Radius, 2) / LastPoint.x};
+				const auto y {sqrt(pow(Radius, 2) - pow(x, 2))};
+				snapPoints.append(Center + OdGeVector3d(x, y, 0));
+				snapPoints.append(Center + OdGeVector3d(x, -y, 0));
+				if (ThicknessNotZero) {
+					snapPoints.append(Center + OdGeVector3d(x, y, 0) + Thickness);
+					snapPoints.append(Center + OdGeVector3d(x, -y, 0) + Thickness);
 				}
 			}
 			break;
-		case OdDb::kOsModeNear: // Nearest: cursor ~ hourglasses
-			if (rdPick > 0) {
-				auto Point {ptPick * radius / rdPick};
-				snapPoints.append(center + Point.asVector());
-				if (bThickness) {
-					snapPoints.append(center + Point.asVector() + vThickness);
+		case OdDb::kOsModeNear: // cursor ~ hourglass
+			if (PickRadius > 0) {
+				auto Point {PickPoint * Radius / PickRadius};
+				snapPoints.append(Center + Point.asVector());
+				if (ThicknessNotZero) {
+					snapPoints.append(Center + Point.asVector() + Thickness);
 				}
 			}
 			break;
-		case OdDb::kOsModeEnd:  // Endpoint:     cursor as square
-		case OdDb::kOsModeNode: // Node:         cursor as cross in a square
-		case OdDb::kOsModeMid:  // Midpoint:     cursor as triangle
-		case OdDb::kOsModeIntersec:
-			// Intersection: cursor as intersection in a square
-		case OdDb::kOsModeIns:   // Insertion:    -/-
-		case OdDb::kOsModePar:   // Parallel:
-		case OdDb::kOsModeApint: // Apparent intersection:
-			break;                 //               isn't necessary to do
+		case OdDb::kOsModeEnd: // cursor as square
+		case OdDb::kOsModeNode: // cursor as cross in a square
+		case OdDb::kOsModeMid: // cursor as triangle
+		case OdDb::kOsModeIntersec: // cursor as intersection in a square
+		case OdDb::kOsModeIns:
+		case OdDb::kOsModePar:
+		case OdDb::kOsModeApint:
+			break;
 		default:
 			break;
 	}

@@ -45,7 +45,7 @@ OdResult OdDbPolygonMeshGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, co
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdDbPolygonMesh* pMesh = OdDbPolygonMesh::cast(entity);
 	auto pIter {pMesh->vertexIterator()};
 	OdGePoint3dArray pPosArr;
@@ -64,30 +64,30 @@ OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 				auto pLine {OdDbLine::createObject()};
 				pLine->setStartPoint(pPosArr[i * nCols + j]);
 				pLine->setEndPoint(pPosArr[i * nCols + j + 1]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, xWorldToEye, snapPoints);
+				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 			} else if (j == nCols - 1 && bColsClosed) {
 				auto pLine {OdDbLine::createObject()};
 				pLine->setStartPoint(pPosArr[i * nCols + j]);
 				pLine->setEndPoint(pPosArr[i * nCols]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, xWorldToEye, snapPoints);
+				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 			}
 			if (i < nRows - 1) {
 				auto pLine {OdDbLine::createObject()};
 				pLine->setStartPoint(pPosArr[i * nCols + j]);
 				pLine->setEndPoint(pPosArr[(i + 1) * nCols + j]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, xWorldToEye, snapPoints);
+				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 			} else if (i == nRows - 1 && bRowsClosed) {
 				auto pLine {OdDbLine::createObject()};
 				pLine->setStartPoint(pPosArr[i * nCols + j]);
 				pLine->setEndPoint(pPosArr[j]);
-				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, xWorldToEye, snapPoints);
+				pLine->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 			}
 		}
 	}
 	return eOk;
 }
 
-OdResult OdDbPolygonMeshGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* /*entity*/, const OdDbFullSubentPath& /*path*/, OdDbGripDataPtrArray& /*grips*/, const double /*curViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*curViewDir*/, const OdUInt32 /*bitFlags*/) const {
+OdResult OdDbPolygonMeshGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* /*entity*/, const OdDbFullSubentPath& /*path*/, OdDbGripDataPtrArray& /*grips*/, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*currentViewDirection*/, const OdUInt32 /*bitFlags*/) const {
 	return eNotApplicable;
 }
 

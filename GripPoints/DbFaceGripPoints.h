@@ -1,14 +1,18 @@
 #pragma once
-#include <Ge/GeLine3d.h>
-#include <Ge/GePlanarEnt.h>
 #include <DbFace.h>
 #include <DbGripPoints.h>
 
 class OdDbFaceGripPointsPE : public OdDbGripPointsPE {
-	OdGePoint3d getPlanePoint(const OdDbFacePtr pFace, OdGePoint3d point) const {
-		OdGePlane Plane; // recalculated Point in plane of pFace
+	/**
+	 * \brief 
+	 * \param face 
+	 * \param point 
+	 * \return  recalculated point in plane of face
+	 */
+	static OdGePoint3d GetPlanePoint(const OdDbFacePtr& face, OdGePoint3d point) {
+		OdGePlane Plane;
 		OdDb::Planarity Planarity;
-		pFace->getPlane(Plane, Planarity);
+		face->getPlane(Plane, Planarity);
 		Plane.intersectWith(OdGeLine3d(point, Plane.normal()), point);
 		return point;
 	}
@@ -22,5 +26,5 @@ public:
 
 	OdResult moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 
-	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const override;
+	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const override;
 };

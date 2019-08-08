@@ -21,10 +21,10 @@ static OdDbSpatialFilterPtr getBlockReferenceSpatialFilter(OdDbBlockReference* p
 	return OdDbSpatialFilter::cast(pFDict->getAt(L"SPATIAL", openMode));
 }
 
-void OdDbBlockGripOpStatus(OdDbGripData* pThis, OdDbStub*, OdDbGripOperations::GripStatus status) {
-	if (pThis->appDataOdRxClass() == OdDbBlockGripAppData::desc() && (status == OdDbGripOperations::kGripEnd || status == OdDbGripOperations::kGripAbort)) {
-		((OdDbBlockGripAppData*)pThis->appData())->release();
-		pThis->setAppData(nullptr);
+void OdDbBlockGripOpStatus(OdDbGripData* gripData, OdDbStub* /*stub*/, OdDbGripOperations::GripStatus status) {
+	if (gripData->appDataOdRxClass() == OdDbBlockGripAppData::desc() && (status == OdDbGripOperations::kGripEnd || status == OdDbGripOperations::kGripAbort)) {
+		((OdDbBlockGripAppData*)gripData->appData())->release();
+		gripData->setAppData(nullptr);
 	}
 }
 
@@ -57,33 +57,33 @@ static void drawFlipArrow(OdGiViewportDraw* pWd, const OdGePoint3d& p, int gripS
 	pWd->geometry().polygonEye(7, pp);
 }
 
-static void OdDbBlockGripViewportDraw(OdDbGripData* pThis, OdGiViewportDraw* pWd, OdDbStub* /*entId*/, OdDbGripOperations::DrawType type, OdGePoint3d* imageGripPoint, int gripSize) {
-	ODA_ASSERT(pThis->appDataOdRxClass() == OdDbBlockGripAppData::desc());
-	auto p {imageGripPoint == nullptr ? pThis->gripPoint() : *imageGripPoint};
-	p.transformBy(pWd->viewport().getWorldToEyeTransform());
+static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* viewportDraw, OdDbStub* /*entId*/, OdDbGripOperations::DrawType type, OdGePoint3d* imageGripPoint, int gripSize) {
+	ODA_ASSERT(gripData->appDataOdRxClass() == OdDbBlockGripAppData::desc());
+	auto p {imageGripPoint == nullptr ? gripData->gripPoint() : *imageGripPoint};
+	p.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
 	switch (type) {
 		case OdDbGripOperations::kWarmGrip:
-			pWd->subEntityTraits().setColor(OdCmEntityColor::kACICyan);
+			viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACICyan);
 			break;
 		case OdDbGripOperations::kHoverGrip:
-			pWd->subEntityTraits().setColor(OdCmEntityColor::kACIRed);
+			viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACIRed);
 			break;
 		case OdDbGripOperations::kHotGrip:
-			pWd->subEntityTraits().setColor(OdCmEntityColor::kACIMagenta);
+			viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACIMagenta);
 			break;
 		case OdDbGripOperations::kDragImageGrip:
-			pWd->subEntityTraits().setColor(OdCmEntityColor::kACIBlue);
+			viewportDraw->subEntityTraits().setColor(OdCmEntityColor::kACIBlue);
 			break;
 	}
-	pWd->subEntityTraits().setFillType(kOdGiFillAlways);
-	drawFlipArrow(pWd, p, gripSize, ((OdDbBlockGripAppData*)pThis->appData())->m_vClipInvertOrientation);
+	viewportDraw->subEntityTraits().setFillType(kOdGiFillAlways);
+	drawFlipArrow(viewportDraw, p, gripSize, ((OdDbBlockGripAppData*)gripData->appData())->m_vClipInvertOrientation);
 }
 
-OdResult OdDbBlockHotGrip(OdDbGripData* pThis, OdDbStub* entId, int status) {
-	if (status & OdDbGripOperations::kSharedGrip) {
+OdResult OdDbBlockHotGrip(OdDbGripData* gripData, OdDbStub* entId, int status) {
+	if ((status & OdDbGripOperations::kSharedGrip) != 0) {
 		return eOk;
 	}
-	auto appdata {(OdDbBlockGripAppData*) pThis->appData()};
+	auto appdata {(OdDbBlockGripAppData*) gripData->appData()};
 	if (!appdata->m_bClipInvertGrip) {
 		return eOk;
 	}
@@ -95,7 +95,7 @@ OdResult OdDbBlockHotGrip(OdDbGripData* pThis, OdDbStub* entId, int status) {
 	return eOk;
 }
 
-OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdDbGripDataPtrArray& grips, const double /*curViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& curViewDir, const int /*bitFlags*/) const {
+OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdDbGripDataPtrArray& grips, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& currentViewDirection, const int /*bitFlags*/) const {
 	OdDbBlockReferencePtr pBtr(entity);
 	{
 		// Origin
@@ -148,7 +148,7 @@ OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity,
 				auto flag {OdGe::kOk};
 				v.normalize(OdGeContext::gTol, flag);
 				if (flag == OdGe::kOk) {
-					v.rotateBy(OdaPI2, curViewDir);
+					v.rotateBy(OdaPI2, currentViewDirection);
 					if (pSpatialFilter->isFilterInverted()) {
 						v.negate();
 					}
@@ -264,11 +264,11 @@ OdResult OdDbBlockReferenceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity,
 	return eOk;
 }
 
-OdResult OdDbBlockReferenceGripPointsPE::getOsnapPoints(const OdDbEntity* /*entity*/, OdDb::OsnapMode /*objectSnapMode*/, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& /*snapPoints*/) const {
+OdResult OdDbBlockReferenceGripPointsPE::getOsnapPoints(const OdDbEntity* /*entity*/, OdDb::OsnapMode /*objectSnapMode*/, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& /*snapPoints*/) const {
 	// Should return:
 	// Osnap points for block contents transformed by own transformation.
 	// Plus for INS - own position and INS should be called for attributes
 	//
-	// Note gsSelectionMark also needs to be taken care of
+	// Note selectionMarker also needs to be taken care of
 	return eNotImplemented;
 }

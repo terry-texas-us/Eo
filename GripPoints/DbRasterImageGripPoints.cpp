@@ -132,18 +132,18 @@ OdResult OdDbRasterImageGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, co
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbRasterImageGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*viewTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbRasterImageGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: case OdDb::kOsModeCen: {
-			OdGePoint3dArray gripPoints;
-			getGripPoints(entity, gripPoints);
-			if (gripPoints.size() > 0) {
+			OdGePoint3dArray GripPoints;
+			getGripPoints(entity, GripPoints);
+			if (!GripPoints.empty()) {
 				if (objectSnapMode == OdDb::kOsModeEnd) {
-					gripPoints.erase(gripPoints.begin());
+					GripPoints.erase(GripPoints.begin());
 				} else {
-					gripPoints.erase(gripPoints.begin() + 1, gripPoints.end());
+					GripPoints.erase(GripPoints.begin() + 1, GripPoints.end());
 				}
-				snapPoints.append(gripPoints);
+				snapPoints.append(GripPoints);
 			}
 		}
 			break;

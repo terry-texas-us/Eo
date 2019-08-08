@@ -6,17 +6,17 @@
 #define STL_USING_UTILITY
 #include <OdaSTL.h>
 
-OdResult OdDbUnderlayGripPointsPE::checkBorder(const OdDbUnderlayReferencePtr& pRef, OdDb::OsnapMode objectSnapMode, const OdGePoint3d& pickPoint, OdGePoint3dArray& snapPoints) const {
-	if (pRef.isNull() || objectSnapMode != OdDb::kOsModeEnd) {
+OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& underlayReference, OdDb::OsnapMode objectSnapMode, const OdGePoint3d& pickPoint, OdGePoint3dArray& snapPoints) const {
+	if (underlayReference.isNull() || objectSnapMode != OdDb::kOsModeEnd) {
 		return eNotImplemented;
 	}
 	OdGePoint2dArray pnts2d;
-	if (pRef->isClipped() && pRef->clipBoundary().size()) {
+	if (underlayReference->isClipped() && underlayReference->clipBoundary().size()) {
 		//fill from clip boundary
-		pnts2d.insert(pnts2d.begin(), pRef->clipBoundary().asArrayPtr(), pRef->clipBoundary().asArrayPtr() + pRef->clipBoundary().size());
+		pnts2d.insert(pnts2d.begin(), underlayReference->clipBoundary().asArrayPtr(), underlayReference->clipBoundary().asArrayPtr() + underlayReference->clipBoundary().size());
 	} else {
 		//fill from extents
-		OdDbUnderlayDefinitionPtr pDef = pRef->definitionId().openObject();
+		OdDbUnderlayDefinitionPtr pDef = underlayReference->definitionId().openObject();
 		if (pDef.isNull()) {
 			return eNullEntityPointer;
 		}
@@ -54,7 +54,7 @@ OdResult OdDbUnderlayGripPointsPE::checkBorder(const OdDbUnderlayReferencePtr& p
 	return eOk;
 }
 
-OdResult OdDbUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	auto pRef {OdDbUnderlayReference::cast(entity)};
 	if (pRef.isNull()) {
 		return eNullObjectPointer;
@@ -66,6 +66,6 @@ OdResult OdDbUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb
 	if (!pDef->isLoaded()) { // nothing can be rendered
 		return eFileNotFound;
 	}
-	checkBorder(pRef, objectSnapMode, pickPoint, snapPoints);
+	CheckBorder(pRef, objectSnapMode, pickPoint, snapPoints);
 	return eOk;
 }

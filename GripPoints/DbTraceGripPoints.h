@@ -12,7 +12,7 @@ public:
 
 	virtual OdResult moveStretchPointsAt(_DbTraceGPRedir* trace, const OdIntArray& indices, const OdGeVector3d& offset);
 
-	virtual OdResult getOsnapPoints(const _DbTraceGPRedir* trace, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const;
+	virtual OdResult getOsnapPoints(const _DbTraceGPRedir* trace, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const;
 };
 
 class OdDbTraceGripPointsPE : public OdDbEntityGripPointsPE, protected OdDbTraceGripPointsPE_Base {
@@ -25,7 +25,7 @@ public:
 
 	OdResult moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 
-	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const override;
+	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const override;
 };
 
 class OdDbSolidGripPointsPE : public OdDbEntityGripPointsPE, protected OdDbTraceGripPointsPE_Base {
@@ -38,5 +38,5 @@ public:
 
 	OdResult moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 
-	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const override;
+	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const override;
 };

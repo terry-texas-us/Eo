@@ -8,7 +8,7 @@
 #include "../Extensions/PdfUnderlayCommon/PdfUnderlay.h"
 #include <DbUnderlayDefinition.h>
 
-OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	if (objectSnapMode != OdDb::kOsModeEnd) { // FLYSDK version
 		return eNotImplemented;
 	}
@@ -18,7 +18,7 @@ OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 	if (pModule.isNull()) {
 		return eTxError;
 	}
-	const auto Result {OdDbUnderlayGripPointsPE::getOsnapPoints(entity, objectSnapMode, gsSelectionMark, pickPoint, lastPoint, xWorldToEye, snapPoints)};
+	const auto Result {OdDbUnderlayGripPointsPE::getOsnapPoints(entity, objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, snapPoints)};
 	if (eOk == Result) {
 		class PdfSnapGrabberImpl : public OdStaticRxObject<OdGiDummyGeometry<OdGiGeometry> > {
 			OdGePoint3dArray& snapPoints;

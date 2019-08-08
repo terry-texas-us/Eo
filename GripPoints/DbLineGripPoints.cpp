@@ -14,18 +14,18 @@ OdResult OdDbLineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint
 }
 
 OdResult OdDbLineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto size {indices.size()};
-	if (size == 0) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbLinePtr pLine = entity;
-	if (size > 1 || indices[0] == 2) {
-		pLine->setStartPoint(pLine->startPoint() + offset);
-		pLine->setEndPoint(pLine->endPoint() + offset);
+	OdDbLinePtr Line = entity;
+	if (IndicesSize > 1 || indices[0] == 2) {
+		Line->setStartPoint(Line->startPoint() + offset);
+		Line->setEndPoint(Line->endPoint() + offset);
 	} else if (indices[0] == 0) {
-		pLine->setStartPoint(pLine->startPoint() + offset);
+		Line->setStartPoint(Line->startPoint() + offset);
 	} else if (indices[0] == 1) {
-		pLine->setEndPoint(pLine->endPoint() + offset);
+		Line->setEndPoint(Line->endPoint() + offset);
 	}
 	return eOk;
 }
@@ -42,38 +42,38 @@ OdResult OdDbLineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbLineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& snapPoints) const {
-	OdDbLinePtr line = entity;
-	OdGePoint3d start;
-	OdGePoint3d end;
-	line->getStartPoint(start);
-	line->getEndPoint(end);
+OdResult OdDbLineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+	OdDbLinePtr Line = entity;
+	OdGePoint3d StartPoint;
+	OdGePoint3d EndPoint;
+	Line->getStartPoint(StartPoint);
+	Line->getEndPoint(EndPoint);
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
-			snapPoints.append(start);
-			snapPoints.append(end);
+			snapPoints.append(StartPoint);
+			snapPoints.append(EndPoint);
 			break;
 		case OdDb::kOsModeMid:
-			snapPoints.append(start + (end - start) / 2);
+			snapPoints.append(StartPoint + (EndPoint - StartPoint) / 2.0);
 			break;
 		case OdDb::kOsModePerp: {
-			const OdGeLine3d l(start, end);
-			snapPoints.append(l.evalPoint(l.paramOf(lastPoint)));
+			const OdGeLine3d InfiniteLine(StartPoint, EndPoint);
+			snapPoints.append(InfiniteLine.evalPoint(InfiniteLine.paramOf(lastPoint)));
+			break;
 		}
-		break;
 		case OdDb::kOsModeNear: // TODO: project on view plane
-			if (!start.isEqualTo(end)) {
-				const OdGeLine3d l(start, end);
-				const auto p {l.paramOf(pickPoint)};
-				if (p > 1) {
-					snapPoints.append(end);
-				} else if (p < 0) {
-					snapPoints.append(start);
+			if (!StartPoint.isEqualTo(EndPoint)) {
+				const OdGeLine3d InfiniteLine(StartPoint, EndPoint);
+				const auto PickParameter {InfiniteLine.paramOf(pickPoint)};
+				if (PickParameter > 1) {
+					snapPoints.append(EndPoint);
+				} else if (PickParameter < 0) {
+					snapPoints.append(StartPoint);
 				} else {
-					snapPoints.append(l.evalPoint(p));
+					snapPoints.append(InfiniteLine.evalPoint(PickParameter));
 				}
 			} else {
-				snapPoints.append(start);
+				snapPoints.append(StartPoint);
 			}
 			break;
 		default:

@@ -3,6 +3,7 @@
 #include <Ge/GeMatrix3d.h>
 #include <Ge/GeScale3d.h>
 #include <Ge/GeExtents3d.h>
+#include <DbOle2Frame.h>
 
 OdResult OdDbOleGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	OdGeExtents3d Extents;
@@ -96,6 +97,6 @@ OdResult OdDbOleGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIn
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbOleGripPointsPE::getOsnapPoints(const OdDbEntity* /*entity*/, OdDb::OsnapMode /*objectSnapMode*/, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& /*snapPoints*/) const {
+OdResult OdDbOleGripPointsPE::getOsnapPoints(const OdDbEntity* /*entity*/, OdDb::OsnapMode /*objectSnapMode*/, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& /*snapPoints*/) const {
 	return eOk;
 }

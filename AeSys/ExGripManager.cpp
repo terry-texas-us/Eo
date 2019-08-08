@@ -376,16 +376,16 @@ OdGiDrawablePtr OdExGripManager::OpenObject(OdDbStub* id, const bool isForWriteM
 	return Drawable;
 }
 
-OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize, const OdGeVector3d& curViewDir, const unsigned long bitFlags) const {
-	return OdDbEntity::cast(entity)->getGripPointsAtSubentPath(*static_cast<const OdDbFullSubentPath*>(&path), grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
+OdResult OdExGripManager::GetGripPointsAtSubentPath(OdGiDrawable* entity, const OdDbBaseFullSubentPath& path, OdDbGripDataPtrArray& grips, const double currentViewUnitSize, const int gripSize, const OdGeVector3d& currentViewDirection, const unsigned long bitFlags) const {
+	return OdDbEntity::cast(entity)->getGripPointsAtSubentPath(*static_cast<const OdDbFullSubentPath*>(&path), grips, currentViewUnitSize, gripSize, currentViewDirection, bitFlags);
 }
 
-OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, const double curViewUnitSize, const int gripSize, const OdGeVector3d& curViewDir, const int bitFlags) const {
+OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdDbGripDataPtrArray& grips, const double currentViewUnitSize, const int gripSize, const OdGeVector3d& currentViewDirection, const int bitFlags) const {
 	OdDbEntity* Entity {OdDbEntity::cast(entity)};
 	if (Entity == nullptr) {
 		return eNotApplicable;
 	}
-	return Entity->getGripPoints(grips, curViewUnitSize, gripSize, curViewDir, bitFlags);
+	return Entity->getGripPoints(grips, currentViewUnitSize, gripSize, currentViewDirection, bitFlags);
 }
 
 OdResult OdExGripManager::GetGripPoints(OdGiDrawable* entity, OdGePoint3dArray& gripPoints) const {

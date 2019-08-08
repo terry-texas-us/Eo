@@ -6,80 +6,78 @@
 #include "OdGripPointsModule.h"
 
 OdResult OdDbArcGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	const auto size {gripPoints.size()};
-	OdDbArcPtr arc = entity;
-	const auto dThickness {arc->thickness()};
-	const auto nNumPoints {OdZero(dThickness) ? 4 : 8};
-	gripPoints.resize(size + nNumPoints);
-	auto pStart {gripPoints.asArrayPtr() + size};
-	auto pCur {pStart};
-	arc->getStartPoint(*pCur++);
-	arc->getEndPoint(*pCur++);
-	double start;
-	double end;
-	arc->getStartParam(start);
-	arc->getEndParam(end);
-	arc->getPointAtParam((start + end) / 2, *pCur++);
-	*pCur++ = arc->center();
-	if (nNumPoints == 8) {
-		const auto Extrusion {arc->normal() * dThickness};
-		*pCur++ = *pStart++ + Extrusion;
-		*pCur++ = *pStart++ + Extrusion;
-		*pCur++ = *pStart++ + Extrusion;
-		*pCur++ = *pStart++ + Extrusion;
+	const auto Size {gripPoints.size()};
+	OdDbArcPtr Arc = entity;
+	const auto Thickness {Arc->thickness()};
+	const auto NumberOfPoints {OdZero(Thickness) ? 4 : 8};
+	gripPoints.resize(Size + NumberOfPoints);
+	auto StartPoint {gripPoints.asArrayPtr() + Size};
+	auto CurrentPoint {StartPoint};
+	Arc->getStartPoint(*CurrentPoint++);
+	Arc->getEndPoint(*CurrentPoint++);
+	double StartParameter;
+	double EndParameter;
+	Arc->getStartParam(StartParameter);
+	Arc->getEndParam(EndParameter);
+	Arc->getPointAtParam((StartParameter + EndParameter) / 2.0, *CurrentPoint++);
+	*CurrentPoint++ = Arc->center();
+	if (NumberOfPoints == 8) {
+		const auto Extrusion {Arc->normal() * Thickness};
+		*CurrentPoint++ = *StartPoint++ + Extrusion;
+		*CurrentPoint++ = *StartPoint++ + Extrusion;
+		*CurrentPoint++ = *StartPoint++ + Extrusion;
+		*CurrentPoint++ = *StartPoint++ + Extrusion;
 	}
 	return eOk;
 }
 
-OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& vOffset) {
-	const auto indicesSize {indices.size()};
-	if (indicesSize == 0) {
+OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbArcPtr pArc = entity;
-	auto offset {vOffset};
+	OdDbArcPtr Arc = entity;
+	auto Offset {offset};
 	// Project offset on entity's plane in view direction
-	if (!projectOffset(pArc->database(), pArc->normal(), offset)) { // View direction is perpendicular to normal. Move the arc
-		pArc->setCenter(pArc->center() + offset);
+	if (!ProjectOffset(Arc->database(), Arc->normal(), Offset)) { // View direction is perpendicular to normal. Move the arc
+		Arc->setCenter(Arc->center() + Offset);
 	} else {
-		auto flags {0};
-		OdGePoint3dArray pts;
-		getGripPoints(entity, pts);
-		for (unsigned i = 0; i < indicesSize; ++i) {
-			unsigned ind = indices[i];
-			if (ind < pts.size()) {
-				if (ind >= 4) {
-					ind -= 4;
+		auto flags {0U};
+		OdGePoint3dArray Points;
+		getGripPoints(entity, Points);
+		for (unsigned i = 0; i < IndicesSize; ++i) {
+			unsigned Index = indices[i];
+			if (Index < Points.size()) {
+				if (Index >= 4) {
+					Index -= 4;
 				}
-				const auto nMask {1 << ind};
-				if (!(flags & nMask)) {
-					pts[ind] += offset;
-					flags |= nMask;
+				const auto Mask {1U << Index};
+				if ((flags & Mask) == 0U) {
+					Points[Index] += Offset;
+					flags |= Mask;
 				}
 			}
 		}
 		try {
-			if ((flags & 8) || ((flags & 7) == 7)) { // // Center moved (8) or all 3 arc points moved
-				pArc->setCenter(pts[3]);
+			if (((flags & 8U) != 0U) || (flags & 7U) == 7U) { // // Center moved (8) or all 3 arc points moved
+				Arc->setCenter(Points[3]);
 			} else {
-				const auto pP1 {pts.asArrayPtr()};
+				const auto pP1 {Points.asArrayPtr()};
 				const auto pP2 {pP1 + 2};
 				const auto pP3 {pP1 + 1};
-				OdGeCircArc3d geArc;
-				// Check if arc changed direction. Normal should not be flipped.
+				OdGeCircArc3d CircularArc;
 				const auto v1 {*pP2 - *pP1};
 				const auto v2 {*pP3 - *pP2};
-				const auto vNewNormal {v1.crossProduct(v2)};
-				if (vNewNormal.isCodirectionalTo(pArc->normal())) {
-					// OK
-					geArc.set(*pP1, *pP2, *pP3);
-				} else {
-					geArc.set(*pP3, *pP2, *pP1);
+				const auto NewNormal {v1.crossProduct(v2)};
+				if (NewNormal.isCodirectionalTo(Arc->normal())) { // OK
+					CircularArc.set(*pP1, *pP2, *pP3);
+				} else { // Arc changed direction. Normal should not be flipped.
+					CircularArc.set(*pP3, *pP2, *pP1);
 				}
-				pArc->setFromOdGeCurve(geArc);
+				Arc->setFromOdGeCurve(CircularArc);
 			}
-		} catch (const OdError& e) {
-			return e.code();
+		} catch (const OdError& Error) {
+			return Error.code();
 		}
 	}
 	return eOk;
@@ -95,125 +93,125 @@ OdResult OdDbArcGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoi
 	return Result;
 }
 
-OdResult OdDbArcGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& vOffset) {
-	const auto indicesSize {indices.size()};
-	if (indicesSize == 0) {
+OdResult OdDbArcGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
+	const auto IndicesSize {indices.size()};
+	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbArcPtr pArc = entity;
-	auto offset {vOffset};
+	OdDbArcPtr Arc = entity;
+	auto Offset {offset};
 	// Project offset on entity's plane in view direction
-	if (!projectOffset(pArc->database(), pArc->normal(), offset)) {
-		// View direction is perpendicular to normal
-		// Do nothing
+	if (!ProjectOffset(Arc->database(), Arc->normal(), Offset)) {
+		// View direction is perpendicular to normal. Do nothing
 		return eOk;
 	}
-	if (indicesSize >= 2) {
-		return entity->transformBy(OdGeMatrix3d::translation(offset));
+	if (IndicesSize >= 2) {
+		return entity->transformBy(OdGeMatrix3d::translation(Offset));
 	}
 	try {
-		OdGePoint3d pt;
+		OdGePoint3d Point;
 		switch (indices[0]) {
 			case 0: {
-				pArc->getStartPoint(pt);
-				const auto v0 {pt - pArc->center()};
-				pt += offset;
-				const auto v1 {pt - pArc->center()};
-				const auto angle {v0.angleTo(v1, pArc->normal())};
-				pArc->setStartAngle(pArc->startAngle() + angle);
+				Arc->getStartPoint(Point);
+				const auto v0 {Point - Arc->center()};
+				Point += Offset;
+				const auto v1 {Point - Arc->center()};
+				const auto Angle {v0.angleTo(v1, Arc->normal())};
+				Arc->setStartAngle(Arc->startAngle() + Angle);
+				break;
 			}
-			break;
 			case 1: {
-				pArc->getEndPoint(pt);
-				const auto v0 {pt - pArc->center()};
-				pt += offset;
-				const auto v1 {pt - pArc->center()};
-				const auto angle {v0.angleTo(v1, pArc->normal())};
-				pArc->setEndAngle(pArc->endAngle() + angle);
+				Arc->getEndPoint(Point);
+				const auto v0 {Point - Arc->center()};
+				Point += Offset;
+				const auto v1 {Point - Arc->center()};
+				const auto Angle {v0.angleTo(v1, Arc->normal())};
+				Arc->setEndAngle(Arc->endAngle() + Angle);
+				break;
 			}
-			break;
+			default: ;
 		}
-	} catch (const OdError& e) {
-		return e.code();
+	} catch (const OdError& Error) {
+		return Error.code();
 	}
 	return eOk;
 }
 
-OdResult OdDbArcGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const {
-	OdGePoint3dArray gripPoints;
-	const auto Result {getGripPoints(entity, gripPoints)};
+OdResult OdDbArcGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+	OdGePoint3dArray GripPoints;
+	const auto Result {getGripPoints(entity, GripPoints)};
 	if (Result != eOk) {
 		return Result;
 	}
-	OdDbArcPtr arc = entity;
+	OdDbArcPtr Arc = entity;
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
-			snapPoints.append(gripPoints[0]);
-			snapPoints.append(gripPoints[1]);
+			snapPoints.append(GripPoints[0]);
+			snapPoints.append(GripPoints[1]);
 			break;
 		case OdDb::kOsModeMid:
-			snapPoints.append(gripPoints[2]);
+			snapPoints.append(GripPoints[2]);
 			break;
 		case OdDb::kOsModeCen:
-			snapPoints.append(gripPoints[3]);
+			snapPoints.append(GripPoints[3]);
 			break;
 		case OdDb::kOsModeQuad: {
-			const OdDbDatabase* pDb = entity->database();
-			const auto xAxis {pDb->getUCSXDIR()};
-			const auto yAxis {pDb->getUCSYDIR()};
-			const auto zAxis {xAxis.crossProduct(yAxis)};
-			if (!arc->normal().isParallelTo(zAxis)) {
+			const OdDbDatabase* Database = entity->database();
+			const auto XAxis {Database->getUCSXDIR()};
+			const auto YAxis {Database->getUCSYDIR()};
+			const auto ZAxis {XAxis.crossProduct(YAxis)};
+			if (!Arc->normal().isParallelTo(ZAxis)) {
 				return eInvalidAxis;
 			}
-			snapPoints.append(arc->center() + xAxis * arc->radius());
-			snapPoints.append(arc->center() - xAxis * arc->radius());
-			snapPoints.append(arc->center() + yAxis * arc->radius());
-			snapPoints.append(arc->center() - yAxis * arc->radius());
+			snapPoints.append(Arc->center() + XAxis * Arc->radius());
+			snapPoints.append(Arc->center() - XAxis * Arc->radius());
+			snapPoints.append(Arc->center() + YAxis * Arc->radius());
+			snapPoints.append(Arc->center() - YAxis * Arc->radius());
+			break;
 		}
-		break;
 		case OdDb::kOsModePerp: {
-			const OdGePlane Plane(arc->center(), arc->normal());
+			const OdGePlane Plane(Arc->center(), Arc->normal());
 			OdGePoint3d pp;
 			if (!Plane.project(lastPoint, pp)) {
 				return eNotApplicable;
 			}
-			auto v {pp - arc->center()};
+			auto v {pp - Arc->center()};
 			if (v.isZeroLength()) {
 				return eNotApplicable;
 			}
 			v.normalize();
-			v *= arc->radius();
-			snapPoints.append(arc->center() + v);
-			snapPoints.append(arc->center() - v);
+			v *= Arc->radius();
+			snapPoints.append(Arc->center() + v);
+			snapPoints.append(Arc->center() - v);
+			break;
 		}
-		break;
 		case OdDb::kOsModeTan: {
-			const OdGePlane Plane(arc->center(), arc->normal());
+			const OdGePlane Plane(Arc->center(), Arc->normal());
 			OdGePoint3d pp;
 			if (!Plane.project(lastPoint, pp)) {
 				return eNotApplicable;
 			}
-			auto v {pp - arc->center()};
-			const auto dLen {v.length()};
-			const auto Radius {arc->radius()};
-			if (dLen <= Radius) { // dLen may be zero
+			auto v {pp - Arc->center()};
+			const auto Length {v.length()};
+			const auto Radius {Arc->radius()};
+			if (Length <= Radius) { // Length may be zero
 				return eNotApplicable;
 			}
-			const auto c {Radius / dLen};
-			const auto angle {OD_ACOS(c)};
+			const auto c {Radius / Length};
+			const auto Angle {OD_ACOS(c)};
 			auto v1 {v.normalize()};
 			v1 *= Radius;
 			auto v2 {v1};
-			v1.rotateBy(angle, arc->normal());
-			v2.rotateBy(-angle, arc->normal());
-			snapPoints.append(arc->center() + v1);
-			snapPoints.append(arc->center() + v2);
+			v1.rotateBy(Angle, Arc->normal());
+			v2.rotateBy(-Angle, Arc->normal());
+			snapPoints.append(Arc->center() + v1);
+			snapPoints.append(Arc->center() + v2);
+			break;
 		}
-		break;
 		case OdDb::kOsModeNear: {
-			OdGePoint3d p;
-			if (arc->getClosestPointTo(pickPoint, xWorldToEye.inverse() * OdGeVector3d::kZAxis, p) == eOk) {
-				snapPoints.append(p);
+			OdGePoint3d ClosestPoint;
+			if (Arc->getClosestPointTo(pickPoint, worldToEyeTransform.inverse() * OdGeVector3d::kZAxis, ClosestPoint) == eOk) {
+				snapPoints.append(ClosestPoint);
 			}
 		}
 		break;

@@ -68,7 +68,7 @@ protected:
 
 	void initApp() override;
 
-	void uninitApp();
+	void uninitApp() override;
 
 public:
 	~OdGripPointsModule();
@@ -79,6 +79,6 @@ public:
  * \param database
  * \param normal 
  * \param offset 
- * \return Returns true on success. If current view direction is perpendicular to vNormal returns false and does not modify vOffset
+ * \return true on success. If current view direction is perpendicular to normal returns false and does not modify offset
  */
-bool projectOffset(const OdDbDatabase* database, const OdGeVector3d& normal, OdGeVector3d& offset);
+bool ProjectOffset(const OdDbDatabase* database, const OdGeVector3d& normal, OdGeVector3d& offset);

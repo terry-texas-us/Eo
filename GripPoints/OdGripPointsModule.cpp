@@ -17,6 +17,7 @@
 #include <DbCircle.h>
 #include <DbBlockReference.h>
 #include <DbMLeader.h>
+#include <DbOle2Frame.h>
 #include <DbPolygonMesh.h>
 #include <DbUnderlayReference.h>
 #include <DbViewport.h>
@@ -128,7 +129,7 @@ void OdGripPointsModule::uninitApp() {
 	odrxDynamicLinker()->loadModule(OdDbModuleName, false)->release();
 }
 
-bool projectOffset(const OdDbDatabase* database, const OdGeVector3d& normal, OdGeVector3d& offset) {
+bool ProjectOffset(const OdDbDatabase* database, const OdGeVector3d& normal, OdGeVector3d& offset) {
 	const auto ActiveViewportId {database->activeViewportId()};
 	auto ActiveViewport(ActiveViewportId.openObject());
 	OdAbstractViewPEPtr AbstractView(ActiveViewport);

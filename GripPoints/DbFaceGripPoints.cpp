@@ -22,7 +22,7 @@ OdResult OdDbFaceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntA
 	OdGePlane plane;
 	OdDb::Planarity planarity;
 	pFace->getPlane(plane, planarity);
-	if (!projectOffset(pFace->database(), plane.normal(), offset)) {
+	if (!ProjectOffset(pFace->database(), plane.normal(), offset)) {
 		// Project offset on entity's plane in view direction
 		return eOk;
 	}
@@ -42,7 +42,7 @@ OdResult OdDbFaceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbFaceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbFaceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdGePoint3dArray gripPoints;
 	const auto Result {getGripPoints(entity, gripPoints)};
 	unsigned nSize;
@@ -50,8 +50,8 @@ OdResult OdDbFaceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::Os
 		return Result;
 	}
 	const OdDbFacePtr Face = entity;
-	const auto pickPoint {getPlanePoint(Face, pickPoint_)}; // recalculated pickPoint and lastPoint in plane of face
-	const auto lastPoint {getPlanePoint(Face, lastPoint_)};
+	const auto pickPoint {GetPlanePoint(Face, pickPoint_)}; // recalculated pickPoint and lastPoint in plane of face
+	const auto lastPoint {GetPlanePoint(Face, lastPoint_)};
 	OdGePoint3d start;
 	OdGePoint3d end;
 	OdGePoint3d mid;

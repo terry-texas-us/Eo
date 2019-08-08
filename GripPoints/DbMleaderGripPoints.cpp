@@ -497,7 +497,7 @@ OdResult OdDbMleaderGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const 
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbMleaderGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbMleaderGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdRxObjectPtrArray arrExploded;
 	const auto Result {entity->explode(arrExploded)};
 	if (Result != eOk) {
@@ -506,13 +506,13 @@ OdResult OdDbMleaderGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 	for (unsigned i = 0; i < arrExploded.size(); ++i) {
 		auto Entity {OdDbEntity::cast(arrExploded[i])};
 		if (!Entity.isNull()) {
-			Entity->getOsnapPoints(objectSnapMode, gsSelectionMark, pickPoint, lastPoint, xWorldToEye, snapPoints);
+			Entity->getOsnapPoints(objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 		}
 	}
 	return eOk;
 }
 
-OdResult OdDbMleaderGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* entity, const OdDbFullSubentPath& path, OdDbGripDataPtrArray& grips, const double /*curViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*curViewDir*/, const OdUInt32 /*bitflags*/) const {
+OdResult OdDbMleaderGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* entity, const OdDbFullSubentPath& path, OdDbGripDataPtrArray& grips, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*currentViewDirection*/, const OdUInt32 /*bitflags*/) const {
 	OdDbMLeader* pMLeader = OdDbMLeader::cast(entity);
 	const auto gsMarker {(int) path.subentId().index()};
 	if (gsMarker < OdDbMLeader::kLeaderLineMark || gsMarker >= OdDbMLeader::kBlockAttribute) {

@@ -123,13 +123,13 @@ OdResult OdDbPolylineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const
 	return eOk;
 }
 
-OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& xWorldToEye, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdDbPolylinePtr pPoly = entity;
-	if (gsSelectionMark) {
-		const OdDbFullSubentPath subEntPath(OdDb::kEdgeSubentType, gsSelectionMark);
+	if (selectionMarker) {
+		const OdDbFullSubentPath subEntPath(OdDb::kEdgeSubentType, selectionMarker);
 		auto pSubEnt {pPoly->subentPtr(subEntPath)};
 		if (!pSubEnt.isNull()) {
-			return pSubEnt->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, xWorldToEye, snapPoints);
+			return pSubEnt->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 		}
 	}
 	const auto size {snapPoints.size()};
@@ -181,7 +181,7 @@ OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb
 		break;
 		case OdDb::kOsModeNear: {
 			OdGePoint3d p;
-			if (pPoly->getClosestPointTo(pickPoint, xWorldToEye.inverse() * OdGeVector3d::kZAxis, p) == eOk) {
+			if (pPoly->getClosestPointTo(pickPoint, worldToEyeTransform.inverse() * OdGeVector3d::kZAxis, p) == eOk) {
 				snapPoints.append(p);
 			}
 		}

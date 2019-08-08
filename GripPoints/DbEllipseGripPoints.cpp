@@ -29,7 +29,7 @@ OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 	OdDbEllipsePtr circle = entity;
 	auto Center {true};
 	auto offset {vOffset};
-	if (!projectOffset(circle->database(), circle->normal(), offset))   // Project offset on entity's plane in view direction
+	if (!ProjectOffset(circle->database(), circle->normal(), offset))   // Project offset on entity's plane in view direction
 	{
 		circle->setCenter(circle->center() + offset);                   // View direction is perpendicular to normal
 		return eOk;                                                       // Move the circle
@@ -113,22 +113,22 @@ OdResult OdDbEllipseGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const 
  * \brief Return snap Points into snapPoints, depending on type objectSnapMode
  * \param entity 
  * \param objectSnapMode 
- * \param gsSelectionMark 
+ * \param selectionMarker 
  * \param pickPoint_         Point, which moves
  * \param lastPoint_         Point, from which draw line
- * \param xWorldToEye 
+ * \param worldToEyeTransform 
  * \param snapPoints 
  * \return 
  */
-OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint_, const OdGePoint3d& lastPoint_, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdGePoint3dArray gripPoints;
 	const auto Result {getGripPoints(entity, gripPoints)};
 	if (Result != eOk || gripPoints.size() < 5) {
 		return Result;
 	}
 	OdDbEllipsePtr Ellipse = entity;
-	const auto pickPoint {getPlanePoint(Ellipse, pickPoint_)}; // recalculated pickPoint and lastPoint in plane of circle
-	const auto lastPoint {getPlanePoint(Ellipse, lastPoint_)};
+	const auto pickPoint {GetPlanePoint(Ellipse, pickPoint_)}; // recalculated pickPoint and lastPoint in plane of circle
+	const auto lastPoint {GetPlanePoint(Ellipse, lastPoint_)};
 	auto Center {Ellipse->center()};
 	const auto Radius {0.0}; // circle->radius();
 	const auto ptPick {pickPoint - Center.asVector()};

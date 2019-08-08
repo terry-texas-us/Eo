@@ -102,7 +102,7 @@ OdResult OdDbTraceGripPointsPE_Base::moveStretchPointsAt(_DbTraceGPRedir* trace,
 	return moveGripPointsAt(trace, indices, offset);
 }
 
-OdResult OdDbTraceGripPointsPE_Base::getOsnapPoints(const _DbTraceGPRedir* trace, OdDb::OsnapMode objectSnapMode, OdGsMarker /*gsSelectionMark*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*xWorldToEye*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbTraceGripPointsPE_Base::getOsnapPoints(const _DbTraceGPRedir* trace, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: {
 			const OdUInt32 nSnaps {snapPoints.size()};
@@ -137,9 +137,9 @@ OdResult OdDbTraceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const Od
 	return OdDbTraceGripPointsPE_Base::moveStretchPointsAt(&redir, indices, offset);
 }
 
-OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const {
 	_DbTraceGPRedirImpl<OdDbTracePtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&redir, objectSnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints);
+	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&redir, objectSnapMode, selectionMarker, pickPoint, lastPoint, viewXform, snapPoints);
 } // SolidPE
 OdResult OdDbSolidGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
@@ -161,7 +161,7 @@ OdResult OdDbSolidGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const Od
 	return OdDbTraceGripPointsPE_Base::moveStretchPointsAt(&redir, indices, offset);
 }
 
-OdResult OdDbSolidGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbSolidGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewXform, OdGePoint3dArray& snapPoints) const {
 	_DbTraceGPRedirImpl<OdDbSolidPtr> redir(entity);
-	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&redir, objectSnapMode, gsSelectionMark, pickPoint, lastPoint, viewXform, snapPoints);
+	return OdDbTraceGripPointsPE_Base::getOsnapPoints(&redir, objectSnapMode, selectionMarker, pickPoint, lastPoint, viewXform, snapPoints);
 }

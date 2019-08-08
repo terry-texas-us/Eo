@@ -5,9 +5,9 @@ public:
 
 	OdResult moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) override;
 
-	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker gsSelectionMark, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewTransform, OdGePoint3dArray& snapPoints) const override;
+	OdResult getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& viewTransform, OdGePoint3dArray& snapPoints) const override;
 
-	OdResult getGripPoints(const OdDbEntity* entity, OdDbGripDataPtrArray& grips, double curViewUnitSize, int gripSize, const OdGeVector3d& curViewDir, int bitFlags) const override;
+	OdResult getGripPoints(const OdDbEntity* entity, OdDbGripDataPtrArray& grips, double currentViewUnitSize, int gripSize, const OdGeVector3d& currentViewDirection, int bitFlags) const override;
 
 	OdResult moveGripPointsAt(OdDbEntity* entity, const OdDbVoidPtrArray& grips, const OdGeVector3d& offset, int bitFlags) override;
 };

@@ -277,9 +277,9 @@ public:
 class EoDbCircle_Converter : public EoDbConvertEntityToPrimitive {
 public:
 	void Convert(OdDbEntity* entity, EoDbGroup* group) override {
-		OdDbCirclePtr CircleEntity = entity;
-		const auto CirclePrimitive {new EoDbEllipse(CircleEntity->center(), CircleEntity->normal(), CircleEntity->radius())};
-		ConvertEntityData(CircleEntity, CirclePrimitive);
+		OdDbCirclePtr Circle {entity};
+		const auto CirclePrimitive {new EoDbEllipse(Circle->center(), Circle->normal(), Circle->radius())};
+		ConvertEntityData(Circle, CirclePrimitive);
 		group->AddTail(CirclePrimitive);
 	}
 };
