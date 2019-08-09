@@ -70,7 +70,7 @@ OdResult OdDbTraceGripPointsPE_Base::moveGripPointsAt(_DbTraceGPRedir* trace, co
 	if (OdNonZero(PlanarCoefficients[0]) || OdNonZero(PlanarCoefficients[1])) {
 		bool bMarkIds[4] = {false, false, false, false};
 		const auto delta {PlanarBasis[0] * PlanarCoefficients[0] + PlanarBasis[1] * PlanarCoefficients[1]};
-		for (nPt = 0; nPt < (int)indices.size(); nPt++) {
+		for (nPt = 0; nPt < static_cast<int>(indices.size()); nPt++) {
 			bMarkIds[indices[nPt] % 4] = true;
 		}
 		for (nPt = 0; nPt < 4; nPt++) {
@@ -105,10 +105,10 @@ OdResult OdDbTraceGripPointsPE_Base::moveStretchPointsAt(_DbTraceGPRedir* trace,
 OdResult OdDbTraceGripPointsPE_Base::getOsnapPoints(const _DbTraceGPRedir* trace, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: {
-			const OdUInt32 nSnaps {snapPoints.size()};
-			snapPoints.resize(nSnaps + 4);
+			const auto SnapPointsSize {snapPoints.size()};
+			snapPoints.resize(SnapPointsSize + 4);
 			for (auto nPt = 0; nPt < 4; nPt++) {
-				trace->getPointAt(nPt, snapPoints[nSnaps + nPt]);
+				trace->getPointAt(nPt, snapPoints[SnapPointsSize + nPt]);
 			}
 		}
 		break;

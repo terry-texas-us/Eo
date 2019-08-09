@@ -4,12 +4,12 @@
 #include <Ge/GeLine3d.h>
 
 OdResult OdDbLineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	const auto Size {gripPoints.size()};
-	gripPoints.resize(Size + 3);
+	const auto GripPointsSize {gripPoints.size()};
+	gripPoints.resize(GripPointsSize + 3);
 	OdDbLinePtr Line = entity;
-	Line->getStartPoint(gripPoints[Size + 0]);
-	Line->getEndPoint(gripPoints[Size + 1]);
-	gripPoints[Size + 2] = gripPoints[Size + 0] + (gripPoints[Size + 1] - gripPoints[Size + 0]) / 2;
+	Line->getStartPoint(gripPoints[GripPointsSize + 0]);
+	Line->getEndPoint(gripPoints[GripPointsSize + 1]);
+	gripPoints[GripPointsSize + 2] = gripPoints[GripPointsSize + 0] + (gripPoints[GripPointsSize + 1] - gripPoints[GripPointsSize + 0]) / 2;
 	return eOk;
 }
 

@@ -6,22 +6,22 @@
 #include <cfloat>
 
 OdResult OdDbGeoPositionMarkerPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbGeoPositionMarkerPtr pMarker = entity;
+	OdDbGeoPositionMarkerPtr GeoPositionMarker {entity};
 	gripPoints.reserve(2);
-	gripPoints.append(pMarker->position());
-	auto pMText {pMarker->mtext()};
+	gripPoints.append(GeoPositionMarker->position());
+	auto pMText {GeoPositionMarker->mtext()};
 	if (!pMText.isNull()) {
 		OdGePoint3d closestPoint;
 		OdGePoint3dArray framePoints;
-		pMText->getActualBoundingPoints(framePoints, pMarker->landingGap(), pMarker->landingGap());
+		pMText->getActualBoundingPoints(framePoints, GeoPositionMarker->landingGap(), GeoPositionMarker->landingGap());
 		framePoints.append(framePoints[0]);
 		framePoints.swap(2, 3);
 		auto module {DBL_MAX};
 		for (auto i = 0; i < 4; ++i) {
 			auto pntMiddle {(framePoints[i] + framePoints[i + 1].asVector()) / 2.0};
-			if (module >= pMarker->position().distanceTo(pntMiddle)) {
+			if (module >= GeoPositionMarker->position().distanceTo(pntMiddle)) {
 				closestPoint = pntMiddle;
-				module = pMarker->position().distanceTo(pntMiddle);
+				module = GeoPositionMarker->position().distanceTo(pntMiddle);
 			}
 		}
 		gripPoints.append(closestPoint);
@@ -30,19 +30,19 @@ OdResult OdDbGeoPositionMarkerPE::getGripPoints(const OdDbEntity* entity, OdGePo
 }
 
 OdResult OdDbGeoPositionMarkerPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDbGeoPositionMarkerPtr pMarker = entity;
-	for (unsigned i = 0; i < indices.length(); ++i) {
-		switch (indices[i]) {
+	OdDbGeoPositionMarkerPtr GeoPositionMarker {entity};
+	for (auto Index : indices) {
+		switch (Index) {
 			case 0: {
-				auto pMTextOld {pMarker->mtext()};
-				pMarker->setPosition(pMarker->position() + offset);
-				pMarker->setMText(pMTextOld);
+				auto pMTextOld {GeoPositionMarker->mtext()};
+				GeoPositionMarker->setPosition(GeoPositionMarker->position() + offset);
+				GeoPositionMarker->setMText(pMTextOld);
 				break;
 			}
 			case 1: {
-				auto pMText {pMarker->mtext()};
+				auto pMText {GeoPositionMarker->mtext()};
 				pMText->setLocation(pMText->location() + offset);
-				pMarker->setMText(pMText);
+				GeoPositionMarker->setMText(pMText);
 				break;
 			}
 			default:
@@ -61,15 +61,15 @@ OdResult OdDbGeoPositionMarkerPE::moveStretchPointsAt(OdDbEntity* /*entity*/, co
 }
 
 OdResult OdDbGeoPositionMarkerPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDbGeoPositionMarkerPtr pMarker = entity;
+	OdDbGeoPositionMarkerPtr GeoPositionMarker = entity;
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
-			if (!pMarker->mtext().isNull()) {
+			if (!GeoPositionMarker->mtext().isNull()) {
 				snapPoints.reserve(2);
 				OdGePoint3dArray gripPoints;
-				pMarker->getGripPoints(gripPoints);
+				GeoPositionMarker->getGripPoints(gripPoints);
 				snapPoints.append(gripPoints[1]);
-				const OdGeCircArc3d CircularArc(pMarker->position(), pMarker->normal(), pMarker->radius());
+				const OdGeCircArc3d CircularArc(GeoPositionMarker->position(), GeoPositionMarker->normal(), GeoPositionMarker->radius());
 				snapPoints.append(CircularArc.closestPointTo(gripPoints[1]));
 			}
 			break;
@@ -78,11 +78,11 @@ OdResult OdDbGeoPositionMarkerPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 		case OdDb::kOsModeCen:
 			break;
 		case OdDb::kOsModeNode: {
-			if (!pMarker->mtext().isNull()) {
+			if (!GeoPositionMarker->mtext().isNull()) {
 				snapPoints.reserve(5);
-				pMarker->mtext()->getBoundingPoints(snapPoints);
+				GeoPositionMarker->mtext()->getBoundingPoints(snapPoints);
 			}
-			snapPoints.append(pMarker->position());
+			snapPoints.append(GeoPositionMarker->position());
 		}
 		break;
 		case OdDb::kOsModeQuad: case OdDb::kOsModeIntersec: case OdDb::kOsModeIns: case OdDb::kOsModePerp: case OdDb::kOsModeTan: case OdDb::kOsModeNear: case OdDb::kOsModeApint: case OdDb::kOsModePar: case OdDb::kOsModeStart: default:

@@ -5,17 +5,17 @@
 // Returns 5 Points: center + 4 points on Circle
 OdResult OdDbCircleGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	OdDbCirclePtr Circle {entity};
-	const auto Size {gripPoints.size()};
-	gripPoints.resize(Size + 5);
-	gripPoints[Size + 0] = Circle->center();
-	Circle->getPointAtParam(0, gripPoints[Size + 1]); // 1 - right  (0)
-	Circle->getPointAtParam(OdaPI, gripPoints[Size + 2]); // 2 - left (pi)
-	Circle->getPointAtParam(OdaPI2, gripPoints[Size + 3]); // 3 - top (pi/2)
-	Circle->getPointAtParam(OdaPI + OdaPI2, gripPoints[Size + 4]); // 4 - bottom (pi + pi/2)
+	const auto GripPointsSize {gripPoints.size()};
+	gripPoints.resize(GripPointsSize + 5);
+	gripPoints[GripPointsSize + 0] = Circle->center();
+	Circle->getPointAtParam(0, gripPoints[GripPointsSize + 1]); // 1 - right  (0)
+	Circle->getPointAtParam(OdaPI, gripPoints[GripPointsSize + 2]); // 2 - left (pi)
+	Circle->getPointAtParam(OdaPI2, gripPoints[GripPointsSize + 3]); // 3 - top (pi/2)
+	Circle->getPointAtParam(OdaPI + OdaPI2, gripPoints[GripPointsSize + 4]); // 4 - bottom (pi + pi/2)
 	if (!OdZero(Circle->thickness())) {
 		const auto Extrusion {Circle->normal() * Circle->thickness()};
 		for (auto i = 0; i < 5; i++) {
-			gripPoints.append(gripPoints[Size + i] + Extrusion);
+			gripPoints.append(gripPoints[GripPointsSize + i] + Extrusion);
 		}
 	}
 	return eOk;

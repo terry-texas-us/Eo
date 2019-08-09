@@ -6,22 +6,22 @@
 #include <Ge/GeCircArc3d.h>
 
 OdResult OdDbPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	const auto size {gripPoints.size()};
-	OdDbPolylinePtr pPoly = entity;
-	gripPoints.resize(size + (pPoly->numVerts() * 2 - 1));
-	if (pPoly->numVerts() > 1) {
-		pPoly->getPointAt(0, gripPoints[size]);
+	const auto GripPointsSize {gripPoints.size()};
+	OdDbPolylinePtr Polyline {entity};
+	gripPoints.resize(GripPointsSize + (Polyline->numVerts() * 2 - 1));
+	if (Polyline->numVerts() > 1) {
+		Polyline->getPointAt(0, gripPoints[GripPointsSize]);
 	}
-	auto iIndAdd {size + 1};
-	for (unsigned i = 1; i < pPoly->numVerts(); ++i) {
+	auto iIndAdd {GripPointsSize + 1};
+	for (unsigned i = 1; i < Polyline->numVerts(); ++i) {
 		OdGePoint3d p;
-		pPoly->getPointAtParam(i - 0.5, p);
+		Polyline->getPointAtParam(i - 0.5, p);
 		gripPoints[iIndAdd++] = p;
-		pPoly->getPointAt(i, gripPoints[iIndAdd++]);
+		Polyline->getPointAt(i, gripPoints[iIndAdd++]);
 	}
-	if (pPoly->isClosed()) {
+	if (Polyline->isClosed()) {
 		OdGePoint3d p;
-		pPoly->getPointAtParam(pPoly->numVerts() - 0.5, p);
+		Polyline->getPointAtParam(Polyline->numVerts() - 0.5, p);
 		gripPoints.append(p);
 	}
 	return eOk;
@@ -35,11 +35,9 @@ OdResult OdDbPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const Od
 	OdDbPolylinePtr Polyline {entity};
 	const auto x {OdGeMatrix3d::worldToPlane(Polyline->normal())};
 	const auto NumberOfVertices {Polyline->numVerts()};
-	auto PolyLineIndex {0};
 	unsigned iUStart = 0;
-	unsigned i = 0;
-	for (i = 0; i < IndicesSize; ++i) {
-		PolyLineIndex = indices[i] / 2;
+	for (unsigned i = 0; i < IndicesSize; ++i) {
+		const auto PolyLineIndex {indices[i] / 2};
 		if (indices[i] % 2 == 0) { // "Vertex. Check if near middle grip point presents. If yes skip this vertex
 			auto PreviousIndex {indices[i] - 1};
 			if (PreviousIndex < 0) {
@@ -97,64 +95,64 @@ OdResult OdDbPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const Od
 }
 
 OdResult OdDbPolylineGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	const auto size {stretchPoints.size()};
-	OdDbPolylinePtr pPoly = entity;
-	stretchPoints.resize(size + pPoly->numVerts());
+	const auto StretchPointsSize {stretchPoints.size()};
+	OdDbPolylinePtr Polyline {entity};
+	stretchPoints.resize(StretchPointsSize + Polyline->numVerts());
 	unsigned i = 0;
-	for (; i < pPoly->numVerts(); ++i) {
-		pPoly->getPointAt(i, stretchPoints[size + i]);
+	for (; i < Polyline->numVerts(); ++i) {
+		Polyline->getPointAt(i, stretchPoints[StretchPointsSize + i]);
 	}
 	return eOk;
 }
 
 OdResult OdDbPolylineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDbPolylinePtr pPoly = entity;
-	auto off {offset};
-	off.transformBy(OdGeMatrix3d::worldToPlane(pPoly->normal()));
+	OdDbPolylinePtr Polyline {entity};
+	auto Offset {offset};
+	Offset.transformBy(OdGeMatrix3d::worldToPlane(Polyline->normal()));
 	const auto offset2d {offset.convert2d()};
-	for (unsigned i = 0; i < indices.size(); ++i) {
+	for (auto Index : indices) {
 		OdGePoint2d p;
-		pPoly->getPointAt(indices[i], p);
-		pPoly->setPointAt(indices[i], p + offset2d);
+		Polyline->getPointAt(Index, p);
+		Polyline->setPointAt(Index, p + offset2d);
 	}
 	return eOk;
 }
 
 OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
-	OdDbPolylinePtr pPoly = entity;
+	OdDbPolylinePtr Polyline {entity};
 	if (selectionMarker) {
 		const OdDbFullSubentPath subEntPath(OdDb::kEdgeSubentType, selectionMarker);
-		auto pSubEnt {pPoly->subentPtr(subEntPath)};
+		auto pSubEnt {Polyline->subentPtr(subEntPath)};
 		if (!pSubEnt.isNull()) {
 			return pSubEnt->getOsnapPoints(objectSnapMode, 0, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 		}
 	}
-	const auto size {snapPoints.size()};
+	const auto SnapPointsSize {snapPoints.size()};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
 			getStretchPoints(entity, snapPoints);
 			break;
 		case OdDb::kOsModeMid: {
-			snapPoints.resize(size + pPoly->numVerts() - 1);
-			for (unsigned i = 1; i < pPoly->numVerts(); ++i) {
-				pPoly->getPointAtParam(i - 0.5, snapPoints[size + i - 1]);
+			snapPoints.resize(SnapPointsSize + Polyline->numVerts() - 1);
+			for (unsigned i = 1; i < Polyline->numVerts(); ++i) {
+				Polyline->getPointAtParam(i - 0.5, snapPoints[SnapPointsSize + i - 1]);
 			}
 			break;
 		}
 		case OdDb::kOsModeCen:
-			for (unsigned i = 0; i < pPoly->numVerts(); i++) {
-				if (pPoly->segType(i) == OdDbPolyline::kArc) {
+			for (unsigned i = 0; i < Polyline->numVerts(); i++) {
+				if (Polyline->segType(i) == OdDbPolyline::kArc) {
 					OdGeCircArc3d arc;
-					pPoly->getArcSegAt(i, arc);
+					Polyline->getArcSegAt(i, arc);
 					snapPoints.append(arc.center());
 				}
 			}
 			break;
 		case OdDb::kOsModeQuad: {
-			for (unsigned i = 0; i < pPoly->numVerts(); i++) {
-				if (pPoly->segType(i) == OdDbPolyline::kArc) {
+			for (unsigned i = 0; i < Polyline->numVerts(); i++) {
+				if (Polyline->segType(i) == OdDbPolyline::kArc) {
 					OdGeCircArc3d arc;
-					pPoly->getArcSegAt(i, arc);
+					Polyline->getArcSegAt(i, arc);
 					const OdDbDatabase* pDb = entity->database();
 					auto xAxis {pDb->getUCSXDIR()};
 					auto yAxis {pDb->getUCSYDIR()};
@@ -178,7 +176,7 @@ OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb
 		break;
 		case OdDb::kOsModeNear: {
 			OdGePoint3d p;
-			if (pPoly->getClosestPointTo(pickPoint, worldToEyeTransform.inverse() * OdGeVector3d::kZAxis, p) == eOk) {
+			if (Polyline->getClosestPointTo(pickPoint, worldToEyeTransform.inverse() * OdGeVector3d::kZAxis, p) == eOk) {
 				snapPoints.append(p);
 			}
 		}

@@ -5,17 +5,17 @@
 #include <AbstractViewPE.h>
 
 OdResult OdDbCameraGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	const auto size {gripPoints.size()};
-	OdDbCameraPtr pCamera = entity;
-	auto pView {pCamera->openView(OdDb::kForRead)};
+	const auto GripPointsSize {gripPoints.size()};
+	OdDbCameraPtr Camera {entity};
+	auto pView {Camera->openView(OdDb::kForRead)};
 	if (!pView.isNull()) {
 		OdAbstractViewPEPtr pAvd(pView);
-		const auto target {pAvd->target(pView)};
-		const auto dir {pAvd->direction(pView)};
-		gripPoints.resize(size + 3);
-		gripPoints[size + 0] = target + dir;
-		gripPoints[size + 1] = target + dir * 0.5;
-		gripPoints[size + 2] = target;
+		const auto Target {pAvd->target(pView)};
+		const auto Direction {pAvd->direction(pView)};
+		gripPoints.resize(GripPointsSize + 3);
+		gripPoints[GripPointsSize + 0] = Target + Direction;
+		gripPoints[GripPointsSize + 1] = Target + Direction * 0.5;
+		gripPoints[GripPointsSize + 2] = Target;
 	}
 	return eOk;
 }

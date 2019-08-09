@@ -30,19 +30,19 @@
 #include <DbGeoPositionMarker.h>
 #include <DbWipeout.h>
 #include <DbFace.h>
-#if defined(_TOOLKIT_IN_DLL_) && defined(_MSC_VER) //  MacOS X dynamic library loading.
+#if defined(_TOOLKIT_IN_DLL_) && defined(_MSC_VER)
 #define VC_EXTRALEAN
 #include "windows.h"
 
 extern "C" int APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID) {
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: // remove this if you need per-thread initialization
-			DisableThreadLibraryCalls((HMODULE)instance);
+			DisableThreadLibraryCalls(static_cast<HMODULE>(instance));
 			break;
 	}
 	return TRUE;
 }
-#endif //_TOOLKIT_IN_DLL_ //  MacOS X dynamic library loading.
+#endif
 #pragma warning (suppress: 5043)
 ODRX_DEFINE_DYNAMIC_MODULE(OdGripPointsModule)
 
@@ -51,43 +51,43 @@ OdGripPointsModule::OdGripPointsModule() {}
 OdGripPointsModule::~OdGripPointsModule() {}
 
 void OdGripPointsModule::initApp() {
-	if (!OdDbEntity::desc()) {
+	if (OdDbEntity::desc() == nullptr) {
 		throw OdError(eNotInitializedYet);
 	}
 	odrxDynamicLinker()->loadModule(OdDbModuleName, false)->addRef();
-	OdDbEntity::desc()->addX(OdDbGripPointsPE::desc(), &_egp);
-	OdDbLine::desc()->addX(OdDbGripPointsPE::desc(), &_lgp);
-	OdDbMline::desc()->addX(OdDbGripPointsPE::desc(), &_mlgp);
-	OdDbArc::desc()->addX(OdDbGripPointsPE::desc(), &_agp);
-	OdDbPolyline::desc()->addX(OdDbGripPointsPE::desc(), &_plgp);
-	OdDbRotatedDimension::desc()->addX(OdDbGripPointsPE::desc(), &_rdgp);
-	OdDbAlignedDimension::desc()->addX(OdDbGripPointsPE::desc(), &_adgp);
-	OdDbRadialDimension::desc()->addX(OdDbGripPointsPE::desc(), &_rcdgp);
-	OdDbDiametricDimension::desc()->addX(OdDbGripPointsPE::desc(), &_dcdgp);
-	OdDb3PointAngularDimension::desc()->addX(OdDbGripPointsPE::desc(), &_3padgp);
-	OdDbOrdinateDimension::desc()->addX(OdDbGripPointsPE::desc(), &_odgp);
-	OdDb2LineAngularDimension::desc()->addX(OdDbGripPointsPE::desc(), &_2ladgp);
-	OdDbArcDimension::desc()->addX(OdDbGripPointsPE::desc(), &_arcdgp);
-	OdDbRadialDimensionLarge::desc()->addX(OdDbGripPointsPE::desc(), &_rdlgp);
-	OdDbBlockReference::desc()->addX(OdDbGripPointsPE::desc(), &_insertgp);
-	OdDbMLeader::desc()->addX(OdDbGripPointsPE::desc(), &_mleadgp);
-	OdDbPolygonMesh::desc()->addX(OdDbPolygonMeshGripPointsPE::desc(), &_mmeshdgp);
-	OdDbPdfReference::desc()->addX(OdDbPdfUnderlayGripPointsPE::desc(), &_pdfunderlaygp);
-	OdDbViewport::desc()->addX(OdDbViewportGripPointsPE::desc(), &_vptgp);
-	OdDb2dPolyline::desc()->addX(OdDbGripPointsPE::desc(), &_2dplgp);
-	OdDbRasterImage::desc()->addX(OdDbRasterImageGripPointsPE::desc(), &_rimggp);
-	OdDbTrace::desc()->addX(OdDbTraceGripPointsPE::desc(), &_trcgp);
-	OdDbSolid::desc()->addX(OdDbSolidGripPointsPE::desc(), &_sldgp);
-	OdDb3dPolyline::desc()->addX(OdDbGripPointsPE::desc(), &_3dplgp);
-	OdDbCamera::desc()->addX(OdDbGripPointsPE::desc(), &_camgp);
-	OdDbCircle::desc()->addX(OdDbGripPointsPE::desc(), &_cgp);
-	OdDbEllipse::desc()->addX(OdDbGripPointsPE::desc(), &_elgp);
-	OdDbText::desc()->addX(OdDbGripPointsPE::desc(), &_txtgp);
-	OdDbGeoPositionMarker::desc()->addX(OdDbGeoPositionMarkerPE::desc(), &_geoposmarkgp);
-	OdDbUnderlayReference::desc()->addX(OdDbDgnUnderlayGripPointsPE::desc(), &_dgnunderlaygp);
-	OdDbOle2Frame::desc()->addX(OdDbOleGripPointsPE::desc(), &_olegp);
-	OdDbWipeout::desc()->addX(OdDbWipeOutGripPointsPE::desc(), &_wipeoutgp);
-	OdDbFace::desc()->addX(OdDbGripPointsPE::desc(), &_fgp);
+	OdDbEntity::desc()->addX(OdDbGripPointsPE::desc(), &m_EntityGripPoints);
+	OdDbLine::desc()->addX(OdDbGripPointsPE::desc(), &m_LineGripPoints);
+	OdDbMline::desc()->addX(OdDbGripPointsPE::desc(), &m_MlineGripPoints);
+	OdDbArc::desc()->addX(OdDbGripPointsPE::desc(), &m_ArcGripPoints);
+	OdDbPolyline::desc()->addX(OdDbGripPointsPE::desc(), &m_PolylineGripPoints);
+	OdDbRotatedDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_RotatedDimGripPoints);
+	OdDbAlignedDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_AlignedDimGripPoints);
+	OdDbRadialDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_RadialDimGripPoints);
+	OdDbDiametricDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_DiametricDimGripPoints);
+	OdDb3PointAngularDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_3PointAngularDimGripPoints);
+	OdDbOrdinateDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_OrdinateDimGripPoints);
+	OdDb2LineAngularDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_2LineAngularDimGripPoints);
+	OdDbArcDimension::desc()->addX(OdDbGripPointsPE::desc(), &m_ArcDimGripPoints);
+	OdDbRadialDimensionLarge::desc()->addX(OdDbGripPointsPE::desc(), &m_RadialDimLargeGripPoints);
+	OdDbBlockReference::desc()->addX(OdDbGripPointsPE::desc(), &m_BlockReferenceGripPoints);
+	OdDbMLeader::desc()->addX(OdDbGripPointsPE::desc(), &m_MleaderGripPoints);
+	OdDbPolygonMesh::desc()->addX(OdDbPolygonMeshGripPointsPE::desc(), &m_PolygonMeshGripPoints);
+	OdDbPdfReference::desc()->addX(OdDbPdfUnderlayGripPointsPE::desc(), &m_PdfUnderlayGripPoints);
+	OdDbViewport::desc()->addX(OdDbViewportGripPointsPE::desc(), &m_ViewportGripPoints);
+	OdDb2dPolyline::desc()->addX(OdDbGripPointsPE::desc(), &m_2dPolylineGripPoints);
+	OdDbRasterImage::desc()->addX(OdDbRasterImageGripPointsPE::desc(), &m_RasterImageGripPoints);
+	OdDbTrace::desc()->addX(OdDbTraceGripPointsPE::desc(), &m_TraceGripPoints);
+	OdDbSolid::desc()->addX(OdDbSolidGripPointsPE::desc(), &m_SolidGripPoints);
+	OdDb3dPolyline::desc()->addX(OdDbGripPointsPE::desc(), &m_3dPolylineGripPoints);
+	OdDbCamera::desc()->addX(OdDbGripPointsPE::desc(), &m_CameraGripPoints);
+	OdDbCircle::desc()->addX(OdDbGripPointsPE::desc(), &m_CircleGripPoints);
+	OdDbEllipse::desc()->addX(OdDbGripPointsPE::desc(), &m_EllipseGripPoints);
+	OdDbText::desc()->addX(OdDbGripPointsPE::desc(), &m_TextGripPoints);
+	OdDbGeoPositionMarker::desc()->addX(OdDbGeoPositionMarkerPE::desc(), &m_GeoPositionMarkerGripPoints);
+	OdDbUnderlayReference::desc()->addX(OdDbDgnUnderlayGripPointsPE::desc(), &m_DgnUnderlayGripPoints);
+	OdDbOle2Frame::desc()->addX(OdDbOleGripPointsPE::desc(), &m_OleGripPoints);
+	OdDbWipeout::desc()->addX(OdDbWipeOutGripPointsPE::desc(), &m_WipeOutGripPoints);
+	OdDbFace::desc()->addX(OdDbGripPointsPE::desc(), &m_FaceGripPoints);
 	OdDbBlockGripAppData::rxInit();
 }
 

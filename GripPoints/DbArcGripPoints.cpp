@@ -6,12 +6,12 @@
 #include "OdGripPointsModule.h"
 
 OdResult OdDbArcGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	const auto Size {gripPoints.size()};
+	const auto GripPointsSize {gripPoints.size()};
 	OdDbArcPtr Arc = entity;
 	const auto Thickness {Arc->thickness()};
 	const auto NumberOfPoints {OdZero(Thickness) ? 4 : 8};
-	gripPoints.resize(Size + NumberOfPoints);
-	auto StartPoint {gripPoints.asArrayPtr() + Size};
+	gripPoints.resize(GripPointsSize + NumberOfPoints);
+	auto StartPoint {gripPoints.asArrayPtr() + GripPointsSize};
 	auto CurrentPoint {StartPoint};
 	Arc->getStartPoint(*CurrentPoint++);
 	Arc->getEndPoint(*CurrentPoint++);
@@ -84,10 +84,10 @@ OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntAr
 }
 
 OdResult OdDbArcGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	const auto OldSize {stretchPoints.size()};
+	const auto StretchPointsSize {stretchPoints.size()};
 	const auto Result {getGripPoints(entity, stretchPoints)};
 	if (Result == eOk) {
-		stretchPoints.resize(OldSize + 2);
+		stretchPoints.resize(StretchPointsSize + 2);
 	}
 	// remove mid and center and thickness grips
 	return Result;

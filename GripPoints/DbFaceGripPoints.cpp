@@ -3,11 +3,11 @@
 #include "OdGripPointsModule.h"
 
 OdResult OdDbFaceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	const auto Size {gripPoints.size()};
-	gripPoints.resize(Size + 4);
+	const auto GripPointsSize {gripPoints.size()};
+	gripPoints.resize(GripPointsSize + 4);
 	OdDbFacePtr Face = entity;
 	for (unsigned i = 0; i < 4; i++) {
-		Face->getVertexAt(i, gripPoints[Size + i]);
+		Face->getVertexAt(i, gripPoints[GripPointsSize + i]);
 	}
 	return eOk;
 }

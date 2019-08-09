@@ -5,15 +5,15 @@
 #include <Ge/GeCircArc2d.h>
 
 OdResult OdDb2dPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDb2dPolylinePtr pPoly = entity;
-	auto pIt {pPoly->vertexIterator()};
-	while (!pIt->done()) {
-		auto pVertex {OdDb2dVertex::cast(pIt->entity())};
-		ODA_ASSERT_ONCE(pVertex->vertexType() == OdDb::k2dVertex);
-		if (pVertex->vertexType() == OdDb::k2dVertex) {
-			gripPoints.append(pVertex->position());
+	OdDb2dPolylinePtr Polyline {entity};
+	auto VertexIterator {Polyline->vertexIterator()};
+	while (!VertexIterator->done()) {
+		auto Vertex {OdDb2dVertex::cast(VertexIterator->entity())};
+		ODA_ASSERT_ONCE(Vertex->vertexType() == OdDb::k2dVertex);
+		if (Vertex->vertexType() == OdDb::k2dVertex) {
+			gripPoints.append(Vertex->position());
 		}
-		pIt->step();
+		VertexIterator->step();
 	}
 	return eOk;
 }
@@ -23,33 +23,33 @@ OdResult OdDb2dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const 
 	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDb2dPolylinePtr pPoly = entity;
-	const auto prevType {pPoly->polyType()};
-	auto pIt {pPoly->vertexIterator()};
-	auto counter {0};
-	while (!pIt->done()) {
-		auto pVertex {OdDb2dVertex::cast(pIt->entity())};
-		if (pVertex->vertexType() == OdDb::k2dVertex) {
+	OdDb2dPolylinePtr Polyline {entity};
+	const auto PreviousType {Polyline->polyType()};
+	auto VertexIterator {Polyline->vertexIterator()};
+	auto Counter {0};
+	while (!VertexIterator->done()) {
+		auto Vertex {OdDb2dVertex::cast(VertexIterator->entity())};
+		if (Vertex->vertexType() == OdDb::k2dVertex) {
 			for (unsigned i = 0; i < IndicesSize; i++) {
-				if (indices[i] == counter) {
-					pVertex->upgradeOpen();
-					pVertex->setPosition(pVertex->position() + offset);
+				if (indices[i] == Counter) {
+					Vertex->upgradeOpen();
+					Vertex->setPosition(Vertex->position() + offset);
 					break;
 				}
 			}
-			counter++;
+			Counter++;
 		}
-		pIt->step();
+		VertexIterator->step();
 	}
-	if (prevType != OdDb::k2dSimplePoly) { // Force re-computation of spline curve
-		pPoly->convertToPolyType(prevType);
+	if (PreviousType != OdDb::k2dSimplePoly) { // Force re-computation of spline curve
+		Polyline->convertToPolyType(PreviousType);
 	}
 	return eOk;
 }
 
 OdResult OdDb2dPolylineGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	OdDb2dPolylinePtr pPoly = entity;
-	for (auto i = pPoly->vertexIterator(); !i->done(); i->step()) {
+	OdDb2dPolylinePtr Polyline {entity};
+	for (auto i = Polyline->vertexIterator(); !i->done(); i->step()) {
 		auto v {OdDb2dVertex::cast(i->entity())};
 		if (!v.isNull() && v->vertexType() == OdDb::k2dVertex) {
 			stretchPoints.append(v->position());
@@ -59,32 +59,32 @@ OdResult OdDb2dPolylineGripPointsPE::getStretchPoints(const OdDbEntity* entity, 
 }
 
 OdResult OdDb2dPolylineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDb2dPolylinePtr pPoly = entity;
-	auto index {0};
-	for (auto i = pPoly->vertexIterator(); !i->done(); i->step(), ++index) {
+	OdDb2dPolylinePtr Polyline {entity};
+	auto Index {0};
+	for (auto i = Polyline->vertexIterator(); !i->done(); i->step(), ++Index) {
 		auto v {OdDb2dVertex::cast(i->entity())};
 		if (!v.isNull() && v->vertexType() == OdDb::k2dVertex) {
-			if (indices.contains(index)) {
+			if (indices.contains(Index)) {
 				v->upgradeOpen();
 				v->setPosition(v->position() + offset);
 			}
-			++index;
+			++Index;
 		}
 	}
 	return eOk;
 }
 
 OdResult OdDb2dPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDb2dPolylinePtr Polyline = entity;
+	OdDb2dPolylinePtr Polyline {entity};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: case OdDb::kOsModeCen: case OdDb::kOsModeQuad: case OdDb::kOsModePerp: case OdDb::kOsModeTan: {
-			auto pIt {Polyline->vertexIterator()};
-			while (!pIt->done()) {
-				auto Vertex {OdDb2dVertex::cast(pIt->entity())};
+			auto VertexIterator {Polyline->vertexIterator()};
+			while (!VertexIterator->done()) {
+				auto Vertex {OdDb2dVertex::cast(VertexIterator->entity())};
 				if (Vertex->vertexType() == OdDb::k2dVertex || Vertex->vertexType() == OdDb::k2dCurveFitVertex) {
 					snapPoints.append(Vertex->position());
 				}
-				pIt->step();
+				VertexIterator->step();
 			}
 		}
 			break;

@@ -88,6 +88,15 @@
     </ProjectReference>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Db2LineAngularDimGripPoints.h" />
+    <ClInclude Include="Db3PointAngularDimGripPoints.h" />
+    <ClInclude Include="DbAlignedDimGripPoints.h" />
+    <ClInclude Include="DbArcDimGripPoints.h" />
+    <ClInclude Include="DbDiametricDimGripPoints.h" />
+    <ClInclude Include="DbOrdinateDimGripPoints.h" />
+    <ClInclude Include="DbRadialDimGripPoints.h" />
+    <ClInclude Include="DbRadialDimLargeGripPoints.h" />
+    <ClInclude Include="DbRotatedDimGripPoints.h" />
     <ClInclude Include="OdGripPointsModule.h" />
     <ClInclude Include="DbArcGripPoints.h" />
     <ClInclude Include="DbMlineGripPoints.h" />
@@ -114,7 +123,16 @@
     <ClInclude Include="DbWipeOutGripPoints.h" />
     <ClInclude Include="DbEllipseGripPoints.h" />
     <ClInclude Include="DbFaceGripPoints.h" />
+    <ClCompile Include="Db2LineAngularDimGripPoints.cpp" />
+    <ClCompile Include="Db3PointAngularDimGripPoints.cpp" />
+    <ClCompile Include="DbAlignedDimGripPoints.cpp" />
+    <ClCompile Include="DbArcDimGripPoints.cpp" />
+    <ClCompile Include="DbDiametricDimGripPoints.cpp" />
     <ClCompile Include="DbLineGripPoints.cpp" />
+    <ClCompile Include="DbOrdinateDimGripPoints.cpp" />
+    <ClCompile Include="DbRadialDimGripPoints.cpp" />
+    <ClCompile Include="DbRadialDimLargeGripPoints.cpp" />
+    <ClCompile Include="DbRotatedDimGripPoints.cpp" />
     <ClCompile Include="DbTextGripPoints.cpp" />
     <ClCompile Include="DbCircleGripPoints.cpp" />
     <ClCompile Include="DbDimGripPoints.cpp" />

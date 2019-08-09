@@ -5,7 +5,7 @@
 #include <DbLine.h>
 
 OdResult OdDbPolygonMeshGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbPolygonMesh* Mesh = OdDbPolygonMesh::cast(entity);
+	OdDbPolygonMesh* Mesh {OdDbPolygonMesh::cast(entity)};
 	auto VertexIterator {Mesh->vertexIterator()};
 	while (!VertexIterator->done()) {
 		OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
@@ -16,9 +16,9 @@ OdResult OdDbPolygonMeshGripPointsPE::getGripPoints(const OdDbEntity* entity, Od
 }
 
 OdResult OdDbPolygonMeshGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDbPolygonMesh* Mesh = OdDbPolygonMesh::cast(entity);
+	OdDbPolygonMesh* Mesh {OdDbPolygonMesh::cast(entity)};
 	for (auto Index : indices) {
-		OdDbObjectIteratorPtr VertexIterator {Mesh->vertexIterator()};
+		auto VertexIterator {Mesh->vertexIterator()};
 		auto CurrentIndex {0};
 		while (!VertexIterator->done()) {
 			if (CurrentIndex == Index) {
@@ -85,10 +85,10 @@ OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 	return eOk;
 }
 
-OdResult OdDbPolygonMeshGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* /*entity*/, const OdDbFullSubentPath& /*path*/, OdDbGripDataPtrArray& /*grips*/, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*currentViewDirection*/, const OdUInt32 /*bitFlags*/) const {
+OdResult OdDbPolygonMeshGripPointsPE::getGripPointsAtSubentPath(const OdDbEntity* /*entity*/, const OdDbFullSubentPath& /*path*/, OdDbGripDataPtrArray& /*grips*/, const double /*currentViewUnitSize*/, const int /*gripSize*/, const OdGeVector3d& /*currentViewDirection*/, const unsigned long /*bitFlags*/) const {
 	return eNotApplicable;
 }
 
-OdResult OdDbPolygonMeshGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* /*entity*/, const OdDbFullSubentPathArray& /*paths*/, const OdDbVoidPtrArray& /*gripAppData*/, const OdGeVector3d& /*offset*/, const OdUInt32 /*bitFlags*/) {
+OdResult OdDbPolygonMeshGripPointsPE::moveGripPointsAtSubentPaths(OdDbEntity* /*entity*/, const OdDbFullSubentPathArray& /*paths*/, const OdDbVoidPtrArray& /*gripAppData*/, const OdGeVector3d& /*offset*/, const unsigned long /*bitFlags*/) {
 	return eNotApplicable;
 }

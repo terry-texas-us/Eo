@@ -118,7 +118,7 @@ OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity,
 			OdGeMatrix3d ClipInverseBlockTransform {SpatialFilter->getOriginalInverseBlockXform(ClipInverseBlockTransform)};
 			const auto BlockTransform {BlockReference->blockTransform()};
 			const auto FullTransform {BlockTransform * ClipInverseBlockTransform * ClipSpaceTransform};
-			for (OdUInt32 ClipPointIndex = 0; ClipPointIndex < ClipPoints.size(); ClipPointIndex++) {
+			for (unsigned ClipPointIndex = 0; ClipPointIndex < ClipPoints.size(); ClipPointIndex++) {
 				OdGePoint3d ClipPoint(ClipPoints[ClipPointIndex].x, ClipPoints[ClipPointIndex].y, 0.0);
 				ClipPoint.transformBy(FullTransform);
 				OdDbGripDataPtr GripData(new OdDbGripData());
@@ -204,11 +204,11 @@ OdResult OdDbBlockReferenceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, co
 		cbOffset = offset;
 		cbOffset.transformBy(FullTransform);
 	}
-	for (unsigned k = 0; k < grips.size(); ++k) {
-		if (grips[k] == nullptr || ((OdRxObject*)grips[k])->isA() != OdDbBlockGripAppData::desc()) { // not our grip (maybe overruled)
+	for (auto Grip : grips) {
+		if (Grip == nullptr || ((OdRxObject*)Grip)->isA() != OdDbBlockGripAppData::desc()) { // not our grip (maybe overruled)
 			continue;
 		}
-		const auto AppData {(OdDbBlockGripAppData*) grips[k]};
+		const auto AppData {(OdDbBlockGripAppData*)Grip};
 		if (AppData->m_nClipGripGripIndex >= 0) { // XCLIP boundary
 			ClipPoints[AppData->m_nClipGripGripIndex] += OdGeVector2d(cbOffset.x, cbOffset.y);
 			BoundaryChanged = true;

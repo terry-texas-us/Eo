@@ -4,10 +4,10 @@
 
 OdResult OdDbMlineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	OdDbMline* Mline = OdDbMline::cast(entity);
-	const auto Size {gripPoints.size()};
+	const auto GripPointsSize {gripPoints.size()};
 	const auto NumberOfVertices {Mline->numVertices()};
-	gripPoints.resize(Size + NumberOfVertices);
-	auto Point {gripPoints.asArrayPtr() + Size};
+	gripPoints.resize(GripPointsSize + NumberOfVertices);
+	auto Point {gripPoints.asArrayPtr() + GripPointsSize};
 	for (auto i = 0; i < NumberOfVertices; i++) {
 		*Point++ = Mline->vertexAt(i);
 	}
@@ -35,13 +35,13 @@ OdResult OdDbMlineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const Od
 }
 
 OdResult OdDbMlineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
-	OdRxObjectPtrArray arrExploded;
-	const auto Result {entity->explode(arrExploded)};
+	OdRxObjectPtrArray ExplodedObjects;
+	const auto Result {entity->explode(ExplodedObjects)};
 	if (Result != eOk) {
 		return Result;
 	}
-	for (unsigned i = 0; i < arrExploded.size(); ++i) {
-		auto Entity {OdDbEntity::cast(arrExploded[i])};
+	for (auto& ExplodedObject : ExplodedObjects) {
+		auto Entity {OdDbEntity::cast(ExplodedObject)};
 		if (!Entity.isNull()) {
 			Entity->getOsnapPoints(objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, snapPoints);
 		}

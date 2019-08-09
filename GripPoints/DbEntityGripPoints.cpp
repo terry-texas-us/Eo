@@ -6,9 +6,9 @@ OdResult OdDbEntityGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoi
 	OdGeExtents3d Extents;
 	const auto Result {entity->getGeomExtents(Extents)};
 	if (Result == eOk) {
-		const auto Size {gripPoints.size()};
-		gripPoints.resize(Size + 1);
-		gripPoints[Size] = Extents.minPoint() + (Extents.maxPoint() - Extents.minPoint()) / 2.0;
+		const auto GripPointsSize {gripPoints.size()};
+		gripPoints.resize(GripPointsSize + 1);
+		gripPoints[GripPointsSize] = Extents.minPoint() + (Extents.maxPoint() - Extents.minPoint()) / 2.0;
 	}
 	return Result;
 }

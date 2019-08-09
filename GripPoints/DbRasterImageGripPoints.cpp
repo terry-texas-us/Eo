@@ -5,25 +5,25 @@
 #include <Ge/GeLine3d.h>
 
 OdResult OdDbRasterImageGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbRasterImagePtr pImg = entity;
+	OdDbRasterImagePtr RasterImage {entity};
 	OdGeExtents3d Extents;
-	const auto Result {pImg->getGeomExtents(Extents)};
+	const auto Result {RasterImage->getGeomExtents(Extents)};
 	if (eOk == Result) {
-		const auto Size {gripPoints.size()};
-		if (!pImg->isClipped() || !pImg->isSetDisplayOpt(OdDbRasterImage::kClip)) {
-			gripPoints.resize(Size + 5);
-			gripPoints[Size] = Extents.minPoint() + (Extents.maxPoint() - Extents.minPoint()) / 2.;
+		const auto GripPointsSize {gripPoints.size()};
+		if (!RasterImage->isClipped() || !RasterImage->isSetDisplayOpt(OdDbRasterImage::kClip)) {
+			gripPoints.resize(GripPointsSize + 5);
+			gripPoints[GripPointsSize] = Extents.minPoint() + (Extents.maxPoint() - Extents.minPoint()) / 2.;
 			OdGePoint3d Origin;
 			OdGeVector3d u;
 			OdGeVector3d v;
-			pImg->getOrientation(Origin, u, v);
-			gripPoints[Size + 1] = Origin;
-			gripPoints[Size + 2] = Origin + v;
-			gripPoints[Size + 3] = Origin + u + v;
-			gripPoints[Size + 4] = Origin + u;
+			RasterImage->getOrientation(Origin, u, v);
+			gripPoints[GripPointsSize + 1] = Origin;
+			gripPoints[GripPointsSize + 2] = Origin + v;
+			gripPoints[GripPointsSize + 3] = Origin + u + v;
+			gripPoints[GripPointsSize + 4] = Origin + u;
 		} else {
 			OdGePoint3dArray ClipPoints;
-			pImg->getVertices(ClipPoints);
+			RasterImage->getVertices(ClipPoints);
 			if (ClipPoints.last() == ClipPoints.first()) {
 				ClipPoints.removeLast();
 			}
@@ -97,9 +97,9 @@ OdResult OdDbRasterImageGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const
 	} else {
 		OdGePoint3dArray ClipPoints;
 		pImg->getVertices(ClipPoints);
-		for (unsigned i = 0; i < indices.size(); ++i) {
-			if (indices[i] >= 0 && static_cast<unsigned>(indices[i]) < ClipPoints.size()) {
-				ClipPoints[indices[i]] += offset;
+		for (auto Index : indices) {
+			if (Index >= 0 && static_cast<unsigned>(Index) < ClipPoints.size()) {
+				ClipPoints[Index] += offset;
 			}
 		}
 		ClipPoints.last() = ClipPoints.first();
@@ -108,7 +108,7 @@ OdResult OdDbRasterImageGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const
 		const auto w2p {pImg->getPixelToModelTransform().invert()};
 		const auto ImageSize {pImg->imageSize()};
 		const auto IsWipeout {entity->isKindOf(OdDbWipeout::desc())};
-		for (OdUInt32 setPt = 0; setPt < ClipPoints.size(); setPt++) {
+		for (unsigned setPt = 0; setPt < ClipPoints.size(); setPt++) {
 			outBry[setPt] = ClipPoints[setPt].transformBy(w2p).convert2d();
 			if (!IsWipeout) {
 				if (outBry[setPt].x < 0.0) {

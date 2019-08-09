@@ -4,14 +4,14 @@
 #include <Db3dPolylineVertex.h>
 
 OdResult OdDb3dPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDb3dPolylinePtr Polyline = entity;
-	auto pIt {Polyline->vertexIterator()};
-	while (!pIt->done()) {
-		auto Vertex {OdDb3dPolylineVertex::cast(pIt->entity())};
+	OdDb3dPolylinePtr Polyline {entity};
+	auto VertexIterator {Polyline->vertexIterator()};
+	while (!VertexIterator->done()) {
+		auto Vertex {OdDb3dPolylineVertex::cast(VertexIterator->entity())};
 		if (Vertex->vertexType() == OdDb::k3dSimpleVertex || Vertex->vertexType() == OdDb::k3dControlVertex) {
 			gripPoints.append(Vertex->position());
 		}
-		pIt->step();
+		VertexIterator->step();
 	}
 	return eOk;
 }
@@ -21,26 +21,26 @@ OdResult OdDb3dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const 
 	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDb3dPolylinePtr Polyline = entity;
-	const auto prevType {Polyline->polyType()};
-	auto pIt {Polyline->vertexIterator()};
-	auto counter {0};
-	while (!pIt->done()) {
-		auto Vertex {OdDb3dPolylineVertex::cast(pIt->entity())};
+	OdDb3dPolylinePtr Polyline {entity};
+	const auto PreviousType {Polyline->polyType()};
+	auto VertexIterator {Polyline->vertexIterator()};
+	auto Counter {0};
+	while (!VertexIterator->done()) {
+		auto Vertex {OdDb3dPolylineVertex::cast(VertexIterator->entity())};
 		if (Vertex->vertexType() == OdDb::k3dSimpleVertex || Vertex->vertexType() == OdDb::k3dControlVertex) {
 			for (unsigned i = 0; i < IndicesSize; i++) {
-				if (indices[i] == counter) {
+				if (indices[i] == Counter) {
 					Vertex->upgradeOpen();
 					Vertex->setPosition(Vertex->position() + offset);
 					break;
 				}
 			}
-			counter++;
+			Counter++;
 		}
-		pIt->step();
+		VertexIterator->step();
 	}
-	if (prevType != OdDb::k3dSimplePoly) { // Force re-computation of spline curve
-		Polyline->convertToPolyType(prevType);
+	if (PreviousType != OdDb::k3dSimplePoly) { // Force re-computation of spline curve
+		Polyline->convertToPolyType(PreviousType);
 	}
 	return eOk;
 }
@@ -54,19 +54,19 @@ OdResult OdDb3dPolylineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, con
 }
 
 OdResult OdDb3dPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDb3dPolylinePtr pPoly = entity;
+	OdDb3dPolylinePtr Polyline = entity;
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: {
-			auto pIt {pPoly->vertexIterator()};
-			while (!pIt->done()) {
-				auto Vertex {OdDb3dPolylineVertex::cast(pIt->entity())};
+			auto VertexIterator {Polyline->vertexIterator()};
+			while (!VertexIterator->done()) {
+				auto Vertex {OdDb3dPolylineVertex::cast(VertexIterator->entity())};
 				if (Vertex->vertexType() == OdDb::k3dSimpleVertex || Vertex->vertexType() == OdDb::k3dFitVertex) {
 					snapPoints.append(Vertex->position());
 				}
-				pIt->step();
+				VertexIterator->step();
 			}
+			break;
 		}
-		break;
 		case OdDb::kOsModeMid:
 			break;
 		case OdDb::kOsModeCen:

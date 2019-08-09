@@ -27,7 +27,7 @@ OdResult OdDbWipeOutGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 	// for the closed polyline boundary last coincident point is not returned as a grip
 	const auto HasClosedPolylineBoundary {Points.size() > 2 && Points.last().isEqualTo(Points.first())};
 	for (unsigned i = 0; i < IndicesSize; ++i) {
-		if (indices[i] < (int)Points.length()) {
+		if (indices[i] < static_cast<int>(Points.length())) {
 			auto pt3D {Points.getAt(indices[i])};
 			pt3D += offset;
 			Points.setAt(indices[i], pt3D);
@@ -52,13 +52,13 @@ OdResult OdDbWipeOutGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 	OdDbWipeoutPtr Wipeout {entity};
 	OdGePoint3dArray odGePoint3dArray;
 	Wipeout->getVertices(odGePoint3dArray);
-	const auto Size {snapPoints.size()};
+	const auto SnapPointsSize {snapPoints.size()};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
 			getStretchPoints(entity, snapPoints);
 			break;
 		case OdDb::kOsModeMid: {
-			snapPoints.resize(Size + odGePoint3dArray.length() - 1);
+			snapPoints.resize(SnapPointsSize + odGePoint3dArray.length() - 1);
 			for (unsigned i = 1; i < odGePoint3dArray.length(); ++i) {
 				OdGeLine3d l(odGePoint3dArray.getAt(i - 1), odGePoint3dArray.getAt(i));
 				snapPoints.append(l.evalPoint(l.paramOf(lastPoint)));
@@ -68,7 +68,7 @@ OdResult OdDbWipeOutGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 		case OdDb::kOsModeQuad: // not implemented yet
 			break;
 		case OdDb::kOsModeNear: {
-			snapPoints.resize(Size + odGePoint3dArray.length() - 1);
+			snapPoints.resize(SnapPointsSize + odGePoint3dArray.length() - 1);
 			for (unsigned i = 1; i < odGePoint3dArray.length(); ++i) {
 				auto Start {odGePoint3dArray.getAt(i - 1)};
 				auto End {odGePoint3dArray.getAt(i)};
@@ -88,6 +88,25 @@ OdResult OdDbWipeOutGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 			}
 			break;
 		}
+		case OdDb::kOsModeCen:
+			break;
+		case OdDb::kOsModeNode:
+			break;
+		case OdDb::kOsModeIntersec:
+			break;
+		case OdDb::kOsModeIns:
+			break;
+		case OdDb::kOsModePerp:
+			break;
+		case OdDb::kOsModeTan:
+			break;
+		case OdDb::kOsModeApint:
+			break;
+		case OdDb::kOsModePar:
+			break;
+		case OdDb::kOsModeStart:
+			break;
+		default: ;
 	}
 	return eOk;
 }

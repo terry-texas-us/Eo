@@ -14,16 +14,16 @@ OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& u
 	if (underlayReference->isClipped() && underlayReference->clipBoundary().size()) { // fill from clip boundary
 		Points.insert(Points.begin(), underlayReference->clipBoundary().asArrayPtr(), underlayReference->clipBoundary().asArrayPtr() + underlayReference->clipBoundary().size());
 	} else { // fill from extents
-		OdDbUnderlayDefinitionPtr pDef = underlayReference->definitionId().openObject();
-		if (pDef.isNull()) {
+		OdDbUnderlayDefinitionPtr UnderlayDefinition {underlayReference->definitionId().openObject()};
+		if (UnderlayDefinition.isNull()) {
 			return eNullEntityPointer;
 		}
-		auto pItem {pDef->getUnderlayItem()};
-		if (pItem.isNull()) {
+		auto UnderlayItem {UnderlayDefinition->getUnderlayItem()};
+		if (UnderlayItem.isNull()) {
 			return eNullEntityPointer;
 		}
 		Points.resize(2);
-		pItem->getExtents(Points[0], Points[1]);
+		UnderlayItem->getExtents(Points[0], Points[1]);
 	}
 	if (Points.size() == 2) {
 		if (Points[0].x > Points[1].x) {
@@ -32,21 +32,21 @@ OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& u
 		if (Points[0].y > Points[1].y) {
 			std::swap(Points[0].y, Points[1].y);
 		}
-		auto pt0 = Points[0];
-		auto pt1 = Points[1];
+		const auto Point0 = Points[0];
+		const auto Point1 = Points[1];
 		Points.resize(4);
-		Points[0].set(pt0.x, pt0.y);
-		Points[1].set(pt0.x, pt1.y);
-		Points[2].set(pt1.x, pt1.y);
-		Points[3].set(pt1.x, pt0.y);
+		Points[0].set(Point0.x, Point0.y);
+		Points[1].set(Point0.x, Point1.y);
+		Points[2].set(Point1.x, Point1.y);
+		Points[3].set(Point1.x, Point0.y);
 	}
 	Points.append(Points[0]);
-	for (OdUInt32 f = 0; f < Points.size() - 1; f++) {
-		OdGeLineSeg2d lSeg(Points[f], Points[f + 1]);
-		OdGeTol tol(lSeg.length() * 0.05);
-		if (lSeg.isOn(pickPoint.convert2d(), tol)) {
-			snapPoints.append(OdGePoint3d(lSeg.startPoint().x, lSeg.startPoint().y, 0.));
-			snapPoints.append(OdGePoint3d(lSeg.endPoint().x, lSeg.endPoint().y, 0.));
+	for (unsigned f = 0; f < Points.size() - 1; f++) {
+		OdGeLineSeg2d LineSeg(Points[f], Points[f + 1]);
+		OdGeTol Tolerance(LineSeg.length() * 0.05);
+		if (LineSeg.isOn(pickPoint.convert2d(), Tolerance)) {
+			snapPoints.append(OdGePoint3d(LineSeg.startPoint().x, LineSeg.startPoint().y, 0.));
+			snapPoints.append(OdGePoint3d(LineSeg.endPoint().x, LineSeg.endPoint().y, 0.));
 			return eOk;
 		}
 	}

@@ -4,20 +4,14 @@
 
 // Returns 5 Points: center + 4 points on Circle
 OdResult OdDbEllipseGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbEllipsePtr circle = entity;
-	const auto size {gripPoints.size()};
-	gripPoints.resize(size + 5);
-	gripPoints[size + 0] = circle->center();                            // 0 - center
-	circle->getPointAtParam(circle->startAngle(), gripPoints[size + 1]);             // 1 - right  (0)
-	circle->getPointAtParam(circle->startAngle() + OdaPI, gripPoints[size + 2]);             // 2 - left   (pi)
-	circle->getPointAtParam(circle->startAngle() + OdaPI2, gripPoints[size + 3]);             // 3 - top    (pi/2)
-	circle->getPointAtParam(circle->startAngle() + OdaPI + OdaPI2, gripPoints[size + 4]);     // 4 - bottom (pi + pi/2)
-	//if (!OdZero(circle->thickness()))
-	//{
-	//  OdGeVector3d vExtrusion = circle->normal() * circle->thickness();
-	//  for (int i = 0; i<5; i++)
-	//    gripPoints.append(gripPoints[size + i] + vExtrusion);
-	//}
+	OdDbEllipsePtr Ellipse {entity};
+	const auto GripPointsSize {gripPoints.size()};
+	gripPoints.resize(GripPointsSize + 5);
+	gripPoints[GripPointsSize + 0] = Ellipse->center();                            // 0 - center
+	Ellipse->getPointAtParam(Ellipse->startAngle(), gripPoints[GripPointsSize + 1]);             // 1 - right  (0)
+	Ellipse->getPointAtParam(Ellipse->startAngle() + OdaPI, gripPoints[GripPointsSize + 2]);             // 2 - left   (pi)
+	Ellipse->getPointAtParam(Ellipse->startAngle() + OdaPI2, gripPoints[GripPointsSize + 3]);             // 3 - top    (pi/2)
+	Ellipse->getPointAtParam(Ellipse->startAngle() + OdaPI + OdaPI2, gripPoints[GripPointsSize + 4]);     // 4 - bottom (pi + pi/2)
 	return eOk;
 }
 
@@ -33,8 +27,8 @@ OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 		Ellipse->setCenter(Ellipse->center() + Offset);                   
 		return eOk;                                                       
 	}
-	for (unsigned i = 0; i < indices.size(); i++) {
-		if (indices[i] % 5 == 0) { // point center - move circle
+	for (auto Index : indices) {
+		if (Index % 5 == 0) { // point center - move circle
 			if (Center) {// move center only one time
 				Ellipse->setCenter(Ellipse->center() + Offset);
 				Center = false;
@@ -44,44 +38,44 @@ OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 			Ellipse->getGripPoints(gripPoints);
 			const auto Dist1 {gripPoints[1].distanceTo(gripPoints[2])};
 			const auto Dist2 {gripPoints[3].distanceTo(gripPoints[4])};
-			auto point {gripPoints[indices[i] % 5] + Offset};
+			auto point {gripPoints[Index % 5] + Offset};
 			auto Normal {Ellipse->normal()};
 			auto Center {Ellipse->center()};
 			auto newDist {Ellipse->center().distanceTo(point)};
 			newDist = newDist < 1.e-10 ? 1.e-10 : newDist;
-			auto major {Ellipse->majorAxis()};
-			auto minor {Ellipse->minorAxis()};
-			auto radiusRatio {Ellipse->radiusRatio()};
-			auto startAngle {Ellipse->startAngle()};
-			auto endAngle {Ellipse->endAngle()};
+			auto MajorAxis {Ellipse->majorAxis()};
+			auto MinorAxis {Ellipse->minorAxis()};
+			auto RadiusRatio {Ellipse->radiusRatio()};
+			auto StartAngle {Ellipse->startAngle()};
+			auto EndAngle {Ellipse->endAngle()};
 			auto SwapMajorMinor {false};
-			if (indices[i] < 3 && Dist1 > Dist2 || indices[i] >= 3 && Dist1 < Dist2) {
-				radiusRatio = minor.length() / newDist;
-				major.setLength(newDist);
-				if (radiusRatio > 1) {
-					radiusRatio = 1.0 / radiusRatio;
-					major = minor;
+			if (Index < 3 && Dist1 > Dist2 || Index >= 3 && Dist1 < Dist2) {
+				RadiusRatio = MinorAxis.length() / newDist;
+				MajorAxis.setLength(newDist);
+				if (RadiusRatio > 1) {
+					RadiusRatio = 1.0 / RadiusRatio;
+					MajorAxis = MinorAxis;
 					SwapMajorMinor = true;
 				}
 			} else {
-				radiusRatio = newDist / major.length();
-				if (radiusRatio > 1) {
-					radiusRatio = major.length() / newDist;
-					major = minor;
-					major.setLength(newDist);
+				RadiusRatio = newDist / MajorAxis.length();
+				if (RadiusRatio > 1) {
+					RadiusRatio = MajorAxis.length() / newDist;
+					MajorAxis = MinorAxis;
+					MajorAxis.setLength(newDist);
 					SwapMajorMinor = true;
 				}
 			}
 			try {
 				if (SwapMajorMinor) {
-					startAngle = startAngle - OdaPI2;
-					endAngle = endAngle - OdaPI2;
-					if (startAngle < 0) {
-						startAngle = startAngle + Oda2PI;
-						endAngle = endAngle + Oda2PI;
+					StartAngle = StartAngle - OdaPI2;
+					EndAngle = EndAngle - OdaPI2;
+					if (StartAngle < 0) {
+						StartAngle = StartAngle + Oda2PI;
+						EndAngle = EndAngle + Oda2PI;
 					}
 				}
-				Ellipse->set(Center, Normal, major, radiusRatio, startAngle, endAngle);
+				Ellipse->set(Center, Normal, MajorAxis, RadiusRatio, StartAngle, EndAngle);
 			} catch (...) { }
 		}
 	}
