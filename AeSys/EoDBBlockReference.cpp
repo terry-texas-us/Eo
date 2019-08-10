@@ -63,7 +63,7 @@ EoGeMatrix3d EoDbBlockReference::BlockTransformMatrix(const OdGePoint3d& basePoi
 	// <tas="Some of the BlockReference primitives are a substitute for non BlockReference entities. (example RotatedDimension)"</tas>
 	// <tas="Type checking for access the BlockReference methods required"</tas>
 	if (!m_EntityObjectId.isNull()) {
-		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject();
+		OdDbEntityPtr Entity {m_EntityObjectId.safeOpenObject()};
 		if (!Entity->isKindOf(OdDbBlockReference::desc())) { }
 	}
 	EoGeMatrix3d LeftMatrix;
@@ -212,9 +212,9 @@ void EoDbBlockReference::TransformBy(const EoGeMatrix3d& transformMatrix) {
 	if (m_EntityObjectId.isNull()) {
 		AeSys::AddStringToMessageList(L"Expected valid entity object to exist.");
 	} else {
-		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject();
+		OdDbEntityPtr Entity {m_EntityObjectId.safeOpenObject()};
 		if (Entity->isKindOf(OdDbBlockReference::desc())) {
-			OdDbBlockReferencePtr BlockReference = Entity;
+			OdDbBlockReferencePtr BlockReference {Entity};
 			m_Position = BlockReference->position();
 			m_Normal = BlockReference->normal();
 			SetScaleFactors(BlockReference->scaleFactors());
@@ -313,7 +313,7 @@ void EoDbBlockReference::SetName(const wchar_t* name) {
 void EoDbBlockReference::SetPosition2(const OdGePoint3d& position) {
 	m_Position = position;
 	if (!m_EntityObjectId.isNull()) {
-		OdDbBlockReferencePtr BlockReference = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+		OdDbBlockReferencePtr BlockReference {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 		BlockReference->setPosition(position);
 	}
 }

@@ -56,8 +56,8 @@ void EoDlgSetupLinetype::OnDrawItem(const int controlIdentifier, LPDRAWITEMSTRUC
 					const auto rgbText {drawItemStruct->itemState & ODS_SELECTED ? GetSysColor(COLOR_HIGHLIGHTTEXT) : GetSysColor(COLOR_WINDOWTEXT)};
 					DeviceContext.SetBkColor(BackgroundColor);
 					DeviceContext.SetTextColor(rgbText);
-					const OdDbObjectId ItemData = reinterpret_cast<OdDbStub*>(static_cast<unsigned long>(m_LinetypesListControl.GetItemData(Item)));
-					OdDbLinetypeTableRecordPtr Linetype = ItemData.safeOpenObject(OdDb::kForRead);
+					const OdDbObjectId ItemData {reinterpret_cast<OdDbStub*>(static_cast<unsigned long>(m_LinetypesListControl.GetItemData(Item)))};
+					OdDbLinetypeTableRecordPtr Linetype {ItemData.safeOpenObject(OdDb::kForRead)};
 					CRect SubItemRectangle;
 					m_LinetypesListControl.GetSubItemRect(Item, Name, LVIR_LABEL, SubItemRectangle);
 					const auto Name {Linetype->getName()};

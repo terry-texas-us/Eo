@@ -25,7 +25,7 @@ void AeSysView::OnDrawModeOptions() {
 
 void AeSysView::OnDrawModePoint() {
 	const auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Point {EoDbPoint::Create(BlockTableRecord)};
 	Point->setPosition(CurrentPnt);
 	auto Group {new EoDbGroup};
@@ -287,7 +287,7 @@ void AeSysView::OnDrawModeEscape() {
 
 void AeSysView::DoDrawModeMouseMove() {
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto NumberOfPoints {m_DrawModePoints.size()};
 	switch (g_PreviousDrawCommand) {
 		case ID_OP2:

@@ -132,7 +132,7 @@ void AeSysView::OnDimensionModeDLine() {
 			AlignedDimension->setXLine2Point(CurrentPnt);
 			AlignedDimension->setDimLinePoint(CurrentPnt);
 			AlignedDimension->measurement(); // initial compute of the measurement
-			OdDbDimStyleTablePtr DimStyleTable = Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
+			OdDbDimStyleTablePtr DimStyleTable {Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead)};
 			const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 			AlignedDimension->setDimensionStyle(DimStyleRecord);
 			AlignedDimension->downgradeOpen();
@@ -175,7 +175,7 @@ void AeSysView::OnDimensionModeDLine2() {
 			AlignedDimension->setXLine2Point(CurrentPnt);
 			AlignedDimension->setDimLinePoint(CurrentPnt);
 			AlignedDimension->measurement(); // initial compute of the measurement
-			OdDbDimStyleTablePtr DimStyleTable = Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
+			OdDbDimStyleTablePtr DimStyleTable {Database()->getDimStyleTableId().safeOpenObject(OdDb::kForRead)};
 			const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 			AlignedDimension->setDimensionStyle(DimStyleRecord);
 			AlignedDimension->downgradeOpen();
@@ -410,10 +410,10 @@ void AeSysView::OnDimensionModeConvert() {
 				}
 				if (Primitive->IsKindOf(RUNTIME_CLASS(EoDbDimension)) != 0) {
 					auto DimensionPrimitive {dynamic_cast<EoDbDimension*>(Primitive)};
-					auto ReferenceSystem {DimensionPrimitive->ReferenceSystem()};
+					const auto ReferenceSystem {DimensionPrimitive->ReferenceSystem()};
 					OdGeVector3d PlaneNormal;
 					ReferenceSystem.GetUnitNormal(PlaneNormal);
-					OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+					OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 					auto Line {EoDbLine::Create(BlockTableRecord, DimensionPrimitive->Line().startPoint(), DimensionPrimitive->Line().endPoint())};
 					Line->setColorIndex(static_cast<unsigned short>(DimensionPrimitive->ColorIndex()));
 					Line->setLinetype(EoDbPrimitive::LinetypeObjectFromIndex(DimensionPrimitive->LinetypeIndex()));

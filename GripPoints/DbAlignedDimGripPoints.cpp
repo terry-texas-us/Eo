@@ -22,9 +22,9 @@ OdResult OdDbAlignedDimGripPointsPE::getGripPoints(const OdDbEntity* entity, OdG
 	auto ocsDefPt1 {FirstExtensionLineStartPoint};
 	auto ocsDefPt2 {SecondExtensionLineStartPoint};
 	auto ocsDimLinDefPt {DimensionLinePoint};
-	const auto vNorm {Dimension->normal()};
+	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
-	if (vNorm != OdGeVector3d::kZAxis) {
+	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 		ocsDefPt1.transformBy(WorldToPlaneTransform);
 		ocsDefPt2.transformBy(WorldToPlaneTransform);
@@ -77,9 +77,9 @@ OdResult OdDbAlignedDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdG
 	auto dimNewPt {*GripPoint};
 	auto SavedZCoordinate {0.0};
 	OdGeVector3d vMoveTxt;
-	auto vNorm {Dimension->normal()};
+	auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
-	if (vNorm != OdGeVector3d::kZAxis) {
+	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 	}
 	for (auto i = 0; i < static_cast<int>(indices.size()); i++) {

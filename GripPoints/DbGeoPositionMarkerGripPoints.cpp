@@ -61,7 +61,7 @@ OdResult OdDbGeoPositionMarkerPE::moveStretchPointsAt(OdDbEntity* /*entity*/, co
 }
 
 OdResult OdDbGeoPositionMarkerPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDbGeoPositionMarkerPtr GeoPositionMarker = entity;
+	OdDbGeoPositionMarkerPtr GeoPositionMarker {entity};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
 			if (!GeoPositionMarker->mtext().isNull()) {

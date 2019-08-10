@@ -146,7 +146,7 @@ void EoDbPegFile::ReadLayerTable(AeSysDoc* document) {
 		if (LinetypeName.iCompare(L"Continuous") == 0) {
 			Linetype = m_Database->getLinetypeContinuousId();
 		} else {
-			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
+			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 			Linetype = Linetypes->getAt(LinetypeName);
 		}
 		Layer->SetLinetype(Linetype);
@@ -263,7 +263,7 @@ void EoDbPegFile::WriteVPortTable(AeSysDoc* /*document*/) {
 
 void EoDbPegFile::WriteLinetypeTable(AeSysDoc* /*document*/) {
 	WriteUInt16(kLinetypeTable);
-	OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead);
+	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 	auto Iterator {Linetypes->newIterator()};
 	unsigned short NumberOfLinetypes = 0;
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {

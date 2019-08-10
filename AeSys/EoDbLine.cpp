@@ -48,7 +48,7 @@ void EoDbLine::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) con
 }
 
 EoDbPrimitive* EoDbLine::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbLinePtr Line = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbLinePtr Line {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(Line);
 	return Create(Line);
 }
@@ -59,7 +59,7 @@ void EoDbLine::CutAt(const OdGePoint3d& point, EoDbGroup* newGroup) {
 		OdDbLinePtr Line {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 		Line->setStartPoint(m_LineSeg.startPoint());
 		Line->setEndPoint(m_LineSeg.endPoint());
-		OdDbBlockTableRecordPtr BlockTableRecord = m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+		OdDbBlockTableRecordPtr BlockTableRecord {m_EntityObjectId.database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 		OdDbLinePtr NewLine {m_EntityObjectId.safeOpenObject()->clone()};
 		BlockTableRecord->appendOdDbEntity(NewLine);
 		NewLine->setStartPoint(LineSeg.startPoint());

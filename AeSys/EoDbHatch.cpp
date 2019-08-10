@@ -92,7 +92,7 @@ void EoDbHatch::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) co
 }
 
 EoDbPrimitive* EoDbHatch::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbHatchPtr Hatch {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(Hatch);
 	return Create(Hatch);
 }
@@ -644,7 +644,7 @@ void EoDbHatch::SetInteriorStyle(const short interiorStyle) noexcept {
 
 void EoDbHatch::SetInteriorStyleIndex2(const unsigned styleIndex) {
 	if (!m_EntityObjectId.isNull()) {
-		OdDbHatchPtr Hatch = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+		OdDbHatchPtr Hatch {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 		auto HatchPatternManager {theApp.patternManager()};
 		const auto HatchName {m_InteriorStyle == kSolid ? OdString(L"SOLID") : EoDbHatchPatternTable::LegacyHatchPatternName(styleIndex)};
 		OdHatchPattern HatchPattern;

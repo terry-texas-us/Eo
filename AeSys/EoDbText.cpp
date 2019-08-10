@@ -44,7 +44,7 @@ void EoDbText::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) con
 }
 
 EoDbPrimitive* EoDbText::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbTextPtr Text = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbTextPtr Text {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(Text);
 	return Create(Text);
 }

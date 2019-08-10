@@ -125,11 +125,11 @@ BOOL EoDlgNamedViews::OnInitDialog() {
 	m_views.InsertColumn(5, L"UCS", LVCFMT_LEFT, 60);
 	m_views.InsertColumn(6, L"Perspective", LVCFMT_LEFT, 30);
 	try {
-		const OdDbDatabase* Database = m_pDoc->m_DatabasePtr;
-		OdDbViewTablePtr ViewTable = Database->getViewTableId().safeOpenObject();
+		const OdDbDatabase* Database {m_pDoc->m_DatabasePtr};
+		OdDbViewTablePtr ViewTable {Database->getViewTableId().safeOpenObject()};
 		auto Index {0};
 		for (auto ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
-			OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
+			OdDbViewTableRecordPtr ViewTableRecord {ViewTableIterator->getRecordId().openObject()};
 			m_views.InsertItem(Index++, ViewTableRecord);
 		}
 	} catch (const OdError& Error) {
@@ -143,15 +143,15 @@ BOOL EoDlgNamedViews::OnInitDialog() {
 void EoDlgNamedViews::OnSetcurrentButton() {
 	auto NamedView {m_views.selectedView()};
 	if (NamedView.get() != nullptr) {
-		OdDbDatabase* pDb = m_pDoc->m_DatabasePtr;
-		auto ActiveViewportObject {pDb->activeViewportId().safeOpenObject(OdDb::kForWrite)};
+		OdDbDatabase* Database {m_pDoc->m_DatabasePtr};
+		auto ActiveViewportObject {Database->activeViewportId().safeOpenObject(OdDb::kForWrite)};
 		OdDbAbstractViewportDataPtr pVpPE(ActiveViewportObject);
 		pVpPE->setView(ActiveViewportObject, NamedView);
 		pVpPE->setUcs(ActiveViewportObject, NamedView);
 		pVpPE->setProps(ActiveViewportObject, NamedView);
 		const auto sLSName {NamedView->getLayerState()};
 		if (!sLSName.isEmpty()) {
-			OdDbLayerState::restore(pDb, sLSName, OdDbLayerState::kUndefDoNothing, OdDbLayerState::kOn | OdDbLayerState::kFrozen);
+			OdDbLayerState::restore(Database, sLSName, OdDbLayerState::kUndefDoNothing, OdDbLayerState::kOn | OdDbLayerState::kFrozen);
 		}
 	}
 }
@@ -160,28 +160,28 @@ void EoDlgNamedViews::OnDoubleClickNamedviews(NMHDR* /*notifyStructure*/, LRESUL
 	OnSetcurrentButton();
 }
 
-void deleteLayerState(OdDbViewTableRecord* pNamedView) {
-	const auto sLSName {pNamedView->getLayerState()};
+void DeleteLayerState(OdDbViewTableRecord* namedView) {
+	const auto sLSName {namedView->getLayerState()};
 	if (!sLSName.isEmpty()) {
-		OdDbLayerState::remove(pNamedView->database(), sLSName);
-		pNamedView->setLayerState(L"");
+		OdDbLayerState::remove(namedView->database(), sLSName);
+		namedView->setLayerState(L"");
 	}
 }
 
-void updateLayerState(OdDbViewTableRecord* pNamedView) {
-	auto sLSName {pNamedView->getLayerState()};
-	const auto pDb {pNamedView->database()};
+void UpdateLayerState(OdDbViewTableRecord* namedView) {
+	auto sLSName {namedView->getLayerState()};
+	const auto Database {namedView->database()};
 	if (sLSName.isEmpty()) {
-		OdString name;
-		name.format(L"ACAD_VIEWS_%s", pNamedView->getName().c_str());
-		sLSName = name;
+		OdString Name;
+		Name.format(L"ACAD_VIEWS_%s", namedView->getName().c_str());
+		sLSName = Name;
 		auto i {1};
-		while (OdDbLayerState::has(pDb, sLSName)) {
-			sLSName.format(L"%s(%d)", name.c_str(), ++i);
+		while (OdDbLayerState::has(Database, sLSName)) {
+			sLSName.format(L"%s(%d)", Name.c_str(), ++i);
 		}
-		pNamedView->setLayerState(sLSName);
+		namedView->setLayerState(sLSName);
 	}
-	OdDbLayerState::save(pDb, sLSName, OdDbLayerState::kHidden | OdDbLayerState::kCurrentViewport);
+	OdDbLayerState::save(Database, sLSName, OdDbLayerState::kHidden | OdDbLayerState::kCurrentViewport);
 }
 
 void EoDlgNamedViews::OnNewButton() {
@@ -198,10 +198,10 @@ void EoDlgNamedViews::OnNewButton() {
 			NamedView = m_views.view(i);
 			m_views.DeleteItem(i);
 		} else {
-			OdDbViewTablePtr pViewTable = Database->getViewTableId().safeOpenObject(OdDb::kForWrite);
+			OdDbViewTablePtr ViewTable {Database->getViewTableId().safeOpenObject(OdDb::kForWrite)};
 			NamedView = OdDbViewTableRecord::createObject();
 			NamedView->setName(OdString(NewDlg.m_sViewName));
-			pViewTable->add(NamedView);
+			ViewTable->add(NamedView);
 			i = m_views.GetItemCount();
 		}
 		auto ActiveViewportObject {Database->activeViewportId().safeOpenObject()};
@@ -221,9 +221,9 @@ void EoDlgNamedViews::OnNewButton() {
 		AbstractViewportData->setProps(NamedView, ActiveViewportObject);
 		NamedView->setCategoryName(OdString(NewDlg.m_sViewCategory));
 		if (NewDlg.m_bStoreLS != 0) {
-			updateLayerState(NamedView);
+			UpdateLayerState(NamedView);
 		} else {
-			deleteLayerState(NamedView);
+			DeleteLayerState(NamedView);
 		}
 		m_views.InsertItem(i, NamedView);
 		break;
@@ -233,7 +233,7 @@ void EoDlgNamedViews::OnNewButton() {
 void EoDlgNamedViews::OnUpdateLayersButton() {
 	const auto SelectionMark {m_views.GetSelectionMark()};
 	if (SelectionMark > - 1) {
-		updateLayerState(m_views.selectedView());
+		UpdateLayerState(m_views.selectedView());
 		m_views.SetItemText(SelectionMark, 4, L"Saved");
 	}
 }

@@ -456,7 +456,7 @@ bool OdBaseSnapManager::SetEntityCenters(OdRxObject* rxObject) {
 	if (Database == nullptr) {
 		return false;
 	}
-	OdDbBlockTableRecordPtr BlockTableRecord = Database->getActiveLayoutBTRId().safeOpenObject();  // Layout table
+	OdDbBlockTableRecordPtr BlockTableRecord {Database->getActiveLayoutBTRId().safeOpenObject()}; // Layout table
 	if (Database->getModelSpaceId() != BlockTableRecord->objectId()) { // it's not ModelSpace, it's PaperSpace which can have many ModelSpace
 		OdSmartPtr<OdDbLayout> Layout {BlockTableRecord->getLayoutId().safeOpenObject()};
 		if (Layout->overallVportId() != OdDbObjectId(Database->activeViewportId())) {

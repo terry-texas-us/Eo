@@ -5,7 +5,7 @@
 OdResult OdDbFaceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 4);
-	OdDbFacePtr Face = entity;
+	OdDbFacePtr Face {entity};
 	for (unsigned i = 0; i < 4; i++) {
 		Face->getVertexAt(i, gripPoints[GripPointsSize + i]);
 	}
@@ -13,12 +13,11 @@ OdResult OdDbFaceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint
 }
 
 OdResult OdDbFaceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
 	auto Offset {offset};
-	OdDbFacePtr Face = entity;
+	OdDbFacePtr Face {entity};
 	OdGePlane Plane;
 	OdDb::Planarity Planarity;
 	Face->getPlane(Plane, Planarity);
@@ -27,9 +26,9 @@ OdResult OdDbFaceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntA
 		return eOk;
 	}
 	OdGePoint3d Point;
-	for (unsigned i = 0; i < IndicesSize; i++) {
-		Face->getVertexAt(indices[i], Point);
-		Face->setVertexAt(indices[i], Point + Offset);
+	for (auto Index : indices) {
+		Face->getVertexAt(Index, Point);
+		Face->setVertexAt(Index, Point + Offset);
 	}
 	return eOk;
 }
@@ -49,7 +48,7 @@ OdResult OdDbFaceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::Os
 	if (Result != eOk || (nSize = gripPoints.size()) < 4) {
 		return Result;
 	}
-	const OdDbFacePtr Face = entity;
+	const OdDbFacePtr Face {entity};
 	const auto PickPointInPlane {GetPlanePoint(Face, pickPoint)}; // recalculated pickPoint and lastPoint in plane of face
 	const auto LastPointInPlane {GetPlanePoint(Face, lastPoint)};
 	OdGePoint3d start;

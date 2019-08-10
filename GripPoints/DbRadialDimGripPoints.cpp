@@ -22,9 +22,9 @@ OdResult OdDbRadialDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGe
 	OdDbRadialDimensionPtr Dimension {entity};
 	const auto GripPoint {&gripPoints[indices[0]]};
 	auto dimNewPt {*GripPoint};
-	const auto vNorm {Dimension->normal()};
+	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
-	if (vNorm != OdGeVector3d::kZAxis) {
+	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 	}
 	switch (indices[0]) {

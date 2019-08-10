@@ -28,9 +28,9 @@ OdResult OdDbDiametricDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const O
 	auto ocsDimFarChordPt {dimFarChordPt};
 	auto ocsDimTextPt {TextPosition};
 	auto ocsDimMidPt {dimMidPt};
-	const auto vNorm {Dimension->normal()};
+	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
-	if (vNorm != OdGeVector3d::kZAxis) {
+	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 		ocsDimChordPt.transformBy(WorldToPlaneTransform);
 		ocsDimFarChordPt.transformBy(WorldToPlaneTransform);

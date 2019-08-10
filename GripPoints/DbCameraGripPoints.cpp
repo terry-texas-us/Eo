@@ -7,11 +7,11 @@
 OdResult OdDbCameraGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	const auto GripPointsSize {gripPoints.size()};
 	OdDbCameraPtr Camera {entity};
-	auto pView {Camera->openView(OdDb::kForRead)};
-	if (!pView.isNull()) {
-		OdAbstractViewPEPtr pAvd(pView);
-		const auto Target {pAvd->target(pView)};
-		const auto Direction {pAvd->direction(pView)};
+	auto View {Camera->openView(OdDb::kForRead)};
+	if (!View.isNull()) {
+		OdAbstractViewPEPtr AbstractView(View);
+		const auto Target {AbstractView->target(View)};
+		const auto Direction {AbstractView->direction(View)};
 		gripPoints.resize(GripPointsSize + 3);
 		gripPoints[GripPointsSize + 0] = Target + Direction;
 		gripPoints[GripPointsSize + 1] = Target + Direction * 0.5;
@@ -21,27 +21,26 @@ OdResult OdDbCameraGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoi
 }
 
 OdResult OdDbCameraGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
-	OdDbCameraPtr pCamera = entity;
-	if (IndicesSize > 1 || indices[0] == 1) {
-		pCamera->transformBy(OdGeMatrix3d::translation(offset));
+	OdDbCameraPtr Camera {entity};
+	if (indices.size() > 1 || indices[0] == 1) {
+		Camera->transformBy(OdGeMatrix3d::translation(offset));
 	} else {
-		auto pView {pCamera->openView(OdDb::kForWrite)};
-		if (!pView.isNull()) {
-			OdAbstractViewPEPtr pAvd(pView);
-			auto target {pAvd->target(pView)};
-			const auto dir {pAvd->direction(pView)};
-			auto position {target + dir};
+		auto View {Camera->openView(OdDb::kForWrite)};
+		if (!View.isNull()) {
+			OdAbstractViewPEPtr AbstractView(View);
+			auto Target {AbstractView->target(View)};
+			const auto Direction {AbstractView->direction(View)};
+			auto Position {Target + Direction};
 			if (indices[0] == 0) {
-				position += offset;
+				Position += offset;
 			} else {
-				target += offset;
+				Target += offset;
 			}
-			pAvd->setView(pView, target, position - target, pAvd->upVector(pView), pAvd->fieldWidth(pView), pAvd->fieldHeight(pView), pAvd->isPerspective(pView));
-			pCamera->updateView();
+			AbstractView->setView(View, Target, Position - Target, AbstractView->upVector(View), AbstractView->fieldWidth(View), AbstractView->fieldHeight(View), AbstractView->isPerspective(View));
+			Camera->updateView();
 		}
 	}
 	return eOk;

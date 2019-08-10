@@ -68,9 +68,9 @@ OdResult OdDbRotatedDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdG
 	OdGePoint3d dimNewPt;
 	auto savedZCoordinate {0.0};
 	OdGeVector3d vMoveTxt;
-	auto vNorm {Dimension->normal()};
+	auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
-	if (vNorm != OdGeVector3d::kZAxis) {
+	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 	}
 	for (auto i = 0; i < static_cast<int>(indices.size()); i++) {

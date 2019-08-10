@@ -11,7 +11,7 @@ OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& u
 		return eNotImplemented;
 	}
 	OdGePoint2dArray Points;
-	if (underlayReference->isClipped() && underlayReference->clipBoundary().size()) { // fill from clip boundary
+	if (underlayReference->isClipped() && !underlayReference->clipBoundary().empty()) { // fill from clip boundary
 		Points.insert(Points.begin(), underlayReference->clipBoundary().asArrayPtr(), underlayReference->clipBoundary().asArrayPtr() + underlayReference->clipBoundary().size());
 	} else { // fill from extents
 		OdDbUnderlayDefinitionPtr UnderlayDefinition {underlayReference->definitionId().openObject()};
@@ -41,8 +41,8 @@ OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& u
 		Points[3].set(Point1.x, Point0.y);
 	}
 	Points.append(Points[0]);
-	for (unsigned f = 0; f < Points.size() - 1; f++) {
-		OdGeLineSeg2d LineSeg(Points[f], Points[f + 1]);
+	for (unsigned Index = 0; Index < Points.size() - 1; Index++) {
+		OdGeLineSeg2d LineSeg(Points[Index], Points[Index + 1]);
 		OdGeTol Tolerance(LineSeg.length() * 0.05);
 		if (LineSeg.isOn(pickPoint.convert2d(), Tolerance)) {
 			snapPoints.append(OdGePoint3d(LineSeg.startPoint().x, LineSeg.startPoint().y, 0.));
@@ -54,17 +54,17 @@ OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& u
 }
 
 OdResult OdDbUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	auto pRef {OdDbUnderlayReference::cast(entity)};
-	if (pRef.isNull()) {
+	auto UnderlayReference {OdDbUnderlayReference::cast(entity)};
+	if (UnderlayReference.isNull()) {
 		return eNullObjectPointer;
 	}
-	OdDbUnderlayDefinitionPtr pDef = pRef->definitionId().openObject(OdDb::kForWrite);
-	if (pDef.isNull()) {
+	OdDbUnderlayDefinitionPtr UnderlayDefinition {UnderlayReference->definitionId().openObject(OdDb::kForWrite)};
+	if (UnderlayDefinition.isNull()) {
 		return eNullObjectPointer;
 	}
-	if (!pDef->isLoaded()) { // nothing can be rendered
+	if (!UnderlayDefinition->isLoaded()) { // nothing can be rendered
 		return eFileNotFound;
 	}
-	CheckBorder(pRef, objectSnapMode, pickPoint, snapPoints);
+	CheckBorder(UnderlayReference, objectSnapMode, pickPoint, snapPoints);
 	return eOk;
 }

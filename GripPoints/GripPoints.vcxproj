@@ -97,6 +97,7 @@
     <ClInclude Include="DbRadialDimGripPoints.h" />
     <ClInclude Include="DbRadialDimLargeGripPoints.h" />
     <ClInclude Include="DbRotatedDimGripPoints.h" />
+    <ClInclude Include="DbSolidGripPoints.h" />
     <ClInclude Include="OdGripPointsModule.h" />
     <ClInclude Include="DbArcGripPoints.h" />
     <ClInclude Include="DbMlineGripPoints.h" />
@@ -133,6 +134,7 @@
     <ClCompile Include="DbRadialDimGripPoints.cpp" />
     <ClCompile Include="DbRadialDimLargeGripPoints.cpp" />
     <ClCompile Include="DbRotatedDimGripPoints.cpp" />
+    <ClCompile Include="DbSolidGripPoints.cpp" />
     <ClCompile Include="DbTextGripPoints.cpp" />
     <ClCompile Include="DbCircleGripPoints.cpp" />
     <ClCompile Include="DbDimGripPoints.cpp" />

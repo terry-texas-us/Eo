@@ -89,27 +89,27 @@ void EoDbDwgToPegFile::ConvertViewportTable(AeSysDoc* /*document*/) {
 }
 
 void EoDbDwgToPegFile::ConvertBlocks(AeSysDoc* document) {
-	OdDbBlockTablePtr BlockTable = m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead);
+	OdDbBlockTablePtr BlockTable {m_DatabasePtr_->getBlockTableId().safeOpenObject(OdDb::kForRead)};
 	OdString ReportItem;
 	AeSys::AddStringToReportList(ReportItem.format(L"<%s> Loading block definitions ...\n", static_cast<const wchar_t*>(BlockTable->desc()->name())));
 	auto Iterator {BlockTable->newIterator()};
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
-		OdDbBlockTableRecordPtr Block = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
-		ReportItem.format(L"<%s>  %s", static_cast<const wchar_t*>(Block->desc()->name()), static_cast<const wchar_t*>(Block->getName()));
-		if (Block->isAnonymous()) {
+		OdDbBlockTableRecordPtr BlockTableRecord {Iterator->getRecordId().safeOpenObject(OdDb::kForRead)};
+		ReportItem.format(L"<%s>  %s", static_cast<const wchar_t*>(BlockTableRecord->desc()->name()), static_cast<const wchar_t*>(BlockTableRecord->getName()));
+		if (BlockTableRecord->isAnonymous()) {
 			ReportItem += L" (Anonymous block)";
 		}
-		if (Block->isLayout()) {
+		if (BlockTableRecord->isLayout()) {
 			ReportItem += L" (Layout block)";
 		}
 		AeSys::AddStringToReportList(ReportItem + L"\n");
-		if (Block->xrefStatus() != OdDb::kXrfNotAnXref) {
-			if (Block->isFromExternalReference()) {
-				AeSys::AddStringToReportList(ReportItem.format(L"(External reference to [%s] not loaded)\n", static_cast<const wchar_t*>(Block->pathName())));
+		if (BlockTableRecord->xrefStatus() != OdDb::kXrfNotAnXref) {
+			if (BlockTableRecord->isFromExternalReference()) {
+				AeSys::AddStringToReportList(ReportItem.format(L"(External reference to [%s] not loaded)\n", static_cast<const wchar_t*>(BlockTableRecord->pathName())));
 			}
 		}
-		if (Block->objectId() != m_DatabasePtr_->getModelSpaceId()) {
-			ConvertBlock(Block, document);
+		if (BlockTableRecord->objectId() != m_DatabasePtr_->getModelSpaceId()) {
+			ConvertBlock(BlockTableRecord, document);
 		}
 	}
 }
@@ -129,9 +129,9 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 	auto EntityIterator {block->newIterator()};
 	for (; !EntityIterator->done(); EntityIterator->step()) {
 		const auto EntityObjectId {EntityIterator->objectId()};
-		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
+		OdDbEntityPtr Entity {EntityObjectId.safeOpenObject(OdDb::kForRead)};
 		const auto NumberOfPrimitivesInBlock {Block->GetSize()};
-		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
+		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter {Entity};
 		EntityConverter->Convert(Entity, Block);
 		if (NumberOfPrimitivesInBlock == Block->GetSize()) {
 			EntitiesNotLoaded++;
@@ -146,7 +146,7 @@ void EoDbDwgToPegFile::ConvertBlock(OdDbBlockTableRecordPtr block, AeSysDoc* doc
 	const auto ObjectId {block->extensionDictionary()};
 	if (!ObjectId.isNull()) {
 		const auto ObjectPtr {ObjectId.safeOpenObject(OdDb::kForRead)};
-		OdDbDictionaryPtr Dictionary = ObjectPtr;
+		OdDbDictionaryPtr Dictionary {ObjectPtr};
 		auto Iterator {Dictionary->newIterator()};
 		for (; !Iterator->done(); Iterator->next()) {
 			AeSys::AddStringToReportList(ReportItem.format(L"Dictionary name: %s\n", static_cast<const wchar_t*>(Iterator->name())));
@@ -165,10 +165,10 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 	auto EntityIterator {ModelSpace->newIterator()};
 	for (; !EntityIterator->done(); EntityIterator->step()) {
 		const auto EntityObjectId {EntityIterator->objectId()};
-		OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
+		OdDbEntityPtr Entity {EntityObjectId.safeOpenObject(OdDb::kForRead)};
 		auto Layer {document->GetLayerAt(Entity->layer())};
 		const auto Group {new EoDbGroup()};
-		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
+		OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter {Entity};
 		EntityConverter->Convert(Entity, Group);
 		if (Group->IsEmpty() != 0) {
 			delete Group;
@@ -191,17 +191,17 @@ void EoDbDwgToPegFile::ConvertEntities(AeSysDoc* document) {
 	/*
 		EntitiesNotLoaded = 0;
 	
-		OdDbBlockTableRecordPtr Paperspace = m_DatabasePtr_->getPaperSpaceId().safeOpenObject(OdDb::kForRead);
+		OdDbBlockTableRecordPtr Paperspace {m_DatabasePtr_->getPaperSpaceId().safeOpenObject(OdDb::kForRead)};
 	
 		EntityIterator = Paperspace->newIterator();
 		for (; !EntityIterator->done(); EntityIterator->step()) {
-			OdDbObjectId EntityObjectId = EntityIterator->objectId();
-			OdDbEntityPtr Entity = EntityObjectId.safeOpenObject(OdDb::kForRead);
+			OdDbObjectId EntityObjectId {EntityIterator->objectId()};
+			OdDbEntityPtr Entity {EntityObjectId.safeOpenObject(OdDb::kForRead)};
 	
 			auto Layer {document->GetLayerAt(Entity->layer())};
 	
 			EoDbGroup* Group = new EoDbGroup();
-			OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter = Entity;
+			OdSmartPtr<EoDbConvertEntityToPrimitive> EntityConverter {Entity};
 			EntityConverter->Convert(Entity, Group);
 	
 			if (Group->IsEmpty()) {

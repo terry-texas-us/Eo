@@ -226,7 +226,7 @@ void AeSysView::GenerateHomeRunArrow(const OdGePoint3d& pointOnCircuit, const Od
 
 void AeSysView::GeneratePowerConductorSymbol(const unsigned short conductorType, const OdGePoint3d& pointOnCircuit, const OdGePoint3d& endPoint) const {
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	OdGePoint3d Points[5];
 	EoGeLineSeg3d Circuit(pointOnCircuit, endPoint);
 	OdDbLinePtr Line;

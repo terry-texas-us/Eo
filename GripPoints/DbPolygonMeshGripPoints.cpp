@@ -8,7 +8,7 @@ OdResult OdDbPolygonMeshGripPointsPE::getGripPoints(const OdDbEntity* entity, Od
 	OdDbPolygonMesh* Mesh {OdDbPolygonMesh::cast(entity)};
 	auto VertexIterator {Mesh->vertexIterator()};
 	while (!VertexIterator->done()) {
-		OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
+		OdDbPolygonMeshVertexPtr Vertex {VertexIterator->entity()};
 		gripPoints.append(Vertex->position());
 		VertexIterator->step();
 	}
@@ -22,7 +22,7 @@ OdResult OdDbPolygonMeshGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const
 		auto CurrentIndex {0};
 		while (!VertexIterator->done()) {
 			if (CurrentIndex == Index) {
-				OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
+				OdDbPolygonMeshVertexPtr Vertex {VertexIterator->entity()};
 				Mesh->openVertex(Vertex->id(), OdDb::kForWrite);
 				Vertex->setPosition(Vertex->position() + offset);
 				Mesh->subClose();
@@ -48,7 +48,7 @@ OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 	auto VertexIterator {Mesh->vertexIterator()};
 	OdGePoint3dArray pPosArr;
 	while (!VertexIterator->done()) {
-		OdDbPolygonMeshVertexPtr Vertex = VertexIterator->entity();
+		OdDbPolygonMeshVertexPtr Vertex {VertexIterator->entity()};
 		pPosArr.append(Vertex->position());
 		VertexIterator->step();
 	}

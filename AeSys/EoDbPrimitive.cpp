@@ -105,7 +105,7 @@ double EoDbPrimitive::RelationshipOfPoint() noexcept {
 void EoDbPrimitive::SetColorIndex2(const short colorIndex) {
 	m_ColorIndex = colorIndex;
 	if (!m_EntityObjectId.isNull()) {
-		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+		OdDbEntityPtr Entity {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 		Entity->setColorIndex(static_cast<unsigned short>(colorIndex));
 	}
 }
@@ -114,7 +114,7 @@ void EoDbPrimitive::SetLinetypeIndex2(const short linetypeIndex) {
 	m_LinetypeIndex = linetypeIndex;
 	if (!m_EntityObjectId.isNull()) {
 		const auto Linetype {LinetypeObjectFromIndex(LinetypeIndex())};
-		OdDbEntityPtr Entity = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+		OdDbEntityPtr Entity {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 		Entity->setLinetype(Linetype);
 	}
 }

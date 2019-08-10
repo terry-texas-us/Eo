@@ -1,7 +1,7 @@
 #pragma once
 #include "DbGripPoints.h"
 
-class OdDbTraceGripPointsPE : public OdDbGripPointsPE {
+class OdDbSolidGripPointsPE : public OdDbGripPointsPE {
 public:
 	OdResult getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const override;
 

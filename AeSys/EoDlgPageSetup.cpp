@@ -219,12 +219,12 @@ void EoDlgPageSetup::FillMmInches() {
 void EoDlgPageSetup::FillViewCombo(const bool fillCombo) {
 	if (fillCombo) {
 		m_Views.ResetContent();
-		OdDbViewTablePtr ViewTable = m_PlotSettings.database()->getViewTableId().safeOpenObject();
+		OdDbViewTablePtr ViewTable {m_PlotSettings.database()->getViewTableId().safeOpenObject()};
 		auto ViewTableIterator {ViewTable->newIterator()};
 		while (!ViewTableIterator->done()) {
-			OdDbViewTableRecordPtr pView = ViewTableIterator->getRecord();
-			if (pView->isPaperspaceView() != IsModelSpacePageSetup()) {
-				m_Views.AddString(pView->getName());
+			OdDbViewTableRecordPtr ViewTableRecord {ViewTableIterator->getRecord()};
+			if (ViewTableRecord->isPaperspaceView() != IsModelSpacePageSetup()) {
+				m_Views.AddString(ViewTableRecord->getName());
 			}
 			ViewTableIterator->step();
 		}
@@ -258,9 +258,9 @@ void EoDlgPageSetup::FillShadePlotQualityDpi(const bool fillCombo) {
 		m_CustomDPI = m_PlotSettings.shadePlotCustomDPI();
 	}
 	if (IsModelSpacePageSetup()) {
-		const auto bEnableWindows {PlotType == OdDbPlotSettings::kAsDisplayed || PlotType == OdDbPlotSettings::kRendered};
-		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(static_cast<BOOL>(bEnableWindows));
-		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(static_cast<BOOL>(ResLevel == OdDbPlotSettings::kCustom && bEnableWindows));
+		const auto EnableWindows {PlotType == OdDbPlotSettings::kAsDisplayed || PlotType == OdDbPlotSettings::kRendered};
+		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(static_cast<BOOL>(EnableWindows));
+		GetDlgItem(IDC_PAGESETUP_DPI)->EnableWindow(static_cast<BOOL>(ResLevel == OdDbPlotSettings::kCustom && EnableWindows));
 	} else {
 		GetDlgItem(IDC_PAGESETUP_SHADE_PLOT)->EnableWindow(FALSE);
 		GetDlgItem(IDC_PAGESETUP_QUALITY)->EnableWindow(TRUE);
@@ -321,7 +321,7 @@ void EoDlgPageSetup::OnChangeEditScaleUnit() {
 	const auto OldDrawingScaleUnit {m_DrawingScaleUnit};
 	UpdateData();
 	if (OldPaperScaleUnit != m_PaperScaleUnit || OldDrawingScaleUnit != m_DrawingScaleUnit) {
-		//OdDbPlotSettings::PlotPaperUnits PaperUnits = m_PlotSettings.plotPaperUnits();
+		//OdDbPlotSettings::PlotPaperUnits PaperUnits {m_PlotSettings.plotPaperUnits()};
 		ODA_VERIFY(m_PlotSettingsValidator->setCustomPrintScale(&m_PlotSettings, m_PaperScaleUnit, m_DrawingScaleUnit) == eOk);
 		FillPaperOrientation();
 		FillScaleValues(false);
@@ -663,14 +663,14 @@ void EoDlgPageSetup::FillPlotOffset() {
 }
 
 bool EoDlgPageSetup::ViewsExist() const {
-	OdDbViewTablePtr pViewTable = m_PlotSettings.database()->getViewTableId().safeOpenObject();
-	auto pIt {pViewTable->newIterator()};
-	while (!pIt->done()) {
-		OdDbViewTableRecordPtr pView = pIt->getRecord();
-		if (pView->isPaperspaceView() != IsModelSpacePageSetup()) {
+	OdDbViewTablePtr ViewTable {m_PlotSettings.database()->getViewTableId().safeOpenObject()};
+	auto Iterator {ViewTable->newIterator()};
+	while (!Iterator->done()) {
+		OdDbViewTableRecordPtr ViewTableRecord {Iterator->getRecord()};
+		if (ViewTableRecord->isPaperspaceView() != IsModelSpacePageSetup()) {
 			return true;
 		}
-		pIt->step();
+		Iterator->step();
 	}
 	return false;
 }

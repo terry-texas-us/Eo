@@ -45,10 +45,10 @@ OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 			newDist = newDist < 1.e-10 ? 1.e-10 : newDist;
 			auto MajorAxis {Ellipse->majorAxis()};
 			auto MinorAxis {Ellipse->minorAxis()};
-			auto RadiusRatio {Ellipse->radiusRatio()};
 			auto StartAngle {Ellipse->startAngle()};
 			auto EndAngle {Ellipse->endAngle()};
 			auto SwapMajorMinor {false};
+			double RadiusRatio;
 			if (Index < 3 && Dist1 > Dist2 || Index >= 3 && Dist1 < Dist2) {
 				RadiusRatio = MinorAxis.length() / newDist;
 				MajorAxis.setLength(newDist);
@@ -84,8 +84,8 @@ OdResult OdDbEllipseGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdI
 
 // Cannot be stretched
 OdResult OdDbEllipseGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	OdDbEllipsePtr circle = entity;
-	stretchPoints.append(circle->center());                             // center
+	OdDbEllipsePtr Ellipse {entity};
+	stretchPoints.append(Ellipse->center());                             // center
 	//if (!OdZero(circle->thickness()))                                   // next center
 	//{
 	//  stretchPoints.append(circle->center() + circle->normal()*circle->thickness());
@@ -94,8 +94,8 @@ OdResult OdDbEllipseGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdG
 }
 
 OdResult OdDbEllipseGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& /*indices_*/, const OdGeVector3d& offset) {
-	OdDbEllipsePtr circle = entity;
-	circle->setCenter(circle->center() + offset);
+	OdDbEllipsePtr Ellipse {entity};
+	Ellipse->setCenter(Ellipse->center() + offset);
 	return eOk;
 }
 
@@ -116,7 +116,7 @@ OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 	if (Result != eOk || gripPoints.size() < 5) {
 		return Result;
 	}
-	OdDbEllipsePtr Ellipse = entity;
+	OdDbEllipsePtr Ellipse {entity};
 	const auto PickPointInPlane {GetPlanePoint(Ellipse, pickPoint)}; // recalculated pickPoint and lastPoint in plane of circle
 	const auto LastPointInPlane {GetPlanePoint(Ellipse, lastPoint)};
 	auto Center {Ellipse->center()};
@@ -125,7 +125,7 @@ OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 	const auto rdPick {PickPointInPlane.distanceTo(Center)};
 	const auto ptLast {LastPointInPlane - Center.asVector()};
 	const auto rdLast {LastPointInPlane.distanceTo(Center)};
-	const auto bThickness {false}; //OdZero(circle->thickness());
+	const auto ThicknessNotZero {false};
 	OdGeVector3d vThickness; //= circle->normal()*circle->thickness();
 	switch (objectSnapMode) {
 		case OdDb::kOsModeCen:                   // Center: draw cross
@@ -146,7 +146,7 @@ OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 				auto Point {ptLast * Radius / rdLast};
 				snapPoints.append(Center + Point.asVector());
 				snapPoints.append(Center - Point.asVector());
-				if (bThickness) {
+				if (ThicknessNotZero) {
 					snapPoints.append(Center + Point.asVector() + vThickness);
 					snapPoints.append(Center - Point.asVector() + vThickness);
 				}
@@ -164,13 +164,13 @@ OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 					auto x {(-b + sqrt(pow(b, 2) - 4 * a * c)) / (2 * a)};
 					auto y {(pow(Radius, 2) - ptLast.x * x) / ptLast.y};
 					snapPoints.append(Center + OdGeVector3d(x, y, 0));
-					if (bThickness) {
+					if (ThicknessNotZero) {
 						snapPoints.append(Center + OdGeVector3d(x, y, 0) + vThickness);
 					}
 					x = (-b - sqrt(pow(b, 2) - 4 * a * c)) / (2 * a);
 					y = (pow(Radius, 2) - ptLast.x * x) / ptLast.y;
 					snapPoints.append(Center + OdGeVector3d(x, y, 0));
-					if (bThickness) {
+					if (ThicknessNotZero) {
 						snapPoints.append(Center + OdGeVector3d(x, y, 0) + vThickness);
 					}
 				}
@@ -179,7 +179,7 @@ OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 				auto y {sqrt(pow(Radius, 2) - pow(x, 2))};
 				snapPoints.append(Center + OdGeVector3d(x, y, 0));
 				snapPoints.append(Center + OdGeVector3d(x, -y, 0));
-				if (bThickness) {
+				if (ThicknessNotZero) {
 					snapPoints.append(Center + OdGeVector3d(x, y, 0) + vThickness);
 					snapPoints.append(Center + OdGeVector3d(x, -y, 0) + vThickness);
 				}
@@ -189,7 +189,7 @@ OdResult OdDbEllipseGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb:
 			if (rdPick > 0) {
 				auto Point {ptPick * Radius / rdPick};
 				snapPoints.append(Center + Point.asVector());
-				if (bThickness) {
+				if (ThicknessNotZero) {
 					snapPoints.append(Center + Point.asVector() + vThickness);
 				}
 			}

@@ -7,7 +7,7 @@
 
 OdResult OdDbArcGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	const auto GripPointsSize {gripPoints.size()};
-	OdDbArcPtr Arc = entity;
+	OdDbArcPtr Arc {entity};
 	const auto Thickness {Arc->thickness()};
 	const auto NumberOfPoints {OdZero(Thickness) ? 4 : 8};
 	gripPoints.resize(GripPointsSize + NumberOfPoints);
@@ -36,7 +36,7 @@ OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntAr
 	if (IndicesSize == 0) {
 		return eOk;
 	}
-	OdDbArcPtr Arc = entity;
+	OdDbArcPtr Arc {entity};
 	auto Offset {offset};
 	// Project offset on entity's plane in view direction
 	if (!ProjectOffset(Arc->database(), Arc->normal(), Offset)) { // View direction is perpendicular to normal. Move the arc
@@ -59,7 +59,7 @@ OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntAr
 			}
 		}
 		try {
-			if (((flags & 8U) != 0U) || (flags & 7U) == 7U) { // // Center moved (8) or all 3 arc points moved
+			if ((flags & 8U) != 0U || (flags & 7U) == 7U) { // // Center moved (8) or all 3 arc points moved
 				Arc->setCenter(Points[3]);
 			} else {
 				const auto pP1 {Points.asArrayPtr()};
@@ -94,18 +94,17 @@ OdResult OdDbArcGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoi
 }
 
 OdResult OdDbArcGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
-	OdDbArcPtr Arc = entity;
+	OdDbArcPtr Arc {entity};
 	auto Offset {offset};
 	// Project offset on entity's plane in view direction
 	if (!ProjectOffset(Arc->database(), Arc->normal(), Offset)) {
 		// View direction is perpendicular to normal. Do nothing
 		return eOk;
 	}
-	if (IndicesSize >= 2) {
+	if (indices.size() >= 2) {
 		return entity->transformBy(OdGeMatrix3d::translation(Offset));
 	}
 	try {
@@ -143,7 +142,7 @@ OdResult OdDbArcGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::Osn
 	if (Result != eOk) {
 		return Result;
 	}
-	OdDbArcPtr Arc = entity;
+	OdDbArcPtr Arc {entity};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
 			snapPoints.append(GripPoints[0]);
@@ -156,7 +155,7 @@ OdResult OdDbArcGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::Osn
 			snapPoints.append(GripPoints[3]);
 			break;
 		case OdDb::kOsModeQuad: {
-			const OdDbDatabase* Database = entity->database();
+			const OdDbDatabase* Database {entity->database()};
 			const auto XAxis {Database->getUCSXDIR()};
 			const auto YAxis {Database->getUCSYDIR()};
 			const auto ZAxis {XAxis.crossProduct(YAxis)};

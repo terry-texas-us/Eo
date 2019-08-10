@@ -148,7 +148,7 @@ void AeSysView::OnAnnotateModeBubble() {
 void AeSysView::OnAnnotateModeHook() {
 	const auto CurrentPnt {GetCursorPosition()};
 	auto Group {new EoDbGroup};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	if (m_PreviousOp == 0) {
 		EoViAnn_points.clear();
 		EoViAnn_points.append(CurrentPnt);

@@ -105,7 +105,7 @@ void AeSysView::OnPipeModeFitting() {
 
 void AeSysView::OnPipeModeRise() {
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) { // On an existing horizontal pipe section
@@ -168,7 +168,7 @@ void AeSysView::OnPipeModeRise() {
 
 void AeSysView::OnPipeModeDrop() {
 	auto CurrentPnt {GetCursorPosition()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
 	auto Group {std::get<tGroup>(Selection)};
 	if (Group != nullptr) { // On an existing horizontal pipe section
@@ -272,7 +272,7 @@ void AeSysView::OnPipeModeSymbol() {
 	};
 	const auto CurrentPnt {GetCursorPosition()};
 	const auto ActiveViewPlaneNormal {GetActiveView()->CameraDirection()};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	OnPipeModeEscape();
 	m_PipeModePoints.setLogicalLength(2);
 	auto Selection {SelectLineUsingPoint(CurrentPnt)};
@@ -1007,7 +1007,7 @@ void AeSysView::GenerateLineWithFittings(const int beginType, OdGePoint3d& start
 }
 
 void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	GetDocument()->UpdatePrimitiveInAllViews(EoDb::kPrimitiveEraseSafe, section);
 	const auto BeginPoint {section->StartPoint()};
 	const auto EndPoint {section->EndPoint()};
@@ -1032,7 +1032,7 @@ void AeSysView::DropIntoOrRiseFromHorizontalSection(const OdGePoint3d& point, Eo
 }
 
 void AeSysView::DropFromOrRiseIntoHorizontalSection(const OdGePoint3d& point, EoDbGroup* group, EoDbLine* section) const {
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto BeginPoint {section->StartPoint()};
 	const auto EndPoint {section->EndPoint()};
 	section->SetEndPoint(point);

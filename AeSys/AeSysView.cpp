@@ -1308,9 +1308,9 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			AbstractView = OdAbstractViewPEPtr(ViewObject = ActiveViewport);
 		} else {
 			const auto OverallViewportId {Layout->overallVportId()};
-			OdDbViewportPtr pActiveVP = OverallViewportId.safeOpenObject();
-			ViewTarget = pActiveVP->viewTarget(); // in plotPaperUnits
-			AbstractView = OdAbstractViewPEPtr(ViewObject = pActiveVP);
+			OdDbViewportPtr OverallViewport {OverallViewportId.safeOpenObject()};
+			ViewTarget = OverallViewport->viewTarget(); // in plotPaperUnits
+			AbstractView = OdAbstractViewPEPtr(ViewObject = OverallViewport);
 		}
 		const auto ViewportCenter {AbstractView->target(ViewObject)}; // in plotPaperUnits
 		const auto IsPerspective {AbstractView->isPerspective(ViewObject)};

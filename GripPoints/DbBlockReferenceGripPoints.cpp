@@ -161,8 +161,8 @@ OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity,
 		} 
 		// Attributes
 		auto AttributeIndex {0};
-		for (auto i = BlockReference->attributeIterator(); !i->done(); i->step()) {
-			OdDbAttributePtr Attribute(i->entity());
+		for (auto Iterator = BlockReference->attributeIterator(); !Iterator->done(); Iterator->step()) {
+			OdDbAttributePtr Attribute(Iterator->entity());
 			if (Attribute->lockPositionInBlock()) {
 				continue;
 			}
@@ -214,8 +214,8 @@ OdResult OdDbBlockReferenceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, co
 			BoundaryChanged = true;
 		} else if (AppData->m_nAttributeIndex >= 0) {
 			auto n {0};
-			for (auto i = BlockReference->attributeIterator(); !i->done(); i->step()) {
-				OdDbAttributePtr Attribute(i->entity(OdDb::kForWrite));
+			for (auto Iterator = BlockReference->attributeIterator(); !Iterator->done(); Iterator->step()) {
+				OdDbAttributePtr Attribute(Iterator->entity(OdDb::kForWrite));
 				if (Attribute->lockPositionInBlock()) {
 					continue;
 				}
@@ -226,9 +226,9 @@ OdResult OdDbBlockReferenceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, co
 			}
 		} else if (!AppData->m_bClipInvertGrip) {
 			BlockReference->setPosition(BlockReference->position() + offset);
-			for (auto i = BlockReference->attributeIterator(); !i->done(); i->step()) {
-				OdDbAttributePtr attr(i->entity(OdDb::kForWrite));
-				attr->transformBy(Transform);
+			for (auto Iterator = BlockReference->attributeIterator(); !Iterator->done(); Iterator->step()) {
+				OdDbAttributePtr Attribute(Iterator->entity(OdDb::kForWrite));
+				Attribute->transformBy(Transform);
 			}
 		}
 	}

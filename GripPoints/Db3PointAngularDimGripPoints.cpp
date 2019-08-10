@@ -16,7 +16,7 @@ OdResult OdDb3PointAngularDimGripPointsPE::getGripPoints(const OdDbEntity* entit
 	return eOk;
 }
 
-OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool bStretch) {
+OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool stretch) {
 	if (indices.empty()) {
 		return eOk;
 	}
@@ -80,7 +80,7 @@ OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, con
 				if (NeedTransform) {
 					ocsDimTextPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 				}
-				if (indices.size() == 1 || !bStretch) {
+				if (indices.size() == 1 || !stretch) {
 					Dimension->useSetTextPosition();
 				}
 				Dimension->setTextPosition(ocsDimTextPt);

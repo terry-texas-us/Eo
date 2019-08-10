@@ -19,8 +19,7 @@ OdResult OdDb2dPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdG
 }
 
 OdResult OdDb2dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
 	OdDb2dPolylinePtr Polyline {entity};
@@ -30,8 +29,8 @@ OdResult OdDb2dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const 
 	while (!VertexIterator->done()) {
 		auto Vertex {OdDb2dVertex::cast(VertexIterator->entity())};
 		if (Vertex->vertexType() == OdDb::k2dVertex) {
-			for (unsigned i = 0; i < IndicesSize; i++) {
-				if (indices[i] == Counter) {
+			for (auto Index : indices) {
+				if (Index == Counter) {
 					Vertex->upgradeOpen();
 					Vertex->setPosition(Vertex->position() + offset);
 					break;
@@ -49,10 +48,10 @@ OdResult OdDb2dPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const 
 
 OdResult OdDb2dPolylineGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
 	OdDb2dPolylinePtr Polyline {entity};
-	for (auto i = Polyline->vertexIterator(); !i->done(); i->step()) {
-		auto v {OdDb2dVertex::cast(i->entity())};
-		if (!v.isNull() && v->vertexType() == OdDb::k2dVertex) {
-			stretchPoints.append(v->position());
+	for (auto Iterator = Polyline->vertexIterator(); !Iterator->done(); Iterator->step()) {
+		auto Vertex {OdDb2dVertex::cast(Iterator->entity())};
+		if (!Vertex.isNull() && Vertex->vertexType() == OdDb::k2dVertex) {
+			stretchPoints.append(Vertex->position());
 		}
 	}
 	return eOk;
@@ -61,12 +60,12 @@ OdResult OdDb2dPolylineGripPointsPE::getStretchPoints(const OdDbEntity* entity, 
 OdResult OdDb2dPolylineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
 	OdDb2dPolylinePtr Polyline {entity};
 	auto Index {0};
-	for (auto i = Polyline->vertexIterator(); !i->done(); i->step(), ++Index) {
-		auto v {OdDb2dVertex::cast(i->entity())};
-		if (!v.isNull() && v->vertexType() == OdDb::k2dVertex) {
+	for (auto Iterator = Polyline->vertexIterator(); !Iterator->done(); Iterator->step(), ++Index) {
+		auto Vertex {OdDb2dVertex::cast(Iterator->entity())};
+		if (!Vertex.isNull() && Vertex->vertexType() == OdDb::k2dVertex) {
 			if (indices.contains(Index)) {
-				v->upgradeOpen();
-				v->setPosition(v->position() + offset);
+				Vertex->upgradeOpen();
+				Vertex->setPosition(Vertex->position() + offset);
 			}
 			++Index;
 		}

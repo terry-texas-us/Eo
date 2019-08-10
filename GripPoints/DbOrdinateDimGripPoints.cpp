@@ -20,16 +20,16 @@ OdResult OdDbOrdinateDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const Od
 		return eOk;
 	}
 	OdDbOrdinateDimensionPtr Dimension {entity};
-	auto dimDefiningPt {Dimension->definingPoint()};
-	auto dimLeaderEndPt {Dimension->leaderEndPoint()};
+	auto DefiningPoint {Dimension->definingPoint()};
+	auto LeaderEndPoint {Dimension->leaderEndPoint()};
 	auto TextPosition {Dimension->textPosition()};
 	const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-	auto ocsDimDefiningPt {dimDefiningPt};
-	auto ocsDimLeaderEndPt {dimLeaderEndPt};
+	auto ocsDimDefiningPt {DefiningPoint};
+	auto ocsDimLeaderEndPt {LeaderEndPoint};
 	auto ocsDimTextPt {TextPosition};
-	const auto vNorm {Dimension->normal()};
+	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
-	if (vNorm != OdGeVector3d::kZAxis) {
+	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 		ocsDimDefiningPt.transformBy(WorldToPlaneTransform);
 		ocsDimLeaderEndPt.transformBy(WorldToPlaneTransform);

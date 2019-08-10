@@ -59,7 +59,7 @@ void EoDbDimension::AddToTreeViewControl(const HWND tree, const HTREEITEM parent
 }
 
 EoDbPrimitive* EoDbDimension::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbAlignedDimensionPtr AlignedDimension = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbAlignedDimensionPtr AlignedDimension {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
 	return Create(AlignedDimension);
 }
@@ -473,7 +473,7 @@ void EoDbDimension::Write(CFile& file, unsigned char* buffer) const {
 
 EoDbDimension* EoDbDimension::Create(OdDbAlignedDimensionPtr& alignedDimension) {
 	if (alignedDimension->dimBlockId()) {
-		OdDbBlockTableRecordPtr Block = alignedDimension->dimBlockId().safeOpenObject(OdDb::kForRead);
+		OdDbBlockTableRecordPtr Block {alignedDimension->dimBlockId().safeOpenObject(OdDb::kForRead)};
 		auto DimensionBlockName {Block->getName()};
 	}
 	const auto Measurement {alignedDimension->getMeasurement()};
@@ -549,7 +549,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	const auto Database {blockTableRecord->database()};
 	auto AlignedDimension {OdDbAlignedDimension::createObject()};
 	AlignedDimension->setDatabaseDefaults(Database);
-	OdDbDimStyleTablePtr DimStyleTable = Database->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
+	OdDbDimStyleTablePtr DimStyleTable {Database->getDimStyleTableId().safeOpenObject(OdDb::kForRead)};
 	const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 	AlignedDimension->setDimensionStyle(DimStyleRecord);
 	blockTableRecord->appendOdDbEntity(AlignedDimension);
@@ -617,7 +617,7 @@ OdDbAlignedDimensionPtr EoDbDimension::Create(OdDbBlockTableRecordPtr blockTable
 	const auto Database {blockTableRecord->database()};
 	auto AlignedDimension {OdDbAlignedDimension::createObject()};
 	AlignedDimension->setDatabaseDefaults(Database);
-	OdDbDimStyleTablePtr DimStyleTable = Database->getDimStyleTableId().safeOpenObject(OdDb::kForRead);
+	OdDbDimStyleTablePtr DimStyleTable {Database->getDimStyleTableId().safeOpenObject(OdDb::kForRead)};
 	const auto DimStyleRecord {DimStyleTable->getAt(L"EoStandard")};
 	AlignedDimension->setDimensionStyle(DimStyleRecord);
 	blockTableRecord->appendOdDbEntity(AlignedDimension);

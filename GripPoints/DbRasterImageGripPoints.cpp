@@ -41,21 +41,20 @@ struct Coefficients {
 };
 
 OdResult OdDbRasterImageGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
-	OdDbRasterImagePtr pImg = entity;
-	if (!pImg->isClipped() || !pImg->isSetDisplayOpt(OdDbRasterImage::kClip)) {
+	OdDbRasterImagePtr RasterImage {entity};
+	if (!RasterImage->isClipped() || !RasterImage->isSetDisplayOpt(OdDbRasterImage::kClip)) {
 		if (indices[0] == 0) {
 			return entity->transformBy(OdGeMatrix3d::translation(offset));
 		}
-		OdGePoint3d origin;
-		OdGeVector3d u;
-		OdGeVector3d v;
-		pImg->getOrientation(origin, u, v);
-		auto xNorm = u;
-		auto yNorm = v;
+		OdGePoint3d Origin;
+		OdGeVector3d U;
+		OdGeVector3d V;
+		RasterImage->getOrientation(Origin, U, V);
+		auto xNorm = U;
+		auto yNorm = V;
 		const auto xNLen {xNorm.normalizeGetLength()};
 		const auto yNLen {yNorm.normalizeGetLength()}; //Default bottom - left corner
 		Coefficients cfs = {1, 1, 1, 1};
@@ -90,13 +89,13 @@ OdResult OdDbRasterImageGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const
 		const auto dMov {fabs(dX) > fabs(dY) ? dX : dY};
 		const auto vecU {xNorm * dMov};
 		const auto vecV {yNorm * dMov * yNLen / xNLen};
-		const auto pOrg {origin + cfs.iUOrg * vecU + cfs.iVOrg * vecV};
-		if (!(u - vecU).isZeroLength() && !(v - vecV).isZeroLength()) {
-			pImg->setOrientation(pOrg, u - vecU, v - vecV);
+		const auto pOrg {Origin + cfs.iUOrg * vecU + cfs.iVOrg * vecV};
+		if (!(U - vecU).isZeroLength() && !(V - vecV).isZeroLength()) {
+			RasterImage->setOrientation(pOrg, U - vecU, V - vecV);
 		}
 	} else {
 		OdGePoint3dArray ClipPoints;
-		pImg->getVertices(ClipPoints);
+		RasterImage->getVertices(ClipPoints);
 		for (auto Index : indices) {
 			if (Index >= 0 && static_cast<unsigned>(Index) < ClipPoints.size()) {
 				ClipPoints[Index] += offset;
@@ -105,8 +104,8 @@ OdResult OdDbRasterImageGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const
 		ClipPoints.last() = ClipPoints.first();
 		OdGePoint2dArray outBry;
 		outBry.resize(ClipPoints.size());
-		const auto w2p {pImg->getPixelToModelTransform().invert()};
-		const auto ImageSize {pImg->imageSize()};
+		const auto w2p {RasterImage->getPixelToModelTransform().invert()};
+		const auto ImageSize {RasterImage->imageSize()};
 		const auto IsWipeout {entity->isKindOf(OdDbWipeout::desc())};
 		for (unsigned setPt = 0; setPt < ClipPoints.size(); setPt++) {
 			outBry[setPt] = ClipPoints[setPt].transformBy(w2p).convert2d();
@@ -123,7 +122,7 @@ OdResult OdDbRasterImageGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const
 				}
 			}
 		}
-		pImg->setClipBoundary(outBry);
+		RasterImage->setClipBoundary(outBry);
 	}
 	return eOk;
 }

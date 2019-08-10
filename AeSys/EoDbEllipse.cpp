@@ -81,7 +81,7 @@ void EoDbEllipse::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) 
 }
 
 EoDbPrimitive* EoDbEllipse::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbEllipsePtr Ellipse {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(Ellipse);
 	return Create(Ellipse);
 }
@@ -655,7 +655,7 @@ EoDbEllipse& EoDbEllipse::SetTo2(const OdGePoint3d& center, const OdGeVector3d& 
 		m_MinorAxis = minorAxis;
 		m_SweepAngle = sweepAngle;
 		if (!m_EntityObjectId.isNull()) {
-			OdDbEllipsePtr Ellipse = m_EntityObjectId.safeOpenObject(OdDb::kForWrite);
+			OdDbEllipsePtr Ellipse {m_EntityObjectId.safeOpenObject(OdDb::kForWrite)};
 			const auto RadiusRatio {minorAxis.length() / majorAxis.length()};
 			PlaneNormal.normalize();
 			Ellipse->set(center, PlaneNormal, majorAxis, RadiusRatio, 0.0, sweepAngle);
@@ -856,8 +856,8 @@ OdDbEllipsePtr EoDbEllipse::CreateCircle(OdDbBlockTableRecordPtr& blockTableReco
 	auto Ellipse {OdDbEllipse::createObject()};
 	Ellipse->setDatabaseDefaults(blockTableRecord->database());
 	blockTableRecord->appendOdDbEntity(Ellipse);
-	const OdGeCircArc3d Circle {center, normal, radius};
-	Ellipse->set(center, Circle.normal(), Circle.refVec() * radius, 1.0);
+	const OdGeCircArc3d CircularArc {center, normal, radius};
+	Ellipse->set(center, CircularArc.normal(), CircularArc.refVec() * radius, 1.0);
 	return Ellipse;
 }
 

@@ -6,7 +6,7 @@
 OdResult OdDbLineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 3);
-	OdDbLinePtr Line = entity;
+	OdDbLinePtr Line {entity};
 	Line->getStartPoint(gripPoints[GripPointsSize + 0]);
 	Line->getEndPoint(gripPoints[GripPointsSize + 1]);
 	gripPoints[GripPointsSize + 2] = gripPoints[GripPointsSize + 0] + (gripPoints[GripPointsSize + 1] - gripPoints[GripPointsSize + 0]) / 2;
@@ -14,12 +14,11 @@ OdResult OdDbLineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint
 }
 
 OdResult OdDbLineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
-	OdDbLinePtr Line = entity;
-	if (IndicesSize > 1 || indices[0] == 2) {
+	OdDbLinePtr Line {entity};
+	if (indices.size() > 1 || indices[0] == 2) {
 		Line->setStartPoint(Line->startPoint() + offset);
 		Line->setEndPoint(Line->endPoint() + offset);
 	} else if (indices[0] == 0) {
@@ -43,7 +42,7 @@ OdResult OdDbLineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
 }
 
 OdResult OdDbLineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDbLinePtr Line = entity;
+	OdDbLinePtr Line {entity};
 	OdGePoint3d StartPoint;
 	OdGePoint3d EndPoint;
 	Line->getStartPoint(StartPoint);

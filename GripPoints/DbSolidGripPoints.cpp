@@ -1,15 +1,15 @@
 #include <OdaCommon.h>
-#include <DbTrace.h>
-#include "DbTraceGripPoints.h"
+#include <DbSolid.h>
+#include "DbSolidGripPoints.h"
 
-OdResult OdDbTraceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbTracePtr Trace {entity};
+OdResult OdDbSolidGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
+	OdDbSolidPtr Solid {entity};
 	gripPoints.resize(4);
 	for (auto PointIndex = 0; PointIndex < 4; PointIndex++) {
-		Trace->getPointAt(PointIndex, gripPoints[PointIndex]);
+		Solid->getPointAt(PointIndex, gripPoints[PointIndex]);
 	}
-	if (OdNonZero(Trace->thickness())) {
-		const auto ThicknessPath(Trace->normal().normal() * Trace->thickness());
+	if (OdNonZero(Solid->thickness())) {
+		const auto ThicknessPath(Solid->normal().normal() * Solid->thickness());
 		gripPoints.resize(8);
 		for (auto PointIndex = 4; PointIndex < 8; PointIndex++) {
 			gripPoints[PointIndex] = gripPoints[PointIndex - 4] + ThicknessPath;
@@ -18,12 +18,12 @@ OdResult OdDbTraceGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoin
 	return eOk;
 }
 
-OdResult OdDbTraceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDbTracePtr Trace {entity};
+OdResult OdDbSolidGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
+	OdDbSolidPtr Solid {entity};
 	OdGeVector3d PlanarBasis[3];
 	double PlanarCoefficients[3];
 	int PointIndex;
-	PlanarBasis[2] = Trace->normal();
+	PlanarBasis[2] = Solid->normal();
 	PlanarBasis[0] = PlanarBasis[2].perpVector().normal();
 	PlanarBasis[1] = PlanarBasis[2].crossProduct(PlanarBasis[0]).normal();
 	for (PointIndex = 0; PointIndex < 3; PointIndex++) {
@@ -38,9 +38,9 @@ OdResult OdDbTraceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdInt
 		for (PointIndex = 0; PointIndex < 4; PointIndex++) {
 			if (MarkIds[PointIndex]) {
 				OdGePoint3d MovePoint;
-				Trace->getPointAt(PointIndex, MovePoint);
+				Solid->getPointAt(PointIndex, MovePoint);
 				MovePoint += Delta;
-				Trace->setPointAt(PointIndex, MovePoint);
+				Solid->setPointAt(PointIndex, MovePoint);
 			}
 		}
 	}
@@ -48,32 +48,32 @@ OdResult OdDbTraceGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdInt
 		const auto Delta {PlanarBasis[2] * PlanarCoefficients[2]};
 		for (PointIndex = 0; PointIndex < 4; PointIndex++) {
 			OdGePoint3d MovePoint;
-			Trace->getPointAt(PointIndex, MovePoint);
+			Solid->getPointAt(PointIndex, MovePoint);
 			MovePoint += Delta;
-			Trace->setPointAt(PointIndex, MovePoint);
+			Solid->setPointAt(PointIndex, MovePoint);
 		}
 	}
 	return eOk;
 }
 
-OdResult OdDbTraceGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
-	OdDbTracePtr Trace {entity};
-	return getGripPoints(Trace, stretchPoints);
+OdResult OdDbSolidGripPointsPE::getStretchPoints(const OdDbEntity* entity, OdGePoint3dArray& stretchPoints) const {
+	OdDbSolidPtr Solid {entity};
+	return getGripPoints(Solid, stretchPoints);
 }
 
-OdResult OdDbTraceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdDbTracePtr Trace {entity};
-	return moveGripPointsAt(Trace, indices, offset);
+OdResult OdDbSolidGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
+	OdDbSolidPtr Solid {entity};
+	return moveGripPointsAt(Solid, indices, offset);
 }
 
-OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDbTracePtr Trace {entity};
+OdResult OdDbSolidGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+	OdDbSolidPtr Solid {entity};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: {
 			const auto SnapPointsSize {snapPoints.size()};
 			snapPoints.resize(SnapPointsSize + 4);
 			for (auto PointIndex = 0; PointIndex < 4; PointIndex++) {
-				Trace->getPointAt(PointIndex, snapPoints[SnapPointsSize + PointIndex]);
+				Solid->getPointAt(PointIndex, snapPoints[SnapPointsSize + PointIndex]);
 			}
 			break;
 		}

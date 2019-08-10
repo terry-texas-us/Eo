@@ -104,9 +104,9 @@ public:
 		COleDocument* pOleDocument = 0;
 		if (stream.isKindOf(OdOleItemInitStream::desc())) {
 			m_frameId = OdOleItemInitStreamPtr(&stream)->frameId();
-			OdDbDatabaseDocPtr pDb = OdDbDatabaseDoc::cast(m_frameId.database());
-			if (pDb.get()) {
-				pOleDocument = pDb->document();
+			OdDbDatabaseDocPtr Database {OdDbDatabaseDoc::cast(m_frameId.database())};
+			if (Database.get()) {
+				pOleDocument = Database->document();
 			}
 		}
 		if (pOleDocument) {
@@ -260,7 +260,7 @@ public:
 		// suppress boring save dialog on exit...
 		m_pDocument->SetModifiedFlag(FALSE);
 
-		OdDbOle2FramePtr pOleFrame = m_frameId.openObject(OdDb::kForWrite);
+		OdDbOle2FramePtr pOleFrame {m_frameId.openObject(OdDb::kForWrite)};
 		if (pOleFrame.get()) {
 			CSize newSize;
 			if (GetExtent(&newSize)) {
@@ -303,11 +303,11 @@ public:
 	}
 	void execute(OdEdCommandContext* commandContext) {
 		OdDbCommandContextPtr CommandContext(commandContext);
-		OdDbUserIOPtr UserIO = CommandContext->userIO();
+		OdDbUserIOPtr UserIO {CommandContext->userIO()};
 
 		OdDbOle2FramePtr pOle2Frame;
 		OdSmartPtr<OleDwgItem> pItem;
-		OdDbSelectionSetIteratorPtr pIter = UserIO->select(L"Select an object <done>:")->newIterator();
+		OdDbSelectionSetIteratorPtr pIter {UserIO->select(L"Select an object <done>:")->newIterator()};
 		while (!pIter->done()) {
 			pOle2Frame = OdDbOle2Frame::cast(pIter->objectId().safeOpenObject(OdDb::kForWrite));
 			if(pOle2Frame.get()) {
@@ -353,8 +353,8 @@ public:
 	}
 	void execute(OdEdCommandContext* commandContext) {
 		OdDbCommandContextPtr CommandContext(commandContext);
-		OdDbDatabaseDocPtr Database = CommandContext->database();
-		OdSmartPtr<OdDbUserIO> UserIO = CommandContext->userIO();
+		OdDbDatabaseDocPtr Database {CommandContext->database()};
+		OdSmartPtr<OdDbUserIO> UserIO {CommandContext->userIO()};
 
 		COleInsertDialog OleInsertDialog;
 		
@@ -364,7 +364,7 @@ public:
 
 		OdStaticRxObject<TRACKER> tracker;
 
-		OdSmartPtr<OdDbOle2Frame> pOleFrame = tracker._pOleFrame = OdDbOle2Frame::createObject();
+		OdSmartPtr<OdDbOle2Frame> pOleFrame {tracker._pOleFrame = OdDbOle2Frame::createObject()};
 		pOleFrame->setDatabaseDefaults(Database);
 		OdSmartPtr<OleDwgItem> pItem = pOleFrame->getItemHandler();
 
@@ -398,7 +398,7 @@ public:
 			sPmt.format(L"Specify size <%g>:", tracker._size.length());
 			tracker.setValue(UserIO->getDist(sPmt, 0, 0.0, L"", &tracker));
 
-			OdDbBlockTableRecordPtr pSpace = Database->getActiveLayoutBTRId().safeOpenObject(OdDb::kForWrite);
+			OdDbBlockTableRecordPtr pSpace {Database->getActiveLayoutBTRId().safeOpenObject(OdDb::kForWrite)};
 			pItem->m_frameId = pSpace->appendOdDbEntity(pOleFrame);
 
 			// if insert new object -- initially show the object

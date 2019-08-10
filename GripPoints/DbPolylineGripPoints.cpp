@@ -28,15 +28,14 @@ OdResult OdDbPolylineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGeP
 }
 
 OdResult OdDbPolylineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
 	OdDbPolylinePtr Polyline {entity};
 	const auto x {OdGeMatrix3d::worldToPlane(Polyline->normal())};
 	const auto NumberOfVertices {Polyline->numVerts()};
 	unsigned iUStart = 0;
-	for (unsigned i = 0; i < IndicesSize; ++i) {
+	for (unsigned i = 0; i < indices.size(); ++i) {
 		const auto PolyLineIndex {indices[i] / 2};
 		if (indices[i] % 2 == 0) { // "Vertex. Check if near middle grip point presents. If yes skip this vertex
 			auto PreviousIndex {indices[i] - 1};
@@ -142,32 +141,34 @@ OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb
 		case OdDb::kOsModeCen:
 			for (unsigned i = 0; i < Polyline->numVerts(); i++) {
 				if (Polyline->segType(i) == OdDbPolyline::kArc) {
-					OdGeCircArc3d arc;
-					Polyline->getArcSegAt(i, arc);
-					snapPoints.append(arc.center());
+					OdGeCircArc3d CircularArc;
+					Polyline->getArcSegAt(i, CircularArc);
+					snapPoints.append(CircularArc.center());
 				}
 			}
 			break;
 		case OdDb::kOsModeQuad: {
 			for (unsigned i = 0; i < Polyline->numVerts(); i++) {
 				if (Polyline->segType(i) == OdDbPolyline::kArc) {
-					OdGeCircArc3d arc;
-					Polyline->getArcSegAt(i, arc);
-					const OdDbDatabase* pDb = entity->database();
-					auto xAxis {pDb->getUCSXDIR()};
-					auto yAxis {pDb->getUCSYDIR()};
-					auto zAxis {xAxis.crossProduct(yAxis)};
-					if (!arc.normal().isParallelTo(zAxis)) {
+					OdGeCircArc3d CircularArc;
+					Polyline->getArcSegAt(i, CircularArc);
+					const OdDbDatabase* Database {entity->database()};
+					auto XAxis {Database->getUCSXDIR()};
+					auto YAxis {Database->getUCSYDIR()};
+					auto ZAxis {XAxis.crossProduct(YAxis)};
+					if (!CircularArc.normal().isParallelTo(ZAxis)) {
 						return eInvalidAxis;
 					}
-					OdGeVector3d vStart, vEnd, vQuad;
-					vStart = arc.startPoint() - arc.center();
-					vEnd = arc.endPoint() - arc.center();
+					OdGeVector3d Start;
+					OdGeVector3d End;
+					OdGeVector3d vQuad;
+					Start = CircularArc.startPoint() - CircularArc.center();
+					End = CircularArc.endPoint() - CircularArc.center();
 					int k[5] = {0, 1, 0, -1, 0};
 					for (auto quad = 0; quad < 4; quad ++) {
-						vQuad = xAxis * arc.radius() * k[quad + 1] + yAxis * arc.radius() * k[quad];
-						if ((vQuad - vStart).crossProduct(vEnd - vQuad).isCodirectionalTo(arc.normal())) {
-							snapPoints.append(arc.center() + xAxis * arc.radius() * k[quad + 1] + yAxis * arc.radius() * k[quad]);
+						vQuad = XAxis * CircularArc.radius() * k[quad + 1] + YAxis * CircularArc.radius() * k[quad];
+						if ((vQuad - Start).crossProduct(End - vQuad).isCodirectionalTo(CircularArc.normal())) {
+							snapPoints.append(CircularArc.center() + XAxis * CircularArc.radius() * k[quad + 1] + YAxis * CircularArc.radius() * k[quad]);
 						}
 					}
 				}
@@ -175,9 +176,9 @@ OdResult OdDbPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb
 		}
 		break;
 		case OdDb::kOsModeNear: {
-			OdGePoint3d p;
-			if (Polyline->getClosestPointTo(pickPoint, worldToEyeTransform.inverse() * OdGeVector3d::kZAxis, p) == eOk) {
-				snapPoints.append(p);
+			OdGePoint3d Point;
+			if (Polyline->getClosestPointTo(pickPoint, worldToEyeTransform.inverse() * OdGeVector3d::kZAxis, Point) == eOk) {
+				snapPoints.append(Point);
 			}
 		}
 		break;

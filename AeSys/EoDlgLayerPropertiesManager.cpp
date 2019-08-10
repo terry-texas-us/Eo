@@ -74,7 +74,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 	UpdateFiltersTree();
 
 	// <tas="testing main dictionary interface">
-	OdDbDictionaryPtr MainDictionary = m_Database->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForRead);
+	OdDbDictionaryPtr MainDictionary {m_Database->getNamedObjectsDictionaryId().safeOpenObject(OdDb::kForRead)};
 	TRACE1("Main dictionary contains %i entries\n", MainDictionary->numEntries());
 	// </tas>
 	auto MainDictionaryIterator {MainDictionary->newIterator()};
@@ -82,7 +82,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 		const auto MainDictionaryEntryObjectId {MainDictionaryIterator->objectId()};
 		TRACE2("<%4s> \"%s\"\n", MainDictionaryEntryObjectId.getHandle().ascii().c_str(), MainDictionaryIterator->name().c_str());
 		if (MainDictionaryIterator->objectId() == m_Database->getLayoutDictionaryId()) {
-			OdDbDictionaryPtr LayoutDictionary = m_Database->getLayoutDictionaryId().safeOpenObject(OdDb::kForRead);
+			OdDbDictionaryPtr LayoutDictionary {m_Database->getLayoutDictionaryId().safeOpenObject(OdDb::kForRead)};
 			auto LayoutDictionaryIterator {LayoutDictionary->newIterator()};
 			while (!LayoutDictionaryIterator->done()) {
 				const auto LayoutDictionaryEntryObjectId {LayoutDictionaryIterator->objectId()};
@@ -90,7 +90,7 @@ BOOL EoDlgLayerPropertiesManager::OnInitDialog() {
 				LayoutDictionaryIterator->next();
 			}
 		} else if (MainDictionaryIterator->objectId() == m_Database->getScaleListDictionaryId()) {
-			OdDbDictionaryPtr ScaleListDictionary = m_Database->getScaleListDictionaryId().safeOpenObject(OdDb::kForRead);
+			OdDbDictionaryPtr ScaleListDictionary {m_Database->getScaleListDictionaryId().safeOpenObject(OdDb::kForRead)};
 			auto ScaleListDictionaryIterator {ScaleListDictionary->newIterator()};
 			while (!ScaleListDictionaryIterator->done()) {
 				const auto ScaleListDictionaryEntryObjectId {ScaleListDictionaryIterator->objectId()};

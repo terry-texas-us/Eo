@@ -42,7 +42,7 @@ BOOL EoDlgNewView::OnInitDialog() {
 	OdDbSymbolTablePtr ViewTable {Database->getViewTableId().safeOpenObject()};
 	OdDbSymbolTableIteratorPtr ViewTableIterator;
 	for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
-		OdDbViewTableRecordPtr ViewTableRecord = ViewTableIterator->getRecordId().openObject();
+		OdDbViewTableRecordPtr ViewTableRecord {ViewTableIterator->getRecordId().openObject()};
 		auto CategoryName {ViewTableRecord->getCategoryName()};
 		if (!CategoryName.isEmpty()) {
 			if (m_categories.FindString(-1, CategoryName) == -1) {
@@ -57,8 +57,8 @@ BOOL EoDlgNewView::OnInitDialog() {
 		m_UCSs.AddString(m_sUcsName);
 	}
 	for (ViewTableIterator = ViewTable->newIterator(); !ViewTableIterator->done(); ViewTableIterator->step()) {
-		OdDbUCSTableRecordPtr pUCS = ViewTableIterator->getRecordId().openObject();
-		m_UCSs.AddString(pUCS->getName());
+		OdDbUCSTableRecordPtr UcsTableRecord {ViewTableIterator->getRecordId().openObject()};
+		m_UCSs.AddString(UcsTableRecord->getName());
 	}
 	UpdateData(FALSE);
 	return TRUE;

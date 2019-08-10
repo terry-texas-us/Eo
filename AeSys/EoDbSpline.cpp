@@ -42,7 +42,7 @@ void EoDbSpline::AddToTreeViewControl(const HWND tree, const HTREEITEM parent) c
 }
 
 EoDbPrimitive* EoDbSpline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbSplinePtr Spline {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(Spline);
 	return Create(Spline);
 }
@@ -84,7 +84,7 @@ void EoDbSpline::GetAllPoints(OdGePoint3dArray& points) const {
 OdGePoint3d EoDbSpline::GetCtrlPt() const {
 	OdGePoint3d Point;
 	if (!m_EntityObjectId.isNull()) {
-		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
+		OdDbSplinePtr Spline {m_EntityObjectId.safeOpenObject()};
 		double EndParameter;
 		Spline->getEndParam(EndParameter);
 		Spline->getPointAtParam(EndParameter / 2.0, Point);
@@ -96,7 +96,7 @@ OdGePoint3d EoDbSpline::GetCtrlPt() const {
 
 void EoDbSpline::GetExtents(AeSysView* /*view*/, OdGeExtents3d& extents) const {
 	if (!m_EntityObjectId.isNull()) {
-		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
+		OdDbSplinePtr Spline {m_EntityObjectId.safeOpenObject()};
 		OdGeExtents3d Extents;
 		Spline->getGeomExtents(Extents);
 		extents.addExt(Extents);
@@ -130,8 +130,8 @@ bool EoDbSpline::IsEqualTo(EoDbPrimitive* other) const {
 	auto IsEqual {false};
 	const auto OtherObjectId {other->EntityObjectId()};
 	if (!m_EntityObjectId.isNull() && !OtherObjectId.isNull()) {
-		OdDbSplinePtr Spline = m_EntityObjectId.safeOpenObject();
-		OdDbSplinePtr OtherSpline = OtherObjectId.safeOpenObject();
+		OdDbSplinePtr Spline {m_EntityObjectId.safeOpenObject()};
+		OdDbSplinePtr OtherSpline {OtherObjectId.safeOpenObject()};
 		IsEqual = Spline->isEqualTo(OtherSpline);
 	}
 	return IsEqual;

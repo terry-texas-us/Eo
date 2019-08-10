@@ -7,18 +7,18 @@
 
 // Returns GripPoints
 OdResult OdDbTextGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbTextPtr pText = entity;
-	gripPoints.append(pText->position()); // left lower corner of Text
-	if (!IsJustifyLeft(pText)) { // if in AutoCad properties Justify != Left
-		gripPoints.append(pText->alignmentPoint());
+	OdDbTextPtr Text {entity};
+	gripPoints.append(Text->position()); // left lower corner of Text
+	if (!IsJustifyLeft(Text)) { // if in AutoCad properties Justify != Left
+		gripPoints.append(Text->alignmentPoint());
 	}
 	// OdDbText has two grip points: position() and alignmentPoint
-	const auto dThickness {pText->thickness()};
-	if (!OdZero(dThickness)) {
-		const auto vExtrusion {pText->normal() * dThickness};
-		gripPoints.append(pText->position() + vExtrusion);
-		if (!IsJustifyLeft(pText)) {
-			gripPoints.append(pText->alignmentPoint() + vExtrusion);
+	const auto Thickness {Text->thickness()};
+	if (!OdZero(Thickness)) {
+		const auto Extrusion {Text->normal() * Thickness};
+		gripPoints.append(Text->position() + Extrusion);
+		if (!IsJustifyLeft(Text)) {
+			gripPoints.append(Text->alignmentPoint() + Extrusion);
 		}
 	}
 	return eOk;
@@ -26,8 +26,7 @@ OdResult OdDbTextGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint
 
 // Move text
 OdResult OdDbTextGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
 	OdDbTextPtr Text {entity};
@@ -35,25 +34,25 @@ OdResult OdDbTextGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntA
 	auto MoveAlignmentPoint {false};
 	auto Offset {offset};
 	// Project offset on entity's plane in view direction
-	const auto bPlaneChanges {!ProjectOffset(Text->database(), Text->normal(), Offset)};
+	const auto PlaneChanges {!ProjectOffset(Text->database(), Text->normal(), Offset)};
 	if (IsJustifyLeft(Text)) {
 		MovePosition = true;
 	} else if (IsJustifyAligned(Text) || IsJustifyFit(Text)) {
 		// Both points can be moved
-		if (bPlaneChanges) {
+		if (PlaneChanges) {
 			//Move both points
 			MovePosition = true;
 			MoveAlignmentPoint = true;
 		} else {
-			for (unsigned i = 0; i < IndicesSize; ++i) {
-				const auto ind {indices[i]};
-				switch (ind) {
+			for (auto Index : indices) {
+				switch (Index) {
 					case 0: case 2:
 						MovePosition = true;
 						break;
 					case 1: case 3:
 						MoveAlignmentPoint = true;
 						break;
+					default: ;
 				}
 			}
 		}
@@ -111,7 +110,7 @@ OdResult OdDbTextGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
  * \return 
  */
 OdResult OdDbTextGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdDbTextPtr Text = entity;
+	OdDbTextPtr Text {entity};
 	const auto Thickness {Text->thickness()};
 	const auto Extrusion {Text->normal() * Thickness};
 	switch (objectSnapMode) {

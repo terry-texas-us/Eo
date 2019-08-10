@@ -85,7 +85,7 @@ void EoDbPolyline::AddToTreeViewControl(const HWND tree, const HTREEITEM parent)
 }
 
 EoDbPrimitive* EoDbPolyline::Clone(OdDbBlockTableRecordPtr blockTableRecord) const {
-	OdDbPolylinePtr Polyline = m_EntityObjectId.safeOpenObject()->clone();
+	OdDbPolylinePtr Polyline {m_EntityObjectId.safeOpenObject()->clone()};
 	blockTableRecord->appendOdDbEntity(Polyline);
 	return Create(Polyline);
 }

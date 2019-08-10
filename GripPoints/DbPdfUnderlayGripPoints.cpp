@@ -12,10 +12,8 @@ OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 	if (objectSnapMode != OdDb::kOsModeEnd) { // FLYSDK version
 		return eNotImplemented;
 	}
-	//PdfUnderlayModulePtr pModule = odrxDynamicLinker()->loadModule(OdPdfModuleVIModuleName);
-	//
-	PdfUnderlayModulePtr pModule = OdDbPdfDefinition::loadPdfUnderlayModule();
-	if (pModule.isNull()) {
+	PdfUnderlayModulePtr UnderlayModule {OdDbPdfDefinition::loadPdfUnderlayModule()};
+	if (UnderlayModule.isNull()) {
 		return eTxError;
 	}
 	const auto Result {OdDbUnderlayGripPointsPE::getOsnapPoints(entity, objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, snapPoints)};
@@ -64,7 +62,7 @@ OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 		const OdGeMatrix3d transformRef;
 		PdfSnapGrabberImpl PdfSnapGrabber(snapPoints, transformRef);
 		//transformation is not needed because it has been applied to pickPoint (and will be applied to snap points) on app level
-		return pModule->getSnapGeometry(UnderlayReference, &PdfSnapGrabber, &pickPoint);
+		return UnderlayModule->getSnapGeometry(UnderlayReference, &PdfSnapGrabber, &pickPoint);
 	}
 	return Result;
 }

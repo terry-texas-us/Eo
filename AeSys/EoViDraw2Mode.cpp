@@ -108,7 +108,7 @@ void AeSysView::OnDraw2ModeWall() {
 		Line->setLinetype(Linetype);
 		m_AssemblyGroup->AddTail(EoDbLine::Create(Line));
 		GetDocument()->UpdateGroupInAllViews(EoDb::kGroupSafe, m_AssemblyGroup);
-		OdDbLinePtr LineEntity = m_EndSectionLine->EntityObjectId().safeOpenObject()->clone();
+		OdDbLinePtr LineEntity {m_EndSectionLine->EntityObjectId().safeOpenObject()->clone()};
 		BlockTableRecord->appendOdDbEntity(LineEntity);
 		auto LinePrimitive {EoDbLine::Create(LineEntity)};
 		if (EoGeLineSeg3d(m_PreviousPnt, CurrentPnt).DirectedRelationshipOf(StartPoint) < 0) {
@@ -186,8 +186,8 @@ bool AeSysView::StartAssemblyFromLine() {
 	m_CurrentLeftLine.SetStartPoint(ptInt);
 	Line.IntersectWith_xy(m_CurrentRightLine, ptInt);
 	m_CurrentRightLine.SetStartPoint(ptInt);
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
-	OdDbLinePtr LineEntity = m_BeginSectionLine->EntityObjectId().safeOpenObject()->clone();
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
+	OdDbLinePtr LineEntity {m_BeginSectionLine->EntityObjectId().safeOpenObject()->clone()};
 	BlockTableRecord->appendOdDbEntity(LineEntity);
 	auto LinePrimitive {EoDbLine::Create(LineEntity)};
 	if (OdGeVector3d(m_CurrentLeftLine.startPoint() - Line.startPoint()).length() > OdGeVector3d(m_CurrentRightLine.startPoint() - Line.startPoint()).length()) {

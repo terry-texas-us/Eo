@@ -3,7 +3,7 @@
 #include <DbMline.h>
 
 OdResult OdDbMlineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbMline* Mline = OdDbMline::cast(entity);
+	OdDbMline* Mline {OdDbMline::cast(entity)};
 	const auto GripPointsSize {gripPoints.size()};
 	const auto NumberOfVertices {Mline->numVertices()};
 	gripPoints.resize(GripPointsSize + NumberOfVertices);
@@ -15,13 +15,12 @@ OdResult OdDbMlineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoin
 }
 
 OdResult OdDbMlineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	const auto IndicesSize {indices.size()};
-	if (IndicesSize == 0) {
+	if (indices.empty()) {
 		return eOk;
 	}
-	OdDbMline* Mline = OdDbMline::cast(entity);
-	for (unsigned i = 0; i < IndicesSize; ++i) {
-		Mline->moveVertexAt(indices[i], Mline->vertexAt(indices[i]) + offset);
+	OdDbMline* Mline {OdDbMline::cast(entity)};
+	for (auto Index : indices) {
+		Mline->moveVertexAt(Index, Mline->vertexAt(Index) + offset);
 	}
 	return eOk;
 }

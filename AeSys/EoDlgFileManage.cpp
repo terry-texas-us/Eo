@@ -345,7 +345,7 @@ void EoDlgFileManage::OnNmClickLayersListControl(NMHDR* notifyStructure, LRESULT
 			break;
 		}
 		case kLinetype: {
-			OdDbLinetypeTablePtr Linetypes = m_Database->getLinetypeTableId().safeOpenObject();
+			OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject()};
 			EoDlgSetupLinetype Dialog(Linetypes);
 			if (Dialog.DoModal() == IDOK) {
 				Layer->SetLinetype(Dialog.linetype->objectId());

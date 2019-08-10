@@ -390,7 +390,7 @@ void AeSysView::GenerateEndCap(const OdGePoint3d& startPoint, const OdGePoint3d&
 	auto ResourceBuffer {OdResBuf::newRb(OdResBuf::kDxfRegAppName, L"AeSys")};
 	ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, section.Width()));
 	ResourceBuffer->last()->setNext(OdResBuf::newRb(OdResBuf::kDxfXdReal, section.Depth()));
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Point {EoDbPoint::Create(BlockTableRecord)};
 	Point->setPosition(Midpoint);
 	Point->setColorIndex(15);
@@ -444,7 +444,7 @@ void AeSysView::GenerateFullElbowTakeoff(EoDbGroup* /*group*/, EoGeLineSeg3d& ex
 	}
 	/*
 		if (m_GenerateTurningVanes) {
-			OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+			OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	
 			OdGePoint3dArray Points;
 			Points.setLogicalLength(5);
@@ -515,7 +515,7 @@ void AeSysView::GenerateRectangularElbow(EoGeLineSeg3d& previousReferenceLine, c
 	if (previousReferenceLine.isParallelTo(currentReferenceLine)) {
 		return;
 	}
-	const OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	const OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto EndPoint {previousReferenceLine.endPoint()};
 	previousReferenceLine.SetEndPoint(ProjectToward(EndPoint, previousReferenceLine.startPoint(), m_DuctSeamSize + previousSection.Width() * m_CenterLineEccentricity));
 	EoGeLineSeg3d PreviousLeftLine;
@@ -585,7 +585,7 @@ void AeSysView::GenerateRectangularSection(EoGeLineSeg3d& referenceLine, const d
 void AeSysView::GenSizeNote(const OdGePoint3d& position, const double angle, const Section section) {
 	const auto XDirection {OdGeVector3d(0.06, 0.0, 0.0).rotateBy(angle, OdGeVector3d::kZAxis)};
 	const auto YDirection {OdGeVector3d(0.0, 0.1, 0.0).rotateBy(angle, OdGeVector3d::kZAxis)};
-	EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
+	const EoGeReferenceSystem ReferenceSystem(position, XDirection, YDirection);
 	OdGeVector3d PlaneNormal;
 	ReferenceSystem.GetUnitNormal(PlaneNormal);
 	OdString Note;
@@ -602,7 +602,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, const double angle, con
 	CharacterCellDefinition.SetRotationAngle(0.0);
 	g_PrimitiveState.SetCharacterCellDefinition(CharacterCellDefinition);
 	auto Group {new EoDbGroup};
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	auto Text {EoDbText::Create(BlockTableRecord, ReferenceSystem.Origin(), Note)};
 	Text->setNormal(PlaneNormal);
 	Text->setRotation(ReferenceSystem.Rotation());
@@ -620,7 +620,7 @@ void AeSysView::GenSizeNote(const OdGePoint3d& position, const double angle, con
 bool AeSysView::GenerateRectangularTap(const EJust justification, const Section section) {
 	EoGeLineSeg3d LeftLine;
 	EoGeLineSeg3d RightLine;
-	OdDbBlockTableRecordPtr BlockTableRecord = Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite);
+	OdDbBlockTableRecordPtr BlockTableRecord {Database()->getModelSpaceId().safeOpenObject(OdDb::kForWrite)};
 	const auto ColorIndex {g_PrimitiveState.ColorIndex()};
 	const auto Linetype {EoDbPrimitive::LinetypeObjectFromIndex(g_PrimitiveState.LinetypeIndex())};
 	auto SectionLength {m_CurrentReferenceLine.length()};

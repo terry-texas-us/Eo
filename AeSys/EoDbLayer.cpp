@@ -110,12 +110,12 @@ bool EoDbLayer::IsCurrent() const {
 }
 
 short EoDbLayer::LinetypeIndex() {
-	OdDbLinetypeTableRecordPtr Linetype = m_Layer->linetypeObjectId().safeOpenObject();
+	OdDbLinetypeTableRecordPtr Linetype {m_Layer->linetypeObjectId().safeOpenObject()};
 	return static_cast<short>(EoDbLinetypeTable::LegacyLinetypeIndex(Linetype->getName()));
 }
 
 OdString EoDbLayer::LinetypeName() {
-	OdDbLinetypeTableRecordPtr Linetype = m_Layer->linetypeObjectId().safeOpenObject();
+	OdDbLinetypeTableRecordPtr Linetype {m_Layer->linetypeObjectId().safeOpenObject()};
 	return Linetype->getName();
 }
 

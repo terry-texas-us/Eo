@@ -770,7 +770,7 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddNewTextStyle(const OdString& name, OdDb
 }
 
 OdDbTextStyleTableRecordPtr AeSysDoc::AddStandardTextStyle() {
-	OdDbTextStyleTablePtr TextStyles = m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite);
+	OdDbTextStyleTablePtr TextStyles {m_DatabasePtr->getTextStyleTableId().safeOpenObject(OdDb::kForWrite)};
 	OdDbTextStyleTableRecordPtr TextStyle;
 	if (TextStyles->has(L"EoStandard")) {
 		TextStyle = TextStyles->getAt(L"EoStandard").safeOpenObject();
@@ -782,9 +782,9 @@ OdDbTextStyleTableRecordPtr AeSysDoc::AddStandardTextStyle() {
 }
 
 OdDbDimStyleTableRecordPtr AeSysDoc::AddStandardDimensionStyle() {
-	OdDbDimStyleTablePtr DimStyleTable = m_DatabasePtr->getDimStyleTableId().safeOpenObject(OdDb::kForWrite);
+	OdDbDimStyleTablePtr DimStyleTable {m_DatabasePtr->getDimStyleTableId().safeOpenObject(OdDb::kForWrite)};
 	if (DimStyleTable->has(L"EoStandard")) {
-		OdDbDimStyleTableRecordPtr DimStyle = DimStyleTable->getAt(L"EoStandard").safeOpenObject(OdDb::kForRead);
+		OdDbDimStyleTableRecordPtr DimStyle {DimStyleTable->getAt(L"EoStandard").safeOpenObject(OdDb::kForRead)};
 		return DimStyle;
 	}
 	auto DimStyle {OdDbDimStyleTableRecord::createObject()};
@@ -1471,7 +1471,7 @@ bool AeSysDoc::TracingOpen(const OdString& fileName) {
 	m_DatabasePtr->startUndoRecord();
 	EoDbDwgToPegFile DwgToPegFile(m_DatabasePtr);
 	DwgToPegFile.ConvertToPeg(this);
-	OdDbLayerTableRecordPtr LayerTableRecord = m_DatabasePtr->getCLAYER().safeOpenObject(OdDb::kForWrite);
+	OdDbLayerTableRecordPtr LayerTableRecord {m_DatabasePtr->getCLAYER().safeOpenObject(OdDb::kForWrite)};
 	SetCurrentLayer(LayerTableRecord);
 	LayerTableRecord->setIsReconciled(true);
 	auto Layer {GetLayerAt(0)};

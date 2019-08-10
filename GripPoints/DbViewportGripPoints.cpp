@@ -5,85 +5,85 @@
 #include <AbstractViewPE.h>
 
 OdResult OdDbViewportGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3dArray& gripPoints) const {
-	OdDbViewportPtr pVpt(entity);
-	if (!pVpt->isNonRectClipOn()) {
-		const auto centerPt {pVpt->centerPoint()};
-		const auto widthD {pVpt->width()};
-		const auto heightD {pVpt->height()};
-		const auto xAxis {OdGeVector3d::kXAxis * (widthD * 0.5)};
-		const auto yAxis {OdGeVector3d::kYAxis * (heightD * 0.5)};
+	OdDbViewportPtr Viewport {entity};
+	if (!Viewport->isNonRectClipOn()) {
+		const auto CenterPoint {Viewport->centerPoint()};
+		const auto Width {Viewport->width()};
+		const auto Height {Viewport->height()};
+		const auto XAxis {OdGeVector3d::kXAxis * (Width * 0.5)};
+		const auto YAxis {OdGeVector3d::kYAxis * (Height * 0.5)};
 		gripPoints.reserve(4);
-		gripPoints.append(centerPt - xAxis - yAxis);
-		gripPoints.append(centerPt + xAxis - yAxis);
-		gripPoints.append(centerPt + xAxis + yAxis);
-		gripPoints.append(centerPt - xAxis + yAxis);
+		gripPoints.append(CenterPoint - XAxis - YAxis);
+		gripPoints.append(CenterPoint + XAxis - YAxis);
+		gripPoints.append(CenterPoint + XAxis + YAxis);
+		gripPoints.append(CenterPoint - XAxis + YAxis);
 	}
 	return eOk;
 }
 
 OdResult OdDbViewportGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
 	OdDbViewportPtr Viewport {entity};
-	OdGsDCRectDouble rect;
+	OdGsDCRectDouble Rectangle;
 	const auto CenterPoint {Viewport->centerPoint()};
-	auto widthD {Viewport->width() * 0.5};
-	auto heightD {Viewport->height() * 0.5};
-	rect.m_min.x = CenterPoint.x - widthD;
-	rect.m_min.y = CenterPoint.y - heightD;
-	rect.m_max.x = CenterPoint.x + widthD;
-	rect.m_max.y = CenterPoint.y + heightD;
+	auto Width {Viewport->width() * 0.5};
+	auto Height {Viewport->height() * 0.5};
+	Rectangle.m_min.x = CenterPoint.x - Width;
+	Rectangle.m_min.y = CenterPoint.y - Height;
+	Rectangle.m_max.x = CenterPoint.x + Width;
+	Rectangle.m_max.y = CenterPoint.y + Height;
 	double* logX[4] = {
-		&rect.m_min.x,
-		&rect.m_max.x,
-		&rect.m_max.x,
-		&rect.m_min.x
+		&Rectangle.m_min.x,
+		&Rectangle.m_max.x,
+		&Rectangle.m_max.x,
+		&Rectangle.m_min.x
 	};
 	double* logY[4] = {
-		&rect.m_min.y,
-		&rect.m_min.y,
-		&rect.m_max.y,
-		&rect.m_max.y
+		&Rectangle.m_min.y,
+		&Rectangle.m_min.y,
+		&Rectangle.m_max.y,
+		&Rectangle.m_max.y
 	};
-	bool bMovement[4] = {false, false, false, false};
-	bool* bMovX[4] = {bMovement + 0, bMovement + 2, bMovement + 2, bMovement + 0};
-	bool* bMovY[4] = {bMovement + 1, bMovement + 1, bMovement + 3, bMovement + 3};
+	bool Movement[4] = {false, false, false, false};
+	bool* bMovX[4] = {Movement + 0, Movement + 2, Movement + 2, Movement + 0};
+	bool* bMovY[4] = {Movement + 1, Movement + 1, Movement + 3, Movement + 3};
 	for (auto Index : indices) {
-		if (!(*bMovX[Index])) {
+		if (!*bMovX[Index]) {
 			*logX[Index] += offset.x;
 			*bMovX[Index] = true;
 		}
-		if (!(*bMovY[Index])) {
+		if (!*bMovY[Index]) {
 			*logY[Index] += offset.y;
 			*bMovY[Index] = true;
 		}
 	}
-	if (rect.m_min.x > rect.m_max.x) {
-		const auto tmp {rect.m_min.x};
-		rect.m_min.x = rect.m_max.x;
-		rect.m_max.x = tmp;
+	if (Rectangle.m_min.x > Rectangle.m_max.x) {
+		const auto tmp {Rectangle.m_min.x};
+		Rectangle.m_min.x = Rectangle.m_max.x;
+		Rectangle.m_max.x = tmp;
 	}
-	if (rect.m_min.y > rect.m_max.y) {
-		const auto tmp {rect.m_min.y};
-		rect.m_min.y = rect.m_max.y;
-		rect.m_max.y = tmp;
+	if (Rectangle.m_min.y > Rectangle.m_max.y) {
+		const auto tmp {Rectangle.m_min.y};
+		Rectangle.m_min.y = Rectangle.m_max.y;
+		Rectangle.m_max.y = tmp;
 	}
-	const auto newWidth {rect.m_max.x - rect.m_min.x};
-	const auto newHeight {rect.m_max.y - rect.m_min.y};
-	const OdGePoint3d newCenter(rect.m_min.x + newWidth * 0.5, rect.m_min.y + newHeight * 0.5, CenterPoint.z);
-	if (OdNonZero(newWidth) && OdNonZero(newHeight) && !Viewport->isPerspectiveOn()) {
-		widthD *= 2;
-		heightD *= 2;
-		OdAbstractViewPEPtr pViewPE(Viewport);
-		const auto zAxis {pViewPE->direction(Viewport)};
-		const auto yAxis {pViewPE->upVector(Viewport)};
-		const auto xAxis {yAxis.crossProduct(zAxis).normal()};
-		const auto fieldHeight {pViewPE->fieldHeight(Viewport) / heightD * newHeight};
-		const auto fieldWidth {fieldHeight / heightD * widthD};
-		const auto diff {(newCenter - CenterPoint) / newHeight * fieldHeight};
-		pViewPE->setView(Viewport, pViewPE->target(Viewport) + xAxis * diff.x + yAxis * diff.y, zAxis, yAxis, fieldWidth, fieldHeight, false);
+	const auto NewWidth {Rectangle.m_max.x - Rectangle.m_min.x};
+	const auto NewHeight {Rectangle.m_max.y - Rectangle.m_min.y};
+	const OdGePoint3d NewCenter(Rectangle.m_min.x + NewWidth * 0.5, Rectangle.m_min.y + NewHeight * 0.5, CenterPoint.z);
+	if (OdNonZero(NewWidth) && OdNonZero(NewHeight) && !Viewport->isPerspectiveOn()) {
+		Width *= 2;
+		Height *= 2;
+		OdAbstractViewPEPtr AbstractView(Viewport);
+		const auto ZAxis {AbstractView->direction(Viewport)};
+		const auto YAxis {AbstractView->upVector(Viewport)};
+		const auto XAxis {YAxis.crossProduct(ZAxis).normal()};
+		const auto FieldHeight {AbstractView->fieldHeight(Viewport) / Height * NewHeight};
+		const auto FieldWidth {FieldHeight / Height * Width};
+		const auto Difference {(NewCenter - CenterPoint) / NewHeight * FieldHeight};
+		AbstractView->setView(Viewport, AbstractView->target(Viewport) + XAxis * Difference.x + YAxis * Difference.y, ZAxis, YAxis, FieldWidth, FieldHeight, false);
 	}
-	Viewport->setCenterPoint(newCenter);
-	Viewport->setWidth(newWidth);
-	Viewport->setHeight(newHeight);
+	Viewport->setCenterPoint(NewCenter);
+	Viewport->setWidth(NewWidth);
+	Viewport->setHeight(NewHeight);
 	return eOk;
 }
 

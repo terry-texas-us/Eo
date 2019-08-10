@@ -10,8 +10,8 @@ OdResult OdDbOleGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 5);
 	OdRectangle3d rect;
-	OdDbOle2FramePtr ole2Frame = entity;
-	ole2Frame->position(rect);
+	OdDbOle2FramePtr Ole2Frame {entity};
+	Ole2Frame->position(rect);
 	gripPoints[GripPointsSize + 0] = rect.lowLeft;
 	gripPoints[GripPointsSize + 1] = rect.lowRight;
 	gripPoints[GripPointsSize + 2] = rect.upLeft;
@@ -24,61 +24,61 @@ OdResult OdDbOleGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint3
 }
 
 OdResult OdDbOleGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntArray& indices, const OdGeVector3d& offset) {
-	OdGePoint3dArray point3dArray;
-	OdRectangle3d rect;
-	OdDbOle2FramePtr ole2Frame = entity;
+	OdGePoint3dArray Points;
+	OdRectangle3d Rectangle;
+	OdDbOle2FramePtr Ole2Frame {entity};
 	if (indices.empty()) {
 		return eOk;
 	}
-	auto Result {getGripPoints(entity, point3dArray)};
+	auto Result {getGripPoints(entity, Points)};
 	if (Result != eOk) {
 		return eOk;
 	}
-	auto GripPoints(point3dArray);
+	auto GripPoints(Points);
 	for (auto Index : indices) {
 		GripPoints[Index] += offset;
 	}
-	ole2Frame->position(rect);
+	Ole2Frame->position(Rectangle);
 	switch (indices[0]) {
 		case 0: /*lowLeft*/ {
-			if (point3dArray[0].x - point3dArray[3].x != 0 && point3dArray[0].y - point3dArray[3].y != 0) {
-				const auto ScaleX {fabs((GripPoints[0].x - GripPoints[3].x) / (point3dArray[0].x - point3dArray[3].x))};
-				const auto ScaleY {fabs((GripPoints[0].y - GripPoints[3].y) / (point3dArray[0].y - point3dArray[3].y))};
-				const OdGeScale3d odGeScale3d(ScaleX, ScaleY, 1.0);
-				Result = entity->transformBy(OdGeMatrix3d::scaling(odGeScale3d, GripPoints[3]));
+			if (Points[0].x - Points[3].x != 0 && Points[0].y - Points[3].y != 0) {
+				const auto ScaleX {fabs((GripPoints[0].x - GripPoints[3].x) / (Points[0].x - Points[3].x))};
+				const auto ScaleY {fabs((GripPoints[0].y - GripPoints[3].y) / (Points[0].y - Points[3].y))};
+				const OdGeScale3d Scale(ScaleX, ScaleY, 1.0);
+				entity->transformBy(OdGeMatrix3d::scaling(Scale, GripPoints[3]));
 			}
 			break;
 		}
 		case 1: /*lowRight*/ {
-			if (point3dArray[1].x - point3dArray[2].x != 0 && point3dArray[1].y - point3dArray[2].y != 0) {
-				const auto ScaleX {fabs((GripPoints[1].x - GripPoints[2].x) / (point3dArray[1].x - point3dArray[2].x))};
-				const auto ScaleY {fabs((GripPoints[1].y - GripPoints[2].y) / (point3dArray[1].y - point3dArray[2].y))};
-				const OdGeScale3d odGeScale3d(ScaleX, ScaleY, 1.0);
-				Result = entity->transformBy(OdGeMatrix3d::scaling(odGeScale3d, GripPoints[2]));
+			if (Points[1].x - Points[2].x != 0 && Points[1].y - Points[2].y != 0) {
+				const auto ScaleX {fabs((GripPoints[1].x - GripPoints[2].x) / (Points[1].x - Points[2].x))};
+				const auto ScaleY {fabs((GripPoints[1].y - GripPoints[2].y) / (Points[1].y - Points[2].y))};
+				const OdGeScale3d Scale(ScaleX, ScaleY, 1.0);
+				entity->transformBy(OdGeMatrix3d::scaling(Scale, GripPoints[2]));
 			}
 			break;
 		}
 		case 2: /*upLeft*/ {
-			if (point3dArray[0].x - point3dArray[3].x != 0 && point3dArray[0].y - point3dArray[3].y != 0) {
-				const auto ScaleX {fabs((GripPoints[1].x - GripPoints[2].x) / (point3dArray[1].x - point3dArray[2].x))};
-				const auto ScaleY {fabs((GripPoints[1].y - GripPoints[2].y) / (point3dArray[1].y - point3dArray[2].y))};
-				const OdGeScale3d odGeScale3d(ScaleX, ScaleY, 1.0);
-				Result = entity->transformBy(OdGeMatrix3d::scaling(odGeScale3d, GripPoints[1]));
+			if (Points[0].x - Points[3].x != 0 && Points[0].y - Points[3].y != 0) {
+				const auto ScaleX {fabs((GripPoints[1].x - GripPoints[2].x) / (Points[1].x - Points[2].x))};
+				const auto ScaleY {fabs((GripPoints[1].y - GripPoints[2].y) / (Points[1].y - Points[2].y))};
+				const OdGeScale3d Scale(ScaleX, ScaleY, 1.0);
+				entity->transformBy(OdGeMatrix3d::scaling(Scale, GripPoints[1]));
 			}
 			break;
 		}
 		case 3: /*upRight*/ {
-			if (point3dArray[1].x - point3dArray[2].x != 0 && point3dArray[1].y - point3dArray[2].y != 0) {
-				const auto ScaleX {fabs((GripPoints[0].x - GripPoints[3].x) / (point3dArray[0].x - point3dArray[3].x))};
-				const auto ScaleY {fabs((GripPoints[0].y - GripPoints[3].y) / (point3dArray[0].y - point3dArray[3].y))};
-				const OdGeScale3d odGeScale3d(ScaleX, ScaleY, 1.0);
-				Result = entity->transformBy(OdGeMatrix3d::scaling(odGeScale3d, GripPoints[0]));
+			if (Points[1].x - Points[2].x != 0 && Points[1].y - Points[2].y != 0) {
+				const auto ScaleX {fabs((GripPoints[0].x - GripPoints[3].x) / (Points[0].x - Points[3].x))};
+				const auto ScaleY {fabs((GripPoints[0].y - GripPoints[3].y) / (Points[0].y - Points[3].y))};
+				const OdGeScale3d Scale(ScaleX, ScaleY, 1.0);
+				entity->transformBy(OdGeMatrix3d::scaling(Scale, GripPoints[0]));
 			}
 			break;
 		}
 		case 4: /* center */ {
-			const auto Offset {GripPoints[4] - point3dArray[4]};
-			Result = entity->transformBy(OdGeMatrix3d::translation(Offset));
+			const auto Offset {GripPoints[4] - Points[4]};
+			entity->transformBy(OdGeMatrix3d::translation(Offset));
 			break;
 		}
 		default: ;

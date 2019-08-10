@@ -34,7 +34,7 @@ BOOL EoDlgTrapFilter::OnInitDialog() {
 	OdDbLinetypeTablePtr Linetypes {m_Database->getLinetypeTableId().safeOpenObject(OdDb::kForRead)};
 	auto Iterator {Linetypes->newIterator()};
 	for (Iterator->start(); !Iterator->done(); Iterator->step()) {
-		OdDbLinetypeTableRecordPtr Linetype = Iterator->getRecordId().safeOpenObject(OdDb::kForRead);
+		OdDbLinetypeTableRecordPtr Linetype {Iterator->getRecordId().safeOpenObject(OdDb::kForRead)};
 		filterLineComboBoxControl.AddString(Linetype->getName());
 	}
 	filterLineComboBoxControl.SetCurSel(0);
