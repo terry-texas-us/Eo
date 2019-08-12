@@ -308,18 +308,18 @@ public:
 	/// <summary>A layer is converted to a tracing or a job file</summary>
 	bool LayerMelt(OdString& name);
 
-	int LinetypeIndexReferenceCount(short linetypeIndex);
+	int LinetypeIndexReferenceCount(short linetypeIndex) const;
 
 	void GetExtents___(AeSysView* view, OdGeExtents3d& extents);
 
-	int NumberOfGroupsInWorkLayer();
+	int NumberOfGroupsInWorkLayer() const;
 
-	int NumberOfGroupsInActiveLayers();
+	int NumberOfGroupsInActiveLayers() const;
 
-	void BuildVisibleGroupList(AeSysView* view);
+	void BuildVisibleGroupList(AeSysView* view) const;
 
 	/// <summary>Displays drawing and determines which groups are detectable.</summary>
-	void DisplayAllLayers(AeSysView* view, CDC* deviceContext);
+	void DisplayAllLayers(AeSysView* view, CDC* deviceContext) const;
 
 	// Layer Table interface
 	void AddLayer(EoDbLayer* layer);

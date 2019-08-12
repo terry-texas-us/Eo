@@ -17,27 +17,27 @@ OdResult OdDbAlignedDimGripPointsPE::getGripPoints(const OdDbEntity* entity, OdG
 	const auto SecondExtensionLineStartPoint {Dimension->xLine2Point()};
 	const auto DimensionLinePoint {Dimension->dimLinePoint()};
 	const auto TextPosition {Dimension->textPosition()};
-	auto dOblique {Dimension->oblique()};
+	auto Oblique {Dimension->oblique()};
 	const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-	auto ocsDefPt1 {FirstExtensionLineStartPoint};
-	auto ocsDefPt2 {SecondExtensionLineStartPoint};
-	auto ocsDimLinDefPt {DimensionLinePoint};
+	auto ocsFirstExtensionLineStartPoint {FirstExtensionLineStartPoint};
+	auto ocsSecondExtensionLineStartPoint {SecondExtensionLineStartPoint};
+	auto ocsDimensionLinePoint {DimensionLinePoint};
 	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
-		ocsDefPt1.transformBy(WorldToPlaneTransform);
-		ocsDefPt2.transformBy(WorldToPlaneTransform);
-		ocsDimLinDefPt.transformBy(WorldToPlaneTransform);
+		ocsFirstExtensionLineStartPoint.transformBy(WorldToPlaneTransform);
+		ocsSecondExtensionLineStartPoint.transformBy(WorldToPlaneTransform);
+		ocsDimensionLinePoint.transformBy(WorldToPlaneTransform);
 	}
-	const auto SavedZCoordinate {ocsDefPt1.z};
-	ocsDefPt1.z = ocsDefPt1.z = ocsDimLinDefPt.z = 0.0;
-	if (OdNonZero(dOblique)) {
-		dOblique = Oda2PI - dOblique;
+	const auto SavedZCoordinate {ocsFirstExtensionLineStartPoint.z};
+	ocsFirstExtensionLineStartPoint.z = ocsFirstExtensionLineStartPoint.z = ocsDimensionLinePoint.z = 0.0;
+	if (OdNonZero(Oblique)) {
+		Oblique = Oda2PI - Oblique;
 	} else {
-		dOblique = OdaPI2;
+		Oblique = OdaPI2;
 	}
-	auto v2 {ocsDimLinDefPt - ocsDefPt2};
+	auto v2 {ocsDimensionLinePoint - ocsSecondExtensionLineStartPoint};
 	if (OdZero(v2.length())) {
 		v2 = OdGeVector3d::kYAxis;
 		const auto dlv {SecondExtensionLineStartPoint - FirstExtensionLineStartPoint};
@@ -45,56 +45,51 @@ OdResult OdDbAlignedDimGripPointsPE::getGripPoints(const OdDbEntity* entity, OdG
 			v2 = dlv.perpVector();
 		}
 	}
-	auto v1 = v2;
-	v1.rotateBy(dOblique, OdGeVector3d::kZAxis);
-	OdGeLine3d line1;
-	OdGeLine3d line2;
-	line1.set(ocsDimLinDefPt, v1);
-	line2.set(ocsDefPt1, v2);
-	OdGePoint3d extLineEnd;
-	line1.intersectWith(line2, extLineEnd);
-	extLineEnd.z = SavedZCoordinate;
+	auto v1 {v2};
+	v1.rotateBy(Oblique, OdGeVector3d::kZAxis);
+	const OdGeLine3d Line1(ocsDimensionLinePoint, v1);
+	const OdGeLine3d Line2(ocsFirstExtensionLineStartPoint, v2);
+	OdGePoint3d ExtensionLineEnd;
+	Line1.intersectWith(Line2, ExtensionLineEnd);
+	ExtensionLineEnd.z = SavedZCoordinate;
 	if (NeedTransform) {
-		extLineEnd.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+		ExtensionLineEnd.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 	}
-	gripPoints[GripPointsSize + 0] = FirstExtensionLineStartPoint;
-	gripPoints[GripPointsSize + 1] = SecondExtensionLineStartPoint;
-	gripPoints[GripPointsSize + 2] = extLineEnd;
-	gripPoints[GripPointsSize + 3] = DimensionLinePoint;
-	gripPoints[GripPointsSize + 4] = TextPosition;
+	gripPoints[GripPointsSize + kFirstExtensionLineStartPoint] = FirstExtensionLineStartPoint;
+	gripPoints[GripPointsSize + kSecondExtensionLineStartPoint] = SecondExtensionLineStartPoint;
+	gripPoints[GripPointsSize + kExtensionLineEnd] = ExtensionLineEnd;
+	gripPoints[GripPointsSize + kDimensionLinePoint] = DimensionLinePoint;
+	gripPoints[GripPointsSize + kTextPosition] = TextPosition;
 	if (Dimension->jogSymbolOn()) {
-		gripPoints[GripPointsSize + 5] = Dimension->jogSymbolPosition();
+		gripPoints[GripPointsSize + kJogSymbolPosition] = Dimension->jogSymbolPosition();
 	}
 	return eOk;
 }
 
-OdResult OdDbAlignedDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool bStretch) {
+OdResult OdDbAlignedDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool stretch) {
 	if (indices.empty()) {
 		return eOk;
 	}
 	OdDbAlignedDimensionPtr Dimension {entity};
-	auto GripPoint {&gripPoints[indices[0]]};
-	auto dimNewPt {*GripPoint};
 	auto SavedZCoordinate {0.0};
-	OdGeVector3d vMoveTxt;
+	OdGeVector3d MoveText;
 	auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 	}
 	for (auto i = 0; i < static_cast<int>(indices.size()); i++) {
-		GripPoint = &gripPoints[indices[i]];
-		dimNewPt = *GripPoint;
+		auto GripPoint {gripPoints[indices[i]]};
 		switch (indices[i]) {
-			case 0:
-				Dimension->setXLine1Point(dimNewPt);
+			case kFirstExtensionLineStartPoint:
+				Dimension->setXLine1Point(GripPoint);
 				break;
-			case 1:
-				Dimension->setXLine2Point(dimNewPt);
+			case kSecondExtensionLineStartPoint:
+				Dimension->setXLine2Point(GripPoint);
 				break;
-			case 2: {
+			case kExtensionLineEnd: {
 				auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-				auto ocsDimNewPt(dimNewPt);
+				auto ocsDimNewPt(GripPoint);
 				auto FirstExtensionLineStartPoint {Dimension->xLine1Point()};
 				auto SecondExtensionLineStartPoint {Dimension->xLine2Point()};
 				auto DimensionLinePoint {Dimension->dimLinePoint()};
@@ -107,7 +102,7 @@ OdResult OdDbAlignedDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdG
 					ocsXLinePt2.transformBy(WorldToPlaneTransform);
 					ocsDimLinePt.transformBy(WorldToPlaneTransform);
 				}
-				auto SavedZCoordinate {ocsXLinePt1.z};
+				SavedZCoordinate = ocsXLinePt1.z;
 				ocsDimNewPt.z = 0.0;
 				ocsXLinePt1.z = ocsXLinePt2.z = ocsDimLinePt.z = 0.0;
 				auto Oblique {Dimension->oblique()};
@@ -118,100 +113,98 @@ OdResult OdDbAlignedDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdG
 				}
 				v1 = v2 = ocsXLinePt2 - ocsXLinePt1;
 				v2.rotateBy(Oblique, OdGeVector3d::kZAxis);
-				OdGeLine3d line1;
-				OdGeLine3d line2;
-				line1.set(ocsDimLinePt, v1);
-				line2.set(ocsXLinePt1, v2);
-				OdGePoint3d extLineEnd;
-				line1.intersectWith(line2, extLineEnd);
-				vMoveTxt = extLineEnd - ocsDimNewPt;
-				line1.set(ocsDimNewPt, v1);
-				line2.set(ocsDimLinePt, v2);
-				line1.intersectWith(line2, ocsDimLinePt);
-				dimNewPt = ocsDimLinePt;
-				dimNewPt.z = SavedZCoordinate;
+				OdGeLine3d Line1(ocsDimLinePt, v1);
+				OdGeLine3d Line2(ocsXLinePt1, v2);
+				OdGePoint3d ExtensionLineEnd;
+				Line1.intersectWith(Line2, ExtensionLineEnd);
+				MoveText = ExtensionLineEnd - ocsDimNewPt;
+				Line1.set(ocsDimNewPt, v1);
+				Line2.set(ocsDimLinePt, v2);
+				Line1.intersectWith(Line2, ocsDimLinePt);
+				GripPoint = ocsDimLinePt;
+				GripPoint.z = SavedZCoordinate;
 				if (NeedTransform) {
-					dimNewPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+					GripPoint.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 				}
 			}
-			case 3:
+			case kDimensionLinePoint:
 				if (!Dimension->isUsingDefaultTextPosition() && Dimension->dimtmove() == 0) {
 					auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-					if (indices[0] == 3) {
+					if (indices[0] == kDimensionLinePoint) {
 						auto ocsDimLinePt(Dimension->dimLinePoint());
-						auto ocsDimNewPt {dimNewPt};
+						auto ocsDimNewPt {GripPoint};
 						if (NeedTransform) {
 							ocsDimLinePt.transformBy(WorldToPlaneTransform);
 							ocsDimLinePt.transformBy(WorldToPlaneTransform);
 						}
 						ocsDimNewPt.z = 0.0;
 						ocsDimNewPt.z = 0.0;
-						vMoveTxt = ocsDimLinePt - ocsDimNewPt;
+						MoveText = ocsDimLinePt - ocsDimNewPt;
 					}
-					auto dimTextPt {gripPoints[4]};
-					auto ocsDimTextPt {dimTextPt};
+					auto TextPosition {gripPoints[4]};
+					auto ocsTextPosition {TextPosition};
 					if (NeedTransform) {
-						ocsDimTextPt.transformBy(WorldToPlaneTransform);
+						ocsTextPosition.transformBy(WorldToPlaneTransform);
 					}
-					auto SavedZCoordinate {ocsDimTextPt.z};
-					ocsDimTextPt.z = 0.0;
-					auto ocsDimNewTextPt {ocsDimTextPt - vMoveTxt};
-					auto dimNewTextPt {ocsDimNewTextPt};
-					dimNewTextPt.z = SavedZCoordinate;
+					SavedZCoordinate = ocsTextPosition.z;
+					ocsTextPosition.z = 0.0;
+					auto ocsNewTextPosition {ocsTextPosition - MoveText};
+					auto NewTextPosition {ocsNewTextPosition};
+					NewTextPosition.z = SavedZCoordinate;
 					if (NeedTransform) {
-						dimNewTextPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+						NewTextPosition.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 					}
-					Dimension->setTextPosition(dimNewTextPt);
+					Dimension->setTextPosition(NewTextPosition);
 				} else {
-					Dimension->setDimLinePoint(dimNewPt);
+					Dimension->setDimLinePoint(GripPoint);
 				}
 				break;
-			case 4:
-				Dimension->setTextPosition(dimNewPt);
-				if (indices.size() == 1 || !bStretch) {
+			case kTextPosition:
+				Dimension->setTextPosition(GripPoint);
+				if (indices.size() == 1 || !stretch) {
 					Dimension->useSetTextPosition();
 				}
 				break;
-			case 5:
+			case kJogSymbolPosition:
 				if (!Dimension->isUsingDefaultTextPosition() && Dimension->dimtmove() == 0) {
 					auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-					auto ocsDimJogPt(Dimension->jogSymbolPosition());
-					auto ocsDimNewPt {dimNewPt};
+					auto ocsJogSymbolPosition(Dimension->jogSymbolPosition());
+					auto ocsDimNewPt {GripPoint};
 					auto SecondExtensionLineStartPoint {Dimension->xLine2Point()};
 					auto DimensionLinePoint {Dimension->dimLinePoint()};
 					if (NeedTransform) {
-						ocsDimJogPt.transformBy(WorldToPlaneTransform);
+						ocsJogSymbolPosition.transformBy(WorldToPlaneTransform);
 						ocsDimNewPt.transformBy(WorldToPlaneTransform);
 						SecondExtensionLineStartPoint.transformBy(WorldToPlaneTransform);
 						DimensionLinePoint.transformBy(WorldToPlaneTransform);
 					}
-					ocsDimJogPt.z = 0.0;
+					ocsJogSymbolPosition.z = 0.0;
 					ocsDimNewPt.z = 0.0;
 					SecondExtensionLineStartPoint.z = DimensionLinePoint.z = 0.0;
 					auto v {DimensionLinePoint - SecondExtensionLineStartPoint};
-					vMoveTxt = ocsDimJogPt - ocsDimNewPt;
+					MoveText = ocsJogSymbolPosition - ocsDimNewPt;
 					if (v.length()) {
 						v.normalize();
 					}
-					v *= vMoveTxt.length() * cos(v.angleTo(vMoveTxt));
-					auto dimTextPt {gripPoints[4]};
-					auto ocsDimTextPt {dimTextPt};
+					v *= MoveText.length() * cos(v.angleTo(MoveText));
+					auto TextPosition {gripPoints[4]};
+					auto ocsTextPosition {TextPosition};
 					if (NeedTransform) {
-						ocsDimTextPt.transformBy(WorldToPlaneTransform);
+						ocsTextPosition.transformBy(WorldToPlaneTransform);
 					}
-					SavedZCoordinate = ocsDimTextPt.z;
-					ocsDimTextPt.z = 0.0;
-					auto ocsDimNewTextPt {ocsDimTextPt - v};
-					auto dimNewTextPt {ocsDimNewTextPt};
-					dimNewTextPt.z = SavedZCoordinate;
+					SavedZCoordinate = ocsTextPosition.z;
+					ocsTextPosition.z = 0.0;
+					auto ocsNewTextPosition {ocsTextPosition - v};
+					auto NewTextPosition {ocsNewTextPosition};
+					NewTextPosition.z = SavedZCoordinate;
 					if (NeedTransform) {
-						dimNewTextPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+						NewTextPosition.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 					}
-					Dimension->setTextPosition(dimNewTextPt);
+					Dimension->setTextPosition(NewTextPosition);
 				} else {
-					Dimension->setDimLinePoint(dimNewPt);
+					Dimension->setDimLinePoint(GripPoint);
 				}
-				Dimension->setJogSymbolPosition(dimNewPt);
+				Dimension->setJogSymbolPosition(GripPoint);
 				break;
 			default:
 				break;

@@ -155,12 +155,12 @@ public:
 	enum { IDD = IDD_ABOUTBOX };
 
 protected:
-	void DoDataExchange(CDataExchange* dataExchange) final;
+	void DoDataExchange(CDataExchange* dataExchange);
 
 DECLARE_MESSAGE_MAP()
 
 public:
-	BOOL OnInitDialog() final;
+	BOOL OnInitDialog();
 };
 
 EoDlgAbout::EoDlgAbout() noexcept

@@ -8,80 +8,80 @@ OdResult OdDbDiametricDimGripPointsPE::getGripPoints(const OdDbEntity* entity, O
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 3);
 	OdDbDiametricDimensionPtr Dimension {entity};
-	gripPoints[GripPointsSize + 0] = Dimension->chordPoint();
-	gripPoints[GripPointsSize + 1] = Dimension->farChordPoint();
-	gripPoints[GripPointsSize + 2] = Dimension->textPosition();
+	gripPoints[GripPointsSize + kChordPoint] = Dimension->chordPoint();
+	gripPoints[GripPointsSize + kFarChordPoint] = Dimension->farChordPoint();
+	gripPoints[GripPointsSize + kTextPosition] = Dimension->textPosition();
 	return eOk;
 }
 
-OdResult OdDbDiametricDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool /*bStretch*/) {
+OdResult OdDbDiametricDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool /*stretch*/) {
 	if (indices.empty()) {
 		return eOk;
 	}
 	OdDbDiametricDimensionPtr Dimension {entity};
 	const auto ChordPoint {Dimension->chordPoint()};
-	const auto dimFarChordPt {Dimension->farChordPoint()};
+	const auto FarChordPoint {Dimension->farChordPoint()};
 	auto TextPosition {Dimension->textPosition()};
-	const auto dimMidPt {dimFarChordPt + (ChordPoint - dimFarChordPt) / 2};
+	const auto MidPoint {FarChordPoint + (ChordPoint - FarChordPoint) / 2};
 	const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-	auto ocsDimChordPt {ChordPoint};
-	auto ocsDimFarChordPt {dimFarChordPt};
-	auto ocsDimTextPt {TextPosition};
-	auto ocsDimMidPt {dimMidPt};
+	auto ocsChordPoint {ChordPoint};
+	auto ocsFarChordPoint {FarChordPoint};
+	auto ocsTextPosition {TextPosition};
+	auto ocsMidPoint {MidPoint};
 	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
-		ocsDimChordPt.transformBy(WorldToPlaneTransform);
-		ocsDimFarChordPt.transformBy(WorldToPlaneTransform);
-		ocsDimTextPt.transformBy(WorldToPlaneTransform);
-		ocsDimMidPt.transformBy(WorldToPlaneTransform);
+		ocsChordPoint.transformBy(WorldToPlaneTransform);
+		ocsFarChordPoint.transformBy(WorldToPlaneTransform);
+		ocsTextPosition.transformBy(WorldToPlaneTransform);
+		ocsMidPoint.transformBy(WorldToPlaneTransform);
 	}
-	const auto SavedZCoordinate {ocsDimChordPt.z};
-	ocsDimChordPt.z = ocsDimFarChordPt.z = ocsDimTextPt.z = ocsDimMidPt.z = 0.0;
-	auto vLen {ocsDimFarChordPt - ocsDimChordPt};
+	const auto SavedZCoordinate {ocsChordPoint.z};
+	ocsChordPoint.z = ocsFarChordPoint.z = ocsTextPosition.z = ocsMidPoint.z = 0.0;
 	const auto GripPoint = &gripPoints[indices[0]];
 	auto ocsDimNewPt {*GripPoint};
 	if (NeedTransform) {
 		ocsDimNewPt.transformBy(WorldToPlaneTransform);
 	}
 	ocsDimNewPt.z = 0.0;
-	const auto vX {ocsDimMidPt - ocsDimNewPt};
-	const auto vY {ocsDimMidPt - ocsDimChordPt};
-	auto angle {vY.angleTo(vX, OdGeVector3d::kZAxis)};
-	if (indices[0] == 1) {
-		angle += OdaPI;
+	const auto vX {ocsMidPoint - ocsDimNewPt};
+	const auto vY {ocsMidPoint - ocsChordPoint};
+	auto Angle {vY.angleTo(vX, OdGeVector3d::kZAxis)};
+	if (indices[0] == kFarChordPoint) {
+		Angle += OdaPI;
 	}
-	vLen.rotateBy(angle, OdGeVector3d::kZAxis);
-	if (indices[0] == 1) {
-		const auto newLen {dimMidPt.distanceTo(ocsDimNewPt)};
+	auto vLen {ocsFarChordPoint - ocsChordPoint};
+	vLen.rotateBy(Angle, OdGeVector3d::kZAxis);
+	if (indices[0] == kFarChordPoint) {
+		const auto newLen {MidPoint.distanceTo(ocsDimNewPt)};
 		vLen.normalize();
 		vLen *= newLen;
 	} else {
 		vLen *= 0.5;
 	}
-	ocsDimChordPt = dimMidPt - vLen;
-	ocsDimFarChordPt = dimMidPt + vLen;
-	if (OdNonZero(angle)) {
-		ocsDimTextPt.rotateBy(angle, OdGeVector3d::kZAxis, dimMidPt);
+	ocsChordPoint = MidPoint - vLen;
+	ocsFarChordPoint = MidPoint + vLen;
+	if (OdNonZero(Angle)) {
+		ocsTextPosition.rotateBy(Angle, OdGeVector3d::kZAxis, MidPoint);
 	}
-	if (indices[0] == 2) {
-		ocsDimTextPt = ocsDimNewPt;
+	if (indices[0] == kTextPosition) {
+		ocsTextPosition = ocsDimNewPt;
 		Dimension->useSetTextPosition();
-		if (ocsDimTextPt.distanceTo(ocsDimFarChordPt) < ocsDimTextPt.distanceTo(ocsDimChordPt)) {
-			std::swap(ocsDimFarChordPt, ocsDimChordPt);
+		if (ocsTextPosition.distanceTo(ocsFarChordPoint) < ocsTextPosition.distanceTo(ocsChordPoint)) {
+			std::swap(ocsFarChordPoint, ocsChordPoint);
 		}
 	}
-	ocsDimFarChordPt.z = SavedZCoordinate;
-	ocsDimChordPt.z = SavedZCoordinate;
-	ocsDimTextPt.z = SavedZCoordinate;
+	ocsFarChordPoint.z = SavedZCoordinate;
+	ocsChordPoint.z = SavedZCoordinate;
+	ocsTextPosition.z = SavedZCoordinate;
 	if (NeedTransform) {
-		ocsDimFarChordPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
-		ocsDimChordPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
-		ocsDimTextPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+		ocsFarChordPoint.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+		ocsChordPoint.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+		ocsTextPosition.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 	}
-	Dimension->setFarChordPoint(ocsDimFarChordPt);
-	Dimension->setChordPoint(ocsDimChordPt);
-	Dimension->setTextPosition(ocsDimTextPt);
+	Dimension->setFarChordPoint(ocsFarChordPoint);
+	Dimension->setChordPoint(ocsChordPoint);
+	Dimension->setTextPosition(ocsTextPosition);
 	return eOk;
 }

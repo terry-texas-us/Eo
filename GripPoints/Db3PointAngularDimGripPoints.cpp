@@ -8,11 +8,11 @@ OdResult OdDb3PointAngularDimGripPointsPE::getGripPoints(const OdDbEntity* entit
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 5);
 	OdDb3PointAngularDimensionPtr Dimension {entity};
-	gripPoints[GripPointsSize + 0] = Dimension->xLine1Point();
-	gripPoints[GripPointsSize + 1] = Dimension->xLine2Point();
-	gripPoints[GripPointsSize + 2] = Dimension->centerPoint();
-	gripPoints[GripPointsSize + 3] = Dimension->arcPoint();
-	gripPoints[GripPointsSize + 4] = Dimension->textPosition();
+	gripPoints[GripPointsSize + kFirstExtensionLineStartPoint] = Dimension->xLine1Point();
+	gripPoints[GripPointsSize + kSecondExtensionLineStartPoint] = Dimension->xLine2Point();
+	gripPoints[GripPointsSize + kCenterPoint] = Dimension->centerPoint();
+	gripPoints[GripPointsSize + kArcPoint] = Dimension->arcPoint();
+	gripPoints[GripPointsSize + kTextPosition] = Dimension->textPosition();
 	return eOk;
 }
 
@@ -30,24 +30,24 @@ OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, con
 	const auto WorldToPlaneTransform(OdGeMatrix3d::worldToPlane(Dimension->normal()));
 	auto ocsDimLine1Pt {FirstExtensionLineStartPoint};
 	auto ocsDimLine2Pt {SecondExtensionLineStartPoint};
-	auto ocsDimCenterPt {CenterPoint};
+	auto ocsCenterPoint {CenterPoint};
 	auto ocsDimArcPt {ArcPoint};
 	auto ocsDimTextPt {TextPosition};
-	auto ocsDimArcNewPt {NewArcPoint};
+	auto ocsNewArcPoint {NewArcPoint};
 	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
 		ocsDimLine1Pt.transformBy(WorldToPlaneTransform);
 		ocsDimLine2Pt.transformBy(WorldToPlaneTransform);
-		ocsDimCenterPt.transformBy(WorldToPlaneTransform);
+		ocsCenterPoint.transformBy(WorldToPlaneTransform);
 		ocsDimArcPt.transformBy(WorldToPlaneTransform);
 		ocsDimTextPt.transformBy(WorldToPlaneTransform);
 		ocsDimTextPt.transformBy(WorldToPlaneTransform);
-		ocsDimArcNewPt.transformBy(WorldToPlaneTransform);
+		ocsNewArcPoint.transformBy(WorldToPlaneTransform);
 	}
 	const auto SavedZCoordinate {ocsDimLine1Pt.z};
-	ocsDimLine1Pt.z = ocsDimLine2Pt.z = ocsDimCenterPt.z = ocsDimArcPt.z = ocsDimTextPt.z = ocsDimArcNewPt.z = 0.0;
+	ocsDimLine1Pt.z = ocsDimLine2Pt.z = ocsCenterPoint.z = ocsDimArcPt.z = ocsDimTextPt.z = ocsNewArcPoint.z = 0.0;
 	auto GripPoint = &gripPoints[indices[0]];
 	auto ocsDimNewPt {*GripPoint};
 	auto dimNewPt {ocsDimNewPt};
@@ -55,26 +55,28 @@ OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, con
 		ocsDimNewPt.transformBy(WorldToPlaneTransform);
 	}
 	ocsDimNewPt.z = 0.0;
-	for (auto i = 0; i < static_cast<int>(indices.size()); i++) {
+	for (auto i = 0U; i < indices.size(); i++) {
 		GripPoint = &gripPoints[indices[i]];
 		dimNewPt = *GripPoint;
 		ocsDimNewPt = dimNewPt;
-		if (indices[i] < 4 && !Dimension->isUsingDefaultTextPosition()) {
+		if (indices[i] < kTextPosition && !Dimension->isUsingDefaultTextPosition()) {
 			Dimension->useDefaultTextPosition();
 		}
 		switch (indices[i]) {
-			case 0:
+			case kFirstExtensionLineStartPoint:
 				Dimension->setXLine1Point(dimNewPt);
 				break;
-			case 1:
+			case kSecondExtensionLineStartPoint:
 				Dimension->setXLine2Point(dimNewPt);
 				break;
-			case 2:
+			case kCenterPoint:
 				Dimension->setCenterPoint(dimNewPt);
 				break;
-			case 4: {
-				auto v4 {ocsDimCenterPt - ocsDimArcNewPt};
-				ocsDimArcNewPt = ocsDimCenterPt - v4;
+			case kArcPoint:
+				Dimension->setArcPoint(dimNewPt);
+				break;
+			case kTextPosition: {
+				ocsNewArcPoint = ocsCenterPoint - (ocsCenterPoint - ocsNewArcPoint);
 				ocsDimTextPt = ocsDimNewPt;
 				ocsDimTextPt.z = SavedZCoordinate;
 				if (NeedTransform) {
@@ -84,10 +86,6 @@ OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, con
 					Dimension->useSetTextPosition();
 				}
 				Dimension->setTextPosition(ocsDimTextPt);
-				break;
-			}
-			case 3: {
-				Dimension->setArcPoint(dimNewPt);
 				break;
 			}
 			default:

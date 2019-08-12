@@ -10,7 +10,6 @@
 #include "EoDlgBlockInsert.h"
 #include "EoDbHatch.h"
 #include "EoDbSpline.h"
-#include "EoDbEntityToPrimitiveProtocolExtension.h"
 #include "EoDbPolyline.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW

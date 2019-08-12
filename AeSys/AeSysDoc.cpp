@@ -421,7 +421,7 @@ EoDlgUserIoConsole* AeSysDoc::UserIoConsole() {
 }
 
 unsigned long AeSysDoc::getKeyState() noexcept {
-	unsigned long KeyState(0);
+	unsigned long KeyState {0};
 	if (GetKeyState(VK_CONTROL) != 0) {
 		KeyState |= MK_CONTROL;
 	}
@@ -674,7 +674,7 @@ void AeSysDoc::ExecuteCommand(const OdString& command, const bool echo) {
 BOOL AeSysDoc::OnCmdMsg(const unsigned commandId, const int messageCategory, void* commandObject, AFX_CMDHANDLERINFO* handlerInfo) {
 	if (handlerInfo == nullptr) {
 		auto TopMenu {CMenu::FromHandle(theApp.GetAeSysMenu())};
-		if (TopMenu != nullptr) { // Check if it is theApp's dynamic menu item
+		if (TopMenu != nullptr) { // Check if it is a theApp dynamic menu item
 			MENUITEMINFO MenuItemInfo;
 			MenuItemInfo.cbSize = sizeof MenuItemInfo;
 			MenuItemInfo.fMask = MIIM_DATA;
@@ -1084,7 +1084,7 @@ void AeSysDoc::DeletedGroupsRestore() {
 	}
 }
 
-int AeSysDoc::LinetypeIndexReferenceCount(const short linetypeIndex) {
+int AeSysDoc::LinetypeIndexReferenceCount(const short linetypeIndex) const {
 	auto Count {0};
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
@@ -1109,7 +1109,7 @@ void AeSysDoc::GetExtents___(AeSysView* view, OdGeExtents3d& extents) {
 	}
 }
 
-int AeSysDoc::NumberOfGroupsInWorkLayer() {
+int AeSysDoc::NumberOfGroupsInWorkLayer() const {
 	auto Count {0};
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		const auto Layer {GetLayerAt(LayerIndex)};
@@ -1120,7 +1120,7 @@ int AeSysDoc::NumberOfGroupsInWorkLayer() {
 	return Count;
 }
 
-int AeSysDoc::NumberOfGroupsInActiveLayers() {
+int AeSysDoc::NumberOfGroupsInActiveLayers() const {
 	auto Count {0};
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		const auto Layer {GetLayerAt(LayerIndex)};
@@ -1131,7 +1131,7 @@ int AeSysDoc::NumberOfGroupsInActiveLayers() {
 	return Count;
 }
 
-void AeSysDoc::BuildVisibleGroupList(AeSysView* view) {
+void AeSysDoc::BuildVisibleGroupList(AeSysView* view) const {
 	RemoveAllGroupsFromAllViews();
 	for (auto LayerIndex = 0; LayerIndex < GetLayerTableSize(); LayerIndex++) {
 		auto Layer {GetLayerAt(LayerIndex)};
@@ -1139,7 +1139,7 @@ void AeSysDoc::BuildVisibleGroupList(AeSysView* view) {
 	}
 }
 
-void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) {
+void AeSysDoc::DisplayAllLayers(AeSysView* view, CDC* deviceContext) const {
 	try {
 		const auto IdentifyTrap {theApp.IsTrapHighlighted() && !IsTrapEmpty()};
 		RemoveAllGroupsFromAllViews();

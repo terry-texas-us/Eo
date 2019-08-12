@@ -15,7 +15,7 @@ OdResult OdDbOrdinateDimGripPointsPE::getGripPoints(const OdDbEntity* entity, Od
 	return eOk;
 }
 
-OdResult OdDbOrdinateDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool /*bStretch*/) {
+OdResult OdDbOrdinateDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool /*stretch*/) {
 	if (indices.empty()) {
 		return eOk;
 	}

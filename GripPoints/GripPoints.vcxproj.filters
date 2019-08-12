@@ -208,7 +208,6 @@
     <ClInclude Include="DbOrdinateDimGripPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Db2LineAngularDimGripPoints.h" />
     <ClInclude Include="DbArcDimGripPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -216,6 +215,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="DbSolidGripPoints.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Db2LineAngularDimGripPoints.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

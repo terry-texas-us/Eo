@@ -8,14 +8,14 @@ OdResult OdDbRadialDimLargeGripPointsPE::getGripPoints(const OdDbEntity* entity,
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 4);
 	OdDbRadialDimensionLargePtr Dimension {entity};
-	gripPoints[GripPointsSize + 0] = Dimension->chordPoint();
-	gripPoints[GripPointsSize + 1] = Dimension->overrideCenter();
-	gripPoints[GripPointsSize + 2] = Dimension->jogPoint();
-	gripPoints[GripPointsSize + 3] = Dimension->textPosition();
+	gripPoints[GripPointsSize + kChordPoint] = Dimension->chordPoint();
+	gripPoints[GripPointsSize + kOverrideCenter] = Dimension->overrideCenter();
+	gripPoints[GripPointsSize + kJogPoint] = Dimension->jogPoint();
+	gripPoints[GripPointsSize + kTextPosition] = Dimension->textPosition();
 	return eOk;
 }
 
-OdResult OdDbRadialDimLargeGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool bStretch) {
+OdResult OdDbRadialDimLargeGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool stretch) {
 	if (indices.empty()) {
 		return eOk;
 	}
@@ -27,119 +27,111 @@ OdResult OdDbRadialDimLargeGripPointsPE::moveGripPoint(OdDbEntity* entity, const
 	auto Center {Dimension->center()};
 	auto JogAngle {Dimension->jogAngle()};
 	auto Normal {Dimension->normal()};
-	auto NeedTransform {false};
-	if (Normal != OdGeVector3d::kZAxis) {
-		NeedTransform = true;
-	}
+	auto NeedTransform {Normal != OdGeVector3d::kZAxis};
 	auto WorldToPlaneTransform(OdGeMatrix3d::worldToPlane(Normal));
 	auto PlaneToWorldTransform(OdGeMatrix3d::planeToWorld(Normal));
-	auto ocsDimChordPt {ChordPoint};
-	auto ocsDimOverrideCenterPt {OverrideCenter};
-	auto ocsDimJogPt {JogPoint};
-	auto ocsDimTextPt {TextPosition};
-	auto ocsDimCenterPt {Center};
-	OdGeVector3d vX1;
-	const OdGePoint3d* GripPoint = nullptr;
-	OdGeLine3d line1;
-	OdGeLine3d line2;
-	GripPoint = &gripPoints[indices[0]];
-	auto ocsDimNewPt {*GripPoint};
+	auto ocsChordPoint {ChordPoint};
+	auto ocsOverrideCenter {OverrideCenter};
+	auto ocsJogPoint {JogPoint};
+	auto ocsTextPosition {TextPosition};
+	auto ocsCenter {Center};
+	auto GripPoint {&gripPoints[indices[0]]};
+	auto ocsGripPoint {*GripPoint};
 	if (NeedTransform) {
-		ocsDimChordPt.transformBy(WorldToPlaneTransform);
-		ocsDimOverrideCenterPt.transformBy(WorldToPlaneTransform);
-		ocsDimJogPt.transformBy(WorldToPlaneTransform);
-		ocsDimTextPt.transformBy(WorldToPlaneTransform);
-		ocsDimCenterPt.transformBy(WorldToPlaneTransform);
-		ocsDimNewPt.transformBy(WorldToPlaneTransform);
+		ocsChordPoint.transformBy(WorldToPlaneTransform);
+		ocsOverrideCenter.transformBy(WorldToPlaneTransform);
+		ocsJogPoint.transformBy(WorldToPlaneTransform);
+		ocsTextPosition.transformBy(WorldToPlaneTransform);
+		ocsCenter.transformBy(WorldToPlaneTransform);
+		ocsGripPoint.transformBy(WorldToPlaneTransform);
 	}
-	auto SavedZCoordinate {ocsDimChordPt.z};
-	ocsDimChordPt.z = ocsDimOverrideCenterPt.z = ocsDimJogPt.z = ocsDimTextPt.z = ocsDimCenterPt.z = 0.0;
-	ocsDimNewPt.z = 0.0;
-	if (indices[0] == 0) {
-		auto dimLRadius {fabs(OdGeVector3d(ocsDimCenterPt - ocsDimChordPt).length())};
-		auto vR {ocsDimCenterPt - ocsDimChordPt};
-		vR = ocsDimCenterPt - ocsDimNewPt;
-		vR.normalize();
-		vR *= dimLRadius;
-		ocsDimNewPt = ocsDimCenterPt - vR;
-		ocsDimChordPt = ocsDimNewPt;
-		ocsDimNewPt.z = SavedZCoordinate;
+	auto SavedZCoordinate {ocsChordPoint.z};
+	ocsChordPoint.z = ocsOverrideCenter.z = ocsJogPoint.z = ocsTextPosition.z = ocsCenter.z = 0.0;
+	ocsGripPoint.z = 0.0;
+	if (indices[0] == kChordPoint) {
+		auto Radius {fabs(OdGeVector3d(ocsCenter - ocsChordPoint).length())};
+		auto RadiusVector {ocsCenter - ocsChordPoint};
+		RadiusVector = ocsCenter - ocsGripPoint;
+		RadiusVector.normalize();
+		RadiusVector *= Radius;
+		ocsGripPoint = ocsCenter - RadiusVector;
+		ocsChordPoint = ocsGripPoint;
+		ocsGripPoint.z = SavedZCoordinate;
 		if (NeedTransform) {
-			ocsDimNewPt.transformBy(PlaneToWorldTransform);
+			ocsGripPoint.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setChordPoint(ocsDimNewPt); // correct text point
-		vR.normalize();
-		vR *= ocsDimTextPt.distanceTo(ocsDimCenterPt);
-		ocsDimTextPt = ocsDimCenterPt - vR;
-		ocsDimTextPt.z = SavedZCoordinate;
+		Dimension->setChordPoint(ocsGripPoint);
+		RadiusVector.normalize();
+		RadiusVector *= ocsTextPosition.distanceTo(ocsCenter);
+		ocsTextPosition = ocsCenter - RadiusVector;
+		ocsTextPosition.z = SavedZCoordinate;
 		if (NeedTransform) {
-			ocsDimTextPt.transformBy(PlaneToWorldTransform);
+			ocsTextPosition.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setTextPosition(ocsDimTextPt);
+		Dimension->setTextPosition(ocsTextPosition);
 	}
-	if (indices[0] == 1) {
-		ocsDimOverrideCenterPt = ocsDimNewPt;
+	if (indices[0] == kOverrideCenter) {
+		ocsOverrideCenter = ocsGripPoint;
 		if (NeedTransform) {
-			ocsDimNewPt.transformBy(PlaneToWorldTransform);
+			ocsGripPoint.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setOverrideCenter(ocsDimNewPt);
+		Dimension->setOverrideCenter(ocsGripPoint);
 	}
-	if (indices[0] == 2) {
-		auto vR {ocsDimCenterPt - ocsDimChordPt};
-		vX1 = vR;
+	if (indices[0] == kJogPoint) {
+		auto vR {ocsCenter - ocsChordPoint};
+		auto vX1 {vR};
 		vX1.rotateBy(JogAngle, OdGeVector3d::kZAxis);
-		line1.set(ocsDimCenterPt, vR);
-		line2.set(ocsDimNewPt, vX1);
+		OdGeLine3d Line1(ocsCenter, vR);
+		OdGeLine3d Line2(ocsGripPoint, vX1);
 		OdGePoint3d IntersectPoint;
-		line1.intersectWith(line2, IntersectPoint);
-		line1.set(ocsDimOverrideCenterPt, vR);
+		Line1.intersectWith(Line2, IntersectPoint);
+		Line1.set(ocsOverrideCenter, vR);
 		OdGePoint3d Intersect2Point;
-		line1.intersectWith(line2, Intersect2Point);
+		Line1.intersectWith(Line2, Intersect2Point);
 		auto dimLen {fabs(OdGeVector3d(IntersectPoint - Intersect2Point).length())};
 		auto vR2 {IntersectPoint - Intersect2Point};
 		vR2.normalize();
-		vR2 *= dimLen / 2;
-		ocsDimJogPt = IntersectPoint - vR2;
-		ocsDimJogPt.z = SavedZCoordinate;
+		vR2 *= dimLen / 2.0;
+		ocsJogPoint = IntersectPoint - vR2;
+		ocsJogPoint.z = SavedZCoordinate;
 		if (NeedTransform) {
-			ocsDimJogPt.transformBy(PlaneToWorldTransform);
+			ocsJogPoint.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setJogPoint(ocsDimJogPt);
+		Dimension->setJogPoint(ocsJogPoint);
 	}
-	if (indices[0] == 3) {
-		auto dimLRadius {fabs(OdGeVector3d(ocsDimCenterPt - ocsDimChordPt).length())};
-		auto vR {ocsDimCenterPt - ocsDimChordPt};
-		vR = ocsDimCenterPt - ocsDimNewPt;
+	if (indices[0] == kTextPosition) {
+		auto dimLRadius {fabs(OdGeVector3d(ocsCenter - ocsChordPoint).length())};
+		auto vR {ocsCenter - ocsChordPoint};
+		vR = ocsCenter - ocsGripPoint;
 		vR.normalize();
 		vR *= dimLRadius;
-		ocsDimChordPt = ocsDimCenterPt - vR;
-		ocsDimChordPt.z = SavedZCoordinate;
+		ocsChordPoint = ocsCenter - vR;
+		ocsChordPoint.z = SavedZCoordinate;
 		if (NeedTransform) {
-			ocsDimChordPt.transformBy(PlaneToWorldTransform);
+			ocsChordPoint.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setChordPoint(ocsDimChordPt);
-		ocsDimTextPt = ocsDimNewPt;
-		ocsDimTextPt.z = SavedZCoordinate;
+		Dimension->setChordPoint(ocsChordPoint);
+		ocsTextPosition = ocsGripPoint;
+		ocsTextPosition.z = SavedZCoordinate;
 		if (NeedTransform) {
-			ocsDimTextPt.transformBy(PlaneToWorldTransform);
+			ocsTextPosition.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setTextPosition(ocsDimTextPt); // correct jog point
-		if (indices.size() == 1 || !bStretch) {
+		Dimension->setTextPosition(ocsTextPosition); // correct jog point
+		if (indices.size() == 1 || !stretch) {
 			Dimension->useSetTextPosition();
 		}
 	}
-	if (indices[0] != 2) {
-		// correct jog point
-		auto dimLen {fabs(OdGeVector3d(ocsDimChordPt - ocsDimOverrideCenterPt).length())};
-		auto vR2 {ocsDimChordPt - ocsDimOverrideCenterPt};
+	if (indices[0] != kJogPoint) { // correct jog point
+		auto dimLen {fabs(OdGeVector3d(ocsChordPoint - ocsOverrideCenter).length())};
+		auto vR2 {ocsChordPoint - ocsOverrideCenter};
 		vR2.normalize();
-		vR2 *= dimLen / 2;
-		ocsDimJogPt = ocsDimChordPt - vR2;
-		ocsDimJogPt.z = SavedZCoordinate;
+		vR2 *= dimLen / 2.0;
+		ocsJogPoint = ocsChordPoint - vR2;
+		ocsJogPoint.z = SavedZCoordinate;
 		if (NeedTransform) {
-			ocsDimJogPt.transformBy(PlaneToWorldTransform);
+			ocsJogPoint.transformBy(PlaneToWorldTransform);
 		}
-		Dimension->setJogPoint(ocsDimJogPt);
+		Dimension->setJogPoint(ocsJogPoint);
 	}
 	return eOk;
 }

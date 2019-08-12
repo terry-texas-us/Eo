@@ -217,7 +217,7 @@ private:
 	OdGePoint3d m_PreviousPnt;
 	double m_SelectApertureSize {0.005};
 	bool m_ViewBackgroundImage {false};
-	bool m_ViewOdometer {true};
+	bool m_ViewOdometer {false};
 	bool m_ViewPenWidths {false};
 	CViewports m_Viewports;
 	EoGsViewTransforms m_ViewTransforms;
