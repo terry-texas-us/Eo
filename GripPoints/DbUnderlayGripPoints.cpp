@@ -6,7 +6,7 @@
 #define STL_USING_UTILITY
 #include <OdaSTL.h>
 
-OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& underlayReference, OdDb::OsnapMode objectSnapMode, const OdGePoint3d& pickPoint, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& underlayReference, const OdDb::OsnapMode objectSnapMode, const OdGePoint3d& pickPoint, OdGePoint3dArray& snapPoints) const {
 	if (underlayReference.isNull() || objectSnapMode != OdDb::kOsModeEnd) {
 		return eNotImplemented;
 	}
@@ -53,7 +53,7 @@ OdResult OdDbUnderlayGripPointsPE::CheckBorder(const OdDbUnderlayReferencePtr& u
 	return eOk;
 }
 
-OdResult OdDbUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	auto UnderlayReference {OdDbUnderlayReference::cast(entity)};
 	if (UnderlayReference.isNull()) {
 		return eNullObjectPointer;

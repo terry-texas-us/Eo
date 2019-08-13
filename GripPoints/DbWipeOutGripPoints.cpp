@@ -47,7 +47,7 @@ OdResult OdDbWipeOutGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const 
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbWipeOutGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbWipeOutGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdDbWipeoutPtr Wipeout {entity};
 	OdGePoint3dArray Vertices;
 	Wipeout->getVertices(Vertices);

@@ -34,11 +34,12 @@
 #define VC_EXTRALEAN
 #include "windows.h"
 
-extern "C" int APIENTRY DllMain(HINSTANCE instance, DWORD reason, LPVOID) {
+extern "C" int APIENTRY DllMain(const HINSTANCE instance, const DWORD reason, LPVOID) {
 	switch (reason) {
 		case DLL_PROCESS_ATTACH: // remove this if you need per-thread initialization
 			DisableThreadLibraryCalls(static_cast<HMODULE>(instance));
 			break;
+		default: ;
 	}
 	return TRUE;
 }

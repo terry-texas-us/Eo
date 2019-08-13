@@ -21,22 +21,19 @@ OdResult OdDbRadialDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGe
 	}
 	OdDbRadialDimensionPtr Dimension {entity};
 	const auto GripPoint {&gripPoints[indices[0]]};
-	auto dimNewPt {*GripPoint};
+	auto NewGripPoint {*GripPoint};
 	const auto Normal {Dimension->normal()};
-	auto NeedTransform {false};
-	if (Normal != OdGeVector3d::kZAxis) {
-		NeedTransform = true;
-	}
+	const auto NeedTransform {Normal != OdGeVector3d::kZAxis};
 	switch (indices[0]) {
 		case kCenter: {
 			auto ChordPoint {Dimension->chordPoint()};
 			const auto Radius {Dimension->center().distanceTo(ChordPoint)};
 			const auto TextPosition {Dimension->textPosition()};
-			auto v {TextPosition - dimNewPt};
+			auto v {TextPosition - NewGripPoint};
 			v.normalize();
-			ChordPoint = dimNewPt + v * Radius;
+			ChordPoint = NewGripPoint + v * Radius;
 			Dimension->setChordPoint(ChordPoint);
-			Dimension->setCenter(dimNewPt);
+			Dimension->setCenter(NewGripPoint);
 			break;
 		}
 		case kChordPoint: {
@@ -46,43 +43,43 @@ OdResult OdDbRadialDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGe
 			const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
 			auto ocsCenter {Center};
 			auto ocsChordPoint {ChordPoint};
-			auto ocsDimNewPt(dimNewPt);
+			auto ocsNewGripPoint {NewGripPoint};
 			if (NeedTransform) {
 				ocsCenter.transformBy(WorldToPlaneTransform);
 				ocsChordPoint.transformBy(WorldToPlaneTransform);
-				ocsDimNewPt.transformBy(WorldToPlaneTransform);
+				ocsNewGripPoint.transformBy(WorldToPlaneTransform);
 			}
 			const auto SavedZCoordinate {ocsCenter.z};
 			ocsCenter.z = ocsChordPoint.z = 0.0;
-			ocsDimNewPt.z = 0.0;
-			const auto vX {ocsCenter - ocsDimNewPt};
+			ocsNewGripPoint.z = 0.0;
+			const auto vX {ocsCenter - ocsNewGripPoint};
 			auto vY {ocsCenter - ocsChordPoint};
 			const auto Angle {vY.angleTo(vX, OdGeVector3d::kZAxis)};
-			vY.rotateBy(Oda2PI - (OdaPI - Angle) / 2, OdGeVector3d::kZAxis);
+			vY.rotateBy(Oda2PI - (OdaPI - Angle) / 2.0, OdGeVector3d::kZAxis);
 			const OdGeLine3d Line1(ocsChordPoint, vY);
 			const OdGeLine3d Line2(ocsCenter, vX);
 			Line1.intersectWith(Line2, ocsChordPoint);
-			dimNewPt = ocsChordPoint;
-			dimNewPt.z = SavedZCoordinate;
+			NewGripPoint = ocsChordPoint;
+			NewGripPoint.z = SavedZCoordinate;
 			if (NeedTransform) {
-				dimNewPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+				NewGripPoint.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 			}
-			auto v {dimNewPt - Center};
+			auto v {NewGripPoint - Center};
 			v.normalize();
 			const auto TextPosition {Center + v * dist};
 			Dimension->setTextPosition(TextPosition);
-			Dimension->setChordPoint(dimNewPt);
+			Dimension->setChordPoint(NewGripPoint);
 			break;
 		}
 		case kTextPosition: {
 			const auto Center {Dimension->center()};
 			auto ChordPoint {Dimension->chordPoint()};
 			const auto Radius {Center.distanceTo(ChordPoint)};
-			auto v {dimNewPt - Center};
+			auto v {NewGripPoint - Center};
 			v.normalize();
 			ChordPoint = Center + v * Radius;
 			Dimension->setChordPoint(ChordPoint);
-			Dimension->setTextPosition(dimNewPt);
+			Dimension->setTextPosition(NewGripPoint);
 			break;
 		}
 		default:

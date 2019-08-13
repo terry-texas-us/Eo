@@ -75,7 +75,7 @@ OdResult OdDbCircleGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const O
  * \param snapPoints 
  * \return 
  */
-OdResult OdDbCircleGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbCircleGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdGePoint3dArray GripPoints;
 	const auto Result {getGripPoints(entity, GripPoints)};
 	if (Result != eOk || GripPoints.size() < 5) {

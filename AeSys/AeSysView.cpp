@@ -1354,7 +1354,7 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			OdGeBoundBlock3d BoundBox;
 			if (AbstractView->plotExtents(ViewObject, BoundBox)) { // Iterator also skip 'off layers'
 				BoundBox.transformBy(EyeToWorldTransform);
-				ViewTarget = (BoundBox.minPoint() + BoundBox.maxPoint().asVector()) / 2.;
+				ViewTarget = (BoundBox.minPoint() + BoundBox.maxPoint().asVector()) / 2.0;
 				BoundBox.transformBy(WorldToEyeTransform);
 				FieldWidth = fabs(BoundBox.maxPoint().x - BoundBox.minPoint().x);
 				FieldHeight = fabs(BoundBox.maxPoint().y - BoundBox.minPoint().y);
@@ -1394,8 +1394,8 @@ void AeSysView::OnPrint(CDC* deviceContext, CPrintInfo* printInformation) {
 			ScaleFactor = odmin((DrawableArea.right - DrawableArea.left) / FieldWidth, (DrawableArea.bottom - DrawableArea.top) / FieldHeight);
 		}
 		if (IsCentered) { // Offset also can be incorrectly saved.
-			Offset.x = (DrawableArea.right - DrawableArea.left - FieldWidth * ScaleFactor) / 2.;
-			Offset.y = (DrawableArea.bottom - DrawableArea.top - FieldHeight * ScaleFactor) / 2.;
+			Offset.x = (DrawableArea.right - DrawableArea.left - FieldWidth * ScaleFactor) / 2.0;
+			Offset.y = (DrawableArea.bottom - DrawableArea.top - FieldHeight * ScaleFactor) / 2.0;
 			if (IsPrint90Degrees || IsPrint180Degrees) {
 				Offset.y = -Offset.y;
 				Offset.x = -Offset.x;
@@ -3629,7 +3629,7 @@ void AeSysView::ZoomWindow(OdGePoint3d point1, OdGePoint3d point2) {
 	point2.transformBy(WorldToEye);
 	auto Vector = point2 - point1;
 	if (OdNonZero(Vector.x) && OdNonZero(Vector.y)) {
-		auto NewPosition = point1 + Vector / 2.;
+		auto NewPosition = point1 + Vector / 2.0;
 		Vector.x = fabs(Vector.x);
 		Vector.y = fabs(Vector.y);
 		FirstView->dolly(NewPosition.asVector());

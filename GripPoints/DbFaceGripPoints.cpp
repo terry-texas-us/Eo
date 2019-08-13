@@ -41,67 +41,61 @@ OdResult OdDbFaceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbFaceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
-	OdGePoint3dArray gripPoints;
-	const auto Result {getGripPoints(entity, gripPoints)};
-	unsigned nSize;
-	if (Result != eOk || (nSize = gripPoints.size()) < 4) {
+OdResult OdDbFaceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+	OdGePoint3dArray GripPoints;
+	const auto Result {getGripPoints(entity, GripPoints)};
+	const auto GripPointsSize {GripPoints.size()};
+	if (Result != eOk || GripPointsSize < 4) {
 		return Result;
 	}
 	const OdDbFacePtr Face {entity};
 	const auto PickPointInPlane {GetPlanePoint(Face, pickPoint)}; // recalculated pickPoint and lastPoint in plane of face
 	const auto LastPointInPlane {GetPlanePoint(Face, lastPoint)};
-	OdGePoint3d start;
-	OdGePoint3d end;
-	OdGePoint3d mid;
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
-			for (unsigned i = 0; i < nSize; i++) {
-				snapPoints.append(gripPoints[i]);
+			for (unsigned i = 0; i < GripPointsSize; i++) {
+				snapPoints.append(GripPoints[i]);
 			}
 			break;
 		case OdDb::kOsModeMid:
-			for (unsigned i = 0; i < nSize; i++) {
-				const auto j {i + 1 - nSize * ((i + 1) / nSize)};
-				start = gripPoints[i];
-				end = gripPoints[i + 1 - nSize * ((i + 1) / nSize)];
-				if (!gripPoints[i].isEqualTo(gripPoints[j])) {
-					mid = gripPoints[i] + (gripPoints[j] - gripPoints[i]) / 2;
-					snapPoints.append(mid);
+			for (unsigned i = 0; i < GripPointsSize; i++) {
+				const auto j {i + 1 - GripPointsSize * ((i + 1) / GripPointsSize)};
+				if (!GripPoints[i].isEqualTo(GripPoints[j])) {
+					auto Mid {GripPoints[i] + (GripPoints[j] - GripPoints[i]) / 2.0};
+					snapPoints.append(Mid);
 				}
 			}
 			break;
 		case OdDb::kOsModePerp:
-			for (unsigned i = 0; i < nSize; i++) {
-				const auto j {i + 1 - nSize * ((i + 1) / nSize)};
-				start = gripPoints[i];
-				end = gripPoints[i + 1 - nSize * ((i + 1) / nSize)];
-				if (!gripPoints[i].isEqualTo(gripPoints[j])) {
-					OdGeLine3d l(start, end);
-					OdGePlane perpPlane;
-					l.getPerpPlane(LastPointInPlane, perpPlane);
-					if (perpPlane.intersectWith(l, mid)) {
-						snapPoints.append(mid);
+			for (unsigned i = 0; i < GripPointsSize; i++) {
+				const auto j {i + 1 - GripPointsSize * ((i + 1) / GripPointsSize)};
+				if (!GripPoints[i].isEqualTo(GripPoints[j])) {
+					OdGeLine3d Line(GripPoints[i], GripPoints[i + 1 - GripPointsSize * ((i + 1) / GripPointsSize)]);
+					OdGePlane PerpendicularPlane;
+					Line.getPerpPlane(LastPointInPlane, PerpendicularPlane);
+					OdGePoint3d Intersection;
+					if (PerpendicularPlane.intersectWith(Line, Intersection)) {
+						snapPoints.append(Intersection);
 					}
 				}
 			}
 			break;
 		case OdDb::kOsModeNear:
-			for (unsigned i = 0; i < nSize; i++) {
-				start = gripPoints[i];
-				end = gripPoints[i + 1 - nSize * ((i + 1) / nSize)];
-				if (!start.isEqualTo(end)) {
-					OdGeLine3d l(start, end);
-					const auto p {l.paramOf(PickPointInPlane)};
+			for (unsigned i = 0; i < GripPointsSize; i++) {
+				auto FirstPoint {GripPoints[i]};
+				auto SecondPoint {GripPoints[i + 1 - GripPointsSize * ((i + 1) / GripPointsSize)]};
+				if (!FirstPoint.isEqualTo(SecondPoint)) {
+					OdGeLine3d Line(FirstPoint, SecondPoint);
+					const auto p {Line.paramOf(PickPointInPlane)};
 					if (p > 1) {
-						snapPoints.append(end);
+						snapPoints.append(SecondPoint);
 					} else if (p < 0) {
-						snapPoints.append(start);
+						snapPoints.append(FirstPoint);
 					} else {
-						snapPoints.append(l.evalPoint(p));
+						snapPoints.append(Line.evalPoint(p));
 					}
 				} else {
-					snapPoints.append(start);
+					snapPoints.append(FirstPoint);
 				}
 			}
 			break;

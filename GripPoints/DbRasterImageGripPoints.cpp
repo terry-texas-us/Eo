@@ -12,7 +12,7 @@ OdResult OdDbRasterImageGripPointsPE::getGripPoints(const OdDbEntity* entity, Od
 		const auto GripPointsSize {gripPoints.size()};
 		if (!RasterImage->isClipped() || !RasterImage->isSetDisplayOpt(OdDbRasterImage::kClip)) {
 			gripPoints.resize(GripPointsSize + 5);
-			gripPoints[GripPointsSize] = Extents.minPoint() + (Extents.maxPoint() - Extents.minPoint()) / 2.;
+			gripPoints[GripPointsSize] = Extents.minPoint() + (Extents.maxPoint() - Extents.minPoint()) / 2.0;
 			OdGePoint3d Origin;
 			OdGeVector3d u;
 			OdGeVector3d v;
@@ -135,7 +135,7 @@ OdResult OdDbRasterImageGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, co
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbRasterImageGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbRasterImageGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: case OdDb::kOsModeCen: {
 			OdGePoint3dArray GripPoints;

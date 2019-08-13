@@ -7,9 +7,11 @@ OdResult OdDbLineGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePoint
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 3);
 	OdDbLinePtr Line {entity};
-	Line->getStartPoint(gripPoints[GripPointsSize + 0]);
-	Line->getEndPoint(gripPoints[GripPointsSize + 1]);
-	gripPoints[GripPointsSize + 2] = gripPoints[GripPointsSize + 0] + (gripPoints[GripPointsSize + 1] - gripPoints[GripPointsSize + 0]) / 2;
+	const auto StartPoint {Line->startPoint()};
+	const auto EndPoint {Line->endPoint()};
+	gripPoints[GripPointsSize + kStartPoint] = StartPoint;
+	gripPoints[GripPointsSize + kEndPoint] = EndPoint;
+	gripPoints[GripPointsSize + kMidPoint] = StartPoint + (EndPoint - StartPoint) / 2.0;
 	return eOk;
 }
 
@@ -18,12 +20,12 @@ OdResult OdDbLineGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntA
 		return eOk;
 	}
 	OdDbLinePtr Line {entity};
-	if (indices.size() > 1 || indices[0] == 2) {
+	if (indices.size() > 1 || indices[0] == kMidPoint) {
 		Line->setStartPoint(Line->startPoint() + offset);
 		Line->setEndPoint(Line->endPoint() + offset);
-	} else if (indices[0] == 0) {
+	} else if (indices[0] == kStartPoint) {
 		Line->setStartPoint(Line->startPoint() + offset);
-	} else if (indices[0] == 1) {
+	} else if (indices[0] == kEndPoint) {
 		Line->setEndPoint(Line->endPoint() + offset);
 	}
 	return eOk;
@@ -41,12 +43,10 @@ OdResult OdDbLineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdI
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbLineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbLineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdDbLinePtr Line {entity};
-	OdGePoint3d StartPoint;
-	OdGePoint3d EndPoint;
-	Line->getStartPoint(StartPoint);
-	Line->getEndPoint(EndPoint);
+	const auto StartPoint {Line->startPoint()};
+	const auto EndPoint {Line->endPoint()};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd:
 			snapPoints.append(StartPoint);
@@ -60,7 +60,8 @@ OdResult OdDbLineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::Os
 			snapPoints.append(InfiniteLine.evalPoint(InfiniteLine.paramOf(lastPoint)));
 			break;
 		}
-		case OdDb::kOsModeNear: // TODO: project on view plane
+		case OdDb::kOsModeNear:
+			// <tas="project on view plane"/>
 			if (!StartPoint.isEqualTo(EndPoint)) {
 				const OdGeLine3d InfiniteLine(StartPoint, EndPoint);
 				const auto PickParameter {InfiniteLine.paramOf(pickPoint)};

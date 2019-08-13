@@ -101,19 +101,19 @@ static bool IsDoglegEnabled(OdDbMLeader* pMLeader, bool* connectedAtDogleg = nul
 	return EnableDogleg;
 }
 
-static long GripTypeByIndex(const OdDbEntity* entity, int iIndex) {
+static long GripTypeByIndex(const OdDbEntity* entity, const int index) {
 	auto pMLeader {OdDbMLeader::cast(entity).get()};
-	ODA_ASSERT_ONCE_X(MLEADER, iIndex >= 0);
+	ODA_ASSERT_ONCE_X(MLEADER, index >= 0);
 	auto ConnectedAtDogleg {true};
 	auto UseDoglegCenterGrip {true};
 	auto SkipForLastVertex {false};
 	const auto EnableDogleg = IsDoglegEnabled(pMLeader, &ConnectedAtDogleg, &UseDoglegCenterGrip, &SkipForLastVertex);
-	auto index {0};
+	auto Index {0};
 	OdIntArray LeaderIndexes;
 	pMLeader->getLeaderIndexes(LeaderIndexes);
 	for (auto LeaderIndex : LeaderIndexes) {
 		if (EnableDogleg) {
-			switch (iIndex - index) {
+			switch (index - Index) {
 				case 0:
 					return DOGLEG_START_GRIP;
 				case 1:
@@ -124,12 +124,12 @@ static long GripTypeByIndex(const OdDbEntity* entity, int iIndex) {
 					}
 				default: ;
 			}
-			index += UseDoglegCenterGrip ? 3 : 2;
+			Index += UseDoglegCenterGrip ? 3 : 2;
 		} else if (ConnectedAtDogleg) {
-			if (iIndex == index) {
+			if (index == Index) {
 				return DOGLEG_END_GRIP;
 			}
-			index++;
+			Index++;
 		}
 		OdIntArray LeaderLineIndexes;
 		pMLeader->getLeaderLineIndexes(LeaderIndex, LeaderLineIndexes);
@@ -139,24 +139,24 @@ static long GripTypeByIndex(const OdDbEntity* entity, int iIndex) {
 			if (SkipForLastVertex) {
 				nVertices--;
 			}
-			if (iIndex < index + nVertices) {
+			if (index < Index + nVertices) {
 				return LINE_START_GRIP;
 			}
-			index += nVertices;
+			Index += nVertices;
 		}
 	}
 	if (pMLeader->contentType() == OdDbMLeaderStyle::kMTextContent && (pMLeader->mtext().get() && !pMLeader->mtext()->contents().isEmpty() || !LeaderIndexes.isEmpty())) {
-		if (iIndex == index) {
+		if (index == Index) {
 			return TEXT_POS_GRIP;
 		}
-		index++;
+		Index++;
 	} else if (pMLeader->contentType() == OdDbMLeaderStyle::kBlockContent && ! ConnectedAtDogleg) {
-		if (iIndex == index) {
+		if (index == Index) {
 			return BLOCK_POS_GRIP;
 		}
-		index++;
+		Index++;
 	}
-	ODA_ASSERT_ONCE_X(MLEADER, iIndex == index); // test
+	ODA_ASSERT_ONCE_X(MLEADER, index == Index); // test
 	return 0;                                    // none
 }
 
@@ -213,7 +213,7 @@ static double getScale(OdDbMLeader* pMLeader) {
 	return Scale;
 }
 
-static bool GetConnectionData(OdDbMLeader* pMLeader, int leaderIndex, bool enableDogleg, bool connectedAtDogleg, OdGePoint3d& connectPoint, OdGeVector3d& doglegDirection, double& doglegLength, double* scale = nullptr) {
+static bool GetConnectionData(OdDbMLeader* pMLeader, const int leaderIndex, const bool enableDogleg, const bool connectedAtDogleg, OdGePoint3d& connectPoint, OdGeVector3d& doglegDirection, double& doglegLength, double* scale = nullptr) {
 	doglegDirection = OdGeVector3d();
 	connectPoint = OdGePoint3d();
 	doglegLength = 0;
@@ -293,7 +293,7 @@ OdResult OdDbMleaderGripPointsPE::getGripPoints(const OdDbEntity* entity, OdGePo
 				ODA_ASSERT_ONCE_X(MLEADER, (iGripType = GripTypeByIndex(entity, idxGrip++)) == DOGLEG_START_GRIP);
 				gripPoints.append(ConnectPoint);
 				if (UseDoglegCenterGrip) {
-					auto tmpPt1(ConnectPoint + DoglegDirection * DoglegLength / 2);
+					auto tmpPt1(ConnectPoint + DoglegDirection * DoglegLength / 2.0);
 					ODA_ASSERT_ONCE_X(MLEADER, (iGripType = GripTypeByIndex(entity, idxGrip++)) == DOGLEG_CENTER_GRIP);
 					gripPoints.append(tmpPt1);
 				}
@@ -504,7 +504,7 @@ OdResult OdDbMleaderGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const 
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbMleaderGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbMleaderGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, const OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdRxObjectPtrArray ExplodedObjects;
 	const auto Result {entity->explode(ExplodedObjects)};
 	if (Result != eOk) {

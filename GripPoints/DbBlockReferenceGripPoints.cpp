@@ -21,14 +21,14 @@ static OdDbSpatialFilterPtr GetBlockReferenceSpatialFilter(OdDbBlockReference* b
 	return OdDbSpatialFilter::cast(AcadFilterDictionary->getAt(L"SPATIAL", openMode));
 }
 
-void OdDbBlockGripOpStatus(OdDbGripData* gripData, OdDbStub* /*stub*/, OdDbGripOperations::GripStatus status) {
+void OdDbBlockGripOpStatus(OdDbGripData* gripData, OdDbStub* /*stub*/, const OdDbGripOperations::GripStatus status) {
 	if (gripData->appDataOdRxClass() == OdDbBlockGripAppData::desc() && (status == OdDbGripOperations::kGripEnd || status == OdDbGripOperations::kGripAbort)) {
 		((OdDbBlockGripAppData*)gripData->appData())->release();
 		gripData->setAppData(nullptr);
 	}
 }
 
-static double GetGripSize(OdGiViewportDraw* viewportDraw, const OdGePoint3d& eyePoint, int gripSize) {
+static double GetGripSize(OdGiViewportDraw* viewportDraw, const OdGePoint3d& eyePoint, const int gripSize) {
 	OdGePoint2d PixelDensity;
 	auto wcsPt {eyePoint};
 	wcsPt.transformBy(viewportDraw->viewport().getEyeToWorldTransform());
@@ -57,7 +57,7 @@ static void DrawFlipArrow(OdGiViewportDraw* viewportDraw, const OdGePoint3d& poi
 	viewportDraw->geometry().polygonEye(7, pp);
 }
 
-static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* viewportDraw, OdDbStub* /*entityId*/, OdDbGripOperations::DrawType type, OdGePoint3d* imageGripPoint, int gripSize) {
+static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* viewportDraw, OdDbStub* /*entityId*/, const OdDbGripOperations::DrawType type, OdGePoint3d* imageGripPoint, const int gripSize) {
 	ODA_ASSERT(gripData->appDataOdRxClass() == OdDbBlockGripAppData::desc());
 	auto Point {imageGripPoint == nullptr ? gripData->gripPoint() : *imageGripPoint};
 	Point.transformBy(viewportDraw->viewport().getWorldToEyeTransform());
@@ -79,7 +79,7 @@ static void OdDbBlockGripViewportDraw(OdDbGripData* gripData, OdGiViewportDraw* 
 	DrawFlipArrow(viewportDraw, Point, gripSize, ((OdDbBlockGripAppData*)gripData->appData())->m_vClipInvertOrientation);
 }
 
-OdResult OdDbBlockHotGrip(OdDbGripData* gripData, OdDbStub* entityId, int status) {
+OdResult OdDbBlockHotGrip(OdDbGripData* gripData, OdDbStub* entityId, const int status) {
 	if ((status & OdDbGripOperations::kSharedGrip) != 0) {
 		return eOk;
 	}
@@ -137,7 +137,7 @@ OdResult OdDbBlockReferenceGripPointsPE::getGripPoints(const OdDbEntity* entity,
 				p1.transformBy(FullTransform);
 				p2.transformBy(FullTransform);
 				auto v {p2 - p1};
-				const auto MidPoint {p1 + v / 2};
+				const auto MidPoint {p1 + v / 2.0};
 				OdDbGripDataPtr GripData(new OdDbGripData());
 				GripData->setGripPoint(MidPoint);
 				GripData->setGripOpStatFunc(OdDbBlockGripOpStatus);

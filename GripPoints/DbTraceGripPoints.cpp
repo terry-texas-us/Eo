@@ -66,7 +66,7 @@ OdResult OdDbTraceGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const Od
 	return moveGripPointsAt(Trace, indices, offset);
 }
 
-OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbTraceGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdDbTracePtr Trace {entity};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: {

@@ -16,7 +16,7 @@ OdResult OdDb3PointAngularDimGripPointsPE::getGripPoints(const OdDbEntity* entit
 	return eOk;
 }
 
-OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, bool stretch) {
+OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const OdGePoint3dArray& gripPoints, const OdIntArray& indices, const bool stretch) {
 	if (indices.empty()) {
 		return eOk;
 	}
@@ -28,64 +28,64 @@ OdResult OdDb3PointAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, con
 	auto TextPosition {Dimension->textPosition()};
 	auto NewArcPoint {ArcPoint};
 	const auto WorldToPlaneTransform(OdGeMatrix3d::worldToPlane(Dimension->normal()));
-	auto ocsDimLine1Pt {FirstExtensionLineStartPoint};
-	auto ocsDimLine2Pt {SecondExtensionLineStartPoint};
+	auto ocsFirstExtensionLineStartPoint {FirstExtensionLineStartPoint};
+	auto ocsSecondExtensionLineStartPoint {SecondExtensionLineStartPoint};
 	auto ocsCenterPoint {CenterPoint};
-	auto ocsDimArcPt {ArcPoint};
-	auto ocsDimTextPt {TextPosition};
+	auto ocsArcPoint {ArcPoint};
+	auto ocsTextPosition {TextPosition};
 	auto ocsNewArcPoint {NewArcPoint};
 	const auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
-		ocsDimLine1Pt.transformBy(WorldToPlaneTransform);
-		ocsDimLine2Pt.transformBy(WorldToPlaneTransform);
+		ocsFirstExtensionLineStartPoint.transformBy(WorldToPlaneTransform);
+		ocsSecondExtensionLineStartPoint.transformBy(WorldToPlaneTransform);
 		ocsCenterPoint.transformBy(WorldToPlaneTransform);
-		ocsDimArcPt.transformBy(WorldToPlaneTransform);
-		ocsDimTextPt.transformBy(WorldToPlaneTransform);
-		ocsDimTextPt.transformBy(WorldToPlaneTransform);
+		ocsArcPoint.transformBy(WorldToPlaneTransform);
+		ocsTextPosition.transformBy(WorldToPlaneTransform);
+		ocsTextPosition.transformBy(WorldToPlaneTransform);
 		ocsNewArcPoint.transformBy(WorldToPlaneTransform);
 	}
-	const auto SavedZCoordinate {ocsDimLine1Pt.z};
-	ocsDimLine1Pt.z = ocsDimLine2Pt.z = ocsCenterPoint.z = ocsDimArcPt.z = ocsDimTextPt.z = ocsNewArcPoint.z = 0.0;
+	const auto SavedZCoordinate {ocsFirstExtensionLineStartPoint.z};
+	ocsFirstExtensionLineStartPoint.z = ocsSecondExtensionLineStartPoint.z = ocsCenterPoint.z = ocsArcPoint.z = ocsTextPosition.z = ocsNewArcPoint.z = 0.0;
 	auto GripPoint = &gripPoints[indices[0]];
-	auto ocsDimNewPt {*GripPoint};
-	auto dimNewPt {ocsDimNewPt};
+	auto ocsNewGripPoint {*GripPoint};
+	auto NewGripPoint {ocsNewGripPoint};
 	if (NeedTransform) {
-		ocsDimNewPt.transformBy(WorldToPlaneTransform);
+		ocsNewGripPoint.transformBy(WorldToPlaneTransform);
 	}
-	ocsDimNewPt.z = 0.0;
+	ocsNewGripPoint.z = 0.0;
 	for (auto i = 0U; i < indices.size(); i++) {
 		GripPoint = &gripPoints[indices[i]];
-		dimNewPt = *GripPoint;
-		ocsDimNewPt = dimNewPt;
+		NewGripPoint = *GripPoint;
+		ocsNewGripPoint = NewGripPoint;
 		if (indices[i] < kTextPosition && !Dimension->isUsingDefaultTextPosition()) {
 			Dimension->useDefaultTextPosition();
 		}
 		switch (indices[i]) {
 			case kFirstExtensionLineStartPoint:
-				Dimension->setXLine1Point(dimNewPt);
+				Dimension->setXLine1Point(NewGripPoint);
 				break;
 			case kSecondExtensionLineStartPoint:
-				Dimension->setXLine2Point(dimNewPt);
+				Dimension->setXLine2Point(NewGripPoint);
 				break;
 			case kCenterPoint:
-				Dimension->setCenterPoint(dimNewPt);
+				Dimension->setCenterPoint(NewGripPoint);
 				break;
 			case kArcPoint:
-				Dimension->setArcPoint(dimNewPt);
+				Dimension->setArcPoint(NewGripPoint);
 				break;
 			case kTextPosition: {
 				ocsNewArcPoint = ocsCenterPoint - (ocsCenterPoint - ocsNewArcPoint);
-				ocsDimTextPt = ocsDimNewPt;
-				ocsDimTextPt.z = SavedZCoordinate;
+				ocsTextPosition = ocsNewGripPoint;
+				ocsTextPosition.z = SavedZCoordinate;
 				if (NeedTransform) {
-					ocsDimTextPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+					ocsTextPosition.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 				}
 				if (indices.size() == 1 || !stretch) {
 					Dimension->useSetTextPosition();
 				}
-				Dimension->setTextPosition(ocsDimTextPt);
+				Dimension->setTextPosition(ocsTextPosition);
 				break;
 			}
 			default:

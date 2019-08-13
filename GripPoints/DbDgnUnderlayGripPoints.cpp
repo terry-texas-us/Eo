@@ -5,7 +5,7 @@
 #include <Gi/GiDummyGeometry.h>
 #include <Ge/GeNurbCurve3d.h>
 
-OdResult OdDbDgnUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbDgnUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, const OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	const auto DgnGripPointsModule {odrxDynamicLinker()->loadModule(ExDgnGripPointsModuleName)};
 	if (DgnGripPointsModule.isNull()) {
 		return eTxError;
@@ -15,9 +15,9 @@ OdResult OdDbDgnUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 		auto UnderlayReference {OdDbUnderlayReference::cast(entity)};
 		OdDbUnderlayDefinitionPtr UnderlayDefinition {UnderlayReference->definitionId().openObject()};
 		auto UnderlayItem {UnderlayDefinition->getUnderlayItem()};
-		OdIntArray dummy;
+		OdIntArray GeometryIds;
 		// NB: last parameter of this call needs to be changed to last parameter of this function
-		return UnderlayItem->getOsnapPoints(UnderlayReference->transform(), objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, OdGeMatrix3d::kIdentity, snapPoints, dummy);
+		return UnderlayItem->getOsnapPoints(UnderlayReference->transform(), objectSnapMode, selectionMarker, pickPoint, lastPoint, worldToEyeTransform, OdGeMatrix3d::kIdentity, snapPoints, GeometryIds);
 	}
 	return Result;
 }

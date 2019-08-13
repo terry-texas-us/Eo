@@ -43,7 +43,7 @@ OdResult OdDbPolygonMeshGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, co
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbPolygonMeshGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdDbPolygonMesh* Mesh {OdDbPolygonMesh::cast(entity)};
 	auto VertexIterator {Mesh->vertexIterator()};
 	OdGePoint3dArray pPosArr;

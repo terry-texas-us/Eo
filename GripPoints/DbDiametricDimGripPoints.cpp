@@ -22,7 +22,7 @@ OdResult OdDbDiametricDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const O
 	const auto ChordPoint {Dimension->chordPoint()};
 	const auto FarChordPoint {Dimension->farChordPoint()};
 	auto TextPosition {Dimension->textPosition()};
-	const auto MidPoint {FarChordPoint + (ChordPoint - FarChordPoint) / 2};
+	const auto MidPoint {FarChordPoint + (ChordPoint - FarChordPoint) / 2.0};
 	const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
 	auto ocsChordPoint {ChordPoint};
 	auto ocsFarChordPoint {FarChordPoint};

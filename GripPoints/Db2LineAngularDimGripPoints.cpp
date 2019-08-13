@@ -35,9 +35,9 @@ OdResult OdDb2LineAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, cons
 	auto ocsDimLine1EndPt {FirstExtensionLineEndPoint};
 	auto ocsDimLine2StartPt {SecondExtensionLineStartPoint};
 	auto ocsDimLine2EndPt {SecondExtensionLineEndPoint};
-	auto ocsDimArcPt {ArcPoint};
-	auto ocsDimTextPt {TextPosition};
-	auto ocsDimArcNewPt {NewArcPoint};
+	auto ocsArcPoint {ArcPoint};
+	auto ocsTextPosition {TextPosition};
+	auto ocsNewArcPoint {NewArcPoint};
 	auto Normal {Dimension->normal()};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
@@ -46,12 +46,12 @@ OdResult OdDb2LineAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, cons
 		ocsDimLine1EndPt.transformBy(WorldToPlaneTransform);
 		ocsDimLine2StartPt.transformBy(WorldToPlaneTransform);
 		ocsDimLine2EndPt.transformBy(WorldToPlaneTransform);
-		ocsDimArcPt.transformBy(WorldToPlaneTransform);
-		ocsDimTextPt.transformBy(WorldToPlaneTransform);
-		ocsDimArcNewPt.transformBy(WorldToPlaneTransform);
+		ocsArcPoint.transformBy(WorldToPlaneTransform);
+		ocsTextPosition.transformBy(WorldToPlaneTransform);
+		ocsNewArcPoint.transformBy(WorldToPlaneTransform);
 	}
 	auto SavedZCoordinate {ocsDimLine1StartPt.z};
-	ocsDimLine1StartPt.z = ocsDimLine1EndPt.z = ocsDimLine2StartPt.z = ocsDimLine2EndPt.z = ocsDimArcPt.z = ocsDimTextPt.z = ocsDimArcNewPt.z = 0.0;
+	ocsDimLine1StartPt.z = ocsDimLine1EndPt.z = ocsDimLine2StartPt.z = ocsDimLine2EndPt.z = ocsArcPoint.z = ocsTextPosition.z = ocsNewArcPoint.z = 0.0;
 	const OdGePoint3d* GripPoint = nullptr;
 	OdGePoint3d ocsDimNewPt;
 	OdGePoint3d dimNewPt;
@@ -83,21 +83,21 @@ OdResult OdDb2LineAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, cons
 				OdGePoint3d CenterPoint;
 				auto vX1 {ocsDimLine1EndPt - ocsDimLine1StartPt};
 				auto vX2 {ocsDimLine2StartPt - ocsDimLine2EndPt};
-				OdGeLine3d line1(ocsDimLine1EndPt, vX1);
-				OdGeLine3d line2(ocsDimLine2StartPt, vX2);
-				line1.intersectWith(line2, CenterPoint);
+				OdGeLine3d Line1(ocsDimLine1EndPt, vX1);
+				OdGeLine3d Line2(ocsDimLine2StartPt, vX2);
+				Line1.intersectWith(Line2, CenterPoint);
 				auto Angle1 {vX2.angleTo(vX1)};
 				if (indices[0] == kArcPoint) {
-					ocsDimArcNewPt = ocsDimNewPt;
+					ocsNewArcPoint = ocsDimNewPt;
 				}
 				if (indices[0] == kTextPosition) {
-					auto vT {CenterPoint - ocsDimArcNewPt};
+					auto vT {CenterPoint - ocsNewArcPoint};
 					vT.normalize();
 					vT *= fabs(OdGeVector3d(CenterPoint - ocsDimNewPt).length());
-					ocsDimArcNewPt = CenterPoint - vT;
-					ocsDimTextPt = ocsDimNewPt;
+					ocsNewArcPoint = CenterPoint - vT;
+					ocsTextPosition = ocsDimNewPt;
 				}
-				auto vArc {CenterPoint - ocsDimArcNewPt};
+				auto vArc {CenterPoint - ocsNewArcPoint};
 				auto Angle2 {vX1.angleTo(vArc)};
 				auto Angle3 {vX2.angleTo(vArc)};
 				if (OdEqual(Angle3 - Angle2, Angle1, OdGeContext::gTol.equalPoint())) {
@@ -113,31 +113,31 @@ OdResult OdDb2LineAngularDimGripPointsPE::moveGripPoint(OdDbEntity* entity, cons
 				Angle1 = vX2.angleTo(vX1);
 				auto vXA {!IsAngleDirectionBetweenVectors(vArc, vX1) ? vX1 : vX2};
 				auto vTxt {vXA};
-				vTxt.rotateBy(vX1.angleTo(vX2) / 2, OdGeVector3d::kZAxis);
+				vTxt.rotateBy(vX1.angleTo(vX2) / 2.0, OdGeVector3d::kZAxis);
 				vXA.rotateBy(Angle1 / 3, OdGeVector3d::kZAxis);
 				auto vY {vXA};
 				Angle1 = vArc.angleTo(vXA, OdGeVector3d::kZAxis);
-				vY.rotateBy((OdaPI - Angle1) / 2, OdGeVector3d::kZAxis);
-				line1.set(ocsDimArcNewPt, vY);
-				line2.set(CenterPoint, vXA);
+				vY.rotateBy((OdaPI - Angle1) / 2.0, OdGeVector3d::kZAxis);
+				Line1.set(ocsNewArcPoint, vY);
+				Line2.set(CenterPoint, vXA);
 				OdGePoint3d IntersectPoint;
-				line1.intersectWith(line2, IntersectPoint);
-				ocsDimArcPt = IntersectPoint;
+				Line1.intersectWith(Line2, IntersectPoint);
+				ocsArcPoint = IntersectPoint;
 				auto vT1 {vTxt};
 				vT1.normalize();
-				vT1 *= OdGeVector3d(CenterPoint - ocsDimArcPt).length();
+				vT1 *= OdGeVector3d(CenterPoint - ocsArcPoint).length();
 				NewTextPosition = CenterPoint - vT1;
 				if (indices[0] == kTextPosition) {
-					NewTextPosition = ocsDimTextPt;
+					NewTextPosition = ocsTextPosition;
 				}
-				ocsDimArcPt.z = SavedZCoordinate;
+				ocsArcPoint.z = SavedZCoordinate;
 				NewTextPosition.z = SavedZCoordinate;
 				if (NeedTransform) {
-					ocsDimArcPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+					ocsArcPoint.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 					NewTextPosition.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
 				}
 				if (indices[0] == kArcPoint || Dimension->dimtmove() == 0) {
-					Dimension->setArcPoint(ocsDimArcPt);
+					Dimension->setArcPoint(ocsArcPoint);
 				}
 				if (indices[0] == kTextPosition) {
 					if (indices.size() == 1 || !stretch) {

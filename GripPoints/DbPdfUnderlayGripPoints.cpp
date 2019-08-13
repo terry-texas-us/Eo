@@ -8,7 +8,7 @@
 #include "../Extensions/PdfUnderlayCommon/PdfUnderlay.h"
 #include <DbUnderlayDefinition.h>
 
-OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, const OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	if (objectSnapMode != OdDb::kOsModeEnd) { // FLYSDK version
 		return eNotImplemented;
 	}
@@ -26,7 +26,7 @@ OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 				: snapPoints(sp)
 				, mx(m) {}
 
-			void polyline(OdInt32 numVertices, const OdGePoint3d* vertexList, const OdGeVector3d* /*pNormal*/, OdGsMarker /*baseSubEntMarker*/) override {
+			void polyline(const OdInt32 numVertices, const OdGePoint3d* vertexList, const OdGeVector3d* /*normal*/, OdGsMarker /*baseSubEntMarker*/) override {
 				for (auto f = 0; f < numVertices; ++f) {
 					auto p {vertexList[f]};
 					snapPoints.push_back(p.transformBy(mx));
@@ -50,7 +50,7 @@ OdResult OdDbPdfUnderlayGripPointsPE::getOsnapPoints(const OdDbEntity* entity, O
 				snapPoints.push_back(p.transformBy(mx));
 			}
 
-			void circle(const OdGePoint3d& center, double radius, const OdGeVector3d& normal) override {
+			void circle(const OdGePoint3d& center, const double radius, const OdGeVector3d& normal) override {
 				const OdGeCircArc3d CircularArc(center, normal, radius);
 				OdGePoint3d point;
 				if (CircularArc.hasStartPoint(point)) {

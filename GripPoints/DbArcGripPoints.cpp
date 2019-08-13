@@ -42,7 +42,7 @@ OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntAr
 	if (!ProjectOffset(Arc->database(), Arc->normal(), Offset)) { // View direction is perpendicular to normal. Move the arc
 		Arc->setCenter(Arc->center() + Offset);
 	} else {
-		auto flags {0U};
+		auto Flags {0U};
 		OdGePoint3dArray Points;
 		getGripPoints(entity, Points);
 		for (unsigned i = 0; i < IndicesSize; ++i) {
@@ -52,14 +52,14 @@ OdResult OdDbArcGripPointsPE::moveGripPointsAt(OdDbEntity* entity, const OdIntAr
 					Index -= 4;
 				}
 				const auto Mask {1U << Index};
-				if ((flags & Mask) == 0U) {
+				if ((Flags & Mask) == 0U) {
 					Points[Index] += Offset;
-					flags |= Mask;
+					Flags |= Mask;
 				}
 			}
 		}
 		try {
-			if ((flags & 8U) != 0U || (flags & 7U) == 7U) { // // Center moved (8) or all 3 arc points moved
+			if ((Flags & 8U) != 0U || (Flags & 7U) == 7U) { // // Center moved (8) or all 3 arc points moved
 				Arc->setCenter(Points[3]);
 			} else {
 				const auto pP1 {Points.asArrayPtr()};
@@ -136,7 +136,7 @@ OdResult OdDbArcGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const OdIn
 	return eOk;
 }
 
-OdResult OdDbArcGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbArcGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdGePoint3dArray GripPoints;
 	const auto Result {getGripPoints(entity, GripPoints)};
 	if (Result != eOk) {

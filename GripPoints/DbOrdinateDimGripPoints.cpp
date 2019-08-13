@@ -8,10 +8,10 @@ OdResult OdDbOrdinateDimGripPointsPE::getGripPoints(const OdDbEntity* entity, Od
 	const auto GripPointsSize {gripPoints.size()};
 	gripPoints.resize(GripPointsSize + 4);
 	OdDbOrdinateDimensionPtr Dimension {entity};
-	gripPoints[GripPointsSize + 0] = Dimension->definingPoint();
-	gripPoints[GripPointsSize + 1] = Dimension->leaderEndPoint();
-	gripPoints[GripPointsSize + 2] = Dimension->origin();
-	gripPoints[GripPointsSize + 3] = Dimension->textPosition();
+	gripPoints[GripPointsSize + kDefiningPoint] = Dimension->definingPoint();
+	gripPoints[GripPointsSize + kLeaderEndPoint] = Dimension->leaderEndPoint();
+	gripPoints[GripPointsSize + kOrigin] = Dimension->origin();
+	gripPoints[GripPointsSize + kTextPosition] = Dimension->textPosition();
 	return eOk;
 }
 
@@ -23,68 +23,68 @@ OdResult OdDbOrdinateDimGripPointsPE::moveGripPoint(OdDbEntity* entity, const Od
 	auto DefiningPoint {Dimension->definingPoint()};
 	auto LeaderEndPoint {Dimension->leaderEndPoint()};
 	auto TextPosition {Dimension->textPosition()};
-	const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Dimension->normal())};
-	auto ocsDimDefiningPt {DefiningPoint};
-	auto ocsDimLeaderEndPt {LeaderEndPoint};
-	auto ocsDimTextPt {TextPosition};
 	const auto Normal {Dimension->normal()};
+	const auto WorldToPlaneTransform {OdGeMatrix3d::worldToPlane(Normal)};
+	auto ocsDefiningPoint {DefiningPoint};
+	auto ocsLeaderEndPoint {LeaderEndPoint};
+	auto ocsTextPosition {TextPosition};
 	auto NeedTransform {false};
 	if (Normal != OdGeVector3d::kZAxis) {
 		NeedTransform = true;
-		ocsDimDefiningPt.transformBy(WorldToPlaneTransform);
-		ocsDimLeaderEndPt.transformBy(WorldToPlaneTransform);
-		ocsDimTextPt.transformBy(WorldToPlaneTransform);
+		ocsDefiningPoint.transformBy(WorldToPlaneTransform);
+		ocsLeaderEndPoint.transformBy(WorldToPlaneTransform);
+		ocsTextPosition.transformBy(WorldToPlaneTransform);
 	}
-	const auto SavedZCoordinate {ocsDimDefiningPt.z};
-	ocsDimDefiningPt.z = ocsDimLeaderEndPt.z = ocsDimTextPt.z = 0.0;
+	const auto SavedZCoordinate {ocsDefiningPoint.z};
+	ocsDefiningPoint.z = ocsLeaderEndPoint.z = ocsTextPosition.z = 0.0;
 	auto GripPoint = &gripPoints[indices[0]];
-	auto ocsDimNewPt {*GripPoint};
-	auto dimNewPt {ocsDimNewPt};
+	auto ocsNewGripPoint {*GripPoint};
+	auto NewGripPoint {ocsNewGripPoint};
 	if (NeedTransform) {
-		ocsDimNewPt.transformBy(WorldToPlaneTransform);
+		ocsNewGripPoint.transformBy(WorldToPlaneTransform);
 	}
-	ocsDimNewPt.z = 0.0;
-	auto v1 {ocsDimTextPt - ocsDimLeaderEndPt};
+	ocsNewGripPoint.z = 0.0;
+	auto v1 {ocsTextPosition - ocsLeaderEndPoint};
 	for (auto Index : indices) {
 		GripPoint = &gripPoints[Index];
-		dimNewPt = *GripPoint;
-		ocsDimNewPt = dimNewPt;
+		NewGripPoint = *GripPoint;
+		ocsNewGripPoint = NewGripPoint;
 		switch (Index) {
-			case 0:
-				Dimension->setDefiningPoint(dimNewPt);
+			case kDefiningPoint:
+				Dimension->setDefiningPoint(NewGripPoint);
 				break;
-			case 1:
+			case kLeaderEndPoint:
 				v1.normalize();
-				v1 *= OdGeVector3d(ocsDimTextPt - ocsDimLeaderEndPt).length();
-				ocsDimTextPt = ocsDimNewPt + v1;
-				ocsDimTextPt.z = SavedZCoordinate;
-				ocsDimNewPt.z = SavedZCoordinate;
+				v1 *= OdGeVector3d(ocsTextPosition - ocsLeaderEndPoint).length();
+				ocsTextPosition = ocsNewGripPoint + v1;
+				ocsTextPosition.z = SavedZCoordinate;
+				ocsNewGripPoint.z = SavedZCoordinate;
 				if (NeedTransform) {
-					ocsDimTextPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
-					ocsDimNewPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+					ocsTextPosition.transformBy(OdGeMatrix3d::planeToWorld(Normal));
+					ocsNewGripPoint.transformBy(OdGeMatrix3d::planeToWorld(Normal));
 				}
 				if (!Dimension->isUsingDefaultTextPosition() && Dimension->dimtmove() == 2) {
-					Dimension->setLeaderEndPoint(ocsDimNewPt);
+					Dimension->setLeaderEndPoint(ocsNewGripPoint);
 				} else {
-					Dimension->setTextPosition(ocsDimTextPt);
+					Dimension->setTextPosition(ocsTextPosition);
 				}
 				break;
-			case 2:
-				Dimension->setOrigin(dimNewPt);
+			case kOrigin:
+				Dimension->setOrigin(NewGripPoint);
 				break;
-			case 3:
+			case kTextPosition:
 				v1.normalize();
-				v1 *= OdGeVector3d(ocsDimTextPt - ocsDimLeaderEndPt).length();
-				ocsDimLeaderEndPt = ocsDimNewPt - v1;
-				ocsDimNewPt.z = SavedZCoordinate;
-				ocsDimLeaderEndPt.z = SavedZCoordinate;
+				v1 *= OdGeVector3d(ocsTextPosition - ocsLeaderEndPoint).length();
+				ocsLeaderEndPoint = ocsNewGripPoint - v1;
+				ocsNewGripPoint.z = SavedZCoordinate;
+				ocsLeaderEndPoint.z = SavedZCoordinate;
 				if (NeedTransform) {
-					ocsDimNewPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
-					ocsDimLeaderEndPt.transformBy(OdGeMatrix3d::planeToWorld(Dimension->normal()));
+					ocsNewGripPoint.transformBy(OdGeMatrix3d::planeToWorld(Normal));
+					ocsLeaderEndPoint.transformBy(OdGeMatrix3d::planeToWorld(Normal));
 				}
-				Dimension->setTextPosition(ocsDimNewPt);
+				Dimension->setTextPosition(ocsNewGripPoint);
 				if (Dimension->isUsingDefaultTextPosition() && Dimension->dimtmove() != 2) {
-					Dimension->setLeaderEndPoint(ocsDimLeaderEndPt);
+					Dimension->setLeaderEndPoint(ocsLeaderEndPoint);
 				}
 				break;
 			default: ;

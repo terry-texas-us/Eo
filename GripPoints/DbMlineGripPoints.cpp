@@ -33,7 +33,7 @@ OdResult OdDbMlineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, const Od
 	return moveGripPointsAt(entity, indices, offset);
 }
 
-OdResult OdDbMlineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
+OdResult OdDbMlineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, const OdGsMarker selectionMarker, const OdGePoint3d& pickPoint, const OdGePoint3d& lastPoint, const OdGeMatrix3d& worldToEyeTransform, OdGePoint3dArray& snapPoints) const {
 	OdRxObjectPtrArray ExplodedObjects;
 	const auto Result {entity->explode(ExplodedObjects)};
 	if (Result != eOk) {

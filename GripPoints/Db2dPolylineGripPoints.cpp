@@ -73,7 +73,7 @@ OdResult OdDb2dPolylineGripPointsPE::moveStretchPointsAt(OdDbEntity* entity, con
 	return eOk;
 }
 
-OdResult OdDb2dPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
+OdResult OdDb2dPolylineGripPointsPE::getOsnapPoints(const OdDbEntity* entity, const OdDb::OsnapMode objectSnapMode, OdGsMarker /*selectionMarker*/, const OdGePoint3d& /*pickPoint*/, const OdGePoint3d& /*lastPoint*/, const OdGeMatrix3d& /*worldToEyeTransform*/, OdGePoint3dArray& snapPoints) const {
 	OdDb2dPolylinePtr Polyline {entity};
 	switch (objectSnapMode) {
 		case OdDb::kOsModeEnd: case OdDb::kOsModeCen: case OdDb::kOsModeQuad: case OdDb::kOsModePerp: case OdDb::kOsModeTan: {
