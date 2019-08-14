@@ -65,7 +65,6 @@ protected:
 		void Read(CFile* file) {
 			file->Read(this, sizeof(AcadClipData<T>));
 		}
-
 		T _tempFileName[0x104]; // name of the temp dwg file, where dragged entities are
 		T _origFileName[0x104]; // original file name
 		T _version[4]; // version of the original file, e.g. 'R15'
@@ -92,8 +91,9 @@ protected:
 			AcadClipData<wchar_t>::_x = pickPoint.x;
 			AcadClipData<wchar_t>::_y = pickPoint.y;
 			AcadClipData<wchar_t>::_z = pickPoint.z;
-			memcpy(AcadClipData<wchar_t>::_tempFileName, static_cast<const T*>(tempFileName), odmin((0x100 * sizeof(T)), ((tempFileName.getLength() + 1) * sizeof(T))));
-			memcpy(AcadClipData<wchar_t>::_origFileName, static_cast<const T*>(origFileName), odmin((0x100 * sizeof(T)), ((origFileName.getLength() + 1) * sizeof(T))));
+			// <tas="_tempFileName & _origFileName not static. v16 compile fail."/>
+			// memcpy(AcadClipData<wchar_t>::_tempFileName, static_cast<const T*>(tempFileName), odmin((0x100 * sizeof(T)), ((tempFileName.getLength() + 1) * sizeof(T))));
+			// memcpy(AcadClipData<wchar_t>::_origFileName, static_cast<const T*>(origFileName), odmin((0x100 * sizeof(T)), ((origFileName.getLength() + 1) * sizeof(T))));
 		}
 
 		AcadClipDataConstr() {

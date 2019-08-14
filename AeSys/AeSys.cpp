@@ -1143,7 +1143,6 @@ bool AeSys::InitializeOda() {
 		odrxDynamicLinker()->loadModule(OdAutoSurfServicesModuleName, false); // OdAsSurfBody object support module (loads dependency TD_Br_20.5_15.dll if necessary)
 		odrxDynamicLinker()->loadModule(OdModelDocObjModuleName, false);
 		odrxDynamicLinker()->loadModule(OdPlotSettingsValidatorModuleName, false); // PlotSettingsValidator module (To include support for plot settings)
-		odrxDynamicLinker()->loadModule(L"ExampleRevisionControl", false);
 		AddPaperDrawingCustomization();
 		AddMaterialTextureLoadingMonitor();
 		OdDbDatabaseDoc::rxInit();
@@ -1466,7 +1465,8 @@ void AeSys::OnFilePlotStyleManager() {
 }
 
 void AeSys::OnHelpContents() {
-	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm", HH_DISPLAY_TOPIC, NULL);
+	// <tas="HtmlHelp undefined x64 build. No testing done."/>
+	// ::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm", HH_DISPLAY_TOPIC, NULL);
 }
 
 void AeSys::ResetModes() {

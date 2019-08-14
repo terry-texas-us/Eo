@@ -341,3 +341,9 @@ ASALocalRun/
 /AeSys/CppEssentialProfile.ruleset
 *.lastcodeanalysissucceeded
 /MFCApp-2019
+/AeSys/vc16dlldbg/AeSys.tlog/unsuccessfulbuild
+/GripPoints/GripPoints.dir/vc16dlldbg/GripPoints.tlog/unsuccessfulbuild
+/AeSys/vc16dlldbg/AeSys.tlog
+/AeSys/vc16_amd64dlldbg/AeSys.tlog
+/GripPoints/vc16_amd64dlldbg/GripPoints.tlog
+/GripPoints/vc16dlldbg/GripPoints.tlog

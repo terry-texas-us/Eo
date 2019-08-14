@@ -863,7 +863,8 @@ void EoDlgPlotStyleEditor_FormViewPropertyPage::AddNewPlotStyle(const wchar_t* s
 }
 
 void EoDlgPlotStyleEditor_FormViewPropertyPage::OnAddBtnStyle() {
-	DialogBox(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDD_PS_DLG_ADDPS), m_hWnd, Dlg_Proc);
+	// <tas="Cast added to get x64 compile. No testing done."/>
+	DialogBox(AfxGetInstanceHandle(), MAKEINTRESOURCEW(IDD_PS_DLG_ADDPS), m_hWnd, reinterpret_cast<DLGPROC>(Dlg_Proc));
 	m_listStyles.SetFocus();
 }
 

@@ -1907,7 +1907,7 @@ void AeSysDoc::OnEditTrapPaste() {
 			if (ClipboardDataHandle != nullptr) {
 				const auto ClipboardData {static_cast<char*>(GlobalLock(ClipboardDataHandle))};
 				if (ClipboardData != nullptr) {
-					const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
+					const auto ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
 					const auto Text {new wchar_t[ClipboardDataSize]};
 					for (unsigned ClipboardDataIndex = 0; ClipboardDataIndex < ClipboardDataSize; ClipboardDataIndex++) {
 						Text[ClipboardDataIndex] = static_cast<wchar_t>(ClipboardData[ClipboardDataIndex]);
@@ -1920,7 +1920,7 @@ void AeSysDoc::OnEditTrapPaste() {
 		} else if (IsClipboardFormatAvailable(CF_UNICODETEXT) != 0) {
 			const auto ClipboardDataHandle {GetClipboardData(CF_UNICODETEXT)};
 			const auto ClipboardData {static_cast<wchar_t*>(GlobalLock(ClipboardDataHandle))};
-			const unsigned ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
+			const auto ClipboardDataSize {GlobalSize(ClipboardDataHandle)};
 			const auto Text {new wchar_t[ClipboardDataSize]};
 			for (unsigned ClipboardDataIndex = 0; ClipboardDataIndex < ClipboardDataSize; ClipboardDataIndex++) {
 				Text[ClipboardDataIndex] = ClipboardData[ClipboardDataIndex];
@@ -2229,7 +2229,8 @@ void AeSysDoc::OnFileTracing() {
 	OpenFileName.lpstrTitle = L"Load Tracing";
 	OpenFileName.Flags = OFN_EXPLORER | OFN_ENABLETEMPLATE | OFN_ENABLEHOOK | OFN_HIDEREADONLY | OFN_FILEMUSTEXIST;
 	OpenFileName.lpstrDefExt = L"tra";
-	OpenFileName.lpfnHook = OfnHookProcFileTracing;
+	// <tas="Cast added to get x64 compile. No testing done."/>
+	OpenFileName.lpfnHook = reinterpret_cast<LPOFNHOOKPROC>(OfnHookProcFileTracing);
 	OpenFileName.lpTemplateName = MAKEINTRESOURCEW(IDD_TRACING_EX);
 	if (GetOpenFileNameW(&OpenFileName) != 0) {
 		FilterIndex = OpenFileName.nFilterIndex;
@@ -2412,14 +2413,17 @@ void AeSysDoc::ResetAllViews() const {
 void AeSysDoc::OnHelpKey() {
 	switch (theApp.CurrentMode()) {
 		case ID_MODE_DRAW:
-			HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_draw.htm", HH_DISPLAY_TOPIC, NULL);
+			// <tas="HtmlHelp undefined x64 build. No testing done."/>
+			// HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_draw.htm", HH_DISPLAY_TOPIC, NULL);
 			break;
 		case ID_MODE_EDIT: {
-			HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_edit.htm", HH_DISPLAY_TOPIC, NULL);
+			// <tas="HtmlHelp undefined x64 build. No testing done."/>
+			// HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_edit.htm", HH_DISPLAY_TOPIC, NULL);
 			break;
 		}
 		case ID_MODE_TRAP: case ID_MODE_TRAPR: {
-			HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_trap.htm", HH_DISPLAY_TOPIC, NULL);
+			// <tas="HtmlHelp undefined x64 build. No testing done."/>
+			// HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/hid_mode_trap.htm", HH_DISPLAY_TOPIC, NULL);
 			break;
 		}
 		default: ;

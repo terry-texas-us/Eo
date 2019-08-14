@@ -1,9 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="vc15dlldbg|Win32">
-      <Configuration>vc15dlldbg</Configuration>
+    <ProjectConfiguration Include="vc16dlldbg|Win32">
+      <Configuration>vc16dlldbg</Configuration>
       <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="vc16dlldbg|x64">
+      <Configuration>vc16dlldbg</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="vc16_amd64dlldbg|Win32">
+      <Configuration>vc16_amd64dlldbg</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="vc16_amd64dlldbg|x64">
+      <Configuration>vc16_amd64dlldbg</Configuration>
+      <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -13,35 +25,83 @@
     <WindowsTargetPlatformVersion>10.0.18362.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'" Label="Configuration">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <UseOfMfc>Dynamic</UseOfMfc>
     <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+    <UseOfMfc>Dynamic</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'" Label="PropertySheets">
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">
     <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
     <LinkIncremental>true</LinkIncremental>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">
+    <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">
+    <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">
+    <CodeAnalysisRuleSet>NativeRecommendedRulesPlusCppAllCppCore.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <IncludePath>E:\gsl\include;$(IncludePath)</IncludePath>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir>$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">
     <Midl>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MkTypLibCompatible>false</MkTypLibCompatible>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>E:\ODA\20.5_15;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Include;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices;E:\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Include;E:\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\ODA\intermediate;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Include;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExRender;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Include;E:\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <EnablePREfast>false</EnablePREfast>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -60,7 +120,7 @@
     <ProjectReference />
     <Link>
       <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;PlotStyleServices.lib;TD_Zlib.lib;htmlhelp.lib</AdditionalDependencies>
-      <AdditionalLibraryDirectories>E:\ODA\20.5_15\Kernel_vc15dlldbg\lib\vc15dlldbg;E:\ODA\20.5_15\Drawings_vc15dlldbg\lib\vc15dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\VS 2017\Eo\vc15dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>E:\ODA\intermediate\Kernel_vc16dlldbg\lib\vc16dlldbg;E:\ODA\intermediate\Drawings_vc16dlldbg\lib\vc16dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\Eo\vc16dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <AssemblyDebug>
       </AssemblyDebug>
@@ -69,44 +129,186 @@
     </Link>
     <Bscmake />
   </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\ODA\intermediate;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Include;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExRender;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Include;E:\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <ProjectReference />
+    <Link>
+      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;PlotStyleServices.lib;TD_Zlib.lib;htmlhelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\ODA\intermediate\Kernel_vc16dlldbg\lib\vc16dlldbg;E:\ODA\intermediate\Drawings_vc16dlldbg\lib\vc16dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\Eo\vc16dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <AssemblyDebug>
+      </AssemblyDebug>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+    </Link>
+    <Bscmake />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\ODA\intermediate;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Include;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExRender;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices;E:\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Include;E:\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_WIN32;_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <ProjectReference />
+    <Link>
+      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;PlotStyleServices.lib;TD_Zlib.lib;htmlhelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\ODA\intermediate\Kernel_vc16dlldbg\lib\vc16dlldbg;E:\ODA\intermediate\Drawings_vc16dlldbg\lib\vc16dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\Eo\vc16dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <AssemblyDebug>
+      </AssemblyDebug>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+    </Link>
+    <Bscmake />
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">
+    <Midl>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MkTypLibCompatible>false</MkTypLibCompatible>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>E:\ODA\intermediate;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\Kernel\Include;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\Kernel\Extensions\ExRender;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\Kernel\Extensions\ExServices;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\Kernel\Extensions\win\ExtDialog;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\Drawing\Include;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\Drawing\Extensions\ExServices;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_WINDOWS;_DEBUG;UNICODE;_UNICODE;_CRT_SECURE_NO_DEPRECATE;_CRT_NOFORCE_MANIFEST;_STL_NOFORCE_MANIFEST;_CRTDBG_MAP_ALLOC;ENABLE_DWF_EXPORT_SUPPORT;ENABLE_DWF_IMPORT_SUPPORT;ENABLE_3DDWF_EXPORT_SUPPORT;ODAMFC_EXPORT_SYMBOL;ODA_DISABLE_DDALLOC;ENABLE_COLLADA_EXPORT_SUPPORT;_SISL_IMPL_;_TOOLKIT_IN_DLL_;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <EnablePREfast>false</EnablePREfast>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+    </ResourceCompile>
+    <ProjectReference />
+    <Link>
+      <AdditionalDependencies>TD_Alloc.lib;TD_Root.lib;TD_DbRoot.lib;TD_Ge.lib;TD_Gi.lib;TD_Gs.lib;TD_SpatialIndex.lib;TD_DbCore.lib;TD_Db.lib;TD_DbIO.lib;TD_DbEntities.lib;ISM.lib;WipeOut.lib;RText.lib;ATEXT.lib;SCENEOE.lib;ACCAMERA.lib;AcMPolygonObj15.lib;TD_Key.lib;PlotStyleServices.lib;TD_Zlib.lib;htmlhelp.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>E:\ODA\intermediate\Kernel_vc16_amd64dlldbg\lib\vc16_amd64dlldbg;E:\ODA\intermediate\Drawings_vc16_amd64dlldbg\lib\vc16_amd64dlldbg;C:\Program Files (x86)\HTML Help Workshop\lib;E:\Projects\Eo\vc16_amd64dlldbg;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <AssemblyDebug>
+      </AssemblyDebug>
+      <SubSystem>Windows</SubSystem>
+      <ImageHasSafeExceptionHandlers>
+      </ImageHasSafeExceptionHandlers>
+    </Link>
+    <Bscmake />
+  </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices\ExDbCommandContext.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices\ExFileUndoController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices\ExHostAppServices.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices\ExPageController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Drawing\Extensions\ExServices\ExUndoController.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExRender\BmpTilesGen.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices\ExKWIndex.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices\ExStringIO.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices\ExSystemServices.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices\OdFileBuf.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\ODA\20.5_15\Drawings_vc15dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+    <ClCompile Include="..\..\..\..\ODA\intermediate\Drawings_vc16dlldbg\Kernel\Extensions\ExServices\RxSystemServicesImpl.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="AeSys.cpp" />
     <ClCompile Include="AeSysDoc.cpp" />
     <ClCompile Include="EditorObject.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Eo3dOrbitCmd.cpp" />
     <ClCompile Include="EoAppAuditInfo.cpp" />
@@ -239,14 +441,20 @@
     <ClCompile Include="EoGsModelTransform.cpp" />
     <ClCompile Include="EoGsViewTransform.cpp" />
     <ClCompile Include="OSnapManager.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="PrimState.cpp" />
     <ClCompile Include="EoGeReferenceSystem.cpp" />
     <ClCompile Include="Section.cpp" />
     <ClCompile Include="EoDlgSelectIsometricView.cpp" />
     <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc15dlldbg|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16dlldbg|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='vc16_amd64dlldbg|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="EoDlgTrapFilter.cpp" />
     <ClCompile Include="EoDlgViewParameters.cpp" />
@@ -442,7 +650,7 @@
     <Image Include="res\psbmpwht.bmp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\vc15dlldbg\res\Hatches\DefaultSet.pat" />
+    <Text Include="..\vc16dlldbg\res\Hatches\DefaultSet.pat" />
   </ItemGroup>
   <ItemGroup>
     <Natvis Include="NatvisFile.natvis" />

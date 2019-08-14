@@ -1560,7 +1560,8 @@ public:
 		: SaveViewParameters(view, tracker, cursor, false) {
 		if (tracker != nullptr) {
 			tracker->setCursor(true);
-			SetTimer(m_View->m_hWnd, gc_BlinkCursorTimer, gc_BlinkCursorRate, static_cast<TIMERPROC>(StringTrackerTimer));
+			// <tas="Cast changed from static to reinterpret to get x64 compile. No testing done."/>
+			SetTimer(m_View->m_hWnd, gc_BlinkCursorTimer, gc_BlinkCursorRate, reinterpret_cast<TIMERPROC>(StringTrackerTimer));
 			m_TimerSet = true;
 		} else {
 			m_TimerSet = false;
@@ -2941,7 +2942,8 @@ void AeSysView::OnPrimitivePerpendicularJump() {
 }
 
 void AeSysView::OnHelpKey() {
-	::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/menu_mode.htm", HH_DISPLAY_TOPIC, NULL);
+	// <tas="HtmlHelp undefined x64 build. No testing done."/>
+	//::HtmlHelpW(AfxGetMainWnd()->GetSafeHwnd(), L"..\\AeSys\\hlp\\AeSys.chm::/menu_mode.htm", HH_DISPLAY_TOPIC, NULL);
 }
 
 AeSysView* AeSysView::GetActiveView() {
